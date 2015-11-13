@@ -1,1 +1,15 @@
+*.ilk
+*.lib
+*.obj
+*.pdb
+*.res
+*.sdf
+*.tlog
+
 Build/Bin/upx.exe
+Bin/Debug_x86/Notepad3.exe
+Bin/Debug_x86/obj/Notepad3.log
+Bin/Debug_x86/obj/scintilla/Scintilla.idb
+Bin/Debug_x86/obj/scintilla/Scintilla.log
+Bin/Debug_x86/obj/vc140.idb
+Build/.vs/Notepad3/v14/.suo

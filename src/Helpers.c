@@ -81,7 +81,7 @@ int IniSectionGetInt(
 
     while (*p) {
       if (StrCmpNI(p,tch,ich) == 0) {
-        if (swscanf(p + ich,L"%i",&i) == 1)
+        if (swscanf_s(p + ich,L"%i",&i) == 1)
           return(i);
         else
           return(iDefault);
@@ -872,7 +872,7 @@ int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptb
 
   p = tchButtons;
   while (*p) {
-    if (swscanf(p,L"%i",&iCmd) == 1) {
+    if (swscanf_s(p,L"%i",&iCmd) == 1) {
       iCmd = (iCmd==0)?0:iCmd+cmdBase-1;
       for (i = 0; i < ctbb; i++) {
         if (ptbb[i].idCommand == iCmd) {

@@ -6132,7 +6132,7 @@ void ParseCommandLine()
             }
             else if (ExtractFirstArgument(lp2,lp1,lp2)) {
               int itok =
-                swscanf(lp1,L"%i,%i,%i,%i,%i",&wi.x,&wi.y,&wi.cx,&wi.cy,&wi.max);
+                swscanf_s(lp1,L"%i,%i,%i,%i,%i",&wi.x,&wi.y,&wi.cx,&wi.cy,&wi.max);
               if (itok == 4 || itok == 5) { // scan successful
                 flagPosParam = 1;
                 flagDefaultPos = 0;
@@ -6171,7 +6171,7 @@ void ParseCommandLine()
         case L'G':
           if (ExtractFirstArgument(lp2,lp1,lp2)) {
             int itok =
-              swscanf(lp1,L"%i,%i",&iInitialLine,&iInitialColumn);
+              swscanf_s(lp1,L"%i,%i",&iInitialLine,&iInitialColumn);
             if (itok == 1 || itok == 2) { // scan successful
               flagJumpTo = 1;
             }
