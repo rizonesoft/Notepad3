@@ -1,15 +1,32 @@
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# C++ Junk           #
+######################
+*.aps
 *.ilk
 *.lib
 *.obj
+*.opensdf
 *.pdb
+*.pyc
 *.res
 *.sdf
+*.suo
 *.tlog
+*.user
 
-Build/Bin/upx.exe
-Bin/Debug_x86/Notepad3.exe
-Bin/Debug_x86/obj/Notepad3.log
-Bin/Debug_x86/obj/scintilla/Scintilla.idb
-Bin/Debug_x86/obj/scintilla/Scintilla.log
-Bin/Debug_x86/obj/vc140.idb
-Build/.vs/Notepad3/v14/.suo
+/Bin
+/build.user.bat
+/Build/.vs
+/Build/Packages
+/Build/temp_zip*
+/distrib/Notepad3.*.exe
+/Build/Bin/upx.exe
