@@ -1,0 +1,45 @@
+// File to suppress cppcheck warnings for files that will not be fixed.
+// Does not suppress warnings where an additional occurrence of the warning may be of interest.
+
+// Coding style is to use assignments in constructor when there are many
+// members to initialize or the initialization is complex or has comments.
+useInitializationList
+
+// Some non-explicit constructors are used for conversions or are private to lexers
+noExplicitConstructor
+noExplicitCopyMoveConstructor
+
+// cppcheck does not understand private methods can be called from static methods
+unusedPrivateFunction:scintilla/win32/PlatWin.cxx
+
+// Suppress most lexer warnings since the lexers are maintained by others
+useInitializationList:scintilla/lexers/LexAsm.cxx
+useInitializationList:scintilla/lexers/LexBasic.cxx
+noCopyConstructor:scintilla/lexers/LexBash.cxx
+variableScope:scintilla/lexers/LexBash.cxx
+variableScope:scintilla/lexers/LexBatch.cxx
+variableScope:scintilla/lexers/LexCmake.cxx
+variableScope:scintilla/lexers/LexCSS.cxx
+useInitializationList:scintilla/lexers/LexD.cxx
+variableScope:scintilla/lexers/LexErlang.cxx
+variableScope:scintilla/lexers/LexGui4Cli.cxx
+variableScope:scintilla/lexers/LexInno.cxx
+variableScope:scintilla/lexers/LexLaTeX.cxx
+variableScope:scintilla/lexers/LexMetapost.cxx
+variableScope:scintilla/lexers/LexModula.cxx
+variableScope:scintilla/lexers/LexNimrod.cxx
+variableScope:scintilla/lexers/LexNsis.cxx
+variableScope:scintilla/lexers/LexOpal.cxx
+variableScope:scintilla/lexers/LexPB.cxx
+noCopyConstructor:scintilla/lexers/LexPerl.cxx
+variableScope:scintilla/lexers/LexRuby.cxx
+uninitMemberVar:scintilla/lexers/LexRuby.cxx
+variableScope:scintilla/lexers/LexSpecman.cxx
+unreadVariable:scintilla/lexers/LexSpice.cxx
+clarifyCalculation:scintilla/lexers/LexTADS3.cxx
+invalidscanf:scintilla/lexers/LexTCMD.cxx
+variableScope:scintilla/lexers/LexTeX.cxx
+variableScope:scintilla/lexers/LexVHDL.cxx
+
+// Suppress everything in catch.hpp as won't be changing
+*:scintilla/test/unit/catch.hpp
