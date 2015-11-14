@@ -1338,7 +1338,7 @@ STRINGTABLE
 BEGIN
     IDS_ERR_LOADFILE        "Error loading ""%s""."
     IDS_ERR_SAVEFILE        "Error saving ""%s""."
-    IDS_ERR_BROWSE          "No file browser plugin was found.\nThe metapath file browser plugin can be downloaded from http://www.flos-freeware.ch."
+    IDS_ERR_BROWSE          "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
     IDS_ERR_MRUDLG          "No access to the selected file!\nWould you like to remove it from the list?"
     IDS_ERR_CREATELINK      "Error creating the Desktop link."
     IDS_ERR_PREVWINDISABLED "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"

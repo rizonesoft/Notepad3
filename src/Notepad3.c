@@ -2401,10 +2401,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WCHAR tchTemp[MAX_PATH+4];
 
         if (!IniGetString(L"Settings2",L"filebrowser.exe",L"",tchTemp,COUNTOF(tchTemp))) {
-          if (!SearchPath(NULL,L"metapath.exe",NULL,COUNTOF(tchExeFile),tchExeFile,NULL)) {
+          if (!SearchPath(NULL,L"minipath.exe",NULL,COUNTOF(tchExeFile),tchExeFile,NULL)) {
             GetModuleFileName(NULL,tchExeFile,COUNTOF(tchExeFile));
             PathRemoveFileSpec(tchExeFile);
-            PathAppend(tchExeFile,L"metapath.exe");
+            PathAppend(tchExeFile,L"minipath.exe");
           }
         }
 
@@ -6380,10 +6380,10 @@ void LoadFlags()
   if (IniSectionGetInt(pIniSection,L"NoFileVariables",0))
     fNoFileVariables = 1;
 
-  // if (lstrlen(g_wchAppUserModelID) == 0) {
-    // IniSectionGetString(pIniSection,L"ShellAppUserModelID",L"Notepad3",
-      // g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID));
-  // }
+  if (lstrlen(g_wchAppUserModelID) == 0) {
+    IniSectionGetString(pIniSection,L"ShellAppUserModelID",L"Notepad3",
+      g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID));
+  }
 
   if (flagUseSystemMRU == 0) {
     if (IniSectionGetInt(pIniSection,L"ShellUseSystemMRU",0))
