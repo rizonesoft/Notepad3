@@ -8,7 +8,7 @@
 # Files are regenerated in place with templates stored in comments.
 # The format of generation comments is documented in FileGenerator.py.
 
-from FileGenerator import Regenerate, UpdateLineInFile, ReplaceREInFile
+from FileGenerator import Regenerate, UpdateLineInFile, ReplaceREInFile, UpdateLineInPlistFile
 import ScintillaData
 import HFacer
 
@@ -38,6 +38,10 @@ def UpdateVersionNumbers(sci, root):
     UpdateLineInFile(root + "doc/ScintillaHistory.html",
         '	Released ',
         '	Released ' + sci.dmyModified + '.')
+    UpdateLineInPlistFile(root + "cocoa/ScintillaFramework/Info.plist",
+        "CFBundleVersion", sci.versionDotted)
+    UpdateLineInPlistFile(root + "cocoa/ScintillaFramework/Info.plist",
+        "CFBundleShortVersionString", sci.versionDotted)
 
 def RegenerateAll(root):
     

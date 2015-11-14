@@ -388,7 +388,7 @@ static bool IsStreamCommentStyle(int style) {
 		style == SCE_ECL_COMMENTDOCKEYWORDERROR;
 }
 
-bool MatchNoCase(Accessor & styler, Sci_PositionU & pos, const char *s) {
+static bool MatchNoCase(Accessor & styler, Sci_PositionU & pos, const char *s) {
 	Sci_Position i=0;
 	for (; *s; i++) {
 		char compare_char = tolower(*s);

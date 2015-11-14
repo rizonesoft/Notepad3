@@ -291,7 +291,7 @@ void EditView::AllocateGraphics(const ViewStyle &vsDraw) {
 		pixmapIndentGuideHighlight = Surface::Allocate(vsDraw.technology);
 }
 
-const char *ControlCharacterString(unsigned char ch) {
+static const char *ControlCharacterString(unsigned char ch) {
 	const char *reps[] = {
 		"NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL",
 		"BS", "HT", "LF", "VT", "FF", "CR", "SO", "SI",
@@ -305,7 +305,7 @@ const char *ControlCharacterString(unsigned char ch) {
 	}
 }
 
-void DrawTabArrow(Surface *surface, PRectangle rcTab, int ymid) {
+static void DrawTabArrow(Surface *surface, PRectangle rcTab, int ymid) {
 	int ydiff = static_cast<int>(rcTab.bottom - rcTab.top) / 2;
 	int xhead = static_cast<int>(rcTab.right) - 1 - ydiff;
 	if (xhead <= rcTab.left) {
@@ -711,12 +711,14 @@ int EditView::StartEndDisplayLine(Surface *surface, const EditModel &model, int 
 		int posInLine = pos - posLineStart;
 		if (posInLine <= ll->maxLineLength) {
 			for (int subLine = 0; subLine < ll->lines; subLine++) {
-				if ((posInLine >= ll->LineStart(subLine)) && (posInLine <= ll->LineStart(subLine + 1))) {
+				if ((posInLine >= ll->LineStart(subLine)) &&
+				    (posInLine <= ll->LineStart(subLine + 1)) &&
+				    (posInLine <= ll->numCharsBeforeEOL)) {
 					if (start) {
 						posRet = ll->LineStart(subLine) + posLineStart;
 					} else {
 						if (subLine == ll->lines - 1)
-							posRet = ll->LineStart(subLine + 1) + posLineStart;
+							posRet = ll->numCharsBeforeEOL + posLineStart;
 						else
 							posRet = ll->LineStart(subLine + 1) + posLineStart - 1;
 					}
@@ -1301,8 +1303,7 @@ void EditView::DrawBackground(Surface *surface, const EditModel &model, const Vi
 			if (ts.representation) {
 				if (ll->chars[i] == '\t') {
 					// Tab display
-					if (drawWhitespaceBackground &&
-						(!inIndentation || vsDraw.viewWhitespace == wsVisibleAlways))
+					if (drawWhitespaceBackground && vsDraw.WhiteSpaceVisible(inIndentation))
 						textBack = vsDraw.whitespaceColours.back;
 				} else {
 					// Blob display
@@ -1312,12 +1313,10 @@ void EditView::DrawBackground(Surface *surface, const EditModel &model, const Vi
 			} else {
 				// Normal text display
 				surface->FillRectangle(rcSegment, textBack);
-				if (vsDraw.viewWhitespace != wsInvisible ||
-					(inIndentation && vsDraw.viewIndentationGuides == ivReal)) {
+				if (vsDraw.viewWhitespace != wsInvisible) {
 					for (int cpos = 0; cpos <= i - ts.start; cpos++) {
 						if (ll->chars[cpos + ts.start] == ' ') {
-							if (drawWhitespaceBackground &&
-								(!inIndentation || vsDraw.viewWhitespace == wsVisibleAlways)) {
+							if (drawWhitespaceBackground && vsDraw.WhiteSpaceVisible(inIndentation)) {
 								PRectangle rcSpace(
 									ll->positions[cpos + ts.start] + xStart - static_cast<XYPOSITION>(subLineStart),
 									rcSegment.top,
@@ -1408,27 +1407,26 @@ static void DrawTranslucentLineState(Surface *surface, const EditModel &model, c
 	if ((model.caret.active || vsDraw.alwaysShowCaretLineBackground) && vsDraw.showCaretLineBackground && ll->containsCaret) {
 		SimpleAlphaRectangle(surface, rcLine, vsDraw.caretLineBackground, vsDraw.caretLineAlpha);
 	}
-	int marks = model.pdoc->GetMark(line);
-	for (int markBit = 0; (markBit < 32) && marks; markBit++) {
-		if ((marks & 1) && (vsDraw.markers[markBit].markType == SC_MARK_BACKGROUND)) {
-			SimpleAlphaRectangle(surface, rcLine, vsDraw.markers[markBit].back, vsDraw.markers[markBit].alpha);
-		} else if ((marks & 1) && (vsDraw.markers[markBit].markType == SC_MARK_UNDERLINE)) {
-			PRectangle rcUnderline = rcLine;
-			rcUnderline.top = rcUnderline.bottom - 2;
-			SimpleAlphaRectangle(surface, rcUnderline, vsDraw.markers[markBit].back, vsDraw.markers[markBit].alpha);
-		}
-		marks >>= 1;
-	}
-	if (vsDraw.maskInLine) {
-		int marksMasked = model.pdoc->GetMark(line) & vsDraw.maskInLine;
-		if (marksMasked) {
-			for (int markBit = 0; (markBit < 32) && marksMasked; markBit++) {
-				if ((marksMasked & 1) && (vsDraw.markers[markBit].markType != SC_MARK_EMPTY)) {
-					SimpleAlphaRectangle(surface, rcLine, vsDraw.markers[markBit].back, vsDraw.markers[markBit].alpha);
-				}
-				marksMasked >>= 1;
+	const int marksOfLine = model.pdoc->GetMark(line);
+	int marksDrawnInText = marksOfLine & vsDraw.maskDrawInText;
+	for (int markBit = 0; (markBit < 32) && marksDrawnInText; markBit++) {
+		if (marksDrawnInText & 1) {
+			if (vsDraw.markers[markBit].markType == SC_MARK_BACKGROUND) {
+				SimpleAlphaRectangle(surface, rcLine, vsDraw.markers[markBit].back, vsDraw.markers[markBit].alpha);
+			} else if (vsDraw.markers[markBit].markType == SC_MARK_UNDERLINE) {
+				PRectangle rcUnderline = rcLine;
+				rcUnderline.top = rcUnderline.bottom - 2;
+				SimpleAlphaRectangle(surface, rcUnderline, vsDraw.markers[markBit].back, vsDraw.markers[markBit].alpha);
 			}
 		}
+		marksDrawnInText >>= 1;
+	}
+	int marksDrawnInLine = marksOfLine & vsDraw.maskInLine;
+	for (int markBit = 0; (markBit < 32) && marksDrawnInLine; markBit++) {
+		if (marksDrawnInLine & 1) {
+			SimpleAlphaRectangle(surface, rcLine, vsDraw.markers[markBit].back, vsDraw.markers[markBit].alpha);
+		}
+		marksDrawnInLine >>= 1;
 	}
 }
 
@@ -1504,8 +1502,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 				if (ll->chars[i] == '\t') {
 					// Tab display
 					if (phasesDraw == phasesOne) {
-						if (drawWhitespaceBackground &&
-							(!inIndentation || vsDraw.viewWhitespace == wsVisibleAlways))
+						if (drawWhitespaceBackground && vsDraw.WhiteSpaceVisible(inIndentation))
 							textBack = vsDraw.whitespaceColours.back;
 						surface->FillRectangle(rcSegment, textBack);
 					}
@@ -1521,7 +1518,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 						}
 					}
 					if (vsDraw.viewWhitespace != wsInvisible) {
-						if (!inIndentation || vsDraw.viewWhitespace == wsVisibleAlways) {
+						if (vsDraw.WhiteSpaceVisible(inIndentation)) {
 							if (vsDraw.whitespaceColours.fore.isSet)
 								textFore = vsDraw.whitespaceColours.fore;
 							surface->PenColour(textFore);
@@ -1569,10 +1566,9 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 							if (vsDraw.viewWhitespace != wsInvisible) {
 								if (vsDraw.whitespaceColours.fore.isSet)
 									textFore = vsDraw.whitespaceColours.fore;
-								if (!inIndentation || vsDraw.viewWhitespace == wsVisibleAlways) {
+								if (vsDraw.WhiteSpaceVisible(inIndentation)) {
 									XYPOSITION xmid = (ll->positions[cpos + ts.start] + ll->positions[cpos + ts.start + 1]) / 2;
-									if ((phasesDraw == phasesOne) && drawWhitespaceBackground &&
-										(!inIndentation || vsDraw.viewWhitespace == wsVisibleAlways)) {
+									if ((phasesDraw == phasesOne) && drawWhitespaceBackground) {
 										textBack = vsDraw.whitespaceColours.back;
 										PRectangle rcSpace(
 											ll->positions[cpos + ts.start] + xStart - static_cast<XYPOSITION>(subLineStart),
@@ -1581,7 +1577,8 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 											rcSegment.bottom);
 										surface->FillRectangle(rcSpace, textBack);
 									}
-									PRectangle rcDot(xmid + xStart - static_cast<XYPOSITION>(subLineStart),
+									const int halfDotWidth = vsDraw.whitespaceSize / 2;
+									PRectangle rcDot(xmid + xStart - halfDotWidth - static_cast<XYPOSITION>(subLineStart),
 										rcSegment.top + vsDraw.lineHeight / 2, 0.0f, 0.0f);
 									rcDot.right = rcDot.left + vsDraw.whitespaceSize;
 									rcDot.bottom = rcDot.top + vsDraw.whitespaceSize;
@@ -1940,7 +1937,7 @@ void EditView::PaintText(Surface *surfaceWindow, const EditModel &model, PRectan
 // Space (3 space characters) between line numbers and text when printing.
 #define lineNumberPrintSpace "   "
 
-ColourDesired InvertedLight(ColourDesired orig) {
+static ColourDesired InvertedLight(ColourDesired orig) {
 	unsigned int r = orig.GetRed();
 	unsigned int g = orig.GetGreen();
 	unsigned int b = orig.GetBlue();

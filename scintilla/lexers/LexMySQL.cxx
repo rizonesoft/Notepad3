@@ -331,7 +331,7 @@ static bool IsStreamCommentStyle(int style)
  * Code copied from StyleContext and modified to work here. Should go into Accessor as a
  * companion to Match()...
  */
-bool MatchIgnoreCase(Accessor &styler, Sci_Position currentPos, const char *s)
+static bool MatchIgnoreCase(Accessor &styler, Sci_Position currentPos, const char *s)
 {
   for (Sci_Position n = 0; *s; n++)
   {

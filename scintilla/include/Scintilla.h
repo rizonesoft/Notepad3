@@ -73,6 +73,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCWS_INVISIBLE 0
 #define SCWS_VISIBLEALWAYS 1
 #define SCWS_VISIBLEAFTERINDENT 2
+#define SCWS_VISIBLEONLYININDENT 3
 #define SCI_GETVIEWWS 2020
 #define SCI_SETVIEWWS 2021
 #define SCI_POSITIONFROMPOINT 2022

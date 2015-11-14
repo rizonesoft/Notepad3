@@ -39,7 +39,7 @@
 
 /******************************************************************************
 *
-* Local and global Variables for Notepad2.c
+* Local and global Variables for Notepad3.c
 *
 */
 HWND      hwndStatus;
@@ -1448,7 +1448,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         break;
 
 
-    //// This message is posted before Notepad2 reactivates itself
+    //// This message is posted before Notepad3 reactivates itself
     //case WM_CHANGENOTIFYCLEAR:
     //  bPendingChangeNotify = FALSE;
     //  break;
@@ -7242,7 +7242,7 @@ BOOL SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 *
 * ActivatePrevInst()
 *
-* Tries to find and activate an already open Notepad2 Window
+* Tries to find and activate an already open Notepad3 Window
 *
 *
 ******************************************************************************/
@@ -7618,7 +7618,7 @@ BOOL RelaunchElevated() {
 //
 //  SnapToDefaultPos()
 //
-//  Aligns Notepad2 to the default window position on the current screen
+//  Aligns Notepad3 to the default window position on the current screen
 //
 //
 void SnapToDefaultPos(HWND hwnd)
@@ -7896,4 +7896,4 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 
 
 
-///  End of Notepad2.c  \\\
+///  End of Notepad3.c  \\\

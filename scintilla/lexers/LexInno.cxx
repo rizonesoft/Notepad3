@@ -33,7 +33,7 @@ static void ColouriseInnoDoc(Sci_PositionU startPos, Sci_Position length, int, W
 	char ch = 0;
 	char chNext = styler[startPos];
 	Sci_Position lengthDoc = startPos + length;
-	char *buffer = new char[length];
+	char *buffer = new char[length+1];
 	Sci_Position bufferCount = 0;
 	bool isBOL, isEOL, isWS, isBOLWS = 0;
 	bool isCStyleComment = false;

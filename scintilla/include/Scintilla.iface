@@ -159,6 +159,7 @@ enu WhiteSpace=SCWS_
 val SCWS_INVISIBLE=0
 val SCWS_VISIBLEALWAYS=1
 val SCWS_VISIBLEAFTERINDENT=2
+val SCWS_VISIBLEONLYININDENT=3
 
 # Are white space characters currently visible?
 # Returns one of SCWS_* constants.

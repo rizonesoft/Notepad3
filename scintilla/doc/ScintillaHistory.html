@@ -6,6 +6,7 @@
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
     <meta name="generator" content="SciTE" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
       Scintilla and SciTE
     </title>
@@ -487,7 +488,81 @@
       </li>
     </ul>
     <h3>
-       <a href="http://prdownloads.sourceforge.net/scintilla/scite361.zip?download">Release 3.6.1</a>
+       <a href="http://www.scintilla.org/scite362.zip">Release 3.6.2</a>
+    </h3>
+    <ul>
+	<li>
+	Released 6 November 2015.
+	</li>
+	<li>
+	Whitespace may be made visible just in indentation.
+	</li>
+	<li>
+	Whitespace dots are centred when larger than 1 pixel.
+	</li>
+	<li>
+	The Scintilla framework on Cocoa now contains version numbers.
+	</li>
+	<li>
+	SciTE's standard properties collect values from all active .properties file to produce the Language menu
+	and the file types pull-down in the File open dialog.
+	</li>
+	<li>
+	The single executable version of SciTE, Sc1, uses 'module' statements within its embedded
+	properties. This makes it act more like the full distribution allowing languages to be turned on
+	and off by setting imports.include and imports.exclude.
+	The default imports.exclude property adds eiffel, erlang, ps, and pov so these languages are
+	turned off by default.
+	</li>
+	<li>
+	SciTE adds an output.blank.margin.left property to allow setting the output pane
+	margin to a different width than the edit pane.
+	</li>
+	<li>
+	CoffeeScript lexer highlights ranges correctly.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1765/">Bug #1765</a>.
+	</li>
+	<li>
+	Markdown lexer treats line starts consistently to always highlight *foo* or similar at line start.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1766/">Bug #1766</a>.
+	</li>
+	<li>
+	Optimise marker redrawing by only drawing affected lines when markers shown in the text.
+	</li>
+	<li>
+	On Cocoa, timers and idling now work in modal dialogs. This also stops some crashes.
+	</li>
+	<li>
+	On Cocoa, fix crashes when deleting a ScintillaView. These crashes could occur when scrolling
+	at the time the ScintillaView was deleted although there may have been other cases.
+	</li>
+	<li>
+	On GTK+ 2.x, fix height of lines in autocompletion lists.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1774/">Bug #1774</a>.
+	</li>
+	<li>
+	Fix bug with SCI_LINEENDDISPLAY where the caret moved to the next document line instead of the
+	end of the display line.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1772/">Bug #1772</a>.
+	</li>
+	<li>
+	Report error (SC_STATUS_FAILURE) when negative length passed to SCI_SETSTYLING.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1768/">Bug #1768</a>.
+	</li>
+	<li>
+	When SC_MARK_UNDERLINE is not assigned to a margin, stop drawing the whole line.
+	</li>
+	<li>
+	When reverting an untitled document in SciTE, just clear it with no message about a file.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1764/">Bug #1764</a>.
+	</li>
+	<li>
+	SciTE on GTK+ allows use of Ctrl+A (Select All) inside find and replace strips.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1769/">Bug #1769</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="http://www.scintilla.org/scite361.zip">Release 3.6.1</a>
     </h3>
     <ul>
 	<li>
@@ -533,6 +608,7 @@
 	<li>
 	On GTK+, avoid "Invalid rectangle passed" warning messages by never reporting the client
 	rectangle with a negative width or height.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1743/">Bug #1743</a>.
 	</li>
 	<li>
 	On Cocoa, copy Sci_Position.h into the framework so clients can build.

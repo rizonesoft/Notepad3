@@ -252,6 +252,10 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 				}
 			} else if (isoperator(static_cast<char>(sc.ch))) {
 				sc.SetState(SCE_COFFEESCRIPT_OPERATOR);
+				// Handle '..' and '...' operators correctly.
+				if (sc.ch == '.') {
+					for (int i = 0; i < 2 && sc.chNext == '.'; i++, sc.Forward()) ;
+				}
 			}
 		}
 

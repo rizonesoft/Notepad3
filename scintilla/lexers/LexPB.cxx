@@ -70,7 +70,7 @@ static inline bool IsAWordStart(const int ch)
     return (ch < 0x80) && (isalnum(ch) || ch == '_');
 }
 
-bool MatchUpperCase(Accessor &styler, Sci_Position pos, const char *s)   //Same as styler.Match() but uppercase comparison (a-z,A-Z and space only)
+static bool MatchUpperCase(Accessor &styler, Sci_Position pos, const char *s)   //Same as styler.Match() but uppercase comparison (a-z,A-Z and space only)
 {
     char ch;
     for (Sci_Position i=0; *s; i++)

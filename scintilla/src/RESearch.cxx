@@ -305,7 +305,7 @@ void RESearch::ChSetWithCase(unsigned char c, bool caseSensitive) {
 	}
 }
 
-unsigned char escapeValue(unsigned char ch) {
+static unsigned char escapeValue(unsigned char ch) {
 	switch (ch) {
 	case 'a':	return '\a';
 	case 'b':	return '\b';

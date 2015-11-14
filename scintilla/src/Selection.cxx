@@ -126,6 +126,10 @@ SelectionSegment SelectionRange::Intersect(SelectionSegment check) const {
 	}
 }
 
+void SelectionRange::Swap() {
+	std::swap(caret, anchor);
+}
+
 bool SelectionRange::Trim(SelectionRange range) {
 	SelectionPosition startRange = range.Start();
 	SelectionPosition endRange = range.End();
