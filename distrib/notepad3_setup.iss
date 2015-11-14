@@ -107,11 +107,11 @@ Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescript
 
 
 [Files]
-Source: {#bindir}\Release_x64\Notepad3.exe; DestDir: {app};                  Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86\Notepad3.exe; DestDir: {app};                  Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: License.txt;                        DestDir: {app};                  Flags: ignoreversion
-Source: Notepad3.txt;                       DestDir: {app};                  Flags: ignoreversion
-Source: Notepad2.ini;                       DestDir: {userappdata}\Notepad2; Flags: onlyifdoesntexist uninsneveruninstall
+Source: {#bindir}\Release_x64\Notepad3.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86\Notepad3.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: License.txt;                        DestDir: {app};                             Flags: ignoreversion
+Source: Readme.txt;                         DestDir: {app};                             Flags: ignoreversion
+Source: Notepad3.ini;                       DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
 
 
 [Icons]
@@ -122,7 +122,7 @@ Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklau
 
 
 [INI]
-Filename: {app}\Notepad2.ini; Section: Notepad2; Key: Notepad2.ini; String: %APPDATA%\Notepad2\Notepad2.ini
+Filename: {app}\Notepad3.ini; Section: Notepad3; Key: Notepad3.ini; String: %APPDATA%\Rizonesoft\Notepad3\Notepad3.ini
 
 
 [Run]
@@ -134,12 +134,12 @@ Type: files;      Name: {userdesktop}\{#app_name}.lnk;   Check: not IsTaskSelect
 Type: files;      Name: {commondesktop}\{#app_name}.lnk; Check: not IsTaskSelected('desktopicon\common') and IsUpgrade()
 Type: files;      Name: {userstartmenu}\{#app_name}.lnk; Check: not IsTaskSelected('startup_icon')       and IsUpgrade()
 Type: files;      Name: {#quick_launch}\{#app_name}.lnk; Check: not IsTaskSelected('quicklaunchicon')    and IsUpgrade(); OnlyBelowVersion: 6.01
-Type: files;      Name: {app}\Notepad2.ini
+Type: files;      Name: {app}\Notepad3.ini
 Type: files;      Name: {app}\Readme.txt
 
 
 [UninstallDelete]
-Type: files;      Name: {app}\Notepad2.ini
+Type: files;      Name: {app}\Notepad3.ini
 Type: dirifempty; Name: {app}
 
 
@@ -189,8 +189,8 @@ end;
 
 function IsOldBuildInstalled(sInfFile: String): Boolean;
 begin
-  if RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Notepad2') and
-  FileExists(ExpandConstant('{pf}\Notepad2\' + sInfFile)) then
+  if RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Notepad3') and
+  FileExists(ExpandConstant('{pf}\Notepad3\' + sInfFile)) then
     Result := True
   else
     Result := False;
@@ -209,7 +209,7 @@ end;
 // Check if Notepad2's settings exist
 function SettingsExistCheck(): Boolean;
 begin
-  if FileExists(ExpandConstant('{userappdata}\Notepad2\Notepad2.ini')) then begin
+  if FileExists(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini')) then begin
     Log('Custom Code: Settings are present');
     Result := True;
   end
@@ -232,7 +232,7 @@ begin
   // default return value
   Result := 0;
   // TODO: use RegQueryStringValue
-  if not Exec('rundll32.exe', ExpandConstant('advpack.dll,LaunchINFSectionEx ' + '"{pf}\Notepad2\' + sInfFile +'",DefaultUninstall,,8,N'), '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then begin
+  if not Exec('rundll32.exe', ExpandConstant('advpack.dll,LaunchINFSectionEx ' + '"{pf}\Notepad3\' + sInfFile +'",DefaultUninstall,,8,N'), '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then begin
     Result := 1;
   end
   else begin
@@ -252,7 +252,7 @@ end;
 
 procedure AddReg();
 begin
-  RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Notepad2');
+  RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Notepad3');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" %1'));
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
 end;
@@ -260,8 +260,8 @@ end;
 
 procedure CleanUpSettings();
 begin
-  DeleteFile(ExpandConstant('{userappdata}\Notepad2\Notepad2.ini'));
-  RemoveDir(ExpandConstant('{userappdata}\Notepad2'));
+  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
+  RemoveDir(ExpandConstant('{userappdata}\Rizonesoft\Notepad3'));
 end;
 
 
@@ -287,7 +287,7 @@ begin
     if IsTaskSelected('reset_settings') then
       CleanUpSettings();
 
-    if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad2.inf') then begin
+    if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad3.inf') then begin
       if IsOldBuildInstalled('Uninstall.inf') then begin
         Log('Custom Code: The old build is installed, will try to uninstall it');
         if UninstallOldVersion('Uninstall.inf') = 2 then
@@ -296,9 +296,9 @@ begin
           Log('Custom Code: Something went wrong when uninstalling the old build');
       end;
 
-      if IsOldBuildInstalled('Notepad2.inf') then begin
+      if IsOldBuildInstalled('Notepad3.inf') then begin
         Log('Custom Code: The official Notepad2 build is installed, will try to uninstall it');
-        if UninstallOldVersion('Notepad2.inf') = 2 then
+        if UninstallOldVersion('Notepad3.inf') = 2 then
           Log('Custom Code: The official Notepad2 build was successfully uninstalled')
         else
           Log('Custom Code: Something went wrong when uninstalling the official Notepad2 build');
@@ -307,14 +307,14 @@ begin
       // This is the case where the old build is installed; the DefaulNotepadCheck() returns true
       // and the set_default task isn't selected
       if not IsTaskSelected('remove_default') then
-        RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad2.exe" /z'));
+        RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
 
     end;
   end;
 
   if CurStep = ssPostInstall then begin
     if IsTaskSelected('set_default') then
-      RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad2.exe" /z'));
+      RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
     if IsTaskSelected('remove_default') then begin
       RegDeleteValue(HKLM, IFEO, 'Debugger');
       RegDeleteKeyIfEmpty(HKLM, IFEO);
