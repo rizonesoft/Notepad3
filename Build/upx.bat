@@ -22,9 +22,15 @@ SET INPUTDIRx64=bin\Release_x64
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"
 ECHO.
+ECHO.
 Bin\UPX --brute "..\%INPUTDIRx86%\Notepad3.exe"
 ECHO.
+Bin\UPX --brute "..\%INPUTDIRx86%\minipath.exe"
+ECHO.
 Bin\UPX --brute "..\%INPUTDIRx64%\Notepad3.exe"
+ECHO.
+Bin\UPX --brute "..\%INPUTDIRx64%\minipath.exe"
+ECHO.
 ECHO.
 
 :SUBMSG

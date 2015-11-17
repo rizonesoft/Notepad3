@@ -10,14 +10,22 @@
   #error Update your Inno Setup version (5.5.6 or newer)
 #endif
 
-#define bindir "..\bin"
+#define bindir "..\Bin"
 
 #ifnexist bindir + "\Release_x86\Notepad3.exe"
   #error Compile Notepad3 x86 first
 #endif
 
+#ifnexist bindir + "\Release_x86\minipath.exe"
+  #error Compile MiniPath x86 first
+#endif
+
 #ifnexist bindir + "\Release_x64\Notepad3.exe"
   #error Compile Notepad3 x64 first
+#endif
+
+#ifnexist bindir + "\Release_x64\minipath.exe"
+  #error Compile MiniPath x64 first
 #endif
 
 #define app_version   GetFileVersion(bindir + "\Release_x86\Notepad3.exe")
@@ -112,7 +120,9 @@ Source: {#bindir}\Release_x86\Notepad3.exe; DestDir: {app};                     
 Source: License.txt;                        DestDir: {app};                             Flags: ignoreversion
 Source: Readme.txt;                         DestDir: {app};                             Flags: ignoreversion
 Source: Notepad3.ini;                       DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
-
+Source: {#bindir}\Release_x64\minipath.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86\minipath.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: minipath.ini;                       DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
 
 [Icons]
 Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
@@ -123,6 +133,7 @@ Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklau
 
 [INI]
 Filename: {app}\Notepad3.ini; Section: Notepad3; Key: Notepad3.ini; String: %APPDATA%\Rizonesoft\Notepad3\Notepad3.ini
+Filename: {app}\minipath.ini; Section: minipath; Key: minipath.ini; String: %APPDATA%\Rizonesoft\Notepad3\minipath.ini
 
 
 [Run]
@@ -136,10 +147,12 @@ Type: files;      Name: {userstartmenu}\{#app_name}.lnk; Check: not IsTaskSelect
 Type: files;      Name: {#quick_launch}\{#app_name}.lnk; Check: not IsTaskSelected('quicklaunchicon')    and IsUpgrade(); OnlyBelowVersion: 6.01
 Type: files;      Name: {app}\Notepad3.ini
 Type: files;      Name: {app}\Readme.txt
+Type: files;      Name: {app}\minipath.ini
 
 
 [UninstallDelete]
 Type: files;      Name: {app}\Notepad3.ini
+Type: files;      Name: {app}\minipath.ini
 Type: dirifempty; Name: {app}
 
 
@@ -189,8 +202,8 @@ end;
 
 function IsOldBuildInstalled(sInfFile: String): Boolean;
 begin
-  if RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Notepad3') and
-  FileExists(ExpandConstant('{pf}\Notepad3\' + sInfFile)) then
+  if RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Notepad2') and
+  FileExists(ExpandConstant('{pf}\Notepad2\' + sInfFile)) then
     Result := True
   else
     Result := False;
@@ -232,7 +245,7 @@ begin
   // default return value
   Result := 0;
   // TODO: use RegQueryStringValue
-  if not Exec('rundll32.exe', ExpandConstant('advpack.dll,LaunchINFSectionEx ' + '"{pf}\Notepad3\' + sInfFile +'",DefaultUninstall,,8,N'), '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then begin
+  if not Exec('rundll32.exe', ExpandConstant('advpack.dll,LaunchINFSectionEx ' + '"{pf}\Notepad2\' + sInfFile +'",DefaultUninstall,,8,N'), '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then begin
     Result := 1;
   end
   else begin

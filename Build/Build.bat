@@ -21,14 +21,12 @@ CD /D %~dp0
 rem Check the building environment
 IF NOT DEFINED VS140COMNTOOLS CALL :SUBMSG "ERROR" "Visual Studio 2015 wasn't found!"
 
-
 rem Check for the help switches
 IF /I "%~1" == "help"   GOTO SHOWHELP
 IF /I "%~1" == "/help"  GOTO SHOWHELP
 IF /I "%~1" == "-help"  GOTO SHOWHELP
 IF /I "%~1" == "--help" GOTO SHOWHELP
 IF /I "%~1" == "/?"     GOTO SHOWHELP
-
 
 rem Check for the first switch
 IF "%~1" == "" (

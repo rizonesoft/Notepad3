@@ -30,7 +30,9 @@ SET INPUTDIRx64=bin\Release_x64
 SET "TEMP_NAME=temp_zip"
 
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
+IF NOT EXIST "..\%INPUTDIRx86%\minipath.exe" CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"
+IF NOT EXIST "..\%INPUTDIRx64%\minipath.exe" CALL :SUBMSG "ERROR" "Compile MiniPath x64 first!"
 
 CALL :SubGetVersion
 CALL :SubDetectSevenzipPath
@@ -84,7 +86,8 @@ IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 IF NOT EXIST "packages"    MD "packages"
 
 FOR %%A IN ("..\License.txt" "..\%1\Notepad3.exe"^
- "..\distrib\Notepad3.ini" "..\distrib\Readme.txt"
+ "..\distrib\Notepad3.ini" "..\distrib\Readme.txt"^
+ "..\%1\minipath.exe"
 ) DO COPY /Y /V "%%A" "%TEMP_NAME%\"
 
 SET "FAVORITES=%TEMP_NAME%\Favorites"
@@ -94,7 +97,7 @@ IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mx=9^
  "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe"^
- "Notepad3.ini" "Readme.txt" "Favorites" >NUL
+ "Notepad3.ini" "Readme.txt" "Favorites" "minipath.exe">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "%ZIP_NAME%.zip created successfully!"
