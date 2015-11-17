@@ -13,11 +13,11 @@
 #define bindir "..\bin"
 
 #ifnexist bindir + "\Release_x86\Notepad3.exe"
-  #error Compile Notepad2 x86 first
+  #error Compile Notepad3 x86 first
 #endif
 
 #ifnexist bindir + "\Release_x64\Notepad3.exe"
-  #error Compile Notepad2 x64 first
+  #error Compile Notepad3 x64 first
 #endif
 
 #define app_version   GetFileVersion(bindir + "\Release_x86\Notepad3.exe")
@@ -152,7 +152,7 @@ external 'IsProcessorFeaturePresent@kernel32.dll stdcall';
 #endif
 
 
-// Check if Notepad2 has replaced Windows Notepad
+// Check if Notepad3 has replaced Windows Notepad
 function DefaulNotepadCheck(): Boolean;
 var
   sDebugger: String;
@@ -206,7 +206,7 @@ begin
 end;
 
 
-// Check if Notepad2's settings exist
+// Check if Notepad3's settings exist
 function SettingsExistCheck(): Boolean;
 begin
   if FileExists(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini')) then begin
@@ -287,7 +287,7 @@ begin
     if IsTaskSelected('reset_settings') then
       CleanUpSettings();
 
-    if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad3.inf') then begin
+    if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad2.inf') then begin
       if IsOldBuildInstalled('Uninstall.inf') then begin
         Log('Custom Code: The old build is installed, will try to uninstall it');
         if UninstallOldVersion('Uninstall.inf') = 2 then
@@ -296,9 +296,9 @@ begin
           Log('Custom Code: Something went wrong when uninstalling the old build');
       end;
 
-      if IsOldBuildInstalled('Notepad3.inf') then begin
+      if IsOldBuildInstalled('Notepad2.inf') then begin
         Log('Custom Code: The official Notepad2 build is installed, will try to uninstall it');
-        if UninstallOldVersion('Notepad3.inf') = 2 then
+        if UninstallOldVersion('Notepad2.inf') = 2 then
           Log('Custom Code: The official Notepad2 build was successfully uninstalled')
         else
           Log('Custom Code: Something went wrong when uninstalling the official Notepad2 build');
@@ -319,7 +319,7 @@ begin
       RegDeleteValue(HKLM, IFEO, 'Debugger');
       RegDeleteKeyIfEmpty(HKLM, IFEO);
     end;
-    // Always add Notepad2's AppUserModelID and the rest registry values
+    // Always add Notepad3's AppUserModelID and the rest registry values
     AddReg();
   end;
 
@@ -328,7 +328,7 @@ end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
-  // When uninstalling, ask the user to delete Notepad2's settings
+  // When uninstalling, ask the user to delete Notepad3's settings
   if CurUninstallStep = usUninstall then begin
     if SettingsExistCheck() then begin
       if SuppressibleMsgBox(CustomMessage('msg_DeleteSettings'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES then

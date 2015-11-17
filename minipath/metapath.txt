@@ -1,0 +1,279 @@
+
+=======================================================================
+=                                                                     =
+=                                                                     =
+=   metapath - The universal Explorer-like Plugin                     =
+=                                                                     =
+=                                                                     =
+=                                                   metapath 4.0.13   =
+=                                      (c) Florian Balmer 1996-2011   =
+=                                       http://www.flos-freeware.ch   =
+=                                                                     =
+=                                                                     =
+=======================================================================
+
+
+Description
+
+  Initially created as an Explorer-like add-on for metapad, the latest
+  version of metapath is a universal file browser plugin. It can open
+  your files in an existing window of any application you like! And of
+  course it works perfectly with Notepad2!
+
+
+Features
+
+  - Explorer-like browser window
+  - Works with any application you like
+  - Back, forward, run and quickview commands
+  - Create new file, save as, delete
+  - Open shell links
+  - Drag & Drop support
+  - Favorites management
+  - Mostly adjustable
+
+
+New in Version 4.0.13 (released May 06, 2011)
+
+  - Move window to default position (Ctrl+Shift+P)
+  - Improved compatibility with Windows 7
+  - Released x64 build of metapath.exe
+
+
+New in Version 4.0.12 (released March 02, 2010)
+
+  - Enhance portability for directory settings inside My Documents
+  - Fixed bug to keep previously visited directories locked
+  - metapath.exe program file no longer compressed with UPX
+
+
+New in Version 4.0.11 (released June 21, 2009)
+
+  - No ini-file is created by default (save settings with F7, once)
+  - /f command line switch to set ini-file (/f0 to omit ini-file)
+  - /ps command line switch to use internal default window position
+  - Renamed /f command line switch to /g
+  - Target applications also work with read-only ini-file
+  - Target application defaults to Notepad2
+  - Save relative directories for "Open with..." and "Favorites"
+  - Removed some rarely used toolbar buttons and commands
+  - Require only single click to restore window from tray icon
+  - Improved visual appearance on Windows Vista
+  - Dialog boxes use correct theme fonts on Vista
+  - Reduced size of metapath.exe program file
+
+
+New in Version 4.0.10 (released October 31, 2008)
+
+  - metapath converted to a native Win32 Unicode application
+  - Fixed minor title tooltip problem on Vista
+  - Various minor fixes and improvements
+
+
+New in Version 3.2.09 (released April 02, 2008)
+
+  - BSD License for metapath and source code (see License.txt)
+  - Program settings are stored in ini-file
+  - New option to enable full row selection
+  - Recent target applications are no longer saved
+  - Improved support for multi-monitor systems
+  - Allow multiple window position settings for different screen sizes
+  - Improved compatibility with Windows Vista
+  - Fixed various minor bugs and visual glitches
+  - Dropped Windows 9x support
+  - metapath.exe program file is compressed with UPX by default
+
+
+New in Version 3.1.08 (released March 05, 2004)
+
+  - Recent target applications are saved for quick access
+
+
+New in Version 3.1.07 (released March 03, 2004)
+
+  - Works with any application you like (press Ctrl+F12 to setup)
+  - Various minor bugfixes
+
+
+New in Version 3.0.06 (released November, 2003)
+
+  - Full Windows XP theme support
+  - Customizable toolbar with new buttons
+  - Negative filter option
+  - More file display options (colors, mouse-tracking, ...)
+  - Fade hidden files, mark shared folders
+  - Minimize to tray option
+  - Transparency mode (Ctrl+U)
+  - Snap to target command (Ctrl+P)
+  - New command line parameters /p, /m and /i
+  - Better performance with multithreading architecture
+  - Fixed crash on Windows 98
+  - Various minor updates and fixes
+
+
+New in Version 2.0.05 (released March, 2002)
+
+  - Window is now displayed in taskbar
+  - Custom file filters can be specified
+  - Copy, move and rename commands
+  - Create shell links, files and directories
+  - Open with... command
+  - More modern design
+
+
+Setting up a Target Application
+
+  To use metapath, you have to setup a target application, which will
+  be activated each time you open a file in metapath. Press Ctrl+F12 to
+  open the configuration dialog box.
+
+  The best way is to use the "Find Window" button to quickly find a
+  target window. metapath will now try and tell this window to open the
+  files you choose. This works fine with most programs, especially with
+  well-done freeware tools like metapad and many other editors and
+  viewers.
+
+  Some applications allow only one instance, so the "Always run target
+  application" setting could be another possibility if the procedure
+  above doesn't work.
+
+  A minority of applications can only be forced to reuse their windows
+  using DDE. The appropriate settings can be found in the "File Types"
+  settings of Windows Explorer or directly in the registry (i.e. with
+  the "Open in Same Window" DDE strings, it's possible to view all your
+  html- and picture-files in the same Internet Explorer window).
+
+
+Installation and Uninstallation
+
+  Just put a copy of metapath.exe and metapath.ini to any directory on
+  your computer. To uninstall metapath, simply delete these two files.
+  metapath does not create any registry entries on your computer.
+
+
+Keyboard Shortcuts for metapath
+
+  Enter           Open selected file in an existing target window.
+  Shift+Enter     Open selected file in a new window.
+  Alt+Enter       Properties of selected object.
+  Backspace       Move to upper directory.
+  Ctrl+Backspace  Move to root directory.
+  Alt+Left        Go to previous directory.
+  Alt+Right       Go to next directory.
+  Tab             Move to next control.
+  Shift+Tab       Move to previous control.
+  Esc             Exit or minimize metapath (optional).
+  Ctrl+D          Change to another directory.
+  Ctrl+E          Toggle "Activate target window" option.
+  Ctrl+F          Launch target application without any file.
+  Ctrl+H          Save settings.
+  Ctrl+K          Create link.
+  Ctrl+L          Launch selected file.
+  Ctrl+M          Specify file filter.
+  Ctrl+N          Create new file.
+  Ctrl+Q          Open file with specified quickviewer.
+  Ctrl+P          Snap to target window.
+  Ctrl+Shift+P    Move window to default position.
+  Ctrl+R          Open run dialog box.
+  Ctrl+S          Save file to new location.
+  Ctrl+T          Toggle "Keep on top" option.
+  Ctrl+U          Toggle transparency mode.
+  Ctrl+1          Sort files by name.
+  Ctrl+2          Sort files by size.
+  Ctrl+3          Sort files by type.
+  Ctrl+4          Sort files by date.
+  Ctrl+5          Sort files in reverse order.
+  Ctrl+*          Set file filter to *.*
+  Alt+D           Create new directory.
+  Alt+G           Goto link target.
+  Alt+L           Open selected file with another application.
+  Alt+N           Open new window.
+  Alt+S           Toggle statusbar.
+  Alt+T           Toggle toolbar.
+  Del             Delete selected object.
+  Shift+Del       Delete selected object (no recycling).
+  Ctrl+Shift+Del  Delete file without confirmation.
+  Alt+Up          Goto next file.
+  Alt+Down        Goto previous file.
+  F1              Display version info.
+  F2              Rename seletced object.
+  F5              Update view of directory.
+  F6              Copy/move selected object to another location.
+  F7              Save settings now.
+  Ctrl+F7         Jump to ini-file.
+  F9              Edit "Favorites" folder.
+  F11             Jump to "Favorites" folder.
+  F12             View program settings.
+  Ctrl+F12        Setup metapath target application.
+
+
+Tips and Tricks, Special Features
+
+  Setting more Options and Custom Filters
+
+  The metapath.ini file contains additional program settings that must
+  be modified directly in the ini-file. These settings include custom
+  filters for the drop-down menu of the filter dialog and customization
+  options for the toolbar bitmaps and labels.
+
+
+  Run Dialog Box
+
+  The Run Dialog Box has a hidden feature: enter / at the beginning of
+  the command line to select the specified file or directory in the
+  active metapath window, instead of launching it.
+
+
+  The "Show - System Objects" Command
+
+  "System Objects" are not only files with the system and/or hidden
+  attributes set, but also binary files and device drivers not relevant
+  to users, exactly as in Windows Explorer.
+
+
+  Command Line Parameters
+
+  metapath.exe [file|dir]
+               [/n] [/g] [/i]
+               [/m [-]FileSpec[;FileSpec2][...]]
+               [/p x,y,cx,cy|/ps]
+               [/f ini|/f0]
+
+    file|dir: File or directory to open, can be a relative pathname.
+    /n: Always open a new metapath window, even if the "reuse-window"
+        option is enabled.
+    /g: Jump to "Favorites" folder at startup.
+    /i: Start as tray icon.
+    /m: Specify multiple file filters (separated by ; and optionally
+        prefixed by - to indicate negative filters).
+    /p: Set window position to x,y and size to cx,cy; /ps use default.
+    /f: Specify ini-file; /f0 use no ini-file (don't save settings).
+
+
+  "Open with..." can copy Files
+
+  If you create a link to a folder and place it in the directory used
+  by the "Open with..." dialog, files and directories will be copied to
+  that folder when you choose it as the target for the "Open with..."
+  operation.
+
+
+Source Code
+
+  The full metapath source code can be found at:
+  http://www.flos-freeware.ch
+
+
+Copyright
+
+  metapath is FREE SOFTWARE and may be used and distributed freely.
+  Please do not charge any distribution or download fees for this
+  program, except for the cost of the distribution medium. The use of
+  this software is AT YOUR OWN RISK. See License.txt for full details.
+
+  If you have comments or questions, please drop me a note:
+  florian.balmer@gmail.com
+
+  (c) Florian Balmer 1996-2011
+
+###
