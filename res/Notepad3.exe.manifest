@@ -3,7 +3,7 @@
   <assemblyIdentity
     name="Notepad3"
     processorArchitecture="*"
-    version="0.2.3.239"
+    version="0.2.5.251"
     type="win32"
   />
   <description>Notepad3</description>
