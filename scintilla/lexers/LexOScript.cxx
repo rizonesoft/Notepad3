@@ -205,12 +205,12 @@ static void ColouriseOScriptDoc(Sci_PositionU startPos, Sci_Position length,
 	bool isFirstToken = true;
 	// It starts with true at the beginning of a line and changes to false as
 	// soon as the first identifier on the line is passed by.
-	bool isFirstIdentifier = true; 
+	bool isFirstIdentifier = true;
 	// It becomes false when #ifdef DOC (the preprocessor directive often
 	// used to start a documentation comment) is encountered and remain false
 	// until the end of the documentation block is not detected. This is done
 	// by checking for the complementary #endif preprocessor directive.
-	bool endDocComment = false; 
+	bool endDocComment = false;
 
 	for (; sc.More(); sc.Forward()) {
 

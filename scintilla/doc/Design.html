@@ -6,7 +6,7 @@
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
     <meta name="generator" content="SciTE" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
       Scintilla and SciTE
     </title>
@@ -49,7 +49,7 @@
       library and with limited use of templates.
     </p>
     <p>
-       The currently supported platforms, Windows, GTK+/Linux and wxWindows are fairly similar in 
+       The currently supported platforms, Windows, GTK+/Linux and wxWindows are fairly similar in
       many ways.
       Each has windows, menus and bitmaps. These features generally work in similar ways so each
       has a way to move a window or draw a red line. Sometimes one platform requires a sequence of
@@ -100,7 +100,7 @@
       have to use the limited set of already available colours.
     </p>
     A Palette object holds a set of colour pairs and can make the appropriate calls to ask to
-    allocate these colours and to see what the platform has decided will be allowed. 
+    allocate these colours and to see what the platform has decided will be allowed.
     <h4>
        Font
     </h4>
@@ -164,7 +164,7 @@
     </h3>
     <p>
        The bulk of Scintilla's code is platform independent. This is made up of the CellBuffer,
-      ContractionState, Document, Editor, Indicator, LineMarker, Style, ViewStyle, KeyMap, 
+      ContractionState, Document, Editor, Indicator, LineMarker, Style, ViewStyle, KeyMap,
       ScintillaBase, CallTip,
       and AutoComplete primary classes.
     </p>
@@ -204,14 +204,14 @@
     </h4>
     <p>
        The Editor object is central to Scintilla. It is responsible for displaying a document and
-      responding to user actions and requests from the container. It uses ContractionState, Indicator, 
-      LineMarker, Style, and ViewStyle objects to display the document and a KeyMap class to 
-      map key presses to functions. 
-      The visibility of each line is kept in the ContractionState which is also responsible for mapping 
+      responding to user actions and requests from the container. It uses ContractionState, Indicator,
+      LineMarker, Style, and ViewStyle objects to display the document and a KeyMap class to
+      map key presses to functions.
+      The visibility of each line is kept in the ContractionState which is also responsible for mapping
       from display lines to documents lines and vice versa.
     </p>
     <p>
-       There may be multiple Editor objects attached to one Document object. Changes to a 
+       There may be multiple Editor objects attached to one Document object. Changes to a
        document are broadcast to the editors through the DocWatcher mechanism.
     </p>
     <h4>

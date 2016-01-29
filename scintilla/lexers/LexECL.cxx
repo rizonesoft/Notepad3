@@ -175,7 +175,7 @@ static void ColouriseEclDoc(Sci_PositionU startPos, Sci_Position length, int ini
 					} else if (keywords5.InList(s)) {
 						sc.ChangeState(SCE_ECL_WORD5);
 					}
-					else	//Data types are of from KEYWORD## 
+					else	//Data types are of from KEYWORD##
 					{
 						int i = static_cast<int>(strlen(s)) - 1;
 						while(i >= 0 && (isdigit(s[i]) || s[i] == '_'))
@@ -186,7 +186,7 @@ static void ColouriseEclDoc(Sci_PositionU startPos, Sci_Position length, int ini
 						s2[i + 1] = 0;
 						if (keywords3.InList(s2)) {
 							sc.ChangeState(SCE_ECL_WORD3);
-						} 
+						}
 					}
 					sc.SetState(SCE_ECL_DEFAULT);
 				}
@@ -393,7 +393,7 @@ static bool MatchNoCase(Accessor & styler, Sci_PositionU & pos, const char *s) {
 	for (; *s; i++) {
 		char compare_char = tolower(*s);
 		char styler_char = tolower(styler.SafeGetCharAt(pos+i));
-		if (compare_char != styler_char) 
+		if (compare_char != styler_char)
 			return false;
 		s++;
 	}
@@ -405,7 +405,7 @@ static bool MatchNoCase(Accessor & styler, Sci_PositionU & pos, const char *s) {
 // Store both the current line's fold level and the next lines in the
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
-static void FoldEclDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, 
+static void FoldEclDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
 					   WordList *[], Accessor &styler) {
 	bool foldComment = true;
 	bool foldPreprocessor = true;
@@ -473,7 +473,7 @@ static void FoldEclDoc(Sci_PositionU startPos, Sci_Position length, int initStyl
 			}
 		}
 		if (style == SCE_ECL_WORD2) {
-			if (MatchNoCase(styler, i, "record") || MatchNoCase(styler, i, "transform") || MatchNoCase(styler, i, "type") || MatchNoCase(styler, i, "function") || 
+			if (MatchNoCase(styler, i, "record") || MatchNoCase(styler, i, "transform") || MatchNoCase(styler, i, "type") || MatchNoCase(styler, i, "function") ||
 				MatchNoCase(styler, i, "module") || MatchNoCase(styler, i, "service") || MatchNoCase(styler, i, "interface") || MatchNoCase(styler, i, "ifblock") ||
 				MatchNoCase(styler, i, "macro") || MatchNoCase(styler, i, "beginc++")) {
 				levelNext++;

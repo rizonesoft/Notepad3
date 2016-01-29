@@ -506,6 +506,12 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_WORDSTARTPOSITION 2266
 #define SCI_WORDENDPOSITION 2267
 #define SCI_ISRANGEWORD 2691
+#define SC_IDLESTYLING_NONE 0
+#define SC_IDLESTYLING_TOVISIBLE 1
+#define SC_IDLESTYLING_AFTERVISIBLE 2
+#define SC_IDLESTYLING_ALL 3
+#define SCI_SETIDLESTYLING 2692
+#define SCI_GETIDLESTYLING 2693
 #define SC_WRAP_NONE 0
 #define SC_WRAP_WORD 1
 #define SC_WRAP_CHAR 2

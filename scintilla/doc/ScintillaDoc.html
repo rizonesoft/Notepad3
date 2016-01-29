@@ -82,7 +82,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 31 July 2015 NH</p>
+    <p>Last edited 6 January 2016 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -1501,6 +1501,7 @@ struct Sci_TextToFind {
     <p><b id="SCI_POSITIONRELATIVE">SCI_POSITIONRELATIVE(int position, int relative)</b><br />
      Count a number of whole characters before or after the argument position and return that position.
      The minimum position returned is 0 and the maximum is the last position in the document.
+     If the position goes past the document end then 0 is returned.
      </p>
 
     <p><b id="SCI_COUNTCHARACTERS">SCI_COUNTCHARACTERS(int startPos, int endPos)</b><br />
@@ -2391,6 +2392,8 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_SETSTYLING">SCI_SETSTYLING(int length, int style)</a><br />
      <a class="message" href="#SCI_SETSTYLINGEX">SCI_SETSTYLINGEX(int length, const char
     *styles)</a><br />
+     <a class="message" href="#SCI_SETIDLESTYLING">SCI_SETIDLESTYLING(int idleStyling)</a><br />
+     <a class="message" href="#SCI_GETIDLESTYLING">SCI_GETIDLESTYLING</a><br />
      <a class="message" href="#SCI_SETLINESTATE">SCI_SETLINESTATE(int line, int value)</a><br />
      <a class="message" href="#SCI_GETLINESTATE">SCI_GETLINESTATE(int line)</a><br />
      <a class="message" href="#SCI_GETMAXLINESTATE">SCI_GETMAXLINESTATE</a><br />
@@ -2424,6 +2427,23 @@ struct Sci_TextToFind {
     the styling position and then increases the styling position by <code>length</code>, ready for
     the next call.
     <code>SCI_STARTSTYLING</code> should be called before the first call to this.
+    </p>
+
+    <p><b id="SCI_SETIDLESTYLING">SCI_SETIDLESTYLING(int idleStyling)</b><br />
+     <b id="SCI_GETIDLESTYLING">SCI_GETIDLESTYLING</b><br />
+     By default, <code>SC_IDLESTYLING_NONE</code> (0),
+     syntax styling is performed for all the currently visible text before displaying it.
+     On very large files, this may make scrolling down slow.
+     With <code>SC_IDLESTYLING_TOVISIBLE</code> (1),
+     a small amount of styling is performed before display and then
+     further styling is performed incrementally in the background as an idle-time task.
+     This may result in the text initially appearing uncoloured and then, some time later, it is coloured.
+     Text after the currently visible portion may be styled in the background with <code>SC_IDLESTYLING_AFTERVISIBLE</code> (2).
+     To style both before and after the visible text in the background use <code>SC_IDLESTYLING_ALL</code> (3).
+    </p>
+    <p>
+     Since wrapping also needs to perform styling and also uses idle time, this setting has no effect when
+     the document is displayed wrapped.
     </p>
 
     <p><b id="SCI_SETLINESTATE">SCI_SETLINESTATE(int line, int value)</b><br />
@@ -2711,7 +2731,7 @@ struct Sci_TextToFind {
     <p><b id="SCI_STYLESETCASE">SCI_STYLESETCASE(int styleNumber, int caseMode)</b><br />
     <b id="SCI_STYLEGETCASE">SCI_STYLEGETCASE(int styleNumber)</b><br />
     The value of caseMode determines how text is displayed. You can set upper case
-    (<code>SC_CASE_UPPER</code>, 1) or lower case (<code>SC_CASE_LOWER</code>, 2) or camel case (<code>SC_CASE_CAMEL</code>, 3) 
+    (<code>SC_CASE_UPPER</code>, 1) or lower case (<code>SC_CASE_LOWER</code>, 2) or camel case (<code>SC_CASE_CAMEL</code>, 3)
     or display normally (<code>SC_CASE_MIXED</code>, 0). This does not change the stored text, only how it is
     displayed.</p>
 
@@ -4237,9 +4257,9 @@ struct Sci_TextToFind {
      <b id="SCI_INDICSETHOVERFORE">SCI_INDICSETHOVERFORE(int indicatorNumber, int <a class="jump" href="#colour">colour</a>)</b><br />
      <b id="SCI_INDICGETHOVERFORE">SCI_INDICGETHOVERFORE(int indicatorNumber)</b><br />
      These messages set and get the colour and style used to draw indicators when the mouse is over them or the caret moved into them.
-     The mouse cursor also changes when an indicator is drawn in hover style. 
+     The mouse cursor also changes when an indicator is drawn in hover style.
      The default is for the hover appearance to be the same as the normal appearance and calling
-     <a class="message" href="#SCI_INDICSETFORE">SCI_INDICSETFORE</a> or 
+     <a class="message" href="#SCI_INDICSETFORE">SCI_INDICSETFORE</a> or
      <a class="message" href="#SCI_INDICSETSTYLE">SCI_INDICSETSTYLE</a> will
      also reset the hover attribute.</p>
 
@@ -6556,7 +6576,7 @@ struct SCNotification {
 	int token;		/* SCN_MODIFIED with SC_MOD_CONTAINER */
 	int annotationLinesAdded;	/* SCN_MODIFIED with SC_MOD_CHANGEANNOTATION */
 	int updated;	/* SCN_UPDATEUI */
-	int listCompletionMethod; 
+	int listCompletionMethod;
 	/* SCN_AUTOCSELECTION, SCN_AUTOCCOMPLETED, SCN_USERLISTSELECTION */
 
 };
@@ -7249,19 +7269,19 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
         <tr>
           <td align="left"><code>ch</code></td>
 
-          <td align="left">If a fillup character was the method of selection, the used 
+          <td align="left">If a fillup character was the method of selection, the used
             character, otherwise 0.</td>
         </tr>
         <tr>
           <td align="left"><code>listCompletionMethod</code></td>
 
-          <td align="left">A value indicating the way in which the completion 
+          <td align="left">A value indicating the way in which the completion
             occurred. See the table below.</td>
         </tr>
       </tbody>
     </table>
     <br />
-  
+
      See the <code><a class="jump" href="#SCN_AUTOCCOMPLETED">SCN_AUTOCCOMPLETED</a></code> notification
     for the possible values for <code>listCompletionMethod.</code>
     <p><b id="SCN_URIDROPPED">SCN_URIDROPPED</b><br />
@@ -7377,13 +7397,13 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
         <tr>
           <td align="left"><code>ch</code></td>
 
-          <td align="left">If a fillup character was the method of selection, the used 
+          <td align="left">If a fillup character was the method of selection, the used
             character, otherwise 0.</td>
         </tr>
         <tr>
           <td align="left"><code>listCompletionMethod</code></td>
 
-          <td align="left">A value indicating the way in which the completion 
+          <td align="left">A value indicating the way in which the completion
             occurred. See the table below.</td>
         </tr>
       </tbody>
@@ -7407,7 +7427,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
 
           <td align="center">0x01</td>
 
-          <td>A fillup character triggered the completion. The character used is 
+          <td>A fillup character triggered the completion. The character used is
             in ch. </td>
 
         </tr>
@@ -7446,7 +7466,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
 
           <td>The
     <code>
-     <a class="message" href="#SCI_AUTOCSELECT">SCI_AUTOCSELECT</a></code> message 
+     <a class="message" href="#SCI_AUTOCSELECT">SCI_AUTOCSELECT</a></code> message
           triggered the completion. ch is 0.</td>
 
         </tr>
@@ -7467,7 +7487,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
     <code>SCN_FOCUSOUT</code> (2029) when it loses focus.</p>
 
     <p><b id="SCN_AUTOCCOMPLETED">SCN_AUTOCCOMPLETED<br />
-    </b>This notification is generated after an autocompletion has inserted its 
+    </b>This notification is generated after an autocompletion has inserted its
     text. The fields are identical to the
     <code>
      <a class="jump" href="#SCN_AUTOCSELECTION">SCN_AUTOCSELECTION</a></code>
@@ -7624,7 +7644,7 @@ EM_FORMATRANGE
     <b id="SCI_GETUSEPALETTE">SCI_GETUSEPALETTE</b> Deprecated<br />
      Scintilla no longer supports palette mode. The last version to support palettes was 2.29.
      Any calls to these methods should be removed.</p>
- 
+
     <p><b id="SCI_SETKEYSUNICODE">SCI_SETKEYSUNICODE(bool keysUnicode)</b> Deprecated<br />
      <b id="SCI_GETKEYSUNICODE">SCI_GETKEYSUNICODE</b> Deprecated<br />
      On Windows, Scintilla no longer supports narrow character windows so input is always treated as Unicode.</p>

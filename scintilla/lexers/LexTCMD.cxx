@@ -52,7 +52,7 @@ static unsigned int GetBatchVarLen( char *wordBuffer )
 {
 	int nLength = 0;
 	if ( wordBuffer[0] == '%' ) {
-		
+
 		if ( wordBuffer[1] == '~' )
 			nLength = 2;
 		else if (( wordBuffer[1] == '%' ) && ( wordBuffer[2] == '~' ))
@@ -244,7 +244,7 @@ static void ColouriseTCMDLine( char *lineBuffer, Sci_PositionU lengthLine, Sci_P
 			if ((CompareCaseInsensitive(sKeywordBuffer, "echo") == 0) ||
 			  (CompareCaseInsensitive(sKeywordBuffer, "echos") == 0) ||
 			  (CompareCaseInsensitive(sKeywordBuffer, "echoerr") == 0) ||
-			  (CompareCaseInsensitive(sKeywordBuffer, "echoserr") == 0) || 
+			  (CompareCaseInsensitive(sKeywordBuffer, "echoserr") == 0) ||
 			  (CompareCaseInsensitive(sKeywordBuffer, "cd") == 0) ||
 			  (CompareCaseInsensitive(sKeywordBuffer, "path") == 0) ||
 			  (CompareCaseInsensitive(sKeywordBuffer, "prompt") == 0)) {

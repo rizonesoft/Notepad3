@@ -246,6 +246,7 @@ public:
 	bool useTabs;
 	bool tabIndents;
 	bool backspaceUnindents;
+	double durationStyleOneLine;
 
 	DecorationList decorations;
 
@@ -272,6 +273,7 @@ public:
 
 	Sci_Position SCI_METHOD LineFromPosition(Sci_Position pos) const;
 	int ClampPositionIntoDocument(int pos) const;
+	bool ContainsLineEnd(const char *s, int length) const { return cb.ContainsLineEnd(s, length); }
 	bool IsCrLf(int pos) const;
 	int LenChar(int pos);
 	bool InGoodUTF8(int pos, int &start, int &end) const;
@@ -339,6 +341,7 @@ public:
 		cb.GetCharRange(buffer, position, lengthRetrieve);
 	}
 	char SCI_METHOD StyleAt(Sci_Position position) const { return cb.StyleAt(position); }
+	int StyleIndexAt(Sci_Position position) const { return static_cast<unsigned char>(cb.StyleAt(position)); }
 	void GetStyleRange(unsigned char *buffer, int position, int lengthRetrieve) const {
 		cb.GetStyleRange(buffer, position, lengthRetrieve);
 	}
@@ -375,7 +378,7 @@ public:
 	struct CharacterExtracted {
 		unsigned int character;
 		unsigned int widthBytes;
-		CharacterExtracted(unsigned int character_, unsigned int widthBytes_) : 
+		CharacterExtracted(unsigned int character_, unsigned int widthBytes_) :
 			character(character_), widthBytes(widthBytes_) {
 		}
 	};
@@ -400,6 +403,7 @@ public:
 	bool SCI_METHOD SetStyles(Sci_Position length, const char *styles);
 	int GetEndStyled() const { return endStyled; }
 	void EnsureStyledTo(int pos);
+	void StyleToAdjustingLineDuration(int pos);
 	void LexerChanged();
 	int GetStyleClock() const { return styleClock; }
 	void IncrementStyleClock();
@@ -425,7 +429,7 @@ public:
 	void AnnotationSetStyles(int line, const unsigned char *styles);
 	int AnnotationLines(int line) const;
 	void AnnotationClearAll();
-	
+
 	bool AddWatcher(DocWatcher *watcher, void *userData);
 	bool RemoveWatcher(DocWatcher *watcher, void *userData);
 

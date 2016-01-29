@@ -42,7 +42,7 @@ public:
 	Selection sel;
 	bool primarySelection;
 
-	enum IMEInteraction { imeWindowed, imeInline } imeInteraction; 
+	enum IMEInteraction { imeWindowed, imeInline } imeInteraction;
 
 	int foldFlags;
 	ContractionState cs;

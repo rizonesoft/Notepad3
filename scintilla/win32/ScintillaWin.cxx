@@ -100,6 +100,14 @@
 #define UNICODE_NOCHAR                  0xFFFF
 #endif
 
+#ifndef IS_HIGH_SURROGATE
+#define IS_HIGH_SURROGATE(x)            ((x) >= SURROGATE_LEAD_FIRST && (x) <= SURROGATE_LEAD_LAST)
+#endif
+
+#ifndef IS_LOW_SURROGATE
+#define IS_LOW_SURROGATE(x)             ((x) >= SURROGATE_TRAIL_FIRST && (x) <= SURROGATE_TRAIL_LAST)
+#endif
+
 #ifndef MK_ALT
 #define MK_ALT 32
 #endif
@@ -212,6 +220,7 @@ class ScintillaWin :
 	public ScintillaBase {
 
 	bool lastKeyDownConsumed;
+	wchar_t lastHighSurrogateChar;
 
 	bool capturedMouse;
 	bool trackedMouseLeave;
@@ -269,6 +278,7 @@ class ScintillaWin :
 	virtual bool DragThreshold(Point ptStart, Point ptNow);
 	virtual void StartDrag();
 	int TargetAsUTF8(char *text);
+	void AddCharUTF16(wchar_t const *wcs, unsigned int wclen);
 	int EncodedFromUTF8(char *utf8, char *encoded) const;
 	sptr_t WndPaint(uptr_t wParam);
 
@@ -383,6 +393,7 @@ ATOM ScintillaWin::callClassAtom = 0;
 ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	lastKeyDownConsumed = false;
+	lastHighSurrogateChar = 0;
 
 	capturedMouse = false;
 	trackedMouseLeave = false;
@@ -729,6 +740,26 @@ int ScintillaWin::EncodedFromUTF8(char *utf8, char *encoded) const {
 	}
 }
 
+// Add one character from a UTF-16 string, by converting to either UTF-8 or
+// the current codepage. Code is similar to HandleCompositionWindowed().
+void ScintillaWin::AddCharUTF16(wchar_t const *wcs, unsigned int wclen) {
+	if (IsUnicodeMode()) {
+		char utfval[maxLenInputIME * 3];
+		unsigned int len = UTF8Length(wcs, wclen);
+		UTF8FromUTF16(wcs, wclen, utfval, len);
+		utfval[len] = '\0';
+		AddCharUTF(utfval, len);
+	} else {
+		UINT cpDest = CodePageOfDocument();
+		char inBufferCP[maxLenInputIME * 2];
+		int size = ::WideCharToMultiByte(cpDest,
+			0, wcs, wclen, inBufferCP, sizeof(inBufferCP) - 1, 0, 0);
+		for (int i=0; i<size; i++) {
+			AddChar(inBufferCP[i]);
+		}
+	}
+}
+
 sptr_t ScintillaWin::WndPaint(uptr_t wParam) {
 	//ElapsedTime et;
 
@@ -950,13 +981,13 @@ void ScintillaWin::EscapeHanja() {
 		SetCandidateWindowPos();
 		// IME_ESC_HANJA_MODE appears to receive the first character only.
 		if (ImmEscapeW(GetKeyboardLayout(0), imc.hIMC, IME_ESC_HANJA_MODE, &uniChar[0])) {
-			SetSelection (currentPos, currentPos + oneCharLen);
+			SetSelection(currentPos, currentPos + oneCharLen);
 		}
 	}
 }
 
 void ScintillaWin::ToggleHanja() {
-	// If selection, convert every hanja to hangul within the main range. 
+	// If selection, convert every hanja to hangul within the main range.
 	// If no selection, commit to IME.
 	if (sel.Count() > 1) {
 		return; // Do not allow multi carets.
@@ -969,12 +1000,59 @@ void ScintillaWin::ToggleHanja() {
 	}
 }
 
+namespace {
+
+unsigned int GetImeCaretPos(HIMC hIMC) {
+	return ImmGetCompositionStringW(hIMC, GCS_CURSORPOS, NULL, 0);
+}
+
+std::vector<BYTE> GetImeAttributes(HIMC hIMC) {
+	int attrLen = ::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, NULL, 0);
+	std::vector<BYTE> attr(attrLen, 0);
+	::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, &attr[0], static_cast<DWORD>(attr.size()));
+	return attr;
+}
+
+std::vector<int> MapImeIndicators(std::vector<BYTE> inputStyle) {
+	std::vector<int> imeIndicator(inputStyle.size(), SC_INDICATOR_UNKNOWN);
+	for (size_t i = 0; i < inputStyle.size(); i++) {
+		switch (static_cast<int>(inputStyle.at(i))) {
+		case ATTR_INPUT:
+			imeIndicator[i] = SC_INDICATOR_INPUT;
+			break;
+		case ATTR_TARGET_NOTCONVERTED:
+		case ATTR_TARGET_CONVERTED:
+			imeIndicator[i] = SC_INDICATOR_TARGET;
+			break;
+		case ATTR_CONVERTED:
+			imeIndicator[i] = SC_INDICATOR_CONVERTED;
+			break;
+		default:
+			imeIndicator[i] = SC_INDICATOR_UNKNOWN;
+			break;
+		}
+	}
+	return imeIndicator;
+}
+
+std::wstring GetCompositionString(HIMC hIMC, DWORD dwIndex) {
+	const LONG byteLen = ::ImmGetCompositionStringW(hIMC, dwIndex, NULL, 0);
+	std::wstring wcs(byteLen / 2, 0);
+	::ImmGetCompositionStringW(hIMC, dwIndex, &wcs[0], byteLen);
+	return wcs;
+}
+
+}
+
 sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 	// Copy & paste by johnsonj with a lot of helps of Neil.
 	// Great thanks for my foreruners, jiniya and BLUEnLIVE.
 
 	IMContext imc(MainHWND());
-	if (!imc.hIMC) {
+	if (!imc.hIMC)
+		return 0;
+	if (pdoc->IsReadOnly() || SelectionContainsProtected()) {
+		::ImmNotifyIME(imc.hIMC, NI_COMPOSITIONSTR, CPS_CANCEL, 0);
 		return 0;
 	}
 
@@ -989,28 +1067,15 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 	view.imeCaretBlockOverride = false;
 
 	if (lParam & GCS_COMPSTR) {
-		wchar_t wcs[maxLenInputIME] = { 0 };
-		long bytes = ::ImmGetCompositionStringW
-			(imc.hIMC, GCS_COMPSTR, wcs, maxLenInputIME);
-		unsigned int wcsLen = bytes / 2;
-
-		if ((wcsLen == 0) || (wcsLen >= maxLenInputIME)) {
+		const std::wstring wcs = GetCompositionString(imc.hIMC, GCS_COMPSTR);
+		if ((wcs.size() == 0) || (wcs.size() >= maxLenInputIME)) {
 			ShowCaretAtCurrentPosition();
 			return 0;
 		}
 
 		pdoc->TentativeStart(); // TentativeActive from now on.
 
-		// Get attribute information from composition string.
-		BYTE compAttr[maxLenInputIME] = { 0 };
-		unsigned int imeCursorPos = 0;
-
-		if (lParam & GCS_COMPATTR) {
-			ImmGetCompositionStringW(imc.hIMC, GCS_COMPATTR, compAttr, sizeof(compAttr));
-		}
-		if (lParam & GCS_CURSORPOS) {
-			imeCursorPos = ImmGetCompositionStringW(imc.hIMC, GCS_CURSORPOS, NULL, 0);
-		}
+		std::vector<int> imeIndicator = MapImeIndicators(GetImeAttributes(imc.hIMC));
 
 		// Display character by character.
 		int numBytes = 0;
@@ -1018,9 +1083,9 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 
 		bool tmpRecordingMacro = recordingMacro;
 		recordingMacro = false;
-		for (size_t i = 0; i < wcsLen; ) {
+		for (size_t i = 0; i < wcs.size(); ) {
 			const size_t ucWidth = UTF16CharLength(wcs[i]);
-			const std::wstring uniChar(wcs+i, ucWidth);
+			const std::wstring uniChar(wcs, i, ucWidth);
 			char oneChar[UTF8MaxBytes + 1] = "\0\0\0\0"; // Maximum 4 bytes in utf8
 			unsigned int oneCharLen = 0;
 
@@ -1040,39 +1105,22 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 			numBytes += oneCharLen;
 			imeCharPos[i + ucWidth] = numBytes;
 
-			// Draw an indicator on the character.
-			int indicator = SC_INDICATOR_UNKNOWN;
-			switch ((int)compAttr[i]) {
-			case ATTR_INPUT:
-				indicator = SC_INDICATOR_INPUT;
-				break;
-			case ATTR_TARGET_NOTCONVERTED:
-			case ATTR_TARGET_CONVERTED:
-				indicator = SC_INDICATOR_TARGET;
-				break;
-			case ATTR_CONVERTED:
-				indicator = SC_INDICATOR_CONVERTED;
-				break;
-			}
-			DrawImeIndicator(indicator, oneCharLen);
+			DrawImeIndicator(imeIndicator[i], oneCharLen);
 			i += ucWidth;
 		}
 		recordingMacro = tmpRecordingMacro;
 
 		// Move IME caret position.
-		MoveImeCarets(-imeCharPos[wcsLen] + imeCharPos[imeCursorPos]);
+		unsigned int imeCursorPos = GetImeCaretPos(imc.hIMC);
+		MoveImeCarets(-imeCharPos[wcs.size()] + imeCharPos[imeCursorPos]);
 		if (KoreanIME()) {
 			view.imeCaretBlockOverride = true;
 		}
 	} else if (lParam & GCS_RESULTSTR) {
-		wchar_t wcs[maxLenInputIME] = { 0 };
-		long bytes = ::ImmGetCompositionStringW
-			(imc.hIMC, GCS_RESULTSTR, wcs, maxLenInputIME);
-		unsigned int wcsLen = bytes / 2;
-
-		for (size_t i = 0; i < wcsLen;) {
+		const std::wstring wcs = GetCompositionString(imc.hIMC, GCS_RESULTSTR);
+		for (size_t i = 0; i < wcs.size();) {
 			const size_t ucWidth = UTF16CharLength(wcs[i]);
-			const std::wstring uniChar(wcs+i, ucWidth);
+			const std::wstring uniChar(wcs, i, ucWidth);
 			char oneChar[UTF8MaxBytes+1] = "\0\0\0\0"; // Maximum 4 bytes in UTF-8.
 			unsigned int oneCharLen = 0;
 
@@ -1414,40 +1462,32 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 		case WM_CHAR:
 			if (((wParam >= 128) || !iscntrl(static_cast<int>(wParam))) || !lastKeyDownConsumed) {
-				wchar_t wcs[2] = {static_cast<wchar_t>(wParam), 0};
-				if (IsUnicodeMode()) {
-					// For a wide character version of the window:
-					char utfval[UTF8MaxBytes];
-					unsigned int len = UTF8Length(wcs, 1);
-					UTF8FromUTF16(wcs, 1, utfval, len);
-					AddCharUTF(utfval, len);
-				} else {
-					UINT cpDest = CodePageOfDocument();
-					char inBufferCP[20];
-					int size = ::WideCharToMultiByte(cpDest,
-						0, wcs, 1, inBufferCP, sizeof(inBufferCP) - 1, 0, 0);
-					inBufferCP[size] = '\0';
-					AddCharUTF(inBufferCP, size);
+				wchar_t wcs[3] = {static_cast<wchar_t>(wParam), 0};
+				unsigned int wclen = 1;
+				if (IS_HIGH_SURROGATE(wcs[0])) {
+					// If this is a high surrogate character, we need a second one
+					lastHighSurrogateChar = wcs[0];
+					return 0;
+				} else if (IS_LOW_SURROGATE(wcs[0])) {
+					wcs[1] = wcs[0];
+					wcs[0] = lastHighSurrogateChar;
+					lastHighSurrogateChar = 0;
+					wclen = 2;
 				}
+				AddCharUTF16(wcs, wclen);
 			}
 			return 0;
 
 		case WM_UNICHAR:
 			if (wParam == UNICODE_NOCHAR) {
-				return IsUnicodeMode() ? 1 : 0;
+				return TRUE;
 			} else if (lastKeyDownConsumed) {
 				return 1;
 			} else {
-				if (IsUnicodeMode()) {
-					char utfval[UTF8MaxBytes];
-					wchar_t wcs[2] = {static_cast<wchar_t>(wParam), 0};
-					unsigned int len = UTF8Length(wcs, 1);
-					UTF8FromUTF16(wcs, 1, utfval, len);
-					AddCharUTF(utfval, len);
-					return 1;
-				} else {
-					return 0;
-				}
+				wchar_t wcs[3] = {0};
+				unsigned int wclen = UTF16FromUTF32Character(static_cast<unsigned int>(wParam), wcs);
+				AddCharUTF16(wcs, wclen);
+				return FALSE;
 			}
 
 		case WM_SYSKEYDOWN:
@@ -1473,7 +1513,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			}
 
 		case WM_IME_REQUEST: {
-			if  (wParam == IMR_RECONVERTSTRING) {
+			if (wParam == IMR_RECONVERTSTRING) {
 				return ImeOnReconvert(lParam);
 			}
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
@@ -1534,7 +1574,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 		case WM_IME_COMPOSITION:
-			if (KoreanIME() || imeInteraction == imeInline) { 
+			if (KoreanIME() || imeInteraction == imeInline) {
 				return HandleCompositionInline(wParam, lParam);
 			} else {
 				return HandleCompositionWindowed(wParam, lParam);
@@ -1681,7 +1721,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 #endif
 
 		case SCI_SETTECHNOLOGY:
-			if ((wParam == SC_TECHNOLOGY_DEFAULT) || 
+			if ((wParam == SC_TECHNOLOGY_DEFAULT) ||
 				(wParam == SC_TECHNOLOGY_DIRECTWRITERETAIN) ||
 				(wParam == SC_TECHNOLOGY_DIRECTWRITEDC) ||
 				(wParam == SC_TECHNOLOGY_DIRECTWRITE)) {
@@ -2180,7 +2220,7 @@ void ScintillaWin::Paste() {
 	if (!::OpenClipboard(MainHWND()))
 		return;
 	UndoGroup ug(pdoc);
-	const bool isLine = SelectionEmpty() && 
+	const bool isLine = SelectionEmpty() &&
 		(::IsClipboardFormatAvailable(cfLineSelect) || ::IsClipboardFormatAvailable(cfVSLineTag));
 	ClearSelection(multiPasteMode == SC_MULTIPASTE_EACH);
 	bool isRectangular = (::IsClipboardFormatAvailable(cfColumnSelect) != 0);
@@ -2608,7 +2648,7 @@ void ScintillaWin::ImeStartComposition() {
 		if (stylesValid) {
 			// Since the style creation code has been made platform independent,
 			// The logfont for the IME is recreated here.
-			int styleHere = (pdoc->StyleAt(sel.MainCaret())) & 31;
+			const int styleHere = pdoc->StyleIndexAt(sel.MainCaret());
 			LOGFONTW lf = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, L""};
 			int sizeZoomed = vs.styles[styleHere].size + vs.zoomLevel * SC_FONT_SIZE_MULTIPLIER;
 			if (sizeZoomed <= 2 * SC_FONT_SIZE_MULTIPLIER)	// Hangs if sizeZoomed <= 1
@@ -2679,7 +2719,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 	rc->dwCompStrLen = (DWORD)static_cast<int>(rcCompWstring.length());
 	rc->dwCompStrOffset = (DWORD)static_cast<int>(rcCompWstart.length()) * sizeof(wchar_t);
 	rc->dwTargetStrLen = rc->dwCompStrLen;
-	rc->dwTargetStrOffset =rc->dwCompStrOffset; 
+	rc->dwTargetStrOffset =rc->dwCompStrOffset;
 
 	IMContext imc(MainHWND());
 	if (!imc.hIMC)
@@ -2695,7 +2735,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 	std::string tgCompStart = StringEncode(rcFeed.substr(0, tgWstart), codePage);
 	std::string tgComp = StringEncode(rcFeed.substr(tgWstart, tgWlen), codePage);
 
-	// No selection needs to adjust reconvert start position for IME set. 
+	// No selection needs to adjust reconvert start position for IME set.
 	int adjust = static_cast<int>(tgCompStart.length() - rcCompStart.length());
 	int docCompLen = static_cast<int>(tgComp.length());
 

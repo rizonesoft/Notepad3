@@ -410,8 +410,7 @@ const unsigned char *LineAnnotation::Styles(int line) const {
 
 static char *AllocateAnnotation(int length, int style) {
 	size_t len = sizeof(AnnotationHeader) + length + ((style == IndividualStyles) ? length : 0);
-	char *ret = new char[len];
-	memset(ret, 0, len);
+	char *ret = new char[len]();
 	return ret;
 }
 

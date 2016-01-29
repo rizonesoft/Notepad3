@@ -7,14 +7,14 @@
 #     version
 #     versionDotted
 #     versionCommad
-#     
+#
 # Date last modified
 #     dateModified
 #     yearModified
 #     mdyModified
 #     dmyModified
 #     myModified
-#     
+#
 # Information about lexers and properties defined in lexers
 #     lexFiles
 #         sorted list of lexer files

@@ -374,7 +374,7 @@ struct OptionSetCPP : public OptionSet<OptionsCPP> {
 
 		DefineProperty("lexer.cpp.verbatim.strings.allow.escapes", &OptionsCPP::verbatimStringsAllowEscapes,
 			"Set to 1 to allow verbatim strings to contain escape sequences.");
-		
+
 		DefineProperty("lexer.cpp.triplequoted.strings", &OptionsCPP::triplequotedStrings,
 			"Set to 1 to enable highlighting of triple-quoted strings.");
 
@@ -1467,7 +1467,7 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 							}
 							iMacro++;
 						}
-								
+
 						// Insert results back into tokens
 						tokens.insert(tokens.begin() + i, macroTokens.begin(), macroTokens.end());
 
@@ -1481,7 +1481,7 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 					tokens.insert(tokens.begin() + i, macroTokens.begin(), macroTokens.end());
 				}
 			} else {
-				// Identifier not found 
+				// Identifier not found
 				tokens.erase(tokens.begin() + i);
 			}
 		} else {

@@ -567,8 +567,8 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					break;
 				}
 			}
-			
-			char qComplement = 0x00;						
+
+			char qComplement = 0x00;
 
 			if (qOperator == '<') {
 				qComplement = '>';
@@ -580,8 +580,8 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				qComplement = ']';
 			} else {
 				qComplement = qOperator;
-			}	
-				
+			}
+
 			if (sc.Match(qComplement, '\'')) {
 				sc.Forward();
 				sc.ForwardSetState(SCE_SQL_DEFAULT);
@@ -592,7 +592,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length, int i
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_SQL_DEFAULT) {
 			if (sc.Match('q', '\'') || sc.Match('Q', '\'')) {
-				sc.SetState(SCE_SQL_QOPERATOR);			
+				sc.SetState(SCE_SQL_QOPERATOR);
 				sc.Forward();
 			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext)) ||
 			          ((sc.ch == '-' || sc.ch == '+') && IsADigit(sc.chNext) && !IsADigit(sc.chPrev))) {

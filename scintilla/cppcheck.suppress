@@ -15,7 +15,7 @@ unusedPrivateFunction:scintilla/win32/PlatWin.cxx
 // Suppress most lexer warnings since the lexers are maintained by others
 useInitializationList:scintilla/lexers/LexAsm.cxx
 useInitializationList:scintilla/lexers/LexBasic.cxx
-noCopyConstructor:scintilla/lexers/LexBash.cxx
+uninitMemberVar:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBatch.cxx
 variableScope:scintilla/lexers/LexCmake.cxx
@@ -31,7 +31,6 @@ variableScope:scintilla/lexers/LexNimrod.cxx
 variableScope:scintilla/lexers/LexNsis.cxx
 variableScope:scintilla/lexers/LexOpal.cxx
 variableScope:scintilla/lexers/LexPB.cxx
-noCopyConstructor:scintilla/lexers/LexPerl.cxx
 variableScope:scintilla/lexers/LexRuby.cxx
 uninitMemberVar:scintilla/lexers/LexRuby.cxx
 variableScope:scintilla/lexers/LexSpecman.cxx

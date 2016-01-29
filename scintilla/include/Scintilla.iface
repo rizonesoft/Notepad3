@@ -249,11 +249,11 @@ enu IMEInteraction=SC_IME_
 val SC_IME_WINDOWED=0
 val SC_IME_INLINE=1
 
-# Is the IME displayed in a winow or inline?
+# Is the IME displayed in a window or inline?
 get int GetIMEInteraction=2678(,)
 
 # Choose to display the the IME in a winow or inline.
-set void SetIMEInteraction=2679(int imeInteraction,) 
+set void SetIMEInteraction=2679(int imeInteraction,)
 
 enu MarkerSymbol=SC_MARK_
 val MARKER_MAX=31
@@ -1260,6 +1260,18 @@ fun int WordEndPosition=2267(position pos, bool onlyWordCharacters)
 # Is the range start..end considered a word?
 fun bool IsRangeWord=2691(position start, position end)
 
+enu IdleStyling=SC_IDLESTYLING_
+val SC_IDLESTYLING_NONE=0
+val SC_IDLESTYLING_TOVISIBLE=1
+val SC_IDLESTYLING_AFTERVISIBLE=2
+val SC_IDLESTYLING_ALL=3
+
+# Sets limits to idle styling.
+set void SetIdleStyling=2692(int idleStyling,)
+
+# Retrieve the limits to idle styling.
+get int GetIdleStyling=2693(,)
+
 enu Wrap=SC_WRAP_
 val SC_WRAP_NONE=0
 val SC_WRAP_WORD=1
@@ -1408,7 +1420,7 @@ val SC_MULTIPASTE_EACH=1
 # Change the effect of pasting when there are multiple selections.
 set void SetMultiPaste=2614(int multiPaste,)
 
-# Retrieve the effect of pasting when there are multiple selections..
+# Retrieve the effect of pasting when there are multiple selections.
 get int GetMultiPaste=2615(,)
 
 # Retrieve the value of a tag from a regular expression search.
@@ -1977,7 +1989,7 @@ val SC_MULTIAUTOC_EACH=1
 # Change the effect of autocompleting when there are multiple selections.
 set void AutoCSetMulti=2636(int multi,)
 
-# Retrieve the effect of autocompleting when there are multiple selections..
+# Retrieve the effect of autocompleting when there are multiple selections.
 get int AutoCGetMulti=2637(,)
 
 enu Ordering=SC_ORDER_

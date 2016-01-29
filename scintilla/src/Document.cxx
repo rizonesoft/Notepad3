@@ -109,6 +109,7 @@ Document::Document() {
 	useTabs = true;
 	tabIndents = true;
 	backspaceUnindents = false;
+	durationStyleOneLine = 0.00001;
 
 	matchesValid = false;
 	regex = 0;
@@ -270,7 +271,7 @@ void Document::TentativeUndo() {
 			bool endSavePoint = cb.IsSavePoint();
 			if (startSavePoint != endSavePoint)
 				NotifySavePoint(endSavePoint);
-				
+
 			cb.TentativeCommit();
 		}
 		enteredModification--;
@@ -1276,7 +1277,7 @@ int Document::SetLineIndentation(int line, int indent) {
 		int indentPos = GetLineIndentPosition(line);
 		UndoGroup ug(this);
 		DeleteChars(thisLineStart, indentPos - thisLineStart);
-		return thisLineStart + InsertString(thisLineStart, linebuf.c_str(), 
+		return thisLineStart + InsertString(thisLineStart, linebuf.c_str(),
 			static_cast<int>(linebuf.length()));
 	} else {
 		return GetLineIndentPosition(line);
@@ -1892,6 +1893,33 @@ void Document::EnsureStyledTo(int pos) {
 	}
 }
 
+void Document::StyleToAdjustingLineDuration(int pos) {
+	// Place bounds on the duration used to avoid glitches spiking it
+	// and so causing slow styling or non-responsive scrolling
+	const double minDurationOneLine = 0.000001;
+	const double maxDurationOneLine = 0.0001;
+
+	// Alpha value for exponential smoothing.
+	// Most recent value contributes 25% to smoothed value.
+	const double alpha = 0.25;
+
+	const Sci_Position lineFirst = LineFromPosition(GetEndStyled());
+	ElapsedTime etStyling;
+	EnsureStyledTo(pos);
+	const double durationStyling = etStyling.Duration();
+	const Sci_Position lineLast = LineFromPosition(GetEndStyled());
+	if (lineLast >= lineFirst + 8) {
+		// Only adjust for styling multiple lines to avoid instability
+		const double durationOneLine = durationStyling / (lineLast - lineFirst);
+		durationStyleOneLine = alpha * durationOneLine + (1.0 - alpha) * durationStyleOneLine;
+		if (durationStyleOneLine < minDurationOneLine) {
+			durationStyleOneLine = minDurationOneLine;
+		} else if (durationStyleOneLine > maxDurationOneLine) {
+			durationStyleOneLine = maxDurationOneLine;
+		}
+	}
+}
+
 void Document::LexerChanged() {
 	// Tell the watchers the lexer has changed.
 	for (std::vector<WatcherWithUserData>::iterator it = watchers.begin(); it != watchers.end(); ++it) {
@@ -2187,7 +2215,7 @@ int Document::BraceMatch(int position, int /*maxReStyle*/) {
 	char chSeek = BraceOpposite(chBrace);
 	if (chSeek == '\0')
 		return - 1;
-	char styBrace = static_cast<char>(StyleAt(position));
+	const int styBrace = StyleIndexAt(position);
 	int direction = -1;
 	if (chBrace == '(' || chBrace == '[' || chBrace == '{' || chBrace == '<')
 		direction = 1;
@@ -2195,7 +2223,7 @@ int Document::BraceMatch(int position, int /*maxReStyle*/) {
 	position = NextPosition(position, direction);
 	while ((position >= 0) && (position < Length())) {
 		char chAtPos = CharAt(position);
-		char styAtPos = static_cast<char>(StyleAt(position));
+		const int styAtPos = StyleIndexAt(position);
 		if ((position > GetEndStyled()) || (styAtPos == styBrace)) {
 			if (chAtPos == chBrace)
 				depth++;
@@ -2526,10 +2554,10 @@ public:
 		return doc != other.doc || position != other.position;
 	}
 	int Pos() const {
-		return position; 
+		return position;
 	}
 	int PosRoundUp() const {
-		return position; 
+		return position;
 	}
 };
 
@@ -2626,7 +2654,7 @@ long Cxx11RegexFindText(Document *doc, int minPos, int maxPos, const char *s,
 			std::wregex regexp;
 #if defined(__APPLE__)
 			// Using a UTF-8 locale doesn't change to Unicode over a byte buffer so '.'
-			// is one byte not one character. 
+			// is one byte not one character.
 			// However, on OS X this makes wregex act as Unicode
 			std::locale localeU("en_US.UTF-8");
 			regexp.imbue(localeU);

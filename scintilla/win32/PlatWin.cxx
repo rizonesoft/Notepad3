@@ -1614,17 +1614,16 @@ void SurfaceD2D::MeasureWidths(Font &font_, const char *s, int len, XYPOSITION *
 		HRESULT hr = pIDWriteFactory->CreateTextLayout(tbuf.buffer, tbuf.tlen, pTextFormat, 10000.0, 1000.0, &pTextLayout);
 		if (!SUCCEEDED(hr))
 			return;
-		// For now, assuming WCHAR == cluster
 		if (!SUCCEEDED(pTextLayout->GetClusterMetrics(clusterMetrics, clusters, &count)))
 			return;
+		// A cluster may be more than one WCHAR, such as for "ffi" which is a ligature in the Candara font
 		FLOAT position = 0.0f;
 		size_t ti=0;
 		for (size_t ci=0; ci<count; ci++) {
-			position += clusterMetrics[ci].width;
 			for (size_t inCluster=0; inCluster<clusterMetrics[ci].length; inCluster++) {
-				//poses.buffer[ti++] = int(position + 0.5);
-				poses.buffer[ti++] = position;
+				poses.buffer[ti++] = position + clusterMetrics[ci].width * (inCluster + 1) / clusterMetrics[ci].length;
 			}
+			position += clusterMetrics[ci].width;
 		}
 		PLATFORM_ASSERT(ti == static_cast<size_t>(tbuf.tlen));
 		pTextLayout->Release();
@@ -2463,7 +2462,7 @@ POINT ListBoxX::MinTrackSize() const {
 
 POINT ListBoxX::MaxTrackSize() const {
 	PRectangle rc = PRectangle::FromInts(0, 0,
-		Platform::Maximum(MinClientWidth(), 
+		Platform::Maximum(MinClientWidth(),
 		maxCharWidth * maxItemCharacters + static_cast<int>(TextInset.x) * 2 +
 		 TextOffset() + ::GetSystemMetrics(SM_CXVSCROLL)),
 		ItemHeight() * lti.Count());
@@ -3162,12 +3161,6 @@ int Platform::Clamp(int val, int minVal, int maxVal) {
 	return val;
 }
 
-#ifdef _MSC_VER
-// GetVersionEx has been deprecated fro Windows 8.1 but called here to determine if Windows 9x.
-// Too dangerous to find alternate check.
-#pragma warning(disable: 4996)
-#endif
-
 void Platform_Initialise(void *hInstance) {
 	::InitializeCriticalSection(&crPlatformLock);
 	hinstPlatformRes = static_cast<HINSTANCE>(hInstance);
@@ -3190,10 +3183,6 @@ void Platform_Initialise(void *hInstance) {
 
 	ListBoxX_Register();
 }
-
-#ifdef _MSC_VER
-#pragma warning(default: 4996)
-#endif
 
 void Platform_Finalise(bool fromDllMain) {
 #if defined(USE_D2D)

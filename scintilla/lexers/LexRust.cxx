@@ -287,7 +287,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 	} else if (!error) {
 		/* If there's a period, it's a floating point literal unless it's
 		 * followed by an identifier (meaning this is a method call, e.g.
-		 * `1.foo()`) or another period, in which case it's a range (e.g. 1..2) 
+		 * `1.foo()`) or another period, in which case it's a range (e.g. 1..2)
 		 */
 		n = styler.SafeGetCharAt(pos + 1, '\0');
 		if (c == '.' && !(IsIdentifierStart(n) || n == '.')) {
@@ -308,7 +308,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 			/* It is invalid to have no digits in the exponent. */
 			error |= !ScanDigits(styler, pos, 10);
 		}
-		
+
 		/* Scan the floating point suffix. */
 		c = styler.SafeGetCharAt(pos, '\0');
 		if (c == 'f') {
@@ -620,7 +620,7 @@ static void ResumeRawString(Accessor &styler, Sci_Position& pos, Sci_Position ma
 		} else if (pos >= max) {
 			break;
 		} else {
-			if (ascii_only && !IsASCII((char)c)) 
+			if (ascii_only && !IsASCII((char)c))
 				break;
 			pos++;
 		}
