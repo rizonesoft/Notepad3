@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by Notepad3.rc
 //
+#define IDC_STATIC                      -1
 #define IDR_MAINWND                     100
 #define IDC_FINDTEXT                    100
 #define IDC_LINENUM                     100
@@ -130,6 +131,18 @@
 #define IDC_NFOASOEM                    300
 #define IDC_COMPILER                    301
 #define IDC_COMPILER2                   302
+#define IDD_READPW                      401
+#define IDC_CHECK1                      402
+#define IDC_EDIT1                       403
+#define IDC_EDIT2                       404
+#define IDC_CHECK2                      405
+#define IDC_STATICPW                    406
+#define IDC_CHECK3                      407
+#define IDM_SETPASS                     408
+#define IDD_PASSWORDS                   409
+#define IDC_EDIT3                       410
+#define IDS_PASS_FAILURE                411
+#define IDS_NOPASS                      412
 #define IDS_APPTITLE                    10000
 #define IDS_APPTITLE_ELEVATED           10001
 #define IDS_APPTITLE_PASTEBOARD         10002

@@ -66,11 +66,15 @@ BEGIN
     BEGIN
         MENUITEM "&New\tCtrl+N",                IDM_FILE_NEW
         MENUITEM "&Open...\tCtrl+O",            IDM_FILE_OPEN
+        //MENUITEM "Open Next",                   IDM_FILE_OPEN_NEXT
+        //MENUITEM "Open Previous",               IDM_FILE_OPEN_PREVIOUS
         MENUITEM "Re&vert\tF5",                 IDM_FILE_REVERT
         MENUITEM "&Save\tCtrl+S",               IDM_FILE_SAVE
         MENUITEM "Save &As...\tF6",             IDM_FILE_SAVEAS
         MENUITEM "Save &Copy...\tCtrl+F6",      IDM_FILE_SAVECOPY
         MENUITEM "&Read Only",                  IDM_FILE_READONLY
+        MENUITEM SEPARATOR
+        MENUITEM "Set Encryption Passphrase",   IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "&Launch"
         BEGIN
@@ -876,6 +880,44 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,115,45,50,14
 END
 
+IDD_PASSWORDS DIALOG 0, 0, 311, 122
+STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Encryption"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,245,94,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,184,94,50,14
+    CONTROL         "Set New Master Key",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
+    EDITTEXT        IDC_EDIT1,17,35,276,14,ES_AUTOHSCROLL | WS_GROUP
+    EDITTEXT        IDC_EDIT2,17,74,277,14
+    LTEXT           "Optional Master Key",IDC_STATIC,18,61,66,10,SS_SUNKEN | NOT WS_GROUP
+    CONTROL         "Encrypt using Passphrase",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,21,98,10
+    CONTROL         "Reuse Master Key",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    GROUPBOX        "Passphrase",IDC_STATIC,7,7,297,108
+END
+STRINGTABLE
+BEGIN
+   IDS_PASS_FAILURE  "The passphrase is incorrect."
+   IDS_NOPASS        "Cancelled - no passphrase."
+END
+
+IDD_READPW DIALOG  0, 0, 299, 84
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE |
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Encrypt File"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,233,54,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,175,54,50,14
+    EDITTEXT        IDC_EDIT3,16,24,267,14,ES_PASSWORD | ES_AUTOHSCROLL |
+                    WS_GROUP
+    CONTROL         "decrypt using the master key",IDC_CHECK3,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,60,148,10
+    LTEXT           "This file has a master key",IDC_STATICPW,16,47,89,11,
+                    NOT WS_GROUP
+    GROUPBOX        "Passphrase",IDC_STATIC,7,7,285,70
+END
+
 IDD_COLUMNWRAP DIALOGEX 0, 0, 130, 47
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Column Wrap"
@@ -1184,6 +1226,15 @@ BEGIN
         BOTTOMMARGIN, 59
     END
 
+    IDD_PASSWORDS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 304
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 115
+    END
+
+
     IDD_COLUMNWRAP, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -1288,8 +1339,8 @@ BEGIN
     IDS_UNTITLED            "Untitled"
     IDS_TITLEEXCERPT        """%s"""
     IDS_READONLY            "(Read Only)"
-    IDS_DOCPOS              "Ln %s : %s   Col %s   Sel %s"
-    IDS_DOCPOS2             "Ln %s : %s   Col %s : %s   Sel %s"
+    IDS_DOCPOS              "Ln %s / %s    Col %s   Sel %s   Sel Ln %s"
+    IDS_DOCPOS2             "Ln %s / %s    Col %s / %s    Sel %s   Sel Ln %s"
     IDS_DOCSIZE             "%s"
     IDS_LOADFILE            "Loading ""%s""..."
     IDS_SAVEFILE            "Saving ""%s""..."

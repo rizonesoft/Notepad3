@@ -25,7 +25,6 @@
 #include <uxtheme.h>
 #include <stdio.h>
 #include <string.h>
-#include "scintilla.h"
 #include "helpers.h"
 #include "resource.h"
 
@@ -989,6 +988,11 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
 
   WCHAR wchPath[MAX_PATH];
   WCHAR wchResult[MAX_PATH];
+
+  if (lpszSrc == NULL) {
+    ZeroMemory(lpszDest, (cchDest == 0) ? MAX_PATH : cchDest);
+    return;
+  }
 
   if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CSTRLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
     SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);

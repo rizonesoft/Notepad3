@@ -14,8 +14,13 @@
 *******************************************************************************/
 
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x501  /*_WIN32_WINNT_WINXP*/
 #endif
+
+#if !defined(NTDDI_VERSION)
+#define NTDDI_VERSION 0x05010100  /*NTDDI_WINXPSP1*/
+#endif
+
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -34,7 +39,7 @@
 #include "helpers.h"
 #include "SciCall.h"
 #include "resource.h"
-
+#include "../crypto/crypto.h"
 
 
 /******************************************************************************
@@ -2363,7 +2368,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
-	case IDM_FILE_READONLY:
+	  case IDM_FILE_READONLY:
       //bReadOnly = (bReadOnly) ? FALSE : TRUE;
       //SendMessage(hwndEdit,SCI_SETREADONLY,bReadOnly,0);
       //UpdateToolbar();
@@ -2467,7 +2472,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         GetModuleFileName(NULL,szModuleName,COUNTOF(szModuleName));
 
-		wsprintf(tch,L"\"-appid=%s\"",g_wchAppUserModelID);
+        wsprintf(tch,L"\"-appid=%s\"",g_wchAppUserModelID);
         lstrcpy(szParameters,tch);
 
         wsprintf(tch,L" \"-sysmru=%i\"",(flagUseSystemMRU == 2) ? 1 : 0);
@@ -2518,14 +2523,14 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
 
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
-        sei.fMask = /*SEE_MASK_NOZONECHECKS*/0x00800000;
+        sei.fMask = SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
         sei.lpFile = szModuleName;
         sei.lpParameters = szParameters;
         sei.lpDirectory = g_wchWorkingDirectory;
         sei.nShow = SW_SHOWNORMAL;
-
+        CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
       }
       break;
@@ -2865,7 +2870,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_SWAP:
       if (SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
           SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0) == 0) {
-        int iNewPos;
+        int iNewPos = -1;
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
         SendMessage(hwndEdit,SCI_PASTE,0,0);
         iNewPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
@@ -3590,8 +3595,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       }
       break;
 
-
-#ifdef BOOKMARK_EDITION
+#ifdef BOOKMARK_EDITION    
     // Main Bookmark Functions
     //case IDM_EDIT_BOOKMARKNEXT:
      case BME_EDIT_BOOKMARKNEXT:
@@ -3692,7 +3696,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         break;
     }
 #endif
-
 
     case IDM_EDIT_FINDNEXT:
     case IDM_EDIT_FINDPREV:
@@ -4346,9 +4349,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         hwnd,AboutDlgProc);
       break;
 
-	case IDM_HELP_CMD:
-		DisplayCmdLineHelp();
-		break;
+    case IDM_SETPASS:
+      GetFileKey(hwndEdit);
+      break;
+
+	  case IDM_HELP_CMD:
+		  DisplayCmdLineHelp();
+		  break;
 
     case CMD_ESCAPE:
       //close the autocomplete box
@@ -6839,6 +6846,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (!FileSave(FALSE,TRUE,FALSE,FALSE))
       return FALSE;
   }
+
+  if (!bReload) { ResetEncryption(); }
 
   if (bNew) {
     lstrcpy(szCurFile,L"");

@@ -32,7 +32,7 @@
 #include "helpers.h"
 #include "resource.h"
 #include "SciCall.h"
-
+#include "../crypto/crypto.h"
 
 extern HWND  hwndMain;
 extern HWND  hwndEdit;
@@ -1238,7 +1238,7 @@ BOOL EditLoadFile(
   }
 
   lpData = GlobalAlloc(GPTR,dwBufSize);
-  bReadSuccess = ReadFile(hFile,lpData,(DWORD)GlobalSize(lpData)-2,&cbData,NULL);
+  bReadSuccess = ReadAndDecryptFile(hwnd, hFile, (DWORD)GlobalSize(lpData) - 2, &lpData, &cbData);
   dwLastIOError = GetLastError();
   CloseHandle(hFile);
 
@@ -1485,7 +1485,7 @@ BOOL EditSaveFile(
 
   // get text
   cbData = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
-  lpData = GlobalAlloc(GPTR,cbData + 1);
+  lpData = GlobalAlloc(GPTR, cbData + 4); //fix: +bom
   SendMessage(hwnd,SCI_GETTEXT,GlobalSize(lpData),(LPARAM)lpData);
 
   if (cbData == 0) {
@@ -1524,22 +1524,22 @@ BOOL EditSaveFile(
       LPWSTR lpDataWide;
       int    cbDataWide;
 
+      const char* bom = "\xFF\xFE";
+      int bomoffset = 0;
+
       SetEndOfFile(hFile);
 
-      lpDataWide = GlobalAlloc(GPTR,cbData * 2 + 16);
-      cbDataWide = MultiByteToWideChar(CP_UTF8,0,lpData,cbData,lpDataWide,(int)GlobalSize(lpDataWide)/sizeof(WCHAR));
+       lpDataWide = GlobalAlloc(GPTR, cbData * 2 + 16);
 
       if (mEncoding[iEncoding].uFlags & NCP_UNICODE_BOM) {
-        if (mEncoding[iEncoding].uFlags & NCP_UNICODE_REVERSE)
-          WriteFile(hFile,(LPCVOID)"\xFE\xFF",2,&dwBytesWritten,NULL);
-        else
-          WriteFile(hFile,(LPCVOID)"\xFF\xFE",2,&dwBytesWritten,NULL);
+        CopyMemory((char*)lpDataWide, bom, 2);
+        bomoffset = 1;
       }
-
-      if (mEncoding[iEncoding].uFlags & NCP_UNICODE_REVERSE)
-        _swab((char*)lpDataWide,(char*)lpDataWide,cbDataWide * sizeof(WCHAR));
-
-      bWriteSuccess = WriteFile(hFile,lpDataWide,cbDataWide * sizeof(WCHAR),&dwBytesWritten,NULL);
+      cbDataWide = bomoffset + MultiByteToWideChar(CP_UTF8, 0, lpData, cbData, &lpDataWide[bomoffset], (int)GlobalSize(lpDataWide) / sizeof(WCHAR) - bomoffset);
+      if (mEncoding[iEncoding].uFlags & NCP_UNICODE_REVERSE) {
+        _swab((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
+      }
+      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &dwBytesWritten);
       dwLastIOError = GetLastError();
 
       GlobalFree(lpDataWide);
@@ -1550,10 +1550,15 @@ BOOL EditSaveFile(
     {
       SetEndOfFile(hFile);
 
-      if (mEncoding[iEncoding].uFlags & NCP_UTF8_SIGN)
-        WriteFile(hFile,(LPCVOID)"\xEF\xBB\xBF",3,&dwBytesWritten,NULL);
-
-      bWriteSuccess = WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
+      if (mEncoding[iEncoding].uFlags & NCP_UTF8_SIGN) {
+        const char* bom = "\xEF\xBB\xBF";
+        DWORD bomoffset = 3;
+        MoveMemory(&lpData[bomoffset], lpData, cbData);
+        CopyMemory(lpData, bom, bomoffset);
+        cbData += bomoffset;
+    }
+      bWriteSuccess = //WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
+        EncryptAndWriteFile(hwnd, hFile, lpData, cbData, &dwBytesWritten);
       dwLastIOError = GetLastError();
 
       GlobalFree(lpData);
@@ -1588,7 +1593,7 @@ BOOL EditSaveFile(
 
       if (!bCancelDataLoss || InfoBox(MBOKCANCEL,L"MsgConv3",IDS_ERR_UNICODE2) == IDOK) {
         SetEndOfFile(hFile);
-        bWriteSuccess = WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
+        bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, lpData, cbData, &dwBytesWritten);
         dwLastIOError = GetLastError();
       }
       else {
@@ -1601,7 +1606,7 @@ BOOL EditSaveFile(
 
     else {
       SetEndOfFile(hFile);
-      bWriteSuccess = WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
+      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, lpData, cbData, &dwBytesWritten);
       dwLastIOError = GetLastError();
       GlobalFree(lpData);
     }
@@ -1756,8 +1761,6 @@ void EditTitleCase(HWND hwnd)
 
       else {
 
-
-#ifdef BOOKMARK_EDITION
       //Slightly enhanced function to make Title Case: Added some '-characters and bPrevWasSpace makes it better (for example "'Don't'" will now work)
       bPrevWasSpace = TRUE;
       for (i = 0; i < cchTextW; i++)
@@ -1788,31 +1791,7 @@ void EditTitleCase(HWND hwnd)
            }
                if( StrChr(L" \r\n\t[](){}",pszTextW[i]) ) bPrevWasSpace = TRUE; else bPrevWasSpace = FALSE;
       }
-#else
 
-        for (i = 0; i < cchTextW; i++) {
-          BOOL bAlphaNumeric = IsCharAlphaNumericW(pszTextW[i]);
-          if (!bAlphaNumeric && (!StrChr(L"\x0027\x2019\x0060\x00B4",pszTextW[i]) || bWordEnd)) {
-            bNewWord = TRUE;
-          }
-          else {
-            if (bNewWord) {
-              if (IsCharLowerW(pszTextW[i])) {
-                pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i],0)));
-                bChanged = TRUE;
-              }
-            }
-            else {
-              if (IsCharUpperW(pszTextW[i])) {
-                pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i],0)));
-                bChanged = TRUE;
-              }
-            }
-            bNewWord = FALSE;
-          }
-          bWordEnd = !bAlphaNumeric;
-        }
-#endif
       }
 
       if (bChanged) {
@@ -2298,7 +2277,7 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
             SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+lstrlenA(chNumber));
           }
         }
-        else if (sscanf(chNumber,"%x",&iNumber) == 1) {
+        else if (sscanf_s(chNumber, "%x", &iNumber, sizeof(iNumber)) == 1) {
           int i;
           BOOL bUppercase = FALSE;
           iWidth = lstrlenA(chNumber) - 2;

@@ -65,7 +65,9 @@
     #endif
 #elif defined(_MSC_VER)
     #if _MSC_VER == 1900
-        #if (_MSC_FULL_VER == 190023026)
+        #if (_MSC_FULL_VER == 190023506)
+            #define VERSION_COMPILER    L"Microsoft Visual C++ Update 1"
+        #elif (_MSC_FULL_VER == 190023026)
             #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
         #elif (_MSC_FULL_VER < 190023026)
             #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Preview/Beta/RC"

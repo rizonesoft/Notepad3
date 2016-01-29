@@ -13,6 +13,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Crypto">
+      <UniqueIdentifier>{aad339da-f291-4358-9ab1-a0fdee012ac6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -35,6 +38,18 @@
     </ClCompile>
     <ClCompile Include="Notepad3.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crypto\crypto.c">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crypto\rijndael-alg-fst.c">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crypto\rijndael-api-fst.c">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crypto\sha-256.c">
+      <Filter>Crypto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +79,18 @@
     </ClInclude>
     <ClInclude Include="Notepad3.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\crypto\crypto.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\crypto\rijndael-alg-fst.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\crypto\rijndael-api-fst.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\crypto\sha-256.h">
+      <Filter>Crypto</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

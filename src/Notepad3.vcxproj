@@ -242,6 +242,10 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\crypto\crypto.c" />
+    <ClCompile Include="..\crypto\rijndael-alg-fst.c" />
+    <ClCompile Include="..\crypto\rijndael-api-fst.c" />
+    <ClCompile Include="..\crypto\sha-256.c" />
     <ClCompile Include="Dialogs.c" />
     <ClCompile Include="Dlapi.c" />
     <ClCompile Include="Edit.c" />
@@ -251,6 +255,10 @@
     <ClCompile Include="Styles.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\crypto\crypto.h" />
+    <ClInclude Include="..\crypto\rijndael-alg-fst.h" />
+    <ClInclude Include="..\crypto\rijndael-api-fst.h" />
+    <ClInclude Include="..\crypto\sha-256.h" />
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />
