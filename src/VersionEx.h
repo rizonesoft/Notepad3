@@ -1,4 +1,4 @@
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 2
-#define VERSION_REV 5
-#define VERSION_BUILD 256
+#define VERSION_REV 6
+#define VERSION_BUILD 262
