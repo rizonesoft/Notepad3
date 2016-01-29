@@ -312,7 +312,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_INITDIALOG:
       {
-        // MakeBitmapButton(hwnd,IDC_SEARCHEXE,g_hInstance,IDB_OPEN);
+        MakeBitmapButton(hwnd,IDC_SEARCHEXE,g_hInstance,IDB_OPEN);
 
         SendDlgItemMessage(hwnd,IDC_COMMANDLINE,EM_LIMITTEXT,MAX_PATH - 1,0);
         SetDlgItemText(hwnd,IDC_COMMANDLINE,(LPCWSTR)lParam);

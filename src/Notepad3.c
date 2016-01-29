@@ -1206,7 +1206,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetDlgItemInt(hwnd,IDC_REUSELOCK,GetTickCount(),FALSE);
 
         if (pcds->dwData == DATA_NOTEPAD3_PARAMS) {
-          LPnp3params params = LocalAlloc(LPTR,pcds->cbData);
+		LPnp3params params = LocalAlloc(LPTR,pcds->cbData);
           CopyMemory(params,pcds->lpData,pcds->cbData);
 
           if (params->flagLexerSpecified)
