@@ -2314,7 +2314,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       FileLoad(FALSE,FALSE,FALSE,FALSE,L"");
       break;
 
-
     case IDM_FILE_REVERT:
       {
         if (lstrlen(szCurFile)) {
@@ -2356,7 +2355,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_SAVE:
       FileSave(TRUE,FALSE,FALSE,FALSE);
       break;
-
 
     case IDM_FILE_SAVEAS:
       FileSave(TRUE,FALSE,TRUE,FALSE);

@@ -67,13 +67,13 @@ IF "%~1" == "" (
 :START
 IF EXIST "%~dp0..\signinfo_notepad2-mod.txt" SET "SIGN=True"
 
-SET INPUTDIRx86=bin\%COMPILER%\Release_x86
-SET INPUTDIRx64=bin\%COMPILER%\Release_x64
+SET INPUTDIRx86=Bin\Release_x86
+SET INPUTDIRx64=Bin\Release_x64
 IF /I NOT "%COMPILER%" == "VS2015" SET SUFFIX=_%COMPILER%
 SET "TEMP_NAME=temp_zip%SUFFIX%"
 
-IF NOT EXIST "..\%INPUTDIRx86%\Notepad2.exe" CALL :SUBMSG "ERROR" "Compile Notepad2 x86 first!"
-IF NOT EXIST "..\%INPUTDIRx64%\Notepad2.exe" CALL :SUBMSG "ERROR" "Compile Notepad2 x64 first!"
+IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
+IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"
 
 IF /I "%SIGN%" == "True" CALL :SubSign %INPUTDIRx86%
 IF /I "%SIGN%" == "True" CALL :SubSign %INPUTDIRx64%
@@ -92,7 +92,7 @@ EXIT /B
 TITLE Building %1 installer...
 CALL :SUBMSG "INFO" "Building %1 installer using %InnoSetupPath%\ISCC.exe..."
 
-"%InnoSetupPath%\ISCC.exe" /SMySignTool="cmd /c "%~dp0sign.bat" $f" /Q /O"packages" "..\distrib\notepad2_setup.iss" /D%1
+"%InnoSetupPath%\ISCC.exe" /SMySignTool="cmd /c "%~dp0sign.bat" $f" /Q /O"packages" "..\distrib\notepad3_setup.iss" /D%1
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 EXIT /B

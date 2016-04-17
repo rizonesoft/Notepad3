@@ -210,6 +210,24 @@ public:
 		if (hIMC)
 			::ImmReleaseContext(hwnd, hIMC);
 	}
+
+	unsigned int GetImeCaretPos() {
+		return ImmGetCompositionStringW(hIMC, GCS_CURSORPOS, NULL, 0);
+	}
+
+	std::vector<BYTE> GetImeAttributes() {
+		int attrLen = ::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, NULL, 0);
+		std::vector<BYTE> attr(attrLen, 0);
+		::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, &attr[0], static_cast<DWORD>(attr.size()));
+		return attr;
+	}
+
+	std::wstring GetCompositionString(DWORD dwIndex) {
+		const LONG byteLen = ::ImmGetCompositionStringW(hIMC, dwIndex, NULL, 0);
+		std::wstring wcs(byteLen / 2, 0);
+		::ImmGetCompositionStringW(hIMC, dwIndex, &wcs[0], byteLen);
+		return wcs;
+	}
 };
 
 }
@@ -291,6 +309,7 @@ class ScintillaWin :
 	void SelectionToHangul();
 	void EscapeHanja();
 	void ToggleHanja();
+	void AddWString(std::wstring wcs);
 
 	UINT CodePageOfDocument() const;
 	virtual bool ValidCodePage(int codePage) const;
@@ -834,24 +853,8 @@ sptr_t ScintillaWin::HandleCompositionWindowed(uptr_t wParam, sptr_t lParam) {
 	if (lParam & GCS_RESULTSTR) {
 		IMContext imc(MainHWND());
 		if (imc.hIMC) {
-			wchar_t wcs[maxLenInputIME];
-			LONG bytes = ::ImmGetCompositionStringW(imc.hIMC,
-				GCS_RESULTSTR, wcs, (maxLenInputIME-1)*2);
-			int wides = bytes / 2;
-			if (IsUnicodeMode()) {
-				char utfval[maxLenInputIME * 3];
-				unsigned int len = UTF8Length(wcs, wides);
-				UTF8FromUTF16(wcs, wides, utfval, len);
-				utfval[len] = '\0';
-				AddCharUTF(utfval, len);
-			} else {
-				char dbcsval[maxLenInputIME * 2];
-				int size = ::WideCharToMultiByte(InputCodePage(),
-					0, wcs, wides, dbcsval, sizeof(dbcsval) - 1, 0, 0);
-				for (int i=0; i<size; i++) {
-					AddChar(dbcsval[i]);
-				}
-			}
+			AddWString(imc.GetCompositionString(GCS_RESULTSTR));
+
 			// Set new position after converted
 			Point pos = PointMainCaret();
 			COMPOSITIONFORM CompForm;
@@ -1002,17 +1005,6 @@ void ScintillaWin::ToggleHanja() {
 
 namespace {
 
-unsigned int GetImeCaretPos(HIMC hIMC) {
-	return ImmGetCompositionStringW(hIMC, GCS_CURSORPOS, NULL, 0);
-}
-
-std::vector<BYTE> GetImeAttributes(HIMC hIMC) {
-	int attrLen = ::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, NULL, 0);
-	std::vector<BYTE> attr(attrLen, 0);
-	::ImmGetCompositionStringW(hIMC, GCS_COMPATTR, &attr[0], static_cast<DWORD>(attr.size()));
-	return attr;
-}
-
 std::vector<int> MapImeIndicators(std::vector<BYTE> inputStyle) {
 	std::vector<int> imeIndicator(inputStyle.size(), SC_INDICATOR_UNKNOWN);
 	for (size_t i = 0; i < inputStyle.size(); i++) {
@@ -1035,13 +1027,21 @@ std::vector<int> MapImeIndicators(std::vector<BYTE> inputStyle) {
 	return imeIndicator;
 }
 
-std::wstring GetCompositionString(HIMC hIMC, DWORD dwIndex) {
-	const LONG byteLen = ::ImmGetCompositionStringW(hIMC, dwIndex, NULL, 0);
-	std::wstring wcs(byteLen / 2, 0);
-	::ImmGetCompositionStringW(hIMC, dwIndex, &wcs[0], byteLen);
-	return wcs;
 }
 
+void ScintillaWin::AddWString(std::wstring wcs) {
+	if (wcs.empty())
+		return;
+
+	int codePage = CodePageOfDocument();
+	for (size_t i = 0; i < wcs.size(); ) {
+		const size_t ucWidth = UTF16CharLength(wcs[i]);
+		const std::wstring uniChar(wcs, i, ucWidth);
+		std::string docChar = StringEncode(uniChar, codePage);
+
+		AddCharUTF(docChar.c_str(), static_cast<unsigned int>(docChar.size()));
+		i += ucWidth;
+	}
 }
 
 sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
@@ -1067,7 +1067,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 	view.imeCaretBlockOverride = false;
 
 	if (lParam & GCS_COMPSTR) {
-		const std::wstring wcs = GetCompositionString(imc.hIMC, GCS_COMPSTR);
+		const std::wstring wcs = imc.GetCompositionString(GCS_COMPSTR);
 		if ((wcs.size() == 0) || (wcs.size() >= maxLenInputIME)) {
 			ShowCaretAtCurrentPosition();
 			return 0;
@@ -1075,66 +1075,34 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 
 		pdoc->TentativeStart(); // TentativeActive from now on.
 
-		std::vector<int> imeIndicator = MapImeIndicators(GetImeAttributes(imc.hIMC));
-
-		// Display character by character.
-		int numBytes = 0;
-		int imeCharPos[maxLenInputIME + 1] = { 0 };
+		std::vector<int> imeIndicator = MapImeIndicators(imc.GetImeAttributes());
 
 		bool tmpRecordingMacro = recordingMacro;
 		recordingMacro = false;
+		int codePage = CodePageOfDocument();
 		for (size_t i = 0; i < wcs.size(); ) {
 			const size_t ucWidth = UTF16CharLength(wcs[i]);
 			const std::wstring uniChar(wcs, i, ucWidth);
-			char oneChar[UTF8MaxBytes + 1] = "\0\0\0\0"; // Maximum 4 bytes in utf8
-			unsigned int oneCharLen = 0;
+			std::string docChar = StringEncode(uniChar, codePage);
 
-			if (IsUnicodeMode()) {
-				oneCharLen = UTF8Length(uniChar.c_str(), static_cast<unsigned int>(uniChar.length()));
-				UTF8FromUTF16(uniChar.c_str(), static_cast<unsigned int>(uniChar.length()), oneChar, oneCharLen);
-			} else {
-				oneCharLen = ::WideCharToMultiByte(InputCodePage(), 0,
-					uniChar.c_str(), static_cast<unsigned int>(uniChar.length()), oneChar, sizeof(oneChar)-1, 0, 0);
-			}
-			oneChar[oneCharLen] = '\0';
+			AddCharUTF(docChar.c_str(), static_cast<unsigned int>(docChar.size()));
 
-			// Display a character.
-			AddCharUTF(oneChar, oneCharLen);
-
-			// Record compstr character positions for moving IME carets.
-			numBytes += oneCharLen;
-			imeCharPos[i + ucWidth] = numBytes;
-
-			DrawImeIndicator(imeIndicator[i], oneCharLen);
+			DrawImeIndicator(imeIndicator[i], static_cast<unsigned int>(docChar.size()));
 			i += ucWidth;
 		}
 		recordingMacro = tmpRecordingMacro;
 
-		// Move IME caret position.
-		unsigned int imeCursorPos = GetImeCaretPos(imc.hIMC);
-		MoveImeCarets(-imeCharPos[wcs.size()] + imeCharPos[imeCursorPos]);
+		// Move IME caret from current last position to imeCaretPos.
+		int toImeStart = static_cast<unsigned int>(StringEncode(wcs, codePage).size());
+		std::string imeCaret(StringEncode(wcs.substr(0, imc.GetImeCaretPos()), codePage));
+		int toImeCaret = static_cast<unsigned int>(imeCaret.size());
+		MoveImeCarets(- toImeStart + toImeCaret);
+
 		if (KoreanIME()) {
 			view.imeCaretBlockOverride = true;
 		}
 	} else if (lParam & GCS_RESULTSTR) {
-		const std::wstring wcs = GetCompositionString(imc.hIMC, GCS_RESULTSTR);
-		for (size_t i = 0; i < wcs.size();) {
-			const size_t ucWidth = UTF16CharLength(wcs[i]);
-			const std::wstring uniChar(wcs, i, ucWidth);
-			char oneChar[UTF8MaxBytes+1] = "\0\0\0\0"; // Maximum 4 bytes in UTF-8.
-			unsigned int oneCharLen = 0;
-
-			if (IsUnicodeMode()) {
-				oneCharLen = UTF8Length(uniChar.c_str(), static_cast<unsigned int>(uniChar.length()));
-				UTF8FromUTF16(uniChar.c_str(), static_cast<unsigned int>(uniChar.length()), oneChar, oneCharLen);
-			} else {
-				oneCharLen = ::WideCharToMultiByte(InputCodePage(), 0,
-					uniChar.c_str(), static_cast<unsigned int>(uniChar.length()), oneChar, sizeof(oneChar)-1, 0, 0);
-			}
-			oneChar[oneCharLen] = '\0';
-			AddCharUTF(oneChar, oneCharLen);
-			i += ucWidth;
-		}
+		AddWString(imc.GetCompositionString(GCS_RESULTSTR));
 	}
 	EnsureCaretVisible();
 	SetCandidateWindowPos();
@@ -2216,9 +2184,25 @@ public:
 	}
 };
 
+// OpenClipboard may fail if another application has opened the clipboard.
+// Try up to 8 times, with an initial delay of 1 ms and an exponential back off
+// for a maximum total delay of 127 ms (1+2+4+8+16+32+64).
+static bool OpenClipboardRetry(HWND hwnd) {
+	for (int attempt=0; attempt<8; attempt++) {
+		if (attempt > 0) {
+			::Sleep(1 << (attempt-1));
+		}
+		if (::OpenClipboard(hwnd)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void ScintillaWin::Paste() {
-	if (!::OpenClipboard(MainHWND()))
+	if (!::OpenClipboardRetry(MainHWND())) {
 		return;
+	}
 	UndoGroup ug(pdoc);
 	const bool isLine = SelectionEmpty() &&
 		(::IsClipboardFormatAvailable(cfLineSelect) || ::IsClipboardFormatAvailable(cfVSLineTag));
@@ -2769,8 +2753,9 @@ void ScintillaWin::GetIntelliMouseParameters() {
 }
 
 void ScintillaWin::CopyToClipboard(const SelectionText &selectedText) {
-	if (!::OpenClipboard(MainHWND()))
+	if (!::OpenClipboardRetry(MainHWND())) {
 		return;
+	}
 	::EmptyClipboard();
 
 	GlobalMemory uniText;

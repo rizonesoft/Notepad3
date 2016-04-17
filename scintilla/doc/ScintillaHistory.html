@@ -480,6 +480,10 @@
 	<td>Yury Dubinsky</td>
 	<td>Sam Hocevar</td>
 	<td>Luyomi</td>
+	<td>Matt Gilarde</td>
+      </tr><tr>
+	<td>Mark C</td>
+	<td>Johannes Sasongko</td>
     </tr>
     </table>
     <p>
@@ -492,15 +496,69 @@
       </li>
     </ul>
     <h3>
+       <a href="http://www.scintilla.org/scite365.zip">Release 3.6.5</a>
+    </h3>
+    <ul>
+	<li>
+	Released 13 March 2016.
+	</li>
+	<li>
+	JSON lexer added.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1140/">Feature #1140.</a>
+	</li>
+	<li>
+	The Python lexer treats '@' as an operator except when it is the first visible character on a line.
+	This is for Python 3.5.
+	</li>
+	<li>
+	SciTE bug fixed with exported HTML where extra line shown.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1816/">Bug #1816</a>.
+	</li>
+	<li>
+	SciTE on Windows fixes bugs with pop-up menus in the find and replace strips.
+	For the replace strip, menu choices change the state.
+	For the find strip, menu choices are reflected in the appearance of their corresponding buttons.
+	</li>
+    </ul>
+    <h3>
        <a href="http://www.scintilla.org/scite364.zip">Release 3.6.4</a>
     </h3>
     <ul>
 	<li>
-	Released 18 January 2016.
+	Released 13 March 2016.
+	</li>
+	<li>
+	SciTE allows setting the autocompletion type separator character.
+	</li>
+	<li>
+	The C++ folder folds code on '(' and ')' to allow multi-line calls to be folded.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1138/">Feature #1138.</a>
 	</li>
 	<li>
 	For the HTML lexer, limit the extent of Mako line comments to finish before
 	the line end characters.
+	</li>
+	<li>
+	Folds unfolded when two fold regions are merged by either deleting an intervening line
+	or changing its fold level by adding characters.
+	This was fixed both in Scintilla and in SciTE's equivalent code.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1799/">Bug #1799</a>.<br />
+	</li>
+	<li>
+	The Progress lexer supports hexadecimal numeric literals,
+	single-line comments, abbreviated keywords and
+	extends nested comments to unlimited levels.
+	</li>
+	<li>
+	Ruby lexer treats alternate hash key syntax "key:" as a symbol.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1810/">Bug #1810</a>.
+	</li>
+	<li>
+	Rust lexer handles bracketed Unicode string escapes like "\u{123abc}".
+	<a href="http://sourceforge.net/p/scintilla/bugs/1809/">Bug #1809</a>.
+	</li>
+	<li>
+	For GTK+ on Windows fix 64-bit build which was broken in 3.6.3.
 	</li>
 	<li>
 	For Qt, release builds have assertions turned off.
@@ -510,6 +568,23 @@
 	</li>
 	<li>
 	IME target range displayed on Qt for OS X.
+	</li>
+	<li>
+	On Windows, make clipboard operations more robust by retrying OpenClipboard if it fails
+	as this may occur when another application has opened the clipboard.
+	</li>
+	<li>
+	On Windows back out change that removed use of def file to ensure
+	Scintilla_DirectFunction exported without name mangling.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1813/">Bug #1813</a>.
+	</li>
+	<li>
+	On GTK+ and Qt over Win32 in Korean fix bug caused by last release's word input change.
+	</li>
+	<li>
+	For SciTE, more descriptive error messages are displayed when there are problems loading the
+	Lua startup script.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1139/">Feature #1139.</a>
 	</li>
     </ul>
     <h3>

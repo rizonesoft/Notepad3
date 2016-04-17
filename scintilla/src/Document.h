@@ -171,6 +171,10 @@ public:
 
 class Document;
 
+inline int LevelNumber(int level) {
+	return level & SC_FOLDLEVELNUMBERMASK;
+}
+
 class LexInterface {
 protected:
 	Document *pdoc;

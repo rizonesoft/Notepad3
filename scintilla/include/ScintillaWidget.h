@@ -44,7 +44,7 @@ struct _ScintillaClass {
 
 GType		scintilla_object_get_type		(void);
 GtkWidget*	scintilla_object_new			(void);
-long		scintilla_object_send_message	(ScintillaObject *sci, unsigned int iMessage, guintptr wParam, gintptr lParam);
+gintptr		scintilla_object_send_message	(ScintillaObject *sci, unsigned int iMessage, guintptr wParam, gintptr lParam);
 
 #ifndef G_IR_SCANNING
 /* The legacy names confuse the g-ir-scanner program */

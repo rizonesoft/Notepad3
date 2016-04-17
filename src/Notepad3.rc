@@ -66,8 +66,6 @@ BEGIN
     BEGIN
         MENUITEM "&New\tCtrl+N",                IDM_FILE_NEW
         MENUITEM "&Open...\tCtrl+O",            IDM_FILE_OPEN
-        //MENUITEM "Open Next",                   IDM_FILE_OPEN_NEXT
-        //MENUITEM "Open Previous",               IDM_FILE_OPEN_PREVIOUS
         MENUITEM "Re&vert\tF5",                 IDM_FILE_REVERT
         MENUITEM "&Save\tCtrl+S",               IDM_FILE_SAVE
         MENUITEM "Save &As...\tF6",             IDM_FILE_SAVEAS
@@ -91,7 +89,7 @@ BEGIN
             MENUITEM "&ANSI",                       IDM_ENCODING_ANSI
             MENUITEM "&Unicode",                    IDM_ENCODING_UNICODE
             MENUITEM "Unicode &Big Endian",         IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8",                      IDM_ENCODING_UTF8
+            MENUITEM "UTF-&8\tShift+F8",            IDM_ENCODING_UTF8
             MENUITEM "UTF-8 with &Signature",       IDM_ENCODING_UTF8SIGN
             MENUITEM "&More...\tF9",                IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
@@ -102,7 +100,7 @@ BEGIN
         POPUP "Line Endin&gs"
         BEGIN
             MENUITEM "&Windows (CR+LF)",            IDM_LINEENDINGS_CRLF
-            MENUITEM "&Unix (LF)",                  IDM_LINEENDINGS_LF
+            MENUITEM "&Unix (LF)\tAlt+F8",          IDM_LINEENDINGS_LF
             MENUITEM "&Mac (CR)",                   IDM_LINEENDINGS_CR
             MENUITEM SEPARATOR
             MENUITEM "&Default...",                 IDM_LINEENDINGS_SETDEFAULT

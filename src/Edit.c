@@ -2277,7 +2277,7 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
             SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+lstrlenA(chNumber));
           }
         }
-        else if (sscanf_s(chNumber, "%x", &iNumber, sizeof(iNumber)) == 1) {
+        else if (sscanf_s(chNumber, "%x", &iNumber) == 1) {
           int i;
           BOOL bUppercase = FALSE;
           iWidth = lstrlenA(chNumber) - 2;
@@ -7226,7 +7226,6 @@ int FileVars_GetEncoding(LPFILEVARS lpfv) {
   else
     return(-1);
 }
-
 
 //=============================================================================
 //
