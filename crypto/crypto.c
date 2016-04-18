@@ -361,32 +361,33 @@ BOOL ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWOR
           AES_bin_setup(&fileDecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binFileKey);
           AES_bin_cipherInit(&fileCypher, AES_MODE_CBC, &rawdata[PREAMBLE_SIZE]);	// IV is next
           { // finally, decrypt the actual data
-            unsigned long nb = 0;
+            int nbb = 0;
+            int nbp = 0;
             if ((readsize - code_offset) > PAD_SLOP) {
-              nb += AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
+              nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
             }
-            nb += AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nb], readsize - code_offset - nb, rawdata + nb);
-            if (nb > 0) {
-              rawdata[nb] = (char)0;
-              rawdata[nb + 1] = (char)0;	// two zeros in case it's multibyte
-              *resultlen = (DWORD)nb;
-              bReadSuccess = 1;
-              usedEncryption = TRUE;
+            nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], readsize - code_offset - nbb, rawdata + nbb);
+            if (nbp > 0) {
+              nbb += nbp;
+              rawdata[nbb] = (char)0;
+              rawdata[nbb + 1] = (char)0;	// two zeros in case it's multi-byte
+              *resultlen = (DWORD)nbb;
+              bReadSuccess = TRUE;
             }
             else {
-              *resultlen = 0;
               MsgBox(MBWARN, IDS_PASS_FAILURE);
-              bReadSuccess = -1;
-              usedEncryption = FALSE;
+              *resultlen = 0;
+              bReadSuccess = FALSE;
             }
           }
+          usedEncryption = TRUE;
         }
         else
         {
           // simulate read failure
           MsgBox(MBWARN, IDS_NOPASS);
           *resultlen = 0;
-          bReadSuccess = -1;
+          bReadSuccess = FALSE;
           usedEncryption = FALSE;
         }
       }
