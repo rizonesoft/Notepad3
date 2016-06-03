@@ -21,8 +21,9 @@ CD /D %~dp0
 
 CALL "Build.bat"
 CALL "upx.bat"
-rem CALL "make_zip.bat"
-rem CALL "make_installer.bat"
+CALL "sign.bat"
+CALL "make_zip.bat"
+CALL "make_installer.bat"
 
 :END
 TITLE Finished!

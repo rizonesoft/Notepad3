@@ -32,3 +32,12 @@ Thumbs.db
 /Build/Bin/upx.exe
 distrib/Notepad3-0.2.1.213.exe
 distrib/Notepad3-0.2.2.225.exe
+Build/Bin/Password.txt
+Build/Bin/Certum.cer
+Build/Bin/Certum.p12
+Build/sign.bat
+Build/Signing/Certum.cer
+Build/Signing/Certum.p12
+Build/Signing/kSign.exe
+Build/Signing/kSignCMD.exe
+Build/Signing/Password.txt

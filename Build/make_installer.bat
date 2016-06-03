@@ -92,7 +92,7 @@ EXIT /B
 TITLE Building %1 installer...
 CALL :SUBMSG "INFO" "Building %1 installer using %InnoSetupPath%\ISCC.exe..."
 
-"%InnoSetupPath%\ISCC.exe" /SMySignTool="cmd /c "%~dp0sign.bat" $f" /Q /O"packages" "..\distrib\notepad3_setup.iss" /D%1
+"%InnoSetupPath%\ISCC.exe" /Q /O "packages" "..\distrib\notepad3_setup.iss" /D%1
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 EXIT /B
