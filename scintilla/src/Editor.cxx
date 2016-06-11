@@ -303,7 +303,7 @@ int Editor::TopLineOfMain() const {
 }
 
 PRectangle Editor::GetClientRectangle() const {
-	Window &win = const_cast<Window &>(wMain);
+	Window win = wMain;
 	return win.GetClientPosition();
 }
 
@@ -828,6 +828,7 @@ void Editor::MovedCaret(SelectionPosition newPos, SelectionPosition previousPos,
 	}
 
 	ShowCaretAtCurrentPosition();
+	NotifyCaretMove();
 
 	ClaimSelection();
 	SetHoverIndicatorPosition(sel.MainCaret());
@@ -1435,6 +1436,9 @@ void Editor::InvalidateCaret() {
 		}
 	}
 	UpdateSystemCaret();
+}
+
+void Editor::NotifyCaretMove() {
 }
 
 void Editor::UpdateSystemCaret() {
@@ -2265,12 +2269,13 @@ void Editor::DelCharBack(bool allowLineStartDeletion) {
 	ShowCaretAtCurrentPosition();
 }
 
-int Editor::ModifierFlags(bool shift, bool ctrl, bool alt, bool meta) {
+int Editor::ModifierFlags(bool shift, bool ctrl, bool alt, bool meta, bool super) {
 	return
 		(shift ? SCI_SHIFT : 0) |
 		(ctrl ? SCI_CTRL : 0) |
 		(alt ? SCI_ALT : 0) |
-		(meta ? SCI_META : 0);
+		(meta ? SCI_META : 0) |
+		(super ? SCI_SUPER : 0);
 }
 
 void Editor::NotifyFocus(bool focus) {

@@ -7,7 +7,6 @@ useInitializationList
 
 // Some non-explicit constructors are used for conversions or are private to lexers
 noExplicitConstructor
-noExplicitCopyMoveConstructor
 
 // cppcheck does not understand private methods can be called from static methods
 unusedPrivateFunction:scintilla/win32/PlatWin.cxx
@@ -34,7 +33,6 @@ variableScope:scintilla/lexers/LexPB.cxx
 variableScope:scintilla/lexers/LexRuby.cxx
 uninitMemberVar:scintilla/lexers/LexRuby.cxx
 variableScope:scintilla/lexers/LexSpecman.cxx
-unreadVariable:scintilla/lexers/LexSpice.cxx
 clarifyCalculation:scintilla/lexers/LexTADS3.cxx
 invalidscanf:scintilla/lexers/LexTCMD.cxx
 variableScope:scintilla/lexers/LexTeX.cxx

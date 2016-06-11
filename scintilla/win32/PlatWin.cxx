@@ -2582,6 +2582,9 @@ void ListBoxX::StartResize(WPARAM hitCode) {
 }
 
 LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const {
+	Window win = *this;	// Copy HWND to avoid const problems
+	const PRectangle rc = win.GetPosition();
+
 	LRESULT hit = ::DefWindowProc(GetHWND(), WM_NCHITTEST, wParam, lParam);
 	// There is an apparent bug in the DefWindowProc hit test code whereby it will
 	// return HTTOPXXX if the window in question is shorter than the default
@@ -2589,7 +2592,6 @@ LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const {
 	// the frame, so workaround that here
 	if (hit >= HTTOP && hit <= HTTOPRIGHT) {
 		int minHeight = GetSystemMetrics(SM_CYMINTRACK);
-		PRectangle rc = const_cast<ListBoxX*>(this)->GetPosition();
 		int yPos = GET_Y_LPARAM(lParam);
 		if ((rc.Height() < minHeight) && (yPos > ((rc.top + rc.bottom)/2))) {
 			hit += HTBOTTOM - HTTOP;
@@ -2607,7 +2609,6 @@ LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const {
 
 		case HTTOP:
 		case HTTOPRIGHT: {
-				PRectangle rc = const_cast<ListBoxX*>(this)->GetPosition();
 				// Valid only if caret below list
 				if (location.y < rc.top)
 					hit = HTERROR;
@@ -2616,9 +2617,8 @@ LRESULT ListBoxX::NcHitTest(WPARAM wParam, LPARAM lParam) const {
 
 		case HTBOTTOM:
 		case HTBOTTOMRIGHT: {
-				PRectangle rc = const_cast<ListBoxX*>(this)->GetPosition();
 				// Valid only if caret above list
-				if (rc.bottom < location.y)
+				if (rc.bottom <= location.y)
 					hit = HTERROR;
 			}
 			break;
@@ -2635,7 +2635,8 @@ void ListBoxX::OnDoubleClick() {
 }
 
 POINT ListBoxX::GetClientExtent() const {
-	PRectangle rc = const_cast<ListBoxX*>(this)->GetClientPosition();
+	Window win = *this;	// Copy HWND to avoid const problems
+	const PRectangle rc = win.GetPosition();
 	POINT ret;
 	ret.x = static_cast<LONG>(rc.Width());
 	ret.y = static_cast<LONG>(rc.Height());

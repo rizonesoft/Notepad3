@@ -82,7 +82,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 6 January 2016 NH</p>
+    <p>Last edited 8 May 2016 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -623,8 +623,9 @@ struct Sci_TextRange {
     <p>
     The base regular expression support
     is limited and should only be used for simple cases and initial development.
-    <span class="provisional">When using a C++11 compliant compiler and runtime, it may be possible to use the
-    runtime's implementation of &lt;regex&gt; by compiling Scintilla with <code>CXX11_REGEX</code> defined.</span>
+    The C++ runtime &lt;regex&gt; library may be used by setting the <code>SCFIND_CXX11REGEX</code> search flag.
+    When using an older C++ compiler that does not support C++11, this may be turned off by
+    compiling Scintilla with <code>NO_CXX11_REGEX</code> defined.
     A different regular expression
     library can be <a class="jump" href="#AlternativeRegEx">integrated into Scintilla</a>
     or can be called from the container using direct access to the buffer contents through
@@ -743,29 +744,32 @@ struct Sci_TextRange {
         <tr>
           <td><code>SCFIND_REGEXP</code></td>
 
-          <td>The search string should be interpreted as a regular expression.</td>
+          <td>The search string should be interpreted as a regular expression.
+            Uses Scintilla's base implementation unless combined with <code>SCFIND_CXX11REGEX</code>.</td>
         </tr>
         <tr>
           <td><code>SCFIND_POSIX</code></td>
 
           <td>Treat regular expression in a more POSIX compatible manner
-            by interpreting bare ( and ) for tagged sections rather than \( and \).</td>
+            by interpreting bare ( and ) for tagged sections rather than \( and \).
+            Has no effect when <code>SCFIND_CXX11REGEX</code> is set.</td>
         </tr>
-        <tr class="provisional">
+        <tr>
           <td><code>SCFIND_CXX11REGEX</code></td>
 
-          <td>When compiled with <code>CXX11_REGEX</code> this flag
-	  may be set to use &lt;regex&gt; instead of Scintilla's basic regular expressions.
-	  If the regular expression is invalid then -1 is returned and status is set to
-	  <code>SC_STATUS_WARN_REGEX</code>.
-	  The ECMAScript flag is set on the regex object and UTF-8 documents will exhibit Unicode-compliant
-	  behaviour. For MSVC, where wchar_t is 16-bits, the reular expression ".." will match a single
-	  astral-plane character. There may be other differences between compilers.</td>
+          <td>This flag may be set to use C++11 &lt;regex&gt; instead of Scintilla's basic regular expressions.
+            If the regular expression is invalid then -1 is returned and status is set to
+            <code>SC_STATUS_WARN_REGEX</code>.
+            The ECMAScript flag is set on the regex object and UTF-8 documents will exhibit Unicode-compliant
+            behaviour. For MSVC, where wchar_t is 16-bits, the reular expression ".." will match a single
+            astral-plane character. There may be other differences between compilers.
+            Must also have <code>SCFIND_REGEXP</code> set.</td>
         </tr>
       </tbody>
     </table>
 
-    <p>In a regular expression, special characters interpreted are:</p>
+    <p>In a regular expression, using Scintilla's base implementation,
+    special characters interpreted are:</p>
 
     <table border="0" summary="Regular expression synopsis">
       <tbody>
@@ -859,6 +863,10 @@ struct Sci_TextRange {
     </table>
 
     <p>Regular expressions will only match ranges within a single line, never matching over multiple lines.</p>
+
+    <p>When using <code>SCFIND_CXX11REGEX</code> more features are available,
+    generally similar to regular expression support in JavaScript.
+    See the documentation of your C++ runtime for details on what is supported.</p>
 
     <code><a class="message" href="#SCI_FINDTEXT">SCI_FINDTEXT(int flags, Sci_TextToFind
     *ttf)</a><br />
@@ -1020,7 +1028,7 @@ struct Sci_TextToFind {
           <td>Generic failure</td>
         </tr>
 
-        <tr class="provisional">
+        <tr>
           <th align="left">SC_STATUS_BADALLOC</th>
           <td>2</td>
           <td>Memory is exhausted</td>
@@ -1137,8 +1145,6 @@ struct Sci_TextToFind {
     <code><a class="message" href="#SCI_GETTEXTLENGTH">SCI_GETTEXTLENGTH</a><br />
      <a class="message" href="#SCI_GETLENGTH">SCI_GETLENGTH</a><br />
      <a class="message" href="#SCI_GETLINECOUNT">SCI_GETLINECOUNT</a><br />
-     <a class="message" href="#SCI_SETFIRSTVISIBLELINE">SCI_SETFIRSTVISIBLELINE(int lineDisplay)</a><br />
-     <a class="message" href="#SCI_GETFIRSTVISIBLELINE">SCI_GETFIRSTVISIBLELINE</a><br />
      <a class="message" href="#SCI_LINESONSCREEN">SCI_LINESONSCREEN</a><br />
      <a class="message" href="#SCI_GETMODIFY">SCI_GETMODIFY</a><br />
      <a class="message" href="#SCI_SETSEL">SCI_SETSEL(int anchorPos, int currentPos)</a><br />
@@ -1205,11 +1211,6 @@ struct Sci_TextToFind {
     <p><b id="SCI_GETLINECOUNT">SCI_GETLINECOUNT</b><br />
      This returns the number of lines in the document. An empty document contains 1 line. A
     document holding only an end of line sequence has 2 lines.</p>
-
-    <p><b id="SCI_SETFIRSTVISIBLELINE">SCI_SETFIRSTVISIBLELINE(int lineDisplay)</b><br />
-     <b id="SCI_GETFIRSTVISIBLELINE">SCI_GETFIRSTVISIBLELINE</b><br />
-     These messages retrieve and set the line number of the first visible line in the Scintilla view. The first line
-    in the document is numbered 0. The value is a visible line rather than a document line.</p>
 
     <p><b id="SCI_LINESONSCREEN">SCI_LINESONSCREEN</b><br />
      This returns the number of complete lines visible on the screen. With a constant line height,
@@ -1826,7 +1827,12 @@ struct Sci_TextToFind {
      </p>
 
     <h2 id="ScrollingAndAutomaticScrolling">Scrolling and automatic scrolling</h2>
-    <code><a class="message" href="#SCI_LINESCROLL">SCI_LINESCROLL(int column, int line)</a><br />
+    <code>
+     <a class="message" href="#SCI_SETFIRSTVISIBLELINE">SCI_SETFIRSTVISIBLELINE(int lineDisplay)</a><br />
+     <a class="message" href="#SCI_GETFIRSTVISIBLELINE">SCI_GETFIRSTVISIBLELINE</a><br />
+     <a class="message" href="#SCI_SETXOFFSET">SCI_SETXOFFSET(int xOffset)</a><br />
+     <a class="message" href="#SCI_GETXOFFSET">SCI_GETXOFFSET</a><br />
+     <a class="message" href="#SCI_LINESCROLL">SCI_LINESCROLL(int column, int line)</a><br />
      <a class="message" href="#SCI_SCROLLCARET">SCI_SCROLLCARET</a><br />
      <a class="message" href="#SCI_SCROLLRANGE">SCI_SCROLLRANGE(int secondary, int primary)</a><br />
      <a class="message" href="#SCI_SETXCARETPOLICY">SCI_SETXCARETPOLICY(int caretPolicy, int
@@ -1839,8 +1845,6 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_GETHSCROLLBAR">SCI_GETHSCROLLBAR</a><br />
      <a class="message" href="#SCI_SETVSCROLLBAR">SCI_SETVSCROLLBAR(bool visible)</a><br />
      <a class="message" href="#SCI_GETVSCROLLBAR">SCI_GETVSCROLLBAR</a><br />
-     <a class="message" href="#SCI_GETXOFFSET">SCI_GETXOFFSET</a><br />
-     <a class="message" href="#SCI_SETXOFFSET">SCI_SETXOFFSET(int xOffset)</a><br />
      <a class="message" href="#SCI_SETSCROLLWIDTH">SCI_SETSCROLLWIDTH(int pixelWidth)</a><br />
      <a class="message" href="#SCI_GETSCROLLWIDTH">SCI_GETSCROLLWIDTH</a><br />
      <a class="message" href="#SCI_SETSCROLLWIDTHTRACKING">SCI_SETSCROLLWIDTHTRACKING(bool tracking)</a><br />
@@ -1849,6 +1853,17 @@ struct Sci_TextToFind {
     endAtLastLine)</a><br />
      <a class="message" href="#SCI_GETENDATLASTLINE">SCI_GETENDATLASTLINE</a><br />
     </code>
+
+    <p><b id="SCI_SETFIRSTVISIBLELINE">SCI_SETFIRSTVISIBLELINE(int lineDisplay)</b><br />
+     <b id="SCI_GETFIRSTVISIBLELINE">SCI_GETFIRSTVISIBLELINE</b><br />
+     These messages retrieve and set the line number of the first visible line in the Scintilla view. The first line
+    in the document is numbered 0. The value is a visible line rather than a document line.</p>
+
+    <p><b id="SCI_SETXOFFSET">SCI_SETXOFFSET(int xOffset)</b><br />
+     <b id="SCI_GETXOFFSET">SCI_GETXOFFSET</b><br />
+     The <code>xOffset</code> is the horizontal scroll position in pixels of the start of the text
+    view. A value of 0 is the normal position with the first text column visible at the left of the
+    view.</p>
 
     <p><b id="SCI_LINESCROLL">SCI_LINESCROLL(int column, int line)</b><br />
      This will attempt to scroll the display by the number of columns and lines that you specify.
@@ -2145,12 +2160,6 @@ struct Sci_TextToFind {
      By default, the vertical scroll bar is always displayed when required. You can choose to hide
     or show it with <code>SCI_SETVSCROLLBAR</code> and get the current state with
     <code>SCI_GETVSCROLLBAR</code>.</p>
-
-    <p><b id="SCI_SETXOFFSET">SCI_SETXOFFSET(int xOffset)</b><br />
-     <b id="SCI_GETXOFFSET">SCI_GETXOFFSET</b><br />
-     The <code>xOffset</code> is the horizontal scroll position in pixels of the start of the text
-    view. A value of 0 is the normal position with the first text column visible at the left of the
-    view.</p>
 
     <p>See also: <a class="message" href="#SCI_LINESCROLL"><code>SCI_LINESCROLL</code></a></p>
 
@@ -5042,9 +5051,11 @@ struct Sci_TextToFind {
     <code>SCK_WIN</code>.</p>
 
     <p>The modifiers are a combination of zero or more of <code>SCMOD_ALT</code>,
-    <code>SCMOD_CTRL</code>, <code>SCMOD_SHIFT</code>, and <code>SCMOD_META</code>.
+    <code>SCMOD_CTRL</code>, <code>SCMOD_SHIFT</code>,
+    <code>SCMOD_META</code>, and <code>SCMOD_SUPER</code>.
     On OS X, the Command key is mapped to <code>SCMOD_CTRL</code> and the Control key to
     <code>SCMOD_META</code>.
+    <code>SCMOD_SUPER</code> is only available on GTK+ which is commonly the Windows key.
     If you are building a table, you might
     want to use <code>SCMOD_NORM</code>, which has the value 0, to mean no modifiers.</p>
 
@@ -7576,8 +7587,6 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
     The <code class="provisional">SC_TECHNOLOGY_DIRECTWRITERETAIN</code> and
     <code class="provisional">SC_TECHNOLOGY_DIRECTWRITEDC</code> values for
     <a class="message" href="#SCI_SETTECHNOLOGY">SCI_SETTECHNOLOGY</a> are provisional.</p>
-
-    <p>Using C++11 &lt;regex&gt; is provisional.</p>
 
     <p>Some developers may want to only use features that are stable and have graduated from
     provisional status. To avoid using provisional messages compile with the symbol

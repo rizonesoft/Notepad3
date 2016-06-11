@@ -199,7 +199,7 @@ static void Colourise4glDoc(Sci_PositionU startPos, Sci_Position length, int ini
 				sc.SetState(SCE_4GL_COMMENT1 | mask);
 				sc.Forward();
 			} else if (sc.Match('/', '/') &&
-					   (sc.atLineStart || sc.chPrev == ' ')) {
+					   (sc.atLineStart || sc.chPrev == ' ' || sc.chPrev == '\t')) {
 				sc.SetState(SCE_4GL_COMMENT2 | mask);
 			} else if (sc.ch == '\"') {
 				sc.SetState(SCE_4GL_STRING | ResetSentenceStart);

@@ -484,6 +484,12 @@
       </tr><tr>
 	<td>Mark C</td>
 	<td>Johannes Sasongko</td>
+	<td>fstirlitz</td>
+	<td>Robin Haberkorn</td>
+      </tr><tr>
+	<td>Pavel Sountsov</td>
+	<td>Dirk Lorenzen</td>
+	<td>Kasper B. Graversen</td>
     </tr>
     </table>
     <p>
@@ -496,19 +502,91 @@
       </li>
     </ul>
     <h3>
+       <a href="http://www.scintilla.org/scite366.zip">Release 3.6.6</a>
+    </h3>
+    <ul>
+	<li>
+	Released 24 May 2016.
+	</li>
+	<li>
+	C++ 11 &lt;regex&gt; support built by default. Can be disabled by defining NO_CXX11_REGEX.
+	</li>
+	<li>
+	SciTE_USERHOME environment variable allows separate location for writable properties files.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/965/">Feature #965.</a>
+	</li>
+	<li>
+	GObject introspection supports notify and command events.
+	</li>
+	<li>
+	The Progress lexer now allows comments preceded by a tab.
+	</li>
+	<li>
+	Scripts reading Scintilla.iface file include comments for enu and lex definitions.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1829/">Bug #1829</a>.
+	</li>
+	<li>
+	Fix crashes on GTK+ if idle work active when destroyed.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1827/">Bug #1827</a>.
+	</li>
+	<li>
+	Fixed bugs when used on GTK+ 3.20.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1825/">Bug #1825</a>.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1831/">Bug #1831</a>.
+	</li>
+	<li>
+	Fix SciTE search field background with dark theme on GTK+ 2.x.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1826/">Bug #1826</a>.
+	</li>
+	<li>
+	Fixed bug on Win32 that allowed resizing autocompletion from bottom when it was
+	located above the caret.
+	</li>
+	<li>
+	On Win32, when using a screen reader and selecting text using Shift+Arrow,
+	fix bug when scrolling made the caret stay at the same screen location
+	so the screen reader did not speak the added or removed selection.
+	</li>
+    </ul>
+    <h3>
        <a href="http://www.scintilla.org/scite365.zip">Release 3.6.5</a>
     </h3>
     <ul>
 	<li>
-	Released 13 March 2016.
+	Released 26 April 2016.
 	</li>
 	<li>
 	JSON lexer added.
 	<a href="http://sourceforge.net/p/scintilla/feature-requests/1140/">Feature #1140.</a>
 	</li>
 	<li>
+	The C++ lexer fixes a bug with multi-line strings with line continuation where the string style
+	overflowed after an edit.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1824/">Bug #1824</a>.
+	</li>
+	<li>
 	The Python lexer treats '@' as an operator except when it is the first visible character on a line.
 	This is for Python 3.5.
+	</li>
+	<li>
+	The Rust lexer allows '?' as an operator.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1146/">Feature #1146.</a>
+	</li>
+	<li>
+	Doubled size of compiled regex buffer.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1822/">Bug #1822</a>.
+	</li>
+	<li>
+	For GTK+, the Super modifier key can be used in key bindings.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1142/">Feature #1142.</a>
+	</li>
+	<li>
+	For GTK+, fix some crashes when using multiple threads.
+	</li>
+	<li>
+	Platform layer font cache removed on GTK+ as platform-independent caches are used.
+	This avoids the use of thread locking and initialisation of threads so any GTK+
+	applications that rely on Scintilla initialising threads will have to do that themselves.
 	</li>
 	<li>
 	SciTE bug fixed with exported HTML where extra line shown.
@@ -518,6 +596,9 @@
 	SciTE on Windows fixes bugs with pop-up menus in the find and replace strips.
 	For the replace strip, menu choices change the state.
 	For the find strip, menu choices are reflected in the appearance of their corresponding buttons.
+	</li>
+	<li>
+	SciTE on Windows on high DPI displays fixes the height of edit boxes in user strips.
 	</li>
     </ul>
     <h3>

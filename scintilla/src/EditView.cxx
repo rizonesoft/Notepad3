@@ -1,5 +1,5 @@
 // Scintilla source code edit control
-/** @file Editor.cxx
+/** @file EditView.cxx
  ** Defines the appearance of the main text area of the editor window.
  **/
 // Copyright 1998-2014 by Neil Hodgson <neilh@scintilla.org>

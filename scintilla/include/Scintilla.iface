@@ -4757,7 +4757,7 @@ evt void FocusIn=2028(void)
 evt void FocusOut=2029(void)
 evt void AutoCCompleted=2030(string text, int position, int ch, CompletionMethods listCompletionMethod)
 
-# There are no provisional features currently
+# There are no provisional APIs currently, but some arguments to SCI_SETTECHNOLOGY are provisional.
 
 cat Provisional
 

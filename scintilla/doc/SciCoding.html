@@ -145,8 +145,7 @@
 	<p>
 	Do not use old C style casts like (char *)s. Instead use the most strict form of C++
 	cast possible like const_cast&lt;char *&gt;(s). Use static_cast and const_cast
-	where possible rather than reinterpret_cast. Because the code is compiled with
-	run-time type information turned off, dynamic_cast will not work.
+	where possible rather than reinterpret_cast.
 	</p>
 	<p>
 	The benefit to using the new style casts is that they explicitly detail what evil is

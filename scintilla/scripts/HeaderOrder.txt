@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
+#include <sys/time.h>
 
 // C++ wrappers of C standard library
 #include <cstdlib>
@@ -31,6 +32,7 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include <functional>
 #include <memory>
 #include <regex>
 #include <sstream>
@@ -54,6 +56,10 @@
 
 // Cocoa headers
 #include <Cocoa/Cocoa.h>
+#import <Foundation/NSGeometry.h>
+#import <QuartzCore/CAGradientLayer.h>
+#import <QuartzCore/CAAnimation.h>
+#import <QuartzCore/CATransaction.h>
 
 // Scintilla headers
 
@@ -106,6 +112,7 @@
 #include "Decoration.h"
 #include "CaseFolder.h"
 #include "Document.h"
+#include "RESearch.h"
 #include "CaseConvert.h"
 #include "UniConversion.h"
 #include "UnicodeFromUTF8.h"
@@ -129,10 +136,15 @@
 #include "HanjaDic.h"
 
 // gtk
+#include "scintilla-marshal.h"
 #include "Converter.h"
 
 // cocoa
 #include "QuartzTextStyle.h"
 #include "QuartzTextStyleAttribute.h"
+#include "QuartzTextLayout.h"
 #import "InfoBarCommunicator.h"
 #include "InfoBar.h"
+#import "ScintillaView.h"
+#import "ScintillaCocoa.h"
+#import "PlatCocoa.h"
