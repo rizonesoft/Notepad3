@@ -6,8 +6,8 @@
 ; Inno Setup: http://www.jrsoftware.org/isdl.php
 
 ; Preprocessor related stuff
-#if VER < EncodeVer(5,5,6)
-  #error Update your Inno Setup version (5.5.6 or newer)
+#if VER < EncodeVer(5,5,9)
+  #error Update your Inno Setup version (5.5.9 or newer)
 #endif
 
 #define bindir "..\Bin"

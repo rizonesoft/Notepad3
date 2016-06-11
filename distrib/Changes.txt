@@ -5,7 +5,7 @@ Notepad3 Build 0000 (11 June 2016)
 - Updated Apache Keywords for version 2.4
 - Removed Visual Studio 2010 to 2013 Support
 - Added Visual Studio 2015 Update 2 version number
--
+- Added Support for Inno Setup 5.5.9
 -
 -
 -
