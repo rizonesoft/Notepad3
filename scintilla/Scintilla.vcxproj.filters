@@ -395,9 +395,6 @@
     <ClInclude Include="src\XPM.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="win32\HanjaDic.h">
-      <Filter>win32</Filter>
-    </ClInclude>
     <ClInclude Include="win32\PlatWin.h">
       <Filter>win32</Filter>
     </ClInclude>

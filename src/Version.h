@@ -49,21 +49,7 @@
 #endif
 
 // Compiler specific
-#if defined(WDK_BUILD)
-    #if _MSC_VER == 1600
-        #if (_MSC_FULL_VER >= 160040219)
-            #define VERSION_COMPILER    L"WDK (Microsoft Visual C++ 2010 SP1)"
-        #else
-            #define VERSION_COMPILER    L"WDK (Microsoft Visual C++ 2010)"
-        #endif
-    #elif _MSC_VER == 1500
-        #if (_MSC_FULL_VER == 150030729)
-            #define VERSION_COMPILER    L"WDK"
-        #else
-            #define VERSION_COMPILER    L"WDK (version unknown)"
-        #endif
-    #endif
-#elif defined(_MSC_VER)
+#if defined(_MSC_VER)
     #if _MSC_VER == 1900
         #if (_MSC_FULL_VER == 190023918)
             #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 2"
@@ -71,8 +57,6 @@
             #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 1"
         #elif (_MSC_FULL_VER == 190023026)
             #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
-        #elif (_MSC_FULL_VER < 190023026)
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Preview/Beta/RC"
         #else
             #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
         #endif
