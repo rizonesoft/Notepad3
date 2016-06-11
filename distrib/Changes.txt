@@ -2,7 +2,7 @@ Notepad3 Build 0000 (11 June 2016)
 ================================================================================
 - Fixed Compiler warnings
 - Updated to Scintilla 3.6.6
--
+- Updated Apache Keywords for version 2.4
 -
 -
 -
