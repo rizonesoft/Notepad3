@@ -124,6 +124,9 @@ Source: {#bindir}\Release_x64\minipath.exe; DestDir: {app};                     
 Source: {#bindir}\Release_x86\minipath.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: minipath.ini;                       DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
 
+[Dirs]
+Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
+
 [Icons]
 Name: {commondesktop}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: desktopicon\common; Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
 Name: {userdesktop}\{#app_name};   Filename: {app}\Notepad3.exe; Tasks: desktopicon\user;   Comment: {#app_name} {#app_version}; WorkingDir: {app}; AppUserModelID: Notepad3; IconFilename: {app}\Notepad3.exe; IconIndex: 0
@@ -134,6 +137,8 @@ Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklau
 [INI]
 Filename: {app}\Notepad3.ini; Section: Notepad3; Key: Notepad3.ini; String: %APPDATA%\Rizonesoft\Notepad3\Notepad3.ini
 Filename: {app}\minipath.ini; Section: minipath; Key: minipath.ini; String: %APPDATA%\Rizonesoft\Notepad3\minipath.ini
+
+Filename: {userappdata}\Rizonesoft\Notepad3\Notepad3.ini; Section: Settings; Key: Favorites; String: %APPDATA%\Rizonesoft\Notepad3\Favorites\
 
 
 [Run]
@@ -154,7 +159,6 @@ Type: files;      Name: {app}\minipath.ini
 Type: files;      Name: {app}\Notepad3.ini
 Type: files;      Name: {app}\minipath.ini
 Type: dirifempty; Name: {app}
-
 
 [Code]
 const IFEO = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe';
@@ -274,6 +278,7 @@ end;
 procedure CleanUpSettings();
 begin
   DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
+  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\minipath.ini'));
   RemoveDir(ExpandConstant('{userappdata}\Rizonesoft\Notepad3'));
 end;
 

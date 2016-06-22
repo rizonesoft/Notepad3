@@ -3,7 +3,7 @@
     <assemblyIdentity
         name="MiniPath"
         processorArchitecture="*"
-        version="0.0.8.82"
+        version="0.0.8.85"
         type="win32"
      />
     <description>metapath</description>
