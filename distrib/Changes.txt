@@ -1,4 +1,4 @@
-Notepad3 Build 0000 (11 June 2016)
+Notepad3 1 Build 330 (24 June 2016)
 ================================================================================
 - Fixed Compiler warnings
 - Updated to Scintilla 3.6.6
@@ -7,6 +7,6 @@ Notepad3 Build 0000 (11 June 2016)
 - Added Visual Studio 2015 Update 2 version number
 - Added Support for Inno Setup 5.5.9
 - Fixed Favorites Function
--
--
+- Updated Rizonesoft Versions Program
+- Implemented a new versioning scheme
 -
