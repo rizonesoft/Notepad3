@@ -490,6 +490,15 @@
 	<td>Pavel Sountsov</td>
 	<td>Dirk Lorenzen</td>
 	<td>Kasper B. Graversen</td>
+	<td>Chris Mayo</td>
+      </tr><tr>
+	<td>Van de Bugger</td>
+	<td>Tse Kit Yam</td>
+	<td><a href="https://www.smartsharesystems.com/">SmartShare Systems</a></td>
+	<td>Morten Brørup</td>
+      </tr><tr>
+	<td>Alexey Denisov</td>
+	<td>jedailey</td>
     </tr>
     </table>
     <p>
@@ -502,6 +511,81 @@
       </li>
     </ul>
     <h3>
+       <a href="http://www.scintilla.org/scite367.zip">Release 3.6.7</a>
+    </h3>
+    <ul>
+	<li>
+	Released 4 September 2016.
+	</li>
+	<li>
+	C++11 range-based for loops used in SciTE so GCC 4.6 is now the minimum supported version.
+	</li>
+	<li>
+	SC_CHARSET_DEFAULT now means code page 1252 on Windows unless a code page is set.
+	This prevents unexpected behaviour and crashes on East Asian systems where default locales are commonly DBCS.
+	Projects which want to default to DBCS code pages in East Asian locales should set the code page and
+	character set explicitly.
+	</li>
+	<li>
+	SCVS_NOWRAPLINESTART option stops left arrow from wrapping to the previous line.
+	Most commonly wanted when virtual space is used.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1648/">Bug #1648</a>.
+	</li>
+	<li>
+	The C++ lexer can fold on #else and #elif with the fold.cpp.preprocessor.at.else property.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/210/">Bug #210</a>.
+	</li>
+	<li>
+	The errorlist lexer detects warnings from Visual C++ which do not contain line numbers.
+	</li>
+	<li>
+	The HTML lexer no longer treats "&lt;?" inside a string in a script as potentially starting an XML document.
+	<a href="http://sourceforge.net/p/scintilla/bugs/767/">Bug #767</a>.
+	</li>
+	<li>
+	The HTML lexer fixes a problem resuming at a script start where the starting state continued
+	past where it should.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1849/">Bug #1849</a>.
+	</li>
+	<li>
+	When inserting spaces for virtual space and the position is in indentation and tabs are enabled
+	for indentation then use tabs.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1850/">Bug #1850</a>.
+	</li>
+	<li>
+	Fix fold expand when some child text not styled.
+	Caused by fixes for Bug #1799.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1842/">Bug #1842</a>.
+	</li>
+	<li>
+	Fix key binding bug on Cocoa for control+.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1854/">Bug #1854</a>.
+	</li>
+	<li>
+	Fix scroll bar size warnings on GTK+ caused by #1831.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1851/">Bug #1851</a>.
+	</li>
+	<li>
+	Small fixes for GTK+ makefile.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1844/">Bug #1844</a>.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1845/">Bug #1845</a>.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1846/">Bug #1846</a>.
+	</li>
+	<li>
+	Fix SciTE indentation after code like "void function () {}".
+	</li>
+	<li>
+	Fix SciTE global regex replace of "^" with something which missed the line after empty
+	lines with LF line ends.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1839/">Bug #1839</a>.
+	</li>
+	<li>
+	Fix SciTE on GTK+ 3.20 bug where toggle buttons on find and replace strips
+	did not show active state.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1853/">Bug #1853</a>.
+	</li>
+    </ul>
+    <h3>
        <a href="http://www.scintilla.org/scite366.zip">Release 3.6.6</a>
     </h3>
     <ul>
@@ -512,7 +596,7 @@
 	C++ 11 &lt;regex&gt; support built by default. Can be disabled by defining NO_CXX11_REGEX.
 	</li>
 	<li>
-	SciTE_USERHOME environment variable allows separate location for writable properties files.
+	SciTE_USERHOME environment variable allows separate location for writeable properties files.
 	<a href="http://sourceforge.net/p/scintilla/feature-requests/965/">Feature #965.</a>
 	</li>
 	<li>
@@ -873,7 +957,7 @@
 	</li>
 	<li>
 	The errorlist lexer understands some ANSI escape sequences to change foreground colour and intensity.
-	This is sufficient to colour diagnotic output from gcc and clang when -fdiagnostics-color set.
+	This is sufficient to colour diagnostic output from gcc and clang when -fdiagnostics-color set.
 	</li>
 	<li>
 	The errorlist lexer allows the line number to be 0 in GCC errors as some tools report whole file
@@ -936,7 +1020,7 @@
 	</li>
 	<li>
 	External interfaces use the Sci_Position and Sci_PositionU typedefs instead of int and unsigned int
-	to allow for changes to a 64-bit interface on 64-bit plactforms in the future.
+	to allow for changes to a 64-bit interface on 64-bit platforms in the future.
 	Applications and external lexers should start using the new type names so that
 	they will be compatible when the 64-bit change occurs.
 	There is also Sci_PositionCR (long) for use in the Sci_CharacterRange struct which will

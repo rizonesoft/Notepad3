@@ -1696,9 +1696,14 @@ struct Sci_TextToFind {
     <b id="SCI_SETVIRTUALSPACEOPTIONS">SCI_SETVIRTUALSPACEOPTIONS(int virtualSpace)</b><br />
     <b id="SCI_GETVIRTUALSPACEOPTIONS">SCI_GETVIRTUALSPACEOPTIONS</b><br />
      Virtual space can be enabled or disabled for rectangular selections or in other circumstances or in both.
-     There are two bit flags <code>SCVS_RECTANGULARSELECTION</code>=1 and
-     <code>SCVS_USERACCESSIBLE</code>=2 which can be set independently.
+     There are three bit flags <code>SCVS_RECTANGULARSELECTION</code>=1,
+     <code>SCVS_USERACCESSIBLE</code>=2, and
+     <code>SCVS_NOWRAPLINESTART</code>=4 which can be set independently.
      <code>SCVS_NONE</code>=0, the default, disables all use of virtual space.</p>
+     <p><code>SCVS_NOWRAPLINESTART</code> prevents left arrow movement and selection
+     from wrapping to the previous line.
+     This is most commonly desired in conjunction with virtual space but is an independent
+     setting so works without virtual space.</p>
 
     <p>
     <b id="SCI_SETRECTANGULARSELECTIONMODIFIER">SCI_SETRECTANGULARSELECTIONMODIFIER(int modifier)</b><br />
@@ -2718,24 +2723,66 @@ struct Sci_TextToFind {
     <code>SCI_STYLESETCHARACTERSET(SCE_C_STRING, SC_CHARSET_RUSSIAN)</code> would ensure that
     strings in Russian would display correctly in C and C++ (<code>SCE_C_STRING</code> is the style
     number used by the C and C++ lexer to display literal strings; it has the value 6). This
-    feature works differently on Windows and GTK+.</p>
+    feature works differently on Windows and GTK+.<br />
+    The default character set is <code>SC_CHARSET_DEFAULT</code>.</p>
 
     <p>The character sets supported on Windows are:<br />
-     <code>SC_CHARSET_ANSI</code>, <code>SC_CHARSET_ARABIC</code>, <code>SC_CHARSET_BALTIC</code>,
-    <code>SC_CHARSET_CHINESEBIG5</code>, <code>SC_CHARSET_DEFAULT</code>,
-    <code>SC_CHARSET_EASTEUROPE</code>, <code>SC_CHARSET_GB2312</code>,
-    <code>SC_CHARSET_GREEK</code>, <code>SC_CHARSET_HANGUL</code>, <code>SC_CHARSET_HEBREW</code>,
-    <code>SC_CHARSET_JOHAB</code>, <code>SC_CHARSET_MAC</code>, <code>SC_CHARSET_OEM</code>,
-    <code>SC_CHARSET_RUSSIAN</code> (code page 1251),
-    <code>SC_CHARSET_SHIFTJIS</code>, <code>SC_CHARSET_SYMBOL</code>, <code>SC_CHARSET_THAI</code>,
-    <code>SC_CHARSET_TURKISH</code>, and <code>SC_CHARSET_VIETNAMESE</code>.</p>
+     <code>SC_CHARSET_ANSI</code>,
+     <code>SC_CHARSET_ARABIC</code>,
+     <code>SC_CHARSET_BALTIC</code>,
+     <code>SC_CHARSET_CHINESEBIG5</code>,
+     <code>SC_CHARSET_DEFAULT</code>,
+     <code>SC_CHARSET_EASTEUROPE</code>,
+     <code>SC_CHARSET_GB2312</code>,
+     <code>SC_CHARSET_GREEK</code>,
+     <code>SC_CHARSET_HANGUL</code>,
+     <code>SC_CHARSET_HEBREW</code>,
+     <code>SC_CHARSET_JOHAB</code>,
+     <code>SC_CHARSET_MAC</code>,
+     <code>SC_CHARSET_OEM</code>,
+     <code>SC_CHARSET_RUSSIAN</code> (code page 1251),
+     <code>SC_CHARSET_SHIFTJIS</code>,
+     <code>SC_CHARSET_SYMBOL</code>,
+     <code>SC_CHARSET_THAI</code>,
+     <code>SC_CHARSET_TURKISH</code>, and
+     <code>SC_CHARSET_VIETNAMESE</code>.<br />
+     <code>SC_CHARSET_ANSI</code> and <code>SC_CHARSET_DEFAULT</code> specify European Windows
+     code page 1252 unless the code page is set.</p>
 
     <p>The character sets supported on GTK+ are:<br />
-     <code>SC_CHARSET_ANSI</code>, <code>SC_CHARSET_OEM866</code> (code page 866), <code>SC_CHARSET_CYRILLIC</code> (code page 1251),
+     <code>SC_CHARSET_ANSI</code>,
+     <code>SC_CHARSET_DEFAULT</code> (8859-1), 
+     <code>SC_CHARSET_OEM866</code> (code page 866),
+     <code>SC_CHARSET_CYRILLIC</code> (code page 1251),
      <code>SC_CHARSET_EASTEUROPE</code>,
-    <code>SC_CHARSET_GB2312</code>, <code>SC_CHARSET_HANGUL</code>,
-    <code>SC_CHARSET_RUSSIAN</code> (KOI8-R), <code>SC_CHARSET_SHIFTJIS</code>, and
-    <code>SC_CHARSET_8859_15</code>.</p>
+     <code>SC_CHARSET_GB2312</code>,
+     <code>SC_CHARSET_HANGUL</code>,
+     <code>SC_CHARSET_RUSSIAN</code> (KOI8-R),
+     <code>SC_CHARSET_SHIFTJIS</code>, and
+     <code>SC_CHARSET_8859_15</code>.</p>
+
+    <p>The character sets supported on Cocoa are:<br />
+     <code>SC_CHARSET_8859_15</code>,
+     <code>SC_CHARSET_ANSI</code> (8859-1),
+     <code>SC_CHARSET_ARABIC</code>,
+     <code>SC_CHARSET_BALTIC</code>,
+     <code>SC_CHARSET_CHINESEBIG5</code>,
+     <code>SC_CHARSET_CYRILLIC</code> (code page 1251),
+     <code>SC_CHARSET_DEFAULT</code> (8859-1), 
+     <code>SC_CHARSET_EASTEUROPE</code>,
+     <code>SC_CHARSET_GB2312</code>,
+     <code>SC_CHARSET_GREEK</code>,
+     <code>SC_CHARSET_HANGUL</code>,
+     <code>SC_CHARSET_HEBREW</code>,
+     <code>SC_CHARSET_JOHAB</code>,
+     <code>SC_CHARSET_MAC</code>,
+     <code>SC_CHARSET_OEM</code>,
+     <code>SC_CHARSET_RUSSIAN</code> (code page 1251),
+     <code>SC_CHARSET_SHIFTJIS</code>,
+     <code>SC_CHARSET_SYMBOL</code>,
+     <code>SC_CHARSET_THAI</code>,
+     <code>SC_CHARSET_TURKISH</code>,
+     <code>SC_CHARSET_VIETNAMESE</code>.</p>
 
     <p><b id="SCI_STYLESETCASE">SCI_STYLESETCASE(int styleNumber, int caseMode)</b><br />
     <b id="SCI_STYLEGETCASE">SCI_STYLEGETCASE(int styleNumber)</b><br />
@@ -3312,7 +3359,14 @@ struct Sci_TextToFind {
      These messages turn buffered drawing on or off and report the buffered drawing state. Buffered
     drawing draws each line into a bitmap rather than directly to the screen and then copies the
     bitmap to the screen. This avoids flickering although it does take longer. The default is for
-    drawing to be buffered.</p>
+    drawing to be buffered on Win32 and GTK+ and to not be buffered on Cocoa and Qt.
+    Buffered drawing is not supported on Cocoa.
+    </p>
+
+    <p>Current platforms perform window buffering so it is almost always better for this option to be turned off.
+    For Win32 and GTK+, client code should turn off buffering at initialisation.
+    There are some older platforms and unusual modes where buffering may still be useful.
+    </p>
 
     <p><b id="SCI_SETPHASESDRAW">SCI_SETPHASESDRAW(int phases)</b><br />
      <b id="SCI_GETPHASESDRAW">SCI_GETPHASESDRAW</b><br />
@@ -3989,8 +4043,9 @@ struct Sci_TextToFind {
 
     <p>Indicators are stored in a format similar to run length encoding which is efficient in both
     speed and storage for sparse information.</p>
-    <p>An indicator may store different values for each range but currently all values are drawn the same.
-    In the future, it may be possible to draw different values in different styles.</p>
+    <p>An indicator may store different values for each range but normally all values are drawn the same.
+    The <a class="message" href="#SCI_INDICSETFLAGS">SCI_INDICSETFLAGS</a>
+    API may be used to display different colours for different values.</p>
 
     <p>Originally, Scintilla used a different technique for indicators but this
     has been <a href="#RemovedFeatures">removed</a>

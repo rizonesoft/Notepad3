@@ -7,7 +7,7 @@
 *   Based on code from Notepad2-mod, (c) XhmikosR 2010-2015                   *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2016   *
-*                                                    https://rizonesoft.com   *
+*                                                 http://www.rizonesoft.com   *
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
@@ -35,7 +35,7 @@
 #define VERSION_LEGALCOPYRIGHT		 L"Copyright © 2008-2016 Rizonesoft"
 //#define VERSION_LEGALCOPYRIGHT_LONG  L"© Rizonesoft 2008-2016"
 #define VERSION_AUTHORNAME           L"Rizonesoft"
-#define VERSION_WEBPAGEDISPLAY       L"https://rizonesoft.com"
+#define VERSION_WEBPAGEDISPLAY       L"http://www.rizonesoft.com"
 #define VERSION_COMPANYNAME          L"Rizonesoft"
 #define VERSION_MODPAGEDISPLAY       L"https://xhmikosr.github.io/notepad2-mod/"
 #define VERSION_WEBPAGE2DISPLAY      L"http://www.flos-freeware.ch"
@@ -49,19 +49,35 @@
 #endif
 
 // Compiler specific
-#if defined(_MSC_VER)
-    #if _MSC_VER == 1900
-        #if (_MSC_FULL_VER == 190023918)
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 2"
-        #elif (_MSC_FULL_VER == 190023506)
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 1"
-        #elif (_MSC_FULL_VER == 190023026)
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
+#if defined(WDK_BUILD)
+    #if _MSC_VER == 1600
+        #if (_MSC_FULL_VER >= 160040219)
+            #define VERSION_COMPILER    L"WDK (MSVC 2010 SP1)"
         #else
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
+            #define VERSION_COMPILER    L"WDK (MSVC 2010)"
+        #endif
+    #elif _MSC_VER == 1500
+        #if (_MSC_FULL_VER == 150030729)
+            #define VERSION_COMPILER    L"WDK"
+        #else
+            #define VERSION_COMPILER    L"WDK (version unknown)"
+        #endif
+    #endif
+#elif defined(_MSC_VER)
+    #if _MSC_VER == 1900
+        #if (_MSC_FULL_VER == 190024213)
+            #define VERSION_COMPILER    L"MSVC 2015 Update 3"
+        #elif (_MSC_FULL_VER == 190023918)
+            #define VERSION_COMPILER    L"MSVC 2015 Update 2"
+        #elif (_MSC_FULL_VER == 190023506)
+            #define VERSION_COMPILER    L"MSVC 2015 Update 1"
+        #elif (_MSC_FULL_VER == 190023026)
+            #define VERSION_COMPILER    L"MSVC 2015"
+        #else
+            #define VERSION_COMPILER    L"MSVC 2015"
         #endif
     #else
-        #define VERSION_COMPILER        L"Microsoft Visual C++ (Version Unknown)"
+        #define VERSION_COMPILER        L"MSVC (version unknown)"
     #endif
 #else
     #define VERSION_COMPILER            L"(Unknown compiler)"

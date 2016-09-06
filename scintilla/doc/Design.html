@@ -87,25 +87,21 @@
       the name of a macro on Windows.
     </p>
     <h4>
-       Colour, ColourPair, Palette
+       ColourDesired
     </h4>
     <p>
-       Colour holds a platform specific colour identifier - COLORREF for Windows and GdkColor for
-      GTK+. The red, green and blue components that make up the colour are limited to the 8 bits of
-      precision available on Windows. ColourPairs are used because not all possible colours are
-      always available. Using an 8 bit colour mode, which is a common setting for both Windows and
-      GTK+, only 256 colours are possible on the display. Thus when an application asks for a dull
-      red, say #400000, it may only be allocated an already available colour such as #800000 or
-      #330000. With 16 or 2 colour modes even less choice is available and the application will
-      have to use the limited set of already available colours.
+       This is a simple class holding an expected colour. It is internally represented as a single
+      32 bit integer in BGR format with 8 bits per colour, but also provides a convenient API to fetch
+      each component separately.
+       As a platform might not be able to represent the exact desired colour if it doesn't have 24 bit
+      depth available, it might not actually represent the exact desired colour but select a best fit
+      that it can actually render.
     </p>
-    A Palette object holds a set of colour pairs and can make the appropriate calls to ask to
-    allocate these colours and to see what the platform has decided will be allowed.
     <h4>
        Font
     </h4>
     <p>
-       Font holds a platform specific font identifier - HFONT for Windows, GdkFont* for GTK+. It
+       Font holds a platform specific font identifier - HFONT for Windows, PangoFontDescription* for GTK+. It
       does not own the identifier and so will not delete the platform font object in its
       destructor. Client code should call Destroy at appropriate times.
     </p>
@@ -116,8 +112,8 @@
        Surface is an abstraction over each platform's concept of somewhere that graphical drawing
       operations can be done. It may wrap an already created drawing place such as a window or be
       used to create a bitmap that can be drawn into and later copied onto another surface. On
-      Windows it wraps a HDC and possibly a HBITMAP. On GTK+ it wraps a GdkDrawable* and possibly a
-      GdkPixmap*. Other platform specific objects are created (and correctly destroyed) whenever
+      Windows it wraps a HDC and possibly a HBITMAP. On GTK+ it wraps a cairo_surface_t*.
+      Other platform specific objects are created (and correctly destroyed) whenever
       required to perform drawing actions.
     </p>
     <p>
@@ -147,7 +143,7 @@
     </h4>
     <p>
        Menu is a small helper class for constructing popup menus. It contains the platform specific
-      menu identifier - HMENU for Windows, GtkItemFactory* for GTK+. Most of the work in
+      menu identifier - HMENU for Windows, GtkMenu* for GTK+. Most of the work in
       constructing menus requires access to platform events and so is done in the Platform Events
       and API layer.
     </p>

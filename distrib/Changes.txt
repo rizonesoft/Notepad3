@@ -1,3 +1,12 @@
+================================================================================
+Notepad3 1 Build 000 (05 September 2016)
+================================================================================
+- Updated HTML Keywords
+- Updated Scintilla to version 3.6.7
+- Added Microsoft Visual C++ Update 3 version number
+- 
+
+================================================================================
 Notepad3 1 Build 330 (24 June 2016)
 ================================================================================
 - Fixed Compiler warnings
@@ -9,4 +18,3 @@ Notepad3 1 Build 330 (24 June 2016)
 - Fixed Favorites Function
 - Updated Rizonesoft Versions Program
 - Implemented a new versioning scheme
--

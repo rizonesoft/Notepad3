@@ -2331,6 +2331,7 @@ enu VirtualSpace=SCVS_
 val SCVS_NONE=0
 val SCVS_RECTANGULARSELECTION=1
 val SCVS_USERACCESSIBLE=2
+val SCVS_NOWRAPLINESTART=4
 
 set void SetVirtualSpaceOptions=2596(int virtualSpaceOptions,)
 get int GetVirtualSpaceOptions=2597(,)
