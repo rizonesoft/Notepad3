@@ -85,7 +85,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\VS2012\$(Configuration)_x64\obj\scintilla\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='10.0'">..\bin\VS2010\$(Configuration)_x64\obj\scintilla\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='12.0'">..\bin\VS2013\$(Configuration)_x64\obj\scintilla\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='14.0'">..\bin\VS2015\$(Configuration)_x64\obj\scintilla\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_x64\obj\scintilla\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\VS2012\$(Configuration)_x86\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='10.0'">..\bin\VS2010\$(Configuration)_x86\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='12.0'">..\bin\VS2013\$(Configuration)_x86\obj\scintilla\</IntDir>
@@ -93,7 +93,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\VS2012\$(Configuration)_x64\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='10.0'">..\bin\VS2010\$(Configuration)_x64\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='12.0'">..\bin\VS2013\$(Configuration)_x64\obj\scintilla\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='14.0'">..\bin\VS2015\$(Configuration)_x64\obj\scintilla\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_x64\obj\scintilla\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\VS2012\$(Configuration)_x86\obj\scintilla\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='10.0'">..\bin\VS2010\$(Configuration)_x86\obj\scintilla\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='12.0'">..\bin\VS2013\$(Configuration)_x86\obj\scintilla\</OutDir>
@@ -101,7 +101,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\VS2012\$(Configuration)_x64\obj\scintilla\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='10.0'">..\bin\VS2010\$(Configuration)_x64\obj\scintilla\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='12.0'">..\bin\VS2013\$(Configuration)_x64\obj\scintilla\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='14.0'">..\bin\VS2015\$(Configuration)_x64\obj\scintilla\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_x64\obj\scintilla\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\VS2012\$(Configuration)_x86\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='10.0'">..\bin\VS2010\$(Configuration)_x86\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='12.0'">..\bin\VS2013\$(Configuration)_x86\obj\scintilla\</IntDir>
@@ -109,7 +109,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\VS2012\$(Configuration)_x64\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='10.0'">..\bin\VS2010\$(Configuration)_x64\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='12.0'">..\bin\VS2013\$(Configuration)_x64\obj\scintilla\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='14.0'">..\bin\VS2015\$(Configuration)_x64\obj\scintilla\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_x64\obj\scintilla\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>

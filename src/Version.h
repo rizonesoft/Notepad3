@@ -66,18 +66,18 @@
 #elif defined(_MSC_VER)
     #if _MSC_VER == 1900
         #if (_MSC_FULL_VER == 190024213)
-            #define VERSION_COMPILER    L"MSVC 2015 Update 3"
+            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 3"
         #elif (_MSC_FULL_VER == 190023918)
-            #define VERSION_COMPILER    L"MSVC 2015 Update 2"
+            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 2"
         #elif (_MSC_FULL_VER == 190023506)
-            #define VERSION_COMPILER    L"MSVC 2015 Update 1"
+            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 1"
         #elif (_MSC_FULL_VER == 190023026)
-            #define VERSION_COMPILER    L"MSVC 2015"
+            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
         #else
-            #define VERSION_COMPILER    L"MSVC 2015"
+            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
         #endif
     #else
-        #define VERSION_COMPILER        L"MSVC (version unknown)"
+        #define VERSION_COMPILER        L"Microsoft Visual C++ (version unknown)"
     #endif
 #else
     #define VERSION_COMPILER            L"(Unknown compiler)"
