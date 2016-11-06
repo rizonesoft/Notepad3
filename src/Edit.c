@@ -542,7 +542,8 @@ BOOL EditCopyAppend(HWND hwnd)
         (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
         (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
 
-      pszText = LocalAlloc(LPTR,iSelCount + 1);
+      // fixing 64bit issue #37
+      pszText = LocalAlloc(LPTR,iSelCount + 4);
       (int)SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)pszText);
     }
   }
@@ -1651,8 +1652,8 @@ void EditInvertCase(HWND hwnd)
       int iSelCount = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
                         (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
 
-      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+2);
-      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+2);
+      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+4);
+      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+8);
 
       if (pszText == NULL || pszTextW == NULL) {
         GlobalFree(pszText);
@@ -1727,8 +1728,8 @@ void EditTitleCase(HWND hwnd)
       int iSelCount = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
                         (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
 
-      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+2);
-      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+2);
+      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+4);
+      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+8);
 
       if (pszText == NULL || pszTextW == NULL) {
         GlobalFree(pszText);
@@ -1839,8 +1840,8 @@ void EditSentenceCase(HWND hwnd)
       int iSelCount = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
                         (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
 
-      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+2);
-      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+2);
+      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+4);
+      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+8);
 
       if (pszText == NULL || pszTextW == NULL) {
         GlobalFree(pszText);
@@ -1926,12 +1927,12 @@ void EditURLEncode(HWND hwnd)
       DWORD  cchEscapedW;
       LPWSTR pszEscapedW;
 
-      pszText = LocalAlloc(LPTR,(iSelCount)+2);
+      pszText = LocalAlloc(LPTR,(iSelCount)+4);
       if (pszText == NULL) {
         return;
       }
 
-      pszTextW = LocalAlloc(LPTR,(iSelCount*2)+2);
+      pszTextW = LocalAlloc(LPTR,(iSelCount*2)+8);
       if (pszTextW == NULL) {
         LocalFree(pszText);
         return;
@@ -2012,12 +2013,12 @@ void EditURLDecode(HWND hwnd)
       DWORD  cchUnescapedW;
       LPWSTR pszUnescapedW;
 
-      pszText = LocalAlloc(LPTR,(iSelCount)+2);
+      pszText = LocalAlloc(LPTR,(iSelCount)+4);
       if (pszText == NULL) {
         return;
       }
 
-      pszTextW = LocalAlloc(LPTR,(iSelCount*2)+2);
+      pszTextW = LocalAlloc(LPTR,(iSelCount*2)+8);
       if (pszTextW == NULL) {
         LocalFree(pszText);
         return;
@@ -5810,23 +5811,23 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
       (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iSelEnd, 0))
     return;
 
-
-  pszText = LocalAlloc(LPTR,iSelCount + 1);
+  // fixing 64bit issue #37
+  pszText = LocalAlloc(LPTR,iSelCount + 4);
   (int)SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)pszText);
 
 
   // exit if selection is not a word and Match whole words only is enabled
   if (bMarkOccurrencesMatchWords)
   {
-    iSelStart = 0;
-    while (pszText[iSelStart])
+    int i = 0;
+    while ((i <= iSelCount) && pszText[i])
     {
-      if (StrChrIA(" \t\r\n@#$%^&*~-=+()[]{}\\/:;'\"", pszText[iSelStart]))
+      if (StrChrIA(" \t\r\n@#$%^&*~-=+()[]{}\\/:;'\"", pszText[i]))
       {
         LocalFree(pszText);
         return;
       }
-      iSelStart++;
+      i++;
     }
   }
 

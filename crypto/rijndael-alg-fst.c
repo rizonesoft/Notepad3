@@ -853,7 +853,7 @@ int rijndaelKeySetupDec(u32 rk[/*4*(Nr + 1)*/], const u8 cipherKey[], int keyBit
 	return Nr;
 }
 
-void rijndaelEncrypt(u32 rk[/*4*(Nr + 1)*/], int Nr, const u8 pt[16], u8 ct[16]) {
+void rijndaelEncrypt(const u32 rk[/*4*(Nr + 1)*/], int Nr, const u8 pt[16], u8 ct[16]) {
 	u32 s0, s1, s2, s3, t0, t1, t2, t3;
 #ifndef FULL_UNROLL
     int r;
@@ -1034,7 +1034,7 @@ void rijndaelEncrypt(u32 rk[/*4*(Nr + 1)*/], int Nr, const u8 pt[16], u8 ct[16])
 	PUTU32(ct + 12, s3);
 }
 
-void rijndaelDecrypt(u32 rk[/*4*(Nr + 1)*/], int Nr, const u8 ct[16], u8 pt[16]) {
+void rijndaelDecrypt(const u32 rk[/*4*(Nr + 1)*/], int Nr, const u8 ct[16], u8 pt[16]) {
 	u32 s0, s1, s2, s3, t0, t1, t2, t3;
 #ifndef FULL_UNROLL
     int r;
@@ -1217,7 +1217,7 @@ void rijndaelDecrypt(u32 rk[/*4*(Nr + 1)*/], int Nr, const u8 ct[16], u8 pt[16])
 
 #ifdef INTERMEDIATE_VALUE_KAT
 
-void rijndaelEncryptRound(u32 rk[/*4*(Nr + 1)*/], int Nr, u8 block[16], int rounds) {
+void rijndaelEncryptRound(const u32 rk[/*4*(Nr + 1)*/], int Nr, u8 block[16], int rounds) {
 	int r;
 	u32 s0, s1, s2, s3, t0, t1, t2, t3;
 
@@ -1310,7 +1310,7 @@ void rijndaelEncryptRound(u32 rk[/*4*(Nr + 1)*/], int Nr, u8 block[16], int roun
 	PUTU32(block + 12, s3);
 }
 
-void rijndaelDecryptRound(u32 rk[/*4*(Nr + 1)*/], int Nr, u8 block[16], int rounds) {
+void rijndaelDecryptRound(const u32 rk[/*4*(Nr + 1)*/], int Nr, u8 block[16], int rounds) {
 	int r;
 	u32 s0, s1, s2, s3, t0, t1, t2, t3;
 
