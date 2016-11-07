@@ -361,17 +361,19 @@ BOOL ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWOR
           AES_bin_setup(&fileDecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binFileKey);
           AES_bin_cipherInit(&fileCypher, AES_MODE_CBC, &rawdata[PREAMBLE_SIZE]);	// IV is next
           { // finally, decrypt the actual data
-            int nbb = 0;
-            int nbp = 0;
-            if ((readsize - code_offset) > PAD_SLOP) {
+            int nbb = BAD_CIPHER_STATE;
+            int nbp = BAD_CIPHER_STATE;
+            if ((readsize - code_offset) >= PAD_SLOP) {
               nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
             }
+            if (nbb >= 0) {
             nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], readsize - code_offset - nbb, rawdata + nbb);
-            if (nbp > 0) {
-              nbb += nbp;
-              rawdata[nbb] = (char)0;
-              rawdata[nbb + 1] = (char)0;	// two zeros in case it's multi-byte
-              *resultlen = (DWORD)nbb;
+            }
+            if (nbp >= 0) {
+              int nb = nbb + nbp;
+              rawdata[nb] = (char)0;
+              rawdata[nb + 1] = (char)0;	// two zeros in case it's multi-byte
+              *resultlen = (DWORD)nb;
               bReadSuccess = TRUE;
             }
             else {
