@@ -16,6 +16,9 @@
     <Filter Include="win32">
       <UniqueIdentifier>{afe7e35e-cd81-406c-a770-df29d2b3fc95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="deelx">
+      <UniqueIdentifier>{cea00e5b-ec6a-47ed-818f-d6a1ca11c3b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexers\LexAHK.cxx">
@@ -237,6 +240,18 @@
     <ClCompile Include="win32\ScintillaWin.cxx">
       <Filter>win32</Filter>
     </ClCompile>
+    <ClCompile Include="lexers\LexJSON.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers\LexMatlab.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers\LexRegistry.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="deelx\DeelxRegexSearch.cxx">
+      <Filter>deelx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -398,6 +413,11 @@
     <ClInclude Include="win32\PlatWin.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="include\Sci_Position.h" />
+    <ClInclude Include="include\Sci_Position.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="deelx\deelx64.h">
+      <Filter>deelx</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
