@@ -127,7 +127,7 @@ int Scintilla_LinkLexers() {
 	LINK_LEXER(lmHTML);
 	//LINK_LEXER(lmIHex);
 	LINK_LEXER(lmInno);
-	//LINK_LEXER(lmJSON);
+	LINK_LEXER(lmJSON);
 	//LINK_LEXER(lmKix);
 	//LINK_LEXER(lmKVIrc);
 	LINK_LEXER(lmLatex);
@@ -139,7 +139,7 @@ int Scintilla_LinkLexers() {
 	//LINK_LEXER(lmMagikSF);
 	LINK_LEXER(lmMake);
 	LINK_LEXER(lmMarkdown);
-	//LINK_LEXER(lmMatlab);
+	LINK_LEXER(lmMatlab);
 	//LINK_LEXER(lmMETAPOST);
 	//LINK_LEXER(lmMMIXAL);
 	//LINK_LEXER(lmModula);
@@ -168,7 +168,7 @@ int Scintilla_LinkLexers() {
 	LINK_LEXER(lmPython);
 	//LINK_LEXER(lmR);
 	//LINK_LEXER(lmREBOL);
-	//LINK_LEXER(lmRegistry);
+	LINK_LEXER(lmRegistry);
 	LINK_LEXER(lmRuby);
 	//LINK_LEXER(lmRust);
 	//LINK_LEXER(lmScriptol);

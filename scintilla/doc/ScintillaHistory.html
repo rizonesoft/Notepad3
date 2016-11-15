@@ -499,6 +499,11 @@
       </tr><tr>
 	<td>Alexey Denisov</td>
 	<td>jedailey</td>
+	<td>oirfeodent</td>
+	<td>A-R-C-A</td>
+    </tr>
+      </tr><tr>
+	<td>Roberto Rossi</td>
     </tr>
     </table>
     <p>
@@ -509,6 +514,110 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="http://www.scintilla.org/scite368.zip">Release 3.7.0</a>
+    </h3>
+    <ul>
+	<li>
+	Released 16 October 2016.
+	</li>
+	<li>
+	Word selection, navigation, and manipulation is now performed on characters instead of bytes
+	leading to more natural behaviour for multi-byte encodings like UTF-8.
+	For UTF-8 characters 0x80 and above, classification into word; punctuation; space; or line-end
+	is based on the Unicode general category of the character and is not customizable.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1832/">Bug #1832</a>.
+	</li>
+	<li>
+	Two enums changed in Scintilla.iface which may lead to changed bindings.
+	There were 2 FontQuality enums and the first is now PhasesDraw.
+	The prefix for FoldAction was SC_FOLDACTION and is now SC_FOLDACTION_
+	which is similar to other enums.
+	These changes do not affect the standard C/C++ binding.
+	</li>
+	<li>
+	EDGE_MULTILINE and SCI_MULTIEDGEADDLINE added to allow displaying multiple
+	vertical edges simultaneously.
+	</li>
+	<li>
+	The number of margins can be changed with SCI_SETMARGINS.
+	</li>
+	<li>
+	Margin type SC_MARGIN_COLOUR added so that the application may
+	choose any colour for a margin with SCI_SETMARGINBACKN.
+	</li>
+	<li>
+	On Win32, mouse wheel scrolling can be restricted to only occur when the mouse is
+	within the window.
+	</li>
+	<li>
+	The WordList class in lexlib used by lexers adds an InListAbridged method for
+	matching keywords that have particular prefixes and/or suffixes.
+	</li>
+	<li>
+	The Baan lexer was changed significantly with more lexical states, keyword sets,
+	and support for abridged keywords.
+	</li>
+	<li>
+	The CoffeeScript lexer styles interpolated code in strings.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1865/">Bug #1865</a>.
+	</li>
+	<li>
+	The Progress lexer "progress" has been replaced with a new lexer "abl"
+	(Advanced Business Language)
+	with a different set of lexical states and more functionality.
+	The lexical state prefix has changed from SCE_4GL_ to SCE_ABL_.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1143/">Feature #1143.</a>
+	</li>
+	<li>
+	The PowerShell lexer understands the grave accent escape character.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1868/">Bug #1868</a>.
+	</li>
+	<li>
+	The YAML lexer recognizes inline comments.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1660/">Bug #1660</a>.
+	</li>
+	<li>
+	SciTE on Windows can retain coloured selection when inactive with
+	selection.always.visible property.
+	</li>
+	<li>
+	SciTE on Windows adds a state to close.on.find to close the find strip when
+	a match is found.
+	</li>
+	<li>
+	Fix caret position after left or right movement with rectangular selection.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1861/">Bug #1861</a>.
+	</li>
+	<li>
+	In SciTE, optional prefix argument added to scite.ConstantName method.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1860/">Bug #1860</a>.
+	</li>
+	<li>
+	On Cocoa, include ILexer.h in the public headers of the framework.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1855/">Bug #1855</a>.
+	</li>
+	<li>
+	On Cocoa, allow subclass of SCIContentView to set cursor.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1863/">Bug #1863</a>.
+	</li>
+	<li>
+	On Cocoa, recognize the numeric keypad '+', '-', and '/' keys as
+	SCK_ADD, SCK_SUBTRACT, and SCK_DIVIDE.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1867/">Bug #1867</a>.
+	</li>
+	<li>
+	On GTK+ 3.21+ fix incorrect font size in auto-completion list.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1859/">Bug #1859</a>.
+	</li>
+	<li>
+	Fix SciTE crash when command.mode ends with comma.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1857/">Bug #1857</a>.
+	</li>
+	<li>
+	SciTE on Windows has a full size toolbar icon for "Close".
+	</li>
     </ul>
     <h3>
        <a href="http://www.scintilla.org/scite367.zip">Release 3.6.7</a>

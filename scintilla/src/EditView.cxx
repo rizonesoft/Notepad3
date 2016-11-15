@@ -25,6 +25,7 @@
 #include "Scintilla.h"
 
 #include "StringCopy.h"
+#include "CharacterSet.h"
 #include "Position.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
@@ -389,16 +390,16 @@ void EditView::LayoutLine(const EditModel &model, int line, Surface *surface, co
 					(ll->chars[numCharsInLine] == chDoc);
 				else if (vstyle.styles[ll->styles[numCharsInLine]].caseForce == Style::caseLower)
 					allSame = allSame &&
-					(ll->chars[numCharsInLine] == static_cast<char>(tolower(chDoc)));
+					(ll->chars[numCharsInLine] == MakeLowerCase(chDoc));
 				else if (vstyle.styles[ll->styles[numCharsInLine]].caseForce == Style::caseUpper)
 					allSame = allSame &&
-					(ll->chars[numCharsInLine] == static_cast<char>(toupper(chDoc)));
+					(ll->chars[numCharsInLine] == MakeUpperCase(chDoc));
 				else	{ // Style::caseCamel
-					if ((model.pdoc->WordCharClass(ll->chars[numCharsInLine]) == CharClassify::ccWord) &&
-					  ((numCharsInLine == 0) || (model.pdoc->WordCharClass(ll->chars[numCharsInLine - 1]) != CharClassify::ccWord))) {
-						allSame = allSame && (ll->chars[numCharsInLine] == static_cast<char>(toupper(chDoc)));
+					if ((model.pdoc->IsASCIIWordByte(ll->chars[numCharsInLine])) &&
+					  ((numCharsInLine == 0) || (!model.pdoc->IsASCIIWordByte(ll->chars[numCharsInLine - 1])))) {
+						allSame = allSame && (ll->chars[numCharsInLine] == MakeUpperCase(chDoc));
 					} else {
-						allSame = allSame && (ll->chars[numCharsInLine] == static_cast<char>(tolower(chDoc)));
+						allSame = allSame && (ll->chars[numCharsInLine] == MakeLowerCase(chDoc));
 					}
 				}
 				numCharsInLine++;
@@ -417,7 +418,7 @@ void EditView::LayoutLine(const EditModel &model, int line, Surface *surface, co
 		ll->widthLine = LineLayout::wrapWidthInfinite;
 		ll->lines = 1;
 		if (vstyle.edgeState == EDGE_BACKGROUND) {
-			ll->edgeColumn = model.pdoc->FindColumn(line, vstyle.theEdge);
+			ll->edgeColumn = model.pdoc->FindColumn(line, vstyle.theEdge.column);
 			if (ll->edgeColumn >= posLineStart) {
 				ll->edgeColumn -= posLineStart;
 			}
@@ -440,15 +441,15 @@ void EditView::LayoutLine(const EditModel &model, int line, Surface *surface, co
 			for (int charInLine = 0; charInLine<lineLength; charInLine++) {
 				char chDoc = ll->chars[charInLine];
 				if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseUpper)
-					ll->chars[charInLine] = static_cast<char>(toupper(chDoc));
+					ll->chars[charInLine] = static_cast<char>(MakeUpperCase(chDoc));
 				else if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseLower)
-					ll->chars[charInLine] = static_cast<char>(tolower(chDoc));
+					ll->chars[charInLine] = static_cast<char>(MakeLowerCase(chDoc));
 				else if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseCamel) {
-					if ((model.pdoc->WordCharClass(ll->chars[charInLine]) == CharClassify::ccWord) &&
-					  ((charInLine == 0) || (model.pdoc->WordCharClass(ll->chars[charInLine - 1]) != CharClassify::ccWord))) {
-						ll->chars[charInLine] = static_cast<char>(toupper(chDoc));
+					if ((model.pdoc->IsASCIIWordByte(ll->chars[charInLine])) &&
+					  ((charInLine == 0) || (!model.pdoc->IsASCIIWordByte(ll->chars[charInLine - 1])))) {
+						ll->chars[charInLine] = static_cast<char>(MakeUpperCase(chDoc));
 					} else {
-						ll->chars[charInLine] = static_cast<char>(tolower(chDoc));
+						ll->chars[charInLine] = static_cast<char>(MakeLowerCase(chDoc));
 					}
 				}
 			}
@@ -749,7 +750,7 @@ static ColourDesired TextBackground(const EditModel &model, const ViewStyle &vsD
 		if ((vsDraw.edgeState == EDGE_BACKGROUND) &&
 			(i >= ll->edgeColumn) &&
 			(i < ll->numCharsBeforeEOL))
-			return vsDraw.edgecolour;
+			return vsDraw.theEdge.colour;
 		if (inHotspot && vsDraw.hotspotColours.back.isSet)
 			return vsDraw.hotspotColours.back;
 	}
@@ -1339,12 +1340,24 @@ static void DrawEdgeLine(Surface *surface, const ViewStyle &vsDraw, const LineLa
 	Range lineRange, int xStart) {
 	if (vsDraw.edgeState == EDGE_LINE) {
 		PRectangle rcSegment = rcLine;
-		int edgeX = static_cast<int>(vsDraw.theEdge * vsDraw.spaceWidth);
+		int edgeX = static_cast<int>(vsDraw.theEdge.column * vsDraw.spaceWidth);
 		rcSegment.left = static_cast<XYPOSITION>(edgeX + xStart);
 		if ((ll->wrapIndent != 0) && (lineRange.start != 0))
 			rcSegment.left -= ll->wrapIndent;
 		rcSegment.right = rcSegment.left + 1;
-		surface->FillRectangle(rcSegment, vsDraw.edgecolour);
+		surface->FillRectangle(rcSegment, vsDraw.theEdge.colour);
+	} else if (vsDraw.edgeState == EDGE_MULTILINE) {
+		for (size_t edge = 0; edge < vsDraw.theMultiEdge.size(); edge++) {
+			if (vsDraw.theMultiEdge[edge].column >= 0) {
+				PRectangle rcSegment = rcLine;
+				int edgeX = static_cast<int>(vsDraw.theMultiEdge[edge].column * vsDraw.spaceWidth);
+				rcSegment.left = static_cast<XYPOSITION>(edgeX + xStart);
+				if ((ll->wrapIndent != 0) && (lineRange.start != 0))
+					rcSegment.left -= ll->wrapIndent;
+				rcSegment.right = rcSegment.left + 1;
+				surface->FillRectangle(rcSegment, vsDraw.theMultiEdge[edge].colour);
+			}
+		}
 	}
 }
 
@@ -1919,10 +1932,19 @@ void EditView::PaintText(Surface *surfaceWindow, const EditModel &model, PRectan
 		if (rcBeyondEOF.top < rcBeyondEOF.bottom) {
 			surfaceWindow->FillRectangle(rcBeyondEOF, vsDraw.styles[STYLE_DEFAULT].back);
 			if (vsDraw.edgeState == EDGE_LINE) {
-				int edgeX = static_cast<int>(vsDraw.theEdge * vsDraw.spaceWidth);
+				int edgeX = static_cast<int>(vsDraw.theEdge.column * vsDraw.spaceWidth);
 				rcBeyondEOF.left = static_cast<XYPOSITION>(edgeX + xStart);
 				rcBeyondEOF.right = rcBeyondEOF.left + 1;
-				surfaceWindow->FillRectangle(rcBeyondEOF, vsDraw.edgecolour);
+				surfaceWindow->FillRectangle(rcBeyondEOF, vsDraw.theEdge.colour);
+			} else if (vsDraw.edgeState == EDGE_MULTILINE) {
+				for (size_t edge = 0; edge < vsDraw.theMultiEdge.size(); edge++) {
+					if (vsDraw.theMultiEdge[edge].column >= 0) {
+						int edgeX = static_cast<int>(vsDraw.theMultiEdge[edge].column * vsDraw.spaceWidth);
+						rcBeyondEOF.left = static_cast<XYPOSITION>(edgeX + xStart);
+						rcBeyondEOF.right = rcBeyondEOF.left + 1;
+						surfaceWindow->FillRectangle(rcBeyondEOF, vsDraw.theMultiEdge[edge].colour);
+					}
+				}
 			}
 		}
 		//Platform::DebugPrintf("start display %d, offset = %d\n", pdoc->Length(), xOffset);
@@ -1961,9 +1983,9 @@ long EditView::FormatRange(bool draw, Sci_RangeToFormat *pfr, Surface *surface, 
 	// Modify the view style for printing as do not normally want any of the transient features to be printed
 	// Printing supports only the line number margin.
 	int lineNumberIndex = -1;
-	for (int margin = 0; margin <= SC_MAX_MARGIN; margin++) {
+	for (size_t margin = 0; margin < vs.ms.size(); margin++) {
 		if ((vsPrint.ms[margin].style == SC_MARGIN_NUMBER) && (vsPrint.ms[margin].width > 0)) {
-			lineNumberIndex = margin;
+			lineNumberIndex = static_cast<int>(margin);
 		} else {
 			vsPrint.ms[margin].width = 0;
 		}
