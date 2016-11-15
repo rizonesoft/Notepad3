@@ -46,7 +46,7 @@ static unsigned int SpaceCount(char* lineBuffer) {
 	while (*headBuffer == ' ')
 		headBuffer++;
 
-	return headBuffer - lineBuffer;
+	return static_cast<unsigned int>(headBuffer - lineBuffer);
 }
 
 #define YAML_STATE_BITSIZE 16
@@ -148,16 +148,30 @@ static void ColouriseYAMLLine(
 				styler.ColourTo(endPos, SCE_YAML_KEYWORD);
 				return;
 			} else {
+				Sci_PositionU startComment = i;
+				bInQuotes = false;
+				while (startComment < lengthLine) { // Comment must be space padded
+					if (lineBuffer[startComment] == '\'' || lineBuffer[startComment] == '\"')
+						bInQuotes = !bInQuotes;
+					if (lineBuffer[startComment] == '#' && isspacechar(lineBuffer[startComment - 1]) && !bInQuotes)
+						break;
+					startComment++;
+				}
 				Sci_PositionU i2 = i;
-				while ((i < lengthLine) && lineBuffer[i]) {
-					if (!(IsASCII(lineBuffer[i]) && isdigit(lineBuffer[i])) && lineBuffer[i] != '-' && lineBuffer[i] != '.' && lineBuffer[i] != ',') {
-						styler.ColourTo(endPos, SCE_YAML_DEFAULT);
+				while ((i < startComment) && lineBuffer[i]) {
+					if (!(IsASCII(lineBuffer[i]) && isdigit(lineBuffer[i])) && lineBuffer[i] != '-' 
+						    && lineBuffer[i] != '.' && lineBuffer[i] != ',' && lineBuffer[i] != ' ') {
+						styler.ColourTo(startLine + startComment - 1, SCE_YAML_DEFAULT);
+						if (startComment < lengthLine)
+							styler.ColourTo(endPos, SCE_YAML_COMMENT);
 						return;
 					}
 					i++;
 				}
 				if (i > i2) {
-					styler.ColourTo(endPos, SCE_YAML_NUMBER);
+					styler.ColourTo(startLine + startComment - 1, SCE_YAML_NUMBER);
+					if (startComment < lengthLine)
+						styler.ColourTo(endPos, SCE_YAML_COMMENT);
 					return;
 				}
 			}

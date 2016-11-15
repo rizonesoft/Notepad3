@@ -1224,7 +1224,7 @@ BOOL EditLoadFile(
 
   // calculate buffer limit
   dwFileSize = GetFileSize(hFile,NULL);
-  dwBufSize  = dwFileSize + 10;
+  dwBufSize = dwFileSize + 16;
 
   // Check if a warning message should be displayed for large files
   dwFileSizeLimit = IniGetInt(L"Settings2",L"FileLoadWarningMB",1);
@@ -1558,8 +1558,8 @@ BOOL EditSaveFile(
         CopyMemory(lpData, bom, bomoffset);
         cbData += bomoffset;
     }
-      bWriteSuccess = //WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
-        EncryptAndWriteFile(hwnd, hFile, lpData, cbData, &dwBytesWritten);
+      //bWriteSuccess = WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
+      bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, lpData, cbData, &dwBytesWritten);
       dwLastIOError = GetLastError();
 
       GlobalFree(lpData);

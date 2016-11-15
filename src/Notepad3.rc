@@ -198,6 +198,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Filename\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
             MENUITEM "&Path and Filename\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
+            MENUITEM SEPARATOR
+            MENUITEM "&GUID\tCtrl+Shift+."          IDM_EDIT_INSERT_GUID
         END
         POPUP "Spec&ial"
         BEGIN
@@ -221,6 +223,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Complete Word\tCtrl+Enter",   IDM_EDIT_COMPLETEWORD
         END
+        MENUITEM SEPARATOR
         POPUP "Bookmarks"
         BEGIN
             MENUITEM "Toggle\tCtrl+F2",             BME_EDIT_BOOKMARKTOGGLE
@@ -527,6 +530,7 @@ BEGIN
     "Z",            IDM_EDIT_UNDO,          VIRTKEY, CONTROL, NOINVERT
     "Z",            IDM_EDIT_STRIP1STCHAR,  VIRTKEY, ALT, NOINVERT
     "Z",            IDM_EDIT_REDO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_OEM_PERIOD,  IDM_EDIT_INSERT_GUID,   VIRTKEY, SHIFT, CONTROL, NOINVERT
 END
 
 IDR_ACCFINDREPLACE ACCELERATORS
@@ -568,7 +572,7 @@ BEGIN
     LTEXT           "Florian Balmer et al. ( Notepad2 )",IDC_STATIC,45,110,200,8
     LTEXT           "",IDC_NOTE2WEBPAGE2,45,119,200,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_NOTE2WEBPAGE,"SysLink",WS_TABSTOP,45,119,200,10
-    LTEXT           "Contributors: Derick Payne (Rizonesoft), XhmikosR (Notepad2-mod), Kai Liu, RL Vision, Aleksandar Lekov,  Bruno Barbieri, Florian Balmer (Notepad2), Neil Hodgson (SciTE), Matthew Ellis (MinimizeToTray)",IDC_STATIC,45,153,200,48
+    LTEXT           "Contributors: Derick Payne (Rizonesoft), XhmikosR (Notepad2-mod), Kai Liu, RL Vision, Aleksandar Lekov,  Bruno Barbieri, Florian Balmer (Notepad2), Neil Hodgson (SciTE), Matthew Ellis (MinimizeToTray), Dave Dyer (Crypto-mod)",IDC_STATIC,45,153,200,48
 END
 
 IDD_FIND DIALOGEX 0, 0, 272, 101
@@ -902,7 +906,7 @@ END
 IDD_READPW DIALOG  0, 0, 299, 84
 STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE |
     WS_CAPTION | WS_SYSMENU
-CAPTION "Encrypt File"
+CAPTION "Decrypt File"
 FONT 8, "MS Shell Dlg"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,233,54,50,14

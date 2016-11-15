@@ -203,7 +203,7 @@ class IMContext {
 	HWND hwnd;
 public:
 	HIMC hIMC;
-	IMContext(HWND hwnd_) :
+	explicit IMContext(HWND hwnd_) :
 		hwnd(hwnd_), hIMC(::ImmGetContext(hwnd_)) {
 	}
 	~IMContext() {
@@ -1272,6 +1272,18 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			break;
 
 		case WM_MOUSEWHEEL:
+			if (!mouseWheelCaptures) {
+				// if the mouse wheel is not captured, test if the mouse
+				// pointer is over the editor window and if not, don't
+				// handle the message but pass it on.
+				RECT rc;
+				GetWindowRect(MainHWND(), &rc);
+				POINT pt;
+				pt.x = GET_X_LPARAM(lParam);
+				pt.y = GET_Y_LPARAM(lParam);
+				if (!PtInRect(&rc, pt))
+					return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+			}
 			// if autocomplete list active then send mousewheel message to it
 			if (ac.Active()) {
 				HWND hWnd = static_cast<HWND>(ac.lb->GetID());
@@ -2650,7 +2662,7 @@ void ScintillaWin::ImeStartComposition() {
 			// The negative is to allow for leading
 			lf.lfHeight = -(abs(deviceHeight / SC_FONT_SIZE_MULTIPLIER));
 			lf.lfWeight = vs.styles[styleHere].weight;
-			lf.lfItalic = static_cast<BYTE>(vs.styles[styleHere].italic ? 1 : 0);
+			lf.lfItalic = static_cast<byte>(vs.styles[styleHere].italic ? 0x01 : 0x00);
 			lf.lfCharSet = DEFAULT_CHARSET;
 			lf.lfFaceName[0] = L'\0';
 			if (vs.styles[styleHere].fontName) {
