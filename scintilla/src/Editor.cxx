@@ -112,6 +112,7 @@ Editor::Editor() {
 	hasFocus = false;
 	errorStatus = 0;
 	mouseDownCaptures = true;
+	mouseWheelCaptures = true;
 
 	lastClickTime = 0;
 	doubleClickCloseThreshold = Point(3, 3);
@@ -739,8 +740,8 @@ void Editor::MultipleSelectAdd(AddNumber addNumber) {
 			const int searchEnd = it->end;
 			for (;;) {
 				int lengthFound = static_cast<int>(selectedText.length());
-				int pos = pdoc->FindText(searchStart, searchEnd, selectedText.c_str(),
-					searchFlags, &lengthFound);
+				int pos = static_cast<int>(pdoc->FindText(searchStart, searchEnd,
+					selectedText.c_str(), searchFlags, &lengthFound));
 				if (pos >= 0) {
 					sel.AddSelection(SelectionRange(pos + lengthFound, pos));
 					ScrollRange(sel.RangeMain());
@@ -2425,9 +2426,9 @@ void Editor::NotifyIndicatorClick(bool click, int position, bool shift, bool ctr
 bool Editor::NotifyMarginClick(Point pt, int modifiers) {
 	int marginClicked = -1;
 	int x = vs.textStart - vs.fixedColumnWidth;
-	for (int margin = 0; margin <= SC_MAX_MARGIN; margin++) {
+	for (size_t margin = 0; margin < vs.ms.size(); margin++) {
 		if ((pt.x >= x) && (pt.x < x + vs.ms[margin].width))
-			marginClicked = margin;
+			marginClicked = static_cast<int>(margin);
 		x += vs.ms[margin].width;
 	}
 	if ((marginClicked >= 0) && vs.ms[marginClicked].sensitive) {
@@ -3319,13 +3320,13 @@ int Editor::HorizontalMove(unsigned int iMessage) {
 		sel.selType = Selection::selRectangle;
 		sel.Rectangular() = SelectionRange(spCaret, rangeBase.anchor);
 		SetRectangularRange();
+	} else if (sel.IsRectangular()) {
+		// Not a rectangular extension so switch to stream.
+		const SelectionPosition selAtLimit = 
+			(NaturalDirection(iMessage) > 0) ? sel.Limits().end : sel.Limits().start;
+		sel.selType = Selection::selStream;
+		sel.SetSelection(SelectionRange(selAtLimit));
 	} else {
-		if (sel.IsRectangular()) {
-			// Not a rectangular extension so switch to stream.
-			SelectionPosition selAtLimit = (NaturalDirection(iMessage) > 0) ? sel.Limits().end : sel.Limits().start;
-			sel.selType = Selection::selStream;
-			sel.SetSelection(SelectionRange(selAtLimit));
-		}
 		if (!additionalSelectionTyping) {
 			InvalidateWholeSelection();
 			sel.DropAdditionalRanges();
@@ -3421,7 +3422,7 @@ int Editor::HorizontalMove(unsigned int iMessage) {
 			const int directionMove = (spCaret < spCaretNow) ? -1 : 1;
 			spCaret = MovePositionSoVisible(spCaret, directionMove);
 
-			// Handle move versus extend, and special behaviour for non-emoty left/right
+			// Handle move versus extend, and special behaviour for non-empty left/right
 			switch (iMessage) {
 			case SCI_CHARLEFT:
 			case SCI_CHARRIGHT:
@@ -4304,7 +4305,7 @@ bool Editor::PointInSelMargin(Point pt) const {
 
 Window::Cursor Editor::GetMarginCursor(Point pt) const {
 	int x = 0;
-	for (int margin = 0; margin <= SC_MAX_MARGIN; margin++) {
+	for (size_t margin = 0; margin < vs.ms.size(); margin++) {
 		if ((pt.x >= x) && (pt.x < x + vs.ms[margin].width))
 			return static_cast<Window::Cursor>(vs.ms[margin].cursor);
 		x += vs.ms[margin].width;
@@ -5584,8 +5585,8 @@ void Editor::AddStyledText(char *buffer, int appendLength) {
 	SetEmptySelection(sel.MainCaret() + lengthInserted);
 }
 
-static bool ValidMargin(uptr_t wParam) {
-	return wParam <= SC_MAX_MARGIN;
+bool Editor::ValidMargin(uptr_t wParam) {
+	return wParam < vs.ms.size();
 }
 
 static char *CharPtrFromSPtr(sptr_t lParam) {
@@ -6899,6 +6900,27 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		else
 			return 0;
 
+	case SCI_SETMARGINBACKN:
+		if (ValidMargin(wParam)) {
+			vs.ms[wParam].back = ColourDesired(static_cast<long>(lParam));
+			InvalidateStyleRedraw();
+		}
+		break;
+
+	case SCI_GETMARGINBACKN:
+		if (ValidMargin(wParam))
+			return vs.ms[wParam].back.AsLong();
+		else
+			return 0;
+
+	case SCI_SETMARGINS:
+		if (wParam < 1000)
+			vs.ms.resize(wParam);
+		break;
+
+	case SCI_GETMARGINS:
+		return vs.ms.size();
+
 	case SCI_STYLECLEARALL:
 		vs.ClearStyles();
 		InvalidateStyleRedraw();
@@ -7449,10 +7471,10 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return vs.zoomLevel;
 
 	case SCI_GETEDGECOLUMN:
-		return vs.theEdge;
+		return vs.theEdge.column;
 
 	case SCI_SETEDGECOLUMN:
-		vs.theEdge = static_cast<int>(wParam);
+		vs.theEdge.column = static_cast<int>(wParam);
 		InvalidateStyleRedraw();
 		break;
 
@@ -7465,10 +7487,20 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_GETEDGECOLOUR:
-		return vs.edgecolour.AsLong();
+		return vs.theEdge.colour.AsLong();
 
 	case SCI_SETEDGECOLOUR:
-		vs.edgecolour = ColourDesired(static_cast<long>(wParam));
+		vs.theEdge.colour = ColourDesired(static_cast<long>(wParam));
+		InvalidateStyleRedraw();
+		break;
+
+	case SCI_MULTIEDGEADDLINE:
+		vs.theMultiEdge.push_back(EdgeProperties(wParam, lParam));
+		InvalidateStyleRedraw();
+		break;
+
+	case SCI_MULTIEDGECLEARALL:
+		std::vector<EdgeProperties>().swap(vs.theMultiEdge); // Free vector and memory, C++03 compatible
 		InvalidateStyleRedraw();
 		break;
 
@@ -7599,6 +7631,13 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETMOUSEDOWNCAPTURES:
 		return mouseDownCaptures;
+
+	case SCI_SETMOUSEWHEELCAPTURES:
+		mouseWheelCaptures = wParam != 0;
+		break;
+
+	case SCI_GETMOUSEWHEELCAPTURES:
+		return mouseWheelCaptures;
 
 	case SCI_SETCURSOR:
 		cursorMode = static_cast<int>(wParam);

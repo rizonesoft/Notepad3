@@ -2169,13 +2169,13 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = (int)SendMessage(hwndEdit,SCI_GETLEXER,0,0);
   EnableCmd(hmenu,IDM_EDIT_LINECOMMENT,
-    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF));
+    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || SCLEX_MARKDOWN));
   EnableCmd(hmenu,IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML));
+      i == SCLEX_YAML || i == SCLEX_REGISTRY));
 
   EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING,*mEncoding[iEncoding].pszParseNames);
 
@@ -3376,12 +3376,35 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
+    case IDM_EDIT_INSERT_GUID:
+      {
+        UINT uCP;
+        GUID guid;
+        WCHAR wszGuid[40];
+        WCHAR *pwszGuid;
+        char mszGuid[40 * 4]; // UTF-8 max of 4 bytes per char
+
+        if (SUCCEEDED(CoCreateGuid(&guid))) {          
+          if (StringFromGUID2(&guid,wszGuid,COUNTOF(wszGuid))) {
+            pwszGuid = wszGuid + 1; // trim first brace char
+            wszGuid[wcslen(wszGuid) - 1] = L'\0'; // trim last brace char 
+            uCP = (SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8) ? CP_UTF8 : CP_ACP;            
+            if (WideCharToMultiByte(uCP,0,pwszGuid,-1,mszGuid,COUNTOF(mszGuid),NULL,NULL)) {
+              SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszGuid);
+            }
+          }
+        }
+      }
+      break;
+
+
     case IDM_EDIT_LINECOMMENT:
       switch (SendMessage(hwndEdit,SCI_GETLEXER,0,0)) {
         case SCLEX_NULL:
         case SCLEX_CSS:
         case SCLEX_DIFF:
         case SCLEX_MARKDOWN:
+        case SCLEX_JSON:
           break;
         case SCLEX_HTML:
         case SCLEX_XML:
@@ -3423,6 +3446,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           EditToggleLineComments(hwndEdit,L";",TRUE);
           EndWaitCursor();
           break;
+        case SCLEX_REGISTRY:
+          BeginWaitCursor();
+          EditToggleLineComments(hwndEdit,L";;",TRUE);
+          EndWaitCursor();
+          break;
         case SCLEX_SQL:
         case SCLEX_LUA:
         case SCLEX_VHDL:
@@ -3436,6 +3464,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           EndWaitCursor();
           break;
         case SCLEX_LATEX:
+        case SCLEX_MATLAB:
           BeginWaitCursor();
           EditToggleLineComments(hwndEdit,L"%",TRUE);
           EndWaitCursor();
@@ -3468,6 +3497,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCLEX_CMAKE:
         case SCLEX_MARKDOWN:
         case SCLEX_YAML:
+        case SCLEX_JSON:
+        case SCLEX_REGISTRY:
           break;
         case SCLEX_HTML:
         case SCLEX_XML:
@@ -3487,6 +3518,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
         case SCLEX_COFFEESCRIPT:
           EditEncloseSelection(hwndEdit,L"###",L"###");
+          break;
+        case SCLEX_MATLAB:
+          EditEncloseSelection(hwndEdit,L"%{",L"%}");
       }
       break;
 
@@ -6252,7 +6286,7 @@ void ParseCommandLine()
             LocalFree(lpSchemeArg);
             lpSchemeArg = NULL;
           }
-          iInitialLexer = 34;
+          iInitialLexer = 35;
           flagLexerSpecified = 1;
           break;
 
@@ -6261,7 +6295,7 @@ void ParseCommandLine()
             LocalFree(lpSchemeArg);
             lpSchemeArg = NULL;
           }
-          iInitialLexer = 35;
+          iInitialLexer = 36;
           flagLexerSpecified = 1;
           break;
 
@@ -6915,7 +6949,6 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
                       NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
       dwLastIOError = GetLastError();
       if (fSuccess = (hFile != INVALID_HANDLE_VALUE)) {
-        CloseHandle(hFile);
         FileVars_Init(NULL,0,&fvCurFile);
         EditSetNewText(hwndEdit,"",0);
         Style_SetLexer(hwndEdit,NULL);
@@ -6932,6 +6965,9 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         SendMessage(hwndEdit,SCI_SETCODEPAGE,(iEncoding == CPI_DEFAULT) ? iDefaultCodePage : SC_CP_UTF8,0);
         bReadOnly = FALSE;
         EditSetNewText(hwndEdit,"",0);
+      }
+      if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE)) {
+        CloseHandle(hFile);
       }
     }
     else

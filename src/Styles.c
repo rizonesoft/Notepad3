@@ -42,7 +42,7 @@ KEYWORDLIST KeyWords_NULL = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexDefault = { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL, {
+EDITLEXER lexDefault =   { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL, {
                 /*  0 */ { STYLE_DEFAULT, 63100, L"Default Style", L"font:Default; size:10", L"" },
                 /*  1 */ { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"size:-2; fore:#FF0000", L"" },
                 /*  2 */ { STYLE_BRACELIGHT, 63102, L"Matching Braces", L"size:+1; bold; fore:#FF0000", L"" },
@@ -294,7 +294,7 @@ KEYWORDLIST KeyWords_CSS = {
 "" };
 
 
-EDITLEXER lexCSS = { SCLEX_CSS, 63003, L"CSS Style Sheets", L"css", L"", &KeyWords_CSS, {
+EDITLEXER lexCSS = { SCLEX_CSS, 63003, L"CSS Style Sheets", L"css; less; sass; scss", L"", &KeyWords_CSS, {
                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
                      //{ SCE_CSS_DEFAULT, L"Default", L"", L"" },
                      { SCE_CSS_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
@@ -616,7 +616,7 @@ KEYWORDLIST KeyWords_JS = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexJS = { SCLEX_CPP, 63010, L"JavaScript", L"js; jse; jsm; json; as", L"", &KeyWords_JS, {
+EDITLEXER lexJS = { SCLEX_CPP, 63010, L"JavaScript", L"js; jse; jsm; as", L"", &KeyWords_JS, {
                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
                     //{ SCE_C_DEFAULT, L"Default", L"", L"" },
                     { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
@@ -632,6 +632,51 @@ EDITLEXER lexJS = { SCLEX_CPP, 63010, L"JavaScript", L"js; jse; jsm; json; as", 
                     //{ SCE_C_GLOBALCLASS, L"Global Class", L"", L"" },
                     { -1, 00000, L"", L"", L"" } } };
 
+
+KEYWORDLIST KeyWords_JSON = {
+"false true null",
+"@id @context @type @value @language @container @list @set @reverse @index @base @vocab @graph",
+"", "", "", "", "", "", "" };
+
+
+EDITLEXER lexJSON = { SCLEX_JSON, 63382, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", &KeyWords_JSON, {
+                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                    //{ SCE_C_DEFAULT, L"Default", L"", L"" },
+                    { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
+                    { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#A46000", L"" },
+                    { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+                    { SCE_JSON_STRING, 63131, L"String", L"fore:#008000", L"" },
+                    { SCE_C_REGEX, 63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
+                    { SCE_JSON_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_C_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+                    { -1, 00000, L"", L"", L"" } } };
+
+/*
+# String
+style.json.2=fore:#7F0000
+# Unclosed string       SCE_JSON_STRINGEOL
+style.json.3=fore:#FFFFFF,back:#FF0000,eolfilled
+# Property name         SCE_JSON_PROPERTYNAME
+style.json.4=fore:#880AE8
+# Escape sequence       SCE_JSON_ESCAPESEQUENCE
+style.json.5=fore:#0B982E
+# Line comment          SCE_JSON_LINECOMMENT
+style.json.6=fore:#05BBAE,italics
+# Block comment         SCE_JSON_BLOCKCOMMENT
+style.json.7=$(style.json.6)
+# Operator              SCE_JSON_OPERATOR
+style.json.8=fore:#18644A
+# URL/IRI               SCE_JSON_URI
+style.json.9=fore:#0000FF
+# JSON-LD compact IRI   SCE_JSON_COMPACTIRI
+style.json.10=fore:#D137C1
+# JSON keyword          SCE_JSON_KEYWORD
+style.json.11=fore:#0BCEA7,bold
+# JSON-LD keyword       SCE_JSON_LDKEYWORD
+style.json.12=fore:#EC2806
+# Parsing error         SCE_JSON_ERROR
+style.json.13=fore:#FFFFFF,back:#FF0000
+*/
 
 KEYWORDLIST KeyWords_JAVA = {
 "@interface abstract assert boolean break byte case catch char class const "
@@ -858,11 +903,11 @@ EDITLEXER lexPL = { SCLEX_PERL, 63014, L"Perl Script", L"pl; pm; cgi; pod", L"",
                     { -1, 00000, L"", L"", L"" } } };
 
 
-KEYWORDLIST KeyWords_INI = {
+KEYWORDLIST KeyWords_PROPS = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexINI = { SCLEX_PROPERTIES, 63015, L"Configuration Files", L"ini; inf; reg; cfg; properties; oem; sif; url; sed; theme", L"", &KeyWords_INI, {
+EDITLEXER lexPROPS = { SCLEX_PROPERTIES, 63015, L"Configuration Files", L"ini; inf; cfg; properties; oem; sif; url; sed; theme", L"", &KeyWords_PROPS, {
                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
                      //{ SCE_PROPS_DEFAULT, L"Default", L"", L"" },
                      { SCE_PROPS_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
@@ -1178,16 +1223,16 @@ EDITLEXER lexPS = { SCLEX_POWERSHELL, 63021, L"PowerShell Script", L"ps1; psd1; 
 
 KEYWORDLIST KeyWords_NSIS = {
 "!addincludedir !addplugindir !appendfile !cd !define !delfile !echo !else !endif !error "
-"!execute !if !ifdef !ifmacrodef !ifmacrondef !ifndef !include !insertmacro !macro !macroend "
-"!packhdr !searchparse !searchreplace !system !tempfile !undef !verbose !warning .onguiend .onguiinit "
-".oninit .oninstfailed .oninstsuccess .onmouseoversection .onrebootfailed .onselchange .onuserabort "
-".onverifyinstdir un.onguiend un.onguiinit un.oninit un.onrebootfailed un.onuninstfailed un.onuninstsuccess "
+"!execute !finalize !getdllversion !if !ifdef !ifmacrodef !ifmacrondef !ifndef !include !insertmacro !macro "
+"!macroend !macroundef !makensis !packhdr !searchparse !searchreplace !system !tempfile !undef !verbose !warning "
+".onguiend .onguiinit .oninit .oninstfailed .oninstsuccess .onmouseoversection .onrebootfailed .onselchange "
+".onuserabort .onverifyinstdir un.onguiend un.onguiinit un.oninit un.onrebootfailed un.onuninstfailed un.onuninstsuccess "
 "un.onuserabort abort addbrandingimage addsize allowrootdirinstall allowskipfiles autoclosewindow "
 "bannertrimpath bgfont bggradient brandingtext bringtofront call callinstdll caption changeui checkbitmap "
 "clearerrors completedtext componenttext copyfiles crccheck createdirectory createfont createshortcut "
 "delete deleteinisec deleteinistr deleteregkey deleteregvalue detailprint detailsbuttontext dirstate dirtext "
 "dirvar dirverify enablewindow enumregkey enumregvalue exch exec execshell execwait expandenvstrings "
-"file filebufsize fileclose fileerrortext fileopen fileread filereadbyte filereadutf16le filereadword "
+"file filebufsize fileclose fileerrortext fileexists fileopen fileread filereadbyte filereadutf16le filereadword "
 "fileseek filewrite filewritebyte filewriteutf16le filewriteword findclose findfirst findnext findproc "
 "findwindow flushini getcurinsttype getcurrentaddress getdlgitem getdllversion getdllversionlocal "
 "geterrorlevel getfiletime getfiletimelocal getfontname getfontnamelocal getfontversion getfontversionlocal "
@@ -1195,17 +1240,17 @@ KEYWORDLIST KeyWords_NSIS = {
 "ifabort iferrors iffileexists ifrebootflag ifsilent initpluginsdir installbuttontext installcolors installdir "
 "installdirregkey instprogressflags insttype insttypegettext insttypesettext intcmp intcmpu intfmt intop "
 "iswindow langstring licensebkcolor licensedata licenseforceselection licenselangstring licensetext "
-"loadlanguagefile lockwindow logset logtext messagebox miscbuttontext name nop outfile page pagecallbacks pop "
-"push quit readenvstr readinistr readregdword readregstr reboot regdll rename requestexecutionlevel reservefile "
-"return rmdir searchpath sectiongetflags sectiongetinsttypes sectiongetsize sectiongettext sectionin "
+"loadlanguagefile lockwindow logset logtext manifestsupportedos messagebox miscbuttontext name nop outfile page "
+"pagecallbacks pop push quit readenvstr readinistr readregdword readregstr reboot regdll rename requestexecutionlevel "
+"reservefile return rmdir searchpath sectiongetflags sectiongetinsttypes sectiongetsize sectiongettext sectionin "
 "sectionsetflags sectionsetinsttypes sectionsetsize sectionsettext sendmessage setautoclose setbrandingimage "
 "setcompress setcompressionlevel setcompressor setcompressordictsize setctlcolors setcurinsttype "
 "setdatablockoptimize setdatesave setdetailsprint setdetailsview seterrorlevel seterrors setfileattributes "
 "setfont setoutpath setoverwrite setpluginunload setrebootflag setregview setshellvarcontext setsilent "
 "showinstdetails showuninstdetails showwindow silentinstall silentuninstall sleep spacetexts strcmp strcmps "
-"strcpy strlen subcaption uninstallbuttontext uninstallcaption uninstallicon uninstallsubcaption uninstalltext "
-"uninstpage unregdll var viaddversionkey viproductversion windowicon writeinistr writeregbin writeregdword "
-"writeregexpandstr writeregstr writeuninstaller xpstyle",
+"strcpy strlen subcaption unicode uninstallbuttontext uninstallcaption uninstallicon uninstallsubcaption uninstalltext "
+"uninstpage unregdll var viaddversionkey vifileversion viproductversion windowicon writeinistr writeregbin "
+"writeregdword writeregexpandstr writeregstr writeuninstaller xpstyle",
 "${nsisdir} $0 $1 $2 $3 $4 $5 $6 $7 $8 $9 $r0 $r1 $r2 $r3 $r4 $r5 $r6 $r7 $r8 $r9 $instdir $outdir $cmdline "
 "$language $programfiles $programfiles32 $programfiles64 $commonfiles $commonfiles32 $commonfiles64 "
 "$desktop $exedir $exefile $exepath $windir $sysdir $temp $startmenu $smprograms $smstartup $quicklaunch "
@@ -1213,7 +1258,7 @@ KEYWORDLIST KeyWords_NSIS = {
 "$localappdata $printhood $internet_cache $cookies $history $profile $admintools $resources $resources_localized "
 "$cdburn_area $hwndparent $pluginsdir ${__date__} ${__file__} ${__function__} ${__global__} ${__line__} "
 "${__pageex__} ${__section__} ${__time__} ${__timestamp__} ${__uninstall__}",
-"alt colored control cur date end global ignorecase leave shift smooth utcdate sw_hide sw_showmaximized "
+"alt charset colored control cur date end global ignorecase leave shift smooth utcdate sw_hide sw_showmaximized "
 "sw_showminimized sw_shownormal archive auto oname rebootok nonfatal ifempty nounload filesonly short mb_ok "
 "mb_okcancel mb_abortretryignore mb_retrycancel mb_yesno mb_yesnocancel mb_iconexclamation mb_iconinformation "
 "mb_iconquestion mb_iconstop mb_usericon mb_topmost mb_setforeground mb_right mb_rtlreading mb_defbutton1 "
@@ -1226,7 +1271,7 @@ KEYWORDLIST KeyWords_NSIS = {
 "zlib bzip2 lzma try ifnewer ifdiff lastused manual alwaysoff normal file_attribute_normal file_attribute_archive "
 "hidden file_attribute_hidden offline file_attribute_offline readonly file_attribute_readonly system "
 "file_attribute_system temporary file_attribute_temporary custom license components directory instfiles "
-"uninstconfirm 32 64 enablecancel",
+"uninstconfirm 32 64 enablecancel noworkingdir plugin rawnl winvista win7 win8 win8.1 win10",
 "", "", "", "", "", "" };
 
 
@@ -2487,6 +2532,26 @@ EDITLEXER lexVHDL = { SCLEX_VHDL, 63370, L"VHDL", L"vhdl; vhd", L"", &KeyWords_V
                        { -1, 00000, L"", L"", L"" } } };
 
 
+KEYWORDLIST KeyWords_Registry = {
+"", "", "", "", "", "", "", "", "" };
+
+EDITLEXER lexRegistry = { SCLEX_REGISTRY, 63370, L"Windows Registry Files", L"reg", L"", &KeyWords_Registry, {
+                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                       //{ SCE_REG_DEFAULT, 63126, L"Default", L"", L"" },
+                       { SCE_REG_COMMENT, 63127, L"Comment", L"fore:#008800", L"" },
+                       { SCE_REG_VALUENAME, 63376, L"Value Name", L"", L"" },
+                       { MULTI_STYLE(SCE_REG_STRING,SCE_REG_STRING_GUID,0,0), 63131, L"String", L"fore:#008000", L"" },
+                       { SCE_REG_VALUETYPE, 63377, L"Value Type", L"bold; fore:#00007F", L"" },
+                       { SCE_REG_HEXDIGIT, 63378, L"Hex", L"fore:#7F0B0C", L"" },
+                       { SCE_REG_ADDEDKEY, 63379, L"Added Key", L"fore:#000000; back:#FF8040; bold; eolfilled", L"" }, //fore:#530155
+                       { SCE_REG_DELETEDKEY, 63380, L"Deleted Key", L"fore:#FF0000", L"" },
+                       { SCE_REG_ESCAPED, 63381, L"Escaped", L"bold; fore:#7D8187", L"" },
+                       { SCE_REG_KEYPATH_GUID, 63382, L"GUID in Key Path", L"fore:#7B5F15", L"" },
+                       { SCE_REG_PARAMETER, 63294, L"Parameter", L"fore:#0B6561", L"" },
+                       { SCE_REG_OPERATOR, 63132, L"Operator", L"bold", L"" },
+                       { -1, 00000, L"", L"", L"" } } };
+
+
 KEYWORDLIST KeyWords_COFFEESCRIPT = {
 "", "", "", "", "", "", "", "", "" };
 
@@ -2509,6 +2574,25 @@ EDITLEXER lexCOFFEESCRIPT = { SCLEX_COFFEESCRIPT, 63362, L"Coffeescript", L"coff
                        { -1, 00000, L"", L"", L"" } } };
 
 
+KEYWORDLIST KeyWords_MATLAB = {
+"break case catch continue else elseif end for function global if otherwise "
+"persistent return switch try while",
+"", "", "", "", "", "", "", "" };
+
+
+EDITLEXER lexMATLAB = { SCLEX_MATLAB, 63360, L"MATLAB", L"matlab", L"", &KeyWords_MATLAB, {
+                        { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                        //{ SCE_MATLAB_DEFAULT, L"Default", L"", L"" },
+                        { SCE_MATLAB_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
+                        { SCE_MATLAB_COMMAND, 63236, L"Command", L"bold", L"" },
+                        { SCE_MATLAB_NUMBER, 63130, L"Number", L"fore:#FF8000", L"" },
+                        { SCE_MATLAB_KEYWORD, 63128, L"Keyword", L"fore:#00007F; bold", L"" },
+                        { MULTI_STYLE(SCE_MATLAB_STRING,SCE_MATLAB_DOUBLEQUOTESTRING,0,0), 63131, L"String", L"fore:#7F007F", L"" },
+                        { SCE_MATLAB_OPERATOR, 63132, L"Operator", L"", L"" },
+                        { SCE_MATLAB_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+                        { -1, 00000, L"", L"", L"" } } };
+
+
 // This array holds all the lexers...
 // Don't forget to change the number of the lexer for HTML and XML
 // in Notepad2.c ParseCommandLine() if you change this array!
@@ -2516,42 +2600,45 @@ PEDITLEXER pLexArray[NUMLEXERS] =
 {
   &lexDefault,
   &lexANSI,
-  &lexAVS,
-  &lexCONF, //Apache Config Scripts
-  &lexASM,
   &lexAHK,
+  &lexASM,
   &lexAU3,
+  &lexAVS,
+  &lexBASH,
   &lexBAT,
   &lexCOFFEESCRIPT,
-  &lexINI,
+  &lexCONF, //Apache Config Scripts
   &lexCPP,
   &lexCS,
-  &lexCmake,
   &lexCSS,
+  &lexCmake,
   &lexDIFF,
+  &lexHTML,
   &lexINNO,
   &lexJAVA,
   &lexJS,
-  &lexMAK,
-  &lexMARKDOWN,
+  &lexJSON,
   &lexLATEX,
   &lexLUA,
+  &lexMAK,
+  &lexMARKDOWN,
+  &lexMATLAB,
   &lexNSIS,
   &lexPAS,
   &lexPL,
+  &lexPROPS,
   &lexPS,
   &lexPY,
   &lexRC,
   &lexRUBY,
-  &lexBASH,
+  &lexRegistry,
   &lexSQL,
   &lexTCL,
-  &lexVBS,
   &lexVB,
-  &lexHTML,
+  &lexVBS,
+  &lexVHDL,
   &lexXML,
-  &lexYAML,
-  &lexVHDL
+  &lexYAML
 };
 
 
@@ -2609,7 +2696,7 @@ void Style_Load()
     wsprintf(tch,L"%02i",i+1);
     if (IniSectionGetString(pIniSection,tch,L"",wch,COUNTOF(wch))) {
       if (wch[0] == L'#') {
-        itok = swscanf(CharNext(wch),L"%x",&irgb);
+        itok = swscanf_s(CharNext(wch),L"%x",&irgb);
         if (itok == 1)
           crCustom[i] = RGB((irgb&0xFF0000) >> 16,(irgb&0xFF00) >> 8,irgb&0xFF);
       }
@@ -2853,6 +2940,14 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
   }
   else if (pLexNew->iLexer == SCLEX_NSIS)
     SciCall_SetProperty("nsis.ignorecase", "1");
+  else if (pLexNew->iLexer == SCLEX_CSS) {
+    SciCall_SetProperty("lexer.css.scss.language", "1");
+    SciCall_SetProperty("lexer.css.less.language", "1");
+  }
+  else if (pLexNew->iLexer == SCLEX_JSON) {
+    SciCall_SetProperty("json.allow.comments", "1");
+    SciCall_SetProperty("json.escape.sequence", "1");
+  }
 
   // Code folding
   SciCall_SetProperty("fold", "1");
@@ -3694,7 +3789,7 @@ BOOL Style_StrGetCharSet(LPCWSTR lpszStyle,int *i)
     if (p = StrChr(tch,L';'))
       *p = L'\0';
     TrimString(tch);
-    itok = swscanf(tch,L"%i",&iValue);
+    itok = swscanf_s(tch,L"%i",&iValue);
     if (itok == 1)
     {
       *i = iValue;
@@ -3733,7 +3828,7 @@ BOOL Style_StrGetSize(LPCWSTR lpszStyle,int *i)
     if (p = StrChr(tch,L';'))
       *p = L'\0';
     TrimString(tch);
-    itok = swscanf(tch,L"%i",&iValue);
+    itok = swscanf_s(tch,L"%i",&iValue);
     if (itok == 1)
     {
       if (iSign == 0)
@@ -3789,7 +3884,7 @@ BOOL Style_StrGetColor(BOOL bFore,LPCWSTR lpszStyle,int *rgb)
     if (p = StrChr(tch,L';'))
       *p = L'\0';
     TrimString(tch);
-    itok = swscanf(tch,L"%x",&iValue);
+    itok = swscanf_s(tch,L"%x",&iValue);
     if (itok == 1)
     {
       *rgb = RGB((iValue&0xFF0000) >> 16,(iValue&0xFF00) >> 8,iValue&0xFF);
@@ -3845,7 +3940,7 @@ BOOL Style_StrGetAlpha(LPCWSTR lpszStyle,int *i)
     if (p = StrChr(tch,L';'))
       *p = L'\0';
     TrimString(tch);
-    itok = swscanf(tch,L"%i",&iValue);
+    itok = swscanf_s(tch,L"%i",&iValue);
     if (itok == 1)
     {
       *i = min(max(SC_ALPHA_TRANSPARENT,iValue),SC_ALPHA_OPAQUE);
@@ -4107,7 +4202,6 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
 {
 
   WCHAR tch[256];
-  WCHAR *p;
   int  iValue;
 
   // Font
@@ -4130,25 +4224,25 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
     SendMessage(hwnd,SCI_STYLESETBACK,iStyle,(LPARAM)iValue);
 
   // Bold
-  if (p = StrStrI(lpszStyle,L"bold"))
+  if (StrStrI(lpszStyle,L"bold") != NULL)
     SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)TRUE);
   else
     SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)FALSE);
 
   // Italic
-  if (p = StrStrI(lpszStyle,L"italic"))
+  if (StrStrI(lpszStyle,L"italic") != NULL)
     SendMessage(hwnd,SCI_STYLESETITALIC,iStyle,(LPARAM)TRUE);
   else
     SendMessage(hwnd,SCI_STYLESETITALIC,iStyle,(LPARAM)FALSE);
 
   // Underline
-  if (p = StrStrI(lpszStyle,L"underline"))
+  if (StrStrI(lpszStyle,L"underline") != NULL)
     SendMessage(hwnd,SCI_STYLESETUNDERLINE,iStyle,(LPARAM)TRUE);
   else
     SendMessage(hwnd,SCI_STYLESETUNDERLINE,iStyle,(LPARAM)FALSE);
 
   // EOL Filled
-  if (p = StrStrI(lpszStyle,L"eolfilled"))
+  if (StrStrI(lpszStyle,L"eolfilled") != NULL)
     SendMessage(hwnd,SCI_STYLESETEOLFILLED,iStyle,(LPARAM)TRUE);
   else
     SendMessage(hwnd,SCI_STYLESETEOLFILLED,iStyle,(LPARAM)FALSE);
