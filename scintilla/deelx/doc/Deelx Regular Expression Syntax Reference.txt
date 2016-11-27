@@ -1,0 +1,426 @@
+Regular Expression Syntax Reference                                                 http://www.regexlab.com/en/regref.htm
+
+  [All rights reserved: http://www.regexlab.com/en/regref.htm]
+  [Author: sswater shi  (sswater@gmail.com)] 
+  
+  
+  Introduction
+  
+  Regular expression is to express a characteristic in a string, and then to match another string
+  with the characteristic. For example, pattern "ab+" means "one 'a' and at least one 'b' ", so "ab",
+  "abb", "abbbbbbb" match the pattern.
+  
+  Regular expression is used to : (1) test a string whether it matches a pattern, such as a email
+  address. (2) to find a substring which matches certain pattern, from a whole text. (3) to do
+  complex replacement in a text.
+  
+  It is very simple to study regular expression syntax, and the few abstract concepts can be
+  understood easily too. Many articles does not introduce its concepts from simple ones to
+  abstract ones step by step, so some persons may feel it is difficult to study. On the other hand,
+  each regular expression engine's document will describe its special function, but this part of
+  special function is not what we should study first.
+
+  
+  1. Regular Expression Basic Syntax
+  
+  1.1 Common Characters
+  
+  Letters, numbers, the underline, and punctuations with no special definition are "common
+  characters". When regular expression matches a string, a common character can match the
+  same character.
+  
+  - Example1: When pattern "c" matches string "abcde", match result: success; substring
+  matched: "c"; position: starts at 2, ends at 3.
+
+  - Example2: When pattern "bcd" matches string "abcde",match result: success; substring
+  matched: "bcd"; position: starts at 1, ends at 4.
+
+
+  1.2 Simple escaped characters
+
+  Nonprinting characters which we know:
+
+  Expression  Matches
+  \r, \n      Carriage return, newline character
+  \t          Tabs
+  \\          Matches "\" itself
+
+  Some punctuations are specially defined in regular expression. To match these characters in
+  string, add "\" in pattern. For example: ^, $ has special definition, so we need to use "\^" and
+  "\$" to match them.
+
+
+  Expression  Matches
+  \^         Matches "^" itself
+  \$         Matches "$" itself
+
+  \.         Matches dot(.) itself
+
+  These escaped characters have the same effect as "common characters": to match a certain
+  character.
+
+
+ - Example1: When pattern "\$d" matches string "abc$de", match result: success; substring
+  matched: "$d"; position: starts at 3, ends at 5.
+
+
+  1.3 Expression matches anyone of many characters
+
+  Some expressions can match anyone of many characters. For example: "\d" can match any
+  number character. Each of these expressions can match only one character at one time, though
+  they can match any character of a certain group of characters.
+
+  Expression  Matches
+
+  \d         Any digit character, any one of 0~9
+  \w         Any alpha, numeric, underline, any one of A~Z,a~z,0~9,_
+  \s         Any one of space, tab, newline, return, or newpage character
+
+  .          '.' matches any character except the newline character(\n)
+
+ - Example1: When pattern "\d\d" matches "abc123", match result: success; substring
+  matched: "12"; position: starts at 3, ends at 5.
+
+ - Example2: When pattern "a.\d" matches "aaa100", match result: success; substring
+  matched: "aa1"; position: starts at 1, ends at 4.
+
+
+  1.4 Custom expression matches anyone of many characters
+
+  Expression uses square brackets [ ] to contain a series of characters, it can match anyone of
+  them. Uses [^ ] to contain a series of characters, it can match anyone character except
+  characters contained.
+
+  Expression   Matches
+
+  [ab5@]       Matches "a" or "b" or "5" or "@"
+  [^abc]       Matches any character except "a","b","c"
+
+  [f-k]        Any character among "f"~"k"
+  [^A-F0-3]    Any character except "A"~"F","0"~"3"
+
+ - Example1: When pattern "[bcd][bcd]" matches "abc123" , match result: success; substring
+  matched: "bc"; position: starts at 1, ends at 3.
+
+ - Example2: When pattern "[^abc]" matches "abc123", match result: success; substring
+  matched: "1"; position: starts at 3, ends at 4.
+
+
+  1.5 Special expression to quantify matching
+
+  All expressions introduced before can match character only one time. If a expression is
+  followed by a quantifier, it can matches more than one times.
+
+
+  For example: we can use the pattern "[bcd]{2}" instead of "[bcd][bcd]".
+
+  Expression  Function
+             Match exactly n times, example:   "\w{2}" equals "\w\w";    "a{5}"
+  {n}
+             equals "aaaaa"
+  {m,n}      At least m but no more than n times:    "ba{1,3}" matches "ba","baa","baaa"
+
+  {m,}       Match at least n times:    "\w\d{2,}" matches "a12","_456","M12344"...
+  ?          Match 1 or 0 times, equivalent to {0,1}:    "a[cd]?" matches "a","ac","ad".
+
+  +          Match 1 or more times, equivalent to {1,}:    "a+b" matches "ab","aab","aaab"...
+  *          Match 0 or more times, equivalent to {0,}:    "\^*b" matches "b","^^^b"...
+
+
+ - Example1: When pattern "\d+\.?\d*" matches "It costs $12.5", match result: success;
+  substring matched:"12.5"; position: starts at 10, ends at 14.
+
+
+ - Example2: When pattern "go{2,8}gle" matches "Ads by goooooogle", match result:
+  success; substring matched: "goooooogle"; position: starts at 7, ends at 17.
+
+
+
+  1.6 Some special punctuations with abstract function
+
+  Some punctuations in pattern have special function:
+
+  Expression  Function
+  ^          Match the beginning of the string
+  $          Match the end of the string
+
+  \b         Match a word boundary
+
+  More examples to help you to understand.
+
+ - Example1: When pattern "^aaa" matches "xxx aaa xxx", match result: failed. Because "^"
+  must match the beginning of the string. It could match successfully on condition that "aaa" is
+  at the beginning of the string, such as "aaa xxx xxx".
+
+ - Example2: When pattern "aaa$" matches "xxx aaa xxx", match result: failed. Bacause "$"
+  must match the end of the string. It could match successfully on condition that "aaa" is at the
+  end of the string,    such as "xxx xxx aaa".
+
+ - Example3: When pattern ".\b." matches "@@@abc", match result: success; substring
+  matched: "@a"; position: starts at 2, ends at 4.
+  Further explanation: "\b" is similar to "^" and "$", matches no character itself, but it require a
+  '\w' character at its one side, another not '\w' character at the other side.
+
+
+ - Example4: When pattern "\bend\b" matches "weekend,endfor,end", match result:
+  success; substring matched: "end"; position: starts at 15, ends at 18.
+
+  Some special punctuation can make effect on other sub-patterns:
+
+
+  Expression Function
+  |          Alternation, matches either left side or right side
+             (1). Let sub-patterns in it to be a whole part when it is quantified.
+  ( )
+             (2). Match result of sub-patterns in it can be retrieved individually
+
+ - Example5: When pattern "Tom|Jack" matches string "I'm Tom, he is Jack", match result:
+  success; substring matched: "Tom"; position: starts at 4, ends at 7. When match next, match
+  result: success; substring matched: "Jack"; position: starts at 15, ends at 19.
+
+
+ - Example6: When pattern "(go\s*)+" matches "Let's go go go!", match result: success;
+  substring matched: "go go go"; position: starts at 6, ends at 14.
+
+ - Example7: When pattern "?(\d+\.?\d*)" matches "$10.9,?20.5", match result: success;
+  substring matched: "?20.5"; position: starts at 6, ends at 10. Match result of sub-patterns 
+  in "( )" is: "20.5".
+
+
+  2. Regular expression advanced syntax
+
+  2.1 Reluctant or greedy quantifiers
+
+  There are serval method to quantify subpattern, such as: "{m,n}", "{m,}", "?", "*", "+". By
+  default, a quantified subpattern is "greedy", that is, it will match as many times as possible
+  (given a particular starting location) while still allowing the rest of the pattern to match. For
+  example, to match "dxxxdxxxd":
+
+  Expression     Match result
+
+      (d)(\w+)   "\w+" matches all characters "xxxdxxxd" behind of "d"
+                 "\w+" matches all characters "xxxdxxx" between the first "d" and the last
+      (d)(\w+)(d)  "d". In order to let the whole pattern match success, "\w" has to give up the
+                 last "d", although it can match the last "d" too.
+
+  Thus it can be seen that: when "\w+" matches, it will match as many characters as possible.
+  In the second example, it does not match the last "d", but this is in order to let the whole
+  pattern match successfully. Pattern with "*" or "{m,n}" will also match as many times as
+  possible, pattern with "?" will match if possible. This type of matching is called "greedy
+  matching". ?
+
+
+  Reluctant Matching:
+
+  To follow the quantifier with a "?", it can let the pattern to match the minimum number of
+  times possible. This type of matching is called reluctant matching. In order to let the whole
+  pattern match successfully, the reluctant pattern may match a few more times if it is required.
+  For example, to match "dxxxdxxxd":
+
+  Expression     Match result
+
+      (d)(\w+?)  "\w+?" match as few times as possible, so "\w+?" matches only one "x"
+                 In order to let the whole pattern match successfully, "\w+?" has to match
+      (d)(\w+?)(d)
+                 "xxx". So, match result is: "\w+?" matches "xxx"
+
+  More examples:
+
+ - Example1: When pattern "<td>(.*)</td>" matches "<td><p>aa</p></td>
+  <td><p>bb</p></td>", match result: success; substring matched: the whole
+  "<td><p>aa</p></td> <td><p>bb</p></td>", "</td>" in the pattern matches the last
+  "</td>" in the string.
+
+ - Example2: For comparison, when pattern "<td>(.*?)</td>" matches the string in
+  example1, it matches "<td><p>aa</p></td>". When match next, the next "<td><p>bb</p>
+  </td>" can be matched.
+
+
+  2.2 Referring to matched substring \1, \2...
+
+  During the process of matching, the match results of subpattern between parentheses "( )"
+  are recorded for later use. When retrieving match results, those match result of subpattern can
+  be retrieved individually, and this has been demonstrated many times in former examples. In
+  practice, parentheses "( )" must be used to get what we want indeed after match, such as
+  "<td>(.*?)</td>".
+
+
+  In fact, those match result of subpattern between parentheses can be used not only after
+  matching, but also during matching. The latter part of subpattern, can refer the match result of
+  former subpattern. Usage: "\" plus a number to refer to the corresponding substring. "\1" refers
+  to 1st pair of parentheses' match result, "\2" refers to 2nd pair of parentheses' match result.
+
+  Examples:
+
+ - Example1: When pattern "('|")(.*?)(\1)" matches " 'Hello', "World" ", match result: success;
+  substring matched: " 'Hello' "; when match next, substring matched: " "World" ".
+
+ - Example2: When pattern "(\w)\1{4,}" matches "aa bbbb abcdefg ccccc 111121111
+  999999999", match result: success; substring matched: "ccccc"; when match next, substring
+  matched "999999999". This pattern require a character of "\w" to repeat at least 5 times.
+  Pay attention to comparison with "\w{5,}".
+
+ - Example3: When pattern "<(\w+)\s*(\w+(=('|").*?\4)?\s*)*>.*?</\1>" matches "<td
+  id='td1' style="bgcolor:white"></td>", match result: success. If both "<td>" and "</td>" are
+  not "td", the match will fail.
+
+
+  2.2b DEELX Regular Expression Replace Syntax
+  
+  $1 ~ $999 - Stands for what a certain group captured. If the number is larger than the max group number, 
+  DEELX will use less digitals, till the number is smaller than or equal to the max group number.
+    For example:
+      If the max group number is 20, "$999" means "$9" and common string "99", while "$15" means the 15th group.
+      If you need "$1" and common string "5", you can use $0015 , DEELX at most recognize 3 digitals as number.
+
+   ${name} - Stands for what a named group captured.
+   $$      - Stands for a single dollars ($).
+   $&      - Stands for what the overall expression captured.
+   $`      - The substring before the beginning of what the overall expression captured in the original text.
+   $'      - The substring behind the end of what the overall expression captured in the original text.
+   $+      - Stands for what a group captured, which group has the max group number among those groups 
+             that have captured. For example: when "aaa(b+)|ccc(b+)" matches "aaabbb" , 
+             $+ stands for $1, even though $2 has the max group number.
+   $_      - Stands for the whole original text.
+
+
+  2.3 Lookahead assertion; Lookbehind assertion
+  In former chapters, I have introduced serval punctuations with special function:
+  "^","$","\b". They all do not match any characters, but they all require certain conditions on
+  their position. Now, this chapter will introduce more methods to add conditions on the gap
+  between characters.
+
+  Lookahead assertion: "(?=xxxxx)", "(?!xxxxx)"
+
+  Format: "(?=xxxxx)", the condition which it add on the gap is that: string on the right side of
+  the gap must be abe to match the subpattern "xxxxx" between the parentheses. It is just a
+  condition, not a match operation, so there is no match result.
+
+ - Example1: When pattern "Windows (?=NT|XP)" matches "Windows 98, Windows NT,
+  Windows 2000", it can match only "Windows " of "Windows NT", the other "Windows " could
+  not be matched.
+
+ - Example2: When pattern "(\w)((?=\1\1\1)(\1))+" matches "aaa ffffff 999999999", it can
+  match first 4 "f"s among the 6 "f"s, it can match first 7 "9"s among 9 "9"s.
+
+  Format: "(?!xxxxx)", string on the right side of the gap must not be able to match the
+  subpattern "xxxxx".
+
+ - Example3: When pattern "((?!\bstop\b).)+" matches "fdjka ljfdl stop fjdsla fdj", it will
+  match from the beginning of string to the position of "stop". If there is no "stop" in the string,
+  the pattern will match the whole string.
+
+
+ - Example4: When pattern "do(?!\w)" matches "done, do, dog", it can only match "do".
+  Here, "(?!\w)" has the same effect as "\b".
+
+  Lookbehind assertion: "(?<=xxxxx)", "(?<!xxxxx)"
+
+
+  The concepts of "Lookbehind assertion" and "Lookahead assertion" are similar. "(?<=xxxxx)"
+  and "(?<!xxxxx)" require the string on the left side of the gap to be able to match or to be not
+  able to match the subpattern, not the right side. And they will not match any characters
+  themselves too.
+
+  Example5: When pattern "(?<=\d{4})\d+(?=\d{4})" matches "1234567890123456", it will
+  match 8 numbers in the middle, except first 4 numbers and last 4 numbers. Because
+  lookbehind assertion is not supported by JScript.RegExp, this example could not be
+  demonstrated. There are many engines support lookbehind assertion, such as java.util.regex
+  package in Java 1.4 or later, System.Text.RegularExpressions namespace in .NET platform, and
+  DEELX Regexp Engine etc.
+
+
+  3. Other usually supported rules
+
+
+  There are several usually supported rules which have not been mentioned.
+
+  3.1 In pattern, a character can be expressed as "\xXX" or "\uXXXX" ("X" is a hex number)
+
+
+  Format     Character range
+  \xXX       0 ~ 255, such as    space can be "\x20"
+
+  \uXXXX     Any character can be expressed as "\u" plus 4 hex numbers, such as    "\u4E2D"
+
+  3.2 While "\s", "\d", "\w", "\b" are specially defined, their uppercase letters have the opposite
+  meaning
+
+
+  Pattern  Matches
+  \S           All characters except spaces
+  \D           All characters except numeric characters
+
+  \W           All characters except alpha, numeric, "_"
+
+  \B           Characters' gap which is not a word boundary
+
+  3.3 Specially defined characters table
+
+  Character Description
+  ^        Matches the beginning of the string. Use "\^" to match "^" itself
+
+  $        Matches the end of the string. Use "\$" to match "$" itself
+  ( )      Grouping. Use "\(" and "\)" to match "(" and ")"
+  [ ]      Character class. Use "\[" and "\]" to match "[" and "]"
+
+  { }      Define quantifiers. Use "\{" and "\}" to match "{" and "}"
+  .        Match any character except newline(\n). Use "\." to match "." itself
+  ?        Let subpattern match 0 or 1 time. Use "\?" to match "?" itself
+  +        Let subpattern match at least 1 times. Use "\+" to match "+" itself
+  *        Let subpattern match any times. Use "\*" to match "*" itself
+
+  |        Alternation. Use "\|" to match "|" itself
+
+  3.4 If a subpattern is in "(?:xxxxx)", the match result is not recorded for later use.
+
+ - Example1: When pattern "(?:(\w)\1)+" matches "a bbccdd efg", the substring matched:
+  "bbccdd". The match result of subpattern in "(?:)" is not recorded, so "\1" is used to refer to the
+  match result of "(\w)".
+
+  3.5 Pattern attribute: Ignorecase,Singleline,Multiline,Global
+
+  Attribute    Description
+
+  Ignorecase   Do case-insensitive pattern matching. Default is case-sensitive.
+               Treat string as single line. That is, change "." to match any character
+  Singleline
+               whatsoever, even a newline, which it normally would not match.
+               Treat string as multiple lines. Default is that "^" and "$" match at only the very
+               start? of the string and end? of the string. If multiline, they match the
+               start? of any line and end? of any line within the string:
+  Multiline
+
+               ?xxxxxxxxx?\n
+               ?xxxxxxxxx?
+
+  Global       Replace all matches if the pattern is used in replace operation.
+
+
+
+  4. Integrated prompt
+
+
+  4.1 If you want to know what else are implemented by advanced engines, you can refer to
+  DEELX Syntax on this site.
+
+  4.2 If the pattern is required to match the whole string, not a part of string, we may use "^" and
+  "$", such as: "^\d+$" require the whole string consist of digit characters.
+
+  4.3 If the pattern is required to match a whole word, not a part of word, we may use "\b" at the
+  beginning and the end of the pattern, such as:    use "\b(if|while|else|void|int……)\b" to match
+  keywords in a program.
+
+  4.4 Do not let pattern match empty string "". Or you will get an empty substring matched,
+  while the match operation returns success. For example: if we need a pattern to match
+  "123"?"123."?"123.5"?".5", we should not use this pattern "\d*\.?\d*". Though there is
+  nothing, we may still get a success.   Proper pattern: "\d+\.?\d*|\.\d+".
+
+  4.5 Do not let a subpattern loop infinite times if the subpattern can match empty string.
+
+  4.6 Choose reluctant or greedy quantifier properly.
+  4.7 Only one side of "|" to match a certain character.
+
+  Author: sswater shi.
+
+  RegExLab.com © 2005 - 2016 All Rights Reserved
