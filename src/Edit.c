@@ -532,22 +532,16 @@ BOOL EditCopyAppend(HWND hwnd)
 
   if (iCurPos != iAnchorPos) {
 
-    if (SC_SEL_RECTANGLE == SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0)) {
-      MsgBox(MBWARN,IDS_SELRECT);
+    if (SC_SEL_RECTANGLE == SendMessage(hwnd, SCI_GETSELECTIONMODE, 0, 0)) {
+      MsgBox(MBWARN, IDS_SELRECT);
       return(FALSE);
     }
-
     else {
-      int iSelCount =
-        (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
-        (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
-
-      // fixing 64bit issue #37
-      pszText = LocalAlloc(LPTR,iSelCount + 4);
-      (int)SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)pszText);
+      int iSelLength = (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, 0);
+      pszText = LocalAlloc(LPTR, iSelLength);
+      (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)pszText);
     }
   }
-
   else {
     int cchText = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
     pszText = LocalAlloc(LPTR,cchText + 1);
@@ -1649,11 +1643,12 @@ void EditInvertCase(HWND hwnd)
   {
     if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
     {
-      int iSelCount = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
-                        (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
+      int iSelStart  = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
+      int iSelEnd    = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
+      int iSelLength = (int)SendMessage(hwnd,SCI_GETSELTEXT,0,0);
 
-      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+4);
-      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+8);
+      char*  pszText  = GlobalAlloc(GPTR,iSelLength);
+      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelLength*sizeof(WCHAR)));
 
       if (pszText == NULL || pszTextW == NULL) {
         GlobalFree(pszText);
@@ -1665,7 +1660,7 @@ void EditInvertCase(HWND hwnd)
 
       cpEdit = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
 
-      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelCount,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
+      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
 
       for (i = 0; i < cchTextW; i++) {
         if (IsCharUpperW(pszTextW[i])) {
@@ -1684,7 +1679,7 @@ void EditInvertCase(HWND hwnd)
 
         SendMessage(hwnd,SCI_BEGINUNDOACTION,0,0);
         SendMessage(hwnd,SCI_CLEAR,0,0);
-        SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)iSelCount,(LPARAM)pszText);
+        SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)(iSelEnd - iSelStart),(LPARAM)pszText);
         SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
         SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
 
@@ -1725,11 +1720,12 @@ void EditTitleCase(HWND hwnd)
   {
     if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
     {
-      int iSelCount = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
-                        (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
+      int iSelStart = (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0);
+      int iSelEnd = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
+      int iSelLength = (int)SendMessage(hwnd,SCI_GETSELTEXT,0,0);
 
-      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+4);
-      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+8);
+      char*  pszText  = GlobalAlloc(GPTR,iSelLength);
+      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelLength*sizeof(WCHAR)));
 
       if (pszText == NULL || pszTextW == NULL) {
         GlobalFree(pszText);
@@ -1741,7 +1737,7 @@ void EditTitleCase(HWND hwnd)
 
       cpEdit = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
 
-      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelCount,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
+      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
 
       if (IsW7()) {
 
@@ -1749,9 +1745,9 @@ void EditTitleCase(HWND hwnd)
 
         if (LCMapString(
               LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING|/*LCMAP_TITLECASE*/0x00000300,
-              pszTextW,cchTextW,pszMappedW,(int)LocalSize(pszMappedW)/sizeof(WCHAR))) {
+              pszTextW,cchTextW,pszMappedW,(int)(LocalSize(pszMappedW)/sizeof(WCHAR)))) {
 
-          StrCpyN(pszTextW,pszMappedW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
+          StrCpyN(pszTextW,pszMappedW,(int)(GlobalSize(pszTextW)/sizeof(WCHAR)));
           bChanged = TRUE;
         }
         else
@@ -1801,7 +1797,7 @@ void EditTitleCase(HWND hwnd)
 
         SendMessage(hwnd,SCI_BEGINUNDOACTION,0,0);
         SendMessage(hwnd,SCI_CLEAR,0,0);
-        SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)iSelCount,(LPARAM)pszText);
+        SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)(iSelEnd - iSelStart),(LPARAM)pszText);
         SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
         SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
 
@@ -1837,11 +1833,12 @@ void EditSentenceCase(HWND hwnd)
   {
     if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
     {
-      int iSelCount = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
-                        (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
+      int iSelStart  = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
+      int iSelEnd    = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
+      int iSelLength = (int)SendMessage(hwnd,SCI_GETSELTEXT,0,0);
 
-      char*  pszText  = GlobalAlloc(GPTR,(iSelCount)+4);
-      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+8);
+      char*  pszText  = GlobalAlloc(GPTR,iSelLength);
+      LPWSTR pszTextW = GlobalAlloc(GPTR,(iSelLength*sizeof(WCHAR)));
 
       if (pszText == NULL || pszTextW == NULL) {
         GlobalFree(pszText);
@@ -1853,7 +1850,7 @@ void EditSentenceCase(HWND hwnd)
 
       cpEdit = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
 
-      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelCount,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
+      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
 
       for (i = 0; i < cchTextW; i++) {
         if (StrChr(L".;!?\r\n",pszTextW[i])) {
@@ -1884,7 +1881,7 @@ void EditSentenceCase(HWND hwnd)
 
         SendMessage(hwnd,SCI_BEGINUNDOACTION,0,0);
         SendMessage(hwnd,SCI_CLEAR,0,0);
-        SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)iSelCount,(LPARAM)pszText);
+        SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)(iSelEnd - iSelStart),(LPARAM)pszText);
         SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
         SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
       }
@@ -1916,9 +1913,6 @@ void EditURLEncode(HWND hwnd)
   {
     if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
     {
-      int iSelCount = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
-                        (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
-
       char*  pszText;
       LPWSTR pszTextW;
 
@@ -1927,12 +1921,14 @@ void EditURLEncode(HWND hwnd)
       DWORD  cchEscapedW;
       LPWSTR pszEscapedW;
 
-      pszText = LocalAlloc(LPTR,(iSelCount)+4);
+      int iSelLength = (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, 0);
+
+      pszText = LocalAlloc(LPTR,iSelLength);
       if (pszText == NULL) {
         return;
       }
 
-      pszTextW = LocalAlloc(LPTR,(iSelCount*2)+8);
+      pszTextW = LocalAlloc(LPTR,(iSelLength*sizeof(WCHAR)));
       if (pszTextW == NULL) {
         LocalFree(pszText);
         return;
@@ -1940,7 +1936,7 @@ void EditURLEncode(HWND hwnd)
 
       SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)pszText);
       cpEdit = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
-      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelCount,pszTextW,(int)LocalSize(pszTextW)/sizeof(WCHAR));
+      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,(int)LocalSize(pszTextW)/sizeof(WCHAR));
 
       pszEscaped = LocalAlloc(LPTR,LocalSize(pszText) * 3);
       if (pszEscaped == NULL) {
@@ -2002,9 +1998,6 @@ void EditURLDecode(HWND hwnd)
   {
     if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
     {
-      int iSelCount = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) -
-                        (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
-
       char*  pszText;
       LPWSTR pszTextW;
 
@@ -2013,12 +2006,14 @@ void EditURLDecode(HWND hwnd)
       DWORD  cchUnescapedW;
       LPWSTR pszUnescapedW;
 
-      pszText = LocalAlloc(LPTR,(iSelCount)+4);
+      int iSelLength = (int)SendMessage(hwnd,SCI_GETSELTEXT,0,0);
+
+      pszText = LocalAlloc(LPTR,iSelLength);
       if (pszText == NULL) {
         return;
       }
 
-      pszTextW = LocalAlloc(LPTR,(iSelCount*2)+8);
+      pszTextW = LocalAlloc(LPTR,(iSelLength*sizeof(WCHAR)));
       if (pszTextW == NULL) {
         LocalFree(pszText);
         return;
@@ -2026,7 +2021,7 @@ void EditURLDecode(HWND hwnd)
 
       SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)pszText);
       cpEdit = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
-      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelCount,pszTextW,(int)LocalSize(pszTextW)/sizeof(WCHAR));
+      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,(int)LocalSize(pszTextW)/sizeof(WCHAR));
 
       pszUnescaped = LocalAlloc(LPTR,LocalSize(pszText) * 3);
       if (pszUnescaped == NULL) {
@@ -5786,6 +5781,7 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   int iTextLen;
   int iSelStart;
   int iSelEnd;
+  int iSelLength;
   int iSelCount;
   int iMatchesCount;
 
@@ -5799,6 +5795,7 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   // get current selection
   iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
   iSelEnd = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
+  iSelLength = (int)SendMessage(hwnd,SCI_GETSELTEXT,0,0);
   iSelCount = iSelEnd - iSelStart;
 
   // clear existing indicator
@@ -5806,28 +5803,28 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, iTextLen);
 
   // if nothing selected or multiple lines are selected exit
-  if (iSelCount == 0 ||
+  if ((iSelCount == 0) ||
       (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iSelStart, 0) !=
       (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iSelEnd, 0))
     return;
 
-  // fixing 64bit issue #37
-  pszText = LocalAlloc(LPTR,iSelCount + 4);
+
+  pszText = LocalAlloc(LPTR,iSelLength);
   (int)SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)pszText);
 
 
   // exit if selection is not a word and Match whole words only is enabled
   if (bMarkOccurrencesMatchWords)
   {
-    int i = 0;
-    while ((i <= iSelCount) && pszText[i])
+    int iSelStart = 0;
+    while ((iSelStart <= iSelCount) && pszText[iSelStart])
     {
-      if (StrChrIA(" \t\r\n@#$%^&*~-=+()[]{}\\/:;'\"", pszText[i]))
+      if (StrChrIA(" \t\r\n@#$%^&*~-=+()[]{}\\/:;'\"", pszText[iSelStart]))
       {
         LocalFree(pszText);
         return;
       }
-      i++;
+      iSelStart++;
     }
   }
 
