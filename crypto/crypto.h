@@ -10,9 +10,10 @@
 #define FILEKEY_FORMAT 1		// next 4 bytes determine version/format
 #define MASTERKEY_FORMAT 2		// format with master key
 #define MASTER_KEY_OFFSET (PREAMBLE_SIZE+AES_MAX_IV_SIZE)
+#define UNUSED(expr) (void)(expr)
 
 BOOL EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD *written);
 BOOL ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void **lpdata, DWORD *cbdata);
-BOOL GetFileKey( HWND hwnd );
+BOOL GetFileKey(HWND hwnd);
 void ResetEncryption();
 #endif
