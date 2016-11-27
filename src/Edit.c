@@ -5344,37 +5344,53 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bReplace)
 
 
 #ifdef BOOKMARK_EDITION
-    // Wildcard search uses the regexp engine to perform a simple search with * ? as wildcards instead of more advanced and user-unfriendly regexp syntax
-    void EscapeWildcards( char* szFind2 , LPCEDITFINDREPLACE lpefr )
+// Wildcard search uses the regexp engine to perform a simple search with * ? as wildcards 
+// instead of more advanced and user-unfriendly regexp syntax
+void EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
+{
+    char szWildcardEscaped[512] = { '\0' };
+    int iSource = 0;
+    int iDest = 0;
+
+    lpefr->fuFlags |= SCFIND_REGEXP;
+
+    while (szFind2[iSource] != '\0')
     {
-        char szWildcardEscaped[512];
-        int iSource = 0;
-        int iDest = 0;
-
-        lpefr->fuFlags |= SCFIND_REGEXP;
-
-        while( szFind2[iSource] )
+        char c = szFind2[iSource];
+        if (c == '*')
         {
-            char c = szFind2[iSource];
-            if( c == '*' )
-            {
-                szWildcardEscaped[iDest++] = '.'; szWildcardEscaped[iDest] = '*';
-            }
-            else if( c == '?' )
-            {
-                szWildcardEscaped[iDest] = '.';
-            }
-            else
-            {
-                if( c == '.'  ||  c == '^'  ||  c == '$'  ||  c == '\\'  ||  c == '['  ||  c == ']'  ||  c == '+' ) szWildcardEscaped[iDest++] = '\\';
-                szWildcardEscaped[iDest] = c;
-            }
-            iSource++;
-            iDest++;
+            szWildcardEscaped[iDest++] = '.';
         }
-        szWildcardEscaped[iDest] = (char)NULL;
-        lstrcpynA(szFind2,szWildcardEscaped,COUNTOF(szWildcardEscaped));
+        else if (c == '?')
+        {
+            c = '.';
+        }
+        else
+        {
+            if (c == '^' ||
+                c == '$' ||
+                c == '(' ||
+                c == ')' ||
+                c == '[' ||
+                c == ']' ||
+                c == '{' ||
+                c == '}' ||
+                c == '.' ||
+                c == '+' ||
+                c == '|' ||
+                c == '\\')
+            {
+                szWildcardEscaped[iDest++] = '\\';
+            }
+        }
+        szWildcardEscaped[iDest++] = c;
+        iSource++;
     }
+
+    szWildcardEscaped[iDest] = '\0';
+
+    lstrcpynA(szFind2, szWildcardEscaped, COUNTOF(szWildcardEscaped));
+}
 #endif
 
 
