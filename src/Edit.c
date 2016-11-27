@@ -2340,28 +2340,22 @@ void EditTabsToSpaces(HWND hwnd,int nTabWidth,BOOL bOnlyIndentingWS)
   iCurPos    = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
   iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
 
-  if (iCurPos == iAnchorPos) /*{
-    iSelStart = 0;
-    iSelEnd   = SendMessage(hwnd,SCI_GETLENGTH,0,0);
-  }*/
+  if (iCurPos == iAnchorPos)
     return;
 
-  else {
-    iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
-    iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
-  }
-
-  iLine = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iSelStart,0);
-  iSelStart = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
-
+  iSelStart = (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0);
+  iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, (WPARAM)iSelStart, 0);
+  iSelStart = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (WPARAM)iLine, 0);   // rebase selection to start of line
+  iSelEnd = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
   iSelCount = iSelEnd - iSelStart;
 
-  pszText = GlobalAlloc(GPTR,(iSelCount)+2);
+  pszText = GlobalAlloc(GPTR, iSelCount + 2);
   if (pszText == NULL)
     return;
 
-  pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+2);
-  if (pszTextW == NULL) {
+  pszTextW = GlobalAlloc(GPTR, (iSelCount + 2) * sizeof(WCHAR));
+  if (pszTextW == NULL)
+  {
     GlobalFree(pszText);
     return;
   }
@@ -2476,28 +2470,22 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,BOOL bOnlyIndentingWS)
   iCurPos    = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
   iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
 
-  if (iCurPos == iAnchorPos) /*{
-    iSelStart = 0;
-    iSelEnd   = SendMessage(hwnd,SCI_GETLENGTH,0,0);
-  }*/
+  if (iCurPos == iAnchorPos)
     return;
 
-  else {
-    iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
-    iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
-  }
-
-  iLine = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iSelStart,0);
-  iSelStart = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
-
+  iSelStart = (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0);
+  iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, (WPARAM)iSelStart, 0);
+  iSelStart = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (WPARAM)iLine, 0);  // rebase selection to start of line
+  iSelEnd = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
   iSelCount = iSelEnd - iSelStart;
 
-  pszText = GlobalAlloc(GPTR,(iSelCount)+2);
+  pszText = GlobalAlloc(GPTR, iSelCount + 2);
   if (pszText == NULL)
     return;
 
-  pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+2);
-  if (pszTextW == NULL) {
+  pszTextW = GlobalAlloc(GPTR, (iSelCount + 2) * sizeof(WCHAR));
+  if (pszTextW == NULL)
+  {
     GlobalFree(pszText);
     return;
   }
@@ -4027,27 +4015,20 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
   iCurPos    = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
   iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
 
-  if (iCurPos == iAnchorPos) /*{
-    iSelStart = 0;
-    iSelEnd   = SendMessage(hwnd,SCI_GETLENGTH,0,0);
-  }*/
+  if (iCurPos == iAnchorPos)
     return;
 
-  else {
-    iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
-    iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
-  }
-
+  iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
   iLine = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iSelStart,0);
   iSelStart = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
-
+  iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
   iSelCount = iSelEnd - iSelStart;
 
-  pszText = GlobalAlloc(GPTR,(iSelCount)+2);
+  pszText = GlobalAlloc(GPTR,iSelCount+2);
   if (pszText == NULL)
     return;
 
-  pszTextW = GlobalAlloc(GPTR,(iSelCount*2)+2);
+  pszTextW = GlobalAlloc(GPTR,(iSelCount+2)*sizeof(WCHAR));
   if (pszTextW == NULL) {
     GlobalFree(pszText);
     return;
@@ -4060,7 +4041,7 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
 
   cpEdit = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
 
-  cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelCount,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
+  cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelCount,pszTextW,(int)(GlobalSize(pszTextW)/sizeof(WCHAR)));
   GlobalFree(pszText);
 
   pszConvW = GlobalAlloc(GPTR,cchTextW*sizeof(WCHAR)*3+2);
@@ -4240,17 +4221,13 @@ void EditJoinLinesEx(HWND hwnd)
   if (iCurPos == iAnchorPos)
     return;
 
-  else {
-    iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
-    iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
-  }
-
+  iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
   iLine = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iSelStart,0);
   iSelStart = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
-
+  iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
   iSelCount = iSelEnd - iSelStart;
 
-  pszText = LocalAlloc(LPTR,(iSelCount)+2);
+  pszText = LocalAlloc(LPTR,iSelCount+4);
   if (pszText == NULL)
     return;
 
