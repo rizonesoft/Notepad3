@@ -11,7 +11,12 @@ noExplicitConstructor
 // cppcheck does not understand private methods can be called from static methods
 unusedPrivateFunction:scintilla/win32/PlatWin.cxx
 
+// The performance cost of by-value passing is often small and using a reference decreases
+// code legibility.
+passedByValue
+
 // Suppress most lexer warnings since the lexers are maintained by others
+redundantCondition:scintilla/lexers/LexA68k.cxx
 useInitializationList:scintilla/lexers/LexAsm.cxx
 useInitializationList:scintilla/lexers/LexBasic.cxx
 uninitMemberVar:scintilla/lexers/LexBash.cxx
@@ -30,6 +35,7 @@ variableScope:scintilla/lexers/LexNimrod.cxx
 variableScope:scintilla/lexers/LexNsis.cxx
 variableScope:scintilla/lexers/LexOpal.cxx
 variableScope:scintilla/lexers/LexPB.cxx
+variableScope:scintilla/lexers/LexProgress.cxx
 variableScope:scintilla/lexers/LexRuby.cxx
 uninitMemberVar:scintilla/lexers/LexRuby.cxx
 variableScope:scintilla/lexers/LexSpecman.cxx

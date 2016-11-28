@@ -34,16 +34,16 @@
  * Markus Friedl <markus.friedl@informatik.uni-erlangen.de>
  * John Skodon <skodonj@webquill.com>
  */
-/* @doc CRYPTO
+ /* @doc CRYPTO
 
-  None of the functinality has been changed, but some names and definitions
-  have been tweaked for compatibility with the local environment.
+   None of the functinality has been changed, but some names and definitions
+   have been tweaked for compatibility with the local environment.
 
-*/
+ */
 #include <windows.h>
-//#include "helpers.h"
-//#include "appreg.h"
-//#include "resource.h"
+ //#include "helpers.h"
+ //#include "appreg.h"
+ //#include "resource.h"
 #include <stdio.h>
 #include "crypto.h"
 #include "sha-256.h"
@@ -56,9 +56,9 @@
 <nl>Overview: <l Crypto Utilities>
  */
 void AES_keygen(char *passphrase,	//* @parm the ascii passphrase
-        BYTE key[32])		//* @parm the result key
+                BYTE key[32])		//* @parm the result key
 {
-  Sha256String(passphrase,key);
+    Sha256String(passphrase, key);
 }
 /* @func
  prepare an AES key for use.  TheKey is a string of hex digits,
@@ -68,75 +68,78 @@ void AES_keygen(char *passphrase,	//* @parm the ascii passphrase
 <nl>Overview: <l Crypto Utilities>
 */
 int AES_setup
-  (AES_keyInstance *key,	// @parm the <t AES_keyInstance> to be initialized
-  AES_MODES direction,	// @parm either <e AES_MODES.AES_DIR_ENCRYPT> or <e AES_MODES.AES_DIR_DECRYPT>
-  int keyLen,				// @parm the length of the key in bits (better be 256)
-  char *TheKey)			// @parm the key itself, a hex string
+(AES_keyInstance *key,	// @parm the <t AES_keyInstance> to be initialized
+ AES_MODES direction,	// @parm either <e AES_MODES.AES_DIR_ENCRYPT> or <e AES_MODES.AES_DIR_DECRYPT>
+ int keyLen,				// @parm the length of the key in bits (better be 256)
+ char *TheKey)			// @parm the key itself, a hex string
 {
-  int i;
-  char *keyMat;
-  u8 cipherKey[MAXKB];
+    int i;
+    char *keyMat;
+    u8 cipherKey[MAXKB];
 
 
-  if (TheKey != NULL) {
-    //strncpy(key->TheKey, TheKey, keyLen/4);
-    memcpy_s(key->TheKey, AES_MAX_KEY_SIZE, TheKey, keyLen / 4);
-  }
+    if (TheKey != NULL) {
+        //strncpy(key->TheKey, TheKey, keyLen/4);
+        memcpy_s(key->TheKey, AES_MAX_KEY_SIZE, TheKey, keyLen / 4);
+    }
 
-  /* initialize key schedule: */
-  keyMat = key->TheKey;
-  for (i = 0; i < keyLen/8; i++) {
-    int t, v;
+    /* initialize key schedule: */
+    keyMat = key->TheKey;
+    for (i = 0; i < keyLen / 8; i++) {
+        int t, v;
 
-    t = *keyMat++;
-    if ((t >= '0') && (t <= '9')) v = (t - '0') << 4;
-    else if ((t >= 'a') && (t <= 'f')) v = (t - 'a' + 10) << 4;
-    else if ((t >= 'A') && (t <= 'F')) v = (t - 'A' + 10) << 4;
-    else return BAD_KEY_MAT;
+        t = *keyMat++;
+        if ((t >= '0') && (t <= '9')) v = (t - '0') << 4;
+        else if ((t >= 'a') && (t <= 'f')) v = (t - 'a' + 10) << 4;
+        else if ((t >= 'A') && (t <= 'F')) v = (t - 'A' + 10) << 4;
+        else return BAD_KEY_MAT;
 
-    t = *keyMat++;
-    if ((t >= '0') && (t <= '9')) v ^= (t - '0');
-    else if ((t >= 'a') && (t <= 'f')) v ^= (t - 'a' + 10);
-    else if ((t >= 'A') && (t <= 'F')) v ^= (t - 'A' + 10);
-    else return BAD_KEY_MAT;
+        t = *keyMat++;
+        if ((t >= '0') && (t <= '9')) v ^= (t - '0');
+        else if ((t >= 'a') && (t <= 'f')) v ^= (t - 'a' + 10);
+        else if ((t >= 'A') && (t <= 'F')) v ^= (t - 'A' + 10);
+        else return BAD_KEY_MAT;
 
-    cipherKey[i] = (u8)v;
-  }
-  return(AES_bin_setup(key,direction,keyLen,cipherKey));
+        cipherKey[i] = (u8)v;
+    }
+    return(AES_bin_setup(key, direction, keyLen, cipherKey));
 }
 /* @func
- lower level version of <f AES_setup> where the key is already 
+ lower level version of <f AES_setup> where the key is already
  converted to binary.
 */
-int AES_bin_setup	
-  (AES_keyInstance *key,	// @parm the <t AES_keyInstance> to be initialized
-  AES_MODES direction,	// @parm either <e AES_MODES.AES_DIR_ENCRYPT> or <e AES_MODES.AES_DIR_DECRYPT>
-  int keyLen,				// @parm the length of the key in bits (better be 256)
-  BYTE *cipherKey)		// @parm the key itself, keyLen/8 bytes
+int AES_bin_setup
+(AES_keyInstance *key,	// @parm the <t AES_keyInstance> to be initialized
+ AES_MODES direction,	// @parm either <e AES_MODES.AES_DIR_ENCRYPT> or <e AES_MODES.AES_DIR_DECRYPT>
+ int keyLen,				// @parm the length of the key in bits (better be 256)
+ BYTE *cipherKey)		// @parm the key itself, keyLen/8 bytes
 {
-  if (key == NULL) {
-    return BAD_KEY_INSTANCE;
-  }
+    if (key == NULL) {
+        return BAD_KEY_INSTANCE;
+    }
 
-  if ((direction == AES_DIR_ENCRYPT) || (direction == AES_DIR_DECRYPT)) {
-    key->direction = direction;
-  } else {
-    return BAD_KEY_DIR;
-  }
+    if ((direction == AES_DIR_ENCRYPT) || (direction == AES_DIR_DECRYPT)) {
+        key->direction = direction;
+    }
+    else {
+        return BAD_KEY_DIR;
+    }
 
-  if ((keyLen == 128) || (keyLen == 192) || (keyLen == 256)) {
-    key->keyLen = keyLen;
-  } else {
-    return BAD_KEY_MAT;
-  }
+    if ((keyLen == 128) || (keyLen == 192) || (keyLen == 256)) {
+        key->keyLen = keyLen;
+    }
+    else {
+        return BAD_KEY_MAT;
+    }
 
-  if (direction == AES_DIR_ENCRYPT) {
-    key->Nr = rijndaelKeySetupEnc(key->rk, cipherKey, keyLen);
-  } else {
-    key->Nr = rijndaelKeySetupDec(key->rk, cipherKey, keyLen);
-  }
-  rijndaelKeySetupEnc(key->ek, cipherKey, keyLen);
-  return TRUE;
+    if (direction == AES_DIR_ENCRYPT) {
+        key->Nr = rijndaelKeySetupEnc(key->rk, cipherKey, keyLen);
+    }
+    else {
+        key->Nr = rijndaelKeySetupDec(key->rk, cipherKey, keyLen);
+    }
+    rijndaelKeySetupEnc(key->ek, cipherKey, keyLen);
+    return TRUE;
 }
 
 /* @func
@@ -146,22 +149,23 @@ int AES_bin_setup
 <nl>Overview: <l Crypto Utilities>
   */
 int AES_bin_cipherInit
-  (AES_cipherInstance *cipher,	//@parm the <t AES_cipherInstance> to be set up
-  AES_MODES mode,				//@parm the <t AES_MODES> to use, <e AES_MODES.AES_MODE_CBC> is recommended
-  BYTE *IV)			//@parm the IV, any 16 bytes
+(AES_cipherInstance *cipher,	//@parm the <t AES_cipherInstance> to be set up
+ AES_MODES mode,				//@parm the <t AES_MODES> to use, <e AES_MODES.AES_MODE_CBC> is recommended
+ BYTE *IV)			//@parm the IV, any 16 bytes
 {
-  if ((mode == AES_MODE_ECB) || (mode == AES_MODE_CBC) || (mode == AES_MODE_CFB1)) {
-    cipher->mode = mode;
-  } else {
-    return BAD_CIPHER_MODE;
-  }
-  if(IV!=NULL)
-  {
-    memcpy(cipher->IV,IV,AES_MAX_IV_SIZE);
-  } else {
-    memset(cipher->IV, 0, AES_MAX_IV_SIZE);
-  }
-  return TRUE;
+    if ((mode == AES_MODE_ECB) || (mode == AES_MODE_CBC) || (mode == AES_MODE_CFB1)) {
+        cipher->mode = mode;
+    }
+    else {
+        return BAD_CIPHER_MODE;
+    }
+    if (IV != NULL) {
+        memcpy(cipher->IV, IV, AES_MAX_IV_SIZE);
+    }
+    else {
+        memset(cipher->IV, 0, AES_MAX_IV_SIZE);
+    }
+    return TRUE;
 }
 
 /* @func
@@ -171,38 +175,40 @@ int AES_bin_cipherInit
 <nl>Overview: <l Crypto Utilities>
   */
 int AES_cipherInit
-  (AES_cipherInstance *cipher,	//@parm the <t AES_cipherInstance> to be set up
-  AES_MODES mode,				//@parm the <t AES_MODES> to use, <e AES_MODES.AES_MODE_CBC> is recommended
-  char *IV)			//@parm the IV, ascii hex to define 16 bytes
+(AES_cipherInstance *cipher,	//@parm the <t AES_cipherInstance> to be set up
+ AES_MODES mode,				//@parm the <t AES_MODES> to use, <e AES_MODES.AES_MODE_CBC> is recommended
+ char *IV)			//@parm the IV, ascii hex to define 16 bytes
 {
-  if ((mode == AES_MODE_ECB) || (mode == AES_MODE_CBC) || (mode == AES_MODE_CFB1)) {
-    cipher->mode = mode;
-  } else {
-    return BAD_CIPHER_MODE;
-  }
-  if (IV != NULL) {
-    int i;
-    for (i = 0; i < AES_MAX_IV_SIZE; i++) {
-      int t, j;
-
-      t = IV[2*i];
-      if ((t >= '0') && (t <= '9')) j = (t - '0') << 4;
-      else if ((t >= 'a') && (t <= 'f')) j = (t - 'a' + 10) << 4;
-      else if ((t >= 'A') && (t <= 'F')) j = (t - 'A' + 10) << 4;
-      else return BAD_CIPHER_INSTANCE;
-
-      t = IV[2*i+1];
-      if ((t >= '0') && (t <= '9')) j ^= (t - '0');
-      else if ((t >= 'a') && (t <= 'f')) j ^= (t - 'a' + 10);
-      else if ((t >= 'A') && (t <= 'F')) j ^= (t - 'A' + 10);
-      else return BAD_CIPHER_INSTANCE;
-
-      cipher->IV[i] = (u8)j;
+    if ((mode == AES_MODE_ECB) || (mode == AES_MODE_CBC) || (mode == AES_MODE_CFB1)) {
+        cipher->mode = mode;
     }
-  } else {
-    memset(cipher->IV, 0, AES_MAX_IV_SIZE);
-  }
-  return TRUE;
+    else {
+        return BAD_CIPHER_MODE;
+    }
+    if (IV != NULL) {
+        int i;
+        for (i = 0; i < AES_MAX_IV_SIZE; i++) {
+            int t, j;
+
+            t = IV[2 * i];
+            if ((t >= '0') && (t <= '9')) j = (t - '0') << 4;
+            else if ((t >= 'a') && (t <= 'f')) j = (t - 'a' + 10) << 4;
+            else if ((t >= 'A') && (t <= 'F')) j = (t - 'A' + 10) << 4;
+            else return BAD_CIPHER_INSTANCE;
+
+            t = IV[2 * i + 1];
+            if ((t >= '0') && (t <= '9')) j ^= (t - '0');
+            else if ((t >= 'a') && (t <= 'f')) j ^= (t - 'a' + 10);
+            else if ((t >= 'A') && (t <= 'F')) j ^= (t - 'A' + 10);
+            else return BAD_CIPHER_INSTANCE;
+
+            cipher->IV[i] = (u8)j;
+        }
+    }
+    else {
+        memset(cipher->IV, 0, AES_MAX_IV_SIZE);
+    }
+    return TRUE;
 }
 /* @func
  Encrypt a block of data, using the provided key and cipher.  The block
@@ -214,61 +220,61 @@ int AES_cipherInit
   @rdesc number of bytes encrypted
   */
 int AES_blockEncrypt
-  (AES_cipherInstance *cipher, //@parm the current <t AES_cipherInstance>
-   AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
-  BYTE *input,	// @parm the input data
-  int inputLen,	// @parm the size of the input data
-  BYTE *outBuffer) //@parm a buffer to receive the encrypted data
+(AES_cipherInstance *cipher, //@parm the current <t AES_cipherInstance>
+ AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
+ BYTE *input,	// @parm the input data
+ int inputLen,	// @parm the size of the input data
+ BYTE *outBuffer) //@parm a buffer to receive the encrypted data
 {
-  int i, k, t, numBlocks;
-  u8 block[16], *iv;
+    int i, k, t, numBlocks;
+    u8 block[16], *iv;
 
-  if (cipher == NULL ||
-    key == NULL ||
-    key->direction == AES_DIR_DECRYPT) {
-    return BAD_CIPHER_STATE;
-  }
-  if (input == NULL || inputLen <= 0) {
-    return 0; /* nothing to do */
-  }
-
-  numBlocks = inputLen/16;
-
-  switch (cipher->mode) {
-  case AES_MODE_ECB:
-    for (i = numBlocks; i > 0; i--) {
-      rijndaelEncrypt(key->rk, key->Nr, input, outBuffer);
-      input += 16;
-      outBuffer += 16;
+    if (cipher == NULL ||
+        key == NULL ||
+        key->direction == AES_DIR_DECRYPT) {
+        return BAD_CIPHER_STATE;
     }
-    break;
-
-  case AES_MODE_CBC:
-    iv = cipher->IV;
-    for (i = numBlocks; i > 0; i--) {
-      ((u32*)block)[0] = ((u32*)input)[0] ^ ((u32*)iv)[0];
-      ((u32*)block)[1] = ((u32*)input)[1] ^ ((u32*)iv)[1];
-      ((u32*)block)[2] = ((u32*)input)[2] ^ ((u32*)iv)[2];
-      ((u32*)block)[3] = ((u32*)input)[3] ^ ((u32*)iv)[3];
-      rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
-      iv = outBuffer;
-      input += 16;
-      outBuffer += 16;
+    if (input == NULL || inputLen <= 0) {
+        return 0; /* nothing to do */
     }
-    // copy the iv for proper chaining to the next block
-    if (numBlocks > 0)
-          memcpy(cipher->IV,outBuffer-AES_MAX_IV_SIZE,AES_MAX_IV_SIZE);
-    break;
+
+    numBlocks = inputLen / 16;
+
+    switch (cipher->mode) {
+    case AES_MODE_ECB:
+        for (i = numBlocks; i > 0; i--) {
+            rijndaelEncrypt(key->rk, key->Nr, input, outBuffer);
+            input += 16;
+            outBuffer += 16;
+        }
+        break;
+
+    case AES_MODE_CBC:
+        iv = cipher->IV;
+        for (i = numBlocks; i > 0; i--) {
+            ((u32*)block)[0] = ((u32*)input)[0] ^ ((u32*)iv)[0];
+            ((u32*)block)[1] = ((u32*)input)[1] ^ ((u32*)iv)[1];
+            ((u32*)block)[2] = ((u32*)input)[2] ^ ((u32*)iv)[2];
+            ((u32*)block)[3] = ((u32*)input)[3] ^ ((u32*)iv)[3];
+            rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
+            iv = outBuffer;
+            input += 16;
+            outBuffer += 16;
+        }
+        // copy the iv for proper chaining to the next block
+        if (numBlocks > 0)
+            memcpy(cipher->IV, outBuffer - AES_MAX_IV_SIZE, AES_MAX_IV_SIZE);
+        break;
 
     case AES_MODE_CFB1:
-    iv = cipher->IV;
+        iv = cipher->IV;
         for (i = numBlocks; i > 0; i--) {
-      memcpy(outBuffer, input, 16);
+            memcpy(outBuffer, input, 16);
             for (k = 0; k < 128; k++) {
-        rijndaelEncrypt(key->ek, key->Nr, iv, block);
+                rijndaelEncrypt(key->ek, key->Nr, iv, block);
                 outBuffer[k >> 3] ^= (block[0] & 0x80U) >> (k & 7);
                 for (t = 0; t < 15; t++) {
-                  iv[t] = (iv[t] << 1) | (iv[t + 1] >> 7);
+                    iv[t] = (iv[t] << 1) | (iv[t + 1] >> 7);
                 }
                 iv[15] = (iv[15] << 1) | ((outBuffer[k >> 3] >> (7 - (k & 7))) & 1);
             }
@@ -277,11 +283,11 @@ int AES_blockEncrypt
         }
         break;
 
-  default:
-    return BAD_CIPHER_STATE;
-  }
+    default:
+        return BAD_CIPHER_STATE;
+    }
 
-  return 16*numBlocks;
+    return 16 * numBlocks;
 }
 
 /* @func
@@ -290,7 +296,7 @@ int AES_blockEncrypt
   multiple blocks, all but the last should be multiples of 16 in size and
   be encrypted using <f AES_encrypt>.  This last block will be padded to
   fill out the block, or if the original was already a multiple of 16, a
-  full 16 bytes of padding will be added.   Conventional use is to always 
+  full 16 bytes of padding will be added.   Conventional use is to always
   provide at least one pad byte. If the original file was
   a multiple of 16, supply a block of 16 pad bytes so the decrypted data
   can be exactly the size of the encrypted data.  In CBC mode, the cipher IV is updated to be ready
@@ -299,74 +305,74 @@ int AES_blockEncrypt
   @rdesc	length in octets (not bits) of the encrypted output buffer.
  */
 int AES_padEncrypt
-  (AES_cipherInstance *cipher, //@parm the current <t AES_cipherInstance>
-   AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
-  BYTE *input,	// @parm the input data
-  int inputOctets, // @parm the size of the input data
-  BYTE *outBuffer) //@parm a buffer to receive the encrypted data
+(AES_cipherInstance *cipher, //@parm the current <t AES_cipherInstance>
+ AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
+ BYTE *input,	// @parm the input data
+ int inputOctets, // @parm the size of the input data
+ BYTE *outBuffer) //@parm a buffer to receive the encrypted data
 {
-  int i, numBlocks, padLen;
-  u8 block[16], *iv;
+    int i, numBlocks, padLen;
+    u8 block[16], *iv;
 
-  if (cipher == NULL ||
-    key == NULL ||
-    key->direction == AES_DIR_DECRYPT) {
-    return BAD_CIPHER_STATE;
-  }
-  if (input == NULL || inputOctets < 0) {
-    return 0; /* nothing to do */
-  }
-
-  numBlocks = inputOctets/16;
-
-  switch (cipher->mode) {
-  case AES_MODE_ECB:
-    for (i = numBlocks; i > 0; i--) {
-      rijndaelEncrypt(key->rk, key->Nr, input, outBuffer);
-      input += 16;
-      outBuffer += 16;
+    if (cipher == NULL ||
+        key == NULL ||
+        key->direction == AES_DIR_DECRYPT) {
+        return BAD_CIPHER_STATE;
     }
-    padLen = 16 - (inputOctets - 16*numBlocks);
-    if((padLen <= 0) || (padLen > 16))
-      { BUG1("Padding must be 1-16, is %d",padLen); 
-      }
-    memcpy(block, input, 16 - padLen);
-    memset(block + 16 - padLen, padLen, padLen);
-    rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
-    break;
-
-  case AES_MODE_CBC:
-    iv = cipher->IV;
-    for (i = numBlocks; i > 0; i--) {
-      ((u32*)block)[0] = ((u32*)input)[0] ^ ((u32*)iv)[0];
-      ((u32*)block)[1] = ((u32*)input)[1] ^ ((u32*)iv)[1];
-      ((u32*)block)[2] = ((u32*)input)[2] ^ ((u32*)iv)[2];
-      ((u32*)block)[3] = ((u32*)input)[3] ^ ((u32*)iv)[3];
-      rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
-      iv = outBuffer;
-      input += 16;
-      outBuffer += 16;
+    if (input == NULL || inputOctets < 0) {
+        return 0; /* nothing to do */
     }
-    padLen = 16 - (inputOctets - 16*numBlocks);
-    if((padLen <= 0) || (padLen > 16))
-      { BUG1("Padding must be 1-16, is %d",padLen); 
-      }
-    for (i = 0; i < 16 - padLen; i++) {
-      block[i] = input[i] ^ iv[i];
-    }
-    for (i = 16 - padLen; i < 16; i++) {
-      block[i] = (BYTE)padLen ^ iv[i];
-    }
-    rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
-    // set for chaining to the next block, even though there will normally not be one
-        memcpy(cipher->IV,outBuffer,AES_MAX_IV_SIZE);
-    break;
 
-  default:
-    return BAD_CIPHER_STATE;
-  }
+    numBlocks = inputOctets / 16;
 
-  return 16*(numBlocks + 1);
+    switch (cipher->mode) {
+    case AES_MODE_ECB:
+        for (i = numBlocks; i > 0; i--) {
+            rijndaelEncrypt(key->rk, key->Nr, input, outBuffer);
+            input += 16;
+            outBuffer += 16;
+        }
+        padLen = 16 - (inputOctets - 16 * numBlocks);
+        if ((padLen <= 0) || (padLen > 16)) {
+            BUG1("Padding must be 1-16, is %d", padLen);
+        }
+        memcpy(block, input, 16 - padLen);
+        memset(block + 16 - padLen, padLen, padLen);
+        rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
+        break;
+
+    case AES_MODE_CBC:
+        iv = cipher->IV;
+        for (i = numBlocks; i > 0; i--) {
+            ((u32*)block)[0] = ((u32*)input)[0] ^ ((u32*)iv)[0];
+            ((u32*)block)[1] = ((u32*)input)[1] ^ ((u32*)iv)[1];
+            ((u32*)block)[2] = ((u32*)input)[2] ^ ((u32*)iv)[2];
+            ((u32*)block)[3] = ((u32*)input)[3] ^ ((u32*)iv)[3];
+            rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
+            iv = outBuffer;
+            input += 16;
+            outBuffer += 16;
+        }
+        padLen = 16 - (inputOctets - 16 * numBlocks);
+        if ((padLen <= 0) || (padLen > 16)) {
+            BUG1("Padding must be 1-16, is %d", padLen);
+        }
+        for (i = 0; i < 16 - padLen; i++) {
+            block[i] = input[i] ^ iv[i];
+        }
+        for (i = 16 - padLen; (0 <= i) && (i < 16); i++) {
+            block[i] = (BYTE)padLen ^ iv[i];
+        }
+        rijndaelEncrypt(key->rk, key->Nr, block, outBuffer);
+        // set for chaining to the next block, even though there will normally not be one
+        memcpy(cipher->IV, outBuffer, AES_MAX_IV_SIZE);
+        break;
+
+    default:
+        return BAD_CIPHER_STATE;
+    }
+
+    return 16 * (numBlocks + 1);
 }
 /* @func
 Decrypt a block of data using the supplied key and cipher.  The block
@@ -377,59 +383,59 @@ next block.
 @rdesc the number of bytes decrypted
   */
 int AES_blockDecrypt
-  (AES_cipherInstance *cipher,	//@parm the current <t AES_cipherInstance>
-  AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
-  BYTE *input,	//@parm the input encrypted data
-  int inputLen,	//@parm the size of the input
-  BYTE *outBuffer) //@parm a buffer to receive the decrypted buffer
-{	int lim=32;
-  int i, k, t, numBlocks;
-  u8 block[16], *iv;
+(AES_cipherInstance *cipher,	//@parm the current <t AES_cipherInstance>
+ AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
+ BYTE *input,	//@parm the input encrypted data
+ int inputLen,	//@parm the size of the input
+ BYTE *outBuffer) //@parm a buffer to receive the decrypted buffer
+{
+    //int lim = 32;
+    int i, k, t, numBlocks;
+    u8 block[16], *iv;
 
-  if (cipher == NULL ||
-    key == NULL ||
-    cipher->mode != AES_MODE_CFB1 && key->direction == AES_DIR_ENCRYPT) {
-    return BAD_CIPHER_STATE;
-  }
-  if (input == NULL || inputLen <= 0) {
-    return 0; /* nothing to do */
-  }
-
-  numBlocks = inputLen/16;
-
-  switch (cipher->mode) {
-  case AES_MODE_ECB:
-    for (i = numBlocks; i > 0; i--) {
-      rijndaelDecrypt(key->rk, key->Nr, input, outBuffer);
-      input += 16;
-      outBuffer += 16;
+    if (cipher == NULL ||
+        key == NULL ||
+        cipher->mode != AES_MODE_CFB1 && key->direction == AES_DIR_ENCRYPT) {
+        return BAD_CIPHER_STATE;
     }
-    break;
-
-  case AES_MODE_CBC:
-    iv = cipher->IV;
-    for (i = numBlocks; i > 0; i--) 
-    {
-      rijndaelDecrypt(key->rk, key->Nr, input, block);
-      ((u32*)block)[0] ^= ((u32*)iv)[0];
-      ((u32*)block)[1] ^= ((u32*)iv)[1];
-      ((u32*)block)[2] ^= ((u32*)iv)[2];
-      ((u32*)block)[3] ^= ((u32*)iv)[3];
-      memcpy(cipher->IV, input, 16);
-      memcpy(outBuffer, block, 16);
-      input += 16;
-      outBuffer += 16;
+    if (input == NULL || inputLen <= 0) {
+        return 0; /* nothing to do */
     }
-    break;
+
+    numBlocks = inputLen / 16;
+
+    switch (cipher->mode) {
+    case AES_MODE_ECB:
+        for (i = numBlocks; i > 0; i--) {
+            rijndaelDecrypt(key->rk, key->Nr, input, outBuffer);
+            input += 16;
+            outBuffer += 16;
+        }
+        break;
+
+    case AES_MODE_CBC:
+        iv = cipher->IV;
+        for (i = numBlocks; i > 0; i--) {
+            rijndaelDecrypt(key->rk, key->Nr, input, block);
+            ((u32*)block)[0] ^= ((u32*)iv)[0];
+            ((u32*)block)[1] ^= ((u32*)iv)[1];
+            ((u32*)block)[2] ^= ((u32*)iv)[2];
+            ((u32*)block)[3] ^= ((u32*)iv)[3];
+            memcpy(cipher->IV, input, 16);
+            memcpy(outBuffer, block, 16);
+            input += 16;
+            outBuffer += 16;
+        }
+        break;
 
     case AES_MODE_CFB1:
-    iv = cipher->IV;
+        iv = cipher->IV;
         for (i = numBlocks; i > 0; i--) {
-      memcpy(outBuffer, input, 16);
+            memcpy(outBuffer, input, 16);
             for (k = 0; k < 128; k++) {
-        rijndaelEncrypt(key->ek, key->Nr, iv, block);
+                rijndaelEncrypt(key->ek, key->Nr, iv, block);
                 for (t = 0; t < 15; t++) {
-                  iv[t] = (iv[t] << 1) | (iv[t + 1] >> 7);
+                    iv[t] = (iv[t] << 1) | (iv[t + 1] >> 7);
                 }
                 iv[15] = (iv[15] << 1) | ((input[k >> 3] >> (7 - (k & 7))) & 1);
                 outBuffer[k >> 3] ^= (block[0] & 0x80U) >> (k & 7);
@@ -439,15 +445,15 @@ int AES_blockDecrypt
         }
         break;
 
-  default:
-    return BAD_CIPHER_STATE;
-  }
+    default:
+        return BAD_CIPHER_STATE;
+    }
 
-  return 16*numBlocks;
+    return 16 * numBlocks;
 }
 /* @func
 Decrypt a block of data using the supplied key and cipher.  The block
-must be a multiple of 16 bytes, and should be padded in the manner of 
+must be a multiple of 16 bytes, and should be padded in the manner of
 <f AES_padEncrypt> the trailing bytes mod 16 are ignored.  In CBC
 mode, the IV is updated to be ready to decrypt the next block, even
 thought there normally will not be any more blocks.
@@ -456,88 +462,88 @@ thought there normally will not be any more blocks.
   */
 
 int AES_padDecrypt
-  (AES_cipherInstance *cipher,	//@parm the current <t AES_cipherInstance>
-  AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
-  BYTE *input,	//@parm the input encrypted data
-  int inputOctets,	//@parm the size of the input
-  BYTE *outBuffer) //@parm a buffer to receive the decrypted buffer 
+(AES_cipherInstance *cipher,	//@parm the current <t AES_cipherInstance>
+ AES_keyInstance *key,	//@parm the current <t AES_keyInstance>
+ BYTE *input,	//@parm the input encrypted data
+ int inputOctets,	//@parm the size of the input
+ BYTE *outBuffer) //@parm a buffer to receive the decrypted buffer 
 {
-  int i, numBlocks, padLen;
-  u8 block[16];
+    int i, numBlocks, padLen;
+    u8 block[16];
 
-  if (cipher == NULL ||
-    key == NULL ||
-    key->direction == AES_DIR_ENCRYPT) {
-    return BAD_CIPHER_STATE;
-  }
-  if (input == NULL || inputOctets <= 0) {
-    return 0; /* nothing to do */
-  }
-  if (inputOctets % 16 != 0) {
-    return BAD_DATA;
-  }
-
-  numBlocks = inputOctets/16;
-
-  switch (cipher->mode) {
-  case AES_MODE_ECB:
-    /* all blocks but last */
-    for (i = numBlocks - 1; i > 0; i--) {
-      rijndaelDecrypt(key->rk, key->Nr, input, outBuffer);
-      input += 16;
-      outBuffer += 16;
+    if (cipher == NULL ||
+        key == NULL ||
+        key->direction == AES_DIR_ENCRYPT) {
+        return BAD_CIPHER_STATE;
     }
-    /* last block */
-    rijndaelDecrypt(key->rk, key->Nr, input, block);
-    padLen = block[15];
-    if (padLen >= 16) {
-      return BAD_DATA;
+    if (input == NULL || inputOctets <= 0) {
+        return 0; /* nothing to do */
     }
-    for (i = 16 - padLen; i < 16; i++) {
-      if (block[i] != padLen) {
+    if (inputOctets % 16 != 0) {
         return BAD_DATA;
-      }
     }
-    memcpy(outBuffer, block, 16 - padLen);
-    break;
 
-  case AES_MODE_CBC:
-    /* all blocks but last */
-    for (i = numBlocks - 1; i > 0; i--) {
-      rijndaelDecrypt(key->rk, key->Nr, input, block);
-      ((u32*)block)[0] ^= ((u32*)cipher->IV)[0];
-      ((u32*)block)[1] ^= ((u32*)cipher->IV)[1];
-      ((u32*)block)[2] ^= ((u32*)cipher->IV)[2];
-      ((u32*)block)[3] ^= ((u32*)cipher->IV)[3];
-      memcpy(cipher->IV, input, 16);
-      memcpy(outBuffer, block, 16);
-      input += 16;
-      outBuffer += 16;
-    }
-    /* last block */
-    rijndaelDecrypt(key->rk, key->Nr, input, block);
-    ((u32*)block)[0] ^= ((u32*)cipher->IV)[0];
-    ((u32*)block)[1] ^= ((u32*)cipher->IV)[1];
-    ((u32*)block)[2] ^= ((u32*)cipher->IV)[2];
-    ((u32*)block)[3] ^= ((u32*)cipher->IV)[3];
-    memcpy(cipher->IV, input, 16);
-    padLen = block[15];
-    if (padLen <= 0 || padLen > 16) {
-      return BAD_DATA;
-    }
-    for (i = 16 - padLen; i < 16; i++) {
-      if (block[i] != padLen) {
-        return BAD_DATA;
-      }
-    }
-    memcpy(outBuffer, block, 16 - padLen);
-    break;
+    numBlocks = inputOctets / 16;
 
-  default:
-    return BAD_CIPHER_STATE;
-  }
+    switch (cipher->mode) {
+    case AES_MODE_ECB:
+        /* all blocks but last */
+        for (i = numBlocks - 1; i > 0; i--) {
+            rijndaelDecrypt(key->rk, key->Nr, input, outBuffer);
+            input += 16;
+            outBuffer += 16;
+        }
+        /* last block */
+        rijndaelDecrypt(key->rk, key->Nr, input, block);
+        padLen = block[15];
+        if (padLen >= 16) {
+            return BAD_DATA;
+        }
+        for (i = 16 - padLen; i < 16; i++) {
+            if (block[i] != padLen) {
+                return BAD_DATA;
+            }
+        }
+        memcpy(outBuffer, block, 16 - padLen);
+        break;
 
-  return 16*numBlocks - padLen;
+    case AES_MODE_CBC:
+        /* all blocks but last */
+        for (i = numBlocks - 1; i > 0; i--) {
+            rijndaelDecrypt(key->rk, key->Nr, input, block);
+            ((u32*)block)[0] ^= ((u32*)cipher->IV)[0];
+            ((u32*)block)[1] ^= ((u32*)cipher->IV)[1];
+            ((u32*)block)[2] ^= ((u32*)cipher->IV)[2];
+            ((u32*)block)[3] ^= ((u32*)cipher->IV)[3];
+            memcpy(cipher->IV, input, 16);
+            memcpy(outBuffer, block, 16);
+            input += 16;
+            outBuffer += 16;
+        }
+        /* last block */
+        rijndaelDecrypt(key->rk, key->Nr, input, block);
+        ((u32*)block)[0] ^= ((u32*)cipher->IV)[0];
+        ((u32*)block)[1] ^= ((u32*)cipher->IV)[1];
+        ((u32*)block)[2] ^= ((u32*)cipher->IV)[2];
+        ((u32*)block)[3] ^= ((u32*)cipher->IV)[3];
+        memcpy(cipher->IV, input, 16);
+        padLen = block[15];
+        if (padLen <= 0 || padLen > 16) {
+            return BAD_DATA;
+        }
+        for (i = 16 - padLen; i < 16; i++) {
+            if (block[i] != padLen) {
+                return BAD_DATA;
+            }
+        }
+        memcpy(outBuffer, block, 16 - padLen);
+        break;
+
+    default:
+        return BAD_CIPHER_STATE;
+    }
+
+    return 16 * numBlocks - padLen;
 }
 
 #ifdef INTERMEDIATE_VALUE_KAT
@@ -552,30 +558,31 @@ int AES_padDecrypt
  *		BAD_CIPHER_STATE - cipher in bad state (e.g., not initialized)
  */
 int cipherUpdateRounds(AES_cipherInstance *cipher, AES_keyInstance *key,
-    BYTE *input, int inputLen, BYTE *outBuffer, int rounds) {
-  u8 block[16];
+                       BYTE *input, int inputLen, BYTE *outBuffer, int rounds)
+{
+    u8 block[16];
 
-  if (cipher == NULL || key == NULL) {
-    return BAD_CIPHER_STATE;
-  }
+    if (cipher == NULL || key == NULL) {
+        return BAD_CIPHER_STATE;
+    }
 
-  memcpy(block, input, 16);
+    memcpy(block, input, 16);
 
-  switch (key->direction) {
-  case AES_DIR_ENCRYPT:
-    rijndaelEncryptRound(key->rk, key->Nr, block, rounds);
-    break;
+    switch (key->direction) {
+    case AES_DIR_ENCRYPT:
+        rijndaelEncryptRound(key->rk, key->Nr, block, rounds);
+        break;
 
-  case AES_DIR_DECRYPT:
-    rijndaelDecryptRound(key->rk, key->Nr, block, rounds);
-    break;
+    case AES_DIR_DECRYPT:
+        rijndaelDecryptRound(key->rk, key->Nr, block, rounds);
+        break;
 
-  default:
-    return BAD_KEY_DIR;
-  }
+    default:
+        return BAD_KEY_DIR;
+    }
 
-  memcpy(outBuffer, block, 16);
+    memcpy(outBuffer, block, 16);
 
-  return TRUE;
+    return TRUE;
 }
 #endif /* INTERMEDIATE_VALUE_KAT */
