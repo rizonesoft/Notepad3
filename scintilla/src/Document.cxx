@@ -16,8 +16,15 @@
 #include <vector>
 #include <algorithm>
 
+#define NOEXCEPT
 #ifndef NO_CXX11_REGEX
 #include <regex>
+#if defined(__GLIBCXX__)
+// If using the GNU implementation of <regex> then have 'noexcept' so can use
+// when defining regex iterators to keep Clang analyze happy.
+#undef NOEXCEPT
+#define NOEXCEPT noexcept
+#endif
 #endif
 
 #include "Platform.h"
@@ -2570,7 +2577,7 @@ public:
 	Position position;
 	ByteIterator(const Document *doc_ = 0, Position position_ = 0) : doc(doc_), position(position_) {
 	}
-	ByteIterator(const ByteIterator &other) {
+	ByteIterator(const ByteIterator &other) NOEXCEPT {
 		doc = other.doc;
 		position = other.position;
 	}
@@ -2745,7 +2752,7 @@ class UTF8Iterator : public std::iterator<std::bidirectional_iterator_tag, wchar
 public:
 	UTF8Iterator(const Document *doc_=0, Position position_=0) : doc(doc_), position(position_) {
 	}
-	UTF8Iterator(const UTF8Iterator &other) {
+	UTF8Iterator(const UTF8Iterator &other) NOEXCEPT {
 		doc = other.doc;
 		position = other.position;
 	}

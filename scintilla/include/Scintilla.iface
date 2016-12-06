@@ -168,6 +168,17 @@ get int GetViewWS=2020(,)
 # Make white space characters invisible, always visible or visible outside indentation.
 set void SetViewWS=2021(int viewWS,)
 
+enu TabDrawMode=SCTD_
+val SCTD_LONGARROW=0
+val SCTD_STRIKEOUT=1
+
+# Retrieve the current tab draw mode.
+# Returns one of SCTD_* constants.
+get int GetTabDrawMode=2698(,)
+
+# Set how tabs are drawn when visible.
+set void SetTabDrawMode=2699(int tabDrawMode,)
+
 # Find the position from a point within the window.
 fun position PositionFromPoint=2022(int x, int y)
 
@@ -414,7 +425,8 @@ val STYLE_BRACEBAD=35
 val STYLE_CONTROLCHAR=36
 val STYLE_INDENTGUIDE=37
 val STYLE_CALLTIP=38
-val STYLE_LASTPREDEFINED=39
+val STYLE_FOLDDISPLAYTEXT=39
+val STYLE_LASTPREDEFINED=40
 val STYLE_MAX=255
 
 # Character set identifiers are used in StyleSetCharacterSet.
@@ -626,6 +638,8 @@ val INDIC_COMPOSITIONTHICK=14
 val INDIC_COMPOSITIONTHIN=15
 val INDIC_FULLBOX=16
 val INDIC_TEXTFORE=17
+val INDIC_POINT=18
+val INDIC_POINTCHARACTER=19
 val INDIC_IME=32
 val INDIC_IME_MAX=35
 val INDIC_MAX=35
@@ -1198,6 +1212,17 @@ get bool GetFoldExpanded=2230(int line,)
 # Switch a header line between expanded and contracted.
 fun void ToggleFold=2231(int line,)
 
+# Switch a header line between expanded and contracted and show some text after the line.
+fun void ToggleFoldShowText=2700(int line, string text)
+
+enu foldDisplayTextStyle=SC_FOLDDISPLAYTEXTSTYLE_
+val SC_FOLDDISPLAYTEXT_HIDDEN=0
+val SC_FOLDDISPLAYTEXT_STANDARD=1
+val SC_FOLDDISPLAYTEXT_BOXED=2
+
+# Set the style of fold display text
+set void FoldDisplayTextSetStyle=2701(int style,)
+
 enu FoldAction=SC_FOLDACTION_
 val SC_FOLDACTION_CONTRACT=0
 val SC_FOLDACTION_EXPAND=1
@@ -1723,9 +1748,14 @@ fun int SearchPrev=2368(int searchFlags, string text)
 # Retrieves the number of lines completely visible.
 get int LinesOnScreen=2370(,)
 
+enu PopUp=SC_POPUP_
+val SC_POPUP_NEVER=0
+val SC_POPUP_ALL=1
+val SC_POPUP_TEXT=2
+
 # Set whether a pop up menu is displayed automatically when the user presses
-# the wrong mouse button.
-fun void UsePopUp=2371(bool allowPopUp,)
+# the wrong mouse button on certain areas.
+fun void UsePopUp=2371(int popUpMode,)
 
 # Is the selection rectangular? The alternative is the more common stream selection.
 get bool SelectionIsRectangle=2372(,)
@@ -2860,6 +2890,7 @@ val SCLEX_SREC=117
 val SCLEX_IHEX=118
 val SCLEX_TEHEX=119
 val SCLEX_JSON=120
+val SCLEX_EDIFACT=121
 
 # When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 # value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -4749,6 +4780,16 @@ val SCE_JSON_COMPACTIRI=10
 val SCE_JSON_KEYWORD=11
 val SCE_JSON_LDKEYWORD=12
 val SCE_JSON_ERROR=13
+lex EDIFACT=SCLEX_EDIFACT SCE_EDI_
+val SCE_EDI_DEFAULT=0
+val SCE_EDI_SEGMENTSTART=1
+val SCE_EDI_SEGMENTEND=2
+val SCE_EDI_SEP_ELEMENT=3
+val SCE_EDI_SEP_COMPOSITE=4
+val SCE_EDI_SEP_RELEASE=5
+val SCE_EDI_UNA=6
+val SCE_EDI_UNH=7
+val SCE_EDI_BADSEGMENT=8
 
 # Events
 
@@ -4783,25 +4824,13 @@ evt void HotSpotReleaseClick=2027(int modifiers, int position)
 evt void FocusIn=2028(void)
 evt void FocusOut=2029(void)
 evt void AutoCCompleted=2030(string text, int position, int ch, CompletionMethods listCompletionMethod)
+evt void MarginRightClick=2031(int modifiers, int position, int margin)
 
 # There are no provisional APIs currently, but some arguments to SCI_SETTECHNOLOGY are provisional.
 
 cat Provisional
 
 cat Deprecated
-
-# Deprecated in 2.21
-# The SC_CP_DBCS value can be used to indicate a DBCS mode for GTK+.
-val SC_CP_DBCS=1
-
-# Deprecated in 2.30
-
-# In palette mode?
-get bool GetUsePalette=2139(,)
-
-# In palette mode, Scintilla uses the environment's palette calls to display
-# more colours. This may lead to ugly displays.
-set void SetUsePalette=2039(bool usePalette,)
 
 # Deprecated in 3.5.5
 

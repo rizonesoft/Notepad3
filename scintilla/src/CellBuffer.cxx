@@ -73,8 +73,7 @@ int LineVector::LineFromPosition(int pos) const {
 	return starts.PartitionFromPosition(pos);
 }
 
-Action::Action() {
-	at = startAction;
+Action::Action() : at(startAction) {
 	position = 0;
 	data = 0;
 	lenData = 0;

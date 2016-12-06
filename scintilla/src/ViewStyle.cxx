@@ -153,6 +153,7 @@ ViewStyle::ViewStyle(const ViewStyle &source)  : fonts() {
 	textStart = source.textStart;
 	zoomLevel = source.zoomLevel;
 	viewWhitespace = source.viewWhitespace;
+	tabDrawMode = source.tabDrawMode;
 	whitespaceSize = source.whitespaceSize;
 	viewIndentationGuides = source.viewIndentationGuides;
 	viewEOL = source.viewEOL;
@@ -293,6 +294,7 @@ void ViewStyle::Init(size_t stylesSize_) {
 	textStart = marginInside ? fixedColumnWidth : leftMarginWidth;
 	zoomLevel = 0;
 	viewWhitespace = wsInvisible;
+	tabDrawMode = tdLongArrow;
 	whitespaceSize = 1;
 	viewIndentationGuides = ivNone;
 	viewEOL = false;
@@ -443,6 +445,17 @@ bool ViewStyle::ProtectionActive() const {
 
 int ViewStyle::ExternalMarginWidth() const {
 	return marginInside ? 0 : fixedColumnWidth;
+}
+
+int ViewStyle::MarginFromLocation(Point pt) const {
+	int margin = -1;
+	int x = textStart - fixedColumnWidth;
+	for (size_t i = 0; i < ms.size(); i++) {
+		if ((pt.x >= x) && (pt.x < x + ms[i].width))
+			margin = static_cast<int>(i);
+		x += ms[i].width;
+	}
+	return margin;
 }
 
 bool ViewStyle::ValidStyle(size_t styleIndex) const {

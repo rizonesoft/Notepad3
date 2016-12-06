@@ -323,7 +323,10 @@ struct OptionsCPP {
 	bool foldPreprocessorAtElse;
 	bool foldCompact;
 	bool foldAtElse;
-	OptionsCPP() {
+	OptionsCPP() 
+    : foldExplicitStart("")
+    , foldExplicitEnd("")
+	{
 		stylingWithinPreprocessor = false;
 		identifiersAllowDollars = true;
 		trackPreprocessor = true;
@@ -338,8 +341,6 @@ struct OptionsCPP {
 		foldComment = false;
 		foldCommentMultiline = true;
 		foldCommentExplicit = true;
-		foldExplicitStart = "";
-		foldExplicitEnd = "";
 		foldExplicitAnywhere = false;
 		foldPreprocessor = false;
 		foldPreprocessorAtElse = false;
@@ -692,7 +693,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 		}
 	}
 
-	StyleContext sc(startPos, length, initStyle, styler, static_cast<unsigned char>(0xff));
+	StyleContext sc(startPos, length, initStyle, styler);
 	LinePPState preproc = vlls.ForLine(lineCurrent);
 
 	bool definitionsChanged = false;

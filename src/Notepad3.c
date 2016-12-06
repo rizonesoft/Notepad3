@@ -5301,7 +5301,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
               if (iSize >= 3) {
 
-                struct TextRange tr = { { iStartPos, iCurPos }, tchBuf };
+                struct Sci_TextRange tr = { { iStartPos, iCurPos }, tchBuf };
                 SendMessage(hwndEdit,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
 
                 if (tchBuf[iSize - 2] != '/') {

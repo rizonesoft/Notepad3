@@ -124,7 +124,7 @@ public:
 	virtual void InsertLine(int line);
 	virtual void RemoveLine(int line);
 
-	bool ClearTabstops(int line);
+	bool ClearTabstops(int line) const;
 	bool AddTabstop(int line, int x);
 	int GetNextTabstop(int line, int x) const;
 };
