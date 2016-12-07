@@ -88,7 +88,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 29 September 2016 NH</p>
+    <p>Last edited 4 December 2016 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -347,22 +347,26 @@
         <tr>
           <td>o <a class="toc" href="#Notifications">Notifications</a></td>
 
-          <td>o <a class="toc" href="#Images">Images</a></td>
+          <td>o <a class="toc" href="#Accessibility">Accessibility</a></td>
 
-          <td>o <a class="toc" href="#GTK">GTK+</a></td>
+          <td>o <a class="toc" href="#Images">Images</a></td>
 
         </tr>
 
         <tr>
+          <td>o <a class="toc" href="#GTK">GTK+</a></td>
+
           <td>o <a class="toc" href="#ProvisionalMessages"><span class="provisional">Provisional messages</span></a></td>
 
           <td>o <a class="toc" href="#DeprecatedMessages">Deprecated messages</a></td>
 
+        </tr>
+        <tr>
           <td>o <a class="toc" href="#EditMessagesNeverSupportedByScintilla">Edit messages never
           supported by Scintilla</a></td>
 
-        </tr>
-        <tr>
+          <td>o <a class="toc" href="#RemovedFeatures">Removed features</a></td>
+
           <td>o <a class="toc" href="#BuildingScintilla">Building Scintilla</a></td>
 
         </tr>
@@ -2105,6 +2109,8 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_SETWHITESPACESIZE">SCI_SETWHITESPACESIZE(int
     size)</a><br />
      <a class="message" href="#SCI_GETWHITESPACESIZE">SCI_GETWHITESPACESIZE &rarr; int</a><br />
+     <a class="message" href="#SCI_SETTABDRAWMODE">SCI_SETTABDRAWMODE(int tabDrawMode)</a><br />
+     <a class="message" href="#SCI_GETTABDRAWMODE">SCI_GETTABDRAWMODE &rarr; int</a><br />
      <a class="message" href="#SCI_SETEXTRAASCENT">SCI_SETEXTRAASCENT(int extraAscent)</a><br />
      <a class="message" href="#SCI_GETEXTRAASCENT">SCI_GETEXTRAASCENT &rarr; int</a><br />
      <a class="message" href="#SCI_SETEXTRADESCENT">SCI_SETEXTRADESCENT(int extraDescent)</a><br />
@@ -2171,6 +2177,33 @@ struct Sci_TextToFind {
      <code>SCI_SETWHITESPACESIZE</code> sets the size of the dots used for mark space characters.
      The <code>SCI_GETWHITESPACESIZE</code> message retrieves the current size.
     </p>
+
+    <p><b id="SCI_SETTABDRAWMODE">SCI_SETTABDRAWMODE(int tabDrawMode)</b><br />
+     <b id="SCI_GETTABDRAWMODE">SCI_GETTABDRAWMODE &rarr; int</b><br />
+    These two messages get and set how tab characters are drawn when white space is visible.
+    The <code class="parameter">tabDrawMode</code> argument can be one of:</p>
+
+    <table cellpadding="1" cellspacing="2" border="0" summary="White space policy">
+      <tbody valign="top">
+        <tr>
+          <th align="left"><code>SCTD_LONGARROW</code></th>
+
+          <td>0</td>
+
+          <td>The default mode of an arrow stretching until the tabstop.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>SCTD_STRIKEOUT</code></th>
+
+          <td>1</td>
+
+          <td>A horizontal line stretching until the tabstop.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>The effect of using any other <code class="parameter">tabDrawMode</code> value is undefined.</p>
 
     <p>
      <b id="SCI_SETEXTRAASCENT">SCI_SETEXTRAASCENT(int extraAscent)</b><br />
@@ -2665,14 +2698,20 @@ struct Sci_TextToFind {
         </tr>
 
         <tr>
+          <th align="left"><code>STYLE_FOLDDISPLAYTEXT</code></th>
+
+          <td>39</td>
+
+          <td>This is the style used for drawing text tags attached to folded text.</td>
+        </tr>
+
+        <tr>
           <th align="left"><code>STYLE_LASTPREDEFINED</code></th>
 
           <td>39</td>
 
           <td>To make it easier for client code to discover the range of styles that are
-          predefined, this is set to the style number of the last predefined style. This is
-          currently set to 39 and the last style with an identifier is 38, which reserves space
-          for one future predefined style.</td>
+          predefined, this is set to the style number of the last predefined style.</td>
         </tr>
 
         <tr>
@@ -3125,7 +3164,7 @@ struct Sci_TextToFind {
     5 margins are allocated initially numbered from 0 to <code>SC_MAX_MARGIN</code> (4)
     but this may be changed by calling
     <a class="message" href="#SCI_SETMARGINS"><code>SCI_SETMARGINS</code></a>.
-    Each margin can be set to display only symbols, line numbers, or text with 
+    Each margin can be set to display only symbols, line numbers, or text with
     <a class="message" href="#SCI_SETMARGINTYPEN"><code>SCI_SETMARGINTYPEN</code></a>.
     Textual margins may also display symbols.
     The markers
@@ -3134,7 +3173,8 @@ struct Sci_TextToFind {
     a visible margin will be displayed as changes in background colour in the text. A width in
     pixels can be set for each margin. Margins with a zero width are ignored completely. You can
     choose if a mouse click in a margin sends a <a class="message"
-    href="#SCN_MARGINCLICK"><code>SCN_MARGINCLICK</code></a> notification to the container or
+    href="#SCN_MARGINCLICK"><code>SCN_MARGINCLICK</code></a> or <a class="message"
+    href="#SCN_MARGINRIGHTCLICK"><code>SCN_MARGINRIGHTCLICK</code></a> notification to the container or
     selects a line of text.</p>
 
     <p>Using a margin number outside the valid range has no
@@ -3244,7 +3284,8 @@ struct Sci_TextToFind {
      <b id="SCI_GETMARGINSENSITIVEN">SCI_GETMARGINSENSITIVEN(int margin) &rarr; bool</b><br />
      Each of the five margins can be set sensitive or insensitive to mouse clicks. A click in a
     sensitive margin sends a <a class="message"
-    href="#SCN_MARGINCLICK"><code>SCN_MARGINCLICK</code></a> <a class="jump"
+    href="#SCN_MARGINCLICK"><code>SCN_MARGINCLICK</code></a> or <a class="message"
+    href="#SCN_MARGINRIGHTCLICK"><code>SCN_MARGINRIGHTCLICK</code></a> <a class="jump"
     href="#Notifications">notification</a> to the container. Margins that are not sensitive act as
     selection margins which make it easy to select ranges of lines. By default, all margins are
     insensitive.</p>
@@ -4339,6 +4380,22 @@ struct Sci_TextToFind {
           <td>Change the colour of the text to the indicator's fore colour.</td>
         </tr>
 
+        <tr>
+          <td align="left"><code>INDIC_POINT</code></td>
+
+          <td align="center">18</td>
+
+          <td>Draw a triangle below the start of the indicator range.</td>
+        </tr>
+
+        <tr>
+          <td align="left"><code>INDIC_POINTCHARACTER</code></td>
+
+          <td align="center">19</td>
+
+          <td>Draw a triangle below the centre of the first character of the indicator range.</td>
+        </tr>
+
       </tbody>
     </table>
 
@@ -5111,7 +5168,7 @@ struct Sci_TextToFind {
     <p>The <code>SCI_WORDPART*</code> commands are used to move between word segments marked by
     capitalisation (aCamelCaseIdentifier) or underscores (an_under_bar_ident).</p>
 
-    <p>The <code>SCI_WORD[LEFT|RIGHT]END*</code> commands are 
+    <p>The <code>SCI_WORD[LEFT|RIGHT]END*</code> commands are
     similar to <code>SCI_WORD[LEFT|RIGHT]*</code> but move between word ends instead of word starts.</p>
 
     <p>The <code>SCI_HOME*</code> commands move the caret to the start of the line, while the
@@ -5200,14 +5257,57 @@ struct Sci_TextToFind {
 
     <h2 id="PopupEditMenu">Popup edit menu</h2>
 
-    <code><a class="message" href="#SCI_USEPOPUP">SCI_USEPOPUP(bool allowPopUp)</a><br />
+    <code><a class="message" href="#SCI_USEPOPUP">SCI_USEPOPUP(int popUpMode)</a><br />
     </code>
 
-    <p><b id="SCI_USEPOPUP">SCI_USEPOPUP(bool allowPopUp)</b><br />
+    <p><b id="SCI_USEPOPUP">SCI_USEPOPUP(int popUpMode)</b><br />
      Clicking the wrong button on the mouse pops up a short default editing menu. This may be
-    turned off with <code>SCI_USEPOPUP(0)</code>. If you turn it off, context menu commands (in
+    turned off with <code>SCI_USEPOPUP(SC_POPUP_NEVER)</code>. If you turn it off, context menu commands (in
     Windows, <code>WM_CONTEXTMENU</code>) will not be handled by Scintilla, so the parent of the
     Scintilla window will have the opportunity to handle the message.</p>
+
+        <table cellpadding="1" cellspacing="2" border="0" summary="Display context menu mode">
+          <tbody>
+            <tr>
+              <th align="left">Symbol</th>
+
+              <th>Value</th>
+
+              <th align="left">Meaning</th>
+
+            </tr>
+          </tbody>
+
+          <tbody valign="top">
+            <tr>
+              <td align="left"><code>SC_POPUP_NEVER</code></td>
+
+              <td align="center">0x01</td>
+
+              <td>Never show default editing menu.</td>
+
+            </tr>
+
+            <tr>
+              <td align="left"><code>SC_POPUP_ALL</code></td>
+
+              <td align="center">0x02</td>
+
+              <td>Show default editing menu if clicking on scintilla.</td>
+
+            </tr>
+
+            <tr>
+              <td align="left"><code>SC_POPUP_TEXT</code></td>
+
+              <td align="center">0x04</td>
+
+              <td>Show default editing menu only if clicking on text area.</td>
+
+            </tr>
+
+          </tbody>
+        </table>
 
     <h2 id="MacroRecording">Macro recording</h2>
 
@@ -5566,8 +5666,9 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <code>AddData</code> will return SC_STATUS_OK unless a failure, such as memory exhaustion occurs.
     If a failure occurs in <code>AddData</code> or in a file reading call then loading can be abandoned and the loader released with
     the <code>Release</code> call.
-    When the whole file has been read, the <code>ConvertToDocument</code> method should be called to produce a Scintilla
-    document pointer which can be used in the same way as a document pointer returned from
+    When the whole file has been read, <code>ConvertToDocument</code> should be called to produce a Scintilla
+    document pointer. The newly created document will have a reference count of 1 in the same way as a document pointer
+    returned from
     <a class="seealso" href="#SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT</a>.
     There is no need to call <code>Release</code> after <code>ConvertToDocument</code>.</p>
 
@@ -5618,6 +5719,8 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      <a class="message" href="#SCI_GETFOLDEXPANDED">SCI_GETFOLDEXPANDED(int line) &rarr; bool</a><br />
      <a class="message" href="#SCI_CONTRACTEDFOLDNEXT">SCI_CONTRACTEDFOLDNEXT(int lineStart) &rarr; int</a><br />
      <a class="message" href="#SCI_TOGGLEFOLD">SCI_TOGGLEFOLD(int line)</a><br />
+     <a class="message" href="#SCI_TOGGLEFOLDSHOWTEXT">SCI_TOGGLEFOLDSHOWTEXT(int line, const char *text)</a><br />
+     <a class="message" href="#SCI_FOLDDISPLAYTEXTSETSTYLE">SCI_FOLDDISPLAYTEXTSETSTYLE(int style)</a><br />
      <a class="message" href="#SCI_FOLDLINE">SCI_FOLDLINE(int line, int action)</a><br />
      <a class="message" href="#SCI_FOLDCHILDREN">SCI_FOLDCHILDREN(int line, int action)</a><br />
      <a class="message" href="#SCI_FOLDALL">SCI_FOLDALL(int action)</a><br />
@@ -5769,10 +5872,49 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     inconsistent, the return value is -1.</p>
 
     <p><b id="SCI_TOGGLEFOLD">SCI_TOGGLEFOLD(int line)</b><br />
+    <b id="SCI_TOGGLEFOLDSHOWTEXT">SCI_TOGGLEFOLDSHOWTEXT(int line, const char *text)</b><br />
      Each fold point may be either expanded, displaying all its child lines, or contracted, hiding
-    all the child lines. This message toggles the folding state of the given line as long as it has
-    the <code>SC_FOLDLEVELHEADERFLAG</code> set. This message takes care of folding or expanding
+    all the child lines. These messages toggle the folding state of the given line as long as it has
+    the <code>SC_FOLDLEVELHEADERFLAG</code> set. These messages take care of folding or expanding
     all the lines that depend on the line. The display updates after this message.</p>
+    <p>An optional text tag may be shown to the right of the folded text with the
+    <code class="parameter">text</code> argument to
+    <code>SCI_TOGGLEFOLDSHOWTEXT</code>.
+    The text is drawn with the
+    <code><a class="message" href="#StyleDefinition">STYLE_FOLDDISPLAYTEXT</a></code> style.</p>
+
+    <p><b id="SCI_FOLDDISPLAYTEXTSETSTYLE">SCI_FOLDDISPLAYTEXTSETSTYLE(int style)</b><br />
+    This message changes the appearance of fold text tags.</p>
+    <table cellpadding="1" cellspacing="2" border="0" summary="Fold flags">
+      <tbody>
+        <tr>
+          <th align="left">Symbol</th>
+          <th align="left">Value</th>
+          <th align="left">Effect</th>
+        </tr>
+      </tbody>
+
+      <tbody valign="top">
+        <tr>
+          <td align="left">SC_FOLDDISPLAYTEXT_HIDDEN</td>
+          <td align="left">0</td>
+          <td align="left">Do not display the text tags. This is the default.</td>
+        </tr>
+
+        <tr>
+          <td align="left">SC_FOLDDISPLAYTEXT_STANDARD</td>
+          <td align="left">1</td>
+          <td align="left">Display the text tags.</td>
+        </tr>
+
+        <tr>
+          <td align="left">SC_FOLDDISPLAYTEXT_BOXED</td>
+          <td align="left">2</td>
+          <td align="left">Display the text tags with a box drawn around them.</td>
+        </tr>
+
+      </tbody>
+    </table>
 
     <p><b id="SCI_SETFOLDEXPANDED">SCI_SETFOLDEXPANDED(int line, bool expanded)</b><br />
      <b id="SCI_GETFOLDEXPANDED">SCI_GETFOLDEXPANDED(int line) &rarr; bool</b><br />
@@ -6707,9 +6849,9 @@ struct SCNotification {
 	struct Sci_NotifyHeader nmhdr;
 	Sci_Position position;
 	/* SCN_STYLENEEDED, SCN_DOUBLECLICK, SCN_MODIFIED, SCN_MARGINCLICK, */
-	/* SCN_NEEDSHOWN, SCN_DWELLSTART, SCN_DWELLEND, SCN_CALLTIPCLICK, */
-	/* SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK, SCN_HOTSPOTRELEASECLICK, */
-	/* SCN_INDICATORCLICK, SCN_INDICATORRELEASE, */
+	/* SCN_MARGINRIGHTCLICK, SCN_NEEDSHOWN, SCN_DWELLSTART, SCN_DWELLEND, */
+	/* SCN_CALLTIPCLICK, SCN_HOTSPOTCLICK, SCN_HOTSPOTDOUBLECLICK, */
+	/* SCN_HOTSPOTRELEASECLICK, SCN_INDICATORCLICK, SCN_INDICATORRELEASE, */
 	/* SCN_USERLISTSELECTION, SCN_AUTOCSELECTION */
 
 	int ch;
@@ -6731,7 +6873,7 @@ struct SCNotification {
 	Sci_Position line;		/* SCN_MODIFIED */
 	int foldLevelNow;	/* SCN_MODIFIED */
 	int foldLevelPrev;	/* SCN_MODIFIED */
-	int margin;		/* SCN_MARGINCLICK */
+	int margin;		/* SCN_MARGINCLICK, SCN_MARGINRIGHTCLICK */
 	int listType;	/* SCN_USERLISTSELECTION */
 	int x;			/* SCN_DWELLSTART, SCN_DWELLEND */
 	int y;		/* SCN_DWELLSTART, SCN_DWELLEND */
@@ -6776,6 +6918,7 @@ struct SCNotification {
      <a class="message" href="#SCN_FOCUSIN">SCN_FOCUSIN</a><br />
      <a class="message" href="#SCN_FOCUSOUT">SCN_FOCUSOUT</a><br />
      <a class="message" href="#SCN_AUTOCCOMPLETED">SCN_AUTOCCOMPLETED</a><br />
+     <a class="message" href="#SCN_MARGINRIGHTCLICK">SCN_MARGINRIGHTCLICK</a><br />
     </code>
 
     <p>The following <code>SCI_*</code> messages are associated with these notifications:</p>
@@ -7335,7 +7478,8 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     </table>
 
     <p><b id="SCN_MARGINCLICK">SCN_MARGINCLICK</b><br />
-     This notification tells the container that the mouse was clicked inside a <a class="jump"
+     <b id="SCN_MARGINRIGHTCLICK">SCN_MARGINRIGHTCLICK</b><br />
+     These notifications tell the container that the mouse was clicked or right clicked inside a <a class="jump"
     href="#Margins">margin</a> that was marked as sensitive (see <a class="message"
     href="#SCI_SETMARGINSENSITIVEN"><code>SCI_SETMARGINSENSITIVEN</code></a>). This can be used to
     perform folding or to place breakpoints. The following <code>SCNotification</code> fields are
@@ -7655,6 +7799,15 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
      <a class="jump" href="#SCN_AUTOCSELECTION">SCN_AUTOCSELECTION</a></code>
      notification.</p>
 
+    <h2 id="Accessibility">Accessibility</h2>
+
+    <p>Scintilla supports some platform accessibility features.
+    This support differs between platforms.
+    On GTK+ and Cocoa the platform accessibility APIs are implemented sufficiently to
+    make screen readers work.
+    On Win32, the system caret is manipulated to help screen readers.
+    </p>
+
     <h2 id="Images">Images</h2>
 
     <p>Two formats are supported for images used in margin markers and autocompletion lists, RGBA and XPM.</p>
@@ -7717,7 +7870,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
     widgets.</p>
 
     <p><b id="scintilla_set_id">void scintilla_set_id(ScintillaObject *sci, uptr_t id)</b><br />
-    Set the control ID which will be used in the idFrom field of the NotifyHeader structure of all
+    Set the control ID which will be used in the idFrom field of the Sci_NotifyHeader structure of all
     notifications for this instance.
     This is equivalent to <a class="seealso" href="#SCI_SETIDENTIFIER">SCI_SETIDENTIFIER</a>.</p>
 
@@ -7796,23 +7949,13 @@ EM_FORMATRANGE
     <code>INCLUDE_DEPRECATED_FEATURES</code> in <code>Scintilla.h</code>. To ensure future
     compatibility you should change them as indicated.</p>
 
-    <code><a class="message" href="#SCI_SETUSEPALETTE">SCI_SETUSEPALETTE(bool usePalette)</a><br />
-     <a class="message" href="#SCI_GETUSEPALETTE">SCI_GETUSEPALETTE &rarr; bool</a><br />
+    <code>
      <a class="message" href="#SCI_SETKEYSUNICODE">SCI_SETKEYSUNICODE(bool keysUnicode)</a><br />
      <a class="message" href="#SCI_GETKEYSUNICODE">SCI_GETKEYSUNICODE &rarr; bool</a><br />
      <a class="message" href="#SCI_SETSTYLEBITS">SCI_SETSTYLEBITS(int bits)</a><br />
      <a class="message" href="#SCI_GETSTYLEBITS">SCI_GETSTYLEBITS &rarr; int</a><br />
      <a class="message" href="#SCI_GETSTYLEBITSNEEDED">SCI_GETSTYLEBITSNEEDED &rarr; int</a><br />
     </code>
-
-    <p><b id="SC_CP_DBCS">SC_CP_DBCS</b> Deprecated<br />
-     This was used to set a DBCS (Double Byte Character Set) mode on GTK+.
-     An explicit DBCS code page should be used when calling <a class="seealso" href="#SCI_SETCODEPAGE">SCI_SETCODEPAGE</a></p>
-
-    <p><b id="SCI_SETUSEPALETTE">SCI_SETUSEPALETTE(bool usePalette)</b> Deprecated<br />
-    <b id="SCI_GETUSEPALETTE">SCI_GETUSEPALETTE &rarr; bool</b> Deprecated<br />
-     Scintilla no longer supports palette mode. The last version to support palettes was 2.29.
-     Any calls to these methods should be removed.</p>
 
     <p><b id="SCI_SETKEYSUNICODE">SCI_SETKEYSUNICODE(bool keysUnicode)</b> Deprecated<br />
      <b id="SCI_GETKEYSUNICODE">SCI_GETKEYSUNICODE &rarr; bool</b> Deprecated<br />
@@ -7866,6 +8009,17 @@ EM_SETTARGETDEVICE
     be sensibly handled. Unsupported messages have no effect.</p>
 
     <h2 id="RemovedFeatures">Removed features</h2>
+
+    <p>These features have now been removed completely.</p>
+
+    <p><b id="SC_CP_DBCS">SC_CP_DBCS</b> Removed in 2016 with release 3.7.1<br />
+     This was used to set a DBCS (Double Byte Character Set) mode on GTK+.
+     An explicit DBCS code page should be used when calling <a class="seealso" href="#SCI_SETCODEPAGE">SCI_SETCODEPAGE</a></p>
+
+    <p><b id="SCI_SETUSEPALETTE">SCI_SETUSEPALETTE(bool usePalette)</b> Removed in 2016 with release 3.7.1<br />
+    <b id="SCI_GETUSEPALETTE">SCI_GETUSEPALETTE &rarr; bool</b> Removed in 2016 with release 3.7.1<br />
+     Scintilla no longer supports palette mode. The last version to support palettes was 2.29.
+     Any calls to these methods must be removed.</p>
 
     <p>Previous versions of Scintilla allowed indicators to be stored in bits of each style byte.
     This was deprecated in 2007 and removed in 2014 with release 3.4.3.

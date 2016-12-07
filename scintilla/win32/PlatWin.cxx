@@ -276,8 +276,8 @@ static void SetLogFont(LOGFONTW &lf, const char *faceName, int characterSet, flo
   // The negative is to allow for leading
   lf.lfHeight = -(abs(static_cast<int>(size + 0.5)));
   lf.lfWeight = weight;
-  lf.lfItalic = static_cast<byte>(italic ? 0x01 : 0x00);
-  lf.lfCharSet = static_cast<byte>(characterSet & 0xff);
+	lf.lfItalic = static_cast<BYTE>(italic ? 1 : 0);
+	lf.lfCharSet = static_cast<BYTE>(characterSet);
   lf.lfQuality = Win32MapFontQuality(extraFontFlag);
   UTF16FromUTF8(faceName, strlen(faceName)+1, lf.lfFaceName, LF_FACESIZE);
 }
@@ -377,7 +377,7 @@ bool FontCached::SameAs(const FontParameters &fp) {
   if (
     (size == fp.size) &&
     (lf.lfWeight == fp.weight) &&
-    (lf.lfItalic == static_cast<byte>(fp.italic ? 0x01 : 0x00)) &&
+		(lf.lfItalic == static_cast<BYTE>(fp.italic ? 1 : 0)) &&
     (lf.lfCharSet == fp.characterSet) &&
     (lf.lfQuality == Win32MapFontQuality(fp.extraFontFlag)) &&
     (technology == fp.technology)) {

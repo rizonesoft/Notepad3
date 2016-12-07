@@ -363,14 +363,14 @@ SelectionPosition Editor::ClampPositionIntoDocument(SelectionPosition sp) const 
 	}
 }
 
-Point Editor::LocationFromPosition(SelectionPosition pos) {
+Point Editor::LocationFromPosition(SelectionPosition pos, PointEnd pe) {
 	RefreshStyleData();
 	AutoSurface surface(this);
-	return view.LocationFromPosition(surface, *this, pos, topLine, vs);
+	return view.LocationFromPosition(surface, *this, pos, topLine, vs, pe);
 }
 
-Point Editor::LocationFromPosition(int pos) {
-	return LocationFromPosition(SelectionPosition(pos));
+Point Editor::LocationFromPosition(int pos, PointEnd pe) {
+	return LocationFromPosition(SelectionPosition(pos), pe);
 }
 
 int Editor::XFromPosition(int pos) {
@@ -1377,7 +1377,7 @@ void Editor::SetXYScroll(XYScrollPosition newXY) {
 	}
 }
 
-void Editor::ScrollRange(SelectionRange range) {
+void Editor::ScrollRange(const SelectionRange& range) {
 	SetXYScroll(XYScrollToMakeVisible(range, xysDefault));
 }
 
@@ -2424,13 +2424,7 @@ void Editor::NotifyIndicatorClick(bool click, int position, bool shift, bool ctr
 }
 
 bool Editor::NotifyMarginClick(Point pt, int modifiers) {
-	int marginClicked = -1;
-	int x = vs.textStart - vs.fixedColumnWidth;
-	for (size_t margin = 0; margin < vs.ms.size(); margin++) {
-		if ((pt.x >= x) && (pt.x < x + vs.ms[margin].width))
-			marginClicked = static_cast<int>(margin);
-		x += vs.ms[margin].width;
-	}
+	const int marginClicked = vs.MarginFromLocation(pt);
 	if ((marginClicked >= 0) && vs.ms[marginClicked].sensitive) {
 		int position = pdoc->LineStart(LineFromLocation(pt));
 		if ((vs.ms[marginClicked].mask & SC_MASK_FOLDERS) && (foldAutomatic & SC_AUTOMATICFOLD_CLICK)) {
@@ -2469,6 +2463,22 @@ bool Editor::NotifyMarginClick(Point pt, int modifiers) {
 
 bool Editor::NotifyMarginClick(Point pt, bool shift, bool ctrl, bool alt) {
 	return NotifyMarginClick(pt, ModifierFlags(shift, ctrl, alt));
+}
+
+bool Editor::NotifyMarginRightClick(Point pt, int modifiers) {
+	int marginRightClicked = vs.MarginFromLocation(pt);
+	if ((marginRightClicked >= 0) && vs.ms[marginRightClicked].sensitive) {
+		int position = pdoc->LineStart(LineFromLocation(pt));
+		SCNotification scn = {};
+		scn.nmhdr.code = SCN_MARGINRIGHTCLICK;
+		scn.modifiers = modifiers;
+		scn.position = position;
+		scn.margin = marginRightClicked;
+		NotifyParent(scn);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void Editor::NotifyNeedShown(int pos, int len) {
@@ -3154,6 +3164,12 @@ void Editor::ParaUpOrDown(int direction, Selection::selTypes selt) {
 			}
 		}
 	} while (!cs.GetVisible(lineDoc));
+}
+
+Range Editor::RangeDisplayLine(int lineVisible) {
+	RefreshStyleData();
+	AutoSurface surface(this);
+	return view.RangeDisplayLine(surface, *this, lineVisible, vs);
 }
 
 int Editor::StartEndDisplayLine(int pos, bool start) {
@@ -4029,11 +4045,11 @@ std::string Editor::CaseMapString(const std::string &s, int caseMapping) {
 	for (size_t i=0; i<ret.size(); i++) {
 		switch (caseMapping) {
 			case cmUpper:
-				if (ret[i] >= 'a' && ret[i] <= 'z')
+				if ((ret[i] >= 'a') && (ret[i] <= 'z'))
 					ret[i] = static_cast<char>(ret[i] - 'a' + 'A');
 				break;
 			case cmLower:
-				if (ret[i] >= 'A' && ret[i] <= 'Z')
+				if ((ret[i] >= 'A') && (ret[i] <= 'Z'))
 					ret[i] = static_cast<char>(ret[i] - 'A' + 'a');
 				break;
 		}
@@ -4514,6 +4530,10 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifie
 		}
 	} else {	// Single click
 		if (inSelMargin) {
+			if (sel.IsRectangular() || (sel.Count() > 1)) {
+				InvalidateWholeSelection();
+				sel.Clear();
+			}
 			sel.selType = Selection::selStream;
 			if (!shift) {
 				// Single click in margin: select whole line or only subline if word wrap is enabled
@@ -4590,6 +4610,10 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifie
 	ShowCaretAtCurrentPosition();
 }
 
+void Editor::RightButtonDownWithModifiers(Point pt, unsigned int, int modifiers) {
+	if (NotifyMarginRightClick(pt, modifiers))
+		return;
+}
 void Editor::ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt) {
 	return ButtonDownWithModifiers(pt, curTime, ModifierFlags(shift, ctrl, alt));
 }
@@ -5585,7 +5609,7 @@ void Editor::AddStyledText(char *buffer, int appendLength) {
 	SetEmptySelection(sel.MainCaret() + lengthInserted);
 }
 
-bool Editor::ValidMargin(uptr_t wParam) {
+bool Editor::ValidMargin(uptr_t wParam) const {
 	return wParam < vs.ms.size();
 }
 
@@ -6300,6 +6324,14 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		Redraw();
 		break;
 
+	case SCI_GETTABDRAWMODE:
+		return vs.tabDrawMode;
+
+	case SCI_SETTABDRAWMODE:
+		vs.tabDrawMode = static_cast<TabDrawMode>(wParam);
+		Redraw();
+		break;
+
 	case SCI_GETWHITESPACESIZE:
 		return vs.whitespaceSize;
 
@@ -6720,15 +6752,6 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_GETIMEINTERACTION:
 		return imeInteraction;
 
-#ifdef INCLUDE_DEPRECATED_FEATURES
-	case SCI_SETUSEPALETTE:
-		InvalidateStyleRedraw();
-		break;
-
-	case SCI_GETUSEPALETTE:
-		return 0;
-#endif
-
 		// Marker definition and setting
 	case SCI_MARKERDEFINE:
 		if (wParam <= MARKER_MAX) {
@@ -7069,6 +7092,16 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_SETFOLDFLAGS:
 		foldFlags = static_cast<int>(wParam);
+		Redraw();
+		break;
+
+	case SCI_TOGGLEFOLDSHOWTEXT:
+		cs.SetFoldDisplayText(static_cast<int>(wParam), CharPtrFromSPtr(lParam));
+		FoldLine(static_cast<int>(wParam), SC_FOLDACTION_TOGGLE);
+		break;
+
+	case SCI_FOLDDISPLAYTEXTSETSTYLE:
+		foldDisplayTextStyle = static_cast<int>(wParam);
 		Redraw();
 		break;
 

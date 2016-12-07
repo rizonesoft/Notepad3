@@ -23,7 +23,7 @@ class XPM {
 	ColourDesired colourCodeTable[256];
 	char codeTransparent;
 	ColourDesired ColourFromCode(int ch) const;
-	void FillRun(Surface *surface, int code, int startX, int y, int x);
+	void FillRun(Surface *surface, int code, int startX, int y, int x) const;
 public:
 	explicit XPM(const char *textForm);
 	explicit XPM(const char *const *linesForm);

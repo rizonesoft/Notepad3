@@ -422,6 +422,9 @@
     <ClInclude Include="include\Sci_Position.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="src\SparseVector.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="deelx\doc\deelx_en.chm">

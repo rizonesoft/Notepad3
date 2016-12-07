@@ -16,6 +16,15 @@ static inline bool IsEOLChar(char ch) {
 	return (ch == '\r') || (ch == '\n');
 }
 
+// There are two points for some positions and this enumeration
+// can choose between the end of the first line or subline
+// and the start of the next line or subline.
+enum PointEnd {
+	peDefault = 0x0,
+	peLineEnd = 0x1,
+	peSubLineEnd = 0x2
+};
+
 /**
  */
 class LineLayout {
@@ -64,7 +73,7 @@ public:
 	void RestoreBracesHighlight(Range rangeLine, const Position braces[], bool ignoreStyle);
 	int FindBefore(XYPOSITION x, int lower, int upper) const;
 	int FindPositionFromX(XYPOSITION x, Range range, bool charPosition) const;
-	Point PointFromPosition(int posInLine, int lineHeight) const;
+	Point PointFromPosition(int posInLine, int lineHeight, PointEnd pe) const;
 	int EndLineStyle() const;
 };
 

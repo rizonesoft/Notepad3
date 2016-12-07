@@ -513,7 +513,7 @@ void LineTabstops::RemoveLine(int line) {
 	}
 }
 
-bool LineTabstops::ClearTabstops(int line) {
+bool LineTabstops::ClearTabstops(int line) const {
 	if (line < tabstops.Length()) {
 		TabstopList *tl = tabstops[line];
 		if (tl) {

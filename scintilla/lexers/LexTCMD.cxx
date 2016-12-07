@@ -238,7 +238,7 @@ static void ColouriseTCMDLine( char *lineBuffer, Sci_PositionU lengthLine, Sci_P
 		} else if ((wordBuffer[0] != '%') && (wordBuffer[0] != '!') && (!IsBOperator(wordBuffer[0])) &&	(!inString) && (continueProcessing)) {
 
 			// a few commands accept "illegal" syntax -- cd\, echo., etc.
-			sscanf( wordBuffer, "%[^.<>|&=\\/]", sKeywordBuffer );
+			sscanf( wordBuffer, "%260[^.<>|&=\\/]", sKeywordBuffer );
 			sKeywordFound = false;
 
 			if ((CompareCaseInsensitive(sKeywordBuffer, "echo") == 0) ||

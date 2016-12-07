@@ -55,6 +55,8 @@ enum IndentView {ivNone, ivReal, ivLookForward, ivLookBoth};
 
 enum WhiteSpaceVisibility {wsInvisible=0, wsVisibleAlways=1, wsVisibleAfterIndent=2, wsVisibleOnlyInIndent=3};
 
+enum TabDrawMode {tdLongArrow=0, tdStrikeOut=1};
+
 typedef std::map<FontSpecification, FontRealised *> FontMap;
 
 enum WrapMode { eWrapNone, eWrapWord, eWrapChar, eWrapWhitespace };
@@ -133,6 +135,7 @@ public:
 	int textStart;	///< Starting x position of text within the view
 	int zoomLevel;
 	WhiteSpaceVisibility viewWhitespace;
+	TabDrawMode tabDrawMode;
 	int whitespaceSize;
 	IndentView viewIndentationGuides;
 	bool viewEOL;
@@ -184,6 +187,7 @@ public:
 	void SetStyleFontName(int styleIndex, const char *name);
 	bool ProtectionActive() const;
 	int ExternalMarginWidth() const;
+	int MarginFromLocation(Point pt) const;
 	bool ValidStyle(size_t styleIndex) const;
 	void CalcLargestMarkerHeight();
 	ColourOptional Background(int marksOfLine, bool caretActive, bool lineContainsCaret) const;
