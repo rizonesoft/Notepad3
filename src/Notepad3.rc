@@ -25,6 +25,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 1                       RT_MANIFEST             "..\\res\\Notepad3.exe.manifest"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon
@@ -33,8 +34,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINWND             ICON                    "..\\res\\Notepad3.ico"
+
 IDI_RUN                 ICON                    "..\\res\\Run.ico"
+
 IDI_STYLES              ICON                    "..\\res\\Styles.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -42,11 +46,17 @@ IDI_STYLES              ICON                    "..\\res\\Styles.ico"
 //
 
 IDR_MAINWND             BITMAP                  "..\\res\\Toolbar.bmp"
+
 IDB_OPEN                BITMAP                  "..\\res\\Open.bmp"
+
 IDB_NEXT                BITMAP                  "..\\res\\Next.bmp"
+
 IDB_PREV                BITMAP                  "..\\res\\Prev.bmp"
+
 IDB_PICK                BITMAP                  "..\\res\\Pick.bmp"
+
 IDB_ENCODING            BITMAP                  "..\\res\\Encoding.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -54,6 +64,7 @@ IDB_ENCODING            BITMAP                  "..\\res\\Encoding.bmp"
 //
 
 IDC_COPY                CURSOR                  "..\\res\\Copy.cur"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -199,7 +210,7 @@ BEGIN
             MENUITEM "&Filename\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
             MENUITEM "&Path and Filename\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+."          IDM_EDIT_INSERT_GUID
+            MENUITEM "&GUID\tCtrl+Shift+.",         IDM_EDIT_INSERT_GUID
         END
         POPUP "Spec&ial"
         BEGIN
@@ -559,7 +570,7 @@ CAPTION "About Notepad3"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,195,204,50,14
-    ICON            IDR_MAINWND,IDC_STATIC,7,7,20,20
+    ICON            IDR_MAINWND,IDC_STATIC,7,7,21,20
     LTEXT           "",IDC_VERSION,45,10,200,17
     LTEXT           "Compiled with:",IDC_COMPILER2,45,24,200,8
     LTEXT           "",IDC_COMPILER,96,24,200,8
@@ -572,7 +583,7 @@ BEGIN
     LTEXT           "Florian Balmer et al. ( Notepad2 )",IDC_STATIC,45,110,200,8
     LTEXT           "",IDC_NOTE2WEBPAGE2,45,119,200,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_NOTE2WEBPAGE,"SysLink",WS_TABSTOP,45,119,200,10
-    LTEXT           "Contributors: Derick Payne (Rizonesoft), XhmikosR (Notepad2-mod), Kai Liu, RL Vision, Aleksandar Lekov,  Bruno Barbieri, Florian Balmer (Notepad2), Neil Hodgson (SciTE), Matthew Ellis (MinimizeToTray), Dave Dyer (Crypto-mod)",IDC_STATIC,45,153,200,48
+    LTEXT           "Contributors: Derick Payne (Rizonesoft), RaPeHoff, XhmikosR (Notepad2-mod), Kai Liu, RL Vision, Aleksandar Lekov,  Bruno Barbieri, Florian Balmer (Notepad2), Neil Hodgson (SciTE), Matthew Ellis (MinimizeToTray), Dave Dyer (Crypto-mod)",IDC_STATIC,45,150,200,44
 END
 
 IDD_FIND DIALOGEX 0, 0, 272, 101
@@ -897,26 +908,17 @@ BEGIN
     CONTROL         "Reuse Master Key",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     GROUPBOX        "Passphrase",IDC_STATIC,7,7,297,108
 END
-STRINGTABLE
-BEGIN
-   IDS_PASS_FAILURE  "The passphrase is incorrect."
-   IDS_NOPASS        "Cancelled - no passphrase."
-END
 
-IDD_READPW DIALOG  0, 0, 299, 84
-STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE |
-    WS_CAPTION | WS_SYSMENU
+IDD_READPW DIALOG 0, 0, 299, 84
+STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Decrypt File"
 FONT 8, "MS Shell Dlg"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,233,54,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,175,54,50,14
-    EDITTEXT        IDC_EDIT3,16,24,267,14,ES_PASSWORD | ES_AUTOHSCROLL |
-                    WS_GROUP
-    CONTROL         "decrypt using the master key",IDC_CHECK3,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,17,60,148,10
-    LTEXT           "This file has a master key",IDC_STATICPW,16,47,89,11,
-                    NOT WS_GROUP
+    EDITTEXT        IDC_EDIT3,16,24,267,14,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
+    CONTROL         "decrypt using the master key",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,60,148,10
+    LTEXT           "This file has a master key",IDC_STATICPW,16,47,89,11,NOT WS_GROUP
     GROUPBOX        "Passphrase",IDC_STATIC,7,7,285,70
 END
 
@@ -1236,7 +1238,6 @@ BEGIN
         BOTTOMMARGIN, 115
     END
 
-
     IDD_COLUMNWRAP, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -1335,6 +1336,12 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_PASS_FAILURE        "The passphrase is incorrect."
+    IDS_NOPASS              "Cancelled - no passphrase."
+END
+
+STRINGTABLE
+BEGIN
     IDS_APPTITLE            "Notepad3"
     IDS_APPTITLE_ELEVATED   "%s (Administrator)"
     IDS_APPTITLE_PASTEBOARD "Notepad3 : Paste Board"
@@ -1355,16 +1362,12 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_BACKSLASHHELP       "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\ooo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_REGEXPHELP          "RegExp Syntax (Multi Lines)\n\n.\tAny character, except line-breaks\n^\tStart of a line\n$\tEnd of a line\n\\<\tStart of a word\n\\>\tEnd of a word\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_WILDCARDHELP        "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
-END
-
-STRINGTABLE
-BEGIN
     IDS_FILTER_INI          "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_OPENWITH            "Select the directory with links to your favorite applications."
     IDS_FAVORITES           "Select the directory with links to your favorite files."
+    IDS_BACKSLASHHELP       "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\ooo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_REGEXPHELP          "RegExp Syntax (Multi Lines)\n\n.\tAny character, except line-breaks\n^\tStart of a line\n$\tEnd of a line\n\\<\tStart of a word\n\\>\tEnd of a word\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
+    IDS_WILDCARDHELP        "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
 END
 
 STRINGTABLE

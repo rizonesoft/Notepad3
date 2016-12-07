@@ -2,7 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by Notepad3.rc
 //
-#define IDC_STATIC                      -1
 #define IDR_MAINWND                     100
 #define IDC_FINDTEXT                    100
 #define IDC_LINENUM                     100
@@ -55,10 +54,7 @@
 #define IDC_AUTOSTRIPBLANKS             103
 #define IDC_ENCODINGFROMFILEVARS        103
 #define IDC_WEBPAGE2                    103
-#define IDC_MODWEBPAGE                  105
-#define IDC_MODWEBPAGE2					104
-#define IDC_NOTE2WEBPAGE				106
-#define IDC_NOTE2WEBPAGE2				107
+#define IDC_MODWEBPAGE2                 104
 #define IDD_ENCODING                    104
 #define IDC_MOD_PAGE2                   104
 #define IDC_FINDSTART                   104
@@ -66,15 +62,18 @@
 #define IDC_STYLEBACK                   104
 #define IDC_AUTHORNAME                  104
 #define IDC_WEBPAGE4                    104
+#define IDC_MODWEBPAGE                  105
 #define IDD_RECODE                      105
 #define IDC_FINDREGEXP                  105
 #define IDC_STYLEFONT                   105
 #define IDB_ENCODING                    105
 #define IDC_EMAIL                       105
+#define IDC_NOTE2WEBPAGE                106
 #define IDD_DEFEOLMODE                  106
 #define IDC_FINDTRANSFORMBS             106
 #define IDC_PREVIEW                     106
 #define IDC_EMAIL2                      106
+#define IDC_NOTE2WEBPAGE2               107
 #define IDD_FAVORITES                   107
 #define IDC_NOWRAP                      107
 #define IDC_STYLEDEFAULT                107
@@ -82,6 +81,7 @@
 #define IDC_PREVSTYLE                   108
 #define IDC_FINDCLOSE                   108
 #define IDC_EMAIL3                      108
+#define IDC_VERSION2                    108
 #define IDD_FILEMRU                     109
 #define IDC_FINDPREV                    109
 #define IDC_NEXTSTYLE                   109
@@ -445,6 +445,7 @@
 #define IDS_EXPORT_FAIL                 50040
 #define IDS_CMDLINEHELP                 60000
 #define IDM_EDIT_INSERT_GUID            60001
+#define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 

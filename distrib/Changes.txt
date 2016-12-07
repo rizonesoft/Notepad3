@@ -1,14 +1,28 @@
-================================================================================
-Notepad3 1 Build 000 (05 September 2016)
-================================================================================
+==================================================
+Rizonesoft Notepad3 CHANGES
+==================================================
+
+--------------------------------------------------
+Version 1 Build 386 (08 December 2016)
+--------------------------------------------------
+- Crypto Module: code cleanup 
+- Crypto Module: Replaced LocalAlloc/GlobalAlloc by HeapAlloc methods.
+- Integration of DeelX RegExpr engine (http://www.regexlab.com/en/deelx/) 
+- Update to Scintilla 371 (NP2 adaption due to deprecated data types).
+- clean-code Solution (instead of "magic numbers").
+- Fixed block selecting cause crash.
+- Added RaPeHoff to the contributors list.
+
+--------------------------------------------------
+Version 1 Build 350 (05 September 2016)
+--------------------------------------------------
 - Updated HTML Keywords
 - Updated Scintilla to version 3.6.7
 - Added Microsoft Visual C++ Update 3 version number
-- 
 
-================================================================================
-Notepad3 1 Build 330 (24 June 2016)
-================================================================================
+--------------------------------------------------
+Version 1 Build 330 (24 June 2016)
+--------------------------------------------------
 - Fixed Compiler warnings
 - Updated to Scintilla 3.6.6
 - Updated Apache Keywords for version 2.4
