@@ -23,6 +23,34 @@
 	A.jump { text-decoration: none; }
 	LI.message { text-decoration: none; font-weight: bold; font-family: Menlo,Consolas,Bitstream Vera Sans Mono,Courier New,monospace; }
 	H2 { background: #E0EAFF; }
+
+	table {
+		border: 0px;
+		border-collapse: collapse;
+	}
+
+	table.categories {
+		border: 0px;
+		border-collapse: collapse;
+	}
+	table.categories td {
+		padding: 4px 12px;
+	}
+
+	table.standard {
+		border-collapse: collapse;
+	}
+	table.standard th {
+		background: #404040;
+		color: #FFFFFF;
+		padding: 1px 5px 1px 5px;
+	}
+	table.standard tr:nth-child(odd) {background: #D7D7D7}
+	table.standard tr:nth-child(even) {background: #F0F0F0}
+	table.standard td {
+		padding: 1px 5px 1px 5px;
+	}
+
 	.S0 {
 		color: #808080;
 	}
@@ -88,7 +116,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 4 December 2016 NH</p>
+    <p>Last edited 7 December 2016 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -146,23 +174,24 @@
     enhancement of messages without the risk of breaking existing code. Common argument types
     are:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Common argument types">
+    <table class="standard" summary="Common argument types">
       <tbody valign="top">
         <tr>
-          <th align="left">bool</th>
+          <th align="left"><code>bool</code></th>
 
           <td>Arguments expect the values 0 for <code>false</code> and 1 for
           <code>true</code>.</td>
         </tr>
 
         <tr>
-          <th align="left">int</th>
+          <th align="left"><code>int</code></th>
 
-          <td>Arguments are 32-bit signed integers.</td>
+          <td>Arguments are 32-bit or 64-bit signed integers depending on the platform.
+          Equivalent to <code>intptr_t</code>.</td>
         </tr>
 
         <tr>
-          <th align="left">const&nbsp;char&nbsp;*</th>
+          <th align="left"><code>const&nbsp;char&nbsp;*</code></th>
 
           <td>Arguments point at text that is being passed to Scintilla but not modified. The text
           may be zero terminated or another argument may specify the character count, the
@@ -170,7 +199,7 @@
         </tr>
 
         <tr>
-          <th align="left">char *</th>
+          <th align="left"><code>char *</code></th>
 
           <td>Arguments point at text buffers that Scintilla will fill with text. In some cases,
           another argument will tell Scintilla the buffer size. In others, you must make sure that
@@ -181,7 +210,7 @@
         </tr>
 
         <tr>
-          <th align="left" id="colour">colour</th>
+          <th align="left" id="colour"><code>colour</code></th>
 
           <td>Colours are set using the RGB format (Red, Green, Blue). The intensity of each colour
           is set in the range 0 to 255. If you have three such intensities, they are combined as:
@@ -192,7 +221,7 @@
         </tr>
 
         <tr>
-          <th align="left" id="alpha">alpha</th>
+          <th align="left" id="alpha"><code>alpha</code></th>
 
           <td>Translucency is set using an alpha value.
                         Alpha ranges from 0 (SC_ALPHA_TRANSPARENT) which is completely transparent to
@@ -203,7 +232,7 @@
         </tr>
 
         <tr>
-          <th align="left">&lt;unused&gt;</th>
+          <th align="left"><code>&lt;unused&gt;</code></th>
 
           <td>This is an unused argument. Setting it to 0 will ensure compatibility with future
           enhancements.</td>
@@ -213,161 +242,161 @@
 
     <h2 id="MessageCategories">Contents</h2>
 
-    <table cellpadding="4" cellspacing="2" border="0" summary="Message categories">
+    <table class="categories" summary="Message categories">
       <tbody>
         <tr>
-          <td>o <a class="toc" href="#TextRetrievalAndModification">Text retrieval and
+          <td>&cir; <a class="toc" href="#TextRetrievalAndModification">Text retrieval and
           modification</a></td>
 
-          <td>o <a class="toc" href="#Searching">Searching and replacing</a></td>
+          <td>&cir; <a class="toc" href="#Searching">Searching and replacing</a></td>
 
-          <td>o <a class="toc" href="#Overtype">Overtype</a></td>
-
-        </tr>
-
-        <tr>
-          <td>o <a class="toc" href="#CutCopyAndPaste">Cut, copy and paste</a></td>
-
-          <td>o <a class="toc" href="#ErrorHandling">Error handling</a></td>
-
-          <td>o <a class="toc" href="#UndoAndRedo">Undo and Redo</a></td>
+          <td>&cir; <a class="toc" href="#Overtype">Overtype</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#SelectionAndInformation">Selection and information</a></td>
+          <td>&cir; <a class="toc" href="#CutCopyAndPaste">Cut, copy and paste</a></td>
 
-          <td>o <a class="toc" href="#MultipleSelectionAndVirtualSpace">Multiple Selection and Virtual Space</a></td>
+          <td>&cir; <a class="toc" href="#ErrorHandling">Error handling</a></td>
 
-          <td>o <a class="toc" href="#ScrollingAndAutomaticScrolling">Scrolling and automatic
+          <td>&cir; <a class="toc" href="#UndoAndRedo">Undo and Redo</a></td>
+
+        </tr>
+
+        <tr>
+          <td>&cir; <a class="toc" href="#SelectionAndInformation">Selection and information</a></td>
+
+          <td>&cir; <a class="toc" href="#MultipleSelectionAndVirtualSpace">Multiple Selection and Virtual Space</a></td>
+
+          <td>&cir; <a class="toc" href="#ScrollingAndAutomaticScrolling">Scrolling and automatic
           scrolling</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#WhiteSpace">White space</a></td>
+          <td>&cir; <a class="toc" href="#WhiteSpace">White space</a></td>
 
-          <td>o <a class="toc" href="#Cursor">Cursor</a></td>
+          <td>&cir; <a class="toc" href="#Cursor">Cursor</a></td>
 
-          <td>o <a class="toc" href="#MouseCapture">Mouse capture</a></td>
-
-        </tr>
-
-        <tr>
-          <td>o <a class="toc" href="#LineEndings">Line endings</a></td>
-
-          <td>o <a class="toc" href="#Words">Words</a></td>
-
-          <td>o <a class="toc" href="#Styling">Styling</a></td>
+          <td>&cir; <a class="toc" href="#MouseCapture">Mouse capture</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#StyleDefinition">Style definition</a></td>
+          <td>&cir; <a class="toc" href="#LineEndings">Line endings</a></td>
 
-          <td>o <a class="toc" href="#CaretAndSelectionStyles">Caret, selection, and hotspot styles</a></td>
+          <td>&cir; <a class="toc" href="#Words">Words</a></td>
 
-          <td>o <a class="toc" href="#CharacterRepresentations">Character representations</a></td>
-
-        </tr>
-
-        <tr>
-          <td>o <a class="toc" href="#Margins">Margins</a></td>
-
-          <td>o <a class="toc" href="#Annotations">Annotations</a></td>
-
-          <td>o <a class="toc" href="#OtherSettings">Other settings</a></td>
+          <td>&cir; <a class="toc" href="#Styling">Styling</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#BraceHighlighting">Brace highlighting</a></td>
+          <td>&cir; <a class="toc" href="#StyleDefinition">Style definition</a></td>
 
-          <td>o <a class="toc" href="#TabsAndIndentationGuides">Tabs and Indentation
+          <td>&cir; <a class="toc" href="#CaretAndSelectionStyles">Caret, selection, and hotspot styles</a></td>
+
+          <td>&cir; <a class="toc" href="#CharacterRepresentations">Character representations</a></td>
+
+        </tr>
+
+        <tr>
+          <td>&cir; <a class="toc" href="#Margins">Margins</a></td>
+
+          <td>&cir; <a class="toc" href="#Annotations">Annotations</a></td>
+
+          <td>&cir; <a class="toc" href="#OtherSettings">Other settings</a></td>
+
+        </tr>
+
+        <tr>
+          <td>&cir; <a class="toc" href="#BraceHighlighting">Brace highlighting</a></td>
+
+          <td>&cir; <a class="toc" href="#TabsAndIndentationGuides">Tabs and Indentation
           Guides</a></td>
 
-          <td>o <a class="toc" href="#Markers">Markers</a></td>
+          <td>&cir; <a class="toc" href="#Markers">Markers</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#Indicators">Indicators</a></td>
+          <td>&cir; <a class="toc" href="#Indicators">Indicators</a></td>
 
-          <td>o <a class="toc" href="#Autocompletion">Autocompletion</a></td>
+          <td>&cir; <a class="toc" href="#Autocompletion">Autocompletion</a></td>
 
-          <td>o <a class="toc" href="#UserLists">User lists</a></td>
-
-        </tr>
-
-        <tr>
-          <td>o <a class="toc" href="#CallTips">Call tips</a></td>
-
-          <td>o <a class="toc" href="#KeyboardCommands">Keyboard commands</a></td>
-
-          <td>o <a class="toc" href="#KeyBindings">Key bindings</a></td>
+          <td>&cir; <a class="toc" href="#UserLists">User lists</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#PopupEditMenu">Popup edit menu</a></td>
+          <td>&cir; <a class="toc" href="#CallTips">Call tips</a></td>
 
-          <td>o <a class="toc" href="#MacroRecording">Macro recording</a></td>
+          <td>&cir; <a class="toc" href="#KeyboardCommands">Keyboard commands</a></td>
 
-          <td>o <a class="toc" href="#Printing">Printing</a></td>
-
-        </tr>
-
-        <tr>
-          <td>o <a class="toc" href="#DirectAccess">Direct access</a></td>
-
-          <td>o <a class="toc" href="#MultipleViews">Multiple views</a></td>
-
-          <td>o <a class="toc" href="#BackgroundLoadSave">Background loading and saving</a></td>
+          <td>&cir; <a class="toc" href="#KeyBindings">Key bindings</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#Folding">Folding</a></td>
+          <td>&cir; <a class="toc" href="#PopupEditMenu">Popup edit menu</a></td>
 
-          <td>o <a class="toc" href="#LineWrapping">Line wrapping</a></td>
+          <td>&cir; <a class="toc" href="#MacroRecording">Macro recording</a></td>
 
-          <td>o <a class="toc" href="#Zooming">Zooming</a></td>
-
-        </tr>
-
-        <tr>
-          <td>o <a class="toc" href="#LongLines">Long lines</a></td>
-
-          <td>o <a class="toc" href="#Lexer">Lexer</a></td>
-
-          <td>o <a class="toc" href="#LexerObjects">Lexer objects</a></td>
+          <td>&cir; <a class="toc" href="#Printing">Printing</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#Notifications">Notifications</a></td>
+          <td>&cir; <a class="toc" href="#DirectAccess">Direct access</a></td>
 
-          <td>o <a class="toc" href="#Accessibility">Accessibility</a></td>
+          <td>&cir; <a class="toc" href="#MultipleViews">Multiple views</a></td>
 
-          <td>o <a class="toc" href="#Images">Images</a></td>
+          <td>&cir; <a class="toc" href="#BackgroundLoadSave">Background loading and saving</a></td>
 
         </tr>
 
         <tr>
-          <td>o <a class="toc" href="#GTK">GTK+</a></td>
+          <td>&cir; <a class="toc" href="#Folding">Folding</a></td>
 
-          <td>o <a class="toc" href="#ProvisionalMessages"><span class="provisional">Provisional messages</span></a></td>
+          <td>&cir; <a class="toc" href="#LineWrapping">Line wrapping</a></td>
 
-          <td>o <a class="toc" href="#DeprecatedMessages">Deprecated messages</a></td>
+          <td>&cir; <a class="toc" href="#Zooming">Zooming</a></td>
+
+        </tr>
+
+        <tr>
+          <td>&cir; <a class="toc" href="#LongLines">Long lines</a></td>
+
+          <td>&cir; <a class="toc" href="#Lexer">Lexer</a></td>
+
+          <td>&cir; <a class="toc" href="#LexerObjects">Lexer objects</a></td>
+
+        </tr>
+
+        <tr>
+          <td>&cir; <a class="toc" href="#Notifications">Notifications</a></td>
+
+          <td>&cir; <a class="toc" href="#Accessibility">Accessibility</a></td>
+
+          <td>&cir; <a class="toc" href="#Images">Images</a></td>
+
+        </tr>
+
+        <tr>
+          <td>&cir; <a class="toc" href="#GTK">GTK+</a></td>
+
+          <td>&cir; <a class="toc" href="#ProvisionalMessages"><span class="provisional">Provisional messages</span></a></td>
+
+          <td>&cir; <a class="toc" href="#DeprecatedMessages">Deprecated messages</a></td>
 
         </tr>
         <tr>
-          <td>o <a class="toc" href="#EditMessagesNeverSupportedByScintilla">Edit messages never
+          <td>&cir; <a class="toc" href="#EditMessagesNeverSupportedByScintilla">Edit messages never
           supported by Scintilla</a></td>
 
-          <td>o <a class="toc" href="#RemovedFeatures">Removed features</a></td>
+          <td>&cir; <a class="toc" href="#RemovedFeatures">Removed features</a></td>
 
-          <td>o <a class="toc" href="#BuildingScintilla">Building Scintilla</a></td>
+          <td>&cir; <a class="toc" href="#BuildingScintilla">Building Scintilla</a></td>
 
         </tr>
       </tbody>
@@ -729,7 +758,7 @@ struct Sci_TextRange {
      Several of the search routines use flag options, which include a simple regular expression
     search. Combine the flag options by adding them:</p>
 
-    <table border="0" summary="Search flags">
+    <table class="standard" summary="Search flags">
       <tbody>
         <tr>
           <td><code>SCFIND_MATCHCASE</code></td>
@@ -781,7 +810,7 @@ struct Sci_TextRange {
     <p>In a regular expression, using Scintilla's base implementation,
     special characters interpreted are:</p>
 
-    <table border="0" summary="Regular expression synopsis">
+    <table class="standard" summary="Regular expression synopsis">
       <tbody>
         <tr>
           <td><code>.</code></td>
@@ -1027,28 +1056,28 @@ struct Sci_TextToFind {
     The currently defined statuses are:
     </p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Status values">
+    <table class="standard" summary="Status values">
       <tbody valign="top">
         <tr>
-          <th align="left">SC_STATUS_OK</th>
+          <th align="left"><code>SC_STATUS_OK</code></th>
           <td>0</td>
           <td>No failures</td>
         </tr>
 
         <tr>
-          <th align="left">SC_STATUS_FAILURE</th>
+          <th align="left"><code>SC_STATUS_FAILURE</code></th>
           <td>1</td>
           <td>Generic failure</td>
         </tr>
 
         <tr>
-          <th align="left">SC_STATUS_BADALLOC</th>
+          <th align="left"><code>SC_STATUS_BADALLOC</code></th>
           <td>2</td>
           <td>Memory is exhausted</td>
         </tr>
 
         <tr>
-          <th align="left">SC_STATUS_WARN_REGEX</th>
+          <th align="left"><code>SC_STATUS_WARN_REGEX</code></th>
           <td>1001</td>
           <td>Regular expression is invalid</td>
         </tr>
@@ -1274,7 +1303,7 @@ struct Sci_TextToFind {
     current position. They do not make the caret visible. The table shows the positions of the
     anchor and the current position after using these messages.</p>
 
-    <table cellpadding="3" cellspacing="0" border="1" summary="SetSelection caret positioning">
+    <table class="standard" summary="SetSelection caret positioning">
       <thead align="center">
         <tr>
           <th>
@@ -1810,7 +1839,7 @@ struct Sci_TextToFind {
     <code>CARET_SLOP</code>, <code>CARET_STRICT</code>, <code>CARET_JUMPS</code> and
     <code>CARET_EVEN</code>.</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Caret policy">
+    <table class="standard" summary="Caret policy">
       <tbody valign="top">
         <tr>
           <th align="left"><code>CARET_SLOP</code></th>
@@ -1850,8 +1879,9 @@ struct Sci_TextToFind {
         </tr>
       </tbody>
     </table>
+    <br />
 
-    <table cellpadding="3" cellspacing="0" border="1" summary="Caret positioning">
+    <table class="standard" summary="Caret positioning">
       <thead align="center">
         <tr>
           <th>slop</th>
@@ -2125,7 +2155,7 @@ struct Sci_TextToFind {
     class="jump" href="#LineEndings">end of line characters</a>. The two messages set and get the
     white space display mode. The <code class="parameter">viewWS</code> argument can be one of:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="White space policy">
+    <table class="standard" summary="White space policy">
       <tbody valign="top">
         <tr>
           <th align="left"><code>SCWS_INVISIBLE</code></th>
@@ -2183,7 +2213,7 @@ struct Sci_TextToFind {
     These two messages get and set how tab characters are drawn when white space is visible.
     The <code class="parameter">tabDrawMode</code> argument can be one of:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="White space policy">
+    <table class="standard" summary="White space policy">
       <tbody valign="top">
         <tr>
           <th align="left"><code>SCTD_LONGARROW</code></th>
@@ -2229,7 +2259,7 @@ struct Sci_TextToFind {
     cursor. You set the cursor type with <code>SCI_SETCURSOR</code>. The <code class="parameter">cursorType</code>
     argument can be:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Mouse cursors">
+    <table class="standard" summary="Mouse cursors">
       <tbody valign="top">
         <tr>
           <th align="left"><code>SC_CURSORNORMAL</code></th>
@@ -2408,7 +2438,7 @@ struct Sci_TextToFind {
     the position and <code>true</code> or <code>false</code> is the state of
     <code class="parameter">onlyWordCharacters</code>:</p>
 
-    <table cellpadding="3" cellspacing="0" border="1" summary="Word start and end positions">
+    <table class="standard" summary="Word start and end positions">
       <thead align="center">
         <tr>
           <th>Initial state</th>
@@ -2621,7 +2651,7 @@ struct Sci_TextToFind {
     predefined numbered styles starting at 32, The following <code>STYLE_</code>* constants are
     defined.</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Preset styles">
+    <table class="standard" summary="Preset styles">
       <tbody valign="top">
         <tr>
           <th align="left"><code>STYLE_DEFAULT</code></th>
@@ -2867,64 +2897,126 @@ struct Sci_TextToFind {
     number used by the C and C++ lexer to display literal strings; it has the value 6). This
     feature works differently on Windows and GTK+.<br />
     The default character set is <code>SC_CHARSET_DEFAULT</code>.</p>
+    <p><code>SC_CHARSET_ANSI</code> and <code>SC_CHARSET_DEFAULT</code> specify European Windows code page 1252 unless the code page is set.</p>
 
-    <p>The character sets supported on Windows are:<br />
-     <code>SC_CHARSET_ANSI</code>,
-     <code>SC_CHARSET_ARABIC</code>,
-     <code>SC_CHARSET_BALTIC</code>,
-     <code>SC_CHARSET_CHINESEBIG5</code>,
-     <code>SC_CHARSET_DEFAULT</code>,
-     <code>SC_CHARSET_EASTEUROPE</code>,
-     <code>SC_CHARSET_GB2312</code>,
-     <code>SC_CHARSET_GREEK</code>,
-     <code>SC_CHARSET_HANGUL</code>,
-     <code>SC_CHARSET_HEBREW</code>,
-     <code>SC_CHARSET_JOHAB</code>,
-     <code>SC_CHARSET_MAC</code>,
-     <code>SC_CHARSET_OEM</code>,
-     <code>SC_CHARSET_RUSSIAN</code> (code page 1251),
-     <code>SC_CHARSET_SHIFTJIS</code>,
-     <code>SC_CHARSET_SYMBOL</code>,
-     <code>SC_CHARSET_THAI</code>,
-     <code>SC_CHARSET_TURKISH</code>, and
-     <code>SC_CHARSET_VIETNAMESE</code>.<br />
-     <code>SC_CHARSET_ANSI</code> and <code>SC_CHARSET_DEFAULT</code> specify European Windows
-     code page 1252 unless the code page is set.</p>
-
-    <p>The character sets supported on GTK+ are:<br />
-     <code>SC_CHARSET_ANSI</code>,
-     <code>SC_CHARSET_DEFAULT</code> (8859-1),
-     <code>SC_CHARSET_OEM866</code> (code page 866),
-     <code>SC_CHARSET_CYRILLIC</code> (code page 1251),
-     <code>SC_CHARSET_EASTEUROPE</code>,
-     <code>SC_CHARSET_GB2312</code>,
-     <code>SC_CHARSET_HANGUL</code>,
-     <code>SC_CHARSET_RUSSIAN</code> (KOI8-R),
-     <code>SC_CHARSET_SHIFTJIS</code>, and
-     <code>SC_CHARSET_8859_15</code>.</p>
-
-    <p>The character sets supported on Cocoa are:<br />
-     <code>SC_CHARSET_8859_15</code>,
-     <code>SC_CHARSET_ANSI</code> (8859-1),
-     <code>SC_CHARSET_ARABIC</code>,
-     <code>SC_CHARSET_BALTIC</code>,
-     <code>SC_CHARSET_CHINESEBIG5</code>,
-     <code>SC_CHARSET_CYRILLIC</code> (code page 1251),
-     <code>SC_CHARSET_DEFAULT</code> (8859-1),
-     <code>SC_CHARSET_EASTEUROPE</code>,
-     <code>SC_CHARSET_GB2312</code>,
-     <code>SC_CHARSET_GREEK</code>,
-     <code>SC_CHARSET_HANGUL</code>,
-     <code>SC_CHARSET_HEBREW</code>,
-     <code>SC_CHARSET_JOHAB</code>,
-     <code>SC_CHARSET_MAC</code>,
-     <code>SC_CHARSET_OEM</code>,
-     <code>SC_CHARSET_RUSSIAN</code> (code page 1251),
-     <code>SC_CHARSET_SHIFTJIS</code>,
-     <code>SC_CHARSET_SYMBOL</code>,
-     <code>SC_CHARSET_THAI</code>,
-     <code>SC_CHARSET_TURKISH</code>,
-     <code>SC_CHARSET_VIETNAMESE</code>.</p>
+<table class="standard" summary="Character Sets supported"><tbody>
+  <tr>
+    <th>Character Set</th>
+    <th>Windows</th>
+    <th>GTK+</th>
+    <th>Cocoa</th></tr></tbody>
+  <tbody>
+  <tr>
+    <td><code>SC_CHARSET_ANSI</code></td>
+    <td>&#10003;</td>
+    <td>&#10003;</td>
+    <td>&#10003; (8859-1)</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_ARABIC</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_BALTIC</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_CHINESEBIG5</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_DEFAULT</code></td>
+    <td>&#10003;</td>
+    <td>&#10003; (8859-1)</td>
+    <td>&#10003; (8859-1)</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_EASTEUROPE</code></td>
+    <td>&#10003;</td>
+    <td>&#10003;</td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_GB2312</code></td>
+    <td>&#10003;</td>
+    <td>&#10003;</td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_GREEK</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_HANGUL</code></td>
+    <td>&#10003;</td>
+    <td>&#10003;</td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_HEBREW</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_JOHAB</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_MAC</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_OEM</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_RUSSIAN</code></td>
+    <td>&#10003; (cp1251)</td>
+    <td>&#10003; (koi8-r)</td>
+    <td>&#10003; (cp1251)</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_SHIFTJIS</code></td>
+    <td>&#10003;</td>
+    <td>&#10003;</td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_SYMBOL</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_THAI</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_TURKISH</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_VIETNAMESE</code></td>
+    <td>&#10003;</td>
+    <td></td>
+    <td>&#10003;</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_OEM866</code></td>
+    <td></td>
+    <td>&#10003; (cp866)</td>
+    <td></td></tr>
+   <tr>
+    <td><code>SC_CHARSET_CYRILLIC</code></td>
+    <td></td>
+    <td>&#10003; (cp1251)</td>
+    <td>&#10003; (cp1251)</td></tr>
+   <tr>
+    <td><code>SC_CHARSET_8859_15</code></td>
+    <td></td>
+    <td>&#10003;</td>
+    <td>&#10003;</td></tr>
+</tbody></table>
 
     <p><b id="SCI_STYLESETCASE">SCI_STYLESETCASE(int style, int caseVisible)</b><br />
     <b id="SCI_STYLEGETCASE">SCI_STYLEGETCASE(int style) &rarr; int</b><br />
@@ -3420,7 +3512,7 @@ struct Sci_TextToFind {
      The two messages set and get the annotation display mode. The <code class="parameter">visible</code>
      argument can be one of:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Annotation visibility">
+    <table class="standard" summary="Annotation visibility">
       <tbody valign="top">
         <tr>
           <th align="left"><code>ANNOTATION_HIDDEN</code></th>
@@ -3768,7 +3860,7 @@ struct Sci_TextToFind {
     <p>There are 4 indentation guide views.
     SC_IV_NONE turns the feature off but the other 3 states determine how far the guides appear on
     empty lines. </p>
-    <table border="0" summary="Search flags">
+    <table class="standard" summary="Search flags">
       <tbody>
         <tr>
           <td><code>SC_IV_NONE</code></td>
@@ -3926,7 +4018,7 @@ struct Sci_TextToFind {
     Macintosh), plus/minus shows folded lines as '+' and opened folds as '-', Circle tree, Box
     tree.</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Markers used for folding">
+    <table class="standard" summary="Markers used for folding">
       <thead align="left">
         <tr>
           <th><code>SC_MARKNUM_</code>*</th>
@@ -4200,7 +4292,7 @@ struct Sci_TextToFind {
 
     <img src="Indicators.png" alt="Indicator samples" /></p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Indicators">
+    <table class="standard" summary="Indicators">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -5266,7 +5358,7 @@ struct Sci_TextToFind {
     Windows, <code>WM_CONTEXTMENU</code>) will not be handled by Scintilla, so the parent of the
     Scintilla window will have the opportunity to handle the message.</p>
 
-        <table cellpadding="1" cellspacing="2" border="0" summary="Display context menu mode">
+        <table class="standard" summary="Display context menu mode">
           <tbody>
             <tr>
               <th align="left">Symbol</th>
@@ -5409,7 +5501,7 @@ struct Sci_RangeToFormat {
     you use a dark or black screen background. Printing white on black uses up toner and ink very
     many times faster than the other way around. You can set the mode to one of:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Colour printing modes">
+    <table class="standard" summary="Colour printing modes">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -5793,7 +5885,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <code class="parameter">flags</code> determine where folding lines are drawn:<br />
     </p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Fold flags">
+    <table class="standard" summary="Fold flags">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -5885,7 +5977,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <p><b id="SCI_FOLDDISPLAYTEXTSETSTYLE">SCI_FOLDDISPLAYTEXTSETSTYLE(int style)</b><br />
     This message changes the appearance of fold text tags.</p>
-    <table cellpadding="1" cellspacing="2" border="0" summary="Fold flags">
+    <table class="standard" summary="Fold flags">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -5939,7 +6031,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p>To affect the entire document call <code>SCI_FOLDALL</code>. With <code>SC_FOLDACTION_TOGGLE</code>
     the first fold header in the document is examined to decide whether to expand or contract.
     </p>
-    <table cellpadding="1" cellspacing="2" border="0" summary="Fold flags">
+    <table class="standard" summary="Fold flags">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -5989,7 +6081,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     like to add or change click behaviour such as showing method headers only when Shift+Alt is used in
     conjunction with a click.
     </p>
-    <table cellpadding="1" cellspacing="2" border="0" summary="Fold flags">
+    <table class="standard" summary="Fold flags">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -6106,7 +6198,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
                 You can enable the drawing of visual flags to indicate a line is wrapped. Bits set in
                 wrapVisualFlags determine which visual flags are drawn.
     </p>
-    <table cellpadding="1" cellspacing="2" border="0" summary="Wrap visual flags">
+    <table class="standard" summary="Wrap visual flags">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -6150,7 +6242,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
                 Bits set in wrapVisualFlagsLocation set the location to near the text for the corresponding visual flag.
     </p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Wrap visual flags locations">
+    <table class="standard" summary="Wrap visual flags locations">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -6187,7 +6279,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
                 The modes are:
     </p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Wrap visual flags locations">
+    <table class="standard" summary="Wrap visual flags locations">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -6233,7 +6325,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      <b id="SCI_GETLAYOUTCACHE">SCI_GETLAYOUTCACHE &rarr; int</b><br />
      You can set <code class="parameter">cacheMode</code> to one of the symbols in the table:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Line caching styles">
+    <table class="standard" summary="Line caching styles">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -6344,7 +6436,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      These two messages set and get the mode used to display long lines. You can set one of the
     values in the table:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Long line styles">
+    <table class="standard" summary="Long line styles">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -7009,7 +7101,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
      Either the text or styling of the document has changed or the selection range or scroll position has changed.
      Now would be a good time to update any container UI elements that depend on document or view state.
      The <code>updated</code> field is set to the bit set of things changed since the previous notification.</p>
-    <table cellpadding="1" cellspacing="2" border="0" summary="Modify notification type flags">
+    <table class="standard" summary="Modify notification type flags">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -7069,7 +7161,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     while in a <code>SCN_MODIFIED</code> event. The <code>SCNotification</code> fields used
     are:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Modify notification types">
+    <table class="standard" summary="Modify notification types">
       <tbody>
         <tr>
           <th align="left">Field</th>
@@ -7142,7 +7234,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     <code>SC_PERFORMED_*</code> bits tell you if the action was done by the user, or the result of
     Undo or Redo of a previous action.</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Modify notification type flags">
+    <table class="standard" summary="Modify notification type flags">
       <tbody>
         <tr>
           <th align="left">Symbol</th>
@@ -7447,7 +7539,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     <code>Editor::NotifyMacroRecord</code>. The fields of <code>SCNotification</code> set in this
     notification are:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Macro record notification data">
+    <table class="standard" summary="Macro record notification data">
       <tbody>
         <tr>
           <th align="left">Field</th>
@@ -7485,7 +7577,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     perform folding or to place breakpoints. The following <code>SCNotification</code> fields are
     used:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Margin click notification">
+    <table class="standard" summary="Margin click notification">
       <tbody>
         <tr>
           <th align="left">Field</th>
@@ -7543,7 +7635,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
      The user has selected an item in a <a class="jump" href="#UserLists">user list</a>. The
     <code>SCNotification</code> fields used are:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="User list notification">
+    <table class="standard" summary="User list notification">
       <tbody>
         <tr>
           <th align="left">Field</th>
@@ -7604,7 +7696,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
     key press indicates the dwell is over. Both notifications set the same fields in
     <code>SCNotification</code>:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Mouse dwell notification">
+    <table class="standard" summary="Mouse dwell notification">
       <tbody>
         <tr>
           <th align="left">Field</th>
@@ -7680,7 +7772,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
      <code><a class="message" href="#SCI_AUTOCCANCEL">SCI_AUTOCCANCEL</a></code> message
      before returning from the notification. The <code>SCNotification</code> fields used are:</p>
 
-    <table cellpadding="1" cellspacing="2" border="0" summary="Autocompletion list notification">
+    <table class="standard" summary="Autocompletion list notification">
       <tbody>
         <tr>
           <th align="left">Field</th>
@@ -7715,7 +7807,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
       </tbody>
     </table>
     <br />
-    <table cellpadding="1" cellspacing="2" border="0" summary="Modify notification type flags">
+    <table class="standard" summary="Modify notification type flags">
       <tbody>
         <tr>
           <th align="left">Symbol</th>

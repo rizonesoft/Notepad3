@@ -16,6 +16,23 @@ static inline bool IsEOLChar(char ch) {
 	return (ch == '\r') || (ch == '\n');
 }
 
+/**
+* A point in document space.
+* Uses double for sufficient resolution in large (>20,000,000 line) documents.
+*/
+class PointDocument {
+public:
+	double x;
+	double y;
+
+	explicit PointDocument(double x_ = 0, double y_ = 0) : x(x_), y(y_) {
+	}
+
+	// Conversion from Point.
+	explicit PointDocument(Point pt) : x(pt.x), y(pt.y) {
+	}
+};
+
 // There are two points for some positions and this enumeration
 // can choose between the end of the first line or subline
 // and the start of the next line or subline.
