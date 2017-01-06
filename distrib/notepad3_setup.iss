@@ -101,6 +101,7 @@ en.tsk_ResetSettings         =Reset {#app_name}'s settings
 en.tsk_RemoveDefault         =Restore Windows notepad
 en.tsk_SetDefault            =Replace Windows notepad with {#app_name}
 en.tsk_StartMenuIcon         =Create a Start Menu shortcut
+en.tsk_LaunchWelcomePage     =Visit Rizonesoft for more downloads
 
 
 [Tasks]
@@ -143,6 +144,7 @@ Filename: {userappdata}\Rizonesoft\Notepad3\Notepad3.ini; Section: Settings; Key
 
 [Run]
 Filename: {app}\Notepad3.exe; Description: {cm:LaunchProgram,{#app_name}}; WorkingDir: {app}; Flags: nowait postinstall skipifsilent unchecked
+Filename: "http://www.rizonesoft.com/downloads/"; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent
 
 
 [InstallDelete]
