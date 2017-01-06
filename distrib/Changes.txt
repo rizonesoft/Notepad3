@@ -3,6 +3,13 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 1 Build 300 (06 January 2017)
+--------------------------------------------------
+- Updated Scintilla to version 3.7.2
+- MiniPath now works on Windows XP
+
+
+--------------------------------------------------
 Version 1 Build 386 (08 December 2016)
 --------------------------------------------------
 - Crypto Module: code cleanup 
