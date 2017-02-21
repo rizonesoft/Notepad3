@@ -202,7 +202,7 @@ int ScintillaBase::KeyCommand(unsigned int iMessage) {
 }
 
 void ScintillaBase::AutoCompleteDoubleClick(void *p) {
-	ScintillaBase *sci = reinterpret_cast<ScintillaBase *>(p);
+	ScintillaBase *sci = static_cast<ScintillaBase *>(p);
 	sci->AutoCompleteCompleted(0, SC_AC_DOUBLECLICK);
 }
 

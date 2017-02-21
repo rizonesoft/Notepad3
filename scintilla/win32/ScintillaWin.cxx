@@ -1419,12 +1419,12 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			break;
 
 		case WM_RBUTTONDOWN: {
-			::SetFocus(MainHWND());
+				::SetFocus(MainHWND());
 				Point pt = Point::FromLong(static_cast<long>(lParam));
 				if (!PointInSelection(pt)) {
-				CancelModes();
-				SetEmptySelection(PositionFromLocation(Point::FromLong(static_cast<long>(lParam))));
-			}
+					CancelModes();
+					SetEmptySelection(PositionFromLocation(Point::FromLong(static_cast<long>(lParam))));
+				}
 
 				RightButtonDownWithModifiers(pt, ::GetMessageTime(), ModifierFlags((wParam & MK_SHIFT) != 0,
 										      (wParam & MK_CONTROL) != 0,
@@ -1583,16 +1583,16 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				::ScreenToClient(MainHWND(), &rpt);
 				const Point ptClient = PointFromPOINT(rpt);
 				if (ShouldDisplayPopup(ptClient)) {
-				if ((pt.x == -1) && (pt.y == -1)) {
-					// Caused by keyboard so display menu near caret
-					pt = PointMainCaret();
-					POINT spt = {static_cast<int>(pt.x), static_cast<int>(pt.y)};
-					::ClientToScreen(MainHWND(), &spt);
-					pt = PointFromPOINT(spt);
+					if ((pt.x == -1) && (pt.y == -1)) {
+						// Caused by keyboard so display menu near caret
+						pt = PointMainCaret();
+						POINT spt = {static_cast<int>(pt.x), static_cast<int>(pt.y)};
+						::ClientToScreen(MainHWND(), &spt);
+						pt = PointFromPOINT(spt);
+					}
+					ContextMenu(pt);
+					return 0;
 				}
-				ContextMenu(pt);
-				return 0;
-			}
 			}
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
@@ -1679,7 +1679,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				if (nStart == -1) {
 					nStart = nEnd;	// Remove selection
 				}
-					SetSelection(nEnd, nStart);
+				SetSelection(nEnd, nStart);
 				EnsureCaretVisible();
 			}
 			break;
@@ -2116,12 +2116,12 @@ std::string ScintillaWin::CaseMapString(const std::string &s, int caseMapping) {
 		return CaseConvertString(s, (caseMapping == cmUpper) ? CaseConversionUpper : CaseConversionLower);
 	}
 
+	// Change text to UTF-16
 	const std::wstring wsText = StringDecode(s, cpDoc);
 
 	const DWORD mapFlags = LCMAP_LINGUISTIC_CASING |
 		((caseMapping == cmUpper) ? LCMAP_UPPERCASE : LCMAP_LOWERCASE);
 
-	// Change text to UTF-16
 	// Change case
 	const std::wstring wsConverted = StringMapCase(wsText, mapFlags);
 

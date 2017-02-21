@@ -1804,7 +1804,7 @@ bool Document::MatchesWordOptions(bool word, bool wordStart, int pos, int length
 			(wordStart && IsWordStartAt(pos));
 }
 
-bool Document::HasCaseFolder(void) const {
+bool Document::HasCaseFolder() const {
 	return pcf != 0;
 }
 

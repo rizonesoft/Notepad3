@@ -501,11 +501,13 @@
 	<td>jedailey</td>
 	<td>oirfeodent</td>
 	<td>A-R-C-A</td>
-    </tr>
       </tr><tr>
 	<td>Roberto Rossi</td>
 	<td>Kenny Liu</td>
 	<td>Iain Clarke</td>
+	<td>desto</td>
+      </tr><tr>
+	<td>John Flatness</td>
     </tr>
     </table>
     <p>
@@ -516,6 +518,68 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="http://www.scintilla.org/scite373.zip">Release 3.7.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 19 February 2017.
+	</li>
+	<li>
+	Display block caret over the character at the end of a selection to be similar
+	to other editors.
+	</li>
+	<li>
+	In SciTE can choose colours for fold markers.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1172/">Feature #1172.</a>
+	</li>
+	<li>
+	In SciTE can hide buffer numbers in tabs.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1173/">Feature #1173.</a>
+	</li>
+	<li>
+	The Diff lexer recognizes deleted lines that start with "--- ".
+	</li>
+	<li>
+	The Lua lexer requires the first line to start with "#!" to be treated as a shebang comment,
+	not just "#".
+	<a href="http://sourceforge.net/p/scintilla/bugs/1900/">Bug #1900</a>.
+	</li>
+	<li>
+	The Matlab lexer requires block comment start and end to be alone on a line.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1902/">Bug #1902</a>.
+	</li>
+	<li>
+	The Python lexer supports f-strings with new styles, allows Unicode identifiers,
+	and no longer allows @1 to be a decorator.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1848/">Bug #1848</a>.
+	</li>
+	<li>
+	Fix folding inconsistency when fold header added above a folded part.
+	Avoid unnecessary unfolding when a deletion does not include a line end.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1896/">Bug #1896</a>.
+	</li>
+	<li>
+	Fix finalization crash on Cocoa.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1909/">Bug #1909</a>.
+	</li>
+	<li>
+	SciTE on GTK+ can have a wide divider between the panes with the
+	split.wide property.
+	</li>
+	<li>
+	Fix display of autocompletion lists and calltips on GTK+ 3.22 on Wayland.
+	Newer APIs used on GTK+ 3.22 as older APIs were deprecated.
+	</li>
+	<li>
+	Fix crash in accessibility code on GTK+ due to signal receipt after destruction.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1907/">Bug #1907</a>.
+	</li>
+	<li>
+	Make trackpad scrolling work on Wayland.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1901/">Bug #1901</a>.
+	</li>
     </ul>
     <h3>
        <a href="http://www.scintilla.org/scite372.zip">Release 3.7.2</a>

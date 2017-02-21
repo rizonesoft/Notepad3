@@ -2354,10 +2354,10 @@ get bool GetSelectionEmpty=2650(,)
 fun void ClearSelections=2571(,)
 
 # Set a simple selection
-fun int SetSelection=2572(position caret, position anchor)
+fun void SetSelection=2572(position caret, position anchor)
 
 # Add a selection
-fun int AddSelection=2573(position caret, position anchor)
+fun void AddSelection=2573(position caret, position anchor)
 
 # Drop one selection
 fun void DropSelectionN=2671(int selection,)
@@ -2914,6 +2914,10 @@ val SCE_P_COMMENTBLOCK=12
 val SCE_P_STRINGEOL=13
 val SCE_P_WORD2=14
 val SCE_P_DECORATOR=15
+val SCE_P_FSTRING=16
+val SCE_P_FCHARACTER=17
+val SCE_P_FTRIPLE=18
+val SCE_P_FTRIPLEDOUBLE=19
 # Lexical states for SCLEX_CPP, SCLEX_BULLANT, SCLEX_COBOL, SCLEX_TACL, SCLEX_TAL
 lex Cpp=SCLEX_CPP SCE_C_
 lex BullAnt=SCLEX_BULLANT SCE_C_
