@@ -2611,10 +2611,10 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 				if (pdoc->ContainsLineEnd(mh.text, mh.length) && (mh.position != pdoc->LineStart(lineOfPos)))
 					endNeedShown = pdoc->LineStart(lineOfPos+1);
 			} else if (mh.modificationType & SC_MOD_BEFOREDELETE) {
-				// Extend the need shown area over any folded lines
+				// If the deletion includes any EOL then we extend the need shown area.
 				endNeedShown = mh.position + mh.length;
 				int lineLast = pdoc->LineFromPosition(mh.position+mh.length);
-				for (int line = lineOfPos; line <= lineLast; line++) {
+				for (int line = lineOfPos + 1; line <= lineLast; line++) {
 					const int lineMaxSubord = pdoc->GetLastChild(line, -1, -1);
 					if (lineLast < lineMaxSubord) {
 						lineLast = lineMaxSubord;
@@ -5515,7 +5515,7 @@ void Editor::FoldChanged(int line, int levelNow, int levelPrev) {
 	if (!(levelNow & SC_FOLDLEVELWHITEFLAG) && (LevelNumber(levelPrev) < LevelNumber(levelNow))) {
 		if (cs.HiddenLines()) {
 			const int parentLine = pdoc->GetFoldParent(line);
-			if (!cs.GetExpanded(parentLine) && cs.GetExpanded(line))
+			if (!cs.GetExpanded(parentLine) && cs.GetVisible(line))
 				FoldLine(parentLine, SC_FOLDACTION_EXPAND);
 		}
 	}

@@ -37,6 +37,7 @@
 #include <functional>
 #include <memory>
 #include <regex>
+#include <iostream>
 #include <sstream>
 
 // GTK+ headers
@@ -45,6 +46,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkwayland.h>
 #include <gtk/gtk-a11y.h>
 
 // Windows headers

@@ -323,10 +323,7 @@ struct OptionsCPP {
 	bool foldPreprocessorAtElse;
 	bool foldCompact;
 	bool foldAtElse;
-	OptionsCPP() 
-    : foldExplicitStart("")
-    , foldExplicitEnd("")
-	{
+	OptionsCPP() {
 		stylingWithinPreprocessor = false;
 		identifiersAllowDollars = true;
 		trackPreprocessor = true;
@@ -341,6 +338,8 @@ struct OptionsCPP {
 		foldComment = false;
 		foldCommentMultiline = true;
 		foldCommentExplicit = true;
+		foldExplicitStart = "";
+		foldExplicitEnd = "";
 		foldExplicitAnywhere = false;
 		foldPreprocessor = false;
 		foldPreprocessorAtElse = false;

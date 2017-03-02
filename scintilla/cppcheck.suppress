@@ -8,9 +8,6 @@ useInitializationList
 // Some non-explicit constructors are used for conversions or are private to lexers
 noExplicitConstructor
 
-// cppcheck does not understand private methods can be called from static methods
-unusedPrivateFunction:scintilla/win32/PlatWin.cxx
-
 // ScintillaDocument is providing an API and there are no consumers of the API inside Scintilla
 unusedFunction:scintilla/qt/ScintillaEdit/ScintillaDocument.cpp
 

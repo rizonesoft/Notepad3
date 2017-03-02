@@ -20,6 +20,7 @@
 #include "Scintilla.h"
 #include "SciLexer.h"
 
+#include "StringCopy.h"
 #include "WordList.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
@@ -70,10 +71,42 @@ bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed allowed) {
 	return false;
 }
 
+bool IsPyFStringState(int st) {
+	return ((st == SCE_P_FCHARACTER) || (st == SCE_P_FSTRING) ||
+		(st == SCE_P_FTRIPLE) || (st == SCE_P_FTRIPLEDOUBLE));
+}
+
+bool IsPySingleQuoteStringState(int st) {
+	return ((st == SCE_P_CHARACTER) || (st == SCE_P_STRING) ||
+		(st == SCE_P_FCHARACTER) || (st == SCE_P_FSTRING));
+}
+
+bool IsPyTripleQuoteStringState(int st) {
+	return ((st == SCE_P_TRIPLE) || (st == SCE_P_TRIPLEDOUBLE) ||
+		(st == SCE_P_FTRIPLE) || (st == SCE_P_FTRIPLEDOUBLE));
+}
+
+void PushStateToStack(int state, int *stack, int stackSize) {
+	for (int i = stackSize-1; i > 0; i--) {
+		stack[i] = stack[i-1];
+	}
+	stack[0] = state;
+}
+
+int PopFromStateStack(int *stack, int stackSize) {
+	int top = stack[0];
+	for (int i = 0; i < stackSize - 1; i++) {
+		stack[i] = stack[i+1];
+	}
+	stack[stackSize-1] = 0;
+	return top;
+}
+
 /* Return the state to use for the string starting at i; *nextIndex will be set to the first index following the quote(s) */
 int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex, literalsAllowed allowed) {
 	char ch = styler.SafeGetCharAt(i);
 	char chNext = styler.SafeGetCharAt(i + 1);
+	int firstIsF = (ch == 'f' || ch == 'F');
 
 	// Advance beyond r, u, or ur prefix (or r, b, or br in Python 2.7+ and r, f, or fr in Python 3.6+), but bail if there are any unexpected chars
 	if (ch == 'r' || ch == 'R') {
@@ -98,16 +131,16 @@ int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex,
 		*nextIndex = i + 3;
 
 		if (ch == '"')
-			return SCE_P_TRIPLEDOUBLE;
+			return (firstIsF ? SCE_P_FTRIPLEDOUBLE : SCE_P_TRIPLEDOUBLE);
 		else
-			return SCE_P_TRIPLE;
+			return (firstIsF ? SCE_P_FTRIPLE : SCE_P_TRIPLE);
 	} else {
 		*nextIndex = i + 1;
 
 		if (ch == '"')
-			return SCE_P_STRING;
+			return (firstIsF ? SCE_P_FSTRING : SCE_P_STRING);
 		else
-			return SCE_P_CHARACTER;
+			return (firstIsF ? SCE_P_FCHARACTER : SCE_P_CHARACTER);
 	}
 }
 
@@ -126,12 +159,12 @@ inline bool IsAWordChar(int ch, bool unicodeIdentifiers) {
 }
 
 inline bool IsAWordStart(int ch, bool unicodeIdentifiers) {
-	if (ch < 0x80) 
+	if (ch < 0x80)
 		return (isalpha(ch) || ch == '_');
 
 	if (!unicodeIdentifiers)
 		return false;
-	
+
 	// Approximation, Python uses the XID_Start set from unicode data
 	// see http://unicode.org/reports/tr31/
 	CharacterCategory c = CategoriseCharacter(ch);
@@ -318,6 +351,9 @@ public:
 	static ILexer *LexerFactoryPython() {
 		return new LexerPython();
 	}
+
+private:
+	void ProcessLineEnd(StyleContext &sc, int *fstringStateStack, bool &inContinuedString) const;
 };
 
 Sci_Position SCI_METHOD LexerPython::PropertySet(const char *key, const char *val) {
@@ -349,9 +385,35 @@ Sci_Position SCI_METHOD LexerPython::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
+void LexerPython::ProcessLineEnd(StyleContext &sc, int *fstringStateStack, bool &inContinuedString) const {
+	// Restore to to outermost string state if in an f-string expression and 
+	// let code below decide what to do
+	while (fstringStateStack[0] != 0) {
+		sc.SetState(PopFromStateStack(fstringStateStack, 4));
+	}
+
+	if ((sc.state == SCE_P_DEFAULT)
+		|| IsPyTripleQuoteStringState(sc.state)) {
+		// Perform colourisation of white space and triple quoted strings at end of each line to allow
+		// tab marking to work inside white space and triple quoted strings
+		sc.SetState(sc.state);
+	}
+	if (IsPySingleQuoteStringState(sc.state)) {
+		if (inContinuedString || options.stringsOverNewline) {
+			inContinuedString = false;
+		} else {
+			sc.ChangeState(SCE_P_STRINGEOL);
+			sc.ForwardSetState(SCE_P_DEFAULT);
+		}
+	}
+}
+
 void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) {
 	Accessor styler(pAccess, NULL);
 
+	// Track whether in f-string expression; an array is used for a stack to
+	// handle nested f-strings such as f"""{f'''{f"{f'{1}'}"}'''}"""
+	int fstringStateStack[4] = { 0, };
 	const Sci_Position endPos = startPos + length;
 
 	// Backtrack to previous line in case need to fix its tab whinging
@@ -417,29 +479,15 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 		}
 
 		if (sc.atLineEnd) {
-			if ((sc.state == SCE_P_DEFAULT) ||
-			        (sc.state == SCE_P_TRIPLE) ||
-			        (sc.state == SCE_P_TRIPLEDOUBLE)) {
-				// Perform colourisation of white space and triple quoted strings at end of each line to allow
-				// tab marking to work inside white space and triple quoted strings
-				sc.SetState(sc.state);
-			}
+			ProcessLineEnd(sc, fstringStateStack, inContinuedString);
 			lineCurrent++;
-			if ((sc.state == SCE_P_STRING) || (sc.state == SCE_P_CHARACTER)) {
-				if (inContinuedString || options.stringsOverNewline) {
-					inContinuedString = false;
-				} else {
-					sc.ChangeState(SCE_P_STRINGEOL);
-					sc.ForwardSetState(SCE_P_DEFAULT);
-				}
-			}
 			if (!sc.More())
 				break;
 		}
 
 		bool needEOLCheck = false;
 
-		// Check for a state end
+
 		if (sc.state == SCE_P_OPERATOR) {
 			kwLast = kwOther;
 			sc.SetState(SCE_P_DEFAULT);
@@ -524,7 +572,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 			if (!IsAWordStart(sc.ch, options.unicodeIdentifiers)) {
 				sc.SetState(SCE_P_DEFAULT);
 			}
-		} else if ((sc.state == SCE_P_STRING) || (sc.state == SCE_P_CHARACTER)) {
+		} else if (IsPySingleQuoteStringState(sc.state)) {
 			if (sc.ch == '\\') {
 				if ((sc.chNext == '\r') && (sc.GetRelative(2) == '\n')) {
 					sc.Forward();
@@ -535,14 +583,16 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 					// Don't roll over the newline.
 					sc.Forward();
 				}
-			} else if ((sc.state == SCE_P_STRING) && (sc.ch == '\"')) {
+			} else if (((sc.state == SCE_P_STRING || sc.state == SCE_P_FSTRING))
+				   && (sc.ch == '\"')) {
 				sc.ForwardSetState(SCE_P_DEFAULT);
 				needEOLCheck = true;
-			} else if ((sc.state == SCE_P_CHARACTER) && (sc.ch == '\'')) {
+			} else if (((sc.state == SCE_P_CHARACTER) || (sc.state == SCE_P_FCHARACTER))
+				   && (sc.ch == '\'')) {
 				sc.ForwardSetState(SCE_P_DEFAULT);
 				needEOLCheck = true;
 			}
-		} else if (sc.state == SCE_P_TRIPLE) {
+		} else if ((sc.state == SCE_P_TRIPLE) || (sc.state == SCE_P_FTRIPLE)) {
 			if (sc.ch == '\\') {
 				sc.Forward();
 			} else if (sc.Match("\'\'\'")) {
@@ -551,7 +601,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 				sc.ForwardSetState(SCE_P_DEFAULT);
 				needEOLCheck = true;
 			}
-		} else if (sc.state == SCE_P_TRIPLEDOUBLE) {
+		} else if ((sc.state == SCE_P_TRIPLEDOUBLE) || (sc.state == SCE_P_FTRIPLEDOUBLE)) {
 			if (sc.ch == '\\') {
 				sc.Forward();
 			} else if (sc.Match("\"\"\"")) {
@@ -561,6 +611,19 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 				needEOLCheck = true;
 			}
 		}
+		
+		// Note if used and not if else because string states also match
+		// some of the above clauses
+		if (IsPyFStringState(sc.state) && sc.ch == '{') {
+			if (sc.chNext == '{') {
+				sc.Forward();
+			} else {
+				PushStateToStack(sc.state, fstringStateStack, ELEMENTS(fstringStateStack));
+				sc.ForwardSetState(SCE_P_DEFAULT);
+			}
+			needEOLCheck = true;
+		}
+		// End of code to find the end of a state
 
 		if (!indentGood && !IsASpaceOrTab(sc.ch)) {
 			styler.IndicatorFill(startIndicator, sc.currentPos, indicatorWhitespace, 1);
@@ -575,10 +638,16 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 
 		// State exit code may have moved on to end of line
 		if (needEOLCheck && sc.atLineEnd) {
+			ProcessLineEnd(sc, fstringStateStack, inContinuedString);
 			lineCurrent++;
 			styler.IndentAmount(lineCurrent, &spaceFlags, IsPyComment);
 			if (!sc.More())
 				break;
+		}
+
+		// If in f-string expression, check for } to resume f-string state
+		if (fstringStateStack[0] != 0 && sc.ch == '}') {
+			sc.SetState(PopFromStateStack(fstringStateStack, ELEMENTS(fstringStateStack)));
 		}
 
 		// Check for a new state starting character

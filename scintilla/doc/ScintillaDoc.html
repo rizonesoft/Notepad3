@@ -1536,8 +1536,8 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_GETSELECTIONS">SCI_GETSELECTIONS &rarr; int</a><br />
      <a class="message" href="#SCI_GETSELECTIONEMPTY">SCI_GETSELECTIONEMPTY &rarr; bool</a><br />
      <a class="message" href="#SCI_CLEARSELECTIONS">SCI_CLEARSELECTIONS</a><br />
-     <a class="message" href="#SCI_SETSELECTION">SCI_SETSELECTION(int caret, int anchor) &rarr; int</a><br />
-     <a class="message" href="#SCI_ADDSELECTION">SCI_ADDSELECTION(int caret, int anchor) &rarr; int</a><br />
+     <a class="message" href="#SCI_SETSELECTION">SCI_SETSELECTION(int caret, int anchor)</a><br />
+     <a class="message" href="#SCI_ADDSELECTION">SCI_ADDSELECTION(int caret, int anchor)</a><br />
      <a class="message" href="#SCI_DROPSELECTIONN">SCI_DROPSELECTIONN(int selection)</a><br />
      <a class="message" href="#SCI_SETMAINSELECTION">SCI_SETMAINSELECTION(int selection)</a><br />
      <a class="message" href="#SCI_GETMAINSELECTION">SCI_GETMAINSELECTION &rarr; int</a><br />
@@ -1667,11 +1667,11 @@ struct Sci_TextToFind {
      Set a single empty selection at 0 as the only selection.</p>
 
     <p>
-    <b id="SCI_SETSELECTION">SCI_SETSELECTION(int caret, int anchor) &rarr; int</b><br />
+    <b id="SCI_SETSELECTION">SCI_SETSELECTION(int caret, int anchor)</b><br />
      Set a single selection from <code class="parameter">anchor</code> to <code class="parameter">caret</code> as the only selection.</p>
 
     <p>
-    <b id="SCI_ADDSELECTION">SCI_ADDSELECTION(int caret, int anchor) &rarr; int</b><br />
+    <b id="SCI_ADDSELECTION">SCI_ADDSELECTION(int caret, int anchor)</b><br />
      Add a new selection from <code class="parameter">anchor</code> to <code class="parameter">caret</code> as the main selection retaining all other
      selections as additional selections.
      Since there is always at least one selection, to set a list of selections, the first selection should be
@@ -5374,7 +5374,7 @@ struct Sci_TextToFind {
             <tr>
               <td align="left"><code>SC_POPUP_NEVER</code></td>
 
-              <td align="center">0x01</td>
+              <td align="center">0</td>
 
               <td>Never show default editing menu.</td>
 
@@ -5383,7 +5383,7 @@ struct Sci_TextToFind {
             <tr>
               <td align="left"><code>SC_POPUP_ALL</code></td>
 
-              <td align="center">0x02</td>
+              <td align="center">1</td>
 
               <td>Show default editing menu if clicking on scintilla.</td>
 
@@ -5392,7 +5392,7 @@ struct Sci_TextToFind {
             <tr>
               <td align="left"><code>SC_POPUP_TEXT</code></td>
 
-              <td align="center">0x04</td>
+              <td align="center">2</td>
 
               <td>Show default editing menu only if clicking on text area.</td>
 

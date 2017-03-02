@@ -317,16 +317,16 @@ static void DrawTabArrow(Surface *surface, PRectangle rcTab, int ymid, const Vie
 
 	// Draw the arrow head if needed
 	if (vsDraw.tabDrawMode == tdLongArrow) {
-	int ydiff = static_cast<int>(rcTab.bottom - rcTab.top) / 2;
-	int xhead = static_cast<int>(rcTab.right) - 1 - ydiff;
-	if (xhead <= rcTab.left) {
-		ydiff -= static_cast<int>(rcTab.left) - xhead - 1;
-		xhead = static_cast<int>(rcTab.left) - 1;
+		int ydiff = static_cast<int>(rcTab.bottom - rcTab.top) / 2;
+		int xhead = static_cast<int>(rcTab.right) - 1 - ydiff;
+		if (xhead <= rcTab.left) {
+			ydiff -= static_cast<int>(rcTab.left) - xhead - 1;
+			xhead = static_cast<int>(rcTab.left) - 1;
+		}
+		surface->LineTo(xhead, ymid - ydiff);
+		surface->MoveTo(static_cast<int>(rcTab.right) - 1, ymid);
+		surface->LineTo(xhead, ymid + ydiff);
 	}
-	surface->LineTo(xhead, ymid - ydiff);
-	surface->MoveTo(static_cast<int>(rcTab.right) - 1, ymid);
-	surface->LineTo(xhead, ymid + ydiff);
-}
 }
 
 void EditView::RefreshPixMaps(Surface *surfaceWindow, WindowID wid, const ViewStyle &vsDraw) {
@@ -951,7 +951,6 @@ void EditView::DrawEOL(Surface *surface, const EditModel &model, const ViewStyle
 		}
 	}
 
-	// Fill the remainder of the line
 	rcSegment.left = rcSegment.right;
 	if (rcSegment.left < rcLine.left)
 		rcSegment.left = rcLine.left;
@@ -959,6 +958,7 @@ void EditView::DrawEOL(Surface *surface, const EditModel &model, const ViewStyle
 
 	bool fillRemainder = !lastSubLine || model.foldDisplayTextStyle == SC_FOLDDISPLAYTEXT_HIDDEN || !model.cs.GetFoldDisplayTextShown(line);
 	if (fillRemainder) {
+		// Fill the remainder of the line
 		FillLineRemainder(surface, model, vsDraw, ll, line, rcSegment, subLine);
 	}
 
@@ -1085,7 +1085,7 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 		int posAfterLineEnd = model.pdoc->LineStart(line + 1);
 		eolInSelection = (subLine == (ll->lines - 1)) ? model.sel.InSelectionForEOL(posAfterLineEnd) : 0;
 		alpha = (eolInSelection == 1) ? vsDraw.selAlpha : vsDraw.selAdditionalAlpha;
-				}
+	}
 
 	const XYPOSITION spaceWidth = vsDraw.styles[ll->EndLineStyle()].spaceWidth;
 	XYPOSITION virtualSpace = model.sel.VirtualSpaceFor(model.pdoc->LineEnd(line)) * spaceWidth;
@@ -1097,7 +1097,7 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 	ColourDesired textFore = vsDraw.styles[STYLE_FOLDDISPLAYTEXT].fore;
 	if (eolInSelection && (vsDraw.selColours.fore.isSet)) {
 		textFore = (eolInSelection == 1) ? vsDraw.selColours.fore : vsDraw.selAdditionalForeground;
-			}
+	}
 	ColourDesired textBack = TextBackground(model, vsDraw, ll, background, eolInSelection,
 											false, STYLE_FOLDDISPLAYTEXT, -1);
 
@@ -1290,7 +1290,13 @@ void EditView::DrawCarets(Surface *surface, const EditModel &model, const ViewSt
 	// For each selection draw
 	for (size_t r = 0; (r<model.sel.Count()) || drawDrag; r++) {
 		const bool mainCaret = r == model.sel.Main();
-		const SelectionPosition posCaret = (drawDrag ? model.posDrag : model.sel.Range(r).caret);
+		SelectionPosition posCaret = (drawDrag ? model.posDrag : model.sel.Range(r).caret);
+		if (vsDraw.caretStyle == CARETSTYLE_BLOCK && !drawDrag && posCaret > model.sel.Range(r).anchor) {
+			if (posCaret.VirtualSpace() > 0)
+				posCaret.SetVirtualSpace(posCaret.VirtualSpace() - 1);
+			else
+				posCaret.SetPosition(model.pdoc->MovePositionOutsideChar(posCaret.Position()-1, -1));
+		}
 		const int offset = posCaret.Position() - posLineStart;
 		const XYPOSITION spaceWidth = vsDraw.styles[ll->EndLineStyle()].spaceWidth;
 		const XYPOSITION virtualOffset = posCaret.VirtualSpace() * spaceWidth;
@@ -2087,7 +2093,7 @@ void EditView::PaintText(Surface *surfaceWindow, const EditModel &model, PRectan
 }
 
 void EditView::FillLineRemainder(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
-	int line, PRectangle rcArea, int subLine) {
+	int line, PRectangle rcArea, int subLine) const {
 		int eolInSelection = 0;
 		int alpha = SC_ALPHA_NOALPHA;
 		if (!hideSelection) {

@@ -400,7 +400,7 @@ public:
 	bool IsWordAt(int start, int end) const;
 
 	bool MatchesWordOptions(bool word, bool wordStart, int pos, int length) const;
-	bool HasCaseFolder(void) const;
+	bool HasCaseFolder() const;
 	void SetCaseFolder(CaseFolder *pcf_);
 	long FindText(int minPos, int maxPos, const char *search, int flags, int *length);
 	const char *SubstituteByPosition(const char *text, int *length);
