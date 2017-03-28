@@ -19,6 +19,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <memory>
 
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0500
@@ -157,7 +158,6 @@ class ScintillaWin; 	// Forward declaration for COM interface subobjects
 
 typedef void VFunction(void);
 
-static HMODULE commctrl32 = 0;
 
 /**
  */
@@ -203,7 +203,7 @@ class IMContext {
 	HWND hwnd;
 public:
 	HIMC hIMC;
-	explicit IMContext(HWND hwnd_) :
+	IMContext(HWND hwnd_) :
 		hwnd(hwnd_), hIMC(::ImmGetContext(hwnd_)) {
 	}
 	~IMContext() {
@@ -242,7 +242,6 @@ class ScintillaWin :
 
 	bool capturedMouse;
 	bool trackedMouseLeave;
-	TrackMouseEventSig TrackMouseEventFn;
 	SetCoalescableTimerSig SetCoalescableTimerFn;
 
 	unsigned int linesPerScroll;	///< Intellimouse support
@@ -273,11 +272,11 @@ class ScintillaWin :
 
 	explicit ScintillaWin(HWND hwnd);
 	ScintillaWin(const ScintillaWin &);
-	virtual ~ScintillaWin();
+	~ScintillaWin() override;
 	ScintillaWin &operator=(const ScintillaWin &);
 
-	virtual void Initialise();
-	virtual void Finalise();
+	void Initialise() override;
+	void Finalise() override;
 #if defined(USE_D2D)
 	void EnsureRenderTarget(HDC hdc);
 	void DropRenderTarget();
@@ -293,8 +292,8 @@ class ScintillaWin :
 
 	enum { invalidTimerID, standardTimerID, idleTimerID, fineTimerStart };
 
-	virtual bool DragThreshold(Point ptStart, Point ptNow);
-	virtual void StartDrag();
+	bool DragThreshold(Point ptStart, Point ptNow) override;
+	void StartDrag() override;
 	int TargetAsUTF8(char *text);
 	void AddCharUTF16(wchar_t const *wcs, unsigned int wclen);
 	int EncodedFromUTF8(char *utf8, char *encoded) const;
@@ -312,39 +311,39 @@ class ScintillaWin :
 	void AddWString(std::wstring wcs);
 
 	UINT CodePageOfDocument() const;
-	virtual bool ValidCodePage(int codePage) const;
-	virtual sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
-	virtual bool SetIdle(bool on);
+	bool ValidCodePage(int codePage) const override;
+	sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) override;
+	bool SetIdle(bool on) override;
 	UINT_PTR timers[tickDwell+1];
-	virtual bool FineTickerAvailable();
-	virtual bool FineTickerRunning(TickReason reason);
-	virtual void FineTickerStart(TickReason reason, int millis, int tolerance);
-	virtual void FineTickerCancel(TickReason reason);
-	virtual void SetMouseCapture(bool on);
-	virtual bool HaveMouseCapture();
-	virtual void SetTrackMouseLeaveEvent(bool on);
-	virtual bool PaintContains(PRectangle rc);
-	virtual void ScrollText(int linesToMove);
-	virtual void NotifyCaretMove();
-	virtual void UpdateSystemCaret();
-	virtual void SetVerticalScrollPos();
-	virtual void SetHorizontalScrollPos();
-	virtual bool ModifyScrollBars(int nMax, int nPage);
-	virtual void NotifyChange();
-	virtual void NotifyFocus(bool focus);
-	virtual void SetCtrlID(int identifier);
-	virtual int GetCtrlID();
-	virtual void NotifyParent(SCNotification scn);
-	virtual void NotifyDoubleClick(Point pt, int modifiers);
-	virtual CaseFolder *CaseFolderForEncoding();
-	virtual std::string CaseMapString(const std::string &s, int caseMapping);
-	virtual void Copy();
-	virtual void CopyAllowLine();
-	virtual bool CanPaste();
-	virtual void Paste();
-	virtual void CreateCallTipWindow(PRectangle rc);
-	virtual void AddToPopUp(const char *label, int cmd = 0, bool enabled = true);
-	virtual void ClaimSelection();
+	bool FineTickerAvailable() override;
+	bool FineTickerRunning(TickReason reason) override;
+	void FineTickerStart(TickReason reason, int millis, int tolerance) override;
+	void FineTickerCancel(TickReason reason) override;
+	void SetMouseCapture(bool on) override;
+	bool HaveMouseCapture() override;
+	void SetTrackMouseLeaveEvent(bool on);
+	bool PaintContains(PRectangle rc) override;
+	void ScrollText(int linesToMove) override;
+	void NotifyCaretMove() override;
+	void UpdateSystemCaret() override;
+	void SetVerticalScrollPos() override;
+	void SetHorizontalScrollPos() override;
+	bool ModifyScrollBars(int nMax, int nPage) override;
+	void NotifyChange() override;
+	void NotifyFocus(bool focus) override;
+	void SetCtrlID(int identifier) override;
+	int GetCtrlID() override;
+	void NotifyParent(SCNotification scn) override;
+	void NotifyDoubleClick(Point pt, int modifiers) override;
+	CaseFolder *CaseFolderForEncoding() override;
+	std::string CaseMapString(const std::string &s, int caseMapping) override;
+	void Copy() override;
+	void CopyAllowLine() override;
+	bool CanPaste() override;
+	void Paste() override;
+	void CreateCallTipWindow(PRectangle rc) override;
+	void AddToPopUp(const char *label, int cmd = 0, bool enabled = true) override;
+	void ClaimSelection() override;
 
 	// DBCS
 	void ImeStartComposition();
@@ -352,7 +351,7 @@ class ScintillaWin :
 	LRESULT ImeOnReconvert(LPARAM lParam);
 
 	void GetIntelliMouseParameters();
-	virtual void CopyToClipboard(const SelectionText &selectedText);
+	void CopyToClipboard(const SelectionText &selectedText) override;
 	void ScrollMessage(WPARAM wParam);
 	void HorizontalScrollMessage(WPARAM wParam);
 	void FullPaint();
@@ -360,15 +359,15 @@ class ScintillaWin :
 	bool IsCompatibleDC(HDC dc);
 	DWORD EffectFromState(DWORD grfKeyState) const;
 
-	virtual int SetScrollInfo(int nBar, LPCSCROLLINFO lpsi, BOOL bRedraw);
-	virtual bool GetScrollInfo(int nBar, LPSCROLLINFO lpsi);
+	int SetScrollInfo(int nBar, LPCSCROLLINFO lpsi, BOOL bRedraw);
+	bool GetScrollInfo(int nBar, LPSCROLLINFO lpsi);
 	void ChangeScrollPos(int barType, int pos);
 	sptr_t GetTextLength();
 	sptr_t GetText(uptr_t wParam, sptr_t lParam);
 
 public:
 	// Public for benefit of Scintilla_DirectFunction
-	virtual sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
+	sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) override;
 
 	/// Implement IUnknown
 	STDMETHODIMP QueryInterface(REFIID riid, PVOID *ppv);
@@ -417,7 +416,6 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	capturedMouse = false;
 	trackedMouseLeave = false;
-	TrackMouseEventFn = 0;
 	SetCoalescableTimerFn = 0;
 
 	linesPerScroll = 0;
@@ -474,18 +472,9 @@ void ScintillaWin::Initialise() {
 	// Find TrackMouseEvent which is available on Windows > 95
 	HMODULE user32 = ::GetModuleHandle(TEXT("user32.dll"));
 	if (user32) {
-		TrackMouseEventFn = (TrackMouseEventSig)::GetProcAddress(user32, "TrackMouseEvent");
 		SetCoalescableTimerFn = (SetCoalescableTimerSig)::GetProcAddress(user32, "SetCoalescableTimer");
 	}
-	if (TrackMouseEventFn == NULL) {
-		// Windows 95 has an emulation in comctl32.dll:_TrackMouseEvent
-		if (!commctrl32)
-			commctrl32 = ::LoadLibrary(TEXT("comctl32.dll"));
-		if (commctrl32 != NULL) {
-			TrackMouseEventFn = (TrackMouseEventSig)
-				::GetProcAddress(commctrl32, "_TrackMouseEvent");
-		}
-	}
+
 	for (TickReason tr = tickCaret; tr <= tickDwell; tr = static_cast<TickReason>(tr + 1)) {
 		timers[tr] = 0;
 	}
@@ -1061,12 +1050,13 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 		return 0;
 	}
 
+	bool initialCompose = false;
 	if (pdoc->TentativeActive()) {
 		pdoc->TentativeUndo();
 	} else {
 		// No tentative undo means start of this composition so
 		// fill in any virtual spaces.
-		ClearBeforeTentativeStart();
+		initialCompose = true;
 	}
 
 	view.imeCaretBlockOverride = false;
@@ -1078,6 +1068,8 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 			return 0;
 		}
 
+		if (initialCompose)
+			ClearBeforeTentativeStart();
 		pdoc->TentativeStart(); // TentativeActive from now on.
 
 		std::vector<int> imeIndicator = MapImeIndicators(imc.GetImeAttributes());
@@ -1840,13 +1832,13 @@ bool ScintillaWin::HaveMouseCapture() {
 }
 
 void ScintillaWin::SetTrackMouseLeaveEvent(bool on) {
-	if (on && TrackMouseEventFn && !trackedMouseLeave) {
+	if (on && !trackedMouseLeave) {
 		TRACKMOUSEEVENT tme;
 		tme.cbSize = sizeof(tme);
 		tme.dwFlags = TME_LEAVE;
 		tme.hwndTrack = MainHWND();
 		tme.dwHoverTime = HOVER_DEFAULT;	// Unused but triggers Dr. Memory if not initialized
-		TrackMouseEventFn(&tme);
+		TrackMouseEvent(&tme);
 	}
 	trackedMouseLeave = on;
 }
@@ -2012,7 +2004,7 @@ public:
 	explicit CaseFolderDBCS(UINT cp_) : cp(cp_) {
 		StandardASCII();
 	}
-	virtual size_t Fold(char *folded, size_t sizeFolded, const char *mixed, size_t lenMixed) {
+	size_t Fold(char *folded, size_t sizeFolded, const char *mixed, size_t lenMixed) override {
 		if ((lenMixed == 1) && (sizeFolded > 0)) {
 			folded[0] = mapping[static_cast<unsigned char>(mixed[0])];
 			return 1;
@@ -3437,10 +3429,6 @@ int Scintilla_RegisterClasses(void *hInstance) {
 
 static int ResourcesRelease(bool fromDllMain) {
 	bool result = ScintillaWin::Unregister();
-	if (commctrl32) {
-		FreeLibrary(commctrl32);
-		commctrl32 = NULL;
-	}
 	Platform_Finalise(fromDllMain);
 	return result;
 }

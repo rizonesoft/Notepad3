@@ -193,7 +193,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define STYLE_INDENTGUIDE 37
 #define STYLE_CALLTIP 38
 #define STYLE_FOLDDISPLAYTEXT 39
-#define STYLE_LASTPREDEFINED 40
+#define STYLE_LASTPREDEFINED 39
 #define STYLE_MAX 255
 #define SC_CHARSET_ANSI 0
 #define SC_CHARSET_DEFAULT 1
@@ -593,6 +593,10 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_LINESSPLIT 2289
 #define SCI_SETFOLDMARGINCOLOUR 2290
 #define SCI_SETFOLDMARGINHICOLOUR 2291
+#define SC_ACCESSIBILITY_DISABLED 0
+#define SC_ACCESSIBILITY_ENABLED 1
+#define SCI_SETACCESSIBILITY 2702
+#define SCI_GETACCESSIBILITY 2703
 #define SCI_LINEDOWN 2300
 #define SCI_LINEDOWNEXTEND 2301
 #define SCI_LINEUP 2302
