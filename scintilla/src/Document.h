@@ -8,6 +8,8 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
+#include <memory>
+
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif
@@ -234,7 +236,7 @@ private:
 	PerLine *perLineData[ldSize];
 
 	bool matchesValid;
-	RegexSearchBase *regex;
+	std::unique_ptr<RegexSearchBase> regex;
 
 public:
 

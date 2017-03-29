@@ -16,6 +16,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <memory>
 
 #include "Platform.h"
 
@@ -535,7 +536,7 @@ public:
 	int lexLanguage;
 
 	explicit LexState(Document *pdoc_);
-	virtual ~LexState();
+	~LexState() override;
 	void SetLexer(uptr_t wParam);
 	void SetLexerLanguage(const char *languageName);
 	const char *DescribeWordListSets();

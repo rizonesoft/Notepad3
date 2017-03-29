@@ -1089,7 +1089,7 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 
 	const XYPOSITION spaceWidth = vsDraw.styles[ll->EndLineStyle()].spaceWidth;
 	XYPOSITION virtualSpace = model.sel.VirtualSpaceFor(model.pdoc->LineEnd(line)) * spaceWidth;
-	rcSegment.left = xStart + static_cast<XYPOSITION>(ll->positions[ll->numCharsInLine] - subLineStart) + spaceWidth + virtualSpace;
+	rcSegment.left = xStart + static_cast<XYPOSITION>(ll->positions[ll->numCharsInLine] - subLineStart) + virtualSpace + vsDraw.aveCharWidth;
 	rcSegment.right = rcSegment.left + static_cast<XYPOSITION>(widthFoldDisplayText);
 
 	ColourOptional background = vsDraw.Background(model.pdoc->GetMark(line), model.caret.active, ll->containsCaret);
@@ -1108,12 +1108,12 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 		}
 	}
 
-	if ((phasesDraw != phasesOne) && (phase & drawBack)) {
+	if (phase & drawBack) {
 		surface->FillRectangle(rcSegment, textBack);
 
 		// Fill Remainder of the line
 		PRectangle rcRemainder = rcSegment;
-		rcRemainder.left = rcRemainder.right + 1;
+		rcRemainder.left = rcRemainder.right;
 		if (rcRemainder.left < rcLine.left)
 			rcRemainder.left = rcLine.left;
 		rcRemainder.right = rcLine.right;
@@ -1135,14 +1135,17 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 	if (phase & drawIndicatorsFore) {
 		if (model.foldDisplayTextStyle == SC_FOLDDISPLAYTEXT_BOXED) {
 			surface->PenColour(textFore);
-			surface->MoveTo(static_cast<int>(rcSegment.left), static_cast<int>(rcSegment.top));
-			surface->LineTo(static_cast<int>(rcSegment.left), static_cast<int>(rcSegment.bottom));
-			surface->MoveTo(static_cast<int>(rcSegment.right), static_cast<int>(rcSegment.top));
-			surface->LineTo(static_cast<int>(rcSegment.right), static_cast<int>(rcSegment.bottom));
-			surface->MoveTo(static_cast<int>(rcSegment.left), static_cast<int>(rcSegment.top));
-			surface->LineTo(static_cast<int>(rcSegment.right), static_cast<int>(rcSegment.top));
-			surface->MoveTo(static_cast<int>(rcSegment.left), static_cast<int>(rcSegment.bottom - 1));
-			surface->LineTo(static_cast<int>(rcSegment.right), static_cast<int>(rcSegment.bottom - 1));
+			PRectangle rcBox = rcSegment;
+			rcBox.left = static_cast<XYPOSITION>(RoundXYPosition(rcSegment.left));
+			rcBox.right = static_cast<XYPOSITION>(RoundXYPosition(rcSegment.right));
+			surface->MoveTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.top));
+			surface->LineTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.bottom));
+			surface->MoveTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.top));
+			surface->LineTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.bottom));
+			surface->MoveTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.top));
+			surface->LineTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.top));
+			surface->MoveTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.bottom - 1));
+			surface->LineTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.bottom - 1));
 		}
 	}
 
@@ -1845,17 +1848,21 @@ void EditView::DrawLine(Surface *surface, const EditModel &model, const ViewStyl
 		xStart += static_cast<int>(ll->wrapIndent);
 	}
 
-	if ((phasesDraw != phasesOne) && (phase & drawBack)) {
-		DrawBackground(surface, model, vsDraw, ll, rcLine, lineRange, posLineStart, xStart,
-			subLine, background);
-		DrawEOL(surface, model, vsDraw, ll, rcLine, line, lineRange.end,
-			xStart, subLine, subLineStart, background);
-	}
+	if (phasesDraw != phasesOne) {
+		if (phase & drawBack) {
+			DrawBackground(surface, model, vsDraw, ll, rcLine, lineRange, posLineStart, xStart,
+				subLine, background);
+			DrawFoldDisplayText(surface, model, vsDraw, ll, line, xStart, rcLine, subLine, subLineStart, drawBack);
+			phase = static_cast<DrawPhase>(phase & ~drawBack);	// Remove drawBack to not draw again in DrawFoldDisplayText
+			DrawEOL(surface, model, vsDraw, ll, rcLine, line, lineRange.end,
+				xStart, subLine, subLineStart, background);
+		}
 
-	if (phase & drawIndicatorsBack) {
-		DrawIndicators(surface, model, vsDraw, ll, line, xStart, rcLine, subLine, lineRange.end, true, model.hoverIndicatorPos);
-		DrawEdgeLine(surface, vsDraw, ll, rcLine, lineRange, xStart);
-		DrawMarkUnderline(surface, model, vsDraw, line, rcLine);
+		if (phase & drawIndicatorsBack) {
+			DrawIndicators(surface, model, vsDraw, ll, line, xStart, rcLine, subLine, lineRange.end, true, model.hoverIndicatorPos);
+			DrawEdgeLine(surface, vsDraw, ll, rcLine, lineRange, xStart);
+			DrawMarkUnderline(surface, model, vsDraw, line, rcLine);
+		}
 	}
 
 	if (phase & drawText) {
@@ -1871,13 +1878,14 @@ void EditView::DrawLine(Surface *surface, const EditModel &model, const ViewStyl
 		DrawIndicators(surface, model, vsDraw, ll, line, xStart, rcLine, subLine, lineRange.end, false, model.hoverIndicatorPos);
 	}
 
-	// End of the drawing of the current line
+	DrawFoldDisplayText(surface, model, vsDraw, ll, line, xStart, rcLine, subLine, subLineStart, phase);
+
 	if (phasesDraw == phasesOne) {
 		DrawEOL(surface, model, vsDraw, ll, rcLine, line, lineRange.end,
 			xStart, subLine, subLineStart, background);
+		DrawEdgeLine(surface, vsDraw, ll, rcLine, lineRange, xStart);
+		DrawMarkUnderline(surface, model, vsDraw, line, rcLine);
 	}
-
-	DrawFoldDisplayText(surface, model, vsDraw, ll, line, xStart, rcLine, subLine, subLineStart, phase);
 
 	if (!hideSelection && (phase & drawSelectionTranslucent)) {
 		DrawTranslucentSelection(surface, model, vsDraw, ll, line, rcLine, subLine, lineRange, xStart);

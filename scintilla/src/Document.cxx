@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 #define NOEXCEPT
 #ifndef NO_CXX11_REGEX
@@ -139,8 +140,7 @@ Document::~Document() {
 		delete perLineData[j];
 		perLineData[j] = 0;
 	}
-	delete regex;
-	regex = 0;
+	regex.release();
 	delete pli;
 	pli = 0;
 	delete pcf;
@@ -1847,7 +1847,7 @@ long Document::FindText(int minPos, int maxPos, const char *search,
 	const bool regExp = (flags & SCFIND_REGEXP) != 0;
 	if (regExp) {
 		if (!regex)
-			regex = CreateRegexSearch(&charClass);
+			regex = std::unique_ptr<RegexSearchBase>(CreateRegexSearch(&charClass));
 		return regex->FindText(this, minPos, maxPos, search, caseSensitive, word, wordStart, flags, length);
 	} else {
 
@@ -1886,7 +1886,7 @@ long Document::FindText(int minPos, int maxPos, const char *search,
 			}
 		} else if (SC_CP_UTF8 == dbcsCodePage) {
 			const size_t maxFoldingExpansion = 4;
-			std::vector<char> searchThing(lengthFind * UTF8MaxBytes * maxFoldingExpansion + 1);
+			std::vector<char> searchThing((lengthFind+1) * UTF8MaxBytes * maxFoldingExpansion + 1);
 			const int lenSearch = static_cast<int>(
 				pcf->Fold(&searchThing[0], searchThing.size(), search, lengthFind));
 			char bytes[UTF8MaxBytes + 1];
@@ -1913,6 +1913,8 @@ long Document::FindText(int minPos, int maxPos, const char *search,
 						break;
 					const int lenFlat = static_cast<int>(pcf->Fold(folded, sizeof(folded), bytes, widthChar));
 					folded[lenFlat] = 0;
+					// memcmp may examine lenFlat bytes in both arguments so assert it doesn't read past end of searchThing
+					assert(static_cast<size_t>(indexSearch + lenFlat) <= searchThing.size());
 					// Does folded match the buffer
 					characterMatches = 0 == memcmp(folded, &searchThing[0] + indexSearch, lenFlat);
 					if (!characterMatches)
@@ -1938,7 +1940,7 @@ long Document::FindText(int minPos, int maxPos, const char *search,
 		} else if (dbcsCodePage) {
 			const size_t maxBytesCharacter = 2;
 			const size_t maxFoldingExpansion = 4;
-			std::vector<char> searchThing(lengthFind * maxBytesCharacter * maxFoldingExpansion + 1);
+			std::vector<char> searchThing((lengthFind+1) * maxBytesCharacter * maxFoldingExpansion + 1);
 			const int lenSearch = static_cast<int>(
 				pcf->Fold(&searchThing[0], searchThing.size(), search, lengthFind));
 			while (forward ? (pos < endPos) : (pos >= endPos)) {
@@ -1958,6 +1960,8 @@ long Document::FindText(int minPos, int maxPos, const char *search,
 					char folded[maxBytesCharacter * maxFoldingExpansion + 1];
 					const int lenFlat = static_cast<int>(pcf->Fold(folded, sizeof(folded), bytes, widthChar));
 					folded[lenFlat] = 0;
+					// memcmp may examine lenFlat bytes in both arguments so assert it doesn't read past end of searchThing
+					assert(static_cast<size_t>(indexSearch + lenFlat) <= searchThing.size());
 					// Does folded match the buffer
 					characterMatches = 0 == memcmp(folded, &searchThing[0] + indexSearch, lenFlat);
 					indexDocument += widthChar;
@@ -2480,14 +2484,14 @@ class BuiltinRegex : public RegexSearchBase {
 public:
 	explicit BuiltinRegex(CharClassify *charClassTable) : search(charClassTable) {}
 
-	virtual ~BuiltinRegex() {
+	~BuiltinRegex() override {
 	}
 
-	virtual long FindText(Document *doc, int minPos, int maxPos, const char *s,
+	long FindText(Document *doc, int minPos, int maxPos, const char *s,
                         bool caseSensitive, bool word, bool wordStart, int flags,
-                        int *length);
+                        int *length) override;
 
-	virtual const char *SubstituteByPosition(Document *doc, const char *text, int *length);
+	const char *SubstituteByPosition(Document *doc, const char *text, int *length) override;
 
 private:
 	RESearch search;
@@ -2558,10 +2562,10 @@ public:
 		pdoc(pdoc_), end(end_) {
 	}
 
-	virtual ~DocumentIndexer() {
+	~DocumentIndexer() override {
 	}
 
-	virtual char CharAt(int index) {
+	char CharAt(int index) override {
 		if (index < 0 || index >= end)
 			return 0;
 		else

@@ -43,9 +43,9 @@ private:
  * A translucent image stored as a sequence of RGBA bytes.
  */
 class RGBAImage {
-	// Private so RGBAImage objects can not be copied
-	RGBAImage(const RGBAImage &);
-	RGBAImage &operator=(const RGBAImage &);
+	// Deleted so RGBAImage objects can not be copied
+	RGBAImage(const RGBAImage &) = delete;
+	RGBAImage &operator=(const RGBAImage &) = delete;
 	int height;
 	int width;
 	float scale;

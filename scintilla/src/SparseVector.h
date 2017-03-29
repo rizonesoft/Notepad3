@@ -100,7 +100,8 @@ public:
 			if (partition == 0) {
 				// Inserting at start of document so ensure 0
 				if (valueCurrent != T()) {
-					ClearValue(0);
+					// Since valueCurrent is needed again, should not ClearValue
+					values->SetValueAt(0, T());
 					starts->InsertPartition(1, 0);
 					values->InsertValue(1, 1, valueCurrent);
 					starts->InsertText(0, insertLength);

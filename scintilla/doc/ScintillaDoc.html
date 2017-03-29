@@ -367,16 +367,16 @@
         <tr>
           <td>&cir; <a class="toc" href="#LongLines">Long lines</a></td>
 
-          <td>&cir; <a class="toc" href="#Lexer">Lexer</a></td>
+          <td>&cir; <a class="toc" href="#Accessibility">Accessibility</a></td>
 
-          <td>&cir; <a class="toc" href="#LexerObjects">Lexer objects</a></td>
+          <td>&cir; <a class="toc" href="#Lexer">Lexer</a></td>
 
         </tr>
 
         <tr>
-          <td>&cir; <a class="toc" href="#Notifications">Notifications</a></td>
+          <td>&cir; <a class="toc" href="#LexerObjects">Lexer objects</a></td>
 
-          <td>&cir; <a class="toc" href="#Accessibility">Accessibility</a></td>
+          <td>&cir; <a class="toc" href="#Notifications">Notifications</a></td>
 
           <td>&cir; <a class="toc" href="#Images">Images</a></td>
 
@@ -665,7 +665,7 @@ struct Sci_TextRange {
     The base regular expression support
     is limited and should only be used for simple cases and initial development.
     The C++ runtime &lt;regex&gt; library may be used by setting the <code>SCFIND_CXX11REGEX</code> search flag.
-    When using an older C++ compiler that does not support C++11, this may be turned off by
+    The C++11 &lt;regex&gt; support may be disabled by
     compiling Scintilla with <code>NO_CXX11_REGEX</code> defined.
     A different regular expression
     library can be <a class="jump" href="#AlternativeRegEx">integrated into Scintilla</a>
@@ -6511,6 +6511,60 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     of a space character in <code>STYLE_DEFAULT</code>. All the edges can be cleared with
     <code>SCI_MULTIEDGECLEARALL</code>.</p>
 
+    <h2 id="Accessibility">Accessibility</h2>
+
+    <p>Scintilla supports some platform accessibility features.
+    This support differs between platforms.
+    On GTK+ and Cocoa the platform accessibility APIs are implemented sufficiently to
+    make screen readers work.
+    On Win32, the system caret is manipulated to help screen readers.
+    </p>
+
+    <code><a class="message" href="#SCI_SETACCESSIBILITY">SCI_SETACCESSIBILITY(int accessibility)</a><br />
+     <a class="message" href="#SCI_GETACCESSIBILITY">SCI_GETACCESSIBILITY &rarr; int</a><br />
+    </code>
+
+    <p><b id="SCI_SETACCESSIBILITY">SCI_SETACCESSIBILITY(int accessibility)</b><br />
+     <b id="SCI_GETACCESSIBILITY">SCI_GETACCESSIBILITY &rarr; int</b><br />
+     These messages may enable or disable accessibility and report its current status.</p>
+
+    <p>On most platforms, accessibility is either implemented or not implemented and this can be
+    discovered with <code>SCI_GETACCESSIBILITY</code> with
+    <code>SCI_SETACCESSIBILITY</code> performing no action.
+    On GTK+, there are storage and performance costs to accessibility, so it can be disabled
+    by calling <code>SCI_SETACCESSIBILITY</code>.
+    </p>
+ 
+    <table class="standard" summary="Accessibility status">
+      <tbody>
+        <tr>
+          <th align="left">Symbol</th>
+
+          <th>Value</th>
+
+          <th align="left">Accessibility status</th>
+        </tr>
+      </tbody>
+
+      <tbody valign="top">
+        <tr>
+          <td align="left"><code>SC_ACCESSIBILITY_DISABLED</code></td>
+
+          <td align="center">0</td>
+
+          <td>Accessibility is disabled.</td>
+        </tr>
+
+        <tr>
+          <td align="left"><code>SC_ACCESSIBILITY_ENABLED</code></td>
+
+          <td align="center">1</td>
+
+          <td>Accessibility is enabled.</td>
+        </tr>
+      </tbody>
+    </table>
+   
     <h2 id="Lexer">Lexer</h2>
 
     <p>If you define the symbol <code>SCI_LEXER</code> when building Scintilla, (this is sometimes
@@ -7891,15 +7945,6 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
      <a class="jump" href="#SCN_AUTOCSELECTION">SCN_AUTOCSELECTION</a></code>
      notification.</p>
 
-    <h2 id="Accessibility">Accessibility</h2>
-
-    <p>Scintilla supports some platform accessibility features.
-    This support differs between platforms.
-    On GTK+ and Cocoa the platform accessibility APIs are implemented sufficiently to
-    make screen readers work.
-    On Win32, the system caret is manipulated to help screen readers.
-    </p>
-
     <h2 id="Images">Images</h2>
 
     <p>Two formats are supported for images used in margin markers and autocompletion lists, RGBA and XPM.</p>
@@ -8120,8 +8165,10 @@ EM_SETTARGETDEVICE
     <h2 id="BuildingScintilla">Building Scintilla</h2>
 
     <p>To build Scintilla or SciTE, see the README file present in both the Scintilla and SciTE
-    directories. For Windows, GCC 4.7 or Microsoft Visual C++ 2010 can be used
-    for building. For GTK+, GCC 4.4 or newer should be used. GTK+ 2.18+ and 3.x are
+    directories.
+    The compiler must support C++11.
+    For Windows, GCC 4.8 or Microsoft Visual C++ 2015 can be used
+    for building. For GTK+, GCC 4.8 or newer should be used. GTK+ 2.18+ and 3.x are
     supported with glib 2.22+. The version of GTK+ installed should be detected automatically.
     When both GTK+ 2 and GTK+ 3 are present, building for GTK+ 3.x requires defining GTK3
     on the command line.</p>

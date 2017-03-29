@@ -816,7 +816,7 @@ void Editor::MovedCaret(SelectionPosition newPos, SelectionPosition previousPos,
 	if (ensureVisible) {
 		// In case in need of wrapping to ensure DisplayFromDoc works.
 		if (currentLine >= wrapPending.start)
-			WrapLines(wsAll);
+			WrapLines(WrapScope::wsAll);
 		XYScrollPosition newXY = XYScrollToMakeVisible(
 			SelectionRange(posDrag.IsValid() ? posDrag : newPos), xysDefault);
 		if (previousPos.IsValid() && (newXY.xOffset == xOffset)) {
@@ -1476,7 +1476,7 @@ bool Editor::WrapOneLine(Surface *surface, int lineToWrap) {
 // wsVisible: wrap currently visible lines
 // wsIdle: wrap one page + 100 lines
 // Return true if wrapping occurred.
-bool Editor::WrapLines(enum wrapScope ws) {
+bool Editor::WrapLines(WrapScope ws) {
 	int goodTopLine = topLine;
 	bool wrapOccurred = false;
 	if (!Wrapping()) {
@@ -1494,14 +1494,14 @@ bool Editor::WrapLines(enum wrapScope ws) {
 		wrapPending.start = std::min(wrapPending.start, pdoc->LinesTotal());
 		if (!SetIdle(true)) {
 			// Idle processing not supported so full wrap required.
-			ws = wsAll;
+			ws = WrapScope::wsAll;
 		}
 		// Decide where to start wrapping
 		int lineToWrap = wrapPending.start;
 		int lineToWrapEnd = std::min(wrapPending.end, pdoc->LinesTotal());
 		const int lineDocTop = cs.DocFromDisplay(topLine);
 		const int subLineTop = topLine - cs.DisplayFromDoc(lineDocTop);
-		if (ws == wsVisible) {
+		if (ws == WrapScope::wsVisible) {
 			lineToWrap = Platform::Clamp(lineDocTop-5, wrapPending.start, pdoc->LinesTotal());
 			// Priority wrap to just after visible area.
 			// Since wrapping could reduce display lines, treat each
@@ -1518,7 +1518,7 @@ bool Editor::WrapLines(enum wrapScope ws) {
 				// Currently visible text does not need wrapping
 				return false;
 			}
-		} else if (ws == wsIdle) {
+		} else if (ws == WrapScope::wsIdle) {
 			lineToWrapEnd = lineToWrap + LinesOnScreen() + 100;
 		}
 		const int lineEndNeedWrap = std::min(wrapPending.end, pdoc->LinesTotal());
@@ -1711,7 +1711,7 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 	}
 
 	// Wrap the visible lines if needed.
-	if (WrapLines(wsVisible)) {
+	if (WrapLines(WrapScope::wsVisible)) {
 		// The wrapping process has changed the height of some lines so
 		// abandon this paint for a complete repaint.
 		if (AbandonPaint()) {
@@ -1872,10 +1872,6 @@ void Editor::FilterSelections() {
 	}
 }
 
-static bool cmpSelPtrs(const SelectionRange *a, const SelectionRange *b) {
-	return *a < *b;
-}
-
 // AddCharUTF inserts an array of bytes which may or may not be in UTF-8.
 void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 	FilterSelections();
@@ -1888,7 +1884,8 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 			selPtrs.push_back(&sel.Range(r));
 		}
 		// Order selections by position in document.
-		std::sort(selPtrs.begin(), selPtrs.end(), cmpSelPtrs);
+		std::sort(selPtrs.begin(), selPtrs.end(),
+			[](const SelectionRange *a, const SelectionRange *b) {return *a < *b;});
 
 		// Loop in reverse to avoid disturbing positions of selections yet to be processed.
 		for (std::vector<SelectionRange *>::reverse_iterator rit = selPtrs.rbegin();
@@ -3111,6 +3108,9 @@ SelectionPosition Editor::PositionUpOrDown(SelectionPosition spStart, int direct
 }
 
 void Editor::CursorUpOrDown(int direction, Selection::selTypes selt) {
+	if ((selt == Selection::noSel) && sel.MoveExtends()) {
+		selt = Selection::selStream;
+	}
 	SelectionPosition caretToUse = sel.Range(sel.Main()).caret;
 	if (sel.IsRectangular()) {
 		if (selt ==  Selection::noSel) {
@@ -3947,7 +3947,7 @@ public:
 	CaseFolderASCII() {
 		StandardASCII();
 	}
-	~CaseFolderASCII() {
+	~CaseFolderASCII() override {
 	}
 };
 
@@ -4042,15 +4042,15 @@ long Editor::SearchText(
 
 std::string Editor::CaseMapString(const std::string &s, int caseMapping) {
 	std::string ret(s);
-	for (size_t i=0; i<ret.size(); i++) {
+	for (char &ch : ret) {
 		switch (caseMapping) {
 			case cmUpper:
-				if ((ret[i] >= 'a') && (ret[i] <= 'z'))
-					ret[i] = static_cast<char>(ret[i] - 'a' + 'A');
+				if (ch >= 'a' && ch <= 'z')
+					ch = static_cast<char>(ch - 'a' + 'A');
 				break;
 			case cmLower:
-				if ((ret[i] >= 'A') && (ret[i] <= 'Z'))
-					ret[i] = static_cast<char>(ret[i] - 'A' + 'a');
+				if (ch >= 'A' && ch <= 'Z')
+					ch = static_cast<char>(ch - 'A' + 'a');
 				break;
 		}
 	}
@@ -4946,7 +4946,7 @@ bool Editor::Idle() {
 
 	if (needWrap) {
 		// Wrap lines during idle.
-		WrapLines(wsIdle);
+		WrapLines(WrapScope::wsIdle);
 		// No more wrapping
 		needWrap = wrapPending.NeedsWrap();
 	} else if (needIdleStyling) {
@@ -5385,7 +5385,7 @@ void Editor::EnsureLineVisible(int lineDoc, bool enforcePolicy) {
 
 	// In case in need of wrapping to ensure DisplayFromDoc works.
 	if (lineDoc >= wrapPending.start)
-		WrapLines(wsAll);
+		WrapLines(WrapScope::wsAll);
 
 	if (!cs.GetVisible(lineDoc)) {
 		// Back up to find a non-blank line
@@ -7568,6 +7568,13 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_MULTIEDGECLEARALL:
 		std::vector<EdgeProperties>().swap(vs.theMultiEdge); // Free vector and memory, C++03 compatible
 		InvalidateStyleRedraw();
+		break;
+	
+	case SCI_GETACCESSIBILITY:
+		return SC_ACCESSIBILITY_DISABLED;
+
+	case SCI_SETACCESSIBILITY:
+		// May be implemented by platform code.
 		break;
 
 	case SCI_GETDOCPOINTER:

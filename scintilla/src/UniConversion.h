@@ -23,6 +23,7 @@ size_t UTF16Length(const char *s, size_t len);
 size_t UTF16FromUTF8(const char *s, size_t len, wchar_t *tbuf, size_t tlen);
 unsigned int UTF32FromUTF8(const char *s, unsigned int len, unsigned int *tbuf, unsigned int tlen);
 unsigned int UTF16FromUTF32Character(unsigned int val, wchar_t *tbuf);
+std::string FixInvalidUTF8(const std::string &text);
 
 extern int UTF8BytesOfLead[256];
 void UTF8BytesOfLeadInitialise();

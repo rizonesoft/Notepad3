@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #include <stdexcept>
+#include <string>
 
 #include "UniConversion.h"
 
@@ -302,6 +303,28 @@ int UTF8Classify(const unsigned char *us, int len) {
 int UTF8DrawBytes(const unsigned char *us, int len) {
 	int utf8StatusNext = UTF8Classify(us, len);
 	return (utf8StatusNext & UTF8MaskInvalid) ? 1 : (utf8StatusNext & UTF8MaskWidth);
+}
+
+// Replace invalid bytes in UTF-8 with the replacement character
+std::string FixInvalidUTF8(const std::string &text) {
+	std::string result;
+	const unsigned char *us = reinterpret_cast<const unsigned char *>(text.c_str());
+	size_t remaining = text.size();
+	while (remaining > 0) {
+		const int utf8Status = UTF8Classify(us, static_cast<int>(remaining));
+		if (utf8Status & UTF8MaskInvalid) {
+			// Replacement character 0xFFFD = UTF8:"efbfbd".
+			result.append("\xef\xbf\xbd");
+			us++;
+			remaining--;
+		} else {
+			const int len = utf8Status&UTF8MaskWidth;
+			result.append(reinterpret_cast<const char *>(us), len);
+			us += len;
+			remaining -= len;
+		}
+	}
+	return result;
 }
 
 #ifdef SCI_NAMESPACE
