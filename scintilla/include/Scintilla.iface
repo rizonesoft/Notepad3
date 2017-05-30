@@ -731,6 +731,14 @@ get colour GetCaretLineBack=2097(,)
 # Set the colour of the background of the line containing the caret.
 set void SetCaretLineBack=2098(colour back,)
 
+# Retrieve the caret line frame width.
+# Width = 0 means this option is disabled.
+get int GetCaretLineFrame=2704(,)
+
+# Display the caret line framed.
+# Set width != 0 to enable this option and width = 0 to disable it.
+set void SetCaretLineFrame=2705(int width,)
+
 # Set a style to be changeable or not (read only).
 # Experimental feature, currently buggy.
 set void StyleSetChangeable=2099(int style, bool changeable)
@@ -1613,6 +1621,9 @@ fun void LineDelete=2338(,)
 
 # Switch the current line with the previous.
 fun void LineTranspose=2339(,)
+
+# Reverse order of selected lines.
+fun void LineReverse=2354(,)
 
 # Duplicate the current line.
 fun void LineDuplicate=2404(,)

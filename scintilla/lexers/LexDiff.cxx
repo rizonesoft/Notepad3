@@ -126,7 +126,7 @@ static void FoldDiffDoc(Sci_PositionU startPos, Sci_Position length, int, WordLi
 	int nextLevel;
 
 	do {
-		int lineType = styler.StyleAt(curLineStart);
+		const int lineType = styler.StyleAt(curLineStart);
 		if (lineType == SCE_DIFF_COMMAND)
 			nextLevel = SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG;
 		else if (lineType == SCE_DIFF_HEADER)

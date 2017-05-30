@@ -112,7 +112,7 @@ int GetHangulOfHanja(wchar_t *inout) {
 			if (dict.IsHanja(static_cast<int>(inout[i]))) { // Pass hanja only!
 				conv[0] = inout[i];
 				BSTR bstrHanja = SysAllocString(conv);
-				HRESULT hr = dict.HJinterface->HanjaToHangul(bstrHanja, &bstrHangul);
+				const HRESULT hr = dict.HJinterface->HanjaToHangul(bstrHanja, &bstrHangul);
 				if (SUCCEEDED(hr)) {
 					inout[i] = static_cast<wchar_t>(bstrHangul[0]);
 					changed += 1;

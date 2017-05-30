@@ -4,6 +4,7 @@
 ** Based heavily on LexCPP.cxx
 **/
 // Copyright 2001- by Vamsi Potluru <vamsi@who.net> & Praveen Ambekar <ambekarpraveen@yahoo.com>
+// Maintainer Email: oirfeodent@yahoo.co.in
 // The License.txt file describes the conditions under which this software may be distributed.
 
 // C standard library
@@ -504,6 +505,7 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	bool lineHasPreProc = false;
 	bool lineIgnoreString = false;
 	bool lineHasDefines = false;
+	bool numberIsHex = false;
 	char word[1000];
 	int wordlen = 0;
 
@@ -520,9 +522,18 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 		case SCE_BAAN_OPERATOR:
 			sc.SetState(SCE_BAAN_DEFAULT);
 			break;
-		case SCE_BAAN_NUMBER:
-			if (!IsAWordChar(sc.ch)) {
+		case SCE_BAAN_NUMBER: 
+			if (IsASpaceOrTab(sc.ch) || sc.ch == '\r' || sc.ch == '\n') {
 				sc.SetState(SCE_BAAN_DEFAULT);
+			}
+			else if ((numberIsHex && !(MakeLowerCase(sc.ch) == 'x' || MakeLowerCase(sc.ch) == 'e' ||
+				IsADigit(sc.ch, 16) || sc.ch == '.' || sc.ch == '-' || sc.ch == '+')) ||
+				(!numberIsHex && !(MakeLowerCase(sc.ch) == 'e' || IsADigit(sc.ch)
+				|| sc.ch == '.' || sc.ch == '-' || sc.ch == '+'))) {
+					// check '-' for possible -10e-5. Add '+' as well.
+					numberIsHex = false;
+					sc.ChangeState(SCE_BAAN_IDENTIFIER);
+					sc.SetState(SCE_BAAN_DEFAULT);
 			}
 			break;
 		case SCE_BAAN_IDENTIFIER:
@@ -606,7 +617,7 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			}
 			break;
 		case SCE_BAAN_COMMENT:
-			if (sc.atLineEnd) {
+			if (sc.ch == '\r' || sc.ch == '\n') {
 				sc.SetState(SCE_BAAN_DEFAULT);
 			}
 			break;
@@ -638,7 +649,13 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_BAAN_DEFAULT) {
-			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
+			if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))
+				|| ((sc.ch == '-' || sc.ch == '+') && (IsADigit(sc.chNext) || sc.chNext == '.'))
+				|| (MakeLowerCase(sc.ch) == 'e' && (IsADigit(sc.chNext) || sc.chNext == '+' || sc.chNext == '-'))) {
+				if ((sc.ch == '0' && MakeLowerCase(sc.chNext) == 'x') ||
+					((sc.ch == '-' || sc.ch == '+') && sc.chNext == '0' && MakeLowerCase(sc.GetRelativeCharacter(2)) == 'x')){
+					numberIsHex = true;
+				}
 				sc.SetState(SCE_BAAN_NUMBER);
 			}
 			else if (sc.MatchIgnoreCase("dllusage") || sc.MatchIgnoreCase("functionusage")) {
@@ -697,6 +714,7 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			lineHasPreProc = false;
 			lineIgnoreString = false;
 			lineHasDefines = false;
+			numberIsHex = false;
 		}
 		if (!IsASpace(sc.ch)) {
 			visibleChars++;

@@ -31,7 +31,7 @@ public:
 	void Init(const char *textForm);
 	void Init(const char *const *linesForm);
 	/// Decompose image into runs and use FillRectangle for each run
-	void Draw(Surface *surface, PRectangle &rc);
+	void Draw(Surface *surface, const PRectangle &rc);
 	int GetHeight() const { return height; }
 	int GetWidth() const { return width; }
 	void PixelAt(int x, int y, ColourDesired &colour, bool &transparent) const;
@@ -43,9 +43,6 @@ private:
  * A translucent image stored as a sequence of RGBA bytes.
  */
 class RGBAImage {
-	// Deleted so RGBAImage objects can not be copied
-	RGBAImage(const RGBAImage &) = delete;
-	RGBAImage &operator=(const RGBAImage &) = delete;
 	int height;
 	int width;
 	float scale;
@@ -53,6 +50,9 @@ class RGBAImage {
 public:
 	RGBAImage(int width_, int height_, float scale_, const unsigned char *pixels_);
 	explicit RGBAImage(const XPM &xpm);
+	// Deleted so RGBAImage objects can not be copied.
+	RGBAImage(const RGBAImage &) = delete;
+	RGBAImage &operator=(const RGBAImage &) = delete;
 	virtual ~RGBAImage();
 	int GetHeight() const { return height; }
 	int GetWidth() const { return width; }
@@ -68,7 +68,7 @@ public:
  * A collection of RGBAImage pixmaps indexed by integer id.
  */
 class RGBAImageSet {
-	typedef std::map<int, RGBAImage*> ImageMap;
+	typedef std::map<int, std::unique_ptr<RGBAImage>> ImageMap;
 	ImageMap images;
 	mutable int height;	///< Memorize largest height of the set.
 	mutable int width;	///< Memorize largest width of the set.
