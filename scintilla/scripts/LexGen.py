@@ -113,7 +113,7 @@ def RegenerateAll(root):
     sci = ScintillaData.ScintillaData(root)
 
     Regenerate(root + "src/Catalogue.cxx", "//", sci.lexerModules)
-    Regenerate(root + "win32/scintilla.mak", "#", sci.lexFiles)
+    #Regenerate(root + "win32/scintilla.mak", "#", sci.lexFiles)    #commented out
 
     RegenerateXcodeProject(root + "cocoa/ScintillaFramework/ScintillaFramework.xcodeproj/project.pbxproj",
         sci.lexFiles, sci.lexersXcode)

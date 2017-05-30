@@ -5,11 +5,9 @@
 // Copyright 1998-2002 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cassert>
+#include <cstring>
 
 #include <algorithm>
 
@@ -37,7 +35,7 @@ static char **ArrayFromWordList(char *wordlist, int *len, bool onlyLineEnds = fa
 		wordSeparator[static_cast<unsigned int>('\t')] = true;
 	}
 	for (int j = 0; wordlist[j]; j++) {
-		int curr = static_cast<unsigned char>(wordlist[j]);
+		const int curr = static_cast<unsigned char>(wordlist[j]);
 		if (!wordSeparator[curr] && wordSeparator[prev])
 			words++;
 		prev = curr;
@@ -59,6 +57,7 @@ static char **ArrayFromWordList(char *wordlist, int *len, bool onlyLineEnds = fa
 			prev = wordlist[k];
 		}
 	}
+	assert(wordsStore < (words + 1));
 	keywords[wordsStore] = &wordlist[slen];
 	*len = wordsStore;
 	return keywords;
@@ -146,7 +145,7 @@ void WordList::Set(const char *s) {
 bool WordList::InList(const char *s) const {
 	if (0 == words)
 		return false;
-	unsigned char firstChar = s[0];
+	const unsigned char firstChar = s[0];
 	int j = starts[firstChar];
 	if (j >= 0) {
 		while (static_cast<unsigned char>(words[j][0]) == firstChar) {
@@ -188,7 +187,7 @@ bool WordList::InList(const char *s) const {
 bool WordList::InListAbbreviated(const char *s, const char marker) const {
 	if (0 == words)
 		return false;
-	unsigned char firstChar = s[0];
+	const unsigned char firstChar = s[0];
 	int j = starts[firstChar];
 	if (j >= 0) {
 		while (static_cast<unsigned char>(words[j][0]) == firstChar) {
@@ -242,7 +241,7 @@ bool WordList::InListAbbreviated(const char *s, const char marker) const {
 bool WordList::InListAbridged(const char *s, const char marker) const {
 	if (0 == words)
 		return false;
-	unsigned char firstChar = s[0];
+	const unsigned char firstChar = s[0];
 	int j = starts[firstChar];
 	if (j >= 0) {
 		while (static_cast<unsigned char>(words[j][0]) == firstChar) {

@@ -305,6 +305,7 @@
     <ClInclude Include="src\Style.h" />
     <ClInclude Include="src\UnicodeFromUTF8.h" />
     <ClInclude Include="src\UniConversion.h" />
+    <ClInclude Include="src\UniqueString.h" />
     <ClInclude Include="src\ViewStyle.h" />
     <ClInclude Include="src\XPM.h" />
     <ClInclude Include="win32\PlatWin.h" />

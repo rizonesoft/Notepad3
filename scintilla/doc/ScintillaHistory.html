@@ -508,6 +508,8 @@
 	<td>desto</td>
       </tr><tr>
 	<td>John Flatness</td>
+	<td>Thorsten Kani</td>
+	<td>Bernhard M. Wiedemann</td>
     </tr>
     </table>
     <p>
@@ -518,6 +520,100 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="http://www.scintilla.org/scite375.zip">Release 3.7.5</a>
+    </h3>
+    <ul>
+	<li>
+	Released 26 May 2017.
+	</li>
+	<li>
+	Support dropped for Microsoft Visual C++ 2013 due to increased use of C++11 features.
+	</li>
+	<li>
+	Added a caret line frame as an alternative visual for highlighting the caret line.
+	</li>
+	<li>
+	Added "Reverse Selected Lines" feature.
+	</li>
+	<li>
+	SciTE adds "Select All Bookmarks" command.
+	</li>
+	<li>
+	SciTE adds a save.path.suggestion setting to suggest a file name when saving an
+	unnamed buffer.
+	</li>
+	<li>
+	Updated case conversion and character categories to Unicode 9.
+	</li>
+	<li>
+	The Baan lexer recognizes numeric literals in a more compliant manner including
+	hexadecimal numbers and exponentials.
+	</li>
+	<li>
+	The Bash lexer recognizes strings in lists in more cases.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1944/">Bug #1944</a>.
+	</li>
+	<li>
+	The Fortran lexer recognizes a preprocessor line after a line continuation &amp;.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1935/">Bug #1935</a>.
+	</li>
+	<li>
+	The Fortran folder can fold comments.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1936/">Bug #1936</a>.
+	</li>
+	<li>
+	The PowerShell lexer recognizes escaped quotes in strings.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1929/">Bug #1929</a>.
+	</li>
+	<li>
+	The Python lexer recognizes identifiers more accurately when they include non-ASCII characters.
+	</li>
+	<li>
+	The Python folder treats comments at the end of the file as separate from the preceding structure.
+	</li>
+	<li>
+	The YAML lexer recognizes comments in more situations and styles a
+	"..." line like a "---" line.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1931/">Bug #1931</a>.
+	</li>
+	<li>
+	Update scroll bar when annotations added, removed, or visibility changed.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1187/">Feature #1187.</a>
+	</li>
+	<li>
+	Canceling modes with the Esc key preserves a rectangular selection.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1940/">Bug #1940</a>.
+	</li>
+	<li>
+	Builds are made with a sorted list of lexers to be more reproducible.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1946/">Bug #1946</a>.
+	</li>
+	<li>
+	On Cocoa, a leak of mouse tracking areas was fixed.
+	</li>
+	<li>
+	On Cocoa, the autocompletion is 4 pixels wider to avoid text truncation.
+	</li>
+	<li>
+	On Windows, stop drawing a focus rectangle on the autocompletion list and
+	raise the default list length to 9 items.
+	</li>
+	<li>
+	SciTE examines at most 1 MB of a file to automatically determine indentation
+	for indent.auto to avoid a lengthy pause when loading very large files.
+	</li>
+	<li>
+	SciTE user interface uses lighter colours and fewer 3D elements to match current desktop environments.
+	</li>
+	<li>
+	SciTE sets buffer dirty and shows message when file deleted if load.on.activate on.
+	</li>
+	<li>
+	SciTE on Windows Find strip Find button works in incremental no-close mode.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1926/">Bug #1926</a>.
+	</li>
     </ul>
     <h3>
        <a href="http://www.scintilla.org/scite374.zip">Release 3.7.4</a>
@@ -546,7 +642,7 @@
 	<li>
 	In the Python lexer, improve f-string support.
 	Add support for multiline expressions in triple quoted f-strings.
-	Handle nested "()", "[]", and "{}" in f-string expressions and terminate expression coloring at ":" or "!".
+	Handle nested "()", "[]", and "{}" in f-string expressions and terminate expression colouring at ":" or "!".
 	End f-string if ending quote is seen in a "{}" expression.
 	Fix terminating single quoted f-string at EOL.
 	<a href="http://sourceforge.net/p/scintilla/bugs/1918/">Bug #1918</a>.
@@ -806,7 +902,7 @@
 	<a href="http://sourceforge.net/p/scintilla/bugs/1886/">Bug #1886</a>.
 	</li>
 	<li>
-	SciTE on GTK+ allows localising tool bar tool tips.
+	SciTE on GTK+ allows localizing tool bar tool tips.
 	<a href="http://sourceforge.net/p/scintilla/feature-requests/1167/">Feature #1167.</a>
 	</li>
 	<li>
@@ -1080,8 +1176,8 @@
 	</li>
 	<li>
 	Platform layer font cache removed on GTK+ as platform-independent caches are used.
-	This avoids the use of thread locking and initialisation of threads so any GTK+
-	applications that rely on Scintilla initialising threads will have to do that themselves.
+	This avoids the use of thread locking and initialization of threads so any GTK+
+	applications that rely on Scintilla initializing threads will have to do that themselves.
 	</li>
 	<li>
 	SciTE bug fixed with exported HTML where extra line shown.
@@ -1311,7 +1407,7 @@
 	<a href="http://sourceforge.net/p/scintilla/bugs/1766/">Bug #1766</a>.
 	</li>
 	<li>
-	Optimise marker redrawing by only drawing affected lines when markers shown in the text.
+	Optimize marker redrawing by only drawing affected lines when markers shown in the text.
 	</li>
 	<li>
 	On Cocoa, timers and idling now work in modal dialogs. This also stops some crashes.
@@ -1527,7 +1623,7 @@
 	Added SCI_TARGETWHOLEDOCUMENT to set the target to the whole document.
 	</li>
 	<li>
-	Verilog lexer recognises protected regions and the folder folds protected regions.
+	Verilog lexer recognizes protected regions and the folder folds protected regions.
 	</li>
 	<li>
 	A performance problem with markers when deleting many lines was fixed.
@@ -2140,7 +2236,7 @@
 	<a href="http://sourceforge.net/p/scintilla/bugs/156/">Bug #156</a>.
 	</li>
 	<li>
-	For SciTE on GTK+ fix bug with initialisation of toggle buttons in find and replace strips.
+	For SciTE on GTK+ fix bug with initialization of toggle buttons in find and replace strips.
 	<a href="http://sourceforge.net/p/scintilla/bugs/1612/">Bug #1612</a>.
 	</li>
     </ul>
@@ -2292,7 +2388,7 @@
 	Released 22 March 2014.
 	</li>
 	<li>
-	The Unicode line ends and substyles features added as provisional in 3.2.5 are now finalised.
+	The Unicode line ends and substyles features added as provisional in 3.2.5 are now finalized.
 	There are now no provisional features.
 	</li>
 	<li>
@@ -2795,7 +2891,7 @@
 	<a href="http://sourceforge.net/p/scintilla/bugs/1491/">Bug #1491</a>.
 	</li>
 	<li>
-	errorlist lexer only recognises Perl diagnostics when there is a filename between
+	errorlist lexer only recognizes Perl diagnostics when there is a filename between
 	"at" and "line". Had been triggering for MSVC errors containing "at line".
 	</li>
 	<li>
@@ -2943,7 +3039,7 @@
 	<a href="http://sourceforge.net/p/scintilla/bugs/1468/">Bug #1468 </a>.
 	</li>
 	<li>
-	PowerShell lexer recognises here strings and doccomment keywords.
+	PowerShell lexer recognizes here strings and doccomment keywords.
 	#region folding added.
 	<a href="http://sourceforge.net/p/scintilla/feature-requests/985/">Feature #985.</a>
 	</li>
@@ -3013,7 +3109,7 @@
 	<a href="http://sourceforge.net/p/scintilla/bugs/1459/">Bug #1459.</a>
 	</li>
 	<li>
-	Matlab/Octave lexer recognises block comments and ... comments.
+	Matlab/Octave lexer recognizes block comments and ... comments.
 	<a href="http://sourceforge.net/p/scintilla/bugs/1414/">Bug #1414.</a>
 	</li>
 	<li>
@@ -3062,12 +3158,12 @@
 	If the whole range can not be displayed, priority is given to one end.
 	</li>
 	<li>
-	C++ lexer no longer recognises raw (R"") strings when the first character after "
+	C++ lexer no longer recognizes raw (R"") strings when the first character after "
 	is invalid.
 	<a href="http://sourceforge.net/p/scintilla/bugs/1454/">Bug #1454.</a>
 	</li>
 	<li>
-	HTML lexer recognises JavaScript RegEx literals in more contexts.
+	HTML lexer recognizes JavaScript RegEx literals in more contexts.
 	<a href="http://sourceforge.net/p/scintilla/bugs/1412/">Bug #1412.</a>
 	</li>
 	<li>
@@ -3109,7 +3205,7 @@
 	<a href="http://sourceforge.net/p/scintilla/feature-requests/978/">Feature #978.</a>
 	</li>
 	<li>
-	The errorlist lexer recognises gcc include path diagnostics that appear before an error.
+	The errorlist lexer recognizes gcc include path diagnostics that appear before an error.
 	</li>
 	<li>
 	Folding implemented for GetText (PO)  translation language.
@@ -3250,7 +3346,7 @@
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3515392&group_id=2439">Bug #3515392.</a>
 	</li>
 	<li>
-	For C/C++, recognise exponent in floating point hexadecimal literals.
+	For C/C++, recognize exponent in floating point hexadecimal literals.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3576454&group_id=2439">Bug #3576454.</a>
 	</li>
 	<li>
@@ -4007,7 +4103,7 @@
 	Printing implemented in SciTE on GTK+ 3.x.
 	</li>
 	<li>
-	ILoader interface for background loading finalised and documented.
+	ILoader interface for background loading finalized and documented.
 	</li>
 	<li>
 	CoffeeScript lexer added.
@@ -4089,7 +4185,7 @@
 	as this avoids faint lines at lexeme boundaries.
 	</li>
 	<li>
-	Ensure pixmaps allocated before painting as there was a crash when Scintilla drew without common initialisation calls.
+	Ensure pixmaps allocated before painting as there was a crash when Scintilla drew without common initialization calls.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3432354&group_id=2439">Bug #3432354.</a>
 	</li>
 	<li>
@@ -4104,7 +4200,7 @@
 	Fixed leak of document objects in SciTE.
 	</li>
 	<li>
-	Recognise URL characters '?' and '%' for Open Selected command in SciTE.
+	Recognize URL characters '?' and '%' for Open Selected command in SciTE.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3429409&group_id=2439">Bug #3429409.</a>
 	</li>
     </ul>
@@ -4199,7 +4295,7 @@
 	avenue, baan, escript, lot, metapost, and mmixal.
 	</li>
 	<li>
-	C++ lexer fixed a bug with raw strings being recognised too easily.
+	C++ lexer fixed a bug with raw strings being recognized too easily.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3388122&group_id=2439">Bug #3388122.</a>
 	</li>
 	<li>
@@ -4304,7 +4400,7 @@
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3014850&group_id=2439">Bug #3014850.</a>
 	</li>
 	<li>
-	Mako template language block syntax extended and ## comments recognised.
+	Mako template language block syntax extended and ## comments recognized.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3325178&group_id=2439">Feature #3325178.</a>
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3318818&group_id=2439">Bug #3318818.</a>
 	</li>
@@ -4509,7 +4605,7 @@
 	Batch file lexer allows braces '(' or ')' inside variable names.
 	</li>
 	<li>
-	The cpp lexer only recognises Vala triple quoted strings when lexer.cpp.triplequoted.strings property is set.
+	The cpp lexer only recognizes Vala triple quoted strings when lexer.cpp.triplequoted.strings property is set.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3239234&group_id=2439">Bug #3239234.</a>
 	</li>
 	<li>
@@ -4643,7 +4739,7 @@
 	LPeg lexer support‎ improved in SciTE.
 	</li>
 	<li>
-	SciTE on Windows-64 fixes for menu localisation and Lua scripts.
+	SciTE on Windows-64 fixes for menu localization and Lua scripts.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3204502&group_id=2439">Bug #3204502.</a>
 	</li>
 	<li>
@@ -4797,7 +4893,7 @@
 	Performance improved when creating large rectangular selections.
 	</li>
 	<li>
-	PHP folder recognises #region and #endregion comments.
+	PHP folder recognizes #region and #endregion comments.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3101624&group_id=2439">Feature #3101624.</a>
 	</li>
 	<li>
@@ -4806,7 +4902,7 @@
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3098071&group_id=2439">Feature #3098071.</a>
 	</li>
 	<li>
-	SQL folder recognises case statements and understands the fold.at.else property.
+	SQL folder recognizes case statements and understands the fold.at.else property.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3104091&group_id=2439">Bug #3104091.</a>
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3107362&group_id=2439">Bug #3107362.</a>
 	</li>
@@ -4900,7 +4996,7 @@
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3058924&group_id=2439">Bug #3058924.</a>
 	</li>
 	<li>
-	JavaScript lexer recognise regexes following return keyword.‎
+	JavaScript lexer recognize regexes following return keyword.‎
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3062287&group_id=2439">Bug #3062287.</a>
 	</li>
 	<li>
@@ -5189,7 +5285,7 @@
 	SciTE HTML exports take the Use Monospaced Font setting into account.
 	</li>
 	<li>
-	SciTE window title "[n of m]" localised.
+	SciTE window title "[n of m]" localized.
 	</li>
 	<li>
 	When new line inserted at start of line, markers are moved down.
@@ -5362,8 +5458,8 @@
 	Added SCI_SETFIRSTVISIBLELINE to match SCI_GETFIRSTVISIBLELINE.
 	</li>
 	<li>
-	Erlang lexer extended set of numeric bases recognised; separate style for module:function_name; detects
-	built-in functions, known module attributes, and known preprocessor instructions; recognises EDoc and EDoc macros;
+	Erlang lexer extended set of numeric bases recognized; separate style for module:function_name; detects
+	built-in functions, known module attributes, and known preprocessor instructions; recognizes EDoc and EDoc macros;
 	separates types of comments.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2942448&group_id=2439">Bug #2942448.</a>
 	</li>
@@ -5606,7 +5702,7 @@
 	SciTE on GTK+ path bar is now optional and defaults to off.
 	</li>
 	<li>
-	MagikSF lexer recognises numbers correctly.
+	MagikSF lexer recognizes numbers correctly.
 	</li>
 	<li>
 	Folding of Python comments and blank lines improved. <a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=210240&group_id=2439">Bug #210240.</a>
@@ -5734,7 +5830,7 @@
 	Unit test script for Scintilla on Windows included with source code.
 	</li>
 	<li>
-	User defined menu items are now localised when there is a matching translation.
+	User defined menu items are now localized when there is a matching translation.
 	</li>
 	<li>
 	Width of icon column of autocompletion lists on GTK+ made more consistent.
@@ -5857,7 +5953,7 @@
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2671749&group_id=2439">Bug #2671749.</a>
 	</li>
 	<li>
-	SciTE on GTK+ crash fixed on startup when child process exits before initialisation complete.
+	SciTE on GTK+ crash fixed on startup when child process exits before initialization complete.
 	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2716987&group_id=2439">Bug #2716987.</a>
 	</li>
 	<li>
@@ -6141,7 +6237,7 @@
 	Bash lexer handles octal literals.
 	</li>
 	<li>
-	C++/JavaScript lexer recognises regex literals in more situations.
+	C++/JavaScript lexer recognizes regex literals in more situations.
 	</li>
 	<li>
 	Haskell lexer fixed for quoted strings.
@@ -6152,7 +6248,7 @@
 	ASP problem fixed where &lt;/ is used inside a comment.
 	</li>
 	<li>
-	Error messages from Lua 5.1 are recognised.
+	Error messages from Lua 5.1 are recognized.
 	</li>
 	<li>
 	Folding implemented for Metapost.
@@ -6316,7 +6412,7 @@
 	Style changes may be made during text modification events.
 	</li>
 	<li>
-	Regular expressions recognise \d, \D, \s, \S, \w, \W, and \xHH.
+	Regular expressions recognize \d, \D, \s, \S, \w, \W, and \xHH.
 	</li>
 	<li>
 	Support for cmake language added.
@@ -6340,7 +6436,7 @@
 	SciTE on GTK+ removed GTK+ 1.x compatible file dialog code.
 	</li>
 	<li>
-	SciTE on GTK+ recognises key names KeypadMultiply and KeypadDivide.
+	SciTE on GTK+ recognizes key names KeypadMultiply and KeypadDivide.
 	</li>
 	<li>
 	Background colour of line wrapping visual flag changed to STYLE_DEFAULT.
@@ -6577,7 +6673,7 @@
 	when no similar character is available a '?' may be inserted.
 	</li>
 	<li>
-	On GTK+, the internationalised IM (Input Method) feature is used for all typed input for all character sets.
+	On GTK+, the internationalized IM (Input Method) feature is used for all typed input for all character sets.
 	</li>
 	<li>
 	Scintilla has new margin types SC_MARGIN_BACK and SC_MARGIN_FORE that use the default
@@ -6618,7 +6714,7 @@
 	Support for Spice language.
 	</li>
 	<li>
-	On GTK+ autocompletion lists are optimised and use correct selection colours.
+	On GTK+ autocompletion lists are optimized and use correct selection colours.
 	</li>
 	<li>
 	On GTK+ the URI data type is preferred in drag and drop so that applications
@@ -6810,7 +6906,7 @@
 	Bash lexer handles here documents better.
 	</li>
 	<li>
-	JavaScript lexing recognises regular expressions more accurately and includes flag
+	JavaScript lexing recognizes regular expressions more accurately and includes flag
 	characters in the regular expression style. This is both in JavaScript files and when
 	JavaScript is embedded in HTML.
 	</li>
@@ -6946,7 +7042,7 @@
 	An initial ">" on a line is ignored when Enter pressed.
 	</li>
 	<li>
-	C++ lexer recognises keywords within line doc comments. It continues styles over line
+	C++ lexer recognizes keywords within line doc comments. It continues styles over line
 	end characters more consistently so that eolfilled style can be used for preprocessor lines
 	and line comments.
 	</li>
@@ -7036,7 +7132,7 @@
 	</li>
 	<li>
 	Perl lexer handles here docs better; disambiguates barewords, quote-like delimiters, and repetition operators;
-	handles Pods after __END__; recognises numbers better; and handles some typeglob special variables.
+	handles Pods after __END__; recognizes numbers better; and handles some typeglob special variables.
 	</li>
 	<li>
 	Lisp adds more lexical states.
@@ -7045,7 +7141,7 @@
 	PHP allows spaces after &lt;&lt;&lt;.
 	</li>
 	<li>
-	TADS3 has a simpler set of states and recognises identifiers.
+	TADS3 has a simpler set of states and recognizes identifiers.
 	</li>
 	<li>
 	Avenue elseif folds better.
@@ -7055,7 +7151,7 @@
 	styles from '+' and '-' as they indicate file names in diffs.
 	</li>
 	<li>
-	SciTE error recogniser handles file paths in extra explanatory lines from MSVC
+	SciTE error recognizer handles file paths in extra explanatory lines from MSVC
 	and in '+++' and '---' lines from diff.
 	</li>
 	<li>
@@ -7065,7 +7161,7 @@
 	</li>
 	<li>
 	SciTE on Windows uses correct font for dialogs and better font for tab bar
-	allowing better localisation
+	allowing better localization
 	</li>
 	<li>
 	When Windows is used with a secondary monitor before the primary
@@ -7143,7 +7239,7 @@
 	</li>
 	<li>
 	Perl can fold POD and package sections. POD verbatim section style.
-	Globbing syntax recognised better.
+	Globbing syntax recognized better.
 	</li>
 	<li>
 	Context menu moved slightly on GTK+ so that it will be under the mouse and will
@@ -7241,7 +7337,7 @@
 	SQL lexer gains second set of keywords.
 	</li>
 	<li>
-	Errorlist lexer recognises Borland Delphi error messages.
+	Errorlist lexer recognizes Borland Delphi error messages.
 	</li>
 	<li>
 	Method added for determining number of visual lines occupied by a document
@@ -7483,7 +7579,7 @@
 	PHP lexer handles 'e' in numerical literals.
 	</li>
 	<li>
-	PowerBasic lexer updated for macros and optimised.
+	PowerBasic lexer updated for macros and optimized.
 	</li>
 	<li>
 	Properties file folder changed to leave lines before a header at the base level
@@ -7520,7 +7616,7 @@
 	Other Lua scripting bugs fixed.
 	</li>
 	<li>
-	SciTE on Windows localisation of menu accelerators changed to be compatible
+	SciTE on Windows localization of menu accelerators changed to be compatible
 	with alternative UI themes.
 	</li>
 	<li>
@@ -7628,7 +7724,7 @@
 	AutoIt3 lexer updated.
 	</li>
 	<li>
-	Perl lexer recognises regular expression use better.
+	Perl lexer recognizes regular expression use better.
 	</li>
 	<li>
 	Errorlist lexer understands Lua tracebacks and copes with findstr
@@ -7716,7 +7812,7 @@
 	correctly in more circumstances.
 	</li>
 	<li>
-	PHP recognises variables within strings.
+	PHP recognizes variables within strings.
 	</li>
 	<li>
 	NSIS has properties "nsis.uservars" and "nsis.ignorecase".
@@ -7782,7 +7878,7 @@
 	</li>
 	<li>
 	Key bindings for command.shortcut implemented in a way that doesn't break
-	when the menus are localised.
+	when the menus are localized.
 	</li>
 	<li>
 	Drawing of background on GTK+ faster as theme drawing disabled.
@@ -7968,9 +8064,9 @@
 	Replace in Selection performed.
 	</li>
 	<li>
-	Localisation files may contain a translation.encoding setting which is used
+	Localization files may contain a translation.encoding setting which is used
 	on GTK+ 2 to automatically reencode the translation to UTF-8 so it will be
-	the localised text will be displayed correctly.
+	the localized text will be displayed correctly.
 	</li>
 	<li>
 	SciTE on GTK+ implements check.if.already.open.
@@ -8514,7 +8610,7 @@
 	CSS lexer improved.
       </li>
       <li>
-	Interface to platform layer changed - Surface initialisation now requires
+	Interface to platform layer changed - Surface initialization now requires
 	a WindowID parameter.
       </li>
       <li>
@@ -8704,7 +8800,7 @@
 	the subject of the Open Selected Filename command.
       </li>
       <li>
-        The localisation file name can be changed with the locale.properties property.
+        The localization file name can be changed with the locale.properties property.
       </li>
       <li>
 	On Windows, SciTE can pipe the result of a string expression into a command line tool.
@@ -8803,7 +8899,7 @@
 	and block comments.
       </li>
       <li>
-	Errorlist lexer recognises PHP error messages.
+	Errorlist lexer recognizes PHP error messages.
       </li>
       <li>
 	Variant of the C++ lexer with case insensitive keywords
@@ -8835,7 +8931,7 @@
 	SciTE Save All command saves all buffers.
       </li>
       <li>
-	SciTE localisation compares keys case insensitively to make translations more flexible.
+	SciTE localization compares keys case insensitively to make translations more flexible.
       </li>
       <li>
 	SciTE detects a utf-8 coding cookie "coding: utf-8" in first two
@@ -8903,10 +8999,10 @@
 	independent of the colours chosen for the lexical class of that whitespace.
       </li>
       <li>
-	Per line data optimised by using an exponential allocation scheme.
+	Per line data optimized by using an exponential allocation scheme.
       </li>
       <li>
-	SciTE API file loading optimised.
+	SciTE API file loading optimized.
       </li>
       <li>
 	SciTE for GTK+ subsystem 2 documented. The exit status of commands
@@ -9013,7 +9109,7 @@
 	SciTE in scite/boundscheck.
       </li>
       <li>
-	SciTE automatically recognises Unicode files based
+	SciTE automatically recognizes Unicode files based
 	on their Byte Order Marks and switches to Unicode mode.
 	On Windows, where SciTE supports Unicode display, this
 	allows display of non European characters.
@@ -9258,10 +9354,10 @@
 	insertion point.
       </li>
       <li>
-	On Windows with a wheel mouse, page-at-a-time mode is recognised.
+	On Windows with a wheel mouse, page-at-a-time mode is recognized.
       </li>
       <li>
-	Read-only mode added to SciTE with a property to initialise it and another property,
+	Read-only mode added to SciTE with a property to initialize it and another property,
 	$(ReadOnly) available to show this mode in the status bar.
       </li>
       <li>
@@ -9314,12 +9410,12 @@
       <li>
 	In SciTE, indentation and tab settings stored with buffers so maintained correctly
 	as buffers selected.
-	The properties used to initialise these settings can now be set separately for different
+	The properties used to initialize these settings can now be set separately for different
 	file patterns.
       </li>
       <li>
 	Thread safety improved on Windows with a critical section protecting the font
-	cache and initialisation of globals performed within Scintilla_RegisterClasses.
+	cache and initialization of globals performed within Scintilla_RegisterClasses.
 	New Scintilla_ReleaseResources call provided to allow explicit freeing of resources
 	when statically bound into another application. Resources automatically freed
 	in DLL version. The window classes are now unregistered as part of resource
@@ -9466,7 +9562,7 @@
 	Released on 24 December 2001.
       </li>
       <li>
-	Better localisation support including context menus and most messages.
+	Better localization support including context menus and most messages.
 	Translations of the SciTE user interface available for Bulgarian,
 	French, German, Italian, Russian, and Turkish.
       </li>
@@ -9574,10 +9670,10 @@
 	modifications.
       </li>
       <li>
-	Horizontal scrolling and display of long lines optimised.
+	Horizontal scrolling and display of long lines optimized.
       </li>
       <li>
-	Cursor setting in Scintilla on GTK+ optimised.
+	Cursor setting in Scintilla on GTK+ optimized.
       </li>
       <li>
 	Experimental changeable style attribute.
@@ -9659,7 +9755,7 @@
 	menu.language property rather than being hardcoded.
       </li>
       <li>
-        The user interface of SciTE can be localised to a particular language by editing
+        The user interface of SciTE can be localized to a particular language by editing
 	a locale.properties file.
       </li>
       <li>
@@ -9990,7 +10086,7 @@
 	Regular expression '^' and '$' work more often allowing insertion
 	of text at start or end of line with a replace command.
 	Backslash quoted control characters \a, \b, \f, \t, and \v
-	recognised within sets.
+	recognized within sets.
       </li>
       <li>
 	Session files for SciTE.
@@ -10060,7 +10156,7 @@
 	Option in both Scintilla and SciTE to treat both left and right margin
 	as equally important when repositioning visible area in response to
 	caret movement. Default is to prefer visible area positioning which
-	minimises the horizontal scroll position thus favouring the left margin.
+	minimizes the horizontal scroll position thus favouring the left margin.
       </li>
       <li>
 	Caret line highlighting.
@@ -10147,7 +10243,7 @@
 	led to that range becoming permanently invisible.
       </li>
       <li>
-	Bug fixed in Batch lexer where comments were not recognised.
+	Bug fixed in Batch lexer where comments were not recognized.
       </li>
       <li>
 	Bug fixed with undo actions coalescing into steps incorrectly.
@@ -10482,7 +10578,7 @@
       </li>
       <li>
         Changes to Python lexer to allow 'as' as a context sensitive keyword and the
-        string forms starting with u, r, and ur to be recognised.
+        string forms starting with u, r, and ur to be recognized.
       </li>
       <li>
         SCN_POSCHANGED notification now working and SCN_PAINTED notification added.
@@ -10684,7 +10780,7 @@
         use the old APIs.
       </li>
       <li>
-        "if" and "import" statements in SciTE properties files allows modularisation into
+        "if" and "import" statements in SciTE properties files allows modularization into
         language-specific properties files and choices based upon platform.
         This means that SciTE is delivered with 9 language-specific properties files
         as well as the standard SciTEGlobal.properties file.
@@ -10700,7 +10796,7 @@
         a dark background) and to force black on white printing.
       </li>
       <li>
-        Option for printing magnified or miniaturised from screen settings.
+        Option for printing magnified or miniaturized from screen settings.
       </li>
       <li>
         In SciTE, Ctrl+F3 and Ctrl+Shift+F3 find the selection in the forwards and backwards
@@ -10728,7 +10824,7 @@
       </li>
       <li>
         When saving a file, the SciTE option save.deletes.first deletes it before doing the save.
-        This allows saving with a different capitalisation on Windows.
+        This allows saving with a different capitalization on Windows.
       </li>
       <li>
         When use tabs option is off pressing the tab key inserts spaces.
@@ -10850,7 +10946,7 @@
         Bug fixed with hiding fold margin by setting fold.margin.width to 0.
       </li>
       <li>
-        Bugs fixed with file name confusion on Windows when long and short names used, or different capitalisations,
+        Bugs fixed with file name confusion on Windows when long and short names used, or different capitalizations,
 	or relative paths.
       </li>
     </ul>
@@ -10949,7 +11045,7 @@
         Fixed bugs relating to null fonts.
       </li>
       <li>
-        Fixed bugs where recolourisation was not done sometimes when required.
+        Fixed bugs where recolourization was not done sometimes when required.
       </li>
       <li>
         Fixed compilation problems with SVector.h.
@@ -11052,7 +11148,7 @@
         Optional macro recording support.
       </li>
       <li>
-        User properties file (SciTEUser.properties) allows for customisation by the user
+        User properties file (SciTEUser.properties) allows for customization by the user
 	that is not overwritten with each installation of SciTE.
       </li>
       <li>
@@ -11110,7 +11206,7 @@
 	is more likely to show the same text as when the file was previously visible.
       </li>
       <li>
-        Document reference count now initialised correctly.
+        Document reference count now initialized correctly.
       </li>
       <li>
         Setting a null document pointer creates an empty document.
@@ -11240,7 +11336,7 @@
         File open filter remembered in SciTE on Windows.
       </li>
       <li>
-        New mechanism using style numbers 32 to 36 standardises the setting of styles for brace
+        New mechanism using style numbers 32 to 36 standardizes the setting of styles for brace
         highlighting, brace badlighting, line numbers, control characters and the default style.
       </li>
       <li>
@@ -11497,7 +11593,7 @@
         Released on 29 April 1999, containing working GTK+/Linux version.
       </li>
       <li>
-        The Java, C++ and Python lexers recognise operators as distinct from default allowing them
+        The Java, C++ and Python lexers recognize operators as distinct from default allowing them
         to be highlighted.
       </li>
     </ul>
@@ -11519,7 +11615,7 @@
       </li>
       <li>
         Static linking supported and Tidy.EXE, a statically linked version of Tide.EXE. Changes to
-        compiler flags in the makefiles to optimise for size.
+        compiler flags in the makefiles to optimize for size.
       </li>
       <li>
         Scintilla supports a 'savepoint' in the undo stack which can be set by the container when

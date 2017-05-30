@@ -329,6 +329,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_SETCARETLINEVISIBLE 2096
 #define SCI_GETCARETLINEBACK 2097
 #define SCI_SETCARETLINEBACK 2098
+#define SCI_GETCARETLINEFRAME 2704
+#define SCI_SETCARETLINEFRAME 2705
 #define SCI_STYLESETCHANGEABLE 2099
 #define SCI_AUTOCSHOW 2100
 #define SCI_AUTOCCANCEL 2101
@@ -638,6 +640,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_LINECUT 2337
 #define SCI_LINEDELETE 2338
 #define SCI_LINETRANSPOSE 2339
+#define SCI_LINEREVERSE 2354
 #define SCI_LINEDUPLICATE 2404
 #define SCI_LOWERCASE 2340
 #define SCI_UPPERCASE 2341

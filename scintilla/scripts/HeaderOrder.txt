@@ -17,13 +17,17 @@
 #include <sys/time.h>
 
 // C++ wrappers of C standard library
+#include <cstddef>
 #include <cstdlib>
+#include <cstdint>
 #include <cassert>
 #include <cstring>
 #include <cctype>
 #include <cstdio>
 #include <cstdarg>
+#include <ctime>
 #include <cmath>
+#include <climits>
 
 // C++ standard library
 #include <stdexcept>
@@ -33,6 +37,7 @@
 #include <deque>
 #include <map>
 #include <set>
+#include <forward_list>
 #include <algorithm>
 #include <functional>
 #include <memory>
@@ -101,6 +106,7 @@
 #include "Catalogue.h"
 
 #include "Position.h"
+#include "UniqueString.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
 #include "RunStyles.h"
