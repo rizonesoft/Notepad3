@@ -22,9 +22,18 @@ inline UniqueString UniqueStringCopy(const char *text) {
 		return UniqueString();
 	}
 	const size_t len = strlen(text);
+#if (_MSC_VER >= 1900)
 	char *sNew = new char[len + 1];
 	std::copy(text, text + len + 1, sNew);
 	return UniqueString(sNew);
+#else
+	// this works for VS2013 (vc120) 
+	auto buf = std::make_unique<char[]>(len + 1);
+	std::copy(text, text + len + 1, buf.get());
+	std::unique_ptr<const char[]> ret;
+	ret.reset(const_cast<const char*>(buf.release()));
+	return std::move(ret);
+#endif
 }
 
 #ifdef SCI_NAMESPACE
