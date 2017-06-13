@@ -5,7 +5,7 @@ Rizonesoft Notepad3 CHANGES
 --------------------------------------------------
 Version 2 Build 398 (13 June 2017)
 --------------------------------------------------
-- Updated Scintilla to version 3.7.4
+- Updated Scintilla to version 3.7.5
 - Don't use 2nd default syntax scheme by default. (Issue #21)
 - Added Microsoft Visual C++ 2017 (vc141) support.
 - Bigger Toolbar Buttons (24px). Should be big enough now. (Issue #21)

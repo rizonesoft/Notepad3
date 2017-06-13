@@ -77,7 +77,7 @@ EXIT /B
 
 
 :SubZipFiles
-SET "ZIP_NAME=Notepad3-%NP2_VER%_%2%SUFFIX%"
+SET "ZIP_NAME=Notepad3_%NP2_VER%_%2%SUFFIX%"
 TITLE Creating %ZIP_NAME%.zip...
 CALL :SUBMSG "INFO" "Creating %ZIP_NAME%.zip..."
 
