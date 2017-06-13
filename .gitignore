@@ -23,6 +23,7 @@ Thumbs.db
 *.tlog
 *.user
 
+/.vs
 /Bin
 /build.user.bat
 /Build/.vs
