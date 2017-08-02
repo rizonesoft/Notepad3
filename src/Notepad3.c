@@ -5669,9 +5669,9 @@ void LoadSettings()
   bViewEOLs = IniSectionGetInt(pIniSection,L"ViewEOLs",0);
   if (bViewEOLs) bViewEOLs = 1;
 
-  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding",0);
+  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", (int)GetACP());
   iDefaultEncoding = Encoding_MapIniSetting(TRUE,iDefaultEncoding);
-  if (!Encoding_IsValid(iDefaultEncoding)) iDefaultEncoding = CPI_UTF8;
+  if (!Encoding_IsValid(iDefaultEncoding)) iDefaultEncoding = CPI_DEFAULT;
 
   bSkipUnicodeDetection = IniSectionGetInt(pIniSection,L"SkipUnicodeDetection",0);
   if (bSkipUnicodeDetection) bSkipUnicodeDetection = 1;
@@ -5837,18 +5837,26 @@ void LoadSettings()
 
   LocalFree(pIniSection);
 
-  iDefaultCodePage = 0; {
+  /*
+  iDefaultCodePage = CPI_DEFAULT;
+  {
+    // check for Chinese, Japan, Korean CPs
     int acp = GetACP();
     if (acp == 932 || acp == 936 || acp == 949 || acp == 950 || acp == 1361)
-      iDefaultCodePage = acp;
+      iDefaultCodePage = Encoding_MapIniSetting(TRUE, acp);
   }
+  */
+
+  // sync Encoding and CodePage
+  iDefaultCodePage = iDefaultEncoding;
+
 
   {
     CHARSETINFO ci;
-    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iDefaultCodePage,&ci,TCI_SRCCODEPAGE))
-      iDefaultCharSet = ci.ciCharset;
+    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iDefaultCodePage, &ci, TCI_SRCCODEPAGE))
+        iDefaultCharSet = ci.ciCharset;
     else
-      iDefaultCharSet = ANSI_CHARSET;
+        iDefaultCharSet = DEFAULT_CHARSET; // ANSI_CHARSET;
   }
 
   // Scintilla Styles
