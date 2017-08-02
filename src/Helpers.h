@@ -41,6 +41,7 @@ __inline BOOL IniSetInt(LPCWSTR lpSection,LPCWSTR lpName,int i) {
   WritePrivateProfileSection(lpSection,lpBuf,szIniFile)
 int IniSectionGetString(LPCWSTR,LPCWSTR,LPCWSTR,LPWSTR,int);
 int IniSectionGetInt(LPCWSTR,LPCWSTR,int);
+UINT IniSectionGetUInt(LPCWSTR,LPCWSTR,UINT);
 BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
 __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);

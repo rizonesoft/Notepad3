@@ -246,7 +246,22 @@ UINT      msgTaskbarCreated = 0;
 
 HMODULE   hModUxTheme = NULL;
 
-EDITFINDREPLACE efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, NULL };
+EDITFINDREPLACE efrData = { 
+   ""
+  ,"" 
+  ,"" 
+  ,"" 
+  ,0 
+  ,0 
+  ,0 
+  ,0 
+  ,0 
+  ,0 
+  ,NULL
+#ifdef BOOKMARK_EDITION
+  ,0
+#endif
+};
 UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
 
@@ -2169,7 +2184,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = (int)SendMessage(hwndEdit,SCI_GETLEXER,0,0);
   EnableCmd(hmenu,IDM_EDIT_LINECOMMENT,
-    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || SCLEX_MARKDOWN));
+    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON));
   EnableCmd(hmenu,IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
@@ -5547,6 +5562,16 @@ void LoadSettings()
   efrData.bNoFindWrap = IniSectionGetInt(pIniSection,L"NoFindWrap",0);
   if (efrData.bNoFindWrap) efrData.bNoFindWrap = TRUE;
 
+  efrData.bTransformBS = IniSectionGetInt(pIniSection,L"FindTransformBS",0);
+  if (efrData.bTransformBS) efrData.bTransformBS = TRUE;
+
+#ifdef BOOKMARK_EDITION
+  efrData.bWildcardSearch = IniSectionGetInt(pIniSection,L"WildcardSearch",0);
+  if (efrData.bWildcardSearch) efrData.bWildcardSearch = TRUE;
+#endif
+
+  efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
+
   if (!IniSectionGetString(pIniSection,L"OpenWithDir",L"",
         tchOpenWithDir,COUNTOF(tchOpenWithDir)))
     SHGetSpecialFolderPath(NULL,tchOpenWithDir,CSIDL_DESKTOPDIRECTORY,TRUE);
@@ -5863,6 +5888,9 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(pIniSection,L"CloseFind",efrData.bFindClose);
   IniSectionSetInt(pIniSection,L"CloseReplace",efrData.bReplaceClose);
   IniSectionSetInt(pIniSection,L"NoFindWrap",efrData.bNoFindWrap);
+  IniSectionSetInt(pIniSection,L"FindTransformBS", efrData.bTransformBS);
+  IniSectionSetInt(pIniSection,L"WildcardSearch", efrData.bWildcardSearch);
+  IniSectionSetInt(pIniSection,L"efrData_fuFlags", efrData.fuFlags);
   PathRelativeToApp(tchOpenWithDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
   IniSectionSetString(pIniSection,L"OpenWithDir",wchTmp);
   PathRelativeToApp(tchFavoritesDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
@@ -7006,7 +7034,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
       char tchLog[5] = "";
       SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
-      if (lstrcmpiA(tchLog,".LOG") == 0) {
+      if (lstrcmpA(tchLog,".LOG") == 0) {
         EditJumpTo(hwndEdit,-1,0);
         SendMessage(hwndEdit,SCI_BEGINUNDOACTION,0,0);
         SendMessage(hwndEdit,SCI_NEWLINE,0,0);
