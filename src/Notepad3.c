@@ -2119,8 +2119,11 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   i  = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) - (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
   i2 = (int)SendMessage(hwndEdit,SCI_CANPASTE,0,0);
 
-  EnableCmd(hmenu,IDM_EDIT_CUT,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_COPY,i /*&& !bReadOnly*/);
+  //~EnableCmd(hmenu,IDM_EDIT_CUT,i /*&& !bReadOnly*/);
+  //~EnableCmd(hmenu,IDM_EDIT_COPY,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_CUT,1 /*&& !bReadOnly*/);      // allow Ctrl-X w/o selection
+  EnableCmd(hmenu,IDM_EDIT_COPY,1 /*&& !bReadOnly*/);     // allow Ctrl-C w/o selection
+
   EnableCmd(hmenu,IDM_EDIT_COPYALL,SendMessage(hwndEdit,SCI_GETLENGTH,0,0) /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_COPYADD,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_PASTE,i2 /*&& !bReadOnly*/);
@@ -2847,14 +2850,25 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_CUT:
       if (flagPasteBoard)
         bLastCopyFromMe = TRUE;
-      SendMessage(hwndEdit,SCI_CUT,0,0);
+      if ((int)SendMessage(hwndEdit, SCI_GETSELECTIONEND, 0, 0) != (int)SendMessage(hwndEdit, SCI_GETSELECTIONSTART, 0, 0)) {
+        SendMessage(hwndEdit, SCI_CUT, 0, 0);
+      }
+      else {
+        SendMessage(hwndEdit, SCI_LINECUT, 0, 0);   // VisualStudio behaviour
+      }
       break;
 
 
     case IDM_EDIT_COPY:
       if (flagPasteBoard)
         bLastCopyFromMe = TRUE;
-      SendMessage(hwndEdit,SCI_COPY,0,0);
+      if ((int)SendMessage(hwndEdit, SCI_GETSELECTIONEND, 0, 0) != (int)SendMessage(hwndEdit, SCI_GETSELECTIONSTART, 0, 0)) 
+      {
+        SendMessage(hwndEdit, SCI_COPY, 0, 0);
+      }
+      else {
+        SendMessage(hwndEdit, SCI_LINECOPY, 0, 0);  // VisualStudio behaviour
+      }
       UpdateToolbar();
       break;
 
@@ -4982,6 +4996,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_CUT,1),0);
       else
         MessageBeep(0);
+        //SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_CUTLINE,1),0);
       break;
 
 
@@ -4990,6 +5005,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_COPY,1),0);
       else
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_COPYALL,1),0);
+        //SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_COPYLINE,1),0);
       break;
 
 
