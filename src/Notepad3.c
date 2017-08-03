@@ -1226,7 +1226,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetDlgItemInt(hwnd,IDC_REUSELOCK,GetTickCount(),FALSE);
 
         if (pcds->dwData == DATA_NOTEPAD3_PARAMS) {
-		LPnp3params params = LocalAlloc(LPTR,pcds->cbData);
+        LPnp3params params = LocalAlloc(LPTR,pcds->cbData);
           CopyMemory(params,pcds->lpData,pcds->cbData);
 
           if (params->flagLexerSpecified)
@@ -2381,7 +2381,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
-	  case IDM_FILE_READONLY:
+      case IDM_FILE_READONLY:
       //bReadOnly = (bReadOnly) ? FALSE : TRUE;
       //SendMessage(hwndEdit,SCI_SETREADONLY,bReadOnly,0);
       //UpdateToolbar();
@@ -4400,9 +4400,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       GetFileKey(hwndEdit);
       break;
 
-	  case IDM_HELP_CMD:
-		  DisplayCmdLineHelp();
-		  break;
+      case IDM_HELP_CMD:
+          DisplayCmdLineHelp();
+          break;
 
     case CMD_ESCAPE:
       //close the autocomplete box
@@ -5669,7 +5669,7 @@ void LoadSettings()
   bViewEOLs = IniSectionGetInt(pIniSection,L"ViewEOLs",0);
   if (bViewEOLs) bViewEOLs = 1;
 
-  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", (int)GetACP());
+  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_DEFAULT);
   iDefaultEncoding = Encoding_MapIniSetting(TRUE,iDefaultEncoding);
   if (!Encoding_IsValid(iDefaultEncoding)) iDefaultEncoding = CPI_DEFAULT;
 
@@ -5837,26 +5837,21 @@ void LoadSettings()
 
   LocalFree(pIniSection);
 
-  /*
-  iDefaultCodePage = CPI_DEFAULT;
+  //iDefaultCodePage = (iDefaultEncoding == CPI_DEFAULT) ? Encoding_MapIniSetting(TRUE, (int)GetACP()) : iDefaultEncoding;
+  iDefaultCodePage = iDefaultEncoding;
   {
     // check for Chinese, Japan, Korean CPs
     int acp = GetACP();
     if (acp == 932 || acp == 936 || acp == 949 || acp == 950 || acp == 1361)
       iDefaultCodePage = Encoding_MapIniSetting(TRUE, acp);
   }
-  */
-
-  // sync Encoding and CodePage
-  iDefaultCodePage = iDefaultEncoding;
-
 
   {
     CHARSETINFO ci;
     if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iDefaultCodePage, &ci, TCI_SRCCODEPAGE))
         iDefaultCharSet = ci.ciCharset;
     else
-        iDefaultCharSet = DEFAULT_CHARSET; // ANSI_CHARSET;
+        iDefaultCharSet = ANSI_CHARSET;
   }
 
   // Scintilla Styles

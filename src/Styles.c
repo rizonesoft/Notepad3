@@ -2656,7 +2656,6 @@ int iDefaultLexer;
 BOOL bAutoSelect;
 int cxStyleSelectDlg;
 int cyStyleSelectDlg;
-extern int  iDefaultCodePage;
 extern int  iDefaultCharSet;
 extern BOOL bHiliteCurrentLine;
 

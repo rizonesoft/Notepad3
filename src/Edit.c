@@ -380,14 +380,12 @@ BOOL EditSetNewEncoding(HWND hwnd,int iCurrentEncoding,int iNewEncoding,BOOL bNo
 
   if (iCurrentEncoding != iNewEncoding) {
 
-    if ((iCurrentEncoding == CPI_DEFAULT && iNewEncoding == CPI_DEFAULT) ||
-        (iCurrentEncoding != CPI_DEFAULT && iNewEncoding != CPI_DEFAULT))
+    if (iCurrentEncoding != CPI_DEFAULT && iNewEncoding != CPI_DEFAULT)
       return(TRUE);
 
     if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0) {
 
-      BOOL bIsEmptyUndoHistory =
-        (SendMessage(hwnd,SCI_CANUNDO,0,0) == 0 && SendMessage(hwnd,SCI_CANREDO,0,0) == 0);
+      BOOL bIsEmptyUndoHistory = (SendMessage(hwnd,SCI_CANUNDO,0,0) == 0 && SendMessage(hwnd,SCI_CANREDO,0,0) == 0);
 
       if ((iCurrentEncoding == CPI_DEFAULT || iNewEncoding == CPI_DEFAULT) &&
           (bNoUI || bIsEmptyUndoHistory || InfoBox(MBYESNO,L"MsgConv2",IDS_ASK_ENCODING2) == IDYES)) {
@@ -654,7 +652,7 @@ int Encoding_MapIniSetting(BOOL bLoad,int iSetting) {
       default: {
         int i;
         for (i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); i++) {
-          if (mEncoding[i].uCodePage == (UINT)iSetting && Encoding_IsValid(i))
+          if ((mEncoding[i].uCodePage == (UINT)iSetting) && Encoding_IsValid(i))
             return(i);
         }
         return CPI_DEFAULT;
