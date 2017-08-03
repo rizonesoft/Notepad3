@@ -154,8 +154,9 @@ long DeelxRegexSearch::FindText(Document* doc, int minPos, int maxPos, const cha
     startPos = doc->MovePositionOutsideChar(startPos, 1, false);
     endPos = doc->MovePositionOutsideChar(endPos, 1, false);
 
-    int compileFlags(deelx::MULTILINE | deelx::GLOBAL | deelx::EXTENDED); // the .(dot) does not match line-breaks
-    //int compileFlags(deelx::SINGLELINE | deelx::MULTILINE | deelx::GLOBAL | deelx::EXTENDED);  // the .(dot) also matches line-breaks
+    //int compileFlags(deelx::SINGLELINE | deelx::MULTILINE | deelx::GLOBAL);  // the .(dot) also matches line-breaks
+    int compileFlags(deelx::MULTILINE | deelx::GLOBAL); // the .(dot) does not match line-breaks
+    //compileFlags |= deelx::EXTENDED; // ignore spaces and use '#' as line-comment)
     compileFlags |= (caseSensitive) ? deelx::NO_FLAG : deelx::IGNORECASE;
     compileFlags |= (left2right) ? deelx::NO_FLAG : deelx::RIGHTTOLEFT;
 

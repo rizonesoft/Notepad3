@@ -246,7 +246,22 @@ UINT      msgTaskbarCreated = 0;
 
 HMODULE   hModUxTheme = NULL;
 
-EDITFINDREPLACE efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, NULL };
+EDITFINDREPLACE efrData = { 
+   ""
+  ,"" 
+  ,"" 
+  ,"" 
+  ,0 
+  ,0 
+  ,0 
+  ,0 
+  ,0 
+  ,0 
+  ,NULL
+#ifdef BOOKMARK_EDITION
+  ,0
+#endif
+};
 UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
 
@@ -2169,7 +2184,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = (int)SendMessage(hwndEdit,SCI_GETLEXER,0,0);
   EnableCmd(hmenu,IDM_EDIT_LINECOMMENT,
-    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || SCLEX_MARKDOWN));
+    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON));
   EnableCmd(hmenu,IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
@@ -5547,6 +5562,16 @@ void LoadSettings()
   efrData.bNoFindWrap = IniSectionGetInt(pIniSection,L"NoFindWrap",0);
   if (efrData.bNoFindWrap) efrData.bNoFindWrap = TRUE;
 
+  efrData.bTransformBS = IniSectionGetInt(pIniSection,L"FindTransformBS",0);
+  if (efrData.bTransformBS) efrData.bTransformBS = TRUE;
+
+#ifdef BOOKMARK_EDITION
+  efrData.bWildcardSearch = IniSectionGetInt(pIniSection,L"WildcardSearch",0);
+  if (efrData.bWildcardSearch) efrData.bWildcardSearch = TRUE;
+#endif
+
+  efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
+
   if (!IniSectionGetString(pIniSection,L"OpenWithDir",L"",
         tchOpenWithDir,COUNTOF(tchOpenWithDir)))
     SHGetSpecialFolderPath(NULL,tchOpenWithDir,CSIDL_DESKTOPDIRECTORY,TRUE);
@@ -5644,9 +5669,9 @@ void LoadSettings()
   bViewEOLs = IniSectionGetInt(pIniSection,L"ViewEOLs",0);
   if (bViewEOLs) bViewEOLs = 1;
 
-  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding",0);
+  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", (int)GetACP());
   iDefaultEncoding = Encoding_MapIniSetting(TRUE,iDefaultEncoding);
-  if (!Encoding_IsValid(iDefaultEncoding)) iDefaultEncoding = CPI_UTF8;
+  if (!Encoding_IsValid(iDefaultEncoding)) iDefaultEncoding = CPI_DEFAULT;
 
   bSkipUnicodeDetection = IniSectionGetInt(pIniSection,L"SkipUnicodeDetection",0);
   if (bSkipUnicodeDetection) bSkipUnicodeDetection = 1;
@@ -5812,18 +5837,26 @@ void LoadSettings()
 
   LocalFree(pIniSection);
 
-  iDefaultCodePage = 0; {
+  /*
+  iDefaultCodePage = CPI_DEFAULT;
+  {
+    // check for Chinese, Japan, Korean CPs
     int acp = GetACP();
     if (acp == 932 || acp == 936 || acp == 949 || acp == 950 || acp == 1361)
-      iDefaultCodePage = acp;
+      iDefaultCodePage = Encoding_MapIniSetting(TRUE, acp);
   }
+  */
+
+  // sync Encoding and CodePage
+  iDefaultCodePage = iDefaultEncoding;
+
 
   {
     CHARSETINFO ci;
-    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iDefaultCodePage,&ci,TCI_SRCCODEPAGE))
-      iDefaultCharSet = ci.ciCharset;
+    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iDefaultCodePage, &ci, TCI_SRCCODEPAGE))
+        iDefaultCharSet = ci.ciCharset;
     else
-      iDefaultCharSet = ANSI_CHARSET;
+        iDefaultCharSet = DEFAULT_CHARSET; // ANSI_CHARSET;
   }
 
   // Scintilla Styles
@@ -5863,6 +5896,9 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(pIniSection,L"CloseFind",efrData.bFindClose);
   IniSectionSetInt(pIniSection,L"CloseReplace",efrData.bReplaceClose);
   IniSectionSetInt(pIniSection,L"NoFindWrap",efrData.bNoFindWrap);
+  IniSectionSetInt(pIniSection,L"FindTransformBS", efrData.bTransformBS);
+  IniSectionSetInt(pIniSection,L"WildcardSearch", efrData.bWildcardSearch);
+  IniSectionSetInt(pIniSection,L"efrData_fuFlags", efrData.fuFlags);
   PathRelativeToApp(tchOpenWithDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
   IniSectionSetString(pIniSection,L"OpenWithDir",wchTmp);
   PathRelativeToApp(tchFavoritesDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
@@ -7006,7 +7042,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
       char tchLog[5] = "";
       SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
-      if (lstrcmpiA(tchLog,".LOG") == 0) {
+      if (lstrcmpA(tchLog,".LOG") == 0) {
         EditJumpTo(hwndEdit,-1,0);
         SendMessage(hwndEdit,SCI_BEGINUNDOACTION,0,0);
         SendMessage(hwndEdit,SCI_NEWLINE,0,0);
