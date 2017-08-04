@@ -2656,7 +2656,7 @@ int iDefaultLexer;
 BOOL bAutoSelect;
 int cxStyleSelectDlg;
 int cyStyleSelectDlg;
-extern int  iDefaultCharSet;
+extern int  iInternalCharSet;
 extern BOOL bHiliteCurrentLine;
 
 
@@ -4004,7 +4004,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   if (bDefaultStyle &&
       lf.lfCharSet != DEFAULT_CHARSET &&
       lf.lfCharSet != ANSI_CHARSET &&
-      lf.lfCharSet != iDefaultCharSet) {
+      lf.lfCharSet != iInternalCharSet) {
     lstrcat(szNewStyle,L"; charset:");
     wsprintf(tch,L"%i",lf.lfCharSet);
     lstrcat(szNewStyle,tch);

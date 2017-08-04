@@ -27,6 +27,11 @@
 #include <string.h>
 #include "helpers.h"
 #include "resource.h"
+#include "Edit.h"
+
+
+//=============================================================================
+extern iInternalCodePage;
 
 
 //=============================================================================
@@ -488,6 +493,16 @@ void SetWindowTransparentMode(HWND hwnd,BOOL bTransparentMode)
   else
     SetWindowLongPtr(hwnd,GWL_EXSTYLE,
       GetWindowLongPtr(hwnd,GWL_EXSTYLE) & ~WS_EX_LAYERED);
+}
+
+
+//=============================================================================
+//
+//  SetInternalCodePage()
+//
+void SetInternalCodePage(HWND hwnd, int encoding)   {
+  iInternalCodePage = (encoding == CPI_ANSI) ? 0 : SC_CP_UTF8;
+  SendMessage(hwnd, SCI_SETCODEPAGE, iInternalCodePage, 0);
 }
 
 
