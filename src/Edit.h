@@ -65,7 +65,7 @@ typedef struct _editfindreplace
 
 HWND  EditCreate(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
-BOOL  EditConvertText(HWND,UINT,UINT,BOOL);
+BOOL  EditConvertText(HWND,int,int,BOOL);
 BOOL  EditSetNewEncoding(HWND,int,int,BOOL,BOOL);
 char* EditGetClipboardText(HWND);
 BOOL  EditCopyAppend(HWND);
@@ -140,7 +140,7 @@ extern int g_DOSEncoding;
 #define NCP_INTERNAL          (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM)
 #define NCP_RECODE           128
 #define CPI_NONE              -1
-#define CPI_DEFAULT            0
+#define CPI_ANSI               0
 #define CPI_OEM                1
 #define CPI_UNICODEBOM         2
 #define CPI_UNICODEBEBOM       3
