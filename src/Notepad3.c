@@ -170,6 +170,23 @@ BOOL      bTransparentMode;
 BOOL      bTransparentModeAvailable;
 BOOL      bShowToolbar;
 BOOL      bShowStatusbar;
+int       iSciDirectWriteTech;
+int       iSciFontQuality;
+
+const int DirectWriteTechnology[] = {
+    SC_TECHNOLOGY_DEFAULT
+  , SC_TECHNOLOGY_DIRECTWRITE
+  , SC_TECHNOLOGY_DIRECTWRITERETAIN
+  , SC_TECHNOLOGY_DIRECTWRITEDC
+};
+
+const int FontQuality[] = {
+    SC_EFF_QUALITY_DEFAULT
+  , SC_EFF_QUALITY_NON_ANTIALIASED
+  , SC_EFF_QUALITY_ANTIALIASED
+  , SC_EFF_QUALITY_LCD_OPTIMIZED
+};
+
 
 typedef struct _wi
 {
@@ -687,6 +704,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   if (!(hwnd = InitInstance(hInstance,lpCmdLine,nCmdShow)))
     return FALSE;
+  
+  if (IsVista()) {
+    if (iSciDirectWriteTech >= 0)
+      SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
+    if (iSciFontQuality >= 0)
+      SciCall_SetFontQuality(FontQuality[iSciFontQuality]);
+  }
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
@@ -5807,6 +5831,12 @@ void LoadSettings()
   xFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosX",0);
   yFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosY",0);
 
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",-1);
+  iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
+
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
+  iSciFontQuality = max(min(iSciFontQuality,3),-1);
+
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
   bStickyWinPos = IniSectionGetInt(pIniSection,L"StickyWindowPosition",0);
@@ -5988,6 +6018,8 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(pIniSection,L"FavoritesDlgSizeY",cyFavoritesDlg);
   IniSectionSetInt(pIniSection,L"FindReplaceDlgPosX",xFindReplaceDlg);
   IniSectionSetInt(pIniSection,L"FindReplaceDlgPosY",yFindReplaceDlg);
+  IniSectionSetInt(pIniSection, L"SciDrawTechnology",iSciDirectWriteTech);
+  IniSectionSetInt(pIniSection, L"SciFontQuality",iSciFontQuality);
 
   SaveIniSection(L"Settings",pIniSection);
   LocalFree(pIniSection);
