@@ -83,7 +83,7 @@ BOOL IsFontAvailable(LPCWSTR);
 
 BOOL SetWindowTitle(HWND,UINT,BOOL,UINT,LPCWSTR,int,BOOL,UINT,BOOL,LPCWSTR);
 void SetWindowTransparentMode(HWND,BOOL);
-void SetInternalCodePage(HWND,int);
+
 
 void CenterDlgInParent(HWND);
 void GetDlgPos(HWND,LPINT,LPINT);

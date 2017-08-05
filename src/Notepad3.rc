@@ -507,7 +507,7 @@ BEGIN
     VK_F8,          IDM_ENCODING_RECODE,    VIRTKEY, NOINVERT
     VK_F8,          IDM_EDIT_INSERT_ENCODING, VIRTKEY, CONTROL, NOINVERT
     VK_F8,          CMD_RELOADNOFILEVARS,   VIRTKEY, ALT, NOINVERT
-    VK_F8,          CMD_RELOADASCIIASUTF8,  VIRTKEY, SHIFT, NOINVERT
+    VK_F8,          IDM_ENCODING_UTF8,      VIRTKEY, SHIFT, NOINVERT
     VK_F9,          IDM_ENCODING_SELECT,    VIRTKEY, NOINVERT
     VK_F9,          IDM_EDIT_INSERT_FILENAME, VIRTKEY, CONTROL, NOINVERT
     VK_F9,          IDM_FILE_MANAGEFAV,     VIRTKEY, ALT, NOINVERT
@@ -1421,8 +1421,8 @@ BEGIN
     IDS_FIND_WRAPRE         "Reached the beginning of the document, restarting search at the end."
     IDS_NOTFOUND            "The specified text was not found."
     IDS_REPLCOUNT           "%i occurrences of the specified text have been replaced."
-    IDS_ASK_ENCODING        "Switching the file encoding from ANSI to non-ANSI (and vice versa) may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_ASK_ENCODING2       "You are about to change the encoding of an empty file from ANSI to non-ANSI. Note that this will clear the undo history, as it can't be synchronized with the new encoding. Continue?"
+    IDS_ASK_ENCODING        "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
+    IDS_ASK_ENCODING2       "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronized with the new encoding. Continue?"
     IDS_ERR_ENCODINGNA      "Code page conversion tables for the selected encoding are not available on your system."
     IDS_ERR_UNICODE         "Error converting this Unicode file.\nData will be lost if the file is saved!"
 END

@@ -57,9 +57,9 @@ extern BOOL bFixLineEndings;
 extern BOOL bAutoStripBlanks;
 
 
-// Internal Codepage and Character Set
-extern int iInternalCodePage;
-extern int iInternalCharSet;
+// Default Codepage and Character Set
+extern int iDefaultCodePage;
+extern int iDefaultCharSet;
 extern BOOL bSkipUnicodeDetection;
 extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
@@ -73,15 +73,15 @@ WCHAR wchANSI[8] = L"";
 WCHAR wchOEM [8] = L"";
 
 NP2ENCODING mEncoding[] = {
-  { NCP_DEFAULT|NCP_RECODE,                          0, "ansi,ansi,ascii,",                                       61000, L"" },
-  { NCP_8BIT|NCP_RECODE,                             0, "oem,oem,",                                               61001, L"" },
-  { NCP_UNICODE|NCP_UNICODE_BOM,                     0, "",                                                       61002, L"" },
-  { NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM, 0, "",                                                       61003, L"" },
-  { NCP_UNICODE|NCP_RECODE,                          0, "utf-16,utf16,unicode,",                                  61004, L"" },
-  { NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_RECODE,      0, "utf-16be,utf16be,unicodebe,",                            61005, L"" },
-  { NCP_UTF8|NCP_RECODE,                       CP_UTF8, "utf-8,utf8,",                                            61006, L"" },
-  { NCP_UTF8|NCP_UTF8_SIGN,                    CP_UTF8, "utf-8,utf8,",                                            61007, L"" },
-  { NCP_8BIT|NCP_RECODE,                       CP_UTF7, "utf-7,utf7,",                                            61008, L"" },
+  { NCP_ANSI|NCP_RECODE,                             CP_ACP, "ansi,ansi,ascii,",                                  61000, L"" },
+  { NCP_8BIT|NCP_RECODE,                             CP_OEMCP, "oem,oem,",                                        61001, L"" },
+  { NCP_UNICODE|NCP_UNICODE_BOM,                     CP_UTF8, "",                                                 61002, L"" },
+  { NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM, CP_UTF8, "",                                                 61003, L"" },
+  { NCP_UNICODE|NCP_RECODE,                          CP_UTF8, "utf-16,utf16,unicode,",                            61004, L"" },
+  { NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_RECODE,      CP_UTF8, "utf-16be,utf16be,unicodebe,",                      61005, L"" },
+  { NCP_UTF8|NCP_RECODE,                             CP_UTF8, "utf-8,utf8,",                                      61006, L"" },
+  { NCP_UTF8|NCP_UTF8_SIGN,                          CP_UTF8, "utf-8,utf8,",                                      61007, L"" },
+  { NCP_8BIT|NCP_RECODE,                             CP_UTF7, "utf-7,utf7,",                                      61008, L"" },
   { NCP_8BIT|NCP_RECODE, 720,   "DOS-720,dos720,",                                                                61009, L"" },
   { NCP_8BIT|NCP_RECODE, 28596, "iso-8859-6,iso88596,arabic,csisolatinarabic,ecma114,isoir127,",                  61010, L"" },
   { NCP_8BIT|NCP_RECODE, 10004, "x-mac-arabic,xmacarabic,",                                                       61011, L"" },
@@ -238,7 +238,7 @@ HWND EditCreate(HWND hwndParent)
            g_hInstance,
            NULL);
 
-  SetInternalCodePage(hwnd,iInternalCodePage);
+  SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(iDefaultEncoding),0);
   SendMessage(hwnd,SCI_SETEOLMODE,SC_EOL_CRLF,0);
   SendMessage(hwnd,SCI_SETPASTECONVERTENDINGS,1,0);
   SendMessage(hwnd,SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT|SC_MOD_DELETETEXT,0);
@@ -325,6 +325,9 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
   if (encSource == encDest)
     return(TRUE);
 
+  if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
+    return(FALSE);
+
   length = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
 
   if (length == 0) {
@@ -333,7 +336,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     SendMessage(hwnd,SCI_EMPTYUNDOBUFFER,0,0);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
     SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
-    SetInternalCodePage(hwnd, encDest);
+    SendMessage(hwnd,SCI_SETCODEPAGE, Encoding_GetSciCodePage(encDest),0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
     SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0);
     SendMessage(hwnd,SCI_GOTOPOS,0,0);
@@ -344,6 +347,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
   }
 
   else {
+
     pchText = GlobalAlloc(GPTR,length*5+2);
 
     tr.lpstrText = pchText;
@@ -351,17 +355,17 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 
     pwchText = GlobalAlloc(GPTR,length*3+2);
 
-    UINT cpSrc = (encSource == CPI_ANSI) ? CP_ACP : ((encSource == CPI_OEM) ? CP_OEMCP : ((encSource == CPI_UTF7) ? CP_UTF7 : CP_UTF8));
-    UINT cpDst = (encDest == CPI_ANSI) ? CP_ACP : ((encDest == CPI_OEM) ? CP_OEMCP : ((encDest == CPI_UTF7) ? CP_UTF7 : CP_UTF8));
-    cbwText  = MultiByteToWideChar(cpSrc,0,pchText,length,pwchText,length*3+2);
-    cbText   = WideCharToMultiByte(cpDst,0,pwchText,cbwText,pchText,length*5+2,NULL,NULL);
+    UINT cpSrc = mEncoding[encSource].uCodePage;
+    UINT cpDst = mEncoding[encDest].uCodePage;
+    cbwText = MultiByteToWideChar(cpSrc,0,pchText,length,pwchText,length*3+2);
+    cbText = WideCharToMultiByte(cpDst,0,pwchText,cbwText,pchText,length*5+2,NULL,NULL);
 
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
     SendMessage(hwnd,SCI_EMPTYUNDOBUFFER,0,0);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
     SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
-    SetInternalCodePage(hwnd, encDest);
+    SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(encDest),0);
     SendMessage(hwnd,SCI_ADDTEXT,cbText,(LPARAM)pchText);
     SendMessage(hwnd,SCI_EMPTYUNDOBUFFER,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
@@ -383,43 +387,39 @@ BOOL EditSetNewEncoding(HWND hwnd,int iCurrentEncoding,int iNewEncoding,BOOL bNo
 
   if (iCurrentEncoding != iNewEncoding) {
 
-    if (iCurrentEncoding != CPI_ANSI && iNewEncoding != CPI_ANSI)
-      return(TRUE); // can only convert from-and-to ANSI
+    BOOL bOneEncodingIsANSI = (Encoding_IsANSI(iCurrentEncoding) || Encoding_IsANSI(iNewEncoding));
+    BOOL bBothEncodingsAreANSI = (Encoding_IsANSI(iCurrentEncoding) && Encoding_IsANSI(iNewEncoding));
+  
+    // conversion between arbirtaty encodings may lead to unexpected results
+    if (!bOneEncodingIsANSI || bBothEncodingsAreANSI) {
+      // ~ return(TRUE); // this would imply a successful conversion - it is not !
+      // return(FALSE); // commented out ? : allow conversion between arbirtaty encodings
+    }
+  
+    if (SendMessage(hwnd, SCI_GETLENGTH, 0, 0) == 0) {
 
-    if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0) {
+      BOOL bIsEmptyUndoHistory = (SendMessage(hwnd, SCI_CANUNDO, 0, 0) == 0 && SendMessage(hwnd, SCI_CANREDO, 0, 0) == 0);
 
-      BOOL bIsEmptyUndoHistory = (SendMessage(hwnd,SCI_CANUNDO,0,0) == 0 && SendMessage(hwnd,SCI_CANREDO,0,0) == 0);
+      BOOL doNewEncoding = (!bIsEmptyUndoHistory && !bNoUI) ?
+        (InfoBox(MBYESNO, L"MsgConv2", IDS_ASK_ENCODING2) == IDYES) : TRUE;
 
-      if ((iCurrentEncoding == CPI_ANSI || iNewEncoding == CPI_ANSI) &&
-          (bNoUI || bIsEmptyUndoHistory || InfoBox(MBYESNO,L"MsgConv2",IDS_ASK_ENCODING2) == IDYES)) {
-
-        EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, bSetSavePoint);
-
-        return(TRUE);
+      if (doNewEncoding) {
+        return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
       }
-
-      else
-        return(FALSE);
     }
+    else {
+      
+      BOOL doNewEncoding = (!bNoUI) ? (InfoBox(MBYESNO, L"MsgConv1", IDS_ASK_ENCODING) == IDYES) : TRUE;
 
-    else if ((iCurrentEncoding == CPI_ANSI || iNewEncoding == CPI_ANSI) &&
-              (bNoUI || InfoBox(MBYESNO,L"MsgConv1",IDS_ASK_ENCODING) == IDYES)) {
-
-      BeginWaitCursor();
-
-      EditConvertText(hwnd, iCurrentEncoding, iNewEncoding, FALSE);
-
-      EndWaitCursor();
-
-      return(TRUE);
+      if (doNewEncoding) {
+        BeginWaitCursor();
+        BOOL result = EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,FALSE);
+        EndWaitCursor();
+        return(result);
+      }
     }
-
-    else
-      return(FALSE);
-  }
-
-  else
-    return(FALSE);
+  } 
+  return(FALSE);
 }
 
 
@@ -637,7 +637,7 @@ int Encoding_MapIniSetting(BOOL bLoad,int iSetting) {
   if (bLoad) {
     switch (iSetting) {
       case -1: return CPI_NONE;
-      case  0: return CPI_ANSI;
+      case  0: return CPI_ANSI_DEFAULT;
       case  1: return CPI_UNICODEBOM;
       case  2: return CPI_UNICODEBEBOM;
       case  3: return CPI_UTF8;
@@ -651,14 +651,14 @@ int Encoding_MapIniSetting(BOOL bLoad,int iSetting) {
           if ((mEncoding[i].uCodePage == (UINT)iSetting) && Encoding_IsValid(i))
             return(i);
         }
-        return CPI_UTF8;  // not found
+        return CPI_ANSI_DEFAULT;
       }
     }
   }
   else {
     switch (iSetting) {
       case CPI_NONE:         return -1;
-      case CPI_ANSI:         return  0;
+      case CPI_ANSI_DEFAULT: return  0;
       case CPI_UNICODEBOM:   return  1;
       case CPI_UNICODEBEBOM: return  2;
       case CPI_UTF8:         return  3;
@@ -667,7 +667,12 @@ int Encoding_MapIniSetting(BOOL bLoad,int iSetting) {
       case CPI_UNICODE:      return  6;
       case CPI_UNICODEBE:    return  7;
       case CPI_UTF7:         return  8;
-      default:               return(mEncoding[iSetting].uCodePage);
+      default: {
+        if (Encoding_IsValid(iSetting))
+          return(mEncoding[iSetting].uCodePage);
+        else
+          return CPI_ANSI_DEFAULT;
+      }
     }
   }
 }
@@ -783,7 +788,7 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly)
       else
         StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
 
-      if (id == CPI_ANSI)
+      if (Encoding_IsANSI(id))
         StrCatN(wchBuf,wchANSI,COUNTOF(wchBuf));
       else if (id == CPI_OEM)
         StrCatN(wchBuf,wchOEM,COUNTOF(wchBuf));
@@ -875,7 +880,7 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly)
       else
         StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
 
-      if (id == CPI_ANSI)
+      if (Encoding_IsANSI(id))
         StrCatN(wchBuf,wchANSI,COUNTOF(wchBuf));
       else if (id == CPI_OEM)
         StrCatN(wchBuf,wchOEM,COUNTOF(wchBuf));
@@ -918,6 +923,25 @@ BOOL Encoding_GetFromComboboxEx(HWND hwnd,int *pidEncoding)
       MsgBox(MBWARN,IDS_ERR_ENCODINGNA);
   }
   return(FALSE);
+}
+
+
+BOOL Encoding_IsDefault(int iEncoding)
+{
+  return (mEncoding[iEncoding].uFlags & NCP_DEFAULT);
+}
+
+BOOL Encoding_IsANSI(int iEncoding)
+{
+  return (mEncoding[iEncoding].uFlags & NCP_ANSI);
+}
+
+int Encoding_GetSciCodePage(int iEncoding)
+{
+  if (Encoding_IsDefault(iEncoding))
+    return iDefaultCodePage;
+
+  return (Encoding_IsANSI(iEncoding)) ? 0 : SC_CP_UTF8;
 }
 
 
@@ -1185,13 +1209,14 @@ BOOL EditLoadFile(
   char* lpData;
   DWORD cbData;
   //char  *cp;
-  int _iDefaultEncoding;
+  int _iPrefEncoding;
 
   BOOL bBOM;
   BOOL bReverse = FALSE;
 
   BOOL bPreferOEM = FALSE;
 
+  *iEncoding    = CPI_ANSI_DEFAULT;
   *pbUnicodeErr = FALSE;
   *pbFileTooBig = FALSE;
 
@@ -1205,8 +1230,8 @@ BOOL EditLoadFile(
   dwLastIOError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
-    iSrcEncoding = -1;
-    iWeakSrcEncoding = -1;
+    iSrcEncoding = CPI_NONE;
+    iWeakSrcEncoding = CPI_NONE;
     return FALSE;
   }
 
@@ -1220,8 +1245,8 @@ BOOL EditLoadFile(
     if (InfoBox(MBYESNO,L"MsgFileSizeWarning",IDS_WARNLOADBIGFILE) != IDYES) {
       CloseHandle(hFile);
       *pbFileTooBig = TRUE;
-      iSrcEncoding = -1;
-      iWeakSrcEncoding = -1;
+      iSrcEncoding = CPI_NONE;
+      iWeakSrcEncoding = CPI_NONE;
       return FALSE;
     }
   }
@@ -1233,8 +1258,8 @@ BOOL EditLoadFile(
 
   if (!bReadSuccess) {
     GlobalFree(lpData);
-    iSrcEncoding = -1;
-    iWeakSrcEncoding = -1;
+    iSrcEncoding = CPI_NONE;
+    iWeakSrcEncoding = CPI_NONE;
     return FALSE;
   }
 
@@ -1245,34 +1270,29 @@ BOOL EditLoadFile(
       bPreferOEM = TRUE;
   }
 
-  if (!Encoding_IsValid(iDefaultEncoding))
-    iDefaultEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI;
-
-  _iDefaultEncoding = (bPreferOEM) ? g_DOSEncoding : iDefaultEncoding;
-  if (iWeakSrcEncoding != -1 && Encoding_IsValid(iWeakSrcEncoding))
-    _iDefaultEncoding = iWeakSrcEncoding;
-
-  *iEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI;
+  _iPrefEncoding = (bPreferOEM) ? g_DOSEncoding : iDefaultEncoding;
+  if (Encoding_IsValid(iWeakSrcEncoding))
+    _iPrefEncoding = iWeakSrcEncoding;
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&fvCurFile);
     *iEOLMode = iLineEndings[iDefaultEOLMode];
-    if (iSrcEncoding == -1) {
+    if (iSrcEncoding == CPI_NONE) {
       if (bLoadASCIIasUTF8 && !bPreferOEM)
         *iEncoding = CPI_UTF8;
       else
-        *iEncoding = _iDefaultEncoding;
+        *iEncoding = _iPrefEncoding;
     }
     else
       *iEncoding = iSrcEncoding;
 
-    SetInternalCodePage(hwnd, *iEncoding);
+    SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(*iEncoding),0);
     EditSetNewText(hwnd,"",0);
     SendMessage(hwnd,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
     GlobalFree(lpData);
   }
 
-  else if (!bSkipEncodingDetection && (iSrcEncoding == -1 || iSrcEncoding == CPI_UNICODE || iSrcEncoding == CPI_UNICODEBE) &&
+  else if (!bSkipEncodingDetection && (iSrcEncoding == CPI_NONE || iSrcEncoding == CPI_UNICODE || iSrcEncoding == CPI_UNICODEBE) &&
       (iSrcEncoding == CPI_UNICODE || iSrcEncoding == CPI_UNICODEBE || IsUnicode(lpData,cbData,&bBOM,&bReverse)) &&
       (iSrcEncoding == CPI_UNICODE || iSrcEncoding == CPI_UNICODEBE || !IsUTF8Signature(lpData))) // check for UTF-8 signature
   {
@@ -1310,7 +1330,7 @@ BOOL EditLoadFile(
     }
 
     GlobalFree(lpData);
-    SetInternalCodePage(hwnd, SC_CP_UTF8);
+    SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(*iEncoding),0);
     EditSetNewText(hwnd,"",0);
     FileVars_Init(lpDataUTF8,cbData-1,&fvCurFile);
     EditSetNewText(hwnd,lpDataUTF8,cbData-1);
@@ -1320,7 +1340,7 @@ BOOL EditLoadFile(
 
   else {
     FileVars_Init(lpData,cbData,&fvCurFile);
-    if (!bSkipEncodingDetection && (iSrcEncoding == -1 || iSrcEncoding == CPI_UTF8 || iSrcEncoding == CPI_UTF8SIGN) &&
+    if (!bSkipEncodingDetection && (iSrcEncoding == CPI_NONE || iSrcEncoding == CPI_UTF8 || iSrcEncoding == CPI_UTF8SIGN) &&
             ((IsUTF8Signature(lpData) ||
               FileVars_IsUTF8(&fvCurFile) ||
               (iSrcEncoding == CPI_UTF8 || iSrcEncoding == CPI_UTF8SIGN) ||
@@ -1328,11 +1348,11 @@ BOOL EditLoadFile(
               (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 !=
                 UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
                 (!bPreferOEM && (
-                mEncoding[_iDefaultEncoding].uFlags & NCP_UTF8 ||
+                mEncoding[_iPrefEncoding].uFlags & NCP_UTF8 ||
                 bLoadASCIIasUTF8 )) ))))) && !(FileVars_IsNonUTF8(&fvCurFile) &&
                   (iSrcEncoding != CPI_UTF8 && iSrcEncoding != CPI_UTF8SIGN)))
     {
-      SetInternalCodePage(hwnd, SC_CP_UTF8);
+      SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(CPI_UTF8),0);
       EditSetNewText(hwnd,"",0);
       if (IsUTF8Signature(lpData)) {
         EditSetNewText(hwnd,UTF8StringStart(lpData),cbData-3);
@@ -1353,20 +1373,20 @@ BOOL EditLoadFile(
       LPWSTR lpDataWide;
       int cbDataWide;
 
-      if (iSrcEncoding != -1)
+      if (iSrcEncoding != CPI_NONE)
         *iEncoding = iSrcEncoding;
       else {
         *iEncoding = FileVars_GetEncoding(&fvCurFile);
-        if (*iEncoding == -1) {
+        if (*iEncoding == CPI_NONE) {
           if (fvCurFile.mask & FV_ENCODING)
-            *iEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI;
+            *iEncoding = CPI_ANSI_DEFAULT;
           else {
-            if (iWeakSrcEncoding == -1)
-              *iEncoding = _iDefaultEncoding;
+            if (iWeakSrcEncoding == CPI_NONE)
+              *iEncoding = _iPrefEncoding;
             else if (mEncoding[iWeakSrcEncoding].uFlags & NCP_INTERNAL)
               *iEncoding = iDefaultEncoding;
             else
-              *iEncoding = _iDefaultEncoding;
+              *iEncoding = _iPrefEncoding;
           }
         }
       }
@@ -1385,18 +1405,16 @@ BOOL EditLoadFile(
         cbData = WideCharToMultiByte(CP_UTF8,0,lpDataWide,cbDataWide,lpData,(int)GlobalSize(lpData),NULL,NULL);
         GlobalFree(lpDataWide);
 
-        SetInternalCodePage(hwnd, SC_CP_UTF8);
+        SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(*iEncoding),0);
         EditSetNewText(hwnd,"",0);
         EditSetNewText(hwnd,lpData,cbData);
         *iEOLMode = EditDetectEOLMode(hwnd,lpData,cbData);
 
         GlobalFree(lpData);
       }
-
       else {
-
-        *iEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI;
-        SetInternalCodePage(hwnd, *iEncoding);
+        *iEncoding = iDefaultEncoding;
+        SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(*iEncoding),0);
         EditSetNewText(hwnd,"",0);
         EditSetNewText(hwnd,lpData,cbData);
         *iEOLMode = EditDetectEOLMode(hwnd,lpData,cbData);
@@ -1472,11 +1490,6 @@ BOOL EditSaveFile(
   // strip trailing blanks
   if (bAutoStripBlanks)
     EditStripTrailingBlanks(hwnd,TRUE);
-
-  // convert to ANSI, if CP is set to UTF8
-  if ((iEncoding == CPI_ANSI) && (iInternalCodePage == SC_CP_UTF8)) {
-    EditSetNewEncoding(hwnd, CPI_UTF8, CPI_ANSI, FALSE, TRUE);
-  }
 
   // get text
   cbData = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);

@@ -222,8 +222,8 @@ int       iEncoding;
 int       iOriginalEncoding;
 int       iEOLMode;
 
-int       iInternalCodePage;
-int       iInternalCharSet;
+int       iDefaultCodePage;
+int       iDefaultCharSet;
 
 int       iInitialLine;
 int       iInitialColumn;
@@ -919,7 +919,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     if (iSrcEncoding != -1) {
       iEncoding = iSrcEncoding;
       iOriginalEncoding = iSrcEncoding;
-      SetInternalCodePage(hwndEdit, iEncoding);
+      SendMessage(hwndEdit,SCI_SETCODEPAGE,Encoding_GetSciCodePage(iEncoding),0);
     }
   }
 
@@ -2097,7 +2097,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
     i = IDM_ENCODING_UTF8SIGN;
   else if (mEncoding[iEncoding].uFlags & NCP_UTF8)
     i = IDM_ENCODING_UTF8;
-  else if (mEncoding[iEncoding].uFlags & NCP_DEFAULT)
+  else if (mEncoding[iEncoding].uFlags & NCP_ANSI)
     i = IDM_ENCODING_ANSI;
   else
     i = -1;
@@ -2750,7 +2750,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
             case IDM_ENCODING_UTF8:       iNewEncoding = CPI_UTF8; break;
             case IDM_ENCODING_UTF8SIGN:   iNewEncoding = CPI_UTF8SIGN; break;
-            case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI; break;
+            case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
           }
         }
 
@@ -2763,7 +2763,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             iOriginalEncoding = iNewEncoding;
           }
           else {
-            if (iEncoding == CPI_ANSI || iNewEncoding == CPI_ANSI)
+            if (Encoding_IsANSI(iEncoding) || Encoding_IsANSI(iNewEncoding))
                iOriginalEncoding = CPI_NONE;
             iEncoding = iNewEncoding;
           }
@@ -2785,21 +2785,21 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           WCHAR tchCurFile2[MAX_PATH];
 
-          int iNewEncoding = CPI_NONE;
-          if (iEncoding != CPI_ANSI)
-            iNewEncoding = iEncoding;
+          // file to ANSI is default loading behaviour, recoding does not make sense
+          int iNewEncoding = Encoding_IsANSI(iEncoding) ? CPI_NONE : iEncoding;
+
           if (iEncoding == CPI_UTF8SIGN)
             iNewEncoding = CPI_UTF8;
-          if (iEncoding == CPI_UNICODEBOM)
+          else if (iEncoding == CPI_UNICODEBOM)
             iNewEncoding = CPI_UNICODE;
-          if (iEncoding == CPI_UNICODEBEBOM)
+          else if (iEncoding == CPI_UNICODEBEBOM)
             iNewEncoding = CPI_UNICODEBE;
 
           if ((bModified || iEncoding != iOriginalEncoding) && MsgBox(MBOKCANCEL,IDS_ASK_RECODE) != IDOK)
             return(0);
 
-          if (RecodeDlg(hwnd,&iNewEncoding)) {
-
+          if (RecodeDlg(hwnd,&iNewEncoding)) 
+          {
             lstrcpy(tchCurFile2,szCurFile);
             iSrcEncoding = iNewEncoding;
             FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2);
@@ -4517,7 +4517,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         WCHAR tchCurFile2[MAX_PATH];
         if (lstrlen(szCurFile)) {
-          iSrcEncoding = CPI_ANSI;
+          iSrcEncoding = CPI_ANSI_DEFAULT;
           lstrcpy(tchCurFile2,szCurFile);
           FileLoad(FALSE,FALSE,TRUE,FALSE,tchCurFile2);
         }
@@ -5685,20 +5685,21 @@ void LoadSettings()
   bViewEOLs = IniSectionGetInt(pIniSection,L"ViewEOLs",0);
   if (bViewEOLs) bViewEOLs = 1;
 
-  // prefered default encoding is UTF-8  (used for internal codepage too: SC_CP_UTF8)
-  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_NONE);
+  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_ANSI_DEFAULT);
+  // if DefaultEncoding is defined as CPI_NONE(-1) explicitly, set to system's current code-page 
   iDefaultEncoding = (iDefaultEncoding == CPI_NONE) ? 
     Encoding_MapIniSetting(TRUE, (int)GetACP()) : 
     Encoding_MapIniSetting(TRUE, iDefaultEncoding);
-  if (!Encoding_IsValid(iDefaultEncoding)) iDefaultEncoding = CPI_UTF8; 
-
-  bLoadASCIIasUTF8 = IniSectionGetInt(pIniSection,L"LoadASCIIasUTF8",0);
-  if (bLoadASCIIasUTF8) bLoadASCIIasUTF8 = 1;
-  // re-adjust ANSI encoding
-  iDefaultEncoding = ((iDefaultEncoding == CPI_ANSI) && (bLoadASCIIasUTF8 == 1)) ? CPI_UTF8 : iDefaultEncoding;
+  if (!Encoding_IsValid(iDefaultEncoding)) 
+    iDefaultEncoding = CPI_ANSI_DEFAULT;
+  // set flag for encoding default
+  mEncoding[iDefaultEncoding].uFlags |= NCP_DEFAULT;
 
   bSkipUnicodeDetection = IniSectionGetInt(pIniSection, L"SkipUnicodeDetection", 0);
   if (bSkipUnicodeDetection) bSkipUnicodeDetection = 1;
+
+  bLoadASCIIasUTF8 = IniSectionGetInt(pIniSection, L"LoadASCIIasUTF8", 0);
+  if (bLoadASCIIasUTF8) bLoadASCIIasUTF8 = 1;
 
   bLoadNFOasOEM = IniSectionGetInt(pIniSection,L"LoadNFOasOEM",1);
   if (bLoadNFOasOEM) bLoadNFOasOEM = 1;
@@ -5858,22 +5859,22 @@ void LoadSettings()
 
   LocalFree(pIniSection);
 
-  // define scintilla internal code page 
-  iInternalCodePage = (iDefaultEncoding == CPI_ANSI) ? 0 : SC_CP_UTF8;
-
+  // define scintilla internal code page, don't use Encoding_GetSciCodePage(iDefaultEncoding) here
+  iDefaultCodePage = (iDefaultEncoding == CPI_ANSI_DEFAULT) ? 0 : SC_CP_UTF8; 
   {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
     int acp = (int)GetACP();
     if (acp == 932 || acp == 936 || acp == 949 || acp == 950 || acp == 1361)
-      iInternalCodePage = acp;
+      iDefaultCodePage = acp;
   }
+
 
   {
     CHARSETINFO ci;
-    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iInternalCodePage, &ci, TCI_SRCCODEPAGE))
-        iInternalCharSet = ci.ciCharset;
+    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iDefaultCodePage, &ci, TCI_SRCCODEPAGE))
+      iDefaultCharSet = ci.ciCharset;
     else
-        iInternalCharSet = ANSI_CHARSET;
+      iDefaultCharSet = ANSI_CHARSET;
   }
 
   // Scintilla Styles
@@ -5949,8 +5950,8 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(pIniSection,L"ViewWhiteSpace",bViewWhiteSpace);
   IniSectionSetInt(pIniSection,L"ViewEOLs",bViewEOLs);
   IniSectionSetInt(pIniSection,L"DefaultEncoding",Encoding_MapIniSetting(FALSE,iDefaultEncoding));
-  IniSectionSetInt(pIniSection,L"LoadASCIIasUTF8",bLoadASCIIasUTF8);
   IniSectionSetInt(pIniSection,L"SkipUnicodeDetection",bSkipUnicodeDetection);
+  IniSectionSetInt(pIniSection,L"LoadASCIIasUTF8",bLoadASCIIasUTF8);
   IniSectionSetInt(pIniSection,L"LoadNFOasOEM",bLoadNFOasOEM);
   IniSectionSetInt(pIniSection,L"NoEncodingTags",bNoEncodingTags);
   IniSectionSetInt(pIniSection,L"DefaultEOLMode",iDefaultEOLMode);
@@ -6950,7 +6951,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     SendMessage(hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
     iEncoding = iDefaultEncoding;
     iOriginalEncoding = iDefaultEncoding;
-    SetInternalCodePage(hwndEdit, iEncoding);
+    SendMessage(hwndEdit,SCI_SETCODEPAGE,Encoding_GetSciCodePage(iDefaultEncoding),0);
     EditSetNewText(hwndEdit,"",0);
     SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
       iPathNameFormat,bModified || iEncoding != iOriginalEncoding,
@@ -7015,7 +7016,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
           iEncoding = iDefaultEncoding;
           iOriginalEncoding = iDefaultEncoding;
         }
-        SetInternalCodePage(hwndEdit, iEncoding);
+        SendMessage(hwndEdit,SCI_SETCODEPAGE,Encoding_GetSciCodePage(iEncoding),0);
         bReadOnly = FALSE;
         EditSetNewText(hwndEdit,"",0);
       }
