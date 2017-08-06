@@ -148,3 +148,19 @@ DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, int, line);
 //
 //
 DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, value);
+
+
+//=============================================================================
+//
+//  SetTechnology
+//
+//
+DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
+
+
+//=============================================================================
+//
+//  SetFontQuality
+//
+//
+DeclareSciCallV1(SetFontQuality, SETFONTQUALITY, int, quality);

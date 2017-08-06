@@ -70,7 +70,6 @@ EDITLEXER lexDefault =   { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx;
                 /* 23 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
                          { -1, 00000, L"", L"", L"" } } };
 
-
 KEYWORDLIST KeyWords_HTML = {
 "!doctype ^aria- ^data- a abbr accept accept-charset accesskey acronym action address align alink "
 "alt and applet archive area article aside async audio autocomplete autofocus autoplay axis b "
@@ -2656,7 +2655,6 @@ int iDefaultLexer;
 BOOL bAutoSelect;
 int cxStyleSelectDlg;
 int cyStyleSelectDlg;
-extern int  iDefaultCodePage;
 extern int  iDefaultCharSet;
 extern BOOL bHiliteCurrentLine;
 
