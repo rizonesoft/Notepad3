@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -1028,7 +1028,7 @@
 	C++11 range-based for loops used in SciTE so GCC 4.6 is now the minimum supported version.
 	</li>
 	<li>
-	SC_CHARSET_DEFAULT now means code page 1252 on Windows unless a code page is set.
+	(REVERTED in Notepad2-mod) SC_CHARSET_DEFAULT now means code page 1252 on Windows unless a code page is set.
 	This prevents unexpected behaviour and crashes on East Asian systems where default locales are commonly DBCS.
 	Projects which want to default to DBCS code pages in East Asian locales should set the code page and
 	character set explicitly.
