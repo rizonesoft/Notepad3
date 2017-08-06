@@ -58,10 +58,8 @@ static const WCHAR *pDirListProp = L"DirListData";
 //
 BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 {
-
   HIMAGELIST hil;
   SHFILEINFO shfi;
-  LV_COLUMN  lvc;
 
   // Allocate DirListData Property
   LPDLDATA lpdl = (LPVOID)GlobalAlloc(GPTR,sizeof(DLDATA));
@@ -101,11 +99,7 @@ BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
   lpdl->hExitThread = CreateEvent(NULL,TRUE,FALSE,NULL);
   lpdl->hTerminatedThread = CreateEvent(NULL,TRUE,TRUE,NULL);
 
-  lvc;
-  pszHeader;
-
   return TRUE;
-
 }
 
 

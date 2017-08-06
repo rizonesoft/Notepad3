@@ -782,14 +782,14 @@ void SurfaceGDI::AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fil
 
 			DWORD valEmpty = dwordFromBGRA(0,0,0,0);
 			DWORD valFill = dwordFromBGRA(
-				static_cast<byte>(GetBValue(fill.AsLong()) * alphaFill / 255),
-				static_cast<byte>(GetGValue(fill.AsLong()) * alphaFill / 255),
-				static_cast<byte>(GetRValue(fill.AsLong()) * alphaFill / 255),
+				static_cast<byte>(fill.GetBlue() * alphaFill / 255),
+				static_cast<byte>(fill.GetGreen() * alphaFill / 255),
+				static_cast<byte>(fill.GetRed() * alphaFill / 255),
 				static_cast<byte>(alphaFill));
 			DWORD valOutline = dwordFromBGRA(
-				static_cast<byte>(GetBValue(outline.AsLong()) * alphaOutline / 255),
-				static_cast<byte>(GetGValue(outline.AsLong()) * alphaOutline / 255),
-				static_cast<byte>(GetRValue(outline.AsLong()) * alphaOutline / 255),
+				static_cast<byte>(outline.GetBlue() * alphaFill / 255),
+				static_cast<byte>(outline.GetGreen() * alphaFill / 255),
+				static_cast<byte>(outline.GetRed() * alphaFill / 255),
 				static_cast<byte>(alphaOutline));
 			DWORD *pixels = static_cast<DWORD *>(image);
 			for (int y=0; y<height; y++) {
