@@ -1719,7 +1719,6 @@ void EditTitleCase(HWND hwnd)
   UINT cpEdit;
   int i;
   BOOL bNewWord = TRUE;
-  BOOL bWordEnd = TRUE;
   BOOL bChanged = FALSE;
 
 #ifdef BOOKMARK_EDITION
@@ -2207,6 +2206,7 @@ void EditHex2Char(HWND hwnd) {
       if (SendMessage(hwnd,SCI_GETSELTEXT,0,0) <= COUNTOF(ch)) {
 
         SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)ch);
+        ch[31] = '\0';
 
         if (StrChrIA(ch,' ') || StrChrIA(ch,'\t') || StrChrIA(ch,'\r') || StrChrIA(ch,'\n') || StrChrIA(ch,'-'))
           return;
@@ -2262,13 +2262,14 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
 
     if (iSelEnd - iSelStart) {
 
-      char chFormat[32] = "";
-      char chNumber[32];
+      char chFormat[32] = { '\0' };
+      char chNumber[32] = { '\0' };
       int  iNumber;
       int  iWidth;
 
       if (SendMessage(hwnd,SCI_GETSELTEXT,0,0) <= COUNTOF(chNumber)) {
         SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)chNumber);
+        chNumber[31] = '\0';
 
         if (StrChrIA(chNumber,'-'))
           return;
@@ -2397,7 +2398,7 @@ void EditTabsToSpaces(HWND hwnd,int nTabWidth,BOOL bOnlyIndentingWS)
   for (iTextW = 0; iTextW < cchTextW; iTextW++)
   {
     WCHAR w = pszTextW[iTextW];
-    if (w == L'\t' && (!bOnlyIndentingWS || bOnlyIndentingWS && bIsLineStart)) {
+    if (w == L'\t' && (!bOnlyIndentingWS || bIsLineStart)) {
       for (j = 0; j < nTabWidth - i % nTabWidth; j++)
         pszConvW[cchConvW++] = L' ';
       i = 0;
@@ -2527,7 +2528,7 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,BOOL bOnlyIndentingWS)
   for (iTextW = 0; iTextW < cchTextW; iTextW++)
   {
     WCHAR w = pszTextW[iTextW];
-    if ((w == L' ' || w == L'\t') && (!bOnlyIndentingWS || bOnlyIndentingWS && bIsLineStart)) {
+    if ((w == L' ' || w == L'\t') && (!bOnlyIndentingWS || bIsLineStart)) {
       space[j++] = w;
       if (j == nTabWidth - i % nTabWidth || w == L'\t') {
         if (j > 1 || pszTextW[iTextW+1] == L' ' || pszTextW[iTextW+1] == L'\t')
@@ -2814,14 +2815,14 @@ void EditMoveDown(HWND hwnd)
 //
 void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 {
-  char  mszPrefix1[256*3] = "";
-  char  mszPrefix2[256*3] = "";
+  char  mszPrefix1[256*3] = { '\0' };
+  char  mszPrefix2[256*3] = { '\0' };
   BOOL  bPrefixNum = FALSE;
   int   iPrefixNum = 0;
   int   iPrefixNumWidth = 1;
   char *pszPrefixNumPad = "";
-  char  mszAppend1[256*3] = "";
-  char  mszAppend2[256*3] = "";
+  char  mszAppend1[256*3] = { '\0' };
+  char  mszAppend2[256*3] = { '\0' };
   BOOL  bAppendNum = FALSE;
   int   iAppendNum = 0;
   int   iAppendNumWidth = 1;
@@ -3168,7 +3169,7 @@ void EditAlignText(HWND hwnd,int nMode)
 
         else {
 
-          char  tchLineBuf[BUFSIZE_ALIGN*3] = "";
+          char  tchLineBuf[BUFSIZE_ALIGN*3] = { '\0' };
           WCHAR wchLineBuf[BUFSIZE_ALIGN*3] = L"";
           WCHAR *pWords[BUFSIZE_ALIGN*3/2];
           WCHAR *p = wchLineBuf;
@@ -3361,8 +3362,8 @@ void EditAlignText(HWND hwnd,int nMode)
 //
 void EditEncloseSelection(HWND hwnd,LPCWSTR pwszOpen,LPCWSTR pwszClose)
 {
-  char  mszOpen[256*3] = "";
-  char  mszClose[256*3] = "";
+  char  mszOpen[256*3] = { '\0' };
+  char  mszClose[256*3] = { '\0' };
   int   mbcp;
 
   int iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
@@ -3427,7 +3428,7 @@ void EditEncloseSelection(HWND hwnd,LPCWSTR pwszOpen,LPCWSTR pwszClose)
 //
 void EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,BOOL bInsertAtStart)
 {
-  char  mszComment[256*3] = "";
+  char  mszComment[256*3] = { '\0' };
   int   cchComment;
   int   mbcp;
   int   iAction = 0;
@@ -4745,7 +4746,7 @@ void EditEnsureSelectionVisible(HWND hwnd)
 //
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 {
-  WCHAR tch[256] = L"";
+  WCHAR tch[256] = { L'\0' };
   WCHAR *p;
   DWORD cch = 0;
   UINT cpEdit;
