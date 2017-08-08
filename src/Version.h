@@ -35,7 +35,7 @@
 #define VERSION_LEGALCOPYRIGHT		 L"Copyright © 2008-2017 Rizonesoft"
 //#define VERSION_LEGALCOPYRIGHT_LONG  L"© Rizonesoft 2008-2016"
 #define VERSION_AUTHORNAME           L"Rizonesoft"
-#define VERSION_WEBPAGEDISPLAY       L"http://www.rizonesoft.com"
+#define VERSION_WEBPAGEDISPLAY       L"https://www.rizonesoft.com"
 #define VERSION_COMPANYNAME          L"Rizonesoft"
 #define VERSION_MODPAGEDISPLAY       L"https://xhmikosr.github.io/notepad2-mod/"
 #define VERSION_WEBPAGE2DISPLAY      L"http://www.flos-freeware.ch"
