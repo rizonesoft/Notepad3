@@ -28,7 +28,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -43,7 +43,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -60,20 +60,20 @@
     <_ProjectFileVersion>14.0.23107.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\Bin\$(Configuration)_x86\</OutDir>
-    <IntDir>..\Bin\$(Configuration)_x86\obj\minipath\</IntDir>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)\obj\minipath\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\Bin\$(Configuration)_x86\</OutDir>
-    <IntDir>..\Bin\$(Configuration)_x86\obj\minipath\</IntDir>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)\obj\minipath\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\Bin\$(Configuration)_x64\</OutDir>
-    <IntDir>..\Bin\$(Configuration)_x64\obj\minipath\</IntDir>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)\obj\minipath\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\Bin\$(Configuration)_x64\</OutDir>
-    <IntDir>..\Bin\$(Configuration)_x64\obj\minipath\</IntDir>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)\</OutDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)\obj\minipath\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -162,6 +162,7 @@
       <ProgramDataBaseFileName>..\Bin\$(Configuration)_x64\obj\minipath\</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

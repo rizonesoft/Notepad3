@@ -118,6 +118,7 @@
 #define IDC_REGEXPHELP                  152
 #define IDC_WILDCARDHELP                153
 #define IDC_WILDCARDSEARCH              154
+#define IDC_SCI_VERSION                 155
 #define IDACC_FIND                      200
 #define IDACC_REPLACE                   201
 #define IDACC_SAVEPOS                   202
@@ -172,8 +173,8 @@
 #define CMD_CTRLDEL                     20004
 #define CMD_CTRLTAB                     20005
 #define CMD_RECODEDEFAULT               20006
-#define CMD_RELOADANSI                  20007
-#define CMD_RELOADOEM                   20008
+#define CMD_RECODEANSI                  20007
+#define CMD_RECODEOEM                   20008
 #define CMD_RELOADASCIIASUTF8           20009
 #define CMD_RELOADNOFILEVARS            20010
 #define CMD_LEXDEFAULT                  20011

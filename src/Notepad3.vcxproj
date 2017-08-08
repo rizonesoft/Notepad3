@@ -29,13 +29,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -44,11 +45,12 @@
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v140_xp</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -70,27 +72,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <GenerateManifest>false</GenerateManifest>
-    <IntDir>..\Bin\$(Configuration)_x86\obj\</IntDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)\obj\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Bin\$(Configuration)_x86\</OutDir>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>false</GenerateManifest>
-    <IntDir>..\Bin\$(Configuration)_x86\obj\</IntDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)\obj\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Bin\$(Configuration)_x86\</OutDir>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <GenerateManifest>false</GenerateManifest>
-    <IntDir>..\Bin\$(Configuration)_x64\obj\</IntDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)\obj\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Bin\$(Configuration)_x64\</OutDir>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <GenerateManifest>false</GenerateManifest>
-    <IntDir>..\Bin\$(Configuration)_x64\obj\</IntDir>
+    <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)\obj\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Bin\$(Configuration)_x64\</OutDir>
+    <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

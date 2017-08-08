@@ -97,16 +97,18 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Encoding"
         BEGIN
-            MENUITEM "&ANSI",                       IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                    IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",         IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",            IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 with &Signature",       IDM_ENCODING_UTF8SIGN
-            MENUITEM "&More...\tF9",                IDM_ENCODING_SELECT
+            MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
+            MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
+            MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
+            MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
+            MENUITEM "UTF-8 with &Signature",          IDM_ENCODING_UTF8SIGN
+            MENUITEM "&More...\tF9",                   IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "&Recode...\tF8",              IDM_ENCODING_RECODE
+            MENUITEM "Recode to &ANSI\tCtrl-Shift+A",  CMD_RECODEANSI
+            MENUITEM "Recode to &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
+            MENUITEM "&Recode...\tF8",                 IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
-            MENUITEM "&Default...",                 IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set &Default...",                IDM_ENCODING_SETDEFAULT
         END
         POPUP "Line Endin&gs"
         BEGIN
@@ -293,21 +295,21 @@ BEGIN
     END
     POPUP "&Settings"
     BEGIN
-        MENUITEM "Insert Tabs as &Spaces",      IDM_VIEW_TABSASSPACES
-        MENUITEM "&Tab Settings...\tCtrl+T",    IDM_VIEW_TABSETTINGS
-        MENUITEM "&Word Wrap Settings...",      IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Long Line Settings...",      IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Auto In&dent Text",           IDM_VIEW_AUTOINDENTTEXT
+        MENUITEM "Insert Tabs as &Spaces",             IDM_VIEW_TABSASSPACES
+        MENUITEM "&Tab Settings...\tCtrl+T",           IDM_VIEW_TABSETTINGS
+        MENUITEM "&Word Wrap Settings...",             IDM_VIEW_WORDWRAPSETTINGS
+        MENUITEM "&Long Line Settings...",             IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "Auto In&dent Text",                  IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "Auto Close &HTML/XML\tCtrl+Shift+H", IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Auto Complete Wo&rds",        IDM_VIEW_AUTOCOMPLETEWORDS
+        MENUITEM "Auto Complete Wo&rds",               IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM SEPARATOR
-        MENUITEM "&Reuse Window",               IDM_VIEW_REUSEWINDOW
-        MENUITEM "Sticky Window &Position",     IDM_VIEW_STICKYWINPOS
-        MENUITEM "&Always On Top\tAlt+T",       IDM_VIEW_ALWAYSONTOP
-        MENUITEM "Minimi&ze To Tray",           IDM_VIEW_MINTOTRAY
-        MENUITEM "Transparent &Mode\tCtrl+Numpad_*",   IDM_VIEW_TRANSPARENT
+        MENUITEM "&Reuse Window",                    IDM_VIEW_REUSEWINDOW
+        MENUITEM "Sticky Window &Position",          IDM_VIEW_STICKYWINPOS
+        MENUITEM "&Always On Top\tAlt+T",            IDM_VIEW_ALWAYSONTOP
+        MENUITEM "Minimi&ze To Tray",                IDM_VIEW_MINTOTRAY
+        MENUITEM "Transparent &Mode\tCtrl+Numpad_*", IDM_VIEW_TRANSPARENT
         MENUITEM SEPARATOR
-        MENUITEM "Single &File Instance",       IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Single &File Instance",                IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
         POPUP "Window Title Displa&y"
         BEGIN
@@ -390,7 +392,7 @@ BEGIN
     "9",            CMD_TOGGLETITLE,        VIRTKEY, CONTROL, NOINVERT
     "9",            IDM_VIEW_SHOWEOLS,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "A",            IDM_EDIT_SELECTALL,     VIRTKEY, CONTROL, NOINVERT
-    "A",            CMD_RELOADANSI,         VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "A",            CMD_RECODEANSI,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     "B",            IDM_EDIT_FINDMATCHINGBRACE, VIRTKEY, CONTROL, NOINVERT
     "B",            IDM_EDIT_PADWITHSPACES, VIRTKEY, ALT, NOINVERT
     "B",            IDM_EDIT_SELTOMATCHINGBRACE, VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -435,7 +437,7 @@ BEGIN
     "O",            IDM_FILE_OPEN,          VIRTKEY, CONTROL, NOINVERT
     "O",            IDM_EDIT_SORTLINES,     VIRTKEY, ALT, NOINVERT
     "O",            IDM_EDIT_SENTENCECASE,  VIRTKEY, CONTROL, ALT, NOINVERT
-    "O",            CMD_RELOADOEM,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "O",            CMD_RECODEOEM,          VIRTKEY, SHIFT, CONTROL, NOINVERT
     "P",            IDM_FILE_PRINT,         VIRTKEY, CONTROL, NOINVERT
     "P",            IDM_EDIT_COMPRESSWS,    VIRTKEY, ALT, NOINVERT
     "P",            CMD_DEFAULTWINPOS,      VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -576,18 +578,19 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,195,204,50,14
     ICON            IDR_MAINWND,IDC_STATIC,7,7,21,20
     LTEXT           "",IDC_VERSION,45,10,200,17
-    LTEXT           "Compiled with:",IDC_COMPILER2,45,24,200,8
-    LTEXT           "",IDC_COMPILER,96,24,200,8
-    LTEXT           "",IDC_COPYRIGHT,45,45,200,8
-    LTEXT           "",IDC_WEBPAGE2,45,54,200,8,NOT WS_VISIBLE | WS_DISABLED
-    CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,45,54,200,10
+    LTEXT           "Scintilla Library Version:", IDC_SCI_VERSION, 45, 24, 200, 8
+    LTEXT           "Compiled with:",IDC_COMPILER2,45,35,200,8
+    LTEXT           "",IDC_COMPILER,96,35,200,8
+    LTEXT           "",IDC_COPYRIGHT,45,55,200,8
+    LTEXT           "",IDC_WEBPAGE2,45,64,200,8,NOT WS_VISIBLE | WS_DISABLED
+    CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,45,64,200,10
     LTEXT           "XhmikosR ( Notepad2-mod )",IDC_STATIC,45,85,200,8
     LTEXT           "",IDC_MODWEBPAGE2,45,94,200,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_MODWEBPAGE,"SysLink",WS_TABSTOP,45,94,200,10
     LTEXT           "Florian Balmer et al. ( Notepad2 )",IDC_STATIC,45,110,200,8
     LTEXT           "",IDC_NOTE2WEBPAGE2,45,119,200,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_NOTE2WEBPAGE,"SysLink",WS_TABSTOP,45,119,200,10
-    LTEXT           "Contributors: Derick Payne (Rizonesoft), RaPeHoff, XhmikosR (Notepad2-mod), Kai Liu, RL Vision, Aleksandar Lekov,  Bruno Barbieri, Florian Balmer (Notepad2), Neil Hodgson (SciTE), Matthew Ellis (MinimizeToTray), Dave Dyer (Crypto-mod)",IDC_STATIC,45,150,200,44
+    LTEXT           "Contributors: Derick Payne (Rizonesoft), RaiKoHoff, XhmikosR (Notepad2-mod), Kai Liu, RL Vision, Aleksandar Lekov, Bruno Barbieri, Florian Balmer (Notepad2), Neil Hodgson (Scintilla), Matthew Ellis (MinimizeToTray), Dave Dyer (Crypto-mod)",IDC_STATIC,45,150,200,44
 END
 
 IDD_FIND DIALOGEX 0, 0, 272, 101

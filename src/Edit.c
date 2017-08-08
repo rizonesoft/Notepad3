@@ -348,17 +348,19 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 
   else {
 
-    pchText = GlobalAlloc(GPTR,length*5+2);
+    const int chLen = length * 5 + 2;
+    pchText = GlobalAlloc(GPTR,chLen);
 
     tr.lpstrText = pchText;
     SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
 
-    pwchText = GlobalAlloc(GPTR,length*3+2);
+    const int wchLen = length * 3 + 2;
+    pwchText = GlobalAlloc(GPTR,wchLen);
 
     UINT cpSrc = mEncoding[encSource].uCodePage;
     UINT cpDst = mEncoding[encDest].uCodePage;
-    cbwText = MultiByteToWideChar(cpSrc,0,pchText,length,pwchText,length*3+2);
-    cbText = WideCharToMultiByte(cpDst,0,pwchText,cbwText,pchText,length*5+2,NULL,NULL);
+    cbwText = MultiByteToWideChar(cpSrc,0,pchText,length,pwchText,wchLen);
+    cbText = WideCharToMultiByte(cpDst,0,pwchText,cbwText,pchText,chLen,NULL,NULL);
 
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
@@ -543,7 +545,7 @@ BOOL EditCopyAppend(HWND hwnd)
     SendMessage(hwnd,SCI_GETTEXT,(int)LocalSize(pszText),(LPARAM)pszText);
   }
 
-  uCodePage = (SendMessage(hwnd,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8) ? CP_UTF8 : CP_ACP;
+  uCodePage = (UINT)SendMessage(hwnd, SCI_GETCODEPAGE, 0, 0);
 
   cchTextW = MultiByteToWideChar(uCodePage,0,pszText,-1,NULL,0);
   if (cchTextW > 0) {
@@ -614,9 +616,9 @@ int EditDetectEOLMode(HWND hwnd,char* lpData,DWORD cbData)
 //  Encoding Helper Functions
 //
 void Encoding_InitDefaults() {
-  wsprintf(wchANSI,L" (%i)",GetACP());
+  wsprintf(wchANSI,L" (%u)",GetACP());
   mEncoding[CPI_OEM].uCodePage = GetOEMCP();
-  wsprintf(wchOEM,L" (%i)",mEncoding[CPI_OEM].uCodePage);
+  wsprintf(wchOEM,L" (%u)",mEncoding[CPI_OEM].uCodePage);
 
   g_DOSEncoding = CPI_OEM;
 
@@ -1208,8 +1210,6 @@ BOOL EditLoadFile(
 
   char* lpData;
   DWORD cbData;
-  //char  *cp;
-  int _iPrefEncoding;
 
   BOOL bBOM;
   BOOL bReverse = FALSE;
@@ -1270,7 +1270,7 @@ BOOL EditLoadFile(
       bPreferOEM = TRUE;
   }
 
-  _iPrefEncoding = (bPreferOEM) ? g_DOSEncoding : iDefaultEncoding;
+  int _iPrefEncoding = (bPreferOEM) ? g_DOSEncoding : iDefaultEncoding;
   if (Encoding_IsValid(iWeakSrcEncoding))
     _iPrefEncoding = iWeakSrcEncoding;
 
@@ -1413,7 +1413,7 @@ BOOL EditLoadFile(
         GlobalFree(lpData);
       }
       else {
-        *iEncoding = iDefaultEncoding;
+        *iEncoding = Encoding_IsValid(iSrcEncoding) ? iSrcEncoding : iDefaultEncoding;
         SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(*iEncoding),0);
         EditSetNewText(hwnd,"",0);
         EditSetNewText(hwnd,lpData,cbData);
@@ -2827,7 +2827,6 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
   int   iAppendNum = 0;
   int   iAppendNumWidth = 1;
   char *pszAppendNumPad = "";
-  int   mbcp;
 
   int iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
   int iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
@@ -2837,10 +2836,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
   //  iSelEnd   = SendMessage(hwnd,SCI_GETLENGTH,0,0);
   //}
 
-  if (SendMessage(hwnd,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8)
-    mbcp = CP_UTF8;
-  else
-    mbcp = CP_ACP;
+  UINT mbcp = (UINT)SendMessage(hwnd, SCI_GETCODEPAGE, 0, 0);
 
   if (lstrlen(pwszPrefix))
     WideCharToMultiByte(mbcp,0,pwszPrefix,-1,mszPrefix1,COUNTOF(mszPrefix1),NULL,NULL);
@@ -3093,7 +3089,6 @@ void EditAlignText(HWND hwnd,int nMode)
 {
   #define BUFSIZE_ALIGN 1024
 
-  int   mbcp;
   BOOL  bModified = FALSE;
 
   int iSelStart  = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
@@ -3101,10 +3096,7 @@ void EditAlignText(HWND hwnd,int nMode)
   int iCurPos    = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
   int iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
 
-  if (SendMessage(hwnd,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8)
-    mbcp = CP_UTF8;
-  else
-    mbcp = CP_ACP;
+  UINT mbcp = (UINT)SendMessage(hwnd, SCI_GETCODEPAGE, 0, 0);
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
   {
@@ -3364,15 +3356,11 @@ void EditEncloseSelection(HWND hwnd,LPCWSTR pwszOpen,LPCWSTR pwszClose)
 {
   char  mszOpen[256*3] = { '\0' };
   char  mszClose[256*3] = { '\0' };
-  int   mbcp;
 
   int iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
   int iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
 
-  if (SendMessage(hwnd,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8)
-    mbcp = CP_UTF8;
-  else
-    mbcp = CP_ACP;
+  UINT mbcp = (UINT)SendMessage(hwnd, SCI_GETCODEPAGE, 0, 0);
 
   if (lstrlen(pwszOpen))
     WideCharToMultiByte(mbcp,0,pwszOpen,-1,mszOpen,COUNTOF(mszOpen),NULL,NULL);
@@ -3430,17 +3418,13 @@ void EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,BOOL bInsertAtStart)
 {
   char  mszComment[256*3] = { '\0' };
   int   cchComment;
-  int   mbcp;
   int   iAction = 0;
 
   int iSelStart = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
   int iSelEnd   = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
   int iCurPos   = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
 
-  if (SendMessage(hwnd,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8)
-    mbcp = CP_UTF8;
-  else
-    mbcp = CP_ACP;
+  UINT mbcp = (UINT)SendMessage(hwnd, SCI_GETCODEPAGE, 0, 0);
 
   if (lstrlen(pwszComment))
     WideCharToMultiByte(mbcp,0,pwszComment,-1,mszComment,COUNTOF(mszComment),NULL,NULL);
@@ -4447,7 +4431,7 @@ void EditSortLines(HWND hwnd,int iSortFlags)
   if (iLineCount < 2)
     return;
 
-  uCodePage = (SendMessage(hwnd,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8) ? CP_UTF8 : CP_ACP;
+  uCodePage = (UINT)SendMessage(hwnd, SCI_GETCODEPAGE, 0, 0);
 
   cEOLMode = (DWORD)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
   if (cEOLMode == SC_EOL_CR) {

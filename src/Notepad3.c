@@ -3354,7 +3354,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WCHAR tchTemplate[256];
         SYSTEMTIME st;
         char  mszBuf[MAX_PATH*3];
-        UINT  uCP;
         //int   iSelStart;
 
         GetLocalTime(&st);
@@ -3383,7 +3382,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           wsprintf(tchDateTime,L"%s %s",tchTime,tchDate);
         }
 
-        uCP = (SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8) ? CP_UTF8 : CP_ACP;
+        UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
         WideCharToMultiByte(uCP,0,tchDateTime,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
         //iSelStart = SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
@@ -3399,7 +3398,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WCHAR *pszInsert;
         WCHAR tchUntitled[32];
         char  mszBuf[MAX_PATH*3];
-        UINT  uCP;
         //int   iSelStart;
 
         if (lstrlen(szCurFile)) {
@@ -3416,7 +3414,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           pszInsert = tchUntitled;
         }
 
-        uCP = (SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8) ? CP_UTF8 : CP_ACP;
+        UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
         WideCharToMultiByte(uCP,0,pszInsert,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
         //iSelStart = SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
@@ -3427,7 +3425,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_INSERT_GUID:
       {
-        UINT uCP;
         GUID guid;
         WCHAR wszGuid[40];
         WCHAR *pwszGuid;
@@ -3437,7 +3434,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           if (StringFromGUID2(&guid,wszGuid,COUNTOF(wszGuid))) {
             pwszGuid = wszGuid + 1; // trim first brace char
             wszGuid[wcslen(wszGuid) - 1] = L'\0'; // trim last brace char 
-            uCP = (SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8) ? CP_UTF8 : CP_ACP;            
+            UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
             if (WideCharToMultiByte(uCP,0,pwszGuid,-1,mszGuid,COUNTOF(mszGuid),NULL,NULL)) {
               SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszGuid);
             }
@@ -4527,31 +4524,31 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           else
             iSrcEncoding = iDefaultEncoding;
           lstrcpy(tchCurFile2,szCurFile);
-          FileLoad(FALSE,FALSE,TRUE,FALSE,tchCurFile2);
+          FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
       }
       break;
 
 
-    case CMD_RELOADANSI:
+    case CMD_RECODEANSI:
       {
         WCHAR tchCurFile2[MAX_PATH];
         if (lstrlen(szCurFile)) {
           iSrcEncoding = CPI_ANSI_DEFAULT;
           lstrcpy(tchCurFile2,szCurFile);
-          FileLoad(FALSE,FALSE,TRUE,FALSE,tchCurFile2);
+          FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
       }
       break;
 
 
-    case CMD_RELOADOEM:
+    case CMD_RECODEOEM:
       {
         WCHAR tchCurFile2[MAX_PATH];
         if (lstrlen(szCurFile)) {
           iSrcEncoding = CPI_OEM;
           lstrcpy(tchCurFile2,szCurFile);
-          FileLoad(FALSE,FALSE,TRUE,FALSE,tchCurFile2);
+          FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
       }
       break;
@@ -4701,7 +4698,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (lstrlenA(mszSelection)) {
 
               WCHAR wszSelection[512];
-              UINT uCP = (SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0) == SC_CP_UTF8) ? CP_UTF8 : CP_ACP;
+              UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
               MultiByteToWideChar(uCP,0,mszSelection,-1,wszSelection,COUNTOF(wszSelection));
 
               lpszCommand = GlobalAlloc(GPTR,sizeof(WCHAR)*(512+COUNTOF(szCmdTemplate)+MAX_PATH+32));
@@ -7036,7 +7033,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         Style_SetLexer(hwndEdit,NULL);
         iEOLMode = iLineEndings[iDefaultEOLMode];
         SendMessage(hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
-        if (iSrcEncoding != -1) {
+        if (iSrcEncoding != CPI_NONE) {
           iEncoding = iSrcEncoding;
           iOriginalEncoding = iSrcEncoding;
         }

@@ -213,6 +213,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         LOGFONT lf;
 
         SetDlgItemText(hwnd,IDC_VERSION,VERSION_FILEVERSION_LONG);
+        SetDlgItemText(hwnd,IDC_SCI_VERSION,VERSION_SCIVERSION);
         SetDlgItemText(hwnd,IDC_COPYRIGHT,VERSION_LEGALCOPYRIGHT);
         SetDlgItemText(hwnd,IDC_AUTHORNAME,VERSION_AUTHORNAME);
         SetDlgItemText(hwnd,IDC_COMPILER,VERSION_COMPILER);
@@ -224,9 +225,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
         GetObject(hFontTitle,sizeof(LOGFONT),&lf);
         lf.lfWeight = FW_BOLD;
-		lf.lfWidth = 8;
-		lf.lfHeight = 22;
-		// lf.lfQuality = ANTIALIASED_QUALITY;
+        lf.lfWidth = 8;
+        lf.lfHeight = 22;
+        // lf.lfQuality = ANTIALIASED_QUALITY;
         hFontTitle = CreateFontIndirect(&lf);
         SendDlgItemMessage(hwnd,IDC_VERSION,WM_SETFONT,(WPARAM)hFontTitle,TRUE);
 
@@ -239,23 +240,23 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           SetDlgItemText(hwnd,IDC_WEBPAGE,wch);
         }
 
-		if (GetDlgItem(hwnd, IDC_MODWEBPAGE) == NULL) {
-			SetDlgItemText(hwnd, IDC_MODWEBPAGE2, VERSION_MODPAGEDISPLAY);
-			ShowWindow(GetDlgItem(hwnd, IDC_MODWEBPAGE2), SW_SHOWNORMAL);
-		}
-		else {
-			wsprintf(wch, L"<A>%s</A>", VERSION_MODPAGEDISPLAY);
-			SetDlgItemText(hwnd, IDC_MODWEBPAGE, wch);
-		}
+        if (GetDlgItem(hwnd, IDC_MODWEBPAGE) == NULL) {
+          SetDlgItemText(hwnd, IDC_MODWEBPAGE2, VERSION_MODPAGEDISPLAY);
+          ShowWindow(GetDlgItem(hwnd, IDC_MODWEBPAGE2), SW_SHOWNORMAL);
+        }
+        else {
+          wsprintf(wch, L"<A>%s</A>", VERSION_MODPAGEDISPLAY);
+          SetDlgItemText(hwnd, IDC_MODWEBPAGE, wch);
+        }
 
-		if (GetDlgItem(hwnd, IDC_NOTE2WEBPAGE) == NULL) {
-			SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE2, VERSION_WEBPAGE2DISPLAY);
-			ShowWindow(GetDlgItem(hwnd, IDC_NOTE2WEBPAGE2), SW_SHOWNORMAL);
-		}
-		else {
-			wsprintf(wch, L"<A>%s</A>", VERSION_WEBPAGE2DISPLAY);
-			SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE, wch);
-		}
+        if (GetDlgItem(hwnd, IDC_NOTE2WEBPAGE) == NULL) {
+          SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE2, VERSION_WEBPAGE2DISPLAY);
+          ShowWindow(GetDlgItem(hwnd, IDC_NOTE2WEBPAGE2), SW_SHOWNORMAL);
+        }
+        else {
+          wsprintf(wch, L"<A>%s</A>", VERSION_WEBPAGE2DISPLAY);
+          SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE, wch);
+        }
 
         CenterDlgInParent(hwnd);
       }
