@@ -7,7 +7,7 @@
 *   Main application window functionality                                     *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2016   *
+*                                                  (c) Rizonesoft 2008-2017   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -738,9 +738,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   OleUninitialize();
 
   return(int)(msg.wParam);
-
-  hPrevInst;
-
 }
 
 
@@ -2921,10 +2918,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_SWAP:
       if (SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
           SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0) == 0) {
-        int iNewPos = -1;
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
         SendMessage(hwndEdit,SCI_PASTE,0,0);
-        iNewPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+        int iNewPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
         SendMessage(hwndEdit,SCI_SETSEL,iPos,iNewPos);
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_CLEARCLIPBOARD,1),0);
       }

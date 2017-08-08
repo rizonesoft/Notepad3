@@ -34,7 +34,7 @@
 #define VERSION_INTERNALNAME         L"MiniPath"
 #define VERSION_ORIGINALFILENAME     L"minipath.exe"
 #define VERSION_AUTHORNAME           L"Florian Balmer et al. ( metapath )"
-#define VERSION_WEBPAGEDISPLAY       L"https://rizonesoft.com"
+#define VERSION_WEBPAGEDISPLAY       L"https://www.rizonesoft.com"
 #define VERSION_FBWEBPAGEDISPLAY     L"http://www.flos-freeware.ch"
 
 #if defined(_WIN64)

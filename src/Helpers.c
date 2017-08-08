@@ -1014,8 +1014,8 @@ void PathRelativeToApp(
 //
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpandEnv) {
 
-  WCHAR wchPath[MAX_PATH];
-  WCHAR wchResult[MAX_PATH];
+  WCHAR wchPath[MAX_PATH] = { L'\0'};
+  WCHAR wchResult[MAX_PATH] = { L'\0'};
 
   if (lpszSrc == NULL) {
     ZeroMemory(lpszDest, (cchDest == 0) ? MAX_PATH : cchDest);
@@ -1026,8 +1026,11 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
     SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
     PathAppend(wchPath,lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
   }
-  else
+  else {
+    if (lpszSrc) {
     lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
+    }
+  }
 
   if (bExpandEnv)
     ExpandEnvironmentStringsEx(wchPath,COUNTOF(wchPath));

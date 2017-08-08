@@ -2709,7 +2709,7 @@ void Style_Load()
 
   // default scheme
   iDefaultLexer = IniSectionGetInt(pIniSection,L"DefaultScheme",0);
-  iDefaultLexer = min(max(iDefaultLexer,0),NUMLEXERS-1);
+  iDefaultLexer = min(max(iDefaultLexer,0),COUNTOF(pLexArray)-1);
 
   // auto select
   bAutoSelect = (IniSectionGetInt(pIniSection,L"AutoSelect",1)) ? 1 : 0;
@@ -2721,7 +2721,7 @@ void Style_Load()
   cyStyleSelectDlg = IniSectionGetInt(pIniSection,L"SelectDlgSizeY",0);
   cyStyleSelectDlg = max(cyStyleSelectDlg,324);
 
-  for (iLexer = 0; iLexer < NUMLEXERS; iLexer++) {
+  for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
     LoadIniSection(pLexArray[iLexer]->pszName,pIniSection,cchIniSection);
     if (!IniSectionGetString(pIniSection,L"FileNameExtensions",pLexArray[iLexer]->pszDefExt,
           pLexArray[iLexer]->szExtensions,COUNTOF(pLexArray[iLexer]->szExtensions)))
@@ -2783,7 +2783,7 @@ void Style_Save()
   }
 
   ZeroMemory(pIniSection,cchIniSection);
-  for (iLexer = 0; iLexer < NUMLEXERS; iLexer++) {
+  for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
     IniSectionSetString(pIniSection,L"FileNameExtensions",pLexArray[iLexer]->szExtensions);
     i = 0;
     while (pLexArray[iLexer]->Styles[i].iStyle != -1) {
@@ -2826,7 +2826,7 @@ BOOL Style_Import(HWND hwnd)
     WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
     int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
-    for (iLexer = 0; iLexer < NUMLEXERS; iLexer++) {
+    for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
       if (GetPrivateProfileSection(pLexArray[iLexer]->pszName,pIniSection,cchIniSection,szFile)) {
         if (!IniSectionGetString(pIniSection,L"FileNameExtensions",pLexArray[iLexer]->pszDefExt,
               pLexArray[iLexer]->szExtensions,COUNTOF(pLexArray[iLexer]->szExtensions)))
@@ -2878,7 +2878,7 @@ BOOL Style_Export(HWND hwnd)
     WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
     int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
-    for (iLexer = 0; iLexer < NUMLEXERS; iLexer++) {
+    for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
       IniSectionSetString(pIniSection,L"FileNameExtensions",pLexArray[iLexer]->szExtensions);
       i = 0;
       while (pLexArray[iLexer]->Styles[i].iStyle != -1) {
@@ -3418,7 +3418,7 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames)
 
   if (!bCheckNames) {
 
-    for (i = 0; i < NUMLEXERS; i++) {
+    for (i = 0; i < COUNTOF(pLexArray); i++) {
 
       ZeroMemory(tch,sizeof(WCHAR)*COUNTOF(tch));
       lstrcpy(tch,pLexArray[i]->szExtensions);
@@ -3441,7 +3441,7 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames)
     int cch = lstrlen(lpszMatch);
     if (cch >= 3) {
 
-      for (i = 0; i < NUMLEXERS; i++) {
+      for (i = 0; i < COUNTOF(pLexArray); i++) {
         if (StrCmpNI(pLexArray[i]->pszName,lpszMatch,cch) == 0)
           return(pLexArray[i]);
       }
@@ -3625,7 +3625,7 @@ void Style_SetXMLLexer(HWND hwnd)
 //
 void Style_SetLexerFromID(HWND hwnd,int id)
 {
-  if (id >= 0 && id < NUMLEXERS) {
+  if (id >= 0 && id < COUNTOF(pLexArray)) {
     Style_SetLexer(hwnd,pLexArray[id]);
   }
 }
@@ -4448,7 +4448,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           SHGFI_SMALLICON | SHGFI_SYSICONINDEX),TVSIL_NORMAL);
 
         // Add lexers
-        for (i = 0; i < NUMLEXERS; i++)
+        for (i = 0; i < COUNTOF(pLexArray); i++)
         {
           if (!found && lstrcmp(pLexArray[i]->pszName,pLexCurrent->pszName) == 0)
           {
@@ -4959,7 +4959,7 @@ void Style_ConfigDlg(HWND hwnd)
 
   // Backup Styles
   c = 0;
-  for (iLexer = 0; iLexer < NUMLEXERS; iLexer++) {
+  for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
     StyleBackup[c++] = StrDup(pLexArray[iLexer]->szExtensions);
     i = 0;
     while (pLexArray[iLexer]->Styles[i].iStyle != -1) {
@@ -4976,7 +4976,7 @@ void Style_ConfigDlg(HWND hwnd)
   {
     // Restore Styles
     c = 0;
-    for (iLexer = 0; iLexer < NUMLEXERS; iLexer++) {
+    for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
       lstrcpy(pLexArray[iLexer]->szExtensions,StyleBackup[c++]);
       i = 0;
       while (pLexArray[iLexer]->Styles[i].iStyle != -1) {
@@ -5075,7 +5075,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         ListView_InsertColumn(hwndLV,0,&lvc);
 
         // Add lexers
-        for (i = 0; i < NUMLEXERS; i++)
+        for (i = 0; i < COUNTOF(pLexArray); i++)
           Style_AddLexerToListView(hwndLV,pLexArray[i]);
 
         ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
