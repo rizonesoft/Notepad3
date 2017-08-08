@@ -1,12 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Notepad3", "src\Notepad3.vcxproj", "{BAAD32AB-CD47-12FD-873C-0BBC204B7641}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Notepad3", "src\Notepad3_VS2017.vcxproj", "{BAAD32AB-CD47-12FD-873C-0BBC204B7641}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scintilla", "scintilla\Scintilla.vcxproj", "{5877B917-512B-49F5-B514-1B4159E7A9CA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scintilla", "scintilla\Scintilla_VS2017.vcxproj", "{5877B917-512B-49F5-B514-1B4159E7A9CA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minipath", "minipath\minipath.vcxproj", "{781B17E7-427F-488F-A8E9-360BA38A10F3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minipath", "minipath\minipath_VS2017.vcxproj", "{781B17E7-427F-488F-A8E9-360BA38A10F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
