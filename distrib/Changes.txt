@@ -3,9 +3,15 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
-Version 2 Build 402 (6 August 2017)
+Version 2 Build 411 (9 August 2017)
 --------------------------------------------------
-- 
+- Reintroduce HighDPI toolbar
+- Fixed nullptr access while pressing "favorites" toolbar button on 'virgin' Notepad3 ToolBar
+- Added VS2017 .vcproj files and adapted Compiler Tool Set accordingly
+- Integrate Scintillas DirectWrite technology
+- Minor cleanups reported by CppCheck v.1.79
+- Added VisualStudio's Editor Behaviour for Ctrl-C and Ctrl-X
+- Fixed broken Ctrl-Q (toggle line comments)
 
 --------------------------------------------------
 Version 2 Build 398 (13 June 2017)
