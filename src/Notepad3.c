@@ -5852,17 +5852,7 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  int ResX = GetSystemMetrics(SM_CXSCREEN);
-  int ResY = GetSystemMetrics(SM_CYSCREEN);
-
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
-
-  iHighDpiToolBar = IniSectionGetInt(pIniSection, L"HighDpiToolBar", -1);
-  iHighDpiToolBar = max(min(iHighDpiToolBar, 1), -1);
-  if (iHighDpiToolBar < 0) { // undefined: derermine high DPI (higher than Full-HD)
-    if ((ResX > 1920) && (ResY > 1080))
-      iHighDpiToolBar = 1;
-  }
 
   IniSectionGetString(pIniSection,L"BitmapDefault",L"",
     tchToolbarBitmap,COUNTOF(tchToolbarBitmap));
@@ -5870,6 +5860,20 @@ void LoadSettings()
     tchToolbarBitmapHot,COUNTOF(tchToolbarBitmap));
   IniSectionGetString(pIniSection,L"BitmapDisabled",L"",
     tchToolbarBitmapDisabled,COUNTOF(tchToolbarBitmap));
+
+  int ResX = GetSystemMetrics(SM_CXSCREEN);
+  int ResY = GetSystemMetrics(SM_CYSCREEN);
+
+  LoadIniSection(L"Window", pIniSection, cchIniSection);
+
+  WCHAR tchHighDpiToolBar[32];
+  wsprintf(tchHighDpiToolBar, L"%ix%i HighDpiToolBar", ResX, ResY);
+  iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
+  iHighDpiToolBar = max(min(iHighDpiToolBar, 1), -1);
+  if (iHighDpiToolBar < 0) { // undefined: derermine high DPI (higher than Full-HD)
+    if ((ResX > 1920) && (ResY > 1080))
+      iHighDpiToolBar = 1;
+  }
 
   if (!flagPosParam /*|| bStickyWinPos*/) { // ignore window position if /p was specified
 
@@ -5880,8 +5884,6 @@ void LoadSettings()
     wsprintf(tchSizeX,L"%ix%i SizeX",ResX,ResY);
     wsprintf(tchSizeY,L"%ix%i SizeY",ResX,ResY);
     wsprintf(tchMaximized,L"%ix%i Maximized",ResX,ResY);
-
-    LoadIniSection(L"Window",pIniSection,cchIniSection);
 
     wi.x = IniSectionGetInt(pIniSection,tchPosX,CW_USEDEFAULT);
     wi.y = IniSectionGetInt(pIniSection,tchPosY,CW_USEDEFAULT);
@@ -5922,8 +5924,7 @@ void LoadSettings()
 //  SaveSettings()
 //
 //
-void SaveSettings(BOOL bSaveSettingsNow)
-{
+void SaveSettings(BOOL bSaveSettingsNow) {
   WCHAR *pIniSection = NULL;
   int   cchIniSection = 0;
 
@@ -5935,110 +5936,109 @@ void SaveSettings(BOOL bSaveSettingsNow)
   CreateIniFile();
 
   if (!bSaveSettings && !bSaveSettingsNow) {
-    IniSetInt(L"Settings",L"SaveSettings",bSaveSettings);
+    IniSetInt(L"Settings", L"SaveSettings", bSaveSettings);
     return;
   }
 
-  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+  pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * 32 * 1024);
+  cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
-  IniSectionSetInt(pIniSection,L"SaveSettings",bSaveSettings);
-  IniSectionSetInt(pIniSection,L"SaveRecentFiles",bSaveRecentFiles);
-  IniSectionSetInt(pIniSection,L"SaveFindReplace",bSaveFindReplace);
-  IniSectionSetInt(pIniSection,L"CloseFind",efrData.bFindClose);
-  IniSectionSetInt(pIniSection,L"CloseReplace",efrData.bReplaceClose);
-  IniSectionSetInt(pIniSection,L"NoFindWrap",efrData.bNoFindWrap);
-  IniSectionSetInt(pIniSection,L"FindTransformBS", efrData.bTransformBS);
-  IniSectionSetInt(pIniSection,L"WildcardSearch", efrData.bWildcardSearch);
-  IniSectionSetInt(pIniSection,L"efrData_fuFlags", efrData.fuFlags);
-  PathRelativeToApp(tchOpenWithDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
-  IniSectionSetString(pIniSection,L"OpenWithDir",wchTmp);
-  PathRelativeToApp(tchFavoritesDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
-  IniSectionSetString(pIniSection,L"Favorites",wchTmp);
-  IniSectionSetInt(pIniSection,L"PathNameFormat",iPathNameFormat);
-  IniSectionSetInt(pIniSection,L"WordWrap",fWordWrapG);
-  IniSectionSetInt(pIniSection,L"WordWrapMode",iWordWrapMode);
-  IniSectionSetInt(pIniSection,L"WordWrapIndent",iWordWrapIndent);
-  IniSectionSetInt(pIniSection,L"WordWrapSymbols",iWordWrapSymbols);
-  IniSectionSetInt(pIniSection,L"ShowWordWrapSymbols",bShowWordWrapSymbols);
-  IniSectionSetInt(pIniSection,L"MatchBraces",bMatchBraces);
-  IniSectionSetInt(pIniSection,L"AutoCloseTags",bAutoCloseTags);
-  IniSectionSetInt(pIniSection,L"HighlightCurrentLine",bHiliteCurrentLine);
-  IniSectionSetInt(pIniSection,L"AutoIndent",bAutoIndent);
-  IniSectionSetInt(pIniSection,L"AutoCompleteWords",bAutoCompleteWords);
-  IniSectionSetInt(pIniSection,L"ShowIndentGuides",bShowIndentGuides);
-  IniSectionSetInt(pIniSection,L"TabsAsSpaces",bTabsAsSpacesG);
-  IniSectionSetInt(pIniSection,L"TabIndents",bTabIndentsG);
-  IniSectionSetInt(pIniSection,L"BackspaceUnindents",bBackspaceUnindents);
-  IniSectionSetInt(pIniSection,L"TabWidth",iTabWidthG);
-  IniSectionSetInt(pIniSection,L"IndentWidth",iIndentWidthG);
-  IniSectionSetInt(pIniSection,L"MarkLongLines",bMarkLongLines);
-  IniSectionSetInt(pIniSection,L"LongLinesLimit",iLongLinesLimitG);
-  IniSectionSetInt(pIniSection,L"LongLineMode",iLongLineMode);
-  IniSectionSetInt(pIniSection,L"ShowSelectionMargin",bShowSelectionMargin);
-  IniSectionSetInt(pIniSection,L"ShowLineNumbers",bShowLineNumbers);
-  IniSectionSetInt(pIniSection,L"ShowCodeFolding",bShowCodeFolding);
-  IniSectionSetInt(pIniSection,L"MarkOccurrences",iMarkOccurrences);
-  IniSectionSetInt(pIniSection,L"MarkOccurrencesMatchCase",bMarkOccurrencesMatchCase);
-  IniSectionSetInt(pIniSection,L"MarkOccurrencesMatchWholeWords",bMarkOccurrencesMatchWords);
-  IniSectionSetInt(pIniSection,L"ViewWhiteSpace",bViewWhiteSpace);
-  IniSectionSetInt(pIniSection,L"ViewEOLs",bViewEOLs);
-  IniSectionSetInt(pIniSection,L"DefaultEncoding",Encoding_MapIniSetting(FALSE,iDefaultEncoding));
-  IniSectionSetInt(pIniSection,L"SkipUnicodeDetection",bSkipUnicodeDetection);
-  IniSectionSetInt(pIniSection,L"LoadASCIIasUTF8",bLoadASCIIasUTF8);
-  IniSectionSetInt(pIniSection,L"LoadNFOasOEM",bLoadNFOasOEM);
-  IniSectionSetInt(pIniSection,L"NoEncodingTags",bNoEncodingTags);
-  IniSectionSetInt(pIniSection,L"DefaultEOLMode",iDefaultEOLMode);
-  IniSectionSetInt(pIniSection,L"FixLineEndings",bFixLineEndings);
-  IniSectionSetInt(pIniSection,L"FixTrailingBlanks",bAutoStripBlanks);
-  IniSectionSetInt(pIniSection,L"PrintHeader",iPrintHeader);
-  IniSectionSetInt(pIniSection,L"PrintFooter",iPrintFooter);
-  IniSectionSetInt(pIniSection,L"PrintColorMode",iPrintColor);
-  IniSectionSetInt(pIniSection,L"PrintZoom",iPrintZoom+10);
-  IniSectionSetInt(pIniSection,L"PrintMarginLeft",pagesetupMargin.left);
-  IniSectionSetInt(pIniSection,L"PrintMarginTop",pagesetupMargin.top);
-  IniSectionSetInt(pIniSection,L"PrintMarginRight",pagesetupMargin.right);
-  IniSectionSetInt(pIniSection,L"PrintMarginBottom",pagesetupMargin.bottom);
-  IniSectionSetInt(pIniSection,L"SaveBeforeRunningTools",bSaveBeforeRunningTools);
-  IniSectionSetInt(pIniSection,L"FileWatchingMode",iFileWatchingMode);
-  IniSectionSetInt(pIniSection,L"ResetFileWatching",bResetFileWatching);
-  IniSectionSetInt(pIniSection,L"EscFunction",iEscFunction);
-  IniSectionSetInt(pIniSection,L"AlwaysOnTop",bAlwaysOnTop);
-  IniSectionSetInt(pIniSection,L"MinimizeToTray",bMinimizeToTray);
-  IniSectionSetInt(pIniSection,L"TransparentMode",bTransparentMode);
-  Toolbar_GetButtons(hwndToolbar,IDT_FILE_NEW,tchToolbarButtons,COUNTOF(tchToolbarButtons));
-  IniSectionSetString(pIniSection,L"ToolbarButtons",tchToolbarButtons);
-  IniSectionSetInt(pIniSection,L"ShowToolbar",bShowToolbar);
-  IniSectionSetInt(pIniSection,L"ShowStatusbar",bShowStatusbar);
-  IniSectionSetInt(pIniSection,L"EncodingDlgSizeX",cxEncodingDlg);
-  IniSectionSetInt(pIniSection,L"EncodingDlgSizeY",cyEncodingDlg);
-  IniSectionSetInt(pIniSection,L"RecodeDlgSizeX",cxRecodeDlg);
-  IniSectionSetInt(pIniSection,L"RecodeDlgSizeY",cyRecodeDlg);
-  IniSectionSetInt(pIniSection,L"FileMRUDlgSizeX",cxFileMRUDlg);
-  IniSectionSetInt(pIniSection,L"FileMRUDlgSizeY",cyFileMRUDlg);
-  IniSectionSetInt(pIniSection,L"OpenWithDlgSizeX",cxOpenWithDlg);
-  IniSectionSetInt(pIniSection,L"OpenWithDlgSizeY",cyOpenWithDlg);
-  IniSectionSetInt(pIniSection,L"FavoritesDlgSizeX",cxFavoritesDlg);
-  IniSectionSetInt(pIniSection,L"FavoritesDlgSizeY",cyFavoritesDlg);
-  IniSectionSetInt(pIniSection,L"FindReplaceDlgPosX",xFindReplaceDlg);
-  IniSectionSetInt(pIniSection,L"FindReplaceDlgPosY",yFindReplaceDlg);
-  IniSectionSetInt(pIniSection, L"SciDrawTechnology",iSciDirectWriteTech);
-  IniSectionSetInt(pIniSection, L"SciFontQuality",iSciFontQuality);
+  IniSectionSetInt(pIniSection, L"SaveSettings", bSaveSettings);
+  IniSectionSetInt(pIniSection, L"SaveRecentFiles", bSaveRecentFiles);
+  IniSectionSetInt(pIniSection, L"SaveFindReplace", bSaveFindReplace);
+  IniSectionSetInt(pIniSection, L"CloseFind", efrData.bFindClose);
+  IniSectionSetInt(pIniSection, L"CloseReplace", efrData.bReplaceClose);
+  IniSectionSetInt(pIniSection, L"NoFindWrap", efrData.bNoFindWrap);
+  IniSectionSetInt(pIniSection, L"FindTransformBS", efrData.bTransformBS);
+  IniSectionSetInt(pIniSection, L"WildcardSearch", efrData.bWildcardSearch);
+  IniSectionSetInt(pIniSection, L"efrData_fuFlags", efrData.fuFlags);
+  PathRelativeToApp(tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+  IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
+  PathRelativeToApp(tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+  IniSectionSetString(pIniSection, L"Favorites", wchTmp);
+  IniSectionSetInt(pIniSection, L"PathNameFormat", iPathNameFormat);
+  IniSectionSetInt(pIniSection, L"WordWrap", fWordWrapG);
+  IniSectionSetInt(pIniSection, L"WordWrapMode", iWordWrapMode);
+  IniSectionSetInt(pIniSection, L"WordWrapIndent", iWordWrapIndent);
+  IniSectionSetInt(pIniSection, L"WordWrapSymbols", iWordWrapSymbols);
+  IniSectionSetInt(pIniSection, L"ShowWordWrapSymbols", bShowWordWrapSymbols);
+  IniSectionSetInt(pIniSection, L"MatchBraces", bMatchBraces);
+  IniSectionSetInt(pIniSection, L"AutoCloseTags", bAutoCloseTags);
+  IniSectionSetInt(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
+  IniSectionSetInt(pIniSection, L"AutoIndent", bAutoIndent);
+  IniSectionSetInt(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
+  IniSectionSetInt(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
+  IniSectionSetInt(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
+  IniSectionSetInt(pIniSection, L"TabIndents", bTabIndentsG);
+  IniSectionSetInt(pIniSection, L"BackspaceUnindents", bBackspaceUnindents);
+  IniSectionSetInt(pIniSection, L"TabWidth", iTabWidthG);
+  IniSectionSetInt(pIniSection, L"IndentWidth", iIndentWidthG);
+  IniSectionSetInt(pIniSection, L"MarkLongLines", bMarkLongLines);
+  IniSectionSetInt(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
+  IniSectionSetInt(pIniSection, L"LongLineMode", iLongLineMode);
+  IniSectionSetInt(pIniSection, L"ShowSelectionMargin", bShowSelectionMargin);
+  IniSectionSetInt(pIniSection, L"ShowLineNumbers", bShowLineNumbers);
+  IniSectionSetInt(pIniSection, L"ShowCodeFolding", bShowCodeFolding);
+  IniSectionSetInt(pIniSection, L"MarkOccurrences", iMarkOccurrences);
+  IniSectionSetInt(pIniSection, L"MarkOccurrencesMatchCase", bMarkOccurrencesMatchCase);
+  IniSectionSetInt(pIniSection, L"MarkOccurrencesMatchWholeWords", bMarkOccurrencesMatchWords);
+  IniSectionSetInt(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
+  IniSectionSetInt(pIniSection, L"ViewEOLs", bViewEOLs);
+  IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, iDefaultEncoding));
+  IniSectionSetInt(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
+  IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", bLoadASCIIasUTF8);
+  IniSectionSetInt(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
+  IniSectionSetInt(pIniSection, L"NoEncodingTags", bNoEncodingTags);
+  IniSectionSetInt(pIniSection, L"DefaultEOLMode", iDefaultEOLMode);
+  IniSectionSetInt(pIniSection, L"FixLineEndings", bFixLineEndings);
+  IniSectionSetInt(pIniSection, L"FixTrailingBlanks", bAutoStripBlanks);
+  IniSectionSetInt(pIniSection, L"PrintHeader", iPrintHeader);
+  IniSectionSetInt(pIniSection, L"PrintFooter", iPrintFooter);
+  IniSectionSetInt(pIniSection, L"PrintColorMode", iPrintColor);
+  IniSectionSetInt(pIniSection, L"PrintZoom", iPrintZoom + 10);
+  IniSectionSetInt(pIniSection, L"PrintMarginLeft", pagesetupMargin.left);
+  IniSectionSetInt(pIniSection, L"PrintMarginTop", pagesetupMargin.top);
+  IniSectionSetInt(pIniSection, L"PrintMarginRight", pagesetupMargin.right);
+  IniSectionSetInt(pIniSection, L"PrintMarginBottom", pagesetupMargin.bottom);
+  IniSectionSetInt(pIniSection, L"SaveBeforeRunningTools", bSaveBeforeRunningTools);
+  IniSectionSetInt(pIniSection, L"FileWatchingMode", iFileWatchingMode);
+  IniSectionSetInt(pIniSection, L"ResetFileWatching", bResetFileWatching);
+  IniSectionSetInt(pIniSection, L"EscFunction", iEscFunction);
+  IniSectionSetInt(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
+  IniSectionSetInt(pIniSection, L"MinimizeToTray", bMinimizeToTray);
+  IniSectionSetInt(pIniSection, L"TransparentMode", bTransparentMode);
+  Toolbar_GetButtons(hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+  IniSectionSetString(pIniSection, L"ToolbarButtons", tchToolbarButtons);
+  IniSectionSetInt(pIniSection, L"ShowToolbar", bShowToolbar);
+  IniSectionSetInt(pIniSection, L"ShowStatusbar", bShowStatusbar);
+  IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
+  IniSectionSetInt(pIniSection, L"EncodingDlgSizeY", cyEncodingDlg);
+  IniSectionSetInt(pIniSection, L"RecodeDlgSizeX", cxRecodeDlg);
+  IniSectionSetInt(pIniSection, L"RecodeDlgSizeY", cyRecodeDlg);
+  IniSectionSetInt(pIniSection, L"FileMRUDlgSizeX", cxFileMRUDlg);
+  IniSectionSetInt(pIniSection, L"FileMRUDlgSizeY", cyFileMRUDlg);
+  IniSectionSetInt(pIniSection, L"OpenWithDlgSizeX", cxOpenWithDlg);
+  IniSectionSetInt(pIniSection, L"OpenWithDlgSizeY", cyOpenWithDlg);
+  IniSectionSetInt(pIniSection, L"FavoritesDlgSizeX", cxFavoritesDlg);
+  IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
+  IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
+  IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
+  IniSectionSetInt(pIniSection, L"SciDrawTechnology", iSciDirectWriteTech);
+  IniSectionSetInt(pIniSection, L"SciFontQuality", iSciFontQuality);
 
-  SaveIniSection(L"Settings",pIniSection);
+  SaveIniSection(L"Settings", pIniSection);
   LocalFree(pIniSection);
 
   /*
     SaveSettingsNow(): query Window Dimensions
   */
 
-  if (bSaveSettingsNow)
-  {
+  if (bSaveSettingsNow) {
     WINDOWPLACEMENT wndpl;
 
     // GetWindowPlacement
     wndpl.length = sizeof(WINDOWPLACEMENT);
-    GetWindowPlacement(hwndMain,&wndpl);
+    GetWindowPlacement(hwndMain, &wndpl);
 
     wi.x = wndpl.rcNormalPosition.left;
     wi.y = wndpl.rcNormalPosition.top;
@@ -6047,12 +6047,16 @@ void SaveSettings(BOOL bSaveSettingsNow)
     wi.max = (IsZoomed(hwndMain) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
   }
 
+  int ResX = GetSystemMetrics(SM_CXSCREEN);
+  int ResY = GetSystemMetrics(SM_CYSCREEN);
+
+  WCHAR tchHighDpiToolBar[32];
+  wsprintf(tchHighDpiToolBar, L"%ix%i HighDpiToolBar", ResX, ResY);
+  IniSetInt(L"Window", tchHighDpiToolBar, iHighDpiToolBar);
+
   if (!IniGetInt(L"Settings2",L"StickyWindowPosition",0)) {
 
     WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
-
-    int ResX = GetSystemMetrics(SM_CXSCREEN);
-    int ResY = GetSystemMetrics(SM_CYSCREEN);
 
     wsprintf(tchPosX,L"%ix%i PosX",ResX,ResY);
     wsprintf(tchPosY,L"%ix%i PosY",ResX,ResY);
