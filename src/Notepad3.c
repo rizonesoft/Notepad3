@@ -172,6 +172,7 @@ BOOL      bShowToolbar;
 BOOL      bShowStatusbar;
 int       iSciDirectWriteTech;
 int       iSciFontQuality;
+int       iHighDpiToolBar;
 
 const int DirectWriteTechnology[] = {
     SC_TECHNOLOGY_DEFAULT
@@ -1813,11 +1814,13 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
       lstrcpy(szTmp,tchToolbarBitmap);
     hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE);
   }
+
   if (hbmp)
     bExternalBitmap = TRUE;
   else {
-    hbmp = LoadImage(hInstance,MAKEINTRESOURCE(IDR_MAINWND),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
-    hbmpCopy = CopyImage(hbmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+    LPWSTR toolBarIntRes = (iHighDpiToolBar > 0) ? MAKEINTRESOURCE(IDR_MAINWND2) : MAKEINTRESOURCE(IDR_MAINWND);
+    hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
   GetObject(hbmp,sizeof(BITMAP),&bmp);
   if (!IsXP())
@@ -5849,7 +5852,18 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
+  int ResX = GetSystemMetrics(SM_CXSCREEN);
+  int ResY = GetSystemMetrics(SM_CYSCREEN);
+
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
+
+  iHighDpiToolBar = IniSectionGetInt(pIniSection, L"HighDpiToolBar", -1);
+  iHighDpiToolBar = max(min(iHighDpiToolBar, 1), -1);
+  if (iHighDpiToolBar < 0) { // undefined: derermine high DPI (higher than Full-HD)
+    if ((ResX > 1920) && (ResY > 1080))
+      iHighDpiToolBar = 1;
+  }
+
   IniSectionGetString(pIniSection,L"BitmapDefault",L"",
     tchToolbarBitmap,COUNTOF(tchToolbarBitmap));
   IniSectionGetString(pIniSection,L"BitmapHot",L"",
@@ -5860,9 +5874,6 @@ void LoadSettings()
   if (!flagPosParam /*|| bStickyWinPos*/) { // ignore window position if /p was specified
 
     WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
-
-    int ResX = GetSystemMetrics(SM_CXSCREEN);
-    int ResY = GetSystemMetrics(SM_CYSCREEN);
 
     wsprintf(tchPosX,L"%ix%i PosX",ResX,ResY);
     wsprintf(tchPosY,L"%ix%i PosY",ResX,ResY);

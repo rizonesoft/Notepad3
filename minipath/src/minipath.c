@@ -2774,12 +2774,20 @@ void LoadSettings()
   cxCopyMoveDlg = IniSectionGetInt(pIniSection,L"CopyMoveDlgSizeX",0);
   cxCopyMoveDlg = max(cxCopyMoveDlg,0);
 
+  int ResX = GetSystemMetrics(SM_CXSCREEN);
+  int ResY = GetSystemMetrics(SM_CYSCREEN);
+
+  LoadIniSection(L"Toolbar Images", pIniSection, cbIniSection);
+  IniSectionGetString(pIniSection, L"BitmapDefault", L"",
+    tchToolbarBitmap, COUNTOF(tchToolbarBitmap));
+  IniSectionGetString(pIniSection, L"BitmapHot", L"",
+    tchToolbarBitmapHot, COUNTOF(tchToolbarBitmap));
+  IniSectionGetString(pIniSection, L"BitmapDisabled", L"",
+    tchToolbarBitmapDisabled, COUNTOF(tchToolbarBitmap));
+
   if (!flagPosParam) { // ignore window position if /p was specified
 
     WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32];
-
-    int ResX = GetSystemMetrics(SM_CXSCREEN);
-    int ResY = GetSystemMetrics(SM_CYSCREEN);
 
     wsprintf(tchPosX,L"%ix%i PosX",ResX,ResY);
     wsprintf(tchPosY,L"%ix%i PosY",ResX,ResY);
@@ -2793,14 +2801,6 @@ void LoadSettings()
     wi.cx = IniSectionGetInt(pIniSection,tchSizeX,CW_USEDEFAULT);
     wi.cy = IniSectionGetInt(pIniSection,tchSizeY,CW_USEDEFAULT);
   }
-
-  LoadIniSection(L"Toolbar Images",pIniSection,cbIniSection);
-  IniSectionGetString(pIniSection,L"BitmapDefault",L"",
-    tchToolbarBitmap,COUNTOF(tchToolbarBitmap));
-  IniSectionGetString(pIniSection,L"BitmapHot",L"",
-    tchToolbarBitmapHot,COUNTOF(tchToolbarBitmap));
-  IniSectionGetString(pIniSection,L"BitmapDisabled",L"",
-    tchToolbarBitmapDisabled,COUNTOF(tchToolbarBitmap));
 
   LocalFree(pIniSection);
 

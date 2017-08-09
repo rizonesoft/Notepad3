@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by Notepad3.rc
+// Von Microsoft Visual C++ generierte Includedatei.
+// Verwendet durch Notepad3.rc
 //
 #define IDR_MAINWND                     100
 #define IDC_FINDTEXT                    100
@@ -119,6 +119,7 @@
 #define IDC_WILDCARDHELP                153
 #define IDC_WILDCARDSEARCH              154
 #define IDC_SCI_VERSION                 155
+#define IDR_MAINWND2                    156
 #define IDACC_FIND                      200
 #define IDACC_REPLACE                   201
 #define IDACC_SAVEPOS                   202
@@ -453,7 +454,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        0
+#define _APS_NEXT_RESOURCE_VALUE        3
 #define _APS_NEXT_COMMAND_VALUE         5
 #define _APS_NEXT_CONTROL_VALUE         0
 #define _APS_NEXT_SYMED_VALUE           0

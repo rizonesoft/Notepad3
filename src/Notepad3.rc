@@ -12,7 +12,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Englisch (USA) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -57,6 +57,8 @@ IDB_PICK                BITMAP                  "..\\res\\Pick.bmp"
 
 IDB_ENCODING            BITMAP                  "..\\res\\Encoding.bmp"
 
+IDR_MAINWND2            BITMAP                  "..\\res\\Toolbar2.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -97,18 +99,18 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Encoding"
         BEGIN
-            MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 with &Signature",          IDM_ENCODING_UTF8SIGN
-            MENUITEM "&More...\tF9",                   IDM_ENCODING_SELECT
+            MENUITEM "&ANSI",                       IDM_ENCODING_ANSI
+            MENUITEM "&Unicode",                    IDM_ENCODING_UNICODE
+            MENUITEM "Unicode &Big Endian",         IDM_ENCODING_UNICODEREV
+            MENUITEM "UTF-&8\tShift+F8",            IDM_ENCODING_UTF8
+            MENUITEM "UTF-8 with &Signature",       IDM_ENCODING_UTF8SIGN
+            MENUITEM "&More...\tF9",                IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "Recode to &ANSI\tCtrl-Shift+A",  CMD_RECODEANSI
+            MENUITEM "Recode to &ANSI\tCtrl-Shift+A", CMD_RECODEANSI
             MENUITEM "Recode to &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
-            MENUITEM "&Recode...\tF8",                 IDM_ENCODING_RECODE
+            MENUITEM "&Recode...\tF8",              IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
-            MENUITEM "Set &Default...",                IDM_ENCODING_SETDEFAULT
+            MENUITEM "Set &Default...",             IDM_ENCODING_SETDEFAULT
         END
         POPUP "Line Endin&gs"
         BEGIN
@@ -295,21 +297,21 @@ BEGIN
     END
     POPUP "&Settings"
     BEGIN
-        MENUITEM "Insert Tabs as &Spaces",             IDM_VIEW_TABSASSPACES
-        MENUITEM "&Tab Settings...\tCtrl+T",           IDM_VIEW_TABSETTINGS
-        MENUITEM "&Word Wrap Settings...",             IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Long Line Settings...",             IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Auto In&dent Text",                  IDM_VIEW_AUTOINDENTTEXT
+        MENUITEM "Insert Tabs as &Spaces",      IDM_VIEW_TABSASSPACES
+        MENUITEM "&Tab Settings...\tCtrl+T",    IDM_VIEW_TABSETTINGS
+        MENUITEM "&Word Wrap Settings...",      IDM_VIEW_WORDWRAPSETTINGS
+        MENUITEM "&Long Line Settings...",      IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "Auto In&dent Text",           IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "Auto Close &HTML/XML\tCtrl+Shift+H", IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Auto Complete Wo&rds",               IDM_VIEW_AUTOCOMPLETEWORDS
+        MENUITEM "Auto Complete Wo&rds",        IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM SEPARATOR
-        MENUITEM "&Reuse Window",                    IDM_VIEW_REUSEWINDOW
-        MENUITEM "Sticky Window &Position",          IDM_VIEW_STICKYWINPOS
-        MENUITEM "&Always On Top\tAlt+T",            IDM_VIEW_ALWAYSONTOP
-        MENUITEM "Minimi&ze To Tray",                IDM_VIEW_MINTOTRAY
+        MENUITEM "&Reuse Window",               IDM_VIEW_REUSEWINDOW
+        MENUITEM "Sticky Window &Position",     IDM_VIEW_STICKYWINPOS
+        MENUITEM "&Always On Top\tAlt+T",       IDM_VIEW_ALWAYSONTOP
+        MENUITEM "Minimi&ze To Tray",           IDM_VIEW_MINTOTRAY
         MENUITEM "Transparent &Mode\tCtrl+Numpad_*", IDM_VIEW_TRANSPARENT
         MENUITEM SEPARATOR
-        MENUITEM "Single &File Instance",                IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Single &File Instance",       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
         POPUP "Window Title Displa&y"
         BEGIN
@@ -578,7 +580,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,195,204,50,14
     ICON            IDR_MAINWND,IDC_STATIC,7,7,21,20
     LTEXT           "",IDC_VERSION,45,10,200,17
-    LTEXT           "Scintilla Library Version:", IDC_SCI_VERSION, 45, 24, 200, 8
+    LTEXT           "Scintilla Library Version:",IDC_SCI_VERSION,45,24,200,8
     LTEXT           "Compiled with:",IDC_COMPILER2,45,35,200,8
     LTEXT           "",IDC_COMPILER,96,35,200,8
     LTEXT           "",IDC_COPYRIGHT,45,55,200,8
@@ -1812,12 +1814,12 @@ BEGIN
     63257                   "XML Element Text"
 END
 
-#endif    // English (United States) resources
+#endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Switzerland) resources
+// Deutsch (Schweiz) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
@@ -1846,7 +1848,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // German (Switzerland) resources
+#endif    // Deutsch (Schweiz) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
