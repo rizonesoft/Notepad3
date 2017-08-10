@@ -22,9 +22,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 // RT_MANIFEST
 //
-
-1                       RT_MANIFEST             "..\\res\\Notepad3.exe.manifest"
-
+//~~~ Linker generated and merged & embedded by manifesttool
+//~~~IDR_RT_MANIFEST         RT_MANIFEST             "..\\res\\Notepad3.exe.manifest"
 
 /////////////////////////////////////////////////////////////////////////////
 //

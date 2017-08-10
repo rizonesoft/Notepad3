@@ -116,6 +116,13 @@
     <PreBuildEvent>
       <Command>Version.exe</Command>
     </PreBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <InputResourceManifests>
+      </InputResourceManifests>
+      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
+      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -155,6 +162,13 @@
     <PreBuildEvent>
       <Command>Version.exe</Command>
     </PreBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <InputResourceManifests>
+      </InputResourceManifests>
+      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
+      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
@@ -173,6 +187,13 @@
       </PrecompiledHeaderOutputFile>
       <PrecompiledHeaderFile />
     </ClCompile>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <InputResourceManifests>
+      </InputResourceManifests>
+      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
+      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
@@ -190,6 +211,13 @@
       </PrecompiledHeaderOutputFile>
       <PrecompiledHeaderFile />
     </ClCompile>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <InputResourceManifests>
+      </InputResourceManifests>
+      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
+      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Dialogs.c" />
