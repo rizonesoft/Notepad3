@@ -28,6 +28,8 @@
 #include "helpers.h"
 #include "resource.h"
 
+extern HINSTANCE g_hInstance;
+extern UINT16 g_uWinVer;
 
 //=============================================================================
 //
