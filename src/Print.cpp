@@ -33,7 +33,7 @@ extern "C" {
 
 
 extern "C" HINSTANCE g_hInstance;
-
+extern "C" HWND hwndEdit;
 
 // Global settings...
 extern "C" int iPrintHeader;

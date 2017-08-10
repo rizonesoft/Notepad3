@@ -21,6 +21,8 @@ see ecryption-doc.txt for details
 #include "rijndael-api-fst.h"
 #include "crypto.h"
 
+extern HINSTANCE g_hInstance;
+
 #define WKEY_LEN 256
 #define KEY_LEN  512
 #define PAD_SLOP 16
