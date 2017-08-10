@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Quelldateien">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Headerdateien">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Ressourcendateien">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="crypto">
+      <UniqueIdentifier>{3f9cf2f1-2454-45d8-a2ed-02e3a66581e8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\crypto\crypto.h">
+      <Filter>crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\crypto\rijndael-alg-fst.h">
+      <Filter>crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\crypto\rijndael-api-fst.h">
+      <Filter>crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="..\crypto\sha-256.h">
+      <Filter>crypto</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="np3encrypt.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crypto\rijndael-alg-fst.c">
+      <Filter>crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crypto\rijndael-api-fst.c">
+      <Filter>crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crypto\sha-256.c">
+      <Filter>crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="..\crypto\notepadcrypt.c">
+      <Filter>crypto</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

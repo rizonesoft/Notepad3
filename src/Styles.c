@@ -32,6 +32,7 @@
 #include "resource.h"
 #include "SciCall.h"
 
+extern HINSTANCE g_hInstance;
 extern int iEncoding;
 
 

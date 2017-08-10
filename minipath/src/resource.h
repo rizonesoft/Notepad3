@@ -2,7 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by minipath.rc
 //
-#define IDR_RT_MANIFEST                 99
+#define IDR_RT_MANIFEST                   1
 #define IDR_MAINWND                     100
 #define IDC_COMMANDLINE                 100
 #define IDD_ABOUT                       100

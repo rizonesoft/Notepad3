@@ -34,6 +34,7 @@
 #include "SciCall.h"
 #include "../crypto/crypto.h"
 
+extern UINT16 g_uWinVer;
 extern HWND  hwndMain;
 extern HWND  hwndEdit;
 extern HINSTANCE g_hInstance;

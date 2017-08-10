@@ -261,8 +261,10 @@ int main(int argc, char *argv[])
         err++;
     }
     if (err) {
-        printf("notepadcrypt - command line file encrypt/decrypt compatible with notepad2\n"
-               "Usage: notepadcrypt {ef em df dm} source destination {passphrase} {passphrase}\n\n");
+        printf("\n%s - command line file encrypt/decrypt compatible with Notepad3\n\n"
+               "Usage: %s {ef em df dm} source destination {passphrase} {passphrase}\n", argv[0], argv[0]);
+        printf("       ef - encrypt w/filekey\n       em - encrypt w/masterkey\n"
+               "       df - decrypt w/filekey\n       dm - decrypt w/masterkey\n\n");
     }
 
     return err;

@@ -13,11 +13,6 @@
 *                                                                             *
 *******************************************************************************/
 
-#include "scintilla.h"
-
-extern HINSTANCE g_hInstance;
-extern UINT16 g_uWinVer;
-
 
 #define UNUSED(expr) (void)(expr)
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
@@ -49,18 +44,9 @@ __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
 }
 
 
-extern HWND hwndEdit;
-__inline void BeginWaitCursor()
-{
-  SendMessage(hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORWAIT,0);
-}
-__inline void EndWaitCursor()
-{
-  POINT pt;
-  SendMessage(hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORNORMAL,0);
-  GetCursorPos(&pt);
-  SetCursorPos(pt.x,pt.y);
-}
+//extern HWND hwndEdit;
+#define BeginWaitCursor() SendMessage(hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORWAIT,0)
+#define EndWaitCursor() { POINT pt; SendMessage(hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORNORMAL,0); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); }
 
 
 #define Is2k()    (g_uWinVer >= 0x0500)
