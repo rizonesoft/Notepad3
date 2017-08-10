@@ -3,6 +3,12 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 422 (10 August 2017)
+--------------------------------------------------
+- Cleanup manifest handling
+- Minipath DPI aware false
+
+--------------------------------------------------
 Version 2 Build 411 (9 August 2017)
 --------------------------------------------------
 - Reintroduce HighDPI toolbar
