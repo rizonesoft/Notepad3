@@ -263,10 +263,8 @@
       <ManifestFile />
     </Link>
     <PreBuildEvent>
-      <Command>
-      </Command>
-      <Message>
-      </Message>
+      <Command>..\Version.exe</Command>
+      <Message>Generating version number...</Message>
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>_WIN64;BOOKMARK_EDITION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
