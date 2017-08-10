@@ -114,6 +114,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <ManifestFile />
     </Link>
     <PreBuildEvent>
       <Command>..\Version.exe</Command>
@@ -136,7 +137,8 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
-      <ResourceOutputFileName>$(IntDir)$(TargetName)$(TargetExt).embed.manifest.res</ResourceOutputFileName>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
     </ManifestResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,6 +161,7 @@
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <ManifestFile />
     </Link>
     <PreBuildEvent>
       <Command>
@@ -183,7 +186,8 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
-      <ResourceOutputFileName>$(IntDir)$(TargetName)$(TargetExt).embed.manifest.res</ResourceOutputFileName>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
     </ManifestResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -208,6 +212,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <ManifestFile />
     </Link>
     <PreBuildEvent>
       <Command>..\Version.exe</Command>
@@ -230,7 +235,8 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
-      <ResourceOutputFileName>$(IntDir)$(TargetName)$(TargetExt).embed.manifest.res</ResourceOutputFileName>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
     </ManifestResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -254,6 +260,7 @@
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalLibraryDirectories>$(IntermediateOutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <ManifestFile />
     </Link>
     <PreBuildEvent>
       <Command>
@@ -278,7 +285,8 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
-      <ResourceOutputFileName>$(IntDir)$(TargetName)$(TargetExt).embed.manifest.res</ResourceOutputFileName>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
     </ManifestResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
