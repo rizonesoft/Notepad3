@@ -22,8 +22,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 // RT_MANIFEST
 //
-
-IDR_RT_MANIFEST         RT_MANIFEST             "..\\res\\minipath.exe.manifest"
+//~~~ Linker generated and merged & embedded by manifesttool
+//~~~IDR_RT_MANIFEST         RT_MANIFEST             "..\\res\\minipath.exe.manifest"
 
 /////////////////////////////////////////////////////////////////////////////
 //

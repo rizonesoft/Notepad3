@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="C/C++ Source Files">
+      <UniqueIdentifier>{5553d3c0-044f-438f-b1b2-867093fe3ae1}</UniqueIdentifier>
+      <Extensions>c;cpp</Extensions>
+    </Filter>
+    <Filter Include="H Source Files">
+      <UniqueIdentifier>{e1f8cff3-413c-4dc8-948b-890b217e91a9}</UniqueIdentifier>
+      <Extensions>h;hpp</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{2dcd5d78-6817-4e88-95dd-45317fb30c57}</UniqueIdentifier>
+      <Extensions>rc;manifest;ver</Extensions>
+    </Filter>
+    <Filter Include="Image Files">
+      <UniqueIdentifier>{ed5af34a-ecde-4869-92de-751b5f039b98}</UniqueIdentifier>
+      <Extensions>bmp;ico;cur</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Dialogs.c">
+      <Filter>C/C++ Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dlapi.c">
+      <Filter>C/C++ Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dropsource.cpp">
+      <Filter>C/C++ Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Helpers.c">
+      <Filter>C/C++ Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\minipath.c">
+      <Filter>C/C++ Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Dialogs.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dlapi.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dropsource.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Helpers.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\version.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\minipath.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Hover.cur">
+      <Filter>Image Files</Filter>
+    </None>
+    <None Include="res\crosshair.cur">
+      <Filter>Image Files</Filter>
+    </None>
+    <None Include="src\minipath.ver">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Folder.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\Goto.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\Items.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\Open.bmp">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\Options.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\Options2.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\Progs.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\Run.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\cross1.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\cross2.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\metapath.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+    <Image Include="res\MiniPath.ico">
+      <Filter>Image Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="res\minipath.exe.manifest">
+      <Filter>Resource Files</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\minipath.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
