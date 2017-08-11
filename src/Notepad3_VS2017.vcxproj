@@ -79,7 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>true</GenerateManifest>
     <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -91,7 +91,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <GenerateManifest>true</GenerateManifest>
     <IntDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -107,6 +107,7 @@
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <OmitFramePointers />
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -154,7 +155,8 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <OmitFramePointers>false</OmitFramePointers>
+      <OmitFramePointers>
+      </OmitFramePointers>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -207,7 +209,6 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
@@ -256,7 +257,6 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>

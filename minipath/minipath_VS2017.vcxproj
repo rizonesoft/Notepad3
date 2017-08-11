@@ -94,6 +94,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeaderFile />
       <TreatWarningAsError>true</TreatWarningAsError>
+      <OmitFramePointers />
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
@@ -146,6 +147,8 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <PrecompiledHeaderFile />
       <TreatWarningAsError>true</TreatWarningAsError>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <OmitFramePointers />
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
@@ -231,6 +234,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Manifest>
       <EnableDpiAwareness>false</EnableDpiAwareness>
