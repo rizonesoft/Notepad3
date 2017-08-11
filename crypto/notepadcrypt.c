@@ -34,7 +34,7 @@ typedef struct AES_file
 
 void gen_iv(unsigned char *buf, int size)
 {
-    while (--size >= 0) buf[size] = size;//+= CM_random();
+    while (--size >= 0) buf[size] = (unsigned char)size; //+= CM_random();
 }
 /* @func
 open a file, possibly encrypted using notepad2 format, for reading and decryption.
@@ -72,7 +72,7 @@ long ROpen_AES
         if (lbuf[0] == PREAMBLE) {
             switch (lbuf[1]) {
             default:
-                printf("File %s is encrypted with an unsupported format: %d", name, lbuf[1]);
+                printf("File %s is encrypted with an unsupported format: %lu", name, lbuf[1]);
                 fclose(file);
                 return(1);
             case MASTERKEY_FORMAT:

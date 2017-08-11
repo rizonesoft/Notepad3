@@ -16,6 +16,7 @@
 
 typedef struct _editstyle
 {
+  #pragma warning(disable : 4201)  // MS's Non-Std: Struktur/Union ohne Namen
   union
   {
     INT32 iStyle;
@@ -35,7 +36,7 @@ typedef struct _keywordlist
 
 } KEYWORDLIST, *PKEYWORDLIST;
 
-
+#pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Struktur/Union
 typedef struct _editlexer
 {
   int iLexer;

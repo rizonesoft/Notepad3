@@ -13,7 +13,7 @@
 #define UNUSED(expr) (void)(expr)
 
 BOOL EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD *written);
-BOOL ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void **lpdata, DWORD *cbdata);
+BOOL ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD *resultlen);
 BOOL GetFileKey(HWND hwnd);
 void ResetEncryption();
 #endif

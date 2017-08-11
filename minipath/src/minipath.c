@@ -212,7 +212,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (!InitApplication(hInstance))
     return FALSE;
 
-  if (!(hwnd = InitInstance(hInstance,lpCmdLine,nCmdShow)))
+  hwnd = InitInstance(hInstance, lpCmdLine, nCmdShow);
+  if (!hwnd)
     return FALSE;
 
   hAcc = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
@@ -225,14 +226,12 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
       DispatchMessage(&msg);
     }
   }
-
+  
   OleUninitialize();
 
+  UNUSED(hPrevInst);
+  
   return(int)(msg.wParam);
-
-  hPrevInst;
-  lpCmdLine;
-
 }
 
 
@@ -270,7 +269,8 @@ BOOL InitApplication(HINSTANCE hInstance)
 HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 {
 
-  RECT rc = { wi.x, wi.y, wi.x+wi.cx, wi.y+wi.cy };
+  RECT rc;
+  rc.left = wi.x;  rc.top = wi.y;  rc.right = wi.x + wi.cx;  rc.bottom = wi.y + wi.cy;
   RECT rc2;
   MONITORINFO mi;
 
@@ -379,6 +379,9 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   // Update Dirlist
   if (!ListView_GetItemCount(hwndDirList))
     PostMessage(hwndMain,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
+
+
+  UNUSED(pszCmdLine);
 
   return(hwndMain);
 
@@ -568,7 +571,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_CONTEXTMENU:
     {
       HMENU hmenu;
-      int   imenu;
+      int   imenu = 0;
       DWORD dwpts;
       int   nID = GetDlgCtrlID((HWND)wParam);
 
@@ -839,8 +842,9 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   InsertMenu(hmenu,SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_ABOUT,tch);
   InsertMenu(hmenu,SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
 
-  return(0);
+  UNUSED(wParam);
 
+  return(0);
 }
 
 
@@ -911,7 +915,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   {
     if (!SearchPath(NULL,tchToolbarBitmapHot,NULL,COUNTOF(szTmp),szTmp,NULL))
       lstrcpy(szTmp,tchToolbarBitmapHot);
-    if (hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE))
+
+    hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
@@ -927,7 +933,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   {
     if (!SearchPath(NULL,tchToolbarBitmapDisabled,NULL,COUNTOF(szTmp),szTmp,NULL))
       lstrcpy(szTmp,tchToolbarBitmapDisabled);
-    if (hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE))
+
+    hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
@@ -1079,6 +1087,11 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,MAKELONG(rc.right,rc.bottom));
 
   StatusSetText(hwndStatus,ID_FILEINFO,chStatus);
+
+  UNUSED(hwnd);
+  UNUSED(wParam);
+  UNUSED(lParam);
+
 }
 
 
@@ -1154,6 +1167,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SendMessage(hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
   InvalidateRect(hwndStatus,NULL,TRUE);
 
+  UNUSED(hwnd);
 }
 
 
@@ -1207,6 +1221,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   i = (lstrlen(szIniFile) > 0 || lstrlen(szIniFile2) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,i);
 
+  UNUSED(hwnd);
+  UNUSED(wParam);
+  UNUSED(lParam);
 }
 
 
@@ -2068,7 +2085,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
               if (PathFileExists(szFullPath))
               {
                 lstrcpy(szDir,szFullPath);
-                if (p = StrRChr(szDir,NULL,L'\\'))
+                p = StrRChr(szDir, NULL, L'\\');
+                if (p)
                 {
                   *(p+1) = 0;
                   if (!PathIsRoot(szDir))
@@ -2305,8 +2323,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   }
 
-  return(0);
+  UNUSED(wParam);
+  UNUSED(lParam);
 
+  return(0);
 }
 
 
@@ -2521,9 +2541,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   }
 
+  UNUSED(wParam);
 
   return(0);
-
 }
 
 
@@ -2824,10 +2844,6 @@ void LoadSettings()
 //
 void SaveSettings(BOOL bSaveSettingsNow)
 {
-
-  WCHAR *pIniSection = NULL;
-  int   cbIniSection = 0;
-
   WCHAR wchTmp[MAX_PATH];
 
   if (lstrlen(szIniFile) == 0)
@@ -2842,8 +2858,8 @@ void SaveSettings(BOOL bSaveSettingsNow)
     return;
   }
 
-  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+  //int cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
   IniSectionSetInt(pIniSection,L"SaveSettings",bSaveSettings);
   IniSectionSetInt(pIniSection,L"SingleClick",bSingleClick);
@@ -3224,16 +3240,14 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 
   if (*lpszIniFile) {
 
-    HANDLE hFile;
-    WCHAR *pwchTail;
-
-    if (pwchTail = StrRChrW(lpszIniFile,NULL,L'\\')) {
+    WCHAR *pwchTail = StrRChrW(lpszIniFile, NULL, L'\\');
+    if (pwchTail) {
       *pwchTail = 0;
       SHCreateDirectoryEx(NULL,lpszIniFile,NULL);
       *pwchTail = L'\\';
     }
 
-    hFile = CreateFile(lpszIniFile,
+    HANDLE hFile = CreateFile(lpszIniFile,
               GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
               NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
     if (hFile != INVALID_HANDLE_VALUE) {
@@ -3299,15 +3313,14 @@ BOOL DisplayPath(LPCWSTR lpPath,UINT uIdError)
 
     else // dwAttr & FILE_ATTRIBUTE_DIRECTORY
     {
-      WCHAR *p;
-      SHFILEINFO shfi;
-
       // szPath will be modified...
       lstrcpy(szTmp,szPath);
 
+      SHFILEINFO shfi;
       SHGetFileInfo(szPath,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
 
-      if (p = StrRChr(szPath,NULL,L'\\'))
+      WCHAR *p = StrRChr(szPath, NULL, L'\\');
+      if (p)
       {
         *(p+1) = 0;
         if (!PathIsRoot(szPath))
@@ -3394,7 +3407,6 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
 
     else // dwAttr & FILE_ATTRIBUTE_DIRECTORY
     {
-      WCHAR *p;
       int  i;
       SHFILEINFO  shfi;
       LV_FINDINFO lvfi;
@@ -3404,7 +3416,8 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
 
       SHGetFileInfo(szPath,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
 
-      if (p = StrRChr(szPath,NULL,L'\\'))
+      WCHAR *p = StrRChr(szPath, NULL, L'\\');
+      if (p)
       {
         *(p+1) = 0;
         if (!PathIsRoot(szPath))

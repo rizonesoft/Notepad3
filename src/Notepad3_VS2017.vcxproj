@@ -102,10 +102,11 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;STATIC_BUILD;SCI_LEXER;BOOKMARK_EDITION;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;STATIC_BUILD;SCI_LEXER;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -149,10 +150,12 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WIN64;STATIC_BUILD;SCI_LEXER;BOOKMARK_EDITION;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN64;STATIC_BUILD;SCI_LEXER;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <OmitFramePointers>false</OmitFramePointers>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -193,13 +196,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>WIN32;STATIC_BUILD;SCI_LEXER;BOOKMARK_EDITION;NDEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <OmitFramePointers />
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -244,10 +248,11 @@
       <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_WIN64;STATIC_BUILD;SCI_LEXER;BOOKMARK_EDITION;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN64;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>

@@ -470,33 +470,42 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         GetString(IDS_PRINT_HEADER,tch,COUNTOF(tch));
         lstrcat(tch,L"|");
         p1 = tch;
-        while (p2 = StrChr(p1,L'|')) {
+        p2 = StrChr(p1, L'|');
+        while (p2) {
           *p2++ = L'\0';
           if (*p1)
             SendDlgItemMessage(hwnd,32,CB_ADDSTRING,0,(LPARAM)p1);
-          p1 = p2; }
+          p1 = p2;
+          p2 = StrChr(p1, L'|');  // next
+        }
         SendDlgItemMessage(hwnd,32,CB_SETCURSEL,(WPARAM)iPrintHeader,0);
 
         // Set footer options
         GetString(IDS_PRINT_FOOTER,tch,COUNTOF(tch));
         lstrcat(tch,L"|");
         p1 = tch;
-        while (p2 = StrChr(p1,L'|')) {
+        p2 = StrChr(p1, L'|');
+        while (p2) {
           *p2++ = L'\0';
           if (*p1)
             SendDlgItemMessage(hwnd,33,CB_ADDSTRING,0,(LPARAM)p1);
-          p1 = p2; }
+          p1 = p2;
+          p2 = StrChr(p1, L'|');  // next
+        }
         SendDlgItemMessage(hwnd,33,CB_SETCURSEL,(WPARAM)iPrintFooter,0);
 
         // Set color options
         GetString(IDS_PRINT_COLOR,tch,COUNTOF(tch));
         lstrcat(tch,L"|");
         p1 = tch;
-        while (p2 = StrChr(p1,L'|')) {
+        p2 = StrChr(p1, L'|');
+        while (p2) {
           *p2++ = L'\0';
           if (*p1)
             SendDlgItemMessage(hwnd,34,CB_ADDSTRING,0,(LPARAM)p1);
-          p1 = p2; }
+          p1 = p2;
+          p2 = StrChr(p1, L'|');  // next
+        }
         SendDlgItemMessage(hwnd,34,CB_SETCURSEL,(WPARAM)iPrintColor,0);
 
         // Make combos handier
@@ -526,6 +535,9 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
     default:
       break;
   }
+
+  UNUSED(lParam);
+
   return(0);
 }
 

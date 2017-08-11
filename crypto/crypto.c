@@ -209,64 +209,53 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     switch (umsg) {
 
     case WM_INITDIALOG:
-    {
-        int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
-        ShowWindow(GetDlgItem(hDlg, IDC_STATICPW), vis);
-        ShowWindow(GetDlgItem(hDlg, IDC_CHECK3), vis);
-        //@@@SetDlgItemText( hDlg, IDC_EDIT3, fileKey );
-        SetDlgItemText(hDlg, IDC_EDIT3, unicodeFileKey);
-        CheckDlgButton(hDlg, IDC_CHECK3, BST_UNCHECKED);
-        CenterDlgInParent(hDlg);
-        // Don't use: SetFocus( GetDlgItem( hDlg, IDC_EDIT3 ) );
-        SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_EDIT3));
-    }
-
-    return TRUE;
-    break;
+      {
+          int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
+          ShowWindow(GetDlgItem(hDlg, IDC_STATICPW), vis);
+          ShowWindow(GetDlgItem(hDlg, IDC_CHECK3), vis);
+          //@@@SetDlgItemText( hDlg, IDC_EDIT3, fileKey );
+          SetDlgItemText(hDlg, IDC_EDIT3, unicodeFileKey);
+          CheckDlgButton(hDlg, IDC_CHECK3, BST_UNCHECKED);
+          CenterDlgInParent(hDlg);
+          // Don't use: SetFocus( GetDlgItem( hDlg, IDC_EDIT3 ) );
+          SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_EDIT3));
+      }
+      return TRUE;
+      break;
 
     case WM_COMMAND:
 
         switch (LOWORD(wParam)) {
-
         case IDOK:
-        {
+          {
+              BOOL useMas = (IsDlgButtonChecked(hDlg, IDC_CHECK3) == BST_CHECKED);
+              WCHAR newKey[WKEY_LEN] = L"\0";
+              GetDlgItemText(hDlg, IDC_EDIT3, newKey, COUNTOF(newKey));
 
-            BOOL useMas = (IsDlgButtonChecked(hDlg, IDC_CHECK3) == BST_CHECKED);
-            WCHAR newKey[WKEY_LEN] = L"\0";
-            GetDlgItemText(hDlg, IDC_EDIT3, newKey, COUNTOF(newKey));
-
-            if (useMas) {
-                //@@@lstrcpyn( masterKey, newKey, WKEY_LEN );
-                memcpy(unicodeMasterKey, newKey, sizeof(unicodeMasterKey));
-                unicodeStringCpy(masterKey, unicodeMasterKey, sizeof(masterKey));
-                useFileKey = FALSE;
-                useMasterKey = TRUE;
-            }
-            else {
-                //lstrcpyn( fileKey, newKey, WKEY_LEN );
-                memcpy(unicodeFileKey, newKey, sizeof(unicodeFileKey));
-                unicodeStringCpy(fileKey, unicodeFileKey, sizeof(fileKey));
-                useFileKey = TRUE;
-                useMasterKey = FALSE;
-            }
-
-            EndDialog(hDlg, IDOK);
-
-            return(TRUE);
-            break;
-        }
+              if (useMas) {
+                  memcpy(unicodeMasterKey, newKey, sizeof(unicodeMasterKey));
+                  unicodeStringCpy(masterKey, unicodeMasterKey, sizeof(masterKey));
+                  useFileKey = FALSE;
+                  useMasterKey = TRUE;
+              }
+              else {
+                  memcpy(unicodeFileKey, newKey, sizeof(unicodeFileKey));
+                  unicodeStringCpy(fileKey, unicodeFileKey, sizeof(fileKey));
+                  useFileKey = TRUE;
+                  useMasterKey = FALSE;
+              }
+              EndDialog(hDlg, IDOK);
+          }
+          return(TRUE);
+          break;
 
         case IDCANCEL:
             EndDialog(hDlg, IDCANCEL);
             break;
-
         }
-
         break;
     }
-
     return FALSE;
-
 }
 
 
@@ -406,7 +395,6 @@ BOOL ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWOR
 BOOL EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD *written)
 {
     UNUSED(hwnd);
-    static int sequence = 1;	// sequence counter so each time is unique
 
     if (useFileKey || hasMasterFileKey) {
         AES_keyInstance fileEncode;		// encryption key for the file
@@ -418,6 +406,7 @@ BOOL EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
         PREAMBLE_data[0] = PREAMBLE;
         PREAMBLE_data[1] = FILEKEY_FORMAT;
 
+        static int sequence = 1;	// sequence counter so each time is unique
         srand(sequence++ ^ (unsigned int)time(NULL));
         {
             int i; for (i = 0; i < AES_MAX_IV_SIZE; i++) {

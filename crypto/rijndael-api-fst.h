@@ -121,9 +121,17 @@ typedef struct
 /*  Function prototypes  */
 void AES_keygen(char *passphrase, BYTE key[32]);
 
-int AES_setup(AES_keyInstance *key, AES_MODES direction, int keyLen, char *xkeyMaterial);
+int AES_setup
+(AES_keyInstance *key,  // @parm the <t AES_keyInstance> to be initialized
+ AES_MODES direction,   // @parm either <e AES_MODES.AES_DIR_ENCRYPT> or <e AES_MODES.AES_DIR_DECRYPT>
+ int keyLen,            // @parm the length of the key in bits (better be 256)
+ char *TheKey);         // @parm the key itself, a hex string
 
-int AES_bin_setup(AES_keyInstance *key, AES_MODES direction, int keyLen, BYTE *xkeyMaterial);
+int AES_bin_setup
+(AES_keyInstance *key,  // @parm the <t AES_keyInstance> to be initialized
+ AES_MODES direction,   // @parm either <e AES_MODES.AES_DIR_ENCRYPT> or <e AES_MODES.AES_DIR_DECRYPT>
+ int keyLen,            // @parm the length of the key in bits (better be 256)
+ BYTE *cipherKey);      // @parm the key itself, keyLen/8 bytes
 
 int AES_cipherInit(AES_cipherInstance *cipher, AES_MODES mode, char *IV);
 
@@ -143,7 +151,7 @@ int AES_padDecrypt(AES_cipherInstance *cipher, AES_keyInstance *key,
 
 #ifdef INTERMEDIATE_VALUE_KAT
 int cipherUpdateRounds(AES_cipherInstance *cipher, AES_keyInstance *key,
-        BYTE *input, int inputLen, BYTE *outBuffer, int Rounds);
+                       BYTE *input, int inputLen, BYTE *outBuffer, int rounds);
 #endif /* INTERMEDIATE_VALUE_KAT */
 
 #endif /* __RIJNDAEL_API_FST_H */

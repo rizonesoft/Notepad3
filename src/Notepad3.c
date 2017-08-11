@@ -264,22 +264,7 @@ UINT      msgTaskbarCreated = 0;
 
 HMODULE   hModUxTheme = NULL;
 
-EDITFINDREPLACE efrData = { 
-   ""
-  ,"" 
-  ,"" 
-  ,"" 
-  ,0 
-  ,0 
-  ,0 
-  ,0 
-  ,0 
-  ,0 
-  ,NULL
-#ifdef BOOKMARK_EDITION
-  ,0
-#endif
-};
+EDITFINDREPLACE efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, NULL };
 UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
 
@@ -311,67 +296,65 @@ WCHAR     g_wchWorkingDirectory[MAX_PATH] = L"";
 
 
 
-#ifdef BOOKMARK_EDITION
-    //Graphics for bookmark indicator
-    /* XPM */
-    static char * bookmark_pixmap[] = {
-    "11 11 44 1",
-    " 	c #EBE9ED",
-    ".	c #E5E3E7",
-    "+	c #767C6D",
-    "@	c #2A3120",
-    "#	c #1B2312",
-    "$	c #333B28",
-    "%	c #E3E1E5",
-    "&	c #D8D6DA",
-    "*	c #444D38",
-    "=	c #3F5C19",
-    "-	c #63AD00",
-    ";	c #73C900",
-    ">	c #64AF00",
-    ",	c #3D5718",
-    "'	c #3E4634",
-    ")	c #7B8172",
-    "!	c #42601A",
-    "~	c #74CB00",
-    "{	c #71C600",
-    "]	c #3A5317",
-    "^	c #707668",
-    "/	c #3F4931",
-    "(	c #262C1D",
-    "_	c #2F3A1E",
-    ":	c #72C700",
-    "<	c #74CA00",
-    "[	c #0E1109",
-    "}	c #3C462F",
-    "|	c #62AC00",
-    "1	c #21271A",
-    "2	c #7A8071",
-    "3	c #405D19",
-    "4	c #3D5A18",
-    "5	c #D9D7DB",
-    "6	c #4E5841",
-    "7	c #72C800",
-    "8	c #63AC00",
-    "9	c #3F5B19",
-    "0	c #3D4533",
-    "a	c #DFDDE0",
-    "b	c #353E29",
-    "c	c #29331B",
-    "d	c #7B8272",
-    "e	c #DDDBDF",
-    "           ",
-    "  .+@#$+%  ",
-    " &*=-;>,'  ",
-    " )!~~~~{]^ ",
-    " /-~~~~~>( ",
-    " _:~~~~~<[ ",
-    " }|~~~~~|1 ",
-    " 23~~~~;4+ ",
-    " 56=|7890  ",
-    "  a2bc}de  ",
-    "           "};
-#endif
+  //Graphics for bookmark indicator
+  /* XPM */
+  static char * bookmark_pixmap[] = {
+  "11 11 44 1",
+  " 	c #EBE9ED",
+  ".	c #E5E3E7",
+  "+	c #767C6D",
+  "@	c #2A3120",
+  "#	c #1B2312",
+  "$	c #333B28",
+  "%	c #E3E1E5",
+  "&	c #D8D6DA",
+  "*	c #444D38",
+  "=	c #3F5C19",
+  "-	c #63AD00",
+  ";	c #73C900",
+  ">	c #64AF00",
+  ",	c #3D5718",
+  "'	c #3E4634",
+  ")	c #7B8172",
+  "!	c #42601A",
+  "~	c #74CB00",
+  "{	c #71C600",
+  "]	c #3A5317",
+  "^	c #707668",
+  "/	c #3F4931",
+  "(	c #262C1D",
+  "_	c #2F3A1E",
+  ":	c #72C700",
+  "<	c #74CA00",
+  "[	c #0E1109",
+  "}	c #3C462F",
+  "|	c #62AC00",
+  "1	c #21271A",
+  "2	c #7A8071",
+  "3	c #405D19",
+  "4	c #3D5A18",
+  "5	c #D9D7DB",
+  "6	c #4E5841",
+  "7	c #72C800",
+  "8	c #63AC00",
+  "9	c #3F5B19",
+  "0	c #3D4533",
+  "a	c #DFDDE0",
+  "b	c #353E29",
+  "c	c #29331B",
+  "d	c #7B8272",
+  "e	c #DDDBDF",
+  "           ",
+  "  .+@#$+%  ",
+  " &*=-;>,'  ",
+  " )!~~~~{]^ ",
+  " /-~~~~~>( ",
+  " _:~~~~~<[ ",
+  " }|~~~~~|1 ",
+  " 23~~~~;4+ ",
+  " 56=|7890  ",
+  "  a2bc}de  ",
+  "           "};
 
 
 
@@ -702,8 +685,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   if (!InitApplication(hInstance))
     return FALSE;
-
-  if (!(hwnd = InitInstance(hInstance,lpCmdLine,nCmdShow)))
+  
+  hwnd = InitInstance(hInstance, lpCmdLine, nCmdShow);
+  if (!hwnd)
     return FALSE;
   
   if (IsVista()) {
@@ -737,6 +721,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     FreeLibrary(hModUxTheme);
 
   OleUninitialize();
+
+  UNUSED(hPrevInst);
 
   return(int)(msg.wParam);
 }
@@ -776,7 +762,8 @@ BOOL InitApplication(HINSTANCE hInstance)
 HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 {
 
-  RECT rc = { wi.x, wi.y, wi.x+wi.cx, wi.y+wi.cy };
+  RECT rc;
+  rc.left = wi.x;  rc.top = wi.y;  rc.right = wi.x + wi.cx;  rc.bottom = wi.y + wi.cy;
   RECT rc2;
   MONITORINFO mi;
 
@@ -914,7 +901,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
         bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
     }
     else {
-      if (bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,lpFileArg)) {
+      bOpened = FileLoad(FALSE, FALSE, FALSE, FALSE, lpFileArg);
+      if (bOpened) {
         if (flagJumpTo) { // Jump to position
           EditJumpTo(hwndEdit,iInitialLine,iInitialColumn);
           EditEnsureSelectionVisible(hwndEdit);
@@ -1050,6 +1038,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
   UpdateToolbar();
   UpdateStatusbar();
+
+  UNUSED(pszCmdLine);
 
   return(hwndMain);
 
@@ -1370,7 +1360,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             if (iSelStart == iSelEnd && pt.x != -1 && pt.y != -1)
             {
               int iNewPos;
-              POINT ptc = { pt.x, pt.y };
+              POINT ptc;
+              ptc.x = pt.x;  ptc.y = pt.y;
               ScreenToClient(hwndEdit,&ptc);
               iNewPos = (int)SendMessage(hwndEdit,SCI_POSITIONFROMPOINT,(WPARAM)ptc.x,(LPARAM)ptc.y);
               SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iNewPos,0);
@@ -1762,8 +1753,9 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
       hwndStatus == NULL || hwndToolbar == NULL || hwndReBar == NULL)
     return(-1);
 
-  return(0);
+  UNUSED(wParam);
 
+  return(0);
 }
 
 
@@ -1789,7 +1781,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
   DWORD dwReBarStyle = WS_REBAR;
 
-  BOOL bIsAppThemed = PrivateIsAppThemed();
+  BOOL bIsPrivAppThemed = PrivateIsAppThemed();
 
   int i,n;
   WCHAR tchDesc[256];
@@ -1836,7 +1828,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   {
     if (!SearchPath(NULL,tchToolbarBitmapHot,NULL,COUNTOF(szTmp),szTmp,NULL))
       lstrcpy(szTmp,tchToolbarBitmapHot);
-    if (hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE))
+
+    hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
@@ -1852,7 +1846,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   {
     if (!SearchPath(NULL,tchToolbarBitmapDisabled,NULL,COUNTOF(szTmp),szTmp,NULL))
       lstrcpy(szTmp,tchToolbarBitmapDisabled);
-    if (hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE))
+
+    hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
@@ -1929,7 +1925,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   rbBand.fMask   = /*RBBIM_COLORS | RBBIM_TEXT | RBBIM_BACKGROUND | */
                    RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
   rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
-  if (bIsAppThemed)
+  if (bIsPrivAppThemed)
     rbBand.fStyle |= RBBS_CHILDEDGE;
   rbBand.hbmBack = NULL;
   rbBand.lpText     = L"Toolbar";
@@ -1943,7 +1939,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   GetWindowRect(hwndReBar,&rc);
   cyReBar = rc.bottom - rc.top;
 
-  cyReBarFrame = bIsAppThemed ? 0 : 2;
+  cyReBarFrame = bIsPrivAppThemed ? 0 : 2;
 }
 
 
@@ -2002,6 +1998,10 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   GetClientRect(hwnd,&rc);
   SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,MAKELONG(rc.right,rc.bottom));
   UpdateStatusbar();
+
+  UNUSED(lParam);
+  UNUSED(wParam);
+  UNUSED(hwnd);
 }
 
 
@@ -2077,6 +2077,9 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SendMessage(hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
 
   //UpdateStatusbar();
+
+  UNUSED(hwnd);
+  UNUSED(lParam);
 
 }
 
@@ -2237,12 +2240,12 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_SELTOPREV,i && lstrlenA(efrData.szFind));
   EnableCmd(hmenu,IDM_EDIT_FINDMATCHINGBRACE,i);
   EnableCmd(hmenu,IDM_EDIT_SELTOMATCHINGBRACE,i);
-#ifdef BOOKMARK_EDITION
+
   EnableCmd(hmenu,BME_EDIT_BOOKMARKPREV,i);
   EnableCmd(hmenu,BME_EDIT_BOOKMARKNEXT,i);
   EnableCmd(hmenu,BME_EDIT_BOOKMARKTOGGLE,i);
   EnableCmd(hmenu,BME_EDIT_BOOKMARKCLEAR,i);
-#endif
+
   EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
   CheckCmd(hmenu,IDM_VIEW_FOLDING,bShowCodeFolding);
 
@@ -2333,6 +2336,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   i = (lstrlen(szIniFile) > 0 || lstrlen(szIniFile2) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,i);
 
+  UNUSED(lParam);
 }
 
 
@@ -3335,10 +3339,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (*mEncoding[iEncoding].pszParseNames) {
           char msz[32];
-          char *p;
           //int iSelStart;
           lstrcpynA(msz,mEncoding[iEncoding].pszParseNames,COUNTOF(msz));
-          if (p = StrChrA(msz,','))
+          char *p = StrChrA(msz, ',');
+          if (p)
             *p = 0;
           //iSelStart = SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
           SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)msz);
@@ -3676,9 +3680,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       }
       break;
 
-#ifdef BOOKMARK_EDITION    
     // Main Bookmark Functions
-    //case IDM_EDIT_BOOKMARKNEXT:
      case BME_EDIT_BOOKMARKNEXT:
     {
         int iPos = (int)SendMessage( hwndEdit , SCI_GETCURRENTPOS , 0 , 0);
@@ -3702,7 +3704,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         break;
     }
 
-    //case IMD_EDIT_BOOKMARKPREV:
     case BME_EDIT_BOOKMARKPREV:
     {
         int iPos = (int)SendMessage( hwndEdit , SCI_GETCURRENTPOS , 0 , 0);
@@ -3728,7 +3729,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         break;
     }
 
-    //case IDM_EDIT_BOOKMARKTOGGLE:
     case BME_EDIT_BOOKMARKTOGGLE:
     {
         int iPos = (int)SendMessage( hwndEdit , SCI_GETCURRENTPOS , 0 , 0);
@@ -3769,14 +3769,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         break;
     }
 
-    //case IDM_EDIT_BOOKMARKCLEAR:
     case BME_EDIT_BOOKMARKCLEAR:
     {
-        SendMessage( hwndEdit , SCI_MARKERDELETEALL , -1 , 0 );
+        SendMessage(hwndEdit,SCI_MARKERDELETEALL,(WPARAM)-1 ,0);
 
         break;
     }
-#endif
 
     case IDM_EDIT_FINDNEXT:
     case IDM_EDIT_FINDPREV:
@@ -4035,7 +4033,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bShowSelectionMargin = (bShowSelectionMargin) ? FALSE : TRUE;
       SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,1,(bShowSelectionMargin)?16:0);
 
-#ifdef BOOKMARK_EDITION
         //Depending on if the margin is visible or not, choose different bookmark indication
         if( bShowSelectionMargin )
         {
@@ -4047,7 +4044,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             SendMessage( hwndEdit , SCI_MARKERSETALPHA , 0 , 20);
             SendMessage( hwndEdit , SCI_MARKERDEFINE , 0 , SC_MARK_BACKGROUND );
         }
-#endif
 
       break;
 
@@ -4613,18 +4609,19 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         WCHAR wchFind[256] = {0};
         WCHAR wchTemplate[256] = {0};
-        WCHAR *pwchSep;
         WCHAR wchReplace[256];
 
         SYSTEMTIME st;
         struct tm sst;
 
         UINT cp;
-        EDITFINDREPLACE efrTS = { "", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, hwndEdit };
+        EDITFINDREPLACE efrTS = { "", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, 0, NULL };
+        efrTS.hwnd = hwndEdit;
 
         IniGetString(L"Settings2",L"TimeStamp",L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $",wchFind,COUNTOF(wchFind));
 
-        if (pwchSep = StrChr(wchFind,L'|')) {
+        WCHAR *pwchSep = StrChr(wchFind, L'|');
+        if (pwchSep) {
           lstrcpy(wchTemplate,pwchSep+1);
           *pwchSep = 0;
         }
@@ -5162,8 +5159,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   }
 
-  return(0);
+  UNUSED(wParam);
+  UNUSED(lParam);
 
+  return(0);
 }
 
 
@@ -5174,7 +5173,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 //
 LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
-
   LPNMHDR pnmh = (LPNMHDR)lParam;
   struct SCNotification* scn = (struct SCNotification*)lParam;
 
@@ -5214,8 +5212,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               int iEndStyled = (int)SendMessage(hwndEdit,SCI_GETENDSTYLED,0,0);
               if (iEndStyled < (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0)) {
                 int iLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iEndStyled,0);
-                int iEndStyled = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iLine,0);
-                SendMessage(hwndEdit,SCI_COLOURISE,iEndStyled,-1);
+                int iEndStyled2 = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iLine,0);
+                SendMessage(hwndEdit,SCI_COLOURISE,iEndStyled2,-1);
               }
 
               iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
@@ -5277,27 +5275,26 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               //int iLineLength = (int)SendMessage(hwndEdit,SCI_LINELENGTH,iCurLine,0);
               //int iIndentBefore = (int)SendMessage(hwndEdit,SCI_GETLINEINDENTATION,(WPARAM)iCurLine-1,0);
 
-#ifdef BOOKMARK_EDITION
-            // Move bookmark along with line if inserting lines (pressing return at beginning of line) because Scintilla does not do this for us
-            if( iCurLine > 0 )
-            {
-                int iPrevLineLength = (int)SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,iCurLine-1,0) - (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iCurLine-1,0)  ;
-                if( iPrevLineLength == 0 )
-                {
-                    int bitmask = (int)SendMessage( hwndEdit , SCI_MARKERGET , iCurLine-1 , 0 );
-                    if( bitmask & 1 )
-                    {
-                        SendMessage( hwndEdit , SCI_MARKERDELETE , iCurLine-1 , 0 );
-                        SendMessage( hwndEdit , SCI_MARKERADD , iCurLine , 0 );
-                    }
-                }
-            }
-#endif
+              // Move bookmark along with line if inserting lines (pressing return at beginning of line) because Scintilla does not do this for us
+              if( iCurLine > 0 )
+              {
+                  int iPrevLineLength = (int)SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,iCurLine-1,0) - (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iCurLine-1,0)  ;
+                  if( iPrevLineLength == 0 )
+                  {
+                      int bitmask = (int)SendMessage( hwndEdit , SCI_MARKERGET , iCurLine-1 , 0 );
+                      if( bitmask & 1 )
+                      {
+                          SendMessage( hwndEdit , SCI_MARKERDELETE , iCurLine-1 , 0 );
+                          SendMessage( hwndEdit , SCI_MARKERADD , iCurLine , 0 );
+                      }
+                  }
+              }
 
               if (iCurLine > 0/* && iLineLength <= 2*/)
               {
                 int iPrevLineLength = (int)SendMessage(hwndEdit,SCI_LINELENGTH,iCurLine-1,0);
-                if (pLineBuf = GlobalAlloc(GPTR,iPrevLineLength+1))
+                pLineBuf = GlobalAlloc(GPTR, iPrevLineLength + 1);
+                if (pLineBuf)
                 {
                   SendMessage(hwndEdit,SCI_GETLINE,iCurLine-1,(LPARAM)pLineBuf);
                   *(pLineBuf+iPrevLineLength) = '\0';
@@ -5352,7 +5349,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
               if (iSize >= 3) {
 
-                struct Sci_TextRange tr = { { iStartPos, iCurPos }, tchBuf };
+                struct Sci_TextRange tr;
+                tr.chrg.cpMin = iStartPos;  tr.chrg.cpMax = iCurPos;  tr.lpstrText = tchBuf;
+
                 SendMessage(hwndEdit,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
 
                 if (tchBuf[iSize - 2] != '/') {
@@ -5559,9 +5558,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   }
 
+  UNUSED(wParam);
 
   return(0);
-
 }
 
 
@@ -5601,10 +5600,8 @@ void LoadSettings()
   efrData.bTransformBS = IniSectionGetInt(pIniSection,L"FindTransformBS",0);
   if (efrData.bTransformBS) efrData.bTransformBS = TRUE;
 
-#ifdef BOOKMARK_EDITION
   efrData.bWildcardSearch = IniSectionGetInt(pIniSection,L"WildcardSearch",0);
   if (efrData.bWildcardSearch) efrData.bWildcardSearch = TRUE;
-#endif
 
   efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
@@ -5926,7 +5923,6 @@ void LoadSettings()
 //
 void SaveSettings(BOOL bSaveSettingsNow) {
   WCHAR *pIniSection = NULL;
-  int   cchIniSection = 0;
 
   WCHAR wchTmp[MAX_PATH];
 
@@ -5941,7 +5937,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   }
 
   pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * 32 * 1024);
-  cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
+  //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
   IniSectionSetInt(pIniSection, L"SaveSettings", bSaveSettings);
   IniSectionSetInt(pIniSection, L"SaveRecentFiles", bSaveRecentFiles);
@@ -6685,16 +6681,14 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 
   if (*lpszIniFile) {
 
-    HANDLE hFile;
-    WCHAR *pwchTail;
-
-    if (pwchTail = StrRChrW(lpszIniFile,NULL,L'\\')) {
+    WCHAR *pwchTail = StrRChrW(lpszIniFile, NULL, L'\\');
+    if (pwchTail) {
       *pwchTail = 0;
       SHCreateDirectoryEx(NULL,lpszIniFile,NULL);
       *pwchTail = L'\\';
     }
 
-    hFile = CreateFile(lpszIniFile,
+    HANDLE hFile = CreateFile(lpszIniFile,
               GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
               NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
     dwLastIOError = GetLastError();
@@ -6787,15 +6781,13 @@ void UpdateStatusbar()
   WCHAR tchOvrMode[32];
   WCHAR tchLexerName[128];
 
-#ifdef BOOKMARK_EDITION
-    int iSelStart;
-    int iSelEnd;
-    int iLineStart;
-    int iLineEnd;
-    int iStartOfLinePos;
-    int iLinesSelected;
-    WCHAR tchLinesSelected[32];
-#endif
+  int iSelStart;
+  int iSelEnd;
+  int iLineStart;
+  int iLineEnd;
+  int iStartOfLinePos;
+  int iLinesSelected;
+  WCHAR tchLinesSelected[32];
 
   if (!bShowStatusbar)
     return;
@@ -6828,30 +6820,21 @@ void UpdateStatusbar()
   else
     lstrcpy(tchSel,L"--");
 
-#ifdef BOOKMARK_EDITION
-    // Print number of lines selected lines in statusbar
-    iSelStart = (int)SendMessage( hwndEdit , SCI_GETSELECTIONSTART , 0 , 0 );
-    iSelEnd = (int)SendMessage( hwndEdit , SCI_GETSELECTIONEND , 0 , 0 );
-    iLineStart = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelStart , 0 );
-    iLineEnd = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelEnd , 0 );
-    iStartOfLinePos = (int)SendMessage( hwndEdit , SCI_POSITIONFROMLINE , iLineEnd , 0 );
-    iLinesSelected = iLineEnd - iLineStart;
-    if( iSelStart != iSelEnd  &&  iStartOfLinePos != iSelEnd ) iLinesSelected += 1;
-    wsprintf(tchLinesSelected,L"%i",iLinesSelected);
-    FormatNumberStr(tchLinesSelected);
-
-    if (!bMarkLongLines)
-        FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS,tchLn,tchLines,tchCol,tchSel,tchLinesSelected);
-    else
-        FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS2,tchLn,tchLines,tchCol,tchCols,tchSel,tchLinesSelected);
-
-#else
+  // Print number of lines selected lines in statusbar
+  iSelStart = (int)SendMessage( hwndEdit , SCI_GETSELECTIONSTART , 0 , 0 );
+  iSelEnd = (int)SendMessage( hwndEdit , SCI_GETSELECTIONEND , 0 , 0 );
+  iLineStart = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelStart , 0 );
+  iLineEnd = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelEnd , 0 );
+  iStartOfLinePos = (int)SendMessage( hwndEdit , SCI_POSITIONFROMLINE , iLineEnd , 0 );
+  iLinesSelected = iLineEnd - iLineStart;
+  if( iSelStart != iSelEnd  &&  iStartOfLinePos != iSelEnd ) iLinesSelected += 1;
+  wsprintf(tchLinesSelected,L"%i",iLinesSelected);
+  FormatNumberStr(tchLinesSelected);
 
   if (!bMarkLongLines)
-    FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS,tchLn,tchLines,tchCol,tchSel);
+      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS,tchLn,tchLines,tchCol,tchSel,tchLinesSelected);
   else
-    FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS2,tchLn,tchLines,tchCol,tchCols,tchSel);
-#endif
+      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS2,tchLn,tchLines,tchCol,tchCols,tchSel,tchLinesSelected);
 
   iBytes = (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
   StrFormatByteSize(iBytes,tchBytes,COUNTOF(tchBytes));
@@ -7042,7 +7025,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
                       GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
                       NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
       dwLastIOError = GetLastError();
-      if (fSuccess = (hFile != INVALID_HANDLE_VALUE)) {
+      fSuccess = (hFile != INVALID_HANDLE_VALUE);
+      if (fSuccess) {
         FileVars_Init(NULL,0,&fvCurFile);
         EditSetNewText(hwndEdit,"",0);
         Style_SetLexer(hwndEdit,NULL);
@@ -7201,7 +7185,8 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
 
     if (SaveFileDlg(hwndMain,tchFile,COUNTOF(tchFile),tchInitialDir))
     {
-      if (fSuccess = FileIO(FALSE,tchFile,FALSE,&iEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,bSaveCopy))
+      fSuccess = FileIO(FALSE, tchFile, FALSE, &iEncoding, &iEOLMode, NULL, NULL, &bCancelDataLoss, bSaveCopy);
+      if (fSuccess)
       {
         if (!bSaveCopy)
         {
@@ -8000,6 +7985,11 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
         FindNextChangeNotification(hChangeHandle);
     }
   }
+
+  UNUSED(dwTime);
+  UNUSED(idEvent);
+  UNUSED(uMsg);
+  UNUSED(hwnd);
 }
 
 
@@ -8029,6 +8019,11 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 
     dwLastCopyTime = 0;
   }
+
+  UNUSED(dwTime);
+  UNUSED(idEvent);
+  UNUSED(uMsg);
+  UNUSED(hwnd);
 }
 
 

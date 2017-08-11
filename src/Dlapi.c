@@ -20,6 +20,7 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <string.h>
+#include "helpers.h"
 #include "dlapi.h"
 
 
@@ -98,6 +99,8 @@ BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
   // Icon thread control
   lpdl->hExitThread = CreateEvent(NULL,TRUE,FALSE,NULL);
   lpdl->hTerminatedThread = CreateEvent(NULL,TRUE,TRUE,NULL);
+
+  UNUSED(pszHeader);
 
   return TRUE;
 }
@@ -414,7 +417,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
   if (!lpdl->lpsf) {
     SetEvent(lpdl->hTerminatedThread);
     ExitThread(0);
-    return(0);
+    //return(0);
   }
 
   hwnd = lpdl->hwnd;
@@ -500,7 +503,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
 
   SetEvent(lpdl->hTerminatedThread);
   ExitThread(0);
-  return(0);
+  //return(0);
 
 }
 
@@ -531,8 +534,10 @@ BOOL DirList_GetDispInfo(HWND hwnd,LPARAM lParam,BOOL bNoFadeHidden)
   // Set values
   lpdi->item.mask |= LVIF_DI_SETITEM;
 
-  return TRUE;
+  UNUSED(hwnd);
+  UNUSED(bNoFadeHidden);
 
+  return TRUE;
 }
 
 
@@ -675,9 +680,6 @@ int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
   LV_ITEM lvi;
   LPLV_ITEMDATA lplvid;
 
-  ULONG dwAttributes = SFGAO_FILESYSTEM;
-
-
   if (iItem == -1)
   {
 
@@ -735,6 +737,7 @@ int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
     lpdli->ntype = (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ?
                     DLE_DIR : DLE_FILE;
 
+    //ULONG dwAttributes = SFGAO_FILESYSTEM;
     /*lplvid->lpsf->lpVtbl->GetAttributesOf(
                             lplvid->lpsf,
                             1,
@@ -968,11 +971,12 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
   pdlf->nCount = 1;
   pdlf->pFilter[0] = &pdlf->tFilterBuf[0];    // Zeile zum Ausprobieren
 
-  WCHAR* p;
-  while (p = StrChr(pdlf->pFilter[pdlf->nCount-1],L';'))
+  WCHAR* p = StrChr(pdlf->pFilter[pdlf->nCount - 1], L';');
+  while (p)
   {
-    *p = L'\0';                              // Replace L';' by L'\0'
+    *p = L'\0';                             // Replace L';' by L'\0'
     pdlf->pFilter[pdlf->nCount] = (p + 1);  // Next position after L';'
+    p = StrChr(pdlf->pFilter[pdlf->nCount], L';');
     pdlf->nCount++;                         // Increase number of filters
   }
 
@@ -1174,20 +1178,19 @@ int DriveBox_Fill(HWND hwnd)
                 {
                   COMBOBOXEXITEM cbei2;
                   LPDC_ITEMDATA lpdcid2;
-                  HRESULT hr;
                   cbei2.mask = CBEIF_LPARAM;
                   cbei2.iItem = 0;
 
                   while ((SendMessage(hwnd,CBEM_GETITEM,0,(LPARAM)&cbei2)))
                   {
                     lpdcid2 = (LPDC_ITEMDATA)cbei2.lParam;
-                    hr = (lpdcid->lpsf->lpVtbl->CompareIDs(
+                    HRESULT hr2 = (lpdcid->lpsf->lpVtbl->CompareIDs(
                                 lpdcid->lpsf,
                                 0,
                                 lpdcid->pidl,
                                 lpdcid2->pidl));
 
-                    if ((short)(SCODE_CODE(GetScode(hr))) < 0)
+                    if ((short)(SCODE_CODE(GetScode(hr2))) < 0)
                       break;
                     else
                       cbei2.iItem++;
@@ -1436,8 +1439,9 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
   // Set values
   lpnmcbe->ceItem.mask |= CBEIF_DI_SETITEM;
 
-  return TRUE;
+  UNUSED(hwnd);
 
+  return TRUE;
 }
 
 
