@@ -6433,6 +6433,8 @@ void ParseCommandLine()
 
         case L'V':
           flagPrintFileAndLeave = 1;
+          if (*CharUpper(lp1 + 1) == L'D')
+            flagPrintFileAndLeave = 2;  // open printer dialog
           break;
 
         default:
