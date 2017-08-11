@@ -407,7 +407,7 @@ int flagQuietCreate        = 0;
 int flagUseSystemMRU       = 0;
 int flagRelaunchElevated   = 0;
 int flagDisplayHelp        = 0;
-
+int flagPrintFileAndLeave  = 0;
 
 
 //==============================================================================
@@ -938,7 +938,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   }
 
   else {
-    if (iSrcEncoding != -1) {
+    if (iSrcEncoding != CPI_NONE) {
       iEncoding = iSrcEncoding;
       iOriginalEncoding = iSrcEncoding;
       SendMessage(hwndEdit,SCI_SETCODEPAGE,Encoding_GetSciCodePage(iEncoding),0);
@@ -1051,8 +1051,32 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   UpdateToolbar();
   UpdateStatusbar();
 
-  return(hwndMain);
+  // print file immediately and quit
+  if (flagPrintFileAndLeave)
+  {
+    SHFILEINFO shfi;
+    WCHAR *pszTitle;
+    WCHAR tchUntitled[32];
+    WCHAR tchPageFmt[32];
 
+    if (lstrlen(szCurFile)) {
+      SHGetFileInfo2(szCurFile, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
+      pszTitle = shfi.szDisplayName;
+    }
+    else {
+      GetString(IDS_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
+      pszTitle = tchUntitled;
+    }
+
+    GetString(IDS_PRINT_PAGENUM, tchPageFmt, COUNTOF(tchPageFmt));
+
+    if (!EditPrint(hwndEdit, pszTitle, tchPageFmt))
+      MsgBox(MBWARN, IDS_PRINT_ERROR, pszTitle);
+
+    PostMessage(hwndMain, WM_CLOSE, 0, 0);
+  }
+  
+  return(hwndMain);
 }
 
 
@@ -6405,6 +6429,10 @@ void ParseCommandLine()
 
         case L'?':
           flagDisplayHelp = 1;
+          break;
+
+        case L'V':
+          flagPrintFileAndLeave = 1;
           break;
 
         default:
