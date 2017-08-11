@@ -252,7 +252,7 @@ BOOL      bLastCopyFromMe = FALSE;
 DWORD     dwLastCopyTime;
 
 UINT      uidsAppTitle = IDS_APPTITLE;
-WCHAR     szTitleExcerpt[128] = L"";
+WCHAR     szTitleExcerpt[256] = { L'\0' };
 int       fKeepTitleExcerpt = 0;
 
 HANDLE    hChangeHandle = NULL;
@@ -7843,7 +7843,7 @@ void SetNotifyIconTitle(HWND hwnd)
 
   NOTIFYICONDATA nid;
   SHFILEINFO shfi;
-  WCHAR tchTitle[128];
+  WCHAR tchTitle[256];
   WCHAR tchFormat[32];
 
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
