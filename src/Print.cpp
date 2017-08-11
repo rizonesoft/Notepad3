@@ -140,7 +140,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   }
 
   // |= 0 - Don't display dialog box, just use the default printer and options
-  pdlg.Flags |= flagPrintFileAndLeave ? PD_RETURNDEFAULT : 0;
+  pdlg.Flags |= (flagPrintFileAndLeave == 1) ? PD_RETURNDEFAULT : 0;
 
   if (!PrintDlg(&pdlg)) {
     return TRUE; // False means error...
