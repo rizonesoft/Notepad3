@@ -24,6 +24,7 @@ setlocal
 :: - (release) needs version patcher for 
 :: - (release) needs release version of Splasch img:  .\Notepad3Portable\App\AppInfo\Launcher\Splash.jpg
 :: - (release) adapt help files:  .\Notepad3Portable\Other\Help\
+:: - (release) review all distributed (Installe) text files
 :: - 
 :: - (optional?) needs distribution process to PortableApps.com's repository
 
@@ -40,31 +41,47 @@ set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\distrib\
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141_xp\
 set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141_xp\
 
-set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable\App\
+set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable\
 
 :: --------------------------------------------------------------------------------------------------------------------
 
 :: --- Prepare Build ---
 
-xcopy "%NP3_DISTRIB_DIR%Notepad3.ini" "%NP3_PORTAPP_DIR%DefaultData\settings\Notepad3.ini" /Y /V /C /R
-xcopy "%NP3_DISTRIB_DIR%minipath.ini" "%NP3_PORTAPP_DIR%DefaultData\settings\minipath.ini" /Y /V /C /R
+copy "%NP3_DISTRIB_DIR%Notepad3.ini" "%NP3_PORTAPP_DIR%App\DefaultData\settings\Notepad3.ini" /Y /V
+copy "%NP3_DISTRIB_DIR%minipath.ini" "%NP3_PORTAPP_DIR%App\DefaultData\settings\minipath.ini" /Y /V
 
-xcopy "%NP3_WIN32_DIR%Notepad3.exe" "%NP3_PORTAPP_DIR%Notepad3\" /Y /V /C /R
-xcopy "%NP3_WIN32_DIR%minipath.exe" "%NP3_PORTAPP_DIR%Notepad3\" /Y /V /C /R
-xcopy "%NP3_WIN32_DIR%np3encrypt.exe" "%NP3_PORTAPP_DIR%Notepad3\" /Y /V /C /R
+copy /B "%NP3_WIN32_DIR%Notepad3.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\" /Y /V
+copy /B "%NP3_WIN32_DIR%minipath.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\" /Y /V
+copy /B "%NP3_WIN32_DIR%np3encrypt.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\" /Y /V
 
-xcopy "%NP3_X64_DIR%Notepad3.exe" "%NP3_PORTAPP_DIR%Notepad3\x64\" /Y /V /C /R
-xcopy "%NP3_X64_DIR%minipath.exe" "%NP3_PORTAPP_DIR%Notepad3\x64\" /Y /V /C /R
-xcopy "%NP3_X64_DIR%np3encrypt.exe" "%NP3_PORTAPP_DIR%Notepad3\x64\" /Y /V /C /R
+copy /B "%NP3_X64_DIR%Notepad3.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\x64\" /Y /V
+copy /B "%NP3_X64_DIR%minipath.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\x64\" /Y /V
+copy /B "%NP3_X64_DIR%np3encrypt.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\x64\" /Y /V
 
 :: --------------------------------------------------------------------------------------------------------------------
 
 :: --- build Launcher and Installer Package ---
 
+:: - build Launcher -
+:: cmdline version of Launcher Generator does not work (the same as manual started GUI version)
+:: so manually generate Notepad3Portable.exe for now, 
+:: trying to figure out, what is going wrong later ...
+:: ~~~ "%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"
+:: --- instead of generating launcher, you have to use manually create Notepad3Portable.exe
+echo. Please choose dir "%NP3_PORTAPP_DIR%" to create Launcher (Notepad3Portable.exe)
+"%PORTAPP_LAUNCHER_CREATOR%"
+
+:: - build Installer -
+:: unfortunately, the cmdline version of Installer Generator does not work either
+:: so manually generate Notepad3Portable_2.0.2.xxx_English.paf.exe for now, 
+::~~~"%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
+echo. Please choose dir "%NP3_PORTAPP_DIR%" to create Installer (Notepad3Portable_2.0.2.xxx_English.paf.exe)
+%PORTAPP_INSTALLER_CREATOR%
+
+
 :: ====================================================================================================================
 :END
-::pause
-::popd
+pause
 endlocal
-exit
+::exit
 :: ====================================================================================================================

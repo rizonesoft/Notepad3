@@ -1,0 +1,295 @@
+Keyboard Shortcuts for Notepad2
+
+  File
+
+    Ctrl+N                New file.
+    Ctrl+F4               Close file, identical with Ctrl+N.
+    Ctrl+O                Open file.
+    F5                    Reload file.
+    F8                    Reload file without encoding detection.
+    Ctrl+F8               Reload file with Unicode detection toggled.
+    Shift+F8              Reload file with ANSI/UTF-8 defaults toggled.
+    Alt+F8                Reload file without file variable parsing.
+    Ctrl+S                Save file.
+    F6                    Save file as.
+    Ctrl+F6               Save file copy.
+    Ctrl+P                Print file.
+    Alt+H                 Open recent file.
+
+  Tools
+
+    Alt+N                 Open document in new window.
+    Alt+0                 Open new empty window.
+    Ctrl+M                Run metapath file browser plugin.
+    Ctrl+L                Launch document.
+    Alt+L                 Open with.
+    Ctrl+R                Run command.
+
+  Favorites
+
+    Alt+I                 Open favorites.
+    Alt+K                 Add to favorites.
+    F9                    Manage favorites.
+
+  Edit
+
+    Ctrl+Z                Undo.
+    Ctrl+Shift+Z          Redo.
+    Alt+Backspace         Undo.
+    Ctrl+Y                Redo.
+    Ctrl+Shift+Y          Undo.
+    Ctrl+X                Cut.
+    Shift+Del             Cut.
+    Ctrl+C                Copy.
+    Alt+C                 Copy all.
+    Ctrl+E                Copy add.
+    Ctrl+V                Paste.
+    Shift+Ins             Paste.
+    Ctrl+K                Swap.
+    Del                   Clear.
+    Ctrl+A                Select all.
+    Alt+Shift+Arrows      Rectangular selection.
+    Ctrl+Shift+Enter      New line with toggled auto indent option. (orig-NP2: Ctrl+Enter)
+    Ctrl+PgUp/PgDn        Goto previous/next block.
+    Ctrl+Shift+PgUp/PgDn  Select to previous/next block.
+
+  Char, Word
+
+    Ctrl+Space            Select word (or line).
+    Ctrl+Backspace        Delete word before/left.
+    Ctrl+Del              Delete word after/right.
+    Ctrl+Tab              Insert tabulator.
+
+  Lines
+
+    Ctrl+Shift+Space      Select line.
+    Ctrl+Shift+Up         Move line (block) up.
+    Ctrl+Shift+Down       Move line (block) down.
+    Ctrl+D                Duplicate line.
+    Ctrl+Shift+X          Cut line.
+    Ctrl+Shift+C          Copy line.
+    Ctrl+Shift+D          Delete line.
+    Ctrl+Shift+Backspace  Delete line left.
+    Ctrl+Shift+Del        Delete line right.
+    Ctrl+Shift+W          Column wrap.
+    Ctrl+I                Split lines.
+    Ctrl+J                Join lines.
+    Ctrl+Shift+J          Join paragraphs.
+
+  Block
+
+    Tab                   Indent selected block.
+    Shift+Tab             Unindent selected block.
+    Alt+Q                 Enclose selection.
+    Alt+D                 Duplicate selection.
+    Alt+B                 Pad with spaces.
+    Alt+Z                 Strip first character.
+    Alt+U                 Strip last character.
+    Alt+W                 Strip trailing blanks.
+    Alt+P                 Compress whitespace.
+    Alt+R                 Remove blank lines.
+    Alt+M                 Modify lines.
+    Alt+O                 Sort lines.
+
+  Convert
+
+    Ctrl+Shift+U          Make uppercase.
+    Ctrl+U                Make lowercase.
+    Ctrl+Alt+I            Invert case.
+    Ctrl+Alt+T            Title case.
+    Ctrl+Alt+S            Sentence case.
+    Ctrl+Shift+S          Convert tabs to spaces.
+    Ctrl+Shift+T          Convert spaces to tabs.
+    Ctrl+Shift+A          Convert to ANSI.
+    Ctrl+Shift+O          Convert to OEM.
+
+  Insert
+
+    Alt+X                 HTML/XML tag.
+    Ctrl+F5               Time/date (short form).
+    Ctrl+Shift+F5         Time/date (long form).
+    Ctrl+F9               Filename.
+    Ctrl+Shift+F9         Path and filename.
+    Ctrl+Shift+.          GUID
+
+  Special
+
+    Ctrl+Q                Block comment (toggle).
+    Ctrl+Shift+Q          Stream comment.
+    Ctrl+Shift+E          URL Encode.
+    Ctrl+Shift+R          URL Decode.
+    Ctrl+Alt+E            Escape C Special Chars.
+    Ctrl+Alt+U            Unescape C Special Chars.
+    Ctrl+B                Find matching brace.
+    Ctrl+Shift+B          Select to matching brace.
+    Ctrl+1                Enclose within ''.
+    Ctrl+2                Enclose within "".
+    Ctrl+3                Enclose within ().
+    Ctrl+4                Enclose within [].
+    Ctrl+5                Enclose within {}.
+    Ctrl+6                Enclose within ``.
+    Shift+F5              Update timestamps.
+    Ctrl+,                Jump to selection start.
+    Ctrl+.                Jump to selection end.
+
+  Find, Replace
+
+    Ctrl+F                Find.
+    Alt+F3                Save find text.
+    F3                    Find next.
+    Shift+F3              Find previous.
+    Ctrl+F3               Find next word or selection.
+    Ctrl+Shift+F3         Find previous word or selection.
+    Ctrl+Alt+F2           Expand selection to next match. (orig-NP2: F2)
+    Ctrl+Alt+Shift+F2     Expand selection to previous match. (orig-NP2: Shift+F2)
+    Ctrl+H                Replace.
+    F4                    Replace next.
+    Ctrl+G                Jump to line.
+
+  Bookmarks
+
+    F2                    Jump to next bookmark
+    Shift+F2              Jump to previous bookmark
+    Ctrl+F2               Toggle bookmark
+
+  Syntax scheme, Font
+
+    F12                   Select syntax scheme.
+    Shift+F12             Select 2nd default syntax scheme.
+    Ctrl+F12              Customize syntax schemes.
+    Alt+F12               Select default font.
+    F11                   Select default text syntax scheme.
+    Ctrl+F11              Select web source code syntax scheme.
+    Shift+F11             Select XML document syntax scheme.
+
+  View
+
+    Ctrl+W                Toggle word wrap.
+    Ctrl+Shift+L          Show long line marker.
+    Ctrl+Shift+G          Show indentation guides.
+    Ctrl+Shift+N          Show line numbers.
+    Ctrl+Shift+M          Show selection margin.
+    Ctrl+Shift+8          Show whitespace.
+    Ctrl+Shift+9          Show line endings.
+    Ctrl+Shift+0          Show wrap symbols.
+    Ctrl+Shift+V          Toggle visual brace matching.
+    Ctrl+Shift+I          Highlight current line.
+
+  Zoom
+
+    Ctrl++                Zoom in.
+    Ctrl+-                Zoom out.
+    Ctrl+/                Reset zoom.
+
+  Settings
+
+    Ctrl+T                Tab settings.
+    Alt++                 Increase limit for long lines.
+    Alt+-                 Decrease limit for long lines.
+    Ctrl+Shift+H          Toggle auto close HTML/XML.
+    Alt+T                 Always on top.
+    Ctrl+0                Transparent mode.
+    Ctrl+9                Display text excerpt in title.
+    F7                    Save settings now.
+    Ctrl+F7               Jump to ini-file.
+
+  Misc.
+
+    Esc                   Optionally minimize or exit Notepad2.
+    Shift+Esc             Save file and exit Notepad2.
+    F1                    Display version info.
+
+
+Regular Expression Syntax
+
+  .      Matches any character
+
+  \(     This marks the start of a region for tagging a match.
+
+  \)     This marks the end of a tagged region.
+
+  \n     Where n is 1 through 9 refers to the first through ninth
+         tagged region when replacing. For example, if the search
+         string was Fred\([1-9]\)XXX and the replace string was
+         Sam\1YYY, when applied to Fred2XXX this would generate
+         Sam2YYY.
+
+  \<     This matches the start of a word.
+
+  \>     This matches the end of a word.
+
+  \x     This allows you to use a character x that would otherwise
+         have a special meaning. For example, \[ would be interpreted
+         as [ and not as the start of a character set.
+
+  [...]  This indicates a set of characters, for example, [abc] means
+         any of the characters a, b or c. You can also use ranges, for
+         example [a-z] for any lower case character.
+
+  [^...] The complement of the characters in the set. For example,
+         [^A-Za-z] means any character except an alphabetic character.
+
+  ^      This matches the start of a line (unless used inside a set,
+         see above).
+
+  $      This matches the end of a line.
+
+  *      This matches 0 or more times. For example, Sa*m matches Sm,
+         Sam, Saam, Saaam and so on.
+
+  +      This matches 1 or more times. For example, Sa+m matches Sam,
+         Saam, Saaam and so on.
+
+  \d     Any decimal digit.
+  \D     Any character that is not a decimal digit.
+
+  \s     Any whitespace character.
+  \S     Any character that is not a whitespace character.
+
+  \w     Any "word" character.
+  \W     Any "non-word" character.
+
+  \xHH   Character with hex code HH.
+
+  -----> Examples (don't use quotes)
+         - Quote lines: find "^" replace with "> "
+         - Unquote lines: find "^> " replace with ""
+         - Remove line numbers: find "^[0-9]+" replace with ""
+         - Convert tabs to double spaces: find "\t" replace with "  "
+
+
+Command Line Switches
+
+  Notepad2.exe [(encoding)] [(line ending mode)] [/g ln[,col]]
+               [/m[-][r|b] text] [/q] [/s ext] [/d] [/h] [/x] [/c]
+               [/b] [/n|/ns] [/r|/rs]
+               [/p x,y,cx,cy[,max]|/p0|/ps|/pf,l,t,r,b,m]
+               [/t title] [/i] [/f ini|/f0] [/?] [+|-] [file] ...
+
+    file  File to open, can be a relative pathname, or a shell link.
+          Must be the last argument, no quoted spaces by default.
+    +     Accept multiple file arguments (with quoted spaces).
+    -     Accept single file argument (without quoted spaces).
+    ...   Desired file encoding (can be one of /ansi, /unicode,
+            /unicodebe, /utf8 or /utf8sig).
+    ...   Desired line ending mode (either /crlf, /lf, or /cr).
+    /g    Jump to specified position, /g -1 means end of file.
+    /m    Match specified text (/m- last, /mr regex, /mb backslash).
+    /q    Force creation of new files without prompt.
+    /s    Select syntax scheme associated with specified extension.
+    /d    Select default text scheme.
+    /h    Select Web Source Code scheme.
+    /x    Select XML Document scheme.
+    /c    Open a new Notepad2 window and paste the clipboard contents.
+    /b    Open a new Notepad2 paste board to collect clipboard entries.
+    /n    Always open a new Notepad2 window (/ns single file instance).
+    /r    Reuse Notepad2 window (/rs single file instance).
+    /p    Set window position to x,y with size cx,cy, optional max set
+          to nonzero to zoom; /p0 system, /ps internal defaults;
+          /p(f)ull,(l)eft,(t)op,(r)ight,(b)ottom,(m)argin.
+    /t    Set window title.
+    /i    Start as tray icon.
+    /f    Specify ini-file; /f0 use no ini-file (don't save settings).
+    /?    Display a brief summary about command line parameters.
+    /z    Skip next (Registry based Notepad replacement)
+
