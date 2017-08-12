@@ -20,12 +20,20 @@
   #error Compile MiniPath x86 first
 #endif
 
+#ifnexist bindir + "\Release_x86_v141_xp\np3encrypt.exe"
+  #error Compile np3encrypt.exe x86 first
+#endif
+
 #ifnexist bindir + "\Release_x64_v141_xp\Notepad3.exe"
   #error Compile Notepad3 x64 first
 #endif
 
 #ifnexist bindir + "\Release_x64_v141_xp\minipath.exe"
   #error Compile MiniPath x64 first
+#endif
+
+#ifnexist bindir + "\Release_x64_v141_xp\np3encrypt.exe"
+  #error Compile np3encrypt.exe x64 first
 #endif
 
 #define app_version   GetFileVersion(bindir + "\Release_x86_v141_xp\Notepad3.exe")
@@ -120,6 +128,8 @@ Source: Notepad3.ini;                       DestDir: {userappdata}\Rizonesoft\No
 Source: {#bindir}\Release_x64_v141_xp\minipath.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v141_xp\minipath.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: minipath.ini;                       DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
+Source: {#bindir}\Release_x64_v141_xp\np3encrypt.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v141_xp\np3encrypt.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 
 [Dirs]
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
