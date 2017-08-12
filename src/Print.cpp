@@ -41,6 +41,7 @@ extern "C" int iPrintFooter;
 extern "C" int iPrintColor;
 extern "C" int iPrintZoom;
 extern "C" RECT pagesetupMargin;
+extern "C" int flagPrintFileAndLeave;
 
 
 // Stored objects...
@@ -137,10 +138,10 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   } else {
     pdlg.Flags |= PD_SELECTION;
   }
-  if (0) {
-    // Don't display dialog box, just use the default printer and options
-    pdlg.Flags |= PD_RETURNDEFAULT;
-  }
+
+  // |= 0 - Don't display dialog box, just use the default printer and options
+  pdlg.Flags |= (flagPrintFileAndLeave == 1) ? PD_RETURNDEFAULT : 0;
+
   if (!PrintDlg(&pdlg)) {
     return TRUE; // False means error...
   }
