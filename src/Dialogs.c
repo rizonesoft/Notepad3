@@ -97,8 +97,8 @@ int MsgBox(int iType,UINT uIdMsg,...)
     case MBOKCANCEL: iIcon = MB_ICONEXCLAMATION | MB_OKCANCEL; break;
   }
 
-  if (!(hwnd = GetFocus()))
-    hwnd = hwndMain;
+  HWND focus = GetFocus();
+  hwnd = focus ? focus : hwndMain;
 
   return MessageBoxEx(hwnd,
            szText,szTitle,
@@ -146,9 +146,8 @@ int CALLBACK BFFCallBack(HWND hwnd,UINT umsg,LPARAM lParam,LPARAM lpData)
   if (umsg == BFFM_INITIALIZED)
     SendMessage(hwnd,BFFM_SETSELECTION,TRUE,lpData);
 
+  UNUSED(lParam);
   return(0);
-
-  lParam;
 }
 
 
@@ -1048,7 +1047,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
 
   SetEvent(lpit->hTerminatedThread);
   ExitThread(0);
-  return(0);
+  //return(0);
 }
 
 INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
@@ -1412,6 +1411,8 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
       }
       return TRUE;
   }
+  UNUSED(lParam);
+
   return FALSE;
 }
 
@@ -1560,11 +1561,13 @@ INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           GetDlgItemText(hwnd,200+i,tch,COUNTOF(tch));
           lstrcat(tch,L"|");
           p1 = tch;
-          while (p2 = StrChr(p1,L'|')) {
+          p2 = StrChr(p1, L'|');
+          while (p2) {
             *p2++ = L'\0';
             if (*p1)
               SendDlgItemMessage(hwnd,100+i,CB_ADDSTRING,0,(LPARAM)p1);
             p1 = p2;
+            p2 = StrChr(p1, L'|');
           }
 
           SendDlgItemMessage(hwnd,100+i,CB_SETEXTENDEDUI,TRUE,0);
@@ -1619,8 +1622,9 @@ INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
   }
 
-  return FALSE;
+  UNUSED(lParam);
 
+  return FALSE;
 }
 
 
@@ -1832,8 +1836,9 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 
   }
 
-  return FALSE;
+  UNUSED(lParam);
 
+  return FALSE;
 }
 
 
@@ -2328,8 +2333,8 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
   else if (iType == MBOKCANCEL)
     idDlg = IDD_INFOBOX3;
 
-  if (!(hwnd = GetFocus()))
-    hwnd = hwndMain;
+  HWND focus = GetFocus();
+  hwnd = focus ? focus : hwndMain;
 
   MessageBeep(MB_ICONEXCLAMATION);
 

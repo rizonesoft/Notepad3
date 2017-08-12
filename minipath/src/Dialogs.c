@@ -70,8 +70,8 @@ int ErrorMessage(int iLevel,UINT uIdMsg,...)
 
   iIcon = (iLevel > 1) ? MB_ICONEXCLAMATION : MB_ICONINFORMATION;
 
-  if (!(hwnd = GetFocus()))
-    hwnd = hwndMain;
+  HWND focus = GetFocus();
+  hwnd = focus ? focus : hwndMain;
 
   return MessageBoxEx(hwnd,szText,szTitle,MB_SETFOREGROUND | iIcon,
                       MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT));
@@ -88,9 +88,9 @@ int CALLBACK BFFCallBack(HWND hwnd,UINT umsg,LPARAM lParam,LPARAM lpData)
   if (umsg == BFFM_INITIALIZED)
     SendMessage(hwnd,BFFM_SETSELECTION,TRUE,lpData);
 
-  return(0);
+  UNUSED(lParam);
 
-  lParam;
+  return(0);
 }
 
 
@@ -131,8 +131,9 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
     fOk = TRUE;
   }
 
-  return fOk;
+  UNUSED(bNewDialogStyle);
 
+  return fOk;
 }
 
 
@@ -341,8 +342,9 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
   }
 
-  return FALSE;
+  UNUSED(lParam);
 
+  return FALSE;
 }
 
 
@@ -385,7 +387,6 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         RECT rc;
         WCHAR tch[64];
         int cGrip;
-        FARPROC fp;
 
         GetClientRect(hwnd,&rc);
         cxClient = rc.right - rc.left;
@@ -427,7 +428,8 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           }
         }
 
-        if (fp = GetProcAddress(GetModuleHandle(L"User32"),"GetComboBoxInfo")) {
+        FARPROC fp = GetProcAddress(GetModuleHandle(L"User32"), "GetComboBoxInfo");
+        if (fp) {
           COMBOBOXINFO cbi;
           cbi.cbSize = sizeof(COMBOBOXINFO);
           if (fp(GetDlgItem(hwnd,IDC_GOTO),&cbi))
@@ -764,8 +766,9 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
   }
 
-  return FALSE;
+  UNUSED(wParam);
 
+  return FALSE;
 }
 
 
@@ -1389,7 +1392,6 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         case IDC_BROWSEFILTER:
           {
             HMENU hMenu;
-            WCHAR *pIniSection = NULL;
             int   cbIniSection = 0;
             WCHAR *pszFilterName;
             WCHAR *pszFilterValue;
@@ -1401,7 +1403,7 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
             hMenu = CreatePopupMenu();
 
-            pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+            WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
             cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
             LoadIniSection(L"Filters",pIniSection,cbIniSection);
 
@@ -1502,8 +1504,9 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
   }
 
-  return FALSE;
+  UNUSED(lParam);
 
+  return FALSE;
 }
 
 
@@ -2393,7 +2396,7 @@ INT_PTR CALLBACK FindWinDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         WCHAR tch[256];
 
-        SetCursor(LoadCursor(NULL,MAKEINTRESOURCE(IDC_ARROW)));
+        SetCursor(LoadCursor(NULL,IDC_ARROW));
         SendDlgItemMessage(hwnd,IDC_CROSSCURSOR,STM_SETICON,(WPARAM)hIconCross1,0);
         ReleaseCapture();
         bHasCapture = FALSE;
@@ -2766,7 +2769,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
               else {
                 WCHAR  *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-                int    cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+                //int    cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
                 i = IsDlgButtonChecked(hwnd,IDC_LAUNCH);
                 iUseTargetApplication = i ? 0:1;
@@ -2849,8 +2852,9 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
   }
 
-  return FALSE;
+  UNUSED(lParam);
 
+  return FALSE;
 }
 
 

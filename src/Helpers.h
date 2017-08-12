@@ -32,7 +32,7 @@ __inline BOOL IniSetInt(LPCWSTR lpSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSetString(lpSection,lpName,tch);
 }
 #define LoadIniSection(lpSection,lpBuf,cchBuf) \
-  GetPrivateProfileSection(lpSection,lpBuf,cchBuf,szIniFile);
+  GetPrivateProfileSection(lpSection,lpBuf,cchBuf,szIniFile)
 #define SaveIniSection(lpSection,lpBuf) \
   WritePrivateProfileSection(lpSection,lpBuf,szIniFile)
 int IniSectionGetString(LPCWSTR,LPCWSTR,LPCWSTR,LPWSTR,int);

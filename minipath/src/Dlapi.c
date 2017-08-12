@@ -18,6 +18,7 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <string.h>
+#include "helpers.h"
 #include "dlapi.h"
 
 
@@ -28,7 +29,6 @@
 
 typedef struct tagDLDATA // dl
 {
-
   HWND hwnd;                 // HWND of ListView Control
   UINT cbidl;                // Size of pidl
   LPITEMIDLIST  pidl;        // Directory Id
@@ -56,10 +56,8 @@ static const WCHAR *pDirListProp = L"DirListData";
 //
 BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 {
-
   HIMAGELIST hil;
   SHFILEINFO shfi;
-  LV_COLUMN  lvc;
 
   // Allocate DirListData Property
   LPDLDATA lpdl = (LPVOID)GlobalAlloc(GPTR,sizeof(DLDATA));
@@ -99,11 +97,9 @@ BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
   lpdl->hExitThread = CreateEvent(NULL,TRUE,FALSE,NULL);
   lpdl->hTerminatedThread = CreateEvent(NULL,TRUE,TRUE,NULL);
 
-  lvc;
-  pszHeader;
+  UNUSED(pszHeader);
 
   return TRUE;
-
 }
 
 
@@ -418,7 +414,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
   if (!lpdl->lpsf) {
     SetEvent(lpdl->hTerminatedThread);
     ExitThread(0);
-    return(0);
+    //return(0);
   }
 
   hwnd = lpdl->hwnd;
@@ -504,7 +500,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
 
   SetEvent(lpdl->hTerminatedThread);
   ExitThread(0);
-  return(0);
+  //return(0);
 
 }
 
@@ -535,8 +531,10 @@ BOOL DirList_GetDispInfo(HWND hwnd,LPARAM lParam,BOOL bNoFadeHidden)
   // Set values
   lpdi->item.mask |= LVIF_DI_SETITEM;
 
-  return TRUE;
+  UNUSED(hwnd);
+  UNUSED(bNoFadeHidden);
 
+  return TRUE;
 }
 
 
@@ -675,12 +673,8 @@ BOOL DirList_Sort(HWND hwnd,int lFlags,BOOL fRev)
 //
 int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
 {
-
   LV_ITEM lvi;
   LPLV_ITEMDATA lplvid;
-
-  ULONG dwAttributes = SFGAO_FILESYSTEM;
-
 
   if (iItem == -1)
   {
@@ -739,6 +733,7 @@ int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
     lpdli->ntype = (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ?
                     DLE_DIR : DLE_FILE;
 
+    //ULONG dwAttributes = SFGAO_FILESYSTEM;
     /*lplvid->lpsf->lpVtbl->GetAttributesOf(
                             lplvid->lpsf,
                             1,
@@ -1009,9 +1004,6 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
                           BOOL bExcludeFilter)
 {
-
-  WCHAR *p;
-
   ZeroMemory(pdlf,sizeof(DL_FILTER));
   lstrcpyn(pdlf->tFilterBuf,lpszFileSpec,(DL_FILTER_BUFSIZE-1));
   pdlf->bExcludeFilter = bExcludeFilter;
@@ -1022,11 +1014,13 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
   pdlf->nCount = 1;
   pdlf->pFilter[0] = &pdlf->tFilterBuf[0];    // Zeile zum Ausprobieren
 
-  while (p = StrChr(pdlf->pFilter[pdlf->nCount-1],L';'))
+  WCHAR *p = StrChr(pdlf->pFilter[pdlf->nCount - 1], L';');
+  while (p)
   {
     *p = L'\0';                              // Replace L';' by L'\0'
-    pdlf->pFilter[pdlf->nCount] = (p + 1);  // Next position after L';'
-    pdlf->nCount++;                         // Increase number of filters
+    pdlf->pFilter[pdlf->nCount] = (p + 1);   // Next position after L';'
+    p = StrChr(pdlf->pFilter[pdlf->nCount], L';');
+    pdlf->nCount++;                          // Increase number of filters
   }
 
 }
@@ -1208,9 +1202,8 @@ int DriveBox_Fill(HWND hwnd)
 
               // Windows XP: check if pidlEntry is a drive
               SHDESCRIPTIONID di;
-              HRESULT hr;
-              hr = SHGetDataFromIDList(lpsf,pidlEntry,SHGDFIL_DESCRIPTIONID,
-                                        &di,sizeof(SHDESCRIPTIONID));
+              HRESULT hr = SHGetDataFromIDList(lpsf,pidlEntry,SHGDFIL_DESCRIPTIONID,
+                                               &di,sizeof(SHDESCRIPTIONID));
               if (hr != NOERROR || (di.dwDescriptionId >= SHDID_COMPUTER_DRIVE35 &&
                                     di.dwDescriptionId <= SHDID_COMPUTER_OTHER))
               {
@@ -1227,20 +1220,19 @@ int DriveBox_Fill(HWND hwnd)
                 {
                   COMBOBOXEXITEM cbei2;
                   LPDC_ITEMDATA lpdcid2;
-                  HRESULT hr;
                   cbei2.mask = CBEIF_LPARAM;
                   cbei2.iItem = 0;
 
                   while ((SendMessage(hwnd,CBEM_GETITEM,0,(LPARAM)&cbei2)))
                   {
                     lpdcid2 = (LPDC_ITEMDATA)cbei2.lParam;
-                    hr = (lpdcid->lpsf->lpVtbl->CompareIDs(
+                    HRESULT hr2 = (lpdcid->lpsf->lpVtbl->CompareIDs(
                                 lpdcid->lpsf,
                                 0,
                                 lpdcid->pidl,
                                 lpdcid2->pidl));
 
-                    if ((short)(SCODE_CODE(GetScode(hr))) < 0)
+                    if ((short)(SCODE_CODE(GetScode(hr2))) < 0)
                       break;
                     else
                       cbei2.iItem++;
@@ -1489,8 +1481,9 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
   // Set values
   lpnmcbe->ceItem.mask |= CBEIF_DI_SETITEM;
 
-  return TRUE;
+  UNUSED(hwnd);
 
+  return TRUE;
 }
 
 

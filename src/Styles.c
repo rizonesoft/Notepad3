@@ -2905,8 +2905,6 @@ BOOL Style_Export(HWND hwnd)
 //
 void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
 {
-  int i;
-  //WCHAR *p;
   int rgb;
   int iValue;
   int iIdx;
@@ -2957,7 +2955,7 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
   SciCall_SetProperty("fold.cpp.comment.explicit", "0");
 
   // Add KeyWord Lists
-  for (i = 0; i < 9; i++)
+  for (int i = 0; i < 9; i++)
     SendMessage(hwnd,SCI_SETKEYWORDS,i,(LPARAM)pLexNew->pKeyWords->pszKeyWords[i]);
 
   // Use 2nd default style
@@ -3175,8 +3173,6 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
       SC_MARKNUM_FOLDERMIDTAIL
     };
 
-    int i;
-
     COLORREF clrFore = SciCall_StyleGetFore(STYLE_DEFAULT);
     COLORREF clrBack = SciCall_StyleGetBack(STYLE_DEFAULT);
 
@@ -3191,7 +3187,7 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
     // Rounding hack for pure white against pure black
     if (clrFore == 0x7F7F7F) clrFore = 0x808080;
 
-    for (i = 0; i < COUNTOF(iMarkerIDs); ++i)
+    for (int i = 0; i < COUNTOF(iMarkerIDs); ++i)
     {
       SciCall_MarkerSetBack(iMarkerIDs[i], clrFore);
       SciCall_MarkerSetFore(iMarkerIDs[i], clrBack);
@@ -3204,7 +3200,7 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
   if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
   {
     int j;
-    i = 1;
+    int i = 1;
     while (pLexNew->Styles[i].iStyle != -1) {
 
       for (j = 0; j < 4 && (pLexNew->Styles[i].iStyle8[j] != 0 || j == 0); ++j)
@@ -3337,18 +3333,17 @@ void Style_SetLongLineColors(HWND hwnd)
 //
 void Style_SetCurrentLineBackground(HWND hwnd)
 {
-  int rgb, iValue;
-
   // Use 2nd default style
   int iIdx = (bUse2ndDefaultStyle) ? 12 : 0;
 
   if (bHiliteCurrentLine) {
-
+    int rgb = 0;
     if (Style_StrGetColor(FALSE,lexDefault.Styles[8+iIdx].szValue,&rgb)) // caret line back
     {
       SendMessage(hwnd,SCI_SETCARETLINEVISIBLE,TRUE,0);
       SendMessage(hwnd,SCI_SETCARETLINEBACK,rgb,0);
 
+      int iValue = 0;
       if (Style_StrGetAlpha(lexDefault.Styles[8+iIdx].szValue,&iValue))
         SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,iValue,0);
       else
@@ -3422,7 +3417,8 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames)
       lstrcpy(tch,pLexArray[i]->szExtensions);
       p1 = tch;
       while (*p1) {
-        if (p2 = StrChr(p1,L';'))
+        p2 = StrChr(p1, L';');
+        if (p2)
           *p2 = L'\0';
         else
           p2 = StrEnd(p1);
@@ -3475,7 +3471,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       char tchText[256];
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
       StrTrimA(tchText," \t\n\r");
-      if (pLexSniffed = Style_SniffShebang(tchText)) {
+      pLexSniffed = Style_SniffShebang(tchText);
+      if (pLexSniffed) {
         if (iEncoding != g_DOSEncoding || pLexSniffed != &lexDefault || (
             lstrcmpi(lpszExt,L"nfo") && lstrcmpi(lpszExt,L"diz"))) {
           // Although .nfo and .diz were removed from the default lexer's
@@ -3487,13 +3484,17 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     }
 
     if (!bFound) {
-      if (pLexMode = Style_MatchLexer(wchMode,FALSE)) {
+      pLexMode = Style_MatchLexer(wchMode, FALSE);
+      if (pLexMode) {
         pLexNew = pLexMode;
         bFound = TRUE;
       }
-      else if (pLexMode = Style_MatchLexer(wchMode,TRUE)) {
-        pLexNew = pLexMode;
-        bFound = TRUE;
+      else {
+        pLexMode = Style_MatchLexer(wchMode, TRUE);
+        if (pLexMode) {
+          pLexNew = pLexMode;
+          bFound = TRUE;
+        }
       }
     }
   }
@@ -3508,7 +3509,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       char tchText[256];
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
       StrTrimA(tchText," \t\n\r");
-      if (pLexSniffed = Style_SniffShebang(tchText)) {
+      pLexSniffed = Style_SniffShebang(tchText);
+      if (pLexSniffed) {
         pLexNew = pLexSniffed;
         bFound = TRUE;
       }
@@ -3521,7 +3523,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     // check associated extensions
     if (!bFound) {
-      if (pLexSniffed = Style_MatchLexer(lpszExt,FALSE)) {
+      pLexSniffed = Style_MatchLexer(lpszExt, FALSE);
+      if (pLexSniffed) {
         pLexNew = pLexSniffed;
         bFound = TRUE;
       }
@@ -3550,16 +3553,21 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     char tchText[512];
     SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
     StrTrimA(tchText," \t\n\r");
-    if (!fNoHTMLGuess && tchText[0] == '<') {
-      if (StrStrIA(tchText,"<html"))
-        pLexNew = &lexHTML;
-      else
-        pLexNew = &lexXML;
-      bFound = TRUE;
-    }
-    else if (!fNoCGIGuess && (pLexSniffed = Style_SniffShebang(tchText))) {
-      pLexNew = pLexSniffed;
-      bFound = TRUE;
+    if (!fNoCGIGuess) {
+      if (tchText[0] == '<') {
+        if (StrStrIA(tchText, "<html"))
+          pLexNew = &lexHTML;
+        else
+          pLexNew = &lexXML;
+        bFound = TRUE;
+      }
+      else {
+        pLexSniffed = Style_SniffShebang(tchText);
+        if (pLexSniffed) {
+          pLexNew = pLexSniffed;
+          bFound = TRUE;
+        }
+      }
     }
   }
 
@@ -3577,13 +3585,16 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 //
 void Style_SetLexerFromName(HWND hwnd,LPCWSTR lpszFile,LPCWSTR lpszName)
 {
-  PEDITLEXER pLexNew;
-  if (pLexNew = Style_MatchLexer(lpszName,FALSE))
+  PEDITLEXER pLexNew = Style_MatchLexer(lpszName, FALSE);
+  if (pLexNew)
     Style_SetLexer(hwnd,pLexNew);
-  else if (pLexNew = Style_MatchLexer(lpszName,TRUE))
-    Style_SetLexer(hwnd,pLexNew);
-  else
-    Style_SetLexerFromFile(hwnd,lpszFile);
+  else {
+    pLexNew = Style_MatchLexer(lpszName, TRUE);
+    if (pLexNew)
+      Style_SetLexer(hwnd, pLexNew);
+    else
+      Style_SetLexerFromFile(hwnd, lpszFile);
+  }
 }
 
 
@@ -3663,6 +3674,7 @@ void Style_SetDefaultFont(HWND hwnd)
 //
 BOOL Style_GetUse2ndDefault(HWND hwnd)
 {
+  UNUSED(hwnd);
   return (bUse2ndDefaultStyle);
 }
 
@@ -3716,12 +3728,12 @@ BOOL Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
 {
   WCHAR tch[256];
-  WCHAR *p;
-
-  if (p = StrStrI(lpszStyle,L"font:"))
+  WCHAR *p = StrStrI(lpszStyle, L"font:");
+  if (p)
   {
     lstrcpy(tch,p + CSTRLEN(L"font:"));
-    if (p = StrChr(tch,L';'))
+    p = StrChr(tch, L';');
+    if (p)
       *p = L'\0';
     TrimString(tch);
 
@@ -3750,12 +3762,12 @@ BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
 BOOL Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality)
 {
   WCHAR tch[256];
-  WCHAR *p;
-
-  if (p = StrStrI(lpszStyle,L"smoothing:"))
+  WCHAR *p = StrStrI(lpszStyle, L"smoothing:");
+  if (p)
   {
     lstrcpy(tch,p + CSTRLEN(L"smoothing:"));
-    if (p = StrChr(tch,L';'))
+    p = StrChr(tch, L';');
+    if (p)
       *p = L'\0';
     TrimString(tch);
     if (lstrcmpi(tch,L"none") == 0 ||
@@ -3777,17 +3789,16 @@ BOOL Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
 BOOL Style_StrGetCharSet(LPCWSTR lpszStyle,int *i)
 {
   WCHAR tch[256];
-  WCHAR *p;
-  int  iValue;
-  int  itok;
-
-  if (p = StrStrI(lpszStyle,L"charset:"))
+  WCHAR *p = StrStrI(lpszStyle, L"charset:");
+  if (p)
   {
     lstrcpy(tch,p + CSTRLEN(L"charset:"));
-    if (p = StrChr(tch,L';'))
+    p = StrChr(tch, L';');
+    if (p)
       *p = L'\0';
     TrimString(tch);
-    itok = swscanf_s(tch,L"%i",&iValue);
+    int iValue = 0;
+    int itok = swscanf_s(tch,L"%i",&iValue);
     if (itok == 1)
     {
       *i = iValue;
@@ -3805,12 +3816,10 @@ BOOL Style_StrGetCharSet(LPCWSTR lpszStyle,int *i)
 BOOL Style_StrGetSize(LPCWSTR lpszStyle,int *i)
 {
   WCHAR tch[256];
-  WCHAR *p;
-  int  iValue;
   int  iSign = 0;
-  int  itok;
 
-  if (p = StrStrI(lpszStyle,L"size:"))
+  WCHAR *p = StrStrI(lpszStyle, L"size:");
+  if (p)
   {
     lstrcpy(tch,p + CSTRLEN(L"size:"));
     if (tch[0] == L'+')
@@ -3823,10 +3832,12 @@ BOOL Style_StrGetSize(LPCWSTR lpszStyle,int *i)
       iSign = -1;
       tch[0] = L' ';
     }
-    if (p = StrChr(tch,L';'))
+    p = StrChr(tch, L';');
+    if (p)
       *p = L'\0';
     TrimString(tch);
-    itok = swscanf_s(tch,L"%i",&iValue);
+    int iValue = 0;
+    int itok = swscanf_s(tch,L"%i",&iValue);
     if (itok == 1)
     {
       if (iSign == 0)
@@ -3847,12 +3858,12 @@ BOOL Style_StrGetSize(LPCWSTR lpszStyle,int *i)
 BOOL Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 {
   WCHAR tch[256];
-  WCHAR *p;
-
-  if (p = StrStrI(lpszStyle,L"size:"))
+  WCHAR *p = StrStrI(lpszStyle, L"size:");
+  if (p)
   {
     lstrcpy(tch,p + CSTRLEN(L"size:"));
-    if (p = StrChr(tch,L';'))
+    p = StrChr(tch, L';');
+    if (p)
       *p = L'\0';
     TrimString(tch);
     lstrcpyn(lpszSize,tch,cchSize);
@@ -3869,20 +3880,20 @@ BOOL Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 BOOL Style_StrGetColor(BOOL bFore,LPCWSTR lpszStyle,int *rgb)
 {
   WCHAR tch[256];
-  WCHAR *p;
-  int  iValue;
-  int  itok;
   WCHAR *pItem = (bFore) ? L"fore:" : L"back:";
 
-  if (p = StrStrI(lpszStyle,pItem))
+  WCHAR *p = StrStrI(lpszStyle, pItem);
+  if (p)
   {
     lstrcpy(tch,p + lstrlen(pItem));
     if (tch[0] == L'#')
       tch[0] = L' ';
-    if (p = StrChr(tch,L';'))
+    p = StrChr(tch, L';');
+    if (p)
       *p = L'\0';
     TrimString(tch);
-    itok = swscanf_s(tch,L"%x",&iValue);
+    int iValue = 0;
+    int itok = swscanf_s(tch,L"%x",&iValue);
     if (itok == 1)
     {
       *rgb = RGB((iValue&0xFF0000) >> 16,(iValue&0xFF00) >> 8,iValue&0xFF);
@@ -3900,12 +3911,12 @@ BOOL Style_StrGetColor(BOOL bFore,LPCWSTR lpszStyle,int *rgb)
 BOOL Style_StrGetCase(LPCWSTR lpszStyle,int *i)
 {
   WCHAR tch[256];
-  WCHAR *p;
-
-  if (p = StrStrI(lpszStyle,L"case:"))
+  WCHAR *p = StrStrI(lpszStyle, L"case:");
+  if (p)
   {
     lstrcpy(tch,p + CSTRLEN(L"case:"));
-    if (p = StrChr(tch,L';'))
+    p = StrChr(tch, L';');
+    if (p)
       *p = L'\0';
     TrimString(tch);
     if (tch[0] == L'u' || tch[0] == L'U') {
@@ -3928,17 +3939,16 @@ BOOL Style_StrGetCase(LPCWSTR lpszStyle,int *i)
 BOOL Style_StrGetAlpha(LPCWSTR lpszStyle,int *i)
 {
   WCHAR tch[256];
-  WCHAR *p;
-  int  iValue;
-  int  itok;
-
-  if (p = StrStrI(lpszStyle,L"alpha:"))
+  WCHAR *p = StrStrI(lpszStyle, L"alpha:");
+  if (p)
   {
     lstrcpy(tch,p + CSTRLEN(L"alpha:"));
-    if (p = StrChr(tch,L';'))
+    p = StrChr(tch, L';');
+    if (p)
       *p = L'\0';
     TrimString(tch);
-    itok = swscanf_s(tch,L"%i",&iValue);
+    int iValue = 0;
+    int itok = swscanf_s(tch,L"%i",&iValue);
     if (itok == 1)
     {
       *i = min(max(SC_ALPHA_TRANSPARENT,iValue),SC_ALPHA_OPAQUE);
@@ -3969,7 +3979,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch)))
     lstrcpyn(lf.lfFaceName,tch,COUNTOF(lf.lfFaceName));
   if (Style_StrGetCharSet(lpszStyle,&iValue))
-    lf.lfCharSet = iValue;
+    lf.lfCharSet = (BYTE)iValue;
   if (Style_StrGetSize(lpszStyle,&iValue)) {
     hdc = GetDC(hwnd);
     lf.lfHeight = -MulDiv(iValue,GetDeviceCaps(hdc,LOGPIXELSY),72);
@@ -4276,7 +4286,6 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
       wQuality = SC_EFF_QUALITY_DEFAULT;
   }
   else {
-    WCHAR tch[32];
     if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch))) {
       if (lstrcmpi(tch,L"Calibri") == 0 ||
           lstrcmpi(tch,L"Cambria") == 0 ||
@@ -4311,7 +4320,6 @@ void Style_GetCurrentLexerName(LPWSTR lpszName,int cchName)
 //
 int Style_GetLexerIconId(PEDITLEXER plex)
 {
-  WCHAR *p;
   WCHAR *pszExtensions;
   WCHAR *pszFile;
 
@@ -4325,7 +4333,9 @@ int Style_GetLexerIconId(PEDITLEXER plex)
   pszFile = GlobalAlloc(GPTR,sizeof(WCHAR)*(lstrlen(pszExtensions) + CSTRLEN(L"*.txt") + 16));
   lstrcpy(pszFile,L"*.");
   lstrcat(pszFile,pszExtensions);
-  if (p = StrChr(pszFile,L';'))
+
+  WCHAR *p = StrChr(pszFile, L';');
+  if (p)
     *p = L'\0';
 
   // check for ; at beginning
@@ -4366,7 +4376,7 @@ HTREEITEM Style_AddLexerToTreeView(HWND hwnd,PEDITLEXER plex)
   tvis.item.iSelectedImage = tvis.item.iImage;
   tvis.item.lParam = (LPARAM)plex;
 
-  hTreeNode = (HTREEITEM)TreeView_InsertItem(hwnd,&tvis);
+  hTreeNode = TreeView_InsertItem(hwnd,&tvis);
 
   tvis.hParent = hTreeNode;
 
@@ -4435,7 +4445,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
         int i;
         SHFILEINFO shfi;
         LOGFONT lf;
-        HTREEITEM currentLex;
+        HTREEITEM currentLex = { 0 };
         int found = 0;
 
         hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
@@ -4521,7 +4531,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 if (StrChr(wch,L'|')) *StrChr(wch,L'|') = 0;
 
                 pCurrentStyle = 0;
-                if (pCurrentLexer = (PEDITLEXER)lpnmtv->itemNew.lParam)
+                pCurrentLexer = (PEDITLEXER)lpnmtv->itemNew.lParam;
+                if (pCurrentLexer)
                 {
                   SetDlgItemText(hwnd,IDC_STYLELABEL,wch);
                   EnableWindow(GetDlgItem(hwnd,IDC_STYLEEDIT),TRUE);
@@ -4569,7 +4580,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
 
 
                 pCurrentLexer = 0;
-                if (pCurrentStyle = (PEDITSTYLE)lpnmtv->itemNew.lParam)
+                pCurrentStyle = (PEDITSTYLE)lpnmtv->itemNew.lParam;
+                if (pCurrentStyle)
                 {
                   SetDlgItemText(hwnd,IDC_STYLELABEL,StrEnd(wch)+1);
                   EnableWindow(GetDlgItem(hwnd,IDC_STYLEEDIT),TRUE);
@@ -4678,8 +4690,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           HTREEITEM htiTarget;
 
           //ImageList_EndDrag();
-
-          if (htiTarget = TreeView_GetDropHilight(hwndTV))
+          htiTarget = TreeView_GetDropHilight(hwndTV);
+          if (htiTarget)
           {
             WCHAR tchCopy[256];
             TreeView_SelectDropTarget(hwndTV,NULL);
@@ -4866,7 +4878,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
 
         case IDC_IMPORT:
           {
-            HWND hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
+            hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
 
             if (pCurrentStyle)
               GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue));
@@ -4904,7 +4916,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           {
             // Hack from outside
             extern HWND hwndEdit;
-            extern void UpdateLineNumerWidth();
 
             if (pCurrentStyle)
               GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue));
