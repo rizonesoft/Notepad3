@@ -1,0 +1,1 @@
+Any default settings placed here will be copied to AppNamePortable\Data on first run to serve as the base set of settings files and .reg files to be used with the portable app.  These files should only be used to populate Data on first run of the portable app, they should not be altered directly by the app or by the user after installation.

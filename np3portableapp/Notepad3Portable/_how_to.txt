@@ -1,0 +1,53 @@
+PortableApps.com Application Template 3.4
+
+(NOTE: Turn on word wrap for all files to view properly)
+
+This template includes a complete set of example configuration files to portablize an app requiring portable configuration files, local configuration files, and rehgistry entries.  The following should help you get started:
+
+1. Put your app in the App\AppName sub-directory and rename the AppName directory as appropriate
+
+2. Edit the App\AppInfo\AppInfo.ini file to reflect your app's name, appid, category, language, version, etc.
+
+3. Edit the App\AppInfo\Launcher\AppNamePortable.ini file to properly handle the way your app needs to be portablized.  Examples are included for portable config files to be moved to the app's directory, config files that need to be local in APPDATA, and registry configuration options.  Be sure to rename any instances of the \AppName\ directory as appropriate along with the appropriate sections of the registry and/or config file names used by your app.  Don't change the AppID just yet, keep it as AppNamePortable.
+
+4. Optionally populate any default data elements you'd like within DefaultData if necessary.  It can be helpful to run an app once to create these if the app creates them itself but you wish to adjust certain settings (like disabling auto-update).
+
+5. Run AppNamePortable.exe to try out your app and the portablization of it.
+
+ONCE YOU ARE HAPPY WITH YOUR APP, YOU CAN PREPARE IT FOR TEST OR FINAL RELEASE BY CONTINUING
+
+6. Give your app an appropriate AppID other than AppNamePortable within the appinfo.ini file
+
+7. Edit the Start= towards the bottom of the appinfo.ini to have your new AppID with an EXE extension
+
+8. Rename the AppNamePortable.ini file within App\AppInfo\Launcher to match your new AppID
+
+9. Rename the AppNamePortable directory to match your new AppID
+
+10. Copy your app's icon to the appicon.ico, appicon_16.png, appicon_32.png, appicon_75.png, and appicon_128.png files
+
+11. Remove the example AppNamePortable.exe launcher
+
+12. Run the PortableApps.com Launcher generator and point it to your app's base directory (what used to be AppNamePortable but is now the name of your app) to generate your new EXE to launch your app
+
+13. Test your new launcher to ensure it functions as before
+
+14. Edit the installer.ini to preserve any files or directories that are moved into the App directory while the app is running to ensure that no data is lost if the app crashes and is then upgraded before the launcher is run again to move data back to the Data directory.  If your app uses no config files or directories that are moved to the App directory, you can delete installer.ini.
+
+15. Update help.html, replacing strings with the double asterisks (like **App Name**) with the appropriate details of the app. Keep the appropriate paragraph about the license of the app as indicated in the comments within the help file and delete the other paragraph. Also app-specific links may be added.
+
+16. Update Other\Source\Readme.txt, changing references to **AppID**Portable to the app's ID (e.g. FooBarPortable).
+
+17. If packaging for final release, remove the example splash.jpg within App\AppInfo\Launcher
+
+18. Remove this file as well as the whatgoeshere.exe files within the App\AppName and DefaultData directories
+
+19. Remove the example AppName.exe and AppName.nsi source files from your App\AppName directory if they're still there
+
+20. Run the PortableApps.com Installer generator and point it to your app's base directory (what used to be AppNamePortable but is now the name of your app) to generate your new app's .paf.exe installer
+
+For more information, visit http://portableapps.com/development
+
+For assistance, visit the forums after reading the above
+
+Happy portable-apping!
