@@ -381,11 +381,11 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
                     UINT uIDReadOnly,BOOL bReadOnly,LPCWSTR lpszExcerpt)
 {
 
-  WCHAR szUntitled[128];
+  WCHAR szUntitled[256];
   WCHAR szExcrptQuot[256];
   WCHAR szExcrptFmt[32];
-  WCHAR szAppName[128];
-  WCHAR szElevatedAppName[128];
+  WCHAR szAppName[256];
+  WCHAR szElevatedAppName[256];
   WCHAR szReadOnly[32];
   WCHAR szTitle[512];
   static WCHAR szCachedFile[MAX_PATH];

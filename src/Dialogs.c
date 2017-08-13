@@ -2180,7 +2180,7 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
     case WM_INITDIALOG:
       {
         int i;
-        WCHAR wch[128];
+        WCHAR wch[256];
 
         piOption = (int*)lParam;
 
