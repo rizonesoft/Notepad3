@@ -16,7 +16,8 @@
 extern HINSTANCE g_hInstance;
 extern UINT16 g_uWinVer;
 
-#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
+#define UNUSED(expr) (void)(expr)
+#define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 
 extern WCHAR szIniFile[MAX_PATH];
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \

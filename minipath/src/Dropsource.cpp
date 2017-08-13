@@ -14,6 +14,7 @@
 *******************************************************************************/
 #define _WIN32_WINNT 0x501
 #include <windows.h>
+#include "helpers.h"
 #include "dropsource.h"
 
 
@@ -84,6 +85,7 @@ STDMETHODIMP CDropSource::QueryContinueDrag(BOOL fEscapePressed,
 
 STDMETHODIMP CDropSource::GiveFeedback(DWORD dwEffect)
 {
+  UNUSED(dwEffect);
   return DRAGDROP_S_USEDEFAULTCURSORS;
 }
 

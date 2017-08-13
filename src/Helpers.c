@@ -225,8 +225,8 @@ BOOL IsElevated() {
 //  FARPROC pfnSetWindowTheme;
 //
 //  if (IsVista()) {
-//    if (hModUxTheme) {
-//      pfnSetWindowTheme = GetProcAddress(hModUxTheme,"SetWindowTheme");
+//    if (hLocalModUxTheme) {
+//      pfnSetWindowTheme = GetProcAddress(hLocalModUxTheme,"SetWindowTheme");
 //
 //      if (pfnSetWindowTheme)
 //        return (S_OK == pfnSetWindowTheme(hwnd,L"Explorer",NULL));
@@ -355,6 +355,9 @@ BOOL VerifyContrast(COLORREF cr1,COLORREF cr2)
 int CALLBACK EnumFontsProc(CONST LOGFONT *plf,CONST TEXTMETRIC *ptm,DWORD FontType,LPARAM lParam)
 {
   *((PBOOL)lParam) = TRUE;
+  UNUSED(plf);
+  UNUSED(ptm);
+  UNUSED(FontType);
   return(FALSE);
 }
 
@@ -468,20 +471,16 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
 //
 void SetWindowTransparentMode(HWND hwnd,BOOL bTransparentMode)
 {
-  FARPROC fp;
-  int  iAlphaPercent;
-  BYTE bAlpha;
-
   if (bTransparentMode) {
-    if (fp = GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes")) {
-      SetWindowLongPtr(hwnd,GWL_EXSTYLE,
-        GetWindowLongPtr(hwnd,GWL_EXSTYLE) | WS_EX_LAYERED);
+    FARPROC fp = GetProcAddress(GetModuleHandle(L"User32"), "SetLayeredWindowAttributes");
+    if (fp) {
+      SetWindowLongPtr(hwnd,GWL_EXSTYLE,GetWindowLongPtr(hwnd,GWL_EXSTYLE) | WS_EX_LAYERED);
 
       // get opacity level from registry
-      iAlphaPercent = IniGetInt(L"Settings2",L"OpacityLevel",75);
+      int iAlphaPercent = IniGetInt(L"Settings2",L"OpacityLevel",75);
       if (iAlphaPercent < 0 || iAlphaPercent > 100)
         iAlphaPercent = 75;
-      bAlpha = iAlphaPercent * 255 / 100;
+      BYTE bAlpha = (BYTE)(iAlphaPercent * 255 / 100);
 
       fp(hwnd,0,bAlpha,LWA_ALPHA);
     }
@@ -882,16 +881,17 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptbb,int ctbb)
 {
   WCHAR tchButtons[512];
-  WCHAR *p;
   int i,c;
   int iCmd;
 
   ZeroMemory(tchButtons,COUNTOF(tchButtons)*sizeof(tchButtons[0]));
   lstrcpyn(tchButtons,lpszButtons,COUNTOF(tchButtons)-2);
   TrimString(tchButtons);
-  while (p = StrStr(tchButtons,L"  "))
-    MoveMemory((WCHAR*)p,(WCHAR*)p+1,(lstrlen(p) + 1) * sizeof(WCHAR));
-
+  WCHAR *p = StrStr(tchButtons, L"  ");
+  while (p) {
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    p = StrStr(tchButtons, L"  ");  // next
+  }
   c = (int)SendMessage(hwnd,TB_BUTTONCOUNT,0,0);
   for (i = 0; i < c; i++)
     SendMessage(hwnd,TB_DELETEBUTTON,0,0);
@@ -1446,9 +1446,11 @@ void PrepareFilterStr(LPWSTR lpFilter)
 //
 void StrTab2Space(LPWSTR lpsz)
 {
-  WCHAR *c = lpsz;
-  while (c = StrChr(lpsz,L'\t'))
+  WCHAR *c = StrChr(lpsz, L'\t');
+  while (c) {
     *c = L' ';
+    c = StrChr(lpsz, L'\t');  // next
+  }
 }
 
 
@@ -1458,12 +1460,14 @@ void StrTab2Space(LPWSTR lpsz)
 //
 void PathFixBackslashes(LPWSTR lpsz)
 {
-  WCHAR *c = lpsz;
-  while (c = StrChr(c,L'/')) {
-    if (*CharPrev(lpsz,c) == L':' && *CharNext(c) == L'/')
+  WCHAR *c = StrChr(lpsz, L'/');
+  while (c) {
+    if ((*CharPrev(lpsz,c) == L':') && (*CharNext(c) == L'/'))
       c += 2;
     else
       *c = L'\\';
+
+    c = StrChr(c, L'/');  // next
   }
 }
 
@@ -1476,7 +1480,7 @@ void PathFixBackslashes(LPWSTR lpsz)
 //
 void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 {
-  WCHAR szBuf[312];
+  WCHAR szBuf[512];
 
   if (ExpandEnvironmentStrings(lpSrc,szBuf,COUNTOF(szBuf)))
     lstrcpyn(lpSrc,szBuf,dwSrc);
@@ -1889,7 +1893,6 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
 {
   HDC hDC;
   int iLogPixelsY;
-  HMODULE hModUxTheme;
   HTHEME hTheme;
   LOGFONT lf;
   BOOL bSucceed = FALSE;
@@ -1898,11 +1901,12 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
   iLogPixelsY = GetDeviceCaps(hDC,LOGPIXELSY);
   ReleaseDC(NULL,hDC);
 
-  if (hModUxTheme = GetModuleHandle(L"uxtheme.dll")) {
-    if ((BOOL)(GetProcAddress(hModUxTheme,"IsAppThemed"))()) {
-      hTheme = (HTHEME)(INT_PTR)(GetProcAddress(hModUxTheme,"OpenThemeData"))(NULL,L"WINDOWSTYLE;WINDOW");
+  HMODULE hLocalModUxTheme = GetModuleHandle(L"uxtheme.dll");
+  if (hLocalModUxTheme) {
+    if ((BOOL)(GetProcAddress(hLocalModUxTheme,"IsAppThemed"))()) {
+      hTheme = (HTHEME)(INT_PTR)(GetProcAddress(hLocalModUxTheme,"OpenThemeData"))(NULL,L"WINDOWSTYLE;WINDOW");
       if (hTheme) {
-        if (S_OK == (HRESULT)(GetProcAddress(hModUxTheme,"GetThemeSysFont"))(hTheme,/*TMT_MSGBOXFONT*/805,&lf)) {
+        if (S_OK == (HRESULT)(GetProcAddress(hLocalModUxTheme,"GetThemeSysFont"))(hTheme,/*TMT_MSGBOXFONT*/805,&lf)) {
           if (lf.lfHeight < 0)
             lf.lfHeight = -lf.lfHeight;
           *wSize = (WORD)MulDiv(lf.lfHeight,72,iLogPixelsY);
@@ -1911,7 +1915,7 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
           StrCpyN(lpFaceName,lf.lfFaceName,LF_FACESIZE);
           bSucceed = TRUE;
         }
-        (GetProcAddress(hModUxTheme,"CloseThemeData"))(hTheme);
+        (GetProcAddress(hLocalModUxTheme,"CloseThemeData"))(hTheme);
       }
     }
   }
@@ -2147,23 +2151,23 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
         hex = GetHexDigit(*(s+1));
         if (hex >= 0) {
           s++;
-          val[0] = hex;
+          val[0] = (WCHAR)hex;
           hex = GetHexDigit(*(s+1));
           if (hex >= 0) {
             s++;
             val[0] *= 16;
-            val[0] += hex;
+            val[0] += (WCHAR)hex;
             if (!bShort) {
               hex = GetHexDigit(*(s+1));
               if (hex >= 0) {
                 s++;
                 val[0] *= 16;
-                val[0] += hex;
+                val[0] += (WCHAR)hex;
                 hex = GetHexDigit(*(s+1));
                 if (hex >= 0) {
                   s++;
                   val[0] *= 16;
-                  val[0] += hex;
+                  val[0] += (WCHAR)hex;
                 }
               }
             }

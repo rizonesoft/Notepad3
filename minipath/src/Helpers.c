@@ -275,11 +275,9 @@ BOOL PrivateIsAppThemed()
 //
 BOOL SetTheme(HWND hwnd,LPCWSTR lpszTheme)
 {
-  HMODULE hModUxTheme;
-  FARPROC pfnSetWindowTheme;
-
-  if (hModUxTheme = GetModuleHandle(L"uxtheme")) {
-    pfnSetWindowTheme = GetProcAddress(hModUxTheme,"SetWindowTheme");
+  HMODULE hModUxTheme = GetModuleHandle(L"uxtheme");
+  if (hModUxTheme) {
+    FARPROC pfnSetWindowTheme = GetProcAddress(hModUxTheme,"SetWindowTheme");
 
     if (pfnSetWindowTheme)
       return (S_OK == pfnSetWindowTheme(hwnd,lpszTheme,NULL));
@@ -490,20 +488,17 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 //
 void SetWindowTransparentMode(HWND hwnd,BOOL bTransparentMode)
 {
-  FARPROC fp;
-  int  iAlphaPercent;
-  BYTE bAlpha;
-
   if (bTransparentMode) {
-    if (fp = GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes")) {
+    FARPROC fp = GetProcAddress(GetModuleHandle(L"User32"), "SetLayeredWindowAttributes");
+    if (fp) {
       SetWindowLongPtr(hwnd,GWL_EXSTYLE,
         GetWindowLongPtr(hwnd,GWL_EXSTYLE) | WS_EX_LAYERED);
 
       // get opacity level from registry
-      iAlphaPercent = IniGetInt(L"Settings2",L"OpacityLevel",75);
+      int iAlphaPercent = IniGetInt(L"Settings2",L"OpacityLevel",75);
       if (iAlphaPercent < 0 || iAlphaPercent > 100)
         iAlphaPercent = 75;
-      bAlpha = iAlphaPercent * 255 / 100;
+      BYTE bAlpha = (BYTE)(iAlphaPercent * 255 / 100);
 
       fp(hwnd,0,bAlpha,LWA_ALPHA);
     }
@@ -556,16 +551,17 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptbb,int ctbb)
 {
   WCHAR tchButtons[512];
-  WCHAR *p;
   int i,c;
   int iCmd;
 
   ZeroMemory(tchButtons,COUNTOF(tchButtons)*sizeof(tchButtons[0]));
   lstrcpyn(tchButtons,lpszButtons,COUNTOF(tchButtons)-2);
   TrimString(tchButtons);
-  while (p = StrStr(tchButtons,L"  "))
-    MoveMemory((WCHAR*)p,(WCHAR*)p+1,(lstrlen(p) + 1) * sizeof(WCHAR));
-
+  WCHAR *p = StrStr(tchButtons, L"  ");
+  while (p) {
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    p = StrStr(tchButtons, L"  ");
+  }
   c = (int)SendMessage(hwnd,TB_BUTTONCOUNT,0,0);
   for (i = 0; i < c; i++)
     SendMessage(hwnd,TB_DELETEBUTTON,0,0);
@@ -1043,9 +1039,11 @@ void PrepareFilterStr(LPWSTR lpFilter)
 //
 void StrTab2Space(LPWSTR lpsz)
 {
-  WCHAR *c = lpsz;
-  while (c = StrChr(lpsz,L'\t'))
+  WCHAR *c = StrChr(lpsz, L'\t');
+  while (c) {
     *c = L' ';
+    c = StrChr(lpsz, L'\t');
+  }
 }
 
 
@@ -1268,6 +1266,13 @@ HDDEDATA CALLBACK DdeCallback(UINT uType, UINT uFmt, HCONV hconv, HSZ hsz1, HSZ 
     default:
         return (HDDEDATA)NULL;
   }
+  UNUSED(uFmt);
+  UNUSED(hconv);
+  UNUSED(hsz1);
+  UNUSED(hsz2);
+  UNUSED(hdata);
+  UNUSED(dwData1);
+  UNUSED(dwData2);
 }
 
 BOOL ExecDDECommand(LPCWSTR lpszCmdLine,
@@ -1287,7 +1292,8 @@ BOOL ExecDDECommand(LPCWSTR lpszCmdLine,
     return FALSE;
 
   lstrcpyn(lpszDDEMsgBuf,lpszDDEMsg,COUNTOF(lpszDDEMsgBuf));
-  if (pSubst = StrStr(lpszDDEMsgBuf,L"%1"))
+  pSubst = StrStr(lpszDDEMsgBuf, L"%1");
+  if (pSubst)
     *(pSubst+1) = L's';
 
   wsprintf(lpszURLExec,lpszDDEMsgBuf,lpszCmdLine);
@@ -1541,8 +1547,9 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) {
 
   if (pszItem == NULL || cchItem == 0) {
     int i = 0;
-    while (pmru->pszItems[i] && i < pmru->iSize)
-      i++;
+    while ((i < pmru->iSize) && (pmru->pszItems[i])) {
+      ++i;
+    }
     return(i);
   }
   else {
@@ -1647,7 +1654,6 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
 {
   HDC hDC;
   int iLogPixelsY;
-  HMODULE hModUxTheme;
   HTHEME hTheme;
   LOGFONT lf;
   BOOL bSucceed = FALSE;
@@ -1656,7 +1662,8 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
   iLogPixelsY = GetDeviceCaps(hDC,LOGPIXELSY);
   ReleaseDC(NULL,hDC);
 
-  if (hModUxTheme = GetModuleHandle(L"uxtheme.dll")) {
+  HMODULE hModUxTheme = GetModuleHandle(L"uxtheme.dll");
+  if (hModUxTheme) {
     if ((BOOL)(GetProcAddress(hModUxTheme,"IsAppThemed"))()) {
       hTheme = (HTHEME)(INT_PTR)(GetProcAddress(hModUxTheme,"OpenThemeData"))(NULL,L"WINDOWSTYLE;WINDOW");
       if (hTheme) {

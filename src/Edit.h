@@ -31,10 +31,8 @@ typedef struct _editfindreplace
   BOOL bFindClose;
   BOOL bReplaceClose;
   BOOL bNoFindWrap;
-  HWND hwnd;
-#ifdef BOOKMARK_EDITION
   BOOL bWildcardSearch;
-#endif
+  HWND hwnd;
   //HANDLE hMRUFind;
   //HANDLE hMRUReplace;
 
