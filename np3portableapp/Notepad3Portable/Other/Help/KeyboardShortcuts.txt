@@ -1,4 +1,4 @@
-Keyboard Shortcuts for Notepad2
+Keyboard Shortcuts for Notepad3
 
   File
 
@@ -38,9 +38,9 @@ Keyboard Shortcuts for Notepad2
     Alt+Backspace         Undo.
     Ctrl+Y                Redo.
     Ctrl+Shift+Y          Undo.
-    Ctrl+X                Cut.
+    Ctrl+X                Cut selection  / Cut current line,  if no selection.
     Shift+Del             Cut.
-    Ctrl+C                Copy.
+    Ctrl+C                Copy selection / Copy current line, if no selection .
     Alt+C                 Copy all.
     Ctrl+E                Copy add.
     Ctrl+V                Paste.
@@ -151,7 +151,8 @@ Keyboard Shortcuts for Notepad2
     F2                    Jump to next bookmark
     Shift+F2              Jump to previous bookmark
     Ctrl+F2               Toggle bookmark
-
+    Alt+F2                Clear all
+    
   Syntax scheme, Font
 
     F12                   Select syntax scheme.
@@ -179,7 +180,7 @@ Keyboard Shortcuts for Notepad2
 
     Ctrl++                Zoom in.
     Ctrl+-                Zoom out.
-    Ctrl+/                Reset zoom.
+    Ctrl+0                Reset zoom.
 
   Settings
 
@@ -188,7 +189,7 @@ Keyboard Shortcuts for Notepad2
     Alt+-                 Decrease limit for long lines.
     Ctrl+Shift+H          Toggle auto close HTML/XML.
     Alt+T                 Always on top.
-    Ctrl+0                Transparent mode.
+    Ctrl+Numpad_*         Transparent mode.
     Ctrl+9                Display text excerpt in title.
     F7                    Save settings now.
     Ctrl+F7               Jump to ini-file.
@@ -290,6 +291,8 @@ Command Line Switches
     /t    Set window title.
     /i    Start as tray icon.
     /f    Specify ini-file; /f0 use no ini-file (don't save settings).
-    /?    Display a brief summary about command line parameters.
+    /v    Print file and quit.
+    /vd   Print file, but show Printer config dialog.
     /z    Skip next (Registry based Notepad replacement)
+    /?    Display a brief summary about command line parameters.
 

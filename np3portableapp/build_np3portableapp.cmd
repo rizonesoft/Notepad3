@@ -31,57 +31,66 @@ setlocal
 :: ====================================================================================================================
 
 :: --- Environment ---
+set VERSION=2.0.2.422
 
 set SCRIPT_DIR=%~dp0
-set PORTAPP_ROOT_DIR=D:\PortableApps\
-set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
-set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%PortableApps.comInstaller\PortableApps.comInstaller.exe
+set PORTAPP_ROOT_DIR=D:\PortableApps
+set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
+set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
-set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\distrib\
-set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141_xp\
-set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141_xp\
+set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\distrib
+set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141_xp
+set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141_xp
 
-set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable\
+set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable
+set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo
 
 :: --------------------------------------------------------------------------------------------------------------------
 
 :: --- Prepare Build ---
 
-copy "%NP3_DISTRIB_DIR%Notepad3.ini" "%NP3_PORTAPP_DIR%App\DefaultData\settings\Notepad3.ini" /Y /V
-copy "%NP3_DISTRIB_DIR%minipath.ini" "%NP3_PORTAPP_DIR%App\DefaultData\settings\minipath.ini" /Y /V
+copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
+copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
 
-copy /B "%NP3_WIN32_DIR%Notepad3.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\" /Y /V
-copy /B "%NP3_WIN32_DIR%minipath.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\" /Y /V
-copy /B "%NP3_WIN32_DIR%np3encrypt.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\" /Y /V
+copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
+copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
+copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 
-copy /B "%NP3_X64_DIR%Notepad3.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\x64\" /Y /V
-copy /B "%NP3_X64_DIR%minipath.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\x64\" /Y /V
-copy /B "%NP3_X64_DIR%np3encrypt.exe" /B "%NP3_PORTAPP_DIR%App\Notepad3\x64\" /Y /V
+copy /B "%NP3_X64_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+
+call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP3_PORTAPP_INFO%.ini"
 
 :: --------------------------------------------------------------------------------------------------------------------
 
 :: --- build Launcher and Installer Package ---
 
 :: - build Launcher -
-:: cmdline version of Launcher Generator does not work (the same as manual started GUI version)
-:: so manually generate Notepad3Portable.exe for now, 
-:: trying to figure out, what is going wrong later ...
-:: ~~~ "%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"
-:: --- instead of generating launcher, you have to use manually create Notepad3Portable.exe
-echo. Please choose dir "%NP3_PORTAPP_DIR%" to create Launcher (Notepad3Portable.exe)
-"%PORTAPP_LAUNCHER_CREATOR%"
+"%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
 :: - build Installer -
-:: unfortunately, the cmdline version of Installer Generator does not work either
-:: so manually generate Notepad3Portable_2.0.2.xxx_English.paf.exe for now, 
-::~~~"%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
-echo. Please choose dir "%NP3_PORTAPP_DIR%" to create Installer (Notepad3Portable_2.0.2.xxx_English.paf.exe)
-%PORTAPP_INSTALLER_CREATOR%
+"%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
 
 :: ====================================================================================================================
+goto :END
+:: REPLACE  strg(%1)  srcfile(%2)  replstrg(%3)  dstfile(%4) 
+:REPLACE
+if exist "%~4" del /F /Q "%~4"
+type NUL > "%~4"
+for /f "tokens=1,* delims=¶" %%A in (%~2) do (
+    set string=%%A
+    setlocal EnableDelayedExpansion
+    set modified=!string:%~1=%~3!
+    >> "%~4" echo(!modified!
+    endlocal
+)
+goto:EOF
+
+:: ====================================================================================================================
 :END
-pause
+::pause
 endlocal
 ::exit
 :: ====================================================================================================================
