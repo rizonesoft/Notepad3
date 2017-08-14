@@ -108,8 +108,8 @@ BEGIN
             MENUITEM "Recode to &ANSI\tCtrl-Shift+A",  CMD_RECODEANSI
             MENUITEM "Recode to &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
             MENUITEM "Recode to &OEM\tCtrl+Shift+O",   CMD_RECODEOEM
+            MENUITEM "ASCII as UFT-&8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
             MENUITEM "Recode &No FileVars\tAlt+F8",    CMD_RELOADNOFILEVARS
-            MENUITEM "ASCII as UFT-&8\tShift+F8",      CMD_RELOADASCIIASUTF8
             MENUITEM "&Recode...\tF8",                 IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
             MENUITEM "Set &Default...",             IDM_ENCODING_SETDEFAULT
@@ -155,24 +155,29 @@ BEGIN
         MENUITEM "Clear Clipboar&d",            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "&Select All\tCtrl+A",         IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Delete Line Left\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
-        MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
-        MENUITEM "Delete Word Left\tCtrl+Back",       CMD_CTRLBACK
-        MENUITEM "Delete Word Right\tCtrl+Del",       CMD_CTRLDEL
-        MENUITEM SEPARATOR
+        POPUP "&Words"
+        BEGIN
+            MENUITEM "Cursor Word Left\tCtrl+Left", CMD_CTRLBACK
+            MENUITEM "Cursor Word Right\tCtrl+Right", CMD_CTRLBACK
+            MENUITEM "Delete Word Left\tCtrl+Back", CMD_CTRLBACK
+            MENUITEM "Delete Word Right\tCtrl+Del", CMD_CTRLDEL
+        END
         POPUP "L&ines"
         BEGIN
             MENUITEM "Move &Up\tCtrl+Shift+Up",     IDM_EDIT_MOVELINEUP
             MENUITEM "&Move Down\tCtrl+Shift+Down", IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "&Duplicate Line\tCtrl+D",     IDM_EDIT_DUPLICATELINE
-            MENUITEM "&Cut Line\tCtrl+Shift+X",     IDM_EDIT_CUTLINE
-            MENUITEM "C&opy Line\tCtrl+Shift+C",    IDM_EDIT_COPYLINE
-            MENUITEM "D&elete Line\tCtrl+Shift+D",  IDM_EDIT_DELETELINE
+            MENUITEM "&Cut Line\tCtrl+X,Ctrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "C&opy Line\tCtrl+C,Ctrl+Shift+C", IDM_EDIT_COPYLINE
+            MENUITEM "D&elete Line\tCtrl+Shift+D",      IDM_EDIT_DELETELINE
+            MENUITEM "&Duplicate Line\tCtrl+D",         IDM_EDIT_DUPLICATELINE
             MENUITEM SEPARATOR
-            MENUITEM "Column &Wrap...\tCtrl+Shift+W", IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Split Lines\tCtrl+I",        IDM_EDIT_SPLITLINES
-            MENUITEM "&Join Lines\tCtrl+J",         IDM_EDIT_JOINLINES
+            MENUITEM "Delete Line Left\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
+            MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
+            MENUITEM SEPARATOR
+            MENUITEM "Column &Wrap...\tCtrl+Shift+W",  IDM_EDIT_COLUMNWRAP
+            MENUITEM "&Split Lines\tCtrl+I",           IDM_EDIT_SPLITLINES
+            MENUITEM "&Join Lines\tCtrl+J",            IDM_EDIT_JOINLINES
             MENUITEM "Join &Paragraphs\tCtrl+Shift+J", IDM_EDIT_JOINLINESEX
         END
         POPUP "&Block"
@@ -180,6 +185,19 @@ BEGIN
             MENUITEM "&Indent\tTab",                IDM_EDIT_INDENT
             MENUITEM "&Unindent\tShift+Tab",        IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
+            POPUP "&Enclose Selection"
+            BEGIN
+                MENUITEM "&Single Quotes\tCtrl+1", CMD_STRINGIFY
+                MENUITEM "&Double Quotes\tCtrl+2", CMD_STRINGIFY2
+                MENUITEM SEPARATOR
+                MENUITEM "( )\tCtrl+3", CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4", CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5", CMD_EMBRACE3
+                MENUITEM SEPARATOR
+                MENUITEM "&Backticks\tCtrl+6", CMD_EMBRACE4
+                MENUITEM SEPARATOR
+                MENUITEM "&With...\tAlt+Q", IDM_EDIT_ENCLOSESELECTION
+            END
             MENUITEM "&Duplicate Selection\tAlt+D", IDM_EDIT_SELECTIONDUPLICATE
             MENUITEM SEPARATOR
             MENUITEM "&Pad With Spaces\tAlt+B",     IDM_EDIT_PADWITHSPACES
@@ -193,18 +211,6 @@ BEGIN
             MENUITEM "&Modify Lines...\tAlt+M",     IDM_EDIT_MODIFYLINES
             MENUITEM "Alig&n Lines...\tAlt+J",      IDM_EDIT_ALIGN
             MENUITEM "S&ort Lines...\tAlt+O",       IDM_EDIT_SORTLINES
-        END
-        POPUP "&Enclose Selection"
-        BEGIN
-            MENUITEM "( )\tCtrl+3", CMD_EMBRACE
-            MENUITEM "{ }\tCtrl+4", CMD_EMBRACE2
-            MENUITEM "[ ]\tCtrl+5", CMD_EMBRACE3
-            MENUITEM SEPARATOR
-            MENUITEM "&Single Quotes\tCtrl+1", CMD_STRINGIFY
-            MENUITEM "&Double Quotes\tCtrl+2", CMD_STRINGIFY2
-            MENUITEM "&Backticks\tCtrl+6", CMD_EMBRACE4
-            MENUITEM SEPARATOR
-            MENUITEM "&With...\tAlt+Q", IDM_EDIT_ENCLOSESELECTION
         END
         POPUP "C&onvert"
         BEGIN
@@ -484,6 +490,19 @@ BEGIN
     "U",            IDM_EDIT_CONVERTUPPERCASE, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "V",            IDM_EDIT_PASTE,         VIRTKEY, CONTROL, NOINVERT
     "V",            IDM_VIEW_MATCHBRACES,   VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "W",            IDM_VIEW_WORDWRAP, VIRTKEY, CONTROL, NOINVERT
+    "W",            IDM_EDIT_TRIMLINES, VIRTKEY, ALT, NOINVERT
+    "W",            IDM_EDIT_COLUMNWRAP, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "X",            IDM_EDIT_CUT, VIRTKEY, CONTROL, NOINVERT
+    "X",            IDM_EDIT_INSERT_TAG, VIRTKEY, ALT, NOINVERT
+    "X",            IDM_EDIT_CHAR2HEX, VIRTKEY, CONTROL, ALT, NOINVERT
+    "X",            IDM_EDIT_CUTLINE, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "Y",            IDM_EDIT_REDO, VIRTKEY, CONTROL, NOINVERT
+    "Y",            IDM_EDIT_MERGEBLANKLINES, VIRTKEY, ALT, NOINVERT
+    "Y",            IDM_EDIT_UNDO, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "Z",            IDM_EDIT_UNDO, VIRTKEY, CONTROL, NOINVERT
+    "Z",            IDM_EDIT_STRIP1STCHAR, VIRTKEY, ALT, NOINVERT
+    "Z",            IDM_EDIT_REDO, VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_ADD,         IDM_VIEW_ZOOMIN,        VIRTKEY, CONTROL, NOINVERT
     VK_ADD,         CMD_INCLINELIMIT,       VIRTKEY, ALT, NOINVERT
     VK_ADD,         CMD_INCREASENUM,        VIRTKEY, CONTROL, ALT, NOINVERT
@@ -532,6 +551,7 @@ BEGIN
     VK_F8,          IDM_EDIT_INSERT_ENCODING, VIRTKEY, CONTROL, NOINVERT
     VK_F8,          CMD_RELOADNOFILEVARS,   VIRTKEY, ALT, NOINVERT
     VK_F8,          IDM_ENCODING_UTF8,      VIRTKEY, SHIFT, NOINVERT
+    VK_F8,          CMD_RELOADASCIIASUTF8,  VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_F9,          IDM_ENCODING_SELECT,    VIRTKEY, NOINVERT
     VK_F9,          IDM_EDIT_INSERT_FILENAME, VIRTKEY, CONTROL, NOINVERT
     VK_F9,          IDM_FILE_MANAGEFAV,     VIRTKEY, ALT, NOINVERT
@@ -557,19 +577,6 @@ BEGIN
     VK_SUBTRACT,    CMD_DECREASENUM,        VIRTKEY, CONTROL, ALT, NOINVERT
     VK_TAB,         CMD_CTRLTAB,            VIRTKEY, CONTROL, NOINVERT
     VK_UP,          IDM_EDIT_MOVELINEUP,    VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "W",            IDM_VIEW_WORDWRAP,      VIRTKEY, CONTROL, NOINVERT
-    "W",            IDM_EDIT_TRIMLINES,     VIRTKEY, ALT, NOINVERT
-    "W",            IDM_EDIT_COLUMNWRAP,    VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "X",            IDM_EDIT_CUT,           VIRTKEY, CONTROL, NOINVERT
-    "X",            IDM_EDIT_INSERT_TAG,    VIRTKEY, ALT, NOINVERT
-    "X",            IDM_EDIT_CHAR2HEX,      VIRTKEY, CONTROL, ALT, NOINVERT
-    "X",            IDM_EDIT_CUTLINE,       VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "Y",            IDM_EDIT_REDO,          VIRTKEY, CONTROL, NOINVERT
-    "Y",            IDM_EDIT_MERGEBLANKLINES, VIRTKEY, ALT, NOINVERT
-    "Y",            IDM_EDIT_UNDO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "Z",            IDM_EDIT_UNDO,          VIRTKEY, CONTROL, NOINVERT
-    "Z",            IDM_EDIT_STRIP1STCHAR,  VIRTKEY, ALT, NOINVERT
-    "Z",            IDM_EDIT_REDO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_OEM_PERIOD,  IDM_EDIT_INSERT_GUID,   VIRTKEY, SHIFT, CONTROL, NOINVERT
 END
 

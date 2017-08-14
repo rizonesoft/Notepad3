@@ -96,7 +96,7 @@ TBBUTTON  tbbMainWnd[] = { {0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
 WCHAR      szIniFile[MAX_PATH] = { L'\0' };
 WCHAR      szIniFile2[MAX_PATH] = { L'\0' };
 BOOL       bSaveSettings;
-BOOL       bSaveSettingsSafe;
+BOOL       bEnableSaveSettings;
 BOOL       bSaveRecentFiles;
 BOOL       bSaveFindReplace;
 WCHAR      tchLastSaveCopyDir[MAX_PATH] = L"";
@@ -2362,14 +2362,16 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = lstrlen(szIniFile);
   CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,bSaveSettings && i);
-  EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, i);
+
   EnableCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
   EnableCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
   EnableCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVERECENT,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
+  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,bEnableSaveSettings && i);
+
   i = (lstrlen(szIniFile) > 0 || lstrlen(szIniFile2) > 0);
-  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW, (bSaveSettings == bSaveSettingsSafe) && i);
+  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,bEnableSaveSettings && i);
 
   UNUSED(lParam);
 }
@@ -3096,6 +3098,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       if (flagPasteBoard)
         bLastCopyFromMe = TRUE;
       SendMessage(hwndEdit,SCI_LINECUT,0,0);
+      UpdateToolbar();
       break;
 
 
@@ -4408,13 +4411,14 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_SAVESETTINGS:
-      bSaveSettings = (bSaveSettings) ? FALSE : TRUE;
-      bSaveSettingsSafe = bSaveSettings;
+      if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS))
+        bSaveSettings = (bSaveSettings) ? FALSE : TRUE;
       break;
 
 
     case IDM_VIEW_SAVESETTINGSNOW:
-      {
+      if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGSNOW)) {
+
         BOOL bCreateFailure = FALSE;
 
         if (lstrlen(szIniFile) == 0) {
@@ -5057,7 +5061,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       if (IsCmdEnabled(hwnd,IDM_EDIT_COPY))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_COPY,1),0);
       else
-        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_COPYALL,1),0);
+        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_COPYALL,1),0);     // different to Keyboard-Shortcut
         //SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_COPYLINE,1),0);
       break;
 
@@ -5612,17 +5616,14 @@ void LoadSettings()
 
   LoadIniSection(L"Settings",pIniSection,cchIniSection);
 
-  bSaveSettings =
-    IniSectionGetInt(pIniSection,L"SaveSettings",1);
+  bEnableSaveSettings = TRUE;
+  bSaveSettings = IniSectionGetInt(pIniSection,L"SaveSettings",1);
   if (bSaveSettings) bSaveSettings = 1;
-  bSaveSettingsSafe = bSaveSettings;
 
-  bSaveRecentFiles =
-    IniSectionGetInt(pIniSection,L"SaveRecentFiles",0);
+  bSaveRecentFiles = IniSectionGetInt(pIniSection,L"SaveRecentFiles",0);
   if (bSaveRecentFiles) bSaveRecentFiles = 1;
 
-  bSaveFindReplace =
-    IniSectionGetInt(pIniSection,L"SaveFindReplace",0);
+  bSaveFindReplace = IniSectionGetInt(pIniSection,L"SaveFindReplace",0);
   if (bSaveFindReplace) bSaveFindReplace = 1;
 
   efrData.bFindClose = IniSectionGetInt(pIniSection,L"CloseFind",0);
@@ -5965,6 +5966,9 @@ void SaveSettings(BOOL bSaveSettingsNow) {
 
   if (lstrlen(szIniFile) == 0)
     return;
+
+  if (!bEnableSaveSettings)
+    return; 
 
   CreateIniFile();
 
@@ -6677,6 +6681,7 @@ int FindIniFile() {
     }
   }
 
+  // normalize path
   PathCanonicalizeEx(szIniFile);
   GetLongPathNameEx(szIniFile, COUNTOF(szIniFile));
 
@@ -7029,7 +7034,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (bResetFileWatching)
       iFileWatchingMode = 0;
     InstallFileWatching(NULL);
-    bSaveSettings = bSaveSettingsSafe;
+    bEnableSaveSettings = TRUE;
     EnableSettingsCmds(hwndMain);
     return TRUE;
   }
@@ -7103,16 +7108,6 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
   if (fSuccess) {
     lstrcpy(szCurFile,szFileName);
-    // consistent settings file handling (if loaded in editor)
-    if (lstrcmp(szCurFile, szIniFile) == 0) {
-      bSaveSettingsSafe = bSaveSettings;
-      bSaveSettings = FALSE;
-      EnableSettingsCmds(hwndMain);
-    }
-    else if (!bReload && (bSaveSettings != bSaveSettingsSafe)) {
-      bSaveSettings = bSaveSettingsSafe;
-      EnableSettingsCmds(hwndMain);
-    }
     SetDlgItemText(hwndMain,IDC_FILENAME,szCurFile);
     SetDlgItemInt(hwndMain,IDC_REUSELOCK,GetTickCount(),FALSE);
     if (!fKeepTitleExcerpt)
@@ -7152,6 +7147,10 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         EditEnsureSelectionVisible(hwndEdit);
       }
     }
+
+    // consistent settings file handling (if loaded in editor)
+    bEnableSaveSettings = (lstrcmp(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
+    EnableSettingsCmds(hwndMain);
 
     // Show warning: Unicode file loaded as ANSI
     if (bUnicodeErr)
