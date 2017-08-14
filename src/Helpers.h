@@ -95,13 +95,20 @@ int Toolbar_SetButtons(HWND,int,LPCWSTR,void*,int);
 
 LRESULT SendWMSize(HWND);
 
+BOOL IsCmdEnabled(HWND, UINT);
+
 #define EnableCmd(hmenu,id,b) EnableMenuItem(hmenu,id,(b)\
                                ?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 
 #define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)\
                                ?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 
-BOOL IsCmdEnabled(HWND, UINT);
+#define EnableSettingsCmds(hwnd) {\
+    HMENU _hmenu = GetSystemMenu((hwnd), FALSE); \
+    BOOL hasIniFile = (lstrlen(szIniFile) > 0 || lstrlen(szIniFile2) > 0); \
+    CheckCmd(_hmenu, IDM_VIEW_SAVESETTINGS, bSaveSettings); \
+    EnableCmd(_hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && (bSaveSettings == bSaveSettingsSafe)); \
+    EnableCmd(_hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && (bSaveSettings == bSaveSettingsSafe)); }
 
 
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)

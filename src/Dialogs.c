@@ -112,7 +112,7 @@ int MsgBox(int iType,UINT uIdMsg,...)
 //
 //  DisplayCmdLineHelp()
 //
-void DisplayCmdLineHelp()
+void DisplayCmdLineHelp(HWND hwnd)
 {
   MSGBOXPARAMS mbp;
 
@@ -123,7 +123,7 @@ void DisplayCmdLineHelp()
   GetString(IDS_CMDLINEHELP,szText,COUNTOF(szText));
 
   mbp.cbSize = sizeof(MSGBOXPARAMS);
-  mbp.hwndOwner = NULL;
+  mbp.hwndOwner = hwnd;
   mbp.hInstance = g_hInstance;
   mbp.lpszText = szText;
   mbp.lpszCaption = szTitle;

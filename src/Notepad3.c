@@ -93,11 +93,12 @@ TBBUTTON  tbbMainWnd[] = { {0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
                            {23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
                            {24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0} };
 
-WCHAR      szIniFile[MAX_PATH] = L"";
-WCHAR      szIniFile2[MAX_PATH] = L"";
-BOOL      bSaveSettings;
-BOOL      bSaveRecentFiles;
-BOOL      bSaveFindReplace;
+WCHAR      szIniFile[MAX_PATH] = { L'\0' };
+WCHAR      szIniFile2[MAX_PATH] = { L'\0' };
+BOOL       bSaveSettings;
+BOOL       bSaveSettingsSafe;
+BOOL       bSaveRecentFiles;
+BOOL       bSaveFindReplace;
 WCHAR      tchLastSaveCopyDir[MAX_PATH] = L"";
 WCHAR      tchOpenWithDir[MAX_PATH];
 WCHAR      tchFavoritesDir[MAX_PATH];
@@ -645,7 +646,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   // Command Line Help Dialog
   if (flagDisplayHelp) {
-    DisplayCmdLineHelp();
+    DisplayCmdLineHelp(NULL);
     return(0);
   }
 
@@ -2121,6 +2122,14 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = lstrlen(szCurFile);
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
+  EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
+  EnableCmd(hmenu, CMD_RECODEANSI, i);
+  EnableCmd(hmenu, CMD_RECODEOEM, i);
+  EnableCmd(hmenu, CMD_RELOADNOFILEVARS, i);
+  EnableCmd(hmenu, CMD_RECODEDEFAULT, i);
+  EnableCmd(hmenu, IDM_FILE_LAUNCH, i);
+
+
   EnableCmd(hmenu,IDM_FILE_LAUNCH,i);
   EnableCmd(hmenu,IDM_FILE_PROPERTIES,i);
   EnableCmd(hmenu,IDM_FILE_CREATELINK,i);
@@ -2170,8 +2179,6 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   i  = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) - (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
   i2 = (int)SendMessage(hwndEdit,SCI_CANPASTE,0,0);
 
-  //~EnableCmd(hmenu,IDM_EDIT_CUT,i /*&& !bReadOnly*/);
-  //~EnableCmd(hmenu,IDM_EDIT_COPY,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_CUT,1 /*&& !bReadOnly*/);      // allow Ctrl-X w/o selection
   EnableCmd(hmenu,IDM_EDIT_COPY,1 /*&& !bReadOnly*/);     // allow Ctrl-C w/o selection
 
@@ -2270,6 +2277,12 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,BME_EDIT_BOOKMARKTOGGLE,i);
   EnableCmd(hmenu,BME_EDIT_BOOKMARKCLEAR,i);
 
+  EnableCmd(hmenu, IDM_EDIT_DELETELINELEFT, i);
+  EnableCmd(hmenu, IDM_EDIT_DELETELINERIGHT, i);
+  EnableCmd(hmenu, CMD_CTRLBACK, i);
+  EnableCmd(hmenu, CMD_CTRLDEL, i);
+  EnableCmd(hmenu, CMD_TIMESTAMPS, i);
+
   EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
   CheckCmd(hmenu,IDM_VIEW_FOLDING,bShowCodeFolding);
 
@@ -2349,16 +2362,14 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = lstrlen(szIniFile);
   CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,bSaveSettings && i);
-
+  EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, i);
   EnableCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
   EnableCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
   EnableCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVERECENT,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
-  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,i);
-
   i = (lstrlen(szIniFile) > 0 || lstrlen(szIniFile2) > 0);
-  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,i);
+  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW, (bSaveSettings == bSaveSettingsSafe) && i);
 
   UNUSED(lParam);
 }
@@ -4398,6 +4409,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_SAVESETTINGS:
       bSaveSettings = (bSaveSettings) ? FALSE : TRUE;
+      bSaveSettingsSafe = bSaveSettings;
       break;
 
 
@@ -4454,9 +4466,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       GetFileKey(hwndEdit);
       break;
 
-      case IDM_HELP_CMD:
-          DisplayCmdLineHelp();
-          break;
+    case IDM_HELP_CMD:
+      DisplayCmdLineHelp(hwnd);
+      break;
 
     case CMD_ESCAPE:
       //close the autocomplete box
@@ -5603,6 +5615,7 @@ void LoadSettings()
   bSaveSettings =
     IniSectionGetInt(pIniSection,L"SaveSettings",1);
   if (bSaveSettings) bSaveSettings = 1;
+  bSaveSettingsSafe = bSaveSettings;
 
   bSaveRecentFiles =
     IniSectionGetInt(pIniSection,L"SaveRecentFiles",0);
@@ -6641,29 +6654,31 @@ int FindIniFile() {
         }
       }
     }
-    return(1);
   }
-
-  lstrcpy(tchTest,PathFindFileName(tchModule));
-  PathRenameExtension(tchTest,L".ini");
-  bFound = CheckIniFile(tchTest,tchModule);
-
-  if (!bFound) {
-    lstrcpy(tchTest,L"Notepad3.ini");
-    bFound = CheckIniFile(tchTest,tchModule);
-  }
-
-  if (bFound) {
-    // allow two redirections: administrator -> user -> custom
-    if (CheckIniFileRedirect(tchTest,tchModule))
-      CheckIniFileRedirect(tchTest,tchModule);
-    lstrcpy(szIniFile,tchTest);
-  }
-
   else {
-    lstrcpy(szIniFile,tchModule);
-    PathRenameExtension(szIniFile,L".ini");
+    lstrcpy(tchTest, PathFindFileName(tchModule));
+    PathRenameExtension(tchTest, L".ini");
+    bFound = CheckIniFile(tchTest, tchModule);
+
+    if (!bFound) {
+      lstrcpy(tchTest, L"Notepad3.ini");
+      bFound = CheckIniFile(tchTest, tchModule);
+    }
+
+    if (bFound) {
+      // allow two redirections: administrator -> user -> custom
+      if (CheckIniFileRedirect(tchTest, tchModule))
+        CheckIniFileRedirect(tchTest, tchModule);
+      lstrcpy(szIniFile, tchTest);
+    }
+    else {
+      lstrcpy(szIniFile, tchModule);
+      PathRenameExtension(szIniFile, L".ini");
+    }
   }
+
+  PathCanonicalizeEx(szIniFile);
+  GetLongPathNameEx(szIniFile, COUNTOF(szIniFile));
 
   return(1);
 }
@@ -7014,7 +7029,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (bResetFileWatching)
       iFileWatchingMode = 0;
     InstallFileWatching(NULL);
-
+    bSaveSettings = bSaveSettingsSafe;
+    EnableSettingsCmds(hwndMain);
     return TRUE;
   }
 
@@ -7087,6 +7103,16 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
   if (fSuccess) {
     lstrcpy(szCurFile,szFileName);
+    // consistent settings file handling (if loaded in editor)
+    if (lstrcmp(szCurFile, szIniFile) == 0) {
+      bSaveSettingsSafe = bSaveSettings;
+      bSaveSettings = FALSE;
+      EnableSettingsCmds(hwndMain);
+    }
+    else if (!bReload && (bSaveSettings != bSaveSettingsSafe)) {
+      bSaveSettings = bSaveSettingsSafe;
+      EnableSettingsCmds(hwndMain);
+    }
     SetDlgItemText(hwndMain,IDC_FILENAME,szCurFile);
     SetDlgItemInt(hwndMain,IDC_REUSELOCK,GetTickCount(),FALSE);
     if (!fKeepTitleExcerpt)
