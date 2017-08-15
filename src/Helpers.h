@@ -103,15 +103,6 @@ BOOL IsCmdEnabled(HWND, UINT);
 #define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)\
                                ?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 
-#define EnableSettingsCmds(hwnd) {\
-    HMENU _hmenu = GetSystemMenu((hwnd), FALSE); \
-    BOOL hasIniFile = (lstrlen(szIniFile) > 0 || lstrlen(szIniFile2) > 0); \
-    CheckCmd(_hmenu, IDM_VIEW_SAVESETTINGS, bSaveSettings && bEnableSaveSettings); \
-    EnableCmd(_hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && bEnableSaveSettings); \
-    EnableCmd(_hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && bEnableSaveSettings); \
-}
-
-
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))

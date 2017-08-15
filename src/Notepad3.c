@@ -394,6 +394,7 @@ int flagDisplayHelp        = 0;
 int flagPrintFileAndLeave  = 0;
 
 
+
 //==============================================================================
 //
 //  Folding Functions
@@ -1503,6 +1504,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
           if (!bRunningWatch)
             InstallFileWatching(szCurFile);
+
         break;
 
 
@@ -5447,6 +5449,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
             iPathNameFormat,bModified || iEncoding != iOriginalEncoding,
             IDS_READONLY,bReadOnly,szTitleExcerpt);
+          UpdateToolbar();
           break;
 
         case SCN_MARGINCLICK:
@@ -5464,6 +5467,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
             iPathNameFormat,bModified || iEncoding != iOriginalEncoding,
             IDS_READONLY,bReadOnly,szTitleExcerpt);
+          UpdateToolbar();
           break;
       }
       break;
@@ -6798,8 +6802,9 @@ void UpdateToolbar()
   EnableTool(IDT_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
   EnableTool(IDT_FILE_LAUNCH,i);
 
-  CheckTool(IDT_VIEW_WORDWRAP,fWordWrap);
+  EnableTool(IDT_FILE_SAVE, bModified /*&& !bReadOnly*/);
 
+  CheckTool(IDT_VIEW_WORDWRAP,fWordWrap);
 }
 
 
@@ -6950,6 +6955,21 @@ void UpdateLineNumberWidth()
 
 //=============================================================================
 //
+//  UpdateSettingsCmds()
+//
+//
+void UpdateSettingsCmds()
+{
+    HMENU hmenu = GetSystemMenu(hwndMain, FALSE);
+    BOOL hasIniFile = (lstrlen(szIniFile) > 0 || lstrlen(szIniFile2) > 0);
+    CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, bSaveSettings && bEnableSaveSettings);
+    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && bEnableSaveSettings);
+    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && bEnableSaveSettings);
+}
+
+
+//=============================================================================
+//
 //  FileIO()
 //
 //
@@ -7035,7 +7055,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
       iFileWatchingMode = 0;
     InstallFileWatching(NULL);
     bEnableSaveSettings = TRUE;
-    EnableSettingsCmds(hwndMain);
+    UpdateSettingsCmds(hwndMain);
     return TRUE;
   }
 
@@ -7150,7 +7170,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
     // consistent settings file handling (if loaded in editor)
     bEnableSaveSettings = (lstrcmp(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
-    EnableSettingsCmds(hwndMain);
+    UpdateSettingsCmds();
 
     // Show warning: Unicode file loaded as ANSI
     if (bUnicodeErr)
@@ -7189,7 +7209,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     }
   }
 
-  if (!bSaveAlways && (!bModified && iEncoding == iOriginalEncoding || bIsEmptyNewFile) && !bSaveAs)
+  if (!bSaveAlways && (!bModified && (iEncoding == iOriginalEncoding) || bIsEmptyNewFile) && !bSaveAs)
     return TRUE;
 
   if (bAsk)
@@ -7939,11 +7959,8 @@ void InstallFileWatching(LPCWSTR lpszFile)
       bRunningWatch = FALSE;
       dwChangeNotifyTime = 0;
     }
-    return;
   }
-
-  // Install
-  else
+  else  // Install
   {
     // Terminate previous watching
     if (bRunningWatch) {
@@ -7978,6 +7995,7 @@ void InstallFileWatching(LPCWSTR lpszFile)
     bRunningWatch = TRUE;
     dwChangeNotifyTime = 0;
   }
+  UpdateToolbar();
 }
 
 
