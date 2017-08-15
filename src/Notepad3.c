@@ -7154,7 +7154,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     }
 
     // consistent settings file handling (if loaded in editor)
-    bEnableSaveSettings = (lstrcmp(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
+    bEnableSaveSettings = (lstrcmpi(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
     UpdateSettingsCmds();
 
     // Show warning: Unicode file loaded as ANSI
