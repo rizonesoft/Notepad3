@@ -6787,7 +6787,7 @@ void UpdateToolbar()
   EnableTool(IDT_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
   EnableTool(IDT_FILE_LAUNCH,i);
 
-  EnableTool(IDT_FILE_SAVE, bModified /*&& !bReadOnly*/);
+  EnableTool(IDT_FILE_SAVE, (bModified || (iEncoding != iOriginalEncoding)) /*&& !bReadOnly*/);
 
   CheckTool(IDT_VIEW_WORDWRAP,fWordWrap);
 }
