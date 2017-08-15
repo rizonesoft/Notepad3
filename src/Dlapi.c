@@ -36,7 +36,7 @@ typedef struct tagDLDATA // dl
   UINT cbidl;                // Size of pidl
   LPITEMIDLIST  pidl;        // Directory Id
   LPSHELLFOLDER lpsf;        // IShellFolder Interface to pidl
-  WCHAR szPath[MAX_PATH];     // Pathname to Directory Id
+  WCHAR szPath[MAX_PATH];    // Pathname to Directory Id
   int iDefIconFolder;        // Default Folder Icon
   int iDefIconFile;          // Default File Icon
   BOOL bNoFadeHidden;        // Flag passed from GetDispInfo()
@@ -203,7 +203,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                  int iSortFlags,BOOL fSortRev)
 {
 
-  WCHAR wszDir[MAX_PATH];
+  WCHAR wszDir[MAX_PATH] = { L'\0' };
 
   LPSHELLFOLDER lpsfDesktop = NULL;
   LPSHELLFOLDER lpsf = NULL;
@@ -880,7 +880,7 @@ BOOL DirList_PropertyDlg(HWND hwnd,int iItem)
 //
 BOOL DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath)
 {
-  WCHAR tch[MAX_PATH];
+  WCHAR tch[MAX_PATH] = { L'\0' };
   LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
   if (SHGetPathFromIDList(lpdl->pidl,tch))
   {
@@ -904,7 +904,7 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 
   #define LVIS_FLAGS LVIS_SELECTED|LVIS_FOCUSED
 
-  WCHAR szShortPath[MAX_PATH];
+  WCHAR szShortPath[MAX_PATH] = { L'\0' };
   SHFILEINFO  shfi;
 
   LV_FINDINFO lvfi;

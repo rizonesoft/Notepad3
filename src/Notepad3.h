@@ -118,6 +118,7 @@ int  CreateIniFileEx(LPCWSTR);
 void UpdateStatusbar();
 void UpdateToolbar();
 void UpdateLineNumberWidth();
+void UpdateSettingsCmds();
 
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL);
