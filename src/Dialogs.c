@@ -160,8 +160,8 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
 
   BROWSEINFO bi;
   LPITEMIDLIST pidl;
-  WCHAR szTitle[256];
-  WCHAR szBase[MAX_PATH];
+  WCHAR szTitle[256] = { L'\0' };;
+  WCHAR szBase[MAX_PATH] = { L'\0' };
   BOOL fOk = FALSE;
 
   lstrcpy(szTitle,L"");
@@ -335,10 +335,10 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         case IDC_SEARCHEXE:
           {
-            WCHAR szArgs[MAX_PATH];
-            WCHAR szArg2[MAX_PATH];
-            WCHAR szFile[MAX_PATH * 2];
-            WCHAR szFilter[256];
+            WCHAR szArgs[MAX_PATH] = { L'\0' };
+            WCHAR szArg2[MAX_PATH] = { L'\0' };
+            WCHAR szFile[MAX_PATH * 2] = { L'\0' };
+            WCHAR szFilter[256] = { L'\0' };
             OPENFILENAME ofn;
             ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
@@ -375,7 +375,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         case IDC_COMMANDLINE:
           {
             BOOL bEnableOK = FALSE;
-            WCHAR args[MAX_PATH];
+            WCHAR args[MAX_PATH] = { L'\0' };
 
             if (GetDlgItemText(hwnd,IDC_COMMANDLINE,args,MAX_PATH))
               if (ExtractFirstArgument(args,args,NULL))
@@ -389,10 +389,10 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         case IDOK:
           {
-            WCHAR arg1[MAX_PATH];
-            WCHAR arg2[MAX_PATH];
+            WCHAR arg1[MAX_PATH] = { L'\0' };
+            WCHAR arg2[MAX_PATH] = { L'\0' };
             SHELLEXECUTEINFO sei;
-            WCHAR wchDirectory[MAX_PATH] = L"";
+            WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
             if (GetDlgItemText(hwnd,IDC_COMMANDLINE,arg1,MAX_PATH))
             {
@@ -639,8 +639,8 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
                              hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
   {
     SHELLEXECUTEINFO sei;
-    WCHAR szParam[MAX_PATH];
-    WCHAR wchDirectory[MAX_PATH] = L"";
+    WCHAR szParam[MAX_PATH] = { L'\0' };
+    WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
     if (lstrlen(szCurFile)) {
       lstrcpy(wchDirectory,szCurFile);
@@ -918,7 +918,7 @@ BOOL AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 
   INT_PTR iResult;
 
-  WCHAR pszName[MAX_PATH];
+  WCHAR pszName[MAX_PATH] = { L'\0' };
   lstrcpy(pszName,lpszName);
 
   iResult = ThemedDialogBoxParam(
@@ -970,7 +970,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
   HWND hwnd;
   LPICONTHREADINFO lpit;
   LV_ITEM lvi;
-  WCHAR tch[MAX_PATH];
+  WCHAR tch[MAX_PATH] = { L'\0' };
   SHFILEINFO shfi;
   DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
   DWORD dwAttr  = 0;
@@ -1158,7 +1158,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             if (lpdi->item.mask & LVIF_IMAGE) {
 
-              WCHAR tch[MAX_PATH];
+              WCHAR tch[MAX_PATH] = { L'\0' };
               LV_ITEM lvi;
               SHFILEINFO shfi;
               DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
@@ -1237,7 +1237,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         case 0x00A0:
           {
             int i;
-            WCHAR tch[MAX_PATH];
+            WCHAR tch[MAX_PATH] = { L'\0' };
             LV_ITEM lvi;
             SHFILEINFO shfi;
 
@@ -1287,7 +1287,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         case IDOK:
           {
-            WCHAR tch[MAX_PATH];
+            WCHAR tch[MAX_PATH] = { L'\0' };
             //int  iItem;
 
             //if ((iItem = SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETCURSEL,0,0)) != LB_ERR)

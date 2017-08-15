@@ -20,6 +20,7 @@
 
 
 extern WCHAR szIniFile[MAX_PATH];
+
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
   GetPrivateProfileString(lpSection,lpName,lpDefault,lpReturnedStr,nSize,szIniFile)
 #define IniGetInt(lpSection,lpName,nDefault) \

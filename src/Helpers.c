@@ -384,15 +384,15 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
                     UINT uIDReadOnly,BOOL bReadOnly,LPCWSTR lpszExcerpt)
 {
 
-  WCHAR szUntitled[256];
-  WCHAR szExcrptQuot[256];
-  WCHAR szExcrptFmt[32];
-  WCHAR szAppName[256];
-  WCHAR szElevatedAppName[256];
-  WCHAR szReadOnly[32];
-  WCHAR szTitle[512];
-  static WCHAR szCachedFile[MAX_PATH];
-  static WCHAR szCachedDisplayName[MAX_PATH];
+  WCHAR szUntitled[256] = { L'\0' };
+  WCHAR szExcrptQuot[256] = { L'\0' };
+  WCHAR szExcrptFmt[32] = { L'\0' };
+  WCHAR szAppName[256] = { L'\0' };
+  WCHAR szElevatedAppName[256] = { L'\0' };
+  WCHAR szReadOnly[32] = { L'\0' };
+  WCHAR szTitle[512] = { L'\0' };
+  static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
+  static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
   static const WCHAR *pszSep = L" - ";
   static const WCHAR *pszMod = L"* ";
 
@@ -433,7 +433,7 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
       }
       lstrcat(szTitle,szCachedDisplayName);
       if (iFormat == 1) {
-        WCHAR tchPath[MAX_PATH];
+        WCHAR tchPath[MAX_PATH] = { L'\0' };
         StrCpyN(tchPath,lpszFile,COUNTOF(tchPath));
         PathRemoveFileSpec(tchPath);
         StrCat(szTitle,L" [");
@@ -968,14 +968,15 @@ void PathRelativeToApp(
   LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bSrcIsFile,
   BOOL bUnexpandEnv,BOOL bUnexpandMyDocs) {
 
-  WCHAR wchAppPath[MAX_PATH];
-  WCHAR wchWinDir[MAX_PATH];
-  WCHAR wchUserFiles[MAX_PATH];
-  WCHAR wchPath[MAX_PATH];
-  WCHAR wchResult[MAX_PATH];
+  WCHAR wchAppPath[MAX_PATH] = { L'\0' };
+  WCHAR wchWinDir[MAX_PATH] = { L'\0' };
+  WCHAR wchUserFiles[MAX_PATH] = { L'\0' };
+  WCHAR wchPath[MAX_PATH] = { L'\0' };
+  WCHAR wchResult[MAX_PATH] = { L'\0' };
   DWORD dwAttrTo = (bSrcIsFile) ? 0 : FILE_ATTRIBUTE_DIRECTORY;
 
   GetModuleFileName(NULL,wchAppPath,COUNTOF(wchAppPath));
+  PathCanonicalizeEx(wchAppPath);
   PathRemoveFileSpec(wchAppPath);
   GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
   SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
@@ -1030,7 +1031,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
   }
   else {
     if (lpszSrc) {
-    lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
+      lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
     }
   }
 
@@ -1039,6 +1040,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
 
   if (PathIsRelative(wchPath)) {
     GetModuleFileName(NULL,wchResult,COUNTOF(wchResult));
+    PathCanonicalizeEx(wchResult);
     PathRemoveFileSpec(wchResult);
     PathAppend(wchResult,wchPath);
   }
@@ -1127,7 +1129,7 @@ BOOL PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
 
     if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,&ppf)))
     {
-      WORD wsz[MAX_PATH];
+      WORD wsz[MAX_PATH] = { L'\0' };
 
       /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,
                           pszLnkFile,-1,wsz,MAX_PATH);*/
@@ -1170,7 +1172,7 @@ BOOL PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
 BOOL PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
 {
 
-  WCHAR tchResPath[MAX_PATH];
+  WCHAR tchResPath[MAX_PATH] = { L'\0' };
 
   if (PathIsLnkFile(pszPath)) {
 
@@ -1208,13 +1210,13 @@ BOOL PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
 BOOL PathCreateDeskLnk(LPCWSTR pszDocument)
 {
 
-  WCHAR tchExeFile[MAX_PATH];
-  WCHAR tchDocTemp[MAX_PATH];
-  WCHAR tchArguments[MAX_PATH+16];
-  WCHAR tchLinkDir[MAX_PATH];
-  WCHAR tchDescription[64];
+  WCHAR tchExeFile[MAX_PATH] = { L'\0' };
+  WCHAR tchDocTemp[MAX_PATH] = { L'\0' };
+  WCHAR tchArguments[MAX_PATH+16] = { L'\0' };
+  WCHAR tchLinkDir[MAX_PATH] = { L'\0' };
+  WCHAR tchDescription[64] = { L'\0' };
 
-  WCHAR tchLnkFileName[MAX_PATH];
+  WCHAR tchLnkFileName[MAX_PATH] = { L'\0' };
 
   IShellLink *psl;
   BOOL bSucceeded = FALSE;
@@ -1248,7 +1250,7 @@ BOOL PathCreateDeskLnk(LPCWSTR pszDocument)
 
     if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,&ppf)))
     {
-      WORD wsz[MAX_PATH];
+      WORD wsz[MAX_PATH] = { L'\0' };
 
       /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,
                           tchLnkFileName,-1,wsz,MAX_PATH);*/
@@ -1283,7 +1285,7 @@ BOOL PathCreateDeskLnk(LPCWSTR pszDocument)
 BOOL PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
 {
 
-  WCHAR tchLnkFileName[MAX_PATH];
+  WCHAR tchLnkFileName[MAX_PATH] = { L'\0' };
 
   IShellLink *psl;
   BOOL bSucceeded = FALSE;
@@ -1306,7 +1308,7 @@ BOOL PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
 
     if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,&ppf)))
     {
-      WORD wsz[MAX_PATH];
+      WORD wsz[MAX_PATH] = { L'\0' };
 
       /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,
                           tchLnkFileName,-1,wsz,MAX_PATH);*/
@@ -1494,7 +1496,7 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 //
 void PathCanonicalizeEx(LPWSTR lpSrc)
 {
-  WCHAR szDst[MAX_PATH];
+  WCHAR szDst[MAX_PATH] = { L'\0' };
 
   if (PathCanonicalize(szDst,lpSrc))
     lstrcpy(lpSrc,szDst);
@@ -1701,7 +1703,7 @@ BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpan
       break;
     }
     else {
-      WCHAR wchItem[MAX_PATH];
+      WCHAR wchItem[MAX_PATH] = { L'\0' };
       PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),TRUE);
       if (lstrcmpi(wchItem,pszFile) == 0) {
         LocalFree(pmru->pszItems[i]);
@@ -1714,17 +1716,12 @@ BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpan
     pmru->pszItems[i] = pmru->pszItems[i-1];
 
   if (bRelativePath) {
-    WCHAR wchFile[MAX_PATH];
+    WCHAR wchFile[MAX_PATH] = { L'\0' };
     PathRelativeToApp((LPWSTR)pszFile,wchFile,COUNTOF(wchFile),TRUE,TRUE,bUnexpandMyDocs);
     pmru->pszItems[0] = StrDup(wchFile);
   }
   else
     pmru->pszItems[0] = StrDup(pszFile);
-
-/* notepad2-mod custom code start */
-  // Needed to make W7 jump lists work when NP2 is not explicitly associated
-  if (IsW7()) SHAddToRecentDocs(SHARD_PATHW, pszFile);
-/* notepad2-mod custom code end */
 
   return(1);
 }
@@ -1861,7 +1858,7 @@ BOOL MRU_MergeSave(LPMRULIST pmru,BOOL bAddFiles,BOOL bRelativePath,BOOL bUnexpa
   if (bAddFiles) {
     for (i = pmru->iSize-1; i >= 0; i--) {
       if (pmru->pszItems[i]) {
-        WCHAR wchItem[MAX_PATH];
+        WCHAR wchItem[MAX_PATH] = { L'\0' };
         PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),TRUE);
         MRU_AddFile(pmruBase,wchItem,bRelativePath,bUnexpandMyDocs);
       }

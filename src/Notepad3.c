@@ -99,16 +99,16 @@ BOOL       bSaveSettings;
 BOOL       bEnableSaveSettings;
 BOOL       bSaveRecentFiles;
 BOOL       bSaveFindReplace;
-WCHAR      tchLastSaveCopyDir[MAX_PATH] = L"";
-WCHAR      tchOpenWithDir[MAX_PATH];
-WCHAR      tchFavoritesDir[MAX_PATH];
-WCHAR      tchDefaultDir[MAX_PATH];
-WCHAR      tchDefaultExtension[64];
-WCHAR      tchFileDlgFilters[5*1024];
-WCHAR      tchToolbarButtons[512];
-WCHAR      tchToolbarBitmap[MAX_PATH];
-WCHAR      tchToolbarBitmapHot[MAX_PATH];
-WCHAR      tchToolbarBitmapDisabled[MAX_PATH];
+WCHAR      tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
+WCHAR      tchOpenWithDir[MAX_PATH] = { L'\0' };
+WCHAR      tchFavoritesDir[MAX_PATH] = { L'\0' };
+WCHAR      tchDefaultDir[MAX_PATH] = { L'\0' };
+WCHAR      tchDefaultExtension[64] = { L'\0' };
+WCHAR      tchFileDlgFilters[5*1024] = { L'\0' };
+WCHAR      tchToolbarButtons[512] = { L'\0' };
+WCHAR      tchToolbarBitmap[MAX_PATH] = { L'\0' };
+WCHAR      tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
+WCHAR      tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 int       iPathNameFormat;
 BOOL      fWordWrap;
 BOOL      fWordWrapG;
@@ -594,7 +594,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   HACCEL hAccFindReplace;
   INITCOMMONCONTROLSEX icex;
   //HMODULE hSciLexer;
-  WCHAR wchWorkingDirectory[MAX_PATH];
+  WCHAR wchWorkingDirectory[MAX_PATH] = { L'\0' };
 
   // Set global variable g_hInstance
   g_hInstance = hInstance;
@@ -898,7 +898,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
     // Open from Directory
     if (PathIsDirectory(lpFileArg)) {
-      WCHAR tchFile[MAX_PATH];
+      WCHAR tchFile[MAX_PATH] = { L'\0' };
       if (OpenFileDlg(hwndMain,tchFile,COUNTOF(tchFile),lpFileArg))
         bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
     }
@@ -1238,7 +1238,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         DragQueryFile(hDrop,0,szBuf,COUNTOF(szBuf));
 
         if (PathIsDirectory(szBuf)) {
-          WCHAR tchFile[MAX_PATH];
+          WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (OpenFileDlg(hwndMain,tchFile,COUNTOF(tchFile),szBuf))
             FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
         }
@@ -1279,7 +1279,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             iSrcEncoding = params->iSrcEncoding;
 
             if (PathIsDirectory(&params->wchData)) {
-              WCHAR tchFile[MAX_PATH];
+              WCHAR tchFile[MAX_PATH] = { L'\0' };
               if (OpenFileDlg(hwndMain,tchFile,COUNTOF(tchFile),&params->wchData))
                 bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
             }
@@ -1380,10 +1380,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         case IDC_EDIT:
           {
-            int iSelStart = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
-            int iSelEnd   = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
-
-            if (iSelStart == iSelEnd && pt.x != -1 && pt.y != -1)
+            if (SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0) && (pt.x != -1) && (pt.y != -1))
             {
               int iNewPos;
               POINT ptc;
@@ -1801,7 +1798,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   BITMAP bmp;
   HBITMAP hbmp, hbmpCopy = NULL;
   HIMAGELIST himl;
-  WCHAR szTmp[MAX_PATH];
+  WCHAR szTmp[MAX_PATH] = { L'\0' };
   BOOL bExternalBitmap = FALSE;
 
   DWORD dwToolbarStyle = WS_TOOLBAR;
@@ -2178,7 +2175,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_UNDO,SendMessage(hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_REDO,SendMessage(hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
 
-  i  = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) - (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
+  i = !SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
   i2 = (int)SendMessage(hwndEdit,SCI_CANPASTE,0,0);
 
   EnableCmd(hmenu,IDM_EDIT_CUT,1 /*&& !bReadOnly*/);      // allow Ctrl-X w/o selection
@@ -2403,7 +2400,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (lstrlen(szCurFile)) {
 
-          WCHAR tchCurFile2[MAX_PATH];
+          WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
 
           int iCurPos     = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
           int iAnchorPos  = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
@@ -2540,9 +2537,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_NEWWINDOW2:
       {
         SHELLEXECUTEINFO sei;
-        WCHAR szModuleName[MAX_PATH];
-        WCHAR szFileName[MAX_PATH];
-        WCHAR szParameters[2*MAX_PATH+64];
+        WCHAR szModuleName[MAX_PATH] = { L'\0' };
+        WCHAR szFileName[MAX_PATH] = { L'\0' };
+        WCHAR szParameters[2*MAX_PATH+64] = { L'\0' };
 
         MONITORINFO mi;
         HMONITOR hMonitor;
@@ -2622,7 +2619,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_LAUNCH:
       {
         SHELLEXECUTEINFO sei;
-        WCHAR wchDirectory[MAX_PATH] = L"";
+        WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
         if (!lstrlen(szCurFile))
           break;
@@ -2735,7 +2732,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_OPENFAV:
       if (FileSave(FALSE,TRUE,FALSE,FALSE)) {
 
-        WCHAR tchSelItem[MAX_PATH];
+        WCHAR tchSelItem[MAX_PATH] = { L'\0' };
 
         if (FavoritesDlg(hwnd,tchSelItem))
         {
@@ -2744,7 +2741,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           if (PathIsDirectory(tchSelItem))
           {
-            WCHAR tchFile[MAX_PATH];
+            WCHAR tchFile[MAX_PATH] = { L'\0' };
 
             if (OpenFileDlg(hwndMain,tchFile,COUNTOF(tchFile),tchSelItem))
               FileLoad(TRUE,FALSE,FALSE,FALSE,tchFile);
@@ -2788,7 +2785,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_RECENT:
       if (MRU_Enum(pFileMRU,0,NULL,0) > 0) {
         if (FileSave(FALSE,TRUE,FALSE,FALSE)) {
-          WCHAR tchFile[MAX_PATH];
+          WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (FileMRUDlg(hwnd,tchFile))
             FileLoad(TRUE,FALSE,FALSE,FALSE,tchFile);
           }
@@ -2850,7 +2847,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (lstrlen(szCurFile)) {
 
-          WCHAR tchCurFile2[MAX_PATH];
+          WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
 
           // file to ANSI is default loading behaviour, recoding does not make sense
           int iNewEncoding = Encoding_IsANSI(iEncoding) ? CPI_NONE : iEncoding;
@@ -2905,23 +2902,27 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_UNDO:
-      SendMessage(hwndEdit,SCI_UNDO,0,0);
+        SendMessage(hwndEdit, SCI_UNDO, 0, 0);
       break;
 
 
     case IDM_EDIT_REDO:
-      SendMessage(hwndEdit,SCI_REDO,0,0);
+        SendMessage(hwndEdit, SCI_REDO, 0, 0);
       break;
 
 
     case IDM_EDIT_CUT:
-      if (flagPasteBoard)
-        bLastCopyFromMe = TRUE;
-      if ((int)SendMessage(hwndEdit, SCI_GETSELECTIONEND, 0, 0) != (int)SendMessage(hwndEdit, SCI_GETSELECTIONSTART, 0, 0)) {
-        SendMessage(hwndEdit, SCI_CUT, 0, 0);
-      }
-      else {
-        SendMessage(hwndEdit, SCI_LINECUT, 0, 0);   // VisualStudio behaviour
+      {
+        if (flagPasteBoard)
+          bLastCopyFromMe = TRUE;
+
+        if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
+        {
+            SendMessage(hwndEdit, SCI_CUT, 0, 0);
+        }
+        else {
+          SendMessage(hwndEdit, SCI_LINECUT, 0, 0);   // VisualStudio behavior
+        }
       }
       break;
 
@@ -2929,7 +2930,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_COPY:
       if (flagPasteBoard)
         bLastCopyFromMe = TRUE;
-      if ((int)SendMessage(hwndEdit, SCI_GETSELECTIONEND, 0, 0) != (int)SendMessage(hwndEdit, SCI_GETSELECTIONSTART, 0, 0)) 
+      if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0 ,0))
       {
         SendMessage(hwndEdit, SCI_COPY, 0, 0);
       }
@@ -2962,8 +2963,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_SWAP:
-      if (SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
-          SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0) == 0) {
+      if (SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
         SendMessage(hwndEdit,SCI_PASTE,0,0);
         int iNewPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
@@ -3014,13 +3014,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_SELECTWORD:
       {
-        int iSel =
-          (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
-          (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
-
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
 
-        if (iSel == 0) {
+        if (SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
 
           int iWordStart = (int)SendMessage(hwndEdit,SCI_WORDSTARTPOSITION,iPos,TRUE);
           int iWordEnd   = (int)SendMessage(hwndEdit,SCI_WORDENDPOSITION,iPos,TRUE);
@@ -3045,11 +3041,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             SendMessage(hwndEdit,SCI_SETSEL,iWordStart,iWordEnd);
           }
 
-          iSel =
-            (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
-            (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
-
-          if (iSel == 0) {
+          if (SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
             int iLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iPos,0);
             int iLineStart = (int)SendMessage(hwndEdit,SCI_GETLINEINDENTPOSITION,iLine,0);
             int iLineEnd   = (int)SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,iLine,0);
@@ -3384,9 +3376,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           char *p = StrChrA(msz, ',');
           if (p)
             *p = 0;
-          //iSelStart = SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
           SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)msz);
-          //SendMessage(hwndEdit,SCI_SETANCHOR,(WPARAM)iSelStart,0);
         }
       }
       break;
@@ -3431,9 +3421,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
         WideCharToMultiByte(uCP,0,tchDateTime,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
-        //iSelStart = SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
-        //SendMessage(hwndEdit,SCI_SETANCHOR,(WPARAM)iSelStart,0);
       }
       break;
 
@@ -3463,9 +3451,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
         WideCharToMultiByte(uCP,0,pszInsert,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
-        //iSelStart = SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
-        //SendMessage(hwndEdit,SCI_SETANCHOR,(WPARAM)iSelStart,0);
       }
       break;
 
@@ -4554,7 +4540,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_RECODEDEFAULT:
       {
-        WCHAR tchCurFile2[MAX_PATH];
+        WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (lstrlen(szCurFile)) {
           if (iDefaultEncoding == CPI_UNICODEBOM)
             iSrcEncoding = CPI_UNICODE;
@@ -4573,7 +4559,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_RECODEANSI:
       {
-        WCHAR tchCurFile2[MAX_PATH];
+        WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (lstrlen(szCurFile)) {
           iSrcEncoding = CPI_ANSI_DEFAULT;
           lstrcpy(tchCurFile2,szCurFile);
@@ -4585,7 +4571,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_RECODEOEM:
       {
-        WCHAR tchCurFile2[MAX_PATH];
+        WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (lstrlen(szCurFile)) {
           iSrcEncoding = CPI_OEM;
           lstrcpy(tchCurFile2,szCurFile);
@@ -4597,7 +4583,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_RELOADASCIIASUTF8:
       {
-        WCHAR tchCurFile2[MAX_PATH];
+        WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         BOOL _bLoadASCIIasUTF8 = bLoadASCIIasUTF8;
         if (lstrlen(szCurFile)) {
           bLoadASCIIasUTF8 = 1;
@@ -4611,7 +4597,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_RELOADNOFILEVARS:
       {
-        WCHAR tchCurFile2[MAX_PATH];
+        WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (lstrlen(szCurFile)) {
           int _fNoFileVariables = fNoFileVariables;
           BOOL _bNoEncodingTags = bNoEncodingTags;
@@ -4690,8 +4676,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WideCharToMultiByte(cp,0,wchFind,-1,efrTS.szFind,COUNTOF(efrTS.szFind),NULL,NULL);
         WideCharToMultiByte(cp,0,wchReplace,-1,efrTS.szReplace,COUNTOF(efrTS.szReplace),NULL,NULL);
 
-        if (SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0) !=
-            SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0))
+        if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
           EditReplaceAllInSelection(hwndEdit,&efrTS,TRUE);
         else
           EditReplaceAll(hwndEdit,&efrTS,TRUE);
@@ -4704,14 +4689,14 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         BOOL  bCmdEnabled;
         LPWSTR lpszTemplateName;
-        WCHAR  szCmdTemplate[256];
-        char  mszSelection[512] = { 0 };
+        WCHAR  szCmdTemplate[256] = { L'\0' };
+        char  mszSelection[512] = { '\0' };
         DWORD cchSelection;
         char  *lpsz;
         LPWSTR lpszCommand;
         LPWSTR lpszArgs;
         SHELLEXECUTEINFO sei;
-        WCHAR wchDirectory[MAX_PATH] = L"";
+        WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
         lpszTemplateName = (LOWORD(wParam) == CMD_WEBACTION1) ? L"WebTemplate1" : L"WebTemplate2";
 
@@ -4739,7 +4724,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             if (lstrlenA(mszSelection)) {
 
-              WCHAR wszSelection[512];
+              WCHAR wszSelection[512] = { L'\0' };
               UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
               MultiByteToWideChar(uCP,0,mszSelection,-1,wszSelection,COUNTOF(wszSelection));
 
@@ -5966,7 +5951,7 @@ void LoadSettings()
 void SaveSettings(BOOL bSaveSettingsNow) {
   WCHAR *pIniSection = NULL;
 
-  WCHAR wchTmp[MAX_PATH];
+  WCHAR wchTmp[MAX_PATH] = { L'\0' };
 
   if (lstrlen(szIniFile) == 0)
     return;
@@ -6479,7 +6464,7 @@ void ParseCommandLine()
       if (!PathIsRelative(lpFileArg) && !PathIsUNC(lpFileArg) &&
             PathGetDriveNumber(lpFileArg) == -1 /*&& PathGetDriveNumber(g_wchWorkingDirectory) != -1*/) {
 
-        WCHAR wchPath[MAX_PATH];
+        WCHAR wchPath[MAX_PATH] = { L'\0' };
         lstrcpy(wchPath,g_wchWorkingDirectory);
         PathStripToRoot(wchPath);
         PathAppend(wchPath,lpFileArg);
@@ -6581,8 +6566,8 @@ void LoadFlags()
 //
 int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
-  WCHAR tchFileExpanded[MAX_PATH];
-  WCHAR tchBuild[MAX_PATH];
+  WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
+  WCHAR tchBuild[MAX_PATH] = { L'\0' };
   ExpandEnvironmentStrings(lpszFile,tchFileExpanded,COUNTOF(tchFileExpanded));
 
   if (PathIsRelative(tchFileExpanded)) {
@@ -6618,14 +6603,14 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 
 int CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
-  WCHAR tch[MAX_PATH];
+  WCHAR tch[MAX_PATH] = { L'\0' };
   if (GetPrivateProfileString(L"Notepad3",L"Notepad3.ini",L"",tch,COUNTOF(tch),lpszFile)) {
     if (CheckIniFile(tch,lpszModule)) {
       lstrcpy(lpszFile,tch);
       return(1);
     }
     else {
-      WCHAR tchFileExpanded[MAX_PATH];
+      WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
       ExpandEnvironmentStrings(tch,tchFileExpanded,COUNTOF(tchFileExpanded));
       if (PathIsRelative(tchFileExpanded)) {
         lstrcpy(lpszFile,lpszModule);
@@ -6644,8 +6629,8 @@ int CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
 int FindIniFile() {
 
   int bFound = 0;
-  WCHAR tchTest[MAX_PATH];
-  WCHAR tchModule[MAX_PATH];
+  WCHAR tchTest[MAX_PATH] = { L'\0' };
+  WCHAR tchModule[MAX_PATH] = { L'\0' };
   GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
 
   if (lstrlen(szIniFile)) {
@@ -6702,7 +6687,7 @@ int TestIniFile() {
   }
 
   if (PathIsDirectory(szIniFile) || *CharPrev(szIniFile,StrEnd(szIniFile)) == L'\\') {
-    WCHAR wchModule[MAX_PATH];
+    WCHAR wchModule[MAX_PATH] = { L'\0' };
     GetModuleFileName(NULL,wchModule,COUNTOF(wchModule));
     PathAppend(szIniFile,PathFindFileName(wchModule));
     PathRenameExtension(szIniFile,L".ini");
@@ -6787,12 +6772,12 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_UNDO,SendMessage(hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_REDO,SendMessage(hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
 
-  i = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) - (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
+  i = (int)!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
   EnableTool(IDT_EDIT_CUT,i /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_COPY,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
   EnableTool(IDT_EDIT_PASTE,SendMessage(hwndEdit,SCI_CANPASTE,0,0) /*&& !bReadOnly*/);
 
-  i = (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
+  i = (int)!SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
   EnableTool(IDT_EDIT_FIND,i);
   //EnableTool(IDT_EDIT_FINDNEXT,i);
   //EnableTool(IDT_EDIT_FINDPREV,i && lstrlen(efrData.szFind));
@@ -7014,8 +6999,8 @@ BOOL FileIO(BOOL fLoad,LPCWSTR psz,BOOL bNoEncDetect,int *ienc,int *ieol,
 //
 BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lpszFile)
 {
-  WCHAR tch[MAX_PATH] = L"";
-  WCHAR szFileName[MAX_PATH] = L"";
+  WCHAR tch[MAX_PATH] = { L'\0' };
+  WCHAR szFileName[MAX_PATH] = { L'\0' };
   BOOL fSuccess;
   BOOL bUnicodeErr = FALSE;
   BOOL bFileTooBig = FALSE;
@@ -7073,7 +7058,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     StrCpyN(szFileName,g_wchWorkingDirectory,COUNTOF(szFileName));
     PathAppend(szFileName,tch);
     if (!PathFileExists(szFileName)) {
-      WCHAR wchFullPath[MAX_PATH];
+      WCHAR wchFullPath[MAX_PATH] = { L'\0' };
       if (SearchPath(NULL,tch,NULL,COUNTOF(wchFullPath),wchFullPath,NULL)) {
         lstrcpy(szFileName,wchFullPath);
       }
@@ -7191,7 +7176,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 //
 BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
 {
-  WCHAR tchFile[MAX_PATH];
+  WCHAR tchFile[MAX_PATH] = { L'\0' };
   BOOL fSuccess = FALSE;
   BOOL bCancelDataLoss = FALSE;
 
@@ -7215,7 +7200,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
   if (bAsk)
   {
     // File or "Untitled" ...
-    WCHAR tch[MAX_PATH];
+    WCHAR tch[MAX_PATH] = { L'\0' };
     if (lstrlen(szCurFile))
       lstrcpy(tch,szCurFile);
     else
@@ -7249,7 +7234,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
   // Save As...
   if (bSaveAs || bSaveCopy || lstrlen(szCurFile) == 0)
   {
-    WCHAR tchInitialDir[MAX_PATH] = L"";
+    WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
     if (bSaveCopy && lstrlen(tchLastSaveCopyDir)) {
       lstrcpy(tchInitialDir,tchLastSaveCopyDir);
       lstrcpy(tchFile,tchLastSaveCopyDir);
@@ -7331,9 +7316,9 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
 BOOL OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 {
   OPENFILENAME ofn;
-  WCHAR szFile[MAX_PATH];
+  WCHAR szFile[MAX_PATH] = { L'\0' };
   WCHAR szFilter[NUMLEXERS*1024];
-  WCHAR tchInitialDir[MAX_PATH] = L"";
+  WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
 
   lstrcpy(szFile,L"");
   Style_GetOpenDlgFilterStr(szFilter,COUNTOF(szFilter));
@@ -7346,7 +7331,7 @@ BOOL OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
     else if (lstrlen(tchDefaultDir)) {
       ExpandEnvironmentStrings(tchDefaultDir,tchInitialDir,COUNTOF(tchInitialDir));
       if (PathIsRelative(tchInitialDir)) {
-        WCHAR tchModule[MAX_PATH];
+        WCHAR tchModule[MAX_PATH] = { L'\0' };
         GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
         PathRemoveFileSpec(tchModule);
         PathAppend(tchModule,tchInitialDir);
@@ -7387,9 +7372,9 @@ BOOL OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 BOOL SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 {
   OPENFILENAME ofn;
-  WCHAR szNewFile[MAX_PATH];
-  WCHAR szFilter[NUMLEXERS*1024];
-  WCHAR tchInitialDir[MAX_PATH] = L"";
+  WCHAR szNewFile[MAX_PATH] = { L'\0' };
+  WCHAR szFilter[NUMLEXERS*1024] = { L'\0' };
+  WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
 
   lstrcpy(szNewFile,lpstrFile);
   Style_GetOpenDlgFilterStr(szFilter,COUNTOF(szFilter));
@@ -7403,7 +7388,7 @@ BOOL SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   else if (lstrlen(tchDefaultDir)) {
     ExpandEnvironmentStrings(tchDefaultDir,tchInitialDir,COUNTOF(tchInitialDir));
     if (PathIsRelative(tchInitialDir)) {
-      WCHAR tchModule[MAX_PATH];
+      WCHAR tchModule[MAX_PATH] = { L'\0' };
       GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
       PathRemoveFileSpec(tchModule);
       PathAppend(tchModule,tchInitialDir);
@@ -7476,7 +7461,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
       DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,FALSE);
       if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
 
-        WCHAR tchFileName[MAX_PATH] = L"";
+        WCHAR tchFileName[MAX_PATH] = { L'\0' };
 
         if (IsWindowEnabled(hwnd))
           bContinue = FALSE;
@@ -7503,7 +7488,7 @@ BOOL ActivatePrevInst()
 
     // Search working directory from second instance, first!
     // lpFileArg is at least MAX_PATH+2 bytes
-    WCHAR tchTmp[MAX_PATH];
+    WCHAR tchTmp[MAX_PATH] = { L'\0' };
 
     ExpandEnvironmentStringsEx(lpFileArg,(DWORD)GlobalSize(lpFileArg)/sizeof(WCHAR));
 
@@ -7624,7 +7609,7 @@ BOOL ActivatePrevInst()
       {
         // Search working directory from second instance, first!
         // lpFileArg is at least MAX_PATH+2 bytes
-        WCHAR tchTmp[MAX_PATH];
+        WCHAR tchTmp[MAX_PATH] = { L'\0' };
         LPnp3params params;
         DWORD cb = sizeof(np3params);
         int cchTitleExcerpt;
@@ -7943,7 +7928,7 @@ void SetNotifyIconTitle(HWND hwnd)
 void InstallFileWatching(LPCWSTR lpszFile)
 {
 
-  WCHAR tchDirectory[MAX_PATH];
+  WCHAR tchDirectory[MAX_PATH] = { L'\0' };
   HANDLE hFind;
 
   // Terminate
