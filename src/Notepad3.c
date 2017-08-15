@@ -2918,7 +2918,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
         {
-            SendMessage(hwndEdit, SCI_CUT, 0, 0);
+          int token = SetUndoSelection(
+            (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0),
+            (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0));
+          SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
+          SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
+          SendMessage(hwndEdit, SCI_CUT, 0, 0);
+          SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
         }
         else {
           SendMessage(hwndEdit, SCI_LINECUT, 0, 0);   // VisualStudio behavior
@@ -5425,6 +5431,23 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
         case SCN_MODIFIED:
+          if (scn->modificationType & SC_MOD_CONTAINER) {
+            int iCurPos = 0;
+            int iAnchorPos = 0;
+            GetUndoSelection(scn->token, &iCurPos, &iAnchorPos);
+            SendMessage(hwndEdit, SCI_SETSEL, (WPARAM)iCurPos, (LPARAM)iAnchorPos);
+            /*
+            if (iAnchorPos < iCurPos) {
+              SendMessage(hwndEdit, SCI_SETSELECTIONSTART, (WPARAM)iAnchorPos, 0);
+              SendMessage(hwndEdit, SCI_SETSELECTIONEND, (WPARAM)iCurPos, 0);
+            }
+            else {
+              SendMessage(hwndEdit, SCI_SETSELECTIONSTART, (WPARAM)iCurPos, 0);
+              SendMessage(hwndEdit, SCI_SETSELECTIONEND, (WPARAM)iAnchorPos, 0);
+            }
+            */
+          }
+          // fall through
         case SCN_ZOOM:
           UpdateLineNumberWidth();
           break;
@@ -6951,6 +6974,28 @@ void UpdateSettingsCmds()
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && bEnableSaveSettings);
 }
+
+
+static int iCurPosUndoSelection = 0;
+static int iAncorPosUndoSelection = 0;
+
+int SetUndoSelection(int iCurPos, int iAnchorPos)
+{
+  iCurPosUndoSelection = iCurPos;
+  iAncorPosUndoSelection = iAnchorPos;
+  return 4711;
+}
+
+void GetUndoSelection(int token, int* iCurPos, int* iAnchorPos) 
+{
+  if (token == 4711) {
+    if (iCurPos)
+      *iCurPos = iCurPosUndoSelection+4;
+    if (iAnchorPos)
+      *iAnchorPos = iAncorPosUndoSelection+4;
+  }
+}
+
 
 
 //=============================================================================

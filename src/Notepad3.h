@@ -120,6 +120,9 @@ void UpdateToolbar();
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
 
+int  SetUndoSelection(int, int);
+void GetUndoSelection(int,int*,int*);
+
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL);
 BOOL FileLoad(BOOL,BOOL,BOOL,BOOL,LPCWSTR);
