@@ -1352,12 +1352,13 @@ BOOL EditLoadFile(
             ((IsUTF8Signature(lpData) ||
               FileVars_IsUTF8(&fvCurFile) ||
               (iSrcEncoding == CPI_UTF8 || iSrcEncoding == CPI_UTF8SIGN) ||
+              (!bPreferOEM && bLoadASCIIasUTF8) ||
               (IsUTF8(lpData,cbData) &&
               (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 !=
                 UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
                 (!bPreferOEM && (
-                mEncoding[_iPrefEncoding].uFlags & NCP_UTF8 ||
-                bLoadASCIIasUTF8 )) ))))) && !(FileVars_IsNonUTF8(&fvCurFile) &&
+                mEncoding[_iPrefEncoding].uFlags & NCP_UTF8
+                )) ))))) && !(FileVars_IsNonUTF8(&fvCurFile) &&
                   (iSrcEncoding != CPI_UTF8 && iSrcEncoding != CPI_UTF8SIGN)))
     {
       SendMessage(hwnd,SCI_SETCODEPAGE,Encoding_GetSciCodePage(CPI_UTF8),0);

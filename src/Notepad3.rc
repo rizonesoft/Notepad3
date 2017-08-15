@@ -94,6 +94,9 @@ BEGIN
             MENUITEM "Execute &Document\tCtrl+L",   IDM_FILE_LAUNCH
             MENUITEM "&Open with...\tAlt+L",        IDM_FILE_OPENWITH
             MENUITEM "&Command...\tCtrl+R",         IDM_FILE_RUN
+            MENUITEM SEPARATOR
+            MENUITEM "Web Template &1\tCtrl+Shift+1", CMD_WEBACTION1
+            MENUITEM "Web Template &2\tCtrl+Shift+2", CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
         POPUP "&Encoding"

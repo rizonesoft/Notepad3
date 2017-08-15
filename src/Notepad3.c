@@ -4707,10 +4707,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           cchSelection = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
                           (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
 
-          if (cchSelection > 0 && cchSelection <= 500 && SendMessage(hwndEdit,SCI_GETSELTEXT,0,0) < COUNTOF(mszSelection))
+          if ((cchSelection > 0) && (cchSelection <= 500) && (SendMessage(hwndEdit,SCI_GETSELTEXT,0,0) < COUNTOF(mszSelection)))
           {
             SendMessage(hwndEdit,SCI_GETSELTEXT,0,(LPARAM)mszSelection);
-            mszSelection[cchSelection] = 0; // zero terminate
+            mszSelection[cchSelection] = '\0'; // zero terminate
 
             // Check lpszSelection and truncate bad WCHARs
             lpsz = StrChrA(mszSelection,13);
