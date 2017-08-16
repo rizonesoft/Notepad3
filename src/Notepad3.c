@@ -2918,9 +2918,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
         {
-          int iAnchorPos = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
-          int iCurPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-          int token = UndoSelectionMap(-1, &iAnchorPos, &iCurPos);
+          UndoRedoSelection sel;
+          sel.anchorPos = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
+          sel.currPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+          sel.selMode = (int)SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+          int token = UndoSelectionMap(-1, &sel);
           SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
           if (token >= 0)
             SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
@@ -5427,10 +5429,17 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           if (scn->modificationType & SC_MOD_CONTAINER)
           {
             if (scn->modificationType & SC_PERFORMED_UNDO) {
-              int iAnchorPos = -1; int iCurPos = -1;
-              if (UndoSelectionMap(scn->token, &iAnchorPos, &iCurPos) >= 0) {
+              UndoRedoSelection sel = { -1,-1,-1 };
+              if (UndoSelectionMap(scn->token, &sel) >= 0) {
                 // we are inside undo transaction, so do delayed PostMessage() instead of SendMessage()
-                PostMessage(hwndEdit, SCI_SETSEL, (WPARAM)iAnchorPos, (LPARAM)iCurPos);
+                PostMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)sel.selMode, 0);
+                if (sel.selMode == SC_SEL_RECTANGLE) {
+                  PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)sel.anchorPos, 0);
+                  PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARET,  (WPARAM)sel.currPos, 0);
+                }
+                else {
+                  PostMessage(hwndEdit, SCI_SETSELECTION, (WPARAM)sel.currPos, (LPARAM)sel.anchorPos);
+                }
               }
             }
             //else if (scn->modificationType & SC_PERFORMED_REDO) {
@@ -6986,30 +6995,27 @@ void InvalidateSelections()
 //  UndoSelectionMap()
 //
 //
-int UndoSelectionMap(int token, int* iAnchorPos, int* iCurPos)
+int UndoSelectionMap(int token, LPUndoRedoSelection selection)
 {
-  static int iAncorPosUndo[MAX_SELUNDO] = { -1 };
-  static int iCurPosUndo[MAX_SELUNDO] = { -1 };
+  static UndoRedoSelection UndoRedoMap[MAX_SELUNDO] = { {-1,-1,-1} };
   static int iMapIdx = 0;
 
-  if ((iCurPos == NULL) || (iAnchorPos == NULL))
+  if (selection == NULL)
     return -1;
 
   if ((token >= 0) && (token < MAX_SELUNDO)) {
-    // pop stack request
-    *iAnchorPos = iAncorPosUndo[token];
-    *iCurPos    = iCurPosUndo[token];
-    if (*iAnchorPos == -1) {
+    // get map item request
+    *selection = UndoRedoMap[token];
+    if (selection->anchorPos == -1) {
       token = -1; // invalid
     }
-    // don't clear map here (token used in redo/undo again)
+    // don't clear map item here (token used in redo/undo again)
   }
   else {                                      
-    // push stack request
-    if ((*iAnchorPos >= 0) && (*iCurPos >= 0)) {
+    // set map item request
+    if ((selection->anchorPos >= 0) && (selection->currPos >= 0)) {
       token = (iMapIdx + 1) % MAX_SELUNDO;  // round robin next
-      iAncorPosUndo[token] = *iAnchorPos;
-      iCurPosUndo[token] = *iCurPos;
+      UndoRedoMap[token] = *selection;
       iMapIdx = token; // remember map index
     }
     else

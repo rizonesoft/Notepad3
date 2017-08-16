@@ -39,6 +39,17 @@ typedef struct np3params {
 } np3params, *LPnp3params;
 
 
+#define MAX_SELUNDO 512
+typedef struct _undoSel
+{
+  int currPos;
+  int anchorPos;
+  int selMode;
+
+} UndoRedoSelection, *LPUndoRedoSelection;
+
+
+
 //==== Toolbar Style ==========================================================
 #define WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | \
                     TBSTYLE_TOOLTIPS | TBSTYLE_FLAT | TBSTYLE_ALTDRAG | \
@@ -88,9 +99,6 @@ typedef struct np3params {
 //==== Reuse Window Lock Timeout ==============================================
 #define REUSEWINDOWLOCKTIMEOUT 1000
 
-//==== max number of selection undo  ==========================================
-#define MAX_SELUNDO 512
-
 
 //==== Function Declarations ==================================================
 BOOL InitApplication(HINSTANCE);
@@ -124,7 +132,7 @@ void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
 
 void InvalidateSelections();
-int  UndoSelectionMap(int, int*, int*);
+int  UndoSelectionMap(int, LPUndoRedoSelection);
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL);
 BOOL FileLoad(BOOL,BOOL,BOOL,BOOL,LPCWSTR);
