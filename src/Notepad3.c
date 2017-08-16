@@ -2918,16 +2918,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
         {
-          UndoRedoSelection sel;
-          sel.anchorPos = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
-          sel.currPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-          sel.selMode = (int)SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
-          int token = UndoSelectionMap(-1, &sel);
-          SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
-          if (token >= 0)
-            SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
+          int token = BeginSelUndoAction();
           SendMessage(hwndEdit, SCI_CUT, 0, 0);
-          SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+          EndSelUndoAction(token);
         }
         else {
           SendMessage(hwndEdit, SCI_LINECUT, 0, 0);   // VisualStudio behavior
@@ -2999,7 +2992,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_CLEAR:
-      SendMessage(hwndEdit,SCI_CLEAR,0,0);
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_CLEAR, 0, 0);
+        EndSelUndoAction(token);
+      }
       break;
 
 
@@ -4495,6 +4492,22 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bAutoIndent = (bAutoIndent) ? 0 : 1;
       break;
 
+    case CMD_DEL:
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_CLEAR, 0, 0);
+        EndSelUndoAction(token);
+      }
+      break;
+
+    case CMD_BACK:
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_DELETEBACK, 0, 0);
+        EndSelUndoAction(token);
+      }
+      break;
+  
 
     case CMD_CTRLBACK:
       {
@@ -5428,25 +5441,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           // check for ADDUNDOACTION step
           if (scn->modificationType & SC_MOD_CONTAINER)
           {
-            if (scn->modificationType & SC_PERFORMED_UNDO) {
-              UndoRedoSelection sel = { -1,-1,-1 };
-              if (UndoSelectionMap(scn->token, &sel) >= 0) {
-                // we are inside undo transaction, so do delayed PostMessage() instead of SendMessage()
-                PostMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)sel.selMode, 0);
-                if (sel.selMode == SC_SEL_RECTANGLE) {
-                  PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)sel.anchorPos, 0);
-                  PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARET,  (WPARAM)sel.currPos, 0);
-                }
-                else {
-                  PostMessage(hwndEdit, SCI_SETSELECTION, (WPARAM)sel.currPos, (LPARAM)sel.anchorPos);
-                }
-              }
+            if (scn->modificationType & SC_PERFORMED_UNDO) 
+            {
+              ResroreSelectionAction(scn->token);
             }
             //else if (scn->modificationType & SC_PERFORMED_REDO) {
               // REDO of ADDUNDOACTION step
-              // nothing to do here yet
-              //int iAnchorPos = -1; int iCurPos = -1;
-              //int token = UndoSelectionMap(scn->token, &iAnchorPos, &iCurPos);
             //}
           }
           // fall through
@@ -6986,6 +6986,65 @@ void InvalidateSelections()
     SendMessage(hwndEdit, WM_CANCELMODE, 0, 0);
     SendMessage(hwndEdit, SCI_CLEARSELECTIONS, 0, 0);
     SendMessage(hwndEdit, SCI_SETSELECTION, (WPARAM)iCurPos, (LPARAM)iCurPos);
+  }
+}
+
+
+//=============================================================================
+//
+//  BeginSelUndoAction()
+//
+//
+int BeginSelUndoAction()
+{
+  int token = -1;
+  UndoRedoSelection sel;
+  sel.anchorPos = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
+  sel.currPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+  sel.selMode = (int)SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+  if (sel.currPos != sel.anchorPos) {
+    token = UndoSelectionMap(-1, &sel);
+    if (token >= 0) {
+      SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
+      SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
+    }
+  }
+  return token;
+}
+
+
+
+//=============================================================================
+//
+//  EndSelUndoAction()
+//
+//
+void EndSelUndoAction(int token)
+{
+  if (token >= 0) {
+    SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+  }
+}
+
+
+//=============================================================================
+//
+//  ResroreSelectionAction()
+//
+//
+void ResroreSelectionAction(int token)
+{
+  UndoRedoSelection sel = { -1,-1,-1 };
+  if (UndoSelectionMap(token, &sel) >= 0) {
+    // we are inside undo transaction, so do delayed PostMessage() instead of SendMessage()
+    PostMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)sel.selMode, 0);
+    if (sel.selMode == SC_SEL_RECTANGLE) {
+      PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)sel.anchorPos, 0);
+      PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)sel.currPos, 0);
+    }
+    else {
+      PostMessage(hwndEdit, SCI_SETSELECTION, (WPARAM)sel.currPos, (LPARAM)sel.anchorPos);
+    }
   }
 }
 

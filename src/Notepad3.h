@@ -131,8 +131,13 @@ void UpdateToolbar();
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
 
+
 void InvalidateSelections();
+int  BeginSelUndoAction();
+void EndSelUndoAction(int);
+void ResroreSelectionAction(int);
 int  UndoSelectionMap(int, LPUndoRedoSelection);
+
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL);
 BOOL FileLoad(BOOL,BOOL,BOOL,BOOL,LPCWSTR);
