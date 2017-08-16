@@ -20,6 +20,7 @@
 
 
 extern WCHAR szIniFile[MAX_PATH];
+
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
   GetPrivateProfileString(lpSection,lpName,lpDefault,lpReturnedStr,nSize,szIniFile)
 #define IniGetInt(lpSection,lpName,nDefault) \
@@ -95,14 +96,13 @@ int Toolbar_SetButtons(HWND,int,LPCWSTR,void*,int);
 
 LRESULT SendWMSize(HWND);
 
+BOOL IsCmdEnabled(HWND, UINT);
+
 #define EnableCmd(hmenu,id,b) EnableMenuItem(hmenu,id,(b)\
                                ?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 
 #define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)\
                                ?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
-
-BOOL IsCmdEnabled(HWND, UINT);
-
 
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 

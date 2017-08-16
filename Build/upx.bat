@@ -27,9 +27,13 @@ Bin\UPX --brute "..\%INPUTDIRx86%\Notepad3.exe"
 ECHO.
 Bin\UPX --brute "..\%INPUTDIRx86%\minipath.exe"
 ECHO.
+Bin\UPX --brute "..\%INPUTDIRx86%\np3encrypt.exe"
+ECHO.
 Bin\UPX --brute "..\%INPUTDIRx64%\Notepad3.exe"
 ECHO.
 Bin\UPX --brute "..\%INPUTDIRx64%\minipath.exe"
+ECHO.
+Bin\UPX --brute "..\%INPUTDIRx64%\np3encrypt.exe"
 ECHO.
 ECHO.
 

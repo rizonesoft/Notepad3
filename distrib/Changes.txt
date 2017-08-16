@@ -3,6 +3,17 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 432 (10 August 2017)
+--------------------------------------------------
+- Fixed issue #35 (preserve FileExtension settings while switching Styles / 2nd Default Scheme).
+- Enlarge some string buffers for dialogs.
+- Fixed np3encrypt vcxproj files.
+- Added command line option ( /v ) to print file immediately and quit (like Window's original notepad.exe /p option).
+- Added printing additional option /v dialog to allow access to the Printer dialog (as on Menu: Print... ).
+- Initial version of PortableApps.com Launche and Installer build.
+- Build environment, to create Notepad3Portable (according to Portableapps.com) (x86/x64).
+
+--------------------------------------------------
 Version 2 Build 422 (10 August 2017)
 --------------------------------------------------
 - Cleanup manifest handling

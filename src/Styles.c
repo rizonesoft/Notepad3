@@ -5039,7 +5039,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         RECT rc;
-        WCHAR tch[MAX_PATH];
+        WCHAR tch[MAX_PATH] = { L'\0' };
         int cGrip;
 
         GetClientRect(hwnd,&rc);
