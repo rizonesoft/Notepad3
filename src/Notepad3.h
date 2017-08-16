@@ -39,6 +39,17 @@ typedef struct np3params {
 } np3params, *LPnp3params;
 
 
+#define MAX_SELUNDO 512
+typedef struct _undoSel
+{
+  int currPos;
+  int anchorPos;
+  int selMode;
+
+} UndoRedoSelection, *LPUndoRedoSelection;
+
+
+
 //==== Toolbar Style ==========================================================
 #define WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | \
                     TBSTYLE_TOOLTIPS | TBSTYLE_FLAT | TBSTYLE_ALTDRAG | \
@@ -119,6 +130,13 @@ void UpdateStatusbar();
 void UpdateToolbar();
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
+
+
+void InvalidateSelections();
+int  BeginSelUndoAction();
+void EndSelUndoAction(int);
+void ResroreSelectionAction(int);
+int  UndoSelectionMap(int, LPUndoRedoSelection);
 
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL);

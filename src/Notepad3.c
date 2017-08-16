@@ -2918,7 +2918,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
         {
-            SendMessage(hwndEdit, SCI_CUT, 0, 0);
+          int token = BeginSelUndoAction();
+          SendMessage(hwndEdit, SCI_CUT, 0, 0);
+          EndSelUndoAction(token);
         }
         else {
           SendMessage(hwndEdit, SCI_LINECUT, 0, 0);   // VisualStudio behavior
@@ -2990,7 +2992,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_CLEAR:
-      SendMessage(hwndEdit,SCI_CLEAR,0,0);
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_CLEAR, 0, 0);
+        EndSelUndoAction(token);
+      }
       break;
 
 
@@ -4486,6 +4492,22 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bAutoIndent = (bAutoIndent) ? 0 : 1;
       break;
 
+    case CMD_DEL:
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_CLEAR, 0, 0);
+        EndSelUndoAction(token);
+      }
+      break;
+
+    case CMD_BACK:
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_DELETEBACK, 0, 0);
+        EndSelUndoAction(token);
+      }
+      break;
+  
 
     case CMD_CTRLBACK:
       {
@@ -4707,10 +4729,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           cchSelection = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
                           (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
 
-          if (cchSelection > 0 && cchSelection <= 500 && SendMessage(hwndEdit,SCI_GETSELTEXT,0,0) < COUNTOF(mszSelection))
+          if ((cchSelection > 0) && (cchSelection <= 500) && (SendMessage(hwndEdit,SCI_GETSELTEXT,0,0) < COUNTOF(mszSelection)))
           {
             SendMessage(hwndEdit,SCI_GETSELTEXT,0,(LPARAM)mszSelection);
-            mszSelection[cchSelection] = 0; // zero terminate
+            mszSelection[cchSelection] = '\0'; // zero terminate
 
             // Check lpszSelection and truncate bad WCHARs
             lpsz = StrChrA(mszSelection,13);
@@ -4968,7 +4990,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           SetClipboardData(CF_UNICODETEXT,hData);
           CloseClipboard();
         }
-
         UpdateToolbar();
       }
       break;
@@ -5217,15 +5238,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             UpdateToolbar();
             UpdateStatusbar();
 
-            // Invalidate invalid selections
-            // #pragma message("TODO: Remove check for invalid selections once fixed in Scintilla")
-            if (SendMessage(hwndEdit,SCI_GETSELECTIONS,0,0) > 1 &&
-                SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0) != SC_SEL_RECTANGLE) {
-              int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-              SendMessage(hwndEdit,WM_CANCELMODE,0,0);
-              SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
-              SendMessage(hwndEdit,SCI_SETSELECTION,(WPARAM)iCurPos,(LPARAM)iCurPos);
-            }
+            InvalidateSelections();
 
             // mark occurrences of text currently selected
             EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
@@ -5425,6 +5438,18 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
         case SCN_MODIFIED:
+          // check for ADDUNDOACTION step
+          if (scn->modificationType & SC_MOD_CONTAINER)
+          {
+            if (scn->modificationType & SC_PERFORMED_UNDO) 
+            {
+              ResroreSelectionAction(scn->token);
+            }
+            //else if (scn->modificationType & SC_PERFORMED_REDO) {
+              // REDO of ADDUNDOACTION step
+            //}
+          }
+          // fall through
         case SCN_ZOOM:
           UpdateLineNumberWidth();
           break;
@@ -5564,18 +5589,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
       switch(pnmh->code)
       {
-
         case TTN_NEEDTEXT:
           {
-            WCHAR tch[256];
-
-            if (((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND)
+            if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
             {
-              ;
-            }
-
-            else
-            {
+              WCHAR tch[256] = { L'\0' };
               GetString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
               lstrcpyn(((LPTOOLTIPTEXT)lParam)->szText,/*StrChr(tch,L'\n')+1*/tch,80);
             }
@@ -6787,7 +6805,7 @@ void UpdateToolbar()
   EnableTool(IDT_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
   EnableTool(IDT_FILE_LAUNCH,i);
 
-  EnableTool(IDT_FILE_SAVE, bModified /*&& !bReadOnly*/);
+  EnableTool(IDT_FILE_SAVE, (bModified || (iEncoding != iOriginalEncoding)) /*&& !bReadOnly*/);
 
   CheckTool(IDT_VIEW_WORDWRAP,fWordWrap);
 }
@@ -6950,6 +6968,119 @@ void UpdateSettingsCmds()
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, bSaveSettings && bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && bEnableSaveSettings);
+}
+
+
+//=============================================================================
+//
+//  InvalidateSelections()
+//
+//
+void InvalidateSelections()
+{
+  // Invalidate invalid selections
+  // #pragma message("TODO: Remove check for invalid selections once fixed in Scintilla")
+  if (SendMessage(hwndEdit, SCI_GETSELECTIONS, 0, 0) > 1 &&
+      SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0) != SC_SEL_RECTANGLE) {
+    int iCurPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+    SendMessage(hwndEdit, WM_CANCELMODE, 0, 0);
+    SendMessage(hwndEdit, SCI_CLEARSELECTIONS, 0, 0);
+    SendMessage(hwndEdit, SCI_SETSELECTION, (WPARAM)iCurPos, (LPARAM)iCurPos);
+  }
+}
+
+
+//=============================================================================
+//
+//  BeginSelUndoAction()
+//
+//
+int BeginSelUndoAction()
+{
+  int token = -1;
+  UndoRedoSelection sel;
+  sel.anchorPos = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
+  sel.currPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+  sel.selMode = (int)SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+  if (sel.currPos != sel.anchorPos) {
+    token = UndoSelectionMap(-1, &sel);
+    if (token >= 0) {
+      SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
+      SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
+    }
+  }
+  return token;
+}
+
+
+
+//=============================================================================
+//
+//  EndSelUndoAction()
+//
+//
+void EndSelUndoAction(int token)
+{
+  if (token >= 0) {
+    SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+  }
+}
+
+
+//=============================================================================
+//
+//  ResroreSelectionAction()
+//
+//
+void ResroreSelectionAction(int token)
+{
+  UndoRedoSelection sel = { -1,-1,-1 };
+  if (UndoSelectionMap(token, &sel) >= 0) {
+    // we are inside undo transaction, so do delayed PostMessage() instead of SendMessage()
+    PostMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)sel.selMode, 0);
+    if (sel.selMode == SC_SEL_RECTANGLE) {
+      PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)sel.anchorPos, 0);
+      PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)sel.currPos, 0);
+    }
+    else {
+      PostMessage(hwndEdit, SCI_SETSELECTION, (WPARAM)sel.currPos, (LPARAM)sel.anchorPos);
+    }
+  }
+}
+
+
+//=============================================================================
+//
+//  UndoSelectionMap()
+//
+//
+int UndoSelectionMap(int token, LPUndoRedoSelection selection)
+{
+  static UndoRedoSelection UndoRedoMap[MAX_SELUNDO] = { {-1,-1,-1} };
+  static int iMapIdx = 0;
+
+  if (selection == NULL)
+    return -1;
+
+  if ((token >= 0) && (token < MAX_SELUNDO)) {
+    // get map item request
+    *selection = UndoRedoMap[token];
+    if (selection->anchorPos == -1) {
+      token = -1; // invalid
+    }
+    // don't clear map item here (token used in redo/undo again)
+  }
+  else {                                      
+    // set map item request
+    if ((selection->anchorPos >= 0) && (selection->currPos >= 0)) {
+      token = (iMapIdx + 1) % MAX_SELUNDO;  // round robin next
+      UndoRedoMap[token] = *selection;
+      iMapIdx = token; // remember map index
+    }
+    else
+      token = -1;
+  }
+  return token;
 }
 
 
@@ -7154,7 +7285,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     }
 
     // consistent settings file handling (if loaded in editor)
-    bEnableSaveSettings = (lstrcmp(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
+    bEnableSaveSettings = (lstrcmpi(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
     UpdateSettingsCmds();
 
     // Show warning: Unicode file loaded as ANSI
