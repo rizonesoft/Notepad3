@@ -88,6 +88,9 @@ typedef struct np3params {
 //==== Reuse Window Lock Timeout ==============================================
 #define REUSEWINDOWLOCKTIMEOUT 1000
 
+//==== max number of selection undo  ==========================================
+#define MAX_SELUNDO 512
+
 
 //==== Function Declarations ==================================================
 BOOL InitApplication(HINSTANCE);
@@ -120,9 +123,8 @@ void UpdateToolbar();
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
 
-int  SetUndoSelection(int, int);
-void GetUndoSelection(int,int*,int*);
-
+void InvalidateSelections();
+int  UndoSelectionMap(int, int*, int*);
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL);
 BOOL FileLoad(BOOL,BOOL,BOOL,BOOL,LPCWSTR);
