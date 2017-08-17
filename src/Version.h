@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -32,14 +32,14 @@
 #define VERSION_FILEVERSION_NUM      VERSION_MAJOR,VERSION_MINOR,VERSION_REV,VERSION_BUILD
 #define VERSION_FILEVERSION          STRINGIFY(VERSION_MAJOR) "." STRINGIFY(VERSION_MINOR) "." \
                                      STRINGIFY(VERSION_REV) "." STRINGIFY(VERSION_BUILD)
-#define VERSION_LEGALCOPYRIGHT       L"Copyright � 2008-2017 Rizonesoft"
-//#define VERSION_LEGALCOPYRIGHT_LONG  L"� Rizonesoft 2008-2016"
-#define VERSION_AUTHORNAME           L"Rizonesoft"
+#define VERSION_LEGALCOPYRIGHT       L"Copyright © 2008-2017 Rizonesoft"
+//#define VERSION_LEGALCOPYRIGHT_LONG  L"© Rizonesoft 2008-2017"
+#define VERSION_AUTHORNAME           L"© Rizonesoft"
 #define VERSION_WEBPAGEDISPLAY       L"https://www.rizonesoft.com"
-#define VERSION_COMPANYNAME          L"Rizonesoft"
+#define VERSION_COMPANYNAME          L"© Rizonesoft"
 #define VERSION_MODPAGEDISPLAY       L"https://xhmikosr.github.io/notepad2-mod/"
 #define VERSION_WEBPAGE2DISPLAY      L"http://www.flos-freeware.ch"
-#define VERSION_SCIVERSION           L"Scintilla Library Version: 375"
+#define VERSION_SCIVERSION           L"Scintilla Library Version: 376"
 
 #if defined(_WIN64)
    #define VERSION_FILEVERSION_LONG  L"Notepad3 (64-bit) " STRINGIFY(VERSION_MAJOR) L" Build " \

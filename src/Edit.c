@@ -1,4 +1,4 @@
-/******************************************************************************
+ï»¿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -66,6 +66,10 @@ extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
 extern int iSrcEncoding;
 extern int iWeakSrcEncoding;
+
+extern BOOL bAccelWordNavigation;
+extern char* chExtendedWhiteSpaceChars;
+
 
 int g_DOSEncoding;
 
@@ -264,6 +268,11 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (0 << 16)),SCI_LINEENDWRAP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_HOME + (SCMOD_SHIFT << 16)),SCI_VCHOMEWRAPEXTEND);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (SCMOD_SHIFT << 16)),SCI_LINEENDWRAPEXTEND);
+
+  if (bAccelWordNavigation)
+    SendMessage(hwnd, SCI_SETWHITESPACECHARS, 0, (LPARAM)chExtendedWhiteSpaceChars);
+  else
+    SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
 
   // Init default values for printing
   EditPrintInit();
@@ -1776,11 +1785,12 @@ void EditTitleCase(HWND hwnd)
 
       else {
 
-      //Slightly enhanced function to make Title Case: Added some '-characters and bPrevWasSpace makes it better (for example "'Don't'" will now work)
+      // Slightly enhanced function to make Title Case: 
+      // Added some '-characters and bPrevWasSpace makes it better (for example "'Don't'" will now work)
       bPrevWasSpace = TRUE;
       for (i = 0; i < cchTextW; i++)
       {
-          if (!IsCharAlphaNumericW(pszTextW[i]) && (!StrChr(L"'`´’",pszTextW[i]) ||  bPrevWasSpace ) )
+          if (!IsCharAlphaNumericW(pszTextW[i]) && (!StrChr(L"'`Î„â€™",pszTextW[i]) ||  bPrevWasSpace ) )
           {
               bNewWord = TRUE;
           }
@@ -4068,7 +4078,7 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
   cchConvW = 0;
   iLineLength = 0;
 
-#define ISDELIMITER(wc) StrChr(L",;.:-+%&¦|/*?!\"\'~´#=",wc)
+#define ISDELIMITER(wc) StrChr(L",;.:-+%&Â¦|/*?!\"\'~Î„#=",wc)
 #define ISWHITE(wc) StrChr(L" \t",wc)
 #define ISWORDEND(wc) (/*ISDELIMITER(wc) ||*/ StrChr(L" \t\r\n",wc))
 
