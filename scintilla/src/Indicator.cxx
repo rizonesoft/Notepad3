@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <memory>
 
 #include "Platform.h"
@@ -55,7 +56,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 	} else if (sacDraw.style == INDIC_SQUIGGLEPIXMAP) {
 		PRectangle rcSquiggle = PixelGridAlign(rc);
 
-		int width = Platform::Minimum(4000, static_cast<int>(rcSquiggle.Width()));
+		int width = std::min(4000, static_cast<int>(rcSquiggle.Width()));
 		RGBAImage image(width, 3, 1.0, 0);
 		enum { alphaFull = 0xff, alphaSide = 0x2f, alphaSide2=0x5f };
 		for (int x = 0; x < width; x++) {
@@ -137,7 +138,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		rcBox.top = rcLine.top + 1;
 		rcBox.bottom = rcLine.bottom;
 		// Cap width at 4000 to avoid large allocations when mistakes made
-		int width = Platform::Minimum(static_cast<int>(rcBox.Width()), 4000);
+		int width = std::min(static_cast<int>(rcBox.Width()), 4000);
 		RGBAImage image(width, static_cast<int>(rcBox.Height()), 1.0, 0);
 		// Draw horizontal lines top and bottom
 		for (int x=0; x<width; x++) {
@@ -156,7 +157,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		int x = static_cast<int>(rc.left);
 		while (x < rc.right) {
 			surface->MoveTo(x, ymid);
-			surface->LineTo(Platform::Minimum(x + 4, static_cast<int>(rc.right)), ymid);
+			surface->LineTo(std::min(x + 4, static_cast<int>(rc.right)), ymid);
 			x += 7;
 		}
 	} else if (sacDraw.style == INDIC_DOTS) {

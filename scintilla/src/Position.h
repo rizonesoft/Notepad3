@@ -25,6 +25,14 @@ typedef int Line;
 
 const Position invalidPosition = -1;
 
+inline int clamp(int val, int minVal, int maxVal) {
+	if (val > maxVal)
+		val = maxVal;
+	if (val < minVal)
+		val = minVal;
+	return val;
+}
+
 }
 
 #endif

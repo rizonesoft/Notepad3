@@ -37,6 +37,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 #include "OptionSet.h"
+#include "DefaultLexer.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -226,7 +227,7 @@ struct OptionSetBasic : public OptionSet<OptionsBasic> {
 	}
 };
 
-class LexerBasic : public ILexer {
+class LexerBasic : public DefaultLexer {
 	char comment_char;
 	int (*CheckFoldPoint)(char const *, int &);
 	WordList keywordlists[4];
@@ -244,7 +245,7 @@ public:
 		delete this;
 	}
 	int SCI_METHOD Version() const override {
-		return lvOriginal;
+		return lvRelease4;
 	}
 	const char * SCI_METHOD PropertyNames() override {
 		return osBasic.PropertyNames();
@@ -266,13 +267,13 @@ public:
 	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
-	static ILexer *LexerFactoryBlitzBasic() {
+	static ILexer4 *LexerFactoryBlitzBasic() {
 		return new LexerBasic(';', CheckBlitzFoldPoint, blitzbasicWordListDesc);
 	}
-	static ILexer *LexerFactoryPureBasic() {
+	static ILexer4 *LexerFactoryPureBasic() {
 		return new LexerBasic(';', CheckPureFoldPoint, purebasicWordListDesc);
 	}
-	static ILexer *LexerFactoryFreeBasic() {
+	static ILexer4 *LexerFactoryFreeBasic() {
 		return new LexerBasic('\'', CheckFreeFoldPoint, freebasicWordListDesc );
 	}
 };

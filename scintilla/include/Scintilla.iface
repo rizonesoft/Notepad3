@@ -997,7 +997,7 @@ fun int GetSelText=2161(, stringresult text)
 # Return the length of the text.
 fun int GetTextRange=2162(, textrange tr)
 
-# Draw the selection in normal style or with selection highlighted.
+# Draw the selection either highlighted or in normal (non-highlighted) style.
 fun void HideSelection=2163(bool hide,)
 
 # Retrieve the x value of the point in the window where a position is displayed.
@@ -1418,13 +1418,6 @@ get bool GetVScrollBar=2281(,)
 
 # Append a string to the end of the document without changing the selection.
 fun void AppendText=2282(int length, string text)
-
-# Is drawing done in two phases with backgrounds drawn before foregrounds?
-get bool GetTwoPhaseDraw=2283(,)
-
-# In twoPhaseDraw mode, drawing is performed in two phases, first the background
-# and then the foreground. This avoids chopping off characters that overlap the next run.
-set void SetTwoPhaseDraw=2284(bool twoPhase,)
 
 enu PhasesDraw=SC_PHASES_
 val SC_PHASES_ONE=0
@@ -2709,6 +2702,21 @@ get int DistanceToSecondaryStyles=4025(,)
 # Result is NUL-terminated.
 get int GetSubStyleBases=4026(, stringresult styles)
 
+# Retrieve the number of named styles for the lexer.
+get int GetNamedStyles=4029(,)
+
+# Retrieve the name of a style.
+# Result is NUL-terminated.
+fun int NameOfStyle=4030(int style, stringresult names)
+
+# Retrieve a ' ' separated list of style tags like "literal quoted string".
+# Result is NUL-terminated.
+fun int TagsOfStyle=4031(int style, stringresult names)
+
+# Retrieve a description of a style.
+# Result is NUL-terminated.
+fun int DescriptionOfStyle=4032(int style, stringresult names)
+
 # Notifications
 # Type of modification and the action which caused the modification.
 # These are defined as a bit mask to make it easy to specify which notifications are wanted.
@@ -2944,7 +2952,11 @@ val SCE_P_FSTRING=16
 val SCE_P_FCHARACTER=17
 val SCE_P_FTRIPLE=18
 val SCE_P_FTRIPLEDOUBLE=19
-# Lexical states for SCLEX_CPP, SCLEX_BULLANT, SCLEX_COBOL, SCLEX_TACL, SCLEX_TAL
+# Lexical states for SCLEX_CPP
+# Lexical states for SCLEX_BULLANT
+# Lexical states for SCLEX_COBOL
+# Lexical states for SCLEX_TACL
+# Lexical states for SCLEX_TAL
 lex Cpp=SCLEX_CPP SCE_C_
 lex BullAnt=SCLEX_BULLANT SCE_C_
 lex COBOL=SCLEX_COBOL SCE_C_
@@ -4855,8 +4867,9 @@ evt void FocusIn=2028(void)
 evt void FocusOut=2029(void)
 evt void AutoCCompleted=2030(string text, int position, int ch, CompletionMethods listCompletionMethod)
 evt void MarginRightClick=2031(int modifiers, int position, int margin)
+evt void AutoCSelectionChange=2032(int listType, string text, int position)
 
-# There are no provisional APIs currently, but some arguments to SCI_SETTECHNOLOGY are provisional.
+# There are no provisional APIs currently.
 
 cat Provisional
 
@@ -4869,3 +4882,11 @@ set void SetKeysUnicode=2521(bool keysUnicode,)
 
 # Are keys always interpreted as Unicode?
 get bool GetKeysUnicode=2522(,)
+
+# Is drawing done in two phases with backgrounds drawn before foregrounds?
+get bool GetTwoPhaseDraw=2283(,)
+
+# In twoPhaseDraw mode, drawing is performed in two phases, first the background
+# and then the foreground. This avoids chopping off characters that overlap the next run.
+set void SetTwoPhaseDraw=2284(bool twoPhase,)
+

@@ -29,6 +29,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 #include "OptionSet.h"
+#include "DefaultLexer.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -116,7 +117,7 @@ struct OptionSetRust : public OptionSet<OptionsRust> {
 	}
 };
 
-class LexerRust : public ILexer {
+class LexerRust : public DefaultLexer {
 	WordList keywords[NUM_RUST_KEYWORD_LISTS];
 	OptionsRust options;
 	OptionSetRust osRust;
@@ -127,7 +128,7 @@ public:
 		delete this;
 	}
 	int SCI_METHOD Version() const override {
-		return lvOriginal;
+		return lvRelease4;
 	}
 	const char * SCI_METHOD PropertyNames() override {
 		return osRust.PropertyNames();
@@ -148,7 +149,7 @@ public:
 	void * SCI_METHOD PrivateCall(int, void *) override {
 		return 0;
 	}
-	static ILexer *LexerFactoryRust() {
+	static ILexer4 *LexerFactoryRust() {
 		return new LexerRust();
 	}
 };
@@ -213,7 +214,7 @@ static void ScanIdentifier(Accessor& styler, Sci_Position& pos, WordList *keywor
 		styler.ColourTo(pos - 1, SCE_RUST_MACRO);
 	} else {
 		char s[MAX_RUST_IDENT_CHARS + 1];
-		int len = pos - start;
+		Sci_Position len = pos - start;
 		len = len > MAX_RUST_IDENT_CHARS ? MAX_RUST_IDENT_CHARS : len;
 		GrabString(s, styler, start, len);
 		bool keyword = false;
@@ -271,7 +272,7 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 		pos++;
 		c = styler.SafeGetCharAt(pos, '\0');
 		n = styler.SafeGetCharAt(pos + 1, '\0');
-		if (c == '8' || c == 's') {
+		if (c == '8') {
 			pos++;
 		} else if (c == '1' && n == '6') {
 			pos += 2;
@@ -279,6 +280,8 @@ static void ScanNumber(Accessor& styler, Sci_Position& pos) {
 			pos += 2;
 		} else if (c == '6' && n == '4') {
 			pos += 2;
+		} else if (styler.Match(pos, "size")) {
+			pos += 4;
 		} else {
 			error = true;
 		}

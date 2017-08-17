@@ -24,7 +24,10 @@
 using namespace Scintilla;
 #endif
 
-LexerBase::LexerBase() {
+static const char styleSubable[] = { 0 };
+
+LexerBase::LexerBase(const LexicalClass *lexClasses_, size_t nClasses_) :
+	lexClasses(lexClasses_), nClasses(nClasses_) {
 	for (int wl = 0; wl < numWordLists; wl++)
 		keyWordLists[wl] = new WordList;
 	keyWordLists[numWordLists] = 0;
@@ -43,7 +46,7 @@ void SCI_METHOD LexerBase::Release() {
 }
 
 int SCI_METHOD LexerBase::Version() const {
-	return lvOriginal;
+	return lvRelease4;
 }
 
 const char * SCI_METHOD LexerBase::PropertyNames() {
@@ -85,5 +88,59 @@ Sci_Position SCI_METHOD LexerBase::WordListSet(int n, const char *wl) {
 }
 
 void * SCI_METHOD LexerBase::PrivateCall(int, void *) {
+	return nullptr;
+}
+
+int SCI_METHOD LexerBase::LineEndTypesSupported() {
+	return SC_LINE_END_TYPE_DEFAULT;
+}
+
+int SCI_METHOD LexerBase::AllocateSubStyles(int, int) {
+	return -1;
+}
+
+int SCI_METHOD LexerBase::SubStylesStart(int) {
+	return -1;
+}
+
+int SCI_METHOD LexerBase::SubStylesLength(int) {
 	return 0;
+}
+
+int SCI_METHOD LexerBase::StyleFromSubStyle(int subStyle) {
+	return subStyle;
+}
+
+int SCI_METHOD LexerBase::PrimaryStyleFromStyle(int style) {
+	return style;
+}
+
+void SCI_METHOD LexerBase::FreeSubStyles() {
+}
+
+void SCI_METHOD LexerBase::SetIdentifiers(int, const char *) {
+}
+
+int SCI_METHOD LexerBase::DistanceToSecondaryStyles() {
+	return 0;
+}
+
+const char * SCI_METHOD LexerBase::GetSubStyleBases() {
+	return styleSubable;
+}
+
+int SCI_METHOD LexerBase::NamedStyles() {
+	return static_cast<int>(nClasses);
+}
+
+const char * SCI_METHOD LexerBase::NameOfStyle(int style) {
+	return (style < NamedStyles()) ? lexClasses[style].name : "";
+}
+
+const char * SCI_METHOD LexerBase::TagsOfStyle(int style) {
+	return (style < NamedStyles()) ? lexClasses[style].tags : "";
+}
+
+const char * SCI_METHOD LexerBase::DescriptionOfStyle(int style) {
+	return (style < NamedStyles()) ? lexClasses[style].description : "";
 }

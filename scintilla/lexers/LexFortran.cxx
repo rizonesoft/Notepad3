@@ -257,7 +257,7 @@ static void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int
 }
 /***************************************/
 static void CheckLevelCommentLine(const unsigned int nComL,
-				  int nComColB[], int nComColF[], int &nComCur,
+				  Sci_Position nComColB[], Sci_Position nComColF[], Sci_Position &nComCur,
 				  bool comLineB[], bool comLineF[], bool &comLineCur,
 				  int &levelDeltaNext) {
 	levelDeltaNext = 0;
@@ -362,7 +362,7 @@ static void CheckBackComLines(Accessor &styler, bool isFixFormat, Sci_Position l
 	}
 	
 	Sci_Position lineC = lineCurrent - nComL + 1;
-	unsigned int iStart;
+	Sci_PositionU iStart;
 	if (lineC <= 0) {
 		lineC = 0;
 		iStart = nComL - lineCurrent;
@@ -373,11 +373,11 @@ static void CheckBackComLines(Accessor &styler, bool isFixFormat, Sci_Position l
 	bool levChanged = false;
 	int lev = styler.LevelAt(lineC) & SC_FOLDLEVELNUMBERMASK;
 	
-	for (unsigned int i=iStart; i<=nComL; i++) {
+	for (Sci_PositionU i=iStart; i<=nComL; i++) {
 		if (comL[i] && (!comL[i-1] || nComCol[i] != nComCol[i-1])) {
 			bool increase = true;
-			unsigned int until = i + nComL;
-			for (unsigned int j=i+1; j<=until; j++) {
+			Sci_PositionU until = i + nComL;
+			for (Sci_PositionU j=i+1; j<=until; j++) {
 				if (!comL[j] || nComCol[j] != nComCol[i]) {
 					increase = false;
 					break;

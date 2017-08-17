@@ -22,6 +22,7 @@
 #include "Scintilla.h"
 #include "SciLexer.h"
 
+#include "StringCopy.h"
 #include "WordList.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
@@ -432,9 +433,41 @@ struct OptionSetCPP : public OptionSet<OptionsCPP> {
 
 const char styleSubable[] = {SCE_C_IDENTIFIER, SCE_C_COMMENTDOCKEYWORD, 0};
 
+LexicalClass lexicalClasses[] = {
+	// Lexer Cpp SCLEX_CPP SCE_C_:
+	0, "SCE_C_DEFAULT", "default", "White space",
+	1, "SCE_C_COMMENT", "comment", "Comment: /* */.",
+	2, "SCE_C_COMMENTLINE", "comment line", "Line Comment: //.",
+	3, "SCE_C_COMMENTDOC", "comment documentation", "Doc comment: block comments beginning with /** or /*!",
+	4, "SCE_C_NUMBER", "literal numeric", "Number",
+	5, "SCE_C_WORD", "keyword", "Keyword",
+	6, "SCE_C_STRING", "literal string", "Double quoted string",
+	7, "SCE_C_CHARACTER", "literal string character", "Single quoted string",
+	8, "SCE_C_UUID", "literal uuid", "UUIDs (only in IDL)",
+	9, "SCE_C_PREPROCESSOR", "preprocessor", "Preprocessor",
+	10, "SCE_C_OPERATOR", "operator", "Operators",
+	11, "SCE_C_IDENTIFIER", "identifier", "Identifiers",
+	12, "SCE_C_STRINGEOL", "error literal string", "End of line where string is not closed",
+	13, "SCE_C_VERBATIM", "literal string multiline raw", "Verbatim strings for C#",
+	14, "SCE_C_REGEX", "literal regex", "Regular expressions for JavaScript",
+	15, "SCE_C_COMMENTLINEDOC", "comment documentation line", "Doc Comment Line: line comments beginning with /// or //!.",
+	16, "SCE_C_WORD2", "identifier", "Keywords2",
+	17, "SCE_C_COMMENTDOCKEYWORD", "comment documentation keyword", "Comment keyword",
+	18, "SCE_C_COMMENTDOCKEYWORDERROR", "error comment documentation keyword", "Comment keyword error",
+	19, "SCE_C_GLOBALCLASS", "identifier", "Global class",
+	20, "SCE_C_STRINGRAW", "literal string multiline raw", "Raw strings for C++0x",
+	21, "SCE_C_TRIPLEVERBATIM", "literal string multiline raw", "Triple-quoted strings for Vala",
+	22, "SCE_C_HASHQUOTEDSTRING", "literal string", "Hash-quoted strings for Pike",
+	23, "SCE_C_PREPROCESSORCOMMENT", "comment preprocessor", "Preprocessor stream comment",
+	24, "SCE_C_PREPROCESSORCOMMENTDOC", "comment preprocessor documentation", "Preprocessor stream doc comment",
+	25, "SCE_C_USERLITERAL", "literal", "User defined literals",
+	26, "SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
+	27, "SCE_C_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
+};
+
 }
 
-class LexerCPP : public ILexerWithSubStyles {
+class LexerCPP : public ILexer4 {
 	bool caseSensitive;
 	CharacterSet setWord;
 	CharacterSet setNegationOp;
@@ -473,6 +506,7 @@ class LexerCPP : public ILexerWithSubStyles {
 	enum { activeFlag = 0x40 };
 	enum { ssIdentifier, ssDocKeyword };
 	SubStyles subStyles;
+	std::string returnBuffer;
 public:
 	explicit LexerCPP(bool caseSensitive_) :
 		caseSensitive(caseSensitive_),
@@ -489,7 +523,7 @@ public:
 		delete this;
 	}
 	int SCI_METHOD Version() const override {
-		return lvSubStyles;
+		return lvRelease4;
 	}
 	const char * SCI_METHOD PropertyNames() override {
 		return osCPP.PropertyNames();
@@ -532,7 +566,7 @@ public:
 	}
 	int SCI_METHOD PrimaryStyleFromStyle(int style) override {
 		return MaskActive(style);
- 	}
+	}
 	void SCI_METHOD FreeSubStyles() override {
 		subStyles.Free();
 	}
@@ -545,11 +579,64 @@ public:
 	const char * SCI_METHOD GetSubStyleBases() override {
 		return styleSubable;
 	}
+	int SCI_METHOD NamedStyles() override {
+		return std::max(subStyles.LastAllocated() + 1,
+			static_cast<int>(ELEMENTS(lexicalClasses))) +
+			activeFlag;
+	}
+	const char * SCI_METHOD NameOfStyle(int style) override {
+		if (style >= NamedStyles())
+			return "";
+		if (style < static_cast<int>(ELEMENTS(lexicalClasses)))
+			return lexicalClasses[style].name;
+		// TODO: inactive and substyles
+		return "";
+	}
+	const char * SCI_METHOD TagsOfStyle(int style) override {
+		if (style >= NamedStyles())
+			return "Excess";
+		returnBuffer.clear();
+		const int firstSubStyle = subStyles.FirstAllocated();
+		if (firstSubStyle >= 0) {
+			const int lastSubStyle = subStyles.LastAllocated();
+			if (((style >= firstSubStyle) && (style <= (lastSubStyle))) ||
+				((style >= firstSubStyle + activeFlag) && (style <= (lastSubStyle + activeFlag)))) {
+				int styleActive = style;
+				if (style > lastSubStyle) {
+					returnBuffer = "inactive ";
+					styleActive -= activeFlag;
+				}
+				const int styleMain = StyleFromSubStyle(styleActive);
+				returnBuffer += lexicalClasses[styleMain].tags;
+				return returnBuffer.c_str();
+			}
+		}
+		if (style < static_cast<int>(ELEMENTS(lexicalClasses)))
+			return lexicalClasses[style].tags;
+		if (style >= activeFlag) {
+			returnBuffer = "inactive ";
+			const int styleActive = style - activeFlag;
+			if (styleActive < static_cast<int>(ELEMENTS(lexicalClasses)))
+				returnBuffer += lexicalClasses[styleActive].tags;
+			else
+				returnBuffer = "";
+			return returnBuffer.c_str();
+		}
+		return "";
+	}
+	const char * SCI_METHOD DescriptionOfStyle(int style) override {
+		if (style >= NamedStyles())
+			return "";
+		if (style < static_cast<int>(ELEMENTS(lexicalClasses)))
+			return lexicalClasses[style].description;
+		// TODO: inactive and substyles
+		return "";
+	}
 
-	static ILexer *LexerFactoryCPP() {
+	static ILexer4 *LexerFactoryCPP() {
 		return new LexerCPP(true);
 	}
-	static ILexer *LexerFactoryCPPInsensitive() {
+	static ILexer4 *LexerFactoryCPPInsensitive() {
 		return new LexerCPP(false);
 	}
 	static int MaskActive(int style) {

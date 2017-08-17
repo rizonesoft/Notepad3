@@ -498,7 +498,7 @@
 	<td>Morten Brørup</td>
       </tr><tr>
 	<td>Alexey Denisov</td>
-	<td>jedailey</td>
+	<td>Justin Dailey</td>
 	<td>oirfeodent</td>
 	<td>A-R-C-A</td>
       </tr><tr>
@@ -510,6 +510,7 @@
 	<td>John Flatness</td>
 	<td>Thorsten Kani</td>
 	<td>Bernhard M. Wiedemann</td>
+	<td>Baldur Karlsson</td>
     </tr>
     </table>
     <p>
@@ -520,6 +521,154 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="http://www.scintilla.org/scite400.zip">Release 4.0.0</a>
+    </h3>
+    <ul>
+	<li>
+	Released 16 August 2017.
+	</li>
+	<li>
+	This is an unstable release with changes to interfaces used for lexers and platform access.
+	Some more changes may occur to internal and external interfaces before stability is regained with 4.1.0.
+	</li>
+	<li>
+	Uses C++14 features. Requires Microsoft Visual C++ 2017, GCC 7, and Clang 4.0 or newer.
+	</li>
+	<li>
+	Support dropped for GTK+ versions before 2.24.
+	</li>
+	<li>
+	The lexer interfaces ILexer and ILexerWithSubStyles, along with additional style metadata methods, were merged into ILexer4.
+	Most lexers will need to be updated to match the new interfaces.
+	</li>
+	<li>
+	The IDocumentWithLineEnd interface was merged into IDocument.
+	</li>
+	<li>
+	The platform layer interface has changed with unused methods removed, a new mechanism for
+	reporting events, removal of methods that take individual keyboard modifiers, and removal of old timer methods.
+	</li>
+	<li>
+	<a href="StyleMetadata.html">Style metadata</a> may be retrieved from lexers that support this through the SCI_GETNAMEDSTYLES, SCI_NAMEOFSTYLE,
+	SCI_TAGSOFSTYLE, and SCI_DESCRIPTIONOFSTYLE APIs.
+	</li>
+	<li>
+	The Cocoa platform layer uses Automatic Reference Counting (ARC).
+	</li>
+	<li>
+	The default encoding in Scintilla is UTF-8.
+	</li>
+	<li>
+	An SCN_AUTOCSELECTIONCHANGE notification is sent when items are highlighted in an autocompletion or user list.
+	</li>
+	<li>
+	The data parameter to ILoader::AddData made const.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1955/">Bug #1955</a>.
+	</li>
+	<li>
+	SciTE's embedded Lua interpreter updated to Lua 5.3.
+	</li>
+	<li>
+	SciTE allows event handlers to be arbitrary callables, not just functions.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1190/">Feature #1190.</a>
+	</li>
+	<li>
+	SciTE allows user.shortcuts to be defined with symbolic Scintilla messages like
+	'Ctrl+L|SCI_LINEDELETE|'.
+	</li>
+	<li>
+	The Matlab lexer treats 'end' as a number rather than a keyword when used as a index.
+	This also stops incorrect folding.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1951/">Bug #1951</a>.
+	</li>
+	<li>
+	The Matlab folder implements "fold", "fold.comment", and "fold.compact" properties.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1965/">Bug #1965</a>.
+	</li>
+	<li>
+	The Rust lexer recognizes 'usize' numeric literal suffixes.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1919/">Bug #1919</a>.
+	</li>
+	<li>
+	Ensure redraw when application changes overtype mode so caret change visible even when not blinking.
+	Notify application with SC_UPDATE_SELECTION when overtype changed - previously
+	sent SC_UPDATE_CONTENT.
+	</li>
+	<li>
+	Fix drawing failure when in wrap mode for delete to start/end of line which
+	affects later lines but did not redraw them.
+	Also fixed drawing for wrap mode on GTK+ 2.x.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1949/">Bug #1949</a>.
+	</li>
+	<li>
+	On GTK+ fix drawing problems including incorrect scrollbar redrawing and flickering of text.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1876">Bug #1876</a>.
+	</li>
+	<li>
+	On Linux, both for GTK+ and Qt, the default modifier key for rectangular selection is now Alt.
+	This is the same as Windows and macOS.
+	This was changed from Ctrl as window managers are less likely to intercept Alt+Drag for
+	moving windows than in the past.
+	</li>
+	<li>
+	On Cocoa, fix doCommandBySelector but avoid double effect of 'delete'
+	key.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1958">Bug #1958</a>.
+	</li>
+	<li>
+	On Qt, the updateUi signal includes the 'updated' flags.
+	No updateUi signal is sent for focus in events.
+	These changes make Qt behave more like the other platforms.
+	</li>
+	<li>
+	On Qt, dropping files on Scintilla now fires the SCN_URIDROPPED notification
+	instead of inserting text.
+	</li>
+	<li>
+	On Qt, focus changes send the focusChanged signal.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1957/">Bug #1957</a>.
+	</li>
+	<li>
+	On Qt, mouse tracking is reenabled when the window is reshown.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1948/">Bug #1948</a>.
+	</li>
+	<li>
+	On Windows, the DirectWrite modes SC_TECHNOLOGY_DIRECTWRITEDC and
+	SC_TECHNOLOGY_DIRECTWRITERETAIN are no longer provisional.
+	</li>
+	<li>
+	SciTE on macOS fixes a crash when platform-specific and platform-independent
+	session restoration clashed.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1960/">Bug #1960</a>.
+	</li>
+	<li>
+	SciTE on GTK+ implements find.close.on.find.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1152/">Bug #1152</a>,
+	<a href="http://sourceforge.net/p/scintilla/bugs/1254/">Bug #1254</a>,
+	<a href="http://sourceforge.net/p/scintilla/bugs/1762/">Bug #1762</a>,
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/849/">Feature #849</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="http://www.scintilla.org/scintilla376.zip">Release 3.7.6</a>
+    </h3>
+    <ul>
+	<li>
+	Released 8 August 2017.
+	</li>
+	<li>
+	This is the first release of the
+	<a href="http://www.scintilla.org/LongTermDownload.html">long term branch</a>
+	which avoids using features from C++14 or later in order to support older systems.
+	</li>
+	<li>
+	The Baan lexer correctly highlights numbers when followed by an operator.
+	</li>
+	<li>
+	On Cocoa, fix a bug with retrieving encoded bytes.
+	</li>
     </ul>
     <h3>
        <a href="http://www.scintilla.org/scite375.zip">Release 3.7.5</a>
@@ -837,6 +986,10 @@
 	have been removed and can no longer be used in client code.
 	</li>
 	<li>
+	Single phase drawing SC_PHASES_ONE is deprecated along with the
+	SCI_SETTWOPHASEDRAW and SCI_GETTWOPHASEDRAW messages.
+	</li>
+	<li>
 	Accessibility support allowing screen readers to work added on GTK+ and Cocoa.
 	</li>
 	<li>
@@ -1028,7 +1181,7 @@
 	C++11 range-based for loops used in SciTE so GCC 4.6 is now the minimum supported version.
 	</li>
 	<li>
-	(REVERTED in Notepad2-mod) SC_CHARSET_DEFAULT now means code page 1252 on Windows unless a code page is set.
+	(REVERTED in Notepad3) SC_CHARSET_DEFAULT now means code page 1252 on Windows unless a code page is set.
 	This prevents unexpected behaviour and crashes on East Asian systems where default locales are commonly DBCS.
 	Projects which want to default to DBCS code pages in East Asian locales should set the code page and
 	character set explicitly.

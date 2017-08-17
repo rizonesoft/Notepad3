@@ -1,28 +1,26 @@
 // Scintilla source code edit control
-/** @file LexerBase.h
- ** A simple lexer with no state.
+/** @file DefaultLexer.h
+ ** A lexer base class with default empty implementations of methods. 
+ ** For lexers that do not support all features so do not need real implementations.
+ ** Does have real implementation for style metadata.
  **/
-// Copyright 1998-2010 by Neil Hodgson <neilh@scintilla.org>
+// Copyright 2017 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-#ifndef LEXERBASE_H
-#define LEXERBASE_H
+#ifndef DEFAULTLEXER_H
+#define DEFAULTLEXER_H
 
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif
 
 // A simple lexer with no state
-class LexerBase : public ILexer4 {
-protected:
+class DefaultLexer : public ILexer4 {
 	const LexicalClass *lexClasses;
 	size_t nClasses;
-	PropSetSimple props;
-	enum {numWordLists=KEYWORDSET_MAX+1};
-	WordList *keyWordLists[numWordLists+1];
 public:
-	LexerBase(const LexicalClass *lexClasses_=nullptr, size_t nClasses_=0);
-	virtual ~LexerBase();
+	DefaultLexer(const LexicalClass *lexClasses_ = nullptr, size_t nClasses_ = 0);
+	virtual ~DefaultLexer();
 	void SCI_METHOD Release() override;
 	int SCI_METHOD Version() const override;
 	const char * SCI_METHOD PropertyNames() override;
@@ -32,7 +30,7 @@ public:
 	const char * SCI_METHOD DescribeWordListSets() override;
 	Sci_Position SCI_METHOD WordListSet(int n, const char *wl) override;
 	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override = 0;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override = 0;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
 	void * SCI_METHOD PrivateCall(int operation, void *pointer) override;
 	int SCI_METHOD LineEndTypesSupported() override;
 	int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) override;

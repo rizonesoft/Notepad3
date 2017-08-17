@@ -26,6 +26,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
+#include "DefaultLexer.h"
 #include "LexerBase.h"
 
 #ifdef SCI_NAMESPACE
@@ -42,7 +43,7 @@ struct latexFoldSave {
 		for (int i = 0; i < 8; ++i) openBegins[i] = save.openBegins[i];
 	}
 	int openBegins[8];
-	int structLev;
+	Sci_Position structLev;
 };
 
 class LexerLaTeX : public LexerBase {
@@ -78,7 +79,7 @@ private:
 			saves.resize(numLines + 128);
 	}
 public:
-	static ILexer *LexerFactoryLaTeX() {
+	static ILexer4 *LexerFactoryLaTeX() {
 		return new LexerLaTeX();
 	}
 	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;

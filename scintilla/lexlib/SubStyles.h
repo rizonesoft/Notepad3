@@ -37,6 +37,10 @@ public:
 		return firstStyle;
 	}
 
+	int Last() const {
+		return firstStyle + lenStyles - 1;
+	}
+
 	int Length() const {
 		return lenStyles;
 	}
@@ -151,6 +155,24 @@ public:
 
 	int DistanceToSecondaryStyles() const {
 		return secondaryDistance;
+	}
+
+	int FirstAllocated() const {
+		int start = 257;
+		for (std::vector<WordClassifier>::const_iterator it = classifiers.begin(); it != classifiers.end(); ++it) {
+			if (start > it->Start())
+				start = it->Start();
+		}
+		return (start < 256) ? start : -1;
+	}
+
+	int LastAllocated() const {
+		int last = -1;
+		for (std::vector<WordClassifier>::const_iterator it = classifiers.begin(); it != classifiers.end(); ++it) {
+			if (last < it->Last())
+				last = it->Last();
+		}
+		return last;
 	}
 
 	void SetIdentifiers(int style, const char *identifiers) {

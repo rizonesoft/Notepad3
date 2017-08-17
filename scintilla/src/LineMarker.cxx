@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <memory>
 
 #include "Platform.h"
@@ -117,7 +118,7 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 	PRectangle rc = rcWhole;
 	rc.top++;
 	rc.bottom--;
-	int minDim = Platform::Minimum(static_cast<int>(rc.Width()), static_cast<int>(rc.Height()));
+	int minDim = std::min(static_cast<int>(rc.Width()), static_cast<int>(rc.Height()));
 	minDim--;	// Ensure does not go beyond edge
 	int centreX = static_cast<int>(floor((rc.right + rc.left) / 2.0));
 	const int centreY = static_cast<int>(floor((rc.bottom + rc.top) / 2.0));

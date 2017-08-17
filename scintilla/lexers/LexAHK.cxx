@@ -24,7 +24,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 #include "LexerModule.h"
-
+//#include "DefaultLexer.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4100)
