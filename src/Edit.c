@@ -67,6 +67,10 @@ extern BOOL bLoadNFOasOEM;
 extern int iSrcEncoding;
 extern int iWeakSrcEncoding;
 
+extern BOOL bAccelWordNavigation;
+extern char* chExtendedWhiteSpaceChars;
+
+
 int g_DOSEncoding;
 
 // Supported Encodings
@@ -264,6 +268,11 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (0 << 16)),SCI_LINEENDWRAP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_HOME + (SCMOD_SHIFT << 16)),SCI_VCHOMEWRAPEXTEND);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (SCMOD_SHIFT << 16)),SCI_LINEENDWRAPEXTEND);
+
+  if (bAccelWordNavigation)
+    SendMessage(hwnd, SCI_SETWHITESPACECHARS, 0, (LPARAM)chExtendedWhiteSpaceChars);
+  else
+    SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
 
   // Init default values for printing
   EditPrintInit();
