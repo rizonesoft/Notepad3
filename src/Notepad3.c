@@ -109,6 +109,9 @@ WCHAR      tchToolbarButtons[512] = { L'\0' };
 WCHAR      tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
+
+char      chExtendedWhiteSpaceChars[256] = { '\0' };
+
 int       iPathNameFormat;
 BOOL      fWordWrap;
 BOOL      fWordWrapG;
@@ -141,6 +144,7 @@ int       iMarkOccurrences;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
 BOOL      bAutoCompleteWords;
+BOOL      bAccelWordNavigation;
 BOOL      bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
@@ -297,9 +301,9 @@ WCHAR     g_wchWorkingDirectory[MAX_PATH] = L"";
 
 
 
-  //Graphics for bookmark indicator
-  /* XPM */
-  static char * bookmark_pixmap[] = {
+//Graphics for bookmark indicator
+/* XPM */
+static char * bookmark_pixmap[] = {
   "11 11 44 1",
   " 	c #EBE9ED",
   ".	c #E5E3E7",
@@ -355,9 +359,8 @@ WCHAR     g_wchWorkingDirectory[MAX_PATH] = L"";
   " 23~~~~;4+ ",
   " 56=|7890  ",
   "  a2bc}de  ",
-  "           "};
-
-
+  "           "
+};
 
 //=============================================================================
 //
@@ -2297,6 +2300,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,i);
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
+  CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
 
   switch (iMarkOccurrences)
   {
@@ -4071,14 +4075,17 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
-      if (bAutoCompleteWords) {
-        // close the autocompletion list
-        SendMessage(hwndEdit, SCI_AUTOCCANCEL, 0, 0);
-        bAutoCompleteWords = FALSE;
-      }
-      else {
-        bAutoCompleteWords = TRUE;
-      }
+      bAutoCompleteWords = (bAutoCompleteWords) ? FALSE : TRUE;  // toggle
+      if (!bAutoCompleteWords)
+        SendMessage(hwndEdit, SCI_AUTOCCANCEL, 0, 0);  // close the auto completion list
+      break;
+
+    case  IDM_VIEW_ACCELWORDNAV:
+      bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
+      if (bAccelWordNavigation)
+        SendMessage(hwndEdit, SCI_SETWHITESPACECHARS, 0, (LPARAM)chExtendedWhiteSpaceChars);
+      else
+        SendMessage(hwndEdit, SCI_SETCHARSDEFAULT, 0, 0);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_OFF:
@@ -4499,6 +4506,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       }
       break;
   
+
+    case CMD_CTRLLEFT:
+        SendMessage(hwndEdit, SCI_WORDLEFT, 0, 0);
+      break;
+
+
+    case CMD_CTRLRIGHT:
+        SendMessage(hwndEdit, SCI_WORDRIGHT, 0, 0);
+      break;
+
 
     case CMD_CTRLBACK:
       {
@@ -5687,6 +5704,9 @@ void LoadSettings()
   bAutoCompleteWords = IniSectionGetInt(pIniSection,L"AutoCompleteWords",0);
   if (bAutoCompleteWords) bAutoCompleteWords = 1;
 
+  bAccelWordNavigation = IniSectionGetInt(pIniSection, L"AccelWordNavigation", 0);
+  if (bAccelWordNavigation) bAccelWordNavigation = 1;
+
   bShowIndentGuides = IniSectionGetInt(pIniSection,L"ShowIndentGuides",0);
   if (bShowIndentGuides) bShowIndentGuides = 1;
 
@@ -5866,6 +5886,7 @@ void LoadSettings()
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
   iSciFontQuality = max(min(iSciFontQuality,3),-1);
 
+
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
   bStickyWinPos = IniSectionGetInt(pIniSection,L"StickyWindowPosition",0);
@@ -5884,6 +5905,13 @@ void LoadSettings()
 
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
+
+  WCHAR buffer[256];
+  const WCHAR defextwsc[] = L".,;:|/-+$%&<>(){}[]=?#'*";
+  IniSectionGetString(pIniSection, L"ExtendedWhiteSpaceChars", defextwsc, buffer, COUNTOF(buffer));
+  if (!lstrlen(buffer)) lstrcpyn(buffer, defextwsc, COUNTOF(buffer));
+  WideCharToMultiByte(CP_ACP, 0, buffer, -1, chExtendedWhiteSpaceChars, COUNTOF(chExtendedWhiteSpaceChars), NULL, NULL);
+
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
@@ -6002,6 +6030,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
   IniSectionSetInt(pIniSection, L"AutoIndent", bAutoIndent);
   IniSectionSetInt(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
+  IniSectionSetInt(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
   IniSectionSetInt(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
   IniSectionSetInt(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
   IniSectionSetInt(pIniSection, L"TabIndents", bTabIndentsG);
