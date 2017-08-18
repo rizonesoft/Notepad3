@@ -6830,7 +6830,7 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_COPY,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
   EnableTool(IDT_EDIT_PASTE,SendMessage(hwndEdit,SCI_CANPASTE,0,0) /*&& !bReadOnly*/);
 
-  i = (int)!SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
+  i = (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
   EnableTool(IDT_EDIT_FIND,i);
   //EnableTool(IDT_EDIT_FINDNEXT,i);
   //EnableTool(IDT_EDIT_FINDPREV,i && lstrlen(efrData.szFind));
