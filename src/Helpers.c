@@ -1608,21 +1608,21 @@ UINT GetDlgItemTextA2W(UINT uCP,HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMax
   WCHAR wsz[1024] = L"";
   UINT uRet = GetDlgItemTextW(hDlg,nIDDlgItem,wsz,COUNTOF(wsz));
   ZeroMemory(lpString,nMaxCount);
-  WCharToMBCS(uCP,wsz,lpString,nMaxCount-2);
+  WCHAR2MBCS(uCP,wsz,lpString,nMaxCount-2);
   return uRet;
 }
 
 UINT SetDlgItemTextA2W(UINT uCP,HWND hDlg,int nIDDlgItem,LPSTR lpString)
 {
   WCHAR wsz[1024] = L"";
-  MBCSToWChar(uCP,lpString,wsz,COUNTOF(wsz));
+  MBCS2WCHAR(uCP,lpString,wsz,COUNTOF(wsz));
   return SetDlgItemTextW(hDlg,nIDDlgItem,wsz);
 }
 
 LRESULT ComboBox_AddStringA2W(UINT uCP,HWND hwnd,LPCSTR lpString)
 {
   WCHAR wsz[1024] = L"";
-  MBCSToWChar(uCP,lpString,wsz,COUNTOF(wsz));
+  MBCS2WCHAR(uCP,lpString,wsz,COUNTOF(wsz));
   return SendMessageW(hwnd,CB_ADDSTRING,0,(LPARAM)wsz);
 }
 

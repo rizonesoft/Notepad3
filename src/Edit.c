@@ -68,8 +68,6 @@ extern int iSrcEncoding;
 extern int iWeakSrcEncoding;
 
 extern BOOL bAccelWordNavigation;
-extern char* chExtendedWhiteSpaceChars;
-
 
 int g_DOSEncoding;
 
@@ -268,11 +266,7 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (0 << 16)),SCI_LINEENDWRAP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_HOME + (SCMOD_SHIFT << 16)),SCI_VCHOMEWRAPEXTEND);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (SCMOD_SHIFT << 16)),SCI_LINEENDWRAPEXTEND);
-
-  if (bAccelWordNavigation)
-    SendMessage(hwnd, SCI_SETWHITESPACECHARS, 0, (LPARAM)chExtendedWhiteSpaceChars);
-  else
-    SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
+  SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
 
   // Init default values for printing
   EditPrintInit();
@@ -2855,9 +2849,9 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
   UINT mbcp = (UINT)SendMessage(hwnd, SCI_GETCODEPAGE, 0, 0);
 
   if (lstrlen(pwszPrefix))
-    WideCharToMultiByte(mbcp,0,pwszPrefix,-1,mszPrefix1,COUNTOF(mszPrefix1),NULL,NULL);
+    WCHAR2MBCS(mbcp, pwszPrefix, mszPrefix1, COUNTOF(mszPrefix1));
   if (lstrlen(pwszAppend))
-    WideCharToMultiByte(mbcp,0,pwszAppend,-1,mszAppend1,COUNTOF(mszAppend1),NULL,NULL);
+    WCHAR2MBCS(mbcp, pwszAppend, mszAppend1, COUNTOF(mszAppend1));
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
   {

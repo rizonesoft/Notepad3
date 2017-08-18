@@ -110,7 +110,7 @@ WCHAR      tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-char      chExtendedWhiteSpaceChars[256] = { '\0' };
+char      chExtendedWhiteSpaceChars[MIDSZ_BUFFER] = { '\0' };
 
 int       iPathNameFormat;
 BOOL      fWordWrap;
@@ -701,6 +701,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     if (iSciFontQuality >= 0)
       SciCall_SetFontQuality(FontQuality[iSciFontQuality]);
   }
+
+  if (bAccelWordNavigation)
+    PostMessage(hwndEdit,SCI_SETWHITESPACECHARS,0,(LPARAM)chExtendedWhiteSpaceChars);
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
@@ -5906,11 +5909,11 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  WCHAR buffer[256];
+  WCHAR buffer[MIDSZ_BUFFER];
   const WCHAR defextwsc[] = L".,;:|/-+$%&<>(){}[]=?#'*";
   IniSectionGetString(pIniSection, L"ExtendedWhiteSpaceChars", defextwsc, buffer, COUNTOF(buffer));
   if (!lstrlen(buffer)) lstrcpyn(buffer, defextwsc, COUNTOF(buffer));
-  WideCharToMultiByte(CP_ACP, 0, buffer, -1, chExtendedWhiteSpaceChars, COUNTOF(chExtendedWhiteSpaceChars), NULL, NULL);
+  WCHAR2MBCS(CP_ACP,buffer,chExtendedWhiteSpaceChars,COUNTOF(chExtendedWhiteSpaceChars));
 
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
