@@ -2487,7 +2487,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_FILE_BROWSE:
       {
-        SHELLEXECUTEINFO sei;
         WCHAR tchParam[MAX_PATH+4] = L"";
         WCHAR tchExeFile[MAX_PATH+4];
         WCHAR tchTemp[MAX_PATH+4];
@@ -2521,10 +2520,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           StrCatBuff(tchParam,tchTemp,COUNTOF(tchParam));
         }
 
-        ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+        SHELLEXECUTEINFO sei = { 0 };
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
-        sei.fMask = SEE_MASK_FLAG_NO_UI | /*SEE_MASK_NOZONECHECKS*/0x00800000;
+        sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
         sei.lpFile = tchExeFile;
@@ -2543,7 +2541,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2:
       {
-        SHELLEXECUTEINFO sei;
         WCHAR szModuleName[MAX_PATH] = { L'\0' };
         WCHAR szFileName[MAX_PATH] = { L'\0' };
         WCHAR szParameters[2*MAX_PATH+64] = { L'\0' };
@@ -2607,8 +2604,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           lstrcat(szParameters,szFileName);
         }
 
-        ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+        SHELLEXECUTEINFO sei = { 0 };
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
         sei.fMask = SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
         sei.hwnd = hwnd;
@@ -2625,7 +2621,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_FILE_LAUNCH:
       {
-        SHELLEXECUTEINFO sei;
         WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
         if (!lstrlen(szCurFile))
@@ -2639,8 +2634,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           PathRemoveFileSpec(wchDirectory);
         }
 
-        ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+        SHELLEXECUTEINFO sei = { 0 };
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
         sei.fMask = 0;
         sei.hwnd = hwnd;
@@ -2707,13 +2701,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_FILE_PROPERTIES:
       {
-        SHELLEXECUTEINFO sei;
-
         if (lstrlen(szCurFile) == 0)
           break;
 
-        ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+        SHELLEXECUTEINFO sei = { 0 };
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
         sei.fMask = SEE_MASK_INVOKEIDLIST;
         sei.hwnd = hwnd;
@@ -2771,9 +2762,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_FILE_MANAGEFAV:
       {
-        SHELLEXECUTEINFO sei;
-        ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+        SHELLEXECUTEINFO sei = { 0 };
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
         sei.fMask = 0;
         sei.hwnd = hwnd;
@@ -4728,7 +4717,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         char  *lpsz;
         LPWSTR lpszCommand;
         LPWSTR lpszArgs;
-        SHELLEXECUTEINFO sei;
         WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
         lpszTemplateName = (LOWORD(wParam) == CMD_WEBACTION1) ? L"WebTemplate1" : L"WebTemplate2";
@@ -4773,10 +4761,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 PathRemoveFileSpec(wchDirectory);
               }
 
-              ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+              SHELLEXECUTEINFO sei = { 0 };
               sei.cbSize = sizeof(SHELLEXECUTEINFO);
-              sei.fMask = /*SEE_MASK_NOZONECHECKS*/0x00800000;
+              sei.fMask = SEE_MASK_NOZONECHECKS;
               sei.hwnd = NULL;
               sei.lpVerb = NULL;
               sei.lpFile = lpszCommand;
@@ -7933,7 +7920,6 @@ BOOL RelaunchElevated() {
     LPWSTR lpCmdLine;
     LPWSTR lpArg1, lpArg2;
     STARTUPINFO si;
-    SHELLEXECUTEINFO sei;
 
     si.cb = sizeof(STARTUPINFO);
     GetStartupInfo(&si);
@@ -7945,7 +7931,7 @@ BOOL RelaunchElevated() {
 
     if (lstrlen(lpArg1)) {
 
-      ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
+      SHELLEXECUTEINFO sei = { 0 };
       sei.cbSize = sizeof(SHELLEXECUTEINFO);
       sei.fMask = SEE_MASK_FLAG_NO_UI | /*SEE_MASK_NOASYNC*/0x00000100 | /*SEE_MASK_NOZONECHECKS*/0x00800000;
       sei.hwnd = GetForegroundWindow();

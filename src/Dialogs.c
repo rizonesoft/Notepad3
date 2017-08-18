@@ -391,7 +391,6 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           {
             WCHAR arg1[MAX_PATH] = { L'\0' };
             WCHAR arg2[MAX_PATH] = { L'\0' };
-            SHELLEXECUTEINFO sei;
             WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
             if (GetDlgItemText(hwnd,IDC_COMMANDLINE,arg1,MAX_PATH))
@@ -412,8 +411,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 PathRemoveFileSpec(wchDirectory);
               }
 
-              ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+              SHELLEXECUTEINFO sei = { 0 };
               sei.cbSize = sizeof(SHELLEXECUTEINFO);
               sei.fMask = 0;
               sei.hwnd = hwnd;
@@ -638,7 +636,6 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
   if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_OPENWITH),
                              hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
   {
-    SHELLEXECUTEINFO sei;
     WCHAR szParam[MAX_PATH] = { L'\0' };
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
@@ -647,7 +644,7 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
       PathRemoveFileSpec(wchDirectory);
     }
 
-    ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
+    SHELLEXECUTEINFO sei = { 0 };
     sei.cbSize = sizeof(SHELLEXECUTEINFO);
     sei.fMask = 0;
     sei.hwnd = hwnd;
