@@ -1916,7 +1916,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     if (tbbMainWnd[i].fsStyle == TBSTYLE_SEP)
       continue;
 
-    wsprintf(tchIndex,L"%02i",n++);
+    StringCchPrintfW(tchIndex,COUNTOF(tchIndex),L"%02i",n++);
 
     if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc))) {
       tbbMainWnd[i].iString = SendMessage(hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
@@ -2556,10 +2556,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         GetModuleFileName(NULL,szModuleName,COUNTOF(szModuleName));
 
-        wsprintf(tch,L"\"-appid=%s\"",g_wchAppUserModelID);
+        StringCchPrintfW(tch,COUNTOF(tch),L"\"-appid=%s\"",g_wchAppUserModelID);
         lstrcpy(szParameters,tch);
 
-        wsprintf(tch,L" \"-sysmru=%i\"",(flagUseSystemMRU == 2) ? 1 : 0);
+        StringCchPrintfW(tch,COUNTOF(tch),L" \"-sysmru=%i\"",(flagUseSystemMRU == 2) ? 1 : 0);
         lstrcat(szParameters,tch);
 
         lstrcat(szParameters,L" -f");
@@ -2594,7 +2594,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         imax = IsZoomed(hwnd);
 
-        wsprintf(tch,L" -pos %i,%i,%i,%i,%i",x,y,cx,cy,imax);
+        StringCchPrintfW(tch,COUNTOF(tch),L" -pos %i,%i,%i,%i,%i",x,y,cx,cy,imax);
         lstrcat(szParameters,tch);
 
         if (LOWORD(wParam) != IDM_FILE_NEWWINDOW2 && lstrlen(szCurFile)) {
@@ -3418,7 +3418,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             &st,NULL,tchDate,COUNTOF(tchDate));
           GetTimeFormat(LOCALE_USER_DEFAULT,TIME_NOSECONDS,&st,NULL,tchTime,COUNTOF(tchTime));
 
-          wsprintf(tchDateTime,L"%s %s",tchTime,tchDate);
+          StringCchPrintfW(tchDateTime,COUNTOF(tchDateTime),L"%s %s",tchTime,tchDate);
         }
 
         UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
@@ -4258,11 +4258,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
         wi.max = (IsZoomed(hwndMain) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
 
-        wsprintf(tchPosX,L"%ix%i PosX",ResX,ResY);
-        wsprintf(tchPosY,L"%ix%i PosY",ResX,ResY);
-        wsprintf(tchSizeX,L"%ix%i SizeX",ResX,ResY);
-        wsprintf(tchSizeY,L"%ix%i SizeY",ResX,ResY);
-        wsprintf(tchMaximized,L"%ix%i Maximized",ResX,ResY);
+        StringCchPrintfW(tchPosX,COUNTOF(tchPosX),L"%ix%i PosX",ResX,ResY);
+        StringCchPrintfW(tchPosY,COUNTOF(tchPosY),L"%ix%i PosY",ResX,ResY);
+        StringCchPrintfW(tchSizeX,COUNTOF(tchSizeX),L"%ix%i SizeX",ResX,ResY);
+        StringCchPrintfW(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
+        StringCchPrintfW(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
 
         bStickyWinPos = 1;
         IniSetInt(L"Settings2",L"StickyWindowPosition",1);
@@ -4749,8 +4749,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
               UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
               MultiByteToWideChar(uCP,0,mszSelection,-1,wszSelection,COUNTOF(wszSelection));
 
-              lpszCommand = GlobalAlloc(GPTR,sizeof(WCHAR)*(512+COUNTOF(szCmdTemplate)+MAX_PATH+32));
-              wsprintf(lpszCommand,szCmdTemplate,wszSelection);
+              int cmdsz = (512 + COUNTOF(szCmdTemplate) + MAX_PATH + 32);
+              lpszCommand = GlobalAlloc(GPTR,sizeof(WCHAR)*cmdsz);
+              StringCchPrintfW(lpszCommand,cmdsz,szCmdTemplate,wszSelection);
               ExpandEnvironmentStringsEx(lpszCommand,(DWORD)GlobalSize(lpszCommand)/sizeof(WCHAR));
 
               lpszArgs = GlobalAlloc(GPTR,GlobalSize(lpszCommand));
@@ -4962,7 +4963,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_COPYWINPOS: {
 
-        WCHAR wszWinPos[256];
+        WCHAR wszWinPos[MIDSZ_BUFFER];
         WINDOWPLACEMENT wndpl;
         int x, y, cx, cy, max;
 
@@ -4975,7 +4976,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
         max = (IsZoomed(hwndMain) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
 
-        wsprintf(wszWinPos,L"/pos %i,%i,%i,%i,%i",x,y,cx,cy,max);
+        StringCchPrintfW(wszWinPos,COUNTOF(wszWinPos),L"/pos %i,%i,%i,%i,%i",x,y,cx,cy,max);
 
         if (OpenClipboard(hwnd)) {
           HANDLE hData;
@@ -5918,7 +5919,7 @@ void LoadSettings()
   LoadIniSection(L"Window", pIniSection, cchIniSection);
 
   WCHAR tchHighDpiToolBar[32];
-  wsprintf(tchHighDpiToolBar, L"%ix%i HighDpiToolBar", ResX, ResY);
+  StringCchPrintfW(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
   iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
   iHighDpiToolBar = max(min(iHighDpiToolBar, 1), -1);
   if (iHighDpiToolBar < 0) { // undefined: derermine high DPI (higher than Full-HD)
@@ -5930,11 +5931,11 @@ void LoadSettings()
 
     WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
 
-    wsprintf(tchPosX,L"%ix%i PosX",ResX,ResY);
-    wsprintf(tchPosY,L"%ix%i PosY",ResX,ResY);
-    wsprintf(tchSizeX,L"%ix%i SizeX",ResX,ResY);
-    wsprintf(tchSizeY,L"%ix%i SizeY",ResX,ResY);
-    wsprintf(tchMaximized,L"%ix%i Maximized",ResX,ResY);
+    StringCchPrintfW(tchPosX,COUNTOF(tchPosX),L"%ix%i PosX",ResX,ResY);
+    StringCchPrintfW(tchPosY,COUNTOF(tchPosY),L"%ix%i PosY",ResX,ResY);
+    StringCchPrintfW(tchSizeX,COUNTOF(tchSizeX),L"%ix%i SizeX",ResX,ResY);
+    StringCchPrintfW(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
+    StringCchPrintfW(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
 
     wi.x = IniSectionGetInt(pIniSection,tchPosX,CW_USEDEFAULT);
     wi.y = IniSectionGetInt(pIniSection,tchPosY,CW_USEDEFAULT);
@@ -5947,12 +5948,12 @@ void LoadSettings()
   // ---  override by resolution specific settings  ---
 
   WCHAR tchSciDirectWriteTech[32];
-  wsprintf(tchSciDirectWriteTech,L"%ix%i SciDirectWriteTech",ResX,ResY);
+  StringCchPrintfW(tchSciDirectWriteTech,COUNTOF(tchSciDirectWriteTech),L"%ix%i SciDirectWriteTech",ResX,ResY);
   iSciDirectWriteTech = IniSectionGetInt(pIniSection,tchSciDirectWriteTech,iSciDirectWriteTech);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
   WCHAR tchSciFontQuality[32];
-  wsprintf(tchSciFontQuality,L"%ix%i SciFontQuality",ResX,ResY);
+  StringCchPrintfW(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
   iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,iSciFontQuality);
   iSciFontQuality = max(min(iSciFontQuality,3),-1);
 
@@ -6117,18 +6118,18 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   int ResY = GetSystemMetrics(SM_CYSCREEN);
 
   WCHAR tchHighDpiToolBar[32];
-  wsprintf(tchHighDpiToolBar, L"%ix%i HighDpiToolBar", ResX, ResY);
+  StringCchPrintfW(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
   IniSetInt(L"Window", tchHighDpiToolBar, iHighDpiToolBar);
 
   if (!IniGetInt(L"Settings2",L"StickyWindowPosition",0)) {
 
     WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
 
-    wsprintf(tchPosX,L"%ix%i PosX",ResX,ResY);
-    wsprintf(tchPosY,L"%ix%i PosY",ResX,ResY);
-    wsprintf(tchSizeX,L"%ix%i SizeX",ResX,ResY);
-    wsprintf(tchSizeY,L"%ix%i SizeY",ResX,ResY);
-    wsprintf(tchMaximized,L"%ix%i Maximized",ResX,ResY);
+    StringCchPrintfW(tchPosX,COUNTOF(tchPosX),L"%ix%i PosX",ResX,ResY);
+    StringCchPrintfW(tchPosY,COUNTOF(tchPosY),L"%ix%i PosY",ResX,ResY);
+    StringCchPrintfW(tchSizeX,COUNTOF(tchSizeX),L"%ix%i SizeX",ResX,ResY);
+    StringCchPrintfW(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
+    StringCchPrintfW(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
 
     IniSetInt(L"Window",tchPosX,wi.x);
     IniSetInt(L"Window",tchPosY,wi.y);
@@ -6875,26 +6876,26 @@ void UpdateStatusbar()
   iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
 
   iLn = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iPos,0) + 1;
-  wsprintf(tchLn,L"%i",iLn);
+  StringCchPrintfW(tchLn,COUNTOF(tchLn),L"%i",iLn);
   FormatNumberStr(tchLn);
 
   iLines = (int)SendMessage(hwndEdit,SCI_GETLINECOUNT,0,0);
-  wsprintf(tchLines,L"%i",iLines);
+  StringCchPrintfW(tchLines,COUNTOF(tchLines),L"%i",iLines);
   FormatNumberStr(tchLines);
 
   iCol = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0) + 1;
-  wsprintf(tchCol,L"%i",iCol);
+  StringCchPrintfW(tchCol,COUNTOF(tchCol),L"%i",iCol);
   FormatNumberStr(tchCol);
 
   if (bMarkLongLines) {
-    wsprintf(tchCols,L"%i",iLongLinesLimit);
+    StringCchPrintfW(tchCols,COUNTOF(tchCols),L"%i",iLongLinesLimit);
     FormatNumberStr(tchCols);
   }
 
   if (SC_SEL_RECTANGLE != SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0))
   {
     iSel = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) - (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
-    wsprintf(tchSel,L"%i",iSel);
+    StringCchPrintfW(tchSel,COUNTOF(tchSel),L"%i",iSel);
     FormatNumberStr(tchSel);
   }
   else
@@ -6908,7 +6909,7 @@ void UpdateStatusbar()
   iStartOfLinePos = (int)SendMessage( hwndEdit , SCI_POSITIONFROMLINE , iLineEnd , 0 );
   iLinesSelected = iLineEnd - iLineStart;
   if( iSelStart != iSelEnd  &&  iStartOfLinePos != iSelEnd ) iLinesSelected += 1;
-  wsprintf(tchLinesSelected,L"%i",iLinesSelected);
+  StringCchPrintfW(tchLinesSelected,COUNTOF(tchLinesSelected),L"%i",iLinesSelected);
   FormatNumberStr(tchLinesSelected);
 
   if (!bMarkLongLines)
@@ -6956,16 +6957,16 @@ void UpdateStatusbar()
 //
 void UpdateLineNumberWidth()
 {
-  char tchLines[32];
+  char chLines[32];
   int  iLineMarginWidthNow;
   int  iLineMarginWidthFit;
 
   if (bShowLineNumbers) {
 
-    wsprintfA(tchLines,"_%i_",SendMessage(hwndEdit,SCI_GETLINECOUNT,0,0));
+    StringCchPrintfA(chLines,COUNTOF(chLines),"_%i_",SendMessage(hwndEdit,SCI_GETLINECOUNT,0,0));
 
     iLineMarginWidthNow = (int)SendMessage(hwndEdit,SCI_GETMARGINWIDTHN,0,0);
-    iLineMarginWidthFit = (int)SendMessage(hwndEdit,SCI_TEXTWIDTH,STYLE_LINENUMBER,(LPARAM)tchLines);
+    iLineMarginWidthFit = (int)SendMessage(hwndEdit,SCI_TEXTWIDTH,STYLE_LINENUMBER,(LPARAM)chLines);
 
     if (iLineMarginWidthNow != iLineMarginWidthFit) {
       //SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,0,0);
@@ -8055,7 +8056,7 @@ void SetNotifyIconTitle(HWND hwnd)
 
   if (lstrlen(szTitleExcerpt)) {
     GetString(IDS_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
-    wsprintf(tchTitle,tchFormat,szTitleExcerpt);
+    StringCchPrintfW(tchTitle,COUNTOF(tchTitle),tchFormat,szTitleExcerpt);
   }
 
   else if (lstrlen(szCurFile)) {

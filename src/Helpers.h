@@ -12,6 +12,13 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#pragma once
+#ifndef _NP3_HELPERS_H_
+#define _NP3_HELPERS_H_
+
+#define STRSAFE_NO_DEPRECATE     // comment out to see missing migrations
+#define STRSAFE_NO_CB_FUNCTIONS
+#include <strsafe.h>
 
 
 #define SMALL_BUFFER 128
@@ -37,7 +44,7 @@ extern WCHAR szIniFile[MAX_PATH];
 #define IniDeleteSection(lpSection) \
   WritePrivateProfileSection(lpSection,NULL,szIniFile)
 __inline BOOL IniSetInt(LPCWSTR lpSection,LPCWSTR lpName,int i) {
-  WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSetString(lpSection,lpName,tch);
+  WCHAR tch[32]; StringCchPrintfW(tch,COUNTOF(tch),L"%i",i); return IniSetString(lpSection,lpName,tch);
 }
 #define LoadIniSection(lpSection,lpBuf,cchBuf) \
   GetPrivateProfileSection(lpSection,lpBuf,cchBuf,szIniFile)
@@ -48,7 +55,7 @@ int IniSectionGetInt(LPCWSTR,LPCWSTR,int);
 UINT IniSectionGetUInt(LPCWSTR,LPCWSTR,UINT);
 BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
 __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
-  WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
+  WCHAR tch[32]; StringCchPrintfW(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
 
 
@@ -224,5 +231,6 @@ VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
 
 
+#endif //_NP3_HELPERS_H_
 
 ///   End of Helpers.h   \\\

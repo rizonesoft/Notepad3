@@ -12,7 +12,9 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-
+#pragma once
+#ifndef _NP3_NOTEPAD3_H_
+#define _NP3_NOTEPAD3_H_
 
 //==== Main Window ============================================================
 #define WC_NOTEPAD3 L"Notepad3"
@@ -156,4 +158,5 @@ LRESULT MsgCommand(HWND,WPARAM,LPARAM);
 LRESULT MsgNotify(HWND,WPARAM,LPARAM);
 
 
+#endif //_NP3_NOTEPAD3_H_
 ///   End of Notepad3.h   \\\

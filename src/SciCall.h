@@ -16,6 +16,10 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#pragma once
+#ifndef _NP3_SCICALL_H_
+#define _NP3_SCICALL_H_
+
 
 //=============================================================================
 //
@@ -164,3 +168,5 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //
 DeclareSciCallV1(SetFontQuality, SETFONTQUALITY, int, quality);
+
+#endif //_NP3_SCICALL_H_

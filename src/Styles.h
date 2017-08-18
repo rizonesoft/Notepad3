@@ -12,7 +12,11 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#pragma once
+#ifndef _NP3_STYLES_H_
+#define _NP3_STYLES_H_
 
+#define EDSTYLE_BUFFER 256
 
 typedef struct _editstyle
 {
@@ -25,7 +29,7 @@ typedef struct _editstyle
   int rid;
   WCHAR* pszName;
   WCHAR* pszDefault;
-  WCHAR  szValue[256];
+  WCHAR  szValue[EDSTYLE_BUFFER];
 
 } EDITSTYLE, *PEDITSTYLE;
 
@@ -92,5 +96,7 @@ void   Style_ConfigDlg(HWND);
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_SelectLexerDlg(HWND);
 
+
+#endif //_NP3_STYLES_H_
 
 // End of Style.h
