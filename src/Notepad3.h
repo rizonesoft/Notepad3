@@ -135,7 +135,7 @@ void UpdateSettingsCmds();
 void InvalidateSelections();
 int  BeginSelUndoAction();
 void EndSelUndoAction(int);
-void ResroreSelectionAction(int);
+void RestoreSelectionAction(int);
 int  UndoSelectionMap(int, LPUndoRedoSelection);
 
 
