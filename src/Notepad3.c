@@ -7040,6 +7040,7 @@ int BeginSelUndoAction()
   if (sel.currPos != sel.anchorPos) {
     token = UndoSelectionMap(-1, &sel);
     if (token >= 0) {
+      bModified = TRUE;
       SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
       SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
     }
