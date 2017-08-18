@@ -100,6 +100,9 @@ static void ColouriseMatlabOctaveDoc(
 	// of a string
 	bool transpose = false;
 
+	// count of brackets as boolean for when end could be an operator not a keyword
+	int allow_end_op = 0;
+
 	// approximate position of first non space character in a line
 	int nonSpaceColumn = -1;
 	// approximate column position of the current character in a line
@@ -153,7 +156,11 @@ static void ColouriseMatlabOctaveDoc(
 			if (!isalnum(sc.ch) && sc.ch != '_') {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
+
 				if (keywords.InList(s)) {
+					if (strcmp ("end", s) == 0 && allow_end_op) {
+						sc.ChangeState(SCE_MATLAB_NUMBER);
+					}
 					sc.SetState(SCE_MATLAB_DEFAULT);
 					transpose = false;
 				} else {
@@ -253,6 +260,12 @@ static void ColouriseMatlabOctaveDoc(
 			} else if (isalpha(sc.ch)) {
 				sc.SetState(SCE_MATLAB_KEYWORD);
 			} else if (isoperator(static_cast<char>(sc.ch)) || sc.ch == '@' || sc.ch == '\\') {
+				if (sc.ch == '(' || sc.ch == '[' || sc.ch == '{') {
+					allow_end_op ++;
+				} else if ((sc.ch == ')' || sc.ch == ']' || sc.ch == '}') && (allow_end_op > 0)) {
+					allow_end_op --;
+				}
+
 				if (sc.ch == ')' || sc.ch == ']' || sc.ch == '}') {
 					transpose = true;
 				} else {
@@ -281,6 +294,12 @@ static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length, int
                                 WordList *[], Accessor &styler,
                                 bool (*IsComment)(int ch)) {
 
+	if (styler.GetPropertyInt("fold") == 0)
+		return;
+
+	const bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
+	const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
+
 	Sci_PositionU endPos = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);
@@ -301,7 +320,7 @@ static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length, int
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
 
 		// a line that starts with a comment
-		if (style == SCE_MATLAB_COMMENT && IsComment(ch) && visibleChars == 0) {
+		if (foldComment && style == SCE_MATLAB_COMMENT && IsComment(ch) && visibleChars == 0) {
 			// start/end of block comment
 			if (chNext == '{' && IsSpaceToEOL(i+2, styler))
 				levelNext ++;
@@ -327,7 +346,7 @@ static void FoldMatlabOctaveDoc(Sci_PositionU startPos, Sci_Position length, int
 		if (atEOL || (i == endPos-1)) {
 			int levelUse = levelCurrent;
 			int lev = levelUse | levelNext << 16;
-			if (visibleChars == 0)
+			if (visibleChars == 0 && foldCompact)
 				lev |= SC_FOLDLEVELWHITEFLAG;
 			if (levelUse < levelNext)
 				lev |= SC_FOLDLEVELHEADERFLAG;

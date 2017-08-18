@@ -248,7 +248,8 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 				}
 				if (highlightDelimiter.isEnabled) {
 					Sci::Line lastLine = model.cs.DocFromDisplay(topLine + model.LinesOnScreen()) + 1;
-					model.pdoc->GetHighlightDelimiters(highlightDelimiter, model.pdoc->LineFromPosition(model.sel.MainCaret()), lastLine);
+					model.pdoc->GetHighlightDelimiters(highlightDelimiter,
+						static_cast<Sci::Line>(model.pdoc->LineFromPosition(model.sel.MainCaret())), lastLine);
 				}
 			}
 

@@ -55,7 +55,7 @@ static inline bool IsANumberChar(int ch) {
  */
 static void CheckForKeyword(StyleContext& sc, WordList* keywordlists[], int activeState)
 {
-  int length = sc.LengthCurrent() + 1; // +1 for the next char
+  Sci_Position length = sc.LengthCurrent() + 1; // +1 for the next char
   char* s = new char[length];
   sc.GetCurrentLowered(s, length);
   if (keywordlists[0]->InList(s))

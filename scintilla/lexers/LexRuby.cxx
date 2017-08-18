@@ -346,7 +346,7 @@ static bool RE_CanFollowKeyword(const char *keyword) {
 // Look at chars up to but not including endPos
 // Don't look at styles in case we're looking forward
 
-static int skipWhitespace(Sci_Position startPos,
+static Sci_Position skipWhitespace(Sci_Position startPos,
                           Sci_Position endPos,
                           Accessor &styler) {
     for (Sci_Position i = startPos; i < endPos; i++) {

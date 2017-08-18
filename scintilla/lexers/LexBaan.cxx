@@ -34,6 +34,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 #include "OptionSet.h"
+#include "DefaultLexer.h"
 
 # ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -130,7 +131,7 @@ static inline bool IsAnOperator(int ch) {
 	return false;
 }
 
-static inline int IsAnyOtherIdentifier(char *s, int sLength) {
+static inline int IsAnyOtherIdentifier(char *s, Sci_Position sLength) {
 
 	/*	IsAnyOtherIdentifier uses standard templates used in baan.
 	The matching template is shown as comments just above the return condition.
@@ -381,7 +382,7 @@ public:
 
 }
 
-class LexerBaan : public ILexer {
+class LexerBaan : public DefaultLexer {
 	WordListAbridged keywords;
 	WordListAbridged keywords2;
 	WordListAbridged keywords3;
@@ -401,7 +402,7 @@ public:
 	}
 
 	int SCI_METHOD Version() const override {
-		return lvOriginal;
+		return lvRelease4;
 	}
 
 	void SCI_METHOD Release() override {
@@ -436,7 +437,7 @@ public:
 		return NULL;
 	}
 
-	static ILexer * LexerFactoryBaan() {
+	static ILexer4 * LexerFactoryBaan() {
 		return new LexerBaan();
 	}
 };

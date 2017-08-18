@@ -39,6 +39,7 @@
 #include "CharacterCategory.h"
 #include "LexerModule.h"
 #include "OptionSet.h"
+#include "DefaultLexer.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -64,7 +65,7 @@ struct OptionSetVisualProlog : public OptionSet<OptionsVisualProlog> {
     }
 };
 
-class LexerVisualProlog : public ILexer {
+class LexerVisualProlog : public DefaultLexer {
     WordList majorKeywords;
     WordList minorKeywords;
     WordList directiveKeywords;
@@ -80,7 +81,7 @@ public:
         delete this;
     }
     int SCI_METHOD Version() const override {
-        return lvOriginal;
+        return lvRelease4;
     }
     const char * SCI_METHOD PropertyNames() override {
         return osVisualProlog.PropertyNames();
@@ -103,7 +104,7 @@ public:
         return 0;
     }
 
-    static ILexer *LexerFactoryVisualProlog() {
+    static ILexer4 *LexerFactoryVisualProlog() {
         return new LexerVisualProlog();
     }
 };

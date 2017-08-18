@@ -68,7 +68,7 @@ inline bool isGCOperator(int ch)
 #define isFoldPoint(x)  ((styler.LevelAt(x) & SC_FOLDLEVELNUMBERMASK) == 1024)
 
 static void colorFirstWord(WordList *keywordlists[], Accessor &styler,
-									StyleContext *sc, char *buff, Sci_Position length, int)
+									StyleContext *sc, char *buff, Sci_Position length, Sci_Position)
 {
 	Sci_Position c = 0;
 	while (sc->More() && isSpaceOrNL(sc->ch))

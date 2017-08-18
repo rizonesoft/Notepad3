@@ -30,6 +30,7 @@
 #include "LexerModule.h"
 #include "OptionSet.h"
 #include "SubStyles.h"
+#include "DefaultLexer.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -308,18 +309,43 @@ struct OptionSetPython : public OptionSet<OptionsPython> {
 
 const char styleSubable[] = { SCE_P_IDENTIFIER, 0 };
 
+LexicalClass lexicalClasses[] = {
+	// Lexer Python SCLEX_PYTHON SCE_P_:
+	0, "SCE_P_DEFAULT", "default", "White space",
+	1, "SCE_P_COMMENTLINE", "comment line", "Comment",
+	2, "SCE_P_NUMBER", "literal numeric", "Number",
+	3, "SCE_P_STRING", "literal string", "String",
+	4, "SCE_P_CHARACTER", "literal string", "Single quoted string",
+	5, "SCE_P_WORD", "keyword", "Keyword",
+	6, "SCE_P_TRIPLE", "literal string", "Triple quotes",
+	7, "SCE_P_TRIPLEDOUBLE", "literal string", "Triple double quotes",
+	8, "SCE_P_CLASSNAME", "identifier", "Class name definition",
+	9, "SCE_P_DEFNAME", "identifier", "Function or method name definition",
+	10, "SCE_P_OPERATOR", "operator", "Operators",
+	11, "SCE_P_IDENTIFIER", "identifier", "Identifiers",
+	12, "SCE_P_COMMENTBLOCK", "comment", "Comment-blocks",
+	13, "SCE_P_STRINGEOL", "error literal string", "End of line where string is not closed",
+	14, "SCE_P_WORD2", "identifier", "Highlighted identifiers",
+	15, "SCE_P_DECORATOR", "preprocessor", "Decorators",
+	16, "SCE_P_FSTRING", "literal string interpolated", "F-String",
+	17, "SCE_P_FCHARACTER", "literal string interpolated", "Single quoted f-string",
+	18, "SCE_P_FTRIPLE", "literal string interpolated", "Triple quoted f-string",
+	19, "SCE_P_FTRIPLEDOUBLE", "literal string interpolated", "Triple double quoted f-string",
+};
+
 }
 
-class LexerPython : public ILexerWithSubStyles {
+class LexerPython : public DefaultLexer {
 	WordList keywords;
 	WordList keywords2;
 	OptionsPython options;
 	OptionSetPython osPython;
 	enum { ssIdentifier };
 	SubStyles subStyles;
-	std::map<int, std::vector<SingleFStringExpState> > ftripleStateAtEol;
+	std::map<Sci_Position, std::vector<SingleFStringExpState> > ftripleStateAtEol;
 public:
 	explicit LexerPython() :
+		DefaultLexer(lexicalClasses, ELEMENTS(lexicalClasses)),
 		subStyles(styleSubable, 0x80, 0x40, 0) {
 	}
 	virtual ~LexerPython() {
@@ -328,7 +354,7 @@ public:
 		delete this;
 	}
 	int SCI_METHOD Version() const override {
-		return lvSubStyles;
+		return lvRelease4;
 	}
 	const char *SCI_METHOD PropertyNames() override {
 		return osPython.PropertyNames();
@@ -384,7 +410,7 @@ public:
 		return styleSubable;
 	}
 
-	static ILexer *LexerFactoryPython() {
+	static ILexer4 *LexerFactoryPython() {
 		return new LexerPython();
 	}
 
@@ -440,7 +466,7 @@ void LexerPython::ProcessLineEnd(StyleContext &sc, std::vector<SingleFStringExpS
 		}
 	}
 	if (!fstringStateStack.empty()) {
-		std::pair<int, std::vector<SingleFStringExpState> > val;
+		std::pair<Sci_Position, std::vector<SingleFStringExpState> > val;
 		val.first = sc.currentLine;
 		val.second = fstringStateStack;
 
@@ -503,7 +529,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 	}
 
 	// Set up fstate stack from last line and remove any subsequent ftriple at eol states
-	std::map<int, std::vector<SingleFStringExpState> >::iterator it;
+	std::map<Sci_Position, std::vector<SingleFStringExpState> >::iterator it;
 	it = ftripleStateAtEol.find(lineCurrent - 1);
 	if (it != ftripleStateAtEol.end() && !it->second.empty()) {
 		fstringStateStack = it->second;

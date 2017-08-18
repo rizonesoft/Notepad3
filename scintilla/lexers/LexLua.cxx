@@ -18,6 +18,7 @@
 #include "Scintilla.h"
 #include "SciLexer.h"
 
+#include "StringCopy.h"
 #include "WordList.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
@@ -433,4 +434,33 @@ static const char * const luaWordListDesc[] = {
 	0
 };
 
-LexerModule lmLua(SCLEX_LUA, ColouriseLuaDoc, "lua", FoldLuaDoc, luaWordListDesc);
+namespace {
+
+LexicalClass lexicalClasses[] = {
+	// Lexer Lua SCLEX_LUA SCE_LUA_:
+	0, "SCE_LUA_DEFAULT", "default", "White space: Visible only in View Whitespace mode (or if it has a back colour)",
+	1, "SCE_LUA_COMMENT", "comment", "Block comment (Lua 5.0)",
+	2, "SCE_LUA_COMMENTLINE", "comment line", "Line comment",
+	3, "SCE_LUA_COMMENTDOC", "comment documentation", "Doc comment -- Not used in Lua (yet?)",
+	4, "SCE_LUA_NUMBER", "literal numeric", "Number",
+	5, "SCE_LUA_WORD", "keyword", "Keyword",
+	6, "SCE_LUA_STRING", "literal string", "(Double quoted) String",
+	7, "SCE_LUA_CHARACTER", "literal string character", "Character (Single quoted string)",
+	8, "SCE_LUA_LITERALSTRING", "literal string", "Literal string",
+	9, "SCE_LUA_PREPROCESSOR", "preprocessor", "Preprocessor (obsolete in Lua 4.0 and up)",
+	10, "SCE_LUA_OPERATOR", "operator", "Operators",
+	11, "SCE_LUA_IDENTIFIER", "identifier", "Identifier (everything else...)",
+	12, "SCE_LUA_STRINGEOL", "error literal string", "End of line where string is not closed",
+	13, "SCE_LUA_WORD2", "identifier", "Other keywords",
+	14, "SCE_LUA_WORD3", "identifier", "Other keywords",
+	15, "SCE_LUA_WORD4", "identifier", "Other keywords",
+	16, "SCE_LUA_WORD5", "identifier", "Other keywords",
+	17, "SCE_LUA_WORD6", "identifier", "Other keywords",
+	18, "SCE_LUA_WORD7", "identifier", "Other keywords",
+	19, "SCE_LUA_WORD8", "identifier", "Other keywords",
+	20, "SCE_LUA_LABEL", "label", "Labels",
+};
+
+}
+
+LexerModule lmLua(SCLEX_LUA, ColouriseLuaDoc, "lua", FoldLuaDoc, luaWordListDesc, lexicalClasses, ELEMENTS(lexicalClasses));

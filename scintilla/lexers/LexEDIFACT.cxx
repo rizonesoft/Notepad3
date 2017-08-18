@@ -18,24 +18,25 @@
 
 #include "LexAccessor.h"
 #include "LexerModule.h"
+#include "DefaultLexer.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
 #endif
 
-class LexerEDIFACT : public ILexer
+class LexerEDIFACT : public DefaultLexer
 {
 public:
 	LexerEDIFACT();
 	virtual ~LexerEDIFACT() {} // virtual destructor, as we inherit from ILexer
 
-	static ILexer *Factory() {
+	static ILexer4 *Factory() {
 		return new LexerEDIFACT;
 	}
 
 	int SCI_METHOD Version() const override
 	{
-		return lvOriginal;
+		return lvRelease4;
 	}
 	void SCI_METHOD Release() override
 	{
@@ -124,7 +125,7 @@ void LexerEDIFACT::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int, IDoc
 
 	// Style buffer, so we're not issuing loads of notifications
 	LexAccessor styler (pAccess);
-	pAccess->StartStyling(posCurrent, '\377');
+	pAccess->StartStyling(posCurrent);
 	styler.StartSegment(posCurrent);
 	Sci_Position posSegmentStart = -1;
 
@@ -187,7 +188,7 @@ void LexerEDIFACT::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int, IDoc
 	if (posSegmentStart == -1)
 		return;
 
-	pAccess->StartStyling(posSegmentStart, -1);
+	pAccess->StartStyling(posSegmentStart);
 	pAccess->SetStyleFor(posFinish - posSegmentStart, SCE_EDI_BADSEGMENT);
 }
 

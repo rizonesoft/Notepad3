@@ -297,7 +297,7 @@ static inline bool isWordChar(int ch) {
 	return ((ch >= 'a') && (ch <= 'z')) || ((ch >= 'A') && (ch <= 'Z'));
 }
 
-static int ParseTeXCommand(Sci_PositionU pos, Accessor &styler, char *command)
+static Sci_Position ParseTeXCommand(Sci_PositionU pos, Accessor &styler, char *command)
 {
   Sci_Position length=0;
   char ch=styler.SafeGetCharAt(pos+1);

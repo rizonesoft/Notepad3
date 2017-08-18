@@ -26,7 +26,9 @@
 using namespace Scintilla;
 #endif
 
-LexerSimple::LexerSimple(const LexerModule *module_) : module(module_) {
+LexerSimple::LexerSimple(const LexerModule *module_) :
+	LexerBase(module_->LexClasses(), module_->NamedStyles()),
+	module(module_) {
 	for (int wl = 0; wl < module->GetNumWordLists(); wl++) {
 		if (!wordLists.empty())
 			wordLists += "\n";

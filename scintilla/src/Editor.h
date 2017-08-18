@@ -360,7 +360,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	XYScrollPosition XYScrollToMakeVisible(const SelectionRange &range, const XYScrollOptions options);
 	void SetXYScroll(XYScrollPosition newXY);
 	void EnsureCaretVisible(bool useMargin=true, bool vert=true, bool horiz=true);
-	void ScrollRange(const SelectionRange &range);
+	void ScrollRange(const SelectionRange& range);
 	void ShowCaretAtCurrentPosition();
 	void DropCaret();
 	void CaretSetPeriod(int period);
@@ -425,19 +425,13 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void NotifySavePoint(bool isSavePoint);
 	void NotifyModifyAttempt();
 	virtual void NotifyDoubleClick(Point pt, int modifiers);
-	virtual void NotifyDoubleClick(Point pt, bool shift, bool ctrl, bool alt);
 	void NotifyHotSpotClicked(Sci::Position position, int modifiers);
-	void NotifyHotSpotClicked(Sci::Position position, bool shift, bool ctrl, bool alt);
 	void NotifyHotSpotDoubleClicked(Sci::Position position, int modifiers);
-	void NotifyHotSpotDoubleClicked(Sci::Position position, bool shift, bool ctrl, bool alt);
 	void NotifyHotSpotReleaseClick(Sci::Position position, int modifiers);
-	void NotifyHotSpotReleaseClick(Sci::Position position, bool shift, bool ctrl, bool alt);
 	bool NotifyUpdateUI();
 	void NotifyPainted();
 	void NotifyIndicatorClick(bool click, Sci::Position position, int modifiers);
-	void NotifyIndicatorClick(bool click, Sci::Position position, bool shift, bool ctrl, bool alt);
 	bool NotifyMarginClick(Point pt, int modifiers);
-	bool NotifyMarginClick(Point pt, bool shift, bool ctrl, bool alt);
 	bool NotifyMarginRightClick(Point pt, int modifiers);
 	void NotifyNeedShown(Sci::Position pos, Sci::Position len);
 	void NotifyDwelling(Point pt, bool state);
@@ -476,7 +470,6 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual int KeyCommand(unsigned int iMessage);
 	virtual int KeyDefault(int /* key */, int /*modifiers*/);
 	int KeyDownWithModifiers(int key, int modifiers, bool *consumed);
-	int KeyDown(int key, bool shift, bool ctrl, bool alt, bool *consumed=0);
 
 	void Indent(bool forwards);
 
@@ -510,17 +503,12 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void MouseLeave();
 	virtual void ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers);
 	virtual void RightButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers);
-	virtual void ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
-	void ButtonMoveWithModifiers(Point pt, int modifiers);
-	void ButtonMove(Point pt);
-	void ButtonUp(Point pt, unsigned int curTime, bool ctrl);
+	void ButtonMoveWithModifiers(Point pt, unsigned int curTime, int modifiers);
+	void ButtonUpWithModifiers(Point pt, unsigned int curTime, int modifiers);
 
-	void Tick();
 	bool Idle();
-	virtual void SetTicking(bool on);
 	enum TickReason { tickCaret, tickScroll, tickWiden, tickDwell, tickPlatform };
 	virtual void TickFor(TickReason reason);
-	virtual bool FineTickerAvailable();
 	virtual bool FineTickerRunning(TickReason reason);
 	virtual void FineTickerStart(TickReason reason, int millis, int tolerance);
 	virtual void FineTickerCancel(TickReason reason);

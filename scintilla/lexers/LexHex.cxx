@@ -651,7 +651,9 @@ static void ColouriseSrecDoc(Sci_PositionU startPos, Sci_Position length, int in
 
 	while (sc.More()) {
 		Sci_PositionU recStartPos;
-		int byteCount, reqByteCount, addrFieldSize, addrFieldType, dataFieldSize, dataFieldType;
+		Sci_Position reqByteCount;
+		Sci_Position dataFieldSize;
+		int byteCount, addrFieldSize, addrFieldType, dataFieldType;
 		int cs1, cs2;
 
 		switch (sc.state) {

@@ -228,6 +228,7 @@
     <ClCompile Include="lexlib\Accessor.cxx" />
     <ClCompile Include="lexlib\CharacterCategory.cxx" />
     <ClCompile Include="lexlib\CharacterSet.cxx" />
+    <ClCompile Include="lexlib\DefaultLexer.cxx" />
     <ClCompile Include="lexlib\LexerBase.cxx" />
     <ClCompile Include="lexlib\LexerModule.cxx" />
     <ClCompile Include="lexlib\LexerNoExceptions.cxx" />
@@ -243,6 +244,7 @@
     <ClCompile Include="src\CellBuffer.cxx" />
     <ClCompile Include="src\CharClassify.cxx" />
     <ClCompile Include="src\ContractionState.cxx" />
+    <ClCompile Include="src\DBCS.cxx" />
     <ClCompile Include="src\Decoration.cxx" />
     <ClCompile Include="src\Document.cxx" />
     <ClCompile Include="src\EditModel.cxx" />
@@ -277,6 +279,7 @@
     <ClInclude Include="lexlib\Accessor.h" />
     <ClInclude Include="lexlib\CharacterCategory.h" />
     <ClInclude Include="lexlib\CharacterSet.h" />
+    <ClInclude Include="lexlib\DefaultLexer.h" />
     <ClInclude Include="lexlib\LexAccessor.h" />
     <ClInclude Include="lexlib\LexerBase.h" />
     <ClInclude Include="lexlib\LexerModule.h" />
@@ -297,6 +300,7 @@
     <ClInclude Include="src\CellBuffer.h" />
     <ClInclude Include="src\CharClassify.h" />
     <ClInclude Include="src\ContractionState.h" />
+    <ClInclude Include="src\DBCS.h" />
     <ClInclude Include="src\Decoration.h" />
     <ClInclude Include="src\Document.h" />
     <ClInclude Include="src\EditModel.h" />

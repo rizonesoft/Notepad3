@@ -14,10 +14,11 @@ namespace Scintilla {
 
 class Accessor;
 class WordList;
+struct LexicalClass;
 
 typedef void (*LexerFunction)(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
                   WordList *keywordlists[], Accessor &styler);
-typedef ILexer *(*LexerFactoryFunction)();
+typedef ILexer4 *(*LexerFactoryFunction)();
 
 /**
  * A LexerModule is responsible for lexing and folding a particular language.
@@ -31,6 +32,8 @@ protected:
 	LexerFunction fnFolder;
 	LexerFactoryFunction fnFactory;
 	const char * const * wordListDescriptions;
+	const LexicalClass *lexClasses;
+	size_t nClasses;
 
 public:
 	const char *languageName;
@@ -38,7 +41,9 @@ public:
 		LexerFunction fnLexer_,
 		const char *languageName_=0,
 		LexerFunction fnFolder_=0,
-		const char * const wordListDescriptions_[] = NULL);
+		const char * const wordListDescriptions_[] = NULL,
+		const LexicalClass *lexClasses_=nullptr,
+		size_t nClasses_=0);
 	LexerModule(int language_,
 		LexerFactoryFunction fnFactory_,
 		const char *languageName_,
@@ -50,8 +55,10 @@ public:
 	// -1 is returned if no WordList information is available
 	int GetNumWordLists() const;
 	const char *GetWordListDescription(int index) const;
+	const LexicalClass *LexClasses() const;
+	size_t NamedStyles() const;
 
-	ILexer *Create() const;
+	ILexer4 *Create() const;
 
 	virtual void Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle,
                   WordList *keywordlists[], Accessor &styler) const;
