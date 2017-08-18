@@ -523,7 +523,7 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			sc.SetState(SCE_BAAN_DEFAULT);
 			break;
 		case SCE_BAAN_NUMBER: 
-			if (IsASpaceOrTab(sc.ch) || sc.ch == '\r' || sc.ch == '\n') {
+			if (IsASpaceOrTab(sc.ch) || sc.ch == '\r' || sc.ch == '\n' || IsAnOperator(sc.ch)) {
 				sc.SetState(SCE_BAAN_DEFAULT);
 			}
 			else if ((numberIsHex && !(MakeLowerCase(sc.ch) == 'x' || MakeLowerCase(sc.ch) == 'e' ||

@@ -14,7 +14,14 @@
 *******************************************************************************/
 
 
+#define SMALL_BUFFER 128
+#define MIDSZ_BUFFER 256
+#define LARGE_BUFFER 512
+#define HUGE_BUFFER 1024
+
+
 #define UNUSED(expr) (void)(expr)
+#define SIZEOF(ar) sizeof(ar)
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
@@ -142,8 +149,9 @@ int  FormatNumberStr(LPWSTR);
 BOOL SetDlgItemIntEx(HWND,int,UINT);
 
 
-#define MBCSToWChar(c,a,w,i) MultiByteToWideChar(c,0,a,-1,w,i)
-#define WCharToMBCS(c,w,a,i) WideCharToMultiByte(c,0,w,-1,a,i,NULL,NULL)
+#define MBCS2WCHAR(c,a,w,i) MultiByteToWideChar((c),0,(a),-1,(w),(i))
+#define WCHAR2MBCS(c,w,a,i) WideCharToMultiByte((c),0,(w),-1,(a),(i),NULL,NULL)
+
 
 UINT    GetDlgItemTextA2W(UINT,HWND,int,LPSTR,int);
 UINT    SetDlgItemTextA2W(UINT,HWND,int,LPSTR);
