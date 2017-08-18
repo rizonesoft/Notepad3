@@ -5957,6 +5957,19 @@ void LoadSettings()
     if (wi.max) wi.max = 1;
   }
 
+  // ---  override by resolution specific settings  ---
+
+  WCHAR tchSciDirectWriteTech[32];
+  wsprintf(tchSciDirectWriteTech,L"%ix%i SciDirectWriteTech",ResX,ResY);
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,tchSciDirectWriteTech,iSciDirectWriteTech);
+  iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
+
+  WCHAR tchSciFontQuality[32];
+  wsprintf(tchSciFontQuality,L"%ix%i SciFontQuality",ResX,ResY);
+  iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,iSciFontQuality);
+  iSciFontQuality = max(min(iSciFontQuality,3),-1);
+
+
   LocalFree(pIniSection);
 
   // define scintilla internal code page, don't use Encoding_GetSciCodePage(iDefaultEncoding) here
@@ -6090,7 +6103,6 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
-  IniSectionSetInt(pIniSection, L"SciDrawTechnology", iSciDirectWriteTech);
   IniSectionSetInt(pIniSection, L"SciFontQuality", iSciFontQuality);
 
   SaveIniSection(L"Settings", pIniSection);
