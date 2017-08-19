@@ -489,7 +489,7 @@ char* EditGetClipboardText(HWND hwnd)
 
     LocalFree(pmch);
     pmch = LocalAlloc(LPTR,mlen2 + 1);
-    lstrcpyA(pmch,ptmp);
+    StringCchCopyA(pmch,mlen2,ptmp);
     LocalFree(ptmp);
   }
 
@@ -553,8 +553,9 @@ BOOL EditCopyAppend(HWND hwnd)
 
   cchTextW = MultiByteToWideChar(uCodePage,0,pszText,-1,NULL,0);
   if (cchTextW > 0) {
-    pszTextW = LocalAlloc(LPTR,sizeof(WCHAR)*(lstrlen(pszSep) + cchTextW + 1));
-    lstrcpy(pszTextW,pszSep);
+    int lenTxt = (lstrlen(pszSep) + cchTextW + 1);
+    pszTextW = LocalAlloc(LPTR,sizeof(WCHAR)*lenTxt);
+    StringCchCopyW(pszTextW,lenTxt,pszSep);
     MultiByteToWideChar(uCodePage,0,pszText,-1,StrEnd(pszTextW),(int)LocalSize(pszTextW)/sizeof(WCHAR));
   }
   else {
@@ -571,12 +572,12 @@ BOOL EditCopyAppend(HWND hwnd)
   hOld   = GetClipboardData(CF_UNICODETEXT);
   pszOld = GlobalLock(hOld);
 
-  hNew = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,
-           sizeof(WCHAR) * (lstrlen(pszOld) + lstrlen(pszTextW) + 1));
+  int sizeNew = (lstrlen(pszOld) + lstrlen(pszTextW) + 1);
+  hNew = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * sizeNew);
   pszNew = GlobalLock(hNew);
-
-  lstrcpy(pszNew,pszOld);
-  lstrcat(pszNew,pszTextW);
+  
+  StringCchCopyW(pszNew,sizeNew,pszOld);
+  StringCchCatW(pszNew,sizeNew,pszTextW);
 
   GlobalUnlock(hNew);
   GlobalUnlock(hOld);
@@ -623,9 +624,9 @@ int EditDetectEOLMode(HWND hwnd,char* lpData,DWORD cbData)
 //  Encoding Helper Functions
 //
 void Encoding_InitDefaults() {
-  wsprintf(wchANSI,L" (%u)",GetACP());
+  StringCchPrintfW(wchANSI,COUNTOF(wchANSI),L" (%u)",GetACP());
   mEncoding[CPI_OEM].uCodePage = GetOEMCP();
-  wsprintf(wchOEM,L" (%u)",mEncoding[CPI_OEM].uCodePage);
+  StringCchPrintfW(wchOEM,COUNTOF(wchOEM),L" (%u)",mEncoding[CPI_OEM].uCodePage);
 
   g_DOSEncoding = CPI_OEM;
 
@@ -800,9 +801,9 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly)
         StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
 
       if (Encoding_IsANSI(id))
-        StrCatN(wchBuf,wchANSI,COUNTOF(wchBuf));
+        StringCchCatNW(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
       else if (id == CPI_OEM)
-        StrCatN(wchBuf,wchOEM,COUNTOF(wchBuf));
+        StringCchCatNW(wchBuf,COUNTOF(wchBuf),wchOEM,COUNTOF(wchOEM));
 
       if ((mEncoding[id].uFlags & NCP_INTERNAL) ||
           (IsValidCodePage(mEncoding[id].uCodePage) &&
@@ -893,9 +894,9 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly)
         StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
 
       if (Encoding_IsANSI(id))
-        StrCatN(wchBuf,wchANSI,COUNTOF(wchBuf));
+        StringCchCatNW(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
       else if (id == CPI_OEM)
-        StrCatN(wchBuf,wchOEM,COUNTOF(wchBuf));
+        StringCchCatNW(wchBuf,COUNTOF(wchBuf),wchOEM,COUNTOF(wchOEM));
 
       if ((mEncoding[id].uFlags & NCP_INTERNAL) ||
           (IsValidCodePage(mEncoding[id].uCodePage) &&
@@ -2100,16 +2101,16 @@ void EditEscapeCChars(HWND hwnd) {
 
       SendMessage(hwnd,SCI_BEGINUNDOACTION,0,0);
 
-      lstrcpyA(efr.szFind,"\\");
-      lstrcpyA(efr.szReplace,"\\\\");
+      StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\\");
+      StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\\\\");
       EditReplaceAllInSelection(hwnd,&efr,FALSE);
 
-      lstrcpyA(efr.szFind,"\"");
-      lstrcpyA(efr.szReplace,"\\\"");
+      StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\"");
+      StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\\\"");
       EditReplaceAllInSelection(hwnd,&efr,FALSE);
 
-      lstrcpyA(efr.szFind,"\'");
-      lstrcpyA(efr.szReplace,"\\\'");
+      StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\'");
+      StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\\\'");
       EditReplaceAllInSelection(hwnd,&efr,FALSE);
 
       SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
@@ -2135,16 +2136,16 @@ void EditUnescapeCChars(HWND hwnd) {
 
       SendMessage(hwnd,SCI_BEGINUNDOACTION,0,0);
 
-      lstrcpyA(efr.szFind,"\\\\");
-      lstrcpyA(efr.szReplace,"\\");
+      StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\\\\");
+      StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\\");
       EditReplaceAllInSelection(hwnd,&efr,FALSE);
 
-      lstrcpyA(efr.szFind,"\\\"");
-      lstrcpyA(efr.szReplace,"\"");
+      StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\\\"");
+      StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\"");
       EditReplaceAllInSelection(hwnd,&efr,FALSE);
 
-      lstrcpyA(efr.szFind,"\\\'");
-      lstrcpyA(efr.szReplace,"\'");
+      StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\\\'");
+      StringCchCopyA(efr.szReplace,FNDRPL_BUFFER,"\'");
       EditReplaceAllInSelection(hwnd,&efr,FALSE);
 
       SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
@@ -2177,14 +2178,14 @@ void EditChar2Hex(HWND hwnd) {
       SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)ch);
 
       if (ch[0] == 0)
-        lstrcpyA(ch,"\\x00");
+        StringCchCopyA(ch,COUNTOF(ch),"\\x00");
 
       else {
         MultiByteToWideChar(cp,0,ch,-1,wch,COUNTOF(wch));
         if (wch[0] <= 0xFF)
-          wsprintfA(ch,"\\x%02X",wch[0] & 0xFF);
+          StringCchPrintfA(ch,COUNTOF(ch),"\\x%02X",wch[0] & 0xFF);
         else
-          wsprintfA(ch,"\\u%04X",wch[0]);
+          StringCchPrintfA(ch,COUNTOF(ch),"\\u%04X",wch[0]);
       }
 
       SendMessage(hwnd,SCI_REPLACESEL,0,(LPARAM)ch);
@@ -2240,7 +2241,7 @@ void EditHex2Char(HWND hwnd) {
           else {
             UINT  cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
             WCHAR wch[4];
-            wsprintf(wch,L"%lc",(WCHAR)i);
+            StringCchPrintfW(wch,COUNTOF(wch),L"%lc",(WCHAR)i);
             cch = WideCharToMultiByte(cp,0,wch,-1,ch,COUNTOF(ch),NULL,NULL) - 1;
             if (bTrySelExpand && (char)SendMessage(hwnd,SCI_GETCHARAT,(WPARAM)iSelStart-1,0) == '\\') {
               iSelStart--;
@@ -2291,8 +2292,8 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
               iNumber++;
             if (!bIncrease && iNumber > 0)
               iNumber--;
-            wsprintfA(chFormat,"%%0%ii",iWidth);
-            wsprintfA(chNumber,chFormat,iNumber);
+            StringCchPrintfA(chFormat,COUNTOF(chFormat),"%%0%ii",iWidth);
+            StringCchPrintfA(chNumber,COUNTOF(chNumber),chFormat,iNumber);
             SendMessage(hwnd,SCI_REPLACESEL,0,(LPARAM)chNumber);
             SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+lstrlenA(chNumber));
           }
@@ -2315,10 +2316,10 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
               }
             }
             if (bUppercase)
-              wsprintfA(chFormat,"%%#0%iX",iWidth);
+              StringCchPrintfA(chFormat,COUNTOF(chFormat),"%%#0%iX",iWidth);
             else
-              wsprintfA(chFormat,"%%#0%ix",iWidth);
-            wsprintfA(chNumber,chFormat,iNumber);
+              StringCchPrintfA(chFormat,COUNTOF(chFormat),"%%#0%ix",iWidth);
+            StringCchPrintfA(chNumber,COUNTOF(chNumber),chFormat,iNumber);
             SendMessage(hwnd,SCI_REPLACESEL,0,(LPARAM)chNumber);
             SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+lstrlenA(chNumber));
           }
@@ -3024,8 +3025,8 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
         if (bPrefixNum) {
           char tchFmt[64];
           char tchNum[64];
-          wsprintfA(tchFmt,"%%%s%ii",pszPrefixNumPad,iPrefixNumWidth);
-          wsprintfA(tchNum,tchFmt,iPrefixNum);
+          StringCchPrintfA(tchFmt,COUNTOF(tchFmt),"%%%s%ii",pszPrefixNumPad,iPrefixNumWidth);
+          StringCchPrintfA(tchNum,COUNTOF(tchNum),tchFmt,iPrefixNum);
           lstrcatA(mszInsert,tchNum);
           lstrcatA(mszInsert,mszPrefix2);
           iPrefixNum++;
@@ -3044,8 +3045,8 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
         if (bAppendNum) {
           char tchFmt[64];
           char tchNum[64];
-          wsprintfA(tchFmt,"%%%s%ii",pszAppendNumPad,iAppendNumWidth);
-          wsprintfA(tchNum,tchFmt,iAppendNum);
+          StringCchPrintfA(tchFmt,COUNTOF(tchFmt),"%%%s%ii",pszAppendNumPad,iAppendNumWidth);
+          StringCchPrintfA(tchNum,COUNTOF(tchNum),tchFmt,iAppendNum);
           lstrcatA(mszInsert,tchNum);
           lstrcatA(mszInsert,mszAppend2);
           iAppendNum++;

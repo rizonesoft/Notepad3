@@ -12,19 +12,21 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-
+#pragma once
+#ifndef _NP3_EDIT_H_
+#define _NP3_EDIT_H_
 
 // extern "C" declarations of Scintilla functions
 BOOL Scintilla_RegisterClasses(void*);
 BOOL Scintilla_ReleaseResources();
 
-
+#define FNDRPL_BUFFER 512
 typedef struct _editfindreplace
 {
-  char szFind[512];
-  char szReplace[512];
-  char szFindUTF8[3*512];
-  char szReplaceUTF8[3*512];
+  char szFind[FNDRPL_BUFFER];
+  char szReplace[FNDRPL_BUFFER];
+  char szFindUTF8[3 * FNDRPL_BUFFER];
+  char szReplaceUTF8[3 * FNDRPL_BUFFER];
   UINT fuFlags;
   BOOL bTransformBS;
   BOOL bObsolete /* was bFindUp */;
@@ -217,5 +219,6 @@ BOOL FileVars_IsValidEncoding(LPFILEVARS);
 int  FileVars_GetEncoding(LPFILEVARS);
 
 
+#endif //_NP3_EDIT_H_
 
 ///   End of Edit.h   \\\

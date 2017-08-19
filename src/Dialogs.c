@@ -235,7 +235,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           ShowWindow(GetDlgItem(hwnd,IDC_WEBPAGE2),SW_SHOWNORMAL);
         }
         else {
-          wsprintf(wch,L"<A>%s</A>",VERSION_WEBPAGEDISPLAY);
+          StringCchPrintfW(wch,COUNTOF(wch),L"<A>%s</A>",VERSION_WEBPAGEDISPLAY);
           SetDlgItemText(hwnd,IDC_WEBPAGE,wch);
         }
 
@@ -244,7 +244,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           ShowWindow(GetDlgItem(hwnd, IDC_MODWEBPAGE2), SW_SHOWNORMAL);
         }
         else {
-          wsprintf(wch, L"<A>%s</A>", VERSION_MODPAGEDISPLAY);
+          StringCchPrintfW(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_MODPAGEDISPLAY);
           SetDlgItemText(hwnd, IDC_MODWEBPAGE, wch);
         }
 
@@ -253,7 +253,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           ShowWindow(GetDlgItem(hwnd, IDC_NOTE2WEBPAGE2), SW_SHOWNORMAL);
         }
         else {
-          wsprintf(wch, L"<A>%s</A>", VERSION_WEBPAGE2DISPLAY);
+          StringCchPrintfW(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_WEBPAGE2DISPLAY);
           SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE, wch);
         }
 

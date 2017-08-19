@@ -132,7 +132,7 @@ BOOL IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
     while (*p) {
       p = StrEnd(p) + 1;
     }
-    wsprintf(tch,L"%s=%s",lpName,lpString);
+    StringCchPrintfW(tch,COUNTOF(tch),L"%s=%s",lpName,lpString);
     lstrcpy(p,tch);
     p = StrEnd(p) + 1;
     *p = 0;
@@ -415,7 +415,7 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
 
   if (lstrlen(lpszExcerpt)) {
     GetString(IDS_TITLEEXCERPT,szExcrptFmt,COUNTOF(szExcrptFmt));
-    wsprintf(szExcrptQuot,szExcrptFmt,lpszExcerpt);
+    StringCchPrintfW(szExcrptQuot,COUNTOF(szExcrptQuot),szExcrptFmt,lpszExcerpt);
     StrCat(szTitle,szExcrptQuot);
   }
 
@@ -869,7 +869,7 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 
   for (i = 0; i < c; i++) {
     SendMessage(hwnd,TB_GETBUTTON,(WPARAM)i,(LPARAM)&tbb);
-    wsprintf(tchItem,L"%i ",
+    StringCchPrintfW(tchItem,COUNTOF(tchItem),L"%i ",
       (tbb.idCommand==0)?0:tbb.idCommand-cmdBase+1);
     lstrcat(tchButtons,tchItem);
   }
@@ -1592,7 +1592,7 @@ BOOL SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 {
   WCHAR szBuf[64];
 
-  wsprintf(szBuf,L"%u",uValue);
+  StringCchPrintfW(szBuf,COUNTOF(szBuf),L"%u",uValue);
   FormatNumberStr(szBuf);
 
   return(SetDlgItemText(hwnd,nIdItem,szBuf));
@@ -1803,7 +1803,7 @@ BOOL MRU_Load(LPMRULIST pmru) {
   LoadIniSection(pmru->szRegKey,pIniSection,(int)LocalSize(pIniSection)/sizeof(WCHAR));
 
   for (i = 0; i < pmru->iSize; i++) {
-    wsprintf(tchName,L"%.2i",i+1);
+    StringCchPrintfW(tchName,COUNTOF(tchName),L"%.2i",i+1);
     if (IniSectionGetString(pIniSection,tchName,L"",tchItem,COUNTOF(tchItem))) {
       /*if (pmru->iFlags & MRU_UTF8) {
         WCHAR wchItem[1024];
@@ -1829,7 +1829,7 @@ BOOL MRU_Save(LPMRULIST pmru) {
 
   for (i = 0; i < pmru->iSize; i++) {
     if (pmru->pszItems[i]) {
-      wsprintf(tchName,L"%.2i",i+1);
+      StringCchPrintfW(tchName,COUNTOF(tchName),L"%.2i",i+1);
       /*if (pmru->iFlags & MRU_UTF8) {
         WCHAR  tchItem[1024];
         WCHAR wchItem[1024];
