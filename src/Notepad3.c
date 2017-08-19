@@ -5871,12 +5871,6 @@ void LoadSettings()
   xFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosX",0);
   yFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosY",0);
 
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",-1);
-  iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
-
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
-  iSciFontQuality = max(min(iSciFontQuality,3),-1);
-
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
@@ -5896,6 +5890,12 @@ void LoadSettings()
 
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
+
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",-1);
+  iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
+
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
+  iSciFontQuality = max(min(iSciFontQuality,3),-1);
 
   WCHAR buffer[MIDSZ_BUFFER];
   const WCHAR defextwsc[] = L".,;:|/-+$%&<>(){}[]=?#'*";
@@ -6091,7 +6091,6 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
-  IniSectionSetInt(pIniSection, L"SciFontQuality", iSciFontQuality);
 
   SaveIniSection(L"Settings", pIniSection);
   LocalFree(pIniSection);
