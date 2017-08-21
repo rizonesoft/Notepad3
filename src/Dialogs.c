@@ -234,7 +234,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           ShowWindow(GetDlgItem(hwnd,IDC_WEBPAGE2),SW_SHOWNORMAL);
         }
         else {
-          StringCchPrintfW(wch,COUNTOF(wch),L"<A>%s</A>",VERSION_WEBPAGEDISPLAY);
+          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>",VERSION_WEBPAGEDISPLAY);
           SetDlgItemText(hwnd,IDC_WEBPAGE,wch);
         }
 
@@ -243,7 +243,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           ShowWindow(GetDlgItem(hwnd, IDC_MODWEBPAGE2), SW_SHOWNORMAL);
         }
         else {
-          StringCchPrintfW(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_MODPAGEDISPLAY);
+          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_MODPAGEDISPLAY);
           SetDlgItemText(hwnd, IDC_MODWEBPAGE, wch);
         }
 
@@ -252,7 +252,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           ShowWindow(GetDlgItem(hwnd, IDC_NOTE2WEBPAGE2), SW_SHOWNORMAL);
         }
         else {
-          StringCchPrintfW(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_WEBPAGE2DISPLAY);
+          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_WEBPAGE2DISPLAY);
           SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE, wch);
         }
 
@@ -343,7 +343,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             GetDlgItemText(hwnd,IDC_COMMANDLINE,szArgs,COUNTOF(szArgs));
             ExpandEnvironmentStringsEx(szArgs,COUNTOF(szArgs));
-            ExtractFirstArgument(szArgs,szFile,szArg2);
+            ExtractFirstArgument(szArgs,szFile,szArg2,MAX_PATH);
 
             GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
@@ -377,7 +377,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             WCHAR args[MAX_PATH] = { L'\0' };
 
             if (GetDlgItemText(hwnd,IDC_COMMANDLINE,args,MAX_PATH))
-              if (ExtractFirstArgument(args,args,NULL))
+              if (ExtractFirstArgument(args,args,NULL,MAX_PATH))
                 if (lstrlen(args))
                   bEnableOK = TRUE;
 
@@ -397,7 +397,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               BOOL bQuickExit = FALSE;
 
               ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
-              ExtractFirstArgument(arg1,arg1,arg2);
+              ExtractFirstArgument(arg1,arg1,arg2,MAX_PATH);
 
               if (lstrcmpi(arg1,L"notepad3") == 0 ||
                   lstrcmpi(arg1,L"notepad3.exe") == 0) {

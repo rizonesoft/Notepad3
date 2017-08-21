@@ -2694,7 +2694,7 @@ void Style_Load()
     int itok;
     int irgb;
     WCHAR wch[32];
-    StringCchPrintfW(tch,COUNTOF(tch),L"%02i",i+1);
+    StringCchPrintf(tch,COUNTOF(tch),L"%02i",i+1);
     if (IniSectionGetString(pIniSection,tch,L"",wch,COUNTOF(wch))) {
       if (wch[0] == L'#') {
         itok = swscanf_s(CharNext(wch),L"%x",&irgb);
@@ -2753,8 +2753,8 @@ void Style_Save()
   // Custom colors
   for (i = 0; i < 16; i++) {
     WCHAR wch[32];
-    StringCchPrintfW(tch,COUNTOF(tch),L"%02i",i+1);
-    StringCchPrintfW(wch,COUNTOF(wch),L"#%02X%02X%02X",
+    StringCchPrintf(tch,COUNTOF(tch),L"%02i",i+1);
+    StringCchPrintf(wch,COUNTOF(wch),L"#%02X%02X%02X",
       (int)GetRValue(crCustom[i]),(int)GetGValue(crCustom[i]),(int)GetBValue(crCustom[i]));
     IniSectionSetString(pIniSection,tch,wch);
   }
@@ -3046,10 +3046,10 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
     lstrcpyn(wchStyle,lexDefault.Styles[7+iIdx].szValue,COUNTOF(lexDefault.Styles[0].szValue));
 
     iValue = max(min(iValue,5),0);
-    StringCchPrintfW(lexDefault.Styles[7+iIdx].szValue,EDSTYLE_BUFFER,L"size:%i",iValue);
+    StringCchPrintf(lexDefault.Styles[7+iIdx].szValue,EDSTYLE_BUFFER,L"size:%i",iValue);
 
     if (Style_StrGetColor(TRUE,wchStyle,&rgb)) {
-      StringCchPrintfW(tch,COUNTOF(tch),L"; fore:#%02X%02X%02X",
+      StringCchPrintf(tch,COUNTOF(tch),L"; fore:#%02X%02X%02X",
         (int)GetRValue(rgb),
         (int)GetGValue(rgb),
         (int)GetBValue(rgb));
@@ -3057,7 +3057,7 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
     }
 
     if (Style_StrGetColor(FALSE,wchStyle,&rgb)) {
-      StringCchPrintfW(tch,COUNTOF(tch),L"; back:#%02X%02X%02X",
+      StringCchPrintf(tch,COUNTOF(tch),L"; back:#%02X%02X%02X",
         (int)GetRValue(rgb),
         (int)GetGValue(rgb),
         (int)GetBValue(rgb));
@@ -3094,7 +3094,7 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
     iValue = 1;
     if (Style_StrGetSize(lexDefault.Styles[9+iIdx].szValue,&iValue)) {
       iValue = max(min(iValue,3),1);
-      StringCchPrintfW(wch,COUNTOF(wch),L"size:%i",iValue);
+      StringCchPrintf(wch,COUNTOF(wch),L"size:%i",iValue);
       lstrcat(wchCaretStyle,wch);
     }
     SendMessage(hwnd,SCI_SETCARETSTYLE,CARETSTYLE_LINE,0);
@@ -3114,7 +3114,7 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
     rgb = GetSysColor(COLOR_WINDOWTEXT);
   else {
     WCHAR wch[32];
-    StringCchPrintfW(wch,COUNTOF(wch),L"fore:#%02X%02X%02X",
+    StringCchPrintf(wch,COUNTOF(wch),L"fore:#%02X%02X%02X",
       (int)GetRValue(rgb),
       (int)GetGValue(rgb),
       (int)GetBValue(rgb));
@@ -3146,7 +3146,7 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
     int iAscent = 0;
     int iDescent = 0;
     iValue = min(max(iValue,0),64);
-    StringCchPrintfW(lexDefault.Styles[11+iIdx].szValue,EDSTYLE_BUFFER,L"size:%i",iValue);
+    StringCchPrintf(lexDefault.Styles[11+iIdx].szValue,EDSTYLE_BUFFER,L"size:%i",iValue);
     if (iValue % 2) {
       iAscent++;
       iValue--;
@@ -4013,11 +4013,11 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
       lf.lfCharSet != ANSI_CHARSET &&
       lf.lfCharSet != iDefaultCharSet) {
     lstrcat(szNewStyle,L"; charset:");
-    StringCchPrintfW(tch,COUNTOF(tch),L"%i",lf.lfCharSet);
+    StringCchPrintf(tch,COUNTOF(tch),L"%i",lf.lfCharSet);
     lstrcat(szNewStyle,tch);
   }
   lstrcat(szNewStyle,L"; size:");
-  StringCchPrintfW(tch,COUNTOF(tch),L"%i",cf.iPointSize/10);
+  StringCchPrintf(tch,COUNTOF(tch),L"%i",cf.iPointSize/10);
   lstrcat(szNewStyle,tch);
   if (cf.nFontType & BOLD_FONTTYPE)
     lstrcat(szNewStyle,L"; bold");
@@ -4030,7 +4030,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   // save colors
   if (Style_StrGetColor(TRUE,lpszStyle,&iValue))
   {
-    StringCchPrintfW(tch,COUNTOF(tch),L"; fore:#%02X%02X%02X",
+    StringCchPrintf(tch,COUNTOF(tch),L"; fore:#%02X%02X%02X",
       (int)GetRValue(iValue),
       (int)GetGValue(iValue),
       (int)GetBValue(iValue));
@@ -4038,7 +4038,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   }
   if (Style_StrGetColor(FALSE,lpszStyle,&iValue))
   {
-    StringCchPrintfW(tch,COUNTOF(tch),L"; back:#%02X%02X%02X",
+    StringCchPrintf(tch,COUNTOF(tch),L"; back:#%02X%02X%02X",
       (int)GetRValue(iValue),
       (int)GetGValue(iValue),
       (int)GetBValue(iValue));
@@ -4055,7 +4055,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
 
   if (Style_StrGetAlpha(lpszStyle,&iValue)) {
     lstrcat(szNewStyle,L"; alpha:");
-    StringCchPrintfW(tch,COUNTOF(tch),L"%i",iValue);
+    StringCchPrintf(tch,COUNTOF(tch),L"%i",iValue);
     lstrcat(szNewStyle,tch);
   }
 
@@ -4110,7 +4110,7 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
   {
     if (lstrlen(szNewStyle))
       lstrcat(szNewStyle,L"; ");
-    StringCchPrintfW(tch,COUNTOF(tch),L"charset:%i",iValue);
+    StringCchPrintf(tch,COUNTOF(tch),L"charset:%i",iValue);
     lstrcat(szNewStyle,tch);
   }
   if (Style_StrGetSizeStr(lpszStyle,tch,COUNTOF(tch)))
@@ -4144,14 +4144,14 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
   {
     if (lstrlen(szNewStyle))
       lstrcat(szNewStyle,L"; ");
-    StringCchPrintfW(tch,COUNTOF(tch),L"fore:#%02X%02X%02X",
+    StringCchPrintf(tch,COUNTOF(tch),L"fore:#%02X%02X%02X",
       (int)GetRValue(iRGBResult),
       (int)GetGValue(iRGBResult),
       (int)GetBValue(iRGBResult));
     lstrcat(szNewStyle,tch);
     if (Style_StrGetColor(FALSE,lpszStyle,&iValue))
     {
-      StringCchPrintfW(tch,COUNTOF(tch),L"; back:#%02X%02X%02X",
+      StringCchPrintf(tch,COUNTOF(tch),L"; back:#%02X%02X%02X",
         (int)GetRValue(iValue),
         (int)GetGValue(iValue),
         (int)GetBValue(iValue));
@@ -4164,13 +4164,13 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
       lstrcat(szNewStyle,L"; ");
     if (Style_StrGetColor(TRUE,lpszStyle,&iValue))
     {
-      StringCchPrintfW(tch,COUNTOF(tch),L"fore:#%02X%02X%02X; ",
+      StringCchPrintf(tch,COUNTOF(tch),L"fore:#%02X%02X%02X; ",
         (int)GetRValue(iValue),
         (int)GetGValue(iValue),
         (int)GetBValue(iValue));
       lstrcat(szNewStyle,tch);
     }
-    StringCchPrintfW(tch,COUNTOF(tch),L"back:#%02X%02X%02X",
+    StringCchPrintf(tch,COUNTOF(tch),L"back:#%02X%02X%02X",
       (int)GetRValue(iRGBResult),
       (int)GetGValue(iRGBResult),
       (int)GetBValue(iRGBResult));
@@ -4187,7 +4187,7 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
 
   if (Style_StrGetAlpha(lpszStyle,&iValue)) {
     lstrcat(szNewStyle,L"; alpha:");
-    StringCchPrintfW(tch,COUNTOF(tch),L"%i",iValue);
+    StringCchPrintf(tch,COUNTOF(tch),L"%i",iValue);
     lstrcat(szNewStyle,tch);
   }
 

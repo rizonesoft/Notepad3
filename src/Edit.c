@@ -624,9 +624,9 @@ int EditDetectEOLMode(HWND hwnd,char* lpData,DWORD cbData)
 //  Encoding Helper Functions
 //
 void Encoding_InitDefaults() {
-  StringCchPrintfW(wchANSI,COUNTOF(wchANSI),L" (%u)",GetACP());
+  StringCchPrintf(wchANSI,COUNTOF(wchANSI),L" (%u)",GetACP());
   mEncoding[CPI_OEM].uCodePage = GetOEMCP();
-  StringCchPrintfW(wchOEM,COUNTOF(wchOEM),L" (%u)",mEncoding[CPI_OEM].uCodePage);
+  StringCchPrintf(wchOEM,COUNTOF(wchOEM),L" (%u)",mEncoding[CPI_OEM].uCodePage);
 
   g_DOSEncoding = CPI_OEM;
 
@@ -2241,7 +2241,7 @@ void EditHex2Char(HWND hwnd) {
           else {
             UINT  cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
             WCHAR wch[4];
-            StringCchPrintfW(wch,COUNTOF(wch),L"%lc",(WCHAR)i);
+            StringCchPrintf(wch,COUNTOF(wch),L"%lc",(WCHAR)i);
             cch = WideCharToMultiByte(cp,0,wch,-1,ch,COUNTOF(ch),NULL,NULL) - 1;
             if (bTrySelExpand && (char)SendMessage(hwnd,SCI_GETCHARAT,(WPARAM)iSelStart-1,0) == '\\') {
               iSelStart--;
@@ -4758,7 +4758,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   int iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
 
   if (iCurPos == iAnchorPos || SC_SEL_RECTANGLE == SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0)) {
-    lstrcpy(lpszExcerpt,L"");
+    StringCchCopy(lpszExcerpt,cchExcerpt,L"");
     return;
   }
 
@@ -4800,7 +4800,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   }
 
   if (cch == 1)
-    lstrcpy(tch,L" ... ");
+    StringCchCopy(tch,COUNTOF(tch),L" ... ");
 
   if (cch > cchExcerpt) {
     tch[cchExcerpt-2] = L'.';
@@ -5107,12 +5107,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               }
             }
             else
-              lstrcpyA(lpefr->szReplaceUTF8,"");
+              StringCchCopyA(lpefr->szReplaceUTF8,COUNTOF(lpefr->szReplaceUTF8),"");
           }
           else {
             GetDlgItemTextA2W(CP_UTF8,hwnd,IDC_FINDTEXT,lpefr->szFindUTF8,COUNTOF(lpefr->szFindUTF8));
             if (!GetDlgItemTextA2W(CP_UTF8,hwnd,IDC_REPLACETEXT,lpefr->szReplaceUTF8,COUNTOF(lpefr->szReplaceUTF8)))
-              lstrcpyA(lpefr->szReplaceUTF8,"");
+              StringCchCopyA(lpefr->szReplaceUTF8,COUNTOF(lpefr->szReplaceUTF8),"");
           }
 
           if (bIsFindDlg) {
@@ -5706,7 +5706,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         if (!found) {
           struct WLIST* el = (struct WLIST*)LocalAlloc(LPTR, sizeof(struct WLIST));
           el->word = LocalAlloc(LPTR, wordEnd - iPosFind + 2);
-          lstrcpyA(el->word, pWord);
+          StringCchCopyA(el->word,(wordEnd - iPosFind + 2),pWord);
           el->next = p;
           if (t) {
             t->next = el;
@@ -5731,8 +5731,8 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
 
     pList = LocalAlloc(LPTR, iWListSize + 1);
     while (p) {
-      lstrcatA(pList, " ");
-      lstrcatA(pList, p->word);
+      StringCchCatA(pList,iWListSize + 1," ");
+      StringCchCatA(pList,iWListSize + 1,p->word);
       LocalFree(p->word);
       t = p;
       p = p->next;
