@@ -5883,12 +5883,6 @@ void LoadSettings()
   xFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosX",0);
   yFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosY",0);
 
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",-1);
-  iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
-
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
-  iSciFontQuality = max(min(iSciFontQuality,3),-1);
-
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
@@ -5909,12 +5903,22 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  WCHAR buffer[MIDSZ_BUFFER];
-  const WCHAR defextwsc[] = L".,;:|/-+$%&<>(){}[]=?#'*";
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",-1);
+  iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
+
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
+  iSciFontQuality = max(min(iSciFontQuality,3),-1);
+
+  WCHAR buffer[MIDSZ_BUFFER] = { L'\0' };
+  const WCHAR defextwsc[] = L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~";  // underscore counted as part of word
   IniSectionGetString(pIniSection, L"ExtendedWhiteSpaceChars", defextwsc, buffer, COUNTOF(buffer));
   if (!lstrlen(buffer)) lstrcpyn(buffer, defextwsc, COUNTOF(buffer));
   WCHAR2MBCS(CP_ACP,buffer,chExtendedWhiteSpaceChars,COUNTOF(chExtendedWhiteSpaceChars));
-
+  // clear non-7-bit-ASCII chars
+  for (size_t i = 0; i < strlen(chExtendedWhiteSpaceChars); i++) {
+    if (chExtendedWhiteSpaceChars[i] & ~0x7F) 
+      chExtendedWhiteSpaceChars[i] = ' '; // space
+  }
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
@@ -6103,7 +6107,6 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
-  IniSectionSetInt(pIniSection, L"SciFontQuality", iSciFontQuality);
 
   SaveIniSection(L"Settings", pIniSection);
   LocalFree(pIniSection);
