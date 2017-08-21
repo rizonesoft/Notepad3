@@ -35,6 +35,8 @@
 extern HINSTANCE g_hInstance;
 extern int iEncoding;
 
+extern int iSciFontQuality;
+extern const int FontQuality[4];
 
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
@@ -4272,7 +4274,7 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
 //
 void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
 
-  WPARAM wQuality = SC_EFF_QUALITY_DEFAULT;
+  WPARAM wQuality = FontQuality[iSciFontQuality];;
   WCHAR tch[32];
 
   if (Style_StrGetFontQuality(lpszStyle,tch,COUNTOF(tch))) {
@@ -4282,7 +4284,7 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
       wQuality = SC_EFF_QUALITY_ANTIALIASED;
     else if (lstrcmpi(tch,L"cleartype") == 0)
       wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
-    else
+    else if (lstrcmpi(tch,L"default") == 0)
       wQuality = SC_EFF_QUALITY_DEFAULT;
   }
   else {
@@ -4296,8 +4298,6 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
           lstrcmpi(tch,L"Segoe UI") == 0)
         wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
     }
-    else
-      wQuality = SC_EFF_QUALITY_DEFAULT;
   }
   SendMessage(hwnd,SCI_SETFONTQUALITY,wQuality,0);
 }
