@@ -5909,12 +5909,16 @@ void LoadSettings()
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
   iSciFontQuality = max(min(iSciFontQuality,3),-1);
 
-  WCHAR buffer[MIDSZ_BUFFER];
-  const WCHAR defextwsc[] = L".,;:|/-+$%&<>(){}[]=?#'*";
+  WCHAR buffer[MIDSZ_BUFFER] = { L'\0' };
+  const WCHAR defextwsc[] = L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~";  // underscore counted as part of word
   IniSectionGetString(pIniSection, L"ExtendedWhiteSpaceChars", defextwsc, buffer, COUNTOF(buffer));
   if (!lstrlen(buffer)) lstrcpyn(buffer, defextwsc, COUNTOF(buffer));
   WCHAR2MBCS(CP_ACP,buffer,chExtendedWhiteSpaceChars,COUNTOF(chExtendedWhiteSpaceChars));
-
+  // clear non-7-bit-ASCII chars
+  for (size_t i = 0; i < strlen(chExtendedWhiteSpaceChars); i++) {
+    if (chExtendedWhiteSpaceChars[i] & ~0x7F) 
+      chExtendedWhiteSpaceChars[i] = ' '; // space
+  }
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
