@@ -71,7 +71,7 @@ BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
   lpdl->cbidl = 0;
   lpdl->pidl = NULL;
   lpdl->lpsf = NULL;
-  lstrcpy(lpdl->szPath,L"");
+  StringCchCopy(lpdl->szPath,MAX_PATH,L"");
 
   // Add Imagelists
   hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),
@@ -240,7 +240,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
   if (!lpszDir || !*lpszDir)
     return(-1);
 
-  lstrcpy(lpdl->szPath,lpszDir);
+  StringCchCopy(lpdl->szPath,MAX_PATH,lpszDir);
 
   // Init ListView
   SendMessage(hwnd,WM_SETREDRAW,0,0);
@@ -264,8 +264,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
                       -1,
                       wszDir,
                       MAX_PATH);*/
-  lstrcpy(wszDir,lpszDir);
-
+  StringCchCopy(wszDir,COUNTOF(wszDir),lpszDir);
 
   // Get Desktop Folder
   if (NOERROR == SHGetDesktopFolder(&lpsfDesktop))
@@ -878,13 +877,13 @@ BOOL DirList_PropertyDlg(HWND hwnd,int iItem)
 //
 //  Get long pathname for currently displayed directory
 //
-BOOL DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath)
+BOOL DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath,int length)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
   LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
   if (SHGetPathFromIDList(lpdl->pidl,tch))
   {
-    lstrcpy(lpszLongPath,tch);
+    StringCchCopy(lpszLongPath,length,tch);
     return(TRUE);
   }
   else

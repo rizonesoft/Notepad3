@@ -125,7 +125,7 @@ BOOL DirList_PropertyDlg(HWND,int);
 
 //==== DlGetLongPathName() ====================================================
 
-BOOL DirList_GetLongPathName(HWND,LPWSTR);
+BOOL DirList_GetLongPathName(HWND,LPWSTR,int);
 
 //==== DlSelectItem() =========================================================
 

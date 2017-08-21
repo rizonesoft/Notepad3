@@ -555,7 +555,7 @@ BOOL EditCopyAppend(HWND hwnd)
   if (cchTextW > 0) {
     int lenTxt = (lstrlen(pszSep) + cchTextW + 1);
     pszTextW = LocalAlloc(LPTR,sizeof(WCHAR)*lenTxt);
-    StringCchCopyW(pszTextW,lenTxt,pszSep);
+    StringCchCopy(pszTextW,lenTxt,pszSep);
     MultiByteToWideChar(uCodePage,0,pszText,-1,StrEnd(pszTextW),(int)LocalSize(pszTextW)/sizeof(WCHAR));
   }
   else {
@@ -576,8 +576,8 @@ BOOL EditCopyAppend(HWND hwnd)
   hNew = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * sizeNew);
   pszNew = GlobalLock(hNew);
   
-  StringCchCopyW(pszNew,sizeNew,pszOld);
-  StringCchCatW(pszNew,sizeNew,pszTextW);
+  StringCchCopy(pszNew,sizeNew,pszOld);
+  StringCchCat(pszNew,sizeNew,pszTextW);
 
   GlobalUnlock(hNew);
   GlobalUnlock(hOld);
@@ -801,9 +801,9 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly)
         StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
 
       if (Encoding_IsANSI(id))
-        StringCchCatNW(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
+        StringCchCatN(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
       else if (id == CPI_OEM)
-        StringCchCatNW(wchBuf,COUNTOF(wchBuf),wchOEM,COUNTOF(wchOEM));
+        StringCchCatN(wchBuf,COUNTOF(wchBuf),wchOEM,COUNTOF(wchOEM));
 
       if ((mEncoding[id].uFlags & NCP_INTERNAL) ||
           (IsValidCodePage(mEncoding[id].uCodePage) &&
@@ -894,9 +894,9 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly)
         StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
 
       if (Encoding_IsANSI(id))
-        StringCchCatNW(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
+        StringCchCatN(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
       else if (id == CPI_OEM)
-        StringCchCatNW(wchBuf,COUNTOF(wchBuf),wchOEM,COUNTOF(wchOEM));
+        StringCchCatN(wchBuf,COUNTOF(wchBuf),wchOEM,COUNTOF(wchOEM));
 
       if ((mEncoding[id].uFlags & NCP_INTERNAL) ||
           (IsValidCodePage(mEncoding[id].uCodePage) &&
@@ -2880,7 +2880,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         if (StrCmpNA(p,"$(I)",CSTRLEN("$(I)")) == 0) {
           *p = 0;
-          StrCpyA(mszPrefix2,p+CSTRLEN("$(I)"));
+          StringCchCopyA(mszPrefix2,COUNTOF(mszPrefix2),p + CSTRLEN("$(I)"));
           bPrefixNum = TRUE;
           iPrefixNum = 0;
           for (i = iLineEnd - iLineStart; i >= 10; i = i / 10)
@@ -2890,7 +2890,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(0I)",CSTRLEN("$(0I)")) == 0) {
           *p = 0;
-          StrCpyA(mszPrefix2,p+CSTRLEN("$(0I)"));
+          StringCchCopyA(mszPrefix2,COUNTOF(mszPrefix2),p + CSTRLEN("$(0I)"));
           bPrefixNum = TRUE;
           iPrefixNum = 0;
           for (i = iLineEnd - iLineStart; i >= 10; i = i / 10)
@@ -2900,7 +2900,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(N)",CSTRLEN("$(N)")) == 0) {
           *p = 0;
-          StrCpyA(mszPrefix2,p+CSTRLEN("$(N)"));
+          StringCchCopyA(mszPrefix2,COUNTOF(mszPrefix2),p + CSTRLEN("$(N)"));
           bPrefixNum = TRUE;
           iPrefixNum = 1;
           for (i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10)
@@ -2910,7 +2910,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(0N)",CSTRLEN("$(0N)")) == 0) {
           *p = 0;
-          StrCpyA(mszPrefix2,p+CSTRLEN("$(0N)"));
+          StringCchCopyA(mszPrefix2,COUNTOF(mszPrefix2),p + CSTRLEN("$(0N)"));
           bPrefixNum = TRUE;
           iPrefixNum = 1;
           for (i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10)
@@ -2920,7 +2920,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(L)",CSTRLEN("$(L)")) == 0) {
           *p = 0;
-          StrCpyA(mszPrefix2,p+CSTRLEN("$(L)"));
+          StringCchCopyA(mszPrefix2,COUNTOF(mszPrefix2),p + CSTRLEN("$(L)"));
           bPrefixNum = TRUE;
           iPrefixNum = iLineStart+1;
           for (i = iLineEnd + 1; i >= 10; i = i / 10)
@@ -2930,7 +2930,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(0L)",CSTRLEN("$(0L)")) == 0) {
           *p = 0;
-          StrCpyA(mszPrefix2,p+CSTRLEN("$(0L)"));
+          StringCchCopyA(mszPrefix2,COUNTOF(mszPrefix2),p + CSTRLEN("$(0L)"));
           bPrefixNum = TRUE;
           iPrefixNum = iLineStart+1;
           for (i = iLineEnd + 1; i >= 10; i = i / 10)
@@ -2949,7 +2949,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         if (StrCmpNA(p,"$(I)",CSTRLEN("$(I)")) == 0) {
           *p = 0;
-          StrCpyA(mszAppend2,p+CSTRLEN("$(I)"));
+          StringCchCopyA(mszAppend2,COUNTOF(mszAppend2),p + CSTRLEN("$(I)"));
           bAppendNum = TRUE;
           iAppendNum = 0;
           for (i = iLineEnd - iLineStart; i >= 10; i = i / 10)
@@ -2959,7 +2959,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(0I)",CSTRLEN("$(0I)")) == 0) {
           *p = 0;
-          StrCpyA(mszAppend2,p+CSTRLEN("$(0I)"));
+          StringCchCopyA(mszAppend2,COUNTOF(mszAppend2),p + CSTRLEN("$(0I)"));
           bAppendNum = TRUE;
           iAppendNum = 0;
           for (i = iLineEnd - iLineStart; i >= 10; i = i / 10)
@@ -2969,7 +2969,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(N)",CSTRLEN("$(N)")) == 0) {
           *p = 0;
-          StrCpyA(mszAppend2,p+CSTRLEN("$(N)"));
+          StringCchCopyA(mszAppend2,COUNTOF(mszAppend2),p + CSTRLEN("$(N)"));
           bAppendNum = TRUE;
           iAppendNum = 1;
           for (i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10)
@@ -2979,7 +2979,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(0N)",CSTRLEN("$(0N)")) == 0) {
           *p = 0;
-          StrCpyA(mszAppend2,p+CSTRLEN("$(0N)"));
+          StringCchCopyA(mszAppend2,COUNTOF(mszAppend2),p + CSTRLEN("$(0N)"));
           bAppendNum = TRUE;
           iAppendNum = 1;
           for (i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10)
@@ -2989,7 +2989,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(L)",CSTRLEN("$(L)")) == 0) {
           *p = 0;
-          StrCpyA(mszAppend2,p+CSTRLEN("$(L)"));
+          StringCchCopyA(mszAppend2,COUNTOF(mszAppend2),p + CSTRLEN("$(L)"));
           bAppendNum = TRUE;
           iAppendNum = iLineStart+1;
           for (i = iLineEnd + 1; i >= 10; i = i / 10)
@@ -2999,7 +2999,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
         else if (StrCmpNA(p,"$(0L)",CSTRLEN("$(0L)")) == 0) {
           *p = 0;
-          StrCpyA(mszAppend2,p+CSTRLEN("$(0L)"));
+          StringCchCopyA(mszAppend2,COUNTOF(mszAppend2),p + CSTRLEN("$(0L)"));
           bAppendNum = TRUE;
           iAppendNum = iLineStart+1;
           for (i = iLineEnd + 1; i >= 10; i = i / 10)
@@ -3020,15 +3020,15 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
       if (lstrlen(pwszPrefix)) {
 
         char mszInsert[512*3];
-        lstrcpyA(mszInsert,mszPrefix1);
+        StringCchCopyA(mszInsert,COUNTOF(mszInsert),mszPrefix1);
 
         if (bPrefixNum) {
           char tchFmt[64];
           char tchNum[64];
           StringCchPrintfA(tchFmt,COUNTOF(tchFmt),"%%%s%ii",pszPrefixNumPad,iPrefixNumWidth);
           StringCchPrintfA(tchNum,COUNTOF(tchNum),tchFmt,iPrefixNum);
-          lstrcatA(mszInsert,tchNum);
-          lstrcatA(mszInsert,mszPrefix2);
+          StringCchCatA(mszInsert,COUNTOF(mszInsert),tchNum);
+          StringCchCatA(mszInsert,COUNTOF(mszInsert),mszPrefix2);
           iPrefixNum++;
         }
         iPos = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
@@ -3040,15 +3040,15 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
       if (lstrlen(pwszAppend)) {
 
         char mszInsert[512*3];
-        lstrcpyA(mszInsert,mszAppend1);
+        StringCchCopyA(mszInsert,COUNTOF(mszInsert),mszAppend1);
 
         if (bAppendNum) {
           char tchFmt[64];
           char tchNum[64];
           StringCchPrintfA(tchFmt,COUNTOF(tchFmt),"%%%s%ii",pszAppendNumPad,iAppendNumWidth);
           StringCchPrintfA(tchNum,COUNTOF(tchNum),tchFmt,iAppendNum);
-          lstrcatA(mszInsert,tchNum);
-          lstrcatA(mszInsert,mszAppend2);
+          StringCchCatA(mszInsert,COUNTOF(mszInsert),tchNum);
+          StringCchCatA(mszInsert,COUNTOF(mszInsert),mszAppend2);
           iAppendNum++;
         }
         iPos = (int)SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0);
@@ -3235,8 +3235,9 @@ void EditAlignText(HWND hwnd,int nMode)
                 int i,j;
                 int iPos;
 
-                WCHAR wchNewLineBuf[BUFSIZE_ALIGN*3];
-                StrCpy(wchNewLineBuf,pWords[0]);
+                WCHAR wchNewLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
+                int length = BUFSIZE_ALIGN * 3;
+                StringCchCopy(wchNewLineBuf,COUNTOF(wchNewLineBuf),pWords[0]);
                 p = StrEnd(wchNewLineBuf);
 
                 for (i = 1; i < iWords; i++) {
@@ -3248,7 +3249,7 @@ void EditAlignText(HWND hwnd,int nMode)
                     *p++ = L' ';
                     *p = 0;
                   }
-                  StrCat(p,pWords[i]);
+                  StringCchCat(p,(length - lstrlen(wchNewLineBuf)),pWords[i]);
                   p = StrEnd(p);
                 }
 
@@ -3267,14 +3268,14 @@ void EditAlignText(HWND hwnd,int nMode)
                 int i;
                 int iPos;
 
-                WCHAR wchNewLineBuf[BUFSIZE_ALIGN];
-                StrCpy(wchNewLineBuf,pWords[0]);
+                WCHAR wchNewLineBuf[BUFSIZE_ALIGN] = { L'\0' };
+                StringCchCopy(wchNewLineBuf,COUNTOF(wchNewLineBuf),pWords[0]);
                 p = StrEnd(wchNewLineBuf);
 
                 for (i = 1; i < iWords; i++) {
                   *p++ = L' ';
                   *p = 0;
-                  StrCat(wchNewLineBuf,pWords[i]);
+                  StringCchCat(p,(BUFSIZE_ALIGN - lstrlen(wchNewLineBuf)),pWords[i]);
                   p = StrEnd(p);
                 }
 
