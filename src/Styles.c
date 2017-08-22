@@ -2750,7 +2750,7 @@ void Style_Save()
   int i,iLexer;
   WCHAR tch[32];
   WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+  //int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
   // Custom colors
   for (i = 0; i < 16; i++) {
@@ -2761,7 +2761,7 @@ void Style_Save()
     IniSectionSetString(pIniSection,tch,wch);
   }
   SaveIniSection(L"Custom Colors",pIniSection);
-  ZeroMemory(pIniSection, cchIniSection * sizeof(WCHAR));
+  ZeroMemory(pIniSection,LocalSize(pIniSection));
 
   // auto select
   IniSectionSetInt(pIniSection,L"Use2ndDefaultStyle",bUse2ndDefaultStyle);
@@ -2777,7 +2777,7 @@ void Style_Save()
   IniSectionSetInt(pIniSection,L"SelectDlgSizeY",cyStyleSelectDlg);
 
   SaveIniSection(L"Styles",pIniSection);
-  ZeroMemory(pIniSection, cchIniSection * sizeof(WCHAR));
+  ZeroMemory(pIniSection,LocalSize(pIniSection));
 
   if (!fStylesModified) {
     LocalFree(pIniSection);
@@ -2794,7 +2794,7 @@ void Style_Save()
     }
 
     SaveIniSection(pLexArray[iLexer]->pszName,pIniSection);
-    ZeroMemory(pIniSection, cchIniSection * sizeof(WCHAR));
+    ZeroMemory(pIniSection,LocalSize(pIniSection));
   }
   LocalFree(pIniSection);
 }
@@ -2877,7 +2877,7 @@ BOOL Style_Export(HWND hwnd)
 
     int i,iLexer;
     WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-    int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+    //int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
     for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
       IniSectionSetString(pIniSection,L"FileNameExtensions",pLexArray[iLexer]->szExtensions);
@@ -2888,7 +2888,7 @@ BOOL Style_Export(HWND hwnd)
       }
       if (!WritePrivateProfileSection(pLexArray[iLexer]->pszName,pIniSection,szFile))
         dwError = GetLastError();
-      ZeroMemory(pIniSection, cchIniSection * sizeof(WCHAR));
+      ZeroMemory(pIniSection,LocalSize(pIniSection));
     }
     LocalFree(pIniSection);
 
