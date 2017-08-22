@@ -224,7 +224,7 @@ int     cyFavoritesDlg;
 int     xFindReplaceDlg;
 int     yFindReplaceDlg;
 
-LPWSTR      lpFileList[32];
+LPWSTR      lpFileList[32] = { L'\0' };
 int         cFileList = 0;
 int         cchiFileList = 0;
 LPWSTR      lpFileArg = NULL;
@@ -236,7 +236,7 @@ LPMRULIST  mruFind;
 LPMRULIST  mruReplace;
 
 DWORD     dwLastIOError;
-WCHAR      szCurFile[MAX_PATH+40];
+WCHAR      szCurFile[MAX_PATH+40] = { L'\0' };
 FILEVARS   fvCurFile;
 BOOL      bModified;
 BOOL      bReadOnly = FALSE;
@@ -280,11 +280,11 @@ int iLineEndings[3] = {
   SC_EOL_CR
 };
 
-WCHAR wchPrefixSelection[256] = L"";
-WCHAR wchAppendSelection[256] = L"";
+WCHAR wchPrefixSelection[256] = { L'\0' };
+WCHAR wchAppendSelection[256] = { L'\0' };
 
-WCHAR wchPrefixLines[256] = L"";
-WCHAR wchAppendLines[256] = L"";
+WCHAR wchPrefixLines[256] = { L'\0' };
+WCHAR wchAppendLines[256] = { L'\0' };
 
 int   iSortOptions = 0;
 int   iAlignMode   = 0;
@@ -295,8 +295,8 @@ WCHAR     wchWndClass[16] = WC_NOTEPAD3;
 HINSTANCE g_hInstance;
 HANDLE    g_hScintilla;
 UINT16    g_uWinVer;
-WCHAR     g_wchAppUserModelID[32] = L"";
-WCHAR     g_wchWorkingDirectory[MAX_PATH] = L"";
+WCHAR     g_wchAppUserModelID[32] = { L'\0' };
+WCHAR     g_wchWorkingDirectory[MAX_PATH] = { L'\0' };
 
 
 
@@ -1049,8 +1049,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   {
     SHFILEINFO shfi;
     WCHAR *pszTitle;
-    WCHAR tchUntitled[32];
-    WCHAR tchPageFmt[32];
+    WCHAR tchUntitled[32] = { L'\0' };
+    WCHAR tchPageFmt[32] = { L'\0' };
 
     if (lstrlen(szCurFile)) {
       SHGetFileInfo2(szCurFile, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
@@ -1811,8 +1811,8 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   BOOL bIsPrivAppThemed = PrivateIsAppThemed();
 
   int i,n;
-  WCHAR tchDesc[256];
-  WCHAR tchIndex[256];
+  WCHAR tchDesc[256] = { L'\0' };
+  WCHAR tchIndex[256] = { L'\0' };
 
   WCHAR *pIniSection = NULL;
   int   cchIniSection = 0;
@@ -2546,7 +2546,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         HMONITOR hMonitor;
         WINDOWPLACEMENT wndpl;
         int x,y,cx,cy,imax;
-        WCHAR tch[64];
+        WCHAR tch[64] = { L'\0' };
 
         if (bSaveBeforeRunningTools && !FileSave(FALSE,TRUE,FALSE,FALSE))
           break;
@@ -2676,8 +2676,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         SHFILEINFO shfi;
         WCHAR *pszTitle;
-        WCHAR tchUntitled[32];
-        WCHAR tchPageFmt[32];
+        WCHAR tchUntitled[32] = { L'\0' };
+        WCHAR tchPageFmt[32] = { L'\0' };
 
         if (lstrlen(szCurFile)) {
           SHGetFileInfo2(szCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
@@ -3358,8 +3358,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_INSERT_TAG:
       {
-        WCHAR wszOpen[256] = L"";
-        WCHAR wszClose[256] = L"";
+        WCHAR wszOpen[256] = { L'\0' };
+        WCHAR wszClose[256] = { L'\0' };
         if (EditInsertTagDlg(hwnd,wszOpen,wszClose))
           EditEncloseSelection(hwndEdit,wszOpen,wszClose);
       }
@@ -3369,7 +3369,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_INSERT_ENCODING:
       {
         if (*mEncoding[iEncoding].pszParseNames) {
-          char msz[32];
+          char msz[32] = { '\0' };
           //int iSelStart;
           lstrcpynA(msz,mEncoding[iEncoding].pszParseNames,COUNTOF(msz));
           char *p = StrChrA(msz, ',');
@@ -3384,12 +3384,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_INSERT_SHORTDATE:
     case IDM_EDIT_INSERT_LONGDATE:
       {
-        WCHAR tchDate[128];
-        WCHAR tchTime[128];
-        WCHAR tchDateTime[256];
-        WCHAR tchTemplate[256];
+        WCHAR tchDate[128] = { L'\0' };
+        WCHAR tchTime[128] = { L'\0' };
+        WCHAR tchDateTime[256] = { L'\0' };
+        WCHAR tchTemplate[256] = { L'\0' };
         SYSTEMTIME st;
-        char  mszBuf[MAX_PATH*3];
+        char  mszBuf[MAX_PATH*3] = { '\0' };
         //int   iSelStart;
 
         GetLocalTime(&st);
@@ -4654,9 +4654,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_TIMESTAMPS:
       {
-        WCHAR wchFind[256] = {0};
-        WCHAR wchTemplate[256] = {0};
-        WCHAR wchReplace[256];
+        WCHAR wchFind[256] = { L'\0' };
+        WCHAR wchTemplate[256] = { L'\0' };
+        WCHAR wchReplace[256] = { L'\0' };
 
         SYSTEMTIME st;
         struct tm sst;
@@ -4935,7 +4935,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case CMD_COPYPATHNAME: {
 
         WCHAR *pszCopy;
-        WCHAR tchUntitled[32];
+        WCHAR tchUntitled[32] = { L'\0' };
         if (lstrlen(szCurFile))
           pszCopy = szCurFile;
         else {
@@ -5496,7 +5496,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(tbbMainWnd))
             {
-              WCHAR tch[256];
+              WCHAR tch[256] = { L'\0' };
               GetString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
               lstrcpyn(((LPTBNOTIFY)lParam)->pszText,/*StrChr(tch,L'\n')+1*/tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
@@ -5919,7 +5919,7 @@ void LoadSettings()
 
   LoadIniSection(L"Window", pIniSection, cchIniSection);
 
-  WCHAR tchHighDpiToolBar[32];
+  WCHAR tchHighDpiToolBar[32] = { L'\0' };
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
   iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
   iHighDpiToolBar = max(min(iHighDpiToolBar, 1), -1);
@@ -6848,20 +6848,20 @@ void UpdateStatusbar()
   int iLines;
   int iCol;
   int iSel;
-  WCHAR tchLn[32];
-  WCHAR tchLines[32];
-  WCHAR tchCol[32];
-  WCHAR tchCols[32];
-  WCHAR tchSel[32];
-  WCHAR tchDocPos[256];
+  WCHAR tchLn[32] = { L'\0' };
+  WCHAR tchLines[32] = { L'\0' };
+  WCHAR tchCol[32] = { L'\0' };
+  WCHAR tchCols[32] = { L'\0' };
+  WCHAR tchSel[32] = { L'\0' };
+  WCHAR tchDocPos[256] = { L'\0' };
 
   int iBytes;
-  WCHAR tchBytes[64];
-  WCHAR tchDocSize[256];
+  WCHAR tchBytes[64] = { L'\0' };
+  WCHAR tchDocSize[256] = { L'\0' };
 
-  WCHAR tchEOLMode[32];
-  WCHAR tchOvrMode[32];
-  WCHAR tchLexerName[128];
+  WCHAR tchEOLMode[32] = { L'\0' };
+  WCHAR tchOvrMode[32] = { L'\0' };
+  WCHAR tchLexerName[128] = { L'\0' };
 
   int iSelStart;
   int iSelEnd;
@@ -6869,7 +6869,7 @@ void UpdateStatusbar()
   int iLineEnd;
   int iStartOfLinePos;
   int iLinesSelected;
-  WCHAR tchLinesSelected[32];
+  WCHAR tchLinesSelected[32] = { L'\0' };
 
   if (!bShowStatusbar)
     return;
@@ -6958,7 +6958,7 @@ void UpdateStatusbar()
 //
 void UpdateLineNumberWidth()
 {
-  char chLines[32];
+  char chLines[32] = { '\0' };
   int  iLineMarginWidthNow;
   int  iLineMarginWidthFit;
 
@@ -7062,7 +7062,6 @@ void RestoreSelectionAction(int token)
   UndoRedoSelection sel = { -1,-1,-1 };
   if (UndoSelectionMap(token, &sel) >= 0) {
     // we are inside undo transaction, so do delayed PostMessage() instead of SendMessage()
-    int currSelMode = (int)SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
     SendMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)sel.selMode, 0);
     if (sel.selMode == SC_SEL_RECTANGLE) 
     {
@@ -7072,7 +7071,7 @@ void RestoreSelectionAction(int token)
     else {
       PostMessage(hwndEdit, SCI_SETSELECTION, (WPARAM)sel.currPos, (LPARAM)sel.anchorPos);
     }
-    PostMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)currSelMode, 0);
+    PostMessage(hwndEdit, SCI_CANCEL, 0, 0);
   }
 }
 
@@ -7590,7 +7589,7 @@ BOOL SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
 {
   BOOL bContinue = TRUE;
-  WCHAR szClassName[64];
+  WCHAR szClassName[64] = { L'\0' };
 
   if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
 
@@ -7611,7 +7610,7 @@ BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
 BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
 {
   BOOL bContinue = TRUE;
-  WCHAR szClassName[64];
+  WCHAR szClassName[64] = { L'\0' };
 
   if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
 
@@ -8047,8 +8046,8 @@ void SetNotifyIconTitle(HWND hwnd)
 
   NOTIFYICONDATA nid;
   SHFILEINFO shfi;
-  WCHAR tchTitle[256];
-  WCHAR tchFormat[32];
+  WCHAR tchTitle[256] = { L'\0' };
+  WCHAR tchFormat[32] = { L'\0' };
 
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);

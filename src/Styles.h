@@ -16,8 +16,6 @@
 #ifndef _NP3_STYLES_H_
 #define _NP3_STYLES_H_
 
-#define EDSTYLE_BUFFER 256
-
 typedef struct _editstyle
 {
   #pragma warning(disable : 4201)  // MS's Non-Std: Struktur/Union ohne Namen
@@ -29,7 +27,7 @@ typedef struct _editstyle
   int rid;
   WCHAR* pszName;
   WCHAR* pszDefault;
-  WCHAR  szValue[EDSTYLE_BUFFER];
+  WCHAR  szValue[256];
 
 } EDITSTYLE, *PEDITSTYLE;
 

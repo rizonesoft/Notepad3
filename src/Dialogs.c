@@ -53,9 +53,9 @@ extern WCHAR szCurFile[MAX_PATH+40];
 int MsgBox(int iType,UINT uIdMsg,...)
 {
 
-  WCHAR szText [HUGE_BUFFER];
-  WCHAR szBuf  [HUGE_BUFFER];
-  WCHAR szTitle[64];
+  WCHAR szText [HUGE_BUFFER] = { L'\0' };
+  WCHAR szBuf  [HUGE_BUFFER] = { L'\0' };
+  WCHAR szTitle[64] = { L'\0' };
   int iIcon = 0;
   HWND hwnd;
 
@@ -116,8 +116,8 @@ void DisplayCmdLineHelp(HWND hwnd)
 {
   MSGBOXPARAMS mbp;
 
-  WCHAR szTitle[32];
-  WCHAR szText[2048];
+  WCHAR szTitle[32] = { L'\0' };
+  WCHAR szText[2048] = { L'\0' };
 
   GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));
   GetString(IDS_CMDLINEHELP,szText,COUNTOF(szText));
@@ -207,7 +207,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
   {
     case WM_INITDIALOG:
       {
-        WCHAR wch[256];
+        WCHAR wch[256] = { L'\0' };
         LOGFONT lf;
 
         SetDlgItemText(hwnd,IDC_VERSION,VERSION_FILEVERSION_LONG);
@@ -2181,7 +2181,7 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
     case WM_INITDIALOG:
       {
         int i;
-        WCHAR wch[256];
+        WCHAR wch[256] = { L'\0' };
 
         piOption = (int*)lParam;
 

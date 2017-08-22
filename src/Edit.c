@@ -690,7 +690,7 @@ int Encoding_MapIniSetting(BOOL bLoad,int iSetting) {
 
 void Encoding_GetLabel(int iEncoding) {
   if (mEncoding[iEncoding].wchLabel[0] == 0) {
-    WCHAR wch[256] = L"";
+    WCHAR wch[256] = { L'\0' };
     GetString(mEncoding[iEncoding].idsName,wch,COUNTOF(wch));
     WCHAR *pwsz = StrChr(wch, L';');
     if (pwsz) {
@@ -707,14 +707,14 @@ void Encoding_GetLabel(int iEncoding) {
 
 
 int Encoding_MatchW(LPCWSTR pwszTest) {
-  char tchTest[256];
+  char tchTest[256] = { '\0' };
   WideCharToMultiByte(CP_ACP,0,pwszTest,-1,tchTest,COUNTOF(tchTest),NULL,NULL);
   return(Encoding_MatchA(tchTest));
 }
 
 
 int Encoding_MatchA(char *pchTest) {
-  char  chTest[256];
+  char  chTest[256] = { '\0' };
   char *pchSrc = pchTest;
   char *pchDst = chTest;
   *pchDst++ = ',';
@@ -768,7 +768,7 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly)
   int i;
   int iSelItem = -1;
   LVITEM lvi;
-  WCHAR wchBuf[256];
+  WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = LocalAlloc(LPTR,COUNTOF(mEncoding) * sizeof(ENCODINGENTRY));
   for (i = 0; i < COUNTOF(mEncoding); i++) {
@@ -858,7 +858,7 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly)
   int i;
   int iSelItem = -1;
   COMBOBOXEXITEM cbei;
-  WCHAR wchBuf[256];
+  WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = LocalAlloc(LPTR,COUNTOF(mEncoding) * sizeof(ENCODINGENTRY));
   for (i = 0; i < COUNTOF(mEncoding); i++) {
@@ -2171,8 +2171,8 @@ void EditChar2Hex(HWND hwnd) {
         SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iSelEnd,0) &&
         iSelEnd == (int)SendMessage(hwnd,SCI_POSITIONAFTER,(WPARAM)iSelStart,0)) {
 
-      char  ch[32];
-      WCHAR wch[32];
+      char  ch[32] = { '\0' };
+      WCHAR wch[32] = { L'\0' };
       UINT  cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
 
       SendMessage(hwnd,SCI_GETSELTEXT,0,(LPARAM)ch);
@@ -2205,7 +2205,7 @@ void EditHex2Char(HWND hwnd) {
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0)) {
 
-    char ch[32];
+    char ch[32] = { L'\0' };
     int  i;
     BOOL bTrySelExpand = FALSE;
 
@@ -2483,7 +2483,7 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,BOOL bOnlyIndentingWS)
   int iSelCount;
   UINT cpEdit;
   struct Sci_TextRange tr;
-  WCHAR space[256];
+  WCHAR space[256] = { L'\0' };
   BOOL bIsLineStart = TRUE;
   BOOL bModified = FALSE;
 
@@ -3023,8 +3023,8 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
         StringCchCopyA(mszInsert,COUNTOF(mszInsert),mszPrefix1);
 
         if (bPrefixNum) {
-          char tchFmt[64];
-          char tchNum[64];
+          char tchFmt[64] = { '\0' };
+          char tchNum[64] = { '\0' };
           StringCchPrintfA(tchFmt,COUNTOF(tchFmt),"%%%s%ii",pszPrefixNumPad,iPrefixNumWidth);
           StringCchPrintfA(tchNum,COUNTOF(tchNum),tchFmt,iPrefixNum);
           StringCchCatA(mszInsert,COUNTOF(mszInsert),tchNum);
@@ -3039,12 +3039,12 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
       if (lstrlen(pwszAppend)) {
 
-        char mszInsert[512*3];
+        char mszInsert[512*3] = { '\0' };
         StringCchCopyA(mszInsert,COUNTOF(mszInsert),mszAppend1);
 
         if (bAppendNum) {
-          char tchFmt[64];
-          char tchNum[64];
+          char tchFmt[64] = { '\0' };
+          char tchNum[64] = { '\0' };
           StringCchPrintfA(tchFmt,COUNTOF(tchFmt),"%%%s%ii",pszAppendNumPad,iAppendNumWidth);
           StringCchPrintfA(tchNum,COUNTOF(tchNum),tchFmt,iAppendNum);
           StringCchCatA(mszInsert,COUNTOF(mszInsert),tchNum);
@@ -3476,7 +3476,7 @@ void EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,BOOL bInsertAtStart)
     {
       int iCommentPos;
       int iIndentPos = (int)SendMessage(hwnd,SCI_GETLINEINDENTPOSITION,(WPARAM)iLine,0);
-      char tchBuf[32];
+      char tchBuf[32] = { L'\0' };
       struct Sci_TextRange tr;
 
       if (iIndentPos == SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0))
@@ -4841,7 +4841,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         char *lpsz;
         static BOOL bFirstTime = TRUE;
 
-        WCHAR tch2[256];
+        WCHAR tch2[256] = { L'\0' };
         HMENU hmenu;
 
         SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
@@ -6617,7 +6617,7 @@ INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM l
         case 100: {
             if (HIWORD(wParam) == EN_CHANGE) {
 
-              WCHAR wchBuf[256];
+              WCHAR wchBuf[256] = { L'\0' };
               WCHAR wchIns[256] = L"</";
               int  cchIns = 2;
               BOOL bClear = TRUE;
@@ -7053,7 +7053,7 @@ BOOL FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
 //
 BOOL FileVars_ParseInt(char* pszData,char* pszName,int* piValue) {
 
-  char tch[32];
+  char tch[32] = { L'\0' };
   char chPrev;
   char *pvEnd;
   int  itok;
@@ -7111,7 +7111,7 @@ BOOL FileVars_ParseInt(char* pszData,char* pszName,int* piValue) {
 //
 BOOL FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) {
 
-  char tch[32];
+  char tch[32] = { L'\0' };
   char chPrev;
   char *pvEnd;
   BOOL bQuoted = FALSE;

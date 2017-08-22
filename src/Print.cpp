@@ -57,7 +57,7 @@ extern "C" HWND hwndStatus;
 
 void StatusUpdatePrintPage(int iPageNum)
 {
-  WCHAR tch[32];
+  WCHAR tch[32] = { L'\0' };
 
   FormatString(tch,COUNTOF(tch),IDS_PRINTFILE,iPageNum);
 
@@ -99,7 +99,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   int footerLineHeight;
   HFONT fontFooter;
 
-  WCHAR dateString[256];
+  WCHAR dateString[256] = { L'\0' };
 
   DOCINFO di = {sizeof(DOCINFO), 0, 0, 0, 0};
 
@@ -112,7 +112,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   int pageNum;
   BOOL printPage;
 
-  WCHAR pageString[32];
+  WCHAR pageString[32] = { L'\0' };
 
   HPEN pen;
   HPEN penOld;
@@ -277,7 +277,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   // Get current time...
   if (iPrintHeader == 0)
   {
-    WCHAR timeString[128];
+    WCHAR timeString[128] = { L'\0' };
     GetTimeFormat(LOCALE_USER_DEFAULT,TIME_NOSECONDS,&st,NULL,timeString,128);
     lstrcat(dateString,L" ");
     lstrcat(dateString,timeString);
