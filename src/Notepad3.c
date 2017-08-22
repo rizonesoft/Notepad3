@@ -7063,7 +7063,7 @@ void RestoreSelectionAction(int token)
   if (UndoSelectionMap(token, &sel) >= 0) {
     // we are inside undo transaction, so do delayed PostMessage() instead of SendMessage()
     int currSelMode = (int)SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
-    PostMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)sel.selMode, 0);
+    SendMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)sel.selMode, 0);
     if (sel.selMode == SC_SEL_RECTANGLE) 
     {
       PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)sel.anchorPos, 0);

@@ -3275,7 +3275,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 for (i = 1; i < iWords; i++) {
                   *p++ = L' ';
                   *p = 0;
-                  StringCchCat(p,(BUFSIZE_ALIGN - lstrlen(wchNewLineBuf)),pWords[i]);
+                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - lstrlen(wchNewLineBuf)),pWords[i]);
                   p = StrEnd(p);
                 }
 
@@ -3311,11 +3311,11 @@ void EditAlignText(HWND hwnd,int nMode)
                 *p = 0;
               }
               for (i = 0; i < iWords; i++) {
-                StrCat(p,pWords[i]);
-                if (i < iWords-1)
-                  StrCat(p,L" ");
+                StringCchCat(p,(COUNTOF(wchNewLineBuf) - lstrlen(wchNewLineBuf)),pWords[i]);
+                if (i < iWords - 1)
+                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - lstrlen(wchNewLineBuf)),L" ");
                 if (nMode == ALIGN_CENTER && iWords > 1 && iOddSpaces > 0 && i + 1 >= iWords / 2) {
-                  StrCat(p,L" ");
+                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - lstrlen(wchNewLineBuf)),L" ");
                   iOddSpaces--;
                 }
                 p = StrEnd(p);
