@@ -179,20 +179,19 @@ int       iSciDirectWriteTech;
 int       iSciFontQuality;
 int       iHighDpiToolBar;
 
-const int DirectWriteTechnology[] = {
-    SC_TECHNOLOGY_DEFAULT
+const int DirectWriteTechnology[4] = {
+  SC_TECHNOLOGY_DEFAULT
   , SC_TECHNOLOGY_DIRECTWRITE
   , SC_TECHNOLOGY_DIRECTWRITERETAIN
   , SC_TECHNOLOGY_DIRECTWRITEDC
 };
 
-const int FontQuality[] = {
-    SC_EFF_QUALITY_DEFAULT
+const int FontQuality[4] = {
+  SC_EFF_QUALITY_DEFAULT
   , SC_EFF_QUALITY_NON_ANTIALIASED
   , SC_EFF_QUALITY_ANTIALIASED
   , SC_EFF_QUALITY_LCD_OPTIMIZED
 };
-
 
 typedef struct _wi
 {
@@ -698,8 +697,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (IsVista()) {
     if (iSciDirectWriteTech >= 0)
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
-    if (iSciFontQuality >= 0)
-      SciCall_SetFontQuality(FontQuality[iSciFontQuality]);
   }
 
   if (bAccelWordNavigation)
@@ -5906,8 +5903,8 @@ void LoadSettings()
   iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",-1);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
-  iSciFontQuality = max(min(iSciFontQuality,3),-1);
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
+  iSciFontQuality = max(min(iSciFontQuality,3),0);
 
   WCHAR buffer[MIDSZ_BUFFER] = { L'\0' };
   const WCHAR defextwsc[] = L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~";  // underscore counted as part of word
@@ -5971,7 +5968,7 @@ void LoadSettings()
   WCHAR tchSciFontQuality[32];
   wsprintf(tchSciFontQuality,L"%ix%i SciFontQuality",ResX,ResY);
   iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,iSciFontQuality);
-  iSciFontQuality = max(min(iSciFontQuality,3),-1);
+  iSciFontQuality = max(min(iSciFontQuality,3),0);
 
 
   LocalFree(pIniSection);

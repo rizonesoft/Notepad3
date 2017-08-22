@@ -156,11 +156,3 @@ DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, valu
 //
 //
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
-
-
-//=============================================================================
-//
-//  SetFontQuality
-//
-//
-DeclareSciCallV1(SetFontQuality, SETFONTQUALITY, int, quality);
