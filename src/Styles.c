@@ -35,6 +35,8 @@
 extern HINSTANCE g_hInstance;
 extern int iEncoding;
 
+extern int iSciFontQuality;
+extern const int FontQuality[4];
 
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
@@ -4272,20 +4274,20 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
 //
 void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
 
-  WPARAM wQuality = SC_EFF_QUALITY_DEFAULT;
-  WCHAR tch[32];
+  WPARAM wQuality = (WPARAM)FontQuality[iSciFontQuality];;
+  WCHAR tch[64] = { L'\0' };
 
   if (Style_StrGetFontQuality(lpszStyle,tch,COUNTOF(tch))) {
-    if (lstrcmpi(tch,L"none") == 0)
+    if (lstrcmpi(tch,L"default") == 0)
+      wQuality = SC_EFF_QUALITY_DEFAULT;
+    else if (lstrcmpi(tch,L"none") == 0)
       wQuality = SC_EFF_QUALITY_NON_ANTIALIASED;
     else if (lstrcmpi(tch,L"standard") == 0)
       wQuality = SC_EFF_QUALITY_ANTIALIASED;
     else if (lstrcmpi(tch,L"cleartype") == 0)
       wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
-    else
-      wQuality = SC_EFF_QUALITY_DEFAULT;
   }
-  else {
+  else { // undefined, use general settings, except for special fonts
     if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch))) {
       if (lstrcmpi(tch,L"Calibri") == 0 ||
           lstrcmpi(tch,L"Cambria") == 0 ||
@@ -4293,11 +4295,10 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
           lstrcmpi(tch,L"Consolas") == 0 ||
           lstrcmpi(tch,L"Constantia") == 0 ||
           lstrcmpi(tch,L"Corbel") == 0 ||
-          lstrcmpi(tch,L"Segoe UI") == 0)
+          lstrcmpi(tch,L"Segoe UI") == 0 ||
+          lstrcmpi(tch,L"Source Code Pro") == 0)
         wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
     }
-    else
-      wQuality = SC_EFF_QUALITY_DEFAULT;
   }
   SendMessage(hwnd,SCI_SETFONTQUALITY,wQuality,0);
 }

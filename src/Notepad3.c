@@ -179,20 +179,19 @@ int       iSciDirectWriteTech;
 int       iSciFontQuality;
 int       iHighDpiToolBar;
 
-const int DirectWriteTechnology[] = {
+const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
   , SC_TECHNOLOGY_DIRECTWRITE
   , SC_TECHNOLOGY_DIRECTWRITERETAIN
   , SC_TECHNOLOGY_DIRECTWRITEDC
 };
 
-const int FontQuality[] = {
+const int FontQuality[4] = {
     SC_EFF_QUALITY_DEFAULT
   , SC_EFF_QUALITY_NON_ANTIALIASED
   , SC_EFF_QUALITY_ANTIALIASED
   , SC_EFF_QUALITY_LCD_OPTIMIZED
 };
-
 
 typedef struct _wi
 {
@@ -698,8 +697,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (IsVista()) {
     if (iSciDirectWriteTech >= 0)
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
-    if (iSciFontQuality >= 0)
-      SciCall_SetFontQuality(FontQuality[iSciFontQuality]);
   }
 
   if (bAccelWordNavigation)
@@ -5894,8 +5891,8 @@ void LoadSettings()
   iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",-1);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",-1);
-  iSciFontQuality = max(min(iSciFontQuality,3),-1);
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
+  iSciFontQuality = max(min(iSciFontQuality,3),0);
 
   WCHAR buffer[MIDSZ_BUFFER] = { L'\0' };
   const WCHAR defextwsc[] = L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~";  // underscore counted as part of word
@@ -5907,7 +5904,6 @@ void LoadSettings()
     if (chExtendedWhiteSpaceChars[i] & ~0x7F) 
       chExtendedWhiteSpaceChars[i] = ' '; // space
   }
-
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
@@ -5927,7 +5923,7 @@ void LoadSettings()
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
   iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
   iHighDpiToolBar = max(min(iHighDpiToolBar, 1), -1);
-  if (iHighDpiToolBar < 0) { // undefined: derermine high DPI (higher than Full-HD)
+  if (iHighDpiToolBar < 0) { // undefined: determine high DPI (higher than Full-HD)
     if ((ResX > 1920) && (ResY > 1080))
       iHighDpiToolBar = 1;
   }
@@ -5960,7 +5956,7 @@ void LoadSettings()
   WCHAR tchSciFontQuality[32];
   StringCchPrintf(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
   iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,iSciFontQuality);
-  iSciFontQuality = max(min(iSciFontQuality,3),-1);
+  iSciFontQuality = max(min(iSciFontQuality,3),0);
 
 
   LocalFree(pIniSection);
