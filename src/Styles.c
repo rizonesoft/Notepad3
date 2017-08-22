@@ -2761,7 +2761,7 @@ void Style_Save()
     IniSectionSetString(pIniSection,tch,wch);
   }
   SaveIniSection(L"Custom Colors",pIniSection);
-  ZeroMemory(pIniSection, (int)LocalSize(pIniSection));
+  ZeroMemory(pIniSection,LocalSize(pIniSection));
 
   // auto select
   IniSectionSetInt(pIniSection,L"Use2ndDefaultStyle",bUse2ndDefaultStyle);
@@ -2777,7 +2777,7 @@ void Style_Save()
   IniSectionSetInt(pIniSection,L"SelectDlgSizeY",cyStyleSelectDlg);
 
   SaveIniSection(L"Styles",pIniSection);
-  ZeroMemory(pIniSection, (int)LocalSize(pIniSection));
+  ZeroMemory(pIniSection,LocalSize(pIniSection));
 
   if (!fStylesModified) {
     LocalFree(pIniSection);
@@ -2794,7 +2794,7 @@ void Style_Save()
     }
 
     SaveIniSection(pLexArray[iLexer]->pszName,pIniSection);
-    ZeroMemory(pIniSection, (int)LocalSize(pIniSection));
+    ZeroMemory(pIniSection,LocalSize(pIniSection));
   }
   LocalFree(pIniSection);
 }
@@ -2888,7 +2888,7 @@ BOOL Style_Export(HWND hwnd)
       }
       if (!WritePrivateProfileSection(pLexArray[iLexer]->pszName,pIniSection,szFile))
         dwError = GetLastError();
-      ZeroMemory(pIniSection, (int)LocalSize(pIniSection));
+      ZeroMemory(pIniSection,LocalSize(pIniSection));
     }
     LocalFree(pIniSection);
 
