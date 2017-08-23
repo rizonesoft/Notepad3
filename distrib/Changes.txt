@@ -3,6 +3,20 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 440 (16 August 2017)
+--------------------------------------------------
+- Fixed unicode conversion error fixed in .rc
+- Added Del/Back Selection preserving on Undo/Redo
+- Fix: restore "rectangular" selection too on "Selection Cut" Undo/Redo
+- Cut Selection (Ctrl-X) will preserve Selection on Undo/Redo
+- Fixed Toolbar Button "Save" has to be enabled on encoding changes
+- Fixed bug on path compare for editing own settings file (.ini) to disable "save settings" menu entries (should be case insensitive)
+- Zero initializing string buffers (hardening code while searching an issue regarding "Recent Files" list in "relative paths" mode
+- Added Enabling/Disabling Save-Button in toolbar according to file modified indicator.
+- Menu integration of "hidden" commands
+- Fixing and cleanup build for Notepad3Portable
+
+--------------------------------------------------
 Version 2 Build 432 (10 August 2017)
 --------------------------------------------------
 - Fixed issue #35 (preserve FileExtension settings while switching Styles / 2nd Default Scheme).

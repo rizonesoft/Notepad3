@@ -7,7 +7,7 @@
 *   Based on code from Notepad2-mod, (c) XhmikosR 2010-2015                   *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2016   *
-*                                                 http://www.rizonesoft.com   *
+*                                                 https://www.rizonesoft.com  *
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
