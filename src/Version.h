@@ -25,8 +25,10 @@
 #endif
 #endif
 
-#define DO_STRINGIFY(x) _T(#x)
-#define STRINGIFY(x)    DO_STRINGIFY(x)
+#define DO_STRINGIFYA(x)    #x
+#define DO_STRINGIFYW(x) _T(#x)
+#define STRG(x)         DO_STRINGIFYA(x)
+#define STRINGIFY(x)    DO_STRINGIFYW(x)
 
 #define MY_APPNAME                   L"Notepad3"
 #define VERSION_FILEVERSION_NUM      VERSION_MAJOR,VERSION_MINOR,VERSION_REV,VERSION_BUILD
@@ -53,39 +55,43 @@
 #if defined(WDK_BUILD)
     #if _MSC_VER == 1600
         #if (_MSC_FULL_VER >= 160040219)
-            #define VERSION_COMPILER    L"WDK (MSVC 2010 SP1)"
+            #define VER_CPL    "WDK (MSVC 2010 SP1)"
         #else
-            #define VERSION_COMPILER    L"WDK (MSVC 2010)"
+            #define VER_CPL    "WDK (MSVC 2010)"
         #endif
     #elif _MSC_VER == 1500
         #if (_MSC_FULL_VER == 150030729)
-            #define VERSION_COMPILER    L"WDK"
+            #define VER_CPL    "WDK"
         #else
-            #define VERSION_COMPILER    L"WDK (version unknown)"
+            #define VER_CPL    "WDK (version unknown)"
         #endif
     #endif
 #elif defined(_MSC_VER)
-    #if _MSC_VER == 1910
+    #if _MSC_VER >= 1910
         #if (_MSC_FULL_VER >= 191025017)
-           #define VERSION_COMPILER    L"Microsoft Visual C++ 2017"
+           #define VER_CPL     "Microsoft Visual C++ 2017"
         #endif
     #elif _MSC_VER == 1900
         #if (_MSC_FULL_VER == 190024213)
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 3"
+            #define VER_CPL    "Microsoft Visual C++ 2015 Update 3"
         #elif (_MSC_FULL_VER == 190023918)
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 2"
+            #define VER_CPL    "Microsoft Visual C++ 2015 Update 2"
         #elif (_MSC_FULL_VER == 190023506)
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015 Update 1"
+            #define VER_CPL    "Microsoft Visual C++ 2015 Update 1"
         #elif (_MSC_FULL_VER == 190023026)
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
+            #define VER_CPL    "Microsoft Visual C++ 2015"
         #else
-            #define VERSION_COMPILER    L"Microsoft Visual C++ 2015"
+            #define VER_CPL    "Microsoft Visual C++ 2015"
         #endif
     #else
-        #define VERSION_COMPILER        L"Microsoft Visual C++ (version unknown)"
+        #define VER_CPL        "Microsoft Visual C++ (version unknown)"
     #endif
 #else
-    #define VERSION_COMPILER            L"(Unknown compiler)"
+    #define VER_CPL            "(Unknown compiler)"
 #endif
+
+#define VERSION_COMPILER  STRINGIFY(VER_CPL)
+
+#pragma message("Compiler Version: " VER_CPL "  (#" STRG(_MSC_FULL_VER) ")")
 
 #endif // NOTEPAD3_VERSION_H

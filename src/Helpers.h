@@ -16,8 +16,9 @@
 #ifndef _NP3_HELPERS_H_
 #define _NP3_HELPERS_H_
 
-#define STRSAFE_NO_DEPRECATE     // comment out to see missing migrations
 #define STRSAFE_NO_CB_FUNCTIONS
+// don't allow deprecated functions
+#undef STRSAFE_NO_DEPRECATE
 #include <strsafe.h>
 
 

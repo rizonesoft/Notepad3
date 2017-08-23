@@ -26,11 +26,12 @@
 #include "scilexer.h"
 #include "notepad3.h"
 #include "edit.h"
-#include "styles.h"
 #include "dialogs.h"
-#include "helpers.h"
 #include "resource.h"
 #include "SciCall.h"
+#include "helpers.h"
+#include "styles.h"
+
 
 extern HINSTANCE g_hInstance;
 extern int iEncoding;

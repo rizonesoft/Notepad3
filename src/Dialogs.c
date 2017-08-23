@@ -26,10 +26,10 @@
 #include "notepad3.h"
 #include "edit.h"
 #include "dlapi.h"
-#include "dialogs.h"
-#include "helpers.h"
 #include "resource.h"
 #include "version.h"
+#include "helpers.h"
+#include "dialogs.h"
 
 
 extern HWND  hwndMain;

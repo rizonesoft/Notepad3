@@ -25,8 +25,8 @@
 #include <uxtheme.h>
 #include <stdio.h>
 #include <string.h>
-#include "helpers.h"
 #include "resource.h"
+#include "helpers.h"
 
 extern HINSTANCE g_hInstance;
 extern UINT16 g_uWinVer;
