@@ -21,18 +21,10 @@
 #undef STRSAFE_NO_DEPRECATE
 #include <strsafe.h>
 
-
-#define SMALL_BUFFER 128
-#define MIDSZ_BUFFER 256
-#define LARGE_BUFFER 512
-#define HUGE_BUFFER 1024
-
-
 #define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 #define CSTRLEN(s)  (COUNTOF(s)-1)
-
 
 extern WCHAR szIniFile[MAX_PATH];
 
@@ -70,6 +62,15 @@ __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
 #define IsVista() (g_uWinVer >= 0x0600)
 #define IsW7()    (g_uWinVer >= 0x0601)
 
+enum BufferSizes {
+  MICRO_BUFFER =   32,
+  MINI_BUFFER  =   64,
+  SMALL_BUFFER =  128,
+  MIDSZ_BUFFER =  256,
+  LARGE_BUFFER =  512,
+  HUGE_BUFFER  = 1024,
+  FILE_ARG_BUF = MAX_PATH+4
+};
 
 BOOL PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
@@ -150,6 +151,7 @@ void PathFixBackslashes(LPWSTR);
 void  ExpandEnvironmentStringsEx(LPWSTR,DWORD);
 void  PathCanonicalizeEx(LPWSTR,int);
 DWORD GetLongPathNameEx(LPWSTR,DWORD);
+DWORD NormalizePathEx(LPWSTR,int);
 DWORD_PTR SHGetFileInfo2(LPCWSTR,DWORD,SHFILEINFO*,UINT,UINT);
 
 

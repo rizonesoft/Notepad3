@@ -78,12 +78,12 @@ int MsgBox(int iType,UINT uIdMsg,...)
       0,
       NULL);
     StrTrim(lpMsgBuf,L" \a\b\f\n\r\t\v");
-    StrCatBuff(szText,L"\n",COUNTOF(szText));
-    StrCatBuff(szText,lpMsgBuf,COUNTOF(szText));
+    StringCchCat(szText,COUNTOF(szText),L"\n");
+    StringCchCat(szText,COUNTOF(szText),lpMsgBuf);
     LocalFree(lpMsgBuf);
     wcht = *CharPrev(szText,StrEnd(szText));
     if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
-      StrCatBuff(szText,L".",COUNTOF(szText));
+      StringCchCat(szText,COUNTOF(szText),L".");
   }
 
   GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));

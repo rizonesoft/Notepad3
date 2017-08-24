@@ -384,13 +384,13 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
                     UINT uIDReadOnly,BOOL bReadOnly,LPCWSTR lpszExcerpt)
 {
 
-  WCHAR szUntitled[256] = { L'\0' };
-  WCHAR szExcrptQuot[256] = { L'\0' };
+  WCHAR szUntitled[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szExcrptQuot[MIDSZ_BUFFER] = { L'\0' };
   WCHAR szExcrptFmt[32] = { L'\0' };
-  WCHAR szAppName[256] = { L'\0' };
-  WCHAR szElevatedAppName[256] = { L'\0' };
+  WCHAR szAppName[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
   WCHAR szReadOnly[32] = { L'\0' };
-  WCHAR szTitle[512] = { L'\0' };
+  WCHAR szTitle[LARGE_BUFFER] = { L'\0' };
   static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
   static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
   static const WCHAR *pszSep = L" - ";
@@ -405,7 +405,7 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
 
   if (bIsElevated) {
     FormatString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_APPTITLE_ELEVATED,szAppName);
-    StrCpyN(szAppName,szElevatedAppName,COUNTOF(szAppName));
+    StringCchCopyN(szAppName,COUNTOF(szAppName),szElevatedAppName,COUNTOF(szElevatedAppName));
   }
 
   if (bModified)
@@ -434,7 +434,7 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
       StringCchCat(szTitle,COUNTOF(szTitle),szCachedDisplayName);
       if (iFormat == 1) {
         WCHAR tchPath[MAX_PATH] = { L'\0' };
-        StrCpyN(tchPath,lpszFile,COUNTOF(tchPath));
+        StringCchCopyN(tchPath,COUNTOF(tchPath),lpszFile,lstrlen(lpszFile));
         PathRemoveFileSpec(tchPath);
         StringCchCat(szTitle,COUNTOF(szTitle),L" [");
         StringCchCat(szTitle,COUNTOF(szTitle),tchPath);
@@ -1491,12 +1491,12 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 //  PathCanonicalizeEx()
 //
 //
-void PathCanonicalizeEx(LPWSTR lpSrc,int len)
+void PathCanonicalizeEx(LPWSTR lpszPath,int len)
 {
-  WCHAR szDst[MAX_PATH] = { L'\0' };
+  WCHAR szDst[FILE_ARG_BUF] = { L'\0' };
 
-  if (PathCanonicalize(szDst,lpSrc))
-    StringCchCopy(lpSrc,len,szDst);
+  if (PathCanonicalize(szDst,lpszPath))
+    StringCchCopy(lpszPath,len,szDst);
 }
 
 
@@ -1519,6 +1519,19 @@ DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer)
 
 //=============================================================================
 //
+//  NormalizePathEx()
+//
+//
+DWORD NormalizePathEx(LPWSTR lpszPath,int len)
+{
+  PathCanonicalizeEx(lpszPath,len);
+  return GetLongPathNameEx(lpszPath,len);
+}
+
+
+
+//=============================================================================
+//
 //  SHGetFileInfo2()
 //
 //  Return a default name when the file has been removed, and always append
@@ -1532,14 +1545,14 @@ DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,
 
     DWORD_PTR dw = SHGetFileInfo(pszPath,dwFileAttributes,psfi,cbFileInfo,uFlags);
     if (lstrlen(psfi->szDisplayName) < lstrlen(PathFindFileName(pszPath)))
-      StrCatBuff(psfi->szDisplayName,PathFindExtension(pszPath),COUNTOF(psfi->szDisplayName));
+      StringCchCat(psfi->szDisplayName,COUNTOF(psfi->szDisplayName),PathFindExtension(pszPath));
     return(dw);
   }
 
   else {
     DWORD_PTR dw = SHGetFileInfo(pszPath,FILE_ATTRIBUTE_NORMAL,psfi,cbFileInfo,uFlags|SHGFI_USEFILEATTRIBUTES);
     if (lstrlen(psfi->szDisplayName) < lstrlen(PathFindFileName(pszPath)))
-      StrCatBuff(psfi->szDisplayName,PathFindExtension(pszPath),COUNTOF(psfi->szDisplayName));
+      StringCchCat(psfi->szDisplayName,COUNTOF(psfi->szDisplayName),PathFindExtension(pszPath));
     return(dw);
   }
 
@@ -1906,7 +1919,7 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
           *wSize = (WORD)MulDiv(lf.lfHeight,72,iLogPixelsY);
           if (*wSize == 0)
             *wSize = 8;
-          StrCpyN(lpFaceName,lf.lfFaceName,LF_FACESIZE);
+          StringCchCopyN(lpFaceName,LF_FACESIZE,lf.lfFaceName,LF_FACESIZE);
           bSucceed = TRUE;
         }
         (GetProcAddress(hLocalModUxTheme,"CloseThemeData"))(hTheme);
@@ -1924,7 +1937,7 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
     *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
     if (*wSize == 0)
       *wSize = 8;
-    StrCpyN(lpFaceName,ncm.lfMessageFont.lfFaceName,LF_FACESIZE);
+    StringCchCopyN(lpFaceName,LF_FACESIZE,ncm.lfMessageFont.lfFaceName,LF_FACESIZE);
   }*/
 
   return(bSucceed);

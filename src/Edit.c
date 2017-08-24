@@ -34,6 +34,10 @@
 #include "helpers.h"
 #include "edit.h"
 
+#ifndef LCMAP_TITLECASE
+#define LCMAP_TITLECASE  0x00000300  // Title Case Letters bit mask
+#endif
+
 extern UINT16 g_uWinVer;
 extern HWND  hwndMain;
 extern HWND  hwndEdit;
@@ -701,7 +705,8 @@ void Encoding_GetLabel(int iEncoding) {
     }
     if (!pwsz)
       pwsz = wch;
-    StrCpyN(mEncoding[iEncoding].wchLabel,pwsz,COUNTOF(mEncoding[iEncoding].wchLabel));
+    StringCchCopyN(mEncoding[iEncoding].wchLabel,COUNTOF(mEncoding[iEncoding].wchLabel),
+                   pwsz,COUNTOF(mEncoding[iEncoding].wchLabel));
   }
 }
 
@@ -792,13 +797,13 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly)
 
       WCHAR *pwsz = StrChr(pEE[i].wch, L';');
       if (pwsz) {
-        StrCpyN(wchBuf,CharNext(pwsz),COUNTOF(wchBuf));
+        StringCchCopyN(wchBuf,COUNTOF(wchBuf),CharNext(pwsz),COUNTOF(wchBuf));
         pwsz = StrChr(wchBuf, L';');
         if (pwsz)
           *pwsz = 0;
       }
       else
-        StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
+        StringCchCopyN(wchBuf,COUNTOF(wchBuf),pEE[i].wch,COUNTOF(wchBuf));
 
       if (Encoding_IsANSI(id))
         StringCchCatN(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
@@ -885,13 +890,13 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly)
 
       WCHAR *pwsz = StrChr(pEE[i].wch, L';');
       if (pwsz) {
-        StrCpyN(wchBuf,CharNext(pwsz),COUNTOF(wchBuf));
+        StringCchCopyN(wchBuf,COUNTOF(wchBuf),CharNext(pwsz),COUNTOF(wchBuf));
         pwsz = StrChr(wchBuf, L';');
         if (pwsz)
           *pwsz = 0;
       }
       else
-        StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
+        StringCchCopyN(wchBuf,COUNTOF(wchBuf),pEE[i].wch,COUNTOF(wchBuf));
 
       if (Encoding_IsANSI(id))
         StringCchCatN(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
@@ -1759,17 +1764,15 @@ void EditTitleCase(HWND hwnd)
 
       cpEdit = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
 
-      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
+      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,iSelLength);
 
       if (IsW7()) {
 
-        LPWSTR pszMappedW = LocalAlloc(LPTR,LocalSize(pszTextW));
+        LPWSTR pszMappedW = LocalAlloc(LPTR,GlobalSize(pszTextW));
 
-        if (LCMapString(
-              LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING|/*LCMAP_TITLECASE*/0x00000300,
-              pszTextW,cchTextW,pszMappedW,(int)(LocalSize(pszMappedW)/sizeof(WCHAR)))) {
-
-          StrCpyN(pszTextW,pszMappedW,(int)(GlobalSize(pszTextW)/sizeof(WCHAR)));
+        if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING|LCMAP_TITLECASE,
+              pszTextW,cchTextW,pszMappedW,iSelLength)) {
+          StringCchCopyN(pszTextW,iSelLength,pszMappedW,iSelLength);
           bChanged = TRUE;
         }
         else
@@ -4539,8 +4542,9 @@ void EditSortLines(HWND hwnd,int iSortFlags)
       qsort(pLines,iLineCount,sizeof(SORTLINE),CmpStd);
   }
 
-  pmszResult = LocalAlloc(LPTR,cchTotal + 2*iLineCount +1);
-  pmszBuf    = LocalAlloc(LPTR,ichlMax +1);
+  int lenRes = cchTotal + 2 * iLineCount + 1;
+  pmszResult = LocalAlloc(LPTR,lenRes);
+  pmszBuf    = LocalAlloc(LPTR,ichlMax+1);
 
   for (i = 0; i < iLineCount; i++) {
     BOOL bDropLine = FALSE;
@@ -4565,8 +4569,8 @@ void EditSortLines(HWND hwnd,int iSortFlags)
       }
       if (!bDropLine) {
         WideCharToMultiByte(uCodePage,0,pLines[i].pwszLine,-1,pmszBuf,(int)LocalSize(pmszBuf),NULL,NULL);
-        StrCatBuffA(pmszResult,pmszBuf,(int)LocalSize(pmszResult));
-        StrCatBuffA(pmszResult,mszEOL,(int)LocalSize(pmszResult));
+        StringCchCatA(pmszResult,lenRes,pmszBuf);
+        StringCchCatA(pmszResult,lenRes,mszEOL);
       }
     }
   }
@@ -4807,7 +4811,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
     tch[cchExcerpt-3] = L'.';
     tch[cchExcerpt-4] = L'.';
   }
-  StrCpyN(lpszExcerpt,tch,cchExcerpt);
+  StringCchCopyN(lpszExcerpt,cchExcerpt,tch,cchExcerpt);
 
   if (pszText)
     LocalFree(pszText);
