@@ -879,12 +879,12 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 
 int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptbb,int ctbb)
 {
-  WCHAR tchButtons[512];
+  WCHAR tchButtons[LARGE_BUFFER];
   int i,c;
   int iCmd;
 
   ZeroMemory(tchButtons,COUNTOF(tchButtons)*sizeof(tchButtons[0]));
-  lstrcpyn(tchButtons,lpszButtons,COUNTOF(tchButtons)-2);
+  StringCchCopyN(tchButtons,COUNTOF(tchButtons),lpszButtons,COUNTOF(tchButtons)-2);
   TrimString(tchButtons);
   WCHAR *p = StrStr(tchButtons, L"  ");
   while (p) {
@@ -1031,7 +1031,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
   }
   else {
     if (lpszSrc) {
-      lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
+      StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
     }
   }
 
@@ -1045,16 +1045,16 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
     PathAppend(wchResult,wchPath);
   }
   else
-    lstrcpyn(wchResult,wchPath,COUNTOF(wchResult));
+    StringCchCopyN(wchResult,COUNTOF(wchResult),wchPath,COUNTOF(wchPath));
 
   PathCanonicalizeEx(wchResult,MAX_PATH);
   if (PathGetDriveNumber(wchResult) != -1)
     CharUpperBuff(wchResult,1);
 
   if (lpszDest == NULL || lpszSrc == lpszDest)
-    lstrcpyn(lpszSrc,wchResult,(cchDest == 0) ? MAX_PATH : cchDest);
+    StringCchCopyN(lpszSrc,((cchDest == 0) ? MAX_PATH : cchDest),wchResult,COUNTOF(wchResult));
   else
-    lstrcpyn(lpszDest,wchResult,(cchDest == 0) ? MAX_PATH : cchDest);
+    StringCchCopyN(lpszDest,((cchDest == 0) ? MAX_PATH : cchDest),wchResult,COUNTOF(wchResult));
 }
 
 
@@ -1173,24 +1173,21 @@ BOOL PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
 
   WCHAR tchResPath[MAX_PATH] = { L'\0' };
 
-  if (PathIsLnkFile(pszPath)) {
-
-    if (PathGetLnkPath(pszPath,tchResPath,sizeof(WCHAR)*COUNTOF(tchResPath))) {
-
-      if (PathIsDirectory(tchResPath)) {
-
-        lstrcpyn(pszResPath,tchResPath,cchResPath);
+  if (PathIsLnkFile(pszPath)) 
+  {
+    if (PathGetLnkPath(pszPath,tchResPath,sizeof(WCHAR)*COUNTOF(tchResPath))) 
+    {
+      if (PathIsDirectory(tchResPath)) 
+      {
+        StringCchCopyN(pszResPath,cchResPath,tchResPath,COUNTOF(tchResPath));
         return (TRUE);
       }
-
       else
         return FALSE;
       }
-
     else
       return FALSE;
     }
-
   else
     return FALSE;
 
@@ -1479,10 +1476,10 @@ void PathFixBackslashes(LPWSTR lpsz)
 //
 void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 {
-  WCHAR szBuf[512];
+  WCHAR szBuf[LARGE_BUFFER];
 
   if (ExpandEnvironmentStrings(lpSrc,szBuf,COUNTOF(szBuf)))
-    lstrcpyn(lpSrc,szBuf,dwSrc);
+    StringCchCopyN(lpSrc,dwSrc,szBuf,COUNTOF(szBuf));
 }
 
 
@@ -1659,7 +1656,7 @@ LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize) {
 
   LPMRULIST pmru = LocalAlloc(LPTR,sizeof(MRULIST));
   ZeroMemory(pmru,sizeof(MRULIST));
-  lstrcpyn(pmru->szRegKey,pszRegKey,COUNTOF(pmru->szRegKey));
+  StringCchCopyN(pmru->szRegKey,COUNTOF(pmru->szRegKey),pszRegKey,COUNTOF(pmru->szRegKey));
   pmru->iFlags = iFlags;
   pmru->iSize = min(iSize,MRU_MAXITEMS);
   return(pmru);
@@ -1796,7 +1793,7 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) {
     if (iIndex < 0 || iIndex > pmru->iSize-1 || !pmru->pszItems[iIndex])
       return(-1);
     else {
-      lstrcpyn(pszItem,pmru->pszItems[iIndex],cchItem);
+      StringCchCopyN(pszItem,cchItem,pmru->pszItems[iIndex],cchItem);
       return(lstrlen(pszItem));
     }
   }

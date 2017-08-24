@@ -1327,7 +1327,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               if (params->flagLexerSpecified) {
                 if (params->iInitialLexer < 0) {
                   WCHAR wchExt[32] = L".";
-                  lstrcpyn(CharNext(wchExt),StrEnd(&params->wchData)+1,30);
+                  StringCchCopyN(CharNext(wchExt),32,StrEnd(&params->wchData) + 1,31);
                   Style_SetLexerFromName(hwndEdit,&params->wchData,wchExt);
                 }
                 else if (params->iInitialLexer >=0 && params->iInitialLexer < NUMLEXERS)
@@ -1335,7 +1335,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               }
 
               if (params->flagTitleExcerpt) {
-                lstrcpyn(szTitleExcerpt,StrEnd(&params->wchData)+1,COUNTOF(szTitleExcerpt));
+                StringCchCopyN(szTitleExcerpt,COUNTOF(szTitleExcerpt),StrEnd(&params->wchData) + 1,COUNTOF(szTitleExcerpt));
                 SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
                   iPathNameFormat,bModified || iEncoding != iOriginalEncoding,
                   IDS_READONLY,bReadOnly,szTitleExcerpt);
@@ -3372,7 +3372,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (*mEncoding[iEncoding].pszParseNames) {
           char msz[32] = { '\0' };
           //int iSelStart;
-          lstrcpynA(msz,mEncoding[iEncoding].pszParseNames,COUNTOF(msz));
+          StringCchCopyNA(msz,COUNTOF(msz),mEncoding[iEncoding].pszParseNames,COUNTOF(msz));
           char *p = StrChrA(msz, ',');
           if (p)
             *p = 0;
@@ -5498,9 +5498,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(tbbMainWnd))
             {
-              WCHAR tch[256] = { L'\0' };
+              WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
               GetString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
-              lstrcpyn(((LPTBNOTIFY)lParam)->pszText,/*StrChr(tch,L'\n')+1*/tch,((LPTBNOTIFY)lParam)->cchText);
+              StringCchCopyN(((LPTBNOTIFY)lParam)->pszText,((LPTBNOTIFY)lParam)->cchText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
               return TRUE;
             }
@@ -5591,9 +5591,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
             {
-              WCHAR tch[256] = { L'\0' };
+              WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
               GetString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
-              lstrcpyn(((LPTOOLTIPTEXT)lParam)->szText,/*StrChr(tch,L'\n')+1*/tch,80);
+              StringCchCopyN(((LPTOOLTIPTEXT)lParam)->szText,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText),tch,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText));
             }
           }
           break;
@@ -5899,7 +5899,8 @@ void LoadSettings()
   WCHAR buffer[MIDSZ_BUFFER] = { L'\0' };
   const WCHAR defextwsc[] = L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~";  // underscore counted as part of word
   IniSectionGetString(pIniSection, L"ExtendedWhiteSpaceChars", defextwsc, buffer, COUNTOF(buffer));
-  if (!lstrlen(buffer)) lstrcpyn(buffer, defextwsc, COUNTOF(buffer));
+  if (!lstrlen(buffer)) 
+    StringCchCopyN(buffer,COUNTOF(buffer),defextwsc,COUNTOF(buffer));
   WCHAR2MBCS(CP_ACP,buffer,chExtendedWhiteSpaceChars,COUNTOF(chExtendedWhiteSpaceChars));
   // clear non-7-bit-ASCII chars
   for (size_t i = 0; i < strlen(chExtendedWhiteSpaceChars); i++) {
@@ -7509,7 +7510,7 @@ BOOL OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   ofn.lpstrDefExt = (lstrlen(tchDefaultExtension)) ? tchDefaultExtension : NULL;
 
   if (GetOpenFileName(&ofn)) {
-    lstrcpyn(lpstrFile,szFile,cchFile);
+    StringCchCopyN(lpstrFile,cchFile,szFile,COUNTOF(szFile));
     return TRUE;
   }
 
@@ -7565,7 +7566,7 @@ BOOL SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   ofn.lpstrDefExt = (lstrlen(tchDefaultExtension)) ? tchDefaultExtension : NULL;
 
   if (GetSaveFileName(&ofn)) {
-    lstrcpyn(lpstrFile,szNewFile,cchFile);
+    StringCchCopyN(lpstrFile,cchFile,szNewFile,COUNTOF(szNewFile));
     return TRUE;
   }
 

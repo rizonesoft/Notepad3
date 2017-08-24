@@ -837,7 +837,7 @@ BOOL FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
   if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FAVORITES),
                              hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite))
   {
-    lstrcpyn(lpstrFile,dliFavorite.szFileName,MAX_PATH);
+    StringCchCopyN(lpstrFile,MAX_PATH,dliFavorite.szFileName,MAX_PATH);
     return(TRUE);
   }
 

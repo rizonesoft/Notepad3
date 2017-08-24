@@ -919,7 +919,7 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
   if (!lpszDisplayName || !lstrlen(lpszDisplayName))
     SHGetFileInfo(lpszFullPath,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
   else
-    lstrcpyn(shfi.szDisplayName,lpszDisplayName,MAX_PATH);
+    StringCchCopyN(shfi.szDisplayName,COUNTOF(shfi.szDisplayName),lpszDisplayName,MAX_PATH);
 
   lvfi.flags = LVFI_STRING;
   lvfi.psz   = shfi.szDisplayName;
@@ -961,7 +961,7 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
     return;
 
   ZeroMemory(pdlf,sizeof(DL_FILTER));
-  lstrcpyn(pdlf->tFilterBuf,lpszFileSpec,(DL_FILTER_BUFSIZE-1));
+  StringCchCopyN(pdlf->tFilterBuf,COUNTOF(pdlf->tFilterBuf),lpszFileSpec,DL_FILTER_BUFSIZE);
   pdlf->bExcludeFilter = bExcludeFilter;
 
   if (!lstrcmp(lpszFileSpec,L"*.*") || !lstrlen(lpszFileSpec))
@@ -1529,7 +1529,6 @@ BOOL IL_GetDisplayName(LPSHELLFOLDER lpsf,
                        LPWSTR lpszDisplayName,
                        int nDisplayName)
 {
-
   STRRET str;
 
   if (NOERROR == lpsf->lpVtbl->GetDisplayNameOf(lpsf,
@@ -1537,40 +1536,8 @@ BOOL IL_GetDisplayName(LPSHELLFOLDER lpsf,
                                                 dwFlags,
                                                 &str))
   {
-
-    // Shlwapi.dll provides new function:
     return StrRetToBuf(&str,pidl,lpszDisplayName,nDisplayName);
-    // ...but I suppose my version is faster ;-)
-    /*switch (str.uType)
-    {
-
-      case STRRET_WSTR:
-        WideCharToMultiByte(CP_ACP,
-                            0,
-                            str.pOleStr,
-                            -1,
-                            lpszDisplayName,
-                            nDisplayName,
-                            NULL,
-                            NULL);
-        CoTaskMemFree(str.pOleStr);
-        break;
-
-      case STRRET_OFFSET:
-        lstrcpyn(lpszDisplayName,
-                 ((WCHAR *)(pidl)) + str.uOffset,
-                 nDisplayName);
-        break;
-
-      case STRRET_CSTR:
-        lstrcpyn(lpszDisplayName,str.cStr,nDisplayName);
-        break;
-
-    }
-
-    return TRUE;*/
   }
-
   return FALSE;
 }
 
