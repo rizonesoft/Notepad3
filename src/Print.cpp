@@ -25,11 +25,11 @@
 #include "platform.h"
 #include "scintilla.h"
 #include "scilexer.h"
+#include "resource.h"
 extern "C" {
 #include "dialogs.h"
 #include "helpers.h"
 }
-#include "resource.h"
 
 
 extern "C" HINSTANCE g_hInstance;
@@ -57,7 +57,7 @@ extern "C" HWND hwndStatus;
 
 void StatusUpdatePrintPage(int iPageNum)
 {
-  WCHAR tch[32];
+  WCHAR tch[32] = { L'\0' };
 
   FormatString(tch,COUNTOF(tch),IDS_PRINTFILE,iPageNum);
 
@@ -99,7 +99,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   int footerLineHeight;
   HFONT fontFooter;
 
-  WCHAR dateString[256];
+  WCHAR dateString[MIDSZ_BUFFER] = { L'\0' };
 
   DOCINFO di = {sizeof(DOCINFO), 0, 0, 0, 0};
 
@@ -112,7 +112,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   int pageNum;
   BOOL printPage;
 
-  WCHAR pageString[32];
+  WCHAR pageString[32] = { L'\0' };
 
   HPEN pen;
   HPEN penOld;
@@ -272,15 +272,15 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   // Get current date...
   SYSTEMTIME st;
   GetLocalTime(&st);
-  GetDateFormat(LOCALE_USER_DEFAULT,DATE_SHORTDATE,&st,NULL,dateString,256);
+  GetDateFormat(LOCALE_USER_DEFAULT,DATE_SHORTDATE,&st,NULL,dateString,MIDSZ_BUFFER);
 
   // Get current time...
   if (iPrintHeader == 0)
   {
-    WCHAR timeString[128];
-    GetTimeFormat(LOCALE_USER_DEFAULT,TIME_NOSECONDS,&st,NULL,timeString,128);
-    lstrcat(dateString,L" ");
-    lstrcat(dateString,timeString);
+    WCHAR timeString[SMALL_BUFFER] = { L'\0' };
+    GetTimeFormat(LOCALE_USER_DEFAULT,TIME_NOSECONDS,&st,NULL,timeString,SMALL_BUFFER);
+    StringCchCat(dateString,COUNTOF(dateString),L" ");
+    StringCchCat(dateString,COUNTOF(dateString),timeString);
   }
 
   // Set print color mode
@@ -335,7 +335,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     printPage = (!(pdlg.Flags & PD_PAGENUMS) ||
                  (pageNum >= pdlg.nFromPage) && (pageNum <= pdlg.nToPage));
 
-    wsprintf(pageString, pszPageFormat, pageNum);
+    StringCchPrintf(pageString,COUNTOF(pageString),pszPageFormat,pageNum);
 
     if (printPage) {
 
@@ -469,7 +469,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
         // Set header options
         GetString(IDS_PRINT_HEADER,tch,COUNTOF(tch));
-        lstrcat(tch,L"|");
+        StringCchCat(tch,COUNTOF(tch),L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
         while (p2) {
@@ -483,7 +483,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
         // Set footer options
         GetString(IDS_PRINT_FOOTER,tch,COUNTOF(tch));
-        lstrcat(tch,L"|");
+        StringCchCat(tch,COUNTOF(tch),L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
         while (p2) {
@@ -497,7 +497,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
         // Set color options
         GetString(IDS_PRINT_COLOR,tch,COUNTOF(tch));
-        lstrcat(tch,L"|");
+        StringCchCat(tch,COUNTOF(tch),L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
         while (p2) {

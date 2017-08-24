@@ -25,8 +25,8 @@
 #include <uxtheme.h>
 #include <stdio.h>
 #include <string.h>
-#include "helpers.h"
 #include "resource.h"
+#include "helpers.h"
 
 extern HINSTANCE g_hInstance;
 extern UINT16 g_uWinVer;
@@ -43,7 +43,7 @@ int IniSectionGetString(
       int cchReturnedString)
 {
   WCHAR *p = (WCHAR *)lpCachedIniSection;
-  WCHAR tch[256];
+  WCHAR tch[256] = { L'\0' };
   int  ich;
 
   if (p) {
@@ -71,7 +71,7 @@ int IniSectionGetInt(
       int iDefault)
 {
   WCHAR *p = (WCHAR *)lpCachedIniSection;
-  WCHAR tch[256];
+  WCHAR tch[256] = { L'\0' };
   int  ich;
   int  i;
 
@@ -100,7 +100,7 @@ UINT IniSectionGetUInt(
     LPCWSTR lpName,
     UINT uDefault) {
     WCHAR *p = (WCHAR *)lpCachedIniSection;
-    WCHAR tch[256];
+    WCHAR tch[256] = { L'\0' };
     int  ich;
     UINT u;
 
@@ -614,7 +614,7 @@ typedef struct _resizedlg {
 void ResizeDlg_Init(HWND hwnd,int cxFrame,int cyFrame,int nIdGrip)
 {
   RECT rc;
-  WCHAR wch[64];
+  WCHAR wch[64] = { L'\0' };
   int cGrip;
   RESIZEDLG *pm = LocalAlloc(LPTR,sizeof(RESIZEDLG));
 
@@ -813,7 +813,7 @@ LRESULT SendWMSize(HWND hwnd)
 BOOL StatusSetTextID(HWND hwnd,UINT nPart,UINT uID)
 {
 
-  WCHAR szText[256];
+  WCHAR szText[256] = { L'\0' };
   UINT uFlags = (nPart == 255) ? nPart|SBT_NOBORDERS : nPart;
 
   if (!uID)
@@ -1073,7 +1073,7 @@ BOOL PathIsLnkFile(LPCWSTR pszPath)
 
   //WCHAR *pszExt;
 
-  WCHAR tchResPath[256];
+  WCHAR tchResPath[256] = { L'\0' };
 
   if (!pszPath || !*pszPath)
     return FALSE;
@@ -1497,7 +1497,6 @@ void PathCanonicalizeEx(LPWSTR lpSrc,int len)
 
   if (PathCanonicalize(szDst,lpSrc))
     StringCchCopy(lpSrc,len,szDst);
-    lstrcpy(lpSrc,szDst);
 }
 
 
@@ -1588,7 +1587,7 @@ int FormatNumberStr(LPWSTR lpNumberStr)
 //
 BOOL SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 {
-  WCHAR szBuf[64];
+  WCHAR szBuf[64] = { L'\0' };
 
   StringCchPrintf(szBuf,COUNTOF(szBuf),L"%u",uValue);
   FormatNumberStr(szBuf);
@@ -1742,7 +1741,7 @@ BOOL MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile) {
 
   int i = 0;
   LPMRULIST pmruStore;
-  WCHAR wchItem[256];
+  WCHAR wchItem[256] = { L'\0' };
 
   pmruStore = MRU_Create(pmru->szRegKey,pmru->iFlags,pmru->iSize);
   MRU_Load(pmruStore);
@@ -1793,8 +1792,8 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) {
 BOOL MRU_Load(LPMRULIST pmru) {
 
   int i,n = 0;
-  WCHAR tchName[32];
-  WCHAR tchItem[1024];
+  WCHAR tchName[32] = { L'\0' };
+  WCHAR tchItem[1024] = { L'\0' };
   WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
 
   MRU_Empty(pmru);
@@ -1820,7 +1819,7 @@ BOOL MRU_Load(LPMRULIST pmru) {
 BOOL MRU_Save(LPMRULIST pmru) {
 
   int i;
-  WCHAR tchName[32];
+  WCHAR tchName[32] = { L'\0' };
   WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
 
   //IniDeleteSection(pmru->szRegKey);

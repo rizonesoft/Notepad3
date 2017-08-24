@@ -1273,7 +1273,7 @@ BOOL DriveBox_SelectDrive(HWND hwnd,LPCWSTR lpszPath)
 
   COMBOBOXEXITEM cbei;
   LPDC_ITEMDATA lpdcid;
-  WCHAR szRoot[64];
+  WCHAR szRoot[64] = { L'\0' };
 
   int i;
   int cbItems = (int)SendMessage(hwnd,CB_GETCOUNT,0,0);
@@ -1414,7 +1414,7 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
   NMCOMBOBOXEX *lpnmcbe;
   LPDC_ITEMDATA lpdcid;
   SHFILEINFO shfi;
-  WCHAR szTemp[256];
+  WCHAR szTemp[256] = { L'\0' };
 
   lpnmcbe = (LPVOID)lParam;
   lpdcid = (LPDC_ITEMDATA)lpnmcbe->ceItem.lParam;
