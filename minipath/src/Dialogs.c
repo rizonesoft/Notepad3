@@ -290,7 +290,6 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           {
             WCHAR arg1[MAX_PATH];
             WCHAR arg2[MAX_PATH];
-            SHELLEXECUTEINFO sei;
 
             if (GetDlgItemText(hwnd,IDC_COMMANDLINE,arg1,MAX_PATH))
             {
@@ -309,8 +308,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
                 ExtractFirstArgument(arg1,arg1,arg2);
 
-                ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+                SHELLEXECUTEINFO sei = { 0 };
                 sei.cbSize = sizeof(SHELLEXECUTEINFO);
                 sei.fMask = 0;
                 sei.hwnd = hwnd;
@@ -2234,10 +2232,9 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
 
     else
     {
-      SHELLEXECUTEINFO sei;
       WCHAR szParam[MAX_PATH];
 
-      ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
+      SHELLEXECUTEINFO sei = { 0 };
       sei.cbSize = sizeof(SHELLEXECUTEINFO);
       sei.fMask = 0;
       sei.hwnd = hwnd;

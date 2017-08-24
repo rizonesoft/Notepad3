@@ -12,9 +12,10 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#pragma once
 
-#ifndef _DLAPI_H_
-#define _DLAPI_H_
+#ifndef _NP3_DLAPI_H_
+#define _NP3_DLAPI_H_
 
 #ifdef __cplusplus
 extern "C" { // C-Declarations
@@ -124,7 +125,7 @@ BOOL DirList_PropertyDlg(HWND,int);
 
 //==== DlGetLongPathName() ====================================================
 
-BOOL DirList_GetLongPathName(HWND,LPWSTR);
+BOOL DirList_GetLongPathName(HWND,LPWSTR,int);
 
 //==== DlSelectItem() =========================================================
 
@@ -185,7 +186,7 @@ BOOL IL_GetDisplayName(LPSHELLFOLDER,
 #endif //__cplusplus
 
 
-#endif // _DLAPI_H_
+#endif //_NP3_DLAPI_H_
 
 
 ///   End of Dlapi.h   \\\

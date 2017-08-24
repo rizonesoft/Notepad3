@@ -12,6 +12,9 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#pragma once
+#ifndef _NP3_DIALOGS_H_
+#define _NP3_DIALOGS_H_
 
 #define MBINFO         0
 #define MBWARN         1
@@ -41,4 +44,4 @@ BOOL SelectDefLineEndingDlg(HWND,int *);
 INT_PTR InfoBox(int,LPCWSTR,int,...);
 
 
-// End of Dialogs.h
+#endif //_NP3_DIALOGS_H_

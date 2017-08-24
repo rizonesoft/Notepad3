@@ -16,6 +16,10 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#pragma once
+#ifndef _NP3_SCICALL_H_
+#define _NP3_SCICALL_H_
+
 
 //=============================================================================
 //
@@ -156,3 +160,6 @@ DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, valu
 //
 //
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
+
+
+#endif //_NP3_SCICALL_H_

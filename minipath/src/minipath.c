@@ -1365,7 +1365,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_LAUNCH:
       {
         DLITEM dli;
-        SHELLEXECUTEINFO sei;
 
         if (!DirList_IsFileSelected(hwndDirList))
         {
@@ -1377,8 +1376,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (DirList_GetItem(hwndDirList,-1,&dli) == -1)
           break;
 
-        ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+        SHELLEXECUTEINFO sei = { 0 };
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
         sei.fMask = 0;
         sei.hwnd = hwnd;
@@ -1396,7 +1394,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_QUICKVIEW:
       {
         DLITEM dli;
-        SHELLEXECUTEINFO sei;
         WCHAR szParam[MAX_PATH] = L"";
         WCHAR szTmp[MAX_PATH];
 
@@ -1408,8 +1405,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         dli.mask = DLI_FILENAME;
         if (DirList_GetItem(hwndDirList,-1,&dli) == -1)
           break;
-
-        ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
 
         if (PathIsLnkFile(dli.szFileName) &&
             PathGetLnkPath(dli.szFileName,szTmp,COUNTOF(szTmp)))
@@ -1424,6 +1419,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
         StrCatBuff(szParam,szTmp,COUNTOF(szParam));
 
+        SHELLEXECUTEINFO sei = { 0 };
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
         sei.fMask = 0;
         sei.hwnd = hwnd;
@@ -1850,9 +1846,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_EDITFAVORITES:
       {
-        SHELLEXECUTEINFO sei;
-        ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-
+        SHELLEXECUTEINFO sei = { 0 };
         sei.cbSize = sizeof(SHELLEXECUTEINFO);
         sei.fMask = 0;
         sei.hwnd = hwnd;
@@ -3723,7 +3717,6 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
 
     else // Either no window or disabled - run target.exe
     {
-      SHELLEXECUTEINFO sei;
       WCHAR  szFile[MAX_PATH];
       LPWSTR lpParam;
       WCHAR  szParam[MAX_PATH] = L"";
@@ -3747,8 +3740,6 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
               MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND) == IDNO)
           return;
       }
-
-      ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
 
       if (PathIsLnkFile(lpFileName) &&
           PathGetLnkPath(lpFileName,szTmp,COUNTOF(szTmp)))
@@ -3777,6 +3768,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
         }
       }
 
+      SHELLEXECUTEINFO sei = { 0 };
       sei.cbSize = sizeof(SHELLEXECUTEINFO);
       sei.fMask = 0;
       sei.hwnd = hwndMain;
@@ -3792,7 +3784,6 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
 
   else
   {
-    SHELLEXECUTEINFO sei;
     WCHAR  szFile[MAX_PATH];
     LPWSTR lpParam;
     WCHAR  szParam[MAX_PATH] = L"";
@@ -3807,8 +3798,6 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       return;
 
     else {
-
-      ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
 
       if (PathIsLnkFile(lpFileName) &&
           PathGetLnkPath(lpFileName,szTmp,COUNTOF(szTmp)))
@@ -3843,6 +3832,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       else
         lstrcpy(szFile,szTmp);
 
+      SHELLEXECUTEINFO sei = { 0 };
       sei.cbSize = sizeof(SHELLEXECUTEINFO);
       sei.fMask = 0;
       sei.hwnd = hwndMain;
