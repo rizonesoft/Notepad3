@@ -7,7 +7,7 @@
 *   Based on code from Notepad2-mod, (c) XhmikosR 2010-2015                   *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2016   *
-*                                                 http://www.rizonesoft.com   *
+*                                                 https://www.rizonesoft.com  *
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
@@ -65,7 +65,7 @@
         #endif
     #endif
 #elif defined(_MSC_VER)
-    #if _MSC_VER == 1910
+    #if _MSC_VER == 1911
         #if (_MSC_FULL_VER >= 191025017)
            #define VERSION_COMPILER    L"Microsoft Visual C++ 2017"
         #endif
