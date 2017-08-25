@@ -73,6 +73,13 @@ extern int iWeakSrcEncoding;
 
 extern BOOL bAccelWordNavigation;
 
+#define DELIM_BUFFER 258
+char DelimChars[DELIM_BUFFER] = { '\0' };
+char WhiteSpaceCharsDefault[DELIM_BUFFER] = { '\0' };
+char PunctuationCharsDefault[DELIM_BUFFER] = { '\0' };
+char WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { '\0' };
+char PunctuationCharsAccelerated[DELIM_BUFFER] = { '\0' };
+
 int g_DOSEncoding;
 
 // Supported Encodings
@@ -270,7 +277,10 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (0 << 16)),SCI_LINEENDWRAP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_HOME + (SCMOD_SHIFT << 16)),SCI_VCHOMEWRAPEXTEND);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (SCMOD_SHIFT << 16)),SCI_LINEENDWRAPEXTEND);
-  SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
+
+  // word delimiter handling
+  EditInitWordDelimiter(hwnd);
+  EditSetAccelWordNav(hwnd,bAccelWordNavigation);
 
   // Init default values for printing
   EditPrintInit();
@@ -280,6 +290,49 @@ HWND EditCreate(HWND hwndParent)
   return(hwnd);
 
 }
+
+
+//=============================================================================
+//
+//  EditSetWordDelimiter()
+//
+void EditInitWordDelimiter(HWND hwnd)
+{
+  // 1st get/set defaults
+  SendMessage(hwnd,SCI_GETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsDefault);
+  SendMessage(hwnd,SCI_GETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsDefault);
+  // delim chars are whitespace & punctuation
+  StringCchCopyA(DelimChars,COUNTOF(DelimChars),WhiteSpaceCharsDefault);
+  StringCchCatA(DelimChars,COUNTOF(DelimChars),PunctuationCharsDefault);
+  // init accelerated white space array
+  StringCchCopyA(WhiteSpaceCharsAccelerated,COUNTOF(WhiteSpaceCharsAccelerated),WhiteSpaceCharsDefault);
+
+  // 2nd get user settings
+  char whitesp[DELIM_BUFFER] = { '\0' };
+  WCHAR buffer[DELIM_BUFFER] = { L'\0' };
+  IniGetString(L"Settings2",L"ExtendedWhiteSpaceChars",L"",buffer,COUNTOF(buffer));
+  if (lstrlen(buffer) == 0)
+    StringCchCopyA(whitesp,COUNTOF(whitesp),PunctuationCharsDefault);
+  else
+    WCHAR2MBCS(CP_ACP,buffer,whitesp,COUNTOF(whitesp));
+  // add only 7-bit-ASCII chars to accelerate whitespace list
+  for (size_t i = 0; i < strlen(whitesp); i++) {
+    if (whitesp[i] & 0x7F) {
+      if (!StrChrA(WhiteSpaceCharsAccelerated,whitesp[i])) {
+        StringCchCatNA(WhiteSpaceCharsAccelerated,COUNTOF(WhiteSpaceCharsAccelerated),
+                       &(whitesp[i]),1);
+      }
+    }
+  }
+  // remove 7-bit-ASCII whitespace chars from accelerated punctuation list
+  for (size_t i = 0; i < strlen(PunctuationCharsDefault); i++) {
+    if (!StrChrA(WhiteSpaceCharsAccelerated,PunctuationCharsDefault[i])) {
+      StringCchCatNA(PunctuationCharsAccelerated,COUNTOF(PunctuationCharsAccelerated),
+                     &(PunctuationCharsDefault[i]),1);
+    }
+  }
+}
+
 
 
 //=============================================================================
@@ -4077,9 +4130,10 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
   cchConvW = 0;
   iLineLength = 0;
 
-#define ISDELIMITER(wc) StrChr(L",;.:-+%&¦|/*?!\"\'~΄#=",wc)
-#define ISWHITE(wc) StrChr(L" \t",wc)
-#define ISWORDEND(wc) (/*ISDELIMITER(wc) ||*/ StrChr(L" \t\r\n",wc))
+#define W_DELIMITER  L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~"  // underscore counted as part of word
+#define ISDELIMITER(wc) StrChr(W_DELIMITER,wc)
+#define ISWHITE(wc) StrChr(L" \t\f",wc)
+#define ISWORDEND(wc) (/*ISDELIMITER(wc) ||*/ StrChr(L" \t\f\r\n\v",wc))
 
   for (iTextW = 0; iTextW < cchTextW; iTextW++)
   {
@@ -5805,9 +5859,10 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   if (bMarkOccurrencesMatchWords)
   {
     int iSelStart2 = 0;
+    const char* delims = (bAccelWordNavigation ? WhiteSpaceCharsAccelerated : DelimChars);
     while ((iSelStart2 <= iSelCount) && pszText[iSelStart2])
     {
-      if (StrChrIA(" \t\r\n@#$%^&*~-=+()[]{}\\/:;'\"", pszText[iSelStart2]))
+      if (StrChrIA(delims,pszText[iSelStart2]))
       {
         LocalFree(pszText);
         return;
@@ -6845,6 +6900,24 @@ BOOL EditSortDlg(HWND hwnd,int *piSortFlags)
 
   return (iResult == IDOK) ? TRUE : FALSE;
 
+}
+
+
+
+//=============================================================================
+//
+//  EditSortDlg()
+//
+void EditSetAccelWordNav(HWND hwnd,BOOL bAccelWordNav)
+{
+  bAccelWordNavigation = bAccelWordNav;
+
+  if (bAccelWordNavigation) {
+    SendMessage(hwnd,SCI_SETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsAccelerated);
+    SendMessage(hwnd,SCI_SETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsAccelerated);
+  }
+  else
+    SendMessage(hwnd,SCI_SETCHARSDEFAULT,0,0);
 }
 
 

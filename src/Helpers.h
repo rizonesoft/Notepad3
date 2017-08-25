@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -20,6 +20,9 @@
 // don't allow deprecated functions
 #undef STRSAFE_NO_DEPRECATE
 #include <strsafe.h>
+
+#define STRGFY(X)     L##X
+#define MKWSTRG(strg) STRGFY(strg)
 
 #define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)

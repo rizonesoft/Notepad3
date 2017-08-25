@@ -111,8 +111,6 @@ WCHAR      tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-char      chExtendedWhiteSpaceChars[MIDSZ_BUFFER] = { '\0' };
-
 int       iPathNameFormat;
 BOOL      fWordWrap;
 BOOL      fWordWrapG;
@@ -699,9 +697,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     if (iSciDirectWriteTech >= 0)
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
   }
-
-  if (bAccelWordNavigation)
-    PostMessage(hwndEdit,SCI_SETWHITESPACECHARS,0,(LPARAM)chExtendedWhiteSpaceChars);
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
@@ -4071,10 +4066,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case  IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
-      if (bAccelWordNavigation)
-        SendMessage(hwndEdit, SCI_SETWHITESPACECHARS, 0, (LPARAM)chExtendedWhiteSpaceChars);
-      else
-        SendMessage(hwndEdit, SCI_SETCHARSDEFAULT, 0, 0);
+      EditSetAccelWordNav(hwndEdit,bAccelWordNavigation);
+      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_OFF:
@@ -5895,18 +5888,6 @@ void LoadSettings()
 
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
   iSciFontQuality = max(min(iSciFontQuality,3),0);
-
-  WCHAR buffer[MIDSZ_BUFFER] = { L'\0' };
-  const WCHAR defextwsc[] = L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~";  // underscore counted as part of word
-  IniSectionGetString(pIniSection, L"ExtendedWhiteSpaceChars", defextwsc, buffer, COUNTOF(buffer));
-  if (!lstrlen(buffer)) 
-    StringCchCopyN(buffer,COUNTOF(buffer),defextwsc,COUNTOF(buffer));
-  WCHAR2MBCS(CP_ACP,buffer,chExtendedWhiteSpaceChars,COUNTOF(chExtendedWhiteSpaceChars));
-  // clear non-7-bit-ASCII chars
-  for (size_t i = 0; i < strlen(chExtendedWhiteSpaceChars); i++) {
-    if (chExtendedWhiteSpaceChars[i] & ~0x7F) 
-      chExtendedWhiteSpaceChars[i] = ' '; // space
-  }
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
