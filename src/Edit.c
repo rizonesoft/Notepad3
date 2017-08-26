@@ -511,44 +511,47 @@ char* EditGetClipboardText(HWND hwnd)
   codepage = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
   eolmode  = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
 
-  mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 1,NULL,0,0,0) - 1;
+  mlen = WideCharToMultiByte(codepage,0,pwch,wlen+1,NULL,0,0,0);
   pmch = LocalAlloc(LPTR,mlen + 1);
   if (pmch)
-    WideCharToMultiByte(codepage,0,pwch,wlen + 1,pmch,mlen + 1,NULL,NULL);
+    WideCharToMultiByte(codepage,0,pwch,wlen+1,pmch,mlen+1,NULL,NULL);
 
-  ptmp = LocalAlloc(LPTR,mlen * 2 + 1);
-  if (ptmp) {
-    char *s = pmch;
-    char *d = ptmp;
-    int i;
-
-    for (i = 0; (i < mlen) && (*s != 0); i++) {
-      if (*s == '\n' || *s == '\r') {
-        if (eolmode == SC_EOL_CR) {
-          *d++ = '\r';
-        } else if (eolmode == SC_EOL_LF) {
-          *d++ = '\n';
-        } else { // eolmode == SC_EOL_CRLF
-          *d++ = '\r';
-          *d++ = '\n';
-        }
-        if ((*s == '\r') && (i+1 < mlen) && (*(s+1) == '\n')) {
-          i++;
+  if ((BOOL)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) {
+    ptmp = LocalAlloc(LPTR,mlen * 2 + 1);
+    if (ptmp) {
+      char *s = pmch;
+      char *d = ptmp;
+      for (int i = 0; (i <= mlen) && (*s != '\0'); i++) {
+        if (*s == '\n' || *s == '\r') {
+          if (eolmode == SC_EOL_CR) {
+            *d++ = '\r';
+          }
+          else if (eolmode == SC_EOL_LF) {
+            *d++ = '\n';
+          }
+          else { // eolmode == SC_EOL_CRLF
+            *d++ = '\r';
+            *d++ = '\n';
+          }
+          if ((*s == '\r') && (i + 1 < mlen) && (*(s + 1) == '\n')) {
+            i++;
+            s++;
+          }
           s++;
         }
-        s++;
-      } else {
-        *d++ = *s++;
+        else {
+          *d++ = *s++;
+        }
       }
-    }
-    *d++ = 0;
-    mlen2 = (int)(d - ptmp) - 1;
+      *d = '\0';
+      mlen2 = (int)(d - ptmp);
 
-    LocalFree(pmch);
-    pmch = LocalAlloc(LPTR,mlen2 + 1);
-    StringCchCopyA(pmch,mlen2,ptmp);
-    LocalFree(ptmp);
-  }
+      LocalFree(pmch);
+      pmch = LocalAlloc(LPTR,mlen2 + 1);
+      StringCchCopyA(pmch,mlen2 + 1,ptmp);
+      LocalFree(ptmp);
+    }
+  } 
 
   GlobalUnlock(hmem);
   CloseClipboard();
