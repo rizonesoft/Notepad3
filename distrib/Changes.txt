@@ -3,6 +3,19 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 450 (18 August 2017)
+--------------------------------------------------
+- Fixed "file modified" flag not set on Ctrl+X actions
+- Fixed re-enable accidentally disabled toolbar buttons (find, replace, clear, toggle-folds, file-launch)
+- Fixed remove obsolete settings entry, never read (SciDrawTechnology)
+- Fixed crash: not a good idea to make char array (char*) external to other compilation unit.
+- Fixed wrong shortcut in menu on word navigation (Ctrl+LEFT/RIGHT)
+- Renamed encoding menu item: "Recode No FileVars" (Alt+F8) =>> "Ignore Encoding Tags" (Alt-F8)
+- UTF-8 encoding of License.txt (fixing: different ANSI codepage for copyright sign)
+- Update to Scintilla 400 (early bird) pre-release.
+
+
+--------------------------------------------------
 Version 2 Build 440 (16 August 2017)
 --------------------------------------------------
 - Fixed unicode conversion error fixed in .rc

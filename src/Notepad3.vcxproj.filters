@@ -126,10 +126,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="..\res\Notepad3.exe.manifest" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="..\res\Notepad3.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\Toolbar2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -137,5 +137,10 @@
     <ResourceCompile Include="Notepad3.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="..\res\Notepad3.exe.manifest">
+      <Filter>Resource Files</Filter>
+    </Manifest>
   </ItemGroup>
 </Project>

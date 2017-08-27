@@ -3,10 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Notepad3", "src\Notepad3.vcxproj", "{BAAD32AB-CD47-12FD-873C-0BBC204B7641}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5877B917-512B-49F5-B514-1B4159E7A9CA} = {5877B917-512B-49F5-B514-1B4159E7A9CA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minipath", "minipath\minipath.vcxproj", "{781B17E7-427F-488F-A8E9-360BA38A10F3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scintilla", "scintilla\Scintilla.vcxproj", "{5877B917-512B-49F5-B514-1B4159E7A9CA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minipath", "minipath\minipath.vcxproj", "{781B17E7-427F-488F-A8E9-360BA38A10F3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3encrypt", "np3encrypt\np3encrypt.vcxproj", "{0210F830-26C6-40FC-BFD1-6ED833B90830}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,14 +29,6 @@ Global
 		{BAAD32AB-CD47-12FD-873C-0BBC204B7641}.Release|Win32.Build.0 = Release|Win32
 		{BAAD32AB-CD47-12FD-873C-0BBC204B7641}.Release|x64.ActiveCfg = Release|x64
 		{BAAD32AB-CD47-12FD-873C-0BBC204B7641}.Release|x64.Build.0 = Release|x64
-		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Debug|Win32.Build.0 = Debug|Win32
-		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Debug|x64.ActiveCfg = Debug|x64
-		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Debug|x64.Build.0 = Debug|x64
-		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Release|Win32.ActiveCfg = Release|Win32
-		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Release|Win32.Build.0 = Release|Win32
-		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Release|x64.ActiveCfg = Release|x64
-		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Release|x64.Build.0 = Release|x64
 		{781B17E7-427F-488F-A8E9-360BA38A10F3}.Debug|Win32.ActiveCfg = Debug|Win32
 		{781B17E7-427F-488F-A8E9-360BA38A10F3}.Debug|Win32.Build.0 = Debug|Win32
 		{781B17E7-427F-488F-A8E9-360BA38A10F3}.Debug|Win32.Deploy.0 = Debug|Win32
@@ -44,6 +41,22 @@ Global
 		{781B17E7-427F-488F-A8E9-360BA38A10F3}.Release|x64.ActiveCfg = Release|x64
 		{781B17E7-427F-488F-A8E9-360BA38A10F3}.Release|x64.Build.0 = Release|x64
 		{781B17E7-427F-488F-A8E9-360BA38A10F3}.Release|x64.Deploy.0 = Release|x64
+		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Debug|Win32.Build.0 = Debug|Win32
+		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Debug|x64.ActiveCfg = Debug|x64
+		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Debug|x64.Build.0 = Debug|x64
+		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Release|Win32.ActiveCfg = Release|Win32
+		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Release|Win32.Build.0 = Release|Win32
+		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Release|x64.ActiveCfg = Release|x64
+		{5877B917-512B-49F5-B514-1B4159E7A9CA}.Release|x64.Build.0 = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|Win32.Build.0 = Debug|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|x64.ActiveCfg = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|x64.Build.0 = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|Win32.ActiveCfg = Release|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|Win32.Build.0 = Release|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|x64.ActiveCfg = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

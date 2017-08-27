@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -23,41 +23,41 @@
     <ProjectGuid>{5877B917-512B-49F5-B514-1B4159E7A9CA}</ProjectGuid>
     <ProjectName>Scintilla</ProjectName>
     <RootNamespace>Scintilla</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='10.0'">v100</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='12.0'">v120_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='10.0'">v100</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='12.0'">v120_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='10.0'">v100</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='12.0'">v120_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='10.0'">v100</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='12.0'">v120_xp</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)'=='14.0'">v140_xp</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)'=='15.0'">v141_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -125,6 +125,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
+      <OmitFramePointers />
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -161,6 +162,8 @@
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <OmitFramePointers />
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -176,6 +179,7 @@
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>
@@ -224,6 +228,7 @@
     <ClCompile Include="lexlib\Accessor.cxx" />
     <ClCompile Include="lexlib\CharacterCategory.cxx" />
     <ClCompile Include="lexlib\CharacterSet.cxx" />
+    <ClCompile Include="lexlib\DefaultLexer.cxx" />
     <ClCompile Include="lexlib\LexerBase.cxx" />
     <ClCompile Include="lexlib\LexerModule.cxx" />
     <ClCompile Include="lexlib\LexerNoExceptions.cxx" />
@@ -239,6 +244,7 @@
     <ClCompile Include="src\CellBuffer.cxx" />
     <ClCompile Include="src\CharClassify.cxx" />
     <ClCompile Include="src\ContractionState.cxx" />
+    <ClCompile Include="src\DBCS.cxx" />
     <ClCompile Include="src\Decoration.cxx" />
     <ClCompile Include="src\Document.cxx" />
     <ClCompile Include="src\EditModel.cxx" />
@@ -273,6 +279,7 @@
     <ClInclude Include="lexlib\Accessor.h" />
     <ClInclude Include="lexlib\CharacterCategory.h" />
     <ClInclude Include="lexlib\CharacterSet.h" />
+    <ClInclude Include="lexlib\DefaultLexer.h" />
     <ClInclude Include="lexlib\LexAccessor.h" />
     <ClInclude Include="lexlib\LexerBase.h" />
     <ClInclude Include="lexlib\LexerModule.h" />
@@ -293,6 +300,7 @@
     <ClInclude Include="src\CellBuffer.h" />
     <ClInclude Include="src\CharClassify.h" />
     <ClInclude Include="src\ContractionState.h" />
+    <ClInclude Include="src\DBCS.h" />
     <ClInclude Include="src\Decoration.h" />
     <ClInclude Include="src\Document.h" />
     <ClInclude Include="src\EditModel.h" />
