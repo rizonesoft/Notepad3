@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -44,26 +44,30 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
+enum AlignMask
+{
+  ALIGN_LEFT       = 0,
+  ALIGN_RIGHT      = 1,
+  ALIGN_CENTER     = 2,
+  ALIGN_JUSTIFY    = 3,
+  ALIGN_JUSTIFY_EX = 4
+};
 
-#define ALIGN_LEFT       0
-#define ALIGN_RIGHT      1
-#define ALIGN_CENTER     2
-#define ALIGN_JUSTIFY    3
-#define ALIGN_JUSTIFY_EX 4
-
-
-#define SORT_ASCENDING  0
-#define SORT_DESCENDING 1
-#define SORT_SHUFFLE    2
-#define SORT_MERGEDUP   4
-#define SORT_UNIQDUP    8
-#define SORT_UNIQUNIQ  16
-#define SORT_NOCASE    32
-#define SORT_LOGICAL   64
-#define SORT_COLUMN   128
-
+enum SortOrderMask
+{
+  SORT_ASCENDING  =   0,
+  SORT_DESCENDING =   1,
+  SORT_SHUFFLE    =   2,
+  SORT_MERGEDUP   =   4,
+  SORT_UNIQDUP    =   8,
+  SORT_UNIQUNIQ   =  16,
+  SORT_NOCASE     =  32,
+  SORT_LOGICAL    =  64,
+  SORT_COLUMN     =  128
+};
 
 HWND  EditCreate(HWND);
+void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
 BOOL  EditConvertText(HWND,int,int,BOOL);
 BOOL  EditSetNewEncoding(HWND,int,int,BOOL,BOOL);
@@ -126,7 +130,8 @@ BOOL  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMarkAll(HWND,int,BOOL,BOOL);
-void  CompleteWord(HWND, BOOL);
+void  EditSetAccelWordNav(HWND,BOOL);
+void  CompleteWord(HWND,BOOL);
 
 extern int g_DOSEncoding;
 

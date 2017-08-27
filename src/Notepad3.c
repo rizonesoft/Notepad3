@@ -111,8 +111,6 @@ WCHAR      tchToolbarBitmap[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-char      chExtendedWhiteSpaceChars[MIDSZ_BUFFER] = { '\0' };
-
 int       iPathNameFormat;
 BOOL      fWordWrap;
 BOOL      fWordWrapG;
@@ -225,20 +223,20 @@ int     cyFavoritesDlg;
 int     xFindReplaceDlg;
 int     yFindReplaceDlg;
 
-LPWSTR      lpFileList[32] = { L'\0' };
-int         cFileList = 0;
-int         cchiFileList = 0;
-LPWSTR      lpFileArg = NULL;
-LPWSTR      lpSchemeArg = NULL;
-LPWSTR      lpMatchArg = NULL;
-LPWSTR      lpEncodingArg = NULL;
-LPMRULIST  pFileMRU;
-LPMRULIST  mruFind;
-LPMRULIST  mruReplace;
+LPWSTR    lpFileList[32] = { NULL };
+int       cFileList = 0;
+int       cchiFileList = 0;
+LPWSTR    lpFileArg = NULL;
+LPWSTR    lpSchemeArg = NULL;
+LPWSTR    lpMatchArg = NULL;
+LPWSTR    lpEncodingArg = NULL;
+LPMRULIST pFileMRU;
+LPMRULIST mruFind;
+LPMRULIST mruReplace;
 
 DWORD     dwLastIOError;
-WCHAR      szCurFile[MAX_PATH+40] = { L'\0' };
-FILEVARS   fvCurFile;
+WCHAR     szCurFile[FILE_ARG_BUF] = { L'\0' };
+FILEVARS  fvCurFile;
 BOOL      bModified;
 BOOL      bReadOnly = FALSE;
 int       iEncoding;
@@ -257,7 +255,7 @@ BOOL      bLastCopyFromMe = FALSE;
 DWORD     dwLastCopyTime;
 
 UINT      uidsAppTitle = IDS_APPTITLE;
-WCHAR     szTitleExcerpt[256] = { L'\0' };
+WCHAR     szTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 int       fKeepTitleExcerpt = 0;
 
 HANDLE    hChangeHandle = NULL;
@@ -700,9 +698,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
   }
 
-  if (bAccelWordNavigation)
-    PostMessage(hwndEdit,SCI_SETWHITESPACECHARS,0,(LPARAM)chExtendedWhiteSpaceChars);
-
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
 
@@ -915,7 +910,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
         }
       }
     }
-    GlobalFree(lpFileArg);
+    GlobalFree(lpFileArg); lpFileArg = NULL;
 
     if (bOpened) {
       if (flagChangeNotify == 1) {
@@ -1327,7 +1322,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               if (params->flagLexerSpecified) {
                 if (params->iInitialLexer < 0) {
                   WCHAR wchExt[32] = L".";
-                  lstrcpyn(CharNext(wchExt),StrEnd(&params->wchData)+1,30);
+                  StringCchCopyN(CharNext(wchExt),32,StrEnd(&params->wchData) + 1,31);
                   Style_SetLexerFromName(hwndEdit,&params->wchData,wchExt);
                 }
                 else if (params->iInitialLexer >=0 && params->iInitialLexer < NUMLEXERS)
@@ -1335,7 +1330,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               }
 
               if (params->flagTitleExcerpt) {
-                lstrcpyn(szTitleExcerpt,StrEnd(&params->wchData)+1,COUNTOF(szTitleExcerpt));
+                StringCchCopyN(szTitleExcerpt,COUNTOF(szTitleExcerpt),StrEnd(&params->wchData) + 1,COUNTOF(szTitleExcerpt));
                 SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
                   iPathNameFormat,bModified || iEncoding != iOriginalEncoding,
                   IDS_READONLY,bReadOnly,szTitleExcerpt);
@@ -2510,12 +2505,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
 
         if (lstrlen(tchParam) && lstrlen(szCurFile))
-          StrCatBuff(tchParam,L" ",COUNTOF(tchParam));
+          StringCchCat(tchParam,COUNTOF(tchParam),L" ");
 
         if (lstrlen(szCurFile)) {
           StringCchCopy(tchTemp,COUNTOF(tchTemp),szCurFile);
           PathQuoteSpaces(tchTemp);
-          StrCatBuff(tchParam,tchTemp,COUNTOF(tchParam));
+          StringCchCat(tchParam,COUNTOF(tchParam),tchTemp);
         }
 
         SHELLEXECUTEINFO sei = { 0 };
@@ -2926,13 +2921,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_COPY:
       if (flagPasteBoard)
         bLastCopyFromMe = TRUE;
-      if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0 ,0))
-      {
-        SendMessage(hwndEdit, SCI_COPY, 0, 0);
-      }
-      else {
-        SendMessage(hwndEdit, SCI_LINECOPY, 0, 0);  // VisualStudio behaviour
-      }
+      SendMessage(hwndEdit,SCI_COPYALLOWLINE, 0, 0);
       UpdateToolbar();
       break;
 
@@ -2972,14 +2961,14 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         char *pClip = EditGetClipboardText(hwndEdit);
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-        SendMessage(hwndEdit,SCI_BEGINUNDOACTION,0,0);
+        int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_CUT,0,0);
         SendMessage(hwndEdit,SCI_REPLACESEL,(WPARAM)0,(LPARAM)pClip);
         if (iPos > iAnchor)
           SendMessage(hwndEdit,SCI_SETSEL,iAnchor,iAnchor + lstrlenA(pClip));
         else
           SendMessage(hwndEdit,SCI_SETSEL,iPos + lstrlenA(pClip),iPos);
-        SendMessage(hwndEdit,SCI_ENDUNDOACTION,0,0);
+        EndSelUndoAction(token);
         LocalFree(pClip);
       }
       break;
@@ -3008,7 +2997,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_SELECTALL:
       SendMessage(hwndEdit,SCI_SELECTALL,0,0);
-      //SendMessage(hwndEdit,SCI_SETSEL,0,(LPARAM)-1);
       break;
 
 
@@ -3167,30 +3155,46 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_SELECTIONDUPLICATE:
-      SendMessage(hwndEdit,SCI_BEGINUNDOACTION,0,0);
-      SendMessage(hwndEdit,SCI_SELECTIONDUPLICATE,0,0);
-      SendMessage(hwndEdit,SCI_ENDUNDOACTION,0,0);
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_SELECTIONDUPLICATE,0,0);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_PADWITHSPACES:
-      BeginWaitCursor();
-      EditPadWithSpaces(hwndEdit,FALSE,FALSE);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditPadWithSpaces(hwndEdit,FALSE,FALSE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_STRIP1STCHAR:
-      BeginWaitCursor();
-      EditStripFirstCharacter(hwndEdit);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditStripFirstCharacter(hwndEdit);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_STRIPLASTCHAR:
-      BeginWaitCursor();
-      EditStripLastCharacter(hwndEdit);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditStripLastCharacter(hwndEdit);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
@@ -3202,54 +3206,78 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_COMPRESSWS:
-      BeginWaitCursor();
-      EditCompressSpaces(hwndEdit);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditCompressSpaces(hwndEdit);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_MERGEBLANKLINES:
-      BeginWaitCursor();
-      EditRemoveBlankLines(hwndEdit,TRUE);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditRemoveBlankLines(hwndEdit,TRUE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_REMOVEBLANKLINES:
-      BeginWaitCursor();
-      EditRemoveBlankLines(hwndEdit,FALSE);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditRemoveBlankLines(hwndEdit,FALSE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_MODIFYLINES:
-      if (EditModifyLinesDlg(hwnd,wchPrefixLines,wchAppendLines)) {
-        BeginWaitCursor();
-        EditModifyLines(hwndEdit,wchPrefixLines,wchAppendLines);
-        EndWaitCursor();
+      {
+        if (EditModifyLinesDlg(hwnd,wchPrefixLines,wchAppendLines)) {
+          BeginWaitCursor();
+          int token = BeginSelUndoAction();
+          EditModifyLines(hwndEdit,wchPrefixLines,wchAppendLines);
+          EndSelUndoAction(token);
+          EndWaitCursor();
+        }
       }
       break;
 
 
     case IDM_EDIT_ALIGN:
-      if (EditAlignDlg(hwnd,&iAlignMode)) {
-        BeginWaitCursor();
-        EditAlignText(hwndEdit,iAlignMode);
-        EndWaitCursor();
+      {
+        if (EditAlignDlg(hwnd,&iAlignMode)) {
+          BeginWaitCursor();
+          int token = BeginSelUndoAction();
+          EditAlignText(hwndEdit,iAlignMode);
+          EndSelUndoAction(token);
+          EndWaitCursor();
+        }
       }
       break;
 
 
     case IDM_EDIT_SORTLINES:
-      if (EditSortDlg(hwnd,&iSortOptions)) {
-        BeginWaitCursor();
-        StatusSetText(hwndStatus,255,L"...");
-        StatusSetSimple(hwndStatus,TRUE);
-        InvalidateRect(hwndStatus,NULL,TRUE);
-        UpdateWindow(hwndStatus);
-        EditSortLines(hwndEdit,iSortOptions);
-        StatusSetSimple(hwndStatus,FALSE);
-        EndWaitCursor();
+      {
+        if (EditSortDlg(hwnd,&iSortOptions)) {
+          BeginWaitCursor();
+          int token = BeginSelUndoAction();
+          StatusSetText(hwndStatus,255,L"...");
+          StatusSetSimple(hwndStatus,TRUE);
+          InvalidateRect(hwndStatus,NULL,TRUE);
+          UpdateWindow(hwndStatus);
+          EditSortLines(hwndEdit,iSortOptions);
+          StatusSetSimple(hwndStatus,FALSE);
+          EndSelUndoAction(token);
+          EndWaitCursor();
+        }
       }
       break;
 
@@ -3271,19 +3299,27 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_SPLITLINES:
-      BeginWaitCursor();
-      SendMessage(hwndEdit,SCI_TARGETFROMSELECTION,0,0);
-      SendMessage(hwndEdit,SCI_LINESSPLIT,0,0);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_TARGETFROMSELECTION,0,0);
+        SendMessage(hwndEdit,SCI_LINESSPLIT,0,0);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_JOINLINES:
-      BeginWaitCursor();
-      SendMessage(hwndEdit,SCI_TARGETFROMSELECTION,0,0);
-      SendMessage(hwndEdit,SCI_LINESJOIN,0,0);
-      EditJoinLinesEx(hwndEdit);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_TARGETFROMSELECTION,0,0);
+        SendMessage(hwndEdit,SCI_LINESJOIN,0,0);
+        EditJoinLinesEx(hwndEdit);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
@@ -3295,37 +3331,57 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_CONVERTUPPERCASE:
-      BeginWaitCursor();
-      SendMessage(hwndEdit,SCI_UPPERCASE,0,0);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_UPPERCASE,0,0);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_CONVERTLOWERCASE:
-      BeginWaitCursor();
-      SendMessage(hwndEdit,SCI_LOWERCASE,0,0);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_LOWERCASE,0,0);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_INVERTCASE:
-      BeginWaitCursor();
-      EditInvertCase(hwndEdit);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditInvertCase(hwndEdit);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_TITLECASE:
-      BeginWaitCursor();
-      EditTitleCase(hwndEdit);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditTitleCase(hwndEdit);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_SENTENCECASE:
-      BeginWaitCursor();
-      EditSentenceCase(hwndEdit);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditSentenceCase(hwndEdit);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
@@ -3372,11 +3428,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (*mEncoding[iEncoding].pszParseNames) {
           char msz[32] = { '\0' };
           //int iSelStart;
-          lstrcpynA(msz,mEncoding[iEncoding].pszParseNames,COUNTOF(msz));
+          StringCchCopyNA(msz,COUNTOF(msz),mEncoding[iEncoding].pszParseNames,COUNTOF(msz));
           char *p = StrChrA(msz, ',');
           if (p)
             *p = 0;
+          int token = BeginSelUndoAction();
           SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)msz);
+          EndSelUndoAction(token);
         }
       }
       break;
@@ -3421,7 +3479,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
         WideCharToMultiByte(uCP,0,tchDateTime,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
+        int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
+        EndSelUndoAction(token);
       }
       break;
 
@@ -3451,8 +3511,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
         WideCharToMultiByte(uCP,0,pszInsert,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
+        int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
-      }
+        EndSelUndoAction(token);
+    }
       break;
 
 
@@ -3469,7 +3531,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             wszGuid[wcslen(wszGuid) - 1] = L'\0'; // trim last brace char 
             UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
             if (WideCharToMultiByte(uCP,0,pwszGuid,-1,mszGuid,COUNTOF(mszGuid),NULL,NULL)) {
+              int token = BeginSelUndoAction();
               SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszGuid);
+              EndSelUndoAction(token);
             }
           }
         }
@@ -4071,10 +4135,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case  IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
-      if (bAccelWordNavigation)
-        SendMessage(hwndEdit, SCI_SETWHITESPACECHARS, 0, (LPARAM)chExtendedWhiteSpaceChars);
-      else
-        SendMessage(hwndEdit, SCI_SETCHARSDEFAULT, 0, 0);
+      EditSetAccelWordNav(hwndEdit,bAccelWordNavigation);
+      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_OFF:
@@ -4514,8 +4576,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         int iStartPos   = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
         int iIndentPos  = (int)SendMessage(hwndEdit,SCI_GETLINEINDENTPOSITION,(WPARAM)iLine,0);
 
-        if (iPos != iAnchor)
+        if (iPos != iAnchor) {
+          int token = BeginSelUndoAction();
           SendMessage(hwndEdit,SCI_SETSEL,(WPARAM)iPos,(LPARAM)iPos);
+          EndSelUndoAction(token);
+        }
         else {
           if (iPos == iStartPos)
             SendMessage(hwndEdit,SCI_DELETEBACK,0,0);
@@ -4861,32 +4926,56 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case CMD_STRINGIFY:
-      EditEncloseSelection(hwndEdit,L"'",L"'");
+      {
+        int token = BeginSelUndoAction();
+        EditEncloseSelection(hwndEdit,L"'",L"'");
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case CMD_STRINGIFY2:
-      EditEncloseSelection(hwndEdit,L"\"",L"\"");
+      {
+        int token = BeginSelUndoAction();
+        EditEncloseSelection(hwndEdit,L"\"",L"\"");
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case CMD_EMBRACE:
-      EditEncloseSelection(hwndEdit,L"(",L")");
+      {
+        int token = BeginSelUndoAction();
+        EditEncloseSelection(hwndEdit,L"(",L")");
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case CMD_EMBRACE2:
-      EditEncloseSelection(hwndEdit,L"[",L"]");
+      {
+        int token = BeginSelUndoAction();
+        EditEncloseSelection(hwndEdit,L"[",L"]");
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case CMD_EMBRACE3:
-      EditEncloseSelection(hwndEdit,L"{",L"}");
+      {
+        int token = BeginSelUndoAction();
+        EditEncloseSelection(hwndEdit,L"{",L"}");
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case CMD_EMBRACE4:
-      EditEncloseSelection(hwndEdit,L"`",L"`");
+      {
+        int token = BeginSelUndoAction();
+        EditEncloseSelection(hwndEdit,L"`",L"`");
+        EndSelUndoAction(token);
+      }
       break;
 
 
@@ -4947,9 +5036,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           HANDLE hData;
           WCHAR *pData;
           EmptyClipboard();
-          hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * (lstrlen(pszCopy) + 1));
+          int len = lstrlen(pszCopy);
+          hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * (len+1));
           pData = GlobalLock(hData);
-          StrCpyN(pData,pszCopy,(int)GlobalSize(hData) / sizeof(WCHAR));
+          StringCchCopyN(pData,(len+1),pszCopy,len);
           GlobalUnlock(hData);
           SetClipboardData(CF_UNICODETEXT,hData);
           CloseClipboard();
@@ -4979,9 +5069,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           HANDLE hData;
           WCHAR *pData;
           EmptyClipboard();
-          hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * (lstrlen(wszWinPos) + 1));
+          int len = lstrlen(wszWinPos);
+          hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * (len+1));
           pData = GlobalLock(hData);
-          StrCpyN(pData,wszWinPos,(int)GlobalSize(hData) / sizeof(WCHAR));
+          StringCchCopyN(pData,(len+1),wszWinPos,len);
           GlobalUnlock(hData);
           SetClipboardData(CF_UNICODETEXT,hData);
           CloseClipboard();
@@ -5420,10 +5511,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                       lstrcmpiA(tchIns,"</link>") &&
                       lstrcmpiA(tchIns,"</meta>"))
                   {
-                    SendMessage(hwndEdit,SCI_BEGINUNDOACTION,0,0);
+                    int token = BeginSelUndoAction();
                     SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)tchIns);
                     SendMessage(hwndEdit,SCI_SETSEL,iCurPos,iCurPos);
-                    SendMessage(hwndEdit,SCI_ENDUNDOACTION,0,0);
+                    EndSelUndoAction(token);
                   }
                 }
               }
@@ -5435,15 +5526,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_MODIFIED:
           // check for ADDUNDOACTION step
-          if (scn->modificationType & SC_MOD_CONTAINER)
-          {
-            if (scn->modificationType & SC_PERFORMED_UNDO) 
-            {
-              RestoreSelectionAction(scn->token);
+          if (scn->modificationType & SC_MOD_CONTAINER) {
+            if (scn->modificationType & SC_PERFORMED_UNDO) {
+              RestoreSelectionAction(scn->token,UNDO);
+            } else if (scn->modificationType & SC_PERFORMED_REDO) {
+              RestoreSelectionAction(scn->token,REDO);
             }
-            //else if (scn->modificationType & SC_PERFORMED_REDO) {
-              // REDO of ADDUNDOACTION step
-            //}
           }
           // fall through
         case SCN_ZOOM:
@@ -5496,9 +5584,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(tbbMainWnd))
             {
-              WCHAR tch[256] = { L'\0' };
+              WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
               GetString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
-              lstrcpyn(((LPTBNOTIFY)lParam)->pszText,/*StrChr(tch,L'\n')+1*/tch,((LPTBNOTIFY)lParam)->cchText);
+              StringCchCopyN(((LPTBNOTIFY)lParam)->pszText,((LPTBNOTIFY)lParam)->cchText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
               return TRUE;
             }
@@ -5589,9 +5677,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             if (!(((LPTOOLTIPTEXT)lParam)->uFlags & TTF_IDISHWND))
             {
-              WCHAR tch[256] = { L'\0' };
+              WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
               GetString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
-              lstrcpyn(((LPTOOLTIPTEXT)lParam)->szText,/*StrChr(tch,L'\n')+1*/tch,80);
+              StringCchCopyN(((LPTOOLTIPTEXT)lParam)->szText,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText),tch,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText));
             }
           }
           break;
@@ -5893,17 +5981,6 @@ void LoadSettings()
 
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
   iSciFontQuality = max(min(iSciFontQuality,3),0);
-
-  WCHAR buffer[MIDSZ_BUFFER] = { L'\0' };
-  const WCHAR defextwsc[] = L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~";  // underscore counted as part of word
-  IniSectionGetString(pIniSection, L"ExtendedWhiteSpaceChars", defextwsc, buffer, COUNTOF(buffer));
-  if (!lstrlen(buffer)) lstrcpyn(buffer, defextwsc, COUNTOF(buffer));
-  WCHAR2MBCS(CP_ACP,buffer,chExtendedWhiteSpaceChars,COUNTOF(chExtendedWhiteSpaceChars));
-  // clear non-7-bit-ASCII chars
-  for (size_t i = 0; i < strlen(chExtendedWhiteSpaceChars); i++) {
-    if (chExtendedWhiteSpaceChars[i] & ~0x7F) 
-      chExtendedWhiteSpaceChars[i] = ' '; // space
-  }
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
@@ -6217,14 +6294,15 @@ void ParseCommandLine()
 
       // Shell integration
       else if (StrCmpNI(lp1,L"appid=",CSTRLEN(L"appid=")) == 0) {
-        StrCpyN(g_wchAppUserModelID,lp1+CSTRLEN(L"appid="),COUNTOF(g_wchAppUserModelID));
+        StringCchCopyN(g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID),
+                       lp1 + CSTRLEN(L"appid="),len - CSTRLEN(L"appid="));
         StrTrim(g_wchAppUserModelID,L" ");
         if (lstrlen(g_wchAppUserModelID) == 0)
           StringCchCopy(g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID),L"Notepad3");
       }
       else if (StrCmpNI(lp1,L"sysmru=",CSTRLEN(L"sysmru=")) == 0) {
-        WCHAR wch[8];
-        StrCpyN(wch,lp1+CSTRLEN(L"sysmru="),COUNTOF(wch));
+        WCHAR wch[16];
+        StringCchCopyN(wch,COUNTOF(wch),lp1 + CSTRLEN(L"sysmru="),COUNTOF(wch));
         StrTrim(wch,L" ");
         if (*wch == L'1')
           flagUseSystemMRU = 2;
@@ -6257,7 +6335,7 @@ void ParseCommandLine()
           if (*(lp1+1) == L'0' || *CharUpper(lp1+1) == L'O')
             StringCchCopy(szIniFile,COUNTOF(szIniFile),L"*?");
           else if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
-            StrCpyN(szIniFile,lp1,COUNTOF(szIniFile));
+            StringCchCopyN(szIniFile,COUNTOF(szIniFile),lp1,len);
             TrimString(szIniFile);
             PathUnquoteSpaces(szIniFile);
           }
@@ -6348,7 +6426,7 @@ void ParseCommandLine()
 
         case L'T':
           if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
-            StrCpyN(szTitleExcerpt,lp1,COUNTOF(szTitleExcerpt));
+            StringCchCopyN(szTitleExcerpt,COUNTOF(szTitleExcerpt),lp1,len);
             fKeepTitleExcerpt = 1;
           }
           break;
@@ -6497,20 +6575,20 @@ void ParseCommandLine()
 
       if (lpFileArg)
         GlobalFree(lpFileArg);
-
-      lpFileArg = GlobalAlloc(GPTR,sizeof(WCHAR)*(MAX_PATH+2)); // changed for ActivatePrevInst() needs
-      StrCpyN(lpFileArg,lp3,MAX_PATH);
+      
+      lpFileArg = GlobalAlloc(GPTR,sizeof(WCHAR)*FILE_ARG_BUF); // changed for ActivatePrevInst() needs
+      StringCchCopy(lpFileArg,FILE_ARG_BUF,lp3);
 
       PathFixBackslashes(lpFileArg);
 
       if (!PathIsRelative(lpFileArg) && !PathIsUNC(lpFileArg) &&
             PathGetDriveNumber(lpFileArg) == -1 /*&& PathGetDriveNumber(g_wchWorkingDirectory) != -1*/) {
 
-        WCHAR wchPath[MAX_PATH] = { L'\0' };
+        WCHAR wchPath[FILE_ARG_BUF] = { L'\0' };
         StringCchCopy(wchPath,COUNTOF(wchPath),g_wchWorkingDirectory);
         PathStripToRoot(wchPath);
         PathAppend(wchPath,lpFileArg);
-        StringCchCopy(lpFileArg,COUNTOF(lpFileArg),wchPath);
+        StringCchCopy(lpFileArg,FILE_ARG_BUF,wchPath);
       }
 
       StrTrim(lpFileArg,L" \"");
@@ -6712,10 +6790,8 @@ int FindIniFile() {
     }
   }
 
-  // normalize path
-  PathCanonicalizeEx(szIniFile,COUNTOF(szIniFile));
-  GetLongPathNameEx(szIniFile,COUNTOF(szIniFile));
-
+  NormalizePathEx(szIniFile,COUNTOF(szIniFile));
+ 
   return(1);
 }
 
@@ -7021,14 +7097,13 @@ void InvalidateSelections()
 int BeginSelUndoAction()
 {
   int token = -1;
-  UndoRedoSelection sel;
-  sel.anchorPos = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
-  sel.currPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-  sel.selMode = (int)SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
-  if (sel.currPos != sel.anchorPos) {
+  UndoRedoSelection sel = { -1 };
+  sel.selMode = (int)SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0);
+  sel.anchorPos_undo = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
+  sel.currPos_undo = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+  if (sel.currPos_undo != sel.anchorPos_undo) {
     token = UndoSelectionMap(-1, &sel);
     if (token >= 0) {
-      bModified = TRUE;
       SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
       SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
     }
@@ -7046,7 +7121,15 @@ int BeginSelUndoAction()
 void EndSelUndoAction(int token)
 {
   if (token >= 0) {
+    UndoRedoSelection sel = { -1 };
+    if (UndoSelectionMap(token,&sel) >= 0) {
+      // mode should not have changed ???
+      sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
+      sel.currPos_redo = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+    }
+    UndoSelectionMap(token,&sel); // set with redo action filled
     SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+    bModified = TRUE;
   }
 }
 
@@ -7056,21 +7139,24 @@ void EndSelUndoAction(int token)
 //  RestoreSelectionAction()
 //
 //
-void RestoreSelectionAction(int token)
+void RestoreSelectionAction(int token, DoAction doAct)
 {
-  UndoRedoSelection sel = { -1,-1,-1 };
-  if (UndoSelectionMap(token, &sel) >= 0) {
-    // we are inside undo transaction, so do delayed PostMessage() instead of SendMessage()
-    SendMessage(hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)sel.selMode, 0);
-    if (sel.selMode == SC_SEL_RECTANGLE) 
-    {
-      PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)sel.anchorPos, 0);
-      PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)sel.currPos, 0);
+  UndoRedoSelection sel = { -1 };
+  if (UndoSelectionMap(token,&sel) >= 0) {
+    // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
+    int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
+    int currPos   = (doAct == UNDO ? sel.currPos_undo : sel.currPos_redo);
+    SendMessage(hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
+    if (anchorPos != currPos) {
+      if (sel.selMode == SC_SEL_RECTANGLE) {
+        PostMessage(hwndEdit,SCI_SETRECTANGULARSELECTIONANCHOR,(WPARAM)anchorPos,0);
+        PostMessage(hwndEdit,SCI_SETRECTANGULARSELECTIONCARET,(WPARAM)currPos,0);
+      }
+      else {
+        PostMessage(hwndEdit,SCI_SETSELECTION,(WPARAM)currPos,(LPARAM)anchorPos);
+      }
     }
-    else {
-      PostMessage(hwndEdit, SCI_SETSELECTION, (WPARAM)sel.currPos, (LPARAM)sel.anchorPos);
-    }
-    PostMessage(hwndEdit, SCI_CANCEL, 0, 0);
+    PostMessage(hwndEdit,SCI_CANCEL,0,0);
   }
 }
 
@@ -7082,29 +7168,32 @@ void RestoreSelectionAction(int token)
 //
 int UndoSelectionMap(int token, LPUndoRedoSelection selection)
 {
-  static UndoRedoSelection UndoRedoMap[MAX_SELUNDO] = { {-1,-1,-1} };
+  static UndoRedoSelection UndoRedoMap[MAX_SELUNDO] = { { -1 } };
   static int iMapIdx = 0;
 
   if (selection == NULL)
     return -1;
 
+  // get or set map item request ?
   if ((token >= 0) && (token < MAX_SELUNDO)) {
-    // get map item request
-    *selection = UndoRedoMap[token];
-    if (selection->anchorPos == -1) {
-      token = -1; // invalid
+    if (selection->anchorPos_undo < 0) {
+      // this is a get request
+      *selection = UndoRedoMap[token];
+      if (selection->anchorPos_undo < 0) {
+        token = -1; // invalid
+      }
+    }
+    else {
+      // this is a set request (fill redo pos)
+      UndoRedoMap[token] = *selection;
     }
     // don't clear map item here (token used in redo/undo again)
   }
-  else {                                      
-    // set map item request
-    if ((selection->anchorPos >= 0) && (selection->currPos >= 0)) {
-      token = (iMapIdx + 1) % MAX_SELUNDO;  // round robin next
-      UndoRedoMap[token] = *selection;
-      iMapIdx = token; // remember map index
-    }
-    else
-      token = -1;
+  else if (token < 0) {                                      
+    // set map new item request
+    token = (iMapIdx + 1) % MAX_SELUNDO;  // round robin next
+    UndoRedoMap[token] = *selection;
+    iMapIdx = token; // remember map index
   }
   return token;
 }
@@ -7211,7 +7300,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
   ExpandEnvironmentStringsEx(tch,COUNTOF(tch));
 
   if (PathIsRelative(tch)) {
-    StrCpyN(szFileName,g_wchWorkingDirectory,COUNTOF(szFileName));
+    StringCchCopyN(szFileName,COUNTOF(szFileName),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
     PathAppend(szFileName,tch);
     if (!PathFileExists(szFileName)) {
       WCHAR wchFullPath[MAX_PATH] = { L'\0' };
@@ -7223,8 +7312,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
   else
     StringCchCopy(szFileName,COUNTOF(szFileName),tch);
 
-  PathCanonicalizeEx(szFileName,COUNTOF(szFileName));
-  GetLongPathNameEx(szFileName,COUNTOF(szFileName));
+  NormalizePathEx(szFileName,COUNTOF(szFileName));
 
   if (PathIsLnkFile(szFileName))
     PathGetLnkPath(szFileName,szFileName,COUNTOF(szFileName));
@@ -7509,7 +7597,7 @@ BOOL OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   ofn.lpstrDefExt = (lstrlen(tchDefaultExtension)) ? tchDefaultExtension : NULL;
 
   if (GetOpenFileName(&ofn)) {
-    lstrcpyn(lpstrFile,szFile,cchFile);
+    StringCchCopyN(lpstrFile,cchFile,szFile,COUNTOF(szFile));
     return TRUE;
   }
 
@@ -7565,7 +7653,7 @@ BOOL SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   ofn.lpstrDefExt = (lstrlen(tchDefaultExtension)) ? tchDefaultExtension : NULL;
 
   if (GetSaveFileName(&ofn)) {
-    lstrcpyn(lpstrFile,szNewFile,cchFile);
+    StringCchCopyN(lpstrFile,cchFile,szNewFile,COUNTOF(szNewFile));
     return TRUE;
   }
 
@@ -7641,31 +7729,31 @@ BOOL ActivatePrevInst()
   if (flagSingleFileInstance && lpFileArg) {
 
     // Search working directory from second instance, first!
-    // lpFileArg is at least MAX_PATH+2 bytes
-    WCHAR tchTmp[MAX_PATH] = { L'\0' };
+    // lpFileArg is at least MAX_PATH+4 WCHARS
+    WCHAR tchTmp[FILE_ARG_BUF] = { L'\0' };
 
     ExpandEnvironmentStringsEx(lpFileArg,(DWORD)GlobalSize(lpFileArg)/sizeof(WCHAR));
 
     if (PathIsRelative(lpFileArg)) {
-      StrCpyN(tchTmp,g_wchWorkingDirectory,COUNTOF(tchTmp));
+      StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
       PathAppend(tchTmp,lpFileArg);
       if (PathFileExists(tchTmp))
-        StringCchCopy(lpFileArg,COUNTOF(lpFileArg),tchTmp);
+        StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
       else {
         if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-          StringCchCopy(lpFileArg,COUNTOF(lpFileArg),tchTmp);
+          StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
         else {
-          StrCpyN(tchTmp,g_wchWorkingDirectory,COUNTOF(tchTmp));
+          StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
           PathAppend(tchTmp,lpFileArg);
-          StringCchCopy(lpFileArg,COUNTOF(lpFileArg),tchTmp);
+          StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
         }
       }
     }
 
     else if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-      StringCchCopy(lpFileArg,COUNTOF(lpFileArg),tchTmp);
+      StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
 
-    GetLongPathNameEx(lpFileArg,MAX_PATH);
+    NormalizePathEx(lpFileArg,FILE_ARG_BUF);
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -7762,8 +7850,8 @@ BOOL ActivatePrevInst()
       if (lpFileArg)
       {
         // Search working directory from second instance, first!
-        // lpFileArg is at least MAX_PATH+2 bytes
-        WCHAR tchTmp[MAX_PATH] = { L'\0' };
+        // lpFileArg is at least MAX_PATH+4 WCHAR
+        WCHAR tchTmp[FILE_ARG_BUF] = { L'\0' };
         LPnp3params params;
         DWORD cb = sizeof(np3params);
         int cchTitleExcerpt;
@@ -7771,18 +7859,18 @@ BOOL ActivatePrevInst()
         ExpandEnvironmentStringsEx(lpFileArg,(DWORD)GlobalSize(lpFileArg)/sizeof(WCHAR));
 
         if (PathIsRelative(lpFileArg)) {
-          StrCpyN(tchTmp,g_wchWorkingDirectory,COUNTOF(tchTmp));
+          StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
           PathAppend(tchTmp,lpFileArg);
           if (PathFileExists(tchTmp))
-            StringCchCopy(lpFileArg,COUNTOF(lpFileArg),tchTmp);
+            StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
           else {
             if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-              StringCchCopy(lpFileArg,COUNTOF(lpFileArg),tchTmp);
+              StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
           }
         }
 
         else if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-          StringCchCopy(lpFileArg,COUNTOF(lpFileArg),tchTmp);
+          StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
 
         cb += (lstrlen(lpFileArg) + 1) * sizeof(WCHAR);
 
@@ -7825,8 +7913,8 @@ BOOL ActivatePrevInst()
         cds.lpData = params;
 
         SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
-        GlobalFree(params);
-        GlobalFree(lpFileArg);
+        GlobalFree(params);    params = NULL;
+        GlobalFree(lpFileArg); lpFileArg = NULL;
       }
       return(TRUE);
     }
@@ -7890,7 +7978,7 @@ BOOL RelaunchMultiInst() {
     LocalFree(lpCmdLineNew);
     LocalFree(lp1);
     LocalFree(lp2);
-    GlobalFree(lpFileArg);
+    GlobalFree(lpFileArg); lpFileArg = NULL;
 
     return TRUE;
   }

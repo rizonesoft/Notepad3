@@ -384,13 +384,13 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
                     UINT uIDReadOnly,BOOL bReadOnly,LPCWSTR lpszExcerpt)
 {
 
-  WCHAR szUntitled[256] = { L'\0' };
-  WCHAR szExcrptQuot[256] = { L'\0' };
+  WCHAR szUntitled[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szExcrptQuot[MIDSZ_BUFFER] = { L'\0' };
   WCHAR szExcrptFmt[32] = { L'\0' };
-  WCHAR szAppName[256] = { L'\0' };
-  WCHAR szElevatedAppName[256] = { L'\0' };
+  WCHAR szAppName[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
   WCHAR szReadOnly[32] = { L'\0' };
-  WCHAR szTitle[512] = { L'\0' };
+  WCHAR szTitle[LARGE_BUFFER] = { L'\0' };
   static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
   static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
   static const WCHAR *pszSep = L" - ";
@@ -405,7 +405,7 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
 
   if (bIsElevated) {
     FormatString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_APPTITLE_ELEVATED,szAppName);
-    StrCpyN(szAppName,szElevatedAppName,COUNTOF(szAppName));
+    StringCchCopyN(szAppName,COUNTOF(szAppName),szElevatedAppName,COUNTOF(szElevatedAppName));
   }
 
   if (bModified)
@@ -434,7 +434,7 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
       StringCchCat(szTitle,COUNTOF(szTitle),szCachedDisplayName);
       if (iFormat == 1) {
         WCHAR tchPath[MAX_PATH] = { L'\0' };
-        StrCpyN(tchPath,lpszFile,COUNTOF(tchPath));
+        StringCchCopyN(tchPath,COUNTOF(tchPath),lpszFile,lstrlen(lpszFile));
         PathRemoveFileSpec(tchPath);
         StringCchCat(szTitle,COUNTOF(szTitle),L" [");
         StringCchCat(szTitle,COUNTOF(szTitle),tchPath);
@@ -879,12 +879,12 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 
 int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptbb,int ctbb)
 {
-  WCHAR tchButtons[512];
+  WCHAR tchButtons[LARGE_BUFFER];
   int i,c;
   int iCmd;
 
   ZeroMemory(tchButtons,COUNTOF(tchButtons)*sizeof(tchButtons[0]));
-  lstrcpyn(tchButtons,lpszButtons,COUNTOF(tchButtons)-2);
+  StringCchCopyN(tchButtons,COUNTOF(tchButtons),lpszButtons,COUNTOF(tchButtons)-2);
   TrimString(tchButtons);
   WCHAR *p = StrStr(tchButtons, L"  ");
   while (p) {
@@ -1031,7 +1031,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
   }
   else {
     if (lpszSrc) {
-      lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
+      StringCchCopyN(wchPath,COUNTOF(wchPath),lpszSrc,COUNTOF(wchPath));
     }
   }
 
@@ -1045,16 +1045,16 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
     PathAppend(wchResult,wchPath);
   }
   else
-    lstrcpyn(wchResult,wchPath,COUNTOF(wchResult));
+    StringCchCopyN(wchResult,COUNTOF(wchResult),wchPath,COUNTOF(wchPath));
 
   PathCanonicalizeEx(wchResult,MAX_PATH);
   if (PathGetDriveNumber(wchResult) != -1)
     CharUpperBuff(wchResult,1);
 
   if (lpszDest == NULL || lpszSrc == lpszDest)
-    lstrcpyn(lpszSrc,wchResult,(cchDest == 0) ? MAX_PATH : cchDest);
+    StringCchCopyN(lpszSrc,((cchDest == 0) ? MAX_PATH : cchDest),wchResult,COUNTOF(wchResult));
   else
-    lstrcpyn(lpszDest,wchResult,(cchDest == 0) ? MAX_PATH : cchDest);
+    StringCchCopyN(lpszDest,((cchDest == 0) ? MAX_PATH : cchDest),wchResult,COUNTOF(wchResult));
 }
 
 
@@ -1173,24 +1173,21 @@ BOOL PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
 
   WCHAR tchResPath[MAX_PATH] = { L'\0' };
 
-  if (PathIsLnkFile(pszPath)) {
-
-    if (PathGetLnkPath(pszPath,tchResPath,sizeof(WCHAR)*COUNTOF(tchResPath))) {
-
-      if (PathIsDirectory(tchResPath)) {
-
-        lstrcpyn(pszResPath,tchResPath,cchResPath);
+  if (PathIsLnkFile(pszPath)) 
+  {
+    if (PathGetLnkPath(pszPath,tchResPath,sizeof(WCHAR)*COUNTOF(tchResPath))) 
+    {
+      if (PathIsDirectory(tchResPath)) 
+      {
+        StringCchCopyN(pszResPath,cchResPath,tchResPath,COUNTOF(tchResPath));
         return (TRUE);
       }
-
       else
         return FALSE;
       }
-
     else
       return FALSE;
     }
-
   else
     return FALSE;
 
@@ -1479,10 +1476,10 @@ void PathFixBackslashes(LPWSTR lpsz)
 //
 void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 {
-  WCHAR szBuf[512];
+  WCHAR szBuf[LARGE_BUFFER];
 
   if (ExpandEnvironmentStrings(lpSrc,szBuf,COUNTOF(szBuf)))
-    lstrcpyn(lpSrc,szBuf,dwSrc);
+    StringCchCopyN(lpSrc,dwSrc,szBuf,COUNTOF(szBuf));
 }
 
 
@@ -1491,12 +1488,12 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 //  PathCanonicalizeEx()
 //
 //
-void PathCanonicalizeEx(LPWSTR lpSrc,int len)
+void PathCanonicalizeEx(LPWSTR lpszPath,int len)
 {
-  WCHAR szDst[MAX_PATH] = { L'\0' };
+  WCHAR szDst[FILE_ARG_BUF] = { L'\0' };
 
-  if (PathCanonicalize(szDst,lpSrc))
-    StringCchCopy(lpSrc,len,szDst);
+  if (PathCanonicalize(szDst,lpszPath))
+    StringCchCopy(lpszPath,len,szDst);
 }
 
 
@@ -1519,6 +1516,19 @@ DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer)
 
 //=============================================================================
 //
+//  NormalizePathEx()
+//
+//
+DWORD NormalizePathEx(LPWSTR lpszPath,int len)
+{
+  PathCanonicalizeEx(lpszPath,len);
+  return GetLongPathNameEx(lpszPath,len);
+}
+
+
+
+//=============================================================================
+//
 //  SHGetFileInfo2()
 //
 //  Return a default name when the file has been removed, and always append
@@ -1532,14 +1542,14 @@ DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,
 
     DWORD_PTR dw = SHGetFileInfo(pszPath,dwFileAttributes,psfi,cbFileInfo,uFlags);
     if (lstrlen(psfi->szDisplayName) < lstrlen(PathFindFileName(pszPath)))
-      StrCatBuff(psfi->szDisplayName,PathFindExtension(pszPath),COUNTOF(psfi->szDisplayName));
+      StringCchCat(psfi->szDisplayName,COUNTOF(psfi->szDisplayName),PathFindExtension(pszPath));
     return(dw);
   }
 
   else {
     DWORD_PTR dw = SHGetFileInfo(pszPath,FILE_ATTRIBUTE_NORMAL,psfi,cbFileInfo,uFlags|SHGFI_USEFILEATTRIBUTES);
     if (lstrlen(psfi->szDisplayName) < lstrlen(PathFindFileName(pszPath)))
-      StrCatBuff(psfi->szDisplayName,PathFindExtension(pszPath),COUNTOF(psfi->szDisplayName));
+      StringCchCat(psfi->szDisplayName,COUNTOF(psfi->szDisplayName),PathFindExtension(pszPath));
     return(dw);
   }
 
@@ -1646,7 +1656,7 @@ LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize) {
 
   LPMRULIST pmru = LocalAlloc(LPTR,sizeof(MRULIST));
   ZeroMemory(pmru,sizeof(MRULIST));
-  lstrcpyn(pmru->szRegKey,pszRegKey,COUNTOF(pmru->szRegKey));
+  StringCchCopyN(pmru->szRegKey,COUNTOF(pmru->szRegKey),pszRegKey,COUNTOF(pmru->szRegKey));
   pmru->iFlags = iFlags;
   pmru->iSize = min(iSize,MRU_MAXITEMS);
   return(pmru);
@@ -1783,7 +1793,7 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) {
     if (iIndex < 0 || iIndex > pmru->iSize-1 || !pmru->pszItems[iIndex])
       return(-1);
     else {
-      lstrcpyn(pszItem,pmru->pszItems[iIndex],cchItem);
+      StringCchCopyN(pszItem,cchItem,pmru->pszItems[iIndex],cchItem);
       return(lstrlen(pszItem));
     }
   }
@@ -1906,7 +1916,7 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
           *wSize = (WORD)MulDiv(lf.lfHeight,72,iLogPixelsY);
           if (*wSize == 0)
             *wSize = 8;
-          StrCpyN(lpFaceName,lf.lfFaceName,LF_FACESIZE);
+          StringCchCopyN(lpFaceName,LF_FACESIZE,lf.lfFaceName,LF_FACESIZE);
           bSucceed = TRUE;
         }
         (GetProcAddress(hLocalModUxTheme,"CloseThemeData"))(hTheme);
@@ -1924,7 +1934,7 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
     *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
     if (*wSize == 0)
       *wSize = 8;
-    StrCpyN(lpFaceName,ncm.lfMessageFont.lfFaceName,LF_FACESIZE);
+    StringCchCopyN(lpFaceName,LF_FACESIZE,ncm.lfMessageFont.lfFaceName,LF_FACESIZE);
   }*/
 
   return(bSucceed);

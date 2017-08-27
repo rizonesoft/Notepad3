@@ -44,12 +44,18 @@ typedef struct np3params {
 #define MAX_SELUNDO 512
 typedef struct _undoSel
 {
-  int currPos;
-  int anchorPos;
+  int anchorPos_undo;
+  int currPos_undo;
+  int anchorPos_redo;
+  int currPos_redo;
   int selMode;
+} 
+UndoRedoSelection, *LPUndoRedoSelection;
 
-} UndoRedoSelection, *LPUndoRedoSelection;
-
+typedef enum {
+  UNDO = TRUE,
+  REDO = FALSE
+} DoAction;
 
 
 //==== Toolbar Style ==========================================================
@@ -137,7 +143,7 @@ void UpdateSettingsCmds();
 void InvalidateSelections();
 int  BeginSelUndoAction();
 void EndSelUndoAction(int);
-void RestoreSelectionAction(int);
+void RestoreSelectionAction(int,DoAction);
 int  UndoSelectionMap(int, LPUndoRedoSelection);
 
 

@@ -34,6 +34,10 @@
 #include "helpers.h"
 #include "edit.h"
 
+#ifndef LCMAP_TITLECASE
+#define LCMAP_TITLECASE  0x00000300  // Title Case Letters bit mask
+#endif
+
 extern UINT16 g_uWinVer;
 extern HWND  hwndMain;
 extern HWND  hwndEdit;
@@ -68,6 +72,13 @@ extern int iSrcEncoding;
 extern int iWeakSrcEncoding;
 
 extern BOOL bAccelWordNavigation;
+
+#define DELIM_BUFFER 258
+char DelimChars[DELIM_BUFFER] = { '\0' };
+char WhiteSpaceCharsDefault[DELIM_BUFFER] = { '\0' };
+char PunctuationCharsDefault[DELIM_BUFFER] = { '\0' };
+char WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { '\0' };
+char PunctuationCharsAccelerated[DELIM_BUFFER] = { '\0' };
 
 int g_DOSEncoding;
 
@@ -266,7 +277,10 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (0 << 16)),SCI_LINEENDWRAP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_HOME + (SCMOD_SHIFT << 16)),SCI_VCHOMEWRAPEXTEND);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (SCMOD_SHIFT << 16)),SCI_LINEENDWRAPEXTEND);
-  SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
+
+  // word delimiter handling
+  EditInitWordDelimiter(hwnd);
+  EditSetAccelWordNav(hwnd,bAccelWordNavigation);
 
   // Init default values for printing
   EditPrintInit();
@@ -276,6 +290,49 @@ HWND EditCreate(HWND hwndParent)
   return(hwnd);
 
 }
+
+
+//=============================================================================
+//
+//  EditSetWordDelimiter()
+//
+void EditInitWordDelimiter(HWND hwnd)
+{
+  // 1st get/set defaults
+  SendMessage(hwnd,SCI_GETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsDefault);
+  SendMessage(hwnd,SCI_GETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsDefault);
+  // delim chars are whitespace & punctuation
+  StringCchCopyA(DelimChars,COUNTOF(DelimChars),WhiteSpaceCharsDefault);
+  StringCchCatA(DelimChars,COUNTOF(DelimChars),PunctuationCharsDefault);
+  // init accelerated white space array
+  StringCchCopyA(WhiteSpaceCharsAccelerated,COUNTOF(WhiteSpaceCharsAccelerated),WhiteSpaceCharsDefault);
+
+  // 2nd get user settings
+  char whitesp[DELIM_BUFFER] = { '\0' };
+  WCHAR buffer[DELIM_BUFFER] = { L'\0' };
+  IniGetString(L"Settings2",L"ExtendedWhiteSpaceChars",L"",buffer,COUNTOF(buffer));
+  if (lstrlen(buffer) == 0)
+    StringCchCopyA(whitesp,COUNTOF(whitesp),PunctuationCharsDefault);
+  else
+    WCHAR2MBCS(CP_ACP,buffer,whitesp,COUNTOF(whitesp));
+  // add only 7-bit-ASCII chars to accelerate whitespace list
+  for (size_t i = 0; i < strlen(whitesp); i++) {
+    if (whitesp[i] & 0x7F) {
+      if (!StrChrA(WhiteSpaceCharsAccelerated,whitesp[i])) {
+        StringCchCatNA(WhiteSpaceCharsAccelerated,COUNTOF(WhiteSpaceCharsAccelerated),
+                       &(whitesp[i]),1);
+      }
+    }
+  }
+  // remove 7-bit-ASCII whitespace chars from accelerated punctuation list
+  for (size_t i = 0; i < strlen(PunctuationCharsDefault); i++) {
+    if (!StrChrA(WhiteSpaceCharsAccelerated,PunctuationCharsDefault[i])) {
+      StringCchCatNA(PunctuationCharsAccelerated,COUNTOF(PunctuationCharsAccelerated),
+                     &(PunctuationCharsDefault[i]),1);
+    }
+  }
+}
+
 
 
 //=============================================================================
@@ -433,13 +490,12 @@ BOOL EditSetNewEncoding(HWND hwnd,int iCurrentEncoding,int iNewEncoding,BOOL bNo
 //
 //  EditGetClipboardText()
 //
-char* EditGetClipboardText(HWND hwnd)
-{
+char* EditGetClipboardText(HWND hwnd) {
   HANDLE hmem;
   WCHAR *pwch;
   char  *pmch;
   char  *ptmp;
-  int    wlen, mlen, mlen2;
+  int    wlen,mlen,mlen2;
   UINT   codepage;
   int    eolmode;
 
@@ -452,45 +508,48 @@ char* EditGetClipboardText(HWND hwnd)
   wlen = lstrlenW(pwch);
 
   codepage = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
-  eolmode  = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
+  eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
 
-  mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 1,NULL,0,0,0) - 1;
-  pmch = LocalAlloc(LPTR,mlen + 1);
+  mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,0,0);
+  pmch = LocalAlloc(LPTR,mlen + 2);
   if (pmch)
-    WideCharToMultiByte(codepage,0,pwch,wlen + 1,pmch,mlen + 1,NULL,NULL);
+    WideCharToMultiByte(codepage,0,pwch,wlen + 2,pmch,mlen + 2,NULL,NULL);
 
-  ptmp = LocalAlloc(LPTR,mlen * 2 + 1);
-  if (ptmp) {
-    char *s = pmch;
-    char *d = ptmp;
-    int i;
-
-    for (i = 0; (i < mlen) && (*s != 0); i++) {
-      if (*s == '\n' || *s == '\r') {
-        if (eolmode == SC_EOL_CR) {
-          *d++ = '\r';
-        } else if (eolmode == SC_EOL_LF) {
-          *d++ = '\n';
-        } else { // eolmode == SC_EOL_CRLF
-          *d++ = '\r';
-          *d++ = '\n';
-        }
-        if ((*s == '\r') && (i+1 < mlen) && (*(s+1) == '\n')) {
-          i++;
+  if ((BOOL)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) {
+    ptmp = LocalAlloc(LPTR,mlen * 2 + 2);
+    if (ptmp) {
+      char *s = pmch;
+      char *d = ptmp;
+      for (int i = 0; (i <= mlen) && (*s != '\0'); i++) {
+        if (*s == '\n' || *s == '\r') {
+          if (eolmode == SC_EOL_CR) {
+            *d++ = '\r';
+          }
+          else if (eolmode == SC_EOL_LF) {
+            *d++ = '\n';
+          }
+          else { // eolmode == SC_EOL_CRLF
+            *d++ = '\r';
+            *d++ = '\n';
+          }
+          if ((*s == '\r') && (i + 1 < mlen) && (*(s + 1) == '\n')) {
+            i++;
+            s++;
+          }
           s++;
         }
-        s++;
-      } else {
-        *d++ = *s++;
+        else {
+          *d++ = *s++;
+        }
       }
-    }
-    *d++ = 0;
-    mlen2 = (int)(d - ptmp) - 1;
+      *d = '\0';
+      mlen2 = (int)(d - ptmp);
 
-    LocalFree(pmch);
-    pmch = LocalAlloc(LPTR,mlen2 + 1);
-    StringCchCopyA(pmch,mlen2,ptmp);
-    LocalFree(ptmp);
+      LocalFree(pmch);
+      pmch = LocalAlloc(LPTR,mlen2 + 2);
+      StringCchCopyA(pmch,mlen2 + 2,ptmp);
+      LocalFree(ptmp);
+    }
   }
 
   GlobalUnlock(hmem);
@@ -498,6 +557,7 @@ char* EditGetClipboardText(HWND hwnd)
 
   return(pmch);
 }
+
 
 
 //=============================================================================
@@ -556,7 +616,7 @@ BOOL EditCopyAppend(HWND hwnd)
     int lenTxt = (lstrlen(pszSep) + cchTextW + 1);
     pszTextW = LocalAlloc(LPTR,sizeof(WCHAR)*lenTxt);
     StringCchCopy(pszTextW,lenTxt,pszSep);
-    MultiByteToWideChar(uCodePage,0,pszText,-1,StrEnd(pszTextW),(int)LocalSize(pszTextW)/sizeof(WCHAR));
+    MultiByteToWideChar(uCodePage,0,pszText,-1,StrEnd(pszTextW),lenTxt);
   }
   else {
     pszTextW = L"";
@@ -701,7 +761,8 @@ void Encoding_GetLabel(int iEncoding) {
     }
     if (!pwsz)
       pwsz = wch;
-    StrCpyN(mEncoding[iEncoding].wchLabel,pwsz,COUNTOF(mEncoding[iEncoding].wchLabel));
+    StringCchCopyN(mEncoding[iEncoding].wchLabel,COUNTOF(mEncoding[iEncoding].wchLabel),
+                   pwsz,COUNTOF(mEncoding[iEncoding].wchLabel));
   }
 }
 
@@ -792,13 +853,13 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly)
 
       WCHAR *pwsz = StrChr(pEE[i].wch, L';');
       if (pwsz) {
-        StrCpyN(wchBuf,CharNext(pwsz),COUNTOF(wchBuf));
+        StringCchCopyN(wchBuf,COUNTOF(wchBuf),CharNext(pwsz),COUNTOF(wchBuf));
         pwsz = StrChr(wchBuf, L';');
         if (pwsz)
           *pwsz = 0;
       }
       else
-        StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
+        StringCchCopyN(wchBuf,COUNTOF(wchBuf),pEE[i].wch,COUNTOF(wchBuf));
 
       if (Encoding_IsANSI(id))
         StringCchCatN(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
@@ -885,13 +946,13 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly)
 
       WCHAR *pwsz = StrChr(pEE[i].wch, L';');
       if (pwsz) {
-        StrCpyN(wchBuf,CharNext(pwsz),COUNTOF(wchBuf));
+        StringCchCopyN(wchBuf,COUNTOF(wchBuf),CharNext(pwsz),COUNTOF(wchBuf));
         pwsz = StrChr(wchBuf, L';');
         if (pwsz)
           *pwsz = 0;
       }
       else
-        StrCpyN(wchBuf,pEE[i].wch,COUNTOF(wchBuf));
+        StringCchCopyN(wchBuf,COUNTOF(wchBuf),pEE[i].wch,COUNTOF(wchBuf));
 
       if (Encoding_IsANSI(id))
         StringCchCatN(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
@@ -1759,17 +1820,15 @@ void EditTitleCase(HWND hwnd)
 
       cpEdit = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
 
-      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,(int)GlobalSize(pszTextW)/sizeof(WCHAR));
+      cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,iSelLength);
 
       if (IsW7()) {
 
-        LPWSTR pszMappedW = LocalAlloc(LPTR,LocalSize(pszTextW));
+        LPWSTR pszMappedW = LocalAlloc(LPTR,GlobalSize(pszTextW));
 
-        if (LCMapString(
-              LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING|/*LCMAP_TITLECASE*/0x00000300,
-              pszTextW,cchTextW,pszMappedW,(int)(LocalSize(pszMappedW)/sizeof(WCHAR)))) {
-
-          StrCpyN(pszTextW,pszMappedW,(int)(GlobalSize(pszTextW)/sizeof(WCHAR)));
+        if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING|LCMAP_TITLECASE,
+              pszTextW,cchTextW,pszMappedW,iSelLength)) {
+          StringCchCopyN(pszTextW,iSelLength,pszMappedW,iSelLength);
           bChanged = TRUE;
         }
         else
@@ -4074,9 +4133,10 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
   cchConvW = 0;
   iLineLength = 0;
 
-#define ISDELIMITER(wc) StrChr(L",;.:-+%&¦|/*?!\"\'~΄#=",wc)
-#define ISWHITE(wc) StrChr(L" \t",wc)
-#define ISWORDEND(wc) (/*ISDELIMITER(wc) ||*/ StrChr(L" \t\r\n",wc))
+#define W_DELIMITER  L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~"  // underscore counted as part of word
+#define ISDELIMITER(wc) StrChr(W_DELIMITER,wc)
+#define ISWHITE(wc) StrChr(L" \t\f",wc)
+#define ISWORDEND(wc) (/*ISDELIMITER(wc) ||*/ StrChr(L" \t\f\r\n\v",wc))
 
   for (iTextW = 0; iTextW < cchTextW; iTextW++)
   {
@@ -4539,8 +4599,9 @@ void EditSortLines(HWND hwnd,int iSortFlags)
       qsort(pLines,iLineCount,sizeof(SORTLINE),CmpStd);
   }
 
-  pmszResult = LocalAlloc(LPTR,cchTotal + 2*iLineCount +1);
-  pmszBuf    = LocalAlloc(LPTR,ichlMax +1);
+  int lenRes = cchTotal + 2 * iLineCount + 1;
+  pmszResult = LocalAlloc(LPTR,lenRes);
+  pmszBuf    = LocalAlloc(LPTR,ichlMax+1);
 
   for (i = 0; i < iLineCount; i++) {
     BOOL bDropLine = FALSE;
@@ -4565,8 +4626,8 @@ void EditSortLines(HWND hwnd,int iSortFlags)
       }
       if (!bDropLine) {
         WideCharToMultiByte(uCodePage,0,pLines[i].pwszLine,-1,pmszBuf,(int)LocalSize(pmszBuf),NULL,NULL);
-        StrCatBuffA(pmszResult,pmszBuf,(int)LocalSize(pmszResult));
-        StrCatBuffA(pmszResult,mszEOL,(int)LocalSize(pmszResult));
+        StringCchCatA(pmszResult,lenRes,pmszBuf);
+        StringCchCatA(pmszResult,lenRes,mszEOL);
       }
     }
   }
@@ -4807,7 +4868,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
     tch[cchExcerpt-3] = L'.';
     tch[cchExcerpt-4] = L'.';
   }
-  StrCpyN(lpszExcerpt,tch,cchExcerpt);
+  StringCchCopyN(lpszExcerpt,cchExcerpt,tch,cchExcerpt);
 
   if (pszText)
     LocalFree(pszText);
@@ -4841,7 +4902,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         char *lpsz;
         static BOOL bFirstTime = TRUE;
 
-        WCHAR tch2[256] = { L'\0' };
+        WCHAR tch2[FNDRPL_BUFFER] = { L'\0' };
         HMENU hmenu;
 
         SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
@@ -4864,7 +4925,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           cchSelection = (int)SendMessage(lpefr->hwnd,SCI_GETSELECTIONEND,0,0) -
                          (int)SendMessage(lpefr->hwnd,SCI_GETSELECTIONSTART,0,0);
 
-          if (cchSelection <= 500)
+          if (cchSelection < FNDRPL_BUFFER)
           {
             cchSelection = (int)SendMessage(lpefr->hwnd,SCI_GETSELTEXT,0,0);
             lpszSelection = GlobalAlloc(GPTR,cchSelection+2);
@@ -4874,11 +4935,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             if (lstrcmpA( lpszSelection , "" ) == 0  &&  bFirstTime )
             {
                 char *pClip = EditGetClipboardText(hwndEdit);
-                if( lstrlenA( pClip ) > 0  &&  lstrlenA( pClip ) <= 500 )
+                int len = lstrlenA(pClip);
+                if( len > 0  &&  len < FNDRPL_BUFFER)
                 {
                     GlobalFree(lpszSelection);
-                    lpszSelection = GlobalAlloc(GPTR,lstrlenA( pClip )+2);
-                    lstrcpynA( lpszSelection , pClip , 500 );
+                    lpszSelection = GlobalAlloc(GPTR,len+2);
+                    StringCchCopyNA(lpszSelection,len+2,pClip,len);
                 }
                 LocalFree(pClip);
             }
@@ -4899,7 +4961,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
         }
 
-        SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_LIMITTEXT,500,0);
+        SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_LIMITTEXT,FNDRPL_BUFFER,0);
         SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_SETEXTENDEDUI,TRUE,0);
 
         if (!GetWindowTextLengthW(GetDlgItem(hwnd,IDC_FINDTEXT)))
@@ -4907,7 +4969,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
         if (GetDlgItem(hwnd,IDC_REPLACETEXT))
         {
-          SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_LIMITTEXT,500,0);
+          SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_LIMITTEXT,FNDRPL_BUFFER,0);
           SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_SETEXTENDEDUI,TRUE,0);
           SetDlgItemTextA2W(CP_UTF8,hwnd,IDC_REPLACETEXT,lpefr->szReplaceUTF8);
         }
@@ -5316,7 +5378,7 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bReplace)
 // instead of more advanced and user-unfriendly regexp syntax
 void EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 {
-    char szWildcardEscaped[512] = { '\0' };
+    char szWildcardEscaped[FNDRPL_BUFFER] = { '\0' };
     int iSource = 0;
     int iDest = 0;
 
@@ -5357,7 +5419,7 @@ void EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 
     szWildcardEscaped[iDest] = '\0';
 
-    lstrcpynA(szFind2, szWildcardEscaped, COUNTOF(szWildcardEscaped));
+    StringCchCopyNA(szFind2,FNDRPL_BUFFER,szWildcardEscaped,COUNTOF(szWildcardEscaped));
 }
 
 
@@ -5371,13 +5433,13 @@ BOOL EditFindNext(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL fExtendSelection)
   struct Sci_TextToFind ttf;
   int iPos;
   int iSelPos, iSelAnchor;
-  char szFind2[512];
+  char szFind2[FNDRPL_BUFFER];
   BOOL bSuppressNotFound = FALSE;
 
   if (!lstrlenA(lpefr->szFind))
     return /*EditFindReplaceDlg(hwnd,lpefr,FALSE)*/FALSE;
 
-  lstrcpynA(szFind2,lpefr->szFind,COUNTOF(szFind2));
+  StringCchCopyNA(szFind2,COUNTOF(szFind2),lpefr->szFind,COUNTOF(lpefr->szFind));
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),
       (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0));
@@ -5439,13 +5501,13 @@ BOOL EditFindPrev(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL fExtendSelection)
   int iPos;
   int iSelPos, iSelAnchor;
   int iLength;
-  char szFind2[512];
+  char szFind2[FNDRPL_BUFFER];
   BOOL bSuppressNotFound = FALSE;
 
   if (!lstrlenA(lpefr->szFind))
     return /*EditFindReplaceDlg(hwnd,lpefr,FALSE)*/FALSE;
 
-  lstrcpynA(szFind2,lpefr->szFind,COUNTOF(szFind2));
+  StringCchCopyNA(szFind2,COUNTOF(szFind2),lpefr->szFind,COUNTOF(lpefr->szFind));
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),
       (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0));
@@ -5509,14 +5571,14 @@ BOOL EditReplace(HWND hwnd,LPCEDITFINDREPLACE lpefr)
   int iSelStart;
   int iSelEnd;
   int iReplaceMsg = (lpefr->fuFlags & SCFIND_REGEXP) ? SCI_REPLACETARGETRE : SCI_REPLACETARGET;
-  char szFind2[512];
+  char szFind2[FNDRPL_BUFFER];
   char *pszReplace2;
   BOOL bSuppressNotFound = FALSE;
 
   if (!lstrlenA(lpefr->szFind))
     return /*EditFindReplaceDlg(hwnd,lpefr,TRUE)*/FALSE;
 
-  lstrcpynA(szFind2,lpefr->szFind,COUNTOF(szFind2));
+  StringCchCopyNA(szFind2,COUNTOF(szFind2),lpefr->szFind,COUNTOF(lpefr->szFind));
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),
       (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0));
@@ -5658,8 +5720,9 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
     return;
   }
 
-  pRoot = LocalAlloc(LPTR, iCurrentLinePos - iStartWordPos + 2);
-  lstrcpynA(pRoot, pLine + iStartWordPos, iCurrentLinePos - iStartWordPos + 1);
+  int cnt = iCurrentLinePos - iStartWordPos + 2;
+  pRoot = LocalAlloc(LPTR,cnt);
+  StringCchCopyNA(pRoot,cnt,pLine + iStartWordPos,cnt-1);
   LocalFree(pLine);
   iRootLen = lstrlenA(pRoot);
 
@@ -5799,9 +5862,10 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   if (bMarkOccurrencesMatchWords)
   {
     int iSelStart2 = 0;
+    const char* delims = (bAccelWordNavigation ? WhiteSpaceCharsAccelerated : DelimChars);
     while ((iSelStart2 <= iSelCount) && pszText[iSelStart2])
     {
-      if (StrChrIA(" \t\r\n@#$%^&*~-=+()[]{}\\/:;'\"", pszText[iSelStart2]))
+      if (StrChrIA(delims,pszText[iSelStart2]))
       {
         LocalFree(pszText);
         return;
@@ -5850,7 +5914,7 @@ BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
   int iPos;
   int iCount = 0;
   int iReplaceMsg = (lpefr->fuFlags & SCFIND_REGEXP) ? SCI_REPLACETARGETRE : SCI_REPLACETARGET;
-  char szFind2[512];
+  char szFind2[FNDRPL_BUFFER];
   char *pszReplace2;
   BOOL bRegexStartOfLine;
   BOOL bRegexStartOrEndOfLine;
@@ -5861,7 +5925,7 @@ BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
   // Show wait cursor...
   BeginWaitCursor();
 
-  lstrcpynA(szFind2,lpefr->szFind,COUNTOF(szFind2));
+  StringCchCopyNA(szFind2,COUNTOF(szFind2),lpefr->szFind,COUNTOF(lpefr->szFind));
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),
       (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0));
@@ -5974,7 +6038,7 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
   int iCount = 0;
   int iReplaceMsg = (lpefr->fuFlags & SCFIND_REGEXP) ? SCI_REPLACETARGETRE : SCI_REPLACETARGET;
   BOOL fCancel = FALSE;
-  char szFind2[512];
+  char szFind2[FNDRPL_BUFFER];
   char *pszReplace2;
   BOOL bRegexStartOfLine;
   BOOL bRegexStartOrEndOfLine;
@@ -5991,7 +6055,7 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
   // Show wait cursor...
   BeginWaitCursor();
 
-  lstrcpynA(szFind2,lpefr->szFind,COUNTOF(szFind2));
+  StringCchCopyNA(szFind2,COUNTOF(szFind2),lpefr->szFind,COUNTOF(lpefr->szFind));
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),
       (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0));
@@ -6842,6 +6906,24 @@ BOOL EditSortDlg(HWND hwnd,int *piSortFlags)
 }
 
 
+
+//=============================================================================
+//
+//  EditSortDlg()
+//
+void EditSetAccelWordNav(HWND hwnd,BOOL bAccelWordNav)
+{
+  bAccelWordNavigation = bAccelWordNav;
+
+  if (bAccelWordNavigation) {
+    SendMessage(hwnd,SCI_SETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsAccelerated);
+    SendMessage(hwnd,SCI_SETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsAccelerated);
+  }
+  else
+    SendMessage(hwnd,SCI_SETCHARSDEFAULT,0,0);
+}
+
+
 //=============================================================================
 //
 //  FileVars_Init()
@@ -6852,14 +6934,14 @@ extern int fNoFileVariables;
 BOOL FileVars_Init(char *lpData,DWORD cbData,LPFILEVARS lpfv) {
 
   int i;
-  char tch[512];
+  char tch[LARGE_BUFFER];
   BOOL bDisableFileVariables = FALSE;
 
   ZeroMemory(lpfv,sizeof(FILEVARS));
   if ((fNoFileVariables && bNoEncodingTags) || !lpData || !cbData)
     return(TRUE);
 
-  lstrcpynA(tch,lpData,min(cbData+1,COUNTOF(tch)));
+  StringCchCopyNA(tch,COUNTOF(tch),lpData,min(cbData + 1,COUNTOF(tch)));
 
   if (!fNoFileVariables) {
     if (FileVars_ParseInt(tch,"enable-local-variables",&i) && (!i))
@@ -6916,7 +6998,7 @@ BOOL FileVars_Init(char *lpData,DWORD cbData,LPFILEVARS lpfv) {
 
   if (lpfv->mask == 0 && cbData > COUNTOF(tch)) {
 
-    lstrcpynA(tch,lpData+cbData-COUNTOF(tch)+1,COUNTOF(tch));
+    StringCchCopyNA(tch,COUNTOF(tch),lpData + cbData - COUNTOF(tch) + 1,COUNTOF(tch));
 
     if (!fNoFileVariables) {
       if (FileVars_ParseInt(tch,"enable-local-variables",&i) && (!i))
@@ -7079,7 +7161,7 @@ BOOL FileVars_ParseInt(char* pszData,char* pszName,int* piValue) {
     while (*pvStart && StrChrIA(":=\"' \t",*pvStart))
       pvStart++;
 
-    lstrcpynA(tch,pvStart,COUNTOF(tch));
+    StringCchCopyNA(tch,COUNTOF(tch),pvStart,COUNTOF(tch));
 
     pvEnd = tch;
     while (*pvEnd && IsCharAlphaNumericA(*pvEnd))
@@ -7139,7 +7221,7 @@ BOOL FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) 
         bQuoted = TRUE;
       pvStart++;
     }
-    lstrcpynA(tch,pvStart,COUNTOF(tch));
+    StringCchCopyNA(tch,COUNTOF(tch),pvStart,COUNTOF(tch));
 
     pvEnd = tch;
     while (*pvEnd && (IsCharAlphaNumericA(*pvEnd) || StrChrIA("+-/_",*pvEnd) || (bQuoted && *pvEnd == ' ')))
@@ -7147,7 +7229,8 @@ BOOL FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) 
     *pvEnd = 0;
     StrTrimA(tch," \t:=\"'");
 
-    lstrcpynA(pszValue,tch,cchValue);
+    StringCchCopyNA(pszValue,cchValue,tch,COUNTOF(tch));
+
     return(TRUE);
   }
   return(FALSE);

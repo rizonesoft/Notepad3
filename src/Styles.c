@@ -3046,7 +3046,7 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
 
     WCHAR tch[32] = { L'\0' };
     WCHAR wchStyle[COUNTOF(lexDefault.Styles[0].szValue)];
-    lstrcpyn(wchStyle,lexDefault.Styles[7+iIdx].szValue,COUNTOF(lexDefault.Styles[0].szValue));
+    StringCchCopyN(wchStyle,COUNTOF(wchStyle),lexDefault.Styles[7 + iIdx].szValue,COUNTOF(lexDefault.Styles[7 + iIdx].szValue));
 
     iValue = max(min(iValue,5),0);
     StringCchPrintf(lexDefault.Styles[7+iIdx].szValue,COUNTOF(lexDefault.Styles[7 + iIdx].szValue),L"size:%i",iValue);
@@ -3763,7 +3763,7 @@ BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
 //
 BOOL Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality)
 {
-  WCHAR tch[256] = { L'\0' };
+  WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"smoothing:");
   if (p)
   {
@@ -3776,7 +3776,7 @@ BOOL Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
         lstrcmpi(tch,L"standard") == 0 ||
         lstrcmpi(tch,L"cleartype") == 0 ||
         lstrcmpi(tch,L"default") == 0) {
-      lstrcpyn(lpszQuality,tch,cchQuality);
+      StringCchCopyN(lpszQuality,cchQuality,tch,COUNTOF(tch));
       return TRUE;
     }
   }
@@ -3859,7 +3859,7 @@ BOOL Style_StrGetSize(LPCWSTR lpszStyle,int *i)
 //
 BOOL Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 {
-  WCHAR tch[256] = { L'\0' };
+  WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"size:");
   if (p)
   {
@@ -3868,7 +3868,7 @@ BOOL Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
     if (p)
       *p = L'\0';
     TrimString(tch);
-    lstrcpyn(lpszSize,tch,cchSize);
+    StringCchCopyN(lpszSize,cchSize,tch,COUNTOF(tch));
     return TRUE;
   }
   return FALSE;
@@ -4311,7 +4311,7 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
 void Style_GetCurrentLexerName(LPWSTR lpszName,int cchName)
 {
   if (!GetString(pLexCurrent->rid,lpszName,cchName))
-    lstrcpyn(lpszName,pLexCurrent->pszName,cchName);
+    StringCchCopyN(lpszName,cchName,pLexCurrent->pszName,cchName);
 }
 
 
