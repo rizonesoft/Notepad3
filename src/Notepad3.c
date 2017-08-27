@@ -2908,9 +2908,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
         {
           int token = BeginSelUndoAction();
-          //SendMessage(hwndEdit, SCI_CUT, 0, 0); // SCI400 buggy (removes last char)
-          SendMessage(hwndEdit,SCI_COPY,0,0);
-          SendMessage(hwndEdit,SCI_CLEAR,0,0);
+          SendMessage(hwndEdit, SCI_CUT, 0, 0);
           EndSelUndoAction(token);
         }
         else {
@@ -2964,9 +2962,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
         int token = BeginSelUndoAction();
-        //SendMessage(hwndEdit,SCI_CUT,0,0); // SCI400 buggy (removes last char)
-        SendMessage(hwndEdit,SCI_COPY,0,0); 
-        SendMessage(hwndEdit,SCI_CLEAR,0,0);
+        SendMessage(hwndEdit,SCI_CUT,0,0);
         SendMessage(hwndEdit,SCI_REPLACESEL,(WPARAM)0,(LPARAM)pClip);
         if (iPos > iAnchor)
           SendMessage(hwndEdit,SCI_SETSEL,iAnchor,iAnchor + lstrlenA(pClip));

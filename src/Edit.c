@@ -490,13 +490,12 @@ BOOL EditSetNewEncoding(HWND hwnd,int iCurrentEncoding,int iNewEncoding,BOOL bNo
 //
 //  EditGetClipboardText()
 //
-char* EditGetClipboardText(HWND hwnd)
-{
+char* EditGetClipboardText(HWND hwnd) {
   HANDLE hmem;
   WCHAR *pwch;
   char  *pmch;
   char  *ptmp;
-  int    wlen, mlen, mlen2;
+  int    wlen,mlen,mlen2;
   UINT   codepage;
   int    eolmode;
 
@@ -509,15 +508,15 @@ char* EditGetClipboardText(HWND hwnd)
   wlen = lstrlenW(pwch);
 
   codepage = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
-  eolmode  = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
+  eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
 
-  mlen = WideCharToMultiByte(codepage,0,pwch,wlen+1,NULL,0,0,0);
-  pmch = LocalAlloc(LPTR,mlen + 1);
+  mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,0,0);
+  pmch = LocalAlloc(LPTR,mlen + 2);
   if (pmch)
-    WideCharToMultiByte(codepage,0,pwch,wlen+1,pmch,mlen+1,NULL,NULL);
+    WideCharToMultiByte(codepage,0,pwch,wlen + 2,pmch,mlen + 2,NULL,NULL);
 
   if ((BOOL)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) {
-    ptmp = LocalAlloc(LPTR,mlen * 2 + 1);
+    ptmp = LocalAlloc(LPTR,mlen * 2 + 2);
     if (ptmp) {
       char *s = pmch;
       char *d = ptmp;
@@ -547,17 +546,18 @@ char* EditGetClipboardText(HWND hwnd)
       mlen2 = (int)(d - ptmp);
 
       LocalFree(pmch);
-      pmch = LocalAlloc(LPTR,mlen2 + 1);
-      StringCchCopyA(pmch,mlen2 + 1,ptmp);
+      pmch = LocalAlloc(LPTR,mlen2 + 2);
+      StringCchCopyA(pmch,mlen2 + 2,ptmp);
       LocalFree(ptmp);
     }
-  } 
+  }
 
   GlobalUnlock(hmem);
   CloseClipboard();
 
   return(pmch);
 }
+
 
 
 //=============================================================================
