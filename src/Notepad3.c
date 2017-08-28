@@ -147,14 +147,10 @@ BOOL      bAccelWordNavigation;
 BOOL      bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
-int       iDefaultEncoding;
 BOOL      bSkipUnicodeDetection;
 BOOL      bLoadASCIIasUTF8;
 BOOL      bLoadNFOasOEM;
 BOOL      bNoEncodingTags;
-int       iSrcEncoding = -1;
-int       iWeakSrcEncoding = -1;
-int       iDefaultEOLMode;
 BOOL      bFixLineEndings;
 BOOL      bAutoStripBlanks;
 int       iPrintHeader;
@@ -239,12 +235,18 @@ WCHAR     szCurFile[FILE_ARG_BUF] = { L'\0' };
 FILEVARS  fvCurFile;
 BOOL      bModified;
 BOOL      bReadOnly = FALSE;
+
 int       iEncoding;
 int       iOriginalEncoding;
-int       iEOLMode;
+int       iDefaultEncoding;
+int       iSrcEncoding = -1;
+int       iWeakSrcEncoding = -1;
 
-int       iDefaultCodePage;
+int       iSciDefaultCodePage;
 int       iDefaultCharSet;
+
+int       iEOLMode;
+int       iDefaultEOLMode;
 
 int       iInitialLine;
 int       iInitialColumn;
@@ -930,7 +932,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     if (iSrcEncoding != CPI_NONE) {
       iEncoding = iSrcEncoding;
       iOriginalEncoding = iSrcEncoding;
-      SendMessage(hwndEdit,SCI_SETCODEPAGE,Encoding_GetSciCodePage(iEncoding),0);
+      Encoding_SciSetCodePage(hwndEdit,iEncoding);
     }
   }
 
@@ -982,7 +984,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (flagMatchText && lpMatchArg) {
     if (lstrlen(lpMatchArg) && SendMessage(hwndEdit,SCI_GETLENGTH,0,0)) {
 
-      UINT cp = (UINT)SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0);
+      UINT cp = Encoding_SciGetCodePage(hwndEdit);
       WideCharToMultiByte(cp,0,lpMatchArg,-1,efrData.szFind,COUNTOF(efrData.szFind),NULL,NULL);
       WideCharToMultiByte(CP_UTF8,0,lpMatchArg,-1,efrData.szFindUTF8,COUNTOF(efrData.szFindUTF8),NULL,NULL);
       cpLastFind = cp;
@@ -2808,8 +2810,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
 
         if (EditSetNewEncoding(hwndEdit,
-          iEncoding,iNewEncoding,
-          (flagSetEncoding),lstrlen(szCurFile) == 0)) {
+                               CPI_UTF8, //@@@ iEncoding,
+                               iNewEncoding,
+                               (flagSetEncoding),
+                               lstrlen(szCurFile) == 0)) {
 
           if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) == 0) {
             iEncoding = iNewEncoding;
@@ -3477,7 +3481,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           StringCchPrintf(tchDateTime,COUNTOF(tchDateTime),L"%s %s",tchTime,tchDate);
         }
 
-        UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
+        UINT uCP = Encoding_SciGetCodePage(hwndEdit);
         WideCharToMultiByte(uCP,0,tchDateTime,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
@@ -3509,7 +3513,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           pszInsert = tchUntitled;
         }
 
-        UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
+        UINT uCP = Encoding_SciGetCodePage(hwndEdit);
         WideCharToMultiByte(uCP,0,pszInsert,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
@@ -3529,7 +3533,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           if (StringFromGUID2(&guid,wszGuid,COUNTOF(wszGuid))) {
             pwszGuid = wszGuid + 1; // trim first brace char
             wszGuid[wcslen(wszGuid) - 1] = L'\0'; // trim last brace char 
-            UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
+            UINT uCP = Encoding_SciGetCodePage(hwndEdit);
             if (WideCharToMultiByte(uCP,0,pwszGuid,-1,mszGuid,COUNTOF(mszGuid),NULL,NULL)) {
               int token = BeginSelUndoAction();
               SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszGuid);
@@ -3875,9 +3879,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
       else {
 
-        UINT cp = (UINT)SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0);
+        UINT cp = Encoding_SciGetCodePage(hwndEdit);
         if (cpLastFind != cp) {
-          if (cp != SC_CP_UTF8) {
+          if (cp != CP_UTF8) {
 
             WCHAR wch[FNDRPL_BUFFER];
 
@@ -4756,7 +4760,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         mktime(&sst);
         wcsftime(wchReplace,COUNTOF(wchReplace),wchTemplate,&sst);
 
-        cp = (UINT)SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0);
+        cp = Encoding_SciGetCodePage(hwndEdit);
         WideCharToMultiByte(cp,0,wchFind,-1,efrTS.szFind,COUNTOF(efrTS.szFind),NULL,NULL);
         WideCharToMultiByte(cp,0,wchReplace,-1,efrTS.szReplace,COUNTOF(efrTS.szReplace),NULL,NULL);
 
@@ -4808,7 +4812,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (lstrlenA(mszSelection)) {
 
               WCHAR wszSelection[512] = { L'\0' };
-              UINT uCP = (UINT)SendMessage(hwndEdit, SCI_GETCODEPAGE, 0, 0);
+              UINT uCP = Encoding_SciGetCodePage(hwndEdit);
               MultiByteToWideChar(uCP,0,mszSelection,-1,wszSelection,COUNTOF(wszSelection));
 
               int cmdsz = (512 + COUNTOF(szCmdTemplate) + MAX_PATH + 32);
@@ -4874,10 +4878,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           lpsz = StrChrA(mszSelection,'\r');
           if (lpsz) *lpsz = '\0';
 
-          cpLastFind = (UINT)SendMessage(hwndEdit,SCI_GETCODEPAGE,0,0);
+          cpLastFind = Encoding_SciGetCodePage(hwndEdit);
           StringCchCopyA(efrData.szFind,COUNTOF(efrData.szFind),mszSelection);
 
-          if (cpLastFind != SC_CP_UTF8)
+          if (cpLastFind != CP_UTF8)
           {
             WCHAR wszBuf[FNDRPL_BUFFER];
 
@@ -5834,15 +5838,10 @@ void LoadSettings()
   bViewEOLs = IniSectionGetInt(pIniSection,L"ViewEOLs",0);
   if (bViewEOLs) bViewEOLs = 1;
 
-  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_ANSI_DEFAULT);
-  // if DefaultEncoding is defined as CPI_NONE(-1) explicitly, set to system's current code-page 
-  iDefaultEncoding = (iDefaultEncoding == CPI_NONE) ? 
-    Encoding_MapIniSetting(TRUE, (int)GetACP()) : 
-    Encoding_MapIniSetting(TRUE, iDefaultEncoding);
-  if (!Encoding_IsValid(iDefaultEncoding)) 
-    iDefaultEncoding = CPI_ANSI_DEFAULT;
-  // set flag for encoding default
-  mEncoding[iDefaultEncoding].uFlags |= NCP_DEFAULT;
+  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_NONE);
+  // if DefaultEncoding is not defined set to system's current code-page 
+  iDefaultEncoding = (iDefaultEncoding == CPI_NONE) ?
+    Encoding_MapIniSetting(TRUE,(int)GetACP()) : Encoding_MapIniSetting(TRUE,iDefaultEncoding);
 
   bSkipUnicodeDetection = IniSectionGetInt(pIniSection, L"SkipUnicodeDetection", 0);
   if (bSkipUnicodeDetection) bSkipUnicodeDetection = 1;
@@ -6038,19 +6037,26 @@ void LoadSettings()
 
   LocalFree(pIniSection);
 
-  // define scintilla internal code page, don't use Encoding_GetSciCodePage(iDefaultEncoding) here
-  iDefaultCodePage = (iDefaultEncoding == CPI_ANSI_DEFAULT) ? 0 : SC_CP_UTF8; 
+
+  // define scintilla internal code page
+  iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
+
+  if (iDefaultEncoding == CPI_ANSI_DEFAULT)
   {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
     int acp = (int)GetACP();
-    if (acp == 932 || acp == 936 || acp == 949 || acp == 950 || acp == 1361)
-      iDefaultCodePage = acp;
+    if (acp == 932 || acp == 936 || acp == 949 || acp == 950 || acp == 1361) {
+      iSciDefaultCodePage = acp;
+    }
+    iDefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
   }
+  // set flag for encoding default
+  mEncoding[iDefaultEncoding].uFlags |= NCP_DEFAULT;
 
 
   {
     CHARSETINFO ci;
-    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iDefaultCodePage, &ci, TCI_SRCCODEPAGE))
+    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iSciDefaultCodePage, &ci, TCI_SRCCODEPAGE))
       iDefaultCharSet = ci.ciCharset;
     else
       iDefaultCharSet = ANSI_CHARSET;
@@ -7275,7 +7281,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     SendMessage(hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
     iEncoding = iDefaultEncoding;
     iOriginalEncoding = iDefaultEncoding;
-    SendMessage(hwndEdit,SCI_SETCODEPAGE,Encoding_GetSciCodePage(iDefaultEncoding),0);
+    Encoding_SciSetCodePage(hwndEdit,iDefaultEncoding);
     EditSetNewText(hwndEdit,"",0);
     SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
       iPathNameFormat,bModified || iEncoding != iOriginalEncoding,
@@ -7340,7 +7346,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
           iEncoding = iDefaultEncoding;
           iOriginalEncoding = iDefaultEncoding;
         }
-        SendMessage(hwndEdit,SCI_SETCODEPAGE,Encoding_GetSciCodePage(iEncoding),0);
+        Encoding_SciSetCodePage(hwndEdit,iEncoding);
         bReadOnly = FALSE;
         EditSetNewText(hwndEdit,"",0);
       }

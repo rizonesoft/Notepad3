@@ -173,13 +173,17 @@ void Encoding_GetLabel(int);
 int  Encoding_MatchW(LPCWSTR);
 int  Encoding_MatchA(char*);
 BOOL Encoding_IsValid(int);
+int  Encoding_GetByCodePage(UINT);
 void Encoding_AddToListView(HWND,int,BOOL);
 BOOL Encoding_GetFromListView(HWND,int *);
 void Encoding_AddToComboboxEx(HWND,int,BOOL);
 BOOL Encoding_GetFromComboboxEx(HWND,int *);
 BOOL Encoding_IsDefault(int);
 BOOL Encoding_IsANSI(int);
-int  Encoding_GetSciCodePage(int);
+
+UINT Encoding_SciGetCodePage(HWND);
+void Encoding_SciSetCodePage(HWND,int);
+
 
 BOOL IsUnicode(const char*,int,LPBOOL,LPBOOL);
 BOOL IsUTF8(const char*,int);

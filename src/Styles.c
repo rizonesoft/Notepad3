@@ -3466,7 +3466,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     WCHAR wchMode[32] = { L'\0' };
     PEDITLEXER pLexMode;
-    UINT cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
+    UINT cp = Encoding_SciGetCodePage(hwnd);
     MultiByteToWideChar(cp,0,fvCurFile.tchMode,-1,wchMode,COUNTOF(wchMode));
 
     if (!fNoCGIGuess && (lstrcmpi(wchMode,L"cgi") == 0 || lstrcmpi(wchMode,L"fcgi") == 0)) {
