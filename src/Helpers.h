@@ -162,8 +162,8 @@ int  FormatNumberStr(LPWSTR);
 BOOL SetDlgItemIntEx(HWND,int,UINT);
 
 
-#define MBCS2WCHAR(c,a,w,i) MultiByteToWideChar((c),0,(a),-1,(w),(i))
-#define WCHAR2MBCS(c,w,a,i) WideCharToMultiByte((c),0,(w),-1,(a),(i),NULL,NULL)
+#define MultiByteToWideCharStrg(c,a,w) MultiByteToWideChar((c),0,(a),-1,(w),COUNTOF(w))
+#define WideCharToMultiByteStrg(c,w,a) WideCharToMultiByte((c),0,(w),-1,(a),COUNTOF(a),NULL,NULL)
 
 
 UINT    GetDlgItemTextA2W(UINT,HWND,int,LPSTR,int);

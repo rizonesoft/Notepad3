@@ -1615,21 +1615,21 @@ UINT GetDlgItemTextA2W(UINT uCP,HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMax
   WCHAR wsz[1024] = L"";
   UINT uRet = GetDlgItemTextW(hDlg,nIDDlgItem,wsz,COUNTOF(wsz));
   ZeroMemory(lpString,nMaxCount);
-  WCHAR2MBCS(uCP,wsz,lpString,nMaxCount-2);
+  WideCharToMultiByte(uCP,0,wsz,-1,lpString,nMaxCount - 2,NULL,NULL);
   return uRet;
 }
 
 UINT SetDlgItemTextA2W(UINT uCP,HWND hDlg,int nIDDlgItem,LPSTR lpString)
 {
   WCHAR wsz[1024] = L"";
-  MBCS2WCHAR(uCP,lpString,wsz,COUNTOF(wsz));
+  MultiByteToWideCharStrg(uCP,lpString,wsz);
   return SetDlgItemTextW(hDlg,nIDDlgItem,wsz);
 }
 
 LRESULT ComboBox_AddStringA2W(UINT uCP,HWND hwnd,LPCSTR lpString)
 {
   WCHAR wsz[1024] = L"";
-  MBCS2WCHAR(uCP,lpString,wsz,COUNTOF(wsz));
+  MultiByteToWideCharStrg(uCP,lpString,wsz);
   return SendMessageW(hwnd,CB_ADDSTRING,0,(LPARAM)wsz);
 }
 
@@ -1814,7 +1814,7 @@ BOOL MRU_Load(LPMRULIST pmru) {
     if (IniSectionGetString(pIniSection,tchName,L"",tchItem,COUNTOF(tchItem))) {
       /*if (pmru->iFlags & MRU_UTF8) {
         WCHAR wchItem[1024];
-        int cbw = MultiByteToWideChar(CP_UTF7,0,tchItem,-1,wchItem,COUNTOF(wchItem));
+        int cbw = MultiByteToWideCharStrg(CP_UTF7,tchItem,wchItem);
         WideCharToMultiByte(CP_UTF8,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
         pmru->pszItems[n++] = StrDup(tchItem);
       }
@@ -1840,7 +1840,7 @@ BOOL MRU_Save(LPMRULIST pmru) {
       /*if (pmru->iFlags & MRU_UTF8) {
         WCHAR  tchItem[1024];
         WCHAR wchItem[1024];
-        int cbw = MultiByteToWideChar(CP_UTF8,0,pmru->pszItems[i],-1,wchItem,COUNTOF(wchItem));
+        int cbw = MultiByteToWideCharStrg(CP_UTF8,pmru->pszItems[i],wchItem);
         WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
         IniSectionSetString(pIniSection,tchName,tchItem);
       }
@@ -2178,7 +2178,7 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
           }
           if (val[0]) {
             val[1] = 0;
-            WideCharToMultiByte(cpEdit,0,val,-1,ch,COUNTOF(ch),NULL,NULL);
+            WideCharToMultiByteStrg(cpEdit,val,ch);
             *o = *pch++;
             while (*pch)
               *++o = *pch++;

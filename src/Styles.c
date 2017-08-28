@@ -3467,7 +3467,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     WCHAR wchMode[32] = { L'\0' };
     PEDITLEXER pLexMode;
     UINT cp = Encoding_SciGetCodePage(hwnd);
-    MultiByteToWideChar(cp,0,fvCurFile.tchMode,-1,wchMode,COUNTOF(wchMode));
+    MultiByteToWideCharStrg(cp,fvCurFile.tchMode,wchMode);
 
     if (!fNoCGIGuess && (lstrcmpi(wchMode,L"cgi") == 0 || lstrcmpi(wchMode,L"fcgi") == 0)) {
       char tchText[256] = { L'\0' };
@@ -4217,7 +4217,7 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   // Font
   if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch))) {
     char mch[256] = { '\0' };
-    WideCharToMultiByte(CP_UTF8,0,tch,-1,mch,COUNTOF(mch),NULL,NULL);
+    WideCharToMultiByteStrg(CP_UTF8,tch,mch);
     SendMessage(hwnd,SCI_STYLESETFONT,iStyle,(LPARAM)mch);
   }
 

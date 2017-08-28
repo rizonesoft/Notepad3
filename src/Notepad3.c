@@ -242,7 +242,6 @@ int       iDefaultEncoding;
 int       iSrcEncoding = -1;
 int       iWeakSrcEncoding = -1;
 
-int       iSciDefaultCodePage;
 int       iDefaultCharSet;
 
 int       iEOLMode;
@@ -985,8 +984,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     if (lstrlen(lpMatchArg) && SendMessage(hwndEdit,SCI_GETLENGTH,0,0)) {
 
       UINT cp = Encoding_SciGetCodePage(hwndEdit);
-      WideCharToMultiByte(cp,0,lpMatchArg,-1,efrData.szFind,COUNTOF(efrData.szFind),NULL,NULL);
-      WideCharToMultiByte(CP_UTF8,0,lpMatchArg,-1,efrData.szFindUTF8,COUNTOF(efrData.szFindUTF8),NULL,NULL);
+      WideCharToMultiByteStrg(cp,lpMatchArg,efrData.szFind);
+      WideCharToMultiByteStrg(CP_UTF8,lpMatchArg,efrData.szFindUTF8);
       cpLastFind = cp;
 
       if (flagMatchText & 4)
@@ -3482,7 +3481,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
 
         UINT uCP = Encoding_SciGetCodePage(hwndEdit);
-        WideCharToMultiByte(uCP,0,tchDateTime,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
+        WideCharToMultiByteStrg(uCP,tchDateTime,mszBuf);
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
         EndSelUndoAction(token);
@@ -3514,7 +3513,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
 
         UINT uCP = Encoding_SciGetCodePage(hwndEdit);
-        WideCharToMultiByte(uCP,0,pszInsert,-1,mszBuf,COUNTOF(mszBuf),NULL,NULL);
+        WideCharToMultiByteStrg(uCP,pszInsert,mszBuf);
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
         EndSelUndoAction(token);
@@ -3534,7 +3533,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             pwszGuid = wszGuid + 1; // trim first brace char
             wszGuid[wcslen(wszGuid) - 1] = L'\0'; // trim last brace char 
             UINT uCP = Encoding_SciGetCodePage(hwndEdit);
-            if (WideCharToMultiByte(uCP,0,pwszGuid,-1,mszGuid,COUNTOF(mszGuid),NULL,NULL)) {
+            if (WideCharToMultiByteStrg(uCP,pwszGuid,mszGuid)) {
               int token = BeginSelUndoAction();
               SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszGuid);
               EndSelUndoAction(token);
@@ -3885,11 +3884,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             WCHAR wch[FNDRPL_BUFFER];
 
-            MultiByteToWideChar(CP_UTF8,0,efrData.szFindUTF8,-1,wch,COUNTOF(wch));
-            WideCharToMultiByte(cp,0,wch,-1,efrData.szFind,COUNTOF(efrData.szFind),NULL,NULL);
+            MultiByteToWideCharStrg(CP_UTF8,efrData.szFindUTF8,wch);
+            WideCharToMultiByteStrg(cp,wch,efrData.szFind);
 
-            MultiByteToWideChar(CP_UTF8,0,efrData.szReplaceUTF8,-1,wch,COUNTOF(wch));
-            WideCharToMultiByte(cp,0,wch,-1,efrData.szReplace,COUNTOF(efrData.szReplace),NULL,NULL);
+            MultiByteToWideCharStrg(CP_UTF8,efrData.szReplaceUTF8,wch);
+            WideCharToMultiByteStrg(cp,wch,efrData.szReplace);
           }
           else {
             StringCchCopyA(efrData.szFind,COUNTOF(efrData.szFind),efrData.szFindUTF8);
@@ -4761,8 +4760,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         wcsftime(wchReplace,COUNTOF(wchReplace),wchTemplate,&sst);
 
         cp = Encoding_SciGetCodePage(hwndEdit);
-        WideCharToMultiByte(cp,0,wchFind,-1,efrTS.szFind,COUNTOF(efrTS.szFind),NULL,NULL);
-        WideCharToMultiByte(cp,0,wchReplace,-1,efrTS.szReplace,COUNTOF(efrTS.szReplace),NULL,NULL);
+        WideCharToMultiByteStrg(cp,wchFind,efrTS.szFind);
+        WideCharToMultiByteStrg(cp,wchReplace,efrTS.szReplace);
 
         if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
           EditReplaceAllInSelection(hwndEdit,&efrTS,TRUE);
@@ -4813,7 +4812,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
               WCHAR wszSelection[512] = { L'\0' };
               UINT uCP = Encoding_SciGetCodePage(hwndEdit);
-              MultiByteToWideChar(uCP,0,mszSelection,-1,wszSelection,COUNTOF(wszSelection));
+              MultiByteToWideCharStrg(uCP,mszSelection,wszSelection);
 
               int cmdsz = (512 + COUNTOF(szCmdTemplate) + MAX_PATH + 32);
               lpszCommand = GlobalAlloc(GPTR,sizeof(WCHAR)*cmdsz);
@@ -4885,8 +4884,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             WCHAR wszBuf[FNDRPL_BUFFER];
 
-            MultiByteToWideChar(cpLastFind,0,mszSelection,-1,wszBuf,COUNTOF(wszBuf));
-            WideCharToMultiByte(CP_UTF8,0,wszBuf,-1,efrData.szFindUTF8,COUNTOF(efrData.szFindUTF8),NULL,NULL);
+            MultiByteToWideCharStrg(cpLastFind,mszSelection,wszBuf);
+            WideCharToMultiByteStrg(CP_UTF8,wszBuf,efrData.szFindUTF8);
           }
           else
             StringCchCopyA(efrData.szFindUTF8,COUNTOF(efrData.szFindUTF8),mszSelection);
@@ -6039,7 +6038,7 @@ void LoadSettings()
 
 
   // define scintilla internal code page
-  iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
+  int iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
 
   if (iDefaultEncoding == CPI_ANSI_DEFAULT)
   {

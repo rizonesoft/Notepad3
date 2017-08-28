@@ -63,7 +63,6 @@ extern BOOL bAutoStripBlanks;
 
 
 // Default Codepage and Character Set
-extern int iSciDefaultCodePage;
 extern int iDefaultCharSet;
 extern BOOL bSkipUnicodeDetection;
 extern BOOL bLoadASCIIasUTF8;
@@ -314,7 +313,7 @@ void EditInitWordDelimiter(HWND hwnd)
   if (lstrlen(buffer) == 0)
     StringCchCopyA(whitesp,COUNTOF(whitesp),PunctuationCharsDefault);
   else
-    WCHAR2MBCS(CP_ACP,buffer,whitesp,COUNTOF(whitesp));
+    WideCharToMultiByteStrg(CP_ACP,buffer,whitesp);
   // add only 7-bit-ASCII chars to accelerate whitespace list
   for (size_t i = 0; i < strlen(whitesp); i++) {
     if (whitesp[i] & 0x7F) {
@@ -769,7 +768,7 @@ void Encoding_GetLabel(int iEncoding) {
 
 int Encoding_MatchW(LPCWSTR pwszTest) {
   char tchTest[256] = { '\0' };
-  WideCharToMultiByte(CP_ACP,0,pwszTest,-1,tchTest,COUNTOF(tchTest),NULL,NULL);
+  WideCharToMultiByteStrg(CP_ACP,pwszTest,tchTest);
   return(Encoding_MatchA(tchTest));
 }
 
@@ -2265,7 +2264,7 @@ void EditChar2Hex(HWND hwnd) {
 
       else {
         UINT cp = Encoding_SciGetCodePage(hwnd);
-        MultiByteToWideChar(cp,0,ch,-1,wch,COUNTOF(wch));
+        MultiByteToWideCharStrg(cp,ch,wch);
         if (wch[0] <= 0xFF)
           StringCchPrintfA(ch,COUNTOF(ch),"\\x%02X",wch[0] & 0xFF);
         else
@@ -2326,7 +2325,7 @@ void EditHex2Char(HWND hwnd) {
             UINT  cp = Encoding_SciGetCodePage(hwnd);
             WCHAR wch[4];
             StringCchPrintf(wch,COUNTOF(wch),L"%lc",(WCHAR)i);
-            cch = WideCharToMultiByte(cp,0,wch,-1,ch,COUNTOF(ch),NULL,NULL) - 1;
+            cch = WideCharToMultiByteStrg(cp,wch,ch) - 1;
             if (bTrySelExpand && (char)SendMessage(hwnd,SCI_GETCHARAT,(WPARAM)iSelStart-1,0) == '\\') {
               iSelStart--;
             }
@@ -2932,9 +2931,9 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
   UINT mbcp = Encoding_SciGetCodePage(hwnd);
 
   if (lstrlen(pwszPrefix))
-    WCHAR2MBCS(mbcp, pwszPrefix, mszPrefix1, COUNTOF(mszPrefix1));
+    WideCharToMultiByteStrg(mbcp,pwszPrefix,mszPrefix1);
   if (lstrlen(pwszAppend))
-    WCHAR2MBCS(mbcp, pwszAppend, mszAppend1, COUNTOF(mszAppend1));
+    WideCharToMultiByteStrg(mbcp,pwszAppend,mszAppend1);
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
   {
@@ -3335,7 +3334,7 @@ void EditAlignText(HWND hwnd,int nMode)
                   p = StrEnd(p);
                 }
 
-                WideCharToMultiByte(mbcp,0,wchNewLineBuf,-1,tchLineBuf,COUNTOF(tchLineBuf),NULL,NULL);
+                WideCharToMultiByteStrg(mbcp,wchNewLineBuf,tchLineBuf);
 
                 iPos = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
                 SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iPos,0);
@@ -3361,7 +3360,7 @@ void EditAlignText(HWND hwnd,int nMode)
                   p = StrEnd(p);
                 }
 
-                WideCharToMultiByte(mbcp,0,wchNewLineBuf,-1,tchLineBuf,COUNTOF(tchLineBuf),NULL,NULL);
+                WideCharToMultiByteStrg(mbcp,wchNewLineBuf,tchLineBuf);
 
                 iPos = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
                 SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iPos,0);
@@ -3403,7 +3402,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 p = StrEnd(p);
               }
 
-              WideCharToMultiByte(mbcp,0,wchNewLineBuf,-1,tchLineBuf,COUNTOF(tchLineBuf),NULL,NULL);
+              WideCharToMultiByteStrg(mbcp,wchNewLineBuf,tchLineBuf);
 
               if (nMode == ALIGN_RIGHT || nMode == ALIGN_CENTER) {
                 SendMessage(hwnd,SCI_SETLINEINDENTATION,(WPARAM)iLine,(LPARAM)iMinIndent);
@@ -3459,9 +3458,9 @@ void EditEncloseSelection(HWND hwnd,LPCWSTR pwszOpen,LPCWSTR pwszClose)
   UINT mbcp = Encoding_SciGetCodePage(hwnd);
 
   if (lstrlen(pwszOpen))
-    WideCharToMultiByte(mbcp,0,pwszOpen,-1,mszOpen,COUNTOF(mszOpen),NULL,NULL);
+    WideCharToMultiByteStrg(mbcp,pwszOpen,mszOpen);
   if (lstrlen(pwszClose))
-    WideCharToMultiByte(mbcp,0,pwszClose,-1,mszClose,COUNTOF(mszClose),NULL,NULL);
+    WideCharToMultiByteStrg(mbcp,pwszClose,mszClose);
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
   {
