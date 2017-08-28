@@ -34,7 +34,6 @@
 
 
 extern HINSTANCE g_hInstance;
-extern int iEncoding;
 
 extern int iSciFontQuality;
 extern const int FontQuality[4];
@@ -3475,7 +3474,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
-        if (iEncoding != g_DOSEncoding || pLexSniffed != &lexDefault || (
+        if (Encoding_Current(CPI_GET) != g_DOSEncoding || pLexSniffed != &lexDefault || (
             lstrcmpi(lpszExt,L"nfo") && lstrcmpi(lpszExt,L"diz"))) {
           // Although .nfo and .diz were removed from the default lexer's
           // default extensions list, they may still presist in the user's INI
@@ -3573,7 +3572,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     }
   }
 
-  if (!bFound && iEncoding == g_DOSEncoding)
+  if (!bFound && Encoding_Current(CPI_GET) == g_DOSEncoding)
     pLexNew = &lexANSI;
 
   // Apply the new lexer

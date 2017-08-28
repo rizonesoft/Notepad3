@@ -145,6 +145,7 @@ extern int g_DOSEncoding;
 #define NCP_ANSI             128
 #define NCP_INTERNAL          (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI)
 #define NCP_RECODE           256
+#define CPI_GET               -2
 #define CPI_NONE              -1
 #define CPI_ANSI_DEFAULT       0
 #define CPI_OEM                1
@@ -167,6 +168,7 @@ typedef struct _np2encoding {
   WCHAR   wchLabel[32];
 } NP2ENCODING;
 
+int  Encoding_Current(int);   // getter/setter
 void Encoding_InitDefaults();
 int  Encoding_MapIniSetting(BOOL,int);
 void Encoding_GetLabel(int);

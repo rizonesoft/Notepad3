@@ -503,13 +503,36 @@ char* EditGetClipboardText(HWND hwnd) {
 
   hmem = GetClipboardData(CF_UNICODETEXT);
   pwch = GlobalLock(hmem);
-
   wlen = lstrlenW(pwch);
 
+  // check for clipboard chars not in Current-Codepage and perform new encoding ...
+  codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
+  if (codepage < 50000U && codepage != 42) {
+    BOOL bHasForeignChars = FALSE;
+    int bSuccess = WideCharToMultiByte(codepage,WC_NO_BEST_FIT_CHARS,pwch,wlen + 2,NULL,0,NULL,&bHasForeignChars);
+    if (!bSuccess || bHasForeignChars) {
+      int iPos = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
+      int iAnchor = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
+
+      SendMessage(hwndMain,WM_COMMAND,MAKELONG(IDM_ENCODING_UTF8,1),0);
+
+      if (iPos > iAnchor) {
+        SendMessage(hwndEdit,SCI_SETSEL,iAnchor,iPos);
+      } 
+      else {
+        SendMessage(hwndEdit,SCI_SETSEL,iPos,iAnchor);
+      }
+      if (Encoding_Current(CPI_GET) != CPI_UTF8) {
+        return(NULL);
+      }
+    }
+  }
+
+  // get clipboard
   codepage = Encoding_SciGetCodePage(hwnd);
   eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
 
-  mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,0,0);
+  mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,NULL,NULL);
   pmch = LocalAlloc(LPTR,mlen + 2);
   if (pmch)
     WideCharToMultiByte(codepage,0,pwch,wlen + 2,pmch,mlen + 2,NULL,NULL);
@@ -681,6 +704,20 @@ int EditDetectEOLMode(HWND hwnd,char* lpData,DWORD cbData)
 //
 //  Encoding Helper Functions
 //
+
+int Encoding_Current(int iEncoding)
+{
+  static int CurrentEncoding = CPI_NONE;
+  
+  if (iEncoding >= 0) {
+    if (Encoding_IsValid(iEncoding)) {
+      CurrentEncoding = iEncoding;
+    }
+  }
+  return CurrentEncoding;
+}
+
+
 void Encoding_InitDefaults() {
   mEncoding[CPI_ANSI_DEFAULT].uCodePage = GetACP();
   StringCchPrintf(wchANSI,COUNTOF(wchANSI),L" (%u)",mEncoding[CPI_ANSI_DEFAULT].uCodePage);
