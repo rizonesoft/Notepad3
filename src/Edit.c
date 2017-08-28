@@ -408,6 +408,14 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 
   else {
 
+    //~UINT cpSrc = mEncoding[encSource].uCodePage;
+    //~UINT cpDst = mEncoding[encDest].uCodePage;
+    UINT cpSrc = Encoding_SciMappedCodePage(encSource);
+    UINT cpDst = Encoding_SciMappedCodePage(encDest);
+
+    if (cpSrc == cpDst)
+      return(TRUE);
+
     const int chLen = length * 5 + 2;
     pchText = GlobalAlloc(GPTR,chLen);
 
@@ -417,8 +425,6 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     const int wchLen = length * 3 + 2;
     pwchText = GlobalAlloc(GPTR,wchLen);
 
-    UINT cpSrc = mEncoding[encSource].uCodePage;
-    UINT cpDst = mEncoding[encDest].uCodePage;
     cbwText = MultiByteToWideChar(cpSrc,0,pchText,length,pwchText,wchLen);
     cbText = WideCharToMultiByte(cpDst,0,pwchText,cbwText,pchText,chLen,NULL,NULL);
 
@@ -436,6 +442,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 
     GlobalFree(pchText);
     GlobalFree(pwchText);
+
   }
   return(TRUE);
 }
@@ -1069,17 +1076,23 @@ UINT Encoding_SciGetCodePage(HWND hwnd)
 }
 
 
-void Encoding_SciSetCodePage(HWND hwnd, int iEncoding)
+int Encoding_SciMappedCodePage(int iEncoding) 
 {
   if (Encoding_IsValid(iEncoding)) {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
     int cp = (int)mEncoding[iEncoding].uCodePage;
     if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
-      SendMessage(hwnd,SCI_SETCODEPAGE,(WPARAM)cp,0);
+      return cp;
     }
-    else
-      SendMessage(hwnd,SCI_SETCODEPAGE,(WPARAM)SC_CP_UTF8,0); // any other case
   }
+  return SC_CP_UTF8;
+}
+
+
+void Encoding_SciSetCodePage(HWND hwnd, int iEncoding)
+{
+  int cp = Encoding_SciMappedCodePage(iEncoding);
+  SendMessage(hwnd,SCI_SETCODEPAGE,(WPARAM)cp,0);
 }
 
 

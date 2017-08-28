@@ -184,6 +184,7 @@ BOOL Encoding_IsDefault(int);
 BOOL Encoding_IsANSI(int);
 
 UINT Encoding_SciGetCodePage(HWND);
+int  Encoding_SciMappedCodePage(int);
 void Encoding_SciSetCodePage(HWND,int);
 
 
