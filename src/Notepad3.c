@@ -6045,7 +6045,7 @@ void LoadSettings()
   {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
     int acp = (int)GetACP();
-    if (acp == 932 || acp == 936 || acp == 949 || acp == 950 || acp == 1361) {
+    if (acp == 932 || acp == 936 || acp == 949 || acp == 950) {
       iSciDefaultCodePage = acp;
     }
     iDefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);

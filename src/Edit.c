@@ -202,8 +202,8 @@ NP2ENCODING mEncoding[] = {
   { NCP_8BIT|NCP_RECODE, 20936, "x-cp20936,xcp20936,",                                                            00000, L"" }, // Chinese Simplified (GB2312)
   { NCP_8BIT|NCP_RECODE, 52936, "hz-gb-2312,hzgb2312,hz,",                                                        00000, L"" }, // Chinese Simplified (HZ-GB2312) */
   { NCP_8BIT|NCP_RECODE, 54936, "gb18030,gb18030,",                                                               61072, L"" },
-  { NCP_8BIT|NCP_RECODE, 1361,  "johab,johab,",                                                                   61073, L"" }, // Korean (Johab)
-/*{ NCP_8BIT|NCP_RECODE, 20932, "euc-jp,,",                                                                       00000, L"" }, // Japanese (JIS X 0208-1990 & 0212-1990)
+/* { NCP_8BIT|NCP_RECODE, 1361,  "johab,johab,",                                                                   61073, L"" }, // Korean (Johab)
+  { NCP_8BIT|NCP_RECODE, 20932, "euc-jp,,",                                                                       00000, L"" }, // Japanese (JIS X 0208-1990 & 0212-1990)
   { NCP_8BIT|NCP_RECODE, 50220, "iso-2022-jp,iso2022jp,",                                                         00000, L"" }, // Japanese (JIS)
   { NCP_8BIT|NCP_RECODE, 50221, "csISO2022JP,csiso2022jp,",                                                       00000, L"" }, // Japanese (JIS-Allow 1 byte Kana)
   { NCP_8BIT|NCP_RECODE, 50222, "_iso-2022-jp$SIO,iso2022jpSIO,",                                                 00000, L"" }, // Japanese (JIS-Allow 1 byte Kana - SO/SI)
@@ -1026,7 +1026,7 @@ UINT Encoding_SciGetCodePage(HWND hwnd)
 {
   UINT cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
 
-  if (cp == (UINT)CP_UTF8 || cp == 932U || cp == 936U || cp == 949U || cp == 950U || cp == 1361U) {
+  if (cp == (UINT)CP_UTF8 || cp == 932U || cp == 936U || cp == 949U || cp == 950U) {
     return cp;
   }
   return (UINT)CP_UTF8; // CP_ACP;
@@ -1038,7 +1038,7 @@ void Encoding_SciSetCodePage(HWND hwnd, int iEncoding)
   if (Encoding_IsValid(iEncoding)) {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
     int cp = (int)mEncoding[iEncoding].uCodePage;
-    if (cp == 932 || cp == 936 || cp == 949 || cp == 950 || cp == 1361) {
+    if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
       SendMessage(hwnd,SCI_SETCODEPAGE,(WPARAM)cp,0);
     }
     else
