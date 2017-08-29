@@ -236,11 +236,7 @@ FILEVARS  fvCurFile;
 BOOL      bModified;
 BOOL      bReadOnly = FALSE;
 
-int       iOriginalEncoding;
 int       iDefaultEncoding;
-int       iSrcEncoding = CPI_NONE;
-int       iWeakSrcEncoding = CPI_NONE;
-
 int       iDefaultCharSet;
 
 int       iEOLMode;
@@ -888,7 +884,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
   // Source Encoding
   if (lpEncodingArg)
-    iSrcEncoding = Encoding_MatchW(lpEncodingArg);
+    Encoding_Source(Encoding_MatchW(lpEncodingArg));
 
   // Pathname parameter
   if (lpFileArg /*&& !flagNewFromClipboard*/)
@@ -927,15 +923,15 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   }
 
   else {
-    if (iSrcEncoding != CPI_NONE) {
-      Encoding_Current(iSrcEncoding);
-      iOriginalEncoding = iSrcEncoding;
+    if (Encoding_Source(CPI_GET) != CPI_NONE) {
+      Encoding_Current(Encoding_Source(CPI_GET));
+      Encoding_HasChanged(Encoding_Source(CPI_GET));
       Encoding_SciSetCodePage(hwndEdit,Encoding_Current(CPI_GET));
     }
   }
 
   // reset
-  iSrcEncoding = CPI_NONE;
+  Encoding_Source(CPI_NONE);
   flagQuietCreate = 0;
   fKeepTitleExcerpt = 0;
 
@@ -1014,7 +1010,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     hwndNextCBChain = SetClipboardViewer(hwndMain);
     uidsAppTitle = IDS_APPTITLE_PASTEBOARD;
     SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-      iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
       IDS_READONLY,bReadOnly,szTitleExcerpt);
     bLastCopyFromMe = FALSE;
 
@@ -1275,7 +1271,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           if (params->flagFileSpecified) {
 
             BOOL bOpened = FALSE;
-            iSrcEncoding = params->iSrcEncoding;
+            Encoding_Source(params->iSrcEncoding);
 
             if (PathIsDirectory(&params->wchData)) {
               WCHAR tchFile[MAX_PATH] = { L'\0' };
@@ -1332,12 +1328,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               if (params->flagTitleExcerpt) {
                 StringCchCopyN(szTitleExcerpt,COUNTOF(szTitleExcerpt),StrEnd(&params->wchData) + 1,COUNTOF(szTitleExcerpt));
                 SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-                  iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+                  iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
                   IDS_READONLY,bReadOnly,szTitleExcerpt);
               }
             }
             // reset
-            iSrcEncoding = CPI_NONE;
+            Encoding_Source(CPI_NONE);
           }
 
           if (params->flagJumpTo) {
@@ -1454,12 +1450,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
 
       case WM_CHANGENOTIFY:
-          if (iFileWatchingMode == 1 || bModified || Encoding_Current(CPI_GET) != iOriginalEncoding)
+          if (iFileWatchingMode == 1 || bModified || Encoding_HasChanged(CPI_GET))
             SetForegroundWindow(hwnd);
 
           if (PathFileExists(szCurFile)) {
 
-            if ((iFileWatchingMode == 2 && !bModified && Encoding_Current(CPI_GET) == iOriginalEncoding) ||
+            if ((iFileWatchingMode == 2 && !bModified && !Encoding_HasChanged(CPI_GET)) ||
                  MsgBox(MBYESNO,IDS_FILECHANGENOTIFY) == IDYES) {
 
               int iCurPos     = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
@@ -1469,7 +1465,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               int iXOffset    = (int)SendMessage(hwndEdit,SCI_GETXOFFSET,0,0);
               BOOL bIsTail    = (iCurPos == iAnchorPos) && (iCurPos == SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
 
-              iWeakSrcEncoding = Encoding_Current(CPI_GET);
+              Encoding_SrcWeak(Encoding_Current(CPI_GET));
+
               if (FileLoad(TRUE,FALSE,TRUE,FALSE,szCurFile)) {
 
                 if (bIsTail && iFileWatchingMode == 2) {
@@ -2409,12 +2406,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           int iDocTopLine = (int)SendMessage(hwndEdit,SCI_DOCLINEFROMVISIBLE,(WPARAM)iVisTopLine,0);
           int iXOffset    = (int)SendMessage(hwndEdit,SCI_GETXOFFSET,0,0);
 
-          if ((bModified || Encoding_Current(CPI_GET) != iOriginalEncoding) && MsgBox(MBOKCANCEL,IDS_ASK_REVERT) != IDOK)
+          if ((bModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_REVERT) != IDOK)
             return(0);
 
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),szCurFile);
 
-          iWeakSrcEncoding = Encoding_Current(CPI_GET);
+          Encoding_SrcWeak(Encoding_Current(CPI_GET));
+
           if (FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2))
           {
             if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
@@ -2473,7 +2471,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
         SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-          iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+          iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
           IDS_READONLY,bReadOnly,szTitleExcerpt);
       }
       break;
@@ -2816,11 +2814,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) == 0) {
             Encoding_Current(iNewEncoding);
-            iOriginalEncoding = iNewEncoding;
+            Encoding_HasChanged(iNewEncoding);
           }
           else {
             if (Encoding_IsANSI(Encoding_Current(CPI_GET)) || Encoding_IsANSI(iNewEncoding))
-               iOriginalEncoding = CPI_NONE;
+              Encoding_HasChanged(CPI_NONE);
             Encoding_Current(iNewEncoding);
           }
 
@@ -2828,7 +2826,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           UpdateStatusbar();
 
           SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
             IDS_READONLY,bReadOnly,szTitleExcerpt);
         }
       }
@@ -2850,13 +2848,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           else if (iNewEncoding == CPI_UNICODEBEBOM)
             iNewEncoding = CPI_UNICODEBE;
 
-          if ((bModified || Encoding_Current(CPI_GET) != iOriginalEncoding) && MsgBox(MBOKCANCEL,IDS_ASK_RECODE) != IDOK)
+          if ((bModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_RECODE) != IDOK)
             return(0);
 
           if (RecodeDlg(hwnd,&iNewEncoding)) 
           {
             StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),szCurFile);
-            iSrcEncoding = iNewEncoding;
+            Encoding_Source(iNewEncoding);
             FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2);
           }
         }
@@ -2881,7 +2879,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         UpdateToolbar();
         UpdateStatusbar();
         SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-          iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+          iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
           IDS_READONLY,bReadOnly,szTitleExcerpt);
       }
       break;
@@ -2929,39 +2927,52 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_COPYALL:
-      if (flagPasteBoard)
-        bLastCopyFromMe = TRUE;
-      SendMessage(hwndEdit,SCI_COPYRANGE,0,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
-      UpdateToolbar();
+      {
+        if (flagPasteBoard)
+          bLastCopyFromMe = TRUE;
+
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_COPYRANGE,0,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
+        EndSelUndoAction(token);
+
+        UpdateToolbar();
+      }
       break;
 
 
     case IDM_EDIT_COPYADD:
-      if (flagPasteBoard)
-        bLastCopyFromMe = TRUE;
-      EditCopyAppend(hwndEdit);
-      UpdateToolbar();
-      break;
+      {
+        if (flagPasteBoard)
+          bLastCopyFromMe = TRUE;
+        
+        int token = BeginSelUndoAction();
+        EditCopyAppend(hwndEdit);
+        EndSelUndoAction(token);
 
+        UpdateToolbar();
+      }
+      break;
 
     case IDM_EDIT_SWAP:
       bSwapClipBoard = TRUE;
     case IDM_EDIT_PASTE:
       {
+        char *pClip = EditGetClipboardText(hwndEdit);
+
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
         int iAnchor = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
 
-        char *pClip = EditGetClipboardText(hwndEdit);
-
         int token = BeginSelUndoAction();
+
         if (SendMessage(hwndEdit,SCI_GETSELECTIONEMPTY,0,0)) {
 
           SendMessage(hwndEdit,SCI_REPLACESEL,(WPARAM)0,(LPARAM)pClip);
-          int iNewPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-          SendMessage(hwndEdit,SCI_SETSEL,iPos,iNewPos);
 
-          if (bSwapClipBoard)
+          if (bSwapClipBoard) {
+            int iNewPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+            SendMessage(hwndEdit,SCI_SETSEL,iPos,iNewPos);
             SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_CLEARCLIPBOARD,1),0);
+          }
         }
         else {
           if (flagPasteBoard)
@@ -3007,12 +3018,18 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_SELECTALL:
-      SendMessage(hwndEdit,SCI_SELECTALL,0,0);
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_SELECTALL,0,0);
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case IDM_EDIT_SELECTWORD:
       {
+        int token = BeginSelUndoAction();
+
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
 
         if (SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
@@ -3053,13 +3070,15 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           int iLineEnd   = (int)SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,iLine,0);
           SendMessage(hwndEdit,SCI_SETSEL,iLineStart,iLineEnd);
         }
+        EndSelUndoAction(token);
       }
-
       break;
 
 
     case IDM_EDIT_SELECTLINE:
       {
+        int token = BeginSelUndoAction();
+
         int iSelStart  = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
         int iSelEnd    = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
         int iLineStart = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iSelStart,0);
@@ -3068,6 +3087,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         iSelEnd   = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iLineEnd+1,0);
         SendMessage(hwndEdit,SCI_SETSEL,iSelStart,iSelEnd);
         SendMessage(hwndEdit,SCI_CHOOSECARETX,0,0);
+
+        EndSelUndoAction(token);
       }
       break;
 
@@ -3120,38 +3141,18 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_INDENT:
       {
-        int iLineSelStart = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,
-          (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0),0);
-        int iLineSelEnd   = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,
-          (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0),0);
-
-        SendMessage(hwndEdit,SCI_SETTABINDENTS,TRUE,0);
-        if (iLineSelStart == iLineSelEnd) {
-          SendMessage(hwndEdit,SCI_VCHOME,0,0);
-          SendMessage(hwndEdit,SCI_TAB,0,0);
-        }
-        else
-          SendMessage(hwndEdit,SCI_TAB,0,0);
-        SendMessage(hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_TAB,0,0);
+        EndSelUndoAction(token);
       }
       break;
 
 
     case IDM_EDIT_UNINDENT:
       {
-        int iLineSelStart = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,
-          (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0),0);
-        int iLineSelEnd   = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,
-          (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0),0);
-
-        SendMessage(hwndEdit,SCI_SETTABINDENTS,TRUE,0);
-        if (iLineSelStart == iLineSelEnd) {
-          SendMessage(hwndEdit,SCI_VCHOME,0,0);
-          SendMessage(hwndEdit,SCI_BACKTAB,0,0);
-        }
-        else
-          SendMessage(hwndEdit,SCI_BACKTAB,0,0);
-        SendMessage(hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_BACKTAB,0,0);
+        EndSelUndoAction(token);
       }
       break;
 
@@ -3159,7 +3160,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_ENCLOSESELECTION:
       if (EditEncloseSelectionDlg(hwnd,wchPrefixSelection,wchAppendSelection)) {
         BeginWaitCursor();
+        int token = BeginSelUndoAction();
         EditEncloseSelection(hwndEdit,wchPrefixSelection,wchAppendSelection);
+        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3335,9 +3338,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_JOINLINESEX:
-      BeginWaitCursor();
-      EditJoinLinesEx(hwndEdit);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditJoinLinesEx(hwndEdit);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
@@ -4397,7 +4404,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       iPathNameFormat = 0;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
       SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
         IDS_READONLY,bReadOnly,szTitleExcerpt);
       break;
 
@@ -4406,7 +4413,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       iPathNameFormat = 1;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
       SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
         IDS_READONLY,bReadOnly,szTitleExcerpt);
       break;
 
@@ -4415,7 +4422,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       iPathNameFormat = 2;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
       SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
         IDS_READONLY,bReadOnly,szTitleExcerpt);
       break;
 
@@ -4423,7 +4430,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_SHOWEXCERPT:
       EditGetExcerpt(hwndEdit,szTitleExcerpt,COUNTOF(szTitleExcerpt));
       SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
         IDS_READONLY,bReadOnly,szTitleExcerpt);
       break;
 
@@ -4638,13 +4645,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (lstrlen(szCurFile)) {
           if (iDefaultEncoding == CPI_UNICODEBOM)
-            iSrcEncoding = CPI_UNICODE;
+            Encoding_Source(CPI_UNICODE);
           else if (iDefaultEncoding == CPI_UNICODEBEBOM)
-            iSrcEncoding = CPI_UNICODEBE;
+            Encoding_Source(CPI_UNICODEBE);
           else if (iDefaultEncoding == CPI_UTF8SIGN)
-            iSrcEncoding = CPI_UTF8;
+            Encoding_Source(CPI_UTF8);
           else
-            iSrcEncoding = iDefaultEncoding;
+            Encoding_Source(iDefaultEncoding);
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),szCurFile);
           FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
@@ -4656,7 +4663,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (lstrlen(szCurFile)) {
-          iSrcEncoding = CPI_ANSI_DEFAULT;
+          Encoding_Source(CPI_ANSI_DEFAULT);
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),szCurFile);
           FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
@@ -4668,7 +4675,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (lstrlen(szCurFile)) {
-          iSrcEncoding = CPI_OEM;
+          Encoding_Source(CPI_OEM);
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),szCurFile);
           FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
@@ -5003,7 +5010,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case CMD_TOGGLETITLE:
       EditGetExcerpt(hwndEdit,szTitleExcerpt,COUNTOF(szTitleExcerpt));
       SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
         IDS_READONLY,bReadOnly,szTitleExcerpt);
       break;
 
@@ -5552,7 +5559,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
           SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
             IDS_READONLY,bReadOnly,szTitleExcerpt);
           UpdateToolbar();
           break;
@@ -5570,7 +5577,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
           SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
             IDS_READONLY,bReadOnly,szTitleExcerpt);
           UpdateToolbar();
           break;
@@ -6060,13 +6067,12 @@ void LoadSettings()
   // set flag for encoding default
   mEncoding[iDefaultEncoding].uFlags |= NCP_DEFAULT;
 
-
   {
     CHARSETINFO ci;
-    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iSciDefaultCodePage, &ci, TCI_SRCCODEPAGE))
-      iDefaultCharSet = ci.ciCharset;
+    if (TranslateCharsetInfo((DWORD*)(UINT_PTR)iSciDefaultCodePage,&ci,TCI_SRCCODEPAGE))
+      iDefaultCharSet = ci.ciCharset;  // corresponds to SCI: SC_CHARSET_XXX
     else
-      iDefaultCharSet = ANSI_CHARSET;
+      iDefaultCharSet = SC_CHARSET_ANSI; // == GDI:ANSI_CHARSET // DEFAULT_CHARSET;
   }
 
   // Scintilla Styles
@@ -6918,7 +6924,7 @@ void UpdateToolbar()
   EnableTool(IDT_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
   EnableTool(IDT_FILE_LAUNCH,i);
 
-  EnableTool(IDT_FILE_SAVE, (bModified || (Encoding_Current(CPI_GET) != iOriginalEncoding)) /*&& !bReadOnly*/);
+  EnableTool(IDT_FILE_SAVE, (bModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
 
   CheckTool(IDT_VIEW_WORDWRAP,fWordWrap);
 }
@@ -7112,14 +7118,18 @@ int BeginSelUndoAction()
   int token = -1;
   UndoRedoSelection sel = { -1 };
   sel.selMode = (int)SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0);
-  sel.anchorPos_undo = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
-  sel.currPos_undo = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-  if (sel.currPos_undo != sel.anchorPos_undo) {
-    token = UndoSelectionMap(-1, &sel);
-    if (token >= 0) {
-      SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
-      SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
-    }
+  if (sel.selMode == SC_SEL_LINES) {
+    sel.anchorPos_undo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
+    sel.currPos_undo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
+  }
+  else {
+    sel.anchorPos_undo = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
+    sel.currPos_undo = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+  }
+  token = UndoSelectionMap(-1, &sel);
+  if (token >= 0) {
+    SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
+    SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
   }
   return token;
 }
@@ -7137,8 +7147,14 @@ void EndSelUndoAction(int token)
     UndoRedoSelection sel = { -1 };
     if (UndoSelectionMap(token,&sel) >= 0) {
       // mode should not have changed ???
-      sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
-      sel.currPos_redo = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+      if (sel.selMode == SC_SEL_LINES) {
+        sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
+        sel.currPos_redo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
+      }
+      else {
+        sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
+        sel.currPos_redo = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+      }
     }
     UndoSelectionMap(token,&sel); // set with redo action filled
     SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
@@ -7160,15 +7176,18 @@ void RestoreSelectionAction(int token, DoAction doAct)
     int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     int currPos   = (doAct == UNDO ? sel.currPos_undo : sel.currPos_redo);
     SendMessage(hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
-    if (anchorPos != currPos) {
-      if (sel.selMode == SC_SEL_RECTANGLE) {
-        PostMessage(hwndEdit,SCI_SETRECTANGULARSELECTIONANCHOR,(WPARAM)anchorPos,0);
-        PostMessage(hwndEdit,SCI_SETRECTANGULARSELECTIONCARET,(WPARAM)currPos,0);
-      }
-      else {
-        PostMessage(hwndEdit,SCI_SETSELECTION,(WPARAM)currPos,(LPARAM)anchorPos);
-      }
+    if (sel.selMode == SC_SEL_LINES) {
+      PostMessage(hwndEdit,SCI_SETSELECTIONSTART,(WPARAM)anchorPos,0);
+      PostMessage(hwndEdit,SCI_SETSELECTIONEND,(WPARAM)currPos,0);
     }
+    else if (sel.selMode == SC_SEL_RECTANGLE) {
+      PostMessage(hwndEdit,SCI_SETRECTANGULARSELECTIONANCHOR,(WPARAM)anchorPos,0);
+      PostMessage(hwndEdit,SCI_SETRECTANGULARSELECTIONCARET,(WPARAM)currPos,0);
+    }
+    else {
+      PostMessage(hwndEdit,SCI_SETSELECTION,(WPARAM)currPos,(LPARAM)anchorPos);
+    }
+
     PostMessage(hwndEdit,SCI_CANCEL,0,0);
   }
 }
@@ -7287,11 +7306,11 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     iEOLMode = iLineEndings[iDefaultEOLMode];
     SendMessage(hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
     Encoding_Current(iDefaultEncoding);
-    iOriginalEncoding = iDefaultEncoding;
+    Encoding_HasChanged(iDefaultEncoding);
     Encoding_SciSetCodePage(hwndEdit,iDefaultEncoding);
     EditSetNewText(hwndEdit,"",0);
     SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-      iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
       IDS_READONLY,bReadOnly,szTitleExcerpt);
 
     // Terminate file watching
@@ -7345,13 +7364,13 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         Style_SetLexer(hwndEdit,NULL);
         iEOLMode = iLineEndings[iDefaultEOLMode];
         SendMessage(hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
-        if (iSrcEncoding != CPI_NONE) {
-          Encoding_Current(iSrcEncoding);
-          iOriginalEncoding = iSrcEncoding;
+        if (Encoding_Source(CPI_GET) != CPI_NONE) {
+          Encoding_Current(Encoding_Source(CPI_GET));
+          Encoding_HasChanged(Encoding_Source(CPI_GET));
         }
         else {
           Encoding_Current(iDefaultEncoding);
-          iOriginalEncoding = iDefaultEncoding;
+          Encoding_HasChanged(iDefaultEncoding);
         }
         Encoding_SciSetCodePage(hwndEdit,Encoding_Current(CPI_GET));
         bReadOnly = FALSE;
@@ -7365,9 +7384,9 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
       return FALSE;
   }
   else {
-    int fileEncoding;
+    int fileEncoding = Encoding_Current(CPI_GET);
     fSuccess = FileIO(TRUE,szFileName,bNoEncDetect,&fileEncoding,&iEOLMode,&bUnicodeErr,&bFileTooBig,NULL,FALSE);
-    Encoding_Current(fileEncoding);
+    Encoding_Current(fileEncoding); // load may change encoding
   }
   if (fSuccess) {
     StringCchCopy(szCurFile,COUNTOF(szCurFile),szFileName);
@@ -7378,7 +7397,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (!flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(hwndEdit,szCurFile);
     UpdateLineNumberWidth();
-    iOriginalEncoding = Encoding_Current(CPI_GET);
+    Encoding_HasChanged(Encoding_Current(CPI_GET));
     bModified = FALSE;
     //bReadOnly = FALSE;
     SendMessage(hwndEdit,SCI_SETEOLMODE,iEOLMode,0);
@@ -7386,7 +7405,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
     SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szFileName,
-      iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
       IDS_READONLY,bReadOnly,szTitleExcerpt);
 
     // Install watching of the current file
@@ -7452,7 +7471,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     }
   }
 
-  if (!bSaveAlways && (!bModified && (Encoding_Current(CPI_GET) == iOriginalEncoding) || bIsEmptyNewFile) && !bSaveAs)
+  if (!bSaveAlways && (!bModified && !Encoding_HasChanged(CPI_GET) || bIsEmptyNewFile) && !bSaveAs)
     return TRUE;
 
   if (bAsk)
@@ -7480,7 +7499,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
     if (bReadOnly) {
       SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
         IDS_READONLY,bReadOnly,szTitleExcerpt);
       if (MsgBox(MBYESNOWARN,IDS_READONLY_SAVE,szCurFile) == IDYES)
         bSaveAs = TRUE;
@@ -7503,9 +7522,9 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
 
     if (SaveFileDlg(hwndMain,tchFile,COUNTOF(tchFile),tchInitialDir))
     {
-      int fileEncoding;
+      int fileEncoding = Encoding_Current(CPI_GET);
       fSuccess = FileIO(FALSE, tchFile, FALSE, &fileEncoding, &iEOLMode, NULL, NULL, &bCancelDataLoss, bSaveCopy);
-      Encoding_Current(fileEncoding);
+      //~Encoding_Current(fileEncoding); // save should not change encoding
       if (fSuccess)
       {
         if (!bSaveCopy)
@@ -7530,21 +7549,21 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
   }
 
   else {
-    int fileEncoding;
+    int fileEncoding = Encoding_Current(CPI_GET);
     fSuccess = FileIO(FALSE,szCurFile,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,FALSE);
-    Encoding_Current(fileEncoding);
+    //~Encoding_Current(fileEncoding); // save should not change encoding
   }
   if (fSuccess)
   {
     if (!bSaveCopy)
     {
       bModified = FALSE;
-      iOriginalEncoding = Encoding_Current(CPI_GET);
+      Encoding_HasChanged(Encoding_Current(CPI_GET));
       MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,szCurFile);
       SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
         IDS_READONLY,bReadOnly,szTitleExcerpt);
 
       // Install watching of the current file
@@ -7560,7 +7579,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       StringCchCopy(tchFile,COUNTOF(tchFile),szCurFile);
 
     SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-      iPathNameFormat,bModified || Encoding_Current(CPI_GET) != iOriginalEncoding,
+      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
       IDS_READONLY,bReadOnly,szTitleExcerpt);
 
     MsgBox(MBWARN,IDS_ERR_SAVEFILE,tchFile);
@@ -8172,7 +8191,7 @@ void SetNotifyIconTitle(HWND hwnd)
   else
     GetString(IDS_UNTITLED,tchTitle,COUNTOF(tchTitle)-4);
 
-  if (bModified || Encoding_Current(CPI_GET) != iOriginalEncoding)
+  if (bModified || Encoding_HasChanged(CPI_GET))
     StringCchCopy(nid.szTip,COUNTOF(nid.szTip),L"* ");
   else
     StringCchCopy(nid.szTip,COUNTOF(nid.szTip),L"");

@@ -41,7 +41,7 @@ typedef struct np3params {
 } np3params, *LPnp3params;
 
 
-#define MAX_SELUNDO 512
+#define MAX_SELUNDO 1024
 typedef struct _undoSel
 {
   int anchorPos_undo;

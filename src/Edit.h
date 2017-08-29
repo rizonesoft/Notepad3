@@ -168,7 +168,11 @@ typedef struct _np2encoding {
   WCHAR   wchLabel[32];
 } NP2ENCODING;
 
-int  Encoding_Current(int);   // getter/setter
+int  Encoding_Current(int);    // getter/setter
+int  Encoding_Source(int);     // getter/setter
+int  Encoding_SrcWeak(int);    // getter/setter
+BOOL Encoding_HasChanged(int); // query/setter
+
 void Encoding_InitDefaults();
 int  Encoding_MapIniSetting(BOOL,int);
 void Encoding_GetLabel(int);
