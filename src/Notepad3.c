@@ -2933,9 +2933,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_COPYRANGE,0,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
-        EndSelUndoAction(token);
-
         UpdateToolbar();
+        EndSelUndoAction(token);
       }
       break;
 
@@ -2947,9 +2946,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         
         int token = BeginSelUndoAction();
         EditCopyAppend(hwndEdit);
-        EndSelUndoAction(token);
-
         UpdateToolbar();
+        EndSelUndoAction(token);
       }
       break;
 
@@ -3078,7 +3076,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_SELECTLINE:
       {
         int token = BeginSelUndoAction();
-
         int iSelStart  = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
         int iSelEnd    = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
         int iLineStart = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iSelStart,0);
@@ -3087,7 +3084,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         iSelEnd   = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iLineEnd+1,0);
         SendMessage(hwndEdit,SCI_SETSEL,iSelStart,iSelEnd);
         SendMessage(hwndEdit,SCI_CHOOSECARETX,0,0);
-
         EndSelUndoAction(token);
       }
       break;
@@ -3109,10 +3105,14 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_CUTLINE:
-      if (flagPasteBoard)
-        bLastCopyFromMe = TRUE;
-      SendMessage(hwndEdit,SCI_LINECUT,0,0);
-      UpdateToolbar();
+      {
+        if (flagPasteBoard)
+          bLastCopyFromMe = TRUE;
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_LINECUT,0,0);
+        UpdateToolbar();
+        EndSelUndoAction(token);
+      }
       break;
 
 
@@ -4128,21 +4128,20 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_MARGIN:
-      bShowSelectionMargin = (bShowSelectionMargin) ? FALSE : TRUE;
-      SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,1,(bShowSelectionMargin)?16:0);
+      {
+        bShowSelectionMargin = (bShowSelectionMargin) ? FALSE : TRUE;
+        SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,1,(bShowSelectionMargin) ? 16 : 0);
 
         //Depending on if the margin is visible or not, choose different bookmark indication
-        if( bShowSelectionMargin )
-        {
-            SendMessage( hwndEdit , SCI_MARKERDEFINEPIXMAP , 0 , (LPARAM)bookmark_pixmap );
+        if (bShowSelectionMargin) {
+          SendMessage(hwndEdit,SCI_MARKERDEFINEPIXMAP,0,(LPARAM)bookmark_pixmap);
         }
-        else
-        {
-            SendMessage( hwndEdit , SCI_MARKERSETBACK , 0 , 0xff << 8 );
-            SendMessage( hwndEdit , SCI_MARKERSETALPHA , 0 , 20);
-            SendMessage( hwndEdit , SCI_MARKERDEFINE , 0 , SC_MARK_BACKGROUND );
+        else {
+          SendMessage(hwndEdit,SCI_MARKERSETBACK,0,0xff << 8);
+          SendMessage(hwndEdit,SCI_MARKERSETALPHA,0,20);
+          SendMessage(hwndEdit,SCI_MARKERDEFINE,0,SC_MARK_BACKGROUND);
         }
-
+      }
       break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
@@ -4632,11 +4631,15 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case CMD_CTRLTAB:
-      SendMessage(hwndEdit,SCI_SETTABINDENTS,FALSE,0);
-      SendMessage(hwndEdit,SCI_SETUSETABS,TRUE,0);
-      SendMessage(hwndEdit,SCI_TAB,0,0);
-      SendMessage(hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
-      SendMessage(hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit,SCI_SETTABINDENTS,FALSE,0);
+        SendMessage(hwndEdit,SCI_SETUSETABS,TRUE,0);
+        SendMessage(hwndEdit,SCI_TAB,0,0);
+        SendMessage(hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
+        SendMessage(hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
+        EndSelUndoAction(token);
+      }
       break;
 
 
