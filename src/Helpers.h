@@ -194,6 +194,7 @@ LRESULT ComboBox_AddStringA2W(UINT,HWND,LPCSTR);
 
 
 UINT CodePageFromCharSet(UINT);
+UINT CharSetFromCodePage(UINT);
 
 
 //==== MRU Functions ==========================================================
@@ -257,6 +258,21 @@ void TransformBackslashes(char*,BOOL,UINT);
 BOOL GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
+
+
+//==== StrSafe strlen() =======================================================
+inline int StringCchLenNA(LPCSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthA(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
+#define StringCchLenA(s)  StringCchLenNA((s),COUNTOF(s))
+inline int StringCchLenNW(LPCWSTR s, size_t n) { size_t len; HRESULT hr = StringCchLengthW(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
+#define StringCchLenW(s)  StringCchLenNW((s),COUNTOF(s))
+
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StringCchLen(s)     StringCchLenNW((s),COUNTOF(s))
+#define StringCchLenN(s,n)  StringCchLenNW((s),(n))
+#else
+#define StringCchLen(s)     StringCchLenNA((s),COUNTOF(s))
+#define StringCchLenN(s,n)  StringCchLenNA((s),(n))
+#endif
 
 
 #endif //_NP3_HELPERS_H_

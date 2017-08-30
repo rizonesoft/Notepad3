@@ -306,7 +306,7 @@ void EditInitWordDelimiter(HWND hwnd)
   char whitesp[DELIM_BUFFER] = { '\0' };
   WCHAR buffer[DELIM_BUFFER] = { L'\0' };
   IniGetString(L"Settings2",L"ExtendedWhiteSpaceChars",L"",buffer,COUNTOF(buffer));
-  if (lstrlen(buffer) == 0)
+  if (StringCchLen(buffer) == 0)
     StringCchCopyA(whitesp,COUNTOF(whitesp),PunctuationCharsDefault);
   else
     WideCharToMultiByteStrg(CP_ACP,buffer,whitesp);
@@ -1487,7 +1487,7 @@ BOOL EditLoadFile(
 
   if (bLoadNFOasOEM)
   {
-    PCWSTR pszExt = pszFile + lstrlen(pszFile) - 4;
+    PCWSTR pszExt = pszFile + StringCchLenN(pszFile,MAX_PATH) - 4;
     if (pszExt >= pszFile && !(lstrcmpi(pszExt, L".nfo") && lstrcmpi(pszExt, L".diz")))
       bPreferOEM = TRUE;
   }
@@ -2399,7 +2399,7 @@ void EditChar2Hex(HWND hwnd) {
       }
 
       SendMessage(hwnd,SCI_REPLACESEL,0,(LPARAM)ch);
-      SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+lstrlenA(ch));
+      SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+ StringCchLenA(ch));
     }
   }
   else
@@ -2496,7 +2496,7 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
           return;
 
         if (!StrChrIA(chNumber, 'x') && sscanf_s(chNumber, "%d", &iNumber) == 1) {
-          iWidth = lstrlenA(chNumber);
+          iWidth = StringCchLenA(chNumber);
           if (iNumber >= 0) {
             if (bIncrease && iNumber < INT_MAX)
               iNumber++;
@@ -2505,19 +2505,19 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
             StringCchPrintfA(chFormat,COUNTOF(chFormat),"%%0%ii",iWidth);
             StringCchPrintfA(chNumber,COUNTOF(chNumber),chFormat,iNumber);
             SendMessage(hwnd,SCI_REPLACESEL,0,(LPARAM)chNumber);
-            SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+lstrlenA(chNumber));
+            SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+StringCchLenA(chNumber));
           }
         }
         else if (sscanf_s(chNumber, "%x", &iNumber) == 1) {
           int i;
           BOOL bUppercase = FALSE;
-          iWidth = lstrlenA(chNumber) - 2;
+          iWidth = StringCchLenA(chNumber) - 2;
           if (iNumber >= 0) {
             if (bIncrease && iNumber < INT_MAX)
               iNumber++;
             if (!bIncrease && iNumber > 0)
               iNumber--;
-            for (i = lstrlenA(chNumber) -1 ; i >= 0; i--) {
+            for (i = StringCchLenA(chNumber) -1 ; i >= 0; i--) {
               if (IsCharLowerA(chNumber[i]))
                 break;
               else if (IsCharUpper(chNumber[i])) {
@@ -2531,7 +2531,7 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
               StringCchPrintfA(chFormat,COUNTOF(chFormat),"%%#0%ix",iWidth);
             StringCchPrintfA(chNumber,COUNTOF(chNumber),chFormat,iNumber);
             SendMessage(hwnd,SCI_REPLACESEL,0,(LPARAM)chNumber);
-            SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+lstrlenA(chNumber));
+            SendMessage(hwnd,SCI_SETSEL,iSelStart,iSelStart+StringCchLenA(chNumber));
           }
         }
       }
@@ -2977,7 +2977,7 @@ void EditMoveDown(HWND hwnd)
           chaEOL[0] = '\n';
           chaEOL[1] = 0;
         }
-        SendMessage(hwnd,SCI_APPENDTEXT,(WPARAM)lstrlenA(chaEOL),(LPARAM)chaEOL);
+        SendMessage(hwnd,SCI_APPENDTEXT,(WPARAM)StringCchLenA(chaEOL),(LPARAM)chaEOL);
       }
 
       cLine = (int)SendMessage(hwnd,SCI_GETLINE,(WPARAM)iLineSrc,0);
@@ -3081,7 +3081,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
         iLineEnd--;
     }
 
-    if (lstrlenA(mszPrefix1)) {
+    if (StringCchLenA(mszPrefix1)) {
 
       p = StrStrA(mszPrefix1, "$(");
       while (!bPrefixNum && p) {
@@ -3150,7 +3150,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
       }
     }
 
-    if (lstrlenA(mszAppend1)) {
+    if (StringCchLenA(mszAppend1)) {
 
       p = StrStrA(mszAppend1, "$(");
       while (!bAppendNum && p) {
@@ -3242,7 +3242,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
         iPos = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
         SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iPos,0);
         SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)iPos,0);
-        SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)lstrlenA(mszInsert),(LPARAM)mszInsert);
+        SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenA(mszInsert),(LPARAM)mszInsert);
       }
 
       if (lstrlen(pwszAppend)) {
@@ -3262,7 +3262,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
         iPos = (int)SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0);
         SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iPos,0);
         SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)iPos,0);
-        SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)lstrlenA(mszInsert),(LPARAM)mszInsert);
+        SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenA(mszInsert),(LPARAM)mszInsert);
       }
     }
     SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
@@ -3457,7 +3457,7 @@ void EditAlignText(HWND hwnd,int nMode)
                     *p++ = L' ';
                     *p = 0;
                   }
-                  StringCchCat(p,(length - lstrlen(wchNewLineBuf)),pWords[i]);
+                  StringCchCat(p,(length - StringCchLen(wchNewLineBuf)),pWords[i]);
                   p = StrEnd(p);
                 }
 
@@ -3467,7 +3467,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iPos,0);
                 iPos = (int)SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0);
                 SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)iPos,0);
-                SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)lstrlenA(tchLineBuf),(LPARAM)tchLineBuf);
+                SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenA(tchLineBuf),(LPARAM)tchLineBuf);
 
                 SendMessage(hwnd,SCI_SETLINEINDENTATION,(WPARAM)iLine,(LPARAM)iMinIndent);
               }
@@ -3483,7 +3483,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 for (i = 1; i < iWords; i++) {
                   *p++ = L' ';
                   *p = 0;
-                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - lstrlen(wchNewLineBuf)),pWords[i]);
+                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLen(wchNewLineBuf)),pWords[i]);
                   p = StrEnd(p);
                 }
 
@@ -3493,7 +3493,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iPos,0);
                 iPos = (int)SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0);
                 SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)iPos,0);
-                SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)lstrlenA(tchLineBuf),(LPARAM)tchLineBuf);
+                SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenA(tchLineBuf),(LPARAM)tchLineBuf);
 
                 SendMessage(hwnd,SCI_SETLINEINDENTATION,(WPARAM)iLine,(LPARAM)iMinIndent);
               }
@@ -3519,11 +3519,11 @@ void EditAlignText(HWND hwnd,int nMode)
                 *p = 0;
               }
               for (i = 0; i < iWords; i++) {
-                StringCchCat(p,(COUNTOF(wchNewLineBuf) - lstrlen(wchNewLineBuf)),pWords[i]);
+                StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLen(wchNewLineBuf)),pWords[i]);
                 if (i < iWords - 1)
-                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - lstrlen(wchNewLineBuf)),L" ");
+                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLen(wchNewLineBuf)),L" ");
                 if (nMode == ALIGN_CENTER && iWords > 1 && iOddSpaces > 0 && i + 1 >= iWords / 2) {
-                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - lstrlen(wchNewLineBuf)),L" ");
+                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLen(wchNewLineBuf)),L" ");
                   iOddSpaces--;
                 }
                 p = StrEnd(p);
@@ -3540,7 +3540,7 @@ void EditAlignText(HWND hwnd,int nMode)
               SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iPos,0);
               iPos = (int)SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0);
               SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)iPos,0);
-              SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)lstrlenA(tchLineBuf),(LPARAM)tchLineBuf);
+              SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenA(tchLineBuf),(LPARAM)tchLineBuf);
 
               if (nMode == ALIGN_LEFT)
                 SendMessage(hwnd,SCI_SETLINEINDENTATION,(WPARAM)iLine,(LPARAM)iMinIndent);
@@ -3594,34 +3594,34 @@ void EditEncloseSelection(HWND hwnd,LPCWSTR pwszOpen,LPCWSTR pwszClose)
 
     SendMessage(hwnd,SCI_BEGINUNDOACTION,0,0);
 
-    if (lstrlenA(mszOpen)) {
+    if (StringCchLenA(mszOpen)) {
       SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iSelStart,0);
       SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)iSelStart,0);
-      SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)lstrlenA(mszOpen),(LPARAM)mszOpen);
+      SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenA(mszOpen),(LPARAM)mszOpen);
     }
 
-    if (lstrlenA(mszClose)) {
-      SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iSelEnd + lstrlenA(mszOpen),0);
-      SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)iSelEnd + lstrlenA(mszOpen),0);
-      SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)lstrlenA(mszClose),(LPARAM)mszClose);
+    if (StringCchLenA(mszClose)) {
+      SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iSelEnd + StringCchLenA(mszOpen),0);
+      SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)iSelEnd + StringCchLenA(mszOpen),0);
+      SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenA(mszClose),(LPARAM)mszClose);
     }
 
     SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
 
     // Fix selection
     if (iSelStart == iSelEnd)
-      SendMessage(hwnd,SCI_SETSEL,(WPARAM)iSelStart + lstrlenA(mszOpen),(WPARAM)iSelStart + lstrlenA(mszOpen));
+      SendMessage(hwnd,SCI_SETSEL,(WPARAM)iSelStart + StringCchLenA(mszOpen),(WPARAM)iSelStart + StringCchLenA(mszOpen));
 
     else {
       int iCurPos = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
       int iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
       if (iCurPos < iAnchorPos) {
-        iCurPos = iSelStart + lstrlenA(mszOpen);
-        iAnchorPos = iSelEnd + lstrlenA(mszOpen);
+        iCurPos = iSelStart + StringCchLenA(mszOpen);
+        iAnchorPos = iSelEnd + StringCchLenA(mszOpen);
       }
       else {
-        iAnchorPos = iSelStart + lstrlenA(mszOpen);
-        iCurPos = iSelEnd + lstrlenA(mszOpen);
+        iAnchorPos = iSelStart + StringCchLenA(mszOpen);
+        iCurPos = iSelEnd + StringCchLenA(mszOpen);
       }
       SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
     }
@@ -3650,7 +3650,7 @@ void EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,BOOL bInsertAtStart)
 
   if (lstrlen(pwszComment))
     WideCharToMultiByte(mbcp,0,pwszComment,-1,mszComment,COUNTOF(mszComment),NULL,NULL);
-  cchComment = lstrlenA(mszComment);
+  cchComment = StringCchLenA(mszComment);
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0) && cchComment)
   {
@@ -4790,17 +4790,17 @@ void EditSortLines(HWND hwnd,int iSortFlags)
   if (!bIsRectangular) {
     if (iAnchorPos > iCurPos) {
       iCurPos = iSelStart;
-      iAnchorPos = iSelStart + lstrlenA(pmszResult);
+      iAnchorPos = iSelStart + StringCchLenNA(pmszResult,lenRes);
     }
     else {
       iAnchorPos = iSelStart;
-      iCurPos = iSelStart + lstrlenA(pmszResult);
+      iCurPos = iSelStart + StringCchLenNA(pmszResult,lenRes);
     }
   }
 
   SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLineStart,0),0);
   SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLineEnd+1,0),0);
-  SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)lstrlenA(pmszResult),(LPARAM)pmszResult);
+  SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenNA(pmszResult,lenRes),(LPARAM)pmszResult);
   SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
 
   LocalFree(pmszResult);
@@ -4813,7 +4813,7 @@ void EditSortLines(HWND hwnd,int iSortFlags)
     int iTargetEnd   = (int)SendMessage(hwnd,SCI_GETTARGETEND,0,0);
     SendMessage(hwnd,SCI_CLEARSELECTIONS,0,0);
     if (iTargetStart != iTargetEnd) {
-      iTargetEnd -= lstrlenA(mszEOL);
+      iTargetEnd -= StringCchLenA(mszEOL);
       if (iRcAnchorLine > iRcCurLine) {
         iCurPos = (int)SendMessage(hwnd,SCI_FINDCOLUMN,
           (WPARAM)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iTargetStart,0),(LPARAM)iRcCurCol);
@@ -5304,13 +5304,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           if (!bSwitchedFindReplace) {
             // Save MRUs
-            if (lstrlenA(lpefr->szFind)) {
+            if (StringCchLenA(lpefr->szFind)) {
               if (GetDlgItemTextA2W(CP_UTF8,hwnd,IDC_FINDTEXT,lpefr->szFindUTF8,COUNTOF(lpefr->szFindUTF8))) {
                 GetDlgItemText(hwnd,IDC_FINDTEXT,tch,COUNTOF(tch));
                 MRU_Add(mruFind,tch);
               }
             }
-            if (lstrlenA(lpefr->szReplace)) {
+            if (StringCchLenA(lpefr->szReplace)) {
               if (GetDlgItemTextA2W(CP_UTF8,hwnd,IDC_REPLACETEXT,lpefr->szReplaceUTF8,COUNTOF(lpefr->szReplaceUTF8))) {
                 GetDlgItemText(hwnd,IDC_REPLACETEXT,tch,COUNTOF(tch));
                 MRU_Add(mruReplace,tch);
@@ -5584,14 +5584,14 @@ BOOL EditFindNext(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL fExtendSelection)
   char szFind2[FNDRPL_BUFFER];
   BOOL bSuppressNotFound = FALSE;
 
-  if (!lstrlenA(lpefr->szFind))
+  if (!StringCchLenA(lpefr->szFind))
     return /*EditFindReplaceDlg(hwnd,lpefr,FALSE)*/FALSE;
 
   StringCchCopyNA(szFind2,COUNTOF(szFind2),lpefr->szFind,COUNTOF(lpefr->szFind));
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),Encoding_SciGetCodePage(hwnd));
 
-  if (lstrlenA(szFind2) == 0)
+  if (StringCchLenA(szFind2) == 0)
   {
     InfoBox(0,L"MsgNotFound",IDS_NOTFOUND);
     return FALSE;
@@ -5651,14 +5651,14 @@ BOOL EditFindPrev(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL fExtendSelection)
   char szFind2[FNDRPL_BUFFER];
   BOOL bSuppressNotFound = FALSE;
 
-  if (!lstrlenA(lpefr->szFind))
+  if (!StringCchLenA(lpefr->szFind))
     return /*EditFindReplaceDlg(hwnd,lpefr,FALSE)*/FALSE;
 
   StringCchCopyNA(szFind2,COUNTOF(szFind2),lpefr->szFind,COUNTOF(lpefr->szFind));
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),Encoding_SciGetCodePage(hwnd));
 
-  if (lstrlenA(szFind2) == 0)
+  if (StringCchLenA(szFind2) == 0)
   {
     InfoBox(0,L"MsgNotFound",IDS_NOTFOUND);
     return FALSE;
@@ -5721,14 +5721,14 @@ BOOL EditReplace(HWND hwnd,LPCEDITFINDREPLACE lpefr)
   char *pszReplace2;
   BOOL bSuppressNotFound = FALSE;
 
-  if (!lstrlenA(lpefr->szFind))
+  if (!StringCchLenA(lpefr->szFind))
     return /*EditFindReplaceDlg(hwnd,lpefr,TRUE)*/FALSE;
 
   StringCchCopyNA(szFind2,COUNTOF(szFind2),lpefr->szFind,COUNTOF(lpefr->szFind));
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),Encoding_SciGetCodePage(hwnd));
 
-  if (lstrlenA(szFind2) == 0)
+  if (StringCchLenA(szFind2) == 0)
   {
     InfoBox(0,L"MsgNotFound",IDS_NOTFOUND);
     return FALSE;
@@ -5868,7 +5868,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
   pRoot = LocalAlloc(LPTR,cnt);
   StringCchCopyNA(pRoot,cnt,pLine + iStartWordPos,cnt-1);
   LocalFree(pLine);
-  iRootLen = lstrlenA(pRoot);
+  iRootLen = StringCchLenNA(pRoot,cnt);
 
   iDocLen = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
 
@@ -5892,7 +5892,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         //int lastCmp = 0;
         BOOL found = FALSE;
 
-        pWord = LocalAlloc(LPTR, wordEnd - iPosFind + 2);
+        pWord = LocalAlloc(LPTR,wordLength + 2);
 
         tr.lpstrText = pWord;
         tr.chrg.cpMin = iPosFind;
@@ -5912,8 +5912,8 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         }
         if (!found) {
           struct WLIST* el = (struct WLIST*)LocalAlloc(LPTR, sizeof(struct WLIST));
-          el->word = LocalAlloc(LPTR, wordEnd - iPosFind + 2);
-          StringCchCopyA(el->word,(wordEnd - iPosFind + 2),pWord);
+          el->word = LocalAlloc(LPTR,wordLength + 2);
+          StringCchCopyA(el->word,wordLength + 2,pWord);
           el->next = p;
           if (t) {
             t->next = el;
@@ -5922,7 +5922,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
           }
 
           iNumWords++;
-          iWListSize += lstrlenA(pWord) + 1;
+          iWListSize += StringCchLenNA(pWord,wordLength + 2) + 1;
         }
         LocalFree(pWord);
       }
@@ -6063,7 +6063,7 @@ BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
   BOOL bRegexStartOfLine;
   BOOL bRegexStartOrEndOfLine;
 
-  if (!lstrlenA(lpefr->szFind))
+  if (!StringCchLenA(lpefr->szFind))
     return /*EditFindReplaceDlg(hwnd,lpefr,TRUE)*/FALSE;
 
   // Show wait cursor...
@@ -6073,7 +6073,7 @@ BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),Encoding_SciGetCodePage(hwnd));
 
-  if (lstrlenA(szFind2) == 0)
+  if (StringCchLenA(szFind2) == 0)
   {
     InfoBox(0,L"MsgNotFound",IDS_NOTFOUND);
     return FALSE;
@@ -6191,7 +6191,7 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
     return FALSE;
   }
 
-  if (!lstrlenA(lpefr->szFind))
+  if (!StringCchLenA(lpefr->szFind))
     return /*EditFindReplaceDlg(hwnd,lpefr,TRUE)*/FALSE;
 
   // Show wait cursor...
@@ -6201,7 +6201,7 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind2,(lpefr->fuFlags & SCFIND_REGEXP),Encoding_SciGetCodePage(hwnd));
 
-  if (lstrlenA(szFind2) == 0)
+  if (StringCchLenA(szFind2) == 0)
   {
     InfoBox(0,L"MsgNotFound",IDS_NOTFOUND);
     return FALSE;
@@ -6827,7 +6827,7 @@ INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM l
               BOOL bClear = TRUE;
 
               GetDlgItemTextW(hwnd,100,wchBuf,256);
-              if (lstrlen(wchBuf) >= 3) {
+              if (StringCchLen(wchBuf) >= 3) {
 
                 if (wchBuf[0] == L'<') {
 
@@ -7397,7 +7397,7 @@ BOOL FileVars_IsUTF8(LPFILEVARS lpfv) {
 //
 BOOL FileVars_IsNonUTF8(LPFILEVARS lpfv) {
   if (lpfv->mask & FV_ENCODING) {
-    if (lstrlenA(lpfv->tchEncoding) &&
+    if (StringCchLenA(lpfv->tchEncoding) &&
         lstrcmpiA(lpfv->tchEncoding,"utf-8") != 0 &&
         lstrcmpiA(lpfv->tchEncoding,"utf8") != 0)
       return(TRUE);
