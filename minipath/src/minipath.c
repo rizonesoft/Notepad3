@@ -181,8 +181,12 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   g_hInstance = hInstance;
 
   // Set the Windows version global variable
+  #pragma warning (push)
+  #pragma warning (disable : 4996 ) /* deprecated method */
+  #pragma message ("TODO: use #include <VersionHelpers.h> to replace GetVersion() ")
   g_uWinVer = LOWORD(GetVersion());
   g_uWinVer = MAKEWORD(HIBYTE(g_uWinVer),LOBYTE(g_uWinVer));
+  #pragma warning (pop)
 
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 

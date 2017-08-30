@@ -290,7 +290,6 @@ WCHAR     wchWndClass[16] = WC_NOTEPAD3;
 
 HINSTANCE g_hInstance;
 HANDLE    g_hScintilla;
-UINT16    g_uWinVer;
 WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH] = { L'\0' };
 
@@ -601,10 +600,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // Set global variable g_hInstance
   g_hInstance = hInstance;
 
-  // Set the Windows version global variable
-  g_uWinVer = LOWORD(GetVersion());
-  g_uWinVer = MAKEWORD(HIBYTE(g_uWinVer),LOBYTE(g_uWinVer));
-
   // Don't keep working directory locked
   GetCurrentDirectory(COUNTOF(g_wchWorkingDirectory),g_wchWorkingDirectory);
   GetModuleFileName(NULL,wchWorkingDirectory,COUNTOF(wchWorkingDirectory));
@@ -613,8 +608,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
-  // check if running at least on Windows 2000
-  if (!Is2k()) {
+  // check if running at least on Windows XP
+  if (!IsXP()) {
     LPVOID lpMsgBuf;
     FormatMessage(
         FORMAT_MESSAGE_ALLOCATE_BUFFER|

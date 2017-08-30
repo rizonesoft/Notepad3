@@ -16,10 +16,12 @@
 #ifndef _NP3_HELPERS_H_
 #define _NP3_HELPERS_H_
 
+
+#include <VersionHelpers.h>
 #define STRSAFE_NO_CB_FUNCTIONS
-// don't allow deprecated functions
-#undef STRSAFE_NO_DEPRECATE
+#undef STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
+
 
 #define STRGFY(X)     L##X
 #define MKWSTRG(strg) STRGFY(strg)
@@ -60,10 +62,30 @@ __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
 #define EndWaitCursor() { POINT pt; SendMessage(hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORNORMAL,0); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); }
 
 
-#define Is2k()    (g_uWinVer >= 0x0500)
-#define IsXP()    (g_uWinVer >= 0x0501)
-#define IsVista() (g_uWinVer >= 0x0600)
-#define IsW7()    (g_uWinVer >= 0x0601)
+//#define Is2k()    (g_uWinVer >= 0x0500)
+#define IsXP()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
+#define IsXP1()    IsWindowsXPSP1OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 1 (SP1)version.
+#define IsXP2()    IsWindowsXPSP2OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 2 (SP2)version.
+#define IsXP3()    IsWindowsXPSP3OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 3 (SP3)version.
+
+#define IsVista()  IsWindowsVistaOrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows Vista version.
+#define IsVista1() IsWindowsVistaSP1OrGreater()  // Indicates if the current OS version matches,or is greater than,the Windows Vista with Service Pack 1 (SP1)version.
+#define IsVista2() IsWindowsVistaSP2OrGreater()  // Indicates if the current OS version matches,or is greater than,the Windows Vista with Service Pack 2 (SP2)version.
+
+#define IsWin7()   IsWindows7OrGreater()         // Indicates if the current OS version matches,or is greater than,the Windows 7 version.
+#define IsWin71()  IsWindows7SP1OrGreater()      // Indicates if the current OS version matches,or is greater than,the Windows 7 with Service Pack 1 (SP1)version.
+#define IsWin8()   IsWindows8OrGreater()         // Indicates if the current OS version matches,or is greater than,the Windows 8 version.
+#define IsWin81()  IsWindows8Point1OrGreater()   // Indicates if the current OS version matches,or is greater than,the Windows 8.1 version.
+                                                 //   For Windows 10,IsWindows8Point1OrGreater returns false unless the application contains a manifest that includes
+                                                 //   a compatibility section that contains the GUIDs that designate Windows 8.1 and/or Windows 10.
+
+#define IsWin10()  IsWindows10OrGreater()        // Indicates if the current OS version matches, or is greater than, the Windows 10 version.
+                                                 //   For Windows 10,IsWindows10OrGreater returns false unless the application contains a manifest that includes
+                                                 //   a compatibility section that contains the GUID that designates Windows 10.
+
+#define IsWinServer() IsWindowsServer()          // Indicates if the current OS is a Windows Server release.
+                                                 //   Applications that need to distinguish between server and client versions of Windows should call this function.
+
 
 enum BufferSizes {
   MICRO_BUFFER =   32,

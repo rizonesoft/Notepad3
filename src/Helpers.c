@@ -29,7 +29,6 @@
 #include "helpers.h"
 
 extern HINSTANCE g_hInstance;
-extern UINT16 g_uWinVer;
 
 //=============================================================================
 //

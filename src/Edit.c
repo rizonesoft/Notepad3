@@ -38,7 +38,6 @@
 #define LCMAP_TITLECASE  0x00000300  // Title Case Letters bit mask
 #endif
 
-extern UINT16 g_uWinVer;
 extern HWND  hwndMain;
 extern HWND  hwndEdit;
 extern HINSTANCE g_hInstance;
@@ -1975,7 +1974,7 @@ void EditTitleCase(HWND hwnd)
       cpEdit = Encoding_SciGetCodePage(hwnd);
       cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,iSelLength);
 
-      if (IsW7()) {
+      if (IsWin7()) {
 
         LPWSTR pszMappedW = LocalAlloc(LPTR,GlobalSize(pszTextW));
 
