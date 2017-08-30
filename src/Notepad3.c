@@ -6072,6 +6072,8 @@ void LoadSettings()
   // define scintilla internal code page
   int iSciDefaultCodePage = SC_CP_UTF8; // default UTF8
 
+  // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
+  /*
   if (iDefaultEncoding == CPI_ANSI_DEFAULT)
   {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
@@ -6081,6 +6083,7 @@ void LoadSettings()
     }
     iDefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
   }
+  */
   // set flag for encoding default
   mEncoding[iDefaultEncoding].uFlags |= NCP_DEFAULT;
 

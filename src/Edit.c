@@ -1114,24 +1114,32 @@ BOOL Encoding_IsANSI(int iEncoding)
 
 UINT Encoding_SciGetCodePage(HWND hwnd)
 {
-  UINT cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
-
-  if (cp == (UINT)CP_UTF8 || cp == 932U || cp == 936U || cp == 949U || cp == 950U) {
+  // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
+  /*
+  int cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
+  if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
     return cp;
   }
-  return (UINT)CP_UTF8; // CP_ACP;
+  return (cp == 0) ? CP_ACP : CP_UTF8;
+  */
+  UNUSED(hwnd);
+  return CP_UTF8;
 }
 
 
 int Encoding_SciMappedCodePage(int iEncoding) 
 {
+  // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
+  /*
   if (Encoding_IsValid(iEncoding)) {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
     int cp = (int)mEncoding[iEncoding].uCodePage;
     if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
-      return cp;
+      return cp; 
     }
   }
+  */
+  UNUSED(iEncoding);
   return SC_CP_UTF8;
 }
 
