@@ -38,6 +38,7 @@
 #include "SciCall.h"
 #include "resource.h"
 #include "../crypto/crypto.h"
+#include "../uthash/utarray.h"
 #include "helpers.h"
 #include "notepad3.h"
 
@@ -293,6 +294,10 @@ UINT16    g_uWinVer;
 WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH] = { L'\0' };
 
+
+// undo / redo  selections
+static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
+static UT_array* UndoRedoSelectionUTArray = NULL;
 
 
 //Graphics for bookmark indicator
@@ -934,6 +939,15 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   Encoding_Source(CPI_NONE);
   flagQuietCreate = 0;
   fKeepTitleExcerpt = 0;
+
+  // undo / redo selections
+  if (UndoRedoSelectionUTArray != NULL) {
+    utarray_clear(UndoRedoSelectionUTArray);
+    utarray_free(UndoRedoSelectionUTArray);
+    UndoRedoSelectionUTArray = NULL;
+  }
+  utarray_new(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
+  utarray_reserve(UndoRedoSelectionUTArray,256);
 
   // Check for /c [if no file is specified] -- even if a file is specified
   /*else */if (flagNewFromClipboard) {
@@ -7119,7 +7133,7 @@ void InvalidateSelections()
 int BeginSelUndoAction()
 {
   int token = -1;
-  UndoRedoSelection sel = { -1 };
+  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1 };
   sel.selMode = (int)SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0);
   if (sel.selMode == SC_SEL_LINES) {
     sel.anchorPos_undo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
@@ -7129,7 +7143,7 @@ int BeginSelUndoAction()
     sel.anchorPos_undo = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
     sel.currPos_undo = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
   }
-  token = UndoSelectionMap(-1, &sel);
+  token = UndoRedoSelectionMap(-1, &sel);
   if (token >= 0) {
     SendMessage(hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
     SendMessage(hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
@@ -7147,8 +7161,8 @@ int BeginSelUndoAction()
 void EndSelUndoAction(int token)
 {
   if (token >= 0) {
-    UndoRedoSelection sel = { -1 };
-    if (UndoSelectionMap(token,&sel) >= 0) {
+    UndoRedoSelection_t sel = { -1, -1, -1, -1, -1 };
+    if (UndoRedoSelectionMap(token,&sel) >= 0) {
       // mode should not have changed ???
       if (sel.selMode == SC_SEL_LINES) {
         sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
@@ -7159,7 +7173,7 @@ void EndSelUndoAction(int token)
         sel.currPos_redo = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
       }
     }
-    UndoSelectionMap(token,&sel); // set with redo action filled
+    UndoRedoSelectionMap(token,&sel); // set with redo action filled
     SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
     bModified = TRUE;
   }
@@ -7173,8 +7187,8 @@ void EndSelUndoAction(int token)
 //
 void RestoreSelectionAction(int token, DoAction doAct)
 {
-  UndoRedoSelection sel = { -1 };
-  if (UndoSelectionMap(token,&sel) >= 0) {
+  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1 };
+  if (UndoRedoSelectionMap(token,&sel) >= 0) {
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
     int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     int currPos   = (doAct == UNDO ? sel.currPos_undo : sel.currPos_redo);
@@ -7201,34 +7215,41 @@ void RestoreSelectionAction(int token, DoAction doAct)
 //  UndoSelectionMap()
 //
 //
-int UndoSelectionMap(int token, LPUndoRedoSelection selection)
-{
-  static UndoRedoSelection UndoRedoMap[MAX_SELUNDO] = { { -1 } };
-  static int iMapIdx = 0;
 
-  if (selection == NULL)
+int UndoRedoSelectionMap(int token, UndoRedoSelection_t* selection)
+{
+  static unsigned int iTokenCnt = 0;
+  
+  // indexing is unsigned
+  unsigned int utoken = (token >= 0) ? (unsigned int)token : 0U;
+
+  if (selection == NULL) {
+    // reset / clear
+    if (UndoRedoSelectionUTArray != NULL) {
+      utarray_clear(UndoRedoSelectionUTArray);
+      utarray_init(UndoRedoSelectionUTArray,&UndoRedoSelection_icd);
+    }
+    iTokenCnt = 0U;
     return -1;
+  }
 
   // get or set map item request ?
-  if ((token >= 0) && (token < MAX_SELUNDO)) {
+  if (token >= 0 && utoken < iTokenCnt) {
     if (selection->anchorPos_undo < 0) {
       // this is a get request
-      *selection = UndoRedoMap[token];
-      if (selection->anchorPos_undo < 0) {
-        token = -1; // invalid
-      }
+      *selection = *(UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray,utoken);
     }
     else {
       // this is a set request (fill redo pos)
-      UndoRedoMap[token] = *selection;
+      utarray_insert(UndoRedoSelectionUTArray,(void*)selection,utoken);
     }
     // don't clear map item here (token used in redo/undo again)
   }
   else if (token < 0) {                                      
     // set map new item request
-    token = (iMapIdx + 1) % MAX_SELUNDO;  // round robin next
-    UndoRedoMap[token] = *selection;
-    iMapIdx = token; // remember map index
+    utarray_insert(UndoRedoSelectionUTArray,(void*)selection,iTokenCnt);
+    token = (int)iTokenCnt;
+    iTokenCnt = (iTokenCnt < INT_MAX) ? (iTokenCnt + 1) : 0U;  // round robin next
   }
   return token;
 }

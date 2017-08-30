@@ -360,6 +360,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 
   SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
   SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0);
+  UndoRedoSelectionMap(-1,NULL);
   SendMessage(hwnd,SCI_SETSAVEPOINT,0,0);
   SendMessage(hwnd,SCI_GOTOPOS,0,0);
   SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
@@ -396,6 +397,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     Encoding_SciSetCodePage(hwnd,encDest);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
     SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0);
+    UndoRedoSelectionMap(-1,NULL);
     SendMessage(hwnd,SCI_GOTOPOS,0,0);
     SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
 

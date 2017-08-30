@@ -41,16 +41,15 @@ typedef struct np3params {
 } np3params, *LPnp3params;
 
 
-#define MAX_SELUNDO 1024
 typedef struct _undoSel
 {
+  int selMode;
   int anchorPos_undo;
   int currPos_undo;
   int anchorPos_redo;
   int currPos_redo;
-  int selMode;
 } 
-UndoRedoSelection, *LPUndoRedoSelection;
+UndoRedoSelection_t;
 
 typedef enum {
   UNDO = TRUE,
@@ -144,7 +143,7 @@ void InvalidateSelections();
 int  BeginSelUndoAction();
 void EndSelUndoAction(int);
 void RestoreSelectionAction(int,DoAction);
-int  UndoSelectionMap(int, LPUndoRedoSelection);
+int  UndoRedoSelectionMap(int,UndoRedoSelection_t*);
 
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL);
