@@ -113,6 +113,20 @@ Changed command Line Switches compared to Notepad2:
     /vd   Print specified document, but open Print dialog before
 
 
+Hidden .ini-File parameters:
+
+[Settings2]
+StickyWindowPosition=  0/1 (BOOL)       - get/set by Notepad3
+DefaultExtension=      txt (string)     - get/set by Notepad3
+DefaultDirectory=      dir (string)     - open/save file dialog
+FileDlgFilters=        filter (string)  - open/save file dialog filter
+FileCheckInverval=     2000 [ms]        - ...
+AutoReloadTimeout=     2000 [ms]        - ...
+SciDirectWriteTech=    -1,0,1,2,3       - Scintilla's Direct Write Technology
+SciFontQuality=        0,1,2,3          - default,none,standard,cleartype 
+                                          (if not defined by 'smoothing:xxx' in Style Schema)
+MarkOccurrencesMaxCount= 2000           - max count of marked word occurences                                            
+
 
 =======================================================================
 =                                                                     =
