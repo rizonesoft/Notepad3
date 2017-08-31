@@ -18,6 +18,7 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x501
 #endif
+#define VC_EXTRALEAN 1
 #include <windows.h>
 #include <shlobj.h>
 #include <shlwapi.h>
@@ -172,7 +173,7 @@ HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
   if (lstrlen(AppID) == 0)
     return(S_OK);
 
-  if (lstrcmpi(AppID,L"(default)") == 0)
+  if (StringCchCompareIX(AppID,L"(default)") == 0)
     return(S_OK);
 
   pfnSetCurrentProcessExplicitAppUserModelID =
@@ -422,7 +423,7 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
   {
     if (iFormat < 2 && !PathIsRoot(lpszFile))
     {
-      if (lstrcmp(szCachedFile,lpszFile) != 0) {
+      if (StringCchCompareN(szCachedFile,COUNTOF(szCachedFile),lpszFile,MAX_PATH) != 0) {
         SHFILEINFO shfi;
         StringCchCopy(szCachedFile,COUNTOF(szCachedFile),lpszFile);
         if (SHGetFileInfo2(lpszFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME))
@@ -1062,44 +1063,22 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
 //
 //  Name: PathIsLnkFile()
 //
-//  Purpose: Determine wheter pszPath is a Windows Shell Link File by
+//  Purpose: Determine whether pszPath is a Windows Shell Link File by
 //           comparing the filename extension with L".lnk"
 //
 //  Manipulates:
 //
 BOOL PathIsLnkFile(LPCWSTR pszPath)
 {
-
-  //WCHAR *pszExt;
-
-  WCHAR tchResPath[256] = { L'\0' };
+  WCHAR tchResPath[MAX_PATH] = { L'\0' };
 
   if (!pszPath || !*pszPath)
     return FALSE;
 
-/*pszExt = StrRChr(pszPath,NULL,L'.');
-
-  if (!pszExt)
+  if (StringCchCompareIX(PathFindExtension(pszPath),L".lnk"))
     return FALSE;
-
-  if (!lstrcmpi(pszExt,L".lnk"))
-    return TRUE;
-
-  else
-    return FALSE;*/
-
-  //if (!lstrcmpi(PathFindExtension(pszPath),L".lnk"))
-  //  return TRUE;
-
-  //else
-  //  return FALSE;
-
-  if (lstrcmpi(PathFindExtension(pszPath),L".lnk"))
-    return FALSE;
-
   else
     return PathGetLnkPath(pszPath,tchResPath,COUNTOF(tchResPath));
-
 }
 
 
@@ -1674,8 +1653,8 @@ LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize) {
   return(pmru);
 }
 
-BOOL MRU_Destroy(LPMRULIST pmru) {
-
+BOOL MRU_Destroy(LPMRULIST pmru) 
+{
   int i;
   for (i = 0; i < pmru->iSize; i++) {
     if (pmru->pszItems[i])
@@ -1686,16 +1665,16 @@ BOOL MRU_Destroy(LPMRULIST pmru) {
   return(1);
 }
 
-int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2) {
-
+int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2) 
+{
   if (pmru->iFlags & MRU_NOCASE)
-    return(lstrcmpi(psz1,psz2));
+    return(StringCchCompareIX(psz1,psz2));
   else
-    return(lstrcmp(psz1,psz2));
+    return(StringCchCompareX(psz1,psz2));
 }
 
-BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew) {
-
+BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew) 
+{
   int i;
   for (i = 0; i < pmru->iSize; i++) {
     if (MRU_Compare(pmru,pmru->pszItems[i],pszNew) == 0) {
@@ -1714,7 +1693,7 @@ BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpan
 
   int i;
   for (i = 0; i < pmru->iSize; i++) {
-    if (lstrcmpi(pmru->pszItems[i],pszFile) == 0) {
+    if (StringCchCompareIX(pmru->pszItems[i],pszFile) == 0) {
       LocalFree(pmru->pszItems[i]);
       break;
     }
@@ -1724,7 +1703,7 @@ BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpan
     else {
       WCHAR wchItem[MAX_PATH] = { L'\0' };
       PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),TRUE);
-      if (lstrcmpi(wchItem,pszFile) == 0) {
+      if (StringCchCompareIN(wchItem,COUNTOF(wchItem),pszFile,-1) == 0) {
         LocalFree(pmru->pszItems[i]);
         break;
       }
@@ -1770,7 +1749,7 @@ BOOL MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile) {
 
   while (MRU_Enum(pmruStore,i,wchItem,COUNTOF(wchItem)) != -1) {
     PathAbsoluteFromApp(wchItem,wchItem,COUNTOF(wchItem),TRUE);
-    if (lstrcmpi(wchItem,pszFile) == 0)
+    if (StringCchCompareIN(wchItem,COUNTOF(wchItem),pszFile,-1) == 0)
       MRU_Delete(pmruStore,i);
     else
       i++;

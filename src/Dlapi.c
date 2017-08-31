@@ -15,6 +15,7 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x501
 #endif
+#define VC_EXTRALEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -932,7 +933,7 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
     DirList_GetItem(hwnd,i,&dli);
     GetShortPathName(dli.szFileName,dli.szFileName,MAX_PATH);
 
-    if (!lstrcmpi(dli.szFileName,szShortPath))
+    if (!StringCchCompareI(dli.szFileName,szShortPath))
     {
       ListView_SetItemState(hwnd,i,LVIS_FLAGS,LVIS_FLAGS);
       ListView_EnsureVisible(hwnd,i,FALSE);
@@ -964,7 +965,7 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
   StringCchCopyN(pdlf->tFilterBuf,COUNTOF(pdlf->tFilterBuf),lpszFileSpec,DL_FILTER_BUFSIZE);
   pdlf->bExcludeFilter = bExcludeFilter;
 
-  if (!lstrcmp(lpszFileSpec,L"*.*") || !StringCchLenN(lpszFileSpec,DL_FILTER_BUFSIZE))
+  if (!StringCchCompareX(lpszFileSpec,L"*.*") || !StringCchLenN(lpszFileSpec,DL_FILTER_BUFSIZE))
     return;
 
   pdlf->nCount = 1;

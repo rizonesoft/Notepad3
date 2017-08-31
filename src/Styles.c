@@ -16,6 +16,7 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x501
 #endif
+#define VC_EXTRALEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <commdlg.h>
@@ -3424,7 +3425,7 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames)
         else
           p2 = StrEnd(p1);
         StrTrim(p1,L" .");
-        if (lstrcmpi(p1,lpszMatch) == 0)
+        if (StringCchCompareIX(p1,lpszMatch) == 0)
           return(pLexArray[i]);
         p1 = p2+1;
       }
@@ -3468,14 +3469,15 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     UINT cp = Encoding_SciGetCodePage(hwnd);
     MultiByteToWideCharStrg(cp,fvCurFile.tchMode,wchMode);
 
-    if (!fNoCGIGuess && (lstrcmpi(wchMode,L"cgi") == 0 || lstrcmpi(wchMode,L"fcgi") == 0)) {
+    if (!fNoCGIGuess && (StringCchCompareIN(wchMode,COUNTOF(wchMode),L"cgi",-1) == 0 || 
+                         StringCchCompareIN(wchMode,COUNTOF(wchMode),L"fcgi",-1) == 0)) {
       char tchText[256] = { L'\0' };
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
         if (Encoding_Current(CPI_GET) != g_DOSEncoding || pLexSniffed != &lexDefault || (
-            lstrcmpi(lpszExt,L"nfo") && lstrcmpi(lpszExt,L"diz"))) {
+          StringCchCompareIX(lpszExt,L"nfo") && StringCchCompareIX(lpszExt,L"diz"))) {
           // Although .nfo and .diz were removed from the default lexer's
           // default extensions list, they may still presist in the user's INI
           pLexNew = pLexSniffed;
@@ -3506,7 +3508,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     if (*lpszExt == L'.')
       lpszExt++;
 
-    if (!fNoCGIGuess && (lstrcmpi(lpszExt,L"cgi") == 0 || lstrcmpi(lpszExt,L"fcgi") == 0)) {
+    if (!fNoCGIGuess && (StringCchCompareIX(lpszExt,L"cgi") == 0 || StringCchCompareIX(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { L'\0' };
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
       StrTrimA(tchText," \t\n\r");
@@ -3517,7 +3519,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
       }
     }
 
-    if (!bFound && lstrcmpi(PathFindFileName(lpszFile),L"cmakelists.txt") == 0) {
+    if (!bFound && StringCchCompareIX(PathFindFileName(lpszFile),L"cmakelists.txt") == 0) {
       pLexNew = &lexCmake;
       bFound = TRUE;
     }
@@ -3533,19 +3535,19 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   }
 
   if (!bFound && bAutoSelect &&
-       lstrcmpi(PathFindFileName(lpszFile),L"makefile") == 0) {
+      StringCchCompareIX(PathFindFileName(lpszFile),L"makefile") == 0) {
     pLexNew = &lexMAK;
     bFound = TRUE;
   }
 
   if (!bFound && bAutoSelect &&
-       lstrcmpi(PathFindFileName(lpszFile),L"rakefile") == 0) {
+      StringCchCompareIX(PathFindFileName(lpszFile),L"rakefile") == 0) {
     pLexNew = &lexRUBY;
     bFound = TRUE;
   }
 
   if (!bFound && bAutoSelect &&
-       lstrcmpi(PathFindFileName(lpszFile),L"mozconfig") == 0) {
+      StringCchCompareIX(PathFindFileName(lpszFile),L"mozconfig") == 0) {
     pLexNew = &lexBASH;
     bFound = TRUE;
   }
@@ -3738,7 +3740,7 @@ BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
       *p = L'\0';
     TrimString(tch);
 
-    if (lstrcmpi(tch,L"Default") == 0)
+    if (StringCchCompareIN(tch,COUNTOF(tch),L"Default",-1) == 0)
     {
       if (fIsConsolasAvailable)
         StringCchCopyN(lpszFont,cchFont,L"Consolas",cchFont);
@@ -3771,10 +3773,10 @@ BOOL Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
     if (p)
       *p = L'\0';
     TrimString(tch);
-    if (lstrcmpi(tch,L"none") == 0 ||
-        lstrcmpi(tch,L"standard") == 0 ||
-        lstrcmpi(tch,L"cleartype") == 0 ||
-        lstrcmpi(tch,L"default") == 0) {
+    if (StringCchCompareIN(tch,COUNTOF(tch),L"none",-1) == 0 ||
+        StringCchCompareIN(tch,COUNTOF(tch),L"standard",-1) == 0 ||
+        StringCchCompareIN(tch,COUNTOF(tch),L"cleartype",-1) == 0 ||
+        StringCchCompareIN(tch,COUNTOF(tch),L"default",-1) == 0) {
       StringCchCopyN(lpszQuality,cchQuality,tch,COUNTOF(tch));
       return TRUE;
     }
@@ -4277,25 +4279,25 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
   WCHAR tch[64] = { L'\0' };
 
   if (Style_StrGetFontQuality(lpszStyle,tch,COUNTOF(tch))) {
-    if (lstrcmpi(tch,L"default") == 0)
+    if (StringCchCompareIN(tch,COUNTOF(tch),L"default",-1) == 0)
       wQuality = SC_EFF_QUALITY_DEFAULT;
-    else if (lstrcmpi(tch,L"none") == 0)
+    else if (StringCchCompareIN(tch,COUNTOF(tch),L"none",-1) == 0)
       wQuality = SC_EFF_QUALITY_NON_ANTIALIASED;
-    else if (lstrcmpi(tch,L"standard") == 0)
+    else if (StringCchCompareIN(tch,COUNTOF(tch),L"standard",-1) == 0)
       wQuality = SC_EFF_QUALITY_ANTIALIASED;
-    else if (lstrcmpi(tch,L"cleartype") == 0)
+    else if (StringCchCompareIN(tch,COUNTOF(tch),L"cleartype",-1) == 0)
       wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
   }
   else { // undefined, use general settings, except for special fonts
     if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch))) {
-      if (lstrcmpi(tch,L"Calibri") == 0 ||
-          lstrcmpi(tch,L"Cambria") == 0 ||
-          lstrcmpi(tch,L"Candara") == 0 ||
-          lstrcmpi(tch,L"Consolas") == 0 ||
-          lstrcmpi(tch,L"Constantia") == 0 ||
-          lstrcmpi(tch,L"Corbel") == 0 ||
-          lstrcmpi(tch,L"Segoe UI") == 0 ||
-          lstrcmpi(tch,L"Source Code Pro") == 0)
+      if (StringCchCompareIN(tch,COUNTOF(tch),L"Calibri",-1) == 0 ||
+          StringCchCompareIN(tch,COUNTOF(tch),L"Cambria",-1) == 0 ||
+          StringCchCompareIN(tch,COUNTOF(tch),L"Candara",-1) == 0 ||
+          StringCchCompareIN(tch,COUNTOF(tch),L"Consolas",-1) == 0 ||
+          StringCchCompareIN(tch,COUNTOF(tch),L"Constantia",-1) == 0 ||
+          StringCchCompareIN(tch,COUNTOF(tch),L"Corbel",-1) == 0 ||
+          StringCchCompareIN(tch,COUNTOF(tch),L"Segoe UI",-1) == 0 ||
+          StringCchCompareIN(tch,COUNTOF(tch),L"Source Code Pro",-1) == 0)
         wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
     }
   }
@@ -4459,7 +4461,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
         // Add lexers
         for (i = 0; i < COUNTOF(pLexArray); i++)
         {
-          if (!found && lstrcmp(pLexArray[i]->pszName,pLexCurrent->pszName) == 0)
+          if (!found && (StringCchCompareX(pLexArray[i]->pszName,pLexCurrent->pszName) == 0))
           {
               found = 1;
               currentLex = Style_AddLexerToTreeView(hwndTV,pLexArray[i]);
@@ -4757,8 +4759,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             WCHAR tch[256] = { L'\0' };
             GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
             if (Style_SelectFont(hwnd,tch,COUNTOF(tch),
-                  lstrcmpi(pCurrentStyle->pszName,L"Default Style") == 0 ||
-                  lstrcmpi(pCurrentStyle->pszName,L"2nd Default Style") == 0)) {
+                                 StringCchCompareIX(pCurrentStyle->pszName,L"Default Style") == 0 ||
+                                 StringCchCompareIX(pCurrentStyle->pszName,L"2nd Default Style") == 0)) {
               SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
               //CheckDlgButton(hwnd,IDC_STYLEBOLD,(Style_StrGetAttribute(tch,L"bold") ? BST_CHECKED : BST_UNCHECKED));
               //CheckDlgButton(hwnd,IDC_STYLEITALIC,(Style_StrGetAttribute(tch,L"italic") ? BST_CHECKED : BST_UNCHECKED));
@@ -5097,7 +5099,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         for (i = 0; i < lvItems; i++) {
           lvi.iItem = i;
           ListView_GetItem(hwndLV,&lvi);;
-          if (lstrcmp(((PEDITLEXER)lvi.lParam)->pszName,pLexCurrent->pszName) == 0) {
+          if (StringCchCompareX(((PEDITLEXER)lvi.lParam)->pszName,pLexCurrent->pszName) == 0) {
             ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
             ListView_EnsureVisible(hwndLV,i,FALSE);
             if (iDefaultLexer == i) {

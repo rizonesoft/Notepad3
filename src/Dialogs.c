@@ -15,6 +15,8 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x501
 #endif
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -399,8 +401,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
               ExtractFirstArgument(arg1,arg1,arg2,MAX_PATH);
 
-              if (lstrcmpi(arg1,L"notepad3") == 0 ||
-                  lstrcmpi(arg1,L"notepad3.exe") == 0) {
+              if (StringCchCompareIN(arg1,COUNTOF(arg1),L"notepad3",-1) == 0 ||
+                  StringCchCompareIN(arg1,COUNTOF(arg1),L"notepad3.exe",-1) == 0) {
                 GetModuleFileName(NULL,arg1,COUNTOF(arg1));
                 bQuickExit = TRUE;
               }
