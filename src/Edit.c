@@ -16,6 +16,7 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x501
 #endif
+#define VC_EXTRALEAN 1
 #include <windows.h>
 #include <shlwapi.h>
 #include <commctrl.h>
@@ -346,7 +347,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 
   SendMessage(hwnd,SCI_CANCEL,0,0);
   SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-  SendMessage(hwnd,SCI_EMPTYUNDOBUFFER,0,0);
+  UndoRedoSelectionMap(-1,NULL);
   SendMessage(hwnd,SCI_CLEARALL,0,0);
   SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTH,2048,0);
@@ -358,8 +359,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
     SendMessage(hwnd,SCI_ADDTEXT,cbText,(LPARAM)lpstrText);
 
   SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
-  SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0);
-  UndoRedoSelectionMap(-1,NULL);
+  //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
   SendMessage(hwnd,SCI_SETSAVEPOINT,0,0);
   SendMessage(hwnd,SCI_GOTOPOS,0,0);
   SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
@@ -390,13 +390,12 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
   if (length == 0) {
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-    SendMessage(hwnd,SCI_EMPTYUNDOBUFFER,0,0);
+    UndoRedoSelectionMap(-1,NULL);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
     SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
     Encoding_SciSetCodePage(hwnd,encDest);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
-    SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0);
-    UndoRedoSelectionMap(-1,NULL);
+    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
+    //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
     SendMessage(hwnd,SCI_GOTOPOS,0,0);
     SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
 
@@ -428,13 +427,12 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-    SendMessage(hwnd,SCI_EMPTYUNDOBUFFER,0,0);
+    UndoRedoSelectionMap(-1,NULL);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
     SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
     Encoding_SciSetCodePage(hwnd,encDest);
     SendMessage(hwnd,SCI_ADDTEXT,cbText,(LPARAM)pchText);
-    SendMessage(hwnd,SCI_EMPTYUNDOBUFFER,0,0);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
+    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
     SendMessage(hwnd,SCI_GOTOPOS,0,0);
     SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
 
@@ -1145,9 +1143,11 @@ int Encoding_SciMappedCodePage(int iEncoding)
 
 void Encoding_SciSetCodePage(HWND hwnd, int iEncoding)
 {
-  int charset = SC_CHARSET_ANSI;
   int cp = Encoding_SciMappedCodePage(iEncoding);
-
+  SendMessage(hwnd,SCI_SETCODEPAGE,(WPARAM)cp,0);
+  // charsets can be changed via styles schema
+  /*
+  int charset = SC_CHARSET_ANSI;
   switch (cp) {
   case 932:
     charset = SC_CHARSET_SHIFTJIS;
@@ -1165,8 +1165,8 @@ void Encoding_SciSetCodePage(HWND hwnd, int iEncoding)
     charset = iDefaultCharSet;
     break;
   }
-  SendMessage(hwnd,SCI_SETCODEPAGE,(WPARAM)cp,0);
   SendMessage(hwnd,SCI_STYLESETCHARACTERSET,(WPARAM)STYLE_DEFAULT,(LPARAM)charset);
+  */
 }
 
 
@@ -1488,7 +1488,7 @@ BOOL EditLoadFile(
   if (bLoadNFOasOEM)
   {
     PCWSTR pszExt = pszFile + StringCchLenN(pszFile,MAX_PATH) - 4;
-    if (pszExt >= pszFile && !(lstrcmpi(pszExt, L".nfo") && lstrcmpi(pszExt, L".diz")))
+    if (pszExt >= pszFile && !(StringCchCompareIX(pszExt,L".nfo") && StringCchCompareIX(pszExt,L".diz")))
       bPreferOEM = TRUE;
   }
 
@@ -4790,17 +4790,17 @@ void EditSortLines(HWND hwnd,int iSortFlags)
   if (!bIsRectangular) {
     if (iAnchorPos > iCurPos) {
       iCurPos = iSelStart;
-      iAnchorPos = iSelStart + StringCchLenNA(pmszResult,lenRes);
+      iAnchorPos = iSelStart + _StringCchLenNA(pmszResult,lenRes);
     }
     else {
       iAnchorPos = iSelStart;
-      iCurPos = iSelStart + StringCchLenNA(pmszResult,lenRes);
+      iCurPos = iSelStart + _StringCchLenNA(pmszResult,lenRes);
     }
   }
 
   SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLineStart,0),0);
   SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLineEnd+1,0),0);
-  SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)StringCchLenNA(pmszResult,lenRes),(LPARAM)pmszResult);
+  SendMessage(hwnd,SCI_REPLACETARGET,(WPARAM)_StringCchLenNA(pmszResult,lenRes),(LPARAM)pmszResult);
   SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
 
   LocalFree(pmszResult);
@@ -5079,7 +5079,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             SendMessage(lpefr->hwnd,SCI_GETSELTEXT,0,(LPARAM)lpszSelection);
 
             // First time you bring up find/replace dialog, copy content from clipboard to find box (but only if nothing is selected in the editor)
-            if (lstrcmpA( lpszSelection , "" ) == 0  &&  bFirstTime )
+            if (StringCchCompareNA(lpszSelection,cchSelection + 2,"",-1) == 0  &&  bFirstTime )
             {
                 char *pClip = EditGetClipboardText(hwndEdit);
 
@@ -5736,7 +5736,7 @@ BOOL EditReplace(HWND hwnd,LPCEDITFINDREPLACE lpefr)
 
   if( lpefr->bWildcardSearch ) EscapeWildcards( szFind2 , lpefr );
 
-  if (lstrcmpA(lpefr->szReplace,"^c") == 0) {
+  if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
     pszReplace2 = EditGetClipboardText(hwnd);
   }
@@ -5868,7 +5868,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
   pRoot = LocalAlloc(LPTR,cnt);
   StringCchCopyNA(pRoot,cnt,pLine + iStartWordPos,cnt-1);
   LocalFree(pLine);
-  iRootLen = StringCchLenNA(pRoot,cnt);
+  iRootLen = _StringCchLenNA(pRoot,cnt);
 
   iDocLen = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
 
@@ -5900,8 +5900,8 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         SendMessage(hwnd, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
 
         while(p) {
-          int cmp = lstrcmpA(pWord, p->word);
-          if (!cmp) {
+          int cmp = StringCchCompareNA(pWord,wordLength + 2, p->word,-1);
+          if (cmp == 0) {
             found = TRUE;
             break;
           } else if (cmp < 0) {
@@ -5922,7 +5922,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
           }
 
           iNumWords++;
-          iWListSize += StringCchLenNA(pWord,wordLength + 2) + 1;
+          iWListSize += _StringCchLenNA(pWord,wordLength + 2) + 1;
         }
         LocalFree(pWord);
       }
@@ -6085,9 +6085,11 @@ BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
     (szFind2[0] == '^');
   bRegexStartOrEndOfLine =
     (lpefr->fuFlags & SCFIND_REGEXP &&
-      (!lstrcmpA(szFind2,"$") || !lstrcmpA(szFind2,"^") || !lstrcmpA(szFind2,"^$")));
+      (!StringCchCompareNA(szFind2,FNDRPL_BUFFER,"$",-1) ||
+       !StringCchCompareNA(szFind2,FNDRPL_BUFFER,"^",-1) ||
+       !StringCchCompareNA(szFind2,FNDRPL_BUFFER,"^$",-1)));
 
-  if (lstrcmpA(lpefr->szReplace,"^c") == 0) {
+  if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
     pszReplace2 = EditGetClipboardText(hwnd);
   }
@@ -6211,9 +6213,11 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
 
   bRegexStartOfLine = (szFind2[0] == '^');
   bRegexStartOrEndOfLine = (lpefr->fuFlags & SCFIND_REGEXP &&
-      (!lstrcmpA(szFind2,"$") || !lstrcmpA(szFind2,"^") || !lstrcmpA(szFind2,"^$")));
+      (!StringCchCompareNA(szFind2,FNDRPL_BUFFER,"$",-1) || 
+       !StringCchCompareNA(szFind2,FNDRPL_BUFFER,"^",-1) ||
+       !StringCchCompareNA(szFind2,FNDRPL_BUFFER,"^$",-1)));
 
-  if (lstrcmpA(lpefr->szReplace,"^c") == 0) {
+  if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
     pszReplace2 = EditGetClipboardText(hwnd);
   }
@@ -6854,15 +6858,15 @@ INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM l
                     wchIns[cchIns] = L'\0';
 
                     if (cchIns > 3 &&
-                      lstrcmpi(wchIns,L"</base>") &&
-                      lstrcmpi(wchIns,L"</bgsound>") &&
-                      lstrcmpi(wchIns,L"</br>") &&
-                      lstrcmpi(wchIns,L"</embed>") &&
-                      lstrcmpi(wchIns,L"</hr>") &&
-                      lstrcmpi(wchIns,L"</img>") &&
-                      lstrcmpi(wchIns,L"</input>") &&
-                      lstrcmpi(wchIns,L"</link>") &&
-                      lstrcmpi(wchIns,L"</meta>")) {
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</base>",-1) &&
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</bgsound>",-1) &&
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</br>",-1) &&
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</embed>",-1) &&
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</hr>",-1) &&
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</img>",-1) &&
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</input>",-1) &&
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</link>",-1) &&
+                        StringCchCompareIN(wchIns,COUNTOF(wchIns),L"</meta>",-1)) {
 
                         SetDlgItemTextW(hwnd,101,wchIns);
                         bClear = FALSE;
@@ -7383,8 +7387,8 @@ BOOL FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) 
 //
 BOOL FileVars_IsUTF8(LPFILEVARS lpfv) {
   if (lpfv->mask & FV_ENCODING) {
-    if (lstrcmpiA(lpfv->tchEncoding,"utf-8") == 0 ||
-        lstrcmpiA(lpfv->tchEncoding,"utf8") == 0)
+    if (StringCchCompareINA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf-8",-1) == 0 ||
+        StringCchCompareINA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf8",-1) == 0)
       return(TRUE);
   }
   return(FALSE);
@@ -7398,8 +7402,8 @@ BOOL FileVars_IsUTF8(LPFILEVARS lpfv) {
 BOOL FileVars_IsNonUTF8(LPFILEVARS lpfv) {
   if (lpfv->mask & FV_ENCODING) {
     if (StringCchLenA(lpfv->tchEncoding) &&
-        lstrcmpiA(lpfv->tchEncoding,"utf-8") != 0 &&
-        lstrcmpiA(lpfv->tchEncoding,"utf8") != 0)
+        StringCchCompareINA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf-8",-1) != 0 &&
+        StringCchCompareINA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf8",-1) != 0)
       return(TRUE);
   }
   return(FALSE);

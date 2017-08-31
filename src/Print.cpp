@@ -17,6 +17,7 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x501
 #endif
+#define VC_EXTRALEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlwapi.h>

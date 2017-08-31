@@ -12,6 +12,7 @@ optionally with master key
 see ecryption-doc.txt for details
 
 */
+#define VC_EXTRALEAN 1
 #include <windows.h>
 #include <intsafe.h>
 #include <time.h>
