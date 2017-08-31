@@ -68,6 +68,7 @@ extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
 
 extern BOOL bAccelWordNavigation;
+extern int iMarkOccurrencesMaxCount;
 
 #define DELIM_BUFFER 258
 char DelimChars[DELIM_BUFFER] = { '\0' };
@@ -5972,7 +5973,6 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   int iSelEnd;
   int iSelLength;
   int iSelCount;
-  int iMatchesCount;
 
   // feature is off
   if (!iMarkOccurrences)
@@ -6029,11 +6029,11 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   SendMessage(hwnd, SCI_INDICSETFORE, 1, 0xff << ((iMarkOccurrences - 1) << 3));
   SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_ROUNDBOX);
 
-  iMatchesCount = 0;
+  int iMatchesCount = 0;
   while ((iPos = (int)SendMessage(hwnd, SCI_FINDTEXT,
       (bMarkOccurrencesMatchCase ? SCFIND_MATCHCASE : 0) | (bMarkOccurrencesMatchWords ? SCFIND_WHOLEWORD : 0),
       (LPARAM)&ttf)) != -1
-      && ++iMatchesCount < 2000)
+      && ++iMatchesCount < iMarkOccurrencesMaxCount)
   {
     // mark this match
     SendMessage(hwnd, SCI_INDICATORFILLRANGE, iPos, iSelCount);

@@ -143,6 +143,7 @@ int       iWrapCol = 0;
 BOOL      bShowSelectionMargin;
 BOOL      bShowLineNumbers;
 int       iMarkOccurrences;
+int       iMarkOccurrencesMaxCount;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
 BOOL      bAutoCompleteWords;
@@ -6008,6 +6009,9 @@ void LoadSettings()
 
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
   iSciFontQuality = max(min(iSciFontQuality,3),0);
+
+  iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
+  iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
