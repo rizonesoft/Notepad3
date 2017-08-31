@@ -1,0 +1,121 @@
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XTHML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <title>uthash: a hash table for C structures</title>
+  </head>
+  <body>
+
+  <div id="banner">
+  <img src="banner.png" alt="uthash: a hash table for C structures" />
+  </div> <!-- banner -->
+
+  <div id="topnav">
+  <a href="http://github.com/troydhanson/uthash">GitHub page</a> &gt;
+  uthash home <!-- http://troydhanson.github.com/uthash/ -->
+
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="troydhanson">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </div>
+
+  <hr />
+  <div id="mid">
+
+      <div id="nav">
+
+        <h2>documentation</h2>
+        <div><a href="userguide.html">uthash</a></div>
+        <div><a href="utlist.html">utlist</a></div>
+        <div><a href="utarray.html">utarray</a></div>
+        <div><a href="utringbuffer.html">utringbuffer</a></div>
+        <div><a href="utstring.html">utstring</a></div>
+
+        <h2>download</h2>
+        <h3>GNU/Linux, Windows</h3>
+        <div><a href=https://github.com/troydhanson/uthash/archive/master.zip>uthash-master.zip</a></div>
+        <div><a href=https://github.com/troydhanson/uthash>git clone</a></div>
+
+        <h2>license</h2>
+        <div><a href="license.html">BSD revised</a></div>
+
+
+        <h2>developer</h2>
+        <div><a href="http://troydhanson.github.io/">Troy D. Hanson</a></div>
+
+        <h2>maintainer</h2>
+        <div><a href="https://github.com/Quuxplusone">Arthur O'Dwyer</a></div>
+
+
+      </div>
+
+      <div id="main">
+        Any C structure can be stored in a hash table using uthash. Just add a
+        <em>UT_hash_handle</em> to the structure and choose one or more fields
+        in your structure to act as the key. Then use these macros to store,
+        retrieve or delete items from the hash table.
+
+<div class="listing">
+Example 1. Adding an item to a hash.
+<div class="code">
+<pre>
+#include "uthash.h"
+
+struct my_struct {
+    int id;            /* we'll use this field as the key */
+    char name[10];             
+    UT_hash_handle hh; /* makes this structure hashable */
+};
+
+struct my_struct *users = NULL;
+
+void add_user(struct my_struct *s) {
+    HASH_ADD_INT( users, id, s );    
+}
+
+</pre>
+</div> <!-- code -->
+</div> <!-- listing -->
+
+<div class="listing">
+Example 2. Looking up an item in a hash.
+<div class="code">
+<pre>
+struct my_struct *find_user(int user_id) {
+    struct my_struct *s;
+
+    HASH_FIND_INT( users, &amp;user_id, s );  
+    return s;
+}
+
+</pre>
+</div> <!-- code -->
+</div> <!-- listing -->
+
+<div class="listing">
+Example 3. Deleting an item from a hash.
+<div class="code">
+
+<pre>
+void delete_user(struct my_struct *user) {
+    HASH_DEL( users, user);  
+}
+
+</pre>
+</div> <!-- code -->
+</div> <!-- listing -->
+
+ For more information and examples, please see the <a href="userguide.html">User Guide.</a>
+
+</div> <!-- main -->
+</div> <!-- mid -->
+
+   <hr />
+  <div id="footer">
+  </div> <!-- footer -->
+
+  </body>
+
+</html>
+

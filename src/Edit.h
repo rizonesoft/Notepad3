@@ -145,6 +145,7 @@ extern int g_DOSEncoding;
 #define NCP_ANSI             128
 #define NCP_INTERNAL          (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI)
 #define NCP_RECODE           256
+#define CPI_GET               -2
 #define CPI_NONE              -1
 #define CPI_ANSI_DEFAULT       0
 #define CPI_OEM                1
@@ -167,19 +168,29 @@ typedef struct _np2encoding {
   WCHAR   wchLabel[32];
 } NP2ENCODING;
 
+int  Encoding_Current(int);    // getter/setter
+int  Encoding_Source(int);     // getter/setter
+int  Encoding_SrcWeak(int);    // getter/setter
+BOOL Encoding_HasChanged(int); // query/setter
+
 void Encoding_InitDefaults();
 int  Encoding_MapIniSetting(BOOL,int);
 void Encoding_GetLabel(int);
 int  Encoding_MatchW(LPCWSTR);
 int  Encoding_MatchA(char*);
 BOOL Encoding_IsValid(int);
+int  Encoding_GetByCodePage(UINT);
 void Encoding_AddToListView(HWND,int,BOOL);
 BOOL Encoding_GetFromListView(HWND,int *);
 void Encoding_AddToComboboxEx(HWND,int,BOOL);
 BOOL Encoding_GetFromComboboxEx(HWND,int *);
 BOOL Encoding_IsDefault(int);
 BOOL Encoding_IsANSI(int);
-int  Encoding_GetSciCodePage(int);
+
+UINT Encoding_SciGetCodePage(HWND);
+int  Encoding_SciMappedCodePage(int);
+void Encoding_SciSetCodePage(HWND,int);
+
 
 BOOL IsUnicode(const char*,int,LPBOOL,LPBOOL);
 BOOL IsUTF8(const char*,int);
