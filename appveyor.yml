@@ -59,8 +59,8 @@ platform:
 
 # to add several configurations to build matrix:
 configuration:
-  - Debug
   - Release
+#  - Debug
 
 build:
   project: Notepad3.sln
