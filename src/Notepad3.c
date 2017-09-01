@@ -296,7 +296,6 @@ HINSTANCE g_hInstance;
 HANDLE    g_hScintilla;
 WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
-WCHAR     g_wchApplicationDirectory[MAX_PATH + 2] = { L'\0' };
 
 
 // undo / redo  selections
@@ -609,11 +608,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   PathRemoveFileSpec(wchAppDir);
   PathCanonicalizeEx(wchAppDir,COUNTOF(wchAppDir));
 
-  StringCchCopy(g_wchApplicationDirectory,COUNTOF(g_wchApplicationDirectory),wchAppDir);
-
   if (!GetCurrentDirectory(COUNTOF(g_wchWorkingDirectory),g_wchWorkingDirectory)) {
     StringCchCopy(g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory),wchAppDir);
   }
+
   // Don't keep working directory locked
   SetCurrentDirectory(wchAppDir);
 
@@ -898,12 +896,12 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     Encoding_Source(Encoding_MatchW(lpEncodingArg));
 
   // Pathname parameter
-  if (lpFileArg /*&& !flagNewFromClipboard*/)
+  if (flagBufferFile || (lpFileArg /*&& !flagNewFromClipboard*/))
   {
     BOOL bOpened = FALSE;
 
     // Open from Directory
-    if (PathIsDirectory(lpFileArg)) {
+    if (!flagBufferFile && PathIsDirectory(lpFileArg)) {
       WCHAR tchFile[MAX_PATH] = { L'\0' };
       if (OpenFileDlg(hwndMain,tchFile,COUNTOF(tchFile),lpFileArg))
         bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
@@ -913,12 +911,22 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
       bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,lpFileToOpen);
       if (bOpened) {
         if (flagBufferFile) {
-          StringCchCopy(szCurFile,COUNTOF(szCurFile),lpFileArg);
+          if (lpFileArg) {
+            InstallFileWatching(NULL); // Terminate file watching
+            StringCchCopy(szCurFile,COUNTOF(szCurFile),lpFileArg);
+            InstallFileWatching(szCurFile);
+          }
           if (!flagLexerSpecified)
             Style_SetLexerFromFile(hwndEdit,szCurFile);
           bModified = TRUE;
-          SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,lpFileArg,
-                         iPathNameFormat,bModified,IDS_READONLY,bReadOnly,szTitleExcerpt);
+          if (lpFileArg)
+            SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,lpFileArg,
+                           iPathNameFormat,bModified,IDS_READONLY,bReadOnly,szTitleExcerpt);
+
+          // check for temp file and delete
+          if (fIsElevated && PathFileExists(szBufferFile)) {
+            DeleteFile(szBufferFile);
+          }
         }
         if (flagJumpTo) { // Jump to position
           EditJumpTo(hwndEdit,iInitialLine,iInitialColumn);
@@ -6371,11 +6379,13 @@ void ParseCommandLine()
           flagUseSystemMRU = 1;
       }
 
+      // Relaunch elevated
       else if (StrCmpNI(lp1,L"buffer",CSTRLEN(L"buffer")) == 0) {
         if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
           StringCchCopyN(szBufferFile,COUNTOF(szBufferFile),lp1,len);
           TrimString(szBufferFile);
           PathUnquoteSpaces(szBufferFile);
+          NormalizePathEx(szBufferFile,COUNTOF(szBufferFile));
           flagBufferFile = 1;
         }
       }
@@ -7607,6 +7617,49 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
           PathRemoveFileSpec(tchLastSaveCopyDir);
         }
       }
+#if 0
+      else if (!bCancelDataLoss) {
+        // relaunch elevated ?
+        if (!fIsElevated && dwLastIOError == ERROR_ACCESS_DENIED) {
+          if (IDYES == MsgBox(MBYESNOWARN,IDS_ERR_ACCESSDENIED,tchFile)) {
+            WCHAR lpTempPathBuffer[MAX_PATH];
+            WCHAR szTempFileName[MAX_PATH];
+
+            if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
+              GetTempFileName(lpTempPathBuffer,TEXT("N2"),0,szTempFileName)) {
+              int fEnc = Encoding_Current(CPI_GET);
+              if (FileIO(FALSE,szTempFileName,FALSE,&fEnc,&iEOLMode,NULL,NULL,&bCancelDataLoss,TRUE)) {
+                //~Encoding_Current(fEnc); // save should not change encoding
+
+                WCHAR szArguments[2 * MAX_PATH + 64] = { L'\0' };
+                LPWSTR lpCmdLine = GetCommandLine();
+                int wlen = lstrlen(lpCmdLine) + 2;
+                LPWSTR lpExe = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
+                LPWSTR lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
+                ExtractFirstArgument(lpCmdLine,lpExe,lpArgs,wlen);
+
+                StringCchPrintf(szArguments,COUNTOF(szArguments),L"/u /buffer \"%s\" %s",szTempFileName,lpArgs);
+                if (StringCchLen(tchFile)) {
+                  if (!StrStrI(szArguments,tchFile)) {
+                    StringCchPrintf(szArguments,COUNTOF(szArguments),L"%s \"%s\"",szArguments,tchFile);
+                  }
+                }
+
+                flagRelaunchElevated = 1;
+                if (RelaunchElevated(szArguments)) {
+                  LocalFree(lpExe);
+                  LocalFree(lpArgs);
+                  // set no change and quit
+                  Encoding_HasChanged(Encoding_Current(CPI_GET));
+                  bModified = FALSE;
+                  PostMessage(hwndMain,WM_CLOSE,0,0);
+                }
+              }
+            }
+          }
+        }
+      }
+#endif
     }
     else
       return FALSE;
@@ -7642,7 +7695,6 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
   {
     if (StringCchLen(szCurFile) != 0) {
       StringCchCopy(tchFile,COUNTOF(tchFile),szCurFile);
-      NormalizePathEx(tchFile,COUNTOF(tchFile));
     }
 
     if (!fIsElevated && dwLastIOError == ERROR_ACCESS_DENIED) {
@@ -7654,18 +7706,18 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
             GetTempFileName(lpTempPathBuffer,TEXT("N2"),0,szTempFileName)) {
           int fileEncoding = Encoding_Current(CPI_GET);
           if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,TRUE)) {
-            Encoding_Current(fileEncoding); // load may change encoding
+            //~Encoding_Current(fileEncoding); // save should not change encoding
+
             WCHAR szArguments[2 * MAX_PATH + 64] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
             int wlen = lstrlen(lpCmdLine) + 2;
             LPWSTR lpExe = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
             LPWSTR lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
-
             ExtractFirstArgument(lpCmdLine,lpExe,lpArgs,wlen);
 
-            StringCchPrintf(szArguments,COUNTOF(szArguments),L"/buffer \"%s\" %s",szTempFileName,lpArgs);
+            StringCchPrintf(szArguments,COUNTOF(szArguments),L"/u /buffer \"%s\" %s",szTempFileName,lpArgs);
             if (StringCchLen(tchFile)) {
-              if (!StringCchCompareI(szArguments,tchFile)) {
+              if (!StrStrI(szArguments,tchFile)) {
                 StringCchPrintf(szArguments,COUNTOF(szArguments),L"%s \"%s\"",szArguments,tchFile);
               }
             }
@@ -7674,6 +7726,9 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
             if (RelaunchElevated(szArguments)) {
               LocalFree(lpExe);
               LocalFree(lpArgs);
+              // set no change and quit
+              Encoding_HasChanged(Encoding_Current(CPI_GET));
+              bModified = FALSE;
               PostMessage(hwndMain,WM_CLOSE,0,0);
             }
           }
@@ -8143,44 +8198,48 @@ BOOL RelaunchElevated(LPWSTR lpArgs) {
   if (!IsVista() || fIsElevated || !flagRelaunchElevated || flagDisplayHelp)
     return(FALSE);
 
-  else {
+  STARTUPINFO si;
+  si.cb = sizeof(STARTUPINFO);
+  GetStartupInfo(&si);
 
-    STARTUPINFO si;
-    si.cb = sizeof(STARTUPINFO);
-    GetStartupInfo(&si);
+  LPWSTR lpCmdLine = GetCommandLine();
+  int wlen = lstrlen(lpCmdLine) + 2;
 
-    LPWSTR lpCmdLine = GetCommandLine();
-    int wlen = lstrlen(lpCmdLine) + 2;
+  LPWSTR lpExe1 = NULL;
+  WCHAR lpExe2[MAX_PATH + 2] = { L'\0' };
+  GetModuleFileName(NULL,lpExe2,COUNTOF(lpExe2));
+  NormalizePathEx(lpExe2,MAX_PATH + 2);
 
-    WCHAR lpExe[MAX_PATH + 2] = { L'\0' };
-    GetModuleFileName(NULL,lpExe,COUNTOF(lpExe));
-
-    BOOL bShouldFree = FALSE;
-    if (!lpArgs) {
-      lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);  bShouldFree = TRUE;
-      ExtractFirstArgument(lpCmdLine,NULL,lpArgs,wlen);
-    }
-
-    if (lstrlen(lpArgs)) {
-      SHELLEXECUTEINFO sei;
-      ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
-      sei.cbSize = sizeof(SHELLEXECUTEINFO);
-      sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
-      sei.hwnd = GetForegroundWindow();
-      sei.lpVerb = L"runas";
-      sei.lpFile = lpExe;
-      sei.lpParameters = lpArgs;
-      sei.lpDirectory = g_wchApplicationDirectory;
-      sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
-
-      ShellExecuteEx(&sei);
-    }
-
-    if (bShouldFree)
-      LocalFree(lpArgs);
-
-    return(TRUE);
+  BOOL bShouldFree = FALSE;
+  if (!lpArgs) {
+    lpExe1 = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
+    lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
+    bShouldFree = TRUE;
+    ExtractFirstArgument(lpCmdLine,lpExe1,lpArgs,wlen);
+    NormalizePathEx(lpExe1,wlen);
   }
+
+  if (lstrlen(lpArgs)) {
+    SHELLEXECUTEINFO sei;
+    ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
+    sei.cbSize = sizeof(SHELLEXECUTEINFO);
+    sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
+    sei.hwnd = GetForegroundWindow();
+    sei.lpVerb = L"runas";
+    sei.lpFile = (lpExe1 ? lpExe1 : lpExe2);
+    sei.lpParameters = lpArgs;
+    sei.lpDirectory = g_wchWorkingDirectory;
+    sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
+
+    ShellExecuteEx(&sei);
+  }
+
+  if (bShouldFree) {
+    LocalFree(lpArgs);
+    LocalFree(lpExe1);
+  }
+
+  return(TRUE);
 }
 
 
