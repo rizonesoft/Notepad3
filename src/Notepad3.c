@@ -2967,7 +2967,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bSwapClipBoard = TRUE;
     case IDM_EDIT_PASTE:
       {
-        char *pClip = EditGetClipboardText(hwndEdit);
+        char *pClip = EditGetClipboardText(hwndEdit,TRUE);
+        if (!pClip)
+          break; // recoding canceled
 
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
         int iAnchor = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
@@ -8088,7 +8090,7 @@ BOOL RelaunchElevated() {
 
       SHELLEXECUTEINFO sei = { 0 };
       sei.cbSize = sizeof(SHELLEXECUTEINFO);
-      sei.fMask = SEE_MASK_FLAG_NO_UI | /*SEE_MASK_NOASYNC*/0x00000100 | /*SEE_MASK_NOZONECHECKS*/0x00800000;
+      sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
       sei.hwnd = GetForegroundWindow();
       sei.lpVerb = L"runas";
       sei.lpFile = lpArg1;
