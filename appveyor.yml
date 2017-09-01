@@ -71,8 +71,11 @@ test: off
 # Artifact paths are relative to C:\projects\notepad2-mod\
 artifacts:
   - path: bin\**\*.*
-  name: All
+#  - name: All
 
+matrix:
+  fast_finish: true
+  
 #deploy:
 #  - provider: S3
 #  access_key_id: XXXXXXXXXXXXXXXXXXXX
