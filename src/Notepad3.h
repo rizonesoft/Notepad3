@@ -112,7 +112,7 @@ BOOL InitApplication(HINSTANCE);
 HWND InitInstance(HINSTANCE,LPSTR,int);
 BOOL ActivatePrevInst();
 BOOL RelaunchMultiInst();
-BOOL RelaunchElevated();
+BOOL RelaunchElevated(LPWSTR);
 void SnapToDefaultPos(HWND);
 void ShowNotifyIcon(HWND,BOOL);
 void SetNotifyIconTitle(HWND);

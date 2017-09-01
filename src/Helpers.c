@@ -1364,6 +1364,7 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2,int len)
   BOOL bQuoted = FALSE;
 
   StringCchCopy(lpArg1,len,lpArgs);
+
   if (lpArg2)
     *lpArg2 = L'\0';
 
@@ -1380,7 +1381,7 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2,int len)
   if (bQuoted)
     psz = StrChr(lpArg1,L'\"');
   else
-    psz = StrChr(lpArg1,L' ');;
+    psz = StrChr(lpArg1,L' ');
 
   if (psz)
   {
@@ -1469,7 +1470,6 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 void PathCanonicalizeEx(LPWSTR lpszPath,int len)
 {
   WCHAR szDst[FILE_ARG_BUF] = { L'\0' };
-
   if (PathCanonicalize(szDst,lpszPath))
     StringCchCopy(lpszPath,len,szDst);
 }
@@ -1500,7 +1500,7 @@ DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer)
 DWORD NormalizePathEx(LPWSTR lpszPath,int len)
 {
   PathCanonicalizeEx(lpszPath,len);
-  return GetLongPathNameEx(lpszPath,len);
+  return GetLongPathNameEx(lpszPath,(DWORD)len);
 }
 
 
@@ -1693,11 +1693,11 @@ BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpan
 
   int i;
   for (i = 0; i < pmru->iSize; i++) {
-    if (StringCchCompareIX(pmru->pszItems[i],pszFile) == 0) {
-      LocalFree(pmru->pszItems[i]);
+    if (pmru->pszItems[i] == NULL) {
       break;
     }
-    else if (pmru->pszItems[i] == NULL) {
+    else if (StringCchCompareIX(pmru->pszItems[i],pszFile) == 0) {
+      LocalFree(pmru->pszItems[i]);
       break;
     }
     else {

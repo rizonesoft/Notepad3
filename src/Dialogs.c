@@ -412,7 +412,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 PathRemoveFileSpec(wchDirectory);
               }
 
-              SHELLEXECUTEINFO sei = { 0 };
+              SHELLEXECUTEINFO sei;
+              ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
               sei.cbSize = sizeof(SHELLEXECUTEINFO);
               sei.fMask = 0;
               sei.hwnd = hwnd;
@@ -645,7 +646,8 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
       PathRemoveFileSpec(wchDirectory);
     }
 
-    SHELLEXECUTEINFO sei = { 0 };
+    SHELLEXECUTEINFO sei;
+    ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
     sei.cbSize = sizeof(SHELLEXECUTEINFO);
     sei.fMask = 0;
     sei.hwnd = hwnd;
