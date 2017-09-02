@@ -25,8 +25,8 @@ IF /I "%~1" == "/?"     GOTO SHOWHELP
 
 rem IF EXIST "%~dp0..\signinfo_notepad3.txt" SET "SIGN=True"
 
-SET INPUTDIRx86=bin\Release_x86_v141_xp
-SET INPUTDIRx64=bin\Release_x64_v141_xp
+SET INPUTDIRx86=bin\Release_x86_v141
+SET INPUTDIRx64=bin\Release_x64_v141
 SET "TEMP_NAME=temp_zip"
 
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
