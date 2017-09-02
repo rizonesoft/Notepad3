@@ -40,6 +40,8 @@
    have been tweaked for compatibility with the local environment.
 
  */
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
  //#include "helpers.h"
  //#include "appreg.h"
