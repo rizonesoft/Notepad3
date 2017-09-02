@@ -13,16 +13,18 @@
 *                                                                             *
 *******************************************************************************/
 
+#if !defined(WINVER)
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x501  /*_WIN32_WINNT_WINXP*/
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
 #endif
-
 #if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x05010100  /*NTDDI_WINXPSP1*/
+#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
-
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
+
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -2558,7 +2560,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpParameters = tchParam;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
-
+        CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
 
         if ((INT_PTR)sei.hInstApp < 32)
@@ -2674,7 +2676,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpParameters = NULL;
         sei.lpDirectory = wchDirectory;
         sei.nShow = SW_SHOWNORMAL;
-
+        CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
       }
       break;
@@ -2743,7 +2745,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpVerb = L"properties";
         sei.lpFile = szCurFile;
         sei.nShow = SW_SHOWNORMAL;
-
+        CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
       }
       break;
@@ -2804,8 +2806,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpParameters = NULL;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
-
         // Run favorites directory
+        CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
       }
       break;
@@ -4898,7 +4900,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
               sei.lpParameters = lpszArgs;
               sei.lpDirectory = wchDirectory;
               sei.nShow = SW_SHOWNORMAL;
-
+              CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
               ShellExecuteEx(&sei);
 
               GlobalFree(lpszCommand);
@@ -6380,14 +6382,13 @@ void ParseCommandLine()
       }
 
       // Relaunch elevated
-      else if (StrCmpNI(lp1,L"buffer",CSTRLEN(L"buffer")) == 0) {
-        if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
-          StringCchCopyN(szBufferFile,COUNTOF(szBufferFile),lp1,len);
-          TrimString(szBufferFile);
-          PathUnquoteSpaces(szBufferFile);
-          NormalizePathEx(szBufferFile,COUNTOF(szBufferFile));
-          flagBufferFile = 1;
-        }
+      else if (StrCmpNI(lp1,L"tmpfbuf=",CSTRLEN(L"tmpfbuf=")) == 0) {
+        StringCchCopyN(szBufferFile,COUNTOF(szBufferFile),
+          lp1 + CSTRLEN(L"tmpfbuf="),len - CSTRLEN(L"tmpfbuf="));
+        TrimString(szBufferFile);
+        PathUnquoteSpaces(szBufferFile);
+        NormalizePathEx(szBufferFile,COUNTOF(szBufferFile));
+        flagBufferFile = 1;
       }
 
       else switch (*CharUpper(lp1))
@@ -7638,7 +7639,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
                 LPWSTR lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
                 ExtractFirstArgument(lpCmdLine,lpExe,lpArgs,wlen);
 
-                StringCchPrintf(szArguments,COUNTOF(szArguments),L"/u /buffer \"%s\" %s",szTempFileName,lpArgs);
+                StringCchPrintf(szArguments,COUNTOF(szArguments),L"/u -tmpfbuf=\"%s\" %s",szTempFileName,lpArgs);
                 if (StringCchLen(tchFile)) {
                   if (!StrStrI(szArguments,tchFile)) {
                     StringCchPrintf(szArguments,COUNTOF(szArguments),L"%s \"%s\"",szArguments,tchFile);
@@ -7715,7 +7716,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
             LPWSTR lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
             ExtractFirstArgument(lpCmdLine,lpExe,lpArgs,wlen);
 
-            StringCchPrintf(szArguments,COUNTOF(szArguments),L"/u /buffer \"%s\" %s",szTempFileName,lpArgs);
+            StringCchPrintf(szArguments,COUNTOF(szArguments),L"/u -tmpfbuf=\"%s\" %s",szTempFileName,lpArgs);
             if (StringCchLen(tchFile)) {
               if (!StrStrI(szArguments,tchFile)) {
                 StringCchPrintf(szArguments,COUNTOF(szArguments),L"%s \"%s\"",szArguments,tchFile);
@@ -8195,8 +8196,10 @@ BOOL RelaunchMultiInst() {
 //
 BOOL RelaunchElevated(LPWSTR lpArgs) {
 
+  BOOL result = FALSE;
+
   if (!IsVista() || fIsElevated || !flagRelaunchElevated || flagDisplayHelp)
-    return(FALSE);
+    return result;
 
   STARTUPINFO si;
   si.cb = sizeof(STARTUPINFO);
@@ -8230,8 +8233,8 @@ BOOL RelaunchElevated(LPWSTR lpArgs) {
     sei.lpParameters = lpArgs;
     sei.lpDirectory = g_wchWorkingDirectory;
     sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
-
-    ShellExecuteEx(&sei);
+    CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+    result = ShellExecuteEx(&sei);
   }
 
   if (bShouldFree) {
@@ -8239,7 +8242,7 @@ BOOL RelaunchElevated(LPWSTR lpArgs) {
     LocalFree(lpExe1);
   }
 
-  return(TRUE);
+  return result;
 }
 
 

@@ -12,11 +12,18 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#if !defined(WINVER)
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(NTDDI_VERSION)
+#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
+
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -424,13 +431,14 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               sei.nShow = SW_SHOWNORMAL;
 
               if (bQuickExit) {
-                sei.fMask |= /*SEE_MASK_NOZONECHECKS*/0x00800000;
+                sei.fMask |= SEE_MASK_NOZONECHECKS;
                 EndDialog(hwnd,IDOK);
+                CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
                 ShellExecuteEx(&sei);
               }
 
               else {
-
+                CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
                 if (ShellExecuteEx(&sei))
                   EndDialog(hwnd,IDOK);
 
@@ -631,6 +639,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 //
 BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 {
+  BOOL result = FALSE;
 
   DLITEM dliOpenWith;
   dliOpenWith.mask = DLI_FILENAME;
@@ -663,12 +672,11 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     //GetShortPathName(szParam,szParam,sizeof(WCHAR)*COUNTOF(szParam));
     PathQuoteSpaces(szParam);
 
-    ShellExecuteEx(&sei);
-
-    return(TRUE);
+    CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+    result = ShellExecuteEx(&sei);
   }
 
-  return(FALSE);
+  return result;
 
 }
 
