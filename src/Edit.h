@@ -44,28 +44,6 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
-enum AlignMask
-{
-  ALIGN_LEFT       = 0,
-  ALIGN_RIGHT      = 1,
-  ALIGN_CENTER     = 2,
-  ALIGN_JUSTIFY    = 3,
-  ALIGN_JUSTIFY_EX = 4
-};
-
-enum SortOrderMask
-{
-  SORT_ASCENDING  =   0,
-  SORT_DESCENDING =   1,
-  SORT_SHUFFLE    =   2,
-  SORT_MERGEDUP   =   4,
-  SORT_UNIQDUP    =   8,
-  SORT_UNIQUNIQ   =  16,
-  SORT_NOCASE     =  32,
-  SORT_LOGICAL    =  64,
-  SORT_COLUMN     =  128
-};
-
 HWND  EditCreate(HWND);
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);

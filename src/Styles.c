@@ -13,10 +13,17 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#if !defined(WINVER)
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(NTDDI_VERSION)
+#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
 #define VC_EXTRALEAN 1
+
 #include <windows.h>
 #include <commctrl.h>
 #include <commdlg.h>
@@ -4325,8 +4332,6 @@ int Style_GetLexerIconId(PEDITLEXER plex)
   WCHAR *pszExtensions;
   WCHAR *pszFile;
 
-  SHFILEINFO shfi = { 0 };
-
   if (StringCchLen(plex->szExtensions))
     pszExtensions = plex->szExtensions;
   else
@@ -4344,6 +4349,9 @@ int Style_GetLexerIconId(PEDITLEXER plex)
   // check for ; at beginning
   if (StringCchLenN(pszFile,MAX_PATH) < 3)
     StringCchCat(pszFile,len,L"txt");
+
+  SHFILEINFO shfi;
+  ZeroMemory(&shfi,sizeof(SHFILEINFO));
 
   SHGetFileInfo(pszFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
     SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
@@ -4448,7 +4456,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
         int i;
         SHFILEINFO shfi;
         LOGFONT lf;
-        HTREEITEM currentLex = { 0 };
+        HTREEITEM currentLex = NULL;
         int found = 0;
 
         hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
