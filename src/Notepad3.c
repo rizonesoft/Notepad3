@@ -21,6 +21,8 @@
 #define NTDDI_VERSION 0x05010100  /*NTDDI_WINXPSP1*/
 #endif
 
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -141,6 +143,7 @@ int       iWrapCol = 0;
 BOOL      bShowSelectionMargin;
 BOOL      bShowLineNumbers;
 int       iMarkOccurrences;
+int       iMarkOccurrencesMaxCount;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
 BOOL      bAutoCompleteWords;
@@ -1484,9 +1487,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 }
 
                 else if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
-                  char tch[5] = "";
+                  char tch[5] = { '\0' };
                   SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tch);
-                  if (lstrcmpiA(tch,".LOG") != 0) {
+                  if (StringCchCompareXA(tch,".LOG") != 0) {
                     int iNewTopLine;
                     SendMessage(hwndEdit,SCI_SETSEL,iAnchorPos,iCurPos);
                     SendMessage(hwndEdit,SCI_ENSUREVISIBLE,(WPARAM)iDocTopLine,0);
@@ -2425,9 +2428,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           if (FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2))
           {
             if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
-              char tch[5] = "";
+              char tch[5] = { '\0' };
               SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tch);
-              if (lstrcmpiA(tch,".LOG") != 0) {
+              if (StringCchCompareXA(tch,".LOG") != 0) {
                 int iNewTopLine;
                 SendMessage(hwndEdit,SCI_SETSEL,iAnchorPos,iCurPos);
                 SendMessage(hwndEdit,SCI_ENSUREVISIBLE,(WPARAM)iDocTopLine,0);
@@ -2964,7 +2967,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bSwapClipBoard = TRUE;
     case IDM_EDIT_PASTE:
       {
-        char *pClip = EditGetClipboardText(hwndEdit);
+        char *pClip = EditGetClipboardText(hwndEdit,TRUE);
+        if (!pClip)
+          break; // recoding canceled
 
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
         int iAnchor = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
@@ -5531,15 +5536,15 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   tchIns[cchIns] = 0;
 
                   if (cchIns > 3 &&
-                      lstrcmpiA(tchIns,"</base>") &&
-                      lstrcmpiA(tchIns,"</bgsound>") &&
-                      lstrcmpiA(tchIns,"</br>") &&
-                      lstrcmpiA(tchIns,"</embed>") &&
-                      lstrcmpiA(tchIns,"</hr>") &&
-                      lstrcmpiA(tchIns,"</img>") &&
-                      lstrcmpiA(tchIns,"</input>") &&
-                      lstrcmpiA(tchIns,"</link>") &&
-                      lstrcmpiA(tchIns,"</meta>"))
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</base>",-1) &&
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</bgsound>",-1) &&
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</br>",-1) &&
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</embed>",-1) &&
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</hr>",-1) &&
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</img>",-1) &&
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</input>",-1) &&
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</link>",-1) &&
+                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</meta>",-1))
                   {
                     int token = BeginSelUndoAction();
                     SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)tchIns);
@@ -6007,6 +6012,9 @@ void LoadSettings()
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
   iSciFontQuality = max(min(iSciFontQuality,3),0);
 
+  iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
+  iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
+
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
   IniSectionGetString(pIniSection,L"BitmapDefault",L"",
@@ -6284,12 +6292,12 @@ void ParseCommandLine()
   {
 
     // options
-    if (!bIsFileArg && lstrcmp(lp1,L"+") == 0) {
+    if (!bIsFileArg && (StringCchCompareN(lp1,len,L"+",-1) == 0)) {
       flagMultiFileArg = 2;
       bIsFileArg = TRUE;
     }
 
-    else if (!bIsFileArg && lstrcmp(lp1,L"-") == 0) {
+    else if (!bIsFileArg && (StringCchCompareN(lp1,len,L"-",-1) == 0)) {
       flagMultiFileArg = 1;
       bIsFileArg = TRUE;
     }
@@ -6301,25 +6309,25 @@ void ParseCommandLine()
       StrLTrim(lp1,L"-/");
 
       // Encoding
-      if (lstrcmpi(lp1,L"ANSI") == 0 || lstrcmpi(lp1,L"A") == 0 || lstrcmpi(lp1,L"MBCS") == 0)
+      if (StringCchCompareIX(lp1,L"ANSI") == 0 || StringCchCompareIX(lp1,L"A") == 0 || StringCchCompareIX(lp1,L"MBCS") == 0)
         flagSetEncoding = IDM_ENCODING_ANSI-IDM_ENCODING_ANSI + 1;
-      else if (lstrcmpi(lp1,L"UNICODE") == 0 || lstrcmpi(lp1,L"W") == 0)
+      else if (StringCchCompareIX(lp1,L"UNICODE") == 0 || StringCchCompareIX(lp1,L"W") == 0)
         flagSetEncoding = IDM_ENCODING_UNICODE-IDM_ENCODING_ANSI + 1;
-      else if (lstrcmpi(lp1,L"UNICODEBE") == 0 || lstrcmpi(lp1,L"UNICODE-BE") == 0)
+      else if (StringCchCompareIX(lp1,L"UNICODEBE") == 0 || StringCchCompareIX(lp1,L"UNICODE-BE") == 0)
         flagSetEncoding = IDM_ENCODING_UNICODEREV-IDM_ENCODING_ANSI + 1;
-      else if (lstrcmpi(lp1,L"UTF8") == 0 || lstrcmpi(lp1,L"UTF-8") == 0)
+      else if (StringCchCompareIX(lp1,L"UTF8") == 0 || StringCchCompareIX(lp1,L"UTF-8") == 0)
         flagSetEncoding = IDM_ENCODING_UTF8-IDM_ENCODING_ANSI + 1;
-      else if (lstrcmpi(lp1,L"UTF8SIG") == 0 || lstrcmpi(lp1,L"UTF-8SIG") == 0 ||
-               lstrcmpi(lp1,L"UTF8SIGNATURE") == 0 || lstrcmpi(lp1,L"UTF-8SIGNATURE") == 0 ||
-               lstrcmpi(lp1,L"UTF8-SIGNATURE") == 0 || lstrcmpi(lp1,L"UTF-8-SIGNATURE") == 0)
+      else if (StringCchCompareIX(lp1,L"UTF8SIG") == 0 || StringCchCompareIX(lp1,L"UTF-8SIG") == 0 ||
+               StringCchCompareIX(lp1,L"UTF8SIGNATURE") == 0 || StringCchCompareIX(lp1,L"UTF-8SIGNATURE") == 0 ||
+               StringCchCompareIX(lp1,L"UTF8-SIGNATURE") == 0 || StringCchCompareIX(lp1,L"UTF-8-SIGNATURE") == 0)
         flagSetEncoding = IDM_ENCODING_UTF8SIGN-IDM_ENCODING_ANSI + 1;
 
       // EOL Mode
-      else if (lstrcmpi(lp1,L"CRLF") == 0 || lstrcmpi(lp1,L"CR+LF") == 0)
+      else if (StringCchCompareIX(lp1,L"CRLF") == 0 || StringCchCompareIX(lp1,L"CR+LF") == 0)
         flagSetEOLMode = IDM_LINEENDINGS_CRLF-IDM_LINEENDINGS_CRLF + 1;
-      else if (lstrcmpi(lp1,L"LF") == 0)
+      else if (StringCchCompareIX(lp1,L"LF") == 0)
         flagSetEOLMode = IDM_LINEENDINGS_LF-IDM_LINEENDINGS_CRLF + 1;
-      else if (lstrcmpi(lp1,L"CR") == 0)
+      else if (StringCchCompareIX(lp1,L"CR") == 0)
         flagSetEOLMode = IDM_LINEENDINGS_CR-IDM_LINEENDINGS_CRLF + 1;
 
       // Shell integration
@@ -6784,7 +6792,7 @@ int FindIniFile() {
   GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
 
   if (StringCchLen(szIniFile)) {
-    if (lstrcmpi(szIniFile,L"*?") == 0)
+    if (StringCchCompareIX(szIniFile,L"*?") == 0)
       return(0);
     else {
       if (!CheckIniFile(szIniFile,tchModule)) {
@@ -6828,7 +6836,7 @@ int FindIniFile() {
 
 int TestIniFile() {
 
-  if (lstrcmpi(szIniFile,L"*?") == 0) {
+  if (StringCchCompareIX(szIniFile,L"*?") == 0) {
     StringCchCopy(szIniFile2,COUNTOF(szIniFile2),L"");
     StringCchCopy(szIniFile,COUNTOF(szIniFile),L"");
     return(0);
@@ -7219,11 +7227,16 @@ int UndoRedoSelectionMap(int token, UndoRedoSelection_t* selection)
 
   if (selection == NULL) {
     // reset / clear
+    SendMessage(hwndEdit,SCI_EMPTYUNDOBUFFER,0,0);
     if (UndoRedoSelectionUTArray != NULL) {
       utarray_clear(UndoRedoSelectionUTArray);
       utarray_init(UndoRedoSelectionUTArray,&UndoRedoSelection_icd);
     }
     iTokenCnt = 0U;
+    return -1;
+  }
+
+  if (!(BOOL)SendMessage(hwndEdit,SCI_GETUNDOCOLLECTION,0,0)) {
     return -1;
   }
 
@@ -7435,7 +7448,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
       char tchLog[5] = "";
       SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
-      if (lstrcmpA(tchLog,".LOG") == 0) {
+      if (StringCchCompareXA(tchLog,".LOG") == 0) {
         EditJumpTo(hwndEdit,-1,0);
         SendMessage(hwndEdit,SCI_BEGINUNDOACTION,0,0);
         SendMessage(hwndEdit,SCI_NEWLINE,0,0);
@@ -7449,7 +7462,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     }
 
     // consistent settings file handling (if loaded in editor)
-    bEnableSaveSettings = (lstrcmpi(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
+    bEnableSaveSettings = (StringCchCompareI(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
     UpdateSettingsCmds();
 
     // Show warning: Unicode file loaded as ANSI
@@ -7733,7 +7746,7 @@ BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
 
   if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
 
-    if (lstrcmpi(szClassName,wchWndClass) == 0) {
+    if (StringCchCompareI(szClassName,wchWndClass) == 0) {
 
       DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,FALSE);
       if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
@@ -7754,7 +7767,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
 
   if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
 
-    if (lstrcmpi(szClassName,wchWndClass) == 0) {
+    if (StringCchCompareI(szClassName,wchWndClass) == 0) {
 
       DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,FALSE);
       if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
@@ -7765,7 +7778,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
           bContinue = FALSE;
 
         GetDlgItemText(hwnd,IDC_FILENAME,tchFileName,COUNTOF(tchFileName));
-        if (lstrcmpi(tchFileName,lpFileArg) == 0)
+        if (StringCchCompareIN(tchFileName,COUNTOF(tchFileName),lpFileArg,-1) == 0)
           *(HWND*)lParam = hwnd;
         else
           bContinue = TRUE;
@@ -8077,7 +8090,7 @@ BOOL RelaunchElevated() {
 
       SHELLEXECUTEINFO sei = { 0 };
       sei.cbSize = sizeof(SHELLEXECUTEINFO);
-      sei.fMask = SEE_MASK_FLAG_NO_UI | /*SEE_MASK_NOASYNC*/0x00000100 | /*SEE_MASK_NOZONECHECKS*/0x00800000;
+      sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
       sei.hwnd = GetForegroundWindow();
       sei.lpVerb = L"runas";
       sei.lpFile = lpArg1;

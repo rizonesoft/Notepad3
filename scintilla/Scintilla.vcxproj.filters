@@ -255,6 +255,12 @@
     <ClCompile Include="lexers\LexRegistry.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="src\DBCS.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="lexlib\DefaultLexer.cxx">
+      <Filter>lexlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -427,6 +433,12 @@
     </ClInclude>
     <ClInclude Include="src\UniqueString.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBCS.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="lexlib\DefaultLexer.h">
+      <Filter>lexlib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

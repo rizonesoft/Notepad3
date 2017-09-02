@@ -1,0 +1,95 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 2.0.2.{build}
+
+# you can use {branch} name in version format too
+# version: 1.0.{build}-{branch}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+  - master
+
+  # blacklist
+  except:
+  - gh-pages
+
+# Do not build on tags (GitHub only)
+skip_tags: true
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Operating system (build VM template)
+os: Windows Server 2012
+
+image:
+  - Visual Studio 2017
+#  - Visual Studio 2015
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - git config --global core.autocrlf input
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+#platform: Any CPU
+
+# to add several platforms to build matrix:
+platform:
+  - Win32
+  - x64
+
+# build Configuration, i.e. Debug, Release, etc.
+#configuration: Release
+
+# to add several configurations to build matrix:
+configuration:
+  - Release
+#  - Debug
+
+build:
+  project: Notepad3.sln
+  parallel: true
+  verbosity: minimal
+test: off
+
+# Artifact paths are relative to C:\projects\notepad2-mod\
+artifacts:
+  - path: bin\**\*.*
+#  - name: All
+
+matrix:
+  fast_finish: true
+  
+#deploy:
+#  - provider: S3
+#  access_key_id: XXXXXXXXXXXXXXXXXXXX
+#  secret_access_key:
+#    secure: ---------------------------------------------------------
+#  region: us-west-2
+#  bucket: notepad3
+#  artifact: All
+#  set_public: true
+#  encrypt: true
+#notifications:
+#- provider: Email
+#  to:
+#  - rizonesoft+github@gmail.com
+#  on_build_success: true
+#  on_build_failure: true
+#  on_build_status_changed: true
