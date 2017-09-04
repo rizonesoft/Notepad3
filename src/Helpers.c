@@ -33,10 +33,45 @@
 #include <uxtheme.h>
 #include <stdio.h>
 #include <string.h>
+//#include <pathcch.h>
 #include "resource.h"
 #include "helpers.h"
 
 extern HINSTANCE g_hInstance;
+
+
+
+//=============================================================================
+//
+//  Cut of substrings defined by pattern
+//
+
+CHAR* _StrCutIA(CHAR* s,const CHAR* pattern)
+{
+  CHAR* p = NULL;
+  do {
+    p = StrStrIA(s,pattern);
+    if (p) {
+      CHAR* q = p + strlen(pattern);
+      while (*p != '\0') { *p++ = *q++; }
+    }
+  } while (p);
+  return s;
+}
+
+WCHAR* _StrCutIW(WCHAR* s,const WCHAR* pattern)
+{
+  WCHAR* p = NULL;
+  do {
+    p = StrStrIW(s,pattern);
+    if (p) {
+      WCHAR* q = p + lstrlen(pattern);
+      while (*p != L'\0') { *p++ = *q++; }
+    }
+  } while (p);
+  return s;
+}
+
 
 //=============================================================================
 //
@@ -208,19 +243,48 @@ BOOL IsElevated() {
 
   if (OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&hToken)) {
 
-    struct {
-      DWORD TokenIsElevated;
-    } /*TOKEN_ELEVATION*/te;
+    TOKEN_ELEVATION te;
+    DWORD expectedRetVal = sizeof(TOKEN_ELEVATION);
     DWORD dwReturnLength = 0;
 
-    if (GetTokenInformation(hToken,/*TokenElevation*/20,&te,sizeof(te),&dwReturnLength)) {
-        if (dwReturnLength == sizeof(te))
-          bIsElevated = te.TokenIsElevated;
+    if (GetTokenInformation(hToken,TokenElevation,&te,expectedRetVal,&dwReturnLength)) {
+        if (dwReturnLength == expectedRetVal)
+          bIsElevated = (BOOL)te.TokenIsElevated;
     }
-    CloseHandle(hToken);
+    if (hToken)
+      CloseHandle(hToken);
   }
   return bIsElevated;
 }
+
+
+//=============================================================================
+//
+//  IsUserAdmin()
+//
+// Routine Description: This routine returns TRUE if the caller's
+// process is a member of the Administrators local group. Caller is NOT
+// expected to be impersonating anyone and is expected to be able to
+// open its own process and process token.
+// Arguments: None.
+// Return Value:
+// TRUE - Caller has Administrators local group.
+// FALSE - Caller does not have Administrators local group. --
+//
+BOOL IsUserAdmin()
+{
+  PSID AdminGroup;
+  SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+  BOOL bIsAdmin = AllocateAndInitializeSid(&NtAuthority,2,
+    SECURITY_BUILTIN_DOMAIN_RID,DOMAIN_ALIAS_RID_ADMINS,0,0,0,0,0,0,&AdminGroup);
+  if (bIsAdmin) {
+    if (!CheckTokenMembership(NULL,AdminGroup,&bIsAdmin))
+      bIsAdmin = FALSE;
+    FreeSid(AdminGroup);
+  }
+  return(bIsAdmin);
+}
+
 
 
 //=============================================================================
@@ -983,7 +1047,7 @@ void PathRelativeToApp(
 
   GetModuleFileName(NULL,wchAppPath,COUNTOF(wchAppPath));
   PathCanonicalizeEx(wchAppPath,MAX_PATH);
-  PathRemoveFileSpec(wchAppPath);
+  PathCchRemoveFileSpec(wchAppPath,COUNTOF(wchAppPath));
   GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
   SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
 
@@ -993,7 +1057,7 @@ void PathRelativeToApp(
        PathIsPrefix(wchUserFiles,lpszSrc) &&
        PathRelativePathTo(wchPath,wchUserFiles,FILE_ATTRIBUTE_DIRECTORY,lpszSrc,dwAttrTo)) {
     StringCchCopy(wchUserFiles,COUNTOF(wchUserFiles),L"%CSIDL:MYDOCUMENTS%");
-    PathAppend(wchUserFiles,wchPath);
+    PathCchAppend(wchUserFiles,COUNTOF(wchUserFiles),wchPath);
     StringCchCopy(wchPath,COUNTOF(wchPath),wchUserFiles);
   }
   else if (PathIsRelative(lpszSrc) || PathCommonPrefix(wchAppPath,wchWinDir,NULL))
@@ -1034,7 +1098,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
 
   if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CSTRLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
     SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
-    PathAppend(wchPath,lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
+    PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
   }
   else {
     if (lpszSrc) {
@@ -1049,7 +1113,7 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
     GetModuleFileName(NULL,wchResult,COUNTOF(wchResult));
     PathCanonicalizeEx(wchResult,MAX_PATH);
     PathRemoveFileSpec(wchResult);
-    PathAppend(wchResult,wchPath);
+    PathCchAppend(wchResult,COUNTOF(wchResult),wchPath);
   }
   else
     StringCchCopyN(wchResult,COUNTOF(wchResult),wchPath,COUNTOF(wchPath));
@@ -1274,7 +1338,7 @@ BOOL PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
     return TRUE;
 
   StringCchCopy(tchLnkFileName,COUNTOF(tchLnkFileName),pszDir);
-  PathAppend(tchLnkFileName,pszName);
+  PathCchAppend(tchLnkFileName,COUNTOF(tchLnkFileName),pszName);
   StringCchCat(tchLnkFileName,COUNTOF(tchLnkFileName),L".lnk");
 
   if (PathFileExists(tchLnkFileName))
@@ -1477,7 +1541,7 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 void PathCanonicalizeEx(LPWSTR lpszPath,int len)
 {
   WCHAR szDst[FILE_ARG_BUF] = { L'\0' };
-  if (PathCanonicalize(szDst,lpszPath))
+  if (PathCchCanonicalize(szDst,len,lpszPath))
     StringCchCopy(lpszPath,len,szDst);
 }
 
