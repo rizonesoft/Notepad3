@@ -7379,6 +7379,14 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
   if (PathIsLnkFile(szFileName))
     PathGetLnkPath(szFileName,szFileName,COUNTOF(szFileName));
 
+  // change current directory to prevent directory lock on another path
+  WCHAR szFolder[MAX_PATH+2];
+  if (SUCCEEDED(StringCchCopy(szFolder,COUNTOF(szFolder),tch))) {
+    if (SUCCEEDED(PathCchRemoveFileSpec(szFolder,COUNTOF(szFolder)))) {
+      SetCurrentDirectory(szFolder);
+    }
+  }
+ 
   // Ask to create a new file...
   if (!bReload && !PathFileExists(szFileName))
   {

@@ -16,11 +16,11 @@
 #ifndef _NP3_HELPERS_H_
 #define _NP3_HELPERS_H_
 
-
 #include <VersionHelpers.h>
 #define STRSAFE_NO_CB_FUNCTIONS
 #undef STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
+#include <shlwapi.h>
 
 #define STRGFY(X)     L##X
 #define MKWSTRG(strg) STRGFY(strg)
@@ -338,10 +338,10 @@ inline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
 // including <pathcch.h> and linking against pathcch.lib causes an
 // API-MS-WIN-CORE-PATH-L1-1-0.DLL  library missing error, 
 // so switch back to previous (deprecated) methods:
-#define PathCchAppend(p,l,a)           PathAppend((p),(a))
-#define PathCchCanonicalize(p,l,a)     PathCanonicalize((p),(a))
-#define PathCchRenameExtension(p,l,a)  PathRenameExtension((p),(a))
-#define PathCchRemoveFileSpec(p,l)     PathRemoveFileSpec((p))
+inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); return (PathAppend(p,a) ? S_OK : E_FAIL); }
+inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
+inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
+inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
 
 #endif //_NP3_HELPERS_H_
