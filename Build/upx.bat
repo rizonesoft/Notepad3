@@ -16,8 +16,8 @@ rem ****************************************************************************
 SETLOCAL ENABLEEXTENSIONS
 CD /D %~dp0
 
-SET INPUTDIRx86=Bin\Release_x86_v141_xp
-SET INPUTDIRx64=Bin\Release_x64_v141_xp
+SET INPUTDIRx86=Bin\Release_x86_v141
+SET INPUTDIRx64=Bin\Release_x64_v141
 
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"

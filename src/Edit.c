@@ -13,10 +13,17 @@
 *                                                                             *
 *******************************************************************************/
 
+#if !defined(WINVER)
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(NTDDI_VERSION)
+#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
 #define VC_EXTRALEAN 1
+
 #include <windows.h>
 #include <shlwapi.h>
 #include <commctrl.h>
@@ -76,6 +83,26 @@ char WhiteSpaceCharsDefault[DELIM_BUFFER] = { '\0' };
 char PunctuationCharsDefault[DELIM_BUFFER] = { '\0' };
 char WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { '\0' };
 char PunctuationCharsAccelerated[DELIM_BUFFER] = { '\0' };
+
+enum AlignMask {
+  ALIGN_LEFT = 0,
+  ALIGN_RIGHT = 1,
+  ALIGN_CENTER = 2,
+  ALIGN_JUSTIFY = 3,
+  ALIGN_JUSTIFY_EX = 4
+};
+
+enum SortOrderMask {
+  SORT_ASCENDING = 0,
+  SORT_DESCENDING = 1,
+  SORT_SHUFFLE = 2,
+  SORT_MERGEDUP = 4,
+  SORT_UNIQDUP = 8,
+  SORT_UNIQUNIQ = 16,
+  SORT_NOCASE = 32,
+  SORT_LOGICAL = 64,
+  SORT_COLUMN = 128
+};
 
 int g_DOSEncoding;
 
