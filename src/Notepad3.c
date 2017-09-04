@@ -917,12 +917,13 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
             StringCchCopy(szCurFile,COUNTOF(szCurFile),lpFileArg);
             InstallFileWatching(szCurFile);
           }
+          else
+            StringCchCopy(szCurFile,COUNTOF(szCurFile),L"");
+
           if (!flagLexerSpecified)
             Style_SetLexerFromFile(hwndEdit,szCurFile);
           bModified = TRUE;
-          if (lpFileArg)
-            SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,lpFileArg,
-                           iPathNameFormat,bModified,IDS_READONLY,bReadOnly,szTitleExcerpt);
+          UpdateToolbar();
 
           // check for temp file and delete
           if (fIsElevated && PathFileExists(szBufferFile)) {
@@ -1046,9 +1047,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     bLastCopyFromMe = TRUE;
     hwndNextCBChain = SetClipboardViewer(hwndMain);
     uidsAppTitle = IDS_APPTITLE_PASTEBOARD;
-    SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-      IDS_READONLY,bReadOnly,szTitleExcerpt);
     bLastCopyFromMe = FALSE;
 
     dwLastCopyTime = 0;
@@ -1385,9 +1383,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
               if (params->flagTitleExcerpt) {
                 StringCchCopyN(szTitleExcerpt,COUNTOF(szTitleExcerpt),StrEnd(&params->wchData) + 1,COUNTOF(szTitleExcerpt));
-                SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-                  iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-                  IDS_READONLY,bReadOnly,szTitleExcerpt);
               }
             }
             // reset
@@ -1406,6 +1401,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
           LocalFree(params);
 
+          UpdateToolbar();
           UpdateStatusbar();
         }
       }
@@ -2528,9 +2524,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
           bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
-        SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-          iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-          IDS_READONLY,bReadOnly,szTitleExcerpt);
+        UpdateToolbar();
       }
       break;
 
@@ -2873,10 +2867,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           UpdateToolbar();
           UpdateStatusbar();
-
-          SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-            IDS_READONLY,bReadOnly,szTitleExcerpt);
         }
       }
       break;
@@ -2927,9 +2917,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         EditFixPositions(hwndEdit);
         UpdateToolbar();
         UpdateStatusbar();
-        SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-          iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-          IDS_READONLY,bReadOnly,szTitleExcerpt);
       }
       break;
 
@@ -4445,35 +4432,27 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_SHOWFILENAMEONLY:
       iPathNameFormat = 0;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
     case IDM_VIEW_SHOWFILENAMEFIRST:
       iPathNameFormat = 1;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
     case IDM_VIEW_SHOWFULLPATH:
       iPathNameFormat = 2;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
     case IDM_VIEW_SHOWEXCERPT:
       EditGetExcerpt(hwndEdit,szTitleExcerpt,COUNTOF(szTitleExcerpt));
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
@@ -5056,9 +5035,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_TOGGLETITLE:
       EditGetExcerpt(hwndEdit,szTitleExcerpt,COUNTOF(szTitleExcerpt));
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
@@ -5595,9 +5572,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
-          SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-            IDS_READONLY,bReadOnly,szTitleExcerpt);
           UpdateToolbar();
           break;
 
@@ -5613,9 +5587,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
-          SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-            IDS_READONLY,bReadOnly,szTitleExcerpt);
           UpdateToolbar();
           break;
       }
@@ -6945,8 +6916,9 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 
 void UpdateToolbar()
 {
-
-  int i;
+  SetWindowTitle(hwndMain, uidsAppTitle, fIsElevated, IDS_UNTITLED, szCurFile,
+                 iPathNameFormat, bModified || Encoding_HasChanged(CPI_GET),
+                 IDS_READONLY, bReadOnly, szTitleExcerpt);
 
   if (!bShowToolbar)
     return;
@@ -6956,7 +6928,7 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_UNDO,SendMessage(hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_REDO,SendMessage(hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
 
-  i = (int)!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
+  int i = (int)!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
   EnableTool(IDT_EDIT_CUT,i /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_COPY,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
   EnableTool(IDT_EDIT_PASTE,SendMessage(hwndEdit,SCI_CANPASTE,0,0) /*&& !bReadOnly*/);
@@ -7368,9 +7340,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     Encoding_HasChanged(iDefaultEncoding);
     Encoding_SciSetCodePage(hwndEdit,iDefaultEncoding);
     EditSetNewText(hwndEdit,"",0);
-    SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-      IDS_READONLY,bReadOnly,szTitleExcerpt);
+    UpdateToolbar();
 
     // Terminate file watching
     if (bResetFileWatching)
@@ -7464,9 +7434,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs);
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
-    SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szFileName,
-      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-      IDS_READONLY,bReadOnly,szTitleExcerpt);
+
+    UpdateToolbar();
 
     // Install watching of the current file
     if (!bReload && bResetFileWatching)
@@ -7558,9 +7527,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
       bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
     if (bReadOnly) {
-      SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       if (MsgBox(MBYESNOWARN,IDS_READONLY_SAVE,szCurFile) == IDYES)
         bSaveAs = TRUE;
       else
@@ -7666,10 +7633,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,szCurFile);
-      SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
-
+      UpdateToolbar();
       // Install watching of the current file
       if (bSaveAs && bResetFileWatching)
         iFileWatchingMode = 0;
@@ -7719,15 +7683,16 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
               bModified = FALSE;
               PostMessage(hwndMain,WM_CLOSE,0,0);
             }
+            else {
+              UpdateToolbar();
+              MsgBox(MBWARN,IDS_ERR_SAVEFILE,tchFile);
+            }
           }
         }
       }
     }
     else {
-      SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-                     iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-                     IDS_READONLY,bReadOnly,szTitleExcerpt);
-
+      UpdateToolbar();
       MsgBox(MBWARN,IDS_ERR_SAVEFILE,tchFile);
     }
   }
