@@ -204,7 +204,7 @@ typedef struct _wi
   int max;
 } WININFO;
 
-WININFO wininfo;
+static WININFO wininfo = { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0 };
 
 BOOL    bStickyWinPos;
 
@@ -770,7 +770,6 @@ BOOL InitApplication(HINSTANCE hInstance)
 //
 HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 {
-
   RECT rc;
   rc.left = wininfo.x;  rc.top = wininfo.y;  rc.right = wininfo.x + wininfo.cx;  rc.bottom = wininfo.y + wininfo.cy;
   RECT rc2;
@@ -784,7 +783,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     wininfo.x = wininfo.y = wininfo.cx = wininfo.cy = CW_USEDEFAULT;
     wininfo.max = 0;
   }
-
   else if (flagDefaultPos >= 4) {
     SystemParametersInfo(SPI_GETWORKAREA,0,&rc,0);
     if (flagDefaultPos & 8)
@@ -6482,6 +6480,7 @@ void ParseCommandLine()
               if (itok == 4 || itok == 5) { // scan successful
                 flagPosParam = 1;
                 flagDefaultPos = 0;
+
                 if (wininfo.cx < 1) wininfo.cx = CW_USEDEFAULT;
                 if (wininfo.cy < 1) wininfo.cy = CW_USEDEFAULT;
                 if (wininfo.max) wininfo.max = 1;
