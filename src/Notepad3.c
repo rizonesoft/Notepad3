@@ -7631,12 +7631,10 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
             StringCchPrintf(szArguments,COUNTOF(szArguments),
               L"/pos %i,%i,%i,%i,%i /tmpfbuf=\"%s\" %s",wi.x,wi.y,wi.cx,wi.cy,wi.max,szTempFileName,lpArgs);
             if (StringCchLen(tchFile)) {
-
               if (!StrStrI(szArguments,tchBase)) {
                 StringCchPrintf(szArguments,COUNTOF(szArguments),L"%s \"%s\"",szArguments,tchFile);
               }
             }
-
             flagRelaunchElevated = 1;
             if (RelaunchElevated(szArguments)) {
               LocalFree(lpExe);
@@ -7647,6 +7645,9 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
               PostMessage(hwndMain,WM_CLOSE,0,0);
             }
             else {
+              if (PathFileExists(szTempFileName)) {
+                DeleteFile(szTempFileName);
+              }
               UpdateToolbar();
               MsgBox(MBWARN,IDS_ERR_SAVEFILE,tchFile);
             }
@@ -8155,7 +8156,7 @@ BOOL RelaunchElevated(LPWSTR lpArgs) {
     sei.lpDirectory = g_wchWorkingDirectory;
     sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
     CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE | COINIT_SPEED_OVER_MEMORY);
-    result = ShellExecuteEx(&sei) && (MAKELONG(sei.hInstApp,0) > 32L) ;
+    result = ShellExecuteEx(&sei);
   }
 
   return result;
