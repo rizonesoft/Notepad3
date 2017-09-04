@@ -7618,19 +7618,18 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
           if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,TRUE)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
 
-            WCHAR szArguments[3 * MAX_PATH + 64] = { L'\0' };
+            WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
             int wlen = lstrlen(lpCmdLine) + 2;
             LPWSTR lpExe = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
             LPWSTR lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
             ExtractFirstArgument(lpCmdLine,lpExe,lpArgs,wlen);
-
+            // remove relaunch elevated, we are doing this here already
             lpArgs = StrCutI(lpArgs,L"/u ");
             lpArgs = StrCutI(lpArgs,L"-u ");
-
             WININFO wi = GetMyWindowPlacement(hwndMain,NULL);
             StringCchPrintf(szArguments,COUNTOF(szArguments),
-              L"/pos %i,%i,%i,%i,%i -tmpfbuf=\"%s\" %s",wi.x,wi.y,wi.cx,wi.cy,wi.max,szTempFileName,lpArgs);
+              L"/pos %i,%i,%i,%i,%i /tmpfbuf=\"%s\" %s",wi.x,wi.y,wi.cx,wi.cy,wi.max,szTempFileName,lpArgs);
             if (StringCchLen(tchFile)) {
 
               if (!StrStrI(szArguments,tchBase)) {
@@ -8124,38 +8123,39 @@ BOOL RelaunchElevated(LPWSTR lpArgs) {
   LPWSTR lpCmdLine = GetCommandLine();
   int wlen = lstrlen(lpCmdLine) + 2;
 
-  LPWSTR lpExe1 = NULL;
-  WCHAR lpExe2[MAX_PATH + 2] = { L'\0' };
-  GetModuleFileName(NULL,lpExe2,COUNTOF(lpExe2));
-  NormalizePathEx(lpExe2,MAX_PATH + 2);
+  WCHAR lpExe[MAX_PATH + 2] = { L'\0' };
+  WCHAR szArgs[2032] = { L'\0' };
+  WCHAR szArguments[2032] = { L'\0' };
 
-  BOOL bShouldFree = FALSE;
-  if (!lpArgs) {
-    lpExe1 = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
-    lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
-    bShouldFree = TRUE;
-    ExtractFirstArgument(lpCmdLine,lpExe1,lpArgs,wlen);
-    NormalizePathEx(lpExe1,wlen);
+  ExtractFirstArgument(lpCmdLine,lpExe,szArgs,wlen);
+
+  if (lpArgs) {
+    StringCchCopy(szArgs,COUNTOF(szArgs),lpArgs); // override
   }
 
-  if (lstrlen(lpArgs)) {
+  if (StrStrI(szArgs,L"/f ") || StrStrI(szArgs,L"-f ")) {
+    StringCchCopy(szArguments,COUNTOF(szArguments),szArgs);
+  }
+  else {
+    if (StringCchLen(szIniFile) > 0)
+      StringCchPrintf(szArguments,COUNTOF(szArguments),L"/f \"%s\" %s",szIniFile,szArgs);
+    else
+      StringCchCopy(szArguments,COUNTOF(szArguments),szArgs);
+  }
+
+  if (lstrlen(szArguments)) {
     SHELLEXECUTEINFO sei;
     ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
     sei.cbSize = sizeof(SHELLEXECUTEINFO);
     sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
     sei.hwnd = GetForegroundWindow();
     sei.lpVerb = L"runas";
-    sei.lpFile = (lpExe1 ? lpExe1 : lpExe2);
-    sei.lpParameters = lpArgs;
+    sei.lpFile = lpExe;
+    sei.lpParameters = szArguments;
     sei.lpDirectory = g_wchWorkingDirectory;
     sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
     CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE | COINIT_SPEED_OVER_MEMORY);
     result = ShellExecuteEx(&sei) && (MAKELONG(sei.hInstApp,0) > 32L) ;
-  }
-
-  if (bShouldFree) {
-    LocalFree(lpArgs);
-    LocalFree(lpExe1);
   }
 
   return result;
