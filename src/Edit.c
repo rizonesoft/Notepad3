@@ -1539,6 +1539,17 @@ BOOL EditLoadFile(
   }
 
   lpData = GlobalAlloc(GPTR,dwBufSize);
+
+  dwLastIOError = GetLastError();
+  if (!lpData)
+  {
+    CloseHandle(hFile);
+    *pbFileTooBig = FALSE;
+    Encoding_Source(CPI_NONE);
+    Encoding_SrcWeak(CPI_NONE);
+    return FALSE;
+  }
+
   bReadSuccess = ReadAndDecryptFile(hwnd, hFile, (DWORD)GlobalSize(lpData) - 2, &lpData, &cbData);
   dwLastIOError = GetLastError();
   CloseHandle(hFile);
