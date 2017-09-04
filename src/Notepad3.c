@@ -204,7 +204,8 @@ typedef struct _wi
   int max;
 } WININFO;
 
-WININFO wi;
+static WININFO wininfo = { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0 };
+
 BOOL    bStickyWinPos;
 
 BOOL    bIsAppThemed;
@@ -769,9 +770,8 @@ BOOL InitApplication(HINSTANCE hInstance)
 //
 HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 {
-
   RECT rc;
-  rc.left = wi.x;  rc.top = wi.y;  rc.right = wi.x + wi.cx;  rc.bottom = wi.y + wi.cy;
+  rc.left = wininfo.x;  rc.top = wininfo.y;  rc.right = wininfo.x + wininfo.cx;  rc.bottom = wininfo.y + wininfo.cy;
   RECT rc2;
   MONITORINFO mi;
 
@@ -780,81 +780,80 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   GetMonitorInfo(hMonitor,&mi);
 
   if (flagDefaultPos == 1) {
-    wi.x = wi.y = wi.cx = wi.cy = CW_USEDEFAULT;
-    wi.max = 0;
+    wininfo.x = wininfo.y = wininfo.cx = wininfo.cy = CW_USEDEFAULT;
+    wininfo.max = 0;
   }
-
   else if (flagDefaultPos >= 4) {
     SystemParametersInfo(SPI_GETWORKAREA,0,&rc,0);
     if (flagDefaultPos & 8)
-      wi.x = (rc.right - rc.left) / 2;
+      wininfo.x = (rc.right - rc.left) / 2;
     else
-      wi.x = rc.left;
-    wi.cx = rc.right - rc.left;
+      wininfo.x = rc.left;
+    wininfo.cx = rc.right - rc.left;
     if (flagDefaultPos & (4|8))
-      wi.cx /= 2;
+      wininfo.cx /= 2;
     if (flagDefaultPos & 32)
-      wi.y = (rc.bottom - rc.top) / 2;
+      wininfo.y = (rc.bottom - rc.top) / 2;
     else
-      wi.y = rc.top;
-    wi.cy = rc.bottom - rc.top;
+      wininfo.y = rc.top;
+    wininfo.cy = rc.bottom - rc.top;
     if (flagDefaultPos & (16|32))
-      wi.cy /= 2;
+      wininfo.cy /= 2;
     if (flagDefaultPos & 64) {
-      wi.x = rc.left;
-      wi.y = rc.top;
-      wi.cx = rc.right - rc.left;
-      wi.cy = rc.bottom - rc.top;
+      wininfo.x = rc.left;
+      wininfo.y = rc.top;
+      wininfo.cx = rc.right - rc.left;
+      wininfo.cy = rc.bottom - rc.top;
     }
     if (flagDefaultPos & 128) {
-      wi.x += (flagDefaultPos & 8) ? 4 : 8;
-      wi.cx -= (flagDefaultPos & (4|8)) ? 12 : 16;
-      wi.y += (flagDefaultPos & 32) ? 4 : 8;
-      wi.cy -= (flagDefaultPos & (16|32)) ? 12 : 16;
+      wininfo.x += (flagDefaultPos & 8) ? 4 : 8;
+      wininfo.cx -= (flagDefaultPos & (4|8)) ? 12 : 16;
+      wininfo.y += (flagDefaultPos & 32) ? 4 : 8;
+      wininfo.cy -= (flagDefaultPos & (16|32)) ? 12 : 16;
     }
   }
 
   else if (flagDefaultPos == 2 || flagDefaultPos == 3 ||
-      wi.x == CW_USEDEFAULT || wi.y == CW_USEDEFAULT ||
-      wi.cx == CW_USEDEFAULT || wi.cy == CW_USEDEFAULT) {
+      wininfo.x == CW_USEDEFAULT || wininfo.y == CW_USEDEFAULT ||
+      wininfo.cx == CW_USEDEFAULT || wininfo.cy == CW_USEDEFAULT) {
 
     // default window position
     SystemParametersInfo(SPI_GETWORKAREA,0,&rc,0);
-    wi.y = rc.top + 16;
-    wi.cy = rc.bottom - rc.top - 32;
-    wi.cx = min(rc.right - rc.left - 32,wi.cy);
-    wi.x = (flagDefaultPos == 3) ? rc.left + 16 : rc.right - wi.cx - 16;
+    wininfo.y = rc.top + 16;
+    wininfo.cy = rc.bottom - rc.top - 32;
+    wininfo.cx = min(rc.right - rc.left - 32,wininfo.cy);
+    wininfo.x = (flagDefaultPos == 3) ? rc.left + 16 : rc.right - wininfo.cx - 16;
   }
 
   else {
 
     // fit window into working area of current monitor
-    wi.x += (mi.rcWork.left - mi.rcMonitor.left);
-    wi.y += (mi.rcWork.top - mi.rcMonitor.top);
-    if (wi.x < mi.rcWork.left)
-      wi.x = mi.rcWork.left;
-    if (wi.y < mi.rcWork.top)
-      wi.y = mi.rcWork.top;
-    if (wi.x + wi.cx > mi.rcWork.right) {
-      wi.x -= (wi.x + wi.cx - mi.rcWork.right);
-      if (wi.x < mi.rcWork.left)
-        wi.x = mi.rcWork.left;
-      if (wi.x + wi.cx > mi.rcWork.right)
-        wi.cx = mi.rcWork.right - wi.x;
+    wininfo.x += (mi.rcWork.left - mi.rcMonitor.left);
+    wininfo.y += (mi.rcWork.top - mi.rcMonitor.top);
+    if (wininfo.x < mi.rcWork.left)
+      wininfo.x = mi.rcWork.left;
+    if (wininfo.y < mi.rcWork.top)
+      wininfo.y = mi.rcWork.top;
+    if (wininfo.x + wininfo.cx > mi.rcWork.right) {
+      wininfo.x -= (wininfo.x + wininfo.cx - mi.rcWork.right);
+      if (wininfo.x < mi.rcWork.left)
+        wininfo.x = mi.rcWork.left;
+      if (wininfo.x + wininfo.cx > mi.rcWork.right)
+        wininfo.cx = mi.rcWork.right - wininfo.x;
     }
-    if (wi.y + wi.cy > mi.rcWork.bottom) {
-      wi.y -= (wi.y + wi.cy - mi.rcWork.bottom);
-      if (wi.y < mi.rcWork.top)
-        wi.y = mi.rcWork.top;
-      if (wi.y + wi.cy > mi.rcWork.bottom)
-        wi.cy = mi.rcWork.bottom - wi.y;
+    if (wininfo.y + wininfo.cy > mi.rcWork.bottom) {
+      wininfo.y -= (wininfo.y + wininfo.cy - mi.rcWork.bottom);
+      if (wininfo.y < mi.rcWork.top)
+        wininfo.y = mi.rcWork.top;
+      if (wininfo.y + wininfo.cy > mi.rcWork.bottom)
+        wininfo.cy = mi.rcWork.bottom - wininfo.y;
     }
-    SetRect(&rc,wi.x,wi.y,wi.x+wi.cx,wi.y+wi.cy);
+    SetRect(&rc,wininfo.x,wininfo.y,wininfo.x+wininfo.cx,wininfo.y+wininfo.cy);
     if (!IntersectRect(&rc2,&rc,&mi.rcWork)) {
-      wi.y = mi.rcWork.top + 16;
-      wi.cy = mi.rcWork.bottom - mi.rcWork.top - 32;
-      wi.cx = min(mi.rcWork.right - mi.rcWork.left - 32,wi.cy);
-      wi.x = mi.rcWork.right - wi.cx - 16;
+      wininfo.y = mi.rcWork.top + 16;
+      wininfo.cy = mi.rcWork.bottom - mi.rcWork.top - 32;
+      wininfo.cx = min(mi.rcWork.right - mi.rcWork.left - 32,wininfo.cy);
+      wininfo.x = mi.rcWork.right - wininfo.cx - 16;
     }
   }
 
@@ -863,16 +862,16 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
                wchWndClass,
                L"Notepad3",
                WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-               wi.x,
-               wi.y,
-               wi.cx,
-               wi.cy,
+               wininfo.x,
+               wininfo.y,
+               wininfo.cx,
+               wininfo.cy,
                NULL,
                NULL,
                hInstance,
                NULL);
 
-  if (wi.max)
+  if (wininfo.max)
     nCmdShow = SW_SHOWMAXIMIZED;
 
   if ((bAlwaysOnTop || flagAlwaysOnTop == 2) && flagAlwaysOnTop != 1)
@@ -918,12 +917,13 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
             StringCchCopy(szCurFile,COUNTOF(szCurFile),lpFileArg);
             InstallFileWatching(szCurFile);
           }
+          else
+            StringCchCopy(szCurFile,COUNTOF(szCurFile),L"");
+
           if (!flagLexerSpecified)
             Style_SetLexerFromFile(hwndEdit,szCurFile);
           bModified = TRUE;
-          if (lpFileArg)
-            SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,lpFileArg,
-                           iPathNameFormat,bModified,IDS_READONLY,bReadOnly,szTitleExcerpt);
+          UpdateToolbar();
 
           // check for temp file and delete
           if (fIsElevated && PathFileExists(szBufferFile)) {
@@ -1047,9 +1047,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     bLastCopyFromMe = TRUE;
     hwndNextCBChain = SetClipboardViewer(hwndMain);
     uidsAppTitle = IDS_APPTITLE_PASTEBOARD;
-    SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-      IDS_READONLY,bReadOnly,szTitleExcerpt);
     bLastCopyFromMe = FALSE;
 
     dwLastCopyTime = 0;
@@ -1105,6 +1102,36 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 }
 
 
+
+//=============================================================================
+//
+//  GetMyWindowPlacement()
+//
+//
+WININFO GetMyWindowPlacement(HWND hwnd,MONITORINFO* hMonitorInfo)
+{
+  WINDOWPLACEMENT wndpl;
+  wndpl.length = sizeof(WINDOWPLACEMENT);
+
+  GetWindowPlacement(hwnd,&wndpl);
+
+  WININFO wi;
+  wi.x = wndpl.rcNormalPosition.left;
+  wi.y = wndpl.rcNormalPosition.top;
+  wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
+  wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
+  wi.max = (IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
+
+  if (hMonitorInfo) 
+  {
+    HMONITOR hMonitor = MonitorFromRect(&wndpl.rcNormalPosition,MONITOR_DEFAULTTONEAREST);
+    hMonitorInfo->cbSize = sizeof(MONITORINFO);
+    GetMonitorInfo(hMonitor,hMonitorInfo);
+  }
+  return wi;
+}
+
+
 //=============================================================================
 //
 //  MainWndProc()
@@ -1142,20 +1169,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_ENDSESSION:
       if (!bShutdownOK) {
 
-        WINDOWPLACEMENT wndpl;
-
         // Terminate file watching
         InstallFileWatching(NULL);
 
         // GetWindowPlacement
-        wndpl.length = sizeof(WINDOWPLACEMENT);
-        GetWindowPlacement(hwnd,&wndpl);
-
-        wi.x = wndpl.rcNormalPosition.left;
-        wi.y = wndpl.rcNormalPosition.top;
-        wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-        wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-        wi.max = (IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
+        wininfo = GetMyWindowPlacement(hwnd,NULL);
 
         DragAcceptFiles(hwnd,FALSE);
 
@@ -1365,9 +1383,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
               if (params->flagTitleExcerpt) {
                 StringCchCopyN(szTitleExcerpt,COUNTOF(szTitleExcerpt),StrEnd(&params->wchData) + 1,COUNTOF(szTitleExcerpt));
-                SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-                  iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-                  IDS_READONLY,bReadOnly,szTitleExcerpt);
               }
             }
             // reset
@@ -1386,6 +1401,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
           LocalFree(params);
 
+          UpdateToolbar();
           UpdateStatusbar();
         }
       }
@@ -2508,9 +2524,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
           bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
-        SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-          iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-          IDS_READONLY,bReadOnly,szTitleExcerpt);
+        UpdateToolbar();
       }
       break;
 
@@ -2575,11 +2589,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WCHAR szModuleName[MAX_PATH] = { L'\0' };
         WCHAR szFileName[MAX_PATH] = { L'\0' };
         WCHAR szParameters[2*MAX_PATH+64] = { L'\0' };
-
-        MONITORINFO mi;
-        HMONITOR hMonitor;
-        WINDOWPLACEMENT wndpl;
-        int x,y,cx,cy,imax;
         WCHAR tch[64] = { L'\0' };
 
         if (bSaveBeforeRunningTools && !FileSave(FALSE,TRUE,FALSE,FALSE))
@@ -2604,28 +2613,19 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         StringCchCat(szParameters,COUNTOF(szParameters),L" -n");
 
-        wndpl.length = sizeof(WINDOWPLACEMENT);
-        GetWindowPlacement(hwnd,&wndpl);
-
-        hMonitor = MonitorFromRect(&wndpl.rcNormalPosition,MONITOR_DEFAULTTONEAREST);
-        mi.cbSize = sizeof(mi);
-        GetMonitorInfo(hMonitor,&mi);
-
+        MONITORINFO mi;
+        WININFO wi = GetMyWindowPlacement(hwnd,&mi);
         // offset new window position +10/+10
-        x = wndpl.rcNormalPosition.left + 10;
-        y = wndpl.rcNormalPosition.top  + 10;
-        cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-        cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-
+        wi.x += 10;
+        wi.y += 10;
         // check if window fits monitor
-        if ((x + cx) > mi.rcWork.right || (y + cy) > mi.rcWork.bottom) {
-          x = mi.rcMonitor.left;
-          y = mi.rcMonitor.top;
+        if ((wi.x + wi.cx) > mi.rcWork.right || (wi.y + wi.cy) > mi.rcWork.bottom) {
+          wi.x = mi.rcMonitor.left;
+          wi.y = mi.rcMonitor.top;
         }
+        wi.max = IsZoomed(hwnd);
 
-        imax = IsZoomed(hwnd);
-
-        StringCchPrintf(tch,COUNTOF(tch),L" -pos %i,%i,%i,%i,%i",x,y,cx,cy,imax);
+        StringCchPrintf(tch,COUNTOF(tch),L" -pos %i,%i,%i,%i,%i",wi.x,wi.y,wi.cx,wi.cy,wi.max);
         StringCchCat(szParameters,COUNTOF(szParameters),tch);
 
         if (LOWORD(wParam) != IDM_FILE_NEWWINDOW2 && StringCchLen(szCurFile)) {
@@ -2867,10 +2867,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           UpdateToolbar();
           UpdateStatusbar();
-
-          SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-            IDS_READONLY,bReadOnly,szTitleExcerpt);
         }
       }
       break;
@@ -2921,9 +2917,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         EditFixPositions(hwndEdit);
         UpdateToolbar();
         UpdateStatusbar();
-        SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-          iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-          IDS_READONLY,bReadOnly,szTitleExcerpt);
       }
       break;
 
@@ -4362,22 +4355,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_STICKYWINPOS:
       bStickyWinPos = IniGetInt(L"Settings2",L"StickyWindowPosition",bStickyWinPos);
-      if (!bStickyWinPos) {
-        WINDOWPLACEMENT wndpl;
+      if (!bStickyWinPos) 
+      {
         WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
 
         int ResX = GetSystemMetrics(SM_CXSCREEN);
         int ResY = GetSystemMetrics(SM_CYSCREEN);
-
-        // GetWindowPlacement
-        wndpl.length = sizeof(WINDOWPLACEMENT);
-        GetWindowPlacement(hwndMain,&wndpl);
-
-        wi.x = wndpl.rcNormalPosition.left;
-        wi.y = wndpl.rcNormalPosition.top;
-        wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-        wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-        wi.max = (IsZoomed(hwndMain) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
 
         StringCchPrintf(tchPosX,COUNTOF(tchPosX),L"%ix%i PosX",ResX,ResY);
         StringCchPrintf(tchPosY,COUNTOF(tchPosY),L"%ix%i PosY",ResX,ResY);
@@ -4388,6 +4371,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         bStickyWinPos = 1;
         IniSetInt(L"Settings2",L"StickyWindowPosition",1);
 
+        // GetWindowPlacement
+        WININFO wi = GetMyWindowPlacement(hwndMain,NULL);
         IniSetInt(L"Window",tchPosX,wi.x);
         IniSetInt(L"Window",tchPosY,wi.y);
         IniSetInt(L"Window",tchSizeX,wi.cx);
@@ -4447,35 +4432,27 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_SHOWFILENAMEONLY:
       iPathNameFormat = 0;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
     case IDM_VIEW_SHOWFILENAMEFIRST:
       iPathNameFormat = 1;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
     case IDM_VIEW_SHOWFULLPATH:
       iPathNameFormat = 2;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
     case IDM_VIEW_SHOWEXCERPT:
       EditGetExcerpt(hwndEdit,szTitleExcerpt,COUNTOF(szTitleExcerpt));
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
@@ -5058,9 +5035,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_TOGGLETITLE:
       EditGetExcerpt(hwndEdit,szTitleExcerpt,COUNTOF(szTitleExcerpt));
-      SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       break;
 
 
@@ -5118,19 +5093,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case CMD_COPYWINPOS: {
 
         WCHAR wszWinPos[MIDSZ_BUFFER];
-        WINDOWPLACEMENT wndpl;
-        int x, y, cx, cy, max;
 
-        wndpl.length = sizeof(WINDOWPLACEMENT);
-        GetWindowPlacement(hwndMain,&wndpl);
-
-        x = wndpl.rcNormalPosition.left;
-        y = wndpl.rcNormalPosition.top;
-        cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-        cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-        max = (IsZoomed(hwndMain) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
-
-        StringCchPrintf(wszWinPos,COUNTOF(wszWinPos),L"/pos %i,%i,%i,%i,%i",x,y,cx,cy,max);
+        WININFO wi = GetMyWindowPlacement(hwndMain,NULL);
+        StringCchPrintf(wszWinPos,COUNTOF(wszWinPos),L"/pos %i,%i,%i,%i,%i",wi.x,wi.y,wi.cx,wi.cy,wi.max);
 
         if (OpenClipboard(hwnd)) {
           HANDLE hData;
@@ -5607,9 +5572,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
-          SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-            IDS_READONLY,bReadOnly,szTitleExcerpt);
           UpdateToolbar();
           break;
 
@@ -5625,9 +5587,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
-          SetWindowTitle(hwnd,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-            iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-            IDS_READONLY,bReadOnly,szTitleExcerpt);
           UpdateToolbar();
           break;
       }
@@ -6080,12 +6039,12 @@ void LoadSettings()
     StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
     StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
 
-    wi.x = IniSectionGetInt(pIniSection,tchPosX,CW_USEDEFAULT);
-    wi.y = IniSectionGetInt(pIniSection,tchPosY,CW_USEDEFAULT);
-    wi.cx = IniSectionGetInt(pIniSection,tchSizeX,CW_USEDEFAULT);
-    wi.cy = IniSectionGetInt(pIniSection,tchSizeY,CW_USEDEFAULT);
-    wi.max = IniSectionGetInt(pIniSection,tchMaximized,0);
-    if (wi.max) wi.max = 1;
+    wininfo.x = IniSectionGetInt(pIniSection,tchPosX,CW_USEDEFAULT);
+    wininfo.y = IniSectionGetInt(pIniSection,tchPosY,CW_USEDEFAULT);
+    wininfo.cx = IniSectionGetInt(pIniSection,tchSizeX,CW_USEDEFAULT);
+    wininfo.cy = IniSectionGetInt(pIniSection,tchSizeY,CW_USEDEFAULT);
+    wininfo.max = IniSectionGetInt(pIniSection,tchMaximized,0);
+    if (wininfo.max) wininfo.max = 1;
   }
 
   // ---  override by resolution specific settings  ---
@@ -6248,17 +6207,8 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   */
 
   if (bSaveSettingsNow) {
-    WINDOWPLACEMENT wndpl;
-
     // GetWindowPlacement
-    wndpl.length = sizeof(WINDOWPLACEMENT);
-    GetWindowPlacement(hwndMain, &wndpl);
-
-    wi.x = wndpl.rcNormalPosition.left;
-    wi.y = wndpl.rcNormalPosition.top;
-    wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
-    wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-    wi.max = (IsZoomed(hwndMain) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
+    wininfo = GetMyWindowPlacement(hwndMain,NULL);
   }
 
   int ResX = GetSystemMetrics(SM_CXSCREEN);
@@ -6278,17 +6228,22 @@ void SaveSettings(BOOL bSaveSettingsNow) {
     StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
     StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
 
-    IniSetInt(L"Window",tchPosX,wi.x);
-    IniSetInt(L"Window",tchPosY,wi.y);
-    IniSetInt(L"Window",tchSizeX,wi.cx);
-    IniSetInt(L"Window",tchSizeY,wi.cy);
-    IniSetInt(L"Window",tchMaximized,wi.max);
+    IniSetInt(L"Window",tchPosX,wininfo.x);
+    IniSetInt(L"Window",tchPosY,wininfo.y);
+    IniSetInt(L"Window",tchSizeX,wininfo.cx);
+    IniSetInt(L"Window",tchSizeY,wininfo.cy);
+    IniSetInt(L"Window",tchMaximized,wininfo.max);
   }
 
   // Scintilla Styles
   Style_Save();
 
 }
+
+
+
+
+
 
 
 //=============================================================================
@@ -6492,14 +6447,15 @@ void ParseCommandLine()
             }
             else if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
               int itok =
-                swscanf_s(lp1,L"%i,%i,%i,%i,%i",&wi.x,&wi.y,&wi.cx,&wi.cy,&wi.max);
+                swscanf_s(lp1,L"%i,%i,%i,%i,%i",&wininfo.x,&wininfo.y,&wininfo.cx,&wininfo.cy,&wininfo.max);
               if (itok == 4 || itok == 5) { // scan successful
                 flagPosParam = 1;
                 flagDefaultPos = 0;
-                if (wi.cx < 1) wi.cx = CW_USEDEFAULT;
-                if (wi.cy < 1) wi.cy = CW_USEDEFAULT;
-                if (wi.max) wi.max = 1;
-                if (itok == 4) wi.max = 0;
+
+                if (wininfo.cx < 1) wininfo.cx = CW_USEDEFAULT;
+                if (wininfo.cy < 1) wininfo.cy = CW_USEDEFAULT;
+                if (wininfo.max) wininfo.max = 1;
+                if (itok == 4) wininfo.max = 0;
               }
             }
           }
@@ -6960,8 +6916,9 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 
 void UpdateToolbar()
 {
-
-  int i;
+  SetWindowTitle(hwndMain, uidsAppTitle, fIsElevated, IDS_UNTITLED, szCurFile,
+                 iPathNameFormat, bModified || Encoding_HasChanged(CPI_GET),
+                 IDS_READONLY, bReadOnly, szTitleExcerpt);
 
   if (!bShowToolbar)
     return;
@@ -6971,7 +6928,7 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_UNDO,SendMessage(hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_REDO,SendMessage(hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
 
-  i = (int)!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
+  int i = (int)!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
   EnableTool(IDT_EDIT_CUT,i /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_COPY,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
   EnableTool(IDT_EDIT_PASTE,SendMessage(hwndEdit,SCI_CANPASTE,0,0) /*&& !bReadOnly*/);
@@ -7383,9 +7340,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     Encoding_HasChanged(iDefaultEncoding);
     Encoding_SciSetCodePage(hwndEdit,iDefaultEncoding);
     EditSetNewText(hwndEdit,"",0);
-    SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-      IDS_READONLY,bReadOnly,szTitleExcerpt);
+    UpdateToolbar();
 
     // Terminate file watching
     if (bResetFileWatching)
@@ -7479,9 +7434,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs);
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
-    SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szFileName,
-      iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-      IDS_READONLY,bReadOnly,szTitleExcerpt);
+
+    UpdateToolbar();
 
     // Install watching of the current file
     if (!bReload && bResetFileWatching)
@@ -7573,9 +7527,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
       bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
     if (bReadOnly) {
-      SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
+      UpdateToolbar();
       if (MsgBox(MBYESNOWARN,IDS_READONLY_SAVE,szCurFile) == IDYES)
         bSaveAs = TRUE;
       else
@@ -7681,10 +7633,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,szCurFile);
-      SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-        iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-        IDS_READONLY,bReadOnly,szTitleExcerpt);
-
+      UpdateToolbar();
       // Install watching of the current file
       if (bSaveAs && bResetFileWatching)
         iFileWatchingMode = 0;
@@ -7709,14 +7658,16 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
           if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,TRUE)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
 
-            WCHAR szArguments[2 * MAX_PATH + 64] = { L'\0' };
+            WCHAR szArguments[3 * MAX_PATH + 64] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
             int wlen = lstrlen(lpCmdLine) + 2;
             LPWSTR lpExe = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
             LPWSTR lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
             ExtractFirstArgument(lpCmdLine,lpExe,lpArgs,wlen);
 
-            StringCchPrintf(szArguments,COUNTOF(szArguments),L"/u -tmpfbuf=\"%s\" %s",szTempFileName,lpArgs);
+            WININFO wi = GetMyWindowPlacement(hwndMain,NULL);
+            StringCchPrintf(szArguments,COUNTOF(szArguments),
+              L"/u /pos %i,%i,%i,%i,%i -tmpfbuf=\"%s\" %s",wi.x,wi.y,wi.cx,wi.cy,wi.max,szTempFileName,lpArgs);
             if (StringCchLen(tchFile)) {
               if (!StrStrI(szArguments,tchFile)) {
                 StringCchPrintf(szArguments,COUNTOF(szArguments),L"%s \"%s\"",szArguments,tchFile);
@@ -7732,15 +7683,16 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
               bModified = FALSE;
               PostMessage(hwndMain,WM_CLOSE,0,0);
             }
+            else {
+              UpdateToolbar();
+              MsgBox(MBWARN,IDS_ERR_SAVEFILE,tchFile);
+            }
           }
         }
       }
     }
     else {
-      SetWindowTitle(hwndMain,uidsAppTitle,fIsElevated,IDS_UNTITLED,szCurFile,
-                     iPathNameFormat,bModified || Encoding_HasChanged(CPI_GET),
-                     IDS_READONLY,bReadOnly,szTitleExcerpt);
-
+      UpdateToolbar();
       MsgBox(MBWARN,IDS_ERR_SAVEFILE,tchFile);
     }
   }
