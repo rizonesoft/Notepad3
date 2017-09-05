@@ -41,14 +41,17 @@
 #define VERSION_COMPANYNAME          L"© Rizonesoft"
 #define VERSION_MODPAGEDISPLAY       L"https://xhmikosr.github.io/notepad2-mod/"
 #define VERSION_WEBPAGE2DISPLAY      L"http://www.flos-freeware.ch"
-#define VERSION_SCIVERSION           L"Scintilla Library Version: 400 (early bird)"
+#define VERSION_SCIVERSION           L"Scintilla Library Version: " STRINGIFY(SCINTILLA_VER)
 
 #if defined(_WIN64)
-   #define VERSION_FILEVERSION_LONG  L"Notepad3 (64-bit) " STRINGIFY(VERSION_MAJOR) L" Build " \
-                                     STRINGIFY(VERSION_BUILD)
+//   #define VERSION_FILEVERSION_LONG  L"Notepad3 (64-bit) " STRINGIFY(VERSION_MAJOR) L" Build " \
+//                                     STRINGIFY(VERSION_BUILD)
+   #define VERSION_FILEVERSION_LONG  L"Notepad3 (64-bit) v." VERSION_FILEVERSION
+
 #else
-   #define VERSION_FILEVERSION_LONG  L"Notepad3 " STRINGIFY(VERSION_MAJOR) L" Build " \
-                                     STRINGIFY(VERSION_BUILD)
+//   #define VERSION_FILEVERSION_LONG  L"Notepad3 v." STRINGIFY(VERSION_MAJOR) L" Build " \
+//                                     STRINGIFY(VERSION_BUILD)
+   #define VERSION_FILEVERSION_LONG  L"Notepad3 v." VERSION_FILEVERSION
 #endif
 
 // Compiler specific
