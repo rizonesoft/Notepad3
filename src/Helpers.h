@@ -22,7 +22,6 @@
 #undef STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
 
-
 #define STRGFY(X)     L##X
 #define MKWSTRG(strg) STRGFY(strg)
 
@@ -100,6 +99,7 @@ enum BufferSizes {
 BOOL PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
 BOOL IsElevated();
+BOOL IsUserAdmin();
 //BOOL SetExplorerTheme(HWND);
 
 
@@ -259,6 +259,15 @@ BOOL GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
 
+//==== strCut methods ===================
+
+CHAR*  _StrCutIA(CHAR*,const CHAR*);
+WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrCutI _StrCutIW
+#else
+#define StrCutI _StrCutIA
+#endif
 
 //==== StrSafe lstrlen() =======================================================
 inline int _StringCchLenNA(LPCSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthA(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
@@ -324,6 +333,16 @@ inline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
 #define StringCchCompareIN(s1,l1,s2,l2)  StringCchCompareINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIX(s1,s2)        StringCchCompareIXA((s1),(s2))
 #endif
+
+
+// including <pathcch.h> and linking against pathcch.lib causes an
+// API-MS-WIN-CORE-PATH-L1-1-0.DLL  library missing error, 
+// so switch back to previous (deprecated) methods:
+#define PathCchAppend(p,l,a)           PathAppend((p),(a))
+#define PathCchCanonicalize(p,l,a)     PathCanonicalize((p),(a))
+#define PathCchRenameExtension(p,l,a)  PathRenameExtension((p),(a))
+#define PathCchRemoveFileSpec(p,l)     PathRemoveFileSpec((p))
+
 
 #endif //_NP3_HELPERS_H_
 
