@@ -27,6 +27,13 @@ branches:
 # Do not build on tags (GitHub only)
 skip_tags: true
 
+# Do not build feature branch with open Pull Requests
+# skip_branch_with_pr: true
+
+# Maximum number of concurrent jobs for the project
+max_jobs: 2
+
+
 #---------------------------------#
 #    environment configuration    #
 #---------------------------------#
@@ -38,48 +45,67 @@ image:
   - Visual Studio 2017
 #  - Visual Studio 2015
 
-#---------------------------------#
-#       build configuration       #
-#---------------------------------#
-
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-#platform: Any CPU
-
-# to add several platforms to build matrix:
-platform:
-  - Win32
-  - x64
-
 # build Configuration, i.e. Debug, Release, etc.
 #configuration: Release
 
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
-#  - ps: Update-AppveyorBuild -Version "2.$(Get-Date -format yy.Md).$env:appveyor_build_number"
-#  - ps: '& "$env:appveyor_build_folder\Version.ps1" -AppVeyorEnv'
-  - ps: |
-      if ($true) 
-      {
-        $Major = 2
-        $Minor = $(Get-Date -format yy)
-        $Revis = $(Get-Date -format Mdd)
-        $Build = $env:appveyor_build_number
-        if (!$Build) { $Build = 0 }
-        $SciVer = Get-Content "scintilla\version.txt"
-        if (!$SciVer) { $SciVer = 0 }
-        $CompleteVer = "$Major.$Minor.$Revis.$Build"
-        Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAJOR\$', "$Major" } | Set-Content "src\VersionEx.h"
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MINOR\$', "$Minor" } | Set-Content "src\VersionEx.h"
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content "src\VersionEx.h"
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
-        Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
-        (Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
-        Update-AppveyorBuild -Version $CompleteVer
-      }
 
+# clone directory
+clone_folder: c:\projects\notepad3
+
+# fetch repository as zip archive
+#shallow_clone: true                 # default is "false"
+
+# set clone depth
+#clone_depth: 5                      # clone entire repository history if not defined
+
+# environment variables
+#environment:
+#  my_var1: value1
+#  my_var2: value2
+  # this is how to set encrypted variable. Go to "Encrypt data" page in account menu to encrypt data.
+#  my_secure_var1:
+#    secure: FW3tJ3fMncxvs58/ifSP7w==
+
+# this is how to allow failing jobs in the matrix
+matrix:
+  fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
+#  allow_failures:
+#    - platform: x86
+#      configuration: Debug
+#    - platform: x64
+#      configuration: Release
+
+# scripts that run after cloning repository
+install:
+#  - ps: Update-AppveyorBuild -Version "2.$(Get-Date -format yy.Md).$env:appveyor_build_number"
+  - ps: '& "$env:appveyor_build_folder\Version.ps1" -AppVeyorEnv'
+#  - ps: |
+#      if ($true) 
+#      {
+#        $Major = 2
+#        $Minor = $(Get-Date -format yy)
+#        $Revis = $(Get-Date -format Mdd)
+#        $Build = $env:appveyor_build_number
+#        if (!$Build) { $Build = 0 }
+#        $SciVer = Get-Content "scintilla\version.txt"
+#        if (!$SciVer) { $SciVer = 0 }
+#        $CompleteVer = "$Major.$Minor.$Revis.$Build"
+#        Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAJOR\$', "$Major" } | Set-Content "src\VersionEx.h"
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MINOR\$', "$Minor" } | Set-Content "src\VersionEx.h"
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content "src\VersionEx.h"
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
+#        Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
+#        (Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
+#        Update-AppveyorBuild -Version $CompleteVer
+#      }
+
+
+# enable patching of AssemblyInfo.* files
 assembly_info:
   patch: true
   #file: '**\AssemblyInfo.*'
@@ -88,29 +114,86 @@ assembly_info:
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
 
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+#platform: Any CPU
+# to add several platforms to build matrix:
+platform:
+  - Win32
+  - x64
+
 # to add several configurations to build matrix:
 configuration:
   - Release
 #  - Debug
 
 build:
-  project: Notepad3.sln
   parallel: true
+  project: Notepad3.sln
+  # MSBuild verbosity level (quiet|minimal|normal|detailed)
   verbosity: minimal
+
+# scripts to run before build
+before_build:
+
+# scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
+before_package:
+
+# scripts to run after build
+after_build:
+#  - 7z a Notepad3_%APPVEYOR_BUILD_VERSION%.zip %APPVEYOR_BUILD_FOLDER%\Output\%CONFIGURATION%\Notepad3.exe
+#  - appveyor PushArtifact Notepad3_%APPVEYOR_BUILD_VERSION%.zip
+ 
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+
+# to disable automatic builds
+#build: off
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
 test: off
+#  assemblies:
+#    only:
+#      - asm1.dll
+#      - asm2.dll
+
+#  categories:
+#    only:
+#      - UI
+#      - E2E
+
+# scripts to run before tests
+before_test:
+  - echo script1
+  - ps: Write-Host "script1"
+
+# scripts to run after tests
+after_test:
+
+# to run your custom scripts instead of automatic tests
+test_script:
+  - echo This is my custom test script
+
+# to disable automatic tests
+#test: off
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
 
 # Artifact paths are relative to C:\projects\notepad3\
 artifacts:
   - path: bin\**\*.exe
 #  - name: All
 
-matrix:
-  fast_finish: true
-
-after_build:
-#  - 7z a Notepad3_%APPVEYOR_BUILD_VERSION%.zip %APPVEYOR_BUILD_FOLDER%\Output\%CONFIGURATION%\Notepad3.exe
-#  - appveyor PushArtifact Notepad3_%APPVEYOR_BUILD_VERSION%.zip
- 
 #deploy:
 #  - provider: S3
 #  access_key_id: XXXXXXXXXXXXXXXXXXXX
@@ -128,3 +211,5 @@ after_build:
 #  on_build_success: true
 #  on_build_failure: true
 #  on_build_status_changed: true
+
+
