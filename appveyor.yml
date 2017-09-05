@@ -9,7 +9,7 @@
 #---------------------------------#
 
 # version format
-version: 2.17.95.{build}
+version: 2.0.2.{build}
 
 # you can use {branch} name in version format too
 # version: 1.0.{build}-{branch}
@@ -76,6 +76,7 @@ init:
         (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
         Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
         (Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
+        Update-AppveyorBuild -Version $CompleteVer
       }
 
 assembly_info:
