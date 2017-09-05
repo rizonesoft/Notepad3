@@ -51,7 +51,6 @@ extern HWND  hwndEdit;
 extern HINSTANCE g_hInstance;
 //extern LPMALLOC  g_lpMalloc;
 extern DWORD dwLastIOError;
-extern HWND hDlgFindReplace;
 extern UINT cpLastFind;
 extern BOOL bReplaceInitialized;
 
@@ -1539,6 +1538,17 @@ BOOL EditLoadFile(
   }
 
   lpData = GlobalAlloc(GPTR,dwBufSize);
+
+  dwLastIOError = GetLastError();
+  if (!lpData)
+  {
+    CloseHandle(hFile);
+    *pbFileTooBig = FALSE;
+    Encoding_Source(CPI_NONE);
+    Encoding_SrcWeak(CPI_NONE);
+    return FALSE;
+  }
+
   bReadSuccess = ReadAndDecryptFile(hwnd, hFile, (DWORD)GlobalSize(lpData) - 2, &lpData, &cbData);
   dwLastIOError = GetLastError();
   CloseHandle(hFile);
@@ -1612,22 +1622,32 @@ BOOL EditLoadFile(
     Encoding_SciSetCodePage(hwnd,*iEncoding);
 
     lpDataUTF8 = GlobalAlloc(GPTR,(cbData * 3) + 2);
-    cbData = WideCharToMultiByte(Encoding_SciGetCodePage(hwnd),0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
+
+    DWORD convCnt = (DWORD)WideCharToMultiByte(Encoding_SciGetCodePage(hwnd),0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
               (bBOM) ? (cbData)/sizeof(WCHAR) : cbData/sizeof(WCHAR) + 1,lpDataUTF8,(int)GlobalSize(lpDataUTF8),NULL,NULL);
 
-    if (cbData == 0) {
+    if (convCnt == 0) {
       *pbUnicodeErr = TRUE;
-      cbData = WideCharToMultiByte(CP_ACP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
+      convCnt = (DWORD)WideCharToMultiByte(CP_ACP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
                 (-1),lpDataUTF8,(int)GlobalSize(lpDataUTF8),NULL,NULL);
     }
 
-    GlobalFree(lpData);
-    Encoding_SciSetCodePage(hwnd,*iEncoding);
-    EditSetNewText(hwnd,"",0);
-    FileVars_Init(lpDataUTF8,cbData-1,&fvCurFile);
-    EditSetNewText(hwnd,lpDataUTF8,cbData-1);
-    *iEOLMode = EditDetectEOLMode(hwnd,lpDataUTF8,cbData-1);
-    GlobalFree(lpDataUTF8);
+    if (convCnt != 0) {
+      GlobalFree(lpData);
+      Encoding_SciSetCodePage(hwnd,*iEncoding);
+      EditSetNewText(hwnd,"",0);
+      FileVars_Init(lpDataUTF8,convCnt - 1,&fvCurFile);
+      EditSetNewText(hwnd,lpDataUTF8,convCnt - 1);
+      *iEOLMode = EditDetectEOLMode(hwnd,lpDataUTF8,convCnt - 1);
+      GlobalFree(lpDataUTF8);
+    }
+    else {
+      GlobalFree(lpDataUTF8);
+      GlobalFree(lpData);
+      Encoding_Source(CPI_NONE);
+      Encoding_SrcWeak(CPI_NONE);
+      return FALSE;
+    }
   }
 
   else {
@@ -1661,11 +1681,6 @@ BOOL EditLoadFile(
     }
 
     else {
-
-      UINT uCodePage = CP_UTF8;
-      LPWSTR lpDataWide;
-      int cbDataWide;
-
       if (iSrcEnc != CPI_NONE)
         *iEncoding = iSrcEnc;
       else {
@@ -1687,23 +1702,39 @@ BOOL EditLoadFile(
       if ((mEncoding[*iEncoding].uFlags & NCP_8BIT && mEncoding[*iEncoding].uCodePage != CP_UTF7) ||
           (mEncoding[*iEncoding].uCodePage == CP_UTF7 && IsUTF7(lpData,cbData))) {
 
-        uCodePage  = mEncoding[*iEncoding].uCodePage;
+        UINT uCodePage  = mEncoding[*iEncoding].uCodePage;
 
-        lpDataWide = GlobalAlloc(GPTR,cbData * 2 + 16);
-        cbDataWide = MultiByteToWideChar(uCodePage,0,lpData,cbData,lpDataWide,(int)GlobalSize(lpDataWide)/sizeof(WCHAR));
+        LPWSTR lpDataWide = GlobalAlloc(GPTR,cbData * 2 + 16);
+        int cbDataWide = MultiByteToWideChar(uCodePage,0,lpData,cbData,lpDataWide,(int)GlobalSize(lpDataWide)/sizeof(WCHAR));
+        if (cbDataWide != 0) 
+        {
+          GlobalFree(lpData);
+          lpData = GlobalAlloc(GPTR,cbDataWide * 3 + 16);
 
-        GlobalFree(lpData);
-        lpData = GlobalAlloc(GPTR,cbDataWide * 3 + 16);
-
-        Encoding_SciSetCodePage(hwnd,*iEncoding);
-        cbData = WideCharToMultiByte(Encoding_SciGetCodePage(hwnd),0,lpDataWide,cbDataWide,lpData,(int)GlobalSize(lpData),NULL,NULL);
-
-        GlobalFree(lpDataWide);
-        EditSetNewText(hwnd,"",0);
-        EditSetNewText(hwnd,lpData,cbData);
-        *iEOLMode = EditDetectEOLMode(hwnd,lpData,cbData);
-
-        GlobalFree(lpData);
+          Encoding_SciSetCodePage(hwnd,*iEncoding);
+          cbData = WideCharToMultiByte(Encoding_SciGetCodePage(hwnd),0,lpDataWide,cbDataWide,lpData,(int)GlobalSize(lpData),NULL,NULL);
+          if (cbData != 0) {
+            GlobalFree(lpDataWide);
+            EditSetNewText(hwnd,"",0);
+            EditSetNewText(hwnd,lpData,cbData);
+            *iEOLMode = EditDetectEOLMode(hwnd,lpData,cbData);
+            GlobalFree(lpData);
+          }
+          else {
+            GlobalFree(lpDataWide);
+            GlobalFree(lpData);
+            Encoding_Source(CPI_NONE);
+            Encoding_SrcWeak(CPI_NONE);
+            return FALSE;
+          }
+        }
+        else {
+          GlobalFree(lpDataWide);
+          GlobalFree(lpData);
+          Encoding_Source(CPI_NONE);
+          Encoding_SrcWeak(CPI_NONE);
+          return FALSE;
+        }
       }
       else {
         *iEncoding = Encoding_IsValid(iSrcEnc) ? iSrcEnc : iDefaultEncoding;
@@ -5390,16 +5421,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               StringCchCopyA(lpefr->szReplaceUTF8,COUNTOF(lpefr->szReplaceUTF8),"");
           }
 
-          if (bIsFindDlg) {
-            bCloseDlg = lpefr->bFindClose;
-          }
-          else {
-            if (LOWORD(wParam) == IDOK)
-              bCloseDlg = FALSE;
-            else
-              bCloseDlg = lpefr->bReplaceClose;
-          }
-
           // Reload MRUs
           SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_RESETCONTENT,0,0);
           SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_RESETCONTENT,0,0);
@@ -5419,10 +5440,19 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (!bSwitchedFindReplace)
             SendMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetFocus()),1);
 
+          if (bIsFindDlg) {
+            bCloseDlg = lpefr->bFindClose;
+          }
+          else {
+            if (LOWORD(wParam) == IDOK)
+              bCloseDlg = FALSE;
+            else
+              bCloseDlg = lpefr->bReplaceClose;
+          }
+
           if (bCloseDlg) {
             //EndDialog(hwnd,LOWORD(wParam));
             DestroyWindow(hwnd);
-            hDlgFindReplace = NULL;
           }
 
           switch (LOWORD(wParam))

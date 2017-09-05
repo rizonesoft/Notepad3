@@ -713,7 +713,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   while (GetMessage(&msg,NULL,0,0))
   {
     if (IsWindow(hDlgFindReplace) && (msg.hwnd == hDlgFindReplace || IsChild(hDlgFindReplace,msg.hwnd)))
-      if (TranslateAccelerator(hDlgFindReplace,hAccFindReplace,&msg) || IsDialogMessage(hDlgFindReplace,&msg))
+      if (IsDialogMessage(hDlgFindReplace,&msg) || TranslateAccelerator(hDlgFindReplace,hAccFindReplace,&msg))
         continue;
 
     if (!TranslateAccelerator(hwnd,hAccMain,&msg)) {
@@ -1475,6 +1475,15 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_NOTIFY:
       return MsgNotify(hwnd,wParam,lParam);
+
+
+    //case WM_PARENTNOTIFY:
+    //  if (LOWORD(wParam) & WM_DESTROY) {
+    //    if (IsWindow(hDlgFindReplace) && (hDlgFindReplace == (HWND)lParam)) {
+    //      hDlgFindReplace = NULL;
+    //    }
+    //  }
+    //  break;
 
 
     case WM_COMMAND:
@@ -3827,8 +3836,26 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       }
       break;
 
+
+    case IDM_EDIT_REPLACE:
+      if (!IsWindow(hDlgFindReplace))
+        hDlgFindReplace = EditFindReplaceDlg(hwndEdit,&efrData,TRUE);
+      else {
+        if (!GetDlgItem(hDlgFindReplace,IDC_REPLACE)) {
+          SendMessage(hDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOREPLACE,1),0);
+          DestroyWindow(hDlgFindReplace);
+          hDlgFindReplace = EditFindReplaceDlg(hwndEdit,&efrData,TRUE);
+        }
+        else {
+          SetForegroundWindow(hDlgFindReplace);
+          PostMessage(hDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hDlgFindReplace,IDC_FINDTEXT)),1);
+        }
+      }
+      break;
+
+
     // Main Bookmark Functions
-     case BME_EDIT_BOOKMARKNEXT:
+    case BME_EDIT_BOOKMARKNEXT:
     {
         int iPos = (int)SendMessage( hwndEdit , SCI_GETCURRENTPOS , 0 , 0);
         int iLine = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iPos , 0 );
@@ -3981,23 +4008,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_COMPLETEWORD:
         CompleteWord(hwndEdit, TRUE);
         break;
-
-
-    case IDM_EDIT_REPLACE:
-      if (!IsWindow(hDlgFindReplace))
-        hDlgFindReplace = EditFindReplaceDlg(hwndEdit,&efrData,TRUE);
-      else {
-        if (!GetDlgItem(hDlgFindReplace,IDC_REPLACE)) {
-          SendMessage(hDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOREPLACE,1),0);
-          DestroyWindow(hDlgFindReplace);
-          hDlgFindReplace = EditFindReplaceDlg(hwndEdit,&efrData,TRUE);
-        }
-        else {
-          SetForegroundWindow(hDlgFindReplace);
-          PostMessage(hDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hDlgFindReplace,IDC_FINDTEXT)),1);
-        }
-      }
-      break;
 
 
     case IDM_EDIT_GOTOLINE:
@@ -7379,6 +7389,14 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
   if (PathIsLnkFile(szFileName))
     PathGetLnkPath(szFileName,szFileName,COUNTOF(szFileName));
 
+  // change current directory to prevent directory lock on another path
+  WCHAR szFolder[MAX_PATH+2];
+  if (SUCCEEDED(StringCchCopy(szFolder,COUNTOF(szFolder),tch))) {
+    if (SUCCEEDED(PathCchRemoveFileSpec(szFolder,COUNTOF(szFolder)))) {
+      SetCurrentDirectory(szFolder);
+    }
+  }
+ 
   // Ask to create a new file...
   if (!bReload && !PathFileExists(szFileName))
   {
