@@ -51,7 +51,6 @@ extern HWND  hwndEdit;
 extern HINSTANCE g_hInstance;
 //extern LPMALLOC  g_lpMalloc;
 extern DWORD dwLastIOError;
-extern HWND hDlgFindReplace;
 extern UINT cpLastFind;
 extern BOOL bReplaceInitialized;
 
@@ -5422,16 +5421,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               StringCchCopyA(lpefr->szReplaceUTF8,COUNTOF(lpefr->szReplaceUTF8),"");
           }
 
-          if (bIsFindDlg) {
-            bCloseDlg = lpefr->bFindClose;
-          }
-          else {
-            if (LOWORD(wParam) == IDOK)
-              bCloseDlg = FALSE;
-            else
-              bCloseDlg = lpefr->bReplaceClose;
-          }
-
           // Reload MRUs
           SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_RESETCONTENT,0,0);
           SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_RESETCONTENT,0,0);
@@ -5451,10 +5440,19 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (!bSwitchedFindReplace)
             SendMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetFocus()),1);
 
+          if (bIsFindDlg) {
+            bCloseDlg = lpefr->bFindClose;
+          }
+          else {
+            if (LOWORD(wParam) == IDOK)
+              bCloseDlg = FALSE;
+            else
+              bCloseDlg = lpefr->bReplaceClose;
+          }
+
           if (bCloseDlg) {
             //EndDialog(hwnd,LOWORD(wParam));
             DestroyWindow(hwnd);
-            hDlgFindReplace = NULL;
           }
 
           switch (LOWORD(wParam))
