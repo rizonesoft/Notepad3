@@ -56,7 +56,7 @@ platform:
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
-  - ps: '& "Version.ps1 -AppVeyorEnv"'
+  - ps: '& ((Split-Path $MyInvocation.InvocationName) + "\Version.ps1") -AppVeyorEnv'
 #  - ps: Update-AppveyorBuild -Version "2.$(Get-Date -format yy.Md).$env:appveyor_build_number"
 #  - ps: |
 #      if ($true) 
