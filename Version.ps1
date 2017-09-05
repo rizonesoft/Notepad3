@@ -32,7 +32,7 @@ try
 {
 	$Major = 2
 	$Minor = $(Get-Date -format yy)
-	$Revis = $(Get-Date -format Md)
+	$Revis = $(Get-Date -format Mdd)
 	$Build = $env:appveyor_build_number
 	if (!$Build) { $Build = 0 }
 	$SciVer = Get-Content "scintilla\version.txt"
