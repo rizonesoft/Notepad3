@@ -56,28 +56,29 @@ platform:
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
+  - ps: . .\Version.ps1 -AppVeyorEnv
 #  - ps: Update-AppveyorBuild -Version "2.$(Get-Date -format yy.Md).$env:appveyor_build_number"
-  - ps: |
-      if ($true) 
-      {
-        $Major = 2
-        $Minor = $(Get-Date -format yy)
-        $Revis = $(Get-Date -format Mdd)
-        $Build = $env:appveyor_build_number
-        if (!$Build) { $Build = 0 }
-        $SciVer = Get-Content "scintilla\version.txt"
-        if (!$SciVer) { $SciVer = 0 }
-        $CompleteVer = "$Major.$Minor.$Revis.$Build"
-        Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAJOR\$', "$Major" } | Set-Content "src\VersionEx.h"
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MINOR\$', "$Minor" } | Set-Content "src\VersionEx.h"
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content "src\VersionEx.h"
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
-        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
-        Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
-        (Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
-        Update-AppveyorBuild -Version $CompleteVer
-      }
+#  - ps: |
+#      if ($true) 
+#      {
+#        $Major = 2
+#        $Minor = $(Get-Date -format yy)
+#        $Revis = $(Get-Date -format Mdd)
+#        $Build = $env:appveyor_build_number
+#        if (!$Build) { $Build = 0 }
+#        $SciVer = Get-Content "scintilla\version.txt"
+#        if (!$SciVer) { $SciVer = 0 }
+#        $CompleteVer = "$Major.$Minor.$Revis.$Build"
+#        Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAJOR\$', "$Major" } | Set-Content "src\VersionEx.h"
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MINOR\$', "$Minor" } | Set-Content "src\VersionEx.h"
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content "src\VersionEx.h"
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
+#        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
+#        Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
+#        (Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
+#        Update-AppveyorBuild -Version $CompleteVer
+#      }
 
 assembly_info:
   patch: true

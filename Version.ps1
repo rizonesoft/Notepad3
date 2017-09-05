@@ -3,8 +3,9 @@
 # ToDo:
 # - adapt $Build number in case of local machine builds
 # ------------------------------------------------------------
-#param(
-#)
+param(
+	[switch]$AppVeyorEnv = $false
+)
 # ------------------------------------------------------------
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"  ## Write-Error should throw ...
@@ -49,12 +50,16 @@ try
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
 	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
+	if ($AppVeyorEnv) {
+    Update-AppveyorBuild -Version $CompleteVer
+  }
 }
 catch 
 {
 	if ($LastExitCode -eq 0) { $LastExitCode = 99 }
 	$errorMessage = $_.Exception.Message
 	Write-Warning "Exception caught: `"$errorMessage`"!"
+	throw $_
 }
 finally
 {
