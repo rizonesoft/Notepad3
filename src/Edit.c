@@ -555,7 +555,6 @@ BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 //  EditGetClipboardText()
 //
 
-static char Empty[2] = { '\0', '\0' };
 
 char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
   HANDLE hmem;
@@ -566,8 +565,10 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
   UINT   codepage;
   int    eolmode;
 
-  if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd)))
-    return &Empty[0];
+  if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd))) {
+    char* pEmpty = StrDupA("");
+    return (pEmpty);
+  }
 
   hmem = GetClipboardData(CF_UNICODETEXT);
   pwch = GlobalLock(hmem);
@@ -602,8 +603,13 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
 
   mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,NULL,NULL);
   pmch = LocalAlloc(LPTR,mlen + 2);
-  if (pmch)
-    WideCharToMultiByte(codepage,0,pwch,wlen + 2,pmch,mlen + 2,NULL,NULL);
+  if (pmch && mlen != 0) {
+    int cnt = WideCharToMultiByte(codepage,0,pwch,wlen + 2,pmch,mlen + 2,NULL,NULL);
+    if (cnt == 0)
+      return (pmch);
+  }
+  else 
+    return (pmch);
 
   if ((BOOL)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) {
     ptmp = LocalAlloc(LPTR,mlen * 2 + 2);
@@ -645,7 +651,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
   GlobalUnlock(hmem);
   CloseClipboard();
 
-  return(pmch);
+  return (pmch);
 }
 
 
@@ -5140,9 +5146,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_INITDIALOG:
       {
-        int cchSelection;
-        char *lpszSelection;
-        char *lpsz;
         static BOOL bFirstTime = TRUE;
 
         WCHAR tch2[FNDRPL_BUFFER] = { L'\0' };
@@ -5164,34 +5167,38 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_ADDSTRING,0,(LPARAM)tch2);
         }
 
-        if (!bSwitchedFindReplace) {
-          cchSelection = (int)SendMessage(lpefr->hwnd,SCI_GETSELECTIONEND,0,0) -
-                         (int)SendMessage(lpefr->hwnd,SCI_GETSELECTIONSTART,0,0);
+        if (!bSwitchedFindReplace)
+        {
+          char *lpszSelection = NULL;
 
-          if (cchSelection < FNDRPL_BUFFER)
-          {
+          int cchSelection = (int)SendMessage(lpefr->hwnd,SCI_GETSELECTIONEND,0,0) -
+                             (int)SendMessage(lpefr->hwnd,SCI_GETSELECTIONSTART,0,0);
+
+          if ((0 < cchSelection) && (cchSelection < FNDRPL_BUFFER)) {
             cchSelection = (int)SendMessage(lpefr->hwnd,SCI_GETSELTEXT,0,0);
-            lpszSelection = GlobalAlloc(GPTR,cchSelection+2);
+            lpszSelection = GlobalAlloc(GPTR,cchSelection + 2);
             SendMessage(lpefr->hwnd,SCI_GETSELTEXT,0,(LPARAM)lpszSelection);
-
-            // First time you bring up find/replace dialog, copy content from clipboard to find box (but only if nothing is selected in the editor)
-            if (StringCchCompareNA(lpszSelection,cchSelection + 2,"",-1) == 0  &&  bFirstTime )
+          }
+          else if (cchSelection == 0) {
+            // nothing is selected in the editor:
+            // if first time you bring up find/replace dialog, copy content from clipboard to find box
+            if (bFirstTime)
             {
-                char* pClip = EditGetClipboardText(hwnd,FALSE);
-                if (pClip) {
-                  int len = lstrlenA(pClip);
-                  if (len > 0 && len < FNDRPL_BUFFER) {
-                    GlobalFree(lpszSelection);
-                    lpszSelection = GlobalAlloc(GPTR,len + 2);
-                    StringCchCopyNA(lpszSelection,len + 2,pClip,len);
-                  }
-                  LocalFree(pClip);
+              char* pClip = EditGetClipboardText(hwnd,FALSE);
+              if (pClip) {
+                int len = lstrlenA(pClip);
+                if (len > 0 && len < FNDRPL_BUFFER) {
+                  lpszSelection = GlobalAlloc(GPTR,len + 2);
+                  StringCchCopyNA(lpszSelection,len + 2,pClip,len);
                 }
+                LocalFree(pClip);
+              }
             }
             bFirstTime = FALSE;
-
-            // Check lpszSelection and truncate bad chars
-            lpsz = StrChrA(lpszSelection,13);
+          }
+          if (lpszSelection) {
+            // Check lpszSelection and truncate bad chars (CR,LF,TAB)
+            char* lpsz = StrChrA(lpszSelection,13);
             if (lpsz) *lpsz = '\0';
 
             lpsz = StrChrA(lpszSelection,10);
@@ -5202,6 +5209,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
             SetDlgItemTextA2W(uCPEdit,hwnd,IDC_FINDTEXT,lpszSelection);
             GlobalFree(lpszSelection);
+          }
+          else {
+            MRU_Enum(mruFind,0,tch2,COUNTOF(tch2));
+            SetDlgItemText(hwnd,IDC_FINDTEXT,tch2);
           }
         }
 
@@ -5869,15 +5880,15 @@ BOOL EditReplace(HWND hwnd,LPCEDITFINDREPLACE lpefr)
   if (iPos == -1)
   {
     // notfound
-    LocalFree(pszReplace2);
     if (!bSuppressNotFound)
       InfoBox(0,L"MsgNotFound",IDS_NOTFOUND);
+    LocalFree(pszReplace2);
     return FALSE;
   }
 
   if (iSelStart != ttf.chrgText.cpMin || iSelEnd != ttf.chrgText.cpMax) {
-    LocalFree(pszReplace2);
     EditSelectEx(hwnd,ttf.chrgText.cpMin,ttf.chrgText.cpMax);
+    LocalFree(pszReplace2);
     return FALSE;
   }
 
