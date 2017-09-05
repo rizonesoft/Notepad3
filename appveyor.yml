@@ -9,7 +9,7 @@
 #---------------------------------#
 
 # version format
-version: 2.0.2.{build}
+version: 2.17.95.{build}
 
 # you can use {branch} name in version format too
 # version: 1.0.{build}-{branch}
@@ -38,10 +38,6 @@ image:
   - Visual Studio 2017
 #  - Visual Studio 2015
 
-# scripts that are called at very beginning, before repo cloning
-init:
-  - git config --global core.autocrlf input
-
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
@@ -57,6 +53,39 @@ platform:
 # build Configuration, i.e. Debug, Release, etc.
 #configuration: Release
 
+# scripts that are called at very beginning, before repo cloning
+init:
+  - git config --global core.autocrlf input
+#  - ps: Update-AppveyorBuild -Version "2.$(Get-Date -format yy.Md).$env:appveyor_build_number"
+  - ps: |
+      if ($true) 
+      {
+        $Major = 2
+        $Minor = $(Get-Date -format yy)
+        $Revis = $(Get-Date -format Md)
+        $Build = $env:appveyor_build_number
+        if (!$Build) { $Build = 0 }
+        $SciVer = Get-Content "scintilla\version.txt"
+        if (!$SciVer) { $SciVer = 0 }
+        $CompleteVer = "$Major.$Minor.$Revis.$Build"
+        Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
+        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAJOR\$', "$Major" } | Set-Content "src\VersionEx.h"
+        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MINOR\$', "$Minor" } | Set-Content "src\VersionEx.h"
+        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content "src\VersionEx.h"
+        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
+        (Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
+        Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
+        (Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
+      }
+
+assembly_info:
+  patch: true
+  #file: '**\AssemblyInfo.*'
+  file: 'Versions\AssemblyInfo.inf'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+
 # to add several configurations to build matrix:
 configuration:
   - Release
@@ -68,14 +97,18 @@ build:
   verbosity: minimal
 test: off
 
-# Artifact paths are relative to C:\projects\notepad2-mod\
+# Artifact paths are relative to C:\projects\notepad3\
 artifacts:
-  - path: bin\**\*.*
+  - path: bin\**\*.exe
 #  - name: All
 
 matrix:
   fast_finish: true
-  
+
+after_build:
+#  - 7z a Notepad3_%APPVEYOR_BUILD_VERSION%.zip %APPVEYOR_BUILD_FOLDER%\Output\%CONFIGURATION%\Notepad3.exe
+#  - appveyor PushArtifact Notepad3_%APPVEYOR_BUILD_VERSION%.zip
+ 
 #deploy:
 #  - provider: S3
 #  access_key_id: XXXXXXXXXXXXXXXXXXXX
