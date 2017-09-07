@@ -55,39 +55,31 @@
 #endif
 
 // Compiler specific
-#if defined(WDK_BUILD)
-    #if _MSC_VER == 1600
-        #if (_MSC_FULL_VER >= 160040219)
-            #define VER_CPL    "WDK (MSVC 2010 SP1)"
+#if defined(_MSC_VER)
+    #if _MSC_VER >= 1911
+        #if  (_MSC_FULL_VER >= 191125506)
+           #define VER_CPL     "Microsoft Visual C++ 2017  Version 15.3"
         #else
-            #define VER_CPL    "WDK (MSVC 2010)"
-        #endif
-    #elif _MSC_VER == 1500
-        #if (_MSC_FULL_VER == 150030729)
-            #define VER_CPL    "WDK"
-        #else
-            #define VER_CPL    "WDK (version unknown)"
-        #endif
-    #endif
-#elif defined(_MSC_VER)
-    #if _MSC_VER >= 1910
-        #if (_MSC_FULL_VER >= 191025017)
            #define VER_CPL     "Microsoft Visual C++ 2017"
         #endif
+    #elif _MSC_VER >= 1910
+        #if  (_MSC_FULL_VER >= 191025017)
+            #define VER_CPL    "Microsoft Visual C++ 2017"
+        #else
+            #define VER_CPL    "Microsoft Visual C++ 2017  RC"
+        #endif
     #elif _MSC_VER == 1900
-        #if (_MSC_FULL_VER == 190024213)
-            #define VER_CPL    "Microsoft Visual C++ 2015 Update 3"
-        #elif (_MSC_FULL_VER == 190023918)
-            #define VER_CPL    "Microsoft Visual C++ 2015 Update 2"
-        #elif (_MSC_FULL_VER == 190023506)
-            #define VER_CPL    "Microsoft Visual C++ 2015 Update 1"
-        #elif (_MSC_FULL_VER == 190023026)
-            #define VER_CPL    "Microsoft Visual C++ 2015"
+        #if (_MSC_FULL_VER >= 190024213)
+            #define VER_CPL    "Microsoft Visual C++ 2015  Update 3"
+        #elif (_MSC_FULL_VER >= 190023918)
+            #define VER_CPL    "Microsoft Visual C++ 2015  Update 2"
+        #elif (_MSC_FULL_VER >= 190023506)
+            #define VER_CPL    "Microsoft Visual C++ 2015  Update 1"
         #else
             #define VER_CPL    "Microsoft Visual C++ 2015"
         #endif
     #else
-        #define VER_CPL        "Microsoft Visual C++ (version unknown)"
+        #define VER_CPL        "Microsoft Visual C++  (version unknown)"
     #endif
 #else
     #define VER_CPL            "(Unknown compiler)"
