@@ -4596,7 +4596,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
         else {
           SendMessage(hwndEdit,SCI_GOTOPOS,
-            (WPARAM)SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)(iLine - 1),0),0);
+                      SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)(iLine - 1),0),0);
           SendMessage(hwndEdit,SCI_NEWLINE,0,0);
         }
         EndSelUndoAction(token);
