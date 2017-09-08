@@ -562,8 +562,6 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
   char  *pmch;
   char  *ptmp;
   int    wlen,mlen,mlen2;
-  UINT   codepage;
-  int    eolmode;
 
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd))) {
     char* pEmpty = StrDupA("");
@@ -598,8 +596,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
   }
 
   // get clipboard
-  codepage = Encoding_SciGetCodePage(hwnd);
-  eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
+  UINT codepage = Encoding_SciGetCodePage(hwnd);
 
   mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,NULL,NULL);
   pmch = LocalAlloc(LPTR,mlen + 2);
@@ -616,6 +613,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
     if (ptmp) {
       char *s = pmch;
       char *d = ptmp;
+      int eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
       for (int i = 0; (i <= mlen) && (*s != '\0'); i++) {
         if (*s == '\n' || *s == '\r') {
           if (eolmode == SC_EOL_CR) {
@@ -2046,10 +2044,6 @@ void EditTitleCase(HWND hwnd)
   int iCurPos;
   int iAnchorPos;
   UINT cpEdit;
-  int i;
-  BOOL bNewWord = TRUE;
-  BOOL bChanged = FALSE;
-  BOOL bPrevWasSpace = FALSE;
 
   iCurPos    = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
   iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
@@ -2076,56 +2070,18 @@ void EditTitleCase(HWND hwnd)
       cpEdit = Encoding_SciGetCodePage(hwnd);
       cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,iSelLength);
 
-      if (IsWin7()) {
+      BOOL bChanged = FALSE;
 
-        LPWSTR pszMappedW = LocalAlloc(LPTR,GlobalSize(pszTextW));
-
-        if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING|LCMAP_TITLECASE,
-              pszTextW,cchTextW,pszMappedW,iSelLength)) {
-          StringCchCopyN(pszTextW,iSelLength,pszMappedW,iSelLength);
+      LPWSTR pszMappedW = LocalAlloc(LPTR,GlobalSize(pszTextW));
+      // first make lower case, before applying TitleCase
+      if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE,
+                      pszTextW,cchTextW,pszMappedW,iSelLength)) {
+        if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_TITLECASE,
+                        pszMappedW,cchTextW,pszTextW,iSelLength)) {
           bChanged = TRUE;
         }
-        else
-          bChanged = FALSE;
-
-        LocalFree(pszMappedW);
       }
-
-      else {
-
-      // Slightly enhanced function to make Title Case: 
-      // Added some '-characters and bPrevWasSpace makes it better (for example "'Don't'" will now work)
-      bPrevWasSpace = TRUE;
-      for (i = 0; i < cchTextW; i++)
-      {
-          if (!IsCharAlphaNumericW(pszTextW[i]) && (!StrChr(L"'`΄’",pszTextW[i]) ||  bPrevWasSpace ) )
-          {
-              bNewWord = TRUE;
-          }
-          else
-          {
-              if (bNewWord)
-              {
-                if (IsCharLowerW(pszTextW[i]))
-                {
-                  pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(SIZE_T)MAKELONG(pszTextW[i],0)));
-                  bChanged = TRUE;
-                }
-              }
-              else
-              {
-                if (IsCharUpperW(pszTextW[i]))
-                {
-                  pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(SIZE_T)MAKELONG(pszTextW[i],0)));
-                  bChanged = TRUE;
-                }
-              }
-              bNewWord = FALSE;
-           }
-               if( StrChr(L" \r\n\t[](){}",pszTextW[i]) ) bPrevWasSpace = TRUE; else bPrevWasSpace = FALSE;
-      }
-
-      }
+      LocalFree(pszMappedW);
 
       if (bChanged) {
 
@@ -5937,8 +5893,10 @@ struct WLIST {
   struct WLIST* next;
 };
 
-void CompleteWord(HWND hwnd, BOOL autoInsert) {
-  const char* NON_WORD = " \t\r\n@#$%^&*~-=+()[]{}\\/.,:;'\"!?<>`|";
+void CompleteWord(HWND hwnd, BOOL autoInsert) 
+{
+  const char* NON_WORD = DelimChars;
+
   int iCurrentPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
   int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iCurrentPos, 0);
   int iCurrentLinePos = iCurrentPos - (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (WPARAM)iLine, 0);
@@ -5971,11 +5929,11 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
     return;
   }
 
-  int cnt = iCurrentLinePos - iStartWordPos + 2;
-  pRoot = LocalAlloc(LPTR,cnt);
-  StringCchCopyNA(pRoot,cnt,pLine + iStartWordPos,cnt-1);
+  int cnt = iCurrentLinePos - iStartWordPos;
+  pRoot = LocalAlloc(LPTR,cnt+1);
+  StringCchCopyNA(pRoot,cnt+1,pLine + iStartWordPos,cnt);
   LocalFree(pLine);
-  iRootLen = _StringCchLenNA(pRoot,cnt);
+  iRootLen = _StringCchLenNA(pRoot,cnt+1);
 
   iDocLen = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
 
@@ -5999,7 +5957,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         //int lastCmp = 0;
         BOOL found = FALSE;
 
-        pWord = LocalAlloc(LPTR,wordLength + 2);
+        pWord = LocalAlloc(LPTR,wordLength + 1);
 
         tr.lpstrText = pWord;
         tr.chrg.cpMin = iPosFind;
@@ -6007,7 +5965,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         SendMessage(hwnd, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
 
         while(p) {
-          int cmp = StringCchCompareNA(pWord,wordLength + 2, p->word,-1);
+          int cmp = StringCchCompareNA(pWord,wordLength + 1, p->word,-1);
           if (cmp == 0) {
             found = TRUE;
             break;
@@ -6019,8 +5977,8 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         }
         if (!found) {
           struct WLIST* el = (struct WLIST*)LocalAlloc(LPTR, sizeof(struct WLIST));
-          el->word = LocalAlloc(LPTR,wordLength + 2);
-          StringCchCopyA(el->word,wordLength + 2,pWord);
+          el->word = LocalAlloc(LPTR,wordLength + 1);
+          StringCchCopyA(el->word,wordLength + 1,pWord);
           el->next = p;
           if (t) {
             t->next = el;
@@ -6029,7 +5987,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
           }
 
           iNumWords++;
-          iWListSize += _StringCchLenNA(pWord,wordLength + 2) + 1;
+          iWListSize += _StringCchLenNA(pWord,wordLength + 1) + 1;
         }
         LocalFree(pWord);
       }

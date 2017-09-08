@@ -32,14 +32,19 @@ function DebugOutput($msg)
 try 
 {
 	$Major = 2
-	$Minor = $(Get-Date -format yy)
-	$Revis = $(Get-Date -format Mdd)
-	$Build = $env:appveyor_build_number
+	$Minor = [int]$(Get-Date -format yy)
+	$Revis = [int]$(Get-Date -format Mdd)
+	if ($AppVeyorEnv) {
+		$Build = [int]($env:appveyor_build_number)
+	}
+	else {
+		$Build = [int](Get-Content "Versions\build.txt")
+	}
 	if (!$Build) { $Build = 0 }
-	$SciVer = Get-Content "scintilla\version.txt"
+	$SciVer = [int](Get-Content "scintilla\version.txt")
 	if (!$SciVer) { $SciVer = 0 }
-  $CompleteVer = "$Major.$Minor.$Revis.$Build"
-  
+	
+	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Version number: '$CompleteVer'")
 
 	Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
@@ -51,7 +56,7 @@ try
 	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
 	if ($AppVeyorEnv) {
-    Update-AppveyorBuild -Version $CompleteVer
+		Update-AppveyorBuild -Version $CompleteVer
   }
 }
 catch 
@@ -63,6 +68,9 @@ catch
 }
 finally
 {
+  if (-not $AppVeyorEnv) {
+		$Build + 1 | Set-Content "Versions\build.txt"
+	}
 	[Environment]::SetEnvironmentVariable("LASTEXITCODE", $LastExitCode, "User")
 	$host.SetShouldExit($LastExitCode)
 	Write-Host "VersionPatching: Done! Elapsed time: $($stopwatch.Elapsed)."

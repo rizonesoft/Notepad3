@@ -170,7 +170,7 @@
 #define IDS_WILDCARDHELP                10021
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
-#define CMD_CTRLENTER                   20002
+#define CMD_SHIFTCTRLENTER              20002
 #define CMD_CTRLLEFT                    20003
 #define CMD_CTRLRIGHT                   20004
 #define CMD_BACK                        20005
@@ -208,6 +208,7 @@
 #define CMD_COPYWINPOS                  20037
 #define CMD_DEFAULTWINPOS               20038
 #define CMD_OPENINIFILE                 20039
+#define CMD_CTRLENTER                   20040
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
 #define IDM_FILE_REVERT                 40002
