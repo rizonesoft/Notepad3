@@ -208,6 +208,7 @@
 #define CMD_COPYWINPOS                  20037
 #define CMD_DEFAULTWINPOS               20038
 #define CMD_OPENINIFILE                 20039
+#define CMD_CTRLENTER                   20040
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
 #define IDM_FILE_REVERT                 40002

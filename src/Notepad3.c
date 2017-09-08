@@ -4584,12 +4584,33 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
+    case CMD_CTRLENTER:
+      {
+        int token = BeginSelUndoAction();
+        int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+        int iLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iPos,0);
+        if (iLine <= 0) {
+          SendMessage(hwndEdit,SCI_GOTOLINE,0,0);
+          SendMessage(hwndEdit,SCI_NEWLINE,0,0);
+          SendMessage(hwndEdit,SCI_GOTOLINE,0,0);
+        }
+        else {
+          SendMessage(hwndEdit,SCI_GOTOPOS,
+            (WPARAM)SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)(iLine - 1),0),0);
+          SendMessage(hwndEdit,SCI_NEWLINE,0,0);
+        }
+        EndSelUndoAction(token);
+      }
+      break;
+
+
     // Newline with toggled auto indent setting
     case CMD_SHIFTCTRLENTER:
       bAutoIndent = (bAutoIndent) ? 0 : 1;
       SendMessage(hwndEdit,SCI_NEWLINE,0,0);
       bAutoIndent = (bAutoIndent) ? 0 : 1;
       break;
+
 
     case CMD_DEL:
       {
@@ -4598,6 +4619,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         EndSelUndoAction(token);
       }
       break;
+
 
     case CMD_BACK:
       {
