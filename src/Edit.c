@@ -562,8 +562,6 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
   char  *pmch;
   char  *ptmp;
   int    wlen,mlen,mlen2;
-  UINT   codepage;
-  int    eolmode;
 
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd))) {
     char* pEmpty = StrDupA("");
@@ -598,8 +596,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
   }
 
   // get clipboard
-  codepage = Encoding_SciGetCodePage(hwnd);
-  eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
+  UINT codepage = Encoding_SciGetCodePage(hwnd);
 
   mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,NULL,NULL);
   pmch = LocalAlloc(LPTR,mlen + 2);
@@ -616,6 +613,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
     if (ptmp) {
       char *s = pmch;
       char *d = ptmp;
+      int eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
       for (int i = 0; (i <= mlen) && (*s != '\0'); i++) {
         if (*s == '\n' || *s == '\r') {
           if (eolmode == SC_EOL_CR) {
@@ -2046,10 +2044,6 @@ void EditTitleCase(HWND hwnd)
   int iCurPos;
   int iAnchorPos;
   UINT cpEdit;
-  int i;
-  BOOL bNewWord = TRUE;
-  BOOL bChanged = FALSE;
-  BOOL bPrevWasSpace = FALSE;
 
   iCurPos    = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
   iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
@@ -2076,56 +2070,18 @@ void EditTitleCase(HWND hwnd)
       cpEdit = Encoding_SciGetCodePage(hwnd);
       cchTextW = MultiByteToWideChar(cpEdit,0,pszText,iSelLength,pszTextW,iSelLength);
 
-      if (IsWin7()) {
+      BOOL bChanged = FALSE;
 
-        LPWSTR pszMappedW = LocalAlloc(LPTR,GlobalSize(pszTextW));
-
-        if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING|LCMAP_TITLECASE,
-              pszTextW,cchTextW,pszMappedW,iSelLength)) {
-          StringCchCopyN(pszTextW,iSelLength,pszMappedW,iSelLength);
+      LPWSTR pszMappedW = LocalAlloc(LPTR,GlobalSize(pszTextW));
+      // first make lower case, before applying TitleCase
+      if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE,
+                      pszTextW,cchTextW,pszMappedW,iSelLength)) {
+        if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_TITLECASE,
+                        pszMappedW,cchTextW,pszTextW,iSelLength)) {
           bChanged = TRUE;
         }
-        else
-          bChanged = FALSE;
-
-        LocalFree(pszMappedW);
       }
-
-      else {
-
-      // Slightly enhanced function to make Title Case: 
-      // Added some '-characters and bPrevWasSpace makes it better (for example "'Don't'" will now work)
-      bPrevWasSpace = TRUE;
-      for (i = 0; i < cchTextW; i++)
-      {
-          if (!IsCharAlphaNumericW(pszTextW[i]) && (!StrChr(L"'`΄’",pszTextW[i]) ||  bPrevWasSpace ) )
-          {
-              bNewWord = TRUE;
-          }
-          else
-          {
-              if (bNewWord)
-              {
-                if (IsCharLowerW(pszTextW[i]))
-                {
-                  pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(SIZE_T)MAKELONG(pszTextW[i],0)));
-                  bChanged = TRUE;
-                }
-              }
-              else
-              {
-                if (IsCharUpperW(pszTextW[i]))
-                {
-                  pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(SIZE_T)MAKELONG(pszTextW[i],0)));
-                  bChanged = TRUE;
-                }
-              }
-              bNewWord = FALSE;
-           }
-               if( StrChr(L" \r\n\t[](){}",pszTextW[i]) ) bPrevWasSpace = TRUE; else bPrevWasSpace = FALSE;
-      }
-
-      }
+      LocalFree(pszMappedW);
 
       if (bChanged) {
 
