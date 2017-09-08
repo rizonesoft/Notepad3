@@ -5893,8 +5893,10 @@ struct WLIST {
   struct WLIST* next;
 };
 
-void CompleteWord(HWND hwnd, BOOL autoInsert) {
-  const char* NON_WORD = " \t\r\n@#$%^&*~-=+()[]{}\\/.,:;'\"!?<>`|";
+void CompleteWord(HWND hwnd, BOOL autoInsert) 
+{
+  const char* NON_WORD = DelimChars;
+
   int iCurrentPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
   int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iCurrentPos, 0);
   int iCurrentLinePos = iCurrentPos - (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (WPARAM)iLine, 0);
@@ -5927,11 +5929,11 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
     return;
   }
 
-  int cnt = iCurrentLinePos - iStartWordPos + 2;
-  pRoot = LocalAlloc(LPTR,cnt);
-  StringCchCopyNA(pRoot,cnt,pLine + iStartWordPos,cnt-1);
+  int cnt = iCurrentLinePos - iStartWordPos;
+  pRoot = LocalAlloc(LPTR,cnt+1);
+  StringCchCopyNA(pRoot,cnt+1,pLine + iStartWordPos,cnt);
   LocalFree(pLine);
-  iRootLen = _StringCchLenNA(pRoot,cnt);
+  iRootLen = _StringCchLenNA(pRoot,cnt+1);
 
   iDocLen = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
 
@@ -5955,7 +5957,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         //int lastCmp = 0;
         BOOL found = FALSE;
 
-        pWord = LocalAlloc(LPTR,wordLength + 2);
+        pWord = LocalAlloc(LPTR,wordLength + 1);
 
         tr.lpstrText = pWord;
         tr.chrg.cpMin = iPosFind;
@@ -5963,7 +5965,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         SendMessage(hwnd, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
 
         while(p) {
-          int cmp = StringCchCompareNA(pWord,wordLength + 2, p->word,-1);
+          int cmp = StringCchCompareNA(pWord,wordLength + 1, p->word,-1);
           if (cmp == 0) {
             found = TRUE;
             break;
@@ -5975,8 +5977,8 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         }
         if (!found) {
           struct WLIST* el = (struct WLIST*)LocalAlloc(LPTR, sizeof(struct WLIST));
-          el->word = LocalAlloc(LPTR,wordLength + 2);
-          StringCchCopyA(el->word,wordLength + 2,pWord);
+          el->word = LocalAlloc(LPTR,wordLength + 1);
+          StringCchCopyA(el->word,wordLength + 1,pWord);
           el->next = p;
           if (t) {
             t->next = el;
@@ -5985,7 +5987,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
           }
 
           iNumWords++;
-          iWListSize += _StringCchLenNA(pWord,wordLength + 2) + 1;
+          iWListSize += _StringCchLenNA(pWord,wordLength + 1) + 1;
         }
         LocalFree(pWord);
       }

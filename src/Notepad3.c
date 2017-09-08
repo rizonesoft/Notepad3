@@ -4585,7 +4585,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     // Newline with toggled auto indent setting
-    case CMD_CTRLENTER:
+    case CMD_SHIFTCTRLENTER:
       bAutoIndent = (bAutoIndent) ? 0 : 1;
       SendMessage(hwndEdit,SCI_NEWLINE,0,0);
       bAutoIndent = (bAutoIndent) ? 0 : 1;

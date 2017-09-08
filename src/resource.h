@@ -170,7 +170,7 @@
 #define IDS_WILDCARDHELP                10021
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
-#define CMD_CTRLENTER                   20002
+#define CMD_SHIFTCTRLENTER              20002
 #define CMD_CTRLLEFT                    20003
 #define CMD_CTRLRIGHT                   20004
 #define CMD_BACK                        20005
