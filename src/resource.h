@@ -380,6 +380,7 @@
 #define IDM_VIEW_MARKOCCURRENCES_WORD   40452
 #define IDM_VIEW_AUTOCOMPLETEWORDS      40453
 #define IDM_VIEW_ACCELWORDNAV           40454
+#define IDM_VIEW_VIRTSPACERECTSEL       40455
 #define IDM_HELP_ABOUT                  40500
 #define IDM_HELP_CMD                    40501
 #define IDM_TRAY_RESTORE                40600

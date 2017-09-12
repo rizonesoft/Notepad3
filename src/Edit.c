@@ -74,6 +74,7 @@ extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
 
 extern BOOL bAccelWordNavigation;
+extern BOOL bVirtualSpaceInRectSelection;
 extern int iMarkOccurrencesMaxCount;
 
 #define DELIM_BUFFER 258
@@ -289,7 +290,7 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETYCARETPOLICY,CARET_EVEN,0);
   SendMessage(hwnd,SCI_SETMULTIPLESELECTION,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALSELECTIONTYPING,FALSE,0);
-  SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS,SCVS_NONE,0);
+  SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS,(bVirtualSpaceInRectSelection ? SCVS_RECTANGULARSELECTION : SCVS_NONE),0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
 

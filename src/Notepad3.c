@@ -152,6 +152,7 @@ BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
 BOOL      bAutoCompleteWords;
 BOOL      bAccelWordNavigation;
+BOOL      bVirtualSpaceInRectSelection;
 BOOL      bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
@@ -2358,6 +2359,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,i);
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
+  CheckCmd(hmenu,IDM_VIEW_VIRTSPACERECTSEL,bVirtualSpaceInRectSelection);
 
   switch (iMarkOccurrences)
   {
@@ -4199,12 +4201,19 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         SendMessage(hwndEdit, SCI_AUTOCCANCEL, 0, 0);  // close the auto completion list
       break;
 
-    case  IDM_VIEW_ACCELWORDNAV:
+    case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(hwndEdit,bAccelWordNavigation);
       EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
+    case IDM_VIEW_VIRTSPACERECTSEL:
+      bVirtualSpaceInRectSelection = (bVirtualSpaceInRectSelection) ? FALSE : TRUE;  // toggle
+      //SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
+      SendMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,
+        (bVirtualSpaceInRectSelection ? SCVS_RECTANGULARSELECTION : SCVS_NONE),0);
+      break;
+    
     case IDM_VIEW_MARKOCCURRENCES_OFF:
       iMarkOccurrences = 0;
       // clear all marks
@@ -5842,6 +5851,9 @@ void LoadSettings()
   bAccelWordNavigation = IniSectionGetInt(pIniSection, L"AccelWordNavigation", 0);
   if (bAccelWordNavigation) bAccelWordNavigation = 1;
 
+  bVirtualSpaceInRectSelection = IniSectionGetInt(pIniSection,L"VirtualSpaceInRectSelection",0);
+  if (bVirtualSpaceInRectSelection) bVirtualSpaceInRectSelection = 1;
+
   bShowIndentGuides = IniSectionGetInt(pIniSection,L"ShowIndentGuides",0);
   if (bShowIndentGuides) bShowIndentGuides = 1;
 
@@ -6175,6 +6187,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"AutoIndent", bAutoIndent);
   IniSectionSetInt(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
   IniSectionSetInt(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
+  IniSectionSetInt(pIniSection, L"VirtualSpaceInRectSelection",bVirtualSpaceInRectSelection);
   IniSectionSetInt(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
   IniSectionSetInt(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
   IniSectionSetInt(pIniSection, L"TabIndents", bTabIndentsG);
@@ -7168,13 +7181,19 @@ void InvalidateSelections()
 int BeginSelUndoAction()
 {
   int token = -1;
-  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1 };
+  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0 };
   sel.selMode = (int)SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0);
+  sel.rectSelVS = (int)SendMessage(hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
   if (sel.selMode == SC_SEL_LINES) {
     sel.anchorPos_undo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
     sel.currPos_undo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
   }
-  else {
+  else if (sel.selMode == SC_SEL_RECTANGLE) {
+    sel.anchorPos_undo = (int)SendMessage(hwndEdit,SCI_GETRECTANGULARSELECTIONANCHOR,0,0);
+    sel.currPos_undo = (int)SendMessage(hwndEdit,SCI_GETRECTANGULARSELECTIONCARET,0,0);
+  }
+  else
+  {
     sel.anchorPos_undo = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
     sel.currPos_undo = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
   }
@@ -7196,12 +7215,16 @@ int BeginSelUndoAction()
 void EndSelUndoAction(int token)
 {
   if (token >= 0) {
-    UndoRedoSelection_t sel = { -1, -1, -1, -1, -1 };
+    UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0 };
     if (UndoRedoSelectionMap(token,&sel) >= 0) {
-      // mode should not have changed ???
+      // mode and type should not have changed
       if (sel.selMode == SC_SEL_LINES) {
         sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
         sel.currPos_redo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
+      }
+      else if (sel.selMode == SC_SEL_RECTANGLE) {
+        sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETRECTANGULARSELECTIONANCHOR,0,0);
+        sel.currPos_redo = (int)SendMessage(hwndEdit,SCI_GETRECTANGULARSELECTIONCARET,0,0);
       }
       else {
         sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
@@ -7222,12 +7245,14 @@ void EndSelUndoAction(int token)
 //
 void RestoreSelectionAction(int token, DoAction doAct)
 {
-  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1 };
+  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0 };
   if (UndoRedoSelectionMap(token,&sel) >= 0) {
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
     int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     int currPos   = (doAct == UNDO ? sel.currPos_undo : sel.currPos_redo);
-    SendMessage(hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
+    int currRectType = (int)SendMessage(hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
+    PostMessage(hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
+    PostMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)sel.rectSelVS,0);
     if (sel.selMode == SC_SEL_LINES) {
       PostMessage(hwndEdit,SCI_SETSELECTIONSTART,(WPARAM)anchorPos,0);
       PostMessage(hwndEdit,SCI_SETSELECTIONEND,(WPARAM)currPos,0);
@@ -7239,7 +7264,7 @@ void RestoreSelectionAction(int token, DoAction doAct)
     else {
       PostMessage(hwndEdit,SCI_SETSELECTION,(WPARAM)currPos,(LPARAM)anchorPos);
     }
-
+    PostMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)currRectType,0);
     PostMessage(hwndEdit,SCI_CANCEL,0,0);
   }
 }
