@@ -45,7 +45,7 @@ Supported Operating Systems
 Contributors
 
   - Florian Balmer ( http://www.flos-freeware.ch )
-  - XhmikosR ( http://xhmikosr.github.io/notepad2-mod/ )
+  - XhmikosR ( https://xhmikosr.github.io/notepad2-mod/ )
   - Kai Liu ( http://code.kliu.org/misc/notepad2/ )
   - RL Vision
   - Aleksandar Lekov
