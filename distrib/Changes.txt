@@ -3,7 +3,7 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
-Version 2 Build 505 (23 Septemeber 2017)
+Version 2 Build 505 (23 September 2017)
 --------------------------------------------------
 + 1st chunk of StrSafe migration.
 + Some more StrSafe changes
@@ -14,7 +14,7 @@ Version 2 Build 505 (23 Septemeber 2017)
   restricted to 7-bit ASCII char set (ignoring specified non-7-bit-ASCII chars).
 + StrSafe adaptions
 + Fixed: settings SciFontQuality have been overwritten by Scheme configuration.
-  (Fonts: Calibri,Cambria,Candara,Consolas,Constantia,Corbel,Segoe UI are using 
+  (Fonts: Calibri, Cambria, Candara, Consolas, Constantia, Corbel, Segoe UI are using 
   'cleartype smoothing' (SC_EFF_QUALITY_LCD_OPTIMIZED) by default, if not 
   configured in Schema definition for Lexer)
 + Added font "Source Code Pro" to list of special fonts for cleartype smoothing.
@@ -42,7 +42,7 @@ Version 2 Build 505 (23 Septemeber 2017)
 + Removed support for obsolete Korean Johab (1361) codepage.
 + Fixed ConvertText() according to internal SCI codepage
 + Refactoring: Encoding handling
-+ More operations for selctions undo/redo.
++ More operations for selections undo/redo.
 + Enabled "unlimited" (as in Scintilla Lib: dep. on memory and INT_MAX) 
   undo / redo selection history using utarray from uthash header library 
   (https://troydhanson.github.io/uthash/index.html)
@@ -81,7 +81,7 @@ Version 2 Build 505 (23 Septemeber 2017)
 + Added feature "Insert New (empty) Line above current line Ctrl+Enter (as in VisualStudio).
 + Code cleanup
 + Added new Settings "Virtual Space on Rectangular Selection" used to select. 
-  rectange not delemited by line endings (but including virtual space).
+  rectangle not delimited by line endings (but including virtual space).
 + Readme.txt Updated. (Thanks Will)
 
 --------------------------------------------------
