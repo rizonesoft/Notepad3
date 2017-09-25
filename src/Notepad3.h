@@ -49,6 +49,10 @@ typedef struct _undoSel
   int anchorPos_redo;
   int currPos_redo;
   int rectSelVS;
+  int anchorVS_undo;
+  int currVS_undo;
+  int anchorVS_redo;
+  int currVS_redo;
 } 
 UndoRedoSelection_t;
 
