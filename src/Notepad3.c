@@ -5607,6 +5607,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               RestoreSelectionAction(scn->token,REDO);
             }
           }
+          bModified = TRUE;
           // fall through
         case SCN_ZOOM:
           UpdateLineNumberWidth();
@@ -7233,7 +7234,6 @@ void EndSelUndoAction(int token)
     }
     UndoRedoSelectionMap(token,&sel); // set with redo action filled
     SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
-    bModified = TRUE;
   }
 }
 
