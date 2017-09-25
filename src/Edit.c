@@ -522,32 +522,37 @@ BOOL EditSetNewEncoding(HWND hwnd,int iCurrentEncoding,int iNewEncoding,BOOL bNo
 //
 BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 {
+  if ((pszText == NULL) || (cchLen < 1))
+    return FALSE;
+
+  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
+
+  if ((codepage == CP_UTF7) || (codepage == CP_UTF8))
+    return FALSE;
+
   const UINT uCodePageExcept[20] = {
    42, // (Symbol)
    50220,50221,50222,50225,50227,50229,
    54936, // (GB18030)
    57002,57003,57004,57005,57006,57007,57008,57009,57010,57011,
    65000, // (UTF-7)
-   65001 // (UTF-8)
+   65001  // (UTF-8)
   };
 
-  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
-
-  DWORD dwFlags = WC_NO_BEST_FIT_CHARS;
+  DWORD dwFlags = WC_NO_BEST_FIT_CHARS | WC_COMPOSITECHECK | WC_DEFAULTCHAR;
   for (int i = 0; i < COUNTOF(uCodePageExcept); i++) {
     if (codepage == uCodePageExcept[i]) {
-      dwFlags = 0;
+      dwFlags = 0L;
       break;
     }
   }
 
-  BOOL bSuccess = TRUE;
-  BOOL bHasForeignChars = FALSE;
-  if ((codepage != CP_UTF7) && (codepage != CP_UTF8)) {
-    bSuccess = (BOOL)WideCharToMultiByte(codepage,dwFlags,pszText,cchLen,NULL,0,NULL,&bHasForeignChars);
-  }
+  BOOL bDefaultCharsUsed = FALSE;
+  int cch = WideCharToMultiByte(codepage, dwFlags, pszText, cchLen, NULL, 0, NULL, &bDefaultCharsUsed);
 
-  return (!bSuccess || bHasForeignChars);
+  BOOL bSuccess = ((cch >= cchLen) && (cch != (int)0xFFFD)) ? TRUE : FALSE;
+  
+  return (!bSuccess || bDefaultCharsUsed);
 }
 
 
@@ -569,11 +574,12 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
     return (pEmpty);
   }
 
+  // get clipboard
   hmem = GetClipboardData(CF_UNICODETEXT);
   pwch = GlobalLock(hmem);
   wlen = lstrlenW(pwch);
 
-  if (bCheckEncoding && EditIsRecodingNeeded(pwch,wlen + 2)) 
+  if (bCheckEncoding && EditIsRecodingNeeded(pwch,wlen)) 
   {
     int iPos = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
     int iAnchor = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
@@ -589,16 +595,9 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
       SendMessage(hwnd,SCI_SETSEL,(WPARAM)iPos,(LPARAM)iAnchor);
     }
     EditFixPositions(hwnd);
-
-    // check expected recoding
-    if (Encoding_Current(CPI_GET) != CPI_UTF8) {
-      return (NULL);
-    }
   }
 
-  // get clipboard
-  UINT codepage = Encoding_SciGetCodePage(hwnd);
-
+  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
   mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,NULL,NULL);
   pmch = LocalAlloc(LPTR,mlen + 2);
   if (pmch && mlen != 0) {
