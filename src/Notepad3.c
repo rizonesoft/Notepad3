@@ -1153,6 +1153,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     // Cool idea, don't know if this has any effect... ;-)
     case WM_MOVE:
     case WM_MOUSEACTIVATE:
+    case WM_MOUSEWHEEL:
     case WM_NCHITTEST:
     case WM_NCCALCSIZE:
     case WM_NCPAINT:

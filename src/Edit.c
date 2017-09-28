@@ -46,6 +46,9 @@
 #define LCMAP_TITLECASE  0x00000300  // Title Case Letters bit mask
 #endif
 
+#define DEFAULT_SCROLL_WIDTH 4096    // 4K
+
+
 extern HWND  hwndMain;
 extern HWND  hwndEdit;
 extern HINSTANCE g_hInstance;
@@ -285,7 +288,7 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETPASTECONVERTENDINGS,1,0);
   SendMessage(hwnd,SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT|SC_MOD_DELETETEXT|SC_MOD_CONTAINER,0);
   SendMessage(hwnd,SCI_USEPOPUP,FALSE,0);
-  SendMessage(hwnd,SCI_SETSCROLLWIDTH,2048,0);
+  SendMessage(hwnd,SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTHTRACKING,TRUE,0);
   SendMessage(hwnd,SCI_SETENDATLASTLINE,TRUE,0);
   SendMessage(hwnd,SCI_SETCARETSTICKY,FALSE,0);
@@ -296,7 +299,8 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS,(bVirtualSpaceInRectSelection ? SCVS_RECTANGULARSELECTION : SCVS_NONE),0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
-
+  SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE,0);
+    
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + (SCMOD_CTRL << 16)),SCI_PARADOWN);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_PRIOR + (SCMOD_CTRL << 16)),SCI_PARAUP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)),SCI_PARADOWNEXTEND);
@@ -398,7 +402,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   UndoRedoSelectionMap(-1,NULL);
   SendMessage(hwnd,SCI_CLEARALL,0,0);
   SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
-  SendMessage(hwnd,SCI_SETSCROLLWIDTH,2048,0);
+  SendMessage(hwnd,SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH,0);
   SendMessage(hwnd,SCI_SETXOFFSET,0,0);
 
   FileVars_Apply(hwnd,&fvCurFile);
