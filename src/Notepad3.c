@@ -147,6 +147,7 @@ int       iWrapCol = 0;
 BOOL      bShowSelectionMargin;
 BOOL      bShowLineNumbers;
 int       iMarkOccurrences;
+int       iMarkOccurrencesCount;
 int       iMarkOccurrencesMaxCount;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
@@ -6049,6 +6050,7 @@ void LoadSettings()
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
   iSciFontQuality = max(min(iSciFontQuality,3),0);
 
+  iMarkOccurrencesCount = -1;
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
   iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
 
@@ -7004,16 +7006,12 @@ void UpdateToolbar()
 void UpdateStatusbar()
 {
 
-  int iPos;
-  int iLn;
-  int iLines;
-  int iCol;
-  int iSel;
   WCHAR tchLn[32] = { L'\0' };
   WCHAR tchLines[32] = { L'\0' };
   WCHAR tchCol[32] = { L'\0' };
   WCHAR tchCols[32] = { L'\0' };
   WCHAR tchSel[32] = { L'\0' };
+  WCHAR tchOcc[32] = { L'\0' };
   WCHAR tchDocPos[256] = { L'\0' };
 
   int iBytes;
@@ -7023,29 +7021,22 @@ void UpdateStatusbar()
   WCHAR tchEOLMode[32] = { L'\0' };
   WCHAR tchOvrMode[32] = { L'\0' };
   WCHAR tchLexerName[128] = { L'\0' };
-
-  int iSelStart;
-  int iSelEnd;
-  int iLineStart;
-  int iLineEnd;
-  int iStartOfLinePos;
-  int iLinesSelected;
   WCHAR tchLinesSelected[32] = { L'\0' };
 
   if (!bShowStatusbar)
     return;
 
-  iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+  int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
 
-  iLn = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iPos,0) + 1;
+  int iLn = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iPos,0) + 1;
   StringCchPrintf(tchLn,COUNTOF(tchLn),L"%i",iLn);
   FormatNumberStr(tchLn);
 
-  iLines = (int)SendMessage(hwndEdit,SCI_GETLINECOUNT,0,0);
+  int iLines = (int)SendMessage(hwndEdit,SCI_GETLINECOUNT,0,0);
   StringCchPrintf(tchLines,COUNTOF(tchLines),L"%i",iLines);
   FormatNumberStr(tchLines);
 
-  iCol = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0) + 1;
+  int iCol = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0) + 1;
   StringCchPrintf(tchCol,COUNTOF(tchCol),L"%i",iCol);
   FormatNumberStr(tchCol);
 
@@ -7054,30 +7045,44 @@ void UpdateStatusbar()
     FormatNumberStr(tchCols);
   }
 
-  if (SC_SEL_RECTANGLE != SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0))
-  {
-    iSel = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) - (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
-    StringCchPrintf(tchSel,COUNTOF(tchSel),L"%i",iSel);
+  int iSelStart = (int)SendMessage(hwndEdit, SCI_GETSELECTIONSTART, 0, 0);
+  int iSelEnd = (int)SendMessage(hwndEdit, SCI_GETSELECTIONEND, 0, 0);
+
+  // Print number of selected chars in statusbar
+  if (SC_SEL_RECTANGLE != SendMessage(hwndEdit, SCI_GETSELECTIONMODE, 0, 0)) {
+    int iSel = (int)SendMessage(hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
+    StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
     FormatNumberStr(tchSel);
   }
   else
-    StringCchCopy(tchSel,COUNTOF(tchSel),L"--");
+    StringCchCopy(tchSel, COUNTOF(tchSel), L"--");
+
+
+  if (iMarkOccurrencesCount > 0) {
+    if (iMarkOccurrencesCount < iMarkOccurrencesMaxCount) {
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+      FormatNumberStr(tchOcc);
+    }
+    else
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i", iMarkOccurrencesMaxCount);
+  }
+  else
+    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
+
 
   // Print number of lines selected lines in statusbar
-  iSelStart = (int)SendMessage( hwndEdit , SCI_GETSELECTIONSTART , 0 , 0 );
-  iSelEnd = (int)SendMessage( hwndEdit , SCI_GETSELECTIONEND , 0 , 0 );
-  iLineStart = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelStart , 0 );
-  iLineEnd = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelEnd , 0 );
-  iStartOfLinePos = (int)SendMessage( hwndEdit , SCI_POSITIONFROMLINE , iLineEnd , 0 );
-  iLinesSelected = iLineEnd - iLineStart;
+  int iLineStart = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelStart , 0 );
+  int iLineEnd = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelEnd , 0 );
+  int iStartOfLinePos = (int)SendMessage( hwndEdit , SCI_POSITIONFROMLINE , iLineEnd , 0 );
+  int iLinesSelected = iLineEnd - iLineStart;
   if( iSelStart != iSelEnd  &&  iStartOfLinePos != iSelEnd ) iLinesSelected += 1;
   StringCchPrintf(tchLinesSelected,COUNTOF(tchLinesSelected),L"%i",iLinesSelected);
   FormatNumberStr(tchLinesSelected);
 
   if (!bMarkLongLines)
-      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS,tchLn,tchLines,tchCol,tchSel,tchLinesSelected);
+      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS,tchLn,tchLines,tchCol,tchSel,tchLinesSelected,tchOcc);
   else
-      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS2,tchLn,tchLines,tchCol,tchCols,tchSel,tchLinesSelected);
+      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS2,tchLn,tchLines,tchCol,tchCols,tchSel,tchLinesSelected,tchOcc);
 
   iBytes = (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
   StrFormatByteSize(iBytes,tchBytes,COUNTOF(tchBytes));
