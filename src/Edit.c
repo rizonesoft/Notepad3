@@ -75,14 +75,17 @@ extern BOOL bLoadNFOasOEM;
 
 extern BOOL bAccelWordNavigation;
 extern BOOL bVirtualSpaceInRectSelection;
+extern int iMarkOccurrencesCount;
 extern int iMarkOccurrencesMaxCount;
 
 #define DELIM_BUFFER 258
 char DelimChars[DELIM_BUFFER] = { '\0' };
+char WordCharsDefault[DELIM_BUFFER] = { '\0' };
 char WhiteSpaceCharsDefault[DELIM_BUFFER] = { '\0' };
 char PunctuationCharsDefault[DELIM_BUFFER] = { '\0' };
+char WordCharsAccelerated[DELIM_BUFFER] = { '\0' };
 char WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { '\0' };
-char PunctuationCharsAccelerated[DELIM_BUFFER] = { '\0' };
+char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
 enum AlignMask {
   ALIGN_LEFT = 0,
@@ -323,39 +326,55 @@ HWND EditCreate(HWND hwndParent)
 //
 void EditInitWordDelimiter(HWND hwnd)
 {
+  
+  ZeroMemory(WordCharsDefault, COUNTOF(WordCharsDefault));
+  ZeroMemory(WhiteSpaceCharsDefault, COUNTOF(WhiteSpaceCharsDefault));
+  ZeroMemory(PunctuationCharsDefault, COUNTOF(PunctuationCharsDefault));
+  ZeroMemory(WordCharsAccelerated, COUNTOF(WordCharsAccelerated));
+  ZeroMemory(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated));
+  //ZeroMemory(PunctuationCharsAccelerated, COUNTOF(PunctuationCharsAccelerated)); // empty!
+
   // 1st get/set defaults
-  SendMessage(hwnd,SCI_GETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsDefault);
-  SendMessage(hwnd,SCI_GETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsDefault);
+  SendMessage(hwnd, SCI_GETWORDCHARS, 0, (LPARAM)WordCharsDefault);
+  SendMessage(hwnd, SCI_GETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsDefault);
+  SendMessage(hwnd, SCI_GETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsDefault);
   // delim chars are whitespace & punctuation
   StringCchCopyA(DelimChars,COUNTOF(DelimChars),WhiteSpaceCharsDefault);
   StringCchCatA(DelimChars,COUNTOF(DelimChars),PunctuationCharsDefault);
-  // init accelerated white space array
-  StringCchCopyA(WhiteSpaceCharsAccelerated,COUNTOF(WhiteSpaceCharsAccelerated),WhiteSpaceCharsDefault);
 
   // 2nd get user settings
-  char whitesp[DELIM_BUFFER] = { '\0' };
   WCHAR buffer[DELIM_BUFFER] = { L'\0' };
+  ZeroMemory(buffer, DELIM_BUFFER * sizeof(WCHAR));
+
   IniGetString(L"Settings2",L"ExtendedWhiteSpaceChars",L"",buffer,COUNTOF(buffer));
-  if (StringCchLen(buffer) == 0)
-    StringCchCopyA(whitesp,COUNTOF(whitesp),PunctuationCharsDefault);
-  else
-    WideCharToMultiByteStrg(CP_ACP,buffer,whitesp);
-  // add only 7-bit-ASCII chars to accelerate whitespace list
+  char whitesp[DELIM_BUFFER] = { '\0' };
+  if (StringCchLen(buffer) > 0) {
+    WideCharToMultiByteStrg(CP_ACP, buffer, whitesp);
+  }
+
+  // 3rd set accelerated arrays
+  
+  // init with default
+  StringCchCopyA(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated), WhiteSpaceCharsDefault);
+
+  // add only 7-bit-ASCII chars to accelerated whitespace list
   for (size_t i = 0; i < strlen(whitesp); i++) {
     if (whitesp[i] & 0x7F) {
-      if (!StrChrA(WhiteSpaceCharsAccelerated,whitesp[i])) {
-        StringCchCatNA(WhiteSpaceCharsAccelerated,COUNTOF(WhiteSpaceCharsAccelerated),
-                       &(whitesp[i]),1);
+      if (!StrChrA(WhiteSpaceCharsAccelerated, whitesp[i])) {
+        StringCchCatNA(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated), &(whitesp[i]), 1); 
       }
     }
   }
-  // remove 7-bit-ASCII whitespace chars from accelerated punctuation list
+
+  // construct word char array
+  StringCchCopyA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), WordCharsDefault); // init
+  // add punctuation chars not listed in white-space array
   for (size_t i = 0; i < strlen(PunctuationCharsDefault); i++) {
-    if (!StrChrA(WhiteSpaceCharsAccelerated,PunctuationCharsDefault[i])) {
-      StringCchCatNA(PunctuationCharsAccelerated,COUNTOF(PunctuationCharsAccelerated),
-                     &(PunctuationCharsDefault[i]),1);
+    if (!StrChrA(WhiteSpaceCharsAccelerated, PunctuationCharsDefault[i])) {
+      StringCchCatNA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), &(PunctuationCharsDefault[i]), 1);
     }
   }
+
 }
 
 
@@ -5895,7 +5914,7 @@ struct WLIST {
 
 void CompleteWord(HWND hwnd, BOOL autoInsert) 
 {
-  const char* NON_WORD = DelimChars;
+  const char* NON_WORD = bAccelWordNavigation ? WhiteSpaceCharsAccelerated : DelimChars;
 
   int iCurrentPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
   int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iCurrentPos, 0);
@@ -6039,8 +6058,11 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   int iSelCount;
 
   // feature is off
-  if (!iMarkOccurrences)
+  if (!iMarkOccurrences) {
+    iMarkOccurrencesCount = -1;
+    UpdateStatusbar();
     return;
+  }
 
 
   iTextLen = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
@@ -6093,11 +6115,11 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   SendMessage(hwnd, SCI_INDICSETFORE, 1, 0xff << ((iMarkOccurrences - 1) << 3));
   SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_ROUNDBOX);
 
-  int iMatchesCount = 0;
+  iMarkOccurrencesCount = 0;
   while ((iPos = (int)SendMessage(hwnd, SCI_FINDTEXT,
       (bMarkOccurrencesMatchCase ? SCFIND_MATCHCASE : 0) | (bMarkOccurrencesMatchWords ? SCFIND_WHOLEWORD : 0),
       (LPARAM)&ttf)) != -1
-      && ++iMatchesCount < iMarkOccurrencesMaxCount)
+      && (++iMarkOccurrencesCount < iMarkOccurrencesMaxCount))
   {
     // mark this match
     SendMessage(hwnd, SCI_INDICATORFILLRANGE, iPos, iSelCount);
@@ -6105,8 +6127,11 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
     if (ttf.chrg.cpMin == ttf.chrg.cpMax)
       break;
   }
-
   LocalFree(pszText);
+
+  UpdateStatusbar();
+  iMarkOccurrencesCount = 0;
+
   return;
 }
 
@@ -7126,11 +7151,12 @@ void EditSetAccelWordNav(HWND hwnd,BOOL bAccelWordNav)
   bAccelWordNavigation = bAccelWordNav;
 
   if (bAccelWordNavigation) {
-    SendMessage(hwnd,SCI_SETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsAccelerated);
-    SendMessage(hwnd,SCI_SETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsAccelerated);
+    SendMessage(hwnd, SCI_SETWORDCHARS, 0, (LPARAM)WordCharsAccelerated);
+    SendMessage(hwnd, SCI_SETWHITESPACECHARS, 0,(LPARAM)WhiteSpaceCharsAccelerated);
+    SendMessage(hwnd, SCI_SETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsAccelerated);
   }
   else
-    SendMessage(hwnd,SCI_SETCHARSDEFAULT,0,0);
+    SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
 }
 
 

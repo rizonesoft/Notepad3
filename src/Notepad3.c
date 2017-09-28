@@ -147,6 +147,7 @@ int       iWrapCol = 0;
 BOOL      bShowSelectionMargin;
 BOOL      bShowLineNumbers;
 int       iMarkOccurrences;
+int       iMarkOccurrencesCount;
 int       iMarkOccurrencesMaxCount;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
@@ -6049,6 +6050,7 @@ void LoadSettings()
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
   iSciFontQuality = max(min(iSciFontQuality,3),0);
 
+  iMarkOccurrencesCount = -1;
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
   iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
 
@@ -7009,6 +7011,7 @@ void UpdateStatusbar()
   WCHAR tchCol[32] = { L'\0' };
   WCHAR tchCols[32] = { L'\0' };
   WCHAR tchSel[32] = { L'\0' };
+  WCHAR tchOcc[32] = { L'\0' };
   WCHAR tchDocPos[256] = { L'\0' };
 
   int iBytes;
@@ -7054,6 +7057,19 @@ void UpdateStatusbar()
   else
     StringCchCopy(tchSel, COUNTOF(tchSel), L"--");
 
+
+  if (iMarkOccurrencesCount > 0) {
+    if (iMarkOccurrencesCount < iMarkOccurrencesMaxCount) {
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+      FormatNumberStr(tchOcc);
+    }
+    else
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i", iMarkOccurrencesMaxCount);
+  }
+  else
+    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
+
+
   // Print number of lines selected lines in statusbar
   int iLineStart = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelStart , 0 );
   int iLineEnd = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelEnd , 0 );
@@ -7064,9 +7080,9 @@ void UpdateStatusbar()
   FormatNumberStr(tchLinesSelected);
 
   if (!bMarkLongLines)
-      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS,tchLn,tchLines,tchCol,tchSel,tchLinesSelected);
+      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS,tchLn,tchLines,tchCol,tchSel,tchLinesSelected,tchOcc);
   else
-      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS2,tchLn,tchLines,tchCol,tchCols,tchSel,tchLinesSelected);
+      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS2,tchLn,tchLines,tchCol,tchCols,tchSel,tchLinesSelected,tchOcc);
 
   iBytes = (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
   StrFormatByteSize(iBytes,tchBytes,COUNTOF(tchBytes));
