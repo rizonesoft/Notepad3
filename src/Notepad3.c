@@ -1144,11 +1144,8 @@ WININFO GetMyWindowPlacement(HWND hwnd,MONITORINFO* hMonitorInfo)
 //
 LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  static BOOL bShutdownOK;
-
   switch(umsg)
   {
-
     // Quickly handle painting and sizing messages, found in ScintillaWin.cxx
     // Cool idea, don't know if this has any effect... ;-)
     case WM_MOVE:
@@ -1170,63 +1167,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_DESTROY:
     case WM_ENDSESSION:
-      if (!bShutdownOK) {
-
-        // Terminate file watching
-        InstallFileWatching(NULL);
-
-        // GetWindowPlacement
-        wininfo = GetMyWindowPlacement(hwnd,NULL);
-
-        DragAcceptFiles(hwnd,FALSE);
-
-        // Terminate clipboard watching
-        if (flagPasteBoard) {
-          KillTimer(hwnd,ID_PASTEBOARDTIMER);
-          ChangeClipboardChain(hwnd,hwndNextCBChain);
-        }
-
-        // Destroy find / replace dialog
-        if (IsWindow(hDlgFindReplace))
-          DestroyWindow(hDlgFindReplace);
-
-        // call SaveSettings() when hwndToolbar is still valid
-        SaveSettings(FALSE);
-
-        if (StringCchLen(szIniFile) != 0) {
-
-          // Cleanup unwanted MRU's
-          if (!bSaveRecentFiles) {
-            MRU_Empty(pFileMRU);
-            MRU_Save(pFileMRU);
-          }
-          else
-            MRU_MergeSave(pFileMRU,TRUE,flagRelativeFileMRU,flagPortableMyDocs);
-          MRU_Destroy(pFileMRU);
-
-          if (!bSaveFindReplace) {
-            MRU_Empty(mruFind);
-            MRU_Empty(mruReplace);
-            MRU_Save(mruFind);
-            MRU_Save(mruReplace);
-          }
-          else {
-            MRU_MergeSave(mruFind,FALSE,FALSE,FALSE);
-            MRU_MergeSave(mruReplace,FALSE,FALSE,FALSE);
-          }
-          MRU_Destroy(mruFind);
-          MRU_Destroy(mruReplace);
-        }
-
-        // Remove tray icon if necessary
-        ShowNotifyIcon(hwnd,FALSE);
-
-        bShutdownOK = TRUE;
-      }
-      if (umsg == WM_DESTROY)
-        PostQuitMessage(0);
+      MsgEndSession(hwnd,umsg);
       break;
-
 
     case WM_CLOSE:
       if (FileSave(FALSE,TRUE,FALSE,FALSE))
@@ -1277,203 +1219,22 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
 
     case WM_DROPFILES:
-      {
-        WCHAR szBuf[MAX_PATH+40];
-        HDROP hDrop = (HDROP)wParam;
-
-        // Reset Change Notify
-        //bPendingChangeNotify = FALSE;
-
-        if (IsIconic(hwnd))
-          ShowWindow(hwnd,SW_RESTORE);
-
-        //SetForegroundWindow(hwnd);
-
-        DragQueryFile(hDrop,0,szBuf,COUNTOF(szBuf));
-
-        if (PathIsDirectory(szBuf)) {
-          WCHAR tchFile[MAX_PATH] = { L'\0' };
-          if (OpenFileDlg(hwndMain,tchFile,COUNTOF(tchFile),szBuf))
-            FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
-        }
-
-        else
-          FileLoad(FALSE,FALSE,FALSE,FALSE,szBuf);
-
-        if (DragQueryFile(hDrop,(UINT)(-1),NULL,0) > 1)
-          MsgBox(MBWARN,IDS_ERR_DROP);
-
-        DragFinish(hDrop);
-      }
+      MsgDropFiles(hwnd, wParam, lParam);
       break;
 
 
     case WM_COPYDATA:
-      {
-        PCOPYDATASTRUCT pcds = (PCOPYDATASTRUCT)lParam;
-
-        // Reset Change Notify
-        //bPendingChangeNotify = FALSE;
-
-        SetDlgItemInt(hwnd,IDC_REUSELOCK,GetTickCount(),FALSE);
-
-        if (pcds->dwData == DATA_NOTEPAD3_PARAMS) {
-        LPnp3params params = LocalAlloc(LPTR,pcds->cbData);
-          CopyMemory(params,pcds->lpData,pcds->cbData);
-
-          if (params->flagLexerSpecified)
-            flagLexerSpecified = 1;
-
-          if (params->flagQuietCreate)
-            flagQuietCreate = 1;
-
-          if (params->flagFileSpecified) {
-
-            BOOL bOpened = FALSE;
-            Encoding_Source(params->iSrcEncoding);
-
-            if (PathIsDirectory(&params->wchData)) {
-              WCHAR tchFile[MAX_PATH] = { L'\0' };
-              if (OpenFileDlg(hwndMain,tchFile,COUNTOF(tchFile),&params->wchData))
-                bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
-            }
-
-            else
-              bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,&params->wchData);
-
-            if (bOpened) {
-
-              if (params->flagChangeNotify == 1) {
-                iFileWatchingMode = 0;
-                bResetFileWatching = TRUE;
-                InstallFileWatching(szCurFile);
-              }
-              else if (params->flagChangeNotify == 2) {
-                iFileWatchingMode = 2;
-                bResetFileWatching = TRUE;
-                InstallFileWatching(szCurFile);
-              }
-
-              if (0 != params->flagSetEncoding) {
-                flagSetEncoding = params->flagSetEncoding;
-                SendMessage(
-                  hwnd,
-                  WM_COMMAND,
-                  MAKELONG(IDM_ENCODING_ANSI + flagSetEncoding -1,1),
-                  0);
-                flagSetEncoding = 0;
-              }
-
-              if (0 != params->flagSetEOLMode) {
-                flagSetEOLMode = params->flagSetEOLMode;
-                SendMessage(
-                  hwndMain,
-                  WM_COMMAND,
-                  MAKELONG(IDM_LINEENDINGS_CRLF + flagSetEOLMode -1,1),
-                  0);
-                flagSetEOLMode = 0;
-              }
-
-              if (params->flagLexerSpecified) {
-                if (params->iInitialLexer < 0) {
-                  WCHAR wchExt[32] = L".";
-                  StringCchCopyN(CharNext(wchExt),32,StrEnd(&params->wchData) + 1,31);
-                  Style_SetLexerFromName(hwndEdit,&params->wchData,wchExt);
-                }
-                else if (params->iInitialLexer >=0 && params->iInitialLexer < NUMLEXERS)
-                  Style_SetLexerFromID(hwndEdit,params->iInitialLexer);
-              }
-
-              if (params->flagTitleExcerpt) {
-                StringCchCopyN(szTitleExcerpt,COUNTOF(szTitleExcerpt),StrEnd(&params->wchData) + 1,COUNTOF(szTitleExcerpt));
-              }
-            }
-            // reset
-            Encoding_Source(CPI_NONE);
-          }
-
-          if (params->flagJumpTo) {
-            if (params->iInitialLine == 0)
-              params->iInitialLine = 1;
-            EditJumpTo(hwndEdit,params->iInitialLine,params->iInitialColumn);
-            EditEnsureSelectionVisible(hwndEdit);
-          }
-
-          flagLexerSpecified = 0;
-          flagQuietCreate = 0;
-
-          LocalFree(params);
-
-          UpdateToolbar();
-          UpdateStatusbar();
-        }
-      }
-      return TRUE;
-
+      return MsgCopyData(hwnd, wParam, lParam);
 
     case WM_CONTEXTMENU:
-    {
-      HMENU hmenu;
-      int imenu = 0;
-      POINT pt;
-      int nID = GetDlgCtrlID((HWND)wParam);
-
-      if ((nID != IDC_EDIT) && (nID != IDC_STATUSBAR) &&
-          (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
-        return DefWindowProc(hwnd,umsg,wParam,lParam);
-
-      hmenu = LoadMenu(g_hInstance,MAKEINTRESOURCE(IDR_POPUPMENU));
-      //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,FALSE);
-
-      pt.x = (int)(short)LOWORD(lParam);
-      pt.y = (int)(short)HIWORD(lParam);
-
-      switch(nID)
-      {
-        case IDC_EDIT:
-          {
-            if (SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0) && (pt.x != -1) && (pt.y != -1))
-            {
-              int iNewPos;
-              POINT ptc;
-              ptc.x = pt.x;  ptc.y = pt.y;
-              ScreenToClient(hwndEdit,&ptc);
-              iNewPos = (int)SendMessage(hwndEdit,SCI_POSITIONFROMPOINT,(WPARAM)ptc.x,(LPARAM)ptc.y);
-              SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iNewPos,0);
-            }
-
-            if (pt.x == -1 && pt.y == -1)
-            {
-              int iCurrentPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-              pt.x = (int)SendMessage(hwndEdit,SCI_POINTXFROMPOSITION,0,(LPARAM)iCurrentPos);
-              pt.y = (int)SendMessage(hwndEdit,SCI_POINTYFROMPOSITION,0,(LPARAM)iCurrentPos);
-              ClientToScreen(hwndEdit,&pt);
-            }
-            imenu = 0;
-          }
-          break;
-
-        case IDC_TOOLBAR:
-        case IDC_STATUSBAR:
-        case IDC_REBAR:
-          if (pt.x == -1 && pt.y == -1)
-            GetCursorPos(&pt);
-          imenu = 1;
-          break;
-      }
-
-      TrackPopupMenuEx(GetSubMenu(hmenu,imenu),
-        TPM_LEFTBUTTON | TPM_RIGHTBUTTON,pt.x+1,pt.y+1,hwnd,NULL);
-
-      DestroyMenu(hmenu);
-    }
-    break;
-
+      return MsgContextMenu(hwnd, umsg, wParam, lParam);
 
     case WM_INITMENU:
       MsgInitMenu(hwnd,wParam,lParam);
       break;
 
+    case WM_MOUSEWHEEL:
+      return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_NOTIFY:
       return MsgNotify(hwnd,wParam,lParam);
@@ -1491,80 +1252,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_COMMAND:
       return MsgCommand(hwnd,wParam,lParam);
 
-
     case WM_SYSCOMMAND:
-      switch (wParam)
-      {
-        case SC_MINIMIZE:
-          ShowOwnedPopups(hwnd,FALSE);
-          if (bMinimizeToTray) {
-            MinimizeWndToTray(hwnd);
-            ShowNotifyIcon(hwnd,TRUE);
-            SetNotifyIconTitle(hwnd);
-            return(0);
-          }
-          else
-            return DefWindowProc(hwnd,umsg,wParam,lParam);
+      return MsgSysCommand(hwnd, umsg, wParam, lParam);
 
-        case SC_RESTORE: {
-          LRESULT lrv = DefWindowProc(hwnd,umsg,wParam,lParam);
-          ShowOwnedPopups(hwnd,TRUE);
-          return(lrv);
-        }
-      }
-      return DefWindowProc(hwnd,umsg,wParam,lParam);
-
-
-      case WM_CHANGENOTIFY:
-          if (iFileWatchingMode == 1 || bModified || Encoding_HasChanged(CPI_GET))
-            SetForegroundWindow(hwnd);
-
-          if (PathFileExists(szCurFile)) {
-
-            if ((iFileWatchingMode == 2 && !bModified && !Encoding_HasChanged(CPI_GET)) ||
-                 MsgBox(MBYESNO,IDS_FILECHANGENOTIFY) == IDYES) {
-
-              int iCurPos     = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-              int iAnchorPos  = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
-              int iVisTopLine = (int)SendMessage(hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
-              int iDocTopLine = (int)SendMessage(hwndEdit,SCI_DOCLINEFROMVISIBLE,(WPARAM)iVisTopLine,0);
-              int iXOffset    = (int)SendMessage(hwndEdit,SCI_GETXOFFSET,0,0);
-              BOOL bIsTail    = (iCurPos == iAnchorPos) && (iCurPos == SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
-
-              Encoding_SrcWeak(Encoding_Current(CPI_GET));
-
-              if (FileLoad(TRUE,FALSE,TRUE,FALSE,szCurFile)) {
-
-                if (bIsTail && iFileWatchingMode == 2) {
-                  EditJumpTo(hwndEdit,-1,0);
-                  EditEnsureSelectionVisible(hwndEdit);
-                }
-
-                else if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
-                  char tch[5] = { '\0' };
-                  SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tch);
-                  if (StringCchCompareXA(tch,".LOG") != 0) {
-                    int iNewTopLine;
-                    SendMessage(hwndEdit,SCI_SETSEL,iAnchorPos,iCurPos);
-                    SendMessage(hwndEdit,SCI_ENSUREVISIBLE,(WPARAM)iDocTopLine,0);
-                    iNewTopLine = (int)SendMessage(hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
-                    SendMessage(hwndEdit,SCI_LINESCROLL,0,(LPARAM)iVisTopLine - iNewTopLine);
-                    SendMessage(hwndEdit,SCI_SETXOFFSET,(WPARAM)iXOffset,0);
-                  }
-                }
-              }
-            }
-          }
-          else {
-
-            if (MsgBox(MBYESNO,IDS_FILECHANGENOTIFY2) == IDYES)
-              FileSave(TRUE,FALSE,FALSE,FALSE);
-          }
-
-          if (!bRunningWatch)
-            InstallFileWatching(szCurFile);
-
-        break;
+    case WM_CHANGENOTIFY:
+      MsgChangeNotify(hwnd, wParam, lParam);
+      break;
 
 
     //// This message is posted before Notepad3 reactivates itself
@@ -1592,65 +1285,19 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
 
     case WM_TRAYMESSAGE:
-      switch(lParam)
-      {
-        case WM_RBUTTONUP: {
-
-          HMENU hMenu = LoadMenu(g_hInstance,MAKEINTRESOURCE(IDR_POPUPMENU));
-          HMENU hMenuPopup = GetSubMenu(hMenu,2);
-
-          POINT pt;
-          int iCmd;
-
-          SetForegroundWindow(hwnd);
-
-          GetCursorPos(&pt);
-          SetMenuDefaultItem(hMenuPopup,IDM_TRAY_RESTORE,FALSE);
-          iCmd = TrackPopupMenu(hMenuPopup,
-                   TPM_NONOTIFY|TPM_RETURNCMD|TPM_LEFTBUTTON|TPM_RIGHTBUTTON,
-                   pt.x,pt.y,0,hwnd,NULL);
-
-          PostMessage(hwnd,WM_NULL,0,0);
-
-          DestroyMenu(hMenu);
-
-          if (iCmd == IDM_TRAY_RESTORE) {
-            ShowNotifyIcon(hwnd,FALSE);
-            RestoreWndFromTray(hwnd);
-            ShowOwnedPopups(hwnd,TRUE);
-          }
-
-          else if (iCmd == IDM_TRAY_EXIT) {
-              //ShowNotifyIcon(hwnd,FALSE);
-              SendMessage(hwnd,WM_CLOSE,0,0);
-            }
-          }
-          return TRUE;
-
-        case WM_LBUTTONUP:
-          ShowNotifyIcon(hwnd,FALSE);
-          RestoreWndFromTray(hwnd);
-          ShowOwnedPopups(hwnd,TRUE);
-          return TRUE;
-      }
-      break;
+      return MsgTrayMessage(hwnd, wParam, lParam);
 
 
     default:
-
       if (umsg == msgTaskbarCreated) {
         if (!IsWindowVisible(hwnd))
           ShowNotifyIcon(hwnd,TRUE);
-          SetNotifyIconTitle(hwnd);
-        return(0);
+        SetNotifyIconTitle(hwnd);
       }
-
-      return DefWindowProc(hwnd,umsg,wParam,lParam);
-
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
 
-  return(0);
-
+  return 0;
 }
 
 
@@ -2031,6 +1678,74 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
 //=============================================================================
 //
+//  MsgEndSession() - Handle WM_ENDSESSION,WM_DESTROY
+//
+//
+void MsgEndSession(HWND hwnd, UINT umsg)
+{
+  static BOOL bShutdownOK = FALSE;
+
+  if (!bShutdownOK) {
+
+    // Terminate file watching
+    InstallFileWatching(NULL);
+
+    // GetWindowPlacement
+    wininfo = GetMyWindowPlacement(hwnd, NULL);
+
+    DragAcceptFiles(hwnd, FALSE);
+
+    // Terminate clipboard watching
+    if (flagPasteBoard) {
+      KillTimer(hwnd, ID_PASTEBOARDTIMER);
+      ChangeClipboardChain(hwnd, hwndNextCBChain);
+    }
+
+    // Destroy find / replace dialog
+    if (IsWindow(hDlgFindReplace))
+      DestroyWindow(hDlgFindReplace);
+
+    // call SaveSettings() when hwndToolbar is still valid
+    SaveSettings(FALSE);
+
+    if (StringCchLen(szIniFile) != 0) {
+
+      // Cleanup unwanted MRU's
+      if (!bSaveRecentFiles) {
+        MRU_Empty(pFileMRU);
+        MRU_Save(pFileMRU);
+      }
+      else
+        MRU_MergeSave(pFileMRU, TRUE, flagRelativeFileMRU, flagPortableMyDocs);
+      MRU_Destroy(pFileMRU);
+
+      if (!bSaveFindReplace) {
+        MRU_Empty(mruFind);
+        MRU_Empty(mruReplace);
+        MRU_Save(mruFind);
+        MRU_Save(mruReplace);
+      }
+      else {
+        MRU_MergeSave(mruFind, FALSE, FALSE, FALSE);
+        MRU_MergeSave(mruReplace, FALSE, FALSE, FALSE);
+      }
+      MRU_Destroy(mruFind);
+      MRU_Destroy(mruReplace);
+    }
+
+    // Remove tray icon if necessary
+    ShowNotifyIcon(hwnd, FALSE);
+
+    bShutdownOK = TRUE;
+  }
+
+  if (umsg == WM_DESTROY)
+    PostQuitMessage(0);
+}
+
+
+//=============================================================================
+//
 //  MsgThemeChanged() - Handle WM_THEMECHANGED
 //
 //
@@ -2166,8 +1881,332 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   UNUSED(hwnd);
   UNUSED(lParam);
-
 }
+
+
+
+//=============================================================================
+//
+//  MsgDropFiles() - Handles WM_DROPFILES
+//
+//
+void MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+  WCHAR szBuf[MAX_PATH + 40];
+  HDROP hDrop = (HDROP)wParam;
+
+  // Reset Change Notify
+  //bPendingChangeNotify = FALSE;
+
+  if (IsIconic(hwnd))
+    ShowWindow(hwnd, SW_RESTORE);
+
+  //SetForegroundWindow(hwnd);
+
+  DragQueryFile(hDrop, 0, szBuf, COUNTOF(szBuf));
+
+  if (PathIsDirectory(szBuf)) {
+    WCHAR tchFile[MAX_PATH] = { L'\0' };
+    if (OpenFileDlg(hwndMain, tchFile, COUNTOF(tchFile), szBuf))
+      FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+  }
+
+  else
+    FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
+
+  if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
+    MsgBox(MBWARN, IDS_ERR_DROP);
+
+  DragFinish(hDrop);
+
+  UNUSED(lParam);
+}
+
+
+//=============================================================================
+//
+//  MsgCopyData() - Handles WM_COPYDATA
+//
+//
+LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+  PCOPYDATASTRUCT pcds = (PCOPYDATASTRUCT)lParam;
+
+  // Reset Change Notify
+  //bPendingChangeNotify = FALSE;
+
+  SetDlgItemInt(hwnd, IDC_REUSELOCK, GetTickCount(), FALSE);
+
+  if (pcds->dwData == DATA_NOTEPAD3_PARAMS) {
+    LPnp3params params = LocalAlloc(LPTR, pcds->cbData);
+    CopyMemory(params, pcds->lpData, pcds->cbData);
+
+    if (params->flagLexerSpecified)
+      flagLexerSpecified = 1;
+
+    if (params->flagQuietCreate)
+      flagQuietCreate = 1;
+
+    if (params->flagFileSpecified) {
+
+      BOOL bOpened = FALSE;
+      Encoding_Source(params->iSrcEncoding);
+
+      if (PathIsDirectory(&params->wchData)) {
+        WCHAR tchFile[MAX_PATH] = { L'\0' };
+        if (OpenFileDlg(hwndMain, tchFile, COUNTOF(tchFile), &params->wchData))
+          bOpened = FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+      }
+
+      else
+        bOpened = FileLoad(FALSE, FALSE, FALSE, FALSE, &params->wchData);
+
+      if (bOpened) {
+
+        if (params->flagChangeNotify == 1) {
+          iFileWatchingMode = 0;
+          bResetFileWatching = TRUE;
+          InstallFileWatching(szCurFile);
+        }
+        else if (params->flagChangeNotify == 2) {
+          iFileWatchingMode = 2;
+          bResetFileWatching = TRUE;
+          InstallFileWatching(szCurFile);
+        }
+
+        if (0 != params->flagSetEncoding) {
+          flagSetEncoding = params->flagSetEncoding;
+          SendMessage(
+            hwnd,
+            WM_COMMAND,
+            MAKELONG(IDM_ENCODING_ANSI + flagSetEncoding - 1, 1),
+            0);
+          flagSetEncoding = 0;
+        }
+
+        if (0 != params->flagSetEOLMode) {
+          flagSetEOLMode = params->flagSetEOLMode;
+          SendMessage(
+            hwndMain,
+            WM_COMMAND,
+            MAKELONG(IDM_LINEENDINGS_CRLF + flagSetEOLMode - 1, 1),
+            0);
+          flagSetEOLMode = 0;
+        }
+
+        if (params->flagLexerSpecified) {
+          if (params->iInitialLexer < 0) {
+            WCHAR wchExt[32] = L".";
+            StringCchCopyN(CharNext(wchExt), 32, StrEnd(&params->wchData) + 1, 31);
+            Style_SetLexerFromName(hwndEdit, &params->wchData, wchExt);
+          }
+          else if (params->iInitialLexer >= 0 && params->iInitialLexer < NUMLEXERS)
+            Style_SetLexerFromID(hwndEdit, params->iInitialLexer);
+        }
+
+        if (params->flagTitleExcerpt) {
+          StringCchCopyN(szTitleExcerpt, COUNTOF(szTitleExcerpt), StrEnd(&params->wchData) + 1, COUNTOF(szTitleExcerpt));
+        }
+      }
+      // reset
+      Encoding_Source(CPI_NONE);
+    }
+
+    if (params->flagJumpTo) {
+      if (params->iInitialLine == 0)
+        params->iInitialLine = 1;
+      EditJumpTo(hwndEdit, params->iInitialLine, params->iInitialColumn);
+      EditEnsureSelectionVisible(hwndEdit);
+    }
+
+    flagLexerSpecified = 0;
+    flagQuietCreate = 0;
+
+    LocalFree(params);
+
+    UpdateToolbar();
+    UpdateStatusbar();
+  }
+
+  UNUSED(wParam);
+  return TRUE;
+}
+
+//=============================================================================
+//
+//  MsgContextMenu() - Handles WM_CONTEXTMENU
+//
+//
+LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+  HMENU hmenu;
+  int imenu = 0;
+  POINT pt;
+  int nID = GetDlgCtrlID((HWND)wParam);
+
+  if ((nID != IDC_EDIT) && (nID != IDC_STATUSBAR) &&
+    (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
+    return DefWindowProc(hwnd, umsg, wParam, lParam);
+
+  hmenu = LoadMenu(g_hInstance, MAKEINTRESOURCE(IDR_POPUPMENU));
+  //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,FALSE);
+
+  pt.x = (int)(short)LOWORD(lParam);
+  pt.y = (int)(short)HIWORD(lParam);
+
+  switch (nID) {
+  case IDC_EDIT:
+    {
+      if (SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0) && (pt.x != -1) && (pt.y != -1)) {
+        int iNewPos;
+        POINT ptc;
+        ptc.x = pt.x;  ptc.y = pt.y;
+        ScreenToClient(hwndEdit, &ptc);
+        iNewPos = (int)SendMessage(hwndEdit, SCI_POSITIONFROMPOINT, (WPARAM)ptc.x, (LPARAM)ptc.y);
+        SendMessage(hwndEdit, SCI_GOTOPOS, (WPARAM)iNewPos, 0);
+      }
+
+      if (pt.x == -1 && pt.y == -1) {
+        int iCurrentPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+        pt.x = (int)SendMessage(hwndEdit, SCI_POINTXFROMPOSITION, 0, (LPARAM)iCurrentPos);
+        pt.y = (int)SendMessage(hwndEdit, SCI_POINTYFROMPOSITION, 0, (LPARAM)iCurrentPos);
+        ClientToScreen(hwndEdit, &pt);
+      }
+      imenu = 0;
+    }
+    break;
+
+  case IDC_TOOLBAR:
+  case IDC_STATUSBAR:
+  case IDC_REBAR:
+    if (pt.x == -1 && pt.y == -1)
+      GetCursorPos(&pt);
+    imenu = 1;
+    break;
+  }
+
+  TrackPopupMenuEx(GetSubMenu(hmenu, imenu),
+                   TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
+
+  DestroyMenu(hmenu);
+  return 0;
+}
+
+
+
+//=============================================================================
+//
+//  MsgChangeNotify() - Handles WM_CHANGENOTIFY
+//
+//
+void MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+  if (iFileWatchingMode == 1 || bModified || Encoding_HasChanged(CPI_GET))
+    SetForegroundWindow(hwnd);
+
+  if (PathFileExists(szCurFile)) {
+
+    if ((iFileWatchingMode == 2 && !bModified && !Encoding_HasChanged(CPI_GET)) ||
+        MsgBox(MBYESNO, IDS_FILECHANGENOTIFY) == IDYES) {
+
+      int iCurPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+      int iAnchorPos = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
+      int iVisTopLine = (int)SendMessage(hwndEdit, SCI_GETFIRSTVISIBLELINE, 0, 0);
+      int iDocTopLine = (int)SendMessage(hwndEdit, SCI_DOCLINEFROMVISIBLE, (WPARAM)iVisTopLine, 0);
+      int iXOffset = (int)SendMessage(hwndEdit, SCI_GETXOFFSET, 0, 0);
+      BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurPos == SendMessage(hwndEdit, SCI_GETLENGTH, 0, 0));
+
+      Encoding_SrcWeak(Encoding_Current(CPI_GET));
+
+      if (FileLoad(TRUE, FALSE, TRUE, FALSE, szCurFile)) {
+
+        if (bIsTail && iFileWatchingMode == 2) {
+          EditJumpTo(hwndEdit, -1, 0);
+          EditEnsureSelectionVisible(hwndEdit);
+        }
+
+        else if (SendMessage(hwndEdit, SCI_GETLENGTH, 0, 0) >= 4) {
+          char tch[5] = { '\0' };
+          SendMessage(hwndEdit, SCI_GETTEXT, 5, (LPARAM)tch);
+          if (StringCchCompareXA(tch, ".LOG") != 0) {
+            int iNewTopLine;
+            SendMessage(hwndEdit, SCI_SETSEL, iAnchorPos, iCurPos);
+            SendMessage(hwndEdit, SCI_ENSUREVISIBLE, (WPARAM)iDocTopLine, 0);
+            iNewTopLine = (int)SendMessage(hwndEdit, SCI_GETFIRSTVISIBLELINE, 0, 0);
+            SendMessage(hwndEdit, SCI_LINESCROLL, 0, (LPARAM)iVisTopLine - iNewTopLine);
+            SendMessage(hwndEdit, SCI_SETXOFFSET, (WPARAM)iXOffset, 0);
+          }
+        }
+      }
+    }
+  }
+  else {
+
+    if (MsgBox(MBYESNO, IDS_FILECHANGENOTIFY2) == IDYES)
+      FileSave(TRUE, FALSE, FALSE, FALSE);
+  }
+
+  if (!bRunningWatch)
+    InstallFileWatching(szCurFile);
+
+  UNUSED(wParam);
+  UNUSED(lParam);
+}
+
+
+//=============================================================================
+//
+//  MsgTrayMessage() - Handles WM_TRAYMESSAGE
+//
+//
+LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+  switch (lParam) {
+  case WM_RBUTTONUP:
+    {
+
+      HMENU hMenu = LoadMenu(g_hInstance, MAKEINTRESOURCE(IDR_POPUPMENU));
+      HMENU hMenuPopup = GetSubMenu(hMenu, 2);
+
+      POINT pt;
+      int iCmd;
+
+      SetForegroundWindow(hwnd);
+
+      GetCursorPos(&pt);
+      SetMenuDefaultItem(hMenuPopup, IDM_TRAY_RESTORE, FALSE);
+      iCmd = TrackPopupMenu(hMenuPopup,
+                            TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
+                            pt.x, pt.y, 0, hwnd, NULL);
+
+      PostMessage(hwnd, WM_NULL, 0, 0);
+
+      DestroyMenu(hMenu);
+
+      if (iCmd == IDM_TRAY_RESTORE) {
+        ShowNotifyIcon(hwnd, FALSE);
+        RestoreWndFromTray(hwnd);
+        ShowOwnedPopups(hwnd, TRUE);
+      }
+
+      else if (iCmd == IDM_TRAY_EXIT) {
+        //ShowNotifyIcon(hwnd,FALSE);
+        SendMessage(hwnd, WM_CLOSE, 0, 0);
+      }
+    }
+    return TRUE;
+
+  case WM_LBUTTONUP:
+    ShowNotifyIcon(hwnd, FALSE);
+    RestoreWndFromTray(hwnd);
+    ShowOwnedPopups(hwnd, TRUE);
+    return TRUE;
+  }
+
+  UNUSED(wParam);
+  return 0;
+}
+
 
 
 //=============================================================================
@@ -2439,6 +2478,35 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UNUSED(lParam);
 }
 
+
+//=============================================================================
+//
+//  MsgSysCommand() - Handles WM_SYSCOMMAND
+//
+//
+LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+  switch (wParam) {
+  case SC_MINIMIZE:
+    ShowOwnedPopups(hwnd, FALSE);
+    if (bMinimizeToTray) {
+      MinimizeWndToTray(hwnd);
+      ShowNotifyIcon(hwnd, TRUE);
+      SetNotifyIconTitle(hwnd);
+      return(0);
+    }
+    else
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
+
+  case SC_RESTORE:
+    {
+      LRESULT lrv = DefWindowProc(hwnd, umsg, wParam, lParam);
+      ShowOwnedPopups(hwnd, TRUE);
+      return(lrv);
+    }
+  }
+  return DefWindowProc(hwnd, umsg, wParam, lParam);
+}
 
 //=============================================================================
 //
