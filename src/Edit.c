@@ -83,6 +83,7 @@ extern int iMarkOccurrencesMaxCount;
 
 #define DELIM_BUFFER 258
 char DelimChars[DELIM_BUFFER] = { '\0' };
+char DelimCharsAccel[DELIM_BUFFER] = { '\0' };
 char WordCharsDefault[DELIM_BUFFER] = { '\0' };
 char WhiteSpaceCharsDefault[DELIM_BUFFER] = { '\0' };
 char PunctuationCharsDefault[DELIM_BUFFER] = { '\0' };
@@ -330,7 +331,6 @@ HWND EditCreate(HWND hwndParent)
 //
 void EditInitWordDelimiter(HWND hwnd)
 {
-  
   ZeroMemory(WordCharsDefault, COUNTOF(WordCharsDefault));
   ZeroMemory(WhiteSpaceCharsDefault, COUNTOF(WhiteSpaceCharsDefault));
   ZeroMemory(PunctuationCharsDefault, COUNTOF(PunctuationCharsDefault));
@@ -342,9 +342,12 @@ void EditInitWordDelimiter(HWND hwnd)
   SendMessage(hwnd, SCI_GETWORDCHARS, 0, (LPARAM)WordCharsDefault);
   SendMessage(hwnd, SCI_GETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsDefault);
   SendMessage(hwnd, SCI_GETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsDefault);
-  // delim chars are whitespace & punctuation
+
+  // default word delimiter chars are whitespace & punctuation & line ends
+  const char* lineEnds = "\r\n";
   StringCchCopyA(DelimChars,COUNTOF(DelimChars),WhiteSpaceCharsDefault);
   StringCchCatA(DelimChars,COUNTOF(DelimChars),PunctuationCharsDefault);
+  StringCchCatA(DelimChars,COUNTOF(DelimChars), lineEnds);
 
   // 2nd get user settings
   WCHAR buffer[DELIM_BUFFER] = { L'\0' };
@@ -378,7 +381,11 @@ void EditInitWordDelimiter(HWND hwnd)
       StringCchCatNA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), &(PunctuationCharsDefault[i]), 1);
     }
   }
-
+  
+  // construct accelerated delimiters
+  StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
+  StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
+ 
 }
 
 
@@ -5918,7 +5925,7 @@ struct WLIST {
 
 void CompleteWord(HWND hwnd, BOOL autoInsert) 
 {
-  const char* NON_WORD = bAccelWordNavigation ? WhiteSpaceCharsAccelerated : DelimChars;
+  const char* NON_WORD = bAccelWordNavigation ? DelimCharsAccel : DelimChars;
 
   int iCurrentPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
   int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iCurrentPos, 0);
@@ -6096,7 +6103,7 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   if (bMarkOccurrencesMatchWords)
   {
     int iSelStart2 = 0;
-    const char* delims = (bAccelWordNavigation ? WhiteSpaceCharsAccelerated : DelimChars);
+    const char* delims = (bAccelWordNavigation ? DelimCharsAccel : DelimChars);
     while ((iSelStart2 <= iSelCount) && pszText[iSelStart2])
     {
       if (StrChrIA(delims,pszText[iSelStart2]))
