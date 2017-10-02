@@ -3,6 +3,23 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 518 (2 Oktober 2017)
+--------------------------------------------------
+~ Fix: Made corrections to build 505 change log (spelling, grammar, etc).
+~ Fix: FILE status becomes [MODIFIED] when doing CONTROL+A to select ALL.
+~ Fix: Paste from clipboard to ANSI code page: 
+  unnecessary switching encoding to UTF-8.
+~ Fix: Undo/Redo of virtual space selection rectangle not correct.
+~ Fix: StatusBar SelectionCount (Sel) : count chars instead of bytes.
+~ Fix: Punctuation chars for "Accelerated Word Navigation" (Settings2: 
+  ExtendedWhiteSpaceChars= add non word chars here).
+~ Fix: Do mouse wheel scrolling in editor area only.
+~ Fix: DPI awareness in manifest.
+~ Code cleanup
+~ Fix: word delimiter in case of "Accelerated Word Navigation".
+
+
+--------------------------------------------------
 Version 2 Build 505 (23 September 2017)
 --------------------------------------------------
 + 1st chunk of StrSafe migration.
