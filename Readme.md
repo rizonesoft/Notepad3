@@ -5,7 +5,7 @@
 [![Build status](https://img.shields.io/appveyor/ci/rizonesoft/notepad3/master.svg)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Gratipay](https://img.shields.io/gratipay/project/Notepad3.svg)](https://gratipay.com/Notepad3/)
-[![](https://img.shields.io/badge/Donate-PayPal-brightgreen.svg)]()
+[![](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.me/rizonesoft)
 
 ## Changes compared to the official Notepad2:
 
