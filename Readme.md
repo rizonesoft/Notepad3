@@ -1,11 +1,11 @@
 # Notepad3
 
-> *Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod. MiniPath is based on code from Florian Balmer's metapath.*
-
 [![Build status](https://img.shields.io/appveyor/ci/rizonesoft/notepad3/master.svg)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Gratipay](https://img.shields.io/gratipay/project/Notepad3.svg)](https://gratipay.com/Notepad3/)
 [![](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.me/rizonesoft)
+
+> *Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod. MiniPath is based on code from Florian Balmer's metapath.*
 
 ## Changes compared to the official Notepad2:
 
