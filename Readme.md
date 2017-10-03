@@ -5,8 +5,8 @@
 
 [![Build status](https://img.shields.io/appveyor/ci/rizonesoft/notepad3/master.svg)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
-[![](https://img.shields.io/github/issues-raw/badges/shields.svg)]()
-[![](https://img.shields.io/github/issues-closed-raw/badges/shields.svg)]()
+[![](https://img.shields.io/github/issues-raw/rizonesoft/notepad3/shields.svg)]()
+[![](https://img.shields.io/github/issues-closed-raw/rizonesoft/notepad3/shields.svg)]()
 [![GitHub contributors](https://img.shields.io/github/contributors/cdnjs/cdnjs.svg)]()
 [![Github search hit counter](https://img.shields.io/github/search/torvalds/linux/goto.svg)]()
 [![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg)]()
