@@ -4,7 +4,7 @@
 
 
 [![Build status](https://img.shields.io/appveyor/ci/rizonesoft/notepad3/master.svg)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
-[![AppVeyor tests](https://img.shields.io/appveyor/tests/rizonesoft/notepad3/coap-net-iu0to.svg)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
 ## Changes compared to the official Notepad2:
 
