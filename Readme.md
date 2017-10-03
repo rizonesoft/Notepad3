@@ -5,7 +5,7 @@
 [![Gratipay](https://img.shields.io/gratipay/project/Notepad3.svg)](https://gratipay.com/Notepad3/)
 [![](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.me/rizonesoft)
 
-Notepad3 is a fast and light-weight Scintilla-based text editor with syntax highlighting. It has a small memory footprint, but is powerful enough to handle most programming jobs. Download Notepad3 [here](https://www.rizonesoft.com/downloads/notepad3/).
+Notepad3 is a fast and light-weight Scintilla-based text editor with syntax highlighting. It has a small memory footprint, but is powerful enough to handle most programming jobs. [Download Notepad3 here](https://www.rizonesoft.com/downloads/notepad3/).
 
 > *Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod. MiniPath is based on code from Florian Balmer's metapath.*
 
