@@ -3,7 +3,7 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
-Version 2 Build 518 (2 October 2017)
+Version 2 Build 548 (3 October 2017)
 --------------------------------------------------
 ~ Fix: Made corrections to build 505 change log (spelling, grammar, etc).
 ~ Fix: FILE status becomes [MODIFIED] when doing CONTROL+A to select ALL.
@@ -17,7 +17,7 @@ Version 2 Build 518 (2 October 2017)
 ~ Fix: DPI awareness in manifest.
 ~ Code cleanup
 ~ Fix: word delimiter in case of "Accelerated Word Navigation".
-
+~ Correct UFT Spelling on Encoding menu.
 
 --------------------------------------------------
 Version 2 Build 505 (23 September 2017)
