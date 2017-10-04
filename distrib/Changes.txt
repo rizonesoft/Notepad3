@@ -3,6 +3,105 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 548 (3 October 2017)
+--------------------------------------------------
+~ Fix: Made corrections to build 505 change log (spelling, grammar, etc).
+~ Fix: FILE status becomes [MODIFIED] when doing CONTROL+A to select ALL.
+~ Fix: Paste from clipboard to ANSI code page: 
+  unnecessary switching encoding to UTF-8.
+~ Fix: Undo/Redo of virtual space selection rectangle not correct.
+~ Fix: StatusBar SelectionCount (Sel) : count chars instead of bytes.
+~ Fix: Punctuation chars for "Accelerated Word Navigation" (Settings2: 
+  ExtendedWhiteSpaceChars= add non word chars here).
+~ Fix: Do mouse wheel scrolling in editor area only.
+~ Fix: DPI awareness in manifest.
+~ Code cleanup
+~ Fix: word delimiter in case of "Accelerated Word Navigation".
+~ Correct UFT Spelling on Encoding menu.
+
+--------------------------------------------------
+Version 2 Build 505 (23 September 2017)
+--------------------------------------------------
++ 1st chunk of StrSafe migration.
++ Some more StrSafe changes
++ Fix: manually edited settings (SciDirectWriteTech, SciFontQuality) 
+  should be placed in settings section [Settings2].
++ Extended default "space char set" for "Accelerated Word Navigation" to avoid 
+  unexpected "accelerated word navigation" behavior, space-char extension is 
+  restricted to 7-bit ASCII char set (ignoring specified non-7-bit-ASCII chars).
++ StrSafe adaptions
++ Fixed: settings SciFontQuality have been overwritten by Scheme configuration.
+  (Fonts: Calibri, Cambria, Candara, Consolas, Constantia, Corbel, Segoe UI are using 
+  'cleartype smoothing' (SC_EFF_QUALITY_LCD_OPTIMIZED) by default, if not 
+  configured in Schema definition for Lexer)
++ Added font "Source Code Pro" to list of special fonts for cleartype smoothing.
++ Fix: undo destructive operation on selection (rectangle) does not restore 
+  selection or preserves selection mode (extends selection on caret movement)
+  -> need to send SCI_CANCEL at the end of restored selection.
++ Found bug caused by StrSafe migration 
+  (COUNTOF() for buffer size must not be used on buffer pointer)
++ migrate StrCpyN() and StrCatBuff() to corresponding StrSafe.h methods
++ Adapted lstrcpyn() calls according to StrSafe.h requirements.
++ Refactoring of "Accelerated Word Navigation" to be compliant with Scintillas 
+  WhiteSpace and Punctuation defines.
++ "Accelerated Word Navigation" activation influences "Mark Occurrences" (whole word) if set
++ Extended: Remember selection undo / redo
++ Added undo / redo selection to more operations
++ Found Scintilla 400 method "SCI_CUT" (cut selection) broken: lost last char
+  replaced by SCI_COPY & SCI_CLEAR combination (for now).
++ changes to EditGetClipboardText() solved the SCI_CUT problem, so it can be 
+  switched back from SCI_COPY & SCI_CLEAR to SCI_CUT 
+  (byte alignment in 64-bit, i am nut sure)
++ switching Scintilla internal codepage to UTF-8 only (resp. Japanese, 
+  Chinese and Korean DBCS) single-byte encoding is supported externally and 
+  converted (fore and back) to UTF-8 internally, this simplifies 
+  i.e. clipboard exchange, etc.
++ Removed support for obsolete Korean Johab (1361) codepage.
++ Fixed ConvertText() according to internal SCI codepage
++ Refactoring: Encoding handling
++ More operations for selections undo/redo.
++ Enabled "unlimited" (as in Scintilla Lib: dep. on memory and INT_MAX) 
+  undo / redo selection history using utarray from uthash header library 
+  (https://troydhanson.github.io/uthash/index.html)
++ Moved crypto readme to doc dir
++ remove internal codepage support for Chinese, Japan, Korean DBCS use 
+  generalized UTF-8 codepage instead 
+  (conversions do not work as expected within scintilla lib)
+- Dropping Windows XP support , using compiler toolset vc141 Win SDK 10.0. 
+  (current VC++ redistributable needed?)
++ Replaced lstrcmp() and lstrcmpi() by StrSafe (helper.h defined) methods.
++ Relaunch elevated keeping current changes in a buffer.
++ Fixed some problems for feature "relaunch elevated preserve changes".
++ First AppVeyor config
++ Remember window position in case of "relaunch elevated".
++ Fixed memory initialization problem during InitInstance()
++ Enhanced consistency between toolbar (save button) and titlebar (modified marker)
++ "Relaunch elevated": use current .ini-file instead of new user's (Admin's) .ini
++ Cleanup tmp filebuffer, if elevation has been rejected.
++ Fixed crash in case of wrong Encoding (detection)
++ Changed version display on Help/About.
++ New Powershell script to patch version numbers
++ appveyor.yml using same powershell commands to patch version
+- Remove FindReplaceDlg handle declared as external from compilation unit 
+  Edit.c - not really needed here. (externals (handles / pointers) seemed to 
+  be a problem on module init instance time in 64-bit)
++ Fixed: Open find dialog the first time (new NP3 instance) while
+  clipboard is empty, NP3 crashes (try to LocalFree() static allocated memory)
++ Fixed: RegExpr "Find previous" corrected (find mode "left to right" has been 
+  used, which has not the intended behavior).
++ Updated Compiler Info.
++ Added build.txt (and .ps1 changes) for Local Build Version patching 
+  (common AppVeyor/Local script).
++ Fixed issue "Convert to Title Case" while selected text is all upper case.
++ Fixed broken "Complete Word" feature (Ctrl+Enter/Return).
++ Changed accelerator key for feature "Complete Word" from Ctrl+Enter to Ctrl+Alt+Enter.
++ Added feature "Insert New (empty) Line above current line Ctrl+Enter (as in VisualStudio).
++ Code cleanup
++ Added new Settings "Virtual Space on Rectangular Selection" used to select. 
+  rectangle not delimited by line endings (but including virtual space).
++ Readme.txt Updated. (Thanks Will)
+
+--------------------------------------------------
 Version 2 Build 450 (18 August 2017)
 --------------------------------------------------
 - Fixed "file modified" flag not set on Ctrl+X actions

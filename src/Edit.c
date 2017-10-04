@@ -46,6 +46,9 @@
 #define LCMAP_TITLECASE  0x00000300  // Title Case Letters bit mask
 #endif
 
+#define DEFAULT_SCROLL_WIDTH 4096    // 4K
+
+
 extern HWND  hwndMain;
 extern HWND  hwndEdit;
 extern HINSTANCE g_hInstance;
@@ -75,14 +78,18 @@ extern BOOL bLoadNFOasOEM;
 
 extern BOOL bAccelWordNavigation;
 extern BOOL bVirtualSpaceInRectSelection;
+extern int iMarkOccurrencesCount;
 extern int iMarkOccurrencesMaxCount;
 
 #define DELIM_BUFFER 258
 char DelimChars[DELIM_BUFFER] = { '\0' };
+char DelimCharsAccel[DELIM_BUFFER] = { '\0' };
+char WordCharsDefault[DELIM_BUFFER] = { '\0' };
 char WhiteSpaceCharsDefault[DELIM_BUFFER] = { '\0' };
 char PunctuationCharsDefault[DELIM_BUFFER] = { '\0' };
+char WordCharsAccelerated[DELIM_BUFFER] = { '\0' };
 char WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { '\0' };
-char PunctuationCharsAccelerated[DELIM_BUFFER] = { '\0' };
+char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
 enum AlignMask {
   ALIGN_LEFT = 0,
@@ -282,7 +289,7 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETPASTECONVERTENDINGS,1,0);
   SendMessage(hwnd,SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT|SC_MOD_DELETETEXT|SC_MOD_CONTAINER,0);
   SendMessage(hwnd,SCI_USEPOPUP,FALSE,0);
-  SendMessage(hwnd,SCI_SETSCROLLWIDTH,2048,0);
+  SendMessage(hwnd,SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTHTRACKING,TRUE,0);
   SendMessage(hwnd,SCI_SETENDATLASTLINE,TRUE,0);
   SendMessage(hwnd,SCI_SETCARETSTICKY,FALSE,0);
@@ -293,7 +300,8 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS,(bVirtualSpaceInRectSelection ? SCVS_RECTANGULARSELECTION : SCVS_NONE),0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
-
+  SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE,0);
+    
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + (SCMOD_CTRL << 16)),SCI_PARADOWN);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_PRIOR + (SCMOD_CTRL << 16)),SCI_PARAUP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)),SCI_PARADOWNEXTEND);
@@ -323,39 +331,61 @@ HWND EditCreate(HWND hwndParent)
 //
 void EditInitWordDelimiter(HWND hwnd)
 {
+  ZeroMemory(WordCharsDefault, COUNTOF(WordCharsDefault));
+  ZeroMemory(WhiteSpaceCharsDefault, COUNTOF(WhiteSpaceCharsDefault));
+  ZeroMemory(PunctuationCharsDefault, COUNTOF(PunctuationCharsDefault));
+  ZeroMemory(WordCharsAccelerated, COUNTOF(WordCharsAccelerated));
+  ZeroMemory(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated));
+  //ZeroMemory(PunctuationCharsAccelerated, COUNTOF(PunctuationCharsAccelerated)); // empty!
+
   // 1st get/set defaults
-  SendMessage(hwnd,SCI_GETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsDefault);
-  SendMessage(hwnd,SCI_GETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsDefault);
-  // delim chars are whitespace & punctuation
+  SendMessage(hwnd, SCI_GETWORDCHARS, 0, (LPARAM)WordCharsDefault);
+  SendMessage(hwnd, SCI_GETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsDefault);
+  SendMessage(hwnd, SCI_GETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsDefault);
+
+  // default word delimiter chars are whitespace & punctuation & line ends
+  const char* lineEnds = "\r\n";
   StringCchCopyA(DelimChars,COUNTOF(DelimChars),WhiteSpaceCharsDefault);
   StringCchCatA(DelimChars,COUNTOF(DelimChars),PunctuationCharsDefault);
-  // init accelerated white space array
-  StringCchCopyA(WhiteSpaceCharsAccelerated,COUNTOF(WhiteSpaceCharsAccelerated),WhiteSpaceCharsDefault);
+  StringCchCatA(DelimChars,COUNTOF(DelimChars), lineEnds);
 
   // 2nd get user settings
-  char whitesp[DELIM_BUFFER] = { '\0' };
   WCHAR buffer[DELIM_BUFFER] = { L'\0' };
+  ZeroMemory(buffer, DELIM_BUFFER * sizeof(WCHAR));
+
   IniGetString(L"Settings2",L"ExtendedWhiteSpaceChars",L"",buffer,COUNTOF(buffer));
-  if (StringCchLen(buffer) == 0)
-    StringCchCopyA(whitesp,COUNTOF(whitesp),PunctuationCharsDefault);
-  else
-    WideCharToMultiByteStrg(CP_ACP,buffer,whitesp);
-  // add only 7-bit-ASCII chars to accelerate whitespace list
+  char whitesp[DELIM_BUFFER] = { '\0' };
+  if (StringCchLen(buffer) > 0) {
+    WideCharToMultiByteStrg(CP_ACP, buffer, whitesp);
+  }
+
+  // 3rd set accelerated arrays
+  
+  // init with default
+  StringCchCopyA(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated), WhiteSpaceCharsDefault);
+
+  // add only 7-bit-ASCII chars to accelerated whitespace list
   for (size_t i = 0; i < strlen(whitesp); i++) {
     if (whitesp[i] & 0x7F) {
-      if (!StrChrA(WhiteSpaceCharsAccelerated,whitesp[i])) {
-        StringCchCatNA(WhiteSpaceCharsAccelerated,COUNTOF(WhiteSpaceCharsAccelerated),
-                       &(whitesp[i]),1);
+      if (!StrChrA(WhiteSpaceCharsAccelerated, whitesp[i])) {
+        StringCchCatNA(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated), &(whitesp[i]), 1); 
       }
     }
   }
-  // remove 7-bit-ASCII whitespace chars from accelerated punctuation list
+
+  // construct word char array
+  StringCchCopyA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), WordCharsDefault); // init
+  // add punctuation chars not listed in white-space array
   for (size_t i = 0; i < strlen(PunctuationCharsDefault); i++) {
-    if (!StrChrA(WhiteSpaceCharsAccelerated,PunctuationCharsDefault[i])) {
-      StringCchCatNA(PunctuationCharsAccelerated,COUNTOF(PunctuationCharsAccelerated),
-                     &(PunctuationCharsDefault[i]),1);
+    if (!StrChrA(WhiteSpaceCharsAccelerated, PunctuationCharsDefault[i])) {
+      StringCchCatNA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), &(PunctuationCharsDefault[i]), 1);
     }
   }
+  
+  // construct accelerated delimiters
+  StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
+  StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
+ 
 }
 
 
@@ -379,7 +409,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   UndoRedoSelectionMap(-1,NULL);
   SendMessage(hwnd,SCI_CLEARALL,0,0);
   SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
-  SendMessage(hwnd,SCI_SETSCROLLWIDTH,2048,0);
+  SendMessage(hwnd,SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH,0);
   SendMessage(hwnd,SCI_SETXOFFSET,0,0);
 
   FileVars_Apply(hwnd,&fvCurFile);
@@ -522,32 +552,37 @@ BOOL EditSetNewEncoding(HWND hwnd,int iCurrentEncoding,int iNewEncoding,BOOL bNo
 //
 BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 {
+  if ((pszText == NULL) || (cchLen < 1))
+    return FALSE;
+
+  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
+
+  if ((codepage == CP_UTF7) || (codepage == CP_UTF8))
+    return FALSE;
+
   const UINT uCodePageExcept[20] = {
    42, // (Symbol)
    50220,50221,50222,50225,50227,50229,
    54936, // (GB18030)
    57002,57003,57004,57005,57006,57007,57008,57009,57010,57011,
    65000, // (UTF-7)
-   65001 // (UTF-8)
+   65001  // (UTF-8)
   };
 
-  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
-
-  DWORD dwFlags = WC_NO_BEST_FIT_CHARS;
+  DWORD dwFlags = WC_NO_BEST_FIT_CHARS | WC_COMPOSITECHECK | WC_DEFAULTCHAR;
   for (int i = 0; i < COUNTOF(uCodePageExcept); i++) {
     if (codepage == uCodePageExcept[i]) {
-      dwFlags = 0;
+      dwFlags = 0L;
       break;
     }
   }
 
-  BOOL bSuccess = TRUE;
-  BOOL bHasForeignChars = FALSE;
-  if ((codepage != CP_UTF7) && (codepage != CP_UTF8)) {
-    bSuccess = (BOOL)WideCharToMultiByte(codepage,dwFlags,pszText,cchLen,NULL,0,NULL,&bHasForeignChars);
-  }
+  BOOL bDefaultCharsUsed = FALSE;
+  int cch = WideCharToMultiByte(codepage, dwFlags, pszText, cchLen, NULL, 0, NULL, &bDefaultCharsUsed);
 
-  return (!bSuccess || bHasForeignChars);
+  BOOL bSuccess = ((cch >= cchLen) && (cch != (int)0xFFFD)) ? TRUE : FALSE;
+  
+  return (!bSuccess || bDefaultCharsUsed);
 }
 
 
@@ -569,11 +604,12 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
     return (pEmpty);
   }
 
+  // get clipboard
   hmem = GetClipboardData(CF_UNICODETEXT);
   pwch = GlobalLock(hmem);
   wlen = lstrlenW(pwch);
 
-  if (bCheckEncoding && EditIsRecodingNeeded(pwch,wlen + 2)) 
+  if (bCheckEncoding && EditIsRecodingNeeded(pwch,wlen)) 
   {
     int iPos = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
     int iAnchor = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
@@ -589,16 +625,9 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
       SendMessage(hwnd,SCI_SETSEL,(WPARAM)iPos,(LPARAM)iAnchor);
     }
     EditFixPositions(hwnd);
-
-    // check expected recoding
-    if (Encoding_Current(CPI_GET) != CPI_UTF8) {
-      return (NULL);
-    }
   }
 
-  // get clipboard
-  UINT codepage = Encoding_SciGetCodePage(hwnd);
-
+  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
   mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,NULL,NULL);
   pmch = LocalAlloc(LPTR,mlen + 2);
   if (pmch && mlen != 0) {
@@ -5896,7 +5925,7 @@ struct WLIST {
 
 void CompleteWord(HWND hwnd, BOOL autoInsert) 
 {
-  const char* NON_WORD = DelimChars;
+  const char* NON_WORD = bAccelWordNavigation ? DelimCharsAccel : DelimChars;
 
   int iCurrentPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
   int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iCurrentPos, 0);
@@ -6040,8 +6069,11 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   int iSelCount;
 
   // feature is off
-  if (!iMarkOccurrences)
+  if (!iMarkOccurrences) {
+    iMarkOccurrencesCount = -1;
+    UpdateStatusbar();
     return;
+  }
 
 
   iTextLen = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
@@ -6071,7 +6103,7 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   if (bMarkOccurrencesMatchWords)
   {
     int iSelStart2 = 0;
-    const char* delims = (bAccelWordNavigation ? WhiteSpaceCharsAccelerated : DelimChars);
+    const char* delims = (bAccelWordNavigation ? DelimCharsAccel : DelimChars);
     while ((iSelStart2 <= iSelCount) && pszText[iSelStart2])
     {
       if (StrChrIA(delims,pszText[iSelStart2]))
@@ -6094,11 +6126,11 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   SendMessage(hwnd, SCI_INDICSETFORE, 1, 0xff << ((iMarkOccurrences - 1) << 3));
   SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_ROUNDBOX);
 
-  int iMatchesCount = 0;
+  iMarkOccurrencesCount = 0;
   while ((iPos = (int)SendMessage(hwnd, SCI_FINDTEXT,
       (bMarkOccurrencesMatchCase ? SCFIND_MATCHCASE : 0) | (bMarkOccurrencesMatchWords ? SCFIND_WHOLEWORD : 0),
       (LPARAM)&ttf)) != -1
-      && ++iMatchesCount < iMarkOccurrencesMaxCount)
+      && (++iMarkOccurrencesCount < iMarkOccurrencesMaxCount))
   {
     // mark this match
     SendMessage(hwnd, SCI_INDICATORFILLRANGE, iPos, iSelCount);
@@ -6106,8 +6138,11 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
     if (ttf.chrg.cpMin == ttf.chrg.cpMax)
       break;
   }
-
   LocalFree(pszText);
+
+  UpdateStatusbar();
+  iMarkOccurrencesCount = 0;
+
   return;
 }
 
@@ -7127,11 +7162,12 @@ void EditSetAccelWordNav(HWND hwnd,BOOL bAccelWordNav)
   bAccelWordNavigation = bAccelWordNav;
 
   if (bAccelWordNavigation) {
-    SendMessage(hwnd,SCI_SETWHITESPACECHARS,0,(LPARAM)WhiteSpaceCharsAccelerated);
-    SendMessage(hwnd,SCI_SETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsAccelerated);
+    SendMessage(hwnd, SCI_SETWORDCHARS, 0, (LPARAM)WordCharsAccelerated);
+    SendMessage(hwnd, SCI_SETWHITESPACECHARS, 0,(LPARAM)WhiteSpaceCharsAccelerated);
+    SendMessage(hwnd, SCI_SETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsAccelerated);
   }
   else
-    SendMessage(hwnd,SCI_SETCHARSDEFAULT,0,0);
+    SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
 }
 
 

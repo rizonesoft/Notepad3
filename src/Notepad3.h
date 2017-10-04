@@ -49,6 +49,10 @@ typedef struct _undoSel
   int anchorPos_redo;
   int currPos_redo;
   int rectSelVS;
+  int anchorVS_undo;
+  int currVS_undo;
+  int anchorVS_redo;
+  int currVS_redo;
 } 
 UndoRedoSelection_t;
 
@@ -154,14 +158,21 @@ BOOL OpenFileDlg(HWND,LPWSTR,int,LPCWSTR);
 BOOL SaveFileDlg(HWND,LPWSTR,int,LPCWSTR);
 
 
-LRESULT CALLBACK MainWndProc(HWND,UINT,WPARAM,LPARAM);
-LRESULT MsgCreate(HWND,WPARAM,LPARAM);
-void    CreateBars(HWND,HINSTANCE);
-void    MsgThemeChanged(HWND,WPARAM,LPARAM);
-void    MsgSize(HWND,WPARAM,LPARAM);
-void    MsgInitMenu(HWND,WPARAM,LPARAM);
-LRESULT MsgCommand(HWND,WPARAM,LPARAM);
-LRESULT MsgNotify(HWND,WPARAM,LPARAM);
+LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT MsgCreate(HWND, WPARAM, LPARAM);
+void    MsgEndSession(HWND, UINT);
+void    CreateBars(HWND, HINSTANCE);
+void    MsgThemeChanged(HWND, WPARAM, LPARAM);
+void    MsgSize(HWND, WPARAM, LPARAM);
+void    MsgDropFiles(HWND, WPARAM, LPARAM);
+LRESULT MsgCopyData(HWND, WPARAM, LPARAM);
+LRESULT MsgContextMenu(HWND, UINT, WPARAM, LPARAM);
+void    MsgInitMenu(HWND, WPARAM, LPARAM);
+void    MsgChangeNotify(HWND, WPARAM, LPARAM);
+LRESULT MsgTrayMessage(HWND, WPARAM, LPARAM);
+LRESULT MsgSysCommand(HWND, UINT, WPARAM, LPARAM);
+LRESULT MsgCommand(HWND, WPARAM, LPARAM);
+LRESULT MsgNotify(HWND, WPARAM, LPARAM);
 
 
 #endif //_NP3_NOTEPAD3_H_

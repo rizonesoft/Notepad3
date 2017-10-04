@@ -1,5 +1,5 @@
 Notepad3 and MiniPath Copyright © 2008-2016 Rizonesoft, All rights reserved.
-https://rizonesoft.com
+https://www.rizonesoft.com
 
 Notepad2 and metapath Copyright © 2004-2011 Florian Balmer
 Notepad2-mod Copyright © 2010-2014 All contributors, see Readme.txt
