@@ -2062,7 +2062,6 @@ void EditInvertCase(HWND hwnd)
         SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)(iSelEnd - iSelStart),(LPARAM)pszText);
         SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
         SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
-
       }
 
       GlobalFree(pszText);
@@ -2132,7 +2131,6 @@ void EditTitleCase(HWND hwnd)
         SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)(iSelEnd - iSelStart),(LPARAM)pszText);
         SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
         SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
-
       }
 
       GlobalFree(pszText);
