@@ -464,10 +464,8 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 
   else {
 
-    //~UINT cpSrc = mEncoding[encSource].uCodePage;
-    //~UINT cpDst = mEncoding[encDest].uCodePage;
-    UINT cpSrc = Encoding_SciMappedCodePage(encSource);
-    UINT cpDst = Encoding_SciMappedCodePage(encDest);
+    UINT cpSrc = Encoding_SciGetCodePage(hwnd); // fixed internal 
+    UINT cpDst = mEncoding[encDest].uCodePage;
 
     if (cpSrc == cpDst)
       return(TRUE);
@@ -569,16 +567,26 @@ BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
    65001  // (UTF-8)
   };
 
+  BOOL useNullParams = FALSE;
   DWORD dwFlags = WC_NO_BEST_FIT_CHARS | WC_COMPOSITECHECK | WC_DEFAULTCHAR;
   for (int i = 0; i < COUNTOF(uCodePageExcept); i++) {
     if (codepage == uCodePageExcept[i]) {
-      dwFlags = 0L;
+      useNullParams = TRUE;
       break;
     }
   }
 
   BOOL bDefaultCharsUsed = FALSE;
-  int cch = WideCharToMultiByte(codepage, dwFlags, pszText, cchLen, NULL, 0, NULL, &bDefaultCharsUsed);
+  int cch = 0;
+  if (useNullParams)
+    cch = WideCharToMultiByte(codepage, 0, pszText, cchLen, NULL, 0, NULL, NULL);
+  else
+    cch = WideCharToMultiByte(codepage, dwFlags, pszText, cchLen, NULL, 0, NULL, &bDefaultCharsUsed);
+
+  if (useNullParams && (cch == 0)) {
+    if (GetLastError() != ERROR_NO_UNICODE_TRANSLATION)
+      cch = cchLen; // don't care
+  }
 
   BOOL bSuccess = ((cch >= cchLen) && (cch != (int)0xFFFD)) ? TRUE : FALSE;
   
@@ -627,11 +635,13 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
     EditFixPositions(hwnd);
   }
 
-  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
-  mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,NULL,NULL);
-  pmch = LocalAlloc(LPTR,mlen + 2);
+  // translate to SCI editor component codepage (default: UTF-8)
+  UINT codepage = Encoding_SciGetCodePage(hwnd);
+
+  mlen = WideCharToMultiByte(codepage,0,pwch,wlen,NULL,0,NULL,NULL);
+  pmch = LocalAlloc(LPTR,mlen + 1);
   if (pmch && mlen != 0) {
-    int cnt = WideCharToMultiByte(codepage,0,pwch,wlen + 2,pmch,mlen + 2,NULL,NULL);
+    int cnt = WideCharToMultiByte(codepage,0,pwch,wlen,pmch,mlen + 1,NULL,NULL);
     if (cnt == 0)
       return (pmch);
   }
@@ -670,8 +680,8 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
       mlen2 = (int)(d - ptmp);
 
       LocalFree(pmch);
-      pmch = LocalAlloc(LPTR,mlen2 + 2);
-      StringCchCopyA(pmch,mlen2 + 2,ptmp);
+      pmch = LocalAlloc(LPTR,mlen2 + 1);
+      StringCchCopyA(pmch,mlen2 + 1,ptmp);
       LocalFree(ptmp);
     }
   }

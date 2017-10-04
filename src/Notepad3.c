@@ -3072,7 +3072,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bSwapClipBoard = TRUE;
     case IDM_EDIT_PASTE:
       {
-        char *pClip = EditGetClipboardText(hwndEdit,TRUE);
+        char *pClip = EditGetClipboardText(hwndEdit,!bSkipUnicodeDetection);
         if (!pClip)
           break; // recoding canceled
 
