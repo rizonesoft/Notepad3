@@ -3081,7 +3081,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bSwapClipBoard = TRUE;
     case IDM_EDIT_PASTE:
       {
-        char *pClip = EditGetClipboardText(hwndEdit,!bSkipUnicodeDetection);
+        int lineCount = 0;
+        int lenLastLine = 0;
+        char *pClip = EditGetClipboardText(hwndEdit,!bSkipUnicodeDetection,&lineCount,&lenLastLine);
         if (!pClip)
           break; // recoding canceled
 
@@ -3089,9 +3091,20 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         if (SendMessage(hwndEdit,SCI_GETSELECTIONEMPTY,0,0))
         {
+          int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+          int iCurrLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
+          int iCurColumn = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
+          int iCurVSpace = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+
           SendMessage(hwndEdit, SCI_PASTE, 0, 0);
+
           if (bSwapClipBoard)
             SendMessage(hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
+
+          int newLn = iCurrLine + lineCount + 1;
+          int newCol = (lenLastLine > 1) ? ((lineCount == 0) ? (iCurColumn + lenLastLine + 1) : lenLastLine) : iCurColumn + 1;
+          EditJumpTo(hwndEdit, newLn, newCol + iCurVSpace);
+
         }
         else {
 
@@ -4284,7 +4297,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bVirtualSpaceInRectSelection = (bVirtualSpaceInRectSelection) ? FALSE : TRUE;  // toggle
       //SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
       SendMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,
-        (bVirtualSpaceInRectSelection ? SCVS_RECTANGULARSELECTION : SCVS_NONE),0);
+        (bVirtualSpaceInRectSelection ? (SCVS_RECTANGULARSELECTION | SCVS_USERACCESSIBLE | SCVS_NOWRAPLINESTART) : SCVS_NONE),0);
       break;
     
     case IDM_VIEW_MARKOCCURRENCES_OFF:

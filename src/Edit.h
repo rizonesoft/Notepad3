@@ -50,7 +50,7 @@ void  EditSetNewText(HWND,char*,DWORD);
 BOOL  EditConvertText(HWND,int,int,BOOL);
 BOOL  EditSetNewEncoding(HWND,int,int,BOOL,BOOL);
 BOOL  EditIsRecodingNeeded(WCHAR*,int);
-char* EditGetClipboardText(HWND,BOOL);
+char* EditGetClipboardText(HWND,BOOL,int*,int*);
 BOOL  EditCopyAppend(HWND);
 int   EditDetectEOLMode(HWND,char*,DWORD);
 BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*);
