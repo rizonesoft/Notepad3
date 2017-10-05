@@ -3094,14 +3094,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
           int iCurrLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
           int iCurColumn = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
+          int iCurVSpace = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
 
           SendMessage(hwndEdit, SCI_PASTE, 0, 0);
+
           if (bSwapClipBoard)
             SendMessage(hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
 
           int newLn = iCurrLine + lineCount + 1;
           int newCol = (lenLastLine > 1) ? ((lineCount == 0) ? (iCurColumn + lenLastLine + 1) : lenLastLine) : iCurColumn + 1;
-          EditJumpTo(hwndEdit, newLn, newCol);
+          EditJumpTo(hwndEdit, newLn, newCol + iCurVSpace);
 
         }
         else {
