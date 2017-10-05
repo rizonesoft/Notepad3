@@ -1271,6 +1271,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         dwLastCopyTime = GetTickCount();
       else
         bLastCopyFromMe = FALSE;
+
       if (hwndNextCBChain)
         SendMessage(hwndNextCBChain,WM_DRAWCLIPBOARD,wParam,lParam);
       break;
@@ -3022,24 +3023,31 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
 
+        int token = BeginSelUndoAction();
         if (!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
         {
-          int token = BeginSelUndoAction();
           SendMessage(hwndEdit, SCI_CUT, 0, 0);
-          EndSelUndoAction(token);
         }
-        else {
-          SendMessage(hwndEdit, SCI_LINECUT, 0, 0);   // VisualStudio behavior
+        else { // VisualStudio behavior
+          SendMessage(hwndEdit, SCI_COPYALLOWLINE, 0, 0);
+          SendMessage(hwndEdit, SCI_LINEDELETE, 0, 0);   
         }
+        EndSelUndoAction(token);
+        UpdateToolbar();
       }
       break;
 
 
     case IDM_EDIT_COPY:
-      if (flagPasteBoard)
-        bLastCopyFromMe = TRUE;
-      SendMessage(hwndEdit,SCI_COPYALLOWLINE, 0, 0);
-      UpdateToolbar();
+      {
+        if (flagPasteBoard)
+          bLastCopyFromMe = TRUE;
+
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_COPYALLOWLINE, 0, 0);
+        EndSelUndoAction(token);
+        UpdateToolbar();
+      }
       break;
 
 
@@ -3050,8 +3058,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_COPYRANGE,0,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
-        UpdateToolbar();
         EndSelUndoAction(token);
+        UpdateToolbar();
       }
       break;
 
@@ -3060,55 +3068,67 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-        
+
         int token = BeginSelUndoAction();
         EditCopyAppend(hwndEdit);
-        UpdateToolbar();
         EndSelUndoAction(token);
+        UpdateToolbar();
       }
       break;
+
 
     case IDM_EDIT_SWAP:
       bSwapClipBoard = TRUE;
     case IDM_EDIT_PASTE:
       {
-        char *pClip = EditGetClipboardText(hwndEdit,TRUE);
+        int lineCount = 0;
+        int lenLastLine = 0;
+        char *pClip = EditGetClipboardText(hwndEdit,!bSkipUnicodeDetection,&lineCount,&lenLastLine);
         if (!pClip)
           break; // recoding canceled
 
-        int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-        int iAnchor = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
-
         int token = BeginSelUndoAction();
 
-        if (SendMessage(hwndEdit,SCI_GETSELECTIONEMPTY,0,0)) {
+        if (SendMessage(hwndEdit,SCI_GETSELECTIONEMPTY,0,0))
+        {
+          int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+          int iCurrLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
+          int iCurColumn = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
+          int iCurVSpace = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
 
-          SendMessage(hwndEdit,SCI_REPLACESEL,(WPARAM)0,(LPARAM)pClip);
+          SendMessage(hwndEdit, SCI_PASTE, 0, 0);
 
-          if (bSwapClipBoard) {
-            int iNewPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-            SendMessage(hwndEdit,SCI_SETSEL,iPos,iNewPos);
-            SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_CLEARCLIPBOARD,1),0);
-          }
+          if (bSwapClipBoard)
+            SendMessage(hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
+
+          int newLn = iCurrLine + lineCount + 1;
+          int newCol = (lenLastLine > 1) ? ((lineCount == 0) ? (iCurColumn + lenLastLine + 1) : lenLastLine) : iCurColumn + 1;
+          EditJumpTo(hwndEdit, newLn, newCol + iCurVSpace);
+
         }
         else {
+
+          int iCurrPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+          int iAnchor = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
+
           if (flagPasteBoard)
             bLastCopyFromMe = TRUE;
 
           if (bSwapClipBoard)
-            SendMessage(hwndEdit,SCI_CUT,0,0);
-          else
-            SendMessage(hwndEdit,SCI_CLEAR,0,0);
+            SendMessage(hwndEdit,SCI_COPY,0,0);
 
-          SendMessage(hwndEdit,SCI_REPLACESEL,(WPARAM)0,(LPARAM)pClip);
+          SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)pClip);
 
-          if (iPos > iAnchor)
-            SendMessage(hwndEdit,SCI_SETSEL,iAnchor,iAnchor + lstrlenA(pClip));
+          if (iCurrPos > iAnchor)
+            SendMessage(hwndEdit,SCI_SETSEL, iAnchor, iAnchor + lstrlenA(pClip));
           else
-            SendMessage(hwndEdit,SCI_SETSEL,iPos + lstrlenA(pClip),iPos);
+            SendMessage(hwndEdit,SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
+
         }
         EndSelUndoAction(token);
         LocalFree(pClip);
+        UpdateToolbar();
+        UpdateStatusbar();
       }
       break;
 
@@ -3123,14 +3143,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_CLEARCLIPBOARD:
-      if (OpenClipboard(hwnd)) {
-        if (CountClipboardFormats() > 0) {
-          EmptyClipboard();
-          UpdateToolbar();
-          UpdateStatusbar();
-        }
-        CloseClipboard();
-      }
+      SendMessage(hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
+      UpdateToolbar();
+      UpdateStatusbar();
       break;
 
 
@@ -3227,6 +3242,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
+
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_LINECUT,0,0);
         UpdateToolbar();
@@ -3238,6 +3254,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_COPYLINE:
       if (flagPasteBoard)
         bLastCopyFromMe = TRUE;
+
       SendMessage(hwndEdit,SCI_LINECOPY,0,0);
       UpdateToolbar();
       break;
@@ -4280,7 +4297,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bVirtualSpaceInRectSelection = (bVirtualSpaceInRectSelection) ? FALSE : TRUE;  // toggle
       //SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
       SendMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,
-        (bVirtualSpaceInRectSelection ? SCVS_RECTANGULARSELECTION : SCVS_NONE),0);
+        (bVirtualSpaceInRectSelection ? (SCVS_RECTANGULARSELECTION | SCVS_USERACCESSIBLE | SCVS_NOWRAPLINESTART) : SCVS_NONE),0);
       break;
     
     case IDM_VIEW_MARKOCCURRENCES_OFF:

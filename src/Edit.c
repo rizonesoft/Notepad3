@@ -286,18 +286,22 @@ HWND EditCreate(HWND hwndParent)
 
   Encoding_SciSetCodePage(hwnd,iDefaultEncoding);
   SendMessage(hwnd,SCI_SETEOLMODE,SC_EOL_CRLF,0);
-  SendMessage(hwnd,SCI_SETPASTECONVERTENDINGS,1,0);
+  SendMessage(hwnd,SCI_SETPASTECONVERTENDINGS,TRUE,0);
   SendMessage(hwnd,SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT|SC_MOD_DELETETEXT|SC_MOD_CONTAINER,0);
   SendMessage(hwnd,SCI_USEPOPUP,FALSE,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTHTRACKING,TRUE,0);
   SendMessage(hwnd,SCI_SETENDATLASTLINE,TRUE,0);
-  SendMessage(hwnd,SCI_SETCARETSTICKY,FALSE,0);
+  SendMessage(hwnd,SCI_SETCARETLINEVISIBLEALWAYS,TRUE,0);
+  SendMessage(hwnd,SCI_SETCARETSTICKY,SC_CARETSTICKY_OFF,0);
+  //SendMessage(hwnd,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
   SendMessage(hwnd,SCI_SETXCARETPOLICY,CARET_SLOP|CARET_EVEN,50);
   SendMessage(hwnd,SCI_SETYCARETPOLICY,CARET_EVEN,0);
+  SendMessage(hwnd,SCI_SETMOUSESELECTIONRECTANGULARSWITCH,TRUE,0);
   SendMessage(hwnd,SCI_SETMULTIPLESELECTION,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALSELECTIONTYPING,FALSE,0);
-  SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS,(bVirtualSpaceInRectSelection ? SCVS_RECTANGULARSELECTION : SCVS_NONE),0);
+  SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS,
+    (bVirtualSpaceInRectSelection ? (SCVS_RECTANGULARSELECTION | SCVS_USERACCESSIBLE | SCVS_NOWRAPLINESTART) : SCVS_NONE),0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
   SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE,0);
@@ -464,10 +468,8 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 
   else {
 
-    //~UINT cpSrc = mEncoding[encSource].uCodePage;
-    //~UINT cpDst = mEncoding[encDest].uCodePage;
-    UINT cpSrc = Encoding_SciMappedCodePage(encSource);
-    UINT cpDst = Encoding_SciMappedCodePage(encDest);
+    UINT cpSrc = Encoding_SciGetCodePage(hwnd); // fixed internal 
+    UINT cpDst = mEncoding[encDest].uCodePage;
 
     if (cpSrc == cpDst)
       return(TRUE);
@@ -569,16 +571,26 @@ BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
    65001  // (UTF-8)
   };
 
+  BOOL useNullParams = FALSE;
   DWORD dwFlags = WC_NO_BEST_FIT_CHARS | WC_COMPOSITECHECK | WC_DEFAULTCHAR;
   for (int i = 0; i < COUNTOF(uCodePageExcept); i++) {
     if (codepage == uCodePageExcept[i]) {
-      dwFlags = 0L;
+      useNullParams = TRUE;
       break;
     }
   }
 
   BOOL bDefaultCharsUsed = FALSE;
-  int cch = WideCharToMultiByte(codepage, dwFlags, pszText, cchLen, NULL, 0, NULL, &bDefaultCharsUsed);
+  int cch = 0;
+  if (useNullParams)
+    cch = WideCharToMultiByte(codepage, 0, pszText, cchLen, NULL, 0, NULL, NULL);
+  else
+    cch = WideCharToMultiByte(codepage, dwFlags, pszText, cchLen, NULL, 0, NULL, &bDefaultCharsUsed);
+
+  if (useNullParams && (cch == 0)) {
+    if (GetLastError() != ERROR_NO_UNICODE_TRANSLATION)
+      cch = cchLen; // don't care
+  }
 
   BOOL bSuccess = ((cch >= cchLen) && (cch != (int)0xFFFD)) ? TRUE : FALSE;
   
@@ -592,7 +604,7 @@ BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 //
 
 
-char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
+char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount,int* pLenLastLn) {
   HANDLE hmem;
   WCHAR *pwch;
   char  *pmch;
@@ -627,24 +639,28 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
     EditFixPositions(hwnd);
   }
 
-  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
-  mlen = WideCharToMultiByte(codepage,0,pwch,wlen + 2,NULL,0,NULL,NULL);
-  pmch = LocalAlloc(LPTR,mlen + 2);
+  // translate to SCI editor component codepage (default: UTF-8)
+  UINT codepage = Encoding_SciGetCodePage(hwnd);
+
+  mlen = WideCharToMultiByte(codepage,0,pwch,wlen,NULL,0,NULL,NULL);
+  pmch = LocalAlloc(LPTR,mlen + 1);
   if (pmch && mlen != 0) {
-    int cnt = WideCharToMultiByte(codepage,0,pwch,wlen + 2,pmch,mlen + 2,NULL,NULL);
+    int cnt = WideCharToMultiByte(codepage,0,pwch,wlen,pmch,mlen + 1,NULL,NULL);
     if (cnt == 0)
       return (pmch);
   }
   else 
     return (pmch);
 
+  int lineCount = 0;
+  int lenLastLine = 0;
   if ((BOOL)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) {
     ptmp = LocalAlloc(LPTR,mlen * 2 + 2);
     if (ptmp) {
       char *s = pmch;
       char *d = ptmp;
       int eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
-      for (int i = 0; (i <= mlen) && (*s != '\0'); i++) {
+      for (int i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
         if (*s == '\n' || *s == '\r') {
           if (eolmode == SC_EOL_CR) {
             *d++ = '\r';
@@ -661,6 +677,8 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
             s++;
           }
           s++;
+          ++lineCount;
+          lenLastLine = 0;
         }
         else {
           *d++ = *s++;
@@ -670,14 +688,35 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding) {
       mlen2 = (int)(d - ptmp);
 
       LocalFree(pmch);
-      pmch = LocalAlloc(LPTR,mlen2 + 2);
-      StringCchCopyA(pmch,mlen2 + 2,ptmp);
+      pmch = LocalAlloc(LPTR,mlen2 + 1);
+      StringCchCopyA(pmch,mlen2 + 1,ptmp);
       LocalFree(ptmp);
+    }
+  }
+  else {
+    // count lines only
+    char *s = pmch;
+    for (int i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
+      if (*s == '\n' || *s == '\r') {
+        if ((*s == '\r') && (i + 1 < mlen) && (*(s + 1) == '\n')) {
+          i++;
+          s++;
+        }
+        s++;
+        ++lineCount;
+        lenLastLine = 0;
+      }
     }
   }
 
   GlobalUnlock(hmem);
   CloseClipboard();
+
+  if (pLineCount)
+    *pLineCount = lineCount;
+
+  if (pLenLastLn)
+    *pLenLastLn = lenLastLine;
 
   return (pmch);
 }
@@ -2052,7 +2091,6 @@ void EditInvertCase(HWND hwnd)
         SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)(iSelEnd - iSelStart),(LPARAM)pszText);
         SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
         SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
-
       }
 
       GlobalFree(pszText);
@@ -2122,7 +2160,6 @@ void EditTitleCase(HWND hwnd)
         SendMessage(hwnd,SCI_ADDTEXT,(WPARAM)(iSelEnd - iSelStart),(LPARAM)pszText);
         SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
         SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
-
       }
 
       GlobalFree(pszText);
@@ -5170,7 +5207,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             // if first time you bring up find/replace dialog, copy content from clipboard to find box
             if (bFirstTime)
             {
-              char* pClip = EditGetClipboardText(hwnd,FALSE);
+              char* pClip = EditGetClipboardText(hwnd,FALSE,NULL,NULL);
               if (pClip) {
                 int len = lstrlenA(pClip);
                 if (len > 0 && len < FNDRPL_BUFFER) {
@@ -5830,7 +5867,7 @@ BOOL EditReplace(HWND hwnd,LPCEDITFINDREPLACE lpefr)
 
   if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
-    pszReplace2 = EditGetClipboardText(hwnd,TRUE);
+    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL,NULL);
   }
   else {
     //lstrcpyA(szReplace2,lpefr->szReplace);
@@ -6191,7 +6228,7 @@ BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
 
   if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
-    pszReplace2 = EditGetClipboardText(hwnd,TRUE);
+    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL,NULL);
   }
   else {
     //lstrcpyA(szReplace2,lpefr->szReplace);
@@ -6320,7 +6357,7 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
 
   if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
-    pszReplace2 = EditGetClipboardText(hwnd,TRUE);
+    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL,NULL);
   }
   else {
     //lstrcpyA(szReplace2,lpefr->szReplace);
