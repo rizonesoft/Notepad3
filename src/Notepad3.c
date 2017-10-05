@@ -3082,7 +3082,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_PASTE:
       {
         int lineCount = 0;
-        char *pClip = EditGetClipboardText(hwndEdit,!bSkipUnicodeDetection,&lineCount);
+        int lenLastLine = 0;
+        char *pClip = EditGetClipboardText(hwndEdit,!bSkipUnicodeDetection,&lineCount,&lenLastLine);
         if (!pClip)
           break; // recoding canceled
 
@@ -3091,14 +3092,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (SendMessage(hwndEdit,SCI_GETSELECTIONEMPTY,0,0))
         {
           int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-          int iCurLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
+          int iCurrLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
           int iCurColumn = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
 
           SendMessage(hwndEdit, SCI_PASTE, 0, 0);
           if (bSwapClipBoard)
             SendMessage(hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
 
-          EditJumpTo(hwndEdit, iCurLine + lineCount + 1, iCurColumn + 1);
+          int newLn = iCurrLine + lineCount + 1;
+          int newCol = (lenLastLine > 1) ? ((lineCount == 0) ? (iCurColumn + lenLastLine + 1) : lenLastLine) : iCurColumn + 1;
+          EditJumpTo(hwndEdit, newLn, newCol);
 
         }
         else {

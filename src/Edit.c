@@ -604,7 +604,7 @@ BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 //
 
 
-char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount) {
+char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount,int* pLenLastLn) {
   HANDLE hmem;
   WCHAR *pwch;
   char  *pmch;
@@ -653,13 +653,14 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount) {
     return (pmch);
 
   int lineCount = 0;
+  int lenLastLine = 0;
   if ((BOOL)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) {
     ptmp = LocalAlloc(LPTR,mlen * 2 + 2);
     if (ptmp) {
       char *s = pmch;
       char *d = ptmp;
       int eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
-      for (int i = 0; (i <= mlen) && (*s != '\0'); i++) {
+      for (int i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
         if (*s == '\n' || *s == '\r') {
           if (eolmode == SC_EOL_CR) {
             *d++ = '\r';
@@ -677,6 +678,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount) {
           }
           s++;
           ++lineCount;
+          lenLastLine = 0;
         }
         else {
           *d++ = *s++;
@@ -694,7 +696,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount) {
   else {
     // count lines only
     char *s = pmch;
-    for (int i = 0; (i <= mlen) && (*s != '\0'); i++) {
+    for (int i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
       if (*s == '\n' || *s == '\r') {
         if ((*s == '\r') && (i + 1 < mlen) && (*(s + 1) == '\n')) {
           i++;
@@ -702,6 +704,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount) {
         }
         s++;
         ++lineCount;
+        lenLastLine = 0;
       }
     }
   }
@@ -711,6 +714,9 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount) {
 
   if (pLineCount)
     *pLineCount = lineCount;
+
+  if (pLenLastLn)
+    *pLenLastLn = lenLastLine;
 
   return (pmch);
 }
@@ -5201,7 +5207,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             // if first time you bring up find/replace dialog, copy content from clipboard to find box
             if (bFirstTime)
             {
-              char* pClip = EditGetClipboardText(hwnd,FALSE,NULL);
+              char* pClip = EditGetClipboardText(hwnd,FALSE,NULL,NULL);
               if (pClip) {
                 int len = lstrlenA(pClip);
                 if (len > 0 && len < FNDRPL_BUFFER) {
@@ -5861,7 +5867,7 @@ BOOL EditReplace(HWND hwnd,LPCEDITFINDREPLACE lpefr)
 
   if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
-    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL);
+    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL,NULL);
   }
   else {
     //lstrcpyA(szReplace2,lpefr->szReplace);
@@ -6222,7 +6228,7 @@ BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
 
   if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
-    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL);
+    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL,NULL);
   }
   else {
     //lstrcpyA(szReplace2,lpefr->szReplace);
@@ -6351,7 +6357,7 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
 
   if (StringCchCompareNA(lpefr->szReplace,FNDRPL_BUFFER,"^c",-1) == 0) {
     iReplaceMsg = SCI_REPLACETARGET;
-    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL);
+    pszReplace2 = EditGetClipboardText(hwnd,TRUE,NULL,NULL);
   }
   else {
     //lstrcpyA(szReplace2,lpefr->szReplace);
