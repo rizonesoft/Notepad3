@@ -477,7 +477,8 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     pwchText = GlobalAlloc(GPTR,wchLen);
 
     // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
-    UINT cpSci = Encoding_SciGetCodePage(hwnd); // fixed internal 
+    //UINT cpSci = mEncoding[encSource].uCodePage;
+    UINT cpSci = Encoding_SciGetCodePage(hwnd); // fixed Scintilla internal 
     UINT cpDst = mEncoding[encDest].uCodePage;
     cbwText = MultiByteToWideChar(cpDst,0,pchText,length,pwchText,wchLen);
     cbText = WideCharToMultiByte(cpSci,0,pwchText,cbwText,pchText,chLen,NULL,NULL);
