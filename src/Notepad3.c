@@ -1869,11 +1869,11 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EndDeferWindowPos(hdwp);
 
   // Statusbar width
-  aWidth[0] = max(120,min(cx/3,StatusCalcPaneWidth(hwndStatus,L"Ln 9'999'999 : 9'999'999   Col 9'999'999 : 999   Sel 9'999'999")));
-  aWidth[1] = aWidth[0] + StatusCalcPaneWidth(hwndStatus,L"9'999'999 Bytes");
-  aWidth[2] = aWidth[1] + StatusCalcPaneWidth(hwndStatus,L"Unicode BE BOM");
-  aWidth[3] = aWidth[2] + StatusCalcPaneWidth(hwndStatus,L"CR+LF");
-  aWidth[4] = aWidth[3] + StatusCalcPaneWidth(hwndStatus,L"OVR");
+  aWidth[0] = max(120,min(cx/3,StatusCalcPaneWidth(hwndStatus,L" Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999 ")));
+  aWidth[1] = aWidth[0] + StatusCalcPaneWidth(hwndStatus,L" 9'999'999 Bytes [UTF-8] ");
+  aWidth[2] = aWidth[1] + StatusCalcPaneWidth(hwndStatus,L" Unicode (UTF-8) Signature ");
+  aWidth[3] = aWidth[2] + StatusCalcPaneWidth(hwndStatus,L" CR+LF ");
+  aWidth[4] = aWidth[3] + StatusCalcPaneWidth(hwndStatus,L" OVR ");
   aWidth[5] = -1;
 
   SendMessage(hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
@@ -7160,7 +7160,7 @@ void UpdateStatusbar()
   int iLineEnd = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iSelEnd , 0 );
   int iStartOfLinePos = (int)SendMessage( hwndEdit , SCI_POSITIONFROMLINE , iLineEnd , 0 );
   int iLinesSelected = iLineEnd - iLineStart;
-  if( iSelStart != iSelEnd  &&  iStartOfLinePos != iSelEnd ) iLinesSelected += 1;
+  if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) iLinesSelected += 1;
   StringCchPrintf(tchLinesSelected,COUNTOF(tchLinesSelected),L"%i",iLinesSelected);
   FormatNumberStr(tchLinesSelected);
 
@@ -7177,16 +7177,16 @@ void UpdateStatusbar()
   Encoding_GetLabel(Encoding_Current(CPI_GET));
 
   if (iEOLMode == SC_EOL_CR)
-    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L"CR");
+    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L" CR");
   else if (iEOLMode == SC_EOL_LF)
-    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L"LF");
+    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L" LF");
   else
-    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L"CR+LF");
+    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L" CR+LF");
 
   if (SendMessage(hwndEdit,SCI_GETOVERTYPE,0,0))
-    StringCchCopy(tchOvrMode,COUNTOF(tchOvrMode),L"OVR");
+    StringCchCopy(tchOvrMode,COUNTOF(tchOvrMode),L" OVR");
   else
-    StringCchCopy(tchOvrMode,COUNTOF(tchOvrMode),L"INS");
+    StringCchCopy(tchOvrMode,COUNTOF(tchOvrMode),L" INS");
 
   Style_GetCurrentLexerName(tchLexerName,COUNTOF(tchLexerName));
 

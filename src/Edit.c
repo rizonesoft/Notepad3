@@ -114,9 +114,8 @@ enum SortOrderMask {
 int g_DOSEncoding;
 
 // Supported Encodings
-WCHAR wchANSI[8] = { L'\0'};
-WCHAR wchSYS[8] = { L'\0' };
-WCHAR wchOEM[8] = { L'\0' };
+WCHAR wchANSI[16] = { L'\0'};
+WCHAR wchOEM[16] = { L'\0' };
 
 NP2ENCODING mEncoding[] = {
   { NCP_ANSI | NCP_RECODE,                               CP_ACP, "ansi,system,ascii,",                              61000, L"" },
@@ -907,18 +906,18 @@ BOOL Encoding_HasChanged(int iOriginalEncoding)
 
 void Encoding_InitDefaults() 
 {
-  mEncoding[CPI_ANSI_DEFAULT].uCodePage = GetACP();
-  StringCchPrintf(wchANSI,COUNTOF(wchANSI),L" (%u)",mEncoding[CPI_ANSI_DEFAULT].uCodePage);
+  mEncoding[CPI_ANSI_DEFAULT].uCodePage = GetACP(); // set ANSI system CP
+  StringCchPrintf(wchANSI,COUNTOF(wchANSI),L" (CP-%u)",mEncoding[CPI_ANSI_DEFAULT].uCodePage);
   
   mEncoding[CPI_OEM].uCodePage = GetOEMCP();
-  StringCchPrintf(wchOEM,COUNTOF(wchOEM),L" (%u)",mEncoding[CPI_OEM].uCodePage);
+  StringCchPrintf(wchOEM,COUNTOF(wchOEM),L" (CP-%u)",mEncoding[CPI_OEM].uCodePage);
 
   g_DOSEncoding = CPI_OEM;
   // Try to set the DOS encoding to DOS-437 if the default OEMCP is not DOS-437
   if (mEncoding[g_DOSEncoding].uCodePage != 437)
   {
     for (int i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); ++i) {
-      if (mEncoding[i].uCodePage == 437 && Encoding_IsValid(i)) {
+      if (Encoding_IsValid(i) && (mEncoding[i].uCodePage == 437)) {
         g_DOSEncoding = i;
         break;
       }
@@ -972,11 +971,14 @@ int Encoding_MapIniSetting(BOOL bLoad,int iSetting) {
 }
 
 
-void Encoding_GetLabel(int iEncoding) {
-  if (mEncoding[iEncoding].wchLabel[0] == 0) {
-    WCHAR wch[256] = { L'\0' };
-    GetString(mEncoding[iEncoding].idsName,wch,COUNTOF(wch));
-    WCHAR *pwsz = StrChr(wch, L';');
+void Encoding_GetLabel(int iEncoding) 
+{
+  if (mEncoding[iEncoding].wchLabel[0] == L'\0') 
+  {
+    WCHAR wch1[128] = { L'\0' };
+    WCHAR wch2[128] = { L'\0' };
+    GetString(mEncoding[iEncoding].idsName,wch1,COUNTOF(wch1));
+    WCHAR *pwsz = StrChr(wch1, L';');
     if (pwsz) {
       pwsz = StrChr(CharNext(pwsz), L';');
       if (pwsz) {
@@ -984,9 +986,17 @@ void Encoding_GetLabel(int iEncoding) {
       }
     }
     if (!pwsz)
-      pwsz = wch;
+      pwsz = wch1;
+
+    StringCchCopyN(wch2, COUNTOF(wch2), pwsz, COUNTOF(wch1));
+
+    if (Encoding_IsANSI(iEncoding))
+      StringCchCatN(wch2, COUNTOF(wch2), wchANSI, COUNTOF(wchANSI));
+    else if (iEncoding == CPI_OEM)
+      StringCchCatN(wch2, COUNTOF(wch2), wchOEM, COUNTOF(wchOEM));
+
     StringCchCopyN(mEncoding[iEncoding].wchLabel,COUNTOF(mEncoding[iEncoding].wchLabel),
-                   pwsz,COUNTOF(mEncoding[iEncoding].wchLabel));
+                   wch2,COUNTOF(mEncoding[iEncoding].wchLabel));
   }
 }
 
