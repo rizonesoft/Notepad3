@@ -144,7 +144,7 @@ typedef struct _np2encoding {
   UINT    uCodePage;
   char*   pszParseNames;
   int     idsName;
-  WCHAR   wchLabel[32];
+  WCHAR   wchLabel[64];
 } NP2ENCODING;
 
 int  Encoding_Current(int);    // getter/setter
