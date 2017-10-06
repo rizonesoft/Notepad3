@@ -1871,7 +1871,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   // Statusbar width
   aWidth[0] = max(120,min(cx/3,StatusCalcPaneWidth(hwndStatus,L" Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999 ")));
   aWidth[1] = aWidth[0] + StatusCalcPaneWidth(hwndStatus,L" 9'999'999 Bytes [UTF-8] ");
-  aWidth[2] = aWidth[1] + StatusCalcPaneWidth(hwndStatus,L" Unicode (UTF-16) LE BOM ");
+  aWidth[2] = aWidth[1] + StatusCalcPaneWidth(hwndStatus,L" Unicode (UTF-8) Signature ");
   aWidth[3] = aWidth[2] + StatusCalcPaneWidth(hwndStatus,L" CR+LF ");
   aWidth[4] = aWidth[3] + StatusCalcPaneWidth(hwndStatus,L" OVR ");
   aWidth[5] = -1;
