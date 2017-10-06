@@ -449,7 +449,8 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 
   length = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
 
-  if (length == 0) {
+  if (length == 0) 
+  {
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
     UndoRedoSelectionMap(-1,NULL);
@@ -464,26 +465,22 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     if (bSetSavePoint)
       SendMessage(hwnd,SCI_SETSAVEPOINT,0,0);
   }
-
   else {
 
-    UINT cpSrc = Encoding_SciGetCodePage(hwnd); // fixed internal 
-    UINT cpDst = mEncoding[encDest].uCodePage;
-
-    if (cpSrc == cpDst)
-      return(TRUE);
-
-    const int chLen = length * 5 + 2;
+    const int chLen = length * 5 + 1;
     pchText = GlobalAlloc(GPTR,chLen);
 
     tr.lpstrText = pchText;
     SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
 
-    const int wchLen = length * 3 + 2;
+    const int wchLen = length * 3 + 1;
     pwchText = GlobalAlloc(GPTR,wchLen);
 
-    cbwText = MultiByteToWideChar(cpSrc,0,pchText,length,pwchText,wchLen);
-    cbText = WideCharToMultiByte(cpDst,0,pwchText,cbwText,pchText,chLen,NULL,NULL);
+    // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
+    UINT cpSci = Encoding_SciGetCodePage(hwnd); // fixed internal 
+    UINT cpDst = mEncoding[encDest].uCodePage;
+    cbwText = MultiByteToWideChar(cpDst,0,pchText,length,pwchText,wchLen);
+    cbText = WideCharToMultiByte(cpSci,0,pwchText,cbwText,pchText,chLen,NULL,NULL);
 
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
