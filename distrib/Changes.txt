@@ -3,6 +3,29 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 568 (8 October 2017)
+--------------------------------------------------
+~ Prettier Browse Icon.
+~ Fix: Reverting "reload as UTF-8 not work bugfix".
+~ Fix: Texture glitch on "Browse" button.
+~ Updated the Run Dialog icon.
+~ Fix: Binary directory to build portable app.
+~ Code comment for completeness.
+~ Fix: In-text encoding (convert encoding).
+~ Fix: minor StatusBar string corrections.
+~ StatusBar information enhancements.
+~ Fix: Support pasting position at virtual space.
+~ Fix: Move caret to convenient position after pasting clipboard 
+  (no current selection).
+~ Fix: Virtual space navigation and rectangular selection (minor issues) 
+  (allow "Virtual Space Rectangular Selection" 
+  also allows moving Caret into virtual space (beyond line end))
+~ Fix: Copy/Cut & Paste of current line (in case of no selection - 
+  Visual Studio behavior - using SCI's MSDEVLineSelect).
+~ Enhanced clipboard recoding detection.
+~ Fix: Bug in code-page related text conversion.
+
+--------------------------------------------------
 Version 2 Build 548 (3 October 2017)
 --------------------------------------------------
 ~ Fix: Made corrections to build 505 change log (spelling, grammar, etc).
