@@ -1541,7 +1541,7 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 void PathCanonicalizeEx(LPWSTR lpszPath,int len)
 {
   WCHAR szDst[FILE_ARG_BUF] = { L'\0' };
-  if (PathCchCanonicalize(szDst,len,lpszPath))
+  if (PathCchCanonicalize(szDst,len,lpszPath) == S_OK)
     StringCchCopy(lpszPath,len,szDst);
 }
 
