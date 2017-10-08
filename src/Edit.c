@@ -283,6 +283,7 @@ HWND EditCreate(HWND hwndParent)
            g_hInstance,
            NULL);
 
+  Encoding_Current(iDefaultEncoding);
   Encoding_SciSetCodePage(hwnd,iDefaultEncoding);
   SendMessage(hwnd,SCI_SETEOLMODE,SC_EOL_CRLF,0);
   SendMessage(hwnd,SCI_SETPASTECONVERTENDINGS,TRUE,0);
@@ -1568,32 +1569,16 @@ BOOL EditLoadFile(
        BOOL *pbUnicodeErr,
        BOOL *pbFileTooBig)
 {
-
-  HANDLE hFile;
-
-  DWORD  dwFileSize;
-  DWORD  dwFileSizeLimit;
-  DWORD  dwBufSize;
-  BOOL   bReadSuccess;
-
-  char* lpData;
-  DWORD cbData;
-
-  BOOL bReverse = FALSE;
-
-  BOOL bPreferOEM = FALSE;
-
-  *iEncoding    = CPI_ANSI_DEFAULT;
   *pbUnicodeErr = FALSE;
   *pbFileTooBig = FALSE;
 
-  hFile = CreateFile(pszFile,
-                     GENERIC_READ,
-                     FILE_SHARE_READ|FILE_SHARE_WRITE,
-                     NULL,
-                     OPEN_EXISTING,
-                     FILE_ATTRIBUTE_NORMAL,
-                     NULL);
+  HANDLE hFile = CreateFile(pszFile,
+                            GENERIC_READ,
+                            FILE_SHARE_READ|FILE_SHARE_WRITE,
+                            NULL,
+                            OPEN_EXISTING,
+                            FILE_ATTRIBUTE_NORMAL,
+                            NULL);
   dwLastIOError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
@@ -1603,11 +1588,11 @@ BOOL EditLoadFile(
   }
 
   // calculate buffer limit
-  dwFileSize = GetFileSize(hFile,NULL);
-  dwBufSize = dwFileSize + 16;
+  DWORD dwFileSize = GetFileSize(hFile,NULL);
+  DWORD dwBufSize = dwFileSize + 16;
 
   // Check if a warning message should be displayed for large files
-  dwFileSizeLimit = IniGetInt(L"Settings2",L"FileLoadWarningMB",1);
+  DWORD dwFileSizeLimit = IniGetInt(L"Settings2",L"FileLoadWarningMB",1);
   if (dwFileSizeLimit != 0 && dwFileSizeLimit * 1024 * 1024 < dwFileSize) {
     if (InfoBox(MBYESNO,L"MsgFileSizeWarning",IDS_WARNLOADBIGFILE) != IDYES) {
       CloseHandle(hFile);
@@ -1618,7 +1603,7 @@ BOOL EditLoadFile(
     }
   }
 
-  lpData = GlobalAlloc(GPTR,dwBufSize);
+  char* lpData = GlobalAlloc(GPTR,dwBufSize);
 
   dwLastIOError = GetLastError();
   if (!lpData)
@@ -1630,7 +1615,8 @@ BOOL EditLoadFile(
     return FALSE;
   }
 
-  bReadSuccess = ReadAndDecryptFile(hwnd, hFile, (DWORD)GlobalSize(lpData) - 2, &lpData, &cbData);
+  DWORD cbData = 0L;
+  BOOL bReadSuccess = ReadAndDecryptFile(hwnd, hFile, (DWORD)GlobalSize(lpData) - 2, &lpData, &cbData);
   dwLastIOError = GetLastError();
   CloseHandle(hFile);
 
@@ -1641,6 +1627,7 @@ BOOL EditLoadFile(
     return FALSE;
   }
 
+  BOOL bPreferOEM = FALSE;
   if (bLoadNFOasOEM)
   {
     PCWSTR pszExt = pszFile + StringCchLenN(pszFile,MAX_PATH) - 4;
@@ -1653,6 +1640,8 @@ BOOL EditLoadFile(
     _iPrefEncoding = Encoding_SrcWeak(CPI_GET);
 
   BOOL bBOM = FALSE;
+  BOOL bReverse = FALSE;
+
   const int iSrcEnc = Encoding_Source(CPI_GET);
 
   if (cbData == 0) {
@@ -1737,13 +1726,12 @@ BOOL EditLoadFile(
             ((IsUTF8Signature(lpData) ||
               FileVars_IsUTF8(&fvCurFile) ||
               (iSrcEnc == CPI_UTF8 || iSrcEnc == CPI_UTF8SIGN) ||
-              (!bPreferOEM && bLoadASCIIasUTF8) ||
               (IsUTF8(lpData,cbData) &&
               (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 !=
                 UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
                 (!bPreferOEM && (
-                mEncoding[_iPrefEncoding].uFlags & NCP_UTF8
-                )) ))))) && !(FileVars_IsNonUTF8(&fvCurFile) &&
+                  mEncoding[_iPrefEncoding].uFlags & NCP_UTF8 ||
+                  bLoadASCIIasUTF8))))))) && !(FileVars_IsNonUTF8(&fvCurFile) &&
                   (iSrcEnc != CPI_UTF8 && iSrcEnc != CPI_UTF8SIGN)))
     {
       Encoding_SciSetCodePage(hwnd,CPI_UTF8);
