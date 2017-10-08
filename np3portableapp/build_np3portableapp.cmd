@@ -31,7 +31,7 @@ setlocal
 :: ====================================================================================================================
 
 :: --- Environment ---
-set VERSION=2.0.2.422
+set VERSION=2.17.1008.550
 
 set SCRIPT_DIR=%~dp0
 set PORTAPP_ROOT_DIR=D:\PortableApps
@@ -39,8 +39,8 @@ set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\Portabl
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\distrib
-set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141_xp
-set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141_xp
+set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
+set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 
 set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable
 set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo

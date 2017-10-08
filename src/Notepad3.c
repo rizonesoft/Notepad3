@@ -6508,6 +6508,7 @@ void ParseCommandLine()
             StringCchCopyN(szIniFile,COUNTOF(szIniFile),lp1,len);
             TrimString(szIniFile);
             PathUnquoteSpaces(szIniFile);
+            NormalizePathEx(szIniFile,COUNTOF(szIniFile));
           }
           break;
 
@@ -6988,6 +6989,8 @@ int TestIniFile() {
       }
     }
   }
+  
+  NormalizePathEx(szIniFile,COUNTOF(szIniFile));
 
   if (!PathFileExists(szIniFile) || PathIsDirectory(szIniFile)) {
     StringCchCopy(szIniFile2,COUNTOF(szIniFile2),szIniFile);
