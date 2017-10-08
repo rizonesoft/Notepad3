@@ -3,8 +3,10 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
-Version 2 Build 565 (8 October 2017)
+Version 2 Build 568 (8 October 2017)
 --------------------------------------------------
+~ Prettier Browse Icon.
+~ Fix: Reverting "reload as UTF-8 not work bugfix".
 ~ Fix: Texture glitch on "Browse" button.
 ~ Updated the Run Dialog icon.
 ~ Fix: Binary directory to build portable app.
