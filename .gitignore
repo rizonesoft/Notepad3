@@ -29,9 +29,7 @@ Thumbs.db
 /Build/.vs
 /Build/Packages
 /Build/temp_zip*
-/distrib/Notepad3.*.exe
-distrib/Notepad3-0.2.1.213.exe
-distrib/Notepad3-0.2.2.225.exe
+/distrib/Notepad3*.exe
 Build/Bin/Password.txt
 Build/Bin/Certum.cer
 Build/Bin/Certum.p12
