@@ -43,13 +43,13 @@ set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo
 
 set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
 
-set 'yy'=
-set 'mm'=
-set 'dd'=
+set YY=00
+set MM=00
+set DD=00
 call :GETDATE
-set build=
+set BUILD=0
 call :GETBUILD
-set VERSION=2.%'yy':~2,2%.%'mm'%%'dd'%.%build%
+set VERSION=2.%YY%.%MM%%DD%.%BUILD%
 ::echo.%VERSION%
 ::pause
 ::goto :END
@@ -99,18 +99,19 @@ goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETDATE
-if "%date%A" LSS "A" (set toks=1-3) else (set toks=2-4)
-for /f "tokens=2-4 delims=(-)" %%a in ('echo:^|date') do (
-  for /f "tokens=%toks% delims=.-/ " %%i in ('date/t') do (
-    set '%%a'=%%i
-    set '%%b'=%%j
-    set '%%c'=%%k))
-if %'yy'% LSS 100 set 'yy'=20%'yy'%
+for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "dt=%%a"
+set "YY=%dt:~2,2%" & set "YYYY=%dt:~0,4%" & set "MM=%dt:~4,2%" & set "DD=%dt:~6,2%"
+set "HH=%dt:~8,2%" & set "Min=%dt:~10,2%" & set "Sec=%dt:~12,2%"
+::set "datestamp=%YYYY%%MM%%DD%" & set "timestamp=%HH%%Min%%Sec%"
+::set "fullstamp=%YYYY%-%MM%-%DD%_%HH%-%Min%-%Sec%"
+::echo datestamp: "%datestamp%"
+::echo timestamp: "%timestamp%"
+::echo fullstamp: "%fullstamp%"
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETBUILD
-set /p build=<%NP3_BUILD_VER%
+set /p BUILD=<%NP3_BUILD_VER%
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
