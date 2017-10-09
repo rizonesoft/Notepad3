@@ -119,7 +119,7 @@ WCHAR wchOEM[16] = { L'\0' };
 
 NP2ENCODING mEncoding[] = {
   { NCP_ANSI | NCP_RECODE,                               CP_ACP, "ansi,system,ascii,",                              61000, L"" },
-  { NCP_8BIT | NCP_RECODE,                               CP_OEMCP, "oem,oem,",                                      61001, L"" },
+  { NCP_OEM | NCP_RECODE,                                CP_OEMCP, "oem,oem,",                                      61001, L"" },
   { NCP_UNICODE | NCP_UNICODE_BOM,                       CP_UTF8, "",                                               61002, L"" },
   { NCP_UNICODE | NCP_UNICODE_REVERSE | NCP_UNICODE_BOM, CP_UTF8, "",                                               61003, L"" },
   { NCP_UNICODE | NCP_RECODE,                            CP_UTF8, "utf-16,utf16,unicode,",                          61004, L"" },
@@ -507,18 +507,19 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
 //
 //  EditSetNewEncoding()
 //
-BOOL EditSetNewEncoding(HWND hwnd,int iCurrentEncoding,int iNewEncoding,BOOL bNoUI,BOOL bSetSavePoint) {
+BOOL EditSetNewEncoding(HWND hwnd,int iNewEncoding,BOOL bNoUI,BOOL bSetSavePoint) {
+
+  int iCurrentEncoding = Encoding_Current(CPI_GET);
 
   if (iCurrentEncoding != iNewEncoding) {
 
-    BOOL bOneEncodingIsANSI = (Encoding_IsANSI(iCurrentEncoding) || Encoding_IsANSI(iNewEncoding));
-    BOOL bBothEncodingsAreANSI = (Encoding_IsANSI(iCurrentEncoding) && Encoding_IsANSI(iNewEncoding));
-  
     // conversion between arbitrary encodings may lead to unexpected results
-    if (!bOneEncodingIsANSI || bBothEncodingsAreANSI) {
-      // ~ return(TRUE); // this would imply a successful conversion - it is not !
-      // return(FALSE); // commented out ? : allow conversion between arbirtaty encodings
-    }
+    //BOOL bOneEncodingIsANSI = (Encoding_IsANSI(iCurrentEncoding) || Encoding_IsANSI(iNewEncoding));
+    //BOOL bBothEncodingsAreANSI = (Encoding_IsANSI(iCurrentEncoding) && Encoding_IsANSI(iNewEncoding));
+    //if (!bOneEncodingIsANSI || bBothEncodingsAreANSI) {
+      // ~ return TRUE; // this would imply a successful conversion - it is not !
+      //return FALSE; // commented out ? : allow conversion between arbitrary encodings
+    //}
   
     if (SendMessage(hwnd, SCI_GETLENGTH, 0, 0) == 0) {
 
@@ -539,11 +540,11 @@ BOOL EditSetNewEncoding(HWND hwnd,int iCurrentEncoding,int iNewEncoding,BOOL bNo
         BeginWaitCursor();
         BOOL result = EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,FALSE);
         EndWaitCursor();
-        return(result);
+        return result;
       }
     }
   } 
-  return(FALSE);
+  return FALSE;
 }
 
 //=============================================================================
@@ -908,8 +909,26 @@ void Encoding_InitDefaults()
   mEncoding[CPI_ANSI_DEFAULT].uCodePage = GetACP(); // set ANSI system CP
   StringCchPrintf(wchANSI,COUNTOF(wchANSI),L" (CP-%u)",mEncoding[CPI_ANSI_DEFAULT].uCodePage);
   
+  for (int i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); ++i) {
+    if (Encoding_IsValid(i) && (mEncoding[i].uCodePage == mEncoding[CPI_ANSI_DEFAULT].uCodePage)) {
+      mEncoding[i].uFlags |= NCP_ANSI;
+      if (mEncoding[i].uFlags & NCP_8BIT)
+        mEncoding[CPI_ANSI_DEFAULT].uFlags |= NCP_8BIT;
+      break;
+    }
+  }
+
   mEncoding[CPI_OEM].uCodePage = GetOEMCP();
-  StringCchPrintf(wchOEM,COUNTOF(wchOEM),L" (CP-%u)",mEncoding[CPI_OEM].uCodePage);
+  StringCchPrintf(wchOEM, COUNTOF(wchOEM), L" (CP-%u)", mEncoding[CPI_OEM].uCodePage);
+
+  for (int i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); ++i) {
+    if (Encoding_IsValid(i) && (mEncoding[i].uCodePage == mEncoding[CPI_OEM].uCodePage)) {
+      mEncoding[i].uFlags |= NCP_OEM;
+      if (mEncoding[i].uFlags & NCP_8BIT)
+        mEncoding[CPI_OEM].uFlags |= NCP_8BIT;
+      break;
+    }
+  }
 
   g_DOSEncoding = CPI_OEM;
   // Try to set the DOS encoding to DOS-437 if the default OEMCP is not DOS-437
@@ -991,7 +1010,7 @@ void Encoding_GetLabel(int iEncoding)
 
     if (Encoding_IsANSI(iEncoding))
       StringCchCatN(wch2, COUNTOF(wch2), wchANSI, COUNTOF(wchANSI));
-    else if (iEncoding == CPI_OEM)
+    else if (Encoding_IsOEM(iEncoding))
       StringCchCatN(wch2, COUNTOF(wch2), wchOEM, COUNTOF(wchOEM));
 
     StringCchCopyN(mEncoding[iEncoding].wchLabel,COUNTOF(mEncoding[iEncoding].wchLabel),
@@ -1036,7 +1055,7 @@ int Encoding_MatchA(char *pchTest) {
 
 int Encoding_GetByCodePage(UINT cp)
 {
-  for (int i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); i++) {
+  for (int i = 0; i < COUNTOF(mEncoding); i++) {
     if (cp == mEncoding[i].uCodePage) {
       return i;
     }
@@ -1047,8 +1066,7 @@ int Encoding_GetByCodePage(UINT cp)
 
 BOOL Encoding_IsValid(int iTestEncoding) {
   CPINFO cpi;
-  if (iTestEncoding >= 0 &&
-      iTestEncoding < COUNTOF(mEncoding)) {
+  if ((iTestEncoding >= 0) && (iTestEncoding < COUNTOF(mEncoding))) {
     if  ((mEncoding[iTestEncoding].uFlags & NCP_INTERNAL) ||
           IsValidCodePage(mEncoding[iTestEncoding].uCodePage) &&
           GetCPInfo(mEncoding[iTestEncoding].uCodePage,&cpi)) {
@@ -1091,8 +1109,6 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly)
     int id = pEE[i].id;
     if (!bRecodeOnly || (mEncoding[id].uFlags & NCP_RECODE)) {
 
-      CPINFO cpi;
-
       lvi.iItem = ListView_GetItemCount(hwnd);
 
       WCHAR *pwsz = StrChr(pEE[i].wch, L';');
@@ -1107,12 +1123,10 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly)
 
       if (Encoding_IsANSI(id))
         StringCchCatN(wchBuf,COUNTOF(wchBuf),wchANSI,COUNTOF(wchANSI));
-      else if (id == CPI_OEM)
+      else if (Encoding_IsOEM(id))
         StringCchCatN(wchBuf,COUNTOF(wchBuf),wchOEM,COUNTOF(wchOEM));
 
-      if ((mEncoding[id].uFlags & NCP_INTERNAL) ||
-          (IsValidCodePage(mEncoding[id].uCodePage) &&
-          GetCPInfo(mEncoding[id].uCodePage,&cpi)))
+      if (Encoding_IsValid(id))
         lvi.iImage = 0;
       else
         lvi.iImage = 1;
@@ -1254,6 +1268,10 @@ BOOL Encoding_IsANSI(int iEncoding)
   return (mEncoding[iEncoding].uFlags & NCP_ANSI);
 }
 
+BOOL Encoding_IsOEM(int iEncoding)
+{
+  return (mEncoding[iEncoding].uFlags & NCP_OEM);
+}
 
 UINT Encoding_SciGetCodePage(HWND hwnd)
 {
@@ -1768,8 +1786,8 @@ BOOL EditLoadFile(
         }
       }
 
-      if ((mEncoding[*iEncoding].uFlags & NCP_8BIT && mEncoding[*iEncoding].uCodePage != CP_UTF7) ||
-          (mEncoding[*iEncoding].uCodePage == CP_UTF7 && IsUTF7(lpData,cbData))) {
+      if (((mEncoding[*iEncoding].uCodePage != CP_UTF7) && (mEncoding[*iEncoding].uFlags & NCP_8BIT)) ||
+          ((mEncoding[*iEncoding].uCodePage == CP_UTF7) && IsUTF7(lpData,cbData))) {
 
         UINT uCodePage  = mEncoding[*iEncoding].uCodePage;
 
@@ -1981,7 +1999,7 @@ BOOL EditSaveFile(
       else
         ZeroMemory(lpData,GlobalSize(lpData));
 
-      if (uCodePage == CP_UTF7 || uCodePage == 54936)
+      if ((uCodePage == CP_UTF7) || (uCodePage == 54936))
         cbData = WideCharToMultiByte(uCodePage,0,lpDataWide,cbDataWide,lpData,(int)GlobalSize(lpData),NULL,NULL);
       else {
         cbData = WideCharToMultiByte(uCodePage,WC_NO_BEST_FIT_CHARS,lpDataWide,cbDataWide,lpData,(int)GlobalSize(lpData),NULL,&bCancelDataLoss);

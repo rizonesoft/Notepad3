@@ -48,7 +48,7 @@ HWND  EditCreate(HWND);
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
 BOOL  EditConvertText(HWND,int,int,BOOL);
-BOOL  EditSetNewEncoding(HWND,int,int,BOOL,BOOL);
+BOOL  EditSetNewEncoding(HWND,int,BOOL,BOOL);
 BOOL  EditIsRecodingNeeded(WCHAR*,int);
 char* EditGetClipboardText(HWND,BOOL,int*,int*);
 BOOL  EditCopyAppend(HWND);
@@ -122,8 +122,9 @@ extern int g_DOSEncoding;
 #define NCP_UNICODE_BOM       32
 #define NCP_8BIT              64
 #define NCP_ANSI             128
-#define NCP_INTERNAL          (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI)
-#define NCP_RECODE           256
+#define NCP_OEM              256
+#define NCP_RECODE           512
+#define NCP_INTERNAL          (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI|NCP_OEM)
 #define CPI_GET               -2
 #define CPI_NONE              -1
 #define CPI_ANSI_DEFAULT       0
@@ -165,6 +166,7 @@ void Encoding_AddToComboboxEx(HWND,int,BOOL);
 BOOL Encoding_GetFromComboboxEx(HWND,int *);
 BOOL Encoding_IsDefault(int);
 BOOL Encoding_IsANSI(int);
+BOOL Encoding_IsOEM(int);
 
 UINT Encoding_SciGetCodePage(HWND);
 int  Encoding_SciMappedCodePage(int);
