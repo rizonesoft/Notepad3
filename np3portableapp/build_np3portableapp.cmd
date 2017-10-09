@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal enableextensions
 :: ====================================================================================================================
 :: Build batch to create a PortableApps.com's (https://portableapps.com/development) 
 ::
@@ -20,19 +20,15 @@ setlocal
 ::
 :: ====================================================================================================================
 :: TODO:
-:: - (release) needs verion patcher for:  .\Notepad3Portable\App\AppInfo\appinfo.ini
-:: - (release) needs version patcher for 
 :: - (release) needs release version of Splasch img:  .\Notepad3Portable\App\AppInfo\Launcher\Splash.jpg
 :: - (release) adapt help files:  .\Notepad3Portable\Other\Help\
-:: - (release) review all distributed (Installe) text files
+:: - (release) review all distributed (Installed) text files
 :: - 
 :: - (optional?) needs distribution process to PortableApps.com's repository
 
 :: ====================================================================================================================
 
 :: --- Environment ---
-set VERSION=2.17.1008.550
-
 set SCRIPT_DIR=%~dp0
 set PORTAPP_ROOT_DIR=D:\PortableApps
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
@@ -44,6 +40,19 @@ set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 
 set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable
 set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo
+
+set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
+
+set 'yy'=
+set 'mm'=
+set 'dd'=
+call :GETDATE
+set build=
+call :GETBUILD
+set VERSION=2.%'yy':~2,2%.%'mm'%%'dd'%.%build%
+::echo.%VERSION%
+::pause
+::goto :END
 
 :: --------------------------------------------------------------------------------------------------------------------
 
@@ -87,6 +96,23 @@ for /f "tokens=1,* delims=¶" %%A in (%~2) do (
     endlocal
 )
 goto:EOF
+:: --------------------------------------------------------------------------------------------------------------------
+
+:GETDATE
+if "%date%A" LSS "A" (set toks=1-3) else (set toks=2-4)
+for /f "tokens=2-4 delims=(-)" %%a in ('echo:^|date') do (
+  for /f "tokens=%toks% delims=.-/ " %%i in ('date/t') do (
+    set '%%a'=%%i
+    set '%%b'=%%j
+    set '%%c'=%%k))
+if %'yy'% LSS 100 set 'yy'=20%'yy'%
+goto:EOF
+:: --------------------------------------------------------------------------------------------------------------------
+
+:GETBUILD
+set /p build=<%NP3_BUILD_VER%
+goto:EOF
+:: --------------------------------------------------------------------------------------------------------------------
 
 :: ====================================================================================================================
 :END
