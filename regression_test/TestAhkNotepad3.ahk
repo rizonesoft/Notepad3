@@ -1,32 +1,34 @@
 ; =============================================================================
 ; Regression Tests Notepad3 Gui
 ; Needs files in a Test Directory:
-; This AHK-Script, AHK-Interpreter (AutoHotKeyU32/64.exe)
-; + Notepad3.exe and Notepad3.ini (from distrib)
-; Execute: .\AutoHotkeyU64.exe "TestAhkNotepad3.ahk"
+; Notepad3.exe and Notepad3.ini (from distrib)
+; Execute: AutoHotkeyU32.exe "TestAhkNotepad3.ahk"
 ; =============================================================================
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 SetBatchLines, -1
+StringCaseSense, Off
 CoordMode, Pixel, Screen
 ; =============================================================================
 
 v_NP3Name = Notepad3
-v_NP3IniDir = %A_WorkingDir%
+v_NP3TestDir = %A_WorkingDir%\_TESTDIR
 v_NP3IniFile = %v_NP3Name%.ini
+
+stdout := FileOpen("*", "w")
 
 ; =============================================================================
 
-Run, %A_ScriptDir%/%v_NP3Name%.exe %v_NP3IniDir%/%v_NP3IniFile%, , UseErrorLevel, v_Notepad3_PID
+Run, %v_NP3TestDir%/%v_NP3Name%.exe %v_NP3TestDir%/%v_NP3IniFile%, , UseErrorLevel, v_Notepad3_PID
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
-    MsgBox Notepad3.exe could not be launched.
+    stdout.WriteLine("*** ERROR: " . v_NP3Name . "could not be launched.")
     Goto LABEL_END
 }
-; =============================================================================
+; -----------------------------------------------------------------------------
 
 GoSub CHECK_NP3_STARTS
 GoSub CHECK_WIN_TITLE
@@ -42,34 +44,34 @@ WinWait ahk_pid %v_Notepad3_PID%, , 3
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
-	;( test1 == 0 ) ? test2 : test3
-    MsgBox %v_NP3Name%'s seems not to start in time ???
+    stdout.WriteLine("*** ERROR: " . v_NP3Name . "'s seems not to start in time ???")
     Goto LABEL_END
 }
 Return
 ; =============================================================================
 
 ; =============================================================================
-CHECK_WIN_TITLE: 
+CHECK_WIN_TITLE:
 ; check Main Window Title
 WinGetTitle, v_NP3Title, ahk_pid %v_Notepad3_PID%
 
 IfNotInString, v_NP3Title, %v_NP3Name%
 {
     v_ErrLevel = 1
-    MsgBox Notepad3 has wrong Title: %v_NP3Title%.
-    Goto LABEL_END
+    stdout.WriteLine("*** ERROR: " . v_NP3Name . " missing in Title: " . v_NP3Title)
 }
 IfNotInString, v_NP3Title, %v_NP3IniFile%
 {
     v_ErrLevel = 1
-    MsgBox Notepad3 has wrong Title: %v_NP3Title%.
-    Goto LABEL_END
+    stdout.WriteLine("*** ERROR: " . v_NP3IniFile . " missing in Title: " . v_NP3Title)
 }
-IfNotInString, v_NP3Title, %v_NP3IniDir%
+IfNotInString, v_NP3Title, %v_NP3TestDir%
 {
     v_ErrLevel = 1
-    MsgBox Notepad3 has wrong Title: %v_NP3Title%.
+    stdout.WriteLine("*** ERROR: " . v_NP3TestDir . " missing in Title: " . v_NP3Title)
+}
+If (v_ErrLevel != 0)
+{
     Goto LABEL_END
 }
 Return
@@ -84,8 +86,8 @@ WinWait, About %v_NP3Name%, , 1
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
-    MsgBox Notepad3's About Box is not displayed!
-    Goto LABEL_END
+    stdout.WriteLine("*** ERROR: " . v_NP3Name . "'s About Box is not displayed!")
+    Return
 }
 WinActivate  ; About Box
 ;ControlFocus, OK, About %v_NP3Name%
@@ -95,7 +97,7 @@ WinWaitClose, About %v_NP3Name%, , 1
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
-    MsgBox %v_NP3Name%'s About Box can not be closed!
+    stdout.WriteLine("*** ERROR: " . v_NP3Name . "'s About Box can not be closed!")
     Goto LABEL_END
 }
 Return
@@ -107,18 +109,19 @@ WinClose ahk_pid %v_Notepad3_PID%, , 1
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
-    MsgBox %v_NP3Name% can not be closed!
+    stdout.WriteLine("*** ERROR: " . v_NP3Name . "can not be closed!")
 }
 ; -------------------------------------
 WinWaitClose ahk_pid %v_Notepad3_PID%
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
+    ; FORCED Kill / HANGUP
 }
 ; -------------------------------------
 if (v_ErrLevel != 0)
 {
-  MsgBox, 0, ERROR, Testing %v_NP3Name% exits with error level: %v_ErrLevel% !
+  stdout.WriteLine("*** ERROR: Testing " . v_NP3Name . " exits with error level: " . v_ErrLevel)
   Exit, %v_ErrLevel%
 }
 Exit, 0
