@@ -2932,7 +2932,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
 
         if (EditSetNewEncoding(hwndEdit,
-                               Encoding_Current(CPI_GET),
                                iNewEncoding,
                                (flagSetEncoding),
                                StringCchLen(szCurFile) == 0)) {
