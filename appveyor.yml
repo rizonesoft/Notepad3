@@ -80,6 +80,7 @@ matrix:
 
 # scripts that run after cloning repository
 install:
+  - cinst autohotkey.install
 #  - ps: Update-AppveyorBuild -Version "2.$(Get-Date -format yy.Md).$env:appveyor_build_number"
   - ps: '& "$env:appveyor_build_folder\Version.ps1" -AppVeyorEnv'
 #  - ps: |
@@ -103,7 +104,6 @@ install:
 #        (Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
 #        Update-AppveyorBuild -Version $CompleteVer
 #      }
-
 
 # enable patching of AssemblyInfo.* files
 assembly_info:
@@ -169,20 +169,22 @@ test: off
 #      - UI
 #      - E2E
 
+# to disable automatic tests
+#test: off
+
 # scripts to run before tests
 before_test:
-  - echo script1
-  - ps: Write-Host "script1"
+  - cmd: cd test
+#  - echo script1
+#  - ps: Write-Host "script1"
+
+# to run your custom scripts instead of automatic tests
+test_script:
+  - TestAhkNotepad3.cmd
 
 # scripts to run after tests
 after_test:
 
-# to run your custom scripts instead of automatic tests
-test_script:
-  - echo This is my custom test script
-
-# to disable automatic tests
-#test: off
 
 #---------------------------------#
 #      artifacts configuration    #
