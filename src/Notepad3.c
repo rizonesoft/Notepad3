@@ -2932,7 +2932,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
 
         if (EditSetNewEncoding(hwndEdit,
-                               Encoding_Current(CPI_GET),
                                iNewEncoding,
                                (flagSetEncoding),
                                StringCchLen(szCurFile) == 0)) {
@@ -7125,6 +7124,8 @@ void UpdateStatusbar()
   FormatNumberStr(tchLines);
 
   int iCol = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0) + 1;
+  iCol += (int)SendMessage(hwndEdit,SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE,0,0);
+
   StringCchPrintf(tchCol,COUNTOF(tchCol),L"%i",iCol);
   FormatNumberStr(tchCol);
 
