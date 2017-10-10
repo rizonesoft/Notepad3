@@ -43,14 +43,24 @@ set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo
 
 set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
 
+:: --------------------------------------------------------------------------------------------------------------------
+
 set YY=00
 set MM=00
 set DD=00
 call :GETDATE
 set BUILD=0
 call :GETBUILD
+
+:: VERSION fallback from build date
 set VERSION=2.%YY%.%MM%%DD%.%BUILD%
-::echo.%VERSION%
+
+set FILEVER=
+call :GETFILEVER "%NP3_WIN32_DIR%\Notepad3.exe"
+
+if defined FILEVER set VERSION=%FILEVER%
+
+::echo.VERSION=%VERSION%
 ::pause
 ::goto :END
 
@@ -99,7 +109,9 @@ goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETDATE
-for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "dt=%%a"
+for /f "tokens=2 delims==" %%a in ('
+    wmic OS Get localdatetime /value
+') do set "dt=%%a"
 set "YY=%dt:~2,2%" & set "YYYY=%dt:~0,4%" & set "MM=%dt:~4,2%" & set "DD=%dt:~6,2%"
 set "HH=%dt:~8,2%" & set "Min=%dt:~10,2%" & set "Sec=%dt:~12,2%"
 ::set "datestamp=%YYYY%%MM%%DD%" & set "timestamp=%HH%%Min%%Sec%"
@@ -110,8 +122,22 @@ set "HH=%dt:~8,2%" & set "Min=%dt:~10,2%" & set "Sec=%dt:~12,2%"
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
+:GETFILEVER
+set "file=%~1"
+if not defined file goto:EOF
+if not exist "%file%" goto:EOF
+set "FILEVER="
+for /F "tokens=2 delims==" %%a in ('
+    wmic datafile where name^="%file:\=\\%" Get Version /value 
+') do set "FILEVER=%%a"
+::echo %file% = %FILEVER% 
+goto:EOF
+:: --------------------------------------------------------------------------------------------------------------------
+
+
 :GETBUILD
-set /p BUILD=<%NP3_BUILD_VER%
+set /p nxbuild=<%NP3_BUILD_VER%
+set /a BUILD = %nxbuild% - 1
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
