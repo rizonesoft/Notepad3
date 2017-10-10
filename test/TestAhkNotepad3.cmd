@@ -44,8 +44,8 @@ if errorlevel 1 (
 type %TEST_LOG%
 :: - make EXITCODE survive 'endlocal'
 endlocal & set EXITCODE=%EXITCODE%
-:: -call exit only in case of 
-if not [%EXITCODE%] EQ [0] exit /b %EXITCODE%
+
+exit /b %EXITCODE%
 
 :: ====================================================================================================================
 :: --------------------------------------------------------------------------------------------------------------------
