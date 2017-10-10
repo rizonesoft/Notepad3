@@ -1,0 +1,26 @@
+In "Find Text" dialog (or "Replace Text" and Regular expression search box ticked), 
+I can't "Find Previous" this string
+
+(\d\d)\s\1
+
+on this text (for example):
+
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+03 03 04 05 06 07 08 09
+
+but, "Find Next" is working.
+
+In Notepad2 and Notepad2BE works fine.
