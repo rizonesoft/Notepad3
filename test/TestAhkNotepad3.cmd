@@ -32,7 +32,8 @@ rem 	type testoutput.txt
 rem 	echo.
 rem )
 
-start "testing" /B /wait "%AHK_EXE%" /ErrorStdOut "%~dpn0.ahk" > %TEST_LOG% 2>&1
+:: START Testing
+"%AHK_EXE%" /ErrorStdOut "%~dpn0.ahk" > %TEST_LOG% 2>&1
 if errorlevel 1 (
   echo *** Test failed *** >> %TEST_LOG%
   set EXITCODE=1
@@ -44,7 +45,7 @@ type %TEST_LOG%
 :: - make EXITCODE survive 'endlocal'
 endlocal & set EXITCODE=%EXITCODE%
 :: -call exit only in case of 
-if not ["%EXITCODE%"]==["0"] exit /b %EXITCODE%
+if not [%EXITCODE%] EQ [0] exit /b %EXITCODE%
 
 :: ====================================================================================================================
 :: --------------------------------------------------------------------------------------------------------------------
