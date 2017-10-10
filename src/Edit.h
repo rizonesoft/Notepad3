@@ -123,8 +123,10 @@ extern int g_DOSEncoding;
 #define NCP_8BIT              64
 #define NCP_ANSI             128
 #define NCP_OEM              256
-#define NCP_RECODE           512
-#define NCP_INTERNAL          (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI|NCP_OEM)
+#define NCP_MBCS             512
+#define NCP_INTERNAL          (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI|NCP_OEM|NCP_MBCS)
+#define NCP_RECODE           1024
+
 #define CPI_GET               -2
 #define CPI_NONE              -1
 #define CPI_ANSI_DEFAULT       0
