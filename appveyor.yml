@@ -184,7 +184,7 @@ test_script:
 
 # scripts to run after tests
 after_test:
-
+#   - echo after_test
 
 #---------------------------------#
 #      artifacts configuration    #
