@@ -23,7 +23,8 @@ set EXITCODE=0
 :: prepare tests
 if not exist "%TEST_DIR%" mkdir "%TEST_DIR%"
 copy "%NP3_DISTRIB_DIR%Notepad3.ini" "%TEST_DIR%Notepad3.ini" /Y /V
-copy /B "%NP3_WIN32_DIR%Notepad3.exe" /B "%TEST_DIR%Notepad3.exe" /Y /V
+if exist "%NP3_WIN32_DIR%Notepad3.exe" copy /B "%NP3_WIN32_DIR%Notepad3.exe" /B "%TEST_DIR%Notepad3.exe" /Y /V
+if exist "%NP3_X64_DIR%Notepad3.exe" copy /B "%NP3_X64_DIR%Notepad3.exe" /B "%TEST_DIR%Notepad3.exe" /Y /V
 
 rem Loop over all ahk files in tests directory
 rem for /r %%i in (*.ahk) do (
