@@ -18,6 +18,7 @@ v_NP3TestDir = %A_WorkingDir%\_TESTDIR
 v_NP3IniFile = %v_NP3Name%.ini
 
 stdout := FileOpen("*", "w")
+v_ExitCode := 0
 
 ; =============================================================================
 
@@ -26,6 +27,7 @@ v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
     stdout.WriteLine("*** ERROR: " . v_NP3Name . "could not be launched.")
+    v_ExitCode := 1
     Goto LABEL_END
 }
 ; -----------------------------------------------------------------------------
@@ -45,6 +47,7 @@ v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
     stdout.WriteLine("*** ERROR: " . v_NP3Name . "'s seems not to start in time ???")
+    v_ExitCode := 2
     Goto LABEL_END
 }
 Return
@@ -57,25 +60,25 @@ WinGetTitle, v_NP3Title, ahk_pid %v_Notepad3_PID%
 
 IfNotInString, v_NP3Title, %v_NP3Name%
 {
-    v_ErrLevel = 1
+    v_ExitCode := 3
     stdout.WriteLine("*** ERROR: " . v_NP3Name . " missing in Title: " . v_NP3Title)
 }
 IfNotInString, v_NP3Title, %v_NP3IniFile%
 {
-    v_ErrLevel = 1
+    v_ExitCode := 3
     stdout.WriteLine("*** ERROR: " . v_NP3IniFile . " missing in Title: " . v_NP3Title)
 }
 IfNotInString, v_NP3Title, %v_NP3TestDir%
 {
-    v_ErrLevel = 1
+    v_ExitCode := 3
     stdout.WriteLine("*** ERROR: " . v_NP3TestDir . " missing in Title: " . v_NP3Title)
 }
 IfNotInString, v_NP3Title, "XXX ERROR XXX"
 {
-    v_ErrLevel = 1
+    v_ExitCode := 3
     stdout.WriteLine("*** ERROR: XXX ERROR XXX missing in Title: " . v_NP3Title)
 }
-If (v_ErrLevel != 0)
+If (v_ExitCode != 0)
 {
     Goto LABEL_END
 }
@@ -91,8 +94,9 @@ WinWait, About %v_NP3Name%, , 1
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
+    v_ExitCode := 4
     stdout.WriteLine("*** ERROR: " . v_NP3Name . "'s About Box is not displayed!")
-    Return
+    Goto LABEL_END
 }
 WinActivate  ; About Box
 ;ControlFocus, OK, About %v_NP3Name%
@@ -102,6 +106,7 @@ WinWaitClose, About %v_NP3Name%, , 1
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
+    v_ExitCode := 5
     stdout.WriteLine("*** ERROR: " . v_NP3Name . "'s About Box can not be closed!")
     Goto LABEL_END
 }
@@ -114,6 +119,7 @@ WinClose ahk_pid %v_Notepad3_PID%, , 1
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
+    v_ExitCode := 99
     stdout.WriteLine("*** ERROR: " . v_NP3Name . "can not be closed!")
 }
 ; -------------------------------------
@@ -121,13 +127,15 @@ WinWaitClose ahk_pid %v_Notepad3_PID%
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
+    v_ExitCode := 111
     ; FORCED Kill / HANGUP
 }
 ; -------------------------------------
-if (v_ErrLevel != 0)
+if (v_ExitCode != 0)
 {
-  stdout.WriteLine("*** ERROR: Testing " . v_NP3Name . " exits with error level: " . v_ErrLevel)
-  Exit, %v_ErrLevel%
+  stdout.WriteLine("*** ERROR: Testing " . v_NP3Name . " exit with: " . v_ExitCode)
+  ExitApp, %v_ExitCode%
 }
-Exit, 0
+stdout.WriteLine("Testing " . v_NP3Name . ": All tests PASSED.")
+ExitApp, 0
 ; =============================================================================

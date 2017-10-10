@@ -1,5 +1,5 @@
 @echo off
-setlocal enableextensions enabledelayedexpansion
+setlocal enableextensions
 set SCRIPTDRV=%~d0
 set SCRIPTDIR=%~dp0
 set CWD=%CD%
@@ -25,29 +25,29 @@ rem for /r %%i in (*.ahk) do (
 rem 	echo ** Running %%~nxi **
 rem 	start "testing" /B /wait "%AHK_EXE%" /ErrorStdOut %%~nxi > %TEST_LOG% 2>&1
 rem 	if errorlevel 1 (
+rem 		set err_level=%ERRORLEVEL%
 rem 		echo *** Test file %%~nxi failed ***
-rem 		set err_level=1
 rem 	)
 rem 	type testoutput.txt
 rem 	echo.
 rem )
 
 :: START Testing
-"%AHK_EXE%" /ErrorStdOut "%~dpn0.ahk" > %TEST_LOG% 2>&1
+start "Testing" /B /Wait "%AHK_EXE%" /ErrorStdOut "%~dpn0.ahk" > "%TEST_LOG%" 2>&1
 if errorlevel 1 (
-  echo *** Test failed *** >> %TEST_LOG%
-  set EXITCODE=1
+  set EXITCODE=%ERRORLEVEL%
+  echo *** Test failed *** >> "%TEST_LOG%"
 )
 
 :: --------------------------------------------------------------------------------------------------------------------
 :END
-type %TEST_LOG%
+type "%TEST_LOG%"
 :: - make EXITCODE survive 'endlocal'
 endlocal & set EXITCODE=%EXITCODE%
+::echo.EXITCODE=%EXITCODE%
+::pause
+if [%EXITCODE%] NEQ [0] exit /B %EXITCODE%
 
-exit /b %EXITCODE%
-
-:: ====================================================================================================================
 :: --------------------------------------------------------------------------------------------------------------------
 :: ====================================================================================================================
  
