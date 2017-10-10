@@ -73,11 +73,6 @@ IfNotInString, v_NP3Title, %v_NP3TestDir%
     v_ExitCode := 3
     stdout.WriteLine("*** ERROR: " . v_NP3TestDir . " missing in Title: " . v_NP3Title)
 }
-IfNotInString, v_NP3Title, "XXX ERROR XXX"
-{
-    v_ExitCode := 3
-    stdout.WriteLine("*** ERROR: XXX ERROR XXX missing in Title: " . v_NP3Title)
-}
 If (v_ExitCode != 0)
 {
     Goto LABEL_END
