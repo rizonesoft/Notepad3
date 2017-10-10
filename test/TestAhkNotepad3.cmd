@@ -10,9 +10,12 @@ set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\distrib\
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141\
 set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141\
 
-set AHK_EXE=%ProgramFiles%/AutoHotkey/AutoHotkeyU32.exe 
+set AHK_EXE=%ProgramFiles%/AutoHotkey/AutoHotkeyU32.exe
+set AHK64_EXE=%ProgramW6432%/AutoHotkey/AutoHotkeyU32.exe
+if not exist "%AHK_EXE%" set AHK_EXE=%AHK64_EXE%
+ 
 set EXITCODE=0
-
+        
 :: --------------------------------------------------------------------------------------------------------------------
 
 :: prepare tests
