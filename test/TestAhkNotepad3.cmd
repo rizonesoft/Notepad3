@@ -30,16 +30,18 @@ echo. > "%TEST_LOG%"
 set EXITCODE=0
 ::for /r %%i in (*.ahk) do (
 for %%i in (*.ahk) do (
-  echo. ** Running %%~nxi **
-	echo ** Running %%~nxi ** >> "%TEST_LOG%"
-	start "Testing Suite" /B /Wait "%AHK_EXE%" /ErrorStdOut "%%~nxi" >> "%TEST_LOG%" 2>&1
+  echo - Run Testsuite %%~nxi
+	echo +++ Run Testsuite %%~nxi +++ >> "%TEST_LOG%"
+	start "testing" /B /Wait "%AHK_EXE%" /ErrorStdOut "%%~nxi" >> "%TEST_LOG%" 2>&1
 	if errorlevel 1 (
 		set EXITCODE=%ERRORLEVEL%
-		echo *** Testsuite %%~nxi failed ***
-		echo *** Testsuite %%~nxi failed *** >> "%TEST_LOG%"
+		echo *** Testsuite %%~nxi failed! ***
+		echo *** ERROR: Testsuite %%~nxi failed! *** >> "%TEST_LOG%"
+	) else (
+	  echo +++ Testsuite %%~nxi succeeded. +++ >> "%TEST_LOG%"
 	)
+  echo. >> "%TEST_LOG%"
 )
-echo.
 
 :: --------------------------------------------------------------------------------------------------------------------
 :END
