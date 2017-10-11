@@ -6,7 +6,7 @@ set CWD=%CD%
  
 set TEST_DIR=%SCRIPTDIR%_TESTDIR\
 set TEST_LOG=test.log
-set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\distrib\
+set NP3_CONFIG_DIR=%SCRIPT_DIR%config\
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141\
 set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141\
 
@@ -16,33 +16,31 @@ set AHK_EXE64=%ProgramFiles%/AutoHotkey/AutoHotkeyU32.exe
 if not exist "%AHK_EXE%" set AHK_EXE=%AHK_EXE32%
 if not exist "%AHK_EXE%" set AHK_EXE=%AHK_EXE64%
  
-set EXITCODE=0
-        
 :: --------------------------------------------------------------------------------------------------------------------
 
 :: prepare tests
 if not exist "%TEST_DIR%" mkdir "%TEST_DIR%"
-copy "%NP3_DISTRIB_DIR%Notepad3.ini" "%TEST_DIR%Notepad3.ini" /Y /V
+if not exist "%TEST_DIR%Favorites\" mkdir "%TEST_DIR%Favorites\"
+copy "%NP3_CONFIG_DIR%Notepad3_distrib.ini" "%TEST_DIR%Notepad3.ini" /Y /V
 if exist "%NP3_WIN32_DIR%Notepad3.exe" copy /B "%NP3_WIN32_DIR%Notepad3.exe" /B "%TEST_DIR%Notepad3.exe" /Y /V
 if exist "%NP3_X64_DIR%Notepad3.exe" copy /B "%NP3_X64_DIR%Notepad3.exe" /B "%TEST_DIR%Notepad3.exe" /Y /V
 
-rem Loop over all ahk files in tests directory
-rem for /r %%i in (*.ahk) do (
-rem 	echo ** Running %%~nxi **
-rem 	start "testing" /B /wait "%AHK_EXE%" /ErrorStdOut %%~nxi > %TEST_LOG% 2>&1
-rem 	if errorlevel 1 (
-rem 		set err_level=%ERRORLEVEL%
-rem 		echo *** Test file %%~nxi failed ***
-rem 	)
-rem 	type testoutput.txt
-rem 	echo.
-rem )
-
-:: START Testing
-start "Testing" /B /Wait "%AHK_EXE%" /ErrorStdOut "%~dpn0.ahk" > "%TEST_LOG%" 2>&1
-if errorlevel 1 (
-  set EXITCODE=%ERRORLEVEL%
-  echo *** Test failed *** >> "%TEST_LOG%"
+::Loop over all ahk files in tests directory
+echo. > "%TEST_LOG%"
+set EXITCODE=0
+::for /r %%i in (*.ahk) do (
+for %%i in (*.ahk) do (
+  echo - Run Testsuite %%~nxi
+	echo +++ Run Testsuite %%~nxi +++ >> "%TEST_LOG%"
+	start "testing" /B /Wait "%AHK_EXE%" /ErrorStdOut "%%~nxi" >> "%TEST_LOG%" 2>&1
+	if errorlevel 1 (
+		set EXITCODE=%ERRORLEVEL%
+		echo *** Testsuite %%~nxi failed! ***
+		echo *** ERROR: Testsuite %%~nxi failed! *** >> "%TEST_LOG%"
+	) else (
+	  echo +++ Testsuite %%~nxi succeeded. +++ >> "%TEST_LOG%"
+	)
+  echo. >> "%TEST_LOG%"
 )
 
 :: --------------------------------------------------------------------------------------------------------------------
@@ -53,7 +51,4 @@ endlocal & set EXITCODE=%EXITCODE%
 ::echo.EXITCODE=%EXITCODE%
 ::pause
 if [%EXITCODE%] NEQ [0] exit /B %EXITCODE%
-
-:: --------------------------------------------------------------------------------------------------------------------
 :: ====================================================================================================================
- 
