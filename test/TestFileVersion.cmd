@@ -22,9 +22,6 @@ set TEST_SUCCEEDED=false
 
 set FILEVER=
 if exist "%NP3_WIN32_DIR%Notepad3.exe" call :GETFILEVER "%NP3_WIN32_DIR%Notepad3.exe"
-if defined FILEVER call :COMPAREVER "%VERSHOULD%" "%FILEVER%"
-
-set FILEVER=
 if exist "%NP3_X64_DIR%Notepad3.exe" call :GETFILEVER "%NP3_X64_DIR%Notepad3.exe"
 if defined FILEVER call :COMPAREVER "%VERSHOULD%" "%FILEVER%"
 
