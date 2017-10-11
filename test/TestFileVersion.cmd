@@ -13,7 +13,7 @@ set MM=00
 set DD=00
 call :GETDATE
 set BUILD=0
-call :GETBUILD
+call :GETBUILD "%~1"
 set VERSHOULD=2.%YY%.%MM%%DD%.%BUILD%
 
 :: --------------------------------------------------------------------------------------------------------------------
@@ -63,6 +63,11 @@ goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
 :GETBUILD
+set argbuild=%~1
+if defined argbuild (
+    set BUILD=%argbuild%
+    goto:EOF
+)
 set /p nxbuild=<%NP3_BUILD_VER%
 set /a BUILD = %nxbuild% - 1
 goto:EOF

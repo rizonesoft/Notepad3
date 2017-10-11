@@ -180,7 +180,7 @@ before_test:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - TestFileVersion.cmd
+  - TestFileVersion.cmd {build}
   - TestAhkNotepad3.cmd
 
 # scripts to run after tests
