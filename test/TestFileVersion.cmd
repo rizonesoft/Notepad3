@@ -67,11 +67,10 @@ set argbuild=%~1
 if defined argbuild (
     set BUILD=%argbuild%
     goto:EOF
-) else (
-    set /p nxbuild=<%NP3_BUILD_VER%
-    set BUILD=%nxbuild%
-    ::set /a BUILD = %nxbuild% - 1
 )
+set /p nxbuild=<%NP3_BUILD_VER%
+::set /a BUILD=%nxbuild% - 1
+set BUILD=%nxbuild%
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 
