@@ -3,6 +3,19 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 583 (11 October 2017)
+--------------------------------------------------
+~ Fix: syntax error on exit script.
+~ Cleanup AHK testing script, add test artifacts.
+~ Fix: Try to retrieve correct file version for Notepad3Portable creator.
+~ Fix: StatusBar Col display is not correct in case of Virtual Space Access.
+~ Generalized internal multi-byte codepage definitions (code cleanup).
+~ AHK test script for NP3 GUI tests.
+~ Fix: locale / language independant version patching batch for Notepad3Portable
+~ Fix: version patching for Notepad3 PortableApps build batch.
+~ Fix: Recode to ANSI (in case of Chinese ANSI code-page)
+
+--------------------------------------------------
 Version 2 Build 568 (8 October 2017)
 --------------------------------------------------
 ~ Prettier Browse Icon.
