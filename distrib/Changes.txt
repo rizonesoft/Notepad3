@@ -3,6 +3,13 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 600 (15 October 2017)
+--------------------------------------------------
+~ Fix: Virtual space access: column indicator.
+~ Fix: Customize Schemes... Font... selection: bold/italic now detected 
+  (bold: if selection >= FW_SEMIBOLD)
+
+--------------------------------------------------
 Version 2 Build 583 (11 October 2017)
 --------------------------------------------------
 ~ Fix: syntax error on exit script.
