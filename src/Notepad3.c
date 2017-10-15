@@ -2119,6 +2119,11 @@ void MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
       Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
+      int idx,iCaretPos = 0;
+      if (MRU_FindFile(pFileMRU,szCurFile,&idx)) {
+        iCaretPos = pFileMRU->iCaretPos[idx];
+      }
+
       if (FileLoad(TRUE, FALSE, TRUE, FALSE, szCurFile)) {
 
         if (bIsTail && iFileWatchingMode == 2) {
@@ -2136,6 +2141,10 @@ void MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             iNewTopLine = (int)SendMessage(hwndEdit, SCI_GETFIRSTVISIBLELINE, 0, 0);
             SendMessage(hwndEdit, SCI_LINESCROLL, 0, (LPARAM)iVisTopLine - iNewTopLine);
             SendMessage(hwndEdit, SCI_SETXOFFSET, (WPARAM)iXOffset, 0);
+          }
+          // set historic caret pos
+          else if (iCaretPos > 0) {
+            SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iCaretPos,0);
           }
         }
       }
@@ -2549,6 +2558,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
+          int idx,iCaretPos = 0;
+          if (MRU_FindFile(pFileMRU,tchCurFile2,&idx)) {
+            iCaretPos = pFileMRU->iCaretPos[idx];
+          }
+
           if (FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2))
           {
             if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
@@ -2561,6 +2575,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 iNewTopLine = (int)SendMessage(hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
                 SendMessage(hwndEdit,SCI_LINESCROLL,0,(LPARAM)iVisTopLine - iNewTopLine);
                 SendMessage(hwndEdit,SCI_SETXOFFSET,(WPARAM)iXOffset,0);
+              }
+              // set historic caret pos
+              else if (iCaretPos > 0) {
+                SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iCaretPos,0);
               }
             }
           }
@@ -2959,14 +2977,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
 
-          int iNewEncoding = Encoding_Current(CPI_GET);
-
-          if (iNewEncoding == CPI_UTF8SIGN)
-            iNewEncoding = CPI_UTF8;
-          else if (iNewEncoding == CPI_UNICODEBOM)
-            iNewEncoding = CPI_UNICODE;
-          else if (iNewEncoding == CPI_UNICODEBEBOM)
-            iNewEncoding = CPI_UNICODEBE;
+          int iNewEncoding = Encoding_MapUnicode(Encoding_Current(CPI_GET));
 
           if ((bModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_RECODE) != IDOK)
             return(0);
@@ -4796,14 +4807,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (StringCchLen(szCurFile)) {
-          if (iDefaultEncoding == CPI_UNICODEBOM)
-            Encoding_Source(CPI_UNICODE);
-          else if (iDefaultEncoding == CPI_UNICODEBEBOM)
-            Encoding_Source(CPI_UNICODEBE);
-          else if (iDefaultEncoding == CPI_UTF8SIGN)
-            Encoding_Source(CPI_UTF8);
-          else
-            Encoding_Source(iDefaultEncoding);
+          Encoding_Source(Encoding_MapUnicode(iDefaultEncoding));
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),szCurFile);
           FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
@@ -7433,7 +7437,7 @@ int UndoRedoSelectionMap(int token, UndoRedoSelection_t* selection)
 //  FileIO()
 //
 //
-BOOL FileIO(BOOL fLoad,LPCWSTR psz,BOOL bNoEncDetect,int *ienc,int *ieol,
+BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol,
             BOOL *pbUnicodeErr,BOOL *pbFileTooBig,
             BOOL *pbCancelDataLoss,BOOL bSaveCopy)
 {
@@ -7443,7 +7447,7 @@ BOOL FileIO(BOOL fLoad,LPCWSTR psz,BOOL bNoEncDetect,int *ienc,int *ieol,
 
   BeginWaitCursor();
 
-  FormatString(tch,COUNTOF(tch),(fLoad) ? IDS_LOADFILE : IDS_SAVEFILE,PathFindFileName(psz));
+  FormatString(tch,COUNTOF(tch),(fLoad) ? IDS_LOADFILE : IDS_SAVEFILE,PathFindFileName(pszFileName));
 
   StatusSetText(hwndStatus,STATUS_HELP,tch);
   StatusSetSimple(hwndStatus,TRUE);
@@ -7451,12 +7455,19 @@ BOOL FileIO(BOOL fLoad,LPCWSTR psz,BOOL bNoEncDetect,int *ienc,int *ieol,
   InvalidateRect(hwndStatus,NULL,TRUE);
   UpdateWindow(hwndStatus);
 
-  if (fLoad)
-    fSuccess = EditLoadFile(hwndEdit,psz,bNoEncDetect,ienc,ieol,pbUnicodeErr,pbFileTooBig);
-  else
-    fSuccess = EditSaveFile(hwndEdit,psz,*ienc,pbCancelDataLoss,bSaveCopy);
+  if (fLoad) {
+    fSuccess = EditLoadFile(hwndEdit,pszFileName,bNoEncDetect,ienc,ieol,pbUnicodeErr,pbFileTooBig);
+  }
+  else {
+    int idx;
+    if (MRU_FindFile(pFileMRU,pszFileName,&idx)) {
+      pFileMRU->iEncoding[idx] = *ienc;
+      pFileMRU->iCaretPos[idx] = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+    }
+    fSuccess = EditSaveFile(hwndEdit,pszFileName,*ienc,pbCancelDataLoss,bSaveCopy);
+  }
 
-  dwFileAttributes = GetFileAttributes(psz);
+  dwFileAttributes = GetFileAttributes(pszFileName);
   bReadOnly = (dwFileAttributes != INVALID_FILE_ATTRIBUTES && dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
   StatusSetSimple(hwndStatus,FALSE);
@@ -7479,6 +7490,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
   BOOL fSuccess;
   BOOL bUnicodeErr = FALSE;
   BOOL bFileTooBig = FALSE;
+  int fileEncoding = CPI_ANSI_DEFAULT;
 
   if (!bDontSave)
   {
@@ -7568,8 +7580,9 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         iEOLMode = iLineEndings[iDefaultEOLMode];
         SendMessage(hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
         if (Encoding_Source(CPI_GET) != CPI_NONE) {
-          Encoding_Current(Encoding_Source(CPI_GET));
-          Encoding_HasChanged(Encoding_Source(CPI_GET));
+          fileEncoding = Encoding_Source(CPI_GET);
+          Encoding_Current(fileEncoding);
+          Encoding_HasChanged(fileEncoding);
         }
         else {
           Encoding_Current(iDefaultEncoding);
@@ -7587,7 +7600,15 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
       return FALSE;
   }
   else {
-    int fileEncoding = Encoding_Current(CPI_GET);
+    int idx;
+    if (!bReload && MRU_FindFile(pFileMRU,szFileName,&idx)) {
+      fileEncoding = pFileMRU->iEncoding[idx];
+      if (fileEncoding > 0)
+        Encoding_Source(Encoding_MapUnicode(fileEncoding));
+    }
+    else
+      fileEncoding = Encoding_Current(CPI_GET);
+
     fSuccess = FileIO(TRUE,szFileName,bNoEncDetect,&fileEncoding,&iEOLMode,&bUnicodeErr,&bFileTooBig,NULL,FALSE);
     if (fSuccess)
       Encoding_Current(fileEncoding); // load may change encoding
@@ -7601,11 +7622,16 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (!flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(hwndEdit,szCurFile);
     UpdateLineNumberWidth();
-    Encoding_HasChanged(Encoding_Current(CPI_GET));
     bModified = FALSE;
     //bReadOnly = FALSE;
     SendMessage(hwndEdit,SCI_SETEOLMODE,iEOLMode,0);
-    MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs,0,0);
+    fileEncoding = Encoding_Current(CPI_GET);
+    Encoding_HasChanged(fileEncoding);
+    int idx, iCaretPos = 0;
+    if (MRU_FindFile(pFileMRU,szFileName,&idx)) {
+      iCaretPos = pFileMRU->iCaretPos[idx];
+    }
+    MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs,fileEncoding,iCaretPos);
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
 
@@ -7618,7 +7644,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
     // the .LOG feature ...
     if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
-      char tchLog[5] = "";
+      char tchLog[5] = { '\0' };
       SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
         EditJumpTo(hwndEdit,-1,0);
@@ -7631,8 +7657,11 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         EditJumpTo(hwndEdit,-1,0);
         EditEnsureSelectionVisible(hwndEdit);
       }
+      // set historic caret pos
+      else if (iCaretPos > 0) { 
+        SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iCaretPos,0);
+      }
     }
-
     // consistent settings file handling (if loaded in editor)
     bEnableSaveSettings = (StringCchCompareI(szCurFile, szIniFile) == 0) ? FALSE : TRUE;
     UpdateSettingsCmds();
@@ -7675,8 +7704,14 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     }
   }
 
-  if (!bSaveAlways && (!bModified && !Encoding_HasChanged(CPI_GET) || bIsEmptyNewFile) && !bSaveAs)
+  if (!bSaveAlways && (!bModified && !Encoding_HasChanged(CPI_GET) || bIsEmptyNewFile) && !bSaveAs) {
+    int idx;
+    if (MRU_FindFile(pFileMRU,szCurFile,&idx)) {
+      pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
+      pFileMRU->iCaretPos[idx] = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+    }
     return TRUE;
+  }
 
   if (bAsk)
   {
@@ -7749,7 +7784,6 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     else
       return FALSE;
   }
-
   else {
     int fileEncoding = Encoding_Current(CPI_GET);
     fSuccess = FileIO(FALSE,szCurFile,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,FALSE);
@@ -7763,8 +7797,8 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       bModified = FALSE;
       int iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
-      int mpEnc = Encoding_MapIniSetting(FALSE,iCurrEnc);
-      MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs,mpEnc,0);
+      int iCaretPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+      MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs,iCurrEnc,iCaretPos);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,szCurFile);
       UpdateToolbar();
@@ -7789,14 +7823,8 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
             GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
           int fileEncoding = Encoding_Current(CPI_GET);
-          int idx;
-          if (MRU_FindFile(pFileMRU,tchFile,&idx)) {
-            MRU_SetEnc(pFileMRU,idx,Encoding_MapIniSetting(FALSE,fileEncoding));
-            MRU_SetPos(pFileMRU,idx,(int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0));
-          }
           if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,TRUE)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
-
             WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
             int wlen = lstrlen(lpCmdLine) + 2;

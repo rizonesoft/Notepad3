@@ -1926,11 +1926,17 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
       {
         case IDOK: {
             if (Encoding_GetFromComboboxEx(GetDlgItem(hwnd,IDC_ENCODINGLIST),&pdd->idEncoding)) {
-              bSkipUnicodeDetection = (IsDlgButtonChecked(hwnd,IDC_NOUNICODEDETECTION) == BST_CHECKED) ? 1 : 0;
-              bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd,IDC_ASCIIASUTF8) == BST_CHECKED) ? 1 : 0;
-              bLoadNFOasOEM = (IsDlgButtonChecked(hwnd,IDC_NFOASOEM) == BST_CHECKED) ? 1 : 0;
-              bNoEncodingTags = (IsDlgButtonChecked(hwnd,IDC_ENCODINGFROMFILEVARS) == BST_CHECKED) ? 1 : 0;
-              EndDialog(hwnd,IDOK);
+              if (pdd->idEncoding < 0) {
+                MsgBox(MBWARN,IDS_ERR_ENCODINGNA);
+                EndDialog(hwnd,IDCANCEL);
+              }
+              else {
+                bSkipUnicodeDetection = (IsDlgButtonChecked(hwnd,IDC_NOUNICODEDETECTION) == BST_CHECKED) ? 1 : 0;
+                bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd,IDC_ASCIIASUTF8) == BST_CHECKED) ? 1 : 0;
+                bLoadNFOasOEM = (IsDlgButtonChecked(hwnd,IDC_NFOASOEM) == BST_CHECKED) ? 1 : 0;
+                bNoEncodingTags = (IsDlgButtonChecked(hwnd,IDC_ENCODINGFROMFILEVARS) == BST_CHECKED) ? 1 : 0;
+                EndDialog(hwnd,IDOK);
+              }
             }
             else
               PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_ENCODINGLIST)),1);
@@ -2078,10 +2084,17 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
       {
 
         case IDOK:
-          if (Encoding_GetFromListView(hwndLV,&pdd->idEncoding))
-            EndDialog(hwnd,IDOK);
+          if (Encoding_GetFromListView(hwndLV,&pdd->idEncoding)) {
+            if (pdd->idEncoding < 0) {
+              MsgBox(MBWARN,IDS_ERR_ENCODINGNA);
+              EndDialog(hwnd,IDCANCEL);
+            }
+            else
+              EndDialog(hwnd,IDOK);
+          }
           else
             PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_ENCODINGLIST)),1);
+          
           break;
 
 
