@@ -3,6 +3,12 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2 Build 605 (15 October 2017)
+--------------------------------------------------
+~ Fix: Crash on accessing UndoRedo structure while NP3 instance has 
+  not been initialized completely (.LOG file opening bug).
+
+--------------------------------------------------
 Version 2 Build 600 (15 October 2017)
 --------------------------------------------------
 ~ Fix: Virtual space access: column indicator.
