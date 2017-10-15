@@ -7605,7 +7605,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     bModified = FALSE;
     //bReadOnly = FALSE;
     SendMessage(hwndEdit,SCI_SETEOLMODE,iEOLMode,0);
-    MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs);
+    MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs,0,0);
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
 
@@ -7761,8 +7761,10 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     if (!bSaveCopy)
     {
       bModified = FALSE;
-      Encoding_HasChanged(Encoding_Current(CPI_GET));
-      MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs);
+      int iCurrEnc = Encoding_Current(CPI_GET);
+      Encoding_HasChanged(iCurrEnc);
+      int mpEnc = Encoding_MapIniSetting(FALSE,iCurrEnc);
+      MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs,mpEnc,0);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,szCurFile);
       UpdateToolbar();
@@ -7772,7 +7774,6 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       InstallFileWatching(szCurFile);
     }
   }
-
   else if (!bCancelDataLoss)
   {
     if (StringCchLen(szCurFile) > 0) {
@@ -7788,6 +7789,11 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
             GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
           int fileEncoding = Encoding_Current(CPI_GET);
+          int idx;
+          if (MRU_FindFile(pFileMRU,tchFile,&idx)) {
+            MRU_SetEnc(pFileMRU,idx,Encoding_MapIniSetting(FALSE,fileEncoding));
+            MRU_SetPos(pFileMRU,idx,(int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0));
+          }
           if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,TRUE)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
 

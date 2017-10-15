@@ -5460,13 +5460,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             if (StringCchLenA(lpefr->szFind)) {
               if (GetDlgItemTextA2W(CP_UTF8,hwnd,IDC_FINDTEXT,lpefr->szFindUTF8,COUNTOF(lpefr->szFindUTF8))) {
                 GetDlgItemText(hwnd,IDC_FINDTEXT,tch,COUNTOF(tch));
-                MRU_Add(mruFind,tch);
+                MRU_Add(mruFind,tch,0,0);
               }
             }
             if (StringCchLenA(lpefr->szReplace)) {
               if (GetDlgItemTextA2W(CP_UTF8,hwnd,IDC_REPLACETEXT,lpefr->szReplaceUTF8,COUNTOF(lpefr->szReplaceUTF8))) {
                 GetDlgItemText(hwnd,IDC_REPLACETEXT,tch,COUNTOF(tch));
-                MRU_Add(mruReplace,tch);
+                MRU_Add(mruReplace,tch,0,0);
               }
             }
             else

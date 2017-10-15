@@ -205,16 +205,19 @@ UINT CharSetFromCodePage(UINT);
 typedef struct _mrulist {
 
   WCHAR  szRegKey[256];
-  int   iFlags;
-  int   iSize;
+  int    iFlags;
+  int    iSize;
   LPWSTR pszItems[MRU_MAXITEMS];
+  int    iEncoding[MRU_MAXITEMS];
+  int    iCaretPos[MRU_MAXITEMS];
 
 } MRULIST, *PMRULIST, *LPMRULIST;
 
 LPMRULIST MRU_Create(LPCWSTR,int,int);
 BOOL      MRU_Destroy(LPMRULIST);
-BOOL      MRU_Add(LPMRULIST,LPCWSTR);
-BOOL      MRU_AddFile(LPMRULIST,LPCWSTR,BOOL,BOOL);
+BOOL      MRU_Add(LPMRULIST,LPCWSTR,int,int);
+BOOL      MRU_FindFile(LPMRULIST,LPCWSTR,int*);
+BOOL      MRU_AddFile(LPMRULIST,LPCWSTR,BOOL,BOOL,int,int);
 BOOL      MRU_Delete(LPMRULIST,int);
 BOOL      MRU_DeleteFileFromStore(LPMRULIST,LPCWSTR);
 BOOL      MRU_Empty(LPMRULIST);
@@ -222,6 +225,9 @@ int       MRU_Enum(LPMRULIST,int,LPWSTR,int);
 BOOL      MRU_Load(LPMRULIST);
 BOOL      MRU_Save(LPMRULIST);
 BOOL      MRU_MergeSave(LPMRULIST,BOOL,BOOL,BOOL);
+BOOL      MRU_SetEnc(LPMRULIST,int,int);
+BOOL      MRU_SetPos(LPMRULIST,int,int);
+
 
 
 //==== Themed Dialogs =========================================================

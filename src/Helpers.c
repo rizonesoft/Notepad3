@@ -1733,7 +1733,7 @@ BOOL MRU_Destroy(LPMRULIST pmru)
     }
   ZeroMemory(pmru,sizeof(MRULIST));
   LocalFree(pmru);
-  return(1);
+  return TRUE;
 }
 
 int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2) 
@@ -1744,7 +1744,7 @@ int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2)
     return(StringCchCompareX(psz1,psz2));
 }
 
-BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew) 
+BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, int iPos) 
 {
   int i;
   for (i = 0; i < pmru->iSize; i++) {
@@ -1754,71 +1754,101 @@ BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew)
     }
   }
   i = min(i,pmru->iSize-1);
-  for (; i > 0; i--)
-    pmru->pszItems[i] = pmru->pszItems[i-1];
+  for (; i > 0; i--) {
+    pmru->pszItems[i] = pmru->pszItems[i - 1];
+    pmru->iEncoding[i] = pmru->iEncoding[i - 1];
+    pmru->iCaretPos[i] = pmru->iCaretPos[i - 1];
+  }
   pmru->pszItems[0] = StrDup(pszNew);
-  return(1);
+
+  pmru->iEncoding[0] = iEnc;
+  pmru->iCaretPos[0] = iPos;
+
+  return TRUE;
 }
 
-BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpandMyDocs) {
-
+BOOL MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex) {
+  WCHAR wchItem[MAX_PATH] = { L'\0' };
   int i;
   for (i = 0; i < pmru->iSize; i++) {
     if (pmru->pszItems[i] == NULL) {
-      break;
+      *iIndex = i;
+      return FALSE;
     }
     else if (StringCchCompareIX(pmru->pszItems[i],pszFile) == 0) {
-      LocalFree(pmru->pszItems[i]);
-      break;
+      *iIndex = i;
+      return TRUE;
     }
     else {
-      WCHAR wchItem[MAX_PATH] = { L'\0' };
       PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),TRUE);
       if (StringCchCompareIN(wchItem,COUNTOF(wchItem),pszFile,-1) == 0) {
-        LocalFree(pmru->pszItems[i]);
-        break;
+        *iIndex = i;
+        return TRUE;
       }
     }
   }
-  i = min(i,pmru->iSize-1);
-  for (; i > 0; i--)
-    pmru->pszItems[i] = pmru->pszItems[i-1];
+  *iIndex = i;
+  return FALSE;
+}
 
+BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpandMyDocs,int iEnc,int iPos) {
+
+  int i;
+  if (MRU_FindFile(pmru,pszFile,&i)) {
+    LocalFree(pmru->pszItems[i]);
+  }
+  else {
+    i = (i < pmru->iSize) ? i : (pmru->iSize - 1);
+  }
+  for (; i > 0; i--) {
+    pmru->pszItems[i] = pmru->pszItems[i - 1];
+    pmru->iEncoding[i] = pmru->iEncoding[i - 1];
+    pmru->iCaretPos[i] = pmru->iCaretPos[i - 1];
+  }
   if (bRelativePath) {
     WCHAR wchFile[MAX_PATH] = { L'\0' };
     PathRelativeToApp((LPWSTR)pszFile,wchFile,COUNTOF(wchFile),TRUE,TRUE,bUnexpandMyDocs);
     pmru->pszItems[0] = StrDup(wchFile);
   }
-  else
+  else {
     pmru->pszItems[0] = StrDup(pszFile);
+  }
+  pmru->iEncoding[0] = iEnc;
+  pmru->iCaretPos[0] = iPos;
 
-  return(1);
+  return TRUE;
 }
 
 BOOL MRU_Delete(LPMRULIST pmru,int iIndex) {
 
   int i;
-  if (iIndex < 0 || iIndex > pmru->iSize-1)
-    return(0);
-  if (pmru->pszItems[iIndex])
+  if (iIndex < 0 || iIndex > pmru->iSize - 1) {
+    return FALSE;
+  }
+  if (pmru->pszItems[iIndex]) {
     LocalFree(pmru->pszItems[iIndex]);
+  }
   for (i = iIndex; i < pmru->iSize-1; i++) {
-    pmru->pszItems[i] = pmru->pszItems[i+1];
+    pmru->pszItems[i] = pmru->pszItems[i + 1];
+    pmru->iEncoding[i] = pmru->iEncoding[i + 1];
+    pmru->iCaretPos[i] = pmru->iCaretPos[i + 1];
+
     pmru->pszItems[i+1] = NULL;
   }
-  return(1);
+  return TRUE;
 }
 
 BOOL MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile) {
 
   int i = 0;
   LPMRULIST pmruStore;
-  WCHAR wchItem[256] = { L'\0' };
+  WCHAR wchItem[MAX_PATH] = { L'\0' };
 
   pmruStore = MRU_Create(pmru->szRegKey,pmru->iFlags,pmru->iSize);
   MRU_Load(pmruStore);
 
-  while (MRU_Enum(pmruStore,i,wchItem,COUNTOF(wchItem)) != -1) {
+  while (MRU_Enum(pmruStore,i,wchItem,COUNTOF(wchItem)) != -1) 
+  {
     PathAbsoluteFromApp(wchItem,wchItem,COUNTOF(wchItem),TRUE);
     if (StringCchCompareIN(wchItem,COUNTOF(wchItem),pszFile,-1) == 0)
       MRU_Delete(pmruStore,i);
@@ -1828,7 +1858,7 @@ BOOL MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile) {
 
   MRU_Save(pmruStore);
   MRU_Destroy(pmruStore);
-  return(1);
+  return TRUE;
 }
 
 BOOL MRU_Empty(LPMRULIST pmru) {
@@ -1838,9 +1868,11 @@ BOOL MRU_Empty(LPMRULIST pmru) {
     if (pmru->pszItems[i]) {
       LocalFree(pmru->pszItems[i]);
       pmru->pszItems[i] = NULL;
+      pmru->iEncoding[i] = 0;
+      pmru->iCaretPos[i] = 0;
     }
   }
-  return(1);
+  return TRUE;
 }
 
 int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) {
@@ -1863,7 +1895,6 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) {
 
 BOOL MRU_Load(LPMRULIST pmru) {
 
-  int i,n = 0;
   WCHAR tchName[32] = { L'\0' };
   WCHAR tchItem[1024] = { L'\0' };
   WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
@@ -1871,21 +1902,28 @@ BOOL MRU_Load(LPMRULIST pmru) {
   MRU_Empty(pmru);
   LoadIniSection(pmru->szRegKey,pIniSection,(int)LocalSize(pIniSection)/sizeof(WCHAR));
 
-  for (i = 0; i < pmru->iSize; i++) {
+  int n = 0;
+  for (int i = 0; i < pmru->iSize; i++) {
     StringCchPrintf(tchName,COUNTOF(tchName),L"%.2i",i+1);
     if (IniSectionGetString(pIniSection,tchName,L"",tchItem,COUNTOF(tchItem))) {
       /*if (pmru->iFlags & MRU_UTF8) {
         WCHAR wchItem[1024];
         int cbw = MultiByteToWideCharStrg(CP_UTF7,tchItem,wchItem);
         WideCharToMultiByte(CP_UTF8,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-        pmru->pszItems[n++] = StrDup(tchItem);
+        pmru->pszItems[n] = StrDup(tchItem);
       }
       else*/
-        pmru->pszItems[n++] = StrDup(tchItem);
+        pmru->pszItems[n] = StrDup(tchItem);
+
+        StringCchPrintf(tchName,COUNTOF(tchName),L"ENC%.2i",i + 1);
+        pmru->iEncoding[n] = IniSectionGetInt(pIniSection,tchName,0);
+        StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
+        pmru->iCaretPos[n] = IniSectionGetInt(pIniSection,tchName,0);
+        ++n;
     }
   }
   LocalFree(pIniSection);
-  return(1);
+  return TRUE;
 }
 
 BOOL MRU_Save(LPMRULIST pmru) {
@@ -1898,7 +1936,7 @@ BOOL MRU_Save(LPMRULIST pmru) {
 
   for (i = 0; i < pmru->iSize; i++) {
     if (pmru->pszItems[i]) {
-      StringCchPrintf(tchName,COUNTOF(tchName),L"%.2i",i+1);
+      StringCchPrintf(tchName,COUNTOF(tchName),L"%.2i",i + 1);
       /*if (pmru->iFlags & MRU_UTF8) {
         WCHAR  tchItem[1024];
         WCHAR wchItem[1024];
@@ -1908,11 +1946,20 @@ BOOL MRU_Save(LPMRULIST pmru) {
       }
       else*/
         IniSectionSetString(pIniSection,tchName,pmru->pszItems[i]);
+
+        if (pmru->iEncoding[i] > 0) {
+          StringCchPrintf(tchName,COUNTOF(tchName),L"ENC%.2i",i + 1);
+          IniSectionSetInt(pIniSection,tchName,pmru->iEncoding[i]);
+        }
+        if (pmru->iCaretPos[i] > 0) {
+          StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
+          IniSectionSetInt(pIniSection,tchName,pmru->iCaretPos[i]);
+        }
     }
   }
   SaveIniSection(pmru->szRegKey,pIniSection);
   LocalFree(pIniSection);
-  return(1);
+  return TRUE;
 }
 
 
@@ -1929,7 +1976,7 @@ BOOL MRU_MergeSave(LPMRULIST pmru,BOOL bAddFiles,BOOL bRelativePath,BOOL bUnexpa
       if (pmru->pszItems[i]) {
         WCHAR wchItem[MAX_PATH] = { L'\0' };
         PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),TRUE);
-        MRU_AddFile(pmruBase,wchItem,bRelativePath,bUnexpandMyDocs);
+        MRU_AddFile(pmruBase,wchItem,bRelativePath,bUnexpandMyDocs,pmru->iEncoding[i],pmru->iCaretPos[i]);
       }
     }
   }
@@ -1937,15 +1984,34 @@ BOOL MRU_MergeSave(LPMRULIST pmru,BOOL bAddFiles,BOOL bRelativePath,BOOL bUnexpa
   else {
     for (i = pmru->iSize-1; i >= 0; i--) {
       if (pmru->pszItems[i])
-        MRU_Add(pmruBase,pmru->pszItems[i]);
+        MRU_Add(pmruBase,pmru->pszItems[i],pmru->iEncoding[i],pmru->iCaretPos[i]);
     }
   }
 
   MRU_Save(pmruBase);
   MRU_Destroy(pmruBase);
-  return(1);
+  return TRUE;
 }
 
+
+BOOL MRU_SetEnc(LPMRULIST pmru,int iIndex,int iEnc) {
+
+  if (iIndex < 0 || iIndex > pmru->iSize - 1)
+    return FALSE;
+
+  pmru->iEncoding[iIndex] = iEnc;
+  return TRUE;
+}
+
+
+BOOL MRU_SetPos(LPMRULIST pmru,int iIndex,int iPos) {
+
+  if (iIndex < 0 || iIndex > pmru->iSize - 1)
+    return FALSE;
+
+  pmru->iCaretPos[iIndex] = iPos;
+  return TRUE;
+}
 
 /*
 
