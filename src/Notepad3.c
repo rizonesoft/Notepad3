@@ -7390,18 +7390,19 @@ void RestoreSelectionAction(int token, DoAction doAct)
 
 int UndoRedoSelectionMap(int token, UndoRedoSelection_t* selection)
 {
+  if (UndoRedoSelectionUTArray == NULL)
+    return -1;
+
   static unsigned int iTokenCnt = 0;
-  
+
   // indexing is unsigned
   unsigned int utoken = (token >= 0) ? (unsigned int)token : 0U;
 
   if (selection == NULL) {
     // reset / clear
     SendMessage(hwndEdit,SCI_EMPTYUNDOBUFFER,0,0);
-    if (UndoRedoSelectionUTArray != NULL) {
-      utarray_clear(UndoRedoSelectionUTArray);
-      utarray_init(UndoRedoSelectionUTArray,&UndoRedoSelection_icd);
-    }
+    utarray_clear(UndoRedoSelectionUTArray);
+    utarray_init(UndoRedoSelectionUTArray,&UndoRedoSelection_icd);
     iTokenCnt = 0U;
     return -1;
   }
