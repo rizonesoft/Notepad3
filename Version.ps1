@@ -38,7 +38,7 @@ try
 		$Build = [int]($env:appveyor_build_number)
 	}
 	else {
-		$Build = [int](Get-Content "Versions\build.txt")
+		$Build = [int](Get-Content "Versions\build.txt") + 1
 	}
 	if (!$Build) { $Build = 0 }
 	$SciVer = [int](Get-Content "scintilla\version.txt")
@@ -68,9 +68,7 @@ catch
 }
 finally
 {
-  if (-not $AppVeyorEnv) {
-		$Build + 1 | Set-Content "Versions\build.txt"
-	}
+	$Build | Set-Content "Versions\build.txt"
 	[Environment]::SetEnvironmentVariable("LASTEXITCODE", $LastExitCode, "User")
 	$host.SetShouldExit($LastExitCode)
 	Write-Host "VersionPatching: Done! Elapsed time: $($stopwatch.Elapsed)."

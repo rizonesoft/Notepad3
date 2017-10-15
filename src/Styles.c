@@ -3979,7 +3979,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   LOGFONT lf;
   WCHAR szNewStyle[512] = { L'\0' };
   int  iValue;
-  WCHAR tch[64] = { L'\0' };
+  WCHAR tch[LF_FACESIZE+1] = { L'\0' };
   HDC hdc;
 
   ZeroMemory(&cf,sizeof(CHOOSEFONT));
@@ -3996,14 +3996,20 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
     ReleaseDC(hwnd,hdc);
   }
   lf.lfWeight = (StrStrI(lpszStyle,L"bold")) ? FW_BOLD : FW_NORMAL;
-  lf.lfItalic = (StrStrI(lpszStyle,L"italic")) ? 1 : 0;
+  lf.lfItalic = (StrStrI(lpszStyle,L"italic")) ? TRUE : FALSE;
+
+  COLORREF color = 0L;
+  if (Style_StrGetColor(TRUE, lpszStyle, &iValue)) {
+    color = RGB(GetRValue(iValue),GetGValue(iValue),GetBValue(iValue));
+  }
 
   // Init cf
   cf.lStructSize = sizeof(CHOOSEFONT);
   cf.hwndOwner = hwnd;
+  cf.rgbColors = color;
   cf.lpLogFont = &lf;
-  cf.Flags = CF_INITTOLOGFONTSTRUCT /*| CF_NOSCRIPTSEL*/ | CF_SCREENFONTS;
 
+  cf.Flags = CF_INITTOLOGFONTSTRUCT /*| CF_EFFECTS | CF_NOSCRIPTSEL*/ | CF_SCREENFONTS | CF_FORCEFONTEXIST;
   if (HIBYTE(GetKeyState(VK_SHIFT)))
     cf.Flags |= CF_FIXEDPITCHONLY;
 
@@ -4029,21 +4035,21 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; size:");
   StringCchPrintf(tch,COUNTOF(tch),L"%i",cf.iPointSize/10);
   StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
-  if (cf.nFontType & BOLD_FONTTYPE)
+  if ((cf.nFontType & BOLD_FONTTYPE) || (lf.lfWeight >= FW_SEMIBOLD))
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; bold");
-  if (cf.nFontType & ITALIC_FONTTYPE)
+  if ((cf.nFontType & ITALIC_FONTTYPE) || lf.lfItalic)
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; italic");
 
   if (StrStrI(lpszStyle,L"underline"))
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; underline");
 
   // save colors
-  if (Style_StrGetColor(TRUE,lpszStyle,&iValue))
+  if (color != 0)
   {
     StringCchPrintf(tch,COUNTOF(tch),L"; fore:#%02X%02X%02X",
-      (int)GetRValue(iValue),
-      (int)GetGValue(iValue),
-      (int)GetBValue(iValue));
+      (int)GetRValue(cf.rgbColors),
+      (int)GetGValue(cf.rgbColors),
+      (int)GetBValue(cf.rgbColors));
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
   if (Style_StrGetColor(FALSE,lpszStyle,&iValue))
