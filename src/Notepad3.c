@@ -3093,7 +3093,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
           int iCurrLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
           int iCurColumn = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
-          int iCurVSpace = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+          int iCurVSpace = (int)SendMessage(hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
 
           SendMessage(hwndEdit, SCI_PASTE, 0, 0);
 
@@ -5481,8 +5481,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) {
 
-            UpdateToolbar();
             UpdateStatusbar();
+            UpdateToolbar();
 
             InvalidateSelections();
 
@@ -7124,7 +7124,7 @@ void UpdateStatusbar()
   FormatNumberStr(tchLines);
 
   int iCol = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0) + 1;
-  iCol += (int)SendMessage(hwndEdit,SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE,0,0);
+  iCol += (int)SendMessage(hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
 
   StringCchPrintf(tchCol,COUNTOF(tchCol),L"%i",iCol);
   FormatNumberStr(tchCol);

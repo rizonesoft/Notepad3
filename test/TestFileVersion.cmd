@@ -18,20 +18,37 @@ set VERSHOULD=2.%YY%.%MM%%DD%.%BUILD%
 
 :: --------------------------------------------------------------------------------------------------------------------
 
-set TEST_SUCCEEDED=false
+set TEST_RESULT=failure
 
 set FILEVER=
+set FILEVER32=
 if exist "%NP3_WIN32_DIR%Notepad3.exe" call :GETFILEVER "%NP3_WIN32_DIR%Notepad3.exe"
+if defined FILEVER set FILEVER32=%FILEVER%
+set FILEVER=
+set FILEVER64=
 if exist "%NP3_X64_DIR%Notepad3.exe" call :GETFILEVER "%NP3_X64_DIR%Notepad3.exe"
-if defined FILEVER call :COMPAREVER "%VERSHOULD%" "%FILEVER%"
+if defined FILEVER set FILEVER64=%FILEVER%
+
+if defined FILEVER32 set TEST_RESULT=success
+if defined FILEVER64 set TEST_RESULT=success
+call :COMPAREVER "%VERSHOULD%" "%FILEVER32%" "%FILEVER64%"
 
 :: ====================================================================================================================
 goto :END
 :: --------------------------------------------------------------------------------------------------------------------
 
 :COMPAREVER
-if ["%~1"] EQU ["%~2"] (
-    set TEST_SUCCEEDED=true
+if ["%~2"] NEQ [""] (
+  if ["%~1"] NEQ ["%~2"] (
+      echo ERROR: Expected version "%~1", found version "%~2" in 32-bit exe 
+      set TEST_RESULT=failure
+  )
+)
+if ["%~3"] NEQ [""] (
+  if ["%~1"] NEQ ["%~3"] (
+      echo ERROR: Expected version "%~1", found version "%~3" in 64-bit exe
+      set TEST_RESULT=failure
+  )
 )
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
@@ -76,11 +93,20 @@ goto:EOF
 
 :: ====================================================================================================================
 :END
-echo.VERSHOULD = %VERSHOULD%
-echo.FILEVER = %FILEVER%
-echo.TEST_SUCCEEDED = %TEST_SUCCEEDED%
-:: - make TEST_SUCCEEDED survive 'endlocal'
-endlocal & set TEST_SUCCEEDED=%TEST_SUCCEEDED%
+echo Expected Version = %VERSHOULD%
+if ["%FILEVER32%"] NEQ [""] (
+  echo 32-bit exe Version = %FILEVER32%
+) else (
+  echo No 32-bit exe Version found
+)
+if ["%FILEVER64%"] NEQ [""] (
+  echo 64-bit exe Version = %FILEVER64%
+) else (
+  echo No 64-bit exe Version found
+)
+echo Version Test Result: %TEST_RESULT%
+:: - make TEST_RESULT survive 'endlocal'
+endlocal & set TEST_RESULT=%TEST_RESULT%
 ::pause
-if [%TEST_SUCCEEDED%] NEQ [true] exit /B 1
+if [%TEST_RESULT%] NEQ [success] exit /B 1
 :: ====================================================================================================================
