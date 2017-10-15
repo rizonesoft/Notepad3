@@ -3940,10 +3940,10 @@ void EditPadWithSpaces(HWND hwnd,BOOL bSkipEmpty,BOOL bNoUndoGroup)
     iRcAnchorLine = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iAnchorPos,0);
 
     iRcCurCol = (int)SendMessage(hwnd,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
-    //iRcCurCol += (int)SendMessage(hwnd, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+    //iRcCurCol += (int)SendMessage(hwnd, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
 
     iRcAnchorCol = (int)SendMessage(hwnd,SCI_GETCOLUMN,(WPARAM)iAnchorPos,0);
-    //iRcAnchorCol += (int)SendMessage(hwnd, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+    //iRcAnchorCol += (int)SendMessage(hwnd, SCI_GETSELECTIONNANCHORVIRTUALSPACE, 0, 0);
 
     bIsRectangular = TRUE;
 
@@ -3955,7 +3955,7 @@ void EditPadWithSpaces(HWND hwnd,BOOL bSkipEmpty,BOOL bNoUndoGroup)
       int iPos = (int)SendMessage(hwnd,SCI_GETLINESELENDPOSITION,(WPARAM)iLine,0);
       if (iPos != INVALID_POSITION) {
         int iCol = (int)SendMessage(hwnd, SCI_GETCOLUMN, (WPARAM)iPos, 0);
-        //iCol += (int)SendMessage(hwnd, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+        //iCol += (int)SendMessage(hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
         iMaxColumn = max(iMaxColumn, iCol);
       }
     }
@@ -3986,7 +3986,7 @@ void EditPadWithSpaces(HWND hwnd,BOOL bSkipEmpty,BOOL bNoUndoGroup)
         continue;
 
       int iCol = (int)SendMessage(hwnd, SCI_GETCOLUMN, (WPARAM)iPos, 0);
-      //iCol += (int)SendMessage(hwnd, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+      //iCol += (int)SendMessage(hwnd, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
       iPadLen = iMaxColumn - iCol;
 
       SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)iPos,0);
@@ -4768,10 +4768,10 @@ void EditSortLines(HWND hwnd,int iSortFlags)
     iRcAnchorLine = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iAnchorPos,0);
 
     iRcCurCol = (int)SendMessage(hwnd,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
-    //iRcCurCol += (int)SendMessage(hwnd, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+    //iRcCurCol += (int)SendMessage(hwnd, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
 
     iRcAnchorCol = (int)SendMessage(hwnd, SCI_GETCOLUMN, (WPARAM)iAnchorPos, 0);
-    //iRcAnchorCol += (int)SendMessage(hwnd, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+    //iRcAnchorCol += (int)SendMessage(hwnd, SCI_GETSELECTIONNANCHORVIRTUALSPACE, 0, 0);
 
     bIsRectangular = TRUE;
 
@@ -4796,7 +4796,7 @@ void EditSortLines(HWND hwnd,int iSortFlags)
       iLineEnd--;
 
     iSortColumn = (UINT)SendMessage(hwnd,SCI_GETCOLUMN,(WPARAM)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0),0);
-    //iSortColumn += (int)SendMessage(hwnd, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+    //iSortColumn += (int)SendMessage(hwnd, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
   }
 
   iLineCount = iLineEnd - iLineStart +1;
