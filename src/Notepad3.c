@@ -2106,54 +2106,15 @@ void MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     SetForegroundWindow(hwnd);
 
   if (PathFileExists(szCurFile)) {
-
     if ((iFileWatchingMode == 2 && !bModified && !Encoding_HasChanged(CPI_GET)) ||
-        MsgBox(MBYESNO, IDS_FILECHANGENOTIFY) == IDYES) {
+      MsgBox(MBYESNO,IDS_FILECHANGENOTIFY) == IDYES) {
 
-      int iCurPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-      int iAnchorPos = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
-      int iVisTopLine = (int)SendMessage(hwndEdit, SCI_GETFIRSTVISIBLELINE, 0, 0);
-      int iDocTopLine = (int)SendMessage(hwndEdit, SCI_DOCLINEFROMVISIBLE, (WPARAM)iVisTopLine, 0);
-      int iXOffset = (int)SendMessage(hwndEdit, SCI_GETXOFFSET, 0, 0);
-      BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurPos == SendMessage(hwndEdit, SCI_GETLENGTH, 0, 0));
-
-      Encoding_SrcWeak(Encoding_Current(CPI_GET));
-
-      int idx,iCaretPos = 0;
-      if (MRU_FindFile(pFileMRU,szCurFile,&idx)) {
-        iCaretPos = pFileMRU->iCaretPos[idx];
-      }
-
-      if (FileLoad(TRUE, FALSE, TRUE, FALSE, szCurFile)) {
-
-        if (bIsTail && iFileWatchingMode == 2) {
-          EditJumpTo(hwndEdit, -1, 0);
-          EditEnsureSelectionVisible(hwndEdit);
-        }
-
-        else if (SendMessage(hwndEdit, SCI_GETLENGTH, 0, 0) >= 4) {
-          char tch[5] = { '\0' };
-          SendMessage(hwndEdit, SCI_GETTEXT, 5, (LPARAM)tch);
-          if (StringCchCompareXA(tch, ".LOG") != 0) {
-            int iNewTopLine;
-            SendMessage(hwndEdit, SCI_SETSEL, iAnchorPos, iCurPos);
-            SendMessage(hwndEdit, SCI_ENSUREVISIBLE, (WPARAM)iDocTopLine, 0);
-            iNewTopLine = (int)SendMessage(hwndEdit, SCI_GETFIRSTVISIBLELINE, 0, 0);
-            SendMessage(hwndEdit, SCI_LINESCROLL, 0, (LPARAM)iVisTopLine - iNewTopLine);
-            SendMessage(hwndEdit, SCI_SETXOFFSET, (WPARAM)iXOffset, 0);
-          }
-          // set historic caret pos
-          else if (iCaretPos > 0) {
-            SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iCaretPos,0);
-          }
-        }
-      }
+      FileRevert(szCurFile);
     }
   }
   else {
-
-    if (MsgBox(MBYESNO, IDS_FILECHANGENOTIFY2) == IDYES)
-      FileSave(TRUE, FALSE, FALSE, FALSE);
+    if (MsgBox(MBYESNO,IDS_FILECHANGENOTIFY2) == IDYES)
+      FileSave(TRUE,FALSE,FALSE,FALSE);
   }
 
   if (!bRunningWatch)
@@ -2374,11 +2335,11 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_FIND,i);
   EnableCmd(hmenu,IDM_EDIT_SAVEFIND,i);
   EnableCmd(hmenu,IDM_EDIT_FINDNEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_FINDPREV,i && StringCchLenA(efrData.szFind));
+  EnableCmd(hmenu,IDM_EDIT_FINDPREV,i && strlen(efrData.szFind));
   EnableCmd(hmenu,IDM_EDIT_REPLACE,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_REPLACENEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_SELTONEXT,i && StringCchLenA(efrData.szFind));
-  EnableCmd(hmenu,IDM_EDIT_SELTOPREV,i && StringCchLenA(efrData.szFind));
+  EnableCmd(hmenu,IDM_EDIT_SELTONEXT,i && strlen(efrData.szFind));
+  EnableCmd(hmenu,IDM_EDIT_SELTOPREV,i && strlen(efrData.szFind));
   EnableCmd(hmenu,IDM_EDIT_FINDMATCHINGBRACE,i);
   EnableCmd(hmenu,IDM_EDIT_SELTOMATCHINGBRACE,i);
 
@@ -2518,6 +2479,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   return DefWindowProc(hwnd, umsg, wParam, lParam);
 }
 
+
 //=============================================================================
 //
 //  MsgCommand() - Handles WM_COMMAND
@@ -2540,50 +2502,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
     case IDM_FILE_REVERT:
-      {
-        if (StringCchLen(szCurFile)) {
-
-          WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
-
-          int iCurPos     = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-          int iAnchorPos  = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
-          int iVisTopLine = (int)SendMessage(hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
-          int iDocTopLine = (int)SendMessage(hwndEdit,SCI_DOCLINEFROMVISIBLE,(WPARAM)iVisTopLine,0);
-          int iXOffset    = (int)SendMessage(hwndEdit,SCI_GETXOFFSET,0,0);
-
-          if ((bModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_REVERT) != IDOK)
-            return(0);
-
-          StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),szCurFile);
-
-          Encoding_SrcWeak(Encoding_Current(CPI_GET));
-
-          int idx,iCaretPos = 0;
-          if (MRU_FindFile(pFileMRU,tchCurFile2,&idx)) {
-            iCaretPos = pFileMRU->iCaretPos[idx];
-          }
-
-          if (FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2))
-          {
-            if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
-              char tch[5] = { '\0' };
-              SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tch);
-              if (StringCchCompareXA(tch,".LOG") != 0) {
-                int iNewTopLine;
-                SendMessage(hwndEdit,SCI_SETSEL,iAnchorPos,iCurPos);
-                SendMessage(hwndEdit,SCI_ENSUREVISIBLE,(WPARAM)iDocTopLine,0);
-                iNewTopLine = (int)SendMessage(hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
-                SendMessage(hwndEdit,SCI_LINESCROLL,0,(LPARAM)iVisTopLine - iNewTopLine);
-                SendMessage(hwndEdit,SCI_SETXOFFSET,(WPARAM)iXOffset,0);
-              }
-              // set historic caret pos
-              else if (iCaretPos > 0) {
-                SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iCaretPos,0);
-              }
-            }
-          }
-        }
+      if ((bModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_REVERT) != IDOK) {
+        return(0);
       }
+      FileRevert(szCurFile);
       break;
 
 
@@ -4048,7 +3970,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) == 0)
         break;
 
-      if (!StringCchLenA(efrData.szFind)) {
+      if (!strlen(efrData.szFind)) {
         if (LOWORD(wParam) != IDM_EDIT_REPLACENEXT)
           SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_FIND,1),0);
         else
@@ -7076,7 +6998,7 @@ void UpdateToolbar()
   i = (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
   EnableTool(IDT_EDIT_FIND,i);
   //EnableTool(IDT_EDIT_FINDNEXT,i);
-  //EnableTool(IDT_EDIT_FINDPREV,i && StringCchLen(efrData.szFind));
+  //EnableTool(IDT_EDIT_FINDPREV,i && strlen(efrData.szFind));
   EnableTool(IDT_EDIT_REPLACE,i /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_CLEAR,i /*&& !bReadOnly*/);
 
@@ -7629,10 +7551,11 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     fileEncoding = Encoding_Current(CPI_GET);
     Encoding_HasChanged(fileEncoding);
     int idx, iCaretPos = 0;
-    if (MRU_FindFile(pFileMRU,szFileName,&idx)) {
+    if (!bReload && MRU_FindFile(pFileMRU,szFileName,&idx)) {
       iCaretPos = pFileMRU->iCaretPos[idx];
     }
     MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs,fileEncoding,iCaretPos);
+    
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
 
@@ -7661,6 +7584,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
       // set historic caret pos
       else if (iCaretPos > 0) { 
         SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iCaretPos,0);
+        SendMessage(hwndEdit,SCI_CHOOSECARETX,0,0);
       }
     }
     // consistent settings file handling (if loaded in editor)
@@ -7676,6 +7600,55 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     MsgBox(MBWARN,IDS_ERR_LOADFILE,szFileName);
 
   return(fSuccess);
+}
+
+
+
+//=============================================================================
+//
+//  FileRevert()
+//
+//
+BOOL FileRevert(LPCWSTR szFileName) 
+{
+  if (wcslen(szFileName)) {
+
+    int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+    int iAnchorPos = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
+    int iCurrLine = (int)SendMessage(hwndEdit, SCI_LINEFROMPOSITION, (WPARAM)iCurPos, 0);
+    int iVisTopLine = (int)SendMessage(hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
+    int iDocTopLine = (int)SendMessage(hwndEdit,SCI_DOCLINEFROMVISIBLE,(WPARAM)iVisTopLine,0);
+    int iXOffset = (int)SendMessage(hwndEdit,SCI_GETXOFFSET,0,0);
+    //BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurPos == SendMessage(hwndEdit, SCI_GETLENGTH, 0, 0));
+    BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= ((int)SendMessage(hwndEdit, SCI_GETLINECOUNT, 0, 0) - 1));
+
+    Encoding_SrcWeak(Encoding_Current(CPI_GET));
+
+    WCHAR tchFileName2[MAX_PATH] = { L'\0' };
+    StringCchCopy(tchFileName2,COUNTOF(tchFileName2),szFileName);
+
+    if (FileLoad(TRUE,FALSE,TRUE,FALSE,tchFileName2))
+    {
+      if (bIsTail && iFileWatchingMode == 2) {
+        EditJumpTo(hwndEdit, -1, 0);
+        EditEnsureSelectionVisible(hwndEdit);
+      }
+      else if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
+        char tch[5] = { '\0' };
+        SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tch);
+        if (StringCchCompareXA(tch,".LOG") != 0) {
+          int iNewTopLine;
+          SendMessage(hwndEdit,SCI_SETSEL,iAnchorPos,iCurPos);
+          SendMessage(hwndEdit,SCI_ENSUREVISIBLE,(WPARAM)iDocTopLine,0);
+          iNewTopLine = (int)SendMessage(hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
+          SendMessage(hwndEdit,SCI_LINESCROLL,0,(LPARAM)iVisTopLine - iNewTopLine);
+          SendMessage(hwndEdit,SCI_SETXOFFSET,(WPARAM)iXOffset,0);
+        }
+      }
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 
 

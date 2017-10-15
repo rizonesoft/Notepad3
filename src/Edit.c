@@ -2218,7 +2218,7 @@ void EditMoveDown(HWND hwnd)
           chaEOL[0] = '\n';
           chaEOL[1] = 0;
         }
-        SendMessage(hwnd,SCI_APPENDTEXT,(WPARAM)StringCchLenA(chaEOL),(LPARAM)chaEOL);
+        SendMessage(hwnd,SCI_APPENDTEXT,(WPARAM)strlen(chaEOL),(LPARAM)chaEOL);
       }
 
       cLine = (int)SendMessage(hwnd,SCI_GETLINE,(WPARAM)iLineSrc,0);
@@ -4064,7 +4064,7 @@ void EditSortLines(HWND hwnd,int iSortFlags)
     int iTargetEnd   = (int)SendMessage(hwnd,SCI_GETTARGETEND,0,0);
     SendMessage(hwnd,SCI_CLEARSELECTIONS,0,0);
     if (iTargetStart != iTargetEnd) {
-      iTargetEnd -= StringCchLenA(mszEOL);
+      iTargetEnd -= (int)strlen(mszEOL);
       if (iRcAnchorLine > iRcCurLine) {
         iCurPos = (int)SendMessage(hwnd,SCI_FINDCOLUMN,
           (WPARAM)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iTargetStart,0),(LPARAM)iRcCurCol);
