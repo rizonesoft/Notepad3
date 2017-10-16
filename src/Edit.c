@@ -59,6 +59,7 @@ extern BOOL bReplaceInitialized;
 
 static EDITFINDREPLACE efrSave;
 static BOOL bSwitchedFindReplace = FALSE;
+
 static int xFindReplaceDlgSave;
 static int yFindReplaceDlgSave;
 extern int xFindReplaceDlg;
@@ -4124,6 +4125,7 @@ void EditJumpTo(HWND hwnd,int iNewLine,int iNewCol)
     }
 
     iNewPos = min(iNewPos,iLineEndPos);
+
     EditSelectEx(hwnd,-1,iNewPos); // SCI_GOTOPOS(pos) is equivalent to SCI_SETSEL(-1, pos)
     SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
   }
@@ -5644,23 +5646,7 @@ INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 
           if (iNewLine > 0 && iNewLine <= iMaxLine && iNewCol > 0)
           {
-            //int iNewPos  = SendMessage(hwndEdit,SCI_POSITIONFROMLINE,(WPARAM)iNewLine-1,0);
-            //int iLineEndPos = SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)iNewLine-1,0);
-
-            //while (iNewCol-1 > SendMessage(hwndEdit,SCI_GETCOLUMN,(WPARAM)iNewPos,0))
-            //{
-            //  if (iNewPos >= iLineEndPos)
-            //    break;
-
-            //  iNewPos = SendMessage(hwndEdit,SCI_POSITIONAFTER,(WPARAM)iNewPos,0);
-            //}
-
-            //iNewPos = min(iNewPos,iLineEndPos);
-            //SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iNewPos,0);
-            //SendMessage(hwndEdit,SCI_CHOOSECARETX,0,0);
-
             EditJumpTo(hwndEdit,iNewLine,iNewCol);
-
             EndDialog(hwnd,IDOK);
           }
 
@@ -6483,8 +6469,8 @@ extern BOOL bTabsAsSpaces;
 extern BOOL bTabsAsSpacesG;
 extern BOOL bTabIndents;
 extern BOOL bTabIndentsG;
-extern int fWordWrap;
-extern int fWordWrapG;
+extern BOOL bWordWrap;
+extern BOOL bWordWrapG;
 extern int iWordWrapMode;
 extern int iLongLinesLimit;
 extern int iLongLinesLimitG;
@@ -6519,10 +6505,10 @@ BOOL FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
   SendMessage(hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
 
   if (lpfv->mask & FV_WORDWRAP)
-    fWordWrap = lpfv->fWordWrap;
+    bWordWrap = lpfv->fWordWrap;
   else
-    fWordWrap = fWordWrapG;
-  if (!fWordWrap)
+    bWordWrap = bWordWrapG;
+  if (!bWordWrap)
     SendMessage(hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
     SendMessage(hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);

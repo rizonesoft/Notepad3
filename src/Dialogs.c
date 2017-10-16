@@ -889,8 +889,7 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
       {
 
         case 100:
-            EnableWindow(GetDlgItem(hwnd,IDOK),
-              GetWindowTextLength(GetDlgItem(hwnd,100)));
+            EnableWindow(GetDlgItem(hwnd,IDOK),GetWindowTextLength(GetDlgItem(hwnd,100)));
           break;
 
 
@@ -961,6 +960,7 @@ BOOL AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 //
 extern LPMRULIST pFileMRU;
 extern BOOL bSaveRecentFiles;
+extern BOOL bPreserveCaretPos;
 extern int  cxFileMRUDlg;
 extern int  cyFileMRUDlg;
 extern int  flagNoFadeHidden;
@@ -1095,7 +1095,12 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
         if (bSaveRecentFiles)
-          CheckDlgButton(hwnd,IDC_SAVEMRU,BST_CHECKED);
+          CheckDlgButton(hwnd, IDC_SAVEMRU, BST_CHECKED);
+
+        if (bPreserveCaretPos)
+          CheckDlgButton(hwnd, IDC_PRESERVECARET, BST_CHECKED);
+
+        //if (!bSaveRecentFiles) EnableWindow(GetDlgItem(hwnd, IDC_PRESERVECARET), FALSE);
 
         CenterDlgInParent(hwnd);
       }
@@ -1118,7 +1123,8 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         RemoveProp(hwnd,L"it");
         GlobalFree(lpit);
 
-        bSaveRecentFiles = (IsDlgButtonChecked(hwnd,IDC_SAVEMRU)) ? 1 : 0;
+        bPreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? TRUE : FALSE;
+        bSaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? TRUE : FALSE;
 
         ResizeDlg_Destroy(hwnd,&cxFileMRUDlg,&cyFileMRUDlg);
       }
@@ -1137,7 +1143,9 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp,hwnd,IDC_REMOVE,dx,dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_FILEMRU,dx,dy,SWP_NOMOVE);
+        hdwp = DeferCtlPos(hdwp,hwnd,IDC_PRESERVECARET,0,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_SAVEMRU,0,dy,SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
         ListView_SetColumnWidth(GetDlgItem(hwnd,IDC_FILEMRU),0,LVSCW_AUTOSIZE_USEHEADER);
@@ -1228,7 +1236,11 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         case LVN_ITEMCHANGED:
         case LVN_DELETEITEM:
-            EnableWindow(GetDlgItem(hwnd,IDOK),ListView_GetSelectedCount(GetDlgItem(hwnd,IDC_FILEMRU)));
+            {
+              UINT cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
+              EnableWindow(GetDlgItem(hwnd, IDOK), (cnt > 0));
+              EnableWindow(GetDlgItem(hwnd, IDC_REMOVE), (cnt > 0));
+            }
             break;
           }
         }
@@ -1292,51 +1304,63 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         case IDC_FILEMRU:
           break;
 
-
         case IDOK:
+        case IDC_REMOVE:
           {
-            WCHAR tch[MAX_PATH] = { L'\0' };
+            WCHAR tchFileName[MAX_PATH] = { L'\0' };
             //int  iItem;
 
             //if ((iItem = SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETCURSEL,0,0)) != LB_ERR)
-            if (ListView_GetSelectedCount(GetDlgItem(hwnd,IDC_FILEMRU)))
+
+            UINT cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
+            if (cnt > 0)
             {
               //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_GETTEXT,(WPARAM)iItem,(LPARAM)tch);
               LV_ITEM lvi;
               ZeroMemory(&lvi,sizeof(LV_ITEM));
 
               lvi.mask = LVIF_TEXT;
-              lvi.pszText = tch;
-              lvi.cchTextMax = COUNTOF(tch);
+              lvi.pszText = tchFileName;
+              lvi.cchTextMax = COUNTOF(tchFileName);
               lvi.iItem = ListView_GetNextItem(GetDlgItem(hwnd,IDC_FILEMRU),-1,LVNI_ALL | LVNI_SELECTED);
 
               ListView_GetItem(GetDlgItem(hwnd,IDC_FILEMRU),&lvi);
 
-              PathUnquoteSpaces(tch);
+              PathUnquoteSpaces(tchFileName);
 
-              if (!PathFileExists(tch)) {
+              if (!PathFileExists(tchFileName) || (LOWORD(wParam) == IDC_REMOVE)) {
+
+                // don't remove myself
+                int iCur = 0;
+                if (!MRU_FindFile(pFileMRU, szCurFile, &iCur)) {
+                  iCur = -1;
+                }
 
                 // Ask...
-                if (IDYES == MsgBox(MBYESNO,IDS_ERR_MRUDLG)) {
+                int answ = (LOWORD(wParam) == IDOK) ? MsgBox(MBYESNO, IDS_ERR_MRUDLG) 
+                                                    : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
-                    MRU_Delete(pFileMRU,lvi.iItem);
-                    MRU_DeleteFileFromStore(pFileMRU,tch);
+                if (IDYES == answ) {
 
-                    //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
-                    //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);
-                    // must use IDM_VIEW_REFRESH, index might change...
-                    SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
+                  MRU_Delete(pFileMRU,lvi.iItem);
+                  MRU_DeleteFileFromStore(pFileMRU,tchFileName);
 
-                    //EnableWindow(GetDlgItem(hwnd,IDOK),
-                    //  (LB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,LB_GETCURSEL,0,0)));
+                  //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
+                  //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);
+                  // must use IDM_VIEW_REFRESH, index might change...
+                  SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-                    EnableWindow(GetDlgItem(hwnd,IDOK),
-                      ListView_GetSelectedCount(GetDlgItem(hwnd,IDC_FILEMRU)));
+                  //EnableWindow(GetDlgItem(hwnd,IDOK),
+                  //  (LB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,LB_GETCURSEL,0,0)));
+
+                  cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
+                  EnableWindow(GetDlgItem(hwnd, IDOK), (cnt > 0));
+                  EnableWindow(GetDlgItem(hwnd, IDC_REMOVE), (cnt > 0));
                 }
               }
 
               else {
-                StringCchCopy((LPWSTR)GetWindowLongPtr(hwnd,DWLP_USER),MAX_PATH,tch);
+                StringCchCopy((LPWSTR)GetWindowLongPtr(hwnd,DWLP_USER),MAX_PATH,tchFileName);
                 EndDialog(hwnd,IDOK);
               }
             }

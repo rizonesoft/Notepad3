@@ -106,6 +106,7 @@ WCHAR      szBufferFile[MAX_PATH] = { L'\0' };
 BOOL       bSaveSettings;
 BOOL       bEnableSaveSettings;
 BOOL       bSaveRecentFiles;
+BOOL       bPreserveCaretPos;
 BOOL       bSaveFindReplace;
 WCHAR      tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 WCHAR      tchOpenWithDir[MAX_PATH] = { L'\0' };
@@ -119,8 +120,8 @@ WCHAR      tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 WCHAR      tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
 int       iPathNameFormat;
-BOOL      fWordWrap;
-BOOL      fWordWrapG;
+BOOL      bWordWrap;
+BOOL      bWordWrapG;
 int       iWordWrapMode;
 int       iWordWrapIndent;
 int       iWordWrapSymbols;
@@ -1327,7 +1328,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   Style_SetIndentGuides(hwndEdit,bShowIndentGuides);
 
   // Word wrap
-  if (!fWordWrap)
+  if (!bWordWrap)
     SendMessage(hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
     SendMessage(hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
@@ -1718,6 +1719,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
       }
       else
         MRU_MergeSave(pFileMRU, TRUE, flagRelativeFileMRU, flagPortableMyDocs);
+
       MRU_Destroy(pFileMRU);
 
       if (!bSaveFindReplace) {
@@ -2359,7 +2361,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault(hwndEdit));
 
-  CheckCmd(hmenu,IDM_VIEW_WORDWRAP,fWordWrap);
+  CheckCmd(hmenu,IDM_VIEW_WORDWRAP,bWordWrap);
   CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,bMarkLongLines);
   CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,bTabsAsSpaces);
   CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,bShowIndentGuides);
@@ -2410,6 +2412,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentModeAvailable);
 
   CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT,bSaveRecentFiles);
+  CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, bPreserveCaretPos);
+
   CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,bSaveFindReplace);
   CheckCmd(hmenu,IDM_VIEW_SAVEBEFORERUNNINGTOOLS,bSaveBeforeRunningTools);
 
@@ -2440,6 +2444,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
   EnableCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVERECENT,i);
+  EnableCmd(hmenu,IDM_VIEW_NOPRESERVECARET,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,bEnableSaveSettings && i);
 
@@ -4064,12 +4069,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_WORDWRAP:
-      fWordWrap = (fWordWrap) ? FALSE : TRUE;
-      if (!fWordWrap)
+      bWordWrap = (bWordWrap) ? FALSE : TRUE;
+      if (!bWordWrap)
         SendMessage(hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
       else
         SendMessage(hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
-      fWordWrapG = fWordWrap;
+      bWordWrapG = bWordWrap;
       UpdateToolbar();
       break;
 
@@ -4077,7 +4082,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_WORDWRAPSETTINGS:
       if (WordWrapSettingsDlg(hwnd,IDD_WORDWRAP,&iWordWrapIndent))
       {
-        if (fWordWrap)
+        if (bWordWrap)
           SendMessage(hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
         if (iWordWrapIndent == 5)
           SendMessage(hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
@@ -4498,6 +4503,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bSaveRecentFiles = (bSaveRecentFiles) ? FALSE : TRUE;
       break;
 
+    case IDM_VIEW_NOPRESERVECARET:
+      bPreserveCaretPos = (bPreserveCaretPos) ? FALSE : TRUE;
+      break;
 
     case IDM_VIEW_NOSAVEFINDREPL:
       bSaveFindReplace = (bSaveFindReplace) ? FALSE : TRUE;
@@ -5788,29 +5796,23 @@ void LoadSettings()
   LoadIniSection(L"Settings",pIniSection,cchIniSection);
 
   bEnableSaveSettings = TRUE;
-  bSaveSettings = IniSectionGetInt(pIniSection,L"SaveSettings",1);
-  if (bSaveSettings) bSaveSettings = 1;
+  bSaveSettings = IniSectionGetBool(pIniSection,L"SaveSettings",TRUE);
 
-  bSaveRecentFiles = IniSectionGetInt(pIniSection,L"SaveRecentFiles",0);
-  if (bSaveRecentFiles) bSaveRecentFiles = 1;
+  bSaveRecentFiles = IniSectionGetBool(pIniSection,L"SaveRecentFiles",FALSE);
+  
+  bPreserveCaretPos = IniSectionGetBool(pIniSection, L"PreserveCaretPos",FALSE);
 
-  bSaveFindReplace = IniSectionGetInt(pIniSection,L"SaveFindReplace",0);
-  if (bSaveFindReplace) bSaveFindReplace = 1;
+  bSaveFindReplace = IniSectionGetBool(pIniSection,L"SaveFindReplace",FALSE);
 
-  efrData.bFindClose = IniSectionGetInt(pIniSection,L"CloseFind",0);
-  if (efrData.bFindClose) efrData.bReplaceClose = TRUE;
+  efrData.bFindClose = IniSectionGetBool(pIniSection,L"CloseFind", FALSE);
 
-  efrData.bReplaceClose = IniSectionGetInt(pIniSection,L"CloseReplace",0);
-  if (efrData.bReplaceClose) efrData.bReplaceClose = TRUE;
+  efrData.bReplaceClose = IniSectionGetBool(pIniSection,L"CloseReplace", FALSE);
 
-  efrData.bNoFindWrap = IniSectionGetInt(pIniSection,L"NoFindWrap",0);
-  if (efrData.bNoFindWrap) efrData.bNoFindWrap = TRUE;
+  efrData.bNoFindWrap = IniSectionGetBool(pIniSection,L"NoFindWrap", FALSE);
 
-  efrData.bTransformBS = IniSectionGetInt(pIniSection,L"FindTransformBS",0);
-  if (efrData.bTransformBS) efrData.bTransformBS = TRUE;
+  efrData.bTransformBS = IniSectionGetBool(pIniSection,L"FindTransformBS", FALSE);
 
-  efrData.bWildcardSearch = IniSectionGetInt(pIniSection,L"WildcardSearch",0);
-  if (efrData.bWildcardSearch) efrData.bWildcardSearch = TRUE;
+  efrData.bWildcardSearch = IniSectionGetBool(pIniSection,L"WildcardSearch",FALSE);
 
   efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
@@ -5829,9 +5831,8 @@ void LoadSettings()
   iPathNameFormat = IniSectionGetInt(pIniSection,L"PathNameFormat",0);
   iPathNameFormat = max(min(iPathNameFormat,2),0);
 
-  fWordWrap = IniSectionGetInt(pIniSection,L"WordWrap",0);
-  if (fWordWrap) fWordWrap = 1;
-  fWordWrapG = fWordWrap;
+  bWordWrap = IniSectionGetBool(pIniSection,L"WordWrap",FALSE);
+  bWordWrapG = bWordWrap;
 
   iWordWrapMode = IniSectionGetInt(pIniSection,L"WordWrapMode",0);
   iWordWrapMode = max(min(iWordWrapMode,1),0);
@@ -5842,43 +5843,31 @@ void LoadSettings()
   iWordWrapSymbols = IniSectionGetInt(pIniSection,L"WordWrapSymbols",22);
   iWordWrapSymbols = max(min(iWordWrapSymbols%10,2),0)+max(min((iWordWrapSymbols%100-iWordWrapSymbols%10)/10,2),0)*10;
 
-  bShowWordWrapSymbols = IniSectionGetInt(pIniSection,L"ShowWordWrapSymbols",0);
-  if (bShowWordWrapSymbols) bShowWordWrapSymbols = 1;
+  bShowWordWrapSymbols = IniSectionGetBool(pIniSection,L"ShowWordWrapSymbols",0);
 
-  bMatchBraces = IniSectionGetInt(pIniSection,L"MatchBraces",1);
-  if (bMatchBraces) bMatchBraces = 1;
+  bMatchBraces = IniSectionGetBool(pIniSection,L"MatchBraces",TRUE);
 
-  bAutoCloseTags = IniSectionGetInt(pIniSection,L"AutoCloseTags",0);
-  if (bAutoCloseTags) bAutoCloseTags = 1;
+  bAutoCloseTags = IniSectionGetBool(pIniSection,L"AutoCloseTags",FALSE);
 
-  bHiliteCurrentLine = IniSectionGetInt(pIniSection,L"HighlightCurrentLine",0);
-  if (bHiliteCurrentLine) bHiliteCurrentLine = 1;
+  bHiliteCurrentLine = IniSectionGetBool(pIniSection,L"HighlightCurrentLine",FALSE);
 
-  bAutoIndent = IniSectionGetInt(pIniSection,L"AutoIndent",1);
-  if (bAutoIndent) bAutoIndent = 1;
+  bAutoIndent = IniSectionGetBool(pIniSection,L"AutoIndent",TRUE);
 
-  bAutoCompleteWords = IniSectionGetInt(pIniSection,L"AutoCompleteWords",0);
-  if (bAutoCompleteWords) bAutoCompleteWords = 1;
+  bAutoCompleteWords = IniSectionGetBool(pIniSection,L"AutoCompleteWords",FALSE);
 
-  bAccelWordNavigation = IniSectionGetInt(pIniSection, L"AccelWordNavigation", 0);
-  if (bAccelWordNavigation) bAccelWordNavigation = 1;
+  bAccelWordNavigation = IniSectionGetBool(pIniSection, L"AccelWordNavigation", FALSE);
 
-  bVirtualSpaceInRectSelection = IniSectionGetInt(pIniSection,L"VirtualSpaceInRectSelection",0);
-  if (bVirtualSpaceInRectSelection) bVirtualSpaceInRectSelection = 1;
+  bVirtualSpaceInRectSelection = IniSectionGetBool(pIniSection,L"VirtualSpaceInRectSelection",FALSE);
 
-  bShowIndentGuides = IniSectionGetInt(pIniSection,L"ShowIndentGuides",0);
-  if (bShowIndentGuides) bShowIndentGuides = 1;
+  bShowIndentGuides = IniSectionGetBool(pIniSection,L"ShowIndentGuides",FALSE);
 
-  bTabsAsSpaces = IniSectionGetInt(pIniSection,L"TabsAsSpaces",1);
-  if (bTabsAsSpaces) bTabsAsSpaces = 1;
+  bTabsAsSpaces = IniSectionGetBool(pIniSection,L"TabsAsSpaces",TRUE);
   bTabsAsSpacesG = bTabsAsSpaces;
 
-  bTabIndents = IniSectionGetInt(pIniSection,L"TabIndents",1);
-  if (bTabIndents) bTabIndents = 1;
+  bTabIndents = IniSectionGetBool(pIniSection,L"TabIndents",TRUE);
   bTabIndentsG = bTabIndents;
 
-  bBackspaceUnindents = IniSectionGetInt(pIniSection,L"BackspaceUnindents",0);
-  if (bBackspaceUnindents) bBackspaceUnindents = 1;
+  bBackspaceUnindents = IniSectionGetBool(pIniSection,L"BackspaceUnindents",FALSE);
 
   iTabWidth = IniSectionGetInt(pIniSection,L"TabWidth",2);
   iTabWidth = max(min(iTabWidth,256),1);
@@ -5888,8 +5877,7 @@ void LoadSettings()
   iIndentWidth = max(min(iIndentWidth,256),0);
   iIndentWidthG = iIndentWidth;
 
-  bMarkLongLines = IniSectionGetInt(pIniSection,L"MarkLongLines",0);
-  if (bMarkLongLines) bMarkLongLines = 1;
+  bMarkLongLines = IniSectionGetBool(pIniSection,L"MarkLongLines",FALSE);
 
   iLongLinesLimit = IniSectionGetInt(pIniSection,L"LongLinesLimit",72);
   iLongLinesLimit = max(min(iLongLinesLimit,4096),0);
@@ -5898,50 +5886,39 @@ void LoadSettings()
   iLongLineMode = IniSectionGetInt(pIniSection,L"LongLineMode",EDGE_LINE);
   iLongLineMode = max(min(iLongLineMode,EDGE_BACKGROUND),EDGE_LINE);
 
-  bShowSelectionMargin = IniSectionGetInt(pIniSection,L"ShowSelectionMargin",0);
-  if (bShowSelectionMargin) bShowSelectionMargin = 1;
+  bShowSelectionMargin = IniSectionGetBool(pIniSection,L"ShowSelectionMargin",FALSE);
 
-  bShowLineNumbers = IniSectionGetInt(pIniSection,L"ShowLineNumbers",1);
-  if (bShowLineNumbers) bShowLineNumbers = 1;
+  bShowLineNumbers = IniSectionGetBool(pIniSection,L"ShowLineNumbers", TRUE);
 
-  bShowCodeFolding = IniSectionGetInt(pIniSection,L"ShowCodeFolding",1);
-  if (bShowCodeFolding) bShowCodeFolding = 1;
+  bShowCodeFolding = IniSectionGetBool(pIniSection,L"ShowCodeFolding", TRUE);
 
   iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",3);
-  bMarkOccurrencesMatchCase = IniSectionGetInt(pIniSection,L"MarkOccurrencesMatchCase",0);
-  bMarkOccurrencesMatchWords = IniSectionGetInt(pIniSection,L"MarkOccurrencesMatchWholeWords",1);
+  bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",FALSE);
+  bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",TRUE);
 
-  bViewWhiteSpace = IniSectionGetInt(pIniSection,L"ViewWhiteSpace",0);
-  if (bViewWhiteSpace) bViewWhiteSpace = 1;
+  bViewWhiteSpace = IniSectionGetBool(pIniSection,L"ViewWhiteSpace", FALSE);
 
-  bViewEOLs = IniSectionGetInt(pIniSection,L"ViewEOLs",0);
-  if (bViewEOLs) bViewEOLs = 1;
+  bViewEOLs = IniSectionGetBool(pIniSection,L"ViewEOLs", FALSE);
 
   iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_NONE);
   // if DefaultEncoding is not defined set to system's current code-page 
   iDefaultEncoding = (iDefaultEncoding == CPI_NONE) ?
     Encoding_MapIniSetting(TRUE,(int)GetACP()) : Encoding_MapIniSetting(TRUE,iDefaultEncoding);
 
-  bSkipUnicodeDetection = IniSectionGetInt(pIniSection, L"SkipUnicodeDetection", 0);
-  if (bSkipUnicodeDetection) bSkipUnicodeDetection = 1;
+  bSkipUnicodeDetection = IniSectionGetBool(pIniSection, L"SkipUnicodeDetection", FALSE);
 
-  bLoadASCIIasUTF8 = IniSectionGetInt(pIniSection, L"LoadASCIIasUTF8", 0);
-  if (bLoadASCIIasUTF8) bLoadASCIIasUTF8 = 1;
+  bLoadASCIIasUTF8 = IniSectionGetBool(pIniSection, L"LoadASCIIasUTF8", FALSE);
 
-  bLoadNFOasOEM = IniSectionGetInt(pIniSection,L"LoadNFOasOEM",1);
-  if (bLoadNFOasOEM) bLoadNFOasOEM = 1;
+  bLoadNFOasOEM = IniSectionGetBool(pIniSection,L"LoadNFOasOEM",TRUE);
 
-  bNoEncodingTags = IniSectionGetInt(pIniSection,L"NoEncodingTags",0);
-  if (bNoEncodingTags) bNoEncodingTags = 1;
+  bNoEncodingTags = IniSectionGetBool(pIniSection,L"NoEncodingTags", FALSE);
 
   iDefaultEOLMode = IniSectionGetInt(pIniSection,L"DefaultEOLMode",0);
   iDefaultEOLMode = max(min(iDefaultEOLMode,2),0);
 
-  bFixLineEndings = IniSectionGetInt(pIniSection,L"FixLineEndings",1);
-  if (bFixLineEndings) bFixLineEndings = 1;
+  bFixLineEndings = IniSectionGetBool(pIniSection,L"FixLineEndings",TRUE);
 
-  bAutoStripBlanks = IniSectionGetInt(pIniSection,L"FixTrailingBlanks",0);
-  if (bAutoStripBlanks) bAutoStripBlanks = 1;
+  bAutoStripBlanks = IniSectionGetBool(pIniSection,L"FixTrailingBlanks",FALSE);
 
   iPrintHeader = IniSectionGetInt(pIniSection,L"PrintHeader",1);
   iPrintHeader = max(min(iPrintHeader,3),0);
@@ -5967,39 +5944,32 @@ void LoadSettings()
   pagesetupMargin.bottom = IniSectionGetInt(pIniSection,L"PrintMarginBottom",-1);
   pagesetupMargin.bottom = max(pagesetupMargin.bottom,-1);
 
-  bSaveBeforeRunningTools = IniSectionGetInt(pIniSection,L"SaveBeforeRunningTools",0);
-  if (bSaveBeforeRunningTools) bSaveBeforeRunningTools = 1;
+  bSaveBeforeRunningTools = IniSectionGetBool(pIniSection,L"SaveBeforeRunningTools",FALSE);
 
   iFileWatchingMode = IniSectionGetInt(pIniSection,L"FileWatchingMode",0);
   iFileWatchingMode = max(min(iFileWatchingMode,2),0);
 
-  bResetFileWatching = IniSectionGetInt(pIniSection,L"ResetFileWatching",1);
-  if (bResetFileWatching) bResetFileWatching = 1;
+  bResetFileWatching = IniSectionGetBool(pIniSection,L"ResetFileWatching",TRUE);
 
   iEscFunction = IniSectionGetInt(pIniSection,L"EscFunction",0);
   iEscFunction = max(min(iEscFunction,2),0);
 
-  bAlwaysOnTop = IniSectionGetInt(pIniSection,L"AlwaysOnTop",0);
-  if (bAlwaysOnTop) bAlwaysOnTop = 1;
+  bAlwaysOnTop = IniSectionGetBool(pIniSection,L"AlwaysOnTop",FALSE);
 
-  bMinimizeToTray = IniSectionGetInt(pIniSection,L"MinimizeToTray",0);
-  if (bMinimizeToTray) bMinimizeToTray = 1;
+  bMinimizeToTray = IniSectionGetBool(pIniSection,L"MinimizeToTray",FALSE);
 
-  bTransparentMode = IniSectionGetInt(pIniSection,L"TransparentMode",0);
-  if (bTransparentMode) bTransparentMode = 1;
+  bTransparentMode = IniSectionGetBool(pIniSection,L"TransparentMode",FALSE);
 
   // Check if SetLayeredWindowAttributes() is available
   bTransparentModeAvailable =
     (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
+  bTransparentModeAvailable = (bTransparentModeAvailable) ? TRUE : FALSE;
 
-  IniSectionGetString(pIniSection,L"ToolbarButtons",L"",
-    tchToolbarButtons,COUNTOF(tchToolbarButtons));
+  IniSectionGetString(pIniSection,L"ToolbarButtons",L"",tchToolbarButtons,COUNTOF(tchToolbarButtons));
 
-  bShowToolbar = IniSectionGetInt(pIniSection,L"ShowToolbar",1);
-  if (bShowToolbar) bShowToolbar = 1;
+  bShowToolbar = IniSectionGetBool(pIniSection,L"ShowToolbar",TRUE);
 
-  bShowStatusbar = IniSectionGetInt(pIniSection,L"ShowStatusbar",1);
-  if (bShowStatusbar) bShowStatusbar = 1;
+  bShowStatusbar = IniSectionGetBool(pIniSection,L"ShowStatusbar",TRUE);
 
   cxEncodingDlg = IniSectionGetInt(pIniSection,L"EncodingDlgSizeX",256);
   cxEncodingDlg = max(cxEncodingDlg,0);
@@ -6177,6 +6147,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
 
   IniSectionSetInt(pIniSection, L"SaveSettings", bSaveSettings);
   IniSectionSetInt(pIniSection, L"SaveRecentFiles", bSaveRecentFiles);
+  IniSectionSetInt(pIniSection, L"PreserveCaretPos", bPreserveCaretPos);
   IniSectionSetInt(pIniSection, L"SaveFindReplace", bSaveFindReplace);
   IniSectionSetInt(pIniSection, L"CloseFind", efrData.bFindClose);
   IniSectionSetInt(pIniSection, L"CloseReplace", efrData.bReplaceClose);
@@ -6189,7 +6160,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   PathRelativeToApp(tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
   IniSectionSetString(pIniSection, L"Favorites", wchTmp);
   IniSectionSetInt(pIniSection, L"PathNameFormat", iPathNameFormat);
-  IniSectionSetInt(pIniSection, L"WordWrap", fWordWrapG);
+  IniSectionSetInt(pIniSection, L"WordWrap", bWordWrapG);
   IniSectionSetInt(pIniSection, L"WordWrapMode", iWordWrapMode);
   IniSectionSetInt(pIniSection, L"WordWrapIndent", iWordWrapIndent);
   IniSectionSetInt(pIniSection, L"WordWrapSymbols", iWordWrapSymbols);
@@ -7007,7 +6978,7 @@ void UpdateToolbar()
 
   EnableTool(IDT_FILE_SAVE, (bModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
 
-  CheckTool(IDT_VIEW_WORDWRAP,fWordWrap);
+  CheckTool(IDT_VIEW_WORDWRAP,bWordWrap);
 }
 
 
@@ -7385,7 +7356,7 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol
     int idx;
     if (MRU_FindFile(pFileMRU,pszFileName,&idx)) {
       pFileMRU->iEncoding[idx] = *ienc;
-      pFileMRU->iCaretPos[idx] = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+      pFileMRU->iCaretPos[idx] = (bPreserveCaretPos) ? (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0) : 0;
     }
     fSuccess = EditSaveFile(hwndEdit,pszFileName,*ienc,pbCancelDataLoss,bSaveCopy);
   }
@@ -7582,9 +7553,14 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         EditEnsureSelectionVisible(hwndEdit);
       }
       // set historic caret pos
-      else if (iCaretPos > 0) { 
-        SendMessage(hwndEdit,SCI_GOTOPOS,(WPARAM)iCaretPos,0);
-        SendMessage(hwndEdit,SCI_CHOOSECARETX,0,0);
+      else if (iCaretPos > 0) 
+      {
+        SendMessage(hwndEdit, SCI_GOTOPOS, (WPARAM)iCaretPos, 0);
+        // adjust view
+        int iCurPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+        int iLine   = (int)SendMessage(hwndEdit, SCI_LINEFROMPOSITION, (WPARAM)iCurPos, 0);
+        int iCol    = (int)SendMessage(hwndEdit, SCI_GETCOLUMN, (WPARAM)iCurPos, 0);
+        EditJumpTo(hwndEdit, iLine+1, iCol+1);
       }
     }
     // consistent settings file handling (if loaded in editor)
@@ -7682,7 +7658,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     int idx;
     if (MRU_FindFile(pFileMRU,szCurFile,&idx)) {
       pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
-      pFileMRU->iCaretPos[idx] = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+      pFileMRU->iCaretPos[idx] = (bPreserveCaretPos) ? (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0) : 0;
     }
     return TRUE;
   }
@@ -7771,7 +7747,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       bModified = FALSE;
       int iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
-      int iCaretPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+      int iCaretPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
       MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs,iCurrEnc,iCaretPos);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,szCurFile);

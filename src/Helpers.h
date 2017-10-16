@@ -40,19 +40,27 @@ extern WCHAR szIniFile[MAX_PATH];
   WritePrivateProfileString(lpSection,lpName,lpString,szIniFile)
 #define IniDeleteSection(lpSection) \
   WritePrivateProfileSection(lpSection,NULL,szIniFile)
-__inline BOOL IniSetInt(LPCWSTR lpSection,LPCWSTR lpName,int i) {
-  WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSetString(lpSection,lpName,tch);
+__inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i)
+{
+  WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
 #define LoadIniSection(lpSection,lpBuf,cchBuf) \
   GetPrivateProfileSection(lpSection,lpBuf,cchBuf,szIniFile)
 #define SaveIniSection(lpSection,lpBuf) \
   WritePrivateProfileSection(lpSection,lpBuf,szIniFile)
-int IniSectionGetString(LPCWSTR,LPCWSTR,LPCWSTR,LPWSTR,int);
-int IniSectionGetInt(LPCWSTR,LPCWSTR,int);
-UINT IniSectionGetUInt(LPCWSTR,LPCWSTR,UINT);
+int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
+int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
+UINT IniSectionGetUInt(LPCWSTR, LPCWSTR, UINT);
+__inline BOOL IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, BOOL bDefault) {
+  return (IniSectionGetInt(lpCachedIniSection, lpName, (bDefault ? 1 : 0)) ? TRUE : FALSE);
+}
 BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
 __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
+}
+__inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b)
+{
+  return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
 
 
