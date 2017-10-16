@@ -41,6 +41,7 @@
 
 extern HINSTANCE g_hInstance;
 extern BOOL bSkipUnicodeDetection;
+extern BOOL bPreserveCaretPos;
 
 
 //=============================================================================
@@ -167,10 +168,11 @@ UINT IniSectionGetUInt(
     return(uDefault);
 }
 
+
 BOOL IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString)
 {
   WCHAR tch[32+512*3+32];
-  WCHAR *p = lpCachedIniSection;
+  WCHAR* p = lpCachedIniSection;
 
   if (p) {
     while (*p) {
@@ -1764,7 +1766,7 @@ BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, int iPos)
   pmru->pszItems[0] = StrDup(pszNew);
 
   pmru->iEncoding[0] = iEnc;
-  pmru->iCaretPos[0] = iPos;
+  pmru->iCaretPos[0] = (bPreserveCaretPos) ? iPos : 0;
 
   return TRUE;
 }
@@ -1816,7 +1818,7 @@ BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpan
     pmru->pszItems[0] = StrDup(pszFile);
   }
   pmru->iEncoding[0] = iEnc;
-  pmru->iCaretPos[0] = iPos;
+  pmru->iCaretPos[0] = (bPreserveCaretPos) ? iPos : 0;
 
   return TRUE;
 }
@@ -1836,6 +1838,8 @@ BOOL MRU_Delete(LPMRULIST pmru,int iIndex) {
     pmru->iCaretPos[i] = pmru->iCaretPos[i + 1];
 
     pmru->pszItems[i+1] = NULL;
+    pmru->iEncoding[i+1] = 0;
+    pmru->iCaretPos[i+1] = 0;
   }
   return TRUE;
 }
@@ -1921,7 +1925,7 @@ BOOL MRU_Load(LPMRULIST pmru) {
         int iCP = IniSectionGetInt(pIniSection,tchName,0);
         pmru->iEncoding[n] = Encoding_MapIniSetting(TRUE,iCP);
         StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
-        pmru->iCaretPos[n] = IniSectionGetInt(pIniSection,tchName,0);
+        pmru->iCaretPos[n] = (bPreserveCaretPos) ? IniSectionGetInt(pIniSection,tchName,0) : 0;
         ++n;
     }
   }
