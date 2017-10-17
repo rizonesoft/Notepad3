@@ -48,6 +48,7 @@ typedef struct tagDLDATA // dl
   int iDefIconFolder;        // Default Folder Icon
   int iDefIconFile;          // Default File Icon
   BOOL bNoFadeHidden;        // Flag passed from GetDispInfo()
+  HANDLE hThread;            // Thread Handle
   HANDLE hExitThread;        // Flag is set when Icon Thread should terminate
   HANDLE hTerminatedThread;  // Flag is set when Icon Thread has terminated
 
@@ -79,7 +80,7 @@ BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
   lpdl->cbidl = 0;
   lpdl->pidl = NULL;
   lpdl->lpsf = NULL;
-  StringCchCopy(lpdl->szPath,MAX_PATH,L"");
+  StringCchCopy(lpdl->szPath,COUNTOF(lpdl->szPath),L"");
 
   // Add Imagelists
   hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),
@@ -141,7 +142,6 @@ BOOL DirList_Destroy(HWND hwnd)
   GlobalFree(lpdl);
 
   return FALSE;
-
 }
 
 
@@ -153,7 +153,6 @@ BOOL DirList_Destroy(HWND hwnd)
 //
 BOOL DirList_StartIconThread(HWND hwnd)
 {
-
   DWORD dwtid;
   LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
 
@@ -162,10 +161,14 @@ BOOL DirList_StartIconThread(HWND hwnd)
   ResetEvent(lpdl->hExitThread);
   //ResetEvent(lpdl->hTerminatedThread);
 
-  CreateThread(NULL,0,DirList_IconThread,(LPVOID)lpdl,0,&dwtid);
+  lpdl->hThread = CreateThread(NULL, 0, DirList_IconThread, (LPVOID)lpdl, 0, &dwtid);
 
+  if (lpdl->hThread == NULL) {
+    ResetEvent(lpdl->hExitThread);
+    SetEvent(lpdl->hTerminatedThread);
+    return FALSE;
+  }
   return TRUE;
-
 }
 
 
@@ -177,8 +180,10 @@ BOOL DirList_StartIconThread(HWND hwnd)
 //
 BOOL DirList_TerminateIconThread(HWND hwnd)
 {
+  LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd,pDirListProp);
 
-  LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
+  if (!lpdl->hThread)
+    return FALSE;
 
   SetEvent(lpdl->hExitThread);
 
@@ -194,9 +199,9 @@ BOOL DirList_TerminateIconThread(HWND hwnd)
 
   ResetEvent(lpdl->hExitThread);
   SetEvent(lpdl->hTerminatedThread);
+  lpdl->hThread = NULL;
 
   return TRUE;
-
 }
 
 
@@ -221,18 +226,17 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
 
   LPENUMIDLIST  lpe = NULL;
 
-  LV_ITEM       lvi;
-  LPLV_ITEMDATA lplvid;
-
   ULONG chParsed = 0;
   ULONG dwAttributes = 0;
 
-  DL_FILTER dlf;
-  SHFILEINFO shfi;
+  // First of all terminate running icon thread
+  DirList_TerminateIconThread(hwnd);
 
-  LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
+  LPDLDATA lpdl = (LPDLDATA)GetProp(hwnd,pDirListProp);
 
   // Initialize default icons
+  SHFILEINFO shfi;
+  ZeroMemory(&shfi, sizeof(shfi));
   SHGetFileInfo(L"Icon",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
     SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
   lpdl->iDefIconFolder = shfi.iIcon;
@@ -241,23 +245,24 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
     SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
   lpdl->iDefIconFile = shfi.iIcon;
 
-  // First of all terminate running icon thread
-  DirList_TerminateIconThread(hwnd);
-
   // A Directory is strongly required
-  if (!lpszDir || !*lpszDir)
+  if (!lpszDir || !*lpszDir) {
     return(-1);
-
-  StringCchCopy(lpdl->szPath,MAX_PATH,lpszDir);
+  }
+  StringCchCopyN(lpdl->szPath, COUNTOF(lpdl->szPath), lpszDir, MAX_PATH);
 
   // Init ListView
   SendMessage(hwnd,WM_SETREDRAW,0,0);
   ListView_DeleteAllItems(hwnd);
 
   // Init Filter
+  DL_FILTER dlf;
+  ZeroMemory(&dlf, sizeof(DL_FILTER));
   DirList_CreateFilter(&dlf,lpszFileSpec,bExcludeFilter);
 
   // Init lvi
+  LV_ITEM lvi;
+  ZeroMemory(&lvi, sizeof(LV_ITEM));
   lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
   lvi.iItem = 0;
   lvi.iSubItem = 0;
@@ -335,7 +340,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
               if (DirList_MatchFilter(lpsf,pidlEntry,&dlf))
               {
 
-                lplvid = CoTaskMemAlloc(sizeof(LV_ITEMDATA));
+                LPLV_ITEMDATA lplvid = CoTaskMemAlloc(sizeof(LV_ITEMDATA));
 
                 lplvid->pidl = pidlEntry;
                 lplvid->lpsf = lpsf;
@@ -393,7 +398,6 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
 
   // Return number of items in the control
   return (ListView_GetItemCount(hwnd));
-
 }
 
 
@@ -405,37 +409,32 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
 //
 DWORD WINAPI DirList_IconThread(LPVOID lpParam)
 {
+  if (!lpParam)
+    return(0);
 
-  HWND hwnd;
-
-  LPDLDATA lpdl;
-  LV_ITEM lvi;
-  LPLV_ITEMDATA lplvid;
-
-  IShellIcon* lpshi;
-
-  int iItem = 0;
-  int iMaxItem;
-
-  lpdl = (LPDLDATA)lpParam;
+  LPDLDATA lpdl = (LPDLDATA)lpParam;
   ResetEvent(lpdl->hTerminatedThread);
 
   // Exit immediately if DirList_Fill() hasn't been called
-  if (!lpdl->lpsf) {
+  if (!(lpdl->lpsf)) {
     SetEvent(lpdl->hTerminatedThread);
     ExitThread(0);
     //return(0);
   }
 
-  hwnd = lpdl->hwnd;
-  iMaxItem = ListView_GetItemCount(hwnd);
+  HWND hwnd = lpdl->hwnd;
+  int iMaxItem = ListView_GetItemCount(hwnd);
 
-  CoInitialize(NULL);
+  CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
 
   // Get IShellIcon
+  IShellIcon* lpshi = NULL;
   lpdl->lpsf->lpVtbl->QueryInterface(lpdl->lpsf,&IID_IShellIcon,&lpshi);
 
+  int iItem = 0;
   while (iItem < iMaxItem && WaitForSingleObject(lpdl->hExitThread,0) != WAIT_OBJECT_0) {
+
+    LV_ITEM lvi = { 0 };
 
     lvi.iItem = iItem;
     lvi.mask  = LVIF_PARAM;
@@ -445,7 +444,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
       LPITEMIDLIST pidl;
       DWORD dwAttributes = SFGAO_LINK | SFGAO_SHARE;
 
-      lplvid = (LPLV_ITEMDATA)lvi.lParam;
+      LPLV_ITEMDATA lplvid = (LPLV_ITEMDATA)lvi.lParam;
 
       lvi.mask = LVIF_IMAGE;
 
@@ -511,7 +510,6 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
   SetEvent(lpdl->hTerminatedThread);
   ExitThread(0);
   //return(0);
-
 }
 
 
@@ -557,18 +555,19 @@ BOOL DirList_GetDispInfo(HWND hwnd,LPARAM lParam,BOOL bNoFadeHidden)
 //
 BOOL DirList_DeleteItem(HWND hwnd,LPARAM lParam)
 {
+  if (!lParam)
+    return FALSE;
+
+  LPNMLISTVIEW lpnmlv = (LPNMLISTVIEW)lParam;
 
   LV_ITEM lvi;
-
-  NM_LISTVIEW *lpnmlv = (LPVOID)lParam;
-
+  ZeroMemory(&lvi, sizeof(LV_ITEM));
   lvi.iItem = lpnmlv->iItem;
   lvi.iSubItem = 0;
   lvi.mask = LVIF_PARAM;
 
   if (ListView_GetItem(hwnd,&lvi))
   {
-
     // Free mem
     LPLV_ITEMDATA lplvid = (LPLV_ITEMDATA)lvi.lParam;
     CoTaskMemFree(lplvid->pidl);
@@ -577,12 +576,9 @@ BOOL DirList_DeleteItem(HWND hwnd,LPARAM lParam)
     CoTaskMemFree(lplvid);
 
     return TRUE;
-
   }
-
   else
     return FALSE;
-
 }
 
 
@@ -594,66 +590,40 @@ BOOL DirList_DeleteItem(HWND hwnd,LPARAM lParam)
 //
 int CALLBACK DirList_CompareProcFw(LPARAM lp1,LPARAM lp2,LPARAM lFlags)
 {
-
-  HRESULT hr;
-  int result;
-
   LPLV_ITEMDATA lplvid1 = (LPLV_ITEMDATA)lp1;
   LPLV_ITEMDATA lplvid2 = (LPLV_ITEMDATA)lp2;
 
-  hr = (lplvid1->lpsf->lpVtbl->CompareIDs(
-                                 lplvid1->lpsf,
-                                 lFlags,
-                                 lplvid1->pidl,
-                                 lplvid2->pidl));
+  HRESULT hr = (lplvid1->lpsf->lpVtbl->CompareIDs(lplvid1->lpsf,lFlags,lplvid1->pidl,lplvid2->pidl));
 
-  result = (short)(SCODE_CODE(GetScode(hr)));
+  int result = (short)(SCODE_CODE(GetScode(hr)));
 
   if (result != 0 || lFlags == 0)
-    return(result);
+    return result;
 
-  hr = (lplvid1->lpsf->lpVtbl->CompareIDs(
-                                 lplvid1->lpsf,
-                                 0,
-                                 lplvid1->pidl,
-                                 lplvid2->pidl));
+  hr = (lplvid1->lpsf->lpVtbl->CompareIDs(lplvid1->lpsf,0,lplvid1->pidl,lplvid2->pidl));
 
   result = (short)(SCODE_CODE(GetScode(hr)));
 
-  return(result);
-
+  return result;
 }
 
 int CALLBACK DirList_CompareProcRw(LPARAM lp1,LPARAM lp2,LPARAM lFlags)
 {
-
-  HRESULT hr;
-  int result;
-
   LPLV_ITEMDATA lplvid1 = (LPLV_ITEMDATA)lp1;
   LPLV_ITEMDATA lplvid2 = (LPLV_ITEMDATA)lp2;
 
-  hr = (lplvid1->lpsf->lpVtbl->CompareIDs(
-                                 lplvid1->lpsf,
-                                 lFlags,
-                                 lplvid1->pidl,
-                                 lplvid2->pidl));
+  HRESULT hr = (lplvid1->lpsf->lpVtbl->CompareIDs(lplvid1->lpsf,lFlags,lplvid1->pidl,lplvid2->pidl));
 
-  result = -(short)(SCODE_CODE(GetScode(hr)));
+  int result = -(short)(SCODE_CODE(GetScode(hr)));
 
   if (result != 0)
-    return(result);
+    return result;
 
-  hr = (lplvid1->lpsf->lpVtbl->CompareIDs(
-                                 lplvid1->lpsf,
-                                 0,
-                                 lplvid1->pidl,
-                                 lplvid2->pidl));
+  hr = (lplvid1->lpsf->lpVtbl->CompareIDs(lplvid1->lpsf,0,lplvid1->pidl,lplvid2->pidl));
 
   result = -(short)(SCODE_CODE(GetScode(hr)));
 
-  return(result);
-
+  return result;
 }
 
 
@@ -665,13 +635,10 @@ int CALLBACK DirList_CompareProcRw(LPARAM lp1,LPARAM lp2,LPARAM lFlags)
 //
 BOOL DirList_Sort(HWND hwnd,int lFlags,BOOL fRev)
 {
-
   if (fRev)
     return ListView_SortItems(hwnd,DirList_CompareProcRw,lFlags);
-
   else
     return ListView_SortItems(hwnd,DirList_CompareProcFw,lFlags);
-
 }
 
 
@@ -683,39 +650,29 @@ BOOL DirList_Sort(HWND hwnd,int lFlags,BOOL fRev)
 //
 int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
 {
-
-  LV_ITEM lvi;
-  LPLV_ITEMDATA lplvid;
-
   if (iItem == -1)
   {
-
     if (ListView_GetSelectedCount(hwnd))
-
       iItem = ListView_GetNextItem(hwnd,-1,LVNI_ALL | LVNI_SELECTED);
-
     else
-
       return(-1);
-
   }
 
+  LV_ITEM lvi;
+  ZeroMemory(&lvi, sizeof(LV_ITEM));
   lvi.mask = LVIF_PARAM;
   lvi.iItem = iItem;
   lvi.iSubItem = 0;
 
   if (!ListView_GetItem(hwnd,&lvi))
   {
-
     if (lpdli->mask & DLI_TYPE)
-
       lpdli->ntype = DLE_NONE;
 
     return(-1);
-
   }
 
-  lplvid = (LPLV_ITEMDATA)lvi.lParam;
+  LPLV_ITEMDATA lplvid = (LPLV_ITEMDATA)lvi.lParam;
 
   // Filename
   if (lpdli->mask & DLI_FILENAME)
@@ -756,7 +713,6 @@ int DirList_GetItem(HWND hwnd,int iItem,LPDLITEM lpdli)
   }
 
   return iItem;
-
 }
 
 

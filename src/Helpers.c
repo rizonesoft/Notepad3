@@ -608,6 +608,7 @@ void CenterDlgInParent(HWND hDlg)
 
   SetWindowPos(hDlg,NULL,max(xMin,min(xMax,x)),max(yMin,min(yMax,y)),0,0,SWP_NOZORDER|SWP_NOSIZE);
 
+  //SnapToDefaultButton(hDlg);
 }
 
 
@@ -671,6 +672,41 @@ void SetDlgPos(HWND hDlg,int xDlg,int yDlg)
   SetWindowPos(hDlg,NULL,max(xMin,min(xMax,x)),max(yMin,min(yMax,y)),0,0,SWP_NOZORDER|SWP_NOSIZE);
 
 }
+
+/*
+
+ ... only if we are working with nonstandard dialog boxes ...
+
+//=============================================================================
+//
+//  SnapToDefaultButton()
+//
+// Why doesn't the "Automatically move pointer to the default button in a dialog box"
+// work for nonstandard dialog boxes, and how do I add it to my own nonstandard dialog boxes?
+// https://blogs.msdn.microsoft.com/oldnewthing/20130826-00/?p=3413/
+//
+void SnapToDefaultButton(HWND hwndBox)
+{
+  BOOL bSnapToDefButton = FALSE;
+  if (SystemParametersInfo(SPI_GETSNAPTODEFBUTTON, 0, &bSnapToDefButton, 0) && bSnapToDefButton) {
+    // get child window at the top of the Z order.
+    // for all our MessageBoxs it's the OK or YES button or NULL.
+    HWND btn = GetWindow(hwndBox, GW_CHILD);
+    if (btn != NULL) {
+      WCHAR className[32] = L"";
+      GetClassName(btn, className, COUNTOF(className));
+      if (lstrcmpi(className, L"Button") == 0) {
+        RECT rect;
+        int x, y;
+        GetWindowRect(btn, &rect);
+        x = rect.left + (rect.right - rect.left) / 2;
+        y = rect.top + (rect.bottom - rect.top) / 2;
+        SetCursorPos(x, y);
+      }
+    }
+  }
+}
+*/
 
 
 //=============================================================================
@@ -1036,6 +1072,26 @@ int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
 
 //=============================================================================
 //
+//  GetKnownFolderPath()
+//
+BOOL GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount)
+{
+  //const DWORD dwFlags = (KF_FLAG_DEFAULT_PATH | KF_FLAG_NOT_PARENT_RELATIVE | KF_FLAG_NO_ALIAS);
+  const DWORD dwFlags = KF_FLAG_NO_ALIAS;
+
+  PWSTR pszPath = NULL;
+  HRESULT hr = SHGetKnownFolderPath(rfid, dwFlags, NULL, &pszPath);
+  if (SUCCEEDED(hr) && pszPath) {
+    StringCchCopy(lpOutPath, cchCount, pszPath);
+    CoTaskMemFree(pszPath);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+//=============================================================================
+//
 //  PathRelativeToApp()
 //
 void PathRelativeToApp(
@@ -1053,7 +1109,8 @@ void PathRelativeToApp(
   PathCanonicalizeEx(wchAppPath,MAX_PATH);
   PathCchRemoveFileSpec(wchAppPath,COUNTOF(wchAppPath));
   GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
-  SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
+  //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
+  GetKnownFolderPath(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
   if (bUnexpandMyDocs &&
       !PathIsRelative(lpszSrc) &&
@@ -1101,7 +1158,8 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
   }
 
   if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CSTRLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
-    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
+    //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
+    GetKnownFolderPath(&FOLDERID_Documents, wchPath, COUNTOF(wchPath));
     PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
   }
   else {
@@ -1283,7 +1341,8 @@ BOOL PathCreateDeskLnk(LPCWSTR pszDocument)
   StringCchCopy(tchArguments,COUNTOF(tchArguments),L"-n ");
   StringCchCat(tchArguments,COUNTOF(tchArguments),tchDocTemp);
 
-  SHGetSpecialFolderPath(NULL,tchLinkDir,CSIDL_DESKTOPDIRECTORY,TRUE);
+  //SHGetSpecialFolderPath(NULL,tchLinkDir,CSIDL_DESKTOPDIRECTORY,TRUE);
+  GetKnownFolderPath(&FOLDERID_Desktop, tchLinkDir, COUNTOF(tchLinkDir));
 
   GetString(IDS_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
 
