@@ -608,6 +608,7 @@ void CenterDlgInParent(HWND hDlg)
 
   SetWindowPos(hDlg,NULL,max(xMin,min(xMax,x)),max(yMin,min(yMax,y)),0,0,SWP_NOZORDER|SWP_NOSIZE);
 
+  //SnapToDefaultButton(hDlg);
 }
 
 
@@ -671,6 +672,41 @@ void SetDlgPos(HWND hDlg,int xDlg,int yDlg)
   SetWindowPos(hDlg,NULL,max(xMin,min(xMax,x)),max(yMin,min(yMax,y)),0,0,SWP_NOZORDER|SWP_NOSIZE);
 
 }
+
+/*
+
+ ... only if we are working with nonstandard dialog boxes ...
+
+//=============================================================================
+//
+//  SnapToDefaultButton()
+//
+// Why doesn't the "Automatically move pointer to the default button in a dialog box"
+// work for nonstandard dialog boxes, and how do I add it to my own nonstandard dialog boxes?
+// https://blogs.msdn.microsoft.com/oldnewthing/20130826-00/?p=3413/
+//
+void SnapToDefaultButton(HWND hwndBox)
+{
+  BOOL bSnapToDefButton = FALSE;
+  if (SystemParametersInfo(SPI_GETSNAPTODEFBUTTON, 0, &bSnapToDefButton, 0) && bSnapToDefButton) {
+    // get child window at the top of the Z order.
+    // for all our MessageBoxs it's the OK or YES button or NULL.
+    HWND btn = GetWindow(hwndBox, GW_CHILD);
+    if (btn != NULL) {
+      WCHAR className[32] = L"";
+      GetClassName(btn, className, COUNTOF(className));
+      if (lstrcmpi(className, L"Button") == 0) {
+        RECT rect;
+        int x, y;
+        GetWindowRect(btn, &rect);
+        x = rect.left + (rect.right - rect.left) / 2;
+        y = rect.top + (rect.bottom - rect.top) / 2;
+        SetCursorPos(x, y);
+      }
+    }
+  }
+}
+*/
 
 
 //=============================================================================
