@@ -166,20 +166,18 @@ int CALLBACK BFFCallBack(HWND hwnd,UINT umsg,LPARAM lParam,LPARAM lpData)
 //
 BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BOOL bNewDialogStyle)
 {
-
   BROWSEINFO bi;
-  LPITEMIDLIST pidl;
   WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };;
   WCHAR szBase[MAX_PATH] = { L'\0' };
-  BOOL fOk = FALSE;
 
   GetString(iTitle,szTitle,COUNTOF(szTitle));
 
   if (!pszBase || !*pszBase)
-    GetCurrentDirectory(MAX_PATH,szBase);
+    GetCurrentDirectory(MAX_PATH, szBase);
   else
-    StringCchCopy(szBase,COUNTOF(szBase),pszBase);
+    StringCchCopyN(szBase, COUNTOF(szBase), pszBase, MAX_PATH);
 
+  ZeroMemory(&bi, sizeof(BROWSEINFO));
   bi.hwndOwner = hwndParent;
   bi.pidlRoot = NULL;
   bi.pszDisplayName = pszFolder;
@@ -191,15 +189,13 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
   bi.lParam = (LPARAM)szBase;
   bi.iImage = 0;
 
-  pidl = SHBrowseForFolder(&bi);
+  LPITEMIDLIST pidl = SHBrowseForFolder(&bi);
   if (pidl) {
     SHGetPathFromIDList(pidl,pszFolder);
     CoTaskMemFree(pidl);
-    fOk = TRUE;
+    return TRUE;
   }
-
-  return fOk;
-
+  return FALSE;
 }
 
 
@@ -433,12 +429,10 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               if (bQuickExit) {
                 sei.fMask |= SEE_MASK_NOZONECHECKS;
                 EndDialog(hwnd,IDOK);
-                CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
                 ShellExecuteEx(&sei);
               }
 
               else {
-                CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
                 if (ShellExecuteEx(&sei))
                   EndDialog(hwnd,IDOK);
 
@@ -671,8 +665,6 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
       StringCchCopy(szParam,COUNTOF(szParam),lpstrFile);
     //GetShortPathName(szParam,szParam,sizeof(WCHAR)*COUNTOF(szParam));
     PathQuoteSpaces(szParam);
-
-    CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
     result = ShellExecuteEx(&sei);
   }
 
@@ -686,16 +678,12 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 //  FavoritesDlgProc()
 //
 extern WCHAR tchFavoritesDir[MAX_PATH];
-//extern int  flagNoFadeHidden;
 
 extern int cxFavoritesDlg;
 extern int cyFavoritesDlg;
 
 INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
-  static HWND hwndLV;
-
   switch(umsg)
   {
 
@@ -844,6 +832,7 @@ BOOL FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
 {
 
   DLITEM dliFavorite;
+  ZeroMemory(&dliFavorite, sizeof(DLITEM));
   dliFavorite.mask = DLI_FILENAME;
 
   if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FAVORITES),
@@ -852,9 +841,7 @@ BOOL FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
     StringCchCopyN(lpstrFile,MAX_PATH,dliFavorite.szFileName,MAX_PATH);
     return(TRUE);
   }
-
   return(FALSE);
-
 }
 
 
@@ -968,6 +955,7 @@ extern int  flagNoFadeHidden;
 typedef struct tagIconThreadInfo
 {
   HWND hwnd;                 // HWND of ListView Control
+  HANDLE hThread;            // Thread Handle
   HANDLE hExitThread;        // Flag is set when Icon Thread should terminate
   HANDLE hTerminatedThread;  // Flag is set when Icon Thread has terminated
 
@@ -975,32 +963,33 @@ typedef struct tagIconThreadInfo
 
 DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
 
-  HWND hwnd;
-  LPICONTHREADINFO lpit;
-  LV_ITEM lvi;
   WCHAR tch[MAX_PATH] = { L'\0' };
-  SHFILEINFO shfi;
   DWORD dwFlags = SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_ATTRIBUTES | SHGFI_ATTR_SPECIFIED;
-  DWORD dwAttr  = 0;
-  int iItem = 0;
-  int iMaxItem;
 
-  lpit = (LPICONTHREADINFO)lpParam;
+  LPICONTHREADINFO lpit = (LPICONTHREADINFO)lpParam;
   ResetEvent(lpit->hTerminatedThread);
 
-  hwnd = lpit->hwnd;
-  iMaxItem = ListView_GetItemCount(hwnd);
+  HWND hwnd = lpit->hwnd;
+  int iMaxItem = ListView_GetItemCount(hwnd);
 
-  CoInitialize(NULL);
+  CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
 
-  ZeroMemory(&lvi,sizeof(LV_ITEM));
-
+  int iItem = 0;
   while (iItem < iMaxItem && WaitForSingleObject(lpit->hExitThread,0) != WAIT_OBJECT_0) {
+
+    LV_ITEM lvi;
+    ZeroMemory(&lvi, sizeof(LV_ITEM));
 
     lvi.mask = LVIF_TEXT;
     lvi.pszText = tch;
     lvi.cchTextMax = COUNTOF(tch);
     lvi.iItem = iItem;
+
+    SHFILEINFO shfi;
+    ZeroMemory(&shfi, sizeof(SHFILEINFO));
+
+    DWORD dwAttr = 0;
+
     if (ListView_GetItem(hwnd,&lvi)) {
 
       if (PathIsUNC(tch) || !PathFileExists(tch)) {
@@ -1054,6 +1043,8 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
   CoUninitialize();
 
   SetEvent(lpit->hTerminatedThread);
+  lpit->hThread = NULL;
+
   ExitThread(0);
   //return(0);
 }
@@ -1069,9 +1060,10 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SHFILEINFO shfi;
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
-        LPICONTHREADINFO lpit = (LPVOID)GlobalAlloc(GPTR,sizeof(ICONTHREADINFO));
+        LPICONTHREADINFO lpit = (LPICONTHREADINFO)GlobalAlloc(GPTR,sizeof(ICONTHREADINFO));
         SetProp(hwnd,L"it",(HANDLE)lpit);
         lpit->hwnd = GetDlgItem(hwnd,IDC_FILEMRU);
+        lpit->hThread = NULL;
         lpit->hExitThread = CreateEvent(NULL,TRUE,FALSE,NULL);
         lpit->hTerminatedThread = CreateEvent(NULL,TRUE,TRUE,NULL);
 
@@ -1120,6 +1112,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         }
         CloseHandle(lpit->hExitThread);
         CloseHandle(lpit->hTerminatedThread);
+        lpit->hThread = NULL;
         RemoveProp(hwnd,L"it");
         GlobalFree(lpit);
 
@@ -1274,6 +1267,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             }
             ResetEvent(lpit->hExitThread);
             SetEvent(lpit->hTerminatedThread);
+            lpit->hThread = NULL;
 
             ListView_DeleteAllItems(GetDlgItem(hwnd,IDC_FILEMRU));
 
@@ -1297,7 +1291,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             ListView_SetItemState(GetDlgItem(hwnd,IDC_FILEMRU),0,LVIS_FOCUSED,LVIS_FOCUSED);
             ListView_SetColumnWidth(GetDlgItem(hwnd,IDC_FILEMRU),0,LVSCW_AUTOSIZE_USEHEADER);
 
-            CreateThread(NULL,0,FileMRUIconThread,(LPVOID)lpit,0,&dwtid);
+            lpit->hThread = CreateThread(NULL,0,FileMRUIconThread,(LPVOID)lpit,0,&dwtid);
           }
           break;
 

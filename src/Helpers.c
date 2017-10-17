@@ -1036,6 +1036,26 @@ int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
 
 //=============================================================================
 //
+//  GetKnownFolderPath()
+//
+BOOL GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount)
+{
+  //const DWORD dwFlags = (KF_FLAG_DEFAULT_PATH | KF_FLAG_NOT_PARENT_RELATIVE | KF_FLAG_NO_ALIAS);
+  const DWORD dwFlags = KF_FLAG_NO_ALIAS;
+
+  PWSTR pszPath = NULL;
+  HRESULT hr = SHGetKnownFolderPath(rfid, dwFlags, NULL, &pszPath);
+  if (SUCCEEDED(hr) && pszPath) {
+    StringCchCopy(lpOutPath, cchCount, pszPath);
+    CoTaskMemFree(pszPath);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+//=============================================================================
+//
 //  PathRelativeToApp()
 //
 void PathRelativeToApp(
@@ -1053,7 +1073,8 @@ void PathRelativeToApp(
   PathCanonicalizeEx(wchAppPath,MAX_PATH);
   PathCchRemoveFileSpec(wchAppPath,COUNTOF(wchAppPath));
   GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
-  SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
+  //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
+  GetKnownFolderPath(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
   if (bUnexpandMyDocs &&
       !PathIsRelative(lpszSrc) &&
@@ -1101,7 +1122,8 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
   }
 
   if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CSTRLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
-    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
+    //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
+    GetKnownFolderPath(&FOLDERID_Documents, wchPath, COUNTOF(wchPath));
     PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
   }
   else {
@@ -1283,7 +1305,8 @@ BOOL PathCreateDeskLnk(LPCWSTR pszDocument)
   StringCchCopy(tchArguments,COUNTOF(tchArguments),L"-n ");
   StringCchCat(tchArguments,COUNTOF(tchArguments),tchDocTemp);
 
-  SHGetSpecialFolderPath(NULL,tchLinkDir,CSIDL_DESKTOPDIRECTORY,TRUE);
+  //SHGetSpecialFolderPath(NULL,tchLinkDir,CSIDL_DESKTOPDIRECTORY,TRUE);
+  GetKnownFolderPath(&FOLDERID_Desktop, tchLinkDir, COUNTOF(tchLinkDir));
 
   GetString(IDS_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
 

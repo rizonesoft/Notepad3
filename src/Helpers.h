@@ -159,7 +159,7 @@ BOOL IsCmdEnabled(HWND, UINT);
 
 int FormatString(LPWSTR,int,UINT,...);
 
-
+BOOL GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
 void PathRelativeToApp(LPWSTR,LPWSTR,int,BOOL,BOOL,BOOL);
 void PathAbsoluteFromApp(LPWSTR,LPWSTR,int,BOOL);
 

@@ -2601,7 +2601,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpParameters = tchParam;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
-        CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
 
         if ((INT_PTR)sei.hInstApp < 32)
@@ -2672,7 +2671,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpParameters = szParameters;
         sei.lpDirectory = g_wchWorkingDirectory;
         sei.nShow = SW_SHOWNORMAL;
-        CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
       }
       break;
@@ -2703,7 +2701,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpParameters = NULL;
         sei.lpDirectory = wchDirectory;
         sei.nShow = SW_SHOWNORMAL;
-        CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
       }
       break;
@@ -2772,7 +2769,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpVerb = L"properties";
         sei.lpFile = szCurFile;
         sei.nShow = SW_SHOWNORMAL;
-        CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
       }
       break;
@@ -2834,7 +2830,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
         // Run favorites directory
-        CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
         ShellExecuteEx(&sei);
       }
       break;
@@ -4938,7 +4933,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
               sei.lpParameters = lpszArgs;
               sei.lpDirectory = wchDirectory;
               sei.nShow = SW_SHOWNORMAL;
-              CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
               ShellExecuteEx(&sei);
 
               GlobalFree(lpszCommand);
@@ -5816,17 +5810,20 @@ void LoadSettings()
 
   efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
-  if (!IniSectionGetString(pIniSection,L"OpenWithDir",L"",
-        tchOpenWithDir,COUNTOF(tchOpenWithDir)))
-    SHGetSpecialFolderPath(NULL,tchOpenWithDir,CSIDL_DESKTOPDIRECTORY,TRUE);
-  else
-    PathAbsoluteFromApp(tchOpenWithDir,NULL,COUNTOF(tchOpenWithDir),TRUE);
-
-  if (!IniSectionGetString(pIniSection,L"Favorites",L"",
-        tchFavoritesDir,COUNTOF(tchFavoritesDir)))
-    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,tchFavoritesDir);
-  else
-    PathAbsoluteFromApp(tchFavoritesDir,NULL,COUNTOF(tchFavoritesDir),TRUE);
+  if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"", tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
+    //SHGetSpecialFolderPath(NULL, tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, TRUE);
+    GetKnownFolderPath(&FOLDERID_Desktop, tchOpenWithDir, COUNTOF(tchOpenWithDir));
+  }
+  else {
+    PathAbsoluteFromApp(tchOpenWithDir, NULL, COUNTOF(tchOpenWithDir), TRUE);
+  }
+  if (!IniSectionGetString(pIniSection, L"Favorites", L"", tchFavoritesDir, COUNTOF(tchFavoritesDir))) {
+    //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,tchFavoritesDir);
+    GetKnownFolderPath(&FOLDERID_Favorites, tchFavoritesDir, COUNTOF(tchFavoritesDir));
+  }
+  else {
+    PathAbsoluteFromApp(tchFavoritesDir, NULL, COUNTOF(tchFavoritesDir), TRUE);
+  }
 
   iPathNameFormat = IniSectionGetInt(pIniSection,L"PathNameFormat",0);
   iPathNameFormat = max(min(iPathNameFormat,2),0);
@@ -6767,7 +6764,8 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       return(1);
     }
     // %appdata%
-    if (S_OK == SHGetFolderPath(NULL,CSIDL_APPDATA,NULL,SHGFP_TYPE_CURRENT,tchBuild)) {
+    //if (S_OK == SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
+    if (GetKnownFolderPath(&FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
       PathCchAppend(tchBuild,COUNTOF(tchBuild),tchFileExpanded);
       if (PathFileExists(tchBuild)) {
         StringCchCopy(lpszFile,MAX_PATH,tchBuild);
@@ -8312,7 +8310,6 @@ BOOL RelaunchElevated(LPWSTR lpArgs) {
     sei.lpParameters = szArguments;
     sei.lpDirectory = g_wchWorkingDirectory;
     sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
-    CoInitializeEx(NULL,COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE | COINIT_SPEED_OVER_MEMORY);
     result = ShellExecuteEx(&sei);
   }
 
