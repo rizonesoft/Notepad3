@@ -3,6 +3,17 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2.17.1016.610 (16 October 2017)
+--------------------------------------------------
+~ File History Dlg: rename button "Remove" -> "Discard" 
+  (discard selected item from file history list).
+~ Added remove button for list items.
+~ Checkbox for "preserve caret position" settings.
+~ Removed unnecessary build artifacts from np3portable.
+~ Minor bugfixes for session feature 
+  (file history: remember caret pos and encoding).
+
+--------------------------------------------------
 Version 2 Build 605 (15 October 2017)
 --------------------------------------------------
 ~ Fix: Crash on accessing UndoRedo structure while NP3 instance has 
