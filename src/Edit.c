@@ -692,10 +692,15 @@ BOOL EditLoadFile(
        int* iEncoding,
        int* iEOLMode,
        BOOL *pbUnicodeErr,
-       BOOL *pbFileTooBig)
+       BOOL *pbFileTooBig,
+       BOOL *pbUnkownExt)
 {
-  *pbUnicodeErr = FALSE;
-  *pbFileTooBig = FALSE;
+  if (pbUnicodeErr)
+    *pbUnicodeErr = FALSE;
+  if (pbFileTooBig)
+    *pbFileTooBig = FALSE;
+  if (pbUnkownExt)
+    *pbUnkownExt  = FALSE;
 
   HANDLE hFile = CreateFile(pszFile,
                             GENERIC_READ,
@@ -716,12 +721,26 @@ BOOL EditLoadFile(
   DWORD dwFileSize = GetFileSize(hFile,NULL);
   DWORD dwBufSize = dwFileSize + 16;
 
+  // check for unknown extension
+  LPWSTR lpszExt = PathFindExtension(pszFile);
+  if (!Style_HasLexerForExt(lpszExt)) {
+    if (InfoBox(MBYESNO,L"MsgFileUnknownExt",IDS_WARN_UNKNOWN_EXT,lpszExt) != IDYES) {
+      CloseHandle(hFile);
+      if (pbUnkownExt)
+        *pbUnkownExt = TRUE;
+      Encoding_Source(CPI_NONE);
+      Encoding_SrcWeak(CPI_NONE);
+      return FALSE;
+    }
+  }
+
   // Check if a warning message should be displayed for large files
   DWORD dwFileSizeLimit = IniGetInt(L"Settings2",L"FileLoadWarningMB",1);
   if (dwFileSizeLimit != 0 && dwFileSizeLimit * 1024 * 1024 < dwFileSize) {
-    if (InfoBox(MBYESNO,L"MsgFileSizeWarning",IDS_WARNLOADBIGFILE) != IDYES) {
+    if (InfoBox(MBYESNO,L"MsgFileSizeWarning",IDS_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
-      *pbFileTooBig = TRUE;
+      if (pbFileTooBig)
+        *pbFileTooBig = TRUE;
       Encoding_Source(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return FALSE;
@@ -734,7 +753,8 @@ BOOL EditLoadFile(
   if (!lpData)
   {
     CloseHandle(hFile);
-    *pbFileTooBig = FALSE;
+    if (pbFileTooBig)
+      *pbFileTooBig = FALSE;
     Encoding_Source(CPI_NONE);
     Encoding_SrcWeak(CPI_NONE);
     return FALSE;
@@ -755,8 +775,7 @@ BOOL EditLoadFile(
   BOOL bPreferOEM = FALSE;
   if (bLoadNFOasOEM)
   {
-    PCWSTR pszExt = pszFile + StringCchLenN(pszFile,MAX_PATH) - 4;
-    if (pszExt >= pszFile && !(StringCchCompareIX(pszExt,L".nfo") && StringCchCompareIX(pszExt,L".diz")))
+    if (lpszExt && !(StringCchCompareIX(lpszExt,L".nfo") && StringCchCompareIX(lpszExt,L".diz")))
       bPreferOEM = TRUE;
   }
 
@@ -822,7 +841,8 @@ BOOL EditLoadFile(
               (bBOM) ? (cbData)/sizeof(WCHAR) : cbData/sizeof(WCHAR) + 1,lpDataUTF8,(int)GlobalSize(lpDataUTF8),NULL,NULL);
 
     if (convCnt == 0) {
-      *pbUnicodeErr = TRUE;
+      if (pbUnicodeErr)
+        *pbUnicodeErr = TRUE;
       convCnt = (DWORD)WideCharToMultiByte(CP_ACP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
                 (-1),lpDataUTF8,(int)GlobalSize(lpDataUTF8),NULL,NULL);
     }

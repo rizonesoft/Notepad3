@@ -7330,7 +7330,7 @@ int UndoRedoSelectionMap(int token, UndoRedoSelection_t* selection)
 //
 //
 BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol,
-            BOOL *pbUnicodeErr,BOOL *pbFileTooBig,
+            BOOL *pbUnicodeErr,BOOL *pbFileTooBig, BOOL* pbUnknownExt,
             BOOL *pbCancelDataLoss,BOOL bSaveCopy)
 {
   WCHAR tch[MAX_PATH+40];
@@ -7348,7 +7348,7 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol
   UpdateWindow(hwndStatus);
 
   if (fLoad) {
-    fSuccess = EditLoadFile(hwndEdit,pszFileName,bNoEncDetect,ienc,ieol,pbUnicodeErr,pbFileTooBig);
+    fSuccess = EditLoadFile(hwndEdit,pszFileName,bNoEncDetect,ienc,ieol,pbUnicodeErr,pbFileTooBig,pbUnknownExt);
   }
   else {
     int idx;
@@ -7379,9 +7379,10 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
   WCHAR szFileName[MAX_PATH] = { L'\0' };
-  BOOL fSuccess;
   BOOL bUnicodeErr = FALSE;
   BOOL bFileTooBig = FALSE;
+  BOOL bUnknownExt = FALSE;
+  BOOL fSuccess;
   int fileEncoding = CPI_ANSI_DEFAULT;
 
   if (!bDontSave)
@@ -7501,7 +7502,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     else
       fileEncoding = Encoding_Current(CPI_GET);
 
-    fSuccess = FileIO(TRUE,szFileName,bNoEncDetect,&fileEncoding,&iEOLMode,&bUnicodeErr,&bFileTooBig,NULL,FALSE);
+    fSuccess = FileIO(TRUE,szFileName,bNoEncDetect,&fileEncoding,&iEOLMode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,FALSE);
     if (fSuccess)
       Encoding_Current(fileEncoding); // load may change encoding
   }
@@ -7570,7 +7571,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
       MsgBox(MBWARN,IDS_ERR_UNICODE);
   }
 
-  else if (!bFileTooBig)
+  else if (!(bFileTooBig || bUnknownExt))
     MsgBox(MBWARN,IDS_ERR_LOADFILE,szFileName);
 
   return(fSuccess);
@@ -7708,7 +7709,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     if (SaveFileDlg(hwndMain,tchFile,COUNTOF(tchFile),tchInitialDir))
     {
       int fileEncoding = Encoding_Current(CPI_GET);
-      fSuccess = FileIO(FALSE, tchFile, FALSE, &fileEncoding, &iEOLMode, NULL, NULL, &bCancelDataLoss, bSaveCopy);
+      fSuccess = FileIO(FALSE, tchFile, FALSE, &fileEncoding, &iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
       //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
       if (fSuccess)
       {
@@ -7734,7 +7735,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
   }
   else {
     int fileEncoding = Encoding_Current(CPI_GET);
-    fSuccess = FileIO(FALSE,szCurFile,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,FALSE);
+    fSuccess = FileIO(FALSE,szCurFile,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,FALSE);
     //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
   }
 
@@ -7771,7 +7772,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
             GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
           int fileEncoding = Encoding_Current(CPI_GET);
-          if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,&bCancelDataLoss,TRUE)) {
+          if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,TRUE)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
             WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();

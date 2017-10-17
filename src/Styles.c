@@ -3413,10 +3413,9 @@ PEDITLEXER __fastcall Style_SniffShebang(char *pchText)
 //
 //  Style_MatchLexer()
 //
-PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames)
-{
+PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames) {
   int i;
-  WCHAR  tch[256+16] = { L'\0' };
+  WCHAR  tch[256 + 16] = { L'\0' };
   WCHAR  *p1,*p2;
 
   if (!bCheckNames) {
@@ -3426,7 +3425,7 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames)
       StringCchCopy(tch,COUNTOF(tch),pLexArray[i]->szExtensions);
       p1 = tch;
       while (*p1) {
-        p2 = StrChr(p1, L';');
+        p2 = StrChr(p1,L';');
         if (p2)
           *p2 = L'\0';
         else
@@ -3434,7 +3433,7 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames)
         StrTrim(p1,L" .");
         if (StringCchCompareIX(p1,lpszMatch) == 0)
           return(pLexArray[i]);
-        p1 = p2+1;
+        p1 = p2 + 1;
       }
     }
   }
@@ -3451,6 +3450,17 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,BOOL bCheckNames)
     }
   }
   return(NULL);
+}
+
+
+//=============================================================================
+//
+//  Style_HasLexerForExt()
+//
+BOOL Style_HasLexerForExt(LPCWSTR lpszExt)
+{
+  if (lpszExt && (*lpszExt == L'.')) ++lpszExt;
+  return (lpszExt && Style_MatchLexer(lpszExt,FALSE)) ? TRUE : FALSE;
 }
 
 
@@ -3512,8 +3522,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   if (!bFound && bAutoSelect && /* bAutoSelect == FALSE skips lexer search */
       (lpszFile && StringCchLenN(lpszFile,MAX_PATH) > 0 && *lpszExt)) {
 
-    if (*lpszExt == L'.')
-      lpszExt++;
+    if (*lpszExt == L'.') ++lpszExt;
 
     if (!fNoCGIGuess && (StringCchCompareIX(lpszExt,L"cgi") == 0 || StringCchCompareIX(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { L'\0' };

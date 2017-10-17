@@ -151,7 +151,7 @@ void RestoreSelectionAction(int,DoAction);
 int  UndoRedoSelectionMap(int,UndoRedoSelection_t*);
 
 
-BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL);
+BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL*,BOOL);
 BOOL FileLoad(BOOL,BOOL,BOOL,BOOL,LPCWSTR);
 BOOL FileRevert(LPCWSTR);
 BOOL FileSave(BOOL,BOOL,BOOL,BOOL);
