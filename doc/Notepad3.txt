@@ -113,19 +113,171 @@ Changed command Line Switches compared to Notepad2:
     /vd   Print specified document, but open Print dialog before
 
 
-Hidden .ini-File parameters:
+=======================================================================
+How to reset the Notepad3 notification messages?
+=======================================================================
 
-[Settings2]
-StickyWindowPosition=  0/1 (BOOL)       - get/set by Notepad3
-DefaultExtension=      txt (string)     - get/set by Notepad3
-DefaultDirectory=      dir (string)     - open/save file dialog
-FileDlgFilters=        filter (string)  - open/save file dialog filter
-FileCheckInverval=     2000 [ms]        - ...
-AutoReloadTimeout=     2000 [ms]        - ...
+To bring back the notification messages suppressed with the 
+"Don't display this message again" option, load the ini-file (Ctrl+F7) 
+and delete all the values from the [Suppressed Messages] section.
+
+To block the "Don't display this message again" option for an 
+individual notification, set the value of the corresponding ini-option to 2. 
+For example, MsgNotFound=2 ensures the "Text not found" notification message 
+will always be displayed.
+
+
+=======================================================================
+What about the [Settings2] section of the .ini-file?
+=======================================================================
+
+You may have noticed that the Notepad3 ini-file has a configuration section
+named [Settings2]. This section offers some advanced Notepad3 program settings,
+and can only be edited manually. Press Ctrl+F7 to open the Notepad3 ini-file. 
+Most changes only take effect upon restarting Notepad3.
+
+New (Notepad3) in [Settings2]
+
 SciDirectWriteTech=    -1,0,1,2,3       - Scintilla's Direct Write Technology
 SciFontQuality=        0,1,2,3          - default,none,standard,cleartype 
                                           (if not defined by 'smoothing:xxx' in Style Schema)
-MarkOccurrencesMaxCount= 2000           - max count of marked word occurences                                            
+SciDirectWriteTech
+SciFontQuality
+Specifies Scintilla's internal rendering technology and font quality.
+  SciDirectWriteTech (default is 1):
+    0: SC_TECHNOLOGY_DEFAULT
+    1: SC_TECHNOLOGY_DIRECTWRITE
+    2: SC_TECHNOLOGY_DIRECTWRITERETAIN
+    3: SC_TECHNOLOGY_DIRECTWRITEDC
+  SciFontQuality (default is 3):
+    0: SC_EFF_QUALITY_DEFAULT
+    1: SC_EFF_QUALITY_NON_ANTIALIASED
+    2: SC_EFF_QUALITY_ANTIALIASED
+    3: SC_EFF_QUALITY_LCD_OPTIMIZED
+
+MarkOccurrencesMaxCount
+The maximum number of counts for marking occurences, if this option is active.
+The default is 2000.
+
+
+Notepad2 already existing settings:
+-----------------------------------
+
+StickyWindowPosition
+ReuseWindow
+SingleFileInstance
+These items are managed by Notepad3.
+
+MultiFileArg
+Control if Notepad3 should allow multiple files on the command line (set to 1). 
+The default behaviour is to accept only a single file, without quoted spaces, 
+like Windows Notepad (set to 0). 
+The command line switches + and - can be used to override this setting on the fly, 
+and the /z switch has the same effect as the - switch.
+
+OffsetNewWindows
+Determines whether positions of new windows (opened though Alt+N or Alt+0) 
+should be offset relative to the active Notepad3 window (1). 
+The new default setting for Notepad3 5.0 is to use the same window position 
+as the currently active Notepad3 window (0).
+
+RelativeFileMRU
+Set to 0 to disable recent files on the same drive or network share as Notepad3.exe 
+being saved with relative pathnames. The default is 1 (enabled).
+
+PortableMyDocs
+If set to 1, recent files and other path settings referring to the 
+My Documents directory tree are stored relative to My Documents. 
+This enhances USB stick portability between Windows XP and more recent versions of Windows,
+ which are using different locations for My Documents. 
+ This setting has no effect if Notepad3.exe itself is located inside 
+ My Documents (or a subdirectory thereof). 
+ The default is 1 (enabled) if RelativeFileMRU is enabled, and 0 (disabled) otherwise.
+
+DefaultExtension
+Specify the default extension for saved files (omit the leading dot, just like txt or html).
+The default extension is 'txt', 
+and a value of (none) needs to specified if no default extension is preferred. 
+To save a file without extension (regardless of the default extension setting), 
+put the filename in double quotes.
+
+DefaultDirectory
+Specify the default directory for the open and save dialogs, used if no file is opened. 
+Pathnames can be relative to the Notepad3 program directory.
+
+FileDlgFilters
+Specify filters for the open and save dialogs 
+(Example: Text Files|*.txt;*.wtx;*.log;*.asc;*.doc;*.diz;*.nfo|All Files|*.*).
+
+FileCheckInverval
+The interval (in milliseconds) to check for external modification 
+of the currently opened file. Defaults to 2000 ms.
+
+AutoReloadTimeout
+The timeout (in milliseconds) to wait before automatically reloading modified files. 
+The default value of 2000 ms usually prevents read/write conflicts.
+
+FileLoadWarningMB
+The size limit, in megabytes, to display a warning message for large files. 
+A value of 0 disables the warning.
+
+OpacityLevel
+Opacity level (in %) of the Notepad3 window in transparent mode.
+
+NoFadeHidden
+Set to 1 to disable fading of hidden objects in file lists (such as Favorites, etc.).
+
+ToolbarLook
+Determines the look of disabled toolbar buttons. 0 means system default 
+(dark-grey and somewhat grainy on Windows Vista and Windows 7; not available on Windows 2000), 
+1 means colored and faded (the default from Notepad3 4.2.25 on Windows XP and above), 
+and 2 means Windows XP-style light-grey (the default from Notepad3 4.2.25 on Windows 2000; 
+looks better than the system default on Windows Vista and Windows 7).
+
+SimpleIndentGuides
+Set to 1 to prevent indentation guides from jumping across empty lines.
+
+NoHTMLGuess
+Set to 1 to disable simple HTML/XML detection for files without extensions.
+
+NoCGIGuess
+Set to 1 to disable simple language detection for cgi and fcgi files.
+
+NoFileVariables
+Set to 1 to disable file variable parsing. Encoding tag parsing can be disabled 
+in the File, Encoding, Default dialog box.
+
+filebrowser.exe
+Specify the path of an external program that is launched 
+when pressing the Browse toolbar button. Defaults to metapath.exe, 
+which is my file browser plugin (found in the Project Archive). 
+You can specify additional command line switches, 
+and the file currently opened in Notepad3 will be appended 
+as the last command line parameter.
+To have the current file selected in Windows Explorer 
+when pressing the browse toolbar button, set this entry to "explorer.exe /e,/select,%1".
+Note: Due to special treatment of quotes by the Win32 ini-file APIs, 
+pathnames with spaces need to be quadruple-quoted (""path to/file.exe""), 
+but only double-quoted if there's additional command line arguments ("path to/file.exe" /arg).
+
+DateTimeShort
+DateTimeLong
+Specify the short/long date and time formats. 
+This is the format parameter passed to the strftime() function. 
+Note that the locale will be set to English 
+(because of the English Visual C++ Runtime Library used by Notepad3).
+
+TimeStamp
+Regular expression used to update timestamps.
+
+WebTemplate1
+WebTemplate2
+Undocumented. Dangerous. ☺
+
+ShellAppUserModelID
+ShellUseSystemMRU
+Control system MRU, taskbar and jump list behaviour. 
+See Replacing Windows Notepad for detailed explanations.
 
 
 =======================================================================
@@ -758,8 +910,10 @@ Command Line Switches
     /o    Keep window on top; /o0 do not keep window on top.
     /f    Specify ini-file; /f0 use no ini-file (don't save settings).
     /u    Launch with elevated privileges.
+    /v    Print specified document to default printer and quit.
     /z    Skip next (usable for registry-based Notepad replacement).
     /?    Display a brief summary about command line parameters.
+
 
 
 Source Code
