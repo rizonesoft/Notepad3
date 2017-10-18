@@ -88,6 +88,7 @@ void   Style_SetStyles(HWND,int,LPCWSTR);
 void   Style_SetFontQuality(HWND,LPCWSTR);
 void   Style_GetCurrentLexerName(LPWSTR,int);
 int    Style_GetLexerIconId(PEDITLEXER);
+BOOL   Style_HasLexerForExt(LPCWSTR);
 HTREEITEM Style_AddLexerToTreeView(HWND,PEDITLEXER);
 INT_PTR CALLBACK Styles_ConfigDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_ConfigDlg(HWND);

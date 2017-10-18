@@ -53,7 +53,7 @@ BOOL  EditIsRecodingNeeded(WCHAR*,int);
 char* EditGetClipboardText(HWND,BOOL,int*,int*);
 BOOL  EditCopyAppend(HWND);
 int   EditDetectEOLMode(HWND,char*,DWORD);
-BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*);
+BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*);
 BOOL  EditSaveFile(HWND,LPCWSTR,int,BOOL*,BOOL);
 
 void  EditInvertCase(HWND);
