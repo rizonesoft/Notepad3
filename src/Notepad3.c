@@ -6021,10 +6021,10 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",-1);
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",1);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",0);
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",3);
   iSciFontQuality = max(min(iSciFontQuality,3),0);
 
   iMarkOccurrencesCount = -1;
