@@ -46,3 +46,5 @@ Thumbs.db
 /Notepad3.VC.VC.opendb
 /np3portableapp/Notepad3Portable/Notepad3Portable.exe
 /np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
+/np3portableapp/Notepad3Portable/App/Notepad3/*.exe
+/np3portableapp/Notepad3Portable/App/Notepad3/x64/*.exe
