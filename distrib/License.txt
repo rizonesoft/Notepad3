@@ -1,4 +1,4 @@
-Notepad3 and MiniPath Copyright © 2008-2016 Rizonesoft, All rights reserved.
+Notepad3 and MiniPath Copyright Â© 2008-2016 Rizonesoft, All rights reserved.
 https://rizonesoft.com
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
