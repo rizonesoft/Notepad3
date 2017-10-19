@@ -4222,7 +4222,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(hwndEdit,bAccelWordNavigation);
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_VIRTSPACERECTSEL:
@@ -4235,33 +4235,36 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_MARKOCCURRENCES_OFF:
       iMarkOccurrences = 0;
       // clear all marks
-      SendMessage(hwndEdit, SCI_SETINDICATORCURRENT, 1, 0);
+      SendMessage(hwndEdit, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
       SendMessage(hwndEdit, SCI_INDICATORCLEARRANGE, 0, (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_RED:
       iMarkOccurrences = 1;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_GREEN:
       iMarkOccurrences = 2;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_BLUE:
       iMarkOccurrences = 3;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_WORD:
       bMarkOccurrencesMatchWords = (bMarkOccurrencesMatchWords) ? FALSE : TRUE;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_FOLDING:
@@ -5406,69 +5409,19 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
       switch(pnmh->code)
       {
         case SCN_UPDATEUI:
-
-          if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) {
-
-            UpdateStatusbar();
-            UpdateToolbar();
-
+          if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) 
+          {
             InvalidateSelections();
 
             // mark occurrences of text currently selected
-            EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+            EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
 
             // Brace Match
-            if (bMatchBraces)
-            {
-              int iPos;
-              char c;
-
-              int iEndStyled = (int)SendMessage(hwndEdit,SCI_GETENDSTYLED,0,0);
-              if (iEndStyled < (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0)) {
-                int iLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iEndStyled,0);
-                int iEndStyled2 = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iLine,0);
-                SendMessage(hwndEdit,SCI_COLOURISE,iEndStyled2,-1);
-              }
-
-              iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-              c = (char)SendMessage(hwndEdit,SCI_GETCHARAT,iPos,0);
-              if (StrChrA("()[]{}",c)) {
-                int iBrace2 = (int)SendMessage(hwndEdit,SCI_BRACEMATCH,iPos,0);
-                if (iBrace2 != -1) {
-                  int col1 = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0);
-                  int col2 = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iBrace2,0);
-                  SendMessage(hwndEdit,SCI_BRACEHIGHLIGHT,iPos,iBrace2);
-                  SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,min(col1,col2),0);
-                }
-                else {
-                  SendMessage(hwndEdit,SCI_BRACEBADLIGHT,iPos,0);
-                  SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,0,0);
-                }
-              }
-              // Try one before
-              else
-              {
-                iPos = (int)SendMessage(hwndEdit,SCI_POSITIONBEFORE,iPos,0);
-                c = (char)SendMessage(hwndEdit,SCI_GETCHARAT,iPos,0);
-                if (StrChrA("()[]{}",c)) {
-                  int iBrace2 = (int)SendMessage(hwndEdit,SCI_BRACEMATCH,iPos,0);
-                  if (iBrace2 != -1) {
-                    int col1 = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0);
-                    int col2 = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iBrace2,0);
-                    SendMessage(hwndEdit,SCI_BRACEHIGHLIGHT,iPos,iBrace2);
-                    SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,min(col1,col2),0);
-                  }
-                  else {
-                    SendMessage(hwndEdit,SCI_BRACEBADLIGHT,iPos,0);
-                    SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,0,0);
-                  }
-                }
-                else {
-                  SendMessage(hwndEdit,SCI_BRACEHIGHLIGHT,(WPARAM)-1,(LPARAM)-1);
-                  SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,0,0);
-                }
-              }
+            if (bMatchBraces) {
+              EditMatchBrace(hwndEdit);
             }
+            UpdateToolbar();
+            UpdateStatusbar();
           }
           break;
 
@@ -7418,7 +7371,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
       iFileWatchingMode = 0;
     InstallFileWatching(NULL);
     bEnableSaveSettings = TRUE;
-    UpdateSettingsCmds(hwndMain);
+    UpdateSettingsCmds();
     return TRUE;
   }
 
