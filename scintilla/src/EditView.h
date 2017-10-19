@@ -117,6 +117,7 @@ public:
 	Point LocationFromPosition(Surface *surface, const EditModel &model, SelectionPosition pos, Sci::Line topLine,
 				   const ViewStyle &vs, PointEnd pe);
 	Range RangeDisplayLine(Surface *surface, const EditModel &model, Sci::Line lineVisible, const ViewStyle &vs);
+	XYPOSITION EndSpaceWidth(const EditModel &model, const ViewStyle &vs, LineLayout *ll, Sci::Line line);
 	SelectionPosition SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid,
 		bool charPosition, bool virtualSpace, const ViewStyle &vs);
 	SelectionPosition SPositionFromLineX(Surface *surface, const EditModel &model, Sci::Line lineDoc, int x, const ViewStyle &vs);

@@ -5131,6 +5131,7 @@ void Editor::SetBraceHighlight(Sci::Position pos0, Sci::Position pos1, int match
 			Redraw();
 		}
 	}
+	SetRectangularRange();
 }
 
 void Editor::SetAnnotationHeights(Sci::Line start, Sci::Line end) {
