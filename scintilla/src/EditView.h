@@ -12,7 +12,7 @@
 namespace Scintilla {
 #endif
 
-#define NP3_MATCH_BRACE_RECT_SEL_PATCH 1
+#undef NP3_MATCH_BRACE_RECT_SEL_PATCH
 
 struct PrintParameters {
 	int magnification;

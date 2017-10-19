@@ -47,6 +47,7 @@ typedef struct _editfindreplace
 
 #define INDIC_NP3_MARK_OCCURANCE 1
 #define INDIC_NP3_MATCH_BRACE    2
+#define INDIC_NP3_BAD_BRACE      3
 
 HWND  EditCreate(HWND);
 void  EditInitWordDelimiter(HWND);

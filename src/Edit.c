@@ -172,11 +172,22 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_HOME + (SCMOD_SHIFT << 16)),SCI_VCHOMEWRAPEXTEND);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (SCMOD_SHIFT << 16)),SCI_LINEENDWRAPEXTEND);
 
-  // set style
+  // set indicator styles
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 220);
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
   SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
 
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 220);
+  SendMessage(hwnd, SCI_INDICSETALPHA,INDIC_NP3_MATCH_BRACE, 120);
+  SendMessage(hwnd, SCI_INDICSETFORE,INDIC_NP3_MATCH_BRACE, 0xff << (1 << 3)); // overriden by style
+  SendMessage(hwnd, SCI_INDICSETSTYLE,INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
+
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 220);
+  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
+  SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, 0xff ); // overriden by style
+  SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
+  
 
   // word delimiter handling
   EditInitWordDelimiter(hwnd);
@@ -5251,13 +5262,6 @@ void CompleteWord(HWND hwnd, BOOL autoInsert)
 //
 void EditMatchBrace(HWND hwnd)
 {
-  // set style
-  //SendMessage(hwnd, SCI_INDICSETALPHA, 1, 100);
-  //SendMessage(hwnd, SCI_INDICSETFORE, 1, 0xff << ((iMarkOccurrences - 1) << 3));
-  //SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_ROUNDBOX);
-  //SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, 0);
-  //SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 1, 0);
-
   int iPos;
   char c;
 
@@ -5276,10 +5280,12 @@ void EditMatchBrace(HWND hwnd)
       int col1 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iPos, 0);
       int col2 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iBrace2, 0);
       SendMessage(hwnd, SCI_BRACEHIGHLIGHT, iPos, iBrace2);
+      SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
       SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, min(col1, col2), 0);
     }
     else {
       SendMessage(hwnd, SCI_BRACEBADLIGHT, iPos, 0);
+      SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 1, INDIC_NP3_BAD_BRACE);
       SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
     }
   }
@@ -5293,15 +5299,18 @@ void EditMatchBrace(HWND hwnd)
         int col1 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iPos, 0);
         int col2 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iBrace2, 0);
         SendMessage(hwnd, SCI_BRACEHIGHLIGHT, iPos, iBrace2);
+        SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
         SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, min(col1, col2), 0);
       }
       else {
         SendMessage(hwnd, SCI_BRACEBADLIGHT, iPos, 0);
+        SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 1, INDIC_NP3_BAD_BRACE);
         SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
       }
     }
     else {
       SendMessage(hwnd, SCI_BRACEHIGHLIGHT, (WPARAM)-1, (LPARAM)-1);
+      SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
       SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
     }
   }
