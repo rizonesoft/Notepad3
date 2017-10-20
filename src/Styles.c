@@ -46,6 +46,9 @@ extern HINSTANCE g_hInstance;
 extern int iSciFontQuality;
 extern const int FontQuality[4];
 
+extern BOOL bUseOldStyleBraceMatching;
+
+
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
 
@@ -2999,18 +3002,24 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
 
   Style_SetStyles(hwnd,lexDefault.Styles[1+iIdx].iStyle,lexDefault.Styles[1+iIdx].szValue); // linenumber
 
-  //~Style_SetStyles(hwnd,lexDefault.Styles[2+iIdx].iStyle,lexDefault.Styles[2+iIdx].szValue); // brace light
-  if (Style_StrGetColor(TRUE, lexDefault.Styles[2 + iIdx].szValue, &iValue))
-    SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, iValue);
-  if (Style_StrGetAlpha(lexDefault.Styles[2 + iIdx].szValue, &iValue))
-    SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
-
-  //~Style_SetStyles(hwnd,lexDefault.Styles[3+iIdx].iStyle,lexDefault.Styles[3+iIdx].szValue); // brace bad
-  if (Style_StrGetColor(TRUE, lexDefault.Styles[3 + iIdx].szValue, &iValue))
-    SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, iValue);
-  if (Style_StrGetAlpha(lexDefault.Styles[3 + iIdx].szValue, &iValue))
-    SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
-
+  if (bUseOldStyleBraceMatching) {
+    Style_SetStyles(hwnd,lexDefault.Styles[2+iIdx].iStyle,lexDefault.Styles[2+iIdx].szValue); // brace light
+  }
+  else {
+    if (Style_StrGetColor(TRUE, lexDefault.Styles[2 + iIdx].szValue, &iValue))
+      SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, iValue);
+    if (Style_StrGetAlpha(lexDefault.Styles[2 + iIdx].szValue, &iValue))
+      SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
+  }
+  if (bUseOldStyleBraceMatching) {
+    Style_SetStyles(hwnd, lexDefault.Styles[3 + iIdx].iStyle, lexDefault.Styles[3 + iIdx].szValue); // brace bad
+  }
+  else {
+    if (Style_StrGetColor(TRUE, lexDefault.Styles[3 + iIdx].szValue, &iValue))
+      SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, iValue);
+    if (Style_StrGetAlpha(lexDefault.Styles[3 + iIdx].szValue, &iValue))
+      SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
+  }
  
   if (pLexNew != &lexANSI)
     Style_SetStyles(hwnd,lexDefault.Styles[4+iIdx].iStyle,lexDefault.Styles[4+iIdx].szValue); // control char

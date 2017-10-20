@@ -152,6 +152,7 @@ int       iMarkOccurrencesCount;
 int       iMarkOccurrencesMaxCount;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
+BOOL      bUseOldStyleBraceMatching;
 BOOL      bAutoCompleteWords;
 BOOL      bAccelWordNavigation;
 BOOL      bVirtualSpaceInRectSelection;
@@ -5983,6 +5984,8 @@ void LoadSettings()
   iMarkOccurrencesCount = -1;
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
   iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
+
+  bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 

@@ -55,6 +55,7 @@ extern HINSTANCE g_hInstance;
 extern DWORD dwLastIOError;
 extern UINT cpLastFind;
 extern BOOL bReplaceInitialized;
+extern BOOL bUseOldStyleBraceMatching;
 
 static EDITFINDREPLACE efrSave;
 static BOOL bSwitchedFindReplace = FALSE;
@@ -5256,15 +5257,46 @@ void CompleteWord(HWND hwnd, BOOL autoInsert)
 }
 
 
+BOOL __fastcall EditHighlightIfBrace(HWND hwnd, int iPos)
+{
+  if (iPos < 0) {
+    // clear indicator
+    SendMessage(hwnd, SCI_BRACEBADLIGHT, (WPARAM)INVALID_POSITION, 0);
+    SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
+    if (!bUseOldStyleBraceMatching)
+      SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 0, INDIC_NP3_BAD_BRACE);
+    return TRUE;
+  }
+  char c = (char)SendMessage(hwnd, SCI_GETCHARAT, iPos, 0);
+  if (StrChrA("()[]{}", c)) {
+    int iBrace2 = (int)SendMessage(hwnd, SCI_BRACEMATCH, iPos, 0);
+    if (iBrace2 != -1) {
+      int col1 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iPos, 0);
+      int col2 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iBrace2, 0);
+      SendMessage(hwnd, SCI_BRACEHIGHLIGHT, iPos, iBrace2);
+      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, min(col1, col2), 0);
+      if (!bUseOldStyleBraceMatching)
+        SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
+    }
+    else {
+      SendMessage(hwnd, SCI_BRACEBADLIGHT, iPos, 0);
+      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
+      if (!bUseOldStyleBraceMatching)
+        SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 1, INDIC_NP3_BAD_BRACE);
+    }
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+
 //=============================================================================
 //
 //  EditMatchBrace()
 //
 void EditMatchBrace(HWND hwnd)
 {
-  int iPos;
-  char c;
-
   int iEndStyled = (int)SendMessage(hwnd, SCI_GETENDSTYLED, 0, 0);
   if (iEndStyled < (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0)) {
     int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iEndStyled, 0);
@@ -5272,46 +5304,14 @@ void EditMatchBrace(HWND hwnd)
     SendMessage(hwnd, SCI_COLOURISE, iEndStyled2, -1);
   }
 
-  iPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
-  c = (char)SendMessage(hwnd, SCI_GETCHARAT, iPos, 0);
-  if (StrChrA("()[]{}", c)) {
-    int iBrace2 = (int)SendMessage(hwnd, SCI_BRACEMATCH, iPos, 0);
-    if (iBrace2 != -1) {
-      int col1 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iPos, 0);
-      int col2 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iBrace2, 0);
-      SendMessage(hwnd, SCI_BRACEHIGHLIGHT, iPos, iBrace2);
-      SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
-      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, min(col1, col2), 0);
-    }
-    else {
-      SendMessage(hwnd, SCI_BRACEBADLIGHT, iPos, 0);
-      SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 1, INDIC_NP3_BAD_BRACE);
-      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
-    }
-  }
-  // Try one before
-  else {
+  int iPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+
+  if (!EditHighlightIfBrace(hwnd, iPos)) {
+    // try one before
     iPos = (int)SendMessage(hwnd, SCI_POSITIONBEFORE, iPos, 0);
-    c = (char)SendMessage(hwnd, SCI_GETCHARAT, iPos, 0);
-    if (StrChrA("()[]{}", c)) {
-      int iBrace2 = (int)SendMessage(hwnd, SCI_BRACEMATCH, iPos, 0);
-      if (iBrace2 != -1) {
-        int col1 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iPos, 0);
-        int col2 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iBrace2, 0);
-        SendMessage(hwnd, SCI_BRACEHIGHLIGHT, iPos, iBrace2);
-        SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
-        SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, min(col1, col2), 0);
-      }
-      else {
-        SendMessage(hwnd, SCI_BRACEBADLIGHT, iPos, 0);
-        SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 1, INDIC_NP3_BAD_BRACE);
-        SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
-      }
-    }
-    else {
-      SendMessage(hwnd, SCI_BRACEHIGHLIGHT, (WPARAM)-1, (LPARAM)-1);
-      SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
-      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
+    if (!EditHighlightIfBrace(hwnd, iPos)) {
+      // clear mark
+      EditHighlightIfBrace(hwnd, -1);
     }
   }
 }
@@ -5350,7 +5350,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
   iSelLength = (int)SendMessage(hwnd,SCI_GETSELTEXT,0,0);
   iSelCount = iSelEnd - iSelStart;
 
-  // clear existing indicator
+  // clear existing marker indicators
   SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
   SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, iTextLen);
 

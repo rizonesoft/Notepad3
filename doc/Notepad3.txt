@@ -159,6 +159,10 @@ MarkOccurrencesMaxCount
 The maximum number of counts for marking occurences, if this option is active.
 The default is 2000.
 
+UseOldStyleBraceMatching
+Switch back to (not recommended) old style brace matching.
+The default is 0.
+
 
 Notepad2 already existing settings:
 -----------------------------------
