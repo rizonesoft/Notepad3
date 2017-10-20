@@ -5131,6 +5131,9 @@ void Editor::SetBraceHighlight(Sci::Position pos0, Sci::Position pos1, int match
 			Redraw();
 		}
 	}
+#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
+  SetRectangularRange();
+#endif
 }
 
 void Editor::SetAnnotationHeights(Sci::Line start, Sci::Line end) {
