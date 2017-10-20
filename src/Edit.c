@@ -77,6 +77,7 @@ extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
 
 extern BOOL bAccelWordNavigation;
+extern BOOL bDenyVirtualSpaceAccess;
 
 extern int iMarkOccurrences;
 extern int iMarkOccurrencesCount;
@@ -160,7 +161,7 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
   SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE,0);
-  SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS,SCVS_NONE,0);
+  SendMessage(hwnd, SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_NP3_SPACE_OPT), 0);
 
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + (SCMOD_CTRL << 16)),SCI_PARADOWN);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_PRIOR + (SCMOD_CTRL << 16)),SCI_PARAUP);

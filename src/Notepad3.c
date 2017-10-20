@@ -67,8 +67,6 @@ HWND      hDlgFindReplace = NULL;
 #define NUMINITIALTOOLS 24
 #define MARGIN_FOLD_INDEX 2
 
-#define SCVS_NP3_SPACE_OPT (SCVS_RECTANGULARSELECTION | SCVS_USERACCESSIBLE | SCVS_NOWRAPLINESTART)
-
 TBBUTTON  tbbMainWnd[] = { {0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
                            {1,IDT_FILE_OPEN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
                            {2,IDT_FILE_BROWSE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
@@ -157,7 +155,7 @@ BOOL      bMarkOccurrencesMatchWords;
 BOOL      bUseOldStyleBraceMatching;
 BOOL      bAutoCompleteWords;
 BOOL      bAccelWordNavigation;
-BOOL      bOldStyleRectSelection;
+BOOL      bDenyVirtualSpaceAccess;
 BOOL      bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
@@ -309,7 +307,6 @@ WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 
 
 // undo / redo  selections
-static BOOL bInUndoRedoAction = FALSE;
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 
@@ -1149,20 +1146,14 @@ WININFO GetMyWindowPlacement(HWND hwnd,MONITORINFO* hMonitorInfo)
 //
 LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  if (!bOldStyleRectSelection && !bInUndoRedoAction)
+  if (!bDenyVirtualSpaceAccess)
   {
-    BOOL bIsVSpaceAccessActive = (SendMessage(hwndEdit, SCI_GETVIRTUALSPACEOPTIONS, 0, 0) != SCVS_NONE);
-    if (GetAsyncKeyState(VK_MENU) & SHRT_MIN) // ALT DOWN
-    {
-      if (!bIsVSpaceAccessActive) {
-        //SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
-        SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NP3_SPACE_OPT, 0);
-      }
+    if (GetAsyncKeyState(VK_MENU) & SHRT_MIN) { // ALT-KEY DOWN
+      //SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
+      SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (SCVS_NP3_SPACE_OPT | SCVS_USERACCESSIBLE), 0);
     }
     else {
-      if (bIsVSpaceAccessActive) {
-        SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
-      }
+      SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NP3_SPACE_OPT, 0);
     }
   }
 
@@ -5978,7 +5969,7 @@ void LoadSettings()
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
   iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
 
-  bOldStyleRectSelection = IniSectionGetBool(pIniSection, L"OldStyleRectSelection", FALSE);
+  bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", FALSE);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
@@ -7119,11 +7110,10 @@ void InvalidateSelections()
 //
 int BeginSelUndoAction()
 {
-  bInUndoRedoAction = TRUE;
   int token = -1;
-  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0 };
-  SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NP3_SPACE_OPT, 0);
+  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
   sel.selMode = (int)SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0);
+  sel.rectSelVS = (int)SendMessage(hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
   if (sel.selMode == SC_SEL_LINES) {
     sel.anchorPos_undo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
     sel.currPos_undo = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
@@ -7131,8 +7121,10 @@ int BeginSelUndoAction()
   else if (sel.selMode == SC_SEL_RECTANGLE) {
     sel.anchorPos_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
     sel.currPos_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
+    if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
     sel.anchorVS_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
     sel.currVS_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+    }
   }
   else
   {
@@ -7157,8 +7149,7 @@ int BeginSelUndoAction()
 void EndSelUndoAction(int token)
 {
   if (token >= 0) {
-    UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0 };
-    SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NP3_SPACE_OPT, 0);
+    UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
     if (UndoRedoSelectionMap(token,&sel) >= 0) {
       // mode and type should not have changed
       if (sel.selMode == SC_SEL_LINES) {
@@ -7168,8 +7159,10 @@ void EndSelUndoAction(int token)
       else if (sel.selMode == SC_SEL_RECTANGLE) {
         sel.anchorPos_redo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
         sel.currPos_redo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-        sel.anchorVS_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-        sel.currVS_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+        if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
+          sel.anchorVS_redo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+          sel.currVS_redo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+        }
       }
       else {
         sel.anchorPos_redo = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
@@ -7178,7 +7171,6 @@ void EndSelUndoAction(int token)
     }
     UndoRedoSelectionMap(token,&sel); // set with redo action filled
     SendMessage(hwndEdit, SCI_ENDUNDOACTION, 0, 0);
-    bInUndoRedoAction = FALSE;
   }
 }
 
@@ -7190,14 +7182,14 @@ void EndSelUndoAction(int token)
 //
 void RestoreSelectionAction(int token, DoAction doAct)
 {
-  bInUndoRedoAction = TRUE;
-  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0 };
+  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
   if (UndoRedoSelectionMap(token,&sel) >= 0) {
-    PostMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NP3_SPACE_OPT, 0);
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
     int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     int currPos   = (doAct == UNDO ? sel.currPos_undo : sel.currPos_redo);
+    int currRectType = (int)SendMessage(hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
     PostMessage(hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
+    PostMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)sel.rectSelVS,0);
     if (sel.selMode == SC_SEL_LINES) {
       PostMessage(hwndEdit,SCI_SETSELECTIONSTART,(WPARAM)anchorPos,0);
       PostMessage(hwndEdit,SCI_SETSELECTIONEND,(WPARAM)currPos,0);
@@ -7205,17 +7197,19 @@ void RestoreSelectionAction(int token, DoAction doAct)
     else if (sel.selMode == SC_SEL_RECTANGLE) {
       PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)anchorPos, 0);
       PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)currPos, 0);
+      if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
       int anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
       int currVS = (doAct == UNDO ? sel.currVS_undo : sel.currVS_redo);
       PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
       PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
+      }
     }
     else {
       PostMessage(hwndEdit,SCI_SETSELECTION,(WPARAM)currPos,(LPARAM)anchorPos);
     }
+    PostMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)currRectType,0);
     PostMessage(hwndEdit, SCI_CANCEL, 0, 0);
   }
-  bInUndoRedoAction = FALSE;
 }
 
 
