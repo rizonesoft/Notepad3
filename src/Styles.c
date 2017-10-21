@@ -46,6 +46,9 @@ extern HINSTANCE g_hInstance;
 extern int iSciFontQuality;
 extern const int FontQuality[4];
 
+extern BOOL bUseOldStyleBraceMatching;
+
+
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
 
@@ -2998,8 +3001,26 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
   SendMessage(hwnd,SCI_STYLECLEARALL,0,0);
 
   Style_SetStyles(hwnd,lexDefault.Styles[1+iIdx].iStyle,lexDefault.Styles[1+iIdx].szValue); // linenumber
-  Style_SetStyles(hwnd,lexDefault.Styles[2+iIdx].iStyle,lexDefault.Styles[2+iIdx].szValue); // brace light
-  Style_SetStyles(hwnd,lexDefault.Styles[3+iIdx].iStyle,lexDefault.Styles[3+iIdx].szValue); // brace bad
+
+  if (bUseOldStyleBraceMatching) {
+    Style_SetStyles(hwnd,lexDefault.Styles[2+iIdx].iStyle,lexDefault.Styles[2+iIdx].szValue); // brace light
+  }
+  else {
+    if (Style_StrGetColor(TRUE, lexDefault.Styles[2 + iIdx].szValue, &iValue))
+      SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, iValue);
+    if (Style_StrGetAlpha(lexDefault.Styles[2 + iIdx].szValue, &iValue))
+      SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
+  }
+  if (bUseOldStyleBraceMatching) {
+    Style_SetStyles(hwnd, lexDefault.Styles[3 + iIdx].iStyle, lexDefault.Styles[3 + iIdx].szValue); // brace bad
+  }
+  else {
+    if (Style_StrGetColor(TRUE, lexDefault.Styles[3 + iIdx].szValue, &iValue))
+      SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, iValue);
+    if (Style_StrGetAlpha(lexDefault.Styles[3 + iIdx].szValue, &iValue))
+      SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
+  }
+ 
   if (pLexNew != &lexANSI)
     Style_SetStyles(hwnd,lexDefault.Styles[4+iIdx].iStyle,lexDefault.Styles[4+iIdx].szValue); // control char
   Style_SetStyles(hwnd,lexDefault.Styles[5+iIdx].iStyle,lexDefault.Styles[5+iIdx].szValue); // indent guide
@@ -3925,6 +3946,30 @@ BOOL Style_StrGetColor(BOOL bFore,LPCWSTR lpszStyle,int *rgb)
 
 //=============================================================================
 //
+//  Style_StrGetAlpha()
+//
+BOOL Style_StrGetAlpha(LPCWSTR lpszStyle, int *i) {
+  WCHAR tch[256] = { L'\0' };
+  WCHAR *p = StrStrI(lpszStyle, L"alpha:");
+  if (p) {
+    StringCchCopy(tch, COUNTOF(tch), p + CSTRLEN(L"alpha:"));
+    p = StrChr(tch, L';');
+    if (p)
+      *p = L'\0';
+    TrimString(tch);
+    int iValue = 0;
+    int itok = swscanf_s(tch, L"%i", &iValue);
+    if (itok == 1) {
+      *i = min(max(SC_ALPHA_TRANSPARENT, iValue), SC_ALPHA_OPAQUE);
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+
+//=============================================================================
+//
 //  Style_StrGetCase()
 //
 BOOL Style_StrGetCase(LPCWSTR lpszStyle,int *i)
@@ -3944,33 +3989,6 @@ BOOL Style_StrGetCase(LPCWSTR lpszStyle,int *i)
     }
     else if (tch[0] == L'l' || tch[0] == L'L') {
       *i = SC_CASE_LOWER;
-      return TRUE;
-    }
-  }
-  return FALSE;
-}
-
-
-//=============================================================================
-//
-//  Style_StrGetAlpha()
-//
-BOOL Style_StrGetAlpha(LPCWSTR lpszStyle,int *i)
-{
-  WCHAR tch[256] = { L'\0' };
-  WCHAR *p = StrStrI(lpszStyle, L"alpha:");
-  if (p)
-  {
-    StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"alpha:"));
-    p = StrChr(tch, L';');
-    if (p)
-      *p = L'\0';
-    TrimString(tch);
-    int iValue = 0;
-    int itok = swscanf_s(tch,L"%i",&iValue);
-    if (itok == 1)
-    {
-      *i = min(max(SC_ALPHA_TRANSPARENT,iValue),SC_ALPHA_OPAQUE);
       return TRUE;
     }
   }
