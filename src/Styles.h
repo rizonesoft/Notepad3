@@ -16,8 +16,8 @@
 #ifndef _NP3_STYLES_H_
 #define _NP3_STYLES_H_
 
-#define BUFSIZE_STYLE_VALUE 256
-#define BUFZIZE_STYLE_EXTENTIONS 1024
+#define BUFSIZE_STYLE_VALUE 128
+#define BUFZIZE_STYLE_EXTENTIONS 512
 
 typedef struct _editstyle
 {
