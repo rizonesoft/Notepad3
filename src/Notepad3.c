@@ -152,9 +152,10 @@ int       iMarkOccurrencesCount;
 int       iMarkOccurrencesMaxCount;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
+BOOL      bUseOldStyleBraceMatching;
 BOOL      bAutoCompleteWords;
 BOOL      bAccelWordNavigation;
-BOOL      bVirtualSpaceInRectSelection;
+BOOL      bDenyVirtualSpaceAccess;
 BOOL      bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
@@ -1145,11 +1146,23 @@ WININFO GetMyWindowPlacement(HWND hwnd,MONITORINFO* hMonitorInfo)
 //
 LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
+  if (!bDenyVirtualSpaceAccess)
+  {
+    if (GetAsyncKeyState(VK_MENU) & SHRT_MIN) { // ALT-KEY DOWN
+      //SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
+      SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (SCVS_NP3_SPACE_OPT | SCVS_USERACCESSIBLE), 0);
+    }
+    else {
+      SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NP3_SPACE_OPT, 0);
+    }
+  }
+
   switch(umsg)
   {
     // Quickly handle painting and sizing messages, found in ScintillaWin.cxx
     // Cool idea, don't know if this has any effect... ;-)
     case WM_MOVE:
+    case WM_MOUSEWHEEL:
     case WM_MOUSEACTIVATE:
     case WM_NCHITTEST:
     case WM_NCCALCSIZE:
@@ -1165,7 +1178,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_CREATE:
       return MsgCreate(hwnd,wParam,lParam);
 
-
     case WM_DESTROY:
     case WM_ENDSESSION:
       MsgEndSession(hwnd,umsg);
@@ -1176,13 +1188,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         DestroyWindow(hwnd);
       break;
 
-
     case WM_QUERYENDSESSION:
       if (FileSave(FALSE,TRUE,FALSE,FALSE))
         return TRUE;
       else
         return FALSE;
-
 
     // Reinitialize theme-dependent values and resize windows
     case WM_THEMECHANGED:
@@ -1198,15 +1208,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         return DefWindowProc(hwnd,umsg,wParam,lParam);
       }
 
-
     //case WM_TIMER:
     //  break;
-
 
     case WM_SIZE:
       MsgSize(hwnd,wParam,lParam);
       break;
-
 
     case WM_SETFOCUS:
       SetFocus(hwndEdit);
@@ -1217,7 +1224,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       //if (bPendingChangeNotify)
       //  PostMessage(hwnd,WM_CHANGENOTIFY,0,0);
       break;
-
 
     case WM_DROPFILES:
       MsgDropFiles(hwnd, wParam, lParam);
@@ -1234,12 +1240,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       MsgInitMenu(hwnd,wParam,lParam);
       break;
 
-    case WM_MOUSEWHEEL:
-      return DefWindowProc(hwnd,umsg,wParam,lParam);
-
     case WM_NOTIFY:
       return MsgNotify(hwnd,wParam,lParam);
-
 
     //case WM_PARENTNOTIFY:
     //  if (LOWORD(wParam) & WM_DESTROY) {
@@ -1248,7 +1250,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     //    }
     //  }
     //  break;
-
 
     case WM_COMMAND:
       return MsgCommand(hwnd,wParam,lParam);
@@ -1260,12 +1261,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       MsgChangeNotify(hwnd, wParam, lParam);
       break;
 
-
     //// This message is posted before Notepad3 reactivates itself
     //case WM_CHANGENOTIFYCLEAR:
     //  bPendingChangeNotify = FALSE;
     //  break;
-
 
     case WM_DRAWCLIPBOARD:
       if (!bLastCopyFromMe)
@@ -1277,7 +1276,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SendMessage(hwndNextCBChain,WM_DRAWCLIPBOARD,wParam,lParam);
       break;
 
-
     case WM_CHANGECBCHAIN:
       if ((HWND)wParam == hwndNextCBChain)
         hwndNextCBChain = (HWND)lParam;
@@ -1285,10 +1283,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SendMessage(hwndNextCBChain,WM_CHANGECBCHAIN,lParam,wParam);
       break;
 
-
     case WM_TRAYMESSAGE:
       return MsgTrayMessage(hwnd, wParam, lParam);
-
 
     default:
       if (umsg == msgTaskbarCreated) {
@@ -1298,8 +1294,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
-
-  return 0;
+  return 0; // swallow message
 }
 
 
@@ -2372,7 +2367,6 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,i);
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
-  CheckCmd(hmenu,IDM_VIEW_VIRTSPACERECTSEL,bVirtualSpaceInRectSelection);
 
   switch (iMarkOccurrences)
   {
@@ -4222,46 +4216,42 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(hwndEdit,bAccelWordNavigation);
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
-    case IDM_VIEW_VIRTSPACERECTSEL:
-      bVirtualSpaceInRectSelection = (bVirtualSpaceInRectSelection) ? FALSE : TRUE;  // toggle
-      //SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
-      SendMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,
-        (bVirtualSpaceInRectSelection ? (SCVS_RECTANGULARSELECTION | SCVS_USERACCESSIBLE | SCVS_NOWRAPLINESTART) : SCVS_NONE),0);
-      break;
-    
     case IDM_VIEW_MARKOCCURRENCES_OFF:
       iMarkOccurrences = 0;
       // clear all marks
-      SendMessage(hwndEdit, SCI_SETINDICATORCURRENT, 1, 0);
+      SendMessage(hwndEdit, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
       SendMessage(hwndEdit, SCI_INDICATORCLEARRANGE, 0, (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_RED:
       iMarkOccurrences = 1;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_GREEN:
       iMarkOccurrences = 2;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_BLUE:
       iMarkOccurrences = 3;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_WORD:
       bMarkOccurrencesMatchWords = (bMarkOccurrencesMatchWords) ? FALSE : TRUE;
-      EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_FOLDING:
@@ -5406,69 +5396,19 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
       switch(pnmh->code)
       {
         case SCN_UPDATEUI:
-
-          if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) {
-
-            UpdateStatusbar();
-            UpdateToolbar();
-
+          if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) 
+          {
             InvalidateSelections();
 
             // mark occurrences of text currently selected
-            EditMarkAll(hwndEdit, iMarkOccurrences, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+            EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
 
             // Brace Match
-            if (bMatchBraces)
-            {
-              int iPos;
-              char c;
-
-              int iEndStyled = (int)SendMessage(hwndEdit,SCI_GETENDSTYLED,0,0);
-              if (iEndStyled < (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0)) {
-                int iLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iEndStyled,0);
-                int iEndStyled2 = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iLine,0);
-                SendMessage(hwndEdit,SCI_COLOURISE,iEndStyled2,-1);
-              }
-
-              iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-              c = (char)SendMessage(hwndEdit,SCI_GETCHARAT,iPos,0);
-              if (StrChrA("()[]{}",c)) {
-                int iBrace2 = (int)SendMessage(hwndEdit,SCI_BRACEMATCH,iPos,0);
-                if (iBrace2 != -1) {
-                  int col1 = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0);
-                  int col2 = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iBrace2,0);
-                  SendMessage(hwndEdit,SCI_BRACEHIGHLIGHT,iPos,iBrace2);
-                  SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,min(col1,col2),0);
-                }
-                else {
-                  SendMessage(hwndEdit,SCI_BRACEBADLIGHT,iPos,0);
-                  SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,0,0);
-                }
-              }
-              // Try one before
-              else
-              {
-                iPos = (int)SendMessage(hwndEdit,SCI_POSITIONBEFORE,iPos,0);
-                c = (char)SendMessage(hwndEdit,SCI_GETCHARAT,iPos,0);
-                if (StrChrA("()[]{}",c)) {
-                  int iBrace2 = (int)SendMessage(hwndEdit,SCI_BRACEMATCH,iPos,0);
-                  if (iBrace2 != -1) {
-                    int col1 = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iPos,0);
-                    int col2 = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,iBrace2,0);
-                    SendMessage(hwndEdit,SCI_BRACEHIGHLIGHT,iPos,iBrace2);
-                    SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,min(col1,col2),0);
-                  }
-                  else {
-                    SendMessage(hwndEdit,SCI_BRACEBADLIGHT,iPos,0);
-                    SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,0,0);
-                  }
-                }
-                else {
-                  SendMessage(hwndEdit,SCI_BRACEHIGHLIGHT,(WPARAM)-1,(LPARAM)-1);
-                  SendMessage(hwndEdit,SCI_SETHIGHLIGHTGUIDE,0,0);
-                }
-              }
+            if (bMatchBraces) {
+              EditMatchBrace(hwndEdit);
             }
+            UpdateToolbar();
+            UpdateStatusbar();
           }
           break;
 
@@ -5854,8 +5794,6 @@ void LoadSettings()
 
   bAccelWordNavigation = IniSectionGetBool(pIniSection, L"AccelWordNavigation", FALSE);
 
-  bVirtualSpaceInRectSelection = IniSectionGetBool(pIniSection,L"VirtualSpaceInRectSelection",FALSE);
-
   bShowIndentGuides = IniSectionGetBool(pIniSection,L"ShowIndentGuides",FALSE);
 
   bTabsAsSpaces = IniSectionGetBool(pIniSection,L"TabsAsSpaces",TRUE);
@@ -6031,6 +5969,9 @@ void LoadSettings()
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
   iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
 
+  bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", FALSE);
+  bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
+
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
   IniSectionGetString(pIniSection,L"BitmapDefault",L"",
@@ -6168,7 +6109,6 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"AutoIndent", bAutoIndent);
   IniSectionSetInt(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
   IniSectionSetInt(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
-  IniSectionSetInt(pIniSection, L"VirtualSpaceInRectSelection",bVirtualSpaceInRectSelection);
   IniSectionSetInt(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
   IniSectionSetInt(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
   IniSectionSetInt(pIniSection, L"TabIndents", bTabIndentsG);
@@ -7182,8 +7122,8 @@ int BeginSelUndoAction()
     sel.anchorPos_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
     sel.currPos_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
     if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
-      sel.anchorVS_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-      sel.currVS_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+    sel.anchorVS_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+    sel.currVS_undo = (int)SendMessage(hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
     }
   }
   else
@@ -7258,17 +7198,17 @@ void RestoreSelectionAction(int token, DoAction doAct)
       PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)anchorPos, 0);
       PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)currPos, 0);
       if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
-        int anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
-        int currVS = (doAct == UNDO ? sel.currVS_undo : sel.currVS_redo);
-        PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
-        PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
+      int anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
+      int currVS = (doAct == UNDO ? sel.currVS_undo : sel.currVS_redo);
+      PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
+      PostMessage(hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
       }
     }
     else {
       PostMessage(hwndEdit,SCI_SETSELECTION,(WPARAM)currPos,(LPARAM)anchorPos);
     }
     PostMessage(hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)currRectType,0);
-    PostMessage(hwndEdit,SCI_CANCEL,0,0);
+    PostMessage(hwndEdit, SCI_CANCEL, 0, 0);
   }
 }
 
@@ -7418,7 +7358,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
       iFileWatchingMode = 0;
     InstallFileWatching(NULL);
     bEnableSaveSettings = TRUE;
-    UpdateSettingsCmds(hwndMain);
+    UpdateSettingsCmds();
     return TRUE;
   }
 
