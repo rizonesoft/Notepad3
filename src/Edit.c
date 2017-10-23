@@ -48,7 +48,6 @@
 
 #define DEFAULT_SCROLL_WIDTH 4096    // 4K
 
-
 extern HWND  hwndMain;
 extern HWND  hwndEdit;
 extern HINSTANCE g_hInstance;
@@ -56,6 +55,7 @@ extern HINSTANCE g_hInstance;
 extern DWORD dwLastIOError;
 extern UINT cpLastFind;
 extern BOOL bReplaceInitialized;
+extern BOOL bUseOldStyleBraceMatching;
 
 static EDITFINDREPLACE efrSave;
 static BOOL bSwitchedFindReplace = FALSE;
@@ -77,7 +77,9 @@ extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
 
 extern BOOL bAccelWordNavigation;
-extern BOOL bVirtualSpaceInRectSelection;
+extern BOOL bDenyVirtualSpaceAccess;
+
+extern int iMarkOccurrences;
 extern int iMarkOccurrencesCount;
 extern int iMarkOccurrencesMaxCount;
 
@@ -156,12 +158,11 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETMOUSESELECTIONRECTANGULARSWITCH,TRUE,0);
   SendMessage(hwnd,SCI_SETMULTIPLESELECTION,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALSELECTIONTYPING,FALSE,0);
-  SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS,
-    (bVirtualSpaceInRectSelection ? (SCVS_RECTANGULARSELECTION | SCVS_USERACCESSIBLE | SCVS_NOWRAPLINESTART) : SCVS_NONE),0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
   SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE,0);
-    
+  SendMessage(hwnd, SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_NP3_SPACE_OPT), 0);
+
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + (SCMOD_CTRL << 16)),SCI_PARADOWN);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_PRIOR + (SCMOD_CTRL << 16)),SCI_PARAUP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)),SCI_PARADOWNEXTEND);
@@ -170,6 +171,23 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (0 << 16)),SCI_LINEENDWRAP);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_HOME + (SCMOD_SHIFT << 16)),SCI_VCHOMEWRAPEXTEND);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (SCMOD_SHIFT << 16)),SCI_LINEENDWRAPEXTEND);
+
+  // set indicator styles
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 220);
+  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+  SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
+  SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
+
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 220);
+  SendMessage(hwnd, SCI_INDICSETALPHA,INDIC_NP3_MATCH_BRACE, 120);
+  SendMessage(hwnd, SCI_INDICSETFORE,INDIC_NP3_MATCH_BRACE, 0xff << (1 << 3)); // overriden by style
+  SendMessage(hwnd, SCI_INDICSETSTYLE,INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
+
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 220);
+  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
+  SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, 0xff ); // overriden by style
+  SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
+  
 
   // word delimiter handling
   EditInitWordDelimiter(hwnd);
@@ -5237,12 +5255,74 @@ void CompleteWord(HWND hwnd, BOOL autoInsert)
   LocalFree(pRoot);
 }
 
+
+BOOL __fastcall EditHighlightIfBrace(HWND hwnd, int iPos)
+{
+  if (iPos < 0) {
+    // clear indicator
+    SendMessage(hwnd, SCI_BRACEBADLIGHT, (WPARAM)INVALID_POSITION, 0);
+    SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
+    if (!bUseOldStyleBraceMatching)
+      SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 0, INDIC_NP3_BAD_BRACE);
+    return TRUE;
+  }
+  char c = (char)SendMessage(hwnd, SCI_GETCHARAT, iPos, 0);
+  if (StrChrA("()[]{}", c)) {
+    int iBrace2 = (int)SendMessage(hwnd, SCI_BRACEMATCH, iPos, 0);
+    if (iBrace2 != -1) {
+      int col1 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iPos, 0);
+      int col2 = (int)SendMessage(hwnd, SCI_GETCOLUMN, iBrace2, 0);
+      SendMessage(hwnd, SCI_BRACEHIGHLIGHT, iPos, iBrace2);
+      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, min(col1, col2), 0);
+      if (!bUseOldStyleBraceMatching)
+        SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
+    }
+    else {
+      SendMessage(hwnd, SCI_BRACEBADLIGHT, iPos, 0);
+      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
+      if (!bUseOldStyleBraceMatching)
+        SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 1, INDIC_NP3_BAD_BRACE);
+    }
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+
+//=============================================================================
+//
+//  EditMatchBrace()
+//
+void EditMatchBrace(HWND hwnd)
+{
+  int iEndStyled = (int)SendMessage(hwnd, SCI_GETENDSTYLED, 0, 0);
+  if (iEndStyled < (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0)) {
+    int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iEndStyled, 0);
+    int iEndStyled2 = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, iLine, 0);
+    SendMessage(hwnd, SCI_COLOURISE, iEndStyled2, -1);
+  }
+
+  int iPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+
+  if (!EditHighlightIfBrace(hwnd, iPos)) {
+    // try one before
+    iPos = (int)SendMessage(hwnd, SCI_POSITIONBEFORE, iPos, 0);
+    if (!EditHighlightIfBrace(hwnd, iPos)) {
+      // clear mark
+      EditHighlightIfBrace(hwnd, -1);
+    }
+  }
+}
+
+
+
 //=============================================================================
 //
 //  EditMarkAll()
 //  Mark all occurrences of the text currently selected (by Aleksandar Lekov)
 //
-void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrencesMatchWords)
+void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrencesMatchWords)
 {
   struct Sci_TextToFind ttf;
   int iPos;
@@ -5269,8 +5349,8 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   iSelLength = (int)SendMessage(hwnd,SCI_GETSELTEXT,0,0);
   iSelCount = iSelEnd - iSelStart;
 
-  // clear existing indicator
-  SendMessage(hwnd, SCI_SETINDICATORCURRENT, 1, 0);
+  // clear existing marker indicators
+  SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
   SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, iTextLen);
 
   // if nothing selected or multiple lines are selected exit
@@ -5305,11 +5385,6 @@ void EditMarkAll(HWND hwnd, int iMarkOccurrences, BOOL bMarkOccurrencesMatchCase
   ttf.chrg.cpMin = 0;
   ttf.chrg.cpMax = iTextLen;
   ttf.lpstrText = pszText;
-
-  // set style
-  SendMessage(hwnd, SCI_INDICSETALPHA, 1, 100);
-  SendMessage(hwnd, SCI_INDICSETFORE, 1, 0xff << ((iMarkOccurrences - 1) << 3));
-  SendMessage(hwnd, SCI_INDICSETSTYLE, 1, INDIC_ROUNDBOX);
 
   iMarkOccurrencesCount = 0;
   while ((iPos = (int)SendMessage(hwnd, SCI_FINDTEXT,

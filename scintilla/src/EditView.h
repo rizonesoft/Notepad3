@@ -12,6 +12,8 @@
 namespace Scintilla {
 #endif
 
+#undef NP3_MATCH_BRACE_RECT_SEL_PATCH
+
 struct PrintParameters {
 	int magnification;
 	int colourMode;
@@ -117,7 +119,10 @@ public:
 	Point LocationFromPosition(Surface *surface, const EditModel &model, SelectionPosition pos, Sci::Line topLine,
 				   const ViewStyle &vs, PointEnd pe);
 	Range RangeDisplayLine(Surface *surface, const EditModel &model, Sci::Line lineVisible, const ViewStyle &vs);
-	SelectionPosition SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid,
+#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
+	XYPOSITION EndSpaceWidth(const EditModel &model, const ViewStyle &vs, LineLayout *ll, Sci::Line line);
+#endif
+  SelectionPosition SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid,
 		bool charPosition, bool virtualSpace, const ViewStyle &vs);
 	SelectionPosition SPositionFromLineX(Surface *surface, const EditModel &model, Sci::Line lineDoc, int x, const ViewStyle &vs);
 	Sci::Line DisplayFromPosition(Surface *surface, const EditModel &model, Sci::Position pos, const ViewStyle &vs);

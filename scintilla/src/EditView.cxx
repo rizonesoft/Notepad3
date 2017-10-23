@@ -643,6 +643,23 @@ Range EditView::RangeDisplayLine(Surface *surface, const EditModel &model, Sci::
 	return rangeSubLine;
 }
 
+#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
+
+XYPOSITION EditView::EndSpaceWidth(const EditModel &model, const ViewStyle &vs, LineLayout *ll, Sci::Line line) {
+	int styleEnd = ll->EndLineStyle();
+	const bool bracesIgnoreStyle = ((vs.braceHighlightIndicatorSet && (model.bracesMatchStyle == STYLE_BRACELIGHT)) ||
+		(vs.braceBadLightIndicatorSet && (model.bracesMatchStyle == STYLE_BRACEBAD)));
+	if (!bracesIgnoreStyle) {
+		const Sci::Position lineLastCharacter = static_cast<Sci::Position>(model.pdoc->LineEnd(line)) - 1;
+		if ((lineLastCharacter == model.braces[0]) || (lineLastCharacter == model.braces[1])) {
+			styleEnd = model.bracesMatchStyle;
+		}
+	}
+	return vs.styles[styleEnd].spaceWidth;
+}
+#endif
+
+
 SelectionPosition EditView::SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid, bool charPosition, bool virtualSpace, const ViewStyle &vs) {
 	pt.x = pt.x - vs.textStart;
 	Sci::Line visibleLine = static_cast<int>(floor(pt.y / vs.lineHeight));
@@ -671,7 +688,11 @@ SelectionPosition EditView::SPositionFromLocation(Surface *surface, const EditMo
 				return SelectionPosition(model.pdoc->MovePositionOutsideChar(positionInLine + posLineStart, 1));
 			}
 			if (virtualSpace) {
-				const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
+#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
+        const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
+#else
+        const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
+#endif
 				const int spaceOffset = static_cast<int>(
 					(pt.x + subLineStart - ll->positions[rangeSubLine.end] + spaceWidth / 2) / spaceWidth);
 				return SelectionPosition(rangeSubLine.end + posLineStart, spaceOffset);
@@ -705,7 +726,11 @@ SelectionPosition EditView::SPositionFromLineX(Surface *surface, const EditModel
 		if (positionInLine < rangeSubLine.end) {
 			return SelectionPosition(model.pdoc->MovePositionOutsideChar(positionInLine + posLineStart, 1));
 		}
-		const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
+#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
+    const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
+#else
+    const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
+#endif
 		const int spaceOffset = static_cast<int>(
 			(x + subLineStart - ll->positions[rangeSubLine.end] + spaceWidth / 2) / spaceWidth);
 		return SelectionPosition(rangeSubLine.end + posLineStart, spaceOffset);

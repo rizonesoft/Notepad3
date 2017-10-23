@@ -44,6 +44,11 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
+
+#define INDIC_NP3_MARK_OCCURANCE 1
+#define INDIC_NP3_MATCH_BRACE    2
+#define INDIC_NP3_BAD_BRACE      3
+
 HWND  EditCreate(HWND);
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
@@ -108,7 +113,8 @@ BOOL  EditAlignDlg(HWND,int*);
 BOOL  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
-void  EditMarkAll(HWND,int,BOOL,BOOL);
+void  EditMatchBrace(HWND);
+void  EditMarkAll(HWND,BOOL,BOOL);
 void  EditSetAccelWordNav(HWND,BOOL);
 void  CompleteWord(HWND,BOOL);
 
