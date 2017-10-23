@@ -3,6 +3,38 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 2.17.1023.632 (16 October 2017)
+--------------------------------------------------
+~ Fix: pasting clipboard content into selection box should replace text and 
+  cancel selection then (in case of swapping clipboard, the selection is preserved).
+~ Changed buffers for operating edit box in customize schemes.
+~ Implemented Feature Request #51 (buffer size of file extension edit box).
+~ First prottotype of VirtualSpace RectangularSelection by default (very old 
+  behavior can be turned on by [Settings2] DenyVirtualSpaceAccess=1).
+~ Added switch ([Settings2] UseOldStyleBraceMatching) to preserve old style 
+  brace matching behavior.
+~ Applied patch from Neil Hodgson (Master of Scintilla Lib - respond to 
+  scintilla lib issue report #1976).
+~ Fixed .ini paths for np3portableapps.
+~ Restore wrongly discarded np3portableapps .ini files for NP3Portable, 
+  redirecting .ini reading to correct path.
+~ Documentation: Minor changes to Notepad3.txt.
+~ Documentation: doc/Notepad3.txt - add description of [Section2] .ini settings 
+  (mostly taken from orig. Notepad2 FAQs).
+~ Remove settings for "Favorites" directory -> NP3 uses then users system 
+  default folder (%USERPROFILE%\Favorites).
+~ Default to modern displays settings, using Scintilla's new technology 
+  : SciDirectWriteTech=1, SciFontQuality=3
+~ Settings [Section2] (cannot be set via GUI) add all possible names and 
+  default values, if applicable.
+~ License.txt: switch to UTF-8 encoding.
+~ Feature: Show warning before loading file with unknown (custom schemes) file 
+  name extension.
+~ Add code snippet (activation only prepare for future extensions).
+~ Fix: Crash in Favorites management.
+~ Small code refactoring (replacing deprecated methods).
+
+--------------------------------------------------
 Version 2.17.1016.610 (16 October 2017)
 --------------------------------------------------
 ~ File History Dlg: rename button "Remove" -> "Discard" 
