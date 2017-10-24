@@ -3045,11 +3045,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)pClip);
 
-          if (iCurrPos > iAnchor)
-            SendMessage(hwndEdit,SCI_SETSEL, iAnchor, iAnchor + lstrlenA(pClip));
-          else
-            SendMessage(hwndEdit,SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
-
+          if (bSwapClipBoard) {
+            if (iCurrPos > iAnchor)
+              SendMessage(hwndEdit, SCI_SETSEL, iAnchor, iAnchor + lstrlenA(pClip));
+            else
+              SendMessage(hwndEdit, SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
+          }
         }
         EndSelUndoAction(token);
         LocalFree(pClip);
