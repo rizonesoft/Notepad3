@@ -2706,9 +2706,9 @@ extern BOOL bShowSelectionMargin;
 int __fastcall Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 {
   return (int)RGB(\
-    (255 - alpha) * (int)GetRValue(rgbBack) / 255 + alpha * (int)GetRValue(rgbFore) / 255, \
-    (255 - alpha) * (int)GetGValue(rgbBack) / 255 + alpha * (int)GetGValue(rgbFore) / 255, \
-    (255 - alpha) * (int)GetBValue(rgbBack) / 255 + alpha * (int)GetBValue(rgbFore) / 255);
+    (0xFF - alpha) * (int)GetRValue(rgbBack) / 0xFF + alpha * (int)GetRValue(rgbFore) / 0xFF, \
+    (0xFF - alpha) * (int)GetGValue(rgbBack) / 0xFF + alpha * (int)GetGValue(rgbFore) / 0xFF, \
+    (0xFF - alpha) * (int)GetBValue(rgbBack) / 0xFF + alpha * (int)GetBValue(rgbFore) / 0xFF);
 }
 
 
@@ -3442,18 +3442,18 @@ void Style_SetCurrentMargin(HWND hwnd, BOOL bShowSelMargin) {
   int alpha = 20;
   Style_StrGetAlpha(lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &alpha);
 
-  int rgbFore = RGB(255,0,0); // red
+  int rgbFore = RGB(0xFF, 0, 0); // red
   Style_StrGetColor(TRUE, lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &rgbFore);
 
-  int rgbBack = RGB(0,255,0); // green
+  int rgbBack = RGB(0, 0xFF, 0); // green
   Style_StrGetColor(FALSE, lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &rgbBack);
 
   // adjust background color by alpha in case of show margin
   if (bShowSelMargin) {
     //int bckgrnd = (int)SendMessage(hwnd, SCI_GETMARGINBACKN, MARGIN_NP3_BOOKMRK, 0);
-    int bckgrnd = RGB(240,240,240);
+    int bckgrnd = RGB(0xF0, 0xF0, 0xF0);
     Style_StrGetColor(FALSE, lexDefault.Styles[STY_MARGIN + iIdx].szValue, &bckgrnd);
-    rgbBack = Style_RgbAlpha(rgbBack, bckgrnd, alpha);
+    rgbBack = Style_RgbAlpha(rgbBack, bckgrnd, min(0xFF, alpha + 50));
   }
   SendMessage(hwnd, SCI_MARKERSETFORE, MARKER_NP3_BOOKMARK, rgbFore);
   SendMessage(hwnd, SCI_MARKERSETBACK, MARKER_NP3_BOOKMARK, rgbBack);
