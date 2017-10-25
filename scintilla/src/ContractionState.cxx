@@ -24,9 +24,7 @@
 #include "SparseVector.h"
 #include "ContractionState.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 ContractionState::ContractionState() : linesInDocument(1) {
 }
@@ -293,7 +291,7 @@ void ContractionState::ShowAll() {
 
 // Debugging checks
 
-void ContractionState::Check() {
+void ContractionState::Check() const {
 #ifdef CHECK_CORRECTNESS
 	for (Sci::Line vline = 0; vline < LinesDisplayed(); vline++) {
 		const Sci::Line lineDoc = DocFromDisplay(vline);

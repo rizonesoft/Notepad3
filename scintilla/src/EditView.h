@@ -8,9 +8,7 @@
 #ifndef EDITVIEW_H
 #define EDITVIEW_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 #undef NP3_MATCH_BRACE_RECT_SEL_PATCH
 
@@ -122,7 +120,7 @@ public:
 #ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
 	XYPOSITION EndSpaceWidth(const EditModel &model, const ViewStyle &vs, LineLayout *ll, Sci::Line line);
 #endif
-  SelectionPosition SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid,
+	SelectionPosition SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid,
 		bool charPosition, bool virtualSpace, const ViewStyle &vs);
 	SelectionPosition SPositionFromLineX(Surface *surface, const EditModel &model, Sci::Line lineDoc, int x, const ViewStyle &vs);
 	Sci::Line DisplayFromPosition(Surface *surface, const EditModel &model, Sci::Position pos, const ViewStyle &vs);
@@ -182,8 +180,6 @@ public:
 	}
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

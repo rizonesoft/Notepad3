@@ -8,9 +8,7 @@
 #ifndef STYLECONTEXT_H
 #define STYLECONTEXT_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 // All languages handled so far can treat all characters >= 0x80 as one class
 // which just continues the current token or starts an identifier if in default.
@@ -204,8 +202,6 @@ public:
 	void GetCurrentLowered(char *s, Sci_PositionU len);
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

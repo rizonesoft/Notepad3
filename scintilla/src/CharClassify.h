@@ -8,9 +8,7 @@
 #ifndef CHARCLASSIFY_H
 #define CHARCLASSIFY_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class CharClassify {
 public:
@@ -28,8 +26,6 @@ private:
 	unsigned char charClass[maxChar];    // not type cc to save space
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

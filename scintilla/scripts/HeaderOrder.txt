@@ -79,6 +79,7 @@
 #include "Platform.h"
 
 #include "Sci_Position.h"
+#include "ILoader.h"
 #include "ILexer.h"
 #include "Scintilla.h"
 #include "ScintillaWidget.h"

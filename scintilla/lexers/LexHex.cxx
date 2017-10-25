@@ -118,9 +118,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 // prototypes for general helper functions
 static inline bool IsNewline(const int ch);

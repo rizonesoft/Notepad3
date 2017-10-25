@@ -8,9 +8,7 @@
 #ifndef PLATWIN_H
 #define PLATWIN_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 extern void Platform_Initialise(void *hInstance);
 extern void Platform_Finalise(bool fromDllMain);
@@ -21,8 +19,6 @@ extern ID2D1Factory *pD2DFactory;
 extern IDWriteFactory *pIDWriteFactory;
 #endif
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

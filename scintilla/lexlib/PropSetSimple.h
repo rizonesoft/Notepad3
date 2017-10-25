@@ -8,9 +8,7 @@
 #ifndef PROPSETSIMPLE_H
 #define PROPSETSIMPLE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class PropSetSimple {
 	void *impl;
@@ -25,8 +23,6 @@ public:
 	int GetInt(const char *key, int defaultValue=0) const;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

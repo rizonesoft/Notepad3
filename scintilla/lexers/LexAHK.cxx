@@ -26,6 +26,8 @@
 #include "LexerModule.h"
 //#include "DefaultLexer.h"
 
+using namespace Scintilla;
+
 #ifdef _MSC_VER
 #pragma warning(disable: 4100)
 #endif

@@ -33,9 +33,7 @@
 #include "SparseState.h"
 #include "SubStyles.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 namespace {
 	// Use an unnamed namespace to protect the functions and classes from name conflicts
@@ -1333,6 +1331,8 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 									while ((startValue < restOfLine.length()) && IsSpaceOrTab(restOfLine[startValue]))
 										startValue++;
 									std::string value = restOfLine.substr(startValue);
+									if (OnlySpaceOrTab(value))
+										value = "1";	// No value defaults to 1
 									preprocessorDefinitions[key] = value;
 									ppDefineHistory.push_back(PPDefinition(lineCurrent, key, value));
 									definitionsChanged = true;
@@ -1520,6 +1520,7 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 				if (it != preprocessorDefinitions.end()) {
 					val = "1";
 				}
+				tokens.erase(tokens.begin() + i + 1, tokens.begin() + i + 2);
 			}
 			tokens[i] = val;
 		} else {
@@ -1582,8 +1583,8 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 					tokens.insert(tokens.begin() + i, macroTokens.begin(), macroTokens.end());
 				}
 			} else {
-				// Identifier not found
-				tokens.erase(tokens.begin() + i);
+				// Identifier not found and value defaults to zero
+				tokens[i] = "0";
 			}
 		} else {
 			i++;
