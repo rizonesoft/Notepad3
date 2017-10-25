@@ -160,8 +160,9 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETADDITIONALSELECTIONTYPING,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
-  SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE,0);
-  SendMessage(hwnd, SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
+  SendMessage(hwnd,SCI_SETMOUSEDOWNCAPTURES, FALSE, 0);
+  SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE, 0);
+  SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
 
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + (SCMOD_CTRL << 16)),SCI_PARADOWN);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_PRIOR + (SCMOD_CTRL << 16)),SCI_PARAUP);
@@ -286,7 +287,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
   UndoRedoSelectionMap(-1,NULL);
   SendMessage(hwnd,SCI_CLEARALL,0,0);
-  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
+  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH,0);
   SendMessage(hwnd,SCI_SETXOFFSET,0,0);
 
@@ -330,7 +331,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
     UndoRedoSelectionMap(-1,NULL);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
-    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
+    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
     Encoding_SciSetCodePage(hwnd,encDest);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
     //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
@@ -362,7 +363,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
     UndoRedoSelectionMap(-1,NULL);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
-    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
+    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
     Encoding_SciSetCodePage(hwnd,encDest);
     SendMessage(hwnd,SCI_ADDTEXT,cbText,(LPARAM)pchText);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
@@ -5882,7 +5883,7 @@ INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           if (GetSysColorBrush(COLOR_HOTLIGHT))
             SetTextColor(hdc,GetSysColor(COLOR_HOTLIGHT));
           else
-            SetTextColor(hdc,RGB(0,0,255));
+            SetTextColor(hdc,RGB(0, 0, 0xFF));
           SelectObject(hdc,/*dwId == id_hover?*/hFontHover/*:hFontNormal*/);
           return(LONG_PTR)GetSysColorBrush(COLOR_BTNFACE);
         }

@@ -310,68 +310,6 @@ WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 
-
-//Graphics for bookmark indicator
-/* XPM */
-static char * bookmark_pixmap[] = {
-  "11 11 44 1",
-  " 	c #EBE9ED",
-  ".	c #E5E3E7",
-  "+	c #767C6D",
-  "@	c #2A3120",
-  "#	c #1B2312",
-  "$	c #333B28",
-  "%	c #E3E1E5",
-  "&	c #D8D6DA",
-  "*	c #444D38",
-  "=	c #3F5C19",
-  "-	c #63AD00",
-  ";	c #73C900",
-  ">	c #64AF00",
-  ",	c #3D5718",
-  "'	c #3E4634",
-  ")	c #7B8172",
-  "!	c #42601A",
-  "~	c #74CB00",
-  "{	c #71C600",
-  "]	c #3A5317",
-  "^	c #707668",
-  "/	c #3F4931",
-  "(	c #262C1D",
-  "_	c #2F3A1E",
-  ":	c #72C700",
-  "<	c #74CA00",
-  "[	c #0E1109",
-  "}	c #3C462F",
-  "|	c #62AC00",
-  "1	c #21271A",
-  "2	c #7A8071",
-  "3	c #405D19",
-  "4	c #3D5A18",
-  "5	c #D9D7DB",
-  "6	c #4E5841",
-  "7	c #72C800",
-  "8	c #63AC00",
-  "9	c #3F5B19",
-  "0	c #3D4533",
-  "a	c #DFDDE0",
-  "b	c #353E29",
-  "c	c #29331B",
-  "d	c #7B8272",
-  "e	c #DDDBDF",
-  "           ",
-  "  .+@#$+%  ",
-  " &*=-;>,'  ",
-  " )!~~~~{]^ ",
-  " /-~~~~~>( ",
-  " _:~~~~~<[ ",
-  " }|~~~~~|1 ",
-  " 23~~~~;4+ ",
-  " 56=|7890  ",
-  "  a2bc}de  ",
-  "           "
-};
-
 //=============================================================================
 //
 // Flags
@@ -1159,7 +1097,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     // Quickly handle painting and sizing messages, found in ScintillaWin.cxx
     // Cool idea, don't know if this has any effect... ;-)
     case WM_MOVE:
-    case WM_MOUSEWHEEL:
     case WM_MOUSEACTIVATE:
     case WM_NCHITTEST:
     case WM_NCCALCSIZE:
@@ -1283,6 +1220,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_TRAYMESSAGE:
       return MsgTrayMessage(hwnd, wParam, lParam);
 
+    case WM_MOUSEWHEEL:
+    case WM_MBUTTONDOWN:
+      if (wParam & MK_MBUTTON) {
+        PostMessage(hwnd, WM_COMMAND, MAKELONG(BME_EDIT_BOOKMARKTOGGLE, 1), 0);
+      }
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
+
     default:
       if (umsg == msgTaskbarCreated) {
         if (!IsWindowVisible(hwnd))
@@ -1367,11 +1311,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SendMessage(hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
 
   // Margins
-  SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,2,0);
-  SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,1,(bShowSelectionMargin)?16:0);
+  Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
   UpdateLineNumberWidth();
-  //SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,0,
-  //  (bShowLineNumbers)?SendMessage(hwndEdit,SCI_TEXTWIDTH,STYLE_LINENUMBER,(LPARAM)L"_999999_"):0);
 
   // Code folding
   SciCall_SetMarginType(MARGIN_FOLD_INDEX, SC_MARGIN_SYMBOL);
@@ -3910,39 +3851,26 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     }
 
     case BME_EDIT_BOOKMARKTOGGLE:
-    {
-        int iPos = (int)SendMessage( hwndEdit , SCI_GETCURRENTPOS , 0 , 0);
-        int iLine = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iPos , 0 );
+      {
+        int iPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+        int iLine = (int)SendMessage(hwndEdit, SCI_LINEFROMPOSITION, iPos, 0);
 
-        int bitmask = (int)SendMessage( hwndEdit , SCI_MARKERGET , iLine , 0 );
-        if( bitmask & 1 )
-        {
-            // unset
-            SendMessage( hwndEdit , SCI_MARKERDELETE , iLine , 0 );
+        int bitmask = (int)SendMessage(hwndEdit, SCI_MARKERGET, iLine, MARKER_NP3_BOOKMARK);
+        if (bitmask & 1) {
+          // unset
+          SendMessage(hwndEdit, SCI_MARKERDELETE, iLine, MARKER_NP3_BOOKMARK);
         }
-        else
-        {
-            if( bShowSelectionMargin )
-            {
-                SendMessage( hwndEdit , SCI_MARKERDEFINEPIXMAP , 0 , (LPARAM)bookmark_pixmap );
-            }
-            else
-            {
-                SendMessage( hwndEdit , SCI_MARKERSETBACK , 0 , 0xff << 8 );
-                SendMessage( hwndEdit , SCI_MARKERSETALPHA , 0 , 20);
-                SendMessage( hwndEdit , SCI_MARKERDEFINE , 0 , SC_MARK_BACKGROUND );
-            }
-            // set
-            SendMessage( hwndEdit , SCI_MARKERADD , iLine , 0 );
-            //SendMessage( hwndEdit , SCI_MARKERADD , iLine , 1 );
+        else {
+          Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
+          // set
+          SendMessage(hwndEdit, SCI_MARKERADD, iLine, MARKER_NP3_BOOKMARK);
         }
-
         break;
-    }
+      }
 
     case BME_EDIT_BOOKMARKCLEAR:
     {
-        SendMessage(hwndEdit,SCI_MARKERDELETEALL,(WPARAM)-1 ,0);
+        SendMessage(hwndEdit,SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
 
         break;
     }
@@ -4177,26 +4105,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_LINENUMBERS:
       bShowLineNumbers = (bShowLineNumbers) ? FALSE : TRUE;
       UpdateLineNumberWidth();
-      //SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,0,
-      //  (bShowLineNumbers)?SendMessage(hwndEdit,SCI_TEXTWIDTH,STYLE_LINENUMBER,(LPARAM)"_999999_"):0);
       break;
 
 
     case IDM_VIEW_MARGIN:
-      {
-        bShowSelectionMargin = (bShowSelectionMargin) ? FALSE : TRUE;
-        SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,1,(bShowSelectionMargin) ? 16 : 0);
-
-        //Depending on if the margin is visible or not, choose different bookmark indication
-        if (bShowSelectionMargin) {
-          SendMessage(hwndEdit,SCI_MARKERDEFINEPIXMAP,0,(LPARAM)bookmark_pixmap);
-        }
-        else {
-          SendMessage(hwndEdit,SCI_MARKERSETBACK,0,0xff << 8);
-          SendMessage(hwndEdit,SCI_MARKERSETALPHA,0,20);
-          SendMessage(hwndEdit,SCI_MARKERDEFINE,0,SC_MARK_BACKGROUND);
-        }
-      }
+      bShowSelectionMargin = (bShowSelectionMargin) ? FALSE : TRUE;
+      Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
       break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
@@ -5431,8 +5345,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                       int bitmask = (int)SendMessage( hwndEdit , SCI_MARKERGET , iCurLine-1 , 0 );
                       if( bitmask & 1 )
                       {
-                          SendMessage( hwndEdit , SCI_MARKERDELETE , iCurLine-1 , 0 );
-                          SendMessage( hwndEdit , SCI_MARKERADD , iCurLine , 0 );
+                          SendMessage( hwndEdit , SCI_MARKERDELETE , iCurLine-1 , MARKER_NP3_BOOKMARK);
+                          SendMessage( hwndEdit , SCI_MARKERADD , iCurLine , MARKER_NP3_BOOKMARK);
                       }
                   }
               }
@@ -7048,17 +6962,15 @@ void UpdateLineNumberWidth()
 
     StringCchPrintfA(chLines,COUNTOF(chLines),"_%i_",SendMessage(hwndEdit,SCI_GETLINECOUNT,0,0));
 
-    iLineMarginWidthNow = (int)SendMessage(hwndEdit,SCI_GETMARGINWIDTHN,0,0);
+    iLineMarginWidthNow = (int)SendMessage(hwndEdit,SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
     iLineMarginWidthFit = (int)SendMessage(hwndEdit,SCI_TEXTWIDTH,STYLE_LINENUMBER,(LPARAM)chLines);
 
     if (iLineMarginWidthNow != iLineMarginWidthFit) {
-      //SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,0,0);
-      SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,0,iLineMarginWidthFit);
+      SendMessage(hwndEdit,SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
     }
   }
-
   else
-    SendMessage(hwndEdit,SCI_SETMARGINWIDTHN,0,0);
+    SendMessage(hwndEdit,SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
 }
 
 

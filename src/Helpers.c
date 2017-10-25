@@ -179,7 +179,7 @@ BOOL IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
       p = StrEnd(p) + 1;
     }
     StringCchPrintf(tch,COUNTOF(tch),L"%s=%s",lpName,lpString);
-    StringCchCopy(p,512*3+64,tch);
+    StringCchCopy(p,COUNTOF(tch),tch);
     p = StrEnd(p) + 1;
     *p = 0;
     return(TRUE);
