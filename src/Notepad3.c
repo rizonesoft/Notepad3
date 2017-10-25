@@ -1148,13 +1148,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   if (!bDenyVirtualSpaceAccess)
   {
-    if (GetAsyncKeyState(VK_MENU) & SHRT_MIN) { // ALT-KEY DOWN
-      //SendMessage(hwndEdit,SCI_CLEARSELECTIONS,0,0);
-      SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (SCVS_NP3_SPACE_OPT | SCVS_USERACCESSIBLE), 0);
-    }
-    else {
-      SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NP3_SPACE_OPT, 0);
-    }
+    if (GetAsyncKeyState(VK_MENU) & SHRT_MIN)  // ALT-KEY DOWN
+      SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (SCVS_RECTANGULARSELECTION | SCVS_USERACCESSIBLE), 0);
+    else
+      SendMessage(hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, SCVS_RECTANGULARSELECTION, 0);
   }
 
   switch(umsg)
@@ -2968,10 +2965,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-
-        int token = BeginSelUndoAction();
         SendMessage(hwndEdit, SCI_COPYALLOWLINE, 0, 0);
-        EndSelUndoAction(token);
         UpdateToolbar();
       }
       break;
@@ -2981,10 +2975,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-
-        int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_COPYRANGE,0,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
-        EndSelUndoAction(token);
         UpdateToolbar();
       }
       break;
@@ -2994,10 +2985,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-
-        int token = BeginSelUndoAction();
         EditCopyAppend(hwndEdit);
-        EndSelUndoAction(token);
         UpdateToolbar();
       }
       break;
@@ -3012,8 +3000,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         char *pClip = EditGetClipboardText(hwndEdit,!bSkipUnicodeDetection,&lineCount,&lenLastLine);
         if (!pClip)
           break; // recoding canceled
-
-        int token = BeginSelUndoAction();
 
         if (SendMessage(hwndEdit,SCI_GETSELECTIONEMPTY,0,0))
         {
@@ -3033,6 +3019,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         }
         else {
+          int token = BeginSelUndoAction();
 
           int iCurrPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
           int iAnchor = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
@@ -3051,8 +3038,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else
               SendMessage(hwndEdit, SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
           }
+
+          EndSelUndoAction(token);
         }
-        EndSelUndoAction(token);
         LocalFree(pClip);
         UpdateToolbar();
         UpdateStatusbar();
@@ -3078,17 +3066,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_SELECTALL:
       {
-        int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_SELECTALL,0,0);
-        EndSelUndoAction(token);
       }
       break;
 
 
     case IDM_EDIT_SELECTWORD:
       {
-        int token = BeginSelUndoAction();
-
         int iPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
 
         if (SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
@@ -3129,14 +3113,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           int iLineEnd   = (int)SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,iLine,0);
           SendMessage(hwndEdit,SCI_SETSEL,iLineStart,iLineEnd);
         }
-        EndSelUndoAction(token);
       }
       break;
 
 
     case IDM_EDIT_SELECTLINE:
       {
-        int token = BeginSelUndoAction();
         int iSelStart  = (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
         int iSelEnd    = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0);
         int iLineStart = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,iSelStart,0);
@@ -3145,7 +3127,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         iSelEnd   = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,iLineEnd+1,0);
         SendMessage(hwndEdit,SCI_SETSEL,iSelStart,iSelEnd);
         SendMessage(hwndEdit,SCI_CHOOSECARETX,0,0);
-        EndSelUndoAction(token);
       }
       break;
 
@@ -3169,7 +3150,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_LINECUT,0,0);
         UpdateToolbar();
@@ -3181,24 +3161,35 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_COPYLINE:
       if (flagPasteBoard)
         bLastCopyFromMe = TRUE;
-
       SendMessage(hwndEdit,SCI_LINECOPY,0,0);
       UpdateToolbar();
       break;
 
 
     case IDM_EDIT_DELETELINE:
-      SendMessage(hwndEdit,SCI_LINEDELETE,0,0);
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_LINEDELETE, 0, 0);
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case IDM_EDIT_DELETELINELEFT:
-      SendMessage(hwndEdit,SCI_DELLINELEFT,0,0);
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_DELLINELEFT, 0, 0);
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case IDM_EDIT_DELETELINERIGHT:
-      SendMessage(hwndEdit,SCI_DELLINERIGHT,0,0);
+      {
+        int token = BeginSelUndoAction();
+        SendMessage(hwndEdit, SCI_DELLINERIGHT, 0, 0);
+        EndSelUndoAction(token);
+      }
       break;
 
 
@@ -4225,6 +4216,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       // clear all marks
       SendMessage(hwndEdit, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
       SendMessage(hwndEdit, SCI_INDICATORCLEARRANGE, 0, (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
+      iMarkOccurrencesCount = -1;
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_RED:
