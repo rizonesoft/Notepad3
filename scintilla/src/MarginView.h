@@ -8,9 +8,7 @@
 #ifndef MARGINVIEW_H
 #define MARGINVIEW_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 void DrawWrapMarker(Surface *surface, PRectangle rcPlace, bool isEndMarker, ColourDesired wrapColour);
 
@@ -43,8 +41,6 @@ public:
 		const EditModel &model, const ViewStyle &vs);
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

@@ -39,9 +39,7 @@
 #include "OptionSet.h"
 #include "DefaultLexer.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 /* Bits:
  * 1  - whitespace

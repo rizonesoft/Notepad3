@@ -12,9 +12,7 @@
 #include "StringCopy.h"
 #include "CharacterCategory.h"
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 namespace {
 	// Use an unnamed namespace to protect the declarations from name conflicts
@@ -3850,6 +3848,4 @@ bool IsXidContinue(int character) {
 	}
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif

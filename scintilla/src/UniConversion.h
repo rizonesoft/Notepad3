@@ -8,9 +8,7 @@
 #ifndef UNICONVERSION_H
 #define UNICONVERSION_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 const int UTF8MaxBytes = 4;
 
@@ -66,8 +64,6 @@ inline unsigned int UTF16CharLength(wchar_t uch) {
 	return ((uch >= SURROGATE_LEAD_FIRST) && (uch <= SURROGATE_LEAD_LAST)) ? 2 : 1;
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

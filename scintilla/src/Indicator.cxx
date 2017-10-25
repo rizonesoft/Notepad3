@@ -17,9 +17,7 @@
 #include "Indicator.h"
 #include "XPM.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 static PRectangle PixelGridAlign(const PRectangle &rc) {
 	// Move left and right side to nearest pixel to avoid blurry visuals

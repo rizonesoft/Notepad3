@@ -9,9 +9,7 @@
 #ifndef SPLITVECTOR_H
 #define SPLITVECTOR_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 template <typename T>
 class SplitVector {
@@ -330,8 +328,6 @@ public:
 	}
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

@@ -12,9 +12,7 @@
 #include "Scintilla.h"
 #include "Style.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 FontAlias::FontAlias() {
 }

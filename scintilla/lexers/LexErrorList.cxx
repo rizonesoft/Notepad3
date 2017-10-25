@@ -23,9 +23,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 static bool strstart(const char *haystack, const char *needle) {
 	return strncmp(haystack, needle, strlen(needle)) == 0;

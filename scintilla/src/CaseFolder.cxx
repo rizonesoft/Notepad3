@@ -13,9 +13,7 @@
 #include "CaseConvert.h"
 #include "UniConversion.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 CaseFolder::~CaseFolder() {
 }

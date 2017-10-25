@@ -320,8 +320,6 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_SETWHITESPACEBACK 2085
 #define SCI_SETWHITESPACESIZE 2086
 #define SCI_GETWHITESPACESIZE 2087
-#define SCI_SETSTYLEBITS 2090
-#define SCI_GETSTYLEBITS 2091
 #define SCI_SETLINESTATE 2092
 #define SCI_GETLINESTATE 2093
 #define SCI_GETMAXLINESTATE 2094
@@ -988,7 +986,6 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_GETPROPERTY 4008
 #define SCI_GETPROPERTYEXPANDED 4009
 #define SCI_GETPROPERTYINT 4010
-#define SCI_GETSTYLEBITSNEEDED 4011
 #define SCI_GETLEXERLANGUAGE 4012
 #define SCI_PRIVATELEXERCALL 4013
 #define SCI_PROPERTYNAMES 4014
@@ -1127,7 +1124,6 @@ struct Sci_TextToFind {
 	struct Sci_CharacterRange chrgText;
 };
 
-
 typedef void *Sci_SurfaceID;
 
 struct Sci_Rectangle {
@@ -1148,7 +1144,6 @@ struct Sci_RangeToFormat {
 	struct Sci_CharacterRange chrg;
 };
 
-
 #ifndef __cplusplus
 /* For the GTK+ platform, g-ir-scanner needs to have these typedefs. This
  * is not required in C++ code and actually seems to break ScintillaEditPy */
@@ -1164,7 +1159,6 @@ struct Sci_NotifyHeader {
 	uptr_t idFrom;
 	unsigned int code;
 };
-
 
 struct SCNotification {
 	Sci_NotifyHeader nmhdr;
@@ -1218,6 +1212,10 @@ struct SCNotification {
 #define TextToFind Sci_TextToFind
 #define RangeToFormat Sci_RangeToFormat
 #define NotifyHeader Sci_NotifyHeader
+
+#define SCI_SETSTYLEBITS 2090
+#define SCI_GETSTYLEBITS 2091
+#define SCI_GETSTYLEBITSNEEDED 4011
 
 #endif
 

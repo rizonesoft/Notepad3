@@ -8,9 +8,7 @@
 #ifndef SPARSEVECTOR_H
 #define SPARSEVECTOR_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 // SparseVector is similar to RunStyles but is more efficient for cases where values occur
 // for one position instead of over a range of positions.
@@ -151,8 +149,6 @@ public:
 	}
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

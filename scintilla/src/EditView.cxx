@@ -23,6 +23,7 @@
 
 #include "Platform.h"
 
+#include "ILoader.h"
 #include "ILexer.h"
 #include "Scintilla.h"
 
@@ -53,9 +54,7 @@
 #include "MarginView.h"
 #include "EditView.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 static inline bool IsControlCharacter(int ch) {
 	// iscntrl returns true for lots of chars > 127 which are displayable
@@ -68,9 +67,7 @@ PrintParameters::PrintParameters() {
 	wrapState = eWrapWord;
 }
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 bool ValidStyledText(const ViewStyle &vs, size_t styleOffset, const StyledText &st) {
 	if (st.multipleStyles) {
@@ -170,9 +167,7 @@ void DrawStyledText(Surface *surface, const ViewStyle &vs, int styleOffset, PRec
 	}
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 const XYPOSITION epsilon = 0.0001f;	// A small nudge to avoid floating point precision issues
 
@@ -689,9 +684,9 @@ SelectionPosition EditView::SPositionFromLocation(Surface *surface, const EditMo
 			}
 			if (virtualSpace) {
 #ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
-        const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
+                const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
 #else
-        const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
+				const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
 #endif
 				const int spaceOffset = static_cast<int>(
 					(pt.x + subLineStart - ll->positions[rangeSubLine.end] + spaceWidth / 2) / spaceWidth);
@@ -727,9 +722,9 @@ SelectionPosition EditView::SPositionFromLineX(Surface *surface, const EditModel
 			return SelectionPosition(model.pdoc->MovePositionOutsideChar(positionInLine + posLineStart, 1));
 		}
 #ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
-    const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
+        const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
 #else
-    const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
+		const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
 #endif
 		const int spaceOffset = static_cast<int>(
 			(x + subLineStart - ll->positions[rangeSubLine.end] + spaceWidth / 2) / spaceWidth);

@@ -26,9 +26,7 @@
 #include "Style.h"
 #include "ViewStyle.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 MarginStyle::MarginStyle(int style_, int width_, int mask_) :
 	style(style_), width(width_), mask(mask_), sensitive(false), cursor(SC_CURSORREVERSEARROW) {
@@ -90,9 +88,7 @@ ViewStyle::ViewStyle() : markers(MARKER_MAX + 1), indicators(INDIC_MAX + 1) {
 
 // Copy constructor only called when printing copies the screen ViewStyle so it can be
 // modified for printing styles.
-ViewStyle::ViewStyle(const ViewStyle &source) 
-  : markers(MARKER_MAX + 1), indicators(INDIC_MAX + 1), fonts()
-{
+ViewStyle::ViewStyle(const ViewStyle &source) : markers(MARKER_MAX + 1), indicators(INDIC_MAX + 1), fonts() {
 	Init(source.styles.size());
 	styles = source.styles;
 	for (size_t sty=0; sty<source.styles.size(); sty++) {
@@ -196,7 +192,7 @@ void ViewStyle::CalculateMarginWidthAndMask() {
 	}
 	maskDrawInText = 0;
 	for (int markBit = 0; markBit < 32; markBit++) {
-		const int maskBit = 1 << markBit;
+		const int maskBit = 1U << markBit;
 		switch (markers[markBit].markType) {
 		case SC_MARK_EMPTY:
 			maskInLine &= ~maskBit;

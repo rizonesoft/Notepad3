@@ -18,9 +18,7 @@
 #include "Position.h"
 #include "Selection.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 void SelectionPosition::MoveForInsertDelete(bool insertion, Sci::Position startChange, Sci::Position length) {
 	if (insertion) {

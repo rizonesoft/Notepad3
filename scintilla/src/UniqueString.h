@@ -9,9 +9,7 @@
 #ifndef UNIQUESTRING_H
 #define UNIQUESTRING_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 using UniqueString = std::unique_ptr<const char[]>;
 
@@ -27,8 +25,6 @@ inline UniqueString UniqueStringCopy(const char *text) {
 	return UniqueString(sNew);
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

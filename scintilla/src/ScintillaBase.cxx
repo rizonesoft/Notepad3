@@ -19,6 +19,7 @@
 
 #include "Platform.h"
 
+#include "ILoader.h"
 #include "ILexer.h"
 #include "Scintilla.h"
 
@@ -60,9 +61,7 @@
 #include "AutoComplete.h"
 #include "ScintillaBase.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 ScintillaBase::ScintillaBase() {
 	displayPopupMenu = SC_POPUP_ALL;
@@ -544,9 +543,7 @@ void ScintillaBase::RightButtonDownWithModifiers(Point pt, unsigned int curTime,
 
 #ifdef SCI_LEXER
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class LexState : public LexInterface {
 	const LexerModule *lexCurrent;
@@ -588,9 +585,7 @@ public:
 	const char *DescriptionOfStyle(int style);
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 LexState::LexState(Document *pdoc_) : LexInterface(pdoc_) {
 	lexCurrent = 0;
@@ -1092,8 +1087,10 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 		return reinterpret_cast<sptr_t>(
 			DocumentLexState()->PrivateCall(static_cast<int>(wParam), reinterpret_cast<void *>(lParam)));
 
+#ifdef INCLUDE_DEPRECATED_FEATURES
 	case SCI_GETSTYLEBITSNEEDED:
 		return 8;
+#endif
 
 	case SCI_PROPERTYNAMES:
 		return StringResult(lParam, DocumentLexState()->PropertyNames());

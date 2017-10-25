@@ -24,9 +24,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 #define SCE_HA_JS (SCE_HJA_START - SCE_HJ_START)
 #define SCE_HA_VBS (SCE_HBA_START - SCE_HB_START)

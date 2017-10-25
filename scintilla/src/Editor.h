@@ -8,9 +8,7 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 /**
  */
@@ -621,8 +619,6 @@ public:
 	}
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

@@ -22,9 +22,7 @@
 #include "XPM.h"
 #include "LineMarker.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 void LineMarker::SetXPM(const char *textForm) {
 	pxpm.reset(new XPM(textForm));

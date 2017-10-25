@@ -8,9 +8,7 @@
 #ifndef CHARACTERCATEGORY_H
 #define CHARACTERCATEGORY_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 enum CharacterCategory {
 	ccLu, ccLl, ccLt, ccLm, ccLo,
@@ -30,8 +28,6 @@ bool IsIdContinue(int character);
 bool IsXidStart(int character);
 bool IsXidContinue(int character);
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

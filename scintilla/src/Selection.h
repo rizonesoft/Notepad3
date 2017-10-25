@@ -8,9 +8,7 @@
 #ifndef SELECTION_H
 #define SELECTION_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class SelectionPosition {
 	Sci::Position position;
@@ -189,8 +187,6 @@ public:
 	}
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif
