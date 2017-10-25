@@ -15,9 +15,7 @@
 
 #include "PropSetSimple.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 typedef std::map<std::string, std::string> mapss;
 

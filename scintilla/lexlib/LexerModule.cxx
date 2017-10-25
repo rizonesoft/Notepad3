@@ -22,9 +22,7 @@
 #include "LexerBase.h"
 #include "LexerSimple.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 LexerModule::LexerModule(int language_,
 	LexerFunction fnLexer_,

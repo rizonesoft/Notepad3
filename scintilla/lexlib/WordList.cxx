@@ -14,9 +14,7 @@
 #include "StringCopy.h"
 #include "WordList.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 /**
  * Creates an array that points into each word in the string and puts \0 terminators

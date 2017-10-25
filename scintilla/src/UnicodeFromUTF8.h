@@ -8,9 +8,7 @@
 #ifndef UNICODEFROMUTF8_H
 #define UNICODEFROMUTF8_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 inline int UnicodeFromUTF8(const unsigned char *us) {
 	if (us[0] < 0xC2) {
@@ -25,8 +23,6 @@ inline int UnicodeFromUTF8(const unsigned char *us) {
 	return us[0];
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

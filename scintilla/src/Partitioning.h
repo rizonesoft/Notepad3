@@ -10,9 +10,7 @@
 
 #include <memory>
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 /// A split vector of integers with a method for adding a value to all elements
 /// in a range.
@@ -196,8 +194,6 @@ public:
 };
 
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

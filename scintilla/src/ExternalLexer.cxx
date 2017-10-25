@@ -24,9 +24,7 @@
 #include "Catalogue.h"
 #include "ExternalLexer.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 std::unique_ptr<LexerManager> LexerManager::theInstance;
 

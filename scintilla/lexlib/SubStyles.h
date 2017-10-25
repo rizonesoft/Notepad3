@@ -8,9 +8,7 @@
 #ifndef SUBSTYLES_H
 #define SUBSTYLES_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class WordClassifier {
 	int baseStyle;
@@ -193,8 +191,6 @@ public:
 	}
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

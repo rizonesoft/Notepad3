@@ -23,9 +23,7 @@
 #include "Partitioning.h"
 #include "RunStyles.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 // Find the first run at a position
 int RunStyles::RunFromPosition(int position) const {

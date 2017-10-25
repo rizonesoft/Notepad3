@@ -702,14 +702,6 @@ set void SetWhitespaceSize=2086(int size,)
 # Get the size of the dots used to mark space characters.
 get int GetWhitespaceSize=2087(,)
 
-# Divide each styling byte into lexical class bits (default: 5) and indicator
-# bits (default: 3). If a lexer requires more than 32 lexical states, then this
-# is used to expand the possible states.
-set void SetStyleBits=2090(int bits,)
-
-# Retrieve number of bits in style bytes used to hold the lexical state.
-get int GetStyleBits=2091(,)
-
 # Used to hold extra styling information for each line.
 set void SetLineState=2092(int line, int state)
 
@@ -2637,9 +2629,6 @@ get int GetPropertyExpanded=4009(string key, stringresult value)
 # Retrieve a "property" value previously set with SetProperty,
 # interpreted as an int AFTER any "$()" variable replacement.
 get int GetPropertyInt=4010(string key, int defaultValue)
-
-# Retrieve the number of bits the current lexer needs for styling.
-get int GetStyleBitsNeeded=4011(,)
 
 # Retrieve the name of the lexer.
 # Return the length of the text.
@@ -4874,6 +4863,17 @@ evt void AutoCSelectionChange=2032(int listType, string text, int position)
 cat Provisional
 
 cat Deprecated
+
+# Divide each styling byte into lexical class bits (default: 5) and indicator
+# bits (default: 3). If a lexer requires more than 32 lexical states, then this
+# is used to expand the possible states.
+set void SetStyleBits=2090(int bits,)
+
+# Retrieve number of bits in style bytes used to hold the lexical state.
+get int GetStyleBits=2091(,)
+
+# Retrieve the number of bits the current lexer needs for styling.
+get int GetStyleBitsNeeded=4011(,)
 
 # Deprecated in 3.5.5
 

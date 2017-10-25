@@ -25,9 +25,7 @@
 #include "CellBuffer.h"
 #include "UniConversion.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 LineVector::LineVector() : starts(256), perLine(0) {
 	Init();

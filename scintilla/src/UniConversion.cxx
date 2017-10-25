@@ -12,13 +12,9 @@
 
 #include "UniConversion.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 size_t UTF8Length(const wchar_t *uptr, size_t tlen) {
 	size_t len = 0;
@@ -327,6 +323,4 @@ std::string FixInvalidUTF8(const std::string &text) {
 	return result;
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif

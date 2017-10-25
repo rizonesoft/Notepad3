@@ -8,9 +8,7 @@
 #ifndef CHARACTERSET_H
 #define CHARACTERSET_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class CharacterSet {
 	int size;
@@ -188,8 +186,6 @@ inline int MakeLowerCase(int ch) {
 int CompareCaseInsensitive(const char *a, const char *b);
 int CompareNCaseInsensitive(const char *a, const char *b, size_t len);
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

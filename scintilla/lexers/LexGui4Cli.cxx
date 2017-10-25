@@ -39,9 +39,7 @@ val SCE_GC_OPERATOR=9
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 #define debug Platform::DebugPrintf
 

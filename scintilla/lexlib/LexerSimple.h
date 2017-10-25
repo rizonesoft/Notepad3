@@ -8,9 +8,7 @@
 #ifndef LEXERSIMPLE_H
 #define LEXERSIMPLE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 // A simple lexer with no state
 class LexerSimple : public LexerBase {
@@ -23,8 +21,6 @@ public:
 	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess);
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

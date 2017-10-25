@@ -16,9 +16,7 @@
 #include "StyleContext.h"
 #include "CharacterSet.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 bool StyleContext::MatchIgnoreCase(const char *s) {
 	if (MakeLowerCase(ch) != static_cast<unsigned char>(*s))

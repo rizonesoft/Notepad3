@@ -8,9 +8,7 @@
 #ifndef KEYMAP_H
 #define KEYMAP_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 #define SCI_NORM 0
 #define SCI_SHIFT SCMOD_SHIFT
@@ -60,8 +58,6 @@ public:
 	unsigned int Find(int key, int modifiers) const;	// 0 returned on failure
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

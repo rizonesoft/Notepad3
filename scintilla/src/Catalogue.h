@@ -8,9 +8,7 @@
 #ifndef CATALOGUE_H
 #define CATALOGUE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class Catalogue {
 public:
@@ -19,8 +17,6 @@ public:
 	static void AddLexerModule(LexerModule *plm);
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

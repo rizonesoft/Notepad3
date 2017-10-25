@@ -22,9 +22,7 @@
 #include "Position.h"
 #include "CallTip.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 CallTip::CallTip() {
 	wCallTip = 0;

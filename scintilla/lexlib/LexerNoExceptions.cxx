@@ -20,9 +20,7 @@
 #include "LexerBase.h"
 #include "LexerNoExceptions.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 Sci_Position SCI_METHOD LexerNoExceptions::PropertySet(const char *key, const char *val) {
 	try {
