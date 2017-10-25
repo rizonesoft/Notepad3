@@ -8,14 +8,10 @@
 #ifndef DBCS_H
 #define DBCS_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 bool DBCSIsLeadByte(int codePage, char ch);
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

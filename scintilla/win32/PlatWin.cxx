@@ -72,9 +72,7 @@ static HINSTANCE hinstPlatformRes = 0;
 
 static HCURSOR reverseArrowCursor = NULL;
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 static RECT RectFromPRectangle(PRectangle prc) {
 	RECT rc = {static_cast<LONG>(prc.left), static_cast<LONG>(prc.top),
@@ -1647,7 +1645,7 @@ void SurfaceD2D::MeasureWidths(Font &font_, const char *s, int len, XYPOSITION *
 		}
 	} else if (codePageText == 0) {
 
-		// One character per position
+		// One char per position
 		PLATFORM_ASSERT(len == tbuf.tlen);
 		for (int kk=0; kk<tbuf.tlen; kk++) {
 			positions[kk] = poses.buffer[kk];
@@ -3088,6 +3086,4 @@ void Platform_Finalise(bool fromDllMain) {
 	::DeleteCriticalSection(&crPlatformLock);
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif

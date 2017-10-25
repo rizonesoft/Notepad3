@@ -75,7 +75,7 @@ class Face:
 							"ReturnType": retType,
 							"Value": value,
 							"Param1Type": p1[0], "Param1Name": p1[1], "Param1Value": p1[2],
-							"Param2Type": p2[0],	"Param2Name": p2[1], "Param2Value": p2[2],
+							"Param2Type": p2[0], "Param2Name": p2[1], "Param2Value": p2[2],
 							"Category": currentCategory, "Comment": currentComment
 						}
 						if value in self.values:

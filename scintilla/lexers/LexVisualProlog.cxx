@@ -41,9 +41,7 @@
 #include "OptionSet.h"
 #include "DefaultLexer.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 // Options used for LexerVisualProlog
 struct OptionsVisualProlog {
@@ -366,6 +364,7 @@ void SCI_METHOD LexerVisualProlog::Lex(Sci_PositionU startPos, Sci_Position leng
         case SCE_VISUALPROLOG_STRING_ESCAPE_ERROR:
             // return to SCE_VISUALPROLOG_STRING and treat as such (fall-through)
             sc.SetState(SCE_VISUALPROLOG_STRING);
+            // Falls through.
         case SCE_VISUALPROLOG_STRING:
             if (sc.atLineEnd) {
                 sc.SetState(SCE_VISUALPROLOG_STRING_EOL_OPEN);
@@ -385,6 +384,7 @@ void SCI_METHOD LexerVisualProlog::Lex(Sci_PositionU startPos, Sci_Position leng
         case SCE_VISUALPROLOG_STRING_VERBATIM_EOL:
             // return to SCE_VISUALPROLOG_STRING_VERBATIM and treat as such (fall-through)
             sc.SetState(SCE_VISUALPROLOG_STRING_VERBATIM);
+            // Falls through.
         case SCE_VISUALPROLOG_STRING_VERBATIM:
             if (sc.atLineEnd) {
                 sc.SetState(SCE_VISUALPROLOG_STRING_VERBATIM_EOL);

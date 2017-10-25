@@ -2921,7 +2921,6 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
   int rgb;
   int iValue;
   int iIdx;
-  int iStyleBits;
   WCHAR wchCaretStyle[64] = { L'\0' };
 
   // Select default if NULL is specified
@@ -2931,8 +2930,9 @@ void Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew)
   // Lexer
   SendMessage(hwnd,SCI_SETLEXER,pLexNew->iLexer,0);
 
-  iStyleBits = (int)SendMessage(hwnd,SCI_GETSTYLEBITSNEEDED,0,0);
-  SendMessage(hwnd,SCI_SETSTYLEBITS,(WPARAM)iStyleBits,0);
+  // deprecated since SCI 3.4.2
+  //int iStyleBits = (int)SendMessage(hwnd,SCI_GETSTYLEBITSNEEDED,0,0);
+  //SendMessage(hwnd,SCI_SETSTYLEBITS,(WPARAM)iStyleBits,0);
 
   if (pLexNew->iLexer == SCLEX_XML)
     SendMessage(hwnd,SCI_SETPROPERTY,(WPARAM)"lexer.xml.allow.scripts",(LPARAM)"1");

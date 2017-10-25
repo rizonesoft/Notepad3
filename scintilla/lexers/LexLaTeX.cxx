@@ -29,9 +29,7 @@
 #include "DefaultLexer.h"
 #include "LexerBase.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 using namespace std;
 

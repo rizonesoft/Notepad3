@@ -10,9 +10,7 @@
 #ifndef SPARSESTATE_H
 #define SPARSESTATE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 template <typename T>
 class SparseState {
@@ -103,8 +101,6 @@ public:
 	}
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

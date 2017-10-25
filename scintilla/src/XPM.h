@@ -8,9 +8,7 @@
 #ifndef XPM_H
 #define XPM_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 /**
  * Hold a pixmap in XPM format.
@@ -87,8 +85,6 @@ public:
 	int GetWidth() const;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

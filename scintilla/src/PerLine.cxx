@@ -24,9 +24,7 @@
 #include "CellBuffer.h"
 #include "PerLine.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 MarkerHandleSet::MarkerHandleSet() {
 }

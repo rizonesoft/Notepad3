@@ -29,9 +29,7 @@
 #include "OptionSet.h"
 #include "DefaultLexer.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 // Info for HERE document handling from perldata.pod (reformatted):
 // ----------------------------------------------------------------
@@ -123,8 +121,8 @@ static int disambiguateBareword(LexAccessor &styler, Sci_PositionU bk, Sci_Posit
 	// if ch isn't one of '[{(,' we can skip the test
 	if ((ch == '{' || ch == '(' || ch == '['|| ch == ',')
 	        && fw < endPos) {
-		while (ch = static_cast<unsigned char>(styler.SafeGetCharAt(fw)),
-		        IsASpaceOrTab(ch) && fw < endPos) {
+		while (IsASpaceOrTab(ch = static_cast<unsigned char>(styler.SafeGetCharAt(fw)))
+		        && fw < endPos) {
 			fw++;
 		}
 		if ((ch == '}' && brace)
@@ -139,10 +137,12 @@ static int disambiguateBareword(LexAccessor &styler, Sci_PositionU bk, Sci_Posit
 
 static void skipWhitespaceComment(LexAccessor &styler, Sci_PositionU &p) {
 	// when backtracking, we need to skip whitespace and comments
-	int style;
-	while ((p > 0) && (style = styler.StyleAt(p),
-	        style == SCE_PL_DEFAULT || style == SCE_PL_COMMENTLINE))
+	while (p > 0) {
+		const int style = styler.StyleAt(p);
+		if (style != SCE_PL_DEFAULT && style != SCE_PL_COMMENTLINE)
+			break;
 		p--;
+	}
 }
 
 static int findPrevLexeme(LexAccessor &styler, Sci_PositionU &bk, int &style) {
@@ -1175,6 +1175,7 @@ void SCI_METHOD LexerPerl::Lex(Sci_PositionU startPos, Sci_Position length, int 
 							break;
 						}
 						// (continued for ' delim)
+						// Falls through.
 					default:	// non-interpolated path
 						sc.Forward(sLen);
 					}

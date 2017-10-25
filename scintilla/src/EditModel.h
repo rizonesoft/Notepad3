@@ -8,9 +8,7 @@
 #ifndef EDITMODEL_H
 #define EDITMODEL_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 /**
 */
@@ -63,8 +61,6 @@ public:
 	virtual Range GetHotSpotRange() const = 0;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

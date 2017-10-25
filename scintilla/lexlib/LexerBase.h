@@ -8,9 +8,7 @@
 #ifndef LEXERBASE_H
 #define LEXERBASE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 // A simple lexer with no state
 class LexerBase : public ILexer4 {
@@ -50,8 +48,6 @@ public:
 	const char * SCI_METHOD DescriptionOfStyle(int style) override;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

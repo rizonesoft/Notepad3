@@ -440,6 +440,9 @@
     <ClInclude Include="lexlib\DefaultLexer.h">
       <Filter>lexlib</Filter>
     </ClInclude>
+    <ClInclude Include="include\ILoader.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="deelx\doc\deelx_en.chm">

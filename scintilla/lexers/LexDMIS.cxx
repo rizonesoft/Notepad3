@@ -23,9 +23,7 @@
 #include "LexerModule.h"
 #include "DefaultLexer.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 
 static const char *const DMISWordListDesc[] = {

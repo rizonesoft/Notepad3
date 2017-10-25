@@ -8,9 +8,7 @@
 #ifndef CONTRACTIONSTATE_H
 #define CONTRACTIONSTATE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 template<class T>
 class SparseVector;
@@ -70,11 +68,9 @@ public:
 	bool SetHeight(Sci::Line lineDoc, int height);
 
 	void ShowAll();
-	static void Check();
+	void Check() const;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

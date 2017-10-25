@@ -8,9 +8,7 @@
 #ifndef AUTOCOMPLETE_H
 #define AUTOCOMPLETE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 /**
  */
@@ -88,8 +86,6 @@ public:
 	void Select(const char *word);
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

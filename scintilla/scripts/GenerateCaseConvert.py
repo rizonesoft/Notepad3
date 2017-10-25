@@ -103,7 +103,7 @@ def groupRanges(symmetrics):
     return rangeGroups, nonRanges
 
 def escape(s):
-	return "".join((chr(c) if chr(c) in string.ascii_letters else "\\x%x" % c) for c in s.encode('utf-8'))
+    return "".join((chr(c) if chr(c) in string.ascii_letters else "\\x%x" % c) for c in s.encode('utf-8'))
 
 def updateCaseConvert():
     symmetrics, complexes = conversionSets()
@@ -111,10 +111,10 @@ def updateCaseConvert():
     rangeGroups, nonRanges = groupRanges(symmetrics)
 
     print(len(rangeGroups), "ranges")
-    rangeLines = ["%d,%d,%d,%d, " % x for x in rangeGroups]
+    rangeLines = ["%d,%d,%d,%d," % x for x in rangeGroups]
 
     print(len(nonRanges), "non ranges")
-    nonRangeLines = ["%d,%d, " % x for x in nonRanges]
+    nonRangeLines = ["%d,%d," % x for x in nonRanges]
 
     print(len(symmetrics), "symmetric")
 

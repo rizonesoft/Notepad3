@@ -8,9 +8,7 @@
 #ifndef CALLTIP_H
 #define CALLTIP_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 /**
  */
@@ -86,8 +84,6 @@ public:
 	void SetForeBack(const ColourDesired &fore, const ColourDesired &back);
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

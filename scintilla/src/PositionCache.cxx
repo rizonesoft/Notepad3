@@ -18,6 +18,7 @@
 
 #include "Platform.h"
 
+#include "ILoader.h"
 #include "ILexer.h"
 #include "Scintilla.h"
 
@@ -42,9 +43,7 @@
 #include "Selection.h"
 #include "PositionCache.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 LineLayout::LineLayout(int maxLineLength_) :
 	lenLineStarts(0),

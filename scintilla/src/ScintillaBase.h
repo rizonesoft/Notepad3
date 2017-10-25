@@ -8,9 +8,7 @@
 #ifndef SCINTILLABASE_H
 #define SCINTILLABASE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 #ifdef SCI_LEXER
 class LexState;
@@ -98,8 +96,6 @@ public:
 	sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) override;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

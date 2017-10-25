@@ -20,4 +20,10 @@ typedef size_t Sci_PositionU;
 // For Sci_CharacterRange  which is defined as long to be compatible with Win32 CHARRANGE
 typedef long Sci_PositionCR;
 
+#ifdef _WIN32
+	#define SCI_METHOD __stdcall
+#else
+	#define SCI_METHOD
+#endif
+
 #endif

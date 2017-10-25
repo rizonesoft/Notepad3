@@ -22,9 +22,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 static void ColouriseIndentDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[],
                             Accessor &styler) {

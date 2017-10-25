@@ -28,7 +28,7 @@ def UpdateFile(filename, updated):
             # Same as before so don't write
             return
         os.unlink(filename)
-    except IOError:	# File is not there yet
+    except IOError: # File is not there yet
         newOrChanged = "New"
     with codecs.open(filename, "w", "utf-8") as outfile:
         outfile.write(updated)
@@ -175,13 +175,13 @@ def ReadFileAsList(path):
     """
     with codecs.open(path, "rU", "utf-8") as f:
         return [l.rstrip('\n') for l in f]
-    
+
 def UpdateFileFromLines(path, lines, lineEndToUse):
     """Join the lines with the lineEndToUse then update file if the result is different.
     """
     contents = lineEndToUse.join(lines) + lineEndToUse
     UpdateFile(path, contents)
-    
+
 def FindSectionInList(lines, markers):
     """Find a section defined by an initial start marker, an optional secondary
     marker and an end marker.

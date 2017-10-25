@@ -20,6 +20,7 @@
 
 #include "Platform.h"
 
+#include "ILoader.h"
 #include "ILexer.h"
 #include "Scintilla.h"
 
@@ -46,9 +47,7 @@
 #include "PositionCache.h"
 #include "EditModel.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 Caret::Caret() :
 	active(false), on(false), period(500) {}

@@ -32,6 +32,7 @@
 
 #include "Platform.h"
 
+#include "ILoader.h"
 #include "ILexer.h"
 #include "Scintilla.h"
 
@@ -51,9 +52,7 @@
 #include "UniConversion.h"
 #include "UnicodeFromUTF8.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 void LexInterface::Colourise(Sci::Position start, Sci::Position end) {
 	if (pdoc && instance && !performingStyle) {
@@ -2591,7 +2590,7 @@ public:
 	~DocumentIndexer() override {
 	}
 
-	char CharAt(Sci::Position index) override {
+	char CharAt(Sci::Position index) const override {
 		if (index < 0 || index >= end)
 			return 0;
 		else
@@ -3009,7 +3008,7 @@ long BuiltinRegex::FindText(Document *doc, Sci::Position minPos, Sci::Position m
 			}
 		}
 
-		DocumentIndexer di(doc, endOfLine);
+		const DocumentIndexer di(doc, endOfLine);
 		int success = search.Execute(di, startOfLine, endOfLine);
 		if (success) {
 			pos = search.bopat[0];
@@ -3041,7 +3040,7 @@ long BuiltinRegex::FindText(Document *doc, Sci::Position minPos, Sci::Position m
 
 const char *BuiltinRegex::SubstituteByPosition(Document *doc, const char *text, Sci::Position *length) {
 	substituted.clear();
-	DocumentIndexer di(doc, static_cast<Sci::Position>(doc->Length()));
+	const DocumentIndexer di(doc, static_cast<Sci::Position>(doc->Length()));
 	search.GrabMatches(di);
 	for (int j = 0; j < *length; j++) {
 		if (text[j] == '\\') {
@@ -3093,18 +3092,8 @@ const char *BuiltinRegex::SubstituteByPosition(Document *doc, const char *text, 
 
 #ifndef SCI_OWNREGEX
 
-#ifdef SCI_NAMESPACE
-
 RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable) {
 	return new BuiltinRegex(charClassTable);
 }
-
-#else
-
-RegexSearchBase *CreateRegexSearch(CharClassify *charClassTable) {
-	return new BuiltinRegex(charClassTable);
-}
-
-#endif
 
 #endif
