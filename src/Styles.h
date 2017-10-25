@@ -19,6 +19,9 @@
 #define BUFSIZE_STYLE_VALUE 256
 #define BUFZIZE_STYLE_EXTENTIONS 512
 
+#define MARGIN_NP3_LINENUM 0
+#define MARGIN_NP3_BOOKMRK 1
+
 typedef struct _editstyle
 {
   #pragma warning(disable : 4201)  // MS's Non-Std: Struktur/Union ohne Namen
@@ -66,6 +69,7 @@ BOOL   Style_Export(HWND);
 void   Style_SetLexer(HWND,PEDITLEXER);
 void   Style_SetLongLineColors(HWND);
 void   Style_SetCurrentLineBackground(HWND);
+void   Style_SetCurrentMargin(HWND, BOOL);
 void   Style_SetLexerFromFile(HWND,LPCWSTR);
 void   Style_SetLexerFromName(HWND,LPCWSTR,LPCWSTR);
 void   Style_SetDefaultLexer(HWND);
