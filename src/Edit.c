@@ -4494,14 +4494,18 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDC_FINDTEXT:
         case IDC_REPLACETEXT:
           {
-            BOOL bEnable = (GetWindowTextLengthW(GetDlgItem(hwnd,IDC_FINDTEXT)) ||
-                            CB_ERR != SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_GETCURSEL,0,0));
+            BOOL bEnableF = (GetWindowTextLengthW(GetDlgItem(hwnd,IDC_FINDTEXT)) ||
+              CB_ERR != SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_GETCURSEL,0,0));
 
-            EnableWindow(GetDlgItem(hwnd,IDOK),bEnable);
-            EnableWindow(GetDlgItem(hwnd,IDC_FINDPREV),bEnable);
-            EnableWindow(GetDlgItem(hwnd,IDC_REPLACE),bEnable);
-            EnableWindow(GetDlgItem(hwnd,IDC_REPLACEALL),bEnable);
-            EnableWindow(GetDlgItem(hwnd,IDC_REPLACEINSEL),bEnable);
+            BOOL bEnableR = (GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT)) ||
+              CB_ERR != SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_GETCURSEL, 0, 0));
+
+            EnableWindow(GetDlgItem(hwnd,IDOK),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_FINDPREV),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_REPLACE),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_REPLACEALL),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_REPLACEINSEL),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_SWAPSTRG),bEnableF || bEnableR);
 
             if (HIWORD(wParam) == CBN_CLOSEUP) {
               LONG lSelEnd;
@@ -4557,13 +4561,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           cpLastFind = uCPEdit;
 
           if (!bSwitchedFindReplace &&
-              !GetDlgItemTextA2W(uCPEdit,hwnd,IDC_FINDTEXT,lpefr->szFind,COUNTOF(lpefr->szFind))) {
-
+              !GetDlgItemTextA2W(uCPEdit,hwnd,IDC_FINDTEXT,lpefr->szFind,COUNTOF(lpefr->szFind))) 
+          {
             EnableWindow(GetDlgItem(hwnd,IDOK),FALSE);
             EnableWindow(GetDlgItem(hwnd,IDC_FINDPREV),FALSE);
             EnableWindow(GetDlgItem(hwnd,IDC_REPLACE),FALSE);
             EnableWindow(GetDlgItem(hwnd,IDC_REPLACEALL),FALSE);
             EnableWindow(GetDlgItem(hwnd,IDC_REPLACEINSEL),FALSE);
+            if (!GetDlgItemTextA2W(uCPEdit, hwnd, IDC_REPLACETEXT, lpefr->szReplace, COUNTOF(lpefr->szReplace)))
+              EnableWindow(GetDlgItem(hwnd,IDC_SWAPSTRG),FALSE);
             return TRUE;
           }
 
@@ -4698,6 +4704,18 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           DestroyWindow(hwnd);
           break;
 
+        case IDC_SWAPSTRG:
+          {
+            WCHAR wszFind[1024] = { L'\0' };
+            WCHAR wszRepl[1024] = { L'\0' };
+            GetDlgItemTextW(hwnd, IDC_FINDTEXT, wszFind, COUNTOF(wszFind));
+            GetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszRepl, COUNTOF(wszRepl));
+            SetDlgItemTextW(hwnd, IDC_FINDTEXT, wszRepl);
+            SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
+            PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_FINDTEXT, 1), 0);
+          }
+          break;
+
         case IDACC_FIND:
           PostMessage(GetParent(hwnd),WM_COMMAND,MAKELONG(IDM_EDIT_FIND,1),0);
           break;
@@ -4736,7 +4754,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           CheckDlgButton(hwnd,IDC_FINDTRANSFORMBS,BST_UNCHECKED);
           PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_FINDTEXT)),1);
           break;
-
       }
 
       return TRUE;
