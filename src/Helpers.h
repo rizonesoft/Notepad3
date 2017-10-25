@@ -97,9 +97,6 @@ __inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL 
 #define IsWinServer() IsWindowsServer()          // Indicates if the current OS is a Windows Server release.
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
 
-#define SCVS_NP3_SPACE_OPT (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART)
-
-
 enum BufferSizes {
   MICRO_BUFFER =   32,
   MINI_BUFFER  =   64,

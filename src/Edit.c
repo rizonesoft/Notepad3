@@ -161,7 +161,7 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
   SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE,0);
-  SendMessage(hwnd, SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_NP3_SPACE_OPT), 0);
+  SendMessage(hwnd, SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
 
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + (SCMOD_CTRL << 16)),SCI_PARADOWN);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_PRIOR + (SCMOD_CTRL << 16)),SCI_PARAUP);
@@ -5352,6 +5352,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
   // clear existing marker indicators
   SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
   SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, iTextLen);
+  iMarkOccurrencesCount = -1;
 
   // if nothing selected or multiple lines are selected exit
   if ((iSelCount == 0) ||
@@ -5401,7 +5402,6 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
   LocalFree(pszText);
 
   UpdateStatusbar();
-  iMarkOccurrencesCount = 0;
 
   return;
 }
