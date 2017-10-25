@@ -310,68 +310,6 @@ WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 
-
-//Graphics for bookmark indicator
-/* XPM */
-static char * bookmark_pixmap[] = {
-  "11 11 44 1",
-  " 	c #EBE9ED",
-  ".	c #E5E3E7",
-  "+	c #767C6D",
-  "@	c #2A3120",
-  "#	c #1B2312",
-  "$	c #333B28",
-  "%	c #E3E1E5",
-  "&	c #D8D6DA",
-  "*	c #444D38",
-  "=	c #3F5C19",
-  "-	c #63AD00",
-  ";	c #73C900",
-  ">	c #64AF00",
-  ",	c #3D5718",
-  "'	c #3E4634",
-  ")	c #7B8172",
-  "!	c #42601A",
-  "~	c #74CB00",
-  "{	c #71C600",
-  "]	c #3A5317",
-  "^	c #707668",
-  "/	c #3F4931",
-  "(	c #262C1D",
-  "_	c #2F3A1E",
-  ":	c #72C700",
-  "<	c #74CA00",
-  "[	c #0E1109",
-  "}	c #3C462F",
-  "|	c #62AC00",
-  "1	c #21271A",
-  "2	c #7A8071",
-  "3	c #405D19",
-  "4	c #3D5A18",
-  "5	c #D9D7DB",
-  "6	c #4E5841",
-  "7	c #72C800",
-  "8	c #63AC00",
-  "9	c #3F5B19",
-  "0	c #3D4533",
-  "a	c #DFDDE0",
-  "b	c #353E29",
-  "c	c #29331B",
-  "d	c #7B8272",
-  "e	c #DDDBDF",
-  "           ",
-  "  .+@#$+%  ",
-  " &*=-;>,'  ",
-  " )!~~~~{]^ ",
-  " /-~~~~~>( ",
-  " _:~~~~~<[ ",
-  " }|~~~~~|1 ",
-  " 23~~~~;4+ ",
-  " 56=|7890  ",
-  "  a2bc}de  ",
-  "           "
-};
-
 //=============================================================================
 //
 // Flags
@@ -3920,27 +3858,21 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         int iPos = (int)SendMessage( hwndEdit , SCI_GETCURRENTPOS , 0 , 0);
         int iLine = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iPos , 0 );
 
-        int bitmask = (int)SendMessage( hwndEdit , SCI_MARKERGET , iLine , 0 );
+        int bitmask = (int)SendMessage( hwndEdit , SCI_MARKERGET , iLine , MARKER_NP3_BOOKMARK);
         if( bitmask & 1 )
         {
             // unset
-            SendMessage( hwndEdit , SCI_MARKERDELETE , iLine , 0 );
+            SendMessage( hwndEdit , SCI_MARKERDELETE , iLine , MARKER_NP3_BOOKMARK);
         }
         else
         {
-            if( bShowSelectionMargin )
-            {
-                SendMessage( hwndEdit , SCI_MARKERDEFINEPIXMAP , 0 , (LPARAM)bookmark_pixmap );
-            }
+          if( bShowSelectionMargin )
+              SendMessage(hwndEdit, SCI_MARKERDEFINE, MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
             else
-            {
-                SendMessage( hwndEdit , SCI_MARKERSETBACK , 0 , 0xff << 8 );
-                SendMessage( hwndEdit , SCI_MARKERSETALPHA , 0 , 20);
-                SendMessage( hwndEdit , SCI_MARKERDEFINE , 0 , SC_MARK_BACKGROUND );
-            }
-            // set
-            SendMessage( hwndEdit , SCI_MARKERADD , iLine , 0 );
-            //SendMessage( hwndEdit , SCI_MARKERADD , iLine , 1 );
+              SendMessage(hwndEdit, SCI_MARKERDEFINE, MARKER_NP3_BOOKMARK, SC_MARK_BACKGROUND);
+
+          // set
+            SendMessage( hwndEdit , SCI_MARKERADD , iLine , MARKER_NP3_BOOKMARK);
         }
 
         break;
@@ -3948,7 +3880,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case BME_EDIT_BOOKMARKCLEAR:
     {
-        SendMessage(hwndEdit,SCI_MARKERDELETEALL,(WPARAM)-1 ,0);
+        SendMessage(hwndEdit,SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
 
         break;
     }
@@ -4195,11 +4127,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         //Depending on if the margin is visible or not, choose different bookmark indication
         if (bShowSelectionMargin) {
-          SendMessage(hwndEdit,SCI_MARKERDEFINEPIXMAP,0,(LPARAM)bookmark_pixmap);
+          SendMessage(hwndEdit, SCI_MARKERDEFINE,0,SC_MARK_BOOKMARK);
         }
         else {
-          SendMessage(hwndEdit,SCI_MARKERSETBACK,0,0xff << 8);
-          SendMessage(hwndEdit,SCI_MARKERSETALPHA,0,20);
           SendMessage(hwndEdit,SCI_MARKERDEFINE,0,SC_MARK_BACKGROUND);
         }
       }
@@ -5437,8 +5367,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                       int bitmask = (int)SendMessage( hwndEdit , SCI_MARKERGET , iCurLine-1 , 0 );
                       if( bitmask & 1 )
                       {
-                          SendMessage( hwndEdit , SCI_MARKERDELETE , iCurLine-1 , 0 );
-                          SendMessage( hwndEdit , SCI_MARKERADD , iCurLine , 0 );
+                          SendMessage( hwndEdit , SCI_MARKERDELETE , iCurLine-1 , MARKER_NP3_BOOKMARK);
+                          SendMessage( hwndEdit , SCI_MARKERADD , iCurLine , MARKER_NP3_BOOKMARK);
                       }
                   }
               }
