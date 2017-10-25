@@ -23,9 +23,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 //XXX Identical to Perl, put in common area
 static inline bool isEOLChar(char ch) {

@@ -7,13 +7,9 @@
 
 #include "DBCS.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 bool DBCSIsLeadByte(int codePage, char ch) {
 	// Byte ranges found in Wikipedia articles with relevant search strings in each case
@@ -43,6 +39,4 @@ bool DBCSIsLeadByte(int codePage, char ch) {
 	return false;
 }
 
-#ifdef SCI_NAMESPACE
 }
-#endif

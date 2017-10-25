@@ -160,8 +160,9 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETADDITIONALSELECTIONTYPING,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
-  SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE,0);
-  SendMessage(hwnd, SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_NP3_SPACE_OPT), 0);
+  SendMessage(hwnd,SCI_SETMOUSEDOWNCAPTURES, FALSE, 0);
+  SendMessage(hwnd,SCI_SETMOUSEWHEELCAPTURES,FALSE, 0);
+  SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
 
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_NEXT + (SCMOD_CTRL << 16)),SCI_PARADOWN);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_PRIOR + (SCMOD_CTRL << 16)),SCI_PARAUP);
@@ -286,7 +287,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
   UndoRedoSelectionMap(-1,NULL);
   SendMessage(hwnd,SCI_CLEARALL,0,0);
-  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
+  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH,0);
   SendMessage(hwnd,SCI_SETXOFFSET,0,0);
 
@@ -330,7 +331,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
     UndoRedoSelectionMap(-1,NULL);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
-    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
+    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
     Encoding_SciSetCodePage(hwnd,encDest);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
     //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
@@ -362,7 +363,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
     UndoRedoSelectionMap(-1,NULL);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
-    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)-1,0);
+    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
     Encoding_SciSetCodePage(hwnd,encDest);
     SendMessage(hwnd,SCI_ADDTEXT,cbText,(LPARAM)pchText);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
@@ -4494,14 +4495,18 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDC_FINDTEXT:
         case IDC_REPLACETEXT:
           {
-            BOOL bEnable = (GetWindowTextLengthW(GetDlgItem(hwnd,IDC_FINDTEXT)) ||
-                            CB_ERR != SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_GETCURSEL,0,0));
+            BOOL bEnableF = (GetWindowTextLengthW(GetDlgItem(hwnd,IDC_FINDTEXT)) ||
+              CB_ERR != SendDlgItemMessage(hwnd,IDC_FINDTEXT,CB_GETCURSEL,0,0));
 
-            EnableWindow(GetDlgItem(hwnd,IDOK),bEnable);
-            EnableWindow(GetDlgItem(hwnd,IDC_FINDPREV),bEnable);
-            EnableWindow(GetDlgItem(hwnd,IDC_REPLACE),bEnable);
-            EnableWindow(GetDlgItem(hwnd,IDC_REPLACEALL),bEnable);
-            EnableWindow(GetDlgItem(hwnd,IDC_REPLACEINSEL),bEnable);
+            BOOL bEnableR = (GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT)) ||
+              CB_ERR != SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_GETCURSEL, 0, 0));
+
+            EnableWindow(GetDlgItem(hwnd,IDOK),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_FINDPREV),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_REPLACE),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_REPLACEALL),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_REPLACEINSEL),bEnableF);
+            EnableWindow(GetDlgItem(hwnd,IDC_SWAPSTRG),bEnableF || bEnableR);
 
             if (HIWORD(wParam) == CBN_CLOSEUP) {
               LONG lSelEnd;
@@ -4557,13 +4562,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           cpLastFind = uCPEdit;
 
           if (!bSwitchedFindReplace &&
-              !GetDlgItemTextA2W(uCPEdit,hwnd,IDC_FINDTEXT,lpefr->szFind,COUNTOF(lpefr->szFind))) {
-
+              !GetDlgItemTextA2W(uCPEdit,hwnd,IDC_FINDTEXT,lpefr->szFind,COUNTOF(lpefr->szFind))) 
+          {
             EnableWindow(GetDlgItem(hwnd,IDOK),FALSE);
             EnableWindow(GetDlgItem(hwnd,IDC_FINDPREV),FALSE);
             EnableWindow(GetDlgItem(hwnd,IDC_REPLACE),FALSE);
             EnableWindow(GetDlgItem(hwnd,IDC_REPLACEALL),FALSE);
             EnableWindow(GetDlgItem(hwnd,IDC_REPLACEINSEL),FALSE);
+            if (!GetDlgItemTextA2W(uCPEdit, hwnd, IDC_REPLACETEXT, lpefr->szReplace, COUNTOF(lpefr->szReplace)))
+              EnableWindow(GetDlgItem(hwnd,IDC_SWAPSTRG),FALSE);
             return TRUE;
           }
 
@@ -4698,6 +4705,18 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           DestroyWindow(hwnd);
           break;
 
+        case IDC_SWAPSTRG:
+          {
+            WCHAR wszFind[1024] = { L'\0' };
+            WCHAR wszRepl[1024] = { L'\0' };
+            GetDlgItemTextW(hwnd, IDC_FINDTEXT, wszFind, COUNTOF(wszFind));
+            GetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszRepl, COUNTOF(wszRepl));
+            SetDlgItemTextW(hwnd, IDC_FINDTEXT, wszRepl);
+            SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
+            PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_FINDTEXT, 1), 0);
+          }
+          break;
+
         case IDACC_FIND:
           PostMessage(GetParent(hwnd),WM_COMMAND,MAKELONG(IDM_EDIT_FIND,1),0);
           break;
@@ -4736,7 +4755,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           CheckDlgButton(hwnd,IDC_FINDTRANSFORMBS,BST_UNCHECKED);
           PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_FINDTEXT)),1);
           break;
-
       }
 
       return TRUE;
@@ -5352,6 +5370,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
   // clear existing marker indicators
   SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
   SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, iTextLen);
+  iMarkOccurrencesCount = -1;
 
   // if nothing selected or multiple lines are selected exit
   if ((iSelCount == 0) ||
@@ -5401,7 +5420,6 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
   LocalFree(pszText);
 
   UpdateStatusbar();
-  iMarkOccurrencesCount = 0;
 
   return;
 }
@@ -5865,7 +5883,7 @@ INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           if (GetSysColorBrush(COLOR_HOTLIGHT))
             SetTextColor(hdc,GetSysColor(COLOR_HOTLIGHT));
           else
-            SetTextColor(hdc,RGB(0,0,255));
+            SetTextColor(hdc,RGB(0, 0, 0xFF));
           SelectObject(hdc,/*dwId == id_hover?*/hFontHover/*:hFontNormal*/);
           return(LONG_PTR)GetSysColorBrush(COLOR_BTNFACE);
         }

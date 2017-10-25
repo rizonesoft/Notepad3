@@ -10,9 +10,7 @@
 #ifndef RUNSTYLES_H
 #define RUNSTYLES_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class RunStyles {
 private:
@@ -48,8 +46,6 @@ public:
 	void Check() const;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

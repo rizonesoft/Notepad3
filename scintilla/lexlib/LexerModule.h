@@ -8,9 +8,7 @@
 #ifndef LEXERMODULE_H
 #define LEXERMODULE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 class Accessor;
 class WordList;
@@ -82,8 +80,6 @@ inline int Maximum(int a, int b) {
 #pragma GCC diagnostic ignored "-Wshadow"
 #endif
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

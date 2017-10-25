@@ -272,6 +272,7 @@
   <ItemGroup>
     <ClInclude Include="deelx\deelx64.h" />
     <ClInclude Include="include\ILexer.h" />
+    <ClInclude Include="include\ILoader.h" />
     <ClInclude Include="include\Platform.h" />
     <ClInclude Include="include\SciLexer.h" />
     <ClInclude Include="include\Scintilla.h" />

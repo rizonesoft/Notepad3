@@ -10,9 +10,7 @@
 #ifndef DEFAULTLEXER_H
 #define DEFAULTLEXER_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 // A simple lexer with no state
 class DefaultLexer : public ILexer4 {
@@ -48,8 +46,6 @@ public:
 	const char * SCI_METHOD DescriptionOfStyle(int style) override;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

@@ -8,9 +8,7 @@
 #ifndef LEXERNOEXCEPTIONS_H
 #define LEXERNOEXCEPTIONS_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 // A simple lexer with no state
 class LexerNoExceptions : public LexerBase {
@@ -25,8 +23,6 @@ public:
 	virtual void Folder(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess, Accessor &styler) = 0;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

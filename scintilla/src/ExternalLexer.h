@@ -14,9 +14,7 @@
 #define EXT_LEXER_DECL
 #endif
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 typedef void*(EXT_LEXER_DECL *GetLexerFunction)(unsigned int Index);
 typedef int (EXT_LEXER_DECL *GetLexerCountFn)();
@@ -71,8 +69,6 @@ public:
 	~LMMinder();
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

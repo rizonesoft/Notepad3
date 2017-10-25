@@ -36,9 +36,7 @@
 #include "OptionSet.h"
 #include "DefaultLexer.h"
 
-# ifdef SCI_NAMESPACE
 using namespace Scintilla;
-# endif
 
 namespace {
 // Use an unnamed namespace to protect the functions and classes from name conflicts
@@ -510,7 +508,8 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	char word[1000];
 	int wordlen = 0;
 
-	std::string preProcessorTags[11] = { "#define", "#elif", "#else", "#endif",
+	std::string preProcessorTags[13] = { "#context_off", "#context_on", 
+		"#define", "#elif", "#else", "#endif",
 		"#ident", "#if", "#ifdef", "#ifndef",
 		"#include", "#pragma", "#undef" };
 	LexAccessor styler(pAccess);
@@ -568,7 +567,10 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					sc.ChangeState(SCE_BAAN_WORD2);
 				}
 				else if ((keywords3.kwHasSection && (sc.ch == ':')) ? keywords3.Contains(s1) : keywords3.Contains(s)) {
-					sc.ChangeState(SCE_BAAN_WORD3);
+					if (sc.ch == '(')
+						sc.ChangeState(SCE_BAAN_WORD3);
+					else
+						sc.ChangeState(SCE_BAAN_IDENTIFIER);
 				}
 				else if ((keywords4.kwHasSection && (sc.ch == ':')) ? keywords4.Contains(s1) : keywords4.Contains(s)) {
 					sc.ChangeState(SCE_BAAN_WORD4);
@@ -688,7 +690,7 @@ void SCI_METHOD LexerBaan::Lex(Sci_PositionU startPos, Sci_Position length, int 
 					word[wordlen++] = sc.ch;
 					word[wordlen++] = '\0';
 				}
-				if (!wordInArray(word, preProcessorTags, 11))
+				if (!wordInArray(word, preProcessorTags, 13))
 					// Colorise only preprocessor built in Baan.
 					sc.ChangeState(SCE_BAAN_IDENTIFIER);
 				if (strcmp(word, "#pragma") == 0 || strcmp(word, "#include") == 0) {
@@ -800,9 +802,10 @@ void SCI_METHOD LexerBaan::Fold(Sci_PositionU startPos, Sci_Position length, int
 			else if (style == SCE_BAAN_PREPROCESSOR) {
 				// folds #ifdef/#if/#ifndef - they are not part of the IsPreProcLine folding.
 				if (ch == '#') {
-					if (styler.Match(i, "#ifdef") || styler.Match(i, "#if") || styler.Match(i, "#ifndef"))
+					if (styler.Match(i, "#ifdef") || styler.Match(i, "#if") || styler.Match(i, "#ifndef")
+						|| styler.Match(i, "#context_on"))
 						levelCurrent++;
-					else if (styler.Match(i, "#endif"))
+					else if (styler.Match(i, "#endif") || styler.Match(i, "#context_off"))
 						levelCurrent--;
 				}
 			}

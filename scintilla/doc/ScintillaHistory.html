@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -511,6 +511,10 @@
 	<td>Thorsten Kani</td>
 	<td>Bernhard M. Wiedemann</td>
 	<td>Baldur Karlsson</td>
+      </tr><tr>
+	<td>Martin Kleusberg</td>
+	<td>Jannick</td>
+	<td>Zufu Liu</td>
     </tr>
     </table>
     <p>
@@ -521,6 +525,53 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="http://www.scintilla.org/scite401.zip">Release 4.0.1</a>
+    </h3>
+    <ul>
+	<li>
+	Released 23 October 2017.
+	</li>
+	<li>
+	The ILoader interface is defined in its own header ILoader.h as it is not
+	related to lexing so doesn't belong in ILexer.h.
+	</li>
+	<li>
+	The Scintilla namespace is always active for internal symbols and for the lexer interfaces
+	ILexer4 and IDocument.
+	</li>
+	<li>
+	The Baan lexer checks that matches to 3rd set of keywords are function calls and leaves as identifiers if not.
+	Baan lexer and folder support #context_on / #context_off preprocessor feature.
+	</li>
+	<li>
+	The C++ lexer improved preprocessor conformance.<br />
+	Default value of 0 for undefined preprocessor symbols.<br />
+	#define A is treated as #define A 1.<br />
+	"defined A" removes "A" before replacing "defined" with value.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1966/">Bug #1966</a>.
+	</li>
+	<li>
+	The Python folder treats triple-quoted f-strings like triple-quoted strings.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1977/">Bug #1977</a>.
+	</li>
+	<li>
+	The SQL lexer uses sql.backslash.escapes for double quoted strings.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1968/">Bug #1968</a>.
+	</li>
+	<li>
+	Minor undefined behaviour fixed.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1978">Bug #1978</a>.
+	</li>
+	<li>
+	On Cocoa, improve scrolling on macOS 10.12.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1885">Bug #1885</a>.
+	</li>
+	<li>
+	On Cocoa, fix line selection by clicking in the margin when scrolled.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1971">Bug #1971</a>.
+	</li>
     </ul>
     <h3>
        <a href="http://www.scintilla.org/scite400.zip">Release 4.0.0</a>
@@ -1181,7 +1232,7 @@
 	C++11 range-based for loops used in SciTE so GCC 4.6 is now the minimum supported version.
 	</li>
 	<li>
-	(REVERTED in Notepad3) SC_CHARSET_DEFAULT now means code page 1252 on Windows unless a code page is set.
+	SC_CHARSET_DEFAULT now means code page 1252 on Windows unless a code page is set.
 	This prevents unexpected behaviour and crashes on East Asian systems where default locales are commonly DBCS.
 	Projects which want to default to DBCS code pages in East Asian locales should set the code page and
 	character set explicitly.

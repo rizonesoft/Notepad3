@@ -8,9 +8,7 @@
 #ifndef LINEMARKER_H
 #define LINEMARKER_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 typedef void (*DrawLineMarkerFn)(Surface *surface, PRectangle &rcWhole, Font &fontForCharacter, int tFold, int marginStyle, const void *lineMarker);
 
@@ -73,8 +71,6 @@ public:
 	void Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharacter, typeOfFold tFold, int marginStyle) const;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

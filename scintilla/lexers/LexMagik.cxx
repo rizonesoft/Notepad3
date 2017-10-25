@@ -24,9 +24,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 /**
  * Is it a core character (C isalpha(), exclamation and question mark)

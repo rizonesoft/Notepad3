@@ -8,9 +8,7 @@
 #ifndef PERLINE_H
 #define PERLINE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 /**
  * This holds the marker identifier and the marker type to display.
@@ -149,8 +147,6 @@ public:
 	int GetNextTabstop(Sci::Line line, int x) const;
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

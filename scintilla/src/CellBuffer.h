@@ -10,9 +10,7 @@
 
 #include "Position.h"
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 // Interface to per-line data that wants to see each line insertion and deletion
 class PerLine {
@@ -222,8 +220,6 @@ public:
 	void PerformRedoStep();
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

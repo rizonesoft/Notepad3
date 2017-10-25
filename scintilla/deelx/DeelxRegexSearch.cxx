@@ -46,9 +46,8 @@
 #include "deelx64.h"   // DEELX - Regular Expression Engine (v1.3)
 // ---------------------------------------------------------------
 
-#ifdef SCI_NAMESPACE
+
 using namespace Scintilla;
-#endif
 
 class DeelxRegexSearch : public RegexSearchBase
 {
@@ -104,17 +103,10 @@ private:
 // ============================================================================
 
 
-#ifdef SCI_NAMESPACE
 RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 {
   return new DeelxRegexSearch(charClassTable);
 }
-#else
-RegexSearchBase *CreateRegexSearch(CharClassify *charClassTable)
-{
-  return new DeelxRegexSearch(charClassTable);
-}
-#endif
 
 // ============================================================================
 

@@ -1,7 +1,8 @@
 // Scintilla source code edit control
+// Encoding: UTF-8
 /** @file LexMatlab.cxx
  ** Lexer for Matlab.
- ** Written by José Fonseca
+ ** Written by JosÃ© Fonseca
  **
  ** Changes by Christoph Dalitz 2003/12/04:
  **   - added support for Octave
@@ -43,9 +44,7 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-#ifdef SCI_NAMESPACE
 using namespace Scintilla;
-#endif
 
 static bool IsMatlabCommentChar(int c) {
 	return (c == '%') ;

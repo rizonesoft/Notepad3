@@ -10,15 +10,7 @@
 
 #include "Sci_Position.h"
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
-
-#ifdef _WIN32
-	#define SCI_METHOD __stdcall
-#else
-	#define SCI_METHOD
-#endif
 
 enum { dvRelease4=2 };
 
@@ -81,16 +73,6 @@ public:
 	virtual const char * SCI_METHOD DescriptionOfStyle(int style) = 0;
 };
 
-class ILoader {
-public:
-	virtual int SCI_METHOD Release() = 0;
-	// Returns a status code from SC_STATUS_*
-	virtual int SCI_METHOD AddData(const char *data, Sci_Position length) = 0;
-	virtual void * SCI_METHOD ConvertToDocument() = 0;
-};
-
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

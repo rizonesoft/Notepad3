@@ -8,9 +8,7 @@
 #ifndef VIEWSTYLE_H
 #define VIEWSTYLE_H
 
-#ifdef SCI_NAMESPACE
 namespace Scintilla {
-#endif
 
 /**
  */
@@ -215,8 +213,6 @@ private:
 	void FindMaxAscentDescent();
 };
 
-#ifdef SCI_NAMESPACE
 }
-#endif
 
 #endif

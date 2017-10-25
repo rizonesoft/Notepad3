@@ -356,7 +356,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       StartPage(hdc);
 
       SetTextColor(hdc, RGB(0,0,0));
-      SetBkColor(hdc, RGB(255,255,255));
+      SetBkColor(hdc, RGB(0xFF, 0xFF, 0xFF));
       SelectObject(hdc, fontHeader);
       UINT ta = SetTextAlign(hdc, TA_BOTTOM);
       RECT rcw = {frPrint.rc.left, frPrint.rc.top - headerLineHeight - headerLineHeight / 2,
@@ -400,7 +400,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
     if (printPage) {
       SetTextColor(hdc, RGB(0,0,0));
-      SetBkColor(hdc, RGB(255,255,255));
+      SetBkColor(hdc, RGB(0xFF, 0xFF, 0xFF));
       SelectObject(hdc, fontFooter);
       UINT ta = SetTextAlign(hdc, TA_TOP);
       RECT rcw = {frPrint.rc.left, frPrint.rc.bottom + footerLineHeight / 2,
