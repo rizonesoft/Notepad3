@@ -354,17 +354,11 @@ EDITLEXER lexCSS = { SCLEX_CSS, 63003, L"CSS Style Sheets", L"css; less; sass; s
 
 KEYWORDLIST KeyWords_CPP = {
   // Primary keywords and identifiers
-  //"__abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
-  //"__except __except__try __fastcall __finally __forceinline __gc __hook __identifier "
-  //"__if_exists __if_not_exists __inline __int16 __int32 __int64 __int8 __interface __leave "
-  //"__m128 __m128d __m128i __m64 __multiple_inheritance __nogc __noop __pin __property __raise "
-  //"__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
-  //"__virtual_inheritance __wchar_t auto bool break case catch char class const const_cast "
-  "auto bool break case catch char class const const_cast "
-  "continue default defined delete do double dynamic_cast else enum explicit extern false float "
-  "for friend goto if inline int long mutable naked namespace new operator private protected "
-  "public register reinterpret_cast return short signed size_t sizeof static static_cast struct "
-  "switch template this throw true try typedef typeid typename union unsigned using uuid "
+  "alignas alignof auto bool break case catch char char16_t char32_t class const constexpr const_cast "
+  "continue decltype default defined delete do double dynamic_cast else enum explicit export extern false float "
+  "for friend goto if inline int long mutable naked namespace new noexcept nullptr operator private protected "
+  "public register reinterpret_cast return short signed size_t sizeof static static_assert static_cast struct "
+  "switch template this thread_local throw true try typedef typeid typename union unsigned using "
   "virtual void volatile wchar_t while",
   // Secondary keywords and identifiers
   "__abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
@@ -372,7 +366,7 @@ KEYWORDLIST KeyWords_CPP = {
   "__if_exists __if_not_exists __inline __int16 __int32 __int64 __int8 __interface __leave "
   "__m128 __m128d __m128i __m64 __multiple_inheritance __nogc __noop __pin __property __raise "
   "__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
-  "__virtual_inheritance __wchar_t",
+  "__virtual_inheritance __wchar_t asm",
   // Documentation comment keywords
   "",
   // Global classes and typedefs
@@ -386,9 +380,6 @@ KEYWORDLIST KeyWords_CPP = {
   "" 
 };
 
-
-
-
 EDITLEXER lexCPP = { SCLEX_CPP, 63004, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; m; mm; idl; inl; odl", L"", &KeyWords_CPP, {
                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
                      //{ SCE_C_DEFAULT, L"Default", L"", L"" },
@@ -401,7 +392,7 @@ EDITLEXER lexCPP = { SCLEX_CPP, 63004, L"C/C++ Source Code", L"c; cpp; cxx; cc; 
                      { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), 63133, L"Preprocessor", L"fore:#FF8000", L"" },
                      //{ SCE_C_UUID, L"UUID", L"", L"" },
                      //{ SCE_C_REGEX, L"Regex", L"", L"" },
-                     //{ SCE_C_WORD2, L"Word 2", L"", L"" },
+                     { SCE_C_WORD2, 63260, L"Keyword 2nd", L"italic; fore:#3C6CDD", L"" },
                      //{ SCE_C_GLOBALCLASS, L"Global Class", L"", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
@@ -2684,7 +2675,7 @@ EDITLEXER lexD = { SCLEX_D, 63022, L"D Source Code", L"d; dd; di", L"", &KeyWord
                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
                    //{ SCE_D_DEFAULT, L"Default", L"", L"" },
                    { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
-                   { SCE_D_COMMENTDOC, 63259, L"Comment Documentation", L"fore:#040A0", L"" },
+                   { SCE_D_COMMENTDOC, 63259, L"Comment Doc", L"fore:#040A0", L"" },
                    { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
                    { SCE_D_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
                    //{ SCE_D_WORD2, 63128, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
@@ -2692,14 +2683,14 @@ EDITLEXER lexD = { SCLEX_D, 63022, L"D Source Code", L"d; dd; di", L"", &KeyWord
                    //{ SCE_D_WORD5, 63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
                    //{ SCE_D_WORD6, 63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
                    //{ SCE_D_WORD7, 63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
-                   { SCE_D_TYPEDEF, 63258, L"Typedef", L"fore:#0A246A", L"" },
-                   { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,SCE_D_STRINGB), 63131, L"String", L"fore:#808080", L"" },
+                   { SCE_D_TYPEDEF, 63258, L"Typedef", L"italic; fore:#0A246A", L"" },
+                   { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,0), 63131, L"String", L"italic; fore:#3C6CDD", L"" },
                    { SCE_D_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
                    { SCE_D_IDENTIFIER, 63129, L"Identifier", L"", L"" },
                    //{ SCE_D_COMMENTLINEDOC, L"Default", L"", L"" },
                    //{ SCE_D_COMMENTDOCKEYWORD, L"Default", L"", L"" },
+                   //{ SCE_D_STRINGB, L"Default", L"", L"" },
                    //{ SCE_D_STRINGR, L"Default", L"", L"" },
-                   //C++: { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), 63133, L"Preprocessor", L"fore:#FF8000", L"" },
                    { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2728,7 +2719,7 @@ EDITLEXER lexGo = { SCLEX_D, 63023, L"Go Source Code", L"go", L"", &KeyWords_Go,
   { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
   //{ SCE_D_DEFAULT, L"Default", L"", L"" },
   { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
-  //{ SCE_D_COMMENTDOC, 63259, L"Comment Documentation", L"fore:#040A0", L"" },
+  //{ SCE_D_COMMENTDOC, 63259, L"Comment Doc", L"fore:#040A0", L"" },
   { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
   { SCE_D_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
   //{ SCE_D_WORD2, 63128, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
@@ -2736,8 +2727,8 @@ EDITLEXER lexGo = { SCLEX_D, 63023, L"Go Source Code", L"go", L"", &KeyWords_Go,
   //{ SCE_D_WORD5, 63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
   //{ SCE_D_WORD6, 63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
   //{ SCE_D_WORD7, 63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
-  //{ SCE_D_TYPEDEF, 63258, L"Typedef", L"fore:#0A246A", L"" },
-  { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,SCE_D_STRINGB), 63131, L"String", L"fore:#808080", L"" },
+  //{ SCE_D_TYPEDEF, 63258, L"Typedef", L"italic; fore:#0A246A", L"" },
+  { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,SCE_D_STRINGB), 63131, L"String", L"italic; fore:#3C6CDD", L"" },
   { SCE_D_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
   { SCE_D_IDENTIFIER, 63129, L"Identifier", L"", L"" },
   //{ SCE_D_COMMENTLINEDOC, L"Default", L"", L"" },
