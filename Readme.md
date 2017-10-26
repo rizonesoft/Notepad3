@@ -9,7 +9,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 
 > *Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod. MiniPath is based on code from Florian Balmer's metapath.*
 
-## Changes compared to the official Notepad2:
+## Changes compared to Flo's official Notepad2 (made in Notepad2-mod):
 
 * Code folding
 * Support for bookmarks
@@ -21,7 +21,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 * Improved support for NFO ANSI art
 * Other various minor changes and tweaks
 
-## Changes compared to the Notepad2-mod maintenance fork:
+## Changes compared to the Notepad2-mod fork:
 
 * New toolbar icons based on Yusuke Kamiyaman's Fugue Icons (Purchased by [Rizonesoft](https://www.rizonesoft.com))
 * New program icon and other small cosmetic changes
@@ -35,6 +35,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 * Visual Studio style copy/paste current line (no selection)
 * Count occurrences of a marked selection or word
 * Insert GUIDs
+* Dropped support for Windows XP version
 * Other various minor changes, tweaks and bugfixes
 
 ## Supported Operating Systems:
