@@ -353,19 +353,40 @@ EDITLEXER lexCSS = { SCLEX_CSS, 63003, L"CSS Style Sheets", L"css; less; sass; s
 
 
 KEYWORDLIST KeyWords_CPP = {
-"__abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
-"__except __except__try __fastcall __finally __forceinline __gc __hook __identifier "
-"__if_exists __if_not_exists __inline __int16 __int32 __int64 __int8 __interface __leave "
-"__m128 __m128d __m128i __m64 __multiple_inheritance __nogc __noop __pin __property __raise "
-"__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
-"__virtual_inheritance __wchar_t auto bool break case catch char class const const_cast "
-"continue default defined delete do double dynamic_cast else enum explicit extern false float "
-"for friend goto if inline int long mutable naked namespace new operator private protected "
-"public register reinterpret_cast return short signed size_t sizeof static static_cast struct "
-"switch template this throw true try typedef typeid typename union unsigned using uuid "
-"virtual void volatile wchar_t while",
-"",
-"", "", "", "", "", "", "" };
+  // Primary keywords and identifiers
+  //"__abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
+  //"__except __except__try __fastcall __finally __forceinline __gc __hook __identifier "
+  //"__if_exists __if_not_exists __inline __int16 __int32 __int64 __int8 __interface __leave "
+  //"__m128 __m128d __m128i __m64 __multiple_inheritance __nogc __noop __pin __property __raise "
+  //"__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
+  //"__virtual_inheritance __wchar_t auto bool break case catch char class const const_cast "
+  "auto bool break case catch char class const const_cast "
+  "continue default defined delete do double dynamic_cast else enum explicit extern false float "
+  "for friend goto if inline int long mutable naked namespace new operator private protected "
+  "public register reinterpret_cast return short signed size_t sizeof static static_cast struct "
+  "switch template this throw true try typedef typeid typename union unsigned using uuid "
+  "virtual void volatile wchar_t while",
+  // Secondary keywords and identifiers
+  "__abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
+  "__except __except__try __fastcall __finally __forceinline __gc __hook __identifier "
+  "__if_exists __if_not_exists __inline __int16 __int32 __int64 __int8 __interface __leave "
+  "__m128 __m128d __m128i __m64 __multiple_inheritance __nogc __noop __pin __property __raise "
+  "__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
+  "__virtual_inheritance __wchar_t",
+  // Documentation comment keywords
+  "",
+  // Global classes and typedefs
+  "", 
+  // Preprocessor definitions
+  "_MSC_VER SCI_NAMESPACE", 
+  // Task marker and error marker keywords
+  "",
+  "", 
+  "", 
+  "" 
+};
+
+
 
 
 EDITLEXER lexCPP = { SCLEX_CPP, 63004, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; m; mm; idl; inl; odl", L"", &KeyWords_CPP, {
@@ -2630,6 +2651,104 @@ EDITLEXER lexMATLAB = { SCLEX_MATLAB, 63360, L"MATLAB", L"matlab", L"", &KeyWord
                         { -1, 00000, L"", L"", L"" } } };
 
 
+
+KEYWORDLIST KeyWords_D = {
+  // Primary keywords and identifiers
+  "abstract alias align asm assert auto body bool break byte case cast catch cdouble cent cfloat char class const continue creal "
+  "dchar debug default delegate delete deprecated do double else enum export extern false final finally float for foreach foreach_reverse function "
+  "goto idouble if ifloat import in inout int interface invariant ireal is  lazy long mixin module new null out override "
+  "package pragma private protected public real return scope short static struct super switch synchronized "
+  "template this throw true try typedef typeid typeof ubyte ucent uint ulong union unittest ushort version void volatile wchar while with",
+  // Secondary keywords and identifiers
+  "",
+  // Documentation comment keywords  (doxygen)
+  "a addindex addtogroup anchor arg attention author b brief bug c class code date def defgroup deprecated dontinclude "
+  "e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception f$ f[f] file fn hideinitializer htmlinclude htmlonly "
+  "if image include ingroup internal invariant interface latexonly li line link mainpage name namespace nosubgrouping note overload "
+  "p page par param post pre ref relates remarks return retval sa section see showinitializer since skip skipline struct subsection "
+  "test throw todo typedef union until var verbatim verbinclude version warning weakgroup",
+  // Type definitions and aliases
+  "",
+  // Keywords 5
+  "",
+  // Keywords 6
+  "",
+  // Keywords 7
+  "",
+  // ---
+  ""
+};
+
+
+EDITLEXER lexD = { SCLEX_D, 63022, L"D Source Code", L"d; dd; di", L"", &KeyWords_D, {
+                   { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                   //{ SCE_D_DEFAULT, L"Default", L"", L"" },
+                   { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
+                   { SCE_D_COMMENTDOC, 63259, L"Comment Documentation", L"fore:#040A0", L"" },
+                   { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
+                   { SCE_D_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD2, 63128, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD3, 63128, L"Keyword 3", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD5, 63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD6, 63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD7, 63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
+                   { SCE_D_TYPEDEF, 63258, L"Typedef", L"fore:#0A246A", L"" },
+                   { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,SCE_D_STRINGB), 63131, L"String", L"fore:#808080", L"" },
+                   { SCE_D_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+                   { SCE_D_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+                   //{ SCE_D_COMMENTLINEDOC, L"Default", L"", L"" },
+                   //{ SCE_D_COMMENTDOCKEYWORD, L"Default", L"", L"" },
+                   //{ SCE_D_STRINGR, L"Default", L"", L"" },
+                   //C++: { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), 63133, L"Preprocessor", L"fore:#FF8000", L"" },
+                   { -1, 00000, L"", L"", L"" } } };
+
+
+KEYWORDLIST KeyWords_Go = {
+  // Primary keywords and identifiers
+  "break default func interface select case defer go map struct chan else goto package switch const fallthrough if range type "
+  "continue for import return var bool int int8 int16 int32 int64 byte uint uint8 uint16 uint32 uint64 uintptr float float32 float64 string nil true false",
+  // Secondary keywords and identifiers
+  "",
+  // Documentation comment keywords  (doxygen)
+  "",
+  // Type definitions and aliases
+  "",
+  // Keywords 5
+  "",
+  // Keywords 6
+  "",
+  // Keywords 7
+  "",
+  // ---
+  ""
+};
+
+
+EDITLEXER lexGo = { SCLEX_D, 63023, L"Go Source Code", L"go", L"", &KeyWords_Go,{
+  { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+  //{ SCE_D_DEFAULT, L"Default", L"", L"" },
+  { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
+  //{ SCE_D_COMMENTDOC, 63259, L"Comment Documentation", L"fore:#040A0", L"" },
+  { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
+  { SCE_D_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+  //{ SCE_D_WORD2, 63128, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
+  //{ SCE_D_WORD3, 63128, L"Keyword 3", L"bold; fore:#0A246A", L"" },
+  //{ SCE_D_WORD5, 63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
+  //{ SCE_D_WORD6, 63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
+  //{ SCE_D_WORD7, 63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
+  //{ SCE_D_TYPEDEF, 63258, L"Typedef", L"fore:#0A246A", L"" },
+  { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,SCE_D_STRINGB), 63131, L"String", L"fore:#808080", L"" },
+  { SCE_D_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+  { SCE_D_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+  //{ SCE_D_COMMENTLINEDOC, L"Default", L"", L"" },
+  //{ SCE_D_COMMENTDOCKEYWORD, L"Default", L"", L"" },
+  //{ SCE_D_STRINGR, L"Default", L"", L"" },
+  //C++: { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), 63133, L"Preprocessor", L"fore:#FF8000", L"" },
+  { -1, 00000, L"", L"", L"" } } };
+
+
+
+
 // This array holds all the lexers...
 // Don't forget to change the number of the lexer for HTML and XML
 // in Notepad2.c ParseCommandLine() if you change this array!
@@ -2649,7 +2768,9 @@ PEDITLEXER pLexArray[NUMLEXERS] =
   &lexCS,
   &lexCSS,
   &lexCmake,
+  &lexD,
   &lexDIFF,
+  &lexGo,
   &lexHTML,
   &lexINNO,
   &lexJAVA,
