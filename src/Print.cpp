@@ -375,10 +375,10 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       {
         SIZE sizeInfo;
         SelectObject(hdc,fontFooter);
-        GetTextExtentPoint32(hdc,dateString,StringCchLen(dateString),&sizeInfo);
+        GetTextExtentPoint32(hdc,dateString,StringCchLenW(dateString,COUNTOF(dateString)),&sizeInfo);
         ExtTextOut(hdc, frPrint.rc.right - 5 - sizeInfo.cx, frPrint.rc.top - headerLineHeight / 2,
                       /*ETO_OPAQUE*/0, &rcw, dateString,
-                      StringCchLen(dateString), NULL);
+                      StringCchLenW(dateString,COUNTOF(dateString)), NULL);
       }
 
       if (iPrintHeader < 3)
@@ -409,10 +409,10 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       if (iPrintFooter == 0)
       {
         SIZE sizeFooter;
-        GetTextExtentPoint32(hdc,pageString,StringCchLen(pageString),&sizeFooter);
+        GetTextExtentPoint32(hdc,pageString,StringCchLenW(pageString,COUNTOF(pageString)),&sizeFooter);
         ExtTextOut(hdc, frPrint.rc.right - 5 - sizeFooter.cx, frPrint.rc.bottom + footerLineHeight / 2,
                       /*ETO_OPAQUE*/0, &rcw, pageString,
-                      StringCchLen(pageString), NULL);
+                      StringCchLenW(pageString,COUNTOF(pageString)), NULL);
 
         SetTextAlign(hdc, ta);
         pen = ::CreatePen(0, 1, RGB(0,0,0));

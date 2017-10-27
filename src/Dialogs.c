@@ -363,7 +363,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             if (GetOpenFileName(&ofn)) {
               PathQuoteSpaces(szFile);
-              if (StringCchLen(szArg2))
+              if (StringCchLen(szArg2,COUNTOF(szArg2)))
               {
                 StringCchCat(szFile,COUNTOF(szFile),L" ");
                 StringCchCat(szFile,COUNTOF(szFile),szArg2);
@@ -383,7 +383,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             if (GetDlgItemText(hwnd,IDC_COMMANDLINE,args,MAX_PATH))
               if (ExtractFirstArgument(args,args,NULL,MAX_PATH))
-                if (StringCchLen(args))
+                if (StringCchLenW(args,COUNTOF(args)))
                   bEnableOK = TRUE;
 
             EnableWindow(GetDlgItem(hwnd,IDOK),bEnableOK);
@@ -410,7 +410,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 bQuickExit = TRUE;
               }
 
-              if (StringCchLen(szCurFile)) {
+              if (StringCchLenW(szCurFile,COUNTOF(szCurFile))) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),szCurFile);
                 PathRemoveFileSpec(wchDirectory);
               }
@@ -644,7 +644,7 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     WCHAR szParam[MAX_PATH] = { L'\0' };
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
-    if (StringCchLen(szCurFile)) {
+    if (StringCchLenW(szCurFile,COUNTOF(szCurFile))) {
       StringCchCopy(wchDirectory,COUNTOF(wchDirectory),szCurFile);
       PathRemoveFileSpec(wchDirectory);
     }
@@ -2365,7 +2365,7 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
   ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
   StringCchVPrintfW(ib.lpstrMessage,HUGE_BUFFER,wchFormat,(LPVOID)((PUINT_PTR)&uidMessage + 1));
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StringCchLen(szIniFile) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? TRUE : FALSE;
+  ib.bDisableCheckBox = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? TRUE : FALSE;
 
   if (iType == MBYESNO)
     idDlg = IDD_INFOBOX2;

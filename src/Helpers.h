@@ -285,51 +285,43 @@ WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
 #endif
 
 //==== StrSafe lstrlen() =======================================================
-inline int _StringCchLenNA(LPCSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthA(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
-#define StringCchLenA(s)  _StringCchLenNA((s),COUNTOF(s))
-inline int _StringCchLenNW(LPCWSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthW(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
-#define StringCchLenW(s)  _StringCchLenNW((s),COUNTOF(s))
+inline int StringCchLenA(LPCSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthA(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
+inline int StringCchLenW(LPCWSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthW(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
 
 #if defined(UNICODE) || defined(_UNICODE)  
-#define StringCchLen(s)     _StringCchLenNW((s),COUNTOF(s))
-#define StringCchLenN(s,n)  _StringCchLenNW((s),(n))
+#define StringCchLen(s,n)  StringCchLenW((s),(n))
 #else
-#define StringCchLen(s)     _StringCchLenNA((s),COUNTOF(s))
-#define StringCchLenN(s,n)  _StringCchLenNA((s),(n))
+#define StringCchLen(s,n)  StringCchLenA((s),(n))
 #endif
 
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
 inline int _StringCchCmpNA(PCNZCH s1,int l1,PCNZCH s2,int l2)
 {
-  return (CompareStringA(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? _StringCchLenNA(s1,l1) : -1),
-                         s2,(l2 >= 0 ? _StringCchLenNA(s2,l2) : -1)) - CSTR_EQUAL);
+  return (CompareStringA(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? StringCchLenA(s1,l1) : -1),
+                         s2,(l2 >= 0 ? StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
 }
-#define StringCchCompareA(s1,s2)         _StringCchCmpNA((s1),COUNTOF(s1),(s2),COUNTOF(s2))
 #define StringCchCompareNA(s1,l1,s2,l2)  _StringCchCmpNA((s1),(l1),(s2),(l2))
 #define StringCchCompareXA(s1,s2)        _StringCchCmpNA((s1),-1,(s2),-1)
 
 inline int _StringCchCmpINA(PCNZCH s1,int l1,PCNZCH s2,int l2)
 {
-  return (CompareStringA(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? _StringCchLenNA(s1,l1) : -1),
-                         s2,(l2 >= 0 ? _StringCchLenNA(s2,l2) : -1)) - CSTR_EQUAL);
+  return (CompareStringA(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? StringCchLenA(s1,l1) : -1),
+                         s2,(l2 >= 0 ? StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
 }
-#define StringCchCompareIA(s1,s2)         _StringCchCmpINA((s1),COUNTOF(s1),(s2),COUNTOF(s2))
 #define StringCchCompareINA(s1,l1,s2,l2)  _StringCchCmpINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIXA(s1,s2)        _StringCchCmpINA((s1),-1,(s2),-1)
 
 inline int _StringCchCmpNW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
-  return (CompareStringW(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? _StringCchLenNW(s1,l1) : -1),
-                         s2,(l2 >= 0 ? _StringCchLenNW(s2,l2) : -1)) - CSTR_EQUAL);
+  return (CompareStringW(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? StringCchLenW(s1,l1) : -1),
+                         s2,(l2 >= 0 ? StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
-#define StringCchCompareW(s1,s2)         _StringCchCmpNW((s1),COUNTOF(s1),(s2),COUNTOF(s2))
 #define StringCchCompareNW(s1,l1,s2,l2)  _StringCchCmpNW((s1),(l1),(s2),(l2))
 #define StringCchCompareXW(s1,s2)        _StringCchCmpNW((s1),-1,(s2),-1)
 
 inline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) { 
-  return (CompareStringW(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? _StringCchLenNW(s1,l1) : -1),
-                         s2,(l2 >= 0 ? _StringCchLenNW(s2,l2) : -1)) - CSTR_EQUAL);
+  return (CompareStringW(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? StringCchLenW(s1,l1) : -1),
+                         s2,(l2 >= 0 ? StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
-#define StringCchCompareIW(s1,s2)         _StringCchCmpINW((s1),COUNTOF(s1),(s2),COUNTOF(s2))
 #define StringCchCompareINW(s1,l1,s2,l2)  _StringCchCmpINW((s1),(l1),(s2),(l2))
 #define StringCchCompareIXW(s1,s2)        _StringCchCmpINW((s1),-1,(s2),-1)
 

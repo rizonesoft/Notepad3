@@ -43,6 +43,7 @@
 #include "CharClassify.h"
 #include "Document.h"
 // ---------------------------------------------------------------
+//#include "deelx.h"   // DEELX - Regular Expression Engine (v1.2)
 #include "deelx64.h"   // DEELX - Regular Expression Engine (v1.3)
 // ---------------------------------------------------------------
 
@@ -129,7 +130,7 @@ long DeelxRegexSearch::FindText(Document* doc,int minPos,int maxPos,const char *
                                 bool caseSensitive,bool word,bool wordStart,int searchFlags,int *length)
 {
   const bool right2left = false; // always left-to-right match mode
-  const bool extended = false; // ignore spaces and use '#' as line-comment)
+  const bool extended = false;   // ignore spaces and use '#' as line-comment)
 
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
   minPos = doc->MovePositionOutsideChar(minPos,1,false);
@@ -140,6 +141,7 @@ long DeelxRegexSearch::FindText(Document* doc,int minPos,int maxPos,const char *
   int compileFlags = deelx::NO_FLAG;
   compileFlags |= (deelx::MULTILINE | deelx::GLOBAL); // the .(dot) does not match line-breaks
   //compileFlags |= (deelx::SINGLELINE | deelx::MULTILINE | deelx::GLOBAL);  // the .(dot) also matches line-breaks
+
   compileFlags |= (extended) ? deelx::EXTENDED : deelx::NO_FLAG;
   compileFlags |= (!caseSensitive) ? deelx::IGNORECASE : deelx::NO_FLAG;
   compileFlags |= (right2left) ? deelx::RIGHTTOLEFT : deelx::NO_FLAG;
