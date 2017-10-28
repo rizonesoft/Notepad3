@@ -4891,12 +4891,31 @@ void EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 //
 int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags, int* start, int* end)
 {
+  int tbeg = *start;
+  int tend = *end;
+  int iPos = -1;
   SendMessage(hwnd, SCI_SETSEARCHFLAGS, flags, 0);
-  SendMessage(hwnd, SCI_SETTARGETRANGE, (*start), (*end));
-  int iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
-  if (iPos >= 0) {
-    *start = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
-    *end = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
+  while (TRUE) {
+    SendMessage(hwnd, SCI_SETTARGETRANGE, tbeg, tend);
+    iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
+    if (iPos < 0) {
+      break;  // not found in range
+    }
+    else {
+      // found: get range
+      tbeg = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
+      tend = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
+      if (tbeg == tend) {
+        // zero-length match : search next
+        tbeg = (*start < *end) ? tbeg + 1 : tbeg - 1;
+        tend = *end;
+      }
+      else { // found: OK
+        *start = tbeg;
+        *end = tend;
+        break;
+      }
+    }
   }
   return iPos;
 }
@@ -5155,7 +5174,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   while ((start < end) && ((iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end)) >= 0))
   {
     if (end > iEndPos) {
-      // found, but replace target end is beyond selection
+      // not found or replace target end is beyond selection
       break; // while
     }
 
@@ -5315,7 +5334,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
     if (iPos < 0)
       break; // not found
 
-             // mark this match
+    // mark this match
     SendMessage(hwnd, SCI_INDICATORFILLRANGE, iPos, iSelCount);
     start = end + 1;  end = iTextLen;
 
