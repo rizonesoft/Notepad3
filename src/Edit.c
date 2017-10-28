@@ -5087,6 +5087,9 @@ char* __fastcall EditGetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* 
 //
 BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
 
+  // reject to replace zero-length matches -> EditPaste()
+  // see also: https://www.regular-expressions.info/zerolength.html
+  //
   if ((BOOL)SendMessage(hwnd, SCI_GETSELECTIONEMPTY, 0, 0))
     return EditFindNext(hwnd, lpefr, FALSE);
 

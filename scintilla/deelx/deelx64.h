@@ -10,10 +10,14 @@
 // Author:  ∑ ŸŒ∞ (sswater shi)
 // sswater@gmail.com
 //
-// $Revision $
-//
 // + adaption for 64-bit usage: "basetsd : INT_PTR" replaces int-pointer arithmetic and buffer indexes
 // + Cppcheck cleanup 
+//
+// Good Overview:
+// https://www.regular-expressions.info/
+// 
+
+
 
 #ifndef __DEELX_REGEXP64__H__
 #define __DEELX_REGEXP64__H__
