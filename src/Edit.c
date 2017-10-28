@@ -5077,10 +5077,13 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
     return FALSE; // recoding of clipboard canceled
 
   SendMessage(hwnd, SCI_TARGETFROMSELECTION, 0, 0);
-
   SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
-
+  
   LocalFree(pszReplace);
+
+  // move behind replacement
+  int after = (int)SendMessage(hwnd, SCI_POSITIONAFTER, (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0), 0);
+  SendMessage(hwnd, SCI_SETSEL, after, after);
 
   return EditFindNext(hwnd, lpefr, FALSE);
 }
