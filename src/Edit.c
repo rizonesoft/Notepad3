@@ -4889,52 +4889,36 @@ void EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 //
 //  EditFindInTarget()
 //
-int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags, int* start, int* end)
+int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags, int* start, int* end) 
 {
-  int tbeg = *start;
-  int tend = *end;
-  int iPos = -1;
   SendMessage(hwnd, SCI_SETSEARCHFLAGS, flags, 0);
-  while (TRUE) {
-    SendMessage(hwnd, SCI_SETTARGETRANGE, tbeg, tend);
-    iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
-    if (iPos < 0) {
-      break;  // not found in range
-    }
-    else {
-      // found: get range
-      tbeg = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
-      tend = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
-      if (tbeg == tend) {
-        // zero-length match : search next
-        tbeg = (*start < *end) ? tbeg + 1 : tbeg - 1;
-        tend = *end;
-      }
-      else { // found: OK
-        *start = tbeg;
-        *end = tend;
-        break;
-      }
-    }
+  SendMessage(hwnd, SCI_SETTARGETRANGE, *start, *end);
+  int iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
+  if (iPos >= 0) { // found in range
+    *start = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
+    *end = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
   }
   return iPos;
 }
 
 
+
 //=============================================================================
 //
-//  EditRegexCorrectLineStart()
+//  EditSetRegexStartAnchor()
 //
-void __fastcall EditRegexCorrectLineStart(HWND hwnd, LPSTR szFind, int* start)
+void __fastcall EditSetRegexStartAnchor(HWND hwnd, LPSTR szFind, int* start, BOOL bFindNext)
 {
-  //char* pRegexStOfLn = (char*)StrStrA(szFind, "^");
   if (szFind[0] == '^') {
-    int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, (WPARAM)*start, 0);
-    int ilPos = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (WPARAM)iLine, 0);   // begining of current line
-    // start search at next line, if not already at begin of line
-    if (ilPos != *start) {
-      *start = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (WPARAM)(iLine + 1), 0); // begining of next line
-    }
+    int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, *start, 0);
+    if (bFindNext)
+      *start = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (iLine + 1), 0); // begining of next line
+  }
+  else if (szFind[0] == '$') {
+    int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, *start, 0);
+    int iLnEnd = (int)SendMessage(hwnd, SCI_GETLINEENDPOSITION, iLine, 0);
+    if (bFindNext && (iLnEnd == *start))
+      *start = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (iLine + 1), 0); // begining of next line
   }
 }
 
@@ -4970,7 +4954,7 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL fExtendSelection) {
   int end = iDocLength;
 
   if (lpefr->fuFlags & SCFIND_REGEXP) {
-    EditRegexCorrectLineStart(hwnd, szFind, &start);
+    EditSetRegexStartAnchor(hwnd, szFind, &start, TRUE);
   }
   if (start >= end) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
@@ -5040,7 +5024,7 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL fExtendSelection) {
   int end = 0;
 
   if (lpefr->fuFlags & SCFIND_REGEXP) {
-    EditRegexCorrectLineStart(hwnd, szFind, &start);
+    EditSetRegexStartAnchor(hwnd, szFind, &start, FALSE);
   }
   if (start <= end) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
@@ -5109,8 +5093,8 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   // reject to replace zero-length matches -> EditPaste()
   // see also: https://www.regular-expressions.info/zerolength.html
   //
-  if ((BOOL)SendMessage(hwnd, SCI_GETSELECTIONEMPTY, 0, 0))
-    return EditFindNext(hwnd, lpefr, FALSE);
+  //if ((BOOL)SendMessage(hwnd, SCI_GETSELECTIONEMPTY, 0, 0))
+  //  return EditFindNext(hwnd, lpefr, FALSE);
 
   int iReplaceMsg = SCI_REPLACETARGET;
   char* pszReplace = EditGetReplaceString(hwnd, lpefr, &iReplaceMsg);
@@ -5166,7 +5150,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   int end = iEndPos;
 
   if (lpefr->fuFlags & SCFIND_REGEXP) {
-    EditRegexCorrectLineStart(hwnd, szFind, &start);
+    EditSetRegexStartAnchor(hwnd, szFind, &start, TRUE);
   }
 
   int iPos;
@@ -5191,7 +5175,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
 
     // correction for regex
     if (lpefr->fuFlags & SCFIND_REGEXP) {
-      EditRegexCorrectLineStart(hwnd, szFind, &start);
+      EditSetRegexStartAnchor(hwnd, szFind, &start, TRUE);
     }
   }
 
