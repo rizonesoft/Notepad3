@@ -5150,7 +5150,8 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   int iCount = 0;
   int start = iStartPos;
   int end = iEndPos;
-  while ((start < end) && (iPos >= 0))
+
+  while ((iPos >= 0) && (start < end) && (end <= iEndPos))
   {
     iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
 
