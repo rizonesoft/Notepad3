@@ -261,6 +261,9 @@
     <ClCompile Include="lexlib\DefaultLexer.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
+    <ClCompile Include="lexers\LexD.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
