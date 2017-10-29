@@ -446,6 +446,9 @@
     <ClInclude Include="include\ILoader.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="deelx\deelx.h">
+      <Filter>deelx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="deelx\doc\deelx_en.chm">
