@@ -4946,7 +4946,7 @@ int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
   if (lpefr->bTransformBS)
     TransformBackslashes(szFind, (lpefr->fuFlags & SCFIND_REGEXP), Encoding_SciGetCodePage(hwnd));
 
-  int slen = StringCchLenA(szFind, COUNTOF(szFind));
+  int slen = StringCchLenA(szFind, FNDRPL_BUFFER);
 
   if (slen == 0)
     InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
