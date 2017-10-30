@@ -875,12 +875,12 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 
   int i = -1;
 
-  if (!lpszFullPath || !StringCchLenN(lpszFullPath,MAX_PATH))
+  if (!lpszFullPath || !StringCchLen(lpszFullPath,MAX_PATH))
     return(FALSE);
   else
     GetShortPathName(lpszFullPath,szShortPath,MAX_PATH);
 
-  if (!lpszDisplayName || !StringCchLenN(lpszDisplayName,MAX_PATH))
+  if (!lpszDisplayName || !StringCchLen(lpszDisplayName,MAX_PATH))
     SHGetFileInfo(lpszFullPath,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
   else
     StringCchCopyN(shfi.szDisplayName,COUNTOF(shfi.szDisplayName),lpszDisplayName,MAX_PATH);
@@ -896,7 +896,7 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
     DirList_GetItem(hwnd,i,&dli);
     GetShortPathName(dli.szFileName,dli.szFileName,MAX_PATH);
 
-    if (!StringCchCompareI(dli.szFileName,szShortPath))
+    if (!StringCchCompareIN(dli.szFileName,COUNTOF(dli.szFileName),szShortPath,COUNTOF(szShortPath)))
     {
       ListView_SetItemState(hwnd,i,LVIS_FLAGS,LVIS_FLAGS);
       ListView_EnsureVisible(hwnd,i,FALSE);
@@ -928,7 +928,7 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
   StringCchCopyN(pdlf->tFilterBuf,COUNTOF(pdlf->tFilterBuf),lpszFileSpec,DL_FILTER_BUFSIZE);
   pdlf->bExcludeFilter = bExcludeFilter;
 
-  if (!StringCchCompareX(lpszFileSpec,L"*.*") || !StringCchLenN(lpszFileSpec,DL_FILTER_BUFSIZE))
+  if (!StringCchCompareX(lpszFileSpec,L"*.*") || !StringCchLen(lpszFileSpec,DL_FILTER_BUFSIZE))
     return;
 
   pdlf->nCount = 1;

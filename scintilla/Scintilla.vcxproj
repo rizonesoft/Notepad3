@@ -201,6 +201,7 @@
     <ClCompile Include="lexers\LexConf.cxx" />
     <ClCompile Include="lexers\LexCPP.cxx" />
     <ClCompile Include="lexers\LexCSS.cxx" />
+    <ClCompile Include="lexers\LexD.cxx" />
     <ClCompile Include="lexers\LexDiff.cxx" />
     <ClCompile Include="lexers\LexErrorList.cxx" />
     <ClCompile Include="lexers\LexHTML.cxx" />
@@ -270,6 +271,7 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="deelx\deelx.h" />
     <ClInclude Include="deelx\deelx64.h" />
     <ClInclude Include="include\ILexer.h" />
     <ClInclude Include="include\ILoader.h" />

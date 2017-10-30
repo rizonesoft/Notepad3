@@ -2900,7 +2900,8 @@ struct Sci_TextToFind {
     number used by the C and C++ lexer to display literal strings; it has the value 6). This
     feature works differently on Windows and GTK+.<br />
     The default character set is <code>SC_CHARSET_DEFAULT</code>.</p>
-    <p><code>SC_CHARSET_ANSI</code> and <code>SC_CHARSET_DEFAULT</code> specify European Windows code page 1252 unless the code page is set.</p>
+    <p><code>SC_CHARSET_ANSI</code> specifies European Windows code page 1252.</p>
+    <p><code>SC_CHARSET_DEFAULT</code> specifies the system-default code page unless the code page is set.</p>
 
 <table class="standard" summary="Character Sets supported"><tbody>
   <tr>
@@ -6615,6 +6616,10 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      <a class="message" href="#SCI_GETPRIMARYSTYLEFROMSTYLE">SCI_GETPRIMARYSTYLEFROMSTYLE(int style) &rarr; int</a><br />
      <a class="message" href="#SCI_SETIDENTIFIERS">SCI_SETIDENTIFIERS(int style, const char *identifiers)</a><br />
      <a class="message" href="#SCI_PRIVATELEXERCALL">SCI_PRIVATELEXERCALL(int operation, int pointer) &rarr; int</a><br />
+     <a class="message" href="#SCI_GETNAMEDSTYLES">SCI_GETNAMEDSTYLES &rarr; int</a><br />
+     <a class="message" href="#SCI_NAMEOFSTYLE">SCI_NAMEOFSTYLE(int style, char *name) &rarr; int</a><br />
+     <a class="message" href="#SCI_TAGSOFSTYLE">SCI_TAGSOFSTYLE(int style, char *tags) &rarr; int</a><br />
+     <a class="message" href="#SCI_DESCRIPTIONOFSTYLE">SCI_DESCRIPTIONOFSTYLE(int style, char *description) &rarr; int</a><br />
 
     <p><b id="SCI_SETLEXER">SCI_SETLEXER(int lexer)</b><br />
      <b id="SCI_GETLEXER">SCI_GETLEXER &rarr; int</b><br />
@@ -6791,6 +6796,23 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <p><b id="SCI_PRIVATELEXERCALL">SCI_PRIVATELEXERCALL(int operation, int pointer) &rarr; int</b><br />
      Call into a lexer in a way not understood by Scintilla.</p>
+
+    <h3 id="StyleMetadata">Style Metadata</h3>
+    <p>Lexers may provide information on the styles they use.
+    Lexers have to explicitly support this feature by implementing particular methods.</p>
+
+    <p><b id="SCI_GETNAMEDSTYLES">SCI_GETNAMEDSTYLES &rarr; int</b><br />
+     Retrieve the number of named styles for the lexer.</p>
+
+    <p><b id="SCI_NAMEOFSTYLE">SCI_NAMEOFSTYLE(int style, char *name) &rarr; int</b><br />
+     Retrieve the name of a style. This is a C preprocessor symbol like "SCE_C_COMMENTDOC".</p>
+
+    <p><b id="SCI_TAGSOFSTYLE">SCI_TAGSOFSTYLE(int style, char *tags) &rarr; int</b><br />
+     Retrieve the tags of a style. This is a space-separated set of words like "comment documentation".</p>
+
+    <p><b id="SCI_DESCRIPTIONOFSTYLE">SCI_DESCRIPTIONOFSTYLE(int style, char *description) &rarr; int</b><br />
+     Retrieve an English-language description of a style which may be suitable for display in a user interface.
+     This looks like "Doc comment: block comments beginning with /** or /*!".</p>
 
     <h2 id="LexerObjects">Lexer Objects</h2>
 
