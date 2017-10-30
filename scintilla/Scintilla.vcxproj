@@ -271,6 +271,7 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="deelx\deelx.h" />
     <ClInclude Include="deelx\deelx64.h" />
     <ClInclude Include="include\ILexer.h" />
     <ClInclude Include="include\ILoader.h" />
