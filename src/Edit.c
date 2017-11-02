@@ -323,7 +323,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
   if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
     return(FALSE);
 
-  length = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
+  length = (int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
 
   if (length == 0) 
   {
@@ -396,7 +396,7 @@ BOOL EditSetNewEncoding(HWND hwnd,int iNewEncoding,BOOL bNoUI,BOOL bSetSavePoint
       //return FALSE; // commented out ? : allow conversion between arbitrary encodings
     //}
   
-    if (SendMessage(hwnd, SCI_GETLENGTH, 0, 0) == 0) {
+    if (SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0) == 0) {
 
       BOOL bIsEmptyUndoHistory = (SendMessage(hwnd, SCI_CANUNDO, 0, 0) == 0 && SendMessage(hwnd, SCI_CANREDO, 0, 0) == 0);
 
@@ -626,7 +626,7 @@ BOOL EditCopyAppend(HWND hwnd)
     }
   }
   else {
-    int cchText = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
+    int cchText = (int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
     pszText = LocalAlloc(LPTR,cchText + 1);
     SendMessage(hwnd,SCI_GETTEXT,(int)LocalSize(pszText),(LPARAM)pszText);
   }
@@ -1049,7 +1049,7 @@ BOOL EditSaveFile(
     EditStripTrailingBlanks(hwnd,TRUE);
 
   // get text
-  cbData = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
+  cbData = (int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
   lpData = GlobalAlloc(GPTR, cbData + 4); //fix: +bom
   SendMessage(hwnd,SCI_GETTEXT,GlobalSize(lpData),(LPARAM)lpData);
 
@@ -2174,7 +2174,7 @@ void EditMoveUp(HWND hwnd)
         SendMessage(hwnd,SCI_SETTARGETSTART,(WPARAM)
           SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLineDest,0),0);
         SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)
-          SendMessage(hwnd,SCI_GETLENGTH,0,0),0);
+          SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0),0);
         SendMessage(hwnd,SCI_REPLACETARGET,0,(LPARAM)"");
       }
 
@@ -2285,7 +2285,7 @@ void EditMoveDown(HWND hwnd)
           SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)
             SendMessage(hwnd,SCI_GETLINECOUNT,0,0)-2,0),0);
         SendMessage(hwnd,SCI_SETTARGETEND,(WPARAM)
-          SendMessage(hwnd,SCI_GETLENGTH,0,0),0);
+          SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0),0);
         SendMessage(hwnd,SCI_REPLACETARGET,0,(LPARAM)"");
       }
 
@@ -2333,7 +2333,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
   //if (iSelStart == iSelEnd) {
   //  iSelStart = 0;
-  //  iSelEnd   = SendMessage(hwnd,SCI_GETLENGTH,0,0);
+  //  iSelEnd   = SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
   //}
 
   UINT mbcp = Encoding_SciGetCodePage(hwnd);
@@ -3187,7 +3187,7 @@ void EditStripFirstCharacter(HWND hwnd)
 
   if (iSelStart == iSelEnd) {
     iSelStart = 0;
-    iSelEnd   = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
+    iSelEnd   = (int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
   }
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
@@ -3234,7 +3234,7 @@ void EditStripLastCharacter(HWND hwnd)
 
   if (iSelStart == iSelEnd) {
     iSelStart = 0;
-    iSelEnd   = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
+    iSelEnd   = (int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
   }
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
@@ -3340,7 +3340,7 @@ void EditCompressSpaces(HWND hwnd)
     int iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
     int iLineStart = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iSelStart,0);
     int iLineEnd   = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iSelEnd,0);
-    int iLength    = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
+    int iLength    = (int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
 
     char* pszIn;
     char* pszOut;
@@ -3437,7 +3437,7 @@ void EditRemoveBlankLines(HWND hwnd,BOOL bMerge)
 
   if (iSelStart == iSelEnd) {
     iSelStart = 0;
-    iSelEnd   = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
+    iSelEnd   = (int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
   }
 
   if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
@@ -4200,7 +4200,7 @@ void EditSelectEx(HWND hwnd,int iAnchorPos,int iCurrentPos)
 //
 void EditFixPositions(HWND hwnd)
 {
-  int iMaxPos = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
+  int iMaxPos = (int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0);
   int iCurrentPos = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
   int iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
 
@@ -4274,7 +4274,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
     tr.chrg.cpMax = min(SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0),(LONG)(tr.chrg.cpMin + COUNTOF(tch)));
   }*/
 
-  tr.chrg.cpMax = min((int)SendMessage(hwnd,SCI_GETLENGTH,0,0),tr.chrg.cpMax);
+  tr.chrg.cpMax = min((int)SendMessage(hwnd,SCI_GETTEXTLENGTH,0,0),tr.chrg.cpMax);
 
   pszText  = LocalAlloc(LPTR,(tr.chrg.cpMax - tr.chrg.cpMin)+2);
   pszTextW = LocalAlloc(LPTR,((tr.chrg.cpMax - tr.chrg.cpMin)*2)+2);
@@ -4971,17 +4971,17 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
   if (slen <= 0)
     return FALSE;
 
-  int iDocLength = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
+  int iTextLength = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
 
   int start = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
-  int end = iDocLength;
+  int end = iTextLength;
 
   if (lpefr->fuFlags & SCFIND_REGEXP) {
     EditRegexAdaptAnchors(hwnd, szFind, &start, TRUE);
   }
-  if (start >= end) {
+  if (start > end) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
-      end = start;  start = 0;
+      end = min(start, iTextLength);  start = 0;
     }
     else
       bSuppressNotFound = TRUE;
@@ -4991,7 +4991,7 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
 
   if ((iPos < 0) && (start > 0) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
-      end = start;  start = 0;
+      end = min(start, iTextLength);  start = 0;
       iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
     }
     else
@@ -5029,7 +5029,7 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
   if (slen <= 0)
     return FALSE;
 
-  int iDocLength = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
+  int iTextLength = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
 
   int start = max(0, (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0));
   int end = 0;
@@ -5039,7 +5039,7 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
   }
   if (start <= end) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
-      end = start;  end = iDocLength;
+      end = start;  end = iTextLength;
     }
     else
       bSuppressNotFound = TRUE;
@@ -5047,9 +5047,9 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
 
   int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
 
-  if ((iPos < 0) && (start < iDocLength) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) {
+  if ((iPos < 0) && (start <= iTextLength) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPRE)) {
-      end = start;  start = iDocLength;
+      end = start;  start = iTextLength;
       iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
     }
     else
@@ -5142,7 +5142,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   if (!pszReplace)
     return -1; // recoding of clipboard canceled
 
-  int iDiffToDocEnd = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0) - iEndPos;
+  int iDiffToDocEnd = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0) - iEndPos;
 
   BeginWaitCursor();
 
@@ -5151,7 +5151,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   int start = iStartPos;
   int end = iEndPos;
 
-  while ((iPos >= 0) && (start < end) && (end <= iEndPos))
+  while ((iPos >= 0) && (start <= end) && (end <= iEndPos))
   {
     iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
 
@@ -5164,7 +5164,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
       int iReplLen = (int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
 
       // move start behind replacement; target region maybe extended by replacement
-      iEndPos = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0) - iDiffToDocEnd;
+      iEndPos = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0) - iDiffToDocEnd;
       start += iReplLen;
       end = iEndPos;
 
@@ -5200,7 +5200,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
 BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
 {
   int start = 0;
-  int end = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
+  int end = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
 
   int token = BeginSelUndoAction();
 
@@ -5266,7 +5266,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
     return;
   }
 
-  int iTextLen = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
+  int iTextLength = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
 
   // get current selection
   int iSelStart = (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0);
@@ -5275,7 +5275,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
 
   // clear existing marker indicators
   SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
-  SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, iTextLen);
+  SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, iTextLength);
 
   // if nothing selected or multiple lines are selected exit
   if ((iSelCount == 0) ||
@@ -5306,7 +5306,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
 
   int iPos = 0;
   int start = 0;
-  int end = iTextLen;
+  int end = iTextLength;
 
   while (++iMarkOccurrencesCount < iMarkOccurrencesMaxCount) {
     iPos = EditFindInTarget(hwnd, pszText, iSelLength, flags, &start, &end);
@@ -5316,7 +5316,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
 
     // mark this match
     SendMessage(hwnd, SCI_INDICATORFILLRANGE, iPos, iSelCount);
-    start = end + 1;  end = iTextLen;
+    start = end + 1;  end = iTextLength;
 
     if (start >= end)
       break;
@@ -5370,20 +5370,20 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
   LocalFree(pLine);
 
   int iRootLen = StringCchLenA(pRoot, cnt + 1);
-  int iDocLen = (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0);
+  int iTextLength = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
 
   int start = 0;
-  int end = iDocLen;
+  int end = iTextLength;
 
   int iPosFind = EditFindInTarget(hwnd, pRoot, iRootLen, SCFIND_WORDSTART, &start, &end);
 
   int iNumWords = 0;
   char* pWord = NULL;
-  while (iPosFind >= 0 && iPosFind < iDocLen) {
+  while (iPosFind >= 0 && iPosFind < iTextLength) {
     int wordEnd = iPosFind + iRootLen;
 
     if (iPosFind != iCurrentPos - iRootLen) {
-      while (wordEnd < iDocLen && !StrChrIA(NON_WORD, (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)wordEnd, 0)))
+      while (wordEnd < iTextLength && !StrChrIA(NON_WORD, (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)wordEnd, 0)))
         wordEnd++;
 
       int wordLength = wordEnd - iPosFind;
@@ -5430,7 +5430,7 @@ void CompleteWord(HWND hwnd, BOOL autoInsert) {
         LocalFree(pWord);
       }
     }
-    start = wordEnd;  end = iDocLen;
+    start = wordEnd;  end = iTextLength;
     iPosFind = EditFindInTarget(hwnd, pRoot, iRootLen, SCFIND_WORDSTART, &start, &end);
   }
 
@@ -5504,7 +5504,7 @@ BOOL __fastcall EditHighlightIfBrace(HWND hwnd, int iPos) {
 //
 void EditMatchBrace(HWND hwnd) {
   int iEndStyled = (int)SendMessage(hwnd, SCI_GETENDSTYLED, 0, 0);
-  if (iEndStyled < (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0)) {
+  if (iEndStyled < (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0)) {
     int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iEndStyled, 0);
     int iEndStyled2 = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, iLine, 0);
     SendMessage(hwnd, SCI_COLOURISE, iEndStyled2, -1);

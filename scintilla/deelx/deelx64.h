@@ -6,6 +6,7 @@
 // All Rights Reserved.
 //
 // http://www.regexlab.com/deelx/
+// https://github.com/sswater/deelx
 //
 // Author:  ∑ ŸŒ∞ (sswater shi)
 // sswater@gmail.com
@@ -3864,7 +3865,7 @@ template <class CHART> CHART * CRegexpT <CHART> ::Replace(const CHART * tstring,
         index_t delta = result->GetStart() - lastIndex;
         if (delta > 0)
         {
-            delta = result->GetStart() - lastIndex;
+            //@@@delta = result->GetStart() - lastIndex;
             compiledto.Push(lastIndex);
             compiledto.Push(delta);
         }
