@@ -3865,7 +3865,6 @@ template <class CHART> CHART * CRegexpT <CHART> ::Replace(const CHART * tstring,
         index_t delta = result->GetStart() - lastIndex;
         if (delta > 0)
         {
-            //@@@delta = result->GetStart() - lastIndex;
             compiledto.Push(lastIndex);
             compiledto.Push(delta);
         }

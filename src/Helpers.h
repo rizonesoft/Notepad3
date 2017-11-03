@@ -32,7 +32,7 @@
 
 extern WCHAR szIniFile[MAX_PATH];
 
-__inline void swapi(int a, int b) { int t = a;  a = b;  b = t; }
+__inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
   GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),szIniFile)

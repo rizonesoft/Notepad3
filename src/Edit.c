@@ -5039,7 +5039,7 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
   }
   if (start <= end) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
-      end = start;  end = iTextLength;
+      end = start;  start = iTextLength;
     }
     else
       bSuppressNotFound = TRUE;
@@ -5131,7 +5131,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   char szFind[FNDRPL_BUFFER];
 
   if (iStartPos > iEndPos)
-    swapi(iStartPos, iEndPos);
+    swapi(&iStartPos, &iEndPos);
 
   int slen = EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
   if (slen <= 0)

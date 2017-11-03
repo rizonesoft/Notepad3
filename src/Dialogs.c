@@ -1580,14 +1580,13 @@ INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
 
         WCHAR tch[512];
-        WCHAR *p1, *p2;
         int i;
 
         for (i = 0; i < 4; i++) {
           GetDlgItemText(hwnd,200+i,tch,COUNTOF(tch));
           StringCchCat(tch,COUNTOF(tch),L"|");
-          p1 = tch;
-          p2 = StrChr(p1, L'|');
+          WCHAR* p1 = tch;
+          WCHAR* p2 = StrChr(p1, L'|');
           while (p2) {
             *p2++ = L'\0';
             if (*p1)
