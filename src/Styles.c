@@ -46,6 +46,7 @@ extern HINSTANCE g_hInstance;
 extern int iSciFontQuality;
 extern const int FontQuality[4];
 
+extern int  iMarkOccurrences;
 extern BOOL bUseOldStyleBraceMatching;
 
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
@@ -69,20 +70,22 @@ EDITLEXER lexDefault =   { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx;
                 /* 10 */ { SCI_SETEDGECOLOUR, 63110, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63111, L"Extra Line Spacing (Size)", L"size:2", L"" },
                 /* 12 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63124, L"Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
+                /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63262, L"Mark Occurrences (Colors)", L"", L"" },
 
-                /* 13 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
-                /* 14 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
-                /* 15 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces", L"bold; fore:#FF0000", L"" },
-                /* 16 */ { STYLE_BRACEBAD, 63115, L"2nd Matching Braces Error", L"bold; fore:#000080", L"" },
-                /* 17 */ { STYLE_CONTROLCHAR, 63116, L"2nd Control Characters (Font)", L"size:-1", L"" },
-                /* 18 */ { STYLE_INDENTGUIDE, 63117, L"2nd Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
-                /* 19 */ { SCI_SETSELFORE+SCI_SETSELBACK, 63118, L"2nd Selected Text (Colors)", L"eolfilled", L"" },
-                /* 20 */ { SCI_SETWHITESPACEFORE+SCI_SETWHITESPACEBACK+SCI_SETWHITESPACESIZE, 63119, L"2nd Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
-                /* 21 */ { SCI_SETCARETLINEBACK, 63120, L"2nd Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
-                /* 22 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, 63121, L"2nd Caret (Color, Size 1-3)", L"", L"" },
-                /* 23 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
-                /* 24 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
-                /* 25 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63125, L"2nd Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
+                /* 14 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
+                /* 15 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
+                /* 16 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces", L"bold; fore:#FF0000", L"" },
+                /* 17 */ { STYLE_BRACEBAD, 63115, L"2nd Matching Braces Error", L"bold; fore:#000080", L"" },
+                /* 18 */ { STYLE_CONTROLCHAR, 63116, L"2nd Control Characters (Font)", L"size:-1", L"" },
+                /* 19 */ { STYLE_INDENTGUIDE, 63117, L"2nd Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
+                /* 20 */ { SCI_SETSELFORE+SCI_SETSELBACK, 63118, L"2nd Selected Text (Colors)", L"eolfilled", L"" },
+                /* 21 */ { SCI_SETWHITESPACEFORE+SCI_SETWHITESPACEBACK+SCI_SETWHITESPACESIZE, 63119, L"2nd Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
+                /* 22 */ { SCI_SETCARETLINEBACK, 63120, L"2nd Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
+                /* 23 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, 63121, L"2nd Caret (Color, Size 1-3)", L"", L"" },
+                /* 24 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
+                /* 25 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
+                /* 26 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63125, L"2nd Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
+                /* 27 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100", L"" },
 
                          { -1, 00000, L"", L"", L"" } } };
 
@@ -101,8 +104,9 @@ enum LexDefaultStyles {
   STY_LONG_LN_MRK = 10,
   STY_X_LN_SPACE = 11,
   STY_BOOK_MARK = 12,
+  STY_MARK_OCC = 13,
 
-  STY_CNT_LAST = 13  // STY_2ND_XXX = STY_XXX + STY_CNT_LAST 
+  STY_CNT_LAST = 14  // STY_2ND_XXX = STY_XXX + STY_CNT_LAST 
 };
 
 
@@ -3171,6 +3175,36 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue, &iValue))
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
   }
+
+  // Occurrences Marker
+  if (!Style_StrGetColor(TRUE, lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue)) 
+  {
+    WCHAR* sty = L"";
+    switch (iMarkOccurrences) {
+    case 1:
+      sty = L"fore:0xFF0000";
+      iValue = RGB(0xFF, 0x00, 0x00);
+      break;
+    case 2:
+      sty = L"fore:0x00FF00";
+      iValue = RGB(0x00, 0xFF, 0x00);
+      break;
+    case 3:
+    default:
+      sty = L"fore:0x0000FF";
+      iValue = RGB(0x00, 0xFF, 0x00);
+      break;
+    }
+    StringCchCopyW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), sty);
+  }
+  SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, iValue);
+
+  if (!Style_StrGetAlpha(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue)) {
+    iValue = 100;
+    StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha:100");
+  }   
+  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
+
 
   if (pLexNew != &lexANSI)
     Style_SetStyles(hwnd, lexDefault.Styles[STY_CTRL_CHR + iIdx].iStyle, lexDefault.Styles[STY_CTRL_CHR + iIdx].szValue); // control char

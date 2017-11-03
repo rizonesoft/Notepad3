@@ -173,22 +173,22 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_HOME + (SCMOD_SHIFT << 16)),SCI_VCHOMEWRAPEXTEND);
   SendMessage(hwnd,SCI_ASSIGNCMDKEY,(SCK_END + (SCMOD_SHIFT << 16)),SCI_LINEENDWRAPEXTEND);
 
-  // set indicator styles
-  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 220);
-  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
-  SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
+  // set indicator styles (foreground and alpha maybe overridden by style settings)
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
+  SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, RGB(0x00,0x00,0xFF));  
+  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 220);
 
-  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 220);
-  SendMessage(hwnd, SCI_INDICSETALPHA,INDIC_NP3_MATCH_BRACE, 120);
-  SendMessage(hwnd, SCI_INDICSETFORE,INDIC_NP3_MATCH_BRACE, 0xff << (1 << 3)); // overriden by style
-  SendMessage(hwnd, SCI_INDICSETSTYLE,INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
+  SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
+  SendMessage(hwnd, SCI_INDICSETFORE,INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
+  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, 120);
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, 220);
 
-  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 220);
-  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
-  SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, 0xff ); // overriden by style
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
-  
+  SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, RGB(0xFF, 0x00, 0x00));
+  SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 220);
+
 
   // word delimiter handling
   EditInitWordDelimiter(hwnd);
@@ -5261,7 +5261,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
 {
   iMarkOccurrencesCount = -1; // -1 !
 
-  if (!iMarkOccurrences) { // feature is off
+  if (iMarkOccurrences == 0) { // feature is off
     UpdateStatusbar();
     return;
   }
