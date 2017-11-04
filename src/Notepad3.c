@@ -4519,7 +4519,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case CMD_DEL:
-      {
+      if ((BOOL)SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
+        SendMessage(hwndEdit, SCI_CLEAR, 0, 0);
+      else {
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit, SCI_CLEAR, 0, 0);
         EndSelUndoAction(token);
@@ -4528,7 +4530,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case CMD_BACK:
-      {
+      if ((BOOL)SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
+        SendMessage(hwndEdit, SCI_DELETEBACK, 0, 0);
+      else {
         int token = BeginSelUndoAction();
         SendMessage(hwndEdit, SCI_DELETEBACK, 0, 0);
         EndSelUndoAction(token);
