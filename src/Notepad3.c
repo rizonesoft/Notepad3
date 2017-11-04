@@ -3800,7 +3800,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         int iPos = (int)SendMessage( hwndEdit , SCI_GETCURRENTPOS , 0 , 0);
         int iLine = (int)SendMessage( hwndEdit , SCI_LINEFROMPOSITION , iPos , 0 );
 
-        int bitmask = 1;
+        int bitmask = (1 << MARKER_NP3_BOOKMARK);
         int iNextLine = (int)SendMessage( hwndEdit , SCI_MARKERNEXT , iLine+1 , bitmask );
         if( iNextLine == -1 )
         {
@@ -3849,7 +3849,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         int iLine = (int)SendMessage(hwndEdit, SCI_LINEFROMPOSITION, iPos, 0);
 
         int bitmask = (int)SendMessage(hwndEdit, SCI_MARKERGET, iLine, MARKER_NP3_BOOKMARK);
-        if (bitmask & 1) {
+        if (bitmask & (1 << MARKER_NP3_BOOKMARK)) {
           // unset
           SendMessage(hwndEdit, SCI_MARKERDELETE, iLine, MARKER_NP3_BOOKMARK);
         }
@@ -3933,7 +3933,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
     case IDM_EDIT_COMPLETEWORD:
-        CompleteWord(hwndEdit, TRUE);
+        EditCompleteWord(hwndEdit, TRUE);
         break;
 
 
@@ -5322,7 +5322,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   if( iPrevLineLength == 0 )
                   {
                       int bitmask = (int)SendMessage( hwndEdit , SCI_MARKERGET , iCurLine-1 , 0 );
-                      if( bitmask & 1 )
+                      if( bitmask & (1 << MARKER_NP3_BOOKMARK))
                       {
                           SendMessage( hwndEdit , SCI_MARKERDELETE , iCurLine-1 , MARKER_NP3_BOOKMARK);
                           SendMessage( hwndEdit , SCI_MARKERADD , iCurLine , MARKER_NP3_BOOKMARK);
@@ -5434,7 +5434,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
           }
           else if (bAutoCompleteWords && !SendMessage(hwndEdit, SCI_AUTOCACTIVE, 0, 0))
-            CompleteWord(hwndEdit, FALSE);
+            EditCompleteWord(hwndEdit, FALSE);
           break;
 
         case SCN_MODIFIED:
@@ -7180,6 +7180,11 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol
     if (MRU_FindFile(pFileMRU,pszFileName,&idx)) {
       pFileMRU->iEncoding[idx] = *ienc;
       pFileMRU->iCaretPos[idx] = (bPreserveCaretPos) ? (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0) : 0;
+      WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+      EditGetBookmarkList(hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
+      if (pFileMRU->pszBookMarks[idx])
+        LocalFree(pFileMRU->pszBookMarks[idx]);
+      pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
     }
     fSuccess = EditSaveFile(hwndEdit,pszFileName,*ienc,pbCancelDataLoss,bSaveCopy);
   }
@@ -7346,11 +7351,15 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     fileEncoding = Encoding_Current(CPI_GET);
     Encoding_HasChanged(fileEncoding);
     int idx, iCaretPos = 0;
+    LPCWSTR pszBookMarks = L"";
     if (!bReload && MRU_FindFile(pFileMRU,szFileName,&idx)) {
       iCaretPos = pFileMRU->iCaretPos[idx];
+      pszBookMarks = pFileMRU->pszBookMarks[idx];
     }
-    MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs,fileEncoding,iCaretPos);
+    MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs,fileEncoding,iCaretPos,pszBookMarks);
     
+    EditSetBookmarkList(hwndEdit, pszBookMarks);
+
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
 
@@ -7483,6 +7492,11 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     if (MRU_FindFile(pFileMRU,szCurFile,&idx)) {
       pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
       pFileMRU->iCaretPos[idx] = (bPreserveCaretPos) ? (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0) : 0;
+      WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+      EditGetBookmarkList(hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
+      if (pFileMRU->pszBookMarks[idx])
+        LocalFree(pFileMRU->pszBookMarks[idx]);
+      pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
     }
     return TRUE;
   }
@@ -7572,7 +7586,9 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       int iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
       int iCaretPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-      MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs,iCurrEnc,iCaretPos);
+      WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+      EditGetBookmarkList(hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
+      MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs,iCurrEnc,iCaretPos,wchBookMarks);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,szCurFile);
       UpdateToolbar();
