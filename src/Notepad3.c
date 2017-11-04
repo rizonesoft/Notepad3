@@ -4583,8 +4583,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         int iStartPos   = (int)SendMessage(hwndEdit,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
         int iEndPos     = (int)SendMessage(hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0);
 
-        if (iPos != iAnchor)
-          SendMessage(hwndEdit,SCI_SETSEL,(WPARAM)iPos,(LPARAM)iPos);
+        if (iPos != iAnchor) {
+          int token = BeginSelUndoAction();
+          SendMessage(hwndEdit, SCI_SETSEL, (WPARAM)iPos, (LPARAM)iPos);
+          EndSelUndoAction(token);
+        }
         else {
           if (iStartPos != iEndPos)
             SendMessage(hwndEdit,SCI_DELWORDRIGHT,0,0);
@@ -4597,13 +4600,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case CMD_CTRLTAB:
       {
-        int token = BeginSelUndoAction();
+        int token = ((BOOL)SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) ? -1 : BeginSelUndoAction();
         SendMessage(hwndEdit,SCI_SETTABINDENTS,FALSE,0);
         SendMessage(hwndEdit,SCI_SETUSETABS,TRUE,0);
         SendMessage(hwndEdit,SCI_TAB,0,0);
         SendMessage(hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
         SendMessage(hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
-        EndSelUndoAction(token);
+        if (token >= 0) EndSelUndoAction(token);
       }
       break;
 
