@@ -1140,13 +1140,12 @@ int DriveBox_Fill(HWND hwnd)
                 // Insert sorted ...
                 {
                   COMBOBOXEXITEM cbei2;
-                  LPDC_ITEMDATA lpdcid2;
                   cbei2.mask = CBEIF_LPARAM;
                   cbei2.iItem = 0;
 
                   while ((SendMessage(hwnd,CBEM_GETITEM,0,(LPARAM)&cbei2)))
                   {
-                    lpdcid2 = (LPDC_ITEMDATA)cbei2.lParam;
+                    LPDC_ITEMDATA lpdcid2 = (LPDC_ITEMDATA)cbei2.lParam;
                     HRESULT hr2 = (lpdcid->lpsf->lpVtbl->CompareIDs(
                                 lpdcid->lpsf,
                                 0,
@@ -1236,7 +1235,6 @@ BOOL DriveBox_SelectDrive(HWND hwnd,LPCWSTR lpszPath)
 {
 
   COMBOBOXEXITEM cbei;
-  LPDC_ITEMDATA lpdcid;
   WCHAR szRoot[64] = { L'\0' };
 
   int i;
@@ -1253,7 +1251,7 @@ BOOL DriveBox_SelectDrive(HWND hwnd,LPCWSTR lpszPath)
     // Get DC_ITEMDATA* of Item i
     cbei.iItem = i;
     SendMessage(hwnd,CBEM_GETITEM,0,(LPARAM)&cbei);
-    lpdcid = (LPDC_ITEMDATA)cbei.lParam;
+    LPDC_ITEMDATA lpdcid = (LPDC_ITEMDATA)cbei.lParam;
 
     // Get File System Path for Drive
     IL_GetDisplayName(lpdcid->lpsf,lpdcid->pidl,SHGDN_FORPARSING,szRoot,64);

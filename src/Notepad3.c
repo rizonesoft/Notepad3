@@ -2306,14 +2306,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
 
-  switch (iMarkOccurrences)
-  {
-    case 0: i = IDM_VIEW_MARKOCCURRENCES_OFF; break;
-    case 3: i = IDM_VIEW_MARKOCCURRENCES_BLUE; break;
-    case 2: i = IDM_VIEW_MARKOCCURRENCES_GREEN; break;
-    case 1: i = IDM_VIEW_MARKOCCURRENCES_RED; break;
-  }
-  CheckMenuRadioItem(hmenu,IDM_VIEW_MARKOCCURRENCES_OFF,IDM_VIEW_MARKOCCURRENCES_RED,i,MF_BYCOMMAND);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCURRENCES_ONOFF, iMarkOccurrences != 0);
   CheckCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_CASE,bMarkOccurrencesMatchCase);
   CheckCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_WORD,bMarkOccurrencesMatchWords);
   EnableCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_CASE,iMarkOccurrences != 0);
@@ -4125,30 +4118,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
-    case IDM_VIEW_MARKOCCURRENCES_OFF:
-      iMarkOccurrences = 0;
-      // clear all marks
-      SendMessage(hwndEdit, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
-      SendMessage(hwndEdit, SCI_INDICATORCLEARRANGE, 0, (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
-      iMarkOccurrencesCount = -1;
-      break;
-
-    case IDM_VIEW_MARKOCCURRENCES_RED:
-      iMarkOccurrences = 1;
-      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
-      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      break;
-
-    case IDM_VIEW_MARKOCCURRENCES_GREEN:
-      iMarkOccurrences = 2;
-      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
-      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      break;
-
-    case IDM_VIEW_MARKOCCURRENCES_BLUE:
-      iMarkOccurrences = 3;
-      SendMessage(hwndEdit, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, 0xff << ((iMarkOccurrences - 1) << 3));
-      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+    case IDM_VIEW_MARKOCCURRENCES_ONOFF:
+      iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
+      if (iMarkOccurrences == 0) {
+        // clear all marks
+        SendMessage(hwndEdit, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
+        SendMessage(hwndEdit, SCI_INDICATORCLEARRANGE, 0, (int)SendMessage(hwndEdit, SCI_GETLENGTH, 0, 0));
+        iMarkOccurrencesCount = -1;
+      }
+      else
+        EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_CASE:
@@ -5734,7 +5713,8 @@ void LoadSettings()
 
   bShowCodeFolding = IniSectionGetBool(pIniSection,L"ShowCodeFolding", TRUE);
 
-  iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",3);
+  iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",1);
+  iMarkOccurrences = max(min(iMarkOccurrences, 3), 0);
   bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",FALSE);
   bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",TRUE);
 

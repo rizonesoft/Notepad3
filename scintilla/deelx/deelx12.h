@@ -6,6 +6,7 @@
 // All Rights Reserved.
 //
 // http://www.regexlab.com/deelx/
+// https://github.com/sswater/deelx
 //
 // Author:  ∑ ŸŒ∞ (sswater shi)
 // sswater@gmail.com
