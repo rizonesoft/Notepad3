@@ -4193,7 +4193,7 @@ BOOL Style_StrGetAlpha(LPCWSTR lpszStyle, int *i) {
       *i = min(max(SC_ALPHA_TRANSPARENT, iValue), SC_ALPHA_OPAQUE);
       return TRUE;
     }
-    }
+  }
   return FALSE;
 }
 

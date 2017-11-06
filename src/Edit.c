@@ -4610,13 +4610,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             if (StringCchLenA(lpefr->szFind,COUNTOF(lpefr->szFind))) {
               if (GetDlgItemTextA2W(CP_UTF8,hwnd,IDC_FINDTEXT,lpefr->szFindUTF8,COUNTOF(lpefr->szFindUTF8))) {
                 GetDlgItemText(hwnd,IDC_FINDTEXT,tch,COUNTOF(tch));
-                MRU_Add(mruFind,tch,0,0);
+                MRU_Add(mruFind,tch,0,0,NULL);
               }
             }
             if (StringCchLenA(lpefr->szReplace,COUNTOF(lpefr->szReplace))) {
               if (GetDlgItemTextA2W(CP_UTF8,hwnd,IDC_REPLACETEXT,lpefr->szReplaceUTF8,COUNTOF(lpefr->szReplaceUTF8))) {
                 GetDlgItemText(hwnd,IDC_REPLACETEXT,tch,COUNTOF(tch));
-                MRU_Add(mruReplace,tch,0,0);
+                MRU_Add(mruReplace,tch,0,0,NULL);
               }
             }
             else
@@ -5329,7 +5329,7 @@ void EditMarkAll(HWND hwnd, BOOL bMarkOccurrencesMatchCase, BOOL bMarkOccurrence
 
 //=============================================================================
 //
-//  CompleteWord()
+//  EditCompleteWord()
 //  Auto-complete words (by Aleksandar Lekov)
 //
 struct WLIST {
@@ -5337,7 +5337,7 @@ struct WLIST {
   struct WLIST* next;
 };
 
-void CompleteWord(HWND hwnd, BOOL autoInsert) {
+void EditCompleteWord(HWND hwnd, BOOL autoInsert) {
   const char* NON_WORD = bAccelWordNavigation ? DelimCharsAccel : DelimChars;
 
   int iCurrentPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
@@ -6235,7 +6235,6 @@ BOOL EditSortDlg(HWND hwnd,int *piSortFlags)
 }
 
 
-
 //=============================================================================
 //
 //  EditSortDlg()
@@ -6251,6 +6250,56 @@ void EditSetAccelWordNav(HWND hwnd,BOOL bAccelWordNav)
   }
   else
     SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
+}
+
+
+//=============================================================================
+//
+//  EditGetBookmarkList()
+//
+void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
+{
+  WCHAR tchLine[32];
+  StringCchCopyW(pszBookMarks, cchLength, L"");
+  int bitmask = (1 << MARKER_NP3_BOOKMARK);
+  int iLine = -1;
+  do {
+    iLine = (int)SendMessage(hwnd, SCI_MARKERNEXT, iLine + 1, bitmask);
+    if (iLine >= 0) {
+      StringCchPrintfW(tchLine, COUNTOF(tchLine), L"%i;", iLine);
+      StringCchCatW(pszBookMarks, cchLength, tchLine);
+    }
+  } while (iLine >= 0);
+
+  StrTrimW(pszBookMarks, L";");
+}
+
+
+//=============================================================================
+//
+//  EditSetBookmarkList()
+//
+void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
+{
+  WCHAR lnNum[32];
+  const WCHAR* p1 = pszBookMarks;
+  if (!p1) return;
+
+  int iLineMax = (int)SendMessage(hwnd, SCI_GETLINECOUNT, 0, 0) - 1;
+
+  while (*p1) {
+    const WCHAR* p2 = StrChr(p1, L';');
+    if (!p2)
+      p2 = StrEnd(p1);
+    StringCchCopyNW(lnNum, COUNTOF(lnNum), p1, min((int)(p2 - p1), 16));
+    int iLine = 0;
+    if (swscanf_s(lnNum, L"%i", &iLine) == 1) {
+      if (iLine <= iLineMax) {
+        SendMessage(hwnd, SCI_MARKERADD, iLine, MARKER_NP3_BOOKMARK);
+      }
+    }
+    p1 = (*p2) ? (p2 + 1) : p2;
+  }
 }
 
 
