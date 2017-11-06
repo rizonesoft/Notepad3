@@ -118,7 +118,9 @@ void  EditPrintInit();
 void  EditMatchBrace(HWND);
 void  EditMarkAll(HWND,BOOL,BOOL);
 void  EditSetAccelWordNav(HWND,BOOL);
-void  CompleteWord(HWND,BOOL);
+void  EditCompleteWord(HWND,BOOL);
+void  EditGetBookmarkList(HWND,LPWSTR,int);
+void  EditSetBookmarkList(HWND,LPCWSTR);
 
 
 //void SciInitThemes(HWND);
