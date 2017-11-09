@@ -258,7 +258,7 @@ std::string& translateRegExpr(std::string& regExprStr,bool wholeWord,bool wordSt
       tmpStr.push_back('\\');
       tmpStr.push_back('b');
     }
-    replaceAll(tmpStr,".","\\w");
+    replaceAll(tmpStr,".",R"(\w)");
   }
   else {
     tmpStr.append(regExprStr);

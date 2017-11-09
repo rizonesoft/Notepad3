@@ -99,6 +99,7 @@ void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);
 void  EditGetExcerpt(HWND,LPWSTR,DWORD);
 
+BOOL EditCheckRegex(HWND, LPCEDITFINDREPLACE);
 HWND  EditFindReplaceDlg(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditFindNext(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditFindPrev(HWND,LPCEDITFINDREPLACE,BOOL);

@@ -127,10 +127,7 @@ extern LPMRULIST mruReplace;
 //
 HWND EditCreate(HWND hwndParent)
 {
-
-  HWND hwnd;
-
-  hwnd = CreateWindowEx(
+  HWND hwnd = CreateWindowEx(
            WS_EX_CLIENTEDGE,
            L"Scintilla",
            NULL,
@@ -4323,17 +4320,21 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
-  LPEDITFINDREPLACE lpefr;
+  LPEDITFINDREPLACE lpefr = NULL;
   int i;
-  WCHAR tch[512+32];
+  WCHAR tch[FNDRPL_BUFFER + 32] = { L'\0' };
   BOOL bCloseDlg;
   BOOL bIsFindDlg;
 
   static UINT uCPEdit;
 
+  static COLORREF rgbRed = RGB(255, 170, 170);
+  static COLORREF rgbGreen = RGB(170, 255, 170);
+  static HBRUSH hBrushRed;
+  static HBRUSH hBrushGreen;
+
   switch(umsg)
   {
-
     case WM_INITDIALOG:
       {
         static BOOL bFirstTime = TRUE;
@@ -4483,15 +4484,21 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         GetString(SC_RESETPOS,tch2,COUNTOF(tch2));
         InsertMenu(hmenu,1,MF_BYPOSITION|MF_STRING|MF_ENABLED,SC_RESETPOS,tch2);
         InsertMenu(hmenu,2,MF_BYPOSITION|MF_SEPARATOR,0,NULL);
+
+        hBrushRed = CreateSolidBrush(rgbRed);
+        hBrushGreen = CreateSolidBrush(rgbGreen);
       }
       return TRUE;
 
+    case WM_DESTROY:
+      DeleteObject(hBrushRed);
+      DeleteObject(hBrushGreen);
+      return FALSE;
 
     case WM_COMMAND:
 
       switch(LOWORD(wParam))
       {
-
         case IDC_FINDTEXT:
         case IDC_REPLACETEXT:
           {
@@ -4757,6 +4764,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           break;
       }
 
+      InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE); // @@@
       return TRUE;
 
 
@@ -4801,6 +4809,47 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             }
             break;
         }
+      }
+      break;
+    
+    case WM_CTLCOLOREDIT:
+    case WM_CTLCOLORLISTBOX:
+      {
+        HWND hCheck = (HWND)lParam;
+        HDC hDC = (HDC)wParam;
+
+        HWND hComboBox = GetDlgItem(hwnd, IDC_FINDTEXT);
+        COMBOBOXINFO ci = { sizeof(COMBOBOXINFO) };
+        GetComboBoxInfo(hComboBox, &ci);
+
+        //if (hCheck == ci.hwndItem || hCheck == ci.hwndList)
+        if (hCheck == ci.hwndItem)
+        {
+          SetBkMode(hDC, TRANSPARENT);
+
+          if (IsDlgButtonChecked(hwnd, IDC_FINDREGEXP) == BST_CHECKED)
+          {
+            lpefr = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
+
+            BOOL bIsValidRegEx = (EditCheckRegex(hwnd,lpefr) != -2);
+
+            if (bIsValidRegEx) {
+              //SetTextColor(hDC, green);
+              SetBkColor(hDC, rgbGreen);
+              return (INT_PTR)hBrushGreen;
+            }
+            else {
+              //SetTextColor(hDC, red);
+              SetBkColor(hDC, rgbRed);
+              return (INT_PTR)hBrushRed;
+            }
+          }
+          else {
+            SetBkColor(hDC, COLOR_BACKGROUND);
+            return (INT_PTR)GetSysColorBrush(WHITE_BRUSH);
+          }
+        }
+        return DefWindowProc(hwnd, umsg, wParam, lParam);
       }
       break;
 
@@ -4955,6 +5004,30 @@ int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
       EscapeWildcards(szFind, lpefr);
 
   return slen;
+}
+
+
+
+//=============================================================================
+//
+//  EditCheckRegex()
+//
+BOOL EditCheckRegex(HWND hwnd, LPCEDITFINDREPLACE lpefr)
+{
+  if (!(lpefr->fuFlags & SCFIND_REGEXP))
+    return TRUE;
+
+  char szFind[FNDRPL_BUFFER];
+  int slen = EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
+  if (slen <= 0)
+    return FALSE;
+
+  int start = 0;
+  int end = min(slen,(int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0));
+
+  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
+
+  return (BOOL)(iPos != -2);  // -2 => RegExpr compile error
 }
 
 
@@ -5706,7 +5779,7 @@ INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
           else
             SetTextColor(hdc,RGB(0, 0, 0xFF));
           SelectObject(hdc,/*dwId == id_hover?*/hFontHover/*:hFontNormal*/);
-          return(LONG_PTR)GetSysColorBrush(COLOR_BTNFACE);
+          return (INT_PTR)GetSysColorBrush(COLOR_BTNFACE);
         }
       }
       break;
