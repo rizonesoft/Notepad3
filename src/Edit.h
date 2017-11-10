@@ -99,7 +99,7 @@ void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);
 void  EditGetExcerpt(HWND,LPWSTR,DWORD);
 
-BOOL  EditFindHasMatch(HWND, LPCEDITFINDREPLACE);
+BOOL  EditFindHasMatch(HWND,LPCEDITFINDREPLACE,BOOL);
 HWND  EditFindReplaceDlg(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditFindNext(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditFindPrev(HWND,LPCEDITFINDREPLACE,BOOL);
@@ -117,7 +117,7 @@ BOOL  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
-void  EditMarkAll(HWND,BOOL,BOOL);
+void  EditMarkAll(HWND,char*,int,BOOL,BOOL);
 void  EditSetAccelWordNav(HWND,BOOL);
 void  EditCompleteWord(HWND,BOOL);
 void  EditGetBookmarkList(HWND,LPWSTR,int);

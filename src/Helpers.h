@@ -202,7 +202,7 @@ BOOL SetDlgItemIntEx(HWND,int,UINT);
 #define WideCharToMultiByteStrg(c,w,a) WideCharToMultiByte((c),0,(w),-1,(a),COUNTOF(a),NULL,NULL)
 
 
-UINT    GetDlgItemTextA2W(UINT,HWND,int,LPSTR,int);
+UINT    GetDlgItemTextW2A(UINT,HWND,int,LPSTR,int);
 UINT    SetDlgItemTextA2W(UINT,HWND,int,LPSTR);
 LRESULT ComboBox_AddStringA2W(UINT,HWND,LPCSTR);
 
