@@ -4380,12 +4380,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_INITDIALOG:
       {
         static BOOL bFirstTime = TRUE;
+        WCHAR tch2[FNDRPL_BUFFER] = { L'\0' };
 
         iSaveMarkOcc = iMarkOccurrences;
+        EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, FALSE);
         iMarkOccurrences = 0;
-
-        WCHAR tch2[FNDRPL_BUFFER] = { L'\0' };
-        HMENU hmenu;
 
         SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
         lpefr = (LPEDITFINDREPLACE)lParam;
@@ -4523,7 +4522,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           CopyMemory(lpefr,&efrSave,sizeof(EDITFINDREPLACE));
         }
 
-        hmenu = GetSystemMenu(hwnd,FALSE);
+        HMENU hmenu = GetSystemMenu(hwnd, FALSE);
         GetString(SC_SAVEPOS,tch2,COUNTOF(tch2));
         InsertMenu(hmenu,0,MF_BYPOSITION|MF_STRING|MF_ENABLED,SC_SAVEPOS,tch2);
         GetString(SC_RESETPOS,tch2,COUNTOF(tch2));
@@ -4540,15 +4539,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       return TRUE;
 
     case WM_DESTROY:
-      DeleteObject(hBrushRed);
-      DeleteObject(hBrushGreen);
-      iMarkOccurrences = iSaveMarkOcc;
-      iMarkOccurrencesCount = -1; // -1 !
-      SendMessage(hwndEdit, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
-      SendMessage(hwndEdit, SCI_INDICATORCLEARRANGE, 0, (int)SendMessage(hwndEdit, SCI_GETLENGTH, 0, 0));
-      if (iMarkOccurrences != 0) {
-        iMarkOccurrences = 0;
-        SendMessage(hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCURRENCES_ONOFF, 1), 0);
+      {
+        DeleteObject(hBrushRed);
+        DeleteObject(hBrushGreen);
+        EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, TRUE);
+        if (iSaveMarkOcc != 0) {
+          SendMessage(hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCURRENCES_ONOFF, 1), 0);
+        }
       }
       return FALSE;
 
@@ -4581,7 +4578,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
             EditSetSearchFlags(hwnd, lpefr);
 
-            if (bFlagsChanged || (lstrcmpA(lastFind, lpefr->szFind) != 0)) {
+            if (bFlagsChanged || (StringCchCompareXA(lastFind, lpefr->szFind) != 0)) {
               BeginWaitCursor();
               StringCchCopyA(lastFind, COUNTOF(lastFind), lpefr->szFind);
               BOOL bMatch = bEnableF && EditFindHasMatch(hwndEdit, lpefr, (iSaveMarkOcc != 0));
