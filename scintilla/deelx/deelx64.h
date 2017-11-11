@@ -23,6 +23,7 @@
 #ifndef __DEELX_REGEXP64__H__
 #define __DEELX_REGEXP64__H__
 
+#include <exception>
 #include <memory.h>
 #include <ctype.h>
 #include <limits.h>
@@ -35,12 +36,22 @@ namespace deelx
 {
     // integer type for pointer arithmetic & casts (64-bit aware)
     //typedef int index_t;   // preserve original "deelx.h" v1.3 behavior 
-    typedef INT_PTR index_t;   
+    using index_t = INT_PTR;   
 
 extern "C" {
-    typedef int(*POSIX_FUNC)(int);
+    using POSIX_FUNC = int(*)(int);
     int isblank(int c);
 }
+
+
+class regex_exception : public std::exception
+{
+  const char* what() const throw() override
+  {
+    return "DeelX: regex exception occurred!";
+  }
+} regexExcp;
+
 
 //
 // Data Reference
@@ -154,8 +165,7 @@ template <class ELT> inline index_t CBufferRefT <ELT> ::GetSize() const
     return m_nSize;
 }
 
-template <class ELT> CBufferRefT <ELT> :: ~CBufferRefT()
-{}
+template <class ELT> CBufferRefT <ELT> :: ~CBufferRefT() = default;
 
 //
 // Data Buffer
@@ -488,8 +498,8 @@ public:
     void SortUnFreeze();
 
 public:
-    int  Find(const T & rT, int(*compare)(const void *, const void *) = 0) { return FindAs(*(T*)&rT, compare); }
-    int  FindAs(const T & rT, int(*)(const void *, const void *) = 0);
+    int  Find(const T & rT, int(*compare)(const void *, const void *) = nullptr) { return FindAs(*(T*)&rT, compare); }
+    int  FindAs(const T & rT, int(*)(const void *, const void *) = nullptr);
     index_t  GetSize() const { return CBufferRefT<T>::m_nSize; }
     T & operator [] (index_t nIndex) { return CBufferT <T> :: operator [] (nIndex); }
 
@@ -549,7 +559,7 @@ template <class T> void CSortedBufferT <T> ::Add(const T * pT, index_t nSize)
 
 template <class T> int CSortedBufferT <T> ::FindAs(const T & rT, int(*compare)(const void *, const void *))
 {
-    const T * pT = (const T *)bsearch(&rT, CBufferRefT<T>::m_pBuffer, CBufferRefT<T>::m_nSize, sizeof(T), compare == 0 ? m_fncompare : compare);
+    const T * pT = (const T *)bsearch(&rT, CBufferRefT<T>::m_pBuffer, CBufferRefT<T>::m_nSize, sizeof(T), compare == nullptr ? m_fncompare : compare);
 
     if (pT != NULL)
         return static_cast<int>(pT - CBufferRefT<T>::m_pBuffer); //TODO: x64bit > 4GB ?
@@ -651,7 +661,7 @@ public:
     virtual int MatchNext(CContext * pContext) const = 0;
 
 public:
-    virtual ~ElxInterface() {};
+    virtual ~ElxInterface() = default;
 };
 
 //
@@ -660,8 +670,8 @@ public:
 template <index_t x> class CAlternativeElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CAlternativeElxT();
@@ -670,7 +680,7 @@ public:
     CBufferT <ElxInterface *> m_elxlist;
 };
 
-typedef CAlternativeElxT <0> CAlternativeElx;
+using CAlternativeElx = CAlternativeElxT <0>;
 
 //
 // Assert
@@ -678,8 +688,8 @@ typedef CAlternativeElxT <0> CAlternativeElx;
 template <index_t x> class CAssertElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CAssertElxT(ElxInterface * pelx, int byes = 1);
@@ -689,7 +699,7 @@ public:
     int m_byes;
 };
 
-typedef CAssertElxT <0> CAssertElx;
+using CAssertElx = CAssertElxT <0>;
 
 //
 // Back reference elx
@@ -697,8 +707,8 @@ typedef CAssertElxT <0> CAssertElx;
 template <class CHART> class CBackrefElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CBackrefElxT(int nnumber, int brightleft, int bignorecase);
@@ -818,8 +828,8 @@ enum BOUNDARY_TYPE
 template <class CHART> class CBoundaryElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CBoundaryElxT(int ntype, int byes = 1);
@@ -906,8 +916,8 @@ template <class CHART> inline int CBoundaryElxT <CHART> ::IsWordChar(CHART ch)
 template <class CHART> class CBracketElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CBracketElxT(index_t nnumber, int bright);
@@ -1099,8 +1109,8 @@ template <class CHART> int CBracketElxT <CHART> ::MatchNext(CContext * pContext)
 template <class CHART> class CDelegateElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     explicit CDelegateElxT(int ndata = 0);
@@ -1151,14 +1161,14 @@ template <class CHART> int CDelegateElxT <CHART> ::MatchNext(CContext * pContext
 template <index_t x> class CEmptyElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CEmptyElxT();
 };
 
-typedef CEmptyElxT <0> CEmptyElx;
+using CEmptyElx = CEmptyElxT <0>;
 
 //
 // Global
@@ -1166,14 +1176,14 @@ typedef CEmptyElxT <0> CEmptyElx;
 template <index_t x> class CGlobalElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CGlobalElxT();
 };
 
-typedef CGlobalElxT <0> CGlobalElx;
+using CGlobalElx = CGlobalElxT <0>;
 
 //
 // Repeat
@@ -1181,8 +1191,8 @@ typedef CGlobalElxT <0> CGlobalElx;
 template <int x> class CRepeatElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CRepeatElxT(ElxInterface * pelx, int ntimes);
@@ -1215,7 +1225,7 @@ public:
     int m_nfixed;
 };
 
-typedef CRepeatElxT <0> CRepeatElx;
+using CRepeatElx = CRepeatElxT <0>;
 
 //
 // Greedy
@@ -1223,8 +1233,8 @@ typedef CRepeatElxT <0> CRepeatElx;
 template <index_t x> class CGreedyElxT : public CRepeatElxT <x>
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CGreedyElxT(ElxInterface * pelx, int nmin = 0, int nmax = INT_MAX);
@@ -1237,7 +1247,7 @@ public:
     int m_nvart;
 };
 
-typedef CGreedyElxT <0> CGreedyElx;
+using CGreedyElx = CGreedyElxT <0>;
 
 //
 // Independent
@@ -1245,8 +1255,8 @@ typedef CGreedyElxT <0> CGreedyElx;
 template <index_t x> class CIndependentElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     explicit CIndependentElxT(ElxInterface * pelx);
@@ -1255,7 +1265,7 @@ public:
     ElxInterface * m_pelx;
 };
 
-typedef CIndependentElxT <0> CIndependentElx;
+using CIndependentElx = CIndependentElxT <0>;
 
 //
 // List
@@ -1263,8 +1273,8 @@ typedef CIndependentElxT <0> CIndependentElx;
 template <index_t x> class CListElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     explicit CListElxT(int brightleft);
@@ -1274,7 +1284,7 @@ public:
     int m_brightleft;
 };
 
-typedef CListElxT <0> CListElx;
+using CListElx = CListElxT <0>;
 
 //
 // Posix Elx
@@ -1282,8 +1292,8 @@ typedef CListElxT <0> CListElx;
 template <class CHART> class CPosixElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CPosixElxT(const char * posix, int brightleft);
@@ -1370,14 +1380,14 @@ template <class CHART> int CPosixElxT <CHART> ::MatchNext(CContext * pContext) c
 template <int x> class CPossessiveElxT : public CGreedyElxT <x>
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CPossessiveElxT(ElxInterface * pelx, int nmin = 0, int nmax = INT_MAX);
 };
 
-typedef CPossessiveElxT <0> CPossessiveElx;
+using CPossessiveElx = CPossessiveElxT <0>;
 
 //
 // Range Elx
@@ -1385,8 +1395,8 @@ typedef CPossessiveElxT <0> CPossessiveElx;
 template <class CHART> class CRangeElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CRangeElxT(int brightleft, int byes);
@@ -1485,8 +1495,8 @@ template <class CHART> int CRangeElxT <CHART> ::MatchNext(CContext * pContext) c
 template <int x> class CReluctantElxT : public CRepeatElxT <x>
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CReluctantElxT(ElxInterface * pelx, int nmin = 0, int nmax = INT_MAX);
@@ -1499,7 +1509,7 @@ public:
     int m_nvart;
 };
 
-typedef CReluctantElxT <0> CReluctantElx;
+using CReluctantElx = CReluctantElxT <0>;
 
 //
 // String Elx
@@ -1507,8 +1517,8 @@ typedef CReluctantElxT <0> CReluctantElx;
 template <class CHART> class CStringElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CStringElxT(const CHART * fixed, index_t nlength, int brightleft, int bignorecase);
@@ -1585,8 +1595,8 @@ template <class CHART> int CStringElxT <CHART> ::MatchNext(CContext * pContext) 
 template <class CHART> class CConditionElxT : public ElxInterface
 {
 public:
-    int Match(CContext * pContext) const;
-    int MatchNext(CContext * pContext) const;
+    int Match(CContext * pContext) const override;
+    int MatchNext(CContext * pContext) const override;
 
 public:
     CConditionElxT();
@@ -1634,7 +1644,7 @@ template <class CHART> int CConditionElxT <CHART> ::Match(CContext * pContext) c
 
             // else valid
             condition_yes = 1;
-        } while (0);
+        } while (false);
     }
     else
     {
@@ -1714,7 +1724,7 @@ public:
 
 public:
     MatchResultT(const MatchResultT <x> & from) { *this = from; }
-    MatchResultT(CContext * pContext = 0, index_t nMaxNumber = -1);
+    MatchResultT(CContext * pContext = nullptr, index_t nMaxNumber = -1);
     MatchResultT <x> & operator = (const MatchResultT <x> &);
     inline operator int() const { return IsMatched(); }
 
@@ -1722,7 +1732,7 @@ public:
     CBufferT <index_t> m_result;
 };
 
-typedef MatchResultT <0> MatchResult;
+using MatchResult = MatchResultT <0>;
 
 // Stocked Elx IDs
 enum STOCKELX_ID_DEFINES
@@ -1783,10 +1793,10 @@ enum REGEX_FLAGS
 template <class CHART> class CBuilderT
 {
 public:
-    typedef CDelegateElxT  <CHART> CDelegateElx;
-    typedef CBracketElxT   <CHART> CBracketElx;
-    typedef CBackrefElxT   <CHART> CBackrefElx;
-    typedef CConditionElxT <CHART> CConditionElx;
+    using CDelegateElx = CDelegateElxT  <CHART>;
+    using CBracketElx = CBracketElxT   <CHART>;
+    using CBackrefElx = CBackrefElxT   <CHART>;
+    using CConditionElx = CConditionElxT <CHART>;
 
     // Methods
 public:
@@ -1991,6 +2001,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::Build(const CBufferRef
             else
             {
                 //TODO: ERROR
+                throw regexExcp;
             }
         }
     }
@@ -2027,6 +2038,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::Build(const CBufferRef
             else
             {
                 //TODO: ERROR
+                throw regexExcp;
             }
         }
     }
@@ -2479,7 +2491,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::GetStockElx(int nStock
         return GetStockElx(0);
 
     // create if no
-    if (pStockElxs[nStockId] == 0)
+    if (pStockElxs[nStockId] == nullptr)
     {
         switch (nStockId)
         {
@@ -3100,7 +3112,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::BuildRecursive(int & f
 
     if (curr == CHART_INFO(RCHART('?'), 1))
     {
-        ElxInterface * pElx = 0;
+        ElxInterface * pElx = nullptr;
 
         // skip '?'
         MoveNext();
@@ -3138,7 +3150,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::BuildRecursive(int & f
                 break;
             }
             // break if assertion // else named
-            if (pElx != 0) break;
+            if (pElx != nullptr) break;
 
         case RCHART('P'):
             if (curr.ch == RCHART('P')) MoveNext(); // skip 'P'
@@ -3176,7 +3188,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::BuildRecursive(int & f
                 unsigned int number;
                 char * str = num.GetBuffer();
 
-                if (ReadDec(str, number) ? (*str == '\0') : 0)
+                if (ReadDec(str, number) ? (*str == '\0') : false)
                 {
                     pleft->m_nnumber = number;
                     pright->m_nnumber = number;
@@ -3185,7 +3197,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::BuildRecursive(int & f
                 }
 
                 str = balancing_num.GetBuffer();
-                if (ReadDec(str, number) ? (*str == '\0') : 0)
+                if (ReadDec(str, number) ? (*str == '\0') : false)
                 {
                     pleft->m_balancing = number;
                     pright->m_balancing = number;
@@ -3254,7 +3266,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::BuildRecursive(int & f
                 unsigned int number;
                 char * str = num.GetBuffer();
 
-                if (ReadDec(str, number) ? (*str == '\0') : 0)
+                if (ReadDec(str, number) ? (*str == '\0') : false)
                 {
                     pDelegate->m_ndata = number;
                     name.Release();
@@ -3318,10 +3330,10 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::BuildRecursive(int & f
                     char * str = numstr.GetBuffer();
 
                     // valid group number
-                    if (ReadDec(str, number) ? (*str == '\0') : 0)
+                    if (ReadDec(str, number) ? (*str == '\0') : false)
                     {
                         pConditionElx->m_nnumber = number;
-                        pCondition = 0;
+                        pCondition = nullptr;
                     }
                     else // maybe elx, maybe named
                     {
@@ -3533,7 +3545,7 @@ template <class CHART> ElxInterface * CBuilderT <CHART> ::BuildBackref(int & fla
         unsigned int number;
         char * str = num.GetBuffer();
 
-        if (ReadDec(str, number) ? (*str == '\0') : 0)
+        if (ReadDec(str, number) ? (*str == '\0') : false)
         {
             pbackref->m_nnumber = number;
             name.Release();
@@ -3599,15 +3611,15 @@ public:
     void Compile(const CHART * pattern, index_t length, int flags);
 
 public:
-    MatchResult MatchExact(const CHART * tstring, CContext * pContext = 0) const;
-    MatchResult MatchExact(const CHART * tstring, int length, CContext * pContext = 0) const;
-    MatchResult Match(const CHART * tstring, int start = -1, CContext * pContext = 0) const;
-    MatchResult Match(const CHART * tstring, int length, int start, CContext * pContext = 0) const;
+    MatchResult MatchExact(const CHART * tstring, CContext * pContext = nullptr) const;
+    MatchResult MatchExact(const CHART * tstring, int length, CContext * pContext = nullptr) const;
+    MatchResult Match(const CHART * tstring, int start = -1, CContext * pContext = nullptr) const;
+    MatchResult Match(const CHART * tstring, int length, int start, CContext * pContext = nullptr) const;
     MatchResult Match(CContext * pContext) const;
-    CContext * PrepareMatch(const CHART * tstring, index_t start = -1, CContext * pContext = 0) const;
-    CContext * PrepareMatch(const CHART * tstring, index_t length, index_t start, CContext * pContext = 0) const;
-    CHART * Replace(const CHART * tstring, const CHART * replaceto, index_t start = -1, int ntimes = -1, MatchResult * result = 0, CContext * pContext = 0) const;
-    CHART * Replace(const CHART * tstring, index_t string_length, const CHART * replaceto, index_t to_length, index_t & result_length, index_t start = -1, int ntimes = -1, MatchResult * result = 0, CContext * pContext = 0) const;
+    CContext * PrepareMatch(const CHART * tstring, index_t start = -1, CContext * pContext = nullptr) const;
+    CContext * PrepareMatch(const CHART * tstring, index_t length, index_t start, CContext * pContext = nullptr) const;
+    CHART * Replace(const CHART * tstring, const CHART * replaceto, index_t start = -1, int ntimes = -1, MatchResult * result = nullptr, CContext * pContext = nullptr) const;
+    CHART * Replace(const CHART * tstring, index_t string_length, const CHART * replaceto, index_t to_length, index_t & result_length, index_t start = -1, int ntimes = -1, MatchResult * result = nullptr, CContext * pContext = nullptr) const;
     int GetNamedGroupNumber(const CHART * group_name) const;
 
 public:
@@ -3650,13 +3662,13 @@ template <class CHART> inline MatchResult CRegexpT <CHART> ::MatchExact(const CH
 template <class CHART> MatchResult CRegexpT <CHART> ::MatchExact(const CHART * tstring, int length, CContext * pContext) const
 {
     if (m_builder.m_pTopElx == 0)
-        return 0;
+        return nullptr;
 
     // info
     int endpos = 0;
 
     CContext context;
-    if (pContext == 0) pContext = &context;
+    if (pContext == nullptr) pContext = &context;
 
     pContext->m_stack.Restore(0);
     pContext->m_capturestack.Restore(0);
@@ -3690,17 +3702,17 @@ template <class CHART> MatchResult CRegexpT <CHART> ::MatchExact(const CHART * t
 
     // match
     if (!m_builder.m_pTopElx->Match(pContext))
-        return 0;
+        return nullptr;
     else
     {
         while (pContext->m_nCurrentPos != endpos)
         {
             if (!m_builder.m_pTopElx->MatchNext(pContext))
-                return 0;
+                return nullptr;
             else
             {
                 if (pContext->m_nLastBeginPos == pContext->m_nBeginPos && pContext->m_nBeginPos == pContext->m_nCurrentPos)
-                    return 0;
+                    return nullptr;
                 else
                     pContext->m_nLastBeginPos = pContext->m_nCurrentPos;
             }
@@ -3721,10 +3733,10 @@ template <class CHART> MatchResult CRegexpT <CHART> ::Match(const CHART * tstrin
 template <class CHART> MatchResult CRegexpT <CHART> ::Match(const CHART * tstring, int length, int start, CContext * pContext) const
 {
     if (m_builder.m_pTopElx == 0)
-        return 0;
+        return nullptr;
 
     CContext context;
-    if (pContext == 0) pContext = &context;
+    if (pContext == nullptr) pContext = &context;
 
     PrepareMatch(tstring, length, start, pContext);
 
@@ -3734,7 +3746,7 @@ template <class CHART> MatchResult CRegexpT <CHART> ::Match(const CHART * tstrin
 template <class CHART> MatchResult CRegexpT <CHART> ::Match(CContext * pContext) const
 {
     if (m_builder.m_pTopElx == 0)
-        return 0;
+        return nullptr;
 
     index_t endpos;
     int delta;
@@ -3786,7 +3798,7 @@ template <class CHART> MatchResult CRegexpT <CHART> ::Match(CContext * pContext)
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 template <class CHART> inline CContext * CRegexpT <CHART> ::PrepareMatch(const CHART * tstring, index_t start, CContext * pContext) const
@@ -3797,9 +3809,9 @@ template <class CHART> inline CContext * CRegexpT <CHART> ::PrepareMatch(const C
 template <class CHART> CContext * CRegexpT <CHART> ::PrepareMatch(const CHART * tstring, index_t length, index_t start, CContext * pContext) const
 {
     if (m_builder.m_pTopElx == 0)
-        return 0;
+        return nullptr;
 
-    if (pContext == 0) pContext = new CContext();
+    if (pContext == nullptr) pContext = new CContext();
 
     pContext->m_nParenZindex = 0;
     pContext->m_nLastBeginPos = -1;
@@ -3853,7 +3865,7 @@ template <class CHART> CHART * CRegexpT <CHART> ::Replace(const CHART * tstring,
     static const CHART rtoptn[] = { RCHART('\\'), RCHART('$'), RCHART('('), RCHART('?'), RCHART(':'), RCHART('['), RCHART('$'), RCHART('&'), RCHART('`'), RCHART('\''), RCHART('+'), RCHART('_'), RCHART('\\'), RCHART('d'), RCHART(']'), RCHART('|'), RCHART('\\'), RCHART('{'), RCHART('.'), RCHART('*'), RCHART('?'), RCHART('\\'), RCHART('}'), RCHART(')'), RCHART('\0') };
     static CRegexpT <CHART> rtoreg(rtoptn);
 
-    MatchResult local_result(0), *result = remote_result ? remote_result : &local_result;
+    MatchResult local_result(nullptr), *result = remote_result ? remote_result : &local_result;
 
     // prepare
     CContext * pContext = rtoreg.PrepareMatch(replaceto, to_length, -1, oContext);
@@ -4055,7 +4067,7 @@ template <class CHART> CHART * CRegexpT <CHART> ::Replace(const CHART * tstring,
             }
             else if (off == -2)
             {
-                //TODO:@@@ check to use nmatch instead of len here ???
+                //TODO: @@@ check to use nmatch instead of len here ???
                 int l = static_cast<int>(len);
                 sub = tstring + result->GetGroupStart(l);
                 len = result->GetGroupEnd(l) - result->GetGroupStart(l);
@@ -4086,7 +4098,7 @@ template <class CHART> CHART * CRegexpT <CHART> ::Replace(const CHART * tstring,
         }
     }
 
-    if (oContext == 0) ReleaseContext(pContext);
+    if (oContext == nullptr) ReleaseContext(pContext);
 
     // join string
     result_length = 0;
@@ -4140,14 +4152,13 @@ template <class CHART> inline void CRegexpT <CHART> ::ReleaseString(CHART * tstr
 
 template <class CHART> inline void CRegexpT <CHART> ::ReleaseContext(CContext * pContext)
 {
-    if (pContext != 0) delete pContext;
+    if (pContext != nullptr) delete pContext;
 }
 
 //
 // All implementations
 //
-template <index_t x> CAlternativeElxT <x> ::CAlternativeElxT()
-{}
+template <index_t x> CAlternativeElxT <x> ::CAlternativeElxT() = default;
 
 template <index_t x> int CAlternativeElxT <x> ::Match(CContext * pContext) const
 {
@@ -4244,8 +4255,7 @@ template <index_t x> int CAssertElxT <x> ::MatchNext(CContext * pContext) const
 
 // emptyelx.cpp: implementation of the CEmptyElx class.
 //
-template <index_t x> CEmptyElxT <x> ::CEmptyElxT()
-{}
+template <index_t x> CEmptyElxT <x> ::CEmptyElxT() = default;
 
 template <index_t x> int CEmptyElxT <x> ::Match(CContext *) const
 {
@@ -4259,8 +4269,7 @@ template <index_t x> int CEmptyElxT <x> ::MatchNext(CContext *) const
 
 // globalx.cpp: implementation of the CGlobalElx class.
 //
-template <index_t x> CGlobalElxT <x> ::CGlobalElxT()
-{}
+template <index_t x> CGlobalElxT <x> ::CGlobalElxT() = default;
 
 template <index_t x> int CGlobalElxT <x> ::Match(CContext * pContext) const
 {
@@ -4525,7 +4534,7 @@ template <index_t x> int CListElxT <x> ::MatchNext(CContext * pContext) const
 //
 template <index_t x> MatchResultT <x> ::MatchResultT(CContext * pContext, index_t nMaxNumber)
 {
-    if (pContext != 0)
+    if (pContext != nullptr)
     {
         m_result.Prepare(nMaxNumber * 2 + 3, -1);
 
@@ -4820,13 +4829,13 @@ template <int x> int CRepeatElxT <x> ::MatchNextFixed(CContext * pContext) const
 }
 
 // Regexp
-typedef CRegexpT <char> CRegexpA;
-typedef CRegexpT <unsigned short> CRegexpW;
+using CRegexpA = CRegexpT <char>;
+using CRegexpW = CRegexpT <unsigned short>;
 
 #if defined(_UNICODE) || defined(UNICODE)
-typedef CRegexpW CRegexp;
+using CRegexp = CRegexpW;
 #else
-typedef CRegexpA CRegexp;
+using CRegexp = CRegexpA;
 #endif
 
 }

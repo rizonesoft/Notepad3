@@ -153,11 +153,8 @@ LRESULT SendWMSize(HWND);
 
 BOOL IsCmdEnabled(HWND, UINT);
 
-#define EnableCmd(hmenu,id,b) EnableMenuItem(hmenu,id,(b)\
-                               ?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
-
-#define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)\
-                               ?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
+#define EnableCmd(hmenu,id,b) EnableMenuItem(hmenu,id,(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
+#define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 
@@ -202,7 +199,7 @@ BOOL SetDlgItemIntEx(HWND,int,UINT);
 #define WideCharToMultiByteStrg(c,w,a) WideCharToMultiByte((c),0,(w),-1,(a),COUNTOF(a),NULL,NULL)
 
 
-UINT    GetDlgItemTextA2W(UINT,HWND,int,LPSTR,int);
+UINT    GetDlgItemTextW2A(UINT,HWND,int,LPSTR,int);
 UINT    SetDlgItemTextA2W(UINT,HWND,int,LPSTR);
 LRESULT ComboBox_AddStringA2W(UINT,HWND,LPCSTR);
 

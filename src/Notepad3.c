@@ -3862,11 +3862,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       }
 
     case BME_EDIT_BOOKMARKCLEAR:
-    {
-        SendMessage(hwndEdit,SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
-
-        break;
-    }
+      SendMessage(hwndEdit,SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
+    break;
 
     case IDM_EDIT_FINDNEXT:
     case IDM_EDIT_FINDPREV:
@@ -4115,7 +4112,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(hwndEdit,bAccelWordNavigation);
-      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      if (iMarkOccurrences != 0) {
+        EditMarkAll(hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      }
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_ONOFF:
@@ -4127,17 +4126,21 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         iMarkOccurrencesCount = -1;
       }
       else
-        EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+        EditMarkAll(hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
-      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      if (iMarkOccurrences != 0) {
+        EditMarkAll(hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      }
       break;
 
     case IDM_VIEW_MARKOCCURRENCES_WORD:
       bMarkOccurrencesMatchWords = (bMarkOccurrencesMatchWords) ? FALSE : TRUE;
-      EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      if (iMarkOccurrences != 0) {
+        EditMarkAll(hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      }
       break;
 
     case IDM_VIEW_FOLDING:
@@ -5294,12 +5297,15 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             InvalidateSelections();
 
             // mark occurrences of text currently selected
-            EditMarkAll(hwndEdit, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+            if (iMarkOccurrences != 0) {
+              EditMarkAll(hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+            }
 
             // Brace Match
             if (bMatchBraces) {
               EditMatchBrace(hwndEdit);
             }
+
             UpdateToolbar();
             UpdateStatusbar();
           }

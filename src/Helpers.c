@@ -1722,7 +1722,7 @@ BOOL SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 //
 //  A2W: Convert Dialog Item Text form Unicode to UTF-8 and vice versa
 //
-UINT GetDlgItemTextA2W(UINT uCP,HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount)
+UINT GetDlgItemTextW2A(UINT uCP,HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount)
 {
   WCHAR wsz[1024] = L"";
   UINT uRet = GetDlgItemTextW(hDlg,nIDDlgItem,wsz,COUNTOF(wsz));
