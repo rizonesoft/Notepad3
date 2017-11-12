@@ -124,6 +124,7 @@
 #define IDR_MAINWND2                    156
 #define IDC_REMOVE                      157
 #define IDC_SWAPSTRG                    158
+#define IDC_CHECK_OCC                   159
 #define IDACC_FIND                      200
 #define IDACC_REPLACE                   201
 #define IDACC_SAVEPOS                   202
@@ -410,8 +411,9 @@
 #define IDT_FILE_ADDTOFAV               40722
 #define IDT_VIEW_TOGGLEFOLDS            40723
 #define IDT_FILE_LAUNCH                 40724
-#define SC_SAVEPOS                      40800
-#define SC_RESETPOS                     40801
+#define IDS_SAVEPOS                     40800
+#define IDS_RESETPOS                    40801
+#define IDS_CHECK_OCC                   40802
 #define IDS_ERR_LOADFILE                50000
 #define IDS_ERR_SAVEFILE                50001
 #define IDS_ERR_BROWSE                  50002
