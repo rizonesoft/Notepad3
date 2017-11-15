@@ -386,7 +386,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 if (StringCchLenW(args,COUNTOF(args)))
                   bEnableOK = TRUE;
 
-            EnableWindow(GetDlgItem(hwnd,IDOK),bEnableOK);
+            DialogEnableWindow(hwnd,IDOK,bEnableOK);
           }
           break;
 
@@ -565,7 +565,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
             case LVN_ITEMCHANGED: {
                 NM_LISTVIEW *pnmlv = (NM_LISTVIEW*)lParam;
-                EnableWindow(GetDlgItem(hwnd,IDOK),(pnmlv->uNewState & LVIS_SELECTED));
+                DialogEnableWindow(hwnd,IDOK,(pnmlv->uNewState & LVIS_SELECTED));
               }
               break;
 
@@ -762,7 +762,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
             case LVN_ITEMCHANGED: {
                 NM_LISTVIEW *pnmlv = (NM_LISTVIEW*)lParam;
-                EnableWindow(GetDlgItem(hwnd,IDOK),(pnmlv->uNewState & LVIS_SELECTED));
+                DialogEnableWindow(hwnd,IDOK,(pnmlv->uNewState & LVIS_SELECTED));
               }
               break;
 
@@ -876,7 +876,7 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
       {
 
         case 100:
-            EnableWindow(GetDlgItem(hwnd,IDOK),GetWindowTextLength(GetDlgItem(hwnd,100)));
+          DialogEnableWindow(hwnd,IDOK,GetWindowTextLength(GetDlgItem(hwnd,100)));
           break;
 
 
@@ -1231,8 +1231,8 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         case LVN_DELETEITEM:
             {
               UINT cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
-              EnableWindow(GetDlgItem(hwnd, IDOK), (cnt > 0));
-              EnableWindow(GetDlgItem(hwnd, IDC_REMOVE), (cnt > 0));
+              DialogEnableWindow(hwnd, IDOK, (cnt > 0));
+              DialogEnableWindow(hwnd, IDC_REMOVE, (cnt > 0));
             }
             break;
           }
@@ -1348,8 +1348,8 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                   //  (LB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,LB_GETCURSEL,0,0)));
 
                   cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));
-                  EnableWindow(GetDlgItem(hwnd, IDOK), (cnt > 0));
-                  EnableWindow(GetDlgItem(hwnd, IDC_REMOVE), (cnt > 0));
+                  DialogEnableWindow(hwnd, IDOK, (cnt > 0));
+                  DialogEnableWindow(hwnd, IDC_REMOVE, (cnt > 0));
                 }
               }
 
@@ -2086,7 +2086,7 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
           case LVN_ITEMCHANGED:
           case LVN_DELETEITEM: {
               int i = ListView_GetNextItem(hwndLV,-1,LVNI_ALL | LVNI_SELECTED);
-              EnableWindow(GetDlgItem(hwnd,IDOK),i != -1);
+              DialogEnableWindow(hwnd,IDOK,i != -1);
             }
             break;
           }
@@ -2313,7 +2313,7 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         (WPARAM)LoadIcon(NULL,IDI_EXCLAMATION),0);
       SetDlgItemText(hwnd,IDC_INFOBOXTEXT,lpib->lpstrMessage);
       if (lpib->bDisableCheckBox)
-        EnableWindow(GetDlgItem(hwnd,IDC_INFOBOXCHECK),FALSE);
+        DialogEnableWindow(hwnd,IDC_INFOBOXCHECK,FALSE);
       LocalFree(lpib->lpstrMessage);
       CenterDlgInParent(hwnd);
       return TRUE;

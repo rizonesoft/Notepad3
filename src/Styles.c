@@ -4804,15 +4804,15 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 if (pCurrentLexer)
                 {
                   SetDlgItemText(hwnd,IDC_STYLELABEL,wch);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEEDIT),TRUE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEFONT),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEFORE),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEBACK),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEDEFAULT),TRUE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEBOLD),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEITALIC),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEUNDERLINE),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEEOLFILLED),FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEEDIT,TRUE);
+                  DialogEnableWindow(hwnd,IDC_STYLEFONT,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEFORE,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEBACK,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEDEFAULT,TRUE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEBOLD,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEITALIC,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEUNDERLINE,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEEOLFILLED,FALSE);
                   //CheckDlgButton(hwnd,IDC_STYLEBOLD,BST_UNCHECKED);
                   //CheckDlgButton(hwnd,IDC_STYLEITALIC,BST_UNCHECKED);
                   //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,BST_UNCHECKED);
@@ -4822,15 +4822,15 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 else
                 {
                   SetDlgItemText(hwnd,IDC_STYLELABEL,L"");
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEEDIT),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEFONT),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEFORE),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEBACK),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEDEFAULT),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEBOLD),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEITALIC),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEUNDERLINE),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEEOLFILLED),FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEEDIT,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEFONT,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEFORE,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEBACK,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEDEFAULT,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEBOLD,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEITALIC,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEUNDERLINE,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEEOLFILLED,FALSE);
                   //CheckDlgButton(hwnd,IDC_STYLEBOLD,BST_UNCHECKED);
                   //CheckDlgButton(hwnd,IDC_STYLEITALIC,BST_UNCHECKED);
                   //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,BST_UNCHECKED);
@@ -4853,15 +4853,15 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 if (pCurrentStyle)
                 {
                   SetDlgItemText(hwnd,IDC_STYLELABEL,StrEnd(wch)+1);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEEDIT),TRUE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEFONT),TRUE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEFORE),TRUE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEBACK),TRUE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEDEFAULT),TRUE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEBOLD),TRUE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEITALIC),TRUE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEUNDERLINE),TRUE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEEOLFILLED),TRUE);
+                  DialogEnableWindow(hwnd,IDC_STYLEEDIT,TRUE);
+                  DialogEnableWindow(hwnd,IDC_STYLEFONT,TRUE);
+                  DialogEnableWindow(hwnd,IDC_STYLEFORE,TRUE);
+                  DialogEnableWindow(hwnd,IDC_STYLEBACK,TRUE);
+                  DialogEnableWindow(hwnd,IDC_STYLEDEFAULT,TRUE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEBOLD,TRUE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEITALIC,TRUE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEUNDERLINE,TRUE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEEOLFILLED,TRUE);
                   //CheckDlgButton(hwnd,IDC_STYLEBOLD,(Style_StrGetAttribute(pCurrentStyle->szValue,L"bold") ? BST_CHECKED : BST_UNCHECKED));
                   //CheckDlgButton(hwnd,IDC_STYLEITALIC,(Style_StrGetAttribute(pCurrentStyle->szValue,L"italic") ? BST_CHECKED : BST_UNCHECKED));
                   //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,(Style_StrGetAttribute(pCurrentStyle->szValue,L"underline") ? BST_CHECKED : BST_UNCHECKED));
@@ -4871,15 +4871,15 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 else
                 {
                   SetDlgItemText(hwnd,IDC_STYLELABEL,L"");
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEEDIT),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEFONT),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEFORE),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEBACK),FALSE);
-                  EnableWindow(GetDlgItem(hwnd,IDC_STYLEDEFAULT),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEBOLD),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEITALIC),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEUNDERLINE),FALSE);
-                  //EnableWindow(GetDlgItem(hwnd,IDC_STYLEEOLFILLED),FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEEDIT,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEFONT,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEFORE,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEBACK,FALSE);
+                  DialogEnableWindow(hwnd,IDC_STYLEDEFAULT,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEBOLD,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEITALIC,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEUNDERLINE,FALSE);
+                  //DialogEnableWindow(hwnd,IDC_STYLEEOLFILLED,FALSE);
                   //CheckDlgButton(hwnd,IDC_STYLEBOLD,BST_UNCHECKED);
                   //CheckDlgButton(hwnd,IDC_STYLEITALIC,BST_UNCHECKED);
                   //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,BST_UNCHECKED);
@@ -5463,8 +5463,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
             CheckDlgButton(hwnd,IDC_DEFAULTSCHEME,BST_CHECKED);
           else
             CheckDlgButton(hwnd,IDC_DEFAULTSCHEME,BST_UNCHECKED);
-          EnableWindow(GetDlgItem(hwnd,IDC_DEFAULTSCHEME),i != -1);
-          EnableWindow(GetDlgItem(hwnd,IDOK),i != -1);
+          DialogEnableWindow(hwnd,IDC_DEFAULTSCHEME,i != -1);
+          DialogEnableWindow(hwnd,IDOK,i != -1);
           }
           break;
         }

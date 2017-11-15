@@ -36,6 +36,7 @@
 //#include <pathcch.h>
 #include "scintilla.h"
 #include "resource.h"
+#include "edit.h"
 #include "helpers.h"
 
 
@@ -2434,6 +2435,43 @@ void TransformBackslashes(char* pszInput,BOOL bRegEx,UINT cpEdit)
   else
     UnSlash(pszInput,cpEdit);
 }
+
+
+
+void TransformMetaChars(char* pszInput, BOOL bRegEx, int iEOLMode)
+{
+  if (!bRegEx)  return;
+
+  char buffer[FNDRPL_BUFFER + 1] = { '\0' };
+  char* s = pszInput;
+  char* o = buffer;
+  while (*s) {
+    if ((s[0] != '\\') && (s[1] == '$')) {
+      *o = *s;  ++o;  ++s;
+      switch (iEOLMode) {
+      case SC_EOL_LF:
+        *o = '\n';
+        break;
+      case SC_EOL_CR:
+        *o = '\r';
+        break;
+      case SC_EOL_CRLF:
+      default:
+        *o = '\r'; ++o; *o = '\n';
+        break;
+      }
+      ++s; // skip $
+    }
+    else {
+      *o = *s;
+    }
+    ++o;
+    if (*s)  ++s;
+  }
+  *o = '\0';
+  StringCchCopyA(pszInput, FNDRPL_BUFFER, buffer);
+}
+
 
 
 /*
