@@ -55,12 +55,14 @@ class DeelxRegexSearch : public RegexSearchBase
 public:
 
   explicit DeelxRegexSearch(CharClassify* charClassTable)
-    : m_RegExpr()
-    ,m_Match()
-    ,m_MatchPos(-1)
-    ,m_MatchLength(0)
-    ,m_pContext(nullptr)
-    ,m_SubstitutionBuffer(nullptr)
+    : m_RegExprStrg()
+    , m_CompileFlags(-1)
+    , m_RegExpr()
+    , m_Match()
+    , m_MatchPos(-1)
+    , m_MatchLength(0)
+    , m_pContext(nullptr)
+    , m_SubstitutionBuffer(nullptr)
   {}
 
   virtual ~DeelxRegexSearch()
@@ -94,6 +96,8 @@ private:
   }
 
 private:
+  std::string m_RegExprStrg;
+  int m_CompileFlags;
   deelx::CRegexpT<char> m_RegExpr;
   deelx::MatchResult m_Match;
   deelx::index_t m_MatchPos;
@@ -137,7 +141,6 @@ long DeelxRegexSearch::FindText(Document* doc,int minPos,int maxPos,const char *
   maxPos = doc->MovePositionOutsideChar(maxPos,1,false);
   const bool findprevious = (minPos > maxPos);
 
-
   int compileFlags = deelx::NO_FLAG;
   compileFlags |= (deelx::MULTILINE | deelx::GLOBAL); // the .(dot) does not match line-breaks
   //compileFlags |= (deelx::SINGLELINE | deelx::MULTILINE | deelx::GLOBAL);  // the .(dot) also matches line-breaks
@@ -148,15 +151,52 @@ long DeelxRegexSearch::FindText(Document* doc,int minPos,int maxPos,const char *
 
   std::string sRegExprStrg = translateRegExpr(std::string(pattern,*length),word,wordStart);
 
-  try {
-    m_RegExpr.Compile(sRegExprStrg.c_str(),compileFlags);
-  }
-  catch (...) {
-    return -2;  // -1 is normally used for not found, -2 is used here for invalid regex
+  bool bReCompile = (m_CompileFlags != compileFlags) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
+  if (bReCompile) {
+    m_RegExprStrg.clear();
+    m_RegExprStrg = sRegExprStrg;
+    m_CompileFlags = compileFlags;
+    try {
+      m_RegExpr.Compile(m_RegExprStrg.c_str(), m_CompileFlags);
+    }
+    catch (...) {
+      return -2;  // -1 is normally used for not found, -2 is used here for invalid regex
+    }
   }
 
   int rangeBegin = (findprevious) ? maxPos : minPos;
+  int rangeEnd   = (findprevious) ? minPos : maxPos;
   int rangeLength = abs(maxPos - minPos);
+
+  
+  Sci_Position linesTotal = doc->LinesTotal();
+  Sci_Position fileLastPos = doc->Length();
+
+  Sci_Position lineOfBegPos = doc->LineFromPosition(static_cast<Sci_Position>(rangeBegin));
+  Sci_Position lineOfEndPos = doc->LineFromPosition(static_cast<Sci_Position>(rangeEnd));
+
+  Sci_Position lineStartOfBegPos = doc->LineStart(lineOfBegPos);
+  Sci_Position lineEndOfEndPos = doc->LineEnd(lineOfEndPos);
+
+  size_t begMetaPos = m_RegExprStrg.find_first_of('^');
+  bool bFoundBegMeta = (begMetaPos != std::string::npos) && 
+                       ((begMetaPos == 0) || (m_RegExprStrg.find_first_of('\\') != (begMetaPos - 1)));
+  if (bFoundBegMeta) {
+    if (lineStartOfBegPos != static_cast<Sci_Position>(rangeBegin)) {
+      rangeBegin = (lineOfBegPos < linesTotal) ? doc->LineStart(lineOfBegPos + 1) : doc->LineEnd(linesTotal);
+      rangeEnd   = (rangeBegin <= rangeEnd) ? rangeEnd : rangeBegin;
+    }
+  }
+
+  size_t endMetaPos = m_RegExprStrg.find_last_of('$');
+  bool bFoundEndMeta = (endMetaPos != std::string::npos) && 
+                       ((endMetaPos == 0) || (m_RegExprStrg.find_last_of('\\') != (endMetaPos - 1)));
+  if (bFoundEndMeta) {
+    if (lineEndOfEndPos != static_cast<Sci_Position>(rangeEnd)) {
+      rangeEnd   = (0 < lineOfEndPos) ? doc->LineEnd(lineOfEndPos - 1) : 0;
+      rangeBegin = (rangeBegin <= rangeEnd) ? rangeBegin : rangeEnd;
+    }
+  }
 
   ReleaseContext();
   m_pContext = m_RegExpr.PrepareMatch(doc->RangePointer(rangeBegin,rangeLength));
