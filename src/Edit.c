@@ -4351,6 +4351,128 @@ void __fastcall EditSetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 }
 
 
+// Wildcard search uses the regexp engine to perform a simple search with * ? as wildcards 
+// instead of more advanced and user-unfriendly regexp syntax
+void __fastcall EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
+{
+  char szWildcardEscaped[FNDRPL_BUFFER] = { '\0' };
+  int iSource = 0;
+  int iDest = 0;
+
+  lpefr->fuFlags |= SCFIND_REGEXP;
+
+  while (szFind2[iSource] != '\0')
+  {
+    char c = szFind2[iSource];
+    if (c == '*')
+    {
+      szWildcardEscaped[iDest++] = '.';
+    }
+    else if (c == '?')
+    {
+      c = '.';
+    }
+    else
+    {
+      if (c == '^' ||
+        c == '$' ||
+        c == '(' ||
+        c == ')' ||
+        c == '[' ||
+        c == ']' ||
+        c == '{' ||
+        c == '}' ||
+        c == '.' ||
+        c == '+' ||
+        c == '|' ||
+        c == '\\')
+      {
+        szWildcardEscaped[iDest++] = '\\';
+      }
+    }
+    szWildcardEscaped[iDest++] = c;
+    iSource++;
+  }
+
+  szWildcardEscaped[iDest] = '\0';
+
+  StringCchCopyNA(szFind2, FNDRPL_BUFFER, szWildcardEscaped, COUNTOF(szWildcardEscaped));
+}
+
+
+//=============================================================================
+//
+//  EditGetFindStrg()
+//
+int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, int cchCnt)
+{
+  if (!StringCchLenA(lpefr->szFind, COUNTOF(lpefr->szFind)))
+    return 0;
+
+  StringCchCopyA(szFind, cchCnt, lpefr->szFind);
+
+  if (lpefr->bTransformBS)
+    TransformBackslashes(szFind, (lpefr->fuFlags & SCFIND_REGEXP), Encoding_SciGetCodePage(hwnd));
+
+  int slen = StringCchLenA(szFind, FNDRPL_BUFFER);
+
+  if (slen == 0)
+    InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
+  else
+    if (lpefr->bWildcardSearch)
+      EscapeWildcards(szFind, lpefr);
+
+  return slen;
+}
+
+
+//=============================================================================
+//
+//  EditFindInTarget()
+//
+int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags, int* start, int* end)
+{
+  SendMessage(hwnd, SCI_SETSEARCHFLAGS, flags, 0);
+  SendMessage(hwnd, SCI_SETTARGETRANGE, *start, *end);
+  int iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
+  if (iPos >= 0) {
+    // found in range, set begin and end of finding
+    *start = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
+    *end = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
+  }
+  return iPos;
+}
+
+
+//=============================================================================
+//
+//  EditCheckRegex()
+//
+typedef enum { MATCH = 0, NO_MATCH = 1, INVALID = 2 } RegExResult_t;
+
+RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bMarkAll, BOOL bFirstMatchOnly)
+{
+  char szFind[FNDRPL_BUFFER];
+  int slen = EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
+  if (slen <= 0)
+    return FALSE;
+
+  int start = bFirstMatchOnly ? (int)SendMessage(hwnd, SCI_GETSELECTIONNSTART, 0, 0) : 0;
+  int end = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
+
+  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
+
+  if (!bFirstMatchOnly) 
+  {
+    if (bMarkAll && (iPos >= 0))
+      EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), FALSE, FALSE);
+    else
+      EditMarkAll(hwnd, "", 0, FALSE, FALSE);
+  }
+  return ((iPos >= 0) ? MATCH : ((iPos == -1) ? NO_MATCH : INVALID));
+}
+
+
 //=============================================================================
 //
 //  EditFindReplaceDlgProcW()
@@ -4359,13 +4481,16 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 {
   static LPEDITFINDREPLACE lpefr = NULL;
 
-  static BOOL bFoundMatch = FALSE;
+  static RegExResult_t regexMatch = INVALID;
+
   static BOOL bFlagsChanged = TRUE;
 
   static COLORREF rgbRed = RGB(255, 170, 170);
   static COLORREF rgbGreen = RGB(170, 255, 170);
+  static COLORREF rgbBlue = RGB(170, 200, 255);
   static HBRUSH hBrushRed;
   static HBRUSH hBrushGreen;
+  static HBRUSH hBrushBlue;
 
   static BOOL bDoCheckAllOccurrences = TRUE;
   static char lastFind[FNDRPL_BUFFER] = { L'\0' };
@@ -4539,6 +4664,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
         hBrushRed = CreateSolidBrush(rgbRed);
         hBrushGreen = CreateSolidBrush(rgbGreen);
+        hBrushBlue = CreateSolidBrush(rgbBlue);
 
         EditSetSearchFlags(hwnd, lpefr);
         bFlagsChanged = TRUE;
@@ -4550,6 +4676,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
+        DeleteObject(hBrushBlue);
         if (iSaveMarkOcc >= 0) {
           EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, TRUE);
           if (iSaveMarkOcc != 0) {
@@ -4591,11 +4718,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               if (bFlagsChanged || (StringCchCompareXA(lastFind, lpefr->szFind) != 0)) {
                 BeginWaitCursor();
                 StringCchCopyA(lastFind, COUNTOF(lastFind), lpefr->szFind);
-                BOOL bMatch = bEnableF && EditFindHasMatch(hwndEdit, lpefr, (iSaveMarkOcc > 0));
-                if (bFoundMatch != bMatch) {
-                  bFoundMatch = bMatch;
+                RegExResult_t match = NO_MATCH;
+                if (bEnableF)
+                  match = EditFindHasMatch(hwndEdit, lpefr, (iSaveMarkOcc > 0), FALSE);
+                if (regexMatch != match) {
+                  regexMatch = match;
                   InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
                 }
+                // we have to set Sci's regex instance to first find (have substitution in place)
+                EditFindHasMatch(hwndEdit, lpefr, FALSE, TRUE);
                 bFlagsChanged = FALSE;
                 EndWaitCursor();
               }
@@ -4941,15 +5072,24 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         if (hCheck == ci.hwndItem) {         
           SetBkMode(hDC, TRANSPARENT);
           INT_PTR hBrush;
-          if (bFoundMatch) {
+          switch (regexMatch)
+          {
+          case MATCH:
             //SetTextColor(hDC, green);
             SetBkColor(hDC, rgbGreen);
             hBrush = (INT_PTR)hBrushGreen;
-          }
-          else {
+            break;
+          case NO_MATCH:
+            //SetTextColor(hDC, blue);
+            SetBkColor(hDC, rgbBlue);
+            hBrush = (INT_PTR)hBrushBlue;
+            break;
+          case INVALID:
+          default:
             //SetTextColor(hDC, red);
             SetBkColor(hDC, rgbRed);
             hBrush = (INT_PTR)hBrushRed;
+            break;
           }
           EndWaitCursor();
           return hBrush;
@@ -4989,73 +5129,6 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bReplace)
 }
 
 
-// Wildcard search uses the regexp engine to perform a simple search with * ? as wildcards 
-// instead of more advanced and user-unfriendly regexp syntax
-void EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
-{
-    char szWildcardEscaped[FNDRPL_BUFFER] = { '\0' };
-    int iSource = 0;
-    int iDest = 0;
-
-    lpefr->fuFlags |= SCFIND_REGEXP;
-
-    while (szFind2[iSource] != '\0')
-    {
-        char c = szFind2[iSource];
-        if (c == '*')
-        {
-            szWildcardEscaped[iDest++] = '.';
-        }
-        else if (c == '?')
-        {
-            c = '.';
-        }
-        else
-        {
-            if (c == '^' ||
-                c == '$' ||
-                c == '(' ||
-                c == ')' ||
-                c == '[' ||
-                c == ']' ||
-                c == '{' ||
-                c == '}' ||
-                c == '.' ||
-                c == '+' ||
-                c == '|' ||
-                c == '\\')
-            {
-                szWildcardEscaped[iDest++] = '\\';
-            }
-        }
-        szWildcardEscaped[iDest++] = c;
-        iSource++;
-    }
-
-    szWildcardEscaped[iDest] = '\0';
-
-    StringCchCopyNA(szFind2,FNDRPL_BUFFER,szWildcardEscaped,COUNTOF(szWildcardEscaped));
-}
-
-
-//=============================================================================
-//
-//  EditFindInTarget()
-//
-int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags, int* start, int* end) 
-{
-  SendMessage(hwnd, SCI_SETSEARCHFLAGS, flags, 0);
-  SendMessage(hwnd, SCI_SETTARGETRANGE, *start, *end);
-  int iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
-  if (iPos >= 0) {
-    // found in range, set begin and end of finding
-    *start = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
-    *end = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
-  }
-  return iPos;
-}
-
-
 //=============================================================================
 //
 //  EditSetRegexStartAnchor()
@@ -5083,58 +5156,6 @@ void __fastcall EditRegexAdaptAnchors(HWND hwnd, LPSTR szFind, int* start, BOOL 
     if (bFindNext && (iLnEnd == *start))
       *start = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (iLine + nx), 0);
   }
-}
-
-
-//=============================================================================
-//
-//  EditGetFindStrg()
-//
-int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, int cchCnt)
-{
-  if (!StringCchLenA(lpefr->szFind, COUNTOF(lpefr->szFind)))
-    return 0;
-
-  StringCchCopyA(szFind, cchCnt, lpefr->szFind);
-
-  if (lpefr->bTransformBS)
-    TransformBackslashes(szFind, (lpefr->fuFlags & SCFIND_REGEXP), Encoding_SciGetCodePage(hwnd));
-
-  int slen = StringCchLenA(szFind, FNDRPL_BUFFER);
-
-  if (slen == 0)
-    InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
-  else
-    if (lpefr->bWildcardSearch) 
-      EscapeWildcards(szFind, lpefr);
-
-  return slen;
-}
-
-
-
-//=============================================================================
-//
-//  EditCheckRegex()
-//
-BOOL EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bMarkAll)
-{
-  char szFind[FNDRPL_BUFFER];
-  int slen = EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
-  if (slen <= 0)
-    return FALSE;
-
-  int start = 0;
-  int end = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
-
-  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
-
-  if (bMarkAll && (iPos >= 0))
-    EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), FALSE, FALSE);
-  else
-    EditMarkAll(hwnd, "", 0, FALSE, FALSE);
-
-  return (BOOL)(iPos >= 0);
 }
 
 
