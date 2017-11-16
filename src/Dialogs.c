@@ -1092,7 +1092,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         if (bPreserveCaretPos)
           CheckDlgButton(hwnd, IDC_PRESERVECARET, BST_CHECKED);
 
-        //if (!bSaveRecentFiles) EnableWindow(GetDlgItem(hwnd, IDC_PRESERVECARET), FALSE);
+        //if (!bSaveRecentFiles) DialogEnableWindow(hwnd,IDC_PRESERVECARET, FALSE);
 
         CenterDlgInParent(hwnd);
       }
@@ -1344,7 +1344,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                   // must use IDM_VIEW_REFRESH, index might change...
                   SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-                  //EnableWindow(GetDlgItem(hwnd,IDOK),
+                  //DialogEnableWindow(hwnd,IDOK,
                   //  (LB_ERR != SendDlgItemMessage(hwnd,IDC_GOTO,LB_GETCURSEL,0,0)));
 
                   cnt = ListView_GetSelectedCount(GetDlgItem(hwnd, IDC_FILEMRU));

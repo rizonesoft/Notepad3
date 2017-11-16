@@ -3280,7 +3280,7 @@ void EditStripTrailingBlanks(HWND hwnd,BOOL bIgnoreSelection)
   {
     if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
     {
-      EDITFINDREPLACE efrTrim = { "[ \t]+$", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, 0, NULL };
+      EDITFINDREPLACE efrTrim = { "[ \t]+$", "", "", "",  (SCFIND_REGEXP | SCFIND_POSIX), 0, 0, 0, 0, 0, 0, NULL };
       efrTrim.hwnd = hwnd;
 
       EditReplaceAllInSelection(hwnd,&efrTrim,FALSE);
@@ -4353,13 +4353,14 @@ void __fastcall EditSetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 
 // Wildcard search uses the regexp engine to perform a simple search with * ? as wildcards 
 // instead of more advanced and user-unfriendly regexp syntax
+// for speed, we only need POSIX syntax here
 void __fastcall EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 {
   char szWildcardEscaped[FNDRPL_BUFFER] = { '\0' };
   int iSource = 0;
   int iDest = 0;
 
-  lpefr->fuFlags |= SCFIND_REGEXP;
+  lpefr->fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
 
   while (szFind2[iSource] != '\0')
   {
@@ -4775,7 +4776,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             lpefr->bWildcardSearch = FALSE;
           }
           else {
-            if (!(IsDlgButtonChecked(hwnd, IDC_WILDCARDSEARCH) == BST_CHECKED))
+            if (IsDlgButtonChecked(hwnd, IDC_WILDCARDSEARCH) == BST_CHECKED)
+              lpefr->fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
+            else
               lpefr->fuFlags ^= (SCFIND_REGEXP | SCFIND_POSIX);
           }
           bFlagsChanged = TRUE;
@@ -4786,11 +4789,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (IsDlgButtonChecked(hwnd, IDC_WILDCARDSEARCH) == BST_CHECKED) {
             CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
             lpefr->bWildcardSearch = TRUE;
-            lpefr->fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
+            lpefr->fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
           }
           else {
             lpefr->bWildcardSearch = FALSE;
-            if (!(IsDlgButtonChecked(hwnd, IDC_FINDREGEXP) == BST_CHECKED))
+            if (IsDlgButtonChecked(hwnd, IDC_FINDREGEXP) == BST_CHECKED) {
+              lpefr->fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
+              //lpefr->fuFlags ^= SCFIND_POSIX;
+            }
+            else
               lpefr->fuFlags ^= (SCFIND_REGEXP | SCFIND_POSIX);
           }
           bFlagsChanged = TRUE;
@@ -5331,6 +5338,26 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
     return FALSE; // recoding of clipboard canceled
 
   // w/o selection, replacement string is put into current position
+  // but this mayby not intended here
+  if ((BOOL)SendMessage(hwnd, SCI_GETSELECTIONEMPTY, 0, 0)) {
+    int start = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+    int end = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, start, 0);
+    int _start = start;
+    int iPos = EditFindInTarget(hwnd, lpefr->szFind,
+      StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),
+      (int)(lpefr->fuFlags), &start, &end, FALSE);
+    if ((iPos < 0) || (_start != start) || (_start != end))  {
+      // empty-replace was not intended
+      LocalFree(pszReplace);
+      if (iPos < 0)
+        return EditFindNext(hwnd, lpefr, FALSE);
+      else {
+        EditSelectEx(hwnd, start, end);
+        return TRUE;
+      }
+    }
+  }
+
   SendMessage(hwnd, SCI_TARGETFROMSELECTION, 0, 0);
   SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
   
@@ -5476,8 +5503,7 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
 
 //=============================================================================
 //
-//  EditMarkAll()
-//  Mark all occurrences of the text currently selected (by Aleksandar Lekov)
+//  EditClearAllMarks()
 //
 void EditClearAllMarks(HWND hwnd)
 {
@@ -5488,6 +5514,9 @@ void EditClearAllMarks(HWND hwnd)
 
 
 //=============================================================================
+//
+//  EditMarkAll()
+//  Mark all occurrences of the text currently selected (by Aleksandar Lekov)
 //
 void EditMarkAll(HWND hwnd, char* pszFind, int flags, BOOL bMatchCase, BOOL bMatchWords)
 {
@@ -6363,11 +6392,11 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           CheckRadioButton(hwnd,100,102,101);
         else if (*piSortFlags & SORT_SHUFFLE) {
           CheckRadioButton(hwnd,100,102,102);
-          EnableWindow(GetDlgItem(hwnd,103),FALSE);
-          EnableWindow(GetDlgItem(hwnd,104),FALSE);
-          EnableWindow(GetDlgItem(hwnd,105),FALSE);
-          EnableWindow(GetDlgItem(hwnd,106),FALSE);
-          EnableWindow(GetDlgItem(hwnd,107),FALSE);
+          DialogEnableWindow(hwnd,103,FALSE);
+          DialogEnableWindow(hwnd,104,FALSE);
+          DialogEnableWindow(hwnd,105,FALSE);
+          DialogEnableWindow(hwnd,106,FALSE);
+          DialogEnableWindow(hwnd,107,FALSE);
         }
         else
           CheckRadioButton(hwnd,100,102,100);
@@ -6375,7 +6404,7 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           CheckDlgButton(hwnd,103,BST_CHECKED);
         if (*piSortFlags & SORT_UNIQDUP) {
           CheckDlgButton(hwnd,104,BST_CHECKED);
-          EnableWindow(GetDlgItem(hwnd,103),FALSE);
+          DialogEnableWindow(hwnd,103,FALSE);
         }
         if (*piSortFlags & SORT_UNIQUNIQ)
           CheckDlgButton(hwnd,105,BST_CHECKED);
@@ -6387,12 +6416,12 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           bEnableLogicalSort = TRUE;
         }
         else {
-          EnableWindow(GetDlgItem(hwnd,107),FALSE);
+          DialogEnableWindow(hwnd,107,FALSE);
           bEnableLogicalSort = FALSE;
         }
         if (SC_SEL_RECTANGLE != SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0)) {
           *piSortFlags &= ~SORT_COLUMN;
-          EnableWindow(GetDlgItem(hwnd,108),FALSE);
+          DialogEnableWindow(hwnd,108,FALSE);
         }
         else {
           *piSortFlags |= SORT_COLUMN;
@@ -6430,21 +6459,21 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           break;
         case 100:
         case 101:
-          EnableWindow(GetDlgItem(hwnd,103),IsDlgButtonChecked(hwnd,105) != BST_CHECKED);
-          EnableWindow(GetDlgItem(hwnd,104),TRUE);
-          EnableWindow(GetDlgItem(hwnd,105),TRUE);
-          EnableWindow(GetDlgItem(hwnd,106),TRUE);
-          EnableWindow(GetDlgItem(hwnd,107),bEnableLogicalSort);
+          DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,105) != BST_CHECKED);
+          DialogEnableWindow(hwnd,104,TRUE);
+          DialogEnableWindow(hwnd,105,TRUE);
+          DialogEnableWindow(hwnd,106,TRUE);
+          DialogEnableWindow(hwnd,107,bEnableLogicalSort);
           break;
         case 102:
-          EnableWindow(GetDlgItem(hwnd,103),FALSE);
-          EnableWindow(GetDlgItem(hwnd,104),FALSE);
-          EnableWindow(GetDlgItem(hwnd,105),FALSE);
-          EnableWindow(GetDlgItem(hwnd,106),FALSE);
-          EnableWindow(GetDlgItem(hwnd,107),FALSE);
+          DialogEnableWindow(hwnd,103,FALSE);
+          DialogEnableWindow(hwnd,104,FALSE);
+          DialogEnableWindow(hwnd,105,FALSE);
+          DialogEnableWindow(hwnd,106,FALSE);
+          DialogEnableWindow(hwnd,107,FALSE);
           break;
         case 104:
-          EnableWindow(GetDlgItem(hwnd,103),IsDlgButtonChecked(hwnd,104) != BST_CHECKED);
+          DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,104) != BST_CHECKED);
           break;
       }
       return TRUE;
