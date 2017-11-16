@@ -149,7 +149,7 @@ long DeelxRegexSearch::FindText(Document* doc,int minPos,int maxPos,const char *
   compileFlags |= (!caseSensitive) ? deelx::IGNORECASE : deelx::NO_FLAG;
   compileFlags |= (right2left) ? deelx::RIGHTTOLEFT : deelx::NO_FLAG;
 
-  std::string sRegExprStrg = translateRegExpr(std::string(pattern,*length),word,wordStart);
+  std::string sRegExprStrg = translateRegExpr(std::string(pattern),word,wordStart);
 
   bool bReCompile = (m_CompileFlags != compileFlags) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
   if (bReCompile) {
