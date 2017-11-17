@@ -3280,7 +3280,7 @@ void EditStripTrailingBlanks(HWND hwnd,BOOL bIgnoreSelection)
   {
     if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0))
     {
-      EDITFINDREPLACE efrTrim = { "[ \t]+$", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, 0, NULL };
+      EDITFINDREPLACE efrTrim = { "[ \t]+$", "", "", "",  (SCFIND_REGEXP | SCFIND_POSIX), 0, 0, 0, 0, 0, 0, NULL };
       efrTrim.hwnd = hwnd;
 
       EditReplaceAllInSelection(hwnd,&efrTrim,FALSE);
@@ -4353,13 +4353,14 @@ void __fastcall EditSetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 
 // Wildcard search uses the regexp engine to perform a simple search with * ? as wildcards 
 // instead of more advanced and user-unfriendly regexp syntax
+// for speed, we only need POSIX syntax here
 void __fastcall EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 {
   char szWildcardEscaped[FNDRPL_BUFFER] = { '\0' };
   int iSource = 0;
   int iDest = 0;
 
-  lpefr->fuFlags |= SCFIND_REGEXP;
+  lpefr->fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
 
   while (szFind2[iSource] != '\0')
   {
@@ -4416,12 +4417,15 @@ int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
 
   int slen = StringCchLenA(szFind, FNDRPL_BUFFER);
 
-  if (slen == 0)
+  if (slen == 0) {
     InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
-  else
+  }
+  else {
     if (lpefr->bWildcardSearch)
       EscapeWildcards(szFind, lpefr);
 
+    //@@@~TransformMetaChars(szFind, (lpefr->fuFlags & SCFIND_REGEXP), (int)SendMessage(hwnd, SCI_GETEOLMODE, 0, 0));
+  }
   return slen;
 }
 
@@ -4430,11 +4434,29 @@ int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
 //
 //  EditFindInTarget()
 //
-int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags, int* start, int* end)
+int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags, int* start, int* end, BOOL bForceNext)
 {
+  int _start = *start;
+  int _end = *end;
+  BOOL bFindPrev = (_start > _end);
+
   SendMessage(hwnd, SCI_SETSEARCHFLAGS, flags, 0);
-  SendMessage(hwnd, SCI_SETTARGETRANGE, *start, *end);
+  SendMessage(hwnd, SCI_SETTARGETRANGE, _start, _end);
   int iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
+  //  handle next in case of zero-length-matches (regex) !
+  if ((iPos == _start) && bForceNext) {
+    int newStart = (int)(bFindPrev ? SendMessage(hwnd, SCI_POSITIONBEFORE, _start, 0) :
+                                     SendMessage(hwnd, SCI_POSITIONAFTER,  _start, 0));
+    if (newStart != _start) {
+      _start = newStart;
+      SendMessage(hwnd, SCI_SETTARGETRANGE, newStart, _end);
+      iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
+    }
+    else {
+      iPos = -1; // already at document begin or end => not found
+    }
+  }
+
   if (iPos >= 0) {
     // found in range, set begin and end of finding
     *start = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
@@ -4454,13 +4476,11 @@ RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, B
 {
   char szFind[FNDRPL_BUFFER];
   int slen = EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
-  if (slen <= 0)
-    return FALSE;
 
   int start = bFirstMatchOnly ? (int)SendMessage(hwnd, SCI_GETSELECTIONNSTART, 0, 0) : 0;
   int end = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
 
-  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
+  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
 
   if (!bFirstMatchOnly) 
   {
@@ -4686,10 +4706,22 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       }
       return FALSE;
 
+
+    case WM_ACTIVATE:
+      if (bDoCheckAllOccurrences) {
+        bFlagsChanged = TRUE;
+        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_FINDTEXT, 1), 0);
+      }
+      else {
+        DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !(BOOL)SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0));
+      }
+      return FALSE;
+
+
     case WM_COMMAND:
       {
         lpefr = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
-
+        
         switch (LOWORD(wParam)) {
         case IDC_FINDTEXT:
         case IDC_REPLACETEXT:
@@ -4700,12 +4732,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             BOOL bEnableR = (GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT)) ||
                              CB_ERR != SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_GETCURSEL, 0, 0));
 
-            EnableWindow(GetDlgItem(hwnd, IDOK), bEnableF);
-            EnableWindow(GetDlgItem(hwnd, IDC_FINDPREV), bEnableF);
-            EnableWindow(GetDlgItem(hwnd, IDC_REPLACE), bEnableF);
-            EnableWindow(GetDlgItem(hwnd, IDC_REPLACEALL), bEnableF);
-            EnableWindow(GetDlgItem(hwnd, IDC_REPLACEINSEL), bEnableF);
-            EnableWindow(GetDlgItem(hwnd, IDC_SWAPSTRG), bEnableF || bEnableR);
+            BOOL bEnableIS = !(BOOL)SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
+
+            DialogEnableWindow(hwnd, IDOK, bEnableF);
+            DialogEnableWindow(hwnd, IDC_FINDPREV, bEnableF);
+            DialogEnableWindow(hwnd, IDC_REPLACE, bEnableF);
+            DialogEnableWindow(hwnd, IDC_REPLACEALL, bEnableF);
+            DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableF && bEnableIS);
+            DialogEnableWindow(hwnd, IDC_SWAPSTRG, bEnableF || bEnableR);
 
             if (HIWORD(wParam) == CBN_CLOSEUP) {
               LONG lSelEnd;
@@ -4719,8 +4753,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
                 BeginWaitCursor();
                 StringCchCopyA(lastFind, COUNTOF(lastFind), lpefr->szFind);
                 RegExResult_t match = NO_MATCH;
-                if (bEnableF)
-                  match = EditFindHasMatch(hwndEdit, lpefr, (iSaveMarkOcc > 0), FALSE);
+                match = EditFindHasMatch(hwndEdit, lpefr, (iSaveMarkOcc > 0), FALSE);
                 if (regexMatch != match) {
                   regexMatch = match;
                   InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
@@ -4743,7 +4776,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             lpefr->bWildcardSearch = FALSE;
           }
           else {
-            if (!(IsDlgButtonChecked(hwnd, IDC_WILDCARDSEARCH) == BST_CHECKED))
+            if (IsDlgButtonChecked(hwnd, IDC_WILDCARDSEARCH) == BST_CHECKED)
+              lpefr->fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
+            else
               lpefr->fuFlags ^= (SCFIND_REGEXP | SCFIND_POSIX);
           }
           bFlagsChanged = TRUE;
@@ -4754,11 +4789,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (IsDlgButtonChecked(hwnd, IDC_WILDCARDSEARCH) == BST_CHECKED) {
             CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
             lpefr->bWildcardSearch = TRUE;
-            lpefr->fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
+            lpefr->fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
           }
           else {
             lpefr->bWildcardSearch = FALSE;
-            if (!(IsDlgButtonChecked(hwnd, IDC_FINDREGEXP) == BST_CHECKED))
+            if (IsDlgButtonChecked(hwnd, IDC_FINDREGEXP) == BST_CHECKED) {
+              lpefr->fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
+              //lpefr->fuFlags ^= SCFIND_POSIX;
+            }
+            else
               lpefr->fuFlags ^= (SCFIND_REGEXP | SCFIND_POSIX);
           }
           bFlagsChanged = TRUE;
@@ -4817,13 +4856,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
             if (!bSwitchedFindReplace &&
                 !GetDlgItemTextW2A(uCPEdit, hwnd, IDC_FINDTEXT, lpefr->szFind, COUNTOF(lpefr->szFind))) {
-              EnableWindow(GetDlgItem(hwnd, IDOK), FALSE);
-              EnableWindow(GetDlgItem(hwnd, IDC_FINDPREV), FALSE);
-              EnableWindow(GetDlgItem(hwnd, IDC_REPLACE), FALSE);
-              EnableWindow(GetDlgItem(hwnd, IDC_REPLACEALL), FALSE);
-              EnableWindow(GetDlgItem(hwnd, IDC_REPLACEINSEL), FALSE);
+              DialogEnableWindow(hwnd, IDOK, FALSE);
+              DialogEnableWindow(hwnd, IDC_FINDPREV, FALSE);
+              DialogEnableWindow(hwnd, IDC_REPLACE, FALSE);
+              DialogEnableWindow(hwnd, IDC_REPLACEALL, FALSE);
+              DialogEnableWindow(hwnd, IDC_REPLACEINSEL, FALSE);
               if (!GetDlgItemTextW2A(uCPEdit, hwnd, IDC_REPLACETEXT, lpefr->szReplace, COUNTOF(lpefr->szReplace)))
-                EnableWindow(GetDlgItem(hwnd, IDC_SWAPSTRG), FALSE);
+                DialogEnableWindow(hwnd, IDC_SWAPSTRG, FALSE);
               return TRUE;
             }
 
@@ -5032,8 +5071,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_NOTIFY:
       {
         LPNMHDR pnmhdr = (LPNMHDR)lParam;
-        switch (pnmhdr->code) {
-
+        switch (pnmhdr->code) 
+        {
         case NM_CLICK:
         case NM_RETURN:
           if (pnmhdr->idFrom == IDC_TOGGLEFINDREPLACE) {
@@ -5131,36 +5170,6 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bReplace)
 
 //=============================================================================
 //
-//  EditSetRegexStartAnchor()
-//     beware of zero-length-matches (regex) !
-//     see also : https://www.regular-expressions.info/zerolength.html
-//
-void __fastcall EditRegexAdaptAnchors(HWND hwnd, LPSTR szFind, int* start, BOOL bFindNext)
-{
-  int len = StringCchLenA(szFind, FNDRPL_BUFFER);
-  int nx = 1;
-  char* pBeg = (char*)StrChrA(szFind, '^');
-  BOOL esc1 = ((pBeg > szFind) && (*(--pBeg) == '\\'));
-  if (pBeg && !esc1) {
-    int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, *start, 0);
-    int iLnBeg = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, iLine, 0);
-    int iLnEnd = (int)SendMessage(hwnd, SCI_GETLINEENDPOSITION, iLine, 0);
-    if (bFindNext && ((iLnBeg != *start) || (iLnEnd == *start) || (len == 1)))
-      *start = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (iLine + nx--), 0);
-  }
-  char* pEnd = (char*)StrChrA(szFind, '$');
-  BOOL esc2 = ((pEnd > szFind) && (*(--pEnd) == '\\'));
-  if (pEnd && !esc2) {
-    int iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, *start, 0);
-    int iLnEnd = (int)SendMessage(hwnd, SCI_GETLINEENDPOSITION, iLine, 0);
-    if (bFindNext && (iLnEnd == *start))
-      *start = (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (iLine + nx), 0);
-  }
-}
-
-
-//=============================================================================
-//
 //  EditFindNext()
 //
 BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
@@ -5177,9 +5186,6 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
   int start = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
   int end = iTextLength;
 
-  if (lpefr->fuFlags & SCFIND_REGEXP) {
-    EditRegexAdaptAnchors(hwnd, szFind, &start, TRUE);
-  }
   if (start > end) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
       end = min(start, iTextLength);  start = 0;
@@ -5188,12 +5194,24 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
       bSuppressNotFound = TRUE;
   }
 
-  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
+  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, TRUE);
 
-  if ((iPos < 0) && (start > 0) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) {
-    if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
+  if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+    InfoBox(MBWARN, L"MsgInvalidRegex", IDS_REGEX_INVALID);
+    bSuppressNotFound = TRUE;
+  }
+  else if ((iPos < 0) && (start > 0) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) 
+  {
+    if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPFW)) 
+    {
       end = min(start, iTextLength);  start = 0;
-      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
+
+      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+
+      if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+        InfoBox(MBWARN, L"MsgInvalidRegex2", IDS_REGEX_INVALID);
+        bSuppressNotFound = TRUE;
+      }
     }
     else
       bSuppressNotFound = TRUE;
@@ -5235,9 +5253,6 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
   int start = max(0, (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0));
   int end = 0;
 
-  if (lpefr->fuFlags & SCFIND_REGEXP) {
-    EditRegexAdaptAnchors(hwnd, szFind, &start, FALSE);
-  }
   if (start <= end) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
       end = start;  start = iTextLength;
@@ -5246,12 +5261,25 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
       bSuppressNotFound = TRUE;
   }
 
-  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
+  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, TRUE);
 
-  if ((iPos < 0) && (start <= iTextLength) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) {
-    if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPRE)) {
+  if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) 
+  {
+    InfoBox(MBWARN, L"MsgInvalidRegex", IDS_REGEX_INVALID);
+    bSuppressNotFound = TRUE;
+  }
+  else if ((iPos < 0) && (start <= iTextLength) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) 
+  {
+    if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPRE)) 
+    {
       end = start;  start = iTextLength;
-      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
+
+      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+
+      if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+        InfoBox(MBWARN, L"MsgInvalidRegex2", IDS_REGEX_INVALID);
+        bSuppressNotFound = TRUE;
+      }
     }
     else
       bSuppressNotFound = TRUE;
@@ -5310,6 +5338,26 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
     return FALSE; // recoding of clipboard canceled
 
   // w/o selection, replacement string is put into current position
+  // but this mayby not intended here
+  if ((BOOL)SendMessage(hwnd, SCI_GETSELECTIONEMPTY, 0, 0)) {
+    int start = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+    int end = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, start, 0);
+    int _start = start;
+    int iPos = EditFindInTarget(hwnd, lpefr->szFind,
+      StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),
+      (int)(lpefr->fuFlags), &start, &end, FALSE);
+    if ((iPos < 0) || (_start != start) || (_start != end))  {
+      // empty-replace was not intended
+      LocalFree(pszReplace);
+      if (iPos < 0)
+        return EditFindNext(hwnd, lpefr, FALSE);
+      else {
+        EditSelectEx(hwnd, start, end);
+        return TRUE;
+      }
+    }
+  }
+
   SendMessage(hwnd, SCI_TARGETFROMSELECTION, 0, 0);
   SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
   
@@ -5343,39 +5391,39 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   if (!pszReplace)
     return -1; // recoding of clipboard canceled
 
-  int iDiffToDocEnd = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0) - iEndPos;
-
-  BeginWaitCursor();
-
-  int iPos = 0;
   int iCount = 0;
   int start = iStartPos;
   int end = iEndPos;
 
-  while ((iPos >= 0) && (start <= end) && (end <= iEndPos))
-  {
-    iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end);
+  BeginWaitCursor();
 
-    if ((iPos >= 0) && (end <= iEndPos)) {
+  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
 
-      if (++iCount == 1)
-        SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
-
-      // replace
-      int iReplLen = (int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
-
-      // move start behind replacement; target region maybe extended by replacement
-      iEndPos = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0) - iDiffToDocEnd;
-      start += iReplLen;
-      end = iEndPos;
-
-      // correction for regex
-      if (lpefr->fuFlags & SCFIND_REGEXP) {
-        EditRegexAdaptAnchors(hwnd, szFind, &start, TRUE);
-      }
-    }
+  if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+    InfoBox(MBWARN, L"MsgInvalidRegex", IDS_REGEX_INVALID);
+    bShowInfo = FALSE;
   }
 
+  while ((iPos >= 0) && (start <= iEndPos))
+  {
+    if (++iCount == 1)
+      SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
+
+    // replace
+    int iReplLen = (int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
+    
+    // move start behind replacement; target region maybe extended by replacement
+    int iFoundLen = (end - start);
+    iEndPos += (iReplLen - iFoundLen);
+    start += iReplLen;
+    end = iEndPos;
+
+    if (start <= iEndPos)
+      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, (iFoundLen == 0));
+    else
+      iPos = -1;
+  } 
+  
   EndWaitCursor();
 
   LocalFree(pszReplace);
@@ -5455,15 +5503,24 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
 
 //=============================================================================
 //
-//  EditMarkAll()
-//  Mark all occurrences of the text currently selected (by Aleksandar Lekov)
+//  EditClearAllMarks()
 //
-void EditMarkAll(HWND hwnd, char* pszFind, int flags, BOOL bMatchCase, BOOL bMatchWords) 
+void EditClearAllMarks(HWND hwnd)
 {
-  // clear all marks
   SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
   SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, (int)SendMessage(hwnd, SCI_GETLENGTH, 0, 0));
   iMarkOccurrencesCount = -1; // -1 !
+}
+
+
+//=============================================================================
+//
+//  EditMarkAll()
+//  Mark all occurrences of the text currently selected (by Aleksandar Lekov)
+//
+void EditMarkAll(HWND hwnd, char* pszFind, int flags, BOOL bMatchCase, BOOL bMatchWords)
+{
+  EditClearAllMarks(hwnd);
 
   int iTextLength = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
   int iFindLength = 0;
@@ -5475,10 +5532,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, BOOL bMatchCase, BOOL bMat
     int iSelStart = (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0);
     int iSelEnd = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
     int iSelCount = iSelEnd - iSelStart;
-
-    // clear existing marker indicators
-    SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
-    SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, iTextLength);
 
     // if nothing selected or multiple lines are selected exit
     if ((iSelCount == 0) ||
@@ -5519,19 +5572,21 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, BOOL bMatchCase, BOOL bMat
 
   while (++iMarkOccurrencesCount < iMarkOccurrencesMaxCount) 
   {
-    iPos = EditFindInTarget(hwnd, pszText, iFindLength, flags, &start, &end);
+    iPos = EditFindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (end == start));
 
     if (iPos < 0)
       break; // not found
 
     // mark this match
     SendMessage(hwnd, SCI_INDICATORFILLRANGE, iPos, (end - start));
-    start = end + 1;  end = iTextLength;
+    start = end;
+    end = iTextLength;
 
     if (start >= end)
       break;
   }
 
+  // free text buffer if not set from outside (pszFind)
   if (pszFind == NULL)
     LocalFree(pszText);
 
@@ -5587,17 +5642,17 @@ void EditCompleteWord(HWND hwnd, BOOL autoInsert) {
   int start = 0;
   int end = iTextLength;
 
-  int iPosFind = EditFindInTarget(hwnd, pRoot, iRootLen, SCFIND_WORDSTART, &start, &end);
+  int iPosFind = EditFindInTarget(hwnd, pRoot, iRootLen, SCFIND_WORDSTART, &start, &end, FALSE);
 
   int iNumWords = 0;
   char* pWord = NULL;
-  while (iPosFind >= 0 && iPosFind < iTextLength) {
+  while (iPosFind >= 0 && iPosFind <= iTextLength) {
     int wordEnd = iPosFind + iRootLen;
 
     if (iPosFind != iCurrentPos - iRootLen) {
-      while (wordEnd < iTextLength && !StrChrIA(NON_WORD, (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)wordEnd, 0)))
-        wordEnd++;
-
+      while (wordEnd < iTextLength && !StrChrIA(NON_WORD, (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)wordEnd, 0))) {
+        ++wordEnd;
+      }
       int wordLength = wordEnd - iPosFind;
       if (wordLength > iRootLen) {
         struct WLIST* p = lListHead;
@@ -5642,8 +5697,9 @@ void EditCompleteWord(HWND hwnd, BOOL autoInsert) {
         LocalFree(pWord);
       }
     }
-    start = wordEnd;  end = iTextLength;
-    iPosFind = EditFindInTarget(hwnd, pRoot, iRootLen, SCFIND_WORDSTART, &start, &end);
+    start = wordEnd;
+    end = iTextLength;
+    iPosFind = EditFindInTarget(hwnd, pRoot, iRootLen, SCFIND_WORDSTART, &start, &end, (end == start));
   }
 
   if (iNumWords > 0) {
@@ -6336,11 +6392,11 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           CheckRadioButton(hwnd,100,102,101);
         else if (*piSortFlags & SORT_SHUFFLE) {
           CheckRadioButton(hwnd,100,102,102);
-          EnableWindow(GetDlgItem(hwnd,103),FALSE);
-          EnableWindow(GetDlgItem(hwnd,104),FALSE);
-          EnableWindow(GetDlgItem(hwnd,105),FALSE);
-          EnableWindow(GetDlgItem(hwnd,106),FALSE);
-          EnableWindow(GetDlgItem(hwnd,107),FALSE);
+          DialogEnableWindow(hwnd,103,FALSE);
+          DialogEnableWindow(hwnd,104,FALSE);
+          DialogEnableWindow(hwnd,105,FALSE);
+          DialogEnableWindow(hwnd,106,FALSE);
+          DialogEnableWindow(hwnd,107,FALSE);
         }
         else
           CheckRadioButton(hwnd,100,102,100);
@@ -6348,7 +6404,7 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           CheckDlgButton(hwnd,103,BST_CHECKED);
         if (*piSortFlags & SORT_UNIQDUP) {
           CheckDlgButton(hwnd,104,BST_CHECKED);
-          EnableWindow(GetDlgItem(hwnd,103),FALSE);
+          DialogEnableWindow(hwnd,103,FALSE);
         }
         if (*piSortFlags & SORT_UNIQUNIQ)
           CheckDlgButton(hwnd,105,BST_CHECKED);
@@ -6360,12 +6416,12 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           bEnableLogicalSort = TRUE;
         }
         else {
-          EnableWindow(GetDlgItem(hwnd,107),FALSE);
+          DialogEnableWindow(hwnd,107,FALSE);
           bEnableLogicalSort = FALSE;
         }
         if (SC_SEL_RECTANGLE != SendMessage(hwndEdit,SCI_GETSELECTIONMODE,0,0)) {
           *piSortFlags &= ~SORT_COLUMN;
-          EnableWindow(GetDlgItem(hwnd,108),FALSE);
+          DialogEnableWindow(hwnd,108,FALSE);
         }
         else {
           *piSortFlags |= SORT_COLUMN;
@@ -6403,21 +6459,21 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           break;
         case 100:
         case 101:
-          EnableWindow(GetDlgItem(hwnd,103),IsDlgButtonChecked(hwnd,105) != BST_CHECKED);
-          EnableWindow(GetDlgItem(hwnd,104),TRUE);
-          EnableWindow(GetDlgItem(hwnd,105),TRUE);
-          EnableWindow(GetDlgItem(hwnd,106),TRUE);
-          EnableWindow(GetDlgItem(hwnd,107),bEnableLogicalSort);
+          DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,105) != BST_CHECKED);
+          DialogEnableWindow(hwnd,104,TRUE);
+          DialogEnableWindow(hwnd,105,TRUE);
+          DialogEnableWindow(hwnd,106,TRUE);
+          DialogEnableWindow(hwnd,107,bEnableLogicalSort);
           break;
         case 102:
-          EnableWindow(GetDlgItem(hwnd,103),FALSE);
-          EnableWindow(GetDlgItem(hwnd,104),FALSE);
-          EnableWindow(GetDlgItem(hwnd,105),FALSE);
-          EnableWindow(GetDlgItem(hwnd,106),FALSE);
-          EnableWindow(GetDlgItem(hwnd,107),FALSE);
+          DialogEnableWindow(hwnd,103,FALSE);
+          DialogEnableWindow(hwnd,104,FALSE);
+          DialogEnableWindow(hwnd,105,FALSE);
+          DialogEnableWindow(hwnd,106,FALSE);
+          DialogEnableWindow(hwnd,107,FALSE);
           break;
         case 104:
-          EnableWindow(GetDlgItem(hwnd,103),IsDlgButtonChecked(hwnd,104) != BST_CHECKED);
+          DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,104) != BST_CHECKED);
           break;
       }
       return TRUE;
