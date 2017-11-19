@@ -47,45 +47,47 @@
 #include "deelx64.h"   // DEELX - Regular Expression Engine (v1.3)
 // ---------------------------------------------------------------
 
-
 using namespace Scintilla;
+
+#define SciPos(pos)    static_cast<Sci::Position>(pos)
+#define SciLn(line)    static_cast<Sci::Line>(line)
+#define SciPosExt(pos) static_cast<Sci_Position>(pos)
+
+#define DeelXPos(pos)  static_cast<deelx::index_t>(pos)
+#define Cast2int(n)    static_cast<int>(n)
+
+// ---------------------------------------------------------------
 
 class DeelxRegexSearch : public RegexSearchBase
 {
 public:
 
   explicit DeelxRegexSearch(CharClassify* charClassTable)
-    : m_RegExpr()
-    ,m_Match()
-    ,m_MatchPos(-1)
-    ,m_MatchLength(0)
-    ,m_pContext(nullptr)
-    ,m_SubstitutionBuffer(nullptr)
+    : m_RegExprStrg()
+    , m_CompileFlags(-1)
+    , m_RegExpr()
+    , m_Match()
+    , m_MatchPos(-1)
+    , m_MatchLength(0)
+    , m_SubstitutionBuffer(nullptr)
   {}
 
   virtual ~DeelxRegexSearch()
   {
     ReleaseSubstitutionBuffer();
-    ReleaseContext();
+//    ReleaseContext(SciPos(-1), SciPos(-1));
+    m_RegExprStrg.clear();
   }
 
-  virtual long FindText(Document* doc,int minPos,int maxPos,const char* pattern,
-                        bool caseSensitive,bool word,bool wordStart,int flags,int* length) override;
+  virtual long FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
+                        bool caseSensitive, bool word, bool wordStart, int flags, Sci::Position* length) override;
 
-  virtual const char* SubstituteByPosition(Document* doc,const char* text,int* length) override;
+  virtual const char* SubstituteByPosition(Document* doc, const char* text, Sci::Position* length) override;
 
 
 private:
 
-  inline void ReleaseContext()
-  {
-    if (m_pContext != nullptr) {
-      m_RegExpr.ReleaseContext(m_pContext);
-      m_pContext = nullptr;
-    }
-  }
-
-  inline void ReleaseSubstitutionBuffer()
+  __inline void ReleaseSubstitutionBuffer()
   {
     if (m_SubstitutionBuffer) {
       m_RegExpr.ReleaseString(m_SubstitutionBuffer);
@@ -93,12 +95,17 @@ private:
     }
   }
 
+  std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart);
+  std::string& convertReplExpr(std::string& replStr);
+
 private:
+
+  std::string m_RegExprStrg;
+  int m_CompileFlags;
   deelx::CRegexpT<char> m_RegExpr;
   deelx::MatchResult m_Match;
-  deelx::index_t m_MatchPos;
-  deelx::index_t m_MatchLength;
-  deelx::CContext* m_pContext;
+  Sci::Position m_MatchPos;
+  Sci::Position m_MatchLength;
   char* m_SubstitutionBuffer;
 };
 // ============================================================================
@@ -111,23 +118,14 @@ RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 
 // ============================================================================
 
-/**
- * forward declaration of utility functions
- */
-std::string& translateRegExpr(std::string& regExprStr,bool wholeWord,bool wordStart);
-std::string& convertReplExpr(std::string& replStr);
-
-
-// ============================================================================
-
 
 /**
  * Find text in document, supporting both forward and backward
  * searches (just pass minPos > maxPos to do a backward search)
  * Has not been tested with backwards DBCS searches yet.
  */
-long DeelxRegexSearch::FindText(Document* doc,int minPos,int maxPos,const char *pattern,
-                                bool caseSensitive,bool word,bool wordStart,int searchFlags,int *length)
+long DeelxRegexSearch::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
+                                bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
 {
   const bool right2left = false; // always left-to-right match mode
   const bool extended = false;   // ignore spaces and use '#' as line-comment)
@@ -137,80 +135,122 @@ long DeelxRegexSearch::FindText(Document* doc,int minPos,int maxPos,const char *
   maxPos = doc->MovePositionOutsideChar(maxPos,1,false);
   const bool findprevious = (minPos > maxPos);
 
-
   int compileFlags = deelx::NO_FLAG;
   compileFlags |= (deelx::MULTILINE | deelx::GLOBAL); // the .(dot) does not match line-breaks
   //compileFlags |= (deelx::SINGLELINE | deelx::MULTILINE | deelx::GLOBAL);  // the .(dot) also matches line-breaks
 
   compileFlags |= (extended) ? deelx::EXTENDED : deelx::NO_FLAG;
-  compileFlags |= (!caseSensitive) ? deelx::IGNORECASE : deelx::NO_FLAG;
+  compileFlags |= (caseSensitive) ? deelx::NO_FLAG : deelx::IGNORECASE;
   compileFlags |= (right2left) ? deelx::RIGHTTOLEFT : deelx::NO_FLAG;
 
-  std::string sRegExprStrg = translateRegExpr(std::string(pattern,*length),word,wordStart);
+  std::string sRegExprStrg = translateRegExpr(std::string(pattern),word,wordStart);
 
-  try {
-    m_RegExpr.Compile(sRegExprStrg.c_str(),compileFlags);
+  bool bReCompile = (m_CompileFlags != compileFlags) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
+
+  if (bReCompile) {
+    m_RegExprStrg = sRegExprStrg;
+    m_CompileFlags = compileFlags;
+    try {
+      m_RegExpr.Compile(m_RegExprStrg.c_str(), m_CompileFlags);
+    }
+    catch (...) {
+      return -2;  // -1 is normally used for not found, -2 is used here for invalid regex
+      // DeelX is very fault tolerant and assumes what the user may want ... :-/
+      // so -2 may not occur!
+    }
   }
-  catch (...) {
-    return -2;  // -1 is normally used for not found, -2 is used here for invalid regex
+
+  Sci::Position rangeBegin = (findprevious) ? maxPos : minPos;
+  Sci::Position rangeEnd   = (findprevious) ? minPos : maxPos;
+  
+  Sci::Line     linesTotal  = doc->LinesTotal();
+  Sci::Position fileLastPos = SciPos(doc->Length());
+
+  Sci::Line lineOfBegPos = SciLn(doc->LineFromPosition(SciPosExt(rangeBegin)));
+  Sci::Line lineOfEndPos = SciLn(doc->LineFromPosition(SciPosExt(rangeEnd)));
+
+  Sci::Position lineStartOfBegPos = SciPos(doc->LineStart(SciPosExt(lineOfBegPos)));
+  Sci::Position lineEndOfEndPos   = SciPos(doc->LineEnd(SciPosExt(lineOfEndPos)));
+
+  // --- adapt range start/end according to search pattern ---
+
+  size_t begMetaPos = m_RegExprStrg.find_first_of('^');
+  bool bFoundBegMeta = (begMetaPos != std::string::npos) && 
+                       ((begMetaPos == 0) || (m_RegExprStrg.find_first_of('\\') != (begMetaPos - 1)));
+  if (bFoundBegMeta) {
+    if (lineStartOfBegPos != rangeBegin) {
+      rangeBegin = SciPos((lineOfBegPos < linesTotal) ? 
+                          doc->LineStart(SciPosExt(lineOfBegPos + 1)) : 
+                          doc->LineEnd(SciPosExt(linesTotal)));
+      rangeEnd   = (rangeBegin <= rangeEnd) ? rangeEnd : rangeBegin;
+    }
   }
 
-  int rangeBegin = (findprevious) ? maxPos : minPos;
-  int rangeLength = abs(maxPos - minPos);
+  size_t endMetaPos = m_RegExprStrg.find_last_of('$');
+  bool bFoundEndMeta = (endMetaPos != std::string::npos) && 
+                       ((endMetaPos == 0) || (m_RegExprStrg.find_last_of('\\') != (endMetaPos - 1)));
+  if (bFoundEndMeta) {
+    if (lineEndOfEndPos != rangeEnd) {
+      rangeEnd   = SciPos((0 < lineOfEndPos) ? doc->LineEnd(SciPosExt(lineOfEndPos - 1)) : 0);
+      rangeBegin = (rangeBegin <= rangeEnd) ? rangeBegin : rangeEnd;
+    }
+  }
 
-  ReleaseContext();
-  m_pContext = m_RegExpr.PrepareMatch(doc->RangePointer(rangeBegin,rangeLength));
+//@@@  Sci::Position rangeLength = rangeEnd - rangeBegin;
 
-  m_MatchPos    = -1; // not found
-  m_MatchLength =  0;
 
-  m_Match = m_RegExpr.Match(m_pContext);
+  // ---  start search  ---
+
+  m_MatchPos    = SciPos(-1); // not found
+  m_MatchLength = SciPos(0);
+  const deelx::index_t searchStop = DeelXPos(rangeEnd);
 
   if (findprevious)  // search previous 
   {
+    deelx::CContext* pContext = m_RegExpr.PrepareMatch(doc->RangePointer(0, fileLastPos), 0);
+    m_Match = m_RegExpr.Match(pContext);
     // search for last occurrence in range
-    while (m_Match.IsMatched() && (m_Match.GetStart() < rangeLength)) 
+    while (m_Match.IsMatched() && (m_Match.GetStart() < searchStop))
     {
-      m_MatchPos = rangeBegin + m_Match.GetStart();
-      m_MatchLength = (m_Match.GetEnd() - m_Match.GetStart());
-
-      m_Match = m_RegExpr.Match(m_pContext); //next
+      m_MatchPos = SciPos(m_Match.GetStart());
+      m_MatchLength = SciPos(m_Match.GetEnd() - m_Match.GetStart());
+      m_Match = m_RegExpr.Match(pContext); //next
     }
+    m_RegExpr.ReleaseContext(pContext);
   }
-  else
-  {
-    if (m_Match.IsMatched() && (m_Match.GetStart() < rangeLength)) 
-    {
-      m_MatchPos = rangeBegin + m_Match.GetStart();
-      m_MatchLength = (m_Match.GetEnd() - m_Match.GetStart());
+  else {
+    m_Match = m_RegExpr.Match(doc->RangePointer(0, fileLastPos), 
+                              DeelXPos(fileLastPos), DeelXPos(rangeBegin));
+    if (m_Match.IsMatched() && (m_Match.GetStart() < searchStop)) {
+      m_MatchPos = SciPos(m_Match.GetStart());
+      m_MatchLength = SciPos(m_Match.GetEnd() - m_Match.GetStart());
     }
   }
 
   //NOTE: potential 64-bit-size issue at interface here:
-  *length = static_cast<int>(m_MatchLength);
+  *length = SciPos(m_MatchLength);
   return static_cast<long>(m_MatchPos);
 }
 // ============================================================================
 
 
-const char* DeelxRegexSearch::SubstituteByPosition(Document* doc,const char* text,int* length)
+const char* DeelxRegexSearch::SubstituteByPosition(Document* doc, const char* text, Sci::Position* length)
 {
   if (!m_Match.IsMatched() || (m_MatchPos < 0)) {
-    *length = 0;
+    *length = SciPos(0);
     return nullptr;
   }
   std::string sReplStrg = convertReplExpr(std::string(text,*length));
+  deelx::index_t replLength = DeelXPos(sReplStrg.length());
 
-  //NOTE: potential 64-bit-size issue at interface here:
-  const char* pString = doc->RangePointer(static_cast<int>(m_MatchPos),static_cast<int>(m_MatchLength));
+  const char* pString = doc->RangePointer(m_MatchPos,m_MatchLength);
 
-  deelx::index_t resLength;
   ReleaseSubstitutionBuffer();
-  m_SubstitutionBuffer = m_RegExpr.Replace(pString,m_MatchLength,sReplStrg.c_str(),
-                                           static_cast<deelx::index_t>(sReplStrg.length()),resLength);
+  deelx::index_t resLength;
+  m_SubstitutionBuffer = m_RegExpr.Replace(pString,m_MatchLength,sReplStrg.c_str(),replLength,resLength);
 
   //NOTE: potential 64-bit-size issue at interface here:
-  *length = static_cast<int>(resLength);
+  *length = SciPos(resLength);
 
   return m_SubstitutionBuffer;
 }
@@ -246,7 +286,7 @@ void replaceAll(std::string& source,const std::string& from,const std::string& t
 
 
 
-std::string& translateRegExpr(std::string& regExprStr,bool wholeWord,bool wordStart)
+std::string& DeelxRegexSearch::translateRegExpr(std::string& regExprStr,bool wholeWord,bool wordStart)
 {
   std::string	tmpStr;
 
@@ -270,7 +310,7 @@ std::string& translateRegExpr(std::string& regExprStr,bool wholeWord,bool wordSt
 
 
 
-std::string& convertReplExpr(std::string& replStr)
+std::string& DeelxRegexSearch::convertReplExpr(std::string& replStr)
 {
   std::string	tmpStr;
   for (size_t i = 0; i < replStr.length(); ++i) {
