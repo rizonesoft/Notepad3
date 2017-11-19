@@ -54,7 +54,11 @@ using namespace Scintilla;
 #define SciPosExt(pos) static_cast<Sci_Position>(pos)
 
 #define DeelXPos(pos)  static_cast<deelx::index_t>(pos)
-#define Cast2int(n)    static_cast<int>(n)
+#define Cast2long(n)   static_cast<long>(n)
+
+// ---------------------------------------------------------------
+
+const int MAX_GROUP_COUNT = 10;
 
 // ---------------------------------------------------------------
 
@@ -69,13 +73,12 @@ public:
     , m_Match()
     , m_MatchPos(-1)
     , m_MatchLength(0)
-    , m_SubstitutionBuffer(nullptr)
+    , m_SubstBuffer()
   {}
 
   virtual ~DeelxRegexSearch()
   {
     ReleaseSubstitutionBuffer();
-//    ReleaseContext(SciPos(-1), SciPos(-1));
     m_RegExprStrg.clear();
   }
 
@@ -89,10 +92,10 @@ private:
 
   __inline void ReleaseSubstitutionBuffer()
   {
-    if (m_SubstitutionBuffer) {
-      m_RegExpr.ReleaseString(m_SubstitutionBuffer);
-      m_SubstitutionBuffer = nullptr;
-    }
+    //if (m_SubstitutionBuffer) {
+    //  m_RegExpr.ReleaseString(m_SubstitutionBuffer);
+    //  m_SubstitutionBuffer = nullptr;
+    //}
   }
 
   std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart);
@@ -106,7 +109,7 @@ private:
   deelx::MatchResult m_Match;
   Sci::Position m_MatchPos;
   Sci::Position m_MatchLength;
-  char* m_SubstitutionBuffer;
+  std::string m_SubstBuffer;
 };
 // ============================================================================
 
@@ -196,9 +199,6 @@ long DeelxRegexSearch::FindText(Document* doc, Sci::Position minPos, Sci::Positi
     }
   }
 
-//@@@  Sci::Position rangeLength = rangeEnd - rangeBegin;
-
-
   // ---  start search  ---
 
   m_MatchPos    = SciPos(-1); // not found
@@ -234,25 +234,119 @@ long DeelxRegexSearch::FindText(Document* doc, Sci::Position minPos, Sci::Positi
 // ============================================================================
 
 
+
+#if 0
+
+#define _MAX(a,b) ((a)>(b)?(a):(b))
+#define _MIN(a,b) ((a)<(b)?(a):(b))
+
+
 const char* DeelxRegexSearch::SubstituteByPosition(Document* doc, const char* text, Sci::Position* length)
 {
   if (!m_Match.IsMatched() || (m_MatchPos < 0)) {
     *length = SciPos(0);
     return nullptr;
   }
-  std::string sReplStrg = convertReplExpr(std::string(text,*length));
-  deelx::index_t replLength = DeelXPos(sReplStrg.length());
 
-  const char* pString = doc->RangePointer(m_MatchPos,m_MatchLength);
+  Sci::Position fileLastPos = SciPos(doc->Length());
+
+  std::string rawReplStrg = convertReplExpr(std::string(text,*length));
+  deelx::index_t rawReplLength = DeelXPos(rawReplStrg.length());
+
+  // document slice with look-around context (+/- MatchLength ???)
+  Sci::Position looka = m_MatchLength;   // what should be the size of the lookahead ???
+
+  Sci::Position begin = _MAX(0, (m_MatchPos - looka));
+  Sci::Position end   = _MIN((m_MatchPos + (2 * looka)), fileLastPos);
+  Sci::Position len   = (end - begin);
+  const char* pDocumentSlice = doc->RangePointer(begin, len);
+
+  deelx::index_t relMatchPos = DeelXPos(m_MatchPos - begin);
+  deelx::index_t relSliceLen = DeelXPos(len);
 
   ReleaseSubstitutionBuffer();
-  deelx::index_t resLength;
-  m_SubstitutionBuffer = m_RegExpr.Replace(pString,m_MatchLength,sReplStrg.c_str(),replLength,resLength);
+  deelx::index_t resLength_out = rawReplLength; // init
+  m_SubstitutionBuffer = m_RegExpr.Replace(pDocumentSlice, relSliceLen, rawReplStrg.c_str(), rawReplLength, resLength_out, relMatchPos, 1, &m_Match, nullptr);
 
   //NOTE: potential 64-bit-size issue at interface here:
-  *length = SciPos(resLength);
+  deelx::index_t realReplLength = SciPos(resLength_out - relSliceLen + m_MatchLength);
+  *length = SciPos(realReplLength);
 
-  return m_SubstitutionBuffer;
+  // cut out replacement sub-string only !!!
+  m_SubstitutionBuffer[relMatchPos + realReplLength + 1] = '\0';
+  return &(m_SubstitutionBuffer[relMatchPos]);
+}
+// ============================================================================
+#endif
+
+
+
+const char* DeelxRegexSearch::SubstituteByPosition(Document* doc, const char* text, Sci::Position* length)
+{
+  if (m_Match.IsMatched() == 0) {
+    *length = SciPos(-1);
+    return nullptr;
+  }
+
+  m_SubstBuffer.clear();
+
+  for (int j = 0; j < *length; j++) {
+    if ((text[j] == '$') || (text[j] == '\\'))
+    {
+      if ((text[j + 1] >= '0') && (text[j + 1] <= '9'))
+      {
+        unsigned int patNum = text[j + 1] - '0';
+
+        if (patNum <= m_Match.MaxGroupNumber()) {
+          deelx::index_t gStart = m_Match.GetGroupStart(patNum);
+          deelx::index_t len = m_Match.GetGroupEnd(patNum) - gStart;
+
+          m_SubstBuffer.append(doc->RangePointer(SciPos(gStart), len), len);
+        }
+        ++j;
+      }
+      else {
+        ++j;
+        switch (text[j]) {
+        case 'a':
+          m_SubstBuffer.push_back('\a');
+          break;
+        case 'b':
+          m_SubstBuffer.push_back('\b');
+          break;
+        case 'f':
+          m_SubstBuffer.push_back('\f');
+          break;
+        case 'n':
+          m_SubstBuffer.push_back('\n');
+          break;
+        case 'r':
+          m_SubstBuffer.push_back('\r');
+          break;
+        case 't':
+          m_SubstBuffer.push_back('\t');
+          break;
+        case 'v':
+          m_SubstBuffer.push_back('\v');
+          break;
+        case '\\':
+          m_SubstBuffer.push_back('\\');
+          break;
+        default:
+          m_SubstBuffer.push_back('\\');
+          --j;
+          break;
+        }
+      }
+    }
+    else {
+      m_SubstBuffer.push_back(text[j]);
+    }
+  }
+
+  //NOTE: potential 64-bit-size issue at interface here:
+  *length = SciPos(m_SubstBuffer.length());
+  return m_SubstBuffer.c_str();
 }
 // ============================================================================
 
