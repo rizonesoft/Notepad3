@@ -1092,7 +1092,10 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         if (bPreserveCaretPos)
           CheckDlgButton(hwnd, IDC_PRESERVECARET, BST_CHECKED);
 
-        //if (!bSaveRecentFiles) DialogEnableWindow(hwnd,IDC_PRESERVECARET, FALSE);
+        //if (!bSaveRecentFiles) 
+        //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, FALSE);
+
+
 
         CenterDlgInParent(hwnd);
       }
@@ -1288,8 +1291,13 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               ListView_InsertItem(GetDlgItem(hwnd,IDC_FILEMRU),&lvi);
             }
 
-            ListView_SetItemState(GetDlgItem(hwnd,IDC_FILEMRU),0,LVIS_FOCUSED,LVIS_FOCUSED);
-            ListView_SetColumnWidth(GetDlgItem(hwnd,IDC_FILEMRU),0,LVSCW_AUTOSIZE_USEHEADER);
+            UINT cnt = ListView_GetItemCount(GetDlgItem(hwnd, IDC_FILEMRU));
+            if (cnt > 0) {
+              UINT idx = ListView_GetTopIndex(GetDlgItem(hwnd, IDC_FILEMRU));
+              ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVIS_FOCUSED, LVIS_FOCUSED);
+              ListView_SetColumnWidth(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVSCW_AUTOSIZE_USEHEADER);
+              ListView_SetItemState(GetDlgItem(hwnd, IDC_FILEMRU), idx, LVIS_SELECTED, LVIS_SELECTED);
+            }
 
             lpit->hThread = CreateThread(NULL,0,FileMRUIconThread,(LPVOID)lpit,0,&dwtid);
           }
