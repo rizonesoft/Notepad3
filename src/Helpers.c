@@ -2408,32 +2408,65 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
 
 /**
  * Convert C style \0oo into their indicated characters.
- * This is used to get control characters into the regular expresion engine.
+ * This is used to get control characters into the regular expresion engine
+ * w/o interfering with group referencing ('\0').
  */
-unsigned int UnSlashLowOctal(char *s) {
-  char *sStart = s;
-  char *o = s;
+unsigned int UnSlashLowOctal(char* s) {
+  char* sStart = s;
+  char* o = s;
   while (*s) {
-    if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigit(s[2]) && IsOctalDigit(s[3])) {
+    if ((s[0] == '\\') && (s[1] == '\\')) { // esc seq
+      *o = *s; ++o; ++s; *o = *s;
+    }
+    else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigit(s[2]) && IsOctalDigit(s[3])) {
       *o = (char)(8 * (s[2] - '0') + (s[3] - '0'));
       s += 3;
     } else {
       *o = *s;
     }
-    o++;
+    ++o;
     if (*s)
-      s++;
+      ++s;
   }
   *o = '\0';
   return (unsigned int)(o - sStart);
 }
 
-void TransformBackslashes(char* pszInput,BOOL bRegEx,UINT cpEdit)
+
+/**
+ *  check, if we have regex sub-group referencing 
+ */
+int CheckRegExReplTarget(char* pszInput)
 {
-  if (bRegEx)
+  while (*pszInput) {
+    if ((*pszInput == '$') || (*pszInput == '\\')) {
+      ++pszInput;
+      if ((*pszInput >= '0') && (*pszInput <= '9')) {
+        return SCI_REPLACETARGETRE;
+      }
+    }
+    ++pszInput;
+  }
+  return SCI_REPLACETARGET;
+}
+
+
+void TransformBackslashes(char* pszInput, BOOL bRegEx, UINT cpEdit, int* iReplaceMsg)
+{
+  int replTarget = SCI_REPLACETARGET;
+
+  if (bRegEx) {
     UnSlashLowOctal(pszInput);
-  else
-    UnSlash(pszInput,cpEdit);
+    if (iReplaceMsg)
+      replTarget = CheckRegExReplTarget(pszInput);
+  }
+
+  if (SCI_REPLACETARGET == replTarget)
+    UnSlash(pszInput, cpEdit);
+
+  if (iReplaceMsg)
+    *iReplaceMsg = replTarget;
+
 }
 
 
