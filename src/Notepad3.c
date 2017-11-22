@@ -1013,6 +1013,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
   UpdateToolbar();
   UpdateStatusbar();
+  UpdateLineNumberWidth();
 
   // print file immediately and quit
   if (flagPrintFileAndLeave)
@@ -1038,6 +1039,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
     PostMessage(hwndMain, WM_CLOSE, 0, 0);
   }
+
 
   UNUSED(pszCmdLine);
 
@@ -1151,9 +1153,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_SETFOCUS:
       SetFocus(hwndEdit);
-
       UpdateToolbar();
       UpdateStatusbar();
+      UpdateLineNumberWidth();
 
       //if (bPendingChangeNotify)
       //  PostMessage(hwnd,WM_CHANGENOTIFY,0,0);
@@ -1312,7 +1314,6 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // Margins
   Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
-  UpdateLineNumberWidth();
 
   // Code folding
   SciCall_SetMarginType(MARGIN_FOLD_INDEX, SC_MARGIN_SYMBOL);
@@ -1422,7 +1423,6 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     return(-1);
 
   UNUSED(wParam);
-
   return(0);
 }
 
@@ -4221,19 +4221,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_ZOOMIN:
       SendMessage(hwndEdit,SCI_ZOOMIN,0,0);
-      //UpdateLineNumberWidth();
       break;
 
 
     case IDM_VIEW_ZOOMOUT:
       SendMessage(hwndEdit,SCI_ZOOMOUT,0,0);
-      //UpdateLineNumberWidth();
       break;
 
 
     case IDM_VIEW_RESETZOOM:
       SendMessage(hwndEdit,SCI_SETZOOM,0,0);
-      //UpdateLineNumberWidth();
       break;
 
 
@@ -5305,9 +5302,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (bMatchBraces) {
               EditMatchBrace(hwndEdit);
             }
-
             UpdateToolbar();
             UpdateStatusbar();
+            UpdateLineNumberWidth();
           }
           break;
 
@@ -5460,7 +5457,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
           }
           bModified = TRUE;
-          // fall through
+          UpdateLineNumberWidth();
+          break;
+
         case SCN_ZOOM:
           UpdateLineNumberWidth();
           break;
@@ -5473,6 +5472,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_MARGINCLICK:
           if (scn->margin == MARGIN_FOLD_INDEX)
             FoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+          UpdateLineNumberWidth();
           break;
 
         case SCN_KEY:
@@ -6947,19 +6947,24 @@ void UpdateStatusbar()
 //
 void UpdateLineNumberWidth()
 {
-  char chLines[32] = { '\0' };
-  int  iLineMarginWidthNow;
-  int  iLineMarginWidthFit;
+  static int lastLineCnt = -1;
 
   if (bShowLineNumbers) {
 
-    StringCchPrintfA(chLines,COUNTOF(chLines),"_%i_",SendMessage(hwndEdit,SCI_GETLINECOUNT,0,0));
+    int iLineCnt = (int)SendMessage(hwndEdit, SCI_GETLINECOUNT, 0, 0);
 
-    iLineMarginWidthNow = (int)SendMessage(hwndEdit,SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
-    iLineMarginWidthFit = (int)SendMessage(hwndEdit,SCI_TEXTWIDTH,STYLE_LINENUMBER,(LPARAM)chLines);
+    if (lastLineCnt != iLineCnt) 
+    {
+      char chLines[32] = { '\0' };
+      StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", iLineCnt);
 
-    if (iLineMarginWidthNow != iLineMarginWidthFit) {
-      SendMessage(hwndEdit,SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
+      int iLineMarginWidthNow = (int)SendMessage(hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+      int iLineMarginWidthFit = (int)SendMessage(hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
+
+      if (iLineMarginWidthNow != iLineMarginWidthFit) {
+        SendMessage(hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
+      }
+      lastLineCnt = iLineCnt;
     }
   }
   else
@@ -7245,7 +7250,6 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     FileVars_Init(NULL,0,&fvCurFile);
     EditSetNewText(hwndEdit,"",0);
     Style_SetLexer(hwndEdit,NULL);
-    UpdateLineNumberWidth();
     bModified = FALSE;
     bReadOnly = FALSE;
     iEOLMode = iLineEndings[iDefaultEOLMode];
@@ -7254,7 +7258,10 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     Encoding_HasChanged(iDefaultEncoding);
     Encoding_SciSetCodePage(hwndEdit,iDefaultEncoding);
     EditSetNewText(hwndEdit,"",0);
+
     UpdateToolbar();
+    UpdateStatusbar();
+    UpdateLineNumberWidth();
 
     // Terminate file watching
     if (bResetFileWatching)
