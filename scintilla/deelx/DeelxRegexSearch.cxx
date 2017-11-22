@@ -27,6 +27,9 @@
 #include <string>
 #include <vector>
 
+#define VC_EXTRALEAN 1
+#include <windows.h>
+
 #pragma warning( push )
 #pragma warning( disable : 4996 )   // Scintilla's "unsafe" use of std::copy() (SplitVector.h)
  //                                  // or use -D_SCL_SECURE_NO_WARNINGS preprocessor define
@@ -235,6 +238,7 @@ long DeelxRegexSearch::FindText(Document* doc, Sci::Position minPos, Sci::Positi
 
 
 
+
 #if 0
 
 #define _MAX(a,b) ((a)>(b)?(a):(b))
@@ -288,59 +292,36 @@ const char* DeelxRegexSearch::SubstituteByPosition(Document* doc, const char* te
     return nullptr;
   }
 
+  std::string rawReplStrg = convertReplExpr(std::string(text, *length));
+
   m_SubstBuffer.clear();
 
-  for (int j = 0; j < *length; j++) {
-    if ((text[j] == '$') || (text[j] == '\\'))
+  for (int j = 0; j < rawReplStrg.length(); j++) {
+    if ((rawReplStrg[j] == '$') || (rawReplStrg[j] == '\\'))
     {
-      if ((text[j + 1] >= '0') && (text[j + 1] <= '9'))
+      if ((m_Match.IsMatched() != 0) && (rawReplStrg[j + 1] >= '0') && (rawReplStrg[j + 1] <= '9'))
       {
-        unsigned int patNum = text[j + 1] - '0';
+        unsigned int grpNum = rawReplStrg[j + 1] - '0';
 
-        if (patNum <= m_Match.MaxGroupNumber()) {
-          deelx::index_t gStart = m_Match.GetGroupStart(patNum);
-          deelx::index_t len = m_Match.GetGroupEnd(patNum) - gStart;
+        if (grpNum <= m_Match.MaxGroupNumber()) 
+        {
+          deelx::index_t gStart = m_Match.GetGroupStart(grpNum);
+          deelx::index_t len = m_Match.GetGroupEnd(grpNum) - gStart;
 
-          m_SubstBuffer.append(doc->RangePointer(SciPos(gStart), len), len);
+          m_SubstBuffer.append(doc->RangePointer(SciPos(gStart), SciPos(len)), len);
         }
+        ++j;
+      }
+      else if (rawReplStrg[j] == '\\') {
+        m_SubstBuffer.push_back('\\');
         ++j;
       }
       else {
-        ++j;
-        switch (text[j]) {
-        case 'a':
-          m_SubstBuffer.push_back('\a');
-          break;
-        case 'b':
-          m_SubstBuffer.push_back('\b');
-          break;
-        case 'f':
-          m_SubstBuffer.push_back('\f');
-          break;
-        case 'n':
-          m_SubstBuffer.push_back('\n');
-          break;
-        case 'r':
-          m_SubstBuffer.push_back('\r');
-          break;
-        case 't':
-          m_SubstBuffer.push_back('\t');
-          break;
-        case 'v':
-          m_SubstBuffer.push_back('\v');
-          break;
-        case '\\':
-          m_SubstBuffer.push_back('\\');
-          break;
-        default:
-          m_SubstBuffer.push_back('\\');
-          --j;
-          break;
-        }
+        m_SubstBuffer.push_back(rawReplStrg[j]);
       }
     }
     else {
-      m_SubstBuffer.push_back(text[j]);
+      m_SubstBuffer.push_back(rawReplStrg[j]);
     }
   }
 
@@ -358,7 +339,40 @@ const char* DeelxRegexSearch::SubstituteByPosition(Document* doc, const char* te
 // ============================================================================
 
 
-void replaceAll(std::string& source,const std::string& from,const std::string& to)
+/******************************************************************************
+*
+*  UnSlash functions
+*  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
+*
+/
+
+/**
+* Is the character an octal digit?
+*/
+static bool IsOctalDigit(char ch) {
+  return ch >= '0' && ch <= '7';
+}
+// ----------------------------------------------------------------------------
+
+/**
+* If the character is an hexa digit, get its value.
+*/
+static int GetHexDigit(char ch) {
+  if (ch >= '0' && ch <= '9') {
+    return ch - '0';
+  }
+  if (ch >= 'A' && ch <= 'F') {
+    return ch - 'A' + 10;
+  }
+  if (ch >= 'a' && ch <= 'f') {
+    return ch - 'a' + 10;
+  }
+  return -1;
+}
+// ----------------------------------------------------------------------------
+
+
+static void replaceAll(std::string& source,const std::string& from,const std::string& to)
 {
   std::string newString;
   newString.reserve(source.length() * 2);  // avoids a few memory allocations
@@ -411,11 +425,6 @@ std::string& DeelxRegexSearch::convertReplExpr(std::string& replStr)
     char ch = replStr[i];
     if (ch == '\\') {
       ch = replStr[++i]; // next char
-      if (ch == '\\') {
-        // skip 2nd backslash ("\\")
-        if (i < replStr.length()) { ch = replStr[++i]; }
-        else { break; }
-      }
       if (ch >= '1' && ch <= '9') {
         // former behavior convenience: 
         // change "\\<n>" to deelx's group reference ($<n>)
@@ -445,11 +454,60 @@ std::string& DeelxRegexSearch::convertReplExpr(std::string& replStr)
         tmpStr.push_back('\v');
         break;
       case '\\':
-        tmpStr.push_back('\\');
+        tmpStr.push_back('\\'); // preserve escd "\"
+        tmpStr.push_back('\\'); 
         break;
+      case 'x':
+      case 'u':
+        {
+          bool bShort = (ch == 'x');
+          char buf[8] = { '\0' };
+          char *pch = buf;
+          WCHAR val[2] = L"";
+          int hex;
+          val[0] = 0;
+          ++i;
+          hex = GetHexDigit(replStr[i]);
+          if (hex >= 0) {
+            ++i;
+            val[0] = (WCHAR)hex;
+            hex = GetHexDigit(replStr[i]);
+            if (hex >= 0) {
+              ++i;
+              val[0] *= 16;
+              val[0] += (WCHAR)hex;
+              if (!bShort) {
+                hex = GetHexDigit(replStr[i]);
+                if (hex >= 0) {
+                  ++i;
+                  val[0] *= 16;
+                  val[0] += (WCHAR)hex;
+                  hex = GetHexDigit(replStr[i]);
+                  if (hex >= 0) {
+                    ++i;
+                    val[0] *= 16;
+                    val[0] += (WCHAR)hex;
+                  }
+                }
+              }
+            }
+            if (val[0]) {
+              val[1] = 0;
+              WideCharToMultiByte(CP_UTF8, 0, val, -1, buf, ARRAYSIZE(val), NULL, NULL);
+              tmpStr.push_back(*pch++);
+              while (*pch)
+                tmpStr.push_back(*pch++);
+            }
+            else
+              tmpStr.push_back(ch); // unknown ctrl seq
+          }
+          else
+            tmpStr.push_back(ch); // unknown ctrl seq
+        }
+        break;
+
       default:
-        // unknown ctrl seq
-        tmpStr.push_back(ch);
+        tmpStr.push_back(ch); // unknown ctrl seq
         break;
       }
     }
