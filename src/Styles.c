@@ -358,12 +358,12 @@ EDITLEXER lexCSS = { SCLEX_CSS, 63003, L"CSS Style Sheets", L"css; less; sass; s
 
 KEYWORDLIST KeyWords_CPP = {
   // Primary keywords
-  "alignas auto bool break case catch char class const constexpr const_cast "
+  "alignas auto bool break case catch char char16_t char32_t class const constexpr const_cast "
   "continue decltype default delete do double dynamic_cast else enum explicit export extern false float "
-  "for friend goto if inline int long mutable namespace new noexcept nullptr operator private protected "
-  "public register reinterpret_cast restrict return short signed sizeof static static_assert static_cast struct "
-  "switch template this thread_local throw true try typedef typeid typename "
-  "union unsigned using virtual void volatile while "
+  "for friend goto if inline int long mutable namespace new noexcept nullptr operator "
+  "private protected public register reinterpret_cast restrict return short signed sizeof static "
+  "static_assert static_cast struct switch template this thread_local throw true try typedef typeid typename "
+  "union unsigned using virtual void volatile wchar_t while "
   "alignof defined naked noreturn",
   // Secondary keywords
   "asm __abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
@@ -375,8 +375,8 @@ KEYWORDLIST KeyWords_CPP = {
   // Documentation comment keywords
   "",
   // Global classes and typedefs
-  "complex imaginary char16_t char32_t int8_t int16_t int32_t int64_t intptr_t intmax_t ptrdiff_t size_t "
-  "uint8_t uint16_t uint32_t uint64_t uintptr_t uintmax_t wchar_t "
+  "complex imaginary int8_t int16_t int32_t int64_t intptr_t intmax_t ptrdiff_t size_t "
+  "uint8_t uint16_t uint32_t uint64_t uintptr_t uintmax_t"
   "__int16 __int32 __int64 __int8 __m128 __m128d __m128i __m64 __wchar_t "
   "_Alignas _Alignof _Atomic _Bool _Complex _Generic _Imaginary _Noreturn _Pragma _Static_assert _Thread_local",
   // Preprocessor definitions
