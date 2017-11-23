@@ -73,6 +73,7 @@ extern int iDefaultEOLMode;
 extern int iLineEndings[3];
 extern BOOL bFixLineEndings;
 extern BOOL bAutoStripBlanks;
+extern BOOL bSaveSettings;
 
 // Default Codepage and Character Set
 extern int iDefaultEncoding;
@@ -4710,6 +4711,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
         DeleteObject(hBrushBlue);
+        if (bSaveSettings)
+          IniSetBool(L"Settings2", L"FindReplaceCheckAllOccurrences", bDoCheckAllOccurrences);
+
         if (iSaveMarkOcc >= 0) {
           EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, TRUE);
           if (iSaveMarkOcc != 0) {
@@ -5036,7 +5040,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDC_CHECK_OCC:
           {
             bDoCheckAllOccurrences = !bDoCheckAllOccurrences;
-            IniSetBool(L"Settings2", L"FindReplaceCheckAllOccurrences", bDoCheckAllOccurrences);
             CheckCmd(GetSystemMenu(hwnd, FALSE), IDS_CHECK_OCC, bDoCheckAllOccurrences);
             if (bDoCheckAllOccurrences) {  // switched ON
               iSaveMarkOcc = iMarkOccurrences;
