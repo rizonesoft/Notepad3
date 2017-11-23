@@ -5178,7 +5178,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           return hBrush;
         }
       }
-      return FALSE;
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     } // WM_COMMAND:
     break;

@@ -651,6 +651,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
+  
+  UpdateLineNumberWidth();
 
   while (GetMessage(&msg,NULL,0,0))
   {
@@ -867,6 +869,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
             Style_SetLexerFromFile(hwndEdit,szCurFile);
           bModified = TRUE;
           UpdateToolbar();
+          UpdateLineNumberWidth();
 
           // check for temp file and delete
           if (flagIsElevated && PathFileExists(szBufferFile)) {
@@ -1141,11 +1144,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         extern PEDITLEXER pLexCurrent;
         Style_SetLexer(hwndEdit,pLexCurrent);
+        UpdateLineNumberWidth();
         return DefWindowProc(hwnd,umsg,wParam,lParam);
       }
 
     //case WM_TIMER:
-    //  break;
+    //  return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
       MsgSize(hwnd,wParam,lParam);
@@ -1153,10 +1157,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_SETFOCUS:
       SetFocus(hwndEdit);
-      UpdateToolbar();
-      UpdateStatusbar();
-      UpdateLineNumberWidth();
-
+      //UpdateToolbar();
+      //UpdateStatusbar();
+      //UpdateLineNumberWidth();
       //if (bPendingChangeNotify)
       //  PostMessage(hwnd,WM_CHANGENOTIFY,0,0);
       break;
@@ -1328,6 +1331,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
   SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
   SciCall_SetFoldFlags(16);
+
+  UpdateLineNumberWidth();
 
   // Nonprinting characters
   SendMessage(hwndEdit,SCI_SETVIEWWS,(bViewWhiteSpace)?SCWS_VISIBLEALWAYS:SCWS_INVISIBLE,0);
@@ -1730,11 +1735,14 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   DestroyWindow(hwndReBar);
   DestroyWindow(hwndStatus);
   CreateBars(hwnd,hInstance);
-  UpdateToolbar();
 
   GetClientRect(hwnd,&rc);
   SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,MAKELONG(rc.right,rc.bottom));
+
+  UpdateToolbar();
   UpdateStatusbar();
+  UpdateLineNumberWidth();
+
 
   UNUSED(lParam);
   UNUSED(wParam);
@@ -1813,7 +1821,8 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   SendMessage(hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
 
-  //UpdateStatusbar();
+  UpdateStatusbar();
+  UpdateLineNumberWidth();
 
   UNUSED(hwnd);
   UNUSED(lParam);
@@ -1962,6 +1971,8 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     UpdateToolbar();
     UpdateStatusbar();
+    UpdateLineNumberWidth();
+
   }
 
   UNUSED(wParam);
@@ -3857,6 +3868,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
           // set
           SendMessage(hwndEdit, SCI_MARKERADD, iLine, MARKER_NP3_BOOKMARK);
+          UpdateLineNumberWidth();
         }
         break;
       }
@@ -4101,6 +4113,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_MARGIN:
       bShowSelectionMargin = (bShowSelectionMargin) ? FALSE : TRUE;
       Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
+      UpdateLineNumberWidth();
       break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
@@ -4146,9 +4159,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_FOLDING:
       bShowCodeFolding = (bShowCodeFolding) ? FALSE : TRUE;
       SciCall_SetMarginWidth(MARGIN_FOLD_INDEX, (bShowCodeFolding) ? 11 : 0);
-      UpdateToolbar();
       if (!bShowCodeFolding)
         FoldToggleAll(EXPAND);
+      UpdateToolbar();
       break;
 
 
@@ -4221,16 +4234,19 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_ZOOMIN:
       SendMessage(hwndEdit,SCI_ZOOMIN,0,0);
+      UpdateLineNumberWidth();
       break;
 
 
     case IDM_VIEW_ZOOMOUT:
       SendMessage(hwndEdit,SCI_ZOOMOUT,0,0);
+      UpdateLineNumberWidth();
       break;
 
 
     case IDM_VIEW_RESETZOOM:
       SendMessage(hwndEdit,SCI_SETZOOM,0,0);
+      UpdateLineNumberWidth();
       break;
 
 
@@ -5304,7 +5320,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
             UpdateToolbar();
             UpdateStatusbar();
-            UpdateLineNumberWidth();
           }
           break;
 
@@ -5456,8 +5471,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               RestoreSelectionAction(scn->token,REDO);
             }
           }
+          if (scn->linesAdded != 0) {
+            UpdateLineNumberWidth();
+          }
           bModified = TRUE;
-          UpdateLineNumberWidth();
           break;
 
         case SCN_ZOOM:
@@ -5472,7 +5489,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_MARGINCLICK:
           if (scn->margin == MARGIN_FOLD_INDEX)
             FoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
-          UpdateLineNumberWidth();
           break;
 
         case SCN_KEY:
@@ -6947,24 +6963,18 @@ void UpdateStatusbar()
 //
 void UpdateLineNumberWidth()
 {
-  static int lastLineCnt = -1;
-
-  if (bShowLineNumbers) {
-
+  if (bShowLineNumbers) 
+  {
     int iLineCnt = (int)SendMessage(hwndEdit, SCI_GETLINECOUNT, 0, 0);
 
-    if (lastLineCnt != iLineCnt) 
-    {
-      char chLines[32] = { '\0' };
-      StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", iLineCnt);
+    char chLines[32] = { '\0' };
+    StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", iLineCnt);
 
-      int iLineMarginWidthNow = (int)SendMessage(hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
-      int iLineMarginWidthFit = (int)SendMessage(hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
+    int iLineMarginWidthNow = (int)SendMessage(hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+    int iLineMarginWidthFit = (int)SendMessage(hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
 
-      if (iLineMarginWidthNow != iLineMarginWidthFit) {
-        SendMessage(hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
-      }
-      lastLineCnt = iLineCnt;
+    if (iLineMarginWidthNow != iLineMarginWidthFit) {
+      SendMessage(hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
     }
   }
   else
@@ -7360,11 +7370,13 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     StringCchCopy(szCurFile,COUNTOF(szCurFile),szFileName);
     SetDlgItemText(hwndMain,IDC_FILENAME,szCurFile);
     SetDlgItemInt(hwndMain,IDC_REUSELOCK,GetTickCount(),FALSE);
+
     if (!fKeepTitleExcerpt)
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
+
     if (!flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(hwndEdit,szCurFile);
-    UpdateLineNumberWidth();
+
     bModified = FALSE;
     //bReadOnly = FALSE;
     SendMessage(hwndEdit,SCI_SETEOLMODE,iEOLMode,0);
@@ -7382,8 +7394,6 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
-
-    UpdateToolbar();
 
     // Install watching of the current file
     if (!bReload && bResetFileWatching)
@@ -7416,6 +7426,11 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         EditJumpTo(hwndEdit, iLine+1, iCol+1);
       }
     }
+
+    UpdateToolbar();
+    UpdateStatusbar();
+    UpdateLineNumberWidth();
+
     // consistent settings file handling (if loaded in editor)
     bEnableSaveSettings = (StringCchCompareINW(szCurFile, COUNTOF(szCurFile), szIniFile, COUNTOF(szIniFile)) == 0) ? FALSE : TRUE;
     UpdateSettingsCmds();
