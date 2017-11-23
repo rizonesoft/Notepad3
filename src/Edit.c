@@ -4448,19 +4448,23 @@ int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags,
   SendMessage(hwnd, SCI_SETTARGETRANGE, _start, _end);
   int iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
   //  handle next in case of zero-length-matches (regex) !
-  if ((iPos == _start) && bForceNext) {
-    int newStart = (int)(bFindPrev ? SendMessage(hwnd, SCI_POSITIONBEFORE, _start, 0) :
-                                     SendMessage(hwnd, SCI_POSITIONAFTER,  _start, 0));
-    if (newStart != _start) {
-      _start = newStart;
-      SendMessage(hwnd, SCI_SETTARGETRANGE, newStart, _end);
-      iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
-    }
-    else {
-      iPos = -1; // already at document begin or end => not found
+  if (iPos == _start) {
+    int nend = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
+    if ((_start == nend) && bForceNext)
+    {
+      int newStart = (int)(bFindPrev ? 
+        SendMessage(hwnd, SCI_POSITIONBEFORE, _start, 0) :
+        SendMessage(hwnd, SCI_POSITIONAFTER, _start, 0));
+      if (newStart != _start) {
+        _start = newStart;
+        SendMessage(hwnd, SCI_SETTARGETRANGE, newStart, _end);
+        iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
+      }
+      else {
+        iPos = -1; // already at document begin or end => not found
+      }
     }
   }
-
   if (iPos >= 0) {
     // found in range, set begin and end of finding
     *start = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
