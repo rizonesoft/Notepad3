@@ -651,6 +651,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
+  
+  UpdateLineNumberWidth();
 
   while (GetMessage(&msg,NULL,0,0))
   {
@@ -867,6 +869,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
             Style_SetLexerFromFile(hwndEdit,szCurFile);
           bModified = TRUE;
           UpdateToolbar();
+          UpdateLineNumberWidth();
 
           // check for temp file and delete
           if (flagIsElevated && PathFileExists(szBufferFile)) {
@@ -1013,6 +1016,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
   UpdateToolbar();
   UpdateStatusbar();
+  UpdateLineNumberWidth();
 
   // print file immediately and quit
   if (flagPrintFileAndLeave)
@@ -1038,6 +1042,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
     PostMessage(hwndMain, WM_CLOSE, 0, 0);
   }
+
 
   UNUSED(pszCmdLine);
 
@@ -1139,11 +1144,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         extern PEDITLEXER pLexCurrent;
         Style_SetLexer(hwndEdit,pLexCurrent);
+        UpdateLineNumberWidth();
         return DefWindowProc(hwnd,umsg,wParam,lParam);
       }
 
     //case WM_TIMER:
-    //  break;
+    //  return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
       MsgSize(hwnd,wParam,lParam);
@@ -1151,10 +1157,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_SETFOCUS:
       SetFocus(hwndEdit);
-
-      UpdateToolbar();
-      UpdateStatusbar();
-
+      //UpdateToolbar();
+      //UpdateStatusbar();
+      //UpdateLineNumberWidth();
       //if (bPendingChangeNotify)
       //  PostMessage(hwnd,WM_CHANGENOTIFY,0,0);
       break;
@@ -1312,7 +1317,6 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // Margins
   Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
-  UpdateLineNumberWidth();
 
   // Code folding
   SciCall_SetMarginType(MARGIN_FOLD_INDEX, SC_MARGIN_SYMBOL);
@@ -1327,6 +1331,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
   SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
   SciCall_SetFoldFlags(16);
+
+  UpdateLineNumberWidth();
 
   // Nonprinting characters
   SendMessage(hwndEdit,SCI_SETVIEWWS,(bViewWhiteSpace)?SCWS_VISIBLEALWAYS:SCWS_INVISIBLE,0);
@@ -1422,7 +1428,6 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     return(-1);
 
   UNUSED(wParam);
-
   return(0);
 }
 
@@ -1730,11 +1735,14 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   DestroyWindow(hwndReBar);
   DestroyWindow(hwndStatus);
   CreateBars(hwnd,hInstance);
-  UpdateToolbar();
 
   GetClientRect(hwnd,&rc);
   SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,MAKELONG(rc.right,rc.bottom));
+
+  UpdateToolbar();
   UpdateStatusbar();
+  UpdateLineNumberWidth();
+
 
   UNUSED(lParam);
   UNUSED(wParam);
@@ -1813,7 +1821,8 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   SendMessage(hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
 
-  //UpdateStatusbar();
+  UpdateStatusbar();
+  UpdateLineNumberWidth();
 
   UNUSED(hwnd);
   UNUSED(lParam);
@@ -1962,6 +1971,8 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     UpdateToolbar();
     UpdateStatusbar();
+    UpdateLineNumberWidth();
+
   }
 
   UNUSED(wParam);
@@ -3857,6 +3868,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
           // set
           SendMessage(hwndEdit, SCI_MARKERADD, iLine, MARKER_NP3_BOOKMARK);
+          UpdateLineNumberWidth();
         }
         break;
       }
@@ -4101,6 +4113,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_MARGIN:
       bShowSelectionMargin = (bShowSelectionMargin) ? FALSE : TRUE;
       Style_SetCurrentMargin(hwndEdit, bShowSelectionMargin);
+      UpdateLineNumberWidth();
       break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
@@ -4146,9 +4159,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_FOLDING:
       bShowCodeFolding = (bShowCodeFolding) ? FALSE : TRUE;
       SciCall_SetMarginWidth(MARGIN_FOLD_INDEX, (bShowCodeFolding) ? 11 : 0);
-      UpdateToolbar();
       if (!bShowCodeFolding)
         FoldToggleAll(EXPAND);
+      UpdateToolbar();
       break;
 
 
@@ -4221,19 +4234,19 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_ZOOMIN:
       SendMessage(hwndEdit,SCI_ZOOMIN,0,0);
-      //UpdateLineNumberWidth();
+      UpdateLineNumberWidth();
       break;
 
 
     case IDM_VIEW_ZOOMOUT:
       SendMessage(hwndEdit,SCI_ZOOMOUT,0,0);
-      //UpdateLineNumberWidth();
+      UpdateLineNumberWidth();
       break;
 
 
     case IDM_VIEW_RESETZOOM:
       SendMessage(hwndEdit,SCI_SETZOOM,0,0);
-      //UpdateLineNumberWidth();
+      UpdateLineNumberWidth();
       break;
 
 
@@ -5305,7 +5318,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (bMatchBraces) {
               EditMatchBrace(hwndEdit);
             }
-
             UpdateToolbar();
             UpdateStatusbar();
           }
@@ -5459,8 +5471,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               RestoreSelectionAction(scn->token,REDO);
             }
           }
+          if (scn->linesAdded != 0) {
+            UpdateLineNumberWidth();
+          }
           bModified = TRUE;
-          // fall through
+          break;
+
         case SCN_ZOOM:
           UpdateLineNumberWidth();
           break;
@@ -6947,19 +6963,18 @@ void UpdateStatusbar()
 //
 void UpdateLineNumberWidth()
 {
-  char chLines[32] = { '\0' };
-  int  iLineMarginWidthNow;
-  int  iLineMarginWidthFit;
+  if (bShowLineNumbers) 
+  {
+    int iLineCnt = (int)SendMessage(hwndEdit, SCI_GETLINECOUNT, 0, 0);
 
-  if (bShowLineNumbers) {
+    char chLines[32] = { '\0' };
+    StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", iLineCnt);
 
-    StringCchPrintfA(chLines,COUNTOF(chLines),"_%i_",SendMessage(hwndEdit,SCI_GETLINECOUNT,0,0));
-
-    iLineMarginWidthNow = (int)SendMessage(hwndEdit,SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
-    iLineMarginWidthFit = (int)SendMessage(hwndEdit,SCI_TEXTWIDTH,STYLE_LINENUMBER,(LPARAM)chLines);
+    int iLineMarginWidthNow = (int)SendMessage(hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+    int iLineMarginWidthFit = (int)SendMessage(hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
 
     if (iLineMarginWidthNow != iLineMarginWidthFit) {
-      SendMessage(hwndEdit,SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
+      SendMessage(hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
     }
   }
   else
@@ -7245,7 +7260,6 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     FileVars_Init(NULL,0,&fvCurFile);
     EditSetNewText(hwndEdit,"",0);
     Style_SetLexer(hwndEdit,NULL);
-    UpdateLineNumberWidth();
     bModified = FALSE;
     bReadOnly = FALSE;
     iEOLMode = iLineEndings[iDefaultEOLMode];
@@ -7254,7 +7268,10 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     Encoding_HasChanged(iDefaultEncoding);
     Encoding_SciSetCodePage(hwndEdit,iDefaultEncoding);
     EditSetNewText(hwndEdit,"",0);
+
     UpdateToolbar();
+    UpdateStatusbar();
+    UpdateLineNumberWidth();
 
     // Terminate file watching
     if (bResetFileWatching)
@@ -7353,11 +7370,13 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     StringCchCopy(szCurFile,COUNTOF(szCurFile),szFileName);
     SetDlgItemText(hwndMain,IDC_FILENAME,szCurFile);
     SetDlgItemInt(hwndMain,IDC_REUSELOCK,GetTickCount(),FALSE);
+
     if (!fKeepTitleExcerpt)
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
+
     if (!flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(hwndEdit,szCurFile);
-    UpdateLineNumberWidth();
+
     bModified = FALSE;
     //bReadOnly = FALSE;
     SendMessage(hwndEdit,SCI_SETEOLMODE,iEOLMode,0);
@@ -7375,8 +7394,6 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
-
-    UpdateToolbar();
 
     // Install watching of the current file
     if (!bReload && bResetFileWatching)
@@ -7409,6 +7426,11 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         EditJumpTo(hwndEdit, iLine+1, iCol+1);
       }
     }
+
+    UpdateToolbar();
+    UpdateStatusbar();
+    UpdateLineNumberWidth();
+
     // consistent settings file handling (if loaded in editor)
     bEnableSaveSettings = (StringCchCompareINW(szCurFile, COUNTOF(szCurFile), szIniFile, COUNTOF(szIniFile)) == 0) ? FALSE : TRUE;
     UpdateSettingsCmds();
