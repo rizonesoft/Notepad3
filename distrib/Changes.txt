@@ -5,7 +5,6 @@ Rizonesoft Notepad3 CHANGES
 --------------------------------------------------
 Version 3.17.1124.690 (24 November 2017)
 --------------------------------------------------
-- Minor bug fixes and more...
 - Fix: Revert to Scintilla's default mouse down and mouse wheel capture mode.
 - Fix: "Mark All Occurrences" setting of find/replace dialog should only be persisted, if "Save Settings on Exit" is enabled.
 - Fix:  UpdateLineNumberWidth() triggers cleanup.
@@ -59,6 +58,7 @@ Version 3.17.1124.690 (24 November 2017)
 - Fix: issue #145 (Mark Occurrences Counter is broken).
 - Increase buffers for edit box in "Customize Schemes..." dialog.
 - Fix: Pasting clipboard content into selection box should replace text and cancel selection then.
+- Minor bug fixes and more...
 
 --------------------------------------------------
 Version 2.17.1023.632 (23 October 2017)

@@ -74,4 +74,3 @@ finally
 	Write-Host "VersionPatching: Done! Elapsed time: $($stopwatch.Elapsed)."
 	Exit $LastExitCode
 }
-

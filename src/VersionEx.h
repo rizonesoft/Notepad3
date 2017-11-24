@@ -3,3 +3,4 @@
 #define VERSION_REV 1124
 #define VERSION_BUILD 693
 #define SCINTILLA_VER 402
+
