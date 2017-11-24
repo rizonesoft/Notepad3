@@ -8,4 +8,3 @@
   />
   <description>Notepad3</description>
 </assembly>
-
