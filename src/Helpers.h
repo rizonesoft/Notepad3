@@ -156,6 +156,8 @@ BOOL IsCmdEnabled(HWND, UINT);
 #define EnableCmd(hmenu,id,b) EnableMenuItem(hmenu,id,(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 
+#define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
+  if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, FALSE); } }; EnableWindow(hctrl, (b)); }
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
@@ -267,8 +269,8 @@ HWND    CreateThemedDialogParam(HINSTANCE,LPCTSTR,HWND,DLGPROC,LPARAM);
 
 
 //==== UnSlash Functions ======================================================
-void TransformBackslashes(char*,BOOL,UINT);
-
+void TransformBackslashes(char*,BOOL,UINT,int*);
+void TransformMetaChars(char*,BOOL,int);
 
 //==== MinimizeToTray Functions - see comments in Helpers.c ===================
 BOOL GetDoAnimateMinimize(VOID);

@@ -29,14 +29,13 @@
 #include <limits.h>
 #include <string.h>
 #include <stdlib.h>
-
-#include <basetsd.h>
+#include <stddef.h>
 
 namespace deelx
 {
     // integer type for pointer arithmetic & casts (64-bit aware)
     //typedef int index_t;   // preserve original "deelx.h" v1.3 behavior 
-    using index_t = INT_PTR;   
+    using index_t = ptrdiff_t; //INT_PTR
 
 extern "C" {
     using POSIX_FUNC = int(*)(int);
@@ -3612,9 +3611,9 @@ public:
 
 public:
     MatchResult MatchExact(const CHART * tstring, CContext * pContext = nullptr) const;
-    MatchResult MatchExact(const CHART * tstring, int length, CContext * pContext = nullptr) const;
-    MatchResult Match(const CHART * tstring, int start = -1, CContext * pContext = nullptr) const;
-    MatchResult Match(const CHART * tstring, int length, int start, CContext * pContext = nullptr) const;
+    MatchResult MatchExact(const CHART * tstring, index_t length, CContext * pContext = nullptr) const;
+    MatchResult Match(const CHART * tstring, index_t start = -1, CContext * pContext = nullptr) const;
+    MatchResult Match(const CHART * tstring, index_t length, index_t start, CContext * pContext = nullptr) const;
     MatchResult Match(CContext * pContext) const;
     CContext * PrepareMatch(const CHART * tstring, index_t start = -1, CContext * pContext = nullptr) const;
     CContext * PrepareMatch(const CHART * tstring, index_t length, index_t start, CContext * pContext = nullptr) const;
@@ -3659,7 +3658,7 @@ template <class CHART> inline MatchResult CRegexpT <CHART> ::MatchExact(const CH
     return MatchExact(tstring, CBufferRefT<CHART>(tstring).GetSize(), pContext);
 }
 
-template <class CHART> MatchResult CRegexpT <CHART> ::MatchExact(const CHART * tstring, int length, CContext * pContext) const
+template <class CHART> MatchResult CRegexpT <CHART> ::MatchExact(const CHART * tstring, index_t length, CContext * pContext) const
 {
     if (m_builder.m_pTopElx == 0)
         return nullptr;
@@ -3725,12 +3724,12 @@ template <class CHART> MatchResult CRegexpT <CHART> ::MatchExact(const CHART * t
     }
 }
 
-template <class CHART> MatchResult CRegexpT <CHART> ::Match(const CHART * tstring, int start, CContext * pContext) const
+template <class CHART> MatchResult CRegexpT <CHART> ::Match(const CHART * tstring, index_t start, CContext * pContext) const
 {
     return Match(tstring, CBufferRefT<CHART>(tstring).GetSize(), start, pContext);
 }
 
-template <class CHART> MatchResult CRegexpT <CHART> ::Match(const CHART * tstring, int length, int start, CContext * pContext) const
+template <class CHART> MatchResult CRegexpT <CHART> ::Match(const CHART * tstring, index_t length, index_t start, CContext * pContext) const
 {
     if (m_builder.m_pTopElx == 0)
         return nullptr;

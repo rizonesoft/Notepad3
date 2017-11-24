@@ -116,6 +116,7 @@ BOOL  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
+void  EditClearAllMarks(HWND);
 void  EditMarkAll(HWND,char*,int,BOOL,BOOL);
 void  EditSetAccelWordNav(HWND,BOOL);
 void  EditCompleteWord(HWND,BOOL);

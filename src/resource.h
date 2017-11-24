@@ -116,6 +116,8 @@
 #define IDD_INFOBOX                     126
 #define IDD_INFOBOX2                    127
 #define IDD_INFOBOX3                    128
+#define IDT_TIMER_MRKALL                130
+#define IDC_MARKALL_OCC                 131
 #define IDC_BACKSLASHHELP               151
 #define IDC_REGEXPHELP                  152
 #define IDC_WILDCARDHELP                153
@@ -457,6 +459,7 @@
 #define IDS_EXPORT_FAIL                 50040
 #define IDS_ERR_ACCESSDENIED            50041
 #define IDS_WARN_UNKNOWN_EXT            50042
+#define IDS_REGEX_INVALID               50043
 #define IDS_CMDLINEHELP                 60000
 #define IDM_EDIT_INSERT_GUID            60001
 #define IDC_STATIC                      -1
