@@ -3,7 +3,65 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
-Version 2.17.1023.632 (16 October 2017)
+Version 3.17.1124.690 (24 November 2017)
+--------------------------------------------------
+- Minor bug fixes and more...
+- Fix: Revert to Scintilla's default mouse down and mouse wheel capture mode.
+- Fix: "Mark All Occurrences" setting of find/replace dialog should only be persisted, if "Save Settings on Exit" is enabled.
+- Fix:  UpdateLineNumberWidth() triggers cleanup.
+- Adapt: C/C++ styles - keyword vs. typedefs.
+- Fix: Issue with update of line number margin width.
+- Fix: Transform backslash issues.
+  Fix: C/C++ keywords and types.
+  Timer call for mark occurrences during find/replace.
+- Fix: lookaround regex (DeelX) matches were not replaced.
+- Optimized DeelX regex interface.
+- Fix: Issue regarding find/replace empty-string.
+- Fix: Adapt DeelX RE interface according to enhanced find/replace dialog.
+- Fix: Issue #173 - regex/wildcard search: replacement string not used if "Check All Occurrences" is active.
+- Changed SDK version target to 10.0.16299.0
+- Feature: find/replace mark occurrences.
+- Feature: Indicator in find text box, if search string is matched in document.
+- Feature: validate regexpr.
+- Fix: Recoding minipath's version.h to UTF-8 (Sig), because it contains codepage dependant copyright sign.
+- Fix: Corrections to .vcproj settings inconsistencies (reported in release build process).
+- Feature: Auto remember bookmarks in recent file history.
+- Fix: undo/redo issues (if no selection choosen).
+- Fix: Consecutive DEL/BACKSP undo/redo broken (wrapped by unconditional selection undo/redo).
+- Feature: Mark occurrences coloring is now configurable via "Customize Schemes...".
+- Fix: Issues found by static code analysis.
+- Minor fix for DeelX RegEx engine.
+- Major refactoring of find/replace regex evaluation.
+- Fix: Bug in getting string length from dialog box readout.
+- New "D" and "Go" programming language support.
+- Update: Scintilla Lib v.4.0.2 (402).
+- Fix: Break criteria for "replace all in range".
+- Fix: Issues found regarding zero-length matches using regex anchors, including infinite loops on replace all.
+- Fix: RegEx start anchor adjustment.
+- Enhance: comments with useful web links.
+- Fix: Problem with regex line start and replacements at line end.
+- Move position after replacement (EditReplace()).
+- Refactoring of "Replace All" methods.
+- Split C++ Keywords in two parts (1st: standard keywords, 2nd: keywords starting with double underscore "__xxx").
+- Minor polish of Readme.md.
+  Put changes compared to Notepad2-mod into Readme.md.
+- Repair empty resource file (Notepad3.rc).
+- Bookmark Enhancements
+- Swap text fields in Find/Replace dialog.
+- Fix: Issues regarding selection undo/redo.
+- Fix: Issues regarding margins configuration.
+- Added Book Mark style (Color Background and Alpha) to customize schemes...
+- Replaced old bookmark pixmap (visible margin) by Scintilla's BOOKMARK marker style.
+- Update: Compiler version detection.
+- Feature: "Swap Strings" button in Find/Replace dialog.
+- Fix: Issue #139 and #143 (remove selection undo/redo for non-text-changing operations on selections).
+- Fix: issue #144 (Left arrow no longer moves to previous line).
+- Fix: issue #145 (Mark Occurrences Counter is broken).
+- Increase buffers for edit box in "Customize Schemes..." dialog.
+- Fix: Pasting clipboard content into selection box should replace text and cancel selection then.
+
+--------------------------------------------------
+Version 2.17.1023.632 (23 October 2017)
 --------------------------------------------------
 ~ Fix: pasting clipboard content into selection box should replace text and 
   cancel selection then (in case of swapping clipboard, the selection is preserved).
