@@ -14,7 +14,7 @@ set DD=00
 call :GETDATE
 set BUILD=0
 call :GETBUILD "%~1"
-set VERSHOULD=2.%YY%.%MM%%DD%.%BUILD%
+set VERSHOULD=3.%YY%.%MM%%DD%.%BUILD%
 
 :: --------------------------------------------------------------------------------------------------------------------
 
