@@ -645,6 +645,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     return FALSE;
   
   if (IsVista()) {
+    SciCall_UnBufferedDraw();
     if (iSciDirectWriteTech >= 0)
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
   }
@@ -5875,7 +5876,7 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",1);
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",0);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",3);
