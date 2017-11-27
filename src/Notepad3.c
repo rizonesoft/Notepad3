@@ -1226,13 +1226,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_TRAYMESSAGE:
       return MsgTrayMessage(hwnd, wParam, lParam);
 
-    case WM_MOUSEWHEEL:
-    case WM_MBUTTONDOWN:
-      if (wParam & MK_MBUTTON) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(BME_EDIT_BOOKMARKTOGGLE, 1), 0);
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
-
     default:
       if (umsg == msgTaskbarCreated) {
         if (!IsWindowVisible(hwnd))
