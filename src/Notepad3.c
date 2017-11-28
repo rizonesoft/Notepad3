@@ -645,6 +645,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     return FALSE;
   
   if (IsVista()) {
+    SciCall_UnBufferedDraw();  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
     if (iSciDirectWriteTech >= 0)
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
   }
@@ -1224,13 +1225,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_TRAYMESSAGE:
       return MsgTrayMessage(hwnd, wParam, lParam);
-
-    case WM_MOUSEWHEEL:
-    case WM_MBUTTONDOWN:
-      if (wParam & MK_MBUTTON) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(BME_EDIT_BOOKMARKTOGGLE, 1), 0);
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     default:
       if (umsg == msgTaskbarCreated) {
@@ -5875,11 +5869,11 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",1);
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech", SC_TECHNOLOGY_DEFAULT);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",3);
-  iSciFontQuality = max(min(iSciFontQuality,3),0);
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", SC_EFF_QUALITY_DEFAULT);
+  iSciFontQuality = max(min(iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_EFF_QUALITY_DEFAULT);
 
   iMarkOccurrencesCount = -1;
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
@@ -5939,7 +5933,7 @@ void LoadSettings()
   WCHAR tchSciFontQuality[32];
   StringCchPrintf(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
   iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,iSciFontQuality);
-  iSciFontQuality = max(min(iSciFontQuality,3),0);
+  iSciFontQuality = max(min(iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_TECHNOLOGY_DEFAULT);
 
 
   LocalFree(pIniSection);
