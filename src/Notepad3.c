@@ -313,7 +313,7 @@ static UT_array* UndoRedoSelectionUTArray = NULL;
 
 static CLIPFORMAT cfDrpF = CF_HDROP;
 static POINTL ptDummy = { 0, 0 };
-static PNP3DROPTARGET pDropTarget = NULL;
+static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
 
@@ -652,7 +652,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     return FALSE;
   
   // init DragnDrop handler
-  Np3DragnDropInit(NULL);
+  DragnDropInit(NULL);
 
   if (IsVista()) {
     if (iSciDirectWriteTech >= 0)
@@ -1414,7 +1414,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // Drag & Drop
   DragAcceptFiles(hwnd,TRUE);
-  pDropTarget = Np3RegisterDragnDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)hwndEdit);
+  pDropTarget = RegisterDragnDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)hwndEdit);
 
   // File MRU
   pFileMRU = MRU_Create(L"Recent Files",MRU_NOCASE,32);
@@ -1637,7 +1637,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     wininfo = GetMyWindowPlacement(hwnd, NULL);
 
     DragAcceptFiles(hwnd, FALSE);
-    Np3RevokeDragnDrop(pDropTarget);
+    RevokeDragnDrop(pDropTarget);
 
     // Terminate clipboard watching
     if (flagPasteBoard) {

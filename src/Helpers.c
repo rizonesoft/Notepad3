@@ -3603,19 +3603,19 @@ typedef struct tIDROPTARGET {
   void *pUserData;
   NP3DDCALLBACK pDropProc;
 } 
-NP3IDROPTARGET, *PNP3IDROPTARGET;
+IDROPTARGET, *PIDROPTARGET;
 
 
 typedef struct IDRPTRG_VTBL
 {
   BEGIN_INTERFACE
-    HRESULT(STDMETHODCALLTYPE *QueryInterface)(PNP3IDROPTARGET pThis, REFIID riid, void  **ppvObject);
-    ULONG(STDMETHODCALLTYPE   *AddRef)(PNP3IDROPTARGET pThis);
-    ULONG(STDMETHODCALLTYPE   *Release)(PNP3IDROPTARGET pThis);
-    HRESULT(STDMETHODCALLTYPE *DragEnter)(PNP3IDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
-    HRESULT(STDMETHODCALLTYPE *DragOver)(PNP3IDROPTARGET pThis, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
-    HRESULT(STDMETHODCALLTYPE *DragLeave)(PNP3IDROPTARGET pThis);
-    HRESULT(STDMETHODCALLTYPE *Drop)(PNP3IDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
+    HRESULT(STDMETHODCALLTYPE *QueryInterface)(PIDROPTARGET pThis, REFIID riid, void  **ppvObject);
+    ULONG(STDMETHODCALLTYPE   *AddRef)(PIDROPTARGET pThis);
+    ULONG(STDMETHODCALLTYPE   *Release)(PIDROPTARGET pThis);
+    HRESULT(STDMETHODCALLTYPE *DragEnter)(PIDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
+    HRESULT(STDMETHODCALLTYPE *DragOver)(PIDROPTARGET pThis, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
+    HRESULT(STDMETHODCALLTYPE *DragLeave)(PIDROPTARGET pThis);
+    HRESULT(STDMETHODCALLTYPE *Drop)(PIDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
   END_INTERFACE
 } 
 IDRPTRG_VTBL, *PIDRPTRG_VTBL;
@@ -3625,7 +3625,7 @@ IDRPTRG_VTBL, *PIDRPTRG_VTBL;
 //
 //  NP3DragnDropInit()
 //
-void Np3DragnDropInit(HANDLE hHeap)
+void DragnDropInit(HANDLE hHeap)
 {
   if (g_hHeap == NULL && hHeap == NULL)
     g_hHeap = GetProcessHeap();
@@ -3641,7 +3641,7 @@ void Np3DragnDropInit(HANDLE hHeap)
 //
 //  IDRPTRG_AddRef()
 //
-static ULONG STDMETHODCALLTYPE IDRPTRG_AddRef(PNP3IDROPTARGET pThis)
+static ULONG STDMETHODCALLTYPE IDRPTRG_AddRef(PIDROPTARGET pThis)
 {
   return InterlockedIncrement(&pThis->lRefCount);
 }
@@ -3651,7 +3651,7 @@ static ULONG STDMETHODCALLTYPE IDRPTRG_AddRef(PNP3IDROPTARGET pThis)
 //
 //  IDRPTRG_QueryDataObject()
 //
-static BOOL IDRPTRG_QueryDataObject(PNP3IDROPTARGET pDropTarget, IDataObject *pDataObject)
+static BOOL IDRPTRG_QueryDataObject(PIDROPTARGET pDropTarget, IDataObject *pDataObject)
 {
   ULONG lFmt;
   FORMATETC fmtetc = { CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
@@ -3671,7 +3671,7 @@ static BOOL IDRPTRG_QueryDataObject(PNP3IDROPTARGET pDropTarget, IDataObject *pD
 //
 //  IDRPTRG_QueryInterface()
 //
-static HRESULT STDMETHODCALLTYPE IDRPTRG_QueryInterface(PNP3IDROPTARGET pThis, REFIID riid,
+static HRESULT STDMETHODCALLTYPE IDRPTRG_QueryInterface(PIDROPTARGET pThis, REFIID riid,
   LPVOID *ppvObject)
 {
   *ppvObject = NULL;
@@ -3697,7 +3697,7 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_QueryInterface(PNP3IDROPTARGET pThis, R
 //
 //  IDRPTRG_Release()
 //
-static ULONG STDMETHODCALLTYPE IDRPTRG_Release(PNP3IDROPTARGET pThis)
+static ULONG STDMETHODCALLTYPE IDRPTRG_Release(PIDROPTARGET pThis)
 {
   ULONG nCount;
 
@@ -3742,7 +3742,7 @@ static DWORD IDRPTRG_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwAllowed)
 //
 //  IDRPTRG_DragEnter()
 //
-static HRESULT STDMETHODCALLTYPE IDRPTRG_DragEnter(PNP3IDROPTARGET pThis, IDataObject *pDataObject,
+static HRESULT STDMETHODCALLTYPE IDRPTRG_DragEnter(PIDROPTARGET pThis, IDataObject *pDataObject,
   DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
 {
   pThis->bAllowDrop = IDRPTRG_QueryDataObject(pThis, pDataObject);
@@ -3762,7 +3762,7 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_DragEnter(PNP3IDROPTARGET pThis, IDataO
 //
 //  IDRPTRG_DragOver()
 //
-static HRESULT STDMETHODCALLTYPE IDRPTRG_DragOver(PNP3IDROPTARGET pThis, DWORD dwKeyState, POINTL pt,
+static HRESULT STDMETHODCALLTYPE IDRPTRG_DragOver(PIDROPTARGET pThis, DWORD dwKeyState, POINTL pt,
   DWORD *pdwEffect)
 {
   if (pThis->bAllowDrop)
@@ -3782,7 +3782,7 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_DragOver(PNP3IDROPTARGET pThis, DWORD d
 //
 //  IDRPTRG_DragLeave()
 //
-static HRESULT STDMETHODCALLTYPE IDRPTRG_DragLeave(PNP3IDROPTARGET pThis)
+static HRESULT STDMETHODCALLTYPE IDRPTRG_DragLeave(PIDROPTARGET pThis)
 {
   UNUSED(pThis);
   return S_OK;
@@ -3793,13 +3793,13 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_DragLeave(PNP3IDROPTARGET pThis)
 //
 //  IDRPTRG_Drop()
 //
-static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PNP3IDROPTARGET pThis, IDataObject *pDataObject,
+static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *pDataObject,
   DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
 {
   FORMATETC fmtetc = { CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
   STGMEDIUM medium;
   ULONG lFmt;
-  NP3DROPDATA DropData;
+  DROPDATA DropData;
 
   UNUSED(dwKeyState);
   UNUSED(pt);
@@ -3844,11 +3844,11 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PNP3IDROPTARGET pThis, IDataObject
 //
 //  Np3CreateDropTarget()
 //
-IDropTarget* Np3CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT nMsg,
+IDropTarget* CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT nMsg,
   DWORD(*pDropProc)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData),
   void *pUserData)
 {
-  PNP3IDROPTARGET pRet;
+  PIDROPTARGET pRet;
   static IDRPTRG_VTBL idt_vtbl = {
     IDRPTRG_QueryInterface,
     IDRPTRG_AddRef,
@@ -3858,9 +3858,9 @@ IDropTarget* Np3CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UIN
     IDRPTRG_DragLeave,
     IDRPTRG_Drop };
 
-  if ((pRet = HeapAlloc(NP3DD_HEAP, 0, sizeof(NP3IDROPTARGET) + lFmt * sizeof(CLIPFORMAT))) == NULL)
+  if ((pRet = HeapAlloc(NP3DD_HEAP, 0, sizeof(IDROPTARGET) + lFmt * sizeof(CLIPFORMAT))) == NULL)
     return NULL;
-  pRet->pFormat = (CLIPFORMAT *)(((char *)pRet) + sizeof(NP3IDROPTARGET));
+  pRet->pFormat = (CLIPFORMAT *)(((char *)pRet) + sizeof(IDROPTARGET));
 
   pRet->idt.lpVtbl = (IDropTargetVtbl*)&idt_vtbl;
   pRet->lRefCount = 1;
@@ -3884,11 +3884,11 @@ IDropTarget* Np3CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UIN
 //
 //  Np3RegisterDragnDrop()
 //
-PNP3DROPTARGET Np3RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, NP3DDCALLBACK pDropProc, void *pUserData)
+PDROPTARGET RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, NP3DDCALLBACK pDropProc, void *pUserData)
 {
   IDropTarget *pTarget;
 
-  if ((pTarget = Np3CreateDropTarget(pFormat, lFmt, hWnd, nMsg, pDropProc, pUserData)) == NULL)
+  if ((pTarget = CreateDropTarget(pFormat, lFmt, hWnd, nMsg, pDropProc, pUserData)) == NULL)
     return NULL;
 
   if (RegisterDragDrop(hWnd, pTarget) != S_OK)
@@ -3897,7 +3897,7 @@ PNP3DROPTARGET Np3RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, 
     return NULL;
   }
 
-  return (PNP3DROPTARGET)pTarget;
+  return (PDROPTARGET)pTarget;
 }
 
 
@@ -3905,15 +3905,15 @@ PNP3DROPTARGET Np3RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, 
 //
 //  Np3RevokeDragnDrop()
 //
-PNP3DROPTARGET Np3RevokeDragnDrop(PNP3DROPTARGET pTarget)
+PDROPTARGET RevokeDragnDrop(PDROPTARGET pTarget)
 {
   if (pTarget == NULL)
     return NULL;
 
-  if (((PNP3IDROPTARGET)pTarget)->hWnd != NULL)
+  if (((PIDROPTARGET)pTarget)->hWnd != NULL)
   {
-    if (GetWindowLongPtr(((PNP3IDROPTARGET)pTarget)->hWnd, GWLP_WNDPROC) != 0)
-      RevokeDragDrop(((PNP3IDROPTARGET)pTarget)->hWnd);
+    if (GetWindowLongPtr(((PIDROPTARGET)pTarget)->hWnd, GWLP_WNDPROC) != 0)
+      RevokeDragDrop(((PIDROPTARGET)pTarget)->hWnd);
   }
 
   ((IDropTarget *)pTarget)->lpVtbl->Release((IDropTarget *)pTarget);
