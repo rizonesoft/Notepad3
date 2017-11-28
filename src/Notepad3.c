@@ -310,6 +310,13 @@ WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 
+
+static CLIPFORMAT cfDrpF = CF_HDROP;
+static POINTL ptDummy = { 0, 0 };
+static PNP3DROPTARGET pDropTarget = NULL;
+static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
+
+
 //=============================================================================
 //
 // Flags
@@ -644,6 +651,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (!hwnd)
     return FALSE;
   
+  // init DragnDrop handler
+  Np3DragnDropInit(NULL);
+
   if (IsVista()) {
     if (iSciDirectWriteTech >= 0)
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
@@ -1168,7 +1178,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       MsgDropFiles(hwnd, wParam, lParam);
       break;
 
-
     case WM_COPYDATA:
       return MsgCopyData(hwnd, wParam, lParam);
 
@@ -1224,13 +1233,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_TRAYMESSAGE:
       return MsgTrayMessage(hwnd, wParam, lParam);
-
-    case WM_MOUSEWHEEL:
-    case WM_MBUTTONDOWN:
-      if (wParam & MK_MBUTTON) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(BME_EDIT_BOOKMARKTOGGLE, 1), 0);
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     default:
       if (umsg == msgTaskbarCreated) {
@@ -1412,6 +1414,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // Drag & Drop
   DragAcceptFiles(hwnd,TRUE);
+  pDropTarget = Np3RegisterDragnDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)hwndEdit);
 
   // File MRU
   pFileMRU = MRU_Create(L"Recent Files",MRU_NOCASE,32);
@@ -1634,6 +1637,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     wininfo = GetMyWindowPlacement(hwnd, NULL);
 
     DragAcceptFiles(hwnd, FALSE);
+    Np3RevokeDragnDrop(pDropTarget);
 
     // Terminate clipboard watching
     if (flagPasteBoard) {
@@ -1855,9 +1859,10 @@ void MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if (OpenFileDlg(hwndMain, tchFile, COUNTOF(tchFile), szBuf))
       FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
   }
-
-  else
+  else if (PathFileExists(szBuf))
     FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
+  else
+    MsgBox(MBWARN, IDS_DROP_NO_FILE);
 
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
     MsgBox(MBWARN, IDS_ERR_DROP);
@@ -1866,6 +1871,57 @@ void MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   UNUSED(lParam);
 }
+
+
+
+//=============================================================================
+//
+//  DropFilesProc() - Handles DROPFILES
+//
+//
+static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData)
+{
+  UNUSED(dwKeyState);
+  UNUSED(pt);
+
+  DWORD dwEffect = DROPEFFECT_NONE;
+
+  //HWND hEditWnd = (HWND)pUserData;
+  UNUSED(pUserData);
+
+  if (cf == CF_HDROP)
+  {
+    WCHAR szBuf[MAX_PATH + 40];
+    HDROP hDrop = (HDROP)hData;
+
+    // Reset Change Notify
+    //bPendingChangeNotify = FALSE;
+
+    if (IsIconic(hWnd))
+      ShowWindow(hWnd, SW_RESTORE);
+
+    //SetForegroundWindow(hwnd);
+
+    DragQueryFile(hDrop, 0, szBuf, COUNTOF(szBuf));
+
+    if (PathIsDirectory(szBuf)) {
+      WCHAR tchFile[MAX_PATH] = { L'\0' };
+      if (OpenFileDlg(hWnd, tchFile, COUNTOF(tchFile), szBuf))
+        FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+    }
+
+    else
+      FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
+
+    if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
+      MsgBox(MBWARN, IDS_ERR_DROP);
+
+    dwEffect = DROPEFFECT_COPY;
+  }
+
+  return dwEffect;
+} /* End of MyDropProc(). */
+
 
 
 //=============================================================================

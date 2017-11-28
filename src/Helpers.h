@@ -436,6 +436,25 @@ inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); re
 inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
 
+// special Drag and Drop Handling
+
+typedef struct tNP3DROPDATA
+{
+  CLIPFORMAT cf;
+  POINTL pt;
+  DWORD dwKeyState;
+  HGLOBAL hData;
+} 
+NP3DROPDATA, *PNP3DROPDATA;
+
+typedef struct tNP3DROPTARGET *PNP3DROPTARGET;
+typedef DWORD(*NP3DDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
+
+void Np3DragnDropInit(HANDLE hHeap);
+PNP3DROPTARGET Np3RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, NP3DDCALLBACK, void *pUserData);
+PNP3DROPTARGET Np3RevokeDragnDrop(PNP3DROPTARGET pTarget);
+
+
 #endif //_NP3_HELPERS_H_
 
 ///   End of Helpers.h   \\\
