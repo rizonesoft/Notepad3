@@ -3580,5 +3580,358 @@ INT UTF8_mbslen(LPCSTR source,INT byte_length)
   return wchar_length;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+//
+//   Drag N Drop helpers
+//
+///////////////////////////////////////////////////////////////////////////////
+
+static HANDLE g_hHeap = NULL;
+
+typedef struct tIDROPTARGET {
+  IDropTarget idt;
+  LONG lRefCount;
+  ULONG lNumFormats;
+  CLIPFORMAT *pFormat;
+  HWND hWnd;
+  BOOL bAllowDrop;
+  DWORD dwKeyState;
+  IDataObject *pDataObject;
+  UINT nMsg;
+  void *pUserData;
+  DNDCALLBACK pDropProc;
+} 
+IDROPTARGET, *PIDROPTARGET;
+
+
+typedef struct IDRPTRG_VTBL
+{
+  BEGIN_INTERFACE
+    HRESULT(STDMETHODCALLTYPE *QueryInterface)(PIDROPTARGET pThis, REFIID riid, void  **ppvObject);
+    ULONG(STDMETHODCALLTYPE   *AddRef)(PIDROPTARGET pThis);
+    ULONG(STDMETHODCALLTYPE   *Release)(PIDROPTARGET pThis);
+    HRESULT(STDMETHODCALLTYPE *DragEnter)(PIDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
+    HRESULT(STDMETHODCALLTYPE *DragOver)(PIDROPTARGET pThis, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
+    HRESULT(STDMETHODCALLTYPE *DragLeave)(PIDROPTARGET pThis);
+    HRESULT(STDMETHODCALLTYPE *Drop)(PIDROPTARGET pThis, IDataObject *pDataObject, DWORD dwKeyState, POINTL pt, DWORD *pdwEffect);
+  END_INTERFACE
+} 
+IDRPTRG_VTBL, *PIDRPTRG_VTBL;
+
+
+//=============================================================================
+//
+//  DragAndDropInit()
+//
+void DragAndDropInit(HANDLE hHeap)
+{
+  if (g_hHeap == NULL && hHeap == NULL)
+    g_hHeap = GetProcessHeap();
+  else if (g_hHeap == NULL)
+    g_hHeap = hHeap;
+
+  OleInitialize(NULL); // just in case
+  return;
+}
+
+
+//=============================================================================
+//
+//  GetDnDHeap()
+//
+static HANDLE GetDnDHeap()
+{
+  if (g_hHeap == NULL) {
+    g_hHeap = GetProcessHeap();
+  }
+  return g_hHeap;
+}
+
+
+//=============================================================================
+//
+//  IDRPTRG_AddRef()
+//
+static ULONG STDMETHODCALLTYPE IDRPTRG_AddRef(PIDROPTARGET pThis)
+{
+  return InterlockedIncrement(&pThis->lRefCount);
+}
+
+
+//=============================================================================
+//
+//  IDRPTRG_QueryDataObject()
+//
+static BOOL IDRPTRG_QueryDataObject(PIDROPTARGET pDropTarget, IDataObject *pDataObject)
+{
+  ULONG lFmt;
+  FORMATETC fmtetc = { CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+
+  for (lFmt = 0; lFmt < pDropTarget->lNumFormats; lFmt++)
+  {
+    fmtetc.cfFormat = pDropTarget->pFormat[lFmt];
+    if (pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
+      return TRUE;
+  }
+
+  return FALSE;
+}
+
+
+//=============================================================================
+//
+//  IDRPTRG_QueryInterface()
+//
+static HRESULT STDMETHODCALLTYPE IDRPTRG_QueryInterface(PIDROPTARGET pThis, REFIID riid,
+  LPVOID *ppvObject)
+{
+  *ppvObject = NULL;
+
+  if (IsEqualGUID(riid, &IID_IUnknown))
+  {
+    IDRPTRG_AddRef(pThis);
+    *ppvObject = pThis;
+    return S_OK;
+  }
+  else if (IsEqualGUID(riid, &IID_IDropTarget))
+  {
+    IDRPTRG_AddRef(pThis);
+    *ppvObject = pThis;
+    return S_OK;
+  }
+
+  return E_NOINTERFACE;
+}
+
+
+//=============================================================================
+//
+//  IDRPTRG_Release()
+//
+static ULONG STDMETHODCALLTYPE IDRPTRG_Release(PIDROPTARGET pThis)
+{
+  ULONG nCount;
+
+  if ((nCount = InterlockedDecrement(&pThis->lRefCount)) == 0)
+  {
+    HeapFree(GetDnDHeap(), 0, pThis);
+    return 0;
+  }
+
+  return nCount;
+}
+
+
+
+//=============================================================================
+//
+//  IDRPTRG_DropEffect()
+//
+static DWORD IDRPTRG_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwAllowed)
+{
+  DWORD dwEffect = 0;
+
+  if (dwKeyState & MK_CONTROL)
+    dwEffect = dwAllowed & DROPEFFECT_COPY;
+  else if (dwKeyState & MK_SHIFT)
+    dwEffect = dwAllowed & DROPEFFECT_MOVE;
+
+  if (dwEffect == 0)
+  {
+    if (dwAllowed & DROPEFFECT_COPY)
+      dwEffect = DROPEFFECT_COPY;
+    if (dwAllowed & DROPEFFECT_MOVE)
+      dwEffect = DROPEFFECT_MOVE;
+  }
+
+  UNUSED(pt);
+  return dwEffect;
+}
+
+
+//=============================================================================
+//
+//  IDRPTRG_DragEnter()
+//
+static HRESULT STDMETHODCALLTYPE IDRPTRG_DragEnter(PIDROPTARGET pThis, IDataObject *pDataObject,
+  DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
+{
+  pThis->bAllowDrop = IDRPTRG_QueryDataObject(pThis, pDataObject);
+  if (pThis->bAllowDrop)
+  {
+    *pdwEffect = IDRPTRG_DropEffect(dwKeyState, pt, *pdwEffect);
+    SetFocus(pThis->hWnd);
+  }
+  else
+    *pdwEffect = DROPEFFECT_NONE;
+
+  return S_OK;
+}
+
+
+//=============================================================================
+//
+//  IDRPTRG_DragOver()
+//
+static HRESULT STDMETHODCALLTYPE IDRPTRG_DragOver(PIDROPTARGET pThis, DWORD dwKeyState, POINTL pt,
+  DWORD *pdwEffect)
+{
+  if (pThis->bAllowDrop)
+  {
+    pThis->dwKeyState = dwKeyState;
+
+    *pdwEffect = IDRPTRG_DropEffect(dwKeyState, pt, *pdwEffect);
+  }
+  else
+    *pdwEffect = DROPEFFECT_NONE;
+
+  return S_OK;
+}
+
+
+//=============================================================================
+//
+//  IDRPTRG_DragLeave()
+//
+static HRESULT STDMETHODCALLTYPE IDRPTRG_DragLeave(PIDROPTARGET pThis)
+{
+  UNUSED(pThis);
+  return S_OK;
+}
+
+
+//=============================================================================
+//
+//  IDRPTRG_Drop()
+//
+static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *pDataObject,
+  DWORD dwKeyState, POINTL pt, DWORD *pdwEffect)
+{
+  FORMATETC fmtetc = { CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+  STGMEDIUM medium;
+  ULONG lFmt;
+  DROPDATA DropData;
+
+  UNUSED(dwKeyState);
+  UNUSED(pt);
+
+  if (pThis->bAllowDrop)
+  {
+    for (lFmt = 0; lFmt < pThis->lNumFormats; lFmt++)
+    {
+      fmtetc.cfFormat = pThis->pFormat[lFmt];
+      if (pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
+        break;
+    }
+    if (lFmt < pThis->lNumFormats)
+    {
+      pDataObject->lpVtbl->GetData(pDataObject, &fmtetc, &medium);
+      *pdwEffect = DROPEFFECT_NONE;
+      if (pThis->pDropProc != NULL) {
+        *pdwEffect = (*pThis->pDropProc)(pThis->pFormat[lFmt], medium.hGlobal, pThis->hWnd, pThis->dwKeyState, pt, pThis->pUserData);
+      }
+      else if (pThis->nMsg != WM_NULL)
+      {
+        DropData.cf = pThis->pFormat[lFmt];
+        DropData.dwKeyState = pThis->dwKeyState;
+        DropData.hData = medium.hGlobal;
+        DropData.pt = pt;
+
+        *pdwEffect = (DWORD)SendMessage(pThis->hWnd, pThis->nMsg, (WPARAM)&DropData, (LPARAM)pThis->pUserData);
+      }
+      if (*pdwEffect != DROPEFFECT_NONE)
+        ReleaseStgMedium(&medium);
+    }
+  }
+  else
+    *pdwEffect = DROPEFFECT_NONE;
+
+  return S_OK;
+}
+
+
+//=============================================================================
+//
+//  CreateDropTarget()
+//
+IDropTarget* CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT nMsg,
+  DWORD(*pDropProc)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData),
+  void *pUserData)
+{
+  PIDROPTARGET pRet;
+  static IDRPTRG_VTBL idt_vtbl = {
+    IDRPTRG_QueryInterface,
+    IDRPTRG_AddRef,
+    IDRPTRG_Release,
+    IDRPTRG_DragEnter,
+    IDRPTRG_DragOver,
+    IDRPTRG_DragLeave,
+    IDRPTRG_Drop };
+
+  if ((pRet = HeapAlloc(GetDnDHeap(), 0, sizeof(IDROPTARGET) + lFmt * sizeof(CLIPFORMAT))) == NULL)
+    return NULL;
+
+  pRet->pFormat = (CLIPFORMAT *)(((char *)pRet) + sizeof(IDROPTARGET));
+
+  pRet->idt.lpVtbl = (IDropTargetVtbl*)&idt_vtbl;
+  pRet->lRefCount = 1;
+  pRet->hWnd = hWnd;
+  pRet->nMsg = nMsg;
+  pRet->bAllowDrop = FALSE;
+  pRet->dwKeyState = 0;
+  pRet->lNumFormats = lFmt;
+  pRet->pDropProc = pDropProc;
+  pRet->pUserData = pUserData;
+
+  for (lFmt = 0; lFmt < pRet->lNumFormats; lFmt++) {
+    pRet->pFormat[lFmt] = pFormat[lFmt];
+  }
+  return (IDropTarget *)pRet;
+}
+
+
+
+//=============================================================================
+//
+//  RegisterDragAndDrop()
+//
+PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK pDropProc, void *pUserData)
+{
+  IDropTarget *pTarget;
+
+  if ((pTarget = CreateDropTarget(pFormat, lFmt, hWnd, nMsg, pDropProc, pUserData)) == NULL)
+    return NULL;
+
+  if (RegisterDragDrop(hWnd, pTarget) != S_OK)
+  {
+    HeapFree(GetDnDHeap(), 0, pTarget);
+    return NULL;
+  }
+
+  return (PDROPTARGET)pTarget;
+}
+
+
+//=============================================================================
+//
+//  RevokeDragAndDrop()
+//
+PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget)
+{
+  if (pTarget == NULL)
+    return NULL;
+
+  if (((PIDROPTARGET)pTarget)->hWnd != NULL)
+  {
+    if (GetWindowLongPtr(((PIDROPTARGET)pTarget)->hWnd, GWLP_WNDPROC) != 0)
+      RevokeDragDrop(((PIDROPTARGET)pTarget)->hWnd);
+  }
+
+  ((IDropTarget *)pTarget)->lpVtbl->Release((IDropTarget *)pTarget);
+
+  return NULL;
+}
+
+
 
 ///   End of Helpers.c   \\\
