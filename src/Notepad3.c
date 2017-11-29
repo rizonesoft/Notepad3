@@ -1883,9 +1883,6 @@ void MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData)
 {
-  UNUSED(dwKeyState);
-  UNUSED(pt);
-
   DWORD dwEffect = DROPEFFECT_NONE;
 
   //HWND hEditWnd = (HWND)pUserData;
@@ -1896,13 +1893,8 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
     WCHAR szBuf[MAX_PATH + 40];
     HDROP hDrop = (HDROP)hData;
 
-    // Reset Change Notify
-    //bPendingChangeNotify = FALSE;
-
     if (IsIconic(hWnd))
       ShowWindow(hWnd, SW_RESTORE);
-
-    //SetForegroundWindow(hwnd);
 
     DragQueryFile(hDrop, 0, szBuf, COUNTOF(szBuf));
 
@@ -1911,7 +1903,6 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
       if (OpenFileDlg(hWnd, tchFile, COUNTOF(tchFile), szBuf))
         FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
     }
-
     else
       FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
 
@@ -1921,8 +1912,11 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
     dwEffect = DROPEFFECT_COPY;
   }
 
+  UNUSED(dwKeyState);
+  UNUSED(pt);
+
   return dwEffect;
-} /* End of MyDropProc(). */
+} 
 
 
 
