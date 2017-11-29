@@ -383,24 +383,30 @@ BOOL BitmapGrayScale(HBITMAP hbmp)
 //
 BOOL SetWindowPathTitle(HWND hwnd,LPCWSTR lpszFile)
 {
-
-  WCHAR szTitle[256];
+  WCHAR szTitle[MAX_PATH + 120] = { L'\0' };
 
   if (lstrlen(lpszFile))
   {
-
     if (!PathIsRoot(lpszFile))
     {
       SHFILEINFO shfi;
-      SHGetFileInfo(lpszFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
-      lstrcpy(szTitle,shfi.szDisplayName);
+      if (SHGetFileInfo(lpszFile, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME))
+        lstrcpy(szTitle, shfi.szDisplayName);
+      else
+        lstrcpy(szTitle, PathFindFileName(lpszFile));
+
+      WCHAR tchPath[MAX_PATH] = { L'\0' };
+      lstrcpy(tchPath, lpszFile);
+      PathRemoveFileSpec(tchPath);
+      lstrcat(szTitle, L" - [");
+      lstrcat(szTitle, tchPath);
+      lstrcat(szTitle, L"\\]");
     }
     else
-      lstrcpy(szTitle,lpszFile);
+      lstrcpy(szTitle, lpszFile);
   }
 
-  return SetWindowText(hwnd,szTitle);
-
+  return SetWindowText(hwnd, szTitle);
 }
 
 
