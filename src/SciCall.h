@@ -159,6 +159,7 @@ DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, valu
 //  SetTechnology
 //
 //
+DeclareSciCallV0(UnBufferedDraw, SETBUFFEREDDRAW);
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 
 

@@ -310,6 +310,13 @@ WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 
+
+static CLIPFORMAT cfDrpF = CF_HDROP;
+static POINTL ptDummy = { 0, 0 };
+static PDROPTARGET pDropTarget = NULL;
+static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
+
+
 //=============================================================================
 //
 // Flags
@@ -644,7 +651,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (!hwnd)
     return FALSE;
   
+  // init DragnDrop handler
+  DragAndDropInit(NULL);
+
   if (IsVista()) {
+    SciCall_UnBufferedDraw();  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
     if (iSciDirectWriteTech >= 0)
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
   }
@@ -656,8 +667,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   while (GetMessage(&msg,NULL,0,0))
   {
-    if (IsWindow(hDlgFindReplace) && (msg.hwnd == hDlgFindReplace || IsChild(hDlgFindReplace,msg.hwnd)))
-      if (IsDialogMessage(hDlgFindReplace,&msg) || TranslateAccelerator(hDlgFindReplace,hAccFindReplace,&msg))
+    if (IsWindow(hDlgFindReplace) && (msg.hwnd == hDlgFindReplace || IsChild(hDlgFindReplace, msg.hwnd)))
+      if (TranslateAccelerator(hDlgFindReplace, hAccFindReplace, &msg) || IsDialogMessage(hDlgFindReplace, &msg))
         continue;
 
     if (!TranslateAccelerator(hwnd,hAccMain,&msg)) {
@@ -1168,7 +1179,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       MsgDropFiles(hwnd, wParam, lParam);
       break;
 
-
     case WM_COPYDATA:
       return MsgCopyData(hwnd, wParam, lParam);
 
@@ -1224,13 +1234,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_TRAYMESSAGE:
       return MsgTrayMessage(hwnd, wParam, lParam);
-
-    case WM_MOUSEWHEEL:
-    case WM_MBUTTONDOWN:
-      if (wParam & MK_MBUTTON) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(BME_EDIT_BOOKMARKTOGGLE, 1), 0);
-      }
-      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     default:
       if (umsg == msgTaskbarCreated) {
@@ -1412,6 +1415,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // Drag & Drop
   DragAcceptFiles(hwnd,TRUE);
+  pDropTarget = RegisterDragAndDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)hwndEdit);
 
   // File MRU
   pFileMRU = MRU_Create(L"Recent Files",MRU_NOCASE,32);
@@ -1634,6 +1638,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     wininfo = GetMyWindowPlacement(hwnd, NULL);
 
     DragAcceptFiles(hwnd, FALSE);
+    RevokeDragAndDrop(pDropTarget);
 
     // Terminate clipboard watching
     if (flagPasteBoard) {
@@ -1855,9 +1860,11 @@ void MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if (OpenFileDlg(hwndMain, tchFile, COUNTOF(tchFile), szBuf))
       FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
   }
-
-  else
+  else if (PathFileExists(szBuf))
     FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
+  else
+    // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
+    MsgBox(MBWARN, IDS_DROP_NO_FILE);
 
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
     MsgBox(MBWARN, IDS_ERR_DROP);
@@ -1866,6 +1873,51 @@ void MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   UNUSED(lParam);
 }
+
+
+
+//=============================================================================
+//
+//  DropFilesProc() - Handles DROPFILES
+//
+//
+static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData)
+{
+  DWORD dwEffect = DROPEFFECT_NONE;
+
+  //HWND hEditWnd = (HWND)pUserData;
+  UNUSED(pUserData);
+
+  if (cf == CF_HDROP)
+  {
+    WCHAR szBuf[MAX_PATH + 40];
+    HDROP hDrop = (HDROP)hData;
+
+    if (IsIconic(hWnd))
+      ShowWindow(hWnd, SW_RESTORE);
+
+    DragQueryFile(hDrop, 0, szBuf, COUNTOF(szBuf));
+
+    if (PathIsDirectory(szBuf)) {
+      WCHAR tchFile[MAX_PATH] = { L'\0' };
+      if (OpenFileDlg(hWnd, tchFile, COUNTOF(tchFile), szBuf))
+        FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+    }
+    else
+      FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
+
+    if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
+      MsgBox(MBWARN, IDS_ERR_DROP);
+
+    dwEffect = DROPEFFECT_COPY;
+  }
+
+  UNUSED(dwKeyState);
+  UNUSED(pt);
+
+  return dwEffect;
+} 
+
 
 
 //=============================================================================
@@ -5875,11 +5927,11 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech",1);
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech", SC_TECHNOLOGY_DEFAULT);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality",3);
-  iSciFontQuality = max(min(iSciFontQuality,3),0);
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", SC_EFF_QUALITY_DEFAULT);
+  iSciFontQuality = max(min(iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_EFF_QUALITY_DEFAULT);
 
   iMarkOccurrencesCount = -1;
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
@@ -5939,7 +5991,7 @@ void LoadSettings()
   WCHAR tchSciFontQuality[32];
   StringCchPrintf(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
   iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,iSciFontQuality);
-  iSciFontQuality = max(min(iSciFontQuality,3),0);
+  iSciFontQuality = max(min(iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_TECHNOLOGY_DEFAULT);
 
 
   LocalFree(pIniSection);

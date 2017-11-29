@@ -4047,7 +4047,8 @@ BOOL Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
     if (StringCchCompareIN(tch,COUNTOF(tch),L"none",-1) == 0 ||
         StringCchCompareIN(tch,COUNTOF(tch),L"standard",-1) == 0 ||
         StringCchCompareIN(tch,COUNTOF(tch),L"cleartype",-1) == 0 ||
-        StringCchCompareIN(tch,COUNTOF(tch),L"default",-1) == 0) {
+        StringCchCompareIN(tch,COUNTOF(tch),L"default",-1) == 0) 
+    {
       StringCchCopyN(lpszQuality,cchQuality,tch,COUNTOF(tch));
       return TRUE;
     }
@@ -4549,7 +4550,7 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
 //
 void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
 
-  WPARAM wQuality = (WPARAM)FontQuality[iSciFontQuality];;
+  WPARAM wQuality = (WPARAM)FontQuality[iSciFontQuality];
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   if (Style_StrGetFontQuality(lpszStyle,tch,COUNTOF(tch))) {
@@ -4562,7 +4563,8 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
     else if (StringCchCompareIN(tch,COUNTOF(tch),L"cleartype",-1) == 0)
       wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
   }
-  else { // undefined, use general settings, except for special fonts
+  else if (wQuality == SC_EFF_QUALITY_DEFAULT) { 
+    // undefined, use general settings, except for special fonts
     if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch))) {
       if (StringCchCompareIN(tch,COUNTOF(tch),L"Calibri",-1) == 0 ||
           StringCchCompareIN(tch,COUNTOF(tch),L"Cambria",-1) == 0 ||
