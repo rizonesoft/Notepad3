@@ -652,7 +652,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     return FALSE;
   
   // init DragnDrop handler
-  DragnDropInit(NULL);
+  DragAndDropInit(NULL);
 
   if (IsVista()) {
     SciCall_UnBufferedDraw();  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
@@ -1415,7 +1415,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // Drag & Drop
   DragAcceptFiles(hwnd,TRUE);
-  pDropTarget = RegisterDragnDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)hwndEdit);
+  pDropTarget = RegisterDragAndDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)hwndEdit);
 
   // File MRU
   pFileMRU = MRU_Create(L"Recent Files",MRU_NOCASE,32);
@@ -1638,7 +1638,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     wininfo = GetMyWindowPlacement(hwnd, NULL);
 
     DragAcceptFiles(hwnd, FALSE);
-    RevokeDragnDrop(pDropTarget);
+    RevokeDragAndDrop(pDropTarget);
 
     // Terminate clipboard watching
     if (flagPasteBoard) {
@@ -1863,6 +1863,7 @@ void MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
   else if (PathFileExists(szBuf))
     FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
   else
+    // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
     MsgBox(MBWARN, IDS_DROP_NO_FILE);
 
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)

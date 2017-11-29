@@ -448,11 +448,11 @@ typedef struct tDROPDATA
 DROPDATA, *PDROPDATA;
 
 typedef struct tDROPTARGET *PDROPTARGET;
-typedef DWORD(*NP3DDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
+typedef DWORD(*DNDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
-void DragnDropInit(HANDLE hHeap);
-PDROPTARGET RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, NP3DDCALLBACK, void *pUserData);
-PDROPTARGET RevokeDragnDrop(PDROPTARGET pTarget);
+void DragAndDropInit(HANDLE hHeap);
+PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK, void *pUserData);
+PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget);
 
 
 #endif //_NP3_HELPERS_H_

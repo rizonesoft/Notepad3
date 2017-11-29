@@ -3588,8 +3588,6 @@ INT UTF8_mbslen(LPCSTR source,INT byte_length)
 
 static HANDLE g_hHeap = NULL;
 
-#define NP3DD_HEAP (g_hHeap == NULL ? (g_hHeap = GetProcessHeap()) : g_hHeap)
-
 typedef struct tIDROPTARGET {
   IDropTarget idt;
   LONG lRefCount;
@@ -3601,7 +3599,7 @@ typedef struct tIDROPTARGET {
   IDataObject *pDataObject;
   UINT nMsg;
   void *pUserData;
-  NP3DDCALLBACK pDropProc;
+  DNDCALLBACK pDropProc;
 } 
 IDROPTARGET, *PIDROPTARGET;
 
@@ -3623,9 +3621,9 @@ IDRPTRG_VTBL, *PIDRPTRG_VTBL;
 
 //=============================================================================
 //
-//  NP3DragnDropInit()
+//  DragAndDropInit()
 //
-void DragnDropInit(HANDLE hHeap)
+void DragAndDropInit(HANDLE hHeap)
 {
   if (g_hHeap == NULL && hHeap == NULL)
     g_hHeap = GetProcessHeap();
@@ -3634,6 +3632,19 @@ void DragnDropInit(HANDLE hHeap)
 
   OleInitialize(NULL); // just in case
   return;
+}
+
+
+//=============================================================================
+//
+//  GetDnDHeap()
+//
+static HANDLE GetDnDHeap()
+{
+  if (g_hHeap == NULL) {
+    g_hHeap = GetProcessHeap();
+  }
+  return g_hHeap;
 }
 
 
@@ -3703,7 +3714,7 @@ static ULONG STDMETHODCALLTYPE IDRPTRG_Release(PIDROPTARGET pThis)
 
   if ((nCount = InterlockedDecrement(&pThis->lRefCount)) == 0)
   {
-    HeapFree(NP3DD_HEAP, 0, pThis);
+    HeapFree(GetDnDHeap(), 0, pThis);
     return 0;
   }
 
@@ -3816,9 +3827,9 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *p
     {
       pDataObject->lpVtbl->GetData(pDataObject, &fmtetc, &medium);
       *pdwEffect = DROPEFFECT_NONE;
-      if (pThis->pDropProc != NULL)
-        *pdwEffect = (*pThis->pDropProc)(pThis->pFormat[lFmt], medium.hGlobal, pThis->hWnd, pThis->dwKeyState,
-          pt, pThis->pUserData);
+      if (pThis->pDropProc != NULL) {
+        *pdwEffect = (*pThis->pDropProc)(pThis->pFormat[lFmt], medium.hGlobal, pThis->hWnd, pThis->dwKeyState, pt, pThis->pUserData);
+      }
       else if (pThis->nMsg != WM_NULL)
       {
         DropData.cf = pThis->pFormat[lFmt];
@@ -3826,8 +3837,7 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *p
         DropData.hData = medium.hGlobal;
         DropData.pt = pt;
 
-        *pdwEffect = (DWORD)SendMessage(pThis->hWnd, pThis->nMsg, (WPARAM)&DropData,
-          (LPARAM)pThis->pUserData);
+        *pdwEffect = (DWORD)SendMessage(pThis->hWnd, pThis->nMsg, (WPARAM)&DropData, (LPARAM)pThis->pUserData);
       }
       if (*pdwEffect != DROPEFFECT_NONE)
         ReleaseStgMedium(&medium);
@@ -3842,7 +3852,7 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *p
 
 //=============================================================================
 //
-//  Np3CreateDropTarget()
+//  CreateDropTarget()
 //
 IDropTarget* CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT nMsg,
   DWORD(*pDropProc)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData),
@@ -3858,8 +3868,9 @@ IDropTarget* CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT n
     IDRPTRG_DragLeave,
     IDRPTRG_Drop };
 
-  if ((pRet = HeapAlloc(NP3DD_HEAP, 0, sizeof(IDROPTARGET) + lFmt * sizeof(CLIPFORMAT))) == NULL)
+  if ((pRet = HeapAlloc(GetDnDHeap(), 0, sizeof(IDROPTARGET) + lFmt * sizeof(CLIPFORMAT))) == NULL)
     return NULL;
+
   pRet->pFormat = (CLIPFORMAT *)(((char *)pRet) + sizeof(IDROPTARGET));
 
   pRet->idt.lpVtbl = (IDropTargetVtbl*)&idt_vtbl;
@@ -3872,9 +3883,9 @@ IDropTarget* CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT n
   pRet->pDropProc = pDropProc;
   pRet->pUserData = pUserData;
 
-  for (lFmt = 0; lFmt < pRet->lNumFormats; lFmt++)
+  for (lFmt = 0; lFmt < pRet->lNumFormats; lFmt++) {
     pRet->pFormat[lFmt] = pFormat[lFmt];
-
+  }
   return (IDropTarget *)pRet;
 }
 
@@ -3882,9 +3893,9 @@ IDropTarget* CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT n
 
 //=============================================================================
 //
-//  Np3RegisterDragnDrop()
+//  RegisterDragAndDrop()
 //
-PDROPTARGET RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, NP3DDCALLBACK pDropProc, void *pUserData)
+PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK pDropProc, void *pUserData)
 {
   IDropTarget *pTarget;
 
@@ -3893,7 +3904,7 @@ PDROPTARGET RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT n
 
   if (RegisterDragDrop(hWnd, pTarget) != S_OK)
   {
-    HeapFree(NP3DD_HEAP, 0, pTarget);
+    HeapFree(GetDnDHeap(), 0, pTarget);
     return NULL;
   }
 
@@ -3903,9 +3914,9 @@ PDROPTARGET RegisterDragnDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT n
 
 //=============================================================================
 //
-//  Np3RevokeDragnDrop()
+//  RevokeDragAndDrop()
 //
-PDROPTARGET RevokeDragnDrop(PDROPTARGET pTarget)
+PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget)
 {
   if (pTarget == NULL)
     return NULL;
