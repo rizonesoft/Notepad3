@@ -400,7 +400,10 @@ BOOL SetWindowPathTitle(HWND hwnd,LPCWSTR lpszFile)
       PathRemoveFileSpec(tchPath);
       lstrcat(szTitle, L" - [");
       lstrcat(szTitle, tchPath);
-      lstrcat(szTitle, L"\\]");
+      if (tchPath[0] && (tchPath[lstrlen(tchPath)-1] == L'\\'))
+        lstrcat(szTitle, L"]");
+      else 
+        lstrcat(szTitle, L"\\]");
     }
     else
       lstrcpy(szTitle, lpszFile);

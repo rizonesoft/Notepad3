@@ -85,7 +85,7 @@ EDITLEXER lexDefault =   { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx;
                 /* 24 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 25 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
                 /* 26 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63125, L"2nd Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
-                /* 27 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100", L"" },
+                /* 27 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100; alpha2:100", L"" },
 
                          { -1, 00000, L"", L"", L"" } } };
 
@@ -3167,8 +3167,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   else {
     if (Style_StrGetColor(TRUE, lexDefault.Styles[STY_BRACE_OK + iIdx].szValue, &iValue))
       SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, iValue);
-    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_OK + iIdx].szValue, &iValue))
+    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_OK + iIdx].szValue, &iValue, TRUE))
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
+    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_OK + iIdx].szValue, &iValue, FALSE))
+      SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, iValue);
   }
   if (bUseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, lexDefault.Styles[STY_BRACE_BAD + iIdx].iStyle, lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue); // brace bad
@@ -3176,8 +3178,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   else {
     if (Style_StrGetColor(TRUE, lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue, &iValue))
       SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, iValue);
-    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue, &iValue))
+    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue, &iValue, TRUE))
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
+    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue, &iValue, FALSE))
+      SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, iValue);
   }
 
   // Occurrences Marker
@@ -3203,11 +3207,17 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
   SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, iValue);
 
-  if (!Style_StrGetAlpha(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue)) {
+  if (!Style_StrGetAlpha(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue, TRUE)) {
     iValue = 100;
     StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha:100");
   }   
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
+
+  if (!Style_StrGetAlpha(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue, FALSE)) {
+    iValue = 100;
+    StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha2:100");
+  }
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
 
 
   if (pLexNew != &lexANSI)
@@ -3233,7 +3243,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     SendMessage(hwnd, SCI_SETADDITIONALSELBACK, RGB(0xC0, 0xC0, 0xC0), 0);
   }
 
-  if (Style_StrGetAlpha(lexDefault.Styles[STY_SEL_TXT + iIdx].szValue, &iValue)) { // selection alpha
+  if (Style_StrGetAlpha(lexDefault.Styles[STY_SEL_TXT + iIdx].szValue, &iValue, TRUE)) { // selection alpha
     SendMessage(hwnd, SCI_SETSELALPHA, iValue, 0);
     SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, iValue, 0);
   }
@@ -3293,7 +3303,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
       SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, TRUE, 0);
       SendMessage(hwnd, SCI_SETCARETLINEBACK, rgb, 0);
 
-      if (Style_StrGetAlpha(lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue, &iValue))
+      if (Style_StrGetAlpha(lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue, &iValue, TRUE))
         SendMessage(hwnd, SCI_SETCARETLINEBACKALPHA, iValue, 0);
       else
         SendMessage(hwnd, SCI_SETCARETLINEBACKALPHA, SC_ALPHA_NOALPHA, 0);
@@ -3569,7 +3579,7 @@ void Style_SetCurrentLineBackground(HWND hwnd)
       SendMessage(hwnd,SCI_SETCARETLINEBACK,rgb,0);
 
       int alpha = 0;
-      if (Style_StrGetAlpha(lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue,&alpha))
+      if (Style_StrGetAlpha(lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue, &alpha, TRUE))
         SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,alpha,0);
       else
         SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,SC_ALPHA_NOALPHA,0);
@@ -3591,7 +3601,7 @@ void Style_SetCurrentMargin(HWND hwnd, BOOL bShowSelMargin) {
   int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
 
   int alpha = 20;
-  Style_StrGetAlpha(lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &alpha);
+  Style_StrGetAlpha(lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &alpha, TRUE);
 
   int rgbFore = RGB(0xFF, 0, 0); // red
   Style_StrGetColor(TRUE, lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &rgbFore);
@@ -4183,11 +4193,14 @@ BOOL Style_StrGetColor(BOOL bFore,LPCWSTR lpszStyle,int *rgb)
 //
 //  Style_StrGetCase()
 //
-BOOL Style_StrGetAlpha(LPCWSTR lpszStyle, int *i) {
+BOOL Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, BOOL bAlpha1st) 
+{
+  const WCHAR* strAlpha = bAlpha1st ? L"alpha:" : L"alpha2:";
+
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-  WCHAR *p = StrStrI(lpszStyle, L"alpha:");
+  WCHAR* p = StrStrI(lpszStyle, strAlpha);
   if (p) {
-    StringCchCopy(tch, COUNTOF(tch), p + CSTRLEN(L"alpha:"));
+    StringCchCopy(tch, COUNTOF(tch), p + lstrlen(strAlpha));
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
@@ -4205,7 +4218,7 @@ BOOL Style_StrGetAlpha(LPCWSTR lpszStyle, int *i) {
 
 //=============================================================================
 //
-//  Style_StrGetAlpha()
+//  Style_StrGetCase()
 //
 BOOL Style_StrGetCase(LPCWSTR lpszStyle,int *i)
 {
@@ -4331,9 +4344,8 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),(iValue == SC_CASE_UPPER) ? L"u" : L"");
   }
 
-  if (Style_StrGetAlpha(lpszStyle,&iValue)) {
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; alpha:");
-    StringCchPrintf(tch,COUNTOF(tch),L"%i",iValue);
+  if (Style_StrGetAlpha(lpszStyle, &iValue, TRUE)) {
+    StringCchPrintf(tch,COUNTOF(tch),L"; alpha:%i",iValue);
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
 
@@ -4463,10 +4475,14 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),(iValue == SC_CASE_UPPER) ? L"u" : L"");
   }
 
-  if (Style_StrGetAlpha(lpszStyle,&iValue)) {
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; alpha:");
-    StringCchPrintf(tch,COUNTOF(tch),L"%i",iValue);
+  if (Style_StrGetAlpha(lpszStyle, &iValue, TRUE)) {
+    StringCchPrintf(tch,COUNTOF(tch),L"; alpha:%i",iValue);
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
+  }
+
+  if (Style_StrGetAlpha(lpszStyle, &iValue, FALSE)) {
+    StringCchPrintf(tch, COUNTOF(tch), L"; alpha2:%i", iValue);
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
   }
 
   if (StrStrI(lpszStyle,L"block"))
