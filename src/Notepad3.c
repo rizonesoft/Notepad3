@@ -667,10 +667,12 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   while (GetMessage(&msg,NULL,0,0))
   {
-    if (IsWindow(hDlgFindReplace) && (msg.hwnd == hDlgFindReplace || IsChild(hDlgFindReplace, msg.hwnd)))
-      if (TranslateAccelerator(hDlgFindReplace, hAccFindReplace, &msg) || IsDialogMessage(hDlgFindReplace, &msg))
+    if (IsWindow(hDlgFindReplace) && ((msg.hwnd == hDlgFindReplace) || IsChild(hDlgFindReplace, msg.hwnd))) 
+    {
+      int iTr = TranslateAccelerator(hDlgFindReplace, hAccFindReplace, &msg);
+      if (iTr || IsDialogMessage(hDlgFindReplace, &msg))
         continue;
-
+    }
     if (!TranslateAccelerator(hwnd,hAccMain,&msg)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
