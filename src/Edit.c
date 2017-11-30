@@ -178,17 +178,17 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
   SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, RGB(0x00,0x00,0xFF));  
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
-  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 220);
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
 
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
   SendMessage(hwnd, SCI_INDICSETFORE,INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, 120);
-  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, 220);
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, 120);
 
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
   SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, RGB(0xFF, 0x00, 0x00));
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
-  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 220);
+  SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
 
 
   // word delimiter handling
@@ -4537,9 +4537,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           iSaveMarkOcc = iMarkOccurrences;
           EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, FALSE);
           iMarkOccurrences = 0;
+          CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
         }
         else {
           iSaveMarkOcc = -1;
+          CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
         }
 
         SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
@@ -4684,15 +4686,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
 
         HMENU hmenu = GetSystemMenu(hwnd, FALSE);
-        GetString(IDS_CHECK_OCC, tch2, COUNTOF(tch2));
-        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_CHECK_OCC, tch2);
-        InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
         GetString(IDS_SAVEPOS, tch2, COUNTOF(tch2));
-        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tch2);
+        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tch2);
         GetString(IDS_RESETPOS, tch2, COUNTOF(tch2));
-        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tch2);
-        InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-        CheckCmd(hmenu, IDS_CHECK_OCC, bDoCheckAllOccurrences);
+        InsertMenu(hmenu, 1, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tch2);
+        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 
         hBrushRed = CreateSolidBrush(rgbRed);
         hBrushGreen = CreateSolidBrush(rgbGreen);
@@ -4779,27 +4777,55 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       }
       break;
 
-      case IDC_MARKALL_OCC:
-      {
-        if (bDoCheckAllOccurrences) {
-          EditSetSearchFlags(hwnd, lpefr);
-          if (bFlagsChanged || (StringCchCompareXA(lastFind, lpefr->szFind) != 0)) {
-            BeginWaitCursor();
-            StringCchCopyA(lastFind, COUNTOF(lastFind), lpefr->szFind);
-            RegExResult_t match = NO_MATCH;
-            match = EditFindHasMatch(hwndEdit, lpefr, (iSaveMarkOcc > 0), FALSE);
-            if (regexMatch != match) {
-              regexMatch = match;
-              InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
-            }
-            // we have to set Sci's regex instance to first find (have substitution in place)
-            EditFindHasMatch(hwndEdit, lpefr, FALSE, TRUE);
-            bFlagsChanged = FALSE;
-            EndWaitCursor();
+
+      case IDC_ALL_OCCURRENCES:
+        {
+          if (IsDlgButtonChecked(hwnd, IDC_ALL_OCCURRENCES) == BST_CHECKED) 
+          {
+            bDoCheckAllOccurrences = TRUE;
+            iSaveMarkOcc = iMarkOccurrences;
+            EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, FALSE);
+            iMarkOccurrences = 0;
           }
+          else {                         // switched OFF
+            bDoCheckAllOccurrences = FALSE;
+            if (iSaveMarkOcc >= 0) {
+              EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, TRUE);
+              if (iSaveMarkOcc != 0) {
+                SendMessage(hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCURRENCES_ONOFF, 1), 0);
+              }
+            }
+            iSaveMarkOcc = -1;
+          }
+          bFlagsChanged = TRUE;
+          SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
         }
-      }
-      break;
+        break;
+
+
+      case IDC_MARKALL_OCC:
+        {
+          if (bDoCheckAllOccurrences) {
+            EditSetSearchFlags(hwnd, lpefr);
+            if (bFlagsChanged || (StringCchCompareXA(lastFind, lpefr->szFind) != 0)) {
+              BeginWaitCursor();
+              StringCchCopyA(lastFind, COUNTOF(lastFind), lpefr->szFind);
+              RegExResult_t match = NO_MATCH;
+              match = EditFindHasMatch(hwndEdit, lpefr, (iSaveMarkOcc > 0), FALSE);
+              if (regexMatch != match) {
+                regexMatch = match;
+              }
+              // we have to set Sci's regex instance to first find (have substitution in place)
+              EditFindHasMatch(hwndEdit, lpefr, FALSE, TRUE);
+              bFlagsChanged = FALSE;
+              EndWaitCursor();
+            }
+          }
+          InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
+          UpdateWindow(GetDlgItem(hwnd, IDC_FINDTEXT));
+        }
+        break;
+
 
       case IDC_FINDREGEXP:
         if (IsDlgButtonChecked(hwnd, IDC_FINDREGEXP) == BST_CHECKED)
@@ -5037,29 +5063,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       }
       break;
 
-      case IDC_CHECK_OCC:
-      {
-        bDoCheckAllOccurrences = !bDoCheckAllOccurrences;
-        CheckCmd(GetSystemMenu(hwnd, FALSE), IDS_CHECK_OCC, bDoCheckAllOccurrences);
-        if (bDoCheckAllOccurrences) {  // switched ON
-          iSaveMarkOcc = iMarkOccurrences;
-          EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, FALSE);
-          iMarkOccurrences = 0;
-        }
-        else {                         // switched OFF
-          if (iSaveMarkOcc >= 0) {
-            EnableCmd(GetMenu(hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, TRUE);
-            if (iSaveMarkOcc != 0) {
-              SendMessage(hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCURRENCES_ONOFF, 1), 0);
-            }
-          }
-          iSaveMarkOcc = -1;
-        }
-        bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
-      }
-      break;
-
       case IDACC_FIND:
         PostMessage(GetParent(hwnd), WM_COMMAND, MAKELONG(IDM_EDIT_FIND, 1), 0);
         break;
@@ -5109,11 +5112,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 
     case WM_SYSCOMMAND:
-      if (wParam == IDS_CHECK_OCC) {
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CHECK_OCC, 0), 0);
-        return TRUE;
-      }
-      else if (wParam == IDS_SAVEPOS) {
+      if (wParam == IDS_SAVEPOS) {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_SAVEPOS, 0), 0);
         return TRUE;
       }
@@ -5158,40 +5157,40 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_CTLCOLOREDIT:
     case WM_CTLCOLORLISTBOX:
-      if (bDoCheckAllOccurrences) 
       {
-        HWND hCheck = (HWND)lParam;
-        HDC hDC = (HDC)wParam;
+        if (bDoCheckAllOccurrences) 
+        {
+          HWND hCheck = (HWND)lParam;
+          HDC hDC = (HDC)wParam;
 
-        HWND hComboBox = GetDlgItem(hwnd, IDC_FINDTEXT);
-        COMBOBOXINFO ci = { sizeof(COMBOBOXINFO) };
-        GetComboBoxInfo(hComboBox, &ci);
+          HWND hComboBox = GetDlgItem(hwnd, IDC_FINDTEXT);
+          COMBOBOXINFO ci = { sizeof(COMBOBOXINFO) };
+          GetComboBoxInfo(hComboBox, &ci);
 
-        //if (hCheck == ci.hwndItem || hCheck == ci.hwndList)
-        if (hCheck == ci.hwndItem) {         
-          SetBkMode(hDC, TRANSPARENT);
-          INT_PTR hBrush;
-          switch (regexMatch)
-          {
-          case MATCH:
-            //SetTextColor(hDC, green);
-            SetBkColor(hDC, rgbGreen);
-            hBrush = (INT_PTR)hBrushGreen;
-            break;
-          case NO_MATCH:
-            //SetTextColor(hDC, blue);
-            SetBkColor(hDC, rgbBlue);
-            hBrush = (INT_PTR)hBrushBlue;
-            break;
-          case INVALID:
-          default:
-            //SetTextColor(hDC, red);
-            SetBkColor(hDC, rgbRed);
-            hBrush = (INT_PTR)hBrushRed;
-            break;
+          //if (hCheck == ci.hwndItem || hCheck == ci.hwndList)
+          if (hCheck == ci.hwndItem) {
+            SetBkMode(hDC, TRANSPARENT);
+            INT_PTR hBrush;
+            switch (regexMatch) {
+            case MATCH:
+              //SetTextColor(hDC, green);
+              SetBkColor(hDC, rgbGreen);
+              hBrush = (INT_PTR)hBrushGreen;
+              break;
+            case NO_MATCH:
+              //SetTextColor(hDC, blue);
+              SetBkColor(hDC, rgbBlue);
+              hBrush = (INT_PTR)hBrushBlue;
+              break;
+            case INVALID:
+            default:
+              //SetTextColor(hDC, red);
+              SetBkColor(hDC, rgbRed);
+              hBrush = (INT_PTR)hBrushRed;
+              break;
+            }
+            return hBrush;
           }
-          EndWaitCursor();
-          return hBrush;
         }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);

@@ -88,7 +88,7 @@ BOOL   Style_StrGetSize(LPCWSTR,int*);
 BOOL   Style_StrGetSizeStr(LPCWSTR,LPWSTR,int);
 BOOL   Style_StrGetColor(BOOL,LPCWSTR,int*);
 BOOL   Style_StrGetCase(LPCWSTR,int*);
-BOOL   Style_StrGetAlpha(LPCWSTR,int*);
+BOOL   Style_StrGetAlpha(LPCWSTR,int*,BOOL);
 BOOL   Style_SelectFont(HWND,LPWSTR,int,BOOL);
 BOOL   Style_SelectColor(HWND,BOOL,LPWSTR,int);
 void   Style_SetStyles(HWND,int,LPCWSTR);
