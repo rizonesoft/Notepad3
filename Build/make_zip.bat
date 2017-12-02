@@ -85,9 +85,10 @@ IF EXIST "%TEMP_NAME%"     RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 IF NOT EXIST "packages"    MD "packages"
 
-FOR %%A IN ("..\License.txt" "..\%1\Notepad3.exe"^
+FOR %%A IN ("..\%1\Notepad3.exe"^
  "..\distrib\Notepad3.ini" "..\distrib\Readme.txt"^
- "..\%1\minipath.exe" "..\%1\np3encrypt.exe"
+ "..\distrib\Changes.txt" "..\distrib\License.txt"^
+ "..\%1\minipath.exe" "..\%1\np3encrypt.exe" "
 ) DO COPY /Y /V "%%A" "%TEMP_NAME%\"
 
 SET "FAVORITES=%TEMP_NAME%\Favorites"
@@ -96,7 +97,7 @@ IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 
 PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mx=9^
- "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe"^
+ "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Changes.txt"^
  "Notepad3.ini" "Readme.txt" "Favorites" "minipath.exe" "np3encrypt.exe">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 

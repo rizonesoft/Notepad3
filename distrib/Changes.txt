@@ -3,6 +3,23 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 3.17.1202.715 (2 December 2017)
+--------------------------------------------------
+- #191 Revert to Scintilla's old (default) font rendering technology. Modern DirectWrite available at [Settings2] SciDirectWriteTech=1
+- Fix: Removed unused mouse wheel message interception.
+- Fix: Disabling buffered draw. (Scintilla: "Current platforms perform window buffering so it is almost always better for this option to be turned off.")
+- Fix: Font Smoothing: [Settings2] SciFontQuality=n has no effect on some special fonts (preserving old behavior if not defined).
+- Workaround: #192 Drag n' drop from 32-bit process on Notepad3 x64 window
+- Renaming of drag n' drop methods.
+- Fix: Adapt text for messagebox: no valid drop-file.
+- Fix: issue regarding Accelerator keys for find/replace dialog.
+- Feature: Additionally show full path to current directory in windows title.
+- Fix: Minipath full path display in titlebar (no dbl-slash in case of drive letter only).
+- Fix: Mark occurrences: Outline frame of indicator box shouls have same aplpha channel color (configurable alpha2:nnn).
+- Change request: move "Mark Occurrences" check box from menu to find/replace dialog options.
+- Fix: Find/replace dialog: mark occurrences: use standard save/restore settings behavior.
+
+--------------------------------------------------
 Version 3.17.1124.690 (24 November 2017)
 --------------------------------------------------
 - Fix: Revert to Scintilla's default mouse down and mouse wheel capture mode.
