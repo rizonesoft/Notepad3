@@ -276,7 +276,7 @@ UINT      msgTaskbarCreated = 0;
 
 HMODULE   hModUxTheme = NULL;
 
-EDITFINDREPLACE efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, NULL };
+EDITFINDREPLACE efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, NULL };
 UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
 
@@ -4779,7 +4779,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         struct tm sst;
 
         UINT cp;
-        EDITFINDREPLACE efrTS = { "", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, 0, NULL };
+        EDITFINDREPLACE efrTS = { "", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, 0, 0, NULL };
         efrTS.hwnd = hwndEdit;
 
         IniGetString(L"Settings2",L"TimeStamp",L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $",wchFind,COUNTOF(wchFind));
@@ -5717,6 +5717,8 @@ void LoadSettings()
 
   efrData.bWildcardSearch = IniSectionGetBool(pIniSection,L"WildcardSearch",FALSE);
 
+  efrData.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", FALSE);
+
   efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
   if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"", tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
@@ -6053,57 +6055,58 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
   //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
-  IniSectionSetInt(pIniSection, L"SaveSettings", bSaveSettings);
-  IniSectionSetInt(pIniSection, L"SaveRecentFiles", bSaveRecentFiles);
-  IniSectionSetInt(pIniSection, L"PreserveCaretPos", bPreserveCaretPos);
-  IniSectionSetInt(pIniSection, L"SaveFindReplace", bSaveFindReplace);
-  IniSectionSetInt(pIniSection, L"CloseFind", efrData.bFindClose);
-  IniSectionSetInt(pIniSection, L"CloseReplace", efrData.bReplaceClose);
-  IniSectionSetInt(pIniSection, L"NoFindWrap", efrData.bNoFindWrap);
-  IniSectionSetInt(pIniSection, L"FindTransformBS", efrData.bTransformBS);
-  IniSectionSetInt(pIniSection, L"WildcardSearch", efrData.bWildcardSearch);
+  IniSectionSetBool(pIniSection, L"SaveSettings", bSaveSettings);
+  IniSectionSetBool(pIniSection, L"SaveRecentFiles", bSaveRecentFiles);
+  IniSectionSetBool(pIniSection, L"PreserveCaretPos", bPreserveCaretPos);
+  IniSectionSetBool(pIniSection, L"SaveFindReplace", bSaveFindReplace);
+  IniSectionSetBool(pIniSection, L"CloseFind", efrData.bFindClose);
+  IniSectionSetBool(pIniSection, L"CloseReplace", efrData.bReplaceClose);
+  IniSectionSetBool(pIniSection, L"NoFindWrap", efrData.bNoFindWrap);
+  IniSectionSetBool(pIniSection, L"FindTransformBS", efrData.bTransformBS);
+  IniSectionSetBool(pIniSection, L"WildcardSearch", efrData.bWildcardSearch);
+  IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", efrData.bMarkOccurences);
   IniSectionSetInt(pIniSection, L"efrData_fuFlags", efrData.fuFlags);
   PathRelativeToApp(tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
   IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
   PathRelativeToApp(tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
   IniSectionSetString(pIniSection, L"Favorites", wchTmp);
   IniSectionSetInt(pIniSection, L"PathNameFormat", iPathNameFormat);
-  IniSectionSetInt(pIniSection, L"WordWrap", bWordWrapG);
+  IniSectionSetBool(pIniSection, L"WordWrap", bWordWrapG);
   IniSectionSetInt(pIniSection, L"WordWrapMode", iWordWrapMode);
   IniSectionSetInt(pIniSection, L"WordWrapIndent", iWordWrapIndent);
   IniSectionSetInt(pIniSection, L"WordWrapSymbols", iWordWrapSymbols);
-  IniSectionSetInt(pIniSection, L"ShowWordWrapSymbols", bShowWordWrapSymbols);
-  IniSectionSetInt(pIniSection, L"MatchBraces", bMatchBraces);
-  IniSectionSetInt(pIniSection, L"AutoCloseTags", bAutoCloseTags);
-  IniSectionSetInt(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
-  IniSectionSetInt(pIniSection, L"AutoIndent", bAutoIndent);
-  IniSectionSetInt(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
-  IniSectionSetInt(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
-  IniSectionSetInt(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
-  IniSectionSetInt(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
-  IniSectionSetInt(pIniSection, L"TabIndents", bTabIndentsG);
-  IniSectionSetInt(pIniSection, L"BackspaceUnindents", bBackspaceUnindents);
+  IniSectionSetBool(pIniSection, L"ShowWordWrapSymbols", bShowWordWrapSymbols);
+  IniSectionSetBool(pIniSection, L"MatchBraces", bMatchBraces);
+  IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
+  IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
+  IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
+  IniSectionSetBool(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
+  IniSectionSetBool(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
+  IniSectionSetBool(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
+  IniSectionSetBool(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
+  IniSectionSetBool(pIniSection, L"TabIndents", bTabIndentsG);
+  IniSectionSetBool(pIniSection, L"BackspaceUnindents", bBackspaceUnindents);
   IniSectionSetInt(pIniSection, L"TabWidth", iTabWidthG);
   IniSectionSetInt(pIniSection, L"IndentWidth", iIndentWidthG);
-  IniSectionSetInt(pIniSection, L"MarkLongLines", bMarkLongLines);
+  IniSectionSetBool(pIniSection, L"MarkLongLines", bMarkLongLines);
   IniSectionSetInt(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
   IniSectionSetInt(pIniSection, L"LongLineMode", iLongLineMode);
-  IniSectionSetInt(pIniSection, L"ShowSelectionMargin", bShowSelectionMargin);
-  IniSectionSetInt(pIniSection, L"ShowLineNumbers", bShowLineNumbers);
-  IniSectionSetInt(pIniSection, L"ShowCodeFolding", bShowCodeFolding);
+  IniSectionSetBool(pIniSection, L"ShowSelectionMargin", bShowSelectionMargin);
+  IniSectionSetBool(pIniSection, L"ShowLineNumbers", bShowLineNumbers);
+  IniSectionSetBool(pIniSection, L"ShowCodeFolding", bShowCodeFolding);
   IniSectionSetInt(pIniSection, L"MarkOccurrences", iMarkOccurrences);
-  IniSectionSetInt(pIniSection, L"MarkOccurrencesMatchCase", bMarkOccurrencesMatchCase);
-  IniSectionSetInt(pIniSection, L"MarkOccurrencesMatchWholeWords", bMarkOccurrencesMatchWords);
-  IniSectionSetInt(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
-  IniSectionSetInt(pIniSection, L"ViewEOLs", bViewEOLs);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", bMarkOccurrencesMatchCase);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", bMarkOccurrencesMatchWords);
+  IniSectionSetBool(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
+  IniSectionSetBool(pIniSection, L"ViewEOLs", bViewEOLs);
   IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, iDefaultEncoding));
-  IniSectionSetInt(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
+  IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
   IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", bLoadASCIIasUTF8);
-  IniSectionSetInt(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
-  IniSectionSetInt(pIniSection, L"NoEncodingTags", bNoEncodingTags);
+  IniSectionSetBool(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
+  IniSectionSetBool(pIniSection, L"NoEncodingTags", bNoEncodingTags);
   IniSectionSetInt(pIniSection, L"DefaultEOLMode", iDefaultEOLMode);
-  IniSectionSetInt(pIniSection, L"FixLineEndings", bFixLineEndings);
-  IniSectionSetInt(pIniSection, L"FixTrailingBlanks", bAutoStripBlanks);
+  IniSectionSetBool(pIniSection, L"FixLineEndings", bFixLineEndings);
+  IniSectionSetBool(pIniSection, L"FixTrailingBlanks", bAutoStripBlanks);
   IniSectionSetInt(pIniSection, L"PrintHeader", iPrintHeader);
   IniSectionSetInt(pIniSection, L"PrintFooter", iPrintFooter);
   IniSectionSetInt(pIniSection, L"PrintColorMode", iPrintColor);
@@ -6112,17 +6115,17 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"PrintMarginTop", pagesetupMargin.top);
   IniSectionSetInt(pIniSection, L"PrintMarginRight", pagesetupMargin.right);
   IniSectionSetInt(pIniSection, L"PrintMarginBottom", pagesetupMargin.bottom);
-  IniSectionSetInt(pIniSection, L"SaveBeforeRunningTools", bSaveBeforeRunningTools);
+  IniSectionSetBool(pIniSection, L"SaveBeforeRunningTools", bSaveBeforeRunningTools);
   IniSectionSetInt(pIniSection, L"FileWatchingMode", iFileWatchingMode);
-  IniSectionSetInt(pIniSection, L"ResetFileWatching", bResetFileWatching);
+  IniSectionSetBool(pIniSection, L"ResetFileWatching", bResetFileWatching);
   IniSectionSetInt(pIniSection, L"EscFunction", iEscFunction);
-  IniSectionSetInt(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
-  IniSectionSetInt(pIniSection, L"MinimizeToTray", bMinimizeToTray);
-  IniSectionSetInt(pIniSection, L"TransparentMode", bTransparentMode);
+  IniSectionSetBool(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
+  IniSectionSetBool(pIniSection, L"MinimizeToTray", bMinimizeToTray);
+  IniSectionSetBool(pIniSection, L"TransparentMode", bTransparentMode);
   Toolbar_GetButtons(hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
   IniSectionSetString(pIniSection, L"ToolbarButtons", tchToolbarButtons);
-  IniSectionSetInt(pIniSection, L"ShowToolbar", bShowToolbar);
-  IniSectionSetInt(pIniSection, L"ShowStatusbar", bShowStatusbar);
+  IniSectionSetBool(pIniSection, L"ShowToolbar", bShowToolbar);
+  IniSectionSetBool(pIniSection, L"ShowStatusbar", bShowStatusbar);
   IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
   IniSectionSetInt(pIniSection, L"EncodingDlgSizeY", cyEncodingDlg);
   IniSectionSetInt(pIniSection, L"RecodeDlgSizeX", cxRecodeDlg);
