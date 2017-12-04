@@ -2559,7 +2559,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             PathCchAppend(tchExeFile,COUNTOF(tchExeFile),L"minipath.exe");
           }
         }
-
         else {
           ExtractFirstArgument(tchTemp,tchExeFile,tchParam,MAX_PATH+4);
           if (PathIsRelative(tchExeFile)) {
@@ -5931,11 +5930,11 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech", SC_TECHNOLOGY_DEFAULT);
+  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech", DirectWriteTechnology[0]);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", SC_EFF_QUALITY_DEFAULT);
-  iSciFontQuality = max(min(iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_EFF_QUALITY_DEFAULT);
+  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", FontQuality[3]);
+  iSciFontQuality = max(min(iSciFontQuality, 3), 0);
 
   iMarkOccurrencesCount = -1;
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
@@ -5987,12 +5986,12 @@ void LoadSettings()
 
   // ---  override by resolution specific settings  ---
 
-  WCHAR tchSciDirectWriteTech[32];
+  WCHAR tchSciDirectWriteTech[64];
   StringCchPrintf(tchSciDirectWriteTech,COUNTOF(tchSciDirectWriteTech),L"%ix%i SciDirectWriteTech",ResX,ResY);
   iSciDirectWriteTech = IniSectionGetInt(pIniSection,tchSciDirectWriteTech,iSciDirectWriteTech);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
-  WCHAR tchSciFontQuality[32];
+  WCHAR tchSciFontQuality[64];
   StringCchPrintf(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
   iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,iSciFontQuality);
   iSciFontQuality = max(min(iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_TECHNOLOGY_DEFAULT);
