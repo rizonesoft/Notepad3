@@ -2748,6 +2748,35 @@ EDITLEXER lexGo = { SCLEX_D, 63023, L"Go Source Code", L"go", L"", &KeyWords_Go,
 
 
 
+KEYWORDLIST KeyWords_Awk = {
+  // Keywords
+  "break case continue default do else exit function for if in next return switch while "
+  "@include delete nextfile print printf BEGIN BEGINFILE END "
+  "atan2 cos exp int log rand sin sqrt srand asort asorti gensub gsub index "
+  "length match patsplit split sprintf strtonum sub substr tolower toupper close "
+  "fflush system mktime strftime systime and compl lshift rshift xor "
+  "isarray bindtextdomain dcgettext dcngettext",
+
+  // Highlighted identifiers (Keywords 2nd)
+  "ARGC ARGIND ARGV FILENAME FNR FS NF NR OFMT OFS ORS RLENGTH RS RSTART SUBSEP TEXTDOMAIN "
+  "BINMODE CONVFMT FIELDWIDTHS FPAT IGNORECASE LINT TEXTDOMAiN ENVIRON ERRNO PROCINFO RT",
+
+  ""
+};
+
+
+EDITLEXER lexAwk = { SCLEX_PYTHON,  63024, L"Awk Script", L"awk", L"", &KeyWords_Awk,{
+  { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+  //{ SCE_P_DEFAULT, L"Default", L"", L"" },
+  { SCE_P_WORD, 63128, L"Keyword", L"bold; fore:#0000A0", L"" },
+  { SCE_P_WORD2, 63260, L"Keyword 2nd", L"bold; italic; fore:#6666FF", L"" },
+  { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+  { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#808080", L"" },
+  { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,SCE_P_CHARACTER,0), 63131, L"String", L"fore:#008000", L"" },
+  { SCE_P_NUMBER, 63130, L"Number", L"fore:#C04000", L"" },
+  { SCE_P_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+  { -1, 00000, L"", L"", L"" } } };
+
 
 // This array holds all the lexers...
 // Don't forget to change the number of the lexer for HTML and XML
@@ -2760,6 +2789,7 @@ PEDITLEXER pLexArray[NUMLEXERS] =
   &lexASM,
   &lexAU3,
   &lexAVS,
+  &lexAwk,
   &lexBASH,
   &lexBAT,
   &lexCOFFEESCRIPT,
