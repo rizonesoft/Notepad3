@@ -1467,7 +1467,10 @@ void EditURLEncode(HWND hwnd)
       }
 
       cchEscapedW = (int)LocalSize(pszEscapedW) / sizeof(WCHAR);
-      UrlEscape(pszTextW,pszEscapedW,&cchEscapedW,URL_ESCAPE_SEGMENT_ONLY);
+      if (IsWin7())
+        UrlEscape(pszTextW, pszEscapedW, &cchEscapedW, URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_AS_UTF8);
+      else
+        UrlEscape(pszTextW, pszEscapedW, &cchEscapedW, URL_ESCAPE_SEGMENT_ONLY);
 
       cchEscaped = WideCharToMultiByte(cpEdit,0,pszEscapedW,cchEscapedW,pszEscaped,(int)LocalSize(pszEscaped),NULL,NULL);
 
@@ -1551,7 +1554,12 @@ void EditURLDecode(HWND hwnd)
       }
 
       cchUnescapedW = (int)LocalSize(pszUnescapedW) / sizeof(WCHAR);
-      UrlUnescape(pszTextW,pszUnescapedW,&cchUnescapedW,0);
+      if (IsWin7())
+        UrlUnescapeEx(pszTextW, pszUnescapedW, &cchUnescapedW);
+      //else if (IsWin8())
+      //  UrlUnescape(pszTextW, pszUnescapedW, &cchUnescapedW, URL_UNESCAPE_AS_UTF8);
+      else
+        UrlUnescape(pszTextW, pszUnescapedW, &cchUnescapedW, 0);
 
       cchUnescaped = WideCharToMultiByte(cpEdit,0,pszUnescapedW,cchUnescapedW,pszUnescaped,(int)LocalSize(pszUnescaped),NULL,NULL);
 

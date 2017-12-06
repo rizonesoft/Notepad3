@@ -3580,6 +3580,61 @@ INT UTF8_mbslen(LPCSTR source,INT byte_length)
   return wchar_length;
 }
 
+
+//=============================================================================
+//
+//  UrlUnescapeEx()
+//
+void UrlUnescapeEx(LPCWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
+{
+  CHAR* outBuffer;
+  int posOut = 0;
+
+  outBuffer = LocalAlloc(LPTR, *pcchUnescaped + 1);
+  if (outBuffer == NULL) {
+    return;
+  }
+  int outLen = (int)LocalSize(outBuffer) - 1;
+
+  int lastEsc = lstrlen(lpURL) - 2;
+
+  int posIn = 0;
+  WCHAR buf[3] = { L'\0', L'\0', L'\0' };
+
+  while ((posIn < lastEsc) && (posOut < outLen))
+  {
+    if (lpURL[posIn] == L'%') {
+      buf[0] = lpURL[posIn + 1];
+      buf[1] = lpURL[posIn + 2];
+      int octalCode;
+      if (swscanf_s(buf, L"%x", &octalCode) == 1) {
+        outBuffer[posOut++] = (CHAR)octalCode;
+        posIn += 3;
+      }
+      else {
+        outBuffer[posOut++] = (CHAR)lpURL[posIn++];
+      }
+    }
+    else {
+      outBuffer[posOut++] = (CHAR)lpURL[posIn++];
+    }
+  }
+
+  // copy rest
+  while ((lpURL[posIn] != L'\0') && (posOut < outLen))
+  {
+    outBuffer[posOut++] = (CHAR)lpURL[posIn++];
+  }
+  outBuffer[posOut] = '\0';
+
+  int iOut = MultiByteToWideChar(CP_UTF8, 0, outBuffer, -1, lpUnescaped, (int)*pcchUnescaped);
+  LocalFree(outBuffer);
+
+  *pcchUnescaped = ((iOut > 0) ? (iOut - 1) : 0);
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 //   Drag N Drop helpers

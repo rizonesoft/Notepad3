@@ -106,6 +106,7 @@ enum BufferSizes {
   MIDSZ_BUFFER =  256,
   LARGE_BUFFER =  512,
   HUGE_BUFFER  = 1024,
+  XHUGE_BUFFER = 2048,
   FILE_ARG_BUF = MAX_PATH+4
 };
 
@@ -424,6 +425,9 @@ BOOL IsUTF7(const char*,int);
 
 INT UTF8_mbslen_bytes(LPCSTR utf8_string);
 INT UTF8_mbslen(LPCSTR source,INT byte_length);
+
+
+void UrlUnescapeEx(LPCWSTR, LPWSTR, DWORD*);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
