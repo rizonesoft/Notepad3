@@ -3581,6 +3581,17 @@ INT UTF8_mbslen(LPCSTR source,INT byte_length)
 }
 
 
+
+/**
+* Is the character an octal digit?
+*/
+static BOOL IsDigit(WCHAR wch)
+{
+  return ((wch >= L'0') && (wch <= L'9'));
+}
+
+
+
 //=============================================================================
 //
 //  UrlUnescapeEx()
@@ -3598,24 +3609,38 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   int outLen = (int)LocalSize(outBuffer) - 1;
 
   int posIn = 0;
-  WCHAR buf[3] = { L'\0', L'\0', L'\0' };
+  WCHAR buf[5] = { L'\0' };
   int lastEsc = lstrlen(lpURL) - 2;
+  int code;
 
   while ((posIn < lastEsc) && (posOut < outLen))
   {
+    BOOL bOk = FALSE;
     if (lpURL[posIn] == L'%') {
       buf[0] = lpURL[posIn + 1];
       buf[1] = lpURL[posIn + 2];
-      int octalCode;
-      if (swscanf_s(buf, L"%x", &octalCode) == 1) {
-        outBuffer[posOut++] = (char)octalCode;
+      buf[2] = L'\0';
+      if (swscanf_s(buf, L"%x", &code) == 1) {
+        outBuffer[posOut++] = (char)code;
         posIn += 3;
+        bOk = TRUE;
       }
-      else {
-        posOut += WideCharToMultiByte(CP_UTF8, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
+      else if (lpURL[posIn + 1] == L'#') {
+        int n = 0;
+        while (IsDigit(lpURL[posIn + 2 + n]) && (n < 4)) {
+          buf[n] = lpURL[posIn + 2 + n];
+          ++n;
+        }
+        buf[n] = L'\0';
+        if (swscanf_s(buf, L"%i", &code) == 1) {
+          outBuffer[posOut++] = (char)code;
+          posIn += (2 + n);
+          if (lpURL[posIn] == L';') ++posIn;
+          bOk = TRUE;
+        }
       }
     }
-    else {
+    if (!bOk) {
       posOut += WideCharToMultiByte(CP_UTF8, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
     }
   }
