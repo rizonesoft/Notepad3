@@ -3589,7 +3589,6 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 {
 #if defined(URL_UNESCAPE_AS_UTF8)
   UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
-  return;
 #else
   int posOut = 0;
   char* outBuffer = LocalAlloc(LPTR, *pcchUnescaped + 1);
@@ -3613,18 +3612,18 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
         posIn += 3;
       }
       else {
-        outBuffer[posOut++] = (char)lpURL[posIn++];
+        posOut += WideCharToMultiByte(CP_UTF8, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
       }
     }
     else {
-      outBuffer[posOut++] = (char)lpURL[posIn++];
+      posOut += WideCharToMultiByte(CP_UTF8, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
     }
   }
 
   // copy rest
   while ((lpURL[posIn] != L'\0') && (posOut < outLen))
   {
-    outBuffer[posOut++] = (char)lpURL[posIn++];
+    posOut += WideCharToMultiByte(CP_UTF8, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
   }
   outBuffer[posOut] = '\0';
 
