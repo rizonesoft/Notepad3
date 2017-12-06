@@ -3587,6 +3587,10 @@ INT UTF8_mbslen(LPCSTR source,INT byte_length)
 //
 void UrlUnescapeEx(LPCWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 {
+#if defined(URL_UNESCAPE_AS_UTF8)
+  UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
+  return;
+#else
   CHAR* outBuffer;
   int posOut = 0;
 
@@ -3631,6 +3635,7 @@ void UrlUnescapeEx(LPCWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   LocalFree(outBuffer);
 
   *pcchUnescaped = ((iOut > 0) ? (iOut - 1) : 0);
+#endif
 }
 
 
