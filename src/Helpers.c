@@ -3585,25 +3585,22 @@ INT UTF8_mbslen(LPCSTR source,INT byte_length)
 //
 //  UrlUnescapeEx()
 //
-void UrlUnescapeEx(LPCWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
+void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 {
 #if defined(URL_UNESCAPE_AS_UTF8)
   UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
   return;
 #else
-  CHAR* outBuffer;
   int posOut = 0;
-
-  outBuffer = LocalAlloc(LPTR, *pcchUnescaped + 1);
+  char* outBuffer = LocalAlloc(LPTR, *pcchUnescaped + 1);
   if (outBuffer == NULL) {
     return;
   }
   int outLen = (int)LocalSize(outBuffer) - 1;
 
-  int lastEsc = lstrlen(lpURL) - 2;
-
   int posIn = 0;
   WCHAR buf[3] = { L'\0', L'\0', L'\0' };
+  int lastEsc = lstrlen(lpURL) - 2;
 
   while ((posIn < lastEsc) && (posOut < outLen))
   {
@@ -3612,22 +3609,22 @@ void UrlUnescapeEx(LPCWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
       buf[1] = lpURL[posIn + 2];
       int octalCode;
       if (swscanf_s(buf, L"%x", &octalCode) == 1) {
-        outBuffer[posOut++] = (CHAR)octalCode;
+        outBuffer[posOut++] = (char)octalCode;
         posIn += 3;
       }
       else {
-        outBuffer[posOut++] = (CHAR)lpURL[posIn++];
+        outBuffer[posOut++] = (char)lpURL[posIn++];
       }
     }
     else {
-      outBuffer[posOut++] = (CHAR)lpURL[posIn++];
+      outBuffer[posOut++] = (char)lpURL[posIn++];
     }
   }
 
   // copy rest
   while ((lpURL[posIn] != L'\0') && (posOut < outLen))
   {
-    outBuffer[posOut++] = (CHAR)lpURL[posIn++];
+    outBuffer[posOut++] = (char)lpURL[posIn++];
   }
   outBuffer[posOut] = '\0';
 

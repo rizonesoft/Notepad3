@@ -427,7 +427,7 @@ INT UTF8_mbslen_bytes(LPCSTR utf8_string);
 INT UTF8_mbslen(LPCSTR source,INT byte_length);
 
 
-void UrlUnescapeEx(LPCWSTR, LPWSTR, DWORD*);
+void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
