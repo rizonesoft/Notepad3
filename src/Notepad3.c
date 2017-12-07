@@ -4008,6 +4008,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SelectLexerDlg(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4015,6 +4016,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_ToggleUse2ndDefault(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4022,6 +4024,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_ConfigDlg(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4029,6 +4032,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetDefaultFont(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4281,7 +4285,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_HILITECURRENTLINE:
       bHiliteCurrentLine = (bHiliteCurrentLine) ? FALSE : TRUE;
-      Style_SetCurrentLineBackground(hwndEdit);
+      Style_SetCurrentLineBackground(hwndEdit, bHiliteCurrentLine);
       break;
 
 
@@ -5360,11 +5364,11 @@ void OpenHotSpotURL(tPos position)
   // get right most position of style
   pos = position;
   iNewStyle = iStyle;
-  tPos posTextLength = (tPos)SendMessage(hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+  tPos posTextLength = (tPos)SciCall_GetTextLength();
   while ((iNewStyle == iStyle) && (++pos < posTextLength)) {
     iNewStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, pos, 0);
   }
-  tPos lastPos = (pos - 1);
+  tPos lastPos = pos;
 
   tPos length = lastPos - firstPos;
 
@@ -5450,7 +5454,16 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             UpdateToolbar();
             UpdateStatusbar();
           }
-          break;
+          break; // fall-through -> too slow
+        
+        case SCN_STYLENEEDED:  // needs SCI_SETLEXER(SCLEX_CONTAINER)
+        {
+          int startPos = SciCall_GetEndStyled();
+          int lineNumber = SciCall_LineFromPosition(startPos);
+          startPos = SciCall_PositionFromLine(lineNumber);
+          EditUpdateUrlHotspots(hwndEdit, startPos, (int)scn->position);
+        }
+        break;
 
         case SCN_CHARADDED:
           // Auto indent
@@ -5602,7 +5615,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
           }
           if (scn->linesAdded != 0) {
-            EditUpdateUrlHotspots(hwndEdit, -1, -1);
             UpdateLineNumberWidth();
           }
           bModified = TRUE;
@@ -5615,6 +5627,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
           UpdateToolbar();
+          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
           break;
 
         case SCN_MARGINCLICK:
@@ -7406,6 +7419,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
+    EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
     // Terminate file watching
     if (bResetFileWatching)
@@ -7535,7 +7549,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     InstallFileWatching(szCurFile);
 
     // the .LOG feature ...
-    if (SendMessage(hwndEdit,SCI_GETTEXTLENGTH,0,0) >= 4) {
+    if (SciCall_GetTextLength() >= 4) {
       char tchLog[5] = { '\0' };
       SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
@@ -7564,8 +7578,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
-
-    EditUpdateUrlHotspots(hwndEdit, 0, (tPos)SendMessage(hwndEdit, SCI_GETTEXTLENGTH, 0, 0) - 1);
+    EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
     // consistent settings file handling (if loaded in editor)
     bEnableSaveSettings = (StringCchCompareINW(szCurFile, COUNTOF(szCurFile), szIniFile, COUNTOF(szIniFile)) == 0) ? FALSE : TRUE;
@@ -7733,6 +7746,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
           Style_SetLexerFromFile(hwndEdit,szCurFile);
           UpdateStatusbar();
           UpdateLineNumberWidth();
+          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
         }
         else {
           StringCchCopy(tchLastSaveCopyDir,COUNTOF(tchLastSaveCopyDir),tchFile);

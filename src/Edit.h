@@ -56,8 +56,6 @@ typedef struct _editfindreplace
 #define INDIC_NP3_MATCH_BRACE    2
 #define INDIC_NP3_BAD_BRACE      3
 
-#define STYLE_NP3_ID_HOTSPOT     222
-
 
 HWND  EditCreate(HWND);
 void  EditInitWordDelimiter(HWND);
@@ -127,7 +125,7 @@ void  EditPrintInit();
 void  EditMatchBrace(HWND);
 void  EditClearAllMarks(HWND);
 void  EditMarkAll(HWND,char*,int,BOOL,BOOL);
-void  EditUpdateUrlHotspots(HWND, tPos, tPos);
+void  EditUpdateUrlHotspots(HWND, int, int);
 void  EditSetAccelWordNav(HWND,BOOL);
 void  EditCompleteWord(HWND,BOOL);
 void  EditGetBookmarkList(HWND,LPWSTR,int);
