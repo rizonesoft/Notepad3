@@ -3559,6 +3559,17 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     }
   }
 
+  // Hot Spot settings
+  SendMessage(hwnd, SCI_STYLESETFORE, STYLE_NP3_ID_HOTSPOT, (LPARAM)RGB(0, 0, 200));
+  SendMessage(hwnd, SCI_STYLESETITALIC, STYLE_NP3_ID_HOTSPOT, (LPARAM)TRUE);
+  //SendMessage(hwnd, SCI_STYLESETUNDERLINE, iHotSpotStyle, (LPARAM)TRUE);
+
+  SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_NP3_ID_HOTSPOT, (LPARAM)TRUE);
+  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, TRUE, (LPARAM)RGB(0, 0, 255));
+  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, TRUE, 0);
+  SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
+  
+
   SendMessage(hwnd,SCI_COLOURISE,0,(LPARAM)-1);
 
   // Save current lexer

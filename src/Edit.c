@@ -189,7 +189,6 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
   SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
 
-
   // word delimiter handling
   EditInitWordDelimiter(hwnd);
   EditSetAccelWordNav(hwnd,bAccelWordNavigation);
@@ -5790,6 +5789,57 @@ void EditCompleteWord(HWND hwnd, BOOL autoInsert) {
   }
 
   LocalFree(pRoot);
+}
+
+
+
+//=============================================================================
+//
+//  EditUpdateUrlHotspots()
+//  Find and mark all URL hot-spots
+//
+void EditUpdateUrlHotspots(HWND hwnd, tPos startPos, tPos endPos)
+{
+  const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
+                            "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
+                            "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
+  
+  const int iRegExLen = (int)strlen(pszUrlRegEx);
+
+  tPos posCurr = (tPos)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
+  tPos posTextLength = (tPos)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
+
+  if ((startPos < 0) || (startPos >= posTextLength))
+  {
+    tPos cln = (tPos)SendMessage(hwnd, SCI_LINEFROMPOSITION, posCurr, 0);
+    startPos = (tPos)SendMessage(hwnd, SCI_POSITIONFROMLINE, cln-1, 0);
+  }
+  if ((endPos < 0) || (endPos >= posTextLength)) {
+    tPos cln = (tPos)SendMessage(hwnd, SCI_LINEFROMPOSITION, posCurr, 0);
+    endPos = (tPos)SendMessage(hwnd, SCI_GETLINEENDPOSITION, cln+1, 0);
+  }
+
+  int start = (int)startPos;
+  int end = (int)endPos;
+  int flags = SCFIND_NP3_REGEX;
+
+  while (TRUE) 
+  {
+    int iPos = EditFindInTarget(hwnd, pszUrlRegEx, iRegExLen, flags, &start, &end, (end == start));
+
+    if (iPos < 0)
+      break; // not found
+
+    // mark this match
+    SendMessage(hwnd, SCI_STARTSTYLING, iPos, 0);
+    SendMessage(hwnd, SCI_SETSTYLING, (end - start), STYLE_NP3_ID_HOTSPOT);
+
+    start = end;
+    end = (int)endPos;
+
+    if (start >= end)
+      break;
+  }
 }
 
 

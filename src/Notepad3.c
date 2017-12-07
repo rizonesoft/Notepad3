@@ -5342,6 +5342,74 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 //=============================================================================
 //
+//  OpenHotSpotURL() - Handles WM_NOTIFY
+//
+//
+void OpenHotSpotURL(tPos position)
+{
+  int iStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, position, 0);
+  int iNewStyle = iStyle;
+
+  // get left most position of style
+  tPos pos = position;
+  while ((iNewStyle == iStyle) && (--pos > 0)) {
+    iNewStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, pos, 0);
+  }
+  tPos firstPos = (pos != 0) ? (pos + 1) : 0;
+
+  // get right most position of style
+  pos = position;
+  iNewStyle = iStyle;
+  tPos posTextLength = (tPos)SendMessage(hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+  while ((iNewStyle == iStyle) && (++pos < posTextLength)) {
+    iNewStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, pos, 0);
+  }
+  tPos lastPos = (pos - 1);
+
+  tPos length = lastPos - firstPos;
+
+  if ((length > 0) && (length < HUGE_BUFFER))
+  {
+    char chURL[HUGE_BUFFER] = { '\0' };
+    struct Sci_TextRange tr = { { 0, -1 }, NULL };
+    tr.chrg.cpMin = (Sci_PositionCR)firstPos;
+    tr.chrg.cpMax = (Sci_PositionCR)lastPos;
+    tr.lpstrText = chURL;
+
+    SendMessage(hwndEdit, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+
+    StrTrimA(chURL, " \t\n\r");
+  
+    if (StringCchLenA(chURL, COUNTOF(chURL))) 
+    {
+      WCHAR wchURL[HUGE_BUFFER] = { L'\0' };
+      WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+      MultiByteToWideCharStrg(Encoding_SciGetCodePage(hwndEdit), chURL, wchURL);
+
+      if (StringCchLenW(szCurFile, COUNTOF(szCurFile))) {
+        StringCchCopy(wchDirectory, COUNTOF(wchDirectory), szCurFile);
+        PathRemoveFileSpec(wchDirectory);
+      }
+
+      SHELLEXECUTEINFO sei;
+      ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+      sei.cbSize = sizeof(SHELLEXECUTEINFO);
+      sei.fMask = SEE_MASK_NOZONECHECKS;
+      sei.hwnd = NULL;
+      sei.lpVerb = NULL;
+      sei.lpFile = wchURL;
+      sei.lpParameters = NULL;
+      sei.lpDirectory = wchDirectory;
+      sei.nShow = SW_SHOWNORMAL;
+      ShellExecuteEx(&sei);
+    }
+  }
+}
+
+
+
+//=============================================================================
+//
 //  MsgNotify() - Handles WM_NOTIFY
 //
 //
@@ -5357,6 +5425,14 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
       switch(pnmh->code)
       {
+        case SCN_HOTSPOTCLICK:
+          {
+            if (scn->modifiers & SCMOD_CTRL) {
+              OpenHotSpotURL(scn->position);
+            }
+          }
+          break;
+
         case SCN_UPDATEUI:
           if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) 
           {
@@ -5513,6 +5589,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           else if (bAutoCompleteWords && !SendMessage(hwndEdit, SCI_AUTOCACTIVE, 0, 0))
             EditCompleteWord(hwndEdit, FALSE);
+
           break;
 
         case SCN_MODIFIED:
@@ -5525,6 +5602,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
           }
           if (scn->linesAdded != 0) {
+            EditUpdateUrlHotspots(hwndEdit, -1, -1);
             UpdateLineNumberWidth();
           }
           bModified = TRUE;
@@ -7457,7 +7535,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     InstallFileWatching(szCurFile);
 
     // the .LOG feature ...
-    if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
+    if (SendMessage(hwndEdit,SCI_GETTEXTLENGTH,0,0) >= 4) {
       char tchLog[5] = { '\0' };
       SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
@@ -7486,6 +7564,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
+
+    EditUpdateUrlHotspots(hwndEdit, 0, (tPos)SendMessage(hwndEdit, SCI_GETTEXTLENGTH, 0, 0) - 1);
 
     // consistent settings file handling (if loaded in editor)
     bEnableSaveSettings = (StringCchCompareINW(szCurFile, COUNTOF(szCurFile), szIniFile, COUNTOF(szIniFile)) == 0) ? FALSE : TRUE;
