@@ -131,6 +131,7 @@ BOOL      bAutoIndent;
 BOOL      bAutoCloseTags;
 BOOL      bShowIndentGuides;
 BOOL      bHiliteCurrentLine;
+BOOL      bHyperlinkHotspot;
 BOOL      bTabsAsSpaces;
 BOOL      bTabsAsSpacesG;
 BOOL      bTabIndents;
@@ -2388,7 +2389,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   i = (int)SendMessage(hwndEdit,SCI_GETLEXER,0,0);
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
   CheckCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,bAutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
-  CheckCmd(hmenu,IDM_VIEW_HILITECURRENTLINE,bHiliteCurrentLine);
+  CheckCmd(hmenu, IDM_VIEW_HILITECURRENTLINE, bHiliteCurrentLine);
+  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
 
   i = IniGetInt(L"Settings2",L"ReuseWindow",0);
   CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
@@ -2440,6 +2442,10 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) > 0 || StringCchLenW(szIniFile2,COUNTOF(szIniFile2)) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,bEnableSaveSettings && i);
+
+  BOOL bIsHLink = ((int)SendMessage(hwndEdit, SCI_GETSTYLEAT, 
+                                    SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0), 0) == Style_GetHotspotID(hwndEdit));
+  EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
   UNUSED(lParam);
 }
@@ -4288,6 +4294,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetCurrentLineBackground(hwndEdit, bHiliteCurrentLine);
       break;
 
+    case IDM_VIEW_HYPERLINKHOTSPOTS:
+      bHyperlinkHotspot = (bHyperlinkHotspot) ? FALSE : TRUE;
+      Style_SetUrlHotSpot(hwndEdit, bHyperlinkHotspot);
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
+      if (!bHyperlinkHotspot)
+        SendMessage(hwndEdit, SCI_COLOURISE, 0, (LPARAM)-1);
+      break;
 
     case IDM_VIEW_ZOOMIN:
       SendMessage(hwndEdit,SCI_ZOOMIN,0,0);
@@ -5138,6 +5151,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
+    case CMD_OPEN_HYPERLINK:
+      {
+        OpenHotSpotURL((int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0));
+      }
+      break;
+
     case IDT_FILE_NEW:
       if (IsCmdEnabled(hwnd,IDM_FILE_NEW))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_NEW,1),0);
@@ -5349,28 +5368,31 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 //  OpenHotSpotURL() - Handles WM_NOTIFY
 //
 //
-void OpenHotSpotURL(tPos position)
+void OpenHotSpotURL(int position)
 {
   int iStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, position, 0);
-  int iNewStyle = iStyle;
+
+  if (Style_GetHotspotID(hwndEdit) != iStyle)
+    return; 
 
   // get left most position of style
-  tPos pos = position;
+  int pos = position;
+  int iNewStyle = iStyle;
   while ((iNewStyle == iStyle) && (--pos > 0)) {
     iNewStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, pos, 0);
   }
-  tPos firstPos = (pos != 0) ? (pos + 1) : 0;
+  int firstPos = (pos != 0) ? (pos + 1) : 0;
 
   // get right most position of style
   pos = position;
   iNewStyle = iStyle;
-  tPos posTextLength = (tPos)SciCall_GetTextLength();
+  int posTextLength = SciCall_GetTextLength();
   while ((iNewStyle == iStyle) && (++pos < posTextLength)) {
     iNewStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, pos, 0);
   }
-  tPos lastPos = pos;
+  int lastPos = pos;
 
-  tPos length = lastPos - firstPos;
+  int length = lastPos - firstPos;
 
   if ((length > 0) && (length < HUGE_BUFFER))
   {
@@ -5432,7 +5454,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_HOTSPOTCLICK:
           {
             if (scn->modifiers & SCMOD_CTRL) {
-              OpenHotSpotURL(scn->position);
+              OpenHotSpotURL((int)scn->position);
             }
           }
           break;
@@ -5456,14 +5478,14 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           break; // fall-through -> too slow
         
-        case SCN_STYLENEEDED:  // needs SCI_SETLEXER(SCLEX_CONTAINER)
-        {
-          int startPos = SciCall_GetEndStyled();
-          int lineNumber = SciCall_LineFromPosition(startPos);
-          startPos = SciCall_PositionFromLine(lineNumber);
-          EditUpdateUrlHotspots(hwndEdit, startPos, (int)scn->position);
-        }
-        break;
+        case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
+          {
+            if (bHyperlinkHotspot) {
+              int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
+              EditUpdateUrlHotspots(hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position);
+            }
+          }
+          break;
 
         case SCN_CHARADDED:
           // Auto indent
@@ -5643,6 +5665,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
           UpdateToolbar();
+          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
           break;
       }
       break;
@@ -5848,6 +5871,8 @@ void LoadSettings()
   bAutoCloseTags = IniSectionGetBool(pIniSection,L"AutoCloseTags",FALSE);
 
   bHiliteCurrentLine = IniSectionGetBool(pIniSection,L"HighlightCurrentLine",FALSE);
+
+  bHyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", TRUE);
 
   bAutoIndent = IniSectionGetBool(pIniSection,L"AutoIndent",TRUE);
 
@@ -6169,6 +6194,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"MatchBraces", bMatchBraces);
   IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
   IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
+  IniSectionSetBool(pIniSection, L"HyperlinkHotspot", bHyperlinkHotspot);
   IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
   IniSectionSetBool(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
   IniSectionSetBool(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
@@ -7419,7 +7445,6 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
-    EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
     // Terminate file watching
     if (bResetFileWatching)

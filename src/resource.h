@@ -216,6 +216,7 @@
 #define CMD_DEFAULTWINPOS               20038
 #define CMD_OPENINIFILE                 20039
 #define CMD_CTRLENTER                   20040
+#define CMD_OPEN_HYPERLINK              20041
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
 #define IDM_FILE_REVERT                 40002
@@ -385,6 +386,7 @@
 #define IDM_VIEW_AUTOCOMPLETEWORDS      40450
 #define IDM_VIEW_ACCELWORDNAV           40451
 #define IDM_VIEW_NOPRESERVECARET        40452
+#define IDM_VIEW_HYPERLINKHOTSPOTS      40453
 #define IDM_HELP_ABOUT                  40500
 #define IDM_HELP_CMD                    40501
 #define IDM_TRAY_RESTORE                40600
@@ -471,7 +473,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        600
-#define _APS_NEXT_COMMAND_VALUE         700
+#define _APS_NEXT_COMMAND_VALUE         701
 #define _APS_NEXT_CONTROL_VALUE         801
 #define _APS_NEXT_SYMED_VALUE           900
 #endif

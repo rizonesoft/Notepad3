@@ -2847,6 +2847,7 @@ int cyStyleSelectDlg;
 
 extern int  iDefaultCharSet;
 extern BOOL bHiliteCurrentLine;
+extern BOOL bHyperlinkHotspot;
 extern BOOL bShowSelectionMargin;
 
 
@@ -3170,11 +3171,16 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   fIsConsolasAvailable = IsFontAvailable(L"Consolas");
 
   // Clear
+  SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
   SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+
+  // Idle Styling (very large text)
+  //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
 
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
   SendMessage(hwnd, SCI_STYLESETCHARACTERSET, STYLE_DEFAULT, (LPARAM)DEFAULT_CHARSET);
+  
   iBaseFontSize = 10;
   Style_SetStyles(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].iStyle, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);  // default
   Style_StrGetSize(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iBaseFontSize);                        // base size
@@ -3189,7 +3195,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
     Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue); // lexer default
-  SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
 
   Style_SetStyles(hwnd, lexDefault.Styles[STY_MARGIN + iIdx].iStyle, lexDefault.Styles[STY_MARGIN + iIdx].szValue); // linenumber
 
@@ -3547,9 +3552,12 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     }
   }
 
-  Style_SetUrlHotSpot(hwnd, TRUE);
+  // set URL Hotspot style
+  Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
 
   SendMessage(hwnd,SCI_COLOURISE,0,(LPARAM)-1);
+
+  EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength());
 
   // Save current lexer
   pLexCurrent = pLexNew;
@@ -3582,11 +3590,10 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
     //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, TRUE, 0);
     //else
     //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, FALSE, 0);
-    // Fore
     SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, TRUE, 0);
 
-    int rgb;
-
+    int rgb = 0;
+    // Fore
     if (Style_StrGetColor(TRUE, lpszStyleHotSpot, &rgb)) {
       int inactiveFG = (int)((rgb * 75 + 50) / 100);
       SendMessage(hwnd, SCI_STYLESETFORE, iStyleHotSpot, (LPARAM)inactiveFG);
@@ -5630,7 +5637,10 @@ void Style_SelectLexerDlg(HWND hwnd)
 int Style_GetHotspotID(HWND hwnd)
 {
   UNUSED(hwnd);
-  return (bUse2ndDefaultStyle ? (STY_URL_HOTSPOT + STY_CNT_LAST) : STY_URL_HOTSPOT);
+  if (bHyperlinkHotspot) {
+    return (bUse2ndDefaultStyle ? (STY_URL_HOTSPOT + STY_CNT_LAST) : STY_URL_HOTSPOT);
+  }
+  return (bUse2ndDefaultStyle ? (STY_DEFAULT + STY_CNT_LAST) : STY_DEFAULT);
 }
 
 // End of Styles.c
