@@ -5882,7 +5882,7 @@ void EditMatchBrace(HWND hwnd)
     int iLine = SciCall_LineFromPosition(iEndStyled);
     iEndStyled = SciCall_PositionFromLine(iLine);
     SendMessage(hwnd, SCI_COLOURISE, iEndStyled, -1);
-    //EditUpdateUrlHotspots(hwnd, iEndStyled, SciCall_GetLineEndPosition(iLine));
+    //~EditUpdateUrlHotspots(hwnd, iEndStyled, SciCall_GetLineEndPosition(iLine));
   }
 
   int iPos = SciCall_GetCurrentPos();

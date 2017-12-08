@@ -149,7 +149,7 @@ int  BeginSelUndoAction();
 void EndSelUndoAction(int);
 void RestoreSelectionAction(int,DoAction);
 int  UndoRedoSelectionMap(int,UndoRedoSelection_t*);
-void OpenHotSpotURL(int);
+void OpenHotSpotURL(int, BOOL);
 
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL*,BOOL);
