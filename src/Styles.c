@@ -71,7 +71,7 @@ EDITLEXER lexDefault =   { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx;
                 /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63111, L"Extra Line Spacing (Size)", L"size:2", L"" },
                 /* 12 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63124, L"Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
                 /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63262, L"Mark Occurrences (Colors)", L"", L"" },
-                /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63264, L"URL Hotspot", L"italics; fore:#0000FF", L"" },
+                /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63264, L"Hyperlink Hotspots", L"italics; fore:#0000FF", L"" },
                 
                 /* 15 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
                 /* 16 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
@@ -87,7 +87,7 @@ EDITLEXER lexDefault =   { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx;
                 /* 26 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
                 /* 27 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63125, L"2nd Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
                 /* 28 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100; alpha2:100", L"" },
-                /* 29 */ { SCI_SETHOTSPOTACTIVEFORE, 63265, L"2nd URL Hotspot", L"bold; fore:#FF0000", L"" },
+                /* 29 */ { SCI_SETHOTSPOTACTIVEFORE, 63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
 
                          { -1, 00000, L"", L"", L"" } } };
 
