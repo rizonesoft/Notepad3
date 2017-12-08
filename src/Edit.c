@@ -1467,7 +1467,7 @@ void EditURLEncode(HWND hwnd)
       }
 
       cchEscapedW = (int)LocalSize(pszEscapedW) / sizeof(WCHAR);
-      UrlEscape(pszTextW, pszEscapedW, &cchEscapedW, URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_AS_UTF8);
+      UrlEscape(pszTextW, pszEscapedW, &cchEscapedW, URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_PERCENT | URL_ESCAPE_AS_UTF8);
 
       cchEscaped = WideCharToMultiByte(cpEdit,0,pszEscapedW,cchEscapedW,pszEscaped,(int)LocalSize(pszEscaped),NULL,NULL);
 
