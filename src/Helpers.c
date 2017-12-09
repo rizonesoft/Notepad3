@@ -6,8 +6,8 @@
 * Helpers.c                                                                   *
 *   General helper functions                                                  *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
-*	Parts taken from SciTE, (c) Neil Hodgson                                  *
-*	MinimizeToTray, (c) 2000 Matthew Ellis                                    *
+*	Parts taken from SciTE, (c) Neil Hodgson                                    *
+*	MinimizeToTray, (c) 2000 Matthew Ellis                                      *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2016   *
 *                                                    https://rizonesoft.com   *

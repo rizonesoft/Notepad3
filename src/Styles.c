@@ -71,24 +71,25 @@ EDITLEXER lexDefault =   { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx;
                 /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63111, L"Extra Line Spacing (Size)", L"size:2", L"" },
                 /* 12 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63124, L"Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
                 /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63262, L"Mark Occurrences (Colors)", L"", L"" },
-
-                /* 14 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
-                /* 15 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
-                /* 16 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces", L"bold; fore:#FF0000", L"" },
-                /* 17 */ { STYLE_BRACEBAD, 63115, L"2nd Matching Braces Error", L"bold; fore:#000080", L"" },
-                /* 18 */ { STYLE_CONTROLCHAR, 63116, L"2nd Control Characters (Font)", L"size:-1", L"" },
-                /* 19 */ { STYLE_INDENTGUIDE, 63117, L"2nd Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
-                /* 20 */ { SCI_SETSELFORE+SCI_SETSELBACK, 63118, L"2nd Selected Text (Colors)", L"eolfilled", L"" },
-                /* 21 */ { SCI_SETWHITESPACEFORE+SCI_SETWHITESPACEBACK+SCI_SETWHITESPACESIZE, 63119, L"2nd Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
-                /* 22 */ { SCI_SETCARETLINEBACK, 63120, L"2nd Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
-                /* 23 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, 63121, L"2nd Caret (Color, Size 1-3)", L"", L"" },
-                /* 24 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
-                /* 25 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
-                /* 26 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63125, L"2nd Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
-                /* 27 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100; alpha2:100", L"" },
+                /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63264, L"Hyperlink Hotspots", L"italics; fore:#0000FF", L"" },
+                
+                /* 15 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
+                /* 16 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
+                /* 17 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces", L"bold; fore:#FF0000", L"" },
+                /* 18 */ { STYLE_BRACEBAD, 63115, L"2nd Matching Braces Error", L"bold; fore:#000080", L"" },
+                /* 19 */ { STYLE_CONTROLCHAR, 63116, L"2nd Control Characters (Font)", L"size:-1", L"" },
+                /* 20 */ { STYLE_INDENTGUIDE, 63117, L"2nd Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
+                /* 21 */ { SCI_SETSELFORE + SCI_SETSELBACK, 63118, L"2nd Selected Text (Colors)", L"eolfilled", L"" },
+                /* 22 */ { SCI_SETWHITESPACEFORE + SCI_SETWHITESPACEBACK + SCI_SETWHITESPACESIZE, 63119, L"2nd Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
+                /* 23 */ { SCI_SETCARETLINEBACK, 63120, L"2nd Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
+                /* 24 */ { SCI_SETCARETFORE + SCI_SETCARETWIDTH, 63121, L"2nd Caret (Color, Size 1-3)", L"", L"" },
+                /* 25 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
+                /* 26 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
+                /* 27 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63125, L"2nd Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
+                /* 28 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100; alpha2:100", L"" },
+                /* 29 */ { SCI_SETHOTSPOTACTIVEFORE, 63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
 
                          { -1, 00000, L"", L"", L"" } } };
-
 
 enum LexDefaultStyles {
   STY_DEFAULT = 0,
@@ -105,8 +106,9 @@ enum LexDefaultStyles {
   STY_X_LN_SPACE = 11,
   STY_BOOK_MARK = 12,
   STY_MARK_OCC = 13,
+  STY_URL_HOTSPOT = 14,
 
-  STY_CNT_LAST = 14  // STY_2ND_XXX = STY_XXX + STY_CNT_LAST 
+  STY_CNT_LAST = 15  // STY_2ND_XXX = STY_XXX + STY_CNT_LAST 
 };
 
 
@@ -2845,6 +2847,7 @@ int cyStyleSelectDlg;
 
 extern int  iDefaultCharSet;
 extern BOOL bHiliteCurrentLine;
+extern BOOL bHyperlinkHotspot;
 extern BOOL bShowSelectionMargin;
 
 
@@ -3168,11 +3171,16 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   fIsConsolasAvailable = IsFontAvailable(L"Consolas");
 
   // Clear
+  SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
   SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+
+  // Idle Styling (very large text)
+  //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
 
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
   SendMessage(hwnd, SCI_STYLESETCHARACTERSET, STYLE_DEFAULT, (LPARAM)DEFAULT_CHARSET);
+  
   iBaseFontSize = 10;
   Style_SetStyles(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].iStyle, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);  // default
   Style_StrGetSize(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iBaseFontSize);                        // base size
@@ -3187,7 +3195,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
     Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue); // lexer default
-  SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
 
   Style_SetStyles(hwnd, lexDefault.Styles[STY_MARGIN + iIdx].iStyle, lexDefault.Styles[STY_MARGIN + iIdx].szValue); // linenumber
 
@@ -3250,11 +3257,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
 
 
+  // More default values...
+
   if (pLexNew != &lexANSI)
     Style_SetStyles(hwnd, lexDefault.Styles[STY_CTRL_CHR + iIdx].iStyle, lexDefault.Styles[STY_CTRL_CHR + iIdx].szValue); // control char
+
   Style_SetStyles(hwnd, lexDefault.Styles[STY_INDENT_GUIDE + iIdx].iStyle, lexDefault.Styles[STY_INDENT_GUIDE + iIdx].szValue); // indent guide
 
-  // More default values...
   if (Style_StrGetColor(TRUE, lexDefault.Styles[STY_SEL_TXT + iIdx].szValue, &rgb)) { // selection fore
     SendMessage(hwnd, SCI_SETSELFORE, TRUE, rgb);
     SendMessage(hwnd, SCI_SETADDITIONALSELFORE, rgb, 0);
@@ -3326,24 +3335,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
   SendMessage(hwnd, SCI_SETWHITESPACESIZE, iValue, 0);
 
-  if (bHiliteCurrentLine) {
-
-    if (Style_StrGetColor(FALSE, lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue, &rgb)) // caret line back
-    {
-      SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, TRUE, 0);
-      SendMessage(hwnd, SCI_SETCARETLINEBACK, rgb, 0);
-
-      if (Style_StrGetAlpha(lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue, &iValue, TRUE))
-        SendMessage(hwnd, SCI_SETCARETLINEBACKALPHA, iValue, 0);
-      else
-        SendMessage(hwnd, SCI_SETCARETLINEBACKALPHA, SC_ALPHA_NOALPHA, 0);
-    }
-    else
-      SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, FALSE, 0);
-  }
-  else
-    SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, FALSE, 0);
-
+  // current line background
+  Style_SetCurrentLineBackground(hwnd, bHiliteCurrentLine);
 
   // bookmark line or marker
   Style_SetCurrentMargin(hwnd, bShowSelectionMargin);
@@ -3559,10 +3552,62 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     }
   }
 
+  // set URL Hotspot style
+  Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
+
   SendMessage(hwnd,SCI_COLOURISE,0,(LPARAM)-1);
+
+  EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength());
 
   // Save current lexer
   pLexCurrent = pLexNew;
+}
+
+
+//=============================================================================
+//
+//  Style_SetUrlHotSpot()
+//
+void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
+{
+  // Use 2nd default style ?
+  int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
+
+  // Hot Spot settings
+  const int iStyleHotSpot = (STY_URL_HOTSPOT + iIdx);
+
+  if (bHotSpot)
+  {
+    const WCHAR* lpszStyleHotSpot = lexDefault.Styles[iStyleHotSpot].szValue;
+
+    SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)TRUE);
+    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
+
+    // Font
+    Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
+
+    //if (StrStrI(lpszStyleHotSpot, L"underline") != NULL)
+    //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, TRUE, 0);
+    //else
+    //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, FALSE, 0);
+    SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, TRUE, 0);
+
+    int rgb = 0;
+    // Fore
+    if (Style_StrGetColor(TRUE, lpszStyleHotSpot, &rgb)) {
+      int inactiveFG = (int)((rgb * 75 + 50) / 100);
+      SendMessage(hwnd, SCI_STYLESETFORE, iStyleHotSpot, (LPARAM)inactiveFG);
+      SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, TRUE, (LPARAM)rgb);
+    }
+    // Back
+    if (Style_StrGetColor(FALSE, lpszStyleHotSpot, &rgb)) {
+      SendMessage(hwnd, SCI_STYLESETBACK, iStyleHotSpot, (LPARAM)rgb);
+      SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, TRUE, (LPARAM)rgb);
+    }
+  }
+  else
+    SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)FALSE);
+
 }
 
 
@@ -3596,12 +3641,13 @@ void Style_SetLongLineColors(HWND hwnd)
 //
 //  Style_SetCurrentLineBackground()
 //
-void Style_SetCurrentLineBackground(HWND hwnd)
+void Style_SetCurrentLineBackground(HWND hwnd, BOOL bHiLitCurrLn)
 {
-  // Use 2nd default style
-  int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
+  if (bHiLitCurrLn) {
+    
+    // Use 2nd default style ?
+    int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
 
-  if (bHiliteCurrentLine) {
     int rgb = 0;
     if (Style_StrGetColor(FALSE,lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue,&rgb)) // caret line back
     {
@@ -5583,5 +5629,18 @@ void Style_SelectLexerDlg(HWND hwnd)
     Style_SetLexer(hwnd,pLexCurrent);
 }
 
+
+//=============================================================================
+//
+//  Style_GetHotspotID()
+//
+int Style_GetHotspotID(HWND hwnd)
+{
+  UNUSED(hwnd);
+  if (bHyperlinkHotspot) {
+    return (bUse2ndDefaultStyle ? (STY_URL_HOTSPOT + STY_CNT_LAST) : STY_URL_HOTSPOT);
+  }
+  return (bUse2ndDefaultStyle ? (STY_DEFAULT + STY_CNT_LAST) : STY_DEFAULT);
+}
 
 // End of Styles.c

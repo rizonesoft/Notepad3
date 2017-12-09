@@ -131,6 +131,7 @@ BOOL      bAutoIndent;
 BOOL      bAutoCloseTags;
 BOOL      bShowIndentGuides;
 BOOL      bHiliteCurrentLine;
+BOOL      bHyperlinkHotspot;
 BOOL      bTabsAsSpaces;
 BOOL      bTabsAsSpacesG;
 BOOL      bTabIndents;
@@ -1030,6 +1031,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
+  EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
   // print file immediately and quit
   if (flagPrintFileAndLeave)
@@ -1173,6 +1175,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       //UpdateToolbar();
       //UpdateStatusbar();
       //UpdateLineNumberWidth();
+      //EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       //if (bPendingChangeNotify)
       //  PostMessage(hwnd,WM_CHANGENOTIFY,0,0);
       break;
@@ -1749,7 +1752,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
-
+  EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
   UNUSED(lParam);
   UNUSED(wParam);
@@ -1830,6 +1833,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   UpdateStatusbar();
   UpdateLineNumberWidth();
+  EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
   UNUSED(hwnd);
   UNUSED(lParam);
@@ -2026,6 +2030,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
+    EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
   }
 
@@ -2388,7 +2393,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   i = (int)SendMessage(hwndEdit,SCI_GETLEXER,0,0);
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
   CheckCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,bAutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
-  CheckCmd(hmenu,IDM_VIEW_HILITECURRENTLINE,bHiliteCurrentLine);
+  CheckCmd(hmenu, IDM_VIEW_HILITECURRENTLINE, bHiliteCurrentLine);
+  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
 
   i = IniGetInt(L"Settings2",L"ReuseWindow",0);
   CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
@@ -2440,6 +2446,10 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) > 0 || StringCchLenW(szIniFile2,COUNTOF(szIniFile2)) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,bEnableSaveSettings && i);
+
+  BOOL bIsHLink = ((int)SendMessage(hwndEdit, SCI_GETSTYLEAT, 
+                                    SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0), 0) == Style_GetHotspotID(hwndEdit));
+  EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
   UNUSED(lParam);
 }
@@ -2523,6 +2533,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       //SendMessage(hwndEdit,SCI_SETREADONLY,bReadOnly,0);
       //UpdateToolbar();
       //UpdateStatusbar();
+      //EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
+
       if (StringCchLenW(szCurFile,COUNTOF(szCurFile)))
       {
         DWORD dwFileAttributes = GetFileAttributes(szCurFile);
@@ -2877,6 +2889,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           UpdateToolbar();
           UpdateStatusbar();
+          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
         }
       }
       break;
@@ -2920,6 +2933,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         EditFixPositions(hwndEdit);
         UpdateToolbar();
         UpdateStatusbar();
+        EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       }
       break;
 
@@ -3042,6 +3056,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         LocalFree(pClip);
         UpdateToolbar();
         UpdateStatusbar();
+        EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       }
       break;
 
@@ -4008,6 +4023,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SelectLexerDlg(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4015,6 +4031,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_ToggleUse2ndDefault(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4022,6 +4039,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_ConfigDlg(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4029,6 +4047,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetDefaultFont(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4095,6 +4114,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       else
         SendMessage(hwndEdit,SCI_SETEDGEMODE,EDGE_NONE,0);
       UpdateStatusbar();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4106,6 +4126,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         iLongLinesLimit = max(min(iLongLinesLimit,4096),0);
         SendMessage(hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
         UpdateStatusbar();
+        EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
         iLongLinesLimitG = iLongLinesLimit;
       }
       break;
@@ -4281,9 +4302,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_HILITECURRENTLINE:
       bHiliteCurrentLine = (bHiliteCurrentLine) ? FALSE : TRUE;
-      Style_SetCurrentLineBackground(hwndEdit);
+      Style_SetCurrentLineBackground(hwndEdit, bHiliteCurrentLine);
       break;
 
+    case IDM_VIEW_HYPERLINKHOTSPOTS:
+      bHyperlinkHotspot = (bHyperlinkHotspot) ? FALSE : TRUE;
+      Style_SetUrlHotSpot(hwndEdit, bHyperlinkHotspot);
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
+      if (!bHyperlinkHotspot)
+        SendMessage(hwndEdit, SCI_COLOURISE, 0, (LPARAM)-1);
+      break;
 
     case IDM_VIEW_ZOOMIN:
       SendMessage(hwndEdit,SCI_ZOOMIN,0,0);
@@ -4751,6 +4779,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetDefaultLexer(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4758,6 +4787,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetHTMLLexer(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4765,6 +4795,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetXMLLexer(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -5134,6 +5165,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
+    case CMD_OPEN_HYPERLINK:
+      {
+        OpenHotSpotURL((int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0), FALSE);
+      }
+      break;
+
     case IDT_FILE_NEW:
       if (IsCmdEnabled(hwnd,IDM_FILE_NEW))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_NEW,1),0);
@@ -5342,6 +5379,103 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 //=============================================================================
 //
+//  OpenHotSpotURL() - Handles WM_NOTIFY
+//
+//
+void OpenHotSpotURL(int position, BOOL bForceBrowser)
+{
+  int iStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, position, 0);
+
+  if (Style_GetHotspotID(hwndEdit) != iStyle)
+    return; 
+
+  // get left most position of style
+  int pos = position;
+  int iNewStyle = iStyle;
+  while ((iNewStyle == iStyle) && (--pos > 0)) {
+    iNewStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, pos, 0);
+  }
+  int firstPos = (pos != 0) ? (pos + 1) : 0;
+
+  // get right most position of style
+  pos = position;
+  iNewStyle = iStyle;
+  int posTextLength = SciCall_GetTextLength();
+  while ((iNewStyle == iStyle) && (++pos < posTextLength)) {
+    iNewStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, pos, 0);
+  }
+  int lastPos = pos;
+
+  int length = lastPos - firstPos;
+
+  if ((length > 0) && (length < HUGE_BUFFER))
+  {
+    char chURL[HUGE_BUFFER] = { '\0' };
+    struct Sci_TextRange tr = { { 0, -1 }, NULL };
+    tr.chrg.cpMin = (Sci_PositionCR)firstPos;
+    tr.chrg.cpMax = (Sci_PositionCR)lastPos;
+    tr.lpstrText = chURL;
+
+    SendMessage(hwndEdit, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+
+    StrTrimA(chURL, " \t\n\r");
+    
+    if (!StringCchLenA(chURL, COUNTOF(chURL)))
+      return;
+
+    WCHAR wchURL[HUGE_BUFFER] = { L'\0' };
+    MultiByteToWideCharStrg(Encoding_SciGetCodePage(hwndEdit), chURL, wchURL);
+
+    const WCHAR* chkPreFix = L"file://";
+    const int len = lstrlen(chkPreFix);
+
+    if (!bForceBrowser && (StrStrIW(wchURL, chkPreFix) == wchURL))
+    {
+      WCHAR* szFileName = &(wchURL[len]);
+      StrTrimW(szFileName, L"/");
+
+      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - len);
+
+      if (PathIsDirectory(szFileName))
+      {
+        WCHAR tchFile[MAX_PATH + 1] = { L'\0' };
+
+        if (OpenFileDlg(hwndMain, tchFile, COUNTOF(tchFile), szFileName))
+          FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+      }
+      else
+        FileLoad(FALSE, FALSE, FALSE, FALSE, szFileName);
+
+    }
+    else { // open in web browser
+
+      WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+      if (StringCchLenW(szCurFile, COUNTOF(szCurFile))) {
+        StringCchCopy(wchDirectory, COUNTOF(wchDirectory), szCurFile);
+        PathRemoveFileSpec(wchDirectory);
+      }
+
+      SHELLEXECUTEINFO sei;
+      ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+      sei.cbSize = sizeof(SHELLEXECUTEINFO);
+      sei.fMask = SEE_MASK_NOZONECHECKS;
+      sei.hwnd = NULL;
+      sei.lpVerb = NULL;
+      sei.lpFile = wchURL;
+      sei.lpParameters = NULL;
+      sei.lpDirectory = wchDirectory;
+      sei.nShow = SW_SHOWNORMAL;
+      ShellExecuteEx(&sei);
+
+    }
+
+  }
+}
+
+
+
+//=============================================================================
+//
 //  MsgNotify() - Handles WM_NOTIFY
 //
 //
@@ -5357,6 +5491,19 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
       switch(pnmh->code)
       {
+        case SCN_HOTSPOTCLICK:
+          {
+            if (scn->modifiers & SCMOD_CTRL) {
+              // open in browser
+              OpenHotSpotURL((int)scn->position, TRUE);
+            }
+            if (scn->modifiers & SCMOD_ALT) {
+              // open in application, if applicable (file://)
+              OpenHotSpotURL((int)scn->position, FALSE);
+            }
+          }
+          break;
+
         case SCN_UPDATEUI:
           if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) 
           {
@@ -5373,6 +5520,15 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
             UpdateToolbar();
             UpdateStatusbar();
+          }
+          break; // fall-through -> bad responsive UI !!!
+        
+        case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
+          {
+            if (bHyperlinkHotspot) {
+              int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
+              EditUpdateUrlHotspots(hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position);
+            }
           }
           break;
 
@@ -5513,6 +5669,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           else if (bAutoCompleteWords && !SendMessage(hwndEdit, SCI_AUTOCACTIVE, 0, 0))
             EditCompleteWord(hwndEdit, FALSE);
+
           break;
 
         case SCN_MODIFIED:
@@ -5537,6 +5694,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
           UpdateToolbar();
+          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
           break;
 
         case SCN_MARGINCLICK:
@@ -5552,6 +5710,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
           UpdateToolbar();
+          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
           break;
       }
       break;
@@ -5757,6 +5916,8 @@ void LoadSettings()
   bAutoCloseTags = IniSectionGetBool(pIniSection,L"AutoCloseTags",FALSE);
 
   bHiliteCurrentLine = IniSectionGetBool(pIniSection,L"HighlightCurrentLine",FALSE);
+
+  bHyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", TRUE);
 
   bAutoIndent = IniSectionGetBool(pIniSection,L"AutoIndent",TRUE);
 
@@ -6078,6 +6239,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"MatchBraces", bMatchBraces);
   IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
   IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
+  IniSectionSetBool(pIniSection, L"HyperlinkHotspot", bHyperlinkHotspot);
   IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
   IniSectionSetBool(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
   IniSectionSetBool(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
@@ -7457,7 +7619,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     InstallFileWatching(szCurFile);
 
     // the .LOG feature ...
-    if (SendMessage(hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
+    if (SciCall_GetTextLength() >= 4) {
       char tchLog[5] = { '\0' };
       SendMessage(hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
@@ -7486,6 +7648,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
+    EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
     // consistent settings file handling (if loaded in editor)
     bEnableSaveSettings = (StringCchCompareINW(szCurFile, COUNTOF(szCurFile), szIniFile, COUNTOF(szIniFile)) == 0) ? FALSE : TRUE;
@@ -7653,6 +7816,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
           Style_SetLexerFromFile(hwndEdit,szCurFile);
           UpdateStatusbar();
           UpdateLineNumberWidth();
+          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
         }
         else {
           StringCchCopy(tchLastSaveCopyDir,COUNTOF(tchLastSaveCopyDir),tchFile);

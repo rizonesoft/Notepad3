@@ -67,8 +67,9 @@ void   Style_Save();
 BOOL   Style_Import(HWND);
 BOOL   Style_Export(HWND);
 void   Style_SetLexer(HWND,PEDITLEXER);
+void   Style_SetUrlHotSpot(HWND, BOOL);
 void   Style_SetLongLineColors(HWND);
-void   Style_SetCurrentLineBackground(HWND);
+void   Style_SetCurrentLineBackground(HWND, BOOL);
 void   Style_SetCurrentMargin(HWND, BOOL);
 void   Style_SetLexerFromFile(HWND,LPCWSTR);
 void   Style_SetLexerFromName(HWND,LPCWSTR,LPCWSTR);
@@ -101,6 +102,7 @@ INT_PTR CALLBACK Styles_ConfigDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_ConfigDlg(HWND);
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_SelectLexerDlg(HWND);
+int    Style_GetHotspotID(HWND);
 
 
 #endif //_NP3_STYLES_H_
