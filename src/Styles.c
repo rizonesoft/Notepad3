@@ -3160,7 +3160,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   SciCall_SetProperty("fold.cpp.comment.explicit", "0");
 
   // Add KeyWord Lists
-  for (int i = 0; i < 9; i++)
+  for (int i = 0; i < (KEYWORDSET_MAX + 1); i++)
     SendMessage(hwnd, SCI_SETKEYWORDS, i, (LPARAM)pLexNew->pKeyWords->pszKeyWords[i]);
 
   // Use 2nd default style
@@ -3171,7 +3171,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   fIsConsolasAvailable = IsFontAvailable(L"Consolas");
 
   // Clear
-  SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
   SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
 
   // Idle Styling (very large text)
@@ -3186,7 +3185,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   Style_StrGetSize(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iBaseFontSize);                        // base size
 
   // Auto-select codepage according to charset
-  //Style_SetACPfromCharSet(hwnd);
+  //~Style_SetACPfromCharSet(hwnd);
 
   if (!Style_StrGetColor(TRUE, lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iValue))
     SendMessage(hwnd, SCI_STYLESETFORE, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOWTEXT));   // default text color
@@ -3195,6 +3194,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
     Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue); // lexer default
+  // Reset
+  SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
+
 
   Style_SetStyles(hwnd, lexDefault.Styles[STY_MARGIN + iIdx].iStyle, lexDefault.Styles[STY_MARGIN + iIdx].szValue); // linenumber
 
@@ -3552,15 +3554,18 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     }
   }
 
-  // set URL Hotspot style
-  Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
+  // apply lexer styles
+  SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
 
-  SendMessage(hwnd,SCI_COLOURISE,0,(LPARAM)-1);
-
-  EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength());
+  // override hyperlink hotspot style
+  if (bHyperlinkHotspot) {
+    Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
+    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength());
+  }
 
   // Save current lexer
   pLexCurrent = pLexNew;
+
 }
 
 
@@ -4017,10 +4022,10 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 //
 void Style_SetDefaultFont(HWND hwnd)
 {
-  int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
+  const int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
   if (Style_SelectFont(hwnd,
         lexDefault.Styles[STY_DEFAULT + iIdx].szValue,
-        COUNTOF(lexDefault.Styles[STY_DEFAULT].szValue),
+        COUNTOF(lexDefault.Styles[STY_DEFAULT + iIdx].szValue),
         TRUE)) {
     fStylesModified = TRUE;
     Style_SetLexer(hwnd,pLexCurrent);
@@ -4425,7 +4430,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
 
-  StringCchCopyN(lpszStyle,cchStyle,szNewStyle,cchStyle);
+  StringCchCopyN(lpszStyle,cchStyle,szNewStyle,COUNTOF(szNewStyle));
   return TRUE;
 }
 
