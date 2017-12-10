@@ -108,6 +108,7 @@ en.tsk_ResetSettings         =Reset {#app_name}'s settings
 en.tsk_RemoveDefault         =Restore Windows notepad
 en.tsk_SetDefault            =Replace Windows notepad with {#app_name}
 en.tsk_StartMenuIcon         =Create a Start Menu shortcut
+en.tsk_LaunchWelcomePage     =Get more from Rizonesoft
 
 
 [Tasks]
@@ -151,6 +152,7 @@ Filename: {userappdata}\Rizonesoft\Notepad3\Notepad3.ini; Section: Settings; Key
 
 [Run]
 Filename: {app}\Notepad3.exe; Description: {cm:LaunchProgram,{#app_name}}; WorkingDir: {app}; Flags: nowait postinstall skipifsilent unchecked
+Filename: https://goo.gl/tGtJ6a; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent
 
 
 [InstallDelete]
@@ -172,7 +174,7 @@ Type: dirifempty; Name: {app}
 const
   IFEO = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe';
   VersionURL = 'https://www.rizonesoft.com/update/Notepad3.rus';
-  UpdateURL = 'https://www.rizonesoft.com/downloads/notepad3/update/';
+  UpdateURL = 'https://goo.gl/y6CGMM';
   
 type
   TIntegerArray = array of Integer;
