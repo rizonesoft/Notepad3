@@ -65,8 +65,8 @@ IF "%~1" == "" (
 
 
 :START
-SET INPUTDIRx86=Bin\Release_x86
-SET INPUTDIRx64=Bin\Release_x64
+SET INPUTDIRx86=Bin\Release_x86_v141
+SET INPUTDIRx64=Bin\Release_x64_v141
 IF /I NOT "%COMPILER%" == "VS2015" SET SUFFIX=_%COMPILER%
 SET "TEMP_NAME=temp_zip%SUFFIX%"
 
@@ -87,9 +87,10 @@ EXIT /B
 TITLE Building %1 installer...
 CALL :SUBMSG "INFO" "Building %1 installer using %InnoSetupPath%\ISCC.exe..."
 
-"%InnoSetupPath%\ISCC.exe" /SMySignTool="cmd /c "%~dp0sign.bat" $f" /Q /O"packages" "..\distrib\notepad3_setup.iss" /D%1
+"%InnoSetupPath%\ISCC.exe" /SMySignTool="cmd /c "%~dp0sign.bat" $f" /Q /O"packages" "..\Build\notepad3_setup.iss" /D%1
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
-
+"%InnoSetupPath%\ISCC.exe" /SMySignTool="cmd /c "%~dp0sign.bat" $f" /Q /O"packages" "..\Build\notepad3_setup_replace.iss" /D%1
+IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 EXIT /B
 
 

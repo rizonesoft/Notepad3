@@ -83,11 +83,15 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 //
 //
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, int);
+DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, int);
 DeclareSciCallV2(SetSel, SETSEL, int, anchorPos, int, currentPos);
 DeclareSciCallV1(GotoPos, GOTOPOS, int, position);
 DeclareSciCallV1(GotoLine, GOTOLINE, int, line);
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, int);
 DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, int, Sci_Position, position);
+DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, int, Sci_Position, line);
+DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, int, Sci_Position, line);
+DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int);
 
 
 //=============================================================================
@@ -107,7 +111,8 @@ DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, caretPolicy, int, caretS
 //
 DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, styleNumber);
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, styleNumber);
-
+DeclareSciCallV1(StartStyling, STARTSTYLING, Sci_Position, position);
+DeclareSciCallV2(SetStyling, SETSTYLING, Sci_PositionCR, length, int, style);
 
 //=============================================================================
 //

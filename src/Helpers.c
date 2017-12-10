@@ -6,8 +6,8 @@
 * Helpers.c                                                                   *
 *   General helper functions                                                  *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
-*	Parts taken from SciTE, (c) Neil Hodgson                                  *
-*	MinimizeToTray, (c) 2000 Matthew Ellis                                    *
+*	Parts taken from SciTE, (c) Neil Hodgson                                    *
+*	MinimizeToTray, (c) 2000 Matthew Ellis                                      *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2016   *
 *                                                    https://rizonesoft.com   *
@@ -3616,6 +3616,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   while ((posIn < lastEsc) && (posOut < outLen))
   {
     BOOL bOk = FALSE;
+    // URL encoded
     if (lpURL[posIn] == L'%') {
       buf[0] = lpURL[posIn + 1];
       buf[1] = lpURL[posIn + 2];
@@ -3625,14 +3626,17 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
         posIn += 3;
         bOk = TRUE;
       }
-      else if (lpURL[posIn + 1] == L'#') {
-        int n = 0;
-        while (IsDigit(lpURL[posIn + 2 + n]) && (n < 4)) {
-          buf[n] = lpURL[posIn + 2 + n];
-          ++n;
-        }
-        buf[n] = L'\0';
-        if (swscanf_s(buf, L"%i", &code) == 1) {
+    }
+    // HTML encoded
+    else if ((lpURL[posIn] == L'&') && (lpURL[posIn + 1] == L'#')) {
+      int n = 0;
+      while (IsDigit(lpURL[posIn + 2 + n]) && (n < 4)) {
+        buf[n] = lpURL[posIn + 2 + n];
+        ++n;
+      }
+      buf[n] = L'\0';
+      if (swscanf_s(buf, L"%i", &code) == 1) {
+        if (code <= 0xFF) {
           outBuffer[posOut++] = (char)code;
           posIn += (2 + n);
           if (lpURL[posIn] == L';') ++posIn;
@@ -3640,6 +3644,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
         }
       }
     }
+    //TODO: HTML Hex encoded (&#x...)
     if (!bOk) {
       posOut += WideCharToMultiByte(CP_UTF8, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
     }

@@ -57,11 +57,11 @@ UninstallDisplayIcon={app}\Notepad3.exe
 UninstallDisplayName={#app_name} {#app_version}
 DefaultDirName={pf}\Notepad3
 LicenseFile=License.txt
-OutputDir=.
+OutputDir=.\Packages
 OutputBaseFilename={#app_name}_{#app_version}
-SetupIconFile=Setup.ico
+SetupIconFile=.\Resources\Setup.ico
 WizardImageFile=compiler:WizModernImage-IS.bmp
-WizardSmallImageFile=WizardSmallImageFile.bmp
+WizardSmallImageFile=.\Resources\WizardSmallImageFile.bmp
 Compression=lzma2/max
 InternalCompressLevel=max
 SolidCompression=yes
@@ -106,8 +106,8 @@ en.tsk_AllUsers              =For all users
 en.tsk_CurrentUser           =For the current user only
 en.tsk_Other                 =Other tasks:
 en.tsk_ResetSettings         =Reset {#app_name}'s settings
+en.tsk_RemoveDefault         =Restore Windows notepad
 en.tsk_StartMenuIcon         =Create a Start Menu shortcut
-en.tsk_LaunchWelcomePage     =Visit Rizonesoft for more downloads
 
 
 [Tasks]
@@ -117,17 +117,17 @@ Name: desktopicon\common; Description: {cm:tsk_AllUsers};          GroupDescript
 Name: startup_icon;       Description: {cm:tsk_StartMenuIcon};     GroupDescription: {cm:AdditionalIcons}
 Name: quicklaunchicon;    Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked;             OnlyBelowVersion: 6.01
 Name: reset_settings;     Description: {cm:tsk_ResetSettings};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: SettingsExistCheck()
-
+Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: DefaulNotepadCheck()
 
 [Files]
-Source: {#bindir}\Release_x64_v141\Notepad3.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\Notepad3.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: License.txt;                        DestDir: {app};                             Flags: ignoreversion
-Source: Readme.txt;                         DestDir: {app};                             Flags: ignoreversion
-Source: Notepad3.ini;                       DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
-Source: {#bindir}\Release_x64_v141\minipath.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\minipath.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: minipath.ini;                       DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
+Source: {#bindir}\Release_x64_v141\Notepad3.exe;   DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v141\Notepad3.exe;   DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: License.txt;                               DestDir: {app};                             Flags: ignoreversion
+Source: Readme.txt;                                DestDir: {app};                             Flags: ignoreversion
+Source: Notepad3.ini;                              DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
+Source: {#bindir}\Release_x64_v141\minipath.exe;   DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
+Source: {#bindir}\Release_x86_v141\minipath.exe;   DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
+Source: minipath.ini;                              DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
 Source: {#bindir}\Release_x64_v141\np3encrypt.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v141\np3encrypt.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 
@@ -150,7 +150,6 @@ Filename: {userappdata}\Rizonesoft\Notepad3\Notepad3.ini; Section: Settings; Key
 
 [Run]
 Filename: {app}\Notepad3.exe; Description: {cm:LaunchProgram,{#app_name}}; WorkingDir: {app}; Flags: nowait postinstall skipifsilent unchecked
-Filename: "http://www.rizonesoft.com/downloads/"; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent
 
 
 [InstallDelete]
@@ -169,6 +168,177 @@ Type: files;      Name: {app}\minipath.ini
 Type: dirifempty; Name: {app}
 
 [Code]
+const
+  IFEO = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe';
+  VersionURL = 'https://www.rizonesoft.com/update/Notepad3.rus';
+  UpdateURL = 'https://www.rizonesoft.com/downloads/notepad3/update/';
+  
+type
+  TIntegerArray = array of Integer;
+  TCompareResult = (
+    crLesser,
+    crEquals,
+    crGreater
+  );
+
+function Max(A, B: Integer): Integer;
+begin
+  if A > B then Result := A else Result := B;
+end;
+
+function CompareValue(A, B: Integer): TCompareResult;
+begin
+  if A = B then
+    Result := crEquals
+  else
+  if A < B then
+    Result := crLesser
+  else
+    Result := crGreater;
+end;
+
+function AddVersionChunk(const S: string; var A: TIntegerArray): Integer;
+var
+  Chunk: Integer;
+begin
+  Chunk := StrToIntDef(S, -1);
+  if Chunk <> -1 then
+  begin
+    Result := GetArrayLength(A) + 1;
+    SetArrayLength(A, Result);
+    A[Result - 1] := Chunk;
+  end
+  else
+    RaiseException('Invalid format of version string');
+end;
+
+function ParseVersionStr(const S: string; var A: TIntegerArray): Integer;
+var
+  I: Integer;
+  Count: Integer;
+  Index: Integer;
+begin
+  Count := 0;
+  Index := 1;
+
+  for I := 1 to Length(S) do
+  begin
+    case S[I] of
+      '.':
+      begin
+        AddVersionChunk(Copy(S, Index, Count), A);
+        Count := 0;
+        Index := I + 1;
+      end;
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+      begin
+        Count := Count + 1;
+      end;
+    else
+      RaiseException('Invalid char in version string');
+    end;
+  end;
+  Result := AddVersionChunk(Copy(S, Index, Count), A);
+end;
+
+function GetVersionValue(const A: TIntegerArray; Index,
+  Length: Integer): Integer;
+begin
+  Result := 0;
+  if (Index >= 0) and (Index < Length) then
+    Result := A[Index];
+end;
+
+function CompareVersionStr(const A, B: string): TCompareResult;
+var
+  I: Integer;
+  VerLenA, VerLenB: Integer;
+  VerIntA, VerIntB: TIntegerArray;
+begin
+  Result := crEquals;
+
+  VerLenA := ParseVersionStr(A, VerIntA);
+  VerLenB := ParseVersionStr(B, VerIntB);
+
+  for I := 0 to Max(VerLenA, VerLenB) - 1 do
+  begin
+    Result := CompareValue(GetVersionValue(VerIntA, I, VerLenA),
+      GetVersionValue(VerIntB, I, VerLenB));
+    if Result <> crEquals then
+      Exit;
+  end;
+end;
+
+function DownloadFile(const URL: string; var Response: string): Boolean;
+var
+  WinHttpRequest: Variant;
+begin
+  Result := True;
+  try
+    WinHttpRequest := CreateOleObject('WinHttp.WinHttpRequest.5.1');
+    WinHttpRequest.Open('GET', URL, False);
+    WinHttpRequest.Send;
+    Response := WinHttpRequest.ResponseText;
+  except
+    Result := False;
+    Response := GetExceptionMessage;
+  end;
+end;
+
+function InitializeSetup: Boolean;
+var
+  ErrorCode: Integer;
+  SetupVersion: string;
+  LatestVersion: string;
+
+begin
+  Result := True;
+
+   //Check for Processor SSE2 support.
+  #if defined(sse2_required)
+    if not IsSSE2Supported() then begin
+      SuppressibleMsgBox(CustomMessage('msg_simd_sse2'), mbCriticalError, MB_OK, MB_OK);
+      Result := False;
+    end;
+  #elif defined(sse_required)
+    if not IsSSESupported() then begin
+      SuppressibleMsgBox(CustomMessage('msg_simd_sse'), mbCriticalError, MB_OK, MB_OK);
+      Result := False;
+    end;
+  #endif
+
+  if DownloadFile(VersionURL, LatestVersion) then
+  begin
+    SetupVersion := '{#SetupSetting('AppVersion')}';
+    if CompareVersionStr(LatestVersion, SetupVersion) = crGreater then
+    begin
+      if MsgBox('There is a newer version of {#SetupSetting('AppName')} available. Do ' +
+        'you want to visit the site?', mbConfirmation, MB_YESNO) = IDYES then
+      begin
+        Result := not ShellExec('', UpdateURL, '', '', SW_SHOW, ewNoWait,
+          ErrorCode);
+      end;
+    end;
+  end;
+
+end;
+
+// Check if Notepad3 has replaced Windows Notepad
+function DefaulNotepadCheck(): Boolean;
+var
+  sDebugger: String;
+begin
+  if RegQueryStringValue(HKLM, IFEO, 'Debugger', sDebugger) and
+  (sDebugger = (ExpandConstant('"{app}\Notepad3.exe" /z'))) then begin
+    Log('Custom Code: {#app_name} is set as the default notepad');
+    Result := True;
+  end
+  else begin
+    Log('Custom Code: {#app_name} is NOT set as the default notepad');
+    Result := False;
+  end;
+end;
+
 #if defined(sse_required) || defined(sse2_required)
 function IsProcessorFeaturePresent(Feature: Integer): Boolean;
 external 'IsProcessorFeaturePresent@kernel32.dll stdcall';
@@ -313,6 +483,10 @@ begin
   end;
 
   if CurStep = ssPostInstall then begin
+	if IsTaskSelected('remove_default') then begin
+      RegDeleteValue(HKLM, IFEO, 'Debugger');
+      RegDeleteKeyIfEmpty(HKLM, IFEO);
+    end;
     // Always add Notepad3's AppUserModelID and the rest registry values
     AddReg();
   end;
@@ -328,6 +502,10 @@ begin
       if SuppressibleMsgBox(CustomMessage('msg_DeleteSettings'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES then
         CleanUpSettings();
     end;
+	if DefaulNotepadCheck() then
+      RegDeleteValue(HKLM, IFEO, 'Debugger');
+    RegDeleteKeyIfEmpty(HKLM, IFEO);
+    RemoveReg();
   end;
 end;
 
@@ -337,23 +515,4 @@ begin
   WizardForm.SelectTasksLabel.Hide;
   WizardForm.TasksList.Top    := 0;
   WizardForm.TasksList.Height := PageFromID(wpSelectTasks).SurfaceHeight;
-end;
-
-
-function InitializeSetup(): Boolean;
-begin
-    Result := True;
-
-#if defined(sse2_required)
-    if not IsSSE2Supported() then begin
-      SuppressibleMsgBox(CustomMessage('msg_simd_sse2'), mbCriticalError, MB_OK, MB_OK);
-      Result := False;
-    end;
-#elif defined(sse_required)
-    if not IsSSESupported() then begin
-      SuppressibleMsgBox(CustomMessage('msg_simd_sse'), mbCriticalError, MB_OK, MB_OK);
-      Result := False;
-    end;
-#endif
-
 end;
