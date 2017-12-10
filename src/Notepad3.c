@@ -2030,6 +2030,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
+    EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
   }
 
@@ -2532,6 +2533,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       //SendMessage(hwndEdit,SCI_SETREADONLY,bReadOnly,0);
       //UpdateToolbar();
       //UpdateStatusbar();
+      //EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
 
       if (StringCchLenW(szCurFile,COUNTOF(szCurFile)))
       {
@@ -2887,6 +2889,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           UpdateToolbar();
           UpdateStatusbar();
+          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
         }
       }
       break;
@@ -2930,6 +2933,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         EditFixPositions(hwndEdit);
         UpdateToolbar();
         UpdateStatusbar();
+        EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       }
       break;
 
@@ -3052,6 +3056,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         LocalFree(pClip);
         UpdateToolbar();
         UpdateStatusbar();
+        EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       }
       break;
 
@@ -4105,6 +4110,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       else
         SendMessage(hwndEdit,SCI_SETEDGEMODE,EDGE_NONE,0);
       UpdateStatusbar();
+      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4116,6 +4122,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         iLongLinesLimit = max(min(iLongLinesLimit,4096),0);
         SendMessage(hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
         UpdateStatusbar();
+        EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
         iLongLinesLimitG = iLongLinesLimit;
       }
       break;
