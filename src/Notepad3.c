@@ -5917,7 +5917,7 @@ void LoadSettings()
 
   bHiliteCurrentLine = IniSectionGetBool(pIniSection,L"HighlightCurrentLine",FALSE);
 
-  bHyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", TRUE);
+  bHyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", FALSE);
 
   bAutoIndent = IniSectionGetBool(pIniSection,L"AutoIndent",TRUE);
 
