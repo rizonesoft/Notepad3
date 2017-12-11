@@ -121,7 +121,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -142,7 +142,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -163,7 +163,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -180,7 +180,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -193,6 +193,82 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\oniguruma\ascii.c" />
+    <ClCompile Include="..\oniguruma\big5.c" />
+    <ClCompile Include="..\oniguruma\cp1251.c" />
+    <ClCompile Include="..\oniguruma\euc_jp.c" />
+    <ClCompile Include="..\oniguruma\euc_jp_prop.c" />
+    <ClCompile Include="..\oniguruma\euc_kr.c" />
+    <ClCompile Include="..\oniguruma\euc_tw.c" />
+    <ClCompile Include="..\oniguruma\gb18030.c" />
+    <ClCompile Include="..\oniguruma\iso8859_1.c" />
+    <ClCompile Include="..\oniguruma\iso8859_10.c" />
+    <ClCompile Include="..\oniguruma\iso8859_11.c" />
+    <ClCompile Include="..\oniguruma\iso8859_13.c" />
+    <ClCompile Include="..\oniguruma\iso8859_14.c" />
+    <ClCompile Include="..\oniguruma\iso8859_15.c" />
+    <ClCompile Include="..\oniguruma\iso8859_16.c" />
+    <ClCompile Include="..\oniguruma\iso8859_2.c" />
+    <ClCompile Include="..\oniguruma\iso8859_3.c" />
+    <ClCompile Include="..\oniguruma\iso8859_4.c" />
+    <ClCompile Include="..\oniguruma\iso8859_5.c" />
+    <ClCompile Include="..\oniguruma\iso8859_6.c" />
+    <ClCompile Include="..\oniguruma\iso8859_7.c" />
+    <ClCompile Include="..\oniguruma\iso8859_8.c" />
+    <ClCompile Include="..\oniguruma\iso8859_9.c" />
+    <ClCompile Include="..\oniguruma\koi8.c" />
+    <ClCompile Include="..\oniguruma\koi8_r.c" />
+    <ClCompile Include="..\oniguruma\mktable.c" />
+    <ClCompile Include="..\oniguruma\onig_init.c" />
+    <ClCompile Include="..\oniguruma\regcomp.c" />
+    <ClCompile Include="..\oniguruma\regenc.c" />
+    <ClCompile Include="..\oniguruma\regerror.c" />
+    <ClCompile Include="..\oniguruma\regexec.c" />
+    <ClCompile Include="..\oniguruma\regext.c" />
+    <ClCompile Include="..\oniguruma\reggnu.c" />
+    <ClCompile Include="..\oniguruma\regparse.c" />
+    <ClCompile Include="..\oniguruma\regposerr.c" />
+    <ClCompile Include="..\oniguruma\regposix.c" />
+    <ClCompile Include="..\oniguruma\regsyntax.c" />
+    <ClCompile Include="..\oniguruma\regtrav.c" />
+    <ClCompile Include="..\oniguruma\regversion.c" />
+    <ClCompile Include="..\oniguruma\sjis.c" />
+    <ClCompile Include="..\oniguruma\sjis_prop.c" />
+    <ClCompile Include="..\oniguruma\st.c" />
+    <ClCompile Include="..\oniguruma\unicode.c" />
+    <ClCompile Include="..\oniguruma\unicode_egcb_data.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\unicode_fold1_key.c" />
+    <ClCompile Include="..\oniguruma\unicode_fold2_key.c" />
+    <ClCompile Include="..\oniguruma\unicode_fold3_key.c" />
+    <ClCompile Include="..\oniguruma\unicode_fold_data.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\unicode_property_data.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\unicode_property_data_posix.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\unicode_unfold_key.c" />
+    <ClCompile Include="..\oniguruma\utf16_be.c" />
+    <ClCompile Include="..\oniguruma\utf16_le.c" />
+    <ClCompile Include="..\oniguruma\utf32_be.c" />
+    <ClCompile Include="..\oniguruma\utf32_le.c" />
+    <ClCompile Include="..\oniguruma\utf8.c" />
     <ClCompile Include="deelx\DeelxRegexSearch.cxx" />
     <ClCompile Include="lexers\LexAHK.cxx" />
     <ClCompile Include="lexers\LexAsm.cxx" />
@@ -275,6 +351,14 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\oniguruma\config.h" />
+    <ClInclude Include="..\oniguruma\oniggnu.h" />
+    <ClInclude Include="..\oniguruma\onigposix.h" />
+    <ClInclude Include="..\oniguruma\oniguruma.h" />
+    <ClInclude Include="..\oniguruma\regenc.h" />
+    <ClInclude Include="..\oniguruma\regint.h" />
+    <ClInclude Include="..\oniguruma\regparse.h" />
+    <ClInclude Include="..\oniguruma\st.h" />
     <ClInclude Include="deelx\deelx.h" />
     <ClInclude Include="deelx\deelx64.h" />
     <ClInclude Include="include\ILexer.h" />
