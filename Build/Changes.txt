@@ -3,6 +3,30 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 3.17.1210.729 (10 December 2017)
+--------------------------------------------------
+- Fix: flashing of Search text-box of find/replace dialog in case of Win7 Classic theme
+- [Settings2] section default values (and comment out if not changed) of initially distributed Notepad3.ini
+- Feature: Added Awk Script syntax highlighting (Python lexer based)
+- Fix: Edit/Special : URL encoding/decoding for full UTF8 (non ASCII) characters.
+- Refactoring: Platform independent URL decoding.
+- Fix: Gibberish output if URL decoded again (2nd time).
+- Fix: URL decoding, if encoding has "%#nnn" formatted ASCII chars.
+- Fix: HTML character encoding starts with ampersand, not percent char.
+- Fix: URL encoding: Added flag URL_ESCAPE_PERCENT for UrlEscape().
+- Feature: URL Hotspot (first version).
+- Fix: Added version info for VS2017 v.15.5
+- Feature: Enhanced URL Hotspot highlighting.
+- Refactoring and enhancements for Hyperlink Hotspot feature.
+- Fix: Consistent texts for "Hyperlink Hotspots".
+- Feature: open Hyperlink in NP3 (if applicable: "file://...").
+- Added some more places, where Hotspot style redrawing does not slow down responsiveness.
+- Fix: Hyperlink Hotspots turned off by default. (not stable enough to force the feature).
+- Fix: Normal setup can now clean replace Windows Notepad registry keys.
+- Feature: Update notification in Notepad3 setup.
+- Code Cleanup
+
+--------------------------------------------------
 Version 3.17.1202.715 (2 December 2017)
 --------------------------------------------------
 - #191 Revert to Scintilla's old (default) font rendering technology. Modern DirectWrite available at [Settings2] SciDirectWriteTech=1

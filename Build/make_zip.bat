@@ -51,7 +51,7 @@ IF EXIST "Notepad3_%NP2_VER%.zip" DEL "Notepad3_%NP2_VER%.zip"
 IF EXIST "%TEMP_NAME%"      RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%"  MD "%TEMP_NAME%"
 
-IF EXIST "Notepad3_%NP2_VER%*.exe" COPY /Y /V "Notepad3_%NP2_VER%*.exe" "%TEMP_NAME%\" >NUL
+REM IF EXIST "Notepad3_%NP2_VER%*.exe" COPY /Y /V "Notepad3_%NP2_VER%*.exe" "%TEMP_NAME%\" >NUL
 IF EXIST "Notepad3_%NP2_VER%*.zip" COPY /Y /V "Notepad3_%NP2_VER%*.zip" "%TEMP_NAME%\" >NUL
 
 PUSHD "%TEMP_NAME%"

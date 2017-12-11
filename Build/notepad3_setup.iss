@@ -171,7 +171,7 @@ Type: dirifempty; Name: {app}
 const
   IFEO = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe';
   VersionURL = 'https://www.rizonesoft.com/update/Notepad3.rus';
-  UpdateURL = 'https://www.rizonesoft.com/downloads/notepad3/update/';
+  UpdateURL = 'https://goo.gl/y6CGMM';
   
 type
   TIntegerArray = array of Integer;

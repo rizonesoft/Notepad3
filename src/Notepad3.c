@@ -4023,7 +4023,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SelectLexerDlg(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
-      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4031,7 +4030,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_ToggleUse2ndDefault(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
-      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4039,7 +4037,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_ConfigDlg(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
-      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4047,7 +4044,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetDefaultFont(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
-      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4779,7 +4775,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetDefaultLexer(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
-      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4787,7 +4782,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetHTMLLexer(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
-      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -4795,7 +4789,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       Style_SetXMLLexer(hwndEdit);
       UpdateStatusbar();
       UpdateLineNumberWidth();
-      EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
       break;
 
 
@@ -5681,8 +5674,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               RestoreSelectionAction(scn->token,REDO);
             }
           }
+          else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
+            EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length));
+          }
           if (scn->linesAdded != 0) {
             UpdateLineNumberWidth();
+            EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength());
           }
           bModified = TRUE;
           break;
