@@ -25,6 +25,9 @@
     <Filter Include="oniguruma">
       <UniqueIdentifier>{d5a1f6c6-a4ec-4bb2-bc45-0698a95376d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scionigu">
+      <UniqueIdentifier>{7128e08f-5e39-4f32-8b6d-6248e02e376a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexers\LexAHK.cxx">
@@ -434,6 +437,9 @@
     </ClCompile>
     <ClCompile Include="..\oniguruma\unicode_property_data_posix.c">
       <Filter>oniguruma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scionigu\OniguRegExEngine.cxx">
+      <Filter>scionigu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
