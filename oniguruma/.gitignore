@@ -1,5 +1,4 @@
 Makefile
-config.h
 CaseFolding.txt
 unicode_fold?_key.gperf
 unicode_unfold_key.gperf
