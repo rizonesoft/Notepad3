@@ -42,14 +42,20 @@ using namespace Scintilla;
 
 #define Cast2long(n)   static_cast<long>(n)
 
-// ---------------------------------------------------------------
+// ============================================================================
+// ***   Oninuruma configuration   ***
+// ============================================================================
 
-const int MAX_GROUP_COUNT = 10;
+const bool gOnigExtended = false;   // ignore spaces and use '#' as line-comment)
 
-const OnigEncoding g_pEncodingType = ONIG_ENCODING_ASCII; // ONIG_ENCODING_SJIS
-static OnigEncoding use_encs[] = { g_pEncodingType };
+const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; // ONIG_ENCODING_SJIS
 
-const bool gExtended = false;   // ignore spaces and use '#' as line-comment)
+static OnigSyntaxType* g_pOnigSyntaxType = ONIG_SYNTAX_DEFAULT;
+
+
+// ============================================================================
+
+static OnigEncoding use_encs[] = { g_pOnigEncodingType };
 
 // ---------------------------------------------------------------
 
@@ -60,21 +66,19 @@ public:
   explicit OniguRegExEngine(CharClassify* charClassTable)
     : m_RegExprStrg()
     , m_CmplOptions(ONIG_OPTION_DEFAULT)
-    , m_pRegExpr(nullptr)
+    , m_RegExpr(nullptr)
+    , m_Region({0,0,nullptr,nullptr,nullptr})
     , m_ErrorInfo()
     , m_MatchPos(ONIG_MISMATCH)
     , m_MatchLen(0)
     , m_SubstBuffer()
   {
     onig_initialize(use_encs, sizeof(use_encs) / sizeof(use_encs[0]));
-    m_pRegion = onig_region_new();
   }
 
   virtual ~OniguRegExEngine()
   {
-    if (m_pRegion)
-      onig_region_free(m_pRegion, 1);
-
+    onig_region_free(&m_Region, 0);
     onig_end();
   }
 
@@ -94,8 +98,9 @@ private:
   std::string m_RegExprStrg;
 
   OnigOptionType  m_CmplOptions;
-  regex_t*        m_pRegExpr;
-  OnigRegion*     m_pRegion;
+  OnigRegex       m_RegExpr;
+  OnigRegion      m_Region;
+
   char            m_ErrorInfo[ONIG_MAX_ERROR_MESSAGE_LEN];
 
   Sci::Position   m_MatchPos;
@@ -123,40 +128,52 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
 {
 
-                                 // Range endpoints should not be inside DBCS characters, but just in case, move them.
+  // Range endpoints should not be inside DBCS characters, but just in case, move them.
   minPos = doc->MovePositionOutsideChar(minPos, 1, false);
   maxPos = doc->MovePositionOutsideChar(maxPos, 1, false);
   const bool findprevious = (minPos > maxPos);
 
 
   OnigOptionType cmplOptions = ONIG_OPTION_DEFAULT;
-  cmplOptions |= (ONIG_OPTION_MULTILINE | ONIG_OPTION_CAPTURE_GROUP);  // the .(dot) does not match line-breaks
-  cmplOptions |= (gExtended) ? ONIG_OPTION_EXTEND : ONIG_OPTION_NONE;
-  cmplOptions |= (caseSensitive) ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE;
+  ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_MULTILINE);      // the .(dot) does not match line-breaks
+  ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_CAPTURE_GROUP);
+  ONIG_OPTION_ON(cmplOptions, gOnigExtended ? ONIG_OPTION_EXTEND : ONIG_OPTION_NONE);
+  ONIG_OPTION_ON(cmplOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
+
 
   std::string sRegExprStrg = translateRegExpr(std::string(pattern), word, wordStart, doc->eolMode);
 
-  bool bReCompile = (m_CmplOptions != cmplOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
+  bool bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != cmplOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
 
-  if (bReCompile) {
+  if (bReCompile) 
+  {
     m_RegExprStrg.clear();
     m_RegExprStrg = sRegExprStrg;
     m_CmplOptions = cmplOptions;
     m_ErrorInfo[0] = '\0';
     try {
       OnigErrorInfo einfo;
-      int result = onig_new(&m_pRegExpr, (UChar*)m_RegExprStrg.c_str(), (UChar*)(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
-                            m_CmplOptions, g_pEncodingType, ONIG_SYNTAX_DEFAULT, &einfo);
-      if (result != 0) {
-        onig_error_code_to_str((UChar*)m_ErrorInfo, result, &einfo);
+
+      onig_region_free(&m_Region, 0);
+
+      int res = onig_new(&m_RegExpr, (UChar*)m_RegExprStrg.c_str(), (UChar*)(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
+                         m_CmplOptions, g_pOnigEncodingType, g_pOnigSyntaxType, &einfo);
+      if (res != 0) {
+        onig_error_code_to_str((UChar*)m_ErrorInfo, res, &einfo);
         return Cast2long(-2);
       }
+
+      onig_region_init(&m_Region);
     }
     catch (...) {
       return Cast2long(-2);  // -1 is normally used for not found, -2 is used here for invalid regex
     }
   }
 
+  m_MatchPos = SciPos(ONIG_MISMATCH); // not found
+  m_MatchLen = SciPos(0);
+
+  // ---  search document range for pattern match   ---
 
   UChar* docBegPtr = (UChar*)doc->RangePointer(0, SciPos(doc->Length()));
   UChar* docSEndPtr = (UChar*)doc->RangePointer(SciPos(doc->Length()),0);
@@ -164,35 +181,34 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
   UChar* rangeBegPtr = (UChar*)doc->RangePointer((findprevious) ? maxPos : minPos, rangeLength);
   UChar* rangeEndPtr = (UChar*)doc->RangePointer((findprevious) ? minPos : maxPos, rangeLength);
 
-  m_MatchPos = SciPos(ONIG_MISMATCH); // not found
-  m_MatchLen = SciPos(0);
+  OnigOptionType searchOptions = ONIG_OPTION_NONE;
+  ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTBOL);
+  ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTEOL);
 
-  int result = onig_search(m_pRegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, m_pRegion, ONIG_OPTION_NONE);
+  int result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
 
   if (result < ONIG_MISMATCH) {
     onig_error_code_to_str((UChar*)m_ErrorInfo, result);
     return Cast2long(-2);
   }
 
-  if (findprevious)  // search previous 
+  if (findprevious) // search for last occurrence in range
   {
-    // search for last occurrence in range
     //SPEEDUP: onig_scan() ???
     while ((result >= 0) && (rangeBegPtr <= rangeEndPtr))
     {
-      m_MatchPos = SciPos(m_pRegion->beg[0]);
-      m_MatchLen = SciPos(m_pRegion->end[0] - m_pRegion->beg[0]);
+      m_MatchPos = SciPos(result); //SciPos(m_Region.beg[0]);
+      m_MatchLen = SciPos(m_Region.end[0] - result);
       
       rangeBegPtr = docBegPtr + (m_MatchPos + m_MatchLen);
 
-      result = onig_search(m_pRegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, m_pRegion, ONIG_OPTION_NONE);
+      result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
     }
   }
-  else {
-    if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) {
-      m_MatchPos = SciPos(m_pRegion->beg[0]);
-      m_MatchLen = SciPos(m_pRegion->end[0] - m_pRegion->beg[0]);
-    }
+  else if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) 
+  {
+    m_MatchPos = SciPos(result); //SciPos(m_Region.beg[0]);
+    m_MatchLen = SciPos(m_Region.end[0] - result);
   }
 
   //NOTE: potential 64-bit-size issue at interface here:
@@ -204,8 +220,46 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
 
 const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* text, Sci::Position* length)
 {
+
+  if (m_MatchPos < 0) {
+    *length = SciPos(-1);
+    return nullptr;
+  }
+
+  std::string rawReplStrg = convertReplExpr(std::string(text, *length));
+
+  m_SubstBuffer.clear();
+
+  for (int j = 0; j < rawReplStrg.length(); j++) {
+    if ((rawReplStrg[j] == '$') || (rawReplStrg[j] == '\\'))
+    {
+      if ((rawReplStrg[j + 1] >= '0') && (rawReplStrg[j + 1] <= '9'))
+      {
+        int grpNum = rawReplStrg[j + 1] - '0';
+
+        if (grpNum < m_Region.num_regs)
+        {
+          Sci::Position rBeg = SciPos(m_Region.beg[grpNum]);
+          Sci::Position len = SciPos(m_Region.end[grpNum] - rBeg);
+
+          m_SubstBuffer.append(doc->RangePointer(rBeg, len), (size_t)len);
+        }
+        ++j;
+      }
+      else if (rawReplStrg[j] == '\\') {
+        m_SubstBuffer.push_back('\\');
+        ++j;
+      }
+      else {
+        m_SubstBuffer.push_back(rawReplStrg[j]);
+      }
+    }
+    else {
+      m_SubstBuffer.push_back(rawReplStrg[j]);
+    }
+  }
   //NOTE: potential 64-bit-size issue at interface here:
-  *length = SciPos(0);
+  *length = SciPos(m_SubstBuffer.length());
   return m_SubstBuffer.c_str();
 }
 // ============================================================================
