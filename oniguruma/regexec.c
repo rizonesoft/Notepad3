@@ -3570,7 +3570,7 @@ forward_search_range(regex_t* reg, const UChar* str, const UChar* end, UChar* s,
     }
     else {
       if (reg->dmax != INFINITE_LEN) {
-        if (p - str < reg->dmax) {
+        if ((OnigLen)(p - str) < reg->dmax) {
           *low = (UChar* )str;
           if (low_prev)
             *low_prev = onigenc_get_prev_char_head(reg->enc, str, *low);

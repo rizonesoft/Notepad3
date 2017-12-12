@@ -231,7 +231,7 @@ const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* te
 
   m_SubstBuffer.clear();
 
-  for (int j = 0; j < rawReplStrg.length(); j++) {
+  for (size_t j = 0; j < rawReplStrg.length(); j++) {
     if ((rawReplStrg[j] == '$') || (rawReplStrg[j] == '\\'))
     {
       if ((rawReplStrg[j + 1] >= '0') && (rawReplStrg[j + 1] <= '9'))

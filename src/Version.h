@@ -41,7 +41,7 @@
 #define VERSION_COMPANYNAME          L"© Rizonesoft"
 #define VERSION_MODPAGEDISPLAY       L"https://xhmikosr.github.io/notepad2-mod/"
 #define VERSION_WEBPAGE2DISPLAY      L"http://www.flos-freeware.ch"
-#define VERSION_SCIVERSION           L"Scintilla Library (RegEx:DeelX) Version: " STRINGIFY(SCINTILLA_VER)
+#define VERSION_SCIVERSION           L"Scintilla Library (RegEx:Oniguruma v.6.7.0) Version: " STRINGIFY(SCINTILLA_VER)
 
 #if defined(_WIN64)
 //   #define VERSION_FILEVERSION_LONG  L"Notepad3 (64-bit) " STRINGIFY(VERSION_MAJOR) L" Build " \
