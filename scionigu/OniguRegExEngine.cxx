@@ -40,12 +40,16 @@ using namespace Scintilla;
 #define SciLn(line)    static_cast<Sci::Line>(line)
 #define SciPosExt(pos) static_cast<Sci_Position>(pos)
 
-#define DeelXPos(pos)  static_cast<deelx::index_t>(pos)
 #define Cast2long(n)   static_cast<long>(n)
 
 // ---------------------------------------------------------------
 
 const int MAX_GROUP_COUNT = 10;
+
+const OnigEncoding g_pEncodingType = ONIG_ENCODING_ASCII; // ONIG_ENCODING_SJIS
+static OnigEncoding use_encs[] = { g_pEncodingType };
+
+const bool gExtended = false;   // ignore spaces and use '#' as line-comment)
 
 // ---------------------------------------------------------------
 
@@ -55,11 +59,23 @@ public:
 
   explicit OniguRegExEngine(CharClassify* charClassTable)
     : m_RegExprStrg()
+    , m_CmplOptions(ONIG_OPTION_DEFAULT)
+    , m_pRegExpr(nullptr)
+    , m_ErrorInfo()
+    , m_MatchPos(ONIG_MISMATCH)
+    , m_MatchLen(0)
     , m_SubstBuffer()
-  {}
+  {
+    onig_initialize(use_encs, sizeof(use_encs) / sizeof(use_encs[0]));
+    m_pRegion = onig_region_new();
+  }
 
   virtual ~OniguRegExEngine()
   {
+    if (m_pRegion)
+      onig_region_free(m_pRegion, 1);
+
+    onig_end();
   }
 
   virtual long FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
@@ -70,12 +86,21 @@ public:
 
 private:
 
-  std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart);
+  std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode);
   std::string& convertReplExpr(std::string& replStr);
 
 private:
 
   std::string m_RegExprStrg;
+
+  OnigOptionType  m_CmplOptions;
+  regex_t*        m_pRegExpr;
+  OnigRegion*     m_pRegion;
+  char            m_ErrorInfo[ONIG_MAX_ERROR_MESSAGE_LEN];
+
+  Sci::Position   m_MatchPos;
+  Sci::Position   m_MatchLen;
+
   std::string m_SubstBuffer;
 };
 // ============================================================================
@@ -97,9 +122,82 @@ RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
 {
+
+                                 // Range endpoints should not be inside DBCS characters, but just in case, move them.
+  minPos = doc->MovePositionOutsideChar(minPos, 1, false);
+  maxPos = doc->MovePositionOutsideChar(maxPos, 1, false);
+  const bool findprevious = (minPos > maxPos);
+
+
+  OnigOptionType cmplOptions = ONIG_OPTION_DEFAULT;
+  cmplOptions |= (ONIG_OPTION_MULTILINE | ONIG_OPTION_CAPTURE_GROUP);  // the .(dot) does not match line-breaks
+  cmplOptions |= (gExtended) ? ONIG_OPTION_EXTEND : ONIG_OPTION_NONE;
+  cmplOptions |= (caseSensitive) ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE;
+
+  std::string sRegExprStrg = translateRegExpr(std::string(pattern), word, wordStart, doc->eolMode);
+
+  bool bReCompile = (m_CmplOptions != cmplOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
+
+  if (bReCompile) {
+    m_RegExprStrg.clear();
+    m_RegExprStrg = sRegExprStrg;
+    m_CmplOptions = cmplOptions;
+    m_ErrorInfo[0] = '\0';
+    try {
+      OnigErrorInfo einfo;
+      int result = onig_new(&m_pRegExpr, (UChar*)m_RegExprStrg.c_str(), (UChar*)(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
+                            m_CmplOptions, g_pEncodingType, ONIG_SYNTAX_DEFAULT, &einfo);
+      if (result != 0) {
+        onig_error_code_to_str((UChar*)m_ErrorInfo, result, &einfo);
+        return Cast2long(-2);
+      }
+    }
+    catch (...) {
+      return Cast2long(-2);  // -1 is normally used for not found, -2 is used here for invalid regex
+    }
+  }
+
+
+  UChar* docBegPtr = (UChar*)doc->RangePointer(0, SciPos(doc->Length()));
+  UChar* docSEndPtr = (UChar*)doc->RangePointer(SciPos(doc->Length()),0);
+  Sci::Position rangeLength = abs(maxPos - minPos);
+  UChar* rangeBegPtr = (UChar*)doc->RangePointer((findprevious) ? maxPos : minPos, rangeLength);
+  UChar* rangeEndPtr = (UChar*)doc->RangePointer((findprevious) ? minPos : maxPos, rangeLength);
+
+  m_MatchPos = SciPos(ONIG_MISMATCH); // not found
+  m_MatchLen = SciPos(0);
+
+  int result = onig_search(m_pRegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, m_pRegion, ONIG_OPTION_NONE);
+
+  if (result < ONIG_MISMATCH) {
+    onig_error_code_to_str((UChar*)m_ErrorInfo, result);
+    return Cast2long(-2);
+  }
+
+  if (findprevious)  // search previous 
+  {
+    // search for last occurrence in range
+    //SPEEDUP: onig_scan() ???
+    while ((result >= 0) && (rangeBegPtr <= rangeEndPtr))
+    {
+      m_MatchPos = SciPos(m_pRegion->beg[0]);
+      m_MatchLen = SciPos(m_pRegion->end[0] - m_pRegion->beg[0]);
+      
+      rangeBegPtr = docBegPtr + (m_MatchPos + m_MatchLen);
+
+      result = onig_search(m_pRegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, m_pRegion, ONIG_OPTION_NONE);
+    }
+  }
+  else {
+    if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) {
+      m_MatchPos = SciPos(m_pRegion->beg[0]);
+      m_MatchLen = SciPos(m_pRegion->end[0] - m_pRegion->beg[0]);
+    }
+  }
+
   //NOTE: potential 64-bit-size issue at interface here:
-  *length = SciPos(0);
-  return static_cast<long>(0);
+  *length = m_MatchLen;
+  return static_cast<long>(m_MatchPos);
 }
 // ============================================================================
 
@@ -175,7 +273,7 @@ static void replaceAll(std::string& source,const std::string& from,const std::st
 
 
 
-std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr,bool wholeWord,bool wordStart)
+std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode)
 {
   std::string	tmpStr;
 
@@ -187,12 +285,30 @@ std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr,bool who
       tmpStr.push_back('\\');
       tmpStr.push_back('b');
     }
-    replaceAll(tmpStr,".",R"(\w)");
+    replaceAll(tmpStr, ".", R"(\w)");
   }
   else {
     tmpStr.append(regExprStr);
   }
-  std::swap(regExprStr,tmpStr);
+
+  switch (eolMode) {
+  case SC_EOL_LF:
+    // we are fine here
+    break;
+
+  case SC_EOL_CR:
+    //TODO: don't know what to do here ...
+    break;
+
+  case SC_EOL_CRLF:
+    {
+      //replaceAll(tmpStr, "$", R"(\r$)");
+      //replaceAll(tmpStr, R"(\\r$)", R"(\$)");
+    }
+    break;
+  }
+
+  std::swap(regExprStr, tmpStr);
   return regExprStr;
 }
 // ----------------------------------------------------------------------------
@@ -274,7 +390,7 @@ std::string& OniguRegExEngine::convertReplExpr(std::string& replStr)
             }
             if (val[0]) {
               val[1] = 0;
-              WideCharToMultiByte(CP_UTF8, 0, val, -1, buf, ARRAYSIZE(val), NULL, NULL);
+              WideCharToMultiByte(CP_UTF8, 0, val, -1, buf, ARRAYSIZE(val), nullptr, nullptr);
               tmpStr.push_back(*pch++);
               while (*pch)
                 tmpStr.push_back(*pch++);

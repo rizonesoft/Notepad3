@@ -270,7 +270,6 @@
     <ClCompile Include="..\oniguruma\utf32_le.c" />
     <ClCompile Include="..\oniguruma\utf8.c" />
     <ClCompile Include="..\scionigu\OniguRegExEngine.cxx" />
-    <ClCompile Include="deelx\DeelxRegexSearch.cxx" />
     <ClCompile Include="lexers\LexAHK.cxx" />
     <ClCompile Include="lexers\LexAsm.cxx" />
     <ClCompile Include="lexers\LexAU3.cxx" />
@@ -360,8 +359,6 @@
     <ClInclude Include="..\oniguruma\regint.h" />
     <ClInclude Include="..\oniguruma\regparse.h" />
     <ClInclude Include="..\oniguruma\st.h" />
-    <ClInclude Include="deelx\deelx.h" />
-    <ClInclude Include="deelx\deelx64.h" />
     <ClInclude Include="include\ILexer.h" />
     <ClInclude Include="include\ILoader.h" />
     <ClInclude Include="include\Platform.h" />
@@ -421,9 +418,6 @@
     <ClInclude Include="src\ViewStyle.h" />
     <ClInclude Include="src\XPM.h" />
     <ClInclude Include="win32\PlatWin.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="deelx\doc\deelx_en.chm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
