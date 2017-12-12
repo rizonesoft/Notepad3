@@ -102,7 +102,7 @@ INT_PTR CALLBACK Styles_ConfigDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_ConfigDlg(HWND);
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_SelectLexerDlg(HWND);
-int    Style_GetHotspotID(HWND);
+int    Style_GetHotspotID();
 
 
 #endif //_NP3_STYLES_H_
