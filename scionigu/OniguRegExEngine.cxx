@@ -46,18 +46,12 @@ using namespace Scintilla;
 // ***   Oninuruma configuration   ***
 // ============================================================================
 
-const bool gOnigExtended = false;   // ignore spaces and use '#' as line-comment)
-
 const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; // ONIG_ENCODING_SJIS
-
 static OnigSyntaxType* g_pOnigSyntaxType = ONIG_SYNTAX_DEFAULT;
-
-
-// ============================================================================
-
+// ---------------------------------------------------------------
 static OnigEncoding use_encs[] = { g_pOnigEncodingType };
 
-// ---------------------------------------------------------------
+// ============================================================================
 
 class OniguRegExEngine : public RegexSearchBase
 {
@@ -135,9 +129,12 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
 
 
   OnigOptionType cmplOptions = ONIG_OPTION_DEFAULT;
-  ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_MULTILINE);      // the .(dot) does not match line-breaks
+  ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_EXTEND);
+  //~ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_MULTILINE); // the .(dot) matches line-breaks too - we don't want this here
+  //ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_SINGLELINE);
+  ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_NEGATE_SINGLELINE);
   ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_CAPTURE_GROUP);
-  ONIG_OPTION_ON(cmplOptions, gOnigExtended ? ONIG_OPTION_EXTEND : ONIG_OPTION_NONE);
+
   ONIG_OPTION_ON(cmplOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
 
 
@@ -174,16 +171,20 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
   m_MatchLen = SciPos(0);
 
   // ---  search document range for pattern match   ---
+  Sci::Position docLen = SciPos(doc->Length());
+  UChar* docBegPtr = (UChar*)doc->RangePointer(0, docLen);
+  UChar* docSEndPtr = (UChar*)doc->RangePointer(docLen, 0);
 
-  UChar* docBegPtr = (UChar*)doc->RangePointer(0, SciPos(doc->Length()));
-  UChar* docSEndPtr = (UChar*)doc->RangePointer(SciPos(doc->Length()),0);
-  Sci::Position rangeLength = abs(maxPos - minPos);
-  UChar* rangeBegPtr = (UChar*)doc->RangePointer((findprevious) ? maxPos : minPos, rangeLength);
-  UChar* rangeEndPtr = (UChar*)doc->RangePointer((findprevious) ? minPos : maxPos, rangeLength);
+  Sci::Position rangeBeg = (findprevious) ? maxPos : minPos;
+  Sci::Position rangeEnd = (findprevious) ? minPos : maxPos;
+  Sci::Position rangeLen = (rangeEnd - rangeBeg);
+
+  UChar* rangeBegPtr = (UChar*)doc->RangePointer(rangeBeg, rangeLen);
+  UChar* rangeEndPtr = (UChar*)doc->RangePointer(rangeEnd, rangeLen);
 
   OnigOptionType searchOptions = ONIG_OPTION_NONE;
-  ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTBOL);
-  ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTEOL);
+  if (rangeBeg != 0) { ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTBOL); }
+  if (rangeEnd != docLen) { ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTEOL); }
 
   int result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
 
@@ -200,7 +201,7 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
       m_MatchPos = SciPos(result); //SciPos(m_Region.beg[0]);
       m_MatchLen = SciPos(m_Region.end[0] - result);
       
-      rangeBegPtr = docBegPtr + (m_MatchPos + m_MatchLen);
+      rangeBegPtr = docBegPtr + (m_MatchPos + max(1,m_MatchLen));
 
       result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
     }
