@@ -35,7 +35,7 @@
 
 
 /* PROPERTY: 'NEWLINE': POSIX [[:NEWLINE:]] */
-static const OnigCodePoint 
+static const OnigCodePoint
 CR_NEWLINE[] = { 1,
 0x000a, 0x000a,
 }; /* END of CR_NEWLINE */
