@@ -3558,14 +3558,25 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
 
   // override hyperlink hotspot style
-  if (bHyperlinkHotspot) {
-    Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
-    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength());
-  }
+  Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
+  EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   // Save current lexer
   pLexCurrent = pLexNew;
 
+}
+
+
+//=============================================================================
+//
+//  Style_GetHotspotID()
+//
+int Style_GetHotspotID()
+{
+  if (bHyperlinkHotspot) {
+    return (bUse2ndDefaultStyle ? (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT + STY_CNT_LAST) : (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT));
+  }
+  return (bUse2ndDefaultStyle ? (STY_DEFAULT + STY_CNT_LAST) : STY_DEFAULT);
 }
 
 
@@ -3579,11 +3590,11 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
   int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
 
   // Hot Spot settings
-  const int iStyleHotSpot = (STY_URL_HOTSPOT + iIdx);
+  const int iStyleHotSpot = Style_GetHotspotID();
 
   if (bHotSpot)
   {
-    const WCHAR* lpszStyleHotSpot = lexDefault.Styles[iStyleHotSpot].szValue;
+    const WCHAR* lpszStyleHotSpot = lexDefault.Styles[STY_URL_HOTSPOT + iIdx].szValue;
 
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)TRUE);
     SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
@@ -5632,20 +5643,6 @@ void Style_SelectLexerDlg(HWND hwnd)
                 GetParent(hwnd),Style_SelectLexerDlgProc,0))
 
     Style_SetLexer(hwnd,pLexCurrent);
-}
-
-
-//=============================================================================
-//
-//  Style_GetHotspotID()
-//
-int Style_GetHotspotID(HWND hwnd)
-{
-  UNUSED(hwnd);
-  if (bHyperlinkHotspot) {
-    return (bUse2ndDefaultStyle ? (STY_URL_HOTSPOT + STY_CNT_LAST) : STY_URL_HOTSPOT);
-  }
-  return (bUse2ndDefaultStyle ? (STY_DEFAULT + STY_CNT_LAST) : STY_DEFAULT);
 }
 
 // End of Styles.c

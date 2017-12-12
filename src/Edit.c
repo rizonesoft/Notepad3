@@ -5793,10 +5793,8 @@ void EditCompleteWord(HWND hwnd, BOOL autoInsert) {
 //  EditUpdateUrlHotspots()
 //  Find and mark all URL hot-spots
 //
-void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos)
+void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHotspot)
 {
-  if (!bHyperlinkHotspot)  return;
-
   const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
                             "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
                             "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
@@ -5817,8 +5815,7 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos)
 
   int start = startPos;
   int end = endPos;
-  while (TRUE) 
-  {
+  do {
     int iPos = EditFindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, FALSE);
 
     if (iPos < 0)
@@ -5826,14 +5823,18 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos)
 
     // mark this match
     SciCall_StartStyling(iPos);
-    SciCall_SetStyling((end - start), Style_GetHotspotID(hwnd));
+    SciCall_SetStyling((end - start), Style_GetHotspotID());
 
     // next occurrence
     start = end;
     end = endPos;
-    if (start >= end)
-      break;
   }
+  while (start < end);
+
+  if (bActiveHotspot)
+    UpdateEditWndUI();
+  else
+    SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
 }
 
 
@@ -5885,7 +5886,6 @@ void EditMatchBrace(HWND hwnd)
     int iLine = SciCall_LineFromPosition(iEndStyled);
     iEndStyled = SciCall_PositionFromLine(iLine);
     SendMessage(hwnd, SCI_COLOURISE, iEndStyled, -1);
-    //~EditUpdateUrlHotspots(hwnd, iEndStyled, SciCall_GetLineEndPosition(iLine));
   }
 
   int iPos = SciCall_GetCurrentPos();
