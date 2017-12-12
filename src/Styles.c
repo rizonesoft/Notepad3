@@ -3557,7 +3557,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   // apply lexer styles
   SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
 
-  // override hyperlink hotspot style
+  // override lexer style by hyperlink hotspot style
   Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
   EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 

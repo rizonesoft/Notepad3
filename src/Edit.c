@@ -5831,6 +5831,8 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
   }
   while (start < end);
 
+  SciCall_StartStyling(endPos);
+
   if (bActiveHotspot)
     UpdateEditWndUI();
   else
