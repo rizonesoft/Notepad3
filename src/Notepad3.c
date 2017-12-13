@@ -1031,7 +1031,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
-  EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   // print file immediately and quit
   if (flagPrintFileAndLeave)
