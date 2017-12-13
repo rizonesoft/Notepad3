@@ -3033,7 +3033,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)pClip);
         }
-        LocalFree(pClip);
 
         if (bSwapClipBoard) {
           if (iCurrPos > iAnchor)
@@ -3043,6 +3042,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         }
 
         EndSelUndoAction(token);
+
+        LocalFree(pClip);
 
         UpdateToolbar();
         UpdateStatusbar();
