@@ -5660,11 +5660,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
           }
           else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-            EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
+            //EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
           }
           if (scn->linesAdded != 0) {
             UpdateLineNumberWidth();
-            EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+            //~EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           }
           bModified = TRUE;
           break;
@@ -5692,7 +5692,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
           UpdateToolbar();
-          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+          //EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           break;
       }
       break;
