@@ -3172,8 +3172,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   // --------------------------------------------------------------------------
 
-  Style_SetUrlHotSpot(hwnd, TRUE);
-
   Style_SetStyles(hwnd, lexDefault.Styles[STY_MARGIN + iIdx].iStyle, lexDefault.Styles[STY_MARGIN + iIdx].szValue); // linenumber
 
   if (bUseOldStyleBraceMatching) {
@@ -3435,6 +3433,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   if (SendMessage(hwnd,SCI_GETINDENTATIONGUIDES,0,0) != SC_IV_NONE)
     Style_SetIndentGuides(hwnd,TRUE);
 
+
   if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
   {
     int j;
@@ -3534,9 +3533,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
 
   // apply lexer styles
+  Style_SetUrlHotSpot(hwnd, TRUE);
   SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
 
-  // override lexer style by hyperlink hotspot style
+  // update UI for hotspots
+  Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
   EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
   
   // Save current lexer
@@ -3547,14 +3548,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
 //=============================================================================
 //
-//  Style_GetHotspotID()
+//  Style_GetHotspotStyleID()
 //
-int Style_GetHotspotID()
+int Style_GetHotspotStyleID()
 {
-  if (bHyperlinkHotspot) {
-    return (bUse2ndDefaultStyle ? (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT + STY_CNT_LAST) : (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT));
-  }
-  return (bUse2ndDefaultStyle ? (STY_DEFAULT + STY_CNT_LAST) : STY_DEFAULT);
+  return (bUse2ndDefaultStyle ? (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT + STY_CNT_LAST) : (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT));
 }
 
 
@@ -3568,7 +3566,7 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
   int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
 
   // Hot Spot settings
-  const int iStyleHotSpot = Style_GetHotspotID();
+  const int iStyleHotSpot = Style_GetHotspotStyleID();
 
   if (bHotSpot)
   {
