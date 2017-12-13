@@ -5795,26 +5795,29 @@ void EditCompleteWord(HWND hwnd, BOOL autoInsert) {
 //
 void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHotspot)
 {
-  const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
-                            "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
-                            "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
-  
-  const int iRegExLen = (int)strlen(pszUrlRegEx);
-
   if (endPos < startPos) {
     int tmp = startPos;  startPos = endPos;  endPos = tmp;  // swap
   }
+
+  const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
+    "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
+    "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
+
+  const int iRegExLen = (int)strlen(pszUrlRegEx);
+
   if (startPos < 0) { // current line only
     int currPos = SciCall_GetCurrentPos();
     int lineNo = SciCall_LineFromPosition(currPos);
     startPos = SciCall_PositionFromLine(lineNo);
     endPos = SciCall_GetLineEndPosition(lineNo);
   }
-  if (endPos == startPos)  
+  if (endPos == startPos)
     return;
 
   int start = startPos;
   int end = endPos;
+  int iStyle = bActiveHotspot ? Style_GetHotspotStyleID() : STYLE_DEFAULT;
+  
   do {
     int iPos = EditFindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, FALSE);
 
@@ -5823,20 +5826,23 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
 
     // mark this match
     SciCall_StartStyling(iPos);
-    SciCall_SetStyling((end - start), Style_GetHotspotID());
+    SciCall_SetStyling((end - start), iStyle);
 
     // next occurrence
     start = end;
     end = endPos;
-  }
-  while (start < end);
 
-  SciCall_StartStyling(endPos);
+  } while (start < end);
 
-  if (bActiveHotspot)
+  if (bActiveHotspot) 
+  {
+    SciCall_StartStyling(endPos);
     UpdateEditWndUI();
-  else
+  }
+  else {
+    SciCall_StartStyling(startPos);
     SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
+  }
 }
 
 
