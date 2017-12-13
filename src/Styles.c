@@ -1197,6 +1197,7 @@ KEYWORDLIST KeyWords_CONF = {
 
 EDITLEXER lexCONF = { SCLEX_CONF, 63020, L"Apache Config Files", L"conf; htaccess", L"", &KeyWords_CONF, {
                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                      //{ SCE_CONF_DEFAULT, L"Default", L"", L"" },
                       { SCE_CONF_COMMENT, 63127, L"Comment", L"fore:#648000", L"" },
                       { SCE_CONF_STRING, 63131, L"String", L"fore:#B000B0", L"" },
                       { SCE_CONF_NUMBER, 63130, L"Number", L"fore:#FF4000", L"" },
@@ -1417,7 +1418,7 @@ KEYWORDLIST KeyWords_RUBY = {
 
 EDITLEXER lexRUBY = { SCLEX_RUBY, 63304, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; Rakefile; gemspec", L"", &KeyWords_RUBY, {
                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_P_DEFAULT, L"Default", L"", L"" },
+                    //{ SCE_RB_DEFAULT, L"Default", L"", L"" },
                     { MULTI_STYLE(SCE_RB_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                     { SCE_RB_WORD, 63128, L"Keyword", L"fore:#00007F", L"" },
                     { SCE_RB_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -1502,6 +1503,7 @@ KEYWORDLIST KeyWords_BASH = {
 
 EDITLEXER lexBASH = { SCLEX_BASH, 63259, L"Shell Script", L"sh", L"", &KeyWords_BASH, {
                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                      //{ SCE_SH_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_SH_ERROR, 63261, L"Error", L"", L"" },
                       { SCE_SH_COMMENTLINE, 63127, L"Comment", L"fore:#008000", L"" },
                       { SCE_SH_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
@@ -1550,6 +1552,7 @@ KEYWORDLIST KeyWords_TCL = {
 
 EDITLEXER lexTCL = { SCLEX_TCL, 63273, L"Tcl Script", L"tcl; itcl", L"", &KeyWords_TCL, {
                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                     //{ SCE_TCL_DEFAULT, 63126, L"Default", L"", L"" },
                      { SCE_TCL__MULTI_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_TCL__MULTI_KEYWORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
                      { SCE_TCL_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
@@ -3166,8 +3169,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   // Use 2nd default style
   iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
 
-  // Font quality setup, check availability of Consolas
-  Style_SetFontQuality(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
+  // check availability of Consolas
   fIsConsolasAvailable = IsFontAvailable(L"Consolas");
 
   // Clear
@@ -3178,25 +3180,32 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
-  SendMessage(hwnd, SCI_STYLESETCHARACTERSET, STYLE_DEFAULT, (LPARAM)DEFAULT_CHARSET);
-  
-  iBaseFontSize = 10;
-  Style_SetStyles(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].iStyle, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);  // default
-  Style_StrGetSize(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iBaseFontSize);                        // base size
-
-  // Auto-select codepage according to charset
-  //~Style_SetACPfromCharSet(hwnd);
-
+ 
   if (!Style_StrGetColor(TRUE, lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iValue))
     SendMessage(hwnd, SCI_STYLESETFORE, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOWTEXT));   // default text color
   if (!Style_StrGetColor(FALSE, lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iValue))
     SendMessage(hwnd, SCI_STYLESETBACK, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOW));       // default window color
 
+  // Auto-select codepage according to charset
+  //~Style_SetACPfromCharSet(hwnd);
+
+  // Font quality setup, 
+  Style_SetFontQuality(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
+
+  iBaseFontSize = 10;
+  Style_StrGetSize(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iBaseFontSize);               // base size
+
+  // set default lexer styles
   if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
-    Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue); // lexer default
-  // Reset
+    Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue);
+  else
+    Style_SetStyles(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].iStyle, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
+
+
+  // Re-Set to prior defind default style (STYLE_DEFAULT)
   SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
 
+  // --------------------------------------------------------------------------
 
   Style_SetStyles(hwnd, lexDefault.Styles[STY_MARGIN + iIdx].iStyle, lexDefault.Styles[STY_MARGIN + iIdx].szValue); // linenumber
 
@@ -3258,6 +3267,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
   SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
 
+  // Hyperlink Hotspot style
+  Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
 
   // More default values...
 
@@ -3558,7 +3569,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
 
   // override lexer style by hyperlink hotspot style
-  Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
   EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   // Save current lexer
@@ -4594,7 +4604,6 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
 //
 void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
 {
-
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   int  iValue;
 
@@ -4608,6 +4617,8 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   // Size
   if (Style_StrGetSize(lpszStyle,&iValue))
     SendMessage(hwnd,SCI_STYLESETSIZE,iStyle,(LPARAM)iValue);
+  else
+    SendMessage(hwnd, SCI_STYLESETSIZE,iStyle,(LPARAM)iBaseFontSize);
 
   // Fore
   if (Style_StrGetColor(TRUE,lpszStyle,&iValue))
@@ -4648,7 +4659,8 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   // Character Set
   if (Style_StrGetCharSet(lpszStyle,&iValue))
     SendMessage(hwnd,SCI_STYLESETCHARACTERSET,iStyle,(LPARAM)iValue);
-
+  else
+    SendMessage(hwnd,SCI_STYLESETCHARACTERSET,iStyle,(LPARAM)DEFAULT_CHARSET);
 }
 
 
