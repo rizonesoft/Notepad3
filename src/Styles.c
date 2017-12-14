@@ -4369,6 +4369,7 @@ BOOL Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
       StringCchCopy(lpszStyle, cchSize, IndicatorTypes[*idx]);
       return TRUE;
     }
+    StringCchCopy(lpszStyle, cchSize, IndicatorTypes[INDIC_ROUNDBOX]); // default
   }
   return FALSE;
 }
