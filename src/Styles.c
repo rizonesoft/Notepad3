@@ -5451,9 +5451,9 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         ListView_InsertColumn(hwndLV,0,&lvc);
 
         // Add lexers
-        for (i = 0; i < COUNTOF(pLexArray); i++)
-          Style_AddLexerToListView(hwndLV,pLexArray[i]);
-
+        for (i = 0; i < COUNTOF(pLexArray); i++) {
+          Style_AddLexerToListView(hwndLV, pLexArray[i]);
+        }
         ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
 
         // Select current lexer

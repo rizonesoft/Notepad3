@@ -4311,9 +4311,9 @@ int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
   StringCchCopyA(szFind, cchCnt, lpefr->szFind);
 
   BOOL bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
-  if (lpefr->bTransformBS || bIsRegEx)
-    TransformBackslashes(szFind, bIsRegEx, Encoding_SciGetCodePage(hwnd),NULL);
-
+  if (lpefr->bTransformBS || bIsRegEx) {
+    TransformBackslashes(szFind, bIsRegEx, Encoding_SciGetCodePage(hwnd), NULL);
+  }
   if (StringCchLenA(szFind, FNDRPL_BUFFER) > 0) {
     if (lpefr->bWildcardSearch)
       EscapeWildcards(szFind, lpefr);
@@ -5262,19 +5262,19 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
 char* __fastcall EditGetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
 {
   char* pszReplace = NULL; // replace text of arbitrary size
-  if (StringCchCompareNA(lpefr->szReplace, FNDRPL_BUFFER, "^c", -1) == 0) {
+  if (StringCchCompareINA(lpefr->szReplace, FNDRPL_BUFFER, "^c", -1) == 0) {
     *iReplaceMsg = SCI_REPLACETARGET;
     pszReplace = EditGetClipboardText(hwnd, TRUE, NULL, NULL);
   }
   else {
     pszReplace = StrDupA(lpefr->szReplace);
-    if (!pszReplace)
+    if (!pszReplace) {
       pszReplace = StrDupA("");
-
+    }
     BOOL bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
-    if (lpefr->bTransformBS || bIsRegEx)
+    if (lpefr->bTransformBS || bIsRegEx) {
       TransformBackslashes(pszReplace, bIsRegEx, Encoding_SciGetCodePage(hwnd), iReplaceMsg);
-
+    }
   }
   return pszReplace;
 }
