@@ -1031,7 +1031,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
-  EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   // print file immediately and quit
   if (flagPrintFileAndLeave)
@@ -2442,8 +2441,11 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   i = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) > 0 || StringCchLenW(szIniFile2,COUNTOF(szIniFile2)) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,bEnableSaveSettings && i);
 
-  BOOL bIsHLink = ((int)SendMessage(hwndEdit, SCI_GETSTYLEAT, 
-                                    SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0), 0) == Style_GetHotspotID(hwndEdit));
+  BOOL bIsHLink = FALSE;
+  if ((BOOL)SendMessage(hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) 
+  {
+    bIsHLink = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0), 0) == Style_GetHotspotStyleID();
+  }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
   UNUSED(lParam);
@@ -3005,28 +3007,23 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (!pClip)
           break; // recoding canceled
 
+        int iCurrPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+        int iAnchor = iCurrPos;
+
+        int token = BeginSelUndoAction();
+
         if (SendMessage(hwndEdit,SCI_GETSELECTIONEMPTY,0,0))
         {
-          int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-          int iCurrLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
-          int iCurColumn = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
-          int iCurVSpace = (int)SendMessage(hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
-
           SendMessage(hwndEdit, SCI_PASTE, 0, 0);
 
           if (bSwapClipBoard)
             SendMessage(hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
 
-          int newLn = iCurrLine + lineCount + 1;
-          int newCol = (lenLastLine > 1) ? ((lineCount == 0) ? (iCurColumn + lenLastLine + 1) : lenLastLine) : iCurColumn + 1;
-          EditJumpTo(hwndEdit, newLn, newCol + iCurVSpace);
-
+          iCurrPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
         }
         else {
-          int token = BeginSelUndoAction();
 
-          int iCurrPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-          int iAnchor = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
+          iAnchor = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
 
           if (flagPasteBoard)
             bLastCopyFromMe = TRUE;
@@ -3035,19 +3032,22 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             SendMessage(hwndEdit,SCI_COPY,0,0);
 
           SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)pClip);
-
-          if (bSwapClipBoard) {
-            if (iCurrPos > iAnchor)
-              SendMessage(hwndEdit, SCI_SETSEL, iAnchor, iAnchor + lstrlenA(pClip));
-            else
-              SendMessage(hwndEdit, SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
-          }
-
-          EndSelUndoAction(token);
         }
+
+        if (bSwapClipBoard) {
+          if (iCurrPos > iAnchor)
+            SendMessage(hwndEdit, SCI_SETSEL, iAnchor, iAnchor + lstrlenA(pClip));
+          else
+            SendMessage(hwndEdit, SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
+        }
+
+        EndSelUndoAction(token);
+
         LocalFree(pClip);
+
         UpdateToolbar();
         UpdateStatusbar();
+        SendMessage(hwndEdit, SCI_CHOOSECARETX, 0, 0);
       }
       break;
 
@@ -5361,8 +5361,11 @@ void OpenHotSpotURL(int position, BOOL bForceBrowser)
 {
   int iStyle = (int)SendMessage(hwndEdit, SCI_GETSTYLEAT, position, 0);
 
-  if (Style_GetHotspotID(hwndEdit) != iStyle)
+  if (Style_GetHotspotStyleID() != iStyle)
     return; 
+
+  if (!(BOOL)SendMessage(hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0))
+    return;
 
   // get left most position of style
   int pos = position;
@@ -5479,12 +5482,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           break;
 
-        case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
-          {
-            int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
-            EditUpdateUrlHotspots(hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, bHyperlinkHotspot);
-          }
-          break;
+        //case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
+        //  {
+        //    int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
+        //    EditUpdateUrlHotspots(hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, bHyperlinkHotspot);
+        //  }
+        //  break;
 
         case SCN_UPDATEUI:
           if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) 
@@ -5654,11 +5657,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
           }
           else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-            EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
+            //EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
           }
           if (scn->linesAdded != 0) {
             UpdateLineNumberWidth();
-            EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+            //~EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           }
           bModified = TRUE;
           break;
@@ -5686,7 +5689,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
           UpdateToolbar();
-          EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+          //EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           break;
       }
       break;

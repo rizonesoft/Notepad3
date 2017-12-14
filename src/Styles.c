@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -336,8 +336,7 @@ KEYWORDLIST KeyWords_CSS = {
 
 
 EDITLEXER lexCSS = { SCLEX_CSS, 63003, L"CSS Style Sheets", L"css; less; sass; scss", L"", &KeyWords_CSS, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_CSS_DEFAULT, L"Default", L"", L"" },
+                     { SCE_CSS_DEFAULT, 63126, L"Default", L"", L"" },
                      { SCE_CSS_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
                      { SCE_CSS_TAG, 63136, L"HTML Tag", L"bold; fore:#0A246A", L"" },
                      { SCE_CSS_CLASS, 63194, L"Tag-Class", L"fore:#648000", L"" },
@@ -391,8 +390,7 @@ KEYWORDLIST KeyWords_CPP = {
 };
 
 EDITLEXER lexCPP = { SCLEX_CPP, 63004, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; m; mm; idl; inl; odl", L"", &KeyWords_CPP, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_C_DEFAULT, L"Default", L"", L"" },
+                     { SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
                      { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
                      { SCE_C_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
@@ -543,8 +541,7 @@ KEYWORDLIST KeyWords_CS = {
 
 
 EDITLEXER lexCS = { SCLEX_CPP, 63005, L"C# Source Code", L"cs", L"", &KeyWords_CS, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_C_DEFAULT, L"Default", L"", L"" },
+                    { SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
                     { SCE_C_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                     { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#804000", L"" },
                     { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -573,8 +570,7 @@ KEYWORDLIST KeyWords_RC = {
 
 
 EDITLEXER lexRC = { SCLEX_CPP, 63006, L"Resource Script", L"rc; rc2; rct; rh; r; dlg", L"", &KeyWords_RC, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_C_DEFAULT, L"Default", L"", L"" },
+                    { SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
                     { SCE_C_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                     { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
                     { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -594,8 +590,7 @@ KEYWORDLIST KeyWords_MAK = {
 
 
 EDITLEXER lexMAK = { SCLEX_MAKEFILE, 63007, L"Makefiles", L"mak; make; mk; dsp; msc; msvc", L"", &KeyWords_MAK, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"fore:#0A246A", L"" },
-                     //{ SCE_MAKE_DEFAULT, L"Default", L"", L"" },
+                     { SCE_MAKE_DEFAULT, 63126, L"Default", L"fore:#0A246A", L"" },
                      { SCE_MAKE_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                      { MULTI_STYLE(SCE_MAKE_IDENTIFIER,SCE_MAKE_IDEOL,0,0), 63129, L"Identifier", L"fore:#003CE6", L"" },
                      { SCE_MAKE_OPERATOR, 63132, L"Operator", L"", L"" },
@@ -615,8 +610,7 @@ KEYWORDLIST KeyWords_VBS = {
 
 
 EDITLEXER lexVBS = { SCLEX_VBSCRIPT, 63008, L"VBScript", L"vbs; dsm", L"", &KeyWords_VBS, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_B_DEFAULT, L"Default", L"", L"" },
+                    { SCE_B_DEFAULT, 63126, L"Default", L"", L"" },
                     { SCE_B_COMMENT, 63127, L"Comment", L"fore:#808080", L"" },
                     { SCE_B_KEYWORD, 63128, L"Keyword", L"bold; fore:#B000B0", L"" },
                     { SCE_B_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -649,8 +643,7 @@ KEYWORDLIST KeyWords_VB = {
 
 
 EDITLEXER lexVB = { SCLEX_VB, 63009, L"Visual Basic", L"vb; bas; frm; cls; ctl; pag; dsr; dob", L"", &KeyWords_VB, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_B_DEFAULT, L"Default", L"", L"" },
+                    { SCE_B_DEFAULT, 63126, L"Default", L"", L"" },
                     { SCE_B_COMMENT, 63127, L"Comment", L"fore:#808080", L"" },
                     { SCE_B_KEYWORD, 63128, L"Keyword", L"bold; fore:#B000B0", L"" },
                     { SCE_B_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -676,8 +669,7 @@ KEYWORDLIST KeyWords_JS = {
 
 
 EDITLEXER lexJS = { SCLEX_CPP, 63010, L"JavaScript", L"js; jse; jsm; as", L"", &KeyWords_JS, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_C_DEFAULT, L"Default", L"", L"" },
+                    { SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
                     { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
                     { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#A46000", L"" },
                     { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -699,8 +691,7 @@ KEYWORDLIST KeyWords_JSON = {
 
 
 EDITLEXER lexJSON = { SCLEX_JSON, 63382, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", &KeyWords_JSON, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_C_DEFAULT, L"Default", L"", L"" },
+                    { SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
                     { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
                     { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#A46000", L"" },
                     { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -752,8 +743,7 @@ KEYWORDLIST KeyWords_JAVA = {
 
 
 EDITLEXER lexJAVA = { SCLEX_CPP, 63011, L"Java Source Code", L"java", L"", &KeyWords_JAVA, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_C_DEFAULT, L"Default", L"", L"" },
+                      { SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
                       { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#A46000", L"" },
                       { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -779,8 +769,7 @@ KEYWORDLIST KeyWords_PAS = {
 
 
 EDITLEXER lexPAS = { SCLEX_PASCAL, 63012, L"Pascal Source Code", L"pas; dpr; dpk; dfm; inc; pp", L"", &KeyWords_PAS, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_PAS_DEFAULT, L"Default", L"", L"" },
+                     { SCE_PAS_DEFAULT, 63126, L"Default", L"", L"" },
                      { MULTI_STYLE(SCE_PAS_COMMENT,SCE_PAS_COMMENT2,SCE_PAS_COMMENTLINE,0), 63127, L"Comment", L"fore:#646464", L"" },
                      { SCE_PAS_WORD, 63128, L"Keyword", L"bold; fore:#800080", L"" },
                      { SCE_PAS_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -883,8 +872,7 @@ KEYWORDLIST KeyWords_ASM = {
 
 
 EDITLEXER lexASM = { SCLEX_ASM, 63013, L"Assembly Script", L"asm", L"", &KeyWords_ASM, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_ASM_DEFAULT, L"Default", L"", L"" },
+                     { SCE_ASM_DEFAULT, 63126, L"Default", L"", L"" },
                      { MULTI_STYLE(SCE_ASM_COMMENT,SCE_ASM_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_ASM_IDENTIFIER, 63129, L"Identifier", L"", L"" },
                      { MULTI_STYLE(SCE_ASM_STRING,SCE_ASM_CHARACTER,SCE_ASM_STRINGEOL,0), 63131, L"String", L"fore:#008000", L"" },
@@ -924,8 +912,7 @@ KEYWORDLIST KeyWords_PL = {
 
 
 EDITLEXER lexPL = { SCLEX_PERL, 63014, L"Perl Script", L"pl; pm; cgi; pod", L"", &KeyWords_PL, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_PL_DEFAULT, L"Default", L"", L"" },
+                    { SCE_PL_DEFAULT, 63126, L"Default", L"", L"" },
                     { SCE_PL_COMMENTLINE, 63127, L"Comment", L"fore:#646464", L"" },
                     { SCE_PL_WORD, 63128, L"Keyword", L"bold; fore:#804000", L"" },
                     { SCE_PL_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -967,8 +954,7 @@ KEYWORDLIST KeyWords_PROPS = {
 
 
 EDITLEXER lexPROPS = { SCLEX_PROPERTIES, 63015, L"Configuration Files", L"ini; inf; cfg; properties; oem; sif; url; sed; theme", L"", &KeyWords_PROPS, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_PROPS_DEFAULT, L"Default", L"", L"" },
+                     { SCE_PROPS_DEFAULT, 63126, L"Default", L"", L"" },
                      { SCE_PROPS_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_PROPS_SECTION, 63232, L"Section", L"fore:#000000; back:#FF8040; bold; eolfilled", L"" },
                      { SCE_PROPS_ASSIGNMENT, 63233, L"Assignment", L"fore:#FF0000", L"" },
@@ -991,8 +977,7 @@ KEYWORDLIST KeyWords_BAT = {
 
 
 EDITLEXER lexBAT = { SCLEX_BATCH, 63016, L"Batch Files", L"bat; cmd", L"", &KeyWords_BAT, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_BAT_DEFAULT, L"Default", L"", L"" },
+                     { SCE_BAT_DEFAULT, 63126, L"Default", L"", L"" },
                      { SCE_BAT_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_BAT_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
                      { SCE_BAT_IDENTIFIER, 63129, L"Identifier", L"fore:#003CE6; back:#FFF1A8", L"" },
@@ -1007,8 +992,7 @@ KEYWORDLIST KeyWords_DIFF = {
 
 
 EDITLEXER lexDIFF = { SCLEX_DIFF, 63017, L"Diff Files", L"diff; patch", L"", &KeyWords_DIFF, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_DIFF_DEFAULT, L"Default", L"", L"" },
+                      { SCE_DIFF_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_DIFF_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                       { SCE_DIFF_COMMAND, 63236, L"Command", L"bold; fore:#0A246A", L"" },
                       { SCE_DIFF_HEADER, 63238, L"Source and Destination", L"fore:#C80000; back:#FFF1A8; eolfilled", L"" },
@@ -1046,8 +1030,7 @@ KEYWORDLIST KeyWords_SQL = {
 
 
 EDITLEXER lexSQL = { SCLEX_SQL, 63018, L"SQL Query", L"sql", L"", &KeyWords_SQL, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_SQL_DEFAULT, L"Default", L"", L"" },
+                     { SCE_SQL_DEFAULT, 63126, L"Default", L"", L"" },
                      { SCE_SQL_COMMENT, 63127, L"Comment", L"fore:#505050", L"" },
                      { SCE_SQL_WORD, 63128, L"Keyword", L"bold; fore:#800080", L"" },
                      { MULTI_STYLE(SCE_SQL_STRING,SCE_SQL_CHARACTER,0,0), 63131, L"String", L"fore:#008000; back:#FFF1A8", L"" },
@@ -1066,8 +1049,7 @@ KEYWORDLIST KeyWords_PY = {
 
 
 EDITLEXER lexPY = { SCLEX_PYTHON, 63019, L"Python Script", L"py; pyw", L"", &KeyWords_PY, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_P_DEFAULT, L"Default", L"", L"" },
+                    { SCE_P_DEFAULT, 63126, L"Default", L"", L"" },
                     { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#880000", L"" },
                     { SCE_P_WORD, 63128, L"Keyword", L"fore:#000088", L"" },
                     { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -1196,7 +1178,7 @@ KEYWORDLIST KeyWords_CONF = {
 
 
 EDITLEXER lexCONF = { SCLEX_CONF, 63020, L"Apache Config Files", L"conf; htaccess", L"", &KeyWords_CONF, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                      { SCE_CONF_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_CONF_COMMENT, 63127, L"Comment", L"fore:#648000", L"" },
                       { SCE_CONF_STRING, 63131, L"String", L"fore:#B000B0", L"" },
                       { SCE_CONF_NUMBER, 63130, L"Number", L"fore:#FF4000", L"" },
@@ -1266,8 +1248,7 @@ KEYWORDLIST KeyWords_PS = {
 
 
 EDITLEXER lexPS = { SCLEX_POWERSHELL, 63021, L"PowerShell Script", L"ps1; psd1; psm1", L"", &KeyWords_PS, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_POWERSHELL_DEFAULT, L"Default", L"", L"" },
+                    { SCE_POWERSHELL_DEFAULT, 63126, L"Default", L"", L"" },
                     { MULTI_STYLE(SCE_POWERSHELL_COMMENT,SCE_POWERSHELL_COMMENTSTREAM,0,0), 63127, L"Comment", L"fore:#646464", L"" },
                     { SCE_POWERSHELL_KEYWORD, 63128, L"Keyword", L"bold; fore:#804000", L"" },
                     { SCE_POWERSHELL_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -1335,8 +1316,7 @@ KEYWORDLIST KeyWords_NSIS = {
 
 
 EDITLEXER lexNSIS = { SCLEX_NSIS, 63284, L"NSIS Script", L"nsi; nsh", L"", &KeyWords_NSIS, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_NSIS_DEFAULT, L"Default", L"", L"" },
+                      { SCE_NSIS_DEFAULT, 63126, L"Default", L"", L"" },
                       { MULTI_STYLE(SCE_NSIS_COMMENT,SCE_NSIS_COMMENTBOX,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                       { MULTI_STYLE(SCE_NSIS_STRINGDQ,SCE_NSIS_STRINGLQ,SCE_NSIS_STRINGRQ,0), 63131, L"String", L"fore:#666666; back:#EEEEEE", L"" },
                       { SCE_NSIS_FUNCTION, 63277, L"Function", L"fore:#0033CC", L"" },
@@ -1393,8 +1373,7 @@ KEYWORDLIST KeyWords_INNO = {
 
 
 EDITLEXER lexINNO = { SCLEX_INNOSETUP, 63293, L"Inno Setup Script", L"iss; isl; islu", L"", &KeyWords_INNO, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_INNO_DEFAULT, L"Default", L"", L"" },
+                      { SCE_INNO_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_INNO_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                       { SCE_INNO_KEYWORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
                       { SCE_INNO_PARAMETER, 63294, L"Parameter", L"fore:#0000FF", L"" },
@@ -1416,8 +1395,7 @@ KEYWORDLIST KeyWords_RUBY = {
 "", "", "", "", "", "", "", "" };
 
 EDITLEXER lexRUBY = { SCLEX_RUBY, 63304, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; Rakefile; gemspec", L"", &KeyWords_RUBY, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_P_DEFAULT, L"Default", L"", L"" },
+                    { SCE_RB_DEFAULT, 63126, L"Default", L"", L"" },
                     { MULTI_STYLE(SCE_RB_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                     { SCE_RB_WORD, 63128, L"Keyword", L"fore:#00007F", L"" },
                     { SCE_RB_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -1466,8 +1444,7 @@ KEYWORDLIST KeyWords_LUA = {
 
 
 EDITLEXER lexLUA = { SCLEX_LUA, 63298, L"Lua Script", L"lua", L"", &KeyWords_LUA, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_LUA_DEFAULT, L"Default", L"", L"" },
+                    { SCE_LUA_DEFAULT, 63126, L"Default", L"", L"" },
                     { MULTI_STYLE(SCE_LUA_COMMENT,SCE_LUA_COMMENTLINE,SCE_LUA_COMMENTDOC,0), 63127, L"Comment", L"fore:#008000", L"" },
                     { SCE_LUA_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
                     { SCE_LUA_WORD, 63128, L"Keyword", L"fore:#00007F", L"" },
@@ -1501,7 +1478,7 @@ KEYWORDLIST KeyWords_BASH = {
 
 
 EDITLEXER lexBASH = { SCLEX_BASH, 63259, L"Shell Script", L"sh", L"", &KeyWords_BASH, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                      { SCE_SH_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_SH_ERROR, 63261, L"Error", L"", L"" },
                       { SCE_SH_COMMENTLINE, 63127, L"Comment", L"fore:#008000", L"" },
                       { SCE_SH_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
@@ -1549,7 +1526,7 @@ KEYWORDLIST KeyWords_TCL = {
 
 
 EDITLEXER lexTCL = { SCLEX_TCL, 63273, L"Tcl Script", L"tcl; itcl", L"", &KeyWords_TCL, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                     { SCE_TCL_DEFAULT, 63126, L"Default", L"", L"" },
                      { SCE_TCL__MULTI_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_TCL__MULTI_KEYWORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
                      { SCE_TCL_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
@@ -2208,7 +2185,7 @@ KEYWORDLIST KeyWords_AU3 = {
 
 
 EDITLEXER lexAU3 = { SCLEX_AU3, 63276, L"AutoIt3 Script", L"au3", L"", &KeyWords_AU3, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                     { SCE_AU3_DEFAULT, 63126, L"Default", L"", L"" },
                      { MULTI_STYLE(SCE_AU3_COMMENT,SCE_AU3_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_AU3_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
                      { SCE_AU3_FUNCTION, 63277, L"Function", L"fore:#0000FF", L"" },
@@ -2225,7 +2202,7 @@ EDITLEXER lexAU3 = { SCLEX_AU3, 63276, L"AutoIt3 Script", L"au3", L"", &KeyWords
 
 
 EDITLEXER lexLATEX = { SCLEX_LATEX, 63281, L"LaTeX Files", L"tex; latex; sty", L"", &KeyWords_NULL, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                       { SCE_L_DEFAULT, 63126, L"Default", L"", L"" },
                        { MULTI_STYLE(SCE_L_COMMAND,SCE_L_SHORTCMD,SCE_L_CMDOPT,0), 63236, L"Command", L"fore:#0000FF", L"" },
                        { MULTI_STYLE(SCE_L_COMMENT,SCE_L_COMMENT2,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                        { MULTI_STYLE(SCE_L_MATH,SCE_L_MATH2,0,0), 63283, L"Math", L"fore:#FF0000", L"" },
@@ -2351,8 +2328,7 @@ KEYWORDLIST KeyWords_AHK = {
 
 
 EDITLEXER lexAHK = { SCLEX_AHK, 63305, L"AutoHotkey Script", L"ahk; ia; scriptlet", L"", &KeyWords_AHK, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_AHK_DEFAULT, L"Default", L"", L"" },
+                     { SCE_AHK_DEFAULT, 63126, L"Default", L"", L"" },
                      { MULTI_STYLE(SCE_AHK_COMMENTLINE,SCE_AHK_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_AHK_ESCAPE, 63306, L"Escape", L"fore:#FF8000", L"" },
                      { SCE_AHK_SYNOPERATOR, 63307, L"Syntax Operator", L"fore:#7F200F", L"" },
@@ -2405,8 +2381,7 @@ KEYWORDLIST KeyWords_CMAKE = {
 
 
 EDITLEXER lexCmake = { SCLEX_CMAKE, 63324, L"Cmake Script", L"cmake; ctest", L"", &KeyWords_CMAKE, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                       //{ SCE_CMAKE_DEFAULT, L"Default", L"", L"" },
+                       { SCE_CMAKE_DEFAULT, 63126, L"Default", L"", L"" },
                        { SCE_CMAKE_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                        { MULTI_STYLE(SCE_CMAKE_STRINGDQ,SCE_CMAKE_STRINGLQ,SCE_CMAKE_STRINGRQ,0), 63131, L"String", L"back:#EEEEEE; fore:#7F007F", L"" },
                        { SCE_CMAKE_COMMANDS, 63277, L"Function", L"fore:#00007F", L"" },
@@ -2498,8 +2473,7 @@ KEYWORDLIST KeyWords_AVS = {
 
 
 EDITLEXER lexAVS = { SCLEX_AVS, 63332, L"AviSynth Script", L"avs; avsi", L"", &KeyWords_AVS, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_AVS_DEFAULT, L"Default", L"", L"" },
+                     { SCE_AVS_DEFAULT, 63126, L"Default", L"", L"" },
                      { MULTI_STYLE(SCE_AVS_COMMENTLINE,SCE_AVS_COMMENTBLOCK,SCE_AVS_COMMENTBLOCKN,0), 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_AVS_OPERATOR, 63132, L"Operator", L"", L"" },
                      { MULTI_STYLE(SCE_AVS_STRING,SCE_AVS_TRIPLESTRING,0,0), 63131, L"String", L"fore:#7F007F", L"" },
@@ -2518,8 +2492,7 @@ KEYWORDLIST KeyWords_MARKDOWN = {
 
 
 EDITLEXER lexMARKDOWN = { SCLEX_MARKDOWN, 63336, L"Markdown", L"md; markdown; mdown; mkdn; mkd", L"", &KeyWords_MARKDOWN, {
-                          { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                          //{ SCE_MARKDOWN_DEFAULT, L"Default", L"", L"" },
+                          { SCE_MARKDOWN_DEFAULT, 63126, L"Default", L"", L"" },
                           { SCE_MARKDOWN_LINE_BEGIN, 63338, L"Line Begin", L"", L"" },
                           { MULTI_STYLE(SCE_MARKDOWN_STRONG1,SCE_MARKDOWN_STRONG2,0,0), 63339, L"Strong", L"bold", L"" },
                           { MULTI_STYLE(SCE_MARKDOWN_EM1,SCE_MARKDOWN_EM2,0,0), 63340, L"Emphasis", L"italic", L"" },
@@ -2544,8 +2517,7 @@ KEYWORDLIST KeyWords_YAML = {
 "y n yes no on off true false", "", "", "", "", "", "", "", "" };
 
 EDITLEXER lexYAML = { SCLEX_YAML, 63355, L"YAML", L"yaml; yml", L"", &KeyWords_YAML, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_YAML_DEFAULT, L"Default", L"", L"" },
+                      { SCE_YAML_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_YAML_COMMENT, 63127, L"Comment", L"fore:#008800", L"" },
                       { SCE_YAML_IDENTIFIER, 63129, L"Identifier", L"bold; fore:#0A246A", L"" },
                       { SCE_YAML_KEYWORD, 63128, L"Keyword", L"fore:#880088", L"" },
@@ -2576,7 +2548,7 @@ KEYWORDLIST KeyWords_VHDL = {
 "", "", "" };
 
 EDITLEXER lexVHDL = { SCLEX_VHDL, 63370, L"VHDL", L"vhdl; vhd", L"", &KeyWords_VHDL, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                       { SCE_VHDL_DEFAULT, 63126, L"Default", L"", L"" },
                        { MULTI_STYLE(SCE_VHDL_COMMENTLINEBANG, SCE_VHDL_COMMENT, SCE_VHDL_BLOCK_COMMENT, 0), 63127, L"Comment", L"fore:#008800", L"" },
                        { SCE_VHDL_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
                        { MULTI_STYLE(SCE_VHDL_STRING, SCE_VHDL_STRINGEOL, 0, 0), 63131, L"String", L"fore:#008000", L"" },
@@ -2595,8 +2567,7 @@ KEYWORDLIST KeyWords_Registry = {
 "", "", "", "", "", "", "", "", "" };
 
 EDITLEXER lexRegistry = { SCLEX_REGISTRY, 63370, L"Windows Registry Files", L"reg", L"", &KeyWords_Registry, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                       //{ SCE_REG_DEFAULT, 63126, L"Default", L"", L"" },
+                       { SCE_REG_DEFAULT, 63126, L"Default", L"", L"" },
                        { SCE_REG_COMMENT, 63127, L"Comment", L"fore:#008800", L"" },
                        { SCE_REG_VALUENAME, 63376, L"Value Name", L"", L"" },
                        { MULTI_STYLE(SCE_REG_STRING,SCE_REG_STRING_GUID,0,0), 63131, L"String", L"fore:#008000", L"" },
@@ -2616,8 +2587,7 @@ KEYWORDLIST KeyWords_COFFEESCRIPT = {
 
 
 EDITLEXER lexCOFFEESCRIPT = { SCLEX_COFFEESCRIPT, 63362, L"Coffeescript", L"coffee; Cakefile", L"", &KeyWords_COFFEESCRIPT, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                       //{ SCE_COFFEESCRIPT_DEFAULT, L"Default", L"", L"" },
+                       { SCE_COFFEESCRIPT_DEFAULT, 63126, L"Default", L"", L"" },
                        { MULTI_STYLE(SCE_COFFEESCRIPT_COMMENT,SCE_COFFEESCRIPT_COMMENTLINE,SCE_COFFEESCRIPT_COMMENTDOC,SCE_COFFEESCRIPT_COMMENTBLOCK), 63127, L"Comment", L"fore:#646464", L"" },
                        { MULTI_STYLE(SCE_COFFEESCRIPT_STRING,SCE_COFFEESCRIPT_STRINGEOL,SCE_COFFEESCRIPT_STRINGRAW,0), 63131, L"String", L"fore:#008000", L"" },
                        { SCE_COFFEESCRIPT_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF8000", L"" },
@@ -2640,8 +2610,7 @@ KEYWORDLIST KeyWords_MATLAB = {
 
 
 EDITLEXER lexMATLAB = { SCLEX_MATLAB, 63360, L"MATLAB", L"matlab", L"", &KeyWords_MATLAB, {
-                        { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                        //{ SCE_MATLAB_DEFAULT, L"Default", L"", L"" },
+                        { SCE_MATLAB_DEFAULT, 63126, L"Default", L"", L"" },
                         { SCE_MATLAB_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                         { SCE_MATLAB_COMMAND, 63236, L"Command", L"bold", L"" },
                         { SCE_MATLAB_NUMBER, 63130, L"Number", L"fore:#FF8000", L"" },
@@ -2682,8 +2651,7 @@ KEYWORDLIST KeyWords_D = {
 
 
 EDITLEXER lexD = { SCLEX_D, 63022, L"D Source Code", L"d; dd; di", L"", &KeyWords_D, {
-                   { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                   //{ SCE_D_DEFAULT, L"Default", L"", L"" },
+                   { SCE_D_DEFAULT, 63126, L"Default", L"", L"" },
                    { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
                    { SCE_D_COMMENTDOC, 63259, L"Comment Doc", L"fore:#040A0", L"" },
                    { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
@@ -2726,27 +2694,26 @@ KEYWORDLIST KeyWords_Go = {
 
 
 EDITLEXER lexGo = { SCLEX_D, 63023, L"Go Source Code", L"go", L"", &KeyWords_Go,{
-  { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-  //{ SCE_D_DEFAULT, L"Default", L"", L"" },
-  { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
-  //{ SCE_D_COMMENTDOC, 63259, L"Comment Doc", L"fore:#040A0", L"" },
-  { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-  { SCE_D_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-  { SCE_D_WORD2, 63260, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
-  //{ SCE_D_WORD3, 63128, L"Keyword 3", L"bold; fore:#0A246A", L"" },
-  //{ SCE_D_WORD5, 63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
-  //{ SCE_D_WORD6, 63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
-  //{ SCE_D_WORD7, 63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
-  { SCE_D_TYPEDEF, 63258, L"Typedef", L"italic; fore:#0A246A", L"" },
-  { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,0), 63131, L"String", L"italic; fore:#3C6CDD", L"" },
-  { SCE_D_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-  { SCE_D_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-  //{ SCE_D_COMMENTLINEDOC, L"Default", L"", L"" },
-  //{ SCE_D_COMMENTDOCKEYWORD, L"Default", L"", L"" },
-  //{ SCE_D_STRINGB, L"Default", L"", L"" },
-  //{ SCE_D_STRINGR, L"Default", L"", L"" },
-  //C++: { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), 63133, L"Preprocessor", L"fore:#FF8000", L"" },
-  { -1, 00000, L"", L"", L"" } } };
+                    { SCE_D_DEFAULT, 63126, L"Default", L"", L"" },
+                    { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
+                    //{ SCE_D_COMMENTDOC, 63259, L"Comment Doc", L"fore:#040A0", L"" },
+                    { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_D_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                    { SCE_D_WORD2, 63260, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
+                    //{ SCE_D_WORD3, 63128, L"Keyword 3", L"bold; fore:#0A246A", L"" },
+                    //{ SCE_D_WORD5, 63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
+                    //{ SCE_D_WORD6, 63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
+                    //{ SCE_D_WORD7, 63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
+                    { SCE_D_TYPEDEF, 63258, L"Typedef", L"italic; fore:#0A246A", L"" },
+                    { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,0), 63131, L"String", L"italic; fore:#3C6CDD", L"" },
+                    { SCE_D_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+                    { SCE_D_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+                    //{ SCE_D_COMMENTLINEDOC, L"Default", L"", L"" },
+                    //{ SCE_D_COMMENTDOCKEYWORD, L"Default", L"", L"" },
+                    //{ SCE_D_STRINGB, L"Default", L"", L"" },
+                    //{ SCE_D_STRINGR, L"Default", L"", L"" },
+                    //C++: { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), 63133, L"Preprocessor", L"fore:#FF8000", L"" },
+                    { -1, 00000, L"", L"", L"" } } };
 
 
 
@@ -2768,8 +2735,7 @@ KEYWORDLIST KeyWords_Awk = {
 
 
 EDITLEXER lexAwk = { SCLEX_PYTHON,  63024, L"Awk Script", L"awk", L"", &KeyWords_Awk,{
-  { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-  //{ SCE_P_DEFAULT, L"Default", L"", L"" },
+  { SCE_P_DEFAULT, 63126, L"Default", L"", L"" },
   { SCE_P_WORD, 63128, L"Keyword", L"bold; fore:#0000A0", L"" },
   { SCE_P_WORD2, 63260, L"Keyword 2nd", L"bold; italic; fore:#6666FF", L"" },
   { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
@@ -2838,7 +2804,7 @@ COLORREF crCustom[16];
 BOOL bUse2ndDefaultStyle;
 BOOL fStylesModified = FALSE;
 BOOL fWarnedNoIniFile = FALSE;
-BOOL fIsConsolasAvailable = FALSE;
+WCHAR wchBaseFont[64] = { L'\0' };
 int iBaseFontSize = 10;
 int iDefaultLexer;
 BOOL bAutoSelect;
@@ -3166,10 +3132,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   // Use 2nd default style
   iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
 
-  // Font quality setup, check availability of Consolas
-  Style_SetFontQuality(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
-  fIsConsolasAvailable = IsFontAvailable(L"Consolas");
-
   // Clear
   SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
 
@@ -3178,25 +3140,37 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
-  SendMessage(hwnd, SCI_STYLESETCHARACTERSET, STYLE_DEFAULT, (LPARAM)DEFAULT_CHARSET);
-  
-  iBaseFontSize = 10;
-  Style_SetStyles(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].iStyle, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);  // default
-  Style_StrGetSize(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iBaseFontSize);                        // base size
 
-  // Auto-select codepage according to charset
-  //~Style_SetACPfromCharSet(hwnd);
-
+ 
   if (!Style_StrGetColor(TRUE, lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iValue))
     SendMessage(hwnd, SCI_STYLESETFORE, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOWTEXT));   // default text color
   if (!Style_StrGetColor(FALSE, lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iValue))
     SendMessage(hwnd, SCI_STYLESETBACK, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOW));       // default window color
 
-  if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
-    Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue); // lexer default
-  // Reset
+  // Auto-select codepage according to charset
+  //~Style_SetACPfromCharSet(hwnd);
+
+  // Font quality setup, 
+  Style_SetFontQuality(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
+  Style_StrGetFont(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, wchBaseFont, COUNTOF(wchBaseFont));
+  Style_StrGetSize(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iBaseFontSize);               // base size
+
+
+  // set default style
+  Style_SetStyles(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].iStyle, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
+  
+  // override with Lexer's specific defaults
+  if (StringCchLenW(pLexNew->Styles[STY_DEFAULT].szValue, COUNTOF(pLexNew->Styles[STY_DEFAULT].szValue)) > 0) 
+  {
+    Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue);
+  }
+
+  SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)FALSE);       // default hotspot off
+
+  // Re-Set to just defined default style (STYLE_DEFAULT)
   SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
 
+  // --------------------------------------------------------------------------
 
   Style_SetStyles(hwnd, lexDefault.Styles[STY_MARGIN + iIdx].iStyle, lexDefault.Styles[STY_MARGIN + iIdx].szValue); // linenumber
 
@@ -3257,7 +3231,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha2:100");
   }
   SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
-
 
   // More default values...
 
@@ -3402,25 +3375,28 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
 
   // Extra Line Spacing
-  if (Style_StrGetSize(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue,&iValue) && pLexNew != &lexANSI) {
+  if (Style_StrGetSize(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue,&iValue) && (pLexNew != &lexANSI)) {
     int iAscent = 0;
     int iDescent = 0;
-    iValue = min(max(iValue,0),64);
-    StringCchPrintf(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue,COUNTOF(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue),L"size:%i",iValue);
-    if (iValue % 2) {
+    int iValAdj = min(max(iValue,0),64);
+    if (iValAdj != iValue)
+      StringCchPrintf(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue), L"size:%i", iValAdj);
+
+    if ((iValAdj % 2) != 0) {
       iAscent++;
-      iValue--;
+      iValAdj--;
     }
-    iAscent += iValue / 2;
-    iDescent += iValue / 2;
+    iAscent += (iValAdj / 2);
+    iDescent += (iValAdj / 2);
     SendMessage(hwnd,SCI_SETEXTRAASCENT,(WPARAM)iAscent,0);
     SendMessage(hwnd,SCI_SETEXTRADESCENT,(WPARAM)iDescent,0);
   }
   else {
     SendMessage(hwnd,SCI_SETEXTRAASCENT,0,0);
     SendMessage(hwnd,SCI_SETEXTRADESCENT,0,0);
-    //wsprintf(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue,L"size:0");
+    //StringCchPrintf(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue), L"size:%i", 0);
   }
+
   { // set folding style; braces are for scoping only
     static const int iMarkerIDs[] =
     {
@@ -3457,14 +3433,16 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   if (SendMessage(hwnd,SCI_GETINDENTATIONGUIDES,0,0) != SC_IV_NONE)
     Style_SetIndentGuides(hwnd,TRUE);
 
+
   if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
   {
     int j;
-    int i = 1;
-    while (pLexNew->Styles[i].iStyle != -1) {
-
-      for (j = 0; j < 4 && (pLexNew->Styles[i].iStyle8[j] != 0 || j == 0); ++j)
-        Style_SetStyles(hwnd,pLexNew->Styles[i].iStyle8[j],pLexNew->Styles[i].szValue);
+    int i = 1; // don't touch default style
+    while (pLexNew->Styles[i].iStyle != -1) 
+    {
+      for (j = 0; j < 4 && (pLexNew->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
+        Style_SetStyles(hwnd, pLexNew->Styles[i].iStyle8[j], pLexNew->Styles[i].szValue);
+      }
 
       if (pLexNew->iLexer == SCLEX_HTML && pLexNew->Styles[i].iStyle8[0] == SCE_HPHP_DEFAULT) {
         int iRelated[] = { SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING, SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER,
@@ -3555,12 +3533,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
 
   // apply lexer styles
+  Style_SetUrlHotSpot(hwnd, TRUE);
   SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
 
-  // override lexer style by hyperlink hotspot style
+  // update UI for hotspots
   Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
   EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
-
+  
   // Save current lexer
   pLexCurrent = pLexNew;
 
@@ -3569,14 +3548,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
 //=============================================================================
 //
-//  Style_GetHotspotID()
+//  Style_GetHotspotStyleID()
 //
-int Style_GetHotspotID()
+int Style_GetHotspotStyleID()
 {
-  if (bHyperlinkHotspot) {
-    return (bUse2ndDefaultStyle ? (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT + STY_CNT_LAST) : (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT));
-  }
-  return (bUse2ndDefaultStyle ? (STY_DEFAULT + STY_CNT_LAST) : STY_DEFAULT);
+  return (bUse2ndDefaultStyle ? (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT + STY_CNT_LAST) : (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT));
 }
 
 
@@ -3590,7 +3566,7 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
   int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
 
   // Hot Spot settings
-  const int iStyleHotSpot = Style_GetHotspotID();
+  const int iStyleHotSpot = Style_GetHotspotStyleID();
 
   if (bHotSpot)
   {
@@ -4115,7 +4091,7 @@ BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
 
     if (StringCchCompareIN(tch,COUNTOF(tch),L"Default",-1) == 0)
     {
-      if (fIsConsolasAvailable)
+      if (IsFontAvailable(L"Consolas"))
         StringCchCopyN(lpszFont,cchFont,L"Consolas",cchFont);
       else
         StringCchCopyN(lpszFont,cchFont,L"Lucida Console",cchFont);
@@ -4362,7 +4338,28 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
     lf.lfHeight = -MulDiv(iValue,GetDeviceCaps(hdc,LOGPIXELSY),72);
     ReleaseDC(hwnd,hdc);
   }
-  lf.lfWeight = (StrStrI(lpszStyle,L"bold")) ? FW_BOLD : FW_NORMAL;
+
+  if (StrStrI(lpszStyle, L"thin"))
+    lf.lfWeight = FW_THIN;
+  else if (StrStrI(lpszStyle, L"extralight"))
+    lf.lfWeight = FW_EXTRALIGHT;
+  else if (StrStrI(lpszStyle, L"light"))
+    lf.lfWeight = FW_LIGHT;
+  else if (StrStrI(lpszStyle, L"normal"))
+    lf.lfWeight = FW_NORMAL;
+  else if (StrStrI(lpszStyle, L"medium"))
+    lf.lfWeight = FW_MEDIUM;
+  else if (StrStrI(lpszStyle, L"semibold"))
+    lf.lfWeight = FW_SEMIBOLD;
+  else if (StrStrI(lpszStyle, L"bold"))
+    lf.lfWeight = FW_BOLD;
+  else if (StrStrI(lpszStyle, L"extrabold"))
+    lf.lfWeight = FW_EXTRABOLD;
+  else if (StrStrI(lpszStyle, L"heavy"))
+    lf.lfWeight = FW_HEAVY;
+  else
+    lf.lfWeight = FW_NORMAL;
+
   lf.lfItalic = (StrStrI(lpszStyle,L"italic")) ? TRUE : FALSE;
 
   COLORREF color = 0L;
@@ -4395,15 +4392,45 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
       lf.lfCharSet != DEFAULT_CHARSET &&
       lf.lfCharSet != ANSI_CHARSET &&
       lf.lfCharSet != iDefaultCharSet) {
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; charset:");
-    StringCchPrintf(tch,COUNTOF(tch),L"%i",lf.lfCharSet);
+    StringCchPrintf(tch,COUNTOF(tch),L"; charset:%i",lf.lfCharSet);
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
-  StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; size:");
-  StringCchPrintf(tch,COUNTOF(tch),L"%i",cf.iPointSize/10);
+  StringCchPrintf(tch,COUNTOF(tch),L"; size:%i",cf.iPointSize/10);
   StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
-  if ((cf.nFontType & BOLD_FONTTYPE) || (lf.lfWeight >= FW_SEMIBOLD))
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; bold");
+  
+  switch (lf.lfWeight) {
+  case FW_THIN:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; thin");
+    break;
+  case FW_EXTRALIGHT:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; extralight");
+    break;
+  case FW_LIGHT:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; light");
+    break;
+  case FW_MEDIUM:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; medium");
+    break;
+  case FW_SEMIBOLD:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; semibold");
+    break;
+  case FW_BOLD:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; bold");
+    break;
+  case FW_EXTRABOLD:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; extrabold");
+    break;
+  case FW_HEAVY:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; heavy");
+    break;
+  case FW_NORMAL:
+  default:
+    //~StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; normal");
+    if (cf.nFontType & BOLD_FONTTYPE)
+      StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; bold");
+    break;
+  }
+
   if ((cf.nFontType & ITALIC_FONTTYPE) || lf.lfItalic)
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; italic");
 
@@ -4441,6 +4468,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
 
+  StrTrim(szNewStyle, L" ;");
   StringCchCopyN(lpszStyle,cchStyle,szNewStyle,COUNTOF(szNewStyle));
   return TRUE;
 }
@@ -4476,6 +4504,7 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
 
   // Rebuild style string
   StringCchCopy(szNewStyle,COUNTOF(szNewStyle),L"");
+
   if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch)))
   {
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"font:");
@@ -4483,50 +4512,50 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
   }
   if (Style_StrGetFontQuality(lpszStyle,tch,COUNTOF(tch)))
   {
-    if (StringCchLenW(szNewStyle,COUNTOF(szNewStyle)))
-      StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; ");
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"smoothing:");
+    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; smoothing:");
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
   if (Style_StrGetCharSet(lpszStyle,&iValue))
   {
-    if (StringCchLenW(szNewStyle, COUNTOF(szNewStyle)))
-      StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; ");
-    StringCchPrintf(tch,COUNTOF(tch),L"charset:%i",iValue);
+    StringCchPrintf(tch,COUNTOF(tch),L"; charset:%i",iValue);
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
   if (Style_StrGetSizeStr(lpszStyle,tch,COUNTOF(tch)))
   {
-    if (StringCchLenW(szNewStyle, COUNTOF(szNewStyle)))
-      StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; ");
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"size:");
+    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; size:");
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
 
-  if (StrStrI(lpszStyle,L"bold"))
-  {
-    if (StringCchLenW(szNewStyle, COUNTOF(szNewStyle)))
-      StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; ");
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"bold");
-  }
+  if (StrStrI(lpszStyle, L"thin"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; thin");
+  else if (StrStrI(lpszStyle, L"extralight"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; extralight");
+  else if (StrStrI(lpszStyle, L"light"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; light");
+  else if (StrStrI(lpszStyle, L"normal"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; normal");
+  else if (StrStrI(lpszStyle, L"medium"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; medium");
+  else if (StrStrI(lpszStyle, L"semibold"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; semibold");
+  else if (StrStrI(lpszStyle, L"bold"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; bold");
+  else if (StrStrI(lpszStyle, L"extrabold"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; extrabold");
+  else if (StrStrI(lpszStyle, L"heavy"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; heavy");
+  //else
+  //  StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; normal");
+
   if (StrStrI(lpszStyle,L"italic"))
-  {
-    if (StringCchLenW(szNewStyle, COUNTOF(szNewStyle)))
-      StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; ");
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"italic");
-  }
+    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; italic");
+
   if (StrStrI(lpszStyle,L"underline"))
-  {
-    if (StringCchLenW(szNewStyle, COUNTOF(szNewStyle)))
-      StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; ");
-    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"underline");
-  }
+    StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; underline");
 
   if (bFore)
   {
-    if (StringCchLenW(szNewStyle, COUNTOF(szNewStyle)))
-      StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; ");
-    StringCchPrintf(tch,COUNTOF(tch),L"fore:#%02X%02X%02X",
+    StringCchPrintf(tch,COUNTOF(tch),L"; fore:#%02X%02X%02X",
       (int)GetRValue(iRGBResult),
       (int)GetGValue(iRGBResult),
       (int)GetBValue(iRGBResult));
@@ -4542,17 +4571,15 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
   }
   else
   {
-    if (StringCchLenW(szNewStyle, COUNTOF(szNewStyle)))
-      StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; ");
     if (Style_StrGetColor(TRUE,lpszStyle,&iValue))
     {
-      StringCchPrintf(tch,COUNTOF(tch),L"fore:#%02X%02X%02X; ",
+      StringCchPrintf(tch,COUNTOF(tch),L"; fore:#%02X%02X%02X; ",
         (int)GetRValue(iValue),
         (int)GetGValue(iValue),
         (int)GetBValue(iValue));
       StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
     }
-    StringCchPrintf(tch,COUNTOF(tch),L"back:#%02X%02X%02X",
+    StringCchPrintf(tch,COUNTOF(tch),L"; back:#%02X%02X%02X",
       (int)GetRValue(iRGBResult),
       (int)GetGValue(iRGBResult),
       (int)GetBValue(iRGBResult));
@@ -4583,6 +4610,7 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
   if (StrStrI(lpszStyle,L"noblink"))
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; noblink");
 
+  StrTrim(szNewStyle, L" ;");
   StringCchCopyN(lpszStyle,cchStyle,szNewStyle,cchStyle);
   return TRUE;
 }
@@ -4594,21 +4622,29 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
 //
 void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
 {
-
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   int  iValue;
 
   // Font
-  if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch))) {
-    char mch[BUFSIZE_STYLE_VALUE] = { '\0' };
-    WideCharToMultiByteStrg(CP_UTF8,tch,mch);
-    SendMessage(hwnd,SCI_STYLESETFONT,iStyle,(LPARAM)mch);
+  char chFont[64] = { '\0' };
+  if (Style_StrGetFont(lpszStyle, tch, COUNTOF(tch))) {
+    WideCharToMultiByteStrg(CP_UTF8, tch, chFont);
+    SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
+  }
+  else {
+    WideCharToMultiByteStrg(CP_UTF8, wchBaseFont, chFont);
+    SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
   }
 
   // Size
   if (Style_StrGetSize(lpszStyle,&iValue))
     SendMessage(hwnd,SCI_STYLESETSIZE,iStyle,(LPARAM)iValue);
+  else
+    SendMessage(hwnd, SCI_STYLESETSIZE,iStyle,(LPARAM)iBaseFontSize);
 
+  //or Fractional
+  //SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)(iBaseFontSize * 100));
+  
   // Fore
   if (Style_StrGetColor(TRUE,lpszStyle,&iValue))
     SendMessage(hwnd,SCI_STYLESETFORE,iStyle,(LPARAM)iValue);
@@ -4617,11 +4653,33 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   if (Style_StrGetColor(FALSE,lpszStyle,&iValue))
     SendMessage(hwnd,SCI_STYLESETBACK,iStyle,(LPARAM)iValue);
 
-  // Bold
-  if (StrStrI(lpszStyle,L"bold") != NULL)
-    SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)TRUE);
-  else
-    SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)FALSE);
+  //// Bold
+  //if (StrStrI(lpszStyle,L"bold") != NULL)
+  //  SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)TRUE);
+  //else
+  //  SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)FALSE);
+
+  // Weight
+  if (StrStrI(lpszStyle, L"thin"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_THIN);
+  else if (StrStrI(lpszStyle, L"extralight"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_EXTRALIGHT);
+  else if (StrStrI(lpszStyle, L"light"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_LIGHT);
+  else if (StrStrI(lpszStyle, L"normal"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_NORMAL);
+  else if (StrStrI(lpszStyle, L"medium"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_MEDIUM);
+  else if (StrStrI(lpszStyle, L"semibold"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_SEMIBOLD);
+  else if (StrStrI(lpszStyle, L"bold"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_BOLD);
+  else if (StrStrI(lpszStyle, L"extrabold"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_EXTRABOLD);
+  else if (StrStrI(lpszStyle, L"heavy"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_HEAVY);
+  else 
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_NORMAL);
 
   // Italic
   if (StrStrI(lpszStyle,L"italic") != NULL)
@@ -4648,6 +4706,8 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   // Character Set
   if (Style_StrGetCharSet(lpszStyle,&iValue))
     SendMessage(hwnd,SCI_STYLESETCHARACTERSET,iStyle,(LPARAM)iValue);
+  else
+    SendMessage(hwnd,SCI_STYLESETCHARACTERSET,iStyle,(LPARAM)DEFAULT_CHARSET);
 
 }
 
@@ -4972,14 +5032,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                   DialogEnableWindow(hwnd,IDC_STYLEFORE,TRUE);
                   DialogEnableWindow(hwnd,IDC_STYLEBACK,TRUE);
                   DialogEnableWindow(hwnd,IDC_STYLEDEFAULT,TRUE);
-                  //DialogEnableWindow(hwnd,IDC_STYLEBOLD,TRUE);
-                  //DialogEnableWindow(hwnd,IDC_STYLEITALIC,TRUE);
-                  //DialogEnableWindow(hwnd,IDC_STYLEUNDERLINE,TRUE);
-                  //DialogEnableWindow(hwnd,IDC_STYLEEOLFILLED,TRUE);
-                  //CheckDlgButton(hwnd,IDC_STYLEBOLD,(Style_StrGetAttribute(pCurrentStyle->szValue,L"bold") ? BST_CHECKED : BST_UNCHECKED));
-                  //CheckDlgButton(hwnd,IDC_STYLEITALIC,(Style_StrGetAttribute(pCurrentStyle->szValue,L"italic") ? BST_CHECKED : BST_UNCHECKED));
-                  //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,(Style_StrGetAttribute(pCurrentStyle->szValue,L"underline") ? BST_CHECKED : BST_UNCHECKED));
-                  //CheckDlgButton(hwnd,IDC_STYLEEOLFILLED,(Style_StrGetAttribute(pCurrentStyle->szValue,L"eolfilled") ? BST_CHECKED : BST_UNCHECKED));
                   SetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue);
                 }
                 else
@@ -4990,14 +5042,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                   DialogEnableWindow(hwnd,IDC_STYLEFORE,FALSE);
                   DialogEnableWindow(hwnd,IDC_STYLEBACK,FALSE);
                   DialogEnableWindow(hwnd,IDC_STYLEDEFAULT,FALSE);
-                  //DialogEnableWindow(hwnd,IDC_STYLEBOLD,FALSE);
-                  //DialogEnableWindow(hwnd,IDC_STYLEITALIC,FALSE);
-                  //DialogEnableWindow(hwnd,IDC_STYLEUNDERLINE,FALSE);
-                  //DialogEnableWindow(hwnd,IDC_STYLEEOLFILLED,FALSE);
-                  //CheckDlgButton(hwnd,IDC_STYLEBOLD,BST_UNCHECKED);
-                  //CheckDlgButton(hwnd,IDC_STYLEITALIC,BST_UNCHECKED);
-                  //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,BST_UNCHECKED);
-                  //CheckDlgButton(hwnd,IDC_STYLEEOLFILLED,BST_UNCHECKED);
                   SetDlgItemText(hwnd,IDC_STYLEEDIT,L"");
                 }
               }
@@ -5086,10 +5130,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             {
               StringCchCopy(pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue),tchCopy);
               SetDlgItemText(hwnd,IDC_STYLEEDIT,tchCopy);
-              //CheckDlgButton(hwnd,IDC_STYLEBOLD,(Style_StrGetAttribute(tchCopy,L"bold") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEITALIC,(Style_StrGetAttribute(tchCopy,L"italic") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,(Style_StrGetAttribute(tchCopy,L"underline") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEEOLFILLED,(Style_StrGetAttribute(tchCopy,L"eolfilled") ? BST_CHECKED : BST_UNCHECKED));
             }
           }
           ReleaseCapture();
@@ -5142,10 +5182,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                                  StringCchCompareIX(pCurrentStyle->pszName,L"Default Style") == 0 ||
                                  StringCchCompareIX(pCurrentStyle->pszName,L"2nd Default Style") == 0)) {
               SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
-              //CheckDlgButton(hwnd,IDC_STYLEBOLD,(Style_StrGetAttribute(tch,L"bold") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEITALIC,(Style_StrGetAttribute(tch,L"italic") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,(Style_StrGetAttribute(tch,L"underline") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEEOLFILLED,(Style_StrGetAttribute(tch,L"eolfilled") ? BST_CHECKED : BST_UNCHECKED));
             }
           }
           PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
@@ -5158,10 +5194,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
             if (Style_SelectColor(hwnd,TRUE,tch,COUNTOF(tch))) {
               SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
-              //CheckDlgButton(hwnd,IDC_STYLEBOLD,(Style_StrGetAttribute(tch,L"bold") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEITALIC,(Style_StrGetAttribute(tch,L"italic") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,(Style_StrGetAttribute(tch,L"underline") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEEOLFILLED,(Style_StrGetAttribute(tch,L"eolfilled") ? BST_CHECKED : BST_UNCHECKED));
             }
           }
           PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
@@ -5174,10 +5206,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
             if (Style_SelectColor(hwnd,FALSE,tch,COUNTOF(tch))) {
               SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
-              //CheckDlgButton(hwnd,IDC_STYLEBOLD,(Style_StrGetAttribute(tch,L"bold") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEITALIC,(Style_StrGetAttribute(tch,L"italic") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,(Style_StrGetAttribute(tch,L"underline") ? BST_CHECKED : BST_UNCHECKED));
-              //CheckDlgButton(hwnd,IDC_STYLEEOLFILLED,(Style_StrGetAttribute(tch,L"eolfilled") ? BST_CHECKED : BST_UNCHECKED));
             }
           }
           PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
@@ -5188,10 +5216,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           {
             StringCchCopy(pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue),pCurrentStyle->pszDefault);
             SetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue);
-            //CheckDlgButton(hwnd,IDC_STYLEBOLD,(Style_StrGetAttribute(pCurrentStyle->szValue,L"bold") ? BST_CHECKED : BST_UNCHECKED));
-            //CheckDlgButton(hwnd,IDC_STYLEITALIC,(Style_StrGetAttribute(pCurrentStyle->szValue,L"italic") ? BST_CHECKED : BST_UNCHECKED));
-            //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,(Style_StrGetAttribute(pCurrentStyle->szValue,L"underline") ? BST_CHECKED : BST_UNCHECKED));
-            //CheckDlgButton(hwnd,IDC_STYLEEOLFILLED,(Style_StrGetAttribute(pCurrentStyle->szValue,L"eolfilled") ? BST_CHECKED : BST_UNCHECKED));
           }
           else if (pCurrentLexer) {
             StringCchCopy(pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions),pCurrentLexer->pszDefExt);
@@ -5199,46 +5223,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           }
           PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
           break;
-
-        //case IDC_STYLEBOLD:
-        //  if (pCurrentStyle)
-        //  {
-        //    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        //    GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
-        //    Style_StrSetAttribute(tch,COUNTOF(tch),L"bold",IsDlgButtonChecked(hwnd,IDC_STYLEBOLD));
-        //    SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
-        //  }
-        //  break;
-
-        //case IDC_STYLEITALIC:
-        //  if (pCurrentStyle)
-        //  {
-        //    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        //    GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
-        //    Style_StrSetAttribute(tch,COUNTOF(tch),L"italic",IsDlgButtonChecked(hwnd,IDC_STYLEITALIC));
-        //    SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
-        //  }
-        //  break;
-
-        //case IDC_STYLEUNDERLINE:
-        //  if (pCurrentStyle)
-        //  {
-        //    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        //    GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
-        //    Style_StrSetAttribute(tch,COUNTOF(tch),L"underline",IsDlgButtonChecked(hwnd,IDC_STYLEUNDERLINE));
-        //    SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
-        //  }
-        //  break;
-
-        //case IDC_STYLEEOLFILLED:
-        //  if (pCurrentStyle)
-        //  {
-        //    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        //    GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
-        //    Style_StrSetAttribute(tch,COUNTOF(tch),L"eolfilled",IsDlgButtonChecked(hwnd,IDC_STYLEEOLFILLED));
-        //    SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
-        //  }
-        //  break;
 
         case IDC_STYLEEDIT:
           {
