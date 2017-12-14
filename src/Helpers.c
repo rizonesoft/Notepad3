@@ -2457,13 +2457,11 @@ void TransformBackslashes(char* pszInput, BOOL bRegEx, UINT cpEdit, int* iReplac
 
   if (bRegEx) {
     UnSlashLowOctal(pszInput);
-    if (iReplaceMsg)
-      replTarget = CheckRegExReplTarget(pszInput);
+    replTarget = CheckRegExReplTarget(pszInput);
   }
-
-  if ((SCI_REPLACETARGET == replTarget) && !bRegEx)
+  if (SCI_REPLACETARGET == replTarget) {
     UnSlash(pszInput, cpEdit);
-
+  }
   if (iReplaceMsg)
     *iReplaceMsg = replTarget;
 }
@@ -3716,8 +3714,7 @@ void DragAndDropInit(HANDLE hHeap)
   else if (g_hHeap == NULL)
     g_hHeap = hHeap;
 
-  OleInitialize(NULL); // just in case
-  return;
+  //OleInitialize(NULL); // just in case
 }
 
 
@@ -3759,7 +3756,6 @@ static BOOL IDRPTRG_QueryDataObject(PIDROPTARGET pDropTarget, IDataObject *pData
     if (pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
       return TRUE;
   }
-
   return FALSE;
 }
 
@@ -3785,7 +3781,6 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_QueryInterface(PIDROPTARGET pThis, REFI
     *ppvObject = pThis;
     return S_OK;
   }
-
   return E_NOINTERFACE;
 }
 
@@ -3803,7 +3798,6 @@ static ULONG STDMETHODCALLTYPE IDRPTRG_Release(PIDROPTARGET pThis)
     HeapFree(GetDnDHeap(), 0, pThis);
     return 0;
   }
-
   return nCount;
 }
 
@@ -3829,7 +3823,6 @@ static DWORD IDRPTRG_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwAllowed)
     if (dwAllowed & DROPEFFECT_MOVE)
       dwEffect = DROPEFFECT_MOVE;
   }
-
   UNUSED(pt);
   return dwEffect;
 }
