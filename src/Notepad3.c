@@ -3007,28 +3007,23 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (!pClip)
           break; // recoding canceled
 
+        int iCurrPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+        int iAnchor = iCurrPos;
+
+        int token = BeginSelUndoAction();
+
         if (SendMessage(hwndEdit,SCI_GETSELECTIONEMPTY,0,0))
         {
-          int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
-          int iCurrLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
-          int iCurColumn = (int)SendMessage(hwndEdit,SCI_GETCOLUMN,(WPARAM)iCurPos,0);
-          int iCurVSpace = (int)SendMessage(hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
-
           SendMessage(hwndEdit, SCI_PASTE, 0, 0);
 
           if (bSwapClipBoard)
             SendMessage(hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
 
-          int newLn = iCurrLine + lineCount + 1;
-          int newCol = (lenLastLine > 1) ? ((lineCount == 0) ? (iCurColumn + lenLastLine + 1) : lenLastLine) : iCurColumn + 1;
-          EditJumpTo(hwndEdit, newLn, newCol + iCurVSpace);
-
+          iCurrPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
         }
         else {
-          int token = BeginSelUndoAction();
 
-          int iCurrPos = (int)SendMessage(hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-          int iAnchor = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
+          iAnchor = (int)SendMessage(hwndEdit, SCI_GETANCHOR, 0, 0);
 
           if (flagPasteBoard)
             bLastCopyFromMe = TRUE;
@@ -3037,19 +3032,22 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             SendMessage(hwndEdit,SCI_COPY,0,0);
 
           SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)pClip);
-
-          if (bSwapClipBoard) {
-            if (iCurrPos > iAnchor)
-              SendMessage(hwndEdit, SCI_SETSEL, iAnchor, iAnchor + lstrlenA(pClip));
-            else
-              SendMessage(hwndEdit, SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
-          }
-
-          EndSelUndoAction(token);
         }
+
+        if (bSwapClipBoard) {
+          if (iCurrPos > iAnchor)
+            SendMessage(hwndEdit, SCI_SETSEL, iAnchor, iAnchor + lstrlenA(pClip));
+          else
+            SendMessage(hwndEdit, SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
+        }
+
+        EndSelUndoAction(token);
+
         LocalFree(pClip);
+
         UpdateToolbar();
         UpdateStatusbar();
+        SendMessage(hwndEdit, SCI_CHOOSECARETX, 0, 0);
       }
       break;
 
