@@ -3358,7 +3358,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         {
           iWrapCol = max(min(iWrapCol,512),1);
           BeginWaitCursor();
+          int token = BeginSelUndoAction();
           EditWrapToColumn(hwndEdit,iWrapCol);
+          EndSelUndoAction(token);
           EndWaitCursor();
         }
       }
