@@ -1,9 +1,19 @@
 /**
- * @file  OniguRegExEngine.cxx
- * @brief 
+ * @file  OnigmoRegExEngine.cxx
+ * @brief integrate Onigmo regex engine for Scintilla library
+ *        (Scintilla Lib is copyright 1998-2017 by Neil Hodgson <neilh@scintilla.org>)
+ *
+ *        uses Onigmo - Regular Expression Engine (v6.1.3) (onigmo.h) - https://github.com/k-takata/Onigmo
+ *
+ *   Onigmo is a regular expressions library forked from Oniguruma (https://github.com/kkos/oniguruma). 
+ *   It focuses to support new expressions like \K, \R, (?(cond)yes|no) and etc. which are supported in Perl 5.10+.
+ *   Since Onigmo is used as the default regexp library of Ruby 2.0 or later, many patches are backported from Ruby 2.x.
+ *
+ *   See also the Wiki page: https://github.com/k-takata/Onigmo/wiki
+ *
+ *
  * @autor Rainer Kottenhoff (RaiKoHoff)
  *
- * Install:
  */
 
 #ifdef SCI_OWNREGEX
@@ -49,7 +59,6 @@ using namespace Scintilla;
 const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; // ONIG_ENCODING_SJIS
 
 static const OnigSyntaxType* g_pOnigSyntaxType = ONIG_SYNTAX_DEFAULT;
-// ---------------------------------------------------------------
 static OnigEncoding use_encs[] = { g_pOnigEncodingType };
 
 // ============================================================================
@@ -68,7 +77,7 @@ public:
     , m_MatchLen(0)
     , m_SubstBuffer()
   {
-    onig_initialize(use_encs, sizeof(use_encs) / sizeof(use_encs[0]));
+    onig_initialize(use_encs, _ARRAYSIZE(use_encs));
   }
 
   virtual ~OniguRegExEngine()
@@ -158,13 +167,13 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
                          m_CmplOptions, g_pOnigEncodingType, g_pOnigSyntaxType, &einfo);
       if (res != 0) {
         onig_error_code_to_str((UChar*)m_ErrorInfo, res, &einfo);
-        return Cast2long(-2);
+        return Cast2long(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
       }
 
       onig_region_init(&m_Region);
     }
     catch (...) {
-      return Cast2long(-2);  // -1 is normally used for not found, -2 is used here for invalid regex
+      return Cast2long(-2);
     }
   }
 
@@ -187,16 +196,23 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
   if (rangeBeg != 0) { ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTBOL); }
   if (rangeEnd != docLen) { ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTEOL); }
 
-  OnigPosition result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
+  OnigPosition result = ONIG_MISMATCH;
+  try {
+    result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
+  }
+  catch (...) {
+    return Cast2long(-3);  // -1 is normally used for not found, -3 is used here for exception
+  }
 
   if (result < ONIG_MISMATCH) {
     onig_error_code_to_str((UChar*)m_ErrorInfo, result);
-    return Cast2long(-2);
+    return Cast2long(-3);
   }
 
   if (findprevious) // search for last occurrence in range
   {
     //SPEEDUP: onig_scan() ???
+
     while ((result >= 0) && (rangeBegPtr <= rangeEndPtr))
     {
       m_MatchPos = SciPos(result); //SciPos(m_Region.beg[0]);
@@ -204,7 +220,12 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
       
       rangeBegPtr = docBegPtr + (m_MatchPos + max(1,m_MatchLen));
 
-      result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
+      try {
+        result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
+      }
+      catch (...) {
+        return Cast2long(-3);
+      }
     }
   }
   else if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) 
@@ -215,7 +236,7 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
 
   //NOTE: potential 64-bit-size issue at interface here:
   *length = m_MatchLen;
-  return static_cast<long>(m_MatchPos);
+  return Cast2long(m_MatchPos);
 }
 // ============================================================================
 
@@ -231,6 +252,8 @@ const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* te
   std::string rawReplStrg = convertReplExpr(std::string(text, *length));
 
   m_SubstBuffer.clear();
+
+  //TODO: allow for arbitrary number of grups/regions
 
   for (size_t j = 0; j < rawReplStrg.length(); j++) {
     if ((rawReplStrg[j] == '$') || (rawReplStrg[j] == '\\'))
