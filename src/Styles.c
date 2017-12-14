@@ -86,7 +86,7 @@ EDITLEXER lexDefault =   { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx;
                 /* 25 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 26 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
                 /* 27 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63125, L"2nd Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
-                /* 28 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100; alpha2:100", L"" },
+                /* 28 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100; alpha2:100; indic_box", L"" },
                 /* 29 */ { SCI_SETHOTSPOTACTIVEFORE, 63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
 
                          { -1, 00000, L"", L"", L"" } } };
@@ -3198,6 +3198,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
 
   // Occurrences Marker
+
   if (!Style_StrGetColor(TRUE, lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue)) 
   {
     WCHAR* sty = L"";
@@ -3231,6 +3232,16 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha2:100");
   }
   SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
+
+  iValue = -1; // need for retrieval
+  if (!Style_GetIndicatorType(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue), &iValue)) {
+    // got default, get string
+    StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; ");
+    Style_GetIndicatorType(wchCaretStyle, COUNTOF(wchCaretStyle), &iValue);
+    StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), wchCaretStyle);
+  }
+  SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, iValue);
+
 
   // More default values...
 
@@ -4079,7 +4090,7 @@ BOOL Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 //
 BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
 {
-  WCHAR tch[256] = { L'\0' };
+  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"font:");
   if (p)
   {
@@ -4113,7 +4124,7 @@ BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
 //
 BOOL Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality)
 {
-  WCHAR tch[64] = { L'\0' };
+  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"smoothing:");
   if (p)
   {
@@ -4139,9 +4150,9 @@ BOOL Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
 //
 //  Style_StrGetCharSet()
 //
-BOOL Style_StrGetCharSet(LPCWSTR lpszStyle,int *i)
+BOOL Style_StrGetCharSet(LPCWSTR lpszStyle,int* i)
 {
-  WCHAR tch[256] = { L'\0' };
+  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"charset:");
   if (p)
   {
@@ -4166,7 +4177,7 @@ BOOL Style_StrGetCharSet(LPCWSTR lpszStyle,int *i)
 //
 //  Style_StrGetSize()
 //
-BOOL Style_StrGetSize(LPCWSTR lpszStyle,int *i)
+BOOL Style_StrGetSize(LPCWSTR lpszStyle,int* i)
 {
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   int  iSign = 0;
@@ -4259,7 +4270,7 @@ BOOL Style_StrGetColor(BOOL bFore,LPCWSTR lpszStyle,int *rgb)
 
 //=============================================================================
 //
-//  Style_StrGetCase()
+//  Style_StrGetAlpha()
 //
 BOOL Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, BOOL bAlpha1st) 
 {
@@ -4288,7 +4299,7 @@ BOOL Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, BOOL bAlpha1st)
 //
 //  Style_StrGetCase()
 //
-BOOL Style_StrGetCase(LPCWSTR lpszStyle,int *i)
+BOOL Style_StrGetCase(LPCWSTR lpszStyle,int* i)
 {
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"case:");
@@ -4307,6 +4318,57 @@ BOOL Style_StrGetCase(LPCWSTR lpszStyle,int *i)
       *i = SC_CASE_LOWER;
       return TRUE;
   }
+  }
+  return FALSE;
+}
+
+
+//=============================================================================
+//
+//  Style_GetIndicatorType()
+//
+
+static WCHAR* IndicatorTypes[20] = {
+  L"indic_plain",
+  L"indic_squiggle",
+  L"indic_tt",
+  L"indic_diagonal",
+  L"indic_strike",
+  L"indic_hidden",
+  L"indic_box",
+  L"indic_roundbox",
+  L"indic_straightbox",
+  L"indic_dash",
+  L"indic_dots",
+  L"indic_squigglelow",
+  L"indic_dotbox",
+  L"indic_squigglepixmap",
+  L"indic_compositionthick",
+  L"indic_compositionthin",
+  L"indic_fullbox",
+  L"indic_textfore",
+  L"indic_point",
+  L"indic_pointcharacter"
+};
+
+BOOL Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
+{
+  if (*idx < 0) { // retrieve indicator style from string
+    for (int i = 0; i < COUNTOF(IndicatorTypes); i++) {
+      if (StrStrI(lpszStyle, IndicatorTypes[i])) {
+        *idx = i;
+        return TRUE;
+      }
+    }
+    *idx = INDIC_ROUNDBOX; // default
+  }
+  else {  // get indicator string from index
+
+    if (*idx < COUNTOF(IndicatorTypes)) 
+    {
+      StringCchCopy(lpszStyle, cchSize, IndicatorTypes[*idx]);
+      return TRUE;
+    }
   }
   return FALSE;
 }
@@ -4467,6 +4529,17 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
     StringCchPrintf(tch,COUNTOF(tch),L"; alpha:%i",iValue);
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
+  if (Style_StrGetAlpha(lpszStyle, &iValue, FALSE)) {
+    StringCchPrintf(tch, COUNTOF(tch), L"; alpha2:%i", iValue);
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
+  }
+
+  iValue = -1;
+  if (Style_GetIndicatorType(lpszStyle, cchStyle, &iValue)) {
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
+    Style_GetIndicatorType(tch, COUNTOF(tch), &iValue);
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
+  }
 
   StrTrim(szNewStyle, L" ;");
   StringCchCopyN(lpszStyle,cchStyle,szNewStyle,COUNTOF(szNewStyle));
@@ -4598,7 +4671,6 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
     StringCchPrintf(tch,COUNTOF(tch),L"; alpha:%i",iValue);
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
   }
-
   if (Style_StrGetAlpha(lpszStyle, &iValue, FALSE)) {
     StringCchPrintf(tch, COUNTOF(tch), L"; alpha2:%i", iValue);
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
@@ -4609,6 +4681,13 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
 
   if (StrStrI(lpszStyle,L"noblink"))
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),L"; noblink");
+
+  iValue = -1;
+  if (Style_GetIndicatorType(lpszStyle, cchStyle, &iValue)) {
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
+    Style_GetIndicatorType(tch, COUNTOF(tch), &iValue);
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
+  }
 
   StrTrim(szNewStyle, L" ;");
   StringCchCopyN(lpszStyle,cchStyle,szNewStyle,cchStyle);
