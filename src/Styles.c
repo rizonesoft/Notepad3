@@ -4338,12 +4338,17 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
     lf.lfHeight = -MulDiv(iValue,GetDeviceCaps(hdc,LOGPIXELSY),72);
     ReleaseDC(hwnd,hdc);
   }
+
   if (StrStrI(lpszStyle, L"thin"))
-    lf.lfWeight = FW_THIN;  
-  else if (StrStrI(lpszStyle, L"light"))
+    lf.lfWeight = FW_THIN;
+  else if (StrStrI(lpszStyle, L"extralight"))
     lf.lfWeight = FW_EXTRALIGHT;
+  else if (StrStrI(lpszStyle, L"light"))
+    lf.lfWeight = FW_LIGHT;
   else if (StrStrI(lpszStyle, L"normal"))
     lf.lfWeight = FW_NORMAL;
+  else if (StrStrI(lpszStyle, L"medium"))
+    lf.lfWeight = FW_MEDIUM;
   else if (StrStrI(lpszStyle, L"semibold"))
     lf.lfWeight = FW_SEMIBOLD;
   else if (StrStrI(lpszStyle, L"bold"))
@@ -4398,10 +4403,13 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; thin");
     break;
   case FW_EXTRALIGHT:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; extralight");
+    break;
+  case FW_LIGHT:
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; light");
     break;
-  case FW_NORMAL:
-    //~StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; normal");
+  case FW_MEDIUM:
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; medium");
     break;
   case FW_SEMIBOLD:
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; semibold");
@@ -4415,7 +4423,9 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   case FW_HEAVY:
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; heavy");
     break;
+  case FW_NORMAL:
   default:
+    //~StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; normal");
     if (cf.nFontType & BOLD_FONTTYPE)
       StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; bold");
     break;
@@ -4518,10 +4528,14 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
 
   if (StrStrI(lpszStyle, L"thin"))
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; thin");
+  else if (StrStrI(lpszStyle, L"extralight"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; extralight");
   else if (StrStrI(lpszStyle, L"light"))
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; light");
   else if (StrStrI(lpszStyle, L"normal"))
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; normal");
+  else if (StrStrI(lpszStyle, L"medium"))
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; medium");
   else if (StrStrI(lpszStyle, L"semibold"))
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; semibold");
   else if (StrStrI(lpszStyle, L"bold"))
@@ -4648,10 +4662,14 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   // Weight
   if (StrStrI(lpszStyle, L"thin"))
     SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_THIN);
-  else if (StrStrI(lpszStyle, L"light"))
+  else if (StrStrI(lpszStyle, L"extralight"))
     SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_EXTRALIGHT);
+  else if (StrStrI(lpszStyle, L"light"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_LIGHT);
   else if (StrStrI(lpszStyle, L"normal"))
     SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_NORMAL);
+  else if (StrStrI(lpszStyle, L"medium"))
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_MEDIUM);
   else if (StrStrI(lpszStyle, L"semibold"))
     SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_SEMIBOLD);
   else if (StrStrI(lpszStyle, L"bold"))
