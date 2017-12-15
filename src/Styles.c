@@ -2863,13 +2863,12 @@ void Style_Load()
 
   LoadIniSection(L"Custom Colors",pIniSection,cchIniSection);
   for (i = 0; i < 16; i++) {
-    int itok;
-    int irgb;
     WCHAR wch[32] = { L'\0' };
     StringCchPrintf(tch,COUNTOF(tch),L"%02i",i+1);
     if (IniSectionGetString(pIniSection,tch,L"",wch,COUNTOF(wch))) {
       if (wch[0] == L'#') {
-        itok = swscanf_s(CharNext(wch),L"%x",&irgb);
+        int irgb;
+        int itok = swscanf_s(CharNext(wch),L"%x",&irgb);
         if (itok == 1)
           crCustom[i] = RGB((irgb&0xFF0000) >> 16,(irgb&0xFF00) >> 8,irgb&0xFF);
       }
@@ -3045,13 +3044,12 @@ BOOL Style_Export(HWND hwnd)
 
   if (GetSaveFileName(&ofn)) {
 
-    int i,iLexer;
     WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
     //int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
-    for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
+    for (int iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
       IniSectionSetString(pIniSection,L"FileNameExtensions",pLexArray[iLexer]->szExtensions);
-      i = 0;
+      int i = 0;
       while (pLexArray[iLexer]->Styles[i].iStyle != -1) {
         IniSectionSetString(pIniSection,pLexArray[iLexer]->Styles[i].pszName,pLexArray[iLexer]->Styles[i].szValue);
         i++;
@@ -4179,12 +4177,11 @@ BOOL Style_StrGetCharSet(LPCWSTR lpszStyle,int* i)
 //
 BOOL Style_StrGetSize(LPCWSTR lpszStyle,int* i)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-  int  iSign = 0;
-
   WCHAR *p = StrStrI(lpszStyle, L"size:");
   if (p)
   {
+    int iSign = 0;
+    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
     StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"size:"));
     if (tch[0] == L'+')
     {

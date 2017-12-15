@@ -14,6 +14,7 @@
  *
  * @autor Rainer Kottenhoff (RaiKoHoff)
  *
+ * TODO: add interface to onig_scan() API (mark occ, hyperlink)
  */
 
 #ifdef SCI_OWNREGEX

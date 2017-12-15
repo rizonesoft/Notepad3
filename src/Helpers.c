@@ -88,14 +88,12 @@ int IniSectionGetString(
       LPWSTR lpReturnedString,
       int cchReturnedString)
 {
-  WCHAR *p = (WCHAR *)lpCachedIniSection;
   WCHAR tch[256] = { L'\0' };
-  int  ich;
-
+  WCHAR *p = (WCHAR *)lpCachedIniSection;
   if (p) {
     StringCchCopy(tch,COUNTOF(tch),lpName);
     StringCchCat(tch,COUNTOF(tch),L"=");
-    ich = StringCchLenW(tch,COUNTOF(tch));
+    int ich = StringCchLenW(tch,COUNTOF(tch));
 
     while (*p) {
       if (StrCmpNI(p,tch,ich) == 0) {
@@ -116,18 +114,16 @@ int IniSectionGetInt(
       LPCWSTR lpName,
       int iDefault)
 {
-  WCHAR *p = (WCHAR *)lpCachedIniSection;
   WCHAR tch[256] = { L'\0' };
-  int  ich;
-  int  i;
-
+  WCHAR *p = (WCHAR *)lpCachedIniSection;
   if (p) {
     StringCchCopy(tch,COUNTOF(tch),lpName);
     StringCchCat(tch,COUNTOF(tch),L"=");
-    ich = StringCchLenW(tch,COUNTOF(tch));
+    int ich = StringCchLenW(tch,COUNTOF(tch));
 
     while (*p) {
       if (StrCmpNI(p,tch,ich) == 0) {
+        int i = 0;
         if (swscanf_s(p + ich,L"%i",&i) == 1)
           return(i);
         else
@@ -146,17 +142,15 @@ UINT IniSectionGetUInt(
     LPCWSTR lpName,
     UINT uDefault) {
     WCHAR *p = (WCHAR *)lpCachedIniSection;
-    WCHAR tch[256] = { L'\0' };
-    int  ich;
-    UINT u;
-
     if (p) {
+      WCHAR tch[256] = { L'\0' };
       StringCchCopy(tch,COUNTOF(tch),lpName);
       StringCchCat(tch,COUNTOF(tch),L"=");
-      ich = StringCchLenW(tch,COUNTOF(tch));
+      int ich = StringCchLenW(tch,COUNTOF(tch));
 
         while (*p) {
             if (StrCmpNI(p, tch, ich) == 0) {
+                UINT u;
                 if (swscanf_s(p + ich, L"%u", &u) == 1)
                     return(u);
                 else
@@ -455,6 +449,11 @@ BOOL IsFontAvailable(LPCWSTR lpszFontName)
 //
 BOOL bFreezeAppTitle = FALSE;
 
+static const WCHAR *pszSep = L" - ";
+static const WCHAR *pszMod = L"* ";
+static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
+static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
+
 BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
                     LPCWSTR lpszFile,int iFormat,BOOL bModified,
                     UINT uIDReadOnly,BOOL bReadOnly,LPCWSTR lpszExcerpt)
@@ -467,10 +466,6 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
   WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
   WCHAR szReadOnly[32] = { L'\0' };
   WCHAR szTitle[LARGE_BUFFER] = { L'\0' };
-  static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
-  static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
-  static const WCHAR *pszSep = L" - ";
-  static const WCHAR *pszMod = L"* ";
 
   if (bFreezeAppTitle)
     return FALSE;
