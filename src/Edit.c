@@ -5696,6 +5696,10 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
     int tmp = startPos;  startPos = endPos;  endPos = tmp;  // swap
   }
 
+  // 1st apply current lexer style
+  SciCall_StartStyling(startPos);
+  SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
+
   const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
@@ -5734,7 +5738,7 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
   if (bActiveHotspot) 
   {
     SciCall_StartStyling(endPos);
-    UpdateEditWndUI();
+    UpdateEditWndUI(); // does not apply lexer style
   }
   else {
     SciCall_StartStyling(startPos);
