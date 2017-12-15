@@ -79,20 +79,34 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 //=============================================================================
 //
-//  Selection and information
+//  Selection, positions and information
 //
 //
-DeclareSciCallR0(GetLineCount, GETLINECOUNT, int);
-DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, int);
+DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, int);
+DeclareSciCallR0(GetAnchor, GETANCHOR, int);
+DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, BOOL);
+DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
+DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, int);
+DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, int);
+DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, int, Sci_Position, line);
+DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, int, Sci_Position, line);
+
 DeclareSciCallV2(SetSel, SETSEL, int, anchorPos, int, currentPos);
+
 DeclareSciCallV1(GotoPos, GOTOPOS, int, position);
 DeclareSciCallV1(GotoLine, GOTOLINE, int, line);
-DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, int);
+DeclareSciCallR1(PositionBefore, POSITIONBEFORE, int, Sci_Position, position);
+DeclareSciCallR1(PositionAfter, POSITIONAFTER, int, Sci_Position, position);
+
+DeclareSciCallR0(GetLineCount, GETLINECOUNT, int);
+DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, int);
 DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, int, Sci_Position, position);
 DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, int, Sci_Position, line);
 DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, int, Sci_Position, line);
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int);
+DeclareSciCallR1(GetColumn, GETCOLUMN, int, Sci_Position, position);
 
+DeclareSciCallR1(GetCharAt, GETCHARAT, char, Sci_Position, position);
 
 //=============================================================================
 //

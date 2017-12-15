@@ -2453,19 +2453,19 @@ int CheckRegExReplTarget(char* pszInput)
 
 void TransformBackslashes(char* pszInput, BOOL bRegEx, UINT cpEdit, int* iReplaceMsg)
 {
-  int replTarget = SCI_REPLACETARGET;
-
-  if (bRegEx) {
+  if (bRegEx && iReplaceMsg) {
     UnSlashLowOctal(pszInput);
-    if (iReplaceMsg)
-      replTarget = CheckRegExReplTarget(pszInput);
+    *iReplaceMsg = CheckRegExReplTarget(pszInput);
+  }
+  else if (iReplaceMsg) {
+    *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
   }
 
-  if ((SCI_REPLACETARGET == replTarget) && !bRegEx)
+  // regex handles backslashes itself
+  // except: replacement is not delegated to regex engine
+  if (!bRegEx || (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg))) {
     UnSlash(pszInput, cpEdit);
-
-  if (iReplaceMsg)
-    *iReplaceMsg = replTarget;
+  }
 }
 
 
@@ -3716,8 +3716,7 @@ void DragAndDropInit(HANDLE hHeap)
   else if (g_hHeap == NULL)
     g_hHeap = hHeap;
 
-  OleInitialize(NULL); // just in case
-  return;
+  //OleInitialize(NULL); // just in case
 }
 
 
@@ -3759,7 +3758,6 @@ static BOOL IDRPTRG_QueryDataObject(PIDROPTARGET pDropTarget, IDataObject *pData
     if (pDataObject->lpVtbl->QueryGetData(pDataObject, &fmtetc) == S_OK)
       return TRUE;
   }
-
   return FALSE;
 }
 
@@ -3785,7 +3783,6 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_QueryInterface(PIDROPTARGET pThis, REFI
     *ppvObject = pThis;
     return S_OK;
   }
-
   return E_NOINTERFACE;
 }
 
@@ -3803,7 +3800,6 @@ static ULONG STDMETHODCALLTYPE IDRPTRG_Release(PIDROPTARGET pThis)
     HeapFree(GetDnDHeap(), 0, pThis);
     return 0;
   }
-
   return nCount;
 }
 
@@ -3829,7 +3825,6 @@ static DWORD IDRPTRG_DropEffect(DWORD dwKeyState, POINTL pt, DWORD dwAllowed)
     if (dwAllowed & DROPEFFECT_MOVE)
       dwEffect = DROPEFFECT_MOVE;
   }
-
   UNUSED(pt);
   return dwEffect;
 }

@@ -3341,12 +3341,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (EditSortDlg(hwnd,&iSortOptions)) {
           BeginWaitCursor();
           int token = BeginSelUndoAction();
-          StatusSetText(hwndStatus,255,L"...");
-          StatusSetSimple(hwndStatus,TRUE);
-          InvalidateRect(hwndStatus,NULL,TRUE);
-          UpdateWindow(hwndStatus);
           EditSortLines(hwndEdit,iSortOptions);
-          StatusSetSimple(hwndStatus,FALSE);
           EndSelUndoAction(token);
           EndWaitCursor();
         }
@@ -3363,7 +3358,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         {
           iWrapCol = max(min(iWrapCol,512),1);
           BeginWaitCursor();
+          int token = BeginSelUndoAction();
           EditWrapToColumn(hwndEdit,iWrapCol);
+          EndSelUndoAction(token);
           EndWaitCursor();
         }
       }
@@ -3462,30 +3459,46 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_CONVERTTABS:
-      BeginWaitCursor();
-      EditTabsToSpaces(hwndEdit,iTabWidth,FALSE);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditTabsToSpaces(hwndEdit, iTabWidth, FALSE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_CONVERTSPACES:
-      BeginWaitCursor();
-      EditSpacesToTabs(hwndEdit,iTabWidth,FALSE);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditSpacesToTabs(hwndEdit, iTabWidth, FALSE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_CONVERTTABS2:
-      BeginWaitCursor();
-      EditTabsToSpaces(hwndEdit,iTabWidth,TRUE);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditTabsToSpaces(hwndEdit, iTabWidth, TRUE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
     case IDM_EDIT_CONVERTSPACES2:
-      BeginWaitCursor();
-      EditSpacesToTabs(hwndEdit,iTabWidth,TRUE);
-      EndWaitCursor();
+      {
+        BeginWaitCursor();
+        int token = BeginSelUndoAction();
+        EditSpacesToTabs(hwndEdit, iTabWidth, TRUE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
@@ -5657,11 +5670,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
           }
           else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-            //EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
+            EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
           }
           if (scn->linesAdded != 0) {
+            EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
             UpdateLineNumberWidth();
-            //~EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           }
           bModified = TRUE;
           break;
@@ -6987,7 +7000,6 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 }
 
 
-
 //=============================================================================
 //
 //  UpdateEditWndUI()
@@ -7001,8 +7013,10 @@ void UpdateEditWndUI()
   scn.updated = SC_UPDATE_CONTENT;
   //SendMessage(hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   PostMessage(hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
+  // --------------------------------------------------------------
+  //~ don't SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1); here !
+  // --------------------------------------------------------------
 }
-
 
 
 //=============================================================================

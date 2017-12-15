@@ -998,7 +998,6 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
         shfi.dwAttributes = 0;
         SHGetFileInfo(PathFindFileName(tch),dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
       }
-
       else {
         shfi.dwAttributes = SFGAO_LINK | SFGAO_SHARE;
         SHGetFileInfo(tch,dwAttr,&shfi,sizeof(SHFILEINFO),dwFlags);
@@ -1094,8 +1093,6 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         //if (!bSaveRecentFiles) 
         //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, FALSE);
-
-
 
         CenterDlgInParent(hwnd);
       }
@@ -1279,6 +1276,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             SHGetFileInfo(L"Icon",FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
               SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
+
             lvi.iImage = shfi.iIcon;
 
             for (i = 0; i < MRU_Enum(pFileMRU,0,NULL,0); i++) {

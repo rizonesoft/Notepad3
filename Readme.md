@@ -9,7 +9,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 
 > *Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod. MiniPath is based on code from Florian Balmer's metapath.*
 
-## Changes compared to Flo's official Notepad2 (made in Notepad2-mod):
+## Changes compared to Flo's official [Notepad2](http://www.flos-freeware.ch/notepad2.html) (made in [Notepad2-mod](https://xhmikosr.github.io/notepad2-mod/)):
 
 * Code folding
 * Support for bookmarks
@@ -17,23 +17,27 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 * Updated Scintilla component
 * Word auto-completion
 * Syntax highlighting support for AutoHotkey (AHK), AutoIt3, AviSynth, Bash, CMake, CoffeeScript, 
-  Inno Setup, LaTeX, Lua, Markdown, MATLAB, NSIS, Ruby, Tcl, YAML and VHDL scripts.
+  Inno Setup, LaTeX, Lua, Markdown, NSIS, Ruby, Tcl, YAML and VHDL scripts.
 * Improved support for NFO ANSI art
 * Other various minor changes and tweaks
 
 ## Changes compared to the Notepad2-mod fork:
 
+* Additional syntax highlighting support for Awk, D, golang, MATLAB
+* State of the art Regular Expression search engine ([Onigmu](https://github.com/k-takata/Onigmo))
 * New toolbar icons based on Yusuke Kamiyaman's Fugue Icons (Purchased by [Rizonesoft](https://www.rizonesoft.com))
+* Hyperlink Hotspot highlighting (single click Open in Browser (Ctrl) / Load in Editor (Alt)
 * New program icon and other small cosmetic changes
-* High-DPI awareness, including high definition toolbar icons
-* In-App support for AES-256 Rijndael encryption of files (incl. external commandline tool for batch processing)
-* Multiline Regular Expression search engine (DeelX)
-* Undo/Redo preserves selection
+* In-App support for AES-256 Rijndael encryption/decryption of files (incl. external commandline tool for batch processing)
 * Virtual Space rectangular selection box (Alt-Key down)
+* High-DPI awareness, including high definition toolbar icons
+* Undo/Redo preserves selection
+* File History preserves Caret position (optional) and remembers encoding of file
 * Accelerated word navigation
 * Preserve caret position of items in file history
-* Visual Studio style copy/paste current line (no selection)
 * Count occurrences of a marked selection or word
+* Count and Mark occurrences of matching search/find expression
+* Visual Studio style copy/paste current line (no selection)
 * Insert GUIDs
 * Dropped support for Windows XP version
 * Other various minor changes, tweaks and bugfixes
