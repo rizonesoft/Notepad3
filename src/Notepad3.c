@@ -5670,11 +5670,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
           }
           else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-            //EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
+            EditUpdateUrlHotspots(hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
           }
           if (scn->linesAdded != 0) {
+            EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
             UpdateLineNumberWidth();
-            //~EditUpdateUrlHotspots(hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           }
           bModified = TRUE;
           break;
@@ -7000,7 +7000,6 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 }
 
 
-
 //=============================================================================
 //
 //  UpdateEditWndUI()
@@ -7014,8 +7013,10 @@ void UpdateEditWndUI()
   scn.updated = SC_UPDATE_CONTENT;
   //SendMessage(hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   PostMessage(hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
+  // --------------------------------------------------------------
+  //~ don't SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1); here !
+  // --------------------------------------------------------------
 }
-
 
 
 //=============================================================================

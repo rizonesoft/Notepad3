@@ -34,7 +34,7 @@ set PORTAPP_ROOT_DIR=D:\PortableApps
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
-set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\distrib
+set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
 set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 
@@ -53,7 +53,7 @@ set BUILD=0
 call :GETBUILD
 
 :: VERSION fallback from build date
-set VERSION=2.%YY%.%MM%%DD%.%BUILD%
+set VERSION=3.%YY%.%MM%%DD%.%BUILD%
 
 set FILEVER=
 call :GETFILEVER "%NP3_WIN32_DIR%\Notepad3.exe"

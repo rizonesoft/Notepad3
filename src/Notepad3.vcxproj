@@ -324,6 +324,7 @@
     <ClInclude Include="Styles.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Version.h" />
+    <ClInclude Include="VersionEx.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur" />
@@ -335,6 +336,8 @@
     <None Include="..\res\Run.ico" />
     <None Include="..\res\Styles.ico" />
     <None Include="..\res\Toolbar.bmp" />
+    <None Include="..\Versions\Notepad3.exe.manifest.tpl" />
+    <None Include="..\Versions\VersionEx.h.tpl" />
     <None Include="Notepad3.ver" />
   </ItemGroup>
   <ItemGroup>
@@ -353,6 +356,18 @@
   <ItemGroup>
     <Image Include="..\res\Notepad3.ico" />
     <Image Include="..\res\Toolbar2.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Versions\build.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </Text>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

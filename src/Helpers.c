@@ -2453,17 +2453,19 @@ int CheckRegExReplTarget(char* pszInput)
 
 void TransformBackslashes(char* pszInput, BOOL bRegEx, UINT cpEdit, int* iReplaceMsg)
 {
-  int replTarget = SCI_REPLACETARGET;
-
-  if (bRegEx) {
+  if (bRegEx && iReplaceMsg) {
     UnSlashLowOctal(pszInput);
-    replTarget = CheckRegExReplTarget(pszInput);
+    *iReplaceMsg = CheckRegExReplTarget(pszInput);
   }
-  if (SCI_REPLACETARGET == replTarget) {
+  else if (iReplaceMsg) {
+    *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
+  }
+
+  // regex handles backslashes itself
+  // except: replacement is not delegated to regex engine
+  if (!bRegEx || (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg))) {
     UnSlash(pszInput, cpEdit);
   }
-  if (iReplaceMsg)
-    *iReplaceMsg = replTarget;
 }
 
 
