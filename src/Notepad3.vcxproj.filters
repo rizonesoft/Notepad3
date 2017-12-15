@@ -16,6 +16,9 @@
     <Filter Include="Crypto">
       <UniqueIdentifier>{aad339da-f291-4358-9ab1-a0fdee012ac6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="templates">
+      <UniqueIdentifier>{e817f780-f742-48b4-bc9c-2ab762ced6bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -92,6 +95,9 @@
     <ClInclude Include="..\crypto\sha-256.h">
       <Filter>Crypto</Filter>
     </ClInclude>
+    <ClInclude Include="VersionEx.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">
@@ -124,6 +130,12 @@
     <None Include="Notepad3.ver">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\Versions\Notepad3.exe.manifest.tpl">
+      <Filter>templates</Filter>
+    </None>
+    <None Include="..\Versions\VersionEx.h.tpl">
+      <Filter>templates</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\Notepad3.ico">
@@ -142,5 +154,10 @@
     <Manifest Include="..\res\Notepad3.exe.manifest">
       <Filter>Resource Files</Filter>
     </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Versions\build.txt">
+      <Filter>templates</Filter>
+    </Text>
   </ItemGroup>
 </Project>
