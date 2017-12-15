@@ -656,7 +656,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   DragAndDropInit(NULL);
 
   if (IsVista()) {
-    SciCall_UnBufferedDraw();  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
+    //SciCall_UnBufferedDraw();  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
     if (iSciDirectWriteTech >= 0)
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
   }
