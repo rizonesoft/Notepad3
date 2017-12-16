@@ -656,9 +656,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   DragAndDropInit(NULL);
 
   if (IsVista()) {
-    //SciCall_UnBufferedDraw();  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
-    if (iSciDirectWriteTech >= 0)
+    // Current platforms perform window buffering so it is almost always better for this option to be turned off.
+    // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
+    //~SciCall_SetBufferedDraw(TRUE);  // default is TRUE 
+
+    if (iSciDirectWriteTech >= 0) {
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
+    }
   }
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));

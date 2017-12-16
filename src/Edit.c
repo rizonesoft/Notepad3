@@ -40,6 +40,7 @@
 #include "resource.h"
 #include "SciCall.h"
 #include "../crypto/crypto.h"
+#include "../uthash/utarray.h"
 #include "helpers.h"
 #include "edit.h"
 
@@ -2880,8 +2881,10 @@ void EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,BOOL bInsertAtStart)
           case 0:
             iAction = 1;
           case 1:
-            int iCommentPos = (int)SendMessage(hwnd,SCI_FINDCOLUMN,(WPARAM)iLine,(LPARAM)iCommentCol);
-            SendMessage(hwnd,SCI_INSERTTEXT,(WPARAM)iCommentPos,(LPARAM)mszComment);
+            {
+              int iCommentPos = (int)SendMessage(hwnd, SCI_FINDCOLUMN, (WPARAM)iLine, (LPARAM)iCommentCol);
+              SendMessage(hwnd, SCI_INSERTTEXT, (WPARAM)iCommentPos, (LPARAM)mszComment);
+            }
             break;
           case 2:
             break;
@@ -3988,17 +3991,17 @@ void EditJumpTo(HWND hwnd,int iNewLine,int iNewCol)
 //
 //  EditSelectEx()
 //
-void EditSelectEx(HWND hwnd,int iAnchorPos,int iCurrentPos)
+void EditSelectEx(HWND hwnd, int iAnchorPos, int iCurrentPos)
 {
-  int iNewLine = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iCurrentPos,0);
-  int iAnchorLine = (int)SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iAnchorPos,0);
+  int iNewLine = SciCall_LineFromPosition(iCurrentPos);
+  int iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
 
   // Ensure that the first and last lines of a selection are always unfolded
   // This needs to be done *before* the SCI_SETSEL message
   SciCall_EnsureVisible(iAnchorLine);
-  if (iAnchorLine != iNewLine)
+  if (iAnchorLine != iNewLine) {
     SciCall_EnsureVisible(iNewLine);
-
+  }
   SendMessage(hwnd,SCI_SETXCARETPOLICY,CARET_SLOP|CARET_STRICT|CARET_EVEN,50);
   SendMessage(hwnd,SCI_SETYCARETPOLICY,CARET_SLOP|CARET_STRICT|CARET_EVEN,5);
   SendMessage(hwnd,SCI_SETSEL,iAnchorPos,iCurrentPos);
@@ -4013,22 +4016,24 @@ void EditSelectEx(HWND hwnd,int iAnchorPos,int iCurrentPos)
 //
 void EditFixPositions(HWND hwnd)
 {
-  int iMaxPos = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
-  int iCurrentPos = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
-  int iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
+  int iMaxPos     = SciCall_GetTextLength();;
+  int iCurrentPos = SciCall_GetCurrentPos();
+  int iAnchorPos  = SciCall_GetAnchor();
 
-  if (iCurrentPos > 0 && iCurrentPos < iMaxPos) {
-    int iNewPos = (int)SendMessage(hwnd,SCI_POSITIONAFTER,
-      (WPARAM)(int)SendMessage(hwnd,SCI_POSITIONBEFORE,(WPARAM)iCurrentPos,0),0);
+  if ((iCurrentPos > 0) && (iCurrentPos < iMaxPos)) 
+  {
+    int iNewPos = SciCall_PositionAfter( SciCall_PositionBefore(iCurrentPos) );
+
     if (iNewPos != iCurrentPos) {
       SendMessage(hwnd,SCI_SETCURRENTPOS,(WPARAM)iNewPos,0);
       iCurrentPos = iNewPos;
     }
   }
 
-  if (iAnchorPos != iCurrentPos && iAnchorPos > 0 && iAnchorPos < iMaxPos) {
-    int iNewPos = (int)SendMessage(hwnd,SCI_POSITIONAFTER,(WPARAM)
-                    (int)SendMessage(hwnd,SCI_POSITIONBEFORE,(WPARAM)iAnchorPos,0),0);
+  if ((iAnchorPos != iCurrentPos) && (iAnchorPos > 0) && (iAnchorPos < iMaxPos)) 
+  {
+    int iNewPos = SciCall_PositionAfter(SciCall_PositionBefore(iAnchorPos));
+
     if (iNewPos != iAnchorPos)
       SendMessage(hwnd,SCI_SETANCHOR,(WPARAM)iNewPos,0);
   }
@@ -5239,10 +5244,23 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
 }
 
 
+
 //=============================================================================
 //
 //  EditReplaceAllInRange()
 //
+
+typedef struct _replPos
+{
+  int beg;
+  int end;
+}
+ReplPos_t;
+
+static UT_icd ReplPos_icd = { sizeof(ReplPos_t), NULL, NULL, NULL };
+
+// -------------------------------------------------------------------------------------------------------
+
 int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, int iStartPos, int iEndPos) 
 {
   char szFind[FNDRPL_BUFFER];
@@ -5259,7 +5277,11 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   if (!pszReplace)
     return -1; // recoding of clipboard canceled
 
-  int iCount = 0;
+
+  UT_array* ReplPosUTArray = NULL;
+  utarray_new(ReplPosUTArray, &ReplPos_icd);
+  utarray_reserve(ReplPosUTArray, (2 * SciCall_GetLineCount()) );
+  
   int start = iStartPos;
   int end = iEndPos;
 
@@ -5272,31 +5294,52 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
     bShowInfo = FALSE;
   }
 
+  // build array of matches for later replacements
+
+  ReplPos_t posPair = { 0, 0 };
+
   while ((iPos >= 0) && (start <= iEndPos))
   {
-    if (++iCount == 1)
-      SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
+    posPair.beg = start;
+    posPair.end = end;
 
-    // replace
-    int iReplLen = (int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
-    
-    // move start behind replacement; target region maybe extended by replacement
-    int iFoundLen = (end - start);
-    iEndPos += (iReplLen - iFoundLen);
-    start += iReplLen;
+    utarray_push_back(ReplPosUTArray, &posPair);
+
+    start = end;
     end = iEndPos;
 
     if (start <= iEndPos)
-      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, (iFoundLen == 0));
+      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, ((posPair.end - posPair.beg) == 0));
     else
       iPos = -1;
   } 
   
+  int iCount = utarray_len(ReplPosUTArray);
+
+  if (iCount > 0)
+    SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
+
+  // iterate over findings and replace strings
+  int offset = 0;
+  for (ReplPos_t* pPosPair = (ReplPos_t*)utarray_front(ReplPosUTArray);
+                  pPosPair != NULL;
+                  pPosPair = (ReplPos_t*)utarray_next(ReplPosUTArray, pPosPair)) {
+
+    SciCall_SetTargetRange((pPosPair->beg + offset), (pPosPair->end + offset));
+
+    offset += ((int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace) - pPosPair->end + pPosPair->beg);
+  }
+
   EndWaitCursor();
 
+
+  if (ReplPosUTArray != NULL) {
+    utarray_clear(ReplPosUTArray);
+    utarray_free(ReplPosUTArray);
+  }
   LocalFree(pszReplace);
 
-  if (iCount)
+  if (iCount > 0)
     SendMessage(hwnd, SCI_ENDUNDOACTION, 0, 0);
 
   if (bShowInfo) {
@@ -5335,15 +5378,15 @@ BOOL EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
 //
 BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo)
 {
-  if (SC_SEL_RECTANGLE == SendMessage(hwnd, SCI_GETSELECTIONMODE, 0, 0)) {
+  if (SC_SEL_RECTANGLE == SciCall_GetSelectionMode()) {
     MsgBox(MBWARN, IDS_SELRECT);
     return FALSE;
   }
 
   int token = BeginSelUndoAction();
 
-  int start = (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0);
-  int end = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
+  int start = SciCall_GetSelectionStart();;
+  int end = SciCall_GetSelectionEnd();;
 
   int iCount = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
 
@@ -5352,15 +5395,17 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
   if (iCount <= 0)
     return FALSE;
 
-  if (SendMessage(hwnd,SCI_GETSELECTIONEND,0,0) < SendMessage(hwnd,SCI_GETTARGETEND,0,0)) {
+  int iTargetEnd = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
 
-    int iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
-    int iCurrentPos = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
+  if (SciCall_GetSelectionEnd() < iTargetEnd) {
+
+    int iAnchorPos = SciCall_GetAnchor();
+    int iCurrentPos = SciCall_GetCurrentPos();
 
     if (iAnchorPos > iCurrentPos)
-      iAnchorPos = (int)SendMessage(hwnd,SCI_GETTARGETEND,0,0);
+      iAnchorPos = iTargetEnd;
     else
-      iCurrentPos = (int)SendMessage(hwnd,SCI_GETTARGETEND,0,0);
+      iCurrentPos = iTargetEnd;
 
     EditSelectEx(hwnd,iAnchorPos,iCurrentPos);
   }
