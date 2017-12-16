@@ -14,6 +14,7 @@
  *
  * @autor Rainer Kottenhoff (RaiKoHoff)
  *
+ * TODO: add interface to onig_scan() API (mark occ, hyperlink)
  */
 
 #ifdef SCI_OWNREGEX
@@ -94,7 +95,7 @@ public:
 
 private:
 
-  std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode);
+  std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& rxOptions);
   std::string& convertReplExpr(std::string& replStr);
 
 private:
@@ -131,32 +132,43 @@ RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
 {
+  Sci::Position docLen = SciPos(doc->Length());
 
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
   minPos = doc->MovePositionOutsideChar(minPos, 1, false);
   maxPos = doc->MovePositionOutsideChar(maxPos, 1, false);
   const bool findprevious = (minPos > maxPos);
+  Sci::Position rangeBeg = (findprevious) ? maxPos : minPos;
+  Sci::Position rangeEnd = (findprevious) ? minPos : maxPos;
+  Sci::Position rangeLen = (rangeEnd - rangeBeg);
 
+  // -----------------------------
+  // --- Onigmo Engine Options ---
+  // -----------------------------
 
-  OnigOptionType cmplOptions = ONIG_OPTION_DEFAULT;
-  ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_EXTEND);
-  //~ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_MULTILINE); // the .(dot) matches line-breaks too - we don't want this here
-  //ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_SINGLELINE);
-  ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_NEGATE_SINGLELINE);
-  ONIG_OPTION_ON(cmplOptions, ONIG_OPTION_CAPTURE_GROUP);
+  // fixed options
+  OnigOptionType onigmoOptions = ONIG_OPTION_DEFAULT;
+  ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_EXTEND);
+  //~ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_MULTILINE); // the .(dot) matches line-breaks too - we don't want this here
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_DOTALL);  // deletes multiline option
+  //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_SINGLELINE);
+  ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
+  ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_CAPTURE_GROUP);
 
-  ONIG_OPTION_ON(cmplOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
+  // dynamic options
+  ONIG_OPTION_ON(onigmoOptions, caseSensitive ? ONIG_OPTION_NONE : ONIG_OPTION_IGNORECASE);
+  ONIG_OPTION_ON(onigmoOptions, (rangeBeg != 0) ? ONIG_OPTION_NOTBOL : ONIG_OPTION_NONE);
+  ONIG_OPTION_ON(onigmoOptions, (rangeEnd != docLen) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
 
+  std::string sRegExprStrg = translateRegExpr(std::string(pattern), word, wordStart, doc->eolMode, onigmoOptions);
 
-  std::string sRegExprStrg = translateRegExpr(std::string(pattern), word, wordStart, doc->eolMode);
-
-  bool bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != cmplOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
+  bool bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigmoOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
 
   if (bReCompile) 
   {
     m_RegExprStrg.clear();
     m_RegExprStrg = sRegExprStrg;
-    m_CmplOptions = cmplOptions;
+    m_CmplOptions = onigmoOptions;
     m_ErrorInfo[0] = '\0';
     try {
       OnigErrorInfo einfo;
@@ -181,24 +193,15 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
   m_MatchLen = SciPos(0);
 
   // ---  search document range for pattern match   ---
-  Sci::Position docLen = SciPos(doc->Length());
   UChar* docBegPtr = (UChar*)doc->RangePointer(0, docLen);
   UChar* docSEndPtr = (UChar*)doc->RangePointer(docLen, 0);
-
-  Sci::Position rangeBeg = (findprevious) ? maxPos : minPos;
-  Sci::Position rangeEnd = (findprevious) ? minPos : maxPos;
-  Sci::Position rangeLen = (rangeEnd - rangeBeg);
-
   UChar* rangeBegPtr = (UChar*)doc->RangePointer(rangeBeg, rangeLen);
   UChar* rangeEndPtr = (UChar*)doc->RangePointer(rangeEnd, rangeLen);
 
-  OnigOptionType searchOptions = ONIG_OPTION_NONE;
-  if (rangeBeg != 0) { ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTBOL); }
-  if (rangeEnd != docLen) { ONIG_OPTION_ON(searchOptions, ONIG_OPTION_NOTEOL); }
 
   OnigPosition result = ONIG_MISMATCH;
   try {
-    result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
+    result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
   }
   catch (...) {
     return Cast2long(-3);  // -1 is normally used for not found, -3 is used here for exception
@@ -221,7 +224,7 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
       rangeBegPtr = docBegPtr + (m_MatchPos + max(1,m_MatchLen));
 
       try {
-        result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, searchOptions);
+        result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
       }
       catch (...) {
         return Cast2long(-3);
@@ -352,7 +355,7 @@ static void replaceAll(std::string& source,const std::string& from,const std::st
 
 
 
-std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode)
+std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& rxOptions)
 {
   std::string	tmpStr;
 
@@ -372,18 +375,17 @@ std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wh
 
   switch (eolMode) {
   case SC_EOL_LF:
-    // we are fine here
+    ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_NEWLINE_CRLF);
     break;
 
   case SC_EOL_CR:
-    //TODO: don't know what to do here ...
+    ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_NEWLINE_CRLF);
+    replaceAll(tmpStr, "$", R"((?=\r))"); // $(?![\r\n])
+    replaceAll(tmpStr, R"(\(?=\r))", R"(\$)");
     break;
 
   case SC_EOL_CRLF:
-    {
-      //replaceAll(tmpStr, "$", R"(\r$)");
-      //replaceAll(tmpStr, R"(\\r$)", R"(\$)");
-    }
+    ONIG_OPTION_ON(rxOptions, ONIG_OPTION_NEWLINE_CRLF);
     break;
   }
 

@@ -656,9 +656,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   DragAndDropInit(NULL);
 
   if (IsVista()) {
-    SciCall_UnBufferedDraw();  // Current platforms perform window buffering so it is almost always better for this option to be turned off.
-    if (iSciDirectWriteTech >= 0)
+    // Current platforms perform window buffering so it is almost always better for this option to be turned off.
+    // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
+    //~SciCall_SetBufferedDraw(TRUE);  // default is TRUE 
+
+    if (iSciDirectWriteTech >= 0) {
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
+    }
   }
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
@@ -3610,15 +3614,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_INSERT_GUID:
       {
         GUID guid;
-        WCHAR wszGuid[40];
-        WCHAR *pwszGuid;
-        char mszGuid[40 * 4]; // UTF-8 max of 4 bytes per char
-
-        if (SUCCEEDED(CoCreateGuid(&guid))) {          
+        if (SUCCEEDED(CoCreateGuid(&guid))) {  
+          WCHAR wszGuid[40];
           if (StringFromGUID2(&guid,wszGuid,COUNTOF(wszGuid))) {
-            pwszGuid = wszGuid + 1; // trim first brace char
+            WCHAR* pwszGuid = wszGuid + 1; // trim first brace char
             wszGuid[wcslen(wszGuid) - 1] = L'\0'; // trim last brace char 
             UINT uCP = Encoding_SciGetCodePage(hwndEdit);
+            char mszGuid[40 * 4]; // UTF-8 max of 4 bytes per char
             if (WideCharToMultiByteStrg(uCP,pwszGuid,mszGuid)) {
               int token = BeginSelUndoAction();
               SendMessage(hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszGuid);
@@ -4841,32 +4843,24 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case CMD_WEBACTION1:
     case CMD_WEBACTION2:
       {
-        BOOL  bCmdEnabled;
-        LPWSTR lpszTemplateName;
+        LPWSTR lpszTemplateName = (LOWORD(wParam) == CMD_WEBACTION1) ? L"WebTemplate1" : L"WebTemplate2";
+
         WCHAR  szCmdTemplate[256] = { L'\0' };
-        char  mszSelection[512] = { '\0' };
-        DWORD cchSelection;
-        char  *lpsz;
-        LPWSTR lpszCommand;
-        LPWSTR lpszArgs;
-        WCHAR wchDirectory[MAX_PATH] = { L'\0' };
-
-        lpszTemplateName = (LOWORD(wParam) == CMD_WEBACTION1) ? L"WebTemplate1" : L"WebTemplate2";
-
-        bCmdEnabled = IniGetString(L"Settings2",lpszTemplateName,L"",szCmdTemplate,COUNTOF(szCmdTemplate));
+        BOOL bCmdEnabled = IniGetString(L"Settings2",lpszTemplateName,L"",szCmdTemplate,COUNTOF(szCmdTemplate));
 
         if (bCmdEnabled) {
 
-          cchSelection = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
-                          (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
+          DWORD cchSelection = (int)SendMessage(hwndEdit,SCI_GETSELECTIONEND,0,0) -
+                               (int)SendMessage(hwndEdit,SCI_GETSELECTIONSTART,0,0);
 
+          char  mszSelection[512] = { '\0' };
           if ((cchSelection > 0) && (cchSelection <= 500) && (SendMessage(hwndEdit,SCI_GETSELTEXT,0,0) < COUNTOF(mszSelection)))
           {
             SendMessage(hwndEdit,SCI_GETSELTEXT,0,(LPARAM)mszSelection);
             mszSelection[cchSelection] = '\0'; // zero terminate
 
             // Check lpszSelection and truncate bad WCHARs
-            lpsz = StrChrA(mszSelection,13);
+            char* lpsz = StrChrA(mszSelection,13);
             if (lpsz) *lpsz = '\0';
 
             lpsz = StrChrA(mszSelection,10);
@@ -4882,13 +4876,14 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
               MultiByteToWideCharStrg(uCP,mszSelection,wszSelection);
 
               int cmdsz = (512 + COUNTOF(szCmdTemplate) + MAX_PATH + 32);
-              lpszCommand = GlobalAlloc(GPTR,sizeof(WCHAR)*cmdsz);
+              LPWSTR lpszCommand = GlobalAlloc(GPTR,sizeof(WCHAR)*cmdsz);
               StringCchPrintf(lpszCommand,cmdsz,szCmdTemplate,wszSelection);
               ExpandEnvironmentStringsEx(lpszCommand,(DWORD)GlobalSize(lpszCommand)/sizeof(WCHAR));
 
-              lpszArgs = GlobalAlloc(GPTR,GlobalSize(lpszCommand));
+              LPWSTR lpszArgs = GlobalAlloc(GPTR,GlobalSize(lpszCommand));
               ExtractFirstArgument(lpszCommand,lpszCommand,lpszArgs,cmdsz);
 
+              WCHAR wchDirectory[MAX_PATH] = { L'\0' };
               if (StringCchLenW(szCurFile,COUNTOF(szCurFile))) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),szCurFile);
                 PathRemoveFileSpec(wchDirectory);
@@ -5527,11 +5522,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             // in CRLF mode handle LF only...
             if ((SC_EOL_CRLF == iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != iEOLMode)
             {
-              char *pLineBuf;
-              char *pPos;
-              //int  iIndentLen;
-
-              int iCurPos    = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
+              int iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
               //int iAnchorPos = (int)SendMessage(hwndEdit,SCI_GETANCHOR,0,0);
               int iCurLine = (int)SendMessage(hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
               //int iLineLength = (int)SendMessage(hwndEdit,SCI_LINELENGTH,iCurLine,0);
@@ -5555,12 +5546,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               if (iCurLine > 0/* && iLineLength <= 2*/)
               {
                 int iPrevLineLength = (int)SendMessage(hwndEdit,SCI_LINELENGTH,iCurLine-1,0);
-                pLineBuf = GlobalAlloc(GPTR, iPrevLineLength + 1);
+                char* pLineBuf = GlobalAlloc(GPTR, iPrevLineLength + 1);
                 if (pLineBuf)
                 {
                   SendMessage(hwndEdit,SCI_GETLINE,iCurLine-1,(LPARAM)pLineBuf);
                   *(pLineBuf+iPrevLineLength) = '\0';
-                  for (pPos = pLineBuf; *pPos; pPos++) {
+                  for (char* pPos = pLineBuf; *pPos; pPos++) {
                     if (*pPos != ' ' && *pPos != '\t')
                       *pPos = '\0';
                   }
@@ -5602,8 +5593,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (/*iLexer == SCLEX_HTML || iLexer == SCLEX_XML*/ 1)
             {
               char tchBuf[512] = { '\0' };
-              char tchIns[516] = "</";
-              int  cchIns = 2;
               int  iCurPos = (int)SendMessage(hwndEdit,SCI_GETCURRENTPOS,0,0);
               int  iHelper = iCurPos - (COUNTOF(tchBuf) - 1);
               int  iStartPos = max(0,iHelper);
@@ -5624,6 +5613,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   while (pCur > pBegin && *pCur != '<' && *pCur != '>')
                     --pCur;
 
+                  int  cchIns = 2;
+                  char tchIns[516] = "</";
                   if (*pCur == '<') {
                     pCur++;
                     while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
@@ -6814,7 +6805,7 @@ void LoadFlags()
 //  FindIniFile()
 //
 //
-int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
+BOOL CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
   WCHAR tchBuild[MAX_PATH] = { L'\0' };
@@ -6827,7 +6818,7 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 
     if (PathFileExists(tchBuild)) {
       StringCchCopy(lpszFile,MAX_PATH,tchBuild);
-      return(1);
+      return TRUE;
     }
     // %appdata%
     //if (S_OK == SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
@@ -6835,31 +6826,31 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       PathCchAppend(tchBuild,COUNTOF(tchBuild),tchFileExpanded);
       if (PathFileExists(tchBuild)) {
         StringCchCopy(lpszFile,MAX_PATH,tchBuild);
-        return(1);
+        return TRUE;
       }
     }
     // general
     if (SearchPath(NULL,tchFileExpanded,NULL,COUNTOF(tchBuild),tchBuild,NULL)) {
       StringCchCopy(lpszFile,MAX_PATH,tchBuild);
-      return(1);
+      return TRUE;
     }
   }
 
   else if (PathFileExists(tchFileExpanded)) {
     StringCchCopy(lpszFile,MAX_PATH,tchFileExpanded);
-    return(1);
+    return TRUE;
   }
 
-  return(0);
+  return FALSE;
 }
 
-int CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
+BOOL CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
   if (GetPrivateProfileString(L"Notepad3",L"Notepad3.ini",L"",tch,COUNTOF(tch),lpszFile)) {
     if (CheckIniFile(tch,lpszModule)) {
       StringCchCopy(lpszFile,MAX_PATH,tch);
-      return(1);
+      return TRUE;
     }
     else {
       WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
@@ -6867,20 +6858,19 @@ int CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
       if (PathIsRelative(tchFileExpanded)) {
         StringCchCopy(lpszFile,MAX_PATH,lpszModule);
         StringCchCopy(PathFindFileName(lpszFile),MAX_PATH,tchFileExpanded);
-        return(1);
+        return TRUE;
       }
       else {
         StringCchCopy(lpszFile,MAX_PATH,tchFileExpanded);
-        return(1);
+        return TRUE;
       }
     }
   }
-  return(0);
+  return FALSE;
 }
 
 int FindIniFile() {
 
-  int bFound = 0;
   WCHAR tchTest[MAX_PATH] = { L'\0' };
   WCHAR tchModule[MAX_PATH] = { L'\0' };
   GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
@@ -6903,7 +6893,7 @@ int FindIniFile() {
   else {
     StringCchCopy(tchTest,COUNTOF(tchTest),PathFindFileName(tchModule));
     PathCchRenameExtension(tchTest,COUNTOF(tchTest),L".ini");
-    bFound = CheckIniFile(tchTest,tchModule);
+    BOOL bFound = CheckIniFile(tchTest,tchModule);
 
     if (!bFound) {
       StringCchCopy(tchTest,COUNTOF(tchTest),L"Notepad3.ini");
@@ -6911,9 +6901,11 @@ int FindIniFile() {
     }
 
     if (bFound) {
+
       // allow two redirections: administrator -> user -> custom
       if (CheckIniFileRedirect(tchTest,tchModule))
         CheckIniFileRedirect(tchTest,tchModule);
+
       StringCchCopy(szIniFile,COUNTOF(szIniFile),tchTest);
     }
     else {

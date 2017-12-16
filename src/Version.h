@@ -59,16 +59,20 @@
 // Compiler specific
 #if defined(_MSC_VER)
     #if (_MSC_VER >= 1912)
-        #if(_MSC_FULL_VER >= 191225830)
+        #if(_MSC_FULL_VER >= 191225831)
+            #define VER_CPL     "Microsoft Visual C++ 2017  Version 15.5.2"
+        #elif(_MSC_FULL_VER >= 191225830)
             #define VER_CPL     "Microsoft Visual C++ 2017  Version 15.5"
-        #endif    
+        #else
+            #define VER_CPL     "Microsoft Visual C++ 2017 (version unknown)"
+        #endif
     #elif (_MSC_VER >= 1911)
         #if((_MSC_FULL_VER >= 191125542) && (_MSC_FULL_VER <= 191125547))
            #define VER_CPL     "Microsoft Visual C++ 2017  Version 15.4"
         #elif((_MSC_FULL_VER >= 191125506) && (_MSC_FULL_VER <= 191125508))
            #define VER_CPL     "Microsoft Visual C++ 2017  Version 15.3"
         #else
-           #define VER_CPL     "Microsoft Visual C++ 2017"
+           #define VER_CPL     "Microsoft Visual C++ 2017 (version unknown)"
         #endif
     #elif (_MSC_VER >= 1910)
         #if ((_MSC_FULL_VER >= 191025017) && (_MSC_FULL_VER <= 191025019))
@@ -86,10 +90,10 @@
         #elif (_MSC_FULL_VER == 190023506)
             #define VER_CPL    "Microsoft Visual C++ 2015  Update 1"
         #else
-            #define VER_CPL    "Microsoft Visual C++  (version unknown)"
+            #define VER_CPL    "Microsoft Visual C++ (version unknown)"
         #endif
     #else
-        #define VER_CPL        "Microsoft Visual C++  (version unknown)"
+        #define VER_CPL        "Microsoft Visual C++ (version unknown)"
     #endif
 #else
     #define VER_CPL            "(Unknown compiler)"
