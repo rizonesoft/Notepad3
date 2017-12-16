@@ -92,6 +92,7 @@ DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, int, Sci_Posi
 DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, int, Sci_Position, line);
 
 DeclareSciCallV2(SetSel, SETSEL, int, anchorPos, int, currentPos);
+DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, int, start, int, end);
 
 DeclareSciCallV1(GotoPos, GOTOPOS, int, position);
 DeclareSciCallV1(GotoLine, GOTOLINE, int, line);
@@ -178,7 +179,7 @@ DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, valu
 //  SetTechnology
 //
 //
-DeclareSciCallV0(UnBufferedDraw, SETBUFFEREDDRAW);
+DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, BOOL, value);
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 
 
