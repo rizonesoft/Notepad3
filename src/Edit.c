@@ -4399,14 +4399,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             bFirstTime = FALSE;
           }
           if (lpszSelection) {
-            // Check lpszSelection and truncate bad chars (CR,LF,TAB)
+            // Check lpszSelection and truncate bad chars (CR,LF,VT)
             char* lpsz = StrChrA(lpszSelection,13);
             if (lpsz) *lpsz = '\0';
 
             lpsz = StrChrA(lpszSelection,10);
             if (lpsz) *lpsz = '\0';
 
-            lpsz = StrChrA(lpszSelection,9);
+            lpsz = StrChrA(lpszSelection,11);
             if (lpsz) *lpsz = '\0';
 
             SetDlgItemTextA2W(uCPEdit,hwnd,IDC_FINDTEXT,lpszSelection);
