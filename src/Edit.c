@@ -4357,6 +4357,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
         // Get the current code page for Unicode conversion
         UINT uCPEdit = Encoding_SciGetCodePage(hwndEdit);
+        
+        //const WORD wTabSpacing = (WORD)SendMessage(lpefr->hwnd, SCI_GETTABWIDTH, 0, 0);;  // dialog box units
+        //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
 
         // Load MRUs
         WCHAR tch2[FNDRPL_BUFFER] = { L'\0' };
@@ -4368,6 +4371,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           MRU_Enum(mruReplace,i,tch2,COUNTOF(tch2));
           SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_ADDSTRING,0,(LPARAM)tch2);
         }
+
+        
 
         if (!bSwitchedFindReplace)
         {
