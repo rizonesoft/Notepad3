@@ -2953,8 +2953,7 @@ void Style_Save()
     LocalFree(pIniSection);
     return;
   }
-
-
+  
   for (iLexer = 0; iLexer < COUNTOF(pLexArray); iLexer++) {
     IniSectionSetString(pIniSection,L"FileNameExtensions",pLexArray[iLexer]->szExtensions);
     i = 0;
@@ -4037,17 +4036,12 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 void Style_SetDefaultFont(HWND hwnd)
 {
   const int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
-  if (Style_SelectFont(hwnd,
-        lexDefault.Styles[STY_DEFAULT + iIdx].szValue,
-        COUNTOF(lexDefault.Styles[STY_DEFAULT + iIdx].szValue),
-        TRUE)) {
-
-    // replace lexers default with this new default
-    StringCchCopyW(pLexCurrent->Styles[STY_DEFAULT].szValue,
-      COUNTOF(pLexCurrent->Styles[STY_DEFAULT].szValue),
-      lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
-
+  if (Style_SelectFont(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].szValue,
+        COUNTOF(lexDefault.Styles[STY_DEFAULT + iIdx].szValue), TRUE)) 
+  {
     fStylesModified = TRUE;
+    // clear lexers default - lexer inherits global default then
+    pLexCurrent->Styles[STY_DEFAULT].szValue[0] = L'\0';
     Style_SetLexer(hwnd,pLexCurrent);
   }
 }
@@ -5412,7 +5406,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
 void Style_ConfigDlg(HWND hwnd)
 {
 
-  WCHAR* StyleBackup[NUMLEXERS * 64];
+  WCHAR* StyleBackup[NUMLEXERS * MAX_NUM_OF_STYLES_PER_LEXER];
   int c,cItems,i,iLexer;
 
   // Backup Styles
@@ -5443,18 +5437,17 @@ void Style_ConfigDlg(HWND hwnd)
       }
     }
   }
-
   else {
     fStylesModified = TRUE;
-    if (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0 && !fWarnedNoIniFile) {
+    if (!fWarnedNoIniFile && (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0)) {
       MsgBox(MBWARN,IDS_SETTINGSNOTSAVED);
       fWarnedNoIniFile = TRUE;
     }
   }
 
-  for (c = 0; c < cItems; c++)
+  for (c = 0; c < cItems; c++) {
     LocalFree(StyleBackup[c]);
-
+  }
   // Apply new (or previous) Styles
   Style_SetLexer(hwnd,pLexCurrent);
 }
