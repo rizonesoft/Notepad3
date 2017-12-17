@@ -52,6 +52,9 @@ extern BOOL bUseOldStyleBraceMatching;
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
 
+static int iBaseFontSize = 10;
+
+
 KEYWORDLIST KeyWords_NULL = {
 "", "", "", "", "", "", "", "", "" };
 
@@ -2804,8 +2807,6 @@ COLORREF crCustom[16];
 BOOL bUse2ndDefaultStyle;
 BOOL fStylesModified = FALSE;
 BOOL fWarnedNoIniFile = FALSE;
-WCHAR wchBaseFont[64] = { L'\0' };
-int iBaseFontSize = 10;
 int iDefaultLexer;
 BOOL bAutoSelect;
 int cxStyleSelectDlg;
@@ -3077,6 +3078,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   int rgb;
   int iValue;
   int iIdx;
+  WCHAR wchFontName[64] = { '\0' };
   WCHAR wchCaretStyle[64] = { L'\0' };
 
   // Select default if NULL is specified
@@ -3129,6 +3131,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   // Use 2nd default style
   iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
+  int iDefaultStyle = lexDefault.Styles[STY_DEFAULT + iIdx].iStyle;
+  WCHAR* wchDefaultStyleStrg = lexDefault.Styles[STY_DEFAULT + iIdx].szValue;
 
   // Clear
   SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
@@ -3139,28 +3143,42 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
 
- 
-  if (!Style_StrGetColor(TRUE, lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iValue))
+
+  if (!Style_StrGetColor(TRUE, wchDefaultStyleStrg, &iValue))
     SendMessage(hwnd, SCI_STYLESETFORE, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOWTEXT));   // default text color
-  if (!Style_StrGetColor(FALSE, lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iValue))
+  if (!Style_StrGetColor(FALSE, wchDefaultStyleStrg, &iValue))
     SendMessage(hwnd, SCI_STYLESETBACK, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOW));       // default window color
 
   // Auto-select codepage according to charset
   //~Style_SetACPfromCharSet(hwnd);
 
-  // Font quality setup, 
-  Style_SetFontQuality(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
-  Style_StrGetFont(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, wchBaseFont, COUNTOF(wchBaseFont));
-  Style_StrGetSize(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, &iBaseFontSize);               // base size
+  // ---- Font & More  ---
+  Style_SetFontQuality(hwnd, wchDefaultStyleStrg);
 
-
-  // set default style
-  Style_SetStyles(hwnd, lexDefault.Styles[STY_DEFAULT + iIdx].iStyle, lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
-  
-  // override with Lexer's specific defaults
-  if (StringCchLenW(pLexNew->Styles[STY_DEFAULT].szValue, COUNTOF(pLexNew->Styles[STY_DEFAULT].szValue)) > 0) 
+  if (!Style_StrGetFont(wchDefaultStyleStrg, wchFontName, COUNTOF(wchFontName))) 
   {
-    Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue);
+    char chFontName[32] = { '\0' };
+    if (IsFontAvailable(L"Consolas"))
+      StringCchCopyA(chFontName, COUNTOF(chFontName), "Consolas");
+    else
+      StringCchCopyA(chFontName, COUNTOF(chFontName), "Lucida Console");
+
+    SendMessage(hwnd, SCI_STYLESETFONT, iDefaultStyle, (LPARAM)chFontName);
+  }
+  iBaseFontSize = 10;
+  if (!Style_StrGetSize(wchDefaultStyleStrg, &iBaseFontSize)) {
+    SendMessage(hwnd, SCI_STYLESETSIZE, iDefaultStyle, (LPARAM)iBaseFontSize);  // base size
+  }
+  SendMessage(hwnd, SCI_STYLESETWEIGHT, iDefaultStyle, (LPARAM)FW_NORMAL);
+  SendMessage(hwnd, SCI_STYLESETITALIC, iDefaultStyle, (LPARAM)FALSE);
+  SendMessage(hwnd, SCI_STYLESETEOLFILLED, iDefaultStyle, (LPARAM)FALSE);
+  SendMessage(hwnd, SCI_STYLESETCHARACTERSET, iDefaultStyle, (LPARAM)DEFAULT_CHARSET);
+
+  // apply default style
+  Style_SetStyles(hwnd, iDefaultStyle, wchDefaultStyleStrg);
+  if (StringCchLenW(pLexNew->Styles[STY_DEFAULT].szValue, COUNTOF(pLexNew->Styles[STY_DEFAULT].szValue)) > 0) {
+    // override with Lexer's specific defaults
+    Style_SetStyles(hwnd, iDefaultStyle, pLexNew->Styles[STY_DEFAULT].szValue);
   }
 
   SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)FALSE);       // default hotspot off
@@ -3446,7 +3464,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
   {
     int j;
-    int i = 1; // don't touch default style
+    int i = 1; // don't re-apply lexers default style
     while (pLexNew->Styles[i].iStyle != -1) 
     {
       for (j = 0; j < 4 && (pLexNew->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
@@ -4023,6 +4041,12 @@ void Style_SetDefaultFont(HWND hwnd)
         lexDefault.Styles[STY_DEFAULT + iIdx].szValue,
         COUNTOF(lexDefault.Styles[STY_DEFAULT + iIdx].szValue),
         TRUE)) {
+
+    // replace lexers default with this new default
+    StringCchCopyW(pLexCurrent->Styles[STY_DEFAULT].szValue,
+      COUNTOF(pLexCurrent->Styles[STY_DEFAULT].szValue),
+      lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
+
     fStylesModified = TRUE;
     Style_SetLexer(hwnd,pLexCurrent);
   }
@@ -4382,7 +4406,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   LOGFONT lf;
   WCHAR szNewStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
   int  iValue;
-  WCHAR tch[LF_FACESIZE+1] = { L'\0' };
+  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   HDC hdc;
 
   ZeroMemory(&cf,sizeof(CHOOSEFONT));
@@ -4555,7 +4579,7 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bFore,LPWSTR lpszStyle,int cchStyle)
   WCHAR szNewStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
   int  iRGBResult;
   int  iValue;
-  WCHAR tch[64] = { L'\0' };
+  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   ZeroMemory(&cc,sizeof(CHOOSECOLOR));
 
@@ -4708,20 +4732,14 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
     WideCharToMultiByteStrg(CP_UTF8, tch, chFont);
     SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
   }
-  else {
-    WideCharToMultiByteStrg(CP_UTF8, wchBaseFont, chFont);
-    SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
-  }
 
   // Size
-  if (Style_StrGetSize(lpszStyle,&iValue))
-    SendMessage(hwnd,SCI_STYLESETSIZE,iStyle,(LPARAM)iValue);
-  else
-    SendMessage(hwnd, SCI_STYLESETSIZE,iStyle,(LPARAM)iBaseFontSize);
+  if (Style_StrGetSize(lpszStyle, &iValue)) {
+    SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (LPARAM)iValue);
+    //or Fractional
+    //SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)(iValue * SC_FONT_SIZE_MULTIPLIER));
+  }
 
-  //or Fractional
-  //SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)(iBaseFontSize * 100));
-  
   // Fore
   if (Style_StrGetColor(TRUE,lpszStyle,&iValue))
     SendMessage(hwnd,SCI_STYLESETFORE,iStyle,(LPARAM)iValue);
@@ -4733,8 +4751,6 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   //// Bold
   //if (StrStrI(lpszStyle,L"bold") != NULL)
   //  SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)TRUE);
-  //else
-  //  SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)FALSE);
 
   // Weight
   if (StrStrI(lpszStyle, L"thin"))
@@ -4755,26 +4771,18 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
     SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_EXTRABOLD);
   else if (StrStrI(lpszStyle, L"heavy"))
     SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_HEAVY);
-  else 
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_NORMAL);
 
   // Italic
   if (StrStrI(lpszStyle,L"italic") != NULL)
     SendMessage(hwnd,SCI_STYLESETITALIC,iStyle,(LPARAM)TRUE);
-  else
-    SendMessage(hwnd,SCI_STYLESETITALIC,iStyle,(LPARAM)FALSE);
 
   // Underline
   if (StrStrI(lpszStyle,L"underline") != NULL)
     SendMessage(hwnd,SCI_STYLESETUNDERLINE,iStyle,(LPARAM)TRUE);
-  else
-    SendMessage(hwnd,SCI_STYLESETUNDERLINE,iStyle,(LPARAM)FALSE);
 
   // EOL Filled
   if (StrStrI(lpszStyle,L"eolfilled") != NULL)
     SendMessage(hwnd,SCI_STYLESETEOLFILLED,iStyle,(LPARAM)TRUE);
-  else
-    SendMessage(hwnd,SCI_STYLESETEOLFILLED,iStyle,(LPARAM)FALSE);
 
   // Case
   if (Style_StrGetCase(lpszStyle,&iValue))
@@ -4783,9 +4791,6 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   // Character Set
   if (Style_StrGetCharSet(lpszStyle,&iValue))
     SendMessage(hwnd,SCI_STYLESETCHARACTERSET,iStyle,(LPARAM)iValue);
-  else
-    SendMessage(hwnd,SCI_STYLESETCHARACTERSET,iStyle,(LPARAM)DEFAULT_CHARSET);
-
 }
 
 

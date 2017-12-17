@@ -373,6 +373,14 @@ std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wh
     tmpStr.append(regExprStr);
   }
 
+  // Onigmo unsupported word boundary
+  replaceAll(tmpStr, R"(\<)", R"((?<!\w)(?=\w))");  // word begin
+  replaceAll(tmpStr, R"(\(?<!\w)(?=\w))", R"(\\<)"); // esc'd
+
+  replaceAll(tmpStr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
+  replaceAll(tmpStr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
+
+  // EOL modes
   switch (eolMode) {
   case SC_EOL_LF:
     ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_NEWLINE_CRLF);
@@ -380,7 +388,7 @@ std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wh
 
   case SC_EOL_CR:
     ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_NEWLINE_CRLF);
-    replaceAll(tmpStr, "$", R"((?=\r))"); // $(?![\r\n])
+    replaceAll(tmpStr, R"($)", R"((?=\r))");
     replaceAll(tmpStr, R"(\(?=\r))", R"(\$)");
     break;
 
