@@ -463,6 +463,7 @@
 #define IDS_WARN_UNKNOWN_EXT            50042
 #define IDS_REGEX_INVALID               50043
 #define IDS_DROP_NO_FILE                50044
+#define IDS_APPLY_DEFAULT_FONT          50045
 #define IDS_CMDLINEHELP                 60000
 #define IDM_EDIT_INSERT_GUID            60001
 #define IDC_STATIC                      -1
