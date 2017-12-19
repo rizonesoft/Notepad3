@@ -693,7 +693,7 @@ KEYWORDLIST KeyWords_JSON = {
 "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexJSON = { SCLEX_JSON, 63382, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", &KeyWords_JSON, {
+EDITLEXER lexJSON = { SCLEX_JSON, 63029, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", &KeyWords_JSON, {
                     { SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
                     { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
                     { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#A46000", L"" },
@@ -1318,7 +1318,7 @@ KEYWORDLIST KeyWords_NSIS = {
 "", "", "", "", "", "" };
 
 
-EDITLEXER lexNSIS = { SCLEX_NSIS, 63284, L"NSIS Script", L"nsi; nsh", L"", &KeyWords_NSIS, {
+EDITLEXER lexNSIS = { SCLEX_NSIS, 63030, L"NSIS Script", L"nsi; nsh", L"", &KeyWords_NSIS, {
                       { SCE_NSIS_DEFAULT, 63126, L"Default", L"", L"" },
                       { MULTI_STYLE(SCE_NSIS_COMMENT,SCE_NSIS_COMMENTBOX,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                       { MULTI_STYLE(SCE_NSIS_STRINGDQ,SCE_NSIS_STRINGLQ,SCE_NSIS_STRINGRQ,0), 63131, L"String", L"fore:#666666; back:#EEEEEE", L"" },
@@ -1375,7 +1375,7 @@ KEYWORDLIST KeyWords_INNO = {
 "", "", "", "" };
 
 
-EDITLEXER lexINNO = { SCLEX_INNOSETUP, 63293, L"Inno Setup Script", L"iss; isl; islu", L"", &KeyWords_INNO, {
+EDITLEXER lexINNO = { SCLEX_INNOSETUP, 63031, L"Inno Setup Script", L"iss; isl; islu", L"", &KeyWords_INNO, {
                       { SCE_INNO_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_INNO_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                       { SCE_INNO_KEYWORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
@@ -1397,7 +1397,7 @@ KEYWORDLIST KeyWords_RUBY = {
 "undef unless until when while yield",
 "", "", "", "", "", "", "", "" };
 
-EDITLEXER lexRUBY = { SCLEX_RUBY, 63304, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; Rakefile; gemspec", L"", &KeyWords_RUBY, {
+EDITLEXER lexRUBY = { SCLEX_RUBY, 63032, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; Rakefile; gemspec", L"", &KeyWords_RUBY, {
                     { SCE_RB_DEFAULT, 63126, L"Default", L"", L"" },
                     { MULTI_STYLE(SCE_RB_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                     { SCE_RB_WORD, 63128, L"Keyword", L"fore:#00007F", L"" },
@@ -1446,7 +1446,7 @@ KEYWORDLIST KeyWords_LUA = {
 "", "", "", "", "" };
 
 
-EDITLEXER lexLUA = { SCLEX_LUA, 63298, L"Lua Script", L"lua", L"", &KeyWords_LUA, {
+EDITLEXER lexLUA = { SCLEX_LUA, 63033, L"Lua Script", L"lua", L"", &KeyWords_LUA, {
                     { SCE_LUA_DEFAULT, 63126, L"Default", L"", L"" },
                     { MULTI_STYLE(SCE_LUA_COMMENT,SCE_LUA_COMMENTLINE,SCE_LUA_COMMENTDOC,0), 63127, L"Comment", L"fore:#008000", L"" },
                     { SCE_LUA_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
@@ -1480,7 +1480,7 @@ KEYWORDLIST KeyWords_BASH = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexBASH = { SCLEX_BASH, 63259, L"Shell Script", L"sh", L"", &KeyWords_BASH, {
+EDITLEXER lexBASH = { SCLEX_BASH, 63026, L"Shell Script", L"sh", L"", &KeyWords_BASH, {
                       { SCE_SH_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_SH_ERROR, 63261, L"Error", L"", L"" },
                       { SCE_SH_COMMENTLINE, 63127, L"Comment", L"fore:#008000", L"" },
@@ -1528,7 +1528,7 @@ KEYWORDLIST KeyWords_TCL = {
 #define SCE_TCL__MULTI_SUBSTITUTION MULTI_STYLE(SCE_TCL_SUBSTITUTION,SCE_TCL_SUB_BRACE,0,0)
 
 
-EDITLEXER lexTCL = { SCLEX_TCL, 63273, L"Tcl Script", L"tcl; itcl", L"", &KeyWords_TCL, {
+EDITLEXER lexTCL = { SCLEX_TCL, 63034, L"Tcl Script", L"tcl; itcl", L"", &KeyWords_TCL, {
                      { SCE_TCL_DEFAULT, 63126, L"Default", L"", L"" },
                      { SCE_TCL__MULTI_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_TCL__MULTI_KEYWORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
@@ -2187,7 +2187,7 @@ KEYWORDLIST KeyWords_AU3 = {
 "" };
 
 
-EDITLEXER lexAU3 = { SCLEX_AU3, 63276, L"AutoIt3 Script", L"au3", L"", &KeyWords_AU3, {
+EDITLEXER lexAU3 = { SCLEX_AU3, 63035, L"AutoIt3 Script", L"au3", L"", &KeyWords_AU3, {
                      { SCE_AU3_DEFAULT, 63126, L"Default", L"", L"" },
                      { MULTI_STYLE(SCE_AU3_COMMENT,SCE_AU3_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_AU3_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
@@ -2204,7 +2204,7 @@ EDITLEXER lexAU3 = { SCLEX_AU3, 63276, L"AutoIt3 Script", L"au3", L"", &KeyWords
                      { -1, 00000, L"", L"", L"" } } };
 
 
-EDITLEXER lexLATEX = { SCLEX_LATEX, 63281, L"LaTeX Files", L"tex; latex; sty", L"", &KeyWords_NULL, {
+EDITLEXER lexLATEX = { SCLEX_LATEX, 63036, L"LaTeX Files", L"tex; latex; sty", L"", &KeyWords_NULL, {
                        { SCE_L_DEFAULT, 63126, L"Default", L"", L"" },
                        { MULTI_STYLE(SCE_L_COMMAND,SCE_L_SHORTCMD,SCE_L_CMDOPT,0), 63236, L"Command", L"fore:#0000FF", L"" },
                        { MULTI_STYLE(SCE_L_COMMENT,SCE_L_COMMENT2,0,0), 63127, L"Comment", L"fore:#008000", L"" },
@@ -2215,7 +2215,7 @@ EDITLEXER lexLATEX = { SCLEX_LATEX, 63281, L"LaTeX Files", L"tex; latex; sty", L
                        { -1, 00000, L"", L"", L"" } } };
 
 
-EDITLEXER lexANSI = { SCLEX_NULL, 63266, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL, {
+EDITLEXER lexANSI = { SCLEX_NULL, 63025, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL, {
                       { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console", L"" },
                       { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
                       { STYLE_BRACELIGHT, 63102, L"Matching Braces", L"size:+0", L"" },
@@ -2330,7 +2330,7 @@ KEYWORDLIST KeyWords_AHK = {
 "", "" };
 
 
-EDITLEXER lexAHK = { SCLEX_AHK, 63305, L"AutoHotkey Script", L"ahk; ia; scriptlet", L"", &KeyWords_AHK, {
+EDITLEXER lexAHK = { SCLEX_AHK, 63037, L"AutoHotkey Script", L"ahk; ia; scriptlet", L"", &KeyWords_AHK, {
                      { SCE_AHK_DEFAULT, 63126, L"Default", L"", L"" },
                      { MULTI_STYLE(SCE_AHK_COMMENTLINE,SCE_AHK_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_AHK_ESCAPE, 63306, L"Escape", L"fore:#FF8000", L"" },
@@ -2383,7 +2383,7 @@ KEYWORDLIST KeyWords_CMAKE = {
 "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexCmake = { SCLEX_CMAKE, 63324, L"Cmake Script", L"cmake; ctest", L"", &KeyWords_CMAKE, {
+EDITLEXER lexCmake = { SCLEX_CMAKE, 63038, L"Cmake Script", L"cmake; ctest", L"", &KeyWords_CMAKE, {
                        { SCE_CMAKE_DEFAULT, 63126, L"Default", L"", L"" },
                        { SCE_CMAKE_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                        { MULTI_STYLE(SCE_CMAKE_STRINGDQ,SCE_CMAKE_STRINGLQ,SCE_CMAKE_STRINGRQ,0), 63131, L"String", L"back:#EEEEEE; fore:#7F007F", L"" },
@@ -2475,7 +2475,7 @@ KEYWORDLIST KeyWords_AVS = {
 "", "", "", "" };
 
 
-EDITLEXER lexAVS = { SCLEX_AVS, 63332, L"AviSynth Script", L"avs; avsi", L"", &KeyWords_AVS, {
+EDITLEXER lexAVS = { SCLEX_AVS, 63039, L"AviSynth Script", L"avs; avsi", L"", &KeyWords_AVS, {
                      { SCE_AVS_DEFAULT, 63126, L"Default", L"", L"" },
                      { MULTI_STYLE(SCE_AVS_COMMENTLINE,SCE_AVS_COMMENTBLOCK,SCE_AVS_COMMENTBLOCKN,0), 63127, L"Comment", L"fore:#008000", L"" },
                      { SCE_AVS_OPERATOR, 63132, L"Operator", L"", L"" },
@@ -2494,7 +2494,7 @@ KEYWORDLIST KeyWords_MARKDOWN = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexMARKDOWN = { SCLEX_MARKDOWN, 63336, L"Markdown", L"md; markdown; mdown; mkdn; mkd", L"", &KeyWords_MARKDOWN, {
+EDITLEXER lexMARKDOWN = { SCLEX_MARKDOWN, 63040, L"Markdown", L"md; markdown; mdown; mkdn; mkd", L"", &KeyWords_MARKDOWN, {
                           { SCE_MARKDOWN_DEFAULT, 63126, L"Default", L"", L"" },
                           { SCE_MARKDOWN_LINE_BEGIN, 63338, L"Line Begin", L"", L"" },
                           { MULTI_STYLE(SCE_MARKDOWN_STRONG1,SCE_MARKDOWN_STRONG2,0,0), 63339, L"Strong", L"bold", L"" },
@@ -2519,7 +2519,7 @@ EDITLEXER lexMARKDOWN = { SCLEX_MARKDOWN, 63336, L"Markdown", L"md; markdown; md
 KEYWORDLIST KeyWords_YAML = {
 "y n yes no on off true false", "", "", "", "", "", "", "", "" };
 
-EDITLEXER lexYAML = { SCLEX_YAML, 63355, L"YAML", L"yaml; yml", L"", &KeyWords_YAML, {
+EDITLEXER lexYAML = { SCLEX_YAML, 63041, L"YAML", L"yaml; yml", L"", &KeyWords_YAML, {
                       { SCE_YAML_DEFAULT, 63126, L"Default", L"", L"" },
                       { SCE_YAML_COMMENT, 63127, L"Comment", L"fore:#008800", L"" },
                       { SCE_YAML_IDENTIFIER, 63129, L"Identifier", L"bold; fore:#0A246A", L"" },
@@ -2550,7 +2550,7 @@ KEYWORDLIST KeyWords_VHDL = {
 "file_open_status line text side width std_ulogic std_ulogic_vector std_logic std_logic_vector X01 X01Z UX01 UX01Z unsigned signed",
 "", "", "" };
 
-EDITLEXER lexVHDL = { SCLEX_VHDL, 63370, L"VHDL", L"vhdl; vhd", L"", &KeyWords_VHDL, {
+EDITLEXER lexVHDL = { SCLEX_VHDL, 63028, L"VHDL", L"vhdl; vhd", L"", &KeyWords_VHDL, {
                        { SCE_VHDL_DEFAULT, 63126, L"Default", L"", L"" },
                        { MULTI_STYLE(SCE_VHDL_COMMENTLINEBANG, SCE_VHDL_COMMENT, SCE_VHDL_BLOCK_COMMENT, 0), 63127, L"Comment", L"fore:#008800", L"" },
                        { SCE_VHDL_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
@@ -2569,7 +2569,7 @@ EDITLEXER lexVHDL = { SCLEX_VHDL, 63370, L"VHDL", L"vhdl; vhd", L"", &KeyWords_V
 KEYWORDLIST KeyWords_Registry = {
 "", "", "", "", "", "", "", "", "" };
 
-EDITLEXER lexRegistry = { SCLEX_REGISTRY, 63370, L"Windows Registry Files", L"reg", L"", &KeyWords_Registry, {
+EDITLEXER lexRegistry = { SCLEX_REGISTRY, 63027, L"Registry Files", L"reg", L"", &KeyWords_Registry, {
                        { SCE_REG_DEFAULT, 63126, L"Default", L"", L"" },
                        { SCE_REG_COMMENT, 63127, L"Comment", L"fore:#008800", L"" },
                        { SCE_REG_VALUENAME, 63376, L"Value Name", L"", L"" },
@@ -2589,7 +2589,7 @@ KEYWORDLIST KeyWords_COFFEESCRIPT = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexCOFFEESCRIPT = { SCLEX_COFFEESCRIPT, 63362, L"Coffeescript", L"coffee; Cakefile", L"", &KeyWords_COFFEESCRIPT, {
+EDITLEXER lexCOFFEESCRIPT = { SCLEX_COFFEESCRIPT, 63042, L"Coffeescript", L"coffee; Cakefile", L"", &KeyWords_COFFEESCRIPT, {
                        { SCE_COFFEESCRIPT_DEFAULT, 63126, L"Default", L"", L"" },
                        { MULTI_STYLE(SCE_COFFEESCRIPT_COMMENT,SCE_COFFEESCRIPT_COMMENTLINE,SCE_COFFEESCRIPT_COMMENTDOC,SCE_COFFEESCRIPT_COMMENTBLOCK), 63127, L"Comment", L"fore:#646464", L"" },
                        { MULTI_STYLE(SCE_COFFEESCRIPT_STRING,SCE_COFFEESCRIPT_STRINGEOL,SCE_COFFEESCRIPT_STRINGRAW,0), 63131, L"String", L"fore:#008000", L"" },
@@ -2612,7 +2612,7 @@ KEYWORDLIST KeyWords_MATLAB = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexMATLAB = { SCLEX_MATLAB, 63360, L"MATLAB", L"matlab", L"", &KeyWords_MATLAB, {
+EDITLEXER lexMATLAB = { SCLEX_MATLAB, 63043, L"MATLAB", L"matlab", L"", &KeyWords_MATLAB, {
                         { SCE_MATLAB_DEFAULT, 63126, L"Default", L"", L"" },
                         { SCE_MATLAB_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
                         { SCE_MATLAB_COMMAND, 63236, L"Command", L"bold", L"" },
@@ -2754,50 +2754,50 @@ EDITLEXER lexAwk = { SCLEX_PYTHON,  63024, L"Awk Script", L"awk", L"", &KeyWords
 // in Notepad2.c ParseCommandLine() if you change this array!
 PEDITLEXER pLexArray[NUMLEXERS] =
 {
-  &lexDefault,        // Default Text
-  &lexANSI,           // ANSI Art  
-  &lexCONF,           // Apache Config Files
-  &lexASM,            // Assembly Script
-  &lexAHK,            // AutoHotkey Script
-  &lexAU3,            // AutoIt3 Script
-  &lexAVS,            // AviSynth Script
-  &lexAwk,            // Awk Script
-  &lexBAT,            // Batch Files
-  &lexCS,             // C# Source Code
-  &lexCPP,            // C/C++ Source Code
-  &lexCmake,          // Cmake Script
-  &lexCOFFEESCRIPT,   // Coffeescript
-  &lexPROPS,          // Configuration Files
-  &lexCSS,            // CSS Style Sheets
-  &lexD,              // D Source Code
-  &lexDIFF,           // Diff Files
-  &lexGo,             // Go Source Code
-  &lexINNO,           // Inno Setup Script
-  &lexJAVA,           // Java Source Code
-  &lexJS,             // JavaScript
-  &lexJSON,           // JSON
-  &lexLATEX,          // LaTeX Files
-  &lexLUA,            // Lua Script
-  &lexMAK,            // Makefiles
-  &lexMARKDOWN,       // Markdown
-  &lexMATLAB,         // MATLAB
-  &lexNSIS,           // NSIS Script
-  &lexPAS,            // Pascal Source Code
-  &lexPL,             // Perl Script
-  &lexPS,             // PowerShell Script
-  &lexPY,             // Python Script
-  &lexRC,             // Resource Script
-  &lexRUBY,           // Ruby Script
-  &lexBASH,           // Shell Script
-  &lexSQL,            // SQL Query
-  &lexTCL,            // Tcl Script
-  &lexVBS,            // VBScript
-  &lexVHDL,           // VHDL
-  &lexVB,             // Visual Basic
-  &lexHTML,           // Web Source Code
-  &lexRegistry,       // Windows Registry Files
-  &lexXML,            // XML Document
-  &lexYAML            // YAML
+  &lexDefault,       // Default Text
+  &lexANSI,          // ANSI Files
+  &lexCONF,          // Apache Config Files
+  &lexASM,           // Assembly Script
+  &lexAHK,           // AutoHotkey Script
+  &lexAU3,           // AutoIt3 Script
+  &lexAVS,           // AviSynth Script
+  &lexAwk,           // Awk Script
+  &lexBAT,           // Batch Files
+  &lexCPP,           // C/C++ Source Code
+  &lexCS,            // C# Source Code
+  &lexCmake,         // Cmake Script
+  &lexCOFFEESCRIPT,  // Coffeescript
+  &lexPROPS,         // Configuration Files
+  &lexCSS,           // CSS Style Sheets
+  &lexD,             // D Source Code
+  &lexDIFF,          // Diff Files
+  &lexGo,            // Go Source Code
+  &lexINNO,          // Inno Setup Script
+  &lexJAVA,          // Java Source Code
+  &lexJS,            // JavaScript
+  &lexJSON,          // JSON
+  &lexLATEX,         // LaTeX Files
+  &lexLUA,           // Lua Script
+  &lexMAK,           // Makefiles
+  &lexMARKDOWN,      // Markdown
+  &lexMATLAB,        // MATLAB
+  &lexNSIS,          // NSIS Script
+  &lexPAS,           // Pascal Source Code
+  &lexPL,            // Perl Script
+  &lexPS,            // PowerShell Script
+  &lexPY,            // Python Script
+  &lexRegistry,      // Registry Files
+  &lexRC,            // Resource Script
+  &lexRUBY,          // Ruby Script
+  &lexBASH,          // Shell Script
+  &lexSQL,           // SQL Query
+  &lexTCL,           // Tcl Script
+  &lexVB,            // Visual Basic
+  &lexVBS,           // VBScript
+  &lexVHDL,          // VHDL
+  &lexHTML,          // Web Source Code
+  &lexXML,           // XML Document
+  &lexYAML           // YAML
 };
 
 
