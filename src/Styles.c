@@ -4041,7 +4041,11 @@ void Style_SetDefaultFont(HWND hwnd)
 
   if (Style_SelectFont(hwnd, font, COUNTOF(font), TRUE, TRUE))
   {
-    switch (InfoBox(MBYESNO, L"MsgApplyDefaultFont", IDS_APPLY_DEFAULT_FONT, pLexCurrent->pszName)) 
+    INT_PTR answer = IDNO;
+    if (pLexCurrent != &lexDefault) {
+      answer = InfoBox(MBYESNO, L"MsgApplyDefaultFont", IDS_APPLY_DEFAULT_FONT, pLexCurrent->pszName);
+    }
+    switch (answer) 
     {
     case IDYES:
       // build styles string
