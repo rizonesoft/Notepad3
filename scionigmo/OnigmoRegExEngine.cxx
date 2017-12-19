@@ -22,13 +22,14 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #define VC_EXTRALEAN 1
 #include <windows.h>
 
 #pragma warning( push )
 #pragma warning( disable : 4996 )   // Scintilla's "unsafe" use of std::copy() (SplitVector.h)
- //                                  // or use -D_SCL_SECURE_NO_WARNINGS preprocessor define
+//                                  // or use -D_SCL_SECURE_NO_WARNINGS preprocessor define
 
 #include "Platform.h"
 #include "Scintilla.h"
@@ -42,7 +43,7 @@
 #include "CharClassify.h"
 #include "Document.h"
 // ---------------------------------------------------------------
-#include "onigmo.h"   // Oniguruma - Regular Expression Engine (v6.7)
+#include "onigmo.h"   // Onigmo - Regular Expression Engine (v6.1.3)
 // ---------------------------------------------------------------
 
 using namespace Scintilla;
@@ -54,7 +55,7 @@ using namespace Scintilla;
 #define Cast2long(n)   static_cast<long>(n)
 
 // ============================================================================
-// ***   Oninuruma configuration   ***
+// ***   Oningmo configuration   ***
 // ============================================================================
 
 const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; // ONIG_ENCODING_SJIS
@@ -97,12 +98,11 @@ public:
 
 private:
 
-  //std::string& internalFindAndReplace(std::string& inputStr, const std::string& patternStr, const std::string& replStr);
-
   std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& rxOptions);
 
   std::string& convertReplExpr(std::string& replStr);
 
+  //void regexFindAndReplace(std::string& inputStr_inout, const std::string& patternStr, const std::string& replStr);
 
 private:
 
@@ -128,6 +128,68 @@ RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 }
 
 // ============================================================================
+
+
+
+// ============================================================================
+//   Some Helpers
+// ============================================================================
+
+
+/******************************************************************************
+*
+*  UnSlash functions
+*  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
+*
+/
+
+/**
+* Is the character an octal digit?
+*/
+static bool IsOctalDigit(char ch)
+{
+  return ch >= '0' && ch <= '7';
+}
+// ----------------------------------------------------------------------------
+
+/**
+* If the character is an hexa digit, get its value.
+*/
+static int GetHexDigit(char ch)
+{
+  if (ch >= '0' && ch <= '9') {
+    return ch - '0';
+  }
+  if (ch >= 'A' && ch <= 'F') {
+    return ch - 'A' + 10;
+  }
+  if (ch >= 'a' && ch <= 'f') {
+    return ch - 'a' + 10;
+  }
+  return -1;
+}
+// ----------------------------------------------------------------------------
+
+
+static void replaceAll(std::string& source, const std::string& from, const std::string& to)
+{
+  std::string newString;
+  newString.reserve(source.length() * 2);  // avoids a few memory allocations
+
+  std::string::size_type lastPos = 0;
+  std::string::size_type findPos;
+
+  while (std::string::npos != (findPos = source.find(from, lastPos))) {
+    newString.append(source, lastPos, findPos - lastPos);
+    newString += to;
+    lastPos = findPos + from.length();
+  }
+  // Care for the rest after last occurrence
+  newString += source.substr(lastPos);
+
+  source.swap(newString);
+}
+// ----------------------------------------------------------------------------
 
 
 /**
@@ -297,6 +359,7 @@ const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* te
       m_SubstBuffer.push_back(rawReplStrg[j]);
     }
   }
+
   //NOTE: potential 64-bit-size issue at interface here:
   *length = SciPos(m_SubstBuffer.length());
   return m_SubstBuffer.c_str();
@@ -305,68 +368,14 @@ const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* te
 
 
 
-
 // ============================================================================
-//   Some Helpers
+//
+// private methods
+//
 // ============================================================================
-
-
-/******************************************************************************
-*
-*  UnSlash functions
-*  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
-*
-/
-
-/**
-* Is the character an octal digit?
-*/
-static bool IsOctalDigit(char ch) {
-  return ch >= '0' && ch <= '7';
-}
-// ----------------------------------------------------------------------------
-
-/**
-* If the character is an hexa digit, get its value.
-*/
-static int GetHexDigit(char ch) {
-  if (ch >= '0' && ch <= '9') {
-    return ch - '0';
-  }
-  if (ch >= 'A' && ch <= 'F') {
-    return ch - 'A' + 10;
-  }
-  if (ch >= 'a' && ch <= 'f') {
-    return ch - 'a' + 10;
-  }
-  return -1;
-}
-// ----------------------------------------------------------------------------
-
-
-static void replaceAll(std::string& source,const std::string& from,const std::string& to)
-{
-  std::string newString;
-  newString.reserve(source.length() * 2);  // avoids a few memory allocations
-
-  std::string::size_type lastPos = 0;
-  std::string::size_type findPos;
-
-  while (std::string::npos != (findPos = source.find(from,lastPos))) {
-    newString.append(source,lastPos,findPos - lastPos);
-    newString += to;
-    lastPos = findPos + from.length();
-  }
-  // Care for the rest after last occurrence
-  newString += source.substr(lastPos);
-
-  source.swap(newString);
-}
-// ----------------------------------------------------------------------------
-
 
 /*
-std::string& OniguRegExEngine::internalFindAndReplace(std::string& inputStr, const std::string& patternStr, const std::string& replStr)
+void OniguRegExEngine::regexFindAndReplace(std::string& inputStr_inout, const std::string& patternStr, const std::string& replStr)
 {
   OnigRegex       oRegExpr;
   OnigRegion      oRegion;
@@ -377,11 +386,9 @@ std::string& OniguRegExEngine::internalFindAndReplace(std::string& inputStr, con
   int res = onig_new(&oRegExpr, pattern, pattern + strlen((char*)pattern),
     ONIG_OPTION_DEFAULT, ONIG_ENCODING_ASCII, ONIG_SYNTAX_DEFAULT, &einfo);
 
-  if (res != ONIG_NORMAL) {
-    return inputStr;
-  }
+  if (res != ONIG_NORMAL) { return; }
   
-  const UChar* strg = (UChar*)inputStr.c_str();
+  const UChar* strg = (UChar*)inputStr_inout.c_str();
   const UChar* start = strg;
   const UChar* end = (start + patternStr.length());
   const UChar* range = end;
@@ -390,15 +397,20 @@ std::string& OniguRegExEngine::internalFindAndReplace(std::string& inputStr, con
 
   OnigPosition pos = onig_search(oRegExpr, strg, end, start, range, &oRegion, ONIG_OPTION_DEFAULT);
 
-  std::string	tmpStr;
-  //TODO: replace matches:  ...  OnigPosition len = (oRegion.end[1] - oRegion.beg[1]);
-  tmpStr = replStr;
+  if (pos >= 0) 
+  {
+    std::string replace = replStr; // copy
+    for (int i = 1; i < oRegion.num_regs; i++) {
+      std::ostringstream nr;
+      nr << R"(\)" << i;
+      std::string regio((char*)(strg + oRegion.beg[i]), (oRegion.end[i] - oRegion.beg[i]));
+      replaceAll(replace, nr.str(), regio);
+    }
+    inputStr_inout.replace(oRegion.beg[0], (oRegion.end[0] - oRegion.beg[0]), replace);
+  }
 
   onig_region_free(&oRegion, 0);
   onig_free(oRegExpr);
-
-  std::swap(inputStr, tmpStr);
-  return inputStr;
 }
 // ----------------------------------------------------------------------------
 */
@@ -426,9 +438,15 @@ std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wh
   // Onigmo unsupported word boundary
   replaceAll(tmpStr, R"(\<)", R"((?<!\w)(?=\w))");  // word begin
   replaceAll(tmpStr, R"(\(?<!\w)(?=\w))", R"(\\<)"); // esc'd
-
   replaceAll(tmpStr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
   replaceAll(tmpStr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
+
+  //regexFindAndReplace(tmpStr, R"(\<)", R"((?<!\w)(?=\w))");
+  //regexFindAndReplace(tmpStr, R"(\(?<!\w)(?=\w))", R"(\\<)");
+  //regexFindAndReplace(tmpStr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
+  //regexFindAndReplace(tmpStr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
+
+
 
   // EOL modes
   switch (eolMode) {
