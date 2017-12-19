@@ -92,7 +92,7 @@ BOOL   Style_StrGetColor(BOOL,LPCWSTR,int*);
 BOOL   Style_StrGetCase(LPCWSTR,int*);
 BOOL   Style_StrGetAlpha(LPCWSTR,int*,BOOL);
 BOOL   Style_GetIndicatorType(LPWSTR,int,int*);
-void   Style_AppendStyles(LPWSTR, LPWSTR, int, BOOL, BOOL);
+void   Style_CopyStyles_IfNotDefined(LPWSTR, LPWSTR, int);
 BOOL   Style_SelectFont(HWND,LPWSTR,int,BOOL,BOOL);
 BOOL   Style_SelectColor(HWND,BOOL,LPWSTR,int);
 void   Style_SetStyles(HWND,int,LPCWSTR);
