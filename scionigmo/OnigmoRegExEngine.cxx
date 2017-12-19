@@ -79,11 +79,13 @@ public:
     , m_SubstBuffer()
   {
     onig_initialize(use_encs, _ARRAYSIZE(use_encs));
+    onig_region_init(&m_Region);
   }
 
   virtual ~OniguRegExEngine()
   {
     onig_region_free(&m_Region, 0);
+    onig_free(m_RegExpr);
     onig_end();
   }
 
@@ -95,8 +97,12 @@ public:
 
 private:
 
+  //std::string& internalFindAndReplace(std::string& inputStr, const std::string& patternStr, const std::string& replStr);
+
   std::string& translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& rxOptions);
+
   std::string& convertReplExpr(std::string& replStr);
+
 
 private:
 
@@ -132,6 +138,11 @@ RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
 {
+  if (!(pattern && (strlen(pattern) > 0))) {
+    *length = 0;
+    return Cast2long(-1);
+  }
+
   Sci::Position docLen = SciPos(doc->Length());
 
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
@@ -352,6 +363,45 @@ static void replaceAll(std::string& source,const std::string& from,const std::st
   source.swap(newString);
 }
 // ----------------------------------------------------------------------------
+
+
+/*
+std::string& OniguRegExEngine::internalFindAndReplace(std::string& inputStr, const std::string& patternStr, const std::string& replStr)
+{
+  OnigRegex       oRegExpr;
+  OnigRegion      oRegion;
+
+  const UChar* pattern = (UChar*)patternStr.c_str();
+
+  OnigErrorInfo einfo;
+  int res = onig_new(&oRegExpr, pattern, pattern + strlen((char*)pattern),
+    ONIG_OPTION_DEFAULT, ONIG_ENCODING_ASCII, ONIG_SYNTAX_DEFAULT, &einfo);
+
+  if (res != ONIG_NORMAL) {
+    return inputStr;
+  }
+  
+  const UChar* strg = (UChar*)inputStr.c_str();
+  const UChar* start = strg;
+  const UChar* end = (start + patternStr.length());
+  const UChar* range = end;
+
+  onig_region_init(&oRegion);
+
+  OnigPosition pos = onig_search(oRegExpr, strg, end, start, range, &oRegion, ONIG_OPTION_DEFAULT);
+
+  std::string	tmpStr;
+  //TODO: replace matches:  ...  OnigPosition len = (oRegion.end[1] - oRegion.beg[1]);
+  tmpStr = replStr;
+
+  onig_region_free(&oRegion, 0);
+  onig_free(oRegExpr);
+
+  std::swap(inputStr, tmpStr);
+  return inputStr;
+}
+// ----------------------------------------------------------------------------
+*/
 
 
 
