@@ -4571,9 +4571,11 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
 
   // Map lpszStyle to LOGFONT
   if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch)))
-    StringCchCopyN(lf.lfFaceName,COUNTOF(lf.lfFaceName),tch,COUNTOF(lf.lfFaceName));
+    StringCchCopyN(lf.lfFaceName,COUNTOF(lf.lfFaceName),tch,COUNTOF(tch));
+
   if (Style_StrGetCharSet(lpszStyle,&iValue))
     lf.lfCharSet = (BYTE)iValue;
+
   if (Style_StrGetSize(lpszStyle,&iValue)) {
     hdc = GetDC(hwnd);
     lf.lfHeight = -MulDiv(iValue,GetDeviceCaps(hdc,LOGPIXELSY),72);
@@ -4615,6 +4617,8 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,BOOL bDefaultStyle
   cf.lpLogFont = &lf;
 
   cf.Flags = CF_INITTOLOGFONTSTRUCT /*| CF_EFFECTS | CF_NOSCRIPTSEL*/ | CF_SCREENFONTS | CF_FORCEFONTEXIST;
+  //cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_EFFECTS | CF_NOSCRIPTSEL | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST;
+  
   if (HIBYTE(GetKeyState(VK_SHIFT)))
     cf.Flags |= CF_FIXEDPITCHONLY;
 
