@@ -4047,11 +4047,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_FONT:
-      Style_SetDefaultFont(hwndEdit);
+      Style_SetDefaultFont(hwndEdit, TRUE);
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
 
+    case IDM_VIEW_CURRENTSCHEME:
+      Style_SetDefaultFont(hwndEdit, FALSE);
+      UpdateStatusbar();
+      UpdateLineNumberWidth();
+      break;
 
     case IDM_VIEW_WORDWRAP:
       bWordWrap = (bWordWrap) ? FALSE : TRUE;

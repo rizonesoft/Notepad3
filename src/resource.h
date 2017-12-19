@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by Notepad3.rc
+// Von Microsoft Visual C++ generierte Includedatei.
+// Verwendet durch Notepad3.rc
 //
 #define IDR_RT_MANIFEST                 1
 #define IDR_MAINWND                     100
@@ -387,6 +387,7 @@
 #define IDM_VIEW_ACCELWORDNAV           40451
 #define IDM_VIEW_NOPRESERVECARET        40452
 #define IDM_VIEW_HYPERLINKHOTSPOTS      40453
+#define IDM_VIEW_CURRENTSCHEME          40454
 #define IDM_HELP_ABOUT                  40500
 #define IDM_HELP_CMD                    40501
 #define IDM_TRAY_RESTORE                40600
@@ -473,9 +474,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        600
+#define _APS_NEXT_RESOURCE_VALUE        601
 #define _APS_NEXT_COMMAND_VALUE         701
 #define _APS_NEXT_CONTROL_VALUE         801
-#define _APS_NEXT_SYMED_VALUE           900
+#define _APS_NEXT_SYMED_VALUE           901
 #endif
 #endif

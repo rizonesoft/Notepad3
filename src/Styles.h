@@ -78,7 +78,7 @@ void   Style_SetDefaultLexer(HWND);
 void   Style_SetHTMLLexer(HWND);
 void   Style_SetXMLLexer(HWND);
 void   Style_SetLexerFromID(HWND,int);
-void   Style_SetDefaultFont(HWND);
+void   Style_SetDefaultFont(HWND,BOOL);
 void   Style_ToggleUse2ndDefault(HWND);
 BOOL   Style_GetUse2ndDefault();
 void   Style_SetIndentGuides(HWND,BOOL);

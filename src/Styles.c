@@ -2215,7 +2215,7 @@ EDITLEXER lexLATEX = { SCLEX_LATEX, 63281, L"LaTeX Files", L"tex; latex; sty", L
                        { -1, 00000, L"", L"", L"" } } };
 
 
-EDITLEXER lexANSI = { SCLEX_NULL, 63258, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL, {
+EDITLEXER lexANSI = { SCLEX_NULL, 63266, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL, {
                       { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console", L"" },
                       { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
                       { STYLE_BRACELIGHT, 63102, L"Matching Braces", L"size:+0", L"" },
@@ -4025,10 +4025,40 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 }
 
 
+
 //=============================================================================
 //
 //  Style_SetDefaultFont()
 //
+void Style_SetDefaultFont(HWND hwnd, BOOL bGlobalDefault)
+{
+  WCHAR newStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+
+  int iIdx = 0;
+  PEDITLEXER pLexer = pLexCurrent;
+ 
+  if (pLexCurrent == &lexDefault) {
+    bGlobalDefault = TRUE;
+    iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
+    pLexer = &lexDefault;
+  }
+
+  StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[STY_DEFAULT + iIdx].szValue);
+
+  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), bGlobalDefault, FALSE, TRUE))
+  {
+    // set new styles to current lexer's default text
+    StringCchCopyW(pLexer->Styles[STY_DEFAULT + iIdx].szValue, COUNTOF(pLexer->Styles[STY_DEFAULT + iIdx].szValue), newStyle);
+    fStylesModified = TRUE;
+    // redraw current lexer
+    Style_SetLexer(hwnd, pLexCurrent);
+  }
+
+}
+
+
+
+/*
 void Style_SetDefaultFont(HWND hwnd)
 {
   const int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
@@ -4038,7 +4068,7 @@ void Style_SetDefaultFont(HWND hwnd)
 
   StringCchCopyW(font, COUNTOF(font), lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
 
-  if (Style_SelectFont(hwnd, font, COUNTOF(font), TRUE, TRUE, FALSE))
+  if (Style_SelectFont(hwnd, font, COUNTOF(font), TRUE, FALSE, FALSE))
   {
     INT_PTR answer = IDNO;
     if (pLexCurrent != &lexDefault) {
@@ -4072,6 +4102,7 @@ void Style_SetDefaultFont(HWND hwnd)
     }
   }
 }
+*/
 
 
 //=============================================================================
@@ -4556,6 +4587,24 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
 
 
 
+static const WCHAR* FontSelTitle1 = L"Global Default Font";
+static const WCHAR* FontSelTitle2 = L"Current Scheme Default Font";
+
+/// Callback to set the font dialog's title
+static UINT CALLBACK Style_FontDialogHook(
+  HWND hdlg,      // handle to the dialog box window
+  UINT uiMsg,     // message identifier
+  WPARAM wParam,  // message parameter
+  LPARAM lParam   // message parameter
+)
+{
+  if (uiMsg == WM_INITDIALOG) {
+    SetWindowText(hdlg, (WCHAR*)((CHOOSEFONT*)lParam)->lCustData);
+  }
+  UNUSED(wParam);
+  return 0;	// Allow the default handler a chance to process
+}
+
 //=============================================================================
 //
 //  Style_SelectFont()
@@ -4612,6 +4661,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
   if (Style_StrGetColor(TRUE, lpszStyle, &iValue)) {
     color = iValue;
   }
+
   // Init cf
   CHOOSEFONT cf;
   ZeroMemory(&cf, sizeof(CHOOSEFONT));
@@ -4619,11 +4669,13 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
   cf.hwndOwner = hwnd;
   cf.rgbColors = color;
   cf.lpLogFont = &lf;
+  cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook;	// Register the callback
+  cf.lCustData = (LPARAM)(bDefaultStyle ? FontSelTitle1 : FontSelTitle2);
+
+  cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
 
   if (bWithEffects)
-    cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_EFFECTS | CF_NOSCRIPTSEL | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST;
-  else
-    cf.Flags = CF_INITTOLOGFONTSTRUCT /*| CF_EFFECTS | CF_NOSCRIPTSEL*/ | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST;
+    cf.Flags |= CF_EFFECTS;
   
   if (HIBYTE(GetKeyState(VK_SHIFT)))
     cf.Flags |= CF_FIXEDPITCHONLY;
@@ -5354,9 +5406,11 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           {
             WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
             GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
-            if (Style_SelectFont(hwnd,tch,COUNTOF(tch),
-                                 StringCchCompareIX(pCurrentStyle->pszName,L"Default Style") == 0 ||
-                                 StringCchCompareIX(pCurrentStyle->pszName,L"2nd Default Style") == 0, FALSE, TRUE)) {
+            BOOL bIsGlobalDefault = 
+              (StringCchCompareIX(pCurrentStyle->pszName, L"Default Style") == 0) || 
+              (StringCchCompareIX(pCurrentStyle->pszName, L"2nd Default Style") == 0);
+
+            if (Style_SelectFont(hwnd,tch,COUNTOF(tch), bIsGlobalDefault, FALSE, TRUE))   {
               SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
             }
           }
