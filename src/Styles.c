@@ -3159,6 +3159,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     WideCharToMultiByteStrg(CP_UTF8, wchFontName, chFontName);
     SendMessage(hwnd, SCI_STYLESETFONT, iDefaultStyle, (LPARAM)chFontName);
   }
+
   iBaseFontSize = FIXED_BASE_FONT_SIZE;
   if (!Style_StrGetSize(wchDefaultStyleStrg, &iBaseFontSize)) {
     SendMessage(hwnd, SCI_STYLESETSIZE, iDefaultStyle, (LPARAM)iBaseFontSize); // base size
@@ -3170,14 +3171,16 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   SendMessage(hwnd, SCI_STYLESETEOLFILLED, iDefaultStyle, (LPARAM)FALSE);
   SendMessage(hwnd, SCI_STYLESETVISIBLE, iDefaultStyle, (LPARAM)TRUE);
   SendMessage(hwnd, SCI_STYLESETCASE, iDefaultStyle, (LPARAM)SC_CASE_MIXED);
-
   SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)FALSE);       // default hotspot off
-                                                                              
+  
   Style_SetStyles(hwnd, iDefaultStyle, wchDefaultStyleStrg);                  // apply default style
 
-  if (StringCchLenW(pLexNew->Styles[STY_DEFAULT].szValue, COUNTOF(pLexNew->Styles[STY_DEFAULT].szValue)) > 0) {
-    // override with Lexer's specific defaults
-    Style_SetStyles(hwnd, iDefaultStyle, pLexNew->Styles[STY_DEFAULT].szValue);
+  // apply default and specific styles to lexer
+  if (pLexNew != &lexDefault) {
+    if (StringCchLenW(pLexNew->Styles[STY_DEFAULT].szValue, COUNTOF(pLexNew->Styles[STY_DEFAULT].szValue)) > 0) {
+      // override with Lexer's specific defaults
+      Style_SetStyles(hwnd, pLexNew->Styles[STY_DEFAULT].iStyle, pLexNew->Styles[STY_DEFAULT].szValue);
+    }
   }
 
   // Re-Set to just defined default style (STYLE_DEFAULT)
@@ -3426,7 +3429,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   else {
     SendMessage(hwnd,SCI_SETEXTRAASCENT,0,0);
     SendMessage(hwnd,SCI_SETEXTRADESCENT,0,0);
-    //StringCchPrintf(lexDefault.Styles[DEFAULTLEX(STY_X_LN_SPACE)].szValue, COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_X_LN_SPACE)].szValue), L"size:%i", 0);
   }
 
   { // set folding style; braces are for scoping only
@@ -4160,7 +4162,7 @@ BOOL Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 //
 BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+  WCHAR tch[64] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"font:");
   if (p)
   {
@@ -4181,7 +4183,6 @@ BOOL Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
     {
       StringCchCopyN(lpszFont,cchFont,tch, COUNTOF(tch));
     }
-
     return TRUE;
   }
   return FALSE;
@@ -4276,8 +4277,9 @@ BOOL Style_StrGetSize(LPCWSTR lpszStyle, int* i)
     {
       if (iSign == 0)
         *i = iValue;
-      else { // relative size calculation
-        int base = *i;
+      else { 
+        // relative size calculation
+        int base = *i; // base is input
         *i = max(0, base + (iSign * iValue)); // size must be +
       }
       return TRUE;
@@ -4693,10 +4695,10 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
   }
   
   const int iOrigBFSize = bDefaultStyle ? FIXED_BASE_FONT_SIZE : iBaseFontSize;
-  int iFontSize = iOrigBFSize;
   BOOL bRelFontSize = (StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
   int iFontHeight = 0;
+  int iFontSize = iOrigBFSize;
   if (Style_StrGetSize(lpszStyle,&iFontSize)) {
     HDC hdc = GetDC(hwnd);
     iFontHeight = -MulDiv(iFontSize,GetDeviceCaps(hdc,LOGPIXELSY),72);
@@ -4741,7 +4743,9 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
   cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook;	// Register the callback
   cf.lCustData = (LPARAM)(bDefaultStyle ? FontSelTitle1 : FontSelTitle2);
 
-  cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
+  //cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
+  cf.Flags = CF_INITTOLOGFONTSTRUCT /*| CF_EFFECTS | CF_NOSCRIPTSEL*/ | CF_SCREENFONTS | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
+
 
   if (bWithEffects)
     cf.Flags |= CF_EFFECTS;
@@ -4981,23 +4985,22 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bForeGround,LPWSTR lpszStyle,int cchStyle,
 //
 //  Style_SetStyles()
 //
-void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
+void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 {
-  const int iDefaultStyle = ((pLexCurrent == &lexDefault) ? DEFAULTLEX(STY_DEFAULT) : STY_DEFAULT);
-
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+  WCHAR tch[64] = { L'\0' };
 
   // Font
-  char chFont[64] = { '\0' };
   if (Style_StrGetFont(lpszStyle, tch, COUNTOF(tch))) {
-    WideCharToMultiByteStrg(CP_UTF8, tch, chFont);
-    SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
+    if (lstrlen(tch) > 0) {
+      char chFont[64] = { '\0' };
+      WideCharToMultiByteStrg(CP_UTF8, tch, chFont);
+      SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
+    }
   }
 
-  // Size values maybe relative to current value
+  // Size values are relative to iBaseFontSize
   int  iValue = (pLexCurrent == &lexDefault) ? FIXED_BASE_FONT_SIZE : iBaseFontSize;
-  Style_StrGetSize(pLexCurrent->Styles[iDefaultStyle].szValue, &iValue);
-  // feed current base size
+  
   if (Style_StrGetSize(lpszStyle, &iValue)) {
     SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (LPARAM)iValue);
     //or Fractional
