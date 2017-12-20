@@ -51,8 +51,8 @@ extern BOOL bUseOldStyleBraceMatching;
 
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
-
-static int iBaseFontSize = 10;
+#define FIXED_BASE_FONT_SIZE 10
+static int iBaseFontSize = FIXED_BASE_FONT_SIZE;
 
 
 KEYWORDLIST KeyWords_NULL = {
@@ -114,6 +114,11 @@ enum LexDefaultStyles {
   STY_CNT_LAST = 15  // STY_2ND_XXX = STY_XXX + STY_CNT_LAST 
 };
 
+BOOL bUse2ndDefaultStyle = FALSE;
+
+#define DEFAULTLEX(id) ((id) + (bUse2ndDefaultStyle ? STY_CNT_LAST : 0))
+
+// ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_HTML = {
 "!doctype ^aria- ^data- a abbr accept accept-charset accesskey acronym action address align alink "
@@ -2804,7 +2809,6 @@ PEDITLEXER pLexArray[NUMLEXERS] =
 // Currently used lexer
 PEDITLEXER pLexCurrent = &lexDefault;
 COLORREF crCustom[16];
-BOOL bUse2ndDefaultStyle;
 BOOL fStylesModified = FALSE;
 BOOL fWarnedNoIniFile = FALSE;
 int iDefaultLexer;
@@ -3076,7 +3080,6 @@ BOOL Style_Export(HWND hwnd)
 void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   int rgb;
   int iValue;
-  int iIdx;
   WCHAR wchFontName[64] = { '\0' };
   WCHAR wchCaretStyle[64] = { L'\0' };
 
@@ -3125,9 +3128,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     SendMessage(hwnd, SCI_SETKEYWORDS, i, (LPARAM)pLexNew->pKeyWords->pszKeyWords[i]);
 
   // Use 2nd default style
-  iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
-  int iDefaultStyle = lexDefault.Styles[STY_DEFAULT + iIdx].iStyle;
-  WCHAR* wchDefaultStyleStrg = lexDefault.Styles[STY_DEFAULT + iIdx].szValue;
+  int iDefaultStyle = lexDefault.Styles[DEFAULTLEX(STY_DEFAULT)].iStyle;
+  WCHAR* wchDefaultStyleStrg = lexDefault.Styles[DEFAULTLEX(STY_DEFAULT)].szValue;
 
   // Clear
   SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
@@ -3157,7 +3159,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     WideCharToMultiByteStrg(CP_UTF8, wchFontName, chFontName);
     SendMessage(hwnd, SCI_STYLESETFONT, iDefaultStyle, (LPARAM)chFontName);
   }
-  iBaseFontSize = 10;
+  iBaseFontSize = FIXED_BASE_FONT_SIZE;
   if (!Style_StrGetSize(wchDefaultStyleStrg, &iBaseFontSize)) {
     SendMessage(hwnd, SCI_STYLESETSIZE, iDefaultStyle, (LPARAM)iBaseFontSize); // base size
   }
@@ -3183,34 +3185,37 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   // --------------------------------------------------------------------------
 
-  Style_SetStyles(hwnd, lexDefault.Styles[STY_MARGIN + iIdx].iStyle, lexDefault.Styles[STY_MARGIN + iIdx].szValue); // linenumber
+  Style_SetStyles(hwnd, lexDefault.Styles[DEFAULTLEX(STY_MARGIN)].iStyle,
+                  lexDefault.Styles[DEFAULTLEX(STY_MARGIN)].szValue); // linenumber
 
   if (bUseOldStyleBraceMatching) {
-    Style_SetStyles(hwnd, lexDefault.Styles[STY_BRACE_OK + iIdx].iStyle, lexDefault.Styles[STY_BRACE_OK + iIdx].szValue); // brace light
+    Style_SetStyles(hwnd, lexDefault.Styles[DEFAULTLEX(STY_BRACE_OK)].iStyle,
+                    lexDefault.Styles[DEFAULTLEX(STY_BRACE_OK)].szValue); // brace light
   }
   else {
-    if (Style_StrGetColor(TRUE, lexDefault.Styles[STY_BRACE_OK + iIdx].szValue, &iValue))
+    if (Style_StrGetColor(TRUE, lexDefault.Styles[DEFAULTLEX(STY_BRACE_OK)].szValue, &iValue))
       SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, iValue);
-    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_OK + iIdx].szValue, &iValue, TRUE))
+    if (Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_BRACE_OK)].szValue, &iValue, TRUE))
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
-    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_OK + iIdx].szValue, &iValue, FALSE))
+    if (Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_BRACE_OK)].szValue, &iValue, FALSE))
       SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, iValue);
   }
   if (bUseOldStyleBraceMatching) {
-    Style_SetStyles(hwnd, lexDefault.Styles[STY_BRACE_BAD + iIdx].iStyle, lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue); // brace bad
+    Style_SetStyles(hwnd, lexDefault.Styles[DEFAULTLEX(STY_BRACE_BAD)].iStyle,
+                    lexDefault.Styles[DEFAULTLEX(STY_BRACE_BAD)].szValue); // brace bad
   }
   else {
-    if (Style_StrGetColor(TRUE, lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue, &iValue))
+    if (Style_StrGetColor(TRUE, lexDefault.Styles[DEFAULTLEX(STY_BRACE_BAD)].szValue, &iValue))
       SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, iValue);
-    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue, &iValue, TRUE))
+    if (Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_BRACE_BAD)].szValue, &iValue, TRUE))
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
-    if (Style_StrGetAlpha(lexDefault.Styles[STY_BRACE_BAD + iIdx].szValue, &iValue, FALSE))
+    if (Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_BRACE_BAD)].szValue, &iValue, FALSE))
       SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, iValue);
   }
 
   // Occurrences Marker
 
-  if (!Style_StrGetColor(TRUE, lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue)) 
+  if (!Style_StrGetColor(TRUE, lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, &iValue))
   {
     WCHAR* sty = L"";
     switch (iMarkOccurrences) {
@@ -3228,40 +3233,39 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
       iValue = RGB(0x00, 0xFF, 0x00);
       break;
     }
-    StringCchCopyW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), sty);
+    StringCchCopyW(lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, COUNTOF(lexDefault.Styles[0].szValue), sty);
   }
   SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, iValue);
 
-  if (!Style_StrGetAlpha(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue, TRUE)) {
+  if (!Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, &iValue, TRUE)) {
     iValue = 100;
-    StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha:100");
+    StringCchCatW(lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha:100");
   }   
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
 
-  if (!Style_StrGetAlpha(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, &iValue, FALSE)) {
+  if (!Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, &iValue, FALSE)) {
     iValue = 100;
-    StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha2:100");
+    StringCchCatW(lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; alpha2:100");
   }
   SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, iValue);
 
   iValue = -1; // need for retrieval
-  if (!Style_GetIndicatorType(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, 0, &iValue)) {
+  if (!Style_GetIndicatorType(lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, 0, &iValue)) {
     // got default, get string
-    StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; ");
+    StringCchCatW(lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, COUNTOF(lexDefault.Styles[0].szValue), L"; ");
     Style_GetIndicatorType(wchCaretStyle, COUNTOF(wchCaretStyle), &iValue);
-    StringCchCatW(lexDefault.Styles[STY_MARK_OCC + iIdx].szValue, COUNTOF(lexDefault.Styles[0].szValue), wchCaretStyle);
+    StringCchCatW(lexDefault.Styles[DEFAULTLEX(STY_MARK_OCC)].szValue, COUNTOF(lexDefault.Styles[0].szValue), wchCaretStyle);
   }
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, iValue);
-
 
   // More default values...
 
   if (pLexNew != &lexANSI)
-    Style_SetStyles(hwnd, lexDefault.Styles[STY_CTRL_CHR + iIdx].iStyle, lexDefault.Styles[STY_CTRL_CHR + iIdx].szValue); // control char
+    Style_SetStyles(hwnd, lexDefault.Styles[DEFAULTLEX(STY_CTRL_CHR)].iStyle, lexDefault.Styles[DEFAULTLEX(STY_CTRL_CHR)].szValue); // control char
 
-  Style_SetStyles(hwnd, lexDefault.Styles[STY_INDENT_GUIDE + iIdx].iStyle, lexDefault.Styles[STY_INDENT_GUIDE + iIdx].szValue); // indent guide
+  Style_SetStyles(hwnd, lexDefault.Styles[DEFAULTLEX(STY_INDENT_GUIDE)].iStyle, lexDefault.Styles[DEFAULTLEX(STY_INDENT_GUIDE)].szValue); // indent guide
 
-  if (Style_StrGetColor(TRUE, lexDefault.Styles[STY_SEL_TXT + iIdx].szValue, &rgb)) { // selection fore
+  if (Style_StrGetColor(TRUE, lexDefault.Styles[DEFAULTLEX(STY_SEL_TXT)].szValue, &rgb)) { // selection fore
     SendMessage(hwnd, SCI_SETSELFORE, TRUE, rgb);
     SendMessage(hwnd, SCI_SETADDITIONALSELFORE, rgb, 0);
   }
@@ -3270,7 +3274,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     SendMessage(hwnd, SCI_SETADDITIONALSELFORE, 0, 0);
   }
 
-  if (Style_StrGetColor(FALSE, lexDefault.Styles[STY_SEL_TXT + iIdx].szValue, &iValue)) { // selection back
+  if (Style_StrGetColor(FALSE, lexDefault.Styles[DEFAULTLEX(STY_SEL_TXT)].szValue, &iValue)) { // selection back
     SendMessage(hwnd, SCI_SETSELBACK, TRUE, iValue);
     SendMessage(hwnd, SCI_SETADDITIONALSELBACK, iValue, 0);
   }
@@ -3279,7 +3283,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     SendMessage(hwnd, SCI_SETADDITIONALSELBACK, RGB(0xC0, 0xC0, 0xC0), 0);
   }
 
-  if (Style_StrGetAlpha(lexDefault.Styles[STY_SEL_TXT + iIdx].szValue, &iValue, TRUE)) { // selection alpha
+  if (Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_SEL_TXT)].szValue, &iValue, TRUE)) { // selection alpha
     SendMessage(hwnd, SCI_SETSELALPHA, iValue, 0);
     SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, iValue, 0);
   }
@@ -3288,38 +3292,41 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     SendMessage(hwnd, SCI_SETADDITIONALSELALPHA, SC_ALPHA_NOALPHA, 0);
   }
 
-  if (StrStrI(lexDefault.Styles[STY_SEL_TXT + iIdx].szValue, L"eolfilled")) // selection eolfilled
+  if (StrStrI(lexDefault.Styles[DEFAULTLEX(STY_SEL_TXT)].szValue, L"eolfilled")) // selection eolfilled
     SendMessage(hwnd, SCI_SETSELEOLFILLED, 1, 0);
   else
     SendMessage(hwnd, SCI_SETSELEOLFILLED, 0, 0);
 
-  if (Style_StrGetColor(TRUE, lexDefault.Styles[STY_WHITESPACE + iIdx].szValue, &rgb)) // whitespace fore
+  if (Style_StrGetColor(TRUE, lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue, &rgb)) // whitespace fore
     SendMessage(hwnd, SCI_SETWHITESPACEFORE, TRUE, rgb);
   else
     SendMessage(hwnd, SCI_SETWHITESPACEFORE, 0, 0);
 
-  if (Style_StrGetColor(FALSE, lexDefault.Styles[STY_WHITESPACE + iIdx].szValue, &rgb)) // whitespace back
+  if (Style_StrGetColor(FALSE, lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue, &rgb)) // whitespace back
     SendMessage(hwnd, SCI_SETWHITESPACEBACK, TRUE, rgb);
   else
     SendMessage(hwnd, SCI_SETWHITESPACEBACK, 0, 0);    // use a default value...
 
   // whitespace dot size
   iValue = 1;
-  if (Style_StrGetSize(lexDefault.Styles[STY_WHITESPACE + iIdx].szValue, &iValue)) {
+  if (Style_StrGetSize(lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue, &iValue)) {
 
     WCHAR tch[32] = { L'\0' };
     WCHAR wchStyle[BUFSIZE_STYLE_VALUE];
-    StringCchCopyN(wchStyle, COUNTOF(wchStyle), lexDefault.Styles[STY_WHITESPACE + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_WHITESPACE + iIdx].szValue));
+    StringCchCopyN(wchStyle, COUNTOF(wchStyle), lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue, 
+                   COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue));
 
     iValue = max(min(iValue, 5), 0);
-    StringCchPrintf(lexDefault.Styles[STY_WHITESPACE + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_WHITESPACE + iIdx].szValue), L"size:%i", iValue);
+    StringCchPrintf(lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue, 
+                    COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue), L"size:%i", iValue);
 
     if (Style_StrGetColor(TRUE, wchStyle, &rgb)) {
       StringCchPrintf(tch, COUNTOF(tch), L"; fore:#%02X%02X%02X",
         (int)GetRValue(rgb),
         (int)GetGValue(rgb),
         (int)GetBValue(rgb));
-      StringCchCat(lexDefault.Styles[STY_WHITESPACE + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_WHITESPACE + iIdx].szValue), tch);
+      StringCchCat(lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue, 
+                   COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue), tch);
     }
 
     if (Style_StrGetColor(FALSE, wchStyle, &rgb)) {
@@ -3327,7 +3334,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
         (int)GetRValue(rgb),
         (int)GetGValue(rgb),
         (int)GetBValue(rgb));
-      StringCchCat(lexDefault.Styles[STY_WHITESPACE + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_WHITESPACE + iIdx].szValue), tch);
+      StringCchCat(lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue, 
+                   COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_WHITESPACE)].szValue), tch);
     }
   }
   SendMessage(hwnd, SCI_SETWHITESPACESIZE, iValue, 0);
@@ -3340,22 +3348,23 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
 
   // caret style and width
-  if (StrStr(lexDefault.Styles[STY_CARET + iIdx].szValue,L"block")) {
+  if (StrStr(lexDefault.Styles[DEFAULTLEX(STY_CARET)].szValue,L"block")) {
     SendMessage(hwnd,SCI_SETCARETSTYLE,CARETSTYLE_BLOCK,0);
     StringCchCopy(wchCaretStyle,COUNTOF(wchCaretStyle),L"block");
   }
   else {
+    SendMessage(hwnd, SCI_SETCARETSTYLE, CARETSTYLE_LINE, 0);
+
     WCHAR wch[32] = { L'\0' };
-    iValue = 0;
-    if (Style_StrGetSize(lexDefault.Styles[STY_CARET + iIdx].szValue,&iValue)) {
+    iValue = 1;  // default caret width
+    if (Style_StrGetSize(lexDefault.Styles[DEFAULTLEX(STY_CARET)].szValue,&iValue)) {
       iValue = max(min(iValue,3),1);
       StringCchPrintf(wch,COUNTOF(wch),L"size:%i",iValue);
       StringCchCat(wchCaretStyle,COUNTOF(wchCaretStyle),wch);
     }
-    SendMessage(hwnd,SCI_SETCARETSTYLE,CARETSTYLE_LINE,0);
     SendMessage(hwnd,SCI_SETCARETWIDTH,iValue,0);
   }
-  if (StrStr(lexDefault.Styles[STY_CARET + iIdx].szValue,L"noblink")) {
+  if (StrStr(lexDefault.Styles[DEFAULTLEX(STY_CARET)].szValue,L"noblink")) {
     SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)0,0);
     StringCchCat(wchCaretStyle,COUNTOF(wchCaretStyle),L"; noblink");
   }
@@ -3363,7 +3372,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)GetCaretBlinkTime(),0);
 
   // caret fore
-  if (!Style_StrGetColor(TRUE,lexDefault.Styles[STY_CARET + iIdx].szValue,&rgb))
+  if (!Style_StrGetColor(TRUE,lexDefault.Styles[DEFAULTLEX(STY_CARET)].szValue,&rgb))
     rgb = GetSysColor(COLOR_WINDOWTEXT);
   else {
     WCHAR wch[32] = { L'\0' };
@@ -3380,16 +3389,17 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   SendMessage(hwnd,SCI_SETADDITIONALCARETFORE,rgb,0);
 
   StrTrimW(wchCaretStyle, L" ;");
-  StringCchCopy(lexDefault.Styles[STY_CARET + iIdx].szValue,COUNTOF(lexDefault.Styles[STY_CARET + iIdx].szValue),wchCaretStyle);
+  StringCchCopy(lexDefault.Styles[DEFAULTLEX(STY_CARET)].szValue,
+                COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_CARET)].szValue),wchCaretStyle);
 
   if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) {
-    if (Style_StrGetColor(TRUE,lexDefault.Styles[STY_LONG_LN_MRK + iIdx].szValue,&rgb)) // edge fore
+    if (Style_StrGetColor(TRUE,lexDefault.Styles[DEFAULTLEX(STY_LONG_LN_MRK)].szValue,&rgb)) // edge fore
       SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
     else
       SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
   }
   else {
-    if (Style_StrGetColor(FALSE,lexDefault.Styles[STY_LONG_LN_MRK + iIdx].szValue,&rgb)) // edge back
+    if (Style_StrGetColor(FALSE,lexDefault.Styles[DEFAULTLEX(STY_LONG_LN_MRK)].szValue,&rgb)) // edge back
       SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
     else
       SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
@@ -3397,12 +3407,12 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   // Extra Line Spacing
   iValue = 0;
-  if (Style_StrGetSize(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue,&iValue) && (pLexNew != &lexANSI)) {
+  if (Style_StrGetSize(lexDefault.Styles[DEFAULTLEX(STY_X_LN_SPACE)].szValue,&iValue) && (pLexNew != &lexANSI)) {
     int iAscent = 0;
     int iDescent = 0;
     int iValAdj = min(max(iValue,0),64);
     if (iValAdj != iValue)
-      StringCchPrintf(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue), L"size:%i", iValAdj);
+      StringCchPrintf(lexDefault.Styles[DEFAULTLEX(STY_X_LN_SPACE)].szValue, COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_X_LN_SPACE)].szValue), L"size:%i", iValAdj);
 
     if ((iValAdj % 2) != 0) {
       iAscent++;
@@ -3416,7 +3426,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   else {
     SendMessage(hwnd,SCI_SETEXTRAASCENT,0,0);
     SendMessage(hwnd,SCI_SETEXTRADESCENT,0,0);
-    //StringCchPrintf(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_X_LN_SPACE + iIdx].szValue), L"size:%i", 0);
+    //StringCchPrintf(lexDefault.Styles[DEFAULTLEX(STY_X_LN_SPACE)].szValue, COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_X_LN_SPACE)].szValue), L"size:%i", 0);
   }
 
   { // set folding style; braces are for scoping only
@@ -3574,7 +3584,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 //
 int Style_GetHotspotStyleID()
 {
-  return (bUse2ndDefaultStyle ? (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT + STY_CNT_LAST) : (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT));
+  return (STYLE_LASTPREDEFINED + DEFAULTLEX(STY_URL_HOTSPOT));
 }
 
 
@@ -3584,15 +3594,12 @@ int Style_GetHotspotStyleID()
 //
 void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
 {
-  // Use 2nd default style ?
-  int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
-
   // Hot Spot settings
   const int iStyleHotSpot = Style_GetHotspotStyleID();
 
   if (bHotSpot)
   {
-    const WCHAR* lpszStyleHotSpot = lexDefault.Styles[STY_URL_HOTSPOT + iIdx].szValue;
+    const WCHAR* lpszStyleHotSpot = lexDefault.Styles[DEFAULTLEX(STY_URL_HOTSPOT)].szValue;
 
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)TRUE);
     SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
@@ -3633,17 +3640,15 @@ void Style_SetLongLineColors(HWND hwnd)
 {
   int rgb;
 
-  // Use 2nd default style
-  int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
-
-  if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) {
-    if (Style_StrGetColor(TRUE,lexDefault.Styles[STY_LONG_LN_MRK + iIdx].szValue,&rgb)) // edge fore
+  if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) 
+  {
+    if (Style_StrGetColor(TRUE,lexDefault.Styles[DEFAULTLEX(STY_LONG_LN_MRK)].szValue,&rgb)) // edge fore
       SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
     else
       SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
   }
   else {
-    if (Style_StrGetColor(FALSE,lexDefault.Styles[STY_LONG_LN_MRK + iIdx].szValue,&rgb)) // edge back
+    if (Style_StrGetColor(FALSE,lexDefault.Styles[DEFAULTLEX(STY_LONG_LN_MRK)].szValue,&rgb)) // edge back
       SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
     else
       SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
@@ -3657,19 +3662,16 @@ void Style_SetLongLineColors(HWND hwnd)
 //
 void Style_SetCurrentLineBackground(HWND hwnd, BOOL bHiLitCurrLn)
 {
-  if (bHiLitCurrLn) {
-    
-    // Use 2nd default style ?
-    int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
-
+  if (bHiLitCurrLn) 
+  {
     int rgb = 0;
-    if (Style_StrGetColor(FALSE,lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue,&rgb)) // caret line back
+    if (Style_StrGetColor(FALSE,lexDefault.Styles[DEFAULTLEX(STY_CUR_LN_BCK)].szValue, &rgb)) // caret line back
     {
       SendMessage(hwnd,SCI_SETCARETLINEVISIBLE,TRUE,0);
       SendMessage(hwnd,SCI_SETCARETLINEBACK,rgb,0);
 
       int alpha = 0;
-      if (Style_StrGetAlpha(lexDefault.Styles[STY_CUR_LN_BCK + iIdx].szValue, &alpha, TRUE))
+      if (Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_CUR_LN_BCK)].szValue, &alpha, TRUE))
         SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,alpha,0);
       else
         SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,SC_ALPHA_NOALPHA,0);
@@ -3686,24 +3688,22 @@ void Style_SetCurrentLineBackground(HWND hwnd, BOOL bHiLitCurrLn)
 //
 //  Style_SetCurrentMargin()
 //
-void Style_SetCurrentMargin(HWND hwnd, BOOL bShowSelMargin) {
-
-  int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
-
+void Style_SetCurrentMargin(HWND hwnd, BOOL bShowSelMargin) 
+{
   int alpha = 20;
-  Style_StrGetAlpha(lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &alpha, TRUE);
+  Style_StrGetAlpha(lexDefault.Styles[DEFAULTLEX(STY_BOOK_MARK)].szValue, &alpha, TRUE);
 
   int rgbFore = RGB(0xFF, 0, 0); // red
-  Style_StrGetColor(TRUE, lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &rgbFore);
+  Style_StrGetColor(TRUE, lexDefault.Styles[DEFAULTLEX(STY_BOOK_MARK)].szValue, &rgbFore);
 
   int rgbBack = RGB(0, 0xFF, 0); // green
-  Style_StrGetColor(FALSE, lexDefault.Styles[STY_BOOK_MARK + iIdx].szValue, &rgbBack);
+  Style_StrGetColor(FALSE, lexDefault.Styles[DEFAULTLEX(STY_BOOK_MARK)].szValue, &rgbBack);
 
   // adjust background color by alpha in case of show margin
   if (bShowSelMargin) {
     //int bckgrnd = (int)SendMessage(hwnd, SCI_GETMARGINBACKN, MARGIN_NP3_BOOKMRK, 0);
     int bckgrnd = RGB(0xF0, 0xF0, 0xF0);
-    Style_StrGetColor(FALSE, lexDefault.Styles[STY_MARGIN + iIdx].szValue, &bckgrnd);
+    Style_StrGetColor(FALSE, lexDefault.Styles[DEFAULTLEX(STY_MARGIN)].szValue, &bckgrnd);
     rgbBack = Style_RgbAlpha(rgbBack, bckgrnd, min(0xFF, alpha + 50));
   }
   SendMessage(hwnd, SCI_MARKERSETFORE, MARKER_NP3_BOOKMARK, rgbFore);
@@ -4034,21 +4034,21 @@ void Style_SetDefaultFont(HWND hwnd, BOOL bGlobalDefault)
 {
   WCHAR newStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-  int iIdx = 0;
+  int iStyle = STY_DEFAULT;
   PEDITLEXER pLexer = pLexCurrent;
  
   if (bGlobalDefault || (pLexCurrent == &lexDefault)) {
-    iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
+    iStyle = DEFAULTLEX(STY_DEFAULT);
     pLexer = &lexDefault;
     bGlobalDefault = TRUE;
   }
 
-  StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[STY_DEFAULT + iIdx].szValue);
+  StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[iStyle].szValue);
 
   if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), bGlobalDefault, FALSE, TRUE))
   {
     // set new styles to current lexer's default text
-    StringCchCopyW(pLexer->Styles[STY_DEFAULT + iIdx].szValue, COUNTOF(pLexer->Styles[STY_DEFAULT + iIdx].szValue), newStyle);
+    StringCchCopyW(pLexer->Styles[iStyle].szValue, COUNTOF(pLexer->Styles[iStyle].szValue), newStyle);
     fStylesModified = TRUE;
     // redraw current(!) lexer
     Style_SetLexer(hwnd, pLexCurrent);
@@ -4057,16 +4057,13 @@ void Style_SetDefaultFont(HWND hwnd, BOOL bGlobalDefault)
 }
 
 
-
 /*
 void Style_SetDefaultFont(HWND hwnd)
 {
-  const int iIdx = (bUse2ndDefaultStyle) ? STY_CNT_LAST : 0;
-
   WCHAR font[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR newStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-  StringCchCopyW(font, COUNTOF(font), lexDefault.Styles[STY_DEFAULT + iIdx].szValue);
+  StringCchCopyW(font, COUNTOF(font), lexDefault.Styles[DEFAULTLEX(STY_DEFAULT)].szValue);
 
   if (Style_SelectFont(hwnd, font, COUNTOF(font), TRUE, FALSE, FALSE))
   {
@@ -4088,9 +4085,9 @@ void Style_SetDefaultFont(HWND hwnd)
       // build styles string 
       StringCchCopyW(newStyle, COUNTOF(newStyle), font);
       //StringCchCat(newStyle, COUNTOF(newStyle), L"; ");
-      //~Style_CopyStyles_IfNotDefined(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, newStyle, COUNTOF(newStyle));
+      //~Style_CopyStyles_IfNotDefined(lexDefault.Styles[DEFAULTLEX(STY_DEFAULT)].szValue, newStyle, COUNTOF(newStyle));
       // set new styles to current lexer's default text
-      StringCchCopyW(lexDefault.Styles[STY_DEFAULT + iIdx].szValue, COUNTOF(lexDefault.Styles[STY_DEFAULT + iIdx].szValue), newStyle);
+      StringCchCopyW(lexDefault.Styles[DEFAULTLEX(STY_DEFAULT)].szValue, COUNTOF(lexDefault.Styles[DEFAULTLEX(STY_DEFAULT)].szValue), newStyle);
       // Apply new styles
       fStylesModified = TRUE;
       Style_SetLexer(hwnd, pLexCurrent);
@@ -4300,7 +4297,7 @@ BOOL Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
   WCHAR *p = StrStrI(lpszStyle, L"size:");
   if (p)
   {
-    StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"size:"));
+    StringCchCopy(tch,COUNTOF(tch),(p + CSTRLEN(L"size:")));
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
@@ -4309,6 +4306,72 @@ BOOL Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
     return TRUE;
   }
   return FALSE;
+}
+
+
+//=============================================================================
+//
+//  Style_GetWeightValue()
+//
+int Style_GetWeightValue(LPCWSTR lpszWeight)
+{
+  int iFontWeight = FW_NORMAL;
+  
+  if (StrStrI(lpszWeight, L"thin"))
+    iFontWeight = FW_THIN;
+  else if (StrStrI(lpszWeight, L"extralight"))
+    iFontWeight = FW_EXTRALIGHT;
+  else if (StrStrI(lpszWeight, L"light"))
+    iFontWeight = FW_LIGHT;
+  else if (StrStrI(lpszWeight, L"normal"))
+    iFontWeight = FW_NORMAL;
+  else if (StrStrI(lpszWeight, L"medium"))
+    iFontWeight = FW_MEDIUM;
+  else if (StrStrI(lpszWeight, L"semibold"))
+    iFontWeight = FW_SEMIBOLD;
+  else if (StrStrI(lpszWeight, L"extrabold"))
+    iFontWeight = FW_EXTRABOLD;
+  else if (StrStrI(lpszWeight, L"bold"))     // here, cause bold is in semibold and extrabold too
+    iFontWeight = FW_BOLD;
+  else if (StrStrI(lpszWeight, L"heavy"))
+    iFontWeight = FW_HEAVY;
+
+  return iFontWeight;
+}
+
+//=============================================================================
+//
+//  Style_AppendWeightStr()
+//
+void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
+{
+  if (fontWeight <= FW_THIN) {
+    StringCchCat(lpszWeight, cchSize, L"; thin");
+  }
+  else if (fontWeight <= FW_EXTRALIGHT) {
+    StringCchCat(lpszWeight, cchSize, L"; extralight");
+  }
+  else if (fontWeight <= FW_LIGHT) {
+    StringCchCat(lpszWeight, cchSize, L"; light");
+  }
+  else if (fontWeight <= FW_NORMAL) {
+    StringCchCat(lpszWeight, cchSize, L"; normal");
+  }
+  else if (fontWeight <= FW_MEDIUM) {
+    StringCchCat(lpszWeight, cchSize, L"; medium");
+  }
+  else if (fontWeight <= FW_SEMIBOLD) {
+    StringCchCat(lpszWeight, cchSize, L"; semibold");
+  }
+  else if (fontWeight <= FW_BOLD) {
+    StringCchCat(lpszWeight, cchSize, L"; bold");
+  }
+  else if (fontWeight <= FW_EXTRABOLD) {
+    StringCchCat(lpszWeight, cchSize, L"; extrabold");
+  }
+  else { // (fontWeight >= FW_HEAVY)
+    StringCchCat(lpszWeight, cchSize, L"; heavy");
+  }
 }
 
 
@@ -4470,7 +4533,7 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
     }
   }
 
-  if (StrStrI(lpszStyleSrc, L"thin") && !StrStrI(lpszStyleDest, L" thin"))
+  if (StrStrI(lpszStyleSrc, L"thin") && !StrStrI(lpszStyleDest, L"thin"))
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; thin");
   else if (StrStrI(lpszStyleSrc, L"extralight") && !StrStrI(lpszStyleDest, L"extralight"))
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extralight");
@@ -4614,57 +4677,60 @@ static UINT CALLBACK Style_FontDialogHook(
 BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
                       BOOL bDefaultStyle, BOOL bWithEffects, BOOL bPreserveStyles)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-  int  iValue;
+  // Map lpszStyle to LOGFONT
+  WCHAR wchFontName[64] = { L'\0' };
+  if (!Style_StrGetFont(lpszStyle, wchFontName, COUNTOF(wchFontName))) 
+  {
+    if (!Style_StrGetFont(lexDefault.Styles[DEFAULTLEX(STY_DEFAULT)].szValue, wchFontName, COUNTOF(wchFontName)))
+    {
+      Style_StrGetFont(L"font:Default", wchFontName, COUNTOF(wchFontName));
+    }
+  }
+
+  int iCharSet = DEFAULT_CHARSET;
+  if (!Style_StrGetCharSet(lpszStyle, &iCharSet)) {
+    iCharSet = iDefaultCharSet;
+  }
+  
+  const int iOrigBFSize = bDefaultStyle ? FIXED_BASE_FONT_SIZE : iBaseFontSize;
+  int iFontSize = iOrigBFSize;
+  BOOL bRelFontSize = (StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
+
+  int iFontHeight = 0;
+  if (Style_StrGetSize(lpszStyle,&iFontSize)) {
+    HDC hdc = GetDC(hwnd);
+    iFontHeight = -MulDiv(iFontSize,GetDeviceCaps(hdc,LOGPIXELSY),72);
+    ReleaseDC(hwnd,hdc);
+  }
+  else {
+    HDC hdc = GetDC(hwnd);
+    iFontHeight = -MulDiv(iOrigBFSize, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    ReleaseDC(hwnd, hdc);
+  }
+
+  int  iFontWeight = Style_GetWeightValue(lpszStyle);
+  BOOL bIsItalic = (StrStrI(lpszStyle, L"italic")) ? TRUE : FALSE;
+  BOOL bIsUnderline = (StrStrI(lpszStyle, L"underline")) ? TRUE : FALSE;
+  BOOL bIsStrikeout = (StrStrI(lpszStyle, L"strikeout")) ? TRUE : FALSE;
+
+  // --------------------------------------------------------------------------
 
   LOGFONT lf;
   ZeroMemory(&lf, sizeof(LOGFONT));
-  // Map lpszStyle to LOGFONT
-  if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch)))
-    StringCchCopyN(lf.lfFaceName,COUNTOF(lf.lfFaceName),tch,COUNTOF(tch));
-
-  if (Style_StrGetCharSet(lpszStyle,&iValue))
-    lf.lfCharSet = (BYTE)iValue;
-
-  iValue = iBaseFontSize;
-  if (Style_StrGetSize(lpszStyle,&iValue)) {
-    HDC hdc = GetDC(hwnd);
-    lf.lfHeight = -MulDiv(iValue,GetDeviceCaps(hdc,LOGPIXELSY),72);
-    ReleaseDC(hwnd,hdc);
-  }
-
-  if (StrStrI(lpszStyle, L"thin"))
-    lf.lfWeight = FW_THIN;
-  else if (StrStrI(lpszStyle, L"extralight"))
-    lf.lfWeight = FW_EXTRALIGHT;
-  else if (StrStrI(lpszStyle, L"light"))
-    lf.lfWeight = FW_LIGHT;
-  else if (StrStrI(lpszStyle, L"normal"))
-    lf.lfWeight = FW_NORMAL;
-  else if (StrStrI(lpszStyle, L"medium"))
-    lf.lfWeight = FW_MEDIUM;
-  else if (StrStrI(lpszStyle, L"semibold"))
-    lf.lfWeight = FW_SEMIBOLD;
-  else if (StrStrI(lpszStyle, L"extrabold"))
-    lf.lfWeight = FW_EXTRABOLD;
-  else if (StrStrI(lpszStyle, L"bold"))
-    lf.lfWeight = FW_BOLD;
-  else if (StrStrI(lpszStyle, L"heavy"))
-    lf.lfWeight = FW_HEAVY;
-  else
-    lf.lfWeight = FW_NORMAL;
-
-
-  lf.lfItalic = (StrStrI(lpszStyle,L"italic")) ? TRUE : FALSE;
-  lf.lfUnderline = (StrStrI(lpszStyle, L"underline")) ? TRUE : FALSE;
-  lf.lfStrikeOut = (StrStrI(lpszStyle, L"strikeout")) ? TRUE : FALSE;
-
+  StringCchCopyN(lf.lfFaceName, COUNTOF(lf.lfFaceName), wchFontName, COUNTOF(wchFontName));
+  lf.lfCharSet = (BYTE)iCharSet;
+  lf.lfHeight = iFontHeight;
+  lf.lfWeight = iFontWeight;
+  lf.lfItalic = (BYTE)bIsItalic;
+  lf.lfUnderline = (BYTE)bIsUnderline;
+  lf.lfStrikeOut = (BYTE)bIsStrikeout;
+  
 
   COLORREF color = 0L;
+  int iValue = 0;
   if (Style_StrGetColor(TRUE, lpszStyle, &iValue)) {
-    color = iValue;
+    color = (DWORD)iValue;
   }
-
   // Init cf
   CHOOSEFONT cf;
   ZeroMemory(&cf, sizeof(CHOOSEFONT));
@@ -4675,7 +4741,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
   cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook;	// Register the callback
   cf.lCustData = (LPARAM)(bDefaultStyle ? FontSelTitle1 : FontSelTitle2);
 
-  cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOSCRIPTSEL | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
+  cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
 
   if (bWithEffects)
     cf.Flags |= CF_EFFECTS;
@@ -4691,83 +4757,133 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
 
   WCHAR szNewStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-  StringCchCopy(szNewStyle,COUNTOF(szNewStyle),L"font:");
-  StringCchCat(szNewStyle,COUNTOF(szNewStyle),lf.lfFaceName);
-
-  switch (lf.lfWeight) {
-  case FW_THIN:
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; thin");
-    break;
-  case FW_EXTRALIGHT:
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; extralight");
-    break;
-  case FW_LIGHT:
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; light");
-    break;
-  case FW_MEDIUM:
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; medium");
-    break;
-  case FW_SEMIBOLD:
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; semibold");
-    break;
-  case FW_EXTRABOLD:
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; extrabold");
-    break;
-  case FW_BOLD:
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; bold");
-    break;
-  case FW_HEAVY:
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; heavy");
-    break;
-  case FW_NORMAL:
-  default:
-    //~StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; normal");
-    if (cf.nFontType & BOLD_FONTTYPE) {
-      StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; bold");
+  if (StrStrI(lpszStyle, L"font:")) {
+    StringCchCopy(szNewStyle, COUNTOF(szNewStyle), L"font:");
+    StringCchCat(szNewStyle, COUNTOF(szNewStyle), lf.lfFaceName);
+  }
+  else { // no font in source specified, 
+    if (lstrcmpW(lf.lfFaceName, wchFontName) != 0) {
+      StringCchCopy(szNewStyle, COUNTOF(szNewStyle), L"font:");
+      StringCchCat(szNewStyle, COUNTOF(szNewStyle), lf.lfFaceName);
     }
-    break;
   }
 
-  StringCchPrintf(tch, COUNTOF(tch), L"; size:%i", cf.iPointSize / 10);
-  StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
+  if (lf.lfWeight == iFontWeight) {
+    WCHAR check[64] = { L'\0' };
+    Style_AppendWeightStr(check, COUNTOF(check), lf.lfWeight);
+    StrTrimW(check, L" ;");
+    if (StrStrI(lpszStyle, check)) {
+      Style_AppendWeightStr(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
+    }
+  }
+  else {
+    Style_AppendWeightStr(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
+  }
 
+
+  int iNewFontSize = (int)((cf.iPointSize + 5) / 10);
+  WCHAR newSize[64] = { L'\0' };
+
+  if (bRelFontSize)
+  {
+    int iNewRelSize = iNewFontSize - iOrigBFSize;
+
+    if (iNewRelSize >= 0)
+      StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%i", iNewRelSize);
+    else
+      StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%i", (0 - iNewRelSize));
+  }
+  else {
+    if (iNewFontSize == iFontSize) {
+      if (StrStrI(lpszStyle, L"size:")) {
+        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%i", iNewFontSize);
+      }
+    }
+    else {
+      StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%i", iNewFontSize);
+    }
+  }
+  StringCchCat(szNewStyle, COUNTOF(szNewStyle), newSize);
+
+  
+  WCHAR chset[32] = { L'\0' };
   if (bDefaultStyle &&
-    lf.lfCharSet != DEFAULT_CHARSET &&
-    lf.lfCharSet != ANSI_CHARSET &&
-    lf.lfCharSet != iDefaultCharSet) {
-    StringCchPrintf(tch, COUNTOF(tch), L"; charset:%i", lf.lfCharSet);
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
+    (lf.lfCharSet != DEFAULT_CHARSET) &&
+    (lf.lfCharSet != ANSI_CHARSET) &&
+    (lf.lfCharSet != iDefaultCharSet)) {
+    if (lf.lfCharSet == iCharSet) {
+      if (StrStrI(lpszStyle, L"charset:"))
+      {
+        StringCchPrintf(chset, COUNTOF(chset), L"; charset:%i", lf.lfCharSet);
+        StringCchCat(szNewStyle, COUNTOF(szNewStyle), chset);
+      }
+    }
+    else {
+      StringCchPrintf(chset, COUNTOF(chset), L"; charset:%i", lf.lfCharSet);
+      StringCchCat(szNewStyle, COUNTOF(szNewStyle), chset);
+    }
   }
 
-  if ((cf.nFontType & ITALIC_FONTTYPE) || lf.lfItalic) {
-    StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; italic");
+  if (lf.lfItalic) {
+    if (bIsItalic) {
+      if (StrStrI(lpszStyle, L"italic")) {
+        StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; italic");
+      }
+    }
+    else {
+      StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; italic");
+    }
   }
 
-  // return, if only pure Font style is needed
   if (bWithEffects) {
 
     if (lf.lfUnderline) {
-      StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; underline");
+      if (bIsUnderline) {
+        if (StrStrI(lpszStyle, L"underline")) {
+          StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; underline");
+        }
+      }
+      else {
+        StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; underline");
+      }
     }
 
     if (lf.lfStrikeOut) {
-      StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; strikeout");
+      if (bIsStrikeout) {
+        if (StrStrI(lpszStyle, L"strikeout")) {
+          StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; strikeout");
+        }
+      }
+      else {
+        StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; strikeout");
+      }
     }
 
     // ---  save colors  ---
-    if (color != cf.rgbColors) {
-      StringCchPrintf(tch, COUNTOF(tch), L"; fore:#%02X%02X%02X",
+    WCHAR newColor[64] = { L'\0' };
+    if (cf.rgbColors == color) {
+      if (StrStrI(lpszStyle, L"fore:")) {
+        StringCchPrintf(newColor, COUNTOF(newColor), L"; fore:#%02X%02X%02X",
+          (int)GetRValue(cf.rgbColors),
+                        (int)GetGValue(cf.rgbColors),
+                        (int)GetBValue(cf.rgbColors));
+        StringCchCat(szNewStyle, COUNTOF(szNewStyle), newColor);
+      }
+    }
+    else { // color changed
+      StringCchPrintf(newColor, COUNTOF(newColor), L"; fore:#%02X%02X%02X",
         (int)GetRValue(cf.rgbColors),
                       (int)GetGValue(cf.rgbColors),
                       (int)GetBValue(cf.rgbColors));
-      StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
+      StringCchCat(szNewStyle, COUNTOF(szNewStyle), newColor);
     }
+    // copy background
     if (Style_StrGetColor(FALSE, lpszStyle, &iValue)) {
-      StringCchPrintf(tch, COUNTOF(tch), L"; back:#%02X%02X%02X",
-        (int)GetRValue(iValue),
+      StringCchPrintf(newColor, COUNTOF(newColor), L"; back:#%02X%02X%02X",
+                      (int)GetRValue(iValue),
                       (int)GetGValue(iValue),
                       (int)GetBValue(iValue));
-      StringCchCat(szNewStyle, COUNTOF(szNewStyle), tch);
+      StringCchCat(szNewStyle, COUNTOF(szNewStyle), newColor);
     }
   }
 
@@ -4867,7 +4983,7 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bForeGround,LPWSTR lpszStyle,int cchStyle,
 //
 void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
 {
-  const int iIdx = (bUse2ndDefaultStyle && (pLexCurrent == &lexDefault)) ? STY_CNT_LAST : 0;
+  const int iDefaultStyle = ((pLexCurrent == &lexDefault) ? DEFAULTLEX(STY_DEFAULT) : STY_DEFAULT);
 
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
@@ -4878,10 +4994,10 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
     SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
   }
 
-  // Size (maybe relative to current lexer)
-  int  iValue = iBaseFontSize;
-  Style_StrGetSize(pLexCurrent->Styles[STY_DEFAULT + iIdx].szValue, &iValue);
-
+  // Size values maybe relative to current value
+  int  iValue = (pLexCurrent == &lexDefault) ? FIXED_BASE_FONT_SIZE : iBaseFontSize;
+  Style_StrGetSize(pLexCurrent->Styles[iDefaultStyle].szValue, &iValue);
+  // feed current base size
   if (Style_StrGetSize(lpszStyle, &iValue)) {
     SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (LPARAM)iValue);
     //or Fractional
@@ -4901,24 +5017,7 @@ void Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle)
   //  SendMessage(hwnd,SCI_STYLESETBOLD,iStyle,(LPARAM)TRUE);
 
   // Weight
-  if (StrStrI(lpszStyle, L"thin"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_THIN);
-  else if (StrStrI(lpszStyle, L"extralight"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_EXTRALIGHT);
-  else if (StrStrI(lpszStyle, L"light"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_LIGHT);
-  else if (StrStrI(lpszStyle, L"normal"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_NORMAL);
-  else if (StrStrI(lpszStyle, L"medium"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_MEDIUM);
-  else if (StrStrI(lpszStyle, L"semibold"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_SEMIBOLD);
-  else if (StrStrI(lpszStyle, L"extrabold"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_EXTRABOLD);
-  else if (StrStrI(lpszStyle, L"bold"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_BOLD);
-  else if (StrStrI(lpszStyle, L"heavy"))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)FW_HEAVY);
+  SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)Style_GetWeightValue(lpszStyle));
 
   // Italic
   if (StrStrI(lpszStyle, L"italic"))

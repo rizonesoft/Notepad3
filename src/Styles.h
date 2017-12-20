@@ -106,7 +106,8 @@ void   Style_ConfigDlg(HWND);
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_SelectLexerDlg(HWND);
 int    Style_GetHotspotStyleID();
-
+int Style_GetWeightValue(LPCWSTR);
+void   Style_AppendWeightStr(LPWSTR, int, int);
 
 #endif //_NP3_STYLES_H_
 
