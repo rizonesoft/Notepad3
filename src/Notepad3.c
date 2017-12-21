@@ -2190,7 +2190,7 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
 
-  int i,i2;
+  int i,i2,i3;
   HMENU hmenu = (HMENU)wParam;
 
   i = StringCchLenW(szCurFile,COUNTOF(szCurFile));
@@ -2249,17 +2249,23 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_UNDO,SendMessage(hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_REDO,SendMessage(hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
 
-  i = !SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
-  i2 = (int)SendMessage(hwndEdit,SCI_CANPASTE,0,0);
 
-  EnableCmd(hmenu,IDM_EDIT_CUT,1 /*&& !bReadOnly*/);      // allow Ctrl-X w/o selection
-  EnableCmd(hmenu,IDM_EDIT_COPY,1 /*&& !bReadOnly*/);     // allow Ctrl-C w/o selection
+  i  = !(BOOL)SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
+  i2 = (int)SendMessage(hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+  i3 = (int)SendMessage(hwndEdit, SCI_CANPASTE, 0, 0);
+  
+  EnableCmd(hmenu,IDM_EDIT_CUT,i2 /*&& !bReadOnly*/);       // allow Ctrl-X w/o selection
+  EnableCmd(hmenu,IDM_EDIT_COPY,i2 /*&& !bReadOnly*/);      // allow Ctrl-C w/o selection
 
-  EnableCmd(hmenu,IDM_EDIT_COPYALL,SendMessage(hwndEdit,SCI_GETLENGTH,0,0) /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_COPYALL,i2 /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_COPYADD,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_PASTE,i2 /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_SWAP,i || i2 /*&& !bReadOnly*/);
+
+  EnableCmd(hmenu,IDM_EDIT_PASTE,i3 /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_SWAP,i || i3 /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_CLEAR,i /*&& !bReadOnly*/);
+
+  EnableCmd(hmenu, IDM_EDIT_SELECTALL, i2 /*&& !bReadOnly*/);
+  
 
   OpenClipboard(hwnd);
   EnableCmd(hmenu,IDM_EDIT_CLEARCLIPBOARD,CountClipboardFormats());
@@ -3072,9 +3078,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_SELECTALL:
-      {
         SendMessage(hwndEdit,SCI_SELECTALL,0,0);
-      }
       break;
 
 
@@ -4554,10 +4558,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
-	case IDM_HELP_ONLINEDOCUMENTATION:
-		ShellExecute(0, 0, L"https://www.rizonesoft.com/documents/notepad3/", 0, 0, SW_SHOW);
-		break;
-	case IDM_HELP_ABOUT:
+  case IDM_HELP_ONLINEDOCUMENTATION:
+    ShellExecute(0, 0, L"https://www.rizonesoft.com/documents/notepad3/", 0, 0, SW_SHOW);
+    break;
+  case IDM_HELP_ABOUT:
       ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_ABOUT),
         hwnd,AboutDlgProc);
       break;
@@ -7042,20 +7046,25 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_UNDO,SendMessage(hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_REDO,SendMessage(hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
 
-  int i = (int)!SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
-  EnableTool(IDT_EDIT_CUT,i /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_COPY,SendMessage(hwndEdit,SCI_GETLENGTH,0,0));
-  EnableTool(IDT_EDIT_PASTE,SendMessage(hwndEdit,SCI_CANPASTE,0,0) /*&& !bReadOnly*/);
+  int i, i2, i3;
+  i =  !(BOOL)SendMessage(hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
+  i2 = (int)SendMessage(hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+  i3 = (int)SendMessage(hwndEdit, SCI_CANPASTE, 0, 0);
 
-  i = (int)SendMessage(hwndEdit,SCI_GETLENGTH,0,0);
-  EnableTool(IDT_EDIT_FIND,i);
-  //EnableTool(IDT_EDIT_FINDNEXT,i);
-  //EnableTool(IDT_EDIT_FINDPREV,i && strlen(efrData.szFind));
-  EnableTool(IDT_EDIT_REPLACE,i /*&& !bReadOnly*/);
+
+  EnableTool(IDT_EDIT_FIND,i2);
+  //EnableTool(IDT_EDIT_FINDNEXT,i2);
+  //EnableTool(IDT_EDIT_FINDPREV,i2 && strlen(efrData.szFind));
+  EnableTool(IDT_EDIT_REPLACE, i2 /*&& !bReadOnly*/);
+
+  EnableTool(IDT_EDIT_CUT, i2 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_COPY, i2 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_PASTE, i3 /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_CLEAR,i /*&& !bReadOnly*/);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
-  EnableTool(IDT_FILE_LAUNCH,i);
+
+  EnableTool(IDT_VIEW_TOGGLEFOLDS,i2 && bShowCodeFolding);
+  EnableTool(IDT_FILE_LAUNCH,i2);
 
   EnableTool(IDT_FILE_SAVE, (bModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
 

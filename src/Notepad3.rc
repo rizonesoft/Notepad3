@@ -382,7 +382,7 @@ BEGIN
         MENUITEM "Cu&t",                        IDM_EDIT_CUT
         MENUITEM "&Copy",                       IDM_EDIT_COPY
         MENUITEM "&Paste",                      IDM_EDIT_PASTE
-        MENUITEM "Cl&ear",                      IDM_EDIT_CLEAR
+        MENUITEM "&Delete",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Select All",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
