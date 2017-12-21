@@ -78,9 +78,12 @@ void   Style_SetDefaultLexer(HWND);
 void   Style_SetHTMLLexer(HWND);
 void   Style_SetXMLLexer(HWND);
 void   Style_SetLexerFromID(HWND,int);
-void   Style_SetDefaultFont(HWND);
+void   Style_SetDefaultFont(HWND,BOOL);
 void   Style_ToggleUse2ndDefault(HWND);
-BOOL   Style_GetUse2ndDefault(HWND);
+BOOL   Style_GetUse2ndDefault();
+BOOL   Style_SetUse2ndDefault(int); // in:BOOL
+int    Style_GetBaseFontSize(HWND);
+int    Style_SetBaseFontSize(HWND,int);
 void   Style_SetIndentGuides(HWND,BOOL);
 BOOL   Style_GetOpenDlgFilterStr(LPWSTR,int);
 BOOL   Style_StrGetFont(LPCWSTR,LPWSTR,int);
@@ -92,8 +95,9 @@ BOOL   Style_StrGetColor(BOOL,LPCWSTR,int*);
 BOOL   Style_StrGetCase(LPCWSTR,int*);
 BOOL   Style_StrGetAlpha(LPCWSTR,int*,BOOL);
 BOOL   Style_GetIndicatorType(LPWSTR,int,int*);
-BOOL   Style_SelectFont(HWND,LPWSTR,int,BOOL);
-BOOL   Style_SelectColor(HWND,BOOL,LPWSTR,int);
+void   Style_CopyStyles_IfNotDefined(LPWSTR, LPWSTR, int);
+BOOL   Style_SelectFont(HWND,LPWSTR,int,BOOL,BOOL,BOOL);
+BOOL   Style_SelectColor(HWND,BOOL,LPWSTR,int,BOOL);
 void   Style_SetStyles(HWND,int,LPCWSTR);
 void   Style_SetFontQuality(HWND,LPCWSTR);
 void   Style_GetCurrentLexerName(LPWSTR,int);
@@ -105,7 +109,8 @@ void   Style_ConfigDlg(HWND);
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_SelectLexerDlg(HWND);
 int    Style_GetHotspotStyleID();
-
+int    Style_StrGetWeightValue(LPCWSTR,int*);
+void   Style_AppendWeightStr(LPWSTR, int, int);
 
 #endif //_NP3_STYLES_H_
 

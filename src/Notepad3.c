@@ -1160,8 +1160,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       {
-        extern PEDITLEXER pLexCurrent;
-        Style_SetLexer(hwndEdit,pLexCurrent);
+        Style_SetLexer(hwndEdit,NULL); // uses current lexer
         UpdateLineNumberWidth();
         return DefWindowProc(hwnd,umsg,wParam,lParam);
       }
@@ -2360,7 +2359,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
   CheckCmd(hmenu,IDM_VIEW_FOLDING,bShowCodeFolding);
 
-  CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault(hwndEdit));
+  CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
   CheckCmd(hmenu,IDM_VIEW_WORDWRAP,bWordWrap);
   CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,bMarkLongLines);
@@ -4047,11 +4046,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_FONT:
-      Style_SetDefaultFont(hwndEdit);
+      Style_SetDefaultFont(hwndEdit, TRUE);
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
 
+    case IDM_VIEW_CURRENTSCHEME:
+      Style_SetDefaultFont(hwndEdit, FALSE);
+      UpdateStatusbar();
+      UpdateLineNumberWidth();
+      break;
 
     case IDM_VIEW_WORDWRAP:
       bWordWrap = (bWordWrap) ? FALSE : TRUE;
