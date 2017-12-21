@@ -12,10 +12,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Englisch (USA) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -364,6 +365,8 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
+        MENUITEM "&Online Documentation",       IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM SEPARATOR
         MENUITEM "&About...\tF1",               IDM_HELP_ABOUT
         MENUITEM "Command Line Help",           IDM_HELP_CMD
     END
@@ -1681,6 +1684,10 @@ BEGIN
     63037                   "AutoHotkey Script"
     63038                   "Cmake Script"
     63039                   "AviSynth Script"
+END
+
+STRINGTABLE
+BEGIN
     63040                   "Markdown"
     63041                   "YAML"
     63042                   "Coffeescript"
@@ -1901,15 +1908,16 @@ BEGIN
     63265                   "2nd Hyperlink Hotspots"
 END
 
-#endif    // Englisch (USA) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Deutsch (Schweiz) resources
+// German (Switzerland) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
+#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -1934,7 +1942,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Deutsch (Schweiz) resources
+#endif    // German (Switzerland) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

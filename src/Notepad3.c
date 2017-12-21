@@ -4554,7 +4554,10 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
-    case IDM_HELP_ABOUT:
+	case IDM_HELP_ONLINEDOCUMENTATION:
+		ShellExecute(0, 0, L"https://www.rizonesoft.com/documents/notepad3/", 0, 0, SW_SHOW);
+		break;
+	case IDM_HELP_ABOUT:
       ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_ABOUT),
         hwnd,AboutDlgProc);
       break;
