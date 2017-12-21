@@ -4110,13 +4110,14 @@ void Style_SetDefaultFont(HWND hwnd, BOOL bGlobalDefault)
   WCHAR newStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   PEDITLEXER pLexer = bGlobalDefault ? &lexStandard : g_pLexCurrent;
+  const int iStyle  = bGlobalDefault ? STDLEXID(STY_DEFAULT) : STY_DEFAULT;
 
-  StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[STY_DEFAULT].szValue);
+  StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[iStyle].szValue);
 
   if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), bGlobalDefault, FALSE, TRUE))
   {
     // set new styles to current lexer's default text
-    StringCchCopyW(pLexer->Styles[STY_DEFAULT].szValue, COUNTOF(pLexer->Styles[STY_DEFAULT].szValue), newStyle);
+    StringCchCopyW(pLexer->Styles[iStyle].szValue, COUNTOF(pLexer->Styles[iStyle].szValue), newStyle);
     g_fStylesModified = TRUE;
     // redraw current(!) lexer
     Style_SetLexer(hwnd, g_pLexCurrent);
