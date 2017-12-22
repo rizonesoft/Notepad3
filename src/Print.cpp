@@ -41,7 +41,7 @@ extern "C" {
 
 
 extern "C" HINSTANCE g_hInstance;
-extern "C" HWND hwndEdit;
+extern "C" HWND g_hwndEdit;
 
 // Global settings...
 extern "C" int iPrintHeader;
@@ -61,7 +61,7 @@ HGLOBAL hDevNames = nullptr;
 //
 //  EditPrint() - Code from SciTE
 //
-extern "C" HWND hwndStatus;
+extern "C" HWND g_hwndStatus;
 
 void StatusUpdatePrintPage(int iPageNum)
 {
@@ -69,11 +69,11 @@ void StatusUpdatePrintPage(int iPageNum)
 
   FormatString(tch,COUNTOF(tch),IDS_PRINTFILE,iPageNum);
 
-  StatusSetText(hwndStatus,255,tch);
-  StatusSetSimple(hwndStatus,TRUE);
+  StatusSetText(g_hwndStatus,255,tch);
+  StatusSetSimple(g_hwndStatus,TRUE);
 
-  InvalidateRect(hwndStatus,nullptr,TRUE);
-  UpdateWindow(hwndStatus);
+  InvalidateRect(g_hwndStatus,nullptr,TRUE);
+  UpdateWindow(g_hwndStatus);
 }
 
 
@@ -349,7 +349,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     if (printPage) {
 
       // Show wait cursor...
-      SendMessage(hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORWAIT, 0);
+      SendMessage(g_hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORWAIT, 0);
 
       // Display current page number in Statusbar
       StatusUpdatePrintPage(pageNum);
@@ -443,10 +443,10 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     DeleteObject(fontFooter);
 
   // Reset Statusbar to default mode
-  StatusSetSimple(hwndStatus,FALSE);
+  StatusSetSimple(g_hwndStatus,FALSE);
 
   // Remove wait cursor...
-  { POINT pt; SendMessage(hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORNORMAL, 0); GetCursorPos(&pt); SetCursorPos(pt.x, pt.y); }
+  { POINT pt; SendMessage(g_hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORNORMAL, 0); GetCursorPos(&pt); SetCursorPos(pt.x, pt.y); }
 
   return TRUE;
 }
