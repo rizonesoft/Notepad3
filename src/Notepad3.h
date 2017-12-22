@@ -19,6 +19,7 @@
 //==== Main Window ============================================================
 #define WC_NOTEPAD3 L"Notepad3"
 
+#define ONLINE_HELP_WEBSITE L"https://www.rizonesoft.com/documents/notepad3/"
 
 //==== Data Type for WM_COPYDATA ==============================================
 #define DATA_NOTEPAD3_PARAMS 0xFB10
