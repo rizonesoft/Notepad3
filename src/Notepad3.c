@@ -4559,15 +4559,19 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
   case IDM_HELP_ONLINEDOCUMENTATION:
-    ShellExecute(0, 0, L"https://www.rizonesoft.com/documents/notepad3/", 0, 0, SW_SHOW);
+    ShellExecute(0, 0, ONLINE_HELP_WEBSITE, 0, 0, SW_SHOW);
     break;
+
   case IDM_HELP_ABOUT:
       ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_ABOUT),
         hwnd,AboutDlgProc);
       break;
 
     case IDM_SETPASS:
-      GetFileKey(hwndEdit);
+      if (GetFileKey(hwndEdit)) {
+        bModified = TRUE;
+        UpdateToolbar();
+      }
       break;
 
     case IDM_HELP_CMD:
