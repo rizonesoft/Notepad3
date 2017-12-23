@@ -319,9 +319,10 @@ void Sha256String
 (const char *str,		           	//@parm the string to hash
  unsigned char output[32])	   //@parm the result hash
 {
+    output[0] = '\0';
     sha256_context ctx;
     sha256_starts(&ctx);
-    sha256_update(&ctx, (const unsigned char*)str, (unsigned long)strlen(str));
+    if (str) sha256_update(&ctx, (const unsigned char*)str, (unsigned long)strlen(str));
     sha256_finish(&ctx, output);
 
 }

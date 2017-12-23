@@ -1,27 +1,38 @@
 /* 
- * NotepadCrypt format decrypter
+ * Notepad3 format decrypter
  * 
  * 
- * This standalone program decrypts files that were encrypted in NotepadCrypt's simple format.
+ * This standalone program decrypts files that were encrypted in Notepad3's simple format.
  * 
  * The intent of this program is to provide an independent, robust implementation for handling the file format,
- * in case NotepadCrypt (or that author's own small standalone decrypter) is inaccessible or has errors.
+ * in case Notepad3 (or that author's own small standalone decrypter) is inaccessible or has errors.
  * 
- * Usage: java decryptnotepadcrypt InputFile [-m] Passphrase
+ * Prerequisites: compiled class  (javac DecryptNotepad3.java => DecryptNotepad3.class)
+ * 
+ * Usage: java DecryptNotepad3 InputFile [-m] Passphrase
  * Options:
  *     -m: Use master key (only applicable for files with master key)
  * Examples:
- *     java decryptnotepad myencryptedfile.bin password123
- *     java decryptnotepad myencryptedfile.bin -m masterPass456
+ *     java DecryptNotepad3 myencryptedfile.bin password123
+ *     java DecryptNotepad3 myencryptedfile.bin -m masterPass456
  *     (Prints to standard output)
  * 
  * 
- * Copyright (c) 2013 Nayuki Minase. All rights reserved.
- * http://nayuki.eigenstate.org/page/notepadcrypt-format-decryptor-java
+ * Copyright (c) 2017 Project Nayuki
+ * All rights reserved. Contact Nayuki for licensing.
+ * https://www.nayuki.io/page/notepadcrypt-format-decryptor-java
+ * Old: http://nayuki.eigenstate.org/page/notepadcrypt-format-decryptor-java
  * 
+ * Adaption to Notepad3 by RaiKoHoff
+ *
  * NotepadCrypt resources:
  * - http://www.andromeda.com/people/ddyer/notepad/NotepadCrypt.html
  * - http://www.andromeda.com/people/ddyer/notepad/NotepadCrypt-technotes.html
+ *
+ * Notepad3 resources:
+ * - https://www.rizonesoft.com/downloads/notepad3/
+ * - https://www.rizonesoft.com/documents/notepad3/
+ * - https://github.com/rizonesoft/Notepad3
  */
 
 import java.io.File;
@@ -31,8 +42,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import static java.lang.Integer.rotateRight;
 
-
-public class decryptnotepadcrypt {
+public final class DecryptNotepad3 {
 	
 	/* Main functions */
 	
@@ -48,7 +58,7 @@ public class decryptnotepadcrypt {
 			useMasterKey = true;
 			passphrase = args[2];
 		} else {
-			System.err.println("Usage: java decryptnotepadcrypt InputFile [-m] Passphrase");
+			System.err.println("Usage: java DecryptNotepad3 InputFile [-m] Passphrase");
 			System.err.println("    -m: Use master key (only applicable for files with master key)");
 			System.exit(1);
 			return;
@@ -80,9 +90,9 @@ public class decryptnotepadcrypt {
 	}
 	
 	
-	private static byte[] decryptFileData(byte[] fileData, byte[] passphrase, boolean useMasterKey) {
+	static byte[] decryptFileData(byte[] fileData, byte[] passphrase, boolean useMasterKey) {
 		if (fileData.length == 0)
-			return fileData;  // NotepadCrypt produces an empty file when trying to encrypt an empty text file
+			return fileData;  // Notepad3 produces an empty file when trying to encrypt an empty text file
 		
 		// Parse file format
 		boolean hasMasterKey;
@@ -124,7 +134,7 @@ public class decryptnotepadcrypt {
 		byte[] plaintext = ciphertext.clone();
 		Aes.decryptCbcMode(plaintext, key, initVec);
 		
-		// Check padding
+		// Check padding (rejections are always correct, but false acceptance has 1/255 chance)
 		int padding = plaintext[plaintext.length - 1];
 		if (padding < 1 || padding > 16)
 			throw new IllegalArgumentException("Incorrect key or corrupt data");
@@ -138,8 +148,11 @@ public class decryptnotepadcrypt {
 	}
 	
 	
-	private static int toInt32(byte[] b, int off) {
-		return b[off + 0] << 24 | (b[off + 1] & 0xFF) << 16 | (b[off + 2] & 0xFF) << 8 | (b[off + 3] & 0xFF);
+	static int toInt32(byte[] b, int off) {  // Big endian
+		return (b[off + 0] & 0xFF) << 24 |
+		       (b[off + 1] & 0xFF) << 16 |
+		       (b[off + 2] & 0xFF) <<  8 |
+		       (b[off + 3] & 0xFF) <<  0;
 	}
 	
 	
@@ -150,8 +163,7 @@ public class decryptnotepadcrypt {
 			throw new IllegalArgumentException("Message too large for this implementation");
 		
 		// Add 1 byte for termination, 8 bytes for length, then round up to multiple of block size (64)
-		byte[] padded = new byte[(msg.length + 1 + 8 + 63) & ~0x3F];
-		System.arraycopy(msg, 0, padded, 0, msg.length);
+		byte[] padded = Arrays.copyOf(msg, (msg.length + 1 + 8 + 63) / 64 * 64);
 		padded[msg.length] = (byte)0x80;
 		for (int i = 0; i < 4; i++)
 			padded[padded.length - 1 - i] = (byte)((msg.length * 8) >>> (i * 8));
@@ -172,12 +184,14 @@ public class decryptnotepadcrypt {
 		int[] state = {0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19};
 		for (int off = 0; off < padded.length; off += 64) {
 			int[] schedule = new int[64];
-			for (int i = 0; i < 64; i++)
-				schedule[i / 4] |= (padded[off + i] & 0xFF) << ((3 - (i & 3)) * 8);
+			for (int i = 0; i < 16; i++)
+				schedule[i] = toInt32(padded, off + i * 4);
 			for (int i = 16; i < 64; i++) {
 				int x = schedule[i - 15];
 				int y = schedule[i -  2];
-				schedule[i] = schedule[i-16] + schedule[i-7] + (rotateRight(x,7) ^ rotateRight(x,18) ^ (x>>>3)) + (rotateRight(y,17) ^ rotateRight(y,19) ^ (y>>>10));
+				schedule[i] = schedule[i - 16] + schedule[i - 7] +
+				              (rotateRight(x,  7) ^ rotateRight(x, 18) ^ (x >>>  3)) +
+				              (rotateRight(y, 17) ^ rotateRight(y, 19) ^ (y >>> 10));
 			}
 			
 			int a = state[0], b = state[1], c = state[2], d = state[3];
@@ -201,7 +215,7 @@ public class decryptnotepadcrypt {
 		// Serialize state as result
 		byte[] hash = new byte[state.length * 4];
 		for (int i = 0; i < hash.length; i++)
-			hash[i] = (byte)(state[i / 4] >>> ((3 - (i & 3)) * 8));
+			hash[i] = (byte)(state[i / 4] >>> ((3 - i % 4) * 8));
 		return hash;
 	}
 	
@@ -209,9 +223,9 @@ public class decryptnotepadcrypt {
 
 
 
-class Aes {
+final class Aes {
 	
-	private static final int BLOCK_LEN = 16;
+	private static final int BLOCK_LEN = 16;  // Do not modify
 	
 	
 	public static void decryptCbcMode(byte[] msg, byte[] key, byte[] initVec) {
@@ -242,12 +256,13 @@ class Aes {
 		int rounds = Math.max(nk, 4) + 6;
 		int[] w = new int[(rounds + 1) * 4];  // Key schedule
 		for (int i = 0; i < nk; i++)
-			w[i] = key[i * 4] << 24 | ((key[i * 4 + 1] & 0xFF) << 16) | ((key[i * 4 + 2] & 0xFF) << 8) | (key[i * 4 + 3] & 0xFF);
-		for (int i = nk, rcon = 1; i < w.length; i++) {  // rcon = 2^(i/nk) mod 0x11B
+			w[i] = DecryptNotepad3.toInt32(key, i * 4);
+		byte rcon = 1;
+		for (int i = nk; i < w.length; i++) {  // rcon = 2^(i/nk) mod 0x11B
 			int tp = w[i - 1];
 			if (i % nk == 0) {
-				tp = subInt32Bytes(tp << 8 | tp >>> 24) ^ (rcon << 24);
-				rcon = multiply(rcon, 0x02);
+				tp = subInt32Bytes(rotateRight(tp, 24)) ^ (rcon << 24);
+				rcon = multiply(rcon, (byte)0x02);
 			} else if (nk > 6 && i % nk == 4)
 				tp = subInt32Bytes(tp);
 			w[i] = w[i - nk] ^ tp;
@@ -256,46 +271,43 @@ class Aes {
 		keySchedule = new byte[w.length / 4][BLOCK_LEN];
 		for (int i = 0; i < keySchedule.length; i++) {
 			for (int j = 0; j < keySchedule[i].length; j++)
-				keySchedule[i][j] = (byte)(w[i * 4 + j / 4] >>> ((3 - (j & 3)) * 8));
+				keySchedule[i][j] = (byte)(w[i * 4 + j / 4] >>> ((3 - j % 4) * 8));
 		}
 	}
 	
 	
 	public void decryptBlock(byte[] msg, int off) {
-		byte[] block = Arrays.copyOfRange(msg, off, off + BLOCK_LEN);
-		byte[] temp = new byte[BLOCK_LEN];
-		
 		// Initial round
-		addRoundKey(block, keySchedule[keySchedule.length - 1]);
-		for (int i = 0; i < 4; i++) {  // Shift rows inverse
+		byte[] temp0 = Arrays.copyOfRange(msg, off, off + BLOCK_LEN);
+		addRoundKey(temp0, keySchedule[keySchedule.length - 1]);
+		byte[] temp1 = new byte[BLOCK_LEN];
+		for (int i = 0; i < 4; i++) {  // Shift rows inverse and sub bytes inverse
 			for (int j = 0; j < 4; j++)
-				temp[i + j * 4] = block[i + (j - i + 4) % 4 * 4];
+				temp1[i + j * 4] = SBOX_INVERSE[temp0[i + (j - i + 4) % 4 * 4] & 0xFF];
 		}
-		for (int i = 0; i < BLOCK_LEN; i++)  // Sub bytes inverse
-			block[i] = SBOX_INVERSE[temp[i] & 0xFF];
 		
 		// Middle rounds
 		for (int k = keySchedule.length - 2; k >= 1; k--) {
-			addRoundKey(block, keySchedule[k]);
+			addRoundKey(temp1, keySchedule[k]);
 			for (int i = 0; i < BLOCK_LEN; i += 4) {  // Mix columns inverse
 				for (int j = 0; j < 4; j++) {
-					temp[i + j] = (byte)(
-					        multiply(block[i + (j + 0) % 4] & 0xFF, 0x0E) ^
-					        multiply(block[i + (j + 1) % 4] & 0xFF, 0x0B) ^
-					        multiply(block[i + (j + 2) % 4] & 0xFF, 0x0D) ^
-					        multiply(block[i + (j + 3) % 4] & 0xFF, 0x09));
+					temp0[i + j] = (byte)(
+					        multiply(temp1[i + (j + 0) % 4], (byte)0x0E) ^
+					        multiply(temp1[i + (j + 1) % 4], (byte)0x0B) ^
+					        multiply(temp1[i + (j + 2) % 4], (byte)0x0D) ^
+					        multiply(temp1[i + (j + 3) % 4], (byte)0x09));
 				}
 			}
 			for (int i = 0; i < 4; i++) {  // Shift rows inverse and sub bytes inverse
 				for (int j = 0; j < 4; j++)
-					block[i + j * 4] = SBOX_INVERSE[temp[i + (j - i + 4) % 4 * 4] & 0xFF];
+					temp1[i + j * 4] = SBOX_INVERSE[temp0[i + (j - i + 4) % 4 * 4] & 0xFF];
 			}
 		}
 		
 		// Final round
-		addRoundKey(block, keySchedule[0]);
+		addRoundKey(temp1, keySchedule[0]);
 		
-		System.arraycopy(block, 0, msg, off, block.length);
+		System.arraycopy(temp1, 0, msg, off, temp1.length);
 	}
 	
 	
@@ -307,43 +319,36 @@ class Aes {
 	
 	/* Utilities */
 	
-	private static byte[] SBOX;
-	private static byte[] SBOX_INVERSE;
+	private static byte[] SBOX = new byte[256];
+	private static byte[] SBOX_INVERSE = new byte[256];
 	
+	// Initialize the S-box and inverse
 	static {
-		// Initialize the S-box and inverse
-		SBOX = new byte[256];
-		SBOX_INVERSE = new byte[256];
 		for (int i = 0; i < 256; i++) {
-			int tp = reciprocal(i);
-			int s = ((tp ^ (tp << 4 | tp >>> 4) ^ (tp << 3 | tp >>> 5) ^ (tp << 2 | tp >>> 6) ^ (tp << 1 | tp >>> 7) ^ 0x63)) & 0xFF;
-			SBOX[i] = (byte)s;
-			SBOX_INVERSE[s] = (byte)i;
+			byte tp = reciprocal((byte)i);
+			byte s = (byte)(tp ^ rotateByteLeft(tp, 1) ^ rotateByteLeft(tp, 2) ^ rotateByteLeft(tp, 3) ^ rotateByteLeft(tp, 4) ^ 0x63);
+			SBOX[i] = s;
+			SBOX_INVERSE[s & 0xFF] = (byte)i;
 		}
 	}
 	
 	
-	private static int multiply(int x, int y) {
-		if ((x & 0xFF) != x || (y & 0xFF) != y)
-			throw new IllegalArgumentException("Input out of range");
-		
+	private static byte multiply(byte x, byte y) {
 		// Russian peasant multiplication
-		int z = 0;
-		for (; y != 0; y >>>= 1) {
-			z ^= x * (y & 1);
-			x = (x << 1) ^ (0x11B * (x >>> 7));
+		byte z = 0;
+		for (int i = 0; i < 8; i++) {
+			z ^= x * ((y >>> i) & 1);
+			x = (byte)((x << 1) ^ (((x >>> 7) & 1) * 0x11B));
 		}
 		return z;
 	}
 	
 	
-	private static int reciprocal(int x) {
-		if ((x & 0xFF) != x)
-			throw new IllegalArgumentException("Input out of range");
-		else if (x == 0)
+	private static byte reciprocal(byte x) {
+		if (x == 0)
 			return 0;
 		else {
-			for (int y = 1; y < 256; y++) {
+			for (byte y = 1; y != 0; y++) {
 				if (multiply(x, y) == 1)
 					return y;
 			}
@@ -352,12 +357,18 @@ class Aes {
 	}
 	
 	
+	private static byte rotateByteLeft(byte x, int y) {
+		if (y < 0 || y >= 8)
+			throw new IllegalArgumentException("Input out of range");
+		return (byte)((x << y) | ((x & 0xFF) >>> (8 - y)));
+	}
+	
+	
 	private static int subInt32Bytes(int x) {
-		return
-		      (SBOX[x >>> 24 & 0xFF] & 0xFF) << 24
-		    | (SBOX[x >>> 16 & 0xFF] & 0xFF) << 16
-		    | (SBOX[x >>>  8 & 0xFF] & 0xFF) <<  8
-		    | (SBOX[x >>>  0 & 0xFF] & 0xFF) <<  0;
+		return (SBOX[x >>> 24 & 0xFF] & 0xFF) << 24 |
+		       (SBOX[x >>> 16 & 0xFF] & 0xFF) << 16 |
+		       (SBOX[x >>>  8 & 0xFF] & 0xFF) <<  8 |
+		       (SBOX[x >>>  0 & 0xFF] & 0xFF) <<  0;
 	}
 	
 }
