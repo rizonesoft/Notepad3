@@ -1159,11 +1159,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      {
-        Style_SetLexer(g_hwndEdit,NULL); // uses current lexer
-        UpdateLineNumberWidth();
-        return DefWindowProc(hwnd,umsg,wParam,lParam);
-      }
+      SendMessage(g_hwndEdit, SCI_COLOURISE, 0, (LPARAM)-1);
+      UpdateLineNumberWidth();
+      return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     //case WM_TIMER:
     //  return DefWindowProc(hwnd,umsg,wParam,lParam);

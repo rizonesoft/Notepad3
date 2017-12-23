@@ -3129,9 +3129,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   WCHAR wchFontName[64] = { '\0' };
   WCHAR wchCaretStyle[64] = { L'\0' };
 
-  // Select current if NULL is specified
+  // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = g_pLexCurrent; // initially current lexer is default lexer
+    pLexNew = &lexStandard;
   }
 
   // Lexer 
