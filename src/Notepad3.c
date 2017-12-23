@@ -1159,7 +1159,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      SendMessage(g_hwndEdit, SCI_COLOURISE, 0, (LPARAM)-1);
+      EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
       UpdateLineNumberWidth();
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
@@ -1751,6 +1751,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
+  EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   UNUSED(lParam);
   UNUSED(wParam);
