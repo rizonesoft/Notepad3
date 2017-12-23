@@ -1,7 +1,7 @@
 #!/bin/tcsh
 #set echo
 #
-# this is a test script for notepadcrypt.  It encrypts every file in cwd and compares
+# this is a test script for np3encrypt.exe.  It encrypts every file in cwd and compares
 # the decrypted result with the original. If all goes well it cleans up after itself,
 # leaving the original files untouched.
 #
@@ -12,8 +12,8 @@ if(-f "$file") then
 echo $file
 
 # plain file
-notepadcrypt ef "$file" "$file.enc" "$file"
-notepadcrypt df "$file.enc" "$file.out" "$file"
+np3encrypt ef "$file" "$file.enc" "$file"
+np3encrypt df "$file.enc" "$file.out" "$file"
 diff "$file" "$file.out"
 if($status) then
  echo "decode file"
@@ -22,8 +22,8 @@ if($status) then
 rm "$file.out" "$file.enc"
 
 # master file decrypt with file key
-notepadcrypt em "$file" "$file.enc" "$file key" "master $file"
-notepadcrypt df "$file.enc" "$file.out" "$file key"
+np3encrypt em "$file" "$file.enc" "$file key" "master $file"
+np3encrypt df "$file.enc" "$file.out" "$file key"
 diff "$file" "$file.out"
 if($status) then
  echo "decode master using file"
@@ -32,8 +32,8 @@ if($status) then
 rm "$file.out" "$file.enc"
 
 # master file decrypt with master key
-notepadcrypt em "$file" "$file.enc" "$file key" "master $file"
-notepadcrypt dm "$file.enc" "$file.out" "master $file"
+np3encrypt em "$file" "$file.enc" "$file key" "master $file"
+np3encrypt dm "$file.enc" "$file.out" "master $file"
 diff "$file" "$file.out"
 if($status) then
  echo "decode master using master"
