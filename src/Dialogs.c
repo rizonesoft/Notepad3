@@ -41,8 +41,8 @@
 #include "dialogs.h"
 
 
-extern HWND  hwndMain;
-extern HWND  hwndEdit;
+extern HWND  g_hwndMain;
+extern HWND  g_hwndEdit;
 extern HINSTANCE g_hInstance;
 extern DWORD dwLastIOError;
 extern BOOL bSkipUnicodeDetection;
@@ -107,7 +107,7 @@ int MsgBox(int iType,UINT uIdMsg,...)
   }
 
   HWND focus = GetFocus();
-  hwnd = focus ? focus : hwndMain;
+  hwnd = focus ? focus : g_hwndMain;
 
   return MessageBoxEx(hwnd,
            szText,szTitle,
@@ -2378,7 +2378,7 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
     idDlg = IDD_INFOBOX3;
 
   HWND focus = GetFocus();
-  hwnd = focus ? focus : hwndMain;
+  hwnd = focus ? focus : g_hwndMain;
 
   MessageBeep(MB_ICONEXCLAMATION);
 
