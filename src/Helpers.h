@@ -70,9 +70,9 @@ __inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL 
 }
 
 
-//extern HWND hwndEdit;
-#define BeginWaitCursor() { SendMessage(hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORWAIT,0); StatusSetText(hwndStatus,255,L"..."); }
-#define EndWaitCursor() { POINT pt; SendMessage(hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORNORMAL,0); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); UpdateStatusbar(); }
+//extern HWND g_hwndEdit;
+#define BeginWaitCursor() { SendMessage(g_hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORWAIT,0); StatusSetText(g_hwndStatus,255,L"..."); }
+#define EndWaitCursor() { POINT pt; SendMessage(g_hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORNORMAL,0); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); UpdateStatusbar(); }
 
 
 //#define Is2k()    (g_uWinVer >= 0x0500)

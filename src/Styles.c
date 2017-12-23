@@ -43,6 +43,8 @@
 
 extern HINSTANCE g_hInstance;
 
+extern HWND g_hwndMain;
+
 extern int iSciFontQuality;
 extern const int FontQuality[4];
 
@@ -3256,6 +3258,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   if (g_pLexCurrent != &lexStandard) {
     Style_SetStyles(hwnd, STYLE_DEFAULT, g_pLexCurrent->Styles[STY_DEFAULT].szValue);
+    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, TRUE);
+  }
+  else {
+    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, FALSE);
   }
 
   // Broadcast STYLE_DEFAULT as base style to all other style
@@ -3791,7 +3797,7 @@ void Style_SetCurrentMargin(HWND hwnd, BOOL bShowSelMargin)
   else {
     SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_BOOKMARK, SC_MARK_BACKGROUND);
   }
-  //SendMessage(hwndEdit, SCI_SETMARGINWIDTHN, 2, 0);
+  //SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, 2, 0);
   SendMessage(hwnd, SCI_SETMARGINWIDTHN, MARGIN_NP3_BOOKMRK, (bShowSelMargin) ? 16 : 0);
 }
 
@@ -4109,12 +4115,14 @@ void Style_SetDefaultFont(HWND hwnd, BOOL bGlobalDefault)
 {
   WCHAR newStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-  PEDITLEXER pLexer = bGlobalDefault ? &lexStandard : g_pLexCurrent;
-  const int iStyle  = bGlobalDefault ? STDLEXID(STY_DEFAULT) : STY_DEFAULT;
+  BOOL bIsStdLexer = (bGlobalDefault || (g_pLexCurrent == &lexStandard));
+
+  const PEDITLEXER pLexer = bIsStdLexer ? &lexStandard : g_pLexCurrent;
+  const int iStyle        = bIsStdLexer ? STDLEXID(STY_DEFAULT) : STY_DEFAULT;
 
   StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[iStyle].szValue);
 
-  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), bGlobalDefault, FALSE, TRUE))
+  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), bIsStdLexer, FALSE, TRUE))
   {
     // set new styles to current lexer's default text
     StringCchCopyW(pLexer->Styles[iStyle].szValue, COUNTOF(pLexer->Styles[iStyle].szValue), newStyle);
@@ -4716,6 +4724,8 @@ static const WCHAR* FontSelTitle2 = L"Current Scheme's Default Font";
 static const WCHAR* FontSelTitle3 = L"++ Global Default Font ++";
 static const WCHAR* FontSelTitle4 = L"++ Current Scheme's Default Font ++";
 
+static  WCHAR FontSelTitle[128];
+
 /// Callback to set the font dialog's title
 static UINT CALLBACK Style_FontDialogHook(
   HWND hdlg,      // handle to the dialog box window
@@ -4810,9 +4820,24 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
   cf.rgbColors = color;
   cf.lpLogFont = &lf;
   cf.lpfnHook = (LPCFHOOKPROC)Style_FontDialogHook;	// Register the callback
-  cf.lCustData = (LPARAM)(bDefaultStyle ? (bRelFontSize ? FontSelTitle1 : FontSelTitle1) : (bRelFontSize ? FontSelTitle4 : FontSelTitle2));
+  cf.lCustData = (LPARAM)FontSelTitle;
   //cf.Flags = CF_INITTOLOGFONTSTRUCT /*| CF_EFFECTS | CF_NOSCRIPTSEL*/ | CF_SCREENFONTS | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
   cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_BOTH | CF_WYSIWYG | CF_FORCEFONTEXIST | CF_ENABLEHOOK;
+
+  if (bDefaultStyle) {
+    if (bRelFontSize)
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), 
+        L" +++ Global (%s) %s Font +++", (Style_GetUse2ndDefault() ? L"2nd Scheme" : L"1st Scheme"), lexStandard.pszName);
+    else
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), 
+        L" Global (%s) %s Font", (Style_GetUse2ndDefault() ? L"2nd Scheme" : L"1st Scheme"), lexStandard.pszName);
+  }
+  else {
+    if (bRelFontSize)
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ Default %s Font +++", g_pLexCurrent->pszName);
+    else
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" Default %s Font", g_pLexCurrent->pszName);
+  }
 
   if (bWithEffects)
     cf.Flags |= CF_EFFECTS;
@@ -5690,7 +5715,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
         case IDC_PREVIEW:
           {
             // Hack from outside
-            extern HWND hwndEdit;
+            extern HWND g_hwndEdit;
 
             if (pCurrentStyle)
               GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue));
@@ -5698,7 +5723,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
               if (!GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions)))
                 StringCchCopy(pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions),pCurrentLexer->pszDefExt);
             }
-            Style_SetLexer(hwndEdit,g_pLexCurrent);
+            Style_SetLexer(g_hwndEdit,g_pLexCurrent);
             UpdateLineNumberWidth();
           }
           break;
