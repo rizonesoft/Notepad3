@@ -50,6 +50,7 @@ Version 3.17.1223.773 (23 December 2017)
 - Fix: setting/changing encryption pass-phrase did not trigger "file modified" flag.
 - Fix: Problem with 1st vs. 2nd Default Text Scheme selection.
 - Fix: Inconsistency 1st vs. 2nd Default Text Font selection.
+- Fix: Use Standard Lexer on new (empty) files.
 - General bug fixes and code cleanup.
 
 --------------------------------------------------
