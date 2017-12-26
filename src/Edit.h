@@ -40,9 +40,8 @@ typedef struct _editfindreplace
   BOOL bNoFindWrap;
   BOOL bWildcardSearch;
   BOOL bMarkOccurences;
+  BOOL bDotMatchAll;
   HWND hwnd;
-  //HANDLE hMRUFind;
-  //HANDLE hMRUReplace;
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
 

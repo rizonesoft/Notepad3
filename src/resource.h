@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by Notepad3.rc
+// Von Microsoft Visual C++ generierte Includedatei.
+// Verwendet durch Notepad3.rc
 //
 #define IDR_RT_MANIFEST                 1
 #define IDR_MAINWND                     100
@@ -119,6 +119,7 @@
 #define IDT_TIMER_MRKALL                130
 #define IDC_ALL_OCCURRENCES             131
 #define IDC_MARKALL_OCC                 132
+#define IDC_DOT_MATCH_ALL               133
 #define IDC_BACKSLASHHELP               151
 #define IDC_REGEXPHELP                  152
 #define IDC_WILDCARDHELP                153

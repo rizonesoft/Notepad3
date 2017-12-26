@@ -222,12 +222,20 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
 
   // fixed options
   OnigOptionType onigmoOptions = ONIG_OPTION_DEFAULT;
-  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND); // not wanted here
+
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND); // OFF: not wanted here
   
-  ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_DOTALL);      // ONIG_OPTION_DOTALL == ONIG_OPTION_MULTILINE
+  // ONIG_OPTION_DOTALL == ONIG_OPTION_MULTILINE
+  if (searchFlags & SCFIND_DOT_MATCH_ALL) {
+    ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_DOTALL);
+  }
+  else {
+    ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_DOTALL);
+  }
  
   //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
+
   ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_CAPTURE_GROUP);
 
   // dynamic options
