@@ -58,7 +58,8 @@ using namespace Scintilla;
 // ***   Oningmo configuration   ***
 // ============================================================================
 
-const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; // ONIG_ENCODING_SJIS
+const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; 
+//const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_SJIS; 
 
 static const OnigSyntaxType* g_pOnigSyntaxType = ONIG_SYNTAX_DEFAULT;
 static OnigEncoding use_encs[] = { g_pOnigEncodingType };
@@ -221,11 +222,20 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
 
   // fixed options
   OnigOptionType onigmoOptions = ONIG_OPTION_DEFAULT;
-  ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_EXTEND);
-  //~ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_MULTILINE); // the .(dot) matches line-breaks too - we don't want this here
-  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_DOTALL);  // deletes multiline option
+
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND); // OFF: not wanted here
+  
+  // ONIG_OPTION_DOTALL == ONIG_OPTION_MULTILINE
+  if (searchFlags & SCFIND_DOT_MATCH_ALL) {
+    ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_DOTALL);
+  }
+  else {
+    ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_DOTALL);
+  }
+ 
   //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
+
   ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_CAPTURE_GROUP);
 
   // dynamic options

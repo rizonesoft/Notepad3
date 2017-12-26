@@ -277,7 +277,7 @@ UINT      msgTaskbarCreated = 0;
 
 HMODULE   hModUxTheme = NULL;
 
-EDITFINDREPLACE efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, NULL };
+EDITFINDREPLACE g_efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL };
 UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
 
@@ -981,25 +981,25 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     if (lstrlen(lpMatchArg) && SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0)) {
 
       UINT cp = Encoding_SciGetCodePage(g_hwndEdit);
-      WideCharToMultiByteStrg(cp,lpMatchArg,efrData.szFind);
-      WideCharToMultiByteStrg(CP_UTF8,lpMatchArg,efrData.szFindUTF8);
+      WideCharToMultiByteStrg(cp,lpMatchArg,g_efrData.szFind);
+      WideCharToMultiByteStrg(CP_UTF8,lpMatchArg,g_efrData.szFindUTF8);
       cpLastFind = cp;
 
       if (flagMatchText & 4)
-        efrData.fuFlags |= SCFIND_REGEXP | SCFIND_POSIX;
+        g_efrData.fuFlags |= SCFIND_REGEXP | SCFIND_POSIX;
       else if (flagMatchText & 8)
-        efrData.bTransformBS = TRUE;
+        g_efrData.bTransformBS = TRUE;
 
       if (flagMatchText & 2) {
         if (!flagJumpTo)
           EditJumpTo(g_hwndEdit,-1,0);
-        EditFindPrev(g_hwndEdit,&efrData,FALSE);
+        EditFindPrev(g_hwndEdit,&g_efrData,FALSE);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
       else {
         if (!flagJumpTo)
           SendMessage(g_hwndEdit,SCI_DOCUMENTSTART,0,0);
-        EditFindNext(g_hwndEdit,&efrData,FALSE);
+        EditFindNext(g_hwndEdit,&g_efrData,FALSE);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
     }
@@ -1159,7 +1159,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      SendMessage(g_hwndEdit, SCI_COLOURISE, 0, (LPARAM)-1);
+      EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
       UpdateLineNumberWidth();
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
@@ -1751,6 +1751,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
+  EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   UNUSED(lParam);
   UNUSED(wParam);
@@ -2341,11 +2342,11 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_FIND,i);
   EnableCmd(hmenu,IDM_EDIT_SAVEFIND,i);
   EnableCmd(hmenu,IDM_EDIT_FINDNEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_FINDPREV,i && strlen(efrData.szFind));
+  EnableCmd(hmenu,IDM_EDIT_FINDPREV,i && strlen(g_efrData.szFind));
   EnableCmd(hmenu,IDM_EDIT_REPLACE,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_REPLACENEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_SELTONEXT,i && strlen(efrData.szFind));
-  EnableCmd(hmenu,IDM_EDIT_SELTOPREV,i && strlen(efrData.szFind));
+  EnableCmd(hmenu,IDM_EDIT_SELTONEXT,i && strlen(g_efrData.szFind));
+  EnableCmd(hmenu,IDM_EDIT_SELTOPREV,i && strlen(g_efrData.szFind));
   EnableCmd(hmenu,IDM_EDIT_FINDMATCHINGBRACE,i);
   EnableCmd(hmenu,IDM_EDIT_SELTOMATCHINGBRACE,i);
 
@@ -3848,12 +3849,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_FIND:
       if (!IsWindow(hDlgFindReplace))
-        hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&efrData,FALSE);
+        hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,FALSE);
       else {
         if (GetDlgItem(hDlgFindReplace,IDC_REPLACE)) {
           SendMessage(hDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOFIND,1),0);
           DestroyWindow(hDlgFindReplace);
-          hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&efrData,FALSE);
+          hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,FALSE);
         }
         else {
           SetForegroundWindow(hDlgFindReplace);
@@ -3865,12 +3866,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_REPLACE:
       if (!IsWindow(hDlgFindReplace))
-        hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&efrData,TRUE);
+        hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
       else {
         if (!GetDlgItem(hDlgFindReplace,IDC_REPLACE)) {
           SendMessage(hDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOREPLACE,1),0);
           DestroyWindow(hDlgFindReplace);
-          hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&efrData,TRUE);
+          hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
         }
         else {
           SetForegroundWindow(hDlgFindReplace);
@@ -3961,7 +3962,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       if (SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0) == 0)
         break;
 
-      if (!strlen(efrData.szFind)) {
+      if (!strlen(g_efrData.szFind)) {
         if (LOWORD(wParam) != IDM_EDIT_REPLACENEXT)
           SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_FIND,1),0);
         else
@@ -3976,41 +3977,41 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             WCHAR wch[FNDRPL_BUFFER];
 
-            MultiByteToWideCharStrg(CP_UTF8,efrData.szFindUTF8,wch);
-            WideCharToMultiByteStrg(cp,wch,efrData.szFind);
+            MultiByteToWideCharStrg(CP_UTF8,g_efrData.szFindUTF8,wch);
+            WideCharToMultiByteStrg(cp,wch,g_efrData.szFind);
 
-            MultiByteToWideCharStrg(CP_UTF8,efrData.szReplaceUTF8,wch);
-            WideCharToMultiByteStrg(cp,wch,efrData.szReplace);
+            MultiByteToWideCharStrg(CP_UTF8,g_efrData.szReplaceUTF8,wch);
+            WideCharToMultiByteStrg(cp,wch,g_efrData.szReplace);
           }
           else {
-            StringCchCopyA(efrData.szFind,COUNTOF(efrData.szFind),efrData.szFindUTF8);
-            StringCchCopyA(efrData.szReplace,COUNTOF(efrData.szReplace),efrData.szReplaceUTF8);
+            StringCchCopyA(g_efrData.szFind,COUNTOF(g_efrData.szFind),g_efrData.szFindUTF8);
+            StringCchCopyA(g_efrData.szReplace,COUNTOF(g_efrData.szReplace),g_efrData.szReplaceUTF8);
           }
         }
         cpLastFind = cp;
         switch (LOWORD(wParam)) {
 
           case IDM_EDIT_FINDNEXT:
-            EditFindNext(g_hwndEdit,&efrData,FALSE);
+            EditFindNext(g_hwndEdit,&g_efrData,FALSE);
             break;
 
           case IDM_EDIT_FINDPREV:
-            EditFindPrev(g_hwndEdit,&efrData,FALSE);
+            EditFindPrev(g_hwndEdit,&g_efrData,FALSE);
             break;
 
           case IDM_EDIT_REPLACENEXT:
             if (bReplaceInitialized)
-              EditReplace(g_hwndEdit,&efrData);
+              EditReplace(g_hwndEdit,&g_efrData);
             else
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_REPLACE,1),0);
             break;
 
           case IDM_EDIT_SELTONEXT:
-            EditFindNext(g_hwndEdit,&efrData,TRUE);
+            EditFindNext(g_hwndEdit,&g_efrData,TRUE);
             break;
 
           case IDM_EDIT_SELTOPREV:
-            EditFindPrev(g_hwndEdit,&efrData,TRUE);
+            EditFindPrev(g_hwndEdit,&g_efrData,TRUE);
             break;
         }
       }
@@ -4812,7 +4813,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         struct tm sst;
 
         UINT cp;
-        EDITFINDREPLACE efrTS = { "", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, 0, 0, NULL };
+        EDITFINDREPLACE efrTS = { "", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, 0, 0, 0, NULL };
         efrTS.hwnd = g_hwndEdit;
 
         IniGetString(L"Settings2",L"TimeStamp",L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $",wchFind,COUNTOF(wchFind));
@@ -4953,20 +4954,20 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           if (lpsz) *lpsz = '\0';
 
           cpLastFind = Encoding_SciGetCodePage(g_hwndEdit);
-          StringCchCopyA(efrData.szFind,COUNTOF(efrData.szFind),mszSelection);
+          StringCchCopyA(g_efrData.szFind,COUNTOF(g_efrData.szFind),mszSelection);
 
           if (cpLastFind != CP_UTF8)
           {
             WCHAR wszBuf[FNDRPL_BUFFER];
 
             MultiByteToWideCharStrg(cpLastFind,mszSelection,wszBuf);
-            WideCharToMultiByteStrg(CP_UTF8,wszBuf,efrData.szFindUTF8);
+            WideCharToMultiByteStrg(CP_UTF8,wszBuf,g_efrData.szFindUTF8);
           }
           else
-            StringCchCopyA(efrData.szFindUTF8,COUNTOF(efrData.szFindUTF8),mszSelection);
+            StringCchCopyA(g_efrData.szFindUTF8,COUNTOF(g_efrData.szFindUTF8),mszSelection);
 
-          efrData.fuFlags &= (~(SCFIND_REGEXP|SCFIND_POSIX));
-          efrData.bTransformBS = FALSE;
+          g_efrData.fuFlags &= (~(SCFIND_REGEXP|SCFIND_POSIX));
+          g_efrData.bTransformBS = FALSE;
 
           switch (LOWORD(wParam)) {
 
@@ -4974,11 +4975,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
               break;
 
             case CMD_FINDNEXTSEL:
-              EditFindNext(g_hwndEdit,&efrData,FALSE);
+              EditFindNext(g_hwndEdit,&g_efrData,FALSE);
               break;
 
             case CMD_FINDPREVSEL:
-              EditFindPrev(g_hwndEdit,&efrData,FALSE);
+              EditFindPrev(g_hwndEdit,&g_efrData,FALSE);
               break;
           }
         }
@@ -5861,19 +5862,21 @@ void LoadSettings()
 
   bSaveFindReplace = IniSectionGetBool(pIniSection,L"SaveFindReplace",FALSE);
 
-  efrData.bFindClose = IniSectionGetBool(pIniSection,L"CloseFind", FALSE);
+  g_efrData.bFindClose = IniSectionGetBool(pIniSection,L"CloseFind", FALSE);
 
-  efrData.bReplaceClose = IniSectionGetBool(pIniSection,L"CloseReplace", FALSE);
+  g_efrData.bReplaceClose = IniSectionGetBool(pIniSection,L"CloseReplace", FALSE);
 
-  efrData.bNoFindWrap = IniSectionGetBool(pIniSection,L"NoFindWrap", FALSE);
+  g_efrData.bNoFindWrap = IniSectionGetBool(pIniSection,L"NoFindWrap", FALSE);
 
-  efrData.bTransformBS = IniSectionGetBool(pIniSection,L"FindTransformBS", FALSE);
+  g_efrData.bTransformBS = IniSectionGetBool(pIniSection,L"FindTransformBS", FALSE);
 
-  efrData.bWildcardSearch = IniSectionGetBool(pIniSection,L"WildcardSearch",FALSE);
+  g_efrData.bWildcardSearch = IniSectionGetBool(pIniSection,L"WildcardSearch",FALSE);
 
-  efrData.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", FALSE);
+  g_efrData.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", FALSE);
 
-  efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
+  g_efrData.bDotMatchAll = IniSectionGetBool(pIniSection, L"RegexDotMatchesAll", FALSE);
+  
+  g_efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
   if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"", tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
     //SHGetSpecialFolderPath(NULL, tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, TRUE);
@@ -6215,13 +6218,14 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"SaveRecentFiles", bSaveRecentFiles);
   IniSectionSetBool(pIniSection, L"PreserveCaretPos", bPreserveCaretPos);
   IniSectionSetBool(pIniSection, L"SaveFindReplace", bSaveFindReplace);
-  IniSectionSetBool(pIniSection, L"CloseFind", efrData.bFindClose);
-  IniSectionSetBool(pIniSection, L"CloseReplace", efrData.bReplaceClose);
-  IniSectionSetBool(pIniSection, L"NoFindWrap", efrData.bNoFindWrap);
-  IniSectionSetBool(pIniSection, L"FindTransformBS", efrData.bTransformBS);
-  IniSectionSetBool(pIniSection, L"WildcardSearch", efrData.bWildcardSearch);
-  IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", efrData.bMarkOccurences);
-  IniSectionSetInt(pIniSection, L"efrData_fuFlags", efrData.fuFlags);
+  IniSectionSetBool(pIniSection, L"CloseFind", g_efrData.bFindClose);
+  IniSectionSetBool(pIniSection, L"CloseReplace", g_efrData.bReplaceClose);
+  IniSectionSetBool(pIniSection, L"NoFindWrap", g_efrData.bNoFindWrap);
+  IniSectionSetBool(pIniSection, L"FindTransformBS", g_efrData.bTransformBS);
+  IniSectionSetBool(pIniSection, L"WildcardSearch", g_efrData.bWildcardSearch);
+  IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", g_efrData.bMarkOccurences);
+  IniSectionSetBool(pIniSection, L"RegexDotMatchesAll", g_efrData.bDotMatchAll);
+  IniSectionSetInt(pIniSection, L"efrData_fuFlags", g_efrData.fuFlags);
   PathRelativeToApp(tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
   IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
   PathRelativeToApp(tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
@@ -7056,7 +7060,7 @@ void UpdateToolbar()
 
   EnableTool(IDT_EDIT_FIND,i2);
   //EnableTool(IDT_EDIT_FINDNEXT,i2);
-  //EnableTool(IDT_EDIT_FINDPREV,i2 && strlen(efrData.szFind));
+  //EnableTool(IDT_EDIT_FINDPREV,i2 && strlen(g_efrData.szFind));
   EnableTool(IDT_EDIT_REPLACE, i2 /*&& !bReadOnly*/);
 
   EnableTool(IDT_EDIT_CUT, i2 /*&& !bReadOnly*/);
