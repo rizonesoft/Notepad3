@@ -3724,8 +3724,13 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
       SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, TRUE, (LPARAM)rgb);
     }
   }
-  else
+  else {
+    const WCHAR* lpszStyleHotSpot = lexStandard.Styles[STDLEXID(STY_DEFAULT)].szValue;
+
+    Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
+    
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)FALSE);
+  }
 
 }
 
