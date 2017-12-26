@@ -3127,7 +3127,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   int rgb;
   int iValue;
   WCHAR wchFontName[64] = { '\0' };
-  WCHAR wchCaretStyle[64] = { L'\0' };
+  WCHAR wchSpecificStyle[80] = { L'\0' };
 
   // Select standard if NULL is specified
   if (!pLexNew) {
@@ -3284,6 +3284,15 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
     if (Style_StrGetAlpha(lexStandard.Styles[STDLEXID(STY_BRACE_OK)].szValue, &iValue, FALSE))
       SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, iValue);
+
+    iValue = -1; // need for retrieval
+    if (!Style_GetIndicatorType(lexStandard.Styles[STDLEXID(STY_BRACE_OK)].szValue, 0, &iValue)) {
+      // got default, get string
+      StringCchCatW(lexStandard.Styles[STDLEXID(STY_BRACE_OK)].szValue, COUNTOF(lexStandard.Styles[0].szValue), L"; ");
+      Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
+      StringCchCatW(lexStandard.Styles[STDLEXID(STY_BRACE_OK)].szValue, COUNTOF(lexStandard.Styles[0].szValue), wchSpecificStyle);
+    }
+    SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, iValue);
   }
   if (bUseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, lexStandard.Styles[STDLEXID(STY_BRACE_BAD)].iStyle,
@@ -3296,6 +3305,15 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
     if (Style_StrGetAlpha(lexStandard.Styles[STDLEXID(STY_BRACE_BAD)].szValue, &iValue, FALSE))
       SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, iValue);
+
+    iValue = -1; // need for retrieval
+    if (!Style_GetIndicatorType(lexStandard.Styles[STDLEXID(STY_BRACE_BAD)].szValue, 0, &iValue)) {
+      // got default, get string
+      StringCchCatW(lexStandard.Styles[STDLEXID(STY_BRACE_BAD)].szValue, COUNTOF(lexStandard.Styles[0].szValue), L"; ");
+      Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
+      StringCchCatW(lexStandard.Styles[STDLEXID(STY_BRACE_BAD)].szValue, COUNTOF(lexStandard.Styles[0].szValue), wchSpecificStyle);
+    }
+    SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, iValue);
   }
 
   // Occurrences Marker
@@ -3338,8 +3356,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   if (!Style_GetIndicatorType(lexStandard.Styles[STDLEXID(STY_MARK_OCC)].szValue, 0, &iValue)) {
     // got default, get string
     StringCchCatW(lexStandard.Styles[STDLEXID(STY_MARK_OCC)].szValue, COUNTOF(lexStandard.Styles[0].szValue), L"; ");
-    Style_GetIndicatorType(wchCaretStyle, COUNTOF(wchCaretStyle), &iValue);
-    StringCchCatW(lexStandard.Styles[STDLEXID(STY_MARK_OCC)].szValue, COUNTOF(lexStandard.Styles[0].szValue), wchCaretStyle);
+    Style_GetIndicatorType(wchSpecificStyle, COUNTOF(wchSpecificStyle), &iValue);
+    StringCchCatW(lexStandard.Styles[STDLEXID(STY_MARK_OCC)].szValue, COUNTOF(lexStandard.Styles[0].szValue), wchSpecificStyle);
   }
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, iValue);
 
@@ -3435,7 +3453,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   // caret style and width
   if (StrStr(lexStandard.Styles[STDLEXID(STY_CARET)].szValue,L"block")) {
     SendMessage(hwnd,SCI_SETCARETSTYLE,CARETSTYLE_BLOCK,0);
-    StringCchCopy(wchCaretStyle,COUNTOF(wchCaretStyle),L"block");
+    StringCchCopy(wchSpecificStyle,COUNTOF(wchSpecificStyle),L"block");
   }
   else {
     SendMessage(hwnd, SCI_SETCARETSTYLE, CARETSTYLE_LINE, 0);
@@ -3445,13 +3463,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     if (Style_StrGetSize(lexStandard.Styles[STDLEXID(STY_CARET)].szValue,&iValue)) {
       iValue = max(min(iValue,3),1);
       StringCchPrintf(wch,COUNTOF(wch),L"size:%i",iValue);
-      StringCchCat(wchCaretStyle,COUNTOF(wchCaretStyle),wch);
+      StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
     }
     SendMessage(hwnd,SCI_SETCARETWIDTH,iValue,0);
   }
   if (StrStr(lexStandard.Styles[STDLEXID(STY_CARET)].szValue,L"noblink")) {
     SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)0,0);
-    StringCchCat(wchCaretStyle,COUNTOF(wchCaretStyle),L"; noblink");
+    StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),L"; noblink");
   }
   else
     SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)GetCaretBlinkTime(),0);
@@ -3466,16 +3484,16 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
       (int)GetGValue(rgb),
       (int)GetBValue(rgb));
 
-    StringCchCat(wchCaretStyle,COUNTOF(wchCaretStyle),wch);
+    StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
   }
   if (!VerifyContrast(rgb,(COLORREF)SendMessage(hwnd,SCI_STYLEGETBACK,0,0)))
     rgb = (int)SendMessage(hwnd,SCI_STYLEGETFORE,0,0);
   SendMessage(hwnd,SCI_SETCARETFORE,rgb,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETFORE,rgb,0);
 
-  StrTrimW(wchCaretStyle, L" ;");
+  StrTrimW(wchSpecificStyle, L" ;");
   StringCchCopy(lexStandard.Styles[STDLEXID(STY_CARET)].szValue,
-                COUNTOF(lexStandard.Styles[STDLEXID(STY_CARET)].szValue),wchCaretStyle);
+                COUNTOF(lexStandard.Styles[STDLEXID(STY_CARET)].szValue),wchSpecificStyle);
 
   if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) {
     if (Style_StrGetColor(TRUE,lexStandard.Styles[STDLEXID(STY_LONG_LN_MRK)].szValue,&rgb)) // edge fore
