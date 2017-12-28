@@ -3,7 +3,22 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
-Version 3.17.1223.773 (23 December 2017)
+Version 3.17.1228.783 (28 December 2017)
+--------------------------------------------------
+- Fix: Update coloring on window message WM_SYSCOLORCHANGE, including Hyperlink hotspot colors.
+- Feature: Java sourcecode to compile a class which acts as a standalone tool for decrypting Notepad3's encrypted files.
+- Fix: Crash on empty password for encryption tool.
+- Added batch script to bulk encrypt files of given directory with encryption tool.
+- Fix: Existing bash test script for encryption tool.
+- Fix: Onigmo regex: . matches any charakter and does not stop at line breaks.
+- Fix: Onigmo regex: remove extend mode, where # is used as line rest comment.
+- Feature: Regex - "Dot matches all" vs. "Dot does not match line-breaks" switchable by option in find/replace dialog.
+- Feature: inticator style used for matching braces too.
+- Fix: Change hard coded default values for matching brace styling according to new style (indicator).
+- Fix: font styling of Hyperlinks are not reset to default if feature is switched off.
+
+--------------------------------------------------
+Version 3.17.1223.778 (23 December 2017)
 --------------------------------------------------
 - Fix: Hyperlink feature related delay of font changing.
 - Added more triggers for Hyperlink style updated.
