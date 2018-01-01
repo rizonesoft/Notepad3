@@ -63,8 +63,8 @@ KEYWORDLIST KeyWords_NULL = {
 EDITLEXER lexStandard = { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL, {
                 /*  0 */ { STYLE_DEFAULT, 63100, L"Default Style", L"font:Default; size:10", L"" },
                 /*  1 */ { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"size:-2; fore:#FF0000", L"" },
-                /*  2 */ { STYLE_BRACELIGHT, 63102, L"Matching Braces", L"fore:#00FF40; alpha:40; alpha2:40; indic_roundbox", L"" },
-                /*  3 */ { STYLE_BRACEBAD, 63103, L"Matching Braces Error", L"fore:#FF0080; alpha:140; alpha2:140; indic_roundbox", L"" },
+                /*  2 */ { STYLE_BRACELIGHT, 63102, L"Matching Braces (Indicator)", L"fore:#00FF40; alpha:40; alpha2:40; indic_roundbox", L"" },
+                /*  3 */ { STYLE_BRACEBAD, 63103, L"Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:140; indic_roundbox", L"" },
                 /*  4 */ { STYLE_CONTROLCHAR, 63104, L"Control Characters (Font)", L"size:-1", L"" },
                 /*  5 */ { STYLE_INDENTGUIDE, 63105, L"Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
                 /*  6 */ { SCI_SETSELFORE+SCI_SETSELBACK, 63106, L"Selected Text (Colors)", L"back:#0A246A; eolfilled; alpha:95", L"" },
@@ -74,13 +74,13 @@ EDITLEXER lexStandard = { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; 
                 /* 10 */ { SCI_SETEDGECOLOUR, 63110, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63111, L"Extra Line Spacing (Size)", L"size:2", L"" },
                 /* 12 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63124, L"Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
-                /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63262, L"Mark Occurrences (Colors)", L"indic_roundbox", L"" },
+                /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63262, L"Mark Occurrences (Indicator)", L"indic_roundbox", L"" },
                 /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63264, L"Hyperlink Hotspots", L"italic; fore:#0000FF", L"" },
                 
                 /* 15 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
                 /* 16 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
-                /* 17 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
-                /* 18 */ { STYLE_BRACEBAD, 63115, L"2nd Matching Braces Error", L"fore:#FF0080; alpha:140; alpha2:220; indic_roundbox", L"" },
+                /* 17 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
+                /* 18 */ { STYLE_BRACEBAD, 63115, L"2nd Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:220; indic_roundbox", L"" },
                 /* 19 */ { STYLE_CONTROLCHAR, 63116, L"2nd Control Characters (Font)", L"size:-1", L"" },
                 /* 20 */ { STYLE_INDENTGUIDE, 63117, L"2nd Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
                 /* 21 */ { SCI_SETSELFORE + SCI_SETSELBACK, 63118, L"2nd Selected Text (Colors)", L"eolfilled", L"" },
@@ -90,7 +90,7 @@ EDITLEXER lexStandard = { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; 
                 /* 25 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 26 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
                 /* 27 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63125, L"2nd Book Marks (Colors)", L"back:#00FF00; alpha:20", L"" },
-                /* 28 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Colors)", L"fore:#0x00FF00; alpha:100; alpha2:220; indic_box", L"" },
+                /* 28 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0x00FF00; alpha:100; alpha2:220; indic_box", L"" },
                 /* 29 */ { SCI_SETHOTSPOTACTIVEFORE, 63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
 
                          { -1, 00000, L"", L"", L"" } } };
@@ -4615,7 +4615,6 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   // ---------   Font settings   ---------
-
   if (!StrStrI(lpszStyleDest, L"font:")) {
     if (Style_StrGetFont(lpszStyleSrc, tch, COUNTOF(tch))) {
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; font:");
@@ -4643,13 +4642,6 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; heavy");
   //else
   //  StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");
-
-  if (!StrStrI(lpszStyleDest, L"size:")) {
-    if (Style_StrGetSizeStr(lpszStyleSrc, tch, COUNTOF(tch))) {
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; size:");
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    }
-  }
 
   if (!StrStrI(lpszStyleDest, L"charset:")) {
     if (Style_StrGetCharSet(lpszStyleSrc, &iValue)) {
@@ -4686,8 +4678,16 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), (iValue == SC_CASE_UPPER) ? L"u" : L"");
   }
 
+
+  // ---------  Size  ---------
+  if (!StrStrI(lpszStyleDest, L"size:")) {
+    if (Style_StrGetSizeStr(lpszStyleSrc, tch, COUNTOF(tch))) {
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; size:");
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+    }
+  }
+
   // ---------  Colors  ---------
-  
   if (!StrStrI(lpszStyleDest, L"fore:")) { // foreground
     if (Style_StrGetColor(TRUE, lpszStyleSrc, &iValue)) {
       StringCchPrintf(tch, COUNTOF(tch), L"; fore:#%02X%02X%02X",
@@ -4703,7 +4703,7 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
   }
-  
+
   if (!StrStrI(lpszStyleDest, L"alpha:")) {
     if (Style_StrGetAlpha(lpszStyleSrc, &iValue, TRUE)) {
       StringCchPrintf(tch, COUNTOF(tch), L"; alpha:%i", iValue);
@@ -4717,16 +4717,7 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
     }
   }
 
-  // --------   other style settings   --------
-
-  if (StrStrI(lpszStyleSrc, L"block") && !StrStrI(lpszStyleDest, L"block")) {
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; block");
-  }
-
-  if (StrStrI(lpszStyleSrc, L"noblink") && !StrStrI(lpszStyleDest, L"noblink")) {
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; noblink");
-  }
-
+  // --------   indicator type   --------
   if (!StrStrI(lpszStyleDest, L"indic_")) {
     iValue = -1;
     if (Style_GetIndicatorType(lpszStyleSrc, 0, &iValue)) {
@@ -4734,6 +4725,15 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
       Style_GetIndicatorType(tch, COUNTOF(tch), &iValue);
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
+  }
+
+  // --------   other style settings   --------
+  if (StrStrI(lpszStyleSrc, L"block") && !StrStrI(lpszStyleDest, L"block")) {
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; block");
+  }
+
+  if (StrStrI(lpszStyleSrc, L"noblink") && !StrStrI(lpszStyleDest, L"noblink")) {
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; noblink");
   }
 
   StrTrim(szTmpStyle, L" ;");
