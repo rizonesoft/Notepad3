@@ -1700,8 +1700,8 @@ STRINGTABLE
 BEGIN
     63100                   "Default Style"
     63101                   "Margins and Line Numbers"
-    63102                   "Matching Braces"
-    63103                   "Matching Braces Error"
+    63102                   "Matching Braces (Indicator)"
+    63103                   "Matching Braces Error (Indicator)"
 END
 
 STRINGTABLE
@@ -1716,8 +1716,8 @@ BEGIN
     63111                   "Extra Line Spacing (Size)"
     63112                   "2nd Default Style"
     63113                   "2nd Margins and Line Numbers"
-    63114                   "2nd Matching Braces"
-    63115                   "2nd Matching Braces Error"
+    63114                   "2nd Matching Braces (Indicator)"
+    63115                   "2nd Matching Braces Error (Indicator)"
     63116                   "2nd Control Characters (Font)"
     63117                   "2nd Indentation Guide (Color)"
     63118                   "2nd Selected Text (Colors)"
@@ -1900,8 +1900,8 @@ BEGIN
     63259                   "Comment Doc"
     63260                   "Keyword 2nd"
     63261                   "Error"
-    63262                   "Mark Occurrences (Colors)"
-    63263                   "2nd Mark Occurrences (Colors)"
+    63262                   "Mark Occurrences (Indicator)"
+    63263                   "2nd Mark Occurrences (Indicator)"
 END
 
 STRINGTABLE
