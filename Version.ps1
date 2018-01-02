@@ -33,7 +33,7 @@ try
 {
 	$Major = 3
 	$Minor = [int]$(Get-Date -format yy)
-	$Revis = "{0:D4}" -f [int]$(Get-Date -format MMdd)
+	$Revis = [int]$(Get-Date -format MMdd)
 	if ($AppVeyorEnv) {
 		$Build = [int]($env:appveyor_build_number)
 	}

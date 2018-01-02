@@ -9,7 +9,7 @@ set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
 :: --------------------------------------------------------------------------------------------------------------------
 
 set YY=00
-set MM=00
+set MM=0
 set DD=00
 call :GETDATE
 set BUILD=0
