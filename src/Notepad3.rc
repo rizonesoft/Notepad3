@@ -302,10 +302,11 @@ BEGIN
         MENUITEM "Highlight C&urrent Line\tCtrl+Shift+I", IDM_VIEW_HILITECURRENTLINE
         POPUP "Mar&k Occurrences"
         BEGIN
-            MENUITEM "&Active",                     IDM_VIEW_MARKOCCURRENCES_ONOFF
+            MENUITEM "&Active",                     IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
-            MENUITEM "Match &Case",                 IDM_VIEW_MARKOCCURRENCES_CASE
-            MENUITEM "Match &Whole Words Only",     IDM_VIEW_MARKOCCURRENCES_WORD
+            MENUITEM "Match &Case",                 IDM_VIEW_MARKOCCUR_CASE
+            MENUITEM "Match &Whole Word Only",      IDM_VIEW_MARKOCCUR_WORD
+            MENUITEM "&Instant Match Word",         IDM_VIEW_MARKOCCUR_CURRENT
         END
         MENUITEM SEPARATOR
         MENUITEM "Line &Numbers\tCtrl+Shift+N", IDM_VIEW_LINENUMBERS

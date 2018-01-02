@@ -4352,7 +4352,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       if (lpefr->bMarkOccurences) {
         iSaveMarkOcc = iMarkOccurrences;
-        EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, FALSE);
+        EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, FALSE);
         iMarkOccurrences = 0;
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
       }
@@ -4543,9 +4543,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DeleteObject(hBrushBlue);
 
         if (iSaveMarkOcc >= 0) {
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, TRUE);
+          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, TRUE);
           if (iSaveMarkOcc != 0) {
-            SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCURRENCES_ONOFF, 1), 0);
+            SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCUR_ONOFF, 1), 0);
           }
         }
         KillTimer(hwnd, IDT_TIMER_MRKALL);
@@ -4619,15 +4619,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           {
             lpefr->bMarkOccurences = TRUE;
             iSaveMarkOcc = iMarkOccurrences;
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, FALSE);
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, FALSE);
             iMarkOccurrences = 0;
           }
           else {                         // switched OFF
             lpefr->bMarkOccurences = FALSE;
             if (iSaveMarkOcc >= 0) {
-              EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCURRENCES_ONOFF, TRUE);
+              EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, TRUE);
               if (iSaveMarkOcc != 0) {
-                SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCURRENCES_ONOFF, 1), 0);
+                SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCUR_ONOFF, 1), 0);
               }
             }
             iSaveMarkOcc = -1;
@@ -5477,42 +5477,64 @@ void EditClearAllMarks(HWND hwnd)
 //
 void EditMarkAll(HWND hwnd, char* pszFind, int flags, BOOL bMatchCase, BOOL bMatchWords)
 {
+  char* pszText = NULL;
+  char txtBuffer[LARGE_BUFFER] = { '\0' };
+
   EditClearAllMarks(hwnd);
 
   int iTextLength = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
   int iFindLength = 0;
 
-  char* pszText = pszFind;
+  if (pszFind != NULL)
+    pszText = pszFind;
+  else
+    pszText = txtBuffer;
 
-  if (pszText == NULL) {
-    // get current selection
-    int iSelStart = (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0);
-    int iSelEnd = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
-    int iSelCount = iSelEnd - iSelStart;
+  if (pszFind == NULL) {
+    if (!SciCall_IsSelectionEmpty()) 
+    {
+      // get current selection
+      int iSelStart = (int)SendMessage(hwnd, SCI_GETSELECTIONSTART, 0, 0);
+      int iSelEnd = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
+      int iSelCount = iSelEnd - iSelStart;
 
-    // if nothing selected or multiple lines are selected exit
-    if ((iSelCount == 0) ||
-      (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iSelStart, 0) !=
-        (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iSelEnd, 0))
-      return;
+      // if multiple lines are selected exit
+      if (((int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iSelStart, 0) !=
+        (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iSelEnd, 0)) || (iSelCount >= LARGE_BUFFER))
+        return;
 
-    iFindLength = (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)NULL) - 1;
-    pszText = LocalAlloc(LPTR, iFindLength + 1);
-    (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)pszText);
+      iFindLength = (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)NULL) - 1;
+      (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)pszText);
 
-    // exit if selection is not a word and Match whole words only is enabled
-    if (bMatchWords) {
-      int iSelStart2 = 0;
-      const char* delims = (bAccelWordNavigation ? DelimCharsAccel : DelimChars);
-      while ((iSelStart2 <= iSelCount) && pszText[iSelStart2]) {
-        if (StrChrIA(delims, pszText[iSelStart2])) {
-          LocalFree(pszText);
-          return;
+      // exit if selection is not a word and Match whole words only is enabled
+      if (bMatchWords) {
+        int iSelStart2 = 0;
+        const char* delims = (bAccelWordNavigation ? DelimCharsAccel : DelimChars);
+        while ((iSelStart2 <= iSelCount) && pszText[iSelStart2]) {
+          if (StrChrIA(delims, pszText[iSelStart2])) {
+            return;
+          }
+          iSelStart2++;
         }
-        iSelStart2++;
       }
+      else if (flags) { return; } // no current word matching if we have a selection 
     }
-    // override flags
+    else if (flags) { // nothing selected, get word under caret if flagged
+      int iCurrPos = SciCall_GetCurrentPos();
+      int iWordStart = (int)SendMessage(hwnd, SCI_WORDSTARTPOSITION, iCurrPos, (LPARAM)1);
+      int iWordEnd = (int)SendMessage(hwnd, SCI_WORDENDPOSITION, iCurrPos, (LPARAM)1);
+      iFindLength = iWordEnd - iWordStart;
+      struct Sci_TextRange tr = { { 0, -1 }, NULL };
+      tr.lpstrText = pszText;
+      tr.chrg.cpMin = iWordStart;
+      tr.chrg.cpMax = iWordEnd;
+      SendMessage(hwnd, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+    }
+    else {
+      return; // no selection and no word mark choosen
+    }
+
+    // set additional flags
     flags = 0;
     flags |= (bMatchCase ? SCFIND_MATCHCASE : 0);
     flags |= (bMatchWords ? SCFIND_WHOLEWORD : 0);
@@ -5521,7 +5543,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, BOOL bMatchCase, BOOL bMat
     iFindLength = StringCchLenA(pszFind, FNDRPL_BUFFER);
   }
 
-  if (iFindLength <= 0)  return;
+  if (iFindLength <= 0) { return; }
 
   int start = 0;
   int end = iTextLength;
@@ -5540,10 +5562,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, BOOL bMatchCase, BOOL bMat
     if (start >= end)
       break;
   }
-
-  // free text buffer if not set from outside (pszFind)
-  if (pszFind == NULL)
-    LocalFree(pszText);
 
   UpdateStatusbar();
 }

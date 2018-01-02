@@ -153,6 +153,7 @@ int       iMarkOccurrencesCount;
 int       iMarkOccurrencesMaxCount;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
+BOOL      bMarkOccurrencesCurrentWord;
 BOOL      bUseOldStyleBraceMatching;
 BOOL      bAutoCompleteWords;
 BOOL      bAccelWordNavigation;
@@ -2378,11 +2379,13 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
 
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCURRENCES_ONOFF, iMarkOccurrences != 0);
-  CheckCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_CASE,bMarkOccurrencesMatchCase);
-  CheckCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_WORD,bMarkOccurrencesMatchWords);
-  EnableCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_CASE,iMarkOccurrences != 0);
-  EnableCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_WORD,iMarkOccurrences != 0);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, iMarkOccurrences != 0);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, bMarkOccurrencesMatchCase);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, bMarkOccurrencesMatchWords);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, bMarkOccurrencesCurrentWord && !bMarkOccurrencesMatchWords);
+  EnableCmd(hmenu,IDM_VIEW_MARKOCCUR_CASE,iMarkOccurrences != 0);
+  EnableCmd(hmenu,IDM_VIEW_MARKOCCUR_WORD,iMarkOccurrences != 0);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, iMarkOccurrences != 0);
 
   CheckCmd(hmenu,IDM_VIEW_SHOWWHITESPACE,bViewWhiteSpace);
   CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,bViewEOLs);
@@ -4208,11 +4211,11 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
       if (iMarkOccurrences != 0) {
-        EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       }
       break;
 
-    case IDM_VIEW_MARKOCCURRENCES_ONOFF:
+    case IDM_VIEW_MARKOCCUR_ONOFF:
       iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
       if (iMarkOccurrences == 0) {
         // clear all marks
@@ -4221,20 +4224,33 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         iMarkOccurrencesCount = -1;
       }
       else
-        EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       break;
 
-    case IDM_VIEW_MARKOCCURRENCES_CASE:
+    case IDM_VIEW_MARKOCCUR_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
       if (iMarkOccurrences != 0) {
-        EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       }
       break;
 
-    case IDM_VIEW_MARKOCCURRENCES_WORD:
+    case IDM_VIEW_MARKOCCUR_WORD:
       bMarkOccurrencesMatchWords = (bMarkOccurrencesMatchWords) ? FALSE : TRUE;
+      if (bMarkOccurrencesMatchWords) {
+        bMarkOccurrencesCurrentWord = FALSE;
+      }
       if (iMarkOccurrences != 0) {
-        EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      }
+      break;
+
+    case IDM_VIEW_MARKOCCUR_CURRENT:
+      bMarkOccurrencesCurrentWord = (bMarkOccurrencesCurrentWord) ? FALSE : TRUE;
+      if (bMarkOccurrencesCurrentWord) {
+        bMarkOccurrencesMatchWords = FALSE;
+      }
+      if (iMarkOccurrences != 0) {
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
       }
       break;
 
@@ -5518,7 +5534,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             // mark occurrences of text currently selected
             if (iMarkOccurrences != 0) {
-              EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+              EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
             }
             // Brace Match
             if (bMatchBraces) {
@@ -5961,6 +5977,8 @@ void LoadSettings()
   iMarkOccurrences = max(min(iMarkOccurrences, 3), 0);
   bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",FALSE);
   bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",TRUE);
+  bMarkOccurrencesCurrentWord = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", !bMarkOccurrencesMatchWords);
+  bMarkOccurrencesCurrentWord = bMarkOccurrencesCurrentWord && !bMarkOccurrencesMatchWords;
 
   bViewWhiteSpace = IniSectionGetBool(pIniSection,L"ViewWhiteSpace", FALSE);
 
@@ -6258,6 +6276,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"MarkOccurrences", iMarkOccurrences);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", bMarkOccurrencesMatchCase);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", bMarkOccurrencesMatchWords);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", bMarkOccurrencesCurrentWord);
   IniSectionSetBool(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
   IniSectionSetBool(pIniSection, L"ViewEOLs", bViewEOLs);
   IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, iDefaultEncoding));
