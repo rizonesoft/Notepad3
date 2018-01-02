@@ -2825,6 +2825,7 @@ void EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,BOOL bInsertAtStart)
 
   if ((SC_SEL_RECTANGLE != SciCall_GetSelectionMode()) && (cchComment > 0))
   {
+    int iCommentCol = 0;
     int iLineStart = SciCall_LineFromPosition(iSelStart);
     int iLineEnd   = SciCall_LineFromPosition(iSelEnd);
     
@@ -2834,9 +2835,9 @@ void EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,BOOL bInsertAtStart)
         --iLineEnd;
     }
 
-    int iCommentCol = 1024;
 
     if (!bInsertAtStart) {
+      iCommentCol = 1024;
       for (int iLine = iLineStart; iLine <= iLineEnd; iLine++) {
         
         int iLineEndPos = SciCall_GetLineEndPosition(iLine);
