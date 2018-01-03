@@ -4310,7 +4310,6 @@ RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, B
   if (!bFirstMatchOnly) 
   {
     if (bMarkAll && (iPos >= 0)) {
-      EditClearAllMarks(hwnd);
       EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextLength, FALSE, FALSE);
     }
     else {
@@ -4659,6 +4658,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               bFlagsChanged = FALSE;
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
             }
+            UpdateStatusbar();
           }
         }
         break;
@@ -5481,7 +5481,7 @@ void EditClearAllMarks(HWND hwnd)
 void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeEnd, BOOL bMatchCase, BOOL bMatchWords)
 {
   char* pszText = NULL;
-  char txtBuffer[LARGE_BUFFER] = { '\0' };
+  char txtBuffer[HUGE_BUFFER] = { '\0' };
 
   int iFindLength = 0;
 
@@ -5490,14 +5490,17 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
   else
     pszText = txtBuffer;
 
+  EditClearAllMarks(hwnd);
+
   if (pszFind == NULL) {
+
     if (SciCall_IsSelectionEmpty()) {
 
       if (flags) { // nothing selected, get word under caret if flagged
         int iCurrPos = SciCall_GetCurrentPos();
         int iWordStart = (int)SendMessage(hwnd, SCI_WORDSTARTPOSITION, iCurrPos, (LPARAM)1);
         int iWordEnd = (int)SendMessage(hwnd, SCI_WORDENDPOSITION, iCurrPos, (LPARAM)1);
-        iFindLength = iWordEnd - iWordStart;
+        iFindLength = (iWordEnd - iWordStart);
         struct Sci_TextRange tr = { { 0, -1 }, NULL };
         tr.lpstrText = pszText;
         tr.chrg.cpMin = iWordStart;
@@ -5516,13 +5519,14 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
       int iSelStart = SciCall_GetSelectionStart();
       int iSelEnd = SciCall_GetSelectionEnd();
       int iSelCount = (iSelEnd - iSelStart);
-      iFindLength = (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)NULL) - 1;
 
       // if multiple lines are selected exit
-      if ((SciCall_LineFromPosition(iSelStart) != SciCall_LineFromPosition(iSelEnd)) || (iFindLength >= LARGE_BUFFER))
+      
+      if ((SciCall_LineFromPosition(iSelStart) != SciCall_LineFromPosition(iSelEnd)) || (iSelCount >= HUGE_BUFFER)) {
         return;
+      }
 
-      (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)pszText);
+      iFindLength = (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)pszText) - 1;
 
       // exit if selection is not a word and Match whole words only is enabled
       if (bMatchWords) {
@@ -5536,7 +5540,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
         }
       }
     }
-
     // set additional flags
     flags = 0;
     flags |= (bMatchCase ? SCFIND_MATCHCASE : 0);
@@ -5548,7 +5551,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
 
   if (iFindLength > 0) {
 
-    int iTextLength = SciCall_GetTextLength();
+    const int iTextLength = SciCall_GetTextLength();
     rangeStart = max(0, rangeStart);
     rangeEnd = min(rangeEnd, iTextLength);
 
@@ -5570,8 +5573,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
 
     } while (start < end); // < iMarkOccurrencesMaxCount
   }
-
-  UpdateStatusbar();
 }
 
 

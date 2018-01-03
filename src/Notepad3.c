@@ -1164,17 +1164,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_TIMER:
-      {
-        if (LOWORD(wParam) == IDT_TIMER_MAIN_MARKOCC) {
-          KillTimer(hwnd, IDT_TIMER_MAIN_MARKOCC);
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
-          return TRUE;
-        }
-        else if (LOWORD(wParam) == IDT_TIMER_STATUSBAR) {
-          KillTimer(hwnd, IDT_TIMER_STATUSBAR);
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_UPDATE_STATUSBAR, 1), 0);
-          return TRUE;
-        }
+      if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) {
+        KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
+        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
+        return TRUE;
       }
       break;
 
@@ -1447,9 +1440,6 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
       g_hwndStatus == NULL || hwndToolbar == NULL || hwndReBar == NULL)
     return(-1);
 
-  SetTimer(hwnd, IDT_TIMER_MAIN_MARKOCC, 200, NULL);
-  SetTimer(hwnd, IDT_TIMER_STATUSBAR, 200, NULL);
-  
   UNUSED(wParam);
   return(0);
 }
@@ -1649,10 +1639,6 @@ void MsgEndSession(HWND hwnd, UINT umsg)
   static BOOL bShutdownOK = FALSE;
 
   if (!bShutdownOK) {
-
-    // destroy timer
-    KillTimer(hwnd, IDT_TIMER_MAIN_MARKOCC);
-    KillTimer(hwnd, IDT_TIMER_STATUSBAR);
 
     // Terminate file watching
     InstallFileWatching(NULL);
@@ -2516,131 +2502,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  UpdateStatusbarTimer()
-//
-//
-void _fastcall UpdateStatusbarTimer()
-{
-  static WCHAR tchLn[32] = { L'\0' };
-  static WCHAR tchLines[32] = { L'\0' };
-  static WCHAR tchCol[32] = { L'\0' };
-  static WCHAR tchCols[32] = { L'\0' };
-  static WCHAR tchSel[32] = { L'\0' };
-  static WCHAR tchOcc[32] = { L'\0' };
-  static WCHAR tchDocPos[256] = { L'\0' };
-
-  int iBytes;
-  static WCHAR tchBytes[64] = { L'\0' };
-  static WCHAR tchDocSize[256] = { L'\0' };
-
-  static WCHAR tchEOLMode[32] = { L'\0' };
-  static WCHAR tchOvrMode[32] = { L'\0' };
-  static WCHAR tchLexerName[128] = { L'\0' };
-  static WCHAR tchLinesSelected[32] = { L'\0' };
-
-  if (!bShowStatusbar)
-    return;
-
-  int iPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-
-  int iLn = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iPos, 0) + 1;
-  StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", iLn);
-  FormatNumberStr(tchLn);
-
-  int iLines = (int)SendMessage(g_hwndEdit, SCI_GETLINECOUNT, 0, 0);
-  StringCchPrintf(tchLines, COUNTOF(tchLines), L"%i", iLines);
-  FormatNumberStr(tchLines);
-
-  int iCol = (int)SendMessage(g_hwndEdit, SCI_GETCOLUMN, iPos, 0) + 1;
-  iCol += (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
-
-  StringCchPrintf(tchCol, COUNTOF(tchCol), L"%i", iCol);
-  FormatNumberStr(tchCol);
-
-  if (bMarkLongLines) {
-    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%i", iLongLinesLimit);
-    FormatNumberStr(tchCols);
-  }
-
-  int iSelStart = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONSTART, 0, 0);
-  int iSelEnd = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONEND, 0, 0);
-
-  // Print number of selected chars in statusbar
-  if (SC_SEL_RECTANGLE != SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0)) {
-    int iSel = (int)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
-    StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
-    FormatNumberStr(tchSel);
-  }
-  else
-    StringCchCopy(tchSel, COUNTOF(tchSel), L"--");
-
-
-  if ((iMarkOccurrencesCount >= 0) && !bMarkOccurrencesMatchVisible) {
-
-    //if (iMarkOccurrencesCount < iMarkOccurrencesMaxCount) {
-    //  StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
-    //  FormatNumberStr(tchOcc);
-    //}
-    //else
-    //  StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i", iMarkOccurrencesMaxCount);
-
-    StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
-    FormatNumberStr(tchOcc);
-  }
-  else
-    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
-
-
-  // Print number of lines selected lines in statusbar
-  int iLineStart = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iSelStart, 0);
-  int iLineEnd = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iSelEnd, 0);
-  int iStartOfLinePos = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMLINE, iLineEnd, 0);
-  int iLinesSelected = iLineEnd - iLineStart;
-  if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) iLinesSelected += 1;
-  StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
-  FormatNumberStr(tchLinesSelected);
-
-  if (!bMarkLongLines)
-    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS, tchLn, tchLines, tchCol, tchSel, tchLinesSelected, tchOcc);
-  else
-    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS2, tchLn, tchLines, tchCol, tchCols, tchSel, tchLinesSelected, tchOcc);
-
-  iBytes = (int)SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0);
-  StrFormatByteSize(iBytes, tchBytes, COUNTOF(tchBytes));
-
-  FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
-
-  Encoding_GetLabel(Encoding_Current(CPI_GET));
-
-  if (iEOLMode == SC_EOL_CR)
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR");
-  else if (iEOLMode == SC_EOL_LF)
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF");
-  else
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF");
-
-  if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0))
-    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR");
-  else
-    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS");
-
-  Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
-
-  StatusSetText(g_hwndStatus, STATUS_DOCPOS, tchDocPos);
-  StatusSetText(g_hwndStatus, STATUS_DOCSIZE, tchDocSize);
-  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, mEncoding[Encoding_Current(CPI_GET)].wchLabel);
-  StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
-  StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
-  StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);
-
-  //InvalidateRect(g_hwndStatus,NULL,TRUE);
-}
-
-
-
-//=============================================================================
-//
-//  MarkAllOccurrencesTimer() - called by timer event only
+//  MarkAllOccurrencesTimer()
 // 
 void __fastcall MarkAllOccurrencesTimer()
 {
@@ -2653,16 +2515,16 @@ void __fastcall MarkAllOccurrencesTimer()
       int iEndLine = min((iFirstVisibleLine + (iLinesOnScreen << 1)), iLastLineOfDOc);
       int iPosStart = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMLINE, (WPARAM)iStartLine, 0);
       int iPosEnd = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMLINE, (WPARAM)iEndLine, 0);
-      EditClearAllMarks(g_hwndEdit);
+
       EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
     }
     else {
-      EditClearAllMarks(g_hwndEdit);
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      const int iTextLength = (int)SendMessage(g_hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+
+      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, iTextLength, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
     }
   }
 }
-
 
 
 //=============================================================================
@@ -2676,15 +2538,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   switch(LOWORD(wParam))
   {
-    case IDC_UPDATE_STATUSBAR:
-      UpdateStatusbarTimer();
-      break;
-
-
     case IDC_MAIN_MARKALL_OCC:
       MarkAllOccurrencesTimer();
       break;
-
 
     case IDM_FILE_NEW:
       FileLoad(FALSE,TRUE,FALSE,FALSE,L"");
@@ -4398,11 +4254,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
-      if (iMarkOccurrences == 0) {
-        EditClearAllMarks(g_hwndEdit);
+      if (iMarkOccurrences != 0) {
+        MarkAllOccurrences();
       }
       else {
-        MarkAllOccurrences();
+        EditClearAllMarks(g_hwndEdit);
       }
       break;
 
@@ -4730,13 +4586,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",szIniFile)) {
 
-            BeginWaitCursor(NULL);
-            //StatusSetTextID(g_hwndStatus,STATUS_HELP,IDS_SAVINGSETTINGS);
-            //StatusSetSimple(g_hwndStatus,TRUE);
-            //InvalidateRect(g_hwndStatus,NULL,TRUE);
-            //UpdateWindow(g_hwndStatus);
+            BeginWaitCursorID(IDS_SAVINGSETTINGS);
             SaveSettings(TRUE);
-            //StatusSetSimple(g_hwndStatus,FALSE);
             EndWaitCursor();
             MsgBox(MBINFO,IDS_SAVEDSETTINGS);
           }
@@ -5710,7 +5561,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             InvalidateSelections();
 
-            // mark occurrences of text currently selected
             MarkAllOccurrences();
 
             // Brace Match
@@ -6157,7 +6007,7 @@ void LoadSettings()
 
   iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",1);
   iMarkOccurrences = max(min(iMarkOccurrences, 3), 0);
-  bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", TRUE);
+  bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", FALSE);
   bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",FALSE);
   bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",TRUE);
   bMarkOccurrencesCurrentWord = IniSectionGetBool(pIniSection, L"MarkOccurrencesCurrentWord", !bMarkOccurrencesMatchWords);
@@ -7237,7 +7087,7 @@ void UpdateEditWndUI()
 // 
 void MarkAllOccurrences()
 {
-  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MARKOCC, 100, NULL);
+  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
 }
 
 
@@ -7296,10 +7146,117 @@ void UpdateToolbar()
 //  UpdateStatusbar()
 //
 //
-void UpdateStatusbar()
+void UpdateStatusbar() 
 {
-  SetTimer(g_hwndMain, IDT_TIMER_STATUSBAR, 100, NULL);
+  static WCHAR tchLn[32] = { L'\0' };
+  static WCHAR tchLines[32] = { L'\0' };
+  static WCHAR tchCol[32] = { L'\0' };
+  static WCHAR tchCols[32] = { L'\0' };
+  static WCHAR tchSel[32] = { L'\0' };
+  static WCHAR tchOcc[32] = { L'\0' };
+  static WCHAR tchDocPos[256] = { L'\0' };
+
+  int iBytes;
+  static WCHAR tchBytes[64] = { L'\0' };
+  static WCHAR tchDocSize[256] = { L'\0' };
+
+  static WCHAR tchEOLMode[32] = { L'\0' };
+  static WCHAR tchOvrMode[32] = { L'\0' };
+  static WCHAR tchLexerName[128] = { L'\0' };
+  static WCHAR tchLinesSelected[32] = { L'\0' };
+
+  if (!bShowStatusbar)
+    return;
+
+  int iPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+
+  int iLn = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iPos, 0) + 1;
+  StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", iLn);
+  FormatNumberStr(tchLn);
+
+  int iLines = (int)SendMessage(g_hwndEdit, SCI_GETLINECOUNT, 0, 0);
+  StringCchPrintf(tchLines, COUNTOF(tchLines), L"%i", iLines);
+  FormatNumberStr(tchLines);
+
+  int iCol = (int)SendMessage(g_hwndEdit, SCI_GETCOLUMN, iPos, 0) + 1;
+  iCol += (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
+
+  StringCchPrintf(tchCol, COUNTOF(tchCol), L"%i", iCol);
+  FormatNumberStr(tchCol);
+
+  if (bMarkLongLines) {
+    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%i", iLongLinesLimit);
+    FormatNumberStr(tchCols);
+  }
+
+  int iSelStart = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONSTART, 0, 0);
+  int iSelEnd = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONEND, 0, 0);
+
+  // Print number of selected chars in statusbar
+  if (SC_SEL_RECTANGLE != SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0)) {
+    int iSel = (int)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
+    StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
+    FormatNumberStr(tchSel);
+  }
+  else
+    StringCchCopy(tchSel, COUNTOF(tchSel), L"--");
+
+
+  if ((iMarkOccurrencesCount > 0) && !bMarkOccurrencesMatchVisible) {
+    StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+    FormatNumberStr(tchOcc);
+  }
+  else {
+    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
+  }
+
+  // Print number of lines selected lines in statusbar
+  int iLineStart = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iSelStart, 0);
+  int iLineEnd = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iSelEnd, 0);
+  int iStartOfLinePos = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMLINE, iLineEnd, 0);
+  int iLinesSelected = iLineEnd - iLineStart;
+  if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) iLinesSelected += 1;
+  StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
+  FormatNumberStr(tchLinesSelected);
+
+  if (!bMarkLongLines)
+    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS, tchLn, tchLines, tchCol, tchSel, tchLinesSelected, tchOcc);
+  else
+    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS2, tchLn, tchLines, tchCol, tchCols, tchSel, tchLinesSelected, tchOcc);
+
+  iBytes = (int)SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0);
+  StrFormatByteSize(iBytes, tchBytes, COUNTOF(tchBytes));
+
+  FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
+
+  Encoding_GetLabel(Encoding_Current(CPI_GET));
+
+  if (iEOLMode == SC_EOL_CR)
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR");
+  else if (iEOLMode == SC_EOL_LF)
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF");
+  else
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF");
+
+  if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0))
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR");
+  else
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS");
+
+  Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
+
+  StatusSetText(g_hwndStatus, STATUS_DOCPOS, tchDocPos);
+  StatusSetText(g_hwndStatus, STATUS_DOCSIZE, tchDocSize);
+  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, mEncoding[Encoding_Current(CPI_GET)].wchLabel);
+  StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
+  StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
+  StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);
+
+  //InvalidateRect(g_hwndStatus,NULL,TRUE);
 }
+
+
+
 
 
 //=============================================================================

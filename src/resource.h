@@ -120,10 +120,8 @@
 #define IDC_ALL_OCCURRENCES             131
 #define IDC_MARKALL_OCC                 132
 #define IDC_DOT_MATCH_ALL               133
-#define IDT_TIMER_MAIN_MARKOCC          134
+#define IDT_TIMER_MAIN_MRKALL           134
 #define IDC_MAIN_MARKALL_OCC            135
-#define IDT_TIMER_STATUSBAR             136
-#define IDC_UPDATE_STATUSBAR            137
 #define IDC_BACKSLASHHELP               151
 #define IDC_REGEXPHELP                  152
 #define IDC_WILDCARDHELP                153

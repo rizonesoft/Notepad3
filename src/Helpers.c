@@ -891,6 +891,18 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 
 //=============================================================================
 //
+//  SendWMSize()
+//
+LRESULT SendWMSize(HWND hwnd)
+{
+  RECT rc; GetClientRect(hwnd, &rc);
+  return(SendMessage(hwnd, WM_SIZE, SIZE_RESTORED,
+    MAKELPARAM(rc.right, rc.bottom)));
+}
+
+
+//=============================================================================
+//
 //  StatusSetText()
 //
 BOOL StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
@@ -906,25 +918,13 @@ BOOL StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
 
 //=============================================================================
 //
-//  SendWMSize()
-//
-LRESULT SendWMSize(HWND hwnd)
-{
-  RECT rc; GetClientRect(hwnd,&rc);
-  return(SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,
-         MAKELPARAM(rc.right,rc.bottom)));
-}
-
-
-//=============================================================================
-//
 //  StatusSetTextID()
 //
 BOOL StatusSetTextID(HWND hwnd,UINT nPart,UINT uID)
 {
 
   WCHAR szText[256] = { L'\0' };
-  UINT uFlags = (nPart == 255) ? nPart|SBT_NOBORDERS : nPart;
+  UINT uFlags = (nPart == STATUS_HELP) ? nPart|SBT_NOBORDERS : nPart;
 
   if (!uID)
   {
