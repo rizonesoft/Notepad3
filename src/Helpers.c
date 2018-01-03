@@ -37,6 +37,7 @@
 #include "scintilla.h"
 #include "resource.h"
 #include "edit.h"
+#include "notepad3.h"
 #include "helpers.h"
 
 
@@ -895,9 +896,11 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 BOOL StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
 {
 
-  UINT uFlags = (nPart == 255) ? nPart|SBT_NOBORDERS : nPart;
-  return (BOOL)SendMessage(hwnd,SB_SETTEXT,uFlags,(LPARAM)lpszText);
-
+  UINT uFlags = (nPart == (UINT)STATUS_HELP) ? nPart|SBT_NOBORDERS : nPart;
+  if (lpszText)
+    return (BOOL)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
+  else
+    return (BOOL)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)L"...");
 }
 
 

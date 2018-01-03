@@ -139,9 +139,10 @@ int  CreateIniFile();
 int  CreateIniFileEx(LPCWSTR);
 
 
+void MarkAllOccurrences();
 void UpdateEditWndUI();
-void UpdateStatusbar();
 void UpdateToolbar();
+void UpdateStatusbar();
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
 

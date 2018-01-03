@@ -304,7 +304,9 @@ BEGIN
         BEGIN
             MENUITEM "&Active",                     IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
+            MENUITEM "Match Visible Only",          IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM "Match &Case",                 IDM_VIEW_MARKOCCUR_CASE
+            MENUITEM SEPARATOR
             MENUITEM "Match &Whole Word Only",      IDM_VIEW_MARKOCCUR_WORD
             MENUITEM "&Instant Match Word",         IDM_VIEW_MARKOCCUR_CURRENT
         END
