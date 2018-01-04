@@ -150,9 +150,10 @@ BOOL      bShowSelectionMargin;
 BOOL      bShowLineNumbers;
 int       iMarkOccurrences;
 int       iMarkOccurrencesCount;
-int       iMarkOccurrencesMaxCount;
+BOOL      bMarkOccurrencesMatchVisible;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
+BOOL      bMarkOccurrencesCurrentWord;
 BOOL      bUseOldStyleBraceMatching;
 BOOL      bAutoCompleteWords;
 BOOL      bAccelWordNavigation;
@@ -306,7 +307,6 @@ HANDLE    g_hScintilla;
 WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 
-
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
@@ -317,6 +317,12 @@ static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
+// Timer bitfield
+static volatile LONG g_lTimerBits = 0;
+#define TIMER_BIT_MARK_OCC 1L
+#define TIMER_BIT_UPDATE_HYPER 2L
+#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lTimerBits, B)
+#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lTimerBits, B)
 
 //=============================================================================
 //
@@ -1061,7 +1067,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     PostMessage(g_hwndMain, WM_CLOSE, 0, 0);
   }
 
-
   UNUSED(pszCmdLine);
 
   return(g_hwndMain);
@@ -1156,15 +1161,29 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       MsgThemeChanged(hwnd,wParam,lParam);
       break;
 
-
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
       UpdateLineNumberWidth();
+      MarkAllOccurrences();
+      EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
-    //case WM_TIMER:
-    //  return DefWindowProc(hwnd,umsg,wParam,lParam);
+    case WM_TIMER:
+      if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) {
+        if (TEST_AND_RESET(TIMER_BIT_MARK_OCC)) {
+          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
+          KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
+        }
+        return TRUE;
+      }
+      else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) {
+        if (TEST_AND_RESET(TIMER_BIT_UPDATE_HYPER)) {
+          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CALL_UPDATE_HOTSPOT, 1), 0);
+          KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
+        }
+        return TRUE;
+      }
+      break;
 
     case WM_SIZE:
       MsgSize(hwnd,wParam,lParam);
@@ -1751,6 +1770,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
+  MarkAllOccurrences();
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   UNUSED(lParam);
@@ -2250,7 +2270,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
   i  = !(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
-  i2 = (int)SendMessage(g_hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+  i2 = SciCall_GetTextLength();
   i3 = (int)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
   
   EnableCmd(hmenu,IDM_EDIT_CUT,i2 /*&& !bReadOnly*/);       // allow Ctrl-X w/o selection
@@ -2378,11 +2398,15 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
 
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCURRENCES_ONOFF, iMarkOccurrences != 0);
-  CheckCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_CASE,bMarkOccurrencesMatchCase);
-  CheckCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_WORD,bMarkOccurrencesMatchWords);
-  EnableCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_CASE,iMarkOccurrences != 0);
-  EnableCmd(hmenu,IDM_VIEW_MARKOCCURRENCES_WORD,iMarkOccurrences != 0);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, iMarkOccurrences != 0);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, bMarkOccurrencesMatchCase);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, bMarkOccurrencesMatchWords);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, bMarkOccurrencesCurrentWord && !bMarkOccurrencesMatchWords);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, iMarkOccurrences != 0);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, iMarkOccurrences != 0);
+  EnableCmd(hmenu,IDM_VIEW_MARKOCCUR_WORD,iMarkOccurrences != 0);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, iMarkOccurrences != 0);
 
   CheckCmd(hmenu,IDM_VIEW_SHOWWHITESPACE,bViewWhiteSpace);
   CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,bViewEOLs);
@@ -2490,17 +2514,74 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 }
 
 
+
+//=============================================================================
+//
+//  MarkAllOccurrencesTimer()
+// 
+void __fastcall MarkAllOccurrencesTimer()
+{
+  if (iMarkOccurrences != 0) {
+    if (bMarkOccurrencesMatchVisible) 
+    {
+      // get visible lines for update
+      int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+
+      int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+      int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+
+      int iPosStart = SciCall_PositionFromLine(iStartLine);
+      int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+
+      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+    }
+    else {
+      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+    }
+  }
+}
+
+
+//=============================================================================
+//
+//  UpdateVisibleUrlHotspotTimer()
+// 
+void __fastcall UpdateVisibleUrlHotspotTimer()
+{
+  if (bHyperlinkHotspot) 
+  {
+    // get visible lines for update
+    int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+    
+    int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+    int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+
+    int iPosStart = SciCall_PositionFromLine(iStartLine);
+    int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+
+    EditUpdateUrlHotspots(g_hwndEdit, iPosStart, iPosEnd, bHyperlinkHotspot);
+  }
+}
+
+
 //=============================================================================
 //
 //  MsgCommand() - Handles WM_COMMAND
 //
 //
-LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
+LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   BOOL bSwapClipBoard = FALSE;
 
   switch(LOWORD(wParam))
   {
+    case IDC_MAIN_MARKALL_OCC:
+      MarkAllOccurrencesTimer();
+      break;
+
+    case IDC_CALL_UPDATE_HOTSPOT:
+      UpdateVisibleUrlHotspotTimer();
+      break;
 
     case IDM_FILE_NEW:
       FileLoad(FALSE,TRUE,FALSE,FALSE,L"");
@@ -2510,6 +2591,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_FILE_OPEN:
       FileLoad(FALSE,FALSE,FALSE,FALSE,L"");
       break;
+
 
     case IDM_FILE_REVERT:
       if ((bModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_REVERT) != IDOK) {
@@ -2523,6 +2605,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       FileSave(TRUE,FALSE,FALSE,FALSE);
       break;
 
+
     case IDM_FILE_SAVEAS:
       FileSave(TRUE,FALSE,TRUE,FALSE);
       break;
@@ -2533,7 +2616,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       break;
 
 
-      case IDM_FILE_READONLY:
+    case IDM_FILE_READONLY:
       //bReadOnly = (bReadOnly) ? FALSE : TRUE;
       //SendMessage(g_hwndEdit,SCI_SETREADONLY,bReadOnly,0);
       //UpdateToolbar();
@@ -3223,7 +3306,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_ENCLOSESELECTION:
       if (EditEncloseSelectionDlg(hwnd,wchPrefixSelection,wchAppendSelection)) {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditEncloseSelection(g_hwndEdit,wchPrefixSelection,wchAppendSelection);
         EndSelUndoAction(token);
@@ -3234,7 +3317,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_SELECTIONDUPLICATE:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         SendMessage(g_hwndEdit,SCI_SELECTIONDUPLICATE,0,0);
         EndSelUndoAction(token);
@@ -3245,7 +3328,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_PADWITHSPACES:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditPadWithSpaces(g_hwndEdit,FALSE,FALSE);
         EndSelUndoAction(token);
@@ -3256,7 +3339,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_STRIP1STCHAR:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditStripFirstCharacter(g_hwndEdit);
         EndSelUndoAction(token);
@@ -3267,7 +3350,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_STRIPLASTCHAR:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditStripLastCharacter(g_hwndEdit);
         EndSelUndoAction(token);
@@ -3277,7 +3360,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_TRIMLINES:
-      BeginWaitCursor();
+      BeginWaitCursor(NULL);
       EditStripTrailingBlanks(g_hwndEdit,FALSE);
       EndWaitCursor();
       break;
@@ -3285,7 +3368,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_COMPRESSWS:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditCompressSpaces(g_hwndEdit);
         EndSelUndoAction(token);
@@ -3296,7 +3379,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_MERGEBLANKLINES:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditRemoveBlankLines(g_hwndEdit,TRUE);
         EndSelUndoAction(token);
@@ -3307,7 +3390,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_REMOVEBLANKLINES:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditRemoveBlankLines(g_hwndEdit,FALSE);
         EndSelUndoAction(token);
@@ -3319,7 +3402,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_MODIFYLINES:
       {
         if (EditModifyLinesDlg(hwnd,wchPrefixLines,wchAppendLines)) {
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           int token = BeginSelUndoAction();
           EditModifyLines(g_hwndEdit,wchPrefixLines,wchAppendLines);
           EndSelUndoAction(token);
@@ -3332,7 +3415,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_ALIGN:
       {
         if (EditAlignDlg(hwnd,&iAlignMode)) {
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           int token = BeginSelUndoAction();
           EditAlignText(g_hwndEdit,iAlignMode);
           EndSelUndoAction(token);
@@ -3345,7 +3428,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_EDIT_SORTLINES:
       {
         if (EditSortDlg(hwnd,&iSortOptions)) {
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           int token = BeginSelUndoAction();
           EditSortLines(g_hwndEdit,iSortOptions);
           EndSelUndoAction(token);
@@ -3363,7 +3446,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         if (ColumnWrapDlg(hwnd,IDD_COLUMNWRAP,&iWrapCol))
         {
           iWrapCol = max(min(iWrapCol,512),1);
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           int token = BeginSelUndoAction();
           EditWrapToColumn(g_hwndEdit,iWrapCol);
           EndSelUndoAction(token);
@@ -3375,7 +3458,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_SPLITLINES:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         SendMessage(g_hwndEdit,SCI_TARGETFROMSELECTION,0,0);
         SendMessage(g_hwndEdit,SCI_LINESSPLIT,0,0);
@@ -3387,7 +3470,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_JOINLINES:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         SendMessage(g_hwndEdit,SCI_TARGETFROMSELECTION,0,0);
         SendMessage(g_hwndEdit,SCI_LINESJOIN,0,0);
@@ -3400,7 +3483,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_JOINLINESEX:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditJoinLinesEx(g_hwndEdit);
         EndSelUndoAction(token);
@@ -3411,7 +3494,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_CONVERTUPPERCASE:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         SendMessage(g_hwndEdit,SCI_UPPERCASE,0,0);
         EndSelUndoAction(token);
@@ -3422,7 +3505,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_CONVERTLOWERCASE:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         SendMessage(g_hwndEdit,SCI_LOWERCASE,0,0);
         EndSelUndoAction(token);
@@ -3433,7 +3516,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_INVERTCASE:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditInvertCase(g_hwndEdit);
         EndSelUndoAction(token);
@@ -3444,7 +3527,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_TITLECASE:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditTitleCase(g_hwndEdit);
         EndSelUndoAction(token);
@@ -3455,7 +3538,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_SENTENCECASE:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditSentenceCase(g_hwndEdit);
         EndSelUndoAction(token);
@@ -3466,7 +3549,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_CONVERTTABS:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditTabsToSpaces(g_hwndEdit, iTabWidth, FALSE);
         EndSelUndoAction(token);
@@ -3477,7 +3560,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_CONVERTSPACES:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditSpacesToTabs(g_hwndEdit, iTabWidth, FALSE);
         EndSelUndoAction(token);
@@ -3488,7 +3571,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_CONVERTTABS2:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditTabsToSpaces(g_hwndEdit, iTabWidth, TRUE);
         EndSelUndoAction(token);
@@ -3499,7 +3582,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_EDIT_CONVERTSPACES2:
       {
-        BeginWaitCursor();
+        BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
         EditSpacesToTabs(g_hwndEdit, iTabWidth, TRUE);
         EndSelUndoAction(token);
@@ -3646,13 +3729,13 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCLEX_XML:
         case SCLEX_CPP:
         case SCLEX_PASCAL:
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"//",FALSE);
           EndWaitCursor();
           break;
         case SCLEX_VBSCRIPT:
         case SCLEX_VB:
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"'",FALSE);
           EndWaitCursor();
           break;
@@ -3668,7 +3751,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCLEX_AVS:
         case SCLEX_YAML:
         case SCLEX_COFFEESCRIPT:
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"#",TRUE);
           EndWaitCursor();
           break;
@@ -3678,30 +3761,30 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCLEX_AHK:
         case SCLEX_NSIS: // # could also be used instead
         case SCLEX_INNOSETUP:
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L";",TRUE);
           EndWaitCursor();
           break;
         case SCLEX_REGISTRY:
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L";;",TRUE);
           EndWaitCursor();
           break;
         case SCLEX_SQL:
         case SCLEX_LUA:
         case SCLEX_VHDL:
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"--",TRUE);
           EndWaitCursor();
           break;
         case SCLEX_BATCH:
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"rem ",TRUE);
           EndWaitCursor();
           break;
         case SCLEX_LATEX:
         case SCLEX_MATLAB:
-          BeginWaitCursor();
+          BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"%",TRUE);
           EndWaitCursor();
           break;
@@ -3762,42 +3845,42 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_EDIT_URLENCODE:
-      BeginWaitCursor();
+      BeginWaitCursor(NULL);
       EditURLEncode(g_hwndEdit);
       EndWaitCursor();
       break;
 
 
     case IDM_EDIT_URLDECODE:
-      BeginWaitCursor();
+      BeginWaitCursor(NULL);
       EditURLDecode(g_hwndEdit);
       EndWaitCursor();
       break;
 
 
     case IDM_EDIT_ESCAPECCHARS:
-      BeginWaitCursor();
+      BeginWaitCursor(NULL);
       EditEscapeCChars(g_hwndEdit);
       EndWaitCursor();
       break;
 
 
     case IDM_EDIT_UNESCAPECCHARS:
-      BeginWaitCursor();
+      BeginWaitCursor(NULL);
       EditUnescapeCChars(g_hwndEdit);
       EndWaitCursor();
       break;
 
 
     case IDM_EDIT_CHAR2HEX:
-      BeginWaitCursor();
+      BeginWaitCursor(NULL);
       EditChar2Hex(g_hwndEdit);
       EndWaitCursor();
       break;
 
 
     case IDM_EDIT_HEX2CHAR:
-      BeginWaitCursor();
+      BeginWaitCursor(NULL);
       EditHex2Char(g_hwndEdit);
       EndWaitCursor();
       break;
@@ -3914,8 +3997,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         int iNextLine = (int)SendMessage( g_hwndEdit , SCI_MARKERPREVIOUS , iLine-1 , bitmask );
         if( iNextLine == -1 )
         {
-            int nLines = (int)SendMessage( g_hwndEdit , SCI_GETLINECOUNT , 0 , 0 );
-            iNextLine = (int)SendMessage( g_hwndEdit , SCI_MARKERPREVIOUS , nLines , bitmask );
+            iNextLine = (int)SendMessage( g_hwndEdit , SCI_MARKERPREVIOUS , SciCall_GetLineCount(), bitmask );
         }
 
         if( iNextLine != -1 )
@@ -4207,35 +4289,43 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
-      if (iMarkOccurrences != 0) {
-        EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      }
+      MarkAllOccurrences();
       break;
 
-    case IDM_VIEW_MARKOCCURRENCES_ONOFF:
+    case IDM_VIEW_MARKOCCUR_ONOFF:
       iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
-      if (iMarkOccurrences == 0) {
-        // clear all marks
-        SendMessage(g_hwndEdit, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
-        SendMessage(g_hwndEdit, SCI_INDICATORCLEARRANGE, 0, (int)SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0));
-        iMarkOccurrencesCount = -1;
+      if (iMarkOccurrences != 0) {
+        MarkAllOccurrences();
       }
-      else
-        EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      else {
+        EditClearAllMarks(g_hwndEdit);
+      }
       break;
 
-    case IDM_VIEW_MARKOCCURRENCES_CASE:
+    case IDM_VIEW_MARKOCCUR_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
-      if (iMarkOccurrences != 0) {
-        EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      }
+      MarkAllOccurrences();
       break;
 
-    case IDM_VIEW_MARKOCCURRENCES_WORD:
+    case IDM_VIEW_MARKOCCUR_VISIBLE:
+      bMarkOccurrencesMatchVisible = (bMarkOccurrencesMatchVisible) ? FALSE : TRUE;
+      MarkAllOccurrences();
+      break;
+
+    case IDM_VIEW_MARKOCCUR_WORD:
       bMarkOccurrencesMatchWords = (bMarkOccurrencesMatchWords) ? FALSE : TRUE;
-      if (iMarkOccurrences != 0) {
-        EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      if (bMarkOccurrencesMatchWords) {
+        bMarkOccurrencesCurrentWord = FALSE;
       }
+      MarkAllOccurrences();
+      break;
+
+    case IDM_VIEW_MARKOCCUR_CURRENT:
+      bMarkOccurrencesCurrentWord = (bMarkOccurrencesCurrentWord) ? FALSE : TRUE;
+      if (bMarkOccurrencesCurrentWord) {
+        bMarkOccurrencesMatchWords = FALSE;
+      }
+      MarkAllOccurrences();
       break;
 
     case IDM_VIEW_FOLDING:
@@ -4536,13 +4626,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",szIniFile)) {
 
-            BeginWaitCursor();
-            StatusSetTextID(g_hwndStatus,STATUS_HELP,IDS_SAVINGSETTINGS);
-            StatusSetSimple(g_hwndStatus,TRUE);
-            InvalidateRect(g_hwndStatus,NULL,TRUE);
-            UpdateWindow(g_hwndStatus);
+            BeginWaitCursorID(IDS_SAVINGSETTINGS);
             SaveSettings(TRUE);
-            StatusSetSimple(g_hwndStatus,FALSE);
             EndWaitCursor();
             MsgBox(MBINFO,IDS_SAVEDSETTINGS);
           }
@@ -5489,20 +5574,21 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDC_EDIT:
 
-      switch(pnmh->code)
+      switch (pnmh->code)
       {
         case SCN_HOTSPOTCLICK:
-          {
-            if (scn->modifiers & SCMOD_CTRL) {
-              // open in browser
-              OpenHotSpotURL((int)scn->position, TRUE);
-            }
-            if (scn->modifiers & SCMOD_ALT) {
-              // open in application, if applicable (file://)
-              OpenHotSpotURL((int)scn->position, FALSE);
-            }
+        {
+          if (scn->modifiers & SCMOD_CTRL) {
+            // open in browser
+            OpenHotSpotURL((int)scn->position, TRUE);
           }
-          break;
+          if (scn->modifiers & SCMOD_ALT) {
+            // open in application, if applicable (file://)
+            OpenHotSpotURL((int)scn->position, FALSE);
+          }
+        }
+        break;
+
 
         //case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
         //  {
@@ -5512,219 +5598,237 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         //  break;
 
         case SCN_UPDATEUI:
-          if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) 
-          {
-            InvalidateSelections();
 
-            // mark occurrences of text currently selected
-            if (iMarkOccurrences != 0) {
-              EditMarkAll(g_hwndEdit, NULL, 0, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+          if (scn->updated & SC_UPDATE_SELECTION)
+          {
+            // !!! SC_UPDATE_CONTENT is triggered too often, 
+            // even if nothing relevant has been modified
+            // relevant modifications are handled in SCN_MODIFIED !!!
+
+            //~InvalidateSelections(); // fixed in SCI ?
+
+            if (iMarkOccurrences) {
+              MarkAllOccurrences();
             }
+
             // Brace Match
             if (bMatchBraces) {
               EditMatchBrace(g_hwndEdit);
             }
-            UpdateToolbar();
+
+            if (bHyperlinkHotspot) {
+              UpdateVisibleUrlHotspot();
+            }
+
             UpdateStatusbar();
           }
-          break;
-        
-        case SCN_CHARADDED:
-          // Auto indent
-          if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
+          else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
-            // in CRLF mode handle LF only...
-            if ((SC_EOL_CRLF == iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != iEOLMode)
-            {
-              int iCurPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
-              //int iAnchorPos = (int)SendMessage(g_hwndEdit,SCI_GETANCHOR,0,0);
-              int iCurLine = (int)SendMessage(g_hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
-              //int iLineLength = (int)SendMessage(g_hwndEdit,SCI_LINELENGTH,iCurLine,0);
-              //int iIndentBefore = (int)SendMessage(g_hwndEdit,SCI_GETLINEINDENTATION,(WPARAM)iCurLine-1,0);
-
-              // Move bookmark along with line if inserting lines (pressing return at beginning of line) because Scintilla does not do this for us
-              if( iCurLine > 0 )
-              {
-                  int iPrevLineLength = (int)SendMessage(g_hwndEdit,SCI_GETLINEENDPOSITION,iCurLine-1,0) - (int)SendMessage(g_hwndEdit,SCI_POSITIONFROMLINE,iCurLine-1,0)  ;
-                  if( iPrevLineLength == 0 )
-                  {
-                      int bitmask = (int)SendMessage( g_hwndEdit , SCI_MARKERGET , iCurLine-1 , 0 );
-                      if( bitmask & (1 << MARKER_NP3_BOOKMARK))
-                      {
-                          SendMessage( g_hwndEdit , SCI_MARKERDELETE , iCurLine-1 , MARKER_NP3_BOOKMARK);
-                          SendMessage( g_hwndEdit , SCI_MARKERADD , iCurLine , MARKER_NP3_BOOKMARK);
-                      }
-                  }
-              }
-
-              if (iCurLine > 0/* && iLineLength <= 2*/)
-              {
-                int iPrevLineLength = (int)SendMessage(g_hwndEdit,SCI_LINELENGTH,iCurLine-1,0);
-                char* pLineBuf = GlobalAlloc(GPTR, iPrevLineLength + 1);
-                if (pLineBuf)
-                {
-                  SendMessage(g_hwndEdit,SCI_GETLINE,iCurLine-1,(LPARAM)pLineBuf);
-                  *(pLineBuf+iPrevLineLength) = '\0';
-                  for (char* pPos = pLineBuf; *pPos; pPos++) {
-                    if (*pPos != ' ' && *pPos != '\t')
-                      *pPos = '\0';
-                  }
-                  if (*pLineBuf) {
-                    //int iPrevLineStartPos;
-                    //int iPrevLineEndPos;
-                    //int iPrevLineIndentPos;
-
-                    SendMessage(g_hwndEdit,SCI_BEGINUNDOACTION,0,0);
-                    SendMessage(g_hwndEdit,SCI_ADDTEXT,lstrlenA(pLineBuf),(LPARAM)pLineBuf);
-                    SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
-
-                    //iPrevLineStartPos  = (int)SendMessage(g_hwndEdit,SCI_POSITIONFROMLINE,(WPARAM)iCurLine-1,0);
-                    //iPrevLineEndPos    = (int)SendMessage(g_hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)iCurLine-1,0);
-                    //iPrevLineIndentPos = (int)SendMessage(g_hwndEdit,SCI_GETLINEINDENTPOSITION,(WPARAM)iCurLine-1,0);
-
-                    //if (iPrevLineEndPos == iPrevLineIndentPos) {
-                    //  SendMessage(g_hwndEdit,SCI_BEGINUNDOACTION,0,0);
-                    //  SendMessage(g_hwndEdit,SCI_SETTARGETSTART,(WPARAM)iPrevLineStartPos,0);
-                    //  SendMessage(g_hwndEdit,SCI_SETTARGETEND,(WPARAM)iPrevLineEndPos,0);
-                    //  SendMessage(g_hwndEdit,SCI_REPLACETARGET,0,(LPARAM)"");
-                    //  SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
-                    //}
-                  }
-                  GlobalFree(pLineBuf);
-                  //int iIndent = (int)SendMessage(g_hwndEdit,SCI_GETLINEINDENTATION,(WPARAM)iCurLine,0);
-                  //SendMessage(g_hwndEdit,SCI_SETLINEINDENTATION,(WPARAM)iCurLine,(LPARAM)iIndentBefore);
-                  //iIndentLen = /*- iIndent +*/ SendMessage(g_hwndEdit,SCI_GETLINEINDENTATION,(WPARAM)iCurLine,0);
-                  //if (iIndentLen > 0)
-                  //  SendMessage(g_hwndEdit,SCI_SETSEL,(WPARAM)iAnchorPos+iIndentLen,(LPARAM)iCurPos+iIndentLen);
-                }
-              }
+            if (iMarkOccurrences) {
+              MarkAllOccurrences();
+            }
+            if (bHyperlinkHotspot) {
+              UpdateVisibleUrlHotspot();
             }
           }
-          // Auto close tags
-          else if (bAutoCloseTags && scn->ch == '>')
-          {
-            //int iLexer = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
-            if (/*iLexer == SCLEX_HTML || iLexer == SCLEX_XML*/ 1)
-            {
-              char tchBuf[512] = { '\0' };
-              int  iCurPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
-              int  iHelper = iCurPos - (COUNTOF(tchBuf) - 1);
-              int  iStartPos = max(0,iHelper);
-              int  iSize = iCurPos - iStartPos;
-
-              if (iSize >= 3) {
-
-                struct Sci_TextRange tr;
-                tr.chrg.cpMin = iStartPos;  tr.chrg.cpMax = iCurPos;  tr.lpstrText = tchBuf;
-
-                SendMessage(g_hwndEdit,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
-
-                if (tchBuf[iSize - 2] != '/') {
-
-                  const char* pBegin = &tchBuf[0];
-                  const char* pCur = &tchBuf[iSize - 2];
-
-                  while (pCur > pBegin && *pCur != '<' && *pCur != '>')
-                    --pCur;
-
-                  int  cchIns = 2;
-                  char tchIns[516] = "</";
-                  if (*pCur == '<') {
-                    pCur++;
-                    while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
-                      tchIns[cchIns++] = *pCur;
-                      pCur++;
-                    }
-                  }
-
-                  tchIns[cchIns++] = '>';
-                  tchIns[cchIns] = 0;
-
-                  if (cchIns > 3 &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</base>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</bgsound>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</br>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</embed>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</hr>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</img>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</input>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</link>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</meta>",-1))
-                  {
-                    int token = BeginSelUndoAction();
-                    SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)tchIns);
-                    SendMessage(g_hwndEdit,SCI_SETSEL,iCurPos,iCurPos);
-                    EndSelUndoAction(token);
-                  }
-                }
-              }
-            }
-          }
-          else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0))
-            EditCompleteWord(g_hwndEdit, FALSE);
-
           break;
+
 
         case SCN_MODIFIED:
-          // check for ADDUNDOACTION step
-          if (scn->modificationType & SC_MOD_CONTAINER) {
-            if (scn->modificationType & SC_PERFORMED_UNDO) {
-              RestoreSelectionAction(scn->token,UNDO);
-            } else if (scn->modificationType & SC_PERFORMED_REDO) {
-              RestoreSelectionAction(scn->token,REDO);
+          {
+            // check for ADDUNDOACTION step
+            if (scn->modificationType & SC_MOD_CONTAINER) {
+              if (scn->modificationType & SC_PERFORMED_UNDO) {
+                RestoreSelectionAction(scn->token, UNDO);
+              }
+              else if (scn->modificationType & SC_PERFORMED_REDO) {
+                RestoreSelectionAction(scn->token, REDO);
+              }
+            }
+            else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
+              EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
+            }
+
+            if (scn->linesAdded != 0) {
+              UpdateLineNumberWidth();
+            }
+
+            UpdateToolbar();
+            UpdateStatusbar();
+
+            bModified = TRUE;
+          }
+          break;
+
+
+        case SCN_CHARADDED:
+          {
+            char chLineBuffer[FNDRPL_BUFFER] = { '\0' };
+
+            // Auto indent
+            if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
+            {
+              // in CRLF mode handle LF only...
+              if ((SC_EOL_CRLF == iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != iEOLMode)
+              {
+                int iCurPos = SciCall_GetCurrentPos();
+                int iCurLine = SciCall_LineFromPosition(iCurPos);
+
+                // Move bookmark along with line if inserting lines (pressing return at beginning of line) because Scintilla does not do this for us
+                if (iCurLine > 0)
+                {
+                  int iPrevLineLength = SciCall_GetLineEndPosition(iCurLine - 1) - SciCall_PositionFromLine(iCurLine - 1);
+                  if (iPrevLineLength == 0)
+                  {
+                    int bitmask = (int)SendMessage(g_hwndEdit, SCI_MARKERGET, iCurLine - 1, 0);
+                    if (bitmask & (1 << MARKER_NP3_BOOKMARK))
+                    {
+                      SendMessage(g_hwndEdit, SCI_MARKERDELETE, iCurLine - 1, MARKER_NP3_BOOKMARK);
+                      SendMessage(g_hwndEdit, SCI_MARKERADD, iCurLine, MARKER_NP3_BOOKMARK);
+                    }
+                  }
+                }
+
+                if (iCurLine > 0/* && iLineLength <= 2*/)
+                {
+                  const int iPrevLineLength = SciCall_LineLength(iCurLine - 1);
+                  char* pLineBuf = NULL;
+                  if (iPrevLineLength < FNDRPL_BUFFER) {
+                    pLineBuf = chLineBuffer;
+                  }
+                  else {
+                    pLineBuf = GlobalAlloc(GPTR, iPrevLineLength + 1);
+                  }
+                  if (pLineBuf)
+                  {
+                    SendMessage(g_hwndEdit, SCI_GETLINE, iCurLine - 1, (LPARAM)pLineBuf);
+                    *(pLineBuf + iPrevLineLength) = '\0';
+                    for (char* pPos = pLineBuf; *pPos; pPos++) {
+                      if (*pPos != ' ' && *pPos != '\t')
+                        *pPos = '\0';
+                    }
+                    if (*pLineBuf) {
+                      SendMessage(g_hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
+                      SendMessage(g_hwndEdit, SCI_ADDTEXT, lstrlenA(pLineBuf), (LPARAM)pLineBuf);
+                      SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+                    }
+                    if (iPrevLineLength >= FNDRPL_BUFFER) { GlobalFree(pLineBuf); }
+                  }
+                }
+              }
+            }
+            // Auto close tags
+            else if (bAutoCloseTags && scn->ch == '>')
+            {
+              //int iLexer = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
+              //if (iLexer == SCLEX_HTML || iLexer == SCLEX_XML)
+              {
+                char tchBuf[512] = { '\0' };
+                int  iCurPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+                int  iHelper = iCurPos - (COUNTOF(tchBuf) - 1);
+                int  iStartPos = max(0, iHelper);
+                int  iSize = iCurPos - iStartPos;
+
+                if (iSize >= 3) {
+
+                  struct Sci_TextRange tr;
+                  tr.chrg.cpMin = iStartPos;  tr.chrg.cpMax = iCurPos;  tr.lpstrText = tchBuf;
+
+                  SendMessage(g_hwndEdit, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+
+                  if (tchBuf[iSize - 2] != '/') {
+
+                    const char* pBegin = &tchBuf[0];
+                    const char* pCur = &tchBuf[iSize - 2];
+
+                    while (pCur > pBegin && *pCur != '<' && *pCur != '>')
+                      --pCur;
+
+                    int  cchIns = 2;
+                    char tchIns[516] = "</";
+                    if (*pCur == '<') {
+                      pCur++;
+                      while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
+                        tchIns[cchIns++] = *pCur;
+                        pCur++;
+                      }
+                    }
+
+                    tchIns[cchIns++] = '>';
+                    tchIns[cchIns] = 0;
+
+                    if (cchIns > 3 &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</base>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</bgsound>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</br>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</embed>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</hr>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</img>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</input>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</link>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</meta>", -1))
+                    {
+                      int token = BeginSelUndoAction();
+                      SendMessage(g_hwndEdit, SCI_REPLACESEL, 0, (LPARAM)tchIns);
+                      SendMessage(g_hwndEdit, SCI_SETSEL, iCurPos, iCurPos);
+                      EndSelUndoAction(token);
+                    }
+                  }
+                }
+              }
+            }
+            else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
+              EditCompleteWord(g_hwndEdit, FALSE);
             }
           }
-          else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-            EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
-          }
-          if (scn->linesAdded != 0) {
-            EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
-            UpdateLineNumberWidth();
-          }
-          bModified = TRUE;
           break;
+
 
         case SCN_ZOOM:
           UpdateLineNumberWidth();
           break;
 
+
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
           UpdateToolbar();
-          EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           break;
+
 
         case SCN_MARGINCLICK:
           if (scn->margin == MARGIN_FOLD_INDEX)
             FoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
           break;
 
+
         case SCN_KEY:
           // Also see the corresponding patch in scintilla\src\Editor.cxx
           FoldAltArrow(scn->ch, scn->modifiers);
           break;
 
+
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
           UpdateToolbar();
-          //~EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           break;
+
+        default:
+          return FALSE;
       }
-      break;
+      return TRUE;
 
 
     case IDC_TOOLBAR:
 
       switch(pnmh->code)
       {
-
         case TBN_ENDADJUST:
           UpdateToolbar();
           break;
 
         case TBN_QUERYDELETE:
         case TBN_QUERYINSERT:
-          return TRUE;
+          break;
 
         case TBN_GETBUTTONINFO:
           {
@@ -5747,9 +5851,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
             return(0);
           }
+          break;
 
+        default:
+          return FALSE;
       }
-      break;
+      return TRUE;
 
 
     case IDC_STATUSBAR:
@@ -5812,7 +5919,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
       }
-      break;
+      return TRUE;
 
 
     default:
@@ -5837,7 +5944,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   UNUSED(wParam);
 
-  return(0);
+  return FALSE;
 }
 
 
@@ -5959,8 +6066,11 @@ void LoadSettings()
 
   iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",1);
   iMarkOccurrences = max(min(iMarkOccurrences, 3), 0);
+  bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", FALSE);
   bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",FALSE);
   bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",TRUE);
+  bMarkOccurrencesCurrentWord = IniSectionGetBool(pIniSection, L"MarkOccurrencesCurrentWord", !bMarkOccurrencesMatchWords);
+  bMarkOccurrencesCurrentWord = bMarkOccurrencesCurrentWord && !bMarkOccurrencesMatchWords;
 
   bViewWhiteSpace = IniSectionGetBool(pIniSection,L"ViewWhiteSpace", FALSE);
 
@@ -6027,8 +6137,7 @@ void LoadSettings()
   bTransparentMode = IniSectionGetBool(pIniSection,L"TransparentMode",FALSE);
 
   // Check if SetLayeredWindowAttributes() is available
-  bTransparentModeAvailable =
-    (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
+  bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
   bTransparentModeAvailable = (bTransparentModeAvailable) ? TRUE : FALSE;
 
   IniSectionGetString(pIniSection,L"ToolbarButtons",L"",tchToolbarButtons,COUNTOF(tchToolbarButtons));
@@ -6097,8 +6206,8 @@ void LoadSettings()
   iSciFontQuality = max(min(iSciFontQuality, 3), 0);
 
   iMarkOccurrencesCount = -1;
-  iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
-  iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
+  //iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
+  //iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
 
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", FALSE);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
@@ -6256,8 +6365,10 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"ShowLineNumbers", bShowLineNumbers);
   IniSectionSetBool(pIniSection, L"ShowCodeFolding", bShowCodeFolding);
   IniSectionSetInt(pIniSection, L"MarkOccurrences", iMarkOccurrences);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", bMarkOccurrencesMatchVisible);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", bMarkOccurrencesMatchCase);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", bMarkOccurrencesMatchWords);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", bMarkOccurrencesCurrentWord);
   IniSectionSetBool(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
   IniSectionSetBool(pIniSection, L"ViewEOLs", bViewEOLs);
   IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, iDefaultEncoding));
@@ -7022,9 +7133,31 @@ void UpdateEditWndUI()
   scn.updated = SC_UPDATE_CONTENT;
   //SendMessage(g_hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   PostMessage(g_hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-  // --------------------------------------------------------------
-  //~ don't SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1); here !
-  // --------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  // ~~~ don't Send/Post Message(hwnd, SCI_COLOURISE, 0, (LPARAM)-1); here ! ~~~
+  // ---------------------------------------------------------------------------
+}
+
+
+//=============================================================================
+//
+//  MarkAllOccurrences()
+// 
+void MarkAllOccurrences()
+{
+  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
+  TEST_AND_SET(TIMER_BIT_MARK_OCC);
+}
+
+//=============================================================================
+//
+//  UpdateVisibleUrlHotspot()
+// 
+void UpdateVisibleUrlHotspot()
+{
+  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 100, NULL);
+  TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
+
 }
 
 
@@ -7054,7 +7187,7 @@ void UpdateToolbar()
 
   int i, i2, i3;
   i =  !(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
-  i2 = (int)SendMessage(g_hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+  i2 = SciCall_GetTextLength();
   i3 = (int)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
 
 
@@ -7075,6 +7208,7 @@ void UpdateToolbar()
   EnableTool(IDT_FILE_SAVE, (bModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
 
   CheckTool(IDT_VIEW_WORDWRAP,bWordWrap);
+
 }
 
 
@@ -7083,47 +7217,45 @@ void UpdateToolbar()
 //  UpdateStatusbar()
 //
 //
-void UpdateStatusbar()
+void UpdateStatusbar() 
 {
-
-  WCHAR tchLn[32] = { L'\0' };
-  WCHAR tchLines[32] = { L'\0' };
-  WCHAR tchCol[32] = { L'\0' };
-  WCHAR tchCols[32] = { L'\0' };
-  WCHAR tchSel[32] = { L'\0' };
-  WCHAR tchOcc[32] = { L'\0' };
-  WCHAR tchDocPos[256] = { L'\0' };
+  static WCHAR tchLn[32] = { L'\0' };
+  static WCHAR tchLines[32] = { L'\0' };
+  static WCHAR tchCol[32] = { L'\0' };
+  static WCHAR tchCols[32] = { L'\0' };
+  static WCHAR tchSel[32] = { L'\0' };
+  static WCHAR tchOcc[32] = { L'\0' };
+  static WCHAR tchDocPos[256] = { L'\0' };
 
   int iBytes;
-  WCHAR tchBytes[64] = { L'\0' };
-  WCHAR tchDocSize[256] = { L'\0' };
+  static WCHAR tchBytes[64] = { L'\0' };
+  static WCHAR tchDocSize[256] = { L'\0' };
 
-  WCHAR tchEOLMode[32] = { L'\0' };
-  WCHAR tchOvrMode[32] = { L'\0' };
-  WCHAR tchLexerName[128] = { L'\0' };
-  WCHAR tchLinesSelected[32] = { L'\0' };
+  static WCHAR tchEOLMode[32] = { L'\0' };
+  static WCHAR tchOvrMode[32] = { L'\0' };
+  static WCHAR tchLexerName[128] = { L'\0' };
+  static WCHAR tchLinesSelected[32] = { L'\0' };
 
   if (!bShowStatusbar)
     return;
 
-  int iPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
+  int iPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
 
-  int iLn = (int)SendMessage(g_hwndEdit,SCI_LINEFROMPOSITION,iPos,0) + 1;
-  StringCchPrintf(tchLn,COUNTOF(tchLn),L"%i",iLn);
+  int iLn = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iPos, 0) + 1;
+  StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", iLn);
   FormatNumberStr(tchLn);
 
-  int iLines = (int)SendMessage(g_hwndEdit,SCI_GETLINECOUNT,0,0);
-  StringCchPrintf(tchLines,COUNTOF(tchLines),L"%i",iLines);
+  StringCchPrintf(tchLines, COUNTOF(tchLines), L"%i", SciCall_GetLineCount());
   FormatNumberStr(tchLines);
 
-  int iCol = (int)SendMessage(g_hwndEdit,SCI_GETCOLUMN,iPos,0) + 1;
+  int iCol = (int)SendMessage(g_hwndEdit, SCI_GETCOLUMN, iPos, 0) + 1;
   iCol += (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
 
-  StringCchPrintf(tchCol,COUNTOF(tchCol),L"%i",iCol);
+  StringCchPrintf(tchCol, COUNTOF(tchCol), L"%i", iCol);
   FormatNumberStr(tchCol);
 
   if (bMarkLongLines) {
-    StringCchPrintf(tchCols,COUNTOF(tchCols),L"%i",iLongLinesLimit);
+    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%i", iLongLinesLimit);
     FormatNumberStr(tchCols);
   }
 
@@ -7140,59 +7272,55 @@ void UpdateStatusbar()
     StringCchCopy(tchSel, COUNTOF(tchSel), L"--");
 
 
-  if (iMarkOccurrencesCount > 0) {
-    if (iMarkOccurrencesCount < iMarkOccurrencesMaxCount) {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
-      FormatNumberStr(tchOcc);
-    }
-    else
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i", iMarkOccurrencesMaxCount);
+  if ((iMarkOccurrencesCount > 0) && !bMarkOccurrencesMatchVisible) {
+    StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+    FormatNumberStr(tchOcc);
   }
-  else
+  else {
     StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
-
+  }
 
   // Print number of lines selected lines in statusbar
-  int iLineStart = (int)SendMessage( g_hwndEdit , SCI_LINEFROMPOSITION , iSelStart , 0 );
-  int iLineEnd = (int)SendMessage( g_hwndEdit , SCI_LINEFROMPOSITION , iSelEnd , 0 );
-  int iStartOfLinePos = (int)SendMessage( g_hwndEdit , SCI_POSITIONFROMLINE , iLineEnd , 0 );
+  int iLineStart = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iSelStart, 0);
+  int iLineEnd = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iSelEnd, 0);
+  int iStartOfLinePos = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMLINE, iLineEnd, 0);
   int iLinesSelected = iLineEnd - iLineStart;
   if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) iLinesSelected += 1;
-  StringCchPrintf(tchLinesSelected,COUNTOF(tchLinesSelected),L"%i",iLinesSelected);
+  StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
   FormatNumberStr(tchLinesSelected);
 
   if (!bMarkLongLines)
-      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS,tchLn,tchLines,tchCol,tchSel,tchLinesSelected,tchOcc);
+    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS, tchLn, tchLines, tchCol, tchSel, tchLinesSelected, tchOcc);
   else
-      FormatString(tchDocPos,COUNTOF(tchDocPos),IDS_DOCPOS2,tchLn,tchLines,tchCol,tchCols,tchSel,tchLinesSelected,tchOcc);
+    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS2, tchLn, tchLines, tchCol, tchCols, tchSel, tchLinesSelected, tchOcc);
 
-  iBytes = (int)SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0);
-  StrFormatByteSize(iBytes,tchBytes,COUNTOF(tchBytes));
+  iBytes = (int)SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0);
+  StrFormatByteSize(iBytes, tchBytes, COUNTOF(tchBytes));
 
-  FormatString(tchDocSize,COUNTOF(tchDocSize),IDS_DOCSIZE,tchBytes);
+  FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
 
   Encoding_GetLabel(Encoding_Current(CPI_GET));
 
   if (iEOLMode == SC_EOL_CR)
-    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L" CR");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR");
   else if (iEOLMode == SC_EOL_LF)
-    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L" LF");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF");
   else
-    StringCchCopy(tchEOLMode,COUNTOF(tchEOLMode),L" CR+LF");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF");
 
-  if (SendMessage(g_hwndEdit,SCI_GETOVERTYPE,0,0))
-    StringCchCopy(tchOvrMode,COUNTOF(tchOvrMode),L" OVR");
+  if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0))
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR");
   else
-    StringCchCopy(tchOvrMode,COUNTOF(tchOvrMode),L" INS");
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS");
 
-  Style_GetCurrentLexerName(tchLexerName,COUNTOF(tchLexerName));
+  Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
 
-  StatusSetText(g_hwndStatus,STATUS_DOCPOS,tchDocPos);
-  StatusSetText(g_hwndStatus,STATUS_DOCSIZE,tchDocSize);
-  StatusSetText(g_hwndStatus,STATUS_CODEPAGE,mEncoding[Encoding_Current(CPI_GET)].wchLabel);
-  StatusSetText(g_hwndStatus,STATUS_EOLMODE,tchEOLMode);
-  StatusSetText(g_hwndStatus,STATUS_OVRMODE,tchOvrMode);
-  StatusSetText(g_hwndStatus,STATUS_LEXER,tchLexerName);
+  StatusSetText(g_hwndStatus, STATUS_DOCPOS, tchDocPos);
+  StatusSetText(g_hwndStatus, STATUS_DOCSIZE, tchDocSize);
+  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, mEncoding[Encoding_Current(CPI_GET)].wchLabel);
+  StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
+  StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
+  StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);
 
   //InvalidateRect(g_hwndStatus,NULL,TRUE);
 }
@@ -7205,12 +7333,10 @@ void UpdateStatusbar()
 //
 void UpdateLineNumberWidth()
 {
-  if (bShowLineNumbers) 
+  if (bShowLineNumbers)
   {
-    int iLineCnt = (int)SendMessage(g_hwndEdit, SCI_GETLINECOUNT, 0, 0);
-
     char chLines[32] = { '\0' };
-    StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", iLineCnt);
+    StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", SciCall_GetLineCount());
 
     int iLineMarginWidthNow = (int)SendMessage(g_hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
     int iLineMarginWidthFit = (int)SendMessage(g_hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
@@ -7219,8 +7345,9 @@ void UpdateLineNumberWidth()
       SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
     }
   }
-  else
-    SendMessage(g_hwndEdit,SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+  else {
+    SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+  }
 }
 
 
@@ -7432,15 +7559,9 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol
   BOOL fSuccess;
   DWORD dwFileAttributes;
 
-  BeginWaitCursor();
-
   FormatString(tch,COUNTOF(tch),(fLoad) ? IDS_LOADFILE : IDS_SAVEFILE,PathFindFileName(pszFileName));
 
-  StatusSetText(g_hwndStatus,STATUS_HELP,tch);
-  StatusSetSimple(g_hwndStatus,TRUE);
-
-  InvalidateRect(g_hwndStatus,NULL,TRUE);
-  UpdateWindow(g_hwndStatus);
+  BeginWaitCursor(tch);
 
   if (fLoad) {
     fSuccess = EditLoadFile(g_hwndEdit,pszFileName,bNoEncDetect,ienc,ieol,pbUnicodeErr,pbFileTooBig,pbUnknownExt);
@@ -7461,8 +7582,6 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol
 
   dwFileAttributes = GetFileAttributes(pszFileName);
   bReadOnly = (dwFileAttributes != INVALID_FILE_ATTRIBUTES && dwFileAttributes & FILE_ATTRIBUTE_READONLY);
-
-  StatusSetSimple(g_hwndStatus,FALSE);
 
   EndWaitCursor();
 
@@ -7708,7 +7827,7 @@ BOOL FileRevert(LPCWSTR szFileName)
     int iDocTopLine = (int)SendMessage(g_hwndEdit,SCI_DOCLINEFROMVISIBLE,(WPARAM)iVisTopLine,0);
     int iXOffset = (int)SendMessage(g_hwndEdit,SCI_GETXOFFSET,0,0);
     //BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurPos == SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0));
-    BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= ((int)SendMessage(g_hwndEdit, SCI_GETLINECOUNT, 0, 0) - 1));
+    BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
 
     Encoding_SrcWeak(Encoding_Current(CPI_GET));
 

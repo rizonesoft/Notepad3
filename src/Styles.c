@@ -6,7 +6,7 @@
 * Styles.c                                                                    *
 *   Scintilla Style Management                                                *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
-*	Mostly taken from SciTE, (c) Neil Hodgson                                 *
+*   Mostly taken from SciTE, (c) Neil Hodgson                                 *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2016   *
 *                                                 http://www.rizonesoft.com   *
@@ -3256,8 +3256,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   // global define current lexer
   g_pLexCurrent = pLexNew;
 
-  if (g_pLexCurrent != &lexStandard) {
-    Style_SetStyles(hwnd, STYLE_DEFAULT, g_pLexCurrent->Styles[STY_DEFAULT].szValue);
+  if (g_pLexCurrent != &lexStandard) 
+  {
+    WCHAR* wchCurrentLexerStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
+    // use this font size as new base
+    Style_StrGetSize(wchCurrentLexerStyleStrg, &iBaseFontSize);
+    Style_SetBaseFontSize(hwnd, iBaseFontSize);
+    // merge lexer styles
+    Style_SetStyles(hwnd, STYLE_DEFAULT, wchCurrentLexerStyleStrg);
     EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, TRUE);
   }
   else {
