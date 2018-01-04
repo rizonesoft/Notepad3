@@ -101,11 +101,15 @@ DeclareSciCallR1(PositionAfter, POSITIONAFTER, int, Sci_Position, position);
 
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, int);
 DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, int);
+DeclareSciCallR1(LineLength, LINELENGTH, int, Sci_Position, line);
 DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, int, Sci_Position, position);
 DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, int, Sci_Position, line);
 DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, int, Sci_Position, line);
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int);
 DeclareSciCallR1(GetColumn, GETCOLUMN, int, Sci_Position, position);
+DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, int);
+DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, int);
+DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, int, Sci_Position, line);
 
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, Sci_Position, position);
 

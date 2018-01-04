@@ -123,7 +123,7 @@ void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
 void  EditClearAllMarks(HWND);
-void  EditMarkAll(HWND,char*,int,BOOL,BOOL);
+void  EditMarkAll(HWND,char*,int,int,int,BOOL,BOOL);
 void  EditUpdateUrlHotspots(HWND, int, int, BOOL);
 void  EditSetAccelWordNav(HWND,BOOL);
 void  EditCompleteWord(HWND,BOOL);
