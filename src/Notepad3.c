@@ -317,6 +317,12 @@ static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
+// Timer bitfield
+static volatile LONG g_lTimerBits = 0;
+#define TIMER_BIT_MARK_OCC 1L
+#define TIMER_BIT_UPDATE_HYPER 2L
+#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lTimerBits, B)
+#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lTimerBits, B)
 
 //=============================================================================
 //
@@ -1155,7 +1161,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       MsgThemeChanged(hwnd,wParam,lParam);
       break;
 
-
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       UpdateLineNumberWidth();
@@ -1165,13 +1170,17 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_TIMER:
       if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) {
-        KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
+        if (TEST_AND_RESET(TIMER_BIT_MARK_OCC)) {
+          KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
+          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
+        }
         return TRUE;
       }
       else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) {
-        KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
-        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CALL_UPDATE_HOTSPOT, 1), 0);
+        if (TEST_AND_RESET(TIMER_BIT_UPDATE_HYPER)) {
+          KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
+          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CALL_UPDATE_HOTSPOT, 1), 0);
+        }
         return TRUE;
       }
       break;
@@ -2516,7 +2525,7 @@ void __fastcall MarkAllOccurrencesTimer()
     if (bMarkOccurrencesMatchVisible) 
     {
       // get visible lines for update
-      int iFirstVisibleLine = (int)SendMessage(g_hwndEdit, SCI_GETFIRSTVISIBLELINE, 0, 0);
+      int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
 
       int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
       int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
@@ -2542,7 +2551,7 @@ void __fastcall UpdateVisibleUrlHotspotTimer()
   if (bHyperlinkHotspot) 
   {
     // get visible lines for update
-    int iFirstVisibleLine = SciCall_GetFirstVisibleLine();
+    int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
     
     int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
     int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
@@ -7126,6 +7135,7 @@ void UpdateEditWndUI()
 // 
 void MarkAllOccurrences()
 {
+  TEST_AND_SET(TIMER_BIT_MARK_OCC);
   SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
 }
 
@@ -7135,6 +7145,7 @@ void MarkAllOccurrences()
 // 
 void UpdateVisibleUrlHotspot()
 {
+  TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
   SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 250, NULL);
 }
 
