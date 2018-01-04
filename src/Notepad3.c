@@ -1171,15 +1171,15 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_TIMER:
       if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) {
         if (TEST_AND_RESET(TIMER_BIT_MARK_OCC)) {
-          KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
           PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
+          KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
         }
         return TRUE;
       }
       else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) {
         if (TEST_AND_RESET(TIMER_BIT_UPDATE_HYPER)) {
-          KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
           PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CALL_UPDATE_HOTSPOT, 1), 0);
+          KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
         }
         return TRUE;
       }
@@ -5787,6 +5787,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
           UpdateToolbar();
+          // just in really rare case of possible deadlock 
+          //   (flag set, but no timer event in msg queue to reset)
+          TEST_AND_RESET(TIMER_BIT_MARK_OCC);
+          TEST_AND_RESET(TIMER_BIT_UPDATE_HYPER);
           break;
 
 
@@ -7135,8 +7139,9 @@ void UpdateEditWndUI()
 // 
 void MarkAllOccurrences()
 {
-  TEST_AND_SET(TIMER_BIT_MARK_OCC);
-  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
+  if (!TEST_AND_SET(TIMER_BIT_MARK_OCC)) {
+    SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
+  }
 }
 
 //=============================================================================
@@ -7145,8 +7150,9 @@ void MarkAllOccurrences()
 // 
 void UpdateVisibleUrlHotspot()
 {
-  TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
-  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 250, NULL);
+  if (!TEST_AND_SET(TIMER_BIT_UPDATE_HYPER)) {
+    SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 250, NULL);
+  }
 }
 
 
@@ -7197,6 +7203,7 @@ void UpdateToolbar()
   EnableTool(IDT_FILE_SAVE, (bModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
 
   CheckTool(IDT_VIEW_WORDWRAP,bWordWrap);
+
 }
 
 
