@@ -3948,47 +3948,6 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
 //=============================================================================
 //
-//  EditJumpTo()
-//
-void EditJumpTo(HWND hwnd,int iNewLine,int iNewCol)
-{
-  int iMaxLine = (int)SendMessage(hwnd,SCI_GETLINECOUNT,0,0);
-
-  // Jumpt to end with line set to -1
-  if (iNewLine == -1) {
-    SendMessage(hwnd,SCI_DOCUMENTEND,0,0);
-    return;
-  }
-
-  // Line maximum is iMaxLine
-  iNewLine = min(iNewLine,iMaxLine);
-
-  // Column minimum is 1
-  iNewCol = max(iNewCol,1);
-
-  if (iNewLine > 0 && iNewLine <= iMaxLine && iNewCol > 0)
-  {
-    int iNewPos  = (int)SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iNewLine-1,0);
-    int iLineEndPos = (int)SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iNewLine-1,0);
-
-    while (iNewCol-1 > SendMessage(hwnd,SCI_GETCOLUMN,(WPARAM)iNewPos,0))
-    {
-      if (iNewPos >= iLineEndPos)
-        break;
-
-      iNewPos = (int)SendMessage(hwnd,SCI_POSITIONAFTER,(WPARAM)iNewPos,0);
-    }
-
-    iNewPos = min(iNewPos,iLineEndPos);
-
-    EditSelectEx(hwnd,-1,iNewPos); // SCI_GOTOPOS(pos) is equivalent to SCI_SETSEL(-1, pos)
-    SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
-  }
-}
-
-
-//=============================================================================
-//
 //  EditSelectEx()
 //
 void EditSelectEx(HWND hwnd, int iAnchorPos, int iCurrentPos)
@@ -4002,11 +3961,41 @@ void EditSelectEx(HWND hwnd, int iAnchorPos, int iCurrentPos)
   if (iAnchorLine != iNewLine) {
     SciCall_EnsureVisible(iNewLine);
   }
-  SendMessage(hwnd,SCI_SETXCARETPOLICY,CARET_SLOP|CARET_STRICT|CARET_EVEN,50);
-  SendMessage(hwnd,SCI_SETYCARETPOLICY,CARET_SLOP|CARET_STRICT|CARET_EVEN,5);
-  SendMessage(hwnd,SCI_SETSEL,iAnchorPos,iCurrentPos);
-  SendMessage(hwnd,SCI_SETXCARETPOLICY,CARET_SLOP|CARET_EVEN,50);
-  SendMessage(hwnd,SCI_SETYCARETPOLICY,CARET_EVEN,0);
+  SendMessage(hwnd, SCI_SETXCARETPOLICY, CARET_SLOP | CARET_STRICT | CARET_EVEN, 50);
+  SendMessage(hwnd, SCI_SETYCARETPOLICY, CARET_SLOP | CARET_STRICT | CARET_EVEN, 5);
+  SendMessage(hwnd, SCI_SETSEL, iAnchorPos, iCurrentPos);
+  SendMessage(hwnd, SCI_SETXCARETPOLICY, CARET_SLOP | CARET_EVEN, 50);
+  SendMessage(hwnd, SCI_SETYCARETPOLICY, CARET_EVEN, 0);
+}
+
+
+//=============================================================================
+//
+//  EditJumpTo()
+//
+void EditJumpTo(HWND hwnd,int iNewLine,int iNewCol)
+{
+  // Jumpt to end with line set to -1
+  if (iNewLine < 0) {
+    SendMessage(hwnd, SCI_DOCUMENTEND, 0, 0);
+    return;
+  }
+
+  const int iMaxLine = SciCall_GetLineCount();
+
+  // Line maximum is iMaxLine - 1 (doc line count starts with 0)
+  iNewLine = (min(iNewLine, iMaxLine) - 1);
+  const int iLineEndPos = SciCall_GetLineEndPosition(iNewLine);
+
+  // Column minimum is 1
+  iNewCol = max(0, min((iNewCol - 1), iLineEndPos));
+
+  const int iNewPos = (int)SendMessage(hwnd, SCI_FINDCOLUMN, (WPARAM)iNewLine, (LPARAM)iNewCol);
+
+  EditSelectEx(hwnd, -1, iNewPos); // SCI_GOTOPOS(pos) is equivalent to SCI_SETSEL(-1, pos)
+
+  // remember x-pos for moving caret vertivally
+  SendMessage(hwnd, SCI_CHOOSECARETX, 0, 0);
 }
 
 

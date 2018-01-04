@@ -5574,20 +5574,20 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDC_EDIT:
 
-      switch(pnmh->code)
+      switch (pnmh->code)
       {
         case SCN_HOTSPOTCLICK:
-          {
-            if (scn->modifiers & SCMOD_CTRL) {
-              // open in browser
-              OpenHotSpotURL((int)scn->position, TRUE);
-            }
-            if (scn->modifiers & SCMOD_ALT) {
-              // open in application, if applicable (file://)
-              OpenHotSpotURL((int)scn->position, FALSE);
-            }
+        {
+          if (scn->modifiers & SCMOD_CTRL) {
+            // open in browser
+            OpenHotSpotURL((int)scn->position, TRUE);
           }
-          break;
+          if (scn->modifiers & SCMOD_ALT) {
+            // open in application, if applicable (file://)
+            OpenHotSpotURL((int)scn->position, FALSE);
+          }
+        }
+        break;
 
 
         //case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
@@ -5597,184 +5597,189 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         //  }
         //  break;
 
-
         case SCN_UPDATEUI:
-          if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) 
-          {
-            InvalidateSelections();
 
-            MarkAllOccurrences();
+          if (scn->updated & SC_UPDATE_SELECTION)
+          {
+            // !!! SC_UPDATE_CONTENT is triggered too often, 
+            // even if nothing relevant has been modified
+            // relevant modifications are handled in SCN_MODIFIED !!!
+
+            //~InvalidateSelections(); // fixed in SCI ?
+
+            if (iMarkOccurrences) {
+              MarkAllOccurrences();
+            }
 
             // Brace Match
             if (bMatchBraces) {
               EditMatchBrace(g_hwndEdit);
             }
 
-            UpdateToolbar();
+            if (bHyperlinkHotspot) {
+              UpdateVisibleUrlHotspot();
+            }
+
             UpdateStatusbar();
-            UpdateVisibleUrlHotspot();
           }
           else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
-            MarkAllOccurrences();
-            UpdateVisibleUrlHotspot();
+            if (iMarkOccurrences) {
+              MarkAllOccurrences();
+            }
+            if (bHyperlinkHotspot) {
+              UpdateVisibleUrlHotspot();
+            }
           }
           break;
-        
+
 
         case SCN_MODIFIED:
-          // check for ADDUNDOACTION step
-          if (scn->modificationType & SC_MOD_CONTAINER) {
-            if (scn->modificationType & SC_PERFORMED_UNDO) {
-              RestoreSelectionAction(scn->token, UNDO);
+          {
+            // check for ADDUNDOACTION step
+            if (scn->modificationType & SC_MOD_CONTAINER) {
+              if (scn->modificationType & SC_PERFORMED_UNDO) {
+                RestoreSelectionAction(scn->token, UNDO);
+              }
+              else if (scn->modificationType & SC_PERFORMED_REDO) {
+                RestoreSelectionAction(scn->token, REDO);
+              }
             }
-            else if (scn->modificationType & SC_PERFORMED_REDO) {
-              RestoreSelectionAction(scn->token, REDO);
+            else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
+              EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
             }
+
+            if (scn->linesAdded != 0) {
+              UpdateLineNumberWidth();
+            }
+
+            UpdateToolbar();
+            UpdateStatusbar();
+
+            bModified = TRUE;
           }
-          else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-            EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
-          }
-          if (scn->linesAdded != 0) {
-            UpdateLineNumberWidth();
-          }
-          bModified = TRUE;
           break;
 
 
         case SCN_CHARADDED:
-          // Auto indent
-          if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
           {
-            // in CRLF mode handle LF only...
-            if ((SC_EOL_CRLF == iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != iEOLMode)
+            char chLineBuffer[FNDRPL_BUFFER] = { '\0' };
+
+            // Auto indent
+            if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
             {
-              int iCurPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
-              //int iAnchorPos = (int)SendMessage(g_hwndEdit,SCI_GETANCHOR,0,0);
-              int iCurLine = (int)SendMessage(g_hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
-              //int iLineLength = (int)SendMessage(g_hwndEdit,SCI_LINELENGTH,iCurLine,0);
-              //int iIndentBefore = (int)SendMessage(g_hwndEdit,SCI_GETLINEINDENTATION,(WPARAM)iCurLine-1,0);
-
-              // Move bookmark along with line if inserting lines (pressing return at beginning of line) because Scintilla does not do this for us
-              if( iCurLine > 0 )
+              // in CRLF mode handle LF only...
+              if ((SC_EOL_CRLF == iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != iEOLMode)
               {
-                  int iPrevLineLength = (int)SendMessage(g_hwndEdit,SCI_GETLINEENDPOSITION,iCurLine-1,0) - (int)SendMessage(g_hwndEdit,SCI_POSITIONFROMLINE,iCurLine-1,0)  ;
-                  if( iPrevLineLength == 0 )
-                  {
-                      int bitmask = (int)SendMessage( g_hwndEdit , SCI_MARKERGET , iCurLine-1 , 0 );
-                      if( bitmask & (1 << MARKER_NP3_BOOKMARK))
-                      {
-                          SendMessage( g_hwndEdit , SCI_MARKERDELETE , iCurLine-1 , MARKER_NP3_BOOKMARK);
-                          SendMessage( g_hwndEdit , SCI_MARKERADD , iCurLine , MARKER_NP3_BOOKMARK);
-                      }
-                  }
-              }
+                int iCurPos = SciCall_GetCurrentPos();
+                int iCurLine = SciCall_LineFromPosition(iCurPos);
 
-              if (iCurLine > 0/* && iLineLength <= 2*/)
-              {
-                int iPrevLineLength = (int)SendMessage(g_hwndEdit,SCI_LINELENGTH,iCurLine-1,0);
-                char* pLineBuf = GlobalAlloc(GPTR, iPrevLineLength + 1);
-                if (pLineBuf)
+                // Move bookmark along with line if inserting lines (pressing return at beginning of line) because Scintilla does not do this for us
+                if (iCurLine > 0)
                 {
-                  SendMessage(g_hwndEdit,SCI_GETLINE,iCurLine-1,(LPARAM)pLineBuf);
-                  *(pLineBuf+iPrevLineLength) = '\0';
-                  for (char* pPos = pLineBuf; *pPos; pPos++) {
-                    if (*pPos != ' ' && *pPos != '\t')
-                      *pPos = '\0';
-                  }
-                  if (*pLineBuf) {
-                    //int iPrevLineStartPos;
-                    //int iPrevLineEndPos;
-                    //int iPrevLineIndentPos;
-
-                    SendMessage(g_hwndEdit,SCI_BEGINUNDOACTION,0,0);
-                    SendMessage(g_hwndEdit,SCI_ADDTEXT,lstrlenA(pLineBuf),(LPARAM)pLineBuf);
-                    SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
-
-                    //iPrevLineStartPos  = (int)SendMessage(g_hwndEdit,SCI_POSITIONFROMLINE,(WPARAM)iCurLine-1,0);
-                    //iPrevLineEndPos    = (int)SendMessage(g_hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)iCurLine-1,0);
-                    //iPrevLineIndentPos = (int)SendMessage(g_hwndEdit,SCI_GETLINEINDENTPOSITION,(WPARAM)iCurLine-1,0);
-
-                    //if (iPrevLineEndPos == iPrevLineIndentPos) {
-                    //  SendMessage(g_hwndEdit,SCI_BEGINUNDOACTION,0,0);
-                    //  SendMessage(g_hwndEdit,SCI_SETTARGETSTART,(WPARAM)iPrevLineStartPos,0);
-                    //  SendMessage(g_hwndEdit,SCI_SETTARGETEND,(WPARAM)iPrevLineEndPos,0);
-                    //  SendMessage(g_hwndEdit,SCI_REPLACETARGET,0,(LPARAM)"");
-                    //  SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
-                    //}
-                  }
-                  GlobalFree(pLineBuf);
-                  //int iIndent = (int)SendMessage(g_hwndEdit,SCI_GETLINEINDENTATION,(WPARAM)iCurLine,0);
-                  //SendMessage(g_hwndEdit,SCI_SETLINEINDENTATION,(WPARAM)iCurLine,(LPARAM)iIndentBefore);
-                  //iIndentLen = /*- iIndent +*/ SendMessage(g_hwndEdit,SCI_GETLINEINDENTATION,(WPARAM)iCurLine,0);
-                  //if (iIndentLen > 0)
-                  //  SendMessage(g_hwndEdit,SCI_SETSEL,(WPARAM)iAnchorPos+iIndentLen,(LPARAM)iCurPos+iIndentLen);
-                }
-              }
-            }
-          }
-          // Auto close tags
-          else if (bAutoCloseTags && scn->ch == '>')
-          {
-            //int iLexer = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
-            if (/*iLexer == SCLEX_HTML || iLexer == SCLEX_XML*/ 1)
-            {
-              char tchBuf[512] = { '\0' };
-              int  iCurPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
-              int  iHelper = iCurPos - (COUNTOF(tchBuf) - 1);
-              int  iStartPos = max(0,iHelper);
-              int  iSize = iCurPos - iStartPos;
-
-              if (iSize >= 3) {
-
-                struct Sci_TextRange tr;
-                tr.chrg.cpMin = iStartPos;  tr.chrg.cpMax = iCurPos;  tr.lpstrText = tchBuf;
-
-                SendMessage(g_hwndEdit,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
-
-                if (tchBuf[iSize - 2] != '/') {
-
-                  const char* pBegin = &tchBuf[0];
-                  const char* pCur = &tchBuf[iSize - 2];
-
-                  while (pCur > pBegin && *pCur != '<' && *pCur != '>')
-                    --pCur;
-
-                  int  cchIns = 2;
-                  char tchIns[516] = "</";
-                  if (*pCur == '<') {
-                    pCur++;
-                    while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
-                      tchIns[cchIns++] = *pCur;
-                      pCur++;
+                  int iPrevLineLength = SciCall_GetLineEndPosition(iCurLine - 1) - SciCall_PositionFromLine(iCurLine - 1);
+                  if (iPrevLineLength == 0)
+                  {
+                    int bitmask = (int)SendMessage(g_hwndEdit, SCI_MARKERGET, iCurLine - 1, 0);
+                    if (bitmask & (1 << MARKER_NP3_BOOKMARK))
+                    {
+                      SendMessage(g_hwndEdit, SCI_MARKERDELETE, iCurLine - 1, MARKER_NP3_BOOKMARK);
+                      SendMessage(g_hwndEdit, SCI_MARKERADD, iCurLine, MARKER_NP3_BOOKMARK);
                     }
                   }
+                }
 
-                  tchIns[cchIns++] = '>';
-                  tchIns[cchIns] = 0;
-
-                  if (cchIns > 3 &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</base>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</bgsound>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</br>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</embed>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</hr>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</img>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</input>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</link>",-1) &&
-                      StringCchCompareINA(tchIns,COUNTOF(tchIns),"</meta>",-1))
+                if (iCurLine > 0/* && iLineLength <= 2*/)
+                {
+                  const int iPrevLineLength = SciCall_LineLength(iCurLine - 1);
+                  char* pLineBuf = NULL;
+                  if (iPrevLineLength < FNDRPL_BUFFER) {
+                    pLineBuf = chLineBuffer;
+                  }
+                  else {
+                    pLineBuf = GlobalAlloc(GPTR, iPrevLineLength + 1);
+                  }
+                  if (pLineBuf)
                   {
-                    int token = BeginSelUndoAction();
-                    SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)tchIns);
-                    SendMessage(g_hwndEdit,SCI_SETSEL,iCurPos,iCurPos);
-                    EndSelUndoAction(token);
+                    SendMessage(g_hwndEdit, SCI_GETLINE, iCurLine - 1, (LPARAM)pLineBuf);
+                    *(pLineBuf + iPrevLineLength) = '\0';
+                    for (char* pPos = pLineBuf; *pPos; pPos++) {
+                      if (*pPos != ' ' && *pPos != '\t')
+                        *pPos = '\0';
+                    }
+                    if (*pLineBuf) {
+                      SendMessage(g_hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
+                      SendMessage(g_hwndEdit, SCI_ADDTEXT, lstrlenA(pLineBuf), (LPARAM)pLineBuf);
+                      SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+                    }
+                    if (iPrevLineLength >= FNDRPL_BUFFER) { GlobalFree(pLineBuf); }
                   }
                 }
               }
             }
-          }
-          else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
-            EditCompleteWord(g_hwndEdit, FALSE);
+            // Auto close tags
+            else if (bAutoCloseTags && scn->ch == '>')
+            {
+              //int iLexer = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
+              //if (iLexer == SCLEX_HTML || iLexer == SCLEX_XML)
+              {
+                char tchBuf[512] = { '\0' };
+                int  iCurPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+                int  iHelper = iCurPos - (COUNTOF(tchBuf) - 1);
+                int  iStartPos = max(0, iHelper);
+                int  iSize = iCurPos - iStartPos;
+
+                if (iSize >= 3) {
+
+                  struct Sci_TextRange tr;
+                  tr.chrg.cpMin = iStartPos;  tr.chrg.cpMax = iCurPos;  tr.lpstrText = tchBuf;
+
+                  SendMessage(g_hwndEdit, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+
+                  if (tchBuf[iSize - 2] != '/') {
+
+                    const char* pBegin = &tchBuf[0];
+                    const char* pCur = &tchBuf[iSize - 2];
+
+                    while (pCur > pBegin && *pCur != '<' && *pCur != '>')
+                      --pCur;
+
+                    int  cchIns = 2;
+                    char tchIns[516] = "</";
+                    if (*pCur == '<') {
+                      pCur++;
+                      while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
+                        tchIns[cchIns++] = *pCur;
+                        pCur++;
+                      }
+                    }
+
+                    tchIns[cchIns++] = '>';
+                    tchIns[cchIns] = 0;
+
+                    if (cchIns > 3 &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</base>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</bgsound>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</br>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</embed>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</hr>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</img>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</input>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</link>", -1) &&
+                      StringCchCompareINA(tchIns, COUNTOF(tchIns), "</meta>", -1))
+                    {
+                      int token = BeginSelUndoAction();
+                      SendMessage(g_hwndEdit, SCI_REPLACESEL, 0, (LPARAM)tchIns);
+                      SendMessage(g_hwndEdit, SCI_SETSEL, iCurPos, iCurPos);
+                      EndSelUndoAction(token);
+                    }
+                  }
+                }
+              }
+            }
+            else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
+              EditCompleteWord(g_hwndEdit, FALSE);
+            }
           }
           break;
 
@@ -5787,10 +5792,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
           UpdateToolbar();
-          // just in really rare case of possible deadlock 
-          //   (flag set, but no timer event in msg queue to reset)
-          TEST_AND_RESET(TIMER_BIT_MARK_OCC);
-          TEST_AND_RESET(TIMER_BIT_UPDATE_HYPER);
           break;
 
 
@@ -5810,22 +5811,24 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           bModified = TRUE;
           UpdateToolbar();
           break;
+
+        default:
+          return FALSE;
       }
-      break;
+      return TRUE;
 
 
     case IDC_TOOLBAR:
 
       switch(pnmh->code)
       {
-
         case TBN_ENDADJUST:
           UpdateToolbar();
           break;
 
         case TBN_QUERYDELETE:
         case TBN_QUERYINSERT:
-          return TRUE;
+          break;
 
         case TBN_GETBUTTONINFO:
           {
@@ -5848,9 +5851,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
             return(0);
           }
+          break;
 
+        default:
+          return FALSE;
       }
-      break;
+      return TRUE;
 
 
     case IDC_STATUSBAR:
@@ -5913,7 +5919,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
       }
-      break;
+      return TRUE;
 
 
     default:
@@ -5938,7 +5944,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   UNUSED(wParam);
 
-  return(0);
+  return FALSE;
 }
 
 
@@ -7139,9 +7145,8 @@ void UpdateEditWndUI()
 // 
 void MarkAllOccurrences()
 {
-  if (!TEST_AND_SET(TIMER_BIT_MARK_OCC)) {
-    SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
-  }
+  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
+  TEST_AND_SET(TIMER_BIT_MARK_OCC);
 }
 
 //=============================================================================
@@ -7150,9 +7155,9 @@ void MarkAllOccurrences()
 // 
 void UpdateVisibleUrlHotspot()
 {
-  if (!TEST_AND_SET(TIMER_BIT_UPDATE_HYPER)) {
-    SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 250, NULL);
-  }
+  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 100, NULL);
+  TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
+
 }
 
 
