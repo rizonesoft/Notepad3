@@ -2537,6 +2537,7 @@ void __fastcall MarkAllOccurrencesTimer()
     }
     else {
       EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      UpdateStatusbar();
     }
   }
 }
