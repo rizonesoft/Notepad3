@@ -5541,9 +5541,9 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
       }
     }
     // set additional flags
-    flags = 0;
+    flags = flags ? SCFIND_WHOLEWORD : 0; // match current word under caret ?
+    flags |= (bMatchWords) ? SCFIND_WHOLEWORD : 0;
     flags |= (bMatchCase ? SCFIND_MATCHCASE : 0);
-    flags |= (bMatchWords ? SCFIND_WHOLEWORD : 0);
   }
   else {
     iFindLength = StringCchLenA(pszFind, FNDRPL_BUFFER);

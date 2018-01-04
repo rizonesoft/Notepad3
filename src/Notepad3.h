@@ -145,6 +145,7 @@ void UpdateToolbar();
 void UpdateStatusbar();
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
+void UpdateVisibleUrlHotspot();
 
 
 void InvalidateSelections();

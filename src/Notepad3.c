@@ -307,7 +307,6 @@ HANDLE    g_hScintilla;
 WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 
-
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
@@ -1159,14 +1158,20 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
       UpdateLineNumberWidth();
+      MarkAllOccurrences();
+      EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_TIMER:
       if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) {
         KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
+        return TRUE;
+      }
+      else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) {
+        KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
+        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CALL_UPDATE_HOTSPOT, 1), 0);
         return TRUE;
       }
       break;
@@ -1756,6 +1761,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
+  MarkAllOccurrences();
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   UNUSED(lParam);
@@ -2255,7 +2261,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
   i  = !(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
-  i2 = (int)SendMessage(g_hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+  i2 = SciCall_GetTextLength();
   i3 = (int)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
   
   EnableCmd(hmenu,IDM_EDIT_CUT,i2 /*&& !bReadOnly*/);       // allow Ctrl-X w/o selection
@@ -2507,22 +2513,44 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 void __fastcall MarkAllOccurrencesTimer()
 {
   if (iMarkOccurrences != 0) {
-    if (bMarkOccurrencesMatchVisible) {
-      int iLinesOnScreen = (int)SendMessage(g_hwndEdit, SCI_LINESONSCREEN, 0, 0);
+    if (bMarkOccurrencesMatchVisible) 
+    {
+      // get visible lines for update
       int iFirstVisibleLine = (int)SendMessage(g_hwndEdit, SCI_GETFIRSTVISIBLELINE, 0, 0);
-      int iLastLineOfDOc = (int)SendMessage(g_hwndEdit, SCI_GETLINECOUNT, 0, 0);
-      int iStartLine = max(0, (iFirstVisibleLine - iLinesOnScreen));
-      int iEndLine = min((iFirstVisibleLine + (iLinesOnScreen << 1)), iLastLineOfDOc);
-      int iPosStart = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMLINE, (WPARAM)iStartLine, 0);
-      int iPosEnd = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMLINE, (WPARAM)iEndLine, 0);
+
+      int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+      int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+
+      int iPosStart = SciCall_PositionFromLine(iStartLine);
+      int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
 
       EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
     }
     else {
-      const int iTextLength = (int)SendMessage(g_hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
-
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, iTextLength, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
     }
+  }
+}
+
+
+//=============================================================================
+//
+//  UpdateVisibleUrlHotspotTimer()
+// 
+void __fastcall UpdateVisibleUrlHotspotTimer()
+{
+  if (bHyperlinkHotspot) 
+  {
+    // get visible lines for update
+    int iFirstVisibleLine = SciCall_GetFirstVisibleLine();
+    
+    int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+    int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+
+    int iPosStart = SciCall_PositionFromLine(iStartLine);
+    int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+
+    EditUpdateUrlHotspots(g_hwndEdit, iPosStart, iPosEnd, bHyperlinkHotspot);
   }
 }
 
@@ -2540,6 +2568,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
   {
     case IDC_MAIN_MARKALL_OCC:
       MarkAllOccurrencesTimer();
+      break;
+
+    case IDC_CALL_UPDATE_HOTSPOT:
+      UpdateVisibleUrlHotspotTimer();
       break;
 
     case IDM_FILE_NEW:
@@ -3956,8 +3988,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         int iNextLine = (int)SendMessage( g_hwndEdit , SCI_MARKERPREVIOUS , iLine-1 , bitmask );
         if( iNextLine == -1 )
         {
-            int nLines = (int)SendMessage( g_hwndEdit , SCI_GETLINECOUNT , 0 , 0 );
-            iNextLine = (int)SendMessage( g_hwndEdit , SCI_MARKERPREVIOUS , nLines , bitmask );
+            iNextLine = (int)SendMessage( g_hwndEdit , SCI_MARKERPREVIOUS , SciCall_GetLineCount(), bitmask );
         }
 
         if( iNextLine != -1 )
@@ -5549,12 +5580,14 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           break;
 
+
         //case SCN_STYLENEEDED:  // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
         //  {
         //    int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
         //    EditUpdateUrlHotspots(g_hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, bHyperlinkHotspot);
         //  }
         //  break;
+
 
         case SCN_UPDATEUI:
           if (scn->updated & ~(SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)) 
@@ -5570,13 +5603,36 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             UpdateToolbar();
             UpdateStatusbar();
+            UpdateVisibleUrlHotspot();
           }
-          else if ((scn->updated & SC_UPDATE_V_SCROLL) && bMarkOccurrencesMatchVisible)
+          else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
             MarkAllOccurrences();
+            UpdateVisibleUrlHotspot();
           }
           break;
         
+
+        case SCN_MODIFIED:
+          // check for ADDUNDOACTION step
+          if (scn->modificationType & SC_MOD_CONTAINER) {
+            if (scn->modificationType & SC_PERFORMED_UNDO) {
+              RestoreSelectionAction(scn->token, UNDO);
+            }
+            else if (scn->modificationType & SC_PERFORMED_REDO) {
+              RestoreSelectionAction(scn->token, REDO);
+            }
+          }
+          else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
+            EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
+          }
+          if (scn->linesAdded != 0) {
+            UpdateLineNumberWidth();
+          }
+          bModified = TRUE;
+          break;
+
+
         case SCN_CHARADDED:
           // Auto indent
           if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
@@ -5708,54 +5764,38 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               }
             }
           }
-          else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0))
+          else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
             EditCompleteWord(g_hwndEdit, FALSE);
-
+          }
           break;
 
-        case SCN_MODIFIED:
-          // check for ADDUNDOACTION step
-          if (scn->modificationType & SC_MOD_CONTAINER) {
-            if (scn->modificationType & SC_PERFORMED_UNDO) {
-              RestoreSelectionAction(scn->token,UNDO);
-            } else if (scn->modificationType & SC_PERFORMED_REDO) {
-              RestoreSelectionAction(scn->token,REDO);
-            }
-          }
-          else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-            EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
-          }
-          if (scn->linesAdded != 0) {
-            EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
-            UpdateLineNumberWidth();
-          }
-          bModified = TRUE;
-          break;
 
         case SCN_ZOOM:
           UpdateLineNumberWidth();
           break;
 
+
         case SCN_SAVEPOINTREACHED:
           bModified = FALSE;
           UpdateToolbar();
-          EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           break;
+
 
         case SCN_MARGINCLICK:
           if (scn->margin == MARGIN_FOLD_INDEX)
             FoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
           break;
 
+
         case SCN_KEY:
           // Also see the corresponding patch in scintilla\src\Editor.cxx
           FoldAltArrow(scn->ch, scn->modifiers);
           break;
 
+
         case SCN_SAVEPOINTLEFT:
           bModified = TRUE;
           UpdateToolbar();
-          //~EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
           break;
       }
       break;
@@ -6078,8 +6118,7 @@ void LoadSettings()
   bTransparentMode = IniSectionGetBool(pIniSection,L"TransparentMode",FALSE);
 
   // Check if SetLayeredWindowAttributes() is available
-  bTransparentModeAvailable =
-    (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
+  bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
   bTransparentModeAvailable = (bTransparentModeAvailable) ? TRUE : FALSE;
 
   IniSectionGetString(pIniSection,L"ToolbarButtons",L"",tchToolbarButtons,COUNTOF(tchToolbarButtons));
@@ -7090,6 +7129,15 @@ void MarkAllOccurrences()
   SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
 }
 
+//=============================================================================
+//
+//  UpdateVisibleUrlHotspot()
+// 
+void UpdateVisibleUrlHotspot()
+{
+  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 250, NULL);
+}
+
 
 //=============================================================================
 //
@@ -7117,7 +7165,7 @@ void UpdateToolbar()
 
   int i, i2, i3;
   i =  !(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
-  i2 = (int)SendMessage(g_hwndEdit, SCI_GETTEXTLENGTH, 0, 0);
+  i2 = SciCall_GetTextLength();
   i3 = (int)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
 
 
@@ -7174,8 +7222,7 @@ void UpdateStatusbar()
   StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", iLn);
   FormatNumberStr(tchLn);
 
-  int iLines = (int)SendMessage(g_hwndEdit, SCI_GETLINECOUNT, 0, 0);
-  StringCchPrintf(tchLines, COUNTOF(tchLines), L"%i", iLines);
+  StringCchPrintf(tchLines, COUNTOF(tchLines), L"%i", SciCall_GetLineCount());
   FormatNumberStr(tchLines);
 
   int iCol = (int)SendMessage(g_hwndEdit, SCI_GETCOLUMN, iPos, 0) + 1;
@@ -7256,9 +7303,6 @@ void UpdateStatusbar()
 }
 
 
-
-
-
 //=============================================================================
 //
 //  UpdateLineNumberWidth()
@@ -7266,12 +7310,10 @@ void UpdateStatusbar()
 //
 void UpdateLineNumberWidth()
 {
-  if (bShowLineNumbers) 
+  if (bShowLineNumbers)
   {
-    int iLineCnt = (int)SendMessage(g_hwndEdit, SCI_GETLINECOUNT, 0, 0);
-
     char chLines[32] = { '\0' };
-    StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", iLineCnt);
+    StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", SciCall_GetLineCount());
 
     int iLineMarginWidthNow = (int)SendMessage(g_hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
     int iLineMarginWidthFit = (int)SendMessage(g_hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
@@ -7280,8 +7322,9 @@ void UpdateLineNumberWidth()
       SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
     }
   }
-  else
-    SendMessage(g_hwndEdit,SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+  else {
+    SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+  }
 }
 
 
@@ -7761,7 +7804,7 @@ BOOL FileRevert(LPCWSTR szFileName)
     int iDocTopLine = (int)SendMessage(g_hwndEdit,SCI_DOCLINEFROMVISIBLE,(WPARAM)iVisTopLine,0);
     int iXOffset = (int)SendMessage(g_hwndEdit,SCI_GETXOFFSET,0,0);
     //BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurPos == SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0));
-    BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= ((int)SendMessage(g_hwndEdit, SCI_GETLINECOUNT, 0, 0) - 1));
+    BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
 
     Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
