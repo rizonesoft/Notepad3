@@ -150,6 +150,7 @@ BOOL      bShowSelectionMargin;
 BOOL      bShowLineNumbers;
 int       iMarkOccurrences;
 int       iMarkOccurrencesCount;
+int       iMarkOccurrencesMaxCount;
 BOOL      bMarkOccurrencesMatchVisible;
 BOOL      bMarkOccurrencesMatchCase;
 BOOL      bMarkOccurrencesMatchWords;
@@ -1043,6 +1044,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (flagStartAsTrayIcon)
     SetNotifyIconTitle(g_hwndMain);
 
+  iMarkOccurrencesCount = 0;
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
@@ -6228,10 +6230,9 @@ void LoadSettings()
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", FontQuality[3]);
   iSciFontQuality = max(min(iSciFontQuality, 3), 0);
 
-  iMarkOccurrencesCount = -1;
-  //iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
-  //iMarkOccurrencesMaxCount = max(min(iMarkOccurrencesMaxCount,100000),2);
-
+  iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
+  iMarkOccurrencesMaxCount = (iMarkOccurrencesMaxCount <= 0) ? INT_MAX : iMarkOccurrencesMaxCount;
+  
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", FALSE);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
 
@@ -7270,16 +7271,23 @@ void UpdateStatusbar()
     StringCchCopy(tchSel, COUNTOF(tchSel), L"--");
   }
 
-  if ((iMarkOccurrencesCount > 0) && !bMarkOccurrencesMatchVisible) {
-    StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
-    FormatNumberStr(tchOcc);
+  // Print number of occurrence marks found
+  if ((iMarkOccurrencesCount > 0) && !bMarkOccurrencesMatchVisible) 
+  {
+    if ((iMarkOccurrencesMaxCount < 0) || (iMarkOccurrencesCount < iMarkOccurrencesMaxCount)) 
+    {
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+      FormatNumberStr(tchOcc);
+    }
+    else {
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i", iMarkOccurrencesMaxCount);
+    }
   }
   else {
     StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
   }
 
   // Print number of selected lines in statusbar
-  
   const int iLineStart = SciCall_LineFromPosition(iSelStart);
   const int iLineEnd = SciCall_LineFromPosition(iSelEnd);
   const int iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);

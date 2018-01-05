@@ -87,8 +87,9 @@ extern BOOL bAccelWordNavigation;
 extern BOOL bDenyVirtualSpaceAccess;
 extern BOOL bHyperlinkHotspot;
 
-extern int iMarkOccurrences;
-extern int iMarkOccurrencesCount;
+extern int  iMarkOccurrences;
+extern int  iMarkOccurrencesCount;
+extern int  iMarkOccurrencesMaxCount;
 extern BOOL bMarkOccurrencesMatchVisible;
 
 extern NP2ENCODING mEncoding[];
@@ -5499,7 +5500,6 @@ void EditClearAllMarks(HWND hwnd, int iRangeStart, int iRangeEnd)
   }
   SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
   SendMessage(hwnd, SCI_INDICATORCLEARRANGE, iRangeStart, iRangeEnd);
-  iMarkOccurrencesCount = -1; // -1 !
 }
 
 
@@ -5586,14 +5586,14 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
     int start = rangeStart;
     int end = rangeEnd;
 
+
+    iMarkOccurrencesCount = 0;
     SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
 
     int iPos = -1;
     do {
 
       iPos = EditFindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (start == iPos));
-
-      ++iMarkOccurrencesCount; // -1 -> 0
 
       if (iPos < 0)
         break; // not found
@@ -5607,7 +5607,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
       start = end;
       end = rangeEnd;
 
-    } while (start < end); // < iMarkOccurrencesMaxCount
+    } while ((start < end) && (++iMarkOccurrencesCount < iMarkOccurrencesMaxCount));
   }
 }
 
