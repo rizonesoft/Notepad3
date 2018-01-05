@@ -5568,16 +5568,19 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
 
     SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
 
+    int iPos = -1;
     do {
-      ++iMarkOccurrencesCount;
 
-      int iPos = EditFindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (end == start));
+      iPos = EditFindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (start == iPos));
+
+      ++iMarkOccurrencesCount; // -1 -> 0
 
       if (iPos < 0)
         break; // not found
 
       // mark this match if not done before
-      if (!SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, iPos)) {
+      if (!(SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, end) &&
+            SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, start))) {
         SciCall_IndicatorFillRange(iPos, (end - start));
       }
 

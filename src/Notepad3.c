@@ -5619,10 +5619,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           if (scn->updated & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
           {
-            // !!! SC_UPDATE_CONTENT is triggered very often , 
-            // even if nothing relevant has been modified
-            // relevant modifications are handled in SCN_MODIFIED !!!
-
             //~InvalidateSelections(); // fixed in SCI ?
 
             // Brace Match
@@ -5631,6 +5627,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
 
             if (iMarkOccurrences) {
+              // clear marks only, if caret/selection changed
               if (scn->updated & SC_UPDATE_SELECTION) {
                 EditClearAllMarks(g_hwndEdit, 0, -1);
               }
