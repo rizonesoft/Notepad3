@@ -5607,7 +5607,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
       start = end;
       end = rangeEnd;
 
-    } while ((start < end) && (++iMarkOccurrencesCount < iMarkOccurrencesMaxCount));
+    } while ((++iMarkOccurrencesCount < iMarkOccurrencesMaxCount) && (start < end));
   }
 }
 
