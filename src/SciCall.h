@@ -98,6 +98,7 @@ DeclareSciCallV1(GotoPos, GOTOPOS, int, position);
 DeclareSciCallV1(GotoLine, GOTOLINE, int, line);
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, int, Sci_Position, position);
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, int, Sci_Position, position);
+DeclareSciCallR1(GetCharAt, GETCHARAT, char, Sci_Position, position);
 
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, int);
 DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, int);
@@ -105,13 +106,11 @@ DeclareSciCallR1(LineLength, LINELENGTH, int, Sci_Position, line);
 DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, int, Sci_Position, position);
 DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, int, Sci_Position, line);
 DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, int, Sci_Position, line);
-DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int);
 DeclareSciCallR1(GetColumn, GETCOLUMN, int, Sci_Position, position);
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, int);
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, int);
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, int, Sci_Position, line);
 
-DeclareSciCallR1(GetCharAt, GETCHARAT, char, Sci_Position, position);
 
 //=============================================================================
 //
@@ -130,8 +129,9 @@ DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, caretPolicy, int, caretS
 //
 DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, styleNumber);
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, styleNumber);
-DeclareSciCallV1(StartStyling, STARTSTYLING, Sci_Position, position);
 DeclareSciCallV2(SetStyling, SETSTYLING, Sci_PositionCR, length, int, style);
+DeclareSciCallV1(StartStyling, STARTSTYLING, Sci_Position, position);
+DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int);
 
 //=============================================================================
 //
@@ -154,6 +154,15 @@ DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, BOOL, useSetting,
 DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerNumber, int, markerSymbols);
 DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colour);
 DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour);
+
+
+//=============================================================================
+//
+//  Indicators
+//
+//
+DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, Sci_Position, position);
+DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, Sci_Position, position, Sci_Position, length);
 
 
 //=============================================================================

@@ -324,6 +324,11 @@ static volatile LONG g_lTimerBits = 0;
 #define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lTimerBits, B)
 #define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lTimerBits, B)
 
+
+// SCN_UPDATEUI notification
+#define SC_UPDATE_NP3_INTERNAL_NOTIFY (SC_UPDATE_H_SCROLL << 1)
+
+
 //=============================================================================
 //
 // Flags
@@ -1164,6 +1169,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       UpdateLineNumberWidth();
+      EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences();
       EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
@@ -1770,6 +1776,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
+  EditClearAllMarks(g_hwndEdit, 0, -1);
   MarkAllOccurrences();
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
@@ -2533,6 +2540,8 @@ void __fastcall MarkAllOccurrencesTimer()
       int iPosStart = SciCall_PositionFromLine(iStartLine);
       int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
 
+      // !!! don't clear all marks, else this method is re-called
+      // !!! on UpdateUI notification on drawing indicator mark
       EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
     }
     else {
@@ -4290,26 +4299,27 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
+      EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences();
       break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
+      EditClearAllMarks(g_hwndEdit, 0, -1);
       if (iMarkOccurrences != 0) {
         MarkAllOccurrences();
-      }
-      else {
-        EditClearAllMarks(g_hwndEdit);
       }
       break;
 
     case IDM_VIEW_MARKOCCUR_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
+      EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences();
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
       bMarkOccurrencesMatchVisible = (bMarkOccurrencesMatchVisible) ? FALSE : TRUE;
+      EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences();
       break;
 
@@ -4318,6 +4328,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (bMarkOccurrencesMatchWords) {
         bMarkOccurrencesCurrentWord = FALSE;
       }
+      EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences();
       break;
 
@@ -4326,6 +4337,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (bMarkOccurrencesCurrentWord) {
         bMarkOccurrencesMatchWords = FALSE;
       }
+      EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences();
       break;
 
@@ -4382,7 +4394,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_MATCHBRACES:
       bMatchBraces = (bMatchBraces) ? FALSE : TRUE;
       if (bMatchBraces)
-        UpdateEditWndUI();
+        EditMatchBrace(g_hwndEdit);
       else
         SendMessage(g_hwndEdit,SCI_BRACEHIGHLIGHT,(WPARAM)-1,(LPARAM)-1);
       break;
@@ -5600,21 +5612,29 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_UPDATEUI:
 
-          if (scn->updated & SC_UPDATE_SELECTION)
+          //if (scn->updated & SC_UPDATE_NP3_INTERNAL_NOTIFY) {
+          //  // special case
+          //}
+          //else
+
+          if (scn->updated & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
           {
-            // !!! SC_UPDATE_CONTENT is triggered too often, 
+            // !!! SC_UPDATE_CONTENT is triggered very often , 
             // even if nothing relevant has been modified
             // relevant modifications are handled in SCN_MODIFIED !!!
 
             //~InvalidateSelections(); // fixed in SCI ?
 
-            if (iMarkOccurrences) {
-              MarkAllOccurrences();
-            }
-
             // Brace Match
             if (bMatchBraces) {
               EditMatchBrace(g_hwndEdit);
+            }
+
+            if (iMarkOccurrences) {
+              if (scn->updated & SC_UPDATE_SELECTION) {
+                EditClearAllMarks(g_hwndEdit, 0, -1);
+              }
+              MarkAllOccurrences();
             }
 
             if (bHyperlinkHotspot) {
@@ -5655,6 +5675,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
 
             UpdateToolbar();
+
+            if (iMarkOccurrences) {
+              EditClearAllMarks(g_hwndEdit, 0, -1);
+              MarkAllOccurrences();
+            }
             UpdateStatusbar();
 
             bModified = TRUE;
@@ -7123,25 +7148,6 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 
 //=============================================================================
 //
-//  UpdateEditWndUI()
-//
-void UpdateEditWndUI()
-{
-  struct SCNotification scn;
-  scn.nmhdr.hwndFrom = g_hwndEdit;
-  scn.nmhdr.idFrom = IDC_EDIT;
-  scn.nmhdr.code = SCN_UPDATEUI;
-  scn.updated = SC_UPDATE_CONTENT;
-  //SendMessage(g_hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-  PostMessage(g_hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-  // ---------------------------------------------------------------------------
-  // ~~~ don't Send/Post Message(hwnd, SCI_COLOURISE, 0, (LPARAM)-1); here ! ~~~
-  // ---------------------------------------------------------------------------
-}
-
-
-//=============================================================================
-//
 //  MarkAllOccurrences()
 // 
 void MarkAllOccurrences()
@@ -7158,7 +7164,6 @@ void UpdateVisibleUrlHotspot()
 {
   SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 100, NULL);
   TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
-
 }
 
 
@@ -7228,7 +7233,6 @@ void UpdateStatusbar()
   static WCHAR tchOcc[32] = { L'\0' };
   static WCHAR tchDocPos[256] = { L'\0' };
 
-  int iBytes;
   static WCHAR tchBytes[64] = { L'\0' };
   static WCHAR tchDocSize[256] = { L'\0' };
 
@@ -7237,21 +7241,18 @@ void UpdateStatusbar()
   static WCHAR tchLexerName[128] = { L'\0' };
   static WCHAR tchLinesSelected[32] = { L'\0' };
 
-  if (!bShowStatusbar)
-    return;
+  if (!bShowStatusbar) { return; }
 
-  int iPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+  const int iPos = SciCall_GetCurrentPos();
 
-  int iLn = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iPos, 0) + 1;
-  StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", iLn);
+  StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", SciCall_LineFromPosition(iPos) + 1);
   FormatNumberStr(tchLn);
 
   StringCchPrintf(tchLines, COUNTOF(tchLines), L"%i", SciCall_GetLineCount());
   FormatNumberStr(tchLines);
 
-  int iCol = (int)SendMessage(g_hwndEdit, SCI_GETCOLUMN, iPos, 0) + 1;
+  int iCol = SciCall_GetColumn(iPos) + 1;
   iCol += (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
-
   StringCchPrintf(tchCol, COUNTOF(tchCol), L"%i", iCol);
   FormatNumberStr(tchCol);
 
@@ -7260,18 +7261,17 @@ void UpdateStatusbar()
     FormatNumberStr(tchCols);
   }
 
-  int iSelStart = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONSTART, 0, 0);
-  int iSelEnd = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONEND, 0, 0);
-
   // Print number of selected chars in statusbar
+  const int iSelStart = SciCall_GetSelectionStart();
+  const int iSelEnd = SciCall_GetSelectionEnd();
   if (SC_SEL_RECTANGLE != SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0)) {
-    int iSel = (int)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
+    const int iSel = (int)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
     StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
     FormatNumberStr(tchSel);
   }
-  else
+  else {
     StringCchCopy(tchSel, COUNTOF(tchSel), L"--");
-
+  }
 
   if ((iMarkOccurrencesCount > 0) && !bMarkOccurrencesMatchVisible) {
     StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
@@ -7281,39 +7281,47 @@ void UpdateStatusbar()
     StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
   }
 
-  // Print number of lines selected lines in statusbar
-  int iLineStart = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iSelStart, 0);
-  int iLineEnd = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, iSelEnd, 0);
-  int iStartOfLinePos = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMLINE, iLineEnd, 0);
-  int iLinesSelected = iLineEnd - iLineStart;
-  if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) iLinesSelected += 1;
+  // Print number of selected lines in statusbar
+  
+  const int iLineStart = SciCall_LineFromPosition(iSelStart);
+  const int iLineEnd = SciCall_LineFromPosition(iSelEnd);
+  const int iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
+  int iLinesSelected = (iLineEnd - iLineStart);
+  if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) { iLinesSelected += 1; }
   StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
   FormatNumberStr(tchLinesSelected);
 
-  if (!bMarkLongLines)
+  if (!bMarkLongLines) {
     FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS, tchLn, tchLines, tchCol, tchSel, tchLinesSelected, tchOcc);
-  else
+  }
+  else {
     FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS2, tchLn, tchLines, tchCol, tchCols, tchSel, tchLinesSelected, tchOcc);
-
-  iBytes = (int)SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0);
+  }
+  const int iBytes = SciCall_GetTextLength();
   StrFormatByteSize(iBytes, tchBytes, COUNTOF(tchBytes));
 
   FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
 
   Encoding_GetLabel(Encoding_Current(CPI_GET));
 
-  if (iEOLMode == SC_EOL_CR)
+  if (iEOLMode == SC_EOL_CR) 
+  {
     StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR");
-  else if (iEOLMode == SC_EOL_LF)
+  }
+  else if (iEOLMode == SC_EOL_LF) 
+  {
     StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF");
-  else
+  }
+  else {
     StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF");
-
-  if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0))
+  }
+  if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0)) 
+  {
     StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR");
-  else
+  }
+  else {
     StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS");
-
+  }
   Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
 
   StatusSetText(g_hwndStatus, STATUS_DOCPOS, tchDocPos);
@@ -7364,6 +7372,22 @@ void UpdateSettingsCmds()
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, bSaveSettings && bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && bEnableSaveSettings);
+}
+
+
+//=============================================================================
+//
+//  UpdateUI()
+//
+void UpdateUI()
+{
+  struct SCNotification scn;
+  scn.nmhdr.hwndFrom = g_hwndEdit;
+  scn.nmhdr.idFrom = IDC_EDIT;
+  scn.nmhdr.code = SCN_UPDATEUI;
+  scn.updated = (SC_UPDATE_CONTENT | SC_UPDATE_NP3_INTERNAL_NOTIFY);
+  SendMessage(g_hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
+  //PostMessage(g_hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
 }
 
 

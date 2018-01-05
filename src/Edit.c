@@ -89,6 +89,7 @@ extern BOOL bHyperlinkHotspot;
 
 extern int iMarkOccurrences;
 extern int iMarkOccurrencesCount;
+extern BOOL bMarkOccurrencesMatchVisible;
 
 extern NP2ENCODING mEncoding[];
 
@@ -4289,20 +4290,18 @@ RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, B
   char szFind[FNDRPL_BUFFER];
   int slen = EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
 
-  const int iTextLength = SciCall_GetTextLength();
+  const int iStart = bFirstMatchOnly ? SciCall_GetSelectionStart() : 0;
+  const int iTextLength   = SciCall_GetTextLength();
 
-  int start = bFirstMatchOnly ? (int)SendMessage(hwnd, SCI_GETSELECTIONNSTART, 0, 0) : 0;
-  int end = iTextLength;
-
-  int iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+  int start = iStart;
+  int end   = iTextLength;
+  int iPos  = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
 
   if (!bFirstMatchOnly) 
   {
     if (bMarkAll && (iPos >= 0)) {
+      EditClearAllMarks(hwnd, 0, iTextLength);
       EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), 0, iTextLength, FALSE, FALSE);
-    }
-    else {
-      EditMarkAll(hwnd, "", 0, 0, iTextLength, FALSE, FALSE);
     }
   }
   return ((iPos >= 0) ? MATCH : ((iPos == -1) ? NO_MATCH : INVALID));
@@ -4331,7 +4330,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   static HBRUSH hBrushGreen;
   static HBRUSH hBrushBlue;
 
-  static int iSaveMarkOcc = -1;
+  static int  iSaveMarkOcc = -1;
+  static BOOL bSaveOccVisible = FALSE;
 
   switch(umsg)
   {
@@ -4346,11 +4346,16 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         iSaveMarkOcc = iMarkOccurrences;
         EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, FALSE);
         iMarkOccurrences = 0;
+        bSaveOccVisible = bMarkOccurrencesMatchVisible;
+        EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, FALSE);
+        bMarkOccurrencesMatchVisible = FALSE;
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
       }
       else {
         iSaveMarkOcc = -1;
+        bSaveOccVisible = bMarkOccurrencesMatchVisible;
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
+        EditClearAllMarks(g_hwndEdit, 0, -1);
       }
 
       // Get the current code page for Unicode conversion
@@ -4540,6 +4545,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCUR_ONOFF, 1), 0);
           }
         }
+        bMarkOccurrencesMatchVisible = bSaveOccVisible;
+        EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
+
         KillTimer(hwnd, IDT_TIMER_MRKALL);
       }
       return FALSE;
@@ -4614,6 +4622,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             iSaveMarkOcc = iMarkOccurrences;
             EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, FALSE);
             iMarkOccurrences = 0;
+            bSaveOccVisible = bMarkOccurrencesMatchVisible;
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, FALSE);
+            bMarkOccurrencesMatchVisible = FALSE;
           }
           else {                         // switched OFF
             lpefr->bMarkOccurences = FALSE;
@@ -4624,6 +4635,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               }
             }
             iSaveMarkOcc = -1;
+            bMarkOccurrencesMatchVisible = bSaveOccVisible;
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
+            bSaveOccVisible = FALSE;
+            EditClearAllMarks(g_hwndEdit, 0, -1);
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
           }
           bFlagsChanged = TRUE;
@@ -5454,10 +5469,16 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
 //
 //  EditClearAllMarks()
 //
-void EditClearAllMarks(HWND hwnd)
+void EditClearAllMarks(HWND hwnd, int iRangeStart, int iRangeEnd)
 {
+  if (iRangeEnd <= 0) {
+    iRangeEnd = SciCall_GetTextLength();
+  }
+  if (iRangeStart > iRangeEnd) {
+    swapi(&iRangeStart, &iRangeEnd);
+  }
   SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
-  SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, SciCall_GetTextLength());
+  SendMessage(hwnd, SCI_INDICATORCLEARRANGE, iRangeStart, iRangeEnd);
   iMarkOccurrencesCount = -1; // -1 !
 }
 
@@ -5478,8 +5499,6 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
     pszText = pszFind;
   else
     pszText = txtBuffer;
-
-  EditClearAllMarks(hwnd);
 
   if (pszFind == NULL) {
 
@@ -5547,6 +5566,8 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
     int start = rangeStart;
     int end = rangeEnd;
 
+    SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
+
     do {
       ++iMarkOccurrencesCount;
 
@@ -5555,8 +5576,11 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
       if (iPos < 0)
         break; // not found
 
-      // mark this match
-      SendMessage(hwnd, SCI_INDICATORFILLRANGE, iPos, (end - start));
+      // mark this match if not done before
+      if (!SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, iPos)) {
+        SciCall_IndicatorFillRange(iPos, (end - start));
+      }
+
       start = end;
       end = rangeEnd;
 
@@ -5709,8 +5733,7 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
   }
 
   // 1st apply current lexer style
-  SciCall_StartStyling(startPos);
-  SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
+  EditFinalizeStyling(hwnd);
 
   const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
@@ -5747,15 +5770,11 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
 
   } while (start < end);
 
+
   if (bActiveHotspot) 
-  {
     SciCall_StartStyling(endPos);
-    UpdateEditWndUI(); // does not apply lexer style
-  }
-  else {
+  else
     SciCall_StartStyling(startPos);
-    SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
-  }
 }
 
 
@@ -5795,6 +5814,32 @@ BOOL __fastcall EditHighlightIfBrace(HWND hwnd, int iPos) {
 }
 
 
+//=============================================================================
+//
+//  EditApplyLexerStyle()
+//
+void EditApplyLexerStyle(HWND hwnd, int iRangeStart, int iRangeEnd)
+{
+  SendMessage(hwnd, SCI_COLOURISE, (WPARAM)iRangeStart, (LPARAM)iRangeEnd);
+}
+
+
+//=============================================================================
+//
+//  EditFinalizeStyling()
+//
+void EditFinalizeStyling(HWND hwnd)
+{
+  const int iEndStyled = SciCall_GetEndStyled();
+
+  if (iEndStyled < SciCall_GetTextLength()) 
+  {
+    const int iLineEndStyled = SciCall_LineFromPosition(iEndStyled);
+    const int iStartStyling = SciCall_PositionFromLine(iLineEndStyled);
+    EditApplyLexerStyle(hwnd, iStartStyling, -1);
+  }
+}
+
 
 //=============================================================================
 //
@@ -5802,12 +5847,7 @@ BOOL __fastcall EditHighlightIfBrace(HWND hwnd, int iPos) {
 //
 void EditMatchBrace(HWND hwnd) 
 {
-  int iEndStyled = SciCall_GetEndStyled();
-  if (iEndStyled < SciCall_GetTextLength()) {
-    int iLine = SciCall_LineFromPosition(iEndStyled);
-    iEndStyled = SciCall_PositionFromLine(iLine);
-    SendMessage(hwnd, SCI_COLOURISE, iEndStyled, -1);
-  }
+  EditFinalizeStyling(hwnd);
 
   int iPos = SciCall_GetCurrentPos();
 
