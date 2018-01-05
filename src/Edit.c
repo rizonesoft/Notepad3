@@ -110,6 +110,13 @@ static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 //static WCHAR W_WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { L'\0' };
 
 
+// Timer bitfield
+static volatile LONG g_lEditTimerBits = 0;
+#define TIMER_BIT_MARK_OCC 1L
+//#define TIMER_BIT_ONOTHER_TIMER 2L
+#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lEditTimerBits, B)
+#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lEditTimerBits, B)
+
 
 enum AlignMask {
   ALIGN_LEFT = 0,
@@ -4313,6 +4320,17 @@ RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, B
 //
 //  EditFindReplaceDlgProcW()
 //
+static void __fastcall EditSetTimerMarkAll(HWND hwnd)
+{
+  TEST_AND_SET(TIMER_BIT_MARK_OCC);
+  SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+}
+
+
+//=============================================================================
+//
+//  EditFindReplaceDlgProcW()
+//
 static char g_lastFind[FNDRPL_BUFFER] = { L'\0' };
 
 INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
@@ -4529,7 +4547,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       EditSetSearchFlags(hwnd, lpefr);
       bFlagsChanged = TRUE;
-      SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+      EditSetTimerMarkAll(hwnd);
     }
     return TRUE;
 
@@ -4557,8 +4575,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
         if (LOWORD(wParam) == IDT_TIMER_MRKALL)
         {
-          KillTimer(hwnd, IDT_TIMER_MRKALL);
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MARKALL_OCC, 1), 0);
+          if (TEST_AND_RESET(TIMER_BIT_MARK_OCC)) {
+            PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MARKALL_OCC, 1), 0);
+            KillTimer(hwnd, IDT_TIMER_MRKALL);
+          }
           return TRUE;
         }
       }
@@ -4570,7 +4590,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         lpefr = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
         if (lpefr->bMarkOccurences) {
           bFlagsChanged = TRUE;
-          SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+          EditSetTimerMarkAll(hwnd);
         }
         else {
           DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0));
@@ -4609,7 +4629,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           SendDlgItemMessage(hwnd, LOWORD(wParam), CB_SETEDITSEL, 0, MAKELPARAM(lSelEnd, lSelEnd));
         }
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 200, NULL);
+        EditSetTimerMarkAll(hwnd);
       }
       break;
 
@@ -4642,7 +4662,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
           }
           bFlagsChanged = TRUE;
-          SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+          EditSetTimerMarkAll(hwnd);
         }
         break;
 
@@ -4699,7 +4719,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (lpefr->bTransformBS) ? BST_CHECKED : BST_UNCHECKED);
         }
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+        EditSetTimerMarkAll(hwnd);
         break;
 
       case IDC_DOT_MATCH_ALL:
@@ -4712,7 +4732,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           lpefr->fuFlags &= ~(SCFIND_DOT_MATCH_ALL);
         }
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+        EditSetTimerMarkAll(hwnd);
         break;
 
       case IDC_WILDCARDSEARCH:
@@ -4739,7 +4759,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (lpefr->bTransformBS) ? BST_CHECKED : BST_UNCHECKED);
         }
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+        EditSetTimerMarkAll(hwnd);
         break;
 
       case IDC_FINDTRANSFORMBS:
@@ -4750,22 +4770,22 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           lpefr->bTransformBS = FALSE;
         }
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+        EditSetTimerMarkAll(hwnd);
         break;
 
       case IDC_FINDCASE:
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+        EditSetTimerMarkAll(hwnd);
         break;
 
       case IDC_FINDWORD:
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+        EditSetTimerMarkAll(hwnd);
         break;
 
       case IDC_FINDSTART:
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+        EditSetTimerMarkAll(hwnd);
         break;
 
 
@@ -4902,7 +4922,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
       }
       bFlagsChanged = TRUE;
-      SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+      EditSetTimerMarkAll(hwnd);
       break;
 
 
@@ -4920,7 +4940,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SetDlgItemTextW(hwnd, IDC_FINDTEXT, wszRepl);
         SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
         bFlagsChanged = TRUE;
-        SetTimer(hwnd, IDT_TIMER_MRKALL, 100, NULL);
+        EditSetTimerMarkAll(hwnd);
       }
       break;
 
@@ -5579,8 +5599,8 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
         break; // not found
 
       // mark this match if not done before
-      if (!(SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, end) &&
-            SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, start))) {
+      if (!SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, start) ||
+          !SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, end)) {
         SciCall_IndicatorFillRange(iPos, (end - start));
       }
 

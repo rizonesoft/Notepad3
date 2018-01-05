@@ -7149,8 +7149,8 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 // 
 void MarkAllOccurrences()
 {
-  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
   TEST_AND_SET(TIMER_BIT_MARK_OCC);
+  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
 }
 
 //=============================================================================
@@ -7159,8 +7159,8 @@ void MarkAllOccurrences()
 // 
 void UpdateVisibleUrlHotspot()
 {
-  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 100, NULL);
   TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
+  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 100, NULL);
 }
 
 
