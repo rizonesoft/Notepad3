@@ -147,7 +147,7 @@ BEGIN
         MENUITEM "Copy &Add\tCtrl+E",           IDM_EDIT_COPYADD
         MENUITEM "&Paste\tCtrl+V",              IDM_EDIT_PASTE
         MENUITEM "S&wap\tCtrl+K",               IDM_EDIT_SWAP
-        MENUITEM "Clear\tDel",                  IDM_EDIT_CLEAR
+        MENUITEM "Delete\tDel",                 IDM_EDIT_CLEAR
         MENUITEM "Clear Clipboar&d",            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "&Select All\tCtrl+A",         IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
@@ -305,10 +305,13 @@ BEGIN
             MENUITEM "&Active",                     IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
             MENUITEM "Match Visible Only",          IDM_VIEW_MARKOCCUR_VISIBLE
-            MENUITEM "Match &Case Sensitive",       IDM_VIEW_MARKOCCUR_CASE
             MENUITEM SEPARATOR
-            MENUITEM "Match &Whole Word Only",      IDM_VIEW_MARKOCCUR_WORD
-            MENUITEM "Match Cu&rrent Word",         IDM_VIEW_MARKOCCUR_CURRENT
+            MENUITEM "Match &Case Sensitive",       IDM_VIEW_MARKOCCUR_CASE
+            POPUP "Match &Whole Word Only"
+            BEGIN
+              MENUITEM "Match &Selected Word",      IDM_VIEW_MARKOCCUR_WORD
+              MENUITEM "Match Cu&rrent Word",       IDM_VIEW_MARKOCCUR_CURRENT
+            END
         END
         MENUITEM SEPARATOR
         MENUITEM "Line &Numbers\tCtrl+Shift+N", IDM_VIEW_LINENUMBERS
@@ -1444,6 +1447,7 @@ BEGIN
     IDT_EDIT_CUT            "Cut"
     IDT_EDIT_COPY           "Copy"
     IDT_EDIT_PASTE          "Paste"
+    IDT_EDIT_CLEAR          "Delete"
     IDT_EDIT_FIND           "Find"
     IDT_EDIT_REPLACE        "Replace"
     IDT_VIEW_WORDWRAP       "Word Wrap"
@@ -1454,7 +1458,6 @@ BEGIN
     IDT_FILE_EXIT           "Exit"
     IDT_FILE_SAVEAS         "Save As"
     IDT_FILE_SAVECOPY       "Save Copy"
-    IDT_EDIT_CLEAR          "Clear"
 END
 
 STRINGTABLE
