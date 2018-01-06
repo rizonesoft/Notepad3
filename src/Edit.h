@@ -122,13 +122,15 @@ BOOL  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
-void  EditClearAllMarks(HWND);
+void  EditClearAllMarks(HWND,int,int);
 void  EditMarkAll(HWND,char*,int,int,int,BOOL,BOOL);
 void  EditUpdateUrlHotspots(HWND, int, int, BOOL);
 void  EditSetAccelWordNav(HWND,BOOL);
 void  EditCompleteWord(HWND,BOOL);
 void  EditGetBookmarkList(HWND,LPWSTR,int);
 void  EditSetBookmarkList(HWND,LPCWSTR);
+void  EditApplyLexerStyle(HWND, int, int);
+void  EditFinalizeStyling(HWND);
 
 
 //void SciInitThemes(HWND);
