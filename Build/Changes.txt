@@ -3,6 +3,28 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 3.18.105.802 (5 January 2018)
+--------------------------------------------------
+- Fix: Custom toolbar images ini settings added.
+- Fix: Add hints for free text style properties in "Customize Schemes...".
+- Fix: Test version numbers for month Jan - Sep (mono digit).
+- Fix: Redundant echo of expected version string.
+- Fix: Toggle line comments were placed at line end.
+- Feature: (Mark Occurences) instant word highligting.
+- Added: Switch to draw all occurrences in visible area only.
+- Opt: Delayed mark all occurrences for better UI response.
+- Enhancement: Async mark all occurrences via timer (UI response).
+- Fix: "Match Current Word" should not highlight partial word matches in other lines.
+- Added: Hyperlink Hotspot Style updates on UpdateUI event (visible area only)
+- Fix: Fetching wrong visible document line number in case of hidden or wrapped lines.
+- Fix: Ignoring queued timer event, if timer has been killed.
+- Performance: Optimizing timer handling to avoid multiple calls of complex methods.
+- Fix: use current lexer's default text font size as base font size for relative sizing of other styles.
+- Performance: Fixed some issuses, which eat up CPU.
+- Fix: mark occurrences counter not updated in time.
+- Minor performance enhancements.
+
+--------------------------------------------------
 Version 3.17.1228.783 (28 December 2017)
 --------------------------------------------------
 - Fix: Update coloring on window message WM_SYSCOLORCHANGE, including Hyperlink hotspot colors.
