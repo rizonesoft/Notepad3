@@ -5577,11 +5577,8 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, int rangeStart, int rangeE
       if (iPos < 0)
         break; // not found
 
-      // mark this match if not done before
-      if (!SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, start) ||
-          !SciCall_IndicatorValueAt(INDIC_NP3_MARK_OCCURANCE, end)) {
-        SciCall_IndicatorFillRange(iPos, (end - start));
-      }
+      //// mark this match if not done before
+      SciCall_IndicatorFillRange(iPos, (end - start));
 
       start = end;
       end = rangeEnd;
