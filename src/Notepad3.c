@@ -1172,7 +1172,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_SYSCOLORCHANGE:
       UpdateLineNumberWidth();
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences();
+      MarkAllOccurrences(0);
       EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
@@ -1779,7 +1779,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateStatusbar();
   UpdateLineNumberWidth();
   EditClearAllMarks(g_hwndEdit, 0, -1);
-  MarkAllOccurrences();
+  MarkAllOccurrences(0);
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
   UNUSED(lParam);
@@ -4302,27 +4302,27 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences();
+      MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
       EditClearAllMarks(g_hwndEdit, 0, -1);
       if (iMarkOccurrences != 0) {
-        MarkAllOccurrences();
+        MarkAllOccurrences(0);
       }
       break;
 
     case IDM_VIEW_MARKOCCUR_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences();
+      MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
       bMarkOccurrencesMatchVisible = (bMarkOccurrencesMatchVisible) ? FALSE : TRUE;
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences();
+      MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_MARKOCCUR_WORD:
@@ -4331,7 +4331,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         bMarkOccurrencesCurrentWord = FALSE;
       }
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences();
+      MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
@@ -4340,7 +4340,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         bMarkOccurrencesMatchWords = FALSE;
       }
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences();
+      MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_FOLDING:
@@ -5632,12 +5632,15 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               // clear marks only, if caret/selection changed
               if (scn->updated & SC_UPDATE_SELECTION) {
                 EditClearAllMarks(g_hwndEdit, 0, -1);
+                MarkAllOccurrences(0);
               }
-              MarkAllOccurrences();
+              else {
+                MarkAllOccurrences(50);
+              }
             }
 
             if (bHyperlinkHotspot) {
-              UpdateVisibleUrlHotspot();
+              UpdateVisibleUrlHotspot(100);
             }
 
             UpdateStatusbar();
@@ -5645,10 +5648,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
             if (iMarkOccurrences) {
-              MarkAllOccurrences();
+              MarkAllOccurrences(100);
             }
             if (bHyperlinkHotspot) {
-              UpdateVisibleUrlHotspot();
+              UpdateVisibleUrlHotspot(100);
             }
           }
           break;
@@ -5677,7 +5680,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             if (iMarkOccurrences) {
               EditClearAllMarks(g_hwndEdit, 0, -1);
-              MarkAllOccurrences();
+              MarkAllOccurrences(0);
             }
             UpdateStatusbar();
 
@@ -7148,18 +7151,27 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 //
 //  MarkAllOccurrences()
 // 
-void MarkAllOccurrences()
+void MarkAllOccurrences(int delay)
 {
+  if (delay <= 0) {
+    MarkAllOccurrencesTimer();
+    return;
+  }
   TEST_AND_SET(TIMER_BIT_MARK_OCC);
-  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, 100, NULL);
+  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, delay, NULL);
 }
 
 //=============================================================================
 //
 //  UpdateVisibleUrlHotspot()
 // 
-void UpdateVisibleUrlHotspot()
+void UpdateVisibleUrlHotspot(int delay)
 {
+  if (delay <= 0) {
+    MarkAllOccurrencesTimer();
+    return;
+  }
+
   TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
   SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 100, NULL);
 }

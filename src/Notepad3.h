@@ -139,12 +139,12 @@ int  CreateIniFile();
 int  CreateIniFileEx(LPCWSTR);
 
 
-void MarkAllOccurrences();
+void MarkAllOccurrences(int);
 void UpdateToolbar();
 void UpdateStatusbar();
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
-void UpdateVisibleUrlHotspot();
+void UpdateVisibleUrlHotspot(int);
 void UpdateUI();
 
 
