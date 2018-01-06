@@ -2464,18 +2464,6 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
     }
     SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);
 
-    //// Fix selection
-    //if (iSelStart != iSelEnd && SendMessage(hwnd,SCI_GETTARGETEND,0,0) > SendMessage(hwnd,SCI_GETSELECTIONEND,0,0))
-    //{
-    //  int iCurPos = SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
-    //  int iAnchorPos = SendMessage(hwnd,SCI_GETANCHOR,0,0);
-    //  if (iCurPos > iAnchorPos)
-    //    iCurPos = SendMessage(hwnd,SCI_GETTARGETEND,0,0);
-    //  else
-    //    iAnchorPos = SendMessage(hwnd,SCI_GETTARGETEND,0,0);
-    //  SendMessage(hwnd,SCI_SETSEL,(WPARAM)iAnchorPos,(LPARAM)iCurPos);
-    //}
-
     // extend selection to start of first line
     // the above code is not required when last line has been excluded
     if (iSelStart != iSelEnd)
@@ -4588,13 +4576,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_ACTIVATE:
       {
+        DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !SciCall_IsSelectionEmpty());
+      
         lpefr = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
         if (lpefr->bMarkOccurences) {
           bFlagsChanged = TRUE;
           EditSetTimerMarkAll(hwnd);
-        }
-        else {
-          DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0));
         }
       }
       return FALSE;
@@ -5282,16 +5269,17 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   if (!pszReplace)
     return FALSE; // recoding of clipboard canceled
 
+  // redo find to get group ranges filled
+  int start = (SciCall_IsSelectionEmpty() ? SciCall_GetCurrentPos() : SciCall_GetSelectionStart());
+  int end = SciCall_GetTextLength();
+  int _start = start;
+
+  int iPos = EditFindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),  (int)(lpefr->fuFlags), &start, &end, FALSE);
+
   // w/o selection, replacement string is put into current position
   // but this mayby not intended here
-  if ((BOOL)SendMessage(hwnd, SCI_GETSELECTIONEMPTY, 0, 0)) {
-    int start = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
-    int end = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
-    int _start = start;
-    int iPos = EditFindInTarget(hwnd, lpefr->szFind,
-      StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),
-      (int)(lpefr->fuFlags), &start, &end, FALSE);
-    if ((iPos < 0) || (_start != start) || (_start != end))  {
+  if (SciCall_IsSelectionEmpty()) {
+    if ((iPos < 0) || (_start != start) || (_start != end)) {
       // empty-replace was not intended
       LocalFree(pszReplace);
       if (iPos < 0)
@@ -5366,7 +5354,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
     bShowInfo = FALSE;
   }
 
-  // build array of matches for later replacements
+  // ===  build array of matches for later replacements  ===
 
   ReplPos_t posPair = { 0, 0 };
 
@@ -5391,15 +5379,21 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   if (iCount > 0)
     SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
 
-  // iterate over findings and replace strings
+  // ===  iterate over findings and replace strings  ===
+
   int offset = 0;
   for (ReplPos_t* pPosPair = (ReplPos_t*)utarray_front(ReplPosUTArray);
                   pPosPair != NULL;
                   pPosPair = (ReplPos_t*)utarray_next(ReplPosUTArray, pPosPair)) {
 
-    SciCall_SetTargetRange((pPosPair->beg + offset), (pPosPair->end + offset));
-
-    offset += ((int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace) - pPosPair->end + pPosPair->beg);
+    // redo find to get group ranges filled
+    start = (pPosPair->beg + offset);
+    end = (pPosPair->end + offset);
+    iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+    if (iPos >= 0) {
+      SciCall_SetTargetRange(start, end);
+      offset += ((int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace) - pPosPair->end + pPosPair->beg);
+    }
   }
 
   EndWaitCursor();
@@ -5457,8 +5451,8 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
 
   int token = BeginSelUndoAction();
 
-  int start = SciCall_GetSelectionStart();;
-  int end = SciCall_GetSelectionEnd();;
+  int start = SciCall_GetSelectionStart();
+  int end = SciCall_GetSelectionEnd();
 
   int iCount = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
 
@@ -5466,21 +5460,6 @@ BOOL EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bShowInfo
 
   if (iCount <= 0)
     return FALSE;
-
-  int iTargetEnd = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
-
-  if (SciCall_GetSelectionEnd() < iTargetEnd) {
-
-    int iAnchorPos = SciCall_GetAnchor();
-    int iCurrentPos = SciCall_GetCurrentPos();
-
-    if (iAnchorPos > iCurrentPos)
-      iAnchorPos = iTargetEnd;
-    else
-      iCurrentPos = iTargetEnd;
-
-    EditSelectEx(hwnd,iAnchorPos,iCurrentPos);
-  }
 
   return TRUE;
 }
