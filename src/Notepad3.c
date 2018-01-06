@@ -5672,19 +5672,17 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
             }
 
-            if (scn->linesAdded != 0) {
-              UpdateLineNumberWidth();
-            }
-
-            UpdateToolbar();
-
             if (iMarkOccurrences) {
               EditClearAllMarks(g_hwndEdit, 0, -1);
               MarkAllOccurrences(0);
             }
-            UpdateStatusbar();
 
             bModified = TRUE;
+            if (scn->linesAdded != 0) {
+              UpdateLineNumberWidth();
+            }
+            UpdateToolbar();
+            UpdateStatusbar();
           }
           break;
 
