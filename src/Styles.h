@@ -84,6 +84,8 @@ BOOL   Style_GetUse2ndDefault();
 BOOL   Style_SetUse2ndDefault(int); // in:BOOL
 int    Style_GetBaseFontSize(HWND);
 int    Style_SetBaseFontSize(HWND,int);
+int    Style_GetCurrentFontSize(HWND);
+int    Style_SetCurrentFontSize(HWND, int);
 void   Style_SetIndentGuides(HWND,BOOL);
 BOOL   Style_GetOpenDlgFilterStr(LPWSTR,int);
 BOOL   Style_StrGetFont(LPCWSTR,LPWSTR,int);
@@ -96,7 +98,7 @@ BOOL   Style_StrGetCase(LPCWSTR,int*);
 BOOL   Style_StrGetAlpha(LPCWSTR,int*,BOOL);
 BOOL   Style_GetIndicatorType(LPWSTR,int,int*);
 void   Style_CopyStyles_IfNotDefined(LPWSTR, LPWSTR, int);
-BOOL   Style_SelectFont(HWND,LPWSTR,int,BOOL,BOOL,BOOL);
+BOOL   Style_SelectFont(HWND,LPWSTR,int,BOOL,BOOL,BOOL,BOOL);
 BOOL   Style_SelectColor(HWND,BOOL,LPWSTR,int,BOOL);
 void   Style_SetStyles(HWND,int,LPCWSTR);
 void   Style_SetFontQuality(HWND,LPCWSTR);
