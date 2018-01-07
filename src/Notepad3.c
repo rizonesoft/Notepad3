@@ -4330,6 +4330,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (bMarkOccurrencesMatchWords) {
         bMarkOccurrencesCurrentWord = FALSE;
       }
+      if (bMarkOccurrencesMatchWords || bMarkOccurrencesCurrentWord) {
+        CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, TRUE);
+      }
+      else {
+        CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, FALSE);
+      }
       EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
       break;
@@ -4338,6 +4344,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       bMarkOccurrencesCurrentWord = (bMarkOccurrencesCurrentWord) ? FALSE : TRUE;
       if (bMarkOccurrencesCurrentWord) {
         bMarkOccurrencesMatchWords = FALSE;
+      }
+      if (bMarkOccurrencesMatchWords || bMarkOccurrencesCurrentWord) {
+        CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, TRUE);
+      }
+      else {
+        CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, FALSE);
       }
       EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);

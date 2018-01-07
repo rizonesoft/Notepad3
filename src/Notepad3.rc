@@ -300,7 +300,7 @@ BEGIN
         MENUITEM "Hyperlink Hotspots\tCtrl+Alt+H", IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Visual &Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         MENUITEM "Highlight C&urrent Line\tCtrl+Shift+I", IDM_VIEW_HILITECURRENTLINE
-        POPUP "Mar&k Occurrences"
+        POPUP "Mark &Occurrences"
         BEGIN
             MENUITEM "&Active",                     IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
@@ -310,7 +310,7 @@ BEGIN
             POPUP "Match &Whole Word Only"
             BEGIN
               MENUITEM "Match &Selected Word",      IDM_VIEW_MARKOCCUR_WORD
-              MENUITEM "Match Cu&rrent Word",       IDM_VIEW_MARKOCCUR_CURRENT
+              MENUITEM "Match &Current Word",       IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
