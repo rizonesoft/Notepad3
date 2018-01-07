@@ -2410,12 +2410,25 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, iMarkOccurrences != 0);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, bMarkOccurrencesMatchCase);
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, bMarkOccurrencesMatchWords);
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, bMarkOccurrencesCurrentWord && !bMarkOccurrencesMatchWords);
-  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, iMarkOccurrences != 0);
-  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, iMarkOccurrences != 0);
-  EnableCmd(hmenu,IDM_VIEW_MARKOCCUR_WORD,iMarkOccurrences != 0);
-  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, iMarkOccurrences != 0);
+
+  if (bMarkOccurrencesMatchWords)
+    i = IDM_VIEW_MARKOCCUR_WORD;
+  else if (bMarkOccurrencesCurrentWord)
+    i = IDM_VIEW_MARKOCCUR_CURRENT;
+  else
+    i = IDM_VIEW_MARKOCCUR_WNONE;
+
+  CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
+  CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
+
+  i = (int)(iMarkOccurrences != 0);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
+  EnableCmd(hmenu,IDM_VIEW_MARKOCCUR_WORD, i);
+  EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, i);
+  EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, i);
+
 
   CheckCmd(hmenu,IDM_VIEW_SHOWWHITESPACE,bViewWhiteSpace);
   CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,bViewEOLs);
@@ -4325,20 +4338,23 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       MarkAllOccurrences(0);
       break;
 
+    case IDM_VIEW_MARKOCCUR_WNONE:
+      bMarkOccurrencesMatchWords = FALSE;
+      bMarkOccurrencesCurrentWord = FALSE;
+      EditClearAllMarks(g_hwndEdit, 0, -1);
+      MarkAllOccurrences(0);
+      break;
+
     case IDM_VIEW_MARKOCCUR_WORD:
-      bMarkOccurrencesMatchWords = (bMarkOccurrencesMatchWords) ? FALSE : TRUE;
-      if (bMarkOccurrencesMatchWords) {
-        bMarkOccurrencesCurrentWord = FALSE;
-      }
+      bMarkOccurrencesMatchWords = TRUE;
+      bMarkOccurrencesCurrentWord = FALSE;
       EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
-      bMarkOccurrencesCurrentWord = (bMarkOccurrencesCurrentWord) ? FALSE : TRUE;
-      if (bMarkOccurrencesCurrentWord) {
-        bMarkOccurrencesMatchWords = FALSE;
-      }
+      bMarkOccurrencesCurrentWord = TRUE;
+      bMarkOccurrencesMatchWords = FALSE;
       EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
       break;
@@ -5672,19 +5688,17 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
             }
 
-            if (scn->linesAdded != 0) {
-              UpdateLineNumberWidth();
-            }
-
-            UpdateToolbar();
-
             if (iMarkOccurrences) {
               EditClearAllMarks(g_hwndEdit, 0, -1);
               MarkAllOccurrences(0);
             }
-            UpdateStatusbar();
 
             bModified = TRUE;
+            if (scn->linesAdded != 0) {
+              UpdateLineNumberWidth();
+            }
+            UpdateToolbar();
+            UpdateStatusbar();
           }
           break;
 
