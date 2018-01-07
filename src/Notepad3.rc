@@ -309,6 +309,7 @@ BEGIN
             MENUITEM "Match &Case Sensitive",       IDM_VIEW_MARKOCCUR_CASE
             POPUP "Match &Whole Word Only"
             BEGIN
+              MENUITEM "OFF"                        IDM_VIEW_MARKOCCUR_WNONE
               MENUITEM "Match &Selected Word",      IDM_VIEW_MARKOCCUR_WORD
               MENUITEM "Match &Current Word",       IDM_VIEW_MARKOCCUR_CURRENT
             END
