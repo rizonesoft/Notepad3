@@ -3259,11 +3259,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   if (g_pLexCurrent != &lexStandard) 
   {
     WCHAR* wchCurrentLexerStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
+    // merge lexer styles
+    Style_SetStyles(hwnd, STYLE_DEFAULT, wchCurrentLexerStyleStrg);
     // use this font size as new base
     Style_StrGetSize(wchCurrentLexerStyleStrg, &iBaseFontSize);
     Style_SetCurrentFontSize(hwnd, iBaseFontSize);
-    // merge lexer styles
-    Style_SetStyles(hwnd, STYLE_DEFAULT, wchCurrentLexerStyleStrg);
     EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, TRUE);
   }
   else {
@@ -4158,7 +4158,8 @@ void Style_SetDefaultFont(HWND hwnd, BOOL bGlobalDefault)
   BOOL bIsCurrentDefault = (pLexer->Styles[iStyle].rid == 63126);
        //(StringCchCompareIX(pLexer->Styles[iStyle].pszName, L"Default") == 0);
 
-  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), bIsGlobalDefault, bIsCurrentDefault, FALSE, TRUE))
+  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), pLexer->pszName, pLexer->Styles[iStyle].pszName,
+                       bIsGlobalDefault, bIsCurrentDefault, FALSE, TRUE))
   {
     // set new styles to current lexer's default text
     StringCchCopyW(pLexer->Styles[iStyle].szValue, COUNTOF(pLexer->Styles[iStyle].szValue), newStyle);
@@ -4776,15 +4777,9 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
 }
 
 
-
-static const WCHAR* FontSelTitle1 = L"Global Default Font";
-static const WCHAR* FontSelTitle2 = L"Current Scheme's Default Font";
-static const WCHAR* FontSelTitle3 = L"++ Global Default Font ++";
-static const WCHAR* FontSelTitle4 = L"++ Current Scheme's Default Font ++";
-
+/// Callback to set the font dialog's title
 static  WCHAR FontSelTitle[128];
 
-/// Callback to set the font dialog's title
 static UINT CALLBACK Style_FontDialogHook(
   HWND hdlg,      // handle to the dialog box window
   UINT uiMsg,     // message identifier
@@ -4803,7 +4798,7 @@ static UINT CALLBACK Style_FontDialogHook(
 //
 //  Style_SelectFont()
 //
-BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
+BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerName, LPCWSTR sStyleName,
                       BOOL bGlobalDefaultStyle, BOOL bCurrentDefaultStyle, 
                       BOOL bWithEffects, BOOL bPreserveStyles)
 {
@@ -4883,23 +4878,21 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,
 
   if (bGlobalDefaultStyle) {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), 
-        L" +++ Global (%s) %s Font +++", (Style_GetUse2ndDefault() ? L"2nd Scheme" : L"1st Scheme"), lexStandard.pszName);
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ BASE (%s) +++", sStyleName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), 
-        L" Global (%s) %s Font", (Style_GetUse2ndDefault() ? L"2nd Scheme" : L"1st Scheme"), lexStandard.pszName);
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" BASE (%s)", sStyleName);
   }
   else if (bCurrentDefaultStyle) {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ Default %s Font +++", g_pLexCurrent->pszName);
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ %s: %s Style +++", sLexerName, sStyleName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" Default %s Font", g_pLexCurrent->pszName);
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" %s: %s Style", sLexerName, sStyleName);
   }
   else {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ %s Font +++", g_pLexCurrent->pszName);
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ Style '%s' (%s) +++", sStyleName, sLexerName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" %s Font", g_pLexCurrent->pszName);
+      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" Style '%s' (%s)", sStyleName, sLexerName);
   }
 
   if (bWithEffects)
@@ -5157,7 +5150,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   }
 
   // Size values are relative to iBaseFontSize
-  int  iValue = (g_pLexCurrent == &lexStandard) ? INITIAL_BASE_FONT_SIZE : Style_GetBaseFontSize(hwnd);
+  int  iValue = (g_pLexCurrent == &lexStandard) ? Style_GetBaseFontSize(hwnd) : Style_GetCurrentFontSize(hwnd);
   if (Style_StrGetSize(lpszStyle, &iValue)) {
     SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (LPARAM)iValue);
     //or Fractional
@@ -5371,6 +5364,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
   static HBRUSH hbrFore;
   static HBRUSH hbrBack;
 
+  static WCHAR lastSelectedLexer[128];
+
   switch(umsg)
   {
 
@@ -5401,7 +5396,9 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
               Style_AddLexerToTreeView(hwndTV,pLexArray[i]);
         }
 
+        pCurrentLexer = NULL;
         pCurrentStyle = NULL;
+        StringCchCopyW(lastSelectedLexer, COUNTOF(lastSelectedLexer), L"");
 
         //SetExplorerTheme(hwndTV);
         //TreeView_Expand(hwndTV,TreeView_GetRoot(hwndTV),TVE_EXPAND);
@@ -5447,9 +5444,9 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
 
           case TVN_SELCHANGED:
             {
-              if (pCurrentStyle)
-                GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue));
-
+              if (pCurrentStyle) {
+                GetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue));
+              }
               else if (pCurrentLexer) {
                 WCHAR szBuf[BUFZIZE_STYLE_EXTENTIONS] = { L'\0' };
                 if (GetDlgItemText(hwnd, IDC_STYLEEDIT, szBuf, COUNTOF(szBuf))) 
@@ -5464,8 +5461,9 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 GetDlgItemText(hwnd,IDC_STYLELABELS,wch,COUNTOF(wch));
                 if (StrChr(wch,L'|')) *StrChr(wch,L'|') = L'\0';
 
-                pCurrentStyle = 0;
+                pCurrentStyle = NULL;
                 pCurrentLexer = (PEDITLEXER)lpnmtv->itemNew.lParam;
+
                 if (pCurrentLexer)
                 {
                   SetDlgItemText(hwnd,IDC_STYLELABEL,wch);
@@ -5483,6 +5481,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                   //CheckDlgButton(hwnd,IDC_STYLEUNDERLINE,BST_UNCHECKED);
                   //CheckDlgButton(hwnd,IDC_STYLEEOLFILLED,BST_UNCHECKED);
                   SetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentLexer->szExtensions);
+                  StringCchCopyW(lastSelectedLexer, COUNTOF(lastSelectedLexer), pCurrentLexer->pszName);
                 }
                 else
                 {
@@ -5513,8 +5512,9 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 if (StrChr(wch,L'|')) *StrChr(wch,L'|') = L'\0';
 
 
-                pCurrentLexer = 0;
+                pCurrentLexer = NULL;
                 pCurrentStyle = (PEDITSTYLE)lpnmtv->itemNew.lParam;
+
                 if (pCurrentStyle)
                 {
                   SetDlgItemText(hwnd,IDC_STYLELABEL,StrEnd(wch)+1);
@@ -5677,7 +5677,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             BOOL bIsCurrentDefault = (pCurrentStyle->rid == 63126);
               //(StringCchCompareIX(pCurrentStyle->pszName, L"Default") == 0);
 
-            if (Style_SelectFont(hwnd,tch,COUNTOF(tch), bIsGlobalDefault, bIsCurrentDefault, FALSE, TRUE))   {
+            if (Style_SelectFont(hwnd,tch,COUNTOF(tch), lastSelectedLexer, pCurrentStyle->pszName, 
+                                 bIsGlobalDefault, bIsCurrentDefault, FALSE, TRUE))   {
               SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
             }
           }
