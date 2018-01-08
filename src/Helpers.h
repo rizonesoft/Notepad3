@@ -155,8 +155,12 @@ LRESULT SendWMSize(HWND);
 
 BOOL IsCmdEnabled(HWND, UINT);
 
-#define EnableCmd(hmenu,id,b) EnableMenuItem(hmenu,id,(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
-#define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
+#define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
+#define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
+
+#define EnableCmdPos(hmenu,pos,b) EnableMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_ENABLED:MF_BYPOSITION|MF_GRAYED)
+#define CheckCmdPos(hmenu,pos,b)  CheckMenuItem((hmenu),(pos),(b)?MF_BYPOSITION|MF_CHECKED:MF_BYPOSITION|MF_UNCHECKED)
+
 
 #define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, FALSE); } }; EnableWindow(hctrl, (b)); }
