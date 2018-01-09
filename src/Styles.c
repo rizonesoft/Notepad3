@@ -3736,7 +3736,7 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
     const WCHAR* lpszStyleHotSpot = lexStandard.Styles[STDLEXID(STY_URL_HOTSPOT)].szValue;
 
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)TRUE);
-    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
+    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, FALSE, 0);
 
     // Font
     Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
@@ -3765,6 +3765,7 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
 
     Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
     
+    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)FALSE);
   }
 

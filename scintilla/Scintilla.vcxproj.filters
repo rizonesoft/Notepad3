@@ -441,6 +441,9 @@
     <ClCompile Include="..\onigmo\st.c">
       <Filter>onigmo</Filter>
     </ClCompile>
+    <ClCompile Include="lexers\LexNim.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
