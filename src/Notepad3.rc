@@ -12,7 +12,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Englisch (USA) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -309,9 +309,9 @@ BEGIN
             MENUITEM "Match &Case Sensitive",       IDM_VIEW_MARKOCCUR_CASE
             POPUP "Match &Whole Word Only"
             BEGIN
-              MENUITEM "OFF"                        IDM_VIEW_MARKOCCUR_WNONE
-              MENUITEM "Match &Selected Word",      IDM_VIEW_MARKOCCUR_WORD
-              MENUITEM "Match &Current Word",       IDM_VIEW_MARKOCCUR_CURRENT
+                MENUITEM "OFF",                         IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "Match &Selected Word",        IDM_VIEW_MARKOCCUR_WORD
+                MENUITEM "Match &Current Word",         IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
@@ -817,30 +817,31 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP3,7,117,10,10
 END
 
-IDD_STYLECONFIG DIALOGEX 0, 0, 468, 238
+IDD_STYLECONFIG DIALOGEX 0, 0, 467, 254
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Customize Schemes"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,224
-    LTEXT           "",IDC_STYLELABEL,182,144,279,8
-    EDITTEXT        IDC_STYLEEDIT,182,156,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "For&e...",IDC_STYLEFORE,181,174,46,14
-    PUSHBUTTON      "&Back...",IDC_STYLEBACK,232,174,46,14
-    PUSHBUTTON      "&Font...",IDC_STYLEFONT,283,174,42,14
-    PUSHBUTTON      "&Preview",IDC_PREVIEW,330,174,42,14
-    PUSHBUTTON      "&Reset",IDC_STYLEDEFAULT,377,174,42,14
-    PUSHBUTTON      "",IDC_PREVSTYLE,426,174,15,14
-    PUSHBUTTON      "",IDC_NEXTSTYLE,446,174,15,14
-    PUSHBUTTON      "&Import...",IDC_IMPORT,181,217,50,14
-    PUSHBUTTON      "E&xport...",IDC_EXPORT,237,217,50,14
-    DEFPUSHBUTTON   "OK",IDOK,355,217,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,411,217,50,14
-    GROUPBOX        "Info",IDC_STATIC,181,7,280,127
+    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,240
+    LTEXT           "",IDC_STYLELABEL,181,171,279,8
+    PUSHBUTTON      "For&e...",IDC_STYLEFORE,181,201,46,14
+    PUSHBUTTON      "&Back...",IDC_STYLEBACK,232,201,46,14
+    PUSHBUTTON      "&Font...",IDC_STYLEFONT,283,201,42,14
+    PUSHBUTTON      "&Preview",IDC_PREVIEW,330,201,42,14
+    PUSHBUTTON      "&Reset",IDC_STYLEDEFAULT,377,201,42,14
+    PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14
+    PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14
+    PUSHBUTTON      "&Import...",IDC_IMPORT,181,233,50,14
+    PUSHBUTTON      "E&xport...",IDC_EXPORT,237,233,50,14
+    DEFPUSHBUTTON   "OK",IDOK,355,233,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,410,233,50,14
+    GROUPBOX        "Info",IDC_STATIC,180,7,280,127
     ICON            IDI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Customize Schemes",IDC_TITLE,220,25,200,12
     LTEXT           "Filename extensions must be separated by ;\n\nStyle format:\nfont:Name;size:nn;bold;italic;underline;fore:#ffffff;back:#bbbbbb;eolfilled\n\nStyle properties can be copied using copy and paste or drag and drop.\n\nThe ""Preview"" button will not apply any changes.",IDC_STATIC,197,50,252,70
-    LTEXT           "Associated file&name extensions:|Style &settings:",IDC_STYLELABELS,315,230,152,8,NOT WS_VISIBLE
+    EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
+    LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
 END
 
 IDD_TABSETTINGS DIALOGEX 0, 0, 174, 90
@@ -1240,9 +1241,9 @@ BEGIN
     IDD_STYLECONFIG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 461
+        RIGHTMARGIN, 460
         TOPMARGIN, 7
-        BOTTOMMARGIN, 231
+        BOTTOMMARGIN, 247
     END
 
     IDD_TABSETTINGS, DIALOG
@@ -1400,6 +1401,10 @@ END
 STRINGTABLE
 BEGIN
     IDS_PASS_FAILURE        "The passphrase is incorrect."
+END
+
+STRINGTABLE
+BEGIN
     IDS_NOPASS              "Cancelled - no passphrase."
 END
 
@@ -1448,7 +1453,6 @@ BEGIN
     IDT_EDIT_CUT            "Cut"
     IDT_EDIT_COPY           "Copy"
     IDT_EDIT_PASTE          "Paste"
-    IDT_EDIT_CLEAR          "Delete"
     IDT_EDIT_FIND           "Find"
     IDT_EDIT_REPLACE        "Replace"
     IDT_VIEW_WORDWRAP       "Word Wrap"
@@ -1459,6 +1463,7 @@ BEGIN
     IDT_FILE_EXIT           "Exit"
     IDT_FILE_SAVEAS         "Save As"
     IDT_FILE_SAVECOPY       "Save Copy"
+    IDT_EDIT_CLEAR          "Delete"
 END
 
 STRINGTABLE
@@ -1917,12 +1922,12 @@ BEGIN
     63265                   "2nd Hyperlink Hotspots"
 END
 
-#endif    // Englisch (USA) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Deutsch (Schweiz) resources
+// German (Switzerland) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
@@ -1951,7 +1956,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Deutsch (Schweiz) resources
+#endif    // German (Switzerland) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
