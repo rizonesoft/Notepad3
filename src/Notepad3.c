@@ -1307,6 +1307,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+
   if (iWordWrapIndent == 5)
     SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
   else if (iWordWrapIndent == 6)
@@ -1347,6 +1348,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     SendMessage(g_hwndEdit,SCI_SETEDGEMODE,(iLongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
   else
     SendMessage(g_hwndEdit,SCI_SETEDGEMODE,EDGE_NONE,0);
+
   SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
 
   // Margins
@@ -2358,7 +2360,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY));
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM));
 
   EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING,*mEncoding[Encoding_Current(CPI_GET)].pszParseNames);
 
@@ -3776,6 +3778,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_AVS:
         case SCLEX_YAML:
         case SCLEX_COFFEESCRIPT:
+        case SCLEX_NIM:
           BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"#",TRUE);
           EndWaitCursor();
@@ -3843,6 +3846,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_YAML:
         case SCLEX_JSON:
         case SCLEX_REGISTRY:
+        case SCLEX_NIM:
           break;
         case SCLEX_HTML:
         case SCLEX_XML:
