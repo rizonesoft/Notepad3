@@ -44,6 +44,7 @@
 extern HINSTANCE g_hInstance;
 
 extern HWND g_hwndMain;
+extern HWND g_hwndEdit;
 
 extern int iSciFontQuality;
 extern const int FontQuality[4];
@@ -3134,6 +3135,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     pLexNew = &lexStandard;
   }
 
+  // first set standard lexer's default values
+  g_pLexCurrent = &lexStandard;
+
   // Lexer 
   SendMessage(hwnd, SCI_SETLEXER, pLexNew->iLexer, 0);
 
@@ -3176,17 +3180,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     SendMessage(hwnd, SCI_SETKEYWORDS, i, (LPARAM)pLexNew->pKeyWords->pszKeyWords[i]);
   }
 
-
-  // first set standard lexer's default values
-  g_pLexCurrent = &lexStandard;
-
-  WCHAR* wchStandardStyleStrg = lexStandard.Styles[STDLEXID(STY_DEFAULT)].szValue;
-
   // Clear
   SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
 
+  WCHAR* wchStandardStyleStrg = lexStandard.Styles[STDLEXID(STY_DEFAULT)].szValue;
+
   // Idle Styling (very large text)
-  //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
+  SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
 
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
@@ -3223,7 +3223,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   int iBaseFontSize = INITIAL_BASE_FONT_SIZE; // init
   Style_StrGetSize(wchStandardStyleStrg, &iBaseFontSize);
-  Style_SetBaseFontSize(hwnd, iBaseFontSize); // apply
+  Style_SetBaseFontSize(hwnd, iBaseFontSize);
   Style_SetCurrentFontSize(hwnd, iBaseFontSize);
   
   if (!Style_StrGetCharSet(wchStandardStyleStrg, &iValue)) {
@@ -3248,20 +3248,17 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     SendMessage(hwnd, SCI_STYLESETEOLFILLED, STYLE_DEFAULT, (LPARAM)FALSE);
 
 
-    // ---  apply default style  ---
+  // ---  apply default style  ---
   Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg);
 
   // ---  apply current scheme specific settings to default style  ---
-
-  // global define current lexer
-  g_pLexCurrent = pLexNew;
-
-  if (g_pLexCurrent != &lexStandard) 
+  if (pLexNew != &lexStandard)
   {
-    WCHAR* wchCurrentLexerStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
+    WCHAR* wchCurrentLexerStyleStrg = pLexNew->Styles[STY_DEFAULT].szValue;
     // merge lexer styles
     Style_SetStyles(hwnd, STYLE_DEFAULT, wchCurrentLexerStyleStrg);
-    // use this font size as new base
+    // use this font size as current lexer's base
+    iBaseFontSize = Style_GetBaseFontSize(hwnd);
     Style_StrGetSize(wchCurrentLexerStyleStrg, &iBaseFontSize);
     Style_SetCurrentFontSize(hwnd, iBaseFontSize);
     EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, TRUE);
@@ -3277,7 +3274,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   // --------------------------------------------------------------------------
 
   Style_SetStyles(hwnd, lexStandard.Styles[STDLEXID(STY_MARGIN)].iStyle,
-                  lexStandard.Styles[STDLEXID(STY_MARGIN)].szValue); // linenumber
+                  lexStandard.Styles[STDLEXID(STY_MARGIN)].szValue); // line number
 
   if (bUseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, lexStandard.Styles[STDLEXID(STY_BRACE_OK)].iStyle,
@@ -3521,7 +3518,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     int iDescent = 0;
     int iValAdj = min(max(iValue,0),64);
     if (iValAdj != iValue)
-      StringCchPrintf(lexStandard.Styles[STDLEXID(STY_X_LN_SPACE)].szValue, COUNTOF(lexStandard.Styles[STDLEXID(STY_X_LN_SPACE)].szValue), L"size:%i", iValAdj);
+      StringCchPrintf(lexStandard.Styles[STDLEXID(STY_X_LN_SPACE)].szValue, 
+                      COUNTOF(lexStandard.Styles[STDLEXID(STY_X_LN_SPACE)].szValue), L"size:%i", iValAdj);
 
     if ((iValAdj % 2) != 0) {
       iAscent++;
@@ -3573,58 +3571,60 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   if (SendMessage(hwnd,SCI_GETINDENTATIONGUIDES,0,0) != SC_IV_NONE)
     Style_SetIndentGuides(hwnd,TRUE);
 
+  // here: global define current lexer (used in subsequent calls)
+  g_pLexCurrent = pLexNew;
 
-  if (pLexNew->iLexer != SCLEX_NULL || pLexNew == &lexANSI)
+  if (g_pLexCurrent->iLexer != SCLEX_NULL || g_pLexCurrent == &lexANSI)
   {
     int j;
     int i = 1; // don't re-apply lexers default style
-    while (pLexNew->Styles[i].iStyle != -1) 
+    while (g_pLexCurrent->Styles[i].iStyle != -1) 
     {
-      for (j = 0; j < 4 && (pLexNew->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
-        Style_SetStyles(hwnd, pLexNew->Styles[i].iStyle8[j], pLexNew->Styles[i].szValue);
+      for (j = 0; j < 4 && (g_pLexCurrent->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
+        Style_SetStyles(hwnd, g_pLexCurrent->Styles[i].iStyle8[j], g_pLexCurrent->Styles[i].szValue);
       }
 
-      if (pLexNew->iLexer == SCLEX_HTML && pLexNew->Styles[i].iStyle8[0] == SCE_HPHP_DEFAULT) {
+      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HPHP_DEFAULT) {
         int iRelated[] = { SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING, SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER,
                            SCE_HPHP_OPERATOR, SCE_HPHP_VARIABLE, SCE_HPHP_HSTRING_VARIABLE, SCE_HPHP_COMPLEX_VARIABLE };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if (pLexNew->iLexer == SCLEX_HTML && pLexNew->Styles[i].iStyle8[0] == SCE_HJ_DEFAULT) {
+      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HJ_DEFAULT) {
         int iRelated[] = { SCE_HJ_COMMENT, SCE_HJ_COMMENTLINE, SCE_HJ_COMMENTDOC, SCE_HJ_KEYWORD, SCE_HJ_WORD, SCE_HJ_DOUBLESTRING,
                            SCE_HJ_SINGLESTRING, SCE_HJ_STRINGEOL, SCE_HJ_REGEX, SCE_HJ_NUMBER, SCE_HJ_SYMBOLS };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if (pLexNew->iLexer == SCLEX_HTML && pLexNew->Styles[i].iStyle8[0] == SCE_HJA_DEFAULT) {
+      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HJA_DEFAULT) {
         int iRelated[] = { SCE_HJA_COMMENT, SCE_HJA_COMMENTLINE, SCE_HJA_COMMENTDOC, SCE_HJA_KEYWORD, SCE_HJA_WORD, SCE_HJA_DOUBLESTRING,
                            SCE_HJA_SINGLESTRING, SCE_HJA_STRINGEOL, SCE_HJA_REGEX, SCE_HJA_NUMBER, SCE_HJA_SYMBOLS };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if (pLexNew->iLexer == SCLEX_HTML && pLexNew->Styles[i].iStyle8[0] == SCE_HB_DEFAULT) {
+      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HB_DEFAULT) {
         int iRelated[] = { SCE_HB_COMMENTLINE, SCE_HB_WORD, SCE_HB_IDENTIFIER, SCE_HB_STRING, SCE_HB_STRINGEOL, SCE_HB_NUMBER };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if (pLexNew->iLexer == SCLEX_HTML && pLexNew->Styles[i].iStyle8[0] == SCE_HBA_DEFAULT) {
+      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HBA_DEFAULT) {
         int iRelated[] = { SCE_HBA_COMMENTLINE, SCE_HBA_WORD, SCE_HBA_IDENTIFIER, SCE_HBA_STRING, SCE_HBA_STRINGEOL, SCE_HBA_NUMBER };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if ((pLexNew->iLexer == SCLEX_HTML || pLexNew->iLexer == SCLEX_XML) && pLexNew->Styles[i].iStyle8[0] == SCE_H_SGML_DEFAULT) {
+      if ((g_pLexCurrent->iLexer == SCLEX_HTML || g_pLexCurrent->iLexer == SCLEX_XML) && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_SGML_DEFAULT) {
         int iRelated[] = { SCE_H_SGML_COMMAND, SCE_H_SGML_1ST_PARAM, SCE_H_SGML_DOUBLESTRING, SCE_H_SGML_SIMPLESTRING, SCE_H_SGML_ERROR,
                            SCE_H_SGML_SPECIAL, SCE_H_SGML_ENTITY, SCE_H_SGML_COMMENT, SCE_H_SGML_1ST_PARAM_COMMENT, SCE_H_SGML_BLOCK_DEFAULT };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if ((pLexNew->iLexer == SCLEX_HTML || pLexNew->iLexer == SCLEX_XML) && pLexNew->Styles[i].iStyle8[0] == SCE_H_CDATA) {
+      if ((g_pLexCurrent->iLexer == SCLEX_HTML || g_pLexCurrent->iLexer == SCLEX_XML) && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_CDATA) {
         int iRelated[] = { SCE_HP_START, SCE_HP_DEFAULT, SCE_HP_COMMENTLINE, SCE_HP_NUMBER, SCE_HP_STRING,
                            SCE_HP_CHARACTER, SCE_HP_WORD, SCE_HP_TRIPLE, SCE_HP_TRIPLEDOUBLE, SCE_HP_CLASSNAME,
                            SCE_HP_DEFNAME, SCE_HP_OPERATOR, SCE_HP_IDENTIFIER, SCE_HPA_START, SCE_HPA_DEFAULT,
@@ -3632,10 +3632,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
                            SCE_HPA_TRIPLE, SCE_HPA_TRIPLEDOUBLE, SCE_HPA_CLASSNAME, SCE_HPA_DEFNAME, SCE_HPA_OPERATOR,
                            SCE_HPA_IDENTIFIER };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if (pLexNew->iLexer == SCLEX_XML && pLexNew->Styles[i].iStyle8[0] == SCE_H_CDATA) {
+      if (g_pLexCurrent->iLexer == SCLEX_XML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_CDATA) {
         int iRelated[] = { SCE_H_SCRIPT, SCE_H_ASP, SCE_H_ASPAT, SCE_H_QUESTION,
                            SCE_HPHP_DEFAULT, SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING,
                            SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER, SCE_HPHP_OPERATOR, SCE_HPHP_VARIABLE,
@@ -3654,19 +3654,19 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
                            SCE_HPA_STRING, SCE_HPA_CHARACTER, SCE_HPA_WORD, SCE_HPA_TRIPLE, SCE_HPA_TRIPLEDOUBLE,
                            SCE_HPA_CLASSNAME, SCE_HPA_DEFNAME, SCE_HPA_OPERATOR, SCE_HPA_IDENTIFIER };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if (pLexNew->iLexer == SCLEX_CPP && pLexNew->Styles[i].iStyle8[0] == SCE_C_COMMENT) {
+      if (g_pLexCurrent->iLexer == SCLEX_CPP && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_C_COMMENT) {
         int iRelated[] = { SCE_C_COMMENTLINE, SCE_C_COMMENTDOC, SCE_C_COMMENTLINEDOC, SCE_C_COMMENTDOCKEYWORD, SCE_C_COMMENTDOCKEYWORDERROR };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
 
-      if (pLexNew -> iLexer == SCLEX_SQL && pLexNew->Styles[i].iStyle8[0] == SCE_SQL_COMMENT) {
+      if (g_pLexCurrent -> iLexer == SCLEX_SQL && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_SQL_COMMENT) {
         int iRelated[] = { SCE_SQL_COMMENTLINE, SCE_SQL_COMMENTDOC, SCE_SQL_COMMENTLINEDOC, SCE_SQL_COMMENTDOCKEYWORD, SCE_SQL_COMMENTDOCKEYWORDERROR };
         for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],pLexNew->Styles[i].szValue);
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
       }
       i++;
     }
@@ -4816,12 +4816,12 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (!Style_StrGetCharSet(lpszStyle, &iCharSet)) {
     iCharSet = iDefaultCharSet;
   }
-  
-  const int iBaseFontSize = (bGlobalDefaultStyle ? INITIAL_BASE_FONT_SIZE : 
-    (bCurrentDefaultStyle ? Style_GetBaseFontSize(hwnd) : Style_GetCurrentFontSize(hwnd)));
-
+    
   // is "size:" definition relative ?
   BOOL bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
+
+  const int iBaseFontSize = (bGlobalDefaultStyle ? INITIAL_BASE_FONT_SIZE :
+    (bCurrentDefaultStyle ? Style_GetBaseFontSize(hwnd) : Style_GetCurrentFontSize(hwnd)));
 
   // Font Height
   int iFontHeight = 0;
@@ -5645,46 +5645,21 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
       break;
 
 
+    #define COPY_DIALOG_ITEM_TEXT(_IDC) \
+      if (pCurrentStyle) { \
+        GetDlgItemText(hwnd, _IDC, pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue)); \
+      } \
+      else if (pCurrentLexer) { \
+        if (!GetDlgItemText(hwnd, _IDC, pCurrentLexer->szExtensions, COUNTOF(pCurrentLexer->szExtensions))) { \
+          StringCchCopy(pCurrentLexer->szExtensions, COUNTOF(pCurrentLexer->szExtensions), pCurrentLexer->pszDefExt); \
+        } \
+      }
+
+
     case WM_COMMAND:
 
       switch(LOWORD(wParam))
       {
-
-        case IDC_PREVSTYLE:
-          if (TreeView_GetSelection(hwndTV))
-            TreeView_Select(hwndTV,TreeView_GetPrevVisible(hwndTV,
-              TreeView_GetSelection(hwndTV)),TVGN_CARET);
-          PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
-          break;
-
-        case IDC_NEXTSTYLE:
-          if (TreeView_GetSelection(hwndTV))
-            TreeView_Select(hwndTV,TreeView_GetNextVisible(hwndTV,
-              TreeView_GetSelection(hwndTV)),TVGN_CARET);
-          PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
-          break;
-
-        case IDC_STYLEFONT:
-          if (pCurrentStyle)
-          {
-            WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-            GetDlgItemText(hwnd,IDC_STYLEEDIT,tch,COUNTOF(tch));
-
-            BOOL bIsGlobalDefault = ((pCurrentStyle->rid == 63100) || (pCurrentStyle->rid == 63112));
-              //(StringCchCompareIX(pCurrentStyle->pszName, L"Default Style") == 0) || 
-              //(StringCchCompareIX(pCurrentStyle->pszName, L"2nd Default Style") == 0);
-
-            BOOL bIsCurrentDefault = (pCurrentStyle->rid == 63126);
-              //(StringCchCompareIX(pCurrentStyle->pszName, L"Default") == 0);
-
-            if (Style_SelectFont(hwnd,tch,COUNTOF(tch), lastSelectedLexer, pCurrentStyle->pszName, 
-                                 bIsGlobalDefault, bIsCurrentDefault, FALSE, TRUE))   {
-              SetDlgItemText(hwnd,IDC_STYLEEDIT,tch);
-            }
-          }
-          PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
-          break;
-
         case IDC_STYLEFORE:
           if (pCurrentStyle)
           {
@@ -5707,6 +5682,26 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             }
           }
           PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
+          break;
+
+        case IDC_STYLEFONT:
+          if (pCurrentStyle) {
+            WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+            GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
+
+            BOOL bIsGlobalDefault = ((pCurrentStyle->rid == 63100) || (pCurrentStyle->rid == 63112));
+            //(StringCchCompareIX(pCurrentStyle->pszName, L"Default Style") == 0) || 
+            //(StringCchCompareIX(pCurrentStyle->pszName, L"2nd Default Style") == 0);
+
+            BOOL bIsCurrentDefault = (pCurrentStyle->rid == 63126);
+            //(StringCchCompareIX(pCurrentStyle->pszName, L"Default") == 0);
+
+            if (Style_SelectFont(hwnd, tch, COUNTOF(tch), lastSelectedLexer, pCurrentStyle->pszName,
+                                 bIsGlobalDefault, bIsCurrentDefault, FALSE, TRUE)) {
+              SetDlgItemText(hwnd, IDC_STYLEEDIT, tch);
+            }
+          }
+          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           break;
 
         case IDC_STYLEDEFAULT:
@@ -5745,15 +5740,9 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           {
             hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
 
-            if (pCurrentStyle)
-              GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue));
-            else if (pCurrentLexer) {
-              if (!GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions)))
-                StringCchCopy(pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions),pCurrentLexer->pszDefExt);
-            }
+            COPY_DIALOG_ITEM_TEXT(IDC_STYLEEDIT);
 
             if (Style_Import(hwnd)) {
-
               if (pCurrentStyle)
                 SetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue);
               else if (pCurrentLexer)
@@ -5766,40 +5755,43 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
 
         case IDC_EXPORT:
           {
-            if (pCurrentStyle)
-              GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue));
-            else if (pCurrentLexer) {
-              if (!GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions)))
-                StringCchCopy(pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions),pCurrentLexer->pszDefExt);
-            }
-
+            COPY_DIALOG_ITEM_TEXT(IDC_STYLEEDIT);
             Style_Export(hwnd);
           }
           break;
 
         case IDC_PREVIEW:
           {
-            // Hack from outside
-            extern HWND g_hwndEdit;
-
-            if (pCurrentStyle)
-              GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue));
-            else if (pCurrentLexer) {
-              if (!GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions)))
-                StringCchCopy(pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions),pCurrentLexer->pszDefExt);
-            }
-            Style_SetLexer(g_hwndEdit,g_pLexCurrent);
+            COPY_DIALOG_ITEM_TEXT(IDC_STYLEEDIT);
+            Style_SetLexer(g_hwndEdit, g_pLexCurrent);
             UpdateLineNumberWidth();
           }
           break;
 
+        case IDC_PREVSTYLE:
+          COPY_DIALOG_ITEM_TEXT(IDC_STYLEEDIT);
+          Style_SetLexer(g_hwndEdit, g_pLexCurrent);
+          UpdateLineNumberWidth();
+
+          if (TreeView_GetSelection(hwndTV))
+            TreeView_Select(hwndTV, TreeView_GetPrevVisible(hwndTV,
+                                                            TreeView_GetSelection(hwndTV)), TVGN_CARET);
+          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+          break;
+
+        case IDC_NEXTSTYLE:
+          COPY_DIALOG_ITEM_TEXT(IDC_STYLEEDIT);
+          Style_SetLexer(g_hwndEdit, g_pLexCurrent);
+          UpdateLineNumberWidth();
+
+          if (TreeView_GetSelection(hwndTV))
+            TreeView_Select(hwndTV, TreeView_GetNextVisible(hwndTV,
+                                                            TreeView_GetSelection(hwndTV)), TVGN_CARET);
+          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
+          break;
+
         case IDOK:
-          if (pCurrentStyle)
-            GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue));
-          else if (pCurrentLexer) {
-            if (!GetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions)))
-              StringCchCopy(pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions),pCurrentLexer->pszDefExt);
-          }
+          COPY_DIALOG_ITEM_TEXT(IDC_STYLEEDIT);
           EndDialog(hwnd,IDOK);
           break;
 
