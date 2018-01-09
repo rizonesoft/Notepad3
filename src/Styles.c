@@ -5444,7 +5444,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           StringCchCopy(szBuf, COUNTOF(szBuf), pCurrentLexer->pszDefExt); \
         } \
         if (StringCchCompareIXW(szBuf, pCurrentLexer->szExtensions) != 0) { \
-          StringCchCopyW(pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue), szBuf); \
+          StringCchCopyW(pCurrentLexer->szExtensions, COUNTOF(pCurrentLexer->szExtensions), szBuf); \
           bChgNfy = TRUE; \
         } \
       } \
@@ -5619,8 +5619,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             TreeView_Select(hwndTV,htiTarget,TVGN_CARET);
 
             // after select, this is new current item
-            StringCchCopy(pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue),tchCopy);
             SetDlgItemText(hwnd,IDC_STYLEEDIT,tchCopy);
+            APPLY_DIALOG_ITEM_TEXT;
           }
           ReleaseCapture();
           DestroyCursor(SetCursor(LoadCursor(NULL,IDC_ARROW)));
@@ -5693,13 +5693,11 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           break;
 
         case IDC_STYLEDEFAULT:
-          StringCchCopy(pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue), pCurrentStyle->pszDefault);
-          SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
-
+          SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->pszDefault);
           if (!bIsStyleSelected) {
-            StringCchCopy(pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions),pCurrentLexer->pszDefExt);
-            SetDlgItemText(hwnd,IDC_STYLEEDIT_ROOT,pCurrentLexer->szExtensions);
+            SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->pszDefExt);
           }
+          APPLY_DIALOG_ITEM_TEXT;
           PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,IDC_STYLEEDIT)),1);
           break;
 
@@ -5732,8 +5730,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
               }
               TreeView_Select(hwndTV,TreeView_GetRoot(hwndTV),TVGN_CARET);
+              Style_SetLexer(g_hwndEdit, g_pLexCurrent);
             }
-            APPLY_DIALOG_ITEM_TEXT;
           }
           break;
 
