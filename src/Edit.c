@@ -41,6 +41,7 @@
 #include "SciCall.h"
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
+//#include "../uthash/utstring.h"
 #include "helpers.h"
 #include "edit.h"
 
@@ -5363,6 +5364,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
     posPair.beg = start;
     posPair.end = end;
 
+
     utarray_push_back(ReplPosUTArray, &posPair);
 
     start = end;
@@ -5387,13 +5389,17 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
                   pPosPair = (ReplPos_t*)utarray_next(ReplPosUTArray, pPosPair)) {
 
     // redo find to get group ranges filled
-    start = (pPosPair->beg + offset);
-    end = (pPosPair->end + offset);
+    start = pPosPair->beg + offset;
+    end = iEndPos + offset;
     iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
-    if (iPos >= 0) {
+    // @@@ found same ?
+    //if ((iPos >= 0) && (start == (pPosPair->beg + offset)) && (end == (pPosPair->end + offset))) {
       SciCall_SetTargetRange(start, end);
       offset += ((int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace) - pPosPair->end + pPosPair->beg);
-    }
+    //}
+    //else {
+    //  // this should not happen !!!
+    //}
   }
 
   EndWaitCursor();
@@ -5759,9 +5765,13 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
     if (iPos < 0)
       break; // not found
 
+    int mlen = end - start;
+    if ((mlen <= 0) || ((iPos + mlen) > endPos))
+      break; // wrong match
+
     // mark this match
     SciCall_StartStyling(iPos);
-    SciCall_SetStyling((end - start), iStyle);
+    SciCall_SetStyling(mlen, iStyle);
 
     // next occurrence
     start = end;
