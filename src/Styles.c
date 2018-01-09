@@ -5431,6 +5431,28 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
       return FALSE;
 
 
+    #define APPLY_DIALOG_ITEM_TEXT { \
+      BOOL bChgNfy = FALSE; \
+      WCHAR szBuf[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)]; \
+      GetDlgItemText(hwnd, IDC_STYLEEDIT, szBuf, COUNTOF(szBuf)); \
+      if (StringCchCompareIXW(szBuf, pCurrentStyle->szValue) != 0) { \
+        StringCchCopyW(pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue), szBuf); \
+        bChgNfy = TRUE; \
+      } \
+      if (!bIsStyleSelected) { \
+        if (!GetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, szBuf, COUNTOF(szBuf))) { \
+          StringCchCopy(szBuf, COUNTOF(szBuf), pCurrentLexer->pszDefExt); \
+        } \
+        if (StringCchCompareIXW(szBuf, pCurrentLexer->szExtensions) != 0) { \
+          StringCchCopyW(pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue), szBuf); \
+          bChgNfy = TRUE; \
+        } \
+      } \
+      if (bChgNfy && ((pCurrentLexer == &lexStandard) || (pCurrentLexer == g_pLexCurrent))) { \
+        Style_SetLexer(g_hwndEdit, g_pLexCurrent); \
+      } \
+    }
+
     case WM_NOTIFY:
 
       if (((LPNMHDR)(lParam))->idFrom == IDC_STYLELIST)
@@ -5442,13 +5464,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
 
           case TVN_SELCHANGED:
             {
-              if (bIsStyleSelected) {
-                GetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue));
-              }
-              else {
-                WCHAR szBuf[BUFZIZE_STYLE_EXTENTIONS] = { L'\0' };
-                if (GetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, szBuf, COUNTOF(szBuf))) 
-                  StringCchCopy(pCurrentLexer->szExtensions,COUNTOF(pCurrentLexer->szExtensions),szBuf);
+              if (pCurrentLexer && pCurrentStyle) {
+                APPLY_DIALOG_ITEM_TEXT;
               }
 
               WCHAR label[128] = { L'\0' };
@@ -5588,7 +5605,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
 
     case WM_LBUTTONUP:
       {
-        if (fDragging)
+        if (fDragging && bIsStyleSelected)
         {
           HTREEITEM htiTarget;
 
@@ -5602,11 +5619,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             TreeView_Select(hwndTV,htiTarget,TVGN_CARET);
 
             // after select, this is new current item
-            if (bIsStyleSelected)
-            {
-              StringCchCopy(pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue),tchCopy);
-              SetDlgItemText(hwnd,IDC_STYLEEDIT,tchCopy);
-            }
+            StringCchCopy(pCurrentStyle->szValue,COUNTOF(pCurrentStyle->szValue),tchCopy);
+            SetDlgItemText(hwnd,IDC_STYLEEDIT,tchCopy);
           }
           ReleaseCapture();
           DestroyCursor(SetCursor(LoadCursor(NULL,IDC_ARROW)));
@@ -5628,16 +5642,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
         }
       }
       break;
-
-
-    #define COPY_DIALOG_ITEM_TEXT { \
-      GetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue, COUNTOF(pCurrentStyle->szValue)); \
-      if (!bIsStyleSelected) { \
-        if (!GetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions, COUNTOF(pCurrentLexer->szExtensions))) { \
-          StringCchCopy(pCurrentLexer->szExtensions, COUNTOF(pCurrentLexer->szExtensions), pCurrentLexer->pszDefExt); \
-        } \
-      } \
-    }
 
 
     case WM_COMMAND:
@@ -5722,58 +5726,48 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           {
             hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
 
-            COPY_DIALOG_ITEM_TEXT;
-
             if (Style_Import(hwnd)) {
-              if (pCurrentStyle)
-                SetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentStyle->szValue);
-              else if (pCurrentLexer)
-                SetDlgItemText(hwnd,IDC_STYLEEDIT,pCurrentLexer->szExtensions);
-
+              SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
+              if (!bIsStyleSelected) {
+                SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
+              }
               TreeView_Select(hwndTV,TreeView_GetRoot(hwndTV),TVGN_CARET);
             }
+            APPLY_DIALOG_ITEM_TEXT;
           }
           break;
 
         case IDC_EXPORT:
           {
-            COPY_DIALOG_ITEM_TEXT;
+            APPLY_DIALOG_ITEM_TEXT;
             Style_Export(hwnd);
           }
           break;
 
         case IDC_PREVIEW:
           {
-            COPY_DIALOG_ITEM_TEXT;
-            Style_SetLexer(g_hwndEdit, g_pLexCurrent);
-            UpdateLineNumberWidth();
+            APPLY_DIALOG_ITEM_TEXT;
           }
           break;
 
         case IDC_PREVSTYLE:
-          COPY_DIALOG_ITEM_TEXT;
-          Style_SetLexer(g_hwndEdit, g_pLexCurrent);
-          UpdateLineNumberWidth();
-
-          if (TreeView_GetSelection(hwndTV))
-            TreeView_Select(hwndTV, TreeView_GetPrevVisible(hwndTV,
-                                                            TreeView_GetSelection(hwndTV)), TVGN_CARET);
+          APPLY_DIALOG_ITEM_TEXT;
+          if (TreeView_GetSelection(hwndTV)) {
+            TreeView_Select(hwndTV, TreeView_GetPrevVisible(hwndTV,TreeView_GetSelection(hwndTV)), TVGN_CARET);
+          }
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           break;
 
         case IDC_NEXTSTYLE:
-          COPY_DIALOG_ITEM_TEXT;
-          Style_SetLexer(g_hwndEdit, g_pLexCurrent);
-          UpdateLineNumberWidth();
-
-          if (TreeView_GetSelection(hwndTV))
-            TreeView_Select(hwndTV, TreeView_GetNextVisible(hwndTV,
-                                                            TreeView_GetSelection(hwndTV)), TVGN_CARET);
+          APPLY_DIALOG_ITEM_TEXT;
+          if (TreeView_GetSelection(hwndTV)) {
+            TreeView_Select(hwndTV, TreeView_GetNextVisible(hwndTV, TreeView_GetSelection(hwndTV)), TVGN_CARET);
+          }
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           break;
 
         case IDOK:
-          COPY_DIALOG_ITEM_TEXT;
+          APPLY_DIALOG_ITEM_TEXT;
           EndDialog(hwnd,IDOK);
           break;
 
