@@ -5765,9 +5765,13 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
     if (iPos < 0)
       break; // not found
 
+    int mlen = end - start;
+    if ((mlen <= 0) || ((iPos + mlen) > endPos))
+      break; // wrong match
+
     // mark this match
     SciCall_StartStyling(iPos);
-    SciCall_SetStyling((end - start), iStyle);
+    SciCall_SetStyling(mlen, iStyle);
 
     // next occurrence
     start = end;
