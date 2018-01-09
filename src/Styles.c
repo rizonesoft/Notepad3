@@ -3216,7 +3216,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   WCHAR* wchStandardStyleStrg = lexStandard.Styles[STDLEXID(STY_DEFAULT)].szValue;
 
   // Idle Styling (very large text)
-  SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
+  SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
+  //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
 
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
