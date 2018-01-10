@@ -5558,10 +5558,14 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                   {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
 
-                    if (pCurrentStyle->rid == 63100)
+                    if (pCurrentStyle->rid == 63100) {
                       StringCchCopyW(label, COUNTOF(label), L"BASE (Default Style):");
-                    else
+                    }
+                    else {
                       StringCchCopyW(label, COUNTOF(label), L"BASE (2nd Default Style):");
+                      SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, lexStandard.szExtensions);
+                      DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, FALSE);
+                    }
                   }
                   else {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
