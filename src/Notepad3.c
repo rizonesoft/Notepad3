@@ -322,6 +322,7 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 static volatile LONG g_lTimerBits = 0;
 #define TIMER_BIT_MARK_OCC 1L
 #define TIMER_BIT_UPDATE_HYPER 2L
+#define BLOCK_BIT_MARK_OCC 4L
 #define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lTimerBits, B)
 #define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lTimerBits, B)
 
@@ -2546,24 +2547,27 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 void __fastcall MarkAllOccurrencesTimer()
 {
   if (iMarkOccurrences != 0) {
-    if (bMarkOccurrencesMatchVisible) 
-    {
-      // get visible lines for update
-      int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+    if (!TEST_AND_SET(BLOCK_BIT_MARK_OCC)) {
+      TEST_AND_RESET(BLOCK_BIT_MARK_OCC);
+      if (bMarkOccurrencesMatchVisible)
+      {
+        // get visible lines for update
+        int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
 
-      int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-      int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+        int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+        int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
 
-      int iPosStart = SciCall_PositionFromLine(iStartLine);
-      int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+        int iPosStart = SciCall_PositionFromLine(iStartLine);
+        int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
 
-      // !!! don't clear all marks, else this method is re-called
-      // !!! on UpdateUI notification on drawing indicator mark
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-    }
-    else {
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      UpdateStatusbar();
+        // !!! don't clear all marks, else this method is re-called
+        // !!! on UpdateUI notification on drawing indicator mark
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      }
+      else {
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+        UpdateStatusbar();
+      }
     }
   }
 }
@@ -3487,8 +3491,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
+        TEST_AND_SET(BLOCK_BIT_MARK_OCC);
         SendMessage(g_hwndEdit,SCI_TARGETFROMSELECTION,0,0);
         SendMessage(g_hwndEdit,SCI_LINESSPLIT,0,0);
+        TEST_AND_RESET(BLOCK_BIT_MARK_OCC);
         EndSelUndoAction(token);
         EndWaitCursor();
       }
@@ -3499,8 +3505,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
+        TEST_AND_SET(BLOCK_BIT_MARK_OCC);
         SendMessage(g_hwndEdit,SCI_TARGETFROMSELECTION,0,0);
         SendMessage(g_hwndEdit,SCI_LINESJOIN,0,0);
+        TEST_AND_RESET(BLOCK_BIT_MARK_OCC);
         EditJoinLinesEx(g_hwndEdit);
         EndSelUndoAction(token);
         EndWaitCursor();
