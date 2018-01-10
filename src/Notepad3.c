@@ -1803,9 +1803,6 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   int x,y,cx,cy;
   HDWP hdwp;
 
-  // Statusbar
-  int aWidth[6];
-
   if (wParam == SIZE_MINIMIZED)
     return;
 
@@ -1853,12 +1850,16 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EndDeferWindowPos(hdwp);
 
   // Statusbar width
-  aWidth[0] = max(150,min(cx*2/5,StatusCalcPaneWidth(g_hwndStatus,L"  Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999  ")));
-  aWidth[1] = aWidth[0] + StatusCalcPaneWidth(g_hwndStatus,L"  9'999'999 Bytes [utf-8]  ");
-  aWidth[2] = aWidth[1] + StatusCalcPaneWidth(g_hwndStatus,L"  Unicode (UTF-8) Signature  ");
-  aWidth[3] = aWidth[2] + StatusCalcPaneWidth(g_hwndStatus,L"  CR+LF  ");
-  aWidth[4] = aWidth[3] + StatusCalcPaneWidth(g_hwndStatus,L"  OVR  ");
-  aWidth[5] = -1;
+  int aWidth[7];
+  aWidth[STATUS_DOCPOS]   = max(150,min(cx*2/5,StatusCalcPaneWidth(g_hwndStatus,L" Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999 ")));
+  aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 9'999'999 Bytes [utf-8] ");
+  aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
+  aWidth[STATUS_EOLMODE]  = aWidth[STATUS_CODEPAGE] + StatusCalcPaneWidth(g_hwndStatus,L" CR+LF ");
+  aWidth[STATUS_OVRMODE]  = aWidth[STATUS_EOLMODE] + StatusCalcPaneWidth(g_hwndStatus,L" OVR ");
+  aWidth[STATUS_2ND_DEF]  = aWidth[STATUS_OVRMODE] + StatusCalcPaneWidth(g_hwndStatus, L" 2ND ");
+  aWidth[STATUS_LEXER] = -1;
+
+
 
   SendMessage(g_hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
 
@@ -5902,12 +5903,16 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 SendMessage(hwnd,WM_COMMAND,MAKELONG(i,1),0);
                 return TRUE;
 
-              case STATUS_LEXER:
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_SCHEME,1),0);
-                return TRUE;
-
               case STATUS_OVRMODE:
                 SendMessage(g_hwndEdit,SCI_EDITTOGGLEOVERTYPE,0,0);
+                return TRUE;
+
+              case STATUS_2ND_DEF:
+                SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
+                return TRUE;
+
+              case STATUS_LEXER:
+                SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_SCHEME, 1), 0);
                 return TRUE;
 
               default:
@@ -7218,6 +7223,7 @@ void UpdateStatusbar()
 
   static WCHAR tchEOLMode[32] = { L'\0' };
   static WCHAR tchOvrMode[32] = { L'\0' };
+  static WCHAR tch2ndDef[32] = { L'\0' };
   static WCHAR tchLexerName[128] = { L'\0' };
   static WCHAR tchLinesSelected[32] = { L'\0' };
 
@@ -7310,6 +7316,13 @@ void UpdateStatusbar()
   else {
     StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS ");
   }
+  if (Style_GetUse2ndDefault())
+  {
+    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L" 2ND ");
+  }
+  else {
+    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L" STD ");
+  }
   Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
 
   StatusSetText(g_hwndStatus, STATUS_DOCPOS, tchDocPos);
@@ -7317,6 +7330,7 @@ void UpdateStatusbar()
   StatusSetText(g_hwndStatus, STATUS_CODEPAGE, tchEncoding);
   StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
   StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
+  StatusSetText(g_hwndStatus, STATUS_2ND_DEF, tch2ndDef);
   StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);
 
   //InvalidateRect(g_hwndStatus,NULL,TRUE);

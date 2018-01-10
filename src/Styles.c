@@ -5301,11 +5301,9 @@ void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
     StringCchPrintfW(lpszName, cchName, L" %s", GetCurrentStdLexer()->pszName);
   }
   else {
-    WCHAR wch[128] = { L'\0' };
-    if (!GetString(g_pLexCurrent->rid, wch, COUNTOF(wch))) {
-      StringCchCopyW(wch, COUNTOF(wch), g_pLexCurrent->pszName);
+    if (!GetString(g_pLexCurrent->rid, lpszName, cchName)) {
+      StringCchCopyW(lpszName, cchName, g_pLexCurrent->pszName);
     }
-    StringCchPrintfW(lpszName, cchName, L" %s%s", wch, (Style_GetUse2ndDefault() ? L"  [2nd]" : L""));
   }
 }
 
