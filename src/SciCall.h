@@ -93,6 +93,7 @@ DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, int, Sci_Position
 
 DeclareSciCallV2(SetSel, SETSEL, int, anchorPos, int, currentPos);
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, int, start, int, end);
+DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
 
 DeclareSciCallV1(GotoPos, GOTOPOS, int, position);
 DeclareSciCallV1(GotoLine, GOTOLINE, int, line);
