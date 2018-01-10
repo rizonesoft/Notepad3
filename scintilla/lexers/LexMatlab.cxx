@@ -64,6 +64,7 @@ static int CheckKeywordFoldPoint(char *str) {
 	if (strcmp ("if", str) == 0 ||
 		strcmp ("for", str) == 0 ||
 		strcmp ("switch", str) == 0 ||
+		strcmp ("while", str) == 0 ||
 		strcmp ("try", str) == 0 ||
 		strcmp ("do", str) == 0 ||
 		strcmp ("parfor", str) == 0 ||

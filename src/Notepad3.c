@@ -1307,6 +1307,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+
   if (iWordWrapIndent == 5)
     SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
   else if (iWordWrapIndent == 6)
@@ -1347,6 +1348,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     SendMessage(g_hwndEdit,SCI_SETEDGEMODE,(iLongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
   else
     SendMessage(g_hwndEdit,SCI_SETEDGEMODE,EDGE_NONE,0);
+
   SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
 
   // Margins
@@ -2358,7 +2360,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY));
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM));
 
   EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING,*mEncoding[Encoding_Current(CPI_GET)].pszParseNames);
 
@@ -2536,59 +2538,6 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 }
 
 
-
-//=============================================================================
-//
-//  MarkAllOccurrencesTimer()
-// 
-void __fastcall MarkAllOccurrencesTimer()
-{
-  if (iMarkOccurrences != 0) {
-    if (bMarkOccurrencesMatchVisible) 
-    {
-      // get visible lines for update
-      int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-
-      int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-      int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
-
-      int iPosStart = SciCall_PositionFromLine(iStartLine);
-      int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
-
-      // !!! don't clear all marks, else this method is re-called
-      // !!! on UpdateUI notification on drawing indicator mark
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-    }
-    else {
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      UpdateStatusbar();
-    }
-  }
-}
-
-
-//=============================================================================
-//
-//  UpdateVisibleUrlHotspotTimer()
-// 
-void __fastcall UpdateVisibleUrlHotspotTimer()
-{
-  if (bHyperlinkHotspot) 
-  {
-    // get visible lines for update
-    int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-    
-    int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-    int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
-
-    int iPosStart = SciCall_PositionFromLine(iStartLine);
-    int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
-
-    EditUpdateUrlHotspots(g_hwndEdit, iPosStart, iPosEnd, bHyperlinkHotspot);
-  }
-}
-
-
 //=============================================================================
 //
 //  MsgCommand() - Handles WM_COMMAND
@@ -2601,11 +2550,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
   switch(LOWORD(wParam))
   {
     case IDC_MAIN_MARKALL_OCC:
-      MarkAllOccurrencesTimer();
+      EditMarkAllOccurrences();
       break;
 
     case IDC_CALL_UPDATE_HOTSPOT:
-      UpdateVisibleUrlHotspotTimer();
+      EditUpdateVisibleUrlHotspot();
       break;
 
     case IDM_FILE_NEW:
@@ -3485,8 +3434,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
-        SendMessage(g_hwndEdit,SCI_TARGETFROMSELECTION,0,0);
+        EditEnterTargetTransaction();
+        SciCall_TargetFromSelection();
         SendMessage(g_hwndEdit,SCI_LINESSPLIT,0,0);
+        EditLeaveTargetTransaction();
         EndSelUndoAction(token);
         EndWaitCursor();
       }
@@ -3497,9 +3448,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
-        SendMessage(g_hwndEdit,SCI_TARGETFROMSELECTION,0,0);
+        EditEnterTargetTransaction();
+        SciCall_TargetFromSelection();
         SendMessage(g_hwndEdit,SCI_LINESJOIN,0,0);
-        EditJoinLinesEx(g_hwndEdit);
+        EditLeaveTargetTransaction();
+        EditJoinLinesEx(g_hwndEdit); // needed to join paragraphs ???
         EndSelUndoAction(token);
         EndWaitCursor();
       }
@@ -3776,6 +3729,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_AVS:
         case SCLEX_YAML:
         case SCLEX_COFFEESCRIPT:
+        case SCLEX_NIM:
           BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"#",TRUE);
           EndWaitCursor();
@@ -3843,6 +3797,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_YAML:
         case SCLEX_JSON:
         case SCLEX_REGISTRY:
+        case SCLEX_NIM:
           break;
         case SCLEX_HTML:
         case SCLEX_XML:
@@ -7168,7 +7123,7 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 void MarkAllOccurrences(int delay)
 {
   if (delay <= 0) {
-    MarkAllOccurrencesTimer();
+    EditMarkAllOccurrences();
     return;
   }
   TEST_AND_SET(TIMER_BIT_MARK_OCC);
@@ -7182,10 +7137,9 @@ void MarkAllOccurrences(int delay)
 void UpdateVisibleUrlHotspot(int delay)
 {
   if (delay <= 0) {
-    MarkAllOccurrencesTimer();
+    EditUpdateVisibleUrlHotspot();
     return;
   }
-
   TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
   SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 100, NULL);
 }

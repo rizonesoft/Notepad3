@@ -2797,6 +2797,35 @@ EDITLEXER lexAwk = { SCLEX_PYTHON,  63024, L"Awk Script", L"awk", L"", &KeyWords
                     { -1, 00000, L"", L"", L"" } } };
 
 
+
+KEYWORDLIST KeyWords_Nim = {
+  "addr and as asm atomic bind block break case cast concept const continue converter "
+  "defer discard distinct div do elif else end enum except export finally for from func "
+  "generic if import in include interface is isnot iterator let macro method mixin mod "
+  "nil not notin object of or out proc ptr raise ref return shl shr static "
+  "template try tuple type using var when while with without xor yield",
+  "", "", "", "", "", "", "", "" };
+
+
+EDITLEXER lexNim = { SCLEX_NIM, 63044, L"Nim Source Code", L"nim", L"", &KeyWords_Nim,{
+                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                    //{ SCE_P_DEFAULT, 63126, L"Default", L"", L"" },
+                    { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,SCE_C_COMMENTLINEDOC,0), 63127, L"Comment", L"fore:#880000", L"" },
+                    { SCE_P_WORD, 63128, L"Keyword", L" bold; fore:#000088", L"" },
+                    { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,0,0), 63211, L"String double quoted", L"fore:#008800", L"" },
+                    { SCE_P_CHARACTER, 63212, L"String single quoted", L"fore:#008800", L"" },
+                    { SCE_P_TRIPLEDOUBLE, 63244, L"String triple double quotes", L"fore:#008800", L"" },
+                    { SCE_P_TRIPLE, 63245, L"String triple single quotes", L"fore:#008800", L"" },
+                    { SCE_P_NUMBER, 63130, L"Number", L"fore:#FF4000", L"" },
+                    { SCE_P_OPERATOR, 63132, L"Operator", L"bold; fore:#666600", L"" },
+                    //{ SCE_P_DEFNAME, 63247, L"Function name", L"fore:#660066", L"" },
+                    //{ SCE_P_CLASSNAME, 63246, L"Class name", L"fore:#660066", L"" },
+                    { -1, 00000, L"", L"", L"" } } };
+
+
+
+
 // This array holds all the lexers...
 // Don't forget to change the number of the lexer for HTML and XML
 // in Notepad2.c ParseCommandLine() if you change this array!
@@ -2829,6 +2858,7 @@ static PEDITLEXER pLexArray[NUMLEXERS] =
   &lexMAK,           // Makefiles
   &lexMARKDOWN,      // Markdown
   &lexMATLAB,        // MATLAB
+  &lexNim,           // Nim
   &lexNSIS,          // NSIS Script
   &lexPAS,           // Pascal Source Code
   &lexPL,            // Perl Script
@@ -3186,7 +3216,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   WCHAR* wchStandardStyleStrg = lexStandard.Styles[STDLEXID(STY_DEFAULT)].szValue;
 
   // Idle Styling (very large text)
-  SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
+  SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
+  //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
 
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
@@ -3706,7 +3737,7 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
     const WCHAR* lpszStyleHotSpot = lexStandard.Styles[STDLEXID(STY_URL_HOTSPOT)].szValue;
 
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)TRUE);
-    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
+    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, FALSE, 0);
 
     // Font
     Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
@@ -3735,6 +3766,7 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
 
     Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
     
+    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)FALSE);
   }
 
@@ -4248,10 +4280,15 @@ void Style_SetIndentGuides(HWND hwnd,BOOL bShow)
   int iIndentView = SC_IV_NONE;
   if (bShow) {
     if (!flagSimpleIndentGuides) {
-      if (SendMessage(hwnd,SCI_GETLEXER,0,0) == SCLEX_PYTHON)
+      switch (SendMessage(hwnd, SCI_GETLEXER, 0, 0)) {
+      case SCLEX_PYTHON:
+      case SCLEX_NIM:
         iIndentView = SC_IV_LOOKFORWARD;
-      else
+        break;
+      default:
         iIndentView = SC_IV_LOOKBOTH;
+        break;
+      }
     }
     else
       iIndentView = SC_IV_REAL;
