@@ -132,6 +132,11 @@ void  EditSetBookmarkList(HWND,LPCWSTR);
 void  EditApplyLexerStyle(HWND, int, int);
 void  EditFinalizeStyling(HWND);
 
+void  EditMarkAllOccurrences();
+void  EditUpdateVisibleUrlHotspot();
+
+BOOL  EditEnterTargetTransaction();
+BOOL  EditLeaveTargetTransaction();
 
 //void SciInitThemes(HWND);
 //LRESULT CALLBACK SciThemedWndProc(HWND,UINT,WPARAM,LPARAM);

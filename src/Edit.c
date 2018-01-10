@@ -111,15 +111,6 @@ static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 //static WCHAR W_WhiteSpaceCharsDefault[DELIM_BUFFER] = { L'\0' };
 //static WCHAR W_WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { L'\0' };
 
-
-// Timer bitfield
-static volatile LONG g_lEditTimerBits = 0;
-#define TIMER_BIT_MARK_OCC 1L
-//#define TIMER_BIT_ONOTHER_TIMER 2L
-#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lEditTimerBits, B)
-#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lEditTimerBits, B)
-
-
 enum AlignMask {
   ALIGN_LEFT = 0,
   ALIGN_RIGHT = 1,
@@ -143,6 +134,30 @@ enum SortOrderMask {
 
 extern LPMRULIST mruFind;
 extern LPMRULIST mruReplace;
+
+extern BOOL bMarkOccurrencesCurrentWord;
+extern BOOL bMarkOccurrencesMatchCase;
+extern BOOL bMarkOccurrencesMatchWords;
+
+// Timer bitfield
+static volatile LONG g_lTargetTransactionBits = 0;
+#define TIMER_BIT_MARK_OCC 1L
+#define BLOCK_BIT_TARGET_TRANSACTION 2L
+#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lTargetTransactionBits, B)
+#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lTargetTransactionBits, B)
+
+
+//=============================================================================
+//
+//  EditEnterTargetTransaction(), EditLeaveTargetTransaction()
+//
+BOOL  EditEnterTargetTransaction() {
+  return (BOOL)TEST_AND_SET(BLOCK_BIT_TARGET_TRANSACTION);
+}
+
+BOOL  EditLeaveTargetTransaction() {
+  return (BOOL)TEST_AND_RESET(BLOCK_BIT_TARGET_TRANSACTION);
+}
 
 
 //=============================================================================
@@ -4248,6 +4263,8 @@ int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags,
   int _end = *end;
   BOOL bFindPrev = (_start > _end);
 
+  EditEnterTargetTransaction();
+
   SendMessage(hwnd, SCI_SETSEARCHFLAGS, flags, 0);
   SendMessage(hwnd, SCI_SETTARGETRANGE, _start, _end);
   int iPos = (int)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
@@ -4274,6 +4291,9 @@ int __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, int length, int flags,
     *start = (int)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
     *end = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
   }
+
+  EditLeaveTargetTransaction();
+
   return iPos;
 }
 
@@ -5244,6 +5264,68 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
 }
 
 
+
+//=============================================================================
+//
+//  EditMarkAllOccurrences()
+// 
+void EditMarkAllOccurrences()
+{
+  if (iMarkOccurrences != 0) {
+    
+    if (EditEnterTargetTransaction()) { return; }  // do not block, next event occurs for sure
+
+    if (bMarkOccurrencesMatchVisible)
+    {
+      // get visible lines for update
+      int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+
+      int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+      int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+
+      int iPosStart = SciCall_PositionFromLine(iStartLine);
+      int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+
+      // !!! don't clear all marks, else this method is re-called
+      // !!! on UpdateUI notification on drawing indicator mark
+      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+    }
+    else {
+      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      UpdateStatusbar();
+    }
+
+    EditLeaveTargetTransaction();
+  }
+}
+
+
+//=============================================================================
+//
+//  EditUpdateVisibleUrlHotspotr()
+// 
+void EditUpdateVisibleUrlHotspot()
+{
+  if (bHyperlinkHotspot)
+  {
+    if (EditEnterTargetTransaction()) { return; }  // do not block, next event occurs for sure
+
+    // get visible lines for update
+    int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+
+    int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+    int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+
+    int iPosStart = SciCall_PositionFromLine(iStartLine);
+    int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+
+    EditUpdateUrlHotspots(g_hwndEdit, iPosStart, iPosEnd, bHyperlinkHotspot);
+
+    EditLeaveTargetTransaction();
+  }
+}
+
+
 //=============================================================================
 //
 //  EditGetReplaceString()
@@ -5302,14 +5384,18 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
     }
   }
 
-  SendMessage(hwnd, SCI_TARGETFROMSELECTION, 0, 0);
+  EditEnterTargetTransaction();
+
+  SciCall_TargetFromSelection();
   SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
-  
-  LocalFree(pszReplace);
- 
+
   // move caret behind replacement
   int after = (int)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
   SendMessage(hwnd, SCI_SETSEL, after, after);
+
+  EditLeaveTargetTransaction();
+
+  LocalFree(pszReplace);
 
   return EditFindNext(hwnd, lpefr, FALSE);
 }
@@ -5393,6 +5479,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
 
   // ===  iterate over findings and replace strings  ===
 
+
   int offset = 0;
   for (ReplPos_t* pPosPair = (ReplPos_t*)utarray_front(ReplPosUTArray);
                   pPosPair != NULL;
@@ -5402,6 +5489,9 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
     start = pPosPair->beg + offset;
     end = iEndPos + offset;
     iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+
+    EditEnterTargetTransaction();
+
     // @@@ found same ?
     //if ((iPos >= 0) && (start == (pPosPair->beg + offset)) && (end == (pPosPair->end + offset))) {
       SciCall_SetTargetRange(start, end);
@@ -5410,6 +5500,8 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
     //else {
     //  // this should not happen !!!
     //}
+
+    EditLeaveTargetTransaction();
   }
 
   EndWaitCursor();
