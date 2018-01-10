@@ -3010,6 +3010,9 @@ void Style_Load()
     }
   }
   LocalFree(pIniSection);
+
+  // 2nd Default Style has same filename extension list as (1st) Default Style
+  StringCchCopyW(lexStandard2nd.szExtensions, COUNTOF(lexStandard2nd.szExtensions), lexStandard.szExtensions);
 }
 
 
@@ -5563,7 +5566,6 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                     }
                     else {
                       StringCchCopyW(label, COUNTOF(label), L"BASE (2nd Default Style):");
-                      SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, lexStandard.szExtensions);
                       DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, FALSE);
                     }
                   }
