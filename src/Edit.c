@@ -5492,7 +5492,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
 
     EditEnterTargetTransaction();
 
-    // @@@ found same ?
+    // found same ?
     //if ((iPos >= 0) && (start == (pPosPair->beg + offset)) && (end == (pPosPair->end + offset))) {
       SciCall_SetTargetRange(start, end);
       offset += ((int)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace) - pPosPair->end + pPosPair->beg);
