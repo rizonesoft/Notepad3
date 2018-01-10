@@ -4342,6 +4342,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
   static int  iSaveMarkOcc = -1;
   static BOOL bSaveOccVisible = FALSE;
+  static BOOL bSaveTFBackSlashes = FALSE;
 
   switch(umsg)
   {
@@ -4456,8 +4457,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       if (lpefr->fuFlags & SCFIND_WORDSTART)
         CheckDlgButton(hwnd, IDC_FINDSTART, BST_CHECKED);
 
-      if (lpefr->bTransformBS)
+      if (lpefr->bTransformBS) {
+        bSaveTFBackSlashes = lpefr->bTransformBS;
         CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);
+      }
+      else
+        bSaveTFBackSlashes = FALSE;
 
       if (lpefr->fuFlags & SCFIND_REGEXP) {
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_CHECKED);
@@ -4707,6 +4712,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, FALSE);
 
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, TRUE);
+          lpefr->bTransformBS = bSaveTFBackSlashes;
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (lpefr->bTransformBS) ? BST_CHECKED : BST_UNCHECKED);
         }
         bFlagsChanged = TRUE;
@@ -4738,7 +4744,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);  // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, FALSE);
-
         }
         else { // unchecked
 
@@ -4747,6 +4752,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           lpefr->fuFlags &= ~(SCFIND_DOT_MATCH_ALL);
 
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, TRUE);
+          lpefr->bTransformBS = bSaveTFBackSlashes;
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (lpefr->bTransformBS) ? BST_CHECKED : BST_UNCHECKED);
         }
         bFlagsChanged = TRUE;
@@ -4756,9 +4762,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       case IDC_FINDTRANSFORMBS:
         if (IsDlgButtonChecked(hwnd, IDC_FINDTRANSFORMBS) == BST_CHECKED) {
           lpefr->bTransformBS = TRUE;
+          bSaveTFBackSlashes = TRUE;
         }
         else {
           lpefr->bTransformBS = FALSE;
+          bSaveTFBackSlashes = FALSE;
         }
         bFlagsChanged = TRUE;
         EditSetTimerMarkAll(hwnd);
