@@ -1964,6 +1964,9 @@ set void SetSelectionMode=2422(int selectionMode,)
 # Get the mode of the current selection.
 get int GetSelectionMode=2423(,)
 
+# Get whether or not regular caret moves will extend or reduce the selection.
+get bool GetMoveExtendsSelection=2706(,)
+
 # Retrieve the position of the start of the selection at the given line (INVALID_POSITION if no selection on this line).
 fun position GetLineSelStartPosition=2424(int line,)
 
@@ -2696,15 +2699,15 @@ get int GetNamedStyles=4029(,)
 
 # Retrieve the name of a style.
 # Result is NUL-terminated.
-fun int NameOfStyle=4030(int style, stringresult names)
+fun int NameOfStyle=4030(int style, stringresult name)
 
 # Retrieve a ' ' separated list of style tags like "literal quoted string".
 # Result is NUL-terminated.
-fun int TagsOfStyle=4031(int style, stringresult names)
+fun int TagsOfStyle=4031(int style, stringresult tags)
 
 # Retrieve a description of a style.
 # Result is NUL-terminated.
-fun int DescriptionOfStyle=4032(int style, stringresult names)
+fun int DescriptionOfStyle=4032(int style, stringresult description)
 
 # Notifications
 # Type of modification and the action which caused the modification.
@@ -2914,6 +2917,8 @@ val SCLEX_TEHEX=119
 val SCLEX_JSON=120
 val SCLEX_EDIFACT=121
 val SCLEX_INDENT=122
+val SCLEX_AHK=200
+val SCLEX_NIM=201
 
 # When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 # value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -2921,6 +2926,7 @@ val SCLEX_AUTOMATIC=1000
 # Lexical states for SCLEX_PYTHON
 lex Python=SCLEX_PYTHON SCE_P_
 lex Nimrod=SCLEX_NIMROD SCE_P_
+lex Nim=SCLEX_NIM SCE_P_
 val SCE_P_DEFAULT=0
 val SCE_P_COMMENTLINE=1
 val SCE_P_NUMBER=2

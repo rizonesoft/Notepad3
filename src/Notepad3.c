@@ -322,6 +322,7 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 static volatile LONG g_lTimerBits = 0;
 #define TIMER_BIT_MARK_OCC 1L
 #define TIMER_BIT_UPDATE_HYPER 2L
+#define BLOCK_BIT_MARK_OCC 4L
 #define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lTimerBits, B)
 #define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lTimerBits, B)
 
@@ -1307,6 +1308,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+
   if (iWordWrapIndent == 5)
     SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
   else if (iWordWrapIndent == 6)
@@ -1347,6 +1349,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     SendMessage(g_hwndEdit,SCI_SETEDGEMODE,(iLongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
   else
     SendMessage(g_hwndEdit,SCI_SETEDGEMODE,EDGE_NONE,0);
+
   SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
 
   // Margins
@@ -2358,7 +2361,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY));
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM));
 
   EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING,*mEncoding[Encoding_Current(CPI_GET)].pszParseNames);
 
@@ -2544,24 +2547,27 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 void __fastcall MarkAllOccurrencesTimer()
 {
   if (iMarkOccurrences != 0) {
-    if (bMarkOccurrencesMatchVisible) 
-    {
-      // get visible lines for update
-      int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+    if (!TEST_AND_SET(BLOCK_BIT_MARK_OCC)) {
+      TEST_AND_RESET(BLOCK_BIT_MARK_OCC);
+      if (bMarkOccurrencesMatchVisible)
+      {
+        // get visible lines for update
+        int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
 
-      int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-      int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+        int iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+        int iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
 
-      int iPosStart = SciCall_PositionFromLine(iStartLine);
-      int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+        int iPosStart = SciCall_PositionFromLine(iStartLine);
+        int iPosEnd = SciCall_GetLineEndPosition(iEndLine);
 
-      // !!! don't clear all marks, else this method is re-called
-      // !!! on UpdateUI notification on drawing indicator mark
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-    }
-    else {
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      UpdateStatusbar();
+        // !!! don't clear all marks, else this method is re-called
+        // !!! on UpdateUI notification on drawing indicator mark
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      }
+      else {
+        EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+        UpdateStatusbar();
+      }
     }
   }
 }
@@ -3485,8 +3491,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
+        TEST_AND_SET(BLOCK_BIT_MARK_OCC);
         SendMessage(g_hwndEdit,SCI_TARGETFROMSELECTION,0,0);
         SendMessage(g_hwndEdit,SCI_LINESSPLIT,0,0);
+        TEST_AND_RESET(BLOCK_BIT_MARK_OCC);
         EndSelUndoAction(token);
         EndWaitCursor();
       }
@@ -3497,8 +3505,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
+        TEST_AND_SET(BLOCK_BIT_MARK_OCC);
         SendMessage(g_hwndEdit,SCI_TARGETFROMSELECTION,0,0);
         SendMessage(g_hwndEdit,SCI_LINESJOIN,0,0);
+        TEST_AND_RESET(BLOCK_BIT_MARK_OCC);
         EditJoinLinesEx(g_hwndEdit);
         EndSelUndoAction(token);
         EndWaitCursor();
@@ -3776,6 +3786,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_AVS:
         case SCLEX_YAML:
         case SCLEX_COFFEESCRIPT:
+        case SCLEX_NIM:
           BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"#",TRUE);
           EndWaitCursor();
@@ -3843,6 +3854,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_YAML:
         case SCLEX_JSON:
         case SCLEX_REGISTRY:
+        case SCLEX_NIM:
           break;
         case SCLEX_HTML:
         case SCLEX_XML:

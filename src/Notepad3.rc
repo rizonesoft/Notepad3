@@ -1706,6 +1706,7 @@ BEGIN
     63041                   "YAML"
     63042                   "Coffeescript"
     63043                   "MATLAB"
+    63044                   "Nim Source Code"
 END
 
 STRINGTABLE
