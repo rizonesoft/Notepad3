@@ -1488,7 +1488,6 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   BOOL bExternalBitmap = FALSE;
 
   DWORD dwToolbarStyle = WS_TOOLBAR;
-  DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
   DWORD dwReBarStyle = WS_REBAR;
 
   BOOL bIsPrivAppThemed = PrivateIsAppThemed();
@@ -1616,6 +1615,8 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
   SendMessage(hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
   //SendMessage(hwndToolbar,TB_SETINDENT,2,0);
+
+  DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
 
   if (bShowStatusbar)
     dwStatusbarStyle |= WS_VISIBLE;
@@ -1852,11 +1853,11 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EndDeferWindowPos(hdwp);
 
   // Statusbar width
-  aWidth[0] = max(120,min(cx/3,StatusCalcPaneWidth(g_hwndStatus,L" Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999 ")));
-  aWidth[1] = aWidth[0] + StatusCalcPaneWidth(g_hwndStatus,L" 9'999'999 Bytes [UTF-8] ");
-  aWidth[2] = aWidth[1] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
-  aWidth[3] = aWidth[2] + StatusCalcPaneWidth(g_hwndStatus,L" CR+LF ");
-  aWidth[4] = aWidth[3] + StatusCalcPaneWidth(g_hwndStatus,L" OVR ");
+  aWidth[0] = max(150,min(cx*2/5,StatusCalcPaneWidth(g_hwndStatus,L"  Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999  ")));
+  aWidth[1] = aWidth[0] + StatusCalcPaneWidth(g_hwndStatus,L"  9'999'999 Bytes [utf-8]  ");
+  aWidth[2] = aWidth[1] + StatusCalcPaneWidth(g_hwndStatus,L"  Unicode (UTF-8) Signature  ");
+  aWidth[3] = aWidth[2] + StatusCalcPaneWidth(g_hwndStatus,L"  CR+LF  ");
+  aWidth[4] = aWidth[3] + StatusCalcPaneWidth(g_hwndStatus,L"  OVR  ");
   aWidth[5] = -1;
 
   SendMessage(g_hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
@@ -7212,7 +7213,8 @@ void UpdateStatusbar()
   static WCHAR tchDocPos[256] = { L'\0' };
 
   static WCHAR tchBytes[64] = { L'\0' };
-  static WCHAR tchDocSize[256] = { L'\0' };
+  static WCHAR tchDocSize[64] = { L'\0' };
+  static WCHAR tchEncoding[64] = { L'\0' };
 
   static WCHAR tchEOLMode[32] = { L'\0' };
   static WCHAR tchOvrMode[32] = { L'\0' };
@@ -7256,15 +7258,15 @@ void UpdateStatusbar()
   {
     if ((iMarkOccurrencesMaxCount < 0) || (iMarkOccurrencesCount < iMarkOccurrencesMaxCount)) 
     {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i ", iMarkOccurrencesCount);
       FormatNumberStr(tchOcc);
     }
     else {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i", iMarkOccurrencesMaxCount);
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i ", iMarkOccurrencesMaxCount);
     }
   }
   else {
-    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
+    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"-- ");
   }
 
   // Print number of selected lines in statusbar
@@ -7288,30 +7290,31 @@ void UpdateStatusbar()
   FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
 
   Encoding_GetLabel(Encoding_Current(CPI_GET));
+  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", mEncoding[Encoding_Current(CPI_GET)].wchLabel);
 
   if (iEOLMode == SC_EOL_CR) 
   {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR ");
   }
   else if (iEOLMode == SC_EOL_LF) 
   {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF ");
   }
   else {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF ");
   }
   if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0)) 
   {
-    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR");
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR ");
   }
   else {
-    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS");
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS ");
   }
   Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
 
   StatusSetText(g_hwndStatus, STATUS_DOCPOS, tchDocPos);
   StatusSetText(g_hwndStatus, STATUS_DOCSIZE, tchDocSize);
-  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, mEncoding[Encoding_Current(CPI_GET)].wchLabel);
+  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, tchEncoding);
   StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
   StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
   StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);

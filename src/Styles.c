@@ -5295,10 +5295,18 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
 //
 //  Style_GetCurrentLexerName()
 //
-void Style_GetCurrentLexerName(LPWSTR lpszName,int cchName)
+void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
 {
-  if (!GetString(g_pLexCurrent->rid,lpszName,cchName))
-    StringCchCopyN(lpszName,cchName,g_pLexCurrent->pszName,cchName);
+  if (IsLexerStandard(g_pLexCurrent)) {
+    StringCchPrintfW(lpszName, cchName, L" %s", GetCurrentStdLexer()->pszName);
+  }
+  else {
+    WCHAR wch[128] = { L'\0' };
+    if (!GetString(g_pLexCurrent->rid, wch, COUNTOF(wch))) {
+      StringCchCopyW(wch, COUNTOF(wch), g_pLexCurrent->pszName);
+    }
+    StringCchPrintfW(lpszName, cchName, L" %s%s", wch, (Style_GetUse2ndDefault() ? L"  [2nd]" : L""));
+  }
 }
 
 
