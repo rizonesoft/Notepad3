@@ -1333,8 +1333,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
       case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
     }
     switch (((iWordWrapSymbols%100)-(iWordWrapSymbols%10))/10) {
-      case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
-      case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
+      case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_MARGIN; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
+      case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_MARGIN; break;
     }
     SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGSLOCATION,wrapVisualFlagsLocation,0);
     SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,wrapVisualFlags,0);
@@ -4166,8 +4166,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
           }
           switch (((iWordWrapSymbols%100)-(iWordWrapSymbols%10))/10) {
-            case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
-            case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
+            case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_MARGIN; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
+            case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_MARGIN; break;
           }
           SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGSLOCATION,wrapVisualFlagsLocation,0);
           SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,wrapVisualFlags,0);
@@ -4355,8 +4355,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
         }
         switch (((iWordWrapSymbols%100)-(iWordWrapSymbols%10))/10) {
-          case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
-          case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
+          case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_MARGIN; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
+          case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_MARGIN; break;
         }
         SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGSLOCATION,wrapVisualFlagsLocation,0);
         SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,wrapVisualFlags,0);
