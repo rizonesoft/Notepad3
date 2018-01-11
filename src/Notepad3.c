@@ -7129,7 +7129,7 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 // 
 void MarkAllOccurrences(int delay)
 {
-  if (delay <= 0) {
+  if (delay < USER_TIMER_MINIMUM) {
     EditMarkAllOccurrences();
     return;
   }
@@ -7143,7 +7143,7 @@ void MarkAllOccurrences(int delay)
 // 
 void UpdateVisibleUrlHotspot(int delay)
 {
-  if (delay <= 0) {
+  if (delay < USER_TIMER_MINIMUM) {
     EditUpdateVisibleUrlHotspot();
     return;
   }
