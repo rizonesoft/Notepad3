@@ -1306,7 +1306,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   if (!bWordWrap)
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
-    SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+    SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
 
   if (iWordWrapIndent == 5)
     SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
@@ -4129,8 +4129,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (!bWordWrap)
         SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
       else
-        SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+        SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
       bWordWrapG = bWordWrap;
+      //EditApplyLexerStyle(g_hwndEdit, 0, -1);
       UpdateToolbar();
       break;
 
@@ -4139,7 +4140,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (WordWrapSettingsDlg(hwnd,IDD_WORDWRAP,&iWordWrapIndent))
       {
         if (bWordWrap)
-          SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+          SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
         if (iWordWrapIndent == 5)
           SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
         else if (iWordWrapIndent == 6)

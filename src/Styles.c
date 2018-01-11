@@ -3732,12 +3732,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
 
   // apply lexer styles
-  Style_SetUrlHotSpot(hwnd, TRUE);
-  SendMessage(hwnd, SCI_COLOURISE, 0, (LPARAM)-1);
+  Style_SetUrlHotSpot(hwnd, FALSE);
+  EditApplyLexerStyle(g_hwndEdit, 0, -1);
 
   // update UI for hotspots
-  Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
-  EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+  if (bHyperlinkHotspot) {
+    Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
+    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+  }
 }
 
 
@@ -3762,7 +3764,6 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
 
   if (bHotSpot)
   {
-    
     const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
 
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)TRUE);
@@ -3791,11 +3792,8 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
     }
   }
   else {
-    const WCHAR* lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
-
+    const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
     Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
-    
-    SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, TRUE, 0);
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)FALSE);
   }
 

@@ -6943,7 +6943,7 @@ BOOL FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
   if (!bWordWrap)
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
-    SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+    SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
 
   if (lpfv->mask & FV_LONGLINESLIMIT)
     iLongLinesLimit = lpfv->iLongLinesLimit;
