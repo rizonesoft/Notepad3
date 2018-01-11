@@ -2362,7 +2362,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIM));
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD));
 
   EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING,*mEncoding[Encoding_Current(CPI_GET)].pszParseNames);
 
@@ -3731,7 +3731,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_AVS:
         case SCLEX_YAML:
         case SCLEX_COFFEESCRIPT:
-        case SCLEX_NIM:
+        case SCLEX_NIMROD:
           BeginWaitCursor(NULL);
           EditToggleLineComments(g_hwndEdit,L"#",TRUE);
           EndWaitCursor();
@@ -3799,7 +3799,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_YAML:
         case SCLEX_JSON:
         case SCLEX_REGISTRY:
-        case SCLEX_NIM:
+        case SCLEX_NIMROD:
           break;
         case SCLEX_HTML:
         case SCLEX_XML:

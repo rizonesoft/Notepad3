@@ -2795,7 +2795,7 @@ EDITLEXER lexAwk = { SCLEX_PYTHON,  63024, L"Awk Script", L"awk", L"", &KeyWords
 
 
 
-KEYWORDLIST KeyWords_Nim = {
+KEYWORDLIST KeyWords_Nimrod = {
   "addr and as asm atomic bind block break case cast concept const continue converter "
   "defer discard distinct div do elif else end enum except export finally for from func "
   "generic if import in include interface is isnot iterator let macro method mixin mod "
@@ -2804,21 +2804,21 @@ KEYWORDLIST KeyWords_Nim = {
   "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexNim = { SCLEX_NIM, 63044, L"Nim Source Code", L"nim", L"", &KeyWords_Nim,{
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_P_DEFAULT, 63126, L"Default", L"", L"" },
-                    { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,SCE_C_COMMENTLINEDOC,0), 63127, L"Comment", L"fore:#880000", L"" },
-                    { SCE_P_WORD, 63128, L"Keyword", L" bold; fore:#000088", L"" },
-                    { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,0,0), 63211, L"String double quoted", L"fore:#008800", L"" },
-                    { SCE_P_CHARACTER, 63212, L"String single quoted", L"fore:#008800", L"" },
-                    { SCE_P_TRIPLEDOUBLE, 63244, L"String triple double quotes", L"fore:#008800", L"" },
-                    { SCE_P_TRIPLE, 63245, L"String triple single quotes", L"fore:#008800", L"" },
-                    { SCE_P_NUMBER, 63130, L"Number", L"fore:#FF4000", L"" },
-                    { SCE_P_OPERATOR, 63132, L"Operator", L"bold; fore:#666600", L"" },
-                    //{ SCE_P_DEFNAME, 63247, L"Function name", L"fore:#660066", L"" },
-                    //{ SCE_P_CLASSNAME, 63246, L"Class name", L"fore:#660066", L"" },
-                    { -1, 00000, L"", L"", L"" } } };
+EDITLEXER lexNimrod = { SCLEX_NIMROD, 63044, L"Nim Source Code", L"nim; nimrod", L"", &KeyWords_Nimrod,{
+                        { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
+                        //{ SCE_P_DEFAULT, 63126, L"Default", L"", L"" },
+                        { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,SCE_C_COMMENTLINEDOC,0), 63127, L"Comment", L"fore:#880000", L"" },
+                        { SCE_P_WORD, 63128, L"Keyword", L" bold; fore:#000088", L"" },
+                        { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+                        { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,0,0), 63211, L"String double quoted", L"fore:#008800", L"" },
+                        { SCE_P_CHARACTER, 63212, L"String single quoted", L"fore:#008800", L"" },
+                        { SCE_P_TRIPLEDOUBLE, 63244, L"String triple double quotes", L"fore:#008800", L"" },
+                        { SCE_P_TRIPLE, 63245, L"String triple single quotes", L"fore:#008800", L"" },
+                        { SCE_P_NUMBER, 63130, L"Number", L"fore:#FF4000", L"" },
+                        { SCE_P_OPERATOR, 63132, L"Operator", L"bold; fore:#666600", L"" },
+                        //{ SCE_P_DEFNAME, 63247, L"Function name", L"fore:#660066", L"" },
+                        //{ SCE_P_CLASSNAME, 63246, L"Class name", L"fore:#660066", L"" },
+                        { -1, 00000, L"", L"", L"" } } };
 
 
 
@@ -2855,7 +2855,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexMAK,           // Makefiles
   &lexMARKDOWN,      // Markdown
   &lexMATLAB,        // MATLAB
-  &lexNim,           // Nim
+  &lexNimrod,        // Nim(rod)
   &lexNSIS,          // NSIS Script
   &lexPAS,           // Pascal Source Code
   &lexPL,            // Perl Script
@@ -4302,7 +4302,7 @@ void Style_SetIndentGuides(HWND hwnd,BOOL bShow)
     if (!flagSimpleIndentGuides) {
       switch (SendMessage(hwnd, SCI_GETLEXER, 0, 0)) {
       case SCLEX_PYTHON:
-      case SCLEX_NIM:
+      case SCLEX_NIMROD:
         iIndentView = SC_IV_LOOKFORWARD;
         break;
       default:
