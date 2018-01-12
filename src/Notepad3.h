@@ -91,7 +91,8 @@ typedef enum {
 #define STATUS_CODEPAGE  2
 #define STATUS_EOLMODE   3
 #define STATUS_OVRMODE   4
-#define STATUS_LEXER     5
+#define STATUS_2ND_DEF   5
+#define STATUS_LEXER     6
 #define STATUS_HELP    255
 
 

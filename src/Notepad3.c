@@ -1306,7 +1306,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   if (!bWordWrap)
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
-    SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+    SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
 
   if (iWordWrapIndent == 5)
     SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
@@ -1488,7 +1488,6 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   BOOL bExternalBitmap = FALSE;
 
   DWORD dwToolbarStyle = WS_TOOLBAR;
-  DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
   DWORD dwReBarStyle = WS_REBAR;
 
   BOOL bIsPrivAppThemed = PrivateIsAppThemed();
@@ -1587,7 +1586,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     DeleteObject(hbmpCopy);
 
   // Load toolbar labels
-  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
   LoadIniSection(L"Toolbar Labels",pIniSection,cchIniSection);
   n = 1;
@@ -1616,6 +1615,8 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
   SendMessage(hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
   //SendMessage(hwndToolbar,TB_SETINDENT,2,0);
+
+  DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
 
   if (bShowStatusbar)
     dwStatusbarStyle |= WS_VISIBLE;
@@ -1802,9 +1803,6 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   int x,y,cx,cy;
   HDWP hdwp;
 
-  // Statusbar
-  int aWidth[6];
-
   if (wParam == SIZE_MINIMIZED)
     return;
 
@@ -1852,12 +1850,16 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EndDeferWindowPos(hdwp);
 
   // Statusbar width
-  aWidth[0] = max(120,min(cx/3,StatusCalcPaneWidth(g_hwndStatus,L" Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999 ")));
-  aWidth[1] = aWidth[0] + StatusCalcPaneWidth(g_hwndStatus,L" 9'999'999 Bytes [UTF-8] ");
-  aWidth[2] = aWidth[1] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
-  aWidth[3] = aWidth[2] + StatusCalcPaneWidth(g_hwndStatus,L" CR+LF ");
-  aWidth[4] = aWidth[3] + StatusCalcPaneWidth(g_hwndStatus,L" OVR ");
-  aWidth[5] = -1;
+  int aWidth[7];
+  aWidth[STATUS_DOCPOS]   = max(100,min(cx/3, StatusCalcPaneWidth(g_hwndStatus,
+    L" Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999 ")));
+  aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 999 Bytes [UTF-8] ");
+  aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
+  aWidth[STATUS_EOLMODE]  = aWidth[STATUS_CODEPAGE] + StatusCalcPaneWidth(g_hwndStatus,L" CR+LF ");
+  aWidth[STATUS_OVRMODE]  = aWidth[STATUS_EOLMODE] + StatusCalcPaneWidth(g_hwndStatus,L" OVR ");
+  aWidth[STATUS_2ND_DEF]  = aWidth[STATUS_OVRMODE] + StatusCalcPaneWidth(g_hwndStatus, L" 2ND ");
+  aWidth[STATUS_LEXER] = -1;
+
 
   SendMessage(g_hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
 
@@ -4127,8 +4129,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (!bWordWrap)
         SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
       else
-        SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+        SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
       bWordWrapG = bWordWrap;
+      //EditApplyLexerStyle(g_hwndEdit, 0, -1);
       UpdateToolbar();
       break;
 
@@ -4137,7 +4140,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (WordWrapSettingsDlg(hwnd,IDD_WORDWRAP,&iWordWrapIndent))
       {
         if (bWordWrap)
-          SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WORD : SC_WRAP_CHAR,0);
+          SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
         if (iWordWrapIndent == 5)
           SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
         else if (iWordWrapIndent == 6)
@@ -5901,12 +5904,16 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 SendMessage(hwnd,WM_COMMAND,MAKELONG(i,1),0);
                 return TRUE;
 
-              case STATUS_LEXER:
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_SCHEME,1),0);
-                return TRUE;
-
               case STATUS_OVRMODE:
                 SendMessage(g_hwndEdit,SCI_EDITTOGGLEOVERTYPE,0,0);
+                return TRUE;
+
+              case STATUS_2ND_DEF:
+                SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
+                return TRUE;
+
+              case STATUS_LEXER:
+                SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_SCHEME, 1), 0);
                 return TRUE;
 
               default:
@@ -7122,7 +7129,7 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 // 
 void MarkAllOccurrences(int delay)
 {
-  if (delay <= 0) {
+  if (delay < USER_TIMER_MINIMUM) {
     EditMarkAllOccurrences();
     return;
   }
@@ -7136,7 +7143,7 @@ void MarkAllOccurrences(int delay)
 // 
 void UpdateVisibleUrlHotspot(int delay)
 {
-  if (delay <= 0) {
+  if (delay < USER_TIMER_MINIMUM) {
     EditUpdateVisibleUrlHotspot();
     return;
   }
@@ -7212,10 +7219,12 @@ void UpdateStatusbar()
   static WCHAR tchDocPos[256] = { L'\0' };
 
   static WCHAR tchBytes[64] = { L'\0' };
-  static WCHAR tchDocSize[256] = { L'\0' };
+  static WCHAR tchDocSize[64] = { L'\0' };
+  static WCHAR tchEncoding[64] = { L'\0' };
 
   static WCHAR tchEOLMode[32] = { L'\0' };
   static WCHAR tchOvrMode[32] = { L'\0' };
+  static WCHAR tch2ndDef[32] = { L'\0' };
   static WCHAR tchLexerName[128] = { L'\0' };
   static WCHAR tchLinesSelected[32] = { L'\0' };
 
@@ -7256,15 +7265,15 @@ void UpdateStatusbar()
   {
     if ((iMarkOccurrencesMaxCount < 0) || (iMarkOccurrencesCount < iMarkOccurrencesMaxCount)) 
     {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i ", iMarkOccurrencesCount);
       FormatNumberStr(tchOcc);
     }
     else {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i", iMarkOccurrencesMaxCount);
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i ", iMarkOccurrencesMaxCount);
     }
   }
   else {
-    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
+    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"-- ");
   }
 
   // Print number of selected lines in statusbar
@@ -7288,32 +7297,41 @@ void UpdateStatusbar()
   FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
 
   Encoding_GetLabel(Encoding_Current(CPI_GET));
+  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", mEncoding[Encoding_Current(CPI_GET)].wchLabel);
 
   if (iEOLMode == SC_EOL_CR) 
   {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR ");
   }
   else if (iEOLMode == SC_EOL_LF) 
   {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF ");
   }
   else {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF ");
   }
   if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0)) 
   {
-    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR");
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR ");
   }
   else {
-    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS");
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS ");
+  }
+  if (Style_GetUse2ndDefault())
+  {
+    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L" 2ND ");
+  }
+  else {
+    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L" STD ");
   }
   Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
 
   StatusSetText(g_hwndStatus, STATUS_DOCPOS, tchDocPos);
   StatusSetText(g_hwndStatus, STATUS_DOCSIZE, tchDocSize);
-  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, mEncoding[Encoding_Current(CPI_GET)].wchLabel);
+  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, tchEncoding);
   StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
   StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
+  StatusSetText(g_hwndStatus, STATUS_2ND_DEF, tch2ndDef);
   StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);
 
   //InvalidateRect(g_hwndStatus,NULL,TRUE);
@@ -8078,7 +8096,7 @@ BOOL OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 {
   OPENFILENAME ofn;
   WCHAR szFile[MAX_PATH] = { L'\0' };
-  WCHAR szFilter[NUMLEXERS*1024];
+  WCHAR szFilter[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100];
   WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
 
   Style_GetOpenDlgFilterStr(szFilter,COUNTOF(szFilter));
@@ -8133,7 +8151,7 @@ BOOL SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 {
   OPENFILENAME ofn;
   WCHAR szNewFile[MAX_PATH] = { L'\0' };
-  WCHAR szFilter[NUMLEXERS*1024] = { L'\0' };
+  WCHAR szFilter[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100] = { L'\0' };
   WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
 
   StringCchCopy(szNewFile,COUNTOF(szNewFile),lpstrFile);
