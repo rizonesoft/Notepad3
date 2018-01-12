@@ -1982,8 +1982,7 @@ BOOL MRU_Load(LPMRULIST pmru)
   WCHAR tchName[32] = { L'\0' };
   WCHAR tchItem[1024] = { L'\0' };
   WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-
+  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 2 * MRU_MAXITEMS * 1024);
   MRU_Empty(pmru);
   LoadIniSection(pmru->szRegKey,pIniSection,(int)LocalSize(pIniSection)/sizeof(WCHAR));
 
@@ -2019,7 +2018,7 @@ BOOL MRU_Save(LPMRULIST pmru) {
 
   int i;
   WCHAR tchName[32] = { L'\0' };
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 2 * MRU_MAXITEMS * 1024);
 
   //IniDeleteSection(pmru->szRegKey);
 

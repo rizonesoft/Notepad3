@@ -217,7 +217,7 @@ UINT CharSetFromCodePage(UINT);
 
 
 //==== MRU Functions ==========================================================
-#define MRU_MAXITEMS 24
+#define MRU_MAXITEMS  24
 #define MRU_NOCASE    1
 #define MRU_UTF8      2
 #define MRU_BMRK_SIZE 1024

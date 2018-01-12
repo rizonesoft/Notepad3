@@ -80,7 +80,7 @@ EDITLEXER lexStandard = { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; 
                          { -1, 00000, L"", L"", L"" } } };
 
 
-EDITLEXER lexStandard2nd = { SCLEX_NULL, 63266, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL,{
+EDITLEXER lexStandard2nd = { SCLEX_NULL, 63266, L"2nd Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL,{
                 /*  0 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
                 /*  1 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
                 /*  2 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
@@ -2942,7 +2942,7 @@ void Style_Load()
 {
   int i,iLexer;
   WCHAR tch[32] = { L'\0' };;
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+  WCHAR *pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100) ;
   int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
   // Custom colors
@@ -3022,13 +3022,12 @@ void Style_Load()
 //
 void Style_Save()
 {
-  int i,iLexer;
   WCHAR tch[32] = { L'\0' };;
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100);
   //int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
   // Custom colors
-  for (i = 0; i < 16; i++) {
+  for (int i = 0; i < 16; i++) {
     WCHAR wch[32] = { L'\0' };
     StringCchPrintf(tch,COUNTOF(tch),L"%02i",i+1);
     StringCchPrintf(wch,COUNTOF(wch),L"#%02X%02X%02X",
@@ -3059,11 +3058,11 @@ void Style_Save()
     return;
   }
   
-  for (iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-    IniSectionSetString(pIniSection,L"FileNameExtensions",g_pLexArray[iLexer]->szExtensions);
-    i = 0;
+  for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+    IniSectionSetString(pIniSection,L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
+    int i = 0;
     while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-      IniSectionSetString(pIniSection,g_pLexArray[iLexer]->Styles[i].pszName,g_pLexArray[iLexer]->Styles[i].szValue);
+      IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, g_pLexArray[iLexer]->Styles[i].szValue);
       i++;
     }
 
@@ -3100,7 +3099,7 @@ BOOL Style_Import(HWND hwnd)
   if (GetOpenFileName(&ofn)) {
 
     int i,iLexer;
-    WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+    WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100);
     int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
     for (iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
@@ -3149,7 +3148,7 @@ BOOL Style_Export(HWND hwnd)
 
   if (GetSaveFileName(&ofn)) {
 
-    WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+    WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100);
     //int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
@@ -5875,7 +5874,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
 void Style_ConfigDlg(HWND hwnd)
 {
 
-  WCHAR* StyleBackup[NUMLEXERS * MAX_NUM_OF_STYLES_PER_LEXER];
+  WCHAR* StyleBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
   int c,cItems,i,iLexer;
 
   // Backup Styles

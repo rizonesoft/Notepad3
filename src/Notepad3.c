@@ -1586,7 +1586,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     DeleteObject(hbmpCopy);
 
   // Load toolbar labels
-  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
   LoadIniSection(L"Toolbar Labels",pIniSection,cchIniSection);
   n = 1;
@@ -1851,7 +1851,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // Statusbar width
   int aWidth[7];
-  aWidth[STATUS_DOCPOS]   = max(120,min(cx*36/100, StatusCalcPaneWidth(g_hwndStatus,
+  aWidth[STATUS_DOCPOS]   = max(100,min(cx/3, StatusCalcPaneWidth(g_hwndStatus,
     L" Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999 ")));
   aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 999 Bytes [UTF-8] ");
   aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
@@ -8096,7 +8096,7 @@ BOOL OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 {
   OPENFILENAME ofn;
   WCHAR szFile[MAX_PATH] = { L'\0' };
-  WCHAR szFilter[NUMLEXERS*1024];
+  WCHAR szFilter[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100];
   WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
 
   Style_GetOpenDlgFilterStr(szFilter,COUNTOF(szFilter));
@@ -8151,7 +8151,7 @@ BOOL SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
 {
   OPENFILENAME ofn;
   WCHAR szNewFile[MAX_PATH] = { L'\0' };
-  WCHAR szFilter[NUMLEXERS*1024] = { L'\0' };
+  WCHAR szFilter[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100] = { L'\0' };
   WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
 
   StringCchCopy(szNewFile,COUNTOF(szNewFile),lpstrFile);
