@@ -54,16 +54,16 @@ using namespace Scintilla;
 
 #define Cast2long(n)   static_cast<long>(n)
 
+
 // ============================================================================
 // ***   Oningmo configuration   ***
 // ============================================================================
 
-const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; 
-//const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_SJIS; 
+//const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; 
+const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_UTF8;
+static OnigEncoding g_UsedEncodingsTypes[] = { g_pOnigEncodingType };
 
-static const OnigSyntaxType* g_pOnigSyntaxType = ONIG_SYNTAX_DEFAULT;
-static OnigEncoding use_encs[] = { g_pOnigEncodingType };
-
+// ============================================================================
 // ============================================================================
 
 class OniguRegExEngine : public RegexSearchBase
@@ -80,7 +80,7 @@ public:
     , m_MatchLen(0)
     , m_SubstBuffer()
   {
-    onig_initialize(use_encs, _ARRAYSIZE(use_encs));
+    onig_initialize(g_UsedEncodingsTypes, _ARRAYSIZE(g_UsedEncodingsTypes));
     onig_region_init(&m_Region);
   }
 
@@ -216,6 +216,14 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
   Sci::Position rangeEnd = (findprevious) ? minPos : maxPos;
   Sci::Position rangeLen = (rangeEnd - rangeBeg);
 
+  
+  // ---------------------------------
+  // --- Onigmo Engine Syntax type ---
+  // ---------------------------------
+
+  //const OnigSyntaxType* pOnigSyntaxType = ONIG_SYNTAX_DEFAULT;
+  const OnigSyntaxType* pOnigSyntaxType = ONIG_SYNTAX_PERL58_NG;
+
   // -----------------------------
   // --- Onigmo Engine Options ---
   // -----------------------------
@@ -223,8 +231,10 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
   // fixed options
   OnigOptionType onigmoOptions = ONIG_OPTION_DEFAULT;
 
-  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND); // OFF: not wanted here
-  
+  // OFF: not wanted options in Notepad3
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND);
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_ASCII_RANGE);
+
   // ONIG_OPTION_DOTALL == ONIG_OPTION_MULTILINE
   if (searchFlags & SCFIND_DOT_MATCH_ALL) {
     ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_DOTALL);
@@ -233,6 +243,7 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
     ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_DOTALL);
   }
  
+
   //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
 
@@ -259,7 +270,7 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
       onig_region_free(&m_Region, 0);
 
       int res = onig_new(&m_RegExpr, (UChar*)m_RegExprStrg.c_str(), (UChar*)(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
-                         m_CmplOptions, g_pOnigEncodingType, g_pOnigSyntaxType, &einfo);
+                         m_CmplOptions, g_pOnigEncodingType, pOnigSyntaxType, &einfo);
       if (res != 0) {
         onig_error_code_to_str((UChar*)m_ErrorInfo, res, &einfo);
         return Cast2long(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
