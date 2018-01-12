@@ -3187,6 +3187,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   if (!pLexNew) {
     pLexNew = GetCurrentStdLexer();
   }
+  else if (IsLexerStandard(pLexNew)) {
+    pLexNew = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
+  }
 
   // first set standard lexer's default values
   g_pLexCurrent = GetCurrentStdLexer();
@@ -4189,9 +4192,6 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 {
   BOOL use2ndDefStyle = Style_GetUse2ndDefault();
   Style_SetUse2ndDefault(use2ndDefStyle ? FALSE : TRUE); // swap
-  if (IsLexerStandard(g_pLexCurrent)) {
-    g_pLexCurrent = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
-  }
   Style_SetLexer(hwnd,g_pLexCurrent);
 }
 
