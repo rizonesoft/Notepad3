@@ -1921,6 +1921,7 @@ STRINGTABLE
 BEGIN
     63264                   "Hyperlink Hotspots"
     63265                   "2nd Hyperlink Hotspots"
+    63266                   "2nd Default Text"
 END
 
 #endif    // English (United States) resources
