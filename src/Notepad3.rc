@@ -1418,7 +1418,7 @@ BEGIN
     IDS_READONLY            "(Read Only)"
     IDS_DOCPOS              " Ln %s / %s    Col %s    Sel %s    SelLn %s    Occ %s "
     IDS_DOCPOS2             " Ln %s / %s    Col %s / %s    Sel %s    SelLn %s    Occ %s "
-    IDS_DOCSIZE             " %s [utf-8]"
+    IDS_DOCSIZE             " %s [UTF-8]"
     IDS_LOADFILE            "Loading ""%s""..."
     IDS_SAVEFILE            "Saving ""%s""..."
     IDS_PRINTFILE           "Printing page %i..."
@@ -1922,7 +1922,6 @@ BEGIN
     63264                   "Hyperlink Hotspots"
     63265                   "2nd Hyperlink Hotspots"
     63266                   "2nd Default Text"
-
 END
 
 #endif    // English (United States) resources

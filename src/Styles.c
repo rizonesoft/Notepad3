@@ -80,7 +80,7 @@ EDITLEXER lexStandard = { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; 
                          { -1, 00000, L"", L"", L"" } } };
 
 
-EDITLEXER lexStandard2nd = { SCLEX_NULL, 63266, L"2nd Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL,{
+EDITLEXER lexStandard2nd = { SCLEX_NULL, 63266, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL,{
                 /*  0 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
                 /*  1 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
                 /*  2 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
