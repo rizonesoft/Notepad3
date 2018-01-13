@@ -3,6 +3,66 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 3.18.113.828 (13 January 2018)
+--------------------------------------------------
+- Performance: Redraw indicator ranges (Mark Occurrences) only if needed - avoiding recursive SCN_UPDATEUI notifications.
+- Mark Occurrences: force position progress in case of zero-length matches.
+- Performance: Mark Occurrence triggers enhancements.
+- Convenience: Re-introduce "max mark occurrence counter" to avoid lazy UI.
+  (Set .ini section [Settings2] MarkOccurrencesMaxCount=-1 for unlimited (MAX_INT)).
+- Fix: Correct counting of found matches.
+- Fix: Broken find/replace (regex) on groups.
+- Performance: Tuning delay parameter of "Mark Occurrences" (instantly).
+- Performance: Remove test for set already, if indicator does not change.
+- Fixing several Mark Occurrences (instantly) issues.
+- Fix: Some customizing scheme issues (relative font size hierarchy).
+- Fix: Document modified flag not set properly (title, toolbar & statusbar only).
+- Fix: Renaming menu entries Edit: "Clear" -> "Delete"
+- Enhancement: structured "Mark Occurrences" menu hierarchy.
+- Fix: Menu "Mark Occurrences" whole word matching: add check indicator if one of word matching options (selected/current) is used.
+- Change: Menu "Mark Occurrences" whole word matching: radio button behavior.
+- Fixes Regarding Scheme customizing (rel. size) and View Menu (Mark Occ.).
+- Fix: Regex replacement on look-ahead assertion.
+- Fix: relative font sizing of non-default-style entries in custom schemes.
+- Fix: Font selection box title display.
+- Fix: clean coding for "relative sizing hierarchy".
+- Feature: "Customize Schemes..." UI change to represent "relative sizing hierarchy".
+- Fix: Update view on style change in "Customize schemes..."
+- Fix: Bug regarding "Reset" button in "Customizing Schemes..." dialog.
+- Fix: Bug in detect and style Hyperlink Hotspot.
+- Feature: Initial version of Nim Lexer. Added Scintilla project and header for Nim lexer.
+- Performance: Non visible styling during idle time.
+- Performance: Cache page instead of line only.
+- Change: Option "after visible" for styling in background (idle time).
+- Update: Compiler version 191225834 (VS2017 V.15.5.3).
+- Fix: Loosing state of "Transform Backslashes" while switching regex/wildcard search.
+- Fix: Block "mark occurrences" event on transaction pair: (SCI_TARGETFROMSELECTIO, SCI_REPLACETARGET).
+- Fix: protect SCI target transactions by a guard to break recursion of Mark Occurrences caused by ChangeNotification() events.
+- Fix: Handle "2nd Default Styles" as separate standard (2nd) lexer module.
+- Fix: Handling initial 1st or 2nd default style in case of "Default Text", shown on int "Customize Schemes...".
+- Fix: Crash on navigation between schemes beyond start/end of tree view.
+- Fix: Disable (using 1st Default Style) "Associated filename extensions" for "2nd Default Style".
+- Fix: Clone associated filename extension list of Default Style (for 2nd Default Style).
+- Enhancement: status bar information about usage of 2nd Default Style.
+- Change: View "2nd Default Style" as (dbl-clickable) status bar item.
+- Cleanup: NimLexer = NimrodLexer -> rely on Scintilla distribution for Nim(rod) lexer.
+- Change: Word Wrap mode from WORD to SPACE to avoid wrapping at style change edges.
+- Fix: move word wrap start symbol to margin (new WW mode SPACE (instead of WORD))".
+- Fix: Mark Occurrences timeout on Find/Replace.
+- Fix: Optimized status bar partitioning.
+- Fix: Revert naming for "2nd Default Text".
+- Clean Code: Reasonable assumption for memory allocation of style handling (backup, save, load).
+- Tuning: Statusbar Partitioning.
+- Fix: Bug on switching between 1st and 2nd standard lexers.
+- Fix: Selection of 1st or 2nd standard lexer (Default Text) based on Use2ndStandard flag.
+- Change: Onigmo RegEx syntax dialect.
+- Change: Onigmo regex engine: use PERL 5.10 syntax + enable "\<" and "\>" word boundary matching.
+- Fix: Onigmo regex engine PERL syntax: supporting named groups referencing in replacement text.
+- Enhancement: Statusbar: Count number of bytes in current encoding.
+- Change: Replace Windows Notepad Installer version only.
+- Change: Executables not compressed with UPX.
+
+--------------------------------------------------
 Version 3.18.105.802 (5 January 2018)
 --------------------------------------------------
 - Fix: Custom toolbar images ini settings added.

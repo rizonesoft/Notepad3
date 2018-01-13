@@ -2436,7 +2436,13 @@ unsigned int UnSlashLowOctal(char* s) {
 int CheckRegExReplTarget(char* pszInput)
 {
   while (*pszInput) {
-    if ((*pszInput == '$') || (*pszInput == '\\')) {
+    if (*pszInput == '$') {
+      ++pszInput;
+      if (((*pszInput >= '0') && (*pszInput <= '9')) || (*pszInput == '+') || (*pszInput == '{')) {
+        return SCI_REPLACETARGETRE;
+      }
+    }
+    else if (*pszInput == '\\') {
       ++pszInput;
       if ((*pszInput >= '0') && (*pszInput <= '9')) {
         return SCI_REPLACETARGETRE;
