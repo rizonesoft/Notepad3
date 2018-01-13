@@ -54,24 +54,24 @@ using namespace Scintilla;
 
 #define Cast2long(n)   static_cast<long>(n)
 
+
 // ============================================================================
 // ***   Oningmo configuration   ***
 // ============================================================================
 
-const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_ASCII; 
-//const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_SJIS; 
-
-static const OnigSyntaxType* g_pOnigSyntaxType = ONIG_SYNTAX_DEFAULT;
-static OnigEncoding use_encs[] = { g_pOnigEncodingType };
+const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_UTF8;  // ONIG_ENCODING_ASCII;
+static OnigEncoding g_UsedEncodingsTypes[] = { g_pOnigEncodingType };
 
 // ============================================================================
+// ============================================================================
 
-class OniguRegExEngine : public RegexSearchBase
+class OnigmoRegExEngine : public RegexSearchBase
 {
 public:
 
-  explicit OniguRegExEngine(CharClassify* charClassTable)
+  explicit OnigmoRegExEngine(CharClassify* charClassTable)
     : m_RegExprStrg()
+    , m_OnigSyntax(*ONIG_SYNTAX_PERL)
     , m_CmplOptions(ONIG_OPTION_DEFAULT)
     , m_RegExpr(nullptr)
     , m_Region({0,0,nullptr,nullptr,nullptr})
@@ -80,11 +80,12 @@ public:
     , m_MatchLen(0)
     , m_SubstBuffer()
   {
-    onig_initialize(use_encs, _ARRAYSIZE(use_encs));
+    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END;
+    onig_initialize(g_UsedEncodingsTypes, _ARRAYSIZE(g_UsedEncodingsTypes));
     onig_region_init(&m_Region);
   }
 
-  virtual ~OniguRegExEngine()
+  virtual ~OnigmoRegExEngine()
   {
     onig_region_free(&m_Region, 0);
     onig_free(m_RegExpr);
@@ -96,6 +97,8 @@ public:
 
   virtual const char* SubstituteByPosition(Document* doc, const char* text, Sci::Position* length) override;
 
+
+  const OnigRegion& GetRegion() const { return m_Region; };
 
 private:
 
@@ -109,6 +112,7 @@ private:
 
   std::string m_RegExprStrg;
 
+  OnigSyntaxType  m_OnigSyntax;
   OnigOptionType  m_CmplOptions;
   OnigRegex       m_RegExpr;
   OnigRegion      m_Region;
@@ -118,14 +122,16 @@ private:
   Sci::Position   m_MatchPos;
   Sci::Position   m_MatchLen;
 
+public:
   std::string m_SubstBuffer;
+
 };
 // ============================================================================
 
 
 RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 {
-  return new OniguRegExEngine(charClassTable);
+  return new OnigmoRegExEngine(charClassTable);
 }
 
 // ============================================================================
@@ -198,7 +204,7 @@ static void replaceAll(std::string& source, const std::string& from, const std::
  * searches (just pass minPos > maxPos to do a backward search)
  * Has not been tested with backwards DBCS searches yet.
  */
-long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
+long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
 {
   if (!(pattern && (strlen(pattern) > 0))) {
@@ -216,6 +222,7 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
   Sci::Position rangeEnd = (findprevious) ? minPos : maxPos;
   Sci::Position rangeLen = (rangeEnd - rangeBeg);
 
+  
   // -----------------------------
   // --- Onigmo Engine Options ---
   // -----------------------------
@@ -223,8 +230,10 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
   // fixed options
   OnigOptionType onigmoOptions = ONIG_OPTION_DEFAULT;
 
-  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND); // OFF: not wanted here
-  
+  // OFF: not wanted options in Notepad3
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_EXTEND);
+  ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_ASCII_RANGE);
+
   // ONIG_OPTION_DOTALL == ONIG_OPTION_MULTILINE
   if (searchFlags & SCFIND_DOT_MATCH_ALL) {
     ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_DOTALL);
@@ -233,6 +242,7 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
     ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_DOTALL);
   }
  
+
   //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
 
@@ -259,7 +269,7 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
       onig_region_free(&m_Region, 0);
 
       int res = onig_new(&m_RegExpr, (UChar*)m_RegExprStrg.c_str(), (UChar*)(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
-                         m_CmplOptions, g_pOnigEncodingType, g_pOnigSyntaxType, &einfo);
+                         m_CmplOptions, g_pOnigEncodingType, &m_OnigSyntax, &einfo);
       if (res != 0) {
         onig_error_code_to_str((UChar*)m_ErrorInfo, res, &einfo);
         return Cast2long(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
@@ -327,7 +337,39 @@ long OniguRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Positi
 // ============================================================================
 
 
-const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* text, Sci::Position* length)
+
+////static int GrpNameCallback(const UChar* name, const UChar* name_end, 
+////  int ngroup_num, int* group_nums, regex_t* reg, void* arg)
+////{
+////  OnigmoRegExEngine* pRegExInstance = dynamic_cast<OnigmoRegExEngine*>(arg);
+////
+////  const OnigRegion& region = pRegExInstance->GetRegion();
+////
+////  for (int i = 0; i < ngroup_num; i++) 
+////  {
+////    int grpNum = group_nums[i];
+////    
+////    int ref = onig_name_to_backref_number(reg, name, name_end, &region);
+////
+////    if (ref == grpNum) {
+////
+////      Sci::Position rBeg = SciPos(region.beg[grpNum]);
+////      Sci::Position len = SciPos(region.end[grpNum] - rBeg);
+////
+////      (pRegExInstance->m_SubstBuffer).append(doc->RangePointer(rBeg, len), (size_t)len);
+////
+////    }
+////  }
+////  return 0;  /* 0: continue */
+////}
+////   called by:  int r = onig_foreach_name(m_RegExpr, GrpNameCallback, (void*)this);
+
+
+// ============================================================================
+
+
+
+const char* OnigmoRegExEngine::SubstituteByPosition(Document* doc, const char* text, Sci::Position* length)
 {
 
   if (m_MatchPos < 0) {
@@ -341,13 +383,14 @@ const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* te
 
   //TODO: allow for arbitrary number of grups/regions
 
-  for (size_t j = 0; j < rawReplStrg.length(); j++) {
+  for (size_t j = 0; j < rawReplStrg.length(); j++) 
+  {
+    bool bReplaced = false;
     if ((rawReplStrg[j] == '$') || (rawReplStrg[j] == '\\'))
     {
       if ((rawReplStrg[j + 1] >= '0') && (rawReplStrg[j + 1] <= '9'))
       {
         int grpNum = rawReplStrg[j + 1] - '0';
-
         if (grpNum < m_Region.num_regs)
         {
           Sci::Position rBeg = SciPos(m_Region.beg[grpNum]);
@@ -355,19 +398,38 @@ const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* te
 
           m_SubstBuffer.append(doc->RangePointer(rBeg, len), (size_t)len);
         }
+        bReplaced = true;
         ++j;
       }
-      else if (rawReplStrg[j] == '\\') {
+      else if (rawReplStrg[j] == '$')
+      {
+        size_t k = ((rawReplStrg[j + 1] == '+') && (rawReplStrg[j + 2] == '{')) ? (j + 3) : ((rawReplStrg[j + 1] == '{') ? (j + 2) : 0);
+        if (k > 0) {
+          // named group replacemment
+          UChar* name_beg = (UChar*)&(rawReplStrg[k]);
+          while (rawReplStrg[k] &&  IsCharAlphaNumericA(rawReplStrg[k])) { ++k; }
+          if (rawReplStrg[k] == '}')
+          {
+            int grpNum = onig_name_to_backref_number(m_RegExpr, name_beg, (UChar*)&(rawReplStrg[k]), &m_Region);
+            if ((grpNum >= 0) && (grpNum < m_Region.num_regs))
+            {
+              Sci::Position rBeg = SciPos(m_Region.beg[grpNum]);
+              Sci::Position len = SciPos(m_Region.end[grpNum] - rBeg);
+
+              m_SubstBuffer.append(doc->RangePointer(rBeg, len), (size_t)len);
+            }
+            bReplaced = true;
+            j = k;
+          }
+        }
+      }
+      else if ((rawReplStrg[j] == '\\') && (rawReplStrg[j+1] == '\\')){
         m_SubstBuffer.push_back('\\');
+        bReplaced = true;
         ++j;
       }
-      else {
-        m_SubstBuffer.push_back(rawReplStrg[j]);
-      }
     }
-    else {
-      m_SubstBuffer.push_back(rawReplStrg[j]);
-    }
+    if (!bReplaced) { m_SubstBuffer.push_back(rawReplStrg[j]); }
   }
 
   //NOTE: potential 64-bit-size issue at interface here:
@@ -385,7 +447,7 @@ const char* OniguRegExEngine::SubstituteByPosition(Document* doc, const char* te
 // ============================================================================
 
 /*
-void OniguRegExEngine::regexFindAndReplace(std::string& inputStr_inout, const std::string& patternStr, const std::string& replStr)
+void OnigmoRegExEngine::regexFindAndReplace(std::string& inputStr_inout, const std::string& patternStr, const std::string& replStr)
 {
   OnigRegex       oRegExpr;
   OnigRegion      oRegion;
@@ -427,9 +489,10 @@ void OniguRegExEngine::regexFindAndReplace(std::string& inputStr_inout, const st
 
 
 
-std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& rxOptions)
+std::string& OnigmoRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, int eolMode, OnigOptionType& rxOptions)
 {
   std::string	tmpStr;
+  bool bUseTmpStrg = false;
 
   if (wholeWord || wordStart) {      // push '\b' at the begin of regexpr
     tmpStr.push_back('\\');
@@ -440,22 +503,19 @@ std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wh
       tmpStr.push_back('b');
     }
     replaceAll(tmpStr, ".", R"(\w)");
+    bUseTmpStrg = true;
   }
   else {
     tmpStr.append(regExprStr);
   }
 
-  // Onigmo unsupported word boundary
-  replaceAll(tmpStr, R"(\<)", R"((?<!\w)(?=\w))");  // word begin
-  replaceAll(tmpStr, R"(\(?<!\w)(?=\w))", R"(\\<)"); // esc'd
-  replaceAll(tmpStr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
-  replaceAll(tmpStr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
-
-  //regexFindAndReplace(tmpStr, R"(\<)", R"((?<!\w)(?=\w))");
-  //regexFindAndReplace(tmpStr, R"(\(?<!\w)(?=\w))", R"(\\<)");
-  //regexFindAndReplace(tmpStr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
-  //regexFindAndReplace(tmpStr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
-
+  // Onigmo supports LTGT word boundary by: ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END
+  //
+  //~replaceAll(tmpStr, R"(\<)", R"((?<!\w)(?=\w))");  // word begin
+  //~replaceAll(tmpStr, R"(\(?<!\w)(?=\w))", R"(\\<)"); // esc'd
+  //~replaceAll(tmpStr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
+  //~replaceAll(tmpStr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
+  //~bUseTmpStrg = true;
 
 
   // EOL modes
@@ -468,6 +528,7 @@ std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wh
     ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_NEWLINE_CRLF);
     replaceAll(tmpStr, R"($)", R"((?=\r))");
     replaceAll(tmpStr, R"(\(?=\r))", R"(\$)");
+    bUseTmpStrg = true;
     break;
 
   case SC_EOL_CRLF:
@@ -475,14 +536,15 @@ std::string& OniguRegExEngine::translateRegExpr(std::string& regExprStr, bool wh
     break;
   }
 
-  std::swap(regExprStr, tmpStr);
+  if (bUseTmpStrg) { std::swap(regExprStr, tmpStr); }
+
   return regExprStr;
 }
 // ----------------------------------------------------------------------------
 
 
 
-std::string& OniguRegExEngine::convertReplExpr(std::string& replStr)
+std::string& OnigmoRegExEngine::convertReplExpr(std::string& replStr)
 {
   std::string	tmpStr;
   for (size_t i = 0; i < replStr.length(); ++i) {
