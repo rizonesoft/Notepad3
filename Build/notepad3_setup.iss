@@ -31,8 +31,7 @@
 #ifnexist bindir + "\Release_x64_v141\minipath.exe"
   #error Compile MiniPath x64 first
 #endif
-
-#ifnexist bindir + "\Release_x64_v141\np3encrypt.exe"
+#ifnexist bindir + "\Release_x64_v141\np3encrypt.exe"
   #error Compile np3encrypt.exe x64 first
 #endif
 
@@ -107,7 +106,9 @@ en.tsk_CurrentUser           =For the current user only
 en.tsk_Other                 =Other tasks:
 en.tsk_ResetSettings         =Reset {#app_name}'s settings
 en.tsk_RemoveDefault         =Restore Windows notepad
+en.tsk_SetDefault            =Replace Windows notepad with {#app_name}
 en.tsk_StartMenuIcon         =Create a Start Menu shortcut
+en.tsk_LaunchWelcomePage     =Get more from Rizonesoft
 
 
 [Tasks]
@@ -117,7 +118,9 @@ Name: desktopicon\common; Description: {cm:tsk_AllUsers};          GroupDescript
 Name: startup_icon;       Description: {cm:tsk_StartMenuIcon};     GroupDescription: {cm:AdditionalIcons}
 Name: quicklaunchicon;    Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked;             OnlyBelowVersion: 6.01
 Name: reset_settings;     Description: {cm:tsk_ResetSettings};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: SettingsExistCheck()
+Name: set_default;        Description: {cm:tsk_SetDefault};        GroupDescription: {cm:tsk_Other};                                     Check: not DefaulNotepadCheck()
 Name: remove_default;     Description: {cm:tsk_RemoveDefault};     GroupDescription: {cm:tsk_Other};       Flags: checkedonce unchecked; Check: DefaulNotepadCheck()
+
 
 [Files]
 Source: {#bindir}\Release_x64_v141\Notepad3.exe;   DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
@@ -144,12 +147,12 @@ Name: {#quick_launch}\{#app_name}; Filename: {app}\Notepad3.exe; Tasks: quicklau
 [INI]
 Filename: {app}\Notepad3.ini; Section: Notepad3; Key: Notepad3.ini; String: %APPDATA%\Rizonesoft\Notepad3\Notepad3.ini
 Filename: {app}\minipath.ini; Section: minipath; Key: minipath.ini; String: %APPDATA%\Rizonesoft\Notepad3\minipath.ini
-
 Filename: {userappdata}\Rizonesoft\Notepad3\Notepad3.ini; Section: Settings; Key: Favorites; String: %APPDATA%\Rizonesoft\Notepad3\Favorites\
 
 
 [Run]
 Filename: {app}\Notepad3.exe; Description: {cm:LaunchProgram,{#app_name}}; WorkingDir: {app}; Flags: nowait postinstall skipifsilent unchecked
+Filename: https://goo.gl/tGtJ6a; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent
 
 
 [InstallDelete]
@@ -479,11 +482,19 @@ begin
         else
           Log('Custom Code: Something went wrong when uninstalling the official Notepad2 build');
       end;
+
+      // This is the case where the old build is installed; the DefaulNotepadCheck() returns true
+      // and the set_default task isn't selected
+      if not IsTaskSelected('remove_default') then
+        RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
+
     end;
   end;
 
   if CurStep = ssPostInstall then begin
-	if IsTaskSelected('remove_default') then begin
+    if IsTaskSelected('set_default') then
+      RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
+    if IsTaskSelected('remove_default') then begin
       RegDeleteValue(HKLM, IFEO, 'Debugger');
       RegDeleteKeyIfEmpty(HKLM, IFEO);
     end;
@@ -502,7 +513,7 @@ begin
       if SuppressibleMsgBox(CustomMessage('msg_DeleteSettings'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES then
         CleanUpSettings();
     end;
-	if DefaulNotepadCheck() then
+    if DefaulNotepadCheck() then
       RegDeleteValue(HKLM, IFEO, 'Debugger');
     RegDeleteKeyIfEmpty(HKLM, IFEO);
     RemoveReg();
