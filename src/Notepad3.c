@@ -1852,8 +1852,8 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   // Statusbar width
   int aWidth[7];
   aWidth[STATUS_DOCPOS]   = max(100,min(cx/3, StatusCalcPaneWidth(g_hwndStatus,
-    L" Ln 9'999'999 : 9'999'999    Col 9'999'999 : 999    Sel 9'999'999    SelLn 9'999'999    Occ 9'999'999 ")));
-  aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 999 Bytes [UTF-8] ");
+    L" Ln 9'999'999 : 9'999'999    Col 9'999'999:999 / 999    Sel 9'999'999 (999 Bytes)    SelLn 9'999'999    Occ 9'999'999 ")));
+  aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 9999 Bytes ");
   aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
   aWidth[STATUS_EOLMODE]  = aWidth[STATUS_CODEPAGE] + StatusCalcPaneWidth(g_hwndStatus,L" CR+LF ");
   aWidth[STATUS_OVRMODE]  = aWidth[STATUS_EOLMODE] + StatusCalcPaneWidth(g_hwndStatus,L" OVR ");
@@ -7215,6 +7215,7 @@ void UpdateStatusbar()
   static WCHAR tchCol[32] = { L'\0' };
   static WCHAR tchCols[32] = { L'\0' };
   static WCHAR tchSel[32] = { L'\0' };
+  static WCHAR tchSelB[32] = { L'\0' };
   static WCHAR tchOcc[32] = { L'\0' };
   static WCHAR tchDocPos[256] = { L'\0' };
 
@@ -7231,6 +7232,9 @@ void UpdateStatusbar()
   if (!bShowStatusbar) { return; }
 
   const int iPos = SciCall_GetCurrentPos();
+  const int iTextLength = SciCall_GetTextLength();
+  const int iEncoding = Encoding_Current(CPI_GET);
+  const int iCodePage = mEncoding[iEncoding].uCodePage;
 
   StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", SciCall_LineFromPosition(iPos) + 1);
   FormatNumberStr(tchLn);
@@ -7249,15 +7253,24 @@ void UpdateStatusbar()
   }
 
   // Print number of selected chars in statusbar
-  const int iSelStart = SciCall_GetSelectionStart();
-  const int iSelEnd = SciCall_GetSelectionEnd();
-  if (SC_SEL_RECTANGLE != SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0)) {
+  const BOOL bIsSelEmpty = SciCall_IsSelectionEmpty();
+  const int iSelStart = (bIsSelEmpty ? 0 : SciCall_GetSelectionStart());
+  const int iSelEnd = (bIsSelEmpty ? 0 : SciCall_GetSelectionEnd());
+
+  if (!bIsSelEmpty && (SC_SEL_RECTANGLE != SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0)))
+  {
     const int iSel = (int)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
     StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
     FormatNumberStr(tchSel);
+
+    const int iSelLen = (iSelEnd - iSelStart);
+    const int iSelBytes = MultiByteToWideChar(iCodePage, 0, 
+      SciCall_GetRangePointer(iSelStart, iSelLen), iSelLen, NULL, 0);
+    StrFormatByteSize(iSelBytes, tchSelB, COUNTOF(tchSelB));
   }
   else {
-    StringCchCopy(tchSel, COUNTOF(tchSel), L"--");
+    tchSel[0] = L'-'; tchSel[1] = L'-'; tchSel[2] = L'\0';
+    tchSelB[0] = L'0'; tchSelB[1] = L'\0';
   }
 
   // Print number of occurrence marks found
@@ -7277,27 +7290,35 @@ void UpdateStatusbar()
   }
 
   // Print number of selected lines in statusbar
-  const int iLineStart = SciCall_LineFromPosition(iSelStart);
-  const int iLineEnd = SciCall_LineFromPosition(iSelEnd);
-  const int iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
-  int iLinesSelected = (iLineEnd - iLineStart);
-  if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) { iLinesSelected += 1; }
-  StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
-  FormatNumberStr(tchLinesSelected);
-
-  if (!bMarkLongLines) {
-    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS, tchLn, tchLines, tchCol, tchSel, tchLinesSelected, tchOcc);
+  if (bIsSelEmpty) {
+    tchLinesSelected[0] = L'-';
+    tchLinesSelected[1] = L'-';
+    tchLinesSelected[2] = L'\0';
   }
   else {
-    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS2, tchLn, tchLines, tchCol, tchCols, tchSel, tchLinesSelected, tchOcc);
+    const int iLineStart = SciCall_LineFromPosition(iSelStart);
+    const int iLineEnd = SciCall_LineFromPosition(iSelEnd);
+    const int iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
+    int iLinesSelected = (iLineEnd - iLineStart);
+    if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) { iLinesSelected += 1; }
+    StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
+    FormatNumberStr(tchLinesSelected);
   }
-  const int iBytes = SciCall_GetTextLength();
-  StrFormatByteSize(iBytes, tchBytes, COUNTOF(tchBytes));
 
+  if (!bMarkLongLines) {
+    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS, tchLn, tchLines, tchCol, tchSel, tchSelB, tchLinesSelected, tchOcc);
+  }
+  else {
+    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS2, tchLn, tchLines, tchCol, tchCols, tchSel, tchSelB, tchLinesSelected, tchOcc);
+  }
+
+  // get number of bytes in current encoding
+  int iBytes = MultiByteToWideChar(iCodePage, 0, SciCall_GetRangePointer(0, iTextLength), iTextLength, NULL, 0);
+  StrFormatByteSize(iBytes, tchBytes, COUNTOF(tchBytes));
   FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
 
-  Encoding_GetLabel(Encoding_Current(CPI_GET));
-  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", mEncoding[Encoding_Current(CPI_GET)].wchLabel);
+  Encoding_GetLabel(iEncoding);
+  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", mEncoding[iEncoding].wchLabel);
 
   if (iEOLMode == SC_EOL_CR) 
   {
