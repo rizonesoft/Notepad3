@@ -1222,6 +1222,7 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_SELECTIONISRECTANGLE">SCI_SELECTIONISRECTANGLE &rarr; bool</a><br />
      <a class="message" href="#SCI_SETSELECTIONMODE">SCI_SETSELECTIONMODE(int selectionMode)</a><br />
      <a class="message" href="#SCI_GETSELECTIONMODE">SCI_GETSELECTIONMODE &rarr; int</a><br />
+     <a class="message" href="#SCI_GETMOVEEXTENDSSELECTION">SCI_GETMOVEEXTENDSSELECTION &rarr; bool</a><br />
      <a class="message" href="#SCI_GETLINESELSTARTPOSITION">SCI_GETLINESELSTARTPOSITION(int line) &rarr; position</a><br />
      <a class="message" href="#SCI_GETLINESELENDPOSITION">SCI_GETLINESELENDPOSITION(int line) &rarr; position</a><br />
      <a class="message" href="#SCI_MOVECARETINSIDEVIEW">SCI_MOVECARETINSIDEVIEW</a><br />
@@ -1424,6 +1425,10 @@ struct Sci_TextToFind {
      or with regular extended moves.
      <code>SC_SEL_THIN</code> is the mode after a rectangular selection has been typed into and ensures
      that no characters are selected.</p>
+
+    <p><b id="SCI_GETMOVEEXTENDSSELECTION">SCI_GETMOVEEXTENDSSELECTION &rarr; bool</b><br />
+     This returns 1 if regular caret moves will extend or reduce the selection, 0 if not.
+     <code>SCI_SETSELECTIONMODE</code> toggles this setting between on and off.</p>
 
     <p><b id="SCI_GETLINESELSTARTPOSITION">SCI_GETLINESELSTARTPOSITION(int line) &rarr; position</b><br />
     <b id="SCI_GETLINESELENDPOSITION">SCI_GETLINESELENDPOSITION(int line) &rarr; position</b><br />
