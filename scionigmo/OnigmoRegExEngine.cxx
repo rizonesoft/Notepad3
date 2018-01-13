@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <cctype>
 
 #define VC_EXTRALEAN 1
 #include <windows.h>
@@ -404,14 +403,13 @@ const char* OnigmoRegExEngine::SubstituteByPosition(Document* doc, const char* t
       }
       else if (rawReplStrg[j] == '$')
       {
-        int k = ((rawReplStrg[j + 1] == '+') && (rawReplStrg[j + 2] == '{')) ? (j + 3) : ((rawReplStrg[j + 1] == '{') ? (j + 2) : 0);
+        size_t k = ((rawReplStrg[j + 1] == '+') && (rawReplStrg[j + 2] == '{')) ? (j + 3) : ((rawReplStrg[j + 1] == '{') ? (j + 2) : 0);
         if (k > 0) {
           // named group replacemment
           UChar* name_beg = (UChar*)&(rawReplStrg[k]);
-          while (rawReplStrg[k] && std::isalnum(static_cast<unsigned char>(rawReplStrg[k]))) { ++k; }
+          while (rawReplStrg[k] &&  IsCharAlphaNumericA(rawReplStrg[k])) { ++k; }
           if (rawReplStrg[k] == '}')
           {
-            int* nums;
             int grpNum = onig_name_to_backref_number(m_RegExpr, name_beg, (UChar*)&(rawReplStrg[k]), &m_Region);
             if ((grpNum >= 0) && (grpNum < m_Region.num_regs))
             {
