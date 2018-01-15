@@ -289,7 +289,7 @@
 #define IDM_EDIT_COLUMNWRAP             40321
 #define IDM_EDIT_SPLITLINES             40322
 #define IDM_EDIT_JOINLINES              40323
-#define IDM_EDIT_JOINLINESEX            40324
+#define IDM_EDIT_JOINLINES_PARA         40324
 #define IDM_EDIT_INDENT                 40325
 #define IDM_EDIT_UNINDENT               40326
 #define IDM_EDIT_ENCLOSESELECTION       40327
@@ -339,6 +339,7 @@
 #define IDM_EDIT_SELTONEXT              40371
 #define IDM_EDIT_SELTOPREV              40372
 #define IDM_EDIT_COMPLETEWORD           40373
+#define IDM_EDIT_JOINLN_NOSP            40374
 #define IDM_VIEW_SCHEME                 40400
 #define IDM_VIEW_USE2NDDEFAULT          40401
 #define IDM_VIEW_SCHEMECONFIG           40402
