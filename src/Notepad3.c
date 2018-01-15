@@ -2327,7 +2327,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
   EnableCmd(hmenu,IDM_EDIT_SPLITLINES,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_JOINLINES,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_JOINLINESEX,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_JOINLINES_PARA,i /*&& !bReadOnly*/);
 
   EnableCmd(hmenu,IDM_EDIT_CONVERTUPPERCASE,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_CONVERTLOWERCASE,i /*&& !bReadOnly*/);
@@ -3450,22 +3451,27 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
-        EditEnterTargetTransaction();
-        SciCall_TargetFromSelection();
-        SendMessage(g_hwndEdit,SCI_LINESJOIN,0,0);
-        EditLeaveTargetTransaction();
-        EditJoinLinesEx(g_hwndEdit); // needed to join paragraphs ???
+        EditJoinLinesEx(g_hwndEdit, FALSE, TRUE);
         EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
 
-
-    case IDM_EDIT_JOINLINESEX:
+    case IDM_EDIT_JOINLN_NOSP:
       {
         BeginWaitCursor(NULL);
         int token = BeginSelUndoAction();
-        EditJoinLinesEx(g_hwndEdit);
+        EditJoinLinesEx(g_hwndEdit, FALSE, FALSE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
+      break;
+
+    case IDM_EDIT_JOINLINES_PARA:
+      {
+        BeginWaitCursor(NULL);
+        int token = BeginSelUndoAction();
+        EditJoinLinesEx(g_hwndEdit, TRUE, TRUE);
         EndSelUndoAction(token);
         EndWaitCursor();
       }
