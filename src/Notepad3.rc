@@ -12,7 +12,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Englisch (USA) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -174,9 +174,9 @@ BEGIN
             MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Column &Wrap...\tCtrl+Shift+W", IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Split Lines\tCtrl+I",          IDM_EDIT_SPLITLINES
-            MENUITEM "&Join Lines\tCtrl+J",           IDM_EDIT_JOINLINES
-            MENUITEM "&Fuse Lines\tCtrl+Alt+J",       IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Split Lines\tCtrl+I",        IDM_EDIT_SPLITLINES
+            MENUITEM "&Join Lines\tCtrl+J",         IDM_EDIT_JOINLINES
+            MENUITEM "&Fuse Lines\tCtrl+Alt+J",     IDM_EDIT_JOINLN_NOSP
             MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
         END
         POPUP "&Block"
@@ -371,7 +371,7 @@ BEGIN
         MENUITEM "Save Settings &Now\tF7",      IDM_VIEW_SAVESETTINGSNOW
         MENUITEM "&Open Settings File\tCtrl+F7", CMD_OPENINIFILE
     END
-    POPUP "&Help"
+    POPUP "Help&?"
     BEGIN
         MENUITEM "&Online Documentation",       IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
@@ -462,8 +462,8 @@ BEGIN
     "I",            IDM_VIEW_HILITECURRENTLINE, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "J",            IDM_EDIT_JOINLINES,     VIRTKEY, CONTROL, NOINVERT
     "J",            IDM_EDIT_JOINLN_NOSP,   VIRTKEY, CONTROL, ALT, NOINVERT
-    "J",            IDM_EDIT_JOINLINES_PARA,VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "J",            IDM_EDIT_ALIGN, VIRTKEY, ALT, NOINVERT
+    "J",            IDM_EDIT_JOINLINES_PARA, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "J",            IDM_EDIT_ALIGN,         VIRTKEY, ALT, NOINVERT
     "K",            IDM_EDIT_SWAP,          VIRTKEY, CONTROL, NOINVERT
     "K",            IDM_FILE_ADDTOFAV,      VIRTKEY, ALT, NOINVERT
     "K",            CMD_COPYWINPOS,         VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -1926,12 +1926,12 @@ BEGIN
     63266                   "2nd Default Text"
 END
 
-#endif    // English (United States) resources
+#endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Switzerland) resources
+// Deutsch (Schweiz) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
@@ -1960,7 +1960,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // German (Switzerland) resources
+#endif    // Deutsch (Schweiz) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
