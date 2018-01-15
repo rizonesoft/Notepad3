@@ -2715,7 +2715,7 @@ int g_DOSEncoding;
 WCHAR wchANSI[16] = { L'\0' };
 WCHAR wchOEM[16] = { L'\0' };
 
-NP2ENCODING mEncoding[] = {
+NP2ENCODING g_Encodings[] = {
   { NCP_ANSI | NCP_RECODE,                               CP_ACP, "ansi,system,ascii,",                              61000, L"" },
   { NCP_OEM | NCP_RECODE,                                CP_OEMCP, "oem,oem,",                                      61001, L"" },
   { NCP_UNICODE | NCP_UNICODE_BOM,                       CP_UTF8, "",                                               61002, L"" },
@@ -2856,9 +2856,8 @@ NP2ENCODING mEncoding[] = {
                                                                                                                                   //{ NCP_8BIT|NCP_RECODE, 57011, "x-iscii-pa,xisciipa,",                                                           00000, L"" }, // ISCII Panjabi
 };
 
-
 int Encoding_CountOf() {
-  return COUNTOF(mEncoding);
+  return COUNTOF(g_Encodings);
 }
 
 int Encoding_Current(int iEncoding) {
@@ -2926,44 +2925,44 @@ void Encoding_InitDefaults() {
     65001  // (UTF-8)
   };
 
-  mEncoding[CPI_ANSI_DEFAULT].uCodePage = GetACP(); // set ANSI system CP
-  StringCchPrintf(wchANSI,COUNTOF(wchANSI),L" (CP-%u)",mEncoding[CPI_ANSI_DEFAULT].uCodePage);
+  g_Encodings[CPI_ANSI_DEFAULT].uCodePage = GetACP(); // set ANSI system CP
+  StringCchPrintf(wchANSI,COUNTOF(wchANSI),L" (CP-%u)",g_Encodings[CPI_ANSI_DEFAULT].uCodePage);
 
-  for (int i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); ++i) {
-    if (Encoding_IsValid(i) && (mEncoding[i].uCodePage == mEncoding[CPI_ANSI_DEFAULT].uCodePage)) {
-      mEncoding[i].uFlags |= NCP_ANSI;
-      if (mEncoding[i].uFlags & NCP_8BIT)
-        mEncoding[CPI_ANSI_DEFAULT].uFlags |= NCP_8BIT;
+  for (int i = CPI_UTF7 + 1; i < COUNTOF(g_Encodings); ++i) {
+    if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage)) {
+      g_Encodings[i].uFlags |= NCP_ANSI;
+      if (g_Encodings[i].uFlags & NCP_8BIT)
+        g_Encodings[CPI_ANSI_DEFAULT].uFlags |= NCP_8BIT;
       break;
     }
   }
 
-  mEncoding[CPI_OEM].uCodePage = GetOEMCP();
-  StringCchPrintf(wchOEM,COUNTOF(wchOEM),L" (CP-%u)",mEncoding[CPI_OEM].uCodePage);
+  g_Encodings[CPI_OEM].uCodePage = GetOEMCP();
+  StringCchPrintf(wchOEM,COUNTOF(wchOEM),L" (CP-%u)",g_Encodings[CPI_OEM].uCodePage);
 
-  for (int i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); ++i) {
-    if (Encoding_IsValid(i) && (mEncoding[i].uCodePage == mEncoding[CPI_OEM].uCodePage)) {
-      mEncoding[i].uFlags |= NCP_OEM;
-      if (mEncoding[i].uFlags & NCP_8BIT)
-        mEncoding[CPI_OEM].uFlags |= NCP_8BIT;
+  for (int i = CPI_UTF7 + 1; i < COUNTOF(g_Encodings); ++i) {
+    if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == g_Encodings[CPI_OEM].uCodePage)) {
+      g_Encodings[i].uFlags |= NCP_OEM;
+      if (g_Encodings[i].uFlags & NCP_8BIT)
+        g_Encodings[CPI_OEM].uFlags |= NCP_8BIT;
       break;
     }
   }
 
   // multi byte character sets
-  for (int i = 0; i < COUNTOF(mEncoding); ++i) {
+  for (int i = 0; i < COUNTOF(g_Encodings); ++i) {
     for (int k = 0; k < COUNTOF(uCodePageMBCS); k++) {
-      if (mEncoding[i].uCodePage == uCodePageMBCS[k]) {
-        mEncoding[i].uFlags |= NCP_MBCS;
+      if (g_Encodings[i].uCodePage == uCodePageMBCS[k]) {
+        g_Encodings[i].uFlags |= NCP_MBCS;
       }
     }
   }
 
   g_DOSEncoding = CPI_OEM;
   // Try to set the DOS encoding to DOS-437 if the default OEMCP is not DOS-437
-  if (mEncoding[g_DOSEncoding].uCodePage != 437) {
-    for (int i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); ++i) {
-      if (Encoding_IsValid(i) && (mEncoding[i].uCodePage == 437)) {
+  if (g_Encodings[g_DOSEncoding].uCodePage != 437) {
+    for (int i = CPI_UTF7 + 1; i < COUNTOF(g_Encodings); ++i) {
+      if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == 437)) {
         g_DOSEncoding = i;
         break;
       }
@@ -2986,8 +2985,8 @@ int Encoding_MapIniSetting(BOOL bLoad,int iSetting) {
     case  7: return CPI_UNICODEBE;
     case  8: return CPI_UTF7;
     default: {
-        for (int i = CPI_UTF7 + 1; i < COUNTOF(mEncoding); i++) {
-          if ((mEncoding[i].uCodePage == (UINT)iSetting) && Encoding_IsValid(i))
+        for (int i = CPI_UTF7 + 1; i < COUNTOF(g_Encodings); i++) {
+          if ((g_Encodings[i].uCodePage == (UINT)iSetting) && Encoding_IsValid(i))
             return(i);
         }
         return CPI_ANSI_DEFAULT;
@@ -3008,7 +3007,7 @@ int Encoding_MapIniSetting(BOOL bLoad,int iSetting) {
     case CPI_UTF7:         return  8;
     default: {
         if (Encoding_IsValid(iSetting))
-          return(mEncoding[iSetting].uCodePage);
+          return(g_Encodings[iSetting].uCodePage);
         else
           return CPI_ANSI_DEFAULT;
       }
@@ -3028,11 +3027,11 @@ int Encoding_MapUnicode(int iUni) {
     return iUni;
 }
 
-void Encoding_GetLabel(int iEncoding) {
-  if (mEncoding[iEncoding].wchLabel[0] == L'\0') {
+void Encoding_SetLabel(int iEncoding) {
+  if (g_Encodings[iEncoding].wchLabel[0] == L'\0') {
     WCHAR wch1[128] = { L'\0' };
     WCHAR wch2[128] = { L'\0' };
-    GetString(mEncoding[iEncoding].idsName,wch1,COUNTOF(wch1));
+    GetString(g_Encodings[iEncoding].idsName,wch1,COUNTOF(wch1));
     WCHAR *pwsz = StrChr(wch1,L';');
     if (pwsz) {
       pwsz = StrChr(CharNext(pwsz),L';');
@@ -3050,8 +3049,8 @@ void Encoding_GetLabel(int iEncoding) {
     else if (Encoding_IsOEM(iEncoding))
       StringCchCatN(wch2,COUNTOF(wch2),wchOEM,COUNTOF(wchOEM));
 
-    StringCchCopyN(mEncoding[iEncoding].wchLabel,COUNTOF(mEncoding[iEncoding].wchLabel),
-      wch2,COUNTOF(mEncoding[iEncoding].wchLabel));
+    StringCchCopyN(g_Encodings[iEncoding].wchLabel,COUNTOF(g_Encodings[iEncoding].wchLabel),
+      wch2,COUNTOF(g_Encodings[iEncoding].wchLabel));
   }
 }
 
@@ -3075,12 +3074,12 @@ int Encoding_MatchA(char *pchTest) {
   }
   *pchDst++ = ',';
   *pchDst = 0;
-  for (int i = 0; i < COUNTOF(mEncoding); i++) {
-    if (StrStrIA(mEncoding[i].pszParseNames,chTest)) {
+  for (int i = 0; i < COUNTOF(g_Encodings); i++) {
+    if (StrStrIA(g_Encodings[i].pszParseNames,chTest)) {
       CPINFO cpi;
-      if ((mEncoding[i].uFlags & NCP_INTERNAL) ||
-        IsValidCodePage(mEncoding[i].uCodePage) &&
-        GetCPInfo(mEncoding[i].uCodePage,&cpi))
+      if ((g_Encodings[i].uFlags & NCP_INTERNAL) ||
+        IsValidCodePage(g_Encodings[i].uCodePage) &&
+        GetCPInfo(g_Encodings[i].uCodePage,&cpi))
         return(i);
       else
         return(-1);
@@ -3091,8 +3090,8 @@ int Encoding_MatchA(char *pchTest) {
 
 
 int Encoding_GetByCodePage(UINT cp) {
-  for (int i = 0; i < COUNTOF(mEncoding); i++) {
-    if (cp == mEncoding[i].uCodePage) {
+  for (int i = 0; i < COUNTOF(g_Encodings); i++) {
+    if (cp == g_Encodings[i].uCodePage) {
       return i;
     }
   }
@@ -3102,10 +3101,10 @@ int Encoding_GetByCodePage(UINT cp) {
 
 BOOL Encoding_IsValid(int iTestEncoding) {
   CPINFO cpi;
-  if ((iTestEncoding >= 0) && (iTestEncoding < COUNTOF(mEncoding))) {
-    if ((mEncoding[iTestEncoding].uFlags & NCP_INTERNAL) ||
-      IsValidCodePage(mEncoding[iTestEncoding].uCodePage) &&
-      GetCPInfo(mEncoding[iTestEncoding].uCodePage,&cpi)) {
+  if ((iTestEncoding >= 0) && (iTestEncoding < COUNTOF(g_Encodings))) {
+    if ((g_Encodings[iTestEncoding].uFlags & NCP_INTERNAL) ||
+      IsValidCodePage(g_Encodings[iTestEncoding].uCodePage) &&
+      GetCPInfo(g_Encodings[iTestEncoding].uCodePage,&cpi)) {
       return(TRUE);
     }
   }
@@ -3128,21 +3127,21 @@ void Encoding_AddToListView(HWND hwnd,int idSel,BOOL bRecodeOnly) {
   LVITEM lvi;
   WCHAR wchBuf[256] = { L'\0' };
 
-  PENCODINGENTRY pEE = LocalAlloc(LPTR,COUNTOF(mEncoding) * sizeof(ENCODINGENTRY));
-  for (i = 0; i < COUNTOF(mEncoding); i++) {
+  PENCODINGENTRY pEE = LocalAlloc(LPTR,COUNTOF(g_Encodings) * sizeof(ENCODINGENTRY));
+  for (i = 0; i < COUNTOF(g_Encodings); i++) {
     pEE[i].id = i;
-    GetString(mEncoding[i].idsName,pEE[i].wch,COUNTOF(pEE[i].wch));
+    GetString(g_Encodings[i].idsName,pEE[i].wch,COUNTOF(pEE[i].wch));
   }
-  qsort(pEE,COUNTOF(mEncoding),sizeof(ENCODINGENTRY),CmpEncoding);
+  qsort(pEE,COUNTOF(g_Encodings),sizeof(ENCODINGENTRY),CmpEncoding);
 
   ZeroMemory(&lvi,sizeof(LVITEM));
   lvi.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
   lvi.pszText = wchBuf;
 
-  for (i = 0; i < COUNTOF(mEncoding); i++) {
+  for (i = 0; i < COUNTOF(g_Encodings); i++) {
 
     int id = pEE[i].id;
-    if (!bRecodeOnly || (mEncoding[id].uFlags & NCP_RECODE)) {
+    if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
 
       lvi.iItem = ListView_GetItemCount(hwnd);
 
@@ -3212,12 +3211,12 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly) {
   COMBOBOXEXITEM cbei;
   WCHAR wchBuf[256] = { L'\0' };
 
-  PENCODINGENTRY pEE = LocalAlloc(LPTR,COUNTOF(mEncoding) * sizeof(ENCODINGENTRY));
-  for (i = 0; i < COUNTOF(mEncoding); i++) {
+  PENCODINGENTRY pEE = LocalAlloc(LPTR,COUNTOF(g_Encodings) * sizeof(ENCODINGENTRY));
+  for (i = 0; i < COUNTOF(g_Encodings); i++) {
     pEE[i].id = i;
-    GetString(mEncoding[i].idsName,pEE[i].wch,COUNTOF(pEE[i].wch));
+    GetString(g_Encodings[i].idsName,pEE[i].wch,COUNTOF(pEE[i].wch));
   }
-  qsort(pEE,COUNTOF(mEncoding),sizeof(ENCODINGENTRY),CmpEncoding);
+  qsort(pEE,COUNTOF(g_Encodings),sizeof(ENCODINGENTRY),CmpEncoding);
 
   ZeroMemory(&cbei,sizeof(COMBOBOXEXITEM));
   cbei.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE | CBEIF_LPARAM;
@@ -3226,10 +3225,10 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly) {
   cbei.iImage = 0;
   cbei.iSelectedImage = 0;
 
-  for (i = 0; i < COUNTOF(mEncoding); i++) {
+  for (i = 0; i < COUNTOF(g_Encodings); i++) {
 
     int id = pEE[i].id;
-    if (!bRecodeOnly || (mEncoding[id].uFlags & NCP_RECODE)) {
+    if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
 
       CPINFO cpi;
 
@@ -3250,9 +3249,9 @@ void Encoding_AddToComboboxEx(HWND hwnd,int idSel,BOOL bRecodeOnly) {
       else if (id == CPI_OEM)
         StringCchCatN(wchBuf,COUNTOF(wchBuf),wchOEM,COUNTOF(wchOEM));
 
-      if ((mEncoding[id].uFlags & NCP_INTERNAL) ||
-        (IsValidCodePage(mEncoding[id].uCodePage) &&
-          GetCPInfo(mEncoding[id].uCodePage,&cpi)))
+      if ((g_Encodings[id].uFlags & NCP_INTERNAL) ||
+        (IsValidCodePage(g_Encodings[id].uCodePage) &&
+          GetCPInfo(g_Encodings[id].uCodePage,&cpi)))
         cbei.iImage = 0;
       else
         cbei.iImage = 1;
@@ -3291,15 +3290,15 @@ BOOL Encoding_GetFromComboboxEx(HWND hwnd,int *pidEncoding) {
 
 
 BOOL Encoding_IsDefault(int iEncoding) {
-  return (mEncoding[iEncoding].uFlags & NCP_DEFAULT);
+  return (g_Encodings[iEncoding].uFlags & NCP_DEFAULT);
 }
 
 BOOL Encoding_IsANSI(int iEncoding) {
-  return (mEncoding[iEncoding].uFlags & NCP_ANSI);
+  return (g_Encodings[iEncoding].uFlags & NCP_ANSI);
 }
 
 BOOL Encoding_IsOEM(int iEncoding) {
-  return (mEncoding[iEncoding].uFlags & NCP_OEM);
+  return (g_Encodings[iEncoding].uFlags & NCP_OEM);
 }
 
 UINT Encoding_SciGetCodePage(HWND hwnd) {
@@ -3321,7 +3320,7 @@ int Encoding_SciMappedCodePage(int iEncoding) {
   /*
   if (Encoding_IsValid(iEncoding)) {
   // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
-  int cp = (int)mEncoding[iEncoding].uCodePage;
+  int cp = (int)g_Encodings[iEncoding].uCodePage;
   if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
   return cp;
   }

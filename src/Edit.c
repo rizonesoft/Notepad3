@@ -93,7 +93,7 @@ extern int  iMarkOccurrencesCount;
 extern int  iMarkOccurrencesMaxCount;
 extern BOOL bMarkOccurrencesMatchVisible;
 
-extern NP2ENCODING mEncoding[];
+extern NP2ENCODING g_Encodings[];
 
 
 #define DELIM_BUFFER 258
@@ -351,7 +351,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 //
 //  EditConvertText()
 //
-BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
+BOOL EditConvertText(HWND hwnd, int encSource, int encDest, BOOL bSetSavePoint)
 {
   if (encSource == encDest)
     return(TRUE);
@@ -359,9 +359,9 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
   if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
     return(FALSE);
 
-  int length = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
+  int length = SciCall_GetTextLength();
 
-  if (length == 0) 
+  if (length == 0)
   {
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
@@ -370,7 +370,6 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
     SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
     Encoding_SciSetCodePage(hwnd,encDest);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
-    //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
     SendMessage(hwnd,SCI_GOTOPOS,0,0);
     SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
 
@@ -379,22 +378,31 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint)
   }
   else {
 
-    const int chLen = length * 5 + 1;
-    char* pchText = GlobalAlloc(GPTR,chLen);
+    const int chBufSize = length * 5 + 2;
+    char* pchText = GlobalAlloc(GPTR,chBufSize);
 
     struct Sci_TextRange tr = { { 0, -1 }, NULL };
     tr.lpstrText = pchText;
     SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
 
-    const int wchLen = length * 3 + 1;
-    WCHAR* pwchText = GlobalAlloc(GPTR,wchLen);
+    const int wchBufSize = length * 3 + 2;
+    WCHAR* pwchText = GlobalAlloc(GPTR,wchBufSize);
 
     // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
-    //UINT cpSci = mEncoding[encSource].uCodePage;
-    UINT cpSci = Encoding_SciGetCodePage(hwnd); // fixed Scintilla internal 
-    UINT cpDst = mEncoding[encDest].uCodePage;
-    int cbwText = MultiByteToWideChar(cpDst,0,pchText,length,pwchText,wchLen);
-    int cbText = WideCharToMultiByte(cpSci,0,pwchText,cbwText,pchText,chLen,NULL,NULL);
+    //UINT cpSci = g_Encodings[encSource].uCodePage;
+    UINT cpSci = Encoding_SciGetCodePage(hwnd); // fixed Scintilla internal (UTF-8)
+    UINT cpDst = g_Encodings[encDest].uCodePage;
+    
+    // get text as wide char
+    int cbwText = MultiByteToWideChar(cpSci,0, pchText ,length, pwchText, wchBufSize);
+    // convert wide char to destination multibyte
+    int cbText = WideCharToMultiByte(cpDst, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
+    // re-code to wide char
+    cbwText = MultiByteToWideChar(cpDst, 0, pchText, cbText, pwchText, wchBufSize);
+    // convert to Scintilla format
+    cbText = WideCharToMultiByte(cpSci, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
+    pchText[cbText] = '\0';
+    pchText[cbText+1] = '\0';
 
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
@@ -433,7 +441,7 @@ BOOL EditSetNewEncoding(HWND hwnd,int iNewEncoding,BOOL bNoUI,BOOL bSetSavePoint
       //return FALSE; // commented out ? : allow conversion between arbitrary encodings
     //}
   
-    if (SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0) == 0) {
+    if (SciCall_GetTextLength() == 0) {
 
       BOOL bIsEmptyUndoHistory = (SendMessage(hwnd, SCI_CANUNDO, 0, 0) == 0 && SendMessage(hwnd, SCI_CANREDO, 0, 0) == 0);
 
@@ -468,13 +476,13 @@ BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
   if ((pszText == NULL) || (cchLen < 1))
     return FALSE;
 
-  UINT codepage = mEncoding[Encoding_Current(CPI_GET)].uCodePage;
+  UINT codepage = g_Encodings[Encoding_Current(CPI_GET)].uCodePage;
 
   if ((codepage == CP_UTF7) || (codepage == CP_UTF8))
     return FALSE;
 
   DWORD dwFlags = WC_NO_BEST_FIT_CHARS | WC_COMPOSITECHECK | WC_DEFAULTCHAR;
-  BOOL useNullParams = (mEncoding[Encoding_Current(CPI_GET)].uFlags & NCP_MBCS) ? TRUE : FALSE;
+  BOOL useNullParams = (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_MBCS) ? TRUE : FALSE;
 
   BOOL bDefaultCharsUsed = FALSE;
   int cch = 0;
@@ -912,7 +920,7 @@ BOOL EditLoadFile(
               (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 !=
                 UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
                 (!bPreferOEM && (
-                  mEncoding[_iPrefEncoding].uFlags & NCP_UTF8 ||
+                  g_Encodings[_iPrefEncoding].uFlags & NCP_UTF8 ||
                   bLoadASCIIasUTF8))))))) && !(FileVars_IsNonUTF8(&fvCurFile) &&
                   (iSrcEnc != CPI_UTF8 && iSrcEnc != CPI_UTF8SIGN)))
     {
@@ -942,7 +950,7 @@ BOOL EditLoadFile(
           else {
             if (Encoding_SrcWeak(CPI_GET) == CPI_NONE)
               *iEncoding = _iPrefEncoding;
-            else if (mEncoding[Encoding_SrcWeak(CPI_GET)].uFlags & NCP_INTERNAL)
+            else if (g_Encodings[Encoding_SrcWeak(CPI_GET)].uFlags & NCP_INTERNAL)
               *iEncoding = iDefaultEncoding;
             else
               *iEncoding = _iPrefEncoding;
@@ -950,10 +958,10 @@ BOOL EditLoadFile(
         }
       }
 
-      if (((mEncoding[*iEncoding].uCodePage != CP_UTF7) && (mEncoding[*iEncoding].uFlags & NCP_8BIT)) ||
-          ((mEncoding[*iEncoding].uCodePage == CP_UTF7) && IsUTF7(lpData,cbData))) {
+      if (((g_Encodings[*iEncoding].uCodePage != CP_UTF7) && (g_Encodings[*iEncoding].uFlags & NCP_8BIT)) ||
+          ((g_Encodings[*iEncoding].uCodePage == CP_UTF7) && IsUTF7(lpData,cbData))) {
 
-        UINT uCodePage  = mEncoding[*iEncoding].uCodePage;
+        UINT uCodePage  = g_Encodings[*iEncoding].uCodePage;
 
         LPWSTR lpDataWide = GlobalAlloc(GPTR,cbData * 2 + 16);
         int cbDataWide = MultiByteToWideChar(uCodePage,0,lpData,cbData,lpDataWide,(int)GlobalSize(lpDataWide)/sizeof(WCHAR));
@@ -1067,7 +1075,7 @@ BOOL EditSaveFile(
     EditStripTrailingBlanks(hwnd,TRUE);
 
   // get text
-  cbData = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
+  cbData = SciCall_GetTextLength();
   lpData = GlobalAlloc(GPTR, cbData + 4); //fix: +bom
   SendMessage(hwnd,SCI_GETTEXT,GlobalSize(lpData),(LPARAM)lpData);
 
@@ -1079,7 +1087,7 @@ BOOL EditSaveFile(
   else {
 
   // FIXME: move checks in front of disk file access
-  /*if ((mEncoding[iEncoding].uFlags & NCP_UNICODE) == 0 && (mEncoding[iEncoding].uFlags & NCP_UTF8_SIGN) == 0) {
+  /*if ((g_Encodings[iEncoding].uFlags & NCP_UNICODE) == 0 && (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) == 0) {
       BOOL bEncodingMismatch = TRUE;
       FILEVARS fv;
       FileVars_Init(lpData,cbData,&fv);
@@ -1089,32 +1097,32 @@ BOOL EditSaveFile(
           iAltEncoding = FileVars_GetEncoding(&fv);
           if (iAltEncoding == iEncoding)
             bEncodingMismatch = FALSE;
-          else if ((mEncoding[iAltEncoding].uFlags & NCP_UTF8) && (mEncoding[iEncoding].uFlags & NCP_UTF8))
+          else if ((g_Encodings[iAltEncoding].uFlags & NCP_UTF8) && (g_Encodings[iEncoding].uFlags & NCP_UTF8))
             bEncodingMismatch = FALSE;
         }
         if (bEncodingMismatch) {
-          Encoding_GetLabel(iAltEncoding);
-          Encoding_GetLabel(iEncoding);
+          Encoding_SetLabel(iAltEncoding);
+          Encoding_SetLabel(iEncoding);
           InfoBox(0,L"MsgEncodingMismatch",IDS_ENCODINGMISMATCH,
-            mEncoding[iAltEncoding].wchLabel,
-            mEncoding[iEncoding].wchLabel);
+            g_Encodings[iAltEncoding].wchLabel,
+            g_Encodings[iEncoding].wchLabel);
         }
       }
     }*/
 
-    if (mEncoding[iEncoding].uFlags & NCP_UNICODE)
+    if (g_Encodings[iEncoding].uFlags & NCP_UNICODE)
     {
       SetEndOfFile(hFile);
 
       LPWSTR lpDataWide = GlobalAlloc(GPTR, cbData * 2 + 16);
       int bomoffset = 0;
-      if (mEncoding[iEncoding].uFlags & NCP_UNICODE_BOM) {
+      if (g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM) {
         const char* bom = "\xFF\xFE";
         CopyMemory((char*)lpDataWide, bom, 2);
         bomoffset = 1;
       }
       int cbDataWide = bomoffset + MultiByteToWideChar(Encoding_SciGetCodePage(hwnd), 0, lpData, cbData, &lpDataWide[bomoffset], (int)GlobalSize(lpDataWide) / sizeof(WCHAR) - bomoffset);
-      if (mEncoding[iEncoding].uFlags & NCP_UNICODE_REVERSE) {
+      if (g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE) {
         _swab((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
       }
       bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &dwBytesWritten);
@@ -1124,11 +1132,11 @@ BOOL EditSaveFile(
       GlobalFree(lpData);
     }
 
-    else if (mEncoding[iEncoding].uFlags & NCP_UTF8)
+    else if (g_Encodings[iEncoding].uFlags & NCP_UTF8)
     {
       SetEndOfFile(hFile);
 
-      if (mEncoding[iEncoding].uFlags & NCP_UTF8_SIGN) {
+      if (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) {
         const char* bom = "\xEF\xBB\xBF";
         DWORD bomoffset = 3;
         MoveMemory(&lpData[bomoffset], lpData, cbData);
@@ -1142,15 +1150,15 @@ BOOL EditSaveFile(
       GlobalFree(lpData);
     }
 
-    else if (mEncoding[iEncoding].uFlags & NCP_8BIT) {
+    else if (g_Encodings[iEncoding].uFlags & NCP_8BIT) {
 
       BOOL bCancelDataLoss = FALSE;
-      UINT uCodePage = mEncoding[iEncoding].uCodePage;
+      UINT uCodePage = g_Encodings[iEncoding].uCodePage;
 
       LPWSTR lpDataWide = GlobalAlloc(GPTR,cbData * 2 + 16);
       int    cbDataWide = MultiByteToWideChar(Encoding_SciGetCodePage(hwnd),0,lpData,cbData,lpDataWide,(int)GlobalSize(lpDataWide)/sizeof(WCHAR));
 
-      if (mEncoding[iEncoding].uFlags & NCP_MBCS) {
+      if (g_Encodings[iEncoding].uFlags & NCP_MBCS) {
         GlobalFree(lpData);
         lpData = GlobalAlloc(GPTR, GlobalSize(lpDataWide) * 2); // need more space
         cbData = WideCharToMultiByte(uCodePage, 0, lpDataWide, cbDataWide, lpData, (int)GlobalSize(lpData), NULL, NULL);
@@ -7103,9 +7111,9 @@ BOOL FileVars_IsValidEncoding(LPFILEVARS lpfv) {
   if (lpfv->mask & FV_ENCODING &&
       lpfv->iEncoding >= 0 &&
       lpfv->iEncoding < Encoding_CountOf()) {
-    if ((mEncoding[lpfv->iEncoding].uFlags & NCP_INTERNAL) ||
-         IsValidCodePage(mEncoding[lpfv->iEncoding].uCodePage) &&
-         GetCPInfo(mEncoding[lpfv->iEncoding].uCodePage,&cpi)) {
+    if ((g_Encodings[lpfv->iEncoding].uFlags & NCP_INTERNAL) ||
+         IsValidCodePage(g_Encodings[lpfv->iEncoding].uCodePage) &&
+         GetCPInfo(g_Encodings[lpfv->iEncoding].uCodePage,&cpi)) {
       return(TRUE);
     }
   }

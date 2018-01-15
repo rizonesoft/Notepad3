@@ -515,6 +515,7 @@
 	<td>Martin Kleusberg</td>
 	<td>Jannick</td>
 	<td>Zufu Liu</td>
+	<td>Simon Sobisch</td>
     </tr>
     </table>
     <p>
@@ -527,6 +528,26 @@
       </li>
     </ul>
     <h3>
+       <a href="http://www.scintilla.org/scite403.zip">Release 4.0.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 26 October 2017.
+	</li>
+	<li>
+	Add SCI_GETMOVEEXTENDSSELECTION to allow applications to add more
+	complex selection commands.
+	</li>
+	<li>
+	Improve VHDL lexer's handling of character literals and escape characters in strings.
+	</li>
+	<li>
+	Fix closing autocompletion lists on Cocoa for macOS 10.13 where the window
+	was emptying but staying visible.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1981/">Bug #1981</a>.
+	</li>
+    </ul>
+    <h3>
        <a href="http://www.scintilla.org/scite402.zip">Release 4.0.2</a>
     </h3>
     <ul>
@@ -536,6 +557,10 @@
 	<li>
 	Fix HTML lexer handling of Django so that nesting a  &#123;&#123; &#125;&#125; or &#123;% %&#125;
 	Django tag inside of a &#123;# #&#125; Django comment does not break highlighting of rest of file
+	</li>
+	<li>
+	The Matlab folder now treats "while" as a fold start.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1985/">Bug #1985</a>.
 	</li>
 	<li>
 	Fix failure on Cocoa with animated find indicator in large files with macOS 10.13
@@ -1256,7 +1281,6 @@
 	This prevents unexpected behaviour and crashes on East Asian systems where default locales are commonly DBCS.
 	Projects which want to default to DBCS code pages in East Asian locales should set the code page and
 	character set explicitly.
-	<b> (This change has been REVERTED in Notepad3) </b>
 	</li>
 	<li>
 	SCVS_NOWRAPLINESTART option stops left arrow from wrapping to the previous line.
