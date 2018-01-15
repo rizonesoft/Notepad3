@@ -3576,7 +3576,14 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
 //
 //  EditJoinLinesEx()
 //
-void EditJoinLinesEx(HWND hwnd)
+//  Customized version of  SCI_LINESJOIN  (w/o using TARGET transaction)
+//
+//   ~EditEnterTargetTransaction();
+//   ~SciCall_TargetFromSelection();
+//   ~SendMessage(g_hwndEdit, SCI_LINESJOIN, 0, 0);
+//   ~EditLeaveTargetTransaction();
+//
+void EditJoinLinesEx(HWND hwnd, BOOL bPreserveParagraphs, BOOL bCRLF2Space)
 {
   BOOL bModified = FALSE;
 
@@ -3590,84 +3597,85 @@ void EditJoinLinesEx(HWND hwnd)
 
   int iCurPos    = SciCall_GetCurrentPos();
   int iAnchorPos = SciCall_GetAnchor();
+
   int iSelStart = SciCall_GetSelectionStart();
-  int iLine = SciCall_LineFromPosition(iSelStart);
-  iSelStart = SciCall_PositionFromLine(iLine);
-  int iSelEnd   = SciCall_GetSelectionEnd();
+  int iSelEnd = SciCall_GetSelectionEnd();
   int iSelCount = iSelEnd - iSelStart;
 
-  char* pszText = LocalAlloc(LPTR,iSelCount+2);
-  if (pszText == NULL)
-    return;
+  char* pszText = (char*)SciCall_GetRangePointer(iSelStart, iSelCount);
 
-  char* pszJoin = LocalAlloc(LPTR,LocalSize(pszText));
+  char* pszJoin = LocalAlloc(LPTR, iSelCount+1);
   if (pszJoin == NULL) {
-    LocalFree(pszText);
     return;
   }
 
-  struct Sci_TextRange tr = { { 0, 0 }, NULL };
-  tr.chrg.cpMin = iSelStart;
-  tr.chrg.cpMax = iSelEnd;
-  tr.lpstrText = pszText;
-  SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
-
-  int  cchEOL = 2;
   char szEOL[] = "\r\n";
-  int cEOLMode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
-  if (cEOLMode == SC_EOL_CR)
-    cchEOL = 1;
-  else if (cEOLMode == SC_EOL_LF) {
-    cchEOL = 1;
-    szEOL[0] = '\n';
+  int  cchEOL = 2;
+  switch ((int)SendMessage(hwnd, SCI_GETEOLMODE, 0, 0)) 
+  {
+    case SC_EOL_LF:
+      szEOL[0] = '\n';
+      szEOL[1] = '\0';
+      cchEOL = 1;
+      break;
+    case SC_EOL_CR:
+      szEOL[1] = '\0';
+      cchEOL = 1;
+      break;
+    case SC_EOL_CRLF:
+    default:
+      break;
   }
 
-  int cchJoin = 0;
-  for (int i = 0; i < iSelCount; i++)
+  int cchJoin = -1;
+  for (int i = 0; i < iSelCount; ++i)
   {
-    if (pszText[i] == '\r' || pszText[i] == '\n') {
-      if (pszText[i] == '\r' && pszText[i+1] == '\n')
-        i++;
-      if (!StrChrA("\r\n",pszText[i+1]) && pszText[i+1] != 0) {
-        pszJoin[cchJoin++] = ' ';
+    if (pszText[i] == '\r' || pszText[i] == '\n') 
+    {
+      if (pszText[i] == '\r' && pszText[i + 1] == '\n') { ++i; }
+
+      if (!StrChrA("\r\n",pszText[i+1]) && pszText[i+1]) 
+      {
+        // next char is non line-break 
+        if (bCRLF2Space) { pszJoin[++cchJoin] = ' '; }
         bModified = TRUE;
       }
-      else {
+      else { // we are between paragraphs
+
+        // swallow all line-breaks
         while (StrChrA("\r\n",pszText[i+1])) {
-          i++;
+          ++i;
           bModified = TRUE;
         }
-        if (pszText[i+1] != 0) {
-          pszJoin[cchJoin++] = szEOL[0];
-          if (cchEOL > 1)
-            pszJoin[cchJoin++] = szEOL[1];
-          if (cchJoin > cchEOL) {
-            pszJoin[cchJoin++] = szEOL[0];
-            if (cchEOL > 1)
-              pszJoin[cchJoin++] = szEOL[1];
+
+        if (bPreserveParagraphs) {
+          if (pszText[i + 1] != 0) {
+            for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
+            if (cchJoin > cchEOL) {
+              for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
+            }
+            bModified = TRUE;
           }
         }
       }
     }
     else {
-      pszJoin[cchJoin++] = pszText[i];
+      pszJoin[++cchJoin] = pszText[i]; // copy char
     }
   }
 
-  LocalFree(pszText);
-
   if (bModified) {
     if (iAnchorPos > iCurPos) {
-      //iCurPos = iSelStart;
-      iAnchorPos = iSelStart + cchJoin;
+      iCurPos = iSelStart;
+      iAnchorPos = iSelStart + cchJoin + 1;
     }
     else {
-      //iAnchorPos = iSelStart;
-      iCurPos = iSelStart + cchJoin;
+      iAnchorPos = iSelStart;
+      iCurPos = iSelStart + cchJoin + 1;
     }
 
     SendMessage(hwnd,SCI_BEGINUNDOACTION,0,0);
-    SciCall_SetSel(iSelStart, iCurPos);
+    SciCall_SetSel(iSelStart, iSelEnd);
     SendMessage(hwnd, SCI_REPLACESEL, 0, (LPARAM)pszJoin);
     SciCall_SetSel(iAnchorPos, iCurPos);
     SendMessage(hwnd,SCI_ENDUNDOACTION,0,0);

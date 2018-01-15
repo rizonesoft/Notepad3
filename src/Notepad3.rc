@@ -174,9 +174,10 @@ BEGIN
             MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Column &Wrap...\tCtrl+Shift+W", IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Split Lines\tCtrl+I",        IDM_EDIT_SPLITLINES
-            MENUITEM "&Join Lines\tCtrl+J",         IDM_EDIT_JOINLINES
-            MENUITEM "Join &Paragraphs\tCtrl+Shift+J", IDM_EDIT_JOINLINESEX
+            MENUITEM "&Split Lines\tCtrl+I",          IDM_EDIT_SPLITLINES
+            MENUITEM "&Join Lines\tCtrl+J",           IDM_EDIT_JOINLINES
+            MENUITEM "&Fuse Lines\tCtrl+Alt+J",       IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
         END
         POPUP "&Block"
         BEGIN
@@ -460,8 +461,9 @@ BEGIN
     "I",            IDM_EDIT_TITLECASE,     VIRTKEY, CONTROL, ALT, NOINVERT
     "I",            IDM_VIEW_HILITECURRENTLINE, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "J",            IDM_EDIT_JOINLINES,     VIRTKEY, CONTROL, NOINVERT
-    "J",            IDM_EDIT_ALIGN,         VIRTKEY, ALT, NOINVERT
-    "J",            IDM_EDIT_JOINLINESEX,   VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "J",            IDM_EDIT_JOINLN_NOSP,   VIRTKEY, CONTROL, ALT, NOINVERT
+    "J",            IDM_EDIT_JOINLINES_PARA,VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "J",            IDM_EDIT_ALIGN, VIRTKEY, ALT, NOINVERT
     "K",            IDM_EDIT_SWAP,          VIRTKEY, CONTROL, NOINVERT
     "K",            IDM_FILE_ADDTOFAV,      VIRTKEY, ALT, NOINVERT
     "K",            CMD_COPYWINPOS,         VIRTKEY, SHIFT, CONTROL, NOINVERT
