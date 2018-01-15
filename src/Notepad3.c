@@ -7272,6 +7272,7 @@ void UpdateStatusbar()
   }
   else {
     tchSel[0] = L'-'; tchSel[1] = L'-'; tchSel[2] = L'\0';
+    tchSelB[0] = L'0'; tchSelB[1] = L'\0';
   }
 
   // Print number of occurrence marks found
