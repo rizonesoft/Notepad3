@@ -376,7 +376,7 @@ BEGIN
         MENUITEM "&Online Documentation",       IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
         MENUITEM "&About...\tF1",               IDM_HELP_ABOUT
-        MENUITEM "Command Line Help",           IDM_HELP_CMD
+        MENUITEM "&Command Line Help",          IDM_HELP_CMD
     END
 END
 
