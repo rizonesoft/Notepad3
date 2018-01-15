@@ -120,7 +120,7 @@ int Scintilla_LinkLexers() {
 	//LINK_LEXER(lmHaskell);
 	LINK_LEXER(lmHTML);
 	//LINK_LEXER(lmIHex);
-    //LINK_LEXER(lmIndent);
+	//LINK_LEXER(lmIndent);
 	LINK_LEXER(lmInno);
 	LINK_LEXER(lmJSON);
 	//LINK_LEXER(lmKix);
@@ -141,7 +141,7 @@ int Scintilla_LinkLexers() {
 	//LINK_LEXER(lmMSSQL);
 	//LINK_LEXER(lmMySQL);
 	//LINK_LEXER(lmNimrod);
-  LINK_LEXER(lmNimrod);
+	LINK_LEXER(lmNimrod);
 	//LINK_LEXER(lmNncrontab);
 	LINK_LEXER(lmNsis);
 	LINK_LEXER(lmNull);

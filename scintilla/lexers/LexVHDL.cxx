@@ -50,7 +50,7 @@ static inline bool IsAWordStart(const int ch) {
 
 /***************************************/
 static inline bool IsABlank(unsigned int ch) {
-    return (ch == ' ') || (ch == 0x09) || (ch == 0x0b) ;
+  return (ch == ' ') || (ch == 0x09) || (ch == 0x0b) ;
 }
 
 /***************************************/
@@ -72,8 +72,9 @@ static void ColouriseVHDLDoc(
   StyleContext sc(startPos, length, initStyle, styler);
   bool isExtendedId = false;    // true when parsing an extended identifier
 
-  for (; sc.More(); sc.Forward())
+  while (sc.More())
   {
+    bool advance = true;
 
     // Determine if the current state should terminate.
     if (sc.state == SCE_VHDL_OPERATOR) {
@@ -106,24 +107,28 @@ static void ColouriseVHDLDoc(
         // extended identifiers are terminated by backslash, check for end of line in case we have invalid syntax
         isExtendedId = false;
         sc.ForwardSetState(SCE_VHDL_DEFAULT);
+        advance = false;
       }
     } else if (sc.state == SCE_VHDL_COMMENT || sc.state == SCE_VHDL_COMMENTLINEBANG) {
       if (sc.atLineEnd) {
         sc.SetState(SCE_VHDL_DEFAULT);
       }
     } else if (sc.state == SCE_VHDL_STRING) {
-      if (sc.ch == '\\') {
-        if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
+      if (sc.ch == '"') {
+        advance = false;
+        sc.Forward();
+        if (sc.ch == '"')
           sc.Forward();
-        }
-      } else if (sc.ch == '\"') {
-        sc.ForwardSetState(SCE_VHDL_DEFAULT);
+        else
+          sc.SetState(SCE_VHDL_DEFAULT);
       } else if (sc.atLineEnd) {
+        advance = false;
         sc.ChangeState(SCE_VHDL_STRINGEOL);
         sc.ForwardSetState(SCE_VHDL_DEFAULT);
       }
     } else if (sc.state == SCE_VHDL_BLOCK_COMMENT){
       if(sc.ch == '*' && sc.chNext == '/'){
+        advance = false;
         sc.Forward();
         sc.ForwardSetState(SCE_VHDL_DEFAULT);
       }
@@ -142,8 +147,19 @@ static void ColouriseVHDLDoc(
           sc.SetState(SCE_VHDL_COMMENT);
       } else if (sc.Match('/', '*')){
         sc.SetState(SCE_VHDL_BLOCK_COMMENT);
-      } else if (sc.ch == '\"') {
+      } else if (sc.ch == '"') {
         sc.SetState(SCE_VHDL_STRING);
+      } else if (sc.ch == '\'') {
+        if (sc.GetRelative(2) == '\''){
+          if (sc.chNext != '(' || sc.GetRelative(4) != '\''){
+            // Can only be a character literal
+            sc.SetState(SCE_VHDL_STRING);
+            sc.Forward();
+            sc.Forward();
+            sc.ForwardSetState(SCE_VHDL_DEFAULT);
+            advance = false;
+          } // else can be a tick or a character literal, need more context, eg.: identifier'('x')
+        } // else can only be a tick
       } else if (sc.ch == '\\') {
         isExtendedId = true;
         sc.SetState(SCE_VHDL_IDENTIFIER);
@@ -151,55 +167,58 @@ static void ColouriseVHDLDoc(
         sc.SetState(SCE_VHDL_OPERATOR);
       }
     }
+    
+    if (advance)
+      sc.Forward();
   }
   sc.Complete();
 }
 //=============================================================================
 static bool IsCommentLine(Sci_Position line, Accessor &styler) {
-	Sci_Position pos = styler.LineStart(line);
-	Sci_Position eol_pos = styler.LineStart(line + 1) - 1;
-	for (Sci_Position i = pos; i < eol_pos; i++) {
-		char ch = styler[i];
-		char chNext = styler[i+1];
-		if ((ch == '-') && (chNext == '-'))
-			return true;
-		else if (ch != ' ' && ch != '\t')
-			return false;
-	}
-	return false;
+  Sci_Position pos = styler.LineStart(line);
+  Sci_Position eol_pos = styler.LineStart(line + 1) - 1;
+  for (Sci_Position i = pos; i < eol_pos; i++) {
+    char ch = styler[i];
+    char chNext = styler[i+1];
+    if ((ch == '-') && (chNext == '-'))
+      return true;
+    else if (ch != ' ' && ch != '\t')
+      return false;
+  }
+  return false;
 }
 static bool IsCommentBlockStart(Sci_Position line, Accessor &styler)
 {
-    Sci_Position pos = styler.LineStart(line);
-	Sci_Position eol_pos = styler.LineStart(line + 1) - 1;
-	for (Sci_Position i = pos; i < eol_pos; i++) {
-		char ch = styler[i];
-		char chNext = styler[i+1];
-        char style = styler.StyleAt(i);
-		if ((style == SCE_VHDL_BLOCK_COMMENT) && (ch == '/') && (chNext == '*'))
-			return true;
-	}
-	return false;
+  Sci_Position pos = styler.LineStart(line);
+  Sci_Position eol_pos = styler.LineStart(line + 1) - 1;
+  for (Sci_Position i = pos; i < eol_pos; i++) {
+    char ch = styler[i];
+    char chNext = styler[i+1];
+    char style = styler.StyleAt(i);
+    if ((style == SCE_VHDL_BLOCK_COMMENT) && (ch == '/') && (chNext == '*'))
+      return true;
+  }
+  return false;
 }
 
 static bool IsCommentBlockEnd(Sci_Position line, Accessor &styler)
 {
-    Sci_Position pos = styler.LineStart(line);
-	Sci_Position eol_pos = styler.LineStart(line + 1) - 1;
+  Sci_Position pos = styler.LineStart(line);
+  Sci_Position eol_pos = styler.LineStart(line + 1) - 1;
 
-	for (Sci_Position i = pos; i < eol_pos; i++) {
-		char ch = styler[i];
-		char chNext = styler[i+1];
-        char style = styler.StyleAt(i);
-		if ((style == SCE_VHDL_BLOCK_COMMENT) && (ch == '*') && (chNext == '/'))
-			return true;
-	}
-	return false;
+  for (Sci_Position i = pos; i < eol_pos; i++) {
+    char ch = styler[i];
+    char chNext = styler[i+1];
+    char style = styler.StyleAt(i);
+    if ((style == SCE_VHDL_BLOCK_COMMENT) && (ch == '*') && (chNext == '/'))
+      return true;
+  }
+  return false;
 }
 
 static bool IsCommentStyle(char style)
 {
-    return style == SCE_VHDL_BLOCK_COMMENT || style == SCE_VHDL_COMMENT || style == SCE_VHDL_COMMENTLINEBANG;
+  return style == SCE_VHDL_BLOCK_COMMENT || style == SCE_VHDL_COMMENT || style == SCE_VHDL_COMMENTLINEBANG;
 }
 
 //=============================================================================
