@@ -351,7 +351,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 //
 //  EditConvertText()
 //
-BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint,BOOL bRecoding)
+BOOL EditConvertText(HWND hwnd, int encSource, int encDest, BOOL bSetSavePoint)
 {
   if (encSource == encDest)
     return(TRUE);
@@ -361,7 +361,7 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint,BOOL
 
   int length = SciCall_GetTextLength();
 
-  if ((length == 0) || !bRecoding)
+  if (length == 0)
   {
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
@@ -370,7 +370,6 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint,BOOL
     SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
     Encoding_SciSetCodePage(hwnd,encDest);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
-    //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
     SendMessage(hwnd,SCI_GOTOPOS,0,0);
     SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
 
@@ -379,23 +378,31 @@ BOOL EditConvertText(HWND hwnd,int encSource,int encDest,BOOL bSetSavePoint,BOOL
   }
   else {
 
-    const int chLen = length * 5 + 1;
-    char* pchText = GlobalAlloc(GPTR,chLen);
+    const int chBufSize = length * 5 + 2;
+    char* pchText = GlobalAlloc(GPTR,chBufSize);
 
     struct Sci_TextRange tr = { { 0, -1 }, NULL };
     tr.lpstrText = pchText;
     SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
 
-    const int wchLen = length * 3 + 1;
-    WCHAR* pwchText = GlobalAlloc(GPTR,wchLen);
+    const int wchBufSize = length * 3 + 2;
+    WCHAR* pwchText = GlobalAlloc(GPTR,wchBufSize);
 
     // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
     //UINT cpSci = g_Encodings[encSource].uCodePage;
-    UINT cpSci = Encoding_SciGetCodePage(hwnd); // fixed Scintilla internal 
+    UINT cpSci = Encoding_SciGetCodePage(hwnd); // fixed Scintilla internal (UTF-8)
     UINT cpDst = g_Encodings[encDest].uCodePage;
     
-    int cbwText = MultiByteToWideChar(cpDst,0,pchText,length,pwchText,wchLen);
-    int cbText = WideCharToMultiByte(cpSci,0,pwchText,cbwText,pchText,chLen,NULL,NULL);
+    // get text as wide char
+    int cbwText = MultiByteToWideChar(cpSci,0, pchText ,length, pwchText, wchBufSize);
+    // convert wide char to destination multibyte
+    int cbText = WideCharToMultiByte(cpDst, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
+    // re-code to wide char
+    cbwText = MultiByteToWideChar(cpDst, 0, pchText, cbText, pwchText, wchBufSize);
+    // convert to Scintilla format
+    cbText = WideCharToMultiByte(cpSci, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
+    pchText[cbText] = '\0';
+    pchText[cbText+1] = '\0';
 
     SendMessage(hwnd,SCI_CANCEL,0,0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
@@ -442,7 +449,7 @@ BOOL EditSetNewEncoding(HWND hwnd,int iNewEncoding,BOOL bNoUI,BOOL bSetSavePoint
         (InfoBox(MBYESNO, L"MsgConv2", IDS_ASK_ENCODING2) == IDYES) : TRUE;
 
       if (doNewEncoding) {
-        return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint,FALSE);
+        return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
       }
     }
     else {
@@ -451,7 +458,7 @@ BOOL EditSetNewEncoding(HWND hwnd,int iNewEncoding,BOOL bNoUI,BOOL bSetSavePoint
 
       if (doNewEncoding) {
         BeginWaitCursor(NULL);
-        BOOL result = EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,FALSE,FALSE);
+        BOOL result = EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,FALSE);
         EndWaitCursor();
         return result;
       }

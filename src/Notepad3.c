@@ -1853,7 +1853,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   int aWidth[7];
   aWidth[STATUS_DOCPOS]   = max(100,min(cx/3, StatusCalcPaneWidth(g_hwndStatus,
     L" Ln 9'999'999 : 9'999'999    Col 9'999'999:999 / 999    Sel 9'999'999 (999 Bytes)    SelLn 9'999'999    Occ 9'999'999 ")));
-  aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 9999 Bytes ");
+  aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 9999 Bytes [UTF-8] ");
   aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
   aWidth[STATUS_EOLMODE]  = aWidth[STATUS_CODEPAGE] + StatusCalcPaneWidth(g_hwndStatus,L" CR+LF ");
   aWidth[STATUS_OVRMODE]  = aWidth[STATUS_EOLMODE] + StatusCalcPaneWidth(g_hwndStatus,L" OVR ");
@@ -7234,8 +7234,6 @@ void UpdateStatusbar()
   const int iPos = SciCall_GetCurrentPos();
   const int iTextLength = SciCall_GetTextLength();
   const int iEncoding = Encoding_Current(CPI_GET);
-  const int iCodePage = g_Encodings[iEncoding].uCodePage;
-  const DWORD dwFlags = 0L; // (g_Encodings[iEncoding].uFlags & NCP_MBCS) ? 0L : MB_USEGLYPHCHARS;
 
   StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", SciCall_LineFromPosition(iPos) + 1);
   FormatNumberStr(tchLn);
@@ -7264,14 +7262,10 @@ void UpdateStatusbar()
     StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
     FormatNumberStr(tchSel);
 
-    const int iSelLen = (iSelEnd - iSelStart);
-    const int iSelBytes = MultiByteToWideChar(iCodePage, dwFlags,
-      SciCall_GetRangePointer(iSelStart, iSelLen), iSelLen, NULL, 0);
-    StrFormatByteSize(iSelBytes, tchSelB, COUNTOF(tchSelB));
+    StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
   }
   else {
     tchSel[0] = L'-'; tchSel[1] = L'-'; tchSel[2] = L'\0';
-    tchSelB[0] = L'0'; tchSelB[1] = L'\0';
   }
 
   // Print number of occurrence marks found
@@ -7314,8 +7308,7 @@ void UpdateStatusbar()
   }
 
   // get number of bytes in current encoding
-  int iBytes = MultiByteToWideChar(iCodePage, dwFlags, SciCall_GetRangePointer(0, iTextLength), iTextLength, NULL, 0);
-  StrFormatByteSize(iBytes, tchBytes, COUNTOF(tchBytes));
+  StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
   FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
 
   Encoding_SetLabel(iEncoding);
