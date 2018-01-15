@@ -283,7 +283,7 @@ EDITFINDREPLACE g_efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL };
 UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
 
-extern NP2ENCODING mEncoding[];
+extern NP2ENCODING g_Encodings[];
 
 int iLineEndings[3] = {
   SC_EOL_CRLF,
@@ -2254,15 +2254,15 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   EnableCmd(hmenu,IDM_ENCODING_RECODE,i);
 
-  if (mEncoding[Encoding_Current(CPI_GET)].uFlags & NCP_UNICODE_REVERSE)
+  if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_UNICODE_REVERSE)
     i = IDM_ENCODING_UNICODEREV;
-  else if (mEncoding[Encoding_Current(CPI_GET)].uFlags & NCP_UNICODE)
+  else if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_UNICODE)
     i = IDM_ENCODING_UNICODE;
-  else if (mEncoding[Encoding_Current(CPI_GET)].uFlags & NCP_UTF8_SIGN)
+  else if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_UTF8_SIGN)
     i = IDM_ENCODING_UTF8SIGN;
-  else if (mEncoding[Encoding_Current(CPI_GET)].uFlags & NCP_UTF8)
+  else if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_UTF8)
     i = IDM_ENCODING_UTF8;
-  else if (mEncoding[Encoding_Current(CPI_GET)].uFlags & NCP_ANSI)
+  else if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_ANSI)
     i = IDM_ENCODING_ANSI;
   else
     i = -1;
@@ -2364,7 +2364,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
       i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD));
 
-  EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING,*mEncoding[Encoding_Current(CPI_GET)].pszParseNames);
+  EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING,*g_Encodings[Encoding_Current(CPI_GET)].pszParseNames);
 
   //EnableCmd(hmenu,IDM_EDIT_INSERT_SHORTDATE,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_INSERT_LONGDATE,!bReadOnly);
@@ -3583,10 +3583,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INSERT_ENCODING:
       {
-        if (*mEncoding[Encoding_Current(CPI_GET)].pszParseNames) {
+        if (*g_Encodings[Encoding_Current(CPI_GET)].pszParseNames) {
           char msz[32] = { '\0' };
           //int iSelStart;
-          StringCchCopyNA(msz,COUNTOF(msz),mEncoding[Encoding_Current(CPI_GET)].pszParseNames,COUNTOF(msz));
+          StringCchCopyNA(msz,COUNTOF(msz),g_Encodings[Encoding_Current(CPI_GET)].pszParseNames,COUNTOF(msz));
           char *p = StrChrA(msz, ',');
           if (p)
             *p = 0;
@@ -6289,7 +6289,7 @@ void LoadSettings()
   */
 
   // set flag for encoding default
-  mEncoding[iDefaultEncoding].uFlags |= NCP_DEFAULT;
+  g_Encodings[iDefaultEncoding].uFlags |= NCP_DEFAULT;
 
   // define default charset
   iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
@@ -7234,7 +7234,8 @@ void UpdateStatusbar()
   const int iPos = SciCall_GetCurrentPos();
   const int iTextLength = SciCall_GetTextLength();
   const int iEncoding = Encoding_Current(CPI_GET);
-  const int iCodePage = mEncoding[iEncoding].uCodePage;
+  const int iCodePage = g_Encodings[iEncoding].uCodePage;
+  const DWORD dwFlags = 0L; // (g_Encodings[iEncoding].uFlags & NCP_MBCS) ? 0L : MB_USEGLYPHCHARS;
 
   StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", SciCall_LineFromPosition(iPos) + 1);
   FormatNumberStr(tchLn);
@@ -7264,7 +7265,7 @@ void UpdateStatusbar()
     FormatNumberStr(tchSel);
 
     const int iSelLen = (iSelEnd - iSelStart);
-    const int iSelBytes = MultiByteToWideChar(iCodePage, 0, 
+    const int iSelBytes = MultiByteToWideChar(iCodePage, dwFlags,
       SciCall_GetRangePointer(iSelStart, iSelLen), iSelLen, NULL, 0);
     StrFormatByteSize(iSelBytes, tchSelB, COUNTOF(tchSelB));
   }
@@ -7313,12 +7314,12 @@ void UpdateStatusbar()
   }
 
   // get number of bytes in current encoding
-  int iBytes = MultiByteToWideChar(iCodePage, 0, SciCall_GetRangePointer(0, iTextLength), iTextLength, NULL, 0);
+  int iBytes = MultiByteToWideChar(iCodePage, dwFlags, SciCall_GetRangePointer(0, iTextLength), iTextLength, NULL, 0);
   StrFormatByteSize(iBytes, tchBytes, COUNTOF(tchBytes));
   FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
 
-  Encoding_GetLabel(iEncoding);
-  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", mEncoding[iEncoding].wchLabel);
+  Encoding_SetLabel(iEncoding);
+  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", g_Encodings[iEncoding].wchLabel);
 
   if (iEOLMode == SC_EOL_CR) 
   {

@@ -399,7 +399,7 @@ BOOL Encoding_HasChanged(int); // query/setter
 void Encoding_InitDefaults();
 int  Encoding_MapIniSetting(BOOL,int);
 int  Encoding_MapUnicode(int);
-void Encoding_GetLabel(int);
+void Encoding_SetLabel(int);
 int  Encoding_MatchW(LPCWSTR);
 int  Encoding_MatchA(char*);
 BOOL Encoding_IsValid(int);
