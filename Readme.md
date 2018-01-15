@@ -32,6 +32,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 * State of the art Regular Expression search engine ([Onigmu](https://github.com/k-takata/Onigmo))
 * New toolbar icons based on Yusuke Kamiyaman's Fugue Icons (Purchased by [Rizonesoft](https://www.rizonesoft.com))
 * Hyperlink Hotspot highlighting (single click Open in Browser (Ctrl) / Load in Editor (Alt)
+* Syntax highlighting support for D Source Script, Go Source Script, JSON, Makefiles, MATLAB, Nim Source Code, Power Shell Script, Resource Script, Shell Script.
 * New program icon and other small cosmetic changes
 * In-App support for AES-256 Rijndael encryption/decryption of files (incl. external commandline tool for batch processing)
 * Virtual Space rectangular selection box (Alt-Key down)
