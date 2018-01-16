@@ -3837,20 +3837,21 @@ void Style_SetCurrentLineBackground(HWND hwnd, BOOL bHiLitCurrLn)
     int rgb = 0;
     if (Style_StrGetColor(FALSE, GetCurrentStdLexer()->Styles[STY_CUR_LN_BCK].szValue, &rgb)) // caret line back
     {
-      SendMessage(hwnd,SCI_SETCARETLINEVISIBLE,TRUE,0);
-      SendMessage(hwnd,SCI_SETCARETLINEBACK,rgb,0);
+      SendMessage(hwnd, SCI_SETCARETLINEVISIBLEALWAYS, TRUE, 0);
+      SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, TRUE, 0);
+      SendMessage(hwnd, SCI_SETCARETLINEBACK, rgb, 0);
 
       int alpha = 0;
       if (Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN_BCK].szValue, &alpha, TRUE))
         SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,alpha,0);
       else
         SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,SC_ALPHA_NOALPHA,0);
+
+      return;
     }
-    else
-      SendMessage(hwnd,SCI_SETCARETLINEVISIBLE,FALSE,0);
   }
-  else
-    SendMessage(hwnd,SCI_SETCARETLINEVISIBLE,FALSE,0);
+  SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, FALSE, 0);
+  SendMessage(hwnd, SCI_SETCARETLINEVISIBLEALWAYS, FALSE, 0);
 }
 
 
