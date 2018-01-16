@@ -371,7 +371,7 @@ BEGIN
         MENUITEM "Save Settings &Now\tF7",      IDM_VIEW_SAVESETTINGSNOW
         MENUITEM "&Open Settings File\tCtrl+F7", CMD_OPENINIFILE
     END
-    POPUP "Help&?"
+    POPUP "&?"
     BEGIN
         MENUITEM "&Online Documentation",       IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
