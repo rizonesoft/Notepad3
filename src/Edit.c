@@ -3630,36 +3630,28 @@ void EditJoinLinesEx(HWND hwnd, BOOL bPreserveParagraphs, BOOL bCRLF2Space)
   int cchJoin = -1;
   for (int i = 0; i < iSelCount; ++i)
   {
-    if (pszText[i] == '\r' || pszText[i] == '\n') 
+    if ((pszText[i] == '\r') || (pszText[i] == '\n')) 
     {
-      if (pszText[i] == '\r' && pszText[i + 1] == '\n') { ++i; }
+      if ((pszText[i+1] == '\r') || (pszText[i+1] == '\n')) { ++i;  }
 
-      if (!StrChrA("\r\n",pszText[i+1]) && pszText[i+1]) 
+      int j = ++i;
+      while (StrChrA("\r\n", pszText[j])) { ++j; }  // swallow all next line-breaks
+   
+      if ((i < j) && (j < iSelCount) && pszText[j] && bPreserveParagraphs)
       {
-        // next char is non line-break 
-        if (bCRLF2Space) { pszJoin[++cchJoin] = ' '; }
-        bModified = TRUE;
-      }
-      else { // we are between paragraphs
-
-        // swallow all line-breaks
-        while (StrChrA("\r\n",pszText[i+1])) {
-          ++i;
-          bModified = TRUE;
-        }
-
-        if (bPreserveParagraphs) {
-          if (pszText[i + 1] != 0) {
-            for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
-            if (cchJoin > cchEOL) {
-              for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
-            }
-            bModified = TRUE;
-          }
+        for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
+        if (bCRLF2Space) {
+          for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
         }
       }
+      else if ((j < iSelCount) && pszText[j] && bCRLF2Space) 
+      { 
+        pszJoin[++cchJoin] = ' '; 
+      }
+      i = j;
+      bModified = TRUE;
     }
-    else {
+    if (i < iSelCount) {
       pszJoin[++cchJoin] = pszText[i]; // copy char
     }
   }
