@@ -4145,6 +4145,16 @@ void Style_SetLexerFromName(HWND hwnd,LPCWSTR lpszFile,LPCWSTR lpszName)
 
 //=============================================================================
 //
+//  Style_ResetCurrentLexer()
+//
+void Style_ResetCurrentLexer(HWND hwnd)
+{
+  Style_SetLexer(hwnd, g_pLexCurrent);
+}
+
+
+//=============================================================================
+//
 //  Style_SetDefaultLexer()
 //
 void Style_SetDefaultLexer(HWND hwnd)

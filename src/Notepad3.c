@@ -188,6 +188,8 @@ BOOL      bShowStatusbar;
 int       iSciDirectWriteTech;
 int       iSciFontQuality;
 int       iHighDpiToolBar;
+int       iUpdateDelayHyperlinkStyling;
+int       iUpdateDelayMarkAllCoccurrences;
 
 const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
@@ -1173,7 +1175,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       UpdateLineNumberWidth();
       EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
-      EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+      UpdateVisibleUrlHotspot(0);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_TIMER:
@@ -1784,6 +1786,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EditClearAllMarks(g_hwndEdit, 0, -1);
   MarkAllOccurrences(0);
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+  EditFinalizeStyling(g_hwndEdit, -1);
 
   UNUSED(lParam);
   UNUSED(wParam);
@@ -4395,7 +4398,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_HYPERLINKHOTSPOTS:
       bHyperlinkHotspot = (bHyperlinkHotspot) ? FALSE : TRUE;
       Style_SetUrlHotSpot(g_hwndEdit, bHyperlinkHotspot);
-      EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+      if (bHyperlinkHotspot) {
+        UpdateVisibleUrlHotspot(0);
+      }
+      else {
+        SciCall_StartStyling(0);
+        Style_ResetCurrentLexer(g_hwndEdit);
+      }
       break;
 
     case IDM_VIEW_ZOOMIN:
@@ -5612,15 +5621,15 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               // clear marks only, if caret/selection changed
               if (scn->updated & SC_UPDATE_SELECTION) {
                 EditClearAllMarks(g_hwndEdit, 0, -1);
-                MarkAllOccurrences(0);
+                MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
               }
               else {
-                MarkAllOccurrences(50);
+                MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
               }
             }
 
             if (bHyperlinkHotspot) {
-              UpdateVisibleUrlHotspot(100);
+              UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
             }
 
             UpdateStatusbar();
@@ -5628,10 +5637,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
             if (iMarkOccurrences) {
-              MarkAllOccurrences(100);
+              MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
             if (bHyperlinkHotspot) {
-              UpdateVisibleUrlHotspot(100);
+              UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
             }
           }
           break;
@@ -5654,7 +5663,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             if (iMarkOccurrences) {
               EditClearAllMarks(g_hwndEdit, 0, -1);
-              MarkAllOccurrences(0);
+              MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
 
             bModified = TRUE;
@@ -6217,9 +6226,16 @@ void LoadSettings()
 
   iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
   iMarkOccurrencesMaxCount = (iMarkOccurrencesMaxCount <= 0) ? INT_MAX : iMarkOccurrencesMaxCount;
-  
+
+  iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
+  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), 0);
+
+  iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
+  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), 0);
+
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", FALSE);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
+  
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
@@ -7841,12 +7857,11 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
+    UpdateVisibleUrlHotspot(0);
 
     // consistent settings file handling (if loaded in editor)
     bEnableSaveSettings = (StringCchCompareINW(szCurFile, COUNTOF(szCurFile), szIniFile, COUNTOF(szIniFile)) == 0) ? FALSE : TRUE;
     UpdateSettingsCmds();
-
-    EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
 
     // Show warning: Unicode file loaded as ANSI
     if (bUnicodeErr)
