@@ -3123,15 +3123,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_EDIT_CLEAR:
-      {
-        int token = BeginSelUndoAction();
-        SendMessage(g_hwndEdit,SCI_CLEAR,0,0);
-        EndSelUndoAction(token);
-      }
-      break;
-
-
     case IDM_EDIT_CLEARCLIPBOARD:
       SendMessage(g_hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
       UpdateToolbar();
@@ -4711,13 +4702,20 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDM_EDIT_CLEAR:
     case CMD_DEL:
-      if ((BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
-        SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
-      else {
-        int token = BeginSelUndoAction();
-        SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
-        EndSelUndoAction(token);
+      {
+        if (SciCall_IsSelectionEmpty()) {
+          SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
+        }
+        else {
+          int token = BeginSelUndoAction();
+          SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
+          // possible unexpected behavior on Virtual Space Access, so:
+          const int iPos = SciCall_GetCurrentPos();
+          SendMessage(g_hwndEdit, SCI_SETSELECTION, iPos, iPos);
+          EndSelUndoAction(token);
+        }
       }
       break;
 
