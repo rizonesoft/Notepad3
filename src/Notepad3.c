@@ -4282,7 +4282,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       bAccelWordNavigation = (bAccelWordNavigation) ? FALSE : TRUE;  // toggle  
       EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(0);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
@@ -4293,37 +4293,37 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-    case IDM_VIEW_MARKOCCUR_CASE:
-      bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(0);
-      break;
-
     case IDM_VIEW_MARKOCCUR_VISIBLE:
       bMarkOccurrencesMatchVisible = (bMarkOccurrencesMatchVisible) ? FALSE : TRUE;
       EditClearAllMarks(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
       break;
 
+    case IDM_VIEW_MARKOCCUR_CASE:
+      bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? FALSE : TRUE;
+      EditClearAllMarks(g_hwndEdit, 0, -1);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+      break;
+
     case IDM_VIEW_MARKOCCUR_WNONE:
       bMarkOccurrencesMatchWords = FALSE;
       bMarkOccurrencesCurrentWord = FALSE;
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(0);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_WORD:
       bMarkOccurrencesMatchWords = TRUE;
       bMarkOccurrencesCurrentWord = FALSE;
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(0);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
-      bMarkOccurrencesCurrentWord = TRUE;
       bMarkOccurrencesMatchWords = FALSE;
+      bMarkOccurrencesCurrentWord = TRUE;
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(0);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_FOLDING:
@@ -7170,7 +7170,7 @@ void UpdateVisibleUrlHotspot(int delay)
     return;
   }
   TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
-  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, 100, NULL);
+  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, delay, NULL);
 }
 
 
