@@ -130,7 +130,7 @@ void  EditCompleteWord(HWND,BOOL);
 void  EditGetBookmarkList(HWND,LPWSTR,int);
 void  EditSetBookmarkList(HWND,LPCWSTR);
 void  EditApplyLexerStyle(HWND, int, int);
-void  EditFinalizeStyling(HWND);
+void  EditFinalizeStyling(HWND,int);
 
 void  EditMarkAllOccurrences();
 void  EditUpdateVisibleUrlHotspot();
