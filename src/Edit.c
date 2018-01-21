@@ -186,7 +186,6 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTHTRACKING,TRUE,0);
   SendMessage(hwnd,SCI_SETENDATLASTLINE,TRUE,0);
-  SendMessage(hwnd,SCI_SETCARETLINEVISIBLEALWAYS,TRUE,0);
   SendMessage(hwnd,SCI_SETCARETSTICKY,SC_CARETSTICKY_OFF,0);
   //SendMessage(hwnd,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
   SendMessage(hwnd,SCI_SETXCARETPOLICY,CARET_SLOP|CARET_EVEN,50);
@@ -5519,11 +5518,8 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
 
   EndWaitCursor();
 
-
-  if (ReplPosUTArray != NULL) {
-    utarray_clear(ReplPosUTArray);
-    utarray_free(ReplPosUTArray);
-  }
+  utarray_clear(ReplPosUTArray);
+  utarray_free(ReplPosUTArray);
   LocalFree(pszReplace);
 
   if (iCount > 0)
@@ -5853,7 +5849,7 @@ void EditUpdateUrlHotspots(HWND hwnd, int startPos, int endPos, BOOL bActiveHots
   }
 
   // 1st apply current lexer style
-  EditFinalizeStyling(hwnd);
+  EditFinalizeStyling(hwnd,startPos);
 
   const char* pszUrlRegEx = "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
@@ -5952,15 +5948,15 @@ void EditApplyLexerStyle(HWND hwnd, int iRangeStart, int iRangeEnd)
 //
 //  EditFinalizeStyling()
 //
-void EditFinalizeStyling(HWND hwnd)
+void EditFinalizeStyling(HWND hwnd, int iEndPos)
 {
   const int iEndStyled = SciCall_GetEndStyled();
 
-  if (iEndStyled < SciCall_GetTextLength()) 
+  if ((iEndPos < 0) || (iEndStyled < iEndPos))
   {
     const int iLineEndStyled = SciCall_LineFromPosition(iEndStyled);
     const int iStartStyling = SciCall_PositionFromLine(iLineEndStyled);
-    EditApplyLexerStyle(hwnd, iStartStyling, -1);
+    EditApplyLexerStyle(hwnd, iStartStyling, iEndPos);
   }
 }
 
@@ -5971,9 +5967,9 @@ void EditFinalizeStyling(HWND hwnd)
 //
 void EditMatchBrace(HWND hwnd) 
 {
-  EditFinalizeStyling(hwnd);
-
   int iPos = SciCall_GetCurrentPos();
+
+  EditFinalizeStyling(hwnd, iPos);
 
   if (!EditHighlightIfBrace(hwnd, iPos)) {
     // try one before

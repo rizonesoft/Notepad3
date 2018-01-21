@@ -74,6 +74,7 @@ void   Style_SetCurrentLineBackground(HWND, BOOL);
 void   Style_SetCurrentMargin(HWND, BOOL);
 void   Style_SetLexerFromFile(HWND,LPCWSTR);
 void   Style_SetLexerFromName(HWND,LPCWSTR,LPCWSTR);
+void   Style_ResetCurrentLexer(HWND);
 void   Style_SetDefaultLexer(HWND);
 void   Style_SetHTMLLexer(HWND);
 void   Style_SetXMLLexer(HWND);
