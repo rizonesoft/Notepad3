@@ -305,10 +305,12 @@ int   iAlignMode   = 0;
 BOOL      flagIsElevated = FALSE;
 WCHAR     wchWndClass[16] = WC_NOTEPAD3;
 
-HINSTANCE g_hInstance;
-HANDLE    g_hScintilla;
+
+HINSTANCE g_hInstance = NULL;
+HANDLE    g_hScintilla = NULL;
 WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
+BOOL      g_flagIgnoreNotifyChange = FALSE;
 
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
@@ -3196,12 +3198,20 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_MOVELINEUP:
-      EditMoveUp(g_hwndEdit);
+      {
+        int token = BeginSelUndoAction();
+        EditMoveUp(g_hwndEdit);
+        EndSelUndoAction(token);
+      }
       break;
 
 
     case IDM_EDIT_MOVELINEDOWN:
-      EditMoveDown(g_hwndEdit);
+      {
+        int token = BeginSelUndoAction();
+        EditMoveDown(g_hwndEdit);
+        EndSelUndoAction(token);
+      }
       break;
 
 
@@ -3331,9 +3341,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_TRIMLINES:
-      BeginWaitCursor(NULL);
-      EditStripTrailingBlanks(g_hwndEdit,FALSE);
-      EndWaitCursor();
+      {
+        int token = BeginSelUndoAction();
+        BeginWaitCursor(NULL);
+        EditStripTrailingBlanks(g_hwndEdit, FALSE);
+        EndSelUndoAction(token);
+        EndWaitCursor();
+      }
       break;
 
 
@@ -5162,7 +5176,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_JUMP2SELSTART:
-      if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0)) {
+      if (!SciCall_IsSelectionRectangle()) {
         int iAnchorPos = (int)SendMessage(g_hwndEdit,SCI_GETANCHOR,0,0);
         int iCursorPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
         if (iCursorPos > iAnchorPos) {
@@ -5174,7 +5188,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_JUMP2SELEND:
-      if (SC_SEL_RECTANGLE != SendMessage(hwnd,SCI_GETSELECTIONMODE,0,0)) {
+      if (!SciCall_IsSelectionRectangle()) {
         int iAnchorPos = (int)SendMessage(g_hwndEdit,SCI_GETANCHOR,0,0);
         int iCursorPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
         if (iCursorPos < iAnchorPos) {
@@ -5569,6 +5583,13 @@ void OpenHotSpotURL(int position, BOOL bForceBrowser)
 LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
   LPNMHDR pnmh = (LPNMHDR)lParam;
+
+  if (g_flagIgnoreNotifyChange) 
+  {
+    if (pnmh->idFrom == SCN_MODIFIED) { bModified = TRUE; }
+    return FALSE;
+  }
+
   struct SCNotification* scn = (struct SCNotification*)lParam;
 
   switch(pnmh->idFrom)
@@ -7276,7 +7297,7 @@ void UpdateStatusbar()
   const int iSelStart = (bIsSelEmpty ? 0 : SciCall_GetSelectionStart());
   const int iSelEnd = (bIsSelEmpty ? 0 : SciCall_GetSelectionEnd());
 
-  if (!bIsSelEmpty && (SC_SEL_RECTANGLE != SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0)))
+  if (!bIsSelEmpty && !SciCall_IsSelectionRectangle())
   {
     const int iSel = (int)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
     StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
@@ -7439,8 +7460,7 @@ void InvalidateSelections()
 {
   // Invalidate invalid selections
   // #pragma message("TODO: Remove check for invalid selections once fixed in Scintilla")
-  if (SendMessage(g_hwndEdit, SCI_GETSELECTIONS, 0, 0) > 1 &&
-      SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0) != SC_SEL_RECTANGLE) {
+  if (SendMessage(g_hwndEdit, SCI_GETSELECTIONS, 0, 0) > 1 && !SciCall_IsSelectionRectangle()) {
     int iCurPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
     SendMessage(g_hwndEdit, WM_CANCELMODE, 0, 0);
     SendMessage(g_hwndEdit, SCI_CLEARSELECTIONS, 0, 0);

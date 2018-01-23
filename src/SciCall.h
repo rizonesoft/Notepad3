@@ -85,6 +85,7 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, int);
 DeclareSciCallR0(GetAnchor, GETANCHOR, int);
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, BOOL);
+DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, BOOL);
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
 DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, int);
 DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, int);
@@ -92,6 +93,7 @@ DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, int, Sci_Posi
 DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, int, Sci_Position, line);
 
 DeclareSciCallV2(SetSel, SETSEL, int, anchorPos, int, currentPos);
+DeclareSciCallV0(Clear, CLEAR);
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, int, start, int, end);
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
 
