@@ -955,19 +955,21 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
   // Check for /c [if no file is specified] -- even if a file is specified
   /*else */if (flagNewFromClipboard) {
-    if (SendMessage(g_hwndEdit,SCI_CANPASTE,0,0)) {
+    if (SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0)) {
       BOOL bAutoIndent2 = bAutoIndent;
       bAutoIndent = 0;
-      EditJumpTo(g_hwndEdit,-1,0);
-      SendMessage(g_hwndEdit,SCI_BEGINUNDOACTION,0,0);
-      if (SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0) > 0)
-        SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
-      SendMessage(g_hwndEdit,SCI_PASTE,0,0);
-      SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
-      SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
+      EditJumpTo(g_hwndEdit, -1, 0);
+      SendMessage(g_hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
+      if (SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
+        SendMessage(g_hwndEdit, SCI_NEWLINE, 0, 0);
+      }
+      SendMessage(g_hwndEdit, SCI_PASTE, 0, 0);
+      SendMessage(g_hwndEdit, SCI_NEWLINE, 0, 0);
+      SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
       bAutoIndent = bAutoIndent2;
-      if (flagJumpTo)
-        EditJumpTo(g_hwndEdit,iInitialLine,iInitialColumn);
+      if (flagJumpTo) {
+        EditJumpTo(g_hwndEdit, iInitialLine, iInitialColumn);
+      }
       EditEnsureSelectionVisible(g_hwndEdit);
     }
   }
@@ -3025,7 +3027,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
 
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         if (!SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
         {
           SendMessage(g_hwndEdit, SCI_CUT, 0, 0);
@@ -3034,7 +3036,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           SendMessage(g_hwndEdit, SCI_COPYALLOWLINE, 0, 0);
           SendMessage(g_hwndEdit, SCI_LINEDELETE, 0, 0);   
         }
-        EndSelUndoAction(token);
+        EndUndoAction(token);
         UpdateToolbar();
       }
       break;
@@ -3083,7 +3085,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         int iCurrPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
         int iAnchor = iCurrPos;
 
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
 
         if (SendMessage(g_hwndEdit,SCI_GETSELECTIONEMPTY,0,0))
         {
@@ -3114,7 +3116,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             SendMessage(g_hwndEdit, SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
         }
 
-        EndSelUndoAction(token);
+        EndUndoAction(token);
 
         LocalFree(pClip);
 
@@ -3198,20 +3200,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_MOVELINEUP:
-      {
-        int token = BeginSelUndoAction();
-        EditMoveUp(g_hwndEdit);
-        EndSelUndoAction(token);
-      }
+      EditMoveUp(g_hwndEdit);
       break;
 
 
     case IDM_EDIT_MOVELINEDOWN:
-      {
-        int token = BeginSelUndoAction();
-        EditMoveDown(g_hwndEdit);
-        EndSelUndoAction(token);
-      }
+      EditMoveDown(g_hwndEdit);
       break;
 
 
@@ -3224,10 +3218,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_LINECUT,0,0);
         UpdateToolbar();
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
 
@@ -3242,45 +3236,45 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_DELETELINE:
       {
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit, SCI_LINEDELETE, 0, 0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
 
 
     case IDM_EDIT_DELETELINELEFT:
       {
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit, SCI_DELLINELEFT, 0, 0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
 
 
     case IDM_EDIT_DELETELINERIGHT:
       {
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit, SCI_DELLINERIGHT, 0, 0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
 
 
     case IDM_EDIT_INDENT:
       {
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_TAB,0,0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
 
 
     case IDM_EDIT_UNINDENT:
       {
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_BACKTAB,0,0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
 
@@ -3288,9 +3282,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_ENCLOSESELECTION:
       if (EditEncloseSelectionDlg(hwnd,wchPrefixSelection,wchAppendSelection)) {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditEncloseSelection(g_hwndEdit,wchPrefixSelection,wchAppendSelection);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3299,9 +3291,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SELECTIONDUPLICATE:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_SELECTIONDUPLICATE,0,0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3310,9 +3302,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_PADWITHSPACES:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditPadWithSpaces(g_hwndEdit,FALSE,FALSE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3321,9 +3311,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_STRIP1STCHAR:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditStripFirstCharacter(g_hwndEdit);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3332,9 +3320,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_STRIPLASTCHAR:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditStripLastCharacter(g_hwndEdit);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3342,10 +3328,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_TRIMLINES:
       {
-        int token = BeginSelUndoAction();
         BeginWaitCursor(NULL);
         EditStripTrailingBlanks(g_hwndEdit, FALSE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3354,9 +3338,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_COMPRESSWS:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditCompressSpaces(g_hwndEdit);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3365,9 +3347,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_MERGEBLANKLINES:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditRemoveBlankLines(g_hwndEdit,TRUE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3376,9 +3356,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_REMOVEBLANKLINES:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditRemoveBlankLines(g_hwndEdit,FALSE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3388,9 +3366,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (EditModifyLinesDlg(hwnd,wchPrefixLines,wchAppendLines)) {
           BeginWaitCursor(NULL);
-          int token = BeginSelUndoAction();
           EditModifyLines(g_hwndEdit,wchPrefixLines,wchAppendLines);
-          EndSelUndoAction(token);
           EndWaitCursor();
         }
       }
@@ -3401,9 +3377,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (EditAlignDlg(hwnd,&iAlignMode)) {
           BeginWaitCursor(NULL);
-          int token = BeginSelUndoAction();
           EditAlignText(g_hwndEdit,iAlignMode);
-          EndSelUndoAction(token);
           EndWaitCursor();
         }
       }
@@ -3414,9 +3388,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (EditSortDlg(hwnd,&iSortOptions)) {
           BeginWaitCursor(NULL);
-          int token = BeginSelUndoAction();
           EditSortLines(g_hwndEdit,iSortOptions);
-          EndSelUndoAction(token);
           EndWaitCursor();
         }
       }
@@ -3432,9 +3404,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         {
           iWrapCol = max(min(iWrapCol,512),1);
           BeginWaitCursor(NULL);
-          int token = BeginSelUndoAction();
           EditWrapToColumn(g_hwndEdit,iWrapCol);
-          EndSelUndoAction(token);
           EndWaitCursor();
         }
       }
@@ -3444,12 +3414,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SPLITLINES:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         EditEnterTargetTransaction();
         SciCall_TargetFromSelection();
         SendMessage(g_hwndEdit,SCI_LINESSPLIT,0,0);
         EditLeaveTargetTransaction();
-        EndSelUndoAction(token);
+        EndUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3458,9 +3428,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_JOINLINES:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditJoinLinesEx(g_hwndEdit, FALSE, TRUE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3468,9 +3436,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_JOINLN_NOSP:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditJoinLinesEx(g_hwndEdit, FALSE, FALSE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3478,9 +3444,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_JOINLINES_PARA:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditJoinLinesEx(g_hwndEdit, TRUE, TRUE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3489,9 +3453,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTUPPERCASE:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_UPPERCASE,0,0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3500,9 +3464,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTLOWERCASE:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_LOWERCASE,0,0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3511,9 +3475,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INVERTCASE:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditInvertCase(g_hwndEdit);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3522,9 +3484,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_TITLECASE:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditTitleCase(g_hwndEdit);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3533,9 +3493,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_SENTENCECASE:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditSentenceCase(g_hwndEdit);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3544,9 +3502,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTTABS:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditTabsToSpaces(g_hwndEdit, iTabWidth, FALSE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3555,9 +3511,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTSPACES:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditSpacesToTabs(g_hwndEdit, iTabWidth, FALSE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3566,9 +3520,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTTABS2:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditTabsToSpaces(g_hwndEdit, iTabWidth, TRUE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3577,9 +3529,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CONVERTSPACES2:
       {
         BeginWaitCursor(NULL);
-        int token = BeginSelUndoAction();
         EditSpacesToTabs(g_hwndEdit, iTabWidth, TRUE);
-        EndSelUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3604,9 +3554,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           char *p = StrChrA(msz, ',');
           if (p)
             *p = 0;
-          int token = BeginSelUndoAction();
+          int token = BeginUndoAction();
           SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)msz);
-          EndSelUndoAction(token);
+          EndUndoAction(token);
         }
       }
       break;
@@ -3651,9 +3601,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         UINT uCP = Encoding_SciGetCodePage(g_hwndEdit);
         WideCharToMultiByteStrg(uCP,tchDateTime,mszBuf);
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
 
@@ -3683,9 +3633,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         UINT uCP = Encoding_SciGetCodePage(g_hwndEdit);
         WideCharToMultiByteStrg(uCP,pszInsert,mszBuf);
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
     }
       break;
 
@@ -3701,9 +3651,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             UINT uCP = Encoding_SciGetCodePage(g_hwndEdit);
             char mszGuid[40 * 4]; // UTF-8 max of 4 bytes per char
             if (WideCharToMultiByteStrg(uCP,pwszGuid,mszGuid)) {
-              int token = BeginSelUndoAction();
+              int token = BeginUndoAction();
               SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszGuid);
-              EndSelUndoAction(token);
+              EndUndoAction(token);
             }
           }
         }
@@ -4690,7 +4640,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_CTRLENTER:
       {
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         int iPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
         int iLine = (int)SendMessage(g_hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)iPos,0);
         if (iLine <= 0) {
@@ -4703,7 +4653,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
                       SendMessage(g_hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)(iLine - 1),0),0);
           SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
         }
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
 
@@ -4723,12 +4673,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
         }
         else {
-          int token = BeginSelUndoAction();
+          int token = BeginUndoAction();
           SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
           // possible unexpected behavior on Virtual Space Access, so:
           const int iPos = SciCall_GetCurrentPos();
           SendMessage(g_hwndEdit, SCI_SETSELECTION, iPos, iPos);
-          EndSelUndoAction(token);
+          EndUndoAction(token);
         }
       }
       break;
@@ -4738,9 +4688,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if ((BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
         SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
       else {
-        int token = BeginSelUndoAction();
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
-        EndSelUndoAction(token);
+        EndUndoAction(token);
       }
       break;
   
@@ -4764,9 +4714,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         int iIndentPos  = (int)SendMessage(g_hwndEdit,SCI_GETLINEINDENTPOSITION,(WPARAM)iLine,0);
 
         if (iPos != iAnchor) {
-          int token = BeginSelUndoAction();
+          int token = BeginUndoAction();
           SendMessage(g_hwndEdit,SCI_SETSEL,(WPARAM)iPos,(LPARAM)iPos);
-          EndSelUndoAction(token);
+          EndUndoAction(token);
         }
         else {
           if (iPos == iStartPos)
@@ -4789,9 +4739,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         int iEndPos     = (int)SendMessage(g_hwndEdit,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0);
 
         if (iPos != iAnchor) {
-          int token = BeginSelUndoAction();
+          int token = BeginUndoAction();
           SendMessage(g_hwndEdit, SCI_SETSEL, (WPARAM)iPos, (LPARAM)iPos);
-          EndSelUndoAction(token);
+          EndUndoAction(token);
         }
         else {
           if (iStartPos != iEndPos)
@@ -4805,13 +4755,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_CTRLTAB:
       {
-        int token = ((BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) ? -1 : BeginSelUndoAction();
+        int token = ((BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) ? -1 : BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_SETTABINDENTS,FALSE,0);
         SendMessage(g_hwndEdit,SCI_SETUSETABS,TRUE,0);
         SendMessage(g_hwndEdit,SCI_TAB,0,0);
         SendMessage(g_hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
         SendMessage(g_hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
-        if (token >= 0) EndSelUndoAction(token);
+        if (token >= 0) EndUndoAction(token);
       }
       break;
 
@@ -5106,56 +5056,32 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_STRINGIFY:
-      {
-        int token = BeginSelUndoAction();
-        EditEncloseSelection(g_hwndEdit,L"'",L"'");
-        EndSelUndoAction(token);
-      }
+      EditEncloseSelection(g_hwndEdit,L"'",L"'");
       break;
 
 
     case CMD_STRINGIFY2:
-      {
-        int token = BeginSelUndoAction();
-        EditEncloseSelection(g_hwndEdit,L"\"",L"\"");
-        EndSelUndoAction(token);
-      }
+      EditEncloseSelection(g_hwndEdit,L"\"",L"\"");
       break;
 
 
     case CMD_EMBRACE:
-      {
-        int token = BeginSelUndoAction();
-        EditEncloseSelection(g_hwndEdit,L"(",L")");
-        EndSelUndoAction(token);
-      }
+      EditEncloseSelection(g_hwndEdit,L"(",L")");
       break;
 
 
     case CMD_EMBRACE2:
-      {
-        int token = BeginSelUndoAction();
-        EditEncloseSelection(g_hwndEdit,L"[",L"]");
-        EndSelUndoAction(token);
-      }
+      EditEncloseSelection(g_hwndEdit,L"[",L"]");
       break;
 
 
     case CMD_EMBRACE3:
-      {
-        int token = BeginSelUndoAction();
-        EditEncloseSelection(g_hwndEdit,L"{",L"}");
-        EndSelUndoAction(token);
-      }
+      EditEncloseSelection(g_hwndEdit,L"{",L"}");
       break;
 
 
     case CMD_EMBRACE4:
-      {
-        int token = BeginSelUndoAction();
-        EditEncloseSelection(g_hwndEdit,L"`",L"`");
-        EndSelUndoAction(token);
-      }
+      EditEncloseSelection(g_hwndEdit,L"`",L"`");
       break;
 
 
@@ -5670,10 +5596,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             // check for ADDUNDOACTION step
             if (scn->modificationType & SC_MOD_CONTAINER) {
               if (scn->modificationType & SC_PERFORMED_UNDO) {
-                RestoreSelectionAction(scn->token, UNDO);
+                RestoreAction(scn->token, UNDO);
               }
               else if (scn->modificationType & SC_PERFORMED_REDO) {
-                RestoreSelectionAction(scn->token, REDO);
+                RestoreAction(scn->token, REDO);
               }
             }
             else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
@@ -5802,10 +5728,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                       StringCchCompareINA(tchIns, COUNTOF(tchIns), "</link>", -1) &&
                       StringCchCompareINA(tchIns, COUNTOF(tchIns), "</meta>", -1))
                     {
-                      int token = BeginSelUndoAction();
+                      int token = BeginUndoAction();
                       SendMessage(g_hwndEdit, SCI_REPLACESEL, 0, (LPARAM)tchIns);
                       SendMessage(g_hwndEdit, SCI_SETSEL, iCurPos, iCurPos);
-                      EndSelUndoAction(token);
+                      EndUndoAction(token);
                     }
                   }
                 }
@@ -7471,10 +7397,10 @@ void InvalidateSelections()
 
 //=============================================================================
 //
-//  BeginSelUndoAction()
+//  BeginUndoAction()
 //
 //
-int BeginSelUndoAction()
+int BeginUndoAction()
 {
   int token = -1;
   UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
@@ -7497,7 +7423,7 @@ int BeginSelUndoAction()
     sel.anchorPos_undo = (int)SendMessage(g_hwndEdit,SCI_GETANCHOR,0,0);
     sel.currPos_undo = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
   }
-  token = UndoRedoSelectionMap(-1, &sel);
+  token = UndoRedoActionMap(-1, &sel);
   if (token >= 0) {
     SendMessage(g_hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
     SendMessage(g_hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
@@ -7509,14 +7435,14 @@ int BeginSelUndoAction()
 
 //=============================================================================
 //
-//  EndSelUndoAction()
+//  EndUndoAction()
 //
 //
-void EndSelUndoAction(int token)
+void EndUndoAction(int token)
 {
   if (token >= 0) {
     UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
-    if (UndoRedoSelectionMap(token,&sel) >= 0) {
+    if (UndoRedoActionMap(token,&sel) >= 0) {
       // mode and type should not have changed
       if (sel.selMode == SC_SEL_LINES) {
         sel.anchorPos_redo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONSTART,0,0);
@@ -7535,7 +7461,7 @@ void EndSelUndoAction(int token)
         sel.currPos_redo = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
       }
     }
-    UndoRedoSelectionMap(token,&sel); // set with redo action filled
+    UndoRedoActionMap(token,&sel); // set with redo action filled
     SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
   }
 }
@@ -7543,13 +7469,13 @@ void EndSelUndoAction(int token)
 
 //=============================================================================
 //
-//  RestoreSelectionAction()
+//  RestoreAction()
 //
 //
-void RestoreSelectionAction(int token, DoAction doAct)
+void RestoreAction(int token, DoAction doAct)
 {
   UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
-  if (UndoRedoSelectionMap(token,&sel) >= 0) {
+  if (UndoRedoActionMap(token,&sel) >= 0) {
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
     int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     int currPos   = (doAct == UNDO ? sel.currPos_undo : sel.currPos_redo);
@@ -7585,7 +7511,7 @@ void RestoreSelectionAction(int token, DoAction doAct)
 //
 //
 
-int UndoRedoSelectionMap(int token, UndoRedoSelection_t* selection)
+int UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
 {
   if (UndoRedoSelectionUTArray == NULL)
     return -1;
@@ -8902,7 +8828,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 //
 void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
-  if (dwLastCopyTime > 0 && GetTickCount() - dwLastCopyTime > 200) {
+  if ((dwLastCopyTime > 0) && ((GetTickCount() - dwLastCopyTime) > 200)) {
 
     if (SendMessage(g_hwndEdit,SCI_CANPASTE,0,0)) {
 
@@ -8910,15 +8836,15 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       bAutoIndent = 0;
       EditJumpTo(g_hwndEdit,-1,0);
       SendMessage(g_hwndEdit,SCI_BEGINUNDOACTION,0,0);
-      if (SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0) > 0)
-        SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
+      if (SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
+        SendMessage(g_hwndEdit, SCI_NEWLINE, 0, 0);
+      }
       SendMessage(g_hwndEdit,SCI_PASTE,0,0);
       SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
       SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
       EditEnsureSelectionVisible(g_hwndEdit);
       bAutoIndent = bAutoIndent2;
     }
-
     dwLastCopyTime = 0;
   }
 

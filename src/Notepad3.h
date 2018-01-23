@@ -150,10 +150,10 @@ void UpdateUI();
 
 
 void InvalidateSelections();
-int  BeginSelUndoAction();
-void EndSelUndoAction(int);
-void RestoreSelectionAction(int,DoAction);
-int  UndoRedoSelectionMap(int,UndoRedoSelection_t*);
+int  BeginUndoAction();
+void EndUndoAction(int);
+void RestoreAction(int,DoAction);
+int  UndoRedoActionMap(int,UndoRedoSelection_t*);
 void OpenHotSpotURL(int, BOOL);
 
 
