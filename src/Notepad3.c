@@ -310,7 +310,6 @@ HINSTANCE g_hInstance = NULL;
 HANDLE    g_hScintilla = NULL;
 WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
-BOOL      g_flagIgnoreNotifyChange = FALSE;
 
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
@@ -323,11 +322,34 @@ static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
 // Timer bitfield
-static volatile LONG g_lTimerBits = 0;
+static volatile LONG g_lInterlockBits = 0;
 #define TIMER_BIT_MARK_OCC 1L
 #define TIMER_BIT_UPDATE_HYPER 2L
-#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lTimerBits, B)
-#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lTimerBits, B)
+#define LOCK_NOTIFY_CHANGE 4L
+#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lInterlockBits, B)
+#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lInterlockBits, B)
+
+
+//=============================================================================
+//
+//  IgnoreNotifyChangeEvent(), ObserveNotifyChangeEvent(), CheckNotifyChangeEvent()
+//
+void IgnoreNotifyChangeEvent() {
+  (void)TEST_AND_SET(LOCK_NOTIFY_CHANGE);
+}
+
+void ObserveNotifyChangeEvent() {
+  (void)TEST_AND_RESET(LOCK_NOTIFY_CHANGE);
+}
+
+BOOL CheckNotifyChangeEvent() {
+  if (TEST_AND_RESET(LOCK_NOTIFY_CHANGE)) {
+    (void)TEST_AND_SET(LOCK_NOTIFY_CHANGE);
+    return FALSE;
+  }
+  return TRUE;
+}
+
 
 
 // SCN_UPDATEUI notification
@@ -685,6 +707,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
   
   UpdateLineNumberWidth();
+  ObserveNotifyChangeEvent();
 
   while (GetMessage(&msg,NULL,0,0))
   {
@@ -3013,20 +3036,16 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_UNDO:
-      g_flagIgnoreNotifyChange = TRUE;
+      IgnoreNotifyChangeEvent();
       SendMessage(g_hwndEdit, SCI_UNDO, 0, 0);
-      g_flagIgnoreNotifyChange = FALSE;
-      //UpdateUI();
-      UpdateWindow(g_hwndEdit);
+      ObserveNotifyChangeEvent();
       break;
 
 
     case IDM_EDIT_REDO:
-      g_flagIgnoreNotifyChange = TRUE;
+      IgnoreNotifyChangeEvent();
       SendMessage(g_hwndEdit, SCI_REDO, 0, 0);
-      g_flagIgnoreNotifyChange = FALSE;
-      //UpdateUI();
-      UpdateWindow(g_hwndEdit);
+      ObserveNotifyChangeEvent();
       break;
 
 
@@ -5584,7 +5603,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
   struct SCNotification* scn = (struct SCNotification*)lParam;
 
 
-  if (g_flagIgnoreNotifyChange) 
+  if (!CheckNotifyChangeEvent()) 
   {
     if ((pnmh->idFrom == IDC_EDIT) && (pnmh->code == SCN_MODIFIED)) {
       // check for ADDUNDOACTION step

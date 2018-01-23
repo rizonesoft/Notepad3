@@ -57,7 +57,6 @@
 extern HWND  g_hwndMain;
 extern HWND  g_hwndEdit;
 extern HWND  g_hwndStatus;
-extern BOOL  g_flagIgnoreNotifyChange;
 
 extern HINSTANCE g_hInstance;
 //extern LPMALLOC  g_lpMalloc;
@@ -152,14 +151,21 @@ static volatile LONG g_lTargetTransactionBits = 0;
 //
 //  EditEnterTargetTransaction(), EditLeaveTargetTransaction()
 //
-BOOL  EditEnterTargetTransaction() {
-  return (BOOL)TEST_AND_SET(BLOCK_BIT_TARGET_TRANSACTION);
+void EditEnterTargetTransaction() {
+  (void)TEST_AND_SET(BLOCK_BIT_TARGET_TRANSACTION);
 }
 
-BOOL  EditLeaveTargetTransaction() {
-  return (BOOL)TEST_AND_RESET(BLOCK_BIT_TARGET_TRANSACTION);
+void EditLeaveTargetTransaction() {
+  (void)TEST_AND_RESET(BLOCK_BIT_TARGET_TRANSACTION);
 }
 
+BOOL EditIsInTargetTransaction() {
+  if (TEST_AND_RESET(BLOCK_BIT_TARGET_TRANSACTION)) {
+    (void)TEST_AND_SET(BLOCK_BIT_TARGET_TRANSACTION);
+    return TRUE;
+  }
+  return FALSE;
+}
 
 //=============================================================================
 //
@@ -3094,7 +3100,7 @@ void EditStripFirstCharacter(HWND hwnd)
   if (iSelStart > SciCall_PositionFromLine(iLineStart)) { ++iLineStart; }
   if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) { --iLineEnd; }
 
-  g_flagIgnoreNotifyChange = TRUE;
+  IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
   int chCnt = 0;
@@ -3108,7 +3114,7 @@ void EditStripFirstCharacter(HWND hwnd)
   }
 
   EditLeaveTargetTransaction();
-  g_flagIgnoreNotifyChange = FALSE;
+  ObserveNotifyChangeEvent();
 
   if (!bIsSelEmpty) {
     SciCall_SetSel(iSelStart, (iSelEnd - chCnt));
@@ -3145,7 +3151,7 @@ void EditStripLastCharacter(HWND hwnd)
   if (iSelStart >= SciCall_GetLineEndPosition(iLineStart)) { ++iLineStart; }
   if (iSelEnd < SciCall_GetLineEndPosition(iLineEnd)) { --iLineEnd; }
 
-  g_flagIgnoreNotifyChange = TRUE;
+  IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
   for (int iLine = iLineStart; iLine <= iLineEnd; ++iLine)
@@ -3160,7 +3166,7 @@ void EditStripLastCharacter(HWND hwnd)
   }
 
   EditLeaveTargetTransaction();
-  g_flagIgnoreNotifyChange = FALSE;
+  ObserveNotifyChangeEvent();
 
 }
 
@@ -3195,7 +3201,7 @@ void EditStripTrailingBlanks(HWND hwnd, BOOL bIgnoreSelection)
   if (iSelEnd < SciCall_GetLineEndPosition(iLineEnd)) { --iLineEnd; }
 
 
-  g_flagIgnoreNotifyChange = TRUE;
+  IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
   for (int iLine = iLineStart; iLine <= iLineEnd; ++iLine) 
@@ -3216,7 +3222,7 @@ void EditStripTrailingBlanks(HWND hwnd, BOOL bIgnoreSelection)
   }
 
   EditLeaveTargetTransaction();
-  g_flagIgnoreNotifyChange = FALSE;
+  ObserveNotifyChangeEvent();
 }
 
 //=============================================================================
@@ -3346,7 +3352,7 @@ void EditRemoveBlankLines(HWND hwnd,BOOL bMerge)
   if (iSelStart > SciCall_PositionFromLine(iLineStart)) { ++iLineStart; }
   if ((iSelEnd <= SciCall_PositionFromLine(iLineEnd)) && (iLineEnd != SciCall_GetLineCount() - 1)) { --iLineEnd; }
 
-  g_flagIgnoreNotifyChange = TRUE;
+  IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
   for (int iLine = iLineStart; iLine <= iLineEnd; )
@@ -3371,7 +3377,7 @@ void EditRemoveBlankLines(HWND hwnd,BOOL bMerge)
   }
 
   EditLeaveTargetTransaction();
-  g_flagIgnoreNotifyChange = FALSE;
+  ObserveNotifyChangeEvent();
 }
 
 
@@ -5287,7 +5293,7 @@ void EditMarkAllOccurrences()
 {
   if (iMarkOccurrences != 0) {
     
-    if (EditEnterTargetTransaction()) { return; }  // do not block, next event occurs for sure
+    if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
     if (bMarkOccurrencesMatchVisible)
     {
@@ -5322,7 +5328,7 @@ void EditUpdateVisibleUrlHotspot()
 {
   if (bHyperlinkHotspot)
   {
-    if (EditEnterTargetTransaction()) { return; }  // do not block, next event occurs for sure
+    if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
     // get visible lines for update
     int iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());

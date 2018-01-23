@@ -135,8 +135,9 @@ void  EditFinalizeStyling(HWND,int);
 void  EditMarkAllOccurrences();
 void  EditUpdateVisibleUrlHotspot();
 
-BOOL  EditEnterTargetTransaction();
-BOOL  EditLeaveTargetTransaction();
+void  EditEnterTargetTransaction();
+void  EditLeaveTargetTransaction();
+BOOL  EditIsInTargetTransaction();
 
 //void SciInitThemes(HWND);
 //LRESULT CALLBACK SciThemedWndProc(HWND,UINT,WPARAM,LPARAM);
