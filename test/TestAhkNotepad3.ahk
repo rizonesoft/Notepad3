@@ -84,7 +84,9 @@ Return
 CHECK_ABOUT_BOX:
 ; check About DlgBox
 WinActivate, ahk_pid %v_Notepad3_PID%
-Send {F1}
+; This will select File->Open in Notepad:
+WinMenuSelectItem, ahk_pid %v_Notepad3_PID%, , ?, About...
+
 WinWait, About %v_NP3Name%, , 1
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
