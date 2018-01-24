@@ -251,7 +251,6 @@ LPMRULIST mruReplace;
 DWORD     dwLastIOError;
 WCHAR     szCurFile[FILE_ARG_BUF] = { L'\0' };
 FILEVARS  fvCurFile;
-BOOL      bModified;
 BOOL      bReadOnly = FALSE;
 
 int       iDefaultEncoding;
@@ -350,8 +349,6 @@ BOOL CheckNotifyChangeEvent() {
   return TRUE;
 }
 
-
-
 // SCN_UPDATEUI notification
 #define SC_UPDATE_NP3_INTERNAL_NOTIFY (SC_UPDATE_H_SCROLL << 1)
 
@@ -390,6 +387,22 @@ int flagRelaunchElevated   = 0;
 int flagDisplayHelp        = 0;
 int flagPrintFileAndLeave  = 0;
 int flagBufferFile         = 0;
+
+
+//==============================================================================
+//
+//  Document Modified Flag
+//
+//
+static BOOL IsDocumentModified = FALSE;
+
+void __fastcall SetDocumentModified(BOOL bModified)
+{
+  if (IsDocumentModified != bModified) {
+    IsDocumentModified = bModified;
+    UpdateToolbar();
+  }
+}
 
 
 //==============================================================================
@@ -924,8 +937,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
           if (!flagLexerSpecified)
             Style_SetLexerFromFile(g_hwndEdit,szCurFile);
-          bModified = TRUE;
-          UpdateToolbar();
+
+          SetDocumentModified(TRUE);
           UpdateLineNumberWidth();
 
           // check for temp file and delete
@@ -2166,11 +2179,11 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 void MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  if (iFileWatchingMode == 1 || bModified || Encoding_HasChanged(CPI_GET))
+  if (iFileWatchingMode == 1 || IsDocumentModified || Encoding_HasChanged(CPI_GET))
     SetForegroundWindow(hwnd);
 
   if (PathFileExists(szCurFile)) {
-    if ((iFileWatchingMode == 2 && !bModified && !Encoding_HasChanged(CPI_GET)) ||
+    if ((iFileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
       MsgBox(MBYESNO,IDS_FILECHANGENOTIFY) == IDYES) {
 
       FileRevert(szCurFile);
@@ -2601,7 +2614,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-      if ((bModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_REVERT) != IDOK) {
+      if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_REVERT) != IDOK) {
         return(0);
       }
       FileRevert(szCurFile);
@@ -2996,7 +3009,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           int iNewEncoding = Encoding_MapUnicode(Encoding_Current(CPI_GET));
 
-          if ((bModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_RECODE) != IDOK)
+          if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBox(MBOKCANCEL,IDS_ASK_RECODE) != IDOK)
             return(0);
 
           if (RecodeDlg(hwnd,&iNewEncoding)) 
@@ -4703,8 +4716,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_SETPASS:
       if (GetFileKey(g_hwndEdit)) {
-        bModified = TRUE;
-        UpdateToolbar();
+        SetDocumentModified(TRUE);
       }
       break;
 
@@ -5602,25 +5614,34 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
   LPNMHDR pnmh = (LPNMHDR)lParam;
   struct SCNotification* scn = (struct SCNotification*)lParam;
 
-
   if (!CheckNotifyChangeEvent()) 
   {
-    if ((pnmh->idFrom == IDC_EDIT) && (pnmh->code == SCN_MODIFIED)) {
-      // check for ADDUNDOACTION step
-      if (scn->modificationType & SC_MOD_CONTAINER) {
-        if (scn->modificationType & SC_PERFORMED_UNDO) {
-          RestoreAction(scn->token, UNDO);
+    // --- check only mandatory events (must be fast !!!) ---
+    if (pnmh->idFrom == IDC_EDIT) {
+      if (pnmh->code == SCN_MODIFIED) {
+        // check for ADDUNDOACTION step
+        if (scn->modificationType & SC_MOD_CONTAINER) {
+          if (scn->modificationType & SC_PERFORMED_UNDO) {
+            RestoreAction(scn->token, UNDO);
+          }
+          else if (scn->modificationType & SC_PERFORMED_REDO) {
+            RestoreAction(scn->token, REDO);
+          }
         }
-        else if (scn->modificationType & SC_PERFORMED_REDO) {
-          RestoreAction(scn->token, REDO);
-        }
+        SetDocumentModified(TRUE);
+        return TRUE;
       }
-      bModified = TRUE;
-      return TRUE;
+      else if (pnmh->code == SCN_SAVEPOINTREACHED) {
+        SetDocumentModified(FALSE);
+        return TRUE;
+      }
+      else if (pnmh->code == SCN_SAVEPOINTLEFT) {
+        SetDocumentModified(TRUE);
+        return TRUE;
+      }
     }
     return FALSE;
   }
-
 
   switch(pnmh->idFrom)
   {
@@ -5714,11 +5735,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
 
-            bModified = TRUE;
             if (scn->linesAdded != 0) {
               UpdateLineNumberWidth();
             }
-            UpdateToolbar();
+
+            SetDocumentModified(TRUE);
+
             UpdateStatusbar();
           }
           break;
@@ -5852,12 +5874,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
 
-        case SCN_SAVEPOINTREACHED:
-          bModified = FALSE;
-          UpdateToolbar();
-          break;
-
-
         case SCN_MARGINCLICK:
           if (scn->margin == MARGIN_FOLD_INDEX)
             FoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
@@ -5870,9 +5886,13 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
 
+        case SCN_SAVEPOINTREACHED:
+          SetDocumentModified(FALSE);
+          break;
+
+
         case SCN_SAVEPOINTLEFT:
-          bModified = TRUE;
-          UpdateToolbar();
+          SetDocumentModified(TRUE);
           break;
 
         default:
@@ -7235,7 +7255,7 @@ void UpdateVisibleUrlHotspot(int delay)
 void UpdateToolbar()
 {
   SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_UNTITLED, szCurFile,
-                 iPathNameFormat, bModified || Encoding_HasChanged(CPI_GET),
+                 iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
                  IDS_READONLY, bReadOnly, szTitleExcerpt);
 
   if (!bShowToolbar)
@@ -7266,7 +7286,7 @@ void UpdateToolbar()
   EnableTool(IDT_VIEW_TOGGLEFOLDS,i2 && bShowCodeFolding);
   EnableTool(IDT_FILE_LAUNCH,i2);
 
-  EnableTool(IDT_FILE_SAVE, (bModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
+  EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
 
   CheckTool(IDT_VIEW_WORDWRAP,bWordWrap);
 
@@ -7734,8 +7754,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     FileVars_Init(NULL,0,&fvCurFile);
     EditSetNewText(g_hwndEdit,"",0);
     Style_SetLexer(g_hwndEdit,NULL);
-    bModified = FALSE;
-    bReadOnly = FALSE;
+
     iEOLMode = iLineEndings[iDefaultEOLMode];
     SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
     Encoding_Current(iDefaultEncoding);
@@ -7743,7 +7762,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     Encoding_SciSetCodePage(g_hwndEdit,iDefaultEncoding);
     EditSetNewText(g_hwndEdit,"",0);
 
-    UpdateToolbar();
+    bReadOnly = FALSE;
+    SetDocumentModified(FALSE);
     UpdateStatusbar();
     UpdateLineNumberWidth();
 
@@ -7851,8 +7871,6 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (!flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(g_hwndEdit,szCurFile);
 
-    bModified = FALSE;
-    //bReadOnly = FALSE;
     SendMessage(g_hwndEdit,SCI_SETEOLMODE,iEOLMode,0);
     fileEncoding = Encoding_Current(CPI_GET);
     Encoding_HasChanged(fileEncoding);
@@ -7901,7 +7919,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
       }
     }
 
-    UpdateToolbar();
+    //bReadOnly = FALSE;
+    SetDocumentModified(FALSE);
     UpdateStatusbar();
     UpdateLineNumberWidth();
     UpdateVisibleUrlHotspot(0);
@@ -7997,7 +8016,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     }
   }
 
-  if (!bSaveAlways && (!bModified && !Encoding_HasChanged(CPI_GET) || bIsEmptyNewFile) && !bSaveAs) {
+  if (!bSaveAlways && (!IsDocumentModified && !Encoding_HasChanged(CPI_GET) || bIsEmptyNewFile) && !bSaveAs) {
     int idx;
     if (MRU_FindFile(pFileMRU,szCurFile,&idx)) {
       pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
@@ -8092,7 +8111,6 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
   {
     if (!bSaveCopy)
     {
-      bModified = FALSE;
       int iCurrEnc = Encoding_Current(CPI_GET);
       Encoding_HasChanged(iCurrEnc);
       int iCaretPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
@@ -8101,7 +8119,8 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       MRU_AddFile(pFileMRU,szCurFile,flagRelativeFileMRU,flagPortableMyDocs,iCurrEnc,iCaretPos,wchBookMarks);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,szCurFile);
-      UpdateToolbar();
+
+      SetDocumentModified(FALSE);
       // Install watching of the current file
       if (bSaveAs && bResetFileWatching)
         iFileWatchingMode = 0;
@@ -8148,7 +8167,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
               LocalFree(lpArgs);
               // set no change and quit
               Encoding_HasChanged(Encoding_Current(CPI_GET));
-              bModified = FALSE;
+              SetDocumentModified(FALSE);
               PostMessage(g_hwndMain,WM_CLOSE,0,0);
             }
             else {
@@ -8782,7 +8801,7 @@ void SetNotifyIconTitle(HWND hwnd)
   else
     GetString(IDS_UNTITLED,tchTitle,COUNTOF(tchTitle)-4);
 
-  if (bModified || Encoding_HasChanged(CPI_GET))
+  if (IsDocumentModified || Encoding_HasChanged(CPI_GET))
     StringCchCopy(nid.szTip,COUNTOF(nid.szTip),L"* ");
   else
     StringCchCopy(nid.szTip,COUNTOF(nid.szTip),L"");

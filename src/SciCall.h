@@ -82,10 +82,11 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 //  Selection, positions and information
 //
 //
-DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, int);
-DeclareSciCallR0(GetAnchor, GETANCHOR, int);
+DeclareSciCallR0(IsDocModified, GETMODIFY, BOOL);
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, BOOL);
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, BOOL);
+DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, int);
+DeclareSciCallR0(GetAnchor, GETANCHOR, int);
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
 DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, int);
 DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, int);
