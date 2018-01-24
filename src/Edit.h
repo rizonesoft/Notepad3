@@ -133,7 +133,7 @@ void  EditApplyLexerStyle(HWND, int, int);
 void  EditFinalizeStyling(HWND,int);
 
 void  EditMarkAllOccurrences();
-void  EditUpdateVisibleUrlHotspot();
+void  EditUpdateVisibleUrlHotspot(BOOL);
 
 void  EditEnterTargetTransaction();
 void  EditLeaveTargetTransaction();

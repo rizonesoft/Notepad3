@@ -190,6 +190,7 @@ int       iSciFontQuality;
 int       iHighDpiToolBar;
 int       iUpdateDelayHyperlinkStyling;
 int       iUpdateDelayMarkAllCoccurrences;
+int       iCurrentLineVerticalSlop = 5;
 
 const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
@@ -948,7 +949,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
         }
         if (flagJumpTo) { // Jump to position
           EditJumpTo(g_hwndEdit,iInitialLine,iInitialColumn);
-          EditEnsureSelectionVisible(g_hwndEdit);
         }
       }
     }
@@ -1003,10 +1003,10 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
       SendMessage(g_hwndEdit, SCI_NEWLINE, 0, 0);
       SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
       bAutoIndent = bAutoIndent2;
-      if (flagJumpTo) {
+      if (flagJumpTo)
         EditJumpTo(g_hwndEdit, iInitialLine, iInitialColumn);
-      }
-      EditEnsureSelectionVisible(g_hwndEdit);
+      else
+        EditEnsureSelectionVisible(g_hwndEdit);
     }
   }
 
@@ -1040,19 +1040,17 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
       cpLastFind = cp;
 
       if (flagMatchText & 4)
-        g_efrData.fuFlags |= SCFIND_REGEXP | SCFIND_POSIX;
+        g_efrData.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
       else if (flagMatchText & 8)
         g_efrData.bTransformBS = TRUE;
 
       if (flagMatchText & 2) {
-        if (!flagJumpTo)
-          EditJumpTo(g_hwndEdit,-1,0);
+        if (!flagJumpTo) { SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0); }
         EditFindPrev(g_hwndEdit,&g_efrData,FALSE);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
       else {
-        if (!flagJumpTo)
-          SendMessage(g_hwndEdit,SCI_DOCUMENTSTART,0,0);
+        if (!flagJumpTo) { SendMessage(g_hwndEdit, SCI_DOCUMENTSTART, 0, 0); }
         EditFindNext(g_hwndEdit,&g_efrData,FALSE);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
@@ -1333,6 +1331,10 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   // Setup edit control
   g_hwndEdit = EditCreate(hwnd);
   InitScintillaHandle(g_hwndEdit);
+
+  // Properties
+  SendMessage(g_hwndEdit, SCI_SETYCARETPOLICY, CARET_SLOP | CARET_EVEN | CARET_STRICT, iCurrentLineVerticalSlop);
+  SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
 
   // Tabs
   SendMessage(g_hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
@@ -2092,7 +2094,6 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (params->iInitialLine == 0)
         params->iInitialLine = 1;
       EditJumpTo(g_hwndEdit, params->iInitialLine, params->iInitialColumn);
-      EditEnsureSelectionVisible(g_hwndEdit);
     }
 
     flagLexerSpecified = 0;
@@ -2141,7 +2142,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ptc.x = pt.x;  ptc.y = pt.y;
         ScreenToClient(g_hwndEdit, &ptc);
         iNewPos = (int)SendMessage(g_hwndEdit, SCI_POSITIONFROMPOINT, (WPARAM)ptc.x, (LPARAM)ptc.y);
-        SendMessage(g_hwndEdit, SCI_GOTOPOS, (WPARAM)iNewPos, 0);
+        EditSelectEx(g_hwndEdit, iNewPos, iNewPos);
       }
 
       if (pt.x == -1 && pt.y == -1) {
@@ -2600,7 +2601,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDC_CALL_UPDATE_HOTSPOT:
-      EditUpdateVisibleUrlHotspot();
+      EditUpdateVisibleUrlHotspot(bHyperlinkHotspot);
       break;
 
     case IDM_FILE_NEW:
@@ -4780,7 +4781,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
           // possible unexpected behavior on Virtual Space Access, so:
           const int iPos = SciCall_GetCurrentPos();
-          SendMessage(g_hwndEdit, SCI_SETSELECTION, iPos, iPos);
+          SendMessage(g_hwndEdit, SCI_SETSEL, iPos, iPos);
           EndUndoAction(token);
         }
       }
@@ -6304,6 +6305,8 @@ void LoadSettings()
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", FALSE);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
   
+  iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
+  iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 80), 0);
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
 
@@ -7234,7 +7237,7 @@ void MarkAllOccurrences(int delay)
 void UpdateVisibleUrlHotspot(int delay)
 {
   if (delay < USER_TIMER_MINIMUM) {
-    EditUpdateVisibleUrlHotspot();
+    EditUpdateVisibleUrlHotspot(bHyperlinkHotspot);
     return;
   }
   TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
@@ -7513,7 +7516,7 @@ void InvalidateSelections()
     int iCurPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
     SendMessage(g_hwndEdit, WM_CANCELMODE, 0, 0);
     SendMessage(g_hwndEdit, SCI_CLEARSELECTIONS, 0, 0);
-    SendMessage(g_hwndEdit, SCI_SETSELECTION, (WPARAM)iCurPos, (LPARAM)iCurPos);
+    SendMessage(g_hwndEdit, SCI_SETSEL, iCurPos, iCurPos);
   }
 }
 
@@ -7529,22 +7532,23 @@ int BeginUndoAction()
   UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
   sel.selMode = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONMODE,0,0);
   sel.rectSelVS = (int)SendMessage(g_hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
-  if (sel.selMode == SC_SEL_LINES) {
-    sel.anchorPos_undo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONSTART,0,0);
-    sel.currPos_undo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONEND,0,0);
-  }
-  else if (sel.selMode == SC_SEL_RECTANGLE) {
-    sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-    sel.currPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-    if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
-    sel.anchorVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-    sel.currVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+
+  sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETANCHOR, 0, 0);
+  sel.currPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+
+  if (!(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
+    if (sel.selMode == SC_SEL_LINES) {
+      sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONSTART, 0, 0);
+      sel.currPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONEND, 0, 0);
     }
-  }
-  else
-  {
-    sel.anchorPos_undo = (int)SendMessage(g_hwndEdit,SCI_GETANCHOR,0,0);
-    sel.currPos_undo = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
+    else if (sel.selMode == SC_SEL_RECTANGLE) {
+      sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
+      sel.currPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
+      if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
+        sel.anchorVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+        sel.currVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+      }
+    }
   }
   token = UndoRedoActionMap(-1, &sel);
   if (token >= 0) {
@@ -7567,21 +7571,23 @@ void EndUndoAction(int token)
     UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
     if (UndoRedoActionMap(token,&sel) >= 0) {
       // mode and type should not have changed
-      if (sel.selMode == SC_SEL_LINES) {
-        sel.anchorPos_redo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONSTART,0,0);
-        sel.currPos_redo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONEND,0,0);
-      }
-      else if (sel.selMode == SC_SEL_RECTANGLE) {
-        sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-        sel.currPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-        if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
-          sel.anchorVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-          sel.currVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+
+      sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETANCHOR, 0, 0);
+      sel.currPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+
+      if (!(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
+        if (sel.selMode == SC_SEL_LINES) {
+          sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONSTART, 0, 0);
+          sel.currPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONEND, 0, 0);
         }
-      }
-      else {
-        sel.anchorPos_redo = (int)SendMessage(g_hwndEdit,SCI_GETANCHOR,0,0);
-        sel.currPos_redo = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
+        else if (sel.selMode == SC_SEL_RECTANGLE) {
+          sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
+          sel.currPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
+          if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
+            sel.anchorVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+            sel.currVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
+          }
+        }
       }
     }
     UndoRedoActionMap(token,&sel); // set with redo action filled
@@ -7602,6 +7608,14 @@ void RestoreAction(int token, DoAction doAct)
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
     int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     int currPos   = (doAct == UNDO ? sel.currPos_undo : sel.currPos_redo);
+    int anchorPosLine = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, anchorPos, 0);
+    int currPosLine = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, currPos, 0);
+    // Ensure that the first and last lines of a selection are always unfolded
+    // This needs to be done _before_ the SCI_SETSEL message
+    SendMessage(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
+    if (anchorPosLine != currPosLine) {
+      SendMessage(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0);
+    }
     int currRectType = (int)SendMessage(g_hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
     PostMessage(g_hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
     PostMessage(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)sel.rectSelVS,0);
@@ -7613,14 +7627,15 @@ void RestoreAction(int token, DoAction doAct)
       PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)anchorPos, 0);
       PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)currPos, 0);
       if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
-      int anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
-      int currVS = (doAct == UNDO ? sel.currVS_undo : sel.currVS_redo);
-      PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
-      PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
+        int anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
+        int currVS = (doAct == UNDO ? sel.currVS_undo : sel.currVS_redo);
+        PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
+        PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
       }
     }
     else {
-      PostMessage(g_hwndEdit,SCI_SETSELECTION,(WPARAM)currPos,(LPARAM)anchorPos);
+      PostMessage(g_hwndEdit, SCI_SETSEL, (LPARAM)anchorPos, (WPARAM)currPos);
+      PostMessage(g_hwndEdit, SCI_SCROLLRANGE, (LPARAM)anchorPos, (WPARAM)currPos);
     }
     PostMessage(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)currRectType,0);
     PostMessage(g_hwndEdit, SCI_CANCEL, 0, 0);
@@ -7904,7 +7919,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         EditJumpTo(g_hwndEdit,-1,0);
         SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
         SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
-        EditJumpTo(g_hwndEdit,-1,0);
+        SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
       // set historic caret pos
@@ -7968,7 +7983,7 @@ BOOL FileRevert(LPCWSTR szFileName)
     if (FileLoad(TRUE,FALSE,TRUE,FALSE,tchFileName2))
     {
       if (bIsTail && iFileWatchingMode == 2) {
-        EditJumpTo(g_hwndEdit, -1, 0);
+        SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
       else if (SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0) >= 4) {

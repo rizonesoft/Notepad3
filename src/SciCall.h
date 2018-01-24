@@ -93,13 +93,16 @@ DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, int);
 DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, int, Sci_Position, line);
 DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, int, Sci_Position, line);
 
-DeclareSciCallV2(SetSel, SETSEL, int, anchorPos, int, currentPos);
+DeclareSciCallV2(SetSel, SETSEL, Sci_Position, anchorPos, Sci_Position, currentPos);
+DeclareSciCallV2(ScrollRange, SCROLLRANGE, Sci_Position, secondaryPos, Sci_Position, primaryPos);
 DeclareSciCallV0(Clear, CLEAR);
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, int, start, int, end);
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
 
-DeclareSciCallV1(GotoPos, GOTOPOS, int, position);
-DeclareSciCallV1(GotoLine, GOTOLINE, int, line);
+DeclareSciCallV1(SetAnchor, SETANCHOR, Sci_Position, position);
+DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, Sci_Position, position);
+DeclareSciCallV1(GotoPos, GOTOPOS, Sci_Position, position);
+DeclareSciCallV1(GotoLine, GOTOLINE, Sci_Position, line);
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, int, Sci_Position, position);
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, int, Sci_Position, position);
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, Sci_Position, position);
