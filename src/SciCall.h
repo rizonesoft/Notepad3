@@ -119,7 +119,7 @@ DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, int);
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, int, Sci_Position, line);
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, LPCCH, Sci_Position, start, Sci_Position, length);
-
+DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
 
 //=============================================================================
 //
