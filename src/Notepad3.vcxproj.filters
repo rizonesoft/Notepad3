@@ -136,6 +136,9 @@
     <None Include="..\Versions\VersionEx.h.tpl">
       <Filter>templates</Filter>
     </None>
+    <None Include="..\Build\Notepad3.ini">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\Notepad3.ico">

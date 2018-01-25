@@ -133,10 +133,11 @@ void  EditApplyLexerStyle(HWND, int, int);
 void  EditFinalizeStyling(HWND,int);
 
 void  EditMarkAllOccurrences();
-void  EditUpdateVisibleUrlHotspot();
+void  EditUpdateVisibleUrlHotspot(BOOL);
 
-BOOL  EditEnterTargetTransaction();
-BOOL  EditLeaveTargetTransaction();
+void  EditEnterTargetTransaction();
+void  EditLeaveTargetTransaction();
+BOOL  EditIsInTargetTransaction();
 
 //void SciInitThemes(HWND);
 //LRESULT CALLBACK SciThemedWndProc(HWND,UINT,WPARAM,LPARAM);

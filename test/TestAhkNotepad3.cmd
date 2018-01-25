@@ -34,7 +34,7 @@ for %%i in (*.ahk) do (
 	echo +++ Run Testsuite %%~nxi +++ >> "%TEST_LOG%"
 	start "testing" /B /Wait "%AHK_EXE%" /ErrorStdOut "%%~nxi" >> "%TEST_LOG%" 2>&1
 	if errorlevel 1 (
-		set EXITCODE=%ERRORLEVEL%
+		set EXITCODE=1
 		echo *** Testsuite %%~nxi failed! ***
 		echo *** ERROR: Testsuite %%~nxi failed! *** >> "%TEST_LOG%"
 	) else (

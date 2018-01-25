@@ -82,21 +82,27 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 //  Selection, positions and information
 //
 //
+DeclareSciCallR0(IsDocModified, GETMODIFY, BOOL);
+DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, BOOL);
+DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, BOOL);
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, int);
 DeclareSciCallR0(GetAnchor, GETANCHOR, int);
-DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, BOOL);
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
 DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, int);
 DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, int);
 DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, int, Sci_Position, line);
 DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, int, Sci_Position, line);
 
-DeclareSciCallV2(SetSel, SETSEL, int, anchorPos, int, currentPos);
+DeclareSciCallV2(SetSel, SETSEL, Sci_Position, anchorPos, Sci_Position, currentPos);
+DeclareSciCallV2(ScrollRange, SCROLLRANGE, Sci_Position, secondaryPos, Sci_Position, primaryPos);
+DeclareSciCallV0(Clear, CLEAR);
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, int, start, int, end);
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
 
-DeclareSciCallV1(GotoPos, GOTOPOS, int, position);
-DeclareSciCallV1(GotoLine, GOTOLINE, int, line);
+DeclareSciCallV1(SetAnchor, SETANCHOR, Sci_Position, position);
+DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, Sci_Position, position);
+DeclareSciCallV1(GotoPos, GOTOPOS, Sci_Position, position);
+DeclareSciCallV1(GotoLine, GOTOLINE, Sci_Position, line);
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, int, Sci_Position, position);
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, int, Sci_Position, position);
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, Sci_Position, position);
@@ -113,7 +119,7 @@ DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, int);
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, int, Sci_Position, line);
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, LPCCH, Sci_Position, start, Sci_Position, length);
-
+DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
 
 //=============================================================================
 //
