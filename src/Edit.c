@@ -2770,7 +2770,7 @@ void EditAlignText(HWND hwnd,int nMode)
 //
 void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
 {
-  if (!SciCall_IsSelectionRectangle())
+  if (SciCall_IsSelectionRectangle())
   {
     MsgBox(MBWARN, IDS_SELRECT);
     return;
