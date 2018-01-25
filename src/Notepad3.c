@@ -429,43 +429,54 @@ BOOL __stdcall FoldToggleNode( int ln, FOLD_ACTION action )
     SciCall_ToggleFold(ln);
     return(TRUE);
   }
-
   return(FALSE);
 }
 
+
 void __stdcall FoldToggleAll( FOLD_ACTION action )
 {
-  BOOL fToggled = FALSE;
-  int lnTotal = SciCall_GetLineCount();
-  int ln;
+  static FOLD_ACTION sLastAction = EXPAND;
 
-  for (ln = 0; ln < lnTotal; ++ln)
+  BOOL fToggled = FALSE;
+
+  int lnTotal = SciCall_GetLineCount();
+
+  if (action == SNIFF) 
+  {
+    int cntFolded = 0;
+    int cntExpanded = 0;
+    for (int ln = 0; ln < lnTotal; ++ln)
+    {
+      if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
+      {
+        if (SciCall_GetFoldExpanded(ln))
+          ++cntExpanded;
+        else
+          ++cntFolded;
+      }
+    }
+    if (cntFolded == cntExpanded)
+      action = (sLastAction == FOLD) ? EXPAND : FOLD;
+    else
+      action = (cntFolded < cntExpanded) ? FOLD : EXPAND;
+  }
+
+  for (int ln = 0; ln < lnTotal; ++ln)
   {
     if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
     {
-      if (action == SNIFF)
-        action = SciCall_GetFoldExpanded(ln) ? FOLD : EXPAND;
-
-      if (FoldToggleNode(ln, action))
-        fToggled = TRUE;
+      if (FoldToggleNode(ln, action)) { fToggled = TRUE; }
     }
   }
-
-  if (fToggled)
-  {
-    SciCall_SetXCaretPolicy(CARET_SLOP|CARET_STRICT|CARET_EVEN,50);
-    SciCall_SetYCaretPolicy(CARET_SLOP|CARET_STRICT|CARET_EVEN,5);
-    SciCall_ScrollCaret();
-    SciCall_SetXCaretPolicy(CARET_SLOP|CARET_EVEN,50);
-    SciCall_SetYCaretPolicy(CARET_EVEN,0);
-  }
+  if (fToggled) { SciCall_ScrollCaret(); }
 }
+
 
 void __stdcall FoldPerformAction( int ln, int mode, FOLD_ACTION action )
 {
-  if (action == SNIFF)
+  if (action == SNIFF) {
     action = SciCall_GetFoldExpanded(ln) ? FOLD : EXPAND;
-
+  }
   if (mode & (FOLD_CHILDREN | FOLD_SIBLINGS))
   {
     // ln/lvNode: line and level of the source of this fold action
@@ -494,11 +505,11 @@ void __stdcall FoldPerformAction( int ln, int mode, FOLD_ACTION action )
         FoldToggleNode(ln, action);
     }
   }
-  else
-  {
+  else {
     FoldToggleNode(ln, action);
   }
 }
+
 
 void __stdcall FoldClick( int ln, int mode )
 {
@@ -535,6 +546,7 @@ void __stdcall FoldClick( int ln, int mode )
       return;
     }
   }
+
 
   FoldPerformAction(ln, mode, SNIFF);
 
@@ -4032,9 +4044,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         {
             SciCall_EnsureVisible(iNextLine);
             SendMessage( g_hwndEdit , SCI_GOTOLINE , iNextLine , 0 );
-            SciCall_SetYCaretPolicy(CARET_SLOP|CARET_STRICT|CARET_EVEN,10);
             SciCall_ScrollCaret();
-            SciCall_SetYCaretPolicy(CARET_EVEN,0);
         }
         break;
     }
@@ -4055,9 +4065,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         {
             SciCall_EnsureVisible(iNextLine);
             SendMessage( g_hwndEdit , SCI_GOTOLINE , iNextLine , 0 );
-            SciCall_SetYCaretPolicy(CARET_SLOP|CARET_STRICT|CARET_EVEN,10);
             SciCall_ScrollCaret();
-            SciCall_SetYCaretPolicy(CARET_EVEN,0);
         }
 
         break;
