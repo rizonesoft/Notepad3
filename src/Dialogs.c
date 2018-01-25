@@ -1404,10 +1404,10 @@ BOOL FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //
 //  ChangeNotifyDlgProc()
 //
-//  Controls: 100 Radio Button
-//            101 Radio Button
-//            102 Radio Button
-//            103 Check Box
+//  Controls: 100 Radio Button (None)
+//            101 Radio Button (Display Message)
+//            102 Radio Button (Auto-Reload)
+//            103 Check Box    (Reset on New)
 //
 extern int iFileWatchingMode;
 extern BOOL bResetFileWatching;
@@ -1474,7 +1474,7 @@ BOOL ChangeNotifyDlg(HWND hwnd)
 //
 //  ColumnWrapDlgProc()
 //
-//  Controls: 100 Edit
+//  Controls: Edit IDC_COLUMNWRAP
 //
 INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -1489,8 +1489,8 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
         piNumber = (int*)lParam;
 
-        SetDlgItemInt(hwnd,100,*piNumber,FALSE);
-        SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,15,0);
+        SetDlgItemInt(hwnd, IDC_COLUMNWRAP,*piNumber,FALSE);
+        SendDlgItemMessage(hwnd, IDC_COLUMNWRAP,EM_LIMITTEXT,15,0);
 
         CenterDlgInParent(hwnd);
 
@@ -1507,7 +1507,7 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
           BOOL fTranslated;
 
-          int iNewNumber = GetDlgItemInt(hwnd,100,&fTranslated,FALSE);
+          int iNewNumber = GetDlgItemInt(hwnd, IDC_COLUMNWRAP,&fTranslated,FALSE);
 
           if (fTranslated)
           {
@@ -1517,7 +1517,7 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
           }
 
           else
-            PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,100)),1);
+            PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd, IDC_COLUMNWRAP)),1);
 
           }
           break;

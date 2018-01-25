@@ -1832,7 +1832,7 @@ BEGIN
     63192                   "XML Comment"
     63193                   "XML Entity"
     63194                   "Tag-Class"
-    63195                   "Tag-Id"
+    63195                   "Tag-ID"
     63196                   "Tag-Attribute"
     63197                   "Pseudo-Class"
     63198                   "Unknown Pseudo-Class"
@@ -1924,6 +1924,8 @@ BEGIN
     63264                   "Hyperlink Hotspots"
     63265                   "2nd Hyperlink Hotspots"
     63266                   "2nd Default Text"
+    63267                   "Variable within String"
+    63268                   "Ordered List"
 END
 
 #endif    // Englisch (USA) resources

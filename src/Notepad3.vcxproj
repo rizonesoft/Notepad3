@@ -327,6 +327,7 @@
     <ClInclude Include="VersionEx.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Build\Notepad3.ini" />
     <None Include="..\res\Copy.cur" />
     <None Include="..\res\Encoding.bmp" />
     <None Include="..\res\Next.bmp" />
