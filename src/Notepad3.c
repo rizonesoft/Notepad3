@@ -3324,18 +3324,53 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INDENT:
       {
-        int token = BeginUndoAction();
-        SendMessage(g_hwndEdit,SCI_TAB,0,0);
-        EndUndoAction(token);
+        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
+
+        if (bTabIndents && !SciCall_IsSelectionEmpty()) {
+          const int iLineSelStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+          const int iLineSelEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+          if (iLineSelStart == iLineSelEnd) {
+            SendMessage(g_hwndEdit, SCI_VCHOME, 0, 0);
+          }
+        }
+
+        SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
+
+        if (token >= 0) { EndUndoAction(token); }
       }
       break;
 
 
     case IDM_EDIT_UNINDENT:
       {
-        int token = BeginUndoAction();
-        SendMessage(g_hwndEdit,SCI_BACKTAB,0,0);
-        EndUndoAction(token);
+        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
+
+        if (bTabIndents && !SciCall_IsSelectionEmpty()) {
+          const int iLineSelStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+          const int iLineSelEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+          if (iLineSelStart == iLineSelEnd) {
+            SendMessage(g_hwndEdit, SCI_VCHOME, 0, 0);
+          }
+        }
+
+        SendMessage(g_hwndEdit, SCI_BACKTAB, 0, 0);
+
+        if (token >= 0) { EndUndoAction(token); }
+      }
+      break;
+
+
+    case CMD_CTRLTAB:
+      {
+        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
+
+        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, FALSE, 0);
+        SendMessage(g_hwndEdit, SCI_SETUSETABS, TRUE, 0);
+        SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
+        SendMessage(g_hwndEdit, SCI_SETUSETABS, !bTabsAsSpaces, 0);
+        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, bTabIndents, 0);
+
+        if (token >= 0) { EndUndoAction(token); }
       }
       break;
 
@@ -4861,19 +4896,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           else // iStartPos == iEndPos
             SendMessage(g_hwndEdit,SCI_LINEDELETE,0,0);
         }
-      }
-      break;
-
-
-    case CMD_CTRLTAB:
-      {
-        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        SendMessage(g_hwndEdit,SCI_SETTABINDENTS,FALSE,0);
-        SendMessage(g_hwndEdit,SCI_SETUSETABS,TRUE,0);
-        SendMessage(g_hwndEdit,SCI_TAB,0,0);
-        SendMessage(g_hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
-        SendMessage(g_hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
-        if (token >= 0) EndUndoAction(token);
       }
       break;
 

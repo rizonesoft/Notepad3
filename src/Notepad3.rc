@@ -181,8 +181,8 @@ BEGIN
         END
         POPUP "&Block"
         BEGIN
-            MENUITEM "&Indent\tTab",                IDM_EDIT_INDENT
-            MENUITEM "&Unindent\tShift+Tab",        IDM_EDIT_UNINDENT
+            MENUITEM "&Indent\tTab",                    IDM_EDIT_INDENT
+            MENUITEM "&Unindent\tShift+Tab",            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "&Enclose Selection"
             BEGIN

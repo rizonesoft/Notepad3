@@ -3307,11 +3307,11 @@ void EditCompressSpaces(HWND hwnd)
 
       const int iNewLen = StringCchLenA(pszOut, LocalSize(pszOut));
 
-      if (iCurPos > iAnchorPos) {
-        EditSelectEx(hwnd, iAnchorPos, iAnchorPos + iNewLen);
+      if (iCurPos < iAnchorPos) {
+        EditSelectEx(hwnd, iCurPos + iNewLen, iCurPos);
       }
-      else if (iCurPos < iAnchorPos) {
-        EditSelectEx(hwnd, iCurPos, iCurPos + iNewLen);
+      else if (iCurPos > iAnchorPos) {
+        EditSelectEx(hwnd, iAnchorPos, iAnchorPos + iNewLen);
       }
       else { // empty selection
         int iNewPos = iCurPos; 
