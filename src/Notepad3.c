@@ -2338,7 +2338,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_REDO,SendMessage(g_hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
 
 
-  i  = !(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
+  i = !SciCall_IsSelectionEmpty();
   i2 = SciCall_GetTextLength();
   i3 = (int)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
   
@@ -2403,7 +2403,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_ESCAPECCHARS,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_UNESCAPECCHARS,i /*&& !bReadOnly*/);
 
-  EnableCmd(hmenu,IDM_EDIT_CHAR2HEX,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_CHAR2HEX,TRUE /*&& !bReadOnly*/);  // Char2Hex allowed for char after curr pos
   EnableCmd(hmenu,IDM_EDIT_HEX2CHAR,i /*&& !bReadOnly*/);
 
   //EnableCmd(hmenu,IDM_EDIT_INCREASENUM,i /*&& !bReadOnly*/);
@@ -3378,7 +3378,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_ENCLOSESELECTION:
       if (EditEncloseSelectionDlg(hwnd,wchPrefixSelection,wchAppendSelection)) {
         BeginWaitCursor(NULL);
+        int token = BeginUndoAction();
         EditEncloseSelection(g_hwndEdit,wchPrefixSelection,wchAppendSelection);
+        EndUndoAction(token);
         EndWaitCursor();
       }
       break;
@@ -3675,8 +3677,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         WCHAR wszOpen[256] = { L'\0' };
         WCHAR wszClose[256] = { L'\0' };
-        if (EditInsertTagDlg(hwnd,wszOpen,wszClose))
-          EditEncloseSelection(g_hwndEdit,wszOpen,wszClose);
+        if (EditInsertTagDlg(hwnd, wszOpen, wszClose)) {
+          int token = BeginUndoAction();
+          EditEncloseSelection(g_hwndEdit, wszOpen, wszClose);
+          EndUndoAction(token);
+        }
       }
       break;
 
@@ -3798,7 +3803,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_LINECOMMENT:
-      switch (SendMessage(g_hwndEdit,SCI_GETLEXER,0,0)) {
+      {
+        BeginWaitCursor(NULL);
+        int token = BeginUndoAction();
+
+        switch (SendMessage(g_hwndEdit, SCI_GETLEXER, 0, 0)) {
+        default:
         case SCLEX_NULL:
         case SCLEX_CSS:
         case SCLEX_DIFF:
@@ -3809,15 +3819,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_XML:
         case SCLEX_CPP:
         case SCLEX_PASCAL:
-          BeginWaitCursor(NULL);
-          EditToggleLineComments(g_hwndEdit,L"//",FALSE);
-          EndWaitCursor();
+          EditToggleLineComments(g_hwndEdit, L"//", FALSE);
           break;
         case SCLEX_VBSCRIPT:
         case SCLEX_VB:
-          BeginWaitCursor(NULL);
-          EditToggleLineComments(g_hwndEdit,L"'",FALSE);
-          EndWaitCursor();
+          EditToggleLineComments(g_hwndEdit, L"'", FALSE);
           break;
         case SCLEX_MAKEFILE:
         case SCLEX_PERL:
@@ -3832,9 +3838,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_YAML:
         case SCLEX_COFFEESCRIPT:
         case SCLEX_NIMROD:
-          BeginWaitCursor(NULL);
-          EditToggleLineComments(g_hwndEdit,L"#",TRUE);
-          EndWaitCursor();
+          EditToggleLineComments(g_hwndEdit, L"#", TRUE);
           break;
         case SCLEX_ASM:
         case SCLEX_PROPERTIES:
@@ -3842,39 +3846,37 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_AHK:
         case SCLEX_NSIS: // # could also be used instead
         case SCLEX_INNOSETUP:
-          BeginWaitCursor(NULL);
-          EditToggleLineComments(g_hwndEdit,L";",TRUE);
-          EndWaitCursor();
+          EditToggleLineComments(g_hwndEdit, L";", TRUE);
           break;
         case SCLEX_REGISTRY:
-          BeginWaitCursor(NULL);
-          EditToggleLineComments(g_hwndEdit,L";;",TRUE);
-          EndWaitCursor();
+          EditToggleLineComments(g_hwndEdit, L";;", TRUE);
           break;
         case SCLEX_SQL:
         case SCLEX_LUA:
         case SCLEX_VHDL:
-          BeginWaitCursor(NULL);
-          EditToggleLineComments(g_hwndEdit,L"--",TRUE);
-          EndWaitCursor();
+          EditToggleLineComments(g_hwndEdit, L"--", TRUE);
           break;
         case SCLEX_BATCH:
-          BeginWaitCursor(NULL);
-          EditToggleLineComments(g_hwndEdit,L"rem ",TRUE);
-          EndWaitCursor();
+          EditToggleLineComments(g_hwndEdit, L"rem ", TRUE);
           break;
         case SCLEX_LATEX:
         case SCLEX_MATLAB:
-          BeginWaitCursor(NULL);
-          EditToggleLineComments(g_hwndEdit,L"%",TRUE);
-          EndWaitCursor();
+          EditToggleLineComments(g_hwndEdit, L"%", TRUE);
           break;
+        }
+
+        EndUndoAction(token);
+        EndWaitCursor();
       }
       break;
 
 
     case IDM_EDIT_STREAMCOMMENT:
-      switch (SendMessage(g_hwndEdit,SCI_GETLEXER,0,0)) {
+      {
+        int token = BeginUndoAction();
+
+        switch (SendMessage(g_hwndEdit, SCI_GETLEXER, 0, 0)) {
+        default:
         case SCLEX_NULL:
         case SCLEX_VBSCRIPT:
         case SCLEX_MAKEFILE:
@@ -3908,20 +3910,22 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_NSIS:
         case SCLEX_AVS:
         case SCLEX_VHDL:
-          EditEncloseSelection(g_hwndEdit,L"/*",L"*/");
+          EditEncloseSelection(g_hwndEdit, L"/*", L"*/");
           break;
         case SCLEX_PASCAL:
         case SCLEX_INNOSETUP:
-          EditEncloseSelection(g_hwndEdit,L"{",L"}");
+          EditEncloseSelection(g_hwndEdit, L"{", L"}");
           break;
         case SCLEX_LUA:
-          EditEncloseSelection(g_hwndEdit,L"--[[",L"]]");
+          EditEncloseSelection(g_hwndEdit, L"--[[", L"]]");
           break;
         case SCLEX_COFFEESCRIPT:
-          EditEncloseSelection(g_hwndEdit,L"###",L"###");
+          EditEncloseSelection(g_hwndEdit, L"###", L"###");
           break;
         case SCLEX_MATLAB:
-          EditEncloseSelection(g_hwndEdit,L"%{",L"%}");
+          EditEncloseSelection(g_hwndEdit, L"%{", L"%}");
+        }
+        EndUndoAction(token);
       }
       break;
 
@@ -3971,59 +3975,29 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_CHAR2HEX:
-      BeginWaitCursor(NULL);
-      EditChar2Hex(g_hwndEdit);
-      EndWaitCursor();
+      {
+        int token = BeginUndoAction();
+        EditChar2Hex(g_hwndEdit);
+        EndUndoAction(token);
+      }
       break;
 
 
     case IDM_EDIT_HEX2CHAR:
-      BeginWaitCursor(NULL);
       EditHex2Char(g_hwndEdit);
-      EndWaitCursor();
       break;
 
 
     case IDM_EDIT_FINDMATCHINGBRACE:
-      {
-        int iBrace2 = -1;
-        int iPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
-        char c = (char)SendMessage(g_hwndEdit,SCI_GETCHARAT,iPos,0);
-        if (StrChrA("()[]{}",c))
-          iBrace2 = (int)SendMessage(g_hwndEdit,SCI_BRACEMATCH,iPos,0);
-        // Try one before
-        else {
-          iPos = (int)SendMessage(g_hwndEdit,SCI_POSITIONBEFORE,iPos,0);
-          c = (char)SendMessage(g_hwndEdit,SCI_GETCHARAT,iPos,0);
-          if (StrChrA("()[]{}",c))
-            iBrace2 = (int)SendMessage(g_hwndEdit,SCI_BRACEMATCH,iPos,0);
-        }
-        if (iBrace2 != -1)
-          SendMessage(g_hwndEdit,SCI_GOTOPOS,(WPARAM)iBrace2,0);
-      }
+      EditFindMatchingBrace(g_hwndEdit);
       break;
 
 
     case IDM_EDIT_SELTOMATCHINGBRACE:
       {
-        int iBrace2 = -1;
-        int iPos = (int)SendMessage(g_hwndEdit,SCI_GETCURRENTPOS,0,0);
-        char c = (char)SendMessage(g_hwndEdit,SCI_GETCHARAT,iPos,0);
-        if (StrChrA("()[]{}",c))
-          iBrace2 = (int)SendMessage(g_hwndEdit,SCI_BRACEMATCH,iPos,0);
-        // Try one before
-        else {
-          iPos = (int)SendMessage(g_hwndEdit,SCI_POSITIONBEFORE,iPos,0);
-          c = (char)SendMessage(g_hwndEdit,SCI_GETCHARAT,iPos,0);
-          if (StrChrA("()[]{}",c))
-            iBrace2 = (int)SendMessage(g_hwndEdit,SCI_BRACEMATCH,iPos,0);
-        }
-        if (iBrace2 != -1) {
-          if (iBrace2 > iPos)
-            SendMessage(g_hwndEdit,SCI_SETSEL,(WPARAM)iPos,(LPARAM)iBrace2+1);
-          else
-            SendMessage(g_hwndEdit,SCI_SETSEL,(WPARAM)iPos+1,(LPARAM)iBrace2);
-        }
+        int token = BeginUndoAction();
+        EditSelectToMatchingBrace(g_hwndEdit);
+        EndUndoAction(token);
       }
       break;
 
@@ -5188,34 +5162,57 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-
     case CMD_STRINGIFY:
-      EditEncloseSelection(g_hwndEdit,L"'",L"'");
+      {
+        int token = BeginUndoAction();
+        EditEncloseSelection(g_hwndEdit, L"'", L"'");
+        EndUndoAction(token);
+      }
       break;
 
 
     case CMD_STRINGIFY2:
-      EditEncloseSelection(g_hwndEdit,L"\"",L"\"");
+      {
+        int token = BeginUndoAction();
+        EditEncloseSelection(g_hwndEdit, L"\"", L"\"");
+        EndUndoAction(token);
+      }
       break;
 
 
     case CMD_EMBRACE:
-      EditEncloseSelection(g_hwndEdit,L"(",L")");
+      {
+        int token = BeginUndoAction();
+        EditEncloseSelection(g_hwndEdit, L"(", L")");
+        EndUndoAction(token);
+      }
       break;
 
 
     case CMD_EMBRACE2:
-      EditEncloseSelection(g_hwndEdit,L"[",L"]");
+      {
+        int token = BeginUndoAction();
+        EditEncloseSelection(g_hwndEdit, L"[", L"]");
+        EndUndoAction(token);
+      }
       break;
 
 
     case CMD_EMBRACE3:
-      EditEncloseSelection(g_hwndEdit,L"{",L"}");
+      {
+        int token = BeginUndoAction();
+        EditEncloseSelection(g_hwndEdit, L"{", L"}");
+        EndUndoAction(token);
+      }
       break;
 
 
     case CMD_EMBRACE4:
-      EditEncloseSelection(g_hwndEdit,L"`",L"`");
+      {
+        int token = BeginUndoAction();
+        EditEncloseSelection(g_hwndEdit, L"`", L"`");
+        EndUndoAction(token);
+      }
       break;
 
 
@@ -7643,32 +7640,36 @@ void RestoreAction(int token, DoAction doAct)
     // Ensure that the first and last lines of a selection are always unfolded
     // This needs to be done _before_ the SCI_SETSEL message
     SendMessage(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
-    if (anchorPosLine != currPosLine) {
-      SendMessage(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0);
-    }
+    if (anchorPosLine != currPosLine) { SendMessage(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
     int currRectType = (int)SendMessage(g_hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
-    PostMessage(g_hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
-    PostMessage(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)sel.rectSelVS,0);
+
+  #define ISSUE_MESSAGE PostMessage
+
+    ISSUE_MESSAGE(g_hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
+    ISSUE_MESSAGE(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)sel.rectSelVS,0);
     if (sel.selMode == SC_SEL_LINES) {
-      PostMessage(g_hwndEdit,SCI_SETSELECTIONSTART,(WPARAM)anchorPos,0);
-      PostMessage(g_hwndEdit,SCI_SETSELECTIONEND,(WPARAM)currPos,0);
+      ISSUE_MESSAGE(g_hwndEdit,SCI_SETSELECTIONSTART,(WPARAM)anchorPos,0);
+      ISSUE_MESSAGE(g_hwndEdit,SCI_SETSELECTIONEND,(WPARAM)currPos,0);
     }
     else if (sel.selMode == SC_SEL_RECTANGLE) {
-      PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)anchorPos, 0);
-      PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)currPos, 0);
+      ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)anchorPos, 0);
+      ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)currPos, 0);
       if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
         int anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
         int currVS = (doAct == UNDO ? sel.currVS_undo : sel.currVS_redo);
-        PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
-        PostMessage(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
+        ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
+        ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
       }
     }
     else {
-      PostMessage(g_hwndEdit, SCI_SETSEL, (LPARAM)anchorPos, (WPARAM)currPos);
-      PostMessage(g_hwndEdit, SCI_SCROLLRANGE, (LPARAM)anchorPos, (WPARAM)currPos);
+      ISSUE_MESSAGE(g_hwndEdit, SCI_SETSEL, (LPARAM)anchorPos, (WPARAM)currPos);
+      ISSUE_MESSAGE(g_hwndEdit, SCI_SCROLLRANGE, (LPARAM)anchorPos, (WPARAM)currPos);
     }
-    PostMessage(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)currRectType,0);
-    PostMessage(g_hwndEdit, SCI_CANCEL, 0, 0);
+    ISSUE_MESSAGE(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)currRectType,0);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
+
+  #undef ISSUE_MASSAGE
+
   }
 }
 
