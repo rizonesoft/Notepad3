@@ -524,7 +524,6 @@ void __stdcall FoldClick( int ln, int mode )
   if (!(SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG))
   {
     // Not a fold point: need to look for a double-click
-
     if ( prev.ln == ln && prev.mode == mode &&
          GetTickCount() - prev.dwTickCount <= GetDoubleClickTime() )
     {
@@ -547,57 +546,51 @@ void __stdcall FoldClick( int ln, int mode )
     }
   }
 
-
   FoldPerformAction(ln, mode, SNIFF);
 
-  if (fGotoFoldPoint)
+  if (fGotoFoldPoint) {
     EditJumpTo(g_hwndEdit, ln + 1, 0);
+  }
 }
 
-void __stdcall FoldAltArrow( int key, int mode )
-{
-  // Because Alt-Shift is already in use (and because the sibling fold feature
-  // is not as useful from the keyboard), only the Ctrl modifier is supported
 
-  if (bShowCodeFolding && (mode & (SCMOD_ALT | SCMOD_SHIFT)) == SCMOD_ALT)
+void __stdcall FoldAltArrow( BOOL bJumpNext )
+{
+
+  if (bShowCodeFolding)
   {
     int ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
 
     // Jump to the next visible fold point
-    if (key == SCK_DOWN && !(mode & SCMOD_CTRL))
+    if (bJumpNext)
     {
       int lnTotal = SciCall_GetLineCount();
       for (ln = ln + 1; ln < lnTotal; ++ln)
       {
-        if ( SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG &&
-             SciCall_GetLineVisible(ln) )
+        if ( (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) && SciCall_GetLineVisible(ln) )
         {
           EditJumpTo(g_hwndEdit, ln + 1, 0);
           return;
         }
       }
     }
-
-    // Jump to the previous visible fold point
-    else if (key == SCK_UP && !(mode & SCMOD_CTRL))
+    else // Jump to the previous visible fold point
     {
       for (ln = ln - 1; ln >= 0; --ln)
       {
-        if ( SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG &&
-             SciCall_GetLineVisible(ln) )
+        if ( (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) && SciCall_GetLineVisible(ln) )
         {
           EditJumpTo(g_hwndEdit, ln + 1, 0);
           return;
         }
       }
     }
-
-    // Perform a fold/unfold operation
-    else if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-    {
-      if (key == SCK_LEFT ) FoldPerformAction(ln, mode, FOLD);
-      if (key == SCK_RIGHT) FoldPerformAction(ln, mode, EXPAND);
-    }
+    //// Perform a fold/unfold operation
+    //else if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
+    //{
+    //  if (key == SCK_LEFT ) FoldPerformAction(ln, mode, FOLD);
+    //  if (key == SCK_RIGHT) FoldPerformAction(ln, mode, EXPAND);
+    //}
   }
 }
 
@@ -5321,10 +5314,19 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_OPEN_HYPERLINK:
-      {
         OpenHotSpotURL((int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0), FALSE);
-      }
       break;
+
+
+    case CMD_ALT_ARROW_DOWN:
+      FoldAltArrow(TRUE);
+      break;
+
+
+    case CMD_ALT_ARROW_UP:
+      FoldAltArrow(FALSE);
+      break;
+
 
     case IDT_FILE_NEW:
       if (IsCmdEnabled(hwnd,IDM_FILE_NEW))
@@ -5897,8 +5899,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
 
-        case SCN_ZOOM:
-          UpdateLineNumberWidth();
+        case SCN_NEEDSHOWN:
+          {
+            int iFirstLine = SciCall_LineFromPosition(scn->position);
+            int iLastLine = SciCall_LineFromPosition(scn->position + scn->length - 1);
+            for (int i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
+          }
           break;
 
 
@@ -5908,10 +5914,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
 
-        case SCN_KEY:
-          // Also see the corresponding patch in scintilla\src\Editor.cxx
-          FoldAltArrow(scn->ch, scn->modifiers);
-          break;
+        // ~~~ Not used in Windows ~~~
+        // see: CMD_ALT_ARROW_UP / CMD_ALT_ARROW_DOWN
+        //case SCN_KEY:
+        //  // Also see the corresponding patch in scintilla\src\Editor.cxx
+        //  FoldAltArrow(scn->ch, scn->modifiers);
+        //  break;
 
 
         case SCN_SAVEPOINTREACHED:
@@ -5922,6 +5930,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case SCN_SAVEPOINTLEFT:
           SetDocumentModified(TRUE);
           break;
+
+
+        case SCN_ZOOM:
+          UpdateLineNumberWidth();
+          break;
+
 
         default:
           return FALSE;
