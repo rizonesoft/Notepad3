@@ -90,6 +90,7 @@ extern int  iMarkOccurrences;
 extern int  iMarkOccurrencesCount;
 extern int  iMarkOccurrencesMaxCount;
 extern BOOL bMarkOccurrencesMatchVisible;
+extern BOOL bShowCodeFolding;
 
 extern NP2ENCODING g_Encodings[];
 
@@ -229,6 +230,9 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
   SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
 
+  // No SC_AUTOMATICFOLD_CLICK, performed by 
+  SendMessage(hwnd, SCI_SETAUTOMATICFOLD, (WPARAM)(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE), 0);
+  
   // word delimiter handling
   EditInitWordDelimiter(hwnd);
   EditSetAccelWordNav(hwnd,bAccelWordNavigation);
@@ -7176,6 +7180,197 @@ int FileVars_GetEncoding(LPFILEVARS lpfv) {
   else
     return(-1);
 }
+
+
+//==============================================================================
+//
+//  Folding Functions
+//
+//
+#define FOLD_CHILDREN SCMOD_CTRL
+#define FOLD_SIBLINGS SCMOD_SHIFT
+
+BOOL __stdcall FoldToggleNode(int ln, FOLD_ACTION action)
+{
+  const BOOL fExpanded = SciCall_GetFoldExpanded(ln);
+
+  if ((action == FOLD && fExpanded) || (action == EXPAND && !fExpanded))
+  {
+    SciCall_ToggleFold(ln);
+    return TRUE;
+  }
+  else if (action == SNIFF)
+  {
+    SciCall_ToggleFold(ln);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+void __stdcall EditFoldPerformAction(int ln, int mode, FOLD_ACTION action)
+{
+  if (action == SNIFF) {
+    action = SciCall_GetFoldExpanded(ln) ? FOLD : EXPAND;
+  }
+  if (mode & (FOLD_CHILDREN | FOLD_SIBLINGS))
+  {
+    // ln/lvNode: line and level of the source of this fold action
+    int lnNode = ln;
+    int lvNode = SciCall_GetFoldLevel(lnNode) & SC_FOLDLEVELNUMBERMASK;
+    int lnTotal = SciCall_GetLineCount();
+
+    // lvStop: the level over which we should not cross
+    int lvStop = lvNode;
+
+    if (mode & FOLD_SIBLINGS)
+    {
+      ln = SciCall_GetFoldParent(lnNode) + 1;  // -1 + 1 = 0 if no parent
+      --lvStop;
+    }
+
+    for (; ln < lnTotal; ++ln)
+    {
+      int lv = SciCall_GetFoldLevel(ln);
+      BOOL fHeader = lv & SC_FOLDLEVELHEADERFLAG;
+      lv &= SC_FOLDLEVELNUMBERMASK;
+
+      if (lv < lvStop || (lv == lvStop && fHeader && ln != lnNode))
+        return;
+      else if (fHeader && (lv == lvNode || (lv > lvNode && mode & FOLD_CHILDREN)))
+        FoldToggleNode(ln, action);
+    }
+  }
+  else {
+    FoldToggleNode(ln, action);
+  }
+}
+
+
+void EditFoldToggleAll(FOLD_ACTION action)
+{
+  static FOLD_ACTION sLastAction = EXPAND;
+
+  BOOL fToggled = FALSE;
+
+  int lnTotal = SciCall_GetLineCount();
+
+  if (action == SNIFF)
+  {
+    int cntFolded = 0;
+    int cntExpanded = 0;
+    for (int ln = 0; ln < lnTotal; ++ln)
+    {
+      if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
+      {
+        if (SciCall_GetFoldExpanded(ln))
+          ++cntExpanded;
+        else
+          ++cntFolded;
+      }
+    }
+    if (cntFolded == cntExpanded)
+      action = (sLastAction == FOLD) ? EXPAND : FOLD;
+    else
+      action = (cntFolded < cntExpanded) ? FOLD : EXPAND;
+  }
+
+  for (int ln = 0; ln < lnTotal; ++ln)
+  {
+    if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
+    {
+      if (FoldToggleNode(ln, action)) { fToggled = TRUE; }
+    }
+  }
+  if (fToggled) { SciCall_ScrollCaret(); }
+}
+
+
+void EditFoldClick(int ln, int mode)
+{
+  static struct {
+    int ln;
+    int mode;
+    DWORD dwTickCount;
+  } prev;
+
+  BOOL fGotoFoldPoint = mode & FOLD_SIBLINGS;
+
+  if (!(SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG))
+  {
+    // Not a fold point: need to look for a double-click
+    if (prev.ln == ln && prev.mode == mode &&
+      GetTickCount() - prev.dwTickCount <= GetDoubleClickTime())
+    {
+      prev.ln = -1;  // Prevent re-triggering on a triple-click
+
+      ln = SciCall_GetFoldParent(ln);
+
+      if (ln >= 0 && SciCall_GetFoldExpanded(ln))
+        fGotoFoldPoint = TRUE;
+      else
+        return;
+    }
+    else
+    {
+      // Save the info needed to match this click with the next click
+      prev.ln = ln;
+      prev.mode = mode;
+      prev.dwTickCount = GetTickCount();
+      return;
+    }
+  }
+
+  EditFoldPerformAction(ln, mode, SNIFF);
+
+  if (fGotoFoldPoint) {
+    EditJumpTo(g_hwndEdit, ln + 1, 0);
+  }
+}
+
+
+void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
+{
+  if (bShowCodeFolding)
+  {
+    int ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
+
+    // Jump to the next visible fold point
+    if (move == DOWN)
+    {
+      int lnTotal = SciCall_GetLineCount();
+      for (ln = ln + 1; ln < lnTotal; ++ln)
+      {
+        if ((SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) && SciCall_GetLineVisible(ln))
+        {
+          EditJumpTo(g_hwndEdit, ln + 1, 0);
+          return;
+        }
+      }
+    }
+    else if (move == UP) // Jump to the previous visible fold point
+    {
+      for (ln = ln - 1; ln >= 0; --ln)
+      {
+        if ((SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) && SciCall_GetLineVisible(ln))
+        {
+          EditJumpTo(g_hwndEdit, ln + 1, 0);
+          return;
+        }
+      }
+    }
+
+    // Perform a fold/unfold operation
+    if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
+    {
+      if (action != SNIFF) {
+        FoldToggleNode(ln, action);
+      }
+    }
+  }
+}
+
+
 
 //=============================================================================
 //
