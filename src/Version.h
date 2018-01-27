@@ -6,7 +6,7 @@
 * Version.h                                                                   *
 *   Based on code from Notepad2-mod, (c) XhmikosR 2010-2015                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2016   *
+*                                                  (c) Rizonesoft 2008-2018   *
 *                                                 https://www.rizonesoft.com  *
 *                                                                             *
 *                                                                             *
@@ -34,8 +34,8 @@
 #define VERSION_FILEVERSION_NUM      VERSION_MAJOR,VERSION_MINOR,VERSION_REV,VERSION_BUILD
 #define VERSION_FILEVERSION          STRINGIFY(VERSION_MAJOR) L"." STRINGIFY(VERSION_MINOR) L"." \
                                      STRINGIFY(VERSION_REV) L"." STRINGIFY(VERSION_BUILD)
-#define VERSION_LEGALCOPYRIGHT       L"Copyright © 2008-2017 Rizonesoft"
-//#define VERSION_LEGALCOPYRIGHT_LONG  L"© Rizonesoft 2008-2017"
+#define VERSION_LEGALCOPYRIGHT       L"Copyright © 2008-2018 Rizonesoft"
+//#define VERSION_LEGALCOPYRIGHT_LONG  L"© Rizonesoft 2008-2018"
 #define VERSION_AUTHORNAME           L"© Rizonesoft"
 #define VERSION_WEBPAGEDISPLAY       L"https://www.rizonesoft.com"
 #define VERSION_COMPANYNAME          L"© Rizonesoft"
@@ -59,7 +59,9 @@
 // Compiler specific
 #if defined(_MSC_VER)
     #if (_MSC_VER >= 1912)
-        #if(_MSC_FULL_VER >= 191225834)
+        #if(_MSC_FULL_VER >= 191225835)
+            #define VER_CPL     "Microsoft Visual C++ 2017  Ver. 15.5.5"
+        #elif(_MSC_FULL_VER >= 191225834)
             #define VER_CPL     "Microsoft Visual C++ 2017  Ver. 15.5.(3-4)"
         #elif(_MSC_FULL_VER >= 191225831)
             #define VER_CPL     "Microsoft Visual C++ 2017  Ver. 15.5.2"
