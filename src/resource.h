@@ -223,8 +223,10 @@
 #define CMD_OPENINIFILE                 20039
 #define CMD_CTRLENTER                   20040
 #define CMD_OPEN_HYPERLINK              20041
-#define CMD_ALT_ARROW_UP                20042
-#define CMD_ALT_ARROW_DOWN              20043
+#define CMD_ALTUP                       20042
+#define CMD_ALTDOWN                     20043
+#define CMD_ALTLEFT                     20044
+#define CMD_ALTRIGHT                    20045
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
 #define IDM_FILE_REVERT                 40002

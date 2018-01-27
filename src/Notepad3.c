@@ -417,19 +417,31 @@ typedef enum {
   FOLD   = -1
 } FOLD_ACTION;
 
+typedef enum {
+  UP   = -1,
+  NONE =  0, 
+  DOWN =  1
+} FOLD_MOVE;
+
 #define FOLD_CHILDREN SCMOD_CTRL
 #define FOLD_SIBLINGS SCMOD_SHIFT
 
+
 BOOL __stdcall FoldToggleNode( int ln, FOLD_ACTION action )
 {
-  BOOL fExpanded = SciCall_GetFoldExpanded(ln);
+  const BOOL fExpanded = SciCall_GetFoldExpanded(ln);
 
   if ((action == FOLD && fExpanded) || (action == EXPAND && !fExpanded))
   {
     SciCall_ToggleFold(ln);
-    return(TRUE);
+    return TRUE;
   }
-  return(FALSE);
+  else if (action == SNIFF)
+  {
+    SciCall_ToggleFold(ln);
+    return TRUE;
+  }
+  return FALSE;
 }
 
 
@@ -554,15 +566,14 @@ void __stdcall FoldClick( int ln, int mode )
 }
 
 
-void __stdcall FoldAltArrow( BOOL bJumpNext )
+void __stdcall FoldAltArrow( FOLD_MOVE move, FOLD_ACTION action )
 {
-
   if (bShowCodeFolding)
   {
     int ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
 
     // Jump to the next visible fold point
-    if (bJumpNext)
+    if (move == DOWN)
     {
       int lnTotal = SciCall_GetLineCount();
       for (ln = ln + 1; ln < lnTotal; ++ln)
@@ -574,7 +585,7 @@ void __stdcall FoldAltArrow( BOOL bJumpNext )
         }
       }
     }
-    else // Jump to the previous visible fold point
+    else if (move == UP) // Jump to the previous visible fold point
     {
       for (ln = ln - 1; ln >= 0; --ln)
       {
@@ -585,12 +596,14 @@ void __stdcall FoldAltArrow( BOOL bJumpNext )
         }
       }
     }
-    //// Perform a fold/unfold operation
-    //else if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-    //{
-    //  if (key == SCK_LEFT ) FoldPerformAction(ln, mode, FOLD);
-    //  if (key == SCK_RIGHT) FoldPerformAction(ln, mode, EXPAND);
-    //}
+
+    // Perform a fold/unfold operation
+    if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
+    {
+      if (action != SNIFF) {
+        FoldToggleNode(ln, action);
+      }
+    }
   }
 }
 
@@ -5318,13 +5331,20 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case CMD_ALT_ARROW_DOWN:
-      FoldAltArrow(TRUE);
+    case CMD_ALTDOWN:
+      FoldAltArrow(DOWN, SNIFF);
       break;
 
+    case CMD_ALTUP:
+      FoldAltArrow(UP, SNIFF);
+      break;
 
-    case CMD_ALT_ARROW_UP:
-      FoldAltArrow(FALSE);
+    case CMD_ALTLEFT:
+      FoldAltArrow(NONE, FOLD);
+      break;
+
+    case CMD_ALTRIGHT:
+      FoldAltArrow(NONE, EXPAND);
       break;
 
 
@@ -5915,7 +5935,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
         // ~~~ Not used in Windows ~~~
-        // see: CMD_ALT_ARROW_UP / CMD_ALT_ARROW_DOWN
+        // see: CMD_ALTUP / CMD_ALTDOWN
         //case SCN_KEY:
         //  // Also see the corresponding patch in scintilla\src\Editor.cxx
         //  FoldAltArrow(scn->ch, scn->modifiers);
