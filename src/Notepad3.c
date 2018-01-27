@@ -3128,17 +3128,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INDENT:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-
-        if (bTabIndents && !SciCall_IsSelectionEmpty()) {
-          const int iLineSelStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
-          const int iLineSelEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
-          if (iLineSelStart == iLineSelEnd) {
-            SendMessage(g_hwndEdit, SCI_VCHOME, 0, 0);
-          }
-        }
-
         SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
-
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
@@ -3147,17 +3137,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_UNINDENT:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-
-        if (bTabIndents && !SciCall_IsSelectionEmpty()) {
-          const int iLineSelStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
-          const int iLineSelEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
-          if (iLineSelStart == iLineSelEnd) {
-            SendMessage(g_hwndEdit, SCI_VCHOME, 0, 0);
-          }
-        }
-
         SendMessage(g_hwndEdit, SCI_BACKTAB, 0, 0);
-
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
