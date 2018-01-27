@@ -78,6 +78,8 @@ void  EditEscapeCChars(HWND);
 void  EditUnescapeCChars(HWND);
 void  EditChar2Hex(HWND);
 void  EditHex2Char(HWND);
+void  EditFindMatchingBrace(HWND);
+void  EditSelectToMatchingBrace(HWND);
 void  EditModifyNumber(HWND,BOOL);
 
 void  EditTabsToSpaces(HWND,int,BOOL);
