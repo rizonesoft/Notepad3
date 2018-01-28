@@ -181,8 +181,8 @@ BEGIN
         END
         POPUP "&Block"
         BEGIN
-            MENUITEM "&Indent\tTab",                    IDM_EDIT_INDENT
-            MENUITEM "&Unindent\tShift+Tab",            IDM_EDIT_UNINDENT
+            MENUITEM "&Indent\t(Tab)",                    IDM_EDIT_INDENT
+            MENUITEM "&Unindent\t(Shift+Tab)",            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "&Enclose Selection"
             BEGIN
@@ -597,8 +597,8 @@ BEGIN
     VK_SUBTRACT,    IDM_VIEW_ZOOMOUT,       VIRTKEY, CONTROL, NOINVERT
     VK_SUBTRACT,    CMD_DECLINELIMIT,       VIRTKEY, ALT, NOINVERT
     VK_SUBTRACT,    CMD_DECREASENUM,        VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_TAB,         IDM_EDIT_INDENT,        VIRTKEY, NOINVERT
-    VK_TAB,         IDM_EDIT_UNINDENT,      VIRTKEY, SHIFT, NOINVERT
+    VK_TAB,         CMD_TAB,                VIRTKEY, NOINVERT
+    VK_TAB,         CMD_BACKTAB,            VIRTKEY, SHIFT, NOINVERT
     VK_TAB,         CMD_CTRLTAB,            VIRTKEY, CONTROL, NOINVERT
     VK_UP,          CMD_ALTUP,              VIRTKEY, ALT, NOINVERT
     VK_UP,          IDM_EDIT_MOVELINEUP,    VIRTKEY, SHIFT, CONTROL, NOINVERT

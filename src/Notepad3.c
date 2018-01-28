@@ -2169,8 +2169,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   //EnableCmd(hmenu,IDM_EDIT_COPYLINE,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_DELETELINE,!bReadOnly);
 
-  //EnableCmd(hmenu,IDM_EDIT_INDENT,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_UNINDENT,!bReadOnly);
+  //EnableCmd(hmenu,IDM_EDIT_INDENT,i /*&& !bReadOnly*/);
+  //EnableCmd(hmenu,IDM_EDIT_UNINDENT,i /*&& !bReadOnly*/);
 
   //EnableCmd(hmenu,IDM_EDIT_PADWITHSPACES,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_STRIP1STCHAR,!bReadOnly);
@@ -2179,9 +2179,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   //EnableCmd(hmenu,IDM_EDIT_MERGEBLANKLINES,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_REMOVEBLANKLINES,!bReadOnly);
 
-  EnableCmd(hmenu,IDM_EDIT_SORTLINES,
-    SendMessage(g_hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)SendMessage(g_hwndEdit,SCI_GETSELECTIONEND,0,0),0) -
-    SendMessage(g_hwndEdit,SCI_LINEFROMPOSITION,(WPARAM)SendMessage(g_hwndEdit,SCI_GETSELECTIONSTART,0,0),0) >= 1);
+  EnableCmd(hmenu, IDM_EDIT_SORTLINES,
+    (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) - 
+      SciCall_LineFromPosition(SciCall_GetSelectionStart())) >= 1);
 
   EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
   EnableCmd(hmenu,IDM_EDIT_SPLITLINES,i /*&& !bReadOnly*/);
@@ -3128,7 +3128,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INDENT:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
+        EditIndentBlock(g_hwndEdit, TRUE, bTabIndents, bBackspaceUnindents);
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
@@ -3137,22 +3137,36 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_UNINDENT:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        SendMessage(g_hwndEdit, SCI_BACKTAB, 0, 0);
+        EditIndentBlock(g_hwndEdit, FALSE, bTabIndents, bBackspaceUnindents);
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
 
 
+    case CMD_TAB:
+      {
+        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
+        SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
+        if (token >= 0) { EndUndoAction(token); }
+      }
+    break;
+
+    case CMD_BACKTAB:
+      {
+        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
+        SendMessage(g_hwndEdit, SCI_BACKTAB, 0, 0);
+        if (token >= 0) { EndUndoAction(token); }
+      }
+    break;
+
     case CMD_CTRLTAB:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-
-        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, FALSE, 0);
         SendMessage(g_hwndEdit, SCI_SETUSETABS, TRUE, 0);
+        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, FALSE, 0);
         SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
-        SendMessage(g_hwndEdit, SCI_SETUSETABS, !bTabsAsSpaces, 0);
         SendMessage(g_hwndEdit, SCI_SETTABINDENTS, bTabIndents, 0);
-
+        SendMessage(g_hwndEdit, SCI_SETUSETABS, !bTabsAsSpaces, 0);
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
