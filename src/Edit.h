@@ -178,6 +178,26 @@ BOOL FileVars_IsValidEncoding(LPFILEVARS);
 int  FileVars_GetEncoding(LPFILEVARS);
 
 
+//
+//  Folding Functions
+//
+typedef enum {
+  EXPAND = 1,
+  SNIFF = 0,
+  FOLD = -1
+} FOLD_ACTION;
+
+typedef enum {
+  UP = -1,
+  NONE = 0,
+  DOWN = 1
+} FOLD_MOVE;
+
+void EditFoldToggleAll(FOLD_ACTION);
+void EditFoldClick(int, int);
+void EditFoldAltArrow(FOLD_MOVE, FOLD_ACTION);
+
+
 #endif //_NP3_EDIT_H_
 
 ///   End of Edit.h   \\\
