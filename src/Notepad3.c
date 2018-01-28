@@ -406,209 +406,6 @@ void __fastcall SetDocumentModified(BOOL bModified)
 }
 
 
-//==============================================================================
-//
-//  Folding Functions
-//
-//
-typedef enum {
-  EXPAND =  1,
-  SNIFF  =  0,
-  FOLD   = -1
-} FOLD_ACTION;
-
-typedef enum {
-  UP   = -1,
-  NONE =  0, 
-  DOWN =  1
-} FOLD_MOVE;
-
-#define FOLD_CHILDREN SCMOD_CTRL
-#define FOLD_SIBLINGS SCMOD_SHIFT
-
-
-BOOL __stdcall FoldToggleNode( int ln, FOLD_ACTION action )
-{
-  const BOOL fExpanded = SciCall_GetFoldExpanded(ln);
-
-  if ((action == FOLD && fExpanded) || (action == EXPAND && !fExpanded))
-  {
-    SciCall_ToggleFold(ln);
-    return TRUE;
-  }
-  else if (action == SNIFF)
-  {
-    SciCall_ToggleFold(ln);
-    return TRUE;
-  }
-  return FALSE;
-}
-
-
-void __stdcall FoldToggleAll( FOLD_ACTION action )
-{
-  static FOLD_ACTION sLastAction = EXPAND;
-
-  BOOL fToggled = FALSE;
-
-  int lnTotal = SciCall_GetLineCount();
-
-  if (action == SNIFF) 
-  {
-    int cntFolded = 0;
-    int cntExpanded = 0;
-    for (int ln = 0; ln < lnTotal; ++ln)
-    {
-      if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-      {
-        if (SciCall_GetFoldExpanded(ln))
-          ++cntExpanded;
-        else
-          ++cntFolded;
-      }
-    }
-    if (cntFolded == cntExpanded)
-      action = (sLastAction == FOLD) ? EXPAND : FOLD;
-    else
-      action = (cntFolded < cntExpanded) ? FOLD : EXPAND;
-  }
-
-  for (int ln = 0; ln < lnTotal; ++ln)
-  {
-    if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-    {
-      if (FoldToggleNode(ln, action)) { fToggled = TRUE; }
-    }
-  }
-  if (fToggled) { SciCall_ScrollCaret(); }
-}
-
-
-void __stdcall FoldPerformAction( int ln, int mode, FOLD_ACTION action )
-{
-  if (action == SNIFF) {
-    action = SciCall_GetFoldExpanded(ln) ? FOLD : EXPAND;
-  }
-  if (mode & (FOLD_CHILDREN | FOLD_SIBLINGS))
-  {
-    // ln/lvNode: line and level of the source of this fold action
-    int lnNode = ln;
-    int lvNode = SciCall_GetFoldLevel(lnNode) & SC_FOLDLEVELNUMBERMASK;
-    int lnTotal = SciCall_GetLineCount();
-
-    // lvStop: the level over which we should not cross
-    int lvStop = lvNode;
-
-    if (mode & FOLD_SIBLINGS)
-    {
-      ln = SciCall_GetFoldParent(lnNode) + 1;  // -1 + 1 = 0 if no parent
-      --lvStop;
-    }
-
-    for ( ; ln < lnTotal; ++ln)
-    {
-      int lv = SciCall_GetFoldLevel(ln);
-      BOOL fHeader = lv & SC_FOLDLEVELHEADERFLAG;
-      lv &= SC_FOLDLEVELNUMBERMASK;
-
-      if (lv < lvStop || (lv == lvStop && fHeader && ln != lnNode))
-        return;
-      else if (fHeader && (lv == lvNode || (lv > lvNode && mode & FOLD_CHILDREN)))
-        FoldToggleNode(ln, action);
-    }
-  }
-  else {
-    FoldToggleNode(ln, action);
-  }
-}
-
-
-void __stdcall FoldClick( int ln, int mode )
-{
-  static struct {
-    int ln;
-    int mode;
-    DWORD dwTickCount;
-  } prev;
-
-  BOOL fGotoFoldPoint = mode & FOLD_SIBLINGS;
-
-  if (!(SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG))
-  {
-    // Not a fold point: need to look for a double-click
-    if ( prev.ln == ln && prev.mode == mode &&
-         GetTickCount() - prev.dwTickCount <= GetDoubleClickTime() )
-    {
-      prev.ln = -1;  // Prevent re-triggering on a triple-click
-
-      ln = SciCall_GetFoldParent(ln);
-
-      if (ln >= 0 && SciCall_GetFoldExpanded(ln))
-        fGotoFoldPoint = TRUE;
-      else
-        return;
-    }
-    else
-    {
-      // Save the info needed to match this click with the next click
-      prev.ln = ln;
-      prev.mode = mode;
-      prev.dwTickCount = GetTickCount();
-      return;
-    }
-  }
-
-  FoldPerformAction(ln, mode, SNIFF);
-
-  if (fGotoFoldPoint) {
-    EditJumpTo(g_hwndEdit, ln + 1, 0);
-  }
-}
-
-
-void __stdcall FoldAltArrow( FOLD_MOVE move, FOLD_ACTION action )
-{
-  if (bShowCodeFolding)
-  {
-    int ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
-
-    // Jump to the next visible fold point
-    if (move == DOWN)
-    {
-      int lnTotal = SciCall_GetLineCount();
-      for (ln = ln + 1; ln < lnTotal; ++ln)
-      {
-        if ( (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) && SciCall_GetLineVisible(ln) )
-        {
-          EditJumpTo(g_hwndEdit, ln + 1, 0);
-          return;
-        }
-      }
-    }
-    else if (move == UP) // Jump to the previous visible fold point
-    {
-      for (ln = ln - 1; ln >= 0; --ln)
-      {
-        if ( (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) && SciCall_GetLineVisible(ln) )
-        {
-          EditJumpTo(g_hwndEdit, ln + 1, 0);
-          return;
-        }
-      }
-    }
-
-    // Perform a fold/unfold operation
-    if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-    {
-      if (action != SNIFF) {
-        FoldToggleNode(ln, action);
-      }
-    }
-  }
-}
-
-
-
 //=============================================================================
 //
 //  WinMain()
@@ -3331,17 +3128,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INDENT:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-
-        if (bTabIndents && !SciCall_IsSelectionEmpty()) {
-          const int iLineSelStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
-          const int iLineSelEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
-          if (iLineSelStart == iLineSelEnd) {
-            SendMessage(g_hwndEdit, SCI_VCHOME, 0, 0);
-          }
-        }
-
         SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
-
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
@@ -3350,17 +3137,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_UNINDENT:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-
-        if (bTabIndents && !SciCall_IsSelectionEmpty()) {
-          const int iLineSelStart = SciCall_LineFromPosition(SciCall_GetSelectionStart());
-          const int iLineSelEnd = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
-          if (iLineSelStart == iLineSelEnd) {
-            SendMessage(g_hwndEdit, SCI_VCHOME, 0, 0);
-          }
-        }
-
         SendMessage(g_hwndEdit, SCI_BACKTAB, 0, 0);
-
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
@@ -4413,13 +4190,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       bShowCodeFolding = (bShowCodeFolding) ? FALSE : TRUE;
       SciCall_SetMarginWidth(MARGIN_FOLD_INDEX, (bShowCodeFolding) ? 11 : 0);
       if (!bShowCodeFolding)
-        FoldToggleAll(EXPAND);
+        EditFoldToggleAll(EXPAND);
       UpdateToolbar();
       break;
 
 
     case IDM_VIEW_TOGGLEFOLDS:
-      FoldToggleAll(SNIFF);
+      EditFoldToggleAll(SNIFF);
       break;
 
 
@@ -5332,19 +5109,19 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_ALTDOWN:
-      FoldAltArrow(DOWN, SNIFF);
+      EditFoldAltArrow(DOWN, SNIFF);
       break;
 
     case CMD_ALTUP:
-      FoldAltArrow(UP, SNIFF);
+      EditFoldAltArrow(UP, SNIFF);
       break;
 
     case CMD_ALTLEFT:
-      FoldAltArrow(NONE, FOLD);
+      EditFoldAltArrow(NONE, FOLD);
       break;
 
     case CMD_ALTRIGHT:
-      FoldAltArrow(NONE, EXPAND);
+      EditFoldAltArrow(NONE, EXPAND);
       break;
 
 
@@ -5929,8 +5706,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
         case SCN_MARGINCLICK:
-          if (scn->margin == MARGIN_FOLD_INDEX)
-            FoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+          if (scn->margin == MARGIN_FOLD_INDEX) {
+            EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+          }
           break;
 
 
