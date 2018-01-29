@@ -2555,6 +2555,41 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 
 //=============================================================================
 //
+//  EditIndentBlock()
+//
+void EditIndentBlock(HWND hwnd, BOOL bIndent, BOOL bTabIndents, BOOL bBackspaceUnindents)
+{
+  const int iCurPos = SciCall_GetCurrentPos();
+  const int iAnchorPos = SciCall_GetAnchor();
+  const int iCurLine = SciCall_LineFromPosition(iCurPos);
+  const BOOL bSingleLine = (iCurLine == SciCall_LineFromPosition(iAnchorPos));
+  int iDiff = 0;
+  if (bSingleLine) {
+    SendMessage(hwnd, SCI_VCHOME, 0, 0);
+    if (SciCall_PositionFromLine(iCurLine) == SciCall_GetCurrentPos()) {
+      SendMessage(hwnd, SCI_VCHOME, 0, 0);
+    }
+    iDiff = (iCurPos - SciCall_GetCurrentPos());
+  }
+  if (bIndent) {
+    SendMessage(hwnd, SCI_SETTABINDENTS, TRUE, 0);
+    SendMessage(hwnd, SCI_TAB, 0, 0);
+    SendMessage(hwnd, SCI_SETTABINDENTS, bTabIndents, 0);
+  }
+  else if (SciCall_PositionFromLine(iCurLine) != SciCall_GetSelectionStart()) {
+    SendMessage(hwnd, SCI_SETBACKSPACEUNINDENTS, TRUE, 0);
+    SendMessage(hwnd, SCI_DELETEBACK, 0, 0);
+    SendMessage(hwnd, SCI_SETBACKSPACEUNINDENTS, bBackspaceUnindents, 0);
+  }
+  if (bSingleLine) {
+    EditSelectEx(hwnd, SciCall_GetCurrentPos() + iDiff + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiff);
+  }
+
+}
+
+
+//=============================================================================
+//
 //  EditAlignText()
 //
 void EditAlignText(HWND hwnd,int nMode)
@@ -2783,8 +2818,8 @@ void EditAlignText(HWND hwnd,int nMode)
               SendMessage(hwnd, SCI_SETTARGETRANGE, iPos, SciCall_GetLineEndPosition(iLine));
               SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)tchLineBuf);
 
-if (nMode == ALIGN_LEFT)
-SendMessage(hwnd, SCI_SETLINEINDENTATION, (WPARAM)iLine, (LPARAM)iMinIndent);
+              if (nMode == ALIGN_LEFT)
+                SendMessage(hwnd, SCI_SETLINEINDENTATION, (WPARAM)iLine, (LPARAM)iMinIndent);
             }
           }
         }
@@ -2812,6 +2847,7 @@ SendMessage(hwnd, SCI_SETLINEINDENTATION, (WPARAM)iLine, (LPARAM)iMinIndent);
   else
     MsgBox(MBWARN, IDS_SELRECT);
 }
+
 
 
 //=============================================================================
@@ -2909,10 +2945,7 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, BOOL bInsertAtStart)
       if (iLineIndentPos != iLineEndPos) {
         const int iIndentColumn = SciCall_GetColumn(iLineIndentPos);
         iCommentCol = min(iCommentCol, iIndentColumn);
-        if ((iLine == iLineStart) && (iIndentColumn > iSelBegCol)) { iSelStartOffset = 0; }
       }
-      else
-        if (iLine == iLineStart) { iSelStartOffset = 0; }
     }
   }
 
@@ -2942,7 +2975,9 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, BOOL bInsertAtStart)
         SendMessage(hwnd, SCI_SETTARGETRANGE, iIndentPos, iIndentPos + cchComment);
         SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
         iSelEndOffset -= cchComment;
-        if (iLine == iLineStart) { iSelStartOffset = (0 - iSelStartOffset); }
+        if (iLine == iLineStart) {
+          iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchComment);
+        }
         break;
       case 1:
         break;
@@ -2957,6 +2992,9 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, BOOL bInsertAtStart)
           const int iCommentPos = (int)SendMessage(hwnd, SCI_FINDCOLUMN, (WPARAM)iLine, (LPARAM)iCommentCol);
           SendMessage(hwnd, SCI_INSERTTEXT, (WPARAM)iCommentPos, (LPARAM)mszComment);
           iSelEndOffset += cchComment;
+          if (iLine == iLineStart) { 
+            iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
+          }
         }
         break;
       case 2:
