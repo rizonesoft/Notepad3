@@ -4711,7 +4711,7 @@ BOOL Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
 //
 //  Style_CopyStyles_IfNotDefined()
 //
-void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, int cchSizeDest)
+void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, int cchSizeDest, BOOL bCopyFont, BOOL bWithEffects)
 {
   WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
@@ -4719,52 +4719,86 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   // ---------   Font settings   ---------
-  if (!StrStrI(lpszStyleDest, L"font:")) {
-    if (Style_StrGetFont(lpszStyleSrc, tch, COUNTOF(tch))) {
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; font:");
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+  if (bCopyFont)
+  {
+    if (!StrStrI(lpszStyleDest, L"font:")) {
+      if (Style_StrGetFont(lpszStyleSrc, tch, COUNTOF(tch))) {
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; font:");
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+      }
+    }
+
+    // ---------  Size  ---------
+    if (!StrStrI(lpszStyleDest, L"size:")) {
+      if (Style_StrGetSizeStr(lpszStyleSrc, tch, COUNTOF(tch))) {
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; size:");
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+      }
+    }
+
+    if (StrStrI(lpszStyleSrc, L"thin") && !StrStrI(lpszStyleDest, L"thin"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; thin");
+    else if (StrStrI(lpszStyleSrc, L"extralight") && !StrStrI(lpszStyleDest, L"extralight"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extralight");
+    else if (StrStrI(lpszStyleSrc, L"light") && !StrStrI(lpszStyleDest, L"light"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; light");
+    else if (StrStrI(lpszStyleSrc, L"normal") && !StrStrI(lpszStyleDest, L"normal"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");
+    else if (StrStrI(lpszStyleSrc, L"medium") && !StrStrI(lpszStyleDest, L"medium"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; medium");
+    else if (StrStrI(lpszStyleSrc, L"semibold") && !StrStrI(lpszStyleDest, L"semibold"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; semibold");
+    else if (StrStrI(lpszStyleSrc, L"extrabold") && !StrStrI(lpszStyleDest, L"extrabold"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extrabold");
+    else if (StrStrI(lpszStyleSrc, L"bold") && !StrStrI(lpszStyleDest, L"bold"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; bold");
+    else if (StrStrI(lpszStyleSrc, L"heavy") && !StrStrI(lpszStyleDest, L"heavy"))
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; heavy");
+    //else
+    //  StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");
+
+    if (StrStrI(lpszStyleSrc, L"italic") && !StrStrI(lpszStyleDest, L"italic")) {
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; italic");
+    }
+
+    if (!StrStrI(lpszStyleDest, L"charset:")) {
+      if (Style_StrGetCharSet(lpszStyleSrc, &iValue)) {
+        StringCchPrintf(tch, COUNTOF(tch), L"; charset:%i", iValue);
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+      }
     }
   }
 
-  if (StrStrI(lpszStyleSrc, L"thin") && !StrStrI(lpszStyleDest, L"thin"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; thin");
-  else if (StrStrI(lpszStyleSrc, L"extralight") && !StrStrI(lpszStyleDest, L"extralight"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extralight");
-  else if (StrStrI(lpszStyleSrc, L"light") && !StrStrI(lpszStyleDest, L"light"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; light");
-  else if (StrStrI(lpszStyleSrc, L"normal") && !StrStrI(lpszStyleDest, L"normal"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");
-  else if (StrStrI(lpszStyleSrc, L"medium") && !StrStrI(lpszStyleDest, L"medium"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; medium");
-  else if (StrStrI(lpszStyleSrc, L"semibold") && !StrStrI(lpszStyleDest, L"semibold"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; semibold");
-  else if (StrStrI(lpszStyleSrc, L"extrabold") && !StrStrI(lpszStyleDest, L"extrabold"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; extrabold");
-  else if (StrStrI(lpszStyleSrc, L"bold") && !StrStrI(lpszStyleDest, L"bold"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; bold");
-  else if (StrStrI(lpszStyleSrc, L"heavy") && !StrStrI(lpszStyleDest, L"heavy"))
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; heavy");
-  //else
-  //  StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; normal");
+  // ---------  Effects  ---------
+  if (bWithEffects)
+  {
 
-  if (!StrStrI(lpszStyleDest, L"charset:")) {
-    if (Style_StrGetCharSet(lpszStyleSrc, &iValue)) {
-      StringCchPrintf(tch, COUNTOF(tch), L"; charset:%i", iValue);
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+    if (StrStrI(lpszStyleSrc, L"strikeout") && !StrStrI(lpszStyleDest, L"strikeout")) {
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; strikeout");
+    }
+
+    if (StrStrI(lpszStyleSrc, L"underline") && !StrStrI(lpszStyleDest, L"underline")) {
+      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; underline");
+    }
+
+    if (!StrStrI(lpszStyleDest, L"fore:")) { // foreground
+      if (Style_StrGetColor(TRUE, lpszStyleSrc, &iValue)) {
+        StringCchPrintf(tch, COUNTOF(tch), L"; fore:#%02X%02X%02X",
+          (int)GetRValue(iValue), (int)GetGValue(iValue), (int)GetBValue(iValue));
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+      }
+    }
+
+    if (!StrStrI(lpszStyleDest, L"back:")) { // background
+      if (Style_StrGetColor(FALSE, lpszStyleSrc, &iValue)) {
+        StringCchPrintf(tch, COUNTOF(tch), L"; back:#%02X%02X%02X",
+          (int)GetRValue(iValue), (int)GetGValue(iValue), (int)GetBValue(iValue));
+        StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+      }
     }
   }
 
-  if (StrStrI(lpszStyleSrc, L"italic") && !StrStrI(lpszStyleDest, L"italic")) {
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; italic");
-  }
-
-  if (StrStrI(lpszStyleSrc, L"underline") && !StrStrI(lpszStyleDest, L"underline")) {
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; underline");
-  }
-
-  if (StrStrI(lpszStyleSrc, L"strikeout") && !StrStrI(lpszStyleDest, L"strikeout")) {
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; strikeout");
-  }
+  // ---------  Special Styles  ---------
 
   if (StrStrI(lpszStyleSrc, L"eolfilled") && !StrStrI(lpszStyleDest, L"eolfilled")) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; eolfilled");
@@ -4780,32 +4814,6 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
   if (Style_StrGetCase(lpszStyleSrc, &iValue) && !StrStrI(lpszStyleDest, L"case:")) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; case:");
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), (iValue == SC_CASE_UPPER) ? L"u" : L"");
-  }
-
-
-  // ---------  Size  ---------
-  if (!StrStrI(lpszStyleDest, L"size:")) {
-    if (Style_StrGetSizeStr(lpszStyleSrc, tch, COUNTOF(tch))) {
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; size:");
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    }
-  }
-
-  // ---------  Colors  ---------
-  if (!StrStrI(lpszStyleDest, L"fore:")) { // foreground
-    if (Style_StrGetColor(TRUE, lpszStyleSrc, &iValue)) {
-      StringCchPrintf(tch, COUNTOF(tch), L"; fore:#%02X%02X%02X",
-        (int)GetRValue(iValue), (int)GetGValue(iValue), (int)GetBValue(iValue));
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    }
-  }
-
-  if (!StrStrI(lpszStyleDest, L"back:")) { // background
-    if (Style_StrGetColor(FALSE, lpszStyleSrc, &iValue)) {
-      StringCchPrintf(tch, COUNTOF(tch), L"; back:#%02X%02X%02X",
-        (int)GetRValue(iValue), (int)GetGValue(iValue), (int)GetBValue(iValue));
-      StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    }
   }
 
   if (!StrStrI(lpszStyleDest, L"alpha:")) {
@@ -5056,6 +5064,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
   }
 
+
   if (bWithEffects) {
 
     if (lf.lfUnderline) {
@@ -5111,7 +5120,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (bPreserveStyles) {
     // copy all other styles
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
-    Style_CopyStyles_IfNotDefined(lpszStyle, szNewStyle, COUNTOF(szNewStyle));
+    Style_CopyStyles_IfNotDefined(lpszStyle, szNewStyle, COUNTOF(szNewStyle), FALSE, !bWithEffects);
   }
 
   StrTrim(szNewStyle, L" ;");
@@ -5189,7 +5198,7 @@ BOOL Style_SelectColor(HWND hwnd,BOOL bForeGround,LPWSTR lpszStyle,int cchStyle,
   if (bPreserveStyles) {
     // copy all other styles
     StringCchCat(szNewStyle, COUNTOF(szNewStyle), L"; ");
-    Style_CopyStyles_IfNotDefined(lpszStyle, szNewStyle, COUNTOF(szNewStyle));
+    Style_CopyStyles_IfNotDefined(lpszStyle, szNewStyle, COUNTOF(szNewStyle), TRUE, FALSE);
   }
 
   StrTrim(szNewStyle, L" ;");
