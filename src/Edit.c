@@ -2945,10 +2945,7 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, BOOL bInsertAtStart)
       if (iLineIndentPos != iLineEndPos) {
         const int iIndentColumn = SciCall_GetColumn(iLineIndentPos);
         iCommentCol = min(iCommentCol, iIndentColumn);
-        if ((iLine == iLineStart) && (iIndentColumn > iSelBegCol)) { iSelStartOffset = 0; }
       }
-      else
-        if (iLine == iLineStart) { iSelStartOffset = 0; }
     }
   }
 
@@ -2978,7 +2975,9 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, BOOL bInsertAtStart)
         SendMessage(hwnd, SCI_SETTARGETRANGE, iIndentPos, iIndentPos + cchComment);
         SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
         iSelEndOffset -= cchComment;
-        if (iLine == iLineStart) { iSelStartOffset = (0 - iSelStartOffset); }
+        if (iLine == iLineStart) {
+          iSelStartOffset = (iSelStart == SciCall_PositionFromLine(iLine)) ? 0 : (0 - cchComment);
+        }
         break;
       case 1:
         break;
@@ -2993,6 +2992,9 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, BOOL bInsertAtStart)
           const int iCommentPos = (int)SendMessage(hwnd, SCI_FINDCOLUMN, (WPARAM)iLine, (LPARAM)iCommentCol);
           SendMessage(hwnd, SCI_INSERTTEXT, (WPARAM)iCommentPos, (LPARAM)mszComment);
           iSelEndOffset += cchComment;
+          if (iLine == iLineStart) { 
+            iSelStartOffset = (iCommentCol >= iSelBegCol) ? 0 : cchComment;
+          }
         }
         break;
       case 2:
