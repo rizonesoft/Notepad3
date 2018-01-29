@@ -2557,34 +2557,58 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 //
 //  EditIndentBlock()
 //
-void EditIndentBlock(HWND hwnd, BOOL bIndent, BOOL bTabIndents, BOOL bBackspaceUnindents)
+void EditIndentBlock(HWND hwnd, int mode, BOOL bTabIndents, BOOL bBackspaceUnindents)
 {
   const int iCurPos = SciCall_GetCurrentPos();
   const int iAnchorPos = SciCall_GetAnchor();
   const int iCurLine = SciCall_LineFromPosition(iCurPos);
-  const BOOL bSingleLine = (iCurLine == SciCall_LineFromPosition(iAnchorPos));
-  int iDiff = 0;
+  const int iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
+  const BOOL bSingleLine = (iCurLine == iAnchorLine);
+
+  int iDiffCurrent = 0;
+  int iDiffAnchor = 0;
+  int bFixStart = FALSE;
   if (bSingleLine) {
     SendMessage(hwnd, SCI_VCHOME, 0, 0);
     if (SciCall_PositionFromLine(iCurLine) == SciCall_GetCurrentPos()) {
       SendMessage(hwnd, SCI_VCHOME, 0, 0);
     }
-    iDiff = (iCurPos - SciCall_GetCurrentPos());
+    iDiffCurrent = (iCurPos - SciCall_GetCurrentPos());
   }
-  if (bIndent) {
-    SendMessage(hwnd, SCI_SETTABINDENTS, TRUE, 0);
-    SendMessage(hwnd, SCI_TAB, 0, 0);
-    SendMessage(hwnd, SCI_SETTABINDENTS, bTabIndents, 0);
-  }
-  else if (SciCall_PositionFromLine(iCurLine) != SciCall_GetSelectionStart()) {
-    SendMessage(hwnd, SCI_SETBACKSPACEUNINDENTS, TRUE, 0);
-    SendMessage(hwnd, SCI_DELETEBACK, 0, 0);
-    SendMessage(hwnd, SCI_SETBACKSPACEUNINDENTS, bBackspaceUnindents, 0);
-  }
-  if (bSingleLine) {
-    EditSelectEx(hwnd, SciCall_GetCurrentPos() + iDiff + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiff);
+  else {
+    iDiffCurrent = (SciCall_GetLineEndPosition(iCurLine) - iCurPos);
+    iDiffAnchor = (SciCall_GetLineEndPosition(iAnchorLine) - iAnchorPos);
+    if (iCurPos < iAnchorPos)
+      bFixStart = (SciCall_PositionFromLine(iCurLine) == SciCall_GetCurrentPos());
+    else
+      bFixStart = (SciCall_PositionFromLine(iAnchorLine) == SciCall_GetAnchor());
   }
 
+  if (mode == SCI_TAB) {
+    SendMessage(hwnd, SCI_SETTABINDENTS, TRUE, 0);
+    SendMessage(hwnd, mode, 0, 0);
+    SendMessage(hwnd, SCI_SETTABINDENTS, bTabIndents, 0);
+  }
+  else if (((mode == SCI_BACKTAB) || (mode == SCI_DELETEBACK)) && 
+    (SciCall_PositionFromLine(iCurLine) != SciCall_GetSelectionStart())) 
+  {
+    SendMessage(hwnd, SCI_SETBACKSPACEUNINDENTS, TRUE, 0);
+    SendMessage(hwnd, mode, 0, 0);
+    SendMessage(hwnd, SCI_SETBACKSPACEUNINDENTS, bBackspaceUnindents, 0);
+  }
+
+  if (bSingleLine) {
+    EditSelectEx(hwnd, SciCall_GetCurrentPos() + iDiffCurrent + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiffCurrent);
+  }
+  else {  // on multiline indentation, anchor and current positions are moved to line begin resp. end
+    if (bFixStart) {
+      if (iCurPos < iAnchorPos)
+        iDiffCurrent = SciCall_LineLength(iCurLine) - GetEOLLen();
+      else
+        iDiffAnchor = SciCall_LineLength(iAnchorLine) - GetEOLLen();
+    }
+    EditSelectEx(hwnd, SciCall_GetLineEndPosition(iAnchorLine) - iDiffAnchor, SciCall_GetLineEndPosition(iCurLine) - iDiffCurrent);
+  }
 }
 
 
