@@ -1632,8 +1632,6 @@ void EditChar2Hex(HWND hwnd) {
   }
 
   //TODO: iterate over complete selection?
-  if ((iSelEnd - iSelStart) != 1) { return; }
-
 
   char  ch[32] = { '\0' };
   WCHAR wch[32] = { L'\0' };
