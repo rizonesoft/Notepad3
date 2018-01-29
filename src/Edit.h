@@ -88,7 +88,7 @@ void  EditSpacesToTabs(HWND,int,BOOL);
 void  EditMoveUp(HWND);
 void  EditMoveDown(HWND);
 void  EditModifyLines(HWND,LPCWSTR,LPCWSTR);
-void  EditIndentBlock(HWND,BOOL,BOOL,BOOL);
+void  EditIndentBlock(HWND,int,BOOL,BOOL);
 void  EditAlignText(HWND,int);
 void  EditEncloseSelection(HWND,LPCWSTR,LPCWSTR);
 void  EditToggleLineComments(HWND,LPCWSTR,BOOL);

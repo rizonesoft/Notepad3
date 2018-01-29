@@ -3128,16 +3128,27 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INDENT:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        EditIndentBlock(g_hwndEdit, TRUE, bTabIndents, bBackspaceUnindents);
+        if (SciCall_IsSelectionRectangle()) 
+        {
+          SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
+        }
+        else {
+          EditIndentBlock(g_hwndEdit, SCI_TAB, bTabIndents, bBackspaceUnindents);
+        }
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
 
-
     case IDM_EDIT_UNINDENT:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        EditIndentBlock(g_hwndEdit, FALSE, bTabIndents, bBackspaceUnindents);
+        if (SciCall_IsSelectionRectangle()) 
+        {
+          SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
+        }
+        else {
+          EditIndentBlock(g_hwndEdit, SCI_DELETEBACK, bTabIndents, bBackspaceUnindents);
+        }
         if (token >= 0) { EndUndoAction(token); }
       }
       break;
@@ -3146,7 +3157,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_TAB:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
+        if (IsSingleLineSelection() || SciCall_IsSelectionRectangle()) 
+        {
+          SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
+        }
+        else {
+          EditIndentBlock(g_hwndEdit, SCI_TAB, bTabIndents, bBackspaceUnindents);
+        }
         if (token >= 0) { EndUndoAction(token); }
       }
     break;
@@ -3154,7 +3171,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_BACKTAB:
       {
         int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        SendMessage(g_hwndEdit, SCI_BACKTAB, 0, 0);
+        if (IsSingleLineSelection() || SciCall_IsSelectionRectangle()) 
+        {
+          SendMessage(g_hwndEdit, SCI_BACKTAB, 0, 0);
+        }
+        else {
+          EditIndentBlock(g_hwndEdit, SCI_BACKTAB, bTabIndents, bBackspaceUnindents);
+        }
         if (token >= 0) { EndUndoAction(token); }
       }
     break;

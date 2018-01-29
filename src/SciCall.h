@@ -106,6 +106,7 @@ DeclareSciCallV1(GotoLine, GOTOLINE, Sci_Position, line);
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, int, Sci_Position, position);
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, int, Sci_Position, position);
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, Sci_Position, position);
+DeclareSciCallR0(GetEOLMode, GETEOLMODE, int);
 
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, int);
 DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, int);
@@ -120,6 +121,8 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, int, Sci_Position, line
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, LPCCH, Sci_Position, start, Sci_Position, length);
 DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
+
+
 
 //=============================================================================
 //
@@ -204,5 +207,17 @@ DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, valu
 DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, BOOL, value);
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 
+
+//=============================================================================
+//
+//  Utilities
+//
+//
+
+#define IsSingleLineSelection() \
+(SciCall_LineFromPosition(SciCall_GetCurrentPos()) \
+== SciCall_LineFromPosition(SciCall_GetAnchor()))
+
+#define GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
 #endif //_NP3_SCICALL_H_
