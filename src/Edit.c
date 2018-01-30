@@ -3221,13 +3221,11 @@ void EditStripFirstCharacter(HWND hwnd)
   IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
-  int chCnt = 0;
   for (int iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
     const int iPos = SciCall_PositionFromLine(iLine);
     if (iPos < SciCall_GetLineEndPosition(iLine)) {
       SendMessage(hwnd, SCI_SETTARGETRANGE, (WPARAM)iPos, (LPARAM)SciCall_PositionAfter(iPos));
       SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
-      ++chCnt;
     }
   }
 
@@ -3370,10 +3368,9 @@ void EditCompressSpaces(HWND hwnd)
     bIsLineEnd = (iSelEndPos == SciCall_GetLineEndPosition(iLineEnd));
   }
   
-  int remWSuntilCaretPos = 0;
-
   if (pszIn && pszOut) {
     char* co = (char*)pszOut;
+    int remWSuntilCaretPos = 0;
     for (int i = 0; i < cch; ++i) {
       if (pszIn[i] == ' ' || pszIn[i] == '\t') {
         if (pszIn[i] == '\t') { bModified = TRUE; }
