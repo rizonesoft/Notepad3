@@ -5591,8 +5591,6 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   {
     posPair.beg = start;
     posPair.end = end;
-
-
     utarray_push_back(ReplPosUTArray, &posPair);
 
     start = end;
