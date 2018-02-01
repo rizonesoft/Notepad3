@@ -44,16 +44,19 @@ typedef struct np3params {
 
 typedef struct _undoSel
 {
-  int selMode;
+  int selMode_undo;
   int anchorPos_undo;
-  int currPos_undo;
-  int anchorPos_redo;
-  int currPos_redo;
-  int rectSelVS;
+  int curPos_undo;
+  int rectSelVS_undo;
   int anchorVS_undo;
-  int currVS_undo;
+  int curVS_undo;
+
+  int selMode_redo;
+  int anchorPos_redo;
+  int curPos_redo;
+  int rectSelVS_redo;
   int anchorVS_redo;
-  int currVS_redo;
+  int curVS_redo;
 } 
 UndoRedoSelection_t;
 

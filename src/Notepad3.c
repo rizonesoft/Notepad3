@@ -40,12 +40,12 @@
 #include "edit.h"
 #include "styles.h"
 #include "dialogs.h"
-#include "SciCall.h"
 #include "resource.h"
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
 #include "helpers.h"
 #include "notepad3.h"
+#include "SciCall.h"
 
 
 /******************************************************************************
@@ -64,41 +64,48 @@ HWND      hDlgFindReplace = NULL;
 
 #define INISECTIONBUFCNT 32
 #define NUMTOOLBITMAPS  25
-#define NUMINITIALTOOLS 24
+#define NUMINITIALTOOLS 30
 #define MARGIN_FOLD_INDEX 2
 
-TBBUTTON  tbbMainWnd[] = { {0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {1,IDT_FILE_OPEN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {2,IDT_FILE_BROWSE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {3,IDT_FILE_SAVE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {0,0,0,TBSTYLE_SEP,0,0},
-                           {4,IDT_EDIT_UNDO,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {5,IDT_EDIT_REDO,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {0,0,0,TBSTYLE_SEP,0,0},
-                           {6,IDT_EDIT_CUT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {7,IDT_EDIT_COPY,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {8,IDT_EDIT_PASTE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {0,0,0,TBSTYLE_SEP,0,0},
-                           {9,IDT_EDIT_FIND,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {0,0,0,TBSTYLE_SEP,0,0},
-                           {11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {0,0,0,TBSTYLE_SEP,0,0},
-                           {12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {0,0,0,TBSTYLE_SEP,0,0},
-                           {14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {0,0,0,TBSTYLE_SEP,0,0},
-                           {16,IDT_FILE_EXIT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {20,IDT_FILE_PRINT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0},
-                           {24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0} };
+TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 3,IDT_FILE_SAVE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 2,IDT_FILE_BROWSE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 4,IDT_EDIT_UNDO,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 5,IDT_EDIT_REDO,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 6,IDT_EDIT_CUT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 7,IDT_EDIT_COPY,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 8,IDT_EDIT_PASTE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 9,IDT_EDIT_FIND,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 16,IDT_FILE_EXIT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 }
+};
+
 
 WCHAR      szIniFile[MAX_PATH] = { L'\0' };
 WCHAR      szIniFile2[MAX_PATH] = { L'\0' };
@@ -1133,6 +1140,57 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 }
 
 
+
+//
+//  SetWordWrapping() - WordWrapSettings
+//
+void __fastcall SetWordWrapping()
+{
+  // Word wrap
+  if (bWordWrap)
+    SendMessage(g_hwndEdit, SCI_SETWRAPMODE, (iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR, 0);
+  else
+    SendMessage(g_hwndEdit, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
+
+  if (iWordWrapIndent == 5)
+    SendMessage(g_hwndEdit, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_SAME, 0);
+  else if (iWordWrapIndent == 6)
+    SendMessage(g_hwndEdit, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_INDENT, 0);
+  else {
+    int i = 0;
+    switch (iWordWrapIndent) {
+    case 1: i = 1; break;
+    case 2: i = 2; break;
+    case 3: i = (iIndentWidth) ? 1 * iIndentWidth : 1 * iTabWidth; break;
+    case 4: i = (iIndentWidth) ? 2 * iIndentWidth : 2 * iTabWidth; break;
+    }
+    SendMessage(g_hwndEdit, SCI_SETWRAPSTARTINDENT, i, 0);
+    SendMessage(g_hwndEdit, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_FIXED, 0);
+  }
+
+  if (bShowWordWrapSymbols) {
+    int wrapVisualFlags = 0;
+    int wrapVisualFlagsLocation = 0;
+    if (iWordWrapSymbols == 0)
+      iWordWrapSymbols = 22;
+    switch (iWordWrapSymbols % 10) {
+    case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT; break;
+    case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
+    }
+    switch (((iWordWrapSymbols % 100) - (iWordWrapSymbols % 10)) / 10) {
+    case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
+    case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
+    }
+    SendMessage(g_hwndEdit, SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
+    SendMessage(g_hwndEdit, SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
+  }
+  else {
+    SendMessage(g_hwndEdit, SCI_SETWRAPVISUALFLAGS, 0, 0);
+  }
+}
+
+
+
 //=============================================================================
 //
 //  MsgCreate() - Handles WM_CREATE
@@ -1161,46 +1219,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   // Indent Guides
   Style_SetIndentGuides(g_hwndEdit,bShowIndentGuides);
 
-  // Word wrap
-  if (!bWordWrap)
-    SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
-  else
-    SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
-
-  if (iWordWrapIndent == 5)
-    SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
-  else if (iWordWrapIndent == 6)
-    SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_INDENT,0);
-  else {
-    int i = 0;
-    switch (iWordWrapIndent) {
-      case 1: i = 1; break;
-      case 2: i = 2; break;
-      case 3: i = (iIndentWidth) ? 1 * iIndentWidth : 1 * iTabWidth; break;
-      case 4: i = (iIndentWidth) ? 2 * iIndentWidth : 2 * iTabWidth; break;
-    }
-    SendMessage(g_hwndEdit,SCI_SETWRAPSTARTINDENT,i,0);
-    SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_FIXED,0);
-  }
-  if (bShowWordWrapSymbols) {
-    int wrapVisualFlags = 0;
-    int wrapVisualFlagsLocation = 0;
-    if (iWordWrapSymbols == 0)
-      iWordWrapSymbols = 22;
-    switch (iWordWrapSymbols%10) {
-      case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT; break;
-      case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
-    }
-    switch (((iWordWrapSymbols%100)-(iWordWrapSymbols%10))/10) {
-      case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
-      case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
-    }
-    SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGSLOCATION,wrapVisualFlagsLocation,0);
-    SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,wrapVisualFlags,0);
-  }
-  else {
-    SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,0,0);
-  }
+  // Word Wrap
+  SetWordWrapping();
 
   // Long Lines
   if (bMarkLongLines)
@@ -1470,8 +1490,10 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     SendMessage(hwndToolbar,TB_GETEXTENDEDSTYLE,0,0) | TBSTYLE_EX_MIXEDBUTTONS);
 
   SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
-  if (Toolbar_SetButtons(hwndToolbar,IDT_FILE_NEW,tchToolbarButtons,tbbMainWnd,COUNTOF(tbbMainWnd)) == 0)
-    SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
+
+  if (Toolbar_SetButtons(hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
+    SendMessage(hwndToolbar, TB_ADDBUTTONS, NUMINITIALTOOLS, (LPARAM)tbbMainWnd);
+  }
   SendMessage(hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
   //SendMessage(hwndToolbar,TB_SETINDENT,2,0);
 
@@ -2407,8 +2429,6 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  BOOL bSwapClipBoard = FALSE;
-
   switch(LOWORD(wParam))
   {
     case IDC_MAIN_MARKALL_OCC:
@@ -2884,7 +2904,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           bLastCopyFromMe = TRUE;
 
         int token = BeginUndoAction();
-        if (!SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
+        if (!SciCall_IsSelectionEmpty())
         {
           SendMessage(g_hwndEdit, SCI_CUT, 0, 0);
         }
@@ -2912,7 +2932,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-        SendMessage(g_hwndEdit,SCI_COPYRANGE,0,SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0));
+        SendMessage(g_hwndEdit,SCI_COPYRANGE,0,(LPARAM)SciCall_GetTextLength());
         UpdateToolbar();
       }
       break;
@@ -2927,64 +2947,32 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-
-    case IDM_EDIT_SWAP:
-      bSwapClipBoard = TRUE;
     case IDM_EDIT_PASTE:
       {
-        int lineCount = 0;
-        int lenLastLine = 0;
-        char *pClip = EditGetClipboardText(g_hwndEdit,!bSkipUnicodeDetection,&lineCount,&lenLastLine);
-        if (!pClip)
-          break; // recoding canceled
-
-        int iCurrPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-        int iAnchor = iCurrPos;
-
+        if (flagPasteBoard)
+          bLastCopyFromMe = TRUE;
         int token = BeginUndoAction();
-
-        if (SendMessage(g_hwndEdit,SCI_GETSELECTIONEMPTY,0,0))
-        {
-          SendMessage(g_hwndEdit, SCI_PASTE, 0, 0);
-
-          if (bSwapClipBoard)
-            SendMessage(g_hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
-
-          iCurrPos = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-        }
-        else {
-
-          iAnchor = (int)SendMessage(g_hwndEdit, SCI_GETANCHOR, 0, 0);
-
-          if (flagPasteBoard)
-            bLastCopyFromMe = TRUE;
-
-          if (bSwapClipBoard)
-            SendMessage(g_hwndEdit,SCI_COPY,0,0);
-
-          SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)pClip);
-        }
-
-        if (bSwapClipBoard) {
-          if (iCurrPos > iAnchor)
-            SendMessage(g_hwndEdit, SCI_SETSEL, iAnchor, iAnchor + lstrlenA(pClip));
-          else
-            SendMessage(g_hwndEdit, SCI_SETSEL, iCurrPos + lstrlenA(pClip), iCurrPos);
-        }
-
+        EditPaste(g_hwndEdit, FALSE);
         EndUndoAction(token);
-
-        LocalFree(pClip);
-
         UpdateToolbar();
         UpdateStatusbar();
-        SendMessage(g_hwndEdit, SCI_CHOOSECARETX, 0, 0);
       }
       break;
 
+    case IDM_EDIT_SWAP:
+      {
+        if (flagPasteBoard)
+          bLastCopyFromMe = TRUE;
+        int token = BeginUndoAction();
+        EditPaste(g_hwndEdit, TRUE);
+        EndUndoAction(token);
+        UpdateToolbar();
+        UpdateStatusbar();
+      }
+      break;
 
     case IDM_EDIT_CLEARCLIPBOARD:
-      SendMessage(g_hwndEdit, SCI_COPYTEXT, 0, (LPARAM)NULL);
+      SciClearClipboard();
       UpdateToolbar();
       UpdateStatusbar();
       break;
@@ -3241,7 +3229,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditStripLastCharacter(g_hwndEdit);
+        EditStripLastCharacter(g_hwndEdit, FALSE, FALSE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -3252,7 +3240,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditStripTrailingBlanks(g_hwndEdit, FALSE);
+        EditStripLastCharacter(g_hwndEdit, FALSE, TRUE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -4043,45 +4031,15 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_WORDWRAPSETTINGS:
-      if (WordWrapSettingsDlg(hwnd,IDD_WORDWRAP,&iWordWrapIndent))
-      {
-        if (bWordWrap)
-          SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
-        if (iWordWrapIndent == 5)
-          SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_SAME,0);
-        else if (iWordWrapIndent == 6)
-          SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_INDENT,0);
-        else {
-          int i = 0;
-          switch (iWordWrapIndent) {
-            case 1: i = 1; break;
-            case 2: i = 2; break;
-            case 3: i = (iIndentWidth) ? 1 * iIndentWidth : 1 * iTabWidth; break;
-            case 4: i = (iIndentWidth) ? 2 * iIndentWidth : 2 * iTabWidth; break;
-          }
-          SendMessage(g_hwndEdit,SCI_SETWRAPSTARTINDENT,i,0);
-          SendMessage(g_hwndEdit,SCI_SETWRAPINDENTMODE,SC_WRAPINDENT_FIXED,0);
-        }
-        if (bShowWordWrapSymbols) {
-          int wrapVisualFlags = 0;
-          int wrapVisualFlagsLocation = 0;
-          if (iWordWrapSymbols == 0)
-            iWordWrapSymbols = 22;
-          switch (iWordWrapSymbols%10) {
-            case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT; break;
-            case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
-          }
-          switch (((iWordWrapSymbols%100)-(iWordWrapSymbols%10))/10) {
-            case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
-            case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
-          }
-          SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGSLOCATION,wrapVisualFlagsLocation,0);
-          SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,wrapVisualFlags,0);
-        }
-        else {
-          SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,0,0);
-        }
+      if (WordWrapSettingsDlg(hwnd,IDD_WORDWRAP,&iWordWrapIndent)) {
+        SetWordWrapping();
       }
+      break;
+
+
+    case IDM_VIEW_WORDWRAPSYMBOLS:
+      bShowWordWrapSymbols = (bShowWordWrapSymbols) ? FALSE : TRUE;
+      SetWordWrapping();
       break;
 
 
@@ -4246,30 +4204,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SHOWEOLS:
       bViewEOLs = (bViewEOLs) ? FALSE : TRUE;
       SendMessage(g_hwndEdit,SCI_SETVIEWEOL,bViewEOLs,0);
-      break;
-
-
-    case IDM_VIEW_WORDWRAPSYMBOLS:
-      bShowWordWrapSymbols = (bShowWordWrapSymbols) ? 0 : 1;
-      if (bShowWordWrapSymbols) {
-        int wrapVisualFlags = 0;
-        int wrapVisualFlagsLocation = 0;
-        if (iWordWrapSymbols == 0)
-          iWordWrapSymbols = 22;
-        switch (iWordWrapSymbols%10) {
-          case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT; break;
-          case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
-        }
-        switch (((iWordWrapSymbols%100)-(iWordWrapSymbols%10))/10) {
-          case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
-          case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
-        }
-        SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGSLOCATION,wrapVisualFlagsLocation,0);
-        SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,wrapVisualFlags,0);
-      }
-      else {
-        SendMessage(g_hwndEdit,SCI_SETWRAPVISUALFLAGS,0,0);
-      }
       break;
 
 
@@ -4610,25 +4544,15 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_CLEAR:
     case CMD_DEL:
       {
-        if (SciCall_IsSelectionEmpty()) {
-          SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
-        }
-        else {
-          int token = BeginUndoAction();
-          SendMessage(g_hwndEdit, SCI_CLEAR, 0, 0);
-          // possible unexpected behavior on Virtual Space Access, so:
-          const int iPos = SciCall_GetCurrentPos();
-          SendMessage(g_hwndEdit, SCI_SETSEL, iPos, iPos);
-          EndUndoAction(token);
-        }
+        int token = BeginUndoAction();
+        SciCall_Clear();
+        EndUndoAction(token);
       }
       break;
 
 
     case CMD_BACK:
-      if ((BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
-        SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
-      else {
+      {
         int token = BeginUndoAction();
         SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
         EndUndoAction(token);
@@ -4833,12 +4757,18 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDM_HELP_UPDATECHECK:
+      UpdateCheck();
+      break;
+
+
     case CMD_WEBACTION1:
     case CMD_WEBACTION2:
       {
+        WCHAR  szCmdTemplate[256] = { L'\0' };
+
         LPWSTR lpszTemplateName = (LOWORD(wParam) == CMD_WEBACTION1) ? L"WebTemplate1" : L"WebTemplate2";
 
-        WCHAR  szCmdTemplate[256] = { L'\0' };
         BOOL bCmdEnabled = IniGetString(L"Settings2",lpszTemplateName,L"",szCmdTemplate,COUNTOF(szCmdTemplate));
 
         if (bCmdEnabled) {
@@ -5735,8 +5665,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_NEEDSHOWN:
           {
-            int iFirstLine = SciCall_LineFromPosition(scn->position);
-            int iLastLine = SciCall_LineFromPosition(scn->position + scn->length - 1);
+            DocLn iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
+            DocLn iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
             for (int i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
           }
           break;
@@ -5744,7 +5674,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_MARGINCLICK:
           if (scn->margin == MARGIN_FOLD_INDEX) {
-            EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
+            EditFoldClick(SciCall_LineFromPosition((DocPos)scn->position), scn->modifiers);
           }
           break;
 
@@ -5806,8 +5736,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case TBN_RESET:
           {
             int i; int c = (int)SendMessage(hwndToolbar,TB_BUTTONCOUNT,0,0);
-            for (i = 0; i < c; i++)
-              SendMessage(hwndToolbar,TB_DELETEBUTTON,0,0);
+            for (i = 0; i < c; i++) {
+              SendMessage(hwndToolbar, TB_DELETEBUTTON, 0, 0);
+            }
             SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
             return(0);
           }
@@ -6104,7 +6035,9 @@ void LoadSettings()
   bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
   bTransparentModeAvailable = (bTransparentModeAvailable) ? TRUE : FALSE;
 
-  IniSectionGetString(pIniSection,L"ToolbarButtons",L"",tchToolbarButtons,COUNTOF(tchToolbarButtons));
+  IniSectionGetString(pIniSection,L"ToolbarButtons", 
+    // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
+    L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 0 22 23 0 13 14 0 15 0 25 0 17", tchToolbarButtons,COUNTOF(tchToolbarButtons));
 
   bShowToolbar = IniSectionGetBool(pIniSection,L"ShowToolbar",TRUE);
 
@@ -7405,25 +7338,21 @@ void InvalidateSelections()
 int BeginUndoAction()
 {
   int token = -1;
-  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
-  sel.selMode = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONMODE,0,0);
-  sel.rectSelVS = (int)SendMessage(g_hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
+  UndoRedoSelection_t sel = { -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 };
+  sel.selMode_undo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONMODE,0,0);
+  sel.rectSelVS_undo = (int)SendMessage(g_hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
 
-  sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETANCHOR, 0, 0);
-  sel.currPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-
-  if (!(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
-    if (sel.selMode == SC_SEL_LINES) {
-      sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONSTART, 0, 0);
-      sel.currPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONEND, 0, 0);
-    }
-    else if (sel.selMode == SC_SEL_RECTANGLE) {
-      sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-      sel.currPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-      if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
-        sel.anchorVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-        sel.currVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
-      }
+  if ((sel.selMode_undo == SC_SEL_STREAM) || (sel.selMode_undo == SC_SEL_LINES)) {
+    sel.anchorPos_undo = SciCall_GetAnchor();
+    sel.curPos_undo = SciCall_GetCurrentPos();
+  }
+  else // SC_SEL_RECTANGLE | SC_SEL_THIN
+  {
+    sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
+    sel.curPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
+    if ((sel.rectSelVS_undo & SCVS_RECTANGULARSELECTION) != 0) {
+      sel.anchorVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+      sel.curVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
     }
   }
   token = UndoRedoActionMap(-1, &sel);
@@ -7444,25 +7373,23 @@ int BeginUndoAction()
 void EndUndoAction(int token)
 {
   if (token >= 0) {
-    UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
-    if (UndoRedoActionMap(token,&sel) >= 0) {
-      // mode and type should not have changed
+    UndoRedoSelection_t sel = { -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 };
+    if (UndoRedoActionMap(token, &sel) >= 0) {
 
-      sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETANCHOR, 0, 0);
-      sel.currPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
+      sel.selMode_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
+      sel.rectSelVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETVIRTUALSPACEOPTIONS, 0, 0);
 
-      if (!(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
-        if (sel.selMode == SC_SEL_LINES) {
-          sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONSTART, 0, 0);
-          sel.currPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONEND, 0, 0);
-        }
-        else if (sel.selMode == SC_SEL_RECTANGLE) {
-          sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
-          sel.currPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-          if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
-            sel.anchorVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-            sel.currVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
-          }
+      if ((sel.selMode_redo == SC_SEL_STREAM) || (sel.selMode_redo == SC_SEL_LINES)) {
+        sel.anchorPos_redo = SciCall_GetAnchor();
+        sel.curPos_redo = SciCall_GetCurrentPos();
+      }
+      else // SC_SEL_RECTANGLE | SC_SEL_THIN
+      {
+        sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
+        sel.curPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
+        if ((sel.rectSelVS_redo & SCVS_RECTANGULARSELECTION) != 0) {
+          sel.anchorVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
+          sel.curVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
         }
       }
     }
@@ -7479,46 +7406,45 @@ void EndUndoAction(int token)
 //
 void RestoreAction(int token, DoAction doAct)
 {
-  UndoRedoSelection_t sel = { -1, -1, -1, -1, -1, 0, 0, 0, 0, 0 };
-  if (UndoRedoActionMap(token,&sel) >= 0) {
+  UndoRedoSelection_t sel = { -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 };
+  if (UndoRedoActionMap(token,&sel) >= 0) 
+  {
+    const int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
+    const int currPos   = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
+
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-    int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
-    int currPos   = (doAct == UNDO ? sel.currPos_undo : sel.currPos_redo);
-    int anchorPosLine = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, anchorPos, 0);
-    int currPosLine = (int)SendMessage(g_hwndEdit, SCI_LINEFROMPOSITION, currPos, 0);
+    #define ISSUE_MESSAGE PostMessage
+
     // Ensure that the first and last lines of a selection are always unfolded
     // This needs to be done _before_ the SCI_SETSEL message
-    SendMessage(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
-    if (anchorPosLine != currPosLine) { SendMessage(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
-    int currRectType = (int)SendMessage(g_hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
+    const int anchorPosLine = SciCall_LineFromPosition(anchorPos);
+    const int currPosLine = SciCall_LineFromPosition(currPos);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
+    if (anchorPosLine != currPosLine) { ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
 
-  #define ISSUE_MESSAGE PostMessage
+    const int selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
+    ISSUE_MESSAGE(g_hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)selectionMode,0);
+    const int virtualSpaceOpt = (doAct == UNDO ? sel.rectSelVS_undo : sel.rectSelVS_redo);
+    ISSUE_MESSAGE(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)virtualSpaceOpt,0);
 
-    ISSUE_MESSAGE(g_hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)sel.selMode,0);
-    ISSUE_MESSAGE(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)sel.rectSelVS,0);
-    if (sel.selMode == SC_SEL_LINES) {
-      ISSUE_MESSAGE(g_hwndEdit,SCI_SETSELECTIONSTART,(WPARAM)anchorPos,0);
-      ISSUE_MESSAGE(g_hwndEdit,SCI_SETSELECTIONEND,(WPARAM)currPos,0);
+    if ((selectionMode == SC_SEL_STREAM) || (selectionMode == SC_SEL_LINES)) {
+      ISSUE_MESSAGE(g_hwndEdit,SCI_SETANCHOR,(WPARAM)anchorPos,0);
+      ISSUE_MESSAGE(g_hwndEdit,SCI_SETCURRENTPOS,(WPARAM)currPos,0);
     }
-    else if (sel.selMode == SC_SEL_RECTANGLE) {
+    else // SC_SEL_RECTANGLE | SC_SEL_THIN
+    {
       ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)anchorPos, 0);
       ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)currPos, 0);
-      if ((sel.rectSelVS & SCVS_RECTANGULARSELECTION) != 0) {
+      if ((virtualSpaceOpt & SCVS_RECTANGULARSELECTION) != 0) {
         int anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
-        int currVS = (doAct == UNDO ? sel.currVS_undo : sel.currVS_redo);
+        int currVS = (doAct == UNDO ? sel.curVS_undo : sel.curVS_redo);
         ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
         ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
       }
     }
-    else {
-      ISSUE_MESSAGE(g_hwndEdit, SCI_SETSEL, (LPARAM)anchorPos, (WPARAM)currPos);
-      ISSUE_MESSAGE(g_hwndEdit, SCI_SCROLLRANGE, (LPARAM)anchorPos, (WPARAM)currPos);
-    }
-    ISSUE_MESSAGE(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)currRectType,0);
     ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
 
-  #undef ISSUE_MASSAGE
-
+    #undef ISSUE_MASSAGE
   }
 }
 
@@ -7528,7 +7454,6 @@ void RestoreAction(int token, DoAction doAct)
 //  UndoSelectionMap()
 //
 //
-
 int UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
 {
   if (UndoRedoSelectionUTArray == NULL)

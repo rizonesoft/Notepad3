@@ -181,8 +181,8 @@ BEGIN
         END
         POPUP "&Block"
         BEGIN
-            MENUITEM "&Indent\t(Tab)",                    IDM_EDIT_INDENT
-            MENUITEM "&Unindent\t(Shift+Tab)",            IDM_EDIT_UNINDENT
+            MENUITEM "&Indent\t(Tab)",              IDM_EDIT_INDENT
+            MENUITEM "&Unindent\t(Shift+Tab)",      IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "&Enclose Selection"
             BEGIN
@@ -310,9 +310,9 @@ BEGIN
             MENUITEM "Match &Case Sensitive",       IDM_VIEW_MARKOCCUR_CASE
             POPUP "Match &Whole Word Only"
             BEGIN
-                MENUITEM "OFF",                     IDM_VIEW_MARKOCCUR_WNONE
-                MENUITEM "Match &Selected Word",    IDM_VIEW_MARKOCCUR_WORD
-                MENUITEM "Match &Current Word",     IDM_VIEW_MARKOCCUR_CURRENT
+                MENUITEM "OFF",                         IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "Match &Selected Word",        IDM_VIEW_MARKOCCUR_WORD
+                MENUITEM "Match &Current Word",         IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
@@ -322,61 +322,62 @@ BEGIN
         MENUITEM "Code &Folding\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
         MENUITEM "&Toggle All Folds\tCtrl+Shift+F", IDM_VIEW_TOGGLEFOLDS
         MENUITEM SEPARATOR
-        MENUITEM "Zoom &In\tCtrl++",             IDM_VIEW_ZOOMIN
-        MENUITEM "Zoom &Out\tCtrl+-",            IDM_VIEW_ZOOMOUT
-        MENUITEM "Reset &Zoom\tCtrl+0",          IDM_VIEW_RESETZOOM
+        MENUITEM "Zoom &In\tCtrl++",            IDM_VIEW_ZOOMIN
+        MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
+        MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
     END
     POPUP "&Settings"
     BEGIN
-        MENUITEM "Insert Tabs as &Spaces",       IDM_VIEW_TABSASSPACES
-        MENUITEM "&Tab Settings...\tCtrl+T",     IDM_VIEW_TABSETTINGS
-        MENUITEM "&Word Wrap Settings...",       IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Long Line Settings...",       IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Auto In&dent Text",            IDM_VIEW_AUTOINDENTTEXT
+        MENUITEM "Insert Tabs as &Spaces",      IDM_VIEW_TABSASSPACES
+        MENUITEM "&Tab Settings...\tCtrl+T",    IDM_VIEW_TABSETTINGS
+        MENUITEM "&Word Wrap Settings...",      IDM_VIEW_WORDWRAPSETTINGS
+        MENUITEM "&Long Line Settings...",      IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "Auto In&dent Text",           IDM_VIEW_AUTOINDENTTEXT
         MENUITEM "Auto Close &HTML/XML\tCtrl+Shift+H", IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "Auto Complete Wo&rds",         IDM_VIEW_AUTOCOMPLETEWORDS
+        MENUITEM "Auto Complete Wo&rds",        IDM_VIEW_AUTOCOMPLETEWORDS
         MENUITEM "&Accelerated Word Navigation", IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "&Reuse Window",                IDM_VIEW_REUSEWINDOW
-        MENUITEM "Sticky Window &Position",      IDM_VIEW_STICKYWINPOS
-        MENUITEM "&Always On Top\tAlt+T",        IDM_VIEW_ALWAYSONTOP
-        MENUITEM "Minimi&ze To Tray",            IDM_VIEW_MINTOTRAY
+        MENUITEM "&Reuse Window",               IDM_VIEW_REUSEWINDOW
+        MENUITEM "Sticky Window &Position",     IDM_VIEW_STICKYWINPOS
+        MENUITEM "&Always On Top\tAlt+T",       IDM_VIEW_ALWAYSONTOP
+        MENUITEM "Minimi&ze To Tray",           IDM_VIEW_MINTOTRAY
         MENUITEM "Transparent &Mode\tCtrl+Numpad_*", IDM_VIEW_TRANSPARENT
         MENUITEM SEPARATOR
-        MENUITEM "Single &File Instance",        IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "Single &File Instance",       IDM_VIEW_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
         POPUP "Window Title Displa&y"
         BEGIN
-            MENUITEM "Filename &Only",           IDM_VIEW_SHOWFILENAMEONLY
-            MENUITEM "Filename and &Directory",  IDM_VIEW_SHOWFILENAMEFIRST
-            MENUITEM "Full &Pathname",           IDM_VIEW_SHOWFULLPATH
-            MENUITEM "&Text Excerpt\tCtrl+9",    IDM_VIEW_SHOWEXCERPT
+            MENUITEM "Filename &Only",              IDM_VIEW_SHOWFILENAMEONLY
+            MENUITEM "Filename and &Directory",     IDM_VIEW_SHOWFILENAMEFIRST
+            MENUITEM "Full &Pathname",              IDM_VIEW_SHOWFULLPATH
+            MENUITEM "&Text Excerpt\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
         END
         POPUP "Esc &Key Function"
         BEGIN
-            MENUITEM "&None",                    IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimize Notepad3",       IDM_VIEW_ESCMINIMIZE
-            MENUITEM "E&xit Notepad3",           IDM_VIEW_ESCEXIT
+            MENUITEM "&None",                       IDM_VIEW_NOESCFUNC
+            MENUITEM "&Minimize Notepad3",          IDM_VIEW_ESCMINIMIZE
+            MENUITEM "E&xit Notepad3",              IDM_VIEW_ESCEXIT
         END
-        MENUITEM "Sa&ve Before Running Tools",   IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Remember Recent F&iles",       IDM_VIEW_NOSAVERECENT
-        MENUITEM "Preserve Caret &Position",     IDM_VIEW_NOPRESERVECARET
-        MENUITEM "Remember S&earch Strings",     IDM_VIEW_NOSAVEFINDREPL
+        MENUITEM "Sa&ve Before Running Tools",  IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Remember Recent F&iles",      IDM_VIEW_NOSAVERECENT
+        MENUITEM "Preserve Caret &Position",    IDM_VIEW_NOPRESERVECARET
+        MENUITEM "Remember S&earch Strings",    IDM_VIEW_NOSAVEFINDREPL
         MENUITEM SEPARATOR
-        MENUITEM "Sh&ow Toolbar",                IDM_VIEW_TOOLBAR
-        MENUITEM "C&ustomize Toolbar...",        IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Sh&ow Statusbar",              IDM_VIEW_STATUSBAR
+        MENUITEM "Sh&ow Toolbar",               IDM_VIEW_TOOLBAR
+        MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Sh&ow Statusbar",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "Save Settings On E&xit",       IDM_VIEW_SAVESETTINGS
-        MENUITEM "Save Settings &Now\tF7",       IDM_VIEW_SAVESETTINGSNOW
+        MENUITEM "Save Settings On E&xit",      IDM_VIEW_SAVESETTINGS
+        MENUITEM "Save Settings &Now\tF7",      IDM_VIEW_SAVESETTINGSNOW
         MENUITEM "&Open Settings File\tCtrl+F7", CMD_OPENINIFILE
     END
     POPUP "&?"
     BEGIN
-        MENUITEM "&Online Documentation\tF1",    IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "&Online Documentation\tF1",   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "&About...",                    IDM_HELP_ABOUT
-        MENUITEM "&Command Line Help",           IDM_HELP_CMD
+        MENUITEM "&About...",                   IDM_HELP_ABOUT
+        MENUITEM "&Command Line Help",          IDM_HELP_CMD
+        MENUITEM "Check for Updates",           IDM_HELP_UPDATECHECK
     END
 END
 
@@ -535,7 +536,7 @@ BEGIN
     VK_DOWN,        IDM_EDIT_MOVELINEDOWN,  VIRTKEY, SHIFT, CONTROL, NOINVERT
     VK_ESCAPE,      CMD_ESCAPE,             VIRTKEY, NOINVERT
     VK_ESCAPE,      CMD_SHIFTESC,           VIRTKEY, SHIFT, NOINVERT
-    VK_F1,          IDM_HELP_ONLINEDOCUMENTATION,  VIRTKEY, NOINVERT
+    VK_F1,          IDM_HELP_ONLINEDOCUMENTATION, VIRTKEY, NOINVERT
     VK_F11,         CMD_LEXDEFAULT,         VIRTKEY, NOINVERT
     VK_F11,         CMD_LEXHTML,            VIRTKEY, CONTROL, NOINVERT
     VK_F11,         CMD_LEXXML,             VIRTKEY, SHIFT, NOINVERT

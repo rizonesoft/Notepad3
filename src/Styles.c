@@ -36,9 +36,9 @@
 #include "edit.h"
 #include "dialogs.h"
 #include "resource.h"
-#include "SciCall.h"
 #include "helpers.h"
 #include "styles.h"
+#include "SciCall.h"
 
 
 extern HINSTANCE g_hInstance;
@@ -3529,11 +3529,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   }
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"noblink")) {
     SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)0,0);
+    SendMessage(hwnd, SCI_SETADDITIONALCARETSBLINK, FALSE, 0);
     StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),L"; noblink");
   }
-  else
-    SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)GetCaretBlinkTime(),0);
-
+  else {
+    const UINT uCaretBlinkTime = GetCaretBlinkTime();
+    SendMessage(hwnd, SCI_SETCARETPERIOD, (WPARAM)uCaretBlinkTime, 0);
+    SendMessage(hwnd, SCI_SETADDITIONALCARETSBLINK, ((uCaretBlinkTime != 0) ? TRUE : FALSE), 0);
+  }
   // caret fore
   if (!Style_StrGetColor(TRUE,pCurrentStandard->Styles[STY_CARET].szValue,&rgb))
     rgb = GetSysColor(COLOR_WINDOWTEXT);
@@ -3550,6 +3553,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     rgb = (int)SendMessage(hwnd,SCI_STYLEGETFORE,0,0);
   SendMessage(hwnd,SCI_SETCARETFORE,rgb,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETFORE,rgb,0);
+
 
   StrTrimW(wchSpecificStyle, L" ;");
   StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,

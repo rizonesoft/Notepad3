@@ -106,7 +106,10 @@
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <OmitFramePointers />
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -156,9 +159,10 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <OmitFramePointers>
-      </OmitFramePointers>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -200,13 +204,16 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <PreprocessorDefinitions>WIN32;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <OmitFramePointers />
       <TreatWarningAsError>true</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -251,12 +258,15 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <PreprocessorDefinitions>_WIN64;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <StringPooling>true</StringPooling>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
