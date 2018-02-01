@@ -38,12 +38,12 @@
 #include "styles.h"
 #include "dialogs.h"
 #include "resource.h"
-#include "SciCall.h"
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
 //#include "../uthash/utstring.h"
 #include "helpers.h"
 #include "edit.h"
+#include "SciCall.h"
 
 #ifndef LCMAP_TITLECASE
 #define LCMAP_TITLECASE  0x00000300  // Title Case Letters bit mask
@@ -64,6 +64,7 @@ extern DWORD dwLastIOError;
 extern UINT cpLastFind;
 extern BOOL bReplaceInitialized;
 extern BOOL bUseOldStyleBraceMatching;
+extern BOOL bSkipUnicodeDetection;
 
 static EDITFINDREPLACE efrSave;
 static BOOL bSwitchedFindReplace = FALSE;
@@ -199,8 +200,8 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd,SCI_SETMOUSESELECTIONRECTANGULARSWITCH,TRUE,0);
   SendMessage(hwnd,SCI_SETMULTIPLESELECTION,FALSE,0);
   SendMessage(hwnd,SCI_SETADDITIONALSELECTIONTYPING,FALSE,0);
-  SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,FALSE,0);
-  SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,FALSE,0);
+  SendMessage(hwnd,SCI_SETADDITIONALCARETSBLINK,TRUE,0);
+  SendMessage(hwnd,SCI_SETADDITIONALCARETSVISIBLE,TRUE,0);
   SendMessage(hwnd,SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
   SendMessage(hwnd,SCI_SETLAYOUTCACHE,SC_CACHE_PAGE,0);
 
@@ -367,7 +368,7 @@ BOOL EditConvertText(HWND hwnd, int encSource, int encDest, BOOL bSetSavePoint)
   if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
     return(FALSE);
 
-  int length = SciCall_GetTextLength();
+  DocPos length = SciCall_GetTextLength();
 
   if (length == 0)
   {
@@ -514,8 +515,6 @@ BOOL EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 //
 //  EditGetClipboardText()
 //
-
-
 char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount,int* pLenLastLn) {
 
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd))) {
@@ -628,6 +627,69 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount,int* pL
   return (pmch);
 }
 
+//=============================================================================
+//
+//  EditPaste()
+//
+BOOL EditPaste(HWND hwnd, BOOL bSwapClipBoard)
+{
+  int lineCount = 0;
+  int lenLastLine = 0;
+
+  char* pClip = EditGetClipboardText(hwnd, !bSkipUnicodeDetection, &lineCount, &lenLastLine);
+  if (!pClip) {
+    return FALSE; // recoding canceled
+  }
+  const int clipLen = lstrlenA(pClip);
+
+  const int iCurPos = SciCall_GetCurrentPos();
+  const int iAnchorPos = SciCall_GetAnchor();
+  const BOOL bIsSelRect = SciCall_IsSelectionRectangle();
+  const BOOL bIsSelEmpty = SciCall_IsSelectionEmpty();
+
+  if (bIsSelRect)
+  {
+    EditEnterTargetTransaction();
+
+    const int selCount = (int)SendMessage(hwnd, SCI_GETSELECTIONS, 0, 0);
+
+    for (int s = 0; s < selCount; ++s) 
+    {
+      const int selCaret = (int)SendMessage(hwnd, SCI_GETSELECTIONNCARET, (WPARAM)s, 0);
+      const int selAnchor = (int)SendMessage(hwnd, SCI_GETSELECTIONNANCHOR, (WPARAM)s, 0);
+      SciCall_SetTargetRange(selAnchor, selCaret);
+      SciCall_ReplaceTarget(clipLen, pClip);
+    }
+
+    EditLeaveTargetTransaction();
+  }
+  else if (bIsSelEmpty) 
+  {
+    SciCall_Paste();
+    if (bSwapClipBoard) {
+      SciClearClipboard();
+    }
+  }
+  else {
+
+    if (bSwapClipBoard) {
+      SciCall_Copy();
+    }
+    SciCall_ReplaceSel(pClip);
+
+    if (bSwapClipBoard) {
+      if (iCurPos < iAnchorPos)
+        EditSelectEx(hwnd, iCurPos + clipLen, iCurPos);
+      else
+        EditSelectEx(hwnd, iAnchorPos, iAnchorPos + clipLen);
+    }
+    else if (iCurPos < iAnchorPos)
+      EditSelectEx(hwnd, iCurPos, iCurPos);
+  }
+
+  LocalFree(pClip);
+  return TRUE;
+}
 
 
 //=============================================================================
@@ -638,7 +700,7 @@ BOOL EditCopyAppend(HWND hwnd)
 {
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
     SendMessage(hwnd,SCI_COPY,0,0);
-    return(TRUE);
+    return TRUE;
   }
 
   int iCurPos    = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
@@ -648,7 +710,7 @@ BOOL EditCopyAppend(HWND hwnd)
   if (iCurPos != iAnchorPos) {
     if (SciCall_IsSelectionRectangle()) {
       MsgBox(MBWARN, IDS_SELRECT);
-      return(FALSE);
+      return FALSE;
     }
     else {
       int iSelLength = (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, 0);
@@ -680,7 +742,7 @@ BOOL EditCopyAppend(HWND hwnd)
 
   if (!OpenClipboard(GetParent(hwnd))) {
     LocalFree(pszTextW);
-    return(FALSE);
+    return FALSE;
   }
 
   HANDLE hOld   = GetClipboardData(CF_UNICODETEXT);
@@ -700,7 +762,7 @@ BOOL EditCopyAppend(HWND hwnd)
   SetClipboardData(CF_UNICODETEXT,hNew);
   CloseClipboard();
 
-  return(TRUE);
+  return TRUE;
 }
 
 
@@ -1079,10 +1141,10 @@ BOOL EditSaveFile(
 
   // strip trailing blanks
   if (bAutoStripBlanks)
-    EditStripTrailingBlanks(hwnd,TRUE);
+    EditStripLastCharacter(hwnd, TRUE, TRUE);
 
   // get text
-  cbData = SciCall_GetTextLength();
+  cbData = (DWORD)SciCall_GetTextLength();
   lpData = GlobalAlloc(GPTR, cbData + 4); //fix: +bom
   SendMessage(hwnd,SCI_GETTEXT,GlobalSize(lpData),(LPARAM)lpData);
 
@@ -1622,10 +1684,10 @@ void EditChar2Hex(HWND hwnd) {
     return;
   }
 
-  const int iCurPos = SciCall_GetCurrentPos();
-  const int iAnchorPos = SciCall_GetAnchor();
-  const int iSelStart = SciCall_GetSelectionStart();
-  int iSelEnd = SciCall_GetSelectionEnd();
+  const DocPos iCurPos = SciCall_GetCurrentPos();
+  const DocPos iAnchorPos = SciCall_GetAnchor();
+  const DocPos iSelStart = SciCall_GetSelectionStart();
+  DocPos iSelEnd = SciCall_GetSelectionEnd();
 
   if (iCurPos == iAnchorPos) {
     iSelEnd = SciCall_PositionAfter(iCurPos);
@@ -3107,7 +3169,7 @@ void EditPadWithSpaces(HWND hwnd,BOOL bSkipEmpty,BOOL bNoUndoGroup)
 
     for (iLine = iLineStart; iLine <= iLineEnd; iLine++) {
       int iPos = SciCall_GetLineSelEndPosition(iLine);
-      if (iPos != INVALID_POSITION) {
+      if (iPos != (DocPos)(INVALID_POSITION)) {
         int iCol = SciCall_GetColumn(iPos);
         iMaxColumn = max(iMaxColumn, iCol);
       }
@@ -3131,7 +3193,7 @@ void EditPadWithSpaces(HWND hwnd,BOOL bSkipEmpty,BOOL bNoUndoGroup)
     for (iLine = iLineStart; iLine <= iLineEnd; iLine++) {
 
       const int iLineSelEndPos = SciCall_GetLineSelEndPosition(iLine);
-      if (bIsRectangular && (INVALID_POSITION == iLineSelEndPos))
+      if (bIsRectangular && ((DocPos)(INVALID_POSITION) == iLineSelEndPos))
         continue;
       
       const int iPos = SciCall_GetLineEndPosition(iLine);
@@ -3221,13 +3283,11 @@ void EditStripFirstCharacter(HWND hwnd)
   IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
-  int chCnt = 0;
   for (int iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
     const int iPos = SciCall_PositionFromLine(iLine);
     if (iPos < SciCall_GetLineEndPosition(iLine)) {
       SendMessage(hwnd, SCI_SETTARGETRANGE, (WPARAM)iPos, (LPARAM)SciCall_PositionAfter(iPos));
       SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
-      ++chCnt;
     }
   }
 
@@ -3240,12 +3300,12 @@ void EditStripFirstCharacter(HWND hwnd)
 //
 //  EditStripLastCharacter()
 //
-void EditStripLastCharacter(HWND hwnd)
+void EditStripLastCharacter(HWND hwnd, BOOL bIgnoreSelection, BOOL bTrailingBlanksOnly)
 {
   int iSelStart = 0;
   int iSelEnd = 0;
 
-  if (SciCall_IsSelectionEmpty()) {
+  if (SciCall_IsSelectionEmpty() || bIgnoreSelection) {
     iSelEnd = SciCall_GetTextLength();
   }
   else {
@@ -3259,51 +3319,6 @@ void EditStripLastCharacter(HWND hwnd)
 
   const int iLineStart = SciCall_LineFromPosition(iSelStart);
   const int iLineEnd = SciCall_LineFromPosition(iSelEnd);
-
-  IgnoreNotifyChangeEvent();
-  EditEnterTargetTransaction();
-
-  for (int iLine = iLineStart; iLine <= iLineEnd; ++iLine)
-  {
-    const int iStartPos = SciCall_PositionFromLine(iLine);
-    const int iEndPos   = SciCall_GetLineEndPosition(iLine);
-    if (iStartPos < iEndPos)
-    {
-      SendMessage(hwnd, SCI_SETTARGETRANGE, (WPARAM)SciCall_PositionBefore(iEndPos), (LPARAM)iEndPos);
-      SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
-    }
-  }
-
-  EditLeaveTargetTransaction();
-  ObserveNotifyChangeEvent();
-}
-
-
-//=============================================================================
-//
-//  EditStripTrailingBlanks()
-//
-void EditStripTrailingBlanks(HWND hwnd, BOOL bIgnoreSelection)
-{
-
-  int iSelStart = 0;
-  int iSelEnd = 0;
-
-  if (bIgnoreSelection || SciCall_IsSelectionEmpty()) {
-    iSelEnd = SciCall_GetTextLength();
-  }
-  else {
-    if (SciCall_IsSelectionRectangle()) {
-      MsgBox(MBWARN, IDS_SELRECT);
-      return;
-    }
-    iSelStart = SciCall_GetSelectionStart();
-    iSelEnd = SciCall_GetSelectionEnd();
-  }
-
-  const int iLineStart = SciCall_LineFromPosition(iSelStart);
-  const int iLineEnd = SciCall_LineFromPosition(iSelEnd);
-
 
   IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
@@ -3313,21 +3328,32 @@ void EditStripTrailingBlanks(HWND hwnd, BOOL bIgnoreSelection)
     const int iStartPos = SciCall_PositionFromLine(iLine);
     const int iEndPos = SciCall_GetLineEndPosition(iLine);
 
-    int i = iEndPos;
-    char ch = '\0';
-    do {
-      ch = SciCall_GetCharAt(--i);
-    } while ((i >= iStartPos) && ((ch == ' ') || (ch == '\t')));
+    if (bTrailingBlanksOnly)
+    {
+      DocPos i = iEndPos;
+      char ch = '\0';
+      do {
+        ch = SciCall_GetCharAt(--i);
+      } while ((i >= iStartPos) && ((ch == ' ') || (ch == '\t')));
+      if ((++i) < iEndPos) {
+        SciCall_SetTargetRange(i, iEndPos);
+        SciCall_ReplaceTarget(0, "");
+      }
+    }
+    else { // any char at line end
+      if (iStartPos < iEndPos) {
+        SciCall_SetTargetRange(SciCall_PositionBefore(iEndPos), iEndPos);
+        SciCall_ReplaceTarget(0, "");
+      }
 
-    if ((i + 1) < iEndPos) {
-      SendMessage(hwnd, SCI_SETTARGETRANGE, (WPARAM)(i + 1), (LPARAM)iEndPos);
-      SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
     }
   }
 
   EditLeaveTargetTransaction();
   ObserveNotifyChangeEvent();
+  UNUSED(hwnd);
 }
+
 
 //=============================================================================
 //
@@ -3370,10 +3396,9 @@ void EditCompressSpaces(HWND hwnd)
     bIsLineEnd = (iSelEndPos == SciCall_GetLineEndPosition(iLineEnd));
   }
   
-  int remWSuntilCaretPos = 0;
-
   if (pszIn && pszOut) {
     char* co = (char*)pszOut;
+    int remWSuntilCaretPos = 0;
     for (int i = 0; i < cch; ++i) {
       if (pszIn[i] == ' ' || pszIn[i] == '\t') {
         if (pszIn[i] == '\t') { bModified = TRUE; }
@@ -4091,7 +4116,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 void EditSelectEx(HWND hwnd, int iAnchorPos, int iCurrentPos)
 {
   if ((iAnchorPos < 0) && (iCurrentPos < 0)) {
-    SendMessage(hwnd, SCI_SELECTALL, 0, 0);
+    SciCall_SelectAll();
   }
   else if (iAnchorPos < 0) {
     iAnchorPos = 0;
@@ -4113,9 +4138,10 @@ void EditSelectEx(HWND hwnd, int iAnchorPos, int iCurrentPos)
   SciCall_ScrollRange(iCurrentPos, iAnchorPos);
 
   // remember x-pos for moving caret vertically
-  SendMessage(hwnd, SCI_CHOOSECARETX, 0, 0);
+  SciCall_ChooseCaret();
 
   UpdateStatusbar();
+  UNUSED(hwnd);
 }
 
 
@@ -5594,8 +5620,6 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, i
   {
     posPair.beg = start;
     posPair.end = end;
-
-
     utarray_push_back(ReplPosUTArray, &posPair);
 
     start = end;
@@ -6881,133 +6905,86 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 extern BOOL bNoEncodingTags;
 extern int fNoFileVariables;
 
-BOOL FileVars_Init(char *lpData,DWORD cbData,LPFILEVARS lpfv) {
-
+void __fastcall SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
+{
   int i;
-  char tch[LARGE_BUFFER];
-  BOOL bDisableFileVariables = FALSE;
-
-  ZeroMemory(lpfv,sizeof(FILEVARS));
-  if ((fNoFileVariables && bNoEncodingTags) || !lpData || !cbData)
-    return(TRUE);
-
-  StringCchCopyNA(tch,COUNTOF(tch),lpData,min(cbData + 1,COUNTOF(tch)));
+  BOOL bDisableFileVar = FALSE;
 
   if (!fNoFileVariables) {
-    if (FileVars_ParseInt(tch,"enable-local-variables",&i) && (!i))
-      bDisableFileVariables = TRUE;
 
-    if (!bDisableFileVariables) {
+    if (FileVars_ParseInt(tch, "enable-local-variables", &i) && (!i))
+      bDisableFileVar = TRUE;
 
-      if (FileVars_ParseInt(tch,"tab-width",&i)) {
-        lpfv->iTabWidth = max(min(i,256),1);
+    if (!bDisableFileVar) {
+
+      if (FileVars_ParseInt(tch, "tab-width", &i)) {
+        lpfv->iTabWidth = max(min(i, 256), 1);
         lpfv->mask |= FV_TABWIDTH;
       }
 
-      if (FileVars_ParseInt(tch,"c-basic-indent",&i)) {
-        lpfv->iIndentWidth = max(min(i,256),0);
+      if (FileVars_ParseInt(tch, "c-basic-indent", &i)) {
+        lpfv->iIndentWidth = max(min(i, 256), 0);
         lpfv->mask |= FV_INDENTWIDTH;
       }
 
-      if (FileVars_ParseInt(tch,"indent-tabs-mode",&i)) {
+      if (FileVars_ParseInt(tch, "indent-tabs-mode", &i)) {
         lpfv->bTabsAsSpaces = (i) ? FALSE : TRUE;
         lpfv->mask |= FV_TABSASSPACES;
       }
 
-      if (FileVars_ParseInt(tch,"c-tab-always-indent",&i)) {
+      if (FileVars_ParseInt(tch, "c-tab-always-indent", &i)) {
         lpfv->bTabIndents = (i) ? TRUE : FALSE;
         lpfv->mask |= FV_TABINDENTS;
       }
 
-      if (FileVars_ParseInt(tch,"truncate-lines",&i)) {
+      if (FileVars_ParseInt(tch, "truncate-lines", &i)) {
         lpfv->fWordWrap = (i) ? FALSE : TRUE;
         lpfv->mask |= FV_WORDWRAP;
       }
 
-      if (FileVars_ParseInt(tch,"fill-column",&i)) {
-        lpfv->iLongLinesLimit = max(min(i,4096),0);
+      if (FileVars_ParseInt(tch, "fill-column", &i)) {
+        lpfv->iLongLinesLimit = max(min(i, 4096), 0);
         lpfv->mask |= FV_LONGLINESLIMIT;
       }
     }
   }
 
-  if (!IsUTF8Signature(lpData) && !bNoEncodingTags && !bDisableFileVariables) {
+  if (!IsUTF8Signature(lpData) && !bNoEncodingTags && !bDisableFileVar) {
 
-    if (FileVars_ParseStr(tch,"encoding",lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding)))
+    if (FileVars_ParseStr(tch, "encoding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
       lpfv->mask |= FV_ENCODING;
-    else if (FileVars_ParseStr(tch,"charset",lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding)))
+    else if (FileVars_ParseStr(tch, "charset", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
       lpfv->mask |= FV_ENCODING;
-    else if (FileVars_ParseStr(tch,"coding",lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding)))
+    else if (FileVars_ParseStr(tch, "coding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
       lpfv->mask |= FV_ENCODING;
   }
 
-  if (!fNoFileVariables && !bDisableFileVariables) {
-    if (FileVars_ParseStr(tch,"mode",lpfv->tchMode,COUNTOF(lpfv->tchMode)))
+  if (!fNoFileVariables && !bDisableFileVar) {
+    if (FileVars_ParseStr(tch, "mode", lpfv->tchMode, COUNTOF(lpfv->tchMode)))
       lpfv->mask |= FV_MODE;
   }
+}
+
+BOOL FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
+
+  char tch[LARGE_BUFFER];
+
+  ZeroMemory(lpfv,sizeof(FILEVARS));
+  if ((fNoFileVariables && bNoEncodingTags) || !lpData || !cbData)
+    return TRUE;
+
+  StringCchCopyNA(tch,COUNTOF(tch),lpData,min(cbData + 1,COUNTOF(tch)));
+  SetFileVars(lpData, tch, lpfv);
 
   if (lpfv->mask == 0 && cbData > COUNTOF(tch)) {
-
     StringCchCopyNA(tch,COUNTOF(tch),lpData + cbData - COUNTOF(tch) + 1,COUNTOF(tch));
-
-    if (!fNoFileVariables) {
-      if (FileVars_ParseInt(tch,"enable-local-variables",&i) && (!i))
-        bDisableFileVariables = TRUE;
-
-      if (!bDisableFileVariables) {
-
-        if (FileVars_ParseInt(tch,"tab-width",&i)) {
-          lpfv->iTabWidth = max(min(i,256),1);
-          lpfv->mask |= FV_TABWIDTH;
-        }
-
-        if (FileVars_ParseInt(tch,"c-basic-indent",&i)) {
-          lpfv->iIndentWidth = max(min(i,256),0);
-          lpfv->mask |= FV_INDENTWIDTH;
-        }
-
-        if (FileVars_ParseInt(tch,"indent-tabs-mode",&i)) {
-          lpfv->bTabsAsSpaces = (i) ? FALSE : TRUE;
-          lpfv->mask |= FV_TABSASSPACES;
-        }
-
-        if (FileVars_ParseInt(tch,"c-tab-always-indent",&i)) {
-          lpfv->bTabIndents = (i) ? TRUE : FALSE;
-          lpfv->mask |= FV_TABINDENTS;
-        }
-
-        if (FileVars_ParseInt(tch,"truncate-lines",&i)) {
-          lpfv->fWordWrap = (i) ? FALSE : TRUE;
-          lpfv->mask |= FV_WORDWRAP;
-        }
-
-        if (FileVars_ParseInt(tch,"fill-column",&i)) {
-          lpfv->iLongLinesLimit = max(min(i,4096),0);
-          lpfv->mask |= FV_LONGLINESLIMIT;
-        }
-      }
-    }
-
-    if (!IsUTF8Signature(lpData) && !bNoEncodingTags && !bDisableFileVariables) {
-
-      if (FileVars_ParseStr(tch,"encoding",lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding)))
-        lpfv->mask |= FV_ENCODING;
-      else if (FileVars_ParseStr(tch,"charset",lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding)))
-        lpfv->mask |= FV_ENCODING;
-      else if (FileVars_ParseStr(tch,"coding",lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding)))
-        lpfv->mask |= FV_ENCODING;
-    }
-
-    if (!fNoFileVariables && !bDisableFileVariables) {
-      if (FileVars_ParseStr(tch,"mode",lpfv->tchMode,COUNTOF(lpfv->tchMode)))
-        lpfv->mask |= FV_MODE;
-    }
+    SetFileVars(lpData, tch, lpfv);
   }
 
   if (lpfv->mask & FV_ENCODING)
     lpfv->iEncoding = Encoding_MatchA(lpfv->tchEncoding);
 
-  return(TRUE);
+  return TRUE;
 }
 
 

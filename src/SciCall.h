@@ -20,6 +20,19 @@
 #ifndef _NP3_SCICALL_H_
 #define _NP3_SCICALL_H_
 
+#include <stdbool.h>
+#include "Sci_Position.h"
+
+#if defined(SCI_LARGE_FILE_SUPPORT)
+typedef Sci_Position   DocPos;
+typedef Sci_PositionCR DocPosCR;
+typedef int            DocLn;  // Sci_Line?
+#else
+typedef int  DocPos;
+//typedef ptrdiff_t DocPos; // compile test
+typedef long DocPosCR;
+typedef int  DocLn;
+#endif
 
 //=============================================================================
 //
@@ -32,7 +45,6 @@ __forceinline void InitScintillaHandle(HWND hwnd) {
   g_hScintilla = (HANDLE)SendMessage(hwnd, SCI_GETDIRECTPOINTER, 0, 0);
 }
 
-
 //=============================================================================
 //
 //  SciCall()
@@ -40,7 +52,6 @@ __forceinline void InitScintillaHandle(HWND hwnd) {
 //
 LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 #define SciCall(m, w, l) Scintilla_DirectFunction(g_hScintilla, m, w, l)
-
 
 //=============================================================================
 //
@@ -63,6 +74,7 @@ __forceinline ret SciCall_##fn(type1 var1) {                       \
 __forceinline ret SciCall_##fn(type1 var1, type2 var2) {           \
   return((ret)SciCall(SCI_##msg, (WPARAM)(var1), (LPARAM)(var2))); \
 }
+
 #define DeclareSciCallV0(fn, msg)                                  \
 __forceinline LRESULT SciCall_##fn() {                             \
   return(SciCall(SCI_##msg, 0, 0));                                \
@@ -70,6 +82,10 @@ __forceinline LRESULT SciCall_##fn() {                             \
 #define DeclareSciCallV1(fn, msg, type1, var1)                     \
 __forceinline LRESULT SciCall_##fn(type1 var1) {                   \
   return(SciCall(SCI_##msg, (WPARAM)(var1), 0));                   \
+}
+#define DeclareSciCallV01(fn, msg, type2, var2)                    \
+__forceinline LRESULT SciCall_##fn(type2 var2) {                   \
+  return(SciCall(SCI_##msg, 0, (LPARAM)(var2)));                   \
 }
 #define DeclareSciCallV2(fn, msg, type1, var1, type2, var2)        \
 __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
@@ -82,44 +98,50 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 //  Selection, positions and information
 //
 //
-DeclareSciCallR0(IsDocModified, GETMODIFY, BOOL);
-DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, BOOL);
-DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, BOOL);
-DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, int);
-DeclareSciCallR0(GetAnchor, GETANCHOR, int);
+DeclareSciCallR0(IsDocModified, GETMODIFY, bool);
+DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool);
+DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
+
+DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos);
+DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos);
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
-DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, int);
-DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, int);
-DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, int, Sci_Position, line);
-DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, int, Sci_Position, line);
+DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, DocPos);
+DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, DocPos);
+DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocPos, line);
+DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocPos, line);
 
-DeclareSciCallV2(SetSel, SETSEL, Sci_Position, anchorPos, Sci_Position, currentPos);
-DeclareSciCallV2(ScrollRange, SCROLLRANGE, Sci_Position, secondaryPos, Sci_Position, primaryPos);
 DeclareSciCallV0(Clear, CLEAR);
-DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, int, start, int, end);
+DeclareSciCallV0(Copy, COPY);
+DeclareSciCallV0(Paste, PASTE);
+DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, LPCCH, text);
+DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos);
+DeclareSciCallV0(SelectAll, SELECTALL);
+DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
+DeclareSciCallV01(ReplaceSel, REPLACESEL, LPCCH, text);
+DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, LPCCH, text);
 
-DeclareSciCallV1(SetAnchor, SETANCHOR, Sci_Position, position);
-DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, Sci_Position, position);
-DeclareSciCallV1(GotoPos, GOTOPOS, Sci_Position, position);
-DeclareSciCallV1(GotoLine, GOTOLINE, Sci_Position, line);
-DeclareSciCallR1(PositionBefore, POSITIONBEFORE, int, Sci_Position, position);
-DeclareSciCallR1(PositionAfter, POSITIONAFTER, int, Sci_Position, position);
-DeclareSciCallR1(GetCharAt, GETCHARAT, char, Sci_Position, position);
+DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position);
+DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position);
+DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position);
+DeclareSciCallV1(GotoLine, GOTOLINE, DocPos, line);
+DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position);
+DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position);
+DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position);
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int);
 
-DeclareSciCallR0(GetLineCount, GETLINECOUNT, int);
-DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, int);
-DeclareSciCallR1(LineLength, LINELENGTH, int, Sci_Position, line);
-DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, int, Sci_Position, position);
-DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, int, int, line);
-DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, int, int, line);
-DeclareSciCallR1(GetColumn, GETCOLUMN, int, Sci_Position, position);
-DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, int);
-DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, int);
-DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, int, Sci_Position, line);
+DeclareSciCallR0(GetLineCount, GETLINECOUNT, DocLn);
+DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos);
+DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocPos, line);
+DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, DocLn, DocPos, position);
+DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, DocPos, DocLn, line);
+DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line);
+DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position);
+DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn);
+DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn);
+DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line);
 
-DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, LPCCH, Sci_Position, start, Sci_Position, length);
+DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, LPCCH, DocPos, start, DocPos, length);
 DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
 
 
@@ -129,9 +151,11 @@ DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
 //  Scrolling and automatic scrolling
 //
 //
+DeclareSciCallV0(ChooseCaret, CHOOSECARETX);
 DeclareSciCallV0(ScrollCaret, SCROLLCARET);
 DeclareSciCallV2(SetXCaretPolicy, SETXCARETPOLICY, int, caretPolicy, int, caretSlop);
 DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, caretPolicy, int, caretSlop);
+DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos);
 
 
 //=============================================================================
@@ -141,8 +165,8 @@ DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, caretPolicy, int, caretS
 //
 DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, styleNumber);
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, styleNumber);
-DeclareSciCallV2(SetStyling, SETSTYLING, Sci_PositionCR, length, int, style);
-DeclareSciCallV1(StartStyling, STARTSTYLING, Sci_Position, position);
+DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, int, style);
+DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position);
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int);
 
 //=============================================================================
@@ -153,9 +177,9 @@ DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int);
 DeclareSciCallV2(SetMarginType, SETMARGINTYPEN, int, margin, int, type);
 DeclareSciCallV2(SetMarginWidth, SETMARGINWIDTHN, int, margin, int, pixelWidth);
 DeclareSciCallV2(SetMarginMask, SETMARGINMASKN, int, margin, int, mask);
-DeclareSciCallV2(SetMarginSensitive, SETMARGINSENSITIVEN, int, margin, BOOL, sensitive);
-DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, BOOL, useSetting, COLORREF, colour);
-DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, BOOL, useSetting, COLORREF, colour);
+DeclareSciCallV2(SetMarginSensitive, SETMARGINSENSITIVEN, int, margin, bool, sensitive);
+DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour);
+DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour);
 
 
 //=============================================================================
@@ -173,8 +197,8 @@ DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colo
 //  Indicators
 //
 //
-DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, Sci_Position, position);
-DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, Sci_Position, position, Sci_Position, length);
+DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position);
+DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length);
 
 
 //=============================================================================
@@ -182,7 +206,7 @@ DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, Sci_Position, position,
 //  Folding
 //
 //
-DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, BOOL, int, line);
+DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, int, line);
 DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, int, line);
 DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags);
 DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, int, int, line);
@@ -204,7 +228,7 @@ DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, valu
 //  SetTechnology
 //
 //
-DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, BOOL, value);
+DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value);
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 
 
@@ -214,9 +238,10 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //
 
+#define SciClearClipboard() SciCall_CopyText(0, NULL)
+
 #define IsSingleLineSelection() \
-(SciCall_LineFromPosition(SciCall_GetCurrentPos()) \
-== SciCall_LineFromPosition(SciCall_GetAnchor()))
+(SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 
 #define GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
