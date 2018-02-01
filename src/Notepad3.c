@@ -6029,8 +6029,9 @@ void LoadSettings()
   bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
   bTransparentModeAvailable = (bTransparentModeAvailable) ? TRUE : FALSE;
 
-  // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
-  IniSectionGetString(pIniSection,L"ToolbarButtons", L"", tchToolbarButtons,COUNTOF(tchToolbarButtons));
+  IniSectionGetString(pIniSection,L"ToolbarButtons", 
+    // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
+    L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 0 22 23 0 13 14 0 15 0 25 0 17", tchToolbarButtons,COUNTOF(tchToolbarButtons));
 
   bShowToolbar = IniSectionGetBool(pIniSection,L"ShowToolbar",TRUE);
 
