@@ -3,6 +3,52 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 3.18.131.862 (31 January 2018)
+--------------------------------------------------
+- Fix: Correct in-memory encoding/re-coding of text.
+- Fix: Join Lines (preserve paragraphs) issue.
+- New: Accelerator Key "Ctrl+Alt+J" -> Fuse Lines (:= Join Lines, line-breaks NOT replaced by Space).
+- Fix: Byte counting for selection.
+- Fix: Bug in joining lines algorithm.
+- Fix: Alt+H should open history file access dialog not help menu (add ? to revert to known access key).
+- CR: Reverting back to "?" for help menu and activation (Alt+?) key.
+- CR: Accelerator Key F1 now opens Online Documentation in browser.
+- Cleanup: Highlight current line stuff gathered.
+- Added: Setting2 parameter to adjust "Mark Occ" and "Hyperlink" styling delay.
+- Fix: Revisit usage of "Mark Occurrences" and "Hyperlink Styling" delay usage.
+- Fix: Rectangular selection: (virtual empty) selection persists after clear.
+- Cleanup: Customize Schemes... Style Names.
+- Fixes: Performance for several modify text operations.
+- Fix: Sentencecase some strings in "Customize Schemes...".
+- Refactoring: Usage of undo/redo action stack.
+- Fix: SpeedUp undo/redo action collections.
+- Fix: Lock NotifyUpdate and TargetSelection in case of multi action redo/undo and target replacements.
+- Fix: Handling of document modified flag in case of NotifyChange bypass.
+- Enhancement: Canonical initial Notepad3.ini.
+- Fix: Redo/undo and jump-to behavior having an active selection.
+- Refactor: set/replace selection handling.
+- Fix: Wrong test on rectangular selection.
+- Enhancement: add empty sections to initial settings file (.ini) to force a canonical order.
+- Fix: More select and replace target issues.
+- Fix: Toggle All folds behavior.
+- CR: Changed inifile for Portable Apps Notepad3.
+- Fix: TAB indentation handling according to predecessors (NP2).
+- Fix: selection (anchor and current caret position) handling.
+- Enh: Version check for Visual Studio 2017 v.15.5.5.
+- Fix: "Line Comment" id noselection and current pos == indent pos.
+- Fix: Initial .ini-file: unused section removed.
+- Fix: Support scintilla msg: SCN_NEEDSHOWN (EXPAND folded sections if needed).
+- Revert: Accelerator Key "Alt+UP/DOWN" for navigation (jump) between folded section headlines.
+- Enhancement: Added Accelerator Keys: Alt+LEFT/RIGHT to FOLD/EXPAND folding section.
+- Fix: Avoid some issues regarding folding, using SCI_SETAUTOMATICFOLD.
+- Fix: Revert TAB + Selection action corresponding to VisualStudio's behavior.
+- Fix: Sensible handling of "Block -> (Un)Indent" for different kinds of selections.
+- Fix: Font selection dialog does not reset some styles correctly.
+- Fix: Preserve selection on Line Comment toggle.
+- Enhancement: Make selection block indentation similar to VisualStudio's.
+- Fix: Char2Hex: Remove limit single byte selection.
+
+--------------------------------------------------
 Version 3.18.113.828 (13 January 2018)
 --------------------------------------------------
 - Performance: Redraw indicator ranges (Mark Occurrences) only if needed - avoiding recursive SCN_UPDATEUI notifications.
