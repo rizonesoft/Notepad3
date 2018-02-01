@@ -2343,6 +2343,29 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 }
 
 
+
+//=============================================================================
+//
+//  InfoBox()
+//
+//
+void UpdateCheck()
+{
+  SHELLEXECUTEINFO sei;
+  ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+  sei.cbSize = sizeof(SHELLEXECUTEINFO);
+  sei.fMask = SEE_MASK_NOZONECHECKS;
+  sei.hwnd = NULL;
+  sei.lpVerb = NULL;
+  sei.lpFile = VERSION_UPDATE_CHECK;
+  sei.lpParameters = NULL;
+  sei.lpDirectory = NULL;
+  sei.nShow = SW_SHOWNORMAL;
+  ShellExecuteEx(&sei);
+}
+
+
+
 //=============================================================================
 //
 //  InfoBox()
@@ -2352,33 +2375,29 @@ extern WCHAR szIniFile[MAX_PATH];
 
 INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
 {
-
-  HWND hwnd;
-  int idDlg = IDD_INFOBOX;
-  INFOBOX ib;
-  WCHAR wchFormat[LARGE_BUFFER];
-  int iMode;
-
-  iMode = IniGetInt(L"Suppressed Messages",lpstrSetting,0);
+  int iMode = IniGetInt(L"Suppressed Messages",lpstrSetting,0);
 
   if (lstrlen(lpstrSetting) > 0 && iMode == 1)
     return (iType == MBYESNO) ? IDYES : IDOK;
 
+  WCHAR wchFormat[LARGE_BUFFER];
   if (!GetString(uidMessage,wchFormat,COUNTOF(wchFormat)))
     return(-1);
 
+  INFOBOX ib;
   ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
   StringCchVPrintfW(ib.lpstrMessage,HUGE_BUFFER,wchFormat,(LPVOID)((PUINT_PTR)&uidMessage + 1));
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
   ib.bDisableCheckBox = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? TRUE : FALSE;
 
+  int idDlg = IDD_INFOBOX;
   if (iType == MBYESNO)
     idDlg = IDD_INFOBOX2;
   else if (iType == MBOKCANCEL)
     idDlg = IDD_INFOBOX3;
 
   HWND focus = GetFocus();
-  hwnd = focus ? focus : g_hwndMain;
+  HWND hwnd = focus ? focus : g_hwndMain;
 
   MessageBeep(MB_ICONEXCLAMATION);
 

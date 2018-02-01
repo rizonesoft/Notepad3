@@ -4757,12 +4757,18 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDM_HELP_UPDATECHECK:
+      UpdateCheck();
+      break;
+
+
     case CMD_WEBACTION1:
     case CMD_WEBACTION2:
       {
+        WCHAR  szCmdTemplate[256] = { L'\0' };
+
         LPWSTR lpszTemplateName = (LOWORD(wParam) == CMD_WEBACTION1) ? L"WebTemplate1" : L"WebTemplate2";
 
-        WCHAR  szCmdTemplate[256] = { L'\0' };
         BOOL bCmdEnabled = IniGetString(L"Settings2",lpszTemplateName,L"",szCmdTemplate,COUNTOF(szCmdTemplate));
 
         if (bCmdEnabled) {

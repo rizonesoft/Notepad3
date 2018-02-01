@@ -41,6 +41,7 @@ BOOL SelectDefEncodingDlg(HWND,int *);
 BOOL SelectEncodingDlg(HWND,int *);
 BOOL RecodeDlg(HWND,int *);
 BOOL SelectDefLineEndingDlg(HWND,int *);
+void UpdateCheck();
 INT_PTR InfoBox(int,LPCWSTR,int,...);
 
 
