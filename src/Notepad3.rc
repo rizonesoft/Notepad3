@@ -322,6 +322,10 @@ BEGIN
         MENUITEM "Code &Folding\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
         MENUITEM "&Toggle All Folds\tCtrl+Shift+F", IDM_VIEW_TOGGLEFOLDS
         MENUITEM SEPARATOR
+        MENUITEM "Sh&ow Toolbar",               IDM_VIEW_TOOLBAR
+        MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Sh&ow Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
         MENUITEM "Zoom &In\tCtrl++",            IDM_VIEW_ZOOMIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
@@ -362,10 +366,6 @@ BEGIN
         MENUITEM "Remember Recent F&iles",      IDM_VIEW_NOSAVERECENT
         MENUITEM "Preserve Caret &Position",    IDM_VIEW_NOPRESERVECARET
         MENUITEM "Remember S&earch Strings",    IDM_VIEW_NOSAVEFINDREPL
-        MENUITEM SEPARATOR
-        MENUITEM "Sh&ow Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Sh&ow Statusbar",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
         MENUITEM "Save Settings On E&xit",      IDM_VIEW_SAVESETTINGS
         MENUITEM "Save Settings &Now\tF7",      IDM_VIEW_SAVESETTINGSNOW
