@@ -375,7 +375,7 @@ BEGIN
     BEGIN
         MENUITEM "&Online Documentation\tF1",   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "&About...",                   IDM_HELP_ABOUT
+        MENUITEM "&About...\tShift+F1",         IDM_HELP_ABOUT
         MENUITEM "&Command Line Help",          IDM_HELP_CMD
         MENUITEM "Check for Updates",           IDM_HELP_UPDATECHECK
     END
@@ -537,6 +537,7 @@ BEGIN
     VK_ESCAPE,      CMD_ESCAPE,             VIRTKEY, NOINVERT
     VK_ESCAPE,      CMD_SHIFTESC,           VIRTKEY, SHIFT, NOINVERT
     VK_F1,          IDM_HELP_ONLINEDOCUMENTATION, VIRTKEY, NOINVERT
+    VK_F1,          IDM_HELP_ABOUT,         VIRTKEY, SHIFT, NOINVERT
     VK_F11,         CMD_LEXDEFAULT,         VIRTKEY, NOINVERT
     VK_F11,         CMD_LEXHTML,            VIRTKEY, CONTROL, NOINVERT
     VK_F11,         CMD_LEXXML,             VIRTKEY, SHIFT, NOINVERT
