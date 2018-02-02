@@ -110,7 +110,10 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
+<<<<<<< HEAD
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+=======
+>>>>>>> Notepad3_upstream_Rizone/master
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -164,7 +167,10 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
+<<<<<<< HEAD
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+=======
+>>>>>>> Notepad3_upstream_Rizone/master
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -216,7 +222,10 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
+<<<<<<< HEAD
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+=======
+>>>>>>> Notepad3_upstream_Rizone/master
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -270,7 +279,10 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
+<<<<<<< HEAD
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+=======
+>>>>>>> Notepad3_upstream_Rizone/master
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>

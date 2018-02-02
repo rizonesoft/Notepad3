@@ -43,6 +43,8 @@
 #define VERSION_WEBPAGE2DISPLAY      L"http://www.flos-freeware.ch"
 #define VERSION_SCIVERSION           L"Scintilla Library Ver: " STRINGIFY(SCINTILLA_VER) L"  (RegEx:Onigmo v." STRINGIFY(ONIGMO_REGEX_VER) L")"
 
+#define VERSION_UPDATE_CHECK         L"https://www.rizonesoft.com/notepad3/update.html?version=" VERSION_FILEVERSION
+
 #if defined(_WIN64)
 //   #define VERSION_FILEVERSION_LONG  L"Notepad3 (64-bit) " STRINGIFY(VERSION_MAJOR) L" Build " \
 //                                     STRINGIFY(VERSION_BUILD)
@@ -53,7 +55,6 @@
 //                                     STRINGIFY(VERSION_BUILD)
    #define VERSION_FILEVERSION_LONG  L"Notepad3 v." VERSION_FILEVERSION
 #endif
-
 
 
 // Compiler specific

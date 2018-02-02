@@ -30,7 +30,7 @@
 #define IDC_INFOBOXTEXT                 124
 #define IDB_OPEN                        125
 #define IDR_ACCFINDREPLACE              126
-#define IDC_STYLELABEL_ROOT             127  
+#define IDC_STYLELABEL_ROOT             127
 #define IDC_STYLELABEL                  128
 #define IDC_STYLEEDIT_ROOT              129
 #define IDC_STYLEEDIT                   130
@@ -159,6 +159,7 @@
 #define IDC_EDIT3                       510
 #define IDS_PASS_FAILURE                511
 #define IDS_NOPASS                      512
+#define IDM_HELP_UPDATECHECK            513
 #define IDS_APPTITLE                    10000
 #define IDS_APPTITLE_ELEVATED           10001
 #define IDS_APPTITLE_PASTEBOARD         10002
@@ -492,7 +493,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        601
-#define _APS_NEXT_COMMAND_VALUE         703
+#define _APS_NEXT_COMMAND_VALUE         701
 #define _APS_NEXT_CONTROL_VALUE         801
 #define _APS_NEXT_SYMED_VALUE           901
 #endif

@@ -20,11 +20,6 @@
 BOOL Scintilla_RegisterClasses(void*);
 BOOL Scintilla_ReleaseResources();
 
-
-//typedef Sci_Position tPos;
-typedef ptrdiff_t tPos;
-
-
 #define FNDRPL_BUFFER 512
 typedef struct _editfindreplace
 {
@@ -63,6 +58,7 @@ BOOL  EditConvertText(HWND,int,int,BOOL);
 BOOL  EditSetNewEncoding(HWND,int,BOOL,BOOL);
 BOOL  EditIsRecodingNeeded(WCHAR*,int);
 char* EditGetClipboardText(HWND,BOOL,int*,int*);
+BOOL  EditPaste(HWND,BOOL);
 BOOL  EditCopyAppend(HWND);
 int   EditDetectEOLMode(HWND,char*,DWORD);
 BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*);
@@ -94,8 +90,7 @@ void  EditEncloseSelection(HWND,LPCWSTR,LPCWSTR);
 void  EditToggleLineComments(HWND,LPCWSTR,BOOL);
 void  EditPadWithSpaces(HWND,BOOL,BOOL);
 void  EditStripFirstCharacter(HWND);
-void  EditStripLastCharacter(HWND);
-void  EditStripTrailingBlanks(HWND,BOOL);
+void  EditStripLastCharacter(HWND,BOOL,BOOL);
 void  EditCompressSpaces(HWND);
 void  EditRemoveBlankLines(HWND,BOOL);
 void  EditWrapToColumn(HWND,int);
