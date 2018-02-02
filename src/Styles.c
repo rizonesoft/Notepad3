@@ -3277,6 +3277,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   int iBaseFontSize = INITIAL_BASE_FONT_SIZE; // init
   Style_StrGetSize(wchStandardStyleStrg, &iBaseFontSize);
+  iBaseFontSize = max(0, iBaseFontSize);
   Style_SetBaseFontSize(hwnd, iBaseFontSize);
   Style_SetCurrentFontSize(hwnd, iBaseFontSize);
   
@@ -3314,6 +3315,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
     // use this font size as current lexer's base
     iBaseFontSize = Style_GetBaseFontSize(hwnd);
     Style_StrGetSize(wchCurrentLexerStyleStrg, &iBaseFontSize);
+    iBaseFontSize = max(0, iBaseFontSize);
     Style_SetCurrentFontSize(hwnd, iBaseFontSize);
     EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, TRUE);
   }
@@ -3472,14 +3474,15 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   // whitespace dot size
   iValue = 1;
-  if (Style_StrGetSize(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue)) {
+  if (Style_StrGetSize(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue)) 
+  {
+    iValue = max(min(iValue, 5), 0);
 
     WCHAR tch[32] = { L'\0' };
     WCHAR wchStyle[BUFSIZE_STYLE_VALUE];
     StringCchCopyN(wchStyle, COUNTOF(wchStyle), pCurrentStandard->Styles[STY_WHITESPACE].szValue, 
                    COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue));
 
-    iValue = max(min(iValue, 5), 0);
     StringCchPrintf(pCurrentStandard->Styles[STY_WHITESPACE].szValue, 
                     COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue), L"size:%i", iValue);
 
@@ -3575,13 +3578,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
   // Extra Line Spacing
   iValue = 0;
   if (Style_StrGetSize(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue,&iValue) && (pLexNew != &lexANSI)) {
-    int iAscent = 0;
-    int iDescent = 0;
-    int iValAdj = min(max(iValue,0),64);
+    const int iCurFontSizeDbl = 2 * Style_GetCurrentFontSize(hwnd);
+    int iValAdj = min(max(iValue,(0 - iCurFontSizeDbl)), 256 * iCurFontSizeDbl);
     if (iValAdj != iValue)
       StringCchPrintf(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, 
                       COUNTOF(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue), L"size:%i", iValAdj);
 
+    int iAscent = 0;
+    int iDescent = 0;
     if ((iValAdj % 2) != 0) {
       iAscent++;
       iValAdj--;
@@ -4462,19 +4466,18 @@ BOOL Style_StrGetSize(LPCWSTR lpszStyle, int* i)
       tch[0] = L' ';
     }
     p = StrChr(tch, L';');
-    if (p)
-      *p = L'\0';
+    if (p) { *p = L'\0'; }
     TrimString(tch);
     int iValue = 0;
-    int itok = swscanf_s(tch,L"%i",&iValue);
+    const int itok = swscanf_s(tch,L"%i",&iValue);
     if (itok == 1)
     {
       if (iSign == 0)
         *i = iValue;
       else { 
         // relative size calculation
-        int base = *i; // base is input
-        *i = max(0, base + (iSign * iValue)); // size must be +
+        const int base = *i; // base is input
+        *i = (base + (iSign * iValue)); // can be negative
       }
       return TRUE;
     }
@@ -4906,7 +4909,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // Font Height
   int iFontHeight = 0;
   int iFontSize = iBaseFontSize;
-  if (Style_StrGetSize(lpszStyle,&iFontSize)) {
+  if (Style_StrGetSize(lpszStyle,&iFontSize) > 0) {
     HDC hdc = GetDC(hwnd);
     iFontHeight = -MulDiv(iFontSize,GetDeviceCaps(hdc,LOGPIXELSY),72);
     ReleaseDC(hwnd,hdc);
@@ -5233,7 +5236,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   // Size values are relative to iBaseFontSize
   int  iValue = IsLexerStandard(g_pLexCurrent) ? Style_GetBaseFontSize(hwnd) : Style_GetCurrentFontSize(hwnd);
 
-  if (Style_StrGetSize(lpszStyle, &iValue)) {
+  if (Style_StrGetSize(lpszStyle, &iValue) > 0) {
     SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (LPARAM)iValue);
     //or Fractional
     //SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)(iValue * SC_FONT_SIZE_MULTIPLIER));
