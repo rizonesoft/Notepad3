@@ -213,16 +213,7 @@ const int FontQuality[4] = {
   , SC_EFF_QUALITY_LCD_OPTIMIZED
 };
 
-typedef struct _wi
-{
-  int x;
-  int y;
-  int cx;
-  int cy;
-  int max;
-} WININFO;
-
-static WININFO wininfo = { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0 };
+WININFO g_WinInfo = { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0 };
 
 BOOL    bStickyWinPos;
 
@@ -609,7 +600,7 @@ BOOL InitApplication(HINSTANCE hInstance)
 HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 {
   RECT rc;
-  rc.left = wininfo.x;  rc.top = wininfo.y;  rc.right = wininfo.x + wininfo.cx;  rc.bottom = wininfo.y + wininfo.cy;
+  rc.left = g_WinInfo.x;  rc.top = g_WinInfo.y;  rc.right = g_WinInfo.x + g_WinInfo.cx;  rc.bottom = g_WinInfo.y + g_WinInfo.cy;
   RECT rc2;
   MONITORINFO mi;
 
@@ -618,80 +609,80 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   GetMonitorInfo(hMonitor,&mi);
 
   if (flagDefaultPos == 1) {
-    wininfo.x = wininfo.y = wininfo.cx = wininfo.cy = CW_USEDEFAULT;
-    wininfo.max = 0;
+    g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
+    g_WinInfo.max = 0;
   }
   else if (flagDefaultPos >= 4) {
     SystemParametersInfo(SPI_GETWORKAREA,0,&rc,0);
     if (flagDefaultPos & 8)
-      wininfo.x = (rc.right - rc.left) / 2;
+      g_WinInfo.x = (rc.right - rc.left) / 2;
     else
-      wininfo.x = rc.left;
-    wininfo.cx = rc.right - rc.left;
+      g_WinInfo.x = rc.left;
+    g_WinInfo.cx = rc.right - rc.left;
     if (flagDefaultPos & (4|8))
-      wininfo.cx /= 2;
+      g_WinInfo.cx /= 2;
     if (flagDefaultPos & 32)
-      wininfo.y = (rc.bottom - rc.top) / 2;
+      g_WinInfo.y = (rc.bottom - rc.top) / 2;
     else
-      wininfo.y = rc.top;
-    wininfo.cy = rc.bottom - rc.top;
+      g_WinInfo.y = rc.top;
+    g_WinInfo.cy = rc.bottom - rc.top;
     if (flagDefaultPos & (16|32))
-      wininfo.cy /= 2;
+      g_WinInfo.cy /= 2;
     if (flagDefaultPos & 64) {
-      wininfo.x = rc.left;
-      wininfo.y = rc.top;
-      wininfo.cx = rc.right - rc.left;
-      wininfo.cy = rc.bottom - rc.top;
+      g_WinInfo.x = rc.left;
+      g_WinInfo.y = rc.top;
+      g_WinInfo.cx = rc.right - rc.left;
+      g_WinInfo.cy = rc.bottom - rc.top;
     }
     if (flagDefaultPos & 128) {
-      wininfo.x += (flagDefaultPos & 8) ? 4 : 8;
-      wininfo.cx -= (flagDefaultPos & (4|8)) ? 12 : 16;
-      wininfo.y += (flagDefaultPos & 32) ? 4 : 8;
-      wininfo.cy -= (flagDefaultPos & (16|32)) ? 12 : 16;
+      g_WinInfo.x += (flagDefaultPos & 8) ? 4 : 8;
+      g_WinInfo.cx -= (flagDefaultPos & (4|8)) ? 12 : 16;
+      g_WinInfo.y += (flagDefaultPos & 32) ? 4 : 8;
+      g_WinInfo.cy -= (flagDefaultPos & (16|32)) ? 12 : 16;
     }
   }
 
   else if (flagDefaultPos == 2 || flagDefaultPos == 3 ||
-      wininfo.x == CW_USEDEFAULT || wininfo.y == CW_USEDEFAULT ||
-      wininfo.cx == CW_USEDEFAULT || wininfo.cy == CW_USEDEFAULT) {
+      g_WinInfo.x == CW_USEDEFAULT || g_WinInfo.y == CW_USEDEFAULT ||
+      g_WinInfo.cx == CW_USEDEFAULT || g_WinInfo.cy == CW_USEDEFAULT) {
 
     // default window position
     SystemParametersInfo(SPI_GETWORKAREA,0,&rc,0);
-    wininfo.y = rc.top + 16;
-    wininfo.cy = rc.bottom - rc.top - 32;
-    wininfo.cx = min(rc.right - rc.left - 32,wininfo.cy);
-    wininfo.x = (flagDefaultPos == 3) ? rc.left + 16 : rc.right - wininfo.cx - 16;
+    g_WinInfo.y = rc.top + 16;
+    g_WinInfo.cy = rc.bottom - rc.top - 32;
+    g_WinInfo.cx = min(rc.right - rc.left - 32,g_WinInfo.cy);
+    g_WinInfo.x = (flagDefaultPos == 3) ? rc.left + 16 : rc.right - g_WinInfo.cx - 16;
   }
 
   else {
 
     // fit window into working area of current monitor
-    wininfo.x += (mi.rcWork.left - mi.rcMonitor.left);
-    wininfo.y += (mi.rcWork.top - mi.rcMonitor.top);
-    if (wininfo.x < mi.rcWork.left)
-      wininfo.x = mi.rcWork.left;
-    if (wininfo.y < mi.rcWork.top)
-      wininfo.y = mi.rcWork.top;
-    if (wininfo.x + wininfo.cx > mi.rcWork.right) {
-      wininfo.x -= (wininfo.x + wininfo.cx - mi.rcWork.right);
-      if (wininfo.x < mi.rcWork.left)
-        wininfo.x = mi.rcWork.left;
-      if (wininfo.x + wininfo.cx > mi.rcWork.right)
-        wininfo.cx = mi.rcWork.right - wininfo.x;
+    g_WinInfo.x += (mi.rcWork.left - mi.rcMonitor.left);
+    g_WinInfo.y += (mi.rcWork.top - mi.rcMonitor.top);
+    if (g_WinInfo.x < mi.rcWork.left)
+      g_WinInfo.x = mi.rcWork.left;
+    if (g_WinInfo.y < mi.rcWork.top)
+      g_WinInfo.y = mi.rcWork.top;
+    if (g_WinInfo.x + g_WinInfo.cx > mi.rcWork.right) {
+      g_WinInfo.x -= (g_WinInfo.x + g_WinInfo.cx - mi.rcWork.right);
+      if (g_WinInfo.x < mi.rcWork.left)
+        g_WinInfo.x = mi.rcWork.left;
+      if (g_WinInfo.x + g_WinInfo.cx > mi.rcWork.right)
+        g_WinInfo.cx = mi.rcWork.right - g_WinInfo.x;
     }
-    if (wininfo.y + wininfo.cy > mi.rcWork.bottom) {
-      wininfo.y -= (wininfo.y + wininfo.cy - mi.rcWork.bottom);
-      if (wininfo.y < mi.rcWork.top)
-        wininfo.y = mi.rcWork.top;
-      if (wininfo.y + wininfo.cy > mi.rcWork.bottom)
-        wininfo.cy = mi.rcWork.bottom - wininfo.y;
+    if (g_WinInfo.y + g_WinInfo.cy > mi.rcWork.bottom) {
+      g_WinInfo.y -= (g_WinInfo.y + g_WinInfo.cy - mi.rcWork.bottom);
+      if (g_WinInfo.y < mi.rcWork.top)
+        g_WinInfo.y = mi.rcWork.top;
+      if (g_WinInfo.y + g_WinInfo.cy > mi.rcWork.bottom)
+        g_WinInfo.cy = mi.rcWork.bottom - g_WinInfo.y;
     }
-    SetRect(&rc,wininfo.x,wininfo.y,wininfo.x+wininfo.cx,wininfo.y+wininfo.cy);
+    SetRect(&rc,g_WinInfo.x,g_WinInfo.y,g_WinInfo.x+g_WinInfo.cx,g_WinInfo.y+g_WinInfo.cy);
     if (!IntersectRect(&rc2,&rc,&mi.rcWork)) {
-      wininfo.y = mi.rcWork.top + 16;
-      wininfo.cy = mi.rcWork.bottom - mi.rcWork.top - 32;
-      wininfo.cx = min(mi.rcWork.right - mi.rcWork.left - 32,wininfo.cy);
-      wininfo.x = mi.rcWork.right - wininfo.cx - 16;
+      g_WinInfo.y = mi.rcWork.top + 16;
+      g_WinInfo.cy = mi.rcWork.bottom - mi.rcWork.top - 32;
+      g_WinInfo.cx = min(mi.rcWork.right - mi.rcWork.left - 32,g_WinInfo.cy);
+      g_WinInfo.x = mi.rcWork.right - g_WinInfo.cx - 16;
     }
   }
 
@@ -700,16 +691,16 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
                wchWndClass,
                L"Notepad3",
                WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-               wininfo.x,
-               wininfo.y,
-               wininfo.cx,
-               wininfo.cy,
+               g_WinInfo.x,
+               g_WinInfo.y,
+               g_WinInfo.cx,
+               g_WinInfo.cy,
                NULL,
                NULL,
                hInstance,
                NULL);
 
-  if (wininfo.max)
+  if (g_WinInfo.max)
     nCmdShow = SW_SHOWMAXIMIZED;
 
   if ((bAlwaysOnTop || flagAlwaysOnTop == 2) && flagAlwaysOnTop != 1)
@@ -1550,7 +1541,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     InstallFileWatching(NULL);
 
     // GetWindowPlacement
-    wininfo = GetMyWindowPlacement(hwnd, NULL);
+    g_WinInfo = GetMyWindowPlacement(hwnd, NULL);
 
     DragAcceptFiles(hwnd, FALSE);
     RevokeDragAndDrop(pDropTarget);
@@ -2205,7 +2196,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
     (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) - 
       SciCall_LineFromPosition(SciCall_GetSelectionStart())) >= 1);
 
-  EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
+  //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
   EnableCmd(hmenu,IDM_EDIT_SPLITLINES,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_JOINLINES,i /*&& !bReadOnly*/);
   EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP,i /*&& !bReadOnly*/);
@@ -3321,9 +3312,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COLUMNWRAP:
       {
-        if (iWrapCol == 0)
+        if (iWrapCol == 0) {
           iWrapCol = iLongLinesLimit;
-
+        }
         if (ColumnWrapDlg(hwnd,IDD_COLUMNWRAP,&iWrapCol))
         {
           iWrapCol = max(min(iWrapCol,512),1);
@@ -5688,6 +5679,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
         case SCN_SAVEPOINTREACHED:
+          SendMessage(g_hwndEdit, SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH, 0);
           SetDocumentModified(FALSE);
           break;
 
@@ -6150,12 +6142,12 @@ void LoadSettings()
     StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
     StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
 
-    wininfo.x = IniSectionGetInt(pIniSection,tchPosX,CW_USEDEFAULT);
-    wininfo.y = IniSectionGetInt(pIniSection,tchPosY,CW_USEDEFAULT);
-    wininfo.cx = IniSectionGetInt(pIniSection,tchSizeX,CW_USEDEFAULT);
-    wininfo.cy = IniSectionGetInt(pIniSection,tchSizeY,CW_USEDEFAULT);
-    wininfo.max = IniSectionGetInt(pIniSection,tchMaximized,0);
-    if (wininfo.max) wininfo.max = 1;
+    g_WinInfo.x = IniSectionGetInt(pIniSection,tchPosX,CW_USEDEFAULT);
+    g_WinInfo.y = IniSectionGetInt(pIniSection,tchPosY,CW_USEDEFAULT);
+    g_WinInfo.cx = IniSectionGetInt(pIniSection,tchSizeX,CW_USEDEFAULT);
+    g_WinInfo.cy = IniSectionGetInt(pIniSection,tchSizeY,CW_USEDEFAULT);
+    g_WinInfo.max = IniSectionGetInt(pIniSection,tchMaximized,0);
+    if (g_WinInfo.max) g_WinInfo.max = 1;
   }
 
   // ---  override by resolution specific settings  ---
@@ -6325,7 +6317,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
 
   if (bSaveSettingsNow) {
     // GetWindowPlacement
-    wininfo = GetMyWindowPlacement(g_hwndMain,NULL);
+    g_WinInfo = GetMyWindowPlacement(g_hwndMain,NULL);
   }
 
   int ResX = GetSystemMetrics(SM_CXSCREEN);
@@ -6345,11 +6337,11 @@ void SaveSettings(BOOL bSaveSettingsNow) {
     StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
     StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
 
-    IniSetInt(L"Window",tchPosX,wininfo.x);
-    IniSetInt(L"Window",tchPosY,wininfo.y);
-    IniSetInt(L"Window",tchSizeX,wininfo.cx);
-    IniSetInt(L"Window",tchSizeY,wininfo.cy);
-    IniSetInt(L"Window",tchMaximized,wininfo.max);
+    IniSetInt(L"Window",tchPosX,g_WinInfo.x);
+    IniSetInt(L"Window",tchPosY,g_WinInfo.y);
+    IniSetInt(L"Window",tchSizeX,g_WinInfo.cx);
+    IniSetInt(L"Window",tchSizeY,g_WinInfo.cy);
+    IniSetInt(L"Window",tchMaximized,g_WinInfo.max);
   }
 
   // Scintilla Styles
@@ -6565,15 +6557,15 @@ void ParseCommandLine()
             }
             else if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
               int itok =
-                swscanf_s(lp1,L"%i,%i,%i,%i,%i",&wininfo.x,&wininfo.y,&wininfo.cx,&wininfo.cy,&wininfo.max);
+                swscanf_s(lp1,L"%i,%i,%i,%i,%i",&g_WinInfo.x,&g_WinInfo.y,&g_WinInfo.cx,&g_WinInfo.cy,&g_WinInfo.max);
               if (itok == 4 || itok == 5) { // scan successful
                 flagPosParam = 1;
                 flagDefaultPos = 0;
 
-                if (wininfo.cx < 1) wininfo.cx = CW_USEDEFAULT;
-                if (wininfo.cy < 1) wininfo.cy = CW_USEDEFAULT;
-                if (wininfo.max) wininfo.max = 1;
-                if (itok == 4) wininfo.max = 0;
+                if (g_WinInfo.cx < 1) g_WinInfo.cx = CW_USEDEFAULT;
+                if (g_WinInfo.cy < 1) g_WinInfo.cy = CW_USEDEFAULT;
+                if (g_WinInfo.max) g_WinInfo.max = 1;
+                if (itok == 4) g_WinInfo.max = 0;
               }
             }
           }

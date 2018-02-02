@@ -322,6 +322,10 @@ BEGIN
         MENUITEM "Code &Folding\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
         MENUITEM "&Toggle All Folds\tCtrl+Shift+F", IDM_VIEW_TOGGLEFOLDS
         MENUITEM SEPARATOR
+        MENUITEM "Sh&ow Toolbar",               IDM_VIEW_TOOLBAR
+        MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Sh&ow Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
         MENUITEM "Zoom &In\tCtrl++",            IDM_VIEW_ZOOMIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
@@ -363,10 +367,6 @@ BEGIN
         MENUITEM "Preserve Caret &Position",    IDM_VIEW_NOPRESERVECARET
         MENUITEM "Remember S&earch Strings",    IDM_VIEW_NOSAVEFINDREPL
         MENUITEM SEPARATOR
-        MENUITEM "Sh&ow Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Sh&ow Statusbar",             IDM_VIEW_STATUSBAR
-        MENUITEM SEPARATOR
         MENUITEM "Save Settings On E&xit",      IDM_VIEW_SAVESETTINGS
         MENUITEM "Save Settings &Now\tF7",      IDM_VIEW_SAVESETTINGSNOW
         MENUITEM "&Open Settings File\tCtrl+F7", CMD_OPENINIFILE
@@ -375,7 +375,7 @@ BEGIN
     BEGIN
         MENUITEM "&Online Documentation\tF1",   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "&About...",                   IDM_HELP_ABOUT
+        MENUITEM "&About...\tShift+F1",         IDM_HELP_ABOUT
         MENUITEM "&Command Line Help",          IDM_HELP_CMD
         MENUITEM "Check for Updates",           IDM_HELP_UPDATECHECK
     END
@@ -537,6 +537,7 @@ BEGIN
     VK_ESCAPE,      CMD_ESCAPE,             VIRTKEY, NOINVERT
     VK_ESCAPE,      CMD_SHIFTESC,           VIRTKEY, SHIFT, NOINVERT
     VK_F1,          IDM_HELP_ONLINEDOCUMENTATION, VIRTKEY, NOINVERT
+    VK_F1,          IDM_HELP_ABOUT,         VIRTKEY, SHIFT, NOINVERT
     VK_F11,         CMD_LEXDEFAULT,         VIRTKEY, NOINVERT
     VK_F11,         CMD_LEXHTML,            VIRTKEY, CONTROL, NOINVERT
     VK_F11,         CMD_LEXXML,             VIRTKEY, SHIFT, NOINVERT
