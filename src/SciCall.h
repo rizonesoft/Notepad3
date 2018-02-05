@@ -240,7 +240,7 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //
 
-#define SciClearClipboard() SciCall_CopyText(0, NULL)
+#define SciClearClipboard() SciCall_CopyText(0, "")
 
 #define IsSingleLineSelection() \
 (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))

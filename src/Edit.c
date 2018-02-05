@@ -632,7 +632,6 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount,int* pL
 //
 BOOL EditPaste(HWND hwnd, BOOL bSwapClipBoard)
 {
-  int token = -1;
   int lineCount = 0;
   int lenLastLine = 0;
 
@@ -642,16 +641,9 @@ BOOL EditPaste(HWND hwnd, BOOL bSwapClipBoard)
   }
   const int clipLen = lstrlenA(pClip);
 
-  if (bSwapClipBoard) {
-    if (SciCall_IsSelectionEmpty())
-      SciClearClipboard();
-    else
-      SciCall_Copy();
-  }
+  int token = BeginUndoAction();
 
-  if ((clipLen > 0) || !SciCall_IsSelectionEmpty()) {
-    token = BeginUndoAction(); 
-  }
+  if (bSwapClipBoard) { SciCall_Copy(); }
 
   if (SciCall_IsSelectionRectangle())
   {
@@ -699,16 +691,17 @@ BOOL EditPaste(HWND hwnd, BOOL bSwapClipBoard)
 
     EditLeaveTargetTransaction();
   }
-  else if (SciCall_IsSelectionEmpty())
+  else // Selection: SC_SEL_STREAM, SC_SEL_LINES, SC_SEL_THIN
   {
-    SciCall_Paste();
-  }
-  else {
-
     const int iCurPos = SciCall_GetCurrentPos();
     const int iAnchorPos = SciCall_GetAnchor();
 
-    SciCall_ReplaceSel(pClip);
+    if (SciCall_IsSelectionEmpty()) {
+      SciCall_Paste();
+    }
+    else {
+      SciCall_ReplaceSel(pClip);
+    }
 
     if (bSwapClipBoard) {
       if (iCurPos < iAnchorPos)
@@ -721,7 +714,7 @@ BOOL EditPaste(HWND hwnd, BOOL bSwapClipBoard)
     }
   }
 
-  if (token >= 0) { EndUndoAction(token); }
+  EndUndoAction(token);
 
   LocalFree(pClip);
   return TRUE;

@@ -5401,7 +5401,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
     if (pnmh->idFrom == IDC_EDIT) {
       if (pnmh->code == SCN_MODIFIED) {
         // check for ADDUNDOACTION step
-        if (scn->modificationType & SC_MOD_CONTAINER) {
+        if (scn->modificationType & SC_MOD_CONTAINER)
+        {
           if (scn->modificationType & SC_PERFORMED_UNDO) {
             RestoreAction(scn->token, UNDO);
           }
@@ -7330,11 +7331,7 @@ int BeginUndoAction()
   sel.selMode_undo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONMODE,0,0);
   sel.rectSelVS_undo = (int)SendMessage(g_hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
 
-  if ((sel.selMode_undo == SC_SEL_STREAM) || (sel.selMode_undo == SC_SEL_LINES)) {
-    sel.anchorPos_undo = SciCall_GetAnchor();
-    sel.curPos_undo = SciCall_GetCurrentPos();
-  }
-  else // SC_SEL_RECTANGLE | SC_SEL_THIN
+  if (sel.selMode_redo == SC_SEL_RECTANGLE) 
   {
     sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
     sel.curPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
@@ -7342,6 +7339,11 @@ int BeginUndoAction()
       sel.anchorVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
       sel.curVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
     }
+  }
+  else // SC_SEL_STREAM, SC_SEL_LINES, SC_SEL_THIN
+  {
+    sel.anchorPos_undo = SciCall_GetAnchor();
+    sel.curPos_undo = SciCall_GetCurrentPos();
   }
   token = UndoRedoActionMap(-1, &sel);
   if (token >= 0) {
@@ -7367,11 +7369,7 @@ void EndUndoAction(int token)
       sel.selMode_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
       sel.rectSelVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETVIRTUALSPACEOPTIONS, 0, 0);
 
-      if ((sel.selMode_redo == SC_SEL_STREAM) || (sel.selMode_redo == SC_SEL_LINES)) {
-        sel.anchorPos_redo = SciCall_GetAnchor();
-        sel.curPos_redo = SciCall_GetCurrentPos();
-      }
-      else // SC_SEL_RECTANGLE | SC_SEL_THIN
+      if (sel.selMode_redo == SC_SEL_RECTANGLE) 
       {
         sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
         sel.curPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
@@ -7379,6 +7377,11 @@ void EndUndoAction(int token)
           sel.anchorVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
           sel.curVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
         }
+      }
+      else // SC_SEL_STREAM, SC_SEL_LINES, SC_SEL_THIN
+      {
+        sel.anchorPos_redo = SciCall_GetAnchor();
+        sel.curPos_redo = SciCall_GetCurrentPos();
       }
     }
     UndoRedoActionMap(token,&sel); // set with redo action filled
@@ -7395,13 +7398,13 @@ void EndUndoAction(int token)
 void RestoreAction(int token, DoAction doAct)
 {
   UndoRedoSelection_t sel = { -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 };
-  if (UndoRedoActionMap(token,&sel) >= 0) 
+  if (UndoRedoActionMap(token, &sel) >= 0) 
   {
-    const int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
-    const int currPos   = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
-
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-    #define ISSUE_MESSAGE PostMessage
+  #define ISSUE_MESSAGE PostMessage
+
+    const int anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
+    const int currPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
 
     // Ensure that the first and last lines of a selection are always unfolded
     // This needs to be done _before_ the SCI_SETSEL message
@@ -7410,16 +7413,14 @@ void RestoreAction(int token, DoAction doAct)
     ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
     if (anchorPosLine != currPosLine) { ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
 
-    const int selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
-    ISSUE_MESSAGE(g_hwndEdit,SCI_SETSELECTIONMODE,(WPARAM)selectionMode,0);
-    const int virtualSpaceOpt = (doAct == UNDO ? sel.rectSelVS_undo : sel.rectSelVS_redo);
-    ISSUE_MESSAGE(g_hwndEdit,SCI_SETVIRTUALSPACEOPTIONS,(WPARAM)virtualSpaceOpt,0);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0); // prepare - not needed ?
 
-    if ((selectionMode == SC_SEL_STREAM) || (selectionMode == SC_SEL_LINES)) {
-      ISSUE_MESSAGE(g_hwndEdit,SCI_SETANCHOR,(WPARAM)anchorPos,0);
-      ISSUE_MESSAGE(g_hwndEdit,SCI_SETCURRENTPOS,(WPARAM)currPos,0);
-    }
-    else // SC_SEL_RECTANGLE | SC_SEL_THIN
+    const int selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
+    const int virtualSpaceOpt = (doAct == UNDO ? sel.rectSelVS_undo : sel.rectSelVS_redo);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)virtualSpaceOpt, 0);
+
+    if (sel.selMode_redo == SC_SEL_RECTANGLE)
     {
       ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)anchorPos, 0);
       ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)currPos, 0);
@@ -7430,9 +7431,13 @@ void RestoreAction(int token, DoAction doAct)
         ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
       }
     }
-    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
+    else // SC_SEL_STREAM, SC_SEL_LINES, SC_SEL_THIN
+    {
+      ISSUE_MESSAGE(g_hwndEdit, SCI_SETANCHOR, (WPARAM)anchorPos, 0);
+      ISSUE_MESSAGE(g_hwndEdit, SCI_SETCURRENTPOS, (WPARAM)currPos, 0);
+    }
 
-    #undef ISSUE_MASSAGE
+  #undef ISSUE_MASSAGE
   }
 }
 
