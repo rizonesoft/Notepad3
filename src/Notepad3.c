@@ -2942,9 +2942,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-        int token = BeginUndoAction();
         EditPaste(g_hwndEdit, FALSE);
-        EndUndoAction(token);
         UpdateToolbar();
         UpdateStatusbar();
       }
@@ -2954,9 +2952,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-        int token = BeginUndoAction();
         EditPaste(g_hwndEdit, TRUE);
-        EndUndoAction(token);
         UpdateToolbar();
         UpdateStatusbar();
       }

@@ -123,6 +123,8 @@ DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, LPCCH, text);
 
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position);
 DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position);
+DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option);
+
 DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position);
 DeclareSciCallV1(GotoLine, GOTOLINE, DocPos, line);
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position);

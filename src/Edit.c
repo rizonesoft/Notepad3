@@ -632,6 +632,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount,int* pL
 //
 BOOL EditPaste(HWND hwnd, BOOL bSwapClipBoard)
 {
+  int token = -1;
   int lineCount = 0;
   int lenLastLine = 0;
 
@@ -641,39 +642,72 @@ BOOL EditPaste(HWND hwnd, BOOL bSwapClipBoard)
   }
   const int clipLen = lstrlenA(pClip);
 
-  const int iCurPos = SciCall_GetCurrentPos();
-  const int iAnchorPos = SciCall_GetAnchor();
-  const BOOL bIsSelRect = SciCall_IsSelectionRectangle();
-  const BOOL bIsSelEmpty = SciCall_IsSelectionEmpty();
+  if (bSwapClipBoard) {
+    if (SciCall_IsSelectionEmpty())
+      SciClearClipboard();
+    else
+      SciCall_Copy();
+  }
 
-  if (bIsSelRect)
+  if ((clipLen > 0) || !SciCall_IsSelectionEmpty()) {
+    token = BeginUndoAction(); 
+  }
+
+  if (SciCall_IsSelectionRectangle())
   {
     EditEnterTargetTransaction();
 
-    const int selCount = (int)SendMessage(hwnd, SCI_GETSELECTIONS, 0, 0);
+    if (lineCount <= 1) {
+      SciCall_SetMultiPaste(SC_MULTIPASTE_EACH);
+      SciCall_Paste();
+      SciCall_SetMultiPaste(SC_MULTIPASTE_ONCE);
+    }
+    else { 
+      const int selCount = (int)SendMessage(hwnd, SCI_GETSELECTIONS, 0, 0) - 1; // except last ln
 
-    for (int s = 0; s < selCount; ++s) 
-    {
-      const int selCaret = (int)SendMessage(hwnd, SCI_GETSELECTIONNCARET, (WPARAM)s, 0);
-      const int selAnchor = (int)SendMessage(hwnd, SCI_GETSELECTIONNANCHOR, (WPARAM)s, 0);
+      char* pClipLine = pClip;
+      for (int s = 0; s < selCount; ++s) {
+        // get lines from clip
+        char *ln = pClipLine;
+        int lnLen = 0;
+        while (*ln != '\0') {
+          if (*ln == '\n' || *ln == '\r') {
+            if ((*ln == '\r') && (*(ln + 1) == '\n')) { ++ln; }
+            ++ln; // next line
+            break;
+          }
+          else { ++ln; ++lnLen; }
+        }
+
+        const int selCaret = (int)SendMessage(hwnd, SCI_GETSELECTIONNCARET, (WPARAM)s, 0);
+        const int selAnchor = (int)SendMessage(hwnd, SCI_GETSELECTIONNANCHOR, (WPARAM)s, 0);
+        SciCall_SetTargetRange(selAnchor, selCaret);
+        SciCall_ReplaceTarget(lnLen, pClipLine);
+
+        pClipLine = ln;
+      }
+
+      // remove line-break from last line
+      if (*pClipLine != '\0') { StrTrimA(pClipLine, "\r\n"); }
+
+      // replace last selection
+      const int selCaret = (int)SendMessage(hwnd, SCI_GETSELECTIONNCARET, (WPARAM)selCount, 0);
+      const int selAnchor = (int)SendMessage(hwnd, SCI_GETSELECTIONNANCHOR, (WPARAM)selCount, 0);
       SciCall_SetTargetRange(selAnchor, selCaret);
-      SciCall_ReplaceTarget(clipLen, pClip);
+      SciCall_ReplaceTarget(lstrlenA(pClipLine), pClipLine);
     }
 
     EditLeaveTargetTransaction();
   }
-  else if (bIsSelEmpty) 
+  else if (SciCall_IsSelectionEmpty())
   {
     SciCall_Paste();
-    if (bSwapClipBoard) {
-      SciClearClipboard();
-    }
   }
   else {
 
-    if (bSwapClipBoard) {
-      SciCall_Copy();
-    }
+    const int iCurPos = SciCall_GetCurrentPos();
+    const int iAnchorPos = SciCall_GetAnchor();
+
     SciCall_ReplaceSel(pClip);
 
     if (bSwapClipBoard) {
@@ -682,9 +716,12 @@ BOOL EditPaste(HWND hwnd, BOOL bSwapClipBoard)
       else
         EditSelectEx(hwnd, iAnchorPos, iAnchorPos + clipLen);
     }
-    else if (iCurPos < iAnchorPos)
+    else if (iCurPos < iAnchorPos) {
       EditSelectEx(hwnd, iCurPos, iCurPos);
+    }
   }
+
+  if (token >= 0) { EndUndoAction(token); }
 
   LocalFree(pClip);
   return TRUE;
