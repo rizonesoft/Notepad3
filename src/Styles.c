@@ -4002,8 +4002,8 @@ BOOL Style_HasLexerForExt(LPCWSTR lpszExt)
 //
 //  Style_SetLexerFromFile()
 //
-extern int fNoHTMLGuess;
-extern int fNoCGIGuess;
+extern int flagNoHTMLGuess;
+extern int flagNoCGIGuess;
 extern FILEVARS fvCurFile;
 
 void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
@@ -4020,7 +4020,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     UINT cp = Encoding_SciGetCodePage(hwnd);
     MultiByteToWideCharStrg(cp,fvCurFile.tchMode,wchMode);
 
-    if (!fNoCGIGuess && (StringCchCompareIN(wchMode,COUNTOF(wchMode),L"cgi",-1) == 0 || 
+    if (!flagNoCGIGuess && (StringCchCompareIN(wchMode,COUNTOF(wchMode),L"cgi",-1) == 0 || 
                          StringCchCompareIN(wchMode,COUNTOF(wchMode),L"fcgi",-1) == 0)) {
       char tchText[256] = { L'\0' };
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
@@ -4058,7 +4058,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     if (*lpszExt == L'.') ++lpszExt;
 
-    if (!fNoCGIGuess && (StringCchCompareIX(lpszExt,L"cgi") == 0 || StringCchCompareIX(lpszExt,L"fcgi") == 0)) {
+    if (!flagNoCGIGuess && (StringCchCompareIX(lpszExt,L"cgi") == 0 || StringCchCompareIX(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { L'\0' };
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
       StrTrimA(tchText," \t\n\r");
@@ -4102,11 +4102,11 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     bFound = TRUE;
   }
 
-  if (!bFound && g_bAutoSelect && (!fNoHTMLGuess || !fNoCGIGuess)) {
+  if (!bFound && g_bAutoSelect && (!flagNoHTMLGuess || !flagNoCGIGuess)) {
     char tchText[512];
     SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
     StrTrimA(tchText," \t\n\r");
-    if (!fNoCGIGuess) {
+    if (!flagNoCGIGuess) {
       if (tchText[0] == '<') {
         if (StrStrIA(tchText, "<html"))
           pLexNew = &lexHTML;
