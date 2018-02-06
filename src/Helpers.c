@@ -1482,7 +1482,6 @@ BOOL TrimString(LPWSTR lpString)
     *psz = L'\0';
 
   return TRUE;
-
 }
 
 
@@ -1490,13 +1489,13 @@ BOOL TrimString(LPWSTR lpString)
 //
 //  ExtractFirstArgument()
 //
-BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2,int len)
+BOOL ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
 {
 
   LPWSTR psz;
   BOOL bQuoted = FALSE;
 
-  StringCchCopy(lpArg1,len,lpArgs);
+  StringCchCopy(lpArg1, len, lpArgs);
 
   if (lpArg2)
     *lpArg2 = L'\0';
@@ -1512,15 +1511,15 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2,int len)
   }
 
   if (bQuoted)
-    psz = StrChr(lpArg1,L'\"');
+    psz = StrChr(lpArg1, L'\"');
   else
-    psz = StrChr(lpArg1,L' ');
+    psz = StrChr(lpArg1, L' ');
 
   if (psz)
   {
     *psz = L'\0';
     if (lpArg2)
-      StringCchCopy(lpArg2,len,psz + 1);
+      StringCchCopy(lpArg2, len, psz + 1);
   }
 
   TrimString(lpArg1);
@@ -1529,7 +1528,6 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2,int len)
     TrimString(lpArg2);
 
   return TRUE;
-
 }
 
 

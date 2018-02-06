@@ -6933,14 +6933,14 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 //  FileVars_Init()
 //
 extern BOOL bNoEncodingTags;
-extern int fNoFileVariables;
+extern int flagNoFileVariables;
 
 void __fastcall SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
 {
   int i;
   BOOL bDisableFileVar = FALSE;
 
-  if (!fNoFileVariables) {
+  if (!flagNoFileVariables) {
 
     if (FileVars_ParseInt(tch, "enable-local-variables", &i) && (!i))
       bDisableFileVar = TRUE;
@@ -6989,7 +6989,7 @@ void __fastcall SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
       lpfv->mask |= FV_ENCODING;
   }
 
-  if (!fNoFileVariables && !bDisableFileVar) {
+  if (!flagNoFileVariables && !bDisableFileVar) {
     if (FileVars_ParseStr(tch, "mode", lpfv->tchMode, COUNTOF(lpfv->tchMode)))
       lpfv->mask |= FV_MODE;
   }
@@ -7000,7 +7000,7 @@ BOOL FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
   char tch[LARGE_BUFFER];
 
   ZeroMemory(lpfv,sizeof(FILEVARS));
-  if ((fNoFileVariables && bNoEncodingTags) || !lpData || !cbData)
+  if ((flagNoFileVariables && bNoEncodingTags) || !lpData || !cbData)
     return TRUE;
 
   StringCchCopyNA(tch,COUNTOF(tch),lpData,min(cbData + 1,COUNTOF(tch)));

@@ -41,7 +41,22 @@ BOOL SelectDefEncodingDlg(HWND,int *);
 BOOL SelectEncodingDlg(HWND,int *);
 BOOL RecodeDlg(HWND,int *);
 BOOL SelectDefLineEndingDlg(HWND,int *);
-void UpdateCheck();
+
+
+typedef struct _wi
+{
+  int x;
+  int y;
+  int cx;
+  int cy;
+  int max;
+} WININFO;
+
+WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
+
+void DialogNewWindow(HWND,BOOL,BOOL);
+void DialogFileBrowse(HWND);
+void DialogUpdateCheck(HWND);
 INT_PTR InfoBox(int,LPCWSTR,int,...);
 
 
