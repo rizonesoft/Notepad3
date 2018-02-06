@@ -97,7 +97,6 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 //
 //  Selection, positions and information
 //
-//
 DeclareSciCallR0(IsDocModified, GETMODIFY, bool);
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool);
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
@@ -123,6 +122,8 @@ DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, LPCCH, text);
 
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position);
 DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position);
+DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option);
+
 DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position);
 DeclareSciCallV1(GotoLine, GOTOLINE, DocPos, line);
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position);
@@ -150,7 +151,6 @@ DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
 //
 //  Scrolling and automatic scrolling
 //
-//
 DeclareSciCallV0(ChooseCaret, CHOOSECARETX);
 DeclareSciCallV0(ScrollCaret, SCROLLCARET);
 DeclareSciCallV2(SetXCaretPolicy, SETXCARETPOLICY, int, caretPolicy, int, caretSlop);
@@ -162,7 +162,6 @@ DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primary
 //
 //  Style definition
 //
-//
 DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, styleNumber);
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, styleNumber);
 DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, int, style);
@@ -172,7 +171,6 @@ DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int);
 //=============================================================================
 //
 //  Margins
-//
 //
 DeclareSciCallV2(SetMarginType, SETMARGINTYPEN, int, margin, int, type);
 DeclareSciCallV2(SetMarginWidth, SETMARGINWIDTHN, int, margin, int, pixelWidth);
@@ -186,7 +184,6 @@ DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting,
 //
 //  Markers
 //
-//
 DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerNumber, int, markerSymbols);
 DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colour);
 DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour);
@@ -195,7 +192,6 @@ DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colo
 //=============================================================================
 //
 //  Indicators
-//
 //
 DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position);
 DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length);
@@ -219,14 +215,20 @@ DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, int, line);
 //
 //  Lexer
 //
-//
 DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, value);
+
+
+
+//=============================================================================
+//
+//  Undo/Redo Stack
+//
+DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool);
 
 
 //=============================================================================
 //
 //  SetTechnology
-//
 //
 DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value);
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
@@ -236,13 +238,17 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //  Utilities
 //
-//
 
-#define SciClearClipboard() SciCall_CopyText(0, NULL)
+#define SciClearClipboard() SciCall_CopyText(0, "")
 
 #define IsSingleLineSelection() \
 (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 
 #define GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
+
+
+
+
+//=============================================================================
 
 #endif //_NP3_SCICALL_H_

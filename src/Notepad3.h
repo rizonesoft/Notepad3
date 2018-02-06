@@ -70,6 +70,9 @@ typedef struct _undoSel
 } 
 UndoRedoSelection_t;
 
+#define INIT_UNDOREDOSEL { SC_SEL_STREAM, -1, -1, 0, 0, 0, SC_SEL_STREAM, -1, -1, 0, 0, 0 }
+
+
 typedef enum {
   UNDO = TRUE,
   REDO = FALSE
