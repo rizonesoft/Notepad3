@@ -44,15 +44,21 @@
 extern HWND  g_hwndMain;
 extern HWND  g_hwndEdit;
 extern HINSTANCE g_hInstance;
+extern WCHAR g_wchWorkingDirectory[];
+extern WCHAR g_wchCurFile[];
+extern WCHAR g_wchAppUserModelID[];
+
 extern DWORD dwLastIOError;
 extern BOOL bSkipUnicodeDetection;
 extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
-extern int fNoFileVariables;
 extern BOOL bNoEncodingTags;
 extern BOOL bFixLineEndings;
 extern BOOL bAutoStripBlanks;
-extern WCHAR szCurFile[MAX_PATH+40];
+
+extern int flagNoFileVariables;
+extern int flagUseSystemMRU;
+
 
 
 //=============================================================================
@@ -410,8 +416,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 bQuickExit = TRUE;
               }
 
-              if (StringCchLenW(szCurFile,COUNTOF(szCurFile))) {
-                StringCchCopy(wchDirectory,COUNTOF(wchDirectory),szCurFile);
+              if (StringCchLenW(g_wchCurFile, FILE_ARG_BUF)) {
+                StringCchCopy(wchDirectory,COUNTOF(wchDirectory),g_wchCurFile);
                 PathRemoveFileSpec(wchDirectory);
               }
 
@@ -644,8 +650,8 @@ BOOL OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     WCHAR szParam[MAX_PATH] = { L'\0' };
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
-    if (StringCchLenW(szCurFile,COUNTOF(szCurFile))) {
-      StringCchCopy(wchDirectory,COUNTOF(wchDirectory),szCurFile);
+    if (StringCchLenW(g_wchCurFile, FILE_ARG_BUF)) {
+      StringCchCopy(wchDirectory,COUNTOF(wchDirectory),g_wchCurFile);
       PathRemoveFileSpec(wchDirectory);
     }
 
@@ -1332,7 +1338,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
                 // don't remove myself
                 int iCur = 0;
-                if (!MRU_FindFile(pFileMRU, szCurFile, &iCur)) {
+                if (!MRU_FindFile(pFileMRU, g_wchCurFile, &iCur)) {
                   iCur = -1;
                 }
 
@@ -2346,24 +2352,204 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
 //=============================================================================
 //
-//  InfoBox()
+//  GetMyWindowPlacement()
 //
 //
-void UpdateCheck()
+WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 {
+  WINDOWPLACEMENT wndpl;
+  wndpl.length = sizeof(WINDOWPLACEMENT);
+
+  GetWindowPlacement(hwnd, &wndpl);
+
+  WININFO wi;
+  wi.x = wndpl.rcNormalPosition.left;
+  wi.y = wndpl.rcNormalPosition.top;
+  wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
+  wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
+  wi.max = (IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
+
+  if (hMonitorInfo)
+  {
+    HMONITOR hMonitor = MonitorFromRect(&wndpl.rcNormalPosition, MONITOR_DEFAULTTONEAREST);
+    hMonitorInfo->cbSize = sizeof(MONITORINFO);
+    GetMonitorInfo(hMonitor, hMonitorInfo);
+  }
+  return wi;
+}
+
+
+
+//=============================================================================
+//
+//  DialogNewWindow()
+//
+//
+void DialogNewWindow(HWND hwnd, BOOL bSaveOnRunTools, BOOL bSetCurFile)
+{
+  WCHAR szModuleName[MAX_PATH] = { L'\0' };
+  WCHAR szFileName[MAX_PATH] = { L'\0' };
+  WCHAR szParameters[2 * MAX_PATH + 64] = { L'\0' };
+  WCHAR tch[64] = { L'\0' };
+
+  if (bSaveOnRunTools && !FileSave(FALSE, TRUE, FALSE, FALSE)) { return; }
+
+  GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
+
+  StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", g_wchAppUserModelID);
+  StringCchCopy(szParameters, COUNTOF(szParameters), tch);
+
+  StringCchPrintf(tch, COUNTOF(tch), L" \"-sysmru=%i\"", (flagUseSystemMRU == 2) ? 1 : 0);
+  StringCchCat(szParameters, COUNTOF(szParameters), tch);
+
+  StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
+  if (StringCchLenW(szIniFile, COUNTOF(szIniFile))) {
+    StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
+    StringCchCat(szParameters, COUNTOF(szParameters), szIniFile);
+    StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
+  }
+  else
+    StringCchCat(szParameters, COUNTOF(szParameters), L"0");
+
+  StringCchCat(szParameters, COUNTOF(szParameters), L" -n");
+
+  MONITORINFO mi;
+  WININFO wi = GetMyWindowPlacement(hwnd, &mi);
+  // offset new window position +10/+10
+  wi.x += 10;
+  wi.y += 10;
+  // check if window fits monitor
+  if ((wi.x + wi.cx) > mi.rcWork.right || (wi.y + wi.cy) > mi.rcWork.bottom) {
+    wi.x = mi.rcMonitor.left;
+    wi.y = mi.rcMonitor.top;
+  }
+  wi.max = IsZoomed(hwnd);
+
+  StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
+  StringCchCat(szParameters, COUNTOF(szParameters), tch);
+
+  if (bSetCurFile && StringCchLenW(g_wchCurFile, FILE_ARG_BUF)) 
+  {
+    StringCchCopy(szFileName, COUNTOF(szFileName), g_wchCurFile);
+    PathQuoteSpaces(szFileName);
+    StringCchCat(szParameters, COUNTOF(szParameters), L" ");
+    StringCchCat(szParameters, COUNTOF(szParameters), szFileName);
+  }
+
   SHELLEXECUTEINFO sei;
   ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
   sei.cbSize = sizeof(SHELLEXECUTEINFO);
-  sei.fMask = SEE_MASK_NOZONECHECKS;
-  sei.hwnd = NULL;
+  sei.fMask = SEE_MASK_NOASYNC | SEE_MASK_NOZONECHECKS;
+  sei.hwnd = hwnd;
   sei.lpVerb = NULL;
-  sei.lpFile = VERSION_UPDATE_CHECK;
-  sei.lpParameters = NULL;
-  sei.lpDirectory = NULL;
+  sei.lpFile = szModuleName;
+  sei.lpParameters = szParameters;
+  sei.lpDirectory = g_wchWorkingDirectory;
   sei.nShow = SW_SHOWNORMAL;
   ShellExecuteEx(&sei);
 }
 
+
+
+//=============================================================================
+//
+//  DialogFileBrowse()
+//
+//
+void DialogFileBrowse(HWND hwnd)
+{
+  WCHAR tchParam[MAX_PATH+2] = L"";
+  WCHAR tchExeFile[MAX_PATH+4];
+  WCHAR tchTemp[MAX_PATH+2];
+
+  if (IniGetString(L"Settings2", L"filebrowser.exe", L"", tchTemp, COUNTOF(tchTemp))) 
+  {
+    ExtractFirstArgument(tchTemp, tchExeFile, tchParam, MAX_PATH+2);
+    if (PathIsRelative(tchExeFile)) {
+      if (!SearchPath(NULL, tchExeFile, NULL, COUNTOF(tchTemp), tchTemp, NULL)) {
+        GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
+        PathRemoveFileSpec(tchTemp);
+        PathCchAppend(tchTemp, COUNTOF(tchTemp), tchExeFile);
+        StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
+      }
+    }
+  }
+  else {
+    if (!SearchPath(NULL, L"minipath.exe", NULL, COUNTOF(tchExeFile), tchExeFile, NULL)) {
+      GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
+      PathRemoveFileSpec(tchExeFile);
+      PathCchAppend(tchExeFile, COUNTOF(tchExeFile), L"minipath.exe");
+    }
+  }
+
+  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(g_wchCurFile, FILE_ARG_BUF))
+    StringCchCat(tchParam, COUNTOF(tchParam), L" ");
+
+  if (StringCchLenW(g_wchCurFile, FILE_ARG_BUF)) {
+    StringCchCopy(tchTemp, COUNTOF(tchTemp), g_wchCurFile);
+    PathQuoteSpaces(tchTemp);
+    StringCchCat(tchParam, COUNTOF(tchParam), tchTemp);
+  }
+
+  SHELLEXECUTEINFO sei;
+  ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+  sei.cbSize = sizeof(SHELLEXECUTEINFO);
+  sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
+  sei.hwnd = hwnd;
+  sei.lpVerb = NULL;
+  sei.lpFile = tchExeFile;
+  sei.lpParameters = tchParam;
+  sei.lpDirectory = NULL;
+  sei.nShow = SW_SHOWNORMAL;
+  ShellExecuteEx(&sei);
+
+  if ((INT_PTR)sei.hInstApp < 32)
+    MsgBox(MBWARN, IDS_ERR_BROWSE);
+
+}
+
+
+//=============================================================================
+//
+//  DialogUpdateCheck()
+//
+//
+void DialogUpdateCheck(HWND hwnd)
+{
+  WCHAR tchExeFile[MAX_PATH+2];
+  WCHAR tchTemp[MAX_PATH+2];
+
+  if (!IniGetString(L"Settings2", L"UpdateChecker.exe", L"", tchTemp, COUNTOF(tchTemp))) 
+  {
+    if (!SearchPath(NULL, L"wyUpdate.exe", NULL, COUNTOF(tchExeFile), tchExeFile, NULL)) {
+      GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
+      PathRemoveFileSpec(tchExeFile);
+      PathCchAppend(tchExeFile, COUNTOF(tchExeFile), L"wyUpdate.exe");
+    }
+  }
+
+  SHELLEXECUTEINFO sei;
+  ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+  sei.cbSize = sizeof(SHELLEXECUTEINFO);
+  sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
+  sei.hwnd = hwnd;
+  sei.lpVerb = NULL;
+  sei.lpFile = tchExeFile;
+  sei.lpParameters = NULL; // tchParam;
+  sei.lpDirectory = g_wchWorkingDirectory;
+  sei.nShow = SW_SHOWNORMAL;
+  ShellExecuteEx(&sei);
+
+  if ((INT_PTR)sei.hInstApp < 32) 
+  {
+    if (IDOK == InfoBox(MBOKCANCEL, L"NoUpdateChecker", IDS_ERR_UPDATECHECKER)) 
+    {
+      sei.lpFile = VERSION_UPDATE_CHECK;
+      ShellExecuteEx(&sei);
+    }
+  }
+  //else { /* TODO: -> CLOSE NP3? */}
+}
 
 
 //=============================================================================

@@ -42,16 +42,6 @@ typedef struct np3params {
 } np3params, *LPnp3params;
 
 
-typedef struct _wi
-{
-  int x;
-  int y;
-  int cx;
-  int cy;
-  int max;
-} WININFO;
-
-
 typedef struct _undoSel
 {
   int selMode_undo;
