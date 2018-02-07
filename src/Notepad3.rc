@@ -181,8 +181,8 @@ BEGIN
         END
         POPUP "&Block"
         BEGIN
-            MENUITEM "&Indent\t(Tab)",              IDM_EDIT_INDENT
-            MENUITEM "&Unindent\t(Shift+Tab)",      IDM_EDIT_UNINDENT
+            MENUITEM "&Indent",                        IDM_EDIT_INDENT
+            MENUITEM "&Unindent",                      IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "&Enclose Selection"
             BEGIN
@@ -376,8 +376,8 @@ BEGIN
         MENUITEM "&Online Documentation\tF1",   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
         MENUITEM "&About...\tShift+F1",         IDM_HELP_ABOUT
-        MENUITEM "&Command Line Help",          IDM_HELP_CMD
-        MENUITEM "Check for &Updates",          IDM_HELP_UPDATECHECK
+        MENUITEM "&Command Line Help...",       IDM_HELP_CMD
+        MENUITEM "Launch &Update Installer",    IDM_HELP_UPDATECHECK
     END
 END
 
@@ -524,7 +524,7 @@ BEGIN
     VK_ADD,         IDM_VIEW_ZOOMIN,        VIRTKEY, CONTROL, NOINVERT
     VK_ADD,         CMD_INCLINELIMIT,       VIRTKEY, ALT, NOINVERT
     VK_ADD,         CMD_INCREASENUM,        VIRTKEY, CONTROL, ALT, NOINVERT
-    VK_BACK,        CMD_BACK,               VIRTKEY, NOINVERT
+    VK_BACK,        CMD_DELETEBACK,         VIRTKEY, NOINVERT
     VK_BACK,        CMD_CTRLBACK,           VIRTKEY, CONTROL, NOINVERT
     VK_BACK,        IDM_EDIT_UNDO,          VIRTKEY, ALT, NOINVERT
     VK_BACK,        IDM_EDIT_DELETELINELEFT, VIRTKEY, SHIFT, CONTROL, NOINVERT

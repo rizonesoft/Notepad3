@@ -2780,7 +2780,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit, SCI_COPYALLOWLINE, 0, 0);
+        EndUndoAction(token);
         UpdateToolbar();
       }
       break;
@@ -2790,7 +2792,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_COPYRANGE,0,(LPARAM)SciCall_GetTextLength());
+        EndUndoAction(token);
         UpdateToolbar();
       }
       break;
@@ -2800,7 +2804,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
+        int token = BeginUndoAction();
         EditCopyAppend(g_hwndEdit);
+        EndUndoAction(token);
         UpdateToolbar();
       }
       break;
@@ -2809,7 +2815,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-        EditPaste(g_hwndEdit, FALSE);
+        int token = BeginUndoAction();
+        EditPasteClipboard(g_hwndEdit, FALSE);
+        EndUndoAction(token);
         UpdateToolbar();
         UpdateStatusbar();
       }
@@ -2819,7 +2827,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
-        EditPaste(g_hwndEdit, TRUE);
+        int token = BeginUndoAction();
+        EditPasteClipboard(g_hwndEdit, TRUE);
+        EndUndoAction(token);
         UpdateToolbar();
         UpdateStatusbar();
       }
@@ -2969,73 +2979,55 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INDENT:
       {
-        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        if (SciCall_IsSelectionRectangle()) 
-        {
-          SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
-        }
-        else {
-          EditIndentBlock(g_hwndEdit, SCI_TAB, bTabIndents, bBackspaceUnindents);
-        }
-        if (token >= 0) { EndUndoAction(token); }
+        int token = BeginUndoAction();
+        EditIndentBlock(g_hwndEdit, SCI_TAB, TRUE);
+        EndUndoAction(token);
       }
       break;
 
     case IDM_EDIT_UNINDENT:
       {
-        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        if (SciCall_IsSelectionRectangle()) 
-        {
-          SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
-        }
-        else {
-          EditIndentBlock(g_hwndEdit, SCI_DELETEBACK, bTabIndents, bBackspaceUnindents);
-        }
-        if (token >= 0) { EndUndoAction(token); }
+        int token = BeginUndoAction();
+        EditIndentBlock(g_hwndEdit, SCI_BACKTAB, TRUE);
+        EndUndoAction(token);
       }
       break;
-
 
     case CMD_TAB:
       {
-        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        if (IsSingleLineSelection() || SciCall_IsSelectionRectangle()) 
-        {
-          SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
-        }
-        else {
-          EditIndentBlock(g_hwndEdit, SCI_TAB, bTabIndents, bBackspaceUnindents);
-        }
-        if (token >= 0) { EndUndoAction(token); }
-      }
-    break;
-
-    case CMD_BACKTAB:
-      {
-        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        if (IsSingleLineSelection() || SciCall_IsSelectionRectangle()) 
-        {
-          SendMessage(g_hwndEdit, SCI_BACKTAB, 0, 0);
-        }
-        else {
-          EditIndentBlock(g_hwndEdit, SCI_BACKTAB, bTabIndents, bBackspaceUnindents);
-        }
-        if (token >= 0) { EndUndoAction(token); }
-      }
-    break;
-
-    case CMD_CTRLTAB:
-      {
-        int token = SciCall_IsSelectionEmpty() ? -1 : BeginUndoAction();
-        SendMessage(g_hwndEdit, SCI_SETUSETABS, TRUE, 0);
-        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, FALSE, 0);
-        SendMessage(g_hwndEdit, SCI_TAB, 0, 0);
-        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, bTabIndents, 0);
-        SendMessage(g_hwndEdit, SCI_SETUSETABS, !bTabsAsSpaces, 0);
-        if (token >= 0) { EndUndoAction(token); }
+        int token = BeginUndoAction();
+        EditIndentBlock(g_hwndEdit, SCI_TAB, FALSE);
+        EndUndoAction(token);
       }
       break;
 
+    case CMD_BACKTAB:
+      {
+        int token = BeginUndoAction();
+        EditIndentBlock(g_hwndEdit, SCI_BACKTAB, FALSE);
+        EndUndoAction(token);
+      }
+      break;
+
+    case CMD_CTRLTAB:
+      {
+        int token = BeginUndoAction();
+        SendMessage(g_hwndEdit, SCI_SETUSETABS, TRUE, 0);
+        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, FALSE, 0);
+        EditIndentBlock(g_hwndEdit, SCI_TAB, FALSE);
+        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, bTabIndents, 0);
+        SendMessage(g_hwndEdit, SCI_SETUSETABS, !bTabsAsSpaces, 0);
+        EndUndoAction(token);
+      }
+      break;
+
+    case CMD_DELETEBACK:
+      {
+        int token = BeginUndoAction();
+        SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
+        EndUndoAction(token);
+      }
+      break;
 
     case IDM_EDIT_ENCLOSESELECTION:
       if (EditEncloseSelectionDlg(hwnd,wchPrefixSelection,wchAppendSelection)) {
@@ -4404,15 +4396,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-
-    case CMD_BACK:
-      {
-        int token = BeginUndoAction();
-        SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
-        EndUndoAction(token);
-      }
-      break;
-  
 
     case CMD_CTRLLEFT:
         SendMessage(g_hwndEdit, SCI_WORDLEFT, 0, 0);

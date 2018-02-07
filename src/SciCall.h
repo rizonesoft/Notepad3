@@ -90,6 +90,7 @@ DeclareSciCallR0(IsDocModified, GETMODIFY, bool);
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool);
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
+
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos);
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos);
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
@@ -227,6 +228,8 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //  Utilities
 //
+
+#define IsSelThinRectangle() (SciCall_GetSelectionMode() == SC_SEL_THIN)
 
 #define SciClearClipboard() SciCall_CopyText(0, "")
 
