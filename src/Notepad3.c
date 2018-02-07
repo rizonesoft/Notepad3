@@ -139,14 +139,14 @@ BOOL      bAutoCloseTags;
 BOOL      bShowIndentGuides;
 BOOL      bHiliteCurrentLine;
 BOOL      bHyperlinkHotspot;
-BOOL      bTabsAsSpaces;
+BOOL      g_bTabsAsSpaces;
 BOOL      bTabsAsSpacesG;
-BOOL      bTabIndents;
+BOOL      g_bTabIndents;
 BOOL      bTabIndentsG;
 BOOL      bBackspaceUnindents;
-int       iTabWidth;
+int       g_iTabWidth;
 int       iTabWidthG;
-int       iIndentWidth;
+int       g_iIndentWidth;
 int       iIndentWidthG;
 BOOL      bMarkLongLines;
 int       iLongLinesLimit;
@@ -1123,8 +1123,8 @@ void __fastcall SetWordWrapping()
     switch (iWordWrapIndent) {
     case 1: i = 1; break;
     case 2: i = 2; break;
-    case 3: i = (iIndentWidth) ? 1 * iIndentWidth : 1 * iTabWidth; break;
-    case 4: i = (iIndentWidth) ? 2 * iIndentWidth : 2 * iTabWidth; break;
+    case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
+    case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
     }
     SendMessage(g_hwndEdit, SCI_SETWRAPSTARTINDENT, i, 0);
     SendMessage(g_hwndEdit, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_FIXED, 0);
@@ -1173,11 +1173,11 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
     (bDenyVirtualSpaceAccess ? SCVS_NONE : (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART)), 0);
 
   // Tabs
-  SendMessage(g_hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
-  SendMessage(g_hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
+  SendMessage(g_hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
+  SendMessage(g_hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
   SendMessage(g_hwndEdit,SCI_SETBACKSPACEUNINDENTS,bBackspaceUnindents,0);
-  SendMessage(g_hwndEdit,SCI_SETTABWIDTH,iTabWidth,0);
-  SendMessage(g_hwndEdit,SCI_SETINDENT,iIndentWidth,0);
+  SendMessage(g_hwndEdit,SCI_SETTABWIDTH,g_iTabWidth,0);
+  SendMessage(g_hwndEdit,SCI_SETINDENT,g_iIndentWidth,0);
 
   // Indent Guides
   Style_SetIndentGuides(g_hwndEdit,bShowIndentGuides);
@@ -2249,7 +2249,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   CheckCmd(hmenu,IDM_VIEW_WORDWRAP,bWordWrap);
   CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,bMarkLongLines);
-  CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,bTabsAsSpaces);
+  CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,g_bTabsAsSpaces);
   CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,bShowIndentGuides);
   CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,bAutoIndent);
   CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,bShowLineNumbers);
@@ -3015,8 +3015,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SendMessage(g_hwndEdit, SCI_SETUSETABS, TRUE, 0);
         SendMessage(g_hwndEdit, SCI_SETTABINDENTS, FALSE, 0);
         EditIndentBlock(g_hwndEdit, SCI_TAB, FALSE);
-        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, bTabIndents, 0);
-        SendMessage(g_hwndEdit, SCI_SETUSETABS, !bTabsAsSpaces, 0);
+        SendMessage(g_hwndEdit, SCI_SETTABINDENTS, g_bTabIndents, 0);
+        SendMessage(g_hwndEdit, SCI_SETUSETABS, !g_bTabsAsSpaces, 0);
         EndUndoAction(token);
       }
       break;
@@ -3287,7 +3287,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditTabsToSpaces(g_hwndEdit, iTabWidth, FALSE);
+        EditTabsToSpaces(g_hwndEdit, g_iTabWidth, FALSE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -3298,7 +3298,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditSpacesToTabs(g_hwndEdit, iTabWidth, FALSE);
+        EditSpacesToTabs(g_hwndEdit, g_iTabWidth, FALSE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -3309,7 +3309,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditTabsToSpaces(g_hwndEdit, iTabWidth, TRUE);
+        EditTabsToSpaces(g_hwndEdit, g_iTabWidth, TRUE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -3320,7 +3320,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditSpacesToTabs(g_hwndEdit, iTabWidth, TRUE);
+        EditSpacesToTabs(g_hwndEdit, g_iTabWidth, TRUE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -3916,33 +3916,33 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TABSASSPACES:
-      bTabsAsSpaces = (bTabsAsSpaces) ? FALSE : TRUE;
-      SendMessage(g_hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
-      bTabsAsSpacesG = bTabsAsSpaces;
+      g_bTabsAsSpaces = (g_bTabsAsSpaces) ? FALSE : TRUE;
+      SendMessage(g_hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
+      bTabsAsSpacesG = g_bTabsAsSpaces;
       break;
 
 
     case IDM_VIEW_TABSETTINGS:
       if (TabSettingsDlg(hwnd,IDD_TABSETTINGS,NULL))
       {
-        SendMessage(g_hwndEdit,SCI_SETUSETABS,!bTabsAsSpaces,0);
-        SendMessage(g_hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
+        SendMessage(g_hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
+        SendMessage(g_hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
         SendMessage(g_hwndEdit,SCI_SETBACKSPACEUNINDENTS,bBackspaceUnindents,0);
-        iTabWidth = max(min(iTabWidth,256),1);
-        iIndentWidth = max(min(iIndentWidth,256),0);
-        SendMessage(g_hwndEdit,SCI_SETTABWIDTH,iTabWidth,0);
-        SendMessage(g_hwndEdit,SCI_SETINDENT,iIndentWidth,0);
-        bTabsAsSpacesG = bTabsAsSpaces;
-        bTabIndentsG   = bTabIndents;
-        iTabWidthG     = iTabWidth;
-        iIndentWidthG  = iIndentWidth;
+        g_iTabWidth = max(min(g_iTabWidth,256),1);
+        g_iIndentWidth = max(min(g_iIndentWidth,256),0);
+        SendMessage(g_hwndEdit,SCI_SETTABWIDTH,g_iTabWidth,0);
+        SendMessage(g_hwndEdit,SCI_SETINDENT,g_iIndentWidth,0);
+        bTabsAsSpacesG = g_bTabsAsSpaces;
+        bTabIndentsG   = g_bTabIndents;
+        iTabWidthG     = g_iTabWidth;
+        iIndentWidthG  = g_iIndentWidth;
         if (SendMessage(g_hwndEdit,SCI_GETWRAPINDENTMODE,0,0) == SC_WRAPINDENT_FIXED) {
           int i = 0;
           switch (iWordWrapIndent) {
             case 1: i = 1; break;
             case 2: i = 2; break;
-            case 3: i = (iIndentWidth) ? 1 * iIndentWidth : 1 * iTabWidth; break;
-            case 4: i = (iIndentWidth) ? 2 * iIndentWidth : 2 * iTabWidth; break;
+            case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
+            case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
           }
           SendMessage(g_hwndEdit,SCI_SETWRAPSTARTINDENT,i,0);
         }
@@ -5760,21 +5760,21 @@ void LoadSettings()
 
   bShowIndentGuides = IniSectionGetBool(pIniSection,L"ShowIndentGuides",FALSE);
 
-  bTabsAsSpaces = IniSectionGetBool(pIniSection,L"TabsAsSpaces",TRUE);
-  bTabsAsSpacesG = bTabsAsSpaces;
+  g_bTabsAsSpaces = IniSectionGetBool(pIniSection,L"TabsAsSpaces",TRUE);
+  bTabsAsSpacesG = g_bTabsAsSpaces;
 
-  bTabIndents = IniSectionGetBool(pIniSection,L"TabIndents",TRUE);
-  bTabIndentsG = bTabIndents;
+  g_bTabIndents = IniSectionGetBool(pIniSection,L"TabIndents",TRUE);
+  bTabIndentsG = g_bTabIndents;
 
   bBackspaceUnindents = IniSectionGetBool(pIniSection,L"BackspaceUnindents",FALSE);
 
-  iTabWidth = IniSectionGetInt(pIniSection,L"TabWidth",2);
-  iTabWidth = max(min(iTabWidth,256),1);
-  iTabWidthG = iTabWidth;
+  g_iTabWidth = IniSectionGetInt(pIniSection,L"TabWidth",2);
+  g_iTabWidth = max(min(g_iTabWidth,256),1);
+  iTabWidthG = g_iTabWidth;
 
-  iIndentWidth = IniSectionGetInt(pIniSection,L"IndentWidth",0);
-  iIndentWidth = max(min(iIndentWidth,256),0);
-  iIndentWidthG = iIndentWidth;
+  g_iIndentWidth = IniSectionGetInt(pIniSection,L"IndentWidth",0);
+  g_iIndentWidth = max(min(g_iIndentWidth,256),0);
+  iIndentWidthG = g_iIndentWidth;
 
   bMarkLongLines = IniSectionGetBool(pIniSection,L"MarkLongLines",FALSE);
 

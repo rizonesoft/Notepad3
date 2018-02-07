@@ -92,10 +92,11 @@ extern int  iMarkOccurrencesMaxCount;
 extern BOOL bMarkOccurrencesMatchVisible;
 extern BOOL bShowCodeFolding;
 
-extern BOOL bTabsAsSpaces;
-extern BOOL bTabsAsSpacesG;
-extern BOOL bTabIndents;
-extern BOOL bTabIndentsG;
+extern BOOL g_bTabsAsSpaces;
+extern BOOL g_bTabIndents;
+extern int  g_iTabWidth;
+extern int  g_iIndentWidth;
+
 
 extern NP2ENCODING g_Encodings[];
 
@@ -717,7 +718,8 @@ void EditPaste2RectSel(HWND hwnd, char* pText)
       pTextLine = ln; // next clip line
     }
     //else: rest of rect single selections are filled with last line
-  }
+  
+  } // for()
 
   EditLeaveTargetTransaction();
   ObserveNotifyChangeEvent();
@@ -2685,14 +2687,23 @@ void EditIndentBlock(HWND hwnd, int cmd, BOOL bFormatIndentation)
     return;
   }
 
-  if (SciCall_IsSelectionRectangle()) {
-    if (cmd == SCI_TAB) {
-      if (bTabsAsSpaces)
-        EditPaste2RectSel(hwnd, "       ");
-      else
-        EditPaste2RectSel(hwnd, "\t");
-      return;
-    }
+  if (SciCall_IsSelectionRectangle()) 
+  {
+    //if (cmd == SCI_TAB) {
+    //  if (g_bTabsAsSpaces) {
+    //    int size = (bFormatIndentation ? g_iIndentWidth : g_iTabWidth);
+    //    char* pPadStr = LocalAlloc(LPTR, size + 1);
+    //    FillMemory(pPadStr, size, ' ');
+    //    EditPaste2RectSel(hwnd, pPadStr);
+    //    LocalFree(pPadStr);
+    //  }
+    //  else {
+    //    EditPaste2RectSel(hwnd, "\t");
+    //  }
+    //  return;
+    //}
+    // better idea:  EditPaste2RectSel(hwnd, pPadStr, pText); pText==NULL => copy single sel
+
     //TODO: workaround for rectangular selection: make stream selection
     EditSelectEx(hwnd, SciCall_GetAnchor(), SciCall_GetCurrentPos());
   }
@@ -7037,9 +7048,9 @@ BOOL FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
 //
 //  FileVars_Apply()
 //
-extern int iTabWidth;
+extern BOOL bTabsAsSpacesG;
+extern BOOL bTabIndentsG;
 extern int iTabWidthG;
-extern int iIndentWidth;
 extern int iIndentWidthG;
 extern BOOL bWordWrap;
 extern BOOL bWordWrapG;
@@ -7051,30 +7062,30 @@ extern int iWrapCol;
 BOOL FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
 
   if (lpfv->mask & FV_TABWIDTH)
-    iTabWidth = lpfv->iTabWidth;
+    g_iTabWidth = lpfv->iTabWidth;
   else
-    iTabWidth = iTabWidthG;
-  SendMessage(hwnd,SCI_SETTABWIDTH,iTabWidth,0);
+    g_iTabWidth = iTabWidthG;
+  SendMessage(hwnd,SCI_SETTABWIDTH,g_iTabWidth,0);
 
   if (lpfv->mask & FV_INDENTWIDTH)
-    iIndentWidth = lpfv->iIndentWidth;
+    g_iIndentWidth = lpfv->iIndentWidth;
   else if (lpfv->mask & FV_TABWIDTH)
-    iIndentWidth = 0;
+    g_iIndentWidth = 0;
   else
-    iIndentWidth = iIndentWidthG;
-  SendMessage(hwnd,SCI_SETINDENT,iIndentWidth,0);
+    g_iIndentWidth = iIndentWidthG;
+  SendMessage(hwnd,SCI_SETINDENT,g_iIndentWidth,0);
 
   if (lpfv->mask & FV_TABSASSPACES)
-    bTabsAsSpaces = lpfv->bTabsAsSpaces;
+    g_bTabsAsSpaces = lpfv->bTabsAsSpaces;
   else
-    bTabsAsSpaces = bTabsAsSpacesG;
-  SendMessage(hwnd,SCI_SETUSETABS,!bTabsAsSpaces,0);
+    g_bTabsAsSpaces = bTabsAsSpacesG;
+  SendMessage(hwnd,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
 
   if (lpfv->mask & FV_TABINDENTS)
-    bTabIndents = lpfv->bTabIndents;
+    g_bTabIndents = lpfv->bTabIndents;
   else
-    bTabIndents = bTabIndentsG;
-  SendMessage(g_hwndEdit,SCI_SETTABINDENTS,bTabIndents,0);
+    g_bTabIndents = bTabIndentsG;
+  SendMessage(g_hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
 
   if (lpfv->mask & FV_WORDWRAP)
     bWordWrap = lpfv->fWordWrap;
