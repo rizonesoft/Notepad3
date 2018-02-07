@@ -98,6 +98,9 @@
     <ClInclude Include="VersionEx.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="TypeDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">

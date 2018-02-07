@@ -2066,7 +2066,10 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
 
-  int i,i2,i3;
+  int i;
+  DocPos p;
+  BOOL b;
+
   HMENU hmenu = (HMENU)wParam;
 
   i = StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile));
@@ -2127,20 +2130,20 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
   i = !SciCall_IsSelectionEmpty();
-  i2 = SciCall_GetTextLength();
-  i3 = (int)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
+  p = SciCall_GetTextLength();
+  b = (BOOL)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
   
-  EnableCmd(hmenu,IDM_EDIT_CUT,i2 /*&& !bReadOnly*/);       // allow Ctrl-X w/o selection
-  EnableCmd(hmenu,IDM_EDIT_COPY,i2 /*&& !bReadOnly*/);      // allow Ctrl-C w/o selection
+  EnableCmd(hmenu,IDM_EDIT_CUT,p /*&& !bReadOnly*/);       // allow Ctrl-X w/o selection
+  EnableCmd(hmenu,IDM_EDIT_COPY,p /*&& !bReadOnly*/);      // allow Ctrl-C w/o selection
 
-  EnableCmd(hmenu,IDM_EDIT_COPYALL,i2 /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_COPYALL,p /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_COPYADD,i /*&& !bReadOnly*/);
 
-  EnableCmd(hmenu,IDM_EDIT_PASTE,i3 /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_SWAP,i || i3 /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_PASTE,b /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_SWAP,i || b /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_CLEAR,i /*&& !bReadOnly*/);
 
-  EnableCmd(hmenu, IDM_EDIT_SELECTALL, i2 /*&& !bReadOnly*/);
+  EnableCmd(hmenu, IDM_EDIT_SELECTALL, p /*&& !bReadOnly*/);
   
 
   OpenClipboard(hwnd);
@@ -5154,7 +5157,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  OpenHotSpotURL()
 //
 //
-void OpenHotSpotURL(int position, BOOL bForceBrowser)
+void OpenHotSpotURL(DocPos position, BOOL bForceBrowser)
 {
   int iStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, position, 0);
 
@@ -5165,38 +5168,31 @@ void OpenHotSpotURL(int position, BOOL bForceBrowser)
     return;
 
   // get left most position of style
-  int pos = position;
+  DocPos pos = position;
   int iNewStyle = iStyle;
   while ((iNewStyle == iStyle) && (--pos > 0)) {
     iNewStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, pos, 0);
   }
-  int firstPos = (pos != 0) ? (pos + 1) : 0;
+  DocPos firstPos = (pos != 0) ? (pos + 1) : 0;
 
   // get right most position of style
   pos = position;
   iNewStyle = iStyle;
-  int posTextLength = SciCall_GetTextLength();
+  DocPos posTextLength = SciCall_GetTextLength();
   while ((iNewStyle == iStyle) && (++pos < posTextLength)) {
     iNewStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, pos, 0);
   }
-  int lastPos = pos;
+  DocPos lastPos = pos;
+  DocPos length = (lastPos - firstPos);
 
-  int length = lastPos - firstPos;
-
-  if ((length > 0) && (length < HUGE_BUFFER))
+  if ((length > 0) && (length < XHUGE_BUFFER))
   {
-    char chURL[HUGE_BUFFER] = { '\0' };
-    struct Sci_TextRange tr = { { 0, -1 }, NULL };
-    tr.chrg.cpMin = (Sci_PositionCR)firstPos;
-    tr.chrg.cpMax = (Sci_PositionCR)lastPos;
-    tr.lpstrText = chURL;
+    char chURL[XHUGE_BUFFER] = { '\0' };
 
-    SendMessage(g_hwndEdit, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
-
+    StringCchCopyNA(chURL, XHUGE_BUFFER, SciCall_GetRangePointer(firstPos, length), length);
     StrTrimA(chURL, " \t\n\r");
     
-    if (!StringCchLenA(chURL, COUNTOF(chURL)))
-      return;
+    if (!StringCchLenA(chURL, COUNTOF(chURL))) { return; }
 
     WCHAR wchURL[HUGE_BUFFER] = { L'\0' };
     MultiByteToWideCharStrg(Encoding_SciGetCodePage(g_hwndEdit), chURL, wchURL);
@@ -5224,7 +5220,7 @@ void OpenHotSpotURL(int position, BOOL bForceBrowser)
     }
     else { // open in web browser
 
-      WCHAR wchDirectory[MAX_PATH] = { L'\0' };
+      WCHAR wchDirectory[MAX_PATH+1] = { L'\0' };
       if (StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile))) {
         StringCchCopy(wchDirectory, COUNTOF(wchDirectory), g_wchCurFile);
         PathRemoveFileSpec(wchDirectory);
@@ -5402,13 +5398,13 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               // in CRLF mode handle LF only...
               if ((SC_EOL_CRLF == iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != iEOLMode)
               {
-                int iCurPos = SciCall_GetCurrentPos();
-                int iCurLine = SciCall_LineFromPosition(iCurPos);
+                DocPos iCurPos = SciCall_GetCurrentPos();
+                DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
 
                 // Move bookmark along with line if inserting lines (pressing return at beginning of line) because Scintilla does not do this for us
                 if (iCurLine > 0)
                 {
-                  int iPrevLineLength = SciCall_GetLineEndPosition(iCurLine - 1) - SciCall_PositionFromLine(iCurLine - 1);
+                  DocPos iPrevLineLength = SciCall_GetLineEndPosition(iCurLine - 1) - SciCall_PositionFromLine(iCurLine - 1);
                   if (iPrevLineLength == 0)
                   {
                     int bitmask = (int)SendMessage(g_hwndEdit, SCI_MARKERGET, iCurLine - 1, 0);
@@ -5422,7 +5418,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
                 if (iCurLine > 0/* && iLineLength <= 2*/)
                 {
-                  const int iPrevLineLength = SciCall_LineLength(iCurLine - 1);
+                  const DocPos iPrevLineLength = SciCall_LineLength(iCurLine - 1);
                   char* pLineBuf = NULL;
                   if (iPrevLineLength < FNDRPL_BUFFER) {
                     pLineBuf = chLineBuffer;
@@ -5519,7 +5515,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             DocLn iFirstLine = SciCall_LineFromPosition((DocPos)scn->position);
             DocLn iLastLine = SciCall_LineFromPosition((DocPos)(scn->position + scn->length - 1));
-            for (int i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
+            for (DocLn i = iFirstLine; i <= iLastLine; ++i) { SciCall_EnsureVisible(i); }
           }
           break;
 
@@ -6931,25 +6927,22 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_UNDO,SendMessage(g_hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_REDO,SendMessage(g_hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
 
-  int i, i2, i3;
-  i =  !(BOOL)SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
-  i2 = SciCall_GetTextLength();
-  i3 = (int)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
+  BOOL b1 = !SciCall_IsSelectionEmpty();
+  BOOL b2 = (BOOL)(SciCall_GetTextLength() > 0);
+  BOOL b3 = (BOOL)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
 
+  EnableTool(IDT_EDIT_FIND, b2);
+  //EnableTool(IDT_EDIT_FINDNEXT,b2);
+  //EnableTool(IDT_EDIT_FINDPREV,b2 && strlen(g_efrData.szFind));
+  EnableTool(IDT_EDIT_REPLACE, b2 /*&& !bReadOnly*/);
 
-  EnableTool(IDT_EDIT_FIND,i2);
-  //EnableTool(IDT_EDIT_FINDNEXT,i2);
-  //EnableTool(IDT_EDIT_FINDPREV,i2 && strlen(g_efrData.szFind));
-  EnableTool(IDT_EDIT_REPLACE, i2 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_CUT, b2 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_COPY, b2 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_PASTE, b3 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_CLEAR, b1 /*&& !bReadOnly*/);
 
-  EnableTool(IDT_EDIT_CUT, i2 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_COPY, i2 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_PASTE, i3 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_CLEAR,i /*&& !bReadOnly*/);
-
-
-  EnableTool(IDT_VIEW_TOGGLEFOLDS,i2 && bShowCodeFolding);
-  EnableTool(IDT_FILE_LAUNCH,i2);
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && bShowCodeFolding);
+  EnableTool(IDT_FILE_LAUNCH, b2);
 
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
 
@@ -6986,8 +6979,8 @@ void UpdateStatusbar()
 
   if (!bShowStatusbar) { return; }
 
-  const int iPos = SciCall_GetCurrentPos();
-  const int iTextLength = SciCall_GetTextLength();
+  const DocPos iPos = SciCall_GetCurrentPos();
+  const DocPos iTextLength = SciCall_GetTextLength();
   const int iEncoding = Encoding_Current(CPI_GET);
 
   StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", SciCall_LineFromPosition(iPos) + 1);
@@ -6996,8 +6989,8 @@ void UpdateStatusbar()
   StringCchPrintf(tchLines, COUNTOF(tchLines), L"%i", SciCall_GetLineCount());
   FormatNumberStr(tchLines);
 
-  int iCol = SciCall_GetColumn(iPos) + 1;
-  iCol += (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
+  DocPos iCol = SciCall_GetColumn(iPos) + 1;
+  iCol += (DocPos)SendMessage(g_hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
   StringCchPrintf(tchCol, COUNTOF(tchCol), L"%i", iCol);
   FormatNumberStr(tchCol);
 
@@ -7008,8 +7001,8 @@ void UpdateStatusbar()
 
   // Print number of selected chars in statusbar
   const BOOL bIsSelEmpty = SciCall_IsSelectionEmpty();
-  const int iSelStart = (bIsSelEmpty ? 0 : SciCall_GetSelectionStart());
-  const int iSelEnd = (bIsSelEmpty ? 0 : SciCall_GetSelectionEnd());
+  const DocPos iSelStart = (bIsSelEmpty ? 0 : SciCall_GetSelectionStart());
+  const DocPos iSelEnd = (bIsSelEmpty ? 0 : SciCall_GetSelectionEnd());
 
   if (!bIsSelEmpty && !SciCall_IsSelectionRectangle())
   {
@@ -7047,10 +7040,10 @@ void UpdateStatusbar()
     tchLinesSelected[2] = L'\0';
   }
   else {
-    const int iLineStart = SciCall_LineFromPosition(iSelStart);
-    const int iLineEnd = SciCall_LineFromPosition(iSelEnd);
-    const int iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
-    int iLinesSelected = (iLineEnd - iLineStart);
+    const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
+    const DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
+    const DocPos iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
+    DocLn iLinesSelected = (iLineEnd - iLineStart);
     if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) { iLinesSelected += 1; }
     StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
     FormatNumberStr(tchLinesSelected);
@@ -7280,13 +7273,13 @@ void RestoreAction(int token, DoAction doAct)
 
     ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0); // prepare - not needed ?
 
-    const int _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
-    const int _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
+    const DocPos _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
+    const DocPos _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
 
     // Ensure that the first and last lines of a selection are always unfolded
     // This needs to be done _before_ the SCI_SETSEL message
-    const int anchorPosLine = SciCall_LineFromPosition(_anchorPos);
-    const int currPosLine = SciCall_LineFromPosition(_curPos);
+    const DocLn anchorPosLine = SciCall_LineFromPosition(_anchorPos);
+    const DocLn currPosLine = SciCall_LineFromPosition(_curPos);
     ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
     if (anchorPosLine != currPosLine) { ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
 

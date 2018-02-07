@@ -16,6 +16,8 @@
 #ifndef _NP3_EDIT_H_
 #define _NP3_EDIT_H_
 
+#include "TypeDefs.h"
+
 // extern "C" declarations of Scintilla functions
 BOOL Scintilla_RegisterClasses(void*);
 BOOL Scintilla_ReleaseResources();
@@ -100,8 +102,8 @@ void  EditWrapToColumn(HWND,int);
 void  EditJoinLinesEx(HWND,BOOL,BOOL);
 void  EditSortLines(HWND,int);
 
-void  EditJumpTo(HWND,int,int);
-void  EditSelectEx(HWND,int,int);
+void  EditJumpTo(HWND, DocLn, DocPos);
+void  EditSelectEx(HWND, DocPos, DocPos);
 void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);
 void  EditGetExcerpt(HWND,LPWSTR,DWORD);
@@ -110,7 +112,7 @@ HWND  EditFindReplaceDlg(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditFindNext(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditFindPrev(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditReplace(HWND,LPCEDITFINDREPLACE);
-int   EditReplaceAllInRange(HWND,LPCEDITFINDREPLACE,BOOL,int,int);
+int   EditReplaceAllInRange(HWND,LPCEDITFINDREPLACE,BOOL, DocPos, DocPos);
 BOOL  EditReplaceAll(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditReplaceAllInSelection(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditLinenumDlg(HWND);
@@ -123,15 +125,15 @@ BOOL  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
-void  EditClearAllMarks(HWND,int,int);
-void  EditMarkAll(HWND,char*,int,int,int,BOOL,BOOL);
-void  EditUpdateUrlHotspots(HWND, int, int, BOOL);
+void  EditClearAllMarks(HWND, DocPos, DocPos);
+void  EditMarkAll(HWND, char*, int, DocPos, DocPos, BOOL, BOOL);
+void  EditUpdateUrlHotspots(HWND, DocPos, DocPos, BOOL);
 void  EditSetAccelWordNav(HWND,BOOL);
 void  EditCompleteWord(HWND,BOOL);
 void  EditGetBookmarkList(HWND,LPWSTR,int);
 void  EditSetBookmarkList(HWND,LPCWSTR);
-void  EditApplyLexerStyle(HWND, int, int);
-void  EditFinalizeStyling(HWND,int);
+void  EditApplyLexerStyle(HWND, DocPos, DocPos);
+void  EditFinalizeStyling(HWND, DocPos);
 
 void  EditMarkAllOccurrences();
 void  EditUpdateVisibleUrlHotspot(BOOL);
@@ -193,7 +195,7 @@ typedef enum {
 } FOLD_MOVE;
 
 void EditFoldToggleAll(FOLD_ACTION);
-void EditFoldClick(int, int);
+void EditFoldClick(DocLn, int);
 void EditFoldAltArrow(FOLD_MOVE, FOLD_ACTION);
 
 

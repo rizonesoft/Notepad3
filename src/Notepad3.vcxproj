@@ -333,6 +333,7 @@
     <ClInclude Include="SciCall.h" />
     <ClInclude Include="Styles.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TypeDefs.h" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="VersionEx.h" />
   </ItemGroup>

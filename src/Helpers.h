@@ -16,6 +16,7 @@
 #ifndef _NP3_HELPERS_H_
 #define _NP3_HELPERS_H_
 
+#include "TypeDefs.h"
 #include <VersionHelpers.h>
 #define STRSAFE_NO_CB_FUNCTIONS
 #undef STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
@@ -32,7 +33,8 @@
 
 extern WCHAR szIniFile[MAX_PATH];
 
-__inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
+__forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
+__forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
   GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),szIniFile)
@@ -421,12 +423,8 @@ BOOL IsUnicode(const char*,int,LPBOOL,LPBOOL);
 BOOL IsUTF8(const char*,int);
 BOOL IsUTF7(const char*,int);
 
-#define IsUTF8Signature(p) \
-          ((*(p+0) == '\xEF' && *(p+1) == '\xBB' && *(p+2) == '\xBF'))
-
-
-#define UTF8StringStart(p) \
-          (IsUTF8Signature(p)) ? (p+3) : (p)
+#define IsUTF8Signature(p) ((*(p+0) == '\xEF' && *(p+1) == '\xBB' && *(p+2) == '\xBF'))
+#define UTF8StringStart(p) (IsUTF8Signature(p)) ? (p+3) : (p)
 
 INT UTF8_mbslen_bytes(LPCSTR utf8_string);
 INT UTF8_mbslen(LPCSTR source,INT byte_length);
