@@ -656,6 +656,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Find Text"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "Search Strin&g:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Match &case",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
     CONTROL         "Match &whole word only",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
@@ -672,7 +673,6 @@ BEGIN
     PUSHBUTTON      "Close",IDCANCEL,216,41,50,14
     CONTROL         "<a>Goto Replace (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,104,74,10
-    LTEXT           "Search Strin&g:",IDC_STATIC,7,7,46,8
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
@@ -683,7 +683,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Replace Text"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "Search Strin&g:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Replace wit&h:",IDC_STATIC,7,35,44,8
     COMBOBOX        IDC_REPLACETEXT,7,46,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Match &case",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
     CONTROL         "Match &whole word only",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
@@ -704,8 +706,6 @@ BEGIN
     PUSHBUTTON      "Close",IDCANCEL,216,127,50,14
     CONTROL         "<a>Goto Find (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
                     "SysLink",0x0,125,131,74,10
-    LTEXT           "Search Strin&g:",IDC_STATIC,7,7,46,8
-    LTEXT           "Replace wit&h:",IDC_STATIC,7,35,44,8
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
@@ -716,12 +716,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Run"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    ICON            IDI_RUN,IDC_STATIC,10,7,21,20
+    LTEXT           "Type the name of a program, folder, document, or internet resource, and Windows will open it for you.",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Browse...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
     PUSHBUTTON      "Cancel",IDCANCEL,105,69,55,16
-    ICON            IDI_RUN,IDC_STATIC,10,7,20,20
-    LTEXT           "Type the name of a program, folder, document, or internet resource, and Windows will open it for you.",IDC_STATIC,39,7,179,17
 END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 129
@@ -731,9 +731,9 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
+    LTEXT           "Click here to specify the directory with links to your favorite applications.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,108,108,50,14
-    LTEXT           "Click here to specify the directory with links to your favorite applications.",IDC_OPENWITHDESCR,26,83,132,18
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
 END
 
@@ -742,6 +742,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Encoding"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    LTEXT           "&Default encoding:",IDC_STATIC,7,7,58,8
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,7,20,166,128
     CONTROL         "Skip automatic &Unicode detection.",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,43,124,10
@@ -753,7 +754,6 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,102,10
     DEFPUSHBUTTON   "OK",IDOK,68,97,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,123,97,50,14
-    LTEXT           "&Default encoding:",IDC_STATIC,7,7,58,8
 END
 
 IDD_DEFEOLMODE DIALOGEX 0, 0, 180, 78
@@ -761,6 +761,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Line Endings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    LTEXT           "&Default line ending mode:",IDC_STATIC,7,7,82,8
     COMBOBOX        100,7,20,98,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Ensure consistent line endings when saving.",IDC_CONSISTENTEOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,48,157,10
@@ -768,7 +769,6 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,121,10
     DEFPUSHBUTTON   "OK",IDOK,123,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,123,24,50,14
-    LTEXT           "&Default line ending mode:",IDC_STATIC,7,7,82,8
 END
 
 IDD_LINENUM DIALOGEX 0, 0, 186, 47
@@ -776,12 +776,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Goto"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "&Line:",IDC_STATIC,7,7,16,8
     EDITTEXT        IDC_LINENUM,7,24,46,14,ES_AUTOHSCROLL
+    LTEXT           "&Column:",IDC_STATIC,63,7,27,8
     EDITTEXT        IDC_COLNUM,63,24,46,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
-    LTEXT           "&Line:",IDC_STATIC,7,7,16,8
-    LTEXT           "&Column:",IDC_STATIC,63,7,27,8
 END
 
 IDD_FILEMRU DIALOGEX 0, 0, 269, 154
@@ -832,7 +832,9 @@ CAPTION "Customize Schemes"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,240
+    LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
+    LTEXT           "",IDC_STYLELABEL,181,171,279,8
     EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
     PUSHBUTTON      "For&e...",IDC_STYLEFORE,181,201,46,14
     PUSHBUTTON      "&Back...",IDC_STYLEBACK,232,201,46,14
@@ -845,12 +847,10 @@ BEGIN
     PUSHBUTTON      "E&xport...",IDC_EXPORT,237,233,50,14
     DEFPUSHBUTTON   "OK",IDOK,355,233,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,410,233,50,14
-    LTEXT           "",IDC_STYLELABEL,181,171,279,8
     GROUPBOX        "Info",IDC_STATIC,180,7,280,127
     ICON            IDI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Customize Schemes",IDC_TITLE,220,25,200,12
     LTEXT           "Filename extensions must be separated by ;\n\nStyle format:\nfont:Name;size:nn;bold;italic;underline;fore:#ffffff;back:#bbbbbb;eolfilled\n\nStyle properties can be copied using copy and paste or drag and drop.\n\nThe ""Preview"" button will not apply any changes.",IDC_STATIC,197,50,252,70
-    LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
 END
 
 IDD_TABSETTINGS DIALOGEX 0, 0, 174, 90
@@ -858,15 +858,15 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Tab Settings"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "&Tabulator width:",IDC_STATIC,7,10,54,8
     EDITTEXT        100,67,7,30,14,ES_AUTOHSCROLL
+    LTEXT           "&Indentation size:",IDC_STATIC,7,30,55,8
     EDITTEXT        101,67,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Insert tabs as &spaces.",102,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,87,10
     CONTROL         "Tab &key reformats indentation.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,115,10
     CONTROL         "&Backspace key reformats indentation.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,137,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,117,24,50,14
-    LTEXT           "&Tabulator width:",IDC_STATIC,7,10,54,8
-    LTEXT           "&Indentation size:",IDC_STATIC,7,30,55,8
 END
 
 IDD_LONGLINES DIALOGEX 0, 0, 184, 55
@@ -874,12 +874,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Long Lines"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "&Limit for long lines:",IDC_STATIC,7,10,60,8
     EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
     CONTROL         "Show &edge line.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
     CONTROL         "Change &background color.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,127,24,50,14
-    LTEXT           "&Limit for long lines:",IDC_STATIC,7,10,60,8
 END
 
 IDD_WORDWRAP DIALOGEX 0, 0, 196, 100
@@ -904,38 +904,38 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Page Setup"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    EDITTEXT        1155,120,82,28,12,WS_GROUP
-    EDITTEXT        1157,196,82,28,12,WS_GROUP
-    EDITTEXT        1156,120,103,28,12,WS_GROUP
-    EDITTEXT        1158,196,103,28,12,WS_GROUP
-    CONTROL         "P&ortrait",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
-    CONTROL         "L&andscape",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
-    COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    DEFPUSHBUTTON   "OK",1,190,237,50,14,WS_GROUP
-    PUSHBUTTON      "Cancel",2,244,237,50,14
-    PUSHBUTTON      "&Printer...",1026,298,237,50,14
-    CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
-    EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
-    COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Paper",1073,8,8,224,56,WS_GROUP
     LTEXT           "Si&ze:",1089,16,24,36,8
+    COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Source:",1090,16,45,36,8
+    COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Orientation",1072,8,69,64,56,WS_GROUP
+    CONTROL         "P&ortrait",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
+    CONTROL         "L&andscape",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
     GROUPBOX        "Margins",1075,80,69,152,56,WS_GROUP
     LTEXT           "&Left:",1102,88,85,32,8
-    LTEXT           "&Top:",1104,88,104,32,8
+    EDITTEXT        1155,120,82,28,12,WS_GROUP
     LTEXT           "&Right:",1103,164,85,32,8
+    EDITTEXT        1157,196,82,28,12,WS_GROUP
+    LTEXT           "&Top:",1104,88,104,32,8
+    EDITTEXT        1156,120,103,28,12,WS_GROUP
     LTEXT           "&Bottom:",1105,164,104,32,8
+    EDITTEXT        1158,196,103,28,12,WS_GROUP
     GROUPBOX        "Headers and Footers",1074,8,130,224,56,WS_GROUP
     LTEXT           "&Header:",IDC_STATIC,16,146,36,8
+    COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Footer:",IDC_STATIC,16,167,36,8
+    COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Print Colors",1076,8,191,224,37,WS_GROUP
     LTEXT           "Mo&de:",IDC_STATIC,16,207,36,8
+    COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Zoom",IDC_STATIC,240,170,108,58,WS_GROUP
     LTEXT           "Print zoo&m (-10 to +20):",IDC_STATIC,248,188,92,8
+    EDITTEXT        30,298,206,42,12,ES_AUTOHSCROLL
+    CONTROL         "",31,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,282,205,11,14
+    DEFPUSHBUTTON   "OK",IDOK,190,237,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",IDCANCEL,244,237,50,14
+    PUSHBUTTON      "&Printer...",IDC_PRINTER,298,237,50,14
     GROUPBOX        "Preview",IDC_STATIC,240,8,108,157
     CONTROL         "",1080,"Static",SS_WHITERECT,254,47,80,80
     CONTROL         "",1081,"Static",SS_GRAYRECT,334,51,4,80
@@ -949,9 +949,9 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
+    LTEXT           "Click here to specify the directory with links to your favorite files.",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,108,108,50,14
-    LTEXT           "Click here to specify the directory with links to your favorite files.",IDC_FAVORITESDESCR,26,83,132,18
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
 END
 
@@ -960,36 +960,36 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Add to Favorites"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    LTEXT           "Enter the name for the new favorites item:",IDC_STATIC,7,7,158,8
     EDITTEXT        100,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Cancel",IDCANCEL,115,45,50,14
-    LTEXT           "Enter the name for the new favorites item:",IDC_STATIC,7,7,158,8
 END
 
-IDD_PASSWORDS DIALOGEX 0, 0, 311, 122
+IDD_PASSWORDS DIALOG 0, 0, 311, 122
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Encryption"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
+FONT 8, "MS Shell Dlg"
 BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,245,94,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,184,94,50,14
+    CONTROL         "Set New Master Key",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
     EDITTEXT        IDC_EDIT1,17,35,276,14,ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_EDIT2,17,74,277,14
-    PUSHBUTTON      "Cancel",IDCANCEL,184,94,50,14
-    DEFPUSHBUTTON   "OK",IDOK,245,94,50,14
-    CONTROL         "Encrypt using Passphrase",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,21,98,10
-    CONTROL         "Set New Master Key",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
-    CONTROL         "Reuse Master Key",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     LTEXT           "Optional Master Key",IDC_STATIC,18,61,66,10,SS_SUNKEN | NOT WS_GROUP
+    CONTROL         "Encrypt using Passphrase",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,21,98,10
+    CONTROL         "Reuse Master Key",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     GROUPBOX        "Passphrase",IDC_STATIC,7,7,297,108
 END
 
-IDD_READPW DIALOGEX 0, 0, 299, 84
+IDD_READPW DIALOG 0, 0, 299, 84
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Decrypt File"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
+FONT 8, "MS Shell Dlg"
 BEGIN
-    EDITTEXT        IDC_EDIT3,16,24,267,14,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     DEFPUSHBUTTON   "OK",IDOK,233,54,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,175,54,50,14
+    EDITTEXT        IDC_EDIT3,16,24,267,14,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     CONTROL         "decrypt using the master key",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,60,148,10
     LTEXT           "This file has a master key",IDC_STATICPW,16,47,89,11,NOT WS_GROUP
     GROUPBOX        "Passphrase",IDC_STATIC,7,7,285,70
@@ -1000,10 +1000,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Column Wrap"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "&Boundary:",IDC_STATIC,7,7,34,8
     EDITTEXT        IDC_COLUMNWRAP,7,24,46,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,73,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,73,24,50,14
-    LTEXT           "&Boundary:",IDC_STATIC,7,7,34,8
 END
 
 IDD_MODIFYLINES DIALOGEX 0, 0, 182, 110
@@ -1011,21 +1011,21 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Modify Lines"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "&Prefix text to lines:",IDC_STATIC,7,7,62,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
+    LTEXT           "&Append text to lines:",IDC_STATIC,7,37,68,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
-    LTEXT           "$(L)",200,7,72,14,8
-    LTEXT           "$(N)",202,7,82,15,8
-    LTEXT           "$(I)",204,7,92,13,8
-    LTEXT           "$(0L)",201,30,72,18,8
-    LTEXT           "$(0N)",203,30,82,19,8
-    LTEXT           "$(0I)",205,30,92,17,8
-    LTEXT           "Document line number.",IDC_STATIC,57,72,74,8
-    LTEXT           "Continuous number.",IDC_STATIC,57,82,66,8
-    LTEXT           "Continuous number (zero-based).",IDC_STATIC,57,92,109,8
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,125,24,50,14
-    LTEXT           "&Prefix text to lines:",IDC_STATIC,7,7,62,8
-    LTEXT           "&Append text to lines:",IDC_STATIC,7,37,68,8
+    LTEXT           "$(L)",200,7,72,14,8
+    LTEXT           "$(0L)",201,30,72,18,8
+    LTEXT           "Document line number.",IDC_STATIC,57,72,74,8
+    LTEXT           "$(N)",202,7,82,15,8
+    LTEXT           "$(0N)",203,30,82,19,8
+    LTEXT           "Continuous number.",IDC_STATIC,57,82,66,8
+    LTEXT           "$(I)",204,7,92,13,8
+    LTEXT           "$(0I)",205,30,92,17,8
+    LTEXT           "Continuous number (zero-based).",IDC_STATIC,57,92,109,8
 END
 
 IDD_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -1033,12 +1033,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Insert HTML/XML Tag"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "&Opening tag (with attributes):",IDC_STATIC,7,7,97,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
+    LTEXT           "&Closing tag (can be edited):",IDC_STATIC,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,125,24,50,14
-    LTEXT           "&Opening tag (with attributes):",IDC_STATIC,7,7,97,8
-    LTEXT           "&Closing tag (can be edited):",IDC_STATIC,7,37,90,8
 END
 
 IDD_ENCLOSESELECTION DIALOGEX 0, 0, 182, 70
@@ -1046,12 +1046,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Enclose Selection"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "Insert &before selection:",IDC_STATIC,7,7,76,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
+    LTEXT           "Insert &after selection:",IDC_STATIC,7,37,71,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,125,24,50,14
-    LTEXT           "Insert &before selection:",IDC_STATIC,7,7,76,8
-    LTEXT           "Insert &after selection:",IDC_STATIC,7,37,71,8
 END
 
 IDD_INFOBOX DIALOGEX 0, 0, 244, 71
@@ -1059,11 +1059,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,21,20
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
     DEFPUSHBUTTON   "OK",IDOK,187,50,50,14
     CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,20,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
 END
 
 IDD_INFOBOX2 DIALOGEX 0, 0, 244, 71
@@ -1071,12 +1071,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,21,20
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
     PUSHBUTTON      "&Yes",IDYES,131,50,50,14
     PUSHBUTTON      "&No",IDNO,187,50,50,14
     CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,20,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
 END
 
 IDD_INFOBOX3 DIALOGEX 0, 0, 244, 71
@@ -1084,12 +1084,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Notepad3"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,21,20
+    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
     DEFPUSHBUTTON   "OK",IDOK,131,50,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,187,50,50,14
     CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,20,20
-    LTEXT           "",IDC_INFOBOXTEXT,35,7,202,34
 END
 
 IDD_SORT DIALOGEX 0, 0, 184, 140
@@ -1115,10 +1115,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Recode"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    LTEXT           "Select source &encoding to reload file:",IDC_STATIC,7,7,119,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Cancel",IDCANCEL,108,114,50,14
-    LTEXT           "Select source &encoding to reload file:",IDC_STATIC,7,7,119,8
     SCROLLBAR       IDC_RESIZEGRIP4,7,118,10,10
 END
 
@@ -1127,10 +1127,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Encoding"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    LTEXT           "Select current file &encoding:",IDC_STATIC,7,7,90,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Cancel",IDCANCEL,108,114,50,14
-    LTEXT           "Select current file &encoding:",IDC_STATIC,7,7,90,8
     SCROLLBAR       IDC_RESIZEGRIP4,7,118,10,10
 END
 
@@ -1309,10 +1309,6 @@ BEGIN
         RIGHTMARGIN, 304
         TOPMARGIN, 7
         BOTTOMMARGIN, 115
-    END
-
-    IDD_READPW, DIALOG
-    BEGIN
     END
 
     IDD_COLUMNWRAP, DIALOG
@@ -1524,12 +1520,12 @@ BEGIN
     IDS_REGEX_INVALID       "Error evaluating regular expression. Expression is invalid!"
     IDS_DROP_NO_FILE        "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
     IDS_APPLY_DEFAULT_FONT  "Apply these font settings to current ('%s') scheme's default text also?"
+    IDS_ERR_UPDATECHECKER   "No update installer executable found.\nCheck for update on website https://rizonesoft.com ?"
 END
 
 STRINGTABLE
 BEGIN
     IDS_CMDLINEHELP         "Command Line Help\n\nfile\tMust be the last argument, no quoted spaces by default.\n+\tAccept multiple file arguments (with quoted spaces).\n-\tAccept single file argument (without quoted spaces).\n…\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\n…\tLine ending mode (/crlf, /lf, /cr).\n/e\tFile source encoding.\n/g\tJump to specified position (/g -1 end of file).\n/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\n/l\tAuto-reload modified files.\n/q\tForce creation of new files without prompt.\n/s\tSelect specified syntax scheme.\n/d\tSelect default text scheme.\n/h\tSelect Web Source Code scheme.\n/x\tSelect XML Document scheme.\n/c\tOpen new window and paste clipboard contents.\n/b\tOpen new paste board to collect clipboard entries.\n/n\tAlways open a new window (/ns single file instance).\n/r\tReuse window (/rs single file instance).\n/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\n/t\tSet window title.\n/i\tStart as tray icon.\n/o\tKeep window on top.\n/f\tSpecify ini-file (/f0 no ini-file).\n/u\tLaunch with elevated privileges.\n/v\tPrint file immediately and quit.\n/vd\tPrint file (open printer dialog).\n/z\tSkip next (usable for registry-based Notepad replacement)."
-    IDS_ERR_UPDATECHECKER   "No update installer executable found.\nCheck for update on website https://rizonesoft.com ?"
 END
 
 STRINGTABLE

@@ -540,6 +540,10 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         iPrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
         iPrintColor = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
       }
+      else if (LOWORD(wParam) == IDC_PRINTER)
+      {
+        PostMessage(hwnd, WM_COMMAND, MAKELONG(1026, 1), 0);
+      }
       break;
 
     default:
@@ -548,7 +552,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
   UNUSED(lParam);
 
-  return(0);
+  return 0;
 }
 
 
