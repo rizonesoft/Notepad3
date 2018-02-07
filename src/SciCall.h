@@ -228,11 +228,10 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //  Utilities
 //
-
-#define IsSelThinRectangle() (SciCall_GetSelectionMode() == SC_SEL_THIN)
-
 #define SciClearClipboard() SciCall_CopyText(0, "")
 
+#define IsSelThinRectangle() (SciCall_GetSelectionMode() == SC_SEL_THIN)
+#define IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
 #define IsSingleLineSelection() \
 (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 

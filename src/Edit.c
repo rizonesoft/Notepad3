@@ -2714,7 +2714,7 @@ void EditIndentBlock(HWND hwnd, int cmd, BOOL bFormatIndentation)
   //const DocPos iSelEnd = SciCall_GetSelectionEnd();
   const DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
   const DocLn iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-  const BOOL bSingleLine = (iCurLine == iAnchorLine);
+  const BOOL bSingleLine = IsSingleLineSelection();
 
   const int _bTabIndents = (int)SendMessage(hwnd, SCI_GETTABINDENTS, 0, 0);
   const int _bBSpUnindents = (int)SendMessage(hwnd, SCI_GETBACKSPACEUNINDENTS, 0, 0);
