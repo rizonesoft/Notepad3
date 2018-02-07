@@ -2403,9 +2403,9 @@ void DialogNewWindow(HWND hwnd, BOOL bSaveOnRunTools, BOOL bSetCurFile)
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
-  if (StringCchLenW(szIniFile, COUNTOF(szIniFile))) {
+  if (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile))) {
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
-    StringCchCat(szParameters, COUNTOF(szParameters), szIniFile);
+    StringCchCat(szParameters, COUNTOF(szParameters), g_wchIniFile);
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
   }
   else
@@ -2557,7 +2557,7 @@ void DialogUpdateCheck(HWND hwnd)
 //  InfoBox()
 //
 //
-extern WCHAR szIniFile[MAX_PATH];
+extern WCHAR g_wchIniFile[MAX_PATH];
 
 INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
 {
@@ -2574,7 +2574,7 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
   ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
   StringCchVPrintfW(ib.lpstrMessage,HUGE_BUFFER,wchFormat,(LPVOID)((PUINT_PTR)&uidMessage + 1));
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? TRUE : FALSE;
+  ib.bDisableCheckBox = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? TRUE : FALSE;
 
   int idDlg = IDD_INFOBOX;
   if (iType == MBYESNO)

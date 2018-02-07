@@ -107,8 +107,8 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
 };
 
 
-WCHAR      szIniFile[MAX_PATH] = { L'\0' };
-WCHAR      szIniFile2[MAX_PATH] = { L'\0' };
+WCHAR      g_wchIniFile[MAX_PATH] = { L'\0' };
+WCHAR      g_wchIniFile2[MAX_PATH] = { L'\0' };
 WCHAR      szBufferFile[MAX_PATH] = { L'\0' };
 BOOL       bSaveSettings;
 BOOL       bEnableSaveSettings;
@@ -1531,7 +1531,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     // call SaveSettings() when hwndToolbar is still valid
     SaveSettings(FALSE);
 
-    if (StringCchLenW(szIniFile,COUNTOF(szIniFile)) != 0) {
+    if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) != 0) {
 
       // Cleanup unwanted MRU's
       if (!bSaveRecentFiles) {
@@ -2333,7 +2333,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
     i = IDM_VIEW_NOESCFUNC;
   CheckMenuRadioItem(hmenu,IDM_VIEW_NOESCFUNC,IDM_VIEW_ESCEXIT,i,MF_BYCOMMAND);
 
-  i = StringCchLenW(szIniFile,COUNTOF(szIniFile));
+  i = StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile));
   CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,bSaveSettings && i);
 
   EnableCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
@@ -2344,7 +2344,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,bEnableSaveSettings && i);
 
-  i = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) > 0 || StringCchLenW(szIniFile2,COUNTOF(szIniFile2)) > 0);
+  i = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) > 0 || StringCchLenW(g_wchIniFile2,COUNTOF(g_wchIniFile2)) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,bEnableSaveSettings && i);
 
   BOOL bIsHLink = FALSE;
@@ -4296,12 +4296,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         BOOL bCreateFailure = FALSE;
 
-        if (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0) {
+        if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0) {
 
-          if (StringCchLenW(szIniFile2,COUNTOF(szIniFile2)) > 0) {
-            if (CreateIniFileEx(szIniFile2)) {
-              StringCchCopy(szIniFile,COUNTOF(szIniFile),szIniFile2);
-              StringCchCopy(szIniFile2,COUNTOF(szIniFile2),L"");
+          if (StringCchLenW(g_wchIniFile2,COUNTOF(g_wchIniFile2)) > 0) {
+            if (CreateIniFileEx(g_wchIniFile2)) {
+              StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),g_wchIniFile2);
+              StringCchCopy(g_wchIniFile2,COUNTOF(g_wchIniFile2),L"");
             }
             else
               bCreateFailure = TRUE;
@@ -4313,7 +4313,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         if (!bCreateFailure) {
 
-          if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",szIniFile)) {
+          if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",g_wchIniFile)) {
 
             BeginWaitCursorID(IDS_SAVINGSETTINGS);
             SaveSettings(TRUE);
@@ -4917,9 +4917,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_OPENINIFILE:
-      if (StringCchLenW(szIniFile,COUNTOF(szIniFile))) {
+      if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile))) {
         CreateIniFile();
-        FileLoad(FALSE,FALSE,FALSE,FALSE,szIniFile);
+        FileLoad(FALSE,FALSE,FALSE,FALSE,g_wchIniFile);
       }
       break;
 
@@ -6061,7 +6061,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
 
   WCHAR wchTmp[MAX_PATH] = { L'\0' };
 
-  if (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0)
+  if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0)
     return;
 
   if (!bEnableSaveSettings)
@@ -6335,12 +6335,12 @@ void ParseCommandLine()
 
         case L'F':
           if (*(lp1+1) == L'0' || *CharUpper(lp1+1) == L'O')
-            StringCchCopy(szIniFile,COUNTOF(szIniFile),L"*?");
+            StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),L"*?");
           else if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
-            StringCchCopyN(szIniFile,COUNTOF(szIniFile),lp1,len);
-            TrimString(szIniFile);
-            PathUnquoteSpaces(szIniFile);
-            NormalizePathEx(szIniFile,COUNTOF(szIniFile));
+            StringCchCopyN(g_wchIniFile,COUNTOF(g_wchIniFile),lp1,len);
+            TrimString(g_wchIniFile);
+            PathUnquoteSpaces(g_wchIniFile);
+            NormalizePathEx(g_wchIniFile,COUNTOF(g_wchIniFile));
           }
           break;
 
@@ -6757,17 +6757,17 @@ int FindIniFile() {
   WCHAR tchModule[MAX_PATH] = { L'\0' };
   GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
 
-  if (StringCchLenW(szIniFile,COUNTOF(szIniFile))) {
-    if (StringCchCompareIX(szIniFile,L"*?") == 0)
+  if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile))) {
+    if (StringCchCompareIX(g_wchIniFile,L"*?") == 0)
       return(0);
     else {
-      if (!CheckIniFile(szIniFile,tchModule)) {
-        ExpandEnvironmentStringsEx(szIniFile,COUNTOF(szIniFile));
-        if (PathIsRelative(szIniFile)) {
+      if (!CheckIniFile(g_wchIniFile,tchModule)) {
+        ExpandEnvironmentStringsEx(g_wchIniFile,COUNTOF(g_wchIniFile));
+        if (PathIsRelative(g_wchIniFile)) {
           StringCchCopy(tchTest,COUNTOF(tchTest),tchModule);
           PathRemoveFileSpec(tchTest);
-          PathCchAppend(tchTest,COUNTOF(tchTest),szIniFile);
-          StringCchCopy(szIniFile,COUNTOF(szIniFile),tchTest);
+          PathCchAppend(tchTest,COUNTOF(tchTest),g_wchIniFile);
+          StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchTest);
         }
       }
     }
@@ -6788,15 +6788,15 @@ int FindIniFile() {
       if (CheckIniFileRedirect(tchTest,tchModule))
         CheckIniFileRedirect(tchTest,tchModule);
 
-      StringCchCopy(szIniFile,COUNTOF(szIniFile),tchTest);
+      StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchTest);
     }
     else {
-      StringCchCopy(szIniFile,COUNTOF(szIniFile),tchModule);
-      PathCchRenameExtension(szIniFile,COUNTOF(szIniFile),L".ini");
+      StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchModule);
+      PathCchRenameExtension(g_wchIniFile,COUNTOF(g_wchIniFile),L".ini");
     }
   }
 
-  NormalizePathEx(szIniFile,COUNTOF(szIniFile));
+  NormalizePathEx(g_wchIniFile,COUNTOF(g_wchIniFile));
  
   return(1);
 }
@@ -6804,31 +6804,31 @@ int FindIniFile() {
 
 int TestIniFile() {
 
-  if (StringCchCompareIX(szIniFile,L"*?") == 0) {
-    StringCchCopy(szIniFile2,COUNTOF(szIniFile2),L"");
-    StringCchCopy(szIniFile,COUNTOF(szIniFile),L"");
+  if (StringCchCompareIX(g_wchIniFile,L"*?") == 0) {
+    StringCchCopy(g_wchIniFile2,COUNTOF(g_wchIniFile2),L"");
+    StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),L"");
     return(0);
   }
 
-  if (PathIsDirectory(szIniFile) || *CharPrev(szIniFile,StrEnd(szIniFile)) == L'\\') {
+  if (PathIsDirectory(g_wchIniFile) || *CharPrev(g_wchIniFile,StrEnd(g_wchIniFile)) == L'\\') {
     WCHAR wchModule[MAX_PATH] = { L'\0' };
     GetModuleFileName(NULL,wchModule,COUNTOF(wchModule));
-    PathCchAppend(szIniFile,COUNTOF(szIniFile),PathFindFileName(wchModule));
-    PathCchRenameExtension(szIniFile,COUNTOF(szIniFile),L".ini");
-    if (!PathFileExists(szIniFile)) {
-      StringCchCopy(PathFindFileName(szIniFile),COUNTOF(szIniFile),L"Notepad3.ini");
-      if (!PathFileExists(szIniFile)) {
-        StringCchCopy(PathFindFileName(szIniFile),COUNTOF(szIniFile),PathFindFileName(wchModule));
-        PathCchRenameExtension(szIniFile,COUNTOF(szIniFile),L".ini");
+    PathCchAppend(g_wchIniFile,COUNTOF(g_wchIniFile),PathFindFileName(wchModule));
+    PathCchRenameExtension(g_wchIniFile,COUNTOF(g_wchIniFile),L".ini");
+    if (!PathFileExists(g_wchIniFile)) {
+      StringCchCopy(PathFindFileName(g_wchIniFile),COUNTOF(g_wchIniFile),L"Notepad3.ini");
+      if (!PathFileExists(g_wchIniFile)) {
+        StringCchCopy(PathFindFileName(g_wchIniFile),COUNTOF(g_wchIniFile),PathFindFileName(wchModule));
+        PathCchRenameExtension(g_wchIniFile,COUNTOF(g_wchIniFile),L".ini");
       }
     }
   }
   
-  NormalizePathEx(szIniFile,COUNTOF(szIniFile));
+  NormalizePathEx(g_wchIniFile,COUNTOF(g_wchIniFile));
 
-  if (!PathFileExists(szIniFile) || PathIsDirectory(szIniFile)) {
-    StringCchCopy(szIniFile2,COUNTOF(szIniFile2),szIniFile);
-    StringCchCopy(szIniFile,COUNTOF(szIniFile),L"");
+  if (!PathFileExists(g_wchIniFile) || PathIsDirectory(g_wchIniFile)) {
+    StringCchCopy(g_wchIniFile2,COUNTOF(g_wchIniFile2),g_wchIniFile);
+    StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),L"");
     return(0);
   }
   else
@@ -6838,7 +6838,7 @@ int TestIniFile() {
 
 int CreateIniFile() {
 
-  return(CreateIniFileEx(szIniFile));
+  return(CreateIniFileEx(g_wchIniFile));
 }
 
 
@@ -7135,7 +7135,7 @@ void UpdateLineNumberWidth()
 void UpdateSettingsCmds()
 {
     HMENU hmenu = GetSystemMenu(g_hwndMain, FALSE);
-    BOOL hasIniFile = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) > 0 || StringCchLenW(szIniFile2,COUNTOF(szIniFile2)) > 0);
+    BOOL hasIniFile = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) > 0 || StringCchLenW(g_wchIniFile2,COUNTOF(g_wchIniFile2)) > 0);
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, bSaveSettings && bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && bEnableSaveSettings);
@@ -7624,7 +7624,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     UpdateVisibleUrlHotspot(0);
 
     // consistent settings file handling (if loaded in editor)
-    bEnableSaveSettings = (StringCchCompareINW(g_wchCurFile, COUNTOF(g_wchCurFile), szIniFile, COUNTOF(szIniFile)) == 0) ? FALSE : TRUE;
+    bEnableSaveSettings = (StringCchCompareINW(g_wchCurFile, COUNTOF(g_wchCurFile), g_wchIniFile, COUNTOF(g_wchIniFile)) == 0) ? FALSE : TRUE;
     UpdateSettingsCmds();
 
     // Show warning: Unicode file loaded as ANSI
@@ -8362,8 +8362,8 @@ BOOL RelaunchElevated(LPWSTR lpArgs) {
     StringCchCopy(szArguments,COUNTOF(szArguments),szArgs);
   }
   else {
-    if (StringCchLenW(szIniFile,COUNTOF(szIniFile)) > 0)
-      StringCchPrintf(szArguments,COUNTOF(szArguments),L"/f \"%s\" %s",szIniFile,szArgs);
+    if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) > 0)
+      StringCchPrintf(szArguments,COUNTOF(szArguments),L"/f \"%s\" %s",g_wchIniFile,szArgs);
     else
       StringCchCopy(szArguments,COUNTOF(szArguments),szArgs);
   }

@@ -19,22 +19,24 @@ extern UINT16 g_uWinVer;
 #define UNUSED(expr) (void)(expr)
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 
-extern WCHAR szIniFile[MAX_PATH];
+extern WCHAR g_wchIniFile[MAX_PATH];
+
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
-  GetPrivateProfileString(lpSection,lpName,lpDefault,lpReturnedStr,nSize,szIniFile)
+  GetPrivateProfileString(lpSection,lpName,lpDefault,lpReturnedStr,nSize,g_wchIniFile)
 #define IniGetInt(lpSection,lpName,nDefault) \
-  GetPrivateProfileInt(lpSection,lpName,nDefault,szIniFile)
+  GetPrivateProfileInt(lpSection,lpName,nDefault,g_wchIniFile)
 #define IniSetString(lpSection,lpName,lpString) \
-  WritePrivateProfileString(lpSection,lpName,lpString,szIniFile)
+  WritePrivateProfileString(lpSection,lpName,lpString,g_wchIniFile)
 #define IniDeleteSection(lpSection) \
-  WritePrivateProfileSection(lpSection,NULL,szIniFile)
+  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
 __inline BOOL IniSetInt(LPCWSTR lpSection,LPCWSTR lpName,int i) {
-  WCHAR tch[32]; wsprintf(tch,L"%i",i); return WritePrivateProfileString(lpSection,lpName,tch,szIniFile);
+  WCHAR tch[32]; wsprintf(tch,L"%i",i); 
+  return WritePrivateProfileString(lpSection,lpName,tch,g_wchIniFile);
 }
 #define LoadIniSection(lpSection,lpBuf,cchBuf) \
-  GetPrivateProfileSection(lpSection,lpBuf,cchBuf,szIniFile);
+  GetPrivateProfileSection(lpSection,lpBuf,cchBuf,g_wchIniFile);
 #define SaveIniSection(lpSection,lpBuf) \
-  WritePrivateProfileSection(lpSection,lpBuf,szIniFile)
+  WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
 int IniSectionGetString(LPCWSTR,LPCWSTR,LPCWSTR,LPWSTR,int);
 int IniSectionGetInt(LPCWSTR,LPCWSTR,int);
 BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
