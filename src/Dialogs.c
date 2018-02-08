@@ -1794,10 +1794,10 @@ BOOL LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //            103 Check
 //            104 Check
 //
-extern int iTabWidth;
-extern int iIndentWidth;
-extern BOOL bTabsAsSpaces;
-extern BOOL bTabIndents;
+extern int  g_iTabWidth;
+extern int  g_iIndentWidth;
+extern BOOL g_bTabsAsSpaces;
+extern BOOL g_bTabIndents;
 extern BOOL bBackspaceUnindents;
 
 INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
@@ -1809,16 +1809,16 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
     case WM_INITDIALOG:
       {
 
-        SetDlgItemInt(hwnd,100,iTabWidth,FALSE);
+        SetDlgItemInt(hwnd,100,g_iTabWidth,FALSE);
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,15,0);
 
-        SetDlgItemInt(hwnd,101,iIndentWidth,FALSE);
+        SetDlgItemInt(hwnd,101,g_iIndentWidth,FALSE);
         SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,15,0);
 
-        if (bTabsAsSpaces)
+        if (g_bTabsAsSpaces)
           CheckDlgButton(hwnd,102,BST_CHECKED);
 
-        if (bTabIndents)
+        if (g_bTabIndents)
           CheckDlgButton(hwnd,103,BST_CHECKED);
 
         if (bBackspaceUnindents)
@@ -1844,12 +1844,12 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 
           if (fTranslated1 && fTranslated2)
           {
-            iTabWidth = iNewTabWidth;
-            iIndentWidth = iNewIndentWidth;
+            g_iTabWidth = iNewTabWidth;
+            g_iIndentWidth = iNewIndentWidth;
 
-            bTabsAsSpaces = (IsDlgButtonChecked(hwnd,102)) ? TRUE : FALSE;
+            g_bTabsAsSpaces = (IsDlgButtonChecked(hwnd,102)) ? TRUE : FALSE;
 
-            bTabIndents = (IsDlgButtonChecked(hwnd,103)) ? TRUE : FALSE;
+            g_bTabIndents = (IsDlgButtonChecked(hwnd,103)) ? TRUE : FALSE;
 
             bBackspaceUnindents = (IsDlgButtonChecked(hwnd,104)) ? TRUE : FALSE;
 
@@ -2403,9 +2403,9 @@ void DialogNewWindow(HWND hwnd, BOOL bSaveOnRunTools, BOOL bSetCurFile)
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
-  if (StringCchLenW(szIniFile, COUNTOF(szIniFile))) {
+  if (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile))) {
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
-    StringCchCat(szParameters, COUNTOF(szParameters), szIniFile);
+    StringCchCat(szParameters, COUNTOF(szParameters), g_wchIniFile);
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
   }
   else
@@ -2557,7 +2557,7 @@ void DialogUpdateCheck(HWND hwnd)
 //  InfoBox()
 //
 //
-extern WCHAR szIniFile[MAX_PATH];
+extern WCHAR g_wchIniFile[MAX_PATH];
 
 INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
 {
@@ -2574,7 +2574,7 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
   ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
   StringCchVPrintfW(ib.lpstrMessage,HUGE_BUFFER,wchFormat,(LPVOID)((PUINT_PTR)&uidMessage + 1));
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? TRUE : FALSE;
+  ib.bDisableCheckBox = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? TRUE : FALSE;
 
   int idDlg = IDD_INFOBOX;
   if (iType == MBYESNO)

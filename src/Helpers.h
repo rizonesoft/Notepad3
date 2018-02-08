@@ -22,6 +22,15 @@
 #include <strsafe.h>
 #include <shlwapi.h>
 
+#include "TypeDefs.h"
+
+// ============================================================================
+
+extern WCHAR g_wchIniFile[MAX_PATH];
+
+
+// ============================================================================
+
 #define STRGFY(X)     L##X
 #define MKWSTRG(strg) STRGFY(strg)
 
@@ -30,20 +39,20 @@
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
-extern WCHAR szIniFile[MAX_PATH];
 
-__inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
+__forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
+__forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
-  GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),szIniFile)
+  GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),g_wchIniFile)
 #define IniGetInt(lpSection,lpName,nDefault) \
-  GetPrivateProfileInt(lpSection,lpName,(nDefault),szIniFile)
+  GetPrivateProfileInt(lpSection,lpName,(nDefault),g_wchIniFile)
 #define IniGetBool(lpSection,lpName,nDefault) \
-  (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),szIniFile) ? TRUE : FALSE)
+  (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),g_wchIniFile) ? TRUE : FALSE)
 #define IniSetString(lpSection,lpName,lpString) \
-  WritePrivateProfileString(lpSection,lpName,(lpString),szIniFile)
+  WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
 #define IniDeleteSection(lpSection) \
-  WritePrivateProfileSection(lpSection,NULL,szIniFile)
+  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
 __inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i)
 {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
@@ -51,9 +60,9 @@ __inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i)
 #define IniSetBool(lpSection,lpName,nValue) \
   IniSetInt(lpSection,lpName,((nValue) ? 1 : 0))
 #define LoadIniSection(lpSection,lpBuf,cchBuf) \
-  GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),szIniFile)
+  GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),g_wchIniFile)
 #define SaveIniSection(lpSection,lpBuf) \
-  WritePrivateProfileSection(lpSection,lpBuf,szIniFile)
+  WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
 int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
 int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
 UINT IniSectionGetUInt(LPCWSTR, LPCWSTR, UINT);
@@ -99,17 +108,6 @@ __inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL 
 
 #define IsWinServer() IsWindowsServer()          // Indicates if the current OS is a Windows Server release.
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
-
-enum BufferSizes {
-  MICRO_BUFFER =   32,
-  MINI_BUFFER  =   64,
-  SMALL_BUFFER =  128,
-  MIDSZ_BUFFER =  256,
-  LARGE_BUFFER =  512,
-  HUGE_BUFFER  = 1024,
-  XHUGE_BUFFER = 2048,
-  FILE_ARG_BUF = MAX_PATH+4
-};
 
 BOOL PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
@@ -334,18 +332,15 @@ inline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
 #define StringCchCompareINW(s1,l1,s2,l2)  _StringCchCmpINW((s1),(l1),(s2),(l2))
 #define StringCchCompareIXW(s1,s2)        _StringCchCmpINW((s1),-1,(s2),-1)
 
+
 #if defined(UNICODE) || defined(_UNICODE)  
-#define StringCchCompare(s1,s2)          StringCchCompareW((s1),(s2))
 #define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNW((s1),(l1),(s2),(l2))
 #define StringCchCompareX(s1,s2)         StringCchCompareXW((s1),(s2))
-#define StringCchCompareI(s1,s2)         StringCchCompareIW((s1),(s2))
 #define StringCchCompareIN(s1,l1,s2,l2)  StringCchCompareINW((s1),(l1),(s2),(l2))
 #define StringCchCompareIX(s1,s2)        StringCchCompareIXW((s1),(s2))
 #else
-#define StringCchCompare(s1,s2)          StringCchCompareA((s1),(s2))
 #define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNA((s1),(l1),(s2),(l2))
 #define StringCchCompareX(s1,s2)         StringCchCompareXA((s1),(s2))
-#define StringCchCompareI(s1,s2)         StringCchCompareIA((s1),(s2))
 #define StringCchCompareIN(s1,l1,s2,l2)  StringCchCompareINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIX(s1,s2)        StringCchCompareIXA((s1),(s2))
 #endif
@@ -421,12 +416,8 @@ BOOL IsUnicode(const char*,int,LPBOOL,LPBOOL);
 BOOL IsUTF8(const char*,int);
 BOOL IsUTF7(const char*,int);
 
-#define IsUTF8Signature(p) \
-          ((*(p+0) == '\xEF' && *(p+1) == '\xBB' && *(p+2) == '\xBF'))
-
-
-#define UTF8StringStart(p) \
-          (IsUTF8Signature(p)) ? (p+3) : (p)
+#define IsUTF8Signature(p) ((*(p+0) == '\xEF' && *(p+1) == '\xBB' && *(p+2) == '\xBF'))
+#define UTF8StringStart(p) (IsUTF8Signature(p)) ? (p+3) : (p)
 
 INT UTF8_mbslen_bytes(LPCSTR utf8_string);
 INT UTF8_mbslen(LPCSTR source,INT byte_length);

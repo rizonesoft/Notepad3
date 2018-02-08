@@ -134,6 +134,7 @@
 #define IDC_REMOVE                      229
 #define IDC_SWAPSTRG                    230
 #define IDC_CHECK_OCC                   231
+#define IDC_PRINTER                     232
 #define IDACC_FIND                      302
 #define IDACC_REPLACE                   303
 #define IDACC_SAVEPOS                   304
@@ -187,7 +188,7 @@
 #define CMD_SHIFTCTRLENTER              20002
 #define CMD_CTRLLEFT                    20003
 #define CMD_CTRLRIGHT                   20004
-#define CMD_BACK                        20005
+#define CMD_DELETEBACK                  20005
 #define CMD_CTRLBACK                    20006
 #define CMD_DEL                         20007
 #define CMD_CTRLDEL                     20008

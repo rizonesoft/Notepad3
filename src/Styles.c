@@ -5937,7 +5937,7 @@ void Style_ConfigDlg(HWND hwnd)
   }
   else {
     g_fStylesModified = TRUE;
-    if (!g_fWarnedNoIniFile && (StringCchLenW(szIniFile,COUNTOF(szIniFile)) == 0)) {
+    if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0)) {
       MsgBox(MBWARN,IDS_SETTINGSNOTSAVED);
       g_fWarnedNoIniFile = TRUE;
     }
