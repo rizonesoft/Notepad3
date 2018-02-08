@@ -39,6 +39,7 @@
 #include <set>
 #include <forward_list>
 #include <algorithm>
+#include <iterator>
 #include <functional>
 #include <memory>
 #include <regex>

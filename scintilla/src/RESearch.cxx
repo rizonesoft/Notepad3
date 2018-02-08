@@ -205,6 +205,7 @@
 #include <stdexcept>
 #include <string>
 #include <algorithm>
+#include <iterator>
 
 #include "Position.h"
 #include "CharClassify.h"
@@ -254,9 +255,9 @@ RESearch::RESearch(CharClassify *charClassTable) {
 	charClass = charClassTable;
 	sta = NOP;                  /* status of lastpat */
 	bol = 0;
-	std::fill(bittab, bittab + BITBLK, static_cast<unsigned char>(0));
-	std::fill(tagstk, tagstk + MAXTAG, 0);
-	std::fill(nfa, nfa + MAXNFA, '\0');
+	std::fill(bittab, std::end(bittab), static_cast<unsigned char>(0));
+	std::fill(tagstk, std::end(tagstk), 0);
+	std::fill(nfa, std::end(nfa), '\0');
 	Clear();
 }
 

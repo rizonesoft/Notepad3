@@ -38,6 +38,8 @@ public:
 
 	enum IMEInteraction { imeWindowed, imeInline } imeInteraction;
 
+	enum class Bidirectional { bidiDisabled, bidiL2R, bidiR2L  } bidirectional;
+
 	int foldFlags;
 	int foldDisplayTextStyle;
 	ContractionState cs;

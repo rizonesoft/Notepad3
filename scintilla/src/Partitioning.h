@@ -16,32 +16,33 @@ namespace Scintilla {
 /// in a range.
 /// Used by the Partitioning class.
 
-class SplitVectorWithRangeAdd : public SplitVector<int> {
+template <typename T>
+class SplitVectorWithRangeAdd : public SplitVector<T> {
 public:
-	explicit SplitVectorWithRangeAdd(int growSize_) {
-		SetGrowSize(growSize_);
-		ReAllocate(growSize_);
+	explicit SplitVectorWithRangeAdd(ptrdiff_t growSize_) {
+		this->SetGrowSize(growSize_);
+		this->ReAllocate(growSize_);
 	}
 	// Deleted so SplitVectorWithRangeAdd objects can not be copied.
 	SplitVectorWithRangeAdd(const SplitVectorWithRangeAdd &) = delete;
 	void operator=(const SplitVectorWithRangeAdd &) = delete;
 	~SplitVectorWithRangeAdd() {
 	}
-	void RangeAddDelta(int start, int end, int delta) {
+	void RangeAddDelta(ptrdiff_t start, ptrdiff_t end, T delta) {
 		// end is 1 past end, so end-start is number of elements to change
-		int i = 0;
-		const int rangeLength = end - start;
-		int range1Length = rangeLength;
-		const int part1Left = part1Length - start;
+		ptrdiff_t i = 0;
+		const ptrdiff_t rangeLength = end - start;
+		ptrdiff_t range1Length = rangeLength;
+		const ptrdiff_t part1Left = this->part1Length - start;
 		if (range1Length > part1Left)
 			range1Length = part1Left;
 		while (i < range1Length) {
-			body[start++] += delta;
+			this->body[start++] += delta;
 			i++;
 		}
-		start += gapLength;
+		start += this->gapLength;
 		while (i < rangeLength) {
-			body[start++] += delta;
+			this->body[start++] += delta;
 			i++;
 		}
 	}
@@ -54,36 +55,37 @@ public:
 /// When needed, positions after the interval are considered part of the last partition
 /// but the end of the last partition can be found with PositionFromPartition(last+1).
 
+template <typename T>
 class Partitioning {
 private:
 	// To avoid calculating all the partition positions whenever any text is inserted
 	// there may be a step somewhere in the list.
-	int stepPartition;
-	int stepLength;
-	std::unique_ptr<SplitVectorWithRangeAdd> body;
+	T stepPartition;
+	T stepLength;
+	std::unique_ptr<SplitVectorWithRangeAdd<T>> body;
 
 	// Move step forward
-	void ApplyStep(int partitionUpTo) {
+	void ApplyStep(T partitionUpTo) {
 		if (stepLength != 0) {
 			body->RangeAddDelta(stepPartition+1, partitionUpTo + 1, stepLength);
 		}
 		stepPartition = partitionUpTo;
 		if (stepPartition >= body->Length()-1) {
-			stepPartition = body->Length()-1;
+			stepPartition = Partitions();
 			stepLength = 0;
 		}
 	}
 
 	// Move step backward
-	void BackStep(int partitionDownTo) {
+	void BackStep(T partitionDownTo) {
 		if (stepLength != 0) {
 			body->RangeAddDelta(partitionDownTo+1, stepPartition+1, -stepLength);
 		}
 		stepPartition = partitionDownTo;
 	}
 
-	void Allocate(int growSize) {
-		body.reset(new SplitVectorWithRangeAdd(growSize));
+	void Allocate(ptrdiff_t growSize) {
+		body.reset(new SplitVectorWithRangeAdd<T>(growSize));
 		stepPartition = 0;
 		stepLength = 0;
 		body->Insert(0, 0);	// This value stays 0 for ever
@@ -102,11 +104,11 @@ public:
 	~Partitioning() {
 	}
 
-	int Partitions() const {
-		return body->Length()-1;
+	T Partitions() const {
+		return static_cast<T>(body->Length())-1;
 	}
 
-	void InsertPartition(int partition, int pos) {
+	void InsertPartition(T partition, T pos) {
 		if (stepPartition < partition) {
 			ApplyStep(partition);
 		}
@@ -114,7 +116,7 @@ public:
 		stepPartition++;
 	}
 
-	void SetPartitionStartPosition(int partition, int pos) {
+	void SetPartitionStartPosition(T partition, T pos) {
 		ApplyStep(partition+1);
 		if ((partition < 0) || (partition > body->Length())) {
 			return;
@@ -122,7 +124,7 @@ public:
 		body->SetValueAt(partition, pos);
 	}
 
-	void InsertText(int partitionInsert, int delta) {
+	void InsertText(T partitionInsert, T delta) {
 		// Point all the partitions after the insertion point further along in the buffer
 		if (stepLength != 0) {
 			if (partitionInsert >= stepPartition) {
@@ -134,7 +136,7 @@ public:
 				BackStep(partitionInsert);
 				stepLength += delta;
 			} else {
-				ApplyStep(body->Length()-1);
+				ApplyStep(Partitions());
 				stepPartition = partitionInsert;
 				stepLength = delta;
 			}
@@ -144,7 +146,7 @@ public:
 		}
 	}
 
-	void RemovePartition(int partition) {
+	void RemovePartition(T partition) {
 		if (partition > stepPartition) {
 			ApplyStep(partition);
 			stepPartition--;
@@ -154,29 +156,29 @@ public:
 		body->Delete(partition);
 	}
 
-	int PositionFromPartition(int partition) const {
+	T PositionFromPartition(T partition) const {
 		PLATFORM_ASSERT(partition >= 0);
 		PLATFORM_ASSERT(partition < body->Length());
 		if ((partition < 0) || (partition >= body->Length())) {
 			return 0;
 		}
-		int pos = body->ValueAt(partition);
+		T pos = body->ValueAt(partition);
 		if (partition > stepPartition)
 			pos += stepLength;
 		return pos;
 	}
 
 	/// Return value in range [0 .. Partitions() - 1] even for arguments outside interval
-	int PartitionFromPosition(int pos) const {
+	T PartitionFromPosition(T pos) const {
 		if (body->Length() <= 1)
 			return 0;
-		if (pos >= (PositionFromPartition(body->Length()-1)))
-			return body->Length() - 1 - 1;
-		int lower = 0;
-		int upper = body->Length()-1;
+		if (pos >= (PositionFromPartition(Partitions())))
+			return Partitions() - 1;
+		T lower = 0;
+		T upper = Partitions();
 		do {
-			const int middle = (upper + lower + 1) / 2; 	// Round high
-			int posMiddle = body->ValueAt(middle);
+			const T middle = (upper + lower + 1) / 2; 	// Round high
+			T posMiddle = body->ValueAt(middle);
 			if (middle > stepPartition)
 				posMiddle += stepLength;
 			if (pos < posMiddle) {

@@ -10,6 +10,7 @@
 #include <cstring>
 
 #include <algorithm>
+#include <iterator>
 
 #include "StringCopy.h"
 #include "WordList.h"
@@ -128,7 +129,7 @@ void WordList::Set(const char *s) {
 #else
 	SortWordList(words, len);
 #endif
-	std::fill(starts, starts + ELEMENTS(starts), -1);
+	std::fill(starts, std::end(starts), -1);
 	for (int l = len - 1; l >= 0; l--) {
 		unsigned char indexChar = words[l][0];
 		starts[indexChar] = l;

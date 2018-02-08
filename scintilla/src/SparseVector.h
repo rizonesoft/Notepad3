@@ -15,7 +15,7 @@ namespace Scintilla {
 template <typename T>
 class SparseVector {
 private:
-	std::unique_ptr<Partitioning> starts;
+	std::unique_ptr<Partitioning<int>> starts;
 	std::unique_ptr<SplitVector<T>> values;
 	T empty;
 	// Deleted so SparseVector objects can not be copied.
@@ -26,7 +26,7 @@ private:
 	}
 public:
 	SparseVector() : empty() {
-		starts.reset(new Partitioning(8));
+		starts.reset(new Partitioning<int>(8));
 		values.reset(new SplitVector<T>());
 		values->InsertEmpty(0, 2);
 	}

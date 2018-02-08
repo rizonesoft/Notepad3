@@ -308,7 +308,7 @@ class ScintillaWin :
 
 	Sci::Position TargetAsUTF8(char *text);
 	void AddCharUTF16(wchar_t const *wcs, unsigned int wclen);
-	Sci::Position EncodedFromUTF8(char *utf8, char *encoded) const;
+	Sci::Position EncodedFromUTF8(const char *utf8, char *encoded) const;
 	sptr_t WndPaint(uptr_t wParam);
 
 	sptr_t HandleCompositionWindowed(uptr_t wParam, sptr_t lParam);
@@ -769,8 +769,8 @@ Sci::Position ScintillaWin::TargetAsUTF8(char *text) {
 
 // Translates a nul terminated UTF8 string into the document encoding.
 // Return the length of the result in bytes.
-Sci::Position ScintillaWin::EncodedFromUTF8(char *utf8, char *encoded) const {
-	Sci::Position inputLength = (lengthForEncode >= 0) ? lengthForEncode : static_cast<Sci::Position>(strlen(utf8));
+Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) const {
+	const Sci::Position inputLength = (lengthForEncode >= 0) ? lengthForEncode : static_cast<Sci::Position>(strlen(utf8));
 	if (IsUnicodeMode()) {
 		if (encoded) {
 			memcpy(encoded, utf8, inputLength);
@@ -778,11 +778,11 @@ Sci::Position ScintillaWin::EncodedFromUTF8(char *utf8, char *encoded) const {
 		return inputLength;
 	} else {
 		// Need to convert
-		int charsLen = ::MultiByteToWideChar(CP_UTF8, 0, utf8, inputLength, NULL, 0);
+		const int charsLen = ::MultiByteToWideChar(CP_UTF8, 0, utf8, static_cast<int>(inputLength), NULL, 0);
 		std::wstring characters(charsLen, '\0');
-		::MultiByteToWideChar(CP_UTF8, 0, utf8, inputLength, &characters[0], charsLen);
+		::MultiByteToWideChar(CP_UTF8, 0, utf8, static_cast<int>(inputLength), &characters[0], charsLen);
 
-		int encodedLen = ::WideCharToMultiByte(CodePageOfDocument(),
+		const int encodedLen = ::WideCharToMultiByte(CodePageOfDocument(),
 		                                       0, &characters[0], charsLen, NULL, 0, 0, 0);
 		if (encoded) {
 			::WideCharToMultiByte(CodePageOfDocument(), 0, &characters[0], charsLen, encoded, encodedLen, 0, 0);
@@ -1655,10 +1655,10 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 		case EM_GETSEL:
 			if (wParam) {
-				*reinterpret_cast<int *>(wParam) = SelectionStart().Position();
+				*reinterpret_cast<int *>(wParam) = static_cast<int>(SelectionStart().Position());
 			}
 			if (lParam) {
-				*reinterpret_cast<int *>(lParam) = SelectionEnd().Position();
+				*reinterpret_cast<int *>(lParam) = static_cast<int>(SelectionEnd().Position());
 			}
 			return MAKELONG(SelectionStart().Position(), SelectionEnd().Position());
 
@@ -1667,8 +1667,8 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 					return 0;
 				}
 				Sci_CharacterRange *pCR = reinterpret_cast<Sci_CharacterRange *>(lParam);
-				pCR->cpMin = SelectionStart().Position();
-				pCR->cpMax = SelectionEnd().Position();
+				pCR->cpMin = static_cast<Sci_PositionCR>(SelectionStart().Position());
+				pCR->cpMax = static_cast<Sci_PositionCR>(SelectionEnd().Position());
 			}
 			break;
 
@@ -1745,6 +1745,17 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			}
 			break;
 
+		case SCI_SETBIDIRECTIONAL:
+			if (technology == SC_TECHNOLOGY_DEFAULT) {
+				bidirectional = EditModel::Bidirectional::bidiDisabled;
+			} else if ((wParam >= SC_BIDIRECTIONAL_DISABLED) && (wParam <= SC_BIDIRECTIONAL_R2L)) {
+				bidirectional = static_cast<EditModel::Bidirectional>(wParam);
+			}
+			// Invalidate all cached information including layout.
+			DropGraphics(true);
+			InvalidateStyleRedraw();
+			break;
+
 #ifdef SCI_LEXER
 		case SCI_LOADLEXERLIBRARY:
 			LexerManager::GetInstance()->Load(reinterpret_cast<const char *>(lParam));
@@ -1755,7 +1766,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			return TargetAsUTF8(reinterpret_cast<char*>(lParam));
 
 		case SCI_ENCODEDFROMUTF8:
-			return EncodedFromUTF8(reinterpret_cast<char*>(wParam),
+			return EncodedFromUTF8(reinterpret_cast<const char*>(wParam),
 			        reinterpret_cast<char*>(lParam));
 
 		default:
@@ -1894,7 +1905,7 @@ void ScintillaWin::ChangeScrollPos(int barType, Sci::Position pos) {
 	GetScrollInfo(barType, &sci);
 	if (sci.nPos != pos) {
 		DwellEnd(true);
-		sci.nPos = pos;
+		sci.nPos = static_cast<int>(pos);
 		SetScrollInfo(barType, &sci, TRUE);
 	}
 }
@@ -1923,8 +1934,8 @@ bool ScintillaWin::ModifyScrollBars(Sci::Line nMax, Sci::Line nPage) {
 	        (sci.nPos != 0)) {
 		sci.fMask = SIF_PAGE | SIF_RANGE;
 		sci.nMin = 0;
-		sci.nMax = vertEndPreferred;
-		sci.nPage = nPage;
+		sci.nMax = static_cast<int>(vertEndPreferred);
+		sci.nPage = static_cast<UINT>(nPage);
 		sci.nPos = 0;
 		sci.nTrackPos = 1;
 		SetScrollInfo(SB_VERT, &sci, TRUE);

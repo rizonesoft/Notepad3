@@ -516,6 +516,10 @@
 	<td>Jannick</td>
 	<td>Zufu Liu</td>
 	<td>Simon Sobisch</td>
+      </tr><tr>
+	<td>Georger Araújo</td>
+	<td>Tobias Kühne</td>
+	<td>Dimitar Radev</td>
     </tr>
     </table>
     <p>
@@ -535,16 +539,51 @@
 	Released 26 October 2017.
 	</li>
 	<li>
+	SCI_CREATEDOCUMENT adds a bytes argument to allocate memory for an initial size.
+	SCI_CREATELOADER and SCI_CREATEDOCUMENT add a documentOption argument to
+	allow choosing different document capabilities.
+	</li>
+	<li>
+	Add SC_DOCUMENTOPTION_STYLES_NONE option to stop allocating memory for styles.
+	</li>
+	<li>
 	Add SCI_GETMOVEEXTENDSSELECTION to allow applications to add more
 	complex selection commands.
+	</li>
+	<li>
+	SciTE property bookmark.symbol allows choosing symbol used for bookmarks.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1208/">Feature #1208.</a>
 	</li>
 	<li>
 	Improve VHDL lexer's handling of character literals and escape characters in strings.
 	</li>
 	<li>
+	Fix double tap word selection on Windows 10 1709 Fall Creators Update.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1983/">Bug #1983</a>.
+	</li>
+	<li>
 	Fix closing autocompletion lists on Cocoa for macOS 10.13 where the window
 	was emptying but staying visible.
 	<a href="http://sourceforge.net/p/scintilla/bugs/1981/">Bug #1981</a>.
+	</li>
+	<li>
+	Fix drawing failure on Cocoa with animated find indicator in large files with macOS 10.12
+	by disabling animation.
+	</li>
+	<li>
+	SciTE on GTK+ installs its desktop file as non-executable and supports the common
+	LDLIBS make variable.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1989/">Bug #1989</a>,
+	<a href="http://sourceforge.net/p/scintilla/bugs/1990/">Bug #1990</a>.
+	</li>
+	<li>
+	SciTE shows correct column number when caret in virtual space.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1991/">Bug #1991</a>.
+	</li>
+	<li>
+	SciTE preserves selection positions when saving with strip.trailing.spaces
+	and virtual space turned on.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1992/">Bug #1992</a>.
 	</li>
     </ul>
     <h3>
