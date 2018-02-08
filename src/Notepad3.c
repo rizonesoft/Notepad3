@@ -1708,6 +1708,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   SendMessage(g_hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
 
+  UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
 
@@ -3833,6 +3834,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_SCHEME:
       Style_SelectLexerDlg(g_hwndEdit);
+      UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
@@ -3840,6 +3842,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_USE2NDDEFAULT:
       Style_ToggleUse2ndDefault(g_hwndEdit);
+      UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
@@ -3847,6 +3850,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_SCHEMECONFIG:
       Style_ConfigDlg(g_hwndEdit);
+      UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
@@ -3854,12 +3858,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_FONT:
       Style_SetDefaultFont(g_hwndEdit, TRUE);
+      UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
 
     case IDM_VIEW_CURRENTSCHEME:
       Style_SetDefaultFont(g_hwndEdit, FALSE);
+      UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
@@ -3898,6 +3904,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       else
         SendMessage(g_hwndEdit,SCI_SETEDGEMODE,EDGE_NONE,0);
 
+      UpdateToolbar();
       UpdateStatusbar();
       break;
 
@@ -3909,8 +3916,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         Style_SetLongLineColors(g_hwndEdit);
         iLongLinesLimit = max(min(iLongLinesLimit,4096),0);
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
-        UpdateStatusbar();
         iLongLinesLimitG = iLongLinesLimit;
+        UpdateToolbar();
+        UpdateStatusbar();
       }
       break;
 
@@ -4524,6 +4532,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_LEXDEFAULT:
       Style_SetDefaultLexer(g_hwndEdit);
+      UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
@@ -4531,6 +4540,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_LEXHTML:
       Style_SetHTMLLexer(g_hwndEdit);
+      UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
@@ -4538,6 +4548,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_LEXXML:
       Style_SetXMLLexer(g_hwndEdit);
+      UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
@@ -4744,6 +4755,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           iLongLinesLimit--;
         iLongLinesLimit = max(min(iLongLinesLimit,4096),0);
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
+        UpdateToolbar();
         UpdateStatusbar();
         iLongLinesLimitG = iLongLinesLimit;
       }
@@ -5325,7 +5337,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (bHyperlinkHotspot) {
               UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
             }
-
+            UpdateToolbar();
             UpdateStatusbar();
           }
           else if (scn->updated & SC_UPDATE_V_SCROLL)
@@ -5366,6 +5378,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             SetDocumentModified(TRUE);
 
+            UpdateToolbar();
             UpdateStatusbar();
           }
           break;
@@ -6902,27 +6915,25 @@ void UpdateToolbar()
                  iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
                  IDS_READONLY, bReadOnly, szTitleExcerpt);
 
-  if (!bShowToolbar)
-    return;
+  if (!bShowToolbar) { return; }
 
   EnableTool(IDT_FILE_ADDTOFAV,StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)));
 
   EnableTool(IDT_EDIT_UNDO,SendMessage(g_hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_REDO,SendMessage(g_hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_PASTE,SendMessage(g_hwndEdit,SCI_CANPASTE,0,0) /*&& !bReadOnly*/);
 
-  BOOL b1 = !SciCall_IsSelectionEmpty();
+  BOOL b1 = SciCall_IsSelectionEmpty();
   BOOL b2 = (BOOL)(SciCall_GetTextLength() > 0);
-  BOOL b3 = (BOOL)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
 
   EnableTool(IDT_EDIT_FIND, b2);
   //EnableTool(IDT_EDIT_FINDNEXT,b2);
   //EnableTool(IDT_EDIT_FINDPREV,b2 && strlen(g_efrData.szFind));
   EnableTool(IDT_EDIT_REPLACE, b2 /*&& !bReadOnly*/);
 
-  EnableTool(IDT_EDIT_CUT, b2 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_COPY, b2 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_PASTE, b3 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_CLEAR, b1 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_CUT, !b1 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_COPY, !b1 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_CLEAR, !b1 /*&& !bReadOnly*/);
 
   EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && bShowCodeFolding);
   EnableTool(IDT_FILE_LAUNCH, b2);
@@ -7445,6 +7456,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
     bReadOnly = FALSE;
     SetDocumentModified(FALSE);
+    UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
 
@@ -7602,6 +7614,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
     //bReadOnly = FALSE;
     SetDocumentModified(FALSE);
+    UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
     UpdateVisibleUrlHotspot(0);
@@ -7770,6 +7783,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
           if (!fKeepTitleExcerpt)
             StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
           Style_SetLexerFromFile(g_hwndEdit,g_wchCurFile);
+          UpdateToolbar();
           UpdateStatusbar();
           UpdateLineNumberWidth();
         }

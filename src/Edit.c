@@ -4203,6 +4203,7 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos)
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaret();
 
+  UpdateToolbar();
   UpdateStatusbar();
   UNUSED(hwnd);
 }
@@ -4921,6 +4922,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               bFlagsChanged = FALSE;
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
             }
+            UpdateToolbar();
             UpdateStatusbar();
           }
         }
@@ -5515,6 +5517,7 @@ void EditMarkAllOccurrences()
     }
     else {
       EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+      UpdateToolbar();
       UpdateStatusbar();
     }
 
