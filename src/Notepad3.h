@@ -16,6 +16,8 @@
 #ifndef _NP3_NOTEPAD3_H_
 #define _NP3_NOTEPAD3_H_
 
+#include "TypeDefs.h"
+
 //==== Main Window ============================================================
 #define WC_NOTEPAD3 L"Notepad3"
 
@@ -45,22 +47,22 @@ typedef struct np3params {
 typedef struct _undoSel
 {
   int selMode_undo;
-  int anchorPos_undo;
-  int curPos_undo;
+  DocPos anchorPos_undo;
+  DocPos curPos_undo;
   int rectSelVS_undo;
   int anchorVS_undo;
   int curVS_undo;
 
   int selMode_redo;
-  int anchorPos_redo;
-  int curPos_redo;
+  DocPos anchorPos_redo;
+  DocPos curPos_redo;
   int rectSelVS_redo;
   int anchorVS_redo;
   int curVS_redo;
 } 
 UndoRedoSelection_t;
 
-#define INIT_UNDOREDOSEL { SC_SEL_STREAM, -1, -1, 0, 0, 0, SC_SEL_STREAM, -1, -1, 0, 0, 0 }
+#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, 0, SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, 0 }
 
 
 typedef enum {
@@ -160,7 +162,7 @@ int  BeginUndoAction();
 void EndUndoAction(int);
 void RestoreAction(int,DoAction);
 int  UndoRedoActionMap(int,UndoRedoSelection_t*);
-void OpenHotSpotURL(int, BOOL);
+void OpenHotSpotURL(DocPos, BOOL);
 
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL*,BOOL);

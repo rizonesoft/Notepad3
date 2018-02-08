@@ -5,13 +5,13 @@
 *                                                                             *
 * SciCall.h                                                                   *
 *   Inline wrappers for Scintilla API calls, arranged in the order and        *
-*	grouping in which they appear in the Scintilla documentation.             *
+*	  grouping in which they appear in the Scintilla documentation.             *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
 *   The use of these inline wrapper functions with declared types will        *
-*	ensure that we get the benefit of the compiler's type checking.           *
+*   ensure that we get the benefit of the compiler's type checking.           *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2016   *
+*                                                  (c) Rizonesoft 2008-2018   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -20,24 +20,11 @@
 #ifndef _NP3_SCICALL_H_
 #define _NP3_SCICALL_H_
 
-#include <stdbool.h>
-#include "Sci_Position.h"
-
-#if defined(SCI_LARGE_FILE_SUPPORT)
-typedef Sci_Position   DocPos;
-typedef Sci_PositionCR DocPosCR;
-typedef int            DocLn;  // Sci_Line?
-#else
-typedef int  DocPos;
-//typedef ptrdiff_t DocPos; // compile test
-typedef long DocPosCR;
-typedef int  DocLn;
-#endif
+#include "TypeDefs.h"
 
 //=============================================================================
 //
 //  g_hScintilla
-//
 //
 extern HANDLE g_hScintilla;
 
@@ -48,7 +35,6 @@ __forceinline void InitScintillaHandle(HWND hwnd) {
 //=============================================================================
 //
 //  SciCall()
-//
 //
 LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 #define SciCall(m, w, l) Scintilla_DirectFunction(g_hScintilla, m, w, l)
@@ -61,7 +47,6 @@ LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 //  V: No return type defined ("void"); defaults to SendMessage's LRESULT
 //  0-2: Number of parameters to define
 //
-//
 #define DeclareSciCallR0(fn, msg, ret)                             \
 __forceinline ret SciCall_##fn() {                                 \
   return((ret)SciCall(SCI_##msg, 0, 0));                           \
@@ -69,6 +54,10 @@ __forceinline ret SciCall_##fn() {                                 \
 #define DeclareSciCallR1(fn, msg, ret, type1, var1)                \
 __forceinline ret SciCall_##fn(type1 var1) {                       \
   return((ret)SciCall(SCI_##msg, (WPARAM)(var1), 0));              \
+}
+#define DeclareSciCallR01(fn, msg, ret, type2, var2)               \
+__forceinline ret SciCall_##fn(type2 var2) {                       \
+  return((ret)SciCall(SCI_##msg, 0, (LPARAM)(var2)));              \
 }
 #define DeclareSciCallR2(fn, msg, ret, type1, var1, type2, var2)   \
 __forceinline ret SciCall_##fn(type1 var1, type2 var2) {           \
@@ -101,13 +90,14 @@ DeclareSciCallR0(IsDocModified, GETMODIFY, bool);
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool);
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
+
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos);
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos);
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
 DeclareSciCallR0(GetSelectionStart, GETSELECTIONSTART, DocPos);
 DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, DocPos);
-DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocPos, line);
-DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocPos, line);
+DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn, line);
+DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocLn, line);
 
 DeclareSciCallV0(Clear, CLEAR);
 DeclareSciCallV0(Copy, COPY);
@@ -117,6 +107,7 @@ DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos);
 DeclareSciCallV0(SelectAll, SELECTALL);
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
+DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, LPCCH, text);
 DeclareSciCallV01(ReplaceSel, REPLACESEL, LPCCH, text);
 DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, LPCCH, text);
 
@@ -125,7 +116,7 @@ DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position);
 DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option);
 
 DeclareSciCallV1(GotoPos, GOTOPOS, DocPos, position);
-DeclareSciCallV1(GotoLine, GOTOLINE, DocPos, line);
+DeclareSciCallV1(GotoLine, GOTOLINE, DocLn, line);
 DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position);
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position);
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position);
@@ -133,7 +124,7 @@ DeclareSciCallR0(GetEOLMode, GETEOLMODE, int);
 
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, DocLn);
 DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos);
-DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocPos, line);
+DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocLn, line);
 DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, DocLn, DocPos, position);
 DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, DocPos, DocLn, line);
 DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line);
@@ -202,13 +193,13 @@ DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPo
 //  Folding
 //
 //
-DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, int, line);
-DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, int, line);
+DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line);
+DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, DocLn, line);
 DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags);
-DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, int, int, line);
-DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, int, int, line);
-DeclareSciCallV1(ToggleFold, TOGGLEFOLD, int, line);
-DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, int, line);
+DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, int, DocLn, line);
+DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, int, DocLn, line);
+DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line);
+DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line);
 
 
 //=============================================================================
@@ -216,7 +207,6 @@ DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, int, line);
 //  Lexer
 //
 DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, value);
-
 
 
 //=============================================================================
@@ -238,9 +228,10 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //  Utilities
 //
-
 #define SciClearClipboard() SciCall_CopyText(0, "")
 
+#define IsSelThinRectangle() (SciCall_GetSelectionMode() == SC_SEL_THIN)
+#define IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
 #define IsSingleLineSelection() \
 (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 

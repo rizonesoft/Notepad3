@@ -68,8 +68,8 @@ HANDLE    hChangeHandle = NULL;
 
 HISTORY   mHistory;
 
-WCHAR      szIniFile[MAX_PATH] = L"";
-WCHAR      szIniFile2[MAX_PATH] = L"";
+WCHAR      g_wchIniFile[MAX_PATH] = L"";
+WCHAR      g_wchIniFile2[MAX_PATH] = L"";
 BOOL      bSaveSettings;
 WCHAR      szQuickview[MAX_PATH];
 WCHAR      szQuickviewParams[MAX_PATH];
@@ -1222,7 +1222,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   CheckCmd(hmenu,SC_ALWAYSONTOP,bAlwaysOnTop);
 
-  i = (lstrlen(szIniFile) > 0 || lstrlen(szIniFile2) > 0);
+  i = (lstrlen(g_wchIniFile) > 0 || lstrlen(g_wchIniFile2) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,i);
 
   UNUSED(hwnd);
@@ -1727,9 +1727,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         PathQuoteSpaces(szParameters);
 
         lstrcat(szParameters,L" -f");
-        if (lstrlen(szIniFile)) {
+        if (lstrlen(g_wchIniFile)) {
           lstrcat(szParameters,L" \"");
-          lstrcat(szParameters,szIniFile);
+          lstrcat(szParameters,g_wchIniFile);
           lstrcat(szParameters,L"\"");
         }
         else
@@ -1916,12 +1916,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         BOOL bCreateFailure = FALSE;
 
-        if (lstrlen(szIniFile) == 0) {
+        if (lstrlen(g_wchIniFile) == 0) {
 
-          if (lstrlen(szIniFile2) > 0) {
-            if (CreateIniFileEx(szIniFile2)) {
-              lstrcpy(szIniFile,szIniFile2);
-              lstrcpy(szIniFile2,L"");
+          if (lstrlen(g_wchIniFile2) > 0) {
+            if (CreateIniFileEx(g_wchIniFile2)) {
+              lstrcpy(g_wchIniFile,g_wchIniFile2);
+              lstrcpy(g_wchIniFile2,L"");
             }
             else
               bCreateFailure = TRUE;
@@ -1933,7 +1933,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         if (!bCreateFailure) {
 
-          if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",szIniFile)) {
+          if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",g_wchIniFile)) {
             BeginWaitCursor();
             SaveSettings(TRUE);
             EndWaitCursor();
@@ -2119,9 +2119,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case ACC_SELECTINIFILE:
-      if (lstrlen(szIniFile)) {
+      if (lstrlen(g_wchIniFile)) {
         CreateIniFile();
-        DisplayPath(szIniFile,IDS_ERR_INIOPEN);
+        DisplayPath(g_wchIniFile,IDS_ERR_INIOPEN);
       }
       break;
 
@@ -2844,7 +2844,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
 {
   WCHAR wchTmp[MAX_PATH];
 
-  if (lstrlen(szIniFile) == 0)
+  if (lstrlen(g_wchIniFile) == 0)
     return;
 
   CreateIniFile();
@@ -2990,11 +2990,11 @@ void ParseCommandLine()
 
         case L'F':
           if (*(lp1+1) == L'0' || *CharUpper(lp1+1) == L'O')
-            lstrcpy(szIniFile,L"*?");
+            lstrcpy(g_wchIniFile,L"*?");
           else if (ExtractFirstArgument(lp2,lp1,lp2)) {
-            StrCpyN(szIniFile,lp1,COUNTOF(szIniFile));
-            TrimString(szIniFile);
-            PathUnquoteSpaces(szIniFile);
+            StrCpyN(g_wchIniFile,lp1,COUNTOF(g_wchIniFile));
+            TrimString(g_wchIniFile);
+            PathUnquoteSpaces(g_wchIniFile);
           }
           break;
 
@@ -3154,17 +3154,17 @@ int FindIniFile() {
   WCHAR tchModule[MAX_PATH];
   GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
 
-  if (lstrlen(szIniFile)) {
-    if (lstrcmpi(szIniFile,L"*?") == 0)
+  if (lstrlen(g_wchIniFile)) {
+    if (lstrcmpi(g_wchIniFile,L"*?") == 0)
       return(0);
     else {
-      if (!CheckIniFile(szIniFile,tchModule)) {
-        ExpandEnvironmentStringsEx(szIniFile,COUNTOF(szIniFile));
-        if (PathIsRelative(szIniFile)) {
+      if (!CheckIniFile(g_wchIniFile,tchModule)) {
+        ExpandEnvironmentStringsEx(g_wchIniFile,COUNTOF(g_wchIniFile));
+        if (PathIsRelative(g_wchIniFile)) {
           lstrcpy(tchTest,tchModule);
           PathRemoveFileSpec(tchTest);
-          PathAppend(tchTest,szIniFile);
-          lstrcpy(szIniFile,tchTest);
+          PathAppend(tchTest,g_wchIniFile);
+          lstrcpy(g_wchIniFile,tchTest);
         }
       }
     }
@@ -3184,12 +3184,12 @@ int FindIniFile() {
     // allow two redirections: administrator -> user -> custom
     if (CheckIniFileRedirect(tchTest,tchModule))
       CheckIniFileRedirect(tchTest,tchModule);
-    lstrcpy(szIniFile,tchTest);
+    lstrcpy(g_wchIniFile,tchTest);
   }
 
   else {
-    lstrcpy(szIniFile,tchModule);
-    PathRenameExtension(szIniFile,L".ini");
+    lstrcpy(g_wchIniFile,tchModule);
+    PathRenameExtension(g_wchIniFile,L".ini");
   }
 
   return(1);
@@ -3198,29 +3198,29 @@ int FindIniFile() {
 
 int TestIniFile() {
 
-  if (lstrcmpi(szIniFile,L"*?") == 0) {
-    lstrcpy(szIniFile2,L"");
-    lstrcpy(szIniFile,L"");
+  if (lstrcmpi(g_wchIniFile,L"*?") == 0) {
+    lstrcpy(g_wchIniFile2,L"");
+    lstrcpy(g_wchIniFile,L"");
     return(0);
   }
 
-  if (PathIsDirectory(szIniFile) || *CharPrev(szIniFile,StrEnd(szIniFile)) == L'\\') {
+  if (PathIsDirectory(g_wchIniFile) || *CharPrev(g_wchIniFile,StrEnd(g_wchIniFile)) == L'\\') {
     WCHAR wchModule[MAX_PATH];
     GetModuleFileName(NULL,wchModule,COUNTOF(wchModule));
-    PathAppend(szIniFile,PathFindFileName(wchModule));
-    PathRenameExtension(szIniFile,L".ini");
-    if (!PathFileExists(szIniFile)) {
-      lstrcpy(PathFindFileName(szIniFile),L"minipath.ini");
-      if (!PathFileExists(szIniFile)) {
-        lstrcpy(PathFindFileName(szIniFile),PathFindFileName(wchModule));
-        PathRenameExtension(szIniFile,L".ini");
+    PathAppend(g_wchIniFile,PathFindFileName(wchModule));
+    PathRenameExtension(g_wchIniFile,L".ini");
+    if (!PathFileExists(g_wchIniFile)) {
+      lstrcpy(PathFindFileName(g_wchIniFile),L"minipath.ini");
+      if (!PathFileExists(g_wchIniFile)) {
+        lstrcpy(PathFindFileName(g_wchIniFile),PathFindFileName(wchModule));
+        PathRenameExtension(g_wchIniFile,L".ini");
       }
     }
   }
 
-  if (!PathFileExists(szIniFile) || PathIsDirectory(szIniFile)) {
-    lstrcpy(szIniFile2,szIniFile);
-    lstrcpy(szIniFile,L"");
+  if (!PathFileExists(g_wchIniFile) || PathIsDirectory(g_wchIniFile)) {
+    lstrcpy(g_wchIniFile2,g_wchIniFile);
+    lstrcpy(g_wchIniFile,L"");
     return(0);
   }
   else
@@ -3230,7 +3230,7 @@ int TestIniFile() {
 
 int CreateIniFile() {
 
-  return(CreateIniFileEx(szIniFile));
+  return(CreateIniFileEx(g_wchIniFile));
 }
 
 

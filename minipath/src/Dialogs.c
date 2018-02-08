@@ -650,7 +650,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //  GeneralPageProc
 //
 //
-extern WCHAR szIniFile[MAX_PATH];
+extern WCHAR g_wchIniFile[MAX_PATH];
 extern BOOL bSaveSettings;
 extern WCHAR szQuickview[MAX_PATH];
 extern WCHAR szQuickviewParams[MAX_PATH];
@@ -676,7 +676,7 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
     case WM_INITDIALOG:
 
-      if (lstrlen(szIniFile)) {
+      if (lstrlen(g_wchIniFile)) {
         if (bSaveSettings)
           CheckDlgButton(hwnd,IDC_SAVESETTINGS,BST_CHECKED);
       }
