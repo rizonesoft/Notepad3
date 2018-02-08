@@ -106,6 +106,8 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
                             { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 }
 };
 
+#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 0 22 23 0 13 14 0 15 0 25 0 17"
+
 
 WCHAR      g_wchIniFile[MAX_PATH] = { L'\0' };
 WCHAR      g_wchIniFile2[MAX_PATH] = { L'\0' };
@@ -5880,9 +5882,8 @@ void LoadSettings()
   bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
   bTransparentModeAvailable = (bTransparentModeAvailable) ? TRUE : FALSE;
 
-  IniSectionGetString(pIniSection,L"ToolbarButtons", 
-    // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
-    L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 0 22 23 0 13 14 0 15 0 25 0 17", tchToolbarButtons,COUNTOF(tchToolbarButtons));
+  // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
+  IniSectionGetString(pIniSection,L"ToolbarButtons", L"", tchToolbarButtons, COUNTOF(tchToolbarButtons));
 
   bShowToolbar = IniSectionGetBool(pIniSection,L"ShowToolbar",TRUE);
 
@@ -6144,8 +6145,6 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
   IniSectionSetBool(pIniSection, L"MinimizeToTray", bMinimizeToTray);
   IniSectionSetBool(pIniSection, L"TransparentMode", bTransparentMode);
-  Toolbar_GetButtons(hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
-  IniSectionSetString(pIniSection, L"ToolbarButtons", tchToolbarButtons);
   IniSectionSetBool(pIniSection, L"ShowToolbar", bShowToolbar);
   IniSectionSetBool(pIniSection, L"ShowStatusbar", bShowStatusbar);
   IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
@@ -6160,6 +6159,10 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
+
+    Toolbar_GetButtons(hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+  if (StringCchCompareX(tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { tchToolbarButtons[0] = L'\0'; }
+  IniSectionSetString(pIniSection, L"ToolbarButtons", tchToolbarButtons);
 
   SaveIniSection(L"Settings", pIniSection);
   LocalFree(pIniSection);

@@ -332,18 +332,15 @@ inline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
 #define StringCchCompareINW(s1,l1,s2,l2)  _StringCchCmpINW((s1),(l1),(s2),(l2))
 #define StringCchCompareIXW(s1,s2)        _StringCchCmpINW((s1),-1,(s2),-1)
 
+
 #if defined(UNICODE) || defined(_UNICODE)  
-#define StringCchCompare(s1,s2)          StringCchCompareW((s1),(s2))
 #define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNW((s1),(l1),(s2),(l2))
 #define StringCchCompareX(s1,s2)         StringCchCompareXW((s1),(s2))
-#define StringCchCompareI(s1,s2)         StringCchCompareIW((s1),(s2))
 #define StringCchCompareIN(s1,l1,s2,l2)  StringCchCompareINW((s1),(l1),(s2),(l2))
 #define StringCchCompareIX(s1,s2)        StringCchCompareIXW((s1),(s2))
 #else
-#define StringCchCompare(s1,s2)          StringCchCompareA((s1),(s2))
 #define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNA((s1),(l1),(s2),(l2))
 #define StringCchCompareX(s1,s2)         StringCchCompareXA((s1),(s2))
-#define StringCchCompareI(s1,s2)         StringCchCompareIA((s1),(s2))
 #define StringCchCompareIN(s1,l1,s2,l2)  StringCchCompareINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIX(s1,s2)        StringCchCompareIXA((s1),(s2))
 #endif
