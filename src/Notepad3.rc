@@ -148,7 +148,7 @@ BEGIN
         MENUITEM "&Paste\tCtrl+V",              IDM_EDIT_PASTE
         MENUITEM "&Swap\tCtrl+K",               IDM_EDIT_SWAP
         MENUITEM "&Delete\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "Clear Clipboar&d",            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Cl&ear Clipboard",             IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Select &All\tCtrl+A",         IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
         POPUP "&Words"
@@ -211,7 +211,7 @@ BEGIN
             MENUITEM "&Align Lines...\tAlt+J",      IDM_EDIT_ALIGN
             MENUITEM "&Sort Lines...\tAlt+O",       IDM_EDIT_SORTLINES
         END
-        POPUP "C&onvert"
+        POPUP "Con&vert"
         BEGIN
             MENUITEM "&Uppercase\tCtrl+Shift+U",    IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "&Lowercase\tCtrl+U",          IDM_EDIT_CONVERTLOWERCASE
@@ -275,10 +275,10 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Find...\tCtrl+F",            IDM_EDIT_FIND
-        MENUITEM "Sa&ve Find Text\tAlt+F3",     IDM_EDIT_SAVEFIND
+        MENUITEM "Save Find &Text\tAlt+F3",     IDM_EDIT_SAVEFIND
         MENUITEM "Find &Next\tF3",              IDM_EDIT_FINDNEXT
         MENUITEM "Find Previous\tShift+F3",     IDM_EDIT_FINDPREV
-        MENUITEM "R&eplace...\tCtrl+H",         IDM_EDIT_REPLACE
+        MENUITEM "Replace...\tCtrl+H",          IDM_EDIT_REPLACE
         MENUITEM "Replace Ne&xt\tF4",           IDM_EDIT_REPLACENEXT
         MENUITEM "&Goto...\tCtrl+G",            IDM_EDIT_GOTOLINE
     END
