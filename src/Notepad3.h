@@ -49,20 +49,18 @@ typedef struct _undoSel
   int selMode_undo;
   DocPos anchorPos_undo;
   DocPos curPos_undo;
-  int rectSelVS_undo;
   int anchorVS_undo;
   int curVS_undo;
 
   int selMode_redo;
   DocPos anchorPos_redo;
   DocPos curPos_redo;
-  int rectSelVS_redo;
   int anchorVS_redo;
   int curVS_redo;
 } 
 UndoRedoSelection_t;
 
-#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, 0, SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, 0 }
+#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0 }
 
 
 typedef enum {
