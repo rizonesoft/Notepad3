@@ -53,12 +53,12 @@
 * Local and global Variables for Notepad3.c
 *
 */
-HWND      g_hwndStatus;
-HWND      hwndToolbar;
-HWND      hwndReBar;
-HWND      g_hwndEdit;
-HWND      hwndEditFrame;
-HWND      g_hwndMain;
+HWND      g_hwndMain = NULL;
+HWND      g_hwndEdit = NULL;
+HWND      g_hwndStatus = NULL;
+HWND      g_hwndToolbar = NULL;
+HWND      hwndReBar = NULL;
+HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
 HWND      hDlgFindReplace = NULL;
 
@@ -948,9 +948,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
   if (!bDenyVirtualSpaceAccess)
   {
     if (GetAsyncKeyState(VK_MENU) & SHRT_MIN)  // ALT-KEY DOWN
-      SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE), 0);
+      SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE), 0);
     else
-      SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART), 0);
+      SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)SCVS_RECTANGULARSELECTION, 0);
   }
 
   switch(umsg)
@@ -1170,9 +1170,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   InitScintillaHandle(g_hwndEdit);
 
   // Properties
-  SendMessage(g_hwndEdit, SCI_SETYCARETPOLICY, CARET_SLOP | CARET_EVEN | CARET_STRICT, iCurrentLineVerticalSlop);
-  SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, 
-    (bDenyVirtualSpaceAccess ? SCVS_NONE : (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART)), 0);
+  SendMessage(g_hwndEdit, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineVerticalSlop);
+  SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
 
   // Tabs
   SendMessage(g_hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
@@ -1305,7 +1304,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   MRU_Load(mruReplace);
 
   if (g_hwndEdit == NULL || hwndEditFrame == NULL ||
-      g_hwndStatus == NULL || hwndToolbar == NULL || hwndReBar == NULL)
+      g_hwndStatus == NULL || g_hwndToolbar == NULL || hwndReBar == NULL)
     return(-1);
 
   UNUSED(wParam);
@@ -1346,10 +1345,10 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   if (bShowToolbar)
     dwReBarStyle |= WS_VISIBLE;
 
-  hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
+  g_hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
-  SendMessage(hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
+  SendMessage(g_hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
   // Add normal Toolbar Bitmap
   hbmp = NULL;
@@ -1373,7 +1372,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
   ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
   DeleteObject(hbmp);
-  SendMessage(hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
+  SendMessage(g_hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
 
   // Optionally add hot Toolbar Bitmap
   hbmp = NULL;
@@ -1389,7 +1388,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
       ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
       DeleteObject(hbmp);
-      SendMessage(hwndToolbar,TB_SETHOTIMAGELIST,0,(LPARAM)himl);
+      SendMessage(g_hwndToolbar,TB_SETHOTIMAGELIST,0,(LPARAM)himl);
     }
   }
 
@@ -1407,7 +1406,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
       ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
       DeleteObject(hbmp);
-      SendMessage(hwndToolbar,TB_SETDISABLEDIMAGELIST,0,(LPARAM)himl);
+      SendMessage(g_hwndToolbar,TB_SETDISABLEDIMAGELIST,0,(LPARAM)himl);
       bExternalBitmap = TRUE;
     }
   }
@@ -1423,7 +1422,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     if (fProcessed) {
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
       ImageList_AddMasked(himl,hbmpCopy,CLR_DEFAULT);
-      SendMessage(hwndToolbar,TB_SETDISABLEDIMAGELIST,0,(LPARAM)himl);
+      SendMessage(g_hwndToolbar,TB_SETDISABLEDIMAGELIST,0,(LPARAM)himl);
     }
   }
   if (hbmpCopy)
@@ -1442,7 +1441,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     StringCchPrintf(tchIndex,COUNTOF(tchIndex),L"%02i",n++);
 
     if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc))) {
-      tbbMainWnd[i].iString = SendMessage(hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
+      tbbMainWnd[i].iString = SendMessage(g_hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
       tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
     }
 
@@ -1451,16 +1450,16 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   }
   LocalFree(pIniSection);
 
-  SendMessage(hwndToolbar,TB_SETEXTENDEDSTYLE,0,
-    SendMessage(hwndToolbar,TB_GETEXTENDEDSTYLE,0,0) | TBSTYLE_EX_MIXEDBUTTONS);
+  SendMessage(g_hwndToolbar,TB_SETEXTENDEDSTYLE,0,
+    SendMessage(g_hwndToolbar,TB_GETEXTENDEDSTYLE,0,0) | TBSTYLE_EX_MIXEDBUTTONS);
 
-  SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
+  SendMessage(g_hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
 
-  if (Toolbar_SetButtons(hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
-    SendMessage(hwndToolbar, TB_ADDBUTTONS, NUMINITIALTOOLS, (LPARAM)tbbMainWnd);
+  if (Toolbar_SetButtons(g_hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
+    SendMessage(g_hwndToolbar, TB_ADDBUTTONS, NUMINITIALTOOLS, (LPARAM)tbbMainWnd);
   }
-  SendMessage(hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
-  //SendMessage(hwndToolbar,TB_SETINDENT,2,0);
+  SendMessage(g_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
+  //SendMessage(g_hwndToolbar,TB_SETINDENT,2,0);
 
   DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
 
@@ -1486,7 +1485,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     rbBand.fStyle |= RBBS_CHILDEDGE;
   rbBand.hbmBack = NULL;
   rbBand.lpText     = L"Toolbar";
-  rbBand.hwndChild  = hwndToolbar;
+  rbBand.hwndChild  = g_hwndToolbar;
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
   rbBand.cx         = 0;
@@ -1530,7 +1529,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     if (IsWindow(hDlgFindReplace))
       DestroyWindow(hDlgFindReplace);
 
-    // call SaveSettings() when hwndToolbar is still valid
+    // call SaveSettings() when g_hwndToolbar is still valid
     SaveSettings(FALSE);
 
     if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) != 0) {
@@ -1614,9 +1613,9 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   }
 
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(hwndToolbar,IDT_FILE_NEW,tchToolbarButtons,COUNTOF(tchToolbarButtons));
+  Toolbar_GetButtons(g_hwndToolbar,IDT_FILE_NEW,tchToolbarButtons,COUNTOF(tchToolbarButtons));
 
-  DestroyWindow(hwndToolbar);
+  DestroyWindow(g_hwndToolbar);
   DestroyWindow(hwndReBar);
   DestroyWindow(g_hwndStatus);
   CreateBars(hwnd,hInstance);
@@ -1661,12 +1660,12 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   if (bShowToolbar)
   {
-/*  SendMessage(hwndToolbar,WM_SIZE,0,0);
-    GetWindowRect(hwndToolbar,&rc);
+/*  SendMessage(g_hwndToolbar,WM_SIZE,0,0);
+    GetWindowRect(g_hwndToolbar,&rc);
     y = (rc.bottom - rc.top);
     cy -= (rc.bottom - rc.top);*/
 
-    //SendMessage(hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
+    //SendMessage(g_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
     SetWindowPos(hwndReBar,NULL,0,0,LOWORD(lParam),cyReBar,SWP_NOZORDER);
     // the ReBar automatically sets the correct height
     // calling SetWindowPos() with the height of one toolbar button
@@ -4127,7 +4126,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_CUSTOMIZETB:
-      SendMessage(hwndToolbar,TB_CUSTOMIZE,0,0);
+      SendMessage(g_hwndToolbar,TB_CUSTOMIZE,0,0);
       break;
 
 
@@ -5582,11 +5581,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case TBN_RESET:
           {
-            int i; int c = (int)SendMessage(hwndToolbar,TB_BUTTONCOUNT,0,0);
+            int i; int c = (int)SendMessage(g_hwndToolbar,TB_BUTTONCOUNT,0,0);
             for (i = 0; i < c; i++) {
-              SendMessage(hwndToolbar, TB_DELETEBUTTON, 0, 0);
+              SendMessage(g_hwndToolbar, TB_DELETEBUTTON, 0, 0);
             }
-            SendMessage(hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
+            SendMessage(g_hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
             return(0);
           }
           break;
@@ -6160,7 +6159,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
 
-    Toolbar_GetButtons(hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+    Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
   if (StringCchCompareX(tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { tchToolbarButtons[0] = L'\0'; }
   IniSectionSetString(pIniSection, L"ToolbarButtons", tchToolbarButtons);
 
@@ -6906,10 +6905,10 @@ void UpdateVisibleUrlHotspot(int delay)
 //
 //  UpdateToolbar()
 //
-#define EnableTool(id,b) SendMessage(hwndToolbar,TB_ENABLEBUTTON,id, \
+#define EnableTool(id,b) SendMessage(g_hwndToolbar,TB_ENABLEBUTTON,id, \
                            MAKELONG(((b) ? 1 : 0), 0))
 
-#define CheckTool(id,b)  SendMessage(hwndToolbar,TB_CHECKBUTTON,id, \
+#define CheckTool(id,b)  SendMessage(g_hwndToolbar,TB_CHECKBUTTON,id, \
                            MAKELONG(b,0))
 
 void UpdateToolbar()
@@ -7311,13 +7310,13 @@ void RestoreAction(int token, DoAction doAct)
     case SC_SEL_LINES:
     case SC_SEL_STREAM:
     default:
-      // nothing to do herer
+      // nothing to do here
       break;
     }
 
-    // set current state 
+    // reset current state 
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, 
-      (bDenyVirtualSpaceAccess ? SCVS_NONE : (SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART)), 0);
+      (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
 
     //ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
 
