@@ -945,13 +945,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 //
 LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  if (!bDenyVirtualSpaceAccess)
-  {
-    if (GetAsyncKeyState(VK_MENU) & SHRT_MIN)  // ALT-KEY DOWN
-      SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE), 0);
-    else
-      SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)SCVS_RECTANGULARSELECTION, 0);
-  }
+  static BOOL bAltKeyIsDown = FALSE;
 
   switch(umsg)
   {
@@ -969,6 +963,29 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_WINDOWPOSCHANGING:
     case WM_WINDOWPOSCHANGED:
       return DefWindowProc(hwnd,umsg,wParam,lParam);
+
+    case WM_SYSKEYDOWN:
+      if (GetAsyncKeyState(VK_MENU) & SHRT_MIN)  // ALT-KEY DOWN
+      {
+        if (!bAltKeyIsDown) {
+          bAltKeyIsDown = TRUE;
+          if (!bDenyVirtualSpaceAccess) {
+            SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE), 0);
+          }
+        }
+      }
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
+
+    case WM_SYSKEYUP:
+      if (!(GetAsyncKeyState(VK_MENU) & SHRT_MIN))  // NOT ALT-KEY DOWN
+      {
+        if (bAltKeyIsDown) {
+          bAltKeyIsDown = FALSE;
+          SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)SCVS_RECTANGULARSELECTION, 0);
+        }
+      }
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
+
 
     case WM_CREATE:
       return MsgCreate(hwnd,wParam,lParam);
