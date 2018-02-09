@@ -6972,6 +6972,8 @@ void UpdateStatusbar()
   static WCHAR tch2ndDef[32] = { L'\0' };
   static WCHAR tchLexerName[128] = { L'\0' };
   static WCHAR tchLinesSelected[32] = { L'\0' };
+  
+  static WCHAR tchTmp[32] = { L'\0' };
 
   if (!bShowStatusbar) { return; }
 
@@ -7005,7 +7007,6 @@ void UpdateStatusbar()
     const int iSel = (int)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
     StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
     FormatNumberStr(tchSel);
-
     StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
   }
   else {
@@ -7018,15 +7019,17 @@ void UpdateStatusbar()
   {
     if ((iMarkOccurrencesMaxCount < 0) || (iMarkOccurrencesCount < iMarkOccurrencesMaxCount)) 
     {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i ", iMarkOccurrencesCount);
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
       FormatNumberStr(tchOcc);
     }
     else {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %i ", iMarkOccurrencesMaxCount);
+      StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", iMarkOccurrencesCount);
+      FormatNumberStr(tchTmp);
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
     }
   }
   else {
-    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"-- ");
+    StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
   }
 
   // Print number of selected lines in statusbar
