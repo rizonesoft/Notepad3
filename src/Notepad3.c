@@ -7182,7 +7182,6 @@ int BeginUndoAction()
   int token = -1;
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
   sel.selMode_undo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONMODE,0,0);
-  sel.rectSelVS_undo = (int)SendMessage(g_hwndEdit,SCI_GETVIRTUALSPACEOPTIONS,0,0);
 
   switch (sel.selMode_undo)
   {
@@ -7190,7 +7189,7 @@ int BeginUndoAction()
   case SC_SEL_THIN:
     sel.anchorPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
     sel.curPos_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-    if (sel.rectSelVS_undo & SCVS_RECTANGULARSELECTION) {
+    if (!bDenyVirtualSpaceAccess) {
       sel.anchorVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
       sel.curVS_undo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
     }
@@ -7225,7 +7224,6 @@ void EndUndoAction(int token)
     if (UndoRedoActionMap(token, &sel) >= 0) {
 
       sel.selMode_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
-      sel.rectSelVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETVIRTUALSPACEOPTIONS, 0, 0);
 
       switch (sel.selMode_redo)
       {
@@ -7233,9 +7231,8 @@ void EndUndoAction(int token)
       case SC_SEL_THIN:
         sel.anchorPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
         sel.curPos_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-        if (sel.rectSelVS_redo & SCVS_RECTANGULARSELECTION) {
+        if (!bDenyVirtualSpaceAccess) {
           sel.anchorVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
-          sel.curVS_redo = (int)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
         }
         break;
 
@@ -7282,8 +7279,6 @@ void RestoreAction(int token, DoAction doAct)
 
     const int selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
-    const int virtualSpaceOpt = (doAct == UNDO ? sel.rectSelVS_undo : sel.rectSelVS_redo);
-    ISSUE_MESSAGE(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)virtualSpaceOpt, 0);
 
     // independant from selection mode
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETANCHOR, (WPARAM)_anchorPos, 0);
@@ -7297,7 +7292,7 @@ void RestoreAction(int token, DoAction doAct)
       // fall-through
 
     case SC_SEL_THIN:
-      if (virtualSpaceOpt & SCVS_RECTANGULARSELECTION) {
+      {
         int anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
         int currVS = (doAct == UNDO ? sel.curVS_undo : sel.curVS_redo);
         if ((anchorVS != 0) || (currVS != 0)) {
@@ -7313,10 +7308,6 @@ void RestoreAction(int token, DoAction doAct)
       // nothing to do here
       break;
     }
-
-    // reset current state 
-    ISSUE_MESSAGE(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, 
-      (bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
 
     //ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
 
