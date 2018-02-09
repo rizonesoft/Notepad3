@@ -970,7 +970,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         if (!bAltKeyIsDown) {
           bAltKeyIsDown = TRUE;
           if (!bDenyVirtualSpaceAccess) {
-            SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE), 0);
+            SciCall_SetVirtualSpaceOptions(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE);
           }
         }
       }
@@ -981,7 +981,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         if (bAltKeyIsDown) {
           bAltKeyIsDown = FALSE;
-          SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)SCVS_RECTANGULARSELECTION, 0);
+          SciCall_SetVirtualSpaceOptions(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
         }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
