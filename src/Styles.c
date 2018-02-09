@@ -2878,7 +2878,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
 
 // Currently used lexer
 static int g_iDefaultLexer = 0;
-static PEDITLEXER g_pLexCurrent = &lexStandard; // g_pLexArray[g_iDefaultLexer];
+static PEDITLEXER g_pLexCurrent = &lexStandard;
 
 static BOOL g_fStylesModified  = FALSE;
 static BOOL g_fWarnedNoIniFile = FALSE;
@@ -2918,6 +2918,11 @@ BOOL __fastcall IsStyleStandardDefault(PEDITSTYLE pStyle)
 BOOL __fastcall IsStyleSchemeDefault(PEDITSTYLE pStyle)
 {
   return (pStyle->rid == 63126);
+}
+
+PEDITLEXER __fastcall GetDefaultLexer()
+{
+  return  g_pLexArray[g_iDefaultLexer];
 }
 
 
@@ -3185,7 +3190,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew) {
 
   // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = GetCurrentStdLexer();
+    pLexNew = GetDefaultLexer();  //GetCurrentStdLexer();
   }
   else if (IsLexerStandard(pLexNew)) {
     pLexNew = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
