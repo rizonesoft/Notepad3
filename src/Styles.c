@@ -49,6 +49,7 @@ extern HWND g_hwndEdit;
 extern int iSciFontQuality;
 extern const int FontQuality[4];
 
+extern BOOL g_bCodeFoldingAvailable;
 extern BOOL g_bShowCodeFolding;
 extern BOOL g_bShowSelectionMargin;
 
@@ -3235,12 +3236,27 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
 
   // Code folding
-  SciCall_SetProperty("fold", "1");
-  SciCall_SetProperty("fold.compact", "0");
-  SciCall_SetProperty("fold.comment", "1");
-  SciCall_SetProperty("fold.html", "1");
-  SciCall_SetProperty("fold.preprocessor", "1");
-  SciCall_SetProperty("fold.cpp.comment.explicit", "0");
+  switch (pLexNew->iLexer)
+  {
+  case SCLEX_NULL:
+  case SCLEX_CONTAINER:
+  case SCLEX_BATCH:
+  case SCLEX_CONF:
+  case SCLEX_MAKEFILE:
+  case SCLEX_MARKDOWN:
+    g_bCodeFoldingAvailable = FALSE;
+    SciCall_SetProperty("fold", "0");
+    break;
+  default:
+    g_bCodeFoldingAvailable = TRUE;
+    SciCall_SetProperty("fold", "1");
+    SciCall_SetProperty("fold.compact", "0");
+    SciCall_SetProperty("fold.comment", "1");
+    SciCall_SetProperty("fold.html", "1");
+    SciCall_SetProperty("fold.preprocessor", "1");
+    SciCall_SetProperty("fold.cpp.comment.explicit", "0");
+    break;
+  }
 
   // Add KeyWord Lists
   for (int i = 0; i < (KEYWORDSET_MAX + 1); i++) {
@@ -3706,7 +3722,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         }
       }
 
-      if (g_pLexCurrent -> iLexer == SCLEX_SQL && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_SQL_COMMENT) {
+      if (g_pLexCurrent->iLexer == SCLEX_SQL && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_SQL_COMMENT) {
         int iRelated[] = { SCE_SQL_COMMENTLINE, SCE_SQL_COMMENTDOC, SCE_SQL_COMMENTLINEDOC, SCE_SQL_COMMENTDOCKEYWORD, SCE_SQL_COMMENTDOCKEYWORDERROR };
         for (j = 0; j < COUNTOF(iRelated); j++) {
           Style_SetStyles(hwnd, iRelated[j], g_pLexCurrent->Styles[i].szValue);
@@ -3947,7 +3963,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   // set width
   Style_SetBookmark(hwnd, g_bShowSelectionMargin);
-  Style_SetFolding(hwnd, g_bShowCodeFolding);
+  Style_SetFolding(hwnd, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
 }
 
 

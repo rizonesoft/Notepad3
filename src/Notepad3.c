@@ -167,6 +167,7 @@ BOOL      bUseOldStyleBraceMatching;
 BOOL      bAutoCompleteWords;
 BOOL      bAccelWordNavigation;
 BOOL      bDenyVirtualSpaceAccess;
+BOOL      g_bCodeFoldingAvailable;
 BOOL      g_bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
@@ -2243,8 +2244,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu, CMD_CTRLDEL, i);
   EnableCmd(hmenu, CMD_TIMESTAMPS, i);
 
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && g_bShowCodeFolding);
-  CheckCmd(hmenu,IDM_VIEW_FOLDING,g_bShowCodeFolding);
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  CheckCmd(hmenu,IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableCmd(hmenu, IDM_VIEW_FOLDING, g_bCodeFoldingAvailable);
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
@@ -4038,8 +4040,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_FOLDING:
       g_bShowCodeFolding = (g_bShowCodeFolding) ? FALSE : TRUE;
       Style_SetFolding(g_hwndEdit, g_bShowCodeFolding);
-      if (!g_bShowCodeFolding)
-        EditFoldToggleAll(EXPAND);
+      if (!g_bShowCodeFolding) { EditFoldToggleAll(EXPAND); }
       UpdateToolbar();
       break;
 
@@ -6936,7 +6937,7 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_COPY, !b1 /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_CLEAR, !b1 /*&& !bReadOnly*/);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && g_bShowCodeFolding);
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
   EnableTool(IDT_FILE_LAUNCH, b2);
 
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
