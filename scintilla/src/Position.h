@@ -19,11 +19,6 @@ namespace Sci {
 typedef int Position;
 typedef int Line;
 
-// A later version (4.x) of this file may:
-//#if defined(SCI_LARGE_FILE_SUPPORT)
-//typedef std::ptrdiff_t Position;
-// or may allow runtime choice between different position sizes.
-
 const Position invalidPosition = -1;
 
 }
