@@ -211,7 +211,7 @@ BEGIN
             MENUITEM "&Align Lines...\tAlt+J",      IDM_EDIT_ALIGN
             MENUITEM "&Sort Lines...\tAlt+O",       IDM_EDIT_SORTLINES
         END
-        POPUP "Con&vert"
+        POPUP "Co&nvert"
         BEGIN
             MENUITEM "&Uppercase\tCtrl+Shift+U",    IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "&Lowercase\tCtrl+U",          IDM_EDIT_CONVERTLOWERCASE
@@ -276,9 +276,9 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Find...\tCtrl+F",            IDM_EDIT_FIND
         MENUITEM "Save Find Text\tAlt+F3",     IDM_EDIT_SAVEFIND
-        MENUITEM "Find &Next\tF3",              IDM_EDIT_FINDNEXT
-        MENUITEM "Find Previous\tShift+F3",     IDM_EDIT_FINDPREV
-        MENUITEM "Replace...\tCtrl+H",          IDM_EDIT_REPLACE
+        MENUITEM "Find Ne&xt\tF3",              IDM_EDIT_FINDNEXT
+        MENUITEM "Find Pre&vious\tShift+F3",     IDM_EDIT_FINDPREV
+        MENUITEM "&Replace...\tCtrl+H",          IDM_EDIT_REPLACE
         MENUITEM "Replace Ne&xt\tF4",           IDM_EDIT_REPLACENEXT
         MENUITEM "&Goto...\tCtrl+G",            IDM_EDIT_GOTOLINE
     END
