@@ -838,7 +838,7 @@ void MakeColorPickButton(HWND hwnd,int nCtlId,HINSTANCE hInstance,COLORREF crCol
   if (SendMessage(hwndCtl,BCM_GETIMAGELIST,0,(LPARAM)&bi))
     himlOld = bi.himl;
 
-  if (IsWindowEnabled(hwndCtl) && crColor != -1) {
+  if (IsWindowEnabled(hwndCtl) && crColor != ((COLORREF)-1)) {
     colormap[0].from = RGB(0x00,0x00,0x00);
     colormap[0].to   = GetSysColor(COLOR_3DSHADOW);
   }
@@ -847,10 +847,11 @@ void MakeColorPickButton(HWND hwnd,int nCtlId,HINSTANCE hInstance,COLORREF crCol
     colormap[0].to   = RGB(0xFF,0xFF,0xFF);
   }
 
-  if (IsWindowEnabled(hwndCtl) && crColor != -1) {
-    if (crColor == RGB(0xFF,0xFF,0xFF))
-      crColor = RGB(0xFF,0xFF,0xFE);
+  if (IsWindowEnabled(hwndCtl) && (crColor != (COLORREF)-1)) {
 
+    if (crColor == RGB(0xFF, 0xFF, 0xFF)) {
+      crColor = RGB(0xFF, 0xFF, 0xFE);
+    }
     colormap[1].from = RGB(0xFF,0xFF,0xFF);
     colormap[1].to   = crColor;
   }

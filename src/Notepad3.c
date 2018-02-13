@@ -65,7 +65,6 @@ HWND      hDlgFindReplace = NULL;
 #define INISECTIONBUFCNT 32
 #define NUMTOOLBITMAPS  25
 #define NUMINITIALTOOLS 30
-#define MARGIN_FOLD_INDEX 2
 
 TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
@@ -155,7 +154,7 @@ int       iLongLinesLimit;
 int       iLongLinesLimitG;
 int       iLongLineMode;
 int       iWrapCol = 0;
-BOOL      bShowSelectionMargin;
+BOOL      g_bShowSelectionMargin;
 BOOL      bShowLineNumbers;
 int       iMarkOccurrences;
 int       iMarkOccurrencesCount;
@@ -168,7 +167,7 @@ BOOL      bUseOldStyleBraceMatching;
 BOOL      bAutoCompleteWords;
 BOOL      bAccelWordNavigation;
 BOOL      bDenyVirtualSpaceAccess;
-BOOL      bShowCodeFolding;
+BOOL      g_bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
 BOOL      bSkipUnicodeDetection;
@@ -1211,23 +1210,6 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
 
-  // Margins
-  Style_SetCurrentMargin(g_hwndEdit, bShowSelectionMargin);
-
-  // Code folding
-  SciCall_SetMarginType(MARGIN_FOLD_INDEX, SC_MARGIN_SYMBOL);
-  SciCall_SetMarginMask(MARGIN_FOLD_INDEX, SC_MASK_FOLDERS);
-  SciCall_SetMarginWidth(MARGIN_FOLD_INDEX, (bShowCodeFolding) ? 11 : 0);
-  SciCall_SetMarginSensitive(MARGIN_FOLD_INDEX, TRUE);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPEN, SC_MARK_BOXMINUS);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDER, SC_MARK_BOXPLUS);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNER);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDEREND, SC_MARK_BOXPLUSCONNECTED);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
-  SciCall_SetFoldFlags(16);
-
   UpdateLineNumberWidth();
 
   // Nonprinting characters
@@ -2261,8 +2243,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu, CMD_CTRLDEL, i);
   EnableCmd(hmenu, CMD_TIMESTAMPS, i);
 
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && bShowCodeFolding);
-  CheckCmd(hmenu,IDM_VIEW_FOLDING,bShowCodeFolding);
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && g_bShowCodeFolding);
+  CheckCmd(hmenu,IDM_VIEW_FOLDING,g_bShowCodeFolding);
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
@@ -2272,7 +2254,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,bShowIndentGuides);
   CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,bAutoIndent);
   CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,bShowLineNumbers);
-  CheckCmd(hmenu,IDM_VIEW_MARGIN,bShowSelectionMargin);
+  CheckCmd(hmenu,IDM_VIEW_MARGIN,g_bShowSelectionMargin);
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,i);
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
@@ -3764,7 +3746,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           SendMessage(g_hwndEdit, SCI_MARKERDELETE, iLine, MARKER_NP3_BOOKMARK);
         }
         else {
-          Style_SetCurrentMargin(g_hwndEdit, bShowSelectionMargin);
+          Style_SetBookmark(g_hwndEdit, g_bShowSelectionMargin);
           // set
           SendMessage(g_hwndEdit, SCI_MARKERADD, iLine, MARKER_NP3_BOOKMARK);
           UpdateLineNumberWidth();
@@ -3994,8 +3976,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_MARGIN:
-      bShowSelectionMargin = (bShowSelectionMargin) ? FALSE : TRUE;
-      Style_SetCurrentMargin(g_hwndEdit, bShowSelectionMargin);
+      g_bShowSelectionMargin = (g_bShowSelectionMargin) ? FALSE : TRUE;
+      Style_SetBookmark(g_hwndEdit, g_bShowSelectionMargin);
       UpdateLineNumberWidth();
       break;
 
@@ -4054,9 +4036,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_FOLDING:
-      bShowCodeFolding = (bShowCodeFolding) ? FALSE : TRUE;
-      SciCall_SetMarginWidth(MARGIN_FOLD_INDEX, (bShowCodeFolding) ? 11 : 0);
-      if (!bShowCodeFolding)
+      g_bShowCodeFolding = (g_bShowCodeFolding) ? FALSE : TRUE;
+      Style_SetFolding(g_hwndEdit, g_bShowCodeFolding);
+      if (!g_bShowCodeFolding)
         EditFoldToggleAll(EXPAND);
       UpdateToolbar();
       break;
@@ -5535,7 +5517,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
         case SCN_MARGINCLICK:
-          if (scn->margin == MARGIN_FOLD_INDEX) {
+          if (scn->margin == MARGIN_SCI_FOLDING) {
             EditFoldClick(SciCall_LineFromPosition((DocPos)scn->position), scn->modifiers);
           }
           break;
@@ -5816,11 +5798,11 @@ void LoadSettings()
   iLongLineMode = IniSectionGetInt(pIniSection,L"LongLineMode",EDGE_LINE);
   iLongLineMode = max(min(iLongLineMode,EDGE_BACKGROUND),EDGE_LINE);
 
-  bShowSelectionMargin = IniSectionGetBool(pIniSection,L"ShowSelectionMargin",FALSE);
+  g_bShowSelectionMargin = IniSectionGetBool(pIniSection,L"ShowSelectionMargin",FALSE);
 
   bShowLineNumbers = IniSectionGetBool(pIniSection,L"ShowLineNumbers", TRUE);
 
-  bShowCodeFolding = IniSectionGetBool(pIniSection,L"ShowCodeFolding", TRUE);
+  g_bShowCodeFolding = IniSectionGetBool(pIniSection,L"ShowCodeFolding", TRUE);
 
   iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",1);
   iMarkOccurrences = max(min(iMarkOccurrences, 3), 0);
@@ -6128,9 +6110,9 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"MarkLongLines", bMarkLongLines);
   IniSectionSetInt(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
   IniSectionSetInt(pIniSection, L"LongLineMode", iLongLineMode);
-  IniSectionSetBool(pIniSection, L"ShowSelectionMargin", bShowSelectionMargin);
+  IniSectionSetBool(pIniSection, L"ShowSelectionMargin", g_bShowSelectionMargin);
   IniSectionSetBool(pIniSection, L"ShowLineNumbers", bShowLineNumbers);
-  IniSectionSetBool(pIniSection, L"ShowCodeFolding", bShowCodeFolding);
+  IniSectionSetBool(pIniSection, L"ShowCodeFolding", g_bShowCodeFolding);
   IniSectionSetInt(pIniSection, L"MarkOccurrences", iMarkOccurrences);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", bMarkOccurrencesMatchVisible);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", bMarkOccurrencesMatchCase);
@@ -6954,7 +6936,7 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_COPY, !b1 /*&& !bReadOnly*/);
   EnableTool(IDT_EDIT_CLEAR, !b1 /*&& !bReadOnly*/);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && bShowCodeFolding);
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && g_bShowCodeFolding);
   EnableTool(IDT_FILE_LAUNCH, b2);
 
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
@@ -7130,15 +7112,15 @@ void UpdateLineNumberWidth()
     char chLines[32] = { '\0' };
     StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", SciCall_GetLineCount());
 
-    int iLineMarginWidthNow = (int)SendMessage(g_hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+    int iLineMarginWidthNow = (int)SendMessage(g_hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_SCI_LINENUM, 0);
     int iLineMarginWidthFit = (int)SendMessage(g_hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
 
     if (iLineMarginWidthNow != iLineMarginWidthFit) {
-      SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, iLineMarginWidthFit);
+      SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_SCI_LINENUM, iLineMarginWidthFit);
     }
   }
   else {
-    SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_NP3_LINENUM, 0);
+    SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_SCI_LINENUM, 0);
   }
 }
 

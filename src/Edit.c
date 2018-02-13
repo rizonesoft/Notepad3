@@ -90,7 +90,7 @@ extern int  iMarkOccurrences;
 extern int  iMarkOccurrencesCount;
 extern int  iMarkOccurrencesMaxCount;
 extern BOOL bMarkOccurrencesMatchVisible;
-extern BOOL bShowCodeFolding;
+extern BOOL g_bShowCodeFolding;
 
 extern BOOL g_bTabsAsSpaces;
 extern BOOL g_bTabIndents;
@@ -7423,7 +7423,7 @@ void EditFoldClick(DocLn ln, int mode)
 
 void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
 {
-  if (bShowCodeFolding)
+  if (g_bShowCodeFolding)
   {
     DocLn ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
 
