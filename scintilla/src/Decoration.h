@@ -12,7 +12,7 @@ namespace Scintilla {
 class Decoration {
 	int indicator;
 public:
-	RunStyles rs;
+	RunStyles<int, int> rs;
 
 	explicit Decoration(int indicator_);
 	~Decoration();

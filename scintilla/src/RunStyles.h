@@ -12,36 +12,37 @@
 
 namespace Scintilla {
 
+template <typename DISTANCE, typename STYLE>
 class RunStyles {
 private:
-	std::unique_ptr<Partitioning> starts;
-	std::unique_ptr<SplitVector<int>> styles;
-	int RunFromPosition(int position) const;
-	int SplitRun(int position);
-	void RemoveRun(int run);
-	void RemoveRunIfEmpty(int run);
-	void RemoveRunIfSameAsPrevious(int run);
+	std::unique_ptr<Partitioning<DISTANCE>> starts;
+	std::unique_ptr<SplitVector<STYLE>> styles;
+	DISTANCE RunFromPosition(DISTANCE position) const;
+	DISTANCE SplitRun(DISTANCE position);
+	void RemoveRun(DISTANCE run);
+	void RemoveRunIfEmpty(DISTANCE run);
+	void RemoveRunIfSameAsPrevious(DISTANCE run);
 public:
 	RunStyles();
 	// Deleted so RunStyles objects can not be copied.
 	RunStyles(const RunStyles &) = delete;
 	void operator=(const RunStyles &) = delete;
 	~RunStyles();
-	int Length() const;
-	int ValueAt(int position) const;
-	int FindNextChange(int position, int end) const;
-	int StartRun(int position) const;
-	int EndRun(int position) const;
+	DISTANCE Length() const;
+	STYLE ValueAt(DISTANCE position) const;
+	DISTANCE FindNextChange(DISTANCE position, DISTANCE end) const;
+	DISTANCE StartRun(DISTANCE position) const;
+	DISTANCE EndRun(DISTANCE position) const;
 	// Returns true if some values may have changed
-	bool FillRange(int &position, int value, int &fillLength);
-	void SetValueAt(int position, int value);
-	void InsertSpace(int position, int insertLength);
+	bool FillRange(DISTANCE &position, STYLE value, DISTANCE &fillLength);
+	void SetValueAt(DISTANCE position, STYLE value);
+	void InsertSpace(DISTANCE position, DISTANCE insertLength);
 	void DeleteAll();
-	void DeleteRange(int position, int deleteLength);
-	int Runs() const;
+	void DeleteRange(DISTANCE position, DISTANCE deleteLength);
+	DISTANCE Runs() const;
 	bool AllSame() const;
-	bool AllSameAs(int value) const;
-	int Find(int value, int start) const;
+	bool AllSameAs(STYLE value) const;
+	DISTANCE Find(STYLE value, DISTANCE start) const;
 
 	void Check() const;
 };

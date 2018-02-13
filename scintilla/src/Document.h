@@ -267,7 +267,7 @@ public:
 
 	DecorationList decorations;
 
-	Document();
+	Document(int options);
 	// Deleted so Document objects can not be copied.
 	Document(const Document &) = delete;
 	void operator=(const Document &) = delete;

@@ -342,7 +342,8 @@ void UndoHistory::CompletedRedoStep() {
 	currentAction++;
 }
 
-CellBuffer::CellBuffer() {
+CellBuffer::CellBuffer(bool hasStyles_) :
+	hasStyles(hasStyles_) {
 	readOnly = false;
 	utf8LineEnds = 0;
 	collectingUndo = true;
@@ -369,7 +370,7 @@ void CellBuffer::GetCharRange(char *buffer, Sci::Position position, Sci::Positio
 }
 
 char CellBuffer::StyleAt(Sci::Position position) const {
-	return style.ValueAt(position);
+	return hasStyles ? style.ValueAt(position) : 0;
 }
 
 void CellBuffer::GetStyleRange(unsigned char *buffer, Sci::Position position, Sci::Position lengthRetrieve) const {
@@ -377,6 +378,10 @@ void CellBuffer::GetStyleRange(unsigned char *buffer, Sci::Position position, Sc
 		return;
 	if (position < 0)
 		return;
+	if (!hasStyles) {
+		std::fill(buffer, buffer + lengthRetrieve, static_cast<unsigned char>(0));
+		return;
+	}
 	if ((position + lengthRetrieve) > style.Length()) {
 		Platform::DebugPrintf("Bad GetStyleRange %d for %d of %d\n", position,
 		                      lengthRetrieve, style.Length());
@@ -394,7 +399,7 @@ const char *CellBuffer::RangePointer(Sci::Position position, Sci::Position range
 }
 
 Sci::Position CellBuffer::GapPosition() const {
-	return substance.GapPosition();
+	return static_cast<Sci::Position>(substance.GapPosition());
 }
 
 // The char* returned is to an allocation owned by the undo history
@@ -414,6 +419,9 @@ const char *CellBuffer::InsertString(Sci::Position position, const char *s, Sci:
 }
 
 bool CellBuffer::SetStyleAt(Sci::Position position, char styleValue) {
+	if (!hasStyles) {
+		return false;
+	}
 	const char curVal = style.ValueAt(position);
 	if (curVal != styleValue) {
 		style.SetValueAt(position, styleValue);
@@ -424,6 +432,9 @@ bool CellBuffer::SetStyleAt(Sci::Position position, char styleValue) {
 }
 
 bool CellBuffer::SetStyleFor(Sci::Position position, Sci::Position lengthStyle, char styleValue) {
+	if (!hasStyles) {
+		return false;
+	}
 	bool changed = false;
 	PLATFORM_ASSERT(lengthStyle == 0 ||
 		(lengthStyle > 0 && lengthStyle + position <= style.Length()));
@@ -457,12 +468,14 @@ const char *CellBuffer::DeleteChars(Sci::Position position, Sci::Position delete
 }
 
 Sci::Position CellBuffer::Length() const {
-	return substance.Length();
+	return static_cast<Sci::Position>(substance.Length());
 }
 
 void CellBuffer::Allocate(Sci::Position newSize) {
 	substance.ReAllocate(newSize);
-	style.ReAllocate(newSize);
+	if (hasStyles) {
+		style.ReAllocate(newSize);
+	}
 }
 
 void CellBuffer::SetLineEndTypes(int utf8LineEnds_) {
@@ -608,7 +621,9 @@ void CellBuffer::BasicInsertString(Sci::Position position, const char *s, Sci::P
 	}
 
 	substance.InsertFromArray(position, s, 0, insertLength);
-	style.InsertValue(position, insertLength, 0);
+	if (hasStyles) {
+		style.InsertValue(position, insertLength, 0);
+	}
 
 	Sci::Line lineInsert = lv.LineFromPosition(position) + 1;
 	bool atLineStart = lv.LineStart(lineInsert-1) == position;
@@ -738,7 +753,9 @@ void CellBuffer::BasicDeleteChars(Sci::Position position, Sci::Position deleteLe
 		}
 	}
 	substance.DeleteRange(position, deleteLength);
-	style.DeleteRange(position, deleteLength);
+	if (hasStyles) {
+		style.DeleteRange(position, deleteLength);
+	}
 }
 
 bool CellBuffer::SetUndoCollection(bool collectUndo) {

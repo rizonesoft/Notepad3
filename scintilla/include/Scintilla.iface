@@ -1771,9 +1771,13 @@ set void SetZoom=2373(int zoomInPoints,)
 # Retrieve the zoom level.
 get int GetZoom=2374(,)
 
+enu DocumentOption=SC_DOCUMENTOPTION_
+val SC_DOCUMENTOPTION_DEFAULT=0
+val SC_DOCUMENTOPTION_STYLES_NONE=1
+
 # Create a new document object.
 # Starts with reference count of 1 and not selected into editor.
-fun int CreateDocument=2375(,)
+fun int CreateDocument=2375(int bytes, int documentOption)
 # Extend life of document.
 fun void AddRefDocument=2376(, int doc)
 # Release a reference to the document, deleting document if it fades to black.
@@ -2540,7 +2544,7 @@ set void SetTechnology=2630(int technology,)
 get int GetTechnology=2631(,)
 
 # Create an ILoader*.
-fun int CreateLoader=2632(int bytes,)
+fun int CreateLoader=2632(int bytes, int documentOption)
 
 # On OS X, show a find indicator.
 fun void FindIndicatorShow=2640(position start, position end)
@@ -2918,7 +2922,6 @@ val SCLEX_JSON=120
 val SCLEX_EDIFACT=121
 val SCLEX_INDENT=122
 val SCLEX_AHK=200
-val SCLEX_NIM=201
 
 # When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 # value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -4863,9 +4866,18 @@ evt void AutoCCompleted=2030(string text, int position, int ch, CompletionMethod
 evt void MarginRightClick=2031(int modifiers, int position, int margin)
 evt void AutoCSelectionChange=2032(int listType, string text, int position)
 
-# There are no provisional APIs currently.
-
 cat Provisional
+
+enu Bidirectional=SC_BIDIRECTIONAL_
+val SC_BIDIRECTIONAL_DISABLED=0
+val SC_BIDIRECTIONAL_L2R=1
+val SC_BIDIRECTIONAL_R2L=2
+
+# Retrieve bidirectional text display state.
+get int GetBidirectional=2708(,)
+
+# Set bidirectional text display state.
+set void SetBidirectional=2709(int bidirectional,)
 
 cat Deprecated
 

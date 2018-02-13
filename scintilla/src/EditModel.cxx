@@ -63,12 +63,13 @@ EditModel::EditModel() {
 	highlightGuideColumn = 0;
 	primarySelection = true;
 	imeInteraction = imeWindowed;
+	bidirectional = Bidirectional::bidiDisabled;
 	foldFlags = 0;
 	foldDisplayTextStyle = SC_FOLDDISPLAYTEXT_HIDDEN;
 	hotspot = Range(Sci::invalidPosition);
 	hoverIndicatorPos = Sci::invalidPosition;
 	wrapWidth = LineLayout::wrapWidthInfinite;
-	pdoc = new Document();
+	pdoc = new Document(SC_DOCUMENTOPTION_DEFAULT);
 	pdoc->AddRef();
 }
 
