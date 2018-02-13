@@ -135,7 +135,7 @@ int LineMarkers::MarkValue(Sci::Line line) {
 Sci::Line LineMarkers::MarkerNext(Sci::Line lineStart, int mask) const {
 	if (lineStart < 0)
 		lineStart = 0;
-	const Sci::Line length = markers.Length();
+	const Sci::Line length = static_cast<Sci::Line>(markers.Length());
 	for (Sci::Line iLine = lineStart; iLine < length; iLine++) {
 		const MarkerHandleSet *onLine = markers[iLine].get();
 		if (onLine && ((onLine->MarkValue() & mask) != 0))
@@ -281,7 +281,7 @@ int LineState::GetLineState(Sci::Line line) {
 }
 
 Sci::Line LineState::GetMaxLineState() const {
-	return lineStates.Length();
+	return static_cast<Sci::Line>(lineStates.Length());
 }
 
 static int NumberLines(const char *text) {

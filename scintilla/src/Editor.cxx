@@ -11,8 +11,8 @@
 #include <cstring>
 #include <cctype>
 #include <cstdio>
-
 #include <cmath>
+
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -900,11 +900,11 @@ SelectionPosition Editor::MovePositionSoVisible(SelectionPosition pos, int moveD
 		Sci::Line lineDisplay = cs.DisplayFromDoc(lineDoc);
 		if (moveDir > 0) {
 			// lineDisplay is already line before fold as lines in fold use display line of line after fold
-			lineDisplay = Sci::clamp(lineDisplay, 0, cs.LinesDisplayed());
+			lineDisplay = std::clamp(lineDisplay, static_cast<Sci::Line>(0), cs.LinesDisplayed());
 			return SelectionPosition(static_cast<Sci::Position>(
 				pdoc->LineStart(cs.DocFromDisplay(lineDisplay))));
 		} else {
-			lineDisplay = Sci::clamp(lineDisplay - 1, 0, cs.LinesDisplayed());
+			lineDisplay = std::clamp(lineDisplay - 1, static_cast<Sci::Line>(0), cs.LinesDisplayed());
 			return SelectionPosition(static_cast<Sci::Position>(
 				pdoc->LineEnd(cs.DocFromDisplay(lineDisplay))));
 		}
@@ -929,12 +929,12 @@ void Editor::SetLastXChosen() {
 }
 
 void Editor::ScrollTo(Sci::Line line, bool moveThumb) {
-	const Sci::Line topLineNew = Sci::clamp(line, 0, MaxScrollPos());
+	const Sci::Line topLineNew = std::clamp(line, static_cast<Sci::Line>(0), MaxScrollPos());
 	if (topLineNew != topLine) {
 		// Try to optimise small scrolls
 #ifndef UNDER_CE
 		const Sci::Line linesToMove = topLine - topLineNew;
-		const bool performBlit = (abs(linesToMove) <= 10) && (paintState == notPainting);
+		const bool performBlit = (std::abs(linesToMove) <= 10) && (paintState == notPainting);
 		willRedrawAll = !performBlit;
 #endif
 		SetTopLine(topLineNew);
@@ -1169,7 +1169,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				} else {
 					// yMarginT must equal to caretYSlop, with a minimum of 1 and
 					// a maximum of slightly less than half the heigth of the text area.
-					yMarginT = Sci::clamp(caretYSlop, 1, halfScreen);
+					yMarginT = std::clamp(static_cast<Sci::Line>(caretYSlop), static_cast<Sci::Line>(1), halfScreen);
 					if (bEven) {
 						yMarginB = yMarginT;
 					} else {
@@ -1179,7 +1179,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				yMoveT = yMarginT;
 				if (bEven) {
 					if (bJump) {
-						yMoveT = Sci::clamp(caretYSlop * 3, 1, halfScreen);
+						yMoveT = std::clamp(static_cast<Sci::Line>(caretYSlop * 3), static_cast<Sci::Line>(1), halfScreen);
 					}
 					yMoveB = yMoveT;
 				} else {
@@ -1194,7 +1194,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				}
 			} else {	// Not strict
 				yMoveT = bJump ? caretYSlop * 3 : caretYSlop;
-				yMoveT = Sci::clamp(yMoveT, 1, halfScreen);
+				yMoveT = std::clamp(yMoveT, static_cast<Sci::Line>(1), halfScreen);
 				if (bEven) {
 					yMoveB = yMoveT;
 				} else {
@@ -1244,7 +1244,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				newXY.topLine = std::min(newXY.topLine, lineCaret);
 			}
 		}
-		newXY.topLine = Sci::clamp(newXY.topLine, 0, MaxScrollPos());
+		newXY.topLine = std::clamp(newXY.topLine, static_cast<Sci::Line>(0), MaxScrollPos());
 	}
 
 	// Horizontal positioning
@@ -1266,7 +1266,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				} else {
 					// xMargin must equal to caretXSlop, with a minimum of 2 and
 					// a maximum of slightly less than half the width of the text area.
-					xMarginR = Sci::clamp(caretXSlop, 2, halfScreen);
+					xMarginR = std::clamp(caretXSlop, 2, halfScreen);
 					if (bEven) {
 						xMarginL = xMarginR;
 					} else {
@@ -1275,7 +1275,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				}
 				if (bJump && bEven) {
 					// Jump is used only in even mode
-					xMoveL = xMoveR = Sci::clamp(caretXSlop * 3, 1, halfScreen);
+					xMoveL = xMoveR = std::clamp(caretXSlop * 3, 1, halfScreen);
 				} else {
 					xMoveL = xMoveR = 0;	// Not used, avoid a warning
 				}
@@ -1298,7 +1298,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				}
 			} else {	// Not strict
 				xMoveR = bJump ? caretXSlop * 3 : caretXSlop;
-				xMoveR = Sci::clamp(xMoveR, 1, halfScreen);
+				xMoveR = std::clamp(xMoveR, 1, halfScreen);
 				if (bEven) {
 					xMoveL = xMoveR;
 				} else {
@@ -1510,7 +1510,7 @@ bool Editor::WrapLines(WrapScope ws) {
 		const Sci::Line lineDocTop = cs.DocFromDisplay(topLine);
 		const int subLineTop = topLine - cs.DisplayFromDoc(lineDocTop);
 		if (ws == WrapScope::wsVisible) {
-			lineToWrap = Sci::clamp(lineDocTop-5, wrapPending.start, pdoc->LinesTotal());
+			lineToWrap = std::clamp(lineDocTop-5, wrapPending.start, pdoc->LinesTotal());
 			// Priority wrap to just after visible area.
 			// Since wrapping could reduce display lines, treat each
 			// as taking only one display line.
@@ -1566,7 +1566,7 @@ bool Editor::WrapLines(WrapScope ws) {
 
 	if (wrapOccurred) {
 		SetScrollBars();
-		SetTopLine(Sci::clamp(goodTopLine, 0, MaxScrollPos()));
+		SetTopLine(std::clamp(goodTopLine, static_cast<Sci::Line>(0), MaxScrollPos()));
 		SetVerticalScrollPos();
 	}
 
@@ -1819,7 +1819,7 @@ void Editor::SetScrollBars() {
 	// TODO: ensure always showing as many lines as possible
 	// May not be, if, for example, window made larger
 	if (topLine > MaxScrollPos()) {
-		SetTopLine(Sci::clamp(topLine, 0, MaxScrollPos()));
+		SetTopLine(std::clamp(topLine, static_cast<Sci::Line>(0), MaxScrollPos()));
 		SetVerticalScrollPos();
 		Redraw();
 	}
@@ -2623,7 +2623,7 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 		if (mh.linesAdded != 0) {
 			// Avoid scrolling of display if change before current display
 			if (mh.position < posTopLine && !CanDeferToLastStep(mh)) {
-				Sci::Line newTop = Sci::clamp(topLine + mh.linesAdded, 0, MaxScrollPos());
+				Sci::Line newTop = std::clamp(topLine + mh.linesAdded, static_cast<Sci::Line>(0), MaxScrollPos());
 				if (newTop != topLine) {
 					SetTopLine(newTop);
 					SetVerticalScrollPos();
@@ -2859,8 +2859,8 @@ void Editor::PageMove(int direction, Selection::selTypes selt, bool stuttered) {
 	} else {
 		Point pt = LocationFromPosition(sel.MainCaret());
 
-		topLineNew = Sci::clamp(
-		            topLine + direction * LinesToScroll(), 0, MaxScrollPos());
+		topLineNew = std::clamp(
+		            topLine + direction * LinesToScroll(), static_cast<Sci::Line>(0), MaxScrollPos());
 		newPos = SPositionFromLocation(
 			Point::FromInts(lastXChosen - xOffset, static_cast<int>(pt.y) + direction * (vs.lineHeight * LinesToScroll())),
 			false, false, UserVirtualSpace());
@@ -4455,7 +4455,7 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifie
 	if (shift && !inSelMargin) {
 		SetSelection(newPos);
 	}
-	if (((curTime - lastClickTime) < Platform::DoubleClickTime()) && Close(pt, lastClick, doubleClickCloseThreshold)) {
+	if ((curTime < (lastClickTime+Platform::DoubleClickTime())) && Close(pt, lastClick, doubleClickCloseThreshold)) {
 		//Platform::DebugPrintf("Double click %d %d = %d\n", curTime, lastClickTime, curTime - lastClickTime);
 		SetMouseCapture(true);
 		FineTickerStart(tickScroll, 100, 10);
@@ -5011,7 +5011,7 @@ Sci::Position Editor::PositionAfterMaxStyling(Sci::Position posMax, bool scrolli
 	// When scrolling, allow less time to ensure responsive
 	const double secondsAllowed = scrolling ? 0.005 : 0.02;
 
-	const Sci::Line linesToStyle = Sci::clamp(static_cast<int>(secondsAllowed / pdoc->durationStyleOneLine),
+	const Sci::Line linesToStyle = std::clamp(static_cast<int>(secondsAllowed / pdoc->durationStyleOneLine),
 		10, 0x10000);
 	const Sci::Line stylingMaxLine = std::min(
 		static_cast<Sci::Line>(pdoc->LineFromPosition(pdoc->GetEndStyled()) + linesToStyle),
@@ -5165,7 +5165,7 @@ void Editor::SetDocPointer(Document *document) {
 	pdoc->RemoveWatcher(this, 0);
 	pdoc->Release();
 	if (document == NULL) {
-		pdoc = new Document();
+		pdoc = new Document(SC_DOCUMENTOPTION_DEFAULT);
 	} else {
 		pdoc = document;
 	}
@@ -5362,18 +5362,18 @@ void Editor::EnsureLineVisible(Sci::Line lineDoc, bool enforcePolicy) {
 		const Sci::Line lineDisplay = cs.DisplayFromDoc(lineDoc);
 		if (visiblePolicy & VISIBLE_SLOP) {
 			if ((topLine > lineDisplay) || ((visiblePolicy & VISIBLE_STRICT) && (topLine + visibleSlop > lineDisplay))) {
-				SetTopLine(Sci::clamp(lineDisplay - visibleSlop, 0, MaxScrollPos()));
+				SetTopLine(std::clamp(lineDisplay - visibleSlop, static_cast<Sci::Line>(0), MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			} else if ((lineDisplay > topLine + LinesOnScreen() - 1) ||
 			        ((visiblePolicy & VISIBLE_STRICT) && (lineDisplay > topLine + LinesOnScreen() - 1 - visibleSlop))) {
-				SetTopLine(Sci::clamp(lineDisplay - LinesOnScreen() + 1 + visibleSlop, 0, MaxScrollPos()));
+				SetTopLine(std::clamp(lineDisplay - LinesOnScreen() + 1 + visibleSlop, static_cast<Sci::Line>(0), MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			}
 		} else {
 			if ((topLine > lineDisplay) || (lineDisplay > topLine + LinesOnScreen() - 1) || (visiblePolicy & VISIBLE_STRICT)) {
-				SetTopLine(Sci::clamp(lineDisplay - LinesOnScreen() / 2 + 1, 0, MaxScrollPos()));
+				SetTopLine(std::clamp(lineDisplay - LinesOnScreen() / 2 + 1, static_cast<Sci::Line>(0), MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			}
@@ -5978,7 +5978,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return pdoc->MovePositionOutsideChar(static_cast<int>(wParam) + 1, 1, true);
 
 	case SCI_POSITIONRELATIVE:
-		return Sci::clamp(static_cast<int>(pdoc->GetRelativePosition(static_cast<int>(wParam), static_cast<int>(lParam))),
+		return std::clamp(static_cast<int>(pdoc->GetRelativePosition(static_cast<int>(wParam), static_cast<int>(lParam))),
 			0, static_cast<int>(pdoc->Length()));
 
 	case SCI_LINESCROLL:
@@ -6738,6 +6738,13 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETIMEINTERACTION:
 		return imeInteraction;
+
+	case SCI_SETBIDIRECTIONAL:
+		// SCI_SETBIDIRECTIONAL is implemented on platform subclasses if they support bidirectional text.
+		break;
+
+	case SCI_GETBIDIRECTIONAL:
+		return static_cast<sptr_t>(bidirectional);
 
 		// Marker definition and setting
 	case SCI_MARKERDEFINE:
@@ -7550,8 +7557,9 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return 0;
 
 	case SCI_CREATEDOCUMENT: {
-			Document *doc = new Document();
+			Document *doc = new Document(static_cast<int>(lParam));
 			doc->AddRef();
+			doc->Allocate(static_cast<int>(wParam));
 			return reinterpret_cast<sptr_t>(doc);
 		}
 
@@ -7564,7 +7572,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_CREATELOADER: {
-			Document *doc = new Document();
+			Document *doc = new Document(static_cast<int>(lParam));
 			doc->AddRef();
 			doc->Allocate(static_cast<int>(wParam));
 			doc->SetUndoCollection(false);

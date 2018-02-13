@@ -119,7 +119,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 11 August 2017 NH</p>
+    <p>Last edited 1 February 2018 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -3595,6 +3595,10 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_GETCODEPAGE">SCI_GETCODEPAGE &rarr; int</a><br />
      <a class="message" href="#SCI_SETIMEINTERACTION">SCI_SETIMEINTERACTION(int imeInteraction)</a><br />
      <a class="message" href="#SCI_GETIMEINTERACTION">SCI_GETIMEINTERACTION &rarr; int</a><br />
+<div  class="provisional">
+     <a class="message" href="#SCI_SETBIDIRECTIONAL"><span class="provisional">SCI_SETBIDIRECTIONAL(int bidirectional)</span></a><br />
+     <a class="message" href="#SCI_GETBIDIRECTIONAL">SCI_GETBIDIRECTIONAL &rarr; int</a><br />
+</div>
      <a class="message" href="#SCI_GRABFOCUS">SCI_GRABFOCUS</a><br />
      <a class="message" href="#SCI_SETFOCUS">SCI_SETFOCUS(bool focus)</a><br />
      <a class="message" href="#SCI_GETFOCUS">SCI_GETFOCUS &rarr; bool</a><br />
@@ -3718,6 +3722,27 @@ struct Sci_TextToFind {
      <p>The windowed behaviour can be chosen with <code>SCI_SETIMEINTERACTION(SC_IME_WINDOWED)</code>
      and the inline behaviour with <code>SCI_SETIMEINTERACTION(SC_IME_INLINE)</code>.
      Scintilla may ignore this call in some cases. For example, the inline behaviour might only be supported for some languages.</p>
+
+<div  class="provisional">
+    <a href="#ProvisionalMessages">These bidirectional features are not yet implemented and the API is provisional</a><br />
+    <p><b id="SCI_SETBIDIRECTIONAL">SCI_SETBIDIRECTIONAL(int bidirectional)</b><br />
+     <b id="SCI_GETBIDIRECTIONAL">SCI_GETBIDIRECTIONAL &rarr; int</b><br />
+     Some languages, like Arabic and Hebrew, are written from right to left instead of from left to right as English is.
+     Documents that use multiple languages may contain both directions and this is termed "bidirectional".
+     The default text direction may be right to left or left to right.
+     Scintilla only correctly displays bidirectional text on some platforms and there can be additional processing and storage
+     costs to this.
+     Currently, bidirectional text only works on Win32 using DirectWrite.
+     As some applications may not want to pay the costs, bidirectional support must be explicitly enabled by calling
+     <code>SCI_SETBIDIRECTIONAL(SC_BIDIRECTIONAL_L2R)</code> (1) which chooses left to right as the default direction or
+     <code>SCI_SETBIDIRECTIONAL(SC_BIDIRECTIONAL_R2L)</code> (2) for default right to left.
+     This should be done after setting the technology to <code>SC_TECHNOLOGY_DIRECTWRITE</code>,
+     <code>SC_TECHNOLOGY_DIRECTWRITERETAIN</code>, or
+     <code>SC_TECHNOLOGY_DIRECTWRITEDC</code>.</p>
+     <p>If the call succeeded <code>SCI_GETBIDIRECTIONAL</code> will return the same value otherwise
+     <code>SC_BIDIRECTIONAL_DISABLED</code> (0) is returned.
+     </p>
+</div>
 
     <p><b id="SCI_GRABFOCUS">SCI_GRABFOCUS</b><br />
      <b id="SCI_SETFOCUS">SCI_SETFOCUS(bool focus)</b><br />
@@ -5687,7 +5712,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <code><a class="message" href="#SCI_GETDOCPOINTER">SCI_GETDOCPOINTER &rarr; document *</a><br />
      <a class="message" href="#SCI_SETDOCPOINTER">SCI_SETDOCPOINTER(&lt;unused&gt;, document
     *doc)</a><br />
-     <a class="message" href="#SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT &rarr; document *</a><br />
+     <a class="message" href="#SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT(int bytes, int documentOption) &rarr; document *</a><br />
      <a class="message" href="#SCI_ADDREFDOCUMENT">SCI_ADDREFDOCUMENT(&lt;unused&gt;, document
     *doc)</a><br />
      <a class="message" href="#SCI_RELEASEDOCUMENT">SCI_RELEASEDOCUMENT(&lt;unused&gt;, document
@@ -5708,13 +5733,49 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     window.<br />
      6. If <code class="parameter">doc</code> was not 0, its reference count is increased by 1.</p>
 
-    <p><b id="SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT &rarr; document *</b><br />
+    <p><b id="SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT(int bytes, int documentOption) &rarr; document *</b><br />
      This message creates a new, empty document and returns a pointer to it. This document is not
-    selected into the editor and starts with a reference count of 1. This means that you have
-    ownership of it and must either reduce its reference count by 1 after using
+     selected into the editor and starts with a reference count of 1. This means that you have
+     ownership of it and must either reduce its reference count by 1 after using
     <code>SCI_SETDOCPOINTER</code> so that the Scintilla window owns it or you must make sure that
-    you reduce the reference count by 1 with <code>SCI_RELEASEDOCUMENT</code> before you close the
-    application to avoid memory leaks.</p>
+     you reduce the reference count by 1 with <code>SCI_RELEASEDOCUMENT</code> before you close the
+     application to avoid memory leaks. The <code class="parameter">bytes</code> argument determines
+     the initial memory allocation for the document as it is more efficient
+     to allocate once rather than rely on the buffer growing as data is added.
+     If <code>SCI_CREATEDOCUMENT</code> fails then 0 is returned.</p>
+
+    <p id="documentOption">The <code class="parameter">documentOption</code> argument
+    chooses between different document capabilities which affect memory allocation and performance with
+    <code>SC_DOCUMENTOPTION_DEFAULT</code> (0) choosing standard options.
+    <code>SC_DOCUMENTOPTION_STYLES_NONE</code> (1) stops allocation of memory to style characters
+    which saves significant memory, often 40% with the whole document treated as being style 0.
+    Lexers may still produce visual styling by using indicators.</p>
+
+    <table class="standard" summary="Document options">
+      <tbody>
+        <tr>
+          <th align="left">Symbol</th>
+          <th align="left">Value</th>
+          <th align="left">Effect</th>
+        </tr>
+      </tbody>
+
+      <tbody valign="top">
+
+        <tr>
+          <td align="left">SC_DOCUMENTOPTION_DEFAULT</td>
+          <td align="left">0</td>
+          <td align="left">Standard behaviour</td>
+        </tr>
+
+        <tr>
+          <td align="left">SC_DOCUMENTOPTION_STYLES_NONE</td>
+          <td align="left">1</td>
+          <td align="left">Stop allocation of memory for styles and treat all text as style 0.</td>
+        </tr>
+
+      </tbody>
+    </table>
 
     <p><b id="SCI_ADDREFDOCUMENT">SCI_ADDREFDOCUMENT(&lt;unused&gt;, document *doc)</b><br />
      This increases the reference count of a document by 1. If you want to replace the current
@@ -5741,7 +5802,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <h3 id="BackgroundLoad">Loading in the background</h3>
 
-    <code><a class="message" href="#SCI_CREATELOADER">SCI_CREATELOADER(int bytes) &rarr; int</a><br />
+    <code><a class="message" href="#SCI_CREATELOADER">SCI_CREATELOADER(int bytes, int documentOption) &rarr; int</a><br />
     </code>
 
     <p>An application can load all of a file into a buffer it allocates on a background thread and then add the data in that buffer
@@ -5750,12 +5811,15 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <p>To avoid these issues, a loader object may be created and used to load the file. The loader object supports the ILoader interface.</p>
 
-    <p><b id="SCI_CREATELOADER">SCI_CREATELOADER(int bytes) &rarr; int</b><br />
+    <p><b id="SCI_CREATELOADER">SCI_CREATELOADER(int bytes, int documentOption) &rarr; int</b><br />
      Create an object that supports the <code>ILoader</code> interface which can be used to load data and then
      be turned into a Scintilla document object for attachment to a view object.
      The <code class="parameter">bytes</code> argument determines the initial memory allocation for the document as it is more efficient
      to allocate once rather than rely on the buffer growing as data is added.
      If <code>SCI_CREATELOADER</code> fails then 0 is returned.</p>
+
+    <p>The <code class="parameter">documentOption</code> argument
+    is described in the <a class="seealso" href="#documentOption"><code>SCI_CREATEDOCUMENT</code></a> section.</p>
 
 <h4>ILoader</h4>
 
@@ -6549,7 +6613,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     On GTK+, there are storage and performance costs to accessibility, so it can be disabled
     by calling <code>SCI_SETACCESSIBILITY</code>.
     </p>
- 
+
     <table class="standard" summary="Accessibility status">
       <tbody>
         <tr>
@@ -6579,7 +6643,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
         </tr>
       </tbody>
     </table>
-   
+
     <h2 id="Lexer">Lexer</h2>
 
     <p>If you define the symbol <code>SCI_LEXER</code> when building Scintilla, (this is sometimes
@@ -6870,7 +6934,7 @@ With Scintilla 4, 64-bit builds define these as 64-bit types to allow future imp
 <p>
 Methods that return strings as <code>const char *</code> are not required to maintain separate allocations indefinitely:
 lexer implementations may own a single buffer that is reused for each call.
-Callers should make an immediate copy of returned strings. 
+Callers should make an immediate copy of returned strings.
 </p>
 
 <p>
@@ -8073,8 +8137,6 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
     Provisional features may even be removed if experience shows they are a mistake.</p>
 
     <p>Provisional features are displayed in this document with <span class="provisional">a distinctive background colour</span>.</p>
-
-    <p>There are currently no provisional messages or values.</p>
 
     <p>Some developers may want to only use features that are stable and have graduated from
     provisional status. To avoid using provisional messages compile with the symbol

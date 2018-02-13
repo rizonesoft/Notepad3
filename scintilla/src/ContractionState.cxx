@@ -35,11 +35,11 @@ ContractionState::~ContractionState() {
 
 void ContractionState::EnsureData() {
 	if (OneToOne()) {
-		visible.reset(new RunStyles());
-		expanded.reset(new RunStyles());
-		heights.reset(new RunStyles());
+		visible.reset(new RunStyles<int, int>());
+		expanded.reset(new RunStyles<int, int>());
+		heights.reset(new RunStyles<int, int>());
 		foldDisplayTexts.reset(new SparseVector<UniqueString>());
-		displayLines.reset(new Partitioning(4));
+		displayLines.reset(new Partitioning<int>(4));
 		InsertLines(0, linesInDocument);
 	}
 }

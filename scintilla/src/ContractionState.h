@@ -17,11 +17,11 @@ class SparseVector;
  */
 class ContractionState {
 	// These contain 1 element for every document line.
-	std::unique_ptr<RunStyles> visible;
-	std::unique_ptr<RunStyles> expanded;
-	std::unique_ptr<RunStyles> heights;
+	std::unique_ptr<RunStyles<int, int>> visible;
+	std::unique_ptr<RunStyles<int, int>> expanded;
+	std::unique_ptr<RunStyles<int, int>> heights;
 	std::unique_ptr<SparseVector<UniqueString>> foldDisplayTexts;
-	std::unique_ptr<Partitioning> displayLines;
+	std::unique_ptr<Partitioning<int>> displayLines;
 	Sci::Line linesInDocument;
 
 	void EnsureData();

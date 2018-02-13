@@ -11,6 +11,8 @@
 #include <stdexcept>
 #include <vector>
 #include <map>
+#include <algorithm>
+#include <iterator>
 #include <memory>
 
 #include "Platform.h"
@@ -87,7 +89,7 @@ void XPM::Init(const char *const *linesForm) {
 	if (!linesForm)
 		return;
 
-	std::fill(colourCodeTable, colourCodeTable+256, 0);
+	std::fill(colourCodeTable, std::end(colourCodeTable), 0);
 	const char *line0 = linesForm[0];
 	width = atoi(line0);
 	line0 = NextField(line0);
