@@ -136,7 +136,7 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line);
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, LPCCH, DocPos, start, DocPos, length);
 DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
 
-
+DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options);
 
 //=============================================================================
 //

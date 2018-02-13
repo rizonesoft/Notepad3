@@ -143,15 +143,15 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                IDM_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               IDM_EDIT_COPY
-        MENUITEM "C&opy All\tAlt+C",            IDM_EDIT_COPYALL
+        MENUITEM "Copy &All\tAlt+C",            IDM_EDIT_COPYALL
         MENUITEM "Cop&y Add\tCtrl+E",           IDM_EDIT_COPYADD
         MENUITEM "&Paste\tCtrl+V",              IDM_EDIT_PASTE
-        MENUITEM "&Swap\tCtrl+K",               IDM_EDIT_SWAP
+        MENUITEM "S&wap\tCtrl+K",               IDM_EDIT_SWAP
         MENUITEM "&Delete\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "Cl&ear Clipboard",             IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Select &All\tCtrl+A",         IDM_EDIT_SELECTALL
+        MENUITEM "Cl&ear Clipboard",            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "&Select All\tCtrl+A",         IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "&Words"
+        POPUP "W&ords"
         BEGIN
             MENUITEM "&Complete Word\tCtrl+Alt+Enter", IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
@@ -275,7 +275,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Find...\tCtrl+F",            IDM_EDIT_FIND
-        MENUITEM "Save Find &Text\tAlt+F3",     IDM_EDIT_SAVEFIND
+        MENUITEM "Save Find Text\tAlt+F3",     IDM_EDIT_SAVEFIND
         MENUITEM "Find &Next\tF3",              IDM_EDIT_FINDNEXT
         MENUITEM "Find Previous\tShift+F3",     IDM_EDIT_FINDPREV
         MENUITEM "Replace...\tCtrl+H",          IDM_EDIT_REPLACE

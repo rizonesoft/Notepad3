@@ -1671,32 +1671,33 @@ DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,
 //
 int FormatNumberStr(LPWSTR lpNumberStr)
 {
-  WCHAR *c;
-  WCHAR szSep[8];
-  int  i = 0;
+  static WCHAR szSep[8] = { L'\0' };
+  const int iPlace = 3;
 
-  if (!lstrlen(lpNumberStr))
-    return(0);
+  if (!lstrlen(lpNumberStr)) { return 0; }
 
-  if (!GetLocaleInfo(LOCALE_USER_DEFAULT,
-                     LOCALE_STHOUSAND,
-                     szSep,
-                     COUNTOF(szSep)))
-    szSep[0] = L'\'';
+  StrTrim(lpNumberStr, L" \t");
 
-  c = StrEnd(lpNumberStr);
+  if (lstrlen(lpNumberStr) > iPlace) {
 
-  while ((c = CharPrev(lpNumberStr,c)) != lpNumberStr)
-  {
-    if (++i == 3)
-    {
-      i = 0;
-      MoveMemory(c+1,c,sizeof(WCHAR)*(lstrlen(c)+1));
-      *c = szSep[0];
+    if (szSep[0] == L'\0') {
+      if (!GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND,
+                         szSep, COUNTOF(szSep))) {
+        szSep[0] = L'\'';
+      }
+    }
+
+    WCHAR* ch = StrEnd(lpNumberStr);
+
+    int  i = 0;
+    while ((ch = CharPrev(lpNumberStr, ch)) != lpNumberStr) {
+      if (((++i) % iPlace) == 0) {
+        MoveMemory(ch + 1, ch, sizeof(WCHAR)*(lstrlen(ch) + 1));
+        *ch = szSep[0];
+      }
     }
   }
-
-  return(lstrlen(lpNumberStr));
+  return lstrlen(lpNumberStr);
 }
 
 
