@@ -167,6 +167,7 @@ DeclareSciCallV2(SetMarginType, SETMARGINTYPEN, int, margin, int, type);
 DeclareSciCallV2(SetMarginWidth, SETMARGINWIDTHN, int, margin, int, pixelWidth);
 DeclareSciCallV2(SetMarginMask, SETMARGINMASKN, int, margin, int, mask);
 DeclareSciCallV2(SetMarginSensitive, SETMARGINSENSITIVEN, int, margin, bool, sensitive);
+DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour);
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour);
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour);
 

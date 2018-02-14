@@ -303,7 +303,7 @@ BEGIN
         MENUITEM "Hi&ghlight Current Line\tCtrl+Shift+I", IDM_VIEW_HILITECURRENTLINE
         POPUP "Mar&k Occurrences"
         BEGIN
-            MENUITEM "&Active",                     IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "&Active\tAlt+A",              IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
             MENUITEM "Match Visible Only",          IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -433,6 +433,7 @@ BEGIN
     "9",            CMD_TOGGLETITLE,        VIRTKEY, CONTROL, NOINVERT
     "9",            IDM_VIEW_SHOWEOLS,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "A",            IDM_EDIT_SELECTALL,     VIRTKEY, CONTROL, NOINVERT
+    "A",            IDM_VIEW_MARKOCCUR_ONOFF, VIRTKEY, ALT, NOINVERT
     "A",            CMD_RECODEANSI,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     "B",            IDM_EDIT_FINDMATCHINGBRACE, VIRTKEY, CONTROL, NOINVERT
     "B",            IDM_EDIT_PADWITHSPACES, VIRTKEY, ALT, NOINVERT
@@ -1753,8 +1754,8 @@ BEGIN
     63121                   "2nd Caret (Color, Size 1-3)"
     63122                   "2nd Long Line Marker (Colors)"
     63123                   "2nd Extra Line Spacing (Size)"
-    63124                   "Bookmarks (Colors)"
-    63125                   "2nd Bookmarks (Colors)"
+    63124                   "Bookmarks and Folding (Colors)"
+    63125                   "2nd Bookmarks and Folding (Colors)"
     63126                   "Default"
     63127                   "Comment"
     63128                   "Keyword"
