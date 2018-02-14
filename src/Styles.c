@@ -78,7 +78,7 @@ EDITLEXER lexStandard = { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; 
                 /*  9 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, 63109, L"Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, 63110, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63111, L"Extra Line Spacing (Size)", L"size:2", L"" },
-                /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, 63124, L"Bookmarks and Folding (Colors)", L"fore:#000000; back:#00FF00; alpha:80", L"" },
+                /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, 63124, L"Bookmarks and Folding (Colors)", L"fore:#000000; back:#00FF00; alpha:80; case:U", L"" },
                 /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63262, L"Mark Occurrences (Indicator)", L"indic_roundbox", L"" },
                 /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63264, L"Hyperlink Hotspots", L"italic; fore:#0000FF", L"" },
                          { -1, 00000, L"", L"", L"" } } };
@@ -97,7 +97,7 @@ EDITLEXER lexStandard2nd = { SCLEX_NULL, 63266, L"2nd Default Text", L"txt; text
                 /*  9 */ { SCI_SETCARETFORE + SCI_SETCARETWIDTH, 63121, L"2nd Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
-                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, 63125, L"2nd Bookmarks and Folding (Colors)", L"fore:#000000; back:#00FF00; alpha:80", L"" },
+                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, 63125, L"2nd Bookmarks and Folding (Colors)", L"fore:#000000; back:#00FF00; alpha:80; charset:1; case:U;", L"" },
                 /* 13 */ { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0x00FF00; alpha:100; alpha2:220; indic_box", L"" },
                 /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
                           { -1, 00000, L"", L"", L"" } } };
@@ -3920,12 +3920,14 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   // ---  Bookmarks  ---
   COLORREF bmkFore = clrFore;
   COLORREF bmkBack = clrBack;
-  Style_StrGetColor(TRUE, GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &bmkFore);
-  Style_StrGetColor(FALSE, GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &bmkBack);
+  const WCHAR* wchBookMarkStyleStrg = GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue;
+
+  Style_StrGetColor(TRUE, wchBookMarkStyleStrg, &bmkFore);
+  Style_StrGetColor(FALSE, wchBookMarkStyleStrg, &bmkBack);
 
   // adjust background color by alpha in case of show margin
   int alpha = 20;
-  Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &alpha, TRUE);
+  Style_StrGetAlpha(wchBookMarkStyleStrg, &alpha, TRUE);
 
   COLORREF bckgrnd = clrBack;
   Style_StrGetColor(FALSE, GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &bckgrnd);
@@ -3944,15 +3946,36 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_SetMarginSensitive(MARGIN_SCI_FOLDING, TRUE);
   SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrBack);
 
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPEN, SC_MARK_BOXMINUS);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDER, SC_MARK_BOXPLUS);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNER);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDEREND, SC_MARK_BOXPLUSCONNECTED);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
-  SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
-  SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
-  //SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+  int fldStyleMrk = 0;
+  Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleMrk);
+  if (0 != fldStyleMrk) // circle style
+  {
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPEN, SC_MARK_CIRCLEMINUS);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDER, SC_MARK_CIRCLEPLUS);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNERCURVE);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDEREND, SC_MARK_CIRCLEPLUSCONNECTED);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_CIRCLEMINUSCONNECTED);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNERCURVE);
+  }
+  else // box style
+  {
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPEN, SC_MARK_BOXMINUS);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDER, SC_MARK_BOXPLUS);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDERSUB, SC_MARK_VLINE);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDERTAIL, SC_MARK_LCORNER);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDEREND, SC_MARK_BOXPLUSCONNECTED);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
+    SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
+  }
+
+  int fldStyleLn = SC_CASE_LOWER;
+  Style_StrGetCase(wchBookMarkStyleStrg, &fldStyleLn);
+
+  if (fldStyleLn == SC_CASE_UPPER) // single line (after)
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+  else // double line (enclose)
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
 
   SciCall_SetFoldMarginColour(TRUE, clrBack);    // background
   SciCall_SetFoldMarginHiColour(TRUE, clrBack);  // (!)
@@ -4495,14 +4518,12 @@ BOOL Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
   {
     StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"charset:"));
     p = StrChr(tch, L';');
-    if (p)
-      *p = L'\0';
+    if (p) { *p = L'\0'; }
     TrimString(tch);
     int iValue = 0;
-    int itok = swscanf_s(tch,L"%i",&iValue);
-    if (itok == 1)
+    if (1 == swscanf_s(tch, L"%i", &iValue))
     {
-      *i = iValue;
+      *i = max(SC_CHARSET_ANSI, iValue);
       return TRUE;
     }
   }
