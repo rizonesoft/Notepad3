@@ -11,12 +11,12 @@ setlocal enableextensions
 :: --------------------------------------------------------------------------------------------------------------------
 :: Prerequisites: (portable) intallation of:
 :: -----------------------------------------
+:: + PortableApps.com App Compactor (https://portableapps.com/apps/utilities/appcompactor)
+::
 :: + PortableApps.com Launcher (https://portableapps.com/apps/development/portableapps.com_launcher)
 ::   (needed to create the Notepad3Portable.exe Launcher from the sources)
 ::
 :: + PortableApps.com Installer (https://portableapps.com/apps/development/portableapps.com_installer)
-::
-:: - PortableApps.com App Compactor (optional - not used yet) (https://portableapps.com/apps/utilities/appcompactor)
 ::
 :: ====================================================================================================================
 :: TODO:
@@ -31,6 +31,7 @@ setlocal enableextensions
 :: --- Environment ---
 set SCRIPT_DIR=%~dp0
 set PORTAPP_ROOT_DIR=D:\PortableApps
+set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\PortableApps.comAppCompactor.exe
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
@@ -88,6 +89,9 @@ call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP
 :: --------------------------------------------------------------------------------------------------------------------
 
 :: --- build Launcher and Installer Package ---
+
+:: - compact app -
+"%PORTAPP_APP_COMPACTOR%" "%NP3_PORTAPP_DIR%"
 
 :: - build Launcher -
 "%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"
