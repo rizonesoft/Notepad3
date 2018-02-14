@@ -3999,9 +3999,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_MARKOCCUR_ONOFF:
       iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
       EditClearAllMarks(g_hwndEdit, 0, -1);
-      if (iMarkOccurrences != 0) {
-        MarkAllOccurrences(0);
-      }
+      MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:

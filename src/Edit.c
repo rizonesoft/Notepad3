@@ -5518,11 +5518,12 @@ void EditMarkAllOccurrences()
     }
     else {
       EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      UpdateToolbar();
       UpdateStatusbar();
     }
-
     EditLeaveTargetTransaction();
+  }
+  else {
+    iMarkOccurrencesCount = 0;
   }
 }
 

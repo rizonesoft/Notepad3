@@ -3951,8 +3951,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_MarkerDefine(SC_MARKNUM_FOLDEREND, SC_MARK_BOXPLUSCONNECTED);
   SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
   SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
-  SciCall_SetFoldFlags(16);
-  
+  SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+  //SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+
   SciCall_SetFoldMarginColour(TRUE, clrBack);    // background
   SciCall_SetFoldMarginHiColour(TRUE, clrBack);  // (!)
 
@@ -4701,6 +4702,26 @@ BOOL Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, BOOL bAlpha1st)
 }
 
 
+////=============================================================================
+////
+////  Style_StrGetPropertyValue()
+////
+//BOOL Style_StrGetPropertyValue(LPCWSTR lpszStyle, LPCWSTR lpszProperty, int* val)
+//{
+//  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+//  WCHAR *p = StrStrI(lpszStyle, lpszProperty);
+//  if (p) {
+//    StringCchCopy(tch, COUNTOF(tch), (p + lstrlen(lpszProperty)));
+//    p = StrChr(tch, L';');
+//    if (p)
+//      *p = L'\0';
+//    TrimString(tch);
+//    if (1 == swscanf_s(tch, L"%i", val)) { return TRUE; }
+//  }
+//  return FALSE;
+//}
+
+
 //=============================================================================
 //
 //  Style_StrGetCase()
@@ -4846,7 +4867,6 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
   // ---------  Effects  ---------
   if (bWithEffects)
   {
-
     if (StrStrI(lpszStyleSrc, L"strikeout") && !StrStrI(lpszStyleDest, L"strikeout")) {
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; strikeout");
     }
@@ -4902,6 +4922,14 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
       StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
   }
+
+  //const WCHAR* wchProperty = L"property:";
+  //if (!StrStrI(lpszStyleDest, wchProperty)) {
+  //  if (Style_StrGetPropertyValue(lpszStyleSrc, wchProperty, &iValue)) {
+  //    StringCchPrintf(tch, COUNTOF(tch), L"; %s%i", wchProperty, iValue);
+  //    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
+  //  }
+  //}
 
   // --------   indicator type   --------
   if (!StrStrI(lpszStyleDest, L"indic_")) {

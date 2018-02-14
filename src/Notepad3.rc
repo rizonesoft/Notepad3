@@ -303,7 +303,7 @@ BEGIN
         MENUITEM "Hi&ghlight Current Line\tCtrl+Shift+I", IDM_VIEW_HILITECURRENTLINE
         POPUP "Mar&k Occurrences"
         BEGIN
-            MENUITEM "&Active",                     IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "&Active\tAlt+A",              IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
             MENUITEM "Match Visible Only",          IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -433,6 +433,7 @@ BEGIN
     "9",            CMD_TOGGLETITLE,        VIRTKEY, CONTROL, NOINVERT
     "9",            IDM_VIEW_SHOWEOLS,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "A",            IDM_EDIT_SELECTALL,     VIRTKEY, CONTROL, NOINVERT
+    "A",            IDM_VIEW_MARKOCCUR_ONOFF, VIRTKEY, ALT, NOINVERT
     "A",            CMD_RECODEANSI,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     "B",            IDM_EDIT_FINDMATCHINGBRACE, VIRTKEY, CONTROL, NOINVERT
     "B",            IDM_EDIT_PADWITHSPACES, VIRTKEY, ALT, NOINVERT
