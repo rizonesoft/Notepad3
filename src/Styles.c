@@ -97,7 +97,7 @@ EDITLEXER lexStandard2nd = { SCLEX_NULL, 63266, L"2nd Default Text", L"txt; text
                 /*  9 */ { SCI_SETCARETFORE + SCI_SETCARETWIDTH, 63121, L"2nd Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
-                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, 63125, L"2nd Bookmarks and Folding (Colors)", L"fore:#000000; back:#00FF00; alpha:80; charset:1; case:U;", L"" },
+                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, 63125, L"2nd Bookmarks and Folding (Colors)", L"fore:#000000; back:#00FF00; alpha:80; charset:2; case:U;", L"" },
                 /* 13 */ { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0x00FF00; alpha:100; alpha2:220; indic_box", L"" },
                 /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
                           { -1, 00000, L"", L"", L"" } } };
@@ -3946,9 +3946,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_SetMarginSensitive(MARGIN_SCI_FOLDING, TRUE);
   SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrBack);
 
-  int fldStyleMrk = 0;
-  Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleMrk);
-  if (0 != fldStyleMrk) // circle style
+  int fldStyleMrk = SC_CASE_LOWER;
+  Style_StrGetCase(wchBookMarkStyleStrg, &fldStyleMrk);
+  if (fldStyleMrk == SC_CASE_UPPER) // circle style
   {
     SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPEN, SC_MARK_CIRCLEMINUS);
     SciCall_MarkerDefine(SC_MARKNUM_FOLDER, SC_MARK_CIRCLEPLUS);
@@ -3969,13 +3969,20 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
     SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
   }
 
-  int fldStyleLn = SC_CASE_LOWER;
-  Style_StrGetCase(wchBookMarkStyleStrg, &fldStyleLn);
-
-  if (fldStyleLn == SC_CASE_UPPER) // single line (after)
-    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
-  else // double line (enclose)
-    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+  int fldStyleLn = 0;
+  Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
+    switch (fldStyleLn)
+  {
+    case 1:
+      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED);
+      break;
+    case 2:
+      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+      break;
+    default:
+      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+      break;
+  }
 
   SciCall_SetFoldMarginColour(TRUE, clrBack);    // background
   SciCall_SetFoldMarginHiColour(TRUE, clrBack);  // (!)
