@@ -1718,6 +1718,7 @@ BEGIN
     63042                   "Coffeescript"
     63043                   "MATLAB"
     63044                   "Nim Source Code"
+    63045                   "R-S-SPlus Statistics Code"
 END
 
 STRINGTABLE
@@ -1935,6 +1936,10 @@ BEGIN
     63266                   "2nd Default Text"
     63267                   "Variable within String"
     63268                   "Ordered List"
+    63269                   "Infix"
+    63270                   "Infix EOL"
+    63271                   "Base Package Functions"
+    63272                   "Other Package Functions"
 END
 
 #endif    // English (United States) resources
