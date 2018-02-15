@@ -292,6 +292,7 @@
     <ClCompile Include="lexers\LexPowerShell.cxx" />
     <ClCompile Include="lexers\LexProps.cxx" />
     <ClCompile Include="lexers\LexPython.cxx" />
+    <ClCompile Include="lexers\LexR.cxx" />
     <ClCompile Include="lexers\LexRegistry.cxx" />
     <ClCompile Include="lexers\LexRuby.cxx" />
     <ClCompile Include="lexers\LexSQL.cxx" />
