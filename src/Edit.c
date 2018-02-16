@@ -90,7 +90,8 @@ extern int  iMarkOccurrences;
 extern int  iMarkOccurrencesCount;
 extern int  iMarkOccurrencesMaxCount;
 extern BOOL bMarkOccurrencesMatchVisible;
-extern BOOL bShowCodeFolding;
+extern BOOL g_bCodeFoldingAvailable;
+extern BOOL g_bShowCodeFolding;
 
 extern BOOL g_bTabsAsSpaces;
 extern BOOL g_bTabIndents;
@@ -5517,11 +5518,12 @@ void EditMarkAllOccurrences()
     }
     else {
       EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-      UpdateToolbar();
       UpdateStatusbar();
     }
-
     EditLeaveTargetTransaction();
+  }
+  else {
+    iMarkOccurrencesCount = 0;
   }
 }
 
@@ -7423,7 +7425,7 @@ void EditFoldClick(DocLn ln, int mode)
 
 void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
 {
-  if (bShowCodeFolding)
+  if (g_bCodeFoldingAvailable && g_bShowCodeFolding)
   {
     DocLn ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
 
