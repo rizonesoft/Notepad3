@@ -7263,8 +7263,6 @@ void RestoreAction(int token, DoAction doAct)
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
   #define ISSUE_MESSAGE PostMessage
 
-    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0); // prepare - not needed ?
-
     const DocPos _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     const DocPos _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
 
@@ -7279,7 +7277,7 @@ void RestoreAction(int token, DoAction doAct)
     const int selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
 
-    // independant from selection mode
+    // independent from selection mode
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETANCHOR, (WPARAM)_anchorPos, 0);
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETCURRENTPOS, (WPARAM)_curPos, 0);
 
@@ -7307,8 +7305,7 @@ void RestoreAction(int token, DoAction doAct)
       // nothing to do here
       break;
     }
-
-    //ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
 
   #undef ISSUE_MASSAGE
   }
