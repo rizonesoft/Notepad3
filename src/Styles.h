@@ -19,8 +19,10 @@
 #define BUFSIZE_STYLE_VALUE 256
 #define BUFZIZE_STYLE_EXTENTIONS 512
 
-#define MARGIN_NP3_LINENUM 0
-#define MARGIN_NP3_BOOKMRK 1
+#define MARGIN_SCI_LINENUM 0
+#define MARGIN_SCI_BOOKMRK 1
+#define MARGIN_SCI_FOLDING 2
+
 
 typedef struct _editstyle
 {
@@ -71,7 +73,9 @@ void   Style_SetLexer(HWND,PEDITLEXER);
 void   Style_SetUrlHotSpot(HWND, BOOL);
 void   Style_SetLongLineColors(HWND);
 void   Style_SetCurrentLineBackground(HWND, BOOL);
-void   Style_SetCurrentMargin(HWND, BOOL);
+void   Style_SetFolding(HWND, BOOL);
+void   Style_SetBookmark(HWND, BOOL);
+void   Style_SetMargin(HWND, int, LPCWSTR);
 void   Style_SetLexerFromFile(HWND,LPCWSTR);
 void   Style_SetLexerFromName(HWND,LPCWSTR,LPCWSTR);
 void   Style_ResetCurrentLexer(HWND);
@@ -94,7 +98,7 @@ BOOL   Style_StrGetFontQuality(LPCWSTR,LPWSTR,int);
 BOOL   Style_StrGetCharSet(LPCWSTR,int*);
 BOOL   Style_StrGetSize(LPCWSTR,int*);
 BOOL   Style_StrGetSizeStr(LPCWSTR,LPWSTR,int);
-BOOL   Style_StrGetColor(BOOL,LPCWSTR,int*);
+BOOL   Style_StrGetColor(BOOL,LPCWSTR, COLORREF*);
 BOOL   Style_StrGetCase(LPCWSTR,int*);
 BOOL   Style_StrGetAlpha(LPCWSTR,int*,BOOL);
 BOOL   Style_GetIndicatorType(LPWSTR,int,int*);
