@@ -1432,21 +1432,21 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
   LoadIniSection(L"Toolbar Labels",pIniSection,cchIniSection);
-  n = 1;
   for (i = 0; i < COUNTOF(tbbMainWnd); i++) {
 
     if (tbbMainWnd[i].fsStyle == TBSTYLE_SEP)
       continue;
 
-    StringCchPrintf(tchIndex,COUNTOF(tchIndex),L"%02i",n++);
-
-    if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc))) {
+    n = tbbMainWnd[i].iBitmap + 1;
+    StringCchPrintf(tchIndex,COUNTOF(tchIndex),L"%02i",n);
+    if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc))) 
+    {
       tbbMainWnd[i].iString = SendMessage(g_hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
       tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
     }
-
-    else
+    else {
       tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
+    }
   }
   LocalFree(pIniSection);
 
