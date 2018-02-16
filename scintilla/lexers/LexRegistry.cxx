@@ -340,12 +340,12 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			} else if (isxdigit(context.ch & 0xFF) && highlight) {
 				context.SetState(SCE_REG_HEXDIGIT);
 			}
-			else if (context.chPrev == ']' && !IsNextNonWhitespace(styler, currPos-1, ';')) {
-				context.SetState(stateBefore); // continue Reg-Key style for eolfilled
-			}
 			highlight = (context.ch == '@') ? true : highlight;
 			if (setOperators.Contains(context.ch) && highlight) {
 				context.SetState(SCE_REG_OPERATOR);
+			}
+			if (context.chPrev == ']' && !IsNextNonWhitespace(styler, currPos - 1, ';')) {
+				context.SetState(stateBefore); // continue Reg-Key style for eolfilled
 			}
 		}
 		stateBefore = context.state;
