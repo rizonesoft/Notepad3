@@ -64,6 +64,10 @@ class LexerRegistry : public DefaultLexer {
 		return (state == SCE_REG_ADDEDKEY || state == SCE_REG_DELETEDKEY);
 	}
 
+	static bool IsByteValue(int value) {
+		return ((value >= 0) && (value < 256));
+	}
+
 	static bool AtValueType(LexAccessor &styler, Sci_Position start) {
 		Sci_Position i = 0;
 		while (i < 10) {
@@ -337,7 +341,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 				if (wordStart && AtValueType(styler, currPos)) {
 					context.SetState(SCE_REG_VALUETYPE);
 				}
-			} else if (isxdigit(context.ch & 0xFF) && highlight) {
+			} else if (IsByteValue(context.ch) && isxdigit(context.ch & 0xFF) && highlight) {
 				context.SetState(SCE_REG_HEXDIGIT);
 			}
 			highlight = (context.ch == '@') ? true : highlight;
