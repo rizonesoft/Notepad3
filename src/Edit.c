@@ -4244,7 +4244,7 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
 //
 void EditFixPositions(HWND hwnd)
 {
-  DocPos iMaxPos     = SciCall_GetTextLength();;
+  DocPos iMaxPos     = SciCall_GetTextLength();
   DocPos iCurrentPos = SciCall_GetCurrentPos();
   DocPos iAnchorPos  = SciCall_GetAnchor();
 
