@@ -3503,10 +3503,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_AHK:
         case SCLEX_NSIS: // # could also be used instead
         case SCLEX_INNOSETUP:
-          EditToggleLineComments(g_hwndEdit, L";", TRUE);
-          break;
         case SCLEX_REGISTRY:
-          EditToggleLineComments(g_hwndEdit, L";;", TRUE);
+          EditToggleLineComments(g_hwndEdit, L";", TRUE);
           break;
         case SCLEX_SQL:
         case SCLEX_LUA:
