@@ -1432,21 +1432,21 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
   LoadIniSection(L"Toolbar Labels",pIniSection,cchIniSection);
-  n = 1;
   for (i = 0; i < COUNTOF(tbbMainWnd); i++) {
 
     if (tbbMainWnd[i].fsStyle == TBSTYLE_SEP)
       continue;
 
-    StringCchPrintf(tchIndex,COUNTOF(tchIndex),L"%02i",n++);
-
-    if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc))) {
+    n = tbbMainWnd[i].iBitmap + 1;
+    StringCchPrintf(tchIndex,COUNTOF(tchIndex),L"%02i",n);
+    if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc))) 
+    {
       tbbMainWnd[i].iString = SendMessage(g_hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
       tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
     }
-
-    else
+    else {
       tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
+    }
   }
   LocalFree(pIniSection);
 
@@ -3503,10 +3503,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCLEX_AHK:
         case SCLEX_NSIS: // # could also be used instead
         case SCLEX_INNOSETUP:
-          EditToggleLineComments(g_hwndEdit, L";", TRUE);
-          break;
         case SCLEX_REGISTRY:
-          EditToggleLineComments(g_hwndEdit, L";;", TRUE);
+          EditToggleLineComments(g_hwndEdit, L";", TRUE);
           break;
         case SCLEX_SQL:
         case SCLEX_LUA:
@@ -7265,8 +7263,6 @@ void RestoreAction(int token, DoAction doAct)
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
   #define ISSUE_MESSAGE PostMessage
 
-    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0); // prepare - not needed ?
-
     const DocPos _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     const DocPos _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
 
@@ -7281,7 +7277,7 @@ void RestoreAction(int token, DoAction doAct)
     const int selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
 
-    // independant from selection mode
+    // independent from selection mode
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETANCHOR, (WPARAM)_anchorPos, 0);
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETCURRENTPOS, (WPARAM)_curPos, 0);
 
@@ -7309,8 +7305,7 @@ void RestoreAction(int token, DoAction doAct)
       // nothing to do here
       break;
     }
-
-    //ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
 
   #undef ISSUE_MASSAGE
   }
