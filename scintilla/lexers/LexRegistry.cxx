@@ -179,6 +179,17 @@ class LexerRegistry : public DefaultLexer {
 		}
 	}
 
+	static void ContextForwardSetState(StyleContext& context, const int newState, int& lastNonDefaultState) 
+	{
+		if (context.state != SCE_REG_DEFAULT) {
+			lastNonDefaultState = context.state;
+		}
+		if (newState >= SCE_REG_DEFAULT)
+			context.ForwardSetState(newState);
+		else
+			context.Forward();
+	}
+
 public:
 	LexerRegistry() {}
 	virtual ~LexerRegistry() {}
@@ -260,7 +271,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			case SCE_REG_STRING: {
 					Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
 					if (context.ch == '"') {
-						context.ForwardSetState(SCE_REG_DEFAULT);
+						ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
 					} else if (context.ch == '\\') {
 						beforeEscape = context.state;
 						context.SetState(SCE_REG_ESCAPED);
@@ -279,9 +290,9 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 				}
 				break;
 			case SCE_REG_PARAMETER:
-				context.ForwardSetState(SCE_REG_STRING);
+				ContextForwardSetState(context, SCE_REG_STRING, stateLastNonDefault);
 				if (context.ch == '"') {
-					context.ForwardSetState(SCE_REG_DEFAULT);
+					ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
 				}
 				break;
 			case SCE_REG_VALUETYPE:
@@ -298,7 +309,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			case SCE_REG_ADDEDKEY: {
 					Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
 					if (context.ch == ']' && AtKeyPathEnd(styler, currPos)) {
-						context.ForwardSetState(SCE_REG_DEFAULT);
+						ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
 					} else if (context.ch == '{') {
 						if (AtGUID(styler, currPos)) {
 							beforeGUID = context.state;
@@ -310,7 +321,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			case SCE_REG_ESCAPED:
 				if (context.ch == '"') {
 					context.SetState(beforeEscape);
-					context.ForwardSetState(SCE_REG_DEFAULT);
+					ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
 				} else if (context.ch == '\\') {
 					context.Forward();
 				} else {
@@ -320,14 +331,20 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 				break;
 			case SCE_REG_STRING_GUID:
 			case SCE_REG_KEYPATH_GUID: {
-					Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
 					if (context.ch == '}') {
-						context.ForwardSetState(beforeGUID);
+						ContextForwardSetState(context, beforeGUID, stateLastNonDefault);
 						beforeGUID = SCE_REG_DEFAULT;
-					}	else if (context.ch == '"' && IsStringState(context.state)) {
-						context.ForwardSetState(SCE_REG_DEFAULT);
-					} else if (context.ch == ']' && IsKeyPathState(context.state) && AtKeyPathEnd(styler, currPos)) {
-						context.ForwardSetState(beforeGUID);
+					}
+					Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
+					if (context.ch == '"' && IsStringState(context.state)) {
+						ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
+					} else if (context.ch == ']' && IsKeyPathState(context.state)) {
+						if (AtKeyPathEnd(styler, currPos)) {
+							ContextForwardSetState(context, SCE_REG_DEFAULT, stateLastNonDefault);
+						} 
+						else {
+							ContextForwardSetState(context, beforeGUID, stateLastNonDefault);
+						}
 					} else if (context.ch == '\\' && IsStringState(context.state)) {
 						beforeEscape = context.state;
 						context.SetState(SCE_REG_ESCAPED);
@@ -374,8 +391,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			}
 		}
 		//statePrevious = context.state;
-		stateLastNonDefault = (context.state != SCE_REG_DEFAULT) ? context.state : stateLastNonDefault;
-		context.Forward();
+		ContextForwardSetState(context, -1, stateLastNonDefault);
 	}
 	context.Complete();
 }
