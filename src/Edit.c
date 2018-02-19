@@ -5033,7 +5033,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         EditSetTimerMarkAll(hwnd,0);
         break;
 
-
       case IDOK:
       case IDC_FINDPREV:
       case IDC_REPLACE:
@@ -5161,8 +5160,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           break;
 
         case IDC_REPLACEINSEL:
-          bReplaceInitialized = TRUE;
-          EditReplaceAllInSelection(lpefr->hwnd, lpefr, TRUE);
+          if (!SciCall_IsSelectionEmpty()) {
+            bReplaceInitialized = TRUE;
+            EditReplaceAllInSelection(lpefr->hwnd, lpefr, TRUE);
+          }
           break;
         }
       }

@@ -237,15 +237,17 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 	StyleContext context(startPos, length, initStyle, styler);
 	bool highlight = true;
 	bool afterEqualSign = false;
-	int stateBefore = SCE_REG_DEFAULT;
+	//int statePrevious = SCE_REG_DEFAULT;
+	int stateLastNonDefault = SCE_REG_DEFAULT;
 
 	while (context.More() && context.ch) {
 		if (context.atLineStart) {
 			Sci_Position currPos = static_cast<Sci_Position>(context.currentPos);
 			bool continued = IsPrevNonWhitespace(styler, currPos, '\\'); //styler[currPos - 3] == '\\';
 			highlight = continued ? true : false;
-			if (!highlight) {
+			if (!continued) {
 				context.SetState(SCE_REG_DEFAULT);
+				stateLastNonDefault = SCE_REG_DEFAULT;
 			}
 		}
 		switch (context.state) {
@@ -366,12 +368,16 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			if (setOperators.Contains(context.ch) && highlight) {
 				context.SetState(SCE_REG_OPERATOR);
 			}
-
-			if (context.chPrev == ']' && !IsNextNonWhitespace(styler, currPos - 1, ';')) {
-				context.SetState(stateBefore); // continue Reg-Key style for eolfilled
+			//if (context.chPrev == ']' && !IsNextNonWhitespace(styler, currPos - 1, ';')) {
+			//	context.SetState(stateLastNonDefault); // continue Reg-Key style for eolfilled
+			//}
+			// continue style for eolfilled
+			if (context.ch == '\r' || context.ch == '\n') {
+				context.SetState(stateLastNonDefault);
 			}
 		}
-		stateBefore = context.state;
+		//statePrevious = context.state;
+		stateLastNonDefault = (context.state != SCE_REG_DEFAULT) ? context.state : stateLastNonDefault;
 		context.Forward();
 	}
 	context.Complete();
