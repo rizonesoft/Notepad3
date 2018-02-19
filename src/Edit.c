@@ -86,6 +86,7 @@ extern BOOL bLoadNFOasOEM;
 
 extern BOOL bAccelWordNavigation;
 
+extern int  iReplacedOccurrences;
 extern int  iMarkOccurrences;
 extern int  iMarkOccurrencesCount;
 extern int  iMarkOccurrencesMaxCount;
@@ -4594,6 +4595,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_INITDIALOG:
     {
       static BOOL bFirstTime = TRUE;
+      iReplacedOccurrences = 0;
 
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       lpefr = (LPEDITFINDREPLACE)lParam;
@@ -4808,6 +4810,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         bMarkOccurrencesMatchVisible = bSaveOccVisible;
         EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
 
+        iReplacedOccurrences = 0;
+
         KillTimer(hwnd, IDT_TIMER_MRKALL);
       }
       return FALSE;
@@ -4910,6 +4914,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       // called on timer trigger
       case IDC_MARKALL_OCC:
         {
+          iMarkOccurrencesCount = 0;
           EditSetSearchFlags(hwnd, lpefr);
           if (lpefr->bMarkOccurences) {
             if (bFlagsChanged || (StringCchCompareXA(g_lastFind, lpefr->szFind) != 0)) {
@@ -5033,11 +5038,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         EditSetTimerMarkAll(hwnd,0);
         break;
 
+
       case IDOK:
-      case IDC_FINDPREV:
       case IDC_REPLACE:
       case IDC_REPLACEALL:
       case IDC_REPLACEINSEL:
+        iReplacedOccurrences = 0;
+      case IDC_FINDPREV:
       case IDACC_SELTONEXT:
       case IDACC_SELTOPREV:
       case IDMSG_SWITCHTOFIND:
@@ -5339,12 +5346,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 //
 HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bReplace)
 {
-
-  HWND hDlg;
-
   lpefr->hwnd = hwnd;
-
-  hDlg = CreateThemedDialogParam(g_hInstance,
+  HWND hDlg = CreateThemedDialogParam(g_hInstance,
             (bReplace) ? MAKEINTRESOURCEW(IDD_REPLACE) : MAKEINTRESOURCEW(IDD_FIND),
             GetParent(hwnd),
             EditFindReplaceDlgProcW,
@@ -5595,6 +5598,7 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   DocPos start = (SciCall_IsSelectionEmpty() ? SciCall_GetCurrentPos() : SciCall_GetSelectionStart());
   DocPos end = SciCall_GetTextLength();
   DocPos _start = start;
+  iReplacedOccurrences = 0;
 
   DocPos iPos = EditFindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),  (int)(lpefr->fuFlags), &start, &end, FALSE);
 
@@ -5612,6 +5616,7 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
       }
     }
   }
+  iReplacedOccurrences = 1;
 
   EditEnterTargetTransaction();
 
@@ -5753,11 +5758,11 @@ BOOL EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo)
 
   int token = BeginUndoAction();
 
-  int iCount = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
+  iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
 
   EndUndoAction(token);
 
-  return (iCount > 0) ? TRUE : FALSE;
+  return (iReplacedOccurrences > 0) ? TRUE : FALSE;
 }
 
 
@@ -5777,11 +5782,11 @@ BOOL EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowIn
 
   int token = BeginUndoAction();
 
-  int iCount = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
+  iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
 
   EndUndoAction(token);
 
-  if (iCount <= 0)
+  if (iReplacedOccurrences <= 0)
     return FALSE;
 
   return TRUE;

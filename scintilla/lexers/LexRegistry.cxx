@@ -368,9 +368,6 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 			if (setOperators.Contains(context.ch) && highlight) {
 				context.SetState(SCE_REG_OPERATOR);
 			}
-			//if (context.chPrev == ']' && !IsNextNonWhitespace(styler, currPos - 1, ';')) {
-			//	context.SetState(stateLastNonDefault); // continue Reg-Key style for eolfilled
-			//}
 			// continue style for eolfilled
 			if (context.ch == '\r' || context.ch == '\n') {
 				context.SetState(stateLastNonDefault);
