@@ -329,6 +329,8 @@ BEGIN
         MENUITEM "Zoom &In\tCtrl++",            IDM_VIEW_ZOOMIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
+        MENUITEM SEPARATOR
+        MENUITEM "Scroll Past End of &File",    IDM_VIEW_SCROLLPASTEOF
     END
     POPUP "&Settings"
     BEGIN
@@ -377,7 +379,9 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&About...\tShift+F1",         IDM_HELP_ABOUT
         MENUITEM "&Command Line Help...",       IDM_HELP_CMD
-        MENUITEM "Launch &Update Installer",    IDM_HELP_UPDATECHECK
+        MENUITEM SEPARATOR
+        MENUITEM "Launch &Update Installer",    IDM_HELP_UPDATEINSTALLER
+        MENUITEM "Check &Website for Update",   IDM_HELP_UPDATEWEBSITE
     END
 END
 

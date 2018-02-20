@@ -2514,7 +2514,7 @@ void DialogFileBrowse(HWND hwnd)
 //  DialogUpdateCheck()
 //
 //
-void DialogUpdateCheck(HWND hwnd)
+void DialogUpdateCheck(HWND hwnd, BOOL bExecInstaller)
 {
   WCHAR tchExeFile[MAX_PATH+2];
   WCHAR tchTemp[MAX_PATH+2];
@@ -2538,17 +2538,22 @@ void DialogUpdateCheck(HWND hwnd)
   sei.lpParameters = NULL; // tchParam;
   sei.lpDirectory = g_wchWorkingDirectory;
   sei.nShow = SW_SHOWNORMAL;
-  ShellExecuteEx(&sei);
 
-  if ((INT_PTR)sei.hInstApp < 32) 
-  {
-    if (IDOK == InfoBox(MBOKCANCEL, L"NoUpdateChecker", IDS_ERR_UPDATECHECKER)) 
+  if (bExecInstaller) {
+    ShellExecuteEx(&sei);
+    if ((INT_PTR)sei.hInstApp < 32)
     {
-      sei.lpFile = VERSION_UPDATE_CHECK;
-      ShellExecuteEx(&sei);
+      if (IDOK == InfoBox(MBOKCANCEL, L"NoUpdateChecker", IDS_ERR_UPDATECHECKER))
+      {
+        sei.lpFile = VERSION_UPDATE_CHECK;
+        ShellExecuteEx(&sei);
+      }
     }
   }
-  //else { /* TODO: -> CLOSE NP3? */}
+  else {
+    sei.lpFile = VERSION_UPDATE_CHECK;
+    ShellExecuteEx(&sei);
+  }
 }
 
 
