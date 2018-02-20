@@ -2769,11 +2769,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         int token = BeginUndoAction();
         if (!SciCall_IsSelectionEmpty())
         {
-          SendMessage(g_hwndEdit, SCI_CUT, 0, 0);
+          SciCall_Cut();
         }
         else { // VisualStudio behavior
-          SendMessage(g_hwndEdit, SCI_COPYALLOWLINE, 0, 0);
-          SendMessage(g_hwndEdit, SCI_LINEDELETE, 0, 0);   
+          SciCall_CopyAllowLine();
+          SciCall_LineDelete();
         }
         EndUndoAction(token);
         UpdateToolbar();
@@ -2786,7 +2786,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
         int token = BeginUndoAction();
-        SendMessage(g_hwndEdit, SCI_COPYALLOWLINE, 0, 0);
+        SciCall_CopyAllowLine();
         EndUndoAction(token);
         UpdateToolbar();
       }
@@ -2810,7 +2810,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
         int token = BeginUndoAction();
-        EditCopyAppend(g_hwndEdit);
+        EditCopyAppend(g_hwndEdit,TRUE);
         EndUndoAction(token);
         UpdateToolbar();
       }
@@ -2841,7 +2841,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_EDIT_CLEARCLIPBOARD:
-      SciClearClipboard();
+      EditClearClipboard(g_hwndEdit);
       UpdateToolbar();
       UpdateStatusbar();
       break;
