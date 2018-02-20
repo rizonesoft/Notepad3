@@ -86,6 +86,7 @@ extern BOOL bLoadNFOasOEM;
 
 extern BOOL bAccelWordNavigation;
 
+extern int  iReplacedOccurrences;
 extern int  iMarkOccurrences;
 extern int  iMarkOccurrencesCount;
 extern int  iMarkOccurrencesMaxCount;
@@ -636,6 +637,62 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount,int* pL
 
 //=============================================================================
 //
+//  EditSetClipboardText()
+//
+BOOL EditSetClipboardText(HWND hwnd, const char* pszText)
+{
+  if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
+    SciCall_CopyText((DocPos)strlen(pszText), pszText);
+    return TRUE;
+  }
+
+  WCHAR* pszTextW = L"";
+  UINT uCodePage = Encoding_SciGetCodePage(hwnd);
+  int cchTextW = MultiByteToWideChar(uCodePage, 0, pszText, -1, NULL, 0) + 1;
+  if (cchTextW > 1) {
+    pszTextW = LocalAlloc(LPTR, sizeof(WCHAR)*cchTextW);
+    MultiByteToWideChar(uCodePage, 0, pszText, -1, pszTextW, cchTextW);
+  }
+
+  if (!OpenClipboard(GetParent(hwnd))) {
+    LocalFree(pszTextW);
+    return FALSE;
+  }
+
+  HANDLE hNew = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(WCHAR) * cchTextW);
+  WCHAR* pszNew = GlobalLock(hNew);
+
+  StringCchCopy(pszNew, cchTextW, pszTextW);
+  GlobalUnlock(hNew);
+
+  EmptyClipboard();
+  SetClipboardData(CF_UNICODETEXT, hNew);
+  CloseClipboard();
+  return TRUE;
+}
+
+
+//=============================================================================
+//
+//  EditClearClipboard()
+//
+BOOL EditClearClipboard(HWND hwnd)
+{
+  if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
+    SciCall_CopyText(0, "");
+    return TRUE;
+  }
+  if (!OpenClipboard(GetParent(hwnd))) {
+    return FALSE;
+  }
+  EmptyClipboard();
+  CloseClipboard();
+  return TRUE;
+}
+
+
+//=============================================================================
+//
 //  EditPaste2RectSel()
 //
 void EditPaste2RectSel(HWND hwnd, char* pText)
@@ -742,34 +799,63 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
   }
   const DocPos clipLen = lstrlenA(pClip);
 
-  if (bSwapClipBoard) { SciCall_Copy(); }
+  const DocPos iCurPos = SciCall_GetCurrentPos();
+  const DocPos iAnchorPos = SciCall_GetAnchor();
 
-  if ((lineCount <= 1) || SciCall_IsSelectionEmpty())
+  if (SciCall_IsSelectionEmpty() || (lineCount <= 1)) 
   {
     SciCall_SetMultiPaste(SC_MULTIPASTE_EACH);
-    SciCall_Paste();
+
+    if (SciCall_IsSelectionEmpty()) 
+    {
+      SciCall_Paste();
+      if (bSwapClipBoard) { 
+        EditClearClipboard(hwnd);
+        EditSelectEx(hwnd, iAnchorPos, SciCall_GetCurrentPos());
+      }
+    }
+    else {
+      int iSelLength = SciCall_GetSelText(NULL);
+      char* pszText = LocalAlloc(LPTR, iSelLength);
+      SciCall_GetSelText(pszText);
+      if (clipLen == 0) { SciCall_Clear(); } else { SciCall_Paste(); }
+      EditSetClipboardText(hwnd, pszText);
+      LocalFree(pszText);
+      if (bSwapClipBoard) {
+        if (iCurPos < iAnchorPos)
+          EditSelectEx(hwnd, SciCall_GetCurrentPos(), iCurPos);
+        else
+          EditSelectEx(hwnd, iAnchorPos, SciCall_GetCurrentPos());
+      }
+      else {
+        if (iCurPos < iAnchorPos)
+          EditSelectEx(hwnd, iCurPos, iCurPos);
+      }
+    }
+
     SciCall_SetMultiPaste(SC_MULTIPASTE_ONCE);
   }
   else {
     if (SciCall_IsSelectionRectangle()) 
     {
+      if (bSwapClipBoard) { SciCall_Copy(); }
       EditPaste2RectSel(hwnd, pClip);
+      // TODO: restore selection
     }
     else // Selection: SC_SEL_STREAM, SC_SEL_LINES, SC_SEL_THIN
     {
-      const DocPos iCurPos = SciCall_GetCurrentPos();
-      const DocPos iAnchorPos = SciCall_GetAnchor();
-
-      SciCall_ReplaceSel(pClip);
-
       if (bSwapClipBoard) {
+        SciCall_Copy();
+        SciCall_ReplaceSel(pClip);
         if (iCurPos < iAnchorPos)
           EditSelectEx(hwnd, iCurPos + clipLen, iCurPos);
         else
           EditSelectEx(hwnd, iAnchorPos, iAnchorPos + clipLen);
       }
-      else if (iCurPos < iAnchorPos) {
-        EditSelectEx(hwnd, iCurPos, iCurPos);
+      else {
+        SciCall_ReplaceSel(pClip);
+        if (iCurPos < iAnchorPos)
+          EditSelectEx(hwnd, iCurPos, iCurPos);
       }
     }
   }
@@ -782,15 +868,15 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
 //
 //  EditCopyAppend()
 //
-BOOL EditCopyAppend(HWND hwnd)
+BOOL EditCopyAppend(HWND hwnd, BOOL bAppend)
 {
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
-    SendMessage(hwnd,SCI_COPY,0,0);
+    SciCall_Copy();
     return TRUE;
   }
 
-  int iCurPos    = (int)SendMessage(hwnd,SCI_GETCURRENTPOS,0,0);
-  int iAnchorPos = (int)SendMessage(hwnd,SCI_GETANCHOR,0,0);
+  int iCurPos = SciCall_GetCurrentPos();
+  int iAnchorPos = SciCall_GetAnchor();
 
   char* pszText = NULL;
   if (iCurPos != iAnchorPos) {
@@ -799,28 +885,23 @@ BOOL EditCopyAppend(HWND hwnd)
       return FALSE;
     }
     else {
-      int iSelLength = (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, 0);
+      int iSelLength = SciCall_GetSelText(NULL);
       pszText = LocalAlloc(LPTR, iSelLength);
-      (int)SendMessage(hwnd, SCI_GETSELTEXT, 0, (LPARAM)pszText);
+      SciCall_GetSelText(pszText);
     }
   }
   else {
-    int cchText = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
+    int cchText = SciCall_GetTextLength();
     pszText = LocalAlloc(LPTR,cchText + 1);
-    SendMessage(hwnd,SCI_GETTEXT,(int)LocalSize(pszText),(LPARAM)pszText);
+    SciCall_GetTextFromBegin((DocPos)LocalSize(pszText), pszText);
   }
-  WCHAR* pszTextW = NULL;
+  WCHAR* pszTextW = L"";
   UINT uCodePage = Encoding_SciGetCodePage(hwnd);
   int cchTextW = MultiByteToWideChar(uCodePage,0,pszText,-1,NULL,0);
   if (cchTextW > 0) {
-    WCHAR *pszSep = L"\r\n\r\n";
-    int lenTxt = (lstrlen(pszSep) + cchTextW + 1);
+    int lenTxt = (cchTextW + 1);
     pszTextW = LocalAlloc(LPTR,sizeof(WCHAR)*lenTxt);
-    StringCchCopy(pszTextW,lenTxt,pszSep);
-    MultiByteToWideChar(uCodePage,0,pszText,-1,StrEnd(pszTextW),lenTxt);
-  }
-  else {
-    pszTextW = L"";
+    MultiByteToWideChar(uCodePage,0,pszText,-1,pszTextW,lenTxt);
   }
   
   if (pszText)
@@ -834,13 +915,21 @@ BOOL EditCopyAppend(HWND hwnd)
   HANDLE hOld   = GetClipboardData(CF_UNICODETEXT);
   WCHAR* pszOld = GlobalLock(hOld);
 
-  int sizeNew   = (lstrlen(pszOld) + lstrlen(pszTextW) + 1);
+  int sizeNew   = bAppend ? (lstrlen(pszOld) + lstrlen(pszTextW) + 1) : (lstrlen(pszTextW) + 1);
+  const  WCHAR *pszSep = L"\r\n\r\n";
+  sizeNew += bAppend ? (int)lstrlen(pszSep) : 0;
+
   HANDLE hNew   = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * sizeNew);
   WCHAR* pszNew = GlobalLock(hNew);
   
-  StringCchCopy(pszNew,sizeNew,pszOld);
-  StringCchCat(pszNew,sizeNew,pszTextW);
-
+  if (bAppend) {
+    StringCchCopy(pszNew, sizeNew, pszOld);
+    StringCchCat(pszNew, sizeNew, pszSep);
+    StringCchCat(pszNew, sizeNew, pszTextW);
+  }
+  else {
+    StringCchCopy(pszNew, sizeNew, pszTextW);
+  }
   GlobalUnlock(hNew);
   GlobalUnlock(hOld);
 
@@ -4594,6 +4683,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_INITDIALOG:
     {
       static BOOL bFirstTime = TRUE;
+      iReplacedOccurrences = 0;
 
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       lpefr = (LPEDITFINDREPLACE)lParam;
@@ -4808,6 +4898,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         bMarkOccurrencesMatchVisible = bSaveOccVisible;
         EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
 
+        iReplacedOccurrences = 0;
+
         KillTimer(hwnd, IDT_TIMER_MRKALL);
       }
       return FALSE;
@@ -4910,6 +5002,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       // called on timer trigger
       case IDC_MARKALL_OCC:
         {
+          iMarkOccurrencesCount = 0;
           EditSetSearchFlags(hwnd, lpefr);
           if (lpefr->bMarkOccurences) {
             if (bFlagsChanged || (StringCchCompareXA(g_lastFind, lpefr->szFind) != 0)) {
@@ -5035,10 +5128,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 
       case IDOK:
-      case IDC_FINDPREV:
       case IDC_REPLACE:
       case IDC_REPLACEALL:
       case IDC_REPLACEINSEL:
+        iReplacedOccurrences = 0;
+      case IDC_FINDPREV:
       case IDACC_SELTONEXT:
       case IDACC_SELTOPREV:
       case IDMSG_SWITCHTOFIND:
@@ -5151,8 +5245,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           break;
 
         case IDC_REPLACE:
-          bReplaceInitialized = TRUE;
-          EditReplace(lpefr->hwnd, lpefr);
+          {
+            bReplaceInitialized = TRUE;
+            int token = BeginUndoAction();
+            EditReplace(lpefr->hwnd, lpefr);
+            EndUndoAction(token);
+          }
           break;
 
         case IDC_REPLACEALL:
@@ -5161,8 +5259,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           break;
 
         case IDC_REPLACEINSEL:
-          bReplaceInitialized = TRUE;
-          EditReplaceAllInSelection(lpefr->hwnd, lpefr, TRUE);
+          if (!SciCall_IsSelectionEmpty()) {
+            bReplaceInitialized = TRUE;
+            EditReplaceAllInSelection(lpefr->hwnd, lpefr, TRUE);
+          }
           break;
         }
       }
@@ -5338,12 +5438,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 //
 HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bReplace)
 {
-
-  HWND hDlg;
-
   lpefr->hwnd = hwnd;
-
-  hDlg = CreateThemedDialogParam(g_hInstance,
+  HWND hDlg = CreateThemedDialogParam(g_hInstance,
             (bReplace) ? MAKEINTRESOURCEW(IDD_REPLACE) : MAKEINTRESOURCEW(IDD_FIND),
             GetParent(hwnd),
             EditFindReplaceDlgProcW,
@@ -5594,11 +5690,12 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   DocPos start = (SciCall_IsSelectionEmpty() ? SciCall_GetCurrentPos() : SciCall_GetSelectionStart());
   DocPos end = SciCall_GetTextLength();
   DocPos _start = start;
+  iReplacedOccurrences = 0;
 
-  DocPos iPos = EditFindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),  (int)(lpefr->fuFlags), &start, &end, FALSE);
+  const DocPos iPos = EditFindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),  (int)(lpefr->fuFlags), &start, &end, FALSE);
 
   // w/o selection, replacement string is put into current position
-  // but this mayby not intended here
+  // but this maybe not intended here
   if (SciCall_IsSelectionEmpty()) {
     if ((iPos < 0) || (_start != start) || (_start != end)) {
       // empty-replace was not intended
@@ -5611,6 +5708,7 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
       }
     }
   }
+  iReplacedOccurrences = 1;
 
   EditEnterTargetTransaction();
 
@@ -5618,8 +5716,9 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
 
   // move caret behind replacement
-  DocPos after = (DocPos)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
-  SendMessage(hwnd, SCI_SETSEL, after, after);
+
+  const DocPos after = SciCall_GetTargetEnd();
+  SciCall_SetSel(after, after);
 
   EditLeaveTargetTransaction();
 
@@ -5752,11 +5851,11 @@ BOOL EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo)
 
   int token = BeginUndoAction();
 
-  int iCount = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
+  iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
 
   EndUndoAction(token);
 
-  return (iCount > 0) ? TRUE : FALSE;
+  return (iReplacedOccurrences > 0) ? TRUE : FALSE;
 }
 
 
@@ -5776,11 +5875,11 @@ BOOL EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowIn
 
   int token = BeginUndoAction();
 
-  int iCount = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
+  iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
 
   EndUndoAction(token);
 
-  if (iCount <= 0)
+  if (iReplacedOccurrences <= 0)
     return FALSE;
 
   return TRUE;

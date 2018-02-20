@@ -57,10 +57,10 @@ HWND      g_hwndMain = NULL;
 HWND      g_hwndEdit = NULL;
 HWND      g_hwndStatus = NULL;
 HWND      g_hwndToolbar = NULL;
+HWND      g_hwndDlgFindReplace = NULL;
 HWND      hwndReBar = NULL;
 HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
-HWND      hDlgFindReplace = NULL;
 
 #define INISECTIONBUFCNT 32
 #define NUMTOOLBITMAPS  25
@@ -156,6 +156,7 @@ int       iLongLineMode;
 int       iWrapCol = 0;
 BOOL      g_bShowSelectionMargin;
 BOOL      bShowLineNumbers;
+int       iReplacedOccurrences;
 int       iMarkOccurrences;
 int       iMarkOccurrencesCount;
 int       iMarkOccurrencesMaxCount;
@@ -541,10 +542,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   while (GetMessage(&msg,NULL,0,0))
   {
-    if (IsWindow(hDlgFindReplace) && ((msg.hwnd == hDlgFindReplace) || IsChild(hDlgFindReplace, msg.hwnd))) 
+    if (IsWindow(g_hwndDlgFindReplace) && ((msg.hwnd == g_hwndDlgFindReplace) || IsChild(g_hwndDlgFindReplace, msg.hwnd))) 
     {
-      int iTr = TranslateAccelerator(hDlgFindReplace, hAccFindReplace, &msg);
-      if (iTr || IsDialogMessage(hDlgFindReplace, &msg))
+      int iTr = TranslateAccelerator(g_hwndDlgFindReplace, hAccFindReplace, &msg);
+      if (iTr || IsDialogMessage(g_hwndDlgFindReplace, &msg))
         continue;
     }
     if (!TranslateAccelerator(hwnd,hAccMain,&msg)) {
@@ -900,6 +901,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (flagStartAsTrayIcon)
     SetNotifyIconTitle(g_hwndMain);
 
+  iReplacedOccurrences = 0;
   iMarkOccurrencesCount = 0;
   UpdateToolbar();
   UpdateStatusbar();
@@ -1526,8 +1528,8 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     }
 
     // Destroy find / replace dialog
-    if (IsWindow(hDlgFindReplace))
-      DestroyWindow(hDlgFindReplace);
+    if (IsWindow(g_hwndDlgFindReplace))
+      DestroyWindow(g_hwndDlgFindReplace);
 
     // call SaveSettings() when g_hwndToolbar is still valid
     SaveSettings(FALSE);
@@ -2767,11 +2769,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         int token = BeginUndoAction();
         if (!SciCall_IsSelectionEmpty())
         {
-          SendMessage(g_hwndEdit, SCI_CUT, 0, 0);
+          SciCall_Cut();
         }
         else { // VisualStudio behavior
-          SendMessage(g_hwndEdit, SCI_COPYALLOWLINE, 0, 0);
-          SendMessage(g_hwndEdit, SCI_LINEDELETE, 0, 0);   
+          SciCall_CopyAllowLine();
+          SciCall_LineDelete();
         }
         EndUndoAction(token);
         UpdateToolbar();
@@ -2784,7 +2786,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
         int token = BeginUndoAction();
-        SendMessage(g_hwndEdit, SCI_COPYALLOWLINE, 0, 0);
+        SciCall_CopyAllowLine();
         EndUndoAction(token);
         UpdateToolbar();
       }
@@ -2808,7 +2810,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
         int token = BeginUndoAction();
-        EditCopyAppend(g_hwndEdit);
+        EditCopyAppend(g_hwndEdit,TRUE);
         EndUndoAction(token);
         UpdateToolbar();
       }
@@ -2839,7 +2841,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_EDIT_CLEARCLIPBOARD:
-      SciClearClipboard();
+      EditClearClipboard(g_hwndEdit);
       UpdateToolbar();
       UpdateStatusbar();
       break;
@@ -3658,35 +3660,37 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_FIND:
-      if (!IsWindow(hDlgFindReplace))
-        hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,FALSE);
+      if (!IsWindow(g_hwndDlgFindReplace))
+        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,FALSE);
       else {
-        if (GetDlgItem(hDlgFindReplace,IDC_REPLACE)) {
-          SendMessage(hDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOFIND,1),0);
-          DestroyWindow(hDlgFindReplace);
-          hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,FALSE);
+        if (GetDlgItem(g_hwndDlgFindReplace,IDC_REPLACE)) {
+          SendMessage(g_hwndDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOFIND,1),0);
+          DestroyWindow(g_hwndDlgFindReplace);
+          g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,FALSE);
         }
         else {
-          SetForegroundWindow(hDlgFindReplace);
-          PostMessage(hDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hDlgFindReplace,IDC_FINDTEXT)),1);
+          SetForegroundWindow(g_hwndDlgFindReplace);
+          PostMessage(g_hwndDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(g_hwndDlgFindReplace,IDC_FINDTEXT)),1);
         }
+        UpdateStatusbar();
       }
       break;
 
 
     case IDM_EDIT_REPLACE:
-      if (!IsWindow(hDlgFindReplace))
-        hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
+      if (!IsWindow(g_hwndDlgFindReplace))
+        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
       else {
-        if (!GetDlgItem(hDlgFindReplace,IDC_REPLACE)) {
-          SendMessage(hDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOREPLACE,1),0);
-          DestroyWindow(hDlgFindReplace);
-          hDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
+        if (!GetDlgItem(g_hwndDlgFindReplace,IDC_REPLACE)) {
+          SendMessage(g_hwndDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOREPLACE,1),0);
+          DestroyWindow(g_hwndDlgFindReplace);
+          g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
         }
         else {
-          SetForegroundWindow(hDlgFindReplace);
-          PostMessage(hDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hDlgFindReplace,IDC_FINDTEXT)),1);
+          SetForegroundWindow(g_hwndDlgFindReplace);
+          PostMessage(g_hwndDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(g_hwndDlgFindReplace,IDC_FINDTEXT)),1);
         }
+        UpdateStatusbar();
       }
       break;
 
@@ -6957,7 +6961,9 @@ void UpdateStatusbar()
   static WCHAR tchSel[32] = { L'\0' };
   static WCHAR tchSelB[32] = { L'\0' };
   static WCHAR tchOcc[32] = { L'\0' };
-  static WCHAR tchDocPos[256] = { L'\0' };
+  static WCHAR tchReplOccs[32] = { L'\0' };
+  static WCHAR tchDocPos[128] = { L'\0' };
+  static WCHAR tchFRStatus[128] = { L'\0' };
 
   static WCHAR tchBytes[64] = { L'\0' };
   static WCHAR tchDocSize[64] = { L'\0' };
@@ -7049,6 +7055,17 @@ void UpdateStatusbar()
   }
   else {
     FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS2, tchLn, tchLines, tchCol, tchCols, tchSel, tchSelB, tchLinesSelected, tchOcc);
+  }
+  
+  // update Find/Replace dialog (if any)
+  if (g_hwndDlgFindReplace) {
+    if (iReplacedOccurrences > 0)
+      StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", iReplacedOccurrences);
+    else
+      StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
+
+    FormatString(tchFRStatus, COUNTOF(tchFRStatus), IDS_FR_STATUS_FMT, tchLn, tchLines, tchCol, tchSel, tchOcc, tchReplOccs);
+    SetWindowText(GetDlgItem(g_hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
   }
 
   // get number of bytes in current encoding
