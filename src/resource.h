@@ -160,8 +160,9 @@
 #define IDC_EDIT3                       510
 #define IDS_PASS_FAILURE                511
 #define IDS_NOPASS                      512
-#define IDM_HELP_UPDATECHECK            513
-#define IDS_FR_STATUS_TEXT              514
+#define IDM_HELP_UPDATEINSTALLER        513
+#define IDM_HELP_UPDATEWEBSITE          514
+#define IDS_FR_STATUS_TEXT              515
 #define IDS_APPTITLE                    10000
 #define IDS_APPTITLE_ELEVATED           10001
 #define IDS_APPTITLE_PASTEBOARD         10002

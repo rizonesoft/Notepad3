@@ -4613,10 +4613,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_HELP_UPDATECHECK:
-      DialogUpdateCheck(hwnd);
+    case IDM_HELP_UPDATEINSTALLER:
+      DialogUpdateCheck(hwnd, TRUE);
       break;
 
+    case IDM_HELP_UPDATEWEBSITE:
+      DialogUpdateCheck(hwnd, FALSE);
+      break;
 
     case CMD_WEBACTION1:
     case CMD_WEBACTION2:

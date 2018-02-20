@@ -56,7 +56,7 @@ WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
 
 void DialogNewWindow(HWND,BOOL,BOOL);
 void DialogFileBrowse(HWND);
-void DialogUpdateCheck(HWND);
+void DialogUpdateCheck(HWND,BOOL);
 INT_PTR InfoBox(int,LPCWSTR,int,...);
 
 
