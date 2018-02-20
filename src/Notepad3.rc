@@ -181,8 +181,8 @@ BEGIN
         END
         POPUP "&Block"
         BEGIN
-            MENUITEM "&Indent",                        IDM_EDIT_INDENT
-            MENUITEM "&Unindent",                      IDM_EDIT_UNINDENT
+            MENUITEM "&Indent",                     IDM_EDIT_INDENT
+            MENUITEM "&Unindent",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "&Enclose Selection"
             BEGIN
@@ -275,10 +275,10 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Find...\tCtrl+F",            IDM_EDIT_FIND
-        MENUITEM "Save Find Text\tAlt+F3",     IDM_EDIT_SAVEFIND
+        MENUITEM "Save Find Text\tAlt+F3",      IDM_EDIT_SAVEFIND
         MENUITEM "Find Ne&xt\tF3",              IDM_EDIT_FINDNEXT
-        MENUITEM "Find Pre&vious\tShift+F3",     IDM_EDIT_FINDPREV
-        MENUITEM "&Replace...\tCtrl+H",          IDM_EDIT_REPLACE
+        MENUITEM "Find Pre&vious\tShift+F3",    IDM_EDIT_FINDPREV
+        MENUITEM "&Replace...\tCtrl+H",         IDM_EDIT_REPLACE
         MENUITEM "Replace Ne&xt\tF4",           IDM_EDIT_REPLACENEXT
         MENUITEM "&Goto...\tCtrl+G",            IDM_EDIT_GOTOLINE
     END
@@ -652,7 +652,7 @@ BEGIN
     LTEXT           "Contributors: Derick Payne (Rizonesoft), Flo Balmer (Notepad2), N.Hodgson (Scintilla), XhmikosR (Notepad2-mod), Kai Liu, RL Vision, A.Lekov, B.Barbieri, M.Ellis (MinimizeToTray), D.Dyer (crypt), T.D.Hanson (uthash), RaiKoHoff",IDC_STATIC,45,150,200,44
 END
 
-IDD_FIND DIALOGEX 0, 0, 273, 120
+IDD_FIND DIALOGEX 0, 0, 273, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Find Text"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -669,25 +669,26 @@ BEGIN
     CONTROL         "C&lose after find",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
     CONTROL         "Mark &Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "W&ildcard Search",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    DEFPUSHBUTTON   "&Find Next",IDOK,216,7,50,14
-    PUSHBUTTON      "Find &Previous",IDC_FINDPREV,216,24,50,14
-    PUSHBUTTON      "Close",IDCANCEL,216,41,50,14
+    DEFPUSHBUTTON   "&Find Next",IDOK,211,7,55,14
+    PUSHBUTTON      "Find &Previous",IDC_FINDPREV,211,24,55,14
+    PUSHBUTTON      "Close",IDCANCEL,212,99,54,14
     CONTROL         "<a>Goto Replace (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,104,74,10
+                    "SysLink",0x0,125,103,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
+    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,117,259,9,WS_EX_STATICEDGE
 END
 
-IDD_REPLACE DIALOGEX 0, 0, 273, 147
+IDD_REPLACE DIALOGEX 0, 0, 273, 156
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Replace Text"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Search Strin&g:",IDC_STATIC,7,7,46,8
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Replace wit&h:",IDC_STATIC,7,35,44,8
-    COMBOBOX        IDC_REPLACETEXT,7,46,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Replace wit&h:",IDC_STATIC,7,36,44,8
+    COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Match &case",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
     CONTROL         "Match &whole word only",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "Match &beginning of word only",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
@@ -698,18 +699,19 @@ BEGIN
     CONTROL         "C&lose after replace",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "Mark &Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "W&ildcard Search",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    DEFPUSHBUTTON   "&Find Next",IDOK,216,7,50,14
-    PUSHBUTTON      "Find &Previous",IDC_FINDPREV,216,24,50,14
-    PUSHBUTTON      "&Replace",IDC_REPLACE,216,41,50,14
-    PUSHBUTTON      "Replace &All",IDC_REPLACEALL,216,58,50,14
-    PUSHBUTTON      "In &Selection",IDC_REPLACEINSEL,216,75,50,14
-    PUSHBUTTON      "Swap Strings",IDC_SWAPSTRG,216,92,50,14
-    PUSHBUTTON      "Close",IDCANCEL,216,127,50,14
+    DEFPUSHBUTTON   "&Find Next",IDOK,211,7,55,14
+    PUSHBUTTON      "Find &Previous",IDC_FINDPREV,211,24,55,14
+    PUSHBUTTON      "&Replace",IDC_REPLACE,211,53,55,14
+    PUSHBUTTON      "In &Selection",IDC_REPLACEINSEL,211,70,55,14
+    PUSHBUTTON      "Replace &All",IDC_REPLACEALL,211,88,55,14
+    PUSHBUTTON      "Swap Strings",IDC_SWAPSTRG,149,32,49,12
+    PUSHBUTTON      "Close",IDCANCEL,211,126,55,14
     CONTROL         "<a>Goto Find (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,131,74,10
-    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
+                    "SysLink",0x0,125,130,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
+    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
+    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,144,259,9,WS_EX_STATICEDGE
 END
 
 IDD_RUN DIALOGEX 0, 0, 229, 96
@@ -1173,7 +1175,7 @@ BEGIN
         RIGHTMARGIN, 266
         VERTGUIDE, 7
         TOPMARGIN, 7
-        BOTTOMMARGIN, 114
+        BOTTOMMARGIN, 113
     END
 
     IDD_REPLACE, DIALOG
@@ -1182,7 +1184,7 @@ BEGIN
         RIGHTMARGIN, 266
         VERTGUIDE, 7
         TOPMARGIN, 7
-        BOTTOMMARGIN, 141
+        BOTTOMMARGIN, 140
     END
 
     IDD_RUN, DIALOG
@@ -1446,6 +1448,7 @@ BEGIN
     IDS_BACKSLASHHELP       "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_REGEXPHELP          "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_WILDCARDHELP        "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+    IDS_FR_STATUS_FMT       " Ln %s / %s     Col %s     Sel %s     Occ %s     Repl %s                          "
 END
 
 STRINGTABLE

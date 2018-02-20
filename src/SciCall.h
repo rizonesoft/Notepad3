@@ -89,7 +89,7 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 DeclareSciCallR0(IsDocModified, GETMODIFY, bool);
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool);
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
-
+DeclareSciCallR0(CanPaste, CANPASTE, bool);
 
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos);
 DeclareSciCallR0(GetAnchor, GETANCHOR, DocPos);
@@ -99,16 +99,25 @@ DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, DocPos);
 DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn, line);
 DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocLn, line);
 
-DeclareSciCallV0(Clear, CLEAR);
+
+DeclareSciCallV0(Cut, CUT);
 DeclareSciCallV0(Copy, COPY);
 DeclareSciCallV0(Paste, PASTE);
+DeclareSciCallV0(Clear, CLEAR);
+DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE);
+DeclareSciCallV0(LineDelete, LINEDELETE);
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, LPCCH, text);
+DeclareSciCallV2(GetTextFromBegin, GETTEXT, DocPos, length, LPCCH, text);
+
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos);
 DeclareSciCallV0(SelectAll, SELECTALL);
-DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
-DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
 DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, LPCCH, text);
 DeclareSciCallV01(ReplaceSel, REPLACESEL, LPCCH, text);
+
+DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos);
+DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos);
+DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
+DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
 DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, LPCCH, text);
 
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position);
@@ -229,8 +238,6 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //  Utilities
 //
-#define SciClearClipboard() SciCall_CopyText(0, "")
-
 #define IsSelThinRectangle() (SciCall_GetSelectionMode() == SC_SEL_THIN)
 #define IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
 #define IsSingleLineSelection() \

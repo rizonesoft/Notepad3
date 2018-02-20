@@ -161,6 +161,7 @@
 #define IDS_PASS_FAILURE                511
 #define IDS_NOPASS                      512
 #define IDM_HELP_UPDATECHECK            513
+#define IDS_FR_STATUS_TEXT              514
 #define IDS_APPTITLE                    10000
 #define IDS_APPTITLE_ELEVATED           10001
 #define IDS_APPTITLE_PASTEBOARD         10002
@@ -183,6 +184,7 @@
 #define IDS_BACKSLASHHELP               10019
 #define IDS_REGEXPHELP                  10020
 #define IDS_WILDCARDHELP                10021
+#define IDS_FR_STATUS_FMT               10022
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
 #define CMD_SHIFTCTRLENTER              20002
