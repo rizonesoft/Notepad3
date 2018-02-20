@@ -5245,8 +5245,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           break;
 
         case IDC_REPLACE:
-          bReplaceInitialized = TRUE;
-          EditReplace(lpefr->hwnd, lpefr);
+          {
+            bReplaceInitialized = TRUE;
+            int token = BeginUndoAction();
+            EditReplace(lpefr->hwnd, lpefr);
+            EndUndoAction(token);
+          }
           break;
 
         case IDC_REPLACEALL:
@@ -5688,10 +5692,10 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   DocPos _start = start;
   iReplacedOccurrences = 0;
 
-  DocPos iPos = EditFindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),  (int)(lpefr->fuFlags), &start, &end, FALSE);
+  const DocPos iPos = EditFindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),  (int)(lpefr->fuFlags), &start, &end, FALSE);
 
   // w/o selection, replacement string is put into current position
-  // but this mayby not intended here
+  // but this maybe not intended here
   if (SciCall_IsSelectionEmpty()) {
     if ((iPos < 0) || (_start != start) || (_start != end)) {
       // empty-replace was not intended
@@ -5712,8 +5716,9 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
 
   // move caret behind replacement
-  DocPos after = (DocPos)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
-  SendMessage(hwnd, SCI_SETSEL, after, after);
+
+  const DocPos after = SciCall_GetTargetEnd();
+  SciCall_SetSel(after, after);
 
   EditLeaveTargetTransaction();
 

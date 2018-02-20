@@ -111,10 +111,13 @@ DeclareSciCallV2(GetTextFromBegin, GETTEXT, DocPos, length, LPCCH, text);
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos);
 DeclareSciCallV0(SelectAll, SELECTALL);
-DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
-DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
 DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, LPCCH, text);
 DeclareSciCallV01(ReplaceSel, REPLACESEL, LPCCH, text);
+
+DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos);
+DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos);
+DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
+DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
 DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, LPCCH, text);
 
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position);
