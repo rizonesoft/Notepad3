@@ -140,6 +140,7 @@ BOOL      bAutoCloseTags;
 BOOL      bShowIndentGuides;
 BOOL      bHiliteCurrentLine;
 BOOL      bHyperlinkHotspot;
+BOOL      bScrollPastEOF;
 BOOL      g_bTabsAsSpaces;
 BOOL      bTabsAsSpacesG;
 BOOL      g_bTabIndents;
@@ -1191,6 +1192,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   // Properties
   SendMessage(g_hwndEdit, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineVerticalSlop);
   SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
+  SendMessage(g_hwndEdit, SCI_SETENDATLASTLINE, ((bScrollPastEOF) ? 0 : 1), 0);
 
   // Tabs
   SendMessage(g_hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
@@ -2297,9 +2299,11 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
-  CheckCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,bAutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
+  CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, bAutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
   CheckCmd(hmenu, IDM_VIEW_HILITECURRENTLINE, bHiliteCurrentLine);
   CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
+  CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, bScrollPastEOF);
+ 
 
   i = IniGetInt(L"Settings2",L"ReuseWindow",0);
   CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
@@ -4098,18 +4102,21 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       UpdateLineNumberWidth();
       break;
 
-
     case IDM_VIEW_ZOOMOUT:
       SendMessage(g_hwndEdit,SCI_ZOOMOUT,0,0);
       UpdateLineNumberWidth();
       break;
-
 
     case IDM_VIEW_RESETZOOM:
       SendMessage(g_hwndEdit,SCI_SETZOOM,0,0);
       UpdateLineNumberWidth();
       break;
 
+    
+    case IDM_VIEW_SCROLLPASTEOF:
+      bScrollPastEOF = (bScrollPastEOF) ? FALSE : TRUE;
+      SendMessage(g_hwndEdit, SCI_SETENDATLASTLINE, ((bScrollPastEOF) ? 0 : 1), 0);
+      break;
 
     case IDM_VIEW_TOOLBAR:
       if (bShowToolbar) {
@@ -4606,10 +4613,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_HELP_UPDATECHECK:
-      DialogUpdateCheck(hwnd);
+    case IDM_HELP_UPDATEINSTALLER:
+      DialogUpdateCheck(hwnd, TRUE);
       break;
 
+    case IDM_HELP_UPDATEWEBSITE:
+      DialogUpdateCheck(hwnd, FALSE);
+      break;
 
     case CMD_WEBACTION1:
     case CMD_WEBACTION2:
@@ -5766,6 +5776,8 @@ void LoadSettings()
 
   bHyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", FALSE);
 
+  bScrollPastEOF = IniSectionGetBool(pIniSection, L"ScrollPastEOF", FALSE);
+
   bAutoIndent = IniSectionGetBool(pIniSection,L"AutoIndent",TRUE);
 
   bAutoCompleteWords = IniSectionGetBool(pIniSection,L"AutoCompleteWords",FALSE);
@@ -6099,6 +6111,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
   IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
   IniSectionSetBool(pIniSection, L"HyperlinkHotspot", bHyperlinkHotspot);
+  IniSectionSetBool(pIniSection, L"ScrollPastEOF", bScrollPastEOF);
   IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
   IniSectionSetBool(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
   IniSectionSetBool(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
