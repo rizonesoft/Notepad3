@@ -116,6 +116,7 @@ BOOL       bEnableSaveSettings;
 BOOL       bSaveRecentFiles;
 BOOL       bPreserveCaretPos;
 BOOL       bSaveFindReplace;
+BOOL       bFindReplCopySelOrClip = TRUE;
 WCHAR      tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 WCHAR      tchOpenWithDir[MAX_PATH] = { L'\0' };
 WCHAR      tchFavoritesDir[MAX_PATH] = { L'\0' };
@@ -540,6 +541,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   
   UpdateLineNumberWidth();
   ObserveNotifyChangeEvent();
+  
+  bFindReplCopySelOrClip = TRUE;
 
   while (GetMessage(&msg,NULL,0,0))
   {
@@ -3664,8 +3667,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_FIND:
-      if (!IsWindow(g_hwndDlgFindReplace))
-        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,FALSE);
+      bFindReplCopySelOrClip = TRUE;
+      if (!IsWindow(g_hwndDlgFindReplace)) {
+        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, FALSE);
+      }
       else {
         if (GetDlgItem(g_hwndDlgFindReplace,IDC_REPLACE)) {
           SendMessage(g_hwndDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOFIND,1),0);
@@ -3682,6 +3687,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_REPLACE:
+      bFindReplCopySelOrClip = TRUE;
       if (!IsWindow(g_hwndDlgFindReplace))
         g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
       else {
