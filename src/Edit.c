@@ -239,6 +239,9 @@ HWND EditCreate(HWND hwndParent)
   SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
   SendMessage(hwnd, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
 
+  // paste into rectangular selection
+  SendMessage(hwnd, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
+
   // No SC_AUTOMATICFOLD_CLICK, performed by 
   SendMessage(hwnd, SCI_SETAUTOMATICFOLD, (WPARAM)(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE), 0);
   
@@ -805,8 +808,6 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
 
   if (SciCall_IsSelectionEmpty() || (lineCount <= 1)) 
   {
-    SciCall_SetMultiPaste(SC_MULTIPASTE_EACH);
-
     if (SciCall_IsSelectionEmpty()) 
     {
       SciCall_Paste();
@@ -833,8 +834,6 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
           EditSelectEx(hwnd, iCurPos, iCurPos);
       }
     }
-
-    SciCall_SetMultiPaste(SC_MULTIPASTE_ONCE);
   }
   else {
     if (SciCall_IsSelectionRectangle()) 

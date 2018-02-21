@@ -89,6 +89,7 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 DeclareSciCallR0(IsDocModified, GETMODIFY, bool);
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool);
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
+
 DeclareSciCallR0(CanPaste, CANPASTE, bool);
 
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos);
@@ -238,8 +239,9 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
 //
 //  Utilities
 //
-#define IsSelThinRectangle() (SciCall_GetSelectionMode() == SC_SEL_THIN)
+#define IsStreamSelected() (SciCall_GetSelectionMode() == SC_SEL_STREAM)
 #define IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
+#define IsThinRectangleSelected() (SciCall_GetSelectionMode() == SC_SEL_THIN)
 #define IsSingleLineSelection() \
 (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 
