@@ -4665,6 +4665,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
   static RegExResult_t regexMatch = INVALID;
 
+  static BOOL bHasFocus = TRUE;
   static BOOL bFlagsChanged = TRUE;
 
   static COLORREF rgbRed = RGB(255, 170, 170);
@@ -4955,6 +4956,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_REPLACEALL, bEnableF);
         DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableF && bEnableIS);
         DialogEnableWindow(hwnd, IDC_SWAPSTRG, bEnableF || bEnableR);
+
+        if (!bHasFocus) {
+          //TODO: copy selection/clipboard
+        }
+        bHasFocus = TRUE;
 
         if (HIWORD(wParam) == CBN_CLOSEUP) {
           LONG lSelEnd;
