@@ -4807,7 +4807,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         else
           SetDlgPos(hwnd, xFindReplaceDlg, yFindReplaceDlg);
       }
-
       else {
         SetDlgPos(hwnd, xFindReplaceDlgSave, yFindReplaceDlgSave);
         bSwitchedFindReplace = FALSE;
@@ -4850,7 +4849,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         iReplacedOccurrences = 0;
 
         KillTimer(hwnd, IDT_TIMER_MRKALL);
-        bFindReplCopySelOrClip = TRUE;
       }
       return FALSE;
 
@@ -4879,7 +4877,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           EditSetTimerMarkAll(hwnd,50);
         }
         //if (LOWORD(wParam) == WA_INACTIVE) {
-        //  //bFindReplCopySelOrClip = TRUE;
+        //  bFindReplCopySelOrClip = TRUE;
         //}
       }
       return FALSE;
@@ -4894,7 +4892,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       case IDC_FINDTEXT:
       case IDC_REPLACETEXT:
       {
-        if (bFindReplCopySelOrClip) 
+        if (bFindReplCopySelOrClip)
         {
           char *lpszSelection = NULL;
 
@@ -4909,17 +4907,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           else if (cchSelection == 0) {
             // nothing is selected in the editor:
             // if first time you bring up find/replace dialog, copy content from clipboard to find box
-            if (bFindReplCopySelOrClip)
-            {
-              char* pClip = EditGetClipboardText(hwnd, FALSE, NULL, NULL);
-              if (pClip) {
-                int len = lstrlenA(pClip);
-                if (len > 0 && len < FNDRPL_BUFFER) {
-                  lpszSelection = GlobalAlloc(GPTR, len + 1);
-                  StringCchCopyNA(lpszSelection, len + 1, pClip, len);
-                }
-                LocalFree(pClip);
+            char* pClip = EditGetClipboardText(hwnd, FALSE, NULL, NULL);
+            if (pClip) {
+              int len = lstrlenA(pClip);
+              if (len > 0 && len < FNDRPL_BUFFER) {
+                lpszSelection = GlobalAlloc(GPTR, len + 1);
+                StringCchCopyNA(lpszSelection, len + 1, pClip, len);
               }
+              LocalFree(pClip);
             }
           }
           if (lpszSelection) {

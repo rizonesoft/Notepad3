@@ -542,8 +542,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   UpdateLineNumberWidth();
   ObserveNotifyChangeEvent();
   
-  bFindReplCopySelOrClip = TRUE;
-
   while (GetMessage(&msg,NULL,0,0))
   {
     if (IsWindow(g_hwndDlgFindReplace) && ((msg.hwnd == g_hwndDlgFindReplace) || IsChild(g_hwndDlgFindReplace, msg.hwnd))) 
@@ -3667,11 +3665,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_FIND:
-      bFindReplCopySelOrClip = TRUE;
       if (!IsWindow(g_hwndDlgFindReplace)) {
+        bFindReplCopySelOrClip = TRUE;
         g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, FALSE);
       }
       else {
+        bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
         if (GetDlgItem(g_hwndDlgFindReplace,IDC_REPLACE)) {
           SendMessage(g_hwndDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOFIND,1),0);
           DestroyWindow(g_hwndDlgFindReplace);
@@ -3687,10 +3686,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_REPLACE:
-      bFindReplCopySelOrClip = TRUE;
-      if (!IsWindow(g_hwndDlgFindReplace))
-        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
+      if (!IsWindow(g_hwndDlgFindReplace)) {
+        bFindReplCopySelOrClip = TRUE;
+        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, TRUE);
+      }
       else {
+        bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
         if (!GetDlgItem(g_hwndDlgFindReplace,IDC_REPLACE)) {
           SendMessage(g_hwndDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOREPLACE,1),0);
           DestroyWindow(g_hwndDlgFindReplace);
@@ -3698,7 +3699,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         else {
           SetForegroundWindow(g_hwndDlgFindReplace);
-          PostMessage(g_hwndDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(g_hwndDlgFindReplace,IDC_FINDTEXT)),1);
+          PostMessage(g_hwndDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(g_hwndDlgFindReplace, IDC_FINDTEXT)),1);
         }
         UpdateStatusbar();
       }
