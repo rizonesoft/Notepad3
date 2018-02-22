@@ -3,6 +3,80 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 3.18.222.905 (22 February 2018)
+--------------------------------------------------
+- Enhancement: Replace (virtual) rectangular (empty) selection.
+- Fix: Minor issues in context of undo/redo (virtual) rectangular (empty) selection.
+- CR: Changed initial/reset ToolBar button selection.
+- Enhancement: Allow negative values for Extra Line Spacing (compact line view).
+- Enhancement: Dynamic horizontal scroll bar width adaption.
+- Enhancement: Wrap to Column allowed w/o selection (use complete text)
+- CR: Moved "Show Toolbar" and "Show Statusbar" from Settings Menu to View Menu.
+- Enhancement: Added "Shift+F1" Accelerator Key to open "About..." box.
+- Fix: Static URL string to open version check website.
+- Fix: Tidy up menu navigation via keyboard.
+- Fix: Paste multi-line clipboard into rectangular selection.
+- Fix: Copy/paste and redo/undo on empty/virtual rectangular selection.
+- Enhancement: Changed tab-stop order while navigating several dialogs.
+- Enhancement: Automatic Updates and incorporated launch of update installer "wyUpdate.exe".
+- CR: Added Accelerator Key (Alt+NK0) to launch new empty instance of NP3 (same as Alt+0).
+- Fix: Prepare (i) for Scintilla's Position type change to 64-bit.
+- Refactoring: Global naming.
+- Fix: Corrupted "Page Setup..." dialog layout (after changing tab-stop order).
+- Fix: Pasting into rectangular selections.
+- Fix: Tab-key and indentation handling.
+- Fix: Indentation and rectangular selection (final solution still open).
+- Fix: "Single line selection" criteria.
+- Fix: Synchronized updates for Toolbar & Statusbar.
+- Fix: Empty settings string, if ToolbarButtons are reset to defaults.
+- Fix: Changed navigation keys for "Edit" menu.
+- Fix: Set virtual space option "SCVS_NOWRAPLINESTART" for Alt-Key down rectangular selection only.
+- Optimize: Undo/redo stack does not need to store virtual space options.
+- Fix: Bug in calculating position for thousand separator.
+- Optimize: Check for Alt-Key down/up to allow drawing rectangular selection in virtual space.
+- Fix: Handle case: virtual space user access not allowed.
+- Optimize: Use faster method (SCI direct call) to set/reset virtual space access option.
+- Fix: Selected default lexer has not been used as default startup lexer.
+- CR: Changing menu selection key for "Edit" menu.
+- Scintilla version 4.0.3 and documentation update.
+- CR: Changing menu Alt+ key for "Edit" menu according to discussion.
+- Fix: Code folding integrated in margin.
+- Fix: unique Style IDs.
+- Fix: Disable folding operations for lexers, which don't support it.
+- Added: PortableApps AppCompactor call for UPX compression of NP3 binaries.
+- Added: wyUpdate's client configuration to PortableApps version.
+- Added: Accelerator Key (Alt+A) to switch ON/OFF occurrences marker/counter.
+- Added: Styling for folding marks (charset:1 -> circles / case:U -> double lines).
+- Fix: Default Folding Style: single line after heading.
+- Change: Folding STyle: case:L/U for box vs. circle style; charset:0/1/2 single line after/before/enclosing.
+- Added: R-Statistics Code lexer.
+- Changed: Registry files lexer to support eolfilled on "Added Keys".
+- Fix: Bug in changed "Windows Registry Files" lexer.
+- Fix: Undo/Redo action w/o selection sets/preserves selection mode (bug).
+- Fix: Support styler attribute "eolfilled" in any Reg-Key case (Windows Registry Lexer).
+- Fix: Small datatype correction.
+- Fix: Map Toolbar Labels according to bitmap/settings file.
+- Enhancement: More prominent replace dialog button "In Selection".
+- Enhancement: "Registry Files" lexer: enable attribute "eolfilled" for all styles of this lexer.
+- Added: Status/info bar in find/replace dialog.
+- Fix: "Registry Files lexer: bug in GUID in Key Path with eolfilled attribute.
+- Fix: Broken swap clipboard w/ selection.
+- Fix: Restore selection set/replaced by replace dialog.
+- Added: Feature "Scroll Past End of File" (settings).
+- Added: Menu entry to check Rizonesoft.com directly for updates.
+- Added: Seperator on help menu update entries.
+- Adapted VS compiler version string for About dialog.
+- Change: Compiler optimization flags for release build.
+- Fix: Fill find/replace search box with selection/clipboard on non switching Ctrl+F/H.
+- Fix: Bug detecting find/replace dialog is foreground or not.
+- Fix: Initial .ini file: corrections for labeling toolbar icons.
+- Change: Revert compiler optimization settings back to "Maximize Speed (/O2)" combine with 2nd opt. "Favor Size or Speed: Favor small code (/Os)".
+- Fix: Performance issue: Replace All - delay status update until transaction finished.
+- Change: Encoding type of Version.h from UTF-8 (Signature) to UTF-16 LE, to get Copyright sign right
+- Change: Change start of project on GitHub (date) to 2015 (Version.h).
+- Executables now compressed with NRV2E method. 
+
+--------------------------------------------------
 Version 3.18.131.862 (31 January 2018)
 --------------------------------------------------
 - Fix: Correct in-memory encoding/re-coding of text.

@@ -23,17 +23,17 @@ IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notep
 IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe" CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"
 ECHO.
 ECHO.
-Bin\UPX --best "..\%INPUTDIRx86%\Notepad3.exe"
+Bin\UPX --best --compress-icons=0 --crp-ms=999999 --backup --nrv2e "..\%INPUTDIRx86%\Notepad3.exe"
 ECHO.
-Bin\UPX --best "..\%INPUTDIRx86%\minipath.exe"
+Bin\UPX --best --compress-icons=0 --crp-ms=999999 --backup --nrv2e "..\%INPUTDIRx86%\minipath.exe"
 ECHO.
-Bin\UPX --best "..\%INPUTDIRx86%\np3encrypt.exe"
+Bin\UPX --best --compress-icons=0 --crp-ms=999999 --backup --nrv2e "..\%INPUTDIRx86%\np3encrypt.exe"
 ECHO.
-Bin\UPX --best "..\%INPUTDIRx64%\Notepad3.exe"
+Bin\UPX --best --compress-icons=0 --crp-ms=999999 --backup --nrv2e "..\%INPUTDIRx64%\Notepad3.exe"
 ECHO.
-Bin\UPX --best "..\%INPUTDIRx64%\minipath.exe"
+Bin\UPX --best --compress-icons=0 --crp-ms=999999 --backup --nrv2e "..\%INPUTDIRx64%\minipath.exe"
 ECHO.
-Bin\UPX --best "..\%INPUTDIRx64%\np3encrypt.exe"
+Bin\UPX --best --compress-icons=0 --crp-ms=999999 --backup --nrv2e "..\%INPUTDIRx64%\np3encrypt.exe"
 ECHO.
 ECHO.
 
