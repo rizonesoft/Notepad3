@@ -5795,6 +5795,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, D
   int iCount = utarray_len(ReplPosUTArray);
 
   // ===  iterate over findings and replace strings  ===
+  IgnoreNotifyChangeEvent();
 
   DocPos offset = 0;
   for (ReplPos_t* pPosPair = (ReplPos_t*)utarray_front(ReplPosUTArray);
@@ -5819,6 +5820,8 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, D
 
     EditLeaveTargetTransaction();
   }
+
+  ObserveNotifyChangeEvent();
 
   EndWaitCursor();
 
