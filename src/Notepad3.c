@@ -2683,6 +2683,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
         }
 
+        BeginWaitCursor(NULL);
         if (EditSetNewEncoding(g_hwndEdit,
                                iNewEncoding,
                                (flagSetEncoding),
@@ -2697,10 +2698,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
               Encoding_HasChanged(CPI_NONE);
             Encoding_Current(iNewEncoding);
           }
-
           UpdateToolbar();
-          UpdateStatusbar();
         }
+        EndWaitCursor();
+
       }
       break;
 
@@ -4613,7 +4614,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         WideCharToMultiByteStrg(cp,wchReplace,efrTS.szReplace);
 
         if (!SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
-          EditReplaceAllInSelection(g_hwndEdit,&efrTS,TRUE);
+          EditReplaceAllInSelection(g_hwndEdit, &efrTS, TRUE);
         else
           EditReplaceAll(g_hwndEdit,&efrTS,TRUE);
       }

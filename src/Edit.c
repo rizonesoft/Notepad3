@@ -477,10 +477,7 @@ BOOL EditSetNewEncoding(HWND hwnd,int iNewEncoding,BOOL bNoUI,BOOL bSetSavePoint
       BOOL doNewEncoding = (!bNoUI) ? (InfoBox(MBYESNO, L"MsgConv1", IDS_ASK_ENCODING) == IDYES) : TRUE;
 
       if (doNewEncoding) {
-        BeginWaitCursor(NULL);
-        BOOL result = EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,FALSE);
-        EndWaitCursor();
-        return result;
+        return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,FALSE);
       }
     }
   } 
@@ -3680,7 +3677,6 @@ void EditRemoveBlankLines(HWND hwnd,BOOL bMerge)
   if (iSelStart > SciCall_PositionFromLine(iLineStart)) { ++iLineStart; }
   if ((iSelEnd <= SciCall_PositionFromLine(iLineEnd)) && (iLineEnd != SciCall_GetLineCount() - 1)) { --iLineEnd; }
 
-  IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
   for (DocLn iLine = iLineStart; iLine <= iLineEnd; )
@@ -3705,7 +3701,6 @@ void EditRemoveBlankLines(HWND hwnd,BOOL bMerge)
   }
 
   EditLeaveTargetTransaction();
-  ObserveNotifyChangeEvent();
 }
 
 
@@ -5764,8 +5759,6 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, D
   DocPos start = iStartPos;
   DocPos end = iEndPos;
 
-  BeginWaitCursor(NULL);
-
   DocPos iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
@@ -5821,10 +5814,6 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, D
     EditLeaveTargetTransaction();
   }
 
-  ObserveNotifyChangeEvent();
-
-  EndWaitCursor();
-
   utarray_clear(ReplPosUTArray);
   utarray_free(ReplPosUTArray);
   LocalFree(pszReplace);
@@ -5846,14 +5835,18 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, D
 //
 BOOL EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo)
 {
-  DocPos start = 0;
-  DocPos end = SciCall_GetTextLength();
+  const DocPos start = 0;
+  const DocPos end = SciCall_GetTextLength();
+
+  BeginWaitCursor(NULL);
 
   int token = BeginUndoAction();
 
   iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end);
 
   EndUndoAction(token);
+
+  EndWaitCursor();
 
   return (iReplacedOccurrences > 0) ? TRUE : FALSE;
 }
@@ -5870,8 +5863,14 @@ BOOL EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowIn
     return FALSE;
   }
 
-  DocPos start = SciCall_GetSelectionStart();
-  DocPos end = SciCall_GetSelectionEnd();
+  const DocPos start = SciCall_GetSelectionStart();
+  const DocPos end = SciCall_GetSelectionEnd();
+  bool bWaitCursor = false;
+
+  if ((end - start) > (512 * 512)) {
+    BeginWaitCursor(NULL);
+    bWaitCursor = true;
+  }
 
   int token = BeginUndoAction();
 
@@ -5879,9 +5878,12 @@ BOOL EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowIn
 
   EndUndoAction(token);
 
-  if (iReplacedOccurrences <= 0)
+  if (bWaitCursor) {
+    EndWaitCursor();
+  }
+  if (iReplacedOccurrences <= 0) {
     return FALSE;
-
+  }
   return TRUE;
 }
 
