@@ -178,6 +178,9 @@ BEGIN
             MENUITEM "&Join Lines\tCtrl+J",         IDM_EDIT_JOINLINES
             MENUITEM "&Fuse Lines\tCtrl+Alt+J",     IDM_EDIT_JOINLN_NOSP
             MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            MENUITEM "Merge &Blank Lines\tAlt+Y", IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "&Remove Blank Lines\tAlt+R", IDM_EDIT_REMOVEBLANKLINES
         END
         POPUP "&Block"
         BEGIN
@@ -204,8 +207,6 @@ BEGIN
             MENUITEM "Strip &Last Character\tAlt+U", IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Strip &Trailing Blanks\tAlt+W", IDM_EDIT_TRIMLINES
             MENUITEM "Compress &Whitespace\tAlt+P", IDM_EDIT_COMPRESSWS
-            MENUITEM "Merge &Blank Lines\tAlt+Y",   IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Blank Lines\tAlt+R",  IDM_EDIT_REMOVEBLANKLINES
             MENUITEM SEPARATOR
             MENUITEM "&Modify Lines...\tAlt+M",     IDM_EDIT_MODIFYLINES
             MENUITEM "&Align Lines...\tAlt+J",      IDM_EDIT_ALIGN

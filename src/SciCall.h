@@ -222,6 +222,13 @@ DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, valu
 
 //=============================================================================
 //
+//  Cursor
+//
+DeclareSciCallV1(SetCursor, SETCURSOR, int, flags);
+
+
+//=============================================================================
+//
 //  Undo/Redo Stack
 //
 DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool);
