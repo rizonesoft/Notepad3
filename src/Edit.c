@@ -818,9 +818,8 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
       char* pszText = LocalAlloc(LPTR, iSelLength);
       SciCall_GetSelText(pszText);
       if (clipLen == 0) { SciCall_Clear(); } else { SciCall_Paste(); }
-      EditSetClipboardText(hwnd, pszText);
-      LocalFree(pszText);
       if (bSwapClipBoard) {
+        EditSetClipboardText(hwnd, pszText);
         if (iCurPos < iAnchorPos)
           EditSelectEx(hwnd, SciCall_GetCurrentPos(), iCurPos);
         else
@@ -830,6 +829,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
         if (iCurPos < iAnchorPos)
           EditSelectEx(hwnd, iCurPos, iCurPos);
       }
+      LocalFree(pszText);
     }
   }
   else {
@@ -837,7 +837,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
     {
       if (bSwapClipBoard) { SciCall_Copy(); }
       EditPaste2RectSel(hwnd, pClip);
-      // TODO: restore selection
+      // TODO: restore selection in case of swap clipboard 
     }
     else // Selection: SC_SEL_STREAM, SC_SEL_LINES, SC_SEL_THIN
     {

@@ -3536,6 +3536,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_STREAMCOMMENT:
       {
+        BeginWaitCursor(NULL);
         int token = BeginUndoAction();
 
         switch (SendMessage(g_hwndEdit, SCI_GETLEXER, 0, 0)) {
@@ -3589,6 +3590,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           EditEncloseSelection(g_hwndEdit, L"%{", L"%}");
         }
         EndUndoAction(token);
+        EndWaitCursor();
       }
       break;
 
@@ -7411,7 +7413,7 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol
   BOOL fSuccess;
   DWORD dwFileAttributes;
 
-  FormatString(tch,COUNTOF(tch),(fLoad) ? IDS_LOADFILE : IDS_SAVEFILE,PathFindFileName(pszFileName));
+  FormatString(tch,COUNTOF(tch),(fLoad) ? IDS_LOADFILE : IDS_SAVEFILE, PathFindFileName(pszFileName));
 
   BeginWaitCursor(tch);
 
