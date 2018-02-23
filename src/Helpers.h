@@ -78,11 +78,10 @@ __inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL 
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
 
-
 //extern HWND g_hwndEdit;
-#define BeginWaitCursor(TCH) { SendMessage(g_hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORWAIT,0); StatusSetText(g_hwndStatus,STATUS_HELP,(TCH)); }
-#define BeginWaitCursorID(UID) { SendMessage(g_hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORWAIT,0); StatusSetTextID(g_hwndStatus,STATUS_HELP,(UID)); }
-#define EndWaitCursor() { POINT pt; SendMessage(g_hwndEdit,SCI_SETCURSOR,(WPARAM)SC_CURSORNORMAL,0); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); StatusSetSimple(g_hwndStatus,FALSE); UpdateStatusbar(); }
+#define BeginWaitCursor(TCH) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetText(g_hwndStatus,STATUS_HELP,(TCH)); IgnoreNotifyChangeEvent(); }
+#define BeginWaitCursorID(UID) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetTextID(g_hwndStatus,STATUS_HELP,(UID)); IgnoreNotifyChangeEvent(); }
+#define EndWaitCursor() { POINT pt; SciCall_SetCursor(SC_CURSORNORMAL); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); StatusSetSimple(g_hwndStatus,FALSE); ObserveNotifyChangeEvent(); UpdateStatusbar(); }
 
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
