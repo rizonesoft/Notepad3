@@ -34,7 +34,7 @@
 
 #pragma warning( push )
 #pragma warning( disable : 4201) // union/struct w/o name
-#define _RICHEDIT_VER	0x0200
+#define _RICHEDIT_VER	0x0410
 #include <richedit.h>
 
 #include "scintilla.h"
@@ -64,7 +64,6 @@ extern BOOL bAutoStripBlanks;
 
 extern int flagNoFileVariables;
 extern int flagUseSystemMRU;
-
 
 
 //=============================================================================
@@ -301,7 +300,6 @@ static char* pAboutInfo;
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   WCHAR wch[256] = { L'\0' };
-
   static HFONT hFontTitle;
   
   switch (umsg)
@@ -340,12 +338,25 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     // --- Rich Edit Control ---
 
     COLORREF colBackGr = RGB(230, 230, 230);
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, colBackGr);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)colBackGr);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
-    //SetDlgItemText(hwnd, IDC_RICHEDITABOUT, VERSION_CONTRIBUTORS);
-
+#if 0
+    PARAFORMAT2 ParaFormat2;
+    ZeroMemory(&ParaFormat2, sizeof(PARAFORMAT2));
+    ParaFormat2.cbSize = (UINT)sizeof(PARAFORMAT2);
+    ParaFormat2.dwMask = (PFM_SPACEBEFORE | PFM_SPACEAFTER | PFM_LINESPACING);
+    ParaFormat2.dySpaceBefore = 48;     // paragraph
+    ParaFormat2.dySpaceAfter = 48;      // paragraph
+    ParaFormat2.dyLineSpacing = 24;    // [twips]
+    ParaFormat2.bLineSpacingRule = 5;  // 5: dyLineSpacing/20 is the spacing, in lines, from one line to the next.
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETPARAFORMAT, 0, (LPARAM)&ParaFormat2);
+    SetDlgItemText(hwnd, IDC_RICHEDITABOUT, ABOUT_INFO_PLAIN);
+#else
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
-
+    //pAboutInfo = pAboutInfoErrMsg;
+    pAboutInfo = pAboutInfoResource;
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
     /*
     DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
     if (dwSize != 0) 
@@ -363,10 +374,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
     }
     */
-    //pAboutInfo = pAboutInfoErrMsg;
-    pAboutInfo = pAboutInfoResource;
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-
+#endif
     CenterDlgInParent(hwnd);
   }
   return TRUE;
@@ -385,19 +393,29 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
           ShellExecute(hwnd, L"open", L"https://rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
           break;
 
-        //case IDC_MODWEBPAGE:
-        //  ShellExecute(hwnd, L"open", L"https://xhmikosr.github.io/notepad2-mod/", NULL, NULL, SW_SHOWNORMAL);
-        //  break;
-
-        //case IDC_NOTE2WEBPAGE:
-        //  ShellExecute(hwnd, L"open", L"http://www.flos-freeware.ch", NULL, NULL, SW_SHOWNORMAL);
-        //  break;
-
         default:
           break;
         }
       }
       break;
+
+      case EN_LINK: // hyperlink from RichEdit Ctrl
+      {
+        ENLINK* penLink = (ENLINK *)lParam;
+        if (penLink->msg == WM_LBUTTONDOWN) 
+        {
+          WCHAR hLink[256];
+          TEXTRANGE txtRng;
+          txtRng.chrg = penLink->chrg;
+          txtRng.lpstrText = hLink;
+          SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_GETTEXTRANGE, 0, (LPARAM)&txtRng);
+          ShellExecute(hwnd, L"open", hLink, NULL, NULL, SW_SHOWNORMAL);
+        }
+      }
+      break;
+
+      default:
+        break;
     }
   }
   break;

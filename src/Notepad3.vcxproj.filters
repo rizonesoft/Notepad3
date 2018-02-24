@@ -150,6 +150,9 @@
     <Image Include="..\res\Toolbar2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\res\Notepad3_128.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Notepad3.rc">
@@ -165,5 +168,6 @@
     <Text Include="..\Versions\build.txt">
       <Filter>templates</Filter>
     </Text>
+    <Text Include="..\res\AboutInfo.rtf" />
   </ItemGroup>
 </Project>

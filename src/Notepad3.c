@@ -280,6 +280,7 @@ WIN32_FIND_DATA fdCurFile;
 UINT      msgTaskbarCreated = 0;
 
 HMODULE   hModUxTheme = NULL;
+HMODULE   hRichEdit = NULL;
 
 EDITFINDREPLACE g_efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL };
 UINT cpLastFind = 0;
@@ -512,6 +513,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (!IsWin8()) {
     hModUxTheme = LoadLibrary(L"uxtheme.dll");
   }
+  hRichEdit = LoadLibrary(L"MSFTEDIT.DLL"); // RichEditCtrl > 4.1 // old: LoadLibrary(L"RichEd20.dll");
 
   Scintilla_RegisterClasses(hInstance);
 
@@ -4356,12 +4358,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_HELP_ABOUT:
-      {
-        HMODULE hRichEdit = LoadLibrary(L"RichEd20.dll");
-        if (hRichEdit) {
-          ThemedDialogBox(g_hInstance, MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
-        }
-      }
+        ThemedDialogBox(g_hInstance, MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
       break;
 
     case IDM_SETPASS:

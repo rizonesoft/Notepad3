@@ -164,7 +164,6 @@
 #define IDR_MAINWND128                  550
 #define IDC_RICHEDITABOUT               551
 #define IDC_COPYVERSTRG                 552
-#define IDR_ABOUTINFO_RTF               553
 #define IDS_APPTITLE                    10000
 #define IDS_APPTITLE_ELEVATED           10001
 #define IDS_APPTITLE_PASTEBOARD         10002

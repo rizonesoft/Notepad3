@@ -33,6 +33,7 @@ IDI_RUN                 ICON                    "..\\res\\Run.ico"
 
 IDI_STYLES              ICON                    "..\\res\\Styles.ico"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
@@ -59,10 +60,6 @@ IDR_MAINWND2            BITMAP                  "..\\res\\Toolbar2.bmp"
 //
 
 IDC_COPY                CURSOR                  "..\\res\\Copy.cur"
-
-
-
-IDR_ABOUTINFO_RTF       TEXT                    "..\\res\\AboutInfo.rtf"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -652,7 +649,7 @@ BEGIN
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,55,180,8
     LTEXT           "",IDC_WEBPAGE2,190,55,130,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,190,55,130,10
-    CONTROL         "",IDC_RICHEDITABOUT,"RichEdit20W",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,320,170
+    CONTROL         "",IDC_RICHEDITABOUT,"RichEdit50W",WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,320,170
     PUSHBUTTON      "Copy Version Text",IDC_COPYVERSTRG,260,7,80,14,BS_FLAT
 END
 
@@ -1171,15 +1168,6 @@ BEGIN
         VERTGUIDE, 45
         TOPMARGIN, 7
         BOTTOMMARGIN, 218
-    END
-
-    IDD_ABOUT2, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 361
-        VERTGUIDE, 80
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 271
     END
 
     IDD_FIND, DIALOG
