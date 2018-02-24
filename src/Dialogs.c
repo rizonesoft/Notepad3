@@ -31,6 +31,12 @@
 #include <shlwapi.h>
 #include <commdlg.h>
 #include <string.h>
+
+#pragma warning( push )
+#pragma warning( disable : 4201) // union/struct w/o name
+#define _RICHEDIT_VER	0x0200
+#include <richedit.h>
+
 #include "scintilla.h"
 #include "notepad3.h"
 #include "edit.h"
@@ -205,105 +211,217 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
 }
 
 
+/*
+//=============================================================================
+//
+//  _LoadStringEx()
+//
+static DWORD _LoadStringEx(UINT nResId, LPCTSTR pszRsType, LPSTR strOut)
+{
+  LPTSTR pszResId = MAKEINTRESOURCE(nResId);
+
+  if (g_hInstance == NULL)
+    return 0L;
+
+  HRSRC hRsrc = FindResource(g_hInstance, pszResId, pszRsType);
+
+  if (hRsrc == NULL) {
+    return 0L;
+  }
+
+  HGLOBAL hGlobal = LoadResource(g_hInstance, hRsrc);
+
+  if (hGlobal == NULL) {
+    return 0L;
+  }
+
+  const BYTE* pData = (const BYTE*)LockResource(hGlobal);
+
+  if (pData == NULL) {
+    FreeResource(hGlobal);
+    return 0L;
+  }
+
+  DWORD dwSize = SizeofResource(g_hInstance, hRsrc);
+
+  if (strOut) {
+    memcpy(strOut, (LPCSTR)pData, dwSize);
+  }
+
+  UnlockResource(hGlobal);
+
+  FreeResource(hGlobal);
+
+  return dwSize;
+}
+
+*/
+
+//=============================================================================
+//
+//  (EditStreamCallback)
+//  _LoadRtfCallback() RTF edit control StreamIn's callback function 
+//
+static DWORD CALLBACK _LoadRtfCallback(
+  DWORD_PTR dwCookie,  // (in) pointer to the string
+  LPBYTE pbBuff,       // (in) pointer to the destination buffer
+  LONG cb,             // (in) size in bytes of the destination buffer
+  LONG FAR* pcb        // (out) number of bytes transfered
+)
+{
+  LPSTR* pstr = (LPSTR*)dwCookie;
+  LONG len = (LONG)strlen(*pstr);
+
+  if (len < cb)
+  {
+    *pcb = len;
+    memcpy(pbBuff, (LPCSTR)*pstr, *pcb);
+    *pstr += len;
+    //*pstr = '\0';
+  }
+  else
+  {
+    *pcb = cb;
+    memcpy(pbBuff, (LPCSTR)*pstr, *pcb);
+    *pstr += cb;
+  }
+  return 0;
+}
+// ----------------------------------------------------------------------------
+
+
+static char* pAboutInfoResource = ABOUT_INFO_RTF;
+static char* pAboutInfoErrMsg = ABOUT_INFO_ERRMSG;
+static char* pAboutInfo;
+
 //=============================================================================
 //
 //  AboutDlgProc()
 //
-INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+  WCHAR wch[256] = { L'\0' };
 
   static HFONT hFontTitle;
-
-  switch(umsg)
+  
+  switch (umsg)
   {
-    case WM_INITDIALOG:
+  case WM_INITDIALOG:
+  {
+    SetDlgItemText(hwnd, IDC_VERSION, VERSION_FILEVERSION_LONG);
+    SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
+    SetDlgItemText(hwnd, IDC_COPYRIGHT, VERSION_LEGALCOPYRIGHT);
+    SetDlgItemText(hwnd, IDC_AUTHORNAME, VERSION_AUTHORNAME);
+    SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
+
+    if (hFontTitle)
+      DeleteObject(hFontTitle);
+    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)))
+      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+    LOGFONT lf;
+    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+    lf.lfWeight = FW_BOLD;
+    lf.lfWidth = 8;
+    lf.lfHeight = 22;
+    // lf.lfQuality = ANTIALIASED_QUALITY;
+    hFontTitle = CreateFontIndirect(&lf);
+
+    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, TRUE);
+
+    if (GetDlgItem(hwnd, IDC_WEBPAGE) == NULL) {
+      SetDlgItemText(hwnd, IDC_WEBPAGE2, VERSION_WEBPAGEDISPLAY);
+      ShowWindow(GetDlgItem(hwnd, IDC_WEBPAGE2), SW_SHOWNORMAL);
+    }
+    else {
+      StringCchPrintf(wch, COUNTOF(wch), L"<A>%s</A>", VERSION_WEBPAGEDISPLAY);
+      SetDlgItemText(hwnd, IDC_WEBPAGE, wch);
+    }
+
+    // --- Rich Edit Control ---
+
+    COLORREF colBackGr = RGB(230, 230, 230);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, colBackGr);
+
+    //SetDlgItemText(hwnd, IDC_RICHEDITABOUT, VERSION_CONTRIBUTORS);
+
+    EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
+
+    /*
+    DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
+    if (dwSize != 0) 
+    {
+      char* pchBuffer = LocalAlloc(LPTR, dwSize + 1);
+
+      pAboutInfo = pchBuffer;
+      _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
+      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+
+      LocalFree(pchBuffer);
+    }
+    else {
+      pAboutInfo = chErrMsg;
+      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    }
+    */
+    //pAboutInfo = pAboutInfoErrMsg;
+    pAboutInfo = pAboutInfoResource;
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+
+    CenterDlgInParent(hwnd);
+  }
+  return TRUE;
+
+  case WM_NOTIFY:
+  {
+    LPNMHDR pnmhdr = (LPNMHDR)lParam;
+    switch (pnmhdr->code)
+    {
+      case NM_CLICK:
+      case NM_RETURN:
       {
-        WCHAR wch[256] = { L'\0' };
-        LOGFONT lf;
+        switch (pnmhdr->idFrom)
+        {
+        case IDC_WEBPAGE:
+          ShellExecute(hwnd, L"open", L"https://rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+          break;
 
-        SetDlgItemText(hwnd,IDC_VERSION,VERSION_FILEVERSION_LONG);
-        SetDlgItemText(hwnd,IDC_SCI_VERSION,VERSION_SCIVERSION);
-        SetDlgItemText(hwnd,IDC_COPYRIGHT,VERSION_LEGALCOPYRIGHT);
-        SetDlgItemText(hwnd,IDC_AUTHORNAME,VERSION_AUTHORNAME);
-        SetDlgItemText(hwnd,IDC_COMPILER,VERSION_COMPILER);
+        //case IDC_MODWEBPAGE:
+        //  ShellExecute(hwnd, L"open", L"https://xhmikosr.github.io/notepad2-mod/", NULL, NULL, SW_SHOWNORMAL);
+        //  break;
 
-        if (hFontTitle)
-          DeleteObject(hFontTitle);
+        //case IDC_NOTE2WEBPAGE:
+        //  ShellExecute(hwnd, L"open", L"http://www.flos-freeware.ch", NULL, NULL, SW_SHOWNORMAL);
+        //  break;
 
-        if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd,IDC_VERSION,WM_GETFONT,0,0)))
-          hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-        GetObject(hFontTitle,sizeof(LOGFONT),&lf);
-        lf.lfWeight = FW_BOLD;
-        lf.lfWidth = 8;
-        lf.lfHeight = 22;
-        // lf.lfQuality = ANTIALIASED_QUALITY;
-        hFontTitle = CreateFontIndirect(&lf);
-        SendDlgItemMessage(hwnd,IDC_VERSION,WM_SETFONT,(WPARAM)hFontTitle,TRUE);
-
-        if (GetDlgItem(hwnd,IDC_WEBPAGE) == NULL) {
-          SetDlgItemText(hwnd,IDC_WEBPAGE2,VERSION_WEBPAGEDISPLAY);
-          ShowWindow(GetDlgItem(hwnd,IDC_WEBPAGE2),SW_SHOWNORMAL);
-        }
-        else {
-          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>",VERSION_WEBPAGEDISPLAY);
-          SetDlgItemText(hwnd,IDC_WEBPAGE,wch);
-        }
-
-        if (GetDlgItem(hwnd, IDC_MODWEBPAGE) == NULL) {
-          SetDlgItemText(hwnd, IDC_MODWEBPAGE2, VERSION_MODPAGEDISPLAY);
-          ShowWindow(GetDlgItem(hwnd, IDC_MODWEBPAGE2), SW_SHOWNORMAL);
-        }
-        else {
-          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_MODPAGEDISPLAY);
-          SetDlgItemText(hwnd, IDC_MODWEBPAGE, wch);
-        }
-
-        if (GetDlgItem(hwnd, IDC_NOTE2WEBPAGE) == NULL) {
-          SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE2, VERSION_WEBPAGE2DISPLAY);
-          ShowWindow(GetDlgItem(hwnd, IDC_NOTE2WEBPAGE2), SW_SHOWNORMAL);
-        }
-        else {
-          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_WEBPAGE2DISPLAY);
-          SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE, wch);
-        }
-
-        CenterDlgInParent(hwnd);
-      }
-      return TRUE;
-
-    case WM_NOTIFY:
-      {
-        LPNMHDR pnmhdr = (LPNMHDR)lParam;
-        switch (pnmhdr->code) {
-
-          case NM_CLICK:
-          case NM_RETURN:
-            {
-              if (pnmhdr->idFrom == IDC_WEBPAGE) {
-                ShellExecute(hwnd,L"open",L"https://rizonesoft.com",NULL,NULL,SW_SHOWNORMAL);
-              }
-              else if (pnmhdr->idFrom == IDC_MODWEBPAGE) {
-                ShellExecute(hwnd,L"open",L"https://xhmikosr.github.io/notepad2-mod/",NULL,NULL,SW_SHOWNORMAL);
-              }
-              else if (pnmhdr->idFrom == IDC_NOTE2WEBPAGE) {
-                ShellExecute(hwnd,L"open",L"http://www.flos-freeware.ch",NULL,NULL,SW_SHOWNORMAL);
-              }
-            }
-            break;
+        default:
+          break;
         }
       }
       break;
+    }
+  }
+  break;
 
-    case WM_COMMAND:
+  case WM_COMMAND:
 
-      switch(LOWORD(wParam))
+    switch (LOWORD(wParam))
+    {
+    case IDC_COPYVERSTRG:
       {
-        case IDOK:
-        case IDCANCEL:
-          EndDialog(hwnd,IDOK);
-          break;
+        WCHAR wchVerInfo[1024] = { L'\0' };
+        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), VERSION_FILEVERSION_LONG);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
+        SetClipboardTextW(g_hwndMain, wchVerInfo);
       }
-      return TRUE;
+      break;
+
+    case IDOK:
+    case IDCANCEL:
+      EndDialog(hwnd, IDOK);
+      break;
+    }
+    return TRUE;
   }
   return FALSE;
 }
@@ -2601,6 +2719,6 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
 
 }
 
-
+#pragma warning( pop ) 
 
 //  End of Dialogs.c

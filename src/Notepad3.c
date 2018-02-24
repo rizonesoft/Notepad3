@@ -509,7 +509,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
 
-  hModUxTheme = LoadLibrary(L"uxtheme.dll");
+  if (!IsWin8()) {
+    hModUxTheme = LoadLibrary(L"uxtheme.dll");
+  }
 
   Scintilla_RegisterClasses(hInstance);
 
@@ -4349,13 +4351,17 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-  case IDM_HELP_ONLINEDOCUMENTATION:
-    ShellExecute(0, 0, ONLINE_HELP_WEBSITE, 0, 0, SW_SHOW);
-    break;
+    case IDM_HELP_ONLINEDOCUMENTATION:
+      ShellExecute(0, 0, ONLINE_HELP_WEBSITE, 0, 0, SW_SHOW);
+      break;
 
-  case IDM_HELP_ABOUT:
-      ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_ABOUT),
-        hwnd,AboutDlgProc);
+    case IDM_HELP_ABOUT:
+      {
+        HMODULE hRichEdit = LoadLibrary(L"RichEd20.dll");
+        if (hRichEdit) {
+          ThemedDialogBox(g_hInstance, MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
+        }
+      }
       break;
 
     case IDM_SETPASS:
@@ -4886,19 +4892,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
           pszCopy = tchUntitled;
         }
-
-        if (OpenClipboard(hwnd)) {
-          HANDLE hData;
-          WCHAR *pData;
-          EmptyClipboard();
-          int len = lstrlen(pszCopy);
-          hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * (len+1));
-          pData = GlobalLock(hData);
-          StringCchCopyN(pData,(len+1),pszCopy,len);
-          GlobalUnlock(hData);
-          SetClipboardData(CF_UNICODETEXT,hData);
-          CloseClipboard();
-        }
+        SetClipboardTextW(hwnd, pszCopy);
+        UpdateToolbar();
       }
       break;
 
@@ -4906,22 +4901,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_COPYWINPOS: {
 
         WCHAR wszWinPos[MIDSZ_BUFFER];
-
         WININFO wi = GetMyWindowPlacement(g_hwndMain,NULL);
         StringCchPrintf(wszWinPos,COUNTOF(wszWinPos),L"/pos %i,%i,%i,%i,%i",wi.x,wi.y,wi.cx,wi.cy,wi.max);
-
-        if (OpenClipboard(hwnd)) {
-          HANDLE hData;
-          WCHAR *pData;
-          EmptyClipboard();
-          int len = StringCchLenW(wszWinPos,COUNTOF(wszWinPos));
-          hData = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * (len+1));
-          pData = GlobalLock(hData);
-          StringCchCopyN(pData,(len+1),wszWinPos,len);
-          GlobalUnlock(hData);
-          SetClipboardData(CF_UNICODETEXT,hData);
-          CloseClipboard();
-        }
+        SetClipboardTextW(hwnd, wszWinPos);
         UpdateToolbar();
       }
       break;

@@ -12,7 +12,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Englisch (USA) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -27,10 +27,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 IDR_MAINWND             ICON                    "..\\res\\Notepad3.ico"
 
+IDR_MAINWND128          ICON                    "..\\res\\Notepad3_128.ico"
+
 IDI_RUN                 ICON                    "..\\res\\Run.ico"
 
 IDI_STYLES              ICON                    "..\\res\\Styles.ico"
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -58,6 +59,10 @@ IDR_MAINWND2            BITMAP                  "..\\res\\Toolbar2.bmp"
 //
 
 IDC_COPY                CURSOR                  "..\\res\\Copy.cur"
+
+
+
+IDR_ABOUTINFO_RTF       TEXT                    "..\\res\\AboutInfo.rtf"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -179,8 +184,8 @@ BEGIN
             MENUITEM "&Fuse Lines\tCtrl+Alt+J",     IDM_EDIT_JOINLN_NOSP
             MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Merge &Blank Lines\tAlt+Y", IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Blank Lines\tAlt+R", IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Merge &Blank Lines\tAlt+Y",   IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "&Remove Blank Lines\tAlt+R",  IDM_EDIT_REMOVEBLANKLINES
         END
         POPUP "&Block"
         BEGIN
@@ -634,27 +639,21 @@ END
 // Dialog
 //
 
-IDD_ABOUT DIALOGEX 0, 0, 255, 227
+IDD_ABOUT DIALOGEX 0, 0, 360, 280
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About Notepad3"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,195,204,50,14
-    ICON            IDR_MAINWND,IDC_STATIC,7,7,21,20
-    LTEXT           "",IDC_VERSION,45,10,200,17
-    LTEXT           "Scintilla Library Version:",IDC_SCI_VERSION,45,24,200,8
-    LTEXT           "Compiled with:",IDC_COMPILER2,45,35,200,8
-    LTEXT           "",IDC_COMPILER,96,35,200,8
-    LTEXT           "",IDC_COPYRIGHT,45,55,200,8
-    LTEXT           "",IDC_WEBPAGE2,45,64,200,8,NOT WS_VISIBLE | WS_DISABLED
-    CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,45,64,200,10
-    LTEXT           "XhmikosR ( Notepad2-mod )",IDC_STATIC,45,85,200,8
-    LTEXT           "",IDC_MODWEBPAGE2,45,94,200,8,NOT WS_VISIBLE | WS_DISABLED
-    CONTROL         "",IDC_MODWEBPAGE,"SysLink",WS_TABSTOP,45,94,200,10
-    LTEXT           "Florian Balmer et al. ( Notepad2 )",IDC_STATIC,45,110,200,8
-    LTEXT           "",IDC_NOTE2WEBPAGE2,45,119,200,8,NOT WS_VISIBLE | WS_DISABLED
-    CONTROL         "",IDC_NOTE2WEBPAGE,"SysLink",WS_TABSTOP,45,119,200,10
-    LTEXT           "Contributors: Derick Payne (Rizonesoft), Flo Balmer (Notepad2), N.Hodgson (Scintilla), XhmikosR (Notepad2-mod), Kai Liu, RL Vision, A.Lekov, B.Barbieri, M.Ellis (MinimizeToTray), D.Dyer (crypt), T.D.Hanson (uthash), RaiKoHoff",IDC_STATIC,45,150,200,44
+    DEFPUSHBUTTON   "OK",IDOK,290,257,50,14
+    ICON            IDR_MAINWND128,IDC_STATIC,7,7,20,20,SS_REALSIZEIMAGE,WS_EX_TRANSPARENT
+    LTEXT           "IDC_VERSION",IDC_VERSION,80,7,288,15
+    LTEXT           "Scintilla Library Version:",IDC_SCI_VERSION,80,24,280,8
+    LTEXT           "Compiled with:",IDC_COMPILER,80,35,300,8
+    LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,55,180,8
+    LTEXT           "",IDC_WEBPAGE2,190,55,130,8,NOT WS_VISIBLE | WS_DISABLED
+    CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,190,55,130,10
+    CONTROL         "",IDC_RICHEDITABOUT,"RichEdit20W",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,320,170
+    PUSHBUTTON      "Copy Version Text",IDC_COPYVERSTRG,260,7,80,14,BS_FLAT
 END
 
 IDD_FIND DIALOGEX 0, 0, 273, 129
@@ -1172,6 +1171,15 @@ BEGIN
         VERTGUIDE, 45
         TOPMARGIN, 7
         BOTTOMMARGIN, 218
+    END
+
+    IDD_ABOUT2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 361
+        VERTGUIDE, 80
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 271
     END
 
     IDD_FIND, DIALOG
@@ -1950,12 +1958,12 @@ BEGIN
     63272                   "Other Package Functions"
 END
 
-#endif    // English (United States) resources
+#endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Switzerland) resources
+// Deutsch (Schweiz) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
@@ -1984,7 +1992,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // German (Switzerland) resources
+#endif    // Deutsch (Schweiz) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
