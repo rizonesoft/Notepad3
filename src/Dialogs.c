@@ -34,7 +34,7 @@
 
 #pragma warning( push )
 #pragma warning( disable : 4201) // union/struct w/o name
-#define _RICHEDIT_VER	0x0410
+#define _RICHEDIT_VER	0x0500
 #include <richedit.h>
 
 #include "scintilla.h"
@@ -290,7 +290,6 @@ static DWORD CALLBACK _LoadRtfCallback(
 
 
 static char* pAboutInfoResource = ABOUT_INFO_RTF;
-static char* pAboutInfoErrMsg = ABOUT_INFO_ERRMSG;
 static char* pAboutInfo;
 
 //=============================================================================
@@ -336,12 +335,16 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     }
 
     // --- Rich Edit Control ---
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetBackgroundColor(hwnd));
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetSysColor(COLOR_3DFACE));
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, (LPARAM)FALSE);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)FALSE);
+    DWORD styleFlags = SES_EXTENDBACKCOLOR | SES_HYPERLINKTOOLTIPS;
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLE, (WPARAM)styleFlags, (LPARAM)styleFlags);
 
-    COLORREF colBackGr = RGB(230, 230, 230);
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)colBackGr);
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
-#if 0
+  #if FALSE
     PARAFORMAT2 ParaFormat2;
     ZeroMemory(&ParaFormat2, sizeof(PARAFORMAT2));
     ParaFormat2.cbSize = (UINT)sizeof(PARAFORMAT2);
@@ -353,8 +356,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETPARAFORMAT, 0, (LPARAM)&ParaFormat2);
     SetDlgItemText(hwnd, IDC_RICHEDITABOUT, ABOUT_INFO_PLAIN);
 #else
+    // using RTF format descriptions directly
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
-    //pAboutInfo = pAboutInfoErrMsg;
     pAboutInfo = pAboutInfoResource;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
     /*
@@ -424,6 +427,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     switch (LOWORD(wParam))
     {
+    case IDC_RIZONEBMP:
+      ShellExecute(hwnd, L"open", L"https://rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+      break;
+
     case IDC_COPYVERSTRG:
       {
         WCHAR wchVerInfo[1024] = { L'\0' };

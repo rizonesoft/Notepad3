@@ -145,6 +145,7 @@ void DeleteBitmapButton(HWND,int);
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
 BOOL StatusSetText(HWND,UINT,LPCWSTR);
 BOOL StatusSetTextID(HWND,UINT,UINT);
+COLORREF GetBackgroundColor(HWND);
 int  StatusCalcPaneWidth(HWND,LPCWSTR);
 
 int Toolbar_GetButtons(HWND,int,LPWSTR,int);

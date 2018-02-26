@@ -37,15 +37,15 @@ BEGIN
   BEGIN
     BLOCK "040904b0"
     BEGIN
-      VALUE "Comments",         MY_APPNAME
-      VALUE "FileDescription",  MY_APPNAME
-      VALUE "InternalName",     MY_APPNAME
-      VALUE "ProductName",      MY_APPNAME
+      VALUE "Comments",         APPNAME_A
+      VALUE "FileDescription",  APPNAME_A
+      VALUE "InternalName",     APPNAME_A
+      VALUE "ProductName",      APPNAME_A
       VALUE "CompanyName",      VERSION_COMPANYNAME
       VALUE "FileVersion",      VERSION_FILEVERSION
       VALUE "ProductVersion",   VERSION_FILEVERSION
       VALUE "LegalCopyright",   VERSION_LEGALCOPYRIGHT
-      VALUE "OriginalFilename", "Notepad3.exe"
+      VALUE "OriginalFilename", APPNAME_A ".exe"
     END
   END
   BLOCK "VarFileInfo"

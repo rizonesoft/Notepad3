@@ -12,7 +12,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Englisch (USA) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -25,11 +25,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
+IDI_RUN                 ICON                    "..\\res\\Run.ico"
+
 IDR_MAINWND             ICON                    "..\\res\\Notepad3.ico"
 
 IDR_MAINWND128          ICON                    "..\\res\\Notepad3_128.ico"
-
-IDI_RUN                 ICON                    "..\\res\\Run.ico"
 
 IDI_STYLES              ICON                    "..\\res\\Styles.ico"
 
@@ -39,7 +39,7 @@ IDI_STYLES              ICON                    "..\\res\\Styles.ico"
 // Bitmap
 //
 
-IDR_MAINWND             BITMAP                  "..\\res\\Toolbar.bmp"
+IDR_MAINWNDTB           BITMAP                  "..\\res\\Toolbar.bmp"
 
 IDB_OPEN                BITMAP                  "..\\res\\Open.bmp"
 
@@ -51,7 +51,9 @@ IDB_PICK                BITMAP                  "..\\res\\Pick.bmp"
 
 IDB_ENCODING            BITMAP                  "..\\res\\Encoding.bmp"
 
-IDR_MAINWND2            BITMAP                  "..\\res\\Toolbar2.bmp"
+IDR_MAINWNDTB2          BITMAP                  "..\\res\\Toolbar2.bmp"
+
+IDR_RIZBITMAP           BITMAP                  "..\\res\\rizonesoft.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -636,21 +638,22 @@ END
 // Dialog
 //
 
-IDD_ABOUT DIALOGEX 0, 0, 360, 280
+IDD_ABOUT DIALOGEX 0, 0, 360, 275
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About Notepad3"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,290,257,50,14
-    ICON            IDR_MAINWND128,IDC_STATIC,7,7,20,20,SS_REALSIZEIMAGE,WS_EX_TRANSPARENT
+    DEFPUSHBUTTON   "OK",IDOK,291,256,50,14
+    ICON            IDR_MAINWND128,IDC_STATIC,4,5,20,20,SS_REALSIZEIMAGE,WS_EX_TRANSPARENT
     LTEXT           "IDC_VERSION",IDC_VERSION,80,7,288,15
     LTEXT           "Scintilla Library Version:",IDC_SCI_VERSION,80,24,280,8
-    LTEXT           "Compiled with:",IDC_COMPILER,80,35,300,8
+    LTEXT           "Build with:",IDC_COMPILER,80,35,210,8
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,80,55,180,8
-    LTEXT           "",IDC_WEBPAGE2,190,55,130,8,NOT WS_VISIBLE | WS_DISABLED
-    CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,190,55,130,10
-    CONTROL         "",IDC_RICHEDITABOUT,"RichEdit50W",WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,320,170
-    PUSHBUTTON      "Copy Version Text",IDC_COPYVERSTRG,260,7,80,14,BS_FLAT
+    LTEXT           "",IDC_WEBPAGE2,190,55,100,8,NOT WS_VISIBLE | WS_DISABLED
+    CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,190,55,100,10
+    CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,264,7,130,20,WS_EX_TRANSPARENT
+    PUSHBUTTON      "Copy Version Text",IDC_COPYVERSTRG,262,35,78,14,BS_FLAT
+    CONTROL         "",IDC_RICHEDITABOUT,"RichEdit50W",WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,320,170
 END
 
 IDD_FIND DIALOGEX 0, 0, 273, 129
@@ -665,7 +668,7 @@ BEGIN
     CONTROL         "Match &beginning of word only",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Transform backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
     CONTROL         "Regular &expression search",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Dot matches &all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
+    CONTROL         "Dot &matches all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
     CONTROL         "&Don't wrap around",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "C&lose after find",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
     CONTROL         "Mark &Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
@@ -695,7 +698,7 @@ BEGIN
     CONTROL         "Match &beginning of word only",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Transform backslashes",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
     CONTROL         "Regular &expression search",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Dot matches &all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
+    CONTROL         "Dot &matches all",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "&Don't wrap around",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "C&lose after replace",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "Mark &Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
@@ -1163,11 +1166,11 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 245
-        VERTGUIDE, 45
+        LEFTMARGIN, 4
+        VERTGUIDE, 19
+        VERTGUIDE, 340
         TOPMARGIN, 7
-        BOTTOMMARGIN, 218
+        BOTTOMMARGIN, 270
     END
 
     IDD_FIND, DIALOG
@@ -1946,12 +1949,12 @@ BEGIN
     63272                   "Other Package Functions"
 END
 
-#endif    // Englisch (USA) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Deutsch (Schweiz) resources
+// German (Switzerland) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
@@ -1980,7 +1983,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Deutsch (Schweiz) resources
+#endif    // German (Switzerland) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

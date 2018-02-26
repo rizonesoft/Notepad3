@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Von Microsoft Visual C++ generierte Includedatei.
-// Verwendet durch Notepad3.rc
+// Microsoft Visual C++ generated include file.
+// Used by Notepad3.rc
 //
 #define IDR_RT_MANIFEST                 1
 #define IDR_MAINWND                     100
@@ -129,7 +129,7 @@
 #define IDC_WILDCARDHELP                225
 #define IDC_WILDCARDSEARCH              226
 #define IDC_SCI_VERSION                 227
-#define IDR_MAINWND2                    228
+#define IDR_MAINWNDTB                   228
 #define IDC_REMOVE                      229
 #define IDC_SWAPSTRG                    230
 #define IDC_CHECK_OCC                   231
@@ -161,9 +161,12 @@
 #define IDM_HELP_UPDATEINSTALLER        513
 #define IDM_HELP_UPDATEWEBSITE          514
 #define IDS_FR_STATUS_TEXT              515
-#define IDR_MAINWND128                  550
-#define IDC_RICHEDITABOUT               551
-#define IDC_COPYVERSTRG                 552
+#define IDR_MAINWNDTB2                  550
+#define IDR_MAINWND128                  551
+#define IDC_RICHEDITABOUT               552
+#define IDC_COPYVERSTRG                 553
+#define IDR_RIZBITMAP                   554
+#define IDC_RIZONEBMP                   555
 #define IDS_APPTITLE                    10000
 #define IDS_APPTITLE_ELEVATED           10001
 #define IDS_APPTITLE_PASTEBOARD         10002
@@ -501,7 +504,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        601
 #define _APS_NEXT_COMMAND_VALUE         701
-#define _APS_NEXT_CONTROL_VALUE         803
+#define _APS_NEXT_CONTROL_VALUE         804
 #define _APS_NEXT_SYMED_VALUE           901
 #endif
 #endif

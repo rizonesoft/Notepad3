@@ -374,6 +374,7 @@
   <ItemGroup>
     <Image Include="..\res\Notepad3.ico" />
     <Image Include="..\res\Notepad3_128.ico" />
+    <Image Include="..\res\rizonesoft.bmp" />
     <Image Include="..\res\Toolbar2.bmp" />
   </ItemGroup>
   <ItemGroup>

@@ -971,6 +971,16 @@ BOOL StatusSetTextID(HWND hwnd,UINT nPart,UINT uID)
 //
 //  StatusCalcPaneWidth()
 //
+COLORREF GetBackgroundColor(HWND hwnd)
+{
+  return GetBkColor(GetDC(hwnd));
+}
+
+
+//=============================================================================
+//
+//  StatusCalcPaneWidth()
+//
 int StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
 {
   SIZE  size;

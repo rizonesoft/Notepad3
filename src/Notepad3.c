@@ -513,7 +513,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (!IsWin8()) {
     hModUxTheme = LoadLibrary(L"uxtheme.dll");
   }
-  hRichEdit = LoadLibrary(L"MSFTEDIT.DLL"); // RichEditCtrl > 4.1 // old: LoadLibrary(L"RichEd20.dll");
+  //hRichEdit = LoadLibrary(L"RICHED20.DLL");
+  hRichEdit = LoadLibrary(L"MSFTEDIT.DLL"); // RichEditCtrl > 4.1
 
   Scintilla_RegisterClasses(hInstance);
 
@@ -1371,7 +1372,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   if (hbmp)
     bExternalBitmap = TRUE;
   else {
-    LPWSTR toolBarIntRes = (iHighDpiToolBar > 0) ? MAKEINTRESOURCE(IDR_MAINWND2) : MAKEINTRESOURCE(IDR_MAINWND);
+    LPWSTR toolBarIntRes = (iHighDpiToolBar > 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB2) : MAKEINTRESOURCE(IDR_MAINWNDTB);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
     hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
@@ -8453,8 +8454,7 @@ void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
   NOTIFYICONDATA nid;
 
   if (!hIcon)
-    hIcon = LoadImage(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND),
-                      IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
+    hIcon = LoadImage(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND),IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
 
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
