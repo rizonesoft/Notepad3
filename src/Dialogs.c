@@ -34,7 +34,7 @@
 
 #pragma warning( push )
 #pragma warning( disable : 4201) // union/struct w/o name
-#define _RICHEDIT_VER	0x0500
+#define _RICHEDIT_VER	0x0210
 #include <richedit.h>
 
 #include "scintilla.h"
@@ -339,8 +339,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetSysColor(COLOR_3DFACE));
     //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, (LPARAM)FALSE);
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)FALSE);
-    DWORD styleFlags = SES_EXTENDBACKCOLOR | SES_HYPERLINKTOOLTIPS;
+    DWORD styleFlags = SES_EXTENDBACKCOLOR; // | SES_HYPERLINKTOOLTIPS;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLE, (WPARAM)styleFlags, (LPARAM)styleFlags);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_AUTOURLDETECT, (WPARAM)1, (LPARAM)0);
 
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
@@ -393,7 +394,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         switch (pnmhdr->idFrom)
         {
         case IDC_WEBPAGE:
-          ShellExecute(hwnd, L"open", L"https://rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+          ShellExecute(hwnd, L"open", L"https://www.rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
           break;
 
         default:
@@ -428,7 +429,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     switch (LOWORD(wParam))
     {
     case IDC_RIZONEBMP:
-      ShellExecute(hwnd, L"open", L"https://rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+      ShellExecute(hwnd, L"open", L"https://www.rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
       break;
 
     case IDC_COPYVERSTRG:

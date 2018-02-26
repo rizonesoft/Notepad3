@@ -513,8 +513,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (!IsWin8()) {
     hModUxTheme = LoadLibrary(L"uxtheme.dll");
   }
-  //hRichEdit = LoadLibrary(L"RICHED20.DLL");
-  hRichEdit = LoadLibrary(L"MSFTEDIT.DLL"); // RichEditCtrl > 4.1
+  hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use "RichEdit20W" for control in .rc
+  //hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
 
   Scintilla_RegisterClasses(hInstance);
 
