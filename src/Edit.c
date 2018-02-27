@@ -55,6 +55,7 @@
 extern HWND  g_hwndMain;
 extern HWND  g_hwndEdit;
 extern HWND  g_hwndStatus;
+extern HWND  g_hwndDlgFindReplace;
 extern WININFO g_WinInfo;
 
 extern HINSTANCE g_hInstance;
@@ -1060,8 +1061,10 @@ BOOL EditLoadFile(
   }
 
   int _iPrefEncoding = (bPreferOEM) ? g_DOSEncoding : iDefaultEncoding;
-  if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)))
+
+  if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET))) {
     _iPrefEncoding = Encoding_SrcWeak(CPI_GET);
+  }
 
   BOOL bBOM = FALSE;
   BOOL bReverse = FALSE;
@@ -1151,6 +1154,7 @@ BOOL EditLoadFile(
             ((IsUTF8Signature(lpData) ||
               FileVars_IsUTF8(&fvCurFile) ||
               (iSrcEnc == CPI_UTF8 || iSrcEnc == CPI_UTF8SIGN) ||
+              (!bPreferOEM && bLoadASCIIasUTF8) ||  // from menu "Reload As UTF-8"
               (IsUTF8(lpData,cbData) &&
               (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 !=
                 UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
@@ -4941,7 +4945,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableF && bEnableIS);
         DialogEnableWindow(hwnd, IDC_SWAPSTRG, bEnableF || bEnableR);
 
-
         if (HIWORD(wParam) == CBN_CLOSEUP) {
           LONG lSelEnd;
           SendDlgItemMessage(hwnd, LOWORD(wParam), CB_GETEDITSEL, 0, (LPARAM)&lSelEnd);
@@ -5113,18 +5116,18 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         break;
 
 
-      case IDOK:
       case IDC_REPLACE:
       case IDC_REPLACEALL:
       case IDC_REPLACEINSEL:
         iReplacedOccurrences = 0;
+      case IDOK:
       case IDC_FINDPREV:
       case IDACC_SELTONEXT:
       case IDACC_SELTOPREV:
       case IDMSG_SWITCHTOFIND:
       case IDMSG_SWITCHTOREPLACE:
       {
-        BOOL bIsFindDlg = (GetDlgItem(hwnd, IDC_REPLACE) == NULL);
+        BOOL bIsFindDlg = (GetDlgItem(g_hwndDlgFindReplace, IDC_REPLACE) == NULL);
 
         if ((bIsFindDlg && LOWORD(wParam) == IDMSG_SWITCHTOREPLACE ||
           !bIsFindDlg && LOWORD(wParam) == IDMSG_SWITCHTOFIND)) {
@@ -5220,14 +5223,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDACC_SELTONEXT:
           if (!bIsFindDlg)
             bReplaceInitialized = TRUE;
-          EditFindNext(lpefr->hwnd, lpefr, LOWORD(wParam) == IDACC_SELTONEXT || HIBYTE(GetKeyState(VK_SHIFT)));
+          EditFindNext(lpefr->hwnd, lpefr, (LOWORD(wParam) == IDACC_SELTONEXT), HIBYTE(GetKeyState(VK_F3)));
           break;
 
         case IDC_FINDPREV: // find previous
         case IDACC_SELTOPREV:
           if (!bIsFindDlg)
             bReplaceInitialized = TRUE;
-          EditFindPrev(lpefr->hwnd, lpefr, LOWORD(wParam) == IDACC_SELTOPREV || HIBYTE(GetKeyState(VK_SHIFT)));
+          EditFindPrev(lpefr->hwnd, lpefr, (LOWORD(wParam) == IDACC_SELTOPREV), HIBYTE(GetKeyState(VK_F3)));
           break;
 
         case IDC_REPLACE:
@@ -5293,10 +5296,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         break;
 
       case IDACC_FINDNEXT:
+        //SetFocus(g_hwndMain);
+        //SetForegroundWindow(g_hwndMain);
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDOK, 1), 0);
         break;
 
       case IDACC_FINDPREV:
+        //SetFocus(g_hwndMain);
+        //SetForegroundWindow(g_hwndMain);
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_FINDPREV, 1), 0);
         break;
 
@@ -5441,7 +5448,7 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,BOOL bReplace)
 //
 //  EditFindNext()
 //
-BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
+BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BOOL bFocusWnd) {
 
   char szFind[FNDRPL_BUFFER];
   BOOL bSuppressNotFound = FALSE;
@@ -5450,12 +5457,15 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
   if (slen <= 0)
     return FALSE;
 
-  DocPos iTextLength = (int)SendMessage(hwnd, SCI_GETTEXTLENGTH, 0, 0);
+  if (bFocusWnd)
+    SetFocus(hwnd);
 
-  DocPos start = (int)SendMessage(hwnd, SCI_GETSELECTIONEND, 0, 0);
+  DocPos iTextLength = SciCall_GetTextLength();
+
+  DocPos start = SciCall_GetCurrentPos();
   DocPos end = iTextLength;
 
-  if (start > end) {
+  if (start >= end) {
     if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap1", IDS_FIND_WRAPFW)) {
       end = min(start, iTextLength);  start = 0;
     }
@@ -5508,10 +5518,13 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
 //
 //  EditFindPrev()
 //
-BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection) {
+BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BOOL bFocusWnd) {
 
   char szFind[FNDRPL_BUFFER];
   BOOL bSuppressNotFound = FALSE;
+
+  if (bFocusWnd)
+    SetFocus(hwnd);
 
   DocPos slen = EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
   if (slen <= 0)
@@ -5687,7 +5700,7 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
       // empty-replace was not intended
       LocalFree(pszReplace);
       if (iPos < 0)
-        return EditFindNext(hwnd, lpefr, FALSE);
+        return EditFindNext(hwnd, lpefr, FALSE, FALSE);
       else {
         EditSelectEx(hwnd, start, end);
         return TRUE;
@@ -5710,7 +5723,7 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
 
   LocalFree(pszReplace);
 
-  return EditFindNext(hwnd, lpefr, FALSE);
+  return EditFindNext(hwnd, lpefr, FALSE, FALSE);
 }
 
 

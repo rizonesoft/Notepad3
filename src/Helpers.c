@@ -2932,7 +2932,7 @@ int  Encoding_SrcWeak(int iSrcWeakEnc) {
     if (Encoding_IsValid(iSrcWeakEnc))
       SourceWeakEncoding = iSrcWeakEnc;
     else
-      SourceWeakEncoding = CPI_UTF8;
+      SourceWeakEncoding = CPI_ANSI_DEFAULT;
   }
   else if (iSrcWeakEnc == CPI_NONE) {
     SourceWeakEncoding = CPI_NONE;
