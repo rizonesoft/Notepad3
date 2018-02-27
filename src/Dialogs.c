@@ -34,8 +34,8 @@
 
 #pragma warning( push )
 #pragma warning( disable : 4201) // union/struct w/o name
-#define _RICHEDIT_VER	0x0210
 #include <richedit.h>
+#pragma warning( pop ) 
 
 #include "scintilla.h"
 #include "notepad3.h"
@@ -337,48 +337,59 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     // --- Rich Edit Control ---
     //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetBackgroundColor(hwnd));
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetSysColor(COLOR_3DFACE));
-    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, (LPARAM)FALSE);
+    
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, (LPARAM)TRUE);
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)FALSE);
+
     DWORD styleFlags = SES_EXTENDBACKCOLOR; // | SES_HYPERLINKTOOLTIPS;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLE, (WPARAM)styleFlags, (LPARAM)styleFlags);
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_AUTOURLDETECT, (WPARAM)1, (LPARAM)0);
 
+    //CHARFORMAT2 cf2;
+    //ZeroMemory(&cf2, sizeof(CHARFORMAT2));
+    //cf2.dwMask = CFM_LINK | CFM_UNDERLINE | CFM_COLOR | CFM_LINKPROTECTED;
+    //cf2.dwEffects = CFE_LINK | CFE_UNDERLINE | CFE_LINKPROTECTED;
+    //cf2.crTextColor = RGB(255, 0, 0);
+    //cf2.bUnderlineType = CFU_UNDERLINENONE;
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLEEX, 0, (LPARAM)SES_EX_HANDLEFRIENDLYURL);
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&cf2);
+
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
-  #if FALSE
-    PARAFORMAT2 ParaFormat2;
-    ZeroMemory(&ParaFormat2, sizeof(PARAFORMAT2));
-    ParaFormat2.cbSize = (UINT)sizeof(PARAFORMAT2);
-    ParaFormat2.dwMask = (PFM_SPACEBEFORE | PFM_SPACEAFTER | PFM_LINESPACING);
-    ParaFormat2.dySpaceBefore = 48;     // paragraph
-    ParaFormat2.dySpaceAfter = 48;      // paragraph
-    ParaFormat2.dyLineSpacing = 24;    // [twips]
-    ParaFormat2.bLineSpacingRule = 5;  // 5: dyLineSpacing/20 is the spacing, in lines, from one line to the next.
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETPARAFORMAT, 0, (LPARAM)&ParaFormat2);
-    SetDlgItemText(hwnd, IDC_RICHEDITABOUT, ABOUT_INFO_PLAIN);
-#else
-    // using RTF format descriptions directly
+  #if TRUE
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
     pAboutInfo = pAboutInfoResource;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
     /*
     DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
-    if (dwSize != 0) 
+    if (dwSize != 0)
     {
-      char* pchBuffer = LocalAlloc(LPTR, dwSize + 1);
+    char* pchBuffer = LocalAlloc(LPTR, dwSize + 1);
 
-      pAboutInfo = pchBuffer;
-      _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
-      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    pAboutInfo = pchBuffer;
+    _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
-      LocalFree(pchBuffer);
+    LocalFree(pchBuffer);
     }
     else {
-      pAboutInfo = chErrMsg;
-      SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    pAboutInfo = chErrMsg;
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
     }
     */
-#endif
+  #else
+    PARAFORMAT2 pf2;
+    ZeroMemory(&pf2, sizeof(PARAFORMAT2));
+    pf2.cbSize = (UINT)sizeof(PARAFORMAT2);
+    pf2.dwMask = (PFM_SPACEBEFORE | PFM_SPACEAFTER | PFM_LINESPACING);
+    pf2.dySpaceBefore = 48;     // paragraph
+    pf2.dySpaceAfter = 48;      // paragraph
+    pf2.dyLineSpacing = 24;     // [twips]
+    pf2.bLineSpacingRule = 5;   // 5: dyLineSpacing/20 is the spacing, in lines, from one line to the next.
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETPARAFORMAT, 0, (LPARAM)&pf2);
+    SetDlgItemText(hwnd, IDC_RICHEDITABOUT, ABOUT_INFO_PLAIN);
+  #endif
+
     CenterDlgInParent(hwnd);
   }
   return TRUE;
@@ -2744,7 +2755,5 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
            (LPARAM)&ib);
 
 }
-
-#pragma warning( pop ) 
 
 //  End of Dialogs.c

@@ -34,11 +34,15 @@ try
 	$Major = 3
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format MMdd)
+	$BetaVer = 'L" "'
+	$BetaVerA = '" "'
 	if ($AppVeyorEnv) {
 		$Build = [int]($env:appveyor_build_number)
 	}
 	else {
 		$Build = [int](Get-Content "Versions\build.txt") + 1
+		#$BetaVer  = 'L" beta "'
+		#$BetaVerA = '" beta "'
 	}
 	if (!$Build) { $Build = 0 }
 	$SciVer = [int](Get-Content "scintilla\version.txt")
@@ -56,6 +60,9 @@ try
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$ONIGMOVER\$', "$OnigmoVer" } | Set-Content "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BETAVER\$', "$BetaVer" } | Set-Content "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BETAVERA\$', "$BetaVerA" } | Set-Content "src\VersionEx.h"
+	
 	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
 	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
 	if ($AppVeyorEnv) {

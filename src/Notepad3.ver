@@ -37,15 +37,15 @@ BEGIN
   BEGIN
     BLOCK "040904b0"
     BEGIN
-      VALUE "Comments",         APPNAME_A
-      VALUE "FileDescription",  APPNAME_A
-      VALUE "InternalName",     APPNAME_A
-      VALUE "ProductName",      APPNAME_A
+      VALUE "Comments",         APPNAMEA
+      VALUE "FileDescription",  APPNAMEA
+      VALUE "InternalName",     APPNAMEA
+      VALUE "ProductName",      APPNAMEA
       VALUE "CompanyName",      VERSION_COMPANYNAME
       VALUE "FileVersion",      VERSION_FILEVERSION
       VALUE "ProductVersion",   VERSION_FILEVERSION
       VALUE "LegalCopyright",   VERSION_LEGALCOPYRIGHT
-      VALUE "OriginalFilename", APPNAME_A ".exe"
+      VALUE "OriginalFilename", APPNAMEA ".exe"
     END
   END
   BLOCK "VarFileInfo"
