@@ -504,7 +504,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        601
 #define _APS_NEXT_COMMAND_VALUE         701
-#define _APS_NEXT_CONTROL_VALUE         804
+#define _APS_NEXT_CONTROL_VALUE         801
 #define _APS_NEXT_SYMED_VALUE           901
 #endif
 #endif

@@ -360,23 +360,20 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
     pAboutInfo = pAboutInfoResource;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-    /*
-    DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
-    if (dwSize != 0)
-    {
-    char* pchBuffer = LocalAlloc(LPTR, dwSize + 1);
-
-    pAboutInfo = pchBuffer;
-    _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-
-    LocalFree(pchBuffer);
-    }
-    else {
-    pAboutInfo = chErrMsg;
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-    }
-    */
+    
+    //DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
+    //if (dwSize != 0) {
+    //  char* pchBuffer = LocalAlloc(LPTR, dwSize + 1);
+    //  pAboutInfo = pchBuffer;
+    //  _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
+    //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    //  LocalFree(pchBuffer);
+    //}
+    //else {
+    //  pAboutInfo = chErrMsg;
+    //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    //}
+    
   #else
     PARAFORMAT2 pf2;
     ZeroMemory(&pf2, sizeof(PARAFORMAT2));
@@ -428,12 +425,21 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         }
       }
       break;
-
-      default:
-        break;
     }
   }
   break;
+
+  case WM_SETCURSOR:
+    {
+      if ((LOWORD(lParam) == HTCLIENT) && 
+          (GetDlgCtrlID((HWND)wParam) == IDC_RIZONEBMP))
+      {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        SetWindowLongPtr(hwnd, DWLP_MSGRESULT, TRUE);
+        return TRUE;
+      }
+    }
+    break;
 
   case WM_COMMAND:
 
