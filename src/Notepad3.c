@@ -870,12 +870,12 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
       if (flagMatchText & 2) {
         if (!flagJumpTo) { SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0); }
-        EditFindPrev(g_hwndEdit,&g_efrData,FALSE);
+        EditFindPrev(g_hwndEdit,&g_efrData,FALSE,FALSE);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
       else {
         if (!flagJumpTo) { SendMessage(g_hwndEdit, SCI_DOCUMENTSTART, 0, 0); }
-        EditFindNext(g_hwndEdit,&g_efrData,FALSE);
+        EditFindNext(g_hwndEdit,&g_efrData,FALSE,FALSE);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
     }
@@ -3820,11 +3820,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         switch (LOWORD(wParam)) {
 
           case IDM_EDIT_FINDNEXT:
-            EditFindNext(g_hwndEdit,&g_efrData,FALSE);
+            EditFindNext(g_hwndEdit,&g_efrData,FALSE,FALSE);
             break;
 
           case IDM_EDIT_FINDPREV:
-            EditFindPrev(g_hwndEdit,&g_efrData,FALSE);
+            EditFindPrev(g_hwndEdit,&g_efrData,FALSE,FALSE);
             break;
 
           case IDM_EDIT_REPLACENEXT:
@@ -3835,11 +3835,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             break;
 
           case IDM_EDIT_SELTONEXT:
-            EditFindNext(g_hwndEdit,&g_efrData,TRUE);
+            EditFindNext(g_hwndEdit,&g_efrData,TRUE,FALSE);
             break;
 
           case IDM_EDIT_SELTOPREV:
-            EditFindPrev(g_hwndEdit,&g_efrData,TRUE);
+            EditFindPrev(g_hwndEdit,&g_efrData,TRUE,FALSE);
             break;
         }
       }
@@ -4757,11 +4757,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
               break;
 
             case CMD_FINDNEXTSEL:
-              EditFindNext(g_hwndEdit,&g_efrData,FALSE);
+              EditFindNext(g_hwndEdit,&g_efrData,FALSE,FALSE);
               break;
 
             case CMD_FINDPREVSEL:
-              EditFindPrev(g_hwndEdit,&g_efrData,FALSE);
+              EditFindPrev(g_hwndEdit,&g_efrData,FALSE,FALSE);
               break;
           }
         }
