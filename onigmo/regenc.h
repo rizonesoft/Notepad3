@@ -145,7 +145,7 @@ ONIG_EXTERN int onigenc_apply_all_case_fold_with_map(int map_size, const OnigPai
 ONIG_EXTERN int onigenc_get_case_fold_codes_by_str_with_map(int map_size, const OnigPairCaseFoldCodes map[], int ess_tsett_flag, OnigCaseFoldType flag, const OnigUChar* p, const OnigUChar* end, OnigCaseFoldCodeItem items[]);
 ONIG_EXTERN int onigenc_not_support_get_ctype_code_range(OnigCtype ctype, OnigCodePoint* sb_out, const OnigCodePoint* ranges[], OnigEncoding enc);
 ONIG_EXTERN int onigenc_is_mbc_newline_0x0a(const UChar* p, const UChar* end, OnigEncoding enc);
-ONIG_EXTERN int    onigenc_single_byte_ascii_only_case_map(OnigCaseFoldType* flagP, const OnigUChar** pp, const OnigUChar* end, OnigUChar* to, OnigUChar* to_end, const struct OnigEncodingTypeST* enc);
+ONIG_EXTERN int onigenc_single_byte_ascii_only_case_map(OnigCaseFoldType* flagP, const OnigUChar** pp, const OnigUChar* end, OnigUChar* to, OnigUChar* to_end, const struct OnigEncodingTypeST* enc);
 
 
 /* methods for single byte encoding */

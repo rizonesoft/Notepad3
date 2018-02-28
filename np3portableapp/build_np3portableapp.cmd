@@ -91,7 +91,7 @@ call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP
 :: --- build Launcher and Installer Package ---
 
 :: - compact app -
-"%PORTAPP_APP_COMPACTOR%" "%NP3_PORTAPP_DIR%"
+::"%PORTAPP_APP_COMPACTOR%" "%NP3_PORTAPP_DIR%"
 
 :: - build Launcher -
 "%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"

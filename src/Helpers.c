@@ -1708,29 +1708,45 @@ DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,
 //
 int FormatNumberStr(LPWSTR lpNumberStr)
 {
-  static WCHAR szSep[8] = { L'\0' };
-  const int iPlace = 3;
+  static WCHAR szSep[5] = { L'\0' };
+  static WCHAR szGrp[11] = { L'\0' };
+  static int iPlace[4] = {-1,-1,-1,-1};
 
   if (!lstrlen(lpNumberStr)) { return 0; }
-
   StrTrim(lpNumberStr, L" \t");
 
-  if (lstrlen(lpNumberStr) > iPlace) {
-
-    if (szSep[0] == L'\0') {
-      if (!GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND,
-                         szSep, COUNTOF(szSep))) {
-        szSep[0] = L'\'';
-      }
+  if (szSep[0] == L'\0') {
+    if (!GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND, szSep, COUNTOF(szSep))) {
+      szSep[0] = L'\'';
     }
+  }
+
+  if (szGrp[0] == L'\0') {
+    if (!GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SGROUPING, szGrp, COUNTOF(szGrp))) {
+      szGrp[0] = L'0';
+    }
+    if (szGrp[0] == L'\0') { 
+      szGrp[0] = L'0'; 
+    }
+    swscanf_s(szGrp, L"%i;%i;%i;%i", &iPlace[0], &iPlace[1], &iPlace[2], &iPlace[3]);
+  }
+  if (iPlace[0] <= 0) {
+    return lstrlen(lpNumberStr); 
+  }
+
+  if (lstrlen(lpNumberStr) > iPlace[0]) {
 
     WCHAR* ch = StrEnd(lpNumberStr);
 
+    int  iCnt = 0;
     int  i = 0;
     while ((ch = CharPrev(lpNumberStr, ch)) != lpNumberStr) {
-      if (((++i) % iPlace) == 0) {
+      if (((++iCnt) % iPlace[i]) == 0) {
         MoveMemory(ch + 1, ch, sizeof(WCHAR)*(lstrlen(ch) + 1));
         *ch = szSep[0];
+        i = (i < 3) ? (i + 1) : 3;
+        if (iPlace[i] == 0) { --i; } else if (iPlace[i] < 0) { break; }
+        iCnt = 0;
       }
     }
   }
@@ -2932,7 +2948,7 @@ int  Encoding_SrcWeak(int iSrcWeakEnc) {
     if (Encoding_IsValid(iSrcWeakEnc))
       SourceWeakEncoding = iSrcWeakEnc;
     else
-      SourceWeakEncoding = CPI_UTF8;
+      SourceWeakEncoding = CPI_ANSI_DEFAULT;
   }
   else if (iSrcWeakEnc == CPI_NONE) {
     SourceWeakEncoding = CPI_NONE;
