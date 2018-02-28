@@ -152,7 +152,7 @@ DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options);
 //
 //  Scrolling and automatic scrolling
 //
-DeclareSciCallV0(ChooseCaret, CHOOSECARETX);
+DeclareSciCallV0(ChooseCaretX, CHOOSECARETX);
 DeclareSciCallV0(ScrollCaret, SCROLLCARET);
 DeclareSciCallV2(SetXCaretPolicy, SETXCARETPOLICY, int, caretPolicy, int, caretSlop);
 DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, caretPolicy, int, caretSlop);
