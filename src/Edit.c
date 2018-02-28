@@ -647,7 +647,7 @@ BOOL EditSetClipboardText(HWND hwnd, const char* pszText)
     return TRUE;
   }
 
-  WCHAR* pszTextW = L"";
+  WCHAR* pszTextW = NULL;
   UINT uCodePage = Encoding_SciGetCodePage(hwnd);
   int cchTextW = MultiByteToWideChar(uCodePage, 0, pszText, -1, NULL, 0) + 1;
   if (cchTextW > 1) {
@@ -655,21 +655,12 @@ BOOL EditSetClipboardText(HWND hwnd, const char* pszText)
     MultiByteToWideChar(uCodePage, 0, pszText, -1, pszTextW, cchTextW);
   }
 
-  if (!OpenClipboard(GetParent(hwnd))) {
+  if (pszTextW) {
+    SetClipboardTextW(GetParent(hwnd), pszTextW);
     LocalFree(pszTextW);
-    return FALSE;
+    return TRUE;
   }
-
-  HANDLE hNew = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(WCHAR) * cchTextW);
-  WCHAR* pszNew = GlobalLock(hNew);
-
-  StringCchCopy(pszNew, cchTextW, pszTextW);
-  GlobalUnlock(hNew);
-
-  EmptyClipboard();
-  SetClipboardData(CF_UNICODETEXT, hNew);
-  CloseClipboard();
-  return TRUE;
+  return FALSE;
 }
 
 
@@ -867,11 +858,6 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
 //
 BOOL EditCopyAppend(HWND hwnd, BOOL bAppend)
 {
-  if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
-    SciCall_Copy();
-    return TRUE;
-  }
-
   int iCurPos = SciCall_GetCurrentPos();
   int iAnchorPos = SciCall_GetAnchor();
 
@@ -892,7 +878,7 @@ BOOL EditCopyAppend(HWND hwnd, BOOL bAppend)
     pszText = LocalAlloc(LPTR,cchText + 1);
     SciCall_GetTextFromBegin((DocPos)LocalSize(pszText), pszText);
   }
-  WCHAR* pszTextW = L"";
+  WCHAR* pszTextW = NULL;
   UINT uCodePage = Encoding_SciGetCodePage(hwnd);
   int cchTextW = MultiByteToWideChar(uCodePage,0,pszText,-1,NULL,0);
   if (cchTextW > 0) {
@@ -904,6 +890,14 @@ BOOL EditCopyAppend(HWND hwnd, BOOL bAppend)
   if (pszText)
     LocalFree(pszText);
 
+  if (!bAppend) {
+    BOOL res = (BOOL)SetClipboardTextW(GetParent(hwnd), pszTextW);
+    LocalFree(pszTextW);
+    return res;
+  }
+
+  // --- Append to Clipboard ---
+
   if (!OpenClipboard(GetParent(hwnd))) {
     LocalFree(pszTextW);
     return FALSE;
@@ -912,29 +906,29 @@ BOOL EditCopyAppend(HWND hwnd, BOOL bAppend)
   HANDLE hOld   = GetClipboardData(CF_UNICODETEXT);
   WCHAR* pszOld = GlobalLock(hOld);
 
-  int sizeNew   = bAppend ? (lstrlen(pszOld) + lstrlen(pszTextW) + 1) : (lstrlen(pszTextW) + 1);
-  const  WCHAR *pszSep = L"\r\n\r\n";
-  sizeNew += bAppend ? (int)lstrlen(pszSep) : 0;
+  int sizeNew   = lstrlen(pszOld) + lstrlen(pszTextW) + 1;
 
-  HANDLE hNew   = GlobalAlloc(GMEM_MOVEABLE|GMEM_ZEROINIT,sizeof(WCHAR) * sizeNew);
-  WCHAR* pszNew = GlobalLock(hNew);
+  const  WCHAR *pszSep = L"\r\n";
+  sizeNew += (int)lstrlen(pszSep);
+
+  // Copy Clip
+  WCHAR* pszNewTextW = LocalAlloc(LPTR, sizeof(WCHAR) * sizeNew);
   
-  if (bAppend) {
-    StringCchCopy(pszNew, sizeNew, pszOld);
-    StringCchCat(pszNew, sizeNew, pszSep);
-    StringCchCat(pszNew, sizeNew, pszTextW);
-  }
-  else {
-    StringCchCopy(pszNew, sizeNew, pszTextW);
-  }
-  GlobalUnlock(hNew);
-  GlobalUnlock(hOld);
+  if (pszOld)
+    StringCchCopy(pszNewTextW, sizeNew, pszOld);
 
-  EmptyClipboard();
-  SetClipboardData(CF_UNICODETEXT,hNew);
+  GlobalUnlock(hOld);
   CloseClipboard();
 
-  return TRUE;
+
+  // Add New
+  StringCchCat(pszNewTextW, sizeNew, pszSep);
+  StringCchCat(pszNewTextW, sizeNew, pszTextW);
+
+  BOOL res = (BOOL)SetClipboardTextW(GetParent(hwnd), pszNewTextW);
+
+  LocalFree(pszNewTextW);
+  return res;
 }
 
 

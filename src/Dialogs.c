@@ -31,6 +31,12 @@
 #include <shlwapi.h>
 #include <commdlg.h>
 #include <string.h>
+
+#pragma warning( push )
+#pragma warning( disable : 4201) // union/struct w/o name
+#include <richedit.h>
+#pragma warning( pop ) 
+
 #include "scintilla.h"
 #include "notepad3.h"
 #include "edit.h"
@@ -58,7 +64,6 @@ extern BOOL bAutoStripBlanks;
 
 extern int flagNoFileVariables;
 extern int flagUseSystemMRU;
-
 
 
 //=============================================================================
@@ -205,105 +210,261 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
 }
 
 
+/*
+//=============================================================================
+//
+//  _LoadStringEx()
+//
+static DWORD _LoadStringEx(UINT nResId, LPCTSTR pszRsType, LPSTR strOut)
+{
+  LPTSTR pszResId = MAKEINTRESOURCE(nResId);
+
+  if (g_hInstance == NULL)
+    return 0L;
+
+  HRSRC hRsrc = FindResource(g_hInstance, pszResId, pszRsType);
+
+  if (hRsrc == NULL) {
+    return 0L;
+  }
+
+  HGLOBAL hGlobal = LoadResource(g_hInstance, hRsrc);
+
+  if (hGlobal == NULL) {
+    return 0L;
+  }
+
+  const BYTE* pData = (const BYTE*)LockResource(hGlobal);
+
+  if (pData == NULL) {
+    FreeResource(hGlobal);
+    return 0L;
+  }
+
+  DWORD dwSize = SizeofResource(g_hInstance, hRsrc);
+
+  if (strOut) {
+    memcpy(strOut, (LPCSTR)pData, dwSize);
+  }
+
+  UnlockResource(hGlobal);
+
+  FreeResource(hGlobal);
+
+  return dwSize;
+}
+
+*/
+
+//=============================================================================
+//
+//  (EditStreamCallback)
+//  _LoadRtfCallback() RTF edit control StreamIn's callback function 
+//
+static DWORD CALLBACK _LoadRtfCallback(
+  DWORD_PTR dwCookie,  // (in) pointer to the string
+  LPBYTE pbBuff,       // (in) pointer to the destination buffer
+  LONG cb,             // (in) size in bytes of the destination buffer
+  LONG FAR* pcb        // (out) number of bytes transfered
+)
+{
+  LPSTR* pstr = (LPSTR*)dwCookie;
+  LONG len = (LONG)strlen(*pstr);
+
+  if (len < cb)
+  {
+    *pcb = len;
+    memcpy(pbBuff, (LPCSTR)*pstr, *pcb);
+    *pstr += len;
+    //*pstr = '\0';
+  }
+  else
+  {
+    *pcb = cb;
+    memcpy(pbBuff, (LPCSTR)*pstr, *pcb);
+    *pstr += cb;
+  }
+  return 0;
+}
+// ----------------------------------------------------------------------------
+
+
+static char* pAboutInfoResource = ABOUT_INFO_RTF;
+static char* pAboutInfo;
+
 //=============================================================================
 //
 //  AboutDlgProc()
 //
-INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-
+  WCHAR wch[256] = { L'\0' };
   static HFONT hFontTitle;
-
-  switch(umsg)
+  
+  switch (umsg)
   {
-    case WM_INITDIALOG:
+  case WM_INITDIALOG:
+  {
+    SetDlgItemText(hwnd, IDC_VERSION, VERSION_FILEVERSION_LONG);
+    SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
+    SetDlgItemText(hwnd, IDC_COPYRIGHT, VERSION_LEGALCOPYRIGHT);
+    SetDlgItemText(hwnd, IDC_AUTHORNAME, VERSION_AUTHORNAME);
+    SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
+
+    if (hFontTitle)
+      DeleteObject(hFontTitle);
+    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)))
+      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+    LOGFONT lf;
+    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+    lf.lfWeight = FW_BOLD;
+    lf.lfWidth = 8;
+    lf.lfHeight = 22;
+    // lf.lfQuality = ANTIALIASED_QUALITY;
+    hFontTitle = CreateFontIndirect(&lf);
+
+    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, TRUE);
+
+    if (GetDlgItem(hwnd, IDC_WEBPAGE) == NULL) {
+      SetDlgItemText(hwnd, IDC_WEBPAGE2, VERSION_WEBPAGEDISPLAY);
+      ShowWindow(GetDlgItem(hwnd, IDC_WEBPAGE2), SW_SHOWNORMAL);
+    }
+    else {
+      StringCchPrintf(wch, COUNTOF(wch), L"<A>%s</A>", VERSION_WEBPAGEDISPLAY);
+      SetDlgItemText(hwnd, IDC_WEBPAGE, wch);
+    }
+
+    // --- Rich Edit Control ---
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetBackgroundColor(hwnd));
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetSysColor(COLOR_3DFACE));
+    
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_VERT, (LPARAM)TRUE);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SHOWSCROLLBAR, SB_HORZ, (LPARAM)FALSE);
+
+    DWORD styleFlags = SES_EXTENDBACKCOLOR; // | SES_HYPERLINKTOOLTIPS;
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLE, (WPARAM)styleFlags, (LPARAM)styleFlags);
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_AUTOURLDETECT, (WPARAM)1, (LPARAM)0);
+
+    //CHARFORMAT2 cf2;
+    //ZeroMemory(&cf2, sizeof(CHARFORMAT2));
+    //cf2.dwMask = CFM_LINK | CFM_UNDERLINE | CFM_COLOR | CFM_LINKPROTECTED;
+    //cf2.dwEffects = CFE_LINK | CFE_UNDERLINE | CFE_LINKPROTECTED;
+    //cf2.crTextColor = RGB(255, 0, 0);
+    //cf2.bUnderlineType = CFU_UNDERLINENONE;
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEDITSTYLEEX, 0, (LPARAM)SES_EX_HANDLEFRIENDLYURL);
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&cf2);
+
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
+
+  #if TRUE
+    EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
+    pAboutInfo = pAboutInfoResource;
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    
+    //DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
+    //if (dwSize != 0) {
+    //  char* pchBuffer = LocalAlloc(LPTR, dwSize + 1);
+    //  pAboutInfo = pchBuffer;
+    //  _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
+    //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    //  LocalFree(pchBuffer);
+    //}
+    //else {
+    //  pAboutInfo = chErrMsg;
+    //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+    //}
+    
+  #else
+    PARAFORMAT2 pf2;
+    ZeroMemory(&pf2, sizeof(PARAFORMAT2));
+    pf2.cbSize = (UINT)sizeof(PARAFORMAT2);
+    pf2.dwMask = (PFM_SPACEBEFORE | PFM_SPACEAFTER | PFM_LINESPACING);
+    pf2.dySpaceBefore = 48;     // paragraph
+    pf2.dySpaceAfter = 48;      // paragraph
+    pf2.dyLineSpacing = 24;     // [twips]
+    pf2.bLineSpacingRule = 5;   // 5: dyLineSpacing/20 is the spacing, in lines, from one line to the next.
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETPARAFORMAT, 0, (LPARAM)&pf2);
+    SetDlgItemText(hwnd, IDC_RICHEDITABOUT, ABOUT_INFO_PLAIN);
+  #endif
+
+    CenterDlgInParent(hwnd);
+  }
+  return TRUE;
+
+  case WM_NOTIFY:
+  {
+    LPNMHDR pnmhdr = (LPNMHDR)lParam;
+    switch (pnmhdr->code)
+    {
+      case NM_CLICK:
+      case NM_RETURN:
       {
-        WCHAR wch[256] = { L'\0' };
-        LOGFONT lf;
+        switch (pnmhdr->idFrom)
+        {
+        case IDC_WEBPAGE:
+          ShellExecute(hwnd, L"open", L"https://www.rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+          break;
 
-        SetDlgItemText(hwnd,IDC_VERSION,VERSION_FILEVERSION_LONG);
-        SetDlgItemText(hwnd,IDC_SCI_VERSION,VERSION_SCIVERSION);
-        SetDlgItemText(hwnd,IDC_COPYRIGHT,VERSION_LEGALCOPYRIGHT);
-        SetDlgItemText(hwnd,IDC_AUTHORNAME,VERSION_AUTHORNAME);
-        SetDlgItemText(hwnd,IDC_COMPILER,VERSION_COMPILER);
-
-        if (hFontTitle)
-          DeleteObject(hFontTitle);
-
-        if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd,IDC_VERSION,WM_GETFONT,0,0)))
-          hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-        GetObject(hFontTitle,sizeof(LOGFONT),&lf);
-        lf.lfWeight = FW_BOLD;
-        lf.lfWidth = 8;
-        lf.lfHeight = 22;
-        // lf.lfQuality = ANTIALIASED_QUALITY;
-        hFontTitle = CreateFontIndirect(&lf);
-        SendDlgItemMessage(hwnd,IDC_VERSION,WM_SETFONT,(WPARAM)hFontTitle,TRUE);
-
-        if (GetDlgItem(hwnd,IDC_WEBPAGE) == NULL) {
-          SetDlgItemText(hwnd,IDC_WEBPAGE2,VERSION_WEBPAGEDISPLAY);
-          ShowWindow(GetDlgItem(hwnd,IDC_WEBPAGE2),SW_SHOWNORMAL);
-        }
-        else {
-          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>",VERSION_WEBPAGEDISPLAY);
-          SetDlgItemText(hwnd,IDC_WEBPAGE,wch);
-        }
-
-        if (GetDlgItem(hwnd, IDC_MODWEBPAGE) == NULL) {
-          SetDlgItemText(hwnd, IDC_MODWEBPAGE2, VERSION_MODPAGEDISPLAY);
-          ShowWindow(GetDlgItem(hwnd, IDC_MODWEBPAGE2), SW_SHOWNORMAL);
-        }
-        else {
-          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_MODPAGEDISPLAY);
-          SetDlgItemText(hwnd, IDC_MODWEBPAGE, wch);
-        }
-
-        if (GetDlgItem(hwnd, IDC_NOTE2WEBPAGE) == NULL) {
-          SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE2, VERSION_WEBPAGE2DISPLAY);
-          ShowWindow(GetDlgItem(hwnd, IDC_NOTE2WEBPAGE2), SW_SHOWNORMAL);
-        }
-        else {
-          StringCchPrintf(wch,COUNTOF(wch),L"<A>%s</A>", VERSION_WEBPAGE2DISPLAY);
-          SetDlgItemText(hwnd, IDC_NOTE2WEBPAGE, wch);
-        }
-
-        CenterDlgInParent(hwnd);
-      }
-      return TRUE;
-
-    case WM_NOTIFY:
-      {
-        LPNMHDR pnmhdr = (LPNMHDR)lParam;
-        switch (pnmhdr->code) {
-
-          case NM_CLICK:
-          case NM_RETURN:
-            {
-              if (pnmhdr->idFrom == IDC_WEBPAGE) {
-                ShellExecute(hwnd,L"open",L"https://rizonesoft.com",NULL,NULL,SW_SHOWNORMAL);
-              }
-              else if (pnmhdr->idFrom == IDC_MODWEBPAGE) {
-                ShellExecute(hwnd,L"open",L"https://xhmikosr.github.io/notepad2-mod/",NULL,NULL,SW_SHOWNORMAL);
-              }
-              else if (pnmhdr->idFrom == IDC_NOTE2WEBPAGE) {
-                ShellExecute(hwnd,L"open",L"http://www.flos-freeware.ch",NULL,NULL,SW_SHOWNORMAL);
-              }
-            }
-            break;
+        default:
+          break;
         }
       }
       break;
 
-    case WM_COMMAND:
-
-      switch(LOWORD(wParam))
+      case EN_LINK: // hyperlink from RichEdit Ctrl
       {
-        case IDOK:
-        case IDCANCEL:
-          EndDialog(hwnd,IDOK);
-          break;
+        ENLINK* penLink = (ENLINK *)lParam;
+        if (penLink->msg == WM_LBUTTONDOWN) 
+        {
+          WCHAR hLink[256];
+          TEXTRANGE txtRng;
+          txtRng.chrg = penLink->chrg;
+          txtRng.lpstrText = hLink;
+          SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_GETTEXTRANGE, 0, (LPARAM)&txtRng);
+          ShellExecute(hwnd, L"open", hLink, NULL, NULL, SW_SHOWNORMAL);
+        }
       }
-      return TRUE;
+      break;
+    }
+  }
+  break;
+
+  case WM_SETCURSOR:
+    {
+      if ((LOWORD(lParam) == HTCLIENT) && 
+          (GetDlgCtrlID((HWND)wParam) == IDC_RIZONEBMP))
+      {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+        SetWindowLongPtr(hwnd, DWLP_MSGRESULT, TRUE);
+        return TRUE;
+      }
+    }
+    break;
+
+  case WM_COMMAND:
+
+    switch (LOWORD(wParam))
+    {
+    case IDC_RIZONEBMP:
+      ShellExecute(hwnd, L"open", L"https://www.rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+      break;
+
+    case IDC_COPYVERSTRG:
+      {
+        WCHAR wchVerInfo[1024] = { L'\0' };
+        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), VERSION_FILEVERSION_LONG);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
+        SetClipboardTextW(g_hwndMain, wchVerInfo);
+      }
+      break;
+
+    case IDOK:
+    case IDCANCEL:
+      EndDialog(hwnd, IDOK);
+      break;
+    }
+    return TRUE;
   }
   return FALSE;
 }
@@ -2600,7 +2761,5 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
            (LPARAM)&ib);
 
 }
-
-
 
 //  End of Dialogs.c
