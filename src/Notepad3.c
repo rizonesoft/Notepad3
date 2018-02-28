@@ -254,11 +254,11 @@ LPMRULIST mruReplace;
 
 DWORD     dwLastIOError;
 
-int       iDefaultEncoding;
-int       iDefaultCharSet;
+int       g_iDefaultEncoding;
+int       g_iDefaultCharSet;
 
-int       iEOLMode;
-int       iDefaultEOLMode;
+int       g_iEOLMode;
+int       g_iDefaultEOLMode;
 
 int       iInitialLine;
 int       iInitialColumn;
@@ -282,7 +282,8 @@ UINT      msgTaskbarCreated = 0;
 HMODULE   hModUxTheme = NULL;
 HMODULE   hRichEdit = NULL;
 
-EDITFINDREPLACE g_efrData = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL };
+
+EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
 UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
 
@@ -734,7 +735,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
   // Source Encoding
   if (lpEncodingArg)
-    Encoding_Source(Encoding_MatchW(lpEncodingArg));
+    Encoding_SrcCmdLn(Encoding_MatchW(lpEncodingArg));
 
   // Pathname parameter
   if (flagBufferFile || (lpFileArg /*&& !flagNewFromClipboard*/))
@@ -792,15 +793,15 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     }
   }
   else {
-    if (Encoding_Source(CPI_GET) != CPI_NONE) {
-      Encoding_Current(Encoding_Source(CPI_GET));
-      Encoding_HasChanged(Encoding_Source(CPI_GET));
+    if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
+      Encoding_Current(Encoding_SrcCmdLn(CPI_GET));
+      Encoding_HasChanged(Encoding_SrcCmdLn(CPI_GET));
       Encoding_SciSetCodePage(g_hwndEdit,Encoding_Current(CPI_GET));
     }
   }
 
   // reset
-  Encoding_Source(CPI_NONE);
+  Encoding_SrcCmdLn(CPI_NONE);
   flagQuietCreate = 0;
   fKeepTitleExcerpt = 0;
 
@@ -1840,7 +1841,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if (params->flagFileSpecified) {
 
       BOOL bOpened = FALSE;
-      Encoding_Source(params->iSrcEncoding);
+      Encoding_SrcCmdLn(params->iSrcEncoding);
 
       if (PathIsDirectory(&params->wchData)) {
         WCHAR tchFile[MAX_PATH] = { L'\0' };
@@ -1876,11 +1877,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         if (0 != params->flagSetEOLMode) {
           flagSetEOLMode = params->flagSetEOLMode;
-          SendMessage(
-            g_hwndMain,
-            WM_COMMAND,
-            MAKELONG(IDM_LINEENDINGS_CRLF + flagSetEOLMode - 1, 1),
-            0);
+          SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_LINEENDINGS_CRLF + flagSetEOLMode - 1, 1), 0);
           flagSetEOLMode = 0;
         }
 
@@ -1899,7 +1896,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
       }
       // reset
-      Encoding_Source(CPI_NONE);
+      Encoding_SrcCmdLn(CPI_NONE);
     }
 
     if (params->flagJumpTo) {
@@ -2127,9 +2124,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
     i = -1;
   CheckMenuRadioItem(hmenu,IDM_ENCODING_ANSI,IDM_ENCODING_UTF8SIGN,i,MF_BYCOMMAND);
 
-  if (iEOLMode == SC_EOL_CRLF)
+  if (g_iEOLMode == SC_EOL_CRLF)
     i = IDM_LINEENDINGS_CRLF;
-  else if (iEOLMode == SC_EOL_LF)
+  else if (g_iEOLMode == SC_EOL_LF)
     i = IDM_LINEENDINGS_LF;
   else
     i = IDM_LINEENDINGS_CR;
@@ -2725,7 +2722,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           if (RecodeDlg(hwnd,&iNewEncoding)) 
           {
             StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
-            Encoding_Source(iNewEncoding);
+            Encoding_SrcCmdLn(iNewEncoding);
             FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2);
           }
         }
@@ -2734,7 +2731,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_ENCODING_SETDEFAULT:
-      SelectDefEncodingDlg(hwnd,&iDefaultEncoding);
+      SelectDefEncodingDlg(hwnd,&g_iDefaultEncoding);
       break;
 
 
@@ -2744,9 +2741,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL)
         int iNewEOLMode = iLineEndings[LOWORD(wParam)-IDM_LINEENDINGS_CRLF];
-        iEOLMode = iNewEOLMode;
-        SendMessage(g_hwndEdit,SCI_SETEOLMODE,iEOLMode,0);
-        SendMessage(g_hwndEdit,SCI_CONVERTEOLS,iEOLMode,0);
+        g_iEOLMode = iNewEOLMode;
+        SendMessage(g_hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
+        SendMessage(g_hwndEdit,SCI_CONVERTEOLS,g_iEOLMode,0);
         EditFixPositions(g_hwndEdit);
         EndWaitCursor()
         UpdateToolbar();
@@ -2756,7 +2753,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_LINEENDINGS_SETDEFAULT:
-      SelectDefLineEndingDlg(hwnd,&iDefaultEOLMode);
+      SelectDefLineEndingDlg(hwnd,&g_iDefaultEOLMode);
       break;
 
 
@@ -4469,7 +4466,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          Encoding_Source(Encoding_MapUnicode(iDefaultEncoding));
+          Encoding_SrcCmdLn(Encoding_MapUnicode(g_iDefaultEncoding));
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
           FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
@@ -4481,7 +4478,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          Encoding_Source(CPI_ANSI_DEFAULT);
+          Encoding_SrcCmdLn(CPI_ANSI_DEFAULT);
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
           FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
@@ -4493,7 +4490,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          Encoding_Source(CPI_OEM);
+          Encoding_SrcCmdLn(CPI_OEM);
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
           FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
@@ -4566,8 +4563,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         struct tm sst;
 
         UINT cp;
-        EDITFINDREPLACE efrTS = { "", "", "", "", SCFIND_REGEXP, 0, 0, 0, 0, 0, 0, 0, 0, NULL };
+        EDITFINDREPLACE efrTS = EFR_INIT_DATA;
         efrTS.hwnd = g_hwndEdit;
+        efrTS.fuFlags = SCFIND_REGEXP;
 
         IniGetString(L"Settings2",L"TimeStamp",L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $",wchFind,COUNTOF(wchFind));
 
@@ -5372,7 +5370,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
             {
               // in CRLF mode handle LF only...
-              if ((SC_EOL_CRLF == iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != iEOLMode)
+              if ((SC_EOL_CRLF == g_iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != g_iEOLMode)
               {
                 DocPos iCurPos = SciCall_GetCurrentPos();
                 DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
@@ -5608,9 +5606,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 return TRUE;
 
               case STATUS_EOLMODE:
-                if (iEOLMode == SC_EOL_CRLF)
+                if (g_iEOLMode == SC_EOL_CRLF)
                   i = IDM_LINEENDINGS_CRLF;
-                else if (iEOLMode == SC_EOL_LF)
+                else if (g_iEOLMode == SC_EOL_LF)
                   i = IDM_LINEENDINGS_LF;
                 else
                   i = IDM_LINEENDINGS_CR;
@@ -5798,10 +5796,10 @@ void LoadSettings()
 
   bViewEOLs = IniSectionGetBool(pIniSection,L"ViewEOLs", FALSE);
 
-  iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_NONE);
+  g_iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_NONE);
   // if DefaultEncoding is not defined set to system's current code-page 
-  iDefaultEncoding = (iDefaultEncoding == CPI_NONE) ?
-    Encoding_MapIniSetting(TRUE,(int)GetACP()) : Encoding_MapIniSetting(TRUE,iDefaultEncoding);
+  g_iDefaultEncoding = (g_iDefaultEncoding == CPI_NONE) ?
+    Encoding_MapIniSetting(TRUE,(int)GetACP()) : Encoding_MapIniSetting(TRUE,g_iDefaultEncoding);
 
   bSkipUnicodeDetection = IniSectionGetBool(pIniSection, L"SkipUnicodeDetection", FALSE);
 
@@ -5811,8 +5809,8 @@ void LoadSettings()
 
   bNoEncodingTags = IniSectionGetBool(pIniSection,L"NoEncodingTags", FALSE);
 
-  iDefaultEOLMode = IniSectionGetInt(pIniSection,L"DefaultEOLMode",0);
-  iDefaultEOLMode = max(min(iDefaultEOLMode,2),0);
+  g_iDefaultEOLMode = IniSectionGetInt(pIniSection,L"DefaultEOLMode",0);
+  g_iDefaultEOLMode = max(min(g_iDefaultEOLMode,2),0);
 
   bFixLineEndings = IniSectionGetBool(pIniSection,L"FixLineEndings",TRUE);
 
@@ -6005,22 +6003,22 @@ void LoadSettings()
 
   // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
   /*
-  if (iDefaultEncoding == CPI_ANSI_DEFAULT)
+  if (g_iDefaultEncoding == CPI_ANSI_DEFAULT)
   {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
     int acp = (int)GetACP();
     if (acp == 932 || acp == 936 || acp == 949 || acp == 950) {
       iSciDefaultCodePage = acp;
     }
-    iDefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
+    g_iDefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
   }
   */
 
   // set flag for encoding default
-  g_Encodings[iDefaultEncoding].uFlags |= NCP_DEFAULT;
+  g_Encodings[g_iDefaultEncoding].uFlags |= NCP_DEFAULT;
 
   // define default charset
-  iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
+  g_iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
 
   // Scintilla Styles
   Style_Load();
@@ -6103,12 +6101,12 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", bMarkOccurrencesCurrentWord);
   IniSectionSetBool(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
   IniSectionSetBool(pIniSection, L"ViewEOLs", bViewEOLs);
-  IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, iDefaultEncoding));
+  IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, g_iDefaultEncoding));
   IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
   IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", bLoadASCIIasUTF8);
   IniSectionSetBool(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
   IniSectionSetBool(pIniSection, L"NoEncodingTags", bNoEncodingTags);
-  IniSectionSetInt(pIniSection, L"DefaultEOLMode", iDefaultEOLMode);
+  IniSectionSetInt(pIniSection, L"DefaultEOLMode", g_iDefaultEOLMode);
   IniSectionSetBool(pIniSection, L"FixLineEndings", bFixLineEndings);
   IniSectionSetBool(pIniSection, L"FixTrailingBlanks", bAutoStripBlanks);
   IniSectionSetInt(pIniSection, L"PrintHeader", iPrintHeader);
@@ -7057,11 +7055,11 @@ void UpdateStatusbar()
   Encoding_SetLabel(iEncoding);
   StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", g_Encodings[iEncoding].wchLabel);
 
-  if (iEOLMode == SC_EOL_CR) 
+  if (g_iEOLMode == SC_EOL_CR) 
   {
     StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR ");
   }
-  else if (iEOLMode == SC_EOL_LF) 
+  else if (g_iEOLMode == SC_EOL_LF) 
   {
     StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF ");
   }
@@ -7435,11 +7433,11 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     EditSetNewText(g_hwndEdit,"",0);
     Style_SetLexer(g_hwndEdit,NULL);
 
-    iEOLMode = iLineEndings[iDefaultEOLMode];
-    SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
-    Encoding_Current(iDefaultEncoding);
-    Encoding_HasChanged(iDefaultEncoding);
-    Encoding_SciSetCodePage(g_hwndEdit,iDefaultEncoding);
+    g_iEOLMode = iLineEndings[g_iDefaultEOLMode];
+    SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
+    Encoding_Current(g_iDefaultEncoding);
+    Encoding_HasChanged(g_iDefaultEncoding);
+    Encoding_SciSetCodePage(g_hwndEdit,g_iDefaultEncoding);
     EditSetNewText(g_hwndEdit,"",0);
 
     bReadOnly = FALSE;
@@ -7505,16 +7503,16 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
         FileVars_Init(NULL,0,&fvCurFile);
         EditSetNewText(g_hwndEdit,"",0);
         Style_SetLexer(g_hwndEdit,NULL);
-        iEOLMode = iLineEndings[iDefaultEOLMode];
-        SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
-        if (Encoding_Source(CPI_GET) != CPI_NONE) {
-          fileEncoding = Encoding_Source(CPI_GET);
+        g_iEOLMode = iLineEndings[g_iDefaultEOLMode];
+        SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
+        if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
+          fileEncoding = Encoding_SrcCmdLn(CPI_GET);
           Encoding_Current(fileEncoding);
           Encoding_HasChanged(fileEncoding);
         }
         else {
-          Encoding_Current(iDefaultEncoding);
-          Encoding_HasChanged(iDefaultEncoding);
+          Encoding_Current(g_iDefaultEncoding);
+          Encoding_HasChanged(g_iDefaultEncoding);
         }
         Encoding_SciSetCodePage(g_hwndEdit,Encoding_Current(CPI_GET));
         bReadOnly = FALSE;
@@ -7532,12 +7530,12 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (!bReload && MRU_FindFile(pFileMRU,szFileName,&idx)) {
       fileEncoding = pFileMRU->iEncoding[idx];
       if (fileEncoding > 0)
-        Encoding_Source(Encoding_MapUnicode(fileEncoding));
+        Encoding_SrcCmdLn(Encoding_MapUnicode(fileEncoding));
     }
     else
       fileEncoding = Encoding_Current(CPI_GET);
 
-    fSuccess = FileIO(TRUE,szFileName,bNoEncDetect,&fileEncoding,&iEOLMode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,FALSE);
+    fSuccess = FileIO(TRUE,szFileName,bNoEncDetect,&fileEncoding,&g_iEOLMode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,FALSE);
     if (fSuccess)
       Encoding_Current(fileEncoding); // load may change encoding
   }
@@ -7552,7 +7550,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     if (!flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(g_hwndEdit,g_wchCurFile);
 
-    SendMessage(g_hwndEdit,SCI_SETEOLMODE,iEOLMode,0);
+    SendMessage(g_hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
     fileEncoding = Encoding_Current(CPI_GET);
     Encoding_HasChanged(fileEncoding);
     int idx, iCaretPos = 0;
@@ -7641,6 +7639,7 @@ BOOL FileRevert(LPCWSTR szFileName)
     int iXOffset = (int)SendMessage(g_hwndEdit,SCI_GETXOFFSET,0,0);
     //BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurPos == SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0));
     BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
+
 
     Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
@@ -7759,7 +7758,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     if (SaveFileDlg(g_hwndMain,tchFile,COUNTOF(tchFile),tchInitialDir))
     {
       int fileEncoding = Encoding_Current(CPI_GET);
-      fSuccess = FileIO(FALSE, tchFile, FALSE, &fileEncoding, &iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
+      fSuccess = FileIO(FALSE, tchFile, FALSE, &fileEncoding, &g_iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
       //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
       if (fSuccess)
       {
@@ -7786,7 +7785,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
   }
   else {
     int fileEncoding = Encoding_Current(CPI_GET);
-    fSuccess = FileIO(FALSE,g_wchCurFile,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,FALSE);
+    fSuccess = FileIO(FALSE,g_wchCurFile,FALSE,&fileEncoding,&g_iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,FALSE);
     //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
   }
 
@@ -7825,7 +7824,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
             GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
           int fileEncoding = Encoding_Current(CPI_GET);
-          if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,TRUE)) {
+          if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&g_iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,TRUE)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
             WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();

@@ -42,6 +42,8 @@ typedef struct _editfindreplace
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
 
+#define EFR_INIT_DATA  { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL }
+
 
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
