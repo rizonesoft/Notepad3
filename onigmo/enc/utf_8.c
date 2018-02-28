@@ -252,7 +252,7 @@ static int
 is_mbc_newline(const UChar* p, const UChar* end, OnigEncoding enc)
 {
   if (p < end) {
-    if (*p == 0x0a) return 1;
+    if ((*p == 0x0a) || (*p == 0x0d)) return 1; // LF or CR
 
 #ifdef USE_UNICODE_ALL_LINE_TERMINATORS
     if (*p == 0x0b || *p == 0x0c || *p == 0x0d) return 1;

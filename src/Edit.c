@@ -4284,7 +4284,7 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos)
   SciCall_ScrollRange(iCurrentPos, iAnchorPos);
 
   // remember x-pos for moving caret vertically
-  SciCall_ChooseCaret();
+  SciCall_ChooseCaretX();
 
   UpdateToolbar();
   UpdateStatusbar();

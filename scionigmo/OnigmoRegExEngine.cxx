@@ -521,14 +521,8 @@ std::string& OnigmoRegExEngine::translateRegExpr(std::string& regExprStr, bool w
   // EOL modes
   switch (eolMode) {
   case SC_EOL_LF:
-    ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_NEWLINE_CRLF);
-    break;
-
   case SC_EOL_CR:
     ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_NEWLINE_CRLF);
-    replaceAll(tmpStr, R"($)", R"((?=\r))");
-    replaceAll(tmpStr, R"(\(?=\r))", R"(\$)");
-    bUseTmpStrg = true;
     break;
 
   case SC_EOL_CRLF:
