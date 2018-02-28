@@ -75,14 +75,14 @@ static int yFindReplaceDlgSave;
 extern int xFindReplaceDlg;
 extern int yFindReplaceDlg;
 
-extern int iDefaultEOLMode;
+extern int g_iDefaultEOLMode;
 extern int iLineEndings[3];
 extern BOOL bFixLineEndings;
 extern BOOL bAutoStripBlanks;
 
 // Default Codepage and Character Set
-extern int iDefaultEncoding;
-extern int iDefaultCharSet;
+extern int g_iDefaultEncoding;
+extern int g_iDefaultCharSet;
 extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
 
@@ -193,8 +193,8 @@ HWND EditCreate(HWND hwndParent)
            g_hInstance,
            NULL);
 
-  Encoding_Current(iDefaultEncoding);
-  Encoding_SciSetCodePage(hwnd,iDefaultEncoding);
+  Encoding_Current(g_iDefaultEncoding);
+  Encoding_SciSetCodePage(hwnd,g_iDefaultEncoding);
   SendMessage(hwnd,SCI_SETEOLMODE,SC_EOL_CRLF,0);
   SendMessage(hwnd,SCI_SETPASTECONVERTENDINGS,TRUE,0);
   SendMessage(hwnd,SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT|SC_MOD_DELETETEXT|SC_MOD_CONTAINER,0);
@@ -939,7 +939,7 @@ BOOL EditCopyAppend(HWND hwnd, BOOL bAppend)
 //
 int EditDetectEOLMode(HWND hwnd,char* lpData,DWORD cbData)
 {
-  int iEOLMode = iLineEndings[iDefaultEOLMode];
+  int iEOLMode = iLineEndings[g_iDefaultEOLMode];
   char *cp = (char*)lpData;
 
   if (!cp)
@@ -993,7 +993,7 @@ BOOL EditLoadFile(
   dwLastIOError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
-    Encoding_Source(CPI_NONE);
+    Encoding_SrcCmdLn(CPI_NONE);
     Encoding_SrcWeak(CPI_NONE);
     return FALSE;
   }
@@ -1009,7 +1009,7 @@ BOOL EditLoadFile(
       CloseHandle(hFile);
       if (pbUnkownExt)
         *pbUnkownExt = TRUE;
-      Encoding_Source(CPI_NONE);
+      Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return FALSE;
     }
@@ -1022,7 +1022,7 @@ BOOL EditLoadFile(
       CloseHandle(hFile);
       if (pbFileTooBig)
         *pbFileTooBig = TRUE;
-      Encoding_Source(CPI_NONE);
+      Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return FALSE;
     }
@@ -1036,7 +1036,7 @@ BOOL EditLoadFile(
     CloseHandle(hFile);
     if (pbFileTooBig)
       *pbFileTooBig = FALSE;
-    Encoding_Source(CPI_NONE);
+    Encoding_SrcCmdLn(CPI_NONE);
     Encoding_SrcWeak(CPI_NONE);
     return FALSE;
   }
@@ -1048,7 +1048,7 @@ BOOL EditLoadFile(
 
   if (!bReadSuccess) {
     GlobalFree(lpData);
-    Encoding_Source(CPI_NONE);
+    Encoding_SrcCmdLn(CPI_NONE);
     Encoding_SrcWeak(CPI_NONE);
     return FALSE;
   }
@@ -1060,50 +1060,47 @@ BOOL EditLoadFile(
       bPreferOEM = TRUE;
   }
 
-  int _iPrefEncoding = (bPreferOEM) ? g_DOSEncoding : iDefaultEncoding;
+  const int iFileEncoding = Encoding_SrcCmdLn(CPI_GET);
+  const int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding :
+    (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)) ? Encoding_SrcWeak(CPI_GET) : g_iDefaultEncoding);
 
-  if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET))) {
-    _iPrefEncoding = Encoding_SrcWeak(CPI_GET);
-  }
 
   BOOL bBOM = FALSE;
   BOOL bReverse = FALSE;
 
-  const int iSrcEnc = Encoding_Source(CPI_GET);
-
   if (cbData == 0) {
     FileVars_Init(NULL,0,&fvCurFile);
-    *iEOLMode = iLineEndings[iDefaultEOLMode];
-    if (iSrcEnc == CPI_NONE) {
+    *iEOLMode = iLineEndings[g_iDefaultEOLMode];
+    if (iFileEncoding == CPI_NONE) {
       if (bLoadASCIIasUTF8 && !bPreferOEM)
         *iEncoding = CPI_UTF8;
       else
-        *iEncoding = _iPrefEncoding;
+        *iEncoding = iPreferedEncoding;
     }
     else
-      *iEncoding = iSrcEnc;
+      *iEncoding = iFileEncoding;
 
     Encoding_SciSetCodePage(hwnd,*iEncoding);
     EditSetNewText(hwnd,"",0);
-    SendMessage(hwnd,SCI_SETEOLMODE,iLineEndings[iDefaultEOLMode],0);
+    SendMessage(hwnd,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
     GlobalFree(lpData);
   }
 
   else if (!bSkipEncodingDetection && 
-      (iSrcEnc == CPI_NONE    || iSrcEnc == CPI_UNICODE   || iSrcEnc == CPI_UNICODEBE) &&
-      (iSrcEnc == CPI_UNICODE || iSrcEnc == CPI_UNICODEBE || IsUnicode(lpData,cbData,&bBOM,&bReverse)) &&
-      (iSrcEnc == CPI_UNICODE || iSrcEnc == CPI_UNICODEBE || !IsUTF8Signature(lpData))) // check for UTF-8 signature
+      (iFileEncoding == CPI_NONE    || iFileEncoding == CPI_UNICODE   || iFileEncoding == CPI_UNICODEBE) &&
+      (iFileEncoding == CPI_UNICODE || iFileEncoding == CPI_UNICODEBE || IsUnicode(lpData,cbData,&bBOM,&bReverse)) &&
+      (iFileEncoding == CPI_UNICODE || iFileEncoding == CPI_UNICODEBE || !IsUTF8Signature(lpData))) // check for UTF-8 signature
   {
     char* lpDataUTF8;
 
-    if (iSrcEnc == CPI_UNICODE) {
+    if (iFileEncoding == CPI_UNICODE) {
       bBOM = (*((UNALIGNED PWCHAR)lpData) == 0xFEFF);
       bReverse = FALSE;
     }
-    else if (iSrcEnc == CPI_UNICODEBE)
+    else if (iFileEncoding == CPI_UNICODEBE)
       bBOM = (*((UNALIGNED PWCHAR)lpData) == 0xFFFE);
 
-    if (iSrcEnc == CPI_UNICODEBE || bReverse) {
+    if (iFileEncoding == CPI_UNICODEBE || bReverse) {
       _swab(lpData,lpData,cbData);
       if (bBOM)
         *iEncoding = CPI_UNICODEBEBOM;
@@ -1142,7 +1139,7 @@ BOOL EditLoadFile(
     else {
       GlobalFree(lpDataUTF8);
       GlobalFree(lpData);
-      Encoding_Source(CPI_NONE);
+      Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return FALSE;
     }
@@ -1150,18 +1147,18 @@ BOOL EditLoadFile(
 
   else {
     FileVars_Init(lpData,cbData,&fvCurFile);
-    if (!bSkipEncodingDetection && (iSrcEnc == CPI_NONE || iSrcEnc == CPI_UTF8 || iSrcEnc == CPI_UTF8SIGN) &&
+    if (!bSkipEncodingDetection && (iFileEncoding == CPI_NONE || iFileEncoding == CPI_UTF8 || iFileEncoding == CPI_UTF8SIGN) &&
             ((IsUTF8Signature(lpData) ||
               FileVars_IsUTF8(&fvCurFile) ||
-              (iSrcEnc == CPI_UTF8 || iSrcEnc == CPI_UTF8SIGN) ||
+              (iFileEncoding == CPI_UTF8 || iFileEncoding == CPI_UTF8SIGN) ||
               (!bPreferOEM && bLoadASCIIasUTF8) ||  // from menu "Reload As UTF-8"
               (IsUTF8(lpData,cbData) &&
               (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 !=
                 UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
                 (!bPreferOEM && (
-                  g_Encodings[_iPrefEncoding].uFlags & NCP_UTF8 ||
+                  g_Encodings[iPreferedEncoding].uFlags & NCP_UTF8 ||
                   bLoadASCIIasUTF8))))))) && !(FileVars_IsNonUTF8(&fvCurFile) &&
-                  (iSrcEnc != CPI_UTF8 && iSrcEnc != CPI_UTF8SIGN)))
+                  (iFileEncoding != CPI_UTF8 && iFileEncoding != CPI_UTF8SIGN)))
     {
       Encoding_SciSetCodePage(hwnd,CPI_UTF8);
       EditSetNewText(hwnd,"",0);
@@ -1179,25 +1176,29 @@ BOOL EditLoadFile(
     }
 
     else {
-      if (iSrcEnc != CPI_NONE)
-        *iEncoding = iSrcEnc;
+      if (iFileEncoding != CPI_NONE)
+        *iEncoding = iFileEncoding;
       else {
         *iEncoding = FileVars_GetEncoding(&fvCurFile);
         if (*iEncoding == CPI_NONE) {
           if (fvCurFile.mask & FV_ENCODING)
             *iEncoding = CPI_ANSI_DEFAULT;
           else {
-            if (Encoding_SrcWeak(CPI_GET) == CPI_NONE)
-              *iEncoding = _iPrefEncoding;
-            else if (g_Encodings[Encoding_SrcWeak(CPI_GET)].uFlags & NCP_INTERNAL)
-              *iEncoding = iDefaultEncoding;
-            else
-              *iEncoding = _iPrefEncoding;
+            int iEncWeak = Encoding_SrcWeak(CPI_GET);
+            switch (iEncWeak) {
+            case CPI_NONE:
+              *iEncoding = iPreferedEncoding;
+              break;
+            default:
+              *iEncoding = (g_Encodings[iEncWeak].uFlags & NCP_INTERNAL) ? g_iDefaultEncoding : 
+                (Encoding_IsValid(iEncWeak) ? iEncWeak : iPreferedEncoding);
+              break;
+            }
           }
         }
       }
 
-      if (((g_Encodings[*iEncoding].uCodePage != CP_UTF7) && (g_Encodings[*iEncoding].uFlags & NCP_8BIT)) ||
+      if (((g_Encodings[*iEncoding].uCodePage != CP_UTF7) && (g_Encodings[*iEncoding].uFlags & NCP_EXTERNAL_8BIT)) ||
           ((g_Encodings[*iEncoding].uCodePage == CP_UTF7) && IsUTF7(lpData,cbData))) {
 
         UINT uCodePage  = g_Encodings[*iEncoding].uCodePage;
@@ -1221,7 +1222,7 @@ BOOL EditLoadFile(
           else {
             GlobalFree(lpDataWide);
             GlobalFree(lpData);
-            Encoding_Source(CPI_NONE);
+            Encoding_SrcCmdLn(CPI_NONE);
             Encoding_SrcWeak(CPI_NONE);
             return FALSE;
           }
@@ -1229,13 +1230,13 @@ BOOL EditLoadFile(
         else {
           GlobalFree(lpDataWide);
           GlobalFree(lpData);
-          Encoding_Source(CPI_NONE);
+          Encoding_SrcCmdLn(CPI_NONE);
           Encoding_SrcWeak(CPI_NONE);
           return FALSE;
         }
       }
       else {
-        *iEncoding = Encoding_IsValid(iSrcEnc) ? iSrcEnc : iDefaultEncoding;
+        *iEncoding = Encoding_IsValid(iFileEncoding) ? iFileEncoding : g_iDefaultEncoding;
         Encoding_SciSetCodePage(hwnd,*iEncoding);
         EditSetNewText(hwnd,"",0);
         EditSetNewText(hwnd,lpData,cbData);
@@ -1245,7 +1246,7 @@ BOOL EditLoadFile(
     }
   }
 
-  Encoding_Source(CPI_NONE);
+  Encoding_SrcCmdLn(CPI_NONE);
   Encoding_SrcWeak(CPI_NONE);
   return TRUE;
 
@@ -1389,7 +1390,7 @@ BOOL EditSaveFile(
       GlobalFree(lpData);
     }
 
-    else if (g_Encodings[iEncoding].uFlags & NCP_8BIT) {
+    else if (g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT) {
 
       BOOL bCancelDataLoss = FALSE;
       UINT uCodePage = g_Encodings[iEncoding].uCodePage;
@@ -1793,7 +1794,7 @@ void EditEscapeCChars(HWND hwnd) {
       return;
     }
 
-    EDITFINDREPLACE efr = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL };
+    EDITFINDREPLACE efr = EFR_INIT_DATA;
     efr.hwnd = hwnd;
 
     StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\\");
@@ -1825,7 +1826,7 @@ void EditUnescapeCChars(HWND hwnd) {
       return;
     }
 
-    EDITFINDREPLACE efr = { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL };
+    EDITFINDREPLACE efr = EFR_INIT_DATA;
     efr.hwnd = hwnd;
 
     StringCchCopyA(efr.szFind,FNDRPL_BUFFER,"\\\\");
@@ -7069,7 +7070,7 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 
 //=============================================================================
 //
-//  FileVars_Init()
+//  SetFileVars()
 //
 extern BOOL bNoEncodingTags;
 extern int flagNoFileVariables;
@@ -7133,6 +7134,11 @@ void __fastcall SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
       lpfv->mask |= FV_MODE;
   }
 }
+
+//=============================================================================
+//
+//  FileVars_Init()
+//
 
 BOOL FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
 
