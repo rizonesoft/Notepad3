@@ -108,6 +108,8 @@ __inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL 
 #define IsWinServer() IsWindowsServer()          // Indicates if the current OS is a Windows Server release.
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
 
+bool SetClipboardTextW(HWND, LPCWSTR);
+
 BOOL PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
 BOOL IsElevated();
@@ -143,6 +145,7 @@ void DeleteBitmapButton(HWND,int);
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
 BOOL StatusSetText(HWND,UINT,LPCWSTR);
 BOOL StatusSetTextID(HWND,UINT,UINT);
+COLORREF GetBackgroundColor(HWND);
 int  StatusCalcPaneWidth(HWND,LPCWSTR);
 
 int Toolbar_GetButtons(HWND,int,LPWSTR,int);

@@ -80,6 +80,30 @@ WCHAR* _StrCutIW(WCHAR* s,const WCHAR* pattern)
 
 //=============================================================================
 //
+//  SetClipboardWchTextW()
+//
+bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW)
+{
+  if (!OpenClipboard(hwnd)) {
+    return false;
+  }
+
+  int cchTextW = lstrlen(pszTextW) + 1;
+  HANDLE hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(WCHAR) * cchTextW);
+  WCHAR* pszNew = GlobalLock(hData);
+
+  StringCchCopy(pszNew, cchTextW, pszTextW);
+  GlobalUnlock(hData);
+
+  EmptyClipboard();
+  SetClipboardData(CF_UNICODETEXT, hData);
+  CloseClipboard();
+  return true;
+}
+
+
+//=============================================================================
+//
 //  Manipulation of (cached) ini file sections
 //
 int IniSectionGetString(
@@ -189,16 +213,18 @@ BOOL IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
 //  PrivateIsAppThemed()
 //
 extern HMODULE hModUxTheme;
+
 BOOL PrivateIsAppThemed()
 {
-  FARPROC pfnIsAppThemed;
-  BOOL bIsAppThemed = FALSE;
+  BOOL bIsAppThemed = IsWin8() ? TRUE : FALSE;
 
-  if (hModUxTheme) {
-    pfnIsAppThemed = GetProcAddress(hModUxTheme,"IsAppThemed");
+  if (hModUxTheme && !bIsAppThemed) 
+  {
+    FARPROC pfnIsAppThemed = GetProcAddress(hModUxTheme,"IsAppThemed");
 
-    if (pfnIsAppThemed)
+    if (pfnIsAppThemed) {
       bIsAppThemed = (BOOL)pfnIsAppThemed();
+    }
   }
   return bIsAppThemed;
 }
@@ -938,6 +964,16 @@ BOOL StatusSetTextID(HWND hwnd,UINT nPart,UINT uID)
 
   return (BOOL)SendMessage(hwnd,SB_SETTEXT,uFlags,(LPARAM)szText);
 
+}
+
+
+//=============================================================================
+//
+//  StatusCalcPaneWidth()
+//
+COLORREF GetBackgroundColor(HWND hwnd)
+{
+  return GetBkColor(GetDC(hwnd));
 }
 
 

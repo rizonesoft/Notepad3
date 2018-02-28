@@ -88,7 +88,6 @@
 #define IDD_ADDTOFAV                    182
 #define IDC_FINDCLOSE                   183
 #define IDC_EMAIL3                      184
-#define IDC_VERSION2                    185
 #define IDD_FILEMRU                     186
 #define IDC_FINDPREV                    187
 #define IDD_CHANGENOTIFY                188
@@ -130,7 +129,7 @@
 #define IDC_WILDCARDHELP                225
 #define IDC_WILDCARDSEARCH              226
 #define IDC_SCI_VERSION                 227
-#define IDR_MAINWND2                    228
+#define IDR_MAINWNDTB                   228
 #define IDC_REMOVE                      229
 #define IDC_SWAPSTRG                    230
 #define IDC_CHECK_OCC                   231
@@ -147,7 +146,6 @@
 #define IDACC_SELTOPREV                 311
 #define IDC_NFOASOEM                    400
 #define IDC_COMPILER                    401
-#define IDC_COMPILER2                   402
 #define IDD_READPW                      501
 #define IDC_CHECK1                      502
 #define IDC_EDIT1                       503
@@ -163,6 +161,12 @@
 #define IDM_HELP_UPDATEINSTALLER        513
 #define IDM_HELP_UPDATEWEBSITE          514
 #define IDS_FR_STATUS_TEXT              515
+#define IDR_MAINWNDTB2                  550
+#define IDR_MAINWND128                  551
+#define IDC_RICHEDITABOUT               552
+#define IDC_COPYVERSTRG                 553
+#define IDR_RIZBITMAP                   554
+#define IDC_RIZONEBMP                   555
 #define IDS_APPTITLE                    10000
 #define IDS_APPTITLE_ELEVATED           10001
 #define IDS_APPTITLE_PASTEBOARD         10002

@@ -110,6 +110,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -163,6 +164,7 @@
       <StringPooling>true</StringPooling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -215,6 +217,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <StringPooling>true</StringPooling>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -269,6 +272,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <StringPooling>true</StringPooling>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -369,6 +373,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\Notepad3.ico" />
+    <Image Include="..\res\Notepad3_128.ico" />
+    <Image Include="..\res\rizonesoft.bmp" />
     <Image Include="..\res\Toolbar2.bmp" />
   </ItemGroup>
   <ItemGroup>
