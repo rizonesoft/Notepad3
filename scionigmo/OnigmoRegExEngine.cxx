@@ -205,7 +205,7 @@ static void replaceAll(std::string& source, const std::string& from, const std::
  * Has not been tested with backwards DBCS searches yet.
  */
 long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
-                                bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
+                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
 {
   if (!(pattern && (strlen(pattern) > 0))) {
     *length = 0;
@@ -214,15 +214,18 @@ long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Posit
 
   Sci::Position docLen = SciPos(doc->Length());
 
+  const bool findForward = (minPos <= maxPos);
+  const int increment = findForward ? 1 : -1;
+
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
-  minPos = doc->MovePositionOutsideChar(minPos, 1, false);
-  maxPos = doc->MovePositionOutsideChar(maxPos, 1, false);
-  const bool findprevious = (minPos > maxPos);
-  Sci::Position rangeBeg = (findprevious) ? maxPos : minPos;
-  Sci::Position rangeEnd = (findprevious) ? minPos : maxPos;
+  minPos = doc->MovePositionOutsideChar(minPos, increment, false);
+  maxPos = doc->MovePositionOutsideChar(maxPos, increment, false);
+
+  Sci::Position rangeBeg = (findForward) ? minPos : maxPos;
+  Sci::Position rangeEnd = (findForward) ? maxPos : minPos;
   Sci::Position rangeLen = (rangeEnd - rangeBeg);
 
-  
+
   // -----------------------------
   // --- Onigmo Engine Options ---
   // -----------------------------
@@ -241,7 +244,7 @@ long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Posit
   else {
     ONIG_OPTION_OFF(onigmoOptions, ONIG_OPTION_DOTALL);
   }
- 
+
 
   //ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_ON(onigmoOptions, ONIG_OPTION_NEGATE_SINGLELINE);
@@ -257,8 +260,7 @@ long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Posit
 
   bool bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigmoOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
 
-  if (bReCompile) 
-  {
+  if (bReCompile) {
     m_RegExprStrg.clear();
     m_RegExprStrg = sRegExprStrg;
     m_CmplOptions = onigmoOptions;
@@ -289,12 +291,14 @@ long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Posit
   UChar* docBegPtr = (UChar*)doc->RangePointer(0, docLen);
   UChar* docSEndPtr = (UChar*)doc->RangePointer(docLen, 0);
   UChar* rangeBegPtr = (UChar*)doc->RangePointer(rangeBeg, rangeLen);
-  UChar* rangeEndPtr = (UChar*)doc->RangePointer(rangeEnd, rangeLen);
-
+  UChar* rangeEndPtr = (UChar*)doc->RangePointer(rangeEnd, 0);
 
   OnigPosition result = ONIG_MISMATCH;
   try {
-    result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
+    if (findForward)
+      result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
+    else //                                                              X                                    //
+      result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeEndPtr, rangeBegPtr, &m_Region, onigmoOptions);
   }
   catch (...) {
     return Cast2long(-3);  // -1 is normally used for not found, -3 is used here for exception
@@ -305,26 +309,7 @@ long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Posit
     return Cast2long(-3);
   }
 
-  if (findprevious) // search for last occurrence in range
-  {
-    //SPEEDUP: onig_scan() ???
-
-    while ((result >= 0) && (rangeBegPtr <= rangeEndPtr))
-    {
-      m_MatchPos = SciPos(result); //SciPos(m_Region.beg[0]);
-      m_MatchLen = SciPos(m_Region.end[0] - result);
-      
-      rangeBegPtr = docBegPtr + (m_MatchPos + max(1,m_MatchLen));
-
-      try {
-        result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
-      }
-      catch (...) {
-        return Cast2long(-3);
-      }
-    }
-  }
-  else if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) 
+  if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) 
   {
     m_MatchPos = SciPos(result); //SciPos(m_Region.beg[0]);
     m_MatchLen = SciPos(m_Region.end[0] - result);
