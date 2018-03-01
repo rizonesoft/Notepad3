@@ -321,6 +321,7 @@
     <ClCompile Include="Dialogs.c" />
     <ClCompile Include="Dlapi.c" />
     <ClCompile Include="Edit.c" />
+    <ClCompile Include="Encoding.c" />
     <ClCompile Include="Helpers.c" />
     <ClCompile Include="Notepad3.c" />
     <ClCompile Include="Print.cpp" />
@@ -334,6 +335,7 @@
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />
+    <ClInclude Include="Encoding.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Notepad3.h" />
     <ClInclude Include="SciCall.h" />

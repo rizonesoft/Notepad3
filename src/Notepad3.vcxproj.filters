@@ -54,6 +54,9 @@
     <ClCompile Include="..\crypto\sha-256.c">
       <Filter>Crypto</Filter>
     </ClCompile>
+    <ClCompile Include="Encoding.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">
@@ -99,6 +102,9 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="TypeDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Encoding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

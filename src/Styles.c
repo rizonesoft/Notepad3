@@ -30,16 +30,18 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <stdio.h>
+
 #include "scintilla.h"
 #include "scilexer.h"
 #include "notepad3.h"
 #include "edit.h"
 #include "dialogs.h"
 #include "resource.h"
+#include "encoding.h"
 #include "helpers.h"
-#include "styles.h"
 #include "SciCall.h"
 
+#include "styles.h"
 
 extern HINSTANCE g_hInstance;
 

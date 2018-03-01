@@ -6,9 +6,10 @@
 * Print.cpp                                                                   *
 *   Scintilla Printing Functionality                                          *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
-*	Mostly taken from SciTE, (c) Neil Hodgson                                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2016   *
+* Mostly taken from SciTE, (c) Neil Hodgson                                   *
+*                                                                             *
+*                                                  (c) Rizonesoft 2015-2018   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -34,6 +35,7 @@
 #include "scintilla.h"
 #include "scilexer.h"
 #include "resource.h"
+
 extern "C" {
 #include "dialogs.h"
 #include "helpers.h"
