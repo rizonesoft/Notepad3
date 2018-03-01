@@ -174,6 +174,7 @@ BOOL      g_bCodeFoldingAvailable;
 BOOL      g_bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
+BOOL      bUseDefaultForFileEncoding;
 BOOL      bSkipUnicodeDetection;
 BOOL      bLoadASCIIasUTF8;
 BOOL      bLoadNFOasOEM;
@@ -254,7 +255,7 @@ LPMRULIST mruReplace;
 
 DWORD     dwLastIOError;
 
-int       g_iDefaultEncoding;
+int       g_iDefaultNewFileEncoding;
 int       g_iDefaultCharSet;
 
 int       g_iEOLMode;
@@ -2731,7 +2732,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_ENCODING_SETDEFAULT:
-      SelectDefEncodingDlg(hwnd,&g_iDefaultEncoding);
+      SelectDefEncodingDlg(hwnd,&g_iDefaultNewFileEncoding);
       break;
 
 
@@ -4466,7 +4467,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          Encoding_SrcCmdLn(Encoding_MapUnicode(g_iDefaultEncoding));
+          Encoding_SrcCmdLn(Encoding_MapUnicode(g_iDefaultNewFileEncoding));
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
           FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
         }
@@ -5796,10 +5797,12 @@ void LoadSettings()
 
   bViewEOLs = IniSectionGetBool(pIniSection,L"ViewEOLs", FALSE);
 
-  g_iDefaultEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_NONE);
+  g_iDefaultNewFileEncoding = IniSectionGetInt(pIniSection,L"DefaultEncoding", CPI_NONE);
   // if DefaultEncoding is not defined set to system's current code-page 
-  g_iDefaultEncoding = (g_iDefaultEncoding == CPI_NONE) ?
-    Encoding_MapIniSetting(TRUE,(int)GetACP()) : Encoding_MapIniSetting(TRUE,g_iDefaultEncoding);
+  g_iDefaultNewFileEncoding = (g_iDefaultNewFileEncoding == CPI_NONE) ?
+    Encoding_MapIniSetting(TRUE,(int)GetACP()) : Encoding_MapIniSetting(TRUE,g_iDefaultNewFileEncoding);
+
+  bUseDefaultForFileEncoding = IniSectionGetBool(pIniSection, L"UseDefaultForFileEncoding", FALSE);
 
   bSkipUnicodeDetection = IniSectionGetBool(pIniSection, L"SkipUnicodeDetection", FALSE);
 
@@ -6003,19 +6006,19 @@ void LoadSettings()
 
   // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
   /*
-  if (g_iDefaultEncoding == CPI_ANSI_DEFAULT)
+  if (g_iDefaultNewFileEncoding == CPI_ANSI_DEFAULT)
   {
     // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
     int acp = (int)GetACP();
     if (acp == 932 || acp == 936 || acp == 949 || acp == 950) {
       iSciDefaultCodePage = acp;
     }
-    g_iDefaultEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
+    g_iDefaultNewFileEncoding = Encoding_GetByCodePage(iSciDefaultCodePage);
   }
   */
 
   // set flag for encoding default
-  g_Encodings[g_iDefaultEncoding].uFlags |= NCP_DEFAULT;
+  g_Encodings[g_iDefaultNewFileEncoding].uFlags |= NCP_DEFAULT;
 
   // define default charset
   g_iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
@@ -6101,7 +6104,8 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", bMarkOccurrencesCurrentWord);
   IniSectionSetBool(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
   IniSectionSetBool(pIniSection, L"ViewEOLs", bViewEOLs);
-  IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, g_iDefaultEncoding));
+  IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, g_iDefaultNewFileEncoding));
+  IniSectionSetBool(pIniSection, L"UseDefaultForFileEncoding", bUseDefaultForFileEncoding);
   IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
   IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", bLoadASCIIasUTF8);
   IniSectionSetBool(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
@@ -7435,9 +7439,9 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
 
     g_iEOLMode = iLineEndings[g_iDefaultEOLMode];
     SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
-    Encoding_Current(g_iDefaultEncoding);
-    Encoding_HasChanged(g_iDefaultEncoding);
-    Encoding_SciSetCodePage(g_hwndEdit,g_iDefaultEncoding);
+    Encoding_Current(g_iDefaultNewFileEncoding);
+    Encoding_HasChanged(g_iDefaultNewFileEncoding);
+    Encoding_SciSetCodePage(g_hwndEdit,g_iDefaultNewFileEncoding);
     EditSetNewText(g_hwndEdit,"",0);
 
     bReadOnly = FALSE;
@@ -7511,8 +7515,8 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
           Encoding_HasChanged(fileEncoding);
         }
         else {
-          Encoding_Current(g_iDefaultEncoding);
-          Encoding_HasChanged(g_iDefaultEncoding);
+          Encoding_Current(g_iDefaultNewFileEncoding);
+          Encoding_HasChanged(g_iDefaultNewFileEncoding);
         }
         Encoding_SciSetCodePage(g_hwndEdit,Encoding_Current(CPI_GET));
         bReadOnly = FALSE;

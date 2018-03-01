@@ -42,8 +42,6 @@
 
 
 extern HINSTANCE g_hInstance;
-extern BOOL bSkipUnicodeDetection;
-extern BOOL bPreserveCaretPos;
 
 
 //=============================================================================
@@ -1824,6 +1822,8 @@ UINT CharSetFromCodePage(UINT uCodePage) {
 }
 
 
+extern BOOL bPreserveCaretPos;
+
 //=============================================================================
 //
 //  MRU functions
@@ -3405,6 +3405,7 @@ void Encoding_SciSetCodePage(HWND hwnd,int iEncoding) {
   */
 }
 
+extern BOOL bSkipUnicodeDetection;
 
 BOOL IsUnicode(const char* pBuffer,int cb,LPBOOL lpbBOM,LPBOOL lpbReverse) {
   int i = 0xFFFF;

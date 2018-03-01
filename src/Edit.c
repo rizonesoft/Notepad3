@@ -64,6 +64,7 @@ extern DWORD dwLastIOError;
 extern UINT cpLastFind;
 extern BOOL bReplaceInitialized;
 extern BOOL bUseOldStyleBraceMatching;
+extern BOOL bUseDefaultForFileEncoding;
 extern BOOL bSkipUnicodeDetection;
 extern BOOL bFindReplCopySelOrClip;
 
@@ -81,7 +82,7 @@ extern BOOL bFixLineEndings;
 extern BOOL bAutoStripBlanks;
 
 // Default Codepage and Character Set
-extern int g_iDefaultEncoding;
+extern int g_iDefaultNewFileEncoding;
 extern int g_iDefaultCharSet;
 extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
@@ -193,8 +194,8 @@ HWND EditCreate(HWND hwndParent)
            g_hInstance,
            NULL);
 
-  Encoding_Current(g_iDefaultEncoding);
-  Encoding_SciSetCodePage(hwnd,g_iDefaultEncoding);
+  Encoding_Current(g_iDefaultNewFileEncoding);
+  Encoding_SciSetCodePage(hwnd,g_iDefaultNewFileEncoding);
   SendMessage(hwnd,SCI_SETEOLMODE,SC_EOL_CRLF,0);
   SendMessage(hwnd,SCI_SETPASTECONVERTENDINGS,TRUE,0);
   SendMessage(hwnd,SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT|SC_MOD_DELETETEXT|SC_MOD_CONTAINER,0);
@@ -1061,9 +1062,9 @@ BOOL EditLoadFile(
   }
 
   const int iFileEncoding = Encoding_SrcCmdLn(CPI_GET);
-  const int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding :
-    (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)) ? Encoding_SrcWeak(CPI_GET) : g_iDefaultEncoding);
-
+  const int iFileEncWeak = (Encoding_SrcWeak(CPI_GET) != CPI_NONE) ? Encoding_SrcWeak(CPI_GET) : CPI_ANSI_DEFAULT;
+  const int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : iFileEncWeak);
+    //@@@(g_Encodings[iFileEncWeak].uFlags & NCP_INTERNAL) ? g_iDefaultNewFileEncoding : iFileEncWeak;
 
   BOOL bBOM = FALSE;
   BOOL bReverse = FALSE;
@@ -1176,6 +1177,7 @@ BOOL EditLoadFile(
     }
 
     else {
+
       if (iFileEncoding != CPI_NONE)
         *iEncoding = iFileEncoding;
       else {
@@ -1184,16 +1186,7 @@ BOOL EditLoadFile(
           if (fvCurFile.mask & FV_ENCODING)
             *iEncoding = CPI_ANSI_DEFAULT;
           else {
-            int iEncWeak = Encoding_SrcWeak(CPI_GET);
-            switch (iEncWeak) {
-            case CPI_NONE:
-              *iEncoding = iPreferedEncoding;
-              break;
-            default:
-              *iEncoding = (g_Encodings[iEncWeak].uFlags & NCP_INTERNAL) ? g_iDefaultEncoding : 
-                (Encoding_IsValid(iEncWeak) ? iEncWeak : iPreferedEncoding);
-              break;
-            }
+            *iEncoding = iPreferedEncoding;
           }
         }
       }
@@ -1236,7 +1229,7 @@ BOOL EditLoadFile(
         }
       }
       else {
-        *iEncoding = Encoding_IsValid(iFileEncoding) ? iFileEncoding : g_iDefaultEncoding;
+        *iEncoding = Encoding_IsValid(iFileEncoding) ? iFileEncoding : iPreferedEncoding;
         Encoding_SciSetCodePage(hwnd,*iEncoding);
         EditSetNewText(hwnd,"",0);
         EditSetNewText(hwnd,lpData,cbData);
