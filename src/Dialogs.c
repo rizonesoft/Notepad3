@@ -44,6 +44,8 @@
 #include "resource.h"
 #include "version.h"
 #include "helpers.h"
+#include "encoding.h"
+
 #include "dialogs.h"
 
 

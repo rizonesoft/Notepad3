@@ -35,6 +35,7 @@
 #include <string.h>
 //#include <pathcch.h>
 #include <time.h>
+
 #include "scintilla.h"
 #include "scilexer.h"
 #include "edit.h"
@@ -43,9 +44,12 @@
 #include "resource.h"
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
+#include "encoding.h"
 #include "helpers.h"
-#include "notepad3.h"
 #include "SciCall.h"
+
+#include "notepad3.h"
+
 
 
 /******************************************************************************
@@ -287,8 +291,6 @@ HMODULE   hRichEdit = NULL;
 EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
 UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
-
-extern NP2ENCODING g_Encodings[];
 
 int iLineEndings[3] = {
   SC_EOL_CRLF,
@@ -2111,15 +2113,15 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   EnableCmd(hmenu,IDM_ENCODING_RECODE,i);
 
-  if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_UNICODE_REVERSE)
+  if (Encoding_IsUNICODE_REVERSE(Encoding_Current(CPI_GET)))
     i = IDM_ENCODING_UNICODEREV;
-  else if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_UNICODE)
+  else if (Encoding_IsUNICODE(Encoding_Current(CPI_GET)))
     i = IDM_ENCODING_UNICODE;
-  else if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_UTF8_SIGN)
+  else if (Encoding_IsUTF8_SIGN(Encoding_Current(CPI_GET)))
     i = IDM_ENCODING_UTF8SIGN;
-  else if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_UTF8)
+  else if (Encoding_IsUTF8(Encoding_Current(CPI_GET)))
     i = IDM_ENCODING_UTF8;
-  else if (g_Encodings[Encoding_Current(CPI_GET)].uFlags & NCP_ANSI)
+  else if (Encoding_IsANSI(Encoding_Current(CPI_GET)))
     i = IDM_ENCODING_ANSI;
   else
     i = -1;
@@ -2222,7 +2224,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
       i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD));
 
-  EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING,*g_Encodings[Encoding_Current(CPI_GET)].pszParseNames);
+  EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING, *Encoding_GetParseNames(Encoding_Current(CPI_GET)));
 
   //EnableCmd(hmenu,IDM_EDIT_INSERT_SHORTDATE,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_INSERT_LONGDATE,!bReadOnly);
@@ -3335,10 +3337,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INSERT_ENCODING:
       {
-        if (*g_Encodings[Encoding_Current(CPI_GET)].pszParseNames) {
+        if (*Encoding_GetParseNames(Encoding_Current(CPI_GET))) {
           char msz[32] = { '\0' };
           //int iSelStart;
-          StringCchCopyNA(msz,COUNTOF(msz),g_Encodings[Encoding_Current(CPI_GET)].pszParseNames,COUNTOF(msz));
+          StringCchCopyNA(msz,COUNTOF(msz), Encoding_GetParseNames(Encoding_Current(CPI_GET)),COUNTOF(msz));
           char *p = StrChrA(msz, ',');
           if (p)
             *p = 0;
@@ -6018,7 +6020,7 @@ void LoadSettings()
   */
 
   // set flag for encoding default
-  g_Encodings[g_iDefaultNewFileEncoding].uFlags |= NCP_DEFAULT;
+  Encoding_SetDefaultFlag(g_iDefaultNewFileEncoding);
 
   // define default charset
   g_iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
@@ -7057,7 +7059,7 @@ void UpdateStatusbar()
   FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
 
   Encoding_SetLabel(iEncoding);
-  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", g_Encodings[iEncoding].wchLabel);
+  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", Encoding_GetLabel(iEncoding));
 
   if (g_iEOLMode == SC_EOL_CR) 
   {
