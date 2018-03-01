@@ -25,9 +25,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_RUN                 ICON                    "..\\res\\Run.ico"
-
 IDR_MAINWND             ICON                    "..\\res\\Notepad3.ico"
+
+IDI_RUN                 ICON                    "..\\res\\Run.ico"
 
 IDR_MAINWND128          ICON                    "..\\res\\Notepad3_128.ico"
 
@@ -486,7 +486,7 @@ BEGIN
     "M",            IDM_VIEW_MARGIN,        VIRTKEY, SHIFT, CONTROL, NOINVERT
     "N",            IDM_FILE_NEW,           VIRTKEY, CONTROL, NOINVERT
     "N",            IDM_FILE_NEWWINDOW,     VIRTKEY, ALT, NOINVERT
-    "N",            IDM_FILE_NEWWINDOW2,    VIRTKEY, ALT, SHIFT, NOINVERT
+    "N",            IDM_FILE_NEWWINDOW2,    VIRTKEY, SHIFT, ALT, NOINVERT
     "N",            IDM_VIEW_LINENUMBERS,   VIRTKEY, SHIFT, CONTROL, NOINVERT
     "O",            IDM_FILE_OPEN,          VIRTKEY, CONTROL, NOINVERT
     "O",            IDM_EDIT_SORTLINES,     VIRTKEY, ALT, NOINVERT
@@ -744,23 +744,25 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
 END
 
-IDD_DEFENCODING DIALOGEX 0, 0, 180, 118
+IDD_DEFENCODING DIALOGEX 0, 0, 181, 122
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Encoding"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Default encoding:",IDC_STATIC,7,7,58,8
-    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,7,20,166,128
+    LTEXT           "&Default encoding (new file):",IDC_STATIC,7,7,90,8
+    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,7,20,167,128
+    CONTROL         "Fallback on detection failure.", IDC_USEASREADINGFALLBACK,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 40, 108, 10
     CONTROL         "Skip automatic &Unicode detection.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,43,124,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,51,124,10
     CONTROL         "Open 7-bit &ASCII files in UTF-8 mode.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,53,136,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,136,10
     CONTROL         "Open 8-bit *.&nfo/diz files in DOS-437 mode.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,63,166,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,167,10
     CONTROL         "Don't parse encoding &tags.",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,102,10
-    DEFPUSHBUTTON   "OK",IDOK,68,97,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,123,97,50,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,84,102,10
+    DEFPUSHBUTTON   "OK",IDOK,68,101,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,124,101,50,14
 END
 
 IDD_DEFEOLMODE DIALOGEX 0, 0, 180, 78
@@ -1209,9 +1211,9 @@ BEGIN
     IDD_DEFENCODING, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 173
+        RIGHTMARGIN, 174
         TOPMARGIN, 7
-        BOTTOMMARGIN, 101
+        BOTTOMMARGIN, 115
     END
 
     IDD_DEFEOLMODE, DIALOG

@@ -134,6 +134,7 @@
 #define IDC_SWAPSTRG                    230
 #define IDC_CHECK_OCC                   231
 #define IDC_PRINTER                     232
+#define IDC_USEASREADINGFALLBACK        233
 #define IDACC_FIND                      302
 #define IDACC_REPLACE                   303
 #define IDACC_SAVEPOS                   304
