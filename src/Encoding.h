@@ -65,6 +65,13 @@ extern int g_DOSEncoding;
 #define CPI_UTF8SIGN           7
 #define CPI_UTF7               8
 
+#define CPI_UTF32       CPI_NONE // invalid
+#define CPI_UTF32BE     CPI_NONE // invalid
+#define CPI_UCS4       CPI_UTF32 // invalid
+#define CPI_UCS4BE   CPI_UTF32BE // invalid
+
+#define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
+
 #define IDS_ENCODINGNAME0  61000
 #define IDS_EOLMODENAME0   62000
 
@@ -130,9 +137,7 @@ BOOL IsUTF7(const char*, int);
 INT UTF8_mbslen_bytes(LPCSTR utf8_string);
 INT UTF8_mbslen(LPCSTR source, INT byte_length);
 
-
-int Encoding_GetEncoding(const char* const, const size_t);
-
+int Encoding_Analyze(const char* const, const size_t);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 

@@ -27,10 +27,8 @@
 #define VC_EXTRALEAN 1
 
 #include <windows.h>
+//#include <uxtheme.h>
 #include <shlobj.h>
-#include <shlwapi.h>
-#include <stdio.h>
-#include <string.h>
 //#include <pathcch.h>
 #include "scintilla.h"
 #include "resource.h"

@@ -751,16 +751,16 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "&Default encoding (new file):",IDC_STATIC,7,7,90,8
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,7,20,167,128
-    CONTROL         "Fallback on detection failure.", IDC_USEASREADINGFALLBACK,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 40, 108, 10
-    CONTROL         "Skip automatic &Unicode detection.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,51,124,10
+    CONTROL         "Use as &fallback on detection failure.",IDC_USEASREADINGFALLBACK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,155,10
+    CONTROL         "Skip &encoding detection.",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,51,122,10
     CONTROL         "Open 7-bit &ASCII files in UTF-8 mode.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,136,10
     CONTROL         "Open 8-bit *.&nfo/diz files in DOS-437 mode.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,167,10
-    CONTROL         "Don't parse encoding &tags.",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,84,102,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,155,10
+    CONTROL         "Don't parse encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,84,126,10
     DEFPUSHBUTTON   "OK",IDOK,68,101,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,124,101,50,14
 END

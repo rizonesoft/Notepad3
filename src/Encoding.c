@@ -3,11 +3,11 @@
 *                                                                             *
 * Notepad3                                                                    *
 *                                                                             *
-* Encoding.c                                                                   *
-*   General helper functions                                                  *
+* Encoding.c                                                                  *
+*   Handling and Helpers for File Encoding                                    *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
-*	Parts taken from SciTE, (c) Neil Hodgson                                    *
-*	MinimizeToTray, (c) 2000 Matthew Ellis                                      *
+*	                                                                            *
+*	                                                                            *
 *                                                                             *
 *                                                  (c) Rizonesoft 2015-2018   *
 *                                                    https://rizonesoft.com   *
@@ -28,7 +28,7 @@
 
 #include <windows.h>
 #include <commctrl.h>
-#include <uxtheme.h>
+#include <stdlib.h>
 
 #include "../uthash/utarray.h"
 
@@ -219,7 +219,7 @@ int Encoding_SrcCmdLn(int iSrcEncoding) {
     if (Encoding_IsValid(iSrcEncoding))
       SourceEncoding = iSrcEncoding;
     else
-      SourceEncoding = CPI_UTF8;
+      SourceEncoding = CPI_ANSI_DEFAULT;
   }
   else if (iSrcEncoding == CPI_NONE) {
     SourceEncoding = CPI_NONE;
@@ -260,8 +260,52 @@ BOOL Encoding_HasChanged(int iOriginalEncoding) {
 // ============================================================================
 // ============================================================================
 
+/*
+* Mostly taken from "tellenc"
+* Program to detect the encoding of text.  It currently supports ASCII,
+* UTF-8, UTF-16/32 (little-endian or big-endian), Latin1, Windows-1252,
+* CP437, GB2312, GBK, Big5, and SJIS, among others.
+*
+* Copyright (C) 2006-2016 Wu Yongwei <wuyongwei@gmail.com>
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any
+* damages arising from the use of this software.
+*
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute
+* it freely, subject to the following restrictions:
+*
+* 1. The origin of this software must not be misrepresented; you must
+*    not claim that you wrote the original software.  If you use this
+*    software in a product, an acknowledgment in the product
+*    documentation would be appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must
+*    not be misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source
+*    distribution.
+*
+*
+* The latest version of this software should be available at:
+*      <URL:https://github.com/adah1972/tellenc>
+*
+*/
+
+
 typedef unsigned short uint16_t;
 typedef unsigned int   uint32_t;
+
+
+typedef enum _UTF8_ValidationState
+{
+  UTF8_INVALID,
+  UTF8_1,
+  UTF8_2,
+  UTF8_3,
+  UTF8_4,
+  UTF8_TAIL
+} UTF8_ValidationState;
+
 
 typedef struct {
   int         encID;
@@ -284,6 +328,13 @@ static freq_analysis_data_t freq_analysis_data[] =
 { 19, 0xfa9d, "windows-1250" },         // "úť" (Slovak)
 { 19, 0x9e69, "windows-1250" },         // "ži" (Slovenian)
 { 19, 0xe869, "windows-1250" },         // "či" (Slovenian)
+  
+{ 30, 0xe820, "windows-1251" },         // "и " (Cyrillic)
+{ 30, 0xe3ee, "windows-1251" },         // "го" (Cyrillic)
+{ 30, 0xeaee, "windows-1251" },         // "ко" (Cyrillic)
+{ 30, 0xf1ea, "windows-1251" },         // "ск" (Cyrillic)
+{ 30, 0xf1f2, "windows-1251" },         // "ст" (Cyrillic)
+
 { 67, 0xe020, "windows-1252" },         // "à " (French)
 { 67, 0xe920, "windows-1252" },         // "é " (French)
 { 67, 0xe963, "windows-1252" },         // "éc" (French)
@@ -304,43 +355,43 @@ static freq_analysis_data_t freq_analysis_data[] =
 { 52, 0xc4c4, "cp437" },                // "──"
 { 52, 0xcdcd, "cp437" },                // "══"
 { 52, 0xdbdb, "cp437" },                // "██"
-{ 72, 0xa1a1, "gbk" },                  // "　"
-{ 72, 0xa1a2, "gbk" },                  // "、"
-{ 72, 0xa1a3, "gbk" },                  // "。"
-{ 72, 0xa1a4, "gbk" },                  // "·"
-{ 72, 0xa1b6, "gbk" },                  // "《"
-{ 72, 0xa1b7, "gbk" },                  // "》"
-{ 72, 0xa3ac, "gbk" },                  // "，"
-{ 72, 0xa3ba, "gbk" },                  // "："
-{ 72, 0xb5c4, "gbk" },                  // "的"
-{ 72, 0xc1cb, "gbk" },                  // "了"
-{ 72, 0xd2bb, "gbk" },                  // "一"
-{ 72, 0xcac7, "gbk" },                  // "是"
-{ 72, 0xb2bb, "gbk" },                  // "不"
-{ 72, 0xb8f6, "gbk" },                  // "个"
-{ 72, 0xc8cb, "gbk" },                  // "人"
-{ 72, 0xd5e2, "gbk" },                  // "这"
-{ 72, 0xd3d0, "gbk" },                  // "有"
-{ 72, 0xced2, "gbk" },                  // "我"
-{ 72, 0xc4e3, "gbk" },                  // "你"
-{ 72, 0xcbfb, "gbk" },                  // "他"
-{ 72, 0xcbfd, "gbk" },                  // "她"
-{ 72, 0xc9cf, "gbk" },                  // "上"
-{ 72, 0xbfb4, "gbk" },                  // "看"
-{ 72, 0xd6ae, "gbk" },                  // "之"
-{ 72, 0xbbb9, "gbk" },                  // "还"
-{ 72, 0xbfc9, "gbk" },                  // "可"
-{ 72, 0xbaf3, "gbk" },                  // "后"
-{ 72, 0xd6d0, "gbk" },                  // "中"
-{ 72, 0xd0d0, "gbk" },                  // "行"
-{ 72, 0xb1d2, "gbk" },                  // "币"
-{ 72, 0xb3f6, "gbk" },                  // "出"
-{ 72, 0xb7d1, "gbk" },                  // "费"
-{ 72, 0xb8d0, "gbk" },                  // "感"
-{ 72, 0xbef5, "gbk" },                  // "觉"
-{ 72, 0xc4ea, "gbk" },                  // "年"
-{ 72, 0xd4c2, "gbk" },                  // "月"
-{ 72, 0xc8d5, "gbk" },                  // "日"
+{ 20, 0xa1a1, "gbk" },                  // "　"
+{ 20, 0xa1a2, "gbk" },                  // "、"
+{ 20, 0xa1a3, "gbk" },                  // "。"
+{ 20, 0xa1a4, "gbk" },                  // "·"
+{ 20, 0xa1b6, "gbk" },                  // "《"
+{ 20, 0xa1b7, "gbk" },                  // "》"
+{ 20, 0xa3ac, "gbk" },                  // "，"
+{ 20, 0xa3ba, "gbk" },                  // "："
+{ 20, 0xb5c4, "gbk" },                  // "的"
+{ 20, 0xc1cb, "gbk" },                  // "了"
+{ 20, 0xd2bb, "gbk" },                  // "一"
+{ 20, 0xcac7, "gbk" },                  // "是"
+{ 20, 0xb2bb, "gbk" },                  // "不"
+{ 20, 0xb8f6, "gbk" },                  // "个"
+{ 20, 0xc8cb, "gbk" },                  // "人"
+{ 20, 0xd5e2, "gbk" },                  // "这"
+{ 20, 0xd3d0, "gbk" },                  // "有"
+{ 20, 0xced2, "gbk" },                  // "我"
+{ 20, 0xc4e3, "gbk" },                  // "你"
+{ 20, 0xcbfb, "gbk" },                  // "他"
+{ 20, 0xcbfd, "gbk" },                  // "她"
+{ 20, 0xc9cf, "gbk" },                  // "上"
+{ 20, 0xbfb4, "gbk" },                  // "看"
+{ 20, 0xd6ae, "gbk" },                  // "之"
+{ 20, 0xbbb9, "gbk" },                  // "还"
+{ 20, 0xbfc9, "gbk" },                  // "可"
+{ 20, 0xbaf3, "gbk" },                  // "后"
+{ 20, 0xd6d0, "gbk" },                  // "中"
+{ 20, 0xd0d0, "gbk" },                  // "行"
+{ 20, 0xb1d2, "gbk" },                  // "币"
+{ 20, 0xb3f6, "gbk" },                  // "出"
+{ 20, 0xb7d1, "gbk" },                  // "费"
+{ 20, 0xb8d0, "gbk" },                  // "感"
+{ 20, 0xbef5, "gbk" },                  // "觉"
+{ 20, 0xc4ea, "gbk" },                  // "年"
+{ 20, 0xd4c2, "gbk" },                  // "月"
+{ 20, 0xc8d5, "gbk" },                  // "日"
 { 22, 0xa140, "big5" },                 // "　"
 { 22, 0xa141, "big5" },                 // "，"
 { 22, 0xa143, "big5" },                 // "。"
@@ -416,19 +467,16 @@ static freq_analysis_data_t freq_analysis_data[] =
 };
 // ============================================================================
 
-typedef struct _char_count_t {
-  uint16_t first;
-  uint32_t second;
-} char_count_t;
+#define MAX_CHAR 256
 
-//typedef pair<uint16_t, uint32_t>  char_count_t;
-//typedef map<uint16_t, uint32_t>   char_count_map_t;
-//typedef vector<char_count_t>      char_count_vec_t;
-
+typedef struct _dbyte_cnt_t {
+  uint16_t dblByte;
+  uint32_t count;
+} dbyte_cnt_t;
 
 int __fastcall check_freq_dbyte(uint16_t dbyte)
 {
-  for (size_t i = 0; i < sizeof freq_analysis_data / sizeof(freq_analysis_data_t); ++i) {
+  for (size_t i = 0; i < (sizeof freq_analysis_data / sizeof(freq_analysis_data_t)); ++i) {
     if (dbyte == freq_analysis_data[i].dbyte) {
       return freq_analysis_data[i].encID;
     }
@@ -437,18 +485,20 @@ int __fastcall check_freq_dbyte(uint16_t dbyte)
 }
 // ============================================================================
 
-
-int __fastcall search_freq_dbytes(const UT_array* dbyte_char_cnt)
+// --------------------------------------------------------------
+// arg dbyte_cnt_map must be sorted (high count first)
+//
+int __fastcall search_freq_dbytes(const UT_array* dbyte_cnt_map)
 {
-  size_t max_comp_idx = 10;
-  if (max_comp_idx > utarray_len(dbyte_char_cnt)) {
-    max_comp_idx = utarray_len(dbyte_char_cnt);
-  }
-  for (size_t i = 0; i < max_comp_idx; ++i) {
+  size_t max_comp_cnt = 10;
+  size_t cnt = 0;
 
-    const char_count_t* ccnt = (char_count_t*)utarray_eltptr(dbyte_char_cnt, i);
+  for (dbyte_cnt_t* p = (dbyte_cnt_t*)utarray_front(dbyte_cnt_map);
+       (p != NULL) && (++cnt <= max_comp_cnt);
+       p = (dbyte_cnt_t*)utarray_next(dbyte_cnt_map, p)) {
 
-    const int enc = check_freq_dbyte(ccnt->first);
+    const int enc = check_freq_dbyte(p->dblByte);
+
     if (enc > CPI_NONE) {
       return enc;
     }
@@ -458,35 +508,300 @@ int __fastcall search_freq_dbytes(const UT_array* dbyte_char_cnt)
 // ============================================================================
 
 
+static UTF8_ValidationState utf8_char_table[MAX_CHAR];
 
-int Encoding_TellEncoding(const unsigned char* const buffer, const size_t len)
+void init_utf8_validation_char_table()
+{
+  int ch = 0;
+  utf8_char_table[ch] = UTF8_INVALID;
+  ++ch;
+  for (; ch <= 0x7f; ++ch) {
+    utf8_char_table[ch] = UTF8_1;
+  }
+  for (; ch <= 0xbf; ++ch) {
+    utf8_char_table[ch] = UTF8_TAIL;
+  }
+  for (; ch <= 0xc1; ++ch) {
+    utf8_char_table[ch] = UTF8_INVALID;
+  }
+  for (; ch <= 0xdf; ++ch) {
+    utf8_char_table[ch] = UTF8_2;
+  }
+  for (; ch <= 0xef; ++ch) {
+    utf8_char_table[ch] = UTF8_3;
+  }
+  for (; ch <= 0xf4; ++ch) {
+    utf8_char_table[ch] = UTF8_4;
+  }
+  for (; ch <= 0xff; ++ch) {
+    utf8_char_table[ch] = UTF8_INVALID;
+  }
+}
+// ============================================================================
+
+
+void __fastcall init_sbyte_char_count(dbyte_cnt_t sbyte_char_cnt[])
+{
+  for (size_t ch = 0; ch < MAX_CHAR; ++ch) {
+    sbyte_char_cnt[ch].dblByte = (uint16_t)ch;
+    sbyte_char_cnt[ch].count = 0;
+  }
+}
+// ============================================================================
+
+static const unsigned char NON_TEXT_CHARS[] = { 0, 26, 127, 255 };
+
+__forceinline bool is_non_text(char ch)
+{
+  for (size_t i = 0; i < sizeof(NON_TEXT_CHARS); ++i) {
+    if (ch == NON_TEXT_CHARS[i]) {
+      return true;
+    }
+  }
+  return false;
+}
+// ============================================================================
+
+
+__forceinline dbyte_cnt_t* find_dbyte_count(const UT_array* const dbyte_cnt_map, const uint16_t dbyte)
+{
+  for (dbyte_cnt_t* p = (dbyte_cnt_t*)utarray_front(dbyte_cnt_map);
+    (p != NULL);
+       p = (dbyte_cnt_t*)utarray_next(dbyte_cnt_map, p)) {
+
+    if (p->dblByte == dbyte)
+      return p;
+  }
+  return NULL;
+}
+// ============================================================================
+
+
+static int ascending_count(const void *lhs, const void *rhs)
+{
+  const uint32_t lcnt = ((dbyte_cnt_t*)lhs)->count;
+  const uint32_t rcnt = ((dbyte_cnt_t*)rhs)->count;
+  return (lcnt - rcnt); // ascending order
+}
+
+static int descending_count(const void *lhs, const void *rhs)
+{
+  const uint32_t lcnt = ((dbyte_cnt_t*)lhs)->count;
+  const uint32_t rcnt = ((dbyte_cnt_t*)rhs)->count;
+  return (rcnt - lcnt); // descending order
+}
+
+// ============================================================================
+
+//typedef pair<uint16_t, uint32_t>  char_count_t;
+//typedef map<uint16_t, uint32_t>   char_count_map_t;
+//typedef vector<char_count_t>      char_count_vec_t;
+
+static const char NUL = '\0';
+static const char DOS_EOF = '\x1A';
+static const int EVEN = 0;
+static const int ODD = 1;
+
+static size_t nul_count_byte[2];
+static size_t nul_count_word[2];
+
+
+int Encoding_Analyze(const char* const buffer, const size_t len)
 {
   int iEncoding = CPI_NONE;
-  UT_icd char_count_icd = { sizeof(char_count_t), NULL, NULL, NULL };
-  UT_array* char_count_vector = NULL;
+  bool is_binary = false;
+  bool is_valid_utf8 = true;
+  bool is_valid_latin1 = true;
+  uint32_t dbyte_cnt = 0;
+  uint32_t dbyte_hihi_cnt = 0;
 
-  utarray_new(char_count_vector, &char_count_icd);
-  utarray_reserve(char_count_vector, 256);
+  UT_icd dbyte_count_icd = { sizeof(dbyte_cnt_t), NULL, NULL, NULL };
+  UT_array* dbyte_count_map = NULL;
 
-  ///...
+  utarray_new(dbyte_count_map, &dbyte_count_icd);
+  utarray_reserve(dbyte_count_map, MAX_CHAR);
 
-  utarray_clear(char_count_vector);
-  utarray_free(char_count_vector);
+  //~dbyte_cnt_t sbyte_char_count[MAX_CHAR];
+  //~init_sbyte_char_count(sbyte_char_count);
 
-  UNUSED(buffer);
-  UNUSED(len);
+  int last_ch = EOF;
+  UTF8_ValidationState utf8_valid_state = UTF8_1;
+
+  for (size_t pos = 0; pos < len; ++pos) {
+
+    const unsigned char ch = buffer[pos];
+    //~ ++(sbyte_char_count[ch].count);
+
+    // Check for binary data (including UTF-16/32)
+    if (is_non_text(ch)) {
+      if (!is_binary && !(ch == DOS_EOF && pos == len - 1)) {
+        is_binary = true;
+      }
+      if (ch == NUL) {
+        // Count for NULs in even- and odd-number bytes
+        nul_count_byte[pos & 1]++;
+        if (pos & 1) {
+          if (buffer[pos - 1] == NUL) {
+            // Count for NULs in even- and odd-number words
+            nul_count_word[(pos / 2) & 1]++;
+          }
+        }
+      }
+    }
+
+    // Check for UTF-8 validity
+    if (is_valid_utf8) {
+      switch (utf8_char_table[ch]) {
+      case UTF8_INVALID:
+        is_valid_utf8 = false;
+        break;
+      case UTF8_1:
+        if (utf8_valid_state != UTF8_1) {
+          is_valid_utf8 = false;
+        }
+        break;
+      case UTF8_2:
+        if (utf8_valid_state != UTF8_1) {
+          is_valid_utf8 = false;
+        }
+        else {
+          utf8_valid_state = UTF8_2;
+        }
+        break;
+      case UTF8_3:
+        if (utf8_valid_state != UTF8_1) {
+          is_valid_utf8 = false;
+        }
+        else {
+          utf8_valid_state = UTF8_3;
+        }
+        break;
+      case UTF8_4:
+        if (utf8_valid_state != UTF8_1) {
+          is_valid_utf8 = false;
+        }
+        else {
+          utf8_valid_state = UTF8_4;
+        }
+        break;
+      case UTF8_TAIL:
+        if (utf8_valid_state > UTF8_1) {
+          utf8_valid_state--;
+        }
+        else {
+          is_valid_utf8 = false;
+        }
+        break;
+      }
+    }
+
+    // Check whether non-Latin1 characters appear
+    if (is_valid_latin1) {
+      if (ch >= 0x80 && ch < 0xa0) {
+        is_valid_latin1 = false;
+      }
+    }
+    
+    // Construct double-bytes and count
+    if (last_ch != EOF)
+    {
+      dbyte_cnt_t dbyte_item = { 0, 1 };
+      dbyte_item.dblByte = (uint16_t)((last_ch << 8) + ch);
+
+      dbyte_cnt_t* item = find_dbyte_count(dbyte_count_map, dbyte_item.dblByte);
+      if (item == NULL)
+        utarray_push_back(dbyte_count_map, &dbyte_item);
+      else
+        ++(item->count);
+
+      dbyte_cnt++;
+      if ((last_ch > 0xa0) && (ch > 0xa0)) {
+        ++dbyte_hihi_cnt;
+      }
+      //last_ch = EOF;
+    }
+
+    if (ch >= 0x80)
+      last_ch = ch;
+    else
+      last_ch = EOF;
+
+  } // for
+
+  if (!is_valid_utf8 && is_binary) {
+    // Heuristics for UTF-16/32
+    if (nul_count_byte[EVEN] > 4 &&
+      (nul_count_byte[ODD] == 0 ||
+       nul_count_byte[EVEN] / nul_count_byte[ODD] > 20)) {
+      iEncoding = CPI_UNICODEBE;
+    }
+    else if (nul_count_byte[ODD] > 4 &&
+      (nul_count_byte[EVEN] == 0 ||
+       nul_count_byte[ODD] / nul_count_byte[EVEN] > 20)) {
+      iEncoding = CPI_UNICODE;
+    }
+    else if (nul_count_word[EVEN] > 4 &&
+      (nul_count_word[ODD] == 0 ||
+       nul_count_word[EVEN] / nul_count_word[ODD] > 20)) {
+      iEncoding = CPI_UCS4BE;   // utf-32 is not a built-in encoding for Notepad3
+    }
+    else if (nul_count_word[ODD] > 4 &&
+      (nul_count_word[EVEN] == 0 ||
+       nul_count_word[ODD] / nul_count_word[EVEN] > 20)) {
+      iEncoding = CPI_UCS4; // utf-32le is not a built-in encoding for Notepad3
+    }
+  }
+  else if (dbyte_cnt == 0) {
+    // No characters outside the scope of ASCII
+    iEncoding = CPI_ANSI_DEFAULT;
+  }
+  else if (is_valid_utf8) {
+    // Only valid UTF-8 sequences
+    iEncoding = CPI_UTF8;
+  }
+
+  if (iEncoding == CPI_NONE)  // still unknown ?
+  {
+    // Get the character counts in descending order
+    //~qsort((void*)sbyte_char_count, MAX_CHAR, sizeof(dbyte_cnt_t), descending_count);
+
+    // Get the double-byte counts in descending order
+    utarray_sort(dbyte_count_map, descending_count);
+
+    const int probEncoding = search_freq_dbytes(dbyte_count_map);
+
+    if (probEncoding != CPI_NONE) {
+      iEncoding = probEncoding;
+    }
+    else if (((dbyte_hihi_cnt * 100) / ++dbyte_cnt) < 5) {
+      // mostly a low-byte follows a high-byte
+      iEncoding = CPI_ANSI_DEFAULT;
+    }
+  }
+
+  utarray_clear(dbyte_count_map);
+  utarray_free(dbyte_count_map);
+
   return iEncoding;
 }
 // ============================================================================
 
 
-
+// ============================================================================
+// ============================================================================
+//
+// END  OF  "TELLENC"  PART
+//
 // ============================================================================
 // ============================================================================
 
-void Encoding_InitDefaults() 
+
+void Encoding_InitDefaults()
 
 {
+  // init tellenc code page detection
+  init_utf8_validation_char_table();
+
   const UINT uCodePageMBCS[20] = {
     42, // (Symbol)
     50220,50221,50222,50225,50227,50229, // (Chinese, Japanese, Korean) 
@@ -871,85 +1186,86 @@ BOOL Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
 
 
 UINT Encoding_GetCodePage(int iEncoding) {
-  return g_Encodings[iEncoding].uCodePage;
+  return (iEncoding >= 0) ? g_Encodings[iEncoding].uCodePage : CP_ACP;
 }
 // ============================================================================
 
 BOOL Encoding_IsDefault(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_DEFAULT);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_DEFAULT) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsANSI(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_ANSI);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ANSI) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsOEM(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_OEM);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_OEM) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsUTF8(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_UTF8);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsUTF8_SIGN(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsMBCS(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_MBCS);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_MBCS) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsUNICODE(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_UNICODE);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsUNICODE_BOM(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsUNICODE_REVERSE(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE) : FALSE;
 }
 // ============================================================================
 
 
 BOOL Encoding_IsINTERNAL(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_INTERNAL);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_INTERNAL) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsEXTERNAL_8BIT(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT) : FALSE;
 }
 // ============================================================================
 
 BOOL Encoding_IsRECODE(int iEncoding) {
-  return (g_Encodings[iEncoding].uFlags & NCP_RECODE);
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_RECODE) : FALSE;
 }
 // ============================================================================
 
 
 void Encoding_SetDefaultFlag(int iEncoding) {
-  g_Encodings[iEncoding].uFlags |= NCP_DEFAULT;
+  if (iEncoding >= 0)
+    g_Encodings[iEncoding].uFlags |= NCP_DEFAULT;
 }
 // ============================================================================
 
 
 const WCHAR* Encoding_GetLabel(int iEncoding) {
-  return g_Encodings[iEncoding].wchLabel;
+  return (iEncoding >= 0) ? g_Encodings[iEncoding].wchLabel : NULL;
 }
 // ============================================================================
 
 const char* Encoding_GetParseNames(int iEncoding) {
-  return g_Encodings[iEncoding].pszParseNames;
+  return (iEncoding >= 0) ? g_Encodings[iEncoding].pszParseNames : NULL;
 }
 // ============================================================================
 
@@ -1249,326 +1565,5 @@ INT UTF8_mbslen(LPCSTR source, INT byte_length)
     }
   }
   return wchar_length;
-}
-// ============================================================================
-
-
-
-
-/*
-* Copyright (C) 2006-2016 Wu Yongwei <wuyongwei@gmail.com>
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any
-* damages arising from the use of this software.
-*
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute
-* it freely, subject to the following restrictions:
-*
-* 1. The origin of this software must not be misrepresented; you must
-*    not claim that you wrote the original software.  If you use this
-*    software in a product, an acknowledgement in the product
-*    documentation would be appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must
-*    not be misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source
-*    distribution.
-*
-*
-* The latest version of this software should be available at:
-*      <URL:https://github.com/adah1972/tellenc>
-*
-*/
-
-/**
-* @file    TellEnc.c
-*
-* Program to detect the encoding of text.  It currently supports ASCII,
-* UTF-8, UTF-16/32 (little-endian or big-endian), Latin1, Windows-1252,
-* CP437, GB2312, GBK, Big5, and SJIS, among others.
-*
-* @version 1.22, 2016/07/26
-* @author  Wu Yongwei
-*/
-
-#define MAX_CHAR 256
-
-
-
-
-
-
-static const unsigned char NON_TEXT_CHARS[] = { 0, 26, 127, 255 };
-static const char NUL = '\0';
-static const char DOS_EOF = '\x1A';
-static const int EVEN = 0;
-static const int ODD  = 1;
-
-
-// ============================================================================
-
-
-static size_t nul_count_byte[2];
-static size_t nul_count_word[2];
-
-static bool is_binary = false;
-static bool is_valid_utf8 = true;
-static bool is_valid_latin1 = true;
-static uint32_t dbyte_cnt = 0;
-static uint32_t dbyte_hihi_cnt = 0;
-
-
-// ============================================================================
-// ============================================================================
-
-
-static inline bool is_non_text(char ch)
-{
-  for (size_t i = 0; i < sizeof(NON_TEXT_CHARS); ++i) {
-    if (ch == NON_TEXT_CHARS[i]) {
-      return true;
-    }
-  }
-  return false;
-}
-// ============================================================================
-
-
-
-
-static void init_sbyte_char_count(char_count_t sbyte_char_cnt[])
-{
-  for (size_t i = 0; i < MAX_CHAR; ++i) {
-    sbyte_char_cnt[i].first = (uint16_t)i;
-    sbyte_char_cnt[i].second = 0;
-  }
-}
-// ============================================================================
-
-
-
-
-
-
-#if FALSE
-
-
-typedef struct _pattern_t {
-  const char* name;
-  const char* pattern;
-  size_t pattern_len;
-} pattern_t;
-
-static const char* check_ucs_bom(const unsigned char* const buffer, const size_t len)
-{
-  const pattern_t patterns[] = {
-      { "ucs-4",     "\x00\x00\xFE\xFF",  4 },
-      { "ucs-4le",   "\xFF\xFE\x00\x00",  4 },
-      { "utf-8",     "\xEF\xBB\xBF",      3 },
-      { "utf-16",    "\xFE\xFF",          2 },
-      { "utf-16le",  "\xFF\xFE",          2 },
-      { NULL,        NULL,                0 }
-  };
-  for (size_t i = 0; patterns[i].name; ++i) {
-    const pattern_t* item = &(patterns[i]);
-    if (len >= item->pattern_len &&  memcmp(buffer, item->pattern, item->pattern_len) == 0) {
-      return item->name;
-    }
-  }
-  return NULL;
-}
-// ============================================================================
-
-
-
-
-
-
-const char* tellenc(const unsigned char* const buffer, const size_t len)
-{
-    if (len == 0) {
-        return "unknown";
-    }
-
-    const char* result = check_ucs_bom(buffer, len);
-    if (result) {
-        return result;
-    }
-
-    char_count_t sbyte_char_cnt[MAX_CHAR];
-    char_count_map_t dbyte_char_cnt_map;
-    init_sbyte_char_count(sbyte_char_cnt);
-
-    unsigned char ch;
-    int last_ch = EOF;
-    int utf8_state = UTF8_1;
-    for (size_t i = 0; i < len; ++i) {
-        ch = buffer[i];
-        sbyte_char_cnt[ch].second++;
-
-        // Check for binary data (including UTF-16/32)
-        if (is_non_text(ch)) {
-            if (!is_binary && !(ch == DOS_EOF && i == len - 1)) {
-                is_binary = true;
-            }
-            if (ch == NUL) {
-                // Count for NULs in even- and odd-number bytes
-                nul_count_byte[i & 1]++;
-                if (i & 1) {
-                    if (buffer[i - 1] == NUL) {
-                        // Count for NULs in even- and odd-number words
-                        nul_count_word[(i / 2) & 1]++;
-                    }
-                }
-            }
-        }
-
-        // Check for UTF-8 validity
-        if (is_valid_utf8) {
-            switch (utf8_char_table[ch]) {
-            case UTF8_INVALID:
-                is_valid_utf8 = false;
-                break;
-            case UTF8_1:
-                if (utf8_state != UTF8_1) {
-                    is_valid_utf8 = false;
-                }
-                break;
-            case UTF8_2:
-                if (utf8_state != UTF8_1) {
-                    is_valid_utf8 = false;
-                } else {
-                    utf8_state = UTF8_2;
-                }
-                break;
-            case UTF8_3:
-                if (utf8_state != UTF8_1) {
-                    is_valid_utf8 = false;
-                } else {
-                    utf8_state = UTF8_3;
-                }
-                break;
-            case UTF8_4:
-                if (utf8_state != UTF8_1) {
-                    is_valid_utf8 = false;
-                } else {
-                    utf8_state = UTF8_4;
-                }
-                break;
-            case UTF8_TAIL:
-                if (utf8_state > UTF8_1) {
-                    utf8_state--;
-                } else {
-                    is_valid_utf8 = false;
-                }
-                break;
-            }
-        }
-
-        // Check whether non-Latin1 characters appear
-        if (is_valid_latin1) {
-            if (ch >= 0x80 && ch < 0xa0) {
-                is_valid_latin1 = false;
-            }
-        }
-
-        // Construct double-bytes and count
-        if (last_ch != EOF) {
-            uint16_t dbyte_char = (last_ch << 8) + ch;
-            dbyte_char_cnt_map[dbyte_char]++;
-            dbyte_cnt++;
-            if (last_ch > 0xa0 && ch > 0xa0) {
-                dbyte_hihi_cnt++;
-            }
-            last_ch = EOF;
-        } else if (ch >= 0x80) {
-            last_ch = ch;
-        }
-    }
-
-    // Get the character counts in descending order
-    sort(sbyte_char_cnt, sbyte_char_cnt + MAX_CHAR, greater_char_count());
-
-    // Get the double-byte counts in descending order
-    char_count_vec_t dbyte_char_cnt;
-    for (char_count_map_t::iterator it = dbyte_char_cnt_map.begin();
-            it != dbyte_char_cnt_map.end(); ++it) {
-        dbyte_char_cnt.push_back(*it);
-    }
-    sort(dbyte_char_cnt.begin(),
-         dbyte_char_cnt.end(),
-         greater_char_count());
-
-    if (!is_valid_utf8 && is_binary) {
-        // Heuristics for UTF-16/32
-        if        (nul_count_byte[EVEN] > 4 &&
-                   (nul_count_byte[ODD] == 0 ||
-                    nul_count_byte[EVEN] / nul_count_byte[ODD] > 20)) {
-            return "utf-16";
-        } else if (nul_count_byte[ODD] > 4 &&
-                   (nul_count_byte[EVEN] == 0 ||
-                    nul_count_byte[ODD] / nul_count_byte[EVEN] > 20)) {
-            return "utf-16le";
-        } else if (nul_count_word[EVEN] > 4 &&
-                   (nul_count_word[ODD] == 0 ||
-                    nul_count_word[EVEN] / nul_count_word[ODD] > 20)) {
-            return "ucs-4";   // utf-32 is not a built-in encoding for Vim
-        } else if (nul_count_word[ODD] > 4 &&
-                   (nul_count_word[EVEN] == 0 ||
-                    nul_count_word[ODD] / nul_count_word[EVEN] > 20)) {
-            return "ucs-4le"; // utf-32le is not a built-in encoding for Vim
-        } else {
-            return "binary";
-        }
-    } else if (dbyte_cnt == 0) {
-        // No characters outside the scope of ASCII
-        return "ascii";
-    } else if (is_valid_utf8) {
-        // Only valid UTF-8 sequences
-        return "utf-8";
-    } else if (const char* enc = search_freq_dbytes(dbyte_char_cnt)) {
-        return enc;
-    } else if (dbyte_hihi_cnt * 100 / dbyte_cnt < 5) {
-        // Mostly a low-byte follows a high-byte
-        return "windows-1252";
-    }
-    return NULL;
-}
-// ============================================================================
-
-
-#endif
-const char* tellenc(const unsigned char* const buffer, const size_t len) { UNUSED(buffer); UNUSED(len);  return NULL; }
-
-
-const char* tellenc_simplify(const char* const buffer, const size_t len)
-{
-  const char* enc = tellenc((const unsigned char*)buffer, len);
-    if (enc) {
-        if (strcmp(enc, "windows-1252") == 0 && is_valid_latin1) {
-            // Latin1 is subset of Windows-1252
-            return "latin1";
-        } else if (strcmp(enc, "gbk") == 0 && dbyte_hihi_cnt == dbyte_cnt) {
-            // Special case for GB2312: no high-byte followed by a low-byte
-            return "gb2312";
-        }
-    }
-    return enc;
-}
-// ============================================================================
-
-
-
-static bool bInitDone = false;
-
-int GetBufferEncoding(const char* const buffer, const size_t len)
-{
-  const char* enc = tellenc_simplify(buffer, len);
-
-  if (enc)
-    return 1;
-
-  return 0; // unknown
 }
 // ============================================================================

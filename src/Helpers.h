@@ -16,11 +16,11 @@
 #ifndef _NP3_HELPERS_H_
 #define _NP3_HELPERS_H_
 
-#include <VersionHelpers.h>
 #define STRSAFE_NO_CB_FUNCTIONS
-#undef STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
+#define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
 #include <shlwapi.h>
+#include <VersionHelpers.h>
 
 #include "typedefs.h"
 
@@ -39,7 +39,6 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
-
 __forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
@@ -53,8 +52,7 @@ __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b =
   WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
 #define IniDeleteSection(lpSection) \
   WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
-__inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i)
-{
+__inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
 #define IniSetBool(lpSection,lpName,nValue) \
@@ -73,8 +71,7 @@ BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
 __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
-__inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b)
-{
+__inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b) {
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
 

@@ -1064,9 +1064,19 @@ BOOL EditLoadFile(
   }
 
   const int iForcedEncoding = Encoding_SrcCmdLn(CPI_GET);
-  const int iFileEncWeak = (Encoding_SrcWeak(CPI_GET) != CPI_NONE) ? Encoding_SrcWeak(CPI_GET) : CPI_ANSI_DEFAULT;
-  const int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : iFileEncWeak);
-    //@@@ Encoding_IsINTERNAL(iFileEncWeak) ? g_iDefaultNewFileEncoding : iFileEncWeak;
+  const int iFileEncWeak = Encoding_SrcWeak(CPI_GET);
+  const int iAnalyzedEncoding = !bSkipEncodingDetection ? Encoding_Analyze(lpData, cbData) : CPI_NONE;
+
+  // choose best encoding guess
+  int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
+
+  if (iForcedEncoding != CPI_NONE)
+    iPreferedEncoding = iForcedEncoding;
+  else if (iFileEncWeak != CPI_NONE)
+    iPreferedEncoding = iFileEncWeak;
+  else if (iAnalyzedEncoding != CPI_NONE)
+    iPreferedEncoding = iAnalyzedEncoding;
+
 
   BOOL bBOM = FALSE;
   BOOL bReverse = FALSE;
@@ -1088,10 +1098,11 @@ BOOL EditLoadFile(
     SendMessage(hwnd,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
     GlobalFree(lpData);
   }
-  else if (!bSkipEncodingDetection && 
-      (iForcedEncoding == CPI_NONE    || iForcedEncoding == CPI_UNICODE   || iForcedEncoding == CPI_UNICODEBE) &&
-      (iForcedEncoding == CPI_UNICODE || iForcedEncoding == CPI_UNICODEBE || IsUnicode(lpData,cbData,&bBOM,&bReverse)) &&
-      (iForcedEncoding == CPI_UNICODE || iForcedEncoding == CPI_UNICODEBE || !IsUTF8Signature(lpData))) // check for UTF-8 signature
+  // ===  UNICODE  ===
+  else if (!bSkipEncodingDetection &&  //TODO: use Encoding_IsUNICODE(iAnalyzedEncoding) here ???
+      (Encoding_IsUNICODE(iForcedEncoding) || (iForcedEncoding == CPI_NONE)) &&
+      (Encoding_IsUNICODE(iForcedEncoding) || IsUnicode(lpData,cbData,&bBOM,&bReverse)) &&
+      (Encoding_IsUNICODE(iForcedEncoding) || !IsUTF8Signature(lpData))) // check for UTF-8 signature
   {
     char* lpDataUTF8;
 
@@ -1147,19 +1158,20 @@ BOOL EditLoadFile(
     }
   }
 
-  else {
+  else { // ===  ALL OTHERS  ===
+
     FileVars_Init(lpData,cbData,&fvCurFile);
-    if (!bSkipEncodingDetection && (iForcedEncoding == CPI_NONE || iForcedEncoding == CPI_UTF8 || iForcedEncoding == CPI_UTF8SIGN) &&
-            ((IsUTF8Signature(lpData) ||
-              FileVars_IsUTF8(&fvCurFile) ||
-              (iForcedEncoding == CPI_UTF8 || iForcedEncoding == CPI_UTF8SIGN) ||
-              (!bPreferOEM && bLoadASCIIasUTF8) ||  // from menu "Reload As UTF-8"
-              (IsUTF8(lpData,cbData) &&
-              (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 !=
-                UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
-                (!bPreferOEM && (
-                  Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))))))) && !(FileVars_IsNonUTF8(&fvCurFile) &&
-                  (iForcedEncoding != CPI_UTF8 && iForcedEncoding != CPI_UTF8SIGN)))
+
+    // ===  UTF-8  ===
+    if (!bSkipEncodingDetection && (Encoding_IsNONE(iForcedEncoding) || Encoding_IsUTF8(iForcedEncoding)) &&
+      ((IsUTF8Signature(lpData) ||
+        FileVars_IsUTF8(&fvCurFile) ||
+        (Encoding_IsUTF8(iForcedEncoding) ||
+        (!bPreferOEM && bLoadASCIIasUTF8) ||  // from menu "Reload As UTF-8"
+         (IsUTF8(lpData,cbData) &&
+         (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 != UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
+          (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))))))) && 
+       !(FileVars_IsNonUTF8(&fvCurFile) && !Encoding_IsUTF8(iForcedEncoding))))
     {
       Encoding_SciSetCodePage(hwnd,CPI_UTF8);
       EditSetNewText(hwnd,"",0);
@@ -1176,13 +1188,13 @@ BOOL EditLoadFile(
       GlobalFree(lpData);
     }
 
-    else {
+    else { // ===  ALL OTHER  ===
 
-      if (iForcedEncoding != CPI_NONE)
+      if (!Encoding_IsNONE(iForcedEncoding))
         *iEncoding = iForcedEncoding;
       else {
         *iEncoding = FileVars_GetEncoding(&fvCurFile);
-        if (*iEncoding == CPI_NONE) {
+        if (Encoding_IsNONE(*iEncoding)) {
           if (fvCurFile.mask & FV_ENCODING)
             *iEncoding = CPI_ANSI_DEFAULT;
           else {
