@@ -1659,6 +1659,8 @@ END
 STRINGTABLE
 BEGIN
     61072                   "C;Chinese Simplified (GB18030);GB18030"
+    61073                   "C;Japanese (EUC);Japanese (EUC)"
+    61074                   "C;Korean (EUC);Korean (EUC)"
 END
 
 STRINGTABLE
