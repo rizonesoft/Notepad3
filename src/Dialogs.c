@@ -44,6 +44,8 @@
 #include "resource.h"
 #include "version.h"
 #include "helpers.h"
+#include "encoding.h"
+
 #include "dialogs.h"
 
 
@@ -55,6 +57,7 @@ extern WCHAR g_wchCurFile[];
 extern WCHAR g_wchAppUserModelID[];
 
 extern DWORD dwLastIOError;
+extern BOOL bUseDefaultForFileEncoding;
 extern BOOL bSkipUnicodeDetection;
 extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
@@ -2094,6 +2097,9 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         Encoding_AddToComboboxEx(GetDlgItem(hwnd,IDC_ENCODINGLIST),pdd->idEncoding,0);
 
+        if (bUseDefaultForFileEncoding)
+          CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, BST_CHECKED);
+
         if (bSkipUnicodeDetection)
           CheckDlgButton(hwnd,IDC_NOUNICODEDETECTION,BST_CHECKED);
 
@@ -2121,6 +2127,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
                 EndDialog(hwnd,IDCANCEL);
               }
               else {
+                bUseDefaultForFileEncoding = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED) ? 1 : 0;
                 bSkipUnicodeDetection = (IsDlgButtonChecked(hwnd,IDC_NOUNICODEDETECTION) == BST_CHECKED) ? 1 : 0;
                 bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd,IDC_ASCIIASUTF8) == BST_CHECKED) ? 1 : 0;
                 bLoadNFOasOEM = (IsDlgButtonChecked(hwnd,IDC_NFOASOEM) == BST_CHECKED) ? 1 : 0;

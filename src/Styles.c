@@ -30,16 +30,18 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <stdio.h>
+
 #include "scintilla.h"
 #include "scilexer.h"
 #include "notepad3.h"
 #include "edit.h"
 #include "dialogs.h"
 #include "resource.h"
+#include "encoding.h"
 #include "helpers.h"
-#include "styles.h"
 #include "SciCall.h"
 
+#include "styles.h"
 
 extern HINSTANCE g_hInstance;
 
@@ -2987,7 +2989,7 @@ static int  g_cxStyleSelectDlg;
 static int  g_cyStyleSelectDlg;
 
 
-extern int  iDefaultCharSet;
+extern int  g_iDefaultCharSet;
 extern BOOL bHiliteCurrentLine;
 extern BOOL bHyperlinkHotspot;
 
@@ -5112,9 +5114,9 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
   }
 
-  int iCharSet = iDefaultCharSet;
+  int iCharSet = g_iDefaultCharSet;
   if (!Style_StrGetCharSet(lpszStyle, &iCharSet)) {
-    iCharSet = iDefaultCharSet;
+    iCharSet = g_iDefaultCharSet;
   }
     
   // is "size:" definition relative ?
@@ -5261,7 +5263,7 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (bGlobalDefaultStyle &&
     (lf.lfCharSet != DEFAULT_CHARSET) &&
     (lf.lfCharSet != ANSI_CHARSET) &&
-    (lf.lfCharSet != iDefaultCharSet)) {
+    (lf.lfCharSet != g_iDefaultCharSet)) {
     if (lf.lfCharSet == iCharSet) {
       if (StrStrI(lpszStyle, L"charset:"))
       {

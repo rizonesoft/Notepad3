@@ -16,13 +16,13 @@
 #ifndef _NP3_HELPERS_H_
 #define _NP3_HELPERS_H_
 
-#include <VersionHelpers.h>
 #define STRSAFE_NO_CB_FUNCTIONS
-#undef STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
+#define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
 #include <shlwapi.h>
+#include <VersionHelpers.h>
 
-#include "TypeDefs.h"
+#include "typedefs.h"
 
 // ============================================================================
 
@@ -39,7 +39,6 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
-
 __forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
@@ -53,8 +52,7 @@ __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b =
   WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
 #define IniDeleteSection(lpSection) \
   WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
-__inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i)
-{
+__inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
 #define IniSetBool(lpSection,lpName,nValue) \
@@ -73,8 +71,7 @@ BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
 __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
-__inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b)
-{
+__inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b) {
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
 
@@ -164,6 +161,7 @@ BOOL IsCmdEnabled(HWND, UINT);
 
 #define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, FALSE); } }; EnableWindow(hctrl, (b)); }
+
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
@@ -346,84 +344,6 @@ inline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
 #define StringCchCompareIN(s1,l1,s2,l2)  StringCchCompareINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIX(s1,s2)        StringCchCompareIXA((s1),(s2))
 #endif
-
-// =====  File Encoding  =====
-
-extern int g_DOSEncoding;
-
-#define NCP_DEFAULT            1
-#define NCP_UTF8               2
-#define NCP_UTF8_SIGN          4
-#define NCP_UNICODE            8
-#define NCP_UNICODE_REVERSE   16
-#define NCP_UNICODE_BOM       32
-#define NCP_8BIT              64
-#define NCP_ANSI             128
-#define NCP_OEM              256
-#define NCP_MBCS             512
-#define NCP_INTERNAL          (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI|NCP_OEM|NCP_MBCS)
-#define NCP_RECODE           1024
-
-#define CPI_GET               -2
-#define CPI_NONE              -1
-#define CPI_ANSI_DEFAULT       0
-#define CPI_OEM                1
-#define CPI_UNICODEBOM         2
-#define CPI_UNICODEBEBOM       3
-#define CPI_UNICODE            4
-#define CPI_UNICODEBE          5
-#define CPI_UTF8               6
-#define CPI_UTF8SIGN           7
-#define CPI_UTF7               8
-
-#define IDS_ENCODINGNAME0  61000
-#define IDS_EOLMODENAME0   62000
-
-typedef struct _np2encoding {
-  UINT    uFlags;
-  UINT    uCodePage;
-  char*   pszParseNames;
-  int     idsName;
-  WCHAR   wchLabel[64];
-} NP2ENCODING;
-
-int  Encoding_CountOf();
-int  Encoding_Current(int);    // getter/setter
-int  Encoding_Source(int);     // getter/setter
-int  Encoding_SrcWeak(int);    // getter/setter
-BOOL Encoding_HasChanged(int); // query/setter
-
-void Encoding_InitDefaults();
-int  Encoding_MapIniSetting(BOOL,int);
-int  Encoding_MapUnicode(int);
-void Encoding_SetLabel(int);
-int  Encoding_MatchW(LPCWSTR);
-int  Encoding_MatchA(char*);
-BOOL Encoding_IsValid(int);
-int  Encoding_GetByCodePage(UINT);
-void Encoding_AddToListView(HWND,int,BOOL);
-BOOL Encoding_GetFromListView(HWND,int *);
-void Encoding_AddToComboboxEx(HWND,int,BOOL);
-BOOL Encoding_GetFromComboboxEx(HWND,int *);
-BOOL Encoding_IsDefault(int);
-BOOL Encoding_IsANSI(int);
-BOOL Encoding_IsOEM(int);
-
-UINT Encoding_SciGetCodePage(HWND);
-int  Encoding_SciMappedCodePage(int);
-void Encoding_SciSetCodePage(HWND,int);
-
-
-BOOL IsUnicode(const char*,int,LPBOOL,LPBOOL);
-BOOL IsUTF8(const char*,int);
-BOOL IsUTF7(const char*,int);
-
-#define IsUTF8Signature(p) ((*(p+0) == '\xEF' && *(p+1) == '\xBB' && *(p+2) == '\xBF'))
-#define UTF8StringStart(p) (IsUTF8Signature(p)) ? (p+3) : (p)
-
-INT UTF8_mbslen_bytes(LPCSTR utf8_string);
-INT UTF8_mbslen(LPCSTR source,INT byte_length);
-
 
 void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
 

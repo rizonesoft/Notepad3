@@ -133,6 +133,7 @@ typedef struct {
 #define USE_UNICODE_PROPERTIES
 #define USE_UNICODE_AGE_PROPERTIES
 /* #define USE_UNICODE_CASE_FOLD_TURKISH_AZERI */
+#define USE_ASCII_ALL_LINE_BREAKS // LF, VT, FF, CR
 /* #define USE_UNICODE_ALL_LINE_TERMINATORS */  /* see Unicode.org UTS #18 */
 
 
@@ -187,8 +188,8 @@ ONIG_EXTERN int onigenc_unicode_apply_all_case_fold(OnigCaseFoldType flag, OnigA
 #define UTF16_IS_SURROGATE_SECOND(c)   (((c) & 0xfc) == 0xdc)
 #define UTF16_IS_SURROGATE(c)          (((c) & 0xf8) == 0xd8)
 #define UNICODE_VALID_CODEPOINT_P(c) ( \
-	((c) <= 0x10ffff) && \
-	!((c) < 0x10000 && UTF16_IS_SURROGATE((c) >> 8)))
+  ((c) <= 0x10ffff) && \
+  !((c) < 0x10000 && UTF16_IS_SURROGATE((c) >> 8)))
 
 #define ONIGENC_ISO_8859_1_TO_LOWER_CASE(c) \
   OnigEncISO_8859_1_ToLowerCaseTable[c]
@@ -234,8 +235,8 @@ extern int ONIG_ENC_REGISTER(const char *, OnigEncoding);
 # define OnigEncodingDefine(f,n)			     \
     OnigEncodingDeclare(n);			     \
     void Init_##f(void) {			     \
-	ONIG_ENC_REGISTER(OnigEncodingName(n).name,  \
-			  &OnigEncodingName(n));     \
+  ONIG_ENC_REGISTER(OnigEncodingName(n).name,  \
+        &OnigEncodingName(n));     \
     }						     \
     OnigEncodingDeclare(n)
 #else
