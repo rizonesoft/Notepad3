@@ -3,6 +3,12 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 3.18.223.908 (23 February 2018)
+--------------------------------------------------
+- Fix: Swap clipboard bug while pasting into selection.
+- Fix: Critical error with automatic updates.
+
+--------------------------------------------------
 Version 3.18.222.905 (22 February 2018)
 --------------------------------------------------
 - Enhancement: Replace (virtual) rectangular (empty) selection.
