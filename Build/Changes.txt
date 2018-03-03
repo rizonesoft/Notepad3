@@ -3,6 +3,21 @@ Rizonesoft Notepad3 CHANGES
 ==================================================
 
 --------------------------------------------------
+Version 3.18.303.916 RC (3 March 2018)
+--------------------------------------------------
+- Fix: Swap clipboard while pasting into selection.
+- New: About Box (RichEdit library 2.0)
+- Enh: Pressing F3 at Find/Replace dialog performs a find and switches focus to main window.
+- Change: Accelerator Keys: (Alt+0: Toggle Transparency), (Alt+Shift+N: Launch new empty window).
+- Fix: Activation of Undo TB-Icon on operations, that can't be undone.
+- Fix: Onigmo: use CR (\r) as mono line-break symbol too.
+- Fix: Format number with thousand seperator and digit grouping acording to regional settings.
+- Fix: Integration of "tellenc" encoding detection ideas.
+- Fix: Use Windows regional ANSI Code Page settings for fallback in case of file encoding detection failure (instead of default encoding for created files).
+- Fix: Use all ASCII line breaks for line termination ($) meta char.
+- Fix: Onigmo backward search.
+
+--------------------------------------------------
 Version 3.18.223.908 (23 February 2018)
 --------------------------------------------------
 - Fix: Swap clipboard bug while pasting into selection.
