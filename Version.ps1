@@ -41,8 +41,8 @@ try
 	}
 	else {
 		$Build = [int](Get-Content "Versions\build.txt") + 1
-		#$BetaVer  = 'L" beta "'
-		#$BetaVerA = '" beta "'
+		#$BetaVer  = 'L" develop "'
+		#$BetaVerA = '" develop "'
 	}
 	if (!$Build) { $Build = 0 }
 	$SciVer = [int](Get-Content "scintilla\version.txt")
