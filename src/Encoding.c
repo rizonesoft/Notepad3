@@ -38,7 +38,14 @@
 
 
 extern HINSTANCE g_hInstance;
+extern BOOL bLoadASCIIasUTF8;
 
+//=============================================================================
+
+typedef unsigned short uint16_t;
+typedef unsigned int   uint32_t;
+
+const uint32_t limitDblHiByte4ANSI = 5; // [%] of max. double HighByte in file to be assumed as ANSI
 
 //=============================================================================
 //
@@ -290,11 +297,6 @@ BOOL Encoding_HasChanged(int iOriginalEncoding) {
 *      <URL:https://github.com/adah1972/tellenc>
 *
 */
-
-
-typedef unsigned short uint16_t;
-typedef unsigned int   uint32_t;
-
 
 typedef enum _UTF8_ValidationState
 {
@@ -714,7 +716,7 @@ int Encoding_Analyze(const char* const buffer, const size_t len)
       else
         ++(item->count);
 
-      dbyte_cnt++;
+      ++dbyte_cnt;
       if ((last_ch > 0xa0) && (ch > 0xa0)) {
         ++dbyte_hihi_cnt;
       }
@@ -753,7 +755,7 @@ int Encoding_Analyze(const char* const buffer, const size_t len)
   }
   else if (dbyte_cnt == 0) {
     // No characters outside the scope of ASCII
-    iEncoding = CPI_ANSI_DEFAULT;
+    iEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
   }
   else if (is_valid_utf8) {
     // Only valid UTF-8 sequences
@@ -773,9 +775,9 @@ int Encoding_Analyze(const char* const buffer, const size_t len)
     if (probEncoding != CPI_NONE) {
       iEncoding = probEncoding;
     }
-    else if (((dbyte_hihi_cnt * 100) / ++dbyte_cnt) < 5) {
+    else if (((dbyte_hihi_cnt * 100) / ++dbyte_cnt) < limitDblHiByte4ANSI) {
       // mostly a low-byte follows a high-byte
-      iEncoding = CPI_ANSI_DEFAULT;
+      iEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
   }
 
@@ -1465,13 +1467,13 @@ BOOL IsUTF7(const char* pTest, int nLength) {
 for UTF-16 (21-bit space), max. code length is 4, so we only need to look
 at 4 upper bits.
 */
-static const INT utf8_lengths[16] =
+static const size_t utf8_lengths[16] =
 {
   1,1,1,1,1,1,1,1,        /* 0000 to 0111 : 1 byte (plain ASCII) */
   0,0,0,0,                /* 1000 to 1011 : not valid */
   2,2,                    /* 1100, 1101 : 2 bytes */
   3,                      /* 1110 : 3 bytes */
-  4                       /* 1111 :4 bytes */
+  4                       /* 1111 : 4 bytes */
 };
 // ============================================================================
 
@@ -1489,13 +1491,14 @@ Return value :
 size (in bytes) of a NULL-terminated UTF-8 string.
 -1 if invalid NULL-terminated UTF-8 string
 --*/
-INT UTF8_mbslen_bytes(LPCSTR utf8_string)
+size_t UTF8_mbslen_bytes(LPCSTR utf8_string)
 {
-  INT length = 0;
-  INT code_size;
+  size_t length = 0;
+  size_t code_size;
   BYTE byte;
 
-  while (*utf8_string) {
+  while (*utf8_string) 
+  {
     byte = (BYTE)*utf8_string;
 
     if ((byte <= 0xF7) && (0 != (code_size = utf8_lengths[byte >> 4]))) {
@@ -1530,14 +1533,14 @@ Return value :
 size (in characters) of a UTF-8 string.
 -1 if invalid UTF-8 string
 --*/
-INT UTF8_mbslen(LPCSTR source, INT byte_length)
+size_t UTF8_mbslen(LPCSTR utf8_string, size_t byte_length)
 {
-  INT wchar_length = 0;
-  INT code_size;
+  size_t wchar_length = 0;
+  size_t code_size;
   BYTE byte;
 
   while (byte_length > 0) {
-    byte = (BYTE)*source;
+    byte = (BYTE)*utf8_string;
 
     /* UTF-16 can't encode 5-byte and 6-byte sequences, so maximum value
     for first byte is 11110111. Use lookup table to determine sequence
@@ -1549,7 +1552,7 @@ INT UTF8_mbslen(LPCSTR source, INT byte_length)
       if (code_size == 4)
         wchar_length++;
 
-      source += code_size;        /* increment pointer */
+      utf8_string += code_size;        /* increment pointer */
       byte_length -= code_size;   /* decrement counter*/
     }
     else {
@@ -1558,12 +1561,21 @@ INT UTF8_mbslen(LPCSTR source, INT byte_length)
       we only report the number of valid characters we have encountered
       to match the Windows behavior.
       */
-      //WARN("invalid byte 0x%02X in UTF-8 sequence, skipping it!\n",
-      //     byte);
-      source++;
+      //WARN("invalid byte 0x%02X in UTF-8 sequence, skipping it!\n", byte);
+      utf8_string++;
       byte_length--;
     }
   }
   return wchar_length;
 }
 // ============================================================================
+
+
+
+bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
+{
+  return ((UTF8_mbslen_bytes(UTF8StringStart(utf8_string)) - 1) != 
+           UTF8_mbslen(UTF8StringStart(utf8_string), IsUTF8Signature(utf8_string) ? (byte_length - 3) : byte_length));
+}
+// ============================================================================
+

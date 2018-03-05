@@ -1164,13 +1164,13 @@ BOOL EditLoadFile(
 
     // ===  UTF-8  ===
     if (!bSkipEncodingDetection && (Encoding_IsNONE(iForcedEncoding) || Encoding_IsUTF8(iForcedEncoding)) &&
-      ((IsUTF8Signature(lpData) ||
-        FileVars_IsUTF8(&fvCurFile) ||
-        (Encoding_IsUTF8(iForcedEncoding) ||
-        (!bPreferOEM && bLoadASCIIasUTF8) ||  // from menu "Reload As UTF-8"
-         (IsUTF8(lpData,cbData) &&
-         (((UTF8_mbslen_bytes(UTF8StringStart(lpData)) - 1 != UTF8_mbslen(UTF8StringStart(lpData),IsUTF8Signature(lpData) ? cbData-3 : cbData)) ||
-          (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))))))) && 
+      ((IsUTF8Signature(lpData) || 
+        FileVars_IsUTF8(&fvCurFile) || 
+        (Encoding_IsUTF8(iForcedEncoding) || 
+         Encoding_IsUTF8(iAnalyzedEncoding) ||
+         (!bPreferOEM && bLoadASCIIasUTF8) ||  // from menu "Reload As UTF-8"
+         (IsUTF8(lpData,cbData) && ((UTF8_ContainsInvalidChars(lpData, cbData) ||
+         (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))))))) && 
        !(FileVars_IsNonUTF8(&fvCurFile) && !Encoding_IsUTF8(iForcedEncoding))))
     {
       Encoding_SciSetCodePage(hwnd,CPI_UTF8);
