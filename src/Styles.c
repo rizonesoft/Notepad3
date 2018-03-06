@@ -5262,8 +5262,8 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
   }
   else {
-    fFontSize = (float)(((int)(fFontSize * 100 + 0.5)) / 100.0);
-    fNewFontSize = (float)(((int)(fNewFontSize * 100 + 0.5)) / 100.0);
+    fFontSize = (float)(((int)(fFontSize * 100.0 + 0.5)) / 100.0);
+    fNewFontSize = (float)(((int)(fNewFontSize * 100.0 + 0.5)) / 100.0);
     if (fNewFontSize == fFontSize) {
       if (StrStrI(lpszStyle, L"size:")) {
         if (HasFractionCent(fNewFontSize))
