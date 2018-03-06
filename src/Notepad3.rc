@@ -382,11 +382,11 @@ BEGIN
     BEGIN
         MENUITEM "&Online Documentation\tF1",   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "&About...\tShift+F1",         IDM_HELP_ABOUT
-        MENUITEM "&Command Line Help...",       IDM_HELP_CMD
-        MENUITEM SEPARATOR
         MENUITEM "Launch &Update Installer",    IDM_HELP_UPDATEINSTALLER
         MENUITEM "Check &Website for Update",   IDM_HELP_UPDATEWEBSITE
+        MENUITEM SEPARATOR
+        MENUITEM "&Command Line Help...",       IDM_HELP_CMD
+        MENUITEM "&About...\tShift+F1",         IDM_HELP_ABOUT
     END
 END
 
