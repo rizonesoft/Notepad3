@@ -593,6 +593,32 @@ static int descending_count(const void *lhs, const void *rhs)
   return (rcnt - lcnt); // descending order
 }
 
+
+int __fastcall check_ucs_bom(const char* const buffer, const size_t len)
+{
+  const struct bom_t
+  {
+    const int encoding;
+    const char* bom;
+    size_t bom_len;
+  } boms[] = 
+  {
+    { CPI_UCS4BE,       "\x00\x00\xFE\xFF",  4 },
+    { CPI_UCS4,         "\xFF\xFE\x00\x00",  4 },
+    { CPI_UTF8SIGN,     "\xEF\xBB\xBF",      3 },
+    { CPI_UNICODEBEBOM, "\xFE\xFF",          2 },
+    { CPI_UNICODEBOM,   "\xFF\xFE",          2 },
+    { -1  ,             NULL,                0 }
+  };
+  for (size_t i = 0; (boms[i].encoding >= 0); ++i) {
+    if ((len >= boms[i].bom_len) && (memcmp(buffer, boms[i].bom, boms[i].bom_len) == 0)) {
+      return boms[i].encoding;
+    }
+  }
+  return CPI_NONE;
+}
+
+
 // ============================================================================
 
 //typedef pair<uint16_t, uint32_t>  char_count_t;
@@ -610,7 +636,6 @@ static size_t nul_count_word[2];
 
 int Encoding_Analyze(const char* const buffer, const size_t len)
 {
-  int iEncoding = CPI_NONE;
   bool is_binary = false;
   bool is_valid_utf8 = true;
   bool is_valid_latin1 = true;
@@ -619,6 +644,11 @@ int Encoding_Analyze(const char* const buffer, const size_t len)
 
   UT_icd dbyte_count_icd = { sizeof(dbyte_cnt_t), NULL, NULL, NULL };
   UT_array* dbyte_count_map = NULL;
+
+  int iEncoding = check_ucs_bom(buffer, len);
+
+  if (iEncoding != CPI_NONE)
+    return iEncoding;
 
   utarray_new(dbyte_count_map, &dbyte_count_icd);
   utarray_reserve(dbyte_count_map, MAX_CHAR);
