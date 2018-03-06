@@ -800,7 +800,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
 
   if (SciCall_IsSelectionEmpty() || (lineCount <= 1)) 
   {
-    if (SciCall_IsSelectionEmpty()) 
+    if (SciCall_IsSelectionEmpty()) // SC_SEL_THIN
     {
       SciCall_Paste();
       if (bSwapClipBoard) { 
@@ -834,7 +834,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
       EditPaste2RectSel(hwnd, pClip);
       // TODO: restore selection in case of swap clipboard 
     }
-    else // Selection: SC_SEL_STREAM, SC_SEL_LINES, SC_SEL_THIN
+    else // Selection: SC_SEL_STREAM, SC_SEL_LINES
     {
       if (bSwapClipBoard) {
         SciCall_Copy();
@@ -6033,10 +6033,9 @@ void EditCompleteWord(HWND hwnd, BOOL autoInsert)
 {
   const char* NON_WORD = bAccelWordNavigation ? DelimCharsAccel : DelimChars;
 
-  DocPos iCurrentPos = (int)SendMessage(hwnd, SCI_GETCURRENTPOS, 0, 0);
-  DocLn iLine = (int)SendMessage(hwnd, SCI_LINEFROMPOSITION, iCurrentPos, 0);
-  DocPos iCurrentLinePos = iCurrentPos - (int)SendMessage(hwnd, SCI_POSITIONFROMLINE, (WPARAM)iLine, 0);
-  DocPos iStartWordPos = iCurrentLinePos;
+  const DocPos iCurrentPos = SciCall_GetCurrentPos();
+  const DocLn iLine = SciCall_LineFromPosition(iCurrentPos);
+  const DocPos iCurrentLinePos = iCurrentPos - SciCall_PositionFromLine(iLine);
   struct Sci_TextRange tr = { { 0, -1 }, NULL };
   BOOL bWordAllNumbers = TRUE;
   struct WLIST* lListHead = NULL;
@@ -6045,8 +6044,9 @@ void EditCompleteWord(HWND hwnd, BOOL autoInsert)
   char* pLine = LocalAlloc(LPTR, (int)SendMessage(hwnd, SCI_GETLINE, (WPARAM)iLine, 0) + 1);
   SendMessage(hwnd, SCI_GETLINE, (WPARAM)iLine, (LPARAM)pLine);
 
+  DocPos iStartWordPos = iCurrentLinePos;
   while (iStartWordPos > 0 && !StrChrIA(NON_WORD, pLine[iStartWordPos - 1])) {
-    iStartWordPos--;
+    --iStartWordPos;
     if (pLine[iStartWordPos] < '0' || pLine[iStartWordPos] > '9') {
       bWordAllNumbers = FALSE;
     }

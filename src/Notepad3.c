@@ -5484,6 +5484,17 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
               EditCompleteWord(g_hwndEdit, FALSE);
             }
+            //else if (SciCall_IsSelectionRectangle() || IsThinRectangleSelected()) {
+            //  WCHAR wch[8] = { L'\0' };
+            //  StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)(scn->ch));
+            //  char chr[8] = { '\0' };
+            //  WideCharToMultiByteStrg(Encoding_SciGetCodePage(g_hwndEdit), wch, chr);
+
+            //  if (SciCall_IsSelectionRectangle())
+            //    EditPaste2RectSel(g_hwndEdit, chr);
+            //  else
+            //    SciCall_ReplaceSel(chr);
+            //}
           }
           break;
 

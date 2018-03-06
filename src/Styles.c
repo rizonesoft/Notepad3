@@ -3594,8 +3594,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_SETWHITESPACEBACK, 0, 0);    // use a default value...
 
   // whitespace dot size
-  float fValue = 1.0;
   iValue = 1;
+  float fValue = 1.0;
   if (Style_StrGetSize(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) 
   {
     iValue = (int)max(min(fValue, 5.0), 0.0);
@@ -3698,6 +3698,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
 
   // Extra Line Spacing
+  iValue = 0;
   fValue = 0.0;
   if (Style_StrGetSize(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue,&fValue) && (pLexNew != &lexANSI)) {
     iValue = (int)fValue;
@@ -5137,12 +5138,12 @@ BOOL Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   float fFontSize = fBaseFontSize;
   if (Style_StrGetSize(lpszStyle,&fFontSize) > 0.0) {
     HDC hdc = GetDC(hwnd);
-    iFontHeight = -MulDiv((int)(fFontSize * 100 + 0.5), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
+    iFontHeight = -MulDiv((int)(fFontSize * 100.0 + 0.5), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
     ReleaseDC(hwnd,hdc);
   }
   else {
     HDC hdc = GetDC(hwnd);
-    iFontHeight = -MulDiv((int)(fBaseFontSize * 100 + 0.5), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
+    iFontHeight = -MulDiv((int)(fBaseFontSize * 100.0 + 0.5), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
     ReleaseDC(hwnd, hdc);
   }
 
