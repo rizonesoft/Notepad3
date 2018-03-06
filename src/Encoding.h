@@ -131,11 +131,12 @@ BOOL IsUnicode(const char*, int, LPBOOL, LPBOOL);
 BOOL IsUTF8(const char*, int);
 BOOL IsUTF7(const char*, int);
 
-#define IsUTF8Signature(p) ((*(p+0) == '\xEF' && *(p+1) == '\xBB' && *(p+2) == '\xBF'))
-#define UTF8StringStart(p) (IsUTF8Signature(p)) ? (p+3) : (p)
+#define IsUTF8Signature(p) ((*((p)+0) == '\xEF' && *((p)+1) == '\xBB' && *((p)+2) == '\xBF'))
+#define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-INT UTF8_mbslen_bytes(LPCSTR utf8_string);
-INT UTF8_mbslen(LPCSTR source, INT byte_length);
+size_t UTF8_mbslen_bytes(LPCSTR utf8_string);
+size_t UTF8_mbslen(LPCSTR utf8_string, size_t byte_length);
+bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length);
 
 int Encoding_Analyze(const char* const, const size_t);
 
