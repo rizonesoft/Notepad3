@@ -63,8 +63,6 @@ extern BOOL bUseOldStyleBraceMatching;
 
 #define INITIAL_BASE_FONT_SIZE (10)
 
-static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
-
 KEYWORDLIST KeyWords_NULL = {
 "", "", "", "", "", "", "", "", "" };
 
@@ -5689,7 +5687,7 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 //
 //  Style_ConfigDlgProc()
 //
-INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
+INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
   static HWND hwndTV;
@@ -5701,9 +5699,10 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
   static HBRUSH hbrBack;
   static BOOL bIsStyleSelected = FALSE;
 
+  static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
+
   switch(umsg)
   {
-
     case WM_INITDIALOG:
       {
         SHFILEINFO shfi;
@@ -5715,7 +5714,8 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
           Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->szExtensions);
           int i = 0;
           while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-            Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->Styles[i++].szValue);
+            Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->Styles[i].szValue);
+            ++i;
           }
         }
 
@@ -5778,20 +5778,30 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
       }
       return TRUE;
 
-
     case WM_DESTROY:
       {
-        // Apply new (or previous) Styles
-        Style_SetLexer(g_hwndEdit, g_pLexCurrent);
-
+        DeleteBitmapButton(hwnd, IDC_STYLEFORE);
+        DeleteBitmapButton(hwnd, IDC_STYLEBACK);
+        DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
+        DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
         // free old backup
-        for (int i = 0; i < COUNTOF(Style_StylesBackup); ++i) {
-          if (Style_StylesBackup[i])
-            LocalFree(Style_StylesBackup[i]);
+        int cnt = 0;
+        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+          if (Style_StylesBackup[cnt]) {
+            LocalFree(Style_StylesBackup[cnt]);
+            Style_StylesBackup[cnt++] = NULL;
+          }
+          int i = 0;
+          while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+            if (Style_StylesBackup[cnt]) {
+              LocalFree(Style_StylesBackup[cnt]);
+              Style_StylesBackup[cnt++] = NULL;
+            }
+            ++i;
+          }
         }
       }
       return FALSE;
-
 
     #define APPLY_DIALOG_ITEM_TEXT { \
       BOOL bChgNfy = FALSE; \
@@ -6169,17 +6179,14 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
             MsgBox(MBWARN, IDS_SETTINGSNOTSAVED);
             g_fWarnedNoIniFile = TRUE;
           }
-          DeleteBitmapButton(hwnd, IDC_STYLEFORE);
-          DeleteBitmapButton(hwnd, IDC_STYLEBACK);
-          DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
-          DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
           //EndDialog(hwnd,IDOK);
           DestroyWindow(hwnd);
           break;
 
         case IDCANCEL:
-          if (fDragging)
+          if (fDragging) {
             SendMessage(hwnd, WM_CANCELMODE, 0, 0);
+          }
           else {
             // Restore Styles
             int cnt = 0;
@@ -6191,13 +6198,10 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
                 ++i;
               }
             }
+            Style_SetLexer(g_hwndEdit, g_pLexCurrent);
+            //EndDialog(hwnd,IDCANCEL);
+            DestroyWindow(hwnd);
           }
-          DeleteBitmapButton(hwnd, IDC_STYLEFORE);
-          DeleteBitmapButton(hwnd, IDC_STYLEBACK);
-          DeleteBitmapButton(hwnd, IDC_PREVSTYLE);
-          DeleteBitmapButton(hwnd, IDC_NEXTSTYLE);
-          //EndDialog(hwnd,IDCANCEL);
-          DestroyWindow(hwnd);
           break;
         } // switch()
       } // WM_COMMAND
@@ -6216,8 +6220,8 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
   HWND hDlg = CreateThemedDialogParam(g_hInstance,
                                       MAKEINTRESOURCE(IDD_STYLECONFIG),
                                       GetParent(hwnd),
-                                      Style_ConfigDlgProc,
-                                      (LPARAM)&Style_StylesBackup);
+                                      Style_CustomizeSchemesDlgProc,
+                                      (LPARAM)NULL);
   ShowWindow(hDlg, SW_SHOW);
   return hDlg;
 }
