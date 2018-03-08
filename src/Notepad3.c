@@ -3867,11 +3867,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_SCHEMECONFIG:
-      if (!IsWindow(g_hwndDlgCustomizeSchemes))
+      if (!IsWindow(g_hwndDlgCustomizeSchemes)) {
         g_hwndDlgCustomizeSchemes = Style_CustomizeSchemesDlg(g_hwndEdit);
-      else
+      }
+      else {
         SetForegroundWindow(g_hwndDlgCustomizeSchemes);
-      PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
+        PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
+      }
       break;
 
 

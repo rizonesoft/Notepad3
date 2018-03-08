@@ -5764,8 +5764,10 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
         // Setup title font
         if (hFontTitle)
           DeleteObject(hFontTitle);
+
         if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd,IDC_TITLE,WM_GETFONT,0,0)))
           hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+
         GetObject(hFontTitle,sizeof(LOGFONT),&lf);
         lf.lfHeight += lf.lfHeight / 5;
         lf.lfWeight = FW_BOLD;
@@ -5781,6 +5783,7 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
       {
         // Apply new (or previous) Styles
         Style_SetLexer(g_hwndEdit, g_pLexCurrent);
+
         // free old backup
         for (int i = 0; i < COUNTOF(Style_StylesBackup); ++i) {
           if (Style_StylesBackup[i])
@@ -6012,25 +6015,34 @@ INT_PTR CALLBACK Style_ConfigDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
         {
         case IDC_SETCURLEXERTV:
           {
+            // find current lexer's tree entry
+            HTREEITEM hCurrentTVLex = TreeView_GetRoot(hwndTV);
+            for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
+              if (g_pLexArray[i] == g_pLexCurrent) {
+                break;
+              }
+              hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex); // next
+            }
+            if (g_pLexCurrent == pCurrentLexer)
+              break; // no change
+
+            // collaps current node
             HTREEITEM hSel = TreeView_GetSelection(hwndTV);
             if (hSel) {
-              TreeView_Expand(hwndTV, hSel, TVE_COLLAPSE);
               HTREEITEM hPar = TreeView_GetParent(hwndTV, hSel);
+              TreeView_Expand(hwndTV, hSel, TVE_COLLAPSE);
               if (hPar)
                 TreeView_Expand(hwndTV, hPar, TVE_COLLAPSE);
             }
-            HTREEITEM hCurrentTVLex = TreeView_GetRoot(hwndTV);
-            if (hCurrentTVLex) 
-            {
-              // find current lexer
-              for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-                if (g_pLexArray[i] == g_pLexCurrent) { break; }
-                hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex);
-              }
-              TreeView_Select(hwndTV, hCurrentTVLex, TVGN_CARET);
-              TreeView_Expand(hwndTV, hCurrentTVLex, TVE_EXPAND);
-              PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
-            }
+
+            // set new lexer
+            TreeView_Select(hwndTV, hCurrentTVLex, TVGN_CARET);
+            TreeView_Expand(hwndTV, hCurrentTVLex, TVE_EXPAND);
+
+            pCurrentLexer = g_pLexCurrent;
+            pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+
+            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           }
           break;
         
