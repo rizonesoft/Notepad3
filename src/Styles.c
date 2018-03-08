@@ -59,6 +59,10 @@ extern BOOL g_bShowSelectionMargin;
 extern int  iMarkOccurrences;
 extern BOOL bUseOldStyleBraceMatching;
 
+extern int xCustomSchemesDlg;
+extern int yCustomSchemesDlg;
+
+
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
 #define INITIAL_BASE_FONT_SIZE (10)
@@ -5685,7 +5689,7 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 
 //=============================================================================
 //
-//  Style_ConfigDlgProc()
+//  Style_CustomizeSchemesDlgProc()
 //
 INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -5700,6 +5704,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static BOOL bIsStyleSelected = FALSE;
 
   static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
+
+  WCHAR tchBuf[128] = { L'\0' };
 
   switch(umsg)
   {
@@ -5774,7 +5780,18 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         hFontTitle = CreateFontIndirect(&lf);
         SendDlgItemMessage(hwnd,IDC_TITLE,WM_SETFONT,(WPARAM)hFontTitle,TRUE);
 
-        CenterDlgInParent(hwnd);
+        if (xCustomSchemesDlg == 0 || yCustomSchemesDlg == 0)
+          CenterDlgInParent(hwnd);
+        else
+          SetDlgPos(hwnd, xCustomSchemesDlg, yCustomSchemesDlg);
+
+        HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+        GetString(IDS_SAVEPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
+        GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 1, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
+        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+
       }
       return TRUE;
 
@@ -5789,17 +5806,21 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
           if (Style_StylesBackup[cnt]) {
             LocalFree(Style_StylesBackup[cnt]);
-            Style_StylesBackup[cnt++] = NULL;
+            Style_StylesBackup[cnt] = NULL;
           }
+          ++cnt;
           int i = 0;
           while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
             if (Style_StylesBackup[cnt]) {
               LocalFree(Style_StylesBackup[cnt]);
-              Style_StylesBackup[cnt++] = NULL;
+              Style_StylesBackup[cnt] = NULL;
             }
+            ++cnt;
             ++i;
           }
         }
+        pCurrentLexer = NULL;
+        pCurrentStyle = NULL;
       }
       return FALSE;
 
@@ -5824,6 +5845,20 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         Style_SetLexer(g_hwndEdit, g_pLexCurrent); \
       } \
     }
+
+
+    case WM_SYSCOMMAND:
+      if (wParam == IDS_SAVEPOS) {
+        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_SAVEPOS, 0), 0);
+        return TRUE;
+      }
+      else if (wParam == IDS_RESETPOS) {
+        PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_RESETPOS, 0), 0);
+        return TRUE;
+      }
+      else
+        return FALSE;
+
 
     case WM_NOTIFY:
 
@@ -6056,6 +6091,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           break;
         
+
         case IDC_STYLEFORE:
           if (pCurrentStyle) {
             WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
@@ -6067,6 +6103,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           break;
 
+
         case IDC_STYLEBACK:
           if (pCurrentStyle) {
             WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
@@ -6077,6 +6114,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           break;
+
 
         case IDC_STYLEFONT:
           if (pCurrentStyle) {
@@ -6091,6 +6129,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           break;
 
+
         case IDC_STYLEDEFAULT:
           SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->pszDefault);
           if (!bIsStyleSelected) {
@@ -6099,6 +6138,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           APPLY_DIALOG_ITEM_TEXT;
           PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           break;
+
 
         case IDC_STYLEEDIT:
           {
@@ -6118,6 +6158,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           break;
 
+
         case IDC_IMPORT:
           {
             hwndTV = GetDlgItem(hwnd, IDC_STYLELIST);
@@ -6133,6 +6174,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           break;
 
+
         case IDC_EXPORT:
           {
             APPLY_DIALOG_ITEM_TEXT;
@@ -6140,11 +6182,13 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           break;
 
+
         case IDC_PREVIEW:
           {
             APPLY_DIALOG_ITEM_TEXT;
           }
           break;
+
 
         case IDC_PREVSTYLE:
           {
@@ -6159,6 +6203,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           break;
 
+
         case IDC_NEXTSTYLE:
           {
             APPLY_DIALOG_ITEM_TEXT;
@@ -6172,6 +6217,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           break;
 
+
         case IDOK:
           APPLY_DIALOG_ITEM_TEXT;
           g_fStylesModified = TRUE;
@@ -6183,18 +6229,22 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           DestroyWindow(hwnd);
           break;
 
+
         case IDCANCEL:
           if (fDragging) {
             SendMessage(hwnd, WM_CANCELMODE, 0, 0);
           }
           else {
+            APPLY_DIALOG_ITEM_TEXT;
             // Restore Styles
             int cnt = 0;
             for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
-              StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), Style_StylesBackup[cnt++]);
+              StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), Style_StylesBackup[cnt]);
+              ++cnt;
               int i = 0;
               while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-                StringCchCopy(g_pLexArray[iLexer]->Styles[i].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), Style_StylesBackup[cnt++]);
+                StringCchCopy(g_pLexArray[iLexer]->Styles[i].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), Style_StylesBackup[cnt]);
+                ++cnt;
                 ++i;
               }
             }
@@ -6203,6 +6253,22 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             DestroyWindow(hwnd);
           }
           break;
+
+
+        case IDACC_SAVEPOS:
+          GetDlgPos(hwnd, &xCustomSchemesDlg, &yCustomSchemesDlg);
+          break;
+
+        case IDACC_RESETPOS:
+          CenterDlgInParent(hwnd);
+          xCustomSchemesDlg = yCustomSchemesDlg = 0;
+          break;
+
+
+        default:
+          // return FALSE???
+          break;
+
         } // switch()
       } // WM_COMMAND
       return TRUE;
@@ -6213,7 +6279,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 //=============================================================================
 //
-//  Style_ConfigDlg()
+//  Style_CustomizeSchemesDlg()
 //
 HWND Style_CustomizeSchemesDlg(HWND hwnd)
 {

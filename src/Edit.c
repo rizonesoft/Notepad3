@@ -76,10 +76,10 @@ extern BOOL bFindReplCopySelOrClip;
 static EDITFINDREPLACE efrSave;
 static BOOL bSwitchedFindReplace = FALSE;
 
-static int xFindReplaceDlgSave;
-static int yFindReplaceDlgSave;
 extern int xFindReplaceDlg;
 extern int yFindReplaceDlg;
+static int xFindReplaceDlgSave;
+static int yFindReplaceDlgSave;
 
 extern int g_iDefaultEOLMode;
 extern int iLineEndings[3];
@@ -4810,7 +4810,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         bSwitchedFindReplace = FALSE;
         CopyMemory(lpefr, &efrSave, sizeof(EDITFINDREPLACE));
       }
-
 
       HMENU hmenu = GetSystemMenu(hwnd, FALSE);
       GetString(IDS_SAVEPOS, tchBuf, COUNTOF(tchBuf));

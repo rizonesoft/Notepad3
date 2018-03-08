@@ -634,7 +634,9 @@ END
 
 IDR_ACCCUSTOMSCHEMES ACCELERATORS
 BEGIN
-    VK_F12,         IDACC_VIEWSCHEMECONFIG,   VIRTKEY, CONTROL, ALT
+    "O",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
+    "P",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
+    VK_F12,         IDACC_VIEWSCHEMECONFIG, VIRTKEY, CONTROL, NOINVERT 
 END
 
 /////////////////////////////////////////////////////////////////////////////

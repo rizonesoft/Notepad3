@@ -246,6 +246,9 @@ int     cxFavoritesDlg;
 int     cyFavoritesDlg;
 int     xFindReplaceDlg;
 int     yFindReplaceDlg;
+int     xCustomSchemesDlg;
+int     yCustomSchemesDlg;
+
 
 LPWSTR    lpFileList[32] = { NULL };
 int       cFileList = 0;
@@ -5935,6 +5938,8 @@ void LoadSettings()
   xFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosX",0);
   yFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosY",0);
 
+  xCustomSchemesDlg = IniSectionGetInt(pIniSection, L"CustomSchemesDlgPosX", 0);
+  yCustomSchemesDlg = IniSectionGetInt(pIniSection, L"CustomSchemesDlgPosY", 0);
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
@@ -6174,8 +6179,10 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
+  IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosX", xCustomSchemesDlg);
+  IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosY", yCustomSchemesDlg);
 
-    Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+  Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
   if (StringCchCompareX(tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { tchToolbarButtons[0] = L'\0'; }
   IniSectionSetString(pIniSection, L"ToolbarButtons", tchToolbarButtons);
 
