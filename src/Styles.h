@@ -112,7 +112,7 @@ int    Style_GetLexerIconId(PEDITLEXER);
 BOOL   Style_HasLexerForExt(LPCWSTR);
 HTREEITEM Style_AddLexerToTreeView(HWND,PEDITLEXER);
 INT_PTR CALLBACK Styles_ConfigDlgProc(HWND,UINT,WPARAM,LPARAM);
-void   Style_ConfigDlg(HWND);
+HWND   Style_CustomizeSchemesDlg(HWND);
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_SelectLexerDlg(HWND);
 int    Style_GetHotspotStyleID();

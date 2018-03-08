@@ -62,6 +62,7 @@ HWND      g_hwndEdit = NULL;
 HWND      g_hwndStatus = NULL;
 HWND      g_hwndToolbar = NULL;
 HWND      g_hwndDlgFindReplace = NULL;
+HWND      g_hwndDlgCustomizeSchemes = NULL;
 HWND      hwndReBar = NULL;
 HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
@@ -427,6 +428,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   HWND hwnd;
   HACCEL hAccMain;
   HACCEL hAccFindReplace;
+  HACCEL hAccCoustomizeSchemes;
   INITCOMMONCONTROLSEX icex;
   //HMODULE hSciLexer;
   WCHAR wchAppDir[2*MAX_PATH+4] = { L'\0' };
@@ -547,7 +549,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
-  
+  hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
+
   UpdateLineNumberWidth();
   ObserveNotifyChangeEvent();
   
@@ -555,8 +558,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   {
     if (IsWindow(g_hwndDlgFindReplace) && ((msg.hwnd == g_hwndDlgFindReplace) || IsChild(g_hwndDlgFindReplace, msg.hwnd))) 
     {
-      int iTr = TranslateAccelerator(g_hwndDlgFindReplace, hAccFindReplace, &msg);
+      const int iTr = TranslateAccelerator(g_hwndDlgFindReplace, hAccFindReplace, &msg);
       if (iTr || IsDialogMessage(g_hwndDlgFindReplace, &msg))
+        continue;
+    }
+    if (IsWindow(g_hwndDlgCustomizeSchemes) && ((msg.hwnd == g_hwndDlgCustomizeSchemes) || IsChild(g_hwndDlgCustomizeSchemes, msg.hwnd))) {
+      const int iTr = TranslateAccelerator(g_hwndDlgCustomizeSchemes, hAccCoustomizeSchemes, &msg);
+      if (iTr || IsDialogMessage(g_hwndDlgCustomizeSchemes, &msg))
         continue;
     }
     if (!TranslateAccelerator(hwnd,hAccMain,&msg)) {
@@ -1543,6 +1551,10 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     if (IsWindow(g_hwndDlgFindReplace))
       DestroyWindow(g_hwndDlgFindReplace);
 
+    // Destroy customize schemes
+    if (IsWindow(g_hwndDlgCustomizeSchemes))
+      DestroyWindow(g_hwndDlgCustomizeSchemes);
+
     // call SaveSettings() when g_hwndToolbar is still valid
     SaveSettings(FALSE);
 
@@ -2253,6 +2265,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu, CMD_CTRLBACK, i);
   EnableCmd(hmenu, CMD_CTRLDEL, i);
   EnableCmd(hmenu, CMD_TIMESTAMPS, i);
+
+  EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(g_hwndDlgCustomizeSchemes));
+  EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(g_hwndDlgCustomizeSchemes));
 
   EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
   CheckCmd(hmenu,IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
@@ -3852,26 +3867,28 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_SCHEMECONFIG:
-      Style_ConfigDlg(g_hwndEdit);
-      UpdateToolbar();
-      UpdateStatusbar();
-      UpdateLineNumberWidth();
+      if (!IsWindow(g_hwndDlgCustomizeSchemes))
+        g_hwndDlgCustomizeSchemes = Style_CustomizeSchemesDlg(g_hwndEdit);
+      else
+        SetForegroundWindow(g_hwndDlgCustomizeSchemes);
+      PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
       break;
 
 
     case IDM_VIEW_FONT:
-      Style_SetDefaultFont(g_hwndEdit, TRUE);
+      if (!IsWindow(g_hwndDlgCustomizeSchemes))
+        Style_SetDefaultFont(g_hwndEdit, TRUE);
       UpdateToolbar();
-      UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
 
     case IDM_VIEW_CURRENTSCHEME:
-      Style_SetDefaultFont(g_hwndEdit, FALSE);
+      if (!IsWindow(g_hwndDlgCustomizeSchemes))
+        Style_SetDefaultFont(g_hwndEdit, FALSE);
       UpdateToolbar();
-      UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
+
 
     case IDM_VIEW_WORDWRAP:
       bWordWrap = (bWordWrap) ? FALSE : TRUE;

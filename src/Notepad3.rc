@@ -632,6 +632,10 @@ BEGIN
     VK_F4,          IDACC_REPLACENEXT,      VIRTKEY, NOINVERT
 END
 
+IDR_ACCCUSTOMSCHEMES ACCELERATORS
+BEGIN
+    VK_F12,         IDACC_VIEWSCHEMECONFIG,   VIRTKEY, CONTROL, ALT
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

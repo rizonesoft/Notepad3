@@ -135,6 +135,7 @@
 #define IDC_CHECK_OCC                   231
 #define IDC_PRINTER                     232
 #define IDC_USEASREADINGFALLBACK        233
+#define IDR_ACCCUSTOMSCHEMES            234
 #define IDACC_FIND                      302
 #define IDACC_REPLACE                   303
 #define IDACC_SAVEPOS                   304
@@ -145,8 +146,10 @@
 #define IDACC_SAVEFIND                  309
 #define IDACC_SELTONEXT                 310
 #define IDACC_SELTOPREV                 311
+#define IDACC_VIEWSCHEMECONFIG          312
 #define IDC_NFOASOEM                    400
 #define IDC_COMPILER                    401
+#define IDC_SETCURLEXERTV               402
 #define IDD_READPW                      501
 #define IDC_CHECK1                      502
 #define IDC_EDIT1                       503
