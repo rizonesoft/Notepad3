@@ -938,7 +938,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     WCHAR tchPageFmt[32] = { L'\0' };
 
     if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-      SHGetFileInfo2(g_wchCurFile, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
+      SHGetFileInfo2(g_wchCurFile, FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
       pszTitle = shfi.szDisplayName;
     }
     else {
@@ -2575,7 +2575,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         WCHAR tchPageFmt[32] = { L'\0' };
 
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          SHGetFileInfo2(g_wchCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
+          SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
           pszTitle = shfi.szDisplayName;
         }
         else {
@@ -2646,7 +2646,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_ADDTOFAV:
       if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
         SHFILEINFO shfi;
-        SHGetFileInfo2(g_wchCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
+        SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,
+          &shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
         AddToFavDlg(hwnd,shfi.szDisplayName,g_wchCurFile);
       }
       break;
@@ -3427,13 +3428,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
           if (LOWORD(wParam) == IDM_EDIT_INSERT_FILENAME) {
-            SHGetFileInfo2(g_wchCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
+            SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
+              SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
             pszInsert = shfi.szDisplayName;
           }
           else
             pszInsert = g_wchCurFile;
         }
-
         else {
           GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
@@ -8519,7 +8520,8 @@ void SetNotifyIconTitle(HWND hwnd)
   }
 
   else if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-    SHGetFileInfo2(g_wchCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
+    SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,
+      &shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
     PathCompactPathEx(tchTitle,shfi.szDisplayName,COUNTOF(tchTitle)-4,0);
   }
   else

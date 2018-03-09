@@ -83,13 +83,13 @@ BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
   StringCchCopy(lpdl->szPath,COUNTOF(lpdl->szPath),L"");
 
   // Add Imagelists
-  hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),
-                    SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
+  hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
+                    SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
 
   ListView_SetImageList(hwnd,hil,LVSIL_SMALL);
 
-  hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),
-                    SHGFI_LARGEICON | SHGFI_SYSICONINDEX);
+  hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
+                    SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
 
   ListView_SetImageList(hwnd,hil,LVSIL_NORMAL);
 
@@ -450,8 +450,19 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
 
       if (!lpshi || NOERROR != lpshi->lpVtbl->GetIconOf(lpshi,lplvid->pidl,GIL_FORSHELL,&lvi.iImage))
       {
-        pidl = IL_Create(lpdl->pidl,lpdl->cbidl,lplvid->pidl,0);
-        SHGetFileInfo((LPCWSTR)pidl,0,&shfi,sizeof(SHFILEINFO),SHGFI_PIDL | SHGFI_SYSICONINDEX | SHGFI_SMALLICON);
+        //  get attributes of the shell object using its pidl.
+        lplvid->lpsf->lpVtbl->GetAttributesOf(lplvid->lpsf, 1, &lplvid->pidl, &dwAttributes);
+
+        DWORD attr = 0;
+        if ((dwAttributes & SFGAO_FOLDER) == SFGAO_FOLDER)
+          attr = FILE_ATTRIBUTE_DIRECTORY;
+        else
+          attr = FILE_ATTRIBUTE_NORMAL;
+
+        pidl = IL_Create(lpdl->pidl, lpdl->cbidl, lplvid->pidl, 0);
+
+        SHGetFileInfo((LPCWSTR)pidl,attr,&shfi,sizeof(SHFILEINFO),
+          SHGFI_PIDL | SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
         CoTaskMemFree(pidl);
         lvi.iImage = shfi.iIcon;
       }
@@ -461,10 +472,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
       lvi.state = 0;
 
       // Link and Share Overlay
-      lplvid->lpsf->lpVtbl->GetAttributesOf(
-                              lplvid->lpsf,
-                              1,&lplvid->pidl,
-                              &dwAttributes);
+      lplvid->lpsf->lpVtbl->GetAttributesOf(lplvid->lpsf,1,&lplvid->pidl,&dwAttributes);
 
       if (dwAttributes & SFGAO_LINK)
       {
@@ -1019,17 +1027,14 @@ typedef struct tagDC_ITEMDATA
 //
 BOOL DriveBox_Init(HWND hwnd)
 {
-
-  HIMAGELIST hil;
   SHFILEINFO shfi;
 
-  hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),
-                                  SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
+  HIMAGELIST hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
+                                  SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
   SendMessage(hwnd,CBEM_SETIMAGELIST,0,(LPARAM)hil);
   SendMessage(hwnd,CBEM_SETEXTENDEDSTYLE,CBES_EX_NOSIZELIMIT,CBES_EX_NOSIZELIMIT);
 
   return TRUE;
-
 }
 
 
@@ -1376,7 +1381,7 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
   NMCOMBOBOXEX *lpnmcbe;
   LPDC_ITEMDATA lpdcid;
   SHFILEINFO shfi;
-  WCHAR szTemp[256] = { L'\0' };
+  WCHAR szTemp[MAX_PATH] = { L'\0' };
 
   lpnmcbe = (LPVOID)lParam;
   lpdcid = (LPDC_ITEMDATA)lpnmcbe->ceItem.lParam;
@@ -1391,8 +1396,19 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
   // Get Icon Index
   if (lpnmcbe->ceItem.mask & (CBEIF_IMAGE | CBEIF_SELECTEDIMAGE))
   {
-    IL_GetDisplayName(lpdcid->lpsf,lpdcid->pidl,SHGDN_FORPARSING,szTemp,256);
-    SHGetFileInfo(szTemp,0,&shfi,sizeof(SHFILEINFO),SHGFI_SYSICONINDEX | SHGFI_SMALLICON);
+    DWORD dwAttributes = 0;
+    //  get attributes of the shell object using its pidl.
+    lpdcid->lpsf->lpVtbl->GetAttributesOf(lpdcid->lpsf, 1, &lpdcid->pidl, &dwAttributes);
+
+    DWORD attr = 0;
+    if ((dwAttributes & SFGAO_FOLDER) == SFGAO_FOLDER)
+      attr = FILE_ATTRIBUTE_DIRECTORY;
+    else
+      attr = FILE_ATTRIBUTE_NORMAL;
+
+    IL_GetDisplayName(lpdcid->lpsf,lpdcid->pidl,SHGDN_FORPARSING,szTemp,MAX_PATH);
+    SHGetFileInfo(szTemp,attr,&shfi,sizeof(SHFILEINFO),
+      SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
     lpnmcbe->ceItem.iImage = shfi.iIcon;
     lpnmcbe->ceItem.iSelectedImage = shfi.iIcon;
   }

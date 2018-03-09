@@ -5711,9 +5711,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   {
     case WM_INITDIALOG:
       {
-        SHFILEINFO shfi;
-        LOGFONT lf;
-
         // Backup Styles
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
@@ -5728,9 +5725,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
         fDragging = FALSE;
 
+
+        SHFILEINFO shfi;
+        ZeroMemory(&shfi, sizeof(SHFILEINFO));
         TreeView_SetImageList(hwndTV,
-          (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),
-          SHGFI_SMALLICON | SHGFI_SYSICONINDEX),TVSIL_NORMAL);
+          (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
+            SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),TVSIL_NORMAL);
 
         // find current non-standard lexer
         int found = -1;
@@ -5774,6 +5774,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd,IDC_TITLE,WM_GETFONT,0,0)))
           hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
 
+        LOGFONT lf;
         GetObject(hFontTitle,sizeof(LOGFONT),&lf);
         lf.lfHeight += lf.lfHeight / 5;
         lf.lfWeight = FW_BOLD;
@@ -6356,11 +6357,13 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
 
         ListView_SetImageList(hwndLV,
-          (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),SHGFI_SMALLICON | SHGFI_SYSICONINDEX),
+          (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
+            &shfi,sizeof(SHFILEINFO),SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_SMALL);
 
         ListView_SetImageList(hwndLV,
-          (HIMAGELIST)SHGetFileInfo(L"C:\\",0,&shfi,sizeof(SHFILEINFO),SHGFI_LARGEICON | SHGFI_SYSICONINDEX),
+          (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
+            &shfi,sizeof(SHFILEINFO),SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
           LVSIL_NORMAL);
 
         //SetExplorerTheme(hwndLV);
