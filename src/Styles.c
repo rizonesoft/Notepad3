@@ -5712,6 +5712,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     case WM_INITDIALOG:
       {
         // Backup Styles
+        ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
           Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->szExtensions);
@@ -5787,11 +5788,14 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           SetDlgPos(hwnd, xCustomSchemesDlg, yCustomSchemesDlg);
 
         HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+        GetString(IDS_PREVIEW, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_PREVIEW, tchBuf);
+        InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
         GetString(IDS_SAVEPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
+        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
         GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 1, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
-        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
+        InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 
       }
       return TRUE;
@@ -6258,6 +6262,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         case IDACC_VIEWSCHEMECONFIG:
           PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
+          break;
+
+        case IDACC_PREVIEW:
+          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_PREVIEW, 1), 0);
           break;
 
         case IDACC_SAVEPOS:
