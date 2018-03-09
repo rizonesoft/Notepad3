@@ -622,8 +622,8 @@ IDR_ACCFINDREPLACE ACCELERATORS
 BEGIN
     "F",            IDACC_FIND,             VIRTKEY, CONTROL, NOINVERT
     "H",            IDACC_REPLACE,          VIRTKEY, CONTROL, NOINVERT
-    "O",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
-    "P",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
+    "S",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
+    "R",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
     VK_F2,          IDACC_SELTONEXT,        VIRTKEY, CONTROL, ALT, NOINVERT
     VK_F2,          IDACC_SELTOPREV,        VIRTKEY, SHIFT, CONTROL, ALT, NOINVERT
     VK_F3,          IDACC_FINDNEXT,         VIRTKEY, NOINVERT
@@ -634,9 +634,10 @@ END
 
 IDR_ACCCUSTOMSCHEMES ACCELERATORS
 BEGIN
-    "O",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
-    "P",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
-    VK_F12,         IDACC_VIEWSCHEMECONFIG, VIRTKEY, CONTROL, NOINVERT 
+    "S",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
+    "R",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
+    "S",            IDACC_PREVIEW,          VIRTKEY, CONTROL, NOINVERT
+    VK_F12,         IDACC_VIEWSCHEMECONFIG, VIRTKEY, CONTROL, NOINVERT
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1566,8 +1567,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_SAVEPOS             "&Save Position\tCtrl+O"
-    IDS_RESETPOS            "&Reset Position\tCtrl+P"
+    IDS_SAVEPOS             "&Save Position\tCtrl+S"
+    IDS_RESETPOS            "&Reset Position\tCtrl+R"
+    IDS_PREVIEW             "&Preview Settings\tCtrl+P"
 END
 
 STRINGTABLE

@@ -3876,8 +3876,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       else {
         SetForegroundWindow(g_hwndDlgCustomizeSchemes);
-        PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
       }
+      PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
       break;
 
 
