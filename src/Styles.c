@@ -6255,6 +6255,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           break;
 
 
+        case IDACC_VIEWSCHEMECONFIG:
+          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
+          break;
+
         case IDACC_SAVEPOS:
           GetDlgPos(hwnd, &xCustomSchemesDlg, &yCustomSchemesDlg);
           break;
