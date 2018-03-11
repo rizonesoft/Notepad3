@@ -520,7 +520,7 @@ BOOL SetWindowTitle(HWND hwnd,UINT uIDAppName,BOOL bIsElevated,UINT uIDUntitled,
       if (StringCchCompareN(szCachedFile,COUNTOF(szCachedFile),lpszFile,MAX_PATH) != 0) {
         SHFILEINFO shfi;
         StringCchCopy(szCachedFile,COUNTOF(szCachedFile),lpszFile);
-        if (SHGetFileInfo2(lpszFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME))
+        if (SHGetFileInfo2(lpszFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES))
           StringCchCopy(szCachedDisplayName,COUNTOF(szCachedDisplayName),shfi.szDisplayName);
         else
           StringCchCopy(szCachedDisplayName,COUNTOF(szCachedDisplayName),PathFindFileName(lpszFile));
