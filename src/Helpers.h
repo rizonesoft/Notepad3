@@ -42,6 +42,9 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 __forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
+__forceinline bool HasFractionCent(float f) { return ((((int)(f * 100.0)) % 100) != 0); }
+
+
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
   GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),g_wchIniFile)
 #define IniGetInt(lpSection,lpName,nDefault) \
