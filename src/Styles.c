@@ -6269,16 +6269,22 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> + fix: implement Accelerator-Key self calling
         case IDACC_VIEWSCHEMECONFIG:
           PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
           break;
 
+<<<<<<< HEAD
         case IDACC_PREVIEW:
           PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_PREVIEW, 1), 0);
           break;
 
 =======
 >>>>>>> + add: save/reset dialog position commands (Customize Schemes Dlg)
+=======
+>>>>>>> + fix: implement Accelerator-Key self calling
         case IDACC_SAVEPOS:
           GetDlgPos(hwnd, &xCustomSchemesDlg, &yCustomSchemesDlg);
           break;
