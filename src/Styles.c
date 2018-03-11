@@ -5789,6 +5789,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         HMENU hmenu = GetSystemMenu(hwnd, FALSE);
 <<<<<<< HEAD
+<<<<<<< HEAD
         GetString(IDS_PREVIEW, tchBuf, COUNTOF(tchBuf));
         InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_PREVIEW, tchBuf);
         InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
@@ -5798,12 +5799,22 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 =======
+=======
+        GetString(IDS_PREVIEW, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_PREVIEW, tchBuf);
+        InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+>>>>>>> + fix: initialize (zero mem) for static Schemes backup store
         GetString(IDS_SAVEPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
+        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
         GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
+<<<<<<< HEAD
         InsertMenu(hmenu, 1, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
         InsertMenu(hmenu, 2, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 >>>>>>> + add: save/reset dialog position commands (Customize Schemes Dlg)
+=======
+        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
+        InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+>>>>>>> + fix: initialize (zero mem) for static Schemes backup store
 
       }
       return TRUE;
@@ -6277,14 +6288,20 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> + fix: initialize (zero mem) for static Schemes backup store
         case IDACC_PREVIEW:
           PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_PREVIEW, 1), 0);
           break;
 
+<<<<<<< HEAD
 =======
 >>>>>>> + add: save/reset dialog position commands (Customize Schemes Dlg)
 =======
 >>>>>>> + fix: implement Accelerator-Key self calling
+=======
+>>>>>>> + fix: initialize (zero mem) for static Schemes backup store
         case IDACC_SAVEPOS:
           GetDlgPos(hwnd, &xCustomSchemesDlg, &yCustomSchemesDlg);
           break;
