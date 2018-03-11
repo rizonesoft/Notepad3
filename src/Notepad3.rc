@@ -634,10 +634,16 @@ END
 
 IDR_ACCCUSTOMSCHEMES ACCELERATORS
 BEGIN
+<<<<<<< HEAD
     "S",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
     "R",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
     "S",            IDACC_PREVIEW,          VIRTKEY, CONTROL, NOINVERT
     VK_F12,         IDACC_VIEWSCHEMECONFIG, VIRTKEY, CONTROL, NOINVERT
+=======
+    "O",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
+    "P",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
+    VK_F12,         IDACC_VIEWSCHEMECONFIG, VIRTKEY, CONTROL, NOINVERT 
+>>>>>>> + add: save/reset dialog position commands (Customize Schemes Dlg)
 END
 
 /////////////////////////////////////////////////////////////////////////////

@@ -5788,6 +5788,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           SetDlgPos(hwnd, xCustomSchemesDlg, yCustomSchemesDlg);
 
         HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+<<<<<<< HEAD
         GetString(IDS_PREVIEW, tchBuf, COUNTOF(tchBuf));
         InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_PREVIEW, tchBuf);
         InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
@@ -5796,6 +5797,13 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
         InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+=======
+        GetString(IDS_SAVEPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
+        GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 1, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
+        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+>>>>>>> + add: save/reset dialog position commands (Customize Schemes Dlg)
 
       }
       return TRUE;
@@ -6260,6 +6268,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           break;
 
 
+<<<<<<< HEAD
         case IDACC_VIEWSCHEMECONFIG:
           PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
           break;
@@ -6268,6 +6277,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_PREVIEW, 1), 0);
           break;
 
+=======
+>>>>>>> + add: save/reset dialog position commands (Customize Schemes Dlg)
         case IDACC_SAVEPOS:
           GetDlgPos(hwnd, &xCustomSchemesDlg, &yCustomSchemesDlg);
           break;
