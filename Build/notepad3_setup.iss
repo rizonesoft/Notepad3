@@ -156,7 +156,7 @@ Filename: {userappdata}\Rizonesoft\Notepad3\Notepad3.ini; Section: Settings; Key
 
 [Run]
 Filename: {app}\Notepad3.exe; Description: {cm:LaunchProgram,{#app_name}}; WorkingDir: {app}; Flags: nowait postinstall skipifsilent unchecked
-Filename: https://rizone.tech/2BUTzcO; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent
+Filename: https://rizone.tech/2Ho5UVQ; Description: {cm:tsk_LaunchWelcomePage}; Flags: nowait postinstall shellexec skipifsilent unchecked
 
 
 [InstallDelete]
