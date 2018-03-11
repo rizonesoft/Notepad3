@@ -635,15 +635,21 @@ END
 IDR_ACCCUSTOMSCHEMES ACCELERATORS
 BEGIN
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> + chg: Find/Replace & Custom. Schemes dialog: Acc-keys for dialog position persisting (save: Ctrl+S, reset: Ctrl+R)
     "S",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
     "R",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
     "S",            IDACC_PREVIEW,          VIRTKEY, CONTROL, NOINVERT
     VK_F12,         IDACC_VIEWSCHEMECONFIG, VIRTKEY, CONTROL, NOINVERT
+<<<<<<< HEAD
 =======
     "O",            IDACC_SAVEPOS,          VIRTKEY, CONTROL, NOINVERT
     "P",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
     VK_F12,         IDACC_VIEWSCHEMECONFIG, VIRTKEY, CONTROL, NOINVERT 
 >>>>>>> + add: save/reset dialog position commands (Customize Schemes Dlg)
+=======
+>>>>>>> + chg: Find/Replace & Custom. Schemes dialog: Acc-keys for dialog position persisting (save: Ctrl+S, reset: Ctrl+R)
 END
 
 /////////////////////////////////////////////////////////////////////////////
