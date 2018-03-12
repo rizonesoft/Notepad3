@@ -1074,8 +1074,10 @@ BOOL EditLoadFile(
     iPreferedEncoding = iForcedEncoding;
   else if (iFileEncWeak != CPI_NONE)
     iPreferedEncoding = iFileEncWeak;
+  else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection)
+    iPreferedEncoding = iAnalyzedEncoding;
   else if (iAnalyzedEncoding != CPI_NONE)
-    iPreferedEncoding = (Encoding_IsUNICODE(iAnalyzedEncoding) && bSkipUTFDetection) ? iPreferedEncoding : iAnalyzedEncoding;
+    iPreferedEncoding = iAnalyzedEncoding;
 
 
   BOOL bBOM = FALSE;
