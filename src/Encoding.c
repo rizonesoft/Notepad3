@@ -1365,8 +1365,6 @@ void Encoding_SciSetCodePage(HWND hwnd, int iEncoding) {
 // ============================================================================
 
 
-extern BOOL bSkipUnicodeDetection;
-
 BOOL IsUnicode(const char* pBuffer, int cb, LPBOOL lpbBOM, LPBOOL lpbReverse) {
   int i = 0xFFFF;
 
@@ -1378,10 +1376,7 @@ BOOL IsUnicode(const char* pBuffer, int cb, LPBOOL lpbBOM, LPBOOL lpbReverse) {
   if (!pBuffer || cb < 2)
     return FALSE;
 
-  if (!bSkipUnicodeDetection)
-    bIsTextUnicode = IsTextUnicode(pBuffer, cb, &i);
-  else
-    bIsTextUnicode = FALSE;
+  bIsTextUnicode = IsTextUnicode(pBuffer, cb, &i);
 
   bHasBOM = (*((UNALIGNED PWCHAR)pBuffer) == 0xFEFF);
   bHasRBOM = (*((UNALIGNED PWCHAR)pBuffer) == 0xFFFE);

@@ -59,6 +59,7 @@ extern WCHAR g_wchAppUserModelID[];
 extern DWORD dwLastIOError;
 extern BOOL bUseDefaultForFileEncoding;
 extern BOOL bSkipUnicodeDetection;
+extern BOOL bSkipANSICodePageDetection;
 extern BOOL bLoadASCIIasUTF8;
 extern BOOL bLoadNFOasOEM;
 extern BOOL bNoEncodingTags;
@@ -2105,6 +2106,9 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         if (bSkipUnicodeDetection)
           CheckDlgButton(hwnd,IDC_NOUNICODEDETECTION,BST_CHECKED);
 
+        if (bSkipANSICodePageDetection)
+          CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, BST_CHECKED);
+
         if (bLoadASCIIasUTF8)
           CheckDlgButton(hwnd,IDC_ASCIIASUTF8,BST_CHECKED);
 
@@ -2131,6 +2135,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
               else {
                 bUseDefaultForFileEncoding = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED) ? 1 : 0;
                 bSkipUnicodeDetection = (IsDlgButtonChecked(hwnd,IDC_NOUNICODEDETECTION) == BST_CHECKED) ? 1 : 0;
+                bSkipANSICodePageDetection = (IsDlgButtonChecked(hwnd, IDC_NOANSICPDETECTION) == BST_CHECKED) ? 1 : 0;
                 bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd,IDC_ASCIIASUTF8) == BST_CHECKED) ? 1 : 0;
                 bLoadNFOasOEM = (IsDlgButtonChecked(hwnd,IDC_NFOASOEM) == BST_CHECKED) ? 1 : 0;
                 bNoEncodingTags = (IsDlgButtonChecked(hwnd,IDC_ENCODINGFROMFILEVARS) == BST_CHECKED) ? 1 : 0;
