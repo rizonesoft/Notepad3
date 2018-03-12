@@ -62,6 +62,7 @@ HWND      g_hwndEdit = NULL;
 HWND      g_hwndStatus = NULL;
 HWND      g_hwndToolbar = NULL;
 HWND      g_hwndDlgFindReplace = NULL;
+HWND      g_hwndDlgCustomizeSchemes = NULL;
 HWND      hwndReBar = NULL;
 HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
@@ -245,6 +246,9 @@ int     cxFavoritesDlg;
 int     cyFavoritesDlg;
 int     xFindReplaceDlg;
 int     yFindReplaceDlg;
+int     xCustomSchemesDlg;
+int     yCustomSchemesDlg;
+
 
 LPWSTR    lpFileList[32] = { NULL };
 int       cFileList = 0;
@@ -427,6 +431,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   HWND hwnd;
   HACCEL hAccMain;
   HACCEL hAccFindReplace;
+  HACCEL hAccCoustomizeSchemes;
   INITCOMMONCONTROLSEX icex;
   //HMODULE hSciLexer;
   WCHAR wchAppDir[2*MAX_PATH+4] = { L'\0' };
@@ -547,7 +552,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
-  
+  hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
+
   UpdateLineNumberWidth();
   ObserveNotifyChangeEvent();
   
@@ -555,8 +561,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   {
     if (IsWindow(g_hwndDlgFindReplace) && ((msg.hwnd == g_hwndDlgFindReplace) || IsChild(g_hwndDlgFindReplace, msg.hwnd))) 
     {
-      int iTr = TranslateAccelerator(g_hwndDlgFindReplace, hAccFindReplace, &msg);
+      const int iTr = TranslateAccelerator(g_hwndDlgFindReplace, hAccFindReplace, &msg);
       if (iTr || IsDialogMessage(g_hwndDlgFindReplace, &msg))
+        continue;
+    }
+    if (IsWindow(g_hwndDlgCustomizeSchemes) && ((msg.hwnd == g_hwndDlgCustomizeSchemes) || IsChild(g_hwndDlgCustomizeSchemes, msg.hwnd))) {
+      const int iTr = TranslateAccelerator(g_hwndDlgCustomizeSchemes, hAccCoustomizeSchemes, &msg);
+      if (iTr || IsDialogMessage(g_hwndDlgCustomizeSchemes, &msg))
         continue;
     }
     if (!TranslateAccelerator(hwnd,hAccMain,&msg)) {
@@ -927,7 +938,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     WCHAR tchPageFmt[32] = { L'\0' };
 
     if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-      SHGetFileInfo2(g_wchCurFile, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME);
+      SHGetFileInfo2(g_wchCurFile, FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
       pszTitle = shfi.szDisplayName;
     }
     else {
@@ -1542,6 +1553,10 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     // Destroy find / replace dialog
     if (IsWindow(g_hwndDlgFindReplace))
       DestroyWindow(g_hwndDlgFindReplace);
+
+    // Destroy customize schemes
+    if (IsWindow(g_hwndDlgCustomizeSchemes))
+      DestroyWindow(g_hwndDlgCustomizeSchemes);
 
     // call SaveSettings() when g_hwndToolbar is still valid
     SaveSettings(FALSE);
@@ -2254,6 +2269,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu, CMD_CTRLDEL, i);
   EnableCmd(hmenu, CMD_TIMESTAMPS, i);
 
+  EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(g_hwndDlgCustomizeSchemes));
+  EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(g_hwndDlgCustomizeSchemes));
+
   EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
   CheckCmd(hmenu,IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
   EnableCmd(hmenu, IDM_VIEW_FOLDING, g_bCodeFoldingAvailable);
@@ -2557,7 +2575,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         WCHAR tchPageFmt[32] = { L'\0' };
 
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          SHGetFileInfo2(g_wchCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
+          SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
           pszTitle = shfi.szDisplayName;
         }
         else {
@@ -2628,7 +2646,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_ADDTOFAV:
       if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
         SHFILEINFO shfi;
-        SHGetFileInfo2(g_wchCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
+        SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,
+          &shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
         AddToFavDlg(hwnd,shfi.szDisplayName,g_wchCurFile);
       }
       break;
@@ -3409,13 +3428,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
           if (LOWORD(wParam) == IDM_EDIT_INSERT_FILENAME) {
-            SHGetFileInfo2(g_wchCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
+            SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
+              SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
             pszInsert = shfi.szDisplayName;
           }
           else
             pszInsert = g_wchCurFile;
         }
-
         else {
           GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
@@ -3852,26 +3871,30 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_SCHEMECONFIG:
-      Style_ConfigDlg(g_hwndEdit);
-      UpdateToolbar();
-      UpdateStatusbar();
-      UpdateLineNumberWidth();
+      if (!IsWindow(g_hwndDlgCustomizeSchemes)) {
+        g_hwndDlgCustomizeSchemes = Style_CustomizeSchemesDlg(g_hwndEdit);
+      }
+      else {
+        SetForegroundWindow(g_hwndDlgCustomizeSchemes);
+      }
+      PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
       break;
 
 
     case IDM_VIEW_FONT:
-      Style_SetDefaultFont(g_hwndEdit, TRUE);
+      if (!IsWindow(g_hwndDlgCustomizeSchemes))
+        Style_SetDefaultFont(g_hwndEdit, TRUE);
       UpdateToolbar();
-      UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
 
     case IDM_VIEW_CURRENTSCHEME:
-      Style_SetDefaultFont(g_hwndEdit, FALSE);
+      if (!IsWindow(g_hwndDlgCustomizeSchemes))
+        Style_SetDefaultFont(g_hwndEdit, FALSE);
       UpdateToolbar();
-      UpdateStatusbar();
       UpdateLineNumberWidth();
       break;
+
 
     case IDM_VIEW_WORDWRAP:
       bWordWrap = (bWordWrap) ? FALSE : TRUE;
@@ -5484,6 +5507,17 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
               EditCompleteWord(g_hwndEdit, FALSE);
             }
+            //else if (SciCall_IsSelectionRectangle() || IsThinRectangleSelected()) {
+            //  WCHAR wch[8] = { L'\0' };
+            //  StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)(scn->ch));
+            //  char chr[8] = { '\0' };
+            //  WideCharToMultiByteStrg(Encoding_SciGetCodePage(g_hwndEdit), wch, chr);
+
+            //  if (SciCall_IsSelectionRectangle())
+            //    EditPaste2RectSel(g_hwndEdit, chr);
+            //  else
+            //    SciCall_ReplaceSel(chr);
+            //}
           }
           break;
 
@@ -5905,6 +5939,8 @@ void LoadSettings()
   xFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosX",0);
   yFindReplaceDlg = IniSectionGetInt(pIniSection,L"FindReplaceDlgPosY",0);
 
+  xCustomSchemesDlg = IniSectionGetInt(pIniSection, L"CustomSchemesDlgPosX", 0);
+  yCustomSchemesDlg = IniSectionGetInt(pIniSection, L"CustomSchemesDlgPosY", 0);
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
@@ -6144,8 +6180,10 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
   IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
+  IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosX", xCustomSchemesDlg);
+  IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosY", yCustomSchemesDlg);
 
-    Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+  Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
   if (StringCchCompareX(tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { tchToolbarButtons[0] = L'\0'; }
   IniSectionSetString(pIniSection, L"ToolbarButtons", tchToolbarButtons);
 
@@ -8482,7 +8520,8 @@ void SetNotifyIconTitle(HWND hwnd)
   }
 
   else if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-    SHGetFileInfo2(g_wchCurFile,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
+    SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,
+      &shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
     PathCompactPathEx(tchTitle,shfi.szDisplayName,COUNTOF(tchTitle)-4,0);
   }
   else
