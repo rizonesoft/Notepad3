@@ -68,10 +68,10 @@ char* EditGetClipboardText(HWND,BOOL,int*,int*);
 BOOL  EditSetClipboardText(HWND, const char*);
 BOOL  EditClearClipboard(HWND);
 void  EditPaste2RectSel(HWND,char*);
-BOOL  EditPasteClipboard(HWND,BOOL);
+BOOL  EditPasteClipboard(HWND,BOOL,BOOL);
 BOOL  EditCopyAppend(HWND,BOOL);
 int   EditDetectEOLMode(HWND,char*,DWORD);
-BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*);
+BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,BOOL,int*,int*,BOOL*,BOOL*,BOOL*);
 BOOL  EditSaveFile(HWND,LPCWSTR,int,BOOL*,BOOL);
 
 void  EditInvertCase(HWND);
