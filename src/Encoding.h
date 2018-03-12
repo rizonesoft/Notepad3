@@ -3,7 +3,7 @@
 *                                                                             *
 * Notepad3                                                                    *
 *                                                                             *
-* Encoding.h                                                                   *
+* Encoding.h                                                                  *
 *                                                                             *
 * Copyright (C) 2006-2016 Wu Yongwei <wuyongwei@gmail.com>                    *
 *                                                                             *

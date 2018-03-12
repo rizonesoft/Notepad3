@@ -340,6 +340,7 @@
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />
     <ClInclude Include="Encoding.h" />
+    <ClInclude Include="EncTables.hpp" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Notepad3.h" />
     <ClInclude Include="SciCall.h" />
