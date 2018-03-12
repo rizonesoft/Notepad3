@@ -136,6 +136,7 @@
 #define IDC_PRINTER                     232
 #define IDC_USEASREADINGFALLBACK        233
 #define IDR_ACCCUSTOMSCHEMES            234
+#define IDC_NOANSICPDETECTION           235
 #define IDACC_FIND                      302
 #define IDACC_REPLACE                   303
 #define IDACC_SAVEPOS                   304

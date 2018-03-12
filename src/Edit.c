@@ -70,7 +70,6 @@ extern UINT cpLastFind;
 extern BOOL bReplaceInitialized;
 extern BOOL bUseOldStyleBraceMatching;
 extern BOOL bUseDefaultForFileEncoding;
-extern BOOL bSkipUnicodeDetection;
 extern BOOL bFindReplCopySelOrClip;
 
 static EDITFINDREPLACE efrSave;
@@ -784,12 +783,12 @@ void EditPaste2RectSel(HWND hwnd, char* pText)
 //
 //  EditPasteClipboard()
 //
-BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard)
+BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
 {
   int lineCount = 0;
   int lenLastLine = 0;
 
-  char* pClip = EditGetClipboardText(hwnd, !bSkipUnicodeDetection, &lineCount, &lenLastLine);
+  char* pClip = EditGetClipboardText(hwnd, !bSkipUnicodeCheck, &lineCount, &lenLastLine);
   if (!pClip) {
     return FALSE; // recoding canceled
   }
@@ -972,7 +971,8 @@ int EditDetectEOLMode(HWND hwnd,char* lpData,DWORD cbData)
 BOOL EditLoadFile(
        HWND hwnd,
        LPCWSTR pszFile,
-       BOOL bSkipEncodingDetection,
+       BOOL bSkipUTFDetection,
+       BOOL bSkipANSICPDetection,
        int* iEncoding,
        int* iEOLMode,
        BOOL *pbUnicodeErr,
@@ -1065,7 +1065,7 @@ BOOL EditLoadFile(
 
   const int iForcedEncoding = Encoding_SrcCmdLn(CPI_GET);
   const int iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-  const int iAnalyzedEncoding = !bSkipEncodingDetection ? Encoding_Analyze(lpData, cbData) : CPI_NONE;
+  const int iAnalyzedEncoding = bSkipANSICPDetection ? CPI_NONE : Encoding_Analyze(lpData, cbData);
 
   // choose best encoding guess
   int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
@@ -1075,7 +1075,7 @@ BOOL EditLoadFile(
   else if (iFileEncWeak != CPI_NONE)
     iPreferedEncoding = iFileEncWeak;
   else if (iAnalyzedEncoding != CPI_NONE)
-    iPreferedEncoding = iAnalyzedEncoding;
+    iPreferedEncoding = (Encoding_IsUNICODE(iAnalyzedEncoding) && bSkipUTFDetection) ? iPreferedEncoding : iAnalyzedEncoding;
 
 
   BOOL bBOM = FALSE;
@@ -1099,7 +1099,7 @@ BOOL EditLoadFile(
     GlobalFree(lpData);
   }
   // ===  UNICODE  ===
-  else if (!bSkipEncodingDetection &&  //TODO: use Encoding_IsUNICODE(iAnalyzedEncoding) here ???
+  else if (!bSkipUTFDetection &&  //TODO: use Encoding_IsUNICODE(iAnalyzedEncoding) here ???
       (Encoding_IsUNICODE(iForcedEncoding) || (iForcedEncoding == CPI_NONE)) &&
       (Encoding_IsUNICODE(iForcedEncoding) || IsUnicode(lpData,cbData,&bBOM,&bReverse)) &&
       (Encoding_IsUNICODE(iForcedEncoding) || !IsUTF8Signature(lpData))) // check for UTF-8 signature
@@ -1163,7 +1163,7 @@ BOOL EditLoadFile(
     FileVars_Init(lpData,cbData,&fvCurFile);
 
     // ===  UTF-8  ===
-    if (!bSkipEncodingDetection && (Encoding_IsNONE(iForcedEncoding) || Encoding_IsUTF8(iForcedEncoding)) &&
+    if (!bSkipUTFDetection && (Encoding_IsNONE(iForcedEncoding) || Encoding_IsUTF8(iForcedEncoding)) &&
       ((IsUTF8Signature(lpData) || 
         FileVars_IsUTF8(&fvCurFile) || 
         (Encoding_IsUTF8(iForcedEncoding) || 

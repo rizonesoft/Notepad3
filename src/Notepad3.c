@@ -181,6 +181,7 @@ BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
 BOOL      bUseDefaultForFileEncoding;
 BOOL      bSkipUnicodeDetection;
+BOOL      bSkipANSICodePageDetection;
 BOOL      bLoadASCIIasUTF8;
 BOOL      bLoadNFOasOEM;
 BOOL      bNoEncodingTags;
@@ -736,7 +737,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     SetWindowTransparentMode(g_hwndMain,TRUE);
 
   // Current file information -- moved in front of ShowWindow()
-  FileLoad(TRUE,TRUE,FALSE,FALSE,L"");
+  FileLoad(TRUE,TRUE,FALSE,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
 
   if (!flagStartAsTrayIcon) {
     ShowWindow(g_hwndMain,nCmdShow);
@@ -759,12 +760,12 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     // Open from Directory
     if (!flagBufferFile && PathIsDirectory(lpFileArg)) {
       WCHAR tchFile[MAX_PATH] = { L'\0' };
-      if (OpenFileDlg(g_hwndMain,tchFile,COUNTOF(tchFile),lpFileArg))
-        bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,tchFile);
+      if (OpenFileDlg(g_hwndMain, tchFile, COUNTOF(tchFile), lpFileArg))
+        bOpened = FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
     }
     else {
       LPCWSTR lpFileToOpen = flagBufferFile ? szBufferFile : lpFileArg;
-      bOpened = FileLoad(FALSE,FALSE,FALSE,FALSE,lpFileToOpen);
+      bOpened = FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, lpFileToOpen);
       if (bOpened) {
         if (flagBufferFile) {
           if (lpFileArg) {
@@ -1771,10 +1772,10 @@ void MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (PathIsDirectory(szBuf)) {
     WCHAR tchFile[MAX_PATH] = { L'\0' };
     if (OpenFileDlg(g_hwndMain, tchFile, COUNTOF(tchFile), szBuf))
-      FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+      FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
   }
   else if (PathFileExists(szBuf))
-    FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
+    FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, szBuf);
   else
     // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
     MsgBox(MBWARN, IDS_DROP_NO_FILE);
@@ -1814,10 +1815,10 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
     if (PathIsDirectory(szBuf)) {
       WCHAR tchFile[MAX_PATH] = { L'\0' };
       if (OpenFileDlg(hWnd, tchFile, COUNTOF(tchFile), szBuf))
-        FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+        FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
     }
     else
-      FileLoad(FALSE, FALSE, FALSE, FALSE, szBuf);
+      FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, szBuf);
 
     if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
       MsgBox(MBWARN, IDS_ERR_DROP);
@@ -1864,11 +1865,11 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (PathIsDirectory(&params->wchData)) {
         WCHAR tchFile[MAX_PATH] = { L'\0' };
         if (OpenFileDlg(g_hwndMain, tchFile, COUNTOF(tchFile), &params->wchData))
-          bOpened = FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+          bOpened = FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
       }
 
       else
-        bOpened = FileLoad(FALSE, FALSE, FALSE, FALSE, &params->wchData);
+        bOpened = FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, &params->wchData);
 
       if (bOpened) {
 
@@ -2439,12 +2440,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_FILE_NEW:
-      FileLoad(FALSE,TRUE,FALSE,FALSE,L"");
+      FileLoad(FALSE,TRUE,FALSE,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
       break;
 
 
     case IDM_FILE_OPEN:
-      FileLoad(FALSE,FALSE,FALSE,FALSE,L"");
+      FileLoad(FALSE,FALSE,FALSE,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
       break;
 
 
@@ -2634,10 +2635,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             WCHAR tchFile[MAX_PATH] = { L'\0' };
 
             if (OpenFileDlg(g_hwndMain,tchFile,COUNTOF(tchFile),tchSelItem))
-              FileLoad(TRUE,FALSE,FALSE,FALSE,tchFile);
+              FileLoad(TRUE,FALSE,FALSE,bSkipUnicodeDetection,bSkipANSICodePageDetection,tchFile);
           }
           else
-            FileLoad(TRUE,FALSE,FALSE,FALSE,tchSelItem);
+            FileLoad(TRUE,FALSE,FALSE,bSkipUnicodeDetection,bSkipANSICodePageDetection,tchSelItem);
           }
         }
       break;
@@ -2676,7 +2677,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (FileSave(FALSE,TRUE,FALSE,FALSE)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (FileMRUDlg(hwnd,tchFile))
-            FileLoad(TRUE,FALSE,FALSE,FALSE,tchFile);
+            FileLoad(TRUE,FALSE,FALSE,FALSE,TRUE,tchFile);
           }
         }
       break;
@@ -2745,7 +2746,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           {
             StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
             Encoding_SrcCmdLn(iNewEncoding);
-            FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2);
+            FileLoad(TRUE,FALSE,TRUE,FALSE,TRUE,tchCurFile2);
           }
         }
       }
@@ -2846,7 +2847,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
         int token = BeginUndoAction();
-        EditPasteClipboard(g_hwndEdit, FALSE);
+        EditPasteClipboard(g_hwndEdit, FALSE, bSkipUnicodeDetection);
         EndUndoAction(token);
         UpdateToolbar();
         UpdateStatusbar();
@@ -2858,7 +2859,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (flagPasteBoard)
           bLastCopyFromMe = TRUE;
         int token = BeginUndoAction();
-        EditPasteClipboard(g_hwndEdit, TRUE);
+        EditPasteClipboard(g_hwndEdit, TRUE, bSkipUnicodeDetection);
         EndUndoAction(token);
         UpdateToolbar();
         UpdateStatusbar();
@@ -4494,7 +4495,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
           Encoding_SrcCmdLn(Encoding_MapUnicode(g_iDefaultNewFileEncoding));
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
-          FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
+          FileLoad(FALSE,FALSE,TRUE,TRUE,TRUE,tchCurFile2);
         }
       }
       break;
@@ -4506,7 +4507,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
           Encoding_SrcCmdLn(CPI_ANSI_DEFAULT);
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
-          FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
+          FileLoad(FALSE,FALSE,TRUE,TRUE,bSkipANSICodePageDetection,tchCurFile2);
         }
       }
       break;
@@ -4518,7 +4519,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
           Encoding_SrcCmdLn(CPI_OEM);
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
-          FileLoad(FALSE,FALSE,TRUE,TRUE,tchCurFile2);
+          FileLoad(FALSE,FALSE,TRUE,TRUE,TRUE,tchCurFile2);
         }
       }
       break;
@@ -4531,7 +4532,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
           bLoadASCIIasUTF8 = 1;
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
-          FileLoad(FALSE,FALSE,TRUE,FALSE,tchCurFile2);
+          FileLoad(FALSE,FALSE,TRUE,FALSE,TRUE,tchCurFile2);
           bLoadASCIIasUTF8 = _bLoadASCIIasUTF8;
         }
       }
@@ -4547,7 +4548,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           flagNoFileVariables = 1;
           bNoEncodingTags = 1;
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
-          FileLoad(FALSE,FALSE,TRUE,FALSE,tchCurFile2);
+          FileLoad(FALSE,FALSE,TRUE, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchCurFile2);
           flagNoFileVariables = _fNoFileVariables;
           bNoEncodingTags = _bNoEncodingTags;
         }
@@ -4919,7 +4920,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_OPENINIFILE:
       if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile))) {
         CreateIniFile();
-        FileLoad(FALSE,FALSE,FALSE,FALSE,g_wchIniFile);
+        FileLoad(FALSE,FALSE,FALSE,FALSE,TRUE,g_wchIniFile);
       }
       break;
 
@@ -5211,10 +5212,10 @@ void OpenHotSpotURL(DocPos position, BOOL bForceBrowser)
         WCHAR tchFile[MAX_PATH + 1] = { L'\0' };
 
         if (OpenFileDlg(g_hwndMain, tchFile, COUNTOF(tchFile), szFileName))
-          FileLoad(FALSE, FALSE, FALSE, FALSE, tchFile);
+          FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
       }
       else
-        FileLoad(FALSE, FALSE, FALSE, FALSE, szFileName);
+        FileLoad(FALSE, FALSE, FALSE, bSkipUnicodeDetection, bSkipANSICodePageDetection, szFileName);
 
     }
     else { // open in web browser
@@ -5842,6 +5843,8 @@ void LoadSettings()
 
   bSkipUnicodeDetection = IniSectionGetBool(pIniSection, L"SkipUnicodeDetection", FALSE);
 
+  bSkipANSICodePageDetection = IniSectionGetBool(pIniSection, L"SkipANSICodePageDetection", TRUE);
+
   bLoadASCIIasUTF8 = IniSectionGetBool(pIniSection, L"LoadASCIIasUTF8", FALSE);
 
   bLoadNFOasOEM = IniSectionGetBool(pIniSection,L"LoadNFOasOEM",TRUE);
@@ -6145,6 +6148,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(FALSE, g_iDefaultNewFileEncoding));
   IniSectionSetBool(pIniSection, L"UseDefaultForFileEncoding", bUseDefaultForFileEncoding);
   IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
+  IniSectionSetBool(pIniSection, L"SkipANSICodePageDetection", bSkipANSICodePageDetection);
   IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", bLoadASCIIasUTF8);
   IniSectionSetBool(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
   IniSectionSetBool(pIniSection, L"NoEncodingTags", bNoEncodingTags);
@@ -7406,7 +7410,8 @@ int UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
 //  FileIO()
 //
 //
-BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol,
+BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bSkipUnicodeDetect,BOOL bSkipANSICPDetection,
+            int *ienc,int *ieol,
             BOOL *pbUnicodeErr,BOOL *pbFileTooBig, BOOL* pbUnknownExt,
             BOOL *pbCancelDataLoss,BOOL bSaveCopy)
 {
@@ -7419,7 +7424,7 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol
   BeginWaitCursor(tch);
 
   if (fLoad) {
-    fSuccess = EditLoadFile(g_hwndEdit,pszFileName,bNoEncDetect,ienc,ieol,pbUnicodeErr,pbFileTooBig,pbUnknownExt);
+    fSuccess = EditLoadFile(g_hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,ienc,ieol,pbUnicodeErr,pbFileTooBig,pbUnknownExt);
   }
   else {
     int idx;
@@ -7449,7 +7454,7 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bNoEncDetect,int *ienc,int *ieol
 //  FileLoad()
 //
 //
-BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lpszFile)
+BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, BOOL bSkipANSICPDetection, LPCWSTR lpszFile)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
   WCHAR szFileName[MAX_PATH] = { L'\0' };
@@ -7579,7 +7584,7 @@ BOOL FileLoad(BOOL bDontSave,BOOL bNew,BOOL bReload,BOOL bNoEncDetect,LPCWSTR lp
     else
       fileEncoding = Encoding_Current(CPI_GET);
 
-    fSuccess = FileIO(TRUE,szFileName,bNoEncDetect,&fileEncoding,&g_iEOLMode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,FALSE);
+    fSuccess = FileIO(TRUE,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fileEncoding,&g_iEOLMode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,FALSE);
     if (fSuccess)
       Encoding_Current(fileEncoding); // load may change encoding
   }
@@ -7690,7 +7695,7 @@ BOOL FileRevert(LPCWSTR szFileName)
     WCHAR tchFileName2[MAX_PATH] = { L'\0' };
     StringCchCopy(tchFileName2,COUNTOF(tchFileName2),szFileName);
 
-    if (FileLoad(TRUE,FALSE,TRUE,FALSE,tchFileName2))
+    if (FileLoad(TRUE,FALSE,TRUE,FALSE,TRUE,tchFileName2))
     {
       if (bIsTail && iFileWatchingMode == 2) {
         SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0);
@@ -7802,7 +7807,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
     if (SaveFileDlg(g_hwndMain,tchFile,COUNTOF(tchFile),tchInitialDir))
     {
       int fileEncoding = Encoding_Current(CPI_GET);
-      fSuccess = FileIO(FALSE, tchFile, FALSE, &fileEncoding, &g_iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
+      fSuccess = FileIO(FALSE, tchFile, FALSE, TRUE, &fileEncoding, &g_iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
       //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
       if (fSuccess)
       {
@@ -7829,7 +7834,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
   }
   else {
     int fileEncoding = Encoding_Current(CPI_GET);
-    fSuccess = FileIO(FALSE,g_wchCurFile,FALSE,&fileEncoding,&g_iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,FALSE);
+    fSuccess = FileIO(FALSE, g_wchCurFile, FALSE, TRUE, &fileEncoding, &g_iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, FALSE);
     //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
   }
 
@@ -7868,7 +7873,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
             GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
           int fileEncoding = Encoding_Current(CPI_GET);
-          if (FileIO(FALSE,szTempFileName,FALSE,&fileEncoding,&g_iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,TRUE)) {
+          if (FileIO(FALSE,szTempFileName,FALSE,TRUE,&fileEncoding,&g_iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,TRUE)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
             WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
