@@ -13,11 +13,23 @@
 *                                                                             *
 *******************************************************************************/
 
+#if !defined(WINVER)
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(_WIN32_WINNT)
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(NTDDI_VERSION)
+#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#endif
+#define VC_EXTRALEAN 1
+
+#include <windows.h>
+
+
 extern "C" {
 #include "Encoding.h"
 }
-
-#ifdef _USE_COMPACT_ENCODING_DETECTION
 
 #include "compact_enc_det/compact_enc_det.h"
 
@@ -283,5 +295,3 @@ extern "C" int Encoding_Analyze(const char* const text, const size_t len, bool* 
   return MapEncoding2CPI(encoding);
 }
 // ============================================================================
-
-#endif //_USE_COMPACT_ENCODING_DETECTION

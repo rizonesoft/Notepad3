@@ -34,10 +34,6 @@
 #ifndef _NP3_ENCODING_H_
 #define _NP3_ENCODING_H_
 
-
-//__forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
-
-
 extern int g_DOSEncoding;
 
 #define NCP_DEFAULT            1
@@ -138,7 +134,8 @@ size_t UTF8_mbslen_bytes(LPCSTR utf8_string);
 size_t UTF8_mbslen(LPCSTR utf8_string, size_t byte_length);
 bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length);
 
-int Encoding_Analyze(const char* const, const size_t);
+// 
+int Encoding_Analyze(const char* const text, const size_t len, bool* isReliable);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 

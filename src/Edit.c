@@ -1065,7 +1065,10 @@ BOOL EditLoadFile(
 
   const int iForcedEncoding = Encoding_SrcCmdLn(CPI_GET);
   const int iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-  const int iAnalyzedEncoding = bSkipANSICPDetection ? CPI_NONE : Encoding_Analyze(lpData, cbData);
+  
+  const size_t cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
+  bool bIsReliable = false;
+  const int iAnalyzedEncoding = bSkipANSICPDetection ? CPI_NONE : Encoding_Analyze(lpData, cbNbytes4Analysis, &bIsReliable);
 
   // choose best encoding guess
   int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
