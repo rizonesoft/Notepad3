@@ -5756,7 +5756,7 @@ static UT_icd ReplPos_icd = { sizeof(ReplPos_t), NULL, NULL, NULL };
 
 // -------------------------------------------------------------------------------------------------------
 
-int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, DocPos iStartPos, DocPos iEndPos, DocPos* enlargement)
+int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos* enlargement)
 {
   char szFind[FNDRPL_BUFFER];
 
@@ -5782,7 +5782,6 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, D
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
     InfoBox(MBWARN, L"MsgInvalidRegex", IDS_REGEX_INVALID);
-    bShowInfo = FALSE;
   }
 
   // ===  build array of matches for later replacements  ===
@@ -5829,16 +5828,11 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo, D
     EditLeaveTargetTransaction();
   }
 
+  ObserveNotifyChangeEvent();
+
   utarray_clear(ReplPosUTArray);
   utarray_free(ReplPosUTArray);
   LocalFree(pszReplace);
-
-  if (bShowInfo) {
-    if (iCount > 0)
-      InfoBox(0, L"MsgReplaceCount", IDS_REPLCOUNT, iCount);
-    else
-      InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
-  }
 
   *enlargement = offset;
 
@@ -5860,11 +5854,18 @@ BOOL EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowInfo)
 
   int token = BeginUndoAction();
 
-  iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end, &enlargement);
+  iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
 
   EndUndoAction(token);
 
   EndWaitCursor();
+
+  if (bShowInfo) {
+    if (iReplacedOccurrences > 0)
+      InfoBox(0, L"MsgReplaceCount", IDS_REPLCOUNT, iReplacedOccurrences);
+    else
+      InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
+  }
 
   return (iReplacedOccurrences > 0) ? TRUE : FALSE;
 }
@@ -5895,7 +5896,7 @@ BOOL EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowIn
 
   int token = BeginUndoAction();
 
-  iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, bShowInfo, start, end, &enlargement);
+  iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
 
   if (bWaitCursor) {
     EndWaitCursor();
@@ -5913,7 +5914,14 @@ BOOL EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bShowIn
 
   EndUndoAction(token);
 
-  return TRUE;
+  if (bShowInfo) {
+    if (iReplacedOccurrences > 0)
+      InfoBox(0, L"MsgReplaceCount", IDS_REPLCOUNT, iReplacedOccurrences);
+    else
+      InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
+  }
+
+  return (iReplacedOccurrences > 0) ? TRUE : FALSE;
 }
 
 
