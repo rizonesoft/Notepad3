@@ -134,7 +134,7 @@ size_t UTF8_mbslen_bytes(LPCSTR utf8_string);
 size_t UTF8_mbslen(LPCSTR utf8_string, size_t byte_length);
 bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length);
 
-// 
+// Google's "Compact Encoding Detection" 
 int Encoding_Analyze(const char* const text, const size_t len, bool* isReliable);
 
 // --------------------------------------------------------------------------------------------------------------------------------

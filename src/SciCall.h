@@ -154,8 +154,6 @@ DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options);
 //
 DeclareSciCallV0(ChooseCaretX, CHOOSECARETX);
 DeclareSciCallV0(ScrollCaret, SCROLLCARET);
-DeclareSciCallV2(SetXCaretPolicy, SETXCARETPOLICY, int, caretPolicy, int, caretSlop);
-DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, caretPolicy, int, caretSlop);
 DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos);
 
 

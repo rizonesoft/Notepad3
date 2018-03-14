@@ -209,7 +209,8 @@ int       iSciFontQuality;
 int       iHighDpiToolBar;
 int       iUpdateDelayHyperlinkStyling;
 int       iUpdateDelayMarkAllCoccurrences;
-int       iCurrentLineVerticalSlop = 5;
+int       iCurrentLineHorizontalSlop = 0;
+int       iCurrentLineVerticalSlop = 0;
 
 const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
@@ -1212,7 +1213,9 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   InitScintillaHandle(g_hwndEdit);
 
   // Properties
+  SendMessage(g_hwndEdit, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineHorizontalSlop);
   SendMessage(g_hwndEdit, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineVerticalSlop);
+
   SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
   SendMessage(g_hwndEdit, SCI_SETENDATLASTLINE, ((bScrollPastEOF) ? 0 : 1), 0);
 
@@ -5982,7 +5985,10 @@ void LoadSettings()
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", FALSE);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
   
-  iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
+  iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 50);
+  iCurrentLineHorizontalSlop = max(min(iCurrentLineHorizontalSlop, 2000), 0);
+
+  iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 0);
   iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 80), 0);
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
