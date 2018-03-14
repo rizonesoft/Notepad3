@@ -1671,6 +1671,11 @@ BEGIN
     61072                   "C;Chinese Simplified (GB18030);GB18030"
     61073                   "C;Japanese (EUC);Japanese (EUC)"
     61074                   "C;Korean (EUC);Korean (EUC)"
+    61075                   "C;Chinese Traditional (ISO-2022);ISO-2022-CN"
+    61076                   "C;Chinese Simplified (HZ-GB2312);HZ-GB2312"
+    61077                   "C;Japanese (ISO-2022);ISO-2022-JP"
+    61078                   "C;Korean (ISO-2022);ISO-2022-KR"
+    61079                   "C;Chinese Traditional (CNS);x-chinese-cns"
 END
 
 STRINGTABLE

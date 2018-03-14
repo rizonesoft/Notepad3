@@ -9,6 +9,7 @@
 *   encrypted file was corrupted for source files of 16-31 bytes.
 *   also http://nayuki.eigenstate.org/page/notepadcrypt-format-decryptor-java
 */
+#include "targetver.h"
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>

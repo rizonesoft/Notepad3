@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ced.cpp" />
+    <ClCompile Include="ced\compact_enc_det\compact_enc_det.cc">
+      <Filter>ced\compact_enc_det</Filter>
+    </ClCompile>
+    <ClCompile Include="ced\compact_enc_det\compact_enc_det_hint_code.cc">
+      <Filter>ced\compact_enc_det</Filter>
+    </ClCompile>
+    <ClCompile Include="ced\util\languages\languages.cc">
+      <Filter>ced\util\languages</Filter>
+    </ClCompile>
+    <ClCompile Include="ced\util\encodings\encodings.cc">
+      <Filter>ced\util\encodings</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="ced\compact_enc_det\compact_enc_det.h">
+      <Filter>ced\compact_enc_det</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\compact_enc_det\compact_enc_det_generated_tables.h">
+      <Filter>ced\compact_enc_det</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\compact_enc_det\compact_enc_det_generated_tables2.h">
+      <Filter>ced\compact_enc_det</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\compact_enc_det\compact_enc_det_hint_code.h">
+      <Filter>ced\compact_enc_det</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\languages\languages.h">
+      <Filter>ced\util\languages</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\languages\languages.pb.h">
+      <Filter>ced\util\languages</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\encodings\encodings.h">
+      <Filter>ced\util\encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\encodings\encodings.pb.h">
+      <Filter>ced\util\encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\basictypes.h">
+      <Filter>ced\util</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\case_insensitive_hash.h">
+      <Filter>ced\util</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\commandlineflags.h">
+      <Filter>ced\util</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\logging.h">
+      <Filter>ced\util</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\port.h">
+      <Filter>ced\util</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\string_util.h">
+      <Filter>ced\util</Filter>
+    </ClInclude>
+    <ClInclude Include="ced\util\varsetter.h">
+      <Filter>ced\util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ced">
+      <UniqueIdentifier>{20e6858f-4190-4c33-92b6-aa4b6c06b9a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ced\compact_enc_det">
+      <UniqueIdentifier>{883c9f2c-9b55-43b6-b29e-811d52e7672a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ced\util">
+      <UniqueIdentifier>{69a7b9ae-a26c-41a7-b045-ea0e03327904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ced\util\encodings">
+      <UniqueIdentifier>{345b8347-4577-47b7-a3fc-8ad3b8a43a00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ced\util\languages">
+      <UniqueIdentifier>{4608f3dd-e020-4d1c-a1c0-e907c93e56f9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

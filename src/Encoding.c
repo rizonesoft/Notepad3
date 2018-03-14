@@ -60,10 +60,6 @@ int g_DOSEncoding;
 WCHAR wchANSI[16] = { L'\0' };
 WCHAR wchOEM[16] = { L'\0' };
 
-
-int Encoding_CountOf() {
-  return COUNTOF(g_Encodings);
-}
 // ============================================================================
 
 
