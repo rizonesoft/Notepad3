@@ -43,12 +43,12 @@ inline int strncasecmp(const char* s1, const char* s2, size_t n) {
 
 #if !defined(__linux__)
 inline void* memrchr(const void* s, int c, size_t n) {
-  const unsigned char* p = (const unsigned char*) s;
+  const auto* p = (const unsigned char*) s;
   for (p += n; n > 0; n--) {
     if (*--p == c)
       return (void*) p;
   }
-  return NULL;
+  return nullptr;
 }
 #endif
 
