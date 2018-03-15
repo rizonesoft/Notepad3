@@ -4287,7 +4287,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   struct Sci_TextRange tr = { { 0, 0 }, NULL };
   /*if (iCurPos != iAnchorPos && !SciCall_IsSelectionRectangle()) {*/
   tr.chrg.cpMin = (DocPosCR)SciCall_GetSelectionStart();
-  tr.chrg.cpMax = min((tr.chrg.cpMin + COUNTOF(tch)), (DocPosCR)SciCall_GetSelectionEnd());
+  tr.chrg.cpMax = min((tr.chrg.cpMin + (DocPosCR)COUNTOF(tch)), (DocPosCR)SciCall_GetSelectionEnd());
   /*}
   else {
     int iLine = SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);

@@ -4492,12 +4492,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         const DocLn iLine = SciCall_LineFromPosition(iPos);
         if (iLine <= 0) {
           SciCall_GotoLine(0);
-          SciCall_NewLine(0);
+          SciCall_NewLine();
           SciCall_GotoLine(0);
         }
         else {
           SciCall_GotoPos(SciCall_GetLineEndPosition(iLine - 1));
-          SciCall_NewLine(0);
+          SciCall_NewLine();
         }
         EndUndoAction(token);
       }
@@ -4507,7 +4507,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     // Newline with toggled auto indent setting
     case CMD_SHIFTCTRLENTER:
       bAutoIndent = (bAutoIndent) ? 0 : 1;
-      SciCall_NewLine(0);
+      SciCall_NewLine();
       bAutoIndent = (bAutoIndent) ? 0 : 1;
       break;
 
