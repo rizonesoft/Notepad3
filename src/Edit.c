@@ -715,6 +715,8 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
 
   if (SciCall_IsSelectionEmpty() || (lineCount <= 1)) 
   {
+    IgnoreNotifyChangeEvent();
+
     if (SciCall_IsSelectionEmpty()) // SC_SEL_THIN
     {
       SciCall_Paste();
@@ -741,6 +743,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
       }
       LocalFree(pszText);
     }
+    ObserveNotifyChangeEvent();
   }
   else {
     if (SciCall_IsSelectionRectangle()) 
@@ -751,6 +754,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
     }
     else // Selection: SC_SEL_STREAM, SC_SEL_LINES
     {
+      IgnoreNotifyChangeEvent();
       if (bSwapClipBoard) {
         SciCall_Copy();
         SciCall_ReplaceSel(pClip);
@@ -764,6 +768,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
         if (iCurPos < iAnchorPos)
           EditSelectEx(hwnd, iCurPos, iCurPos);
       }
+      ObserveNotifyChangeEvent();
     }
   }
   LocalFree(pClip);
