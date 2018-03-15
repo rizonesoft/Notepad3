@@ -478,11 +478,20 @@ do {                                                                            
 
 /* convenience forms of HASH_FIND/HASH_ADD/HASH_DEL */
 #define HASH_FIND_STR(head,findstr,out)                                          \
-    HASH_FIND(hh,head,findstr,(unsigned)uthash_strlen(findstr),out)
+do {                                                                             \
+    unsigned _uthash_hfstr_keylen = (unsigned)uthash_strlen(findstr);            \
+    HASH_FIND(hh, head, findstr, _uthash_hfstr_keylen, out);                     \
+} while (0)
 #define HASH_ADD_STR(head,strfield,add)                                          \
-    HASH_ADD(hh,head,strfield[0],(unsigned)uthash_strlen(add->strfield),add)
+do {                                                                             \
+    unsigned _uthash_hastr_keylen = (unsigned)uthash_strlen((add)->strfield);    \
+    HASH_ADD(hh, head, strfield[0], _uthash_hastr_keylen, add);                  \
+} while (0)
 #define HASH_REPLACE_STR(head,strfield,add,replaced)                             \
-    HASH_REPLACE(hh,head,strfield[0],(unsigned)uthash_strlen(add->strfield),add,replaced)
+do {                                                                             \
+    unsigned _uthash_hrstr_keylen = (unsigned)uthash_strlen((add)->strfield);    \
+    HASH_REPLACE(hh, head, strfield[0], _uthash_hrstr_keylen, add, replaced);    \
+} while (0)
 #define HASH_FIND_INT(head,findint,out)                                          \
     HASH_FIND(hh,head,findint,sizeof(int),out)
 #define HASH_ADD_INT(head,intfield,add)                                          \
