@@ -22,15 +22,7 @@
 
 #include "TypeDefs.h"
 
-//=============================================================================
-//
-//  g_hScintilla
-//
 extern HANDLE g_hScintilla;
-
-__forceinline void InitScintillaHandle(HWND hwnd) {
-  g_hScintilla = (HANDLE)SendMessage(hwnd, SCI_GETDIRECTPOINTER, 0, 0);
-}
 
 //=============================================================================
 //

@@ -319,6 +319,7 @@ WCHAR     wchWndClass[16] = WC_NOTEPAD3;
 
 HINSTANCE g_hInstance = NULL;
 HANDLE    g_hScintilla = NULL;
+
 WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 WCHAR     g_wchCurFile[FILE_ARG_BUF] = { L'\0' };
@@ -1151,18 +1152,18 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 //  SetWordWrapping() - WordWrapSettings
 //
-void __fastcall SetWordWrapping()
+void __fastcall SetWordWrapping(HWND hwndEditCtrl)
 {
   // Word wrap
   if (bWordWrap)
-    SendMessage(g_hwndEdit, SCI_SETWRAPMODE, (iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, (iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR, 0);
   else
-    SendMessage(g_hwndEdit, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
 
   if (iWordWrapIndent == 5)
-    SendMessage(g_hwndEdit, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_SAME, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_SAME, 0);
   else if (iWordWrapIndent == 6)
-    SendMessage(g_hwndEdit, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_INDENT, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_INDENT, 0);
   else {
     int i = 0;
     switch (iWordWrapIndent) {
@@ -1171,8 +1172,8 @@ void __fastcall SetWordWrapping()
     case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
     case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
     }
-    SendMessage(g_hwndEdit, SCI_SETWRAPSTARTINDENT, i, 0);
-    SendMessage(g_hwndEdit, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_FIXED, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPSTARTINDENT, i, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_FIXED, 0);
   }
 
   if (bShowWordWrapSymbols) {
@@ -1188,14 +1189,139 @@ void __fastcall SetWordWrapping()
     case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
     case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
     }
-    SendMessage(g_hwndEdit, SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
-    SendMessage(g_hwndEdit, SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
   }
   else {
-    SendMessage(g_hwndEdit, SCI_SETWRAPVISUALFLAGS, 0, 0);
+    SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, 0, 0);
   }
 }
 
+
+//=============================================================================
+//
+//  CreateEditCtrl()
+//
+HWND __fastcall CreateEditCtrl(HWND hwndParent, HINSTANCE hInstance)
+{
+  HWND hwndEditCtrl = CreateWindowEx(
+    WS_EX_CLIENTEDGE,
+    L"Scintilla",
+    NULL,
+    WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS,
+    0, 0, 0, 0,
+    hwndParent,
+    (HMENU)IDC_EDIT,
+    hInstance,
+    NULL);
+
+  g_hScintilla = (HANDLE)SendMessage(hwndEditCtrl, SCI_GETDIRECTPOINTER, 0, 0);
+
+  Encoding_Current(g_iDefaultNewFileEncoding);
+  Encoding_SciSetCodePage(hwndEditCtrl, g_iDefaultNewFileEncoding);
+
+  // general setup
+  SendMessage(hwndEditCtrl, SCI_SETEOLMODE, SC_EOL_CRLF, 0);
+  SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, TRUE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_CONTAINER, 0);
+  SendMessage(hwndEditCtrl, SCI_USEPOPUP, FALSE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH, 0);
+  SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, TRUE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, TRUE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, TRUE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETMULTIPLESELECTION, FALSE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALSELECTIONTYPING, FALSE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, TRUE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, TRUE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
+
+  // assign command keys
+  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
+  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + (SCMOD_CTRL << 16)), SCI_PARAUP);
+  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)), SCI_PARADOWNEXTEND);
+  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + ((SCMOD_CTRL | SCMOD_SHIFT) << 16)), SCI_PARAUPEXTEND);
+  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_HOME + (0 << 16)), SCI_VCHOMEWRAP);
+  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (0 << 16)), SCI_LINEENDWRAP);
+  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_HOME + (SCMOD_SHIFT << 16)), SCI_VCHOMEWRAPEXTEND);
+  SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_END + (SCMOD_SHIFT << 16)), SCI_LINEENDWRAPEXTEND);
+
+  // set indicator styles (foreground and alpha maybe overridden by style settings)
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, INDIC_ROUNDBOX);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MARK_OCCURANCE, RGB(0x00, 0x00, 0xFF));
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MARK_OCCURANCE, 100);
+
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, INDIC_FULLBOX);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, RGB(0x00, 0xFF, 0x00));
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, 120);
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_MATCH_BRACE, 120);
+
+  SendMessage(hwndEditCtrl, SCI_INDICSETSTYLE, INDIC_NP3_BAD_BRACE, INDIC_FULLBOX);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, RGB(0xFF, 0x00, 0x00));
+  SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
+  SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
+
+  // paste into rectangular selection
+  SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
+
+  // No SC_AUTOMATICFOLD_CLICK, performed by 
+  SendMessage(hwndEditCtrl, SCI_SETAUTOMATICFOLD, (WPARAM)(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE), 0);
+
+  // Properties
+  SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, SC_CARETSTICKY_OFF, 0);
+  //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
+  if (iCurrentLineHorizontalSlop > 0)
+    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineHorizontalSlop);
+  else
+    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_EVEN), 0);
+
+  if (iCurrentLineVerticalSlop > 0)
+    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineVerticalSlop);
+  else
+    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_EVEN), 0);
+
+  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
+  SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, ((bScrollPastEOF) ? 0 : 1), 0);
+
+  // Tabs
+  SendMessage(hwndEditCtrl, SCI_SETUSETABS, !g_bTabsAsSpaces, 0);
+  SendMessage(hwndEditCtrl, SCI_SETTABINDENTS, g_bTabIndents, 0);
+  SendMessage(hwndEditCtrl, SCI_SETBACKSPACEUNINDENTS, bBackspaceUnindents, 0);
+  SendMessage(hwndEditCtrl, SCI_SETTABWIDTH, g_iTabWidth, 0);
+  SendMessage(hwndEditCtrl, SCI_SETINDENT, g_iIndentWidth, 0);
+
+  // Indent Guides
+  Style_SetIndentGuides(hwndEditCtrl, bShowIndentGuides);
+
+  // Word Wrap
+  SetWordWrapping(hwndEditCtrl);
+
+  // Long Lines
+  if (bMarkLongLines)
+    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
+  else
+    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, EDGE_NONE, 0);
+
+  SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, iLongLinesLimit, 0);
+
+  // Nonprinting characters
+  SendMessage(hwndEditCtrl, SCI_SETVIEWWS, (bViewWhiteSpace) ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE, 0);
+  SendMessage(hwndEditCtrl, SCI_SETVIEWEOL, bViewEOLs, 0);
+
+  // word delimiter handling
+  EditInitWordDelimiter(hwndEditCtrl);
+  EditSetAccelWordNav(hwndEditCtrl, bAccelWordNavigation);
+
+  // Init default values for printing
+  EditPrintInit();
+
+  //SciInitThemes(hwndEditCtrl);
+
+  UpdateLineNumberWidth();
+
+  return(hwndEditCtrl);
+}
 
 
 //=============================================================================
@@ -1209,42 +1335,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   HINSTANCE hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
   // Setup edit control
-  g_hwndEdit = EditCreate(hwnd);
-  InitScintillaHandle(g_hwndEdit);
-
-  // Properties
-  SendMessage(g_hwndEdit, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineHorizontalSlop);
-  SendMessage(g_hwndEdit, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineVerticalSlop);
-
-  SendMessage(g_hwndEdit, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
-  SendMessage(g_hwndEdit, SCI_SETENDATLASTLINE, ((bScrollPastEOF) ? 0 : 1), 0);
-
-  // Tabs
-  SendMessage(g_hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
-  SendMessage(g_hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
-  SendMessage(g_hwndEdit,SCI_SETBACKSPACEUNINDENTS,bBackspaceUnindents,0);
-  SendMessage(g_hwndEdit,SCI_SETTABWIDTH,g_iTabWidth,0);
-  SendMessage(g_hwndEdit,SCI_SETINDENT,g_iIndentWidth,0);
-
-  // Indent Guides
-  Style_SetIndentGuides(g_hwndEdit,bShowIndentGuides);
-
-  // Word Wrap
-  SetWordWrapping();
-
-  // Long Lines
-  if (bMarkLongLines)
-    SendMessage(g_hwndEdit,SCI_SETEDGEMODE,(iLongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
-  else
-    SendMessage(g_hwndEdit,SCI_SETEDGEMODE,EDGE_NONE,0);
-
-  SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
-
-  UpdateLineNumberWidth();
-
-  // Nonprinting characters
-  SendMessage(g_hwndEdit,SCI_SETVIEWWS,(bViewWhiteSpace)?SCWS_VISIBLEALWAYS:SCWS_INVISIBLE,0);
-  SendMessage(g_hwndEdit,SCI_SETVIEWEOL,bViewEOLs,0);
+  g_hwndEdit = CreateEditCtrl(hwnd, hInstance);
 
   hwndEditFrame = CreateWindowEx(
                     WS_EX_CLIENTEDGE,
@@ -3914,14 +4005,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAPSETTINGS:
       if (WordWrapSettingsDlg(hwnd,IDD_WORDWRAP,&iWordWrapIndent)) {
-        SetWordWrapping();
+        SetWordWrapping(g_hwndEdit);
       }
       break;
 
 
     case IDM_VIEW_WORDWRAPSYMBOLS:
       bShowWordWrapSymbols = (bShowWordWrapSymbols) ? FALSE : TRUE;
-      SetWordWrapping();
+      SetWordWrapping(g_hwndEdit);
       break;
 
 
@@ -5985,7 +6076,7 @@ void LoadSettings()
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", FALSE);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", FALSE);
   
-  iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 50);
+  iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 0);
   iCurrentLineHorizontalSlop = max(min(iCurrentLineHorizontalSlop, 2000), 0);
 
   iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 0);

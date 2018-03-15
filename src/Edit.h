@@ -58,7 +58,6 @@ typedef struct _editfindreplace
 //#define DEFAULT_SCROLL_WIDTH (8*80)
 #define DEFAULT_SCROLL_WIDTH ((8*g_WinInfo.cx)/10)
 
-HWND  EditCreate(HWND);
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
 BOOL  EditConvertText(HWND,int,int,BOOL);
