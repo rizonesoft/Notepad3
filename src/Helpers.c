@@ -1621,8 +1621,9 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 {
   WCHAR szBuf[LARGE_BUFFER];
 
-  if (ExpandEnvironmentStrings(lpSrc,szBuf,COUNTOF(szBuf)))
-    StringCchCopyN(lpSrc,dwSrc,szBuf,COUNTOF(szBuf));
+  if (ExpandEnvironmentStrings(lpSrc, szBuf, COUNTOF(szBuf))) {
+    StringCchCopyN(lpSrc, dwSrc, szBuf, COUNTOF(szBuf));
+  }
 }
 
 
@@ -1858,7 +1859,7 @@ int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2)
     return(StringCchCompareX(psz1,psz2));
 }
 
-BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, int iPos, LPCWSTR pszBookMarks) 
+BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBookMarks)
 {
   int i;
   for (i = 0; i < pmru->iSize; i++) {
@@ -1911,9 +1912,9 @@ BOOL MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex) {
   return FALSE;
 }
 
-BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpandMyDocs,int iEnc,int iPos, LPCWSTR pszBookMarks) {
+BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpandMyDocs,int iEnc, DocPos iPos, LPCWSTR pszBookMarks) {
 
-  int i;
+  int i = 0;
   if (MRU_FindFile(pmru,pszFile,&i)) {
     LocalFree(pmru->pszItems[i]);
   }

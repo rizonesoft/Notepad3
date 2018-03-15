@@ -58,7 +58,6 @@
 #define SCFIND_NP3_REGEX (SCFIND_REGEXP | SCFIND_POSIX)
 
 extern HWND  g_hwndMain;
-extern HWND  g_hwndEdit;
 extern HWND  g_hwndStatus;
 extern HWND  g_hwndDlgFindReplace;
 extern WININFO g_WinInfo;
@@ -725,7 +724,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
       }
     }
     else {
-      int iSelLength = SciCall_GetSelText(NULL);
+      DocPos iSelLength = SciCall_GetSelText(NULL);
       char* pszText = LocalAlloc(LPTR, iSelLength);
       SciCall_GetSelText(pszText);
       if (clipLen == 0) { SciCall_Clear(); } else { SciCall_Paste(); }
@@ -778,8 +777,8 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
 //
 BOOL EditCopyAppend(HWND hwnd, BOOL bAppend)
 {
-  int iCurPos = SciCall_GetCurrentPos();
-  int iAnchorPos = SciCall_GetAnchor();
+  DocPos iCurPos = SciCall_GetCurrentPos();
+  DocPos iAnchorPos = SciCall_GetAnchor();
 
   char* pszText = NULL;
   if (iCurPos != iAnchorPos) {
@@ -788,13 +787,13 @@ BOOL EditCopyAppend(HWND hwnd, BOOL bAppend)
       return FALSE;
     }
     else {
-      int iSelLength = SciCall_GetSelText(NULL);
+      DocPos iSelLength = SciCall_GetSelText(NULL);
       pszText = LocalAlloc(LPTR, iSelLength);
       SciCall_GetSelText(pszText);
     }
   }
   else {
-    int cchText = SciCall_GetTextLength();
+    DocPos cchText = SciCall_GetTextLength();
     pszText = LocalAlloc(LPTR,cchText + 1);
     SciCall_GetTextFromBegin((DocPos)LocalSize(pszText), pszText);
   }

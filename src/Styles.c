@@ -46,7 +46,6 @@
 extern HINSTANCE g_hInstance;
 
 extern HWND g_hwndMain;
-extern HWND g_hwndEdit;
 extern HWND g_hwndDlgCustomizeSchemes;
 
 extern int iSciFontQuality;

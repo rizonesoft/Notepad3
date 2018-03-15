@@ -23,6 +23,16 @@
 #include "TypeDefs.h"
 
 extern HANDLE g_hScintilla;
+extern HANDLE g_hwndEdit;
+
+//=============================================================================
+//
+//  Sci_SendMessage()
+//
+#define Sci_SendMessageV0(CMD)  SendMessage(g_hwndEdit, (CMD), (WPARAM)0, (LPARAM)0)
+#define Sci_SendMessageV1(CMD,WP)  SendMessage(g_hwndEdit, (CMD), (WPARAM)(WP), (LPARAM)0)
+#define Sci_SendMessageV2(CMD,WP,LP)  SendMessage(g_hwndEdit, (CMD), (WPARAM)(WP), (LPARAM)(LP))
+
 
 //=============================================================================
 //
@@ -134,11 +144,21 @@ DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position);
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn);
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn);
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line);
+DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line);
+
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, LPCCH, DocPos, start, DocPos, length);
 DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
 
 DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options);
+
+
+//=============================================================================
+//
+//  Commands
+//
+DeclareSciCallV0(NewLine, NEWLINE);
+
 
 //=============================================================================
 //

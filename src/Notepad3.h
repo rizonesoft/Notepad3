@@ -49,14 +49,14 @@ typedef struct _undoSel
   int selMode_undo;
   DocPos anchorPos_undo;
   DocPos curPos_undo;
-  int anchorVS_undo;
-  int curVS_undo;
+  DocPos anchorVS_undo;
+  DocPos curVS_undo;
 
   int selMode_redo;
   DocPos anchorPos_redo;
   DocPos curPos_redo;
-  int anchorVS_redo;
-  int curVS_redo;
+  DocPos anchorVS_redo;
+  DocPos curVS_redo;
 } 
 UndoRedoSelection_t;
 
