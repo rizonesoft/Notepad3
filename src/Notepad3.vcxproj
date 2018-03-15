@@ -31,6 +31,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -38,6 +39,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -45,6 +47,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -52,6 +55,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -95,7 +99,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
@@ -150,7 +154,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
@@ -204,7 +208,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>WIN32;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -260,7 +264,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>_WIN64;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -314,6 +318,10 @@
     </ManifestResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det.cc" />
+    <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.cc" />
+    <ClCompile Include="..\ced\ced\util\encodings\encodings.cc" />
+    <ClCompile Include="..\ced\ced\util\languages\languages.cc" />
     <ClCompile Include="..\crypto\crypto.c" />
     <ClCompile Include="..\crypto\rijndael-alg-fst.c" />
     <ClCompile Include="..\crypto\rijndael-api-fst.c" />
@@ -322,12 +330,28 @@
     <ClCompile Include="Dlapi.c" />
     <ClCompile Include="Edit.c" />
     <ClCompile Include="Encoding.c" />
+    <ClCompile Include="EncodingCED.cpp" />
     <ClCompile Include="Helpers.c" />
     <ClCompile Include="Notepad3.c" />
     <ClCompile Include="Print.cpp" />
     <ClCompile Include="Styles.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det.h" />
+    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables.h" />
+    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables2.h" />
+    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.h" />
+    <ClInclude Include="..\ced\ced\util\basictypes.h" />
+    <ClInclude Include="..\ced\ced\util\case_insensitive_hash.h" />
+    <ClInclude Include="..\ced\ced\util\commandlineflags.h" />
+    <ClInclude Include="..\ced\ced\util\encodings\encodings.h" />
+    <ClInclude Include="..\ced\ced\util\encodings\encodings.pb.h" />
+    <ClInclude Include="..\ced\ced\util\languages\languages.h" />
+    <ClInclude Include="..\ced\ced\util\languages\languages.pb.h" />
+    <ClInclude Include="..\ced\ced\util\logging.h" />
+    <ClInclude Include="..\ced\ced\util\port.h" />
+    <ClInclude Include="..\ced\ced\util\string_util.h" />
+    <ClInclude Include="..\ced\ced\util\varsetter.h" />
     <ClInclude Include="..\crypto\crypto.h" />
     <ClInclude Include="..\crypto\rijndael-alg-fst.h" />
     <ClInclude Include="..\crypto\rijndael-api-fst.h" />

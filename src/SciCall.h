@@ -22,15 +22,7 @@
 
 #include "TypeDefs.h"
 
-//=============================================================================
-//
-//  g_hScintilla
-//
 extern HANDLE g_hScintilla;
-
-__forceinline void InitScintillaHandle(HWND hwnd) {
-  g_hScintilla = (HANDLE)SendMessage(hwnd, SCI_GETDIRECTPOINTER, 0, 0);
-}
 
 //=============================================================================
 //
@@ -154,8 +146,6 @@ DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options);
 //
 DeclareSciCallV0(ChooseCaretX, CHOOSECARETX);
 DeclareSciCallV0(ScrollCaret, SCROLLCARET);
-DeclareSciCallV2(SetXCaretPolicy, SETXCARETPOLICY, int, caretPolicy, int, caretSlop);
-DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, caretPolicy, int, caretSlop);
 DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos);
 
 

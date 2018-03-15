@@ -58,7 +58,6 @@ typedef struct _editfindreplace
 //#define DEFAULT_SCROLL_WIDTH (8*80)
 #define DEFAULT_SCROLL_WIDTH ((8*g_WinInfo.cx)/10)
 
-HWND  EditCreate(HWND);
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
 BOOL  EditConvertText(HWND,int,int,BOOL);
@@ -68,10 +67,10 @@ char* EditGetClipboardText(HWND,BOOL,int*,int*);
 BOOL  EditSetClipboardText(HWND, const char*);
 BOOL  EditClearClipboard(HWND);
 void  EditPaste2RectSel(HWND,char*);
-BOOL  EditPasteClipboard(HWND,BOOL);
+BOOL  EditPasteClipboard(HWND,BOOL,BOOL);
 BOOL  EditCopyAppend(HWND,BOOL);
 int   EditDetectEOLMode(HWND,char*,DWORD);
-BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,int*,int*,BOOL*,BOOL*,BOOL*);
+BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,BOOL,int*,int*,BOOL*,BOOL*,BOOL*);
 BOOL  EditSaveFile(HWND,LPCWSTR,int,BOOL*,BOOL);
 
 void  EditInvertCase(HWND);
@@ -117,7 +116,7 @@ HWND  EditFindReplaceDlg(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditFindNext(HWND,LPCEDITFINDREPLACE,BOOL,BOOL);
 BOOL  EditFindPrev(HWND,LPCEDITFINDREPLACE,BOOL,BOOL);
 BOOL  EditReplace(HWND,LPCEDITFINDREPLACE);
-int   EditReplaceAllInRange(HWND,LPCEDITFINDREPLACE,BOOL, DocPos, DocPos);
+int   EditReplaceAllInRange(HWND,LPCEDITFINDREPLACE,DocPos,DocPos,DocPos*);
 BOOL  EditReplaceAll(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditReplaceAllInSelection(HWND,LPCEDITFINDREPLACE,BOOL);
 BOOL  EditLinenumDlg(HWND);

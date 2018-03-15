@@ -19,6 +19,21 @@
     <Filter Include="templates">
       <UniqueIdentifier>{e817f780-f742-48b4-bc9c-2ab762ced6bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CED">
+      <UniqueIdentifier>{91d2fb70-4067-4692-b746-9a02db63f461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CED\compact_enc_det">
+      <UniqueIdentifier>{8d78b8ca-ff0f-46cb-8da2-83c4bde259b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CED\util">
+      <UniqueIdentifier>{dbeb3dd1-1f65-45ec-a526-dc0e84e4c350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CED\util\encodings">
+      <UniqueIdentifier>{1d7878c8-36e3-4bae-91d9-fda61101aa81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CED\util\languages">
+      <UniqueIdentifier>{fd5165c7-e622-408b-95f0-666d494aa8f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -55,6 +70,21 @@
       <Filter>Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Encoding.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ced\ced\util\languages\languages.cc">
+      <Filter>CED\util\languages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ced\ced\util\encodings\encodings.cc">
+      <Filter>CED\util\encodings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det.cc">
+      <Filter>CED\compact_enc_det</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.cc">
+      <Filter>CED\compact_enc_det</Filter>
+    </ClCompile>
+    <ClCompile Include="EncodingCED.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -106,6 +136,51 @@
     </ClInclude>
     <ClInclude Include="Encoding.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\basictypes.h">
+      <Filter>CED\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\case_insensitive_hash.h">
+      <Filter>CED\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\commandlineflags.h">
+      <Filter>CED\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\logging.h">
+      <Filter>CED\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\port.h">
+      <Filter>CED\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\string_util.h">
+      <Filter>CED\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\varsetter.h">
+      <Filter>CED\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\languages\languages.h">
+      <Filter>CED\util\languages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\languages\languages.pb.h">
+      <Filter>CED\util\languages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\encodings\encodings.h">
+      <Filter>CED\util\encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\util\encodings\encodings.pb.h">
+      <Filter>CED\util\encodings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det.h">
+      <Filter>CED\compact_enc_det</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables.h">
+      <Filter>CED\compact_enc_det</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables2.h">
+      <Filter>CED\compact_enc_det</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.h">
+      <Filter>CED\compact_enc_det</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

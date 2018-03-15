@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scintilla", "scintilla\Scin
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3encrypt", "np3encrypt\np3encrypt.vcxproj", "{0210F830-26C6-40FC-BFD1-6ED833B90830}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ced", "ced\ced.vcxproj", "{12BD16A7-3BD9-4205-99B0-75E821EA7449}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -57,8 +59,19 @@ Global
 		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|Win32.Build.0 = Release|Win32
 		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|x64.ActiveCfg = Release|x64
 		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|x64.Build.0 = Release|x64
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Debug|Win32.ActiveCfg = Debug|Win32
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Debug|Win32.Build.0 = Debug|Win32
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Debug|x64.ActiveCfg = Debug|x64
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Debug|x64.Build.0 = Debug|x64
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Release|Win32.ActiveCfg = Release|Win32
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Release|Win32.Build.0 = Release|Win32
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Release|x64.ActiveCfg = Release|x64
+		{12BD16A7-3BD9-4205-99B0-75E821EA7449}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C0B8FE68-ECBC-4173-9027-E1EC2C9B5BDF}
 	EndGlobalSection
 EndGlobal
