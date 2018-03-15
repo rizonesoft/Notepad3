@@ -2477,7 +2477,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   bool bIsHLink = FALSE;
   if ((bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) 
   {
-    bIsHLink = (Style_GetHotspotStyleID() == (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0), 0));
+    bIsHLink = (Style_GetHotspotStyleID() == (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, SciCall_GetCurrentPos(), 0));
   }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 

@@ -17,16 +17,27 @@
 #include <stdbool.h>
 #include "Sci_Position.h"
 
+//~#define NP3_COMPILE_TEST 1
+
 #if defined(SCI_LARGE_FILE_SUPPORT)
-typedef Sci_Position   DocPos;
-typedef Sci_PositionCR DocPosCR;
-typedef int            DocLn;  // Sci_Line?
+  typedef Sci_Position   DocPos;
+  typedef Sci_PositionU  DocPosU;
+  typedef Sci_PositionCR DocCR;
+  typedef Sci_Position   DocLn;  // Sci_Line?
 #else
-typedef int  DocPos;
-//typedef ptrdiff_t DocPos; // compile test
-typedef long DocPosCR;
-typedef int  DocLn;
-//typedef ptrdiff_t DocLn; // compile test
+
+  #ifdef NP3_COMPILE_TEST
+    typedef ptrdiff_t DocPos;
+    typedef size_t DocPosU;
+    typedef long DocPosCR;
+    typedef ptrdiff_t DocLn;
+  #else
+    typedef int  DocPos;
+    typedef unsigned int DocPosU;
+    typedef long DocPosCR;
+    typedef int  DocLn;
+  #endif
+
 #endif
 
 

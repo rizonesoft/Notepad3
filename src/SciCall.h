@@ -109,19 +109,24 @@ DeclareSciCallV0(Paste, PASTE);
 DeclareSciCallV0(Clear, CLEAR);
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE);
 DeclareSciCallV0(LineDelete, LINEDELETE);
-DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, LPCCH, text);
-DeclareSciCallV2(GetTextFromBegin, GETTEXT, DocPos, length, LPCCH, text);
+DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text);
+DeclareSciCallV2(GetTextFromBegin, GETTEXT, DocPos, length, const char*, text);
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos);
 DeclareSciCallV0(SelectAll, SELECTALL);
-DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, LPCCH, text);
-DeclareSciCallV01(ReplaceSel, REPLACESEL, LPCCH, text);
+DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, const char*, text);
+DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text);
+DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text);
+DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text);
+
 
 DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos);
 DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos);
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
-DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, LPCCH, text);
+DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, const char*, text);
+DeclareSciCallV2(AddText, ADDTEXT, DocPos, length, const char*, text);
+
 
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position);
 DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position);
@@ -147,8 +152,9 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line);
 DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line);
 
 
-DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, LPCCH, DocPos, start, DocPos, length);
-DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, LPCCH);
+DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, const char*, DocPos, start, DocPos, length);
+DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char*);
+
 
 DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options);
 
