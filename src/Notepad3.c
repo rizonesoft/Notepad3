@@ -1200,23 +1200,10 @@ void __fastcall SetWordWrapping(HWND hwndEditCtrl)
 
 //=============================================================================
 //
-//  CreateEditCtrl()
+//  InitializeSciEditCtrl()
 //
-HWND __fastcall CreateEditCtrl(HWND hwndParent, HINSTANCE hInstance)
+void __fastcall InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
-  HWND hwndEditCtrl = CreateWindowEx(
-    WS_EX_CLIENTEDGE,
-    L"Scintilla",
-    NULL,
-    WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS,
-    0, 0, 0, 0,
-    hwndParent,
-    (HMENU)IDC_EDIT,
-    hInstance,
-    NULL);
-
-  g_hScintilla = (HANDLE)SendMessage(hwndEditCtrl, SCI_GETDIRECTPOINTER, 0, 0);
-
   Encoding_Current(g_iDefaultNewFileEncoding);
   Encoding_SciSetCodePage(hwndEditCtrl, g_iDefaultNewFileEncoding);
 
@@ -1319,8 +1306,6 @@ HWND __fastcall CreateEditCtrl(HWND hwndParent, HINSTANCE hInstance)
   //SciInitThemes(hwndEditCtrl);
 
   UpdateLineNumberWidth();
-
-  return(hwndEditCtrl);
 }
 
 
@@ -1335,7 +1320,20 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   HINSTANCE hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
   // Setup edit control
-  g_hwndEdit = CreateEditCtrl(hwnd, hInstance);
+  g_hwndEdit = CreateWindowEx(
+    WS_EX_CLIENTEDGE,
+    L"Scintilla",
+    NULL,
+    WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS,
+    0, 0, 0, 0,
+    hwnd,
+    (HMENU)IDC_EDIT,
+    hInstance,
+    NULL);
+
+  g_hScintilla = (HANDLE)SendMessage(g_hwndEdit, SCI_GETDIRECTPOINTER, 0, 0);
+
+  InitializeSciEditCtrl(g_hwndEdit);
 
   hwndEditFrame = CreateWindowEx(
                     WS_EX_CLIENTEDGE,
