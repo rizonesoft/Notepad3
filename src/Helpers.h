@@ -221,7 +221,7 @@ UINT CharSetFromCodePage(UINT);
 #define MRU_MAXITEMS  24
 #define MRU_NOCASE    1
 #define MRU_UTF8      2
-#define MRU_BMRK_SIZE 1024
+#define MRU_BMRK_SIZE 512
 
 typedef struct _mrulist {
 
@@ -232,14 +232,14 @@ typedef struct _mrulist {
   int    iEncoding[MRU_MAXITEMS];
   DocPos iCaretPos[MRU_MAXITEMS];
   LPWSTR pszBookMarks[MRU_MAXITEMS];
-
+  LPWSTR pszFindPattern[MRU_MAXITEMS];
 } MRULIST, *PMRULIST, *LPMRULIST;
 
 LPMRULIST MRU_Create(LPCWSTR,int,int);
 BOOL      MRU_Destroy(LPMRULIST);
-BOOL      MRU_Add(LPMRULIST,LPCWSTR,int,DocPos,LPCWSTR);
+BOOL      MRU_Add(LPMRULIST,LPCWSTR,int,DocPos,LPCWSTR,LPCWSTR);
 BOOL      MRU_FindFile(LPMRULIST,LPCWSTR,int*);
-BOOL      MRU_AddFile(LPMRULIST,LPCWSTR,BOOL,BOOL,int,DocPos,LPCWSTR);
+BOOL      MRU_AddFile(LPMRULIST,LPCWSTR,BOOL,BOOL,int,DocPos,LPCWSTR,LPCWSTR);
 BOOL      MRU_Delete(LPMRULIST,int);
 BOOL      MRU_DeleteFileFromStore(LPMRULIST,LPCWSTR);
 BOOL      MRU_Empty(LPMRULIST);

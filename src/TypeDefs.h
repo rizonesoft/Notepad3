@@ -41,17 +41,19 @@
 #endif
 
 
-enum BufferSizes
-{
-  MICRO_BUFFER = 32,
-  MINI_BUFFER = 64,
-  SMALL_BUFFER = 128,
-  MIDSZ_BUFFER = 256,
-  LARGE_BUFFER = 512,
-  HUGE_BUFFER = 1024,
-  XHUGE_BUFFER = 2048,
-  FILE_ARG_BUF = MAX_PATH + 2
-};
+  enum BufferSizes
+  {
+    MICRO_BUFFER = 32,
+    MINI_BUFFER = 64,
+    SMALL_BUFFER = 128,
+    MIDSZ_BUFFER = 256,
+    LARGE_BUFFER = 512,
+    HUGE_BUFFER = 1024,
+    XHUGE_BUFFER = 2048,
+
+    FILE_ARG_BUF = MAX_PATH + 2,
+    FNDRPL_BUFFER = 512
+  };
 
 //=============================================================================
 

@@ -162,6 +162,8 @@ void RestoreAction(int,DoAction);
 int  UndoRedoActionMap(int,UndoRedoSelection_t*);
 void OpenHotSpotURL(DocPos, BOOL);
 
+void SetFindPattern(LPCWSTR);
+void GetFindPattern(LPWSTR, size_t);
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL*,BOOL);
 BOOL FileLoad(BOOL,BOOL,BOOL,BOOL,BOOL,LPCWSTR);
@@ -169,7 +171,6 @@ BOOL FileRevert(LPCWSTR);
 BOOL FileSave(BOOL,BOOL,BOOL,BOOL);
 BOOL OpenFileDlg(HWND,LPWSTR,int,LPCWSTR);
 BOOL SaveFileDlg(HWND,LPWSTR,int,LPCWSTR);
-
 
 LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT MsgCreate(HWND, WPARAM, LPARAM);

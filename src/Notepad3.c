@@ -3881,6 +3881,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (SciCall_GetTextLength() == 0)
         break;
 
+
       if (!strlen(g_efrData.szFind)) 
       {
         if (LOWORD(wParam) != IDM_EDIT_REPLACENEXT)
@@ -4742,14 +4743,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         if (bCmdEnabled) {
 
-          //const DocPos cchSelection = SciCall_GetSelectionEnd() - SciCall_GetSelectionStart();
           const DocPos cchSelection = SciCall_GetSelText(NULL);
 
           char  mszSelection[512] = { '\0' };
-          if ((cchSelection > 0) && (cchSelection < (DocPos)COUNTOF(mszSelection)))
+          if ((1 < cchSelection) && (cchSelection < (DocPos)COUNTOF(mszSelection)))
           {
             SciCall_GetSelText(mszSelection);
-            mszSelection[cchSelection] = '\0'; // zero terminate
 
             // Check lpszSelection and truncate bad WCHARs
             char* lpsz = StrChrA(mszSelection,13);
@@ -4804,17 +4803,16 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         DocPos cchSelection = SciCall_GetSelText(NULL);
 
-        if (cchSelection == 0)
+        if (1 >= cchSelection)
         {
           SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_SELECTWORD,1),0);
           cchSelection = SciCall_GetSelText(NULL);
         }
 
-        if (cchSelection > 0 && cchSelection < FNDRPL_BUFFER)
+        if ((1 < cchSelection) && (cchSelection < FNDRPL_BUFFER))
         {
           char  mszSelection[FNDRPL_BUFFER];
           SciCall_GetSelText(mszSelection);
-          mszSelection[cchSelection] = '\0'; // zero terminate
 
           // Check lpszSelection and truncate newlines
           char *lpsz = StrChrA(mszSelection,'\n');
@@ -5778,6 +5776,27 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UNUSED(wParam);
 
   return FALSE;
+}
+
+
+
+//=============================================================================
+//
+//  SetFindPattern()
+// 
+void SetFindPattern(LPCWSTR wchFindPattern)
+{
+  WideCharToMultiByteStrg(Encoding_SciGetCodePage(g_hwndEdit), wchFindPattern, g_efrData.szFind);
+  WideCharToMultiByteStrg(CP_UTF8, wchFindPattern, g_efrData.szFindUTF8);
+}
+
+//=============================================================================
+//
+//  GetFindPattern()
+// 
+void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize)
+{
+  MultiByteToWideChar(CP_UTF8, 0, g_efrData.szFindUTF8, -1, wchFindPattern, (int)bufferSize);
 }
 
 
@@ -7498,6 +7517,11 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bSkipUnicodeDetect,BOOL bSkipANS
       if (pFileMRU->pszBookMarks[idx])
         LocalFree(pFileMRU->pszBookMarks[idx]);
       pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
+      WCHAR wchFindPattern[FNDRPL_BUFFER] = { L'\0' };
+      GetFindPattern(wchFindPattern, COUNTOF(wchFindPattern));
+      if (pFileMRU->pszFindPattern[idx])
+        LocalFree(pFileMRU->pszFindPattern[idx]);
+      pFileMRU->pszFindPattern[idx] = StrDup(wchFindPattern);
     }
     fSuccess = EditSaveFile(g_hwndEdit,pszFileName,*ienc,pbCancelDataLoss,bSaveCopy);
   }
@@ -7667,13 +7691,17 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
     int idx = 0;
     DocPos iCaretPos = 0;
     LPCWSTR pszBookMarks = L"";
+    LPCWSTR pszFindPattern = L"";
     if (!bReload && MRU_FindFile(pFileMRU,szFileName,&idx)) {
       iCaretPos = pFileMRU->iCaretPos[idx];
       pszBookMarks = pFileMRU->pszBookMarks[idx];
+      pszFindPattern = pFileMRU->pszFindPattern[idx];
     }
-    MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs,fileEncoding,iCaretPos,pszBookMarks);
-    
+    MRU_AddFile(pFileMRU,szFileName,flagRelativeFileMRU,flagPortableMyDocs,
+                fileEncoding,iCaretPos,pszBookMarks,pszFindPattern);
+   
     EditSetBookmarkList(g_hwndEdit, pszBookMarks);
+    SetFindPattern(pszFindPattern);
 
     if (flagUseSystemMRU == 2)
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
@@ -7816,6 +7844,11 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       if (pFileMRU->pszBookMarks[idx])
         LocalFree(pFileMRU->pszBookMarks[idx]);
       pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
+      WCHAR wchFindPattern[MRU_BMRK_SIZE] = { L'\0' };
+      GetFindPattern(wchFindPattern, COUNTOF(wchFindPattern));
+      if (pFileMRU->pszFindPattern[idx])
+        LocalFree(pFileMRU->pszFindPattern[idx]);
+      pFileMRU->pszFindPattern[idx] = StrDup(wchFindPattern);
     }
     return TRUE;
   }
@@ -7907,7 +7940,9 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       const DocPos iCaretPos = SciCall_GetCurrentPos();
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(g_hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-      MRU_AddFile(pFileMRU,g_wchCurFile,flagRelativeFileMRU,flagPortableMyDocs,iCurrEnc,iCaretPos,wchBookMarks);
+      WCHAR wchFindPattern[FNDRPL_BUFFER] = { L'\0' };
+      GetFindPattern(wchFindPattern, COUNTOF(wchFindPattern));
+      MRU_AddFile(pFileMRU,g_wchCurFile,flagRelativeFileMRU,flagPortableMyDocs,iCurrEnc,iCaretPos,wchBookMarks,wchFindPattern);
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,g_wchCurFile);
 
