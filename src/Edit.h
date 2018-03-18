@@ -22,7 +22,6 @@
 BOOL Scintilla_RegisterClasses(void*);
 BOOL Scintilla_ReleaseResources();
 
-#define FNDRPL_BUFFER 512
 typedef struct _editfindreplace
 {
   char szFind[FNDRPL_BUFFER];

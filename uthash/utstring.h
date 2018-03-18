@@ -44,8 +44,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 typedef struct {
-    char *d;
-    size_t n; /* allocd size */
+    char *d;  /* pointer to allocated buffer */
+    size_t n; /* allocated capacity */
     size_t i; /* index of first unused byte */
 } UT_string;
 
@@ -81,8 +81,8 @@ do {                                                       \
 
 #define utstring_new(s)                                    \
 do {                                                       \
-   s = (UT_string*)calloc(sizeof(UT_string),1);            \
-   if (!s) oom();                                          \
+   (s) = (UT_string*)malloc(sizeof(UT_string));            \
+   if (!(s)) oom();                                        \
    utstring_init(s);                                       \
 } while(0)
 

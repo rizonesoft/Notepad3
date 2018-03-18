@@ -46,7 +46,6 @@
 extern HINSTANCE g_hInstance;
 
 extern HWND g_hwndMain;
-extern HWND g_hwndEdit;
 extern HWND g_hwndDlgCustomizeSchemes;
 
 extern int iSciFontQuality;
@@ -3844,6 +3843,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
     EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
   }
+  UpdateLineNumberWidth();
 }
 
 
@@ -5733,9 +5733,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
             SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),TVSIL_NORMAL);
 
-        // find current non-standard lexer
+        // findlexer
         int found = -1;
-        for (int i = 2; i < COUNTOF(g_pLexArray); ++i) {
+        for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
           //if (StringCchCompareX(g_pLexArray[i]->pszName, g_pLexCurrent->pszName) == 0) {
           if (g_pLexArray[i] == g_pLexCurrent) {
             found = i;
@@ -5796,9 +5796,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
         InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-
       }
       return TRUE;
+
+    case WM_ACTIVATE:
+      DialogEnableWindow(hwnd, IDC_PREVIEW, ((pCurrentLexer == g_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
+      break;
 
     case WM_DESTROY:
       {
@@ -5927,8 +5930,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                   SetDlgItemText(hwnd, IDC_STYLELABEL, L"");
                   DialogEnableWindow(hwnd, IDC_STYLEEDIT, FALSE);
                 }
+                DialogEnableWindow(hwnd, IDC_PREVIEW, ((pCurrentLexer == g_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
               }
-
               // a style has been selected
               else
               {
@@ -5980,7 +5983,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         }
       }
-
       break;
 
 

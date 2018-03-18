@@ -1621,8 +1621,9 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 {
   WCHAR szBuf[LARGE_BUFFER];
 
-  if (ExpandEnvironmentStrings(lpSrc,szBuf,COUNTOF(szBuf)))
-    StringCchCopyN(lpSrc,dwSrc,szBuf,COUNTOF(szBuf));
+  if (ExpandEnvironmentStrings(lpSrc, szBuf, COUNTOF(szBuf))) {
+    StringCchCopyN(lpSrc, dwSrc, szBuf, COUNTOF(szBuf));
+  }
 }
 
 
@@ -1821,6 +1822,7 @@ UINT CharSetFromCodePage(UINT uCodePage) {
 
 
 extern BOOL bPreserveCaretPos;
+extern BOOL bSaveFindReplace;
 
 //=============================================================================
 //
@@ -1844,6 +1846,8 @@ BOOL MRU_Destroy(LPMRULIST pmru)
       LocalFree(pmru->pszItems[i]);
     if (pmru->pszBookMarks[i])
       LocalFree(pmru->pszBookMarks[i]);
+    if (pmru->pszFindPattern[i])
+      LocalFree(pmru->pszFindPattern[i]);
   }
   ZeroMemory(pmru,sizeof(MRULIST));
   LocalFree(pmru);
@@ -1858,7 +1862,7 @@ int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2)
     return(StringCchCompareX(psz1,psz2));
 }
 
-BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, int iPos, LPCWSTR pszBookMarks) 
+BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBookMarks, LPCWSTR pszFindPattern)
 {
   int i;
   for (i = 0; i < pmru->iSize; i++) {
@@ -1873,6 +1877,7 @@ BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, int iPos, LPCWSTR pszBookM
     pmru->iEncoding[i] = pmru->iEncoding[i - 1];
     pmru->iCaretPos[i] = pmru->iCaretPos[i - 1];
     pmru->pszBookMarks[i] = pmru->pszBookMarks[i - 1];
+    pmru->pszFindPattern[i] = pmru->pszFindPattern[i - 1];
   }
   pmru->pszItems[0] = StrDup(pszNew);
 
@@ -1883,6 +1888,11 @@ BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, int iPos, LPCWSTR pszBookM
     pmru->pszBookMarks[0] = StrDup(pszBookMarks);
   else
     pmru->pszBookMarks[0] = NULL;
+
+  if (pszFindPattern && bSaveFindReplace)
+    pmru->pszFindPattern[0] = StrDup(pszFindPattern);
+  else
+    pmru->pszFindPattern[0] = NULL;
 
   return TRUE;
 }
@@ -1911,9 +1921,10 @@ BOOL MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex) {
   return FALSE;
 }
 
-BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpandMyDocs,int iEnc,int iPos, LPCWSTR pszBookMarks) {
+BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpandMyDocs,
+                 int iEnc, DocPos iPos, LPCWSTR pszBookMarks, LPCWSTR pszFindPattern) {
 
-  int i;
+  int i = 0;
   if (MRU_FindFile(pmru,pszFile,&i)) {
     LocalFree(pmru->pszItems[i]);
   }
@@ -1925,6 +1936,7 @@ BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpan
     pmru->iEncoding[i] = pmru->iEncoding[i-1];
     pmru->iCaretPos[i] = pmru->iCaretPos[i-1];
     pmru->pszBookMarks[i] = pmru->pszBookMarks[i-1];
+    pmru->pszFindPattern[i] = pmru->pszFindPattern[i - 1];
   }
   if (bRelativePath) {
     WCHAR wchFile[MAX_PATH] = { L'\0' };
@@ -1942,6 +1954,11 @@ BOOL MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,BOOL bRelativePath,BOOL bUnexpan
   else
     pmru->pszBookMarks[0] = StrDup(L"");
 
+  if (pszFindPattern)
+    pmru->pszFindPattern[0] = StrDup(pszFindPattern);
+  else
+    pmru->pszFindPattern[0] = StrDup(L"");
+
   return TRUE;
 }
 
@@ -1957,16 +1974,21 @@ BOOL MRU_Delete(LPMRULIST pmru,int iIndex) {
   if (pmru->pszBookMarks[iIndex]) {
     LocalFree(pmru->pszBookMarks[iIndex]);
   }
+  if (pmru->pszFindPattern[iIndex]) {
+    LocalFree(pmru->pszFindPattern[iIndex]);
+  }
   for (i = iIndex; i < pmru->iSize-1; i++) {
     pmru->pszItems[i] = pmru->pszItems[i+1];
     pmru->iEncoding[i] = pmru->iEncoding[i+1];
     pmru->iCaretPos[i] = pmru->iCaretPos[i+1];
     pmru->pszBookMarks[i] = pmru->pszBookMarks[i+1];
+    pmru->pszFindPattern[i] = pmru->pszFindPattern[i + 1];
 
     pmru->pszItems[i+1] = NULL;
     pmru->iEncoding[i+1] = 0;
     pmru->iCaretPos[i+1] = 0;
     pmru->pszBookMarks[i+1] = NULL;
+    pmru->pszFindPattern[i + 1] = NULL;
   }
   return TRUE;
 }
@@ -2004,6 +2026,9 @@ BOOL MRU_Empty(LPMRULIST pmru)
       if (pmru->pszBookMarks[i])
         LocalFree(pmru->pszBookMarks[i]);
       pmru->pszBookMarks[i] = NULL;
+      if (pmru->pszFindPattern[i])
+        LocalFree(pmru->pszFindPattern[i]);
+      pmru->pszFindPattern[i] = NULL;     
     }
   }
   return TRUE;
@@ -2032,6 +2057,8 @@ BOOL MRU_Load(LPMRULIST pmru)
   WCHAR tchName[32] = { L'\0' };
   WCHAR tchItem[1024] = { L'\0' };
   WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+  WCHAR wchFindPattern[FNDRPL_BUFFER] = { L'\0' };
+
   WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 2 * MRU_MAXITEMS * 1024);
   MRU_Empty(pmru);
   LoadIniSection(pmru->szRegKey,pIniSection,(int)LocalSize(pIniSection)/sizeof(WCHAR));
@@ -2052,11 +2079,18 @@ BOOL MRU_Load(LPMRULIST pmru)
         StringCchPrintf(tchName,COUNTOF(tchName),L"ENC%.2i",i + 1);
         int iCP = IniSectionGetInt(pIniSection,tchName,0);
         pmru->iEncoding[n] = Encoding_MapIniSetting(TRUE,iCP);
+
         StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
         pmru->iCaretPos[n] = (bPreserveCaretPos) ? IniSectionGetInt(pIniSection,tchName,0) : 0;
+
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
         IniSectionGetString(pIniSection, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
         pmru->pszBookMarks[n] = StrDup(wchBookMarks);
+
+        StringCchPrintf(tchName, COUNTOF(tchName), L"FIND%.2i", i + 1);
+        IniSectionGetString(pIniSection, tchName, L"", wchFindPattern, COUNTOF(wchFindPattern));
+        pmru->pszFindPattern[n] = (bSaveFindReplace ? StrDup(wchFindPattern) : NULL);
+
         ++n;
     }
   }
@@ -2098,6 +2132,10 @@ BOOL MRU_Save(LPMRULIST pmru) {
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
         IniSectionSetString(pIniSection, tchName, pmru->pszBookMarks[i]);
       }
+      if (pmru->pszFindPattern[i] && (StringCchLenW(pmru->pszFindPattern[i], FNDRPL_BUFFER) > 0)) {
+        StringCchPrintf(tchName, COUNTOF(tchName), L"FIND%.2i", i + 1);
+        IniSectionSetString(pIniSection, tchName, pmru->pszFindPattern[i]);
+      }
     }
   }
   SaveIniSection(pmru->szRegKey,pIniSection);
@@ -2119,14 +2157,16 @@ BOOL MRU_MergeSave(LPMRULIST pmru,BOOL bAddFiles,BOOL bRelativePath,BOOL bUnexpa
       if (pmru->pszItems[i]) {
         WCHAR wchItem[MAX_PATH] = { L'\0' };
         PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),TRUE);
-        MRU_AddFile(pmruBase,wchItem,bRelativePath,bUnexpandMyDocs,pmru->iEncoding[i],pmru->iCaretPos[i],pmru->pszBookMarks[i]);
+        MRU_AddFile(pmruBase,wchItem,bRelativePath,bUnexpandMyDocs,
+                    pmru->iEncoding[i],pmru->iCaretPos[i],pmru->pszBookMarks[i],pmru->pszFindPattern[i]);
       }
     }
   }
   else {
     for (i = pmru->iSize-1; i >= 0; i--) {
       if (pmru->pszItems[i])
-        MRU_Add(pmruBase,pmru->pszItems[i],pmru->iEncoding[i],pmru->iCaretPos[i],pmru->pszBookMarks[i]);
+        MRU_Add(pmruBase,pmru->pszItems[i],
+                pmru->iEncoding[i],pmru->iCaretPos[i],pmru->pszBookMarks[i],pmru->pszFindPattern[i]);
     }
   }
 
