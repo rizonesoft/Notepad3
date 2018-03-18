@@ -3843,6 +3843,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
     EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
   }
+  UpdateLineNumberWidth();
 }
 
 

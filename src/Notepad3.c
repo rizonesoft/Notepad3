@@ -7580,7 +7580,6 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
     SetDocumentModified(FALSE);
     UpdateToolbar();
     UpdateStatusbar();
-    UpdateLineNumberWidth();
 
     // Terminate file watching
     if (bResetFileWatching)
