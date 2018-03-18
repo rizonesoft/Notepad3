@@ -1822,6 +1822,7 @@ UINT CharSetFromCodePage(UINT uCodePage) {
 
 
 extern BOOL bPreserveCaretPos;
+extern BOOL bSaveFindReplace;
 
 //=============================================================================
 //
@@ -1888,7 +1889,7 @@ BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBo
   else
     pmru->pszBookMarks[0] = NULL;
 
-  if (pszFindPattern)
+  if (pszFindPattern && bSaveFindReplace)
     pmru->pszFindPattern[0] = StrDup(pszFindPattern);
   else
     pmru->pszFindPattern[0] = NULL;
@@ -2088,7 +2089,7 @@ BOOL MRU_Load(LPMRULIST pmru)
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"FIND%.2i", i + 1);
         IniSectionGetString(pIniSection, tchName, L"", wchFindPattern, COUNTOF(wchFindPattern));
-        pmru->pszFindPattern[n] = StrDup(wchFindPattern);
+        pmru->pszFindPattern[n] = (bSaveFindReplace ? StrDup(wchFindPattern) : NULL);
 
         ++n;
     }

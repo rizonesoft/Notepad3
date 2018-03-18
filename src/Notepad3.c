@@ -2436,7 +2436,6 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT,bSaveRecentFiles);
   CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, bPreserveCaretPos);
-
   CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,bSaveFindReplace);
   CheckCmd(hmenu,IDM_VIEW_SAVEBEFORERUNNINGTOOLS,bSaveBeforeRunningTools);
 
@@ -4370,9 +4369,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       bSaveRecentFiles = (bSaveRecentFiles) ? FALSE : TRUE;
       break;
 
+
     case IDM_VIEW_NOPRESERVECARET:
       bPreserveCaretPos = (bPreserveCaretPos) ? FALSE : TRUE;
       break;
+
 
     case IDM_VIEW_NOSAVEFINDREPL:
       bSaveFindReplace = (bSaveFindReplace) ? FALSE : TRUE;
@@ -7511,7 +7512,7 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bSkipUnicodeDetect,BOOL bSkipANS
     int idx;
     if (MRU_FindFile(pFileMRU,pszFileName,&idx)) {
       pFileMRU->iEncoding[idx] = *ienc;
-      pFileMRU->iCaretPos[idx] = (bPreserveCaretPos) ? SciCall_GetCurrentPos() : 0;
+      pFileMRU->iCaretPos[idx] = (bPreserveCaretPos ? SciCall_GetCurrentPos() : 0);
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(g_hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       if (pFileMRU->pszBookMarks[idx])
@@ -7521,7 +7522,7 @@ BOOL FileIO(BOOL fLoad,LPCWSTR pszFileName,BOOL bSkipUnicodeDetect,BOOL bSkipANS
       GetFindPattern(wchFindPattern, COUNTOF(wchFindPattern));
       if (pFileMRU->pszFindPattern[idx])
         LocalFree(pFileMRU->pszFindPattern[idx]);
-      pFileMRU->pszFindPattern[idx] = StrDup(wchFindPattern);
+      pFileMRU->pszFindPattern[idx] = (bSaveFindReplace ? StrDup(wchFindPattern) : NULL);
     }
     fSuccess = EditSaveFile(g_hwndEdit,pszFileName,*ienc,pbCancelDataLoss,bSaveCopy);
   }
@@ -7848,7 +7849,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       GetFindPattern(wchFindPattern, COUNTOF(wchFindPattern));
       if (pFileMRU->pszFindPattern[idx])
         LocalFree(pFileMRU->pszFindPattern[idx]);
-      pFileMRU->pszFindPattern[idx] = StrDup(wchFindPattern);
+      pFileMRU->pszFindPattern[idx] = (bSaveFindReplace ? StrDup(wchFindPattern) : NULL);
     }
     return TRUE;
   }

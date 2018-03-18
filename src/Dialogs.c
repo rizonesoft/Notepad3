@@ -1119,6 +1119,7 @@ BOOL AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 extern LPMRULIST pFileMRU;
 extern BOOL bSaveRecentFiles;
 extern BOOL bPreserveCaretPos;
+extern BOOL bSaveFindReplace;
 extern int  cxFileMRUDlg;
 extern int  cyFileMRUDlg;
 extern int  flagNoFadeHidden;
@@ -1258,14 +1259,14 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         // Update view
         SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-        if (bSaveRecentFiles)
-          CheckDlgButton(hwnd, IDC_SAVEMRU, BST_CHECKED);
+        CheckDlgButton(hwnd, IDC_SAVEMRU, bSaveRecentFiles ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_PRESERVECARET, bPreserveCaretPos ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, bSaveFindReplace ? BST_CHECKED : BST_UNCHECKED);
 
-        if (bPreserveCaretPos)
-          CheckDlgButton(hwnd, IDC_PRESERVECARET, BST_CHECKED);
-
-        //if (!bSaveRecentFiles) 
+        //if (!bSaveRecentFiles) {
         //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, FALSE);
+        //  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, FALSE);
+        //}
 
         CenterDlgInParent(hwnd);
       }
@@ -1289,6 +1290,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         RemoveProp(hwnd,L"it");
         GlobalFree(lpit);
 
+        bSaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? TRUE : FALSE;
         bPreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? TRUE : FALSE;
         bSaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? TRUE : FALSE;
 
@@ -1311,8 +1313,9 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_REMOVE,dx,dy, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_FILEMRU,dx,dy,SWP_NOMOVE);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_PRESERVECARET,0,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_SAVEMRU,0,dy,SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_PRESERVECARET, 0, dy, SWP_NOSIZE);
+        hdwp = DeferCtlPos(hdwp, hwnd, IDC_REMEMBERSEARCHPATTERN, 0, dy, SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
         ListView_SetColumnWidth(GetDlgItem(hwnd,IDC_FILEMRU),0,LVSCW_AUTOSIZE_USEHEADER);
       }
