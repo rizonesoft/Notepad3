@@ -4187,7 +4187,7 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos)
   
   SciCall_SetSel(iAnchorPos, iCurrentPos);
 
-  SciCall_ScrollRange(iCurrentPos, iAnchorPos);
+  SciCall_ScrollRange(iAnchorPos, iCurrentPos);
 
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
@@ -5448,7 +5448,7 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BO
 
   const DocPos iTextLength = SciCall_GetTextLength();
 
-  DocPos start = max(0, SciCall_GetSelectionStart());
+  DocPos start = SciCall_GetCurrentPos();
   DocPos end = 0;
 
   if (start <= end) {
@@ -5495,7 +5495,7 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BO
     EditSelectEx(hwnd, max(iSelPos, iSelAnchor), start);
   }
   else {
-    EditSelectEx(hwnd, start, end);
+    EditSelectEx(hwnd, end, start);
   }
   return TRUE;
 }
