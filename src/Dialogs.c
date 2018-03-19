@@ -1116,7 +1116,7 @@ BOOL AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 //  FileMRUDlgProc()
 //
 //
-extern LPMRULIST pFileMRU;
+extern LPMRULIST g_pFileMRU;
 extern BOOL bSaveRecentFiles;
 extern BOOL bPreserveCaretPos;
 extern BOOL bSaveFindReplace;
@@ -1455,8 +1455,8 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             lvi.iImage = shfi.iIcon;
 
-            for (i = 0; i < MRU_Enum(pFileMRU,0,NULL,0); i++) {
-              MRU_Enum(pFileMRU,i,tch,COUNTOF(tch));
+            for (i = 0; i < MRU_Enum(g_pFileMRU,0,NULL,0); i++) {
+              MRU_Enum(g_pFileMRU,i,tch,COUNTOF(tch));
               PathAbsoluteFromApp(tch,NULL,0,TRUE);
               //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_ADDSTRING,0,(LPARAM)tch); }
               //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_SETCARETINDEX,0,FALSE);
@@ -1508,7 +1508,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
                 // don't remove myself
                 int iCur = 0;
-                if (!MRU_FindFile(pFileMRU, g_wchCurFile, &iCur)) {
+                if (!MRU_FindFile(g_pFileMRU, g_wchCurFile, &iCur)) {
                   iCur = -1;
                 }
 
@@ -1518,8 +1518,8 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
                 if (IDYES == answ) {
 
-                  MRU_Delete(pFileMRU,lvi.iItem);
-                  MRU_DeleteFileFromStore(pFileMRU,tchFileName);
+                  MRU_Delete(g_pFileMRU,lvi.iItem);
+                  MRU_DeleteFileFromStore(g_pFileMRU,tchFileName);
 
                   //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
                   //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);

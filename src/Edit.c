@@ -143,8 +143,8 @@ enum SortOrderMask {
 };
 
 
-extern LPMRULIST mruFind;
-extern LPMRULIST mruReplace;
+extern LPMRULIST g_pMRUfind;
+extern LPMRULIST g_pMRUreplace;
 
 extern BOOL bMarkOccurrencesCurrentWord;
 extern BOOL bMarkOccurrencesMatchCase;
@@ -4608,12 +4608,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
 
       // Load MRUs
-      for (int i = 0; i < MRU_Enum(mruFind, 0, NULL, 0); i++) {
-        MRU_Enum(mruFind, i, tchBuf, COUNTOF(tchBuf));
+      for (int i = 0; i < MRU_Enum(g_pMRUfind, 0, NULL, 0); i++) {
+        MRU_Enum(g_pMRUfind, i, tchBuf, COUNTOF(tchBuf));
         SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_ADDSTRING, 0, (LPARAM)tchBuf);
       }
-      for (int i = 0; i < MRU_Enum(mruReplace, 0, NULL, 0); i++) {
-        MRU_Enum(mruReplace, i, tchBuf, COUNTOF(tchBuf));
+      for (int i = 0; i < MRU_Enum(g_pMRUreplace, 0, NULL, 0); i++) {
+        MRU_Enum(g_pMRUreplace, i, tchBuf, COUNTOF(tchBuf));
         SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)tchBuf);
       }
 
@@ -4834,7 +4834,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
           else {
             if (tchBuf[0] == L'\0') {
-              MRU_Enum(mruFind, 0, tchBuf, COUNTOF(tchBuf));
+              MRU_Enum(g_pMRUfind, 0, tchBuf, COUNTOF(tchBuf));
             }
             SetDlgItemText(hwnd, IDC_FINDTEXT, tchBuf);
           }
@@ -5079,14 +5079,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (StringCchLenA(lpefr->szFind, COUNTOF(lpefr->szFind))) {
             if (GetDlgItemTextW2A(CP_UTF8, hwnd, IDC_FINDTEXT, lpefr->szFindUTF8, COUNTOF(lpefr->szFindUTF8))) {
               GetDlgItemText(hwnd, IDC_FINDTEXT, tchBuf2, COUNTOF(tchBuf2));
-              MRU_Add(mruFind, tchBuf2, 0, 0, NULL, NULL);
+              MRU_Add(g_pMRUfind, tchBuf2, 0, 0, NULL);
               SetFindPattern(tchBuf2);
             }
           }
           if (StringCchLenA(lpefr->szReplace, COUNTOF(lpefr->szReplace))) {
             if (GetDlgItemTextW2A(CP_UTF8, hwnd, IDC_REPLACETEXT, lpefr->szReplaceUTF8, COUNTOF(lpefr->szReplaceUTF8))) {
               GetDlgItemText(hwnd, IDC_REPLACETEXT, tchBuf2, COUNTOF(tchBuf2));
-              MRU_Add(mruReplace, tchBuf2, 0, 0, NULL, NULL);
+              MRU_Add(g_pMRUreplace, tchBuf2, 0, 0, NULL);
             }
           }
           else
@@ -5102,12 +5102,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_RESETCONTENT, 0, 0);
         SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_RESETCONTENT, 0, 0);
 
-        for (int i = 0; i < MRU_Enum(mruFind, 0, NULL, 0); i++) {
-          MRU_Enum(mruFind, i, tchBuf2, COUNTOF(tchBuf2));
+        for (int i = 0; i < MRU_Enum(g_pMRUfind, 0, NULL, 0); i++) {
+          MRU_Enum(g_pMRUfind, i, tchBuf2, COUNTOF(tchBuf2));
           SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_ADDSTRING, 0, (LPARAM)tchBuf2);
         }
-        for (int i = 0; i < MRU_Enum(mruReplace, 0, NULL, 0); i++) {
-          MRU_Enum(mruReplace, i, tchBuf2, COUNTOF(tchBuf2));
+        for (int i = 0; i < MRU_Enum(g_pMRUreplace, 0, NULL, 0); i++) {
+          MRU_Enum(g_pMRUreplace, i, tchBuf2, COUNTOF(tchBuf2));
           SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)tchBuf2);
         }
 
