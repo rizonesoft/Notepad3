@@ -3395,7 +3395,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   {
     char   chFontName[64] = { '\0' };
     Style_StrGetFont(L"font:Default", wchFontName, COUNTOF(wchFontName));
-    WideCharToMultiByteStrg(CP_UTF8, wchFontName, chFontName);
+    WideCharToMultiByteStrg(Encoding_SciCP, wchFontName, chFontName);
     SendMessage(hwnd, SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)chFontName);
   }
 
@@ -4217,8 +4217,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     WCHAR wchMode[32] = { L'\0' };
     PEDITLEXER pLexMode;
-    UINT cp = Encoding_SciGetCodePage(hwnd);
-    MultiByteToWideCharStrg(cp,fvCurFile.tchMode,wchMode);
+
+    MultiByteToWideCharStrg(Encoding_SciCP, fvCurFile.tchMode, wchMode);
 
     if (!flagNoCGIGuess && (StringCchCompareIN(wchMode,COUNTOF(wchMode),L"cgi",-1) == 0 || 
                          StringCchCompareIN(wchMode,COUNTOF(wchMode),L"fcgi",-1) == 0)) {
@@ -5472,7 +5472,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   if (Style_StrGetFont(lpszStyle, tch, COUNTOF(tch))) {
     if (lstrlen(tch) > 0) {
       char chFont[64] = { '\0' };
-      WideCharToMultiByteStrg(CP_UTF8, tch, chFont);
+      WideCharToMultiByteStrg(Encoding_SciCP, tch, chFont);
       SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
     }
   }

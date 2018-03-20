@@ -735,69 +735,6 @@ const char* Encoding_GetParseNames(int iEncoding) {
 // ============================================================================
 
 
-
-
-UINT Encoding_SciGetCodePage(HWND hwnd) {
-  UNUSED(hwnd);
-  return CP_UTF8;
-  // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
-  /*
-  int cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
-  if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
-  return cp;
-  }
-  return (cp == 0) ? CP_ACP : CP_UTF8;
-  */
-}
-// ============================================================================
-
-
-int Encoding_SciMappedCodePage(int iEncoding) {
-  UNUSED(iEncoding);
-  return SC_CP_UTF8;
-  // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
-  /*
-  if (Encoding_IsValid(iEncoding)) {
-  // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
-  int cp = (int)g_Encodings[iEncoding].uCodePage;
-  if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
-  return cp;
-  }
-  }
-  */
-}
-// ============================================================================
-
-
-void Encoding_SciSetCodePage(HWND hwnd, int iEncoding) {
-  int cp = Encoding_SciMappedCodePage(iEncoding);
-  SendMessage(hwnd, SCI_SETCODEPAGE, (WPARAM)cp, 0);
-  // charsets can be changed via styles schema
-  /*
-  int charset = SC_CHARSET_ANSI;
-  switch (cp) {
-  case 932:
-  charset = SC_CHARSET_SHIFTJIS;
-  break;
-  case 936:
-  charset = SC_CHARSET_GB2312;
-  break;
-  case 949:
-  charset = SC_CHARSET_HANGUL;
-  break;
-  case 950:
-  charset = SC_CHARSET_CHINESEBIG5;
-  break;
-  default:
-  charset = g_iDefaultCharSet;
-  break;
-  }
-  SendMessage(hwnd,SCI_STYLESETCHARACTERSET,(WPARAM)STYLE_DEFAULT,(LPARAM)charset);
-  */
-}
-// ============================================================================
-
-
 BOOL IsUnicode(const char* pBuffer, int cb, LPBOOL lpbBOM, LPBOOL lpbReverse) {
   int i = 0xFFFF;
 

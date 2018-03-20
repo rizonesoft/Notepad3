@@ -113,15 +113,12 @@ BOOL Encoding_IsINTERNAL(int);
 BOOL Encoding_IsEXTERNAL_8BIT(int);
 BOOL Encoding_IsRECODE(int);
 
+// Scintilla related
+#define Encoding_SciCP  CP_UTF8
+
 void Encoding_SetDefaultFlag(int);
 const WCHAR* Encoding_GetLabel(int);
 const char* Encoding_GetParseNames(int);
-
-// Scintilla related
-UINT Encoding_SciGetCodePage(HWND);
-int  Encoding_SciMappedCodePage(int);
-void Encoding_SciSetCodePage(HWND, int);
-
 
 BOOL IsUnicode(const char*, int, LPBOOL, LPBOOL);
 BOOL IsUTF8(const char*, int);

@@ -294,7 +294,6 @@ HMODULE   hRichEdit = NULL;
 
 
 EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
-UINT cpLastFind = 0;
 BOOL bReplaceInitialized = FALSE;
 
 int iLineEndings[3] = {
@@ -813,7 +812,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
       Encoding_Current(Encoding_SrcCmdLn(CPI_GET));
       Encoding_HasChanged(Encoding_SrcCmdLn(CPI_GET));
-      Encoding_SciSetCodePage(g_hwndEdit,Encoding_Current(CPI_GET));
     }
   }
 
@@ -876,11 +874,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (flagMatchText && lpMatchArg) {
     if (lstrlen(lpMatchArg) && SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0)) {
 
-      UINT cp = Encoding_SciGetCodePage(g_hwndEdit);
-      WideCharToMultiByteStrg(cp,lpMatchArg,g_efrData.szFind);
-      WideCharToMultiByteStrg(CP_UTF8,lpMatchArg,g_efrData.szFindUTF8);
+      WideCharToMultiByteStrg(Encoding_SciCP,lpMatchArg,g_efrData.szFind);
       SetFindPattern(lpMatchArg);
-      cpLastFind = cp;
 
       if (flagMatchText & 4)
         g_efrData.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
@@ -1206,9 +1201,9 @@ void __fastcall SetWordWrapping(HWND hwndEditCtrl)
 void __fastcall InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
   Encoding_Current(g_iDefaultNewFileEncoding);
-  Encoding_SciSetCodePage(hwndEditCtrl, g_iDefaultNewFileEncoding);
 
   // general setup
+  SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 
   SendMessage(hwndEditCtrl, SCI_SETEOLMODE, SC_EOL_CRLF, 0);
   SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, TRUE, 0);
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_CONTAINER, 0);
@@ -3503,8 +3498,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           StringCchPrintf(tchDateTime,COUNTOF(tchDateTime),L"%s %s",tchTime,tchDate);
         }
 
-        UINT uCP = Encoding_SciGetCodePage(g_hwndEdit);
-        WideCharToMultiByteStrg(uCP,tchDateTime,mszBuf);
+        WideCharToMultiByteStrg(Encoding_SciCP,tchDateTime,mszBuf);
         int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
         EndUndoAction(token);
@@ -3535,8 +3529,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           pszInsert = tchUntitled;
         }
 
-        UINT uCP = Encoding_SciGetCodePage(g_hwndEdit);
-        WideCharToMultiByteStrg(uCP,pszInsert,mszBuf);
+        WideCharToMultiByteStrg(Encoding_SciCP,pszInsert,mszBuf);
         int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszBuf);
         EndUndoAction(token);
@@ -3552,9 +3545,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           if (StringFromGUID2(&guid,wszGuid,COUNTOF(wszGuid))) {
             WCHAR* pwszGuid = wszGuid + 1; // trim first brace char
             wszGuid[wcslen(wszGuid) - 1] = L'\0'; // trim last brace char 
-            UINT uCP = Encoding_SciGetCodePage(g_hwndEdit);
             char mszGuid[40 * 4]; // UTF-8 max of 4 bytes per char
-            if (WideCharToMultiByteStrg(uCP,pwszGuid,mszGuid)) {
+            if (WideCharToMultiByteStrg(Encoding_SciCP,pwszGuid,mszGuid)) {
               int token = BeginUndoAction();
               SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)mszGuid);
               EndUndoAction(token);
@@ -3891,22 +3883,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_REPLACE,1),0);
       }
       else {
-
-        UINT cp = Encoding_SciGetCodePage(g_hwndEdit);
-        if (cpLastFind != cp) {
-          if (cp != CP_UTF8) {
-            WCHAR wch[FNDRPL_BUFFER];
-            MultiByteToWideCharStrg(CP_UTF8,g_efrData.szFindUTF8,wch);
-            WideCharToMultiByteStrg(cp,wch,g_efrData.szFind);
-            MultiByteToWideCharStrg(CP_UTF8,g_efrData.szReplaceUTF8,wch);
-            WideCharToMultiByteStrg(cp,wch,g_efrData.szReplace);
-          }
-          else {
-            StringCchCopyA(g_efrData.szFind,COUNTOF(g_efrData.szFind),g_efrData.szFindUTF8);
-            StringCchCopyA(g_efrData.szReplace,COUNTOF(g_efrData.szReplace),g_efrData.szReplaceUTF8);
-          }
-        }
-        cpLastFind = cp;
 
         switch (LOWORD(wParam)) {
 
@@ -4681,7 +4657,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SYSTEMTIME st;
         struct tm sst;
 
-        UINT cp;
         EDITFINDREPLACE efrTS = EFR_INIT_DATA;
         efrTS.hwnd = g_hwndEdit;
         efrTS.fuFlags = SCFIND_REGEXP;
@@ -4712,9 +4687,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         mktime(&sst);
         wcsftime(wchReplace,COUNTOF(wchReplace),wchTemplate,&sst);
 
-        cp = Encoding_SciGetCodePage(g_hwndEdit);
-        WideCharToMultiByteStrg(cp,wchFind,efrTS.szFind);
-        WideCharToMultiByteStrg(cp,wchReplace,efrTS.szReplace);
+        WideCharToMultiByteStrg(Encoding_SciCP,wchFind,efrTS.szFind);
+        WideCharToMultiByteStrg(Encoding_SciCP,wchReplace,efrTS.szReplace);
 
         if (!SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
           EditReplaceAllInSelection(g_hwndEdit, &efrTS, TRUE);
@@ -4763,8 +4737,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (StringCchLenA(mszSelection,COUNTOF(mszSelection))) {
 
               WCHAR wszSelection[512] = { L'\0' };
-              UINT uCP = Encoding_SciGetCodePage(g_hwndEdit);
-              MultiByteToWideCharStrg(uCP,mszSelection,wszSelection);
+              MultiByteToWideCharStrg(Encoding_SciCP,mszSelection,wszSelection);
 
               int cmdsz = (512 + COUNTOF(szCmdTemplate) + MAX_PATH + 32);
               LPWSTR lpszCommand = GlobalAlloc(GPTR,sizeof(WCHAR)*cmdsz);
@@ -4821,21 +4794,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           lpsz = StrChrA(mszSelection,'\r');
           if (lpsz) *lpsz = '\0';
 
-          cpLastFind = Encoding_SciGetCodePage(g_hwndEdit);
           StringCchCopyA(g_efrData.szFind,COUNTOF(g_efrData.szFind),mszSelection);
-
-          WCHAR wszBuf[FNDRPL_BUFFER];
-          MultiByteToWideCharStrg(cpLastFind, mszSelection, wszBuf);
-
-          if (cpLastFind != CP_UTF8)
-            WideCharToMultiByteStrg(CP_UTF8,wszBuf,g_efrData.szFindUTF8);
-          else
-            StringCchCopyA(g_efrData.szFindUTF8,COUNTOF(g_efrData.szFindUTF8),mszSelection);
-
-          SetFindPattern(wszBuf);
-
           g_efrData.fuFlags &= (~(SCFIND_REGEXP|SCFIND_POSIX));
           g_efrData.bTransformBS = FALSE;
+
+          WCHAR wszBuf[FNDRPL_BUFFER];
+          MultiByteToWideCharStrg(Encoding_SciCP, mszSelection, wszBuf);
+          SetFindPattern(wszBuf);
 
           switch (LOWORD(wParam)) {
 
@@ -5276,7 +5241,7 @@ void OpenHotSpotURL(DocPos position, BOOL bForceBrowser)
     if (!StringCchLenA(chURL, COUNTOF(chURL))) { return; }
 
     WCHAR wchURL[HUGE_BUFFER] = { L'\0' };
-    MultiByteToWideCharStrg(Encoding_SciGetCodePage(g_hwndEdit), chURL, wchURL);
+    MultiByteToWideCharStrg(Encoding_SciCP, chURL, wchURL);
 
     const WCHAR* chkPreFix = L"file://";
     const int len = lstrlen(chkPreFix);
@@ -5587,7 +5552,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             //  WCHAR wch[8] = { L'\0' };
             //  StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)(scn->ch));
             //  char chr[8] = { '\0' };
-            //  WideCharToMultiByteStrg(Encoding_SciGetCodePage(g_hwndEdit), wch, chr);
+            //  WideCharToMultiByteStrg(Encoding_SciCP, wch, chr);
 
             //  if (SciCall_IsSelectionRectangle())
             //    EditPaste2RectSel(g_hwndEdit, chr);
@@ -5788,8 +5753,7 @@ static WCHAR sCurrentFindPattern[FNDRPL_BUFFER] = { L'\0' };
 void SetFindPattern(LPCWSTR wchFindPattern)
 {
   //if (wchFindPattern) {
-  //  WideCharToMultiByteStrg(Encoding_SciGetCodePage(g_hwndEdit), wchFindPattern, g_efrData.szFind);
-  //  WideCharToMultiByteStrg(CP_UTF8, wchFindPattern, g_efrData.szFindUTF8);
+  //  WideCharToMultiByteStrg(Encoding_SciCP, wchFindPattern, g_efrData.szFind);
   //}
   //else {
   //  g_efrData.szFindUTF8[0] = g_efrData.szFind[0] = '\0';
@@ -5804,7 +5768,7 @@ void SetFindPattern(LPCWSTR wchFindPattern)
 // 
 void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize)
 {
-  //MultiByteToWideChar(CP_UTF8, 0, g_efrData.szFindUTF8, -1, wchFindPattern, (int)bufferSize);
+  //MultiByteToWideChar(Encoding_SciCP, 0, g_efrData.szFind, -1, wchFindPattern, (int)bufferSize);
   StringCchCopyW(wchFindPattern, bufferSize, sCurrentFindPattern);
 }
 
@@ -7577,7 +7541,6 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
     SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
     Encoding_Current(g_iDefaultNewFileEncoding);
     Encoding_HasChanged(g_iDefaultNewFileEncoding);
-    Encoding_SciSetCodePage(g_hwndEdit,g_iDefaultNewFileEncoding);
     EditSetNewText(g_hwndEdit,"",0);
 
     bReadOnly = FALSE;
@@ -7653,7 +7616,6 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
           Encoding_Current(g_iDefaultNewFileEncoding);
           Encoding_HasChanged(g_iDefaultNewFileEncoding);
         }
-        Encoding_SciSetCodePage(g_hwndEdit,Encoding_Current(CPI_GET));
         bReadOnly = FALSE;
         EditSetNewText(g_hwndEdit,"",0);
       }

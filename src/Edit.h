@@ -26,8 +26,6 @@ typedef struct _editfindreplace
 {
   char szFind[FNDRPL_BUFFER];
   char szReplace[FNDRPL_BUFFER];
-  char szFindUTF8[3 * FNDRPL_BUFFER];
-  char szReplaceUTF8[3 * FNDRPL_BUFFER];
   UINT fuFlags;
   BOOL bTransformBS;
   BOOL bObsolete /* was bFindUp */;
@@ -41,7 +39,7 @@ typedef struct _editfindreplace
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
 
-#define EFR_INIT_DATA  { "", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL }
+#define EFR_INIT_DATA  { "", "", /* "",  "", */ 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL }
 
 
 #define IDMSG_SWITCHTOFIND    300

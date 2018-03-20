@@ -1770,27 +1770,27 @@ BOOL SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue)
 //
 //  A2W: Convert Dialog Item Text form Unicode to UTF-8 and vice versa
 //
-UINT GetDlgItemTextW2A(UINT uCP,HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount)
+UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount)
 {
-  WCHAR wsz[1024] = L"";
-  UINT uRet = GetDlgItemTextW(hDlg,nIDDlgItem,wsz,COUNTOF(wsz));
+  WCHAR wsz[FNDRPL_BUFFER] = L"";
+  UINT uRet = GetDlgItemTextW(hDlg, nIDDlgItem, wsz, COUNTOF(wsz));
   ZeroMemory(lpString,nMaxCount);
-  WideCharToMultiByte(uCP,0,wsz,-1,lpString,nMaxCount - 2,NULL,NULL);
+  WideCharToMultiByte(Encoding_SciCP, 0, wsz, -1, lpString, nMaxCount - 1, NULL, NULL);
   return uRet;
 }
 
-UINT SetDlgItemTextA2W(UINT uCP,HWND hDlg,int nIDDlgItem,LPSTR lpString)
+UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPSTR lpString)
 {
-  WCHAR wsz[1024] = L"";
-  MultiByteToWideCharStrg(uCP,lpString,wsz);
-  return SetDlgItemTextW(hDlg,nIDDlgItem,wsz);
+  WCHAR wsz[FNDRPL_BUFFER] = L"";
+  MultiByteToWideCharStrg(Encoding_SciCP, lpString, wsz);
+  return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
 }
 
-LRESULT ComboBox_AddStringA2W(UINT uCP,HWND hwnd,LPCSTR lpString)
+LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 {
-  WCHAR wsz[1024] = L"";
-  MultiByteToWideCharStrg(uCP,lpString,wsz);
-  return SendMessageW(hwnd,CB_ADDSTRING,0,(LPARAM)wsz);
+  WCHAR wsz[FNDRPL_BUFFER] = L"";
+  MultiByteToWideCharStrg(Encoding_SciCP, lpString, wsz);
+  return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
 }
 
 
@@ -2037,7 +2037,7 @@ BOOL MRU_Load(LPMRULIST pmru)
       /*if (pmru->iFlags & MRU_UTF8) {
         WCHAR wchItem[1024];
         int cbw = MultiByteToWideCharStrg(CP_UTF7,tchItem,wchItem);
-        WideCharToMultiByte(CP_UTF8,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
+        WideCharToMultiByte(Encoding_SciCP,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
         pmru->pszItems[n] = StrDup(tchItem);
       }
       else*/
@@ -2075,7 +2075,7 @@ BOOL MRU_Save(LPMRULIST pmru) {
       /*if (pmru->iFlags & MRU_UTF8) {
         WCHAR  tchItem[1024];
         WCHAR wchItem[1024];
-        int cbw = MultiByteToWideCharStrg(CP_UTF8,pmru->pszItems[i],wchItem);
+        int cbw = MultiByteToWideCharStrg(Encoding_SciCP,pmru->pszItems[i],wchItem);
         WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
         IniSectionSetString(pIniSection,tchName,tchItem);
       }
@@ -2817,18 +2817,18 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
     }
     //TODO: HTML Hex encoded (&#x...)
     if (!bOk) {
-      posOut += WideCharToMultiByte(CP_UTF8, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
+      posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
     }
   }
 
   // copy rest
   while ((lpURL[posIn] != L'\0') && (posOut < outLen))
   {
-    posOut += WideCharToMultiByte(CP_UTF8, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
+    posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
   }
   outBuffer[posOut] = '\0';
 
-  int iOut = MultiByteToWideChar(CP_UTF8, 0, outBuffer, -1, lpUnescaped, (int)*pcchUnescaped);
+  int iOut = MultiByteToWideChar(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, (int)*pcchUnescaped);
   LocalFree(outBuffer);
 
   *pcchUnescaped = ((iOut > 0) ? (iOut - 1) : 0);
