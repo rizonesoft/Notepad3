@@ -283,6 +283,8 @@ BEGIN
         MENUITEM "Save Find Text\tAlt+F3",      IDM_EDIT_SAVEFIND
         MENUITEM "Find Ne&xt\tF3",              IDM_EDIT_FINDNEXT
         MENUITEM "Find Pre&vious\tShift+F3",    IDM_EDIT_FINDPREV
+        MENUITEM "Find Next Selected\tCtrl+F3",           CMD_FINDNEXTSEL
+        MENUITEM "Find Previous Selected\tCtrl+Shift+F3", CMD_FINDPREVSEL
         MENUITEM "&Replace...\tCtrl+H",         IDM_EDIT_REPLACE
         MENUITEM "Replace Ne&xt\tF4",           IDM_EDIT_REPLACENEXT
         MENUITEM "&Goto...\tCtrl+G",            IDM_EDIT_GOTOLINE
@@ -335,6 +337,7 @@ BEGIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
         MENUITEM SEPARATOR
+        MENUITEM "Position Args to Clipboard",  CMD_COPYWINPOS
         MENUITEM "Scroll Past End of &File",    IDM_VIEW_SCROLLPASTEOF
     END
     POPUP "&Settings"
