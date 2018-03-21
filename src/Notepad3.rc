@@ -337,7 +337,8 @@ BEGIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
         MENUITEM SEPARATOR
-        MENUITEM "Position Args to Clipboard",  CMD_COPYWINPOS
+        MENUITEM "Copy Position Args\tCtrl+Shift+K",  CMD_COPYWINPOS
+        MENUITEM "Snap to Default Position\tCtrl+Shift+P",     CMD_DEFAULTWINPOS
         MENUITEM "Scroll Past End of &File",    IDM_VIEW_SCROLLPASTEOF
     END
     POPUP "&Settings"

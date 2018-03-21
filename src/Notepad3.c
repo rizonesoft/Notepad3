@@ -625,36 +625,38 @@ BOOL InitApplication(HINSTANCE hInstance)
 //  InitInstance()
 //
 //
-HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
+void __fastcall InitWindowPosition(HWND hwnd)
 {
   RECT rc;
-  rc.left = g_WinInfo.x;  rc.top = g_WinInfo.y;  rc.right = g_WinInfo.x + g_WinInfo.cx;  rc.bottom = g_WinInfo.y + g_WinInfo.cy;
-  RECT rc2;
-  MONITORINFO mi;
-
-  HMONITOR hMonitor = MonitorFromRect(&rc,MONITOR_DEFAULTTONEAREST);
-  mi.cbSize = sizeof(mi);
-  GetMonitorInfo(hMonitor,&mi);
+  if (hwnd) {
+    GetWindowRect(hwnd, &rc);
+  }
+  else {
+    rc.left = g_WinInfo.x;  
+    rc.top = g_WinInfo.y;  
+    rc.right = g_WinInfo.x + g_WinInfo.cx;  
+    rc.bottom = g_WinInfo.y + g_WinInfo.cy;
+  }
 
   if (flagDefaultPos == 1) {
     g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
     g_WinInfo.max = 0;
   }
   else if (flagDefaultPos >= 4) {
-    SystemParametersInfo(SPI_GETWORKAREA,0,&rc,0);
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
     if (flagDefaultPos & 8)
       g_WinInfo.x = (rc.right - rc.left) / 2;
     else
       g_WinInfo.x = rc.left;
     g_WinInfo.cx = rc.right - rc.left;
-    if (flagDefaultPos & (4|8))
+    if (flagDefaultPos & (4 | 8))
       g_WinInfo.cx /= 2;
     if (flagDefaultPos & 32)
       g_WinInfo.y = (rc.bottom - rc.top) / 2;
     else
       g_WinInfo.y = rc.top;
     g_WinInfo.cy = rc.bottom - rc.top;
-    if (flagDefaultPos & (16|32))
+    if (flagDefaultPos & (16 | 32))
       g_WinInfo.cy /= 2;
     if (flagDefaultPos & 64) {
       g_WinInfo.x = rc.left;
@@ -664,27 +666,30 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     }
     if (flagDefaultPos & 128) {
       g_WinInfo.x += (flagDefaultPos & 8) ? 4 : 8;
-      g_WinInfo.cx -= (flagDefaultPos & (4|8)) ? 12 : 16;
+      g_WinInfo.cx -= (flagDefaultPos & (4 | 8)) ? 12 : 16;
       g_WinInfo.y += (flagDefaultPos & 32) ? 4 : 8;
-      g_WinInfo.cy -= (flagDefaultPos & (16|32)) ? 12 : 16;
+      g_WinInfo.cy -= (flagDefaultPos & (16 | 32)) ? 12 : 16;
     }
   }
-
-  else if (flagDefaultPos == 2 || flagDefaultPos == 3 ||
+  
+  if (flagDefaultPos == 2 || flagDefaultPos == 3 ||
       g_WinInfo.x == CW_USEDEFAULT || g_WinInfo.y == CW_USEDEFAULT ||
       g_WinInfo.cx == CW_USEDEFAULT || g_WinInfo.cy == CW_USEDEFAULT) {
 
     // default window position
-    SystemParametersInfo(SPI_GETWORKAREA,0,&rc,0);
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
     g_WinInfo.y = rc.top + 16;
     g_WinInfo.cy = rc.bottom - rc.top - 32;
-    g_WinInfo.cx = min(rc.right - rc.left - 32,g_WinInfo.cy);
+    g_WinInfo.cx = (rc.right - rc.left)/2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
     g_WinInfo.x = (flagDefaultPos == 3) ? rc.left + 16 : rc.right - g_WinInfo.cx - 16;
   }
+  else {  // fit window into working area of current monitor
 
-  else {
-
-    // fit window into working area of current monitor
+    MONITORINFO mi;
+    mi.cbSize = sizeof(mi);
+    HMONITOR hMonitor = MonitorFromRect(&rc, MONITOR_DEFAULTTONEAREST);
+    GetMonitorInfo(hMonitor, &mi);
+   
     g_WinInfo.x += (mi.rcWork.left - mi.rcMonitor.left);
     g_WinInfo.y += (mi.rcWork.top - mi.rcMonitor.top);
     if (g_WinInfo.x < mi.rcWork.left)
@@ -705,14 +710,30 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
       if (g_WinInfo.y + g_WinInfo.cy > mi.rcWork.bottom)
         g_WinInfo.cy = mi.rcWork.bottom - g_WinInfo.y;
     }
-    SetRect(&rc,g_WinInfo.x,g_WinInfo.y,g_WinInfo.x+g_WinInfo.cx,g_WinInfo.y+g_WinInfo.cy);
-    if (!IntersectRect(&rc2,&rc,&mi.rcWork)) {
+    SetRect(&rc, g_WinInfo.x, g_WinInfo.y, g_WinInfo.x + g_WinInfo.cx, g_WinInfo.y + g_WinInfo.cy);
+
+    RECT rc2;
+    if (!IntersectRect(&rc2, &rc, &mi.rcWork)) {
       g_WinInfo.y = mi.rcWork.top + 16;
       g_WinInfo.cy = mi.rcWork.bottom - mi.rcWork.top - 32;
-      g_WinInfo.cx = min(mi.rcWork.right - mi.rcWork.left - 32,g_WinInfo.cy);
+      g_WinInfo.cx = min(mi.rcWork.right - mi.rcWork.left - 32, g_WinInfo.cy);
       g_WinInfo.x = mi.rcWork.right - g_WinInfo.cx - 16;
     }
   }
+}
+
+
+
+//=============================================================================
+//
+//  InitInstance()
+//
+//
+HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
+{
+  g_hwndMain = NULL;
+
+  InitWindowPosition(g_hwndMain);
 
   g_hwndMain = CreateWindowEx(
                0,
@@ -8478,44 +8499,29 @@ BOOL RelaunchElevated(LPWSTR lpArgs) {
 //
 //
 void SnapToDefaultPos(HWND hwnd)
-{
+{  
+  RECT rcOld; GetWindowRect(hwnd, &rcOld);
+
+  RECT rc; SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
+
+  flagDefaultPos = 1;
+  InitWindowPosition(hwnd);
+
   WINDOWPLACEMENT wndpl;
-  HMONITOR hMonitor;
-  MONITORINFO mi;
-  int x,y,cx,cy;
-  RECT rcOld;
-
-  GetWindowRect(hwnd,&rcOld);
-
-  hMonitor = MonitorFromRect(&rcOld,MONITOR_DEFAULTTONEAREST);
-  mi.cbSize = sizeof(mi);
-  GetMonitorInfo(hMonitor,&mi);
-
-  y = mi.rcWork.top + 16;
-  cy = mi.rcWork.bottom - mi.rcWork.top - 32;
-  cx = min(mi.rcWork.right - mi.rcWork.left - 32,cy);
-  x = mi.rcWork.right - cx - 16;
-
+  ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
   wndpl.length = sizeof(WINDOWPLACEMENT);
   wndpl.flags = WPF_ASYNCWINDOWPLACEMENT;
   wndpl.showCmd = SW_RESTORE;
 
-  wndpl.rcNormalPosition.left = x;
-  wndpl.rcNormalPosition.top = y;
-  wndpl.rcNormalPosition.right = x + cx;
-  wndpl.rcNormalPosition.bottom = y + cy;
-
-  if (EqualRect(&rcOld,&wndpl.rcNormalPosition)) {
-    x = mi.rcWork.left + 16;
-    wndpl.rcNormalPosition.left = x;
-    wndpl.rcNormalPosition.right = x + cx;
-  }
+  wndpl.rcNormalPosition.left = g_WinInfo.x - rc.left;
+  wndpl.rcNormalPosition.top = g_WinInfo.y - rc.top;
+  wndpl.rcNormalPosition.right = g_WinInfo.x - rc.left + g_WinInfo.cx;
+  wndpl.rcNormalPosition.bottom = g_WinInfo.y - rc.top + g_WinInfo.cy;
 
   if (GetDoAnimateMinimize()) {
     DrawAnimatedRects(hwnd,IDANI_CAPTION,&rcOld,&wndpl.rcNormalPosition);
-    OffsetRect(&wndpl.rcNormalPosition,mi.rcMonitor.left - mi.rcWork.left,mi.rcMonitor.top - mi.rcWork.top);
+    //OffsetRect(&wndpl.rcNormalPosition,mi.rcMonitor.left - mi.rcWork.left,mi.rcMonitor.top - mi.rcWork.top);
   }
-
   SetWindowPlacement(hwnd,&wndpl);
 }
 
