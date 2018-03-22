@@ -638,11 +638,13 @@ void __fastcall InitWindowPosition(HWND hwnd)
     rc.bottom = g_WinInfo.y + g_WinInfo.cy;
   }
 
-  if (flagDefaultPos == 1) {
+  if (flagDefaultPos == 1) 
+  {
     g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
     g_WinInfo.max = 0;
   }
-  else if (flagDefaultPos >= 4) {
+  else if (flagDefaultPos >= 4) 
+  {
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
     if (flagDefaultPos & 8)
       g_WinInfo.x = (rc.right - rc.left) / 2;
@@ -669,14 +671,11 @@ void __fastcall InitWindowPosition(HWND hwnd)
       g_WinInfo.cx -= (flagDefaultPos & (4 | 8)) ? 12 : 16;
       g_WinInfo.y += (flagDefaultPos & 32) ? 4 : 8;
       g_WinInfo.cy -= (flagDefaultPos & (16 | 32)) ? 12 : 16;
+      g_WinInfo.max = 1;
     }
   }
-  
-  if (flagDefaultPos == 2 || flagDefaultPos == 3 ||
-      g_WinInfo.x == CW_USEDEFAULT || g_WinInfo.y == CW_USEDEFAULT ||
-      g_WinInfo.cx == CW_USEDEFAULT || g_WinInfo.cy == CW_USEDEFAULT) {
-
-    // default window position
+  else if (flagDefaultPos == 2 || flagDefaultPos == 3) // NP3 default window position
+  {
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
     g_WinInfo.y = rc.top + 16;
     g_WinInfo.cy = rc.bottom - rc.top - 32;
@@ -8504,7 +8503,7 @@ void SnapToDefaultPos(HWND hwnd)
 
   RECT rc; SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
 
-  flagDefaultPos = 1;
+  flagDefaultPos = 2;
   InitWindowPosition(hwnd);
 
   WINDOWPLACEMENT wndpl;
