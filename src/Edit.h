@@ -51,10 +51,6 @@ typedef struct _editfindreplace
 #define INDIC_NP3_MATCH_BRACE    2
 #define INDIC_NP3_BAD_BRACE      3
 
-// [pixel] auto calculate by SCI_SETSCROLLWIDTHTRACKING
-//#define DEFAULT_SCROLL_WIDTH (8*80)
-#define DEFAULT_SCROLL_WIDTH ((8*g_WinInfo.cx)/10)
-
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
 BOOL  EditConvertText(HWND,int,int,BOOL);

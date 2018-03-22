@@ -5468,6 +5468,9 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   if (lstrlen(lpszStyle) == 0) { return; }
 
+  // reset horizontal scrollbar width
+  SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
+
   // Font
   if (Style_StrGetFont(lpszStyle, tch, COUNTOF(tch))) {
     if (lstrlen(tch) > 0) {

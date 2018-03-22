@@ -1228,7 +1228,7 @@ void __fastcall InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, TRUE, 0);
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_CONTAINER, 0);
   SendMessage(hwndEditCtrl, SCI_USEPOPUP, FALSE, 0);
-  SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH, 0);
+  SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, TRUE, 0);
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, TRUE, 0);
   SendMessage(hwndEditCtrl, SCI_SETMOUSESELECTIONRECTANGULARSWITCH, TRUE, 0);
@@ -5612,7 +5612,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
         case SCN_SAVEPOINTREACHED:
-          SendMessage(g_hwndEdit, SCI_SETSCROLLWIDTH, DEFAULT_SCROLL_WIDTH, 0);
+          SendMessage(g_hwndEdit, SCI_SETSCROLLWIDTH, 1, 0);
           SetDocumentModified(FALSE);
           break;
 
