@@ -4409,9 +4409,13 @@ void __fastcall EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, int cchCnt)
 {
   UNUSED(hwnd);
-  if (!StringCchLenA(lpefr->szFind, COUNTOF(lpefr->szFind))) { return 0; }
-
-  StringCchCopyA(szFind, cchCnt, lpefr->szFind);
+  if (StringCchLenA(lpefr->szFind, COUNTOF(lpefr->szFind))) {
+    StringCchCopyA(szFind, cchCnt, lpefr->szFind);
+  }
+  else {
+    GetFindPatternMB(szFind, cchCnt);
+  }
+  if (!StringCchLenA(szFind, cchCnt)) { return 0; }
 
   BOOL bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
   if (lpefr->bTransformBS || bIsRegEx) {
@@ -4770,19 +4774,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           else if (cchSelection <= 1) {
             // nothing is selected in the editor:
             // if first time you bring up find/replace dialog, 
-            // copy content from File-MRU or clipboard to find box
-            GetFindPattern(tchBuf, FNDRPL_BUFFER);
-            if (tchBuf[0] == L'\0') {
-              // empty string in File-MRU list
-              char* pClip = EditGetClipboardText(hwnd, FALSE, NULL, NULL);
-              if (pClip) {
-                int len = lstrlenA(pClip);
-                if (len > 0 && len < FNDRPL_BUFFER) {
-                  lpszSelection = GlobalAlloc(GPTR, len + 1);
-                  StringCchCopyNA(lpszSelection, len + 1, pClip, len);
-                }
-                LocalFree(pClip);
+            // copy content clipboard to find box
+            char* pClip = EditGetClipboardText(hwnd, FALSE, NULL, NULL);
+            if (pClip) {
+              int len = lstrlenA(pClip);
+              if (len > 0 && len < FNDRPL_BUFFER) {
+                lpszSelection = GlobalAlloc(GPTR, len + 1);
+                StringCchCopyNA(lpszSelection, len + 1, pClip, len);
               }
+              LocalFree(pClip);
             }
           }
 
@@ -4801,6 +4801,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             GlobalFree(lpszSelection);
           }
           else {
+            if (tchBuf[0] == L'\0') {
+              GetFindPattern(tchBuf, FNDRPL_BUFFER);
+            }
             if (tchBuf[0] == L'\0') {
               MRU_Enum(g_pMRUfind, 0, tchBuf, COUNTOF(tchBuf));
             }

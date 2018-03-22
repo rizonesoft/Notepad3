@@ -67,14 +67,14 @@ __inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
 int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
 int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
 UINT IniSectionGetUInt(LPCWSTR, LPCWSTR, UINT);
-__inline BOOL IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, BOOL bDefault) {
+__forceinline BOOL IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, BOOL bDefault) {
   return (IniSectionGetInt(lpCachedIniSection, lpName, ((bDefault) ? 1 : 0)) ? TRUE : FALSE);
 }
 BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
-__inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, DocPos i) {
+__forceinline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, DocPos i) {
   WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
-__inline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b) {
+__forceinline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b) {
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
 
@@ -298,8 +298,8 @@ WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
 #endif
 
 //==== StrSafe lstrlen() =======================================================
-inline int StringCchLenA(LPCSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthA(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
-inline int StringCchLenW(LPCWSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthW(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
+__forceinline int StringCchLenA(LPCSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthA(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
+__forceinline int StringCchLenW(LPCWSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthW(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
 
 #if defined(UNICODE) || defined(_UNICODE)  
 #define StringCchLen(s,n)  StringCchLenW((s),(n))
@@ -308,7 +308,7 @@ inline int StringCchLenW(LPCWSTR s,size_t n) { size_t len; HRESULT hr = StringCc
 #endif
 
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
-inline int _StringCchCmpNA(PCNZCH s1,int l1,PCNZCH s2,int l2)
+__forceinline int _StringCchCmpNA(PCNZCH s1,int l1,PCNZCH s2,int l2)
 {
   return (CompareStringA(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? StringCchLenA(s1,l1) : -1),
                          s2,(l2 >= 0 ? StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
@@ -316,7 +316,7 @@ inline int _StringCchCmpNA(PCNZCH s1,int l1,PCNZCH s2,int l2)
 #define StringCchCompareNA(s1,l1,s2,l2)  _StringCchCmpNA((s1),(l1),(s2),(l2))
 #define StringCchCompareXA(s1,s2)        _StringCchCmpNA((s1),-1,(s2),-1)
 
-inline int _StringCchCmpINA(PCNZCH s1,int l1,PCNZCH s2,int l2)
+__forceinline int _StringCchCmpINA(PCNZCH s1,int l1,PCNZCH s2,int l2)
 {
   return (CompareStringA(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? StringCchLenA(s1,l1) : -1),
                          s2,(l2 >= 0 ? StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
@@ -324,14 +324,14 @@ inline int _StringCchCmpINA(PCNZCH s1,int l1,PCNZCH s2,int l2)
 #define StringCchCompareINA(s1,l1,s2,l2)  _StringCchCmpINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIXA(s1,s2)        _StringCchCmpINA((s1),-1,(s2),-1)
 
-inline int _StringCchCmpNW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
+__forceinline int _StringCchCmpNW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
   return (CompareStringW(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? StringCchLenW(s1,l1) : -1),
                          s2,(l2 >= 0 ? StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
 #define StringCchCompareNW(s1,l1,s2,l2)  _StringCchCmpNW((s1),(l1),(s2),(l2))
 #define StringCchCompareXW(s1,s2)        _StringCchCmpNW((s1),-1,(s2),-1)
 
-inline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) { 
+__forceinline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
   return (CompareStringW(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? StringCchLenW(s1,l1) : -1),
                          s2,(l2 >= 0 ? StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
@@ -358,10 +358,10 @@ void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
 // including <pathcch.h> and linking against pathcch.lib
 // api-ms-win-core-path-l1-1-0.dll  library : Minimum supported client is Windows 8 :-/
 // so switch back to previous (deprecated) methods:
-inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); return (PathAppend(p,a) ? S_OK : E_FAIL); }
-inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
-inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
-inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
+__forceinline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); return (PathAppend(p,a) ? S_OK : E_FAIL); }
+__forceinline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
+__forceinline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
+__forceinline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
 // special Drag and Drop Handling
 

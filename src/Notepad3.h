@@ -162,8 +162,11 @@ void RestoreAction(int,DoAction);
 int  UndoRedoActionMap(int,UndoRedoSelection_t*);
 void OpenHotSpotURL(DocPos, BOOL);
 
+bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR);
+void SetFindPatternMB(LPCSTR);
 void GetFindPattern(LPWSTR, size_t);
+void GetFindPatternMB(LPSTR, size_t);
 
 BOOL FileIO(BOOL,LPCWSTR,BOOL,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL*,BOOL);
 BOOL FileLoad(BOOL,BOOL,BOOL,BOOL,BOOL,LPCWSTR);

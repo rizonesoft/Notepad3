@@ -3777,48 +3777,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_EDIT_FIND:
-      if (!IsWindow(g_hwndDlgFindReplace)) {
-        bFindReplCopySelOrClip = TRUE;
-        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, FALSE);
-      }
-      else {
-        bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
-        if (GetDlgItem(g_hwndDlgFindReplace,IDC_REPLACE)) {
-          SendMessage(g_hwndDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOFIND,1),0);
-          DestroyWindow(g_hwndDlgFindReplace);
-          g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,FALSE);
-        }
-        else {
-          SetForegroundWindow(g_hwndDlgFindReplace);
-          PostMessage(g_hwndDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(g_hwndDlgFindReplace,IDC_FINDTEXT)),1);
-        }
-        UpdateStatusbar();
-      }
-      break;
-
-
-    case IDM_EDIT_REPLACE:
-      if (!IsWindow(g_hwndDlgFindReplace)) {
-        bFindReplCopySelOrClip = TRUE;
-        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, TRUE);
-      }
-      else {
-        bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
-        if (!GetDlgItem(g_hwndDlgFindReplace,IDC_REPLACE)) {
-          SendMessage(g_hwndDlgFindReplace,WM_COMMAND,MAKELONG(IDMSG_SWITCHTOREPLACE,1),0);
-          DestroyWindow(g_hwndDlgFindReplace);
-          g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit,&g_efrData,TRUE);
-        }
-        else {
-          SetForegroundWindow(g_hwndDlgFindReplace);
-          PostMessage(g_hwndDlgFindReplace,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(g_hwndDlgFindReplace, IDC_FINDTEXT)),1);
-        }
-        UpdateStatusbar();
-      }
-      break;
-
-
     // Main Bookmark Functions
     case BME_EDIT_BOOKMARKNEXT:
     {
@@ -3886,6 +3844,49 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     break;
 
 
+
+    case IDM_EDIT_FIND:
+      if (!IsWindow(g_hwndDlgFindReplace)) {
+        bFindReplCopySelOrClip = TRUE;
+        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, FALSE);
+      }
+      else {
+        bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
+        if (GetDlgItem(g_hwndDlgFindReplace, IDC_REPLACE)) {
+          SendMessage(g_hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDMSG_SWITCHTOFIND, 1), 0);
+          DestroyWindow(g_hwndDlgFindReplace);
+          g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, FALSE);
+        }
+        else {
+          SetForegroundWindow(g_hwndDlgFindReplace);
+          PostMessage(g_hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(g_hwndDlgFindReplace, IDC_FINDTEXT)), 1);
+        }
+        UpdateStatusbar();
+      }
+      break;
+
+
+    case IDM_EDIT_REPLACE:
+      if (!IsWindow(g_hwndDlgFindReplace)) {
+        bFindReplCopySelOrClip = TRUE;
+        g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, TRUE);
+      }
+      else {
+        bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
+        if (!GetDlgItem(g_hwndDlgFindReplace, IDC_REPLACE)) {
+          SendMessage(g_hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDMSG_SWITCHTOREPLACE, 1), 0);
+          DestroyWindow(g_hwndDlgFindReplace);
+          g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, TRUE);
+        }
+        else {
+          SetForegroundWindow(g_hwndDlgFindReplace);
+          PostMessage(g_hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(g_hwndDlgFindReplace, IDC_FINDTEXT)), 1);
+        }
+        UpdateStatusbar();
+      }
+      break;
+
+
     case IDM_EDIT_FINDNEXT:
     case IDM_EDIT_FINDPREV:
     case IDM_EDIT_REPLACENEXT:
@@ -3895,7 +3896,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (SciCall_GetTextLength() == 0)
         break;
 
-      if (!strlen(g_efrData.szFind)) 
+      if (IsFindPatternEmpty() && !StringCchLenA(g_efrData.szFind, COUNTOF(g_efrData.szFind)))
       {
         if (LOWORD(wParam) != IDM_EDIT_REPLACENEXT)
           SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_FIND,1),0);
@@ -3931,6 +3932,59 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
       }
       break;
+
+
+    case CMD_FINDNEXTSEL:
+    case CMD_FINDPREVSEL:
+    case IDM_EDIT_SAVEFIND:
+    {
+      DocPos cchSelection = SciCall_GetSelText(NULL);
+
+      if (1 >= cchSelection)
+      {
+        SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_EDIT_SELECTWORD, 1), 0);
+        cchSelection = SciCall_GetSelText(NULL);
+      }
+
+      if ((1 < cchSelection) && (cchSelection < FNDRPL_BUFFER))
+      {
+        char  mszSelection[FNDRPL_BUFFER];
+        SciCall_GetSelText(mszSelection);
+
+        // Check lpszSelection and truncate newlines
+        char *lpsz = StrChrA(mszSelection, '\n');
+        if (lpsz) *lpsz = '\0';
+
+        lpsz = StrChrA(mszSelection, '\r');
+        if (lpsz) *lpsz = '\0';
+
+        StringCchCopyA(g_efrData.szFind, COUNTOF(g_efrData.szFind), mszSelection);
+        g_efrData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
+        g_efrData.bTransformBS = FALSE;
+
+        WCHAR wszBuf[FNDRPL_BUFFER];
+        MultiByteToWideCharStrg(Encoding_SciCP, mszSelection, wszBuf);
+        MRU_Add(g_pMRUfind, wszBuf, 0, 0, NULL);
+        SetFindPattern(wszBuf);
+
+        switch (LOWORD(wParam)) {
+
+        case IDM_EDIT_SAVEFIND:
+          break;
+
+        case CMD_FINDNEXTSEL:
+          EditFindNext(g_hwndEdit, &g_efrData, FALSE, FALSE);
+          break;
+
+        case CMD_FINDPREVSEL:
+          EditFindPrev(g_hwndEdit, &g_efrData, FALSE, FALSE);
+          break;
+        }
+      }
+    }
+    break;
+
+
 
     case IDM_EDIT_COMPLETEWORD:
       EditCompleteWord(g_hwndEdit, TRUE);
@@ -4784,56 +4838,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
               GlobalFree(lpszCommand);
             }
-          }
-        }
-      }
-      break;
-
-
-    case CMD_FINDNEXTSEL:
-    case CMD_FINDPREVSEL:
-    case IDM_EDIT_SAVEFIND:
-      {
-        DocPos cchSelection = SciCall_GetSelText(NULL);
-
-        if (1 >= cchSelection)
-        {
-          SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_SELECTWORD,1),0);
-          cchSelection = SciCall_GetSelText(NULL);
-        }
-
-        if ((1 < cchSelection) && (cchSelection < FNDRPL_BUFFER))
-        {
-          char  mszSelection[FNDRPL_BUFFER];
-          SciCall_GetSelText(mszSelection);
-
-          // Check lpszSelection and truncate newlines
-          char *lpsz = StrChrA(mszSelection,'\n');
-          if (lpsz) *lpsz = '\0';
-
-          lpsz = StrChrA(mszSelection,'\r');
-          if (lpsz) *lpsz = '\0';
-
-          StringCchCopyA(g_efrData.szFind,COUNTOF(g_efrData.szFind),mszSelection);
-          g_efrData.fuFlags &= (~(SCFIND_REGEXP|SCFIND_POSIX));
-          g_efrData.bTransformBS = FALSE;
-
-          WCHAR wszBuf[FNDRPL_BUFFER];
-          MultiByteToWideCharStrg(Encoding_SciCP, mszSelection, wszBuf);
-          SetFindPattern(wszBuf);
-
-          switch (LOWORD(wParam)) {
-
-            case IDM_EDIT_SAVEFIND:
-              break;
-
-            case CMD_FINDNEXTSEL:
-              EditFindNext(g_hwndEdit,&g_efrData,FALSE,FALSE);
-              break;
-
-            case CMD_FINDPREVSEL:
-              EditFindPrev(g_hwndEdit,&g_efrData,FALSE,FALSE);
-              break;
           }
         }
       }
@@ -5764,23 +5768,35 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 }
 
 
+
+//=============================================================================
+//
+//  Set/Get FindPattern()
+// 
+static WCHAR sCurrentFindPattern[FNDRPL_BUFFER] = { L'\0' };
+
+bool IsFindPatternEmpty()
+{
+  return (StringCchLenW(sCurrentFindPattern, COUNTOF(sCurrentFindPattern)) == 0);
+}
+
 //=============================================================================
 //
 //  SetFindPattern()
 // 
-static WCHAR sCurrentFindPattern[FNDRPL_BUFFER] = { L'\0' };
-
 void SetFindPattern(LPCWSTR wchFindPattern)
 {
-  //if (wchFindPattern) {
-  //  WideCharToMultiByteStrg(Encoding_SciCP, wchFindPattern, g_efrData.szFind);
-  //}
-  //else {
-  //  g_efrData.szFindUTF8[0] = g_efrData.szFind[0] = '\0';
-  //}
   StringCchCopyW(sCurrentFindPattern, COUNTOF(sCurrentFindPattern), (wchFindPattern ? wchFindPattern : L""));
 }
 
+//=============================================================================
+//
+//  SetFindPatternMB()
+// 
+void SetFindPatternMB(LPCSTR chFindPattern)
+{
+  MultiByteToWideChar(Encoding_SciCP, 0, chFindPattern, -1, sCurrentFindPattern, COUNTOF(sCurrentFindPattern));
+}
 
 //=============================================================================
 //
@@ -5788,10 +5804,17 @@ void SetFindPattern(LPCWSTR wchFindPattern)
 // 
 void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize)
 {
-  //MultiByteToWideChar(Encoding_SciCP, 0, g_efrData.szFind, -1, wchFindPattern, (int)bufferSize);
   StringCchCopyW(wchFindPattern, bufferSize, sCurrentFindPattern);
 }
 
+//=============================================================================
+//
+//  GetFindPatternMB()
+// 
+void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
+{
+  WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferSize, NULL, NULL);
+}
 
 
 //=============================================================================
