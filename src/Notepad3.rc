@@ -185,7 +185,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Merge &Blank Lines\tAlt+Y",   IDM_EDIT_MERGEBLANKLINES
             MENUITEM "&Remove Blank Lines\tAlt+R",  IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Remove Duplicate Lines\tCtrl+Alt+D",  IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D",  IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "&Block"
         BEGIN
