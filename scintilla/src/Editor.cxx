@@ -6606,8 +6606,8 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return view.posCache.GetSize();
 
 	case SCI_SETSCROLLWIDTH:
-		PLATFORM_ASSERT(wParam >= 0);
-		if ((wParam >= 0) && (wParam != static_cast<unsigned int >(scrollWidth))) {
+		PLATFORM_ASSERT(wParam > 0);
+		if ((wParam > 0) && (wParam != static_cast<unsigned int >(scrollWidth))) {
 			view.lineWidthMaxSeen = 0;
 			scrollWidth = static_cast<int>(wParam);
 			SetScrollBars();
