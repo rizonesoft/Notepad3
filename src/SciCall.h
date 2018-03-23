@@ -146,6 +146,8 @@ DeclareSciCallR1(LineFromPosition, LINEFROMPOSITION, DocLn, DocPos, position);
 DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, DocPos, DocLn, line);
 DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line);
 DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position);
+DeclareSciCallR2(FindColumn, FINDCOLUMN, DocPos, DocLn, line, DocPos, column);
+
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn);
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn);
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line);
