@@ -362,6 +362,7 @@
 #define IDM_EDIT_SELTOPREV                40372
 #define IDM_EDIT_COMPLETEWORD             40373
 #define IDM_EDIT_JOINLN_NOSP              40374
+#define IDM_EDIT_REMOVEDUPLICATELINES     40375
 #define IDM_VIEW_SCHEME                   40400
 #define IDM_VIEW_USE2NDDEFAULT            40401
 #define IDM_VIEW_SCHEMECONFIG             40402

@@ -95,6 +95,7 @@ void  EditStripFirstCharacter(HWND);
 void  EditStripLastCharacter(HWND,BOOL,BOOL);
 void  EditCompressSpaces(HWND);
 void  EditRemoveBlankLines(HWND,BOOL);
+void  EditRemoveDuplicateLines(HWND,bool);
 void  EditWrapToColumn(HWND,int);
 void  EditJoinLinesEx(HWND,BOOL,BOOL);
 void  EditSortLines(HWND,int);

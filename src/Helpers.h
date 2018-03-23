@@ -78,6 +78,20 @@ __forceinline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, 
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
 
+
+// direct heap allocation
+__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags) {
+  return HeapAlloc(GetProcessHeap(), (dwFlags | HEAP_GENERATE_EXCEPTIONS), numBytes);
+}
+__forceinline bool FreeMem(LPVOID lpMemory) {
+  return ((lpMemory != NULL) ? HeapFree(GetProcessHeap(), 0, lpMemory) : TRUE);
+}
+__forceinline size_t SizeOfMem(LPVOID lpMemory) {
+  return ((lpMemory != NULL) ? HeapSize(GetProcessHeap(), 0, lpMemory) : 0);
+}
+
+
+
 //extern HWND g_hwndEdit;
 #define BeginWaitCursor(TCH) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetText(g_hwndStatus,STATUS_HELP,(TCH)); IgnoreNotifyChangeEvent(); }
 #define BeginWaitCursorID(UID) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetTextID(g_hwndStatus,STATUS_HELP,(UID)); IgnoreNotifyChangeEvent(); }
@@ -298,8 +312,8 @@ WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
 #endif
 
 //==== StrSafe lstrlen() =======================================================
-__forceinline int StringCchLenA(LPCSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthA(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
-__forceinline int StringCchLenW(LPCWSTR s,size_t n) { size_t len; HRESULT hr = StringCchLengthW(s,n,&len); return (SUCCEEDED(hr) ? (int)len : 0); }
+__forceinline DocPos StringCchLenA(LPCSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, m, &len)) ? len : m)); }
+__forceinline DocPos StringCchLenW(LPCWSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, m, &len)) ? len : m)); }
 
 #if defined(UNICODE) || defined(_UNICODE)  
 #define StringCchLen(s,n)  StringCchLenW((s),(n))

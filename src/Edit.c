@@ -486,7 +486,7 @@ char* EditGetClipboardText(HWND hwnd,BOOL bCheckEncoding,int* pLineCount,int* pL
     if (ptmp) {
       char *s = pmch;
       char *d = ptmp;
-      int eolmode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
+      int eolmode = SciCall_GetEOLMode();
       for (int i = 0; (i <= mlen) && (*s != '\0'); ++i, ++lenLastLine) {
         if (*s == '\n' || *s == '\r') {
           if (eolmode == SC_EOL_CR) {
@@ -1221,7 +1221,7 @@ BOOL EditSaveFile(
 
   // ensure consistent line endings
   if (bFixLineEndings) {
-    SendMessage(hwnd,SCI_CONVERTEOLS,SendMessage(hwnd,SCI_GETEOLMODE,0,0),0);
+    SendMessage(hwnd,SCI_CONVERTEOLS, SciCall_GetEOLMode(),0);
     EditFixPositions(hwnd);
   }
 
@@ -2271,7 +2271,7 @@ void EditMoveUp(HWND hwnd)
       if (iLineDest == (SciCall_GetLineCount() - 1)) 
       {
         char chaEOL[] = "\r\n";
-        int iEOLMode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
+        int iEOLMode = SciCall_GetEOLMode();
         if (iEOLMode == SC_EOL_CR)
           chaEOL[1] = 0;
         else if (iEOLMode == SC_EOL_LF) {
@@ -2343,7 +2343,7 @@ void EditMoveDown(HWND hwnd)
 
       if (bLastLine) {
         char chaEOL[] = "\r\n";
-        int iEOLMode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
+        int iEOLMode = SciCall_GetEOLMode();
         if (iEOLMode == SC_EOL_CR)
           chaEOL[1] = 0;
         else if (iEOLMode == SC_EOL_LF) {
@@ -2438,9 +2438,8 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
     char  mszPrefix2[256*3] = { '\0' };
     char  mszAppend2[256*3] = { '\0' };
 
-    if (StringCchLenA(mszPrefix1,COUNTOF(mszPrefix1))) {
-
-
+    if (StringCchLenA(mszPrefix1,COUNTOF(mszPrefix1))) 
+    {
       char* p = StrStrA(mszPrefix1, "$(");
       while (!bPrefixNum && p) {
 
@@ -2508,8 +2507,8 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
       }
     }
 
-    if (StringCchLenA(mszAppend1,COUNTOF(mszAppend1))) {
-
+    if (StringCchLenA(mszAppend1,COUNTOF(mszAppend1))) 
+    {
       char* p = StrStrA(mszAppend1, "$(");
       while (!bAppendNum && p) {
 
@@ -3535,17 +3534,19 @@ void EditCompressSpaces(HWND hwnd)
 //
 void EditRemoveBlankLines(HWND hwnd,BOOL bMerge)
 {
+  UNUSED(hwnd);
+
+  if (SciCall_IsSelectionRectangle()) {
+    MsgBox(MBWARN, IDS_SELRECT);
+    return;
+  }
+
   DocPos iSelStart = SciCall_GetSelectionStart();
   DocPos iSelEnd   = SciCall_GetSelectionEnd();
 
   if (iSelStart == iSelEnd) {
     iSelStart = 0;
-    iSelEnd   = SciCall_GetTextLength();
-  }
-
-  if (SciCall_IsSelectionRectangle()) {
-    MsgBox(MBWARN, IDS_SELRECT);
-    return;
+    iSelEnd = SciCall_GetTextLength();
   }
 
   DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
@@ -3554,6 +3555,7 @@ void EditRemoveBlankLines(HWND hwnd,BOOL bMerge)
   if (iSelStart > SciCall_PositionFromLine(iLineStart)) { ++iLineStart; }
   if ((iSelEnd <= SciCall_PositionFromLine(iLineEnd)) && (iLineEnd != SciCall_GetLineCount() - 1)) { --iLineEnd; }
 
+  IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
   for (DocLn iLine = iLineStart; iLine <= iLineEnd; )
@@ -3569,15 +3571,89 @@ void EditRemoveBlankLines(HWND hwnd,BOOL bMerge)
     else {
       if (bMerge) { --nBlanks; }
 
-      SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLine), SciCall_PositionFromLine(iLine + nBlanks));
-      SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
+      SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_PositionFromLine(iLine + nBlanks));
+      SciCall_ReplaceTarget(0, "");
 
       if (bMerge) { ++iLine; }
       iLineEnd -= nBlanks;
     }
   }
-
   EditLeaveTargetTransaction();
+  ObserveNotifyChangeEvent();
+}
+
+
+//=============================================================================
+//
+//  EditRemoveDuplicateLines()
+//
+void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
+{
+  UNUSED(hwnd);
+
+  if (SciCall_IsSelectionRectangle()) {
+    MsgBox(MBWARN, IDS_SELRECT);
+    return;
+  }
+  
+  DocPos iSelStart = SciCall_GetSelectionStart();
+  DocPos iSelEnd = SciCall_GetSelectionEnd();
+
+  if (iSelStart == iSelEnd) {
+    iSelStart = 0;
+    iSelEnd = SciCall_GetTextLength();
+  }
+
+  DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
+  if (iSelStart > SciCall_PositionFromLine(iLineStart)) { ++iLineStart; }
+
+  DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
+  if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) { --iLineEnd; }
+
+  if ((iLineEnd - iLineStart) <= 1) { return; }
+
+  //const DocLn  iLastLine = SciCall_GetLineCount() - 1;
+  const DocPos iEmptyLnLen = (SciCall_GetEOLMode() == SC_EOL_CRLF ? 2 : 1);
+
+  DocPos iMaxLineLen = 0;
+  for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
+    DocPos iLnLen = SciCall_GetLine(iLine, NULL);
+    if (iLnLen > iMaxLineLen)
+      iMaxLineLen = iLnLen;
+  }
+
+  char* pCurrentLine = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
+  
+  IgnoreNotifyChangeEvent();
+  EditEnterTargetTransaction();
+
+  for (DocLn iCurLine = iLineStart; iCurLine < iLineEnd; ++iCurLine)
+  {
+    const DocPos iCurLnLen = SciCall_GetLine(iCurLine, pCurrentLine);
+
+    if (!bRemoveEmptyLines && (iCurLnLen <= iEmptyLnLen)) { continue; }
+
+    for (DocLn iCompareLine = iCurLine + 1; iCompareLine < iLineEnd; ++iCompareLine)
+    {
+      const DocPos iCmpLnLen = SciCall_GetLine(iCompareLine, NULL);
+      
+      if (!bRemoveEmptyLines && (iCmpLnLen <= iEmptyLnLen)) { continue; }
+
+      const DocPos iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
+      const char* pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen);
+
+      if (iCurLnLen == iCmpLnLen) {
+        if (StringCchCompareNA(pCurrentLine, iCurLnLen, pCompareLine, iCmpLnLen) == 0) {
+          SciCall_SetTargetRange(iBegCmpLine, iBegCmpLine + iCmpLnLen);
+          SciCall_ReplaceTarget(0, "");
+          --iLineEnd;
+        }
+      }
+    }
+  }
+  FreeMem(pCurrentLine);
+  EditLeaveTargetTransaction();
+  ObserveNotifyChangeEvent();
 }
 
 
@@ -3624,7 +3700,7 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
 
   int cchEOL = 2;
   WCHAR wszEOL[] = L"\r\n";
-  int cEOLMode = (int)SendMessage(hwnd,SCI_GETEOLMODE,0,0);
+  int cEOLMode = SciCall_GetEOLMode();
   if (cEOLMode == SC_EOL_CR)
     cchEOL = 1;
   else if (cEOLMode == SC_EOL_LF) {
@@ -3773,7 +3849,7 @@ void EditJoinLinesEx(HWND hwnd, BOOL bPreserveParagraphs, BOOL bCRLF2Space)
 
   char szEOL[] = "\r\n";
   int  cchEOL = 2;
-  switch ((int)SendMessage(hwnd, SCI_GETEOLMODE, 0, 0)) 
+  switch (SciCall_GetEOLMode())
   {
     case SC_EOL_LF:
       szEOL[0] = '\n';
@@ -3909,7 +3985,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   char  *pmszResult = NULL;
   char  *pmszBuf = NULL;
 
-  DWORD cEOLMode = 0L;
+  int cEOLMode = 0;
   char mszEOL[] = "\r\n";
 
   int iTabWidth = 0;
@@ -3969,7 +4045,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   if (iLineCount < 2)
     return;
 
-  cEOLMode = (DWORD)SendMessage(hwnd, SCI_GETEOLMODE, 0, 0);
+  cEOLMode = SciCall_GetEOLMode();
   if (cEOLMode == SC_EOL_CR) {
     mszEOL[1] = 0;
   }

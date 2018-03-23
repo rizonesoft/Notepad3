@@ -2304,7 +2304,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   //EnableCmd(hmenu,IDM_EDIT_TRIMLINES,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_MERGEBLANKLINES,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_REMOVEBLANKLINES,!bReadOnly);
-
+  //EnableCmd(hmenu,IDM_EDIT_REMOVEDUPLICATELINES,!bReadOnly);
+ 
   EnableCmd(hmenu, IDM_EDIT_SORTLINES,
     (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) - 
       SciCall_LineFromPosition(SciCall_GetSelectionStart())) >= 1);
@@ -3244,6 +3245,17 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
         EditRemoveBlankLines(g_hwndEdit,FALSE);
+        EndUndoAction(token);
+        EndWaitCursor();
+      }
+      break;
+
+
+    case IDM_EDIT_REMOVEDUPLICATELINES:
+      {
+        BeginWaitCursor(NULL);
+        int token = BeginUndoAction();
+        EditRemoveDuplicateLines(g_hwndEdit, false);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -5687,7 +5699,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             switch (pnmm->dwItemSpec)
             {
               case STATUS_EOLMODE:
-                SendMessage(g_hwndEdit,SCI_CONVERTEOLS,SendMessage(g_hwndEdit,SCI_GETEOLMODE,0,0),0);
+                SendMessage(g_hwndEdit,SCI_CONVERTEOLS, SciCall_GetEOLMode(),0);
                 EditFixPositions(g_hwndEdit);
                 return TRUE;
 
