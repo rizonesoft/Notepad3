@@ -124,7 +124,7 @@ DeclareSciCallR0(GetTargetStart, GETTARGETSTART, DocPos);
 DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos);
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION);
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end);
-DeclareSciCallV2(ReplaceTarget, REPLACETARGET, DocPos, length, const char*, text);
+DeclareSciCallR2(ReplaceTarget, REPLACETARGET, DocPos, DocPos, length, const char*, text);
 DeclareSciCallV2(AddText, ADDTEXT, DocPos, length, const char*, text);
 
 
