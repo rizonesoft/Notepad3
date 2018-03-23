@@ -3596,7 +3596,6 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
   
   DocLn iStartLine = 0;
   DocLn iEndLine = 0;
-  const DocLn  iLastLine = SciCall_GetLineCount() - 1;
 
   const DocPos iSelStart = SciCall_GetSelectionStart();
   const DocPos iSelEnd = SciCall_GetSelectionEnd();
@@ -3608,7 +3607,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
     if (iSelEnd <= SciCall_PositionFromLine(iEndLine)) { --iEndLine; }
   }
   else {
-    iEndLine = iLastLine;
+    iEndLine = SciCall_GetLineCount() - 1; // last line
   }
 
   if ((iEndLine - iStartLine) <= 1) { return; }
@@ -3631,29 +3630,34 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
   {
     const DocPos iCurLnLen = SciCall_GetLine(iCurLine, pCurrentLine);
 
-    if (!bRemoveEmptyLines && (iCurLnLen <= iEmptyLnLen)) { continue; }
+    if (bRemoveEmptyLines || (iCurLnLen > iEmptyLnLen)) {
 
-    for (DocLn iCompareLine = iCurLine + 1; iCompareLine < iEndLine; ++iCompareLine)
-    {
-      const DocPos iCmpLnLen = SciCall_GetLine(iCompareLine, NULL);
-      
-      if (!bRemoveEmptyLines && (iCmpLnLen <= iEmptyLnLen)) { continue; }
+      for (DocLn iCompareLine = iCurLine + 1; iCompareLine < iEndLine; ++iCompareLine) 
+      {
+        const DocPos iCmpLnLen = SciCall_GetLine(iCompareLine, NULL);
 
-      const DocPos iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
-      const char* pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen);
+        if (bRemoveEmptyLines || (iCmpLnLen > iEmptyLnLen)) {
 
-      if (iCurLnLen == iCmpLnLen) {
-        if (StringCchCompareNA(pCurrentLine, iCurLnLen, pCompareLine, iCmpLnLen) == 0) {
-          SciCall_SetTargetRange(iBegCmpLine, iBegCmpLine + iCmpLnLen);
-          SciCall_ReplaceTarget(0, "");
-          --iEndLine;
-        }
+          const DocPos iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
+          const char* pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen + 2);
+
+          if (iCurLnLen == iCmpLnLen) {
+            if (StringCchCompareNA(pCurrentLine, iCurLnLen, pCompareLine, iCmpLnLen) == 0) {
+              SciCall_SetTargetRange(iBegCmpLine, iBegCmpLine + iCmpLnLen);
+              SciCall_ReplaceTarget(0, "");
+              --iCompareLine; // proactive preventing progress to avoid comparison line skip
+              --iEndLine;
+            }
+          }
+        } // empty 
       }
-    }
+    } // empty
   }
-  FreeMem(pCurrentLine);
+
   EditLeaveTargetTransaction();
   ObserveNotifyChangeEvent();
+
+  FreeMem(pCurrentLine);
 }
 
 
