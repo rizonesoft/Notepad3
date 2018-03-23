@@ -813,8 +813,10 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
         }
       }
     }
-    GlobalFree(lpFileArg); lpFileArg = NULL;
-
+    if (lpFileArg) {
+      FreeMem(lpFileArg);
+      lpFileArg = NULL;
+    }
     if (bOpened) {
       if (flagChangeNotify == 1) {
         iFileWatchingMode = 0;
@@ -913,7 +915,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
         EditEnsureSelectionVisible(g_hwndEdit);
       }
     }
-    GlobalFree(lpMatchArg);
+    LocalFree(lpMatchArg);
+    lpMatchArg = NULL;
   }
 
   // Check for Paste Board option -- after loading files
@@ -4826,7 +4829,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
               MultiByteToWideCharStrg(Encoding_SciCP,mszSelection,wszSelection);
 
               int cmdsz = (512 + COUNTOF(szCmdTemplate) + MAX_PATH + 32);
-              LPWSTR lpszCommand = GlobalAlloc(GPTR,sizeof(WCHAR)*cmdsz);
+              LPWSTR lpszCommand = AllocMem(sizeof(WCHAR)*cmdsz, HEAP_ZERO_MEMORY);
               StringCchPrintf(lpszCommand,cmdsz,szCmdTemplate,wszSelection);
               ExpandEnvironmentStringsEx(lpszCommand, cmdsz);
 
@@ -4848,7 +4851,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
               sei.nShow = SW_SHOWNORMAL;
               ShellExecuteEx(&sei);
 
-              GlobalFree(lpszCommand);
+              FreeMem(lpszCommand);
             }
           }
         }
@@ -5503,11 +5506,13 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 {
                   const DocPos iPrevLineLength = SciCall_LineLength(iCurLine - 1);
                   char* pLineBuf = NULL;
+                  bool bAllocLnBuf = false;
                   if (iPrevLineLength < FNDRPL_BUFFER) {
                     pLineBuf = chLineBuffer;
                   }
                   else {
-                    pLineBuf = GlobalAlloc(GPTR, iPrevLineLength + 1);
+                    bAllocLnBuf = true;
+                    pLineBuf = AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
                   }
                   if (pLineBuf)
                   {
@@ -5522,7 +5527,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                       SendMessage(g_hwndEdit, SCI_ADDTEXT, lstrlenA(pLineBuf), (LPARAM)pLineBuf);
                       SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
                     }
-                    if (iPrevLineLength >= FNDRPL_BUFFER) { GlobalFree(pLineBuf); }
+                    if (bAllocLnBuf) { FreeMem(pLineBuf); }
                   }
                 }
               }
@@ -6630,7 +6635,7 @@ void ParseCommandLine()
 
             if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
               if (lpMatchArg)
-                GlobalFree(lpMatchArg);
+                LocalFree(lpMatchArg);
               lpMatchArg = StrDup(lp1);
               flagMatchText = 1;
 
@@ -6731,10 +6736,11 @@ void ParseCommandLine()
 
       cchiFileList = lstrlen(lpCmdLine) - lstrlen(lp3);
 
-      if (lpFileArg)
-        GlobalFree(lpFileArg);
-      
-      lpFileArg = GlobalAlloc(GPTR,sizeof(WCHAR)*FILE_ARG_BUF); // changed for ActivatePrevInst() needs
+      if (lpFileArg) {
+        FreeMem(lpFileArg);
+        //lpFileArg = NULL;
+      }
+      lpFileArg = AllocMem(sizeof(WCHAR)*FILE_ARG_BUF, HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
       StringCchCopy(lpFileArg,FILE_ARG_BUF,lp3);
 
       PathFixBackslashes(lpFileArg);
@@ -8208,7 +8214,7 @@ BOOL ActivatePrevInst()
     // lpFileArg is at least MAX_PATH+4 WCHARS
     WCHAR tchTmp[FILE_ARG_BUF] = { L'\0' };
 
-    ExpandEnvironmentStringsEx(lpFileArg,(DWORD)GlobalSize(lpFileArg)/sizeof(WCHAR));
+    ExpandEnvironmentStringsEx(lpFileArg,(DWORD)SizeOfMem(lpFileArg)/sizeof(WCHAR));
 
     if (PathIsRelative(lpFileArg)) {
       StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
@@ -8238,9 +8244,6 @@ BOOL ActivatePrevInst()
       // Enabled
       if (IsWindowEnabled(hwnd))
       {
-        LPnp3params params;
-        DWORD cb = sizeof(np3params);
-
         // Make sure the previous window won't pop up a change notification message
         //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);
 
@@ -8254,10 +8257,11 @@ BOOL ActivatePrevInst()
 
         SetForegroundWindow(hwnd);
 
+        DWORD cb = sizeof(np3params);
         if (lpSchemeArg)
           cb += (lstrlen(lpSchemeArg) + 1) * sizeof(WCHAR);
 
-        params = GlobalAlloc(GPTR,cb);
+        LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = FALSE;
         params->flagChangeNotify = 0;
         params->flagQuietCreate = FALSE;
@@ -8278,11 +8282,11 @@ BOOL ActivatePrevInst()
         params->flagTitleExcerpt = 0;
 
         cds.dwData = DATA_NOTEPAD3_PARAMS;
-        cds.cbData = (DWORD)GlobalSize(params);
+        cds.cbData = (DWORD)SizeOfMem(params);
         cds.lpData = params;
 
         SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
-        GlobalFree(params);
+        FreeMem(params);
 
         return(TRUE);
       }
@@ -8328,11 +8332,8 @@ BOOL ActivatePrevInst()
         // Search working directory from second instance, first!
         // lpFileArg is at least MAX_PATH+4 WCHAR
         WCHAR tchTmp[FILE_ARG_BUF] = { L'\0' };
-        LPnp3params params;
-        DWORD cb = sizeof(np3params);
-        int cchTitleExcerpt;
 
-        ExpandEnvironmentStringsEx(lpFileArg,(DWORD)GlobalSize(lpFileArg)/sizeof(WCHAR));
+        ExpandEnvironmentStringsEx(lpFileArg,(DWORD)SizeOfMem(lpFileArg)/sizeof(WCHAR));
 
         if (PathIsRelative(lpFileArg)) {
           StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
@@ -8348,16 +8349,17 @@ BOOL ActivatePrevInst()
         else if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
           StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
 
+        DWORD cb = sizeof(np3params);
         cb += (lstrlen(lpFileArg) + 1) * sizeof(WCHAR);
 
         if (lpSchemeArg)
           cb += (lstrlen(lpSchemeArg) + 1) * sizeof(WCHAR);
 
-        cchTitleExcerpt = StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt));
+        int cchTitleExcerpt = StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt));
         if (cchTitleExcerpt)
           cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
 
-        params = GlobalAlloc(GPTR,cb);
+        LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = TRUE;
         StringCchCopy(&params->wchData,lstrlen(lpFileArg)+1,lpFileArg);
         params->flagChangeNotify = flagChangeNotify;
@@ -8385,12 +8387,12 @@ BOOL ActivatePrevInst()
           params->flagTitleExcerpt = 0;
 
         cds.dwData = DATA_NOTEPAD3_PARAMS;
-        cds.cbData = (DWORD)GlobalSize(params);
+        cds.cbData = (DWORD)SizeOfMem(params);
         cds.lpData = params;
 
         SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
-        GlobalFree(params);    params = NULL;
-        GlobalFree(lpFileArg); lpFileArg = NULL;
+        FreeMem(params);    params = NULL;
+        FreeMem(lpFileArg); lpFileArg = NULL;
       }
       return(TRUE);
     }
@@ -8451,10 +8453,11 @@ BOOL RelaunchMultiInst() {
 
       CreateProcess(NULL,lpCmdLineNew,NULL,NULL,FALSE,0,NULL,g_wchWorkingDirectory,&si,&pi);
     }
+
     LocalFree(lpCmdLineNew);
     LocalFree(lp1);
     LocalFree(lp2);
-    GlobalFree(lpFileArg); lpFileArg = NULL;
+    FreeMem(lpFileArg); lpFileArg = NULL;
 
     return TRUE;
   }
