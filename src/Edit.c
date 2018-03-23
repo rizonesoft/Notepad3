@@ -3596,27 +3596,29 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
     return;
   }
   
-  DocPos iSelStart = SciCall_GetSelectionStart();
-  DocPos iSelEnd = SciCall_GetSelectionEnd();
+  DocLn iStartLine = 0;
+  DocLn iEndLine = 0;
+  const DocLn  iLastLine = SciCall_GetLineCount() - 1;
 
-  if (iSelStart == iSelEnd) {
-    iSelStart = 0;
-    iSelEnd = SciCall_GetTextLength();
+  const DocPos iSelStart = SciCall_GetSelectionStart();
+  const DocPos iSelEnd = SciCall_GetSelectionEnd();
+
+  if (iSelStart != iSelEnd) {
+    iStartLine = SciCall_LineFromPosition(iSelStart);
+    if (iSelStart > SciCall_PositionFromLine(iStartLine)) { ++iStartLine; }
+    iEndLine = SciCall_LineFromPosition(iSelEnd);
+    if (iSelEnd <= SciCall_PositionFromLine(iEndLine)) { --iEndLine; }
+  }
+  else {
+    iEndLine = iLastLine;
   }
 
-  DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
-  if (iSelStart > SciCall_PositionFromLine(iLineStart)) { ++iLineStart; }
+  if ((iEndLine - iStartLine) <= 1) { return; }
 
-  DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
-  if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) { --iLineEnd; }
-
-  if ((iLineEnd - iLineStart) <= 1) { return; }
-
-  //const DocLn  iLastLine = SciCall_GetLineCount() - 1;
   const DocPos iEmptyLnLen = (SciCall_GetEOLMode() == SC_EOL_CRLF ? 2 : 1);
 
   DocPos iMaxLineLen = 0;
-  for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
+  for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine) {
     DocPos iLnLen = SciCall_GetLine(iLine, NULL);
     if (iLnLen > iMaxLineLen)
       iMaxLineLen = iLnLen;
@@ -3627,13 +3629,13 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
   IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
-  for (DocLn iCurLine = iLineStart; iCurLine < iLineEnd; ++iCurLine)
+  for (DocLn iCurLine = iStartLine; iCurLine < iEndLine; ++iCurLine)
   {
     const DocPos iCurLnLen = SciCall_GetLine(iCurLine, pCurrentLine);
 
     if (!bRemoveEmptyLines && (iCurLnLen <= iEmptyLnLen)) { continue; }
 
-    for (DocLn iCompareLine = iCurLine + 1; iCompareLine < iLineEnd; ++iCompareLine)
+    for (DocLn iCompareLine = iCurLine + 1; iCompareLine < iEndLine; ++iCompareLine)
     {
       const DocPos iCmpLnLen = SciCall_GetLine(iCompareLine, NULL);
       
@@ -3646,7 +3648,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
         if (StringCchCompareNA(pCurrentLine, iCurLnLen, pCompareLine, iCmpLnLen) == 0) {
           SciCall_SetTargetRange(iBegCmpLine, iBegCmpLine + iCmpLnLen);
           SciCall_ReplaceTarget(0, "");
-          --iLineEnd;
+          --iEndLine;
         }
       }
     }
