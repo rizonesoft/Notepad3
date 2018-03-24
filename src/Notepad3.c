@@ -3922,10 +3922,16 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         switch (LOWORD(wParam)) {
 
           case IDM_EDIT_FINDNEXT:
+            if (!SciCall_IsSelectionEmpty()) {
+              SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELEND, 1), 0);
+            }
             EditFindNext(g_hwndEdit,&g_efrData,FALSE,FALSE);
             break;
 
           case IDM_EDIT_FINDPREV:
+            if (!SciCall_IsSelectionEmpty()) {
+              SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELSTART, 1), 0);
+            }
             EditFindPrev(g_hwndEdit,&g_efrData,FALSE,FALSE);
             break;
 
@@ -3937,10 +3943,16 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             break;
 
           case IDM_EDIT_SELTONEXT:
+            if (!SciCall_IsSelectionEmpty()) {
+              SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELEND, 1), 0);
+            }
             EditFindNext(g_hwndEdit,&g_efrData,TRUE,FALSE);
             break;
 
           case IDM_EDIT_SELTOPREV:
+            if (!SciCall_IsSelectionEmpty()) {
+              SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELSTART, 1), 0);
+            }
             EditFindPrev(g_hwndEdit,&g_efrData,TRUE,FALSE);
             break;
         }
@@ -3987,10 +3999,16 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           break;
 
         case CMD_FINDNEXTSEL:
+          if (!SciCall_IsSelectionEmpty()) {
+            SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELEND, 1), 0);
+          }
           EditFindNext(g_hwndEdit, &g_efrData, FALSE, FALSE);
           break;
 
         case CMD_FINDPREVSEL:
+          if (!SciCall_IsSelectionEmpty()) {
+            SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELSTART, 1), 0);
+          }
           EditFindPrev(g_hwndEdit, &g_efrData, FALSE, FALSE);
           break;
         }
@@ -4947,10 +4965,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_JUMP2SELSTART:
       if (!SciCall_IsSelectionRectangle()) {
-        const DocPos iAnchorPos  = SciCall_GetAnchor();
-        const DocPos iCursorPos = SciCall_GetCurrentPos();
-        if (iCursorPos > iAnchorPos) {
-          SciCall_SetSel(iCursorPos, iAnchorPos);
+        if (SciCall_GetCurrentPos() != SciCall_GetSelectionStart()) {
+          SendMessage(g_hwndEdit, SCI_SWAPMAINANCHORCARET, 0, 0);
           SciCall_ChooseCaretX();
         }
       }
@@ -4959,10 +4975,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_JUMP2SELEND:
       if (!SciCall_IsSelectionRectangle()) {
-        const DocPos iAnchorPos = SciCall_GetAnchor();
-        const DocPos iCursorPos = SciCall_GetCurrentPos();
-        if (iCursorPos < iAnchorPos) {
-          SciCall_SetSel(iCursorPos, iAnchorPos);
+        if (SciCall_GetCurrentPos() != SciCall_GetSelectionEnd()) {
+          SendMessage(g_hwndEdit, SCI_SWAPMAINANCHORCARET, 0, 0);
           SciCall_ChooseCaretX();
         }
       }
@@ -7465,6 +7479,8 @@ void RestoreAction(int token, DoAction doAct)
       // nothing to do here
       break;
     }
+    ISSUE_MESSAGE(g_hwndEdit, SCI_SCROLLCARET, 0, 0);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_CHOOSECARETX, 0, 0);
     ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
 
   #undef ISSUE_MASSAGE

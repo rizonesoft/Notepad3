@@ -2221,81 +2221,12 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,BOOL bOnlyIndentingWS)
 //
 void EditMoveUp(HWND hwnd)
 {
-  
-  DocPos iCurPos = SciCall_GetCurrentPos();
-  DocPos iAnchorPos = SciCall_GetAnchor();
-  const DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
-  const DocLn iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-
-  if (iCurLine == iAnchorLine) 
-  {
-    const DocPos iLineCurPos = iCurPos - SciCall_PositionFromLine(iCurLine);
-    const DocPos iLineAnchorPos = iAnchorPos - SciCall_PositionFromLine(iAnchorLine);
-    if (iCurLine > 0) {
-      SendMessage(hwnd,SCI_LINETRANSPOSE,0,0);
-      SciCall_SetSel(SciCall_PositionFromLine(iAnchorLine - 1) + iLineAnchorPos,
-                     SciCall_PositionFromLine(iCurLine - 1) + iLineCurPos);
-      SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
-    }
+  if (SciCall_IsSelectionRectangle()) {
+    MsgBox(MBWARN, IDS_SELRECT);
   }
-  else if (!SciCall_IsSelectionRectangle()) {
-
-    const DocLn iLineSrc = min(iCurLine,iAnchorLine) - 1;
-    if (iLineSrc >= 0) {
-
-      const DocPos cLine = SciCall_GetLine(iLineSrc, NULL);
-      char* pLine = LocalAlloc(LPTR,cLine+1);
-      /*cLine=*/SciCall_GetLine(iLineSrc, pLine);
-
-      const DocPos iLineSrcStart = SciCall_PositionFromLine(iLineSrc);
-      const DocPos iLineSrcEnd = SciCall_PositionFromLine(iLineSrc + 1);
-      
-      DocLn iLineDest = max(iCurLine,iAnchorLine);
-      if (max(iCurPos,iAnchorPos) <= SciCall_PositionFromLine(iLineDest)) {
-        if (iLineDest >= 1)
-          --iLineDest;
-      }
-
-      EditEnterTargetTransaction();
-
-      SciCall_SetTargetRange(iLineSrcStart, iLineSrcEnd);
-      SciCall_ReplaceTarget(0,"");
-
-      const DocPos iLineDestStart = SciCall_PositionFromLine(iLineDest);
-      SciCall_InsertText(iLineDestStart, pLine);
-
-      LocalFree(pLine);
-
-      if (iLineDest == (SciCall_GetLineCount() - 1)) 
-      {
-        char chaEOL[] = "\r\n";
-        int iEOLMode = SciCall_GetEOLMode();
-        if (iEOLMode == SC_EOL_CR)
-          chaEOL[1] = 0;
-        else if (iEOLMode == SC_EOL_LF) {
-          chaEOL[0] = '\n';
-          chaEOL[1] = 0;
-        }
-        SciCall_InsertText(iLineDestStart, chaEOL);
-        SciCall_SetTargetRange(SciCall_GetLineEndPosition(iLineDest), SciCall_GetTextLength());
-        SciCall_ReplaceTarget(0, "");
-      }
-
-      EditLeaveTargetTransaction();
-
-      if (iCurPos < iAnchorPos) {
-        iCurPos = SciCall_PositionFromLine(iCurLine - 1);
-        iAnchorPos = SciCall_PositionFromLine(iLineDest);
-      }
-      else {
-        iAnchorPos = SciCall_PositionFromLine(iAnchorLine - 1);
-        iCurPos = SciCall_PositionFromLine(iLineDest);
-      }
-      EditSelectEx(hwnd, iAnchorPos, iCurPos);
-    }
+  else {
+    SendMessage(hwnd, SCI_MOVESELECTEDLINESUP, 0, 0);
   }
-  else
-    MsgBox(MBWARN,IDS_SELRECT);
 }
 
 
@@ -2305,90 +2236,12 @@ void EditMoveUp(HWND hwnd)
 //
 void EditMoveDown(HWND hwnd)
 {
-  DocPos iCurPos = SciCall_GetCurrentPos();
-  DocPos iAnchorPos = SciCall_GetAnchor();
-  DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
-  DocLn iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-
-  if (iCurLine == iAnchorLine) 
-  {
-    DocPos iLineCurPos = iCurPos - SciCall_PositionFromLine(iCurLine);
-    DocPos iLineAnchorPos = iAnchorPos - SciCall_PositionFromLine(iAnchorLine);
-    if (iCurLine < (SciCall_GetLineCount() - 1)) {
-      SciCall_GotoLine(iCurLine + 1);
-      SendMessage(hwnd, SCI_LINETRANSPOSE, 0, 0);
-      SciCall_SetSel(SciCall_PositionFromLine(iAnchorLine + 1) + iLineAnchorPos,
-                     SciCall_PositionFromLine(iCurLine + 1) + iLineCurPos);
-      SendMessage(hwnd, SCI_CHOOSECARETX, 0, 0);
-    }
+  if (SciCall_IsSelectionRectangle()) {
+    MsgBox(MBWARN, IDS_SELRECT);
   }
-  else if (!SciCall_IsSelectionRectangle())
-  {
-    DocLn iLineSrc = max(iCurLine,iAnchorLine) + 1;
-    if (max(iCurPos,iAnchorPos) <= SciCall_PositionFromLine(iLineSrc - 1)) {
-      if (iLineSrc >= 1)
-        --iLineSrc;
-    }
-
-    if (iLineSrc <= (DocLn)SendMessage(hwnd,SCI_GETLINECOUNT,0,0) - 1) {
-
-      const BOOL bLastLine = (iLineSrc == (SciCall_GetLineCount() - 1));
-
-      if (bLastLine &&
-          (SciCall_GetLineEndPosition(iLineSrc) - SciCall_PositionFromLine(iLineSrc) == 0) &&
-          (SciCall_GetLineEndPosition(iLineSrc-1) - SciCall_PositionFromLine(iLineSrc-1) == 0))
-        return;
-
-      if (bLastLine) {
-        char chaEOL[] = "\r\n";
-        int iEOLMode = SciCall_GetEOLMode();
-        if (iEOLMode == SC_EOL_CR)
-          chaEOL[1] = 0;
-        else if (iEOLMode == SC_EOL_LF) {
-          chaEOL[0] = '\n';
-          chaEOL[1] = 0;
-        }
-        SendMessage(hwnd,SCI_APPENDTEXT,(WPARAM)strlen(chaEOL),(LPARAM)chaEOL);
-      }
-
-      const DocPos cLine = SciCall_GetLine(iLineSrc, NULL);
-      char* pLine = LocalAlloc(LPTR,cLine+1);
-      SciCall_GetLine(iLineSrc, pLine);
-
-      const DocPos iLineSrcStart = SciCall_PositionFromLine(iLineSrc);
-      const DocPos iLineSrcEnd = SciCall_PositionFromLine(iLineSrc + 1);
-      const DocLn  iLineDest = min(iCurLine,iAnchorLine);
-
-      EditEnterTargetTransaction();
-
-      SciCall_SetTargetRange(iLineSrcStart, iLineSrcEnd);
-      SciCall_ReplaceTarget(0, "");
-
-      const DocPos iLineDestStart = SciCall_PositionFromLine(iLineDest);
-      SciCall_InsertText(iLineDestStart, pLine);
-
-      if (bLastLine) {
-        SciCall_SetTargetRange(SciCall_GetLineEndPosition(SciCall_GetLineCount() - 2), SciCall_GetTextLength());
-        SciCall_ReplaceTarget(0, "");
-      }
-
-      EditLeaveTargetTransaction();
-
-      LocalFree(pLine);
-
-      if (iCurPos < iAnchorPos) {
-        iCurPos = SciCall_PositionFromLine(iCurLine + 1);
-        iAnchorPos = SciCall_PositionFromLine(iLineSrc + 1);
-      }
-      else {
-        iAnchorPos = SciCall_PositionFromLine(iAnchorLine + 1);
-        iCurPos = SciCall_PositionFromLine(iLineSrc + 1);
-      }
-      EditSelectEx(hwnd, iAnchorPos, iCurPos);
-    }
+  else {
+    SendMessage(hwnd, SCI_MOVESELECTEDLINESDOWN, 0, 0);
   }
-  else
-    MsgBox(MBWARN,IDS_SELRECT);
 }
 
 
