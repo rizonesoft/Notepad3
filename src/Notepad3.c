@@ -897,7 +897,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     if (lstrlen(lpMatchArg) && SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0)) {
 
       WideCharToMultiByteStrg(Encoding_SciCP,lpMatchArg,g_efrData.szFind);
-      SetFindPattern(lpMatchArg);
 
       if (flagMatchText & 4)
         g_efrData.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
@@ -2365,11 +2364,11 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_FIND,i);
   EnableCmd(hmenu,IDM_EDIT_SAVEFIND,i);
   EnableCmd(hmenu,IDM_EDIT_FINDNEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_FINDPREV,i && strlen(g_efrData.szFind));
+  EnableCmd(hmenu,IDM_EDIT_FINDPREV,i);
   EnableCmd(hmenu,IDM_EDIT_REPLACE,i /*&& !bReadOnly*/);
   EnableCmd(hmenu,IDM_EDIT_REPLACENEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_SELTONEXT,i && strlen(g_efrData.szFind));
-  EnableCmd(hmenu,IDM_EDIT_SELTOPREV,i && strlen(g_efrData.szFind));
+  EnableCmd(hmenu,IDM_EDIT_SELTONEXT,i);
+  EnableCmd(hmenu,IDM_EDIT_SELTOPREV,i);
   EnableCmd(hmenu,IDM_EDIT_FINDMATCHINGBRACE,i);
   EnableCmd(hmenu,IDM_EDIT_SELTOMATCHINGBRACE,i);
 
