@@ -52,7 +52,8 @@
     XHUGE_BUFFER = 2048,
 
     FILE_ARG_BUF = MAX_PATH + 2,
-    FNDRPL_BUFFER = 1024
+    FNDRPL_BUFFER = 1024,
+    TEMPLINE_BUFFER = 8192
   };
 
 //=============================================================================

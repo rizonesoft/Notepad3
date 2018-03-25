@@ -4630,11 +4630,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         else {
           if (iPos == iStartPos)
-            Sci_SendMessageV0(SCI_DELETEBACK);
+            Sci_SendMsgV0(SCI_DELETEBACK);
           else if (iPos <= iIndentPos)
-            Sci_SendMessageV0(SCI_DELLINELEFT);
+            Sci_SendMsgV0(SCI_DELLINELEFT);
           else
-            Sci_SendMessageV0(SCI_DELWORDLEFT);
+            Sci_SendMsgV0(SCI_DELWORDLEFT);
         }
       }
       break;
@@ -4655,9 +4655,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         else {
           if (iStartPos != iEndPos)
-            Sci_SendMessageV0(SCI_DELWORDRIGHT);
+            Sci_SendMsgV0(SCI_DELWORDRIGHT);
           else // iStartPos == iEndPos
-            Sci_SendMessageV0(SCI_LINEDELETE);
+            Sci_SendMsgV0(SCI_LINEDELETE);
         }
       }
       break;
@@ -5489,7 +5489,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_CHARADDED:
           {
-            static char chLineBuffer[FNDRPL_BUFFER] = { '\0' };
+            static char chLineBuffer[XHUGE_BUFFER] = { '\0' };
 
             // Auto indent
             if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
@@ -5520,7 +5520,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   const DocPos iPrevLineLength = SciCall_LineLength(iCurLine - 1);
                   char* pLineBuf = NULL;
                   bool bAllocLnBuf = false;
-                  if (iPrevLineLength < FNDRPL_BUFFER) {
+                  if (iPrevLineLength < XHUGE_BUFFER) {
                     pLineBuf = chLineBuffer;
                   }
                   else {
