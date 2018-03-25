@@ -219,7 +219,7 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
 
 
-DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, const char*, DocPos, start, DocPos, length)
+DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char* const, DocPos, start, DocPos, length)
 DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char*)
 
 

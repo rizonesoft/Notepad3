@@ -365,6 +365,36 @@ __forceinline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
 #define StringCchCompareIX(s1,s2)        StringCchCompareIXA((s1),(s2))
 #endif
 
+
+
+/**
+* Is the character a white space char?
+*/
+__forceinline bool IsWhiteSpace(char ch) {
+  return ((ch == ' ') || (ch == '\t'));
+}
+
+
+/**
+* Is the character an octal digit?
+*/
+__forceinline bool IsOctalDigit(char ch) {
+  return ch >= '0' && ch <= '7';
+}
+
+
+/**
+* If the character is an hexa digit, get its value.
+*/
+__forceinline int GetHexDigit(char ch) {
+  if (ch >= '0' && ch <= '9') { return ch - '0'; }
+  if (ch >= 'A' && ch <= 'F') { return ch - 'A' + 10; }
+  if (ch >= 'a' && ch <= 'f') { return ch - 'a' + 10; }
+  return -1;
+}
+
+
+
 void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
 
 // --------------------------------------------------------------------------------------------------------------------------------

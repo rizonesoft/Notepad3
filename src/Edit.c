@@ -2966,9 +2966,10 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, BOOL bInsertAtStart)
   for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++)
   {
     const DocPos iIndentPos = SciCall_GetLineIndentPosition(iLine);
+
     if (iIndentPos == SciCall_GetLineEndPosition(iLine)) {
-      SciCall_InsertText(SciCall_FindColumn(iLine, iIndentPos), mszComment);
-      iSelEndOffset += cchComment;
+      // don't set comment char on "empty" (white-space only) lines
+      //~iAction = 1;
       continue;
     }
 
@@ -3319,7 +3320,7 @@ void EditStripLastCharacter(HWND hwnd, BOOL bIgnoreSelection, BOOL bTrailingBlan
           DocPos i = end;
           while (--i >= 0) {
             const char ch = g_pTempLineBuffer[i];
-            if ((ch == '\t') || (ch == ' ')) {
+            if (IsWhiteSpace(ch)) {
               g_pTempLineBuffer[i] = '\0';
             }
             else
@@ -3329,9 +3330,8 @@ void EditStripLastCharacter(HWND hwnd, BOOL bIgnoreSelection, BOOL bTrailingBlan
             g_pTempLineBuffer[++i] = g_pTempLineBuffer[end++];  // add "\r\n" if anny
           }
           diff = len - (++i);
-          len = i;
           SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-          SciCall_ReplaceTarget(len, g_pTempLineBuffer);
+          SciCall_ReplaceTarget(-1, g_pTempLineBuffer);
         }
       }
       else {
@@ -3400,7 +3400,7 @@ void EditStripLastCharacter(HWND hwnd, BOOL bIgnoreSelection, BOOL bTrailingBlan
         char ch = '\0';
         do {
           ch = SciCall_GetCharAt(--i);
-        } while ((i >= iStartPos) && ((ch == ' ') || (ch == '\t')));
+        } while ((i >= iStartPos) && IsWhiteSpace(ch));
         if ((++i) < iEndPos) {
           SciCall_SetTargetRange(i, iEndPos);
           SciCall_ReplaceTarget(0, "");
@@ -3426,105 +3426,172 @@ void EditStripLastCharacter(HWND hwnd, BOOL bIgnoreSelection, BOOL bTrailingBlan
 //
 void EditCompressSpaces(HWND hwnd)
 {
-  if (SciCall_IsSelectionRectangle()) {
-    MsgBox(MBWARN, IDS_SELRECT);
-    return;
-  }
-
-  const DocPos iCurPos      = SciCall_GetCurrentPos();
-  const DocPos iAnchorPos   = SciCall_GetAnchor();
-  const DocPos iSelStartPos = SciCall_GetSelectionStart();
-  const DocPos iSelEndPos   = SciCall_GetSelectionEnd();
-  const DocPos iSelLength   = (iSelEndPos - iSelStartPos);
-
-  const DocLn iLineStart   = SciCall_LineFromPosition(iSelStartPos);
-  const DocLn iLineEnd     = SciCall_LineFromPosition(iSelEndPos);
-  const DocPos iTxtLength   = SciCall_GetTextLength();
   const BOOL bIsSelEmpty = SciCall_IsSelectionEmpty();
 
-  const char* pszIn = NULL;  
-  char* pszOut = NULL;
-  BOOL bIsLineStart = TRUE;
-  BOOL bIsLineEnd = TRUE;
+  if (SciCall_IsSelectionRectangle()) {
+    if (bIsSelEmpty) {
+      return;
+    }
 
-  BOOL bModified = FALSE;
-  
-  DocPos cch = 0;
-  if (bIsSelEmpty) {
-    pszIn = (const char*)SciCall_GetCharacterPointer();
-    cch = iTxtLength;
-    pszOut = LocalAlloc(GPTR, cch+1);
-  }
-  else {
-    pszIn = (const char*)SciCall_GetRangePointer(iSelStartPos, iSelLength);
-    cch = SciCall_GetSelText(NULL) - 1;
-    pszOut = LocalAlloc(LPTR,cch+1);
-    bIsLineStart = (iSelStartPos == SciCall_PositionFromLine(iLineStart));
-    bIsLineEnd = (iSelEndPos == SciCall_GetLineEndPosition(iLineEnd));
-  }
-  
-  if (pszIn && pszOut) {
-    char* co = (char*)pszOut;
-    DocPos remWSuntilCaretPos = 0;
-    for (int i = 0; i < cch; ++i) {
-      if (pszIn[i] == ' ' || pszIn[i] == '\t') {
-        if (pszIn[i] == '\t') { bModified = TRUE; }
-        while (pszIn[i+1] == ' ' || pszIn[i+1] == '\t') {
-          if (bIsSelEmpty && (i < iSelStartPos)) { ++remWSuntilCaretPos; }
-          ++i;
-          bModified = TRUE;
+    const DocPosU selCount = (DocPosU)SendMessage(hwnd, SCI_GETSELECTIONS, 0, 0);
+    for (DocPosU s = 0; s < selCount; ++s)
+    {
+      const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
+      const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
+      const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
+      const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
+
+      const DocPos selTargetStart = (selAnchorPos < selCaretPos) ? selAnchorPos : selCaretPos;
+      const DocPos selTargetEnd = (selAnchorPos < selCaretPos) ? selCaretPos : selAnchorPos;
+      const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
+
+      DocPos diff = 0;
+      DocPos len = 0;
+
+      len = (selTargetEnd - selTargetStart);
+      if ((len >= 0) && (len < TEMPLINE_BUFFER))
+      {
+        char* pText = SciCall_GetRangePointer(selTargetStart, len + 1);
+        const char* pEnd = (pText + len);
+        DocPos i = 0;
+        while (pText < pEnd) {
+          const char ch = *pText++;
+          if (IsWhiteSpace(ch)) {
+            g_pTempLineBuffer[i++] = ' ';
+            while (IsWhiteSpace(*pText)) { ++pText; }
+          }
+          else { g_pTempLineBuffer[i++] = ch; }
         }
-        if (!bIsLineStart && ((pszIn[i + 1] != '\n') && (pszIn[i + 1] != '\r'))) {
-          *co++ = ' ';
+        g_pTempLineBuffer[i] = '\0';
+        diff = len - i;
+        SciCall_SetTargetRange(selTargetStart, selTargetEnd);
+        SciCall_ReplaceTarget(-1, g_pTempLineBuffer);
+      }
+
+      if (selAnchorPos <= selCaretPos) {
+        SciCall_SetSelectionNAnchor(s, selAnchorPos);
+        if ((len > 0) && (vSpcLength > 0)) {
+          SciCall_SetSelectionNCaret(s, selCaretPos - diff);
+          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos - diff);
+          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos + diff);
         }
         else {
-          bModified = TRUE;
+          SciCall_SetSelectionNCaret(s, selCaretPos);
+          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos);
+          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos);
         }
       }
       else {
-        bIsLineStart = (pszIn[i] == '\n' || pszIn[i] == '\r') ? TRUE : FALSE;
-        *co++ = pszIn[i];
-      }
-    }
-
-    if (bIsLineEnd && (co > pszOut) && (*(co-1) == ' ')) {
-      if (bIsSelEmpty && ((cch-1) < iSelStartPos)) { --remWSuntilCaretPos; }
-      *--co = '\0';
-      bModified = TRUE;
-    }
-
-    if (bModified) {
-
-      EditEnterTargetTransaction();
-
-      if (!SciCall_IsSelectionEmpty()) {
-        SendMessage(hwnd, SCI_TARGETFROMSELECTION, 0, 0);
-      }
-      else {
-        SendMessage(hwnd, SCI_SETTARGETRANGE, 0, iTxtLength);
-      }
-      SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)-1, (LPARAM)pszOut);
-
-      EditLeaveTargetTransaction();
-
-      const DocPos iNewLen = StringCchLenA(pszOut, LocalSize(pszOut));
-
-      if (iCurPos < iAnchorPos) {
-        EditSelectEx(hwnd, iCurPos + iNewLen, iCurPos);
-      }
-      else if (iCurPos > iAnchorPos) {
-        EditSelectEx(hwnd, iAnchorPos, iAnchorPos + iNewLen);
-      }
-      else { // empty selection
-        DocPos iNewPos = iCurPos;
-        if (iCurPos > 0) {
-          iNewPos = SciCall_PositionBefore(SciCall_PositionAfter(iCurPos - remWSuntilCaretPos));
+        SciCall_SetSelectionNCaret(s, selCaretPos);
+        if ((len > 0) && (vSpcLength > 0)) {
+          SciCall_SetSelectionNAnchor(s, selAnchorPos - diff);
+          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos - diff);
+          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos + diff);
         }
-        EditSelectEx(hwnd, iNewPos, iNewPos);
+        else {
+          SciCall_SetSelectionNAnchor(s, selAnchorPos);
+          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos);
+          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos);
+        }
       }
-    }
+    } // for()
+
   }
-  if (pszOut) { LocalFree(pszOut); }
+  else   // SC_SEL_LINES | SC_SEL_STREAM
+  {
+    const DocPos iCurPos = SciCall_GetCurrentPos();
+    const DocPos iAnchorPos = SciCall_GetAnchor();
+    const DocPos iSelStartPos = SciCall_GetSelectionStart();
+    const DocPos iSelEndPos = SciCall_GetSelectionEnd();
+    const DocPos iSelLength = (iSelEndPos - iSelStartPos);
+
+    const DocLn iLineStart = SciCall_LineFromPosition(iSelStartPos);
+    const DocLn iLineEnd = SciCall_LineFromPosition(iSelEndPos);
+    const DocPos iTxtLength = SciCall_GetTextLength();
+
+    BOOL bIsLineStart = TRUE;
+    BOOL bIsLineEnd = TRUE;
+    BOOL bModified = FALSE;
+
+    const char* pszIn = NULL;
+    char* pszOut = NULL;
+    DocPos cch = 0;
+    if (bIsSelEmpty) {
+      pszIn = (const char*)SciCall_GetCharacterPointer();
+      cch = iTxtLength;
+      pszOut = AllocMem(cch + 1, HEAP_ZERO_MEMORY);
+    }
+    else {
+      pszIn = (const char*)SciCall_GetRangePointer(iSelStartPos, iSelLength);
+      cch = SciCall_GetSelText(NULL) - 1;
+      pszOut = AllocMem(cch + 1, HEAP_ZERO_MEMORY);
+      bIsLineStart = (iSelStartPos == SciCall_PositionFromLine(iLineStart));
+      bIsLineEnd = (iSelEndPos == SciCall_GetLineEndPosition(iLineEnd));
+    }
+
+    if (pszIn && pszOut) {
+      char* co = (char*)pszOut;
+      DocPos remWSuntilCaretPos = 0;
+      for (int i = 0; i < cch; ++i) {
+        if (IsWhiteSpace(pszIn[i])) {
+          if (pszIn[i] == '\t') { bModified = TRUE; }
+          while (IsWhiteSpace(pszIn[i + 1])) {
+            if (bIsSelEmpty && (i < iSelStartPos)) { ++remWSuntilCaretPos; }
+            ++i;
+            bModified = TRUE;
+          }
+          if (!bIsLineStart && ((pszIn[i + 1] != '\n') && (pszIn[i + 1] != '\r'))) {
+            *co++ = ' ';
+          }
+          else {
+            bModified = TRUE;
+          }
+        }
+        else {
+          bIsLineStart = (pszIn[i] == '\n' || pszIn[i] == '\r') ? TRUE : FALSE;
+          *co++ = pszIn[i];
+        }
+      }
+
+      if (bIsLineEnd && (co > pszOut) && (*(co - 1) == ' ')) {
+        if (bIsSelEmpty && ((cch - 1) < iSelStartPos)) { --remWSuntilCaretPos; }
+        *--co = '\0';
+        bModified = TRUE;
+      }
+
+      if (bModified) {
+
+        EditEnterTargetTransaction();
+
+        if (!SciCall_IsSelectionEmpty()) {
+          SciCall_TargetFromSelection();
+        }
+        else {
+          SciCall_SetTargetRange(0, iTxtLength);
+        }
+        SciCall_ReplaceTarget(-1, pszOut);
+
+        EditLeaveTargetTransaction();
+
+        const DocPos iNewLen = StringCchLenA(pszOut, LocalSize(pszOut));
+
+        if (iCurPos < iAnchorPos) {
+          EditSelectEx(hwnd, iCurPos + iNewLen, iCurPos);
+        }
+        else if (iCurPos > iAnchorPos) {
+          EditSelectEx(hwnd, iAnchorPos, iAnchorPos + iNewLen);
+        }
+        else { // empty selection
+          DocPos iNewPos = iCurPos;
+          if (iCurPos > 0) {
+            iNewPos = SciCall_PositionBefore(SciCall_PositionAfter(iCurPos - remWSuntilCaretPos));
+          }
+          EditSelectEx(hwnd, iNewPos, iNewPos);
+        }
+      }
+    }
+    if (pszOut) { FreeMem(pszOut); }
+  }
 }
 
 

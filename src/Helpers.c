@@ -2348,29 +2348,6 @@ HWND CreateThemedDialogParam(
 /
 
 /**
- * Is the character an octal digit?
- */
-static BOOL IsOctalDigit(char ch) {
-  return ch >= '0' && ch <= '7';
-}
-
-/**
- * If the character is an hexa digit, get its value.
- */
-static int GetHexDigit(char ch) {
-  if (ch >= '0' && ch <= '9') {
-    return ch - '0';
-  }
-  if (ch >= 'A' && ch <= 'F') {
-    return ch - 'A' + 10;
-  }
-  if (ch >= 'a' && ch <= 'f') {
-    return ch - 'a' + 10;
-  }
-  return -1;
-}
-
-/**
  * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh and \uhhhh into their indicated characters.
  */
 unsigned int UnSlash(char *s,UINT cpEdit) {
