@@ -4591,12 +4591,12 @@ DocPos __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int 
     DocPos nend = (DocPos)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
     if ((_start == nend) && bForceNext)
     {
-      DocPos newStart = (int)(bFindPrev ?
+      const DocPos _new_start = (int)(bFindPrev ?
         SendMessage(hwnd, SCI_POSITIONBEFORE, _start, 0) :
         SendMessage(hwnd, SCI_POSITIONAFTER, _start, 0));
-      if (newStart != _start) {
-        //_start = newStart;
-        SendMessage(hwnd, SCI_SETTARGETRANGE, newStart, _end);
+      const BOOL bProceed = (bFindPrev ? (_new_start >= _end) : (_new_start <= _end));
+      if ((_new_start != _start) && bProceed){
+        SendMessage(hwnd, SCI_SETTARGETRANGE, _new_start, _end);
         iPos = (DocPos)SendMessage(hwnd, SCI_SEARCHINTARGET, length, (LPARAM)szFind);
       }
       else {
