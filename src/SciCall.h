@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -62,9 +62,9 @@ extern HANDLE g_hwndEdit;
 //
 //  Sci_SendMessage()  short version
 //
-#define Sci_SendMsgV0(CMD)  SendMessage(g_hwndEdit, (CMD), (WPARAM)0, (LPARAM)0)
-#define Sci_SendMsgV1(CMD,WP)  SendMessage(g_hwndEdit, (CMD), (WPARAM)(WP), (LPARAM)0)
-#define Sci_SendMsgV2(CMD,WP,LP)  SendMessage(g_hwndEdit, (CMD), (WPARAM)(WP), (LPARAM)(LP))
+#define Sci_SendMsgV0(CMD)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
+#define Sci_SendMsgV1(CMD,WP)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
+#define Sci_SendMsgV2(CMD,WP,LP)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
 
 
 //=============================================================================
@@ -81,7 +81,6 @@ LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 #define SciCall(m, w, l) SendMessage(g_hwndEdit, m, w, l)
 
 #endif // SCI_DIRECTFUNCTION_INTERFACE
-
 
 
 //=============================================================================

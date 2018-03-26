@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -33,7 +33,7 @@ BOOL FavoritesDlg(HWND,LPWSTR);
 BOOL AddToFavDlg(HWND,LPCWSTR,LPCWSTR);
 BOOL FileMRUDlg(HWND,LPWSTR);
 BOOL ChangeNotifyDlg(HWND);
-BOOL ColumnWrapDlg(HWND,UINT,int *);
+BOOL ColumnWrapDlg(HWND,UINT,UINT *);
 BOOL WordWrapSettingsDlg(HWND,UINT,int *);
 BOOL LongLineSettingsDlg(HWND,UINT,int *);
 BOOL TabSettingsDlg(HWND,UINT,int *);

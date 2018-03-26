@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -103,49 +103,46 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW)
 //  Manipulation of (cached) ini file sections
 //
 int IniSectionGetString(
-      LPCWSTR lpCachedIniSection,
-      LPCWSTR lpName,
-      LPCWSTR lpDefault,
-      LPWSTR lpReturnedString,
-      int cchReturnedString)
+  LPCWSTR lpCachedIniSection,
+  LPCWSTR lpName,
+  LPCWSTR lpDefault,
+  LPWSTR lpReturnedString,
+  int cchReturnedString)
 {
-  WCHAR tch[256] = { L'\0' };
+  WCHAR tch[1024] = { L'\0' };
   WCHAR *p = (WCHAR *)lpCachedIniSection;
   if (p) {
-    StringCchCopy(tch,COUNTOF(tch),lpName);
-    StringCchCat(tch,COUNTOF(tch),L"=");
-    int ich = StringCchLenW(tch,COUNTOF(tch));
+    StringCchCopy(tch, COUNTOF(tch), lpName);
+    StringCchCat(tch, COUNTOF(tch), L"=");
+    int ich = (int)StringCchLenW(tch, COUNTOF(tch));
 
     while (*p) {
-      if (StrCmpNI(p,tch,ich) == 0) {
-        StringCchCopyN(lpReturnedString,cchReturnedString,p + ich,cchReturnedString);
-        return(StringCchLen(lpReturnedString,cchReturnedString));
+      if (StrCmpNI(p, tch, ich) == 0) {
+        StringCchCopyN(lpReturnedString, cchReturnedString, p + ich, cchReturnedString);
+        return((int)StringCchLen(lpReturnedString, cchReturnedString));
       }
       else
         p = StrEnd(p) + 1;
     }
   }
-  StringCchCopyN(lpReturnedString,cchReturnedString,lpDefault,cchReturnedString);
-  return(StringCchLen(lpReturnedString,cchReturnedString));
+  StringCchCopyN(lpReturnedString, cchReturnedString, lpDefault, cchReturnedString);
+  return((int)StringCchLen(lpReturnedString, cchReturnedString));
 }
 
 
-int IniSectionGetInt(
-      LPCWSTR lpCachedIniSection,
-      LPCWSTR lpName,
-      int iDefault)
+int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault)
 {
-  WCHAR tch[256] = { L'\0' };
+  WCHAR tch[64] = { L'\0' };
   WCHAR *p = (WCHAR *)lpCachedIniSection;
   if (p) {
-    StringCchCopy(tch,COUNTOF(tch),lpName);
-    StringCchCat(tch,COUNTOF(tch),L"=");
-    int ich = StringCchLenW(tch,COUNTOF(tch));
+    StringCchCopy(tch, COUNTOF(tch), lpName);
+    StringCchCat(tch, COUNTOF(tch), L"=");
+    int ich = (int)StringCchLenW(tch, COUNTOF(tch));
 
     while (*p) {
-      if (StrCmpNI(p,tch,ich) == 0) {
+      if (StrCmpNI(p, tch, ich) == 0) {
         int i = 0;
-        if (swscanf_s(p + ich,L"%i",&i) == 1)
+        if (swscanf_s(p + ich, L"%i", &i) == 1)
           return(i);
         else
           return(iDefault);
@@ -158,38 +155,59 @@ int IniSectionGetInt(
 }
 
 
-UINT IniSectionGetUInt(
-    LPCWSTR lpCachedIniSection,
-    LPCWSTR lpName,
-    UINT uDefault) {
-    WCHAR *p = (WCHAR *)lpCachedIniSection;
-    if (p) {
-      WCHAR tch[256] = { L'\0' };
-      StringCchCopy(tch,COUNTOF(tch),lpName);
-      StringCchCat(tch,COUNTOF(tch),L"=");
-      int ich = StringCchLenW(tch,COUNTOF(tch));
+UINT IniSectionGetUInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, UINT uDefault)
+{
+  WCHAR *p = (WCHAR *)lpCachedIniSection;
+  if (p) {
+    WCHAR tch[64] = { L'\0' };
+    StringCchCopy(tch, COUNTOF(tch), lpName);
+    StringCchCat(tch, COUNTOF(tch), L"=");
+    int ich = (int)StringCchLenW(tch, COUNTOF(tch));
 
-        while (*p) {
-            if (StrCmpNI(p, tch, ich) == 0) {
-                UINT u;
-                if (swscanf_s(p + ich, L"%u", &u) == 1)
-                    return(u);
-                else
-                    return(uDefault);
-            }
-            else
-                p = StrEnd(p) + 1;
-        }
+    while (*p) {
+      if (StrCmpNI(p, tch, ich) == 0) {
+        UINT u;
+        if (swscanf_s(p + ich, L"%u", &u) == 1)
+          return(u);
+        else
+          return(uDefault);
+      }
+      else
+        p = StrEnd(p) + 1;
     }
-    return(uDefault);
+  }
+  return(uDefault);
+}
+
+
+DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDefault)
+{
+  WCHAR tch[64] = { L'\0' };
+  WCHAR *p = (WCHAR *)lpCachedIniSection;
+  if (p) {
+    StringCchCopy(tch, COUNTOF(tch), lpName);
+    StringCchCat(tch, COUNTOF(tch), L"=");
+    int ich = (int)StringCchLenW(tch, COUNTOF(tch));
+    while (*p) {
+      if (StrCmpNI(p, tch, ich) == 0) {
+        long long pos = 0;
+        if (swscanf_s(p + ich, L"%lld", &pos) == 1)
+          return (DocPos)pos;
+        else
+          return (DocPos)posDefault;
+      }
+      else
+        p = StrEnd(p) + 1;
+    }
+  }
+  return (DocPos)posDefault;
 }
 
 
 BOOL IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString)
 {
-  WCHAR tch[32+512*3+32];
+  WCHAR tch[64+1024];
   WCHAR* p = lpCachedIniSection;
-
   if (p) {
     while (*p) {
       p = StrEnd(p) + 1;
@@ -1097,7 +1115,7 @@ int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
 
   LocalFree(p);
 
-  return StringCchLen(lpOutput,nOutput);
+  return (int)StringCchLen(lpOutput,nOutput);
 
 }
 
@@ -2015,7 +2033,7 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem)
       return(-1);
     else {
       StringCchCopyN(pszItem,cchItem,pmru->pszItems[iIndex],cchItem);
-      return(StringCchLen(pszItem,cchItem));
+      return((int)StringCchLen(pszItem,cchItem));
     }
   }
 }
@@ -2089,7 +2107,7 @@ BOOL MRU_Save(LPMRULIST pmru) {
       }
       if (pmru->iCaretPos[i] > 0) {
         StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
-        IniSectionSetInt(pIniSection,tchName,pmru->iCaretPos[i]);
+        IniSectionSetPos(pIniSection,tchName,pmru->iCaretPos[i]);
       }
       if (pmru->pszBookMarks[i] && (StringCchLenW(pmru->pszBookMarks[i], MRU_BMRK_SIZE) > 0)) {
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
@@ -2281,7 +2299,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID,HINSTANCE hInst
   else
     pTemplate->style |= DS_SHELLFONT;
 
-  cbNew = cbFontAttr + ((StringCchLenW(wchFaceName,COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+  cbNew = cbFontAttr + (((int)StringCchLenW(wchFaceName,COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
   pbNew = (BYTE*)wchFaceName;
 
   pb = DialogTemplate_GetFontSizeField(pTemplate);

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -1655,7 +1655,7 @@ BOOL ChangeNotifyDlg(HWND hwnd)
 INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
-  static int *piNumber;
+  static UINT *piNumber;
 
   switch(umsg)
   {
@@ -1663,7 +1663,7 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
     case WM_INITDIALOG:
       {
 
-        piNumber = (int*)lParam;
+        piNumber = (UINT*)lParam;
 
         SetDlgItemInt(hwnd, IDC_COLUMNWRAP,*piNumber,FALSE);
         SendDlgItemMessage(hwnd, IDC_COLUMNWRAP,EM_LIMITTEXT,15,0);
@@ -1683,7 +1683,7 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
           BOOL fTranslated;
 
-          int iNewNumber = GetDlgItemInt(hwnd, IDC_COLUMNWRAP,&fTranslated,FALSE);
+          UINT iNewNumber = (UINT)GetDlgItemInt(hwnd, IDC_COLUMNWRAP,&fTranslated,FALSE);
 
           if (fTranslated)
           {
@@ -1718,7 +1718,7 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 //
 //  ColumnWrapDlg()
 //
-BOOL ColumnWrapDlg(HWND hwnd,UINT uidDlg,int *iNumber)
+BOOL ColumnWrapDlg(HWND hwnd,UINT uidDlg, UINT *iNumber)
 {
 
   INT_PTR iResult;

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -355,6 +355,9 @@ void IgnoreNotifyChangeEvent() {
 
 void ObserveNotifyChangeEvent() {
   (void)TEST_AND_RESET(LOCK_NOTIFY_CHANGE);
+  UpdateToolbar();
+  UpdateStatusbar();
+  UpdateLineNumberWidth();
 }
 
 BOOL CheckNotifyChangeEvent() {
@@ -2205,14 +2208,13 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
-
   int i;
   DocPos p;
   BOOL b;
 
   HMENU hmenu = (HMENU)wParam;
 
-  i = StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile));
+  i = (int)StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile));
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
   EnableCmd(hmenu, CMD_RECODEANSI, i);
@@ -2479,7 +2481,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
     i = IDM_VIEW_NOESCFUNC;
   CheckMenuRadioItem(hmenu,IDM_VIEW_NOESCFUNC,IDM_VIEW_ESCEXIT,i,MF_BYCOMMAND);
 
-  i = StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile));
+  i = (int)StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile));
   CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,bSaveSettings && i);
 
   EnableCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
@@ -3308,9 +3310,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (iWrapCol == 0) {
           iWrapCol = iLongLinesLimit;
         }
-        if (ColumnWrapDlg(hwnd,IDD_COLUMNWRAP,&iWrapCol))
+
+        UINT uWrpCol = 0;
+        if (ColumnWrapDlg(hwnd,IDD_COLUMNWRAP,&uWrpCol))
         {
-          iWrapCol = max(min(iWrapCol,512),1);
+          iWrapCol = (DocPos)max(min(uWrpCol,(UINT)iLongLinesLimit),1);
           BeginWaitCursor(NULL);
           int token = BeginUndoAction();
           EditWrapToColumn(g_hwndEdit,iWrapCol);
@@ -4630,11 +4634,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         else {
           if (iPos == iStartPos)
-            Sci_SendMsgV0(SCI_DELETEBACK);
+            Sci_SendMsgV0(DELETEBACK);
           else if (iPos <= iIndentPos)
-            Sci_SendMsgV0(SCI_DELLINELEFT);
+            Sci_SendMsgV0(DELLINELEFT);
           else
-            Sci_SendMsgV0(SCI_DELWORDLEFT);
+            Sci_SendMsgV0(DELWORDLEFT);
         }
       }
       break;
@@ -4655,9 +4659,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         else {
           if (iStartPos != iEndPos)
-            Sci_SendMsgV0(SCI_DELWORDRIGHT);
+            Sci_SendMsgV0(DELWORDRIGHT);
           else // iStartPos == iEndPos
-            Sci_SendMsgV0(SCI_LINEDELETE);
+            Sci_SendMsgV0(LINEDELETE);
         }
       }
       break;
@@ -6279,7 +6283,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"TabWidth", iTabWidthG);
   IniSectionSetInt(pIniSection, L"IndentWidth", iIndentWidthG);
   IniSectionSetBool(pIniSection, L"MarkLongLines", bMarkLongLines);
-  IniSectionSetInt(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
+  IniSectionSetPos(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
   IniSectionSetInt(pIniSection, L"LongLineMode", iLongLineMode);
   IniSectionSetBool(pIniSection, L"ShowSelectionMargin", g_bShowSelectionMargin);
   IniSectionSetBool(pIniSection, L"ShowLineNumbers", bShowLineNumbers);
@@ -7158,19 +7162,19 @@ void UpdateStatusbar()
   const DocPos iTextLength = SciCall_GetTextLength();
   const int iEncoding = Encoding_Current(CPI_GET);
 
-  StringCchPrintf(tchLn, COUNTOF(tchLn), L"%i", SciCall_LineFromPosition(iPos) + 1);
+  StringCchPrintf(tchLn, COUNTOF(tchLn), L"%td", SciCall_LineFromPosition(iPos) + 1);
   FormatNumberStr(tchLn);
 
-  StringCchPrintf(tchLines, COUNTOF(tchLines), L"%i", SciCall_GetLineCount());
+  StringCchPrintf(tchLines, COUNTOF(tchLines), L"%td", SciCall_GetLineCount());
   FormatNumberStr(tchLines);
 
   DocPos iCol = SciCall_GetColumn(iPos) + 1;
   iCol += (DocPos)SendMessage(g_hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
-  StringCchPrintf(tchCol, COUNTOF(tchCol), L"%i", iCol);
+  StringCchPrintf(tchCol, COUNTOF(tchCol), L"%td", iCol);
   FormatNumberStr(tchCol);
 
   if (bMarkLongLines) {
-    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%i", iLongLinesLimit);
+    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iLongLinesLimit);
     FormatNumberStr(tchCols);
   }
 
@@ -7182,7 +7186,7 @@ void UpdateStatusbar()
   if (!bIsSelEmpty && !SciCall_IsSelectionRectangle())
   {
     const DocPos iSel = (DocPos)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
-    StringCchPrintf(tchSel, COUNTOF(tchSel), L"%i", iSel);
+    StringCchPrintf(tchSel, COUNTOF(tchSel), L"%td", iSel);
     FormatNumberStr(tchSel);
     StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
   }
@@ -7299,7 +7303,7 @@ void UpdateLineNumberWidth()
   if (bShowLineNumbers)
   {
     char chLines[32] = { '\0' };
-    StringCchPrintfA(chLines, COUNTOF(chLines), "_%i_", SciCall_GetLineCount());
+    StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
 
     int iLineMarginWidthNow = (int)SendMessage(g_hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_SCI_LINENUM, 0);
     int iLineMarginWidthFit = (int)SendMessage(g_hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
@@ -7623,6 +7627,7 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
     SetDocumentModified(FALSE);
     UpdateToolbar();
     UpdateStatusbar();
+    UpdateLineNumberWidth();
 
     // Terminate file watching
     if (bResetFileWatching)
@@ -8370,7 +8375,7 @@ BOOL ActivatePrevInst()
         if (lpSchemeArg)
           cb += (lstrlen(lpSchemeArg) + 1) * sizeof(WCHAR);
 
-        int cchTitleExcerpt = StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt));
+        int cchTitleExcerpt = (int)StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt));
         if (cchTitleExcerpt)
           cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
 

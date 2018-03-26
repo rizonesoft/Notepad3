@@ -1968,7 +1968,7 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
       int iWidth;
       char chFormat[32] = { '\0' };
       if (!StrChrIA(chNumber, 'x') && sscanf_s(chNumber, "%d", &iNumber) == 1) {
-        iWidth = StringCchLenA(chNumber, COUNTOF(chNumber));
+        iWidth = (int)StringCchLenA(chNumber, COUNTOF(chNumber));
         if (iNumber >= 0) {
           if (bIncrease && iNumber < INT_MAX)
             iNumber++;
@@ -1983,13 +1983,13 @@ void EditModifyNumber(HWND hwnd,BOOL bIncrease) {
       }
       else if (sscanf_s(chNumber, "%x", &iNumber) == 1) {
         BOOL bUppercase = FALSE;
-        iWidth = StringCchLenA(chNumber, COUNTOF(chNumber)) - 2;
+        iWidth = (int)StringCchLenA(chNumber, COUNTOF(chNumber)) - 2;
         if (iNumber >= 0) {
           if (bIncrease && iNumber < INT_MAX)
             iNumber++;
           if (!bIncrease && iNumber > 0)
             iNumber--;
-          for (int i = StringCchLenA(chNumber, COUNTOF(chNumber)) - 1; i >= 0; i--) {
+          for (int i = (int)StringCchLenA(chNumber, COUNTOF(chNumber)) - 1; i >= 0; i--) {
             if (IsCharLowerA(chNumber[i]))
               break;
             else if (IsCharUpper(chNumber[i])) {
@@ -3178,7 +3178,6 @@ void EditPadWithSpaces(HWND hwnd,BOOL bSkipEmpty,BOOL bNoUndoGroup)
 }
 
 
-
 //=============================================================================
 //
 //  EditStripFirstCharacter()
@@ -3704,7 +3703,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 //
 //  EditWrapToColumn()
 //
-void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
+void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
 {
   if (SciCall_IsSelectionRectangle()) {
     MsgBox(MBWARN,IDS_SELRECT);
@@ -3751,7 +3750,7 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
   }
 
   int cchConvW = 0;
-  int iLineLength = 0;
+  DocPos iLineLength = 0;
 
   //#define W_DELIMITER  L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~"  // underscore counted as part of word
   //WCHAR* W_DELIMITER  = bAccelWordNavigation ? W_DelimCharsAccel : W_DelimChars;
@@ -3764,7 +3763,7 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
   //#define ISWORDEND(wc) (ISDELIMITER(wc) || ISWHITE(wc))
   #define ISWORDEND(wc) StrChr(L" \t\f\r\n\v",wc)
   
-  int iCaretShift = 0;
+  DocPos iCaretShift = 0;
   BOOL bModified = FALSE;
 
   for (int iTextW = 0; iTextW < cchTextW; iTextW++)
@@ -3773,7 +3772,7 @@ void EditWrapToColumn(HWND hwnd,int nColumn/*,int nTabWidth*/)
 
     if (ISWHITE(w))
     {
-      int iNextWordLen = 0;
+      DocPos iNextWordLen = 0;
 
       while (pszTextW[iTextW+1] == L' ' || pszTextW[iTextW+1] == L'\t') {
         ++iTextW;
@@ -4217,7 +4216,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
   LocalFree(pLines);
 
-  int iResultLength = StringCchLenA(pmszResult, lenRes);
+  DocPos iResultLength = StringCchLenA(pmszResult, lenRes);
   if (!bIsRectangular) {
     if (iAnchorPos > iCurPos) {
       iCurPos = iSelStart;
@@ -4545,7 +4544,7 @@ int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
       EscapeWildcards(szFind, lpefr);
   }
   
-  return StringCchLenA(szFind, FNDRPL_BUFFER);
+  return (int)StringCchLenA(szFind, FNDRPL_BUFFER);
 }
 
 
@@ -7043,7 +7042,7 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
   do {
     iLine = (DocLn)SendMessage(hwnd, SCI_MARKERNEXT, iLine + 1, bitmask);
     if (iLine >= 0) {
-      StringCchPrintfW(tchLine, COUNTOF(tchLine), L"%i;", iLine);
+      StringCchPrintfW(tchLine, COUNTOF(tchLine), L"%td;", iLine);
       StringCchCatW(pszBookMarks, cchLength, tchLine);
     }
   } while (iLine >= 0);
@@ -7058,6 +7057,7 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
 //
 void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 {
+  UNUSED(hwnd);
   WCHAR lnNum[32];
   const WCHAR* p1 = pszBookMarks;
   if (!p1) return;
@@ -7069,10 +7069,10 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
     if (!p2)
       p2 = StrEnd(p1);
     StringCchCopyNW(lnNum, COUNTOF(lnNum), p1, min((int)(p2 - p1), 16));
-    int iLine = 0;
-    if (swscanf_s(lnNum, L"%i", &iLine) == 1) {
+    long long iLine = 0;
+    if (swscanf_s(lnNum, L"%lld", &iLine) == 1) {
       if (iLine <= iLineMax) {
-        SendMessage(hwnd, SCI_MARKERADD, iLine, MARKER_NP3_BOOKMARK);
+        Sci_SendMsgV2(MARKERADD, iLine, MARKER_NP3_BOOKMARK);
       }
     }
     p1 = (*p2) ? (p2 + 1) : p2;

@@ -45,6 +45,21 @@ __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b =
 __forceinline bool HasFractionCent(float f) { return ((((int)(f * 100.0)) % 100) != 0); }
 
 
+
+// direct heap allocation
+__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
+{
+  return HeapAlloc(GetProcessHeap(), (dwFlags | HEAP_GENERATE_EXCEPTIONS), numBytes);
+}
+__forceinline bool FreeMem(LPVOID lpMemory)
+{
+  return ((lpMemory != NULL) ? HeapFree(GetProcessHeap(), 0, lpMemory) : TRUE);
+}
+__forceinline size_t SizeOfMem(LPVOID lpMemory)
+{
+  return ((lpMemory != NULL) ? HeapSize(GetProcessHeap(), 0, lpMemory) : 0);
+}
+
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
   GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),g_wchIniFile)
 #define IniGetInt(lpSection,lpName,nDefault) \
@@ -55,42 +70,38 @@ __forceinline bool HasFractionCent(float f) { return ((((int)(f * 100.0)) % 100)
   WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
 #define IniDeleteSection(lpSection) \
   WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
+
 __inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
+
 #define IniSetBool(lpSection,lpName,nValue) \
   IniSetInt(lpSection,lpName,((nValue) ? 1 : 0))
 #define LoadIniSection(lpSection,lpBuf,cchBuf) \
   GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),g_wchIniFile)
 #define SaveIniSection(lpSection,lpBuf) \
   WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
+
 int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
 int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
 UINT IniSectionGetUInt(LPCWSTR, LPCWSTR, UINT);
+DocPos IniSectionGetPos(LPCWSTR, LPCWSTR, DocPos);
 __forceinline BOOL IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, BOOL bDefault) {
   return (IniSectionGetInt(lpCachedIniSection, lpName, ((bDefault) ? 1 : 0)) ? TRUE : FALSE);
 }
+
 BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
-__forceinline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, DocPos i) {
+
+__forceinline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
   WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
 __forceinline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b) {
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
-
-
-// direct heap allocation
-__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags) {
-  return HeapAlloc(GetProcessHeap(), (dwFlags | HEAP_GENERATE_EXCEPTIONS), numBytes);
+__forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos)
+{
+  WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
-__forceinline bool FreeMem(LPVOID lpMemory) {
-  return ((lpMemory != NULL) ? HeapFree(GetProcessHeap(), 0, lpMemory) : TRUE);
-}
-__forceinline size_t SizeOfMem(LPVOID lpMemory) {
-  return ((lpMemory != NULL) ? HeapSize(GetProcessHeap(), 0, lpMemory) : 0);
-}
-
-
 
 //extern HWND g_hwndEdit;
 #define BeginWaitCursor(TCH) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetText(g_hwndStatus,STATUS_HELP,(TCH)); IgnoreNotifyChangeEvent(); }
@@ -322,32 +333,32 @@ __forceinline DocPos StringCchLenW(LPCWSTR s,size_t m) { size_t len; return (Doc
 #endif
 
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
-__forceinline int _StringCchCmpNA(PCNZCH s1,int l1,PCNZCH s2,int l2)
+__forceinline int _StringCchCmpNA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
 {
-  return (CompareStringA(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? StringCchLenA(s1,l1) : -1),
-                         s2,(l2 >= 0 ? StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
+  return (CompareStringA(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? (int)StringCchLenA(s1,l1) : -1),
+                         s2,(l2 >= 0 ? (int)StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
 }
 #define StringCchCompareNA(s1,l1,s2,l2)  _StringCchCmpNA((s1),(l1),(s2),(l2))
 #define StringCchCompareXA(s1,s2)        _StringCchCmpNA((s1),-1,(s2),-1)
 
-__forceinline int _StringCchCmpINA(PCNZCH s1,int l1,PCNZCH s2,int l2)
+__forceinline int _StringCchCmpINA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
 {
-  return (CompareStringA(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? StringCchLenA(s1,l1) : -1),
-                         s2,(l2 >= 0 ? StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
+  return (CompareStringA(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? (int)StringCchLenA(s1,l1) : -1),
+                         s2,(l2 >= 0 ? (int)StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
 }
 #define StringCchCompareINA(s1,l1,s2,l2)  _StringCchCmpINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIXA(s1,s2)        _StringCchCmpINA((s1),-1,(s2),-1)
 
-__forceinline int _StringCchCmpNW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
-  return (CompareStringW(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? StringCchLenW(s1,l1) : -1),
-                         s2,(l2 >= 0 ? StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
+__forceinline int _StringCchCmpNW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
+  return (CompareStringW(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? (int)StringCchLenW(s1,l1) : -1),
+                         s2,(l2 >= 0 ? (int)StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
 #define StringCchCompareNW(s1,l1,s2,l2)  _StringCchCmpNW((s1),(l1),(s2),(l2))
 #define StringCchCompareXW(s1,s2)        _StringCchCmpNW((s1),-1,(s2),-1)
 
-__forceinline int _StringCchCmpINW(PCNZWCH s1,int l1,PCNZWCH s2,int l2) {
-  return (CompareStringW(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? StringCchLenW(s1,l1) : -1),
-                         s2,(l2 >= 0 ? StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
+__forceinline int _StringCchCmpINW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
+  return (CompareStringW(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? (int)StringCchLenW(s1,l1) : -1),
+                         s2,(l2 >= 0 ? (int)StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
 #define StringCchCompareINW(s1,l1,s2,l2)  _StringCchCmpINW((s1),(l1),(s2),(l2))
 #define StringCchCompareIXW(s1,s2)        _StringCchCmpINW((s1),-1,(s2),-1)
