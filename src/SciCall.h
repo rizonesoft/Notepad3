@@ -154,7 +154,6 @@ DeclareSciCallV1(SetRectangularSelectionCaretVirtualSpace, SETRECTANGULARSELECTI
 DeclareSciCallR0(GetRectangularSelectionAnchorVirtualSpace, GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos)
 DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos, position)
 
-
 // Multiselections (Lines of Rectangular selection)
 DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU)
 DeclareSciCallR1(GetSelectionNCaret, GETSELECTIONNCARET, DocPos, DocPosU, selnum)
@@ -174,7 +173,7 @@ DeclareSciCallV0(Clear, CLEAR)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
 DeclareSciCallV0(LineDelete, LINEDELETE)
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
-DeclareSciCallV2(GetTextFromBegin, GETTEXT, DocPos, length, const char*, text)
+DeclareSciCallV2(GetText, GETTEXT, DocPos, length, const char*, text)
 
 DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)
 DeclareSciCallV0(SelectAll, SELECTALL)

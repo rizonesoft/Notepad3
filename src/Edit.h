@@ -94,14 +94,14 @@ void  EditPadWithSpaces(HWND,BOOL,BOOL);
 void  EditStripFirstCharacter(HWND);
 void  EditStripLastCharacter(HWND,BOOL,BOOL);
 void  EditCompressSpaces(HWND);
-void  EditRemoveBlankLines(HWND,BOOL);
+void  EditRemoveBlankLines(HWND,BOOL,BOOL);
 void  EditRemoveDuplicateLines(HWND,bool);
 void  EditWrapToColumn(HWND,DocPos);
 void  EditJoinLinesEx(HWND,BOOL,BOOL);
 void  EditSortLines(HWND,int);
 
 void  EditJumpTo(HWND, DocLn, DocPos);
-void  EditSelectEx(HWND, DocPos, DocPos);
+void  EditSelectEx(HWND, DocPos, DocPos, int, int);
 void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);
 void  EditGetExcerpt(HWND,LPWSTR,DWORD);

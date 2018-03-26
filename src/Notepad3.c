@@ -2085,7 +2085,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ptc.x = pt.x;  ptc.y = pt.y;
         ScreenToClient(g_hwndEdit, &ptc);
         iNewPos = (DocPos)SendMessage(g_hwndEdit, SCI_POSITIONFROMPOINT, (WPARAM)ptc.x, (LPARAM)ptc.y);
-        EditSelectEx(g_hwndEdit, iNewPos, iNewPos);
+        EditSelectEx(g_hwndEdit, iNewPos, iNewPos, -1, -1);
       }
 
       if (pt.x == -1 && pt.y == -1) {
@@ -2308,6 +2308,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   //EnableCmd(hmenu,IDM_EDIT_TRIMLINES,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_MERGEBLANKLINES,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_REMOVEBLANKLINES,!bReadOnly);
+  //EnableCmd(hmenu,IDM_EDIT_REMOVEEMPTYLINES,!bReadOnly);
   //EnableCmd(hmenu,IDM_EDIT_REMOVEDUPLICATELINES,!bReadOnly);
  
   EnableCmd(hmenu, IDM_EDIT_SORTLINES,
@@ -3237,7 +3238,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditRemoveBlankLines(g_hwndEdit,TRUE);
+        EditRemoveBlankLines(g_hwndEdit, TRUE, TRUE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -3248,7 +3249,18 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditRemoveBlankLines(g_hwndEdit,FALSE);
+        EditRemoveBlankLines(g_hwndEdit, FALSE, TRUE);
+        EndUndoAction(token);
+        EndWaitCursor();
+      }
+      break;
+
+
+    case IDM_EDIT_REMOVEEMPTYLINES:
+      {
+        BeginWaitCursor(NULL);
+        int token = BeginUndoAction();
+        EditRemoveBlankLines(g_hwndEdit, FALSE, FALSE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -7776,9 +7788,7 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
         SendMessage(g_hwndEdit, SCI_GOTOPOS, (WPARAM)iCaretPos, 0);
         // adjust view
         const DocPos iCurPos = SciCall_GetCurrentPos();
-        const DocLn  iLine   = SciCall_LineFromPosition(iCurPos);
-        const DocPos iCol    = SciCall_GetColumn(iCurPos);
-        EditJumpTo(g_hwndEdit, iLine+1, iCol+1);
+        EditJumpTo(g_hwndEdit, SciCall_LineFromPosition(iCurPos) + 1, SciCall_GetColumn(iCurPos) + 1);
       }
     }
 
@@ -7813,20 +7823,20 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
 //
 BOOL FileRevert(LPCWSTR szFileName) 
 {
-  if (wcslen(szFileName)) {
+  if (StringCchLen(szFileName, MAX_PATH) != 0) {
 
-    const DocPos iCurPos = SciCall_GetCurrentPos();
-    const DocPos iAnchorPos = SciCall_GetAnchor();
+    const DocPos iCurPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
+    const DocPos iAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
+    const int vSpcCaretPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaretVirtualSpace() : -1;
+    const int vSpcAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : -1;
+
     const DocLn iCurrLine = SciCall_LineFromPosition(iCurPos);
-    DocLn iVisTopLine = (DocLn)SendMessage(g_hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
-    DocLn iDocTopLine = (DocLn)SendMessage(g_hwndEdit,SCI_DOCLINEFROMVISIBLE,(WPARAM)iVisTopLine,0);
-    int iXOffset = (int)SendMessage(g_hwndEdit,SCI_GETXOFFSET,0,0);
-    BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
+    const BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
 
     Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
     WCHAR tchFileName2[MAX_PATH] = { L'\0' };
-    StringCchCopy(tchFileName2,COUNTOF(tchFileName2),szFileName);
+    StringCchCopyW(tchFileName2,COUNTOF(tchFileName2),szFileName);
 
     if (FileLoad(TRUE,FALSE,TRUE,FALSE,TRUE,tchFileName2))
     {
@@ -7834,15 +7844,11 @@ BOOL FileRevert(LPCWSTR szFileName)
         SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
-      else if (SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0) >= 4) {
+      else if (SciCall_GetTextLength() >= 4) {
         char tch[5] = { '\0' };
-        SendMessage(g_hwndEdit,SCI_GETTEXT,5,(LPARAM)tch);
+        SciCall_GetText(5, tch);
         if (StringCchCompareXA(tch,".LOG") != 0) {
-          SendMessage(g_hwndEdit,SCI_SETSEL,iAnchorPos,iCurPos);
-          SendMessage(g_hwndEdit,SCI_ENSUREVISIBLE,(WPARAM)iDocTopLine,0);
-          DocLn iNewTopLine = (DocLn)SendMessage(g_hwndEdit,SCI_GETFIRSTVISIBLELINE,0,0);
-          SendMessage(g_hwndEdit,SCI_LINESCROLL,0,(LPARAM)iVisTopLine - iNewTopLine);
-          SendMessage(g_hwndEdit,SCI_SETXOFFSET,(WPARAM)iXOffset,0);
+          EditSelectEx(g_hwndEdit, iAnchorPos, iCurPos, vSpcAnchorPos, vSpcCaretPos);
         }
       }
       return TRUE;
