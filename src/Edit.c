@@ -3198,56 +3198,47 @@ void EditStripFirstCharacter(HWND hwnd)
       SciCall_Clear();
       return;
     }
+
+    const DocPos selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
+    const DocPos selCaretMainPos = SciCall_GetRectangularSelectionCaret();
+    const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+    const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
+
+    DocPos remCount = 0;
     const DocPosU selCount = SciCall_GetSelections();
     for (DocPosU s = 0; s < selCount; ++s) 
     {
       const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
       const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
-      const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
-      const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
+      //const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
+      //const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
 
       const DocPos selTargetStart = (selAnchorPos < selCaretPos) ? selAnchorPos : selCaretPos;
       const DocPos selTargetEnd = (selAnchorPos < selCaretPos) ? selCaretPos : selAnchorPos;
-      const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
+      //const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
 
       const DocPos nextPos = (selTargetStart < selTargetEnd) ? SciCall_PositionAfter(selTargetStart) : selTargetEnd;
-      const DocPos diff = (nextPos <= selTargetEnd) ? (nextPos - selTargetStart) : 0 ;
-      const DocPos len = (selTargetEnd - nextPos);
+      const DocPos diff = (nextPos <= selTargetEnd) ? (nextPos - selTargetStart) : 0;
 
+      const DocPos len = (selTargetEnd - nextPos);
       if ((len >= 0) && (len < TEMPLINE_BUFFER)) //TODO: @@@ alloc memory dynamically
       {
         StringCchCopyNA(g_pTempLineBuffer, TEMPLINE_BUFFER, SciCall_GetRangePointer(nextPos, len+1), len);
         SciCall_SetTargetRange(selTargetStart, selTargetEnd);
         SciCall_ReplaceTarget(len, g_pTempLineBuffer);
       }
+      remCount += diff;
 
-      if (selAnchorPos <= selCaretPos) {
-        SciCall_SetSelectionNAnchor(s, selAnchorPos);
-        if ((len > 0) && (vSpcLength > 0)) {
-          SciCall_SetSelectionNCaret(s, selCaretPos - diff);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos - diff);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos + diff);
-        }
-        else {
-          SciCall_SetSelectionNCaret(s, selCaretPos);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos);
-        }
-      }
-      else {
-        SciCall_SetSelectionNCaret(s, selCaretPos);
-        if ((len > 0) && (vSpcLength > 0)) {
-          SciCall_SetSelectionNAnchor(s, selAnchorPos - diff);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos - diff);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos + diff);
-        }
-        else {
-          SciCall_SetSelectionNAnchor(s, selAnchorPos);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos);
-        }
-      }
     } // for()
+
+    SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
+    if (vSpcAnchorMainPos > 0)
+      SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchorMainPos);
+
+    SciCall_SetRectangularSelectionCaret(selCaretMainPos - remCount);
+    if (vSpcCaretMainPos > 0)
+      SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
+
   }
   else  // SC_SEL_LINES | SC_SEL_STREAM
   {
@@ -3295,17 +3286,24 @@ void EditStripLastCharacter(HWND hwnd, BOOL bIgnoreSelection, BOOL bTrailingBlan
       SciCall_Clear();
       return;
     }
-    const DocPosU selCount = (DocPosU)SendMessage(hwnd, SCI_GETSELECTIONS, 0, 0);
+
+    const DocPos selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
+    const DocPos selCaretMainPos = SciCall_GetRectangularSelectionCaret();
+    const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+    const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
+
+    DocPos remCount = 0;
+    const DocPosU selCount = SciCall_GetSelections();
     for (DocPosU s = 0; s < selCount; ++s)
     {
       const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
       const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
-      const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
-      const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
+      //const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
+      //const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
 
       const DocPos selTargetStart = (selAnchorPos < selCaretPos) ? selAnchorPos : selCaretPos;
       const DocPos selTargetEnd = (selAnchorPos < selCaretPos) ? selCaretPos : selAnchorPos;
-      const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
+      //const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
 
       DocPos diff = 0;
       DocPos len = 0;
@@ -3347,34 +3345,17 @@ void EditStripLastCharacter(HWND hwnd, BOOL bIgnoreSelection, BOOL bTrailingBlan
           SciCall_ReplaceTarget(len, g_pTempLineBuffer);
         }
       }
+      remCount += diff;
 
-      if (selAnchorPos <= selCaretPos) {
-        SciCall_SetSelectionNAnchor(s, selAnchorPos);
-        if ((len > 0) && (vSpcLength > 0)) {
-          SciCall_SetSelectionNCaret(s, selCaretPos - diff);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos - diff);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos + diff);
-        }
-        else {
-          SciCall_SetSelectionNCaret(s, selCaretPos);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos);
-        }
-      }
-      else {
-        SciCall_SetSelectionNCaret(s, selCaretPos);
-        if ((len > 0) && (vSpcLength > 0)) {
-          SciCall_SetSelectionNAnchor(s, selAnchorPos - diff);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos - diff);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos + diff);
-        }
-        else {
-          SciCall_SetSelectionNAnchor(s, selAnchorPos);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos);
-        }
-      }
     } // for()
+
+    SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
+    if (vSpcAnchorMainPos > 0)
+      SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchorMainPos);
+
+    SciCall_SetRectangularSelectionCaret(selCaretMainPos - remCount);
+    if (vSpcCaretMainPos > 0)
+      SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
   }
   else  // SC_SEL_LINES | SC_SEL_STREAM
   {
@@ -3433,17 +3414,23 @@ void EditCompressSpaces(HWND hwnd)
       return;
     }
 
-    const DocPosU selCount = (DocPosU)SendMessage(hwnd, SCI_GETSELECTIONS, 0, 0);
+    const DocPos selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
+    const DocPos selCaretMainPos = SciCall_GetRectangularSelectionCaret();
+    const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+    const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
+
+    DocPos remCount = 0;
+    const DocPosU selCount = SciCall_GetSelections();
     for (DocPosU s = 0; s < selCount; ++s)
     {
       const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
       const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
-      const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
-      const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
+      //const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
+      //const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
 
       const DocPos selTargetStart = (selAnchorPos < selCaretPos) ? selAnchorPos : selCaretPos;
       const DocPos selTargetEnd = (selAnchorPos < selCaretPos) ? selCaretPos : selAnchorPos;
-      const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
+      //const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
 
       DocPos diff = 0;
       DocPos len = 0;
@@ -3467,34 +3454,17 @@ void EditCompressSpaces(HWND hwnd)
         SciCall_SetTargetRange(selTargetStart, selTargetEnd);
         SciCall_ReplaceTarget(-1, g_pTempLineBuffer);
       }
+      remCount += diff;
 
-      if (selAnchorPos <= selCaretPos) {
-        SciCall_SetSelectionNAnchor(s, selAnchorPos);
-        if ((len > 0) && (vSpcLength > 0)) {
-          SciCall_SetSelectionNCaret(s, selCaretPos - diff);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos - diff);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos + diff);
-        }
-        else {
-          SciCall_SetSelectionNCaret(s, selCaretPos);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos);
-        }
-      }
-      else {
-        SciCall_SetSelectionNCaret(s, selCaretPos);
-        if ((len > 0) && (vSpcLength > 0)) {
-          SciCall_SetSelectionNAnchor(s, selAnchorPos - diff);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos - diff);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos + diff);
-        }
-        else {
-          SciCall_SetSelectionNAnchor(s, selAnchorPos);
-          SciCall_SetSelectionNCaretVirtualSpace(s, vSpcCaretPos);
-          SciCall_SetSelectionNAnchorVirtualSpace(s, vSpcAnchorPos);
-        }
-      }
     } // for()
+
+    SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
+    if (vSpcAnchorMainPos > 0)
+      SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchorMainPos);
+
+    SciCall_SetRectangularSelectionCaret(selCaretMainPos - remCount);
+    if (vSpcCaretMainPos > 0)
+      SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
 
   }
   else   // SC_SEL_LINES | SC_SEL_STREAM
