@@ -5534,21 +5534,23 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BO
     InfoBox(MBWARN, L"MsgInvalidRegex", IDS_REGEX_INVALID);
     bSuppressNotFound = TRUE;
   }
-  else if ((iPos < 0) && (start > 0) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) 
+  else if ((iPos < 0) && (start > 0) && !bExtendSelection) 
   {
-    if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPFW))
-    {
-      end = min(start, iTextLength);  start = 0;
+    UpdateStatusbar();
+    if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
+      if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPFW)) {
+        end = min(start, iTextLength);  start = 0;
 
-      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_WRAPED);
+        iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_WRAPED);
 
-      if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
-        InfoBox(MBWARN, L"MsgInvalidRegex2", IDS_REGEX_INVALID);
-        bSuppressNotFound = TRUE;
+        if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+          InfoBox(MBWARN, L"MsgInvalidRegex2", IDS_REGEX_INVALID);
+          bSuppressNotFound = TRUE;
+        }
       }
+      else
+        bSuppressNotFound = TRUE;
     }
-    else
-      bSuppressNotFound = TRUE;
   }
 
   if (iPos < 0) {
@@ -5605,21 +5607,24 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BO
     InfoBox(MBWARN, L"MsgInvalidRegex", IDS_REGEX_INVALID);
     bSuppressNotFound = TRUE;
   }
-  else if ((iPos < 0) && (start <= iTextLength) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) 
+  else if ((iPos < 0) && (start <= iTextLength) &&  !bExtendSelection) 
   {
-    if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPRE)) 
+    UpdateStatusbar();
+    if (!lpefr->bNoFindWrap && !bSuppressNotFound) 
     {
-      end = start;  start = iTextLength;
+      if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPRE)) {
+        end = start;  start = iTextLength;
 
-      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_WRAPED);
+        iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_WRAPED);
 
-      if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
-        InfoBox(MBWARN, L"MsgInvalidRegex2", IDS_REGEX_INVALID);
-        bSuppressNotFound = TRUE;
+        if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+          InfoBox(MBWARN, L"MsgInvalidRegex2", IDS_REGEX_INVALID);
+          bSuppressNotFound = TRUE;
+        }
       }
+      else
+        bSuppressNotFound = TRUE;
     }
-    else
-      bSuppressNotFound = TRUE;
   }
 
   if (iPos < 0) {
