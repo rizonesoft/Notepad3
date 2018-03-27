@@ -23,7 +23,7 @@
   typedef Sci_Position   DocPos;
   typedef Sci_PositionU  DocPosU;
   typedef Sci_PositionCR DocCR;
-  typedef Sci_Position   DocLn;  // Sci_Line?
+  typedef Sci_Line       DocLn;
 #else
 
   #ifdef NP3_COMPILE_TEST

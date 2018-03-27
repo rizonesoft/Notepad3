@@ -274,7 +274,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   UndoRedoActionMap(-1,NULL);
   SendMessage(hwnd,SCI_CLEARALL,0,0);
   SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-  SendMessage(hwnd,SCI_SETSCROLLWIDTH, 1,0);
+  SendMessage(hwnd,SCI_SETSCROLLWIDTH, GetSystemMetrics(SM_CXSCREEN), 0);
   SendMessage(hwnd,SCI_SETXOFFSET,0,0);
 
   FileVars_Apply(hwnd,&fvCurFile);
@@ -285,6 +285,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
   //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
   SendMessage(hwnd,SCI_SETSAVEPOINT,0,0);
+  SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwnd,SCI_GOTOPOS,0,0);
   SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
 
@@ -723,6 +724,9 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
         EditClearClipboard(hwnd);
         EditSelectEx(hwnd, iAnchorPos, SciCall_GetCurrentPos(), -1, -1);
       }
+      //else {
+      //  EditSelectEx(hwnd, SciCall_GetCurrentPos(), SciCall_GetCurrentPos(), -1, -1);
+      //}
     }
     else {
       char* pszText = LocalAlloc(LPTR, SciCall_GetSelText(NULL));
@@ -737,7 +741,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
       }
       else {
         if (iCurPos < iAnchorPos)
-          EditSelectEx(hwnd, iCurPos, iCurPos, -1, -1);
+          EditSelectEx(hwnd, iAnchorPos, iCurPos, -1, -1);
       }
       LocalFree(pszText);
     }
@@ -748,7 +752,7 @@ BOOL EditPasteClipboard(HWND hwnd, BOOL bSwapClipBoard, BOOL bSkipUnicodeCheck)
     {
       if (bSwapClipBoard) { SciCall_Copy(); }
       EditPaste2RectSel(hwnd, pClip);
-      // TODO: restore selection in case of swap clipboard 
+      //TODO: restore selection in case of swap clipboard 
     }
     else // Selection: SC_SEL_STREAM, SC_SEL_LINES
     {
@@ -4253,16 +4257,10 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
   LocalFree(pmszResult);
 
-  if (bIsRectangular) {
-    SendMessage(hwnd, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)iAnchorPos, 0);
-    SendMessage(hwnd, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)iCurPos, 0);
-    SendMessage(hwnd, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)iAnchorPosVS, 0);
-    SendMessage(hwnd, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)iCurPosVS, 0);
-  }
-  else {
+  if (bIsRectangular)
+    EditSelectEx(hwnd, iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
+  else
     EditSelectEx(hwnd, iAnchorPos, iCurPos, -1, -1);
-  }
-
 }
 
 
@@ -4272,6 +4270,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 //
 void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, int vSpcAnchor, int vSpcCurrent)
 {
+  UNUSED(hwnd);
+
   if ((iAnchorPos < 0) && (iCurrentPos < 0)) {
     SciCall_SelectAll();
   }
@@ -4289,7 +4289,7 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, int vSpcAnch
   // This needs to be done *before* the SCI_SETSEL message
   SciCall_EnsureVisible(iAnchorLine);
   if (iAnchorLine != iNewLine) {  SciCall_EnsureVisible(iNewLine);  }
-  
+
   if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
     SciCall_SetRectangularSelectionAnchor(iAnchorPos);
     if (vSpcAnchor > 0)
@@ -4301,6 +4301,7 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, int vSpcAnch
   else
     SciCall_SetSel(iAnchorPos, iCurrentPos);
 
+  //Sci_PostMsgV2(SCROLLRANGE, iAnchorPos, iCurrentPos);
   SciCall_ScrollRange(iAnchorPos, iCurrentPos);
 
   // remember x-pos for moving caret vertically
@@ -4308,7 +4309,34 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, int vSpcAnch
 
   UpdateToolbar();
   UpdateStatusbar();
+  UpdateLineNumberWidth();
+}
+
+
+//=============================================================================
+//
+//  EditEnsureSelectionVisible()
+//
+void EditEnsureSelectionVisible(HWND hwnd)
+{
   UNUSED(hwnd);
+  DocPos iAnchorPos = 0;
+  DocPos iCurrentPos = 0;
+  DocPos iAnchorPosVS = -1;
+  DocPos iCurPosVS = -1;
+
+  if (SciCall_IsSelectionRectangle()) 
+  {
+    iAnchorPos = SciCall_GetRectangularSelectionAnchor();
+    iCurrentPos = SciCall_GetRectangularSelectionCaret();
+    iAnchorPosVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+    iCurPosVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
+  }
+  else {
+    iAnchorPos = SciCall_GetAnchor();
+    iCurrentPos = SciCall_GetCurrentPos();
+  }
+  EditSelectEx(hwnd, iAnchorPos, iCurrentPos, iAnchorPosVS, iCurPosVS);
 }
 
 
@@ -4362,19 +4390,6 @@ void EditFixPositions(HWND hwnd)
       SciCall_SetAnchor(iNewPos); 
     }
   }
-  UNUSED(hwnd);
-}
-
-
-//=============================================================================
-//
-//  EditEnsureSelectionVisible()
-//
-void EditEnsureSelectionVisible(HWND hwnd)
-{
-  const DocPos iAnchorPos = SciCall_GetAnchor();
-  const DocPos iCurrentPos = SciCall_GetCurrentPos();
-  EditSelectEx(hwnd, iAnchorPos, iCurrentPos, -1, -1);
   UNUSED(hwnd);
 }
 

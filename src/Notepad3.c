@@ -208,7 +208,7 @@ int       iSciFontQuality;
 int       iHighDpiToolBar;
 int       iUpdateDelayHyperlinkStyling;
 int       iUpdateDelayMarkAllCoccurrences;
-int       iCurrentLineHorizontalSlop = 1;
+int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 
 const int DirectWriteTechnology[4] = {
@@ -1280,18 +1280,19 @@ void __fastcall InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
 
+  #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
   if (iCurrentLineHorizontalSlop > 0)
-    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineHorizontalSlop);
+    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | CARET_STRICT), iCurrentLineHorizontalSlop);
   else
-    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), (LPARAM)0);
+    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | CARET_STRICT), (LPARAM)0);
 
   if (iCurrentLineVerticalSlop > 0)
-    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | CARET_EVEN | CARET_STRICT), iCurrentLineVerticalSlop);
+    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | CARET_STRICT), iCurrentLineVerticalSlop);
   else
-    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_EVEN), 0);
+    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
 
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
-  SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, ((bScrollPastEOF) ? 0 : 1), 0);
+  SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((bScrollPastEOF) ? 0 : 1), 0);
 
   // Tabs
   SendMessage(hwndEditCtrl, SCI_SETUSETABS, !g_bTabsAsSpaces, 0);
@@ -2964,8 +2965,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         int token = BeginUndoAction();
         EditPasteClipboard(g_hwndEdit, FALSE, bSkipUnicodeDetection);
         EndUndoAction(token);
-        UpdateToolbar();
-        UpdateStatusbar();
+        // Updates done by EditPasteClipboard():
+        //~UpdateToolbar();
+        //~UpdateStatusbar();
+        //~UpdateLineNumberWidth();
       }
       break;
 
@@ -4323,7 +4326,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     
     case IDM_VIEW_SCROLLPASTEOF:
       bScrollPastEOF = (bScrollPastEOF) ? FALSE : TRUE;
-      SendMessage(g_hwndEdit, SCI_SETENDATLASTLINE, ((bScrollPastEOF) ? 0 : 1), 0);
+      SciCall_SetEndAtLastLine(!bScrollPastEOF);
       break;
 
     case IDM_VIEW_TOOLBAR:
@@ -5658,7 +5661,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
         case SCN_SAVEPOINTREACHED:
-          SendMessage(g_hwndEdit, SCI_SETSCROLLWIDTH, 1, 0);
+          SciCall_SetScrollWidth(1);
           SetDocumentModified(FALSE);
           break;
 
@@ -7827,10 +7830,14 @@ BOOL FileRevert(LPCWSTR szFileName)
 
     const DocPos iCurPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
     const DocPos iAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
-    const int vSpcCaretPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaretVirtualSpace() : -1;
-    const int vSpcAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : -1;
+    //const int vSpcCaretPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionCaretVirtualSpace() : -1;
+    //const int vSpcAnchorPos = SciCall_IsSelectionRectangle() ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : -1;
 
     const DocLn iCurrLine = SciCall_LineFromPosition(iCurPos);
+    const DocPos iCurColumn = SciCall_GetColumn(iCurPos);
+    const DocLn iVisTopLine = SciCall_GetFirstVisibleLine();
+    const DocLn iDocTopLine = SciCall_DocLineFromVisible(iVisTopLine);
+    const int   iXOffset = SciCall_GetXoffset();
     const BOOL bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
 
     Encoding_SrcWeak(Encoding_Current(CPI_GET));
@@ -7846,9 +7853,16 @@ BOOL FileRevert(LPCWSTR szFileName)
       }
       else if (SciCall_GetTextLength() >= 4) {
         char tch[5] = { '\0' };
+        
         SciCall_GetText(5, tch);
         if (StringCchCompareXA(tch,".LOG") != 0) {
-          EditSelectEx(g_hwndEdit, iAnchorPos, iCurPos, vSpcAnchorPos, vSpcCaretPos);
+          SciCall_ClearSelections();
+          //~EditSelectEx(g_hwndEdit, iAnchorPos, iCurPos, vSpcAnchorPos, vSpcCaretPos);
+          EditJumpTo(g_hwndEdit, iCurrLine+1, iCurColumn+1);
+          SciCall_EnsureVisible(iDocTopLine);
+          const DocLn iNewTopLine = SciCall_GetFirstVisibleLine();
+          SciCall_LineScroll(0,iVisTopLine - iNewTopLine);
+          SciCall_SetXoffset(iXOffset);
         }
       }
       return TRUE;

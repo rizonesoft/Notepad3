@@ -66,6 +66,9 @@ extern HANDLE g_hwndEdit;
 #define Sci_SendMsgV1(CMD,WP)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
 #define Sci_SendMsgV2(CMD,WP,LP)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
 
+#define Sci_PostMsgV0(CMD)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
+#define Sci_PostMsgV1(CMD,WP)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
+#define Sci_PostMsgV2(CMD,WP,LP)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
 
 //=============================================================================
 //
@@ -155,6 +158,7 @@ DeclareSciCallR0(GetRectangularSelectionAnchorVirtualSpace, GETRECTANGULARSELECT
 DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos, position)
 
 // Multiselections (Lines of Rectangular selection)
+DeclareSciCallV0(ClearSelections, CLEARSELECTIONS)
 DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU)
 DeclareSciCallR1(GetSelectionNCaret, GETSELECTIONNCARET, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNAnchor, GETSELECTIONNANCHOR, DocPos, DocPosU, selnum)
@@ -170,6 +174,7 @@ DeclareSciCallV0(Cut, CUT)
 DeclareSciCallV0(Copy, COPY)
 DeclareSciCallV0(Paste, PASTE)
 DeclareSciCallV0(Clear, CLEAR)
+DeclareSciCallV0(Cancel, CANCEL)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
 DeclareSciCallV0(LineDelete, LINEDELETE)
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
@@ -210,16 +215,10 @@ DeclareSciCallR1(PositionFromLine, POSITIONFROMLINE, DocPos, DocLn, line)
 DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line)
 DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position)
 DeclareSciCallR2(FindColumn, FINDCOLUMN, DocPos, DocLn, line, DocPos, column)
-
-DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
-DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)
-DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
-
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char* const, DocPos, start, DocPos, length)
 DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char*)
-
 
 DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
 
@@ -237,7 +236,16 @@ DeclareSciCallV0(NewLine, NEWLINE)
 //
 DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
 DeclareSciCallV0(ScrollCaret, SCROLLCARET)
+DeclareSciCallV2(LineScroll, LINESCROLL, DocPos, columns, DocLn, lines)
 DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos)
+DeclareSciCallV1(SetScrollWidth, SETSCROLLWIDTH, int, width)
+DeclareSciCallV1(SetEndAtLastLine, SETENDATLASTLINE, bool, flag)
+DeclareSciCallR0(GetXoffset, GETXOFFSET, int)
+DeclareSciCallV1(SetXoffset, SETXOFFSET, int, offset)
+
+DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
+DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)
+DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 
 
 //=============================================================================
