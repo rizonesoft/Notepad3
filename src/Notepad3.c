@@ -7146,6 +7146,10 @@ void UpdateToolbar()
 //  UpdateStatusbar()
 //
 //
+const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
+
+FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
+
 void UpdateStatusbar() 
 {
   static WCHAR tchLn[32] = { L'\0' };
@@ -7258,7 +7262,8 @@ void UpdateStatusbar()
     else
       StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
 
-    FormatString(tchFRStatus, COUNTOF(tchFRStatus), IDS_FR_STATUS_FMT, tchLn, tchLines, tchCol, tchSel, tchOcc, tchReplOccs);
+    FormatString(tchFRStatus, COUNTOF(tchFRStatus), IDS_FR_STATUS_FMT, 
+                 tchLn, tchLines, tchCol, tchSel, tchOcc, tchReplOccs, FR_Status[g_FindReplaceMatchFoundState]);
     SetWindowText(GetDlgItem(g_hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
   }
 

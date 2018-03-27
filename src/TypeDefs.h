@@ -41,7 +41,7 @@
 #endif
 
 
-  enum BufferSizes
+  typedef enum BufferSizes
   {
     MICRO_BUFFER = 32,
     MINI_BUFFER = 64,
@@ -53,8 +53,13 @@
 
     FILE_ARG_BUF = MAX_PATH + 2,
     FNDRPL_BUFFER = 1024,
-    TEMPLINE_BUFFER = 8192
-  };
+    TEMPLINE_BUFFER = 4096
+
+  } BUFFER_SIZES;
+
+
+  typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
+  typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
 
 //=============================================================================
 

@@ -105,6 +105,8 @@ extern BOOL g_bTabIndents;
 extern int  g_iTabWidth;
 extern int  g_iIndentWidth;
 
+extern FR_STATES g_FindReplaceMatchFoundState;
+
 
 #define DELIM_BUFFER 258
 static char DelimChars[DELIM_BUFFER] = { '\0' };
@@ -4590,11 +4592,12 @@ int __fastcall EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind
 //
 //  EditFindInTarget()
 //
-DocPos __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int flags, DocPos* start, DocPos* end, BOOL bForceNext)
+DocPos __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int flags, 
+                                   DocPos* start, DocPos* end, BOOL bForceNext, FR_UPD_MODES fMode)
 {
   DocPos _start = *start;
   DocPos _end = *end;
-  BOOL bFindPrev = (_start > _end);
+  const BOOL bFindPrev = (_start > _end);
 
   EditEnterTargetTransaction();
 
@@ -4620,11 +4623,20 @@ DocPos __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int 
     }
   }
   if (iPos >= 0) {
+    if (fMode != FRMOD_IGNORE) {
+      g_FindReplaceMatchFoundState = bFindPrev ? 
+        ((fMode == FRMOD_WRAPED) ? PRV_WRP_FND : PRV_FND) : 
+        ((fMode == FRMOD_WRAPED) ? NXT_WRP_FND : NXT_FND);
+    }
     // found in range, set begin and end of finding
     *start = (DocPos)SendMessage(hwnd, SCI_GETTARGETSTART, 0, 0);
     *end = (DocPos)SendMessage(hwnd, SCI_GETTARGETEND, 0, 0);
   }
-
+  else {
+    if (fMode != FRMOD_IGNORE) {
+      g_FindReplaceMatchFoundState = (fMode != FRMOD_WRAPED) ? (bFindPrev ? PRV_NOT_FND : NXT_NOT_FND) : FND_NOP;
+    }
+  }
   EditLeaveTargetTransaction();
 
   return iPos;
@@ -4647,7 +4659,7 @@ RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, B
 
   DocPos start = iStart;
   DocPos end   = iTextLength;
-  DocPos iPos  = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+  DocPos iPos  = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_IGNORE);
 
   if (!bFirstMatchOnly) 
   {
@@ -4710,6 +4722,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_INITDIALOG:
     {
       iReplacedOccurrences = 0;
+      g_FindReplaceMatchFoundState = FND_NOP;
 
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       lpefr = (LPEDITFINDREPLACE)lParam;
@@ -4876,6 +4889,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
 
         iReplacedOccurrences = 0;
+        g_FindReplaceMatchFoundState = FND_NOP;
       }
       return FALSE;
 
@@ -5036,7 +5050,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (lpefr->bMarkOccurences) {
             if (bFlagsChanged || (StringCchCompareXA(g_lastFind, lpefr->szFind) != 0)) {
               StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), lpefr->szFind);
-              RegExResult_t match = EditFindHasMatch(g_hwndEdit, lpefr, (iSaveMarkOcc > 0), FALSE);
+              RegExResult_t match = EditFindHasMatch(g_hwndEdit, lpefr, (lpefr->bMarkOccurences), FALSE);
               if (regexMatch != match) {
                 regexMatch = match;
               }
@@ -5309,6 +5323,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SetDlgItemTextW(hwnd, IDC_FINDTEXT, wszRepl);
         SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
         bFlagsChanged = TRUE;
+        g_FindReplaceMatchFoundState = FND_NOP;
         EditSetTimerMarkAll(hwnd,50);
       }
       break;
@@ -5348,6 +5363,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         break;
 
       case IDACC_SAVEFIND:
+        g_FindReplaceMatchFoundState = FND_NOP;
         SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_EDIT_SAVEFIND, 1), 0);
         SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, lpefr->szFind);
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
@@ -5512,7 +5528,7 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BO
       bSuppressNotFound = TRUE;
   }
 
-  DocPos iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, TRUE);
+  DocPos iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, TRUE, FRMOD_NORM);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
     InfoBox(MBWARN, L"MsgInvalidRegex", IDS_REGEX_INVALID);
@@ -5520,11 +5536,11 @@ BOOL EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BO
   }
   else if ((iPos < 0) && (start > 0) && !lpefr->bNoFindWrap && !bExtendSelection && !bSuppressNotFound) 
   {
-    if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPFW)) 
+    if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPFW))
     {
       end = min(start, iTextLength);  start = 0;
 
-      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_WRAPED);
 
       if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
         InfoBox(MBWARN, L"MsgInvalidRegex2", IDS_REGEX_INVALID);
@@ -5582,7 +5598,7 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BO
       bSuppressNotFound = TRUE;
   }
 
-  DocPos iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, TRUE);
+  DocPos iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, TRUE, FRMOD_NORM);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) 
   {
@@ -5595,7 +5611,7 @@ BOOL EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, BOOL bExtendSelection, BO
     {
       end = start;  start = iTextLength;
 
-      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_WRAPED);
 
       if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
         InfoBox(MBWARN, L"MsgInvalidRegex2", IDS_REGEX_INVALID);
@@ -5729,7 +5745,8 @@ BOOL EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   DocPos _start = start;
   iReplacedOccurrences = 0;
 
-  const DocPos iPos = EditFindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FNDRPL_BUFFER),  (int)(lpefr->fuFlags), &start, &end, FALSE);
+  const DocPos iPos = EditFindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FRMOD_NORM), 
+    (int)(lpefr->fuFlags), &start, &end, FALSE, FALSE);
 
   // w/o selection, replacement string is put into current position
   // but this maybe not intended here
@@ -5804,7 +5821,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
   DocPos start = iStartPos;
   DocPos end = iEndPos;
 
-  DocPos iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+  DocPos iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_NORM);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
     InfoBox(MBWARN, L"MsgInvalidRegex", IDS_REGEX_INVALID);
@@ -5824,7 +5841,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
     end = iEndPos;
 
     if (start <= iEndPos)
-      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, ((posPair.end - posPair.beg) == 0));
+      iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, ((posPair.end - posPair.beg) == 0), FRMOD_IGNORE);
     else
       iPos = -1;
   } 
@@ -5843,7 +5860,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
     start = pPosPair->beg + offset;
     end = iEndPos + offset;
 
-    iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE);
+    iPos = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_IGNORE);
 
     EditEnterTargetTransaction();
 
@@ -6053,7 +6070,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
     DocPos iPos = (DocPos)-1;
     do {
 
-      iPos = EditFindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (start == iPos));
+      iPos = EditFindInTarget(hwnd, pszText, iFindLength, flags, &start, &end, (start == iPos), FRMOD_IGNORE);
 
       if (iPos < 0)
         break; // not found
@@ -6232,7 +6249,7 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, BOOL bActi
   int iStyle = bActiveHotspot ? Style_GetHotspotStyleID() : STYLE_DEFAULT;
   
   do {
-    DocPos iPos = EditFindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, FALSE);
+    DocPos iPos = EditFindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, FALSE, FRMOD_IGNORE);
 
     if (iPos < 0)
       break; // not found
