@@ -107,7 +107,6 @@ extern int  g_iIndentWidth;
 
 extern FR_STATES g_FindReplaceMatchFoundState;
 
-
 #define DELIM_BUFFER 258
 static char DelimChars[DELIM_BUFFER] = { '\0' };
 static char DelimCharsAccel[DELIM_BUFFER] = { '\0' };
@@ -4645,7 +4644,7 @@ DocPos __fastcall EditFindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int 
 
 //=============================================================================
 //
-//  EditCheckRegex()
+//  EditFindHasMatch()
 //
 typedef enum { MATCH = 0, NO_MATCH = 1, INVALID = 2 } RegExResult_t;
 
@@ -4656,12 +4655,26 @@ RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, B
 
   const DocPos iStart = bFirstMatchOnly ? SciCall_GetSelectionStart() : 0;
   const DocPos iTextLength = SciCall_GetTextLength();
+  const DocLn iVisTopLine = SciCall_GetFirstVisibleLine();
 
   DocPos start = iStart;
   DocPos end   = iTextLength;
-  DocPos iPos  = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_IGNORE);
+  const DocPos iPos  = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_IGNORE);
 
-  if (!bFirstMatchOnly) 
+  if (bFirstMatchOnly) {
+    if (iPos >= 0) {
+      SciCall_ScrollRange(iPos, iPos);
+      const DocLn iScrollLines = SciCall_LinesOnScreen() / 2;
+      if (SciCall_LineFromPosition(iPos) > (iVisTopLine + iScrollLines)) {
+        SciCall_LineScroll(0, iScrollLines);
+      }
+    }
+    else {
+      const DocPos iCurPos = SciCall_GetCurrentPos();
+      SciCall_ScrollRange(iCurPos, iCurPos);
+    }
+  }
+  else // mark all matches
   {
     if (bMarkAll && (iPos >= 0)) {
       EditClearAllMarks(hwnd, (DocPos)0, iTextLength);

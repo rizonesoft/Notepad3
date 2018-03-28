@@ -169,10 +169,10 @@ BEGIN
             MENUITEM "Move &Up\tCtrl+Shift+Up",     IDM_EDIT_MOVELINEUP
             MENUITEM "&Move Down\tCtrl+Shift+Down", IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut &Line\tCtrl+X,Ctrl+Shift+X", IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Line\tCtrl+C,Ctrl+Shift+C", IDM_EDIT_COPYLINE
-            MENUITEM "D&elete Line\tCtrl+Shift+D",  IDM_EDIT_DELETELINE
+            MENUITEM "Cut &Line\tCtrl[+Shift]+X", IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Line\tCtrl[+Shift]+C", IDM_EDIT_COPYLINE
             MENUITEM "&Duplicate Line\tCtrl+D",     IDM_EDIT_DUPLICATELINE
+            MENUITEM "D&elete Line\tCtrl+Shift+D", IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Delete Line Left\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
             MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT

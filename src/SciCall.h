@@ -245,6 +245,7 @@ DeclareSciCallV1(SetXoffset, SETXOFFSET, int, offset)
 
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)
+DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line)
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 
 
