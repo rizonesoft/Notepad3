@@ -103,7 +103,7 @@ void  EditJoinLinesEx(HWND,BOOL,BOOL);
 void  EditSortLines(HWND,int);
 
 void  EditJumpTo(HWND, DocLn, DocPos);
-void  EditScrollTo(HWND, DocLn);
+void  EditScrollTo(HWND, DocLn, bool);
 void  EditSelectEx(HWND, DocPos, DocPos, int, int);
 void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);

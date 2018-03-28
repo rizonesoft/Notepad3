@@ -122,8 +122,14 @@ static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 //static WCHAR W_WhiteSpaceCharsDefault[DELIM_BUFFER] = { L'\0' };
 //static WCHAR W_WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { L'\0' };
 
+
+// Is the character a white space char?
+//#define IsWhiteSpace(ch)  (((ch) == ' ') || ((ch) == '\t'))
+#define IsWhiteSpace(ch)  StrChrA(WhiteSpaceCharsDefault, (ch))
+#define IsAccelWhiteSpace(ch)  StrChrA(WhiteSpaceCharsAccelerated, (ch))
+
+
 // temporary line buffer for fast line ops 
-#
 static char g_pTempLineBuffer[TEMPLINE_BUFFER];
 
 
@@ -2576,7 +2582,7 @@ void EditIndentBlock(HWND hwnd, int cmd, BOOL bFormatIndentation)
   //const DocPos iSelEnd = SciCall_GetSelectionEnd();
   const DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
   const DocLn iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-  const BOOL bSingleLine = IsSingleLineSelection();
+  const BOOL bSingleLine = Sci_IsSingleLineSelection();
 
   const BOOL _bTabIndents = (BOOL)SendMessage(hwnd, SCI_GETTABINDENTS, 0, 0);
   const BOOL _bBSpUnindents = (BOOL)SendMessage(hwnd, SCI_GETBACKSPACEUNINDENTS, 0, 0);
@@ -2626,9 +2632,9 @@ void EditIndentBlock(HWND hwnd, int cmd, BOOL bFormatIndentation)
   else {  // on multiline indentation, anchor and current positions are moved to line begin resp. end
     if (bFixStart) {
       if (iCurPos < iAnchorPos)
-        iDiffCurrent = SciCall_LineLength(iCurLine) - GetEOLLen();
+        iDiffCurrent = SciCall_LineLength(iCurLine) - Sci_GetEOLLen();
       else
-        iDiffAnchor = SciCall_LineLength(iAnchorLine) - GetEOLLen();
+        iDiffAnchor = SciCall_LineLength(iAnchorLine) - Sci_GetEOLLen();
     }
     EditSelectEx(hwnd, SciCall_GetLineEndPosition(iAnchorLine) - iDiffAnchor, SciCall_GetLineEndPosition(iCurLine) - iDiffCurrent, -1, -1);
   }
@@ -4326,13 +4332,17 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, int vSpcAnch
     SciCall_SetRectangularSelectionCaret(iCurrentPos);
     if (vSpcCurrent > 0)
       SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
+
+    //Sci_PostMsgV2(SCROLLRANGE, iAnchorPos, iCurrentPos);
+    SciCall_ScrollRange(iAnchorPos, iCurrentPos);
   }
   else
-    SciCall_SetSel(iAnchorPos, iCurrentPos);
+    SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
 
-  //Sci_PostMsgV2(SCROLLRANGE, iAnchorPos, iCurrentPos);
-  SciCall_ScrollRange(iAnchorPos, iCurrentPos);
-
+  if (abs(iNewLine - iAnchorLine) < SciCall_LinesOnScreen())
+  {
+    EditScrollTo(hwnd, (iAnchorLine + iNewLine) / 2, true);  // center small selection
+  }
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
 
@@ -4373,7 +4383,7 @@ void EditEnsureSelectionVisible(HWND hwnd)
 //
 //  EditScrollTo()
 //
-void EditScrollTo(HWND hwnd, DocLn iScrollToLine)
+void EditScrollTo(HWND hwnd, DocLn iScrollToLine, bool bForceCenter)
 {
   UNUSED(hwnd);
 
@@ -4388,7 +4398,7 @@ void EditScrollTo(HWND hwnd, DocLn iScrollToLine)
 
   // center line in view (if not already in view)
   const DocLn iNewVisTopLine = SciCall_GetFirstVisibleLine();
-  if (iNewVisTopLine != iVisTopLine) {
+  if ((iNewVisTopLine != iVisTopLine) || bForceCenter) {
     const DocLn iScrollLines = SciCall_LinesOnScreen() / 2;
     const int iScrollCnt = (iScrollToLine - iNewVisTopLine - iScrollLines);
     if (iScrollCnt != 0) { SciCall_LineScroll(0, iScrollCnt); }
@@ -4417,7 +4427,7 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
-  EditScrollTo(hwnd, iNewLine);
+  EditScrollTo(hwnd, iNewLine, false);
 
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
@@ -4430,13 +4440,15 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
 //
 void EditFixPositions(HWND hwnd)
 {
-  DocPos iMaxPos     = SciCall_GetTextLength();
+  UNUSED(hwnd);
+
   DocPos iCurrentPos = SciCall_GetCurrentPos();
-  DocPos iAnchorPos  = SciCall_GetAnchor();
+  const DocPos iAnchorPos = SciCall_GetAnchor();
+  const DocPos iMaxPos = SciCall_GetTextLength();
 
   if ((iCurrentPos > 0) && (iCurrentPos < iMaxPos)) 
   {
-    DocPos iNewPos = SciCall_PositionAfter( SciCall_PositionBefore(iCurrentPos) );
+    const DocPos iNewPos = SciCall_PositionAfter( SciCall_PositionBefore(iCurrentPos) );
 
     if (iNewPos != iCurrentPos) {
       SciCall_SetCurrentPos(iNewPos);
@@ -4446,12 +4458,11 @@ void EditFixPositions(HWND hwnd)
 
   if ((iAnchorPos != iCurrentPos) && (iAnchorPos > 0) && (iAnchorPos < iMaxPos)) 
   {
-    DocPos iNewPos = SciCall_PositionAfter(SciCall_PositionBefore(iAnchorPos));
+    const DocPos iNewPos = SciCall_PositionAfter(SciCall_PositionBefore(iAnchorPos));
     if (iNewPos != iAnchorPos) { 
       SciCall_SetAnchor(iNewPos); 
     }
   }
-  UNUSED(hwnd);
 }
 
 
@@ -4722,10 +4733,10 @@ RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, B
 
   if (bFirstMatchOnly && !bReplaceInitialized) {
     if (iPos >= 0) {
-      EditScrollTo(hwnd, SciCall_LineFromPosition(iPos));
+      EditScrollTo(hwnd, SciCall_LineFromPosition(iPos), true);
     }
     else {
-      EditScrollTo(hwnd, SciCall_LineFromPosition(iStart));
+      EditScrollTo(hwnd, SciCall_LineFromPosition(iStart), false);
     }
   }
   else // mark all matches
@@ -4781,7 +4792,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   static int  iSaveMarkOcc = -1;
   static BOOL bSaveOccVisible = FALSE;
   static BOOL bSaveTFBackSlashes = FALSE;
-  static DocLn iVisTopLine = -1;
 
   WCHAR tchBuf[FNDRPL_BUFFER] = { L'\0' };
 
@@ -4794,7 +4804,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       iReplacedOccurrences = 0;
       g_FindReplaceMatchFoundState = FND_NOP;
-      iVisTopLine = SciCall_GetFirstVisibleLine();
 
       if (lpefr->bMarkOccurences) {
         iSaveMarkOcc = iMarkOccurrences;
@@ -4932,6 +4941,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       EditSetSearchFlags(hwnd, lpefr);
       bFlagsChanged = TRUE;
+
+      EditEnsureSelectionVisible(hwnd);
+
       EditSetTimerMarkAll(hwnd, 50);
     }
     return TRUE;
@@ -4956,10 +4968,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           iReplacedOccurrences = 0;
           g_FindReplaceMatchFoundState = FND_NOP;
 
-          SciCall_ScrollCaret();
-          if (SciCall_GetFirstVisibleLine() != iVisTopLine) {
-            SciCall_SetFirstVisibleLine(iVisTopLine);
-          }
+          //EditScrollTo(hwnd, Sci_GetCurrentLine(), false);
+          EditEnsureSelectionVisible(hwnd);
         }
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
@@ -5382,7 +5392,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
       }
       bFlagsChanged = TRUE;
-      iVisTopLine = SciCall_GetFirstVisibleLine();
       EditSetTimerMarkAll(hwnd,50);
       break;
 

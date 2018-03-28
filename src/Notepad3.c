@@ -326,6 +326,10 @@ FILEVARS  fvCurFile;
 BOOL      bReadOnly = FALSE;
 
 
+// temporary line buffer for fast line ops 
+static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
+
+
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
@@ -3238,10 +3242,20 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_MERGEBLANKLINES:
+    {
+      BeginWaitCursor(NULL);
+      int token = BeginUndoAction();
+      EditRemoveBlankLines(g_hwndEdit, TRUE, TRUE);
+      EndUndoAction(token);
+      EndWaitCursor();
+    }
+    break;
+
+    case IDM_EDIT_MERGEEMPTYLINES:
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditRemoveBlankLines(g_hwndEdit, TRUE, TRUE);
+        EditRemoveBlankLines(g_hwndEdit, TRUE, FALSE);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -5499,22 +5513,20 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_CHARADDED:
           {
-            static char chLineBuffer[XHUGE_BUFFER] = { '\0' };
-
             // Auto indent
             if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
             {
               // in CRLF mode handle LF only...
               if ((SC_EOL_CRLF == g_iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != g_iEOLMode)
               {
-                DocPos iCurPos = SciCall_GetCurrentPos();
-                DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
+                const DocPos iCurPos = SciCall_GetCurrentPos();
+                const DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
 
-                // Move bookmark along with line if inserting lines (pressing return at beginning of line) because Scintilla does not do this for us
+                // Move bookmark along with line if inserting lines (pressing return within indent area of line) because Scintilla does not do this for us
                 if (iCurLine > 0)
                 {
-                  DocPos iPrevLineLength = SciCall_GetLineEndPosition(iCurLine - 1) - SciCall_PositionFromLine(iCurLine - 1);
-                  if (iPrevLineLength == 0)
+                  //const DocPos iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
+                  if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1))
                   {
                     int bitmask = (int)SendMessage(g_hwndEdit, SCI_MARKERGET, iCurLine - 1, 0);
                     if (bitmask & (1 << MARKER_NP3_BOOKMARK))
@@ -5524,14 +5536,14 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                     }
                   }
                 }
-
+                
                 if (iCurLine > 0/* && iLineLength <= 2*/)
                 {
                   const DocPos iPrevLineLength = SciCall_LineLength(iCurLine - 1);
                   char* pLineBuf = NULL;
                   bool bAllocLnBuf = false;
-                  if (iPrevLineLength < XHUGE_BUFFER) {
-                    pLineBuf = chLineBuffer;
+                  if (iPrevLineLength < TEMPLINE_BUFFER) {
+                    pLineBuf = g_pTempLineBufferMain;
                   }
                   else {
                     bAllocLnBuf = true;
@@ -5562,7 +5574,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               //if (iLexer == SCLEX_HTML || iLexer == SCLEX_XML)
               {
                 const DocPos iCurPos = SciCall_GetCurrentPos();
-                const DocPos iHelper = iCurPos - (DocPos)(COUNTOF(chLineBuffer) - 1);
+                const DocPos iHelper = iCurPos - (DocPos)(COUNTOF(g_pTempLineBufferMain) - 1);
                 const DocPos iStartPos = max(0, iHelper);
                 const DocPos iSize = iCurPos - iStartPos;
 
@@ -5578,30 +5590,30 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                       --pCur;
 
                     int  cchIns = 2;
-                    StringCchCopyA(chLineBuffer, FNDRPL_BUFFER, "</");
+                    StringCchCopyA(g_pTempLineBufferMain, FNDRPL_BUFFER, "</");
                     if (*pCur == '<') {
                       pCur++;
                       while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
-                        chLineBuffer[cchIns++] = *pCur;
+                        g_pTempLineBufferMain[cchIns++] = *pCur;
                         pCur++;
                       }
                     }
-                    chLineBuffer[cchIns++] = '>';
-                    chLineBuffer[cchIns] = '\0';
+                    g_pTempLineBufferMain[cchIns++] = '>';
+                    g_pTempLineBufferMain[cchIns] = '\0';
 
                     if (cchIns > 3 &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</base>", -1) &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</bgsound>", -1) &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</br>", -1) &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</embed>", -1) &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</hr>", -1) &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</img>", -1) &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</input>", -1) &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</link>", -1) &&
-                      StringCchCompareINA(chLineBuffer, COUNTOF(chLineBuffer), "</meta>", -1))
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</base>", -1) &&
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</bgsound>", -1) &&
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</br>", -1) &&
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</embed>", -1) &&
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</hr>", -1) &&
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</img>", -1) &&
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</input>", -1) &&
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</link>", -1) &&
+                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</meta>", -1))
                     {
                       int token = BeginUndoAction();
-                      SciCall_ReplaceSel(chLineBuffer);
+                      SciCall_ReplaceSel(g_pTempLineBufferMain);
                       SciCall_SetSel(iCurPos, iCurPos);
                       EndUndoAction(token);
                     }
@@ -5612,17 +5624,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
               EditCompleteWord(g_hwndEdit, FALSE);
             }
-            //else if (SciCall_IsSelectionRectangle() || IsThinRectangleSelected()) {
-            //  WCHAR wch[8] = { L'\0' };
-            //  StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)(scn->ch));
-            //  char chr[8] = { '\0' };
-            //  WideCharToMultiByteStrg(Encoding_SciCP, wch, chr);
-
-            //  if (SciCall_IsSelectionRectangle())
-            //    EditPaste2RectSel(g_hwndEdit, chr);
-            //  else
-            //    SciCall_ReplaceSel(chr);
-            //}
           }
           break;
 

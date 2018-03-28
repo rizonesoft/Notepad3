@@ -338,15 +338,18 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
 //
 //  Utilities
 //
-#define IsStreamSelected() (SciCall_GetSelectionMode() == SC_SEL_STREAM)
-#define IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
-#define IsThinRectangleSelected() (SciCall_GetSelectionMode() == SC_SEL_THIN)
-#define IsSingleLineSelection() \
+#define Sci_IsStreamSelected() (SciCall_GetSelectionMode() == SC_SEL_STREAM)
+#define Sci_IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
+#define Sci_IsThinRectangleSelected() (SciCall_GetSelectionMode() == SC_SEL_THIN)
+#define Sci_IsSingleLineSelection() \
 (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 
-#define GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
+#define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
+#define Sci_GetCurrentLine() SciCall_LineFromPosition(SciCall_GetCurrentPos())
 
+// length of line w/o line-end chars (full use SciCall_LineLength()
+#define Sci_GetNetLineLength(line)  (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
 
 
 //=============================================================================

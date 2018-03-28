@@ -377,26 +377,10 @@ __forceinline int _StringCchCmpINW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) 
 #endif
 
 
+// Is the character an octal digit?
+#define IsOctalDigit(ch) (((ch) >= '0') && ((ch) <= '7'))
 
-/**
-* Is the character a white space char?
-*/
-__forceinline bool IsWhiteSpace(char ch) {
-  return ((ch == ' ') || (ch == '\t'));
-}
-
-
-/**
-* Is the character an octal digit?
-*/
-__forceinline bool IsOctalDigit(char ch) {
-  return ch >= '0' && ch <= '7';
-}
-
-
-/**
-* If the character is an hexa digit, get its value.
-*/
+// If the character is an hexa digit, get its value.
 __forceinline int GetHexDigit(char ch) {
   if (ch >= '0' && ch <= '9') { return ch - '0'; }
   if (ch >= 'A' && ch <= 'F') { return ch - 'A' + 10; }
