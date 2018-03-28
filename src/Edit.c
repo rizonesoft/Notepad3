@@ -2258,6 +2258,35 @@ void EditMoveDown(HWND hwnd)
 
 //=============================================================================
 //
+//  EditJumpToSelectionStart()
+//
+void EditJumpToSelectionStart(HWND hwnd)
+{
+  UNUSED(hwnd);
+  if (!SciCall_IsSelectionRectangle()) {
+    if (SciCall_GetCurrentPos() != SciCall_GetSelectionStart()) {
+      SciCall_SwapMainAnchorCaret();
+    }
+  }
+}
+
+//=============================================================================
+//
+//  EditJumpToSelectionEnd()
+//
+void EditJumpToSelectionEnd(HWND hwnd)
+{
+  UNUSED(hwnd);
+  if (!SciCall_IsSelectionRectangle()) {
+    if (SciCall_GetCurrentPos() != SciCall_GetSelectionEnd()) {
+      SciCall_SwapMainAnchorCaret();
+    }
+  }
+}
+
+
+//=============================================================================
+//
 //  EditModifyLines()
 //
 void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
@@ -3211,8 +3240,7 @@ void EditStripFirstCharacter(HWND hwnd)
 
     DocPos remCount = 0;
     const DocPosU selCount = SciCall_GetSelections();
-    for (DocPosU s = 0; s < selCount; ++s) 
-    {
+    for (DocPosU s = 0; s < selCount; ++s) {
       const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
       const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
       //const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
@@ -3228,7 +3256,7 @@ void EditStripFirstCharacter(HWND hwnd)
       const DocPos len = (selTargetEnd - nextPos);
       if ((len >= 0) && (len < TEMPLINE_BUFFER)) //TODO: @@@ alloc memory dynamically
       {
-        StringCchCopyNA(g_pTempLineBuffer, TEMPLINE_BUFFER, SciCall_GetRangePointer(nextPos, len+1), len);
+        StringCchCopyNA(g_pTempLineBuffer, TEMPLINE_BUFFER, SciCall_GetRangePointer(nextPos, len + 1), len);
         SciCall_SetTargetRange(selTargetStart, selTargetEnd);
         SciCall_ReplaceTarget(len, g_pTempLineBuffer);
       }
@@ -4343,6 +4371,34 @@ void EditEnsureSelectionVisible(HWND hwnd)
 
 //=============================================================================
 //
+//  EditScrollTo()
+//
+void EditScrollTo(HWND hwnd, DocLn iScrollToLine)
+{
+  UNUSED(hwnd);
+
+  const DocLn iVisTopLine = SciCall_GetFirstVisibleLine();
+  const int iXoff = SciCall_GetXoffset();
+  const DocLn iMaxLine = SciCall_GetLineCount() - 1;
+
+  iScrollToLine = min(iScrollToLine, iMaxLine);
+  const DocPos iViewPos = SciCall_PositionFromLine(iScrollToLine);
+
+  SciCall_ScrollRange(iViewPos, iViewPos);
+
+  // center line in view (if not already in view)
+  const DocLn iNewVisTopLine = SciCall_GetFirstVisibleLine();
+  if (iNewVisTopLine != iVisTopLine) {
+    const DocLn iScrollLines = SciCall_LinesOnScreen() / 2;
+    const int iScrollCnt = (iScrollToLine - iNewVisTopLine - iScrollLines);
+    if (iScrollCnt != 0) { SciCall_LineScroll(0, iScrollCnt); }
+  }
+  SciCall_SetXoffset(iXoff);
+}
+
+
+//=============================================================================
+//
 //  EditJumpTo()
 //
 void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
@@ -4360,7 +4416,11 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
   iNewCol = max(0, min((iNewCol - 1), iLineEndPos));
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
-  EditSelectEx(hwnd, iNewPos, iNewPos, -1, -1); // <= SCI_GOTOPOS(pos)
+  SciCall_GotoPos(iNewPos);
+  EditScrollTo(hwnd, iNewLine);
+
+  // remember x-pos for moving caret vertically
+  SciCall_ChooseCaretX();
 }
 
 
@@ -4655,23 +4715,17 @@ RegExResult_t __fastcall EditFindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, B
 
   const DocPos iStart = bFirstMatchOnly ? SciCall_GetSelectionStart() : 0;
   const DocPos iTextLength = SciCall_GetTextLength();
-  const DocLn iVisTopLine = SciCall_GetFirstVisibleLine();
 
   DocPos start = iStart;
   DocPos end   = iTextLength;
   const DocPos iPos  = EditFindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, FALSE, FRMOD_IGNORE);
 
-  if (bFirstMatchOnly) {
+  if (bFirstMatchOnly && !bReplaceInitialized) {
     if (iPos >= 0) {
-      SciCall_ScrollRange(iPos, iPos);
-      const DocLn iScrollLines = SciCall_LinesOnScreen() / 2;
-      if (SciCall_LineFromPosition(iPos) > (iVisTopLine + iScrollLines)) {
-        SciCall_LineScroll(0, iScrollLines);
-      }
+      EditScrollTo(hwnd, SciCall_LineFromPosition(iPos));
     }
     else {
-      const DocPos iCurPos = SciCall_GetCurrentPos();
-      SciCall_ScrollRange(iCurPos, iCurPos);
+      EditScrollTo(hwnd, SciCall_LineFromPosition(iStart));
     }
   }
   else // mark all matches
@@ -4727,6 +4781,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   static int  iSaveMarkOcc = -1;
   static BOOL bSaveOccVisible = FALSE;
   static BOOL bSaveTFBackSlashes = FALSE;
+  static DocLn iVisTopLine = -1;
 
   WCHAR tchBuf[FNDRPL_BUFFER] = { L'\0' };
 
@@ -4734,11 +4789,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   {
     case WM_INITDIALOG:
     {
-      iReplacedOccurrences = 0;
-      g_FindReplaceMatchFoundState = FND_NOP;
-
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       lpefr = (LPEDITFINDREPLACE)lParam;
+
+      iReplacedOccurrences = 0;
+      g_FindReplaceMatchFoundState = FND_NOP;
+      iVisTopLine = SciCall_GetFirstVisibleLine();
 
       if (lpefr->bMarkOccurences) {
         iSaveMarkOcc = iMarkOccurrences;
@@ -4883,26 +4939,32 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_DESTROY:
       {
-        if (!bSwitchedFindReplace) {
+        if (!bSwitchedFindReplace)
+        {
           lpefr = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
           lpefr->szFind[0] = '\0';
+
+          if (iSaveMarkOcc >= 0) {
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, TRUE);
+            if (iSaveMarkOcc != 0) {
+              SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCUR_ONOFF, 1), 0);
+            }
+          }
+          bMarkOccurrencesMatchVisible = bSaveOccVisible;
+          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
+
+          iReplacedOccurrences = 0;
+          g_FindReplaceMatchFoundState = FND_NOP;
+
+          SciCall_ScrollCaret();
+          if (SciCall_GetFirstVisibleLine() != iVisTopLine) {
+            SciCall_SetFirstVisibleLine(iVisTopLine);
+          }
         }
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
         DeleteObject(hBrushBlue);
         KillTimer(hwnd, IDT_TIMER_MRKALL);
-
-        if (iSaveMarkOcc >= 0) {
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, TRUE);
-          if (iSaveMarkOcc != 0) {
-            SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)MAKELONG(IDM_VIEW_MARKOCCUR_ONOFF, 1), 0);
-          }
-        }
-        bMarkOccurrencesMatchVisible = bSaveOccVisible;
-        EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
-
-        iReplacedOccurrences = 0;
-        g_FindReplaceMatchFoundState = FND_NOP;
       }
       return FALSE;
 
@@ -5286,12 +5348,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDOK: // find next
         case IDACC_SELTONEXT:
           if (!bIsFindDlg) { bReplaceInitialized = TRUE; }
+          if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionEnd(hwnd); }
           EditFindNext(lpefr->hwnd, lpefr, (LOWORD(wParam) == IDACC_SELTONEXT), HIBYTE(GetKeyState(VK_F3)));
           break;
 
         case IDC_FINDPREV: // find previous
         case IDACC_SELTOPREV:
           if (!bIsFindDlg) { bReplaceInitialized = TRUE; }
+          if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionStart(hwnd);  }
           EditFindPrev(lpefr->hwnd, lpefr, (LOWORD(wParam) == IDACC_SELTOPREV), HIBYTE(GetKeyState(VK_F3)));
           break;
 
@@ -5318,6 +5382,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
       }
       bFlagsChanged = TRUE;
+      iVisTopLine = SciCall_GetFirstVisibleLine();
       EditSetTimerMarkAll(hwnd,50);
       break;
 

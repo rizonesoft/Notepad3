@@ -3942,14 +3942,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           case IDM_EDIT_FINDNEXT:
             if (!SciCall_IsSelectionEmpty()) {
-              SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELEND, 1), 0);
+              EditJumpToSelectionEnd(g_hwndEdit);
             }
             EditFindNext(g_hwndEdit,&g_efrData,FALSE,FALSE);
             break;
 
           case IDM_EDIT_FINDPREV:
             if (!SciCall_IsSelectionEmpty()) {
-              SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELSTART, 1), 0);
+              EditJumpToSelectionStart(g_hwndEdit);
             }
             EditFindPrev(g_hwndEdit,&g_efrData,FALSE,FALSE);
             break;
@@ -3963,14 +3963,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           case IDM_EDIT_SELTONEXT:
             if (!SciCall_IsSelectionEmpty()) {
-              SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELEND, 1), 0);
+              EditJumpToSelectionEnd(g_hwndEdit);
             }
             EditFindNext(g_hwndEdit,&g_efrData,TRUE,FALSE);
             break;
 
           case IDM_EDIT_SELTOPREV:
             if (!SciCall_IsSelectionEmpty()) {
-              SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELSTART, 1), 0);
+              EditJumpToSelectionStart(g_hwndEdit);
             }
             EditFindPrev(g_hwndEdit,&g_efrData,TRUE,FALSE);
             break;
@@ -4019,14 +4019,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case CMD_FINDNEXTSEL:
           if (!SciCall_IsSelectionEmpty()) {
-            SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELEND, 1), 0);
+            EditJumpToSelectionEnd(g_hwndEdit);
           }
           EditFindNext(g_hwndEdit, &g_efrData, FALSE, FALSE);
           break;
 
         case CMD_FINDPREVSEL:
           if (!SciCall_IsSelectionEmpty()) {
-            SendMessage(hwnd, WM_COMMAND, MAKELONG(CMD_JUMP2SELSTART, 1), 0);
+            EditJumpToSelectionStart(g_hwndEdit);
           }
           EditFindPrev(g_hwndEdit, &g_efrData, FALSE, FALSE);
           break;
@@ -4983,22 +4983,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_JUMP2SELSTART:
-      if (!SciCall_IsSelectionRectangle()) {
-        if (SciCall_GetCurrentPos() != SciCall_GetSelectionStart()) {
-          SendMessage(g_hwndEdit, SCI_SWAPMAINANCHORCARET, 0, 0);
-          SciCall_ChooseCaretX();
-        }
-      }
+      EditJumpToSelectionStart(g_hwndEdit);
+      SciCall_ChooseCaretX();
       break;
 
-
     case CMD_JUMP2SELEND:
-      if (!SciCall_IsSelectionRectangle()) {
-        if (SciCall_GetCurrentPos() != SciCall_GetSelectionEnd()) {
-          SendMessage(g_hwndEdit, SCI_SWAPMAINANCHORCARET, 0, 0);
-          SciCall_ChooseCaretX();
-        }
-      }
+      EditJumpToSelectionEnd(g_hwndEdit);
+      SciCall_ChooseCaretX();
       break;
 
 

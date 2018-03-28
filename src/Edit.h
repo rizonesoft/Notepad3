@@ -85,6 +85,8 @@ void  EditSpacesToTabs(HWND,int,BOOL);
 
 void  EditMoveUp(HWND);
 void  EditMoveDown(HWND);
+void  EditJumpToSelectionEnd(HWND);
+void  EditJumpToSelectionStart(HWND);
 void  EditModifyLines(HWND,LPCWSTR,LPCWSTR);
 void  EditIndentBlock(HWND,int,BOOL);
 void  EditAlignText(HWND,int);
@@ -101,6 +103,7 @@ void  EditJoinLinesEx(HWND,BOOL,BOOL);
 void  EditSortLines(HWND,int);
 
 void  EditJumpTo(HWND, DocLn, DocPos);
+void  EditScrollTo(HWND, DocLn);
 void  EditSelectEx(HWND, DocPos, DocPos, int, int);
 void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);

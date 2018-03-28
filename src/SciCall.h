@@ -159,6 +159,7 @@ DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECT
 
 // Multiselections (Lines of Rectangular selection)
 DeclareSciCallV0(ClearSelections, CLEARSELECTIONS)
+DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
 DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU)
 DeclareSciCallR1(GetSelectionNCaret, GETSELECTIONNCARET, DocPos, DocPosU, selnum)
 DeclareSciCallR1(GetSelectionNAnchor, GETSELECTIONNANCHOR, DocPos, DocPosU, selnum)
@@ -168,6 +169,7 @@ DeclareSciCallV2(SetSelectionNCaret, SETSELECTIONNCARET, DocPosU, selnum, DocPos
 DeclareSciCallV2(SetSelectionNAnchor, SETSELECTIONNANCHOR, DocPosU, selnum, DocPos, anchorPos)
 DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position)
+
 
 // Operations
 DeclareSciCallV0(Cut, CUT)
