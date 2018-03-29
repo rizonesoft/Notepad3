@@ -419,7 +419,7 @@ int flagBufferFile         = 0;
 //
 static BOOL IsDocumentModified = FALSE;
 
-void __fastcall SetDocumentModified(BOOL bModified)
+static void __fastcall _SetDocumentModified(BOOL bModified)
 {
   if (IsDocumentModified != bModified) {
     IsDocumentModified = bModified;
@@ -632,7 +632,7 @@ BOOL InitApplication(HINSTANCE hInstance)
 //  InitInstance()
 //
 //
-void __fastcall InitWindowPosition(HWND hwnd)
+static void __fastcall _InitWindowPosition(HWND hwnd)
 {
   RECT rc;
   if (hwnd) {
@@ -739,7 +739,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 {
   g_hwndMain = NULL;
 
-  InitWindowPosition(g_hwndMain);
+  _InitWindowPosition(g_hwndMain);
 
   g_hwndMain = CreateWindowEx(
                0,
@@ -807,7 +807,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
           if (!flagLexerSpecified)
             Style_SetLexerFromFile(g_hwndEdit,g_wchCurFile);
 
-          SetDocumentModified(TRUE);
+          _SetDocumentModified(TRUE);
           UpdateLineNumberWidth();
 
           // check for temp file and delete
@@ -1174,10 +1174,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
 
 
+//=============================================================================
 //
 //  SetWordWrapping() - WordWrapSettings
 //
-void __fastcall SetWordWrapping(HWND hwndEditCtrl)
+static void __fastcall _SetWordWrapping(HWND hwndEditCtrl)
 {
   // Word wrap
   if (bWordWrap)
@@ -1227,7 +1228,7 @@ void __fastcall SetWordWrapping(HWND hwndEditCtrl)
 //
 //  InitializeSciEditCtrl()
 //
-void __fastcall InitializeSciEditCtrl(HWND hwndEditCtrl)
+static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
   Encoding_Current(g_iDefaultNewFileEncoding);
 
@@ -1309,7 +1310,7 @@ void __fastcall InitializeSciEditCtrl(HWND hwndEditCtrl)
   Style_SetIndentGuides(hwndEditCtrl, bShowIndentGuides);
 
   // Word Wrap
-  SetWordWrapping(hwndEditCtrl);
+  _SetWordWrapping(hwndEditCtrl);
 
   // Long Lines
   if (bMarkLongLines)
@@ -1360,7 +1361,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   g_hScintilla = (HANDLE)SendMessage(g_hwndEdit, SCI_GETDIRECTPOINTER, 0, 0);
 
-  InitializeSciEditCtrl(g_hwndEdit);
+  _InitializeSciEditCtrl(g_hwndEdit);
 
   hwndEditFrame = CreateWindowEx(
                     WS_EX_CLIENTEDGE,
@@ -4117,14 +4118,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAPSETTINGS:
       if (WordWrapSettingsDlg(hwnd,IDD_WORDWRAP,&iWordWrapIndent)) {
-        SetWordWrapping(g_hwndEdit);
+        _SetWordWrapping(g_hwndEdit);
       }
       break;
 
 
     case IDM_VIEW_WORDWRAPSYMBOLS:
       bShowWordWrapSymbols = (bShowWordWrapSymbols) ? FALSE : TRUE;
-      SetWordWrapping(g_hwndEdit);
+      _SetWordWrapping(g_hwndEdit);
       break;
 
 
@@ -4576,7 +4577,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_SETPASS:
       if (GetFileKey(g_hwndEdit)) {
-        SetDocumentModified(TRUE);
+        _SetDocumentModified(TRUE);
       }
       break;
 
@@ -5392,15 +5393,15 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             RestoreAction(scn->token, REDO);
           }
         }
-        SetDocumentModified(TRUE);
+        _SetDocumentModified(TRUE);
         return TRUE;
       }
       else if (pnmh->code == SCN_SAVEPOINTREACHED) {
-        SetDocumentModified(FALSE);
+        _SetDocumentModified(FALSE);
         return TRUE;
       }
       else if (pnmh->code == SCN_SAVEPOINTLEFT) {
-        SetDocumentModified(TRUE);
+        _SetDocumentModified(TRUE);
         return TRUE;
       }
     }
@@ -5503,7 +5504,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               UpdateLineNumberWidth();
             }
 
-            SetDocumentModified(TRUE);
+            _SetDocumentModified(TRUE);
 
             UpdateToolbar();
             UpdateStatusbar();
@@ -5654,12 +5655,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_SAVEPOINTREACHED:
           SciCall_SetScrollWidth(1);
-          SetDocumentModified(FALSE);
+          _SetDocumentModified(FALSE);
           break;
 
 
         case SCN_SAVEPOINTLEFT:
-          SetDocumentModified(TRUE);
+          _SetDocumentModified(TRUE);
           break;
 
 
@@ -7636,7 +7637,7 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
     EditSetNewText(g_hwndEdit,"",0);
 
     bReadOnly = FALSE;
-    SetDocumentModified(FALSE);
+    _SetDocumentModified(FALSE);
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
@@ -7793,7 +7794,7 @@ BOOL FileLoad(BOOL bDontSave, BOOL bNew, BOOL bReload, BOOL bSkipUnicodeDetect, 
     }
 
     //bReadOnly = FALSE;
-    SetDocumentModified(FALSE);
+    _SetDocumentModified(FALSE);
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();
@@ -8000,7 +8001,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
       if (flagUseSystemMRU == 2)
         SHAddToRecentDocs(SHARD_PATHW,g_wchCurFile);
 
-      SetDocumentModified(FALSE);
+      _SetDocumentModified(FALSE);
       // Install watching of the current file
       if (bSaveAs && bResetFileWatching)
         iFileWatchingMode = 0;
@@ -8047,7 +8048,7 @@ BOOL FileSave(BOOL bSaveAlways,BOOL bAsk,BOOL bSaveAs,BOOL bSaveCopy)
               LocalFree(lpArgs);
               // set no change and quit
               Encoding_HasChanged(Encoding_Current(CPI_GET));
-              SetDocumentModified(FALSE);
+              _SetDocumentModified(FALSE);
               PostMessage(g_hwndMain,WM_CLOSE,0,0);
             }
             else {
@@ -8579,7 +8580,7 @@ void SnapToDefaultPos(HWND hwnd)
   RECT rc; SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
 
   flagDefaultPos = 2;
-  InitWindowPosition(hwnd);
+  _InitWindowPosition(hwnd);
 
   WINDOWPLACEMENT wndpl;
   ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
