@@ -28,12 +28,12 @@ typedef struct _editfindreplace
   char szReplace[FNDRPL_BUFFER];
   UINT fuFlags;
   BOOL bTransformBS;
-  BOOL bObsolete /* was bFindUp */;
   BOOL bFindClose;
   BOOL bReplaceClose;
   BOOL bNoFindWrap;
   BOOL bWildcardSearch;
   BOOL bMarkOccurences;
+  BOOL bHideNonMatchedLines;
   BOOL bDotMatchAll;
   HWND hwnd;
 
@@ -46,6 +46,7 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOREPLACE 301
 
 #define MARKER_NP3_BOOKMARK      0
+#define MARKER_NP3_OCCUR_LINE    1
 
 #define INDIC_NP3_MARK_OCCURANCE 1
 #define INDIC_NP3_MATCH_BRACE    2
@@ -138,6 +139,7 @@ void  EditFinalizeStyling(HWND, DocPos);
 
 void  EditMarkAllOccurrences();
 void  EditUpdateVisibleUrlHotspot(BOOL);
+void  EditHideNotMarkedLineRange(HWND, DocPos, DocPos, bool);
 
 void  EditEnterTargetTransaction();
 void  EditLeaveTargetTransaction();

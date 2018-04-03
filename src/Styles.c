@@ -47,6 +47,7 @@ extern HINSTANCE g_hInstance;
 
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
+extern EDITFINDREPLACE g_efrData;
 
 extern int iSciFontQuality;
 extern const int FontQuality[4];
@@ -123,7 +124,8 @@ enum LexDefaultStyles {
   STY_X_LN_SPACE = 11,
   STY_BOOK_MARK = 12,
   STY_MARK_OCC = 13,
-  STY_URL_HOTSPOT = 14
+  STY_URL_HOTSPOT = 14,
+  STY_INVISIBLE = 15
 };
 
 
@@ -3387,7 +3389,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetFontQuality(hwnd, wchStandardStyleStrg);
   SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)TRUE);
   SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)FALSE);       // default hotspot off
-
+  
 
   // customizable 
 
@@ -3834,15 +3836,18 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
   }
 
+  Style_SetInvisible(hwnd, true); // set fixed invisible style
+
   // apply lexer styles
   Style_SetUrlHotSpot(hwnd, FALSE);
-  EditApplyLexerStyle(g_hwndEdit, 0, -1);
+  EditApplyLexerStyle(hwnd, 0, -1);
 
   // update UI for hotspots
   if (bHyperlinkHotspot) {
     Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
     EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
   }
+
   UpdateLineNumberWidth();
 }
 
@@ -3902,6 +3907,28 @@ void Style_SetUrlHotSpot(HWND hwnd, BOOL bHotSpot)
   }
 
 }
+
+
+//=============================================================================
+//
+//  Style_GetInvisibleStyleID()
+//
+int Style_GetInvisibleStyleID()
+{
+  return (STYLE_LASTPREDEFINED + STY_INVISIBLE);
+}
+
+
+//=============================================================================
+//
+//  Style_SetInvisible()
+//
+void Style_SetInvisible(HWND hwnd, bool bInvisible)
+{
+  SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
+  SendMessage(hwnd, SCI_STYLESETVISIBLE, Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
+}
+
 
 
 //=============================================================================
@@ -4089,6 +4116,8 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   SciCall_SetFoldMarginColour(TRUE, clrBack);    // background
   SciCall_SetFoldMarginHiColour(TRUE, clrBack);  // (!)
+
+  SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
 
   for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
     SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore);

@@ -169,10 +169,10 @@ BEGIN
             MENUITEM "Move &Up\tCtrl+Shift+Up",     IDM_EDIT_MOVELINEUP
             MENUITEM "&Move Down\tCtrl+Shift+Down", IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut &Line\tCtrl[+Shift]+X", IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Line\tCtrl[+Shift]+C", IDM_EDIT_COPYLINE
+            MENUITEM "Cut &Line\tCtrl[+Shift]+X",   IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Line\tCtrl[+Shift]+C",  IDM_EDIT_COPYLINE
             MENUITEM "&Duplicate Line\tCtrl+D",     IDM_EDIT_DUPLICATELINE
-            MENUITEM "D&elete Line\tCtrl+Shift+D", IDM_EDIT_DELETELINE
+            MENUITEM "D&elete Line\tCtrl+Shift+D",  IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Delete Line Left\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
             MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
@@ -185,7 +185,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Mer&ge Empty Lines\tAlt+Y",   IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Merge Whitespace Lines\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Empty Lines\tAlt+R", IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "&Remove Empty Lines\tAlt+R",  IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Remove Whitespace Lines\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
         END
@@ -286,7 +286,7 @@ BEGIN
         MENUITEM "Save Find Text\tAlt+F3",      IDM_EDIT_SAVEFIND
         MENUITEM "Find Ne&xt\tF3",              IDM_EDIT_FINDNEXT
         MENUITEM "Find Pre&vious\tShift+F3",    IDM_EDIT_FINDPREV
-        MENUITEM "Find Next Selected\tCtrl+F3",           CMD_FINDNEXTSEL
+        MENUITEM "Find Next Selected\tCtrl+F3", CMD_FINDNEXTSEL
         MENUITEM "Find Previous Selected\tCtrl+Shift+F3", CMD_FINDPREVSEL
         MENUITEM "&Replace...\tCtrl+H",         IDM_EDIT_REPLACE
         MENUITEM "Replace Ne&xt\tF4",           IDM_EDIT_REPLACENEXT
@@ -340,8 +340,8 @@ BEGIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
         MENUITEM SEPARATOR
-        MENUITEM "Copy Position Args\tCtrl+Shift+K",  CMD_COPYWINPOS
-        MENUITEM "Snap to Default Position\tCtrl+Shift+P",     CMD_DEFAULTWINPOS
+        MENUITEM "Copy Position Args\tCtrl+Shift+K", CMD_COPYWINPOS
+        MENUITEM "Snap to Default Position\tCtrl+Shift+P", CMD_DEFAULTWINPOS
         MENUITEM "Scroll Past End of &File",    IDM_VIEW_SCROLLPASTEOF
     END
     POPUP "&Settings"
@@ -699,6 +699,7 @@ BEGIN
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,117,259,9,WS_EX_STATICEDGE
+    PUSHBUTTON      "Toggle Visibility",IDC_TOGGLE_VISIBILITY,211,65,55,14
 END
 
 IDD_REPLACE DIALOGEX 0, 0, 273, 156
@@ -721,10 +722,10 @@ BEGIN
     CONTROL         "Mark &Occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "W&ildcard Search",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
     DEFPUSHBUTTON   "&Find Next",IDOK,211,7,55,14
-    PUSHBUTTON      "Find &Previous",IDC_FINDPREV,211,24,55,14
-    PUSHBUTTON      "&Replace",IDC_REPLACE,211,53,55,14
-    PUSHBUTTON      "In &Selection",IDC_REPLACEINSEL,211,70,55,14
-    PUSHBUTTON      "Replace &All",IDC_REPLACEALL,211,88,55,14
+    PUSHBUTTON      "Find &Previous",IDC_FINDPREV,211,23,55,14
+    PUSHBUTTON      "&Replace",IDC_REPLACE,211,43,55,14
+    PUSHBUTTON      "In &Selection",IDC_REPLACEINSEL,211,59,55,14
+    PUSHBUTTON      "Replace &All",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Swap Strings",IDC_SWAPSTRG,149,32,49,12
     PUSHBUTTON      "Close",IDCANCEL,211,126,55,14
     CONTROL         "<a>Goto Find (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
@@ -733,6 +734,7 @@ BEGIN
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,144,259,9,WS_EX_STATICEDGE
+    PUSHBUTTON      "Toggle Visibility",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
 
 IDD_RUN DIALOGEX 0, 0, 229, 96

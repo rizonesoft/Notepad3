@@ -4111,7 +4111,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       else
         SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
       bWordWrapG = bWordWrap;
-      //EditApplyLexerStyle(g_hwndEdit, 0, -1);
       UpdateToolbar();
       break;
 
@@ -5432,6 +5431,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         //  {
         //    int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
         //    EditUpdateUrlHotspots(g_hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, bHyperlinkHotspot);
+        //    EditUpdateHiddenLineRange(hwnd, &g_efrData, 0, SciCall_GetLineCount());
         //  }
         //  break;
 
@@ -5492,7 +5492,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               }
             }
             else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-              EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
+              const DocPos iStartPos = (DocPos)scn->position;
+              const DocPos iEndPos = (DocPos)(scn->position + scn->length);
+              EditUpdateUrlHotspots(g_hwndEdit, iStartPos, iEndPos, bHyperlinkHotspot);
             }
 
             if (iMarkOccurrences) {
@@ -5873,27 +5875,18 @@ void LoadSettings()
 
   bEnableSaveSettings = TRUE;
   bSaveSettings = IniSectionGetBool(pIniSection,L"SaveSettings",TRUE);
-
   bSaveRecentFiles = IniSectionGetBool(pIniSection,L"SaveRecentFiles",FALSE);
-  
   bPreserveCaretPos = IniSectionGetBool(pIniSection, L"PreserveCaretPos",FALSE);
-
   bSaveFindReplace = IniSectionGetBool(pIniSection,L"SaveFindReplace",FALSE);
 
   g_efrData.bFindClose = IniSectionGetBool(pIniSection,L"CloseFind", FALSE);
-
   g_efrData.bReplaceClose = IniSectionGetBool(pIniSection,L"CloseReplace", FALSE);
-
   g_efrData.bNoFindWrap = IniSectionGetBool(pIniSection,L"NoFindWrap", FALSE);
-
   g_efrData.bTransformBS = IniSectionGetBool(pIniSection,L"FindTransformBS", FALSE);
-
   g_efrData.bWildcardSearch = IniSectionGetBool(pIniSection,L"WildcardSearch",FALSE);
-
   g_efrData.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", FALSE);
-
+  g_efrData.bHideNonMatchedLines = IniSectionGetBool(pIniSection, L"HideNonMatchedLines", FALSE);
   g_efrData.bDotMatchAll = IniSectionGetBool(pIniSection, L"RegexDotMatchesAll", FALSE);
-  
   g_efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
   if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"", tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
@@ -6264,6 +6257,7 @@ void SaveSettings(BOOL bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"FindTransformBS", g_efrData.bTransformBS);
   IniSectionSetBool(pIniSection, L"WildcardSearch", g_efrData.bWildcardSearch);
   IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", g_efrData.bMarkOccurences);
+  IniSectionSetBool(pIniSection, L"HideNonMatchedLines", g_efrData.bHideNonMatchedLines);
   IniSectionSetBool(pIniSection, L"RegexDotMatchesAll", g_efrData.bDotMatchAll);
   IniSectionSetInt(pIniSection, L"efrData_fuFlags", g_efrData.fuFlags);
   PathRelativeToApp(tchOpenWithDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
