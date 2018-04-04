@@ -73,7 +73,6 @@ extern bool bFindReplCopySelOrClip;
 
 static EDITFINDREPLACE efrSave;
 static bool bSwitchedFindReplace = false;
-static bool bHideNonMatchedLines = false;
 
 extern int xFindReplaceDlg;
 extern int yFindReplaceDlg;
@@ -4719,7 +4718,7 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
   static DocLn lastScrollToLn = -1;
 
   if (bFirstMatchOnly && !bReplaceInitialized) {
-    if (!bHideNonMatchedLines) {
+    if (GetForegroundWindow() == g_hwndDlgFindReplace) {
       if (iPos >= 0) {
         const DocLn scrollToLn = SciCall_LineFromPosition(iPos);
         if (scrollToLn != lastScrollToLn) {
@@ -4789,6 +4788,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   static int  iSaveMarkOcc = -1;
   static bool bSaveOccVisible = false;
   static bool bSaveHyperlinkHotspots = false;
+  static bool bHideNonMatchedLines = false;
   static bool bSaveTFBackSlashes = false;
 
   WCHAR tchBuf[FNDRPL_BUFFER] = { L'\0' };
