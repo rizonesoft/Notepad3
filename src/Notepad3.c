@@ -3847,7 +3847,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
 
-        int bitmask = 1;
+        int bitmask = (1 << MARKER_NP3_BOOKMARK);
         DocLn iNextLine = (DocLn)SendMessage( g_hwndEdit , SCI_MARKERPREVIOUS , iLine-1 , bitmask );
         if (iNextLine == (DocLn)-1)
         {
@@ -3868,22 +3868,23 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
 
-        int bitmask = (int)SendMessage(g_hwndEdit, SCI_MARKERGET, iLine, MARKER_NP3_BOOKMARK);
+        int bitmask = SciCall_MarkerGet(iLine);
+
         if (bitmask & (1 << MARKER_NP3_BOOKMARK)) {
           // unset
-          SendMessage(g_hwndEdit, SCI_MARKERDELETE, iLine, MARKER_NP3_BOOKMARK);
+          SciCall_MarkerDelete(iLine, MARKER_NP3_BOOKMARK);
         }
         else {
           Style_SetBookmark(g_hwndEdit, g_bShowSelectionMargin);
           // set
-          SendMessage(g_hwndEdit, SCI_MARKERADD, iLine, MARKER_NP3_BOOKMARK);
+          SciCall_MarkerAdd(iLine, MARKER_NP3_BOOKMARK);
           UpdateLineNumberWidth();
         }
         break;
       }
 
     case BME_EDIT_BOOKMARKCLEAR:
-      SendMessage(g_hwndEdit,SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
+      SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
     break;
 
 
@@ -5526,11 +5527,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   //const DocPos iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
                   if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1))
                   {
-                    int bitmask = (int)SendMessage(g_hwndEdit, SCI_MARKERGET, iCurLine - 1, 0);
+                    int bitmask = SciCall_MarkerGet(iCurLine - 1);
                     if (bitmask & (1 << MARKER_NP3_BOOKMARK))
                     {
-                      SendMessage(g_hwndEdit, SCI_MARKERDELETE, iCurLine - 1, MARKER_NP3_BOOKMARK);
-                      SendMessage(g_hwndEdit, SCI_MARKERADD, iCurLine, MARKER_NP3_BOOKMARK);
+                      SciCall_MarkerDelete(iCurLine - 1, MARKER_NP3_BOOKMARK);
+                      SciCall_MarkerAdd(iCurLine, MARKER_NP3_BOOKMARK);
                     }
                   }
                 }
@@ -7311,7 +7312,7 @@ void UpdateLineNumberWidth()
     int iLineMarginWidthFit = (int)SendMessage(g_hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
 
     if (iLineMarginWidthNow != iLineMarginWidthFit) {
-      SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_SCI_LINENUM, iLineMarginWidthFit);
+      SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_SCI_LINENUM, iLineMarginWidthFit + 60);
     }
   }
   else {

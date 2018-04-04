@@ -45,8 +45,8 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
-#define MARKER_NP3_BOOKMARK      0
-#define MARKER_NP3_OCCUR_LINE    1
+#define MARKER_NP3_BOOKMARK      1
+#define MARKER_NP3_OCCUR_LINE    2
 
 #define INDIC_NP3_MARK_OCCURANCE 1
 #define INDIC_NP3_MATCH_BRACE    2

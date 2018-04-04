@@ -282,7 +282,9 @@ DeclareSciCallR1(MarkerGet, MARKERGET, int, DocLn, line)
 DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerNumber, int, markerSymbols)
 DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colour)
 DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour)
-DeclareSciCallV2(MarkerAdd, MARKERADD, DocLn, line, int, markerNumber)
+DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerNumber)
+DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerNumber)
+DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
 
 
 //=============================================================================
@@ -299,12 +301,14 @@ DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPo
 //
 //
 DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line)
+DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, flags)
 DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, DocLn, line)
 DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags)
 DeclareSciCallV1(FoldDisplayTextSetStyle, FOLDDISPLAYTEXTSETSTYLE, int, flags)
 DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, int, DocLn, line)
 DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, int, DocLn, line)
 DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line)
+DeclareSciCallV1(FoldAll, FOLDALL, int, flags)
 DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line)
 
 

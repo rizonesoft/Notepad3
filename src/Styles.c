@@ -3927,9 +3927,10 @@ int Style_GetInvisibleStyleID()
 //
 void Style_SetInvisible(HWND hwnd, bool bInvisible)
 {
-  SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
+  Style_SetMargin(hwnd, Style_GetInvisibleStyleID(), GetCurrentStdLexer()->Styles[STY_MARGIN].szValue);
   SendMessage(hwnd, SCI_STYLESETVISIBLE, Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
   //SendMessage(hwnd, SCI_FOLDDISPLAYTEXTSETSTYLE, (WPARAM)SC_FOLDDISPLAYTEXT_BOXED, 0);
+  SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
 }
 
 
@@ -4026,16 +4027,17 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 //
 void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 {
+  UNUSED(hwnd);
   float fSize = INITIAL_BASE_FONT_SIZE + 1.0;
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
   SciCall_SetMarginWidth(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? (int)fSize + 4 : 0);
 
   // Depending on if the margin is visible or not, choose different bookmark indication
   if (bShowSelMargin) {
-    SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
+    SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
   }
   else {
-    SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_BOOKMARK, SC_MARK_BACKGROUND);
+    SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BACKGROUND);
   }
 }
 
@@ -4140,7 +4142,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_SetFoldMarginColour(true, clrBack);    // background
   SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
 
-  SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
+  //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
 
   for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
     SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore);
