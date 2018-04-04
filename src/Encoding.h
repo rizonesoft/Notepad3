@@ -83,35 +83,35 @@ int  Encoding_CountOf();
 int  Encoding_Current(int);    // getter/setter
 int  Encoding_SrcCmdLn(int);     // getter/setter
 int  Encoding_SrcWeak(int);    // getter/setter
-BOOL Encoding_HasChanged(int); // query/setter
+bool Encoding_HasChanged(int); // query/setter
 
 void Encoding_InitDefaults();
-int  Encoding_MapIniSetting(BOOL, int);
+int  Encoding_MapIniSetting(bool, int);
 int  Encoding_MapUnicode(int);
 void Encoding_SetLabel(int);
 int  Encoding_MatchW(LPCWSTR);
 int  Encoding_MatchA(char*);
-BOOL Encoding_IsValid(int);
+bool Encoding_IsValid(int);
 int  Encoding_GetByCodePage(UINT);
-void Encoding_AddToListView(HWND, int, BOOL);
-BOOL Encoding_GetFromListView(HWND, int *);
-void Encoding_AddToComboboxEx(HWND, int, BOOL);
-BOOL Encoding_GetFromComboboxEx(HWND, int *);
+void Encoding_AddToListView(HWND, int, bool);
+bool Encoding_GetFromListView(HWND, int *);
+void Encoding_AddToComboboxEx(HWND, int, bool);
+bool Encoding_GetFromComboboxEx(HWND, int *);
 
 UINT Encoding_GetCodePage(int);
 
-BOOL Encoding_IsDefault(int);
-BOOL Encoding_IsANSI(int);
-BOOL Encoding_IsOEM(int);
-BOOL Encoding_IsUTF8(int);
-BOOL Encoding_IsUTF8_SIGN(int);
-BOOL Encoding_IsMBCS(int);
-BOOL Encoding_IsUNICODE(int);
-BOOL Encoding_IsUNICODE_BOM(int);
-BOOL Encoding_IsUNICODE_REVERSE(int);
-BOOL Encoding_IsINTERNAL(int);
-BOOL Encoding_IsEXTERNAL_8BIT(int);
-BOOL Encoding_IsRECODE(int);
+bool Encoding_IsDefault(int);
+bool Encoding_IsANSI(int);
+bool Encoding_IsOEM(int);
+bool Encoding_IsUTF8(int);
+bool Encoding_IsUTF8_SIGN(int);
+bool Encoding_IsMBCS(int);
+bool Encoding_IsUNICODE(int);
+bool Encoding_IsUNICODE_BOM(int);
+bool Encoding_IsUNICODE_REVERSE(int);
+bool Encoding_IsINTERNAL(int);
+bool Encoding_IsEXTERNAL_8BIT(int);
+bool Encoding_IsRECODE(int);
 
 // Scintilla related
 #define Encoding_SciCP  CP_UTF8
@@ -120,9 +120,9 @@ void Encoding_SetDefaultFlag(int);
 const WCHAR* Encoding_GetLabel(int);
 const char* Encoding_GetParseNames(int);
 
-BOOL IsUnicode(const char*, int, LPBOOL, LPBOOL);
-BOOL IsUTF8(const char*, int);
-BOOL IsUTF7(const char*, int);
+bool IsUnicode(const char*, int, bool*, bool*);
+bool IsUTF8(const char*, int);
+bool IsUTF7(const char*, int);
 
 #define IsUTF8Signature(p) ((*((p)+0) == '\xEF' && *((p)+1) == '\xBB' && *((p)+2) == '\xBF'))
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)

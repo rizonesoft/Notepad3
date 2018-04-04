@@ -15,6 +15,7 @@
 #pragma once
 #ifndef _NP3_DIALOGS_H_
 #define _NP3_DIALOGS_H_
+#include <stdbool.h>
 
 #define MBINFO         0
 #define MBWARN         1
@@ -25,22 +26,22 @@
 
 int  MsgBox(int,UINT,...);
 void DisplayCmdLineHelp(HWND);
-BOOL GetDirectory(HWND,int,LPWSTR,LPCWSTR,BOOL);
+bool GetDirectory(HWND,int,LPWSTR,LPCWSTR,bool);
 INT_PTR CALLBACK AboutDlgProc(HWND,UINT,WPARAM,LPARAM);
 void RunDlg(HWND,LPCWSTR);
-BOOL OpenWithDlg(HWND,LPCWSTR);
-BOOL FavoritesDlg(HWND,LPWSTR);
-BOOL AddToFavDlg(HWND,LPCWSTR,LPCWSTR);
-BOOL FileMRUDlg(HWND,LPWSTR);
-BOOL ChangeNotifyDlg(HWND);
-BOOL ColumnWrapDlg(HWND,UINT,UINT *);
-BOOL WordWrapSettingsDlg(HWND,UINT,int *);
-BOOL LongLineSettingsDlg(HWND,UINT,int *);
-BOOL TabSettingsDlg(HWND,UINT,int *);
-BOOL SelectDefEncodingDlg(HWND,int *);
-BOOL SelectEncodingDlg(HWND,int *);
-BOOL RecodeDlg(HWND,int *);
-BOOL SelectDefLineEndingDlg(HWND,int *);
+bool OpenWithDlg(HWND,LPCWSTR);
+bool FavoritesDlg(HWND,LPWSTR);
+bool AddToFavDlg(HWND,LPCWSTR,LPCWSTR);
+bool FileMRUDlg(HWND,LPWSTR);
+bool ChangeNotifyDlg(HWND);
+bool ColumnWrapDlg(HWND,UINT,UINT *);
+bool WordWrapSettingsDlg(HWND,UINT,int *);
+bool LongLineSettingsDlg(HWND,UINT,int *);
+bool TabSettingsDlg(HWND,UINT,int *);
+bool SelectDefEncodingDlg(HWND,int *);
+bool SelectEncodingDlg(HWND,int *);
+bool RecodeDlg(HWND,int *);
+bool SelectDefLineEndingDlg(HWND,int *);
 
 
 typedef struct _wi
@@ -54,9 +55,9 @@ typedef struct _wi
 
 WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
 
-void DialogNewWindow(HWND,BOOL,BOOL);
+void DialogNewWindow(HWND,bool,bool);
 void DialogFileBrowse(HWND);
-void DialogUpdateCheck(HWND,BOOL);
+void DialogUpdateCheck(HWND,bool);
 INT_PTR InfoBox(int,LPCWSTR,int,...);
 
 

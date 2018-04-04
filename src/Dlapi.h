@@ -36,22 +36,22 @@ typedef struct tagLV_ITEMDATA // lvid
 
 //==== DlInit() ===============================================================
 
-BOOL DirList_Init(HWND,LPCWSTR);
+bool DirList_Init(HWND,LPCWSTR);
 
 
 //==== DlDestroy() ============================================================
 
-BOOL DirList_Destroy(HWND);
+bool DirList_Destroy(HWND);
 
 
 //==== DlStartIconThread() ====================================================
 
-BOOL DirList_StartIconThread(HWND);
+bool DirList_StartIconThread(HWND);
 
 
 //==== DlTerminateIconThread() ================================================
 
-BOOL DirList_TerminateIconThread(HWND);
+bool DirList_TerminateIconThread(HWND);
 
 
 //==== DlFill() ===============================================================
@@ -61,7 +61,7 @@ BOOL DirList_TerminateIconThread(HWND);
 #define DL_INCLHIDDEN  128
 #define DL_ALLOBJECTS  (32|64|128)
 
-int DirList_Fill(HWND,LPCWSTR,DWORD,LPCWSTR,BOOL,BOOL,int,BOOL);
+int DirList_Fill(HWND,LPCWSTR,DWORD,LPCWSTR,bool,bool,int,bool);
 
 
 //==== DlIconThread() =========================================================
@@ -71,12 +71,12 @@ DWORD WINAPI DirList_IconThread(LPVOID);
 
 //==== DlGetDispInfo() ========================================================
 
-BOOL DirList_GetDispInfo(HWND,LPARAM,BOOL);
+bool DirList_GetDispInfo(HWND,LPARAM,bool);
 
 
 //==== DlDeleteItem() =========================================================
 
-BOOL DirList_DeleteItem(HWND,LPARAM);
+bool DirList_DeleteItem(HWND,LPARAM);
 
 
 //==== DlSort() ===============================================================
@@ -86,7 +86,7 @@ BOOL DirList_DeleteItem(HWND,LPARAM);
 #define DS_TYPE     2
 #define DS_LASTMOD  3
 
-BOOL DirList_Sort(HWND,int,BOOL);
+bool DirList_Sort(HWND,int,bool);
 
 
 //==== DlGetItem() ============================================================
@@ -120,16 +120,16 @@ int DirList_GetItemEx(HWND,int,LPWIN32_FIND_DATA);
 
 //==== DlPropertyDlg() ========================================================
 
-BOOL DirList_PropertyDlg(HWND,int);
+bool DirList_PropertyDlg(HWND,int);
 
 
 //==== DlGetLongPathName() ====================================================
 
-BOOL DirList_GetLongPathName(HWND,LPWSTR,int);
+bool DirList_GetLongPathName(HWND,LPWSTR,int);
 
 //==== DlSelectItem() =========================================================
 
-BOOL DirList_SelectItem(HWND,LPCWSTR,LPCWSTR);
+bool DirList_SelectItem(HWND,LPCWSTR,LPCWSTR);
 
 //==== DlCreateFilter() and DlMatchFilter() ===================================
 
@@ -139,22 +139,22 @@ typedef struct tagDL_FILTER { //dlf
   int   nCount;
   WCHAR  tFilterBuf[DL_FILTER_BUFSIZE];
   WCHAR  *pFilter  [DL_FILTER_BUFSIZE];
-  BOOL  bExcludeFilter;
+  bool  bExcludeFilter;
 } DL_FILTER, *PDL_FILTER;
 
-void DirList_CreateFilter(PDL_FILTER,LPCWSTR,BOOL);
+void DirList_CreateFilter(PDL_FILTER,LPCWSTR,bool);
 
-BOOL DirList_MatchFilter(LPSHELLFOLDER,LPCITEMIDLIST,PDL_FILTER);
+bool DirList_MatchFilter(LPSHELLFOLDER,LPCITEMIDLIST,PDL_FILTER);
 
 
 
 //==== DriveBox ===============================================================
 
-BOOL DriveBox_Init(HWND);
+bool DriveBox_Init(HWND);
 int  DriveBox_Fill(HWND);
-BOOL DriveBox_GetSelDrive(HWND,LPWSTR,int,BOOL);
-BOOL DriveBox_SelectDrive(HWND,LPCWSTR);
-BOOL DriveBox_PropertyDlg(HWND);
+bool DriveBox_GetSelDrive(HWND,LPWSTR,int,bool);
+bool DriveBox_SelectDrive(HWND,LPCWSTR);
+bool DriveBox_PropertyDlg(HWND);
 
 LRESULT DriveBox_DeleteItem(HWND,LPARAM);
 LRESULT DriveBox_GetDispInfo(HWND,LPARAM);
@@ -174,7 +174,7 @@ LPITEMIDLIST IL_Create(LPCITEMIDLIST,UINT,
 UINT IL_GetSize(LPCITEMIDLIST);
 
 //==== IL_GetDisplayName() ====================================================
-BOOL IL_GetDisplayName(LPSHELLFOLDER,
+bool IL_GetDisplayName(LPSHELLFOLDER,
                        LPCITEMIDLIST,
                        DWORD,LPWSTR,int);
 

@@ -150,7 +150,7 @@ int AES_bin_setup
         key->Nr = rijndaelKeySetupDec(key->rk, cipherKey, keyLen);
     }
     rijndaelKeySetupEnc(key->ek, cipherKey, keyLen);
-    return TRUE;
+    return true;
 }
 
 /* @func
@@ -176,7 +176,7 @@ int AES_bin_cipherInit
     else {
         memset(cipher->IV, 0, AES_MAX_IV_SIZE);
     }
-    return TRUE;
+    return true;
 }
 
 /* @func
@@ -219,7 +219,7 @@ int AES_cipherInit
     else {
         memset(cipher->IV, 0, AES_MAX_IV_SIZE);
     }
-    return TRUE;
+    return true;
 }
 /* @func
  Encrypt a block of data, using the provided key and cipher.  The block
@@ -565,7 +565,7 @@ int AES_padDecrypt
  *	Only used in the Intermediate Value Known Answer Test.
  *
  *	Returns:
- *		TRUE - on success
+ *		true - on success
  *		BAD_CIPHER_STATE - cipher in bad state (e.g., not initialized)
  */
 int cipherUpdateRounds(AES_cipherInstance *cipher, AES_keyInstance *key,
@@ -594,6 +594,6 @@ int cipherUpdateRounds(AES_cipherInstance *cipher, AES_keyInstance *key,
 
     memcpy(outBuffer, block, 16);
 
-    return TRUE;
+    return true;
 }
 #endif /* INTERMEDIATE_VALUE_KAT */

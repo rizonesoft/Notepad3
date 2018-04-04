@@ -1,6 +1,7 @@
 
 #ifndef __CRYPTO_H__
 #define __CRYPTO_H__
+#include <stdbool.h>
 #define BUG1(a,b) { perror("a"); }
 #define BUG(a) { perror("a"); }
 
@@ -12,8 +13,8 @@
 #define MASTER_KEY_OFFSET (PREAMBLE_SIZE+AES_MAX_IV_SIZE)
 #define UNUSED(expr) (void)(expr)
 
-BOOL EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD *written);
-BOOL ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD *resultlen);
-BOOL GetFileKey(HWND hwnd);
+bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD *written);
+bool ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD *resultlen);
+bool GetFileKey(HWND hwnd);
 void ResetEncryption();
 #endif
