@@ -97,6 +97,7 @@ extern int  iMarkOccurrences;
 extern int  iMarkOccurrencesCount;
 extern int  iMarkOccurrencesMaxCount;
 extern bool bMarkOccurrencesMatchVisible;
+extern bool bHyperlinkHotspot;
 extern bool g_bCodeFoldingAvailable;
 extern bool g_bShowCodeFolding;
 
@@ -4775,6 +4776,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
   static int  iSaveMarkOcc = -1;
   static bool bSaveOccVisible = false;
+  static bool bSaveHyperlinkHotspots = false;
   static bool bSaveTFBackSlashes = false;
 
   WCHAR tchBuf[FNDRPL_BUFFER] = { L'\0' };
@@ -4792,6 +4794,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       iSaveMarkOcc = bSwitchedFindReplace ? iSaveMarkOcc : iMarkOccurrences;
       bSaveOccVisible = bSwitchedFindReplace ? bSaveOccVisible : bMarkOccurrencesMatchVisible;
+      bSaveHyperlinkHotspots = bSwitchedFindReplace ? bSaveHyperlinkHotspots : bHyperlinkHotspot;
 
       //const WORD wTabSpacing = (WORD)SendMessage(lpefr->hwnd, SCI_GETTABWIDTH, 0, 0);;  // dialog box units
       //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
@@ -4948,10 +4951,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           iMarkOccurrences = iSaveMarkOcc;
           bMarkOccurrencesMatchVisible = bSaveOccVisible;
+          bHyperlinkHotspot = bSaveHyperlinkHotspots;
           if (iMarkOccurrences > 0) {
             EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
           }
           EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
+          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
 
           iReplacedOccurrences = 0;
           g_FindReplaceMatchFoundState = FND_NOP;
@@ -5090,28 +5095,28 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             lpefr->bMarkOccurences = true;
             iSaveMarkOcc = iMarkOccurrences;
             bSaveOccVisible = bMarkOccurrencesMatchVisible;
+            bSaveHyperlinkHotspots = bHyperlinkHotspot;
             iMarkOccurrences = 0;
             bMarkOccurrencesMatchVisible = false;
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
           }
           else {                         // switched OFF
             lpefr->bMarkOccurences = false;
+            iMarkOccurrences = iSaveMarkOcc;
+            bMarkOccurrencesMatchVisible = bSaveOccVisible;
+            bHyperlinkHotspot = bSaveHyperlinkHotspots;
             if (bHideNonMatchedLines) {
               bHideNonMatchedLines = false;
               SendMessage(g_hwndEdit, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_OCCUR_LINE, 0);
               Style_ResetCurrentLexer(g_hwndEdit);
             }
-            iMarkOccurrences = iSaveMarkOcc;
-            bMarkOccurrencesMatchVisible = bSaveOccVisible;
-            if (iMarkOccurrences > 0) {
-              EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
-            }
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
             EditClearAllMarks(g_hwndEdit, 0, -1);
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
           }
+          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, (iMarkOccurrences > 0));
           EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
+          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
           bFlagsChanged = true;
           _SetTimerMarkAll(hwnd,0);
         }
@@ -5147,9 +5152,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
         bHideNonMatchedLines = bHideNonMatchedLines ? false : true;
         EditClearAllMarks(g_hwndEdit, 0, -1);
-        if (!bHideNonMatchedLines) {
+        if (bHideNonMatchedLines) {
+          bSaveHyperlinkHotspots = bHyperlinkHotspot;
+          bHyperlinkHotspot = false;
+        }
+        else {
+          bHyperlinkHotspot = bSaveHyperlinkHotspots;
           Style_ResetCurrentLexer(g_hwndEdit);
         }
+        EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
         bFlagsChanged = true;
         _SetTimerMarkAll(hwnd, 0);
         if (bHideNonMatchedLines)
