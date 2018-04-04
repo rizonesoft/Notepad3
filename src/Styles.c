@@ -125,7 +125,8 @@ enum LexDefaultStyles {
   STY_BOOK_MARK = 12,
   STY_MARK_OCC = 13,
   STY_URL_HOTSPOT = 14,
-  STY_INVISIBLE = 15
+  STY_INVISIBLE = 15,
+  STY_READONLY = 16
 };
 
 
@@ -3931,6 +3932,26 @@ void Style_SetInvisible(HWND hwnd, bool bInvisible)
   //SendMessage(hwnd, SCI_FOLDDISPLAYTEXTSETSTYLE, (WPARAM)SC_FOLDDISPLAYTEXT_BOXED, 0);
 }
 
+
+
+//=============================================================================
+//
+//  Style_GetReadonlyStyleID()
+//
+int Style_GetReadonlyStyleID()
+{
+  return (STYLE_LASTPREDEFINED + STY_READONLY);
+}
+
+
+//=============================================================================
+//
+//  Style_SetInvisible()
+//
+void Style_SetReadonly(HWND hwnd, bool bReadonly)
+{
+  SendMessage(hwnd, SCI_STYLESETCHANGEABLE, Style_GetReadonlyStyleID(), (LPARAM)!bReadonly);
+}
 
 
 //=============================================================================

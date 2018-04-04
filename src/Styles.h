@@ -72,6 +72,7 @@ bool   Style_Export(HWND);
 void   Style_SetLexer(HWND,PEDITLEXER);
 void   Style_SetUrlHotSpot(HWND, bool);
 void   Style_SetInvisible(HWND, bool);
+void   Style_SetReadonly(HWND, bool);
 void   Style_SetLongLineColors(HWND);
 void   Style_SetCurrentLineBackground(HWND, bool);
 void   Style_SetFolding(HWND, bool);
@@ -118,6 +119,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_SelectLexerDlg(HWND);
 int    Style_GetHotspotStyleID();
 int    Style_GetInvisibleStyleID();
+int    Style_GetReadonlyStyleID();
 bool   Style_StrGetWeightValue(LPCWSTR,int*);
 void   Style_AppendWeightStr(LPWSTR, int, int);
 

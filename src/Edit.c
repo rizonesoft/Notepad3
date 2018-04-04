@@ -73,6 +73,7 @@ extern bool bFindReplCopySelOrClip;
 
 static EDITFINDREPLACE efrSave;
 static bool bSwitchedFindReplace = false;
+static bool bHideNonMatchedLines = false;
 
 extern int xFindReplaceDlg;
 extern int yFindReplaceDlg;
@@ -4715,12 +4716,24 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
   DocPos end   = iTextLength;
   const DocPos iPos  = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
 
+  static DocLn lastScrollToLn = -1;
+
   if (bFirstMatchOnly && !bReplaceInitialized) {
-    if (iPos >= 0) {
-      EditScrollTo(hwnd, SciCall_LineFromPosition(iPos), true);
-    }
-    else {
-      EditScrollTo(hwnd, SciCall_LineFromPosition(iStart), false);
+    if (!bHideNonMatchedLines) {
+      if (iPos >= 0) {
+        const DocLn scrollToLn = SciCall_LineFromPosition(iPos);
+        if (scrollToLn != lastScrollToLn) {
+          EditScrollTo(hwnd, scrollToLn, true);
+          lastScrollToLn = scrollToLn;
+        }
+      }
+      else {
+        const DocLn scrollToLn = SciCall_LineFromPosition(iStart);
+        if (scrollToLn != lastScrollToLn) {
+          EditScrollTo(hwnd, scrollToLn, false);
+          lastScrollToLn = scrollToLn;
+        }
+      }
     }
   }
   else // mark all matches
@@ -4765,7 +4778,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   static RegExResult_t regexMatch = INVALID;
 
   static bool bFlagsChanged = true;
-  static bool bHideNonMatchedLines = false;
 
   static COLORREF rgbRed = RGB(255, 170, 170);
   static COLORREF rgbGreen = RGB(170, 255, 170);
@@ -5163,10 +5175,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
         bFlagsChanged = true;
         _SetTimerMarkAll(hwnd, 0);
-        if (bHideNonMatchedLines)
+        if (bHideNonMatchedLines) {
           EditScrollTo(g_hwndEdit, 0, false);
-        else
+          SendMessage(g_hwndEdit, SCI_SETREADONLY, true, 0);
+        }
+        else {
           EditScrollTo(g_hwndEdit, Sci_GetCurrentLine(), true);
+          SendMessage(g_hwndEdit, SCI_SETREADONLY, false, 0);
+        }
       }
       break;
 
@@ -6408,12 +6424,10 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 //
 void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, bool bHide)
 {
-  static bool bLastState = true;
-  //UNUSED(hwnd);
+  UNUSED(hwnd);
 
   if (!bHide) {
     //SendMessage(hwnd, SCI_FOLDALL, (WPARAM)SC_FOLDACTION_EXPAND, 0);
-    bLastState = bHide;
     return; 
   }
 
@@ -6442,6 +6456,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
 
   const int baseLevel = SC_FOLDLEVELBASE;
+  const int headerLevel = SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG;
   const int hiddenLevel = (SC_FOLDLEVELBASE + 1) | SC_FOLDLEVELWHITEFLAG;
 
   bool bHdrFlag = false;
@@ -6456,7 +6471,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     }
     if (bIsHidden) {
       if (!bHdrFlag) {
-        SendMessage(hwnd, SCI_SETFOLDLEVEL, (WPARAM)iLine, (LPARAM)(baseLevel | SC_FOLDLEVELHEADERFLAG));
+        SendMessage(hwnd, SCI_SETFOLDLEVEL, (WPARAM)iLine, (LPARAM)headerLevel);
         bHdrFlag = true;
       }
       else

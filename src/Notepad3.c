@@ -2594,11 +2594,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_READONLY:
-      //bReadOnly = (bReadOnly) ? false : true;
-      //SendMessage(g_hwndEdit,SCI_SETREADONLY,bReadOnly,0);
-      //UpdateToolbar();
-      //UpdateStatusbar();
-
       if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)))
       {
         DWORD dwFileAttributes = GetFileAttributes(g_wchCurFile);
