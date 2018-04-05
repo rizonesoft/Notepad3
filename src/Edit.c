@@ -4746,15 +4746,10 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
 //
 static void __fastcall _SetTimerMarkAll(HWND hwnd, int delay)
 {
-  if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) { 
-    TEST_AND_SET(BIT_TIMER_MARK_OCC); // in progress
-    return; 
-  } 
-
-  TEST_AND_SET(BIT_TIMER_MARK_OCC); // raise flag to swollow next calls
+  TEST_AND_SET(BIT_TIMER_MARK_OCC); // flag to swollow multi-timer calls
 
   if (delay < USER_TIMER_MINIMUM) {
-    SendMessage(hwnd, WM_TIMER, MAKELONG(IDT_TIMER_MRKALL, 1), 0); // direct timer event
+    PostMessage(hwnd, WM_TIMER, MAKELONG(IDT_TIMER_MRKALL, 1), 0); // direct timer event
   }
   else {
     SetTimer(hwnd, IDT_TIMER_MRKALL, delay, NULL);
@@ -4987,31 +4982,31 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         // The KillTimer function does not remove WM_TIMER messages already posted to the message queue.
         if (LOWORD(wParam) == IDT_TIMER_MRKALL)
         {
-          KillTimer(hwnd, IDT_TIMER_MRKALL);
-          if (!TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS)) // stay in progress
-          {
-            TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS); // start progress
-            iMarkOccurrencesCount = 0;
-            _SetSearchFlags(hwnd, lpefr);
-            if (lpefr->bMarkOccurences) {
-              if (bFlagsChanged || (StringCchCompareXA(g_lastFind, lpefr->szFind) != 0)) {
-                StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), lpefr->szFind);
-                RegExResult_t match = _FindHasMatch(g_hwndEdit, lpefr, (lpefr->bMarkOccurences), false);
-                if (regexMatch != match) {
-                  regexMatch = match;
+          if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) {
+            KillTimer(hwnd, IDT_TIMER_MRKALL);
+            if (!TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS))
+            {
+              iMarkOccurrencesCount = 0;
+              _SetSearchFlags(hwnd, lpefr);
+              if (lpefr->bMarkOccurences) {
+                if (bFlagsChanged || (StringCchCompareXA(g_lastFind, lpefr->szFind) != 0)) {
+                  StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), lpefr->szFind);
+                  RegExResult_t match = _FindHasMatch(g_hwndEdit, lpefr, (lpefr->bMarkOccurences), false);
+                  if (regexMatch != match) {
+                    regexMatch = match;
+                  }
+                  // we have to set Sci's regex instance to first find (have substitution in place)
+                  _FindHasMatch(g_hwndEdit, lpefr, false, true);
+                  bFlagsChanged = false;
+                  InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
+                  if (bHideNonMatchedLines) { EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, true); }
+                  UpdateToolbar();
+                  UpdateStatusbar();
                 }
-                // we have to set Sci's regex instance to first find (have substitution in place)
-                _FindHasMatch(g_hwndEdit, lpefr, false, true);
-                bFlagsChanged = false;
-                InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
-                if (bHideNonMatchedLines) { EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, true); }
-                UpdateToolbar();
-                UpdateStatusbar();
               }
+              TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
             }
-            TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
           }
-          TEST_AND_RESET(BIT_TIMER_MARK_OCC); // ready for new events
           return true;
         }
       }
