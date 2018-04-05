@@ -7627,6 +7627,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
   if (!bReload) { ResetEncryption(); }
 
+
   if (bNew) {
     StringCchCopy(g_wchCurFile,COUNTOF(g_wchCurFile),L"");
     SetDlgItemText(g_hwndMain,IDC_FILENAME,g_wchCurFile);
@@ -7655,6 +7656,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     InstallFileWatching(NULL);
     bEnableSaveSettings = true;
     UpdateSettingsCmds();
+    if (IsWindow(g_hwndDlgFindReplace)) {
+      SendMessage(g_hwndDlgFindReplace, WM_COMMAND, (WPARAM)MAKELONG(IDC_FR_RESET_STATE, 1), 0);
+    }
     return true;
   }
 

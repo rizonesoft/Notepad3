@@ -5035,6 +5035,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       switch (LOWORD(wParam))
       {
+      case IDC_FR_RESET_STATE:
+        if (bHideNonMatchedLines) {
+          Style_ResetCurrentLexer(g_hwndEdit);
+          bHideNonMatchedLines = false;
+        }
+        break;
+
       case IDC_FINDTEXT:
       case IDC_REPLACETEXT:
       {
