@@ -1,4 +1,4 @@
-//{{NO_DEPENDENCIES}}
+﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
 // Used by Notepad3.rc
 //
@@ -118,26 +118,24 @@
 #define IDD_INFOBOX3                      214
 #define IDT_TIMER_MRKALL                  215
 #define IDC_ALL_OCCURRENCES               216
-#define IDC_MARKALL_OCC                   217
-#define IDC_DOT_MATCH_ALL                 218
-#define IDT_TIMER_MAIN_MRKALL             219
-#define IDC_MAIN_MARKALL_OCC              220
-#define IDT_TIMER_UPDATE_HOTSPOT          221
-#define IDC_CALL_UPDATE_HOTSPOT           222
-#define IDC_BACKSLASHHELP                 223
-#define IDC_REGEXPHELP                    224
-#define IDC_WILDCARDHELP                  225
-#define IDC_WILDCARDSEARCH                226
-#define IDC_SCI_VERSION                   227
-#define IDR_MAINWNDTB                     228
-#define IDC_REMOVE                        229
-#define IDC_SWAPSTRG                      230
-#define IDC_CHECK_OCC                     231
-#define IDC_PRINTER                       232
-#define IDC_USEASREADINGFALLBACK          233
-#define IDR_ACCCUSTOMSCHEMES              234
-#define IDC_NOANSICPDETECTION             235
-#define IDC_REMEMBERSEARCHPATTERN         236
+#define IDC_DOT_MATCH_ALL               217
+#define IDT_TIMER_MAIN_MRKALL           218
+#define IDT_TIMER_UPDATE_HOTSPOT        219
+#define IDC_BACKSLASHHELP               220
+#define IDC_REGEXPHELP                  221
+#define IDC_WILDCARDHELP                222
+#define IDC_WILDCARDSEARCH              223
+#define IDC_SCI_VERSION                 224
+#define IDR_MAINWNDTB                   225
+#define IDC_REMOVE                      226
+#define IDC_SWAPSTRG                    227
+#define IDC_CHECK_OCC                   228
+#define IDC_PRINTER                     229
+#define IDC_USEASREADINGFALLBACK        230
+#define IDR_ACCCUSTOMSCHEMES            231
+#define IDC_NOANSICPDETECTION           232
+#define IDC_REMEMBERSEARCHPATTERN       233
+#define IDC_TOGGLE_VISIBILITY           234
 #define IDACC_FIND                        302
 #define IDACC_REPLACE                     303
 #define IDACC_SAVEPOS                     304
@@ -362,6 +360,9 @@
 #define IDM_EDIT_SELTOPREV                40372
 #define IDM_EDIT_COMPLETEWORD             40373
 #define IDM_EDIT_JOINLN_NOSP              40374
+#define IDM_EDIT_REMOVEDUPLICATELINES     40375
+#define IDM_EDIT_REMOVEEMPTYLINES         40376
+#define IDM_EDIT_MERGEEMPTYLINES          40377
 #define IDM_VIEW_SCHEME                   40400
 #define IDM_VIEW_USE2NDDEFAULT            40401
 #define IDM_VIEW_SCHEMECONFIG             40402

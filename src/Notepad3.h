@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -64,8 +64,8 @@ UndoRedoSelection_t;
 
 
 typedef enum {
-  UNDO = TRUE,
-  REDO = FALSE
+  UNDO = true,
+  REDO = false
 } DoAction;
 
 
@@ -121,13 +121,13 @@ typedef enum {
 
 
 //==== Function Declarations ==================================================
-BOOL InitApplication(HINSTANCE);
+bool InitApplication(HINSTANCE);
 HWND InitInstance(HINSTANCE,LPSTR,int);
-BOOL ActivatePrevInst();
-BOOL RelaunchMultiInst();
-BOOL RelaunchElevated(LPWSTR);
+bool ActivatePrevInst();
+bool RelaunchMultiInst();
+bool RelaunchElevated(LPWSTR);
 void SnapToDefaultPos(HWND);
-void ShowNotifyIcon(HWND,BOOL);
+void ShowNotifyIcon(HWND,bool);
 void SetNotifyIconTitle(HWND);
 void InstallFileWatching(LPCWSTR);
 void CALLBACK WatchTimerProc(HWND,UINT,UINT_PTR,DWORD);
@@ -135,11 +135,11 @@ void CALLBACK PasteBoardTimer(HWND,UINT,UINT_PTR,DWORD);
 
 
 void LoadSettings();
-void SaveSettings(BOOL);
+void SaveSettings(bool);
 void ParseCommandLine();
 void LoadFlags();
-BOOL CheckIniFile(LPWSTR,LPCWSTR);
-BOOL CheckIniFileRedirect(LPWSTR,LPCWSTR);
+bool CheckIniFile(LPWSTR,LPCWSTR);
+bool CheckIniFileRedirect(LPWSTR,LPCWSTR);
 int  FindIniFile();
 int  TestIniFile();
 int  CreateIniFile();
@@ -160,17 +160,20 @@ int  BeginUndoAction();
 void EndUndoAction(int);
 void RestoreAction(int,DoAction);
 int  UndoRedoActionMap(int,UndoRedoSelection_t*);
-void OpenHotSpotURL(DocPos, BOOL);
+void OpenHotSpotURL(DocPos, bool);
 
+bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR);
+void SetFindPatternMB(LPCSTR);
 void GetFindPattern(LPWSTR, size_t);
+void GetFindPatternMB(LPSTR, size_t);
 
-BOOL FileIO(BOOL,LPCWSTR,BOOL,BOOL,int*,int*,BOOL*,BOOL*,BOOL*,BOOL*,BOOL);
-BOOL FileLoad(BOOL,BOOL,BOOL,BOOL,BOOL,LPCWSTR);
-BOOL FileRevert(LPCWSTR);
-BOOL FileSave(BOOL,BOOL,BOOL,BOOL);
-BOOL OpenFileDlg(HWND,LPWSTR,int,LPCWSTR);
-BOOL SaveFileDlg(HWND,LPWSTR,int,LPCWSTR);
+bool FileIO(bool,LPCWSTR,bool,bool,int*,int*,bool*,bool*,bool*,bool*,bool);
+bool FileLoad(bool,bool,bool,bool,bool,LPCWSTR);
+bool FileRevert(LPCWSTR);
+bool FileSave(bool,bool,bool,bool);
+bool OpenFileDlg(HWND,LPWSTR,int,LPCWSTR);
+bool SaveFileDlg(HWND,LPWSTR,int,LPCWSTR);
 
 LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT MsgCreate(HWND, WPARAM, LPARAM);
@@ -190,7 +193,7 @@ LRESULT MsgNotify(HWND, WPARAM, LPARAM);
 
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
-BOOL CheckNotifyChangeEvent();
+bool CheckNotifyChangeEvent();
 
 #endif //_NP3_NOTEPAD3_H_
 ///   End of Notepad3.h   \\\

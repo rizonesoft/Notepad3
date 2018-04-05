@@ -38,7 +38,7 @@
 
 
 extern HINSTANCE g_hInstance;
-extern BOOL bLoadASCIIasUTF8;
+extern bool bLoadASCIIasUTF8;
 
 //=============================================================================
 
@@ -255,13 +255,13 @@ int  Encoding_SrcWeak(int iSrcWeakEnc) {
 // ============================================================================
 
 
-BOOL Encoding_HasChanged(int iOriginalEncoding) {
+bool Encoding_HasChanged(int iOriginalEncoding) {
   static int OriginalEncoding = CPI_NONE;
 
   if (iOriginalEncoding >= CPI_NONE) {
     OriginalEncoding = iOriginalEncoding;
   }
-  return (BOOL)(OriginalEncoding != Encoding_Current(CPI_GET));
+  return (bool)(OriginalEncoding != Encoding_Current(CPI_GET));
 }
 // ============================================================================
 
@@ -324,7 +324,7 @@ void Encoding_InitDefaults()
 // ============================================================================
 
 
-int Encoding_MapIniSetting(BOOL bLoad, int iSetting) {
+int Encoding_MapIniSetting(bool bLoad, int iSetting) {
   if (bLoad) {
     switch (iSetting) {
     case -1: return CPI_NONE;
@@ -460,16 +460,16 @@ int Encoding_GetByCodePage(UINT cp) {
 // ============================================================================
 
 
-BOOL Encoding_IsValid(int iTestEncoding) {
+bool Encoding_IsValid(int iTestEncoding) {
   CPINFO cpi;
   if ((iTestEncoding >= 0) && (iTestEncoding < COUNTOF(g_Encodings))) {
     if ((g_Encodings[iTestEncoding].uFlags & NCP_INTERNAL) ||
       IsValidCodePage(g_Encodings[iTestEncoding].uCodePage) &&
       GetCPInfo(g_Encodings[iTestEncoding].uCodePage, &cpi)) {
-      return(TRUE);
+      return(true);
     }
   }
-  return(FALSE);
+  return(false);
 }
 // ============================================================================
 
@@ -485,7 +485,7 @@ int CmpEncoding(const void *s1, const void *s2) {
 // ============================================================================
 
 
-void Encoding_AddToListView(HWND hwnd, int idSel, BOOL bRecodeOnly) {
+void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
   int i;
   int iSelItem = -1;
   LVITEM lvi;
@@ -541,17 +541,17 @@ void Encoding_AddToListView(HWND hwnd, int idSel, BOOL bRecodeOnly) {
 
   if (iSelItem != -1) {
     ListView_SetItemState(hwnd, iSelItem, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-    ListView_EnsureVisible(hwnd, iSelItem, FALSE);
+    ListView_EnsureVisible(hwnd, iSelItem, false);
   }
   else {
     ListView_SetItemState(hwnd, 0, LVIS_FOCUSED, LVIS_FOCUSED);
-    ListView_EnsureVisible(hwnd, 0, FALSE);
+    ListView_EnsureVisible(hwnd, 0, false);
   }
 }
 // ============================================================================
 
 
-BOOL Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
+bool Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
   LVITEM lvi;
 
   lvi.iItem = ListView_GetNextItem(hwnd, -1, LVNI_ALL | LVNI_SELECTED);
@@ -564,14 +564,14 @@ BOOL Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
     else
       *pidEncoding = -1;
 
-    return (TRUE);
+    return (true);
   }
-  return(FALSE);
+  return(false);
 }
 // ============================================================================
 
 
-void Encoding_AddToComboboxEx(HWND hwnd, int idSel, BOOL bRecodeOnly) {
+void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
   int i;
   int iSelItem = -1;
   COMBOBOXEXITEM cbei;
@@ -631,7 +631,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, BOOL bRecodeOnly) {
 // ============================================================================
 
 
-BOOL Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
+bool Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
   COMBOBOXEXITEM cbei;
 
   cbei.iItem = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
@@ -643,9 +643,9 @@ BOOL Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
     else
       *pidEncoding = -1;
 
-    return (TRUE);
+    return (true);
   }
-  return(FALSE);
+  return(false);
 }
 // ============================================================================
 
@@ -655,64 +655,64 @@ UINT Encoding_GetCodePage(int iEncoding) {
 }
 // ============================================================================
 
-BOOL Encoding_IsDefault(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_DEFAULT) : FALSE;
+bool Encoding_IsDefault(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_DEFAULT) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsANSI(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ANSI) : FALSE;
+bool Encoding_IsANSI(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ANSI) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsOEM(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_OEM) : FALSE;
+bool Encoding_IsOEM(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_OEM) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsUTF8(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8) : FALSE;
+bool Encoding_IsUTF8(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsUTF8_SIGN(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) : FALSE;
+bool Encoding_IsUTF8_SIGN(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsMBCS(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_MBCS) : FALSE;
+bool Encoding_IsMBCS(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_MBCS) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsUNICODE(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE) : FALSE;
+bool Encoding_IsUNICODE(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsUNICODE_BOM(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM) : FALSE;
+bool Encoding_IsUNICODE_BOM(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsUNICODE_REVERSE(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE) : FALSE;
+bool Encoding_IsUNICODE_REVERSE(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE) : false;
 }
 // ============================================================================
 
 
-BOOL Encoding_IsINTERNAL(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_INTERNAL) : FALSE;
+bool Encoding_IsINTERNAL(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_INTERNAL) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsEXTERNAL_8BIT(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT) : FALSE;
+bool Encoding_IsEXTERNAL_8BIT(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT) : false;
 }
 // ============================================================================
 
-BOOL Encoding_IsRECODE(int iEncoding) {
-  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_RECODE) : FALSE;
+bool Encoding_IsRECODE(int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_RECODE) : false;
 }
 // ============================================================================
 
@@ -735,79 +735,16 @@ const char* Encoding_GetParseNames(int iEncoding) {
 // ============================================================================
 
 
-
-
-UINT Encoding_SciGetCodePage(HWND hwnd) {
-  UNUSED(hwnd);
-  return CP_UTF8;
-  // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
-  /*
-  int cp = (UINT)SendMessage(hwnd,SCI_GETCODEPAGE,0,0);
-  if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
-  return cp;
-  }
-  return (cp == 0) ? CP_ACP : CP_UTF8;
-  */
-}
-// ============================================================================
-
-
-int Encoding_SciMappedCodePage(int iEncoding) {
-  UNUSED(iEncoding);
-  return SC_CP_UTF8;
-  // remove internal support for Chinese, Japan, Korean DBCS  use UTF-8 instead
-  /*
-  if (Encoding_IsValid(iEncoding)) {
-  // check for Chinese, Japan, Korean DBCS code pages and switch accordingly
-  int cp = (int)g_Encodings[iEncoding].uCodePage;
-  if (cp == 932 || cp == 936 || cp == 949 || cp == 950) {
-  return cp;
-  }
-  }
-  */
-}
-// ============================================================================
-
-
-void Encoding_SciSetCodePage(HWND hwnd, int iEncoding) {
-  int cp = Encoding_SciMappedCodePage(iEncoding);
-  SendMessage(hwnd, SCI_SETCODEPAGE, (WPARAM)cp, 0);
-  // charsets can be changed via styles schema
-  /*
-  int charset = SC_CHARSET_ANSI;
-  switch (cp) {
-  case 932:
-  charset = SC_CHARSET_SHIFTJIS;
-  break;
-  case 936:
-  charset = SC_CHARSET_GB2312;
-  break;
-  case 949:
-  charset = SC_CHARSET_HANGUL;
-  break;
-  case 950:
-  charset = SC_CHARSET_CHINESEBIG5;
-  break;
-  default:
-  charset = g_iDefaultCharSet;
-  break;
-  }
-  SendMessage(hwnd,SCI_STYLESETCHARACTERSET,(WPARAM)STYLE_DEFAULT,(LPARAM)charset);
-  */
-}
-// ============================================================================
-
-
-BOOL IsUnicode(const char* pBuffer, int cb, LPBOOL lpbBOM, LPBOOL lpbReverse) {
+bool IsUnicode(const char* pBuffer, int cb, bool* lpbBOM, bool* lpbReverse) {
   int i = 0xFFFF;
 
-  BOOL bIsTextUnicode;
+  bool bIsTextUnicode;
 
-  BOOL bHasBOM;
-  BOOL bHasRBOM;
+  bool bHasBOM;
+  bool bHasRBOM;
 
   if (!pBuffer || cb < 2)
-    return FALSE;
+    return false;
 
   bIsTextUnicode = IsTextUnicode(pBuffer, cb, &i);
 
@@ -827,22 +764,22 @@ BOOL IsUnicode(const char* pBuffer, int cb, LPBOOL lpbBOM, LPBOOL lpbReverse) {
     if (lpbBOM)
       *lpbBOM = (bHasBOM || bHasRBOM ||
       (i & (IS_TEXT_UNICODE_SIGNATURE | IS_TEXT_UNICODE_REVERSE_SIGNATURE)))
-      ? TRUE : FALSE;
+      ? true : false;
 
     if (lpbReverse)
-      *lpbReverse = (bHasRBOM || (i & IS_TEXT_UNICODE_REVERSE_MASK)) ? TRUE : FALSE;
+      *lpbReverse = (bHasRBOM || (i & IS_TEXT_UNICODE_REVERSE_MASK)) ? true : false;
 
-    return TRUE;
+    return true;
   }
 
   else
 
-    return FALSE;
+    return false;
 }
 // ============================================================================
 
 
-BOOL IsUTF8(const char* pTest, int nLength)
+bool IsUTF8(const char* pTest, int nLength)
 {
   static int byte_class_table[256] = {
     /*       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  */
@@ -906,17 +843,17 @@ BOOL IsUTF8(const char* pTest, int nLength)
 
 
 
-BOOL IsUTF7(const char* pTest, int nLength) {
+bool IsUTF7(const char* pTest, int nLength) {
   int i;
   const char *pt = pTest;
 
   for (i = 0; i < nLength; i++) {
     if (*pt & 0x80 || !*pt)
-      return FALSE;
+      return false;
     pt++;
   }
 
-  return TRUE;
+  return true;
 }
 // ============================================================================
 

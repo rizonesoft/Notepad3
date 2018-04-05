@@ -169,10 +169,10 @@ BEGIN
             MENUITEM "Move &Up\tCtrl+Shift+Up",     IDM_EDIT_MOVELINEUP
             MENUITEM "&Move Down\tCtrl+Shift+Down", IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut &Line\tCtrl+X,Ctrl+Shift+X", IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Line\tCtrl+C,Ctrl+Shift+C", IDM_EDIT_COPYLINE
-            MENUITEM "D&elete Line\tCtrl+Shift+D",  IDM_EDIT_DELETELINE
+            MENUITEM "Cut &Line\tCtrl[+Shift]+X",   IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Line\tCtrl[+Shift]+C",  IDM_EDIT_COPYLINE
             MENUITEM "&Duplicate Line\tCtrl+D",     IDM_EDIT_DUPLICATELINE
+            MENUITEM "D&elete Line\tCtrl+Shift+D",  IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Delete Line Left\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
             MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
@@ -183,8 +183,11 @@ BEGIN
             MENUITEM "&Fuse Lines\tCtrl+Alt+J",     IDM_EDIT_JOINLN_NOSP
             MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Merge &Blank Lines\tAlt+Y",   IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Blank Lines\tAlt+R",  IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Mer&ge Empty Lines\tAlt+Y",   IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "Merge Whitespace Lines\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "&Remove Empty Lines\tAlt+R",  IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Remove Whitespace Lines\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "&Block"
         BEGIN
@@ -209,7 +212,7 @@ BEGIN
             MENUITEM "&Pad With Spaces\tAlt+B",     IDM_EDIT_PADWITHSPACES
             MENUITEM "Strip &First Character\tAlt+Z", IDM_EDIT_STRIP1STCHAR
             MENUITEM "Strip &Last Character\tAlt+U", IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Strip &Trailing Blanks\tAlt+W", IDM_EDIT_TRIMLINES
+            MENUITEM "Strip &Trailing Whitespaces\tAlt+W", IDM_EDIT_TRIMLINES
             MENUITEM "Compress &Whitespace\tAlt+P", IDM_EDIT_COMPRESSWS
             MENUITEM SEPARATOR
             MENUITEM "&Modify Lines...\tAlt+M",     IDM_EDIT_MODIFYLINES
@@ -283,6 +286,8 @@ BEGIN
         MENUITEM "Save Find Text\tAlt+F3",      IDM_EDIT_SAVEFIND
         MENUITEM "Find Ne&xt\tF3",              IDM_EDIT_FINDNEXT
         MENUITEM "Find Pre&vious\tShift+F3",    IDM_EDIT_FINDPREV
+        MENUITEM "Find Next Selected\tCtrl+F3",           CMD_FINDNEXTSEL
+        MENUITEM "Find Previous Selected\tCtrl+Shift+F3", CMD_FINDPREVSEL
         MENUITEM "&Replace...\tCtrl+H",         IDM_EDIT_REPLACE
         MENUITEM "Replace Ne&xt\tF4",           IDM_EDIT_REPLACENEXT
         MENUITEM "&Goto...\tCtrl+G",            IDM_EDIT_GOTOLINE
@@ -335,6 +340,8 @@ BEGIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
         MENUITEM SEPARATOR
+        MENUITEM "Copy Position Args\tCtrl+Shift+K", CMD_COPYWINPOS
+        MENUITEM "Snap to Default Position\tCtrl+Shift+P", CMD_DEFAULTWINPOS
         MENUITEM "Scroll Past End of &File",    IDM_VIEW_SCROLLPASTEOF
     END
     POPUP "&Settings"
@@ -446,6 +453,7 @@ BEGIN
     "B",            IDM_EDIT_FINDMATCHINGBRACE, VIRTKEY, CONTROL, NOINVERT
     "B",            IDM_EDIT_PADWITHSPACES, VIRTKEY, ALT, NOINVERT
     "B",            IDM_EDIT_SELTOMATCHINGBRACE, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "B",            IDM_EDIT_REMOVEBLANKLINES, VIRTKEY, CONTROL, ALT, NOINVERT
     "C",            IDM_EDIT_COPY,          VIRTKEY, CONTROL, NOINVERT
     "C",            IDM_EDIT_COPYALL,       VIRTKEY, ALT, NOINVERT
     "C",            IDM_EDIT_HEX2CHAR,      VIRTKEY, CONTROL, ALT, NOINVERT
@@ -453,6 +461,7 @@ BEGIN
     "D",            IDM_EDIT_DUPLICATELINE, VIRTKEY, CONTROL, NOINVERT
     "D",            IDM_EDIT_SELECTIONDUPLICATE, VIRTKEY, ALT, NOINVERT
     "D",            IDM_EDIT_DELETELINE,    VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "D",            IDM_EDIT_REMOVEDUPLICATELINES, VIRTKEY, CONTROL, ALT, NOINVERT
     "E",            IDM_EDIT_COPYADD,       VIRTKEY, CONTROL, NOINVERT
     "E",            IDM_EDIT_ESCAPECCHARS,  VIRTKEY, CONTROL, ALT, NOINVERT
     "E",            IDM_EDIT_URLENCODE,     VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -499,7 +508,7 @@ BEGIN
     "Q",            IDM_EDIT_ENCLOSESELECTION, VIRTKEY, ALT, NOINVERT
     "Q",            IDM_EDIT_STREAMCOMMENT, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "R",            IDM_FILE_RUN,           VIRTKEY, CONTROL, NOINVERT
-    "R",            IDM_EDIT_REMOVEBLANKLINES, VIRTKEY, ALT, NOINVERT
+    "R",            IDM_EDIT_REMOVEEMPTYLINES, VIRTKEY, ALT, NOINVERT
     "R",            IDM_EDIT_UNESCAPECCHARS, VIRTKEY, CONTROL, ALT, NOINVERT
     "R",            IDM_EDIT_URLDECODE,     VIRTKEY, SHIFT, CONTROL, NOINVERT
     "S",            IDM_FILE_SAVE,          VIRTKEY, CONTROL, NOINVERT
@@ -523,8 +532,9 @@ BEGIN
     "X",            IDM_EDIT_CHAR2HEX,      VIRTKEY, CONTROL, ALT, NOINVERT
     "X",            IDM_EDIT_CUTLINE,       VIRTKEY, SHIFT, CONTROL, NOINVERT
     "Y",            IDM_EDIT_REDO,          VIRTKEY, CONTROL, NOINVERT
-    "Y",            IDM_EDIT_MERGEBLANKLINES, VIRTKEY, ALT, NOINVERT
+    "Y",            IDM_EDIT_MERGEEMPTYLINES, VIRTKEY, ALT, NOINVERT
     "Y",            IDM_EDIT_UNDO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "Y",            IDM_EDIT_MERGEBLANKLINES, VIRTKEY, CONTROL, ALT, NOINVERT
     "Z",            IDM_EDIT_UNDO,          VIRTKEY, CONTROL, NOINVERT
     "Z",            IDM_EDIT_STRIP1STCHAR,  VIRTKEY, ALT, NOINVERT
     "Z",            IDM_EDIT_REDO,          VIRTKEY, SHIFT, CONTROL, NOINVERT
@@ -1465,7 +1475,7 @@ BEGIN
     IDS_BACKSLASHHELP       "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_REGEXPHELP          "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_WILDCARDHELP        "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
-    IDS_FR_STATUS_FMT       " Ln %s / %s     Col %s     Sel %s     Occ %s     Repl %s                          "
+    IDS_FR_STATUS_FMT       " Ln %s / %s     Col %s     Sel %s     Occ %s     Repl %s     (  %s  )              "
 END
 
 STRINGTABLE

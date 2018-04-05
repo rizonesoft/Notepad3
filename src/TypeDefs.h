@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * Notepad3                                                                    *
@@ -23,7 +23,7 @@
   typedef Sci_Position   DocPos;
   typedef Sci_PositionU  DocPosU;
   typedef Sci_PositionCR DocCR;
-  typedef Sci_Position   DocLn;  // Sci_Line?
+  typedef Sci_Line       DocLn;
 #else
 
   #ifdef NP3_COMPILE_TEST
@@ -40,8 +40,20 @@
 
 #endif
 
+  // --------------------------------------------------------------------------
+    
+  typedef struct _wi
+  {
+    int x;
+    int y;
+    int cx;
+    int cy;
+    int max;
+  } WININFO;
 
-  enum BufferSizes
+  // --------------------------------------------------------------------------
+
+  typedef enum BufferSizes
   {
     MICRO_BUFFER = 32,
     MINI_BUFFER = 64,
@@ -52,8 +64,14 @@
     XHUGE_BUFFER = 2048,
 
     FILE_ARG_BUF = MAX_PATH + 2,
-    FNDRPL_BUFFER = 512
-  };
+    FNDRPL_BUFFER = 1024,
+    TEMPLINE_BUFFER = 4096
+
+  } BUFFER_SIZES;
+
+
+  typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
+  typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
 
 //=============================================================================
 
