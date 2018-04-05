@@ -72,20 +72,20 @@ void StatusUpdatePrintPage(int iPageNum)
   FormatString(tch,COUNTOF(tch),IDS_PRINTFILE,iPageNum);
 
   StatusSetText(g_hwndStatus,255,tch);
-  StatusSetSimple(g_hwndStatus,TRUE);
+  StatusSetSimple(g_hwndStatus,true);
 
-  InvalidateRect(g_hwndStatus,nullptr,TRUE);
+  InvalidateRect(g_hwndStatus,nullptr,true);
   UpdateWindow(g_hwndStatus);
 }
 
 
-extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
+extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 {
 
   // Don't print empty documents
   if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0) {
     MsgBox(MBWARN,IDS_PRINT_EMPTY);
-    return TRUE;
+    return true;
   }
 
   int startPos;
@@ -120,7 +120,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   struct Sci_RangeToFormat frPrint;
 
   int pageNum;
-  BOOL printPage;
+  bool printPage;
 
   WCHAR pageString[32] = { L'\0' };
 
@@ -154,7 +154,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   pdlg.Flags |= (flagPrintFileAndLeave == 1) ? PD_RETURNDEFAULT : 0;
 
   if (!PrintDlg(&pdlg)) {
-    return TRUE; // False means error...
+    return true; // False means error...
   }
 
   hDevMode = pdlg.hDevMode;
@@ -277,7 +277,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       DeleteObject(fontHeader);
     if (fontFooter)
       DeleteObject(fontFooter);
-    return FALSE;
+    return false;
   }
 
   // Get current date...
@@ -435,7 +435,7 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       break;
   }
 
-  SendMessage(hwnd,SCI_FORMATRANGE, FALSE, 0);
+  SendMessage(hwnd,SCI_FORMATRANGE, false, 0);
 
   EndDoc(hdc);
   DeleteDC(hdc);
@@ -445,12 +445,12 @@ extern "C" BOOL EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     DeleteObject(fontFooter);
 
   // Reset Statusbar to default mode
-  StatusSetSimple(g_hwndStatus,FALSE);
+  StatusSetSimple(g_hwndStatus,false);
 
   // Remove wait cursor...
   { POINT pt; SendMessage(g_hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORNORMAL, 0); GetCursorPos(&pt); SetCursorPos(pt.x, pt.y); }
 
-  return TRUE;
+  return true;
 }
 
 
@@ -521,11 +521,11 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         SendDlgItemMessage(hwnd,34,CB_SETCURSEL,(WPARAM)iPrintColor,0);
 
         // Make combos handier
-        SendDlgItemMessage(hwnd,32,CB_SETEXTENDEDUI,TRUE,0);
-        SendDlgItemMessage(hwnd,33,CB_SETEXTENDEDUI,TRUE,0);
-        SendDlgItemMessage(hwnd,34,CB_SETEXTENDEDUI,TRUE,0);
-        SendDlgItemMessage(hwnd,1137,CB_SETEXTENDEDUI,TRUE,0);
-        SendDlgItemMessage(hwnd,1138,CB_SETEXTENDEDUI,TRUE,0);
+        SendDlgItemMessage(hwnd,32,CB_SETEXTENDEDUI,true,0);
+        SendDlgItemMessage(hwnd,33,CB_SETEXTENDEDUI,true,0);
+        SendDlgItemMessage(hwnd,34,CB_SETEXTENDEDUI,true,0);
+        SendDlgItemMessage(hwnd,1137,CB_SETEXTENDEDUI,true,0);
+        SendDlgItemMessage(hwnd,1138,CB_SETEXTENDEDUI,true,0);
       }
       break;
 

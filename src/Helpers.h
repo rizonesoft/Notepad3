@@ -53,7 +53,7 @@ __forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 }
 __forceinline bool FreeMem(LPVOID lpMemory)
 {
-  return ((lpMemory != NULL) ? HeapFree(GetProcessHeap(), 0, lpMemory) : TRUE);
+  return ((lpMemory != NULL) ? HeapFree(GetProcessHeap(), 0, lpMemory) : true);
 }
 __forceinline size_t SizeOfMem(LPVOID lpMemory)
 {
@@ -65,13 +65,13 @@ __forceinline size_t SizeOfMem(LPVOID lpMemory)
 #define IniGetInt(lpSection,lpName,nDefault) \
   GetPrivateProfileInt(lpSection,lpName,(nDefault),g_wchIniFile)
 #define IniGetBool(lpSection,lpName,nDefault) \
-  (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),g_wchIniFile) ? TRUE : FALSE)
+  (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),g_wchIniFile) ? true : false)
 #define IniSetString(lpSection,lpName,lpString) \
   WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
 #define IniDeleteSection(lpSection) \
   WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
 
-__inline BOOL IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
+__inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
 
@@ -86,16 +86,16 @@ int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
 int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
 UINT IniSectionGetUInt(LPCWSTR, LPCWSTR, UINT);
 DocPos IniSectionGetPos(LPCWSTR, LPCWSTR, DocPos);
-__forceinline BOOL IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, BOOL bDefault) {
-  return (IniSectionGetInt(lpCachedIniSection, lpName, ((bDefault) ? 1 : 0)) ? TRUE : FALSE);
+__forceinline bool IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, bool bDefault) {
+  return (IniSectionGetInt(lpCachedIniSection, lpName, ((bDefault) ? 1 : 0)) ? true : false);
 }
 
-BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
+bool IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
 
-__forceinline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
+__forceinline bool IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
   WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
-__forceinline BOOL IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, BOOL b) {
+__forceinline bool IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, bool b) {
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
 __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos)
@@ -106,7 +106,7 @@ __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, D
 //extern HWND g_hwndEdit;
 #define BeginWaitCursor(TCH) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetText(g_hwndStatus,STATUS_HELP,(TCH)); IgnoreNotifyChangeEvent(); }
 #define BeginWaitCursorID(UID) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetTextID(g_hwndStatus,STATUS_HELP,(UID)); IgnoreNotifyChangeEvent(); }
-#define EndWaitCursor() { POINT pt; SciCall_SetCursor(SC_CURSORNORMAL); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); StatusSetSimple(g_hwndStatus,FALSE); ObserveNotifyChangeEvent(); UpdateStatusbar(); }
+#define EndWaitCursor() { POINT pt; SciCall_SetCursor(SC_CURSORNORMAL); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); StatusSetSimple(g_hwndStatus,false); ObserveNotifyChangeEvent(); UpdateStatusbar(); }
 
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
@@ -135,22 +135,22 @@ __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, D
 
 bool SetClipboardTextW(HWND, LPCWSTR);
 
-BOOL PrivateIsAppThemed();
+bool PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
-BOOL IsElevated();
-BOOL IsUserAdmin();
-//BOOL SetExplorerTheme(HWND);
+bool IsElevated();
+bool IsUserAdmin();
+//bool SetExplorerTheme(HWND);
 
 
-BOOL BitmapMergeAlpha(HBITMAP,COLORREF);
-BOOL BitmapAlphaBlend(HBITMAP,COLORREF,BYTE);
-BOOL BitmapGrayScale(HBITMAP);
-BOOL VerifyContrast(COLORREF,COLORREF);
-BOOL IsFontAvailable(LPCWSTR);
+bool BitmapMergeAlpha(HBITMAP,COLORREF);
+bool BitmapAlphaBlend(HBITMAP,COLORREF,BYTE);
+bool BitmapGrayScale(HBITMAP);
+bool VerifyContrast(COLORREF,COLORREF);
+bool IsFontAvailable(LPCWSTR);
 
 
-BOOL SetWindowTitle(HWND,UINT,BOOL,UINT,LPCWSTR,int,BOOL,UINT,BOOL,LPCWSTR);
-void SetWindowTransparentMode(HWND,BOOL);
+bool SetWindowTitle(HWND,UINT,bool,UINT,LPCWSTR,int,bool,UINT,bool,LPCWSTR);
+void SetWindowTransparentMode(HWND,bool);
 
 
 void CenterDlgInParent(HWND);
@@ -168,8 +168,8 @@ void DeleteBitmapButton(HWND,int);
 
 
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
-BOOL StatusSetText(HWND,UINT,LPCWSTR);
-BOOL StatusSetTextID(HWND,UINT,UINT);
+bool StatusSetText(HWND,UINT,LPCWSTR);
+bool StatusSetTextID(HWND,UINT,UINT);
 COLORREF GetBackgroundColor(HWND);
 int  StatusCalcPaneWidth(HWND,LPCWSTR);
 
@@ -178,7 +178,7 @@ int Toolbar_SetButtons(HWND,int,LPCWSTR,void*,int);
 
 LRESULT SendWMSize(HWND);
 
-BOOL IsCmdEnabled(HWND, UINT);
+bool IsCmdEnabled(HWND, UINT);
 
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
@@ -188,7 +188,7 @@ BOOL IsCmdEnabled(HWND, UINT);
 
 
 #define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
-  if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, FALSE); } }; EnableWindow(hctrl, (b)); }
+  if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 
@@ -196,21 +196,21 @@ BOOL IsCmdEnabled(HWND, UINT);
 
 int FormatString(LPWSTR,int,UINT,...);
 
-BOOL GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
-void PathRelativeToApp(LPWSTR,LPWSTR,int,BOOL,BOOL,BOOL);
-void PathAbsoluteFromApp(LPWSTR,LPWSTR,int,BOOL);
+bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
+void PathRelativeToApp(LPWSTR,LPWSTR,int,bool,bool,bool);
+void PathAbsoluteFromApp(LPWSTR,LPWSTR,int,bool);
 
 
-BOOL PathIsLnkFile(LPCWSTR);
-BOOL PathGetLnkPath(LPCWSTR,LPWSTR,int);
-BOOL PathIsLnkToDirectory(LPCWSTR,LPWSTR,int);
-BOOL PathCreateDeskLnk(LPCWSTR);
-BOOL PathCreateFavLnk(LPCWSTR,LPCWSTR,LPCWSTR);
+bool PathIsLnkFile(LPCWSTR);
+bool PathGetLnkPath(LPCWSTR,LPWSTR,int);
+bool PathIsLnkToDirectory(LPCWSTR,LPWSTR,int);
+bool PathCreateDeskLnk(LPCWSTR);
+bool PathCreateFavLnk(LPCWSTR,LPCWSTR,LPCWSTR);
 
 
-BOOL StrLTrim(LPWSTR,LPCWSTR);
-BOOL TrimString(LPWSTR);
-BOOL ExtractFirstArgument(LPCWSTR, LPWSTR, LPWSTR, int);
+bool StrLTrim(LPWSTR,LPCWSTR);
+bool TrimString(LPWSTR);
+bool ExtractFirstArgument(LPCWSTR, LPWSTR, LPWSTR, int);
 
 void PrepareFilterStr(LPWSTR);
 
@@ -226,7 +226,7 @@ DWORD_PTR SHGetFileInfo2(LPCWSTR,DWORD,SHFILEINFO*,UINT,UINT);
 
 
 int  FormatNumberStr(LPWSTR);
-BOOL SetDlgItemIntEx(HWND,int,UINT);
+bool SetDlgItemIntEx(HWND,int,UINT);
 
 
 #define MultiByteToWideCharStrg(c,a,w) MultiByteToWideChar((c),0,(a),-1,(w),COUNTOF(w))
@@ -264,17 +264,17 @@ MRULIST, *PMRULIST, *LPMRULIST;
 
 
 LPMRULIST MRU_Create(LPCWSTR,int,int);
-BOOL      MRU_Destroy(LPMRULIST);
-BOOL      MRU_Add(LPMRULIST,LPCWSTR,int,DocPos,LPCWSTR);
-BOOL      MRU_FindFile(LPMRULIST,LPCWSTR,int*);
-BOOL      MRU_AddFile(LPMRULIST,LPCWSTR,BOOL,BOOL,int,DocPos,LPCWSTR);
-BOOL      MRU_Delete(LPMRULIST,int);
-BOOL      MRU_DeleteFileFromStore(LPMRULIST,LPCWSTR);
-BOOL      MRU_Empty(LPMRULIST);
+bool      MRU_Destroy(LPMRULIST);
+bool      MRU_Add(LPMRULIST,LPCWSTR,int,DocPos,LPCWSTR);
+bool      MRU_FindFile(LPMRULIST,LPCWSTR,int*);
+bool      MRU_AddFile(LPMRULIST,LPCWSTR,bool,bool,int,DocPos,LPCWSTR);
+bool      MRU_Delete(LPMRULIST,int);
+bool      MRU_DeleteFileFromStore(LPMRULIST,LPCWSTR);
+bool      MRU_Empty(LPMRULIST);
 int       MRU_Enum(LPMRULIST,int,LPWSTR,int);
-BOOL      MRU_Load(LPMRULIST);
-BOOL      MRU_Save(LPMRULIST);
-BOOL      MRU_MergeSave(LPMRULIST,BOOL,BOOL,BOOL);
+bool      MRU_Load(LPMRULIST);
+bool      MRU_Save(LPMRULIST);
+bool      MRU_MergeSave(LPMRULIST,bool,bool,bool);
 
 
 //==== Themed Dialogs =========================================================
@@ -295,7 +295,7 @@ typedef struct {
 #pragma pack(pop)
 #endif
 
-BOOL GetThemedDialogFont(LPWSTR,WORD*);
+bool GetThemedDialogFont(LPWSTR,WORD*);
 DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR,HINSTANCE);
 #define ThemedDialogBox(hInstance,lpTemplate,hWndParent,lpDialogFunc) \
   ThemedDialogBoxParam(hInstance,lpTemplate,hWndParent,lpDialogFunc,0)
@@ -304,11 +304,11 @@ HWND    CreateThemedDialogParam(HINSTANCE,LPCTSTR,HWND,DLGPROC,LPARAM);
 
 
 //==== UnSlash Functions ======================================================
-void TransformBackslashes(char*,BOOL,UINT,int*);
-void TransformMetaChars(char*,BOOL,int);
+void TransformBackslashes(char*,bool,UINT,int*);
+void TransformMetaChars(char*,bool,int);
 
 //==== MinimizeToTray Functions - see comments in Helpers.c ===================
-BOOL GetDoAnimateMinimize(VOID);
+bool GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
 

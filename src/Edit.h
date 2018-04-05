@@ -19,22 +19,22 @@
 #include "TypeDefs.h"
 
 // extern "C" declarations of Scintilla functions
-BOOL Scintilla_RegisterClasses(void*);
-BOOL Scintilla_ReleaseResources();
+int Scintilla_RegisterClasses(void*);
+int Scintilla_ReleaseResources();
 
 typedef struct _editfindreplace
 {
   char szFind[FNDRPL_BUFFER];
   char szReplace[FNDRPL_BUFFER];
   UINT fuFlags;
-  BOOL bTransformBS;
-  BOOL bObsolete /* was bFindUp */;
-  BOOL bFindClose;
-  BOOL bReplaceClose;
-  BOOL bNoFindWrap;
-  BOOL bWildcardSearch;
-  BOOL bMarkOccurences;
-  BOOL bDotMatchAll;
+  bool bTransformBS;
+  bool bObsolete /* was bFindUp */;
+  bool bFindClose;
+  bool bReplaceClose;
+  bool bNoFindWrap;
+  bool bWildcardSearch;
+  bool bMarkOccurences;
+  bool bDotMatchAll;
   HWND hwnd;
 
 } EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
@@ -53,18 +53,18 @@ typedef struct _editfindreplace
 
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
-BOOL  EditConvertText(HWND,int,int,BOOL);
-BOOL  EditSetNewEncoding(HWND,int,BOOL,BOOL);
-BOOL  EditIsRecodingNeeded(WCHAR*,int);
-char* EditGetClipboardText(HWND,BOOL,int*,int*);
-BOOL  EditSetClipboardText(HWND, const char*);
-BOOL  EditClearClipboard(HWND);
+bool  EditConvertText(HWND,int,int,bool);
+bool  EditSetNewEncoding(HWND,int,bool,bool);
+bool  EditIsRecodingNeeded(WCHAR*,int);
+char* EditGetClipboardText(HWND,bool,int*,int*);
+bool  EditSetClipboardText(HWND, const char*);
+bool  EditClearClipboard(HWND);
 void  EditPaste2RectSel(HWND,char*);
-BOOL  EditPasteClipboard(HWND,BOOL,BOOL);
-BOOL  EditCopyAppend(HWND,BOOL);
+bool  EditPasteClipboard(HWND,bool,bool);
+bool  EditCopyAppend(HWND,bool);
 int   EditDetectEOLMode(HWND,char*,DWORD);
-BOOL  EditLoadFile(HWND,LPCWSTR,BOOL,BOOL,int*,int*,BOOL*,BOOL*,BOOL*);
-BOOL  EditSaveFile(HWND,LPCWSTR,int,BOOL*,BOOL);
+bool  EditLoadFile(HWND,LPCWSTR,bool,bool,int*,int*,bool*,bool*,bool*);
+bool  EditSaveFile(HWND,LPCWSTR,int,bool*,bool);
 
 void  EditInvertCase(HWND);
 void  EditTitleCase(HWND);
@@ -78,28 +78,28 @@ void  EditChar2Hex(HWND);
 void  EditHex2Char(HWND);
 void  EditFindMatchingBrace(HWND);
 void  EditSelectToMatchingBrace(HWND);
-void  EditModifyNumber(HWND,BOOL);
+void  EditModifyNumber(HWND,bool);
 
-void  EditTabsToSpaces(HWND,int,BOOL);
-void  EditSpacesToTabs(HWND,int,BOOL);
+void  EditTabsToSpaces(HWND,int,bool);
+void  EditSpacesToTabs(HWND,int,bool);
 
 void  EditMoveUp(HWND);
 void  EditMoveDown(HWND);
 void  EditJumpToSelectionEnd(HWND);
 void  EditJumpToSelectionStart(HWND);
 void  EditModifyLines(HWND,LPCWSTR,LPCWSTR);
-void  EditIndentBlock(HWND,int,BOOL);
+void  EditIndentBlock(HWND,int,bool);
 void  EditAlignText(HWND,int);
 void  EditEncloseSelection(HWND,LPCWSTR,LPCWSTR);
-void  EditToggleLineComments(HWND,LPCWSTR,BOOL);
-void  EditPadWithSpaces(HWND,BOOL,BOOL);
+void  EditToggleLineComments(HWND,LPCWSTR,bool);
+void  EditPadWithSpaces(HWND,bool,bool);
 void  EditStripFirstCharacter(HWND);
-void  EditStripLastCharacter(HWND,BOOL,BOOL);
+void  EditStripLastCharacter(HWND,bool,bool);
 void  EditCompressSpaces(HWND);
-void  EditRemoveBlankLines(HWND,BOOL,BOOL);
+void  EditRemoveBlankLines(HWND,bool,bool);
 void  EditRemoveDuplicateLines(HWND,bool);
 void  EditWrapToColumn(HWND,DocPos);
-void  EditJoinLinesEx(HWND,BOOL,BOOL);
+void  EditJoinLinesEx(HWND,bool,bool);
 void  EditSortLines(HWND,int);
 
 void  EditJumpTo(HWND, DocLn, DocPos);
@@ -109,39 +109,39 @@ void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);
 void  EditGetExcerpt(HWND,LPWSTR,DWORD);
 
-HWND  EditFindReplaceDlg(HWND,LPCEDITFINDREPLACE,BOOL);
-BOOL  EditFindNext(HWND,LPCEDITFINDREPLACE,BOOL,BOOL);
-BOOL  EditFindPrev(HWND,LPCEDITFINDREPLACE,BOOL,BOOL);
-BOOL  EditReplace(HWND,LPCEDITFINDREPLACE);
+HWND  EditFindReplaceDlg(HWND,LPCEDITFINDREPLACE,bool);
+bool  EditFindNext(HWND,LPCEDITFINDREPLACE,bool,bool);
+bool  EditFindPrev(HWND,LPCEDITFINDREPLACE,bool,bool);
+bool  EditReplace(HWND,LPCEDITFINDREPLACE);
 int   EditReplaceAllInRange(HWND,LPCEDITFINDREPLACE,DocPos,DocPos,DocPos*);
-BOOL  EditReplaceAll(HWND,LPCEDITFINDREPLACE,BOOL);
-BOOL  EditReplaceAllInSelection(HWND,LPCEDITFINDREPLACE,BOOL);
-BOOL  EditLinenumDlg(HWND);
-BOOL  EditModifyLinesDlg(HWND,LPWSTR,LPWSTR);
-BOOL  EditEncloseSelectionDlg(HWND,LPWSTR,LPWSTR);
-BOOL  EditInsertTagDlg(HWND,LPWSTR,LPWSTR);
-BOOL  EditSortDlg(HWND,int*);
-BOOL  EditAlignDlg(HWND,int*);
-BOOL  EditPrint(HWND,LPCWSTR,LPCWSTR);
+bool  EditReplaceAll(HWND,LPCEDITFINDREPLACE,bool);
+bool  EditReplaceAllInSelection(HWND,LPCEDITFINDREPLACE,bool);
+bool  EditLinenumDlg(HWND);
+bool  EditModifyLinesDlg(HWND,LPWSTR,LPWSTR);
+bool  EditEncloseSelectionDlg(HWND,LPWSTR,LPWSTR);
+bool  EditInsertTagDlg(HWND,LPWSTR,LPWSTR);
+bool  EditSortDlg(HWND,int*);
+bool  EditAlignDlg(HWND,int*);
+bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
 void  EditClearAllMarks(HWND, DocPos, DocPos);
-void  EditMarkAll(HWND, char*, int, DocPos, DocPos, BOOL, BOOL);
-void  EditUpdateUrlHotspots(HWND, DocPos, DocPos, BOOL);
-void  EditSetAccelWordNav(HWND,BOOL);
-void  EditCompleteWord(HWND,BOOL);
+void  EditMarkAll(HWND, char*, int, DocPos, DocPos, bool, bool);
+void  EditUpdateUrlHotspots(HWND, DocPos, DocPos, bool);
+void  EditSetAccelWordNav(HWND,bool);
+void  EditCompleteWord(HWND,bool);
 void  EditGetBookmarkList(HWND,LPWSTR,int);
 void  EditSetBookmarkList(HWND,LPCWSTR);
 void  EditApplyLexerStyle(HWND, DocPos, DocPos);
 void  EditFinalizeStyling(HWND, DocPos);
 
 void  EditMarkAllOccurrences();
-void  EditUpdateVisibleUrlHotspot(BOOL);
+void  EditUpdateVisibleUrlHotspot(bool);
 
 void  EditEnterTargetTransaction();
 void  EditLeaveTargetTransaction();
-BOOL  EditIsInTargetTransaction();
+bool  EditIsInTargetTransaction();
 
 //void SciInitThemes(HWND);
 //LRESULT CALLBACK SciThemedWndProc(HWND,UINT,WPARAM,LPARAM);
@@ -160,9 +160,9 @@ typedef struct _filevars {
   int mask;
   int iTabWidth;
   int iIndentWidth;
-  BOOL bTabsAsSpaces;
-  BOOL bTabIndents;
-  BOOL fWordWrap;
+  bool bTabsAsSpaces;
+  bool bTabIndents;
+  bool fWordWrap;
   int iLongLinesLimit;
   char tchEncoding[32];
   int  iEncoding;
@@ -170,13 +170,13 @@ typedef struct _filevars {
 
 } FILEVARS, *LPFILEVARS;
 
-BOOL FileVars_Init(char*,DWORD,LPFILEVARS);
-BOOL FileVars_Apply(HWND,LPFILEVARS);
-BOOL FileVars_ParseInt(char*,char*,int*);
-BOOL FileVars_ParseStr(char*,char*,char*,int);
-BOOL FileVars_IsUTF8(LPFILEVARS);
-BOOL FileVars_IsNonUTF8(LPFILEVARS);
-BOOL FileVars_IsValidEncoding(LPFILEVARS);
+bool FileVars_Init(char*,DWORD,LPFILEVARS);
+bool FileVars_Apply(HWND,LPFILEVARS);
+bool FileVars_ParseInt(char*,char*,int*);
+bool FileVars_ParseStr(char*,char*,char*,int);
+bool FileVars_IsUTF8(LPFILEVARS);
+bool FileVars_IsNonUTF8(LPFILEVARS);
+bool FileVars_IsValidEncoding(LPFILEVARS);
 int  FileVars_GetEncoding(LPFILEVARS);
 
 
