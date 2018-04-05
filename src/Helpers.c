@@ -465,7 +465,7 @@ bool VerifyContrast(COLORREF cr1,COLORREF cr2)
 //
 int CALLBACK EnumFontsProc(CONST LOGFONT *plf,CONST TEXTMETRIC *ptm,DWORD FontType,LPARAM lParam)
 {
-  *((BOOL*)lParam) = TRUE;
+  *((PBOOL)lParam) = true;
   UNUSED(plf);
   UNUSED(ptm);
   UNUSED(FontType);

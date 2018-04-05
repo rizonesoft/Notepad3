@@ -169,10 +169,10 @@ BEGIN
             MENUITEM "Move &Up\tCtrl+Shift+Up",     IDM_EDIT_MOVELINEUP
             MENUITEM "&Move Down\tCtrl+Shift+Down", IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "Cut &Line\tCtrl[+Shift]+X", IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Line\tCtrl[+Shift]+C", IDM_EDIT_COPYLINE
+            MENUITEM "Cut &Line\tCtrl[+Shift]+X",   IDM_EDIT_CUTLINE
+            MENUITEM "&Copy Line\tCtrl[+Shift]+C",  IDM_EDIT_COPYLINE
             MENUITEM "&Duplicate Line\tCtrl+D",     IDM_EDIT_DUPLICATELINE
-            MENUITEM "D&elete Line\tCtrl+Shift+D", IDM_EDIT_DELETELINE
+            MENUITEM "D&elete Line\tCtrl+Shift+D",  IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Delete Line Left\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
             MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
@@ -185,7 +185,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Mer&ge Empty Lines\tAlt+Y",   IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Merge Whitespace Lines\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Empty Lines\tAlt+R", IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "&Remove Empty Lines\tAlt+R",  IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Remove Whitespace Lines\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
             MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
         END
@@ -340,8 +340,8 @@ BEGIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
         MENUITEM SEPARATOR
-        MENUITEM "Copy Position Args\tCtrl+Shift+K",  CMD_COPYWINPOS
-        MENUITEM "Snap to Default Position\tCtrl+Shift+P",     CMD_DEFAULTWINPOS
+        MENUITEM "Copy Position Args\tCtrl+Shift+K", CMD_COPYWINPOS
+        MENUITEM "Snap to Default Position\tCtrl+Shift+P", CMD_DEFAULTWINPOS
         MENUITEM "Scroll Past End of &File",    IDM_VIEW_SCROLLPASTEOF
     END
     POPUP "&Settings"

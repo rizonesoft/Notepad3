@@ -3836,13 +3836,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // apply lexer styles
   Style_SetUrlHotSpot(hwnd, false);
-  EditApplyLexerStyle(g_hwndEdit, 0, -1);
+  EditApplyLexerStyle(hwnd, 0, -1);
 
   // update UI for hotspots
   if (bHyperlinkHotspot) {
     Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
     EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
   }
+
   UpdateLineNumberWidth();
 }
 
@@ -3976,16 +3977,17 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 //
 void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 {
+  UNUSED(hwnd);
   float fSize = INITIAL_BASE_FONT_SIZE + 1.0;
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
   SciCall_SetMarginWidth(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? (int)fSize + 4 : 0);
 
   // Depending on if the margin is visible or not, choose different bookmark indication
   if (bShowSelMargin) {
-    SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
+    SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
   }
   else {
-    SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_BOOKMARK, SC_MARK_BACKGROUND);
+    SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BACKGROUND);
   }
 }
 
@@ -4089,6 +4091,8 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   SciCall_SetFoldMarginColour(true, clrBack);    // background
   SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
+
+  //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
 
   for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
     SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore);

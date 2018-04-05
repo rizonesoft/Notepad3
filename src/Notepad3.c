@@ -1074,15 +1074,15 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_TIMER:
       if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) {
         if (TEST_AND_RESET(TIMER_BIT_MARK_OCC)) {
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
           KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
+          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
         }
         return true;
       }
       else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) {
         if (TEST_AND_RESET(TIMER_BIT_UPDATE_HYPER)) {
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CALL_UPDATE_HOTSPOT, 1), 0);
           KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
+          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CALL_UPDATE_HOTSPOT, 1), 0);
         }
         return true;
       }
@@ -2413,7 +2413,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
 
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, iMarkOccurrences != 0);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (iMarkOccurrences > 0));
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, bMarkOccurrencesMatchCase);
 
@@ -2427,7 +2427,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
   CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
 
-  i = (int)(iMarkOccurrences != 0);
+  i = (int)(iMarkOccurrences > 0);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
@@ -2594,11 +2594,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_READONLY:
-      //bReadOnly = (bReadOnly) ? false : true;
-      //SendMessage(g_hwndEdit,SCI_SETREADONLY,bReadOnly,0);
-      //UpdateToolbar();
-      //UpdateStatusbar();
-
       if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)))
       {
         DWORD dwFileAttributes = GetFileAttributes(g_wchCurFile);
@@ -3852,7 +3847,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
 
-        int bitmask = 1;
+        int bitmask = (1 << MARKER_NP3_BOOKMARK);
         DocLn iNextLine = (DocLn)SendMessage( g_hwndEdit , SCI_MARKERPREVIOUS , iLine-1 , bitmask );
         if (iNextLine == (DocLn)-1)
         {
@@ -3873,22 +3868,23 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         const DocPos iPos = SciCall_GetCurrentPos();
         const DocLn iLine = SciCall_LineFromPosition(iPos);
 
-        int bitmask = (int)SendMessage(g_hwndEdit, SCI_MARKERGET, iLine, MARKER_NP3_BOOKMARK);
+        int bitmask = SciCall_MarkerGet(iLine);
+
         if (bitmask & (1 << MARKER_NP3_BOOKMARK)) {
           // unset
-          SendMessage(g_hwndEdit, SCI_MARKERDELETE, iLine, MARKER_NP3_BOOKMARK);
+          SciCall_MarkerDelete(iLine, MARKER_NP3_BOOKMARK);
         }
         else {
           Style_SetBookmark(g_hwndEdit, g_bShowSelectionMargin);
           // set
-          SendMessage(g_hwndEdit, SCI_MARKERADD, iLine, MARKER_NP3_BOOKMARK);
+          SciCall_MarkerAdd(iLine, MARKER_NP3_BOOKMARK);
           UpdateLineNumberWidth();
         }
         break;
       }
 
     case BME_EDIT_BOOKMARKCLEAR:
-      SendMessage(g_hwndEdit,SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
+      SciCall_MarkerDeleteAll(MARKER_NP3_BOOKMARK);
     break;
 
 
@@ -4111,7 +4107,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       else
         SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
       bWordWrapG = bWordWrap;
-      //EditApplyLexerStyle(g_hwndEdit, 0, -1);
       UpdateToolbar();
       break;
 
@@ -5451,7 +5446,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               EditMatchBrace(g_hwndEdit);
             }
 
-            if (iMarkOccurrences) {
+            if (iMarkOccurrences > 0) {
               // clear marks only, if caret/selection changed
               if (scn->updated & SC_UPDATE_SELECTION) {
                 EditClearAllMarks(g_hwndEdit, 0, -1);
@@ -5470,7 +5465,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
-            if (iMarkOccurrences) {
+            if (iMarkOccurrences > 0) {
               MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
             if (bHyperlinkHotspot) {
@@ -5492,10 +5487,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               }
             }
             else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
-              EditUpdateUrlHotspots(g_hwndEdit, (int)scn->position, (int)(scn->position + scn->length), bHyperlinkHotspot);
+              const DocPos iStartPos = (DocPos)scn->position;
+              const DocPos iEndPos = (DocPos)(scn->position + scn->length);
+              EditUpdateUrlHotspots(g_hwndEdit, iStartPos, iEndPos, bHyperlinkHotspot);
             }
 
-            if (iMarkOccurrences) {
+            if (iMarkOccurrences > 0) {
               EditClearAllMarks(g_hwndEdit, 0, -1);
               MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
@@ -5529,11 +5526,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   //const DocPos iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
                   if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1))
                   {
-                    int bitmask = (int)SendMessage(g_hwndEdit, SCI_MARKERGET, iCurLine - 1, 0);
+                    int bitmask = SciCall_MarkerGet(iCurLine - 1);
                     if (bitmask & (1 << MARKER_NP3_BOOKMARK))
                     {
-                      SendMessage(g_hwndEdit, SCI_MARKERDELETE, iCurLine - 1, MARKER_NP3_BOOKMARK);
-                      SendMessage(g_hwndEdit, SCI_MARKERADD, iCurLine, MARKER_NP3_BOOKMARK);
+                      SciCall_MarkerDelete(iCurLine - 1, MARKER_NP3_BOOKMARK);
+                      SciCall_MarkerAdd(iCurLine, MARKER_NP3_BOOKMARK);
                     }
                   }
                 }
@@ -5873,27 +5870,17 @@ void LoadSettings()
 
   bEnableSaveSettings = true;
   bSaveSettings = IniSectionGetBool(pIniSection,L"SaveSettings",true);
-
   bSaveRecentFiles = IniSectionGetBool(pIniSection,L"SaveRecentFiles",false);
-  
   bPreserveCaretPos = IniSectionGetBool(pIniSection, L"PreserveCaretPos",false);
-
   bSaveFindReplace = IniSectionGetBool(pIniSection,L"SaveFindReplace",false);
 
   g_efrData.bFindClose = IniSectionGetBool(pIniSection,L"CloseFind", false);
-
   g_efrData.bReplaceClose = IniSectionGetBool(pIniSection,L"CloseReplace", false);
-
   g_efrData.bNoFindWrap = IniSectionGetBool(pIniSection,L"NoFindWrap", false);
-
   g_efrData.bTransformBS = IniSectionGetBool(pIniSection,L"FindTransformBS", false);
-
   g_efrData.bWildcardSearch = IniSectionGetBool(pIniSection,L"WildcardSearch",false);
-
   g_efrData.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", false);
-
   g_efrData.bDotMatchAll = IniSectionGetBool(pIniSection, L"RegexDotMatchesAll", false);
-  
   g_efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
   if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"", tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
@@ -8199,7 +8186,7 @@ BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
 
     if (StringCchCompareINW(szClassName,COUNTOF(szClassName),wchWndClass,COUNTOF(wchWndClass)) == 0) {
 
-      DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,false);
+      DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,FALSE);
       if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
 
         *(HWND*)lParam = hwnd;

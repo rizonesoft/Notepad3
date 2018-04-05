@@ -45,7 +45,8 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
-#define MARKER_NP3_BOOKMARK      0
+#define MARKER_NP3_BOOKMARK      1
+
 
 #define INDIC_NP3_MARK_OCCURANCE 1
 #define INDIC_NP3_MATCH_BRACE    2
@@ -103,7 +104,7 @@ void  EditJoinLinesEx(HWND,bool,bool);
 void  EditSortLines(HWND,int);
 
 void  EditJumpTo(HWND, DocLn, DocPos);
-void  EditScrollTo(HWND, DocLn, bool);
+void  EditScrollTo(HWND, DocLn, int);
 void  EditSelectEx(HWND, DocPos, DocPos, int, int);
 void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);
