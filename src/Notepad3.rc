@@ -286,7 +286,7 @@ BEGIN
         MENUITEM "Save Find Text\tAlt+F3",      IDM_EDIT_SAVEFIND
         MENUITEM "Find Ne&xt\tF3",              IDM_EDIT_FINDNEXT
         MENUITEM "Find Pre&vious\tShift+F3",    IDM_EDIT_FINDPREV
-        MENUITEM "Find Next Selected\tCtrl+F3", CMD_FINDNEXTSEL
+        MENUITEM "Find Next Selected\tCtrl+F3",           CMD_FINDNEXTSEL
         MENUITEM "Find Previous Selected\tCtrl+Shift+F3", CMD_FINDPREVSEL
         MENUITEM "&Replace...\tCtrl+H",         IDM_EDIT_REPLACE
         MENUITEM "Replace Ne&xt\tF4",           IDM_EDIT_REPLACENEXT

@@ -469,18 +469,18 @@ int CALLBACK EnumFontsProc(CONST LOGFONT *plf,CONST TEXTMETRIC *ptm,DWORD FontTy
   UNUSED(plf);
   UNUSED(ptm);
   UNUSED(FontType);
-  return(false);
+  return 0;
 }
 
 bool IsFontAvailable(LPCWSTR lpszFontName)
 {
-  bool fFound = false;
+  BOOL fFound = FALSE;
 
   HDC hDC = GetDC(NULL);
   EnumFonts(hDC,lpszFontName,EnumFontsProc,(LPARAM)&fFound);
   ReleaseDC(NULL,hDC);
 
-  return(fFound);
+  return (bool)(fFound);
 }
 
 

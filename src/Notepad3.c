@@ -342,9 +342,14 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 
 // Timer bitfield
 static volatile LONG g_lInterlockBits = 0;
-#define TIMER_BIT_MARK_OCC 1L
-#define TIMER_BIT_UPDATE_HYPER 2L
-#define LOCK_NOTIFY_CHANGE 4L
+#define BIT_TIMER_MARK_OCC 1L
+#define BIT_MARK_OCC_IN_PROGRESS 2L
+
+#define BIT_TIMER_UPDATE_HYPER 4L
+#define BIT_UPDATE_HYPER_IN_PROGRESS 8L
+
+#define LOCK_NOTIFY_CHANGE 16L
+
 #define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lInterlockBits, B)
 #define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lInterlockBits, B)
 
@@ -1071,22 +1076,37 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       UpdateVisibleUrlHotspot(0);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
+
     case WM_TIMER:
-      if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) {
-        if (TEST_AND_RESET(TIMER_BIT_MARK_OCC)) {
+      {
+        // The KillTimer function does not remove WM_TIMER messages already posted to the message queue.
+        if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) 
+        {
           KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MAIN_MARKALL_OCC, 1), 0);
+          if (!TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS)) // stay in progress
+          {
+            TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS); // start progress
+            EditMarkAllOccurrences();
+            TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
+          }
+          TEST_AND_RESET(BIT_TIMER_MARK_OCC);  // ready for new events
+          return true;
         }
-        return true;
-      }
-      else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) {
-        if (TEST_AND_RESET(TIMER_BIT_UPDATE_HYPER)) {
+        else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) 
+        {
           KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
-          PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_CALL_UPDATE_HOTSPOT, 1), 0);
+          if (!TEST_AND_RESET(BIT_UPDATE_HYPER_IN_PROGRESS)) // stay in progress
+          {
+            TEST_AND_SET(BIT_UPDATE_HYPER_IN_PROGRESS); // start progress
+            EditUpdateVisibleUrlHotspot(bHyperlinkHotspot);
+            TEST_AND_RESET(BIT_UPDATE_HYPER_IN_PROGRESS); // done
+          }
+          TEST_AND_RESET(BIT_TIMER_UPDATE_HYPER);  // ready for new events
+          return true;
         }
-        return true;
       }
       break;
+
 
     case WM_SIZE:
       MsgSize(hwnd,wParam,lParam);
@@ -2552,14 +2572,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   switch(LOWORD(wParam))
   {
-    case IDC_MAIN_MARKALL_OCC:
-      EditMarkAllOccurrences();
-      break;
-
-    case IDC_CALL_UPDATE_HOTSPOT:
-      EditUpdateVisibleUrlHotspot(bHyperlinkHotspot);
-      break;
-
     case IDM_FILE_NEW:
       FileLoad(false,true,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
       break;
@@ -5466,7 +5478,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
-            if (iMarkOccurrences > 0) {
+            if ((iMarkOccurrences > 0) && bMarkOccurrencesMatchVisible) {
               MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
             if (bHyperlinkHotspot) {
@@ -7055,13 +7067,21 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 // 
 void MarkAllOccurrences(int delay)
 {
-  if (delay < USER_TIMER_MINIMUM) {
-    EditMarkAllOccurrences();
+  if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) {
+    TEST_AND_SET(BIT_TIMER_MARK_OCC); // in progress
     return;
   }
-  TEST_AND_SET(TIMER_BIT_MARK_OCC);
-  SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, delay, NULL);
+
+  TEST_AND_SET(BIT_TIMER_MARK_OCC); // raise flag to swollow next calls
+
+  if (delay < USER_TIMER_MINIMUM) {
+    SendMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), 0); // direct timer event
+  }
+  else {
+    SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, delay, NULL);
+  }
 }
+
 
 //=============================================================================
 //
@@ -7069,12 +7089,19 @@ void MarkAllOccurrences(int delay)
 // 
 void UpdateVisibleUrlHotspot(int delay)
 {
-  if (delay < USER_TIMER_MINIMUM) {
-    EditUpdateVisibleUrlHotspot(bHyperlinkHotspot);
+  if (TEST_AND_RESET(BIT_TIMER_UPDATE_HYPER)) {
+    TEST_AND_SET(BIT_TIMER_UPDATE_HYPER); // in progress
     return;
   }
-  TEST_AND_SET(TIMER_BIT_UPDATE_HYPER);
-  SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, delay, NULL);
+
+  TEST_AND_SET(BIT_TIMER_UPDATE_HYPER); // raise flag to swollow next calls
+
+  if (delay < USER_TIMER_MINIMUM) {
+    SendMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_UPDATE_HOTSPOT, 1), 0); // direct timer event
+  }
+  else {
+    SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, delay, NULL);
+  }
 }
 
 
@@ -7312,7 +7339,7 @@ void UpdateLineNumberWidth()
     int iLineMarginWidthFit = (int)SendMessage(g_hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
 
     if (iLineMarginWidthNow != iLineMarginWidthFit) {
-      SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_SCI_LINENUM, iLineMarginWidthFit + 60);
+      SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_SCI_LINENUM, iLineMarginWidthFit);
     }
   }
   else {
@@ -8198,7 +8225,7 @@ BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
           bContinue = FALSE;
       }
     }
-  return(bContinue);
+  return bContinue;
 }
 
 BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
@@ -8225,7 +8252,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
           bContinue = TRUE;
       }
     }
-  return(bContinue);
+  return bContinue;
 }
 
 bool ActivatePrevInst()

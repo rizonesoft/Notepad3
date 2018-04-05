@@ -15,7 +15,8 @@
 #pragma once
 #ifndef _NP3_DIALOGS_H_
 #define _NP3_DIALOGS_H_
-#include <stdbool.h>
+
+#include "TypeDefs.h"
 
 #define MBINFO         0
 #define MBWARN         1
@@ -43,15 +44,6 @@ bool SelectEncodingDlg(HWND,int *);
 bool RecodeDlg(HWND,int *);
 bool SelectDefLineEndingDlg(HWND,int *);
 
-
-typedef struct _wi
-{
-  int x;
-  int y;
-  int cx;
-  int cy;
-  int max;
-} WININFO;
 
 WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
 

@@ -236,6 +236,7 @@ DeclareSciCallV0(NewLine, NEWLINE)
 //
 //  Scrolling and automatic scrolling
 //
+DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
 DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
 DeclareSciCallV0(ScrollCaret, SCROLLCARET)
 DeclareSciCallV2(LineScroll, LINESCROLL, DocPos, columns, DocLn, lines)
@@ -310,6 +311,7 @@ DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, int, DocLn, line)
 DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line)
 DeclareSciCallV1(FoldAll, FOLDALL, int, flags)
 DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line)
+DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, line)
 
 
 //=============================================================================

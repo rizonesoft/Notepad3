@@ -1901,7 +1901,7 @@ INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           BOOL fTranslated;
 
-          int iNewNumber = GetDlgItemInt(hwnd,100,&fTranslated,FALSE);
+          UINT iNewNumber = GetDlgItemInt(hwnd,100,&fTranslated,FALSE);
 
           if (fTranslated)
           {
@@ -2009,8 +2009,8 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 
           BOOL fTranslated1,fTranslated2;
 
-          int iNewTabWidth = GetDlgItemInt(hwnd,100,&fTranslated1,FALSE);
-          int iNewIndentWidth = GetDlgItemInt(hwnd,101,&fTranslated2,FALSE);
+          UINT iNewTabWidth = GetDlgItemInt(hwnd,100,&fTranslated1,FALSE);
+          UINT iNewIndentWidth = GetDlgItemInt(hwnd,101,&fTranslated2,FALSE);
 
           if (fTranslated1 && fTranslated2)
           {
