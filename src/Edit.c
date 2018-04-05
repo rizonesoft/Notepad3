@@ -163,10 +163,12 @@ extern bool bMarkOccurrencesMatchWords;
 
 // Timer bitfield
 static volatile LONG g_lTargetTransactionBits = 0;
-#define TIMER_BIT_MARK_OCC 1L
-#define BLOCK_BIT_TARGET_TRANSACTION 2L
-#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lTargetTransactionBits, B)
-#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lTargetTransactionBits, B)
+#define BIT_TIMER_MARK_OCC 1L
+#define BIT_MARK_OCC_IN_PROGRESS 2L
+#define BLOCK_BIT_TARGET_TRANSACTION 4L
+
+#define TEST_AND_SET(BIT)  InterlockedBitTestAndSet(&g_lTargetTransactionBits, BIT)
+#define TEST_AND_RESET(BIT)  InterlockedBitTestAndReset(&g_lTargetTransactionBits, BIT)
 
 
 //=============================================================================
@@ -4739,14 +4741,19 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
 //
 static void __fastcall _SetTimerMarkAll(HWND hwnd, int delay)
 {
+  if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) { 
+    TEST_AND_SET(BIT_TIMER_MARK_OCC); // in progress
+    return; 
+  } 
+
+  TEST_AND_SET(BIT_TIMER_MARK_OCC); // raise flag to swollow next calls
+
   if (delay < USER_TIMER_MINIMUM) {
-    TEST_AND_RESET(TIMER_BIT_MARK_OCC);
-    KillTimer(hwnd, IDT_TIMER_MRKALL);
-    SendMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MARKALL_OCC, 1), 0);
-    return;
+    SendMessage(hwnd, WM_TIMER, MAKELONG(IDT_TIMER_MRKALL, 1), 0); // direct timer event
   }
-  TEST_AND_SET(TIMER_BIT_MARK_OCC);
-  SetTimer(hwnd, IDT_TIMER_MRKALL, delay, NULL);
+  else {
+    SetTimer(hwnd, IDT_TIMER_MRKALL, delay, NULL);
+  }
 }
 
 
@@ -4963,12 +4970,33 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_TIMER:
       {
+        // The KillTimer function does not remove WM_TIMER messages already posted to the message queue.
         if (LOWORD(wParam) == IDT_TIMER_MRKALL)
         {
-          if (TEST_AND_RESET(TIMER_BIT_MARK_OCC)) {
-            KillTimer(hwnd, IDT_TIMER_MRKALL);
-            PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_MARKALL_OCC, 1), 0);
+          KillTimer(hwnd, IDT_TIMER_MRKALL);
+          if (!TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS)) // stay in progress
+          {
+            TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS); // start progress
+            iMarkOccurrencesCount = 0;
+            _SetSearchFlags(hwnd, lpefr);
+            if (lpefr->bMarkOccurences) {
+              if (bFlagsChanged || (StringCchCompareXA(g_lastFind, lpefr->szFind) != 0)) {
+                StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), lpefr->szFind);
+                RegExResult_t match = _FindHasMatch(g_hwndEdit, lpefr, (lpefr->bMarkOccurences), false);
+                if (regexMatch != match) {
+                  regexMatch = match;
+                }
+                // we have to set Sci's regex instance to first find (have substitution in place)
+                _FindHasMatch(g_hwndEdit, lpefr, false, true);
+                bFlagsChanged = false;
+                InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
+                UpdateToolbar();
+                UpdateStatusbar();
+              }
+            }
+            TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
           }
+          TEST_AND_RESET(BIT_TIMER_MARK_OCC); // ready for new events
           return true;
         }
       }
@@ -5109,29 +5137,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             bFlagsChanged = true;
           }
           _SetTimerMarkAll(hwnd,0);
-        }
-        break;
-
-      // called on timer trigger
-      case IDC_MARKALL_OCC:
-        {
-          iMarkOccurrencesCount = 0;
-          _SetSearchFlags(hwnd, lpefr);
-          if (lpefr->bMarkOccurences) {
-            if (bFlagsChanged || (StringCchCompareXA(g_lastFind, lpefr->szFind) != 0)) {
-              StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), lpefr->szFind);
-              RegExResult_t match = _FindHasMatch(g_hwndEdit, lpefr, (lpefr->bMarkOccurences), false);
-              if (regexMatch != match) {
-                regexMatch = match;
-              }
-              // we have to set Sci's regex instance to first find (have substitution in place)
-              _FindHasMatch(g_hwndEdit, lpefr, false, true);
-              bFlagsChanged = false;
-              InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
-              UpdateToolbar();
-              UpdateStatusbar();
-            }
-          }
         }
         break;
 
@@ -5727,6 +5732,7 @@ void EditMarkAllOccurrences()
     
     if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
+    BeginWaitCursor(NULL);
     IgnoreNotifyChangeEvent();
     EditEnterTargetTransaction();
 
@@ -5751,6 +5757,7 @@ void EditMarkAllOccurrences()
     }
     EditLeaveTargetTransaction();
     ObserveNotifyChangeEvent();
+    EndWaitCursor();
 
   }
   else {
@@ -5769,6 +5776,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
   {
     if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
+    BeginWaitCursor(NULL);
     EditEnterTargetTransaction();
 
     // get visible lines for update
@@ -5783,6 +5791,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
     EditUpdateUrlHotspots(g_hwndEdit, iPosStart, iPosEnd, bEnabled);
 
     EditLeaveTargetTransaction();
+    EndWaitCursor();
   }
 }
 
