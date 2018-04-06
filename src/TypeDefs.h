@@ -40,38 +40,73 @@
 
 #endif
 
-  // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
     
-  typedef struct _wi
-  {
-    int x;
-    int y;
-    int cx;
-    int cy;
-    int max;
-  } WININFO;
+typedef struct _wi
+{
+  int x;
+  int y;
+  int cx;
+  int cy;
+  int max;
+} WININFO;
 
-  // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
-  typedef enum BufferSizes
-  {
-    MICRO_BUFFER = 32,
-    MINI_BUFFER = 64,
-    SMALL_BUFFER = 128,
-    MIDSZ_BUFFER = 256,
-    LARGE_BUFFER = 512,
-    HUGE_BUFFER = 1024,
-    XHUGE_BUFFER = 2048,
+typedef enum BufferSizes
+{
+  MICRO_BUFFER = 32,
+  MINI_BUFFER = 64,
+  SMALL_BUFFER = 128,
+  MIDSZ_BUFFER = 256,
+  LARGE_BUFFER = 512,
+  HUGE_BUFFER = 1024,
+  XHUGE_BUFFER = 2048,
 
-    FILE_ARG_BUF = MAX_PATH + 2,
-    FNDRPL_BUFFER = 1024,
-    TEMPLINE_BUFFER = 4096
+  FILE_ARG_BUF = MAX_PATH + 2,
+  FNDRPL_BUFFER = 1024,
+  TEMPLINE_BUFFER = 4096
 
-  } BUFFER_SIZES;
+} BUFFER_SIZES;
 
 
-  typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
-  typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
+typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
+typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
+
+// --------------------------------------------------------------------------
+
+typedef struct _editfindreplace
+{
+  char szFind[FNDRPL_BUFFER];
+  char szReplace[FNDRPL_BUFFER];
+  UINT fuFlags;
+  bool bTransformBS;
+  bool bFindClose;
+  bool bReplaceClose;
+  bool bNoFindWrap;
+  bool bWildcardSearch;
+  bool bMarkOccurences;
+  bool bHideNonMatchedLines;
+  bool bDotMatchAll;
+  bool bStateChanged;
+  HWND hwnd;
+
+} EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
+
+#define EFR_INIT_DATA  { "", "", 0, false, false, false, false, false, false, false, false, true, NULL }
+#define IDMSG_SWITCHTOFIND    300
+#define IDMSG_SWITCHTOREPLACE 301
+
+// --------------------------------------------------------------------------
+
+#define MARKER_NP3_BOOKMARK      1
+#define MARKER_NP3_OCCUR_LINE    2
+
+#define INDIC_NP3_MARK_OCCURANCE 1
+#define INDIC_NP3_MATCH_BRACE    2
+#define INDIC_NP3_BAD_BRACE      3
+
+// --------------------------------------------------------------------------
 
 //=============================================================================
 

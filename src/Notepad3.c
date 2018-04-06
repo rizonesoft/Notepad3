@@ -293,7 +293,7 @@ HMODULE   hModUxTheme = NULL;
 HMODULE   hRichEdit = NULL;
 
 
-EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
+static EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
 bool bReplaceInitialized = false;
 
 int iLineEndings[3] = {

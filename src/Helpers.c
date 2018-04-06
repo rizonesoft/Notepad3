@@ -598,8 +598,7 @@ void SetWindowTransparentMode(HWND hwnd,bool bTransparentMode)
   }
 
   else
-    SetWindowLongPtr(hwnd,GWL_EXSTYLE,
-      GetWindowLongPtr(hwnd,GWL_EXSTYLE) & ~WS_EX_LAYERED);
+    SetWindowLongPtr(hwnd,GWL_EXSTYLE,GetWindowLongPtr(hwnd,GWL_EXSTYLE) & ~WS_EX_LAYERED);
 }
 
 
