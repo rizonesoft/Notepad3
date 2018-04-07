@@ -4940,6 +4940,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   static bool bSaveHyperlinkHotspots = false;
   static bool bHideNonMatchedLines = false;
   static bool bSaveTFBackSlashes = false;
+  static bool bSaveFoldingAvailable = false;
+  static bool bSaveShowFolding = false;
 
   WCHAR tchBuf[FNDRPL_BUFFER] = { L'\0' };
 
@@ -4958,6 +4960,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       iSaveMarkOcc = bSwitchedFindReplace ? iSaveMarkOcc : iMarkOccurrences;
       bSaveOccVisible = bSwitchedFindReplace ? bSaveOccVisible : bMarkOccurrencesMatchVisible;
+      bSaveFoldingAvailable = bSwitchedFindReplace ? bSaveFoldingAvailable : g_bCodeFoldingAvailable;
+      bSaveShowFolding = bSwitchedFindReplace ? bSaveShowFolding : g_bShowCodeFolding;
       bSaveHyperlinkHotspots = bSwitchedFindReplace ? bSaveHyperlinkHotspots : bHyperlinkHotspot;
 
       //const WORD wTabSpacing = (WORD)SendMessage(sg_pefrData->hwnd, SCI_GETTABWIDTH, 0, 0);;  // dialog box units
@@ -5112,6 +5116,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           iMarkOccurrences = iSaveMarkOcc;
           bMarkOccurrencesMatchVisible = bSaveOccVisible;
+          g_bCodeFoldingAvailable = bSaveFoldingAvailable;
+          g_bShowCodeFolding = bSaveShowFolding;
           bHyperlinkHotspot = bSaveHyperlinkHotspots;
           if (iMarkOccurrences > 0) {
             EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
@@ -5291,6 +5297,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           {
             iSaveMarkOcc = iMarkOccurrences;
             bSaveOccVisible = bMarkOccurrencesMatchVisible;
+            bSaveFoldingAvailable = g_bCodeFoldingAvailable;
+            bSaveShowFolding = g_bShowCodeFolding;
             bSaveHyperlinkHotspots = bHyperlinkHotspot;
             iMarkOccurrences = 0;
             bMarkOccurrencesMatchVisible = false;
@@ -5299,6 +5307,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           else {  // switched OFF
             iMarkOccurrences = iSaveMarkOcc;
             bMarkOccurrencesMatchVisible = bSaveOccVisible;
+            g_bCodeFoldingAvailable = bSaveFoldingAvailable;
+            g_bShowCodeFolding = bSaveShowFolding;
             bHyperlinkHotspot = bSaveHyperlinkHotspots;
             if (bHideNonMatchedLines) {
               bHideNonMatchedLines = false;
@@ -5323,16 +5333,22 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         BeginWaitCursor(NULL);
 
         bHideNonMatchedLines = bHideNonMatchedLines ? false : true;
+
         EditClearAllMarks(g_hwndEdit, 0, -1);
         sg_pefrData->bStateChanged = true; // force
 
         if (bHideNonMatchedLines) {
+          bSaveFoldingAvailable = g_bCodeFoldingAvailable;
+          bSaveShowFolding = g_bShowCodeFolding;
           bSaveHyperlinkHotspots = bHyperlinkHotspot;
           bHyperlinkHotspot = false;
         }
         else {
+          g_bCodeFoldingAvailable = bSaveFoldingAvailable;
+          g_bShowCodeFolding = bSaveShowFolding;
           bHyperlinkHotspot = bSaveHyperlinkHotspots;
-          EditApplyLexerStyle(g_hwndEdit, 0, -1);
+          EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, false);
+          sg_pefrData->bStateChanged = true;
         }
         EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
         
@@ -6549,11 +6565,13 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
   if (!bHideLines) {
     SciCall_FoldAll(SC_FOLDACTION_EXPAND);
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE);
+    if (!g_bCodeFoldingAvailable) { SciCall_SetProperty("fold", "0"); }
+    Style_SetFolding(hwnd, g_bShowCodeFolding);
     EditApplyLexerStyle(hwnd, 0, -1);
     ObserveNotifyChangeEvent();
     return; 
   }
-
+  
   if (iEndPos < iStartPos) {
     swapos(&iStartPos, &iEndPos);
   }
@@ -6563,17 +6581,20 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     iEndPos = SciCall_GetTextLength();
   }
 
+  // 1st apply current lexer style
+  EditFinalizeStyling(hwnd, iStartPos);
+
   EditApplyLexerStyle(hwnd, 0, -1); // reset
 
-  g_bCodeFoldingAvailable = true;
+  // prepare hidde (folding) settings
+  g_bCodeFoldingAvailable = true; // saved before
+  g_bShowCodeFolding = true;      // saved before
+  SciCall_SetProperty("fold", "1");
+  //SciCall_SetProperty("fold.compact", "1");
+  Style_SetFolding(hwnd, true);
   SciCall_SetFoldFlags(0);
   //SciCall_SetFoldFlags(SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // Debug
 
-  SciCall_SetProperty("fold", "1");
-  //SciCall_SetProperty("fold.compact", "1");
-
-  // 1st apply current lexer style
-  EditFinalizeStyling(hwnd, iStartPos);
 
   // hide lines without indicator
   const int iOccBitMask = (1 << MARKER_NP3_OCCUR_LINE);

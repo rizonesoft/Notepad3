@@ -4124,25 +4124,25 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
     SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
   }
 
-  int fldStyleLn = 0;
-  Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
-    switch (fldStyleLn)
-  {
-    case 1:
-      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED);
-      break;
-    case 2:
-      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
-      break;
-    default:
-      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
-      break;
-  }
-
   SciCall_SetFoldMarginColour(true, clrBack);    // background
   SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
 
   //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
+
+  int fldStyleLn = 0;
+  Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
+  switch (fldStyleLn)
+  {
+  case 1:
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED);
+    break;
+  case 2:
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+    break;
+  default:
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+    break;
+  }
 
   for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
     SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore);
