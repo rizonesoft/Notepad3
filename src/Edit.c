@@ -284,8 +284,8 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   UndoRedoActionMap(-1,NULL);
   SendMessage(hwnd,SCI_CLEARALL,0,0);
   SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-  EditHideNotMarkedLineRange(hwnd, -1, -1, false);
-  SendMessage(hwnd,SCI_SETSCROLLWIDTH, GetSystemMetrics(SM_CXSCREEN), 0);
+  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_OCCUR_LINE,0);
+  SendMessage(hwnd,SCI_SETSCROLLWIDTH,GetSystemMetrics(SM_CXSCREEN),0);
   SendMessage(hwnd,SCI_SETXOFFSET,0,0);
 
   FileVars_Apply(hwnd,&fvCurFile);
@@ -325,7 +325,7 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
     UndoRedoActionMap(-1,NULL);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
     SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-    EditHideNotMarkedLineRange(hwnd, -1, -1, false);
+    SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_OCCUR_LINE, 0);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
     SendMessage(hwnd,SCI_GOTOPOS,0,0);
     SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
@@ -364,7 +364,7 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
     UndoRedoActionMap(-1,NULL);
     SendMessage(hwnd,SCI_CLEARALL,0,0);
     SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-    EditHideNotMarkedLineRange(hwnd, -1, -1, false);
+    SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_OCCUR_LINE, 0);
     SendMessage(hwnd,SCI_ADDTEXT,cbText,(LPARAM)pchText);
     SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
     SendMessage(hwnd,SCI_GOTOPOS,0,0);
@@ -5106,7 +5106,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           EditClearAllMarks(g_hwndEdit, 0, -1);
 
           if (bHideNonMatchedLines) {
-            Style_ResetCurrentLexer(g_hwndEdit);
+            EditApplyLexerStyle(g_hwndEdit, 0, -1);
             bHideNonMatchedLines = false;
           }
 
@@ -5146,6 +5146,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               _SetSearchFlags(hwnd, sg_pefrData);
               if (sg_pefrData->bMarkOccurences) {
                 if (sg_pefrData->bStateChanged || (StringCchCompareXA(g_lastFind, sg_pefrData->szFind) != 0)) {
+                  if (bHideNonMatchedLines) { SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE); }
                   StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), sg_pefrData->szFind);
                   RegExResult_t match = _FindHasMatch(g_hwndEdit, sg_pefrData, (sg_pefrData->bMarkOccurences), false);
                   if (regexMatch != match) {
@@ -5191,7 +5192,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
       case IDC_FR_RESET_STATE:
         if (bHideNonMatchedLines) {
-          Style_ResetCurrentLexer(g_hwndEdit);
+          EditApplyLexerStyle(g_hwndEdit, 0, -1);
           bHideNonMatchedLines = false;
         }
         break;
@@ -5301,8 +5302,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             bHyperlinkHotspot = bSaveHyperlinkHotspots;
             if (bHideNonMatchedLines) {
               bHideNonMatchedLines = false;
-              EditHideNotMarkedLineRange(hwnd, -1, -1, false);
-              Style_ResetCurrentLexer(g_hwndEdit);
+              EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, false);
               sg_pefrData->bStateChanged = true;
             }
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
@@ -5332,7 +5332,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
         else {
           bHyperlinkHotspot = bSaveHyperlinkHotspots;
-          Style_ResetCurrentLexer(g_hwndEdit);
+          EditApplyLexerStyle(g_hwndEdit, 0, -1);
         }
         EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
         
@@ -6221,6 +6221,9 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 //
 void EditClearAllMarks(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
 {
+  if (iRangeStart < 0) {
+    iRangeStart = 0;
+  }
   if (iRangeEnd <= 0) {
     iRangeEnd = SciCall_GetTextLength();
   }
@@ -6230,7 +6233,10 @@ void EditClearAllMarks(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
   SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
   SendMessage(hwnd, SCI_INDICATORCLEARRANGE, iRangeStart, iRangeEnd);
   // clear occurrences line marker
-  EditHideNotMarkedLineRange(hwnd, iRangeStart, iRangeEnd, false);
+  const DocLn iEndLine = SciCall_LineFromPosition(iRangeEnd);
+  for (DocLn iLine = SciCall_LineFromPosition(iRangeStart); iLine <= iEndLine; ++iLine) {
+    SciCall_MarkerDelete(iLine, MARKER_NP3_OCCUR_LINE);
+  }
 }
 
 
@@ -6538,9 +6544,13 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 {
   UNUSED(hwnd);
 
+  IgnoreNotifyChangeEvent();
+
   if (!bHideLines) {
     SciCall_FoldAll(SC_FOLDACTION_EXPAND);
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE);
+    EditApplyLexerStyle(hwnd, 0, -1);
+    ObserveNotifyChangeEvent();
     return; 
   }
 
@@ -6553,7 +6563,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     iEndPos = SciCall_GetTextLength();
   }
 
-  IgnoreNotifyChangeEvent();
+  EditApplyLexerStyle(hwnd, 0, -1); // reset
 
   g_bCodeFoldingAvailable = true;
   SciCall_SetFoldFlags(0);
@@ -6567,7 +6577,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
   // hide lines without indicator
   const int iOccBitMask = (1 << MARKER_NP3_OCCUR_LINE);
-  //const int iStyleHideID = Style_GetInvisibleStyleID();
+  const int iStyleHideID = Style_GetInvisibleStyleID();
 
   const DocLn iStartLine = SciCall_LineFromPosition(iStartPos);
   const DocLn iEndLine = SciCall_LineFromPosition(iEndPos);
@@ -6583,8 +6593,10 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
   // 1st line
   if ((SciCall_MarkerGet(iStartLine) & iOccBitMask) == 0) 
   { // hide
-    SciCall_StartStyling(SciCall_PositionFromLine(iStartLine));
-    //SciCall_SetStyling((DocPosCR)SciCall_LineLength(iStartLine), iStyleHideID);
+    const DocPos begPos = SciCall_PositionFromLine(iStartLine);
+    const DocPos lnLen = SciCall_LineLength(iStartLine);
+    SciCall_StartStyling(begPos);
+    SciCall_SetStyling((DocPosCR)lnLen, iStyleHideID);
   }
 
   int level = baseLevel;
@@ -6600,8 +6612,10 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
       }
       else // hide line
       {
-        SciCall_StartStyling(SciCall_PositionFromLine(iLine));
-        //SciCall_SetStyling((DocPosCR)SciCall_LineLength(iLine), iStyleHideID);
+        const DocPos begPos = SciCall_PositionFromLine(iLine);
+        const DocPos lnLen = SciCall_LineLength(iLine);
+        SciCall_StartStyling(begPos);
+        SciCall_SetStyling((DocPosCR)lnLen, iStyleHideID);
 
         if (level == baseLevel) {
           SciCall_SetFoldLevel(iLine - 1, SC_FOLDLEVELHEADERFLAG | level++);
@@ -6669,7 +6683,8 @@ static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
 //
 void EditApplyLexerStyle(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
 {
-  SendMessage(hwnd, SCI_COLOURISE, (WPARAM)iRangeStart, (LPARAM)iRangeEnd);
+  UNUSED(hwnd);
+  SciCall_Colourise(iRangeStart, iRangeEnd);
 }
 
 
@@ -6679,12 +6694,11 @@ void EditApplyLexerStyle(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
 //
 void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
-  const int iEndStyled = SciCall_GetEndStyled();
+  const DocPos iEndStyled = SciCall_GetEndStyled();
 
   if ((iEndPos < 0) || (iEndStyled < iEndPos))
   {
-    const DocLn iLineEndStyled = SciCall_LineFromPosition(iEndStyled);
-    const DocPos iStartStyling = SciCall_PositionFromLine(iLineEndStyled);
+    const DocPos iStartStyling = SciCall_PositionFromLine(SciCall_LineFromPosition(iEndStyled));
     EditApplyLexerStyle(hwnd, iStartStyling, iEndPos);
   }
 }

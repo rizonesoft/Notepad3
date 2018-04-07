@@ -3837,7 +3837,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
   }
 
-  Style_SetInvisible(hwnd, true); // set fixed invisible style
+  Style_SetInvisible(hwnd, false); // set fixed invisible style
 
   // apply lexer styles
   Style_SetUrlHotSpot(hwnd, false);
@@ -3916,8 +3916,8 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 //
 int Style_GetInvisibleStyleID()
 {
-  return (STYLE_LASTPREDEFINED + STY_INVISIBLE);
   //return STYLE_FOLDDISPLAYTEXT;
+  return (STYLE_LASTPREDEFINED + STY_INVISIBLE);
 }
 
 
@@ -3927,10 +3927,11 @@ int Style_GetInvisibleStyleID()
 //
 void Style_SetInvisible(HWND hwnd, bool bInvisible)
 {
-  Style_SetMargin(hwnd, Style_GetInvisibleStyleID(), GetCurrentStdLexer()->Styles[STY_MARGIN].szValue);
-  SendMessage(hwnd, SCI_STYLESETVISIBLE, Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
   //SendMessage(hwnd, SCI_FOLDDISPLAYTEXTSETSTYLE, (WPARAM)SC_FOLDDISPLAYTEXT_BOXED, 0);
-  SendMessage(hwnd, SCI_MARKERDEFINE, MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
+  SciCall_MarkerDefine(MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
+  if (bInvisible) {
+    SendMessage(hwnd, SCI_STYLESETVISIBLE, Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
+  }
 }
 
 
@@ -4090,10 +4091,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   SciCall_MarkerSetFore(MARKER_NP3_BOOKMARK, bmkFore);
   SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
-  SendMessage(hwnd, SCI_MARKERSETALPHA, MARKER_NP3_BOOKMARK, alpha);
-
+  SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha);
   SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
-
+  
 
   // ---  Code folding  ---
   SciCall_SetMarginType(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);

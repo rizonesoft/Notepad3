@@ -260,7 +260,7 @@ DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, styleNumber)
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, styleNumber)
 DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, int, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
-DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int)
+DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 
 //=============================================================================
 //
@@ -283,6 +283,7 @@ DeclareSciCallR1(MarkerGet, MARKERGET, int, DocLn, line)
 DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerNumber, int, markerSymbols)
 DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colour)
 DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour)
+DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerNumber, int, alpha)
 DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerNumber)
 DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerNumber)
 DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
@@ -319,6 +320,7 @@ DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, 
 //  Lexer
 //
 DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, value)
+DeclareSciCallV2(Colourise, COLOURISE, DocPos, startPos, DocPos, endPos)
 
 
 //=============================================================================
