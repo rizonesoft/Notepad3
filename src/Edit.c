@@ -4889,7 +4889,7 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
   else // mark all matches
   {
     if (bMarkAll && (iPos >= 0)) {
-      EditClearAllMarks(hwnd, (DocPos)0, iTextLength);
+      EditClearAllOccurrenceMarkers(hwnd, (DocPos)0, iTextLength);
       EditMarkAll(hwnd, szFind, (int)(lpefr->fuFlags), (DocPos)0, iTextLength, false, false, bMarkAll);
     }
   }
@@ -5032,7 +5032,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       else {
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_UNCHECKED);
         DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-        EditClearAllMarks(g_hwndEdit, 0, -1);
+        EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       }
       EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
 
@@ -5107,13 +5107,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         {
           sg_pefrData->szFind[0] = '\0';
 
-          EditClearAllMarks(g_hwndEdit, 0, -1);
-
           if (bHideNonMatchedLines) {
-            EditApplyLexerStyle(g_hwndEdit, 0, -1);
-            bHideNonMatchedLines = false;
+            SendMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
           }
-
+          if (sg_pefrData->bMarkOccurences) {
+            EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
+          }
           iMarkOccurrences = iSaveMarkOcc;
           bMarkOccurrencesMatchVisible = bSaveOccVisible;
           g_bCodeFoldingAvailable = bSaveFoldingAvailable;
@@ -5316,7 +5315,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               sg_pefrData->bStateChanged = true;
             }
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
-            EditClearAllMarks(g_hwndEdit, 0, -1);
+            EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
           }
           EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, (iMarkOccurrences > 0));
@@ -5334,7 +5333,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
         bHideNonMatchedLines = bHideNonMatchedLines ? false : true;
 
-        EditClearAllMarks(g_hwndEdit, 0, -1);
+        EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
         sg_pefrData->bStateChanged = true; // force
 
         if (bHideNonMatchedLines) {
@@ -5902,8 +5901,14 @@ void EditMarkAllOccurrences()
     
     if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
-    BeginWaitCursor(NULL);
-    IgnoreNotifyChangeEvent();
+    bool bWaitCursor = false;
+    if (iMarkOccurrencesCount > 2000) { 
+      BeginWaitCursor(NULL); 
+      bWaitCursor = true;
+    }
+    else {
+      IgnoreNotifyChangeEvent();
+    }
     EditEnterTargetTransaction();
 
     if (bMarkOccurrencesMatchVisible)
@@ -5926,9 +5931,13 @@ void EditMarkAllOccurrences()
       UpdateStatusbar();
     }
     EditLeaveTargetTransaction();
-    ObserveNotifyChangeEvent();
-    EndWaitCursor();
 
+    if (bWaitCursor) {
+      EndWaitCursor();
+    }
+    else {
+      ObserveNotifyChangeEvent();
+    }
   }
   else {
     iMarkOccurrencesCount = 0;
@@ -6233,10 +6242,11 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 
 //=============================================================================
 //
-//  EditClearAllMarks()
+//  EditClearAllOccurrenceMarkers()
 //
-void EditClearAllMarks(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
+void EditClearAllOccurrenceMarkers(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
 {
+  IgnoreNotifyChangeEvent();
   if (iRangeStart < 0) {
     iRangeStart = 0;
   }
@@ -6253,6 +6263,7 @@ void EditClearAllMarks(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
   for (DocLn iLine = SciCall_LineFromPosition(iRangeStart); iLine <= iEndLine; ++iLine) {
     SciCall_MarkerDelete(iLine, MARKER_NP3_OCCUR_LINE);
   }
+  ObserveNotifyChangeEvent();
 }
 
 

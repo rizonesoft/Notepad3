@@ -1071,7 +1071,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       UpdateLineNumberWidth();
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
       UpdateVisibleUrlHotspot(0);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
@@ -1797,7 +1797,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
-  EditClearAllMarks(g_hwndEdit, 0, -1);
+  EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
   MarkAllOccurrences(0);
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
   EditFinalizeStyling(g_hwndEdit, -1);
@@ -4231,46 +4231,46 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? false : true;  // toggle  
       EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
       bMarkOccurrencesMatchVisible = (bMarkOccurrencesMatchVisible) ? false : true;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
       break;
 
     case IDM_VIEW_MARKOCCUR_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? false : true;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_WNONE:
       bMarkOccurrencesMatchWords = false;
       bMarkOccurrencesCurrentWord = false;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_WORD:
       bMarkOccurrencesMatchWords = true;
       bMarkOccurrencesCurrentWord = false;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
       bMarkOccurrencesMatchWords = false;
       bMarkOccurrencesCurrentWord = true;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
@@ -5460,14 +5460,19 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
 
             if (iMarkOccurrences > 0) {
-              // clear marks only, if caret/selection changed
+              // clear marks only, if selection changed
               if (scn->updated & SC_UPDATE_SELECTION) {
-                EditClearAllMarks(g_hwndEdit, 0, -1);
+                EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
+                if (!SciCall_IsSelectionEmpty()) {
+                  MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+                }
+              }
+              else if (scn->updated & SC_UPDATE_CONTENT) {
                 MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
               }
-              else {
-                MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
-              }
+              //else {
+              //  //MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+              //}
             }
 
             if (bHyperlinkHotspot) {
@@ -5506,7 +5511,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             }
 
             if (iMarkOccurrences > 0) {
-              EditClearAllMarks(g_hwndEdit, 0, -1);
+              EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
               MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
 
