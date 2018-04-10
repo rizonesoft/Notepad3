@@ -131,12 +131,12 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         case IDC_CHECK4:
           {
             if (IsDlgButtonChecked(hDlg, IDC_CHECK4) == BST_CHECKED) {
-              SendMessage(GetDlgItem(hDlg, IDC_EDIT1), EM_SETPASSWORDCHAR, 0, 0);
-              SendMessage(GetDlgItem(hDlg, IDC_EDIT2), EM_SETPASSWORDCHAR, 0, 0);
+              SendDlgItemMessage(hDlg, IDC_EDIT1, EM_SETPASSWORDCHAR, 0, 0);
+              SendDlgItemMessage(hDlg, IDC_EDIT2, EM_SETPASSWORDCHAR, 0, 0);
             }
             else {
-              SendMessage(GetDlgItem(hDlg, IDC_EDIT1), EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
-              SendMessage(GetDlgItem(hDlg, IDC_EDIT2), EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+              SendDlgItemMessage(hDlg, IDC_EDIT1, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+              SendDlgItemMessage(hDlg, IDC_EDIT2, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
             }
             InvalidateRect(hDlg, NULL, TRUE);
           }
@@ -257,16 +257,15 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         case IDC_CHECK4:
           {
             if (IsDlgButtonChecked(hDlg, IDC_CHECK4) == BST_CHECKED) {
-              SendMessage(GetDlgItem(hDlg, IDC_EDIT3), EM_SETPASSWORDCHAR, 0, 0);
+              SendDlgItemMessage(hDlg, IDC_EDIT3, EM_SETPASSWORDCHAR, 0, 0);
             }
             else {
-              SendMessage(GetDlgItem(hDlg, IDC_EDIT3), EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+              SendDlgItemMessage(hDlg, IDC_EDIT3, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
             }
             InvalidateRect(hDlg, NULL, TRUE);
+            return(true);
+            break;
           }
-          return(true);
-          break;
-
         case IDOK:
           {
               bool useMas = (IsDlgButtonChecked(hDlg, IDC_CHECK3) == BST_CHECKED);
