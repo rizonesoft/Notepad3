@@ -105,6 +105,7 @@ void SetDialogFocus(HWND hDlg, HWND hwndControl)
 INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     UNUSED(lParam);
+    const WCHAR wDot = (WCHAR)0x25CF;
 
     switch (umsg) {
 
@@ -127,6 +128,20 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     case WM_COMMAND:
 
         switch (LOWORD(wParam)) {
+        case IDC_CHECK4:
+          {
+            if (IsDlgButtonChecked(hDlg, IDC_CHECK4) == BST_CHECKED) {
+              SendMessage(GetDlgItem(hDlg, IDC_EDIT1), EM_SETPASSWORDCHAR, 0, 0);
+              SendMessage(GetDlgItem(hDlg, IDC_EDIT2), EM_SETPASSWORDCHAR, 0, 0);
+            }
+            else {
+              SendMessage(GetDlgItem(hDlg, IDC_EDIT1), EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+              SendMessage(GetDlgItem(hDlg, IDC_EDIT2), EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+            }
+            InvalidateRect(hDlg, NULL, TRUE);
+          }
+          return(true);
+        break;
 
         case IDOK:
         {
@@ -216,6 +231,8 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 {
     UNUSED(lParam);
 
+    const WCHAR wDot = (WCHAR)0x25CF;
+
     switch (umsg) {
 
     case WM_INITDIALOG:
@@ -235,7 +252,21 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
     case WM_COMMAND:
 
-        switch (LOWORD(wParam)) {
+        switch (LOWORD(wParam)) 
+        {
+        case IDC_CHECK4:
+          {
+            if (IsDlgButtonChecked(hDlg, IDC_CHECK4) == BST_CHECKED) {
+              SendMessage(GetDlgItem(hDlg, IDC_EDIT3), EM_SETPASSWORDCHAR, 0, 0);
+            }
+            else {
+              SendMessage(GetDlgItem(hDlg, IDC_EDIT3), EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+            }
+            InvalidateRect(hDlg, NULL, TRUE);
+          }
+          return(true);
+          break;
+
         case IDOK:
           {
               bool useMas = (IsDlgButtonChecked(hDlg, IDC_CHECK3) == BST_CHECKED);
