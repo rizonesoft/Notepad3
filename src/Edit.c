@@ -4320,16 +4320,11 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, int vSpcAnch
     if (vSpcCurrent > 0)
       SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCurrent);
 
-    //Sci_PostMsgV2(SCROLLRANGE, iAnchorPos, iCurrentPos);
     SciCall_ScrollRange(iAnchorPos, iCurrentPos);
   }
   else
     SciCall_SetSel(iAnchorPos, iCurrentPos);  // scrolls into view
 
-  if (abs(iNewLine - iAnchorLine) < SciCall_LinesOnScreen())
-  {
-    EditScrollTo(hwnd, (iAnchorLine + iNewLine) / 2, -1);  // center small selection
-  }
   // remember x-pos for moving caret vertically
   SciCall_ChooseCaretX();
 
@@ -4866,23 +4861,13 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
   DocPos end   = iTextLength;
   const DocPos iPos  = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
 
-  static DocLn lastScrollToLn = -1;
-
   if (bFirstMatchOnly && !bReplaceInitialized) {
     if (GetForegroundWindow() == g_hwndDlgFindReplace) {
       if (iPos >= 0) {
-        const DocLn scrollToLn = SciCall_LineFromPosition(iPos);
-        if (scrollToLn != lastScrollToLn) {
-          EditScrollTo(hwnd, scrollToLn, -1);
-          lastScrollToLn = scrollToLn;
-        }
+        SciCall_ScrollRange(iPos, iPos);
       }
       else {
-        const DocLn scrollToLn = SciCall_LineFromPosition(iStart);
-        if (scrollToLn != lastScrollToLn) {
-          EditScrollTo(hwnd, scrollToLn, -1);
-          lastScrollToLn = scrollToLn;
-        }
+        SciCall_ScrollCaret();
       }
     }
   }
@@ -5127,7 +5112,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           iReplacedOccurrences = 0;
           g_FindReplaceMatchFoundState = FND_NOP;
 
-          //EditScrollTo(g_hwndEdit, Sci_GetCurrentLine(), false);
           EditEnsureSelectionVisible(g_hwndEdit);
         }
         KillTimer(hwnd, IDT_TIMER_MRKALL);
