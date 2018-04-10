@@ -167,6 +167,7 @@
 #define IDM_HELP_UPDATEINSTALLER        513
 #define IDM_HELP_UPDATEWEBSITE          514
 #define IDS_FR_STATUS_TEXT              515
+#define IDC_CHECK4                      516
 #define IDR_MAINWNDTB2                  550
 #define IDR_MAINWND128                  551
 #define IDC_RICHEDITABOUT               552
