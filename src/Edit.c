@@ -652,6 +652,8 @@ void EditPaste2RectSel(HWND hwnd, char* pText)
 
     const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
     const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
+    const DocPos selCaretVspc = SciCall_GetSelectionNCaretVirtualSpace(s);
+    const DocPos selAnchorVspc = SciCall_GetSelectionNAnchorVirtualSpace(s);
 
     DocPos virtualSpaceLen = 0;
     DocPos selTargetStart = 0;
@@ -659,12 +661,12 @@ void EditPaste2RectSel(HWND hwnd, char* pText)
     if (selCaretPos < selAnchorPos) {
       selTargetStart = selCaretPos;
       selTargetEnd = selAnchorPos;
-      virtualSpaceLen = SciCall_GetSelectionNCaretVirtualSpace(s);
+      virtualSpaceLen = selCaretVspc;
     }
     else {
       selTargetStart = selAnchorPos;
       selTargetEnd = selCaretPos;
-      virtualSpaceLen = SciCall_GetSelectionNAnchorVirtualSpace(s);
+      virtualSpaceLen = selAnchorVspc;
     }
 
     if (virtualSpaceLen > 0) {
@@ -689,12 +691,12 @@ void EditPaste2RectSel(HWND hwnd, char* pText)
       SciCall_ReplaceTarget(lnLen, pTextLine);
     }
 
-    SciCall_SetSelectionNCaret(s, selTargetStart);
-    SciCall_SetSelectionNAnchor(s, selTargetStart);
-    if (virtualSpaceLen > 0) {
-      SciCall_SetSelectionNCaretVirtualSpace(s, virtualSpaceLen);
-      SciCall_SetSelectionNAnchorVirtualSpace(s, virtualSpaceLen);
-    }
+    //SciCall_SetSelectionNAnchor(s, selTargetStart);
+    //SciCall_SetSelectionNCaret(s, selTargetStart);
+    //if (virtualSpaceLen > 0) {
+    //  SciCall_SetSelectionNCaretVirtualSpace(s, virtualSpaceLen);
+    //  SciCall_SetSelectionNAnchorVirtualSpace(s, virtualSpaceLen);
+    //}
 
     if (*ln != '\0') {
       pTextLine = ln; // next clip line
@@ -754,7 +756,7 @@ bool EditPasteClipboard(HWND hwnd, bool bSwapClipBoard, bool bSkipUnicodeCheck)
       }
       else {
         if (iCurPos < iAnchorPos)
-          EditSelectEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+          EditSelectEx(hwnd, iCurPos, iCurPos, -1, -1);
       }
       LocalFree(pszText);
     }
