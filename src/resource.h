@@ -424,6 +424,7 @@
 #define IDM_VIEW_HYPERLINKHOTSPOTS      40456
 #define IDM_VIEW_CURRENTSCHEME          40457
 #define IDM_VIEW_SCROLLPASTEOF          40458
+#define IDM_VIEW_TOGGLE_VIEW            40459
 #define IDM_HELP_ABOUT                  40500
 #define IDM_HELP_CMD                    40501
 #define IDM_HELP_ONLINEDOCUMENTATION    40502

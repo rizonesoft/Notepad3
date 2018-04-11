@@ -56,7 +56,7 @@ extern bool g_bCodeFoldingAvailable;
 extern bool g_bShowCodeFolding;
 extern bool g_bShowSelectionMargin;
 
-extern int  iMarkOccurrences;
+extern int  g_iMarkOccurrences;
 extern bool bUseOldStyleBraceMatching;
 
 extern int xCustomSchemesDlg;
@@ -2997,7 +2997,7 @@ static int  g_cyStyleSelectDlg;
 
 extern int  g_iDefaultCharSet;
 extern bool bHiliteCurrentLine;
-extern bool bHyperlinkHotspot;
+extern bool g_bHyperlinkHotspot;
 
 
 //=============================================================================
@@ -3509,7 +3509,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (!Style_StrGetColor(true, pCurrentStandard->Styles[STY_MARK_OCC].szValue, &dColor))
   {
     WCHAR* sty = L"";
-    switch (iMarkOccurrences) {
+    switch (g_iMarkOccurrences) {
     case 1:
       sty = L"fore:0xFF0000";
       dColor = RGB(0xFF, 0x00, 0x00);
@@ -3844,9 +3844,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   EditApplyLexerStyle(hwnd, 0, -1);
 
   // update UI for hotspots
-  if (bHyperlinkHotspot) {
-    Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
-    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+  if (g_bHyperlinkHotspot) {
+    Style_SetUrlHotSpot(hwnd, g_bHyperlinkHotspot);
+    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
   }
 
   UpdateLineNumberWidth();
