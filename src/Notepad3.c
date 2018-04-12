@@ -1082,26 +1082,26 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         // The KillTimer function does not remove WM_TIMER messages already posted to the message queue.
         if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) 
         {
-          KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
-          if (!TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS)) // stay in progress
-          {
-            TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS); // start progress
-            EditMarkAllOccurrences();
-            TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
+          if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) {
+            KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
+            if (!TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS))
+            {
+              EditMarkAllOccurrences();
+              TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
+            }
           }
-          TEST_AND_RESET(BIT_TIMER_MARK_OCC);  // ready for new events
           return true;
         }
         else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) 
         {
-          KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
-          if (!TEST_AND_RESET(BIT_UPDATE_HYPER_IN_PROGRESS)) // stay in progress
-          {
-            TEST_AND_SET(BIT_UPDATE_HYPER_IN_PROGRESS); // start progress
-            EditUpdateVisibleUrlHotspot(bHyperlinkHotspot);
-            TEST_AND_RESET(BIT_UPDATE_HYPER_IN_PROGRESS); // done
+          if (TEST_AND_RESET(BIT_TIMER_UPDATE_HYPER)) {
+            KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
+            if (!TEST_AND_SET(BIT_UPDATE_HYPER_IN_PROGRESS))
+            {
+              EditUpdateVisibleUrlHotspot(bHyperlinkHotspot);
+              TEST_AND_RESET(BIT_UPDATE_HYPER_IN_PROGRESS); // done
+            }
           }
-          TEST_AND_RESET(BIT_TIMER_UPDATE_HYPER);  // ready for new events
           return true;
         }
       }
@@ -7064,15 +7064,10 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 // 
 void MarkAllOccurrences(int delay)
 {
-  if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) {
-    TEST_AND_SET(BIT_TIMER_MARK_OCC); // in progress
-    return;
-  }
-
   TEST_AND_SET(BIT_TIMER_MARK_OCC); // raise flag to swollow next calls
 
   if (delay < USER_TIMER_MINIMUM) {
-    SendMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), 0); // direct timer event
+    PostMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), 0); // direct timer event
   }
   else {
     SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, delay, NULL);
@@ -7086,15 +7081,10 @@ void MarkAllOccurrences(int delay)
 // 
 void UpdateVisibleUrlHotspot(int delay)
 {
-  if (TEST_AND_RESET(BIT_TIMER_UPDATE_HYPER)) {
-    TEST_AND_SET(BIT_TIMER_UPDATE_HYPER); // in progress
-    return;
-  }
-
   TEST_AND_SET(BIT_TIMER_UPDATE_HYPER); // raise flag to swollow next calls
 
   if (delay < USER_TIMER_MINIMUM) {
-    SendMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_UPDATE_HOTSPOT, 1), 0); // direct timer event
+    PostMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_UPDATE_HOTSPOT, 1), 0); // direct timer event
   }
   else {
     SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, delay, NULL);
