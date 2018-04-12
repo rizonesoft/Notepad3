@@ -280,6 +280,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   if (SendMessage(hwnd, SCI_GETREADONLY, 0, 0)) {
     SendMessage(hwnd, SCI_SETREADONLY, false, 0);
   }
+
   SendMessage(hwnd,SCI_CANCEL,0,0);
   SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
   UndoRedoActionMap(-1,NULL);
@@ -288,6 +289,9 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
   SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_OCCUR_LINE,0);
   SendMessage(hwnd,SCI_SETSCROLLWIDTH,GetSystemMetrics(SM_CXSCREEN),0);
   SendMessage(hwnd,SCI_SETXOFFSET,0,0);
+  if (EditToggleView(g_hwndEdit, false)) {
+    EditToggleView(g_hwndEdit, true);
+  }
 
   FileVars_Apply(hwnd,&fvCurFile);
 
@@ -5088,10 +5092,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         if (!bSwitchedFindReplace)
         {
           sg_pefrData->szFind[0] = '\0';
+          KillTimer(hwnd, IDT_TIMER_MRKALL);
 
-          if (sg_pefrData->bMarkOccurences) {
-            EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-          }
           g_iMarkOccurrences = iSaveMarkOcc;
           g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
 
@@ -5106,7 +5108,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           EditEnsureSelectionVisible(g_hwndEdit);
         }
-        KillTimer(hwnd, IDT_TIMER_MRKALL);
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
         DeleteObject(hBrushBlue);
@@ -5157,7 +5158,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !SciCall_IsSelectionEmpty());
       
         if (sg_pefrData->bMarkOccurences) {
-          sg_pefrData->bStateChanged = true; // main window has been edited maybe 
           _SetTimerMarkAll(hwnd,50);
         }
 
@@ -5172,10 +5172,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     {
       switch (LOWORD(wParam))
       {
-      case IDC_FR_RESET_STATE:
-        if (EditToggleView(g_hwndEdit, false)) {
-          EditToggleView(g_hwndEdit, true);
-        }
+
+      case IDC_DOC_MODIFIED:
+        sg_pefrData->bStateChanged = true;
         break;
 
       case IDC_FINDTEXT:
@@ -6259,11 +6258,11 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
 
     if (bHideNonMatchedLines) {
       EditScrollTo(hwnd, 0, false);
-      SendMessage(hwnd, SCI_SETREADONLY, true, 0);
+      SciCall_SetReadOnly(true);
     }
     else {
       EditScrollTo(hwnd, Sci_GetCurrentLine(), true);
-      SendMessage(hwnd, SCI_SETREADONLY, false, 0);
+      SciCall_SetReadOnly(false);
     }
 
     EndWaitCursor();
@@ -6589,9 +6588,6 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
   IgnoreNotifyChangeEvent();
 
-  // 1st apply current lexer style
-  EditFinalizeStyling(hwnd, iStartPos);
-
   if (!bHideLines) {
     SciCall_FoldAll(SC_FOLDACTION_EXPAND);
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE);
@@ -6601,6 +6597,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     ObserveNotifyChangeEvent();
     return;
   }
+
   EditApplyLexerStyle(hwnd, 0, -1); // reset
 
   // prepare hidde (folding) settings
@@ -6664,8 +6661,11 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
   }
 
   if (iEndPos < SciCall_GetTextLength()) {
-    SciCall_StartStyling(SciCall_GetLineEndPosition(iEndPos));
-    EditFinalizeStyling(hwnd, SciCall_GetTextLength());
+    const DocPos iStartStyling = SciCall_PositionFromLine(iEndLine + 1);
+    if ((iStartStyling >= 0) && (iStartStyling < SciCall_GetTextLength())) {
+      SciCall_StartStyling(iStartStyling);
+      EditFinalizeStyling(hwnd, -1);
+    }
   }
 
   ObserveNotifyChangeEvent();

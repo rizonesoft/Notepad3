@@ -136,7 +136,7 @@
 #define IDC_NOANSICPDETECTION           232
 #define IDC_REMEMBERSEARCHPATTERN       233
 #define IDC_TOGGLE_VISIBILITY           234
-#define IDC_FR_RESET_STATE              235
+#define IDC_DOC_MODIFIED                235
 #define IDACC_FIND                      302
 #define IDACC_REPLACE                   303
 #define IDACC_SAVEPOS                   304

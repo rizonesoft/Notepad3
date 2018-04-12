@@ -133,6 +133,12 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 //
 //  Selection, positions and information
 //
+
+DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
+DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
+DeclareSciCallR0(CanUndo, CANUNDO, bool)
+DeclareSciCallR0(CanRedo, CANREDO, bool)
+
 DeclareSciCallR0(IsDocModified, GETMODIFY, bool)
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
