@@ -4964,6 +4964,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_LIMITTEXT, FNDRPL_BUFFER, 0);
       SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_SETEXTENDEDUI, true, 0);
+      //const HWND hwndItem = (HWND)SendDlgItemMessage(hwnd, IDC_FINDTEXT, CBEM_GETEDITCONTROL, 0, 0);
+      COMBOBOXINFO infoF = { sizeof(COMBOBOXINFO) };
+      GetComboBoxInfo(GetDlgItem(hwnd, IDC_FINDTEXT), &infoF);
+      SHAutoComplete(infoF.hwndItem, SHACF_DEFAULT);
 
       if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT)))
         SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
@@ -4972,6 +4976,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
         SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_LIMITTEXT, FNDRPL_BUFFER, 0);
         SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_SETEXTENDEDUI, true, 0);
+        //const HWND hwndItem = (HWND)SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CBEM_GETEDITCONTROL, 0, 0);
+        COMBOBOXINFO infoR = { sizeof(COMBOBOXINFO) };
+        GetComboBoxInfo(GetDlgItem(hwnd, IDC_REPLACETEXT), &infoR);
+        SHAutoComplete(infoR.hwndItem, SHACF_DEFAULT);
+
         SetDlgItemTextMB2W(hwnd, IDC_REPLACETEXT, sg_pefrData->szReplace);
       }
 
@@ -5675,6 +5684,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 //
 HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
 {
+  CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+
   lpefr->hwnd = hwnd;
   HWND hDlg = CreateThemedDialogParam(g_hInstance,
             (bReplace) ? MAKEINTRESOURCEW(IDD_REPLACE) : MAKEINTRESOURCEW(IDD_FIND),
@@ -5684,6 +5695,7 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
 
   ShowWindow(hDlg,SW_SHOW);
 
+  CoUninitialize();
   return hDlg;
 }
 
