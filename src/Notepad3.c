@@ -67,8 +67,6 @@ HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
 
 #define INISECTIONBUFCNT 32
-#define NUMTOOLBITMAPS  25
-#define NUMINITIALTOOLS 30
 
 TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
@@ -88,6 +86,7 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
                             { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 0,0,0,TBSTYLE_SEP,0,0 },
                             { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 25,IDT_VIEW_TOGGLE_VIEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 0,0,0,TBSTYLE_SEP,0,0 },
                             { 21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
@@ -109,7 +108,9 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
                             { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 }
 };
 
-#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 0 22 23 0 13 14 0 15 0 25 0 17"
+#define NUMTOOLBITMAPS  26
+#define NUMINITIALTOOLS 31
+#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 17"
 
 
 WCHAR      g_wchIniFile[MAX_PATH] = { L'\0' };
@@ -5295,6 +5296,15 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         MessageBeep(0);
       break;
 
+      
+    case IDT_VIEW_TOGGLE_VIEW:
+      if (IsCmdEnabled(hwnd, IDM_VIEW_TOGGLE_VIEW))
+        SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_TOGGLE_VIEW, 1), 0);
+      else
+        MessageBeep(0);
+      break;
+
+
     case IDT_FILE_LAUNCH:
       if (IsCmdEnabled(hwnd,IDM_FILE_LAUNCH))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_LAUNCH,1),0);
@@ -7172,6 +7182,8 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_CLEAR, !b1 /*&& !bReadOnly*/);
 
   EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible));
+ 
   EnableTool(IDT_FILE_LAUNCH, b2);
 
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);

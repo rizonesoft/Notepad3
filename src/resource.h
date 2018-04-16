@@ -455,6 +455,7 @@
 #define IDT_FILE_ADDTOFAV               40722
 #define IDT_VIEW_TOGGLEFOLDS            40723
 #define IDT_FILE_LAUNCH                 40724
+#define IDT_VIEW_TOGGLE_VIEW            40725
 #define IDS_SAVEPOS                     40800
 #define IDS_RESETPOS                    40801
 #define IDS_PREVIEW                     40802
