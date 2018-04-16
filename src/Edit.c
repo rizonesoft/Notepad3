@@ -5197,6 +5197,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
 
           EditEnsureSelectionVisible(g_hwndEdit);
+
+          CmdMessageQueue_t* pmqc = NULL;
+          CmdMessageQueue_t* dummy;
+          DL_FOREACH_SAFE(MessageQueue, pmqc, dummy)
+          {
+            DL_DELETE(MessageQueue, pmqc);
+            FreeMem(pmqc);
+          }
         }
 
         KillTimer(hwnd, IDT_TIMER_MRKALL);
