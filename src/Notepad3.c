@@ -44,6 +44,7 @@
 #include "resource.h"
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
+#include "../uthash/utlist.h"
 #include "encoding.h"
 #include "helpers.h"
 #include "SciCall.h"
@@ -335,22 +336,20 @@ static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 
-
 static CLIPFORMAT cfDrpF = CF_HDROP;
 static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
 // Timer bitfield
-static volatile LONG g_lInterlockBits = 0;
-#define BIT_TIMER_MARK_OCC 1L
-#define BIT_MARK_OCC_IN_PROGRESS 2L
+//static volatile LONG g_lInterlockBits = 0;
+//#define BIT_TIMER_MARK_OCC 1L
+//#define BIT_MARK_OCC_IN_PROGRESS 2L
+//#define BIT_TIMER_UPDATE_HYPER 4L
+//#define BIT_UPDATE_HYPER_IN_PROGRESS 8L
 
-#define BIT_TIMER_UPDATE_HYPER 4L
-#define BIT_UPDATE_HYPER_IN_PROGRESS 8L
-
-#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lInterlockBits, B)
-#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lInterlockBits, B)
+//#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lInterlockBits, B)
+//#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lInterlockBits, B)
 
 
 //=============================================================================
@@ -380,6 +379,80 @@ bool CheckNotifyChangeEvent() {
 
 // SCN_UPDATEUI notification
 #define SC_UPDATE_NP3_INTERNAL_NOTIFY (SC_UPDATE_H_SCROLL << 1)
+
+
+//=============================================================================
+//
+//  Delay Message Queue Handling  (TODO: MultiThreading)
+//
+
+static CmdMessageQueue_t* MessageQueue = NULL;
+
+// ----------------------------------------------------------------------------
+
+static int msgcmp(void* mqc1, void* mqc2)
+{
+  const CmdMessageQueue_t* pMQC1 = (CmdMessageQueue_t*)mqc1;
+  const CmdMessageQueue_t* pMQC2 = (CmdMessageQueue_t*)mqc2;
+
+  if ((pMQC1->hwnd == pMQC2->hwnd)
+       && (pMQC1->cmd == pMQC2->cmd)
+       && (pMQC1->wparam == pMQC2->wparam)
+       && (pMQC1->lparam == pMQC2->lparam))
+  {
+    return 0;
+  }
+  return 1;
+}
+// ----------------------------------------------------------------------------
+
+static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* pMsgQCmd, int delay)
+{
+  CmdMessageQueue_t* pmqc = NULL;
+  DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
+
+  if (!pmqc) { // NOT found
+    pmqc = AllocMem(sizeof(CmdMessageQueue_t), HEAP_ZERO_MEMORY);
+    pmqc->hwnd = pMsgQCmd->hwnd;
+    pmqc->cmd = pMsgQCmd->cmd;
+    pmqc->wparam = pMsgQCmd->wparam;
+    pmqc->lparam = pMsgQCmd->lparam;
+    pmqc->delay = 0;
+    DL_APPEND(MessageQueue, pmqc);
+  }
+
+  if (delay < 2) {
+    pmqc->delay = 0; // execute next
+    PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+  }
+  else {
+    pmqc->delay = (pmqc->delay + delay) / 2; // increase delay
+  }
+}
+
+// ----------------------------------------------------------------------------
+//
+// called by Timer(IDT_TIMER_MRKALL)
+//
+static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+  UNUSED(hwnd);    // must be main wnd
+  UNUSED(uMsg);    // must be WM_TIMER
+  UNUSED(idEvent); // must be IDT_TIMER_MRKALL
+  UNUSED(dwTime);  // This is the value returned by the GetTickCount function
+
+  CmdMessageQueue_t* pmqc;
+
+  DL_FOREACH(MessageQueue, pmqc) 
+  {
+    if (pmqc->delay == 0) {
+      SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+    }
+    if (pmqc->delay >= 0) {
+      pmqc->delay -= 1;
+    }
+  }
+}
 
 
 //=============================================================================
@@ -577,6 +650,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   UpdateLineNumberWidth();
   ObserveNotifyChangeEvent();
   
+  SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
+
   while (GetMessage(&msg,NULL,0,0))
   {
     if (IsWindow(g_hwndDlgFindReplace) && ((msg.hwnd == g_hwndDlgFindReplace) || IsChild(g_hwndDlgFindReplace, msg.hwnd))) 
@@ -594,7 +669,17 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
+    //MQ_ExecuteNext(); // delayed messages
   }
+
+  CmdMessageQueue_t* pmqc = NULL;
+  CmdMessageQueue_t* dummy;
+  DL_FOREACH_SAFE(MessageQueue, pmqc, dummy)
+  {
+    DL_DELETE(MessageQueue, pmqc);
+    FreeMem(pmqc);
+  }
+  KillTimer(hwnd, IDT_TIMER_MRKALL);
 
   // Save Settings is done elsewhere
 
@@ -1081,38 +1166,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       MarkAllOccurrences(0);
       UpdateVisibleUrlHotspot(0);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
-
-
-    case WM_TIMER:
-      {
-        // The KillTimer function does not remove WM_TIMER messages already posted to the message queue.
-        if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) 
-        {
-          if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) {
-            KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
-            if (!TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS))
-            {
-              EditMarkAllOccurrences();
-              TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
-            }
-          }
-          return true;
-        }
-        else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) 
-        {
-          if (TEST_AND_RESET(BIT_TIMER_UPDATE_HYPER)) {
-            KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
-            if (!TEST_AND_SET(BIT_UPDATE_HYPER_IN_PROGRESS))
-            {
-              EditUpdateVisibleUrlHotspot(g_bHyperlinkHotspot);
-              TEST_AND_RESET(BIT_UPDATE_HYPER_IN_PROGRESS); // done
-            }
-          }
-          return true;
-        }
-      }
-      break;
-
 
     case WM_SIZE:
       MsgSize(hwnd,wParam,lParam);
@@ -2590,6 +2643,17 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   switch(LOWORD(wParam))
   {
+
+  case IDT_TIMER_MAIN_MRKALL:
+    EditMarkAllOccurrences();
+    break;
+
+
+  case IDT_TIMER_UPDATE_HOTSPOT:
+    EditUpdateVisibleUrlHotspot(g_bHyperlinkHotspot);
+    break;
+
+
     case IDM_FILE_NEW:
       FileLoad(false,true,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
       break;
@@ -6180,10 +6244,10 @@ void LoadSettings()
   iMarkOccurrencesMaxCount = (iMarkOccurrencesMaxCount <= 0) ? INT_MAX : iMarkOccurrencesMaxCount;
 
   iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
-  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), 0);
+  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), 10) / (int)USER_TIMER_MINIMUM;
 
   iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
-  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), 0);
+  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), 10) / (int)USER_TIMER_MINIMUM;
 
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
@@ -7117,14 +7181,9 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 // 
 void MarkAllOccurrences(int delay)
 {
-  TEST_AND_SET(BIT_TIMER_MARK_OCC); // raise flag to swollow next calls
-
-  if (delay < USER_TIMER_MINIMUM) {
-    PostMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), 0); // direct timer event
-  }
-  else {
-    SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, delay, NULL);
-  }
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
+  mqc.hwnd = g_hwndMain;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : delay));
 }
 
 
@@ -7134,14 +7193,9 @@ void MarkAllOccurrences(int delay)
 // 
 void UpdateVisibleUrlHotspot(int delay)
 {
-  TEST_AND_SET(BIT_TIMER_UPDATE_HYPER); // raise flag to swollow next calls
-
-  if (delay < USER_TIMER_MINIMUM) {
-    PostMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_UPDATE_HOTSPOT, 1), 0); // direct timer event
-  }
-  else {
-    SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, delay, NULL);
-  }
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_HOTSPOT, 1), (LPARAM)0 , 0 };
+  mqc.hwnd = g_hwndMain;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : delay));
 }
 
 

@@ -41,6 +41,7 @@
 #include "resource.h"
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
+#include "../uthash/utlist.h"
 //#include "../uthash/utstring.h"
 #include "helpers.h"
 #include "encoding.h"
@@ -165,7 +166,7 @@ extern bool bMarkOccurrencesMatchWords;
 
 // Timer bitfield
 static volatile LONG g_lTargetTransactionBits = 0;
-#define BIT_TIMER_MARK_OCC 1L
+//#define BIT_TIMER_MARK_OCC 1L
 #define BIT_MARK_OCC_IN_PROGRESS 2L
 #define BLOCK_BIT_TARGET_TRANSACTION 4L
 
@@ -192,6 +193,80 @@ bool EditIsInTargetTransaction() {
   }
   return false;
 }
+
+
+//=============================================================================
+//
+//  Delay Message Queue Handling  (TODO: MultiThreading)
+//
+
+static CmdMessageQueue_t* MessageQueue = NULL;
+
+// ----------------------------------------------------------------------------
+
+static int msgcmp(void* mqc1, void* mqc2)
+{
+  const CmdMessageQueue_t* pMQC1 = (CmdMessageQueue_t*)mqc1;
+  const CmdMessageQueue_t* pMQC2 = (CmdMessageQueue_t*)mqc2;
+
+  if ((pMQC1->hwnd == pMQC2->hwnd)
+      && (pMQC1->cmd == pMQC2->cmd)
+      && (pMQC1->wparam == pMQC2->wparam)
+      && (pMQC1->lparam == pMQC2->lparam)) {
+    return 0;
+  }
+  return 1;
+}
+// ----------------------------------------------------------------------------
+
+static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* pMsgQCmd, int delay)
+{
+  CmdMessageQueue_t* pmqc = NULL;
+  DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
+
+  if (!pmqc) { // NOT found
+    pmqc = AllocMem(sizeof(CmdMessageQueue_t), HEAP_ZERO_MEMORY);
+    pmqc->hwnd = pMsgQCmd->hwnd;
+    pmqc->cmd = pMsgQCmd->cmd;
+    pmqc->wparam = pMsgQCmd->wparam;
+    pmqc->lparam = pMsgQCmd->lparam;
+    pmqc->delay = 0;
+    DL_APPEND(MessageQueue, pmqc);
+  }
+
+  if (delay < 2) {
+    pmqc->delay = 0; // execute next
+    PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+  }
+  else {
+    pmqc->delay = (pmqc->delay + delay) / 2; // increase delay
+  }
+}
+
+// ----------------------------------------------------------------------------
+//
+// called by Timer(IDT_TIMER_MRKALL)
+//
+static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+  UNUSED(hwnd);    // must be main wnd
+  UNUSED(uMsg);    // must be WM_TIMER
+  UNUSED(idEvent); // must be IDT_TIMER_MRKALL
+  UNUSED(dwTime);  // This is the value returned by the GetTickCount function
+
+  CmdMessageQueue_t* pmqc;
+
+  DL_FOREACH(MessageQueue, pmqc)
+  {
+    if (pmqc->delay == 0) {
+      SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+    }
+    if (pmqc->delay >= 0) {
+      pmqc->delay -= 1;
+    }
+  }
+}
+
 
 
 //=============================================================================
@@ -4892,19 +4967,14 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
 
 //=============================================================================
 //
-//  _SetTimerMarkAll()
+//  _DelayMarkAll()
 //  
 //
-static void __fastcall _SetTimerMarkAll(HWND hwnd, int delay)
+static void __fastcall _DelayMarkAll(HWND hwnd, int delay)
 {
-  TEST_AND_SET(BIT_TIMER_MARK_OCC); // flag to swollow multi-timer calls
-
-  if (delay < USER_TIMER_MINIMUM) {
-    PostMessage(hwnd, WM_TIMER, MAKELONG(IDT_TIMER_MRKALL, 1), 0); // direct timer event
-  }
-  else {
-    SetTimer(hwnd, IDT_TIMER_MRKALL, delay, NULL);
-  }
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
+  mqc.hwnd = hwnd;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : delay));
 }
 
 
@@ -5093,8 +5163,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       EditEnsureSelectionVisible(hwnd);
 
+      SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
+
       _SetSearchFlags(hwnd, sg_pefrData);
-      _SetTimerMarkAll(hwnd, 50);
+      _DelayMarkAll(hwnd, 5);
     }
     return true;
 
@@ -5104,7 +5176,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         if (!bSwitchedFindReplace)
         {
           sg_pefrData->szFind[0] = '\0';
-          KillTimer(hwnd, IDT_TIMER_MRKALL);
 
           g_iMarkOccurrences = iSaveMarkOcc;
           g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
@@ -5118,59 +5189,29 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           iReplacedOccurrences = 0;
           g_FindReplaceMatchFoundState = FND_NOP;
 
+          if ((g_iMarkOccurrences <= 0) || g_bMarkOccurrencesMatchVisible) {
+            if (EditToggleView(g_hwndEdit, false)) {
+              EditToggleView(g_hwndEdit, true);
+              EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
+            }
+          }
+
           EditEnsureSelectionVisible(g_hwndEdit);
         }
+
+        KillTimer(hwnd, IDT_TIMER_MRKALL);
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
         DeleteObject(hBrushBlue);
       }
       return false;
 
-
-    case WM_TIMER:
-      {
-        // The KillTimer function does not remove WM_TIMER messages already posted to the message queue.
-        if (LOWORD(wParam) == IDT_TIMER_MRKALL)
-        {
-          if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) {
-            KillTimer(hwnd, IDT_TIMER_MRKALL);
-            if (!TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS))
-            {
-              iMarkOccurrencesCount = 0;
-              _SetSearchFlags(hwnd, sg_pefrData);
-              if (sg_pefrData->bMarkOccurences) {
-                if (sg_pefrData->bStateChanged || (StringCchCompareXA(g_lastFind, sg_pefrData->szFind) != 0)) {
-                  IgnoreNotifyChangeEvent();
-                  if (EditToggleView(g_hwndEdit, false)) { SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE); }
-                  StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), sg_pefrData->szFind);
-                  RegExResult_t match = _FindHasMatch(g_hwndEdit, sg_pefrData, (sg_pefrData->bMarkOccurences), false);
-                  if (regexMatch != match) {
-                    regexMatch = match;
-                  }
-                  // we have to set Sci's regex instance to first find (have substitution in place)
-                  _FindHasMatch(g_hwndEdit, sg_pefrData, false, true);
-                  sg_pefrData->bStateChanged = false;
-                  InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
-                  if (EditToggleView(g_hwndEdit, false)) { EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, true); }
-                  ObserveNotifyChangeEvent();
-                }
-
-              }
-              TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
-            }
-          }
-          return true;
-        }
-      }
-      return false;
-
-
     case WM_ACTIVATE:
       {
         DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !SciCall_IsSelectionEmpty());
       
         if (sg_pefrData->bMarkOccurences) {
-          _SetTimerMarkAll(hwnd,50);
+          _DelayMarkAll(hwnd,5);
         }
 
         //if (LOWORD(wParam) == WA_INACTIVE) {
@@ -5270,9 +5311,37 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
 
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd, 50);
+        _DelayMarkAll(hwnd, 5);
       }
       break;
+
+
+      case IDT_TIMER_MAIN_MRKALL:
+        {
+          if (!TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS)) {
+            iMarkOccurrencesCount = 0;
+            _SetSearchFlags(hwnd, sg_pefrData);
+            if (sg_pefrData->bMarkOccurences) {
+              if (sg_pefrData->bStateChanged || (StringCchCompareXA(g_lastFind, sg_pefrData->szFind) != 0)) {
+                IgnoreNotifyChangeEvent();
+                if (EditToggleView(g_hwndEdit, false)) { SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE); }
+                StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), sg_pefrData->szFind);
+                RegExResult_t match = _FindHasMatch(g_hwndEdit, sg_pefrData, (sg_pefrData->bMarkOccurences), false);
+                if (regexMatch != match) {
+                  regexMatch = match;
+                }
+                // we have to set Sci's regex instance to first find (have substitution in place)
+                _FindHasMatch(g_hwndEdit, sg_pefrData, false, true);
+                sg_pefrData->bStateChanged = false;
+                InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
+                if (EditToggleView(g_hwndEdit, false)) { EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, true); }
+                ObserveNotifyChangeEvent();
+              }
+            }
+            TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
+          }
+        }
+        return false;
 
 
       case IDC_ALL_OCCURRENCES:
@@ -5304,7 +5373,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
           EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
 
-          _SetTimerMarkAll(hwnd,0);
+          _DelayMarkAll(hwnd,0);
         }
         break;
 
@@ -5314,7 +5383,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           EditToggleView(g_hwndEdit, true);
           EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
           sg_pefrData->bStateChanged = true;
-          _SetTimerMarkAll(hwnd, 0);
+          _DelayMarkAll(hwnd, 0);
         }
         else {
           EditToggleView(g_hwndEdit, true);
@@ -5336,12 +5405,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (sg_pefrData->bTransformBS) ? BST_CHECKED : BST_UNCHECKED);
         }
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd,0);
+        _DelayMarkAll(hwnd,0);
         break;
 
       case IDC_DOT_MATCH_ALL:
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd,0);
+        _DelayMarkAll(hwnd,0);
         break;
 
       case IDC_WILDCARDSEARCH:
@@ -5357,7 +5426,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (sg_pefrData->bTransformBS) ? BST_CHECKED : BST_UNCHECKED);
         }
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd,0);
+        _DelayMarkAll(hwnd,0);
         break;
 
       case IDC_FINDTRANSFORMBS:
@@ -5368,22 +5437,22 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           bSaveTFBackSlashes = false;
         }
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd,0);
+        _DelayMarkAll(hwnd,0);
         break;
 
       case IDC_FINDCASE:
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd,0);
+        _DelayMarkAll(hwnd,0);
         break;
 
       case IDC_FINDWORD:
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd,0);
+        _DelayMarkAll(hwnd,0);
         break;
 
       case IDC_FINDSTART:
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd,0);
+        _DelayMarkAll(hwnd,0);
         break;
 
 
@@ -5507,7 +5576,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           break;
         }
       }
-      _SetTimerMarkAll(hwnd,50);
+      _DelayMarkAll(hwnd,5);
       break;
 
 
@@ -5526,7 +5595,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
         g_FindReplaceMatchFoundState = FND_NOP;
         _SetSearchFlags(hwnd, sg_pefrData);
-        _SetTimerMarkAll(hwnd,50);
+        _DelayMarkAll(hwnd,5);
       }
       break;
 

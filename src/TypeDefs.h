@@ -99,6 +99,25 @@ typedef struct _editfindreplace
 
 // --------------------------------------------------------------------------
 
+typedef struct _cmq
+{
+  HWND hwnd;
+  UINT  cmd;
+  WPARAM wparam;
+  LPARAM lparam;
+  int delay;
+  struct _cmq* next;
+  struct _cmq* prev;
+
+} CmdMessageQueue_t;
+
+#define MESSAGE_QUEUE_INIT = { NULL, WM_COMMAND, NULL, NULL, -1 };
+
+// --------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------
+
 #define MARKER_NP3_BOOKMARK      1
 #define MARKER_NP3_OCCUR_LINE    2
 
