@@ -1450,12 +1450,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_PASS_FAILURE        "The passphrase is incorrect."
-END
-
-STRINGTABLE
-BEGIN
-    IDS_NOPASS              "Cancelled - no passphrase."
+    IDS_PASS_FAILURE        "The Passphrase is incorrect.\nRetry another Passphrase?"
+    IDS_NOPASS              "Decryption Cancelled!\nRead encrypted raw data?"
 END
 
 STRINGTABLE

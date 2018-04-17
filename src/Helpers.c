@@ -608,7 +608,6 @@ void SetWindowTransparentMode(HWND hwnd,bool bTransparentMode)
 //
 void CenterDlgInParent(HWND hDlg)
 {
-
   RECT rcDlg;
   HWND hParent;
   RECT rcParent;

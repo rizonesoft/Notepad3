@@ -2213,13 +2213,13 @@ void MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   if (PathFileExists(g_wchCurFile)) {
     if ((iFileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
-      MsgBox(MBYESNO,IDS_FILECHANGENOTIFY) == IDYES) {
+      MsgBox(MBYESNOWARN,IDS_FILECHANGENOTIFY) == IDYES) {
 
       FileRevert(g_wchCurFile);
     }
   }
   else {
-    if (MsgBox(MBYESNO,IDS_FILECHANGENOTIFY2) == IDYES)
+    if (MsgBox(MBYESNOWARN,IDS_FILECHANGENOTIFY2) == IDYES)
       FileSave(true,false,false,false);
   }
 
@@ -8452,7 +8452,7 @@ bool ActivatePrevInst()
       else // IsWindowEnabled()
       {
         // Ask...
-        if (IDYES == MsgBox(MBYESNO,IDS_ERR_PREVWINDISABLED))
+        if (IDYES == MsgBox(MBYESNOWARN,IDS_ERR_PREVWINDISABLED))
           return(false);
         else
           return(true);
@@ -8557,10 +8557,7 @@ bool ActivatePrevInst()
     else // IsWindowEnabled()
     {
       // Ask...
-      if (IDYES == MsgBox(MBYESNO,IDS_ERR_PREVWINDISABLED))
-        return(false);
-      else
-        return(true);
+      return ((IDYES == MsgBox(MBYESNOWARN, IDS_ERR_PREVWINDISABLED)) ? false : true);
     }
   }
   else
