@@ -22,36 +22,6 @@
 int Scintilla_RegisterClasses(void*);
 int Scintilla_ReleaseResources();
 
-typedef struct _editfindreplace
-{
-  char szFind[FNDRPL_BUFFER];
-  char szReplace[FNDRPL_BUFFER];
-  UINT fuFlags;
-  bool bTransformBS;
-  bool bObsolete /* was bFindUp */;
-  bool bFindClose;
-  bool bReplaceClose;
-  bool bNoFindWrap;
-  bool bWildcardSearch;
-  bool bMarkOccurences;
-  bool bDotMatchAll;
-  HWND hwnd;
-
-} EDITFINDREPLACE, *LPEDITFINDREPLACE, *LPCEDITFINDREPLACE;
-
-#define EFR_INIT_DATA  { "", "", /* "",  "", */ 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL }
-
-
-#define IDMSG_SWITCHTOFIND    300
-#define IDMSG_SWITCHTOREPLACE 301
-
-#define MARKER_NP3_BOOKMARK      1
-
-
-#define INDIC_NP3_MARK_OCCURANCE 1
-#define INDIC_NP3_MATCH_BRACE    2
-#define INDIC_NP3_BAD_BRACE      3
-
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
 bool  EditConvertText(HWND,int,int,bool);
@@ -127,7 +97,8 @@ bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
-void  EditClearAllMarks(HWND, DocPos, DocPos);
+void  EditClearAllOccurrenceMarkers(HWND, DocPos, DocPos);
+bool  EditToggleView(HWND hwnd, bool bToggleView);
 void  EditMarkAll(HWND, char*, int, DocPos, DocPos, bool, bool);
 void  EditUpdateUrlHotspots(HWND, DocPos, DocPos, bool);
 void  EditSetAccelWordNav(HWND,bool);
@@ -139,6 +110,7 @@ void  EditFinalizeStyling(HWND, DocPos);
 
 void  EditMarkAllOccurrences();
 void  EditUpdateVisibleUrlHotspot(bool);
+void  EditHideNotMarkedLineRange(HWND, DocPos, DocPos, bool);
 
 void  EditEnterTargetTransaction();
 void  EditLeaveTargetTransaction();

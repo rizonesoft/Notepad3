@@ -70,18 +70,50 @@ extern int flagNoFileVariables;
 extern int flagUseSystemMRU;
 
 
+
 //=============================================================================
 //
 //  MsgBox()
 //
+static HHOOK hhkMsgBox = NULL;
+
+static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
+{
+  HWND  hParentWnd, hChildWnd;    // msgbox is "child"
+  RECT  rParent, rChild, rDesktop;
+
+  // notification that a window is about to be activated  
+  if (nCode == HCBT_ACTIVATE) {
+    // set window handles
+    hParentWnd = GetForegroundWindow();
+    hChildWnd = (HWND)wParam; // window handle is wParam
+
+    if ((hParentWnd != NULL) && (hChildWnd != NULL) &&
+        (GetWindowRect(GetDesktopWindow(), &rDesktop) != 0) &&
+        (GetWindowRect(hParentWnd, &rParent) != 0) &&
+        (GetWindowRect(hChildWnd, &rChild) != 0)) {
+      
+      CenterDlgInParent(hChildWnd);
+    }
+    // exit _MsgBoxProc hook
+    UnhookWindowsHookEx(hhkMsgBox);
+
+    
+  }
+  else // otherwise, continue with any possible chained hooks
+  {
+    CallNextHookEx(hhkMsgBox, nCode, wParam, lParam);
+  }
+  return 0;
+}
+// -----------------------------------------------------------------------------
+
+
 int MsgBox(int iType,UINT uIdMsg,...)
 {
-
   WCHAR szText [HUGE_BUFFER] = { L'\0' };
   WCHAR szBuf  [HUGE_BUFFER] = { L'\0' };
   WCHAR szTitle[64] = { L'\0' };
-  int iIcon = 0;
-  HWND hwnd;
 
   if (!GetString(uIdMsg,szBuf,COUNTOF(szBuf)))
     return(0);
@@ -112,22 +144,24 @@ int MsgBox(int iType,UINT uIdMsg,...)
 
   GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));
 
+  int iIcon = MB_ICONHAND;
   switch (iType) {
     case MBINFO: iIcon = MB_ICONINFORMATION; break;
-    case MBWARN: iIcon = MB_ICONEXCLAMATION; break;
-    case MBYESNO: iIcon = MB_ICONEXCLAMATION | MB_YESNO; break;
-    case MBYESNOCANCEL: iIcon = MB_ICONEXCLAMATION | MB_YESNOCANCEL; break;
-    case MBYESNOWARN: iIcon = MB_ICONEXCLAMATION | MB_YESNO; break;
+    case MBWARN: iIcon = MB_ICONWARNING; break;
+    case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
+    case MBYESNOCANCEL: iIcon = MB_ICONINFORMATION | MB_YESNOCANCEL; break;
+    case MBYESNOWARN: iIcon = MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON1; break;
     case MBOKCANCEL: iIcon = MB_ICONEXCLAMATION | MB_OKCANCEL; break;
+    case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
+    default: iIcon = MB_ICONSTOP | MB_TOPMOST | MB_OK; break;
   }
 
   HWND focus = GetFocus();
-  hwnd = focus ? focus : g_hwndMain;
+  HWND hwnd = focus ? focus : g_hwndMain;
 
-  return MessageBoxEx(hwnd,
-           szText,szTitle,
-           MB_SETFOREGROUND | iIcon,
-           MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT));
+  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+
+  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
 
 }
 
@@ -1513,7 +1547,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 }
 
                 // Ask...
-                int answ = (LOWORD(wParam) == IDOK) ? MsgBox(MBYESNO, IDS_ERR_MRUDLG) 
+                int answ = (LOWORD(wParam) == IDOK) ? MsgBox(MBYESNOWARN, IDS_ERR_MRUDLG) 
                                                     : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                 if (IDYES == answ) {
@@ -2759,24 +2793,25 @@ INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
   ib.bDisableCheckBox = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? true : false;
 
-  int idDlg = IDD_INFOBOX;
-  if (iType == MBYESNO)
+  int idDlg;
+  switch (iType) {
+  case MBYESNO:
     idDlg = IDD_INFOBOX2;
-  else if (iType == MBOKCANCEL)
+    break;
+  case MBOKCANCEL:
     idDlg = IDD_INFOBOX3;
+    break;
+  default:
+    idDlg = IDD_INFOBOX;
+    break;
+  }
 
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : g_hwndMain;
 
   MessageBeep(MB_ICONEXCLAMATION);
 
-  return ThemedDialogBoxParam(
-           g_hInstance,
-           MAKEINTRESOURCE(idDlg),
-           hwnd,
-           InfoBoxDlgProc,
-           (LPARAM)&ib);
-
+  return ThemedDialogBoxParam(g_hInstance, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
 }
 
 //  End of Dialogs.c

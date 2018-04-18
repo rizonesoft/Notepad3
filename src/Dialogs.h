@@ -18,13 +18,6 @@
 
 #include "TypeDefs.h"
 
-#define MBINFO         0
-#define MBWARN         1
-#define MBYESNO        2
-#define MBYESNOWARN    3
-#define MBYESNOCANCEL  4
-#define MBOKCANCEL     8
-
 int  MsgBox(int,UINT,...);
 void DisplayCmdLineHelp(HWND);
 bool GetDirectory(HWND,int,LPWSTR,LPCWSTR,bool);

@@ -133,6 +133,12 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 //
 //  Selection, positions and information
 //
+
+DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
+DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
+DeclareSciCallR0(CanUndo, CANUNDO, bool)
+DeclareSciCallR0(CanRedo, CANREDO, bool)
+
 DeclareSciCallR0(IsDocModified, GETMODIFY, bool)
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
@@ -260,7 +266,7 @@ DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, styleNumber)
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, styleNumber)
 DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, int, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
-DeclareSciCallR0(GetEndStyled, GETENDSTYLED, int)
+DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 
 //=============================================================================
 //
@@ -283,6 +289,7 @@ DeclareSciCallR1(MarkerGet, MARKERGET, int, DocLn, line)
 DeclareSciCallV2(MarkerDefine, MARKERDEFINE, int, markerNumber, int, markerSymbols)
 DeclareSciCallV2(MarkerSetFore, MARKERSETFORE, int, markerNumber, COLORREF, colour)
 DeclareSciCallV2(MarkerSetBack, MARKERSETBACK, int, markerNumber, COLORREF, colour)
+DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerNumber, int, alpha)
 DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerNumber)
 DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerNumber)
 DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
@@ -319,6 +326,7 @@ DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, 
 //  Lexer
 //
 DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, value)
+DeclareSciCallV2(Colourise, COLOURISE, DocPos, startPos, DocPos, endPos)
 
 
 //=============================================================================

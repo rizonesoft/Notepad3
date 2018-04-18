@@ -47,6 +47,7 @@ extern HINSTANCE g_hInstance;
 
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
+extern EDITFINDREPLACE g_efrData;
 
 extern int iSciFontQuality;
 extern const int FontQuality[4];
@@ -55,7 +56,7 @@ extern bool g_bCodeFoldingAvailable;
 extern bool g_bShowCodeFolding;
 extern bool g_bShowSelectionMargin;
 
-extern int  iMarkOccurrences;
+extern int  g_iMarkOccurrences;
 extern bool bUseOldStyleBraceMatching;
 
 extern int xCustomSchemesDlg;
@@ -123,7 +124,9 @@ enum LexDefaultStyles {
   STY_X_LN_SPACE = 11,
   STY_BOOK_MARK = 12,
   STY_MARK_OCC = 13,
-  STY_URL_HOTSPOT = 14
+  STY_URL_HOTSPOT = 14,
+  STY_INVISIBLE = 15,
+  STY_READONLY = 16
 };
 
 
@@ -2994,7 +2997,7 @@ static int  g_cyStyleSelectDlg;
 
 extern int  g_iDefaultCharSet;
 extern bool bHiliteCurrentLine;
-extern bool bHyperlinkHotspot;
+extern bool g_bHyperlinkHotspot;
 
 
 //=============================================================================
@@ -3506,7 +3509,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (!Style_StrGetColor(true, pCurrentStandard->Styles[STY_MARK_OCC].szValue, &dColor))
   {
     WCHAR* sty = L"";
-    switch (iMarkOccurrences) {
+    switch (g_iMarkOccurrences) {
     case 1:
       sty = L"fore:0xFF0000";
       dColor = RGB(0xFF, 0x00, 0x00);
@@ -3834,14 +3837,16 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
   }
 
+  Style_SetInvisible(hwnd, false); // set fixed invisible style
+
   // apply lexer styles
   Style_SetUrlHotSpot(hwnd, false);
   EditApplyLexerStyle(hwnd, 0, -1);
 
   // update UI for hotspots
-  if (bHyperlinkHotspot) {
-    Style_SetUrlHotSpot(hwnd, bHyperlinkHotspot);
-    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+  if (g_bHyperlinkHotspot) {
+    Style_SetUrlHotSpot(hwnd, g_bHyperlinkHotspot);
+    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
   }
 
   UpdateLineNumberWidth();
@@ -3902,6 +3907,52 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)false);
   }
 
+}
+
+
+//=============================================================================
+//
+//  Style_GetInvisibleStyleID()
+//
+int Style_GetInvisibleStyleID()
+{
+  //return STYLE_FOLDDISPLAYTEXT;
+  return (STYLE_LASTPREDEFINED + STY_INVISIBLE);
+}
+
+
+//=============================================================================
+//
+//  Style_SetInvisible()
+//
+void Style_SetInvisible(HWND hwnd, bool bInvisible)
+{
+  //SendMessage(hwnd, SCI_FOLDDISPLAYTEXTSETSTYLE, (WPARAM)SC_FOLDDISPLAYTEXT_BOXED, 0);
+  SciCall_MarkerDefine(MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
+  if (bInvisible) {
+    SendMessage(hwnd, SCI_STYLESETVISIBLE, Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
+  }
+}
+
+
+
+//=============================================================================
+//
+//  Style_GetReadonlyStyleID()
+//
+int Style_GetReadonlyStyleID()
+{
+  return (STYLE_LASTPREDEFINED + STY_READONLY);
+}
+
+
+//=============================================================================
+//
+//  Style_SetInvisible()
+//
+void Style_SetReadonly(HWND hwnd, bool bReadonly)
+{
+  SendMessage(hwnd, SCI_STYLESETCHANGEABLE, Style_GetReadonlyStyleID(), (LPARAM)!bReadonly);
 }
 
 
@@ -4040,10 +4091,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   SciCall_MarkerSetFore(MARKER_NP3_BOOKMARK, bmkFore);
   SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
-  SendMessage(hwnd, SCI_MARKERSETALPHA, MARKER_NP3_BOOKMARK, alpha);
-
+  SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha);
   SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
-
+  
 
   // ---  Code folding  ---
   SciCall_SetMarginType(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
@@ -4074,25 +4124,25 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
     SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
   }
 
-  int fldStyleLn = 0;
-  Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
-    switch (fldStyleLn)
-  {
-    case 1:
-      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED);
-      break;
-    case 2:
-      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
-      break;
-    default:
-      SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
-      break;
-  }
-
   SciCall_SetFoldMarginColour(true, clrBack);    // background
   SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
 
   //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
+
+  int fldStyleLn = 0;
+  Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
+  switch (fldStyleLn)
+  {
+  case 1:
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED);
+    break;
+  case 2:
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+    break;
+  default:
+    SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED);
+    break;
+  }
 
   for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
     SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore);

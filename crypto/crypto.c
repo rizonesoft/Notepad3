@@ -105,6 +105,7 @@ void SetDialogFocus(HWND hDlg, HWND hwndControl)
 INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     UNUSED(lParam);
+    const WCHAR wDot = (WCHAR)0x25CF;
 
     switch (umsg) {
 
@@ -127,6 +128,20 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     case WM_COMMAND:
 
         switch (LOWORD(wParam)) {
+        case IDC_CHECK4:
+          {
+            if (IsDlgButtonChecked(hDlg, IDC_CHECK4) == BST_CHECKED) {
+              SendDlgItemMessage(hDlg, IDC_EDIT1, EM_SETPASSWORDCHAR, 0, 0);
+              SendDlgItemMessage(hDlg, IDC_EDIT2, EM_SETPASSWORDCHAR, 0, 0);
+            }
+            else {
+              SendDlgItemMessage(hDlg, IDC_EDIT1, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+              SendDlgItemMessage(hDlg, IDC_EDIT2, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+            }
+            InvalidateRect(hDlg, NULL, TRUE);
+          }
+          return(true);
+        break;
 
         case IDOK:
         {
@@ -216,6 +231,8 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 {
     UNUSED(lParam);
 
+    const WCHAR wDot = (WCHAR)0x25CF;
+
     switch (umsg) {
 
     case WM_INITDIALOG:
@@ -235,7 +252,20 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
     case WM_COMMAND:
 
-        switch (LOWORD(wParam)) {
+        switch (LOWORD(wParam)) 
+        {
+        case IDC_CHECK4:
+          {
+            if (IsDlgButtonChecked(hDlg, IDC_CHECK4) == BST_CHECKED) {
+              SendDlgItemMessage(hDlg, IDC_EDIT3, EM_SETPASSWORDCHAR, 0, 0);
+            }
+            else {
+              SendDlgItemMessage(hDlg, IDC_EDIT3, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+            }
+            InvalidateRect(hDlg, NULL, TRUE);
+            return(true);
+            break;
+          }
         case IDOK:
           {
               bool useMas = (IsDlgButtonChecked(hDlg, IDC_CHECK3) == BST_CHECKED);
@@ -285,121 +315,142 @@ bool ReadFileKey(HWND hwnd, bool master)
 }
 
 
-
-// read the file data, decrypt if necessary, return the result as a new allocation
-bool ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD *resultlen)
+// ////////////////////////////////////////////////////////////////////////////
+//
+// read the file data, decrypt if necessary, 
+// return the result as a new allocation
+//
+int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD *resultlen)
 {
-    bool usedEncryption = false;
-    HANDLE rawhandle = *result;
-    BYTE* rawdata = (BYTE*)GlobalLock(rawhandle);
-    unsigned long readsize = 0;
+  HANDLE rawhandle = *result;
+  BYTE* rawdata = (BYTE*)GlobalLock(rawhandle);
+
+  int returnFlag = DECRYPT_SUCCESS;
+  bool usedEncryption = false;
+  unsigned long readsize = 0;
+  bool bRetryPassPhrase = true;
+
+  while (bRetryPassPhrase) {
+
+    SetFilePointer(hFile, 0L, NULL, FILE_BEGIN);
+    returnFlag = DECRYPT_SUCCESS;
+    usedEncryption = false;
+    readsize = 0;
+    bRetryPassPhrase = false;
+
     bool bReadSuccess = ReadFile(hFile, rawdata, size, &readsize, NULL);
+    returnFlag = bReadSuccess ? DECRYPT_SUCCESS : DECRYPT_FREAD_FAILED;
 
     // we read the file, check if it looks like our encryption format
 
     if (bReadSuccess && (readsize > (PREAMBLE_SIZE + AES_MAX_IV_SIZE))) {
-        long *ldata = (long*)rawdata;
 
-        if (ldata && (ldata[0] == PREAMBLE)) {
-            long scheme = ldata[1];
-            unsigned long code_offset = PREAMBLE_SIZE + AES_MAX_IV_SIZE;
+      long *ldata = (long*)rawdata;
 
-            switch (scheme) {
-            case MASTERKEY_FORMAT:
-                code_offset += sizeof(masterFileKey) + sizeof(masterFileIV);
-                // save the encrypted file key and IV.  They can be reused if the
-                // passphrases are not changed.
-                memcpy(masterFileIV, &rawdata[MASTER_KEY_OFFSET], sizeof(masterFileIV));
-                memcpy(masterFileKey, &rawdata[MASTER_KEY_OFFSET + sizeof(masterFileIV)], sizeof(masterFileKey));
-                hasMasterFileKey = true;
+      if (ldata && (ldata[0] == PREAMBLE)) {
+        long scheme = ldata[1];
+        unsigned long code_offset = PREAMBLE_SIZE + AES_MAX_IV_SIZE;
 
-                // fall through
-            case FILEKEY_FORMAT:
-            {
-                bool haveFileKey = ReadFileKey(hwnd, scheme == MASTERKEY_FORMAT);
+        switch (scheme) {
 
-                if (useFileKey) {
-                    // use the file key to decode
-                    /*@@@
-                                char ansiKey[KEY_LEN+1];
-                                int len = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, fileKey, -1, ansiKey, KEY_LEN, NULL, NULL );
-                                ansiKey[len] = '\0';
-                                AES_keygen( ansiKey, binFileKey );		// generate the encryption key from the passphrase
-                                */
-                    AES_keygen(fileKey, binFileKey);		// generate the encryption key from the passphrase
-                    hasBinFileKey = true;
+        case MASTERKEY_FORMAT:
+          code_offset += sizeof(masterFileKey) + sizeof(masterFileIV);
+          // save the encrypted file key and IV.  They can be reused if the
+          // passphrases are not changed.
+          memcpy(masterFileIV, &rawdata[MASTER_KEY_OFFSET], sizeof(masterFileIV));
+          memcpy(masterFileKey, &rawdata[MASTER_KEY_OFFSET + sizeof(masterFileIV)], sizeof(masterFileKey));
+          hasMasterFileKey = true;
+
+          // fall through
+        case FILEKEY_FORMAT:
+          {
+            bool haveFileKey = ReadFileKey(hwnd, scheme == MASTERKEY_FORMAT);
+
+            if (useFileKey) {
+              // use the file key to decode
+              /*@@@
+                char ansiKey[KEY_LEN+1];
+                int len = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, fileKey, -1, ansiKey, KEY_LEN, NULL, NULL );
+                ansiKey[len] = '\0';
+                AES_keygen( ansiKey, binFileKey );		// generate the encryption key from the passphrase
+                */
+              AES_keygen(fileKey, binFileKey);		// generate the encryption key from the passphrase
+              hasBinFileKey = true;
+            }
+            else if ((scheme == MASTERKEY_FORMAT) && useMasterKey) {	// use the master key to recover the file key
+              BYTE binMasterKey[KEY_BYTES];
+              AES_keyInstance masterdecode;
+              AES_cipherInstance mastercypher;
+              /*@@@
+                char ansiKey[KEY_LEN+1];
+                int len = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, masterKey, -1, ansiKey, KEY_LEN, NULL, NULL );
+                AES_keygen( ansiKey, binMasterKey );
+                */
+              AES_keygen(masterKey, binMasterKey);
+              AES_bin_setup(&masterdecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binMasterKey);
+              AES_bin_cipherInit(&mastercypher, AES_MODE_CBC, masterFileIV);
+              AES_blockDecrypt(&mastercypher, &masterdecode, masterFileKey, sizeof(binFileKey), binFileKey);
+              hasBinFileKey = true;
+              haveFileKey = true;
+              useMasterKey = false;
+            }
+
+            if (haveFileKey) {
+              usedEncryption = true;
+              AES_keyInstance fileDecode;
+              AES_cipherInstance fileCypher;
+              AES_bin_setup(&fileDecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binFileKey);
+              AES_bin_cipherInit(&fileCypher, AES_MODE_CBC, &rawdata[PREAMBLE_SIZE]);	// IV is next
+              { // finally, decrypt the actual data
+                int nbb = BAD_CIPHER_STATE;
+                int nbp = BAD_CIPHER_STATE;
+                if ((readsize - code_offset) >= PAD_SLOP) {
+                  nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
                 }
-                else if ((scheme == MASTERKEY_FORMAT) && useMasterKey) {	// use the master key to recover the file key
-                    BYTE binMasterKey[KEY_BYTES];
-                    AES_keyInstance masterdecode;
-                    AES_cipherInstance mastercypher;
-                    /*@@@
-                                char ansiKey[KEY_LEN+1];
-                                int len = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, masterKey, -1, ansiKey, KEY_LEN, NULL, NULL );
-                                AES_keygen( ansiKey, binMasterKey );
-                                */
-                    AES_keygen(masterKey, binMasterKey);
-                    AES_bin_setup(&masterdecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binMasterKey);
-                    AES_bin_cipherInit(&mastercypher, AES_MODE_CBC, masterFileIV);
-                    AES_blockDecrypt(&mastercypher, &masterdecode, masterFileKey, sizeof(binFileKey), binFileKey);
-                    hasBinFileKey = true;
-                    haveFileKey = true;
-                    useMasterKey = false;
+                if (nbb >= 0) {
+                  nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], readsize - code_offset - nbb, rawdata + nbb);
                 }
-
-                if (haveFileKey) {
-                    AES_keyInstance fileDecode;
-                    AES_cipherInstance fileCypher;
-                    AES_bin_setup(&fileDecode, AES_DIR_DECRYPT, KEY_BYTES * 8, binFileKey);
-                    AES_bin_cipherInit(&fileCypher, AES_MODE_CBC, &rawdata[PREAMBLE_SIZE]);	// IV is next
-                    { // finally, decrypt the actual data
-                        int nbb = BAD_CIPHER_STATE;
-                        int nbp = BAD_CIPHER_STATE;
-                        if ((readsize - code_offset) >= PAD_SLOP) {
-                            nbb = AES_blockDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset], readsize - code_offset - PAD_SLOP, rawdata);
-                        }
-                        if (nbb >= 0) {
-                            nbp = AES_padDecrypt(&fileCypher, &fileDecode, &rawdata[code_offset + nbb], readsize - code_offset - nbb, rawdata + nbb);
-                        }
-                        if (nbp >= 0) {
-                            int nb = nbb + nbp;
-                            rawdata[nb] = (char)0;
-                            rawdata[nb + 1] = (char)0;	// two zeros in case it's multi-byte
-                            *resultlen = (DWORD)nb;
-                            bReadSuccess = true;
-                        }
-                        else {
-                            MsgBox(MBWARN, IDS_PASS_FAILURE);
-                            *resultlen = 0;
-                            bReadSuccess = false;
-                        }
-                    }
-                    usedEncryption = true;
+                if (nbp >= 0) {
+                  int nb = nbb + nbp;
+                  rawdata[nb] = (char)0;
+                  rawdata[nb + 1] = (char)0;	// two zeros in case it's multi-byte
+                  *resultlen = (DWORD)nb;
                 }
                 else {
-                    // simulate read failure
-                    MsgBox(MBWARN, IDS_NOPASS);
-                    *resultlen = 0;
-                    bReadSuccess = false;
-                    usedEncryption = false;
+                  bRetryPassPhrase = (MsgBox(MBRETRYCANCEL, IDS_PASS_FAILURE) == IDRETRY);
+                  if (!bRetryPassPhrase) {
+                    // enable raw encryption read
+                    *resultlen = readsize;
+                    returnFlag |= DECRYPT_WRONG_PASS;
+                  }
                 }
+              }
             }
-
-            break;
-
-            default: BUG1("format %d not understood", scheme);
+            else {
+              // enable raw encryption read
+              returnFlag |= DECRYPT_CANCELED_NO_PASS;
             }
+          }
+          break;
+
+        default:
+          BUG1("format %d not understood", scheme);
+          returnFlag |= DECRYPT_FATAL_ERROR;
+          break;
         }
+      }
     }
+  }  // while bRetryPassPhrase
 
-    if (!usedEncryption) { // here, the file is believed to be a straight text file
-        ResetEncryption();
-        *resultlen = readsize;
-    }
+  if (!usedEncryption) { // here, the file is believed to be a straight text file
+    ResetEncryption();
+    *resultlen = readsize;
+    returnFlag |= DECRYPT_NO_ENCRYPTION;
+  }
 
-    GlobalUnlock(rawhandle);
+  GlobalUnlock(rawhandle);
 
-    return(bReadSuccess);
+  return returnFlag;
 }
 
 bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD *written)

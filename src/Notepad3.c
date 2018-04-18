@@ -44,6 +44,7 @@
 #include "resource.h"
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
+#include "../uthash/utlist.h"
 #include "encoding.h"
 #include "helpers.h"
 #include "SciCall.h"
@@ -67,8 +68,6 @@ HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
 
 #define INISECTIONBUFCNT 32
-#define NUMTOOLBITMAPS  25
-#define NUMINITIALTOOLS 30
 
 TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
@@ -88,6 +87,7 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
                             { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 0,0,0,TBSTYLE_SEP,0,0 },
                             { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 25,IDT_VIEW_TOGGLE_VIEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 0,0,0,TBSTYLE_SEP,0,0 },
                             { 21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
@@ -109,7 +109,9 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
                             { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 }
 };
 
-#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 0 22 23 0 13 14 0 15 0 25 0 17"
+#define NUMTOOLBITMAPS  26
+#define NUMINITIALTOOLS 31
+#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 17"
 
 
 WCHAR      g_wchIniFile[MAX_PATH] = { L'\0' };
@@ -144,7 +146,7 @@ bool      bAutoIndent;
 bool      bAutoCloseTags;
 bool      bShowIndentGuides;
 bool      bHiliteCurrentLine;
-bool      bHyperlinkHotspot;
+bool      g_bHyperlinkHotspot;
 bool      bScrollPastEOF;
 bool      g_bTabsAsSpaces;
 bool      bTabsAsSpacesG;
@@ -163,10 +165,10 @@ int       iWrapCol = 0;
 bool      g_bShowSelectionMargin;
 bool      bShowLineNumbers;
 int       iReplacedOccurrences;
-int       iMarkOccurrences;
-int       iMarkOccurrencesCount;
-int       iMarkOccurrencesMaxCount;
-bool      bMarkOccurrencesMatchVisible;
+int       g_iMarkOccurrences;
+int       g_iMarkOccurrencesCount;
+int       g_iMarkOccurrencesMaxCount;
+bool      g_bMarkOccurrencesMatchVisible;
 bool      bMarkOccurrencesMatchCase;
 bool      bMarkOccurrencesMatchWords;
 bool      bMarkOccurrencesCurrentWord;
@@ -293,7 +295,7 @@ HMODULE   hModUxTheme = NULL;
 HMODULE   hRichEdit = NULL;
 
 
-EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
+static EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
 bool bReplaceInitialized = false;
 
 int iLineEndings[3] = {
@@ -334,51 +336,123 @@ static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 
-
 static CLIPFORMAT cfDrpF = CF_HDROP;
 static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
 // Timer bitfield
-static volatile LONG g_lInterlockBits = 0;
-#define BIT_TIMER_MARK_OCC 1L
-#define BIT_MARK_OCC_IN_PROGRESS 2L
+//static volatile LONG g_lInterlockBits = 0;
+//#define BIT_TIMER_MARK_OCC 1L
+//#define BIT_MARK_OCC_IN_PROGRESS 2L
+//#define BIT_TIMER_UPDATE_HYPER 4L
+//#define BIT_UPDATE_HYPER_IN_PROGRESS 8L
 
-#define BIT_TIMER_UPDATE_HYPER 4L
-#define BIT_UPDATE_HYPER_IN_PROGRESS 8L
-
-#define LOCK_NOTIFY_CHANGE 16L
-
-#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lInterlockBits, B)
-#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lInterlockBits, B)
+//#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lInterlockBits, B)
+//#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lInterlockBits, B)
 
 
 //=============================================================================
 //
 //  IgnoreNotifyChangeEvent(), ObserveNotifyChangeEvent(), CheckNotifyChangeEvent()
 //
+static volatile LONG iNotifyChangeStackCounter = 0;
+
 void IgnoreNotifyChangeEvent() {
-  (void)TEST_AND_SET(LOCK_NOTIFY_CHANGE);
+  InterlockedIncrement(&iNotifyChangeStackCounter);
 }
 
 void ObserveNotifyChangeEvent() {
-  (void)TEST_AND_RESET(LOCK_NOTIFY_CHANGE);
-  UpdateToolbar();
-  UpdateStatusbar();
-  UpdateLineNumberWidth();
+  if (iNotifyChangeStackCounter > 0L) {
+    InterlockedDecrement(&iNotifyChangeStackCounter);
+    if (iNotifyChangeStackCounter == 0L) {
+      UpdateToolbar();
+      UpdateStatusbar();
+      UpdateLineNumberWidth();
+    }
+  }
 }
 
 bool CheckNotifyChangeEvent() {
-  if (TEST_AND_RESET(LOCK_NOTIFY_CHANGE)) {
-    (void)TEST_AND_SET(LOCK_NOTIFY_CHANGE);
-    return false;
-  }
-  return true;
+  return (iNotifyChangeStackCounter == 0L);
 }
 
 // SCN_UPDATEUI notification
 #define SC_UPDATE_NP3_INTERNAL_NOTIFY (SC_UPDATE_H_SCROLL << 1)
+
+
+//=============================================================================
+//
+//  Delay Message Queue Handling  (TODO: MultiThreading)
+//
+
+static CmdMessageQueue_t* MessageQueue = NULL;
+
+// ----------------------------------------------------------------------------
+
+static int msgcmp(void* mqc1, void* mqc2)
+{
+  const CmdMessageQueue_t* pMQC1 = (CmdMessageQueue_t*)mqc1;
+  const CmdMessageQueue_t* pMQC2 = (CmdMessageQueue_t*)mqc2;
+
+  if ((pMQC1->hwnd == pMQC2->hwnd)
+       && (pMQC1->cmd == pMQC2->cmd)
+       && (pMQC1->wparam == pMQC2->wparam)
+       && (pMQC1->lparam == pMQC2->lparam))
+  {
+    return 0;
+  }
+  return 1;
+}
+// ----------------------------------------------------------------------------
+
+static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* pMsgQCmd, int delay)
+{
+  CmdMessageQueue_t* pmqc = NULL;
+  DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
+
+  if (!pmqc) { // NOT found
+    pmqc = AllocMem(sizeof(CmdMessageQueue_t), HEAP_ZERO_MEMORY);
+    pmqc->hwnd = pMsgQCmd->hwnd;
+    pmqc->cmd = pMsgQCmd->cmd;
+    pmqc->wparam = pMsgQCmd->wparam;
+    pmqc->lparam = pMsgQCmd->lparam;
+    pmqc->delay = 0;
+    DL_APPEND(MessageQueue, pmqc);
+  }
+
+  if (delay < 2) {
+    pmqc->delay = 0; // execute next
+    PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+  }
+  else {
+    pmqc->delay = (pmqc->delay + delay) / 2; // increase delay
+  }
+}
+
+// ----------------------------------------------------------------------------
+//
+// called by Timer(IDT_TIMER_MRKALL)
+//
+static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+  UNUSED(hwnd);    // must be main wnd
+  UNUSED(uMsg);    // must be WM_TIMER
+  UNUSED(idEvent); // must be IDT_TIMER_MRKALL
+  UNUSED(dwTime);  // This is the value returned by the GetTickCount function
+
+  CmdMessageQueue_t* pmqc;
+
+  DL_FOREACH(MessageQueue, pmqc) 
+  {
+    if (pmqc->delay == 0) {
+      SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
+    }
+    if (pmqc->delay >= 0) {
+      pmqc->delay -= 1;
+    }
+  }
+}
 
 
 //=============================================================================
@@ -429,6 +503,11 @@ static void __fastcall _SetDocumentModified(bool bModified)
   if (IsDocumentModified != bModified) {
     IsDocumentModified = bModified;
     UpdateToolbar();
+  }
+  if (bModified) {
+    if (IsWindow(g_hwndDlgFindReplace)) {
+      SendMessage(g_hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDC_DOC_MODIFIED, 1), 0);
+    }
   }
 }
 
@@ -571,6 +650,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   UpdateLineNumberWidth();
   ObserveNotifyChangeEvent();
   
+  SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
+
   while (GetMessage(&msg,NULL,0,0))
   {
     if (IsWindow(g_hwndDlgFindReplace) && ((msg.hwnd == g_hwndDlgFindReplace) || IsChild(g_hwndDlgFindReplace, msg.hwnd))) 
@@ -588,7 +669,17 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
+    //MQ_ExecuteNext(); // delayed messages
   }
+
+  CmdMessageQueue_t* pmqc = NULL;
+  CmdMessageQueue_t* dummy;
+  DL_FOREACH_SAFE(MessageQueue, pmqc, dummy)
+  {
+    DL_DELETE(MessageQueue, pmqc);
+    FreeMem(pmqc);
+  }
+  KillTimer(hwnd, IDT_TIMER_MRKALL);
 
   // Save Settings is done elsewhere
 
@@ -957,7 +1048,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     SetNotifyIconTitle(g_hwndMain);
 
   iReplacedOccurrences = 0;
-  iMarkOccurrencesCount = 0;
+  g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
@@ -1071,42 +1162,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       UpdateLineNumberWidth();
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
       UpdateVisibleUrlHotspot(0);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
-
-
-    case WM_TIMER:
-      {
-        // The KillTimer function does not remove WM_TIMER messages already posted to the message queue.
-        if (LOWORD(wParam) == IDT_TIMER_MAIN_MRKALL) 
-        {
-          if (TEST_AND_RESET(BIT_TIMER_MARK_OCC)) {
-            KillTimer(hwnd, IDT_TIMER_MAIN_MRKALL);
-            if (!TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS))
-            {
-              EditMarkAllOccurrences();
-              TEST_AND_RESET(BIT_MARK_OCC_IN_PROGRESS); // done
-            }
-          }
-          return true;
-        }
-        else if (LOWORD(wParam) == IDT_TIMER_UPDATE_HOTSPOT) 
-        {
-          if (TEST_AND_RESET(BIT_TIMER_UPDATE_HYPER)) {
-            KillTimer(hwnd, IDT_TIMER_UPDATE_HOTSPOT);
-            if (!TEST_AND_SET(BIT_UPDATE_HYPER_IN_PROGRESS))
-            {
-              EditUpdateVisibleUrlHotspot(bHyperlinkHotspot);
-              TEST_AND_RESET(BIT_UPDATE_HYPER_IN_PROGRESS); // done
-            }
-          }
-          return true;
-        }
-      }
-      break;
-
 
     case WM_SIZE:
       MsgSize(hwnd,wParam,lParam);
@@ -1797,9 +1856,9 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
-  EditClearAllMarks(g_hwndEdit, 0, -1);
+  EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
   MarkAllOccurrences(0);
-  EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), bHyperlinkHotspot);
+  EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
   EditFinalizeStyling(g_hwndEdit, -1);
 
   UNUSED(lParam);
@@ -1868,7 +1927,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   // Statusbar width
   int aWidth[7];
-  aWidth[STATUS_DOCPOS]   = max(100,min(cx/3, StatusCalcPaneWidth(g_hwndStatus,
+  aWidth[STATUS_DOCPOS]   = max(120,min(cx*4/10, StatusCalcPaneWidth(g_hwndStatus,
     L" Ln 9'999'999 : 9'999'999    Col 9'999'999:999 / 999    Sel 9'999'999 (999 Bytes)    SelLn 9'999'999    Occ 9'999'999 ")));
   aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 9999 Bytes [UTF-8] ");
   aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
@@ -2154,13 +2213,13 @@ void MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   if (PathFileExists(g_wchCurFile)) {
     if ((iFileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
-      MsgBox(MBYESNO,IDS_FILECHANGENOTIFY) == IDYES) {
+      MsgBox(MBYESNOWARN,IDS_FILECHANGENOTIFY) == IDYES) {
 
       FileRevert(g_wchCurFile);
     }
   }
   else {
-    if (MsgBox(MBYESNO,IDS_FILECHANGENOTIFY2) == IDYES)
+    if (MsgBox(MBYESNOWARN,IDS_FILECHANGENOTIFY2) == IDYES)
       FileSave(true,false,false,false);
   }
 
@@ -2234,13 +2293,14 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
-  int i;
-  DocPos p;
-  bool b;
+  //DocPos p;
+  bool b,e,s;
 
   HMENU hmenu = (HMENU)wParam;
 
-  i = (int)StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile));
+  bool ro = SciCall_GetReadOnly();
+
+  int i = (int)StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile));
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
   EnableCmd(hmenu, CMD_RECODEANSI, i);
@@ -2248,7 +2308,6 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu, CMD_RELOADNOFILEVARS, i);
   EnableCmd(hmenu, CMD_RECODEDEFAULT, i);
   EnableCmd(hmenu, IDM_FILE_LAUNCH, i);
-
 
   EnableCmd(hmenu,IDM_FILE_LAUNCH,i);
   EnableCmd(hmenu,IDM_FILE_PROPERTIES,i);
@@ -2258,14 +2317,14 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_FILE_READONLY,i);
   CheckCmd(hmenu,IDM_FILE_READONLY,bReadOnly);
 
-  //EnableCmd(hmenu,IDM_ENCODING_UNICODEREV,!bReadOnly);
-  //EnableCmd(hmenu,IDM_ENCODING_UNICODE,!bReadOnly);
-  //EnableCmd(hmenu,IDM_ENCODING_UTF8SIGN,!bReadOnly);
-  //EnableCmd(hmenu,IDM_ENCODING_UTF8,!bReadOnly);
-  //EnableCmd(hmenu,IDM_ENCODING_ANSI,!bReadOnly);
-  //EnableCmd(hmenu,IDM_LINEENDINGS_CRLF,!bReadOnly);
-  //EnableCmd(hmenu,IDM_LINEENDINGS_LF,!bReadOnly);
-  //EnableCmd(hmenu,IDM_LINEENDINGS_CR,!bReadOnly);
+  EnableCmd(hmenu,IDM_ENCODING_UNICODEREV,!ro);
+  EnableCmd(hmenu,IDM_ENCODING_UNICODE,!ro);
+  EnableCmd(hmenu,IDM_ENCODING_UTF8SIGN,!ro);
+  EnableCmd(hmenu,IDM_ENCODING_UTF8,!ro);
+  EnableCmd(hmenu,IDM_ENCODING_ANSI,!ro);
+  EnableCmd(hmenu,IDM_LINEENDINGS_CRLF,!ro);
+  EnableCmd(hmenu,IDM_LINEENDINGS_LF,!ro);
+  EnableCmd(hmenu,IDM_LINEENDINGS_CR,!ro);
 
   EnableCmd(hmenu,IDM_ENCODING_RECODE,i);
 
@@ -2293,129 +2352,139 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   EnableCmd(hmenu,IDM_FILE_RECENT,(MRU_Enum(g_pFileMRU,0,NULL,0) > 0));
 
-  EnableCmd(hmenu,IDM_EDIT_UNDO,SendMessage(g_hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_REDO,SendMessage(g_hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_UNDO,SciCall_CanUndo() && !ro);
+  EnableCmd(hmenu,IDM_EDIT_REDO,SciCall_CanRedo() && !ro);
 
-
-  i = !SciCall_IsSelectionEmpty();
-  p = SciCall_GetTextLength();
-  b = (bool)SendMessage(g_hwndEdit, SCI_CANPASTE, 0, 0);
+  s = SciCall_IsSelectionEmpty();
+  e = (SciCall_GetTextLength() == 0);
+  b = SciCall_CanPaste();
   
-  EnableCmd(hmenu,IDM_EDIT_CUT,p /*&& !bReadOnly*/);       // allow Ctrl-X w/o selection
-  EnableCmd(hmenu,IDM_EDIT_COPY,p /*&& !bReadOnly*/);      // allow Ctrl-C w/o selection
+  EnableCmd(hmenu,IDM_EDIT_CUT, !e && !ro);       // allow Ctrl-X w/o selection
+  EnableCmd(hmenu,IDM_EDIT_COPY, !e);             // allow Ctrl-C w/o selection
 
-  EnableCmd(hmenu,IDM_EDIT_COPYALL,p /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_COPYADD,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_COPYALL, !e);
+  EnableCmd(hmenu,IDM_EDIT_COPYADD, !s);
 
-  EnableCmd(hmenu,IDM_EDIT_PASTE,b /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_SWAP,i || b /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_CLEAR,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_PASTE, b && !ro);
+  EnableCmd(hmenu,IDM_EDIT_SWAP, (!s || b) && !ro);
+  EnableCmd(hmenu,IDM_EDIT_CLEAR, !s && !ro);
 
-  EnableCmd(hmenu, IDM_EDIT_SELECTALL, p /*&& !bReadOnly*/);
+  EnableCmd(hmenu, IDM_EDIT_SELECTALL, !e);
   
-
   OpenClipboard(hwnd);
   EnableCmd(hmenu,IDM_EDIT_CLEARCLIPBOARD,CountClipboardFormats());
   CloseClipboard();
 
-  //EnableCmd(hmenu,IDM_EDIT_MOVELINEUP,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_MOVELINEDOWN,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_DUPLICATELINE,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_CUTLINE,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_COPYLINE,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_DELETELINE,!bReadOnly);
+  EnableCmd(hmenu,IDM_EDIT_MOVELINEUP,!ro);
+  EnableCmd(hmenu,IDM_EDIT_MOVELINEDOWN,!ro);
+  EnableCmd(hmenu,IDM_EDIT_DUPLICATELINE,!ro);
+  EnableCmd(hmenu,IDM_EDIT_CUTLINE,!ro);
+  EnableCmd(hmenu,IDM_EDIT_COPYLINE,true);
+  EnableCmd(hmenu,IDM_EDIT_DELETELINE,!ro);
 
-  //EnableCmd(hmenu,IDM_EDIT_INDENT,i /*&& !bReadOnly*/);
-  //EnableCmd(hmenu,IDM_EDIT_UNINDENT,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu, IDM_EDIT_MERGEBLANKLINES, !ro);
+  EnableCmd(hmenu, IDM_EDIT_MERGEEMPTYLINES, !ro);
+  EnableCmd(hmenu, IDM_EDIT_REMOVEBLANKLINES, !ro);
+  EnableCmd(hmenu, IDM_EDIT_REMOVEEMPTYLINES, !ro);
+  EnableCmd(hmenu, IDM_EDIT_REMOVEDUPLICATELINES, !ro);
 
-  //EnableCmd(hmenu,IDM_EDIT_PADWITHSPACES,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_STRIP1STCHAR,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_STRIPLASTCHAR,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_TRIMLINES,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_MERGEBLANKLINES,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_REMOVEBLANKLINES,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_REMOVEEMPTYLINES,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_REMOVEDUPLICATELINES,!bReadOnly);
- 
+  EnableCmd(hmenu,IDM_EDIT_INDENT, !s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_UNINDENT, !s && !ro);
+
+  EnableCmd(hmenu,IDM_EDIT_PADWITHSPACES,!ro);
+  EnableCmd(hmenu,IDM_EDIT_STRIP1STCHAR,!ro);
+  EnableCmd(hmenu,IDM_EDIT_STRIPLASTCHAR,!ro);
+  EnableCmd(hmenu,IDM_EDIT_TRIMLINES,!ro);
+  EnableCmd(hmenu, IDM_EDIT_SELECTIONDUPLICATE, !ro);
+  EnableCmd(hmenu, IDM_EDIT_COMPRESSWS, !ro);
+
+  EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
+  EnableCmd(hmenu, IDM_EDIT_ALIGN, !ro);
   EnableCmd(hmenu, IDM_EDIT_SORTLINES,
-    (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) - 
+    (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -
       SciCall_LineFromPosition(SciCall_GetSelectionStart())) >= 1);
-
+ 
   //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu,IDM_EDIT_SPLITLINES,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_JOINLINES,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_JOINLINES_PARA,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_SPLITLINES,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_JOINLINES,!s && !ro);
+  EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_JOINLINES_PARA,!s && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_CONVERTUPPERCASE,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_CONVERTLOWERCASE,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_INVERTCASE,i /*&& !bReadOnly*/ /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu,IDM_EDIT_TITLECASE,i /*&& !bReadOnly*/ /*&& IsWindowsNT()*/);
-  EnableCmd(hmenu,IDM_EDIT_SENTENCECASE,i /*&& !bReadOnly*/ /*&& IsWindowsNT()*/);
+  EnableCmd(hmenu,IDM_EDIT_CONVERTUPPERCASE,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_CONVERTLOWERCASE,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_INVERTCASE,!s && !ro /*&& IsWindowsNT()*/);
+  EnableCmd(hmenu,IDM_EDIT_TITLECASE,!s && !ro /*&& IsWindowsNT()*/);
+  EnableCmd(hmenu,IDM_EDIT_SENTENCECASE,!s && !ro /*&& IsWindowsNT()*/);
 
-  EnableCmd(hmenu,IDM_EDIT_CONVERTTABS,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_CONVERTSPACES,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_CONVERTTABS2,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_CONVERTSPACES2,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_CONVERTTABS,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_CONVERTSPACES,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_CONVERTTABS2,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_CONVERTSPACES2,!s && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_URLENCODE,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_URLDECODE,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_URLENCODE,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_URLDECODE,!s && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_ESCAPECCHARS,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_UNESCAPECCHARS,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_ESCAPECCHARS,!s && !ro);
+  EnableCmd(hmenu,IDM_EDIT_UNESCAPECCHARS,!s && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_CHAR2HEX,true /*&& !bReadOnly*/);  // Char2Hex allowed for char after curr pos
-  EnableCmd(hmenu,IDM_EDIT_HEX2CHAR,i /*&& !bReadOnly*/);
+  EnableCmd(hmenu,IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after curr pos
+  EnableCmd(hmenu,IDM_EDIT_HEX2CHAR, !s && !ro);
 
-  //EnableCmd(hmenu,IDM_EDIT_INCREASENUM,i /*&& !bReadOnly*/);
-  //EnableCmd(hmenu,IDM_EDIT_DECREASENUM,i /*&& !bReadOnly*/);
+  //EnableCmd(hmenu,IDM_EDIT_INCREASENUM,!s && !ro);
+  //EnableCmd(hmenu,IDM_EDIT_DECREASENUM,!s && !ro);
 
-  EnableCmd(hmenu,IDM_VIEW_SHOWEXCERPT,i);
+  EnableCmd(hmenu,IDM_VIEW_SHOWEXCERPT, !s);
 
   i = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
+
   EnableCmd(hmenu,IDM_EDIT_LINECOMMENT,
-    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON));
+    !(i == SCLEX_NULL || i == SCLEX_CSS || i == SCLEX_DIFF || i == SCLEX_MARKDOWN || i == SCLEX_JSON) && !ro);
   EnableCmd(hmenu,IDM_EDIT_STREAMCOMMENT,
     !(i == SCLEX_NULL || i == SCLEX_VBSCRIPT || i == SCLEX_MAKEFILE || i == SCLEX_VB || i == SCLEX_ASM ||
       i == SCLEX_SQL || i == SCLEX_PERL || i == SCLEX_PYTHON || i == SCLEX_PROPERTIES ||i == SCLEX_CONF ||
       i == SCLEX_POWERSHELL || i == SCLEX_BATCH || i == SCLEX_DIFF || i == SCLEX_BASH || i == SCLEX_TCL ||
       i == SCLEX_AU3 || i == SCLEX_LATEX || i == SCLEX_AHK || i == SCLEX_RUBY || i == SCLEX_CMAKE || i == SCLEX_MARKDOWN ||
-      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD));
+      i == SCLEX_YAML || i == SCLEX_REGISTRY || i == SCLEX_NIMROD) && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING, *Encoding_GetParseNames(Encoding_Current(CPI_GET)));
+  EnableCmd(hmenu, CMD_CTRLENTER, !ro);
+  EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
+  EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING, *Encoding_GetParseNames(Encoding_Current(CPI_GET) && !ro));
 
-  //EnableCmd(hmenu,IDM_EDIT_INSERT_SHORTDATE,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_INSERT_LONGDATE,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_INSERT_FILENAME,!bReadOnly);
-  //EnableCmd(hmenu,IDM_EDIT_INSERT_PATHNAME,!bReadOnly);
+  EnableCmd(hmenu,IDM_EDIT_INSERT_SHORTDATE,!ro);
+  EnableCmd(hmenu,IDM_EDIT_INSERT_LONGDATE,!ro);
+  EnableCmd(hmenu,IDM_EDIT_INSERT_FILENAME,!ro);
+  EnableCmd(hmenu,IDM_EDIT_INSERT_PATHNAME,!ro);
 
-  i = (int)(SciCall_GetTextLength() != 0);
-  EnableCmd(hmenu,IDM_EDIT_FIND,i);
-  EnableCmd(hmenu,IDM_EDIT_SAVEFIND,i);
-  EnableCmd(hmenu,IDM_EDIT_FINDNEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_FINDPREV,i);
-  EnableCmd(hmenu,IDM_EDIT_REPLACE,i /*&& !bReadOnly*/);
-  EnableCmd(hmenu,IDM_EDIT_REPLACENEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_SELTONEXT,i);
-  EnableCmd(hmenu,IDM_EDIT_SELTOPREV,i);
-  EnableCmd(hmenu,IDM_EDIT_FINDMATCHINGBRACE,i);
-  EnableCmd(hmenu,IDM_EDIT_SELTOMATCHINGBRACE,i);
+  EnableCmd(hmenu, IDM_EDIT_INSERT_GUID, !ro);
 
-  EnableCmd(hmenu,BME_EDIT_BOOKMARKPREV,i);
-  EnableCmd(hmenu,BME_EDIT_BOOKMARKNEXT,i);
-  EnableCmd(hmenu,BME_EDIT_BOOKMARKTOGGLE,i);
-  EnableCmd(hmenu,BME_EDIT_BOOKMARKCLEAR,i);
+  e = (SciCall_GetTextLength() == 0);
 
-  EnableCmd(hmenu, IDM_EDIT_DELETELINELEFT, i);
-  EnableCmd(hmenu, IDM_EDIT_DELETELINERIGHT, i);
-  EnableCmd(hmenu, CMD_CTRLBACK, i);
-  EnableCmd(hmenu, CMD_CTRLDEL, i);
-  EnableCmd(hmenu, CMD_TIMESTAMPS, i);
+  EnableCmd(hmenu,IDM_EDIT_FIND, !e);
+  EnableCmd(hmenu,IDM_EDIT_SAVEFIND, !e);
+  EnableCmd(hmenu,IDM_EDIT_FINDNEXT, !e);
+  EnableCmd(hmenu,IDM_EDIT_FINDPREV, !e);
+  EnableCmd(hmenu,IDM_EDIT_REPLACE, !e && !ro);
+  EnableCmd(hmenu,IDM_EDIT_REPLACENEXT, !e && !ro);
+  EnableCmd(hmenu,IDM_EDIT_SELTONEXT, !e);
+  EnableCmd(hmenu,IDM_EDIT_SELTOPREV, !e);
+  EnableCmd(hmenu,IDM_EDIT_FINDMATCHINGBRACE, !e);
+  EnableCmd(hmenu,IDM_EDIT_SELTOMATCHINGBRACE, !e);
+
+  EnableCmd(hmenu,BME_EDIT_BOOKMARKPREV, !e);
+  EnableCmd(hmenu,BME_EDIT_BOOKMARKNEXT, !e);
+  EnableCmd(hmenu,BME_EDIT_BOOKMARKTOGGLE, !e);
+  EnableCmd(hmenu,BME_EDIT_BOOKMARKCLEAR, !e);
+
+  EnableCmd(hmenu, IDM_EDIT_DELETELINELEFT, !e && !ro);
+  EnableCmd(hmenu, IDM_EDIT_DELETELINERIGHT, !e && !ro);
+  EnableCmd(hmenu, CMD_CTRLBACK, !e && !ro);
+  EnableCmd(hmenu, CMD_CTRLDEL, !e && !ro);
+  EnableCmd(hmenu, CMD_TIMESTAMPS, !e && !ro);
 
   EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(g_hwndDlgCustomizeSchemes));
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(g_hwndDlgCustomizeSchemes));
 
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,i && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
   CheckCmd(hmenu,IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
   EnableCmd(hmenu, IDM_VIEW_FOLDING, g_bCodeFoldingAvailable);
 
@@ -2429,13 +2498,15 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,bShowLineNumbers);
   CheckCmd(hmenu,IDM_VIEW_MARGIN,g_bShowSelectionMargin);
 
-  EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,i);
-  CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords);
+  EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!e && !ro);
+  CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords && !ro);
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
 
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (iMarkOccurrences > 0));
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, bMarkOccurrencesMatchVisible);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (g_iMarkOccurrences > 0));
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, bMarkOccurrencesMatchCase);
+
+  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
 
   if (bMarkOccurrencesMatchWords)
     i = IDM_VIEW_MARKOCCUR_WORD;
@@ -2447,7 +2518,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
   CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
 
-  i = (int)(iMarkOccurrences > 0);
+  i = (int)(g_iMarkOccurrences > 0);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
@@ -2468,7 +2539,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
   CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, bAutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
   CheckCmd(hmenu, IDM_VIEW_HILITECURRENTLINE, bHiliteCurrentLine);
-  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, bHyperlinkHotspot);
+  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, g_bHyperlinkHotspot);
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, bScrollPastEOF);
  
 
@@ -2572,6 +2643,17 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   switch(LOWORD(wParam))
   {
+
+  case IDT_TIMER_MAIN_MRKALL:
+    EditMarkAllOccurrences();
+    break;
+
+
+  case IDT_TIMER_UPDATE_HOTSPOT:
+    EditUpdateVisibleUrlHotspot(g_bHyperlinkHotspot);
+    break;
+
+
     case IDM_FILE_NEW:
       FileLoad(false,true,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
       break;
@@ -4231,46 +4313,59 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? false : true;  // toggle  
       EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
-      iMarkOccurrences = (iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      g_iMarkOccurrences = (g_iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
-      bMarkOccurrencesMatchVisible = (bMarkOccurrencesMatchVisible) ? false : true;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      g_bMarkOccurrencesMatchVisible = (g_bMarkOccurrencesMatchVisible) ? false : true;
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(0);
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+      break;
+
+    case IDM_VIEW_TOGGLE_VIEW:
+      if (EditToggleView(g_hwndEdit, false)) {
+        EditToggleView(g_hwndEdit, true);
+        EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
+        MarkAllOccurrences(0);
+      }
+      else {
+        EditToggleView(g_hwndEdit, true);
+      }
       break;
 
     case IDM_VIEW_MARKOCCUR_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? false : true;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_WNONE:
       bMarkOccurrencesMatchWords = false;
       bMarkOccurrencesCurrentWord = false;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_WORD:
       bMarkOccurrencesMatchWords = true;
       bMarkOccurrencesCurrentWord = false;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
       bMarkOccurrencesMatchWords = false;
       bMarkOccurrencesCurrentWord = true;
-      EditClearAllMarks(g_hwndEdit, 0, -1);
+      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
       break;
 
@@ -4312,16 +4407,15 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       bAutoCloseTags = (bAutoCloseTags) ? false : true;
       break;
 
-
     case IDM_VIEW_HILITECURRENTLINE:
       bHiliteCurrentLine = (bHiliteCurrentLine) ? false : true;
       Style_SetCurrentLineBackground(g_hwndEdit, bHiliteCurrentLine);
       break;
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
-      bHyperlinkHotspot = (bHyperlinkHotspot) ? false : true;
-      Style_SetUrlHotSpot(g_hwndEdit, bHyperlinkHotspot);
-      if (bHyperlinkHotspot) {
+      g_bHyperlinkHotspot = (g_bHyperlinkHotspot) ? false : true;
+      Style_SetUrlHotSpot(g_hwndEdit, g_bHyperlinkHotspot);
+      if (g_bHyperlinkHotspot) {
         UpdateVisibleUrlHotspot(0);
       }
       else {
@@ -5266,6 +5360,15 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         MessageBeep(0);
       break;
 
+      
+    case IDT_VIEW_TOGGLE_VIEW:
+      if (IsCmdEnabled(hwnd, IDM_VIEW_TOGGLE_VIEW))
+        SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_TOGGLE_VIEW, 1), 0);
+      else
+        MessageBeep(0);
+      break;
+
+
     case IDT_FILE_LAUNCH:
       if (IsCmdEnabled(hwnd,IDM_FILE_LAUNCH))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_LAUNCH,1),0);
@@ -5411,6 +5514,12 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         _SetDocumentModified(true);
         return true;
       }
+      else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
+        if (EditToggleView(g_hwndEdit, false)) {
+          EditToggleView(g_hwndEdit, true);
+        }
+        return true;
+      }
     }
     return false;
   }
@@ -5439,6 +5548,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         //  {
         //    int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
         //    EditUpdateUrlHotspots(g_hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, bHyperlinkHotspot);
+        //    EditUpdateHiddenLineRange(hwnd, &g_efrData, 0, SciCall_GetLineCount());
         //  }
         //  break;
 
@@ -5458,18 +5568,23 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               EditMatchBrace(g_hwndEdit);
             }
 
-            if (iMarkOccurrences > 0) {
-              // clear marks only, if caret/selection changed
+            if (g_iMarkOccurrences > 0) {
+              // clear marks only, if selection changed
               if (scn->updated & SC_UPDATE_SELECTION) {
-                EditClearAllMarks(g_hwndEdit, 0, -1);
+                EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
+                if (!SciCall_IsSelectionEmpty()) {
+                  MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+                }
+              }
+              else if (scn->updated & SC_UPDATE_CONTENT) {
                 MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
               }
-              else {
-                MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
-              }
+              //else {
+              //  //MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+              //}
             }
 
-            if (bHyperlinkHotspot) {
+            if (g_bHyperlinkHotspot) {
               UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
             }
             UpdateToolbar();
@@ -5477,10 +5592,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
-            if ((iMarkOccurrences > 0) && bMarkOccurrencesMatchVisible) {
+            if ((g_iMarkOccurrences > 0) && g_bMarkOccurrencesMatchVisible) {
               MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
-            if (bHyperlinkHotspot) {
+            if (g_bHyperlinkHotspot) {
               UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
             }
           }
@@ -5501,11 +5616,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
               const DocPos iStartPos = (DocPos)scn->position;
               const DocPos iEndPos = (DocPos)(scn->position + scn->length);
-              EditUpdateUrlHotspots(g_hwndEdit, iStartPos, iEndPos, bHyperlinkHotspot);
+              EditUpdateUrlHotspots(g_hwndEdit, iStartPos, iEndPos, g_bHyperlinkHotspot);
             }
 
-            if (iMarkOccurrences > 0) {
-              EditClearAllMarks(g_hwndEdit, 0, -1);
+            if (g_iMarkOccurrences > 0) {
+              EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
               MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
             }
 
@@ -5892,6 +6007,7 @@ void LoadSettings()
   g_efrData.bTransformBS = IniSectionGetBool(pIniSection,L"FindTransformBS", false);
   g_efrData.bWildcardSearch = IniSectionGetBool(pIniSection,L"WildcardSearch",false);
   g_efrData.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", false);
+  g_efrData.bHideNonMatchedLines = IniSectionGetBool(pIniSection, L"HideNonMatchedLines", false);
   g_efrData.bDotMatchAll = IniSectionGetBool(pIniSection, L"RegexDotMatchesAll", false);
   g_efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
@@ -5933,7 +6049,7 @@ void LoadSettings()
 
   bHiliteCurrentLine = IniSectionGetBool(pIniSection,L"HighlightCurrentLine",false);
 
-  bHyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", false);
+  g_bHyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", false);
 
   bScrollPastEOF = IniSectionGetBool(pIniSection, L"ScrollPastEOF", false);
 
@@ -5976,9 +6092,9 @@ void LoadSettings()
 
   g_bShowCodeFolding = IniSectionGetBool(pIniSection,L"ShowCodeFolding", true);
 
-  iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",1);
-  iMarkOccurrences = max(min(iMarkOccurrences, 3), 0);
-  bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", false);
+  g_iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",1);
+  g_iMarkOccurrences = max(min(g_iMarkOccurrences, 3), 0);
+  g_bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", false);
   bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",false);
   bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",true);
   bMarkOccurrencesCurrentWord = IniSectionGetBool(pIniSection, L"MarkOccurrencesCurrentWord", !bMarkOccurrencesMatchWords);
@@ -6124,14 +6240,14 @@ void LoadSettings()
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", FontQuality[3]);
   iSciFontQuality = max(min(iSciFontQuality, 3), 0);
 
-  iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
-  iMarkOccurrencesMaxCount = (iMarkOccurrencesMaxCount <= 0) ? INT_MAX : iMarkOccurrencesMaxCount;
+  g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
+  g_iMarkOccurrencesMaxCount = (g_iMarkOccurrencesMaxCount <= 0) ? INT_MAX : g_iMarkOccurrencesMaxCount;
 
   iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
-  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), 0);
+  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), 10) / (int)USER_TIMER_MINIMUM;
 
   iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
-  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), 0);
+  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), 10) / (int)USER_TIMER_MINIMUM;
 
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
@@ -6263,6 +6379,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"FindTransformBS", g_efrData.bTransformBS);
   IniSectionSetBool(pIniSection, L"WildcardSearch", g_efrData.bWildcardSearch);
   IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", g_efrData.bMarkOccurences);
+  IniSectionSetBool(pIniSection, L"HideNonMatchedLines", g_efrData.bHideNonMatchedLines);
   IniSectionSetBool(pIniSection, L"RegexDotMatchesAll", g_efrData.bDotMatchAll);
   IniSectionSetInt(pIniSection, L"efrData_fuFlags", g_efrData.fuFlags);
   PathRelativeToApp(tchOpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, flagPortableMyDocs);
@@ -6278,7 +6395,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"MatchBraces", bMatchBraces);
   IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
   IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
-  IniSectionSetBool(pIniSection, L"HyperlinkHotspot", bHyperlinkHotspot);
+  IniSectionSetBool(pIniSection, L"HyperlinkHotspot", g_bHyperlinkHotspot);
   IniSectionSetBool(pIniSection, L"ScrollPastEOF", bScrollPastEOF);
   IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
   IniSectionSetBool(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
@@ -6295,8 +6412,8 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"ShowSelectionMargin", g_bShowSelectionMargin);
   IniSectionSetBool(pIniSection, L"ShowLineNumbers", bShowLineNumbers);
   IniSectionSetBool(pIniSection, L"ShowCodeFolding", g_bShowCodeFolding);
-  IniSectionSetInt(pIniSection, L"MarkOccurrences", iMarkOccurrences);
-  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", bMarkOccurrencesMatchVisible);
+  IniSectionSetInt(pIniSection, L"MarkOccurrences", g_iMarkOccurrences);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", g_bMarkOccurrencesMatchVisible);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", bMarkOccurrencesMatchCase);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", bMarkOccurrencesMatchWords);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", bMarkOccurrencesCurrentWord);
@@ -7064,14 +7181,9 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 // 
 void MarkAllOccurrences(int delay)
 {
-  TEST_AND_SET(BIT_TIMER_MARK_OCC); // raise flag to swollow next calls
-
-  if (delay < USER_TIMER_MINIMUM) {
-    PostMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), 0); // direct timer event
-  }
-  else {
-    SetTimer(g_hwndMain, IDT_TIMER_MAIN_MRKALL, delay, NULL);
-  }
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
+  mqc.hwnd = g_hwndMain;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : delay));
 }
 
 
@@ -7081,14 +7193,9 @@ void MarkAllOccurrences(int delay)
 // 
 void UpdateVisibleUrlHotspot(int delay)
 {
-  TEST_AND_SET(BIT_TIMER_UPDATE_HYPER); // raise flag to swollow next calls
-
-  if (delay < USER_TIMER_MINIMUM) {
-    PostMessage(g_hwndMain, WM_TIMER, MAKELONG(IDT_TIMER_UPDATE_HOTSPOT, 1), 0); // direct timer event
-  }
-  else {
-    SetTimer(g_hwndMain, IDT_TIMER_UPDATE_HOTSPOT, delay, NULL);
-  }
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_HOTSPOT, 1), (LPARAM)0 , 0 };
+  mqc.hwnd = g_hwndMain;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : delay));
 }
 
 
@@ -7129,6 +7236,8 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_CLEAR, !b1 /*&& !bReadOnly*/);
 
   EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible));
+ 
   EnableTool(IDT_FILE_LAUNCH, b2);
 
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
@@ -7212,15 +7321,15 @@ void UpdateStatusbar()
   }
 
   // Print number of occurrence marks found
-  if ((iMarkOccurrencesCount > 0) && !bMarkOccurrencesMatchVisible) 
+  if ((g_iMarkOccurrencesCount >= 0) && !g_bMarkOccurrencesMatchVisible) 
   {
-    if ((iMarkOccurrencesMaxCount < 0) || (iMarkOccurrencesCount < iMarkOccurrencesMaxCount)) 
+    if ((g_iMarkOccurrencesMaxCount < 0) || (g_iMarkOccurrencesCount < g_iMarkOccurrencesMaxCount)) 
     {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", g_iMarkOccurrencesCount);
       FormatNumberStr(tchOcc);
     }
     else {
-      StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", iMarkOccurrencesCount);
+      StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", g_iMarkOccurrencesCount);
       FormatNumberStr(tchTmp);
       StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
     }
@@ -7616,6 +7725,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
   bool fSuccess;
   int fileEncoding = CPI_ANSI_DEFAULT;
 
+  if (bNew || bReload) {
+    if (EditToggleView(g_hwndEdit, false)) {
+      EditToggleView(g_hwndEdit, true);
+    }
+  }
+
   if (!bDontSave)
   {
     if (!FileSave(false,true,false,false))
@@ -7647,8 +7762,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     UpdateLineNumberWidth();
 
     // Terminate file watching
-    if (bResetFileWatching)
+    if (bResetFileWatching) {
       iFileWatchingMode = 0;
+    }
     InstallFileWatching(NULL);
     bEnableSaveSettings = true;
     UpdateSettingsCmds();
@@ -8336,7 +8452,7 @@ bool ActivatePrevInst()
       else // IsWindowEnabled()
       {
         // Ask...
-        if (IDYES == MsgBox(MBYESNO,IDS_ERR_PREVWINDISABLED))
+        if (IDYES == MsgBox(MBYESNOWARN,IDS_ERR_PREVWINDISABLED))
           return(false);
         else
           return(true);
@@ -8441,10 +8557,7 @@ bool ActivatePrevInst()
     else // IsWindowEnabled()
     {
       // Ask...
-      if (IDYES == MsgBox(MBYESNO,IDS_ERR_PREVWINDISABLED))
-        return(false);
-      else
-        return(true);
+      return ((IDYES == MsgBox(MBYESNOWARN, IDS_ERR_PREVWINDISABLED)) ? false : true);
     }
   }
   else
