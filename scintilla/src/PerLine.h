@@ -51,7 +51,7 @@ public:
 	// Deleted so Worker objects can not be copied.
 	LineMarkers(const LineMarkers &) = delete;
 	void operator=(const LineMarkers &) = delete;
-	virtual ~LineMarkers();
+	~LineMarkers() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
 	void RemoveLine(Sci::Line line) override;
@@ -73,7 +73,7 @@ public:
 	// Deleted so Worker objects can not be copied.
 	LineLevels(const LineLevels &) = delete;
 	void operator=(const LineLevels &) = delete;
-	virtual ~LineLevels();
+	~LineLevels() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
 	void RemoveLine(Sci::Line line) override;
@@ -92,7 +92,7 @@ public:
 	// Deleted so Worker objects can not be copied.
 	LineState(const LineState &) = delete;
 	void operator=(const LineState &) = delete;
-	virtual ~LineState();
+	~LineState() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
 	void RemoveLine(Sci::Line line) override;
@@ -110,7 +110,7 @@ public:
 	// Deleted so Worker objects can not be copied.
 	LineAnnotation(const LineAnnotation &) = delete;
 	void operator=(const LineAnnotation &) = delete;
-	virtual ~LineAnnotation();
+	~LineAnnotation() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
 	void RemoveLine(Sci::Line line) override;
@@ -137,7 +137,7 @@ public:
 	// Deleted so Worker objects can not be copied.
 	LineTabstops(const LineTabstops &) = delete;
 	void operator=(const LineTabstops &) = delete;
-	virtual ~LineTabstops();
+	~LineTabstops() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
 	void RemoveLine(Sci::Line line) override;

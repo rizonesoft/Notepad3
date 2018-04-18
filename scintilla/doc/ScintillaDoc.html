@@ -119,17 +119,17 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 1 February 2018 NH</p>
+    <p>Last edited 17 April 2018 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
      <a class="jump" href="ScintillaUsage.html">Some notes on using Scintilla</a>.<br />
      <a class="jump" href="Steps.html">How to use the Scintilla Edit Control on Windows</a>.<br />
-     <a class="jump" href="http://www.scintilla.org/dmapp.zip">A simple sample using Scintilla from
+     <a class="jump" href="https://www.scintilla.org/dmapp.zip">A simple sample using Scintilla from
     C++ on Windows</a>.<br />
-     <a class="jump" href="http://www.scintilla.org/SciTry.vb">A simple sample using Scintilla from
+     <a class="jump" href="https://www.scintilla.org/SciTry.vb">A simple sample using Scintilla from
     Visual Basic</a>.<br />
-     <a class="jump" href="http://www.scintilla.org/bait.zip">Bait is a tiny sample using Scintilla
+     <a class="jump" href="https://www.scintilla.org/bait.zip">Bait is a tiny sample using Scintilla
      on GTK+</a>.<br />
      <a class="jump" href="Lexer.txt">A detailed description of how to write a lexer, including a
     discussion of folding</a>.<br />
@@ -5712,11 +5712,12 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <code><a class="message" href="#SCI_GETDOCPOINTER">SCI_GETDOCPOINTER &rarr; document *</a><br />
      <a class="message" href="#SCI_SETDOCPOINTER">SCI_SETDOCPOINTER(&lt;unused&gt;, document
     *doc)</a><br />
-     <a class="message" href="#SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT(int bytes, int documentOption) &rarr; document *</a><br />
+     <a class="message" href="#SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT(int bytes, int documentOptions) &rarr; document *</a><br />
      <a class="message" href="#SCI_ADDREFDOCUMENT">SCI_ADDREFDOCUMENT(&lt;unused&gt;, document
     *doc)</a><br />
      <a class="message" href="#SCI_RELEASEDOCUMENT">SCI_RELEASEDOCUMENT(&lt;unused&gt;, document
     *doc)</a><br />
+     <a class="message" href="#SCI_GETDOCUMENTOPTIONS">SCI_GETDOCUMENTOPTIONS &rarr; int</a><br />
     </code>
 
     <p><b id="SCI_GETDOCPOINTER">SCI_GETDOCPOINTER &rarr; document *</b><br />
@@ -5733,7 +5734,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     window.<br />
      6. If <code class="parameter">doc</code> was not 0, its reference count is increased by 1.</p>
 
-    <p><b id="SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT(int bytes, int documentOption) &rarr; document *</b><br />
+    <p><b id="SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT(int bytes, int documentOptions) &rarr; document *</b><br />
      This message creates a new, empty document and returns a pointer to it. This document is not
      selected into the editor and starts with a reference count of 1. This means that you have
      ownership of it and must either reduce its reference count by 1 after using
@@ -5744,12 +5745,29 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
      to allocate once rather than rely on the buffer growing as data is added.
      If <code>SCI_CREATEDOCUMENT</code> fails then 0 is returned.</p>
 
-    <p id="documentOption">The <code class="parameter">documentOption</code> argument
+    <p id="documentOptions">The <code class="parameter">documentOptions</code> argument
     chooses between different document capabilities which affect memory allocation and performance with
     <code>SC_DOCUMENTOPTION_DEFAULT</code> (0) choosing standard options.
-    <code>SC_DOCUMENTOPTION_STYLES_NONE</code> (1) stops allocation of memory to style characters
+    <code>SC_DOCUMENTOPTION_STYLES_NONE</code> (0x1) stops allocation of memory to style characters
     which saves significant memory, often 40% with the whole document treated as being style 0.
-    Lexers may still produce visual styling by using indicators.</p>
+    Lexers may still produce visual styling by using indicators.
+    <span class="provisional"><code>SC_DOCUMENTOPTION_TEXT_LARGE</code> (0x100) accomodates documents larger than 2 GigaBytes
+    in 64-bit executables.</span>
+    </p>
+
+    <p>With <code>SC_DOCUMENTOPTION_STYLES_NONE</code>, lexers are still active and may display
+    indicators. Some may produce folding information althoough most require lexical styles to correctly determine folding.
+    Its often more efficient to set the null lexer <code>SCLEX_NULL</code> so no lexer is run.
+    </p>
+
+    <p class="provisional">The <code>SC_DOCUMENTOPTION_TEXT_LARGE</code> option is experimental and has not been
+    thoroughly tested. Lexers may fail or hang when lexing past 2GB or 4GB.
+    Applications using this option should be tested to ensure the option works in their circumstances and each lexer
+    included should also be tested with documents larger than 4GB.
+    For many applications lexing documents larger than 4GB will be too sluggish so <code>SC_DOCUMENTOPTION_STYLES_NONE</code>
+    and the null lexer <code>SCLEX_NULL</code> can be used. Another approach is to turn on idle styling with
+    <a class="seealso" href="#SCI_SETIDLESTYLING"><code>SCI_SETIDLESTYLING</code></a>.
+    </p>
 
     <table class="standard" summary="Document options">
       <tbody>
@@ -5770,8 +5788,14 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
         <tr>
           <td align="left">SC_DOCUMENTOPTION_STYLES_NONE</td>
-          <td align="left">1</td>
+          <td align="left">0x1</td>
           <td align="left">Stop allocation of memory for styles and treat all text as style 0.</td>
+        </tr>
+
+        <tr>
+          <td align="left" class="provisional">SC_DOCUMENTOPTION_TEXT_LARGE</td>
+          <td align="left">0x100</td>
+          <td align="left">Allow document to be larger than 2 GB.</td>
         </tr>
 
       </tbody>
@@ -5795,6 +5819,9 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     world spinning in its orbit you must balance each call to <code>SCI_CREATEDOCUMENT</code> or
     <code>SCI_ADDREFDOCUMENT</code> with a call to <code>SCI_RELEASEDOCUMENT</code>.</p>
 
+    <p><b id="SCI_GETDOCUMENTOPTIONS">SCI_GETDOCUMENTOPTIONS &rarr; int</b><br />
+     Returns the options that were used to create the document.</p>
+
     <h2 id="BackgroundLoadSave">Background loading and saving</h2>
 
     <p>To ensure a responsive user interface, applications may decide to load and save documents using a separate thread
@@ -5802,7 +5829,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <h3 id="BackgroundLoad">Loading in the background</h3>
 
-    <code><a class="message" href="#SCI_CREATELOADER">SCI_CREATELOADER(int bytes, int documentOption) &rarr; int</a><br />
+    <code><a class="message" href="#SCI_CREATELOADER">SCI_CREATELOADER(int bytes, int documentOptions) &rarr; int</a><br />
     </code>
 
     <p>An application can load all of a file into a buffer it allocates on a background thread and then add the data in that buffer
@@ -5811,15 +5838,15 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
 
     <p>To avoid these issues, a loader object may be created and used to load the file. The loader object supports the ILoader interface.</p>
 
-    <p><b id="SCI_CREATELOADER">SCI_CREATELOADER(int bytes, int documentOption) &rarr; int</b><br />
+    <p><b id="SCI_CREATELOADER">SCI_CREATELOADER(int bytes, int documentOptions) &rarr; int</b><br />
      Create an object that supports the <code>ILoader</code> interface which can be used to load data and then
      be turned into a Scintilla document object for attachment to a view object.
      The <code class="parameter">bytes</code> argument determines the initial memory allocation for the document as it is more efficient
      to allocate once rather than rely on the buffer growing as data is added.
      If <code>SCI_CREATELOADER</code> fails then 0 is returned.</p>
 
-    <p>The <code class="parameter">documentOption</code> argument
-    is described in the <a class="seealso" href="#documentOption"><code>SCI_CREATEDOCUMENT</code></a> section.</p>
+    <p>The <code class="parameter">documentOptions</code> argument
+    is described in the <a class="seealso" href="#documentOptions"><code>SCI_CREATEDOCUMENT</code></a> section.</p>
 
 <h4>ILoader</h4>
 
@@ -7228,8 +7255,10 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     held down in a similar manner to <a class="message" href="#SCN_KEY">SCN_KEY</a>.</p>
 
     <p><b id="SCN_UPDATEUI">SCN_UPDATEUI</b><br />
-     Either the text or styling of the document has changed or the selection range or scroll position has changed.
+     Either the text or styling of the document has changed or the selection range or scroll position may have changed.
      Now would be a good time to update any container UI elements that depend on document or view state.
+     As it is sometimes difficult to determine whether a change has occurred, these events may also fire when there
+     has been no actual change.
      The <code>updated</code> field is set to the bit set of things changed since the previous notification.</p>
     <table class="standard" summary="Modify notification type flags">
       <tbody>
@@ -7249,7 +7278,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
 
           <td align="center">0x01</td>
 
-          <td>Contents, styling or markers have been changed.</td>
+          <td>Contents, styling or markers may have been changed.</td>
 
         </tr>
 
@@ -7258,7 +7287,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
 
           <td align="center">0x02</td>
 
-          <td>Selection has been changed.</td>
+          <td>Selection may have been changed.</td>
 
         </tr>
 
@@ -7267,7 +7296,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
 
           <td align="center">0x04</td>
 
-          <td>Scrolled vertically.</td>
+          <td>May have scrolled vertically.</td>
 
         </tr>
 
@@ -7276,7 +7305,7 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
 
           <td align="center">0x08</td>
 
-          <td>Scrolled horizontally.</td>
+          <td>May have scrolled horizontally.</td>
 
         </tr>
       </tbody>
@@ -8286,8 +8315,8 @@ EM_SETTARGETDEVICE
 
     <p>To build Scintilla or SciTE, see the README file present in both the Scintilla and SciTE
     directories.
-    The compiler must support C++14.
-    For Windows, GCC 7.1 or Microsoft Visual C++ 2017 can be used
+    The compiler must support C++17.
+    For Windows, GCC 7.1 or Microsoft Visual C++ 2017.5 can be used
     for building. For GTK+, GCC 7.1 or newer should be used. GTK+ 2.24 and 3.x are
     supported with glib 2.22+. The version of GTK+ installed should be detected automatically.
     When both GTK+ 2 and GTK+ 3 are present, building for GTK+ 3.x requires defining GTK3
@@ -8296,12 +8325,12 @@ EM_SETTARGETDEVICE
     <h3>Static linking</h3>
 
     <p>On Windows, Scintilla is normally used as a dynamic library as a .DLL file. If you want to
-    link Scintilla directly into your application .EXE or .DLL file, then the
-    <code>STATIC_BUILD</code> preprocessor symbol should be defined and
-    <code>Scintilla_RegisterClasses</code> called. <code>STATIC_BUILD</code> prevents compiling the
-    <code>DllMain</code> function which will conflict with any <code>DllMain</code> defined in your
-    code. <code>Scintilla_RegisterClasses</code> takes the <code>HINSTANCE</code> of your
+    link Scintilla directly into your application .EXE or .DLL file, then you can link to the static library
+    bin/libscintilla.lib (or .a if using GCC) and call <code>Scintilla_RegisterClasses</code>.
+    <code>Scintilla_RegisterClasses</code> takes the <code>HINSTANCE</code> of your
     application and ensures that the "Scintilla" window class is registered.</p>
+    <p>When producing a stand-alone Scintilla DLL, the ScintillaDLL.cxx file should be compiled and
+    linked in to provide <code>DllMain</code> and <code>Scintilla_RegisterClasses</code>.</p>
 
     <h3>Ensuring lexers are linked into Scintilla</h3>
 

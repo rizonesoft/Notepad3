@@ -36,7 +36,7 @@ public:
 	// FontAlias objects can not be assigned except for initialization
 	FontAlias &operator=(const FontAlias &) = delete;
 	FontAlias(const FontAlias &);
-	virtual ~FontAlias();
+	~FontAlias() override;
 	void MakeAlias(Font &fontOrigin);
 	void ClearFont();
 };

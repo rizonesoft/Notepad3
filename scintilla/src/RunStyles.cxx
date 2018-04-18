@@ -76,8 +76,8 @@ void RunStyles<DISTANCE, STYLE>::RemoveRunIfSameAsPrevious(DISTANCE run) {
 
 template <typename DISTANCE, typename STYLE>
 RunStyles<DISTANCE, STYLE>::RunStyles() {
-	starts.reset(new Partitioning<DISTANCE>(8));
-	styles.reset(new SplitVector<STYLE>());
+	starts = std::make_unique<Partitioning<DISTANCE>>(8);
+	styles = std::make_unique<SplitVector<STYLE>>();
 	styles->InsertValue(0, 2, 0);
 }
 
@@ -126,13 +126,14 @@ DISTANCE RunStyles<DISTANCE, STYLE>::EndRun(DISTANCE position) const {
 }
 
 template <typename DISTANCE, typename STYLE>
-bool RunStyles<DISTANCE, STYLE>::FillRange(DISTANCE &position, STYLE value, DISTANCE &fillLength) {
+FillResult<DISTANCE> RunStyles<DISTANCE, STYLE>::FillRange(DISTANCE position, STYLE value, DISTANCE fillLength) {
+	const FillResult<DISTANCE> resultNoChange{false, position, fillLength};
 	if (fillLength <= 0) {
-		return false;
+		return resultNoChange;
 	}
 	DISTANCE end = position + fillLength;
 	if (end > Length()) {
-		return false;
+		return resultNoChange;
 	}
 	DISTANCE runEnd = RunFromPosition(end);
 	if (styles->ValueAt(runEnd) == value) {
@@ -140,7 +141,7 @@ bool RunStyles<DISTANCE, STYLE>::FillRange(DISTANCE &position, STYLE value, DIST
 		end = starts->PositionFromPartition(runEnd);
 		if (position >= end) {
 			// Whole range is already same as value so no action
-			return false;
+			return resultNoChange;
 		}
 		fillLength = end - position;
 	} else {
@@ -159,6 +160,7 @@ bool RunStyles<DISTANCE, STYLE>::FillRange(DISTANCE &position, STYLE value, DIST
 		}
 	}
 	if (runStart < runEnd) {
+		const FillResult<DISTANCE> result{ true, position, fillLength };
 		styles->SetValueAt(runStart, value);
 		// Remove each old run over the range
 		for (DISTANCE run=runStart+1; run<runEnd; run++) {
@@ -169,16 +171,15 @@ bool RunStyles<DISTANCE, STYLE>::FillRange(DISTANCE &position, STYLE value, DIST
 		RemoveRunIfSameAsPrevious(runStart);
 		runEnd = RunFromPosition(end);
 		RemoveRunIfEmpty(runEnd);
-		return true;
+		return result;
 	} else {
-		return false;
+		return resultNoChange;
 	}
 }
 
 template <typename DISTANCE, typename STYLE>
 void RunStyles<DISTANCE, STYLE>::SetValueAt(DISTANCE position, STYLE value) {
-	DISTANCE len = 1;
-	FillRange(position, value, len);
+	FillRange(position, value, 1);
 }
 
 template <typename DISTANCE, typename STYLE>
@@ -212,8 +213,8 @@ void RunStyles<DISTANCE, STYLE>::InsertSpace(DISTANCE position, DISTANCE insertL
 
 template <typename DISTANCE, typename STYLE>
 void RunStyles<DISTANCE, STYLE>::DeleteAll() {
-	starts.reset(new Partitioning<DISTANCE>(8));
-	styles.reset(new SplitVector<STYLE>());
+	starts = std::make_unique<Partitioning<DISTANCE>>(8);
+	styles = std::make_unique<SplitVector<STYLE>>();
 	styles->InsertValue(0, 2, 0);
 }
 
@@ -304,3 +305,6 @@ void RunStyles<DISTANCE, STYLE>::Check() const {
 }
 
 template class Scintilla::RunStyles<int, int>;
+template class Scintilla::RunStyles<int, char>;
+template class Scintilla::RunStyles<ptrdiff_t, int>;
+template class Scintilla::RunStyles<ptrdiff_t, char>;

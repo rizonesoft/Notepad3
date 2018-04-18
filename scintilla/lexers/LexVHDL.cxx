@@ -167,7 +167,7 @@ static void ColouriseVHDLDoc(
         sc.SetState(SCE_VHDL_OPERATOR);
       }
     }
-    
+
     if (advance)
       sc.Forward();
   }

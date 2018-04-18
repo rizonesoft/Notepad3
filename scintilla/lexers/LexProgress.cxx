@@ -11,7 +11,7 @@
 SpeedScript support in html lexer
 Differentiate between labels and variables
   Option 1: By symbols table
-  Option 2: As a single unidentified symbol in a sytactical line 
+  Option 2: As a single unidentified symbol in a sytactical line
 
 **/
 
@@ -74,7 +74,7 @@ namespace {
 
    bool IsStreamCommentStyle(int style) {
       return style == SCE_ABL_COMMENT;
-             // style == SCE_ABL_LINECOMMENT;  Only block comments are used for folding 
+             // style == SCE_ABL_LINECOMMENT;  Only block comments are used for folding
    }
 
    // Options used for LexerABL
@@ -160,7 +160,7 @@ public:
       return osABL.DescribeProperty(name);
    }
    Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) override ;
-   
+
    const char * SCI_METHOD DescribeWordListSets() override {
       return osABL.DescribeWordListSets();
    }
@@ -236,7 +236,7 @@ void SCI_METHOD LexerABL::Lex(Sci_PositionU startPos, Sci_Position length, int i
             continuationLine = styler.SafeGetCharAt(endLinePrevious-1) == '~';
          }
       }
-   } 
+   }
 
     // Look back to set variables that are actually invisible secondary states. The reason to avoid formal states is to cut down on state's bits
    if (startPos > 0) {
@@ -254,9 +254,9 @@ void SCI_METHOD LexerABL::Lex(Sci_PositionU startPos, Sci_Position length, int i
          ch = styler.SafeGetCharAt(back);
          styler.Flush();  // looking at styles so need to flush
          st = styler.StyleAt(back);
-         
+
          chPrev = styler.SafeGetCharAt(back-1);
-         // isSentenceStart is a non-visible state, used to identify where statements and preprocessor declerations can start 
+         // isSentenceStart is a non-visible state, used to identify where statements and preprocessor declerations can start
          if (checkIsSentenceStart && st != SCE_ABL_COMMENT && st != SCE_ABL_LINECOMMENT && st != SCE_ABL_CHARACTER  && st != SCE_ABL_STRING ) {
             chPrev_1 = styler.SafeGetCharAt(back-2);
             chPrev_2 = styler.SafeGetCharAt(back-3);
@@ -287,7 +287,7 @@ void SCI_METHOD LexerABL::Lex(Sci_PositionU startPos, Sci_Position length, int i
                // eat the '*' so we don't miscount a /* if we see */*/
                --back;
             }
-         }         
+         }
          --back;
       }
    }

@@ -16,8 +16,8 @@
 
 namespace Sci {
 
-typedef int Position;
-typedef int Line;
+typedef ptrdiff_t Position;
+typedef ptrdiff_t Line;
 
 const Position invalidPosition = -1;
 
