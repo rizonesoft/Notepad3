@@ -104,7 +104,7 @@ static int RecogniseErrorListLine(const char *lineBuffer, Sci_PositionU lengthLi
 		// perl error message:
 		// <message> at <file> line <line>
 		return SCE_ERR_PERL;
-	} else if ((lengthLine >= 6) && 
+	} else if ((lengthLine >= 6) &&
 	           (memcmp(lineBuffer, "   at ", 6) == 0) &&
 	           strstr(lineBuffer, ":line ")) {
 		// A .NET traceback

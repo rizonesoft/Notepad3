@@ -4,7 +4,7 @@
 // and more readably here: https://en.wikipedia.org/wiki/EDIFACT
 // This code is subject to the same license terms as the rest of the scintilla project:
 // The License.txt file describes the conditions under which this software may be distributed.
-// 
+//
 
 // Header order must match order in scripts/HeaderOrder.txt
 #include <cstdlib>
@@ -145,7 +145,7 @@ void LexerEDIFACT::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int, IDoc
 		if (SegmentStyle == SCE_EDI_UNA)
 		{
 			posCurrent += 9;
-			styler.ColourTo(posCurrent - 1, SCE_EDI_UNA); // UNA   
+			styler.ColourTo(posCurrent - 1, SCE_EDI_UNA); // UNA
 			continue;
 		}
 		posSegmentStart = posCurrent;

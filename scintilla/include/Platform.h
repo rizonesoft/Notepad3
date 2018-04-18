@@ -406,10 +406,10 @@ public:
 class ListBox : public Window {
 public:
 	ListBox();
-	virtual ~ListBox();
+	~ListBox() override;
 	static ListBox *Allocate();
 
-	virtual void SetFont(Font &font)=0;
+	void SetFont(Font &font) override =0;
 	virtual void Create(Window &parent, int ctrlID, Point location, int lineHeight_, bool unicodeMode_, int technology_)=0;
 	virtual void SetAverageCharWidth(int width)=0;
 	virtual void SetVisibleRows(int rows)=0;

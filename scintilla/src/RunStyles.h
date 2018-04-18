@@ -12,6 +12,16 @@
 
 namespace Scintilla {
 
+// Return for RunStyles::FillRange reports if anything was changed and the
+// range that was changed. This may be trimmed from the requested range
+// when some of the requested range already had the requested value.
+template <typename DISTANCE>
+struct FillResult {
+	bool changed;
+	DISTANCE position;
+	DISTANCE fillLength;
+};
+
 template <typename DISTANCE, typename STYLE>
 class RunStyles {
 private:
@@ -33,8 +43,8 @@ public:
 	DISTANCE FindNextChange(DISTANCE position, DISTANCE end) const;
 	DISTANCE StartRun(DISTANCE position) const;
 	DISTANCE EndRun(DISTANCE position) const;
-	// Returns true if some values may have changed
-	bool FillRange(DISTANCE &position, STYLE value, DISTANCE &fillLength);
+	// Returns changed=true if some values may have changed
+	FillResult<DISTANCE> FillRange(DISTANCE position, STYLE value, DISTANCE fillLength);
 	void SetValueAt(DISTANCE position, STYLE value);
 	void InsertSpace(DISTANCE position, DISTANCE insertLength);
 	void DeleteAll();

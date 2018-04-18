@@ -9,68 +9,50 @@
 
 namespace Scintilla {
 
-class Decoration {
-	int indicator;
+class IDecoration {
 public:
-	RunStyles<int, int> rs;
-
-	explicit Decoration(int indicator_);
-	~Decoration();
-
-	bool Empty() const;
-	int Indicator() const {
-		return indicator;
-	}
+	virtual ~IDecoration() {}
+	virtual bool Empty() const = 0;
+	virtual int Indicator() const = 0;
+	virtual Sci::Position Length() const = 0;
+	virtual int ValueAt(Sci::Position position) const = 0;
+	virtual Sci::Position StartRun(Sci::Position position) const = 0;
+	virtual Sci::Position EndRun(Sci::Position position) const = 0;
+	virtual void SetValueAt(Sci::Position position, int value) = 0;
+	virtual void InsertSpace(Sci::Position position, Sci::Position insertLength) = 0;
+	virtual Sci::Position Runs() const = 0;
 };
 
-class DecorationList {
-	int currentIndicator;
-	int currentValue;
-	Decoration *current;	// Cached so FillRange doesn't have to search for each call.
-	int lengthDocument;
-	// Ordered by indicator
-	std::vector<std::unique_ptr<Decoration>> decorationList;
-	std::vector<const Decoration*> decorationView;	// Read-only view of decorationList
-	bool clickNotified;
-
-	Decoration *DecorationFromIndicator(int indicator);
-	Decoration *Create(int indicator, int length);
-	void Delete(int indicator);
-	void DeleteAnyEmpty();
-	void SetView();
+class IDecorationList {
 public:
+	virtual ~IDecorationList() {}
 
-	DecorationList();
-	~DecorationList();
+	virtual const std::vector<const IDecoration*> &View() const =0;
 
-	const std::vector<const Decoration*> &View() const { return decorationView; }
+	virtual void SetCurrentIndicator(int indicator) = 0;
+	virtual int GetCurrentIndicator() const = 0;
 
-	void SetCurrentIndicator(int indicator);
-	int GetCurrentIndicator() const { return currentIndicator; }
+	virtual void SetCurrentValue(int value) = 0;
+	virtual int GetCurrentValue() const = 0;
 
-	void SetCurrentValue(int value);
-	int GetCurrentValue() const { return currentValue; }
+	// Returns with changed=true if some values may have changed
+	virtual FillResult<Sci::Position> FillRange(Sci::Position position, int value, Sci::Position fillLength) = 0;
+	virtual void InsertSpace(Sci::Position position, Sci::Position insertLength) = 0;
+	virtual void DeleteRange(Sci::Position position, Sci::Position deleteLength) = 0;
+	virtual void DeleteLexerDecorations() = 0;
 
-	// Returns true if some values may have changed
-	bool FillRange(int &position, int value, int &fillLength);
+	virtual int AllOnFor(Sci::Position position) const = 0;
+	virtual int ValueAt(int indicator, Sci::Position position) = 0;
+	virtual Sci::Position Start(int indicator, Sci::Position position) = 0;
+	virtual Sci::Position End(int indicator, Sci::Position position) = 0;
 
-	void InsertSpace(int position, int insertLength);
-	void DeleteRange(int position, int deleteLength);
-
-	void DeleteLexerDecorations();
-
-	int AllOnFor(int position) const;
-	int ValueAt(int indicator, int position);
-	int Start(int indicator, int position);
-	int End(int indicator, int position);
-
-	bool ClickNotified() const {
-		return clickNotified;
-	}
-	void SetClickNotified(bool notified) {
-		clickNotified = notified;
-	}
+	virtual bool ClickNotified() const = 0;
+	virtual void SetClickNotified(bool notified) = 0;
 };
+
+std::unique_ptr<IDecoration> DecorationCreate(bool largeDocument, int indicator);
+
+std::unique_ptr<IDecorationList> DecorationListCreate(bool largeDocument);
 
 }
 

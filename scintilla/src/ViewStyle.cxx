@@ -71,8 +71,8 @@ void FontRealised::Realise(Surface &surface, int zoomLevel, int technology, cons
 	if (sizeZoomed <= 2 * SC_FONT_SIZE_MULTIPLIER)	// Hangs if sizeZoomed <= 1
 		sizeZoomed = 2 * SC_FONT_SIZE_MULTIPLIER;
 
-	float deviceHeight = static_cast<float>(surface.DeviceHeightFont(sizeZoomed));
-	FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.italic, fs.extraFontFlag, technology, fs.characterSet);
+	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(sizeZoomed));
+	const FontParameters fp(fs.fontName, deviceHeight / SC_FONT_SIZE_MULTIPLIER, fs.weight, fs.italic, fs.extraFontFlag, technology, fs.characterSet);
 	font.Create(fp);
 
 	ascent = static_cast<unsigned int>(surface.Ascent(font));
@@ -317,7 +317,7 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	for (Style &style : styles) {
 		style.extraFontFlag = extraFontFlag;
 	}
-	
+
 	// Create a FontRealised object for each unique font in the styles.
 	CreateAndAddFont(styles[STYLE_DEFAULT]);
 	for (const Style &style : styles) {
@@ -377,7 +377,7 @@ void ViewStyle::ReleaseAllExtendedStyles() {
 }
 
 int ViewStyle::AllocateExtendedStyles(int numberStyles) {
-	int startRange = static_cast<int>(nextExtendedStyle);
+	const int startRange = static_cast<int>(nextExtendedStyle);
 	nextExtendedStyle += numberStyles;
 	EnsureStyle(nextExtendedStyle);
 	for (size_t i=startRange; i<nextExtendedStyle; i++) {
@@ -586,7 +586,7 @@ void ViewStyle::CreateAndAddFont(const FontSpecification &fs) {
 	if (fs.fontName) {
 		FontMap::iterator it = fonts.find(fs);
 		if (it == fonts.end()) {
-			fonts[fs] = std::unique_ptr<FontRealised>(new FontRealised());
+			fonts[fs] = std::make_unique<FontRealised>();
 		}
 	}
 }

@@ -1773,15 +1773,19 @@ get int GetZoom=2374(,)
 
 enu DocumentOption=SC_DOCUMENTOPTION_
 val SC_DOCUMENTOPTION_DEFAULT=0
-val SC_DOCUMENTOPTION_STYLES_NONE=1
+val SC_DOCUMENTOPTION_STYLES_NONE=0x1
+val SC_DOCUMENTOPTION_TEXT_LARGE=0x100
 
 # Create a new document object.
 # Starts with reference count of 1 and not selected into editor.
-fun int CreateDocument=2375(int bytes, int documentOption)
+fun int CreateDocument=2375(int bytes, int documentOptions)
 # Extend life of document.
 fun void AddRefDocument=2376(, int doc)
 # Release a reference to the document, deleting document if it fades to black.
 fun void ReleaseDocument=2377(, int doc)
+
+# Get which document options are set.
+get int GetDocumentOptions=2379(,)
 
 # Get which document modification events are sent to the container.
 get int GetModEventMask=2378(,)
@@ -2544,7 +2548,7 @@ set void SetTechnology=2630(int technology,)
 get int GetTechnology=2631(,)
 
 # Create an ILoader*.
-fun int CreateLoader=2632(int bytes, int documentOption)
+fun int CreateLoader=2632(int bytes, int documentOptions)
 
 # On OS X, show a find indicator.
 fun void FindIndicatorShow=2640(position start, position end)
@@ -2921,6 +2925,7 @@ val SCLEX_TEHEX=119
 val SCLEX_JSON=120
 val SCLEX_EDIFACT=121
 val SCLEX_INDENT=122
+val SCLEX_MAXIMA=123
 val SCLEX_AHK=200
 
 # When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -3541,6 +3546,16 @@ val SCE_MATLAB_STRING=5
 val SCE_MATLAB_OPERATOR=6
 val SCE_MATLAB_IDENTIFIER=7
 val SCE_MATLAB_DOUBLEQUOTESTRING=8
+# Lexical states for SCLEX_MAXIMA
+lex Maxima=SCLEX_MAXIMA SCE_MAXIMA_
+val SCE_MAXIMA_OPERATOR=0
+val SCE_MAXIMA_COMMANDENDING=1
+val SCE_MAXIMA_COMMENT=2
+val SCE_MAXIMA_NUMBER=3
+val SCE_MAXIMA_STRING=4
+val SCE_MAXIMA_COMMAND=5
+val SCE_MAXIMA_VARIABLE=6
+val SCE_MAXIMA_UNKNOWN=7
 # Lexical states for SCLEX_SCRIPTOL
 lex Sol=SCLEX_SCRIPTOL SCE_SCRIPTOL_
 val SCE_SCRIPTOL_DEFAULT=0

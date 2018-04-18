@@ -10,6 +10,9 @@
 
 namespace Scintilla {
 
+class XPM;
+class RGBAImage;
+
 typedef void (*DrawLineMarkerFn)(Surface *surface, PRectangle &rcWhole, Font &fontForCharacter, int tFold, int marginStyle, const void *lineMarker);
 
 /**
@@ -30,41 +33,10 @@ public:
 	 * it instead of creating a new method(s) in the Surface class that existing
 	 * platforms must implement as empty. */
 	DrawLineMarkerFn customDraw;
-	LineMarker() {
-		markType = SC_MARK_CIRCLE;
-		fore = ColourDesired(0,0,0);
-		back = ColourDesired(0xff,0xff,0xff);
-		backSelected = ColourDesired(0xff,0x00,0x00);
-		alpha = SC_ALPHA_NOALPHA;
-		customDraw = nullptr;
-	}
-	LineMarker(const LineMarker &) {
-		// Defined to avoid pxpm and image being blindly copied, not as a complete copy constructor.
-		markType = SC_MARK_CIRCLE;
-		fore = ColourDesired(0,0,0);
-		back = ColourDesired(0xff,0xff,0xff);
-		backSelected = ColourDesired(0xff,0x00,0x00);
-		alpha = SC_ALPHA_NOALPHA;
-		pxpm.reset();
-		image.reset();
-		customDraw = nullptr;
-	}
-	~LineMarker() {
-	}
-	LineMarker &operator=(const LineMarker &other) {
-		// Defined to avoid pxpm and image being blindly copied, not as a complete assignment operator.
-		if (this != &other) {
-			markType = SC_MARK_CIRCLE;
-			fore = ColourDesired(0,0,0);
-			back = ColourDesired(0xff,0xff,0xff);
-			backSelected = ColourDesired(0xff,0x00,0x00);
-			alpha = SC_ALPHA_NOALPHA;
-			pxpm.reset();
-			image.reset();
-			customDraw = nullptr;
-		}
-		return *this;
-	}
+	LineMarker();
+	LineMarker(const LineMarker &);
+	virtual ~LineMarker();
+	LineMarker &operator=(const LineMarker &other);
 	void SetXPM(const char *textForm);
 	void SetXPM(const char *const *linesForm);
 	void SetRGBAImage(Point sizeRGBAImage, float scale, const unsigned char *pixelsRGBAImage);

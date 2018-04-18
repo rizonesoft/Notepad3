@@ -52,7 +52,7 @@ using namespace Scintilla;
 #define SciLn(line)    static_cast<Sci::Line>(line)
 #define SciPosExt(pos) static_cast<Sci_Position>(pos)
 
-#define Cast2long(n)   static_cast<long>(n)
+//#define Cast2long(n)   static_cast<long>(n)
 
 
 // ============================================================================
@@ -92,8 +92,8 @@ public:
     onig_end();
   }
 
-  virtual long FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
-                        bool caseSensitive, bool word, bool wordStart, int flags, Sci::Position* length) override;
+  virtual Sci::Position FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
+                                 bool caseSensitive, bool word, bool wordStart, int flags, Sci::Position* length) override;
 
   virtual const char* SubstituteByPosition(Document* doc, const char* text, Sci::Position* length) override;
 
@@ -204,12 +204,12 @@ static void replaceAll(std::string& source, const std::string& from, const std::
  * searches (just pass minPos > maxPos to do a backward search)
  * Has not been tested with backwards DBCS searches yet.
  */
-long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
+Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *pattern,
                                  bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position *length)
 {
   if (!(pattern && (strlen(pattern) > 0))) {
     *length = 0;
-    return Cast2long(-1);
+    return SciPos(-1);
   }
 
   Sci::Position docLen = SciPos(doc->Length());
@@ -274,13 +274,13 @@ long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Posit
                          m_CmplOptions, g_pOnigEncodingType, &m_OnigSyntax, &einfo);
       if (res != 0) {
         onig_error_code_to_str((UChar*)m_ErrorInfo, res, &einfo);
-        return Cast2long(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
+        return SciPos(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
       }
 
       onig_region_init(&m_Region);
     }
     catch (...) {
-      return Cast2long(-2);
+      return SciPos(-2);
     }
   }
 
@@ -301,12 +301,12 @@ long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Posit
       result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeEndPtr, rangeBegPtr, &m_Region, onigmoOptions);
   }
   catch (...) {
-    return Cast2long(-3);  // -1 is normally used for not found, -3 is used here for exception
+    return SciPos(-3);  // -1 is normally used for not found, -3 is used here for exception
   }
 
   if (result < ONIG_MISMATCH) {
     onig_error_code_to_str((UChar*)m_ErrorInfo, result);
-    return Cast2long(-3);
+    return SciPos(-3);
   }
 
   if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) 
@@ -317,7 +317,7 @@ long OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, Sci::Posit
 
   //NOTE: potential 64-bit-size issue at interface here:
   *length = m_MatchLen;
-  return Cast2long(m_MatchPos);
+  return SciPos(m_MatchPos);
 }
 // ============================================================================
 
