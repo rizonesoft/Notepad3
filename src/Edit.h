@@ -75,7 +75,7 @@ void  EditSortLines(HWND,int);
 
 void  EditJumpTo(HWND, DocLn, DocPos);
 void  EditScrollTo(HWND, DocLn, int);
-void  EditSelectEx(HWND, DocPos, DocPos, int, int);
+void  EditSelectEx(HWND, DocPos, DocPos, DocPos, DocPos);
 void  EditFixPositions(HWND);
 void  EditEnsureSelectionVisible(HWND);
 void  EditGetExcerpt(HWND,LPWSTR,DWORD);

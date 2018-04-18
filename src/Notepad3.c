@@ -6252,10 +6252,10 @@ void LoadSettings()
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
   
-  iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 0);
+  iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 40);
   iCurrentLineHorizontalSlop = max(min(iCurrentLineHorizontalSlop, 2000), 0);
 
-  iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 0);
+  iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
   iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
 
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
