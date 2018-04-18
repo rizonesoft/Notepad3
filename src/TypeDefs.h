@@ -19,6 +19,9 @@
 
 //~#define NP3_COMPILE_TEST 1
 
+//
+// SC_DOCUMENTOPTION_TEXT_LARGE
+//
 #if defined(SCI_LARGE_FILE_SUPPORT)
   typedef Sci_Position   DocPos;
   typedef Sci_PositionU  DocPosU;
