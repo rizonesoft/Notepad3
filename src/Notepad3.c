@@ -166,8 +166,8 @@ bool      g_bShowSelectionMargin;
 bool      bShowLineNumbers;
 int       iReplacedOccurrences;
 int       g_iMarkOccurrences;
-int       iMarkOccurrencesCount;
-int       iMarkOccurrencesMaxCount;
+int       g_iMarkOccurrencesCount;
+int       g_iMarkOccurrencesMaxCount;
 bool      g_bMarkOccurrencesMatchVisible;
 bool      bMarkOccurrencesMatchCase;
 bool      bMarkOccurrencesMatchWords;
@@ -1048,7 +1048,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     SetNotifyIconTitle(g_hwndMain);
 
   iReplacedOccurrences = 0;
-  iMarkOccurrencesCount = 0;
+  g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
@@ -6240,8 +6240,8 @@ void LoadSettings()
   iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", FontQuality[3]);
   iSciFontQuality = max(min(iSciFontQuality, 3), 0);
 
-  iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
-  iMarkOccurrencesMaxCount = (iMarkOccurrencesMaxCount <= 0) ? INT_MAX : iMarkOccurrencesMaxCount;
+  g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
+  g_iMarkOccurrencesMaxCount = (g_iMarkOccurrencesMaxCount <= 0) ? INT_MAX : g_iMarkOccurrencesMaxCount;
 
   iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
   iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), 10) / (int)USER_TIMER_MINIMUM;
@@ -7321,15 +7321,15 @@ void UpdateStatusbar()
   }
 
   // Print number of occurrence marks found
-  if ((iMarkOccurrencesCount > 0) && !g_bMarkOccurrencesMatchVisible) 
+  if ((g_iMarkOccurrencesCount >= 0) && !g_bMarkOccurrencesMatchVisible) 
   {
-    if ((iMarkOccurrencesMaxCount < 0) || (iMarkOccurrencesCount < iMarkOccurrencesMaxCount)) 
+    if ((g_iMarkOccurrencesMaxCount < 0) || (g_iMarkOccurrencesCount < g_iMarkOccurrencesMaxCount)) 
     {
-      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", iMarkOccurrencesCount);
+      StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", g_iMarkOccurrencesCount);
       FormatNumberStr(tchOcc);
     }
     else {
-      StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", iMarkOccurrencesCount);
+      StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", g_iMarkOccurrencesCount);
       FormatNumberStr(tchTmp);
       StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
     }

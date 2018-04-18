@@ -95,8 +95,8 @@ extern bool bAccelWordNavigation;
 
 extern int  iReplacedOccurrences;
 extern int  g_iMarkOccurrences;
-extern int  iMarkOccurrencesCount;
-extern int  iMarkOccurrencesMaxCount;
+extern int  g_iMarkOccurrencesCount;
+extern int  g_iMarkOccurrencesMaxCount;
 extern bool g_bMarkOccurrencesMatchVisible;
 
 extern bool g_bHyperlinkHotspot;
@@ -5339,13 +5339,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       case IDT_TIMER_MAIN_MRKALL:
         {
           if (!TEST_AND_SET(BIT_MARK_OCC_IN_PROGRESS)) {
-            iMarkOccurrencesCount = 0;
             _SetSearchFlags(hwnd, sg_pefrData);
             if (sg_pefrData->bMarkOccurences) {
               if (sg_pefrData->bStateChanged || (StringCchCompareXA(g_lastFind, sg_pefrData->szFind) != 0)) {
                 IgnoreNotifyChangeEvent();
                 if (EditToggleView(g_hwndEdit, false)) { SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE); }
                 StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), sg_pefrData->szFind);
+                g_iMarkOccurrencesCount = 0;
                 RegExResult_t match = _FindHasMatch(g_hwndEdit, sg_pefrData, (sg_pefrData->bMarkOccurences), false);
                 if (regexMatch != match) {
                   regexMatch = match;
@@ -5944,49 +5944,46 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
 // 
 void EditMarkAllOccurrences()
 {
-  if (g_iMarkOccurrences > 0) {
-    
-    if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
+  if (g_iMarkOccurrences <= 0) {
+    g_iMarkOccurrencesCount = -1;
+    return;
+  }
+  if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
-    bool bWaitCursor = false;
-    if (iMarkOccurrencesCount > 2000) { 
-      BeginWaitCursor(NULL); 
-      bWaitCursor = true;
-    }
-    else {
-      IgnoreNotifyChangeEvent();
-    }
-    EditEnterTargetTransaction();
-
-    if (g_bMarkOccurrencesMatchVisible)
-    {
-      // get visible lines for update
-      DocLn iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
-
-      DocLn iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-      DocLn iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
-
-      DocPos iPosStart = SciCall_PositionFromLine(iStartLine);
-      DocPos iPosEnd = SciCall_GetLineEndPosition(iEndLine);
-
-      // !!! don't clear all marks, else this method is re-called
-      // !!! on UpdateUI notification on drawing indicator mark
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-    }
-    else {
-      EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
-    }
-    EditLeaveTargetTransaction();
-
-    if (bWaitCursor) {
-      EndWaitCursor();
-    }
-    else {
-      ObserveNotifyChangeEvent();
-    }
+  bool bWaitCursor = false;
+  if (g_iMarkOccurrencesCount > 2000) {
+    BeginWaitCursor(NULL);
+    bWaitCursor = true;
   }
   else {
-    iMarkOccurrencesCount = 0;
+    IgnoreNotifyChangeEvent();
+  }
+  EditEnterTargetTransaction();
+
+  if (g_bMarkOccurrencesMatchVisible) {
+    // get visible lines for update
+    DocLn iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+
+    DocLn iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+    DocLn iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+
+    DocPos iPosStart = SciCall_PositionFromLine(iStartLine);
+    DocPos iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+
+    // !!! don't clear all marks, else this method is re-called
+    // !!! on UpdateUI notification on drawing indicator mark
+    EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+  }
+  else {
+    EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
+  }
+  EditLeaveTargetTransaction();
+
+  if (bWaitCursor) {
+    EndWaitCursor();
+  }
+  else {
+    ObserveNotifyChangeEvent();
   }
 }
 
@@ -6314,11 +6311,16 @@ void EditClearAllOccurrenceMarkers(HWND hwnd, DocPos iRangeStart, DocPos iRangeE
   // clear occurrences line marker
   if (bClearAll) {
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE);
+    g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
   }
   else {
+    const int iOccBitMask = (1 << MARKER_NP3_OCCUR_LINE);
     const DocLn iEndLine = SciCall_LineFromPosition(iRangeEnd);
     for (DocLn iLine = SciCall_LineFromPosition(iRangeStart); iLine <= iEndLine; ++iLine) {
-      SciCall_MarkerDelete(iLine, MARKER_NP3_OCCUR_LINE);
+      if ((SciCall_MarkerGet(iLine) & iOccBitMask) != 0) {
+        SciCall_MarkerDelete(iLine, MARKER_NP3_OCCUR_LINE);
+        if (g_iMarkOccurrencesCount > 0) { --g_iMarkOccurrencesCount; }
+      }
     }
   }
   ObserveNotifyChangeEvent();
@@ -6454,12 +6456,11 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
     DocPos start = rangeStart;
     DocPos end = rangeEnd;
 
-
-    iMarkOccurrencesCount = 0;
     SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
     
     const int iOccBitMask = (1 << MARKER_NP3_OCCUR_LINE);
 
+    g_iMarkOccurrencesCount = 0;
     DocPos iPos = (DocPos)-1;
     do {
 
@@ -6478,7 +6479,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       start = end;
       end = rangeEnd;
 
-    } while ((++iMarkOccurrencesCount < iMarkOccurrencesMaxCount) && (start < end));
+    } while ((++g_iMarkOccurrencesCount < g_iMarkOccurrencesMaxCount) && (start < end));
   }
 }
 
