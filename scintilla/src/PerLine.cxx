@@ -119,7 +119,7 @@ Sci::Line LineMarkers::LineFromHandle(int markerHandle) {
 void LineMarkers::MergeMarkers(Sci::Line line) {
 	if (markers[line + 1]) {
 		if (!markers[line])
-			markers[line].reset(new MarkerHandleSet);
+			markers[line] = std::make_unique<MarkerHandleSet>();
 		markers[line]->CombineWith(markers[line + 1].get());
 		markers[line + 1].reset();
 	}
@@ -155,7 +155,7 @@ int LineMarkers::AddMark(Sci::Line line, int markerNum, Sci::Line lines) {
 	}
 	if (!markers[line]) {
 		// Need new structure to hold marker handle
-		markers[line].reset(new MarkerHandleSet());
+		markers[line] = std::make_unique<MarkerHandleSet>();
 	}
 	markers[line]->InsertHandle(handleCurrent, markerNum);
 
@@ -179,7 +179,7 @@ bool LineMarkers::DeleteMark(Sci::Line line, int markerNum, bool all) {
 }
 
 void LineMarkers::DeleteMarkFromHandle(int markerHandle) {
-	Sci::Line line = LineFromHandle(markerHandle);
+	const Sci::Line line = LineFromHandle(markerHandle);
 	if (line >= 0) {
 		markers[line]->RemoveHandle(markerHandle);
 		if (markers[line]->Empty()) {
@@ -197,7 +197,7 @@ void LineLevels::Init() {
 
 void LineLevels::InsertLine(Sci::Line line) {
 	if (levels.Length()) {
-		int level = (line < levels.Length()) ? levels[line] : SC_FOLDLEVELBASE;
+		const int level = (line < levels.Length()) ? levels[line] : SC_FOLDLEVELBASE;
 		levels.InsertValue(line, 1, level);
 	}
 }
@@ -255,7 +255,7 @@ void LineState::Init() {
 void LineState::InsertLine(Sci::Line line) {
 	if (lineStates.Length()) {
 		lineStates.EnsureLength(line);
-		int val = (line < lineStates.Length()) ? lineStates[line] : 0;
+		const int val = (line < lineStates.Length()) ? lineStates[line] : 0;
 		lineStates.Insert(line, val);
 	}
 }
@@ -359,17 +359,16 @@ const unsigned char *LineAnnotation::Styles(Sci::Line line) const {
 		return 0;
 }
 
-static char *AllocateAnnotation(int length, int style) {
+static std::unique_ptr<char[]>AllocateAnnotation(int length, int style) {
 	const size_t len = sizeof(AnnotationHeader) + length + ((style == IndividualStyles) ? length : 0);
-	char *ret = new char[len]();
-	return ret;
+	return std::make_unique<char[]>(len);
 }
 
 void LineAnnotation::SetText(Sci::Line line, const char *text) {
 	if (text && (line >= 0)) {
 		annotations.EnsureLength(line+1);
 		const int style = Style(line);
-		annotations[line].reset(AllocateAnnotation(static_cast<int>(strlen(text)), style));
+		annotations[line] = AllocateAnnotation(static_cast<int>(strlen(text)), style);
 		char *pa = annotations[line].get();
 		assert(pa);
 		AnnotationHeader *pah = reinterpret_cast<AnnotationHeader *>(pa);
@@ -391,7 +390,7 @@ void LineAnnotation::ClearAll() {
 void LineAnnotation::SetStyle(Sci::Line line, int style) {
 	annotations.EnsureLength(line+1);
 	if (!annotations[line]) {
-		annotations[line].reset(AllocateAnnotation(0, style));
+		annotations[line] = AllocateAnnotation(0, style);
 	}
 	reinterpret_cast<AnnotationHeader *>(annotations[line].get())->style = static_cast<short>(style);
 }
@@ -400,16 +399,16 @@ void LineAnnotation::SetStyles(Sci::Line line, const unsigned char *styles) {
 	if (line >= 0) {
 		annotations.EnsureLength(line+1);
 		if (!annotations[line]) {
-			annotations[line].reset(AllocateAnnotation(0, IndividualStyles));
+			annotations[line] = AllocateAnnotation(0, IndividualStyles);
 		} else {
-			AnnotationHeader *pahSource = reinterpret_cast<AnnotationHeader *>(annotations[line].get());
+			const AnnotationHeader *pahSource = reinterpret_cast<AnnotationHeader *>(annotations[line].get());
 			if (pahSource->style != IndividualStyles) {
-				char *allocation = AllocateAnnotation(pahSource->length, IndividualStyles);
-				AnnotationHeader *pahAlloc = reinterpret_cast<AnnotationHeader *>(allocation);
+				std::unique_ptr<char[]>allocation = AllocateAnnotation(pahSource->length, IndividualStyles);
+				AnnotationHeader *pahAlloc = reinterpret_cast<AnnotationHeader *>(allocation.get());
 				pahAlloc->length = pahSource->length;
 				pahAlloc->lines = pahSource->lines;
-				memcpy(allocation + sizeof(AnnotationHeader), annotations[line].get() + sizeof(AnnotationHeader), pahSource->length);
-				annotations[line].reset(allocation);
+				memcpy(allocation.get() + sizeof(AnnotationHeader), annotations[line].get() + sizeof(AnnotationHeader), pahSource->length);
+				annotations[line] = std::move(allocation);
 			}
 		}
 		AnnotationHeader *pah = reinterpret_cast<AnnotationHeader *>(annotations[line].get());
@@ -468,7 +467,7 @@ bool LineTabstops::ClearTabstops(Sci::Line line) {
 bool LineTabstops::AddTabstop(Sci::Line line, int x) {
 	tabstops.EnsureLength(line + 1);
 	if (!tabstops[line]) {
-		tabstops[line].reset(new TabstopList());
+		tabstops[line] = std::make_unique<TabstopList>();
 	}
 
 	TabstopList *tl = tabstops[line].get();

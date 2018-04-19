@@ -114,7 +114,7 @@ public:
 	Sci_Position LineStart(Sci_Position line) const {
 		return pAccess->LineStart(line);
 	}
-	Sci_Position LineEnd(Sci_Position line) {
+	Sci_Position LineEnd(Sci_Position line) const {
 		return pAccess->LineEnd(line);
 	}
 	int LevelAt(Sci_Position line) const {

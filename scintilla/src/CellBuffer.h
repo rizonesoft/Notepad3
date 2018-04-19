@@ -24,33 +24,7 @@ public:
 /**
  * The line vector contains information about each of the lines in a cell buffer.
  */
-class LineVector {
-
-	Partitioning<int> starts;
-	PerLine *perLine;
-
-public:
-
-	LineVector();
-	// Deleted so LineVector objects can not be copied.
-	LineVector(const LineVector &) = delete;
-	void operator=(const LineVector &) = delete;
-	~LineVector();
-	void Init();
-	void SetPerLine(PerLine *pl);
-
-	void InsertText(Sci::Line line, Sci::Position delta);
-	void InsertLine(Sci::Line line, Sci::Position position, bool lineStart);
-	void SetLineStart(Sci::Line line, Sci::Position position);
-	void RemoveLine(Sci::Line line);
-	Sci::Line Lines() const {
-		return starts.Partitions();
-	}
-	Sci::Line LineFromPosition(Sci::Position pos) const;
-	Sci::Position LineStart(Sci::Line line) const {
-		return starts.PositionFromPartition(line);
-	}
-};
+class ILineVector;
 
 enum actionType { insertAction, removeAction, startAction, containerAction };
 
@@ -136,6 +110,7 @@ public:
 class CellBuffer {
 private:
 	bool hasStyles;
+	bool largeDocument;
 	SplitVector<char> substance;
 	SplitVector<char> style;
 	bool readOnly;
@@ -144,7 +119,7 @@ private:
 	bool collectingUndo;
 	UndoHistory uh;
 
-	LineVector lv;
+	std::unique_ptr<ILineVector> plv;
 
 	bool UTF8LineEndOverlaps(Sci::Position position) const;
 	void ResetLineEnds();
@@ -154,7 +129,7 @@ private:
 
 public:
 
-	CellBuffer(bool hasStyles_);
+	CellBuffer(bool hasStyles_, bool largeDocument_);
 	// Deleted so CellBuffer objects can not be copied.
 	CellBuffer(const CellBuffer &) = delete;
 	void operator=(const CellBuffer &) = delete;
@@ -177,7 +152,7 @@ public:
 	void SetPerLine(PerLine *pl);
 	Sci::Line Lines() const;
 	Sci::Position LineStart(Sci::Line line) const;
-	Sci::Line LineFromPosition(Sci::Position pos) const { return lv.LineFromPosition(pos); }
+	Sci::Line LineFromPosition(Sci::Position pos) const;
 	void InsertLine(Sci::Line line, Sci::Position position, bool lineStart);
 	void RemoveLine(Sci::Line line);
 	const char *InsertString(Sci::Position position, const char *s, Sci::Position insertLength, bool &startSequence);
@@ -191,6 +166,8 @@ public:
 
 	bool IsReadOnly() const;
 	void SetReadOnly(bool set);
+	bool IsLarge() const;
+	bool HasStyles() const;
 
 	/// The save point is a marker in the undo stack where the container has stated that
 	/// the buffer was saved. Undo and redo can move over the save point.

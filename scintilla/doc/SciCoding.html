@@ -124,8 +124,8 @@
 	compilers on diverse platforms with high performance and low resource usage.
 	Scintilla has stricter portability requirements to SciTE as it may be ported to
 	low capability platforms.
-	Scintilla code must build with C++03 which can be checked with "g++ --std=gnu++03".
-	SciTE can use C++11 features that are widely available from g++ 4.6, MSVC 2012 and clang 3.4 compilers.
+	Scintilla code must build with C++17 which can be checked with "g++ --std=c++17".
+	SciTE can use C++17 features that are widely available from g++ 7.1, MSVC 2017.6 and Clang 5.0 compilers.
 	</p>
 	<p>
 	To achieve portability, only a subset of C++ features are used.
@@ -278,7 +278,7 @@
 	<p>
 	Properties provided by a new lexer should follow the naming conventions
 	and should include a comment suitable for showing to end users.
-	The convention is for properties that control styling to be named 
+	The convention is for properties that control styling to be named
 	lexer.&lt;lexername&gt;.* and those that control folding to be named
 	fold.&lt;lexername&gt;.*.
 	Examples are "lexer.python.literals.binary" and "fold.haskell.imports".

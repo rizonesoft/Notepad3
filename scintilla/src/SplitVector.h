@@ -78,7 +78,7 @@ public:
 	ptrdiff_t GetGrowSize() const {
 		return growSize;
 	}
-	
+
 	void SetGrowSize(ptrdiff_t growSize_) {
 		growSize = growSize_;
 	}

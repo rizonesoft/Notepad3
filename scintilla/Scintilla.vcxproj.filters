@@ -447,6 +447,9 @@
     <ClCompile Include="lexers\LexR.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="win32\ScintillaDLL.cxx">
+      <Filter>win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -664,6 +667,9 @@
     </ClInclude>
     <ClInclude Include="..\onigmo\regparse.h">
       <Filter>onigmo</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\ScintillaWin.h">
+      <Filter>win32</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

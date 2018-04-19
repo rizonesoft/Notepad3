@@ -65,6 +65,8 @@ LexerLibrary::LexerLibrary(const char *moduleName_) {
 				char lexname[100] = "";
 				GetLexerName(i, lexname, sizeof(lexname));
 				ExternalLexerModule *lex = new ExternalLexerModule(SCLEX_AUTOMATIC, NULL, lexname, NULL);
+				// This is storing a second reference to lex in the Catalogue as well as in modules.
+				// TODO: Should use std::shared_ptr or similar to ensure allocation safety.
 				Catalogue::AddLexerModule(lex);
 
 				// Remember ExternalLexerModule so we don't leak it
@@ -112,8 +114,7 @@ void LexerManager::Load(const char *path) {
 		if (ll->moduleName == path)
 			return;
 	}
-	LexerLibrary *lib = new LexerLibrary(path);
-	libraries.push_back(std::unique_ptr<LexerLibrary>(lib));
+	libraries.push_back(std::make_unique<LexerLibrary>(path));
 }
 
 void LexerManager::Clear() {

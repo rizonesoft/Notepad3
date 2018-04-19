@@ -11,7 +11,6 @@
 
 #include "CaseFolder.h"
 #include "CaseConvert.h"
-#include "UniConversion.h"
 
 using namespace Scintilla;
 

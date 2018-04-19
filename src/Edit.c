@@ -3713,15 +3713,15 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
       bSpcOnly = false;
       const DocPos posLnBeg = SciCall_PositionFromLine(iLine + nBlanks);
       const DocPos posLnEnd = SciCall_GetLineEndPosition(iLine + nBlanks);
-      const int iLnLength = (posLnEnd - posLnBeg);
+      const DocPos iLnLength = (posLnEnd - posLnBeg);
 
       if (iLnLength == 0) {
         ++nBlanks;
         bSpcOnly = true;
       }
       else if (bRemoveWhiteSpace) {
-        const char* pLine = SciCall_GetRangePointer(posLnBeg, (DocPos)iLnLength);
-        int i = 0;
+        const char* pLine = SciCall_GetRangePointer(posLnBeg, iLnLength);
+        DocPos i = 0;
         for (; i < iLnLength; ++i) {
           if (!IsWhiteSpace(pLine[i])) {
             break;
@@ -4384,7 +4384,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 //
 //  EditSelectEx()
 //
-void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, int vSpcAnchor, int vSpcCurrent)
+void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent)
 {
   UNUSED(hwnd);
 
@@ -4464,7 +4464,7 @@ void EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop)
   UNUSED(hwnd);
 
   const int iXoff = SciCall_GetXoffset();
-  const int iLinesOnScreen = SciCall_LinesOnScreen();
+  const DocLn iLinesOnScreen = SciCall_LinesOnScreen();
   const DocLn iSlopLines = ((iSlop < 0) || (iSlop >= iLinesOnScreen)) ? (iLinesOnScreen/2) : iSlop;
 
   SciCall_SetVisiblePolicy((VISIBLE_SLOP | VISIBLE_STRICT), iSlopLines);
