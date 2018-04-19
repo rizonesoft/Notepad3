@@ -28,7 +28,7 @@ static PRectangle PixelGridAlign(const PRectangle &rc) {
 void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &rcLine, const PRectangle &rcCharacter, DrawState drawState, int value) const {
 	StyleAndColour sacDraw = sacNormal;
 	if (Flags() & SC_INDICFLAG_VALUEFORE) {
-		sacDraw.fore = value & SC_INDICVALUEMASK;
+		sacDraw.fore = ColourDesired(value & SC_INDICVALUEMASK);
 	}
 	if (drawState == drawHover) {
 		sacDraw = sacHover;

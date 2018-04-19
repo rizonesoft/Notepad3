@@ -89,7 +89,7 @@ void XPM::Init(const char *const *linesForm) {
 	if (!linesForm)
 		return;
 
-	std::fill(colourCodeTable, std::end(colourCodeTable), 0);
+	std::fill(colourCodeTable, std::end(colourCodeTable), ColourDesired(0));
 	const char *line0 = linesForm[0];
 	width = atoi(line0);
 	line0 = NextField(line0);
@@ -148,16 +148,16 @@ void XPM::Draw(Surface *surface, const PRectangle &rc) {
 
 void XPM::PixelAt(int x, int y, ColourDesired &colour, bool &transparent) const {
 	if (pixels.empty() || (x<0) || (x >= width) || (y<0) || (y >= height)) {
-		colour = 0;
+		colour = ColourDesired(0);
 		transparent = true;
 		return;
 	}
 	int code = pixels[y * width + x];
 	transparent = code == codeTransparent;
 	if (transparent) {
-		colour = 0;
+		colour = ColourDesired(0);
 	} else {
-		colour = ColourFromCode(code).AsLong();
+		colour = ColourFromCode(code);
 	}
 }
 

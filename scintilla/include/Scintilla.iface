@@ -922,6 +922,7 @@ get int GetPrintMagnification=2147(,)
 
 enu PrintOption=SC_PRINT_
 # PrintColourMode - use same colours as screen.
+# with the exception of line number margins, which use a white background
 val SC_PRINT_NORMAL=0
 # PrintColourMode - invert the light value of each style for printing.
 val SC_PRINT_INVERTLIGHT=1
@@ -931,6 +932,8 @@ val SC_PRINT_BLACKONWHITE=2
 val SC_PRINT_COLOURONWHITE=3
 # PrintColourMode - only the default-background is forced to be white for printing.
 val SC_PRINT_COLOURONWHITEDEFAULTBG=4
+# PrintColourMode - use same colours as screen, including line number margins.
+val SC_PRINT_SCREENCOLOURS=5
 
 # Modify colours when printing for clearer printed text.
 set void SetPrintColourMode=2148(int mode,)

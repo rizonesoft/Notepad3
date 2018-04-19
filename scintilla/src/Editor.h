@@ -394,9 +394,9 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void AddChar(char ch);
 	virtual void AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS=false);
 	void ClearBeforeTentativeStart();
-	void InsertPaste(const char *text, int len);
+	void InsertPaste(const char *text, Sci::Position len);
 	enum PasteShape { pasteStream=0, pasteRectangular = 1, pasteLine = 2 };
-	void InsertPasteShape(const char *text, int len, PasteShape shape);
+	void InsertPasteShape(const char *text, Sci::Position len, PasteShape shape);
 	void ClearSelection(bool retainMultipleSelections = false);
 	void ClearAll();
 	void ClearDocumentStyle();
@@ -483,7 +483,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	std::string RangeText(Sci::Position start, Sci::Position end) const;
 	void CopySelectionRange(SelectionText *ss, bool allowLineCopy=false);
 	void CopyRangeToClipboard(Sci::Position start, Sci::Position end);
-	void CopyText(int length, const char *text);
+	void CopyText(size_t length, const char *text);
 	void SetDragPosition(SelectionPosition newPos);
 	virtual void DisplayCursor(Window::Cursor c);
 	virtual bool DragThreshold(Point ptStart, Point ptNow);
@@ -557,7 +557,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 
 	int CodePage() const;
 	virtual bool ValidCodePage(int /* codePage */) const { return true; }
-	int WrapCount(int line);
+	Sci::Line WrapCount(Sci::Line line);
 	void AddStyledText(char *buffer, Sci::Position appendLength);
 
 	virtual sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) = 0;

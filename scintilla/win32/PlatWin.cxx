@@ -666,7 +666,7 @@ void SurfaceGDI::BrushColor(ColourDesired back) {
 		brushOld = 0;
 	}
 	// Only ever want pure, non-dithered brushes
-	ColourDesired colourNearest = ::GetNearestColor(hdc, back.AsLong());
+	ColourDesired colourNearest = ColourDesired(::GetNearestColor(hdc, back.AsLong()));
 	brush = ::CreateSolidBrush(colourNearest.AsLong());
 	brushOld = static_cast<HBRUSH>(::SelectObject(hdc, brush));
 }
@@ -2987,11 +2987,11 @@ DynamicLibrary *DynamicLibrary::Load(const char *modulePath) {
 }
 
 ColourDesired Platform::Chrome() {
-	return ::GetSysColor(COLOR_3DFACE);
+	return ColourDesired(::GetSysColor(COLOR_3DFACE));
 }
 
 ColourDesired Platform::ChromeHighlight() {
-	return ::GetSysColor(COLOR_3DHIGHLIGHT);
+	return ColourDesired(::GetSysColor(COLOR_3DHIGHLIGHT));
 }
 
 const char *Platform::DefaultFont() {

@@ -46,7 +46,6 @@ variableScope:scintilla/lexers/LexVHDL.cxx
 
 // Suppress everything in catch.hpp as won't be changing
 *:scintilla/test/unit/catch.hpp
-// Spurious errors due to choice of variadic or two argument TEST_CASE macro
 preprocessorErrorDirective:scintilla/test/unit/*.cxx
-syntaxError:scintilla/test/unit/UnitTester.cxx
 syntaxError:scintilla/test/unit/unitTest.cxx
+*:scintilla/test/unit/*.cxx

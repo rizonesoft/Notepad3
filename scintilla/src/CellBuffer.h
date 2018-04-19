@@ -137,6 +137,7 @@ public:
 
 	/// Retrieving positions outside the range of the buffer works and returns 0
 	char CharAt(Sci::Position position) const;
+	unsigned char UCharAt(Sci::Position position) const;
 	void GetCharRange(char *buffer, Sci::Position position, Sci::Position lengthRetrieve) const;
 	char StyleAt(Sci::Position position) const;
 	void GetStyleRange(unsigned char *buffer, Sci::Position position, Sci::Position lengthRetrieve) const;

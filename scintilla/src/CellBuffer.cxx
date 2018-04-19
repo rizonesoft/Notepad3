@@ -54,7 +54,6 @@ public:
 		Init();
  	}
 	~LineVector() override {
-		starts.DeleteAll();
  	}
 	void Init() override {
 		starts.DeleteAll();
@@ -86,10 +85,10 @@ public:
 		}
 	}
 	Sci::Line Lines() const override {
-		return starts.Partitions();
+		return static_cast<Sci::Line>(starts.Partitions());
 	}
 	Sci::Line LineFromPosition(Sci::Position pos) const override {
-		return starts.PartitionFromPosition(static_cast<POS>(pos));
+		return static_cast<Sci::Line>(starts.PartitionFromPosition(static_cast<POS>(pos)));
 	}
 	Sci::Position LineStart(Sci::Line line) const override {
 		return starts.PositionFromPartition(static_cast<POS>(line));
@@ -369,12 +368,10 @@ CellBuffer::CellBuffer(bool hasStyles_, bool largeDocument_) :
 	readOnly = false;
 	utf8LineEnds = 0;
 	collectingUndo = true;
-	plv = std::make_unique<LineVector<Sci::Position>>();
 	if (largeDocument)
 		plv = std::make_unique<LineVector<Sci::Position>>();
 	else
 		plv = std::make_unique<LineVector<int>>();
-
 }
 
 CellBuffer::~CellBuffer() {
@@ -382,6 +379,10 @@ CellBuffer::~CellBuffer() {
 
 char CellBuffer::CharAt(Sci::Position position) const {
 	return substance.ValueAt(position);
+}
+
+unsigned char CellBuffer::UCharAt(Sci::Position position) const {
+	return static_cast<unsigned char>(substance.ValueAt(position));
 }
 
 void CellBuffer::GetCharRange(char *buffer, Sci::Position position, Sci::Position lengthRetrieve) const {
@@ -427,7 +428,7 @@ const char *CellBuffer::RangePointer(Sci::Position position, Sci::Position range
 }
 
 Sci::Position CellBuffer::GapPosition() const {
-	return static_cast<Sci::Position>(substance.GapPosition());
+	return substance.GapPosition();
 }
 
 // The char* returned is to an allocation owned by the undo history
@@ -496,7 +497,7 @@ const char *CellBuffer::DeleteChars(Sci::Position position, Sci::Position delete
 }
 
 Sci::Position CellBuffer::Length() const {
-	return static_cast<Sci::Position>(substance.Length());
+	return substance.Length();
 }
 
 void CellBuffer::Allocate(Sci::Position newSize) {

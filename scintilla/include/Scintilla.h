@@ -390,6 +390,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_PRINT_BLACKONWHITE 2
 #define SC_PRINT_COLOURONWHITE 3
 #define SC_PRINT_COLOURONWHITEDEFAULTBG 4
+#define SC_PRINT_SCREENCOLOURS 5
 #define SCI_SETPRINTCOLOURMODE 2148
 #define SCI_GETPRINTCOLOURMODE 2149
 #define SCFIND_WHOLEWORD 0x2
