@@ -325,7 +325,7 @@ WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 WCHAR     g_wchCurFile[FILE_ARG_BUF] = { L'\0' };
 FILEVARS  fvCurFile;
-bool      bReadOnly = false;
+bool      g_bFileReadOnly = false;
 
 
 // temporary line buffer for fast line ops 
@@ -2315,7 +2315,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_FILE_ADDTOFAV,i);
 
   EnableCmd(hmenu,IDM_FILE_READONLY,i);
-  CheckCmd(hmenu,IDM_FILE_READONLY,bReadOnly);
+  CheckCmd(hmenu,IDM_FILE_READONLY,g_bFileReadOnly);
 
   EnableCmd(hmenu,IDM_ENCODING_UNICODEREV,!ro);
   EnableCmd(hmenu,IDM_ENCODING_UNICODE,!ro);
@@ -2692,7 +2692,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         DWORD dwFileAttributes = GetFileAttributes(g_wchCurFile);
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES) {
-          if (bReadOnly)
+          if (g_bFileReadOnly)
             dwFileAttributes = (dwFileAttributes & ~FILE_ATTRIBUTE_READONLY);
           else
             dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
@@ -2704,7 +2704,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         dwFileAttributes = GetFileAttributes(g_wchCurFile);
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
-          bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+          g_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
         UpdateToolbar();
       }
@@ -4340,6 +4340,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       else {
         EditToggleView(g_hwndEdit, true);
       }
+      UpdateToolbar();
       break;
 
     case IDM_VIEW_MARKOCCUR_CASE:
@@ -7203,47 +7204,46 @@ void UpdateVisibleUrlHotspot(int delay)
 //
 //  UpdateToolbar()
 //
-#define EnableTool(id,b) SendMessage(g_hwndToolbar,TB_ENABLEBUTTON,id, \
-                           MAKELONG(((b) ? 1 : 0), 0))
-
-#define CheckTool(id,b)  SendMessage(g_hwndToolbar,TB_CHECKBUTTON,id, \
-                           MAKELONG(b,0))
+#define EnableTool(id,b) SendMessage(g_hwndToolbar,TB_ENABLEBUTTON,id, MAKELONG(((b) ? 1 : 0), 0))
+#define CheckTool(id,b)  SendMessage(g_hwndToolbar,TB_CHECKBUTTON,id, MAKELONG((b),0))
 
 void UpdateToolbar()
 {
   SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_UNTITLED, g_wchCurFile,
                  iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
-                 IDS_READONLY, bReadOnly, szTitleExcerpt);
+                 IDS_READONLY, g_bFileReadOnly, szTitleExcerpt);
 
   if (!bShowToolbar) { return; }
 
-  EnableTool(IDT_FILE_ADDTOFAV,StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)));
-
-  EnableTool(IDT_EDIT_UNDO,SendMessage(g_hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_REDO,SendMessage(g_hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_PASTE,SendMessage(g_hwndEdit,SCI_CANPASTE,0,0) /*&& !bReadOnly*/);
+  EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile)));
+  EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
+  CheckTool(IDT_VIEW_WORDWRAP, bWordWrap);
 
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
+  bool ro = SciCall_GetReadOnly();
+  bool tv = EditToggleView(g_hwndEdit, false);
+
+  EnableTool(IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
+  EnableTool(IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
+  EnableTool(IDT_EDIT_PASTE, SciCall_CanPaste() && !ro);
+
+  EnableTool(IDT_FILE_LAUNCH, b2);
+
 
   EnableTool(IDT_EDIT_FIND, b2);
   //EnableTool(IDT_EDIT_FINDNEXT,b2);
   //EnableTool(IDT_EDIT_FINDPREV,b2 && strlen(g_efrData.szFind));
-  EnableTool(IDT_EDIT_REPLACE, b2 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_REPLACE, b2 && !ro);
 
-  EnableTool(IDT_EDIT_CUT, !b1 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_COPY, !b1 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_CLEAR, !b1 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_CUT, !b1 && !ro);
+  EnableTool(IDT_EDIT_COPY, !b1 && !ro);
+  EnableTool(IDT_EDIT_CLEAR, !b1 && !ro);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding) && !tv);
+
   EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible));
- 
-  EnableTool(IDT_FILE_LAUNCH, b2);
-
-  EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
-
-  CheckTool(IDT_VIEW_WORDWRAP,bWordWrap);
-
+  CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
 }
 
 
@@ -7720,7 +7720,7 @@ bool FileIO(bool fLoad,LPCWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANS
   }
 
   dwFileAttributes = GetFileAttributes(pszFileName);
-  bReadOnly = (dwFileAttributes != INVALID_FILE_ATTRIBUTES && dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+  g_bFileReadOnly = (dwFileAttributes != INVALID_FILE_ATTRIBUTES && dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
   EndWaitCursor();
 
@@ -7773,7 +7773,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     Encoding_HasChanged(g_iDefaultNewFileEncoding);
     EditSetNewText(g_hwndEdit,"",0);
 
-    bReadOnly = false;
+    g_bFileReadOnly = false;
     _SetDocumentModified(false);
     UpdateToolbar();
     UpdateStatusbar();
@@ -7848,7 +7848,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
           Encoding_Current(g_iDefaultNewFileEncoding);
           Encoding_HasChanged(g_iDefaultNewFileEncoding);
         }
-        bReadOnly = false;
+        g_bFileReadOnly = false;
         EditSetNewText(g_hwndEdit,"",0);
       }
       if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE)) {
@@ -8070,8 +8070,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
   {
     DWORD dwFileAttributes = GetFileAttributes(g_wchCurFile);
     if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
-      bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
-    if (bReadOnly) {
+      g_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+    if (g_bFileReadOnly) {
       UpdateToolbar();
       if (MsgBox(MBYESNOWARN,IDS_READONLY_SAVE,g_wchCurFile) == IDYES)
         bSaveAs = true;
