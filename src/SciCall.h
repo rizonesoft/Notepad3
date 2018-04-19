@@ -192,7 +192,6 @@ DeclareSciCallV2(SetSel, SETSEL, DocPos, anchorPos, DocPos, currentPos)
 DeclareSciCallV0(SelectAll, SELECTALL)
 DeclareSciCallR01(GetSelText, GETSELTEXT, DocPos, const char*, text)
 DeclareSciCallV01(ReplaceSel, REPLACESEL, const char*, text)
-DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text)
 DeclareSciCallV2(InsertText, INSERTTEXT, DocPos, position, const char*, text)
 
 
@@ -226,7 +225,8 @@ DeclareSciCallR2(FindColumn, FINDCOLUMN, DocPos, DocLn, line, DocPos, column)
 DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char* const, DocPos, start, DocPos, length)
-DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, const char*)
+DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, char* const)
+DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text)
 
 DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
 
@@ -340,7 +340,12 @@ DeclareSciCallV1(SetCursor, SETCURSOR, int, flags)
 //
 //  Undo/Redo Stack
 //
+DeclareSciCallV0(EmptyUndoBuffer, EMPTYUNDOBUFFER)
+DeclareSciCallV0(BeginUndoAction, BEGINUNDOACTION)
+DeclareSciCallV2(AddUndoAction, ADDUNDOACTION, int, token, int, flags)
+DeclareSciCallV0(EndUndoAction, ENDUNDOACTION)
 DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool)
+DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo)
 
 
 //=============================================================================

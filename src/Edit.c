@@ -339,6 +339,55 @@ void EditInitWordDelimiter(HWND hwnd)
 }
 
 
+//=============================================================================
+//
+//  _ClearTextBuffer()
+//
+void __fastcall _ClearTextBuffer(HWND hwnd)
+{
+  SendMessage(hwnd, SCI_CANCEL, 0, 0);
+
+  if (SendMessage(hwnd, SCI_GETREADONLY, 0, 0)) { SendMessage(hwnd, SCI_SETREADONLY, false, 0); }
+
+  UndoRedoActionMap(-1, NULL); 
+
+  SciCall_SetUndoCollection(false);
+
+  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
+  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
+
+  EditClearAllOccurrenceMarkers(hwnd, 0, -1);
+  if (EditToggleView(g_hwndEdit, false)) {
+    EditToggleView(g_hwndEdit, true);
+  }
+
+  SciCall_SetUndoCollection(true);
+
+  SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
+  SendMessage(hwnd, SCI_SETXOFFSET, 0, 0);
+}
+
+
+//=============================================================================
+//
+//  _InitTextBuffer()
+//
+void __fastcall _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
+{
+  SciCall_SetUndoCollection(false);
+
+  if (textLen > 0) {
+    SciCall_AddText(textLen, lpstrText);
+  }
+  SciCall_GotoPos(0);
+  SciCall_ChooseCaretX(0);
+
+  SciCall_SetUndoCollection(true);
+
+  if (bSetSavePoint) { SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0); }
+}
+
+
 
 //=============================================================================
 //
@@ -347,38 +396,15 @@ void EditInitWordDelimiter(HWND hwnd)
 extern bool bFreezeAppTitle;
 extern FILEVARS fvCurFile;
 
-
 void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 {
   bFreezeAppTitle = true;
 
-  if (SendMessage(hwnd, SCI_GETREADONLY, 0, 0)) {
-    SendMessage(hwnd, SCI_SETREADONLY, false, 0);
-  }
-
-  SendMessage(hwnd,SCI_CANCEL,0,0);
-  SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-  UndoRedoActionMap(-1,NULL);
-  SendMessage(hwnd,SCI_CLEARALL,0,0);
-  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_OCCUR_LINE,0);
-  SendMessage(hwnd,SCI_SETSCROLLWIDTH,GetSystemMetrics(SM_CXSCREEN),0);
-  SendMessage(hwnd,SCI_SETXOFFSET,0,0);
-  if (EditToggleView(g_hwndEdit, false)) {
-    EditToggleView(g_hwndEdit, true);
-  }
+  _ClearTextBuffer(hwnd);
 
   FileVars_Apply(hwnd,&fvCurFile);
 
-  if (cbText > 0) {
-    SendMessage(hwnd, SCI_ADDTEXT, cbText, (LPARAM)lpstrText);
-  }
-  SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
-  //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
-  SendMessage(hwnd,SCI_SETSAVEPOINT,0,0);
-  SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
-  SendMessage(hwnd,SCI_GOTOPOS,0,0);
-  SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
+  _InitTextBuffer(hwnd, lpstrText, cbText, true);
 
   bFreezeAppTitle = false;
 }
@@ -396,22 +422,12 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
   if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
     return(false);
 
-  DocPos length = SciCall_GetTextLength();
+  DocPos const length = SciCall_GetTextLength();
 
   if (length == 0)
   {
-    SendMessage(hwnd,SCI_CANCEL,0,0);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-    UndoRedoActionMap(-1,NULL);
-    SendMessage(hwnd,SCI_CLEARALL,0,0);
-    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-    SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_OCCUR_LINE, 0);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
-    SendMessage(hwnd,SCI_GOTOPOS,0,0);
-    SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
-
-    if (bSetSavePoint)
-      SendMessage(hwnd,SCI_SETSAVEPOINT,0,0);
+    _ClearTextBuffer(hwnd);
+    _InitTextBuffer(hwnd, NULL, length, bSetSavePoint);
   }
   else {
 
@@ -439,20 +455,12 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
     pchText[cbText] = '\0';
     pchText[cbText+1] = '\0';
 
-    SendMessage(hwnd,SCI_CANCEL,0,0);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-    UndoRedoActionMap(-1,NULL);
-    SendMessage(hwnd,SCI_CLEARALL,0,0);
-    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-    SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_OCCUR_LINE, 0);
-    SendMessage(hwnd,SCI_ADDTEXT,cbText,(LPARAM)pchText);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
-    SendMessage(hwnd,SCI_GOTOPOS,0,0);
-    SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
-
-    FreeMem(pchText);
     FreeMem(pwchText);
 
+    _ClearTextBuffer(hwnd);
+    _InitTextBuffer(hwnd, pchText, cbText, bSetSavePoint);
+
+    FreeMem(pchText);
   }
   return(true);
 }
@@ -485,6 +493,7 @@ bool EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool bNoUI,bool bSetSavePoint
 
       if (doNewEncoding) {
         return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
+
       }
     }
     else {
@@ -498,6 +507,7 @@ bool EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool bNoUI,bool bSetSavePoint
   } 
   return false;
 }
+
 
 //=============================================================================
 //
@@ -2747,9 +2757,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 //
 void EditAlignText(HWND hwnd,int nMode)
 {
-  #define BUFSIZE_ALIGN 1024
-
-  bool  bModified = false;
+  #define BUFSIZE_ALIGN 2048
 
   const DocPos iSelStart  = SciCall_GetSelectionStart();
   const DocPos iSelEnd    = SciCall_GetSelectionEnd();
@@ -2807,15 +2815,9 @@ void EditAlignText(HWND hwnd,int nMode)
         DocPos iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if ((iIndentPos == iEndPos) && (iEndPos > 0)) {
-
-          if (!bModified) {
-            SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
-            bModified = true;
-          }
           SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLine), iEndPos);
           SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
         }
-
         else {
 
           char  tchLineBuf[BUFSIZE_ALIGN*3] = { '\0' };
@@ -2826,11 +2828,6 @@ void EditAlignText(HWND hwnd,int nMode)
           int iWords = 0;
           int iWordsLength = 0;
           DocPos cchLine = SciCall_GetLine(iLine, tchLineBuf);
-
-          if (!bModified) {
-            SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
-            bModified = true;
-          }
 
           MultiByteToWideChar(Encoding_SciCP,0,tchLineBuf,(int)cchLine,wchLineBuf,COUNTOF(wchLineBuf));
           StrTrim(wchLineBuf,L"\r\n\t ");
@@ -2978,10 +2975,6 @@ void EditAlignText(HWND hwnd,int nMode)
     }
     else
       MsgBox(MBINFO, IDS_BUFFERTOOSMALL);
-
-      if (bModified) {
-        SendMessage(hwnd, SCI_ENDUNDOACTION, 0, 0);
-      }
 
       if (iCurPos < iAnchorPos) {
         iCurPos = SciCall_PositionFromLine(iLineStart);
