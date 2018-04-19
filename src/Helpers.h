@@ -100,7 +100,7 @@ __forceinline bool IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, 
 }
 __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos)
 {
-  WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
+  WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
 //extern HWND g_hwndEdit;
