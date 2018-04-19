@@ -247,7 +247,7 @@ void ScintillaBase::AutoCompleteStart(Sci::Position lenEntered, const char *list
 		if (list && !strchr(list, ac.GetSeparator())) {
 			const char *typeSep = strchr(list, ac.GetTypesep());
 			const Sci::Position lenInsert = typeSep ?
-				static_cast<Sci::Position>(typeSep-list) : static_cast<Sci::Position>(strlen(list));
+				(typeSep-list) : strlen(list);
 			if (ac.ignoreCase) {
 				// May need to convert the case before invocation, so remove lenEntered characters
 				AutoCompleteInsert(sel.MainCaret() - lenEntered, lenEntered, list, lenInsert);
@@ -423,7 +423,7 @@ void ScintillaBase::AutoCompleteCompleted(char ch, unsigned int completionMethod
 		endPos = pdoc->ExtendWordSelect(endPos, 1, true);
 	if (endPos < firstPos)
 		return;
-	AutoCompleteInsert(firstPos, endPos - firstPos, selected.c_str(), static_cast<Sci::Position>(selected.length()));
+	AutoCompleteInsert(firstPos, endPos - firstPos, selected.c_str(), selected.length());
 	SetLastXChosen();
 
 	scn.nmhdr.code = SCN_AUTOCCOMPLETED;
@@ -656,7 +656,7 @@ void LexState::SetWordList(int n, const char *wl) {
 	if (instance) {
 		const Sci_Position firstModification = instance->WordListSet(n, wl);
 		if (firstModification >= 0) {
-			pdoc->ModifiedAt(static_cast<Sci::Position>(firstModification));
+			pdoc->ModifiedAt(firstModification);
 		}
 	}
 }
@@ -702,7 +702,7 @@ void LexState::PropSet(const char *key, const char *val) {
 	if (instance) {
 		const Sci_Position firstModification = instance->PropertySet(key, val);
 		if (firstModification >= 0) {
-			pdoc->ModifiedAt(static_cast<Sci::Position>(firstModification));
+			pdoc->ModifiedAt(firstModification);
 		}
 	}
 }
@@ -825,10 +825,10 @@ const char *LexState::DescriptionOfStyle(int style) {
 void ScintillaBase::NotifyStyleToNeeded(Sci::Position endStyleNeeded) {
 #ifdef SCI_LEXER
 	if (DocumentLexState()->lexLanguage != SCLEX_CONTAINER) {
-		const Sci::Line lineEndStyled = static_cast<Sci::Line>(
-			pdoc->LineFromPosition(pdoc->GetEndStyled()));
-		const Sci::Position endStyled = static_cast<Sci::Position>(
-			pdoc->LineStart(lineEndStyled));
+		const Sci::Line lineEndStyled =
+			pdoc->SciLineFromPosition(pdoc->GetEndStyled());
+		const Sci::Position endStyled =
+			pdoc->LineStart(lineEndStyled);
 		DocumentLexState()->Colourise(endStyled, endStyleNeeded);
 		return;
 	}
@@ -984,7 +984,7 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 		return ac.GetTypesep();
 
 	case SCI_CALLTIPSHOW:
-		CallTipShow(LocationFromPosition(static_cast<int>(wParam)),
+		CallTipShow(LocationFromPosition(static_cast<Sci::Position>(wParam)),
 			reinterpret_cast<const char *>(lParam));
 		break;
 
@@ -999,7 +999,7 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 		return ct.posStartCallTip;
 
 	case SCI_CALLTIPSETPOSSTART:
-		ct.posStartCallTip = static_cast<int>(wParam);
+		ct.posStartCallTip = static_cast<Sci::Position>(wParam);
 		break;
 
 	case SCI_CALLTIPSETHLT:
@@ -1048,7 +1048,7 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 	case SCI_COLOURISE:
 		if (DocumentLexState()->lexLanguage == SCLEX_CONTAINER) {
 			pdoc->ModifiedAt(static_cast<Sci::Position>(wParam));
-			NotifyStyleToNeeded((lParam == -1) ? static_cast<Sci::Position>(pdoc->Length()) :
+			NotifyStyleToNeeded((lParam == -1) ? pdoc->Length() :
 					    static_cast<Sci::Position>(lParam));
 		} else {
 			DocumentLexState()->Colourise(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));

@@ -5558,7 +5558,8 @@ struct Sci_RangeToFormat {
 
           <td align="center">0</td>
 
-          <td>Print using the current screen colours. This is the default.</td>
+          <td>Print using the current screen colours with the exception of line number margins which print on a white background.
+		  This is the default.</td>
         </tr>
 
         <tr>
@@ -5591,9 +5592,19 @@ struct Sci_RangeToFormat {
 
           <td align="center">4</td>
 
-          <td>Everything prints in its own colour on a white background except that line numbers
-          use their own background colour.</td>
+          <td>Everything prints in its own foreground colour but all styles up to and including STYLE_LINENUMBER will print
+		  on a white background.</td>
         </tr>
+
+        <tr>
+          <td align="left"><code>SC_PRINT_SCREENCOLOURS</code></td>
+
+          <td align="center">5</td>
+
+          <td>Print using the current screen colours for both foreground and background.
+		  This is the only mode that does not set the background colour of the line number margin to white.</td>
+        </tr>
+
       </tbody>
     </table>
 

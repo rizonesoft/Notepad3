@@ -133,7 +133,7 @@ static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
 
 // temporary line buffer for fast line ops 
-static char g_pTempLineBuffer[TEMPLINE_BUFFER];
+static char  g_pTempLineBuffer[TEMPLINE_BUFFER];
 
 
 enum AlignMask {
@@ -339,6 +339,55 @@ void EditInitWordDelimiter(HWND hwnd)
 }
 
 
+//=============================================================================
+//
+//  _ClearTextBuffer()
+//
+void __fastcall _ClearTextBuffer(HWND hwnd)
+{
+  SendMessage(hwnd, SCI_CANCEL, 0, 0);
+
+  if (SendMessage(hwnd, SCI_GETREADONLY, 0, 0)) { SendMessage(hwnd, SCI_SETREADONLY, false, 0); }
+
+  UndoRedoActionMap(-1, NULL); 
+
+  SciCall_SetUndoCollection(false);
+
+  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
+  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
+
+  EditClearAllOccurrenceMarkers(hwnd, 0, -1);
+  if (EditToggleView(g_hwndEdit, false)) {
+    EditToggleView(g_hwndEdit, true);
+  }
+
+  SciCall_SetUndoCollection(true);
+
+  SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
+  SendMessage(hwnd, SCI_SETXOFFSET, 0, 0);
+}
+
+
+//=============================================================================
+//
+//  _InitTextBuffer()
+//
+void __fastcall _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
+{
+  SciCall_SetUndoCollection(false);
+
+  if (textLen > 0) {
+    SciCall_AddText(textLen, lpstrText);
+  }
+  SciCall_GotoPos(0);
+  SciCall_ChooseCaretX();
+
+  SciCall_SetUndoCollection(true);
+
+  if (bSetSavePoint) { SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0); }
+}
+
+
 
 //=============================================================================
 //
@@ -347,38 +396,15 @@ void EditInitWordDelimiter(HWND hwnd)
 extern bool bFreezeAppTitle;
 extern FILEVARS fvCurFile;
 
-
 void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 {
   bFreezeAppTitle = true;
 
-  if (SendMessage(hwnd, SCI_GETREADONLY, 0, 0)) {
-    SendMessage(hwnd, SCI_SETREADONLY, false, 0);
-  }
-
-  SendMessage(hwnd,SCI_CANCEL,0,0);
-  SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-  UndoRedoActionMap(-1,NULL);
-  SendMessage(hwnd,SCI_CLEARALL,0,0);
-  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-  SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_OCCUR_LINE,0);
-  SendMessage(hwnd,SCI_SETSCROLLWIDTH,GetSystemMetrics(SM_CXSCREEN),0);
-  SendMessage(hwnd,SCI_SETXOFFSET,0,0);
-  if (EditToggleView(g_hwndEdit, false)) {
-    EditToggleView(g_hwndEdit, true);
-  }
+  _ClearTextBuffer(hwnd);
 
   FileVars_Apply(hwnd,&fvCurFile);
 
-  if (cbText > 0) {
-    SendMessage(hwnd, SCI_ADDTEXT, cbText, (LPARAM)lpstrText);
-  }
-  SendMessage(hwnd,SCI_SETUNDOCOLLECTION,1,0);
-  //SendMessage(hwnd,EM_EMPTYUNDOBUFFER,0,0); // deprecated
-  SendMessage(hwnd,SCI_SETSAVEPOINT,0,0);
-  SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
-  SendMessage(hwnd,SCI_GOTOPOS,0,0);
-  SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
+  _InitTextBuffer(hwnd, lpstrText, cbText, true);
 
   bFreezeAppTitle = false;
 }
@@ -396,22 +422,12 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
   if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
     return(false);
 
-  DocPos length = SciCall_GetTextLength();
+  DocPos const length = SciCall_GetTextLength();
 
   if (length == 0)
   {
-    SendMessage(hwnd,SCI_CANCEL,0,0);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-    UndoRedoActionMap(-1,NULL);
-    SendMessage(hwnd,SCI_CLEARALL,0,0);
-    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-    SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_OCCUR_LINE, 0);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
-    SendMessage(hwnd,SCI_GOTOPOS,0,0);
-    SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
-
-    if (bSetSavePoint)
-      SendMessage(hwnd,SCI_SETSAVEPOINT,0,0);
+    _ClearTextBuffer(hwnd);
+    _InitTextBuffer(hwnd, NULL, length, bSetSavePoint);
   }
   else {
 
@@ -439,20 +455,12 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
     pchText[cbText] = '\0';
     pchText[cbText+1] = '\0';
 
-    SendMessage(hwnd,SCI_CANCEL,0,0);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,0,0);
-    UndoRedoActionMap(-1,NULL);
-    SendMessage(hwnd,SCI_CLEARALL,0,0);
-    SendMessage(hwnd,SCI_MARKERDELETEALL,(WPARAM)MARKER_NP3_BOOKMARK,0);
-    SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_OCCUR_LINE, 0);
-    SendMessage(hwnd,SCI_ADDTEXT,cbText,(LPARAM)pchText);
-    SendMessage(hwnd,SCI_SETUNDOCOLLECTION,(WPARAM)1,0);
-    SendMessage(hwnd,SCI_GOTOPOS,0,0);
-    SendMessage(hwnd,SCI_CHOOSECARETX,0,0);
-
-    FreeMem(pchText);
     FreeMem(pwchText);
 
+    _ClearTextBuffer(hwnd);
+    _InitTextBuffer(hwnd, pchText, cbText, bSetSavePoint);
+
+    FreeMem(pchText);
   }
   return(true);
 }
@@ -485,6 +493,7 @@ bool EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool bNoUI,bool bSetSavePoint
 
       if (doNewEncoding) {
         return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
+
       }
     }
     else {
@@ -498,6 +507,7 @@ bool EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool bNoUI,bool bSetSavePoint
   } 
   return false;
 }
+
 
 //=============================================================================
 //
@@ -616,8 +626,10 @@ char* EditGetClipboardText(HWND hwnd,bool bCheckEncoding,int* pLineCount,int* pL
 
       LocalFree(pmch);
       pmch = LocalAlloc(LPTR,mlen2 + 1);
-      StringCchCopyA(pmch,mlen2 + 1,ptmp);
-      LocalFree(ptmp);
+      if (pmch) {
+        StringCchCopyA(pmch, mlen2 + 1, ptmp);
+        LocalFree(ptmp);
+      }
     }
   }
   else {
@@ -896,19 +908,20 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   else {
     DocPos cchText = SciCall_GetTextLength();
     pszText = LocalAlloc(LPTR,cchText + 1);
-    SciCall_GetText((DocPos)LocalSize(pszText), pszText);
+    if (pszText) {
+      SciCall_GetText((DocPos)LocalSize(pszText), pszText);
+    }
   }
   WCHAR* pszTextW = NULL;
-  int cchTextW = MultiByteToWideChar(Encoding_SciCP,0,pszText,-1,NULL,0);
-  if (cchTextW > 0) {
-    int lenTxt = (cchTextW + 1);
-    pszTextW = LocalAlloc(LPTR,sizeof(WCHAR)*lenTxt);
-    MultiByteToWideChar(Encoding_SciCP,0,pszText,-1,pszTextW,lenTxt);
-  }
-  
-  if (pszText)
+  if (pszText) {
+    int cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, NULL, 0);
+    if (cchTextW > 0) {
+      int lenTxt = (cchTextW + 1);
+      pszTextW = LocalAlloc(LPTR, sizeof(WCHAR)*lenTxt);
+      MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, pszTextW, lenTxt);
+    }
     LocalFree(pszText);
-
+  }
   if (!bAppend) {
     bool res = (bool)SetClipboardTextW(GetParent(hwnd), pszTextW);
     LocalFree(pszTextW);
@@ -925,7 +938,9 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   HANDLE hOld   = GetClipboardData(CF_UNICODETEXT);
   WCHAR* pszOld = GlobalLock(hOld);
 
-  int sizeNew   = lstrlen(pszOld) + lstrlen(pszTextW) + 1;
+  int sizeNew = 0;
+  if (pszOld && pszTextW)
+    sizeNew = lstrlen(pszOld) + lstrlen(pszTextW) + 1;
 
   const  WCHAR *pszSep = L"\r\n";
   sizeNew += (int)lstrlen(pszSep);
@@ -933,19 +948,21 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   // Copy Clip
   WCHAR* pszNewTextW = LocalAlloc(LPTR, sizeof(WCHAR) * sizeNew);
   
-  if (pszOld)
+  if (pszOld && pszNewTextW)
     StringCchCopy(pszNewTextW, sizeNew, pszOld);
 
   GlobalUnlock(hOld);
   CloseClipboard();
 
-
   // Add New
-  StringCchCat(pszNewTextW, sizeNew, pszSep);
-  StringCchCat(pszNewTextW, sizeNew, pszTextW);
+  bool res = false;
+  if (pszTextW && pszNewTextW) {
+    StringCchCat(pszNewTextW, sizeNew, pszSep);
+    StringCchCat(pszNewTextW, sizeNew, pszTextW);
+    res = (bool)SetClipboardTextW(GetParent(hwnd), pszNewTextW);
+  }
 
-  bool res = (bool)SetClipboardTextW(GetParent(hwnd), pszNewTextW);
-
+  LocalFree(pszTextW);
   LocalFree(pszNewTextW);
   return res;
 }
@@ -1574,14 +1591,15 @@ void EditTitleCase(HWND hwnd)
 
       bool bChanged = false;
       LPWSTR pszMappedW = LocalAlloc(LPTR,SizeOfMem(pszTextW));
-      // first make lower case, before applying TitleCase
-      if (LCMapString(LOCALE_SYSTEM_DEFAULT,(LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE), pszTextW,cchTextW,pszMappedW,(int)iSelLength)) 
-      {
-        if (LCMapString(LOCALE_SYSTEM_DEFAULT,LCMAP_TITLECASE,pszMappedW,cchTextW,pszTextW,(int)iSelLength)) {
-          bChanged = true;
+      if (pszMappedW) {
+        // first make lower case, before applying TitleCase
+        if (LCMapString(LOCALE_SYSTEM_DEFAULT, (LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE), pszTextW, cchTextW, pszMappedW, (int)iSelLength)) {
+          if (LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_TITLECASE, pszMappedW, cchTextW, pszTextW, (int)iSelLength)) {
+            bChanged = true;
+          }
         }
+        LocalFree(pszMappedW);
       }
-      LocalFree(pszMappedW);
 
       if (bChanged) {
 
@@ -2747,9 +2765,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 //
 void EditAlignText(HWND hwnd,int nMode)
 {
-  #define BUFSIZE_ALIGN 1024
-
-  bool  bModified = false;
+  #define BUFSIZE_ALIGN 512
 
   const DocPos iSelStart  = SciCall_GetSelectionStart();
   const DocPos iSelEnd    = SciCall_GetSelectionEnd();
@@ -2807,32 +2823,20 @@ void EditAlignText(HWND hwnd,int nMode)
         DocPos iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if ((iIndentPos == iEndPos) && (iEndPos > 0)) {
-
-          if (!bModified) {
-            SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
-            bModified = true;
-          }
           SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLine), iEndPos);
           SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
         }
-
         else {
-
-          char  tchLineBuf[BUFSIZE_ALIGN*3] = { '\0' };
+          g_pTempLineBuffer[0] = '\0';
           WCHAR wchLineBuf[BUFSIZE_ALIGN*3] = L"";
           WCHAR *pWords[BUFSIZE_ALIGN*3/2];
           WCHAR *p = wchLineBuf;
 
           int iWords = 0;
           int iWordsLength = 0;
-          DocPos cchLine = SciCall_GetLine(iLine, tchLineBuf);
+          DocPos cchLine = SciCall_GetLine(iLine, g_pTempLineBuffer);
 
-          if (!bModified) {
-            SendMessage(hwnd, SCI_BEGINUNDOACTION, 0, 0);
-            bModified = true;
-          }
-
-          MultiByteToWideChar(Encoding_SciCP,0,tchLineBuf,(int)cchLine,wchLineBuf,COUNTOF(wchLineBuf));
+          MultiByteToWideChar(Encoding_SciCP,0,g_pTempLineBuffer,(int)cchLine,wchLineBuf,COUNTOF(wchLineBuf));
           StrTrim(wchLineBuf,L"\r\n\t ");
 
           while (*p) {
@@ -2896,10 +2900,10 @@ void EditAlignText(HWND hwnd,int nMode)
                   p = StrEnd(p);
                 }
 
-                int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,tchLineBuf) - 1;
+                int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
 
                 SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
-                SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)tchLineBuf);
+                SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)g_pTempLineBuffer);
 
                 SendMessage(hwnd,SCI_SETLINEINDENTATION,(WPARAM)iLine,(LPARAM)iMinIndent);
               }
@@ -2916,10 +2920,10 @@ void EditAlignText(HWND hwnd,int nMode)
                   p = StrEnd(p);
                 }
 
-                int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,tchLineBuf) - 1;
+                int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
 
                 SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
-                SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)tchLineBuf);
+                SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)g_pTempLineBuffer);
 
                 SendMessage(hwnd, SCI_SETLINEINDENTATION, (WPARAM)iLine, (LPARAM)iMinIndent);
               }
@@ -2955,7 +2959,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 p = StrEnd(p);
               }
 
-              int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,tchLineBuf) - 1;
+              int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
 
               if (nMode == ALIGN_RIGHT || nMode == ALIGN_CENTER) {
                 SendMessage(hwnd,SCI_SETLINEINDENTATION,(WPARAM)iLine,(LPARAM)iMinIndent);
@@ -2965,7 +2969,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 iPos = SciCall_PositionFromLine(iLine);
               
               SendMessage(hwnd, SCI_SETTARGETRANGE, iPos, SciCall_GetLineEndPosition(iLine));
-              SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)tchLineBuf);
+              SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)g_pTempLineBuffer);
 
               if (nMode == ALIGN_LEFT)
                 SendMessage(hwnd, SCI_SETLINEINDENTATION, (WPARAM)iLine, (LPARAM)iMinIndent);
@@ -2978,10 +2982,6 @@ void EditAlignText(HWND hwnd,int nMode)
     }
     else
       MsgBox(MBINFO, IDS_BUFFERTOOSMALL);
-
-      if (bModified) {
-        SendMessage(hwnd, SCI_ENDUNDOACTION, 0, 0);
-      }
 
       if (iCurPos < iAnchorPos) {
         iCurPos = SciCall_PositionFromLine(iLineStart);
@@ -4239,6 +4239,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
 
   pLines = LocalAlloc(LPTR, sizeof(SORTLINE) * iLineCount);
+  if (!pLines) { return; }
+
   DocLn i = 0;
   for (iLine = iLineStart; iLine <= iLineEnd; iLine++) {
 
@@ -4306,11 +4308,12 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     }
   }
   else {
-    if (iSortFlags & SORT_LOGICAL && pfnStrCmpLogicalW)
+    if ((iSortFlags & SORT_LOGICAL) && pfnStrCmpLogicalW)
       qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLogical);
     else
       qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
   }
+  
 
   DocLn lenRes = cchTotal + 2 * iLineCount + 1;
   pmszResult = LocalAlloc(LPTR, lenRes);
@@ -6697,7 +6700,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     SciCall_FoldAll(SC_FOLDACTION_EXPAND);
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE);
     if (!g_bCodeFoldingAvailable) { SciCall_SetProperty("fold", "0"); }
-    Style_SetFolding(hwnd, g_bShowCodeFolding);
+    Style_SetFolding(hwnd, g_bCodeFoldingAvailable && g_bShowCodeFolding);
     EditApplyLexerStyle(hwnd, 0, -1);
     ObserveNotifyChangeEvent();
     return;
@@ -7602,7 +7605,7 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
   do {
     iLine = (DocLn)SendMessage(hwnd, SCI_MARKERNEXT, iLine + 1, bitmask);
     if (iLine >= 0) {
-      StringCchPrintfW(tchLine, COUNTOF(tchLine), L"%td;", iLine);
+      StringCchPrintfW(tchLine, COUNTOF(tchLine), L"%td;", (long long)iLine);
       StringCchCatW(pszBookMarks, cchLength, tchLine);
     }
   } while (iLine >= 0);

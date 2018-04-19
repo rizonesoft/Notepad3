@@ -292,6 +292,7 @@ public:
 	void SCI_METHOD SetErrorStatus(int status) override;
 
 	Sci_Position SCI_METHOD LineFromPosition(Sci_Position pos) const override;
+	Sci::Line SciLineFromPosition(Sci::Position pos) const;	// Avoids casting LineFromPosition
 	Sci::Position ClampPositionIntoDocument(Sci::Position pos) const;
 	bool ContainsLineEnd(const char *s, Sci::Position length) const { return cb.ContainsLineEnd(s, length); }
 	bool IsCrLf(Sci::Position pos) const;
@@ -362,10 +363,10 @@ public:
 
 	char CharAt(Sci::Position position) const { return cb.CharAt(position); }
 	void SCI_METHOD GetCharRange(char *buffer, Sci_Position position, Sci_Position lengthRetrieve) const override {
-		cb.GetCharRange(buffer, static_cast<Sci::Position>(position), static_cast<Sci::Position>(lengthRetrieve));
+		cb.GetCharRange(buffer, position, lengthRetrieve);
 	}
-	char SCI_METHOD StyleAt(Sci_Position position) const override { return cb.StyleAt(static_cast<Sci::Position>(position)); }
-	int StyleIndexAt(Sci_Position position) const { return static_cast<unsigned char>(cb.StyleAt(static_cast<Sci::Position>(position))); }
+	char SCI_METHOD StyleAt(Sci_Position position) const override { return cb.StyleAt(position); }
+	int StyleIndexAt(Sci_Position position) const { return static_cast<unsigned char>(cb.StyleAt(position)); }
 	void GetStyleRange(unsigned char *buffer, Sci::Position position, Sci::Position lengthRetrieve) const {
 		cb.GetStyleRange(buffer, position, lengthRetrieve);
 	}

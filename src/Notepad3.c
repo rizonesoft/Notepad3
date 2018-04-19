@@ -325,7 +325,7 @@ WCHAR     g_wchAppUserModelID[32] = { L'\0' };
 WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 WCHAR     g_wchCurFile[FILE_ARG_BUF] = { L'\0' };
 FILEVARS  fvCurFile;
-bool      bReadOnly = false;
+bool      g_bFileReadOnly = false;
 
 
 // temporary line buffer for fast line ops 
@@ -960,13 +960,13 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
       bool bAutoIndent2 = bAutoIndent;
       bAutoIndent = 0;
       EditJumpTo(g_hwndEdit, -1, 0);
-      SendMessage(g_hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
+      int token = BeginUndoAction();
       if (SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
         SendMessage(g_hwndEdit, SCI_NEWLINE, 0, 0);
       }
       SendMessage(g_hwndEdit, SCI_PASTE, 0, 0);
       SendMessage(g_hwndEdit, SCI_NEWLINE, 0, 0);
-      SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+      EndUndoAction(token);
       bAutoIndent = bAutoIndent2;
       if (flagJumpTo)
         EditJumpTo(g_hwndEdit, iInitialLine, iInitialColumn);
@@ -2315,7 +2315,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_FILE_ADDTOFAV,i);
 
   EnableCmd(hmenu,IDM_FILE_READONLY,i);
-  CheckCmd(hmenu,IDM_FILE_READONLY,bReadOnly);
+  CheckCmd(hmenu,IDM_FILE_READONLY,g_bFileReadOnly);
 
   EnableCmd(hmenu,IDM_ENCODING_UNICODEREV,!ro);
   EnableCmd(hmenu,IDM_ENCODING_UNICODE,!ro);
@@ -2507,6 +2507,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, bMarkOccurrencesMatchCase);
 
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, EditToggleView(g_hwndEdit, false));
 
   if (bMarkOccurrencesMatchWords)
     i = IDM_VIEW_MARKOCCUR_WORD;
@@ -2692,7 +2693,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         DWORD dwFileAttributes = GetFileAttributes(g_wchCurFile);
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES) {
-          if (bReadOnly)
+          if (g_bFileReadOnly)
             dwFileAttributes = (dwFileAttributes & ~FILE_ATTRIBUTE_READONLY);
           else
             dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
@@ -2704,7 +2705,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         dwFileAttributes = GetFileAttributes(g_wchCurFile);
         if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
-          bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+          g_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
         UpdateToolbar();
       }
@@ -4340,6 +4341,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       else {
         EditToggleView(g_hwndEdit, true);
       }
+      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, EditToggleView(g_hwndEdit, false));
+      UpdateToolbar();
       break;
 
     case IDM_VIEW_MARKOCCUR_CASE:
@@ -5676,16 +5679,16 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   }
                   if (pLineBuf)
                   {
-                    SendMessage(g_hwndEdit, SCI_GETLINE, iCurLine - 1, (LPARAM)pLineBuf);
+                    SciCall_GetLine(iCurLine - 1, pLineBuf);
                     *(pLineBuf + iPrevLineLength) = '\0';
                     for (char* pPos = pLineBuf; *pPos; pPos++) {
                       if (*pPos != ' ' && *pPos != '\t')
                         *pPos = '\0';
                     }
                     if (*pLineBuf) {
-                      SendMessage(g_hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
-                      SendMessage(g_hwndEdit, SCI_ADDTEXT, lstrlenA(pLineBuf), (LPARAM)pLineBuf);
-                      SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+                      int token = BeginUndoAction();
+                      SciCall_AddText(lstrlenA(pLineBuf), pLineBuf);
+                      EndUndoAction(token);
                     }
                     if (bAllocLnBuf) { FreeMem(pLineBuf); }
                   }
@@ -7203,47 +7206,47 @@ void UpdateVisibleUrlHotspot(int delay)
 //
 //  UpdateToolbar()
 //
-#define EnableTool(id,b) SendMessage(g_hwndToolbar,TB_ENABLEBUTTON,id, \
-                           MAKELONG(((b) ? 1 : 0), 0))
+#define EnableTool(id,b) SendMessage(g_hwndToolbar,TB_ENABLEBUTTON,id, MAKELONG(((b) ? 1 : 0), 0))
+#define CheckTool(id,b)  SendMessage(g_hwndToolbar,TB_CHECKBUTTON,id, MAKELONG((b),0))
 
-#define CheckTool(id,b)  SendMessage(g_hwndToolbar,TB_CHECKBUTTON,id, \
-                           MAKELONG(b,0))
 
 void UpdateToolbar()
 {
   SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_UNTITLED, g_wchCurFile,
                  iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
-                 IDS_READONLY, bReadOnly, szTitleExcerpt);
+                 IDS_READONLY, g_bFileReadOnly, szTitleExcerpt);
 
   if (!bShowToolbar) { return; }
 
-  EnableTool(IDT_FILE_ADDTOFAV,StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)));
-
-  EnableTool(IDT_EDIT_UNDO,SendMessage(g_hwndEdit,SCI_CANUNDO,0,0) /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_REDO,SendMessage(g_hwndEdit,SCI_CANREDO,0,0) /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_PASTE,SendMessage(g_hwndEdit,SCI_CANPASTE,0,0) /*&& !bReadOnly*/);
+  EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile)));
+  EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
+  CheckTool(IDT_VIEW_WORDWRAP, bWordWrap);
 
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
+  bool ro = SciCall_GetReadOnly();
+  bool tv = EditToggleView(g_hwndEdit, false);
+
+  EnableTool(IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
+  EnableTool(IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
+  EnableTool(IDT_EDIT_PASTE, SciCall_CanPaste() && !ro);
+
+  EnableTool(IDT_FILE_LAUNCH, b2);
+
 
   EnableTool(IDT_EDIT_FIND, b2);
   //EnableTool(IDT_EDIT_FINDNEXT,b2);
   //EnableTool(IDT_EDIT_FINDPREV,b2 && strlen(g_efrData.szFind));
-  EnableTool(IDT_EDIT_REPLACE, b2 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_REPLACE, b2 && !ro);
 
-  EnableTool(IDT_EDIT_CUT, !b1 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_COPY, !b1 /*&& !bReadOnly*/);
-  EnableTool(IDT_EDIT_CLEAR, !b1 /*&& !bReadOnly*/);
+  EnableTool(IDT_EDIT_CUT, !b1 && !ro);
+  EnableTool(IDT_EDIT_COPY, !b1 && !ro);
+  EnableTool(IDT_EDIT_CLEAR, !b1 && !ro);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding) && !tv);
+
   EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible));
- 
-  EnableTool(IDT_FILE_LAUNCH, b2);
-
-  EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
-
-  CheckTool(IDT_VIEW_WORDWRAP,bWordWrap);
-
+  CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
 }
 
 
@@ -7480,9 +7483,13 @@ void UpdateUI()
 //  BeginUndoAction()
 //
 //
+
+static volatile LONG UndoActionToken = -1L;
+
 int BeginUndoAction()
 {
-  int token = -1;
+  if (InterlockedExchange(&UndoActionToken, UndoActionToken) >= 0L) { return -1; } // already active
+
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
   sel.selMode_undo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONMODE,0,0);
 
@@ -7505,14 +7512,17 @@ int BeginUndoAction()
     sel.curPos_undo = (DocPos)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
     break;
   }
-  token = UndoRedoActionMap(-1, &sel);
+
+  int token = UndoRedoActionMap(-1, &sel);
+ 
   if (token >= 0) {
-    SendMessage(g_hwndEdit, SCI_BEGINUNDOACTION, 0, 0);
-    SendMessage(g_hwndEdit, SCI_ADDUNDOACTION, (WPARAM)token, 0);
+    SciCall_BeginUndoAction();
+    SciCall_AddUndoAction(token, 0);
   }
+
+  InterlockedExchange(&UndoActionToken, (LONG)token);
   return token;
 }
-
 
 
 //=============================================================================
@@ -7522,10 +7532,12 @@ int BeginUndoAction()
 //
 void EndUndoAction(int token)
 {
-  if (token >= 0) {
+  if ((token >= 0) && (token == (int)InterlockedExchange(&UndoActionToken, UndoActionToken)))
+  {
     UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
-    if (UndoRedoActionMap(token, &sel) >= 0) {
 
+    if (UndoRedoActionMap(token, &sel) >= 0) 
+    {
       sel.selMode_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
 
       switch (sel.selMode_redo)
@@ -7547,8 +7559,12 @@ void EndUndoAction(int token)
         break;
       }
     }
+    
     UndoRedoActionMap(token,&sel); // set with redo action filled
-    SendMessage(g_hwndEdit, SCI_ENDUNDOACTION, 0, 0);
+
+    SciCall_EndUndoAction();
+    
+    InterlockedExchange(&UndoActionToken, -1L);
   }
 }
 
@@ -7567,18 +7583,18 @@ void RestoreAction(int token, DoAction doAct)
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
   #define ISSUE_MESSAGE PostMessage
 
-    const DocPos _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
-    const DocPos _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
+    DocPos const _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
+    DocPos const _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
 
     // Ensure that the first and last lines of a selection are always unfolded
     // This needs to be done _before_ the SCI_SETSEL message
-    const DocLn anchorPosLine = SciCall_LineFromPosition(_anchorPos);
-    const DocLn currPosLine = SciCall_LineFromPosition(_curPos);
+    DocLn const anchorPosLine = SciCall_LineFromPosition(_anchorPos);
+    DocLn const currPosLine = SciCall_LineFromPosition(_curPos);
     ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
     if (anchorPosLine != currPosLine) { ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
 
 
-    const int selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
+    int const selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
 
     // independent from selection mode
@@ -7594,8 +7610,8 @@ void RestoreAction(int token, DoAction doAct)
 
     case SC_SEL_THIN:
       {
-        const DocPos anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
-        const DocPos currVS = (doAct == UNDO ? sel.curVS_undo : sel.curVS_redo);
+        DocPos const anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
+        DocPos const currVS = (doAct == UNDO ? sel.curVS_undo : sel.curVS_redo);
         if ((anchorVS != 0) || (currVS != 0)) {
           ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)anchorVS, 0);
           ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)currVS, 0);
@@ -7625,26 +7641,31 @@ void RestoreAction(int token, DoAction doAct)
 //
 int UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
 {
-  if (UndoRedoSelectionUTArray == NULL) { return -1; }
+  if (UndoRedoSelectionUTArray == NULL) { return -1L; }
 
-  static unsigned int iTokenCnt = 0;
+  static unsigned int uiTokenCnt = 0U;
 
   // indexing is unsigned
   unsigned int utoken = (token >= 0) ? (unsigned int)token : 0U;
 
   if (selection == NULL) {
     // reset / clear
-    SendMessage(g_hwndEdit, SCI_EMPTYUNDOBUFFER, 0, 0);
+    int const curToken = InterlockedExchange(&UndoActionToken, UndoActionToken);
+    if (curToken >= 0) { EndUndoAction(curToken); }
+    SciCall_SetUndoCollection(false);
+    SciCall_EmptyUndoBuffer();
     utarray_clear(UndoRedoSelectionUTArray);
     utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
-    iTokenCnt = 0U;
+    uiTokenCnt = 0U;
+    SciCall_SetUndoCollection(true);
+    InterlockedExchange(&UndoActionToken, -1L);
     return -1;
   }
 
   if (!SciCall_GetUndoCollection()) { return -1; }
 
   // get or set map item request ?
-  if ((token >= 0) && (utoken < iTokenCnt)) 
+  if ((token >= 0) && (utoken < uiTokenCnt)) 
   {
     if (selection->anchorPos_undo < 0) {
       // this is a get request
@@ -7658,9 +7679,9 @@ int UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
   }
   else if (token < 0) {
     // set map new item request
-    utarray_insert(UndoRedoSelectionUTArray, (void*)selection, iTokenCnt);
-    token = (int)iTokenCnt;
-    iTokenCnt = (iTokenCnt < INT_MAX) ? (iTokenCnt + 1) : 0U;  // round robin next
+    token = (int)uiTokenCnt;
+    utarray_insert(UndoRedoSelectionUTArray, (void*)selection, uiTokenCnt);
+    uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
   }
   return token;
 }
@@ -7702,7 +7723,7 @@ bool FileIO(bool fLoad,LPCWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANS
   }
 
   dwFileAttributes = GetFileAttributes(pszFileName);
-  bReadOnly = (dwFileAttributes != INVALID_FILE_ATTRIBUTES && dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+  g_bFileReadOnly = (dwFileAttributes != INVALID_FILE_ATTRIBUTES && dwFileAttributes & FILE_ATTRIBUTE_READONLY);
 
   EndWaitCursor();
 
@@ -7755,7 +7776,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     Encoding_HasChanged(g_iDefaultNewFileEncoding);
     EditSetNewText(g_hwndEdit,"",0);
 
-    bReadOnly = false;
+    g_bFileReadOnly = false;
     _SetDocumentModified(false);
     UpdateToolbar();
     UpdateStatusbar();
@@ -7830,7 +7851,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
           Encoding_Current(g_iDefaultNewFileEncoding);
           Encoding_HasChanged(g_iDefaultNewFileEncoding);
         }
-        bReadOnly = false;
+        g_bFileReadOnly = false;
         EditSetNewText(g_hwndEdit,"",0);
       }
       if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE)) {
@@ -7894,12 +7915,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       SendMessage(g_hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
         EditJumpTo(g_hwndEdit,-1,0);
-        SendMessage(g_hwndEdit,SCI_BEGINUNDOACTION,0,0);
+        int token = BeginUndoAction();
         SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
         SendMessage(g_hwndMain,WM_COMMAND,MAKELONG(IDM_EDIT_INSERT_SHORTDATE,1),0);
         EditJumpTo(g_hwndEdit,-1,0);
         SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
-        SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
+        EndUndoAction(token);
         SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
@@ -8052,8 +8073,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
   {
     DWORD dwFileAttributes = GetFileAttributes(g_wchCurFile);
     if (dwFileAttributes != INVALID_FILE_ATTRIBUTES)
-      bReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
-    if (bReadOnly) {
+      g_bFileReadOnly = (dwFileAttributes & FILE_ATTRIBUTE_READONLY);
+    if (g_bFileReadOnly) {
       UpdateToolbar();
       if (MsgBox(MBYESNOWARN,IDS_READONLY_SAVE,g_wchCurFile) == IDYES)
         bSaveAs = true;
@@ -8937,13 +8958,13 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       bool bAutoIndent2 = bAutoIndent;
       bAutoIndent = 0;
       EditJumpTo(g_hwndEdit,-1,0);
-      SendMessage(g_hwndEdit,SCI_BEGINUNDOACTION,0,0);
+      int token = BeginUndoAction();
       if (SendMessage(g_hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
         SendMessage(g_hwndEdit, SCI_NEWLINE, 0, 0);
       }
       SendMessage(g_hwndEdit,SCI_PASTE,0,0);
       SendMessage(g_hwndEdit,SCI_NEWLINE,0,0);
-      SendMessage(g_hwndEdit,SCI_ENDUNDOACTION,0,0);
+      EndUndoAction(token);
       EditEnsureSelectionVisible(g_hwndEdit);
       bAutoIndent = bAutoIndent2;
     }

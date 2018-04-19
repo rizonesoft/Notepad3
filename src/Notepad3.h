@@ -156,10 +156,12 @@ void UpdateUI();
 
 
 void InvalidateSelections();
-int  BeginUndoAction();
+
+int BeginUndoAction();
 void EndUndoAction(int);
 void RestoreAction(int,DoAction);
-int  UndoRedoActionMap(int,UndoRedoSelection_t*);
+int UndoRedoActionMap(int,UndoRedoSelection_t*);
+
 void OpenHotSpotURL(DocPos, bool);
 
 bool IsFindPatternEmpty();

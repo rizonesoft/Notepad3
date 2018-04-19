@@ -770,7 +770,7 @@ Sci::Position ScintillaWin::TargetAsUTF8(char *text) {
 // Translates a nul terminated UTF8 string into the document encoding.
 // Return the length of the result in bytes.
 Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) const {
-	const Sci::Position inputLength = (lengthForEncode >= 0) ? lengthForEncode : static_cast<Sci::Position>(strlen(utf8));
+	const Sci::Position inputLength = (lengthForEncode >= 0) ? lengthForEncode : strlen(utf8);
 	if (IsUnicodeMode()) {
 		if (encoded) {
 			memcpy(encoded, utf8, inputLength);
@@ -961,7 +961,7 @@ void ScintillaWin::SelectionToHangul() {
 		if (converted > 0) {
 			pdoc->BeginUndoAction();
 			ClearSelection();
-			InsertPaste(&documentStr[0], static_cast<int>(documentStr.size()));
+			InsertPaste(&documentStr[0], documentStr.size());
 			pdoc->EndUndoAction();
 		}
 	}
@@ -1210,7 +1210,7 @@ sptr_t ScintillaWin::GetText(uptr_t wParam, sptr_t lParam) {
 	std::vector<char> docBytes(pdoc->Length(), '\0');
 	pdoc->GetCharRange(&docBytes[0], 0, pdoc->Length());
 	if (IsUnicodeMode()) {
-		size_t lengthUTF16 = UTF16Length(&docBytes[0], static_cast<unsigned int>(docBytes.size()));
+		size_t lengthUTF16 = UTF16Length(&docBytes[0], docBytes.size());
 		if (lParam == 0)
 			return lengthUTF16;
 		if (wParam == 0)
@@ -1676,7 +1676,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				Sci::Position nStart = static_cast<Sci::Position>(wParam);
 				Sci::Position nEnd = static_cast<Sci::Position>(lParam);
 				if (nStart == 0 && nEnd == -1) {
-					nEnd = static_cast<Sci::Position>(pdoc->Length());
+					nEnd = pdoc->Length();
 				}
 				if (nStart == -1) {
 					nStart = nEnd;	// Remove selection
@@ -1693,7 +1693,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				Sci_CharacterRange *pCR = reinterpret_cast<Sci_CharacterRange *>(lParam);
 				sel.selType = Selection::selStream;
 				if (pCR->cpMin == 0 && pCR->cpMax == -1) {
-					SetSelection(pCR->cpMin, static_cast<Sci::Position>(pdoc->Length()));
+					SetSelection(pCR->cpMin, pdoc->Length());
 				} else {
 					SetSelection(pCR->cpMin, pCR->cpMax);
 				}
@@ -2262,7 +2262,7 @@ void ScintillaWin::Paste() {
 					                      &putf[0], static_cast<int>(len) + 1, NULL, NULL);
 			}
 
-			InsertPasteShape(&putf[0], static_cast<int>(len), pasteShape);
+			InsertPasteShape(&putf[0], len, pasteShape);
 		}
 		memUSelection.Unlock();
 	} else {
@@ -2277,12 +2277,12 @@ void ScintillaWin::Paste() {
 					if ((len == bytes) && (0 == ptr[i]))
 						len = i;
 				}
-				const int ilen = static_cast<int>(len);
 
 				// In Unicode mode, convert clipboard text to UTF-8
 				if (IsUnicodeMode()) {
 					std::vector<wchar_t> uptr(len+1);
 
+					const int ilen = static_cast<int>(len);
 					const size_t ulen = ::MultiByteToWideChar(CP_ACP, 0,
 					                    ptr, ilen, &uptr[0], ilen +1);
 
@@ -2290,9 +2290,9 @@ void ScintillaWin::Paste() {
 					std::vector<char> putf(mlen+1);
 					UTF8FromUTF16(&uptr[0], ulen, &putf[0], mlen);
 
-					InsertPasteShape(&putf[0], static_cast<int>(mlen), pasteShape);
+					InsertPasteShape(&putf[0], mlen, pasteShape);
 				} else {
-					InsertPasteShape(ptr, ilen, pasteShape);
+					InsertPasteShape(ptr, len, pasteShape);
 				}
 			}
 			memSelection.Unlock();
@@ -2690,11 +2690,11 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 	// Look around:   baseStart  <--  (|mainStart|  -- mainEnd)  --> baseEnd.
 	const Sci::Position mainStart = sel.RangeMain().Start().Position();
 	const Sci::Position mainEnd = sel.RangeMain().End().Position();
-	const Sci::Line curLine = static_cast<Sci::Line>(pdoc->LineFromPosition(mainStart));
+	const Sci::Line curLine = pdoc->SciLineFromPosition(mainStart);
 	if (curLine != pdoc->LineFromPosition(mainEnd))
 		return 0;
-	const Sci::Position baseStart = static_cast<Sci::Position>(pdoc->LineStart(curLine));
-	const Sci::Position baseEnd = static_cast<Sci::Position>(pdoc->LineEnd(curLine));
+	const Sci::Position baseStart = pdoc->LineStart(curLine);
+	const Sci::Position baseEnd = pdoc->LineEnd(curLine);
 	if ((baseStart == baseEnd) || (mainEnd > baseEnd))
 		return 0;
 
@@ -2754,7 +2754,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 		} else {
 			// Ensure docCompStart+docCompLen be not beyond lineEnd.
 			// since docCompLen by byte might break eol.
-			Sci::Position lineEnd = static_cast<Sci::Position>(pdoc->LineEnd(pdoc->LineFromPosition(rBase)));
+			Sci::Position lineEnd = pdoc->LineEnd(pdoc->LineFromPosition(rBase));
 			Sci::Position overflow = (docCompStart + docCompLen) - lineEnd;
 			if (overflow > 0) {
 				pdoc->DeleteChars(docCompStart, docCompLen - overflow);
