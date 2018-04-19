@@ -2507,6 +2507,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, bMarkOccurrencesMatchCase);
 
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+  CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, EditToggleView(g_hwndEdit, false));
 
   if (bMarkOccurrencesMatchWords)
     i = IDM_VIEW_MARKOCCUR_WORD;
@@ -4340,6 +4341,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       else {
         EditToggleView(g_hwndEdit, true);
       }
+      CheckCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, EditToggleView(g_hwndEdit, false));
       UpdateToolbar();
       break;
 
