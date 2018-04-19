@@ -7207,6 +7207,7 @@ void UpdateVisibleUrlHotspot(int delay)
 #define EnableTool(id,b) SendMessage(g_hwndToolbar,TB_ENABLEBUTTON,id, MAKELONG(((b) ? 1 : 0), 0))
 #define CheckTool(id,b)  SendMessage(g_hwndToolbar,TB_CHECKBUTTON,id, MAKELONG((b),0))
 
+
 void UpdateToolbar()
 {
   SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_UNTITLED, g_wchCurFile,

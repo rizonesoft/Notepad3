@@ -6700,7 +6700,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     SciCall_FoldAll(SC_FOLDACTION_EXPAND);
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE);
     if (!g_bCodeFoldingAvailable) { SciCall_SetProperty("fold", "0"); }
-    Style_SetFolding(hwnd, g_bShowCodeFolding);
+    Style_SetFolding(hwnd, g_bCodeFoldingAvailable && g_bShowCodeFolding);
     EditApplyLexerStyle(hwnd, 0, -1);
     ObserveNotifyChangeEvent();
     return;
