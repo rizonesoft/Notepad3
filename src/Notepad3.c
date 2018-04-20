@@ -2448,7 +2448,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   EnableCmd(hmenu, CMD_CTRLENTER, !ro);
   EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
-  EnableCmd(hmenu,IDM_EDIT_INSERT_ENCODING, *Encoding_GetParseNames(Encoding_Current(CPI_GET) && !ro));
+  EnableCmd(hmenu, IDM_EDIT_INSERT_ENCODING, (Encoding_GetParseNames(Encoding_Current(CPI_GET)) != NULL) && !ro);
 
   EnableCmd(hmenu,IDM_EDIT_INSERT_SHORTDATE,!ro);
   EnableCmd(hmenu,IDM_EDIT_INSERT_LONGDATE,!ro);
@@ -7243,7 +7243,7 @@ void UpdateToolbar()
   EnableTool(IDT_EDIT_COPY, !b1 && !ro);
   EnableTool(IDT_EDIT_CLEAR, !b1 && !ro);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding) && !tv);
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
 
   EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible));
   CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);

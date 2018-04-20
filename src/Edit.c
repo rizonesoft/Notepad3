@@ -347,24 +347,27 @@ void __fastcall _ClearTextBuffer(HWND hwnd)
 {
   SendMessage(hwnd, SCI_CANCEL, 0, 0);
 
-  if (SendMessage(hwnd, SCI_GETREADONLY, 0, 0)) { SendMessage(hwnd, SCI_SETREADONLY, false, 0); }
+  IgnoreNotifyChangeEvent();
+  
+  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
 
   UndoRedoActionMap(-1, NULL); 
-
   SciCall_SetUndoCollection(false);
-
-  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
-  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
 
   EditClearAllOccurrenceMarkers(hwnd, 0, -1);
   if (EditToggleView(g_hwndEdit, false)) {
     EditToggleView(g_hwndEdit, true);
   }
 
+  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
+  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
+
   SciCall_SetUndoCollection(true);
 
   SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwnd, SCI_SETXOFFSET, 0, 0);
+
+  ObserveNotifyChangeEvent();
 }
 
 
