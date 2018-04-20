@@ -19,6 +19,7 @@
 #include <map>
 #include <forward_list>
 #include <algorithm>
+#include <iterator>
 #include <memory>
 
 #include "Platform.h"
@@ -86,9 +87,9 @@ static int WidthStyledText(Surface *surface, const ViewStyle &vs, int styleOffse
 	int width = 0;
 	size_t start = 0;
 	while (start < len) {
-		const size_t style = styles[start];
+		const unsigned char style = styles[start];
 		size_t endSegment = start;
-		while ((endSegment + 1 < len) && (static_cast<size_t>(styles[endSegment + 1]) == style))
+		while ((endSegment + 1 < len) && (styles[endSegment + 1] == style))
 			endSegment++;
 		FontAlias fontText = vs.styles[style + styleOffset].font;
 		width += static_cast<int>(surface->WidthText(fontText, text + start,
@@ -280,13 +281,13 @@ void EditView::AllocateGraphics(const ViewStyle &vsDraw) {
 }
 
 static const char *ControlCharacterString(unsigned char ch) {
-	const char *reps[] = {
+	const char * const reps[] = {
 		"NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL",
 		"BS", "HT", "LF", "VT", "FF", "CR", "SO", "SI",
 		"DLE", "DC1", "DC2", "DC3", "DC4", "NAK", "SYN", "ETB",
 		"CAN", "EM", "SUB", "ESC", "FS", "GS", "RS", "US"
 	};
-	if (ch < ELEMENTS(reps)) {
+	if (ch < std::size(reps)) {
 		return reps[ch];
 	} else {
 		return "BAD";
@@ -433,15 +434,15 @@ void EditView::LayoutLine(const EditModel &model, Sci::Line line, Surface *surfa
 			for (int charInLine = 0; charInLine<lineLength; charInLine++) {
 				const char chDoc = ll->chars[charInLine];
 				if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseUpper)
-					ll->chars[charInLine] = static_cast<char>(MakeUpperCase(chDoc));
+					ll->chars[charInLine] = MakeUpperCase(chDoc);
 				else if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseLower)
-					ll->chars[charInLine] = static_cast<char>(MakeLowerCase(chDoc));
+					ll->chars[charInLine] = MakeLowerCase(chDoc);
 				else if (vstyle.styles[ll->styles[charInLine]].caseForce == Style::caseCamel) {
 					if ((model.pdoc->IsASCIIWordByte(ll->chars[charInLine])) &&
 					  ((charInLine == 0) || (!model.pdoc->IsASCIIWordByte(ll->chars[charInLine - 1])))) {
-						ll->chars[charInLine] = static_cast<char>(MakeUpperCase(chDoc));
+						ll->chars[charInLine] = MakeUpperCase(chDoc);
 					} else {
-						ll->chars[charInLine] = static_cast<char>(MakeLowerCase(chDoc));
+						ll->chars[charInLine] = MakeLowerCase(chDoc);
 					}
 				}
 			}
@@ -722,7 +723,7 @@ SelectionPosition EditView::SPositionFromLineX(Surface *surface, const EditModel
 			return SelectionPosition(model.pdoc->MovePositionOutsideChar(positionInLine + posLineStart, 1));
 		}
 #ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
-        const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
+    const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
 #else
 		const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
 #endif
@@ -810,10 +811,10 @@ static ColourDesired TextBackground(const EditModel &model, const ViewStyle &vsD
 	}
 }
 
-void EditView::DrawIndentGuide(Surface *surface, Sci::Line lineVisible, int lineHeight, Sci::Position start, PRectangle rcSegment, bool highlight) {
+void EditView::DrawIndentGuide(Surface *surface, Sci::Line lineVisible, int lineHeight, XYPOSITION start, PRectangle rcSegment, bool highlight) {
 	const Point from = Point::FromInts(0, ((lineVisible & 1) && (lineHeight & 1)) ? 1 : 0);
-	const PRectangle rcCopyArea = PRectangle::FromInts(static_cast<int>(start + 1), static_cast<int>(rcSegment.top),
-		static_cast<int>(start + 2), static_cast<int>(rcSegment.bottom));
+	const PRectangle rcCopyArea(start + 1, rcSegment.top,
+		start + 2, rcSegment.bottom);
 	surface->Copy(rcCopyArea, from,
 		highlight ? *pixmapIndentGuideHighlight : *pixmapIndentGuide);
 }
@@ -938,7 +939,7 @@ void EditView::DrawEOL(Surface *surface, const EditModel &model, const ViewStyle
 			rcSegment.left = xStart + ll->positions[eolPos] - static_cast<XYPOSITION>(subLineStart)+virtualSpace;
 			rcSegment.right = xStart + ll->positions[eolPos + 1] - static_cast<XYPOSITION>(subLineStart)+virtualSpace;
 			blobsWidth += rcSegment.Width();
-			char hexits[4];
+			char hexits[4] = "";
 			const char *ctrlChar;
 			const unsigned char chEOL = ll->chars[eolPos];
 			const int styleMain = ll->styles[eolPos];
@@ -1188,8 +1189,8 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 		if (model.foldDisplayTextStyle == SC_FOLDDISPLAYTEXT_BOXED) {
 			surface->PenColour(textFore);
 			PRectangle rcBox = rcSegment;
-			rcBox.left = static_cast<XYPOSITION>(RoundXYPosition(rcSegment.left));
-			rcBox.right = static_cast<XYPOSITION>(RoundXYPosition(rcSegment.right));
+			rcBox.left = round(rcSegment.left);
+			rcBox.right = round(rcSegment.right);
 			surface->MoveTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.top));
 			surface->LineTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.bottom));
 			surface->MoveTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.top));
@@ -1391,7 +1392,7 @@ void EditView::DrawCarets(Surface *surface, const EditModel &model, const ViewSt
 				xposCaret += xStart;
 				if (model.posDrag.IsValid()) {
 					/* Dragging text, use a line caret */
-					rcCaret.left = static_cast<XYPOSITION>(RoundXYPosition(xposCaret - caretWidthOffset));
+					rcCaret.left = round(xposCaret - caretWidthOffset);
 					rcCaret.right = rcCaret.left + vsDraw.caretWidth;
 				} else if (model.inOverstrike && drawOverstrikeCaret) {
 					/* Overstrike (insert mode), use a modified bar caret */
@@ -1409,7 +1410,7 @@ void EditView::DrawCarets(Surface *surface, const EditModel &model, const ViewSt
 					}
 				} else {
 					/* Line caret */
-					rcCaret.left = static_cast<XYPOSITION>(RoundXYPosition(xposCaret - caretWidthOffset));
+					rcCaret.left = round(xposCaret - caretWidthOffset);
 					rcCaret.right = rcCaret.left + vsDraw.caretWidth;
 				}
 				const ColourDesired caretColour = mainCaret ? vsDraw.caretcolour : vsDraw.additionalCaretColour;
@@ -1725,7 +1726,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 							indentCount <= (ll->positions[i + 1] - epsilon) / indentWidth;
 							indentCount++) {
 							if (indentCount > 0) {
-								const int xIndent = static_cast<int>(indentCount * indentWidth);
+								const XYPOSITION xIndent = floor(indentCount * indentWidth);
 								DrawIndentGuide(surface, lineVisible, vsDraw.lineHeight, xIndent + xStart, rcSegment,
 									(ll->xHighlightGuide == xIndent));
 							}
@@ -1804,7 +1805,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 									indentCount <= (ll->positions[cpos + ts.start + 1] - epsilon) / indentWidth;
 									indentCount++) {
 									if (indentCount > 0) {
-										const int xIndent = static_cast<int>(indentCount * indentWidth);
+										const XYPOSITION xIndent = floor(indentCount * indentWidth);
 										DrawIndentGuide(surface, lineVisible, vsDraw.lineHeight, xIndent + xStart, rcSegment,
 											(ll->xHighlightGuide == xIndent));
 									}
@@ -1881,7 +1882,7 @@ void EditView::DrawIndentGuidesOverEmpty(Surface *surface, const EditModel &mode
 		}
 
 		for (int indentPos = model.pdoc->IndentSize(); indentPos < indentSpace; indentPos += model.pdoc->IndentSize()) {
-			const int xIndent = static_cast<int>(indentPos * vsDraw.spaceWidth);
+			const XYPOSITION xIndent = floor(indentPos * vsDraw.spaceWidth);
 			if (xIndent < xStartText) {
 				DrawIndentGuide(surface, lineVisible, vsDraw.lineHeight, xIndent + xStart, rcLine,
 					(ll->xHighlightGuide == xIndent));
@@ -2215,7 +2216,7 @@ static ColourDesired InvertedLight(ColourDesired orig) {
 	return ColourDesired(std::min(r, 0xffu), std::min(g, 0xffu), std::min(b, 0xffu));
 }
 
-Sci::Position EditView::FormatRange(bool draw, Sci_RangeToFormat *pfr, Surface *surface, Surface *surfaceMeasure,
+Sci::Position EditView::FormatRange(bool draw, const Sci_RangeToFormat *pfr, Surface *surface, Surface *surfaceMeasure,
 	const EditModel &model, const ViewStyle &vs) {
 	// Can't use measurements cached for screen
 	posCache.Clear();

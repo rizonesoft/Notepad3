@@ -130,14 +130,14 @@ public:
 			if (position < 0) {
 				;
 			} else {
-				body[position] = std::move(v);
+				body[position] = std::forward<ParamType>(v);
 			}
 		} else {
 			PLATFORM_ASSERT(position < lengthBody);
 			if (position >= lengthBody) {
 				;
 			} else {
-				body[gapLength + position] = std::move(v);
+				body[gapLength + position] = std::forward<ParamType>(v);
 			}
 		}
 	}

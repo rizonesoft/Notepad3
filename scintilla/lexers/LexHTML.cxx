@@ -58,7 +58,7 @@ inline bool IsOperator(int ch) {
 static void GetTextSegment(Accessor &styler, Sci_PositionU start, Sci_PositionU end, char *s, size_t len) {
 	Sci_PositionU i = 0;
 	for (; (i < end - start + 1) && (i < len-1); i++) {
-		s[i] = static_cast<char>(MakeLowerCase(styler[start + i]));
+		s[i] = MakeLowerCase(styler[start + i]);
 	}
 	s[i] = '\0';
 }
@@ -267,7 +267,7 @@ static int classifyTagHTML(Sci_PositionU start, Sci_PositionU end,
 	for (Sci_PositionU cPos = start; cPos <= end && i < 30; cPos++) {
 		char ch = styler[cPos];
 		if ((ch != '<') && (ch != '/')) {
-			withSpace[i++] = caseSensitive ? ch : static_cast<char>(MakeLowerCase(ch));
+			withSpace[i++] = caseSensitive ? ch : MakeLowerCase(ch);
 		}
 	}
 

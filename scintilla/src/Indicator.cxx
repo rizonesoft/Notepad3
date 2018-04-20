@@ -5,6 +5,8 @@
 // Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
+#include <cmath>
+
 #include <stdexcept>
 #include <vector>
 #include <map>
@@ -21,8 +23,8 @@ using namespace Scintilla;
 
 static PRectangle PixelGridAlign(const PRectangle &rc) {
 	// Move left and right side to nearest pixel to avoid blurry visuals
-	return PRectangle::FromInts(static_cast<int>(rc.left + 0.5), static_cast<int>(rc.top),
-		static_cast<int>(rc.right + 0.5), static_cast<int>(rc.bottom));
+	return PRectangle::FromInts(static_cast<int>(lround(rc.left)), static_cast<int>(rc.top),
+		static_cast<int>(lround(rc.right)), static_cast<int>(rc.bottom));
 }
 
 void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &rcLine, const PRectangle &rcCharacter, DrawState drawState, int value) const {
@@ -36,8 +38,8 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 	surface->PenColour(sacDraw.fore);
 	const int ymid = static_cast<int>(rc.bottom + rc.top) / 2;
 	if (sacDraw.style == INDIC_SQUIGGLE) {
-		int x = static_cast<int>(rc.left+0.5);
-		const int xLast = static_cast<int>(rc.right+0.5);
+		int x = static_cast<int>(lround(rc.left));
+		const int xLast = static_cast<int>(lround(rc.right));
 		int y = 0;
 		surface->MoveTo(x, static_cast<int>(rc.top) + y);
 		while (x < xLast) {
@@ -175,7 +177,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		if (rcCharacter.Width() >= 0.1) {
 			const int pixelHeight = static_cast<int>(rc.Height() - 1.0f);	// 1 pixel onto next line if multiphase
 			const XYPOSITION x = (sacDraw.style == INDIC_POINT) ? (rcCharacter.left) : ((rcCharacter.right + rcCharacter.left) / 2);
-			const int ix = static_cast<int>(x + 0.5f);
+			const int ix = static_cast<int>(lround(x));
 			const int iy = static_cast<int>(rc.top + 1.0f);
 			Point pts[] = {
 				Point::FromInts(ix - pixelHeight, iy + pixelHeight),	// Left

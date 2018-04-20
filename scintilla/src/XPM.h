@@ -59,7 +59,7 @@ public:
 	float GetScaledWidth() const { return width / scale; }
 	int CountBytes() const;
 	const unsigned char *Pixels() const;
-	void SetPixel(int x, int y, ColourDesired colour, int alpha=0xff);
+	void SetPixel(int x, int y, ColourDesired colour, int alpha);
 };
 
 /**
