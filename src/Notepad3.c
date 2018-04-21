@@ -4375,13 +4375,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_FOLDING:
       g_bShowCodeFolding = (g_bShowCodeFolding) ? false : true;
       Style_SetFolding(g_hwndEdit, g_bShowCodeFolding);
-      if (!g_bShowCodeFolding) { EditFoldToggleAll(EXPAND); }
+      if (!g_bShowCodeFolding) { EditToggleFolds(EXPAND, true); }
       UpdateToolbar();
       break;
 
 
     case IDM_VIEW_TOGGLEFOLDS:
-      EditFoldToggleAll(SNIFF);
+      EditToggleFolds(SNIFF, false);
       break;
 
 

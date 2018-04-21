@@ -168,7 +168,7 @@ typedef enum {
   DOWN = 1
 } FOLD_MOVE;
 
-void EditFoldToggleAll(FOLD_ACTION);
+void EditToggleFolds(FOLD_ACTION, bool);
 void EditFoldClick(DocLn, int);
 void EditFoldAltArrow(FOLD_MOVE, FOLD_ACTION);
 

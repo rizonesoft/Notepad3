@@ -332,7 +332,7 @@ BEGIN
         MENUITEM "Selection &Margin\tCtrl+Shift+M", IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
         MENUITEM "Code &Folding\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
-        MENUITEM "&Toggle All Folds\tCtrl+Shift+F", IDM_VIEW_TOGGLEFOLDS
+        MENUITEM "&Toggle Folds\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
         MENUITEM SEPARATOR
         MENUITEM "Show Tool&bar",               IDM_VIEW_TOOLBAR
         MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
@@ -1522,7 +1522,7 @@ BEGIN
     IDT_FILE_PRINT          "Print"
     IDT_FILE_OPENFAV        "Favorites"
     IDT_FILE_ADDTOFAV       "Add to Favorites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle All Folds"
+    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
     IDT_FILE_LAUNCH         "Execute Document"
     IDT_VIEW_TOGGLE_VIEW    "Focused View"
 END

@@ -8032,19 +8032,24 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
 }
 
 
-void EditFoldToggleAll(FOLD_ACTION action)
+void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 {
   static FOLD_ACTION sLastAction = EXPAND;
 
-  bool fToggled = false;
+  DocLn iStartLine = 0;
+  DocLn iEndLine = SciCall_GetLineCount() - 1;
 
-  DocLn lnTotal = SciCall_GetLineCount();
+  if (!bForceAll && !SciCall_IsSelectionEmpty()) 
+  {
+    iStartLine = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+    iEndLine = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+  }
 
   if (action == SNIFF)
   {
     int cntFolded = 0;
     int cntExpanded = 0;
-    for (int ln = 0; ln < lnTotal; ++ln)
+    for (DocLn ln = iStartLine; ln <= iEndLine; ++ln)
     {
       if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
       {
@@ -8054,13 +8059,18 @@ void EditFoldToggleAll(FOLD_ACTION action)
           ++cntFolded;
       }
     }
-    if (cntFolded == cntExpanded)
+    if (cntFolded == cntExpanded) {
       action = (sLastAction == FOLD) ? EXPAND : FOLD;
-    else
+    }
+    else {
       action = (cntFolded < cntExpanded) ? FOLD : EXPAND;
+    }
+    sLastAction = action;
   }
 
-  for (int ln = 0; ln < lnTotal; ++ln)
+  bool fToggled = false;
+
+  for (DocLn ln = iStartLine; ln <= iEndLine; ++ln)
   {
     if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
     {
