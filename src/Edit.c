@@ -8041,8 +8041,13 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 
   if (!bForceAll && !SciCall_IsSelectionEmpty()) 
   {
-    iStartLine = SciCall_LineFromPosition(SciCall_GetSelectionStart());
-    iEndLine = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+    DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+    DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+    // selection range must span at least two lines
+    if (iBegLn != iEndLn) {
+      iStartLine = iBegLn;
+      iEndLine = iEndLn;
+    }
   }
 
   if (action == SNIFF)
