@@ -286,7 +286,8 @@ bool ContractionState<LINE>::SetFoldDisplayText(Sci::Line lineDoc, const char *t
 	EnsureData();
 	const char *foldText = foldDisplayTexts->ValueAt(lineDoc).get();
 	if (!foldText || !text || 0 != strcmp(text, foldText)) {
-		foldDisplayTexts->SetValueAt(lineDoc, UniqueStringCopy(text));
+		UniqueString uns = UniqueStringCopy(text);
+		foldDisplayTexts->SetValueAt(lineDoc, std::move(uns));
 		Check();
 		return true;
 	} else {

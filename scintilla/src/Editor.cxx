@@ -19,6 +19,7 @@
 #include <map>
 #include <forward_list>
 #include <algorithm>
+#include <iterator>
 #include <memory>
 
 #include "Platform.h"
@@ -28,6 +29,7 @@
 #include "Scintilla.h"
 
 #include "StringCopy.h"
+#include "CharacterSet.h"
 #include "Position.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
@@ -204,13 +206,13 @@ void Editor::SetRepresentations() {
 	reprs.Clear();
 
 	// C0 control set
-	const char *reps[] = {
+	const char * const reps[] = {
 		"NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL",
 		"BS", "HT", "LF", "VT", "FF", "CR", "SO", "SI",
 		"DLE", "DC1", "DC2", "DC3", "DC4", "NAK", "SYN", "ETB",
 		"CAN", "EM", "SUB", "ESC", "FS", "GS", "RS", "US"
 	};
-	for (size_t j=0; j < ELEMENTS(reps); j++) {
+	for (size_t j=0; j < std::size(reps); j++) {
 		const char c[2] = { static_cast<char>(j), 0 };
 		reprs.SetRepresentation(c, reps[j]);
 	}
@@ -218,13 +220,13 @@ void Editor::SetRepresentations() {
 	// C1 control set
 	// As well as Unicode mode, ISO-8859-1 should use these
 	if (IsUnicodeMode()) {
-		const char *repsC1[] = {
+		const char * const repsC1[] = {
 			"PAD", "HOP", "BPH", "NBH", "IND", "NEL", "SSA", "ESA",
 			"HTS", "HTJ", "VTS", "PLD", "PLU", "RI", "SS2", "SS3",
 			"DCS", "PU1", "PU2", "STS", "CCH", "MW", "SPA", "EPA",
 			"SOS", "SGCI", "SCI", "CSI", "ST", "OSC", "PM", "APC"
 		};
-		for (size_t j=0; j < ELEMENTS(repsC1); j++) {
+		for (size_t j=0; j < std::size(repsC1); j++) {
 			const char c1[3] = { '\xc2',  static_cast<char>(0x80+j), 0 };
 			reprs.SetRepresentation(c1, repsC1[j]);
 		}
@@ -1632,7 +1634,7 @@ void Editor::LinesSplit(int pixelWidth) {
 	}
 }
 
-void Editor::PaintSelMargin(Surface *surfaceWindow, PRectangle &rc) {
+void Editor::PaintSelMargin(Surface *surfaceWindow, const PRectangle &rc) {
 	if (vs.fixedColumnWidth == 0)
 		return;
 
@@ -1777,7 +1779,7 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 // This is mostly copied from the Paint method but with some things omitted
 // such as the margin markers, line numbers, selection and caret
 // Should be merged back into a combined Draw method.
-Sci::Position Editor::FormatRange(bool draw, Sci_RangeToFormat *pfr) {
+Sci::Position Editor::FormatRange(bool draw, const Sci_RangeToFormat *pfr) {
 	if (!pfr)
 		return 0;
 
@@ -2612,7 +2614,7 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 		if (mh.modificationType & SC_MOD_CHANGEANNOTATION) {
 			const Sci::Line lineDoc = pdoc->SciLineFromPosition(mh.position);
 			if (vs.annotationVisible) {
-				if (pcs->SetHeight(lineDoc, static_cast<int>(pcs->GetHeight(lineDoc) + mh.annotationLinesAdded))) {
+				if (pcs->SetHeight(lineDoc, pcs->GetHeight(lineDoc) + static_cast<int>(mh.annotationLinesAdded))) {
 					SetScrollBars();
 				}
 				Redraw();
@@ -4092,12 +4094,10 @@ std::string Editor::CaseMapString(const std::string &s, int caseMapping) {
 	for (char &ch : ret) {
 		switch (caseMapping) {
 			case cmUpper:
-				if (ch >= 'a' && ch <= 'z')
-					ch = static_cast<char>(ch - 'a' + 'A');
+				ch = MakeUpperCase(ch);
 				break;
 			case cmLower:
-				if (ch >= 'A' && ch <= 'Z')
-					ch = static_cast<char>(ch - 'A' + 'a');
+				ch = MakeLowerCase(ch);
 				break;
 		}
 	}

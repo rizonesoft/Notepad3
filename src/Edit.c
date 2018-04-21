@@ -347,24 +347,27 @@ void __fastcall _ClearTextBuffer(HWND hwnd)
 {
   SendMessage(hwnd, SCI_CANCEL, 0, 0);
 
-  if (SendMessage(hwnd, SCI_GETREADONLY, 0, 0)) { SendMessage(hwnd, SCI_SETREADONLY, false, 0); }
+  IgnoreNotifyChangeEvent();
+  
+  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
 
   UndoRedoActionMap(-1, NULL); 
-
   SciCall_SetUndoCollection(false);
-
-  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
-  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
 
   EditClearAllOccurrenceMarkers(hwnd, 0, -1);
   if (EditToggleView(g_hwndEdit, false)) {
     EditToggleView(g_hwndEdit, true);
   }
 
+  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
+  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
+
   SciCall_SetUndoCollection(true);
 
   SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwnd, SCI_SETXOFFSET, 0, 0);
+
+  ObserveNotifyChangeEvent();
 }
 
 
@@ -8029,35 +8032,53 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
 }
 
 
-void EditFoldToggleAll(FOLD_ACTION action)
+void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 {
   static FOLD_ACTION sLastAction = EXPAND;
 
-  bool fToggled = false;
+  DocLn iStartLine = 0;
+  DocLn iEndLine = SciCall_GetLineCount() - 1;
 
-  DocLn lnTotal = SciCall_GetLineCount();
+  if (!bForceAll && !SciCall_IsSelectionEmpty()) 
+  {
+    DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+    DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+    // selection range must span at least two lines
+    if (iBegLn != iEndLn) {
+      iStartLine = iBegLn;
+      iEndLine = iEndLn;
+    }
+  }
 
   if (action == SNIFF)
   {
     int cntFolded = 0;
     int cntExpanded = 0;
-    for (int ln = 0; ln < lnTotal; ++ln)
+    for (DocLn ln = iStartLine; ln <= iEndLine; ++ln)
     {
       if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
       {
-        if (SciCall_GetFoldExpanded(ln))
-          ++cntExpanded;
-        else
-          ++cntFolded;
+        if (SciCall_GetLastChild(ln,-1) != ln) 
+        {
+          if (SciCall_GetFoldExpanded(ln))
+            ++cntExpanded;
+          else
+            ++cntFolded;
+        }
       }
     }
-    if (cntFolded == cntExpanded)
+    if (cntFolded == cntExpanded) {
       action = (sLastAction == FOLD) ? EXPAND : FOLD;
-    else
+    }
+    else {
       action = (cntFolded < cntExpanded) ? FOLD : EXPAND;
+    }
+    sLastAction = action;
   }
 
-  for (int ln = 0; ln < lnTotal; ++ln)
+  bool fToggled = false;
+
+  for (DocLn ln = iStartLine; ln <= iEndLine; ++ln)
   {
     if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
     {

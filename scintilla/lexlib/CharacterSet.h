@@ -167,16 +167,18 @@ inline bool isoperator(int ch) {
 	return false;
 }
 
-// Simple case functions for ASCII.
+// Simple case functions for ASCII supersets.
 
-inline int MakeUpperCase(int ch) {
+template <typename T>
+inline T MakeUpperCase(T ch) {
 	if (ch < 'a' || ch > 'z')
 		return ch;
 	else
-		return static_cast<char>(ch - 'a' + 'A');
+		return ch - 'a' + 'A';
 }
 
-inline int MakeLowerCase(int ch) {
+template <typename T>
+inline T MakeLowerCase(T ch) {
 	if (ch < 'A' || ch > 'Z')
 		return ch;
 	else

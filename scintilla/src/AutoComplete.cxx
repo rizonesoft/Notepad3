@@ -49,7 +49,7 @@ AutoComplete::~AutoComplete() {
 	}
 }
 
-bool AutoComplete::Active() const {
+bool AutoComplete::Active() const noexcept {
 	return active;
 }
 
@@ -70,7 +70,7 @@ void AutoComplete::SetStopChars(const char *stopChars_) {
 	stopChars = stopChars_;
 }
 
-bool AutoComplete::IsStopChar(char ch) {
+bool AutoComplete::IsStopChar(char ch) const noexcept {
 	return ch && (stopChars.find(ch) != std::string::npos);
 }
 
@@ -78,7 +78,7 @@ void AutoComplete::SetFillUpChars(const char *fillUpChars_) {
 	fillUpChars = fillUpChars_;
 }
 
-bool AutoComplete::IsFillUpChar(char ch) {
+bool AutoComplete::IsFillUpChar(char ch) const noexcept {
 	return ch && (fillUpChars.find(ch) != std::string::npos);
 }
 
@@ -86,7 +86,7 @@ void AutoComplete::SetSeparator(char separator_) {
 	separator = separator_;
 }
 
-char AutoComplete::GetSeparator() const {
+char AutoComplete::GetSeparator() const noexcept {
 	return separator;
 }
 
@@ -94,7 +94,7 @@ void AutoComplete::SetTypesep(char separator_) {
 	typesep = separator_;
 }
 
-char AutoComplete::GetTypesep() const {
+char AutoComplete::GetTypesep() const noexcept {
 	return typesep;
 }
 
