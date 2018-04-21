@@ -157,9 +157,9 @@ int  FileVars_GetEncoding(LPFILEVARS);
 //  Folding Functions
 //
 typedef enum {
-  EXPAND = 1,
-  SNIFF = 0,
-  FOLD = -1
+  FOLD = SC_FOLDACTION_CONTRACT,
+  EXPAND = SC_FOLDACTION_EXPAND,
+  SNIFF = SC_FOLDACTION_TOGGLE
 } FOLD_ACTION;
 
 typedef enum {
@@ -168,7 +168,7 @@ typedef enum {
   DOWN = 1
 } FOLD_MOVE;
 
-void EditToggleFolds(FOLD_ACTION, bool);
+void EditToggleFolds(FOLD_ACTION,bool);
 void EditFoldClick(DocLn, int);
 void EditFoldAltArrow(FOLD_MOVE, FOLD_ACTION);
 
