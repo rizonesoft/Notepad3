@@ -8053,10 +8053,13 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
     {
       if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
       {
-        if (SciCall_GetFoldExpanded(ln))
-          ++cntExpanded;
-        else
-          ++cntFolded;
+        if (SciCall_GetLastChild(ln,-1) != ln) 
+        {
+          if (SciCall_GetFoldExpanded(ln))
+            ++cntExpanded;
+          else
+            ++cntFolded;
+        }
       }
     }
     if (cntFolded == cntExpanded) {
