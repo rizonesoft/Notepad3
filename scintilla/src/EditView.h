@@ -126,7 +126,7 @@ public:
 	Sci::Line DisplayFromPosition(Surface *surface, const EditModel &model, Sci::Position pos, const ViewStyle &vs);
 	Sci::Position StartEndDisplayLine(Surface *surface, const EditModel &model, Sci::Position pos, bool start, const ViewStyle &vs);
 
-	void DrawIndentGuide(Surface *surface, Sci::Line lineVisible, int lineHeight, Sci::Position start, PRectangle rcSegment, bool highlight);
+	void DrawIndentGuide(Surface *surface, Sci::Line lineVisible, int lineHeight, XYPOSITION start, PRectangle rcSegment, bool highlight);
 	void DrawEOL(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll, PRectangle rcLine,
 		Sci::Line line, Sci::Position lineEnd, int xStart, int subLine, XYACCUMULATOR subLineStart,
 		ColourOptional background);
@@ -150,7 +150,7 @@ public:
 		const ViewStyle &vsDraw);
 	void FillLineRemainder(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 		Sci::Line line, PRectangle rcArea, int subLine) const;
-	Sci::Position FormatRange(bool draw, Sci_RangeToFormat *pfr, Surface *surface, Surface *surfaceMeasure,
+	Sci::Position FormatRange(bool draw, const Sci_RangeToFormat *pfr, Surface *surface, Surface *surfaceMeasure,
 		const EditModel &model, const ViewStyle &vs);
 };
 

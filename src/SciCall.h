@@ -309,12 +309,13 @@ DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPo
 //
 //
 DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line)
-DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, flags)
+DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, level)
 DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, DocLn, line)
 DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags)
 DeclareSciCallV1(FoldDisplayTextSetStyle, FOLDDISPLAYTEXTSETSTYLE, int, flags)
-DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, int, DocLn, line)
-DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, int, DocLn, line)
+DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, DocLn, DocLn, line)
+DeclareSciCallR2(GetLastChild, GETLASTCHILD, DocLn, DocLn, line, int, level)
+DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, bool, DocLn, line)
 DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line)
 DeclareSciCallV1(FoldAll, FOLDALL, int, flags)
 DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line)

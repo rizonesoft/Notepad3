@@ -347,24 +347,27 @@ void __fastcall _ClearTextBuffer(HWND hwnd)
 {
   SendMessage(hwnd, SCI_CANCEL, 0, 0);
 
-  if (SendMessage(hwnd, SCI_GETREADONLY, 0, 0)) { SendMessage(hwnd, SCI_SETREADONLY, false, 0); }
+  IgnoreNotifyChangeEvent();
+  
+  if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
 
   UndoRedoActionMap(-1, NULL); 
-
   SciCall_SetUndoCollection(false);
-
-  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
-  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
 
   EditClearAllOccurrenceMarkers(hwnd, 0, -1);
   if (EditToggleView(g_hwndEdit, false)) {
     EditToggleView(g_hwndEdit, true);
   }
 
+  SendMessage(hwnd, SCI_CLEARALL, 0, 0);
+  SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
+
   SciCall_SetUndoCollection(true);
 
   SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwnd, SCI_SETXOFFSET, 0, 0);
+
+  ObserveNotifyChangeEvent();
 }
 
 
@@ -7972,16 +7975,10 @@ int FileVars_GetEncoding(LPFILEVARS lpfv) {
 #define FOLD_CHILDREN SCMOD_CTRL
 #define FOLD_SIBLINGS SCMOD_SHIFT
 
-bool __stdcall FoldToggleNode(DocLn ln, FOLD_ACTION action)
+bool __forceinline _FoldToggleNode(DocLn ln, FOLD_ACTION action)
 {
-  const bool fExpanded = SciCall_GetFoldExpanded(ln);
-
-  if ((action == FOLD && fExpanded) || (action == EXPAND && !fExpanded))
-  {
-    SciCall_ToggleFold(ln);
-    return true;
-  }
-  else if (action == SNIFF)
+  bool const fExpanded = SciCall_GetFoldExpanded(ln);
+  if ((action == SNIFF) || ((action == FOLD) && fExpanded) || ((action == EXPAND) && !fExpanded))
   {
     SciCall_ToggleFold(ln);
     return true;
@@ -8020,48 +8017,75 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
       if (lv < lvStop || (lv == lvStop && fHeader && ln != lnNode))
         return;
       else if (fHeader && (lv == lvNode || (lv > lvNode && mode & FOLD_CHILDREN)))
-        FoldToggleNode(ln, action);
+        _FoldToggleNode(ln, action);
     }
   }
   else {
-    FoldToggleNode(ln, action);
+    _FoldToggleNode(ln, action);
   }
 }
 
 
-void EditFoldToggleAll(FOLD_ACTION action)
+void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 {
-  static FOLD_ACTION sLastAction = EXPAND;
+  static FOLD_ACTION sbLastSniffAllAction = EXPAND;
+
+  bool bAllLines = true;
+  DocLn iStartLine = 0;
+  DocLn iEndLine = SciCall_GetLineCount() - 1;
+
+  if (!bForceAll && !SciCall_IsSelectionEmpty())
+  {
+    DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+    DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+    // selection range must span at least two lines
+    if (iBegLn != iEndLn) {
+      iStartLine = iBegLn;
+      iEndLine = iEndLn;
+      bAllLines = false;
+    }
+  }
 
   bool fToggled = false;
 
-  DocLn lnTotal = SciCall_GetLineCount();
+  if (bAllLines) {
+    if (action == SNIFF) {
+      // determine majority to find action for all
+      int cntFolded = 0;
+      int cntExpanded = 0;
+      for (DocLn ln = iStartLine; ln <= iEndLine; ++ln)
+      {
+        if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
+        {
+          if (SciCall_GetLastChild(ln, -1) != ln)
+          {
+            if (SciCall_GetFoldExpanded(ln))
+              ++cntExpanded;
+            else
+              ++cntFolded;
+          }
+        }
+      }
+      if (cntFolded == cntExpanded) {
+        action = (sbLastSniffAllAction == FOLD) ? EXPAND : FOLD;
+      }
+      else {
+        action = (cntFolded < cntExpanded) ? FOLD : EXPAND;
+      }
+      sbLastSniffAllAction = action;
+    }
 
-  if (action == SNIFF)
+    SciCall_FoldAll(action);
+    fToggled = true;
+  }
+  else // in selection
   {
-    int cntFolded = 0;
-    int cntExpanded = 0;
-    for (int ln = 0; ln < lnTotal; ++ln)
+    for (DocLn ln = iStartLine; ln <= iEndLine; ++ln)
     {
       if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
       {
-        if (SciCall_GetFoldExpanded(ln))
-          ++cntExpanded;
-        else
-          ++cntFolded;
+        if (_FoldToggleNode(ln, action)) { fToggled = !fToggled ? true : false; }
       }
-    }
-    if (cntFolded == cntExpanded)
-      action = (sLastAction == FOLD) ? EXPAND : FOLD;
-    else
-      action = (cntFolded < cntExpanded) ? FOLD : EXPAND;
-  }
-
-  for (int ln = 0; ln < lnTotal; ++ln)
-  {
-    if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-    {
-      if (FoldToggleNode(ln, action)) { fToggled = true; }
     }
   }
   if (fToggled) { SciCall_ScrollCaret(); }
@@ -8146,7 +8170,7 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
     if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
     {
       if (action != SNIFF) {
-        FoldToggleNode(ln, action);
+        _FoldToggleNode(ln, action);
       }
     }
   }
