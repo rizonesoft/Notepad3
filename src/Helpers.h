@@ -171,7 +171,7 @@ void DeleteBitmapButton(HWND,int);
 bool StatusSetText(HWND,UINT,LPCWSTR);
 bool StatusSetTextID(HWND,UINT,UINT);
 COLORREF GetBackgroundColor(HWND);
-int  StatusCalcPaneWidth(HWND,LPCWSTR);
+LONG StatusCalcPaneWidth(HWND,LPCWSTR);
 
 int Toolbar_GetButtons(HWND,int,LPWSTR,int);
 int Toolbar_SetButtons(HWND,int,LPCWSTR,void*,int);

@@ -77,6 +77,15 @@ typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_
 typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
 typedef enum { MBINFO = 0, MBWARN, MBYESNO, MBYESNOWARN, MBYESNOCANCEL, MBOKCANCEL, MBRETRYCANCEL } MBTYPES;
 
+
+//==== Statusbar ==============================================================
+typedef enum {
+  STATUS_DOCLINE = 0, STATUS_DOCCOLUMN, STATUS_SELECTION, STATUS_OCCURRENCE, STATUS_DOCSIZE,
+  STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF, STATUS_LEXER, 
+  STATUS_SECTOR_COUNT,
+  STATUS_HELP = 255
+} STATUS_SECTOR_T;
+
 // --------------------------------------------------------------------------
 
 typedef struct _editfindreplace
