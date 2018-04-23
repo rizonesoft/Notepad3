@@ -1007,7 +1007,7 @@ int StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
   SelectObject(hdc,hfold);
   ReleaseDC(hwnd,hdc);
 
-  return(size.cx + 9);
+  return(size.cx + 16);
 }
 
 
