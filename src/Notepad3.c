@@ -1925,20 +1925,6 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   EndDeferWindowPos(hdwp);
 
-  // Statusbar width
-  int aWidth[7];
-  aWidth[STATUS_DOCPOS]   = max(120,min(cx*4/10, StatusCalcPaneWidth(g_hwndStatus,
-    L" Ln 9'999'999 : 9'999'999    Col 9'999'999:999 / 999    Sel 9'999'999 (999 Bytes)    SelLn 9'999'999    Occ 9'999'999 ")));
-  aWidth[STATUS_DOCSIZE]  = aWidth[STATUS_DOCPOS] + StatusCalcPaneWidth(g_hwndStatus,L" 9999 Bytes [UTF-8] ");
-  aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus,L" Unicode (UTF-8) Signature ");
-  aWidth[STATUS_EOLMODE]  = aWidth[STATUS_CODEPAGE] + StatusCalcPaneWidth(g_hwndStatus,L" CR+LF ");
-  aWidth[STATUS_OVRMODE]  = aWidth[STATUS_EOLMODE] + StatusCalcPaneWidth(g_hwndStatus,L" OVR ");
-  aWidth[STATUS_2ND_DEF]  = aWidth[STATUS_OVRMODE] + StatusCalcPaneWidth(g_hwndStatus, L" 2ND ");
-  aWidth[STATUS_LEXER] = -1;
-
-
-  SendMessage(g_hwndStatus,SB_SETPARTS,COUNTOF(aWidth),(LPARAM)aWidth);
-
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
@@ -5872,8 +5858,13 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             switch (pnmm->dwItemSpec)
             {
+              case STATUS_DOCLINE:
+              case STATUS_DOCCOLUMN:
+                PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_EDIT_GOTOLINE,1),0);
+                return true;
+
               case STATUS_CODEPAGE:
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_ENCODING_SELECT,1),0);
+                PostMessage(hwnd,WM_COMMAND,MAKELONG(IDM_ENCODING_SELECT,1),0);
                 return true;
 
               case STATUS_EOLMODE:
@@ -5886,7 +5877,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 i++;
                 if (i > IDM_LINEENDINGS_CR)
                   i = IDM_LINEENDINGS_CRLF;
-                SendMessage(hwnd,WM_COMMAND,MAKELONG(i,1),0);
+                PostMessage(hwnd,WM_COMMAND,MAKELONG(i,1),0);
                 return true;
 
               case STATUS_OVRMODE:
@@ -5894,11 +5885,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 return true;
 
               case STATUS_2ND_DEF:
-                SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
+                PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
                 return true;
 
               case STATUS_LEXER:
-                SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_SCHEME, 1), 0);
+                PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_SCHEME, 1), 0);
                 return true;
 
               default:
@@ -7269,9 +7260,11 @@ void UpdateStatusbar()
   static WCHAR tchSelB[32] = { L'\0' };
   static WCHAR tchOcc[32] = { L'\0' };
   static WCHAR tchReplOccs[32] = { L'\0' };
-  static WCHAR tchDocPos[128] = { L'\0' };
+  static WCHAR tchDocLine[64] = { L'\0' };
+  static WCHAR tchDocColumn[64] = { L'\0' };
+  static WCHAR tchDocSelection[64] = { L'\0' };
+  static WCHAR tchDocOccurrence[64] = { L'\0' };
   static WCHAR tchFRStatus[128] = { L'\0' };
-
   static WCHAR tchBytes[64] = { L'\0' };
   static WCHAR tchDocSize[64] = { L'\0' };
   static WCHAR tchEncoding[64] = { L'\0' };
@@ -7357,13 +7350,81 @@ void UpdateStatusbar()
     FormatNumberStr(tchLinesSelected);
   }
 
-  if (!bMarkLongLines) {
-    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS, tchLn, tchLines, tchCol, tchSel, tchSelB, tchLinesSelected, tchOcc);
+  FormatString(tchDocLine, COUNTOF(tchDocLine), IDS_STATUS_DOCLINE, tchLn, tchLines);
+ 
+  if (bMarkLongLines)
+    FormatString(tchDocColumn, COUNTOF(tchDocColumn), IDS_STATUS_DOCCOLUMN2, tchCol, tchCols);
+  else
+    FormatString(tchDocColumn, COUNTOF(tchDocColumn), IDS_STATUS_DOCCOLUMN, tchCol);
+
+  FormatString(tchDocSelection, COUNTOF(tchDocSelection), IDS_STATUS_SELECTION, tchSel, tchSelB, tchLinesSelected);
+
+  FormatString(tchDocOccurrence, COUNTOF(tchDocOccurrence), IDS_STATUS_OCCURRENCE, tchOcc);
+
+  // get number of bytes in current encoding
+  StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
+  FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_STATUS_DOCSIZE, tchBytes);
+
+  Encoding_SetLabel(iEncoding);
+  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L"%s", Encoding_GetLabel(iEncoding));
+
+  if (g_iEOLMode == SC_EOL_CR) 
+  {
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L"CR");
+  }
+  else if (g_iEOLMode == SC_EOL_LF) 
+  {
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L"LF");
   }
   else {
-    FormatString(tchDocPos, COUNTOF(tchDocPos), IDS_DOCPOS2, tchLn, tchLines, tchCol, tchCols, tchSel, tchSelB, tchLinesSelected, tchOcc);
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L"CR+LF");
   }
-  
+  if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0)) 
+  {
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L"OVR");
+  }
+  else {
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L"INS");
+  }
+  if (Style_GetUse2ndDefault())
+  {
+    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L"2ND");
+  }
+  else {
+    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L"STD");
+  }
+  Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
+
+  // Statusbar width
+  int aWidth[10];
+  //     max(120, min(cx * 4 / 10, StatusCalcPaneWidth(g_hwndStatus, L" Ln 9'999'999 : 9'999'999    Col 9'999'999:999 / 999    Sel 9'999'999 (999 Bytes)    SelLn 9'999'999    Occ 9'999'999 ")));
+  aWidth[STATUS_DOCLINE] = StatusCalcPaneWidth(g_hwndStatus, tchDocLine);
+  aWidth[STATUS_DOCCOLUMN] = aWidth[STATUS_DOCLINE] + StatusCalcPaneWidth(g_hwndStatus, tchDocColumn);
+  aWidth[STATUS_SELECTION] = aWidth[STATUS_DOCCOLUMN] + StatusCalcPaneWidth(g_hwndStatus, tchDocSelection);
+  aWidth[STATUS_OCCURRENCE] = aWidth[STATUS_SELECTION] + StatusCalcPaneWidth(g_hwndStatus, tchDocOccurrence);
+  aWidth[STATUS_DOCSIZE] = aWidth[STATUS_OCCURRENCE] + StatusCalcPaneWidth(g_hwndStatus, tchDocSize);
+  aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus, tchEncoding);
+  aWidth[STATUS_EOLMODE] = aWidth[STATUS_CODEPAGE] + StatusCalcPaneWidth(g_hwndStatus, tchEOLMode);
+  aWidth[STATUS_OVRMODE] = aWidth[STATUS_EOLMODE] + StatusCalcPaneWidth(g_hwndStatus, tchOvrMode);
+  aWidth[STATUS_2ND_DEF] = aWidth[STATUS_OVRMODE] + StatusCalcPaneWidth(g_hwndStatus, L"STD");
+  aWidth[STATUS_LEXER] = -1;  // tchLexerName
+
+  SendMessage(g_hwndStatus, SB_SETPARTS, COUNTOF(aWidth), (LPARAM)aWidth);
+
+  StatusSetText(g_hwndStatus, STATUS_DOCLINE, tchDocLine);
+  StatusSetText(g_hwndStatus, STATUS_DOCCOLUMN, tchDocColumn);
+  StatusSetText(g_hwndStatus, STATUS_SELECTION, tchDocSelection);
+  StatusSetText(g_hwndStatus, STATUS_OCCURRENCE, tchDocOccurrence);
+  StatusSetText(g_hwndStatus, STATUS_DOCSIZE, tchDocSize);
+  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, tchEncoding);
+  StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
+  StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
+  StatusSetText(g_hwndStatus, STATUS_2ND_DEF, tch2ndDef);
+  StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);
+  //InvalidateRect(g_hwndStatus,NULL,true);
+
+  // --------------------------------------------------------------------------
+
   // update Find/Replace dialog (if any)
   if (g_hwndDlgFindReplace) {
     if (iReplacedOccurrences > 0)
@@ -7371,54 +7432,12 @@ void UpdateStatusbar()
     else
       StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
 
-    FormatString(tchFRStatus, COUNTOF(tchFRStatus), IDS_FR_STATUS_FMT, 
+    FormatString(tchFRStatus, COUNTOF(tchFRStatus), IDS_FR_STATUS_FMT,
                  tchLn, tchLines, tchCol, tchSel, tchOcc, tchReplOccs, FR_Status[g_FindReplaceMatchFoundState]);
+
     SetWindowText(GetDlgItem(g_hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
   }
 
-  // get number of bytes in current encoding
-  StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
-  FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_DOCSIZE, tchBytes);
-
-  Encoding_SetLabel(iEncoding);
-  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L" %s ", Encoding_GetLabel(iEncoding));
-
-  if (g_iEOLMode == SC_EOL_CR) 
-  {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR ");
-  }
-  else if (g_iEOLMode == SC_EOL_LF) 
-  {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" LF ");
-  }
-  else {
-    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L" CR+LF ");
-  }
-  if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0)) 
-  {
-    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" OVR ");
-  }
-  else {
-    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L" INS ");
-  }
-  if (Style_GetUse2ndDefault())
-  {
-    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L" 2ND ");
-  }
-  else {
-    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L" STD ");
-  }
-  Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
-
-  StatusSetText(g_hwndStatus, STATUS_DOCPOS, tchDocPos);
-  StatusSetText(g_hwndStatus, STATUS_DOCSIZE, tchDocSize);
-  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, tchEncoding);
-  StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
-  StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
-  StatusSetText(g_hwndStatus, STATUS_2ND_DEF, tch2ndDef);
-  StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);
-
-  //InvalidateRect(g_hwndStatus,NULL,true);
 }
 
 

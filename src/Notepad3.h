@@ -92,13 +92,16 @@ typedef enum {
 
 
 //==== Statusbar ==============================================================
-#define STATUS_DOCPOS    0
-#define STATUS_DOCSIZE   1
-#define STATUS_CODEPAGE  2
-#define STATUS_EOLMODE   3
-#define STATUS_OVRMODE   4
-#define STATUS_2ND_DEF   5
-#define STATUS_LEXER     6
+#define STATUS_DOCLINE    0
+#define STATUS_DOCCOLUMN  1
+#define STATUS_SELECTION  2
+#define STATUS_OCCURRENCE 3
+#define STATUS_DOCSIZE    4
+#define STATUS_CODEPAGE   5
+#define STATUS_EOLMODE    6
+#define STATUS_OVRMODE    7
+#define STATUS_2ND_DEF    8
+#define STATUS_LEXER      9
 #define STATUS_HELP    255
 
 
