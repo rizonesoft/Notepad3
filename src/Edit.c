@@ -8048,33 +8048,8 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 
   bool fToggled = false;
 
-  if (bAllLines) {
-    if (action == SNIFF) {
-      // determine majority to find action for all
-      int cntFolded = 0;
-      int cntExpanded = 0;
-      for (DocLn ln = iStartLine; ln <= iEndLine; ++ln)
-      {
-        if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-        {
-          if (SciCall_GetLastChild(ln, -1) != ln)
-          {
-            if (SciCall_GetFoldExpanded(ln))
-              ++cntExpanded;
-            else
-              ++cntFolded;
-          }
-        }
-      }
-      if (cntFolded == cntExpanded) {
-        action = (sbLastSniffAllAction == FOLD) ? EXPAND : FOLD;
-      }
-      else {
-        action = (cntFolded < cntExpanded) ? FOLD : EXPAND;
-      }
-      sbLastSniffAllAction = action;
-    }
-
+  if (bAllLines) 
+  {
     SciCall_FoldAll(action);
     fToggled = true;
   }
@@ -8167,7 +8142,13 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
     }
 
     // Perform a fold/unfold operation
-    if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
+    DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+    DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+    // selection range must span at least two lines for action
+    if (iBegLn != iEndLn) {
+      EditToggleFolds(action, false);
+    }
+    else if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
     {
       if (action != SNIFF) {
         _FoldToggleNode(ln, action);
