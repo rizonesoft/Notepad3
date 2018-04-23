@@ -23,11 +23,11 @@ public:
 	double x;
 	double y;
 
-	explicit PointDocument(double x_ = 0, double y_ = 0) : x(x_), y(y_) {
+	explicit PointDocument(double x_ = 0, double y_ = 0) noexcept : x(x_), y(y_) {
 	}
 
 	// Conversion from Point.
-	explicit PointDocument(Point pt) : x(pt.x), y(pt.y) {
+	explicit PointDocument(Point pt) noexcept : x(pt.x), y(pt.y) {
 	}
 };
 
@@ -172,10 +172,10 @@ struct TextSegment {
 	int start;
 	int length;
 	const Representation *representation;
-	TextSegment(int start_=0, int length_=0, const Representation *representation_=0) :
+	TextSegment(int start_=0, int length_=0, const Representation *representation_=nullptr) noexcept :
 		start(start_), length(length_), representation(representation_) {
 	}
-	int end() const {
+	int end() const noexcept {
 		return start + length;
 	}
 };

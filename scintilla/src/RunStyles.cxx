@@ -29,7 +29,7 @@ using namespace Scintilla;
 
 // Find the first run at a position
 template <typename DISTANCE, typename STYLE>
-DISTANCE RunStyles<DISTANCE, STYLE>::RunFromPosition(DISTANCE position) const {
+DISTANCE RunStyles<DISTANCE, STYLE>::RunFromPosition(DISTANCE position) const noexcept {
 	DISTANCE run = starts->PartitionFromPosition(position);
 	// Go to first element with this position
 	while ((run > 0) && (position == starts->PositionFromPartition(run-1))) {
@@ -88,17 +88,17 @@ RunStyles<DISTANCE, STYLE>::~RunStyles() {
 }
 
 template <typename DISTANCE, typename STYLE>
-DISTANCE RunStyles<DISTANCE, STYLE>::Length() const {
+DISTANCE RunStyles<DISTANCE, STYLE>::Length() const noexcept {
 	return starts->PositionFromPartition(starts->Partitions());
 }
 
 template <typename DISTANCE, typename STYLE>
-STYLE RunStyles<DISTANCE, STYLE>::ValueAt(DISTANCE position) const {
+STYLE RunStyles<DISTANCE, STYLE>::ValueAt(DISTANCE position) const noexcept {
 	return styles->ValueAt(starts->PartitionFromPosition(position));
 }
 
 template <typename DISTANCE, typename STYLE>
-DISTANCE RunStyles<DISTANCE, STYLE>::FindNextChange(DISTANCE position, DISTANCE end) const {
+DISTANCE RunStyles<DISTANCE, STYLE>::FindNextChange(DISTANCE position, DISTANCE end) const noexcept {
 	const DISTANCE run = starts->PartitionFromPosition(position);
 	if (run < starts->Partitions()) {
 		const DISTANCE runChange = starts->PositionFromPartition(run);
@@ -118,12 +118,12 @@ DISTANCE RunStyles<DISTANCE, STYLE>::FindNextChange(DISTANCE position, DISTANCE 
 }
 
 template <typename DISTANCE, typename STYLE>
-DISTANCE RunStyles<DISTANCE, STYLE>::StartRun(DISTANCE position) const {
+DISTANCE RunStyles<DISTANCE, STYLE>::StartRun(DISTANCE position) const noexcept {
 	return starts->PositionFromPartition(starts->PartitionFromPosition(position));
 }
 
 template <typename DISTANCE, typename STYLE>
-DISTANCE RunStyles<DISTANCE, STYLE>::EndRun(DISTANCE position) const {
+DISTANCE RunStyles<DISTANCE, STYLE>::EndRun(DISTANCE position) const noexcept {
 	return starts->PositionFromPartition(starts->PartitionFromPosition(position) + 1);
 }
 
@@ -243,12 +243,12 @@ void RunStyles<DISTANCE, STYLE>::DeleteRange(DISTANCE position, DISTANCE deleteL
 }
 
 template <typename DISTANCE, typename STYLE>
-DISTANCE RunStyles<DISTANCE, STYLE>::Runs() const {
+DISTANCE RunStyles<DISTANCE, STYLE>::Runs() const noexcept {
 	return starts->Partitions();
 }
 
 template <typename DISTANCE, typename STYLE>
-bool RunStyles<DISTANCE, STYLE>::AllSame() const {
+bool RunStyles<DISTANCE, STYLE>::AllSame() const noexcept {
 	for (int run = 1; run < starts->Partitions(); run++) {
 		if (styles->ValueAt(run) != styles->ValueAt(run - 1))
 			return false;
@@ -257,12 +257,12 @@ bool RunStyles<DISTANCE, STYLE>::AllSame() const {
 }
 
 template <typename DISTANCE, typename STYLE>
-bool RunStyles<DISTANCE, STYLE>::AllSameAs(STYLE value) const {
+bool RunStyles<DISTANCE, STYLE>::AllSameAs(STYLE value) const noexcept {
 	return AllSame() && (styles->ValueAt(0) == value);
 }
 
 template <typename DISTANCE, typename STYLE>
-DISTANCE RunStyles<DISTANCE, STYLE>::Find(STYLE value, DISTANCE start) const {
+DISTANCE RunStyles<DISTANCE, STYLE>::Find(STYLE value, DISTANCE start) const noexcept {
 	if (start < Length()) {
 		DISTANCE run = start ? RunFromPosition(start) : 0;
 		if (styles->ValueAt(run) == value)

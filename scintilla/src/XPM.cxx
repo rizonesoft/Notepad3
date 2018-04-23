@@ -120,7 +120,7 @@ void XPM::Init(const char *const *linesForm) {
 		const char *lform = linesForm[y+nColours+1];
 		const size_t len = MeasureLength(lform);
 		for (size_t x = 0; x<len; x++)
-			pixels[y * width + x] = static_cast<unsigned char>(lform[x]);
+			pixels[y * width + x] = lform[x];
 	}
 }
 

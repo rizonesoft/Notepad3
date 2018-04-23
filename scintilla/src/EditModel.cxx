@@ -51,7 +51,7 @@ using namespace Scintilla;
 Caret::Caret() :
 	active(false), on(false), period(500) {}
 
-EditModel::EditModel() {
+EditModel::EditModel() : braces{} {
 	inOverstrike = false;
 	xOffset = 0;
 	trackLineWidth = false;

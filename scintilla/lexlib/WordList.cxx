@@ -113,7 +113,7 @@ static int cmpWords(const void *a, const void *b) {
 }
 
 static void SortWordList(char **words, unsigned int len) {
-	qsort(static_cast<void *>(words), len, sizeof(*words), cmpWords);
+	qsort(words, len, sizeof(*words), cmpWords);
 }
 
 #endif
@@ -147,7 +147,7 @@ bool WordList::InList(const char *s) const {
 	const unsigned char firstChar = s[0];
 	int j = starts[firstChar];
 	if (j >= 0) {
-		while (static_cast<unsigned char>(words[j][0]) == firstChar) {
+		while (words[j][0] == firstChar) {
 			if (s[1] == words[j][1]) {
 				const char *a = words[j] + 1;
 				const char *b = s + 1;
@@ -189,7 +189,7 @@ bool WordList::InListAbbreviated(const char *s, const char marker) const {
 	const unsigned char firstChar = s[0];
 	int j = starts[firstChar];
 	if (j >= 0) {
-		while (static_cast<unsigned char>(words[j][0]) == firstChar) {
+		while (words[j][0] == firstChar) {
 			bool isSubword = false;
 			int start = 1;
 			if (words[j][1] == marker) {
@@ -243,7 +243,7 @@ bool WordList::InListAbridged(const char *s, const char marker) const {
 	const unsigned char firstChar = s[0];
 	int j = starts[firstChar];
 	if (j >= 0) {
-		while (static_cast<unsigned char>(words[j][0]) == firstChar) {
+		while (words[j][0] == firstChar) {
 			const char *a = words[j];
 			const char *b = s;
 			while (*a && *a == *b) {

@@ -87,9 +87,8 @@ void UTF8FromUTF32Character(int uch, char *putf) {
 
 size_t UTF16Length(const char *s, size_t len) {
 	size_t ulen = 0;
-	const unsigned char *us = reinterpret_cast<const unsigned char *>(s);
 	for (size_t i = 0; i < len;) {
-		const unsigned char ch = us[i];
+		const unsigned char ch = s[i];
 		const unsigned int byteCount = UTF8BytesOfLead[ch];
 		const unsigned int utf16Len = UTF16LengthFromUTF8ByteCount(byteCount);
 		i += byteCount;
@@ -218,7 +217,7 @@ size_t UTF32FromUTF8(const char *s, size_t len, unsigned int *tbuf, size_t tlen)
 	return ui;
 }
 
-unsigned int UTF16FromUTF32Character(unsigned int val, wchar_t *tbuf) {
+unsigned int UTF16FromUTF32Character(unsigned int val, wchar_t *tbuf) noexcept {
 	if (val < SUPPLEMENTAL_PLANE_FIRST) {
 		tbuf[0] = static_cast<wchar_t>(val);
 		return 1;
@@ -254,7 +253,7 @@ const unsigned char UTF8BytesOfLead[256] = {
 // the non-characters *FFFE, *FFFF and FDD0 .. FDEF return 3 or 4 as they can be
 // reasonably treated as code points in some circumstances. They will, however,
 // not have associated glyphs.
-int UTF8Classify(const unsigned char *us, int len) {
+int UTF8Classify(const unsigned char *us, int len) noexcept {
 	// For the rules: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
 	if (us[0] < 0x80) {
 		// ASCII
@@ -325,7 +324,7 @@ int UTF8Classify(const unsigned char *us, int len) {
 	return UTF8MaskInvalid | 1;
 }
 
-int UTF8DrawBytes(const unsigned char *us, int len) {
+int UTF8DrawBytes(const unsigned char *us, int len) noexcept {
 	const int utf8StatusNext = UTF8Classify(us, len);
 	return (utf8StatusNext & UTF8MaskInvalid) ? 1 : (utf8StatusNext & UTF8MaskWidth);
 }

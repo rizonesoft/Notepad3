@@ -10,7 +10,7 @@
 
 namespace Scintilla {
 
-bool DBCSIsLeadByte(int codePage, char ch);
+bool DBCSIsLeadByte(int codePage, char ch) noexcept;
 
 }
 

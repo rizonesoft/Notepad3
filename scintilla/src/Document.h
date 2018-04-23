@@ -242,11 +242,11 @@ public:
 	struct CharacterExtracted {
 		unsigned int character;
 		unsigned int widthBytes;
-		CharacterExtracted(unsigned int character_, unsigned int widthBytes_) :
+		CharacterExtracted(unsigned int character_, unsigned int widthBytes_) noexcept :
 			character(character_), widthBytes(widthBytes_) {
 		}
 		// For DBCS characters turn 2 bytes into an int
-		static CharacterExtracted DBCS(unsigned char lead, unsigned char trail) {
+		static CharacterExtracted DBCS(unsigned char lead, unsigned char trail) noexcept {
 			return CharacterExtracted((lead << 8) | trail, 2);
 		}
 	};
@@ -268,7 +268,9 @@ public:
 	Document(int options);
 	// Deleted so Document objects can not be copied.
 	Document(const Document &) = delete;
+	Document(Document &&) = delete;
 	void operator=(const Document &) = delete;
+	Document &operator=(Document &&) = delete;
 	~Document() override;
 
 	int AddRef();
@@ -292,15 +294,15 @@ public:
 	void SCI_METHOD SetErrorStatus(int status) override;
 
 	Sci_Position SCI_METHOD LineFromPosition(Sci_Position pos) const override;
-	Sci::Line SciLineFromPosition(Sci::Position pos) const;	// Avoids casting LineFromPosition
+	Sci::Line SciLineFromPosition(Sci::Position pos) const noexcept;	// Avoids casting LineFromPosition
 	Sci::Position ClampPositionIntoDocument(Sci::Position pos) const;
 	bool ContainsLineEnd(const char *s, Sci::Position length) const { return cb.ContainsLineEnd(s, length); }
 	bool IsCrLf(Sci::Position pos) const;
 	int LenChar(Sci::Position pos);
-	bool InGoodUTF8(Sci::Position pos, Sci::Position &start, Sci::Position &end) const;
+	bool InGoodUTF8(Sci::Position pos, Sci::Position &start, Sci::Position &end) const noexcept;
 	Sci::Position MovePositionOutsideChar(Sci::Position pos, Sci::Position moveDir, bool checkLineEnd=true) const;
-	Sci::Position NextPosition(Sci::Position pos, int moveDir) const;
-	bool NextCharacter(Sci::Position &pos, int moveDir) const;	// Returns true if pos changed
+	Sci::Position NextPosition(Sci::Position pos, int moveDir) const noexcept;
+	bool NextCharacter(Sci::Position &pos, int moveDir) const noexcept;	// Returns true if pos changed
 	Document::CharacterExtracted CharacterAfter(Sci::Position position) const;
 	Document::CharacterExtracted CharacterBefore(Sci::Position position) const;
 	Sci_Position SCI_METHOD GetRelativePosition(Sci_Position positionStart, Sci_Position characterOffset) const override;
@@ -308,6 +310,7 @@ public:
 	int SCI_METHOD GetCharacterAndWidth(Sci_Position position, Sci_Position *pWidth) const override;
 	int SCI_METHOD CodePage() const override;
 	bool SCI_METHOD IsDBCSLeadByte(char ch) const override;
+	bool IsDBCSLeadByteNoExcept(char ch) const noexcept;
 	int SafeSegment(const char *text, int length, int lengthSegment) const;
 	EncodingFamily CodePageFamily() const;
 
@@ -361,7 +364,7 @@ public:
 	void DelChar(Sci::Position pos);
 	void DelCharBack(Sci::Position pos);
 
-	char CharAt(Sci::Position position) const { return cb.CharAt(position); }
+	char CharAt(Sci::Position position) const noexcept { return cb.CharAt(position); }
 	void SCI_METHOD GetCharRange(char *buffer, Sci_Position position, Sci_Position lengthRetrieve) const override {
 		cb.GetCharRange(buffer, position, lengthRetrieve);
 	}
@@ -399,7 +402,7 @@ public:
 	Sci_Position SCI_METHOD Length() const override { return cb.Length(); }
 	void Allocate(Sci::Position newSize) { cb.Allocate(newSize); }
 
-	CharacterExtracted ExtractCharacter(Sci::Position position) const;
+	CharacterExtracted ExtractCharacter(Sci::Position position) const noexcept;
 
 	bool IsWordStartAt(Sci::Position pos) const;
 	bool IsWordEndAt(Sci::Position pos) const;
