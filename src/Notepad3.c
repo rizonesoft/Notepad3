@@ -1872,6 +1872,9 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
 //  MsgSize() - Handles WM_SIZE
 //
 //
+static int g_aStatusSectorWidth[STATUS_SECTOR_COUNT] = { -1 };
+
+
 void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
 
@@ -1924,6 +1927,31 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
                  SWP_NOZORDER | SWP_NOACTIVATE);
 
   EndDeferWindowPos(hdwp);
+
+  // calculate average space for statusbar sectors
+  //g_aStatusSectorWidth[STATUS_DOCLINE] = StatusCalcPaneWidth(g_hwndStatus, L"Ln  9'999'/9'999");
+  //g_aStatusSectorWidth[STATUS_DOCCOLUMN] = StatusCalcPaneWidth(g_hwndStatus, L"Col  999/999");
+  //g_aStatusSectorWidth[STATUS_SELECTION] = StatusCalcPaneWidth(g_hwndStatus, L"Sel  9'999 (9999 Bytes)/999[ln]");
+  //g_aStatusSectorWidth[STATUS_OCCURRENCE] = StatusCalcPaneWidth(g_hwndStatus, L"Occ  9'999");
+  //g_aStatusSectorWidth[STATUS_DOCSIZE] = StatusCalcPaneWidth(g_hwndStatus, L"9'999 (Bytes)");
+  //g_aStatusSectorWidth[STATUS_CODEPAGE] = StatusCalcPaneWidth(g_hwndStatus, L"Unicode (UTF-8)");
+  //g_aStatusSectorWidth[STATUS_EOLMODE] = StatusCalcPaneWidth(g_hwndStatus, L"LF");
+  //g_aStatusSectorWidth[STATUS_OVRMODE] = StatusCalcPaneWidth(g_hwndStatus, L"OVR");
+  //g_aStatusSectorWidth[STATUS_2ND_DEF] = StatusCalcPaneWidth(g_hwndStatus, L"2ND");
+  //g_aStatusSectorWidth[STATUS_LEXER] = StatusCalcPaneWidth(g_hwndStatus, L"Standard Lexer");
+
+  int const weight[STATUS_SECTOR_COUNT+1] = { 3, 3, 5, 3, 2, 2, 1, 1, 1, 3, 24 };
+  g_aStatusSectorWidth[STATUS_DOCLINE] = (cx * weight[STATUS_DOCLINE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_DOCCOLUMN] = (cx * weight[STATUS_DOCCOLUMN]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_SELECTION] = (cx * weight[STATUS_SELECTION]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_OCCURRENCE] = (cx * weight[STATUS_OCCURRENCE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_DOCSIZE] = (cx * weight[STATUS_DOCSIZE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_CODEPAGE] = (cx * weight[STATUS_CODEPAGE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_EOLMODE] = (cx * weight[STATUS_EOLMODE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_OVRMODE] = (cx * weight[STATUS_OVRMODE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_2ND_DEF] = (cx * weight[STATUS_2ND_DEF]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_LEXER] = -1;  //(cx * weight[STATUS_LEXER]) / weight[STATUS_SECTOR_COUNT];
+
 
   UpdateToolbar();
   UpdateStatusbar();
@@ -7396,18 +7424,17 @@ void UpdateStatusbar()
   Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
 
   // Statusbar width
-  int aWidth[10];
-  //     max(120, min(cx * 4 / 10, StatusCalcPaneWidth(g_hwndStatus, L" Ln 9'999'999 : 9'999'999    Col 9'999'999:999 / 999    Sel 9'999'999 (999 Bytes)    SelLn 9'999'999    Occ 9'999'999 ")));
-  aWidth[STATUS_DOCLINE] = StatusCalcPaneWidth(g_hwndStatus, tchDocLine);
-  aWidth[STATUS_DOCCOLUMN] = aWidth[STATUS_DOCLINE] + StatusCalcPaneWidth(g_hwndStatus, tchDocColumn);
-  aWidth[STATUS_SELECTION] = aWidth[STATUS_DOCCOLUMN] + StatusCalcPaneWidth(g_hwndStatus, tchDocSelection);
-  aWidth[STATUS_OCCURRENCE] = aWidth[STATUS_SELECTION] + StatusCalcPaneWidth(g_hwndStatus, tchDocOccurrence);
-  aWidth[STATUS_DOCSIZE] = aWidth[STATUS_OCCURRENCE] + StatusCalcPaneWidth(g_hwndStatus, tchDocSize);
-  aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + StatusCalcPaneWidth(g_hwndStatus, tchEncoding);
-  aWidth[STATUS_EOLMODE] = aWidth[STATUS_CODEPAGE] + StatusCalcPaneWidth(g_hwndStatus, tchEOLMode);
-  aWidth[STATUS_OVRMODE] = aWidth[STATUS_EOLMODE] + StatusCalcPaneWidth(g_hwndStatus, tchOvrMode);
-  aWidth[STATUS_2ND_DEF] = aWidth[STATUS_OVRMODE] + StatusCalcPaneWidth(g_hwndStatus, L"STD");
-  aWidth[STATUS_LEXER] = -1;  // tchLexerName
+  int aWidth[STATUS_SECTOR_COUNT];
+  aWidth[STATUS_DOCLINE] = max(g_aStatusSectorWidth[STATUS_DOCLINE], StatusCalcPaneWidth(g_hwndStatus, tchDocLine));
+  aWidth[STATUS_DOCCOLUMN] = aWidth[STATUS_DOCLINE] + max(g_aStatusSectorWidth[STATUS_DOCCOLUMN], StatusCalcPaneWidth(g_hwndStatus, tchDocColumn));
+  aWidth[STATUS_SELECTION] = aWidth[STATUS_DOCCOLUMN] + max(g_aStatusSectorWidth[STATUS_SELECTION], StatusCalcPaneWidth(g_hwndStatus, tchDocSelection));
+  aWidth[STATUS_OCCURRENCE] = aWidth[STATUS_SELECTION] + max(g_aStatusSectorWidth[STATUS_OCCURRENCE], StatusCalcPaneWidth(g_hwndStatus, tchDocOccurrence));
+  aWidth[STATUS_DOCSIZE] = aWidth[STATUS_OCCURRENCE] + max(g_aStatusSectorWidth[STATUS_DOCSIZE], StatusCalcPaneWidth(g_hwndStatus, tchDocSize));
+  aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + max(g_aStatusSectorWidth[STATUS_CODEPAGE], StatusCalcPaneWidth(g_hwndStatus, tchEncoding));
+  aWidth[STATUS_EOLMODE] = aWidth[STATUS_CODEPAGE] + max(g_aStatusSectorWidth[STATUS_EOLMODE], StatusCalcPaneWidth(g_hwndStatus, tchEOLMode));
+  aWidth[STATUS_OVRMODE] = g_aStatusSectorWidth[STATUS_OVRMODE];
+  aWidth[STATUS_2ND_DEF] = g_aStatusSectorWidth[STATUS_2ND_DEF];
+  aWidth[STATUS_LEXER] = g_aStatusSectorWidth[STATUS_LEXER];
 
   SendMessage(g_hwndStatus, SB_SETPARTS, COUNTOF(aWidth), (LPARAM)aWidth);
 

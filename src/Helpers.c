@@ -993,21 +993,21 @@ COLORREF GetBackgroundColor(HWND hwnd)
 //
 //  StatusCalcPaneWidth()
 //
-int StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
+LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
 {
-  SIZE  size;
-  HDC   hdc   = GetDC(hwnd);
-  HFONT hfont = (HFONT)SendMessage(hwnd,WM_GETFONT,0,0);
-  HFONT hfold = SelectObject(hdc,hfont);
-  int   mmode = SetMapMode(hdc,MM_TEXT);
+  HDC const hdc   = GetDC(hwnd);
+  HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd,WM_GETFONT,0,0);
+  HGDIOBJ const hfold = SelectObject(hdc,hfont);
+  int const mmode = SetMapMode(hdc,MM_TEXT);
 
+  SIZE size = { 0, 0 };
   GetTextExtentPoint32(hdc,lpsz,lstrlen(lpsz),&size);
 
   SetMapMode(hdc,mmode);
   SelectObject(hdc,hfold);
   ReleaseDC(hwnd,hdc);
 
-  return(size.cx + 16);
+  return (size.cx + 16L);
 }
 
 
