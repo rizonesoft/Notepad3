@@ -1007,7 +1007,7 @@ LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
   SelectObject(hdc,hfold);
   ReleaseDC(hwnd,hdc);
 
-  return (size.cx + 16L);
+  return (size.cx + 12L);
 }
 
 
@@ -1038,7 +1038,7 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 
 int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptbb,int ctbb)
 {
-  WCHAR tchButtons[LARGE_BUFFER];
+  WCHAR tchButtons[MIDSZ_BUFFER];
   int i,c;
   int iCmd;
 

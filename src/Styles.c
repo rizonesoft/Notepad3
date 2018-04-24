@@ -4598,14 +4598,15 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
 //
 //  Style_GetFileOpenDlgFilter()
 //
-extern WCHAR tchFileDlgFilters[5*1024];
+extern WCHAR g_tchFileDlgFilters[XXXL_BUFFER];
 
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
-  if (StringCchLenW(tchFileDlgFilters,COUNTOF(tchFileDlgFilters)) == 0)
-    GetString(IDS_FILTER_ALL,lpszFilter,cchFilter);
+  if (StringCchLenW(g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters)) == 0) {
+    GetString(IDS_FILTER_ALL, lpszFilter, cchFilter);
+  }
   else {
-    StringCchCopyN(lpszFilter,cchFilter,tchFileDlgFilters,cchFilter - 2);
+    StringCchCopyN(lpszFilter,cchFilter,g_tchFileDlgFilters,cchFilter - 2);
     StringCchCat(lpszFilter,cchFilter,L"||");
   }
   PrepareFilterStr(lpszFilter);
