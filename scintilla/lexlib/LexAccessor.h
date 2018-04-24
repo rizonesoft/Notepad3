@@ -106,7 +106,7 @@ public:
 		return true;
 	}
 	char StyleAt(Sci_Position position) const {
-		return static_cast<char>(pAccess->StyleAt(position));
+		return pAccess->StyleAt(position);
 	}
 	Sci_Position GetLine(Sci_Position position) const {
 		return pAccess->LineFromPosition(position);

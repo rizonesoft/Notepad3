@@ -563,8 +563,7 @@ class CaseConverter : public ICaseConverter {
 	enum { maxConversionLength=6 };
 	struct ConversionString {
 		char conversion[maxConversionLength+1];
-		ConversionString() {
-			conversion[0] = '\0';
+		ConversionString() : conversion{} {
 		}
 	};
 	// Conversions are initially store in a vector of structs but then decomposed into
@@ -572,10 +571,10 @@ class CaseConverter : public ICaseConverter {
 	struct CharacterConversion {
 		int character;
 		ConversionString conversion;
-		CharacterConversion(int character_=0, const char *conversion_="") : character(character_) {
+		CharacterConversion(int character_=0, const char *conversion_="") noexcept : character(character_) {
 			StringCopy(conversion.conversion, conversion_);
 		}
-		bool operator<(const CharacterConversion &other) const {
+		bool operator<(const CharacterConversion &other) const noexcept {
 			return character < other.character;
 		}
 	};
@@ -607,9 +606,9 @@ public:
 	size_t CaseConvertString(char *converted, size_t sizeConverted, const char *mixed, size_t lenMixed) override {
 		size_t lenConverted = 0;
 		size_t mixedPos = 0;
-		unsigned char bytes[UTF8MaxBytes + 1];
+		unsigned char bytes[UTF8MaxBytes + 1]{};
 		while (mixedPos < lenMixed) {
-			const unsigned char leadByte = static_cast<unsigned char>(mixed[mixedPos]);
+			const unsigned char leadByte = mixed[mixedPos];
 			const char *caseConverted = 0;
 			size_t lenMixedChar = 1;
 			if (UTF8IsAscii(leadByte)) {
@@ -705,10 +704,10 @@ void SetupConversions(enum CaseConversion conversion) {
 	while (*sComplex) {
 		// Longest ligature is 3 character so 5 for safety
 		const size_t lenUTF8 = 5*UTF8MaxBytes+1;
-		char originUTF8[lenUTF8];
-		char foldedUTF8[lenUTF8];
-		char lowerUTF8[lenUTF8];
-		char upperUTF8[lenUTF8];
+		unsigned char originUTF8[lenUTF8]{};
+		char foldedUTF8[lenUTF8]{};
+		char lowerUTF8[lenUTF8]{};
+		char upperUTF8[lenUTF8]{};
 		size_t i = 0;
 		while (*sComplex && *sComplex != '|') {
 			originUTF8[i++] = *sComplex;
@@ -738,7 +737,7 @@ void SetupConversions(enum CaseConversion conversion) {
 		sComplex++;
 		lowerUTF8[i] = 0;
 
-		const int character = UnicodeFromUTF8(reinterpret_cast<unsigned char *>(originUTF8));
+		const int character = UnicodeFromUTF8(originUTF8);
 
 		if (conversion == CaseConversionFold && foldedUTF8[0]) {
 			caseConvFold.Add(character, foldedUTF8);

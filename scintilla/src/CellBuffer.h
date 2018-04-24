@@ -132,28 +132,30 @@ public:
 	CellBuffer(bool hasStyles_, bool largeDocument_);
 	// Deleted so CellBuffer objects can not be copied.
 	CellBuffer(const CellBuffer &) = delete;
+	CellBuffer(CellBuffer &&) = delete;
 	void operator=(const CellBuffer &) = delete;
+	void operator=(CellBuffer &&) = delete;
 	~CellBuffer();
 
 	/// Retrieving positions outside the range of the buffer works and returns 0
-	char CharAt(Sci::Position position) const;
-	unsigned char UCharAt(Sci::Position position) const;
+	char CharAt(Sci::Position position) const noexcept;
+	unsigned char UCharAt(Sci::Position position) const noexcept;
 	void GetCharRange(char *buffer, Sci::Position position, Sci::Position lengthRetrieve) const;
-	char StyleAt(Sci::Position position) const;
+	char StyleAt(Sci::Position position) const noexcept;
 	void GetStyleRange(unsigned char *buffer, Sci::Position position, Sci::Position lengthRetrieve) const;
 	const char *BufferPointer();
 	const char *RangePointer(Sci::Position position, Sci::Position rangeLength);
 	Sci::Position GapPosition() const;
 
-	Sci::Position Length() const;
+	Sci::Position Length() const noexcept;
 	void Allocate(Sci::Position newSize);
 	int GetLineEndTypes() const { return utf8LineEnds; }
 	void SetLineEndTypes(int utf8LineEnds_);
 	bool ContainsLineEnd(const char *s, Sci::Position length) const;
 	void SetPerLine(PerLine *pl);
-	Sci::Line Lines() const;
-	Sci::Position LineStart(Sci::Line line) const;
-	Sci::Line LineFromPosition(Sci::Position pos) const;
+	Sci::Line Lines() const noexcept;
+	Sci::Position LineStart(Sci::Line line) const noexcept;
+	Sci::Line LineFromPosition(Sci::Position pos) const noexcept;
 	void InsertLine(Sci::Line line, Sci::Position position, bool lineStart);
 	void RemoveLine(Sci::Line line);
 	const char *InsertString(Sci::Position position, const char *s, Sci::Position insertLength, bool &startSequence);

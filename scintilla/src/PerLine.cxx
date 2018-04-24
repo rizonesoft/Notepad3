@@ -33,11 +33,11 @@ MarkerHandleSet::~MarkerHandleSet() {
 	mhList.clear();
 }
 
-bool MarkerHandleSet::Empty() const {
+bool MarkerHandleSet::Empty() const noexcept {
 	return mhList.empty();
 }
 
-int MarkerHandleSet::MarkValue() const {
+int MarkerHandleSet::MarkValue() const noexcept {
 	unsigned int m = 0;
 	for (const MarkerHandleNumber &mhn : mhList) {
 		m |= (1 << mhn.number);
@@ -45,7 +45,7 @@ int MarkerHandleSet::MarkValue() const {
 	return m;
 }
 
-bool MarkerHandleSet::Contains(int handle) const {
+bool MarkerHandleSet::Contains(int handle) const noexcept {
 	for (const MarkerHandleNumber &mhn : mhList) {
 		if (mhn.handle == handle) {
 			return true;
@@ -125,7 +125,7 @@ void LineMarkers::MergeMarkers(Sci::Line line) {
 	}
 }
 
-int LineMarkers::MarkValue(Sci::Line line) {
+int LineMarkers::MarkValue(Sci::Line line) noexcept {
 	if (markers.Length() && (line >= 0) && (line < markers.Length()) && markers[line])
 		return markers[line]->MarkValue();
 	else

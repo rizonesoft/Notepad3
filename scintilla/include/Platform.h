@@ -339,11 +339,6 @@ public:
 };
 
 /**
- * A simple callback action passing one piece of untyped user data.
- */
-typedef void (*CallBackAction)(void*);
-
-/**
  * Class to hide the details of window manipulation.
  * Does not own the window which will normally have a longer life than this object.
  */
