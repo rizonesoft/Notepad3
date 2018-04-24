@@ -6710,7 +6710,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     ObserveNotifyChangeEvent();
     return;
   }
-
+  
   EditApplyLexerStyle(hwnd, 0, -1); // reset
 
   // prepare hidde (folding) settings
