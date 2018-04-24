@@ -837,6 +837,7 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
 //
 //
 static int g_aStatusbarSectionWidth[STATUS_SECTOR_COUNT];
+static int g_aSBSOrder[STATUS_SECTOR_COUNT];
 
 static void __fastcall _StatusbarSetSections(int cx)
 {
@@ -846,6 +847,7 @@ static void __fastcall _StatusbarSetSections(int cx)
   // prepare sector array
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
     g_aStatusbarSectionWidth[i] = -1;
+    g_aSBSOrder[i] = -1;
   }
 
   static WCHAR tchSectors[SMALL_BUFFER];
@@ -867,6 +869,7 @@ static void __fastcall _StatusbarSetSections(int cx)
   int const weight[STATUS_SECTOR_COUNT] = STATUSBAR_SECTOR_WEIGHTS;
 
   // fill width
+  int cnt = 0;
   int totalWeight = 1;
   p = tchSectors;
   while (*p) {
@@ -875,6 +878,7 @@ static void __fastcall _StatusbarSetSections(int cx)
       if ((iID >= 0) && (iID < STATUS_SECTOR_COUNT)) {
         g_aStatusbarSectionWidth[iID] = (bStatusBarOptimizedSpace ? 0 : (cx * weight[iID]));
         totalWeight += weight[iID];
+        g_aSBSOrder[cnt++] = iID;
       }
     }
     p = StrEnd(p) + 1;
@@ -7470,12 +7474,14 @@ void UpdateStatusbar()
   }
   Style_GetCurrentLexerName(tchStatusBar[STATUS_LEXER], txtWidth);
 
-  // Statusbar width
+  // Statusbar widths
   int aStatusbarSections[STATUS_SECTOR_COUNT];
+
   int cnt = 0;
   int totalWidth = 0;
-  for (int id = 0; id < STATUS_SECTOR_COUNT; ++id) {
-    if (g_aStatusbarSectionWidth[id] >= 0) {
+  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+    int const id = g_aSBSOrder[i];
+    if ((id >= 0) && (g_aStatusbarSectionWidth[id] >= 0)) {
       totalWidth += max(g_aStatusbarSectionWidth[id], StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[id]));
       aStatusbarSections[cnt++] = totalWidth;
     }
@@ -7487,8 +7493,9 @@ void UpdateStatusbar()
   SendMessage(g_hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
 
   cnt = 0;
-  for (int id = 0; id < STATUS_SECTOR_COUNT; ++id) {
-    if (g_aStatusbarSectionWidth[id] >= 0) {
+  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+    int const id = g_aSBSOrder[i];
+    if ((id >= 0) && (g_aStatusbarSectionWidth[id] >= 0)) {
       StatusSetText(g_hwndStatus, cnt++, tchStatusBar[id]);
     }
   }
