@@ -682,7 +682,7 @@ void RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 //
 //  OpenWithDlgProc()
 //
-extern WCHAR tchOpenWithDir[MAX_PATH];
+extern WCHAR g_tchOpenWithDir[MAX_PATH];
 extern int  flagNoFadeHidden;
 
 extern int cxOpenWithDlg;
@@ -706,7 +706,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_OPENWITHDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
         ListView_InsertColumn(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,&lvc);
         DirList_Init(GetDlgItem(hwnd,IDC_OPENWITHDIR),NULL);
-        DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),tchOpenWithDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
+        DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),g_tchOpenWithDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
@@ -791,9 +791,9 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
         case IDC_GETOPENWITHDIR:
           {
-            if (GetDirectory(hwnd,IDS_OPENWITH,tchOpenWithDir,tchOpenWithDir,true))
+            if (GetDirectory(hwnd,IDS_OPENWITH,g_tchOpenWithDir,g_tchOpenWithDir,true))
             {
-              DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),tchOpenWithDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
+              DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),g_tchOpenWithDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
               ListView_EnsureVisible(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,false);
               ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -882,7 +882,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 //
 //  FavoritesDlgProc()
 //
-extern WCHAR tchFavoritesDir[MAX_PATH];
+extern WCHAR g_tchFavoritesDir[MAX_PATH];
 
 extern int cxFavoritesDlg;
 extern int cyFavoritesDlg;
@@ -904,7 +904,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_FAVORITESDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
         ListView_InsertColumn(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,&lvc);
         DirList_Init(GetDlgItem(hwnd,IDC_FAVORITESDIR),NULL);
-        DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),tchFavoritesDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
+        DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),g_tchFavoritesDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
@@ -988,9 +988,9 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
         case IDC_GETFAVORITESDIR:
           {
-            if (GetDirectory(hwnd,IDS_FAVORITES,tchFavoritesDir,tchFavoritesDir,true))
+            if (GetDirectory(hwnd,IDS_FAVORITES,g_tchFavoritesDir,g_tchFavoritesDir,true))
             {
-              DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),tchFavoritesDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
+              DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),g_tchFavoritesDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
               ListView_EnsureVisible(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,false);
               ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -1128,7 +1128,7 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 
   if (iResult == IDOK)
   {
-    if (!PathCreateFavLnk(pszName,lpszTarget,tchFavoritesDir)) {
+    if (!PathCreateFavLnk(pszName,lpszTarget,g_tchFavoritesDir)) {
       MsgBox(MBWARN,IDS_FAV_FAILURE);
       return false;
     }
