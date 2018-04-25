@@ -114,34 +114,25 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
 #define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 17"
 
 
-WCHAR         g_wchIniFile[MAX_PATH] = { L'\0' };
-WCHAR         g_wchIniFile2[MAX_PATH] = { L'\0' };
-static WCHAR  g_szTmpFilePath[MAX_PATH] = { L'\0' };
-
-bool          bSaveSettings;
-bool          bEnableSaveSettings;
-bool          bSaveRecentFiles;
-bool          bPreserveCaretPos;
-bool          bSaveFindReplace;
-bool          bFindReplCopySelOrClip = true;
-
-WCHAR         g_tchFileDlgFilters[XXXL_BUFFER] = { L'\0' };
-
-WCHAR         g_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
-WCHAR         g_tchOpenWithDir[MAX_PATH] = { L'\0' };
-WCHAR         g_tchFavoritesDir[MAX_PATH] = { L'\0' };
-
-static WCHAR  g_tchDefaultExtension[64] = { L'\0' };
-static WCHAR  g_tchDefaultDir[MAX_PATH] = { L'\0' };
-static WCHAR  g_tchToolbarButtons[MIDSZ_BUFFER] = { L'\0' };
-static WCHAR  g_tchStatusbarSections[SMALL_BUFFER] = { L'\0' };
-static WCHAR  g_tchStatusbarRelWidths[SMALL_BUFFER] = { L'\0' };
-static bool   g_bStatusBarOptimizedSpace = false;
-static bool   g_bUsrDefinedStatusbarWidth = false;
-
-static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
-static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
-static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
+WCHAR      g_wchIniFile[MAX_PATH] = { L'\0' };
+WCHAR      g_wchIniFile2[MAX_PATH] = { L'\0' };
+WCHAR      szBufferFile[MAX_PATH] = { L'\0' };
+bool       bSaveSettings;
+bool       bEnableSaveSettings;
+bool       bSaveRecentFiles;
+bool       bPreserveCaretPos;
+bool       bSaveFindReplace;
+bool       bFindReplCopySelOrClip = true;
+WCHAR      tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
+WCHAR      tchOpenWithDir[MAX_PATH] = { L'\0' };
+WCHAR      tchFavoritesDir[MAX_PATH] = { L'\0' };
+WCHAR      tchDefaultDir[MAX_PATH] = { L'\0' };
+WCHAR      tchDefaultExtension[64] = { L'\0' };
+WCHAR      tchFileDlgFilters[5*1024] = { L'\0' };
+WCHAR      tchToolbarButtons[512] = { L'\0' };
+WCHAR      tchToolbarBitmap[MAX_PATH] = { L'\0' };
+WCHAR      tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
+WCHAR      tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
 int       iPathNameFormat;
 bool      bWordWrap;
@@ -732,97 +723,9 @@ bool InitApplication(HINSTANCE hInstance)
 }
 
 
-static int g_aStatusbarSectionWidth[STATUS_SECTOR_COUNT];
-static int g_aSBSOrder[STATUS_SECTOR_COUNT];
-
 //=============================================================================
 //
-//  _ReadVectorFromString()
-//
-//
-
-static int __fastcall _ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault)
-{
-  static WCHAR wchTmpBuff[SMALL_BUFFER];
-
-  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
-  TrimString(wchTmpBuff);
-  // ensure single spaces only
-  WCHAR *p = StrStr(wchTmpBuff, L"  ");
-  while (p) {
-    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
-    p = StrStr(wchTmpBuff, L"  ");  // next
-  }
-  // separate values
-  int const len = lstrlen(wchTmpBuff);
-  for (int i = 0; i < len; ++i) {
-    if (wchTmpBuff[i] == L' ') { wchTmpBuff[i] = L'\0'; }
-  }
-  // fill default
-  for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
-  // insert values
-  int n = 0;
-  p = wchTmpBuff;
-  while (*p) {
-    int iValue;
-    if (swscanf_s(p, L"%i", &iValue) == 1) {
-      if ((n < iCount) && (iValue >= iMin) && (iValue <= iMax)) {
-        iVector[n++] = iValue;
-      }
-    }
-    p = StrEnd(p) + 1;
-  }
-  return n;
-}
-
-
-//=============================================================================
-//
-//  _StatusbarSetSections()
-//
-//
-static void __fastcall _StatusbarSetSections(int cx)
-{
-  static int lastCX = -1;
-  if (!bShowStatusbar || (cx == lastCX)) { return; } // static calculation
-
-                                                     // prepare sector array
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    g_aStatusbarSectionWidth[i] = -1;
-    g_aSBSOrder[i] = -1;
-  }
-
-  int vSections[STATUS_SECTOR_COUNT];
-  _ReadVectorFromString(g_tchStatusbarSections, vSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
-
-  int vWeights[STATUS_SECTOR_COUNT];
-  _ReadVectorFromString(g_tchStatusbarRelWidths, vWeights, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), 1);
-
-  int cnt = 0;
-  int totalWeight = 0;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    int const iID = vSections[i];
-    if (iID != -1) {
-      g_aStatusbarSectionWidth[iID] = (cx * vWeights[iID]);
-      totalWeight += vWeights[iID];
-      g_aSBSOrder[cnt++] = iID;
-    }
-  }
-  // normalize
-  if (totalWeight > 0) {
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      if (g_aStatusbarSectionWidth[i] > 0) {
-        g_aStatusbarSectionWidth[i] /= totalWeight;
-      }
-    }
-  }
-  lastCX = cx;
-}
-
-
-//=============================================================================
-//
-//  _InitWindowPosition()
+//  InitInstance()
 //
 //
 static void __fastcall _InitWindowPosition(HWND hwnd)
@@ -919,8 +822,8 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
       g_WinInfo.x = mi.rcWork.right - g_WinInfo.cx - 16;
     }
   }
-  _StatusbarSetSections(g_WinInfo.cx);
 }
+
 
 
 //=============================================================================
@@ -985,7 +888,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
         bOpened = FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
     }
     else {
-      LPCWSTR lpFileToOpen = flagBufferFile ? g_szTmpFilePath : lpFileArg;
+      LPCWSTR lpFileToOpen = flagBufferFile ? szBufferFile : lpFileArg;
       bOpened = FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, lpFileToOpen);
       if (bOpened) {
         if (flagBufferFile) {
@@ -1004,8 +907,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
           UpdateLineNumberWidth();
 
           // check for temp file and delete
-          if (flagIsElevated && PathFileExists(g_szTmpFilePath)) {
-            DeleteFile(g_szTmpFilePath);
+          if (flagIsElevated && PathFileExists(szBufferFile)) {
+            DeleteFile(szBufferFile);
           }
         }
         if (flagJumpTo) { // Jump to position
@@ -1146,7 +1049,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
   iReplacedOccurrences = 0;
   g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
-
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
@@ -1676,10 +1578,10 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Add normal Toolbar Bitmap
   hbmp = NULL;
-  if (StringCchLenW(g_tchToolbarBitmap,COUNTOF(g_tchToolbarBitmap)))
+  if (StringCchLenW(tchToolbarBitmap,COUNTOF(tchToolbarBitmap)))
   {
-    if (!SearchPath(NULL,g_tchToolbarBitmap,NULL,COUNTOF(szTmp),szTmp,NULL))
-      StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmap);
+    if (!SearchPath(NULL,tchToolbarBitmap,NULL,COUNTOF(szTmp),szTmp,NULL))
+      StringCchCopy(szTmp,COUNTOF(szTmp),tchToolbarBitmap);
     hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE);
   }
 
@@ -1700,10 +1602,10 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Optionally add hot Toolbar Bitmap
   hbmp = NULL;
-  if (StringCchLenW(g_tchToolbarBitmapHot,COUNTOF(g_tchToolbarBitmapHot)))
+  if (StringCchLenW(tchToolbarBitmapHot,COUNTOF(tchToolbarBitmapHot)))
   {
-    if (!SearchPath(NULL,g_tchToolbarBitmapHot,NULL,COUNTOF(szTmp),szTmp,NULL))
-      StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmapHot);
+    if (!SearchPath(NULL,tchToolbarBitmapHot,NULL,COUNTOF(szTmp),szTmp,NULL))
+      StringCchCopy(szTmp,COUNTOF(szTmp),tchToolbarBitmapHot);
 
     hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
     if (hbmp)
@@ -1718,10 +1620,10 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Optionally add disabled Toolbar Bitmap
   hbmp = NULL;
-  if (StringCchLenW(g_tchToolbarBitmapDisabled,COUNTOF(g_tchToolbarBitmapDisabled)))
+  if (StringCchLenW(tchToolbarBitmapDisabled,COUNTOF(tchToolbarBitmapDisabled)))
   {
-    if (!SearchPath(NULL,g_tchToolbarBitmapDisabled,NULL,COUNTOF(szTmp),szTmp,NULL))
-      StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmapDisabled);
+    if (!SearchPath(NULL,tchToolbarBitmapDisabled,NULL,COUNTOF(szTmp),szTmp,NULL))
+      StringCchCopy(szTmp,COUNTOF(szTmp),tchToolbarBitmapDisabled);
 
     hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
     if (hbmp)
@@ -1779,7 +1681,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   SendMessage(g_hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
 
-  if (Toolbar_SetButtons(g_hwndToolbar, IDT_FILE_NEW, g_tchToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
+  if (Toolbar_SetButtons(g_hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
     SendMessage(g_hwndToolbar, TB_ADDBUTTONS, NUMINITIALTOOLS, (LPARAM)tbbMainWnd);
   }
   SendMessage(g_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
@@ -1941,7 +1843,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   }
 
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(g_hwndToolbar,IDT_FILE_NEW,g_tchToolbarButtons,COUNTOF(g_tchToolbarButtons));
+  Toolbar_GetButtons(g_hwndToolbar,IDT_FILE_NEW,tchToolbarButtons,COUNTOF(tchToolbarButtons));
 
   DestroyWindow(g_hwndToolbar);
   DestroyWindow(hwndReBar);
@@ -1970,21 +1872,28 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
 //  MsgSize() - Handles WM_SIZE
 //
 //
+static int g_aStatusSectorWidth[STATUS_SECTOR_COUNT] = { -1 };
+
+
 void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
+
+  RECT rc;
+  int x,y,cx,cy;
+  HDWP hdwp;
+
   if (wParam == SIZE_MINIMIZED)
     return;
 
-  int x = 0;
-  int y = 0;
+  x = 0;
+  y = 0;
 
-  int cx = LOWORD(lParam);
-  int cy = HIWORD(lParam);
+  cx = LOWORD(lParam);
+  cy = HIWORD(lParam);
 
   if (bShowToolbar)
   {
 /*  SendMessage(g_hwndToolbar,WM_SIZE,0,0);
-    RECT rc;
     GetWindowRect(g_hwndToolbar,&rc);
     y = (rc.bottom - rc.top);
     cy -= (rc.bottom - rc.top);*/
@@ -2003,13 +1912,12 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   if (bShowStatusbar)
   {
-    RECT rc;
     SendMessage(g_hwndStatus,WM_SIZE,0,0);
     GetWindowRect(g_hwndStatus,&rc);
     cy -= (rc.bottom - rc.top);
   }
 
-  HDWP hdwp = BeginDeferWindowPos(2);
+  hdwp = BeginDeferWindowPos(2);
 
   DeferWindowPos(hdwp,hwndEditFrame,NULL,x,y,cx,cy,
                  SWP_NOZORDER | SWP_NOACTIVATE);
@@ -2021,8 +1929,30 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EndDeferWindowPos(hdwp);
 
   // calculate average space for statusbar sectors
-  _StatusbarSetSections(cx);
-    
+  //g_aStatusSectorWidth[STATUS_DOCLINE] = StatusCalcPaneWidth(g_hwndStatus, L"Ln  9'999'/9'999");
+  //g_aStatusSectorWidth[STATUS_DOCCOLUMN] = StatusCalcPaneWidth(g_hwndStatus, L"Col  999/999");
+  //g_aStatusSectorWidth[STATUS_SELECTION] = StatusCalcPaneWidth(g_hwndStatus, L"Sel  9'999 (9999 Bytes)/999[ln]");
+  //g_aStatusSectorWidth[STATUS_OCCURRENCE] = StatusCalcPaneWidth(g_hwndStatus, L"Occ  9'999");
+  //g_aStatusSectorWidth[STATUS_DOCSIZE] = StatusCalcPaneWidth(g_hwndStatus, L"9'999 (Bytes)");
+  //g_aStatusSectorWidth[STATUS_CODEPAGE] = StatusCalcPaneWidth(g_hwndStatus, L"Unicode (UTF-8)");
+  //g_aStatusSectorWidth[STATUS_EOLMODE] = StatusCalcPaneWidth(g_hwndStatus, L"LF");
+  //g_aStatusSectorWidth[STATUS_OVRMODE] = StatusCalcPaneWidth(g_hwndStatus, L"OVR");
+  //g_aStatusSectorWidth[STATUS_2ND_DEF] = StatusCalcPaneWidth(g_hwndStatus, L"2ND");
+  //g_aStatusSectorWidth[STATUS_LEXER] = StatusCalcPaneWidth(g_hwndStatus, L"Standard Lexer");
+
+  int const weight[STATUS_SECTOR_COUNT+1] = { 3, 3, 5, 3, 2, 2, 1, 1, 1, 3, 24 };
+  g_aStatusSectorWidth[STATUS_DOCLINE] = (cx * weight[STATUS_DOCLINE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_DOCCOLUMN] = (cx * weight[STATUS_DOCCOLUMN]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_SELECTION] = (cx * weight[STATUS_SELECTION]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_OCCURRENCE] = (cx * weight[STATUS_OCCURRENCE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_DOCSIZE] = (cx * weight[STATUS_DOCSIZE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_CODEPAGE] = (cx * weight[STATUS_CODEPAGE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_EOLMODE] = (cx * weight[STATUS_EOLMODE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_OVRMODE] = (cx * weight[STATUS_OVRMODE]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_2ND_DEF] = (cx * weight[STATUS_2ND_DEF]) / weight[STATUS_SECTOR_COUNT];
+  g_aStatusSectorWidth[STATUS_LEXER] = -1;  //(cx * weight[STATUS_LEXER]) / weight[STATUS_SECTOR_COUNT];
+
+
   UpdateToolbar();
   UpdateStatusbar();
   UpdateLineNumberWidth();
@@ -2957,7 +2887,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         sei.fMask = 0;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = g_tchFavoritesDir;
+        sei.lpFile = tchFavoritesDir;
         sei.lpParameters = NULL;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
@@ -5954,7 +5884,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             int i;
             LPNMMOUSE pnmm = (LPNMMOUSE)lParam;
 
-            switch (g_aSBSOrder[pnmm->dwItemSpec])
+            switch (pnmm->dwItemSpec)
             {
               case STATUS_DOCLINE:
               case STATUS_DOCCOLUMN:
@@ -6085,9 +6015,7 @@ void LoadSettings()
   WCHAR *pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
   int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
-  // --------------------------------------------------------------------------
-  LoadIniSection(L"Settings", pIniSection, cchIniSection);
-  // --------------------------------------------------------------------------
+  LoadIniSection(L"Settings",pIniSection,cchIniSection);
 
   bEnableSaveSettings = true;
   bSaveSettings = IniSectionGetBool(pIniSection,L"SaveSettings",true);
@@ -6105,19 +6033,19 @@ void LoadSettings()
   g_efrData.bDotMatchAll = IniSectionGetBool(pIniSection, L"RegexDotMatchesAll", false);
   g_efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
 
-  if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"", g_tchOpenWithDir, COUNTOF(g_tchOpenWithDir))) {
-    //SHGetSpecialFolderPath(NULL, g_tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, true);
-    GetKnownFolderPath(&FOLDERID_Desktop, g_tchOpenWithDir, COUNTOF(g_tchOpenWithDir));
+  if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"", tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
+    //SHGetSpecialFolderPath(NULL, tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, true);
+    GetKnownFolderPath(&FOLDERID_Desktop, tchOpenWithDir, COUNTOF(tchOpenWithDir));
   }
   else {
-    PathAbsoluteFromApp(g_tchOpenWithDir, NULL, COUNTOF(g_tchOpenWithDir), true);
+    PathAbsoluteFromApp(tchOpenWithDir, NULL, COUNTOF(tchOpenWithDir), true);
   }
-  if (!IniSectionGetString(pIniSection, L"Favorites", L"", g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir))) {
-    //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,g_tchFavoritesDir);
-    GetKnownFolderPath(&FOLDERID_Favorites, g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir));
+  if (!IniSectionGetString(pIniSection, L"Favorites", L"", tchFavoritesDir, COUNTOF(tchFavoritesDir))) {
+    //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,tchFavoritesDir);
+    GetKnownFolderPath(&FOLDERID_Favorites, tchFavoritesDir, COUNTOF(tchFavoritesDir));
   }
   else {
-    PathAbsoluteFromApp(g_tchFavoritesDir, NULL, COUNTOF(g_tchFavoritesDir), true);
+    PathAbsoluteFromApp(tchFavoritesDir, NULL, COUNTOF(tchFavoritesDir), true);
   }
 
   iPathNameFormat = IniSectionGetInt(pIniSection,L"PathNameFormat",0);
@@ -6267,7 +6195,7 @@ void LoadSettings()
   bTransparentModeAvailable = (bTransparentModeAvailable) ? true : false;
 
   // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
-  IniSectionGetString(pIniSection,L"ToolbarButtons", L"", g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
+  IniSectionGetString(pIniSection,L"ToolbarButtons", L"", tchToolbarButtons, COUNTOF(tchToolbarButtons));
 
   bShowToolbar = IniSectionGetBool(pIniSection,L"ShowToolbar",true);
 
@@ -6309,23 +6237,21 @@ void LoadSettings()
   xCustomSchemesDlg = IniSectionGetInt(pIniSection, L"CustomSchemesDlgPosX", 0);
   yCustomSchemesDlg = IniSectionGetInt(pIniSection, L"CustomSchemesDlgPosY", 0);
 
-  // --------------------------------------------------------------------------
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
-  // --------------------------------------------------------------------------
 
   bStickyWinPos = IniSectionGetInt(pIniSection,L"StickyWindowPosition",0);
   if (bStickyWinPos) bStickyWinPos = 1;
 
   IniSectionGetString(pIniSection,L"DefaultExtension",L"txt",
-    g_tchDefaultExtension,COUNTOF(g_tchDefaultExtension));
-  StrTrim(g_tchDefaultExtension,L" \t.\"");
+    tchDefaultExtension,COUNTOF(tchDefaultExtension));
+  StrTrim(tchDefaultExtension,L" \t.\"");
 
   IniSectionGetString(pIniSection,L"DefaultDirectory",L"",
-    g_tchDefaultDir,COUNTOF(g_tchDefaultDir));
+    tchDefaultDir,COUNTOF(tchDefaultDir));
 
-  ZeroMemory(g_tchFileDlgFilters,sizeof(WCHAR)*COUNTOF(g_tchFileDlgFilters));
+  ZeroMemory(tchFileDlgFilters,sizeof(WCHAR)*COUNTOF(tchFileDlgFilters));
   IniSectionGetString(pIniSection,L"FileDlgFilters",L"",
-    g_tchFileDlgFilters,COUNTOF(g_tchFileDlgFilters)-2);
+    tchFileDlgFilters,COUNTOF(tchFileDlgFilters)-2);
 
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
@@ -6354,33 +6280,19 @@ void LoadSettings()
   iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
   iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
 
-  g_bStatusBarOptimizedSpace = IniSectionGetBool(pIniSection, L"StatusBarOptimizedSpace", false);
-  IniSectionGetString(pIniSection, L"StatusbarVisibleSections", STATUSBAR_DEFAULT_IDS, g_tchStatusbarSections, COUNTOF(g_tchStatusbarSections));
-
-  g_bUsrDefinedStatusbarWidth = true;
-  IniSectionGetString(pIniSection, L"StatusbarSectionRelWidths", L"", g_tchStatusbarRelWidths, COUNTOF(g_tchStatusbarRelWidths));
-  if (StringCchLenW(g_tchStatusbarRelWidths, COUNTOF(g_tchStatusbarRelWidths)) == 0) {
-    g_bUsrDefinedStatusbarWidth = false;
-    StringCchCopyW(g_tchStatusbarRelWidths, COUNTOF(g_tchStatusbarRelWidths), STATUSBAR_SECTION_WIDTH);
-  }
-
-  // --------------------------------------------------------------------------
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
-  // --------------------------------------------------------------------------
 
   IniSectionGetString(pIniSection,L"BitmapDefault",L"",
-    g_tchToolbarBitmap,COUNTOF(g_tchToolbarBitmap));
+    tchToolbarBitmap,COUNTOF(tchToolbarBitmap));
   IniSectionGetString(pIniSection,L"BitmapHot",L"",
-    g_tchToolbarBitmapHot,COUNTOF(g_tchToolbarBitmap));
+    tchToolbarBitmapHot,COUNTOF(tchToolbarBitmap));
   IniSectionGetString(pIniSection,L"BitmapDisabled",L"",
-    g_tchToolbarBitmapDisabled,COUNTOF(g_tchToolbarBitmap));
+    tchToolbarBitmapDisabled,COUNTOF(tchToolbarBitmap));
 
   int ResX = GetSystemMetrics(SM_CXSCREEN);
   int ResY = GetSystemMetrics(SM_CYSCREEN);
 
-  // --------------------------------------------------------------------------
   LoadIniSection(L"Window", pIniSection, cchIniSection);
-  // --------------------------------------------------------------------------
 
   WCHAR tchHighDpiToolBar[32] = { L'\0' };
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
@@ -6492,9 +6404,9 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"HideNonMatchedLines", g_efrData.bHideNonMatchedLines);
   IniSectionSetBool(pIniSection, L"RegexDotMatchesAll", g_efrData.bDotMatchAll);
   IniSectionSetInt(pIniSection, L"efrData_fuFlags", g_efrData.fuFlags);
-  PathRelativeToApp(g_tchOpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, flagPortableMyDocs);
+  PathRelativeToApp(tchOpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, flagPortableMyDocs);
   IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
-  PathRelativeToApp(g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, flagPortableMyDocs);
+  PathRelativeToApp(tchFavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, flagPortableMyDocs);
   IniSectionSetString(pIniSection, L"Favorites", wchTmp);
   IniSectionSetInt(pIniSection, L"PathNameFormat", iPathNameFormat);
   IniSectionSetBool(pIniSection, L"WordWrap", bWordWrapG);
@@ -6571,9 +6483,9 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosX", xCustomSchemesDlg);
   IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosY", yCustomSchemesDlg);
 
-  Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
-  if (StringCchCompareX(g_tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { g_tchToolbarButtons[0] = L'\0'; }
-  IniSectionSetString(pIniSection, L"ToolbarButtons", g_tchToolbarButtons);
+  Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, tchToolbarButtons, COUNTOF(tchToolbarButtons));
+  if (StringCchCompareX(tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { tchToolbarButtons[0] = L'\0'; }
+  IniSectionSetString(pIniSection, L"ToolbarButtons", tchToolbarButtons);
 
   SaveIniSection(L"Settings", pIniSection);
   LocalFree(pIniSection);
@@ -6714,11 +6626,11 @@ void ParseCommandLine()
 
       // Relaunch elevated
       else if (StrCmpNI(lp1,L"tmpfbuf=",CSTRLEN(L"tmpfbuf=")) == 0) {
-        StringCchCopyN(g_szTmpFilePath,COUNTOF(g_szTmpFilePath),
+        StringCchCopyN(szBufferFile,COUNTOF(szBufferFile),
           lp1 + CSTRLEN(L"tmpfbuf="),len - CSTRLEN(L"tmpfbuf="));
-        TrimString(g_szTmpFilePath);
-        PathUnquoteSpaces(g_szTmpFilePath);
-        NormalizePathEx(g_szTmpFilePath,COUNTOF(g_szTmpFilePath));
+        TrimString(szBufferFile);
+        PathUnquoteSpaces(szBufferFile);
+        NormalizePathEx(szBufferFile,COUNTOF(szBufferFile));
         flagBufferFile = 1;
       }
 
@@ -7366,49 +7278,60 @@ const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", 
 
 FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
 
-#define txtWidth 80
-
 void UpdateStatusbar() 
 {
-  if (!bShowStatusbar) { return; }
-
-  static WCHAR tchStatusBar[STATUS_SECTOR_COUNT][txtWidth];
+  static WCHAR tchLn[32] = { L'\0' };
+  static WCHAR tchLines[32] = { L'\0' };
+  static WCHAR tchCol[32] = { L'\0' };
+  static WCHAR tchCols[32] = { L'\0' };
+  static WCHAR tchSel[32] = { L'\0' };
+  static WCHAR tchSelB[32] = { L'\0' };
+  static WCHAR tchOcc[32] = { L'\0' };
+  static WCHAR tchReplOccs[32] = { L'\0' };
+  static WCHAR tchDocLine[64] = { L'\0' };
+  static WCHAR tchDocColumn[64] = { L'\0' };
+  static WCHAR tchDocSelection[64] = { L'\0' };
+  static WCHAR tchDocOccurrence[64] = { L'\0' };
   static WCHAR tchFRStatus[128] = { L'\0' };
+  static WCHAR tchBytes[64] = { L'\0' };
+  static WCHAR tchDocSize[64] = { L'\0' };
+  static WCHAR tchEncoding[64] = { L'\0' };
+
+  static WCHAR tchEOLMode[32] = { L'\0' };
+  static WCHAR tchOvrMode[32] = { L'\0' };
+  static WCHAR tch2ndDef[32] = { L'\0' };
+  static WCHAR tchLexerName[128] = { L'\0' };
+  static WCHAR tchLinesSelected[32] = { L'\0' };
+  
   static WCHAR tchTmp[32] = { L'\0' };
+
+  if (!bShowStatusbar) { return; }
 
   const DocPos iPos = SciCall_GetCurrentPos();
   const DocPos iTextLength = SciCall_GetTextLength();
   const int iEncoding = Encoding_Current(CPI_GET);
 
-  static WCHAR tchLn[32] = { L'\0' };
   StringCchPrintf(tchLn, COUNTOF(tchLn), L"%td", SciCall_LineFromPosition(iPos) + 1);
   FormatNumberStr(tchLn);
 
-  static WCHAR tchLines[32] = { L'\0' };
   StringCchPrintf(tchLines, COUNTOF(tchLines), L"%td", SciCall_GetLineCount());
   FormatNumberStr(tchLines);
 
   DocPos iCol = SciCall_GetColumn(iPos) + 1;
   iCol += (DocPos)SendMessage(g_hwndEdit, SCI_GETSELECTIONNCARETVIRTUALSPACE, 0, 0);
-  static WCHAR tchCol[32] = { L'\0' };
   StringCchPrintf(tchCol, COUNTOF(tchCol), L"%td", iCol);
   FormatNumberStr(tchCol);
 
-  static WCHAR tchCols[32] = { L'\0' };
   if (bMarkLongLines) {
     StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iLongLinesLimit);
     FormatNumberStr(tchCols);
   }
-  else {
-    tchCols[0] = L'\0';
-  }
 
-  // number of selected chars in statusbar
+  // Print number of selected chars in statusbar
   const bool bIsSelEmpty = SciCall_IsSelectionEmpty();
   const DocPos iSelStart = (bIsSelEmpty ? 0 : SciCall_GetSelectionStart());
   const DocPos iSelEnd = (bIsSelEmpty ? 0 : SciCall_GetSelectionEnd());
-  static WCHAR tchSel[32] = { L'\0' };
-  static WCHAR tchSelB[32] = { L'\0' };
+
   if (!bIsSelEmpty && !SciCall_IsSelectionRectangle())
   {
     const DocPos iSel = (DocPos)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
@@ -7421,26 +7344,8 @@ void UpdateStatusbar()
     tchSelB[0] = L'0'; tchSelB[1] = L'\0';
   }
 
-  // number of selected lines in statusbar
-  static WCHAR tchLinesSelected[32] = { L'\0' };
-  if (bIsSelEmpty) {
-    tchLinesSelected[0] = L'-';
-    tchLinesSelected[1] = L'-';
-    tchLinesSelected[2] = L'\0';
-  }
-  else {
-    const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
-    const DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
-    const DocPos iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
-    DocLn iLinesSelected = (iLineEnd - iLineStart);
-    if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) { iLinesSelected += 1; }
-    StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
-    FormatNumberStr(tchLinesSelected);
-  }
-
-  // number of occurrence marks found
-  static WCHAR tchOcc[32] = { L'\0' };
-  if ((g_iMarkOccurrencesCount >= 0) && !g_bMarkOccurrencesMatchVisible)
+  // Print number of occurrence marks found
+  if ((g_iMarkOccurrencesCount >= 0) && !g_bMarkOccurrencesMatchVisible) 
   {
     if ((g_iMarkOccurrencesMaxCount < 0) || (g_iMarkOccurrencesCount < g_iMarkOccurrencesMaxCount)) 
     {
@@ -7457,96 +7362,97 @@ void UpdateStatusbar()
     StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
   }
 
-  // --------------------------------------------------------------------------
+  // Print number of selected lines in statusbar
+  if (bIsSelEmpty) {
+    tchLinesSelected[0] = L'-';
+    tchLinesSelected[1] = L'-';
+    tchLinesSelected[2] = L'\0';
+  }
+  else {
+    const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
+    const DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
+    const DocPos iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
+    DocLn iLinesSelected = (iLineEnd - iLineStart);
+    if ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) { iLinesSelected += 1; }
+    StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
+    FormatNumberStr(tchLinesSelected);
+  }
 
-  FormatString(tchStatusBar[STATUS_DOCLINE], txtWidth, IDS_STATUS_DOCLINE, tchLn, tchLines);
+  FormatString(tchDocLine, COUNTOF(tchDocLine), IDS_STATUS_DOCLINE, tchLn, tchLines);
  
   if (bMarkLongLines)
-    FormatString(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, IDS_STATUS_DOCCOLUMN2, tchCol, tchCols);
+    FormatString(tchDocColumn, COUNTOF(tchDocColumn), IDS_STATUS_DOCCOLUMN2, tchCol, tchCols);
   else
-    FormatString(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, IDS_STATUS_DOCCOLUMN, tchCol);
+    FormatString(tchDocColumn, COUNTOF(tchDocColumn), IDS_STATUS_DOCCOLUMN, tchCol);
 
-  FormatString(tchStatusBar[STATUS_SELECTION], txtWidth, IDS_STATUS_SELECTION, tchSel, tchSelB);
-  FormatString(tchStatusBar[STATUS_SELCTLINES], txtWidth, IDS_STATUS_SELCTLINES, tchLinesSelected);
+  FormatString(tchDocSelection, COUNTOF(tchDocSelection), IDS_STATUS_SELECTION, tchSel, tchSelB, tchLinesSelected);
 
-  FormatString(tchStatusBar[STATUS_OCCURRENCE], txtWidth, IDS_STATUS_OCCURRENCE, tchOcc);
+  FormatString(tchDocOccurrence, COUNTOF(tchDocOccurrence), IDS_STATUS_OCCURRENCE, tchOcc);
 
   // get number of bytes in current encoding
-  static WCHAR tchBytes[32] = { L'\0' };
   StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
-  FormatString(tchStatusBar[STATUS_DOCSIZE], txtWidth, IDS_STATUS_DOCSIZE, tchBytes);
+  FormatString(tchDocSize, COUNTOF(tchDocSize), IDS_STATUS_DOCSIZE, tchBytes);
 
   Encoding_SetLabel(iEncoding);
-  StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s", Encoding_GetLabel(iEncoding));
+  StringCchPrintf(tchEncoding, COUNTOF(tchEncoding), L"%s", Encoding_GetLabel(iEncoding));
 
   if (g_iEOLMode == SC_EOL_CR) 
   {
-    StringCchCopy(tchStatusBar[STATUS_EOLMODE], txtWidth, L"CR");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L"CR");
   }
   else if (g_iEOLMode == SC_EOL_LF) 
   {
-    StringCchCopy(tchStatusBar[STATUS_EOLMODE], txtWidth, L"LF");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L"LF");
   }
   else {
-    StringCchCopy(tchStatusBar[STATUS_EOLMODE], txtWidth, L"CR+LF");
+    StringCchCopy(tchEOLMode, COUNTOF(tchEOLMode), L"CR+LF");
   }
   if (SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0)) 
   {
-    StringCchCopy(tchStatusBar[STATUS_OVRMODE], txtWidth, L"OVR");
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L"OVR");
   }
   else {
-    StringCchCopy(tchStatusBar[STATUS_OVRMODE], txtWidth, L"INS");
+    StringCchCopy(tchOvrMode, COUNTOF(tchOvrMode), L"INS");
   }
   if (Style_GetUse2ndDefault())
   {
-    StringCchCopy(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"2ND");
+    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L"2ND");
   }
   else {
-    StringCchCopy(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"STD");
+    StringCchCopy(tch2ndDef, COUNTOF(tch2ndDef), L"STD");
   }
-  Style_GetCurrentLexerName(tchStatusBar[STATUS_LEXER], txtWidth);
+  Style_GetCurrentLexerName(tchLexerName, COUNTOF(tchLexerName));
 
-  // Statusbar widths
-  int aStatusbarSections[STATUS_SECTOR_COUNT];
-  int cnt = 0;
-  int totalWidth = 0;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    int const id = g_aSBSOrder[i];
-    if ((id >= 0) && (g_aStatusbarSectionWidth[id] >= 0)) 
-    {
-      if (g_bStatusBarOptimizedSpace)
-      {
-        if (g_bUsrDefinedStatusbarWidth)
-          totalWidth += g_aStatusbarSectionWidth[id];
-        else
-          totalWidth += StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[id]);
-      }
-      else // NOT optimized
-      {
-        totalWidth += max(g_aStatusbarSectionWidth[id], StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[id]));
-      }
-      aStatusbarSections[cnt++] = totalWidth;
-    }
-  }
+  // Statusbar width
+  int aWidth[STATUS_SECTOR_COUNT];
+  aWidth[STATUS_DOCLINE] = max(g_aStatusSectorWidth[STATUS_DOCLINE], StatusCalcPaneWidth(g_hwndStatus, tchDocLine));
+  aWidth[STATUS_DOCCOLUMN] = aWidth[STATUS_DOCLINE] + max(g_aStatusSectorWidth[STATUS_DOCCOLUMN], StatusCalcPaneWidth(g_hwndStatus, tchDocColumn));
+  aWidth[STATUS_SELECTION] = aWidth[STATUS_DOCCOLUMN] + max(g_aStatusSectorWidth[STATUS_SELECTION], StatusCalcPaneWidth(g_hwndStatus, tchDocSelection));
+  aWidth[STATUS_OCCURRENCE] = aWidth[STATUS_SELECTION] + max(g_aStatusSectorWidth[STATUS_OCCURRENCE], StatusCalcPaneWidth(g_hwndStatus, tchDocOccurrence));
+  aWidth[STATUS_DOCSIZE] = aWidth[STATUS_OCCURRENCE] + max(g_aStatusSectorWidth[STATUS_DOCSIZE], StatusCalcPaneWidth(g_hwndStatus, tchDocSize));
+  aWidth[STATUS_CODEPAGE] = aWidth[STATUS_DOCSIZE] + max(g_aStatusSectorWidth[STATUS_CODEPAGE], StatusCalcPaneWidth(g_hwndStatus, tchEncoding));
+  aWidth[STATUS_EOLMODE] = aWidth[STATUS_CODEPAGE] + max(g_aStatusSectorWidth[STATUS_EOLMODE], StatusCalcPaneWidth(g_hwndStatus, tchEOLMode));
+  aWidth[STATUS_OVRMODE] = g_aStatusSectorWidth[STATUS_OVRMODE];
+  aWidth[STATUS_2ND_DEF] = g_aStatusSectorWidth[STATUS_2ND_DEF];
+  aWidth[STATUS_LEXER] = g_aStatusSectorWidth[STATUS_LEXER];
 
-  if (cnt > 0) { aStatusbarSections[cnt - 1] = -1; }
-  else { aStatusbarSections[0] = -1; bShowStatusbar = false; }
+  SendMessage(g_hwndStatus, SB_SETPARTS, COUNTOF(aWidth), (LPARAM)aWidth);
 
-  SendMessage(g_hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
-
-  cnt = 0;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    int const id = g_aSBSOrder[i];
-    if ((id >= 0) && (g_aStatusbarSectionWidth[id] >= 0)) {
-      StatusSetText(g_hwndStatus, cnt++, tchStatusBar[id]);
-    }
-  }
+  StatusSetText(g_hwndStatus, STATUS_DOCLINE, tchDocLine);
+  StatusSetText(g_hwndStatus, STATUS_DOCCOLUMN, tchDocColumn);
+  StatusSetText(g_hwndStatus, STATUS_SELECTION, tchDocSelection);
+  StatusSetText(g_hwndStatus, STATUS_OCCURRENCE, tchDocOccurrence);
+  StatusSetText(g_hwndStatus, STATUS_DOCSIZE, tchDocSize);
+  StatusSetText(g_hwndStatus, STATUS_CODEPAGE, tchEncoding);
+  StatusSetText(g_hwndStatus, STATUS_EOLMODE, tchEOLMode);
+  StatusSetText(g_hwndStatus, STATUS_OVRMODE, tchOvrMode);
+  StatusSetText(g_hwndStatus, STATUS_2ND_DEF, tch2ndDef);
+  StatusSetText(g_hwndStatus, STATUS_LEXER, tchLexerName);
   //InvalidateRect(g_hwndStatus,NULL,true);
 
   // --------------------------------------------------------------------------
 
   // update Find/Replace dialog (if any)
-  static WCHAR tchReplOccs[32] = { L'\0' };
   if (g_hwndDlgFindReplace) {
     if (iReplacedOccurrences > 0)
       StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", iReplacedOccurrences);
@@ -8227,9 +8133,9 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
   if (bSaveAs || bSaveCopy || StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)) == 0)
   {
     WCHAR tchInitialDir[MAX_PATH] = { L'\0' };
-    if (bSaveCopy && StringCchLenW(g_tchLastSaveCopyDir,COUNTOF(g_tchLastSaveCopyDir))) {
-      StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),g_tchLastSaveCopyDir);
-      StringCchCopy(tchFile,COUNTOF(tchFile),g_tchLastSaveCopyDir);
+    if (bSaveCopy && StringCchLenW(tchLastSaveCopyDir,COUNTOF(tchLastSaveCopyDir))) {
+      StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),tchLastSaveCopyDir);
+      StringCchCopy(tchFile,COUNTOF(tchFile),tchLastSaveCopyDir);
       PathCchAppend(tchFile,COUNTOF(tchFile),PathFindFileName(g_wchCurFile));
     }
     else
@@ -8255,8 +8161,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
           UpdateLineNumberWidth();
         }
         else {
-          StringCchCopy(g_tchLastSaveCopyDir,COUNTOF(g_tchLastSaveCopyDir),tchFile);
-          PathRemoveFileSpec(g_tchLastSaveCopyDir);
+          StringCchCopy(tchLastSaveCopyDir,COUNTOF(tchLastSaveCopyDir),tchFile);
+          PathRemoveFileSpec(tchLastSaveCopyDir);
         }
       }
     }
@@ -8371,8 +8277,8 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
       StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),g_wchCurFile);
       PathRemoveFileSpec(tchInitialDir);
     }
-    else if (StringCchLenW(g_tchDefaultDir,COUNTOF(g_tchDefaultDir))) {
-      ExpandEnvironmentStrings(g_tchDefaultDir,tchInitialDir,COUNTOF(tchInitialDir));
+    else if (StringCchLenW(tchDefaultDir,COUNTOF(tchDefaultDir))) {
+      ExpandEnvironmentStrings(tchDefaultDir,tchInitialDir,COUNTOF(tchInitialDir));
       if (PathIsRelative(tchInitialDir)) {
         WCHAR tchModule[MAX_PATH] = { L'\0' };
         GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
@@ -8395,7 +8301,7 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
               OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
               OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
-  ofn.lpstrDefExt = (StringCchLenW(g_tchDefaultExtension,COUNTOF(g_tchDefaultExtension))) ? g_tchDefaultExtension : NULL;
+  ofn.lpstrDefExt = (StringCchLenW(tchDefaultExtension,COUNTOF(tchDefaultExtension))) ? tchDefaultExtension : NULL;
 
   if (GetOpenFileName(&ofn)) {
     StringCchCopyN(lpstrFile,cchFile,szFile,COUNTOF(szFile));
@@ -8428,8 +8334,8 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),g_wchCurFile);
     PathRemoveFileSpec(tchInitialDir);
   }
-  else if (StringCchLenW(g_tchDefaultDir,COUNTOF(g_tchDefaultDir))) {
-    ExpandEnvironmentStrings(g_tchDefaultDir,tchInitialDir,COUNTOF(tchInitialDir));
+  else if (StringCchLenW(tchDefaultDir,COUNTOF(tchDefaultDir))) {
+    ExpandEnvironmentStrings(tchDefaultDir,tchInitialDir,COUNTOF(tchInitialDir));
     if (PathIsRelative(tchInitialDir)) {
       WCHAR tchModule[MAX_PATH] = { L'\0' };
       GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
@@ -8451,7 +8357,7 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   ofn.Flags = OFN_HIDEREADONLY /*| OFN_NOCHANGEDIR*/ |
             /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
             OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
-  ofn.lpstrDefExt = (StringCchLenW(g_tchDefaultExtension,COUNTOF(g_tchDefaultExtension))) ? g_tchDefaultExtension : NULL;
+  ofn.lpstrDefExt = (StringCchLenW(tchDefaultExtension,COUNTOF(tchDefaultExtension))) ? tchDefaultExtension : NULL;
 
   if (GetSaveFileName(&ofn)) {
     StringCchCopyN(lpstrFile,cchFile,szNewFile,COUNTOF(szNewFile));
