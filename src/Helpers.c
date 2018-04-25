@@ -1105,16 +1105,13 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 //
 int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
 {
+  static WCHAR pBuffer[XHUGE_BUFFER];
+  pBuffer[0] = L'\0';
 
-  WCHAR *p = LocalAlloc(LPTR,sizeof(WCHAR)*nOutput);
-
-  if (GetString(uIdFormat,p,nOutput))
-    StringCchVPrintf(lpOutput,nOutput,p,(LPVOID)((PUINT_PTR)&uIdFormat + 1));
-
-  LocalFree(p);
-
-  return (int)StringCchLen(lpOutput,nOutput);
-
+  if (GetString(uIdFormat, pBuffer, nOutput)) {
+    StringCchVPrintf(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+  }
+  return (int)StringCchLen(lpOutput, nOutput);
 }
 
 
