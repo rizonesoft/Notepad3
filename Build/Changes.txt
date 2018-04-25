@@ -99,6 +99,8 @@ Version 3.18.422.952 RC (23 April 2018)
 - Fix: "Toggle Folds": exclude fold point (headers) which have no children.
 - Fix: "Toggle Folds": selection must span at least two lines.
 - Enhancement: "Toggle Folds": Selection range (really) toggles folds.
+- Change: Focus View icon.
+- Fix: Matched Rizonesoft logo background with About dialog background.
 
 --------------------------------------------------
 Version 3.18.311.928 (11 March 2018)
