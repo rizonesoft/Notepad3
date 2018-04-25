@@ -88,7 +88,7 @@ typedef enum {
 } STATUS_SECTOR_T;
 
 #define STATUSBAR_DEFAULT_IDS  L"0 1 2 3 4 5 6 7 8 9 10"
-#define STATUSBAR_SECTION_WIDTH L"2 2 3 2 2 2 2 1 1 1 3"
+#define STATUSBAR_SECTOR_WEIGHTS { 2, 2, 3, 2, 2, 2, 2, 1, 1, 1, 3 }
 
 // --------------------------------------------------------------------------
 
