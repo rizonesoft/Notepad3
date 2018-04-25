@@ -135,6 +135,10 @@ static WCHAR  g_tchDefaultExtension[64] = { L'\0' };
 static WCHAR  g_tchDefaultDir[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarButtons[MIDSZ_BUFFER] = { L'\0' };
 static WCHAR  g_tchStatusbarSections[SMALL_BUFFER] = { L'\0' };
+static WCHAR  g_tchStatusbarRelWidths[SMALL_BUFFER] = { L'\0' };
+static bool   g_bStatusBarOptimizedSpace = false;
+static bool   g_bUsrDefinedStatusbarWidth = false;
+
 static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
@@ -217,7 +221,6 @@ int       iUpdateDelayHyperlinkStyling;
 int       iUpdateDelayMarkAllCoccurrences;
 int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
-bool      bStatusBarOptimizedSpace = false;
 
 const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
@@ -729,6 +732,94 @@ bool InitApplication(HINSTANCE hInstance)
 }
 
 
+static int g_aStatusbarSectionWidth[STATUS_SECTOR_COUNT];
+static int g_aSBSOrder[STATUS_SECTOR_COUNT];
+
+//=============================================================================
+//
+//  _ReadVectorFromString()
+//
+//
+
+static int __fastcall _ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault)
+{
+  static WCHAR wchTmpBuff[SMALL_BUFFER];
+
+  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
+  TrimString(wchTmpBuff);
+  // ensure single spaces only
+  WCHAR *p = StrStr(wchTmpBuff, L"  ");
+  while (p) {
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    p = StrStr(wchTmpBuff, L"  ");  // next
+  }
+  // separate values
+  int const len = lstrlen(wchTmpBuff);
+  for (int i = 0; i < len; ++i) {
+    if (wchTmpBuff[i] == L' ') { wchTmpBuff[i] = L'\0'; }
+  }
+  // fill default
+  for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
+  // insert values
+  int n = 0;
+  p = wchTmpBuff;
+  while (*p) {
+    int iValue;
+    if (swscanf_s(p, L"%i", &iValue) == 1) {
+      if ((n < iCount) && (iValue >= iMin) && (iValue <= iMax)) {
+        iVector[n++] = iValue;
+      }
+    }
+    p = StrEnd(p) + 1;
+  }
+  return n;
+}
+
+
+//=============================================================================
+//
+//  _StatusbarSetSections()
+//
+//
+static void __fastcall _StatusbarSetSections(int cx)
+{
+  static int lastCX = -1;
+  if (!bShowStatusbar || (cx == lastCX)) { return; } // static calculation
+
+                                                     // prepare sector array
+  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+    g_aStatusbarSectionWidth[i] = -1;
+    g_aSBSOrder[i] = -1;
+  }
+
+  int vSections[STATUS_SECTOR_COUNT];
+  _ReadVectorFromString(g_tchStatusbarSections, vSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
+
+  int vWeights[STATUS_SECTOR_COUNT];
+  _ReadVectorFromString(g_tchStatusbarRelWidths, vWeights, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), 1);
+
+  int cnt = 0;
+  int totalWeight = 0;
+  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+    int const iID = vSections[i];
+    if (iID != -1) {
+      g_aStatusbarSectionWidth[iID] = (cx * vWeights[iID]);
+      totalWeight += vWeights[iID];
+      g_aSBSOrder[cnt++] = iID;
+    }
+  }
+  // normalize
+  if (totalWeight > 0) {
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+      if (g_aStatusbarSectionWidth[i] > 0) {
+        g_aStatusbarSectionWidth[i] /= totalWeight;
+      }
+    }
+  }
+  lastCX = cx;
+}
+
+
 //=============================================================================
 //
 //  _InitWindowPosition()
@@ -828,70 +919,7 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
       g_WinInfo.x = mi.rcWork.right - g_WinInfo.cx - 16;
     }
   }
-}
-
-
-//=============================================================================
-//
-//  _StatusbarSetSections()
-//
-//
-static int g_aStatusbarSectionWidth[STATUS_SECTOR_COUNT];
-static int g_aSBSOrder[STATUS_SECTOR_COUNT];
-
-static void __fastcall _StatusbarSetSections(int cx)
-{
-  static int lastCX = -1;
-  if (!bShowStatusbar || (cx == lastCX)) { return; } // static calculation
-
-  // prepare sector array
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    g_aStatusbarSectionWidth[i] = -1;
-    g_aSBSOrder[i] = -1;
-  }
-
-  static WCHAR tchSectors[SMALL_BUFFER];
-
-  StringCchCopy(tchSectors, COUNTOF(tchSectors), g_tchStatusbarSections);
-  TrimString(tchSectors);
-
-  // ensure single spaces only
-  WCHAR *p = StrStr(tchSectors, L"  ");
-  while (p) {
-    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
-    p = StrStr(tchSectors, L"  ");  // next
-  }
-  // separate IDs
-  for (int i = 0; i < COUNTOF(tchSectors); ++i) {
-    if (tchSectors[i] == L' ') { tchSectors[i] = L'\0'; }
-  }
-
-  int const weight[STATUS_SECTOR_COUNT] = STATUSBAR_SECTOR_WEIGHTS;
-
-  // fill width
-  int cnt = 0;
-  int totalWeight = 1;
-  p = tchSectors;
-  while (*p) {
-    int iID;
-    if (swscanf_s(p, L"%i", &iID) == 1) {
-      if ((iID >= 0) && (iID < STATUS_SECTOR_COUNT)) {
-        g_aStatusbarSectionWidth[iID] = (bStatusBarOptimizedSpace ? 0 : (cx * weight[iID]));
-        totalWeight += weight[iID];
-        g_aSBSOrder[cnt++] = iID;
-      }
-    }
-    p = StrEnd(p) + 1;
-  }
-  // normalize
-  if (!bStatusBarOptimizedSpace) {
-    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-      if (g_aStatusbarSectionWidth[i] > 0) {
-        g_aStatusbarSectionWidth[i] /= totalWeight;
-      }
-    }
-  }
-  lastCX = cx;
+  _StatusbarSetSections(g_WinInfo.cx);
 }
 
 
@@ -1118,8 +1146,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
   iReplacedOccurrences = 0;
   g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
-
-  _StatusbarSetSections(g_WinInfo.cx);
 
   UpdateToolbar();
   UpdateStatusbar();
@@ -5928,7 +5954,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             int i;
             LPNMMOUSE pnmm = (LPNMMOUSE)lParam;
 
-            switch (pnmm->dwItemSpec)
+            switch (g_aSBSOrder[pnmm->dwItemSpec])
             {
               case STATUS_DOCLINE:
               case STATUS_DOCCOLUMN:
@@ -6328,8 +6354,15 @@ void LoadSettings()
   iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
   iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
 
-  bStatusBarOptimizedSpace = IniSectionGetBool(pIniSection, L"StatusBarOptimizedSpace", false);
+  g_bStatusBarOptimizedSpace = IniSectionGetBool(pIniSection, L"StatusBarOptimizedSpace", false);
   IniSectionGetString(pIniSection, L"StatusbarVisibleSections", STATUSBAR_DEFAULT_IDS, g_tchStatusbarSections, COUNTOF(g_tchStatusbarSections));
+
+  g_bUsrDefinedStatusbarWidth = true;
+  IniSectionGetString(pIniSection, L"StatusbarSectionRelWidths", L"", g_tchStatusbarRelWidths, COUNTOF(g_tchStatusbarRelWidths));
+  if (StringCchLenW(g_tchStatusbarRelWidths, COUNTOF(g_tchStatusbarRelWidths)) == 0) {
+    g_bUsrDefinedStatusbarWidth = false;
+    StringCchCopyW(g_tchStatusbarRelWidths, COUNTOF(g_tchStatusbarRelWidths), STATUSBAR_SECTION_WIDTH);
+  }
 
   // --------------------------------------------------------------------------
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
@@ -7337,12 +7370,11 @@ FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
 
 void UpdateStatusbar() 
 {
-  static WCHAR tchStatusBar[STATUS_SECTOR_COUNT][txtWidth];
+  if (!bShowStatusbar) { return; }
 
+  static WCHAR tchStatusBar[STATUS_SECTOR_COUNT][txtWidth];
   static WCHAR tchFRStatus[128] = { L'\0' };
   static WCHAR tchTmp[32] = { L'\0' };
-
-  if (!bShowStatusbar) { return; }
 
   const DocPos iPos = SciCall_GetCurrentPos();
   const DocPos iTextLength = SciCall_GetTextLength();
@@ -7476,13 +7508,23 @@ void UpdateStatusbar()
 
   // Statusbar widths
   int aStatusbarSections[STATUS_SECTOR_COUNT];
-
   int cnt = 0;
   int totalWidth = 0;
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
     int const id = g_aSBSOrder[i];
-    if ((id >= 0) && (g_aStatusbarSectionWidth[id] >= 0)) {
-      totalWidth += max(g_aStatusbarSectionWidth[id], StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[id]));
+    if ((id >= 0) && (g_aStatusbarSectionWidth[id] >= 0)) 
+    {
+      if (g_bStatusBarOptimizedSpace)
+      {
+        if (g_bUsrDefinedStatusbarWidth)
+          totalWidth += g_aStatusbarSectionWidth[id];
+        else
+          totalWidth += StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[id]);
+      }
+      else // NOT optimized
+      {
+        totalWidth += max(g_aStatusbarSectionWidth[id], StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[id]));
+      }
       aStatusbarSections[cnt++] = totalWidth;
     }
   }
