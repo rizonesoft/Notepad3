@@ -7751,7 +7751,7 @@ extern bool bTabsAsSpacesG;
 extern bool bTabIndentsG;
 extern int iTabWidthG;
 extern int iIndentWidthG;
-extern bool bWordWrap;
+extern bool g_bWordWrap;
 extern bool bWordWrapG;
 extern int iWordWrapMode;
 extern int iLongLinesLimit;
@@ -7787,11 +7787,11 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
   SendMessage(g_hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
 
   if (lpfv->mask & FV_WORDWRAP)
-    bWordWrap = lpfv->fWordWrap;
+    g_bWordWrap = lpfv->fWordWrap;
   else
-    bWordWrap = bWordWrapG;
+    g_bWordWrap = bWordWrapG;
 
-  if (!bWordWrap)
+  if (!g_bWordWrap)
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);

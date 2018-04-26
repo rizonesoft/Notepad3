@@ -429,6 +429,7 @@
 #define IDM_VIEW_CURRENTSCHEME          40457
 #define IDM_VIEW_SCROLLPASTEOF          40458
 #define IDM_VIEW_TOGGLE_VIEW            40459
+#define IDM_VIEW_CHASING_DOCTAIL        40460
 #define IDM_HELP_ABOUT                  40500
 #define IDM_HELP_CMD                    40501
 #define IDM_HELP_ONLINEDOCUMENTATION    40502
@@ -460,6 +461,7 @@
 #define IDT_VIEW_TOGGLEFOLDS            40723
 #define IDT_FILE_LAUNCH                 40724
 #define IDT_VIEW_TOGGLE_VIEW            40725
+#define IDT_VIEW_CHASING_DOCTAIL        40726
 #define IDS_SAVEPOS                     40800
 #define IDS_RESETPOS                    40801
 #define IDS_PREVIEW                     40802

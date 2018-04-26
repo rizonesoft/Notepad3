@@ -242,15 +242,19 @@ DeclareSciCallV0(NewLine, NEWLINE)
 //
 //  Scrolling and automatic scrolling
 //
-DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
-DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
+DeclareSciCallV0(ScrollToStart, SCROLLTOSTART)
+DeclareSciCallV0(ScrollToEnd, SCROLLTOEND)
 DeclareSciCallV0(ScrollCaret, SCROLLCARET)
+DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
 DeclareSciCallV2(LineScroll, LINESCROLL, DocPos, columns, DocLn, lines)
 DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos)
 DeclareSciCallV1(SetScrollWidth, SETSCROLLWIDTH, int, width)
 DeclareSciCallV1(SetEndAtLastLine, SETENDATLASTLINE, bool, flag)
 DeclareSciCallR0(GetXoffset, GETXOFFSET, int)
 DeclareSciCallV1(SetXoffset, SETXOFFSET, int, offset)
+DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
+
+
 
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)

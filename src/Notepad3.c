@@ -95,6 +95,8 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
                             { 12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 0,0,0,TBSTYLE_SEP,0,0 },
+                            { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
+                            { 0,0,0,TBSTYLE_SEP,0,0 },
                             { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
                             { 0,0,0,TBSTYLE_SEP,0,0 },
                             { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
@@ -109,9 +111,9 @@ TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 
                             { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 }
 };
 
-#define NUMTOOLBITMAPS  26
-#define NUMINITIALTOOLS 31
-#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 17"
+#define NUMTOOLBITMAPS  27
+#define NUMINITIALTOOLS 33
+#define TBBUTTON_DEFAULT_IDS  L"1 2 4 3 0 5 6 0 7 8 9 0 10 11 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17"
 
 
 WCHAR         g_wchIniFile[MAX_PATH] = { L'\0' };
@@ -146,7 +148,7 @@ static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
 int       iPathNameFormat;
-bool      bWordWrap;
+bool      g_bWordWrap;
 bool      bWordWrapG;
 int       iWordWrapMode;
 int       iWordWrapIndent;
@@ -205,8 +207,8 @@ int       iPrintColor;
 int       iPrintZoom;
 RECT      pagesetupMargin;
 bool      bSaveBeforeRunningTools;
-int       iFileWatchingMode;
-bool      bResetFileWatching;
+int       g_iFileWatchingMode;
+bool      g_bResetFileWatching;
 DWORD     dwFileCheckInverval;
 DWORD     dwAutoReloadTimeout;
 int       iEscFunction;
@@ -223,6 +225,8 @@ int       iUpdateDelayHyperlinkStyling;
 int       iUpdateDelayMarkAllCoccurrences;
 int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
+bool      g_bChasingDocTail = false;
+
 
 const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
@@ -296,7 +300,6 @@ WCHAR     szTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 int       fKeepTitleExcerpt = 0;
 
 HANDLE    hChangeHandle = NULL;
-bool      bRunningWatch = false;
 bool      dwChangeNotifyTime = 0;
 WIN32_FIND_DATA fdCurFile;
 
@@ -305,6 +308,7 @@ UINT      msgTaskbarCreated = 0;
 HMODULE   hModUxTheme = NULL;
 HMODULE   hRichEdit = NULL;
 
+static bool g_bRunningWatch = false;
 
 static EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
 bool bReplaceInitialized = false;
@@ -985,14 +989,19 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
     }
     if (bOpened) {
       if (flagChangeNotify == 1) {
-        iFileWatchingMode = 0;
-        bResetFileWatching = true;
+        g_iFileWatchingMode = 0;
+        g_bResetFileWatching = true;
         InstallFileWatching(g_wchCurFile);
       }
       else if (flagChangeNotify == 2) {
-        iFileWatchingMode = 2;
-        bResetFileWatching = true;
-        InstallFileWatching(g_wchCurFile);
+        if (!g_bChasingDocTail) { 
+          SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); 
+        }
+        else {
+          g_iFileWatchingMode = 2;
+          g_bResetFileWatching = true;
+          InstallFileWatching(g_wchCurFile);
+        }
       }
     }
   }
@@ -1324,7 +1333,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 static void __fastcall _SetWordWrapping(HWND hwndEditCtrl)
 {
   // Word wrap
-  if (bWordWrap)
+  if (g_bWordWrap)
     SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, (iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR, 0);
   else
     SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
@@ -2124,14 +2133,19 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       if (bOpened) {
 
         if (params->flagChangeNotify == 1) {
-          iFileWatchingMode = 0;
-          bResetFileWatching = true;
+          g_iFileWatchingMode = 0;
+          g_bResetFileWatching = true;
           InstallFileWatching(g_wchCurFile);
         }
         else if (params->flagChangeNotify == 2) {
-          iFileWatchingMode = 2;
-          bResetFileWatching = true;
-          InstallFileWatching(g_wchCurFile);
+          if (!g_bChasingDocTail) {
+            SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
+          }
+          else {
+            g_iFileWatchingMode = 2;
+            g_bResetFileWatching = true;
+            InstallFileWatching(g_wchCurFile);
+          }
         }
 
         if (0 != params->flagSetEncoding) {
@@ -2258,23 +2272,34 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 void MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  if (iFileWatchingMode == 1 || IsDocumentModified || Encoding_HasChanged(CPI_GET))
+  if (g_iFileWatchingMode == 1 || IsDocumentModified || Encoding_HasChanged(CPI_GET)) {
     SetForegroundWindow(hwnd);
+  }
 
-  if (PathFileExists(g_wchCurFile)) {
-    if ((iFileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
-      MsgBox(MBYESNOWARN,IDS_FILECHANGENOTIFY) == IDYES) {
-
+  if (PathFileExists(g_wchCurFile)) 
+  {
+    if ((g_iFileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
+      MsgBox(MBYESNOWARN,IDS_FILECHANGENOTIFY) == IDYES) 
+    {
       FileRevert(g_wchCurFile);
+      
+      if (g_bChasingDocTail) 
+      {
+        SciCall_SetReadOnly(g_bChasingDocTail);
+        //SetForegroundWindow(hwnd);
+        SciCall_ScrollToEnd(); 
+      }
     }
   }
   else {
-    if (MsgBox(MBYESNOWARN,IDS_FILECHANGENOTIFY2) == IDYES)
-      FileSave(true,false,false,false);
+    if (MsgBox(MBYESNOWARN, IDS_FILECHANGENOTIFY2) == IDYES) {
+      FileSave(true, false, false, false);
+    }
   }
 
-  if (!bRunningWatch)
+  if (!g_bRunningWatch) {
     InstallFileWatching(g_wchCurFile);
+  }
 
   UNUSED(wParam);
   UNUSED(lParam);
@@ -2540,13 +2565,14 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
-  CheckCmd(hmenu,IDM_VIEW_WORDWRAP,bWordWrap);
+  CheckCmd(hmenu,IDM_VIEW_WORDWRAP,g_bWordWrap);
   CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,bMarkLongLines);
   CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,g_bTabsAsSpaces);
   CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,bShowIndentGuides);
   CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,bAutoIndent);
   CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,bShowLineNumbers);
   CheckCmd(hmenu,IDM_VIEW_MARGIN,g_bShowSelectionMargin);
+  CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!e && !ro);
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords && !ro);
@@ -2610,7 +2636,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,bSaveFindReplace);
   CheckCmd(hmenu,IDM_VIEW_SAVEBEFORERUNNINGTOOLS,bSaveBeforeRunningTools);
 
-  CheckCmd(hmenu,IDM_VIEW_CHANGENOTIFY,iFileWatchingMode);
+  CheckCmd(hmenu,IDM_VIEW_CHANGENOTIFY,g_iFileWatchingMode);
 
   if (StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt)))
     i = IDM_VIEW_SHOWEXCERPT;
@@ -4246,12 +4272,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_WORDWRAP:
-      bWordWrap = (bWordWrap) ? false : true;
-      if (!bWordWrap)
+      g_bWordWrap = (g_bWordWrap) ? false : true;
+      if (!g_bWordWrap)
         SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
       else
         SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
-      bWordWrapG = bWordWrap;
+      bWordWrapG = g_bWordWrap;
       UpdateToolbar();
       break;
 
@@ -4492,6 +4518,36 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       UpdateLineNumberWidth();
       break;
 
+    case IDM_VIEW_CHASING_DOCTAIL: 
+      {
+        static int flagPrevChangeNotify = 0;
+        static int iPrevFileWatchingMode = 0;
+        static bool bPrevResetFileWatching = false;
+
+        g_bChasingDocTail = (g_bChasingDocTail) ? false : true;
+        SciCall_SetReadOnly(g_bChasingDocTail);
+
+        if (g_bChasingDocTail) 
+        {
+          SetForegroundWindow(hwnd);
+          flagPrevChangeNotify = flagChangeNotify;
+          iPrevFileWatchingMode = g_iFileWatchingMode;
+          bPrevResetFileWatching = g_bResetFileWatching;
+          flagChangeNotify = 2;
+          g_iFileWatchingMode = 2;
+          g_bResetFileWatching = true;
+        }
+        else {
+          flagChangeNotify = flagPrevChangeNotify;
+          g_iFileWatchingMode = iPrevFileWatchingMode;
+          g_bResetFileWatching = bPrevResetFileWatching;
+        }
+        if (!g_bRunningWatch) { InstallFileWatching(g_wchCurFile); }
+
+        CheckCmd(GetMenu(g_hwndMain), IDM_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
+        UpdateToolbar();
+      }
+      break;
     
     case IDM_VIEW_SCROLLPASTEOF:
       bScrollPastEOF = (bScrollPastEOF) ? false : true;
@@ -5337,6 +5393,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDT_VIEW_CHASING_DOCTAIL:
+      if (IsCmdEnabled(hwnd, IDM_VIEW_CHASING_DOCTAIL))
+        SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_CHASING_DOCTAIL,1),0);
+      else
+        MessageBeep(0);
+      break;
+
+
     case IDT_VIEW_SCHEME:
       if (IsCmdEnabled(hwnd,IDM_VIEW_SCHEME))
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_SCHEME,1),0);
@@ -6089,8 +6153,8 @@ void LoadSettings()
   iPathNameFormat = IniSectionGetInt(pIniSection,L"PathNameFormat",0);
   iPathNameFormat = max(min(iPathNameFormat,2),0);
 
-  bWordWrap = IniSectionGetBool(pIniSection,L"WordWrap",false);
-  bWordWrapG = bWordWrap;
+  g_bWordWrap = IniSectionGetBool(pIniSection,L"WordWrap",false);
+  bWordWrapG = g_bWordWrap;
 
   iWordWrapMode = IniSectionGetInt(pIniSection,L"WordWrapMode",0);
   iWordWrapMode = max(min(iWordWrapMode,1),0);
@@ -6214,10 +6278,10 @@ void LoadSettings()
 
   bSaveBeforeRunningTools = IniSectionGetBool(pIniSection,L"SaveBeforeRunningTools",false);
 
-  iFileWatchingMode = IniSectionGetInt(pIniSection,L"FileWatchingMode",0);
-  iFileWatchingMode = max(min(iFileWatchingMode,2),0);
+  g_iFileWatchingMode = IniSectionGetInt(pIniSection,L"FileWatchingMode",0);
+  g_iFileWatchingMode = max(min(g_iFileWatchingMode,2),0);
 
-  bResetFileWatching = IniSectionGetBool(pIniSection,L"ResetFileWatching",true);
+  g_bResetFileWatching = IniSectionGetBool(pIniSection,L"ResetFileWatching",true);
 
   iEscFunction = IniSectionGetInt(pIniSection,L"EscFunction",0);
   iEscFunction = max(min(iEscFunction,2),0);
@@ -6522,8 +6586,8 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"PrintMarginRight", pagesetupMargin.right);
   IniSectionSetInt(pIniSection, L"PrintMarginBottom", pagesetupMargin.bottom);
   IniSectionSetBool(pIniSection, L"SaveBeforeRunningTools", bSaveBeforeRunningTools);
-  IniSectionSetInt(pIniSection, L"FileWatchingMode", iFileWatchingMode);
-  IniSectionSetBool(pIniSection, L"ResetFileWatching", bResetFileWatching);
+  IniSectionSetInt(pIniSection, L"FileWatchingMode", g_iFileWatchingMode);
+  IniSectionSetBool(pIniSection, L"ResetFileWatching", g_bResetFileWatching);
   IniSectionSetInt(pIniSection, L"EscFunction", iEscFunction);
   IniSectionSetBool(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
   IniSectionSetBool(pIniSection, L"MinimizeToTray", bMinimizeToTray);
@@ -7301,7 +7365,8 @@ void UpdateToolbar()
 
   EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile)));
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
-  CheckTool(IDT_VIEW_WORDWRAP, bWordWrap);
+  CheckTool(IDT_VIEW_WORDWRAP, g_bWordWrap);
+  CheckTool(IDT_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
 
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
@@ -7900,8 +7965,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     UpdateLineNumberWidth();
 
     // Terminate file watching
-    if (bResetFileWatching) {
-      iFileWatchingMode = 0;
+    if (g_bResetFileWatching) {
+      if (g_bChasingDocTail) {
+        SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
+      }
+      g_iFileWatchingMode = 0;
     }
     InstallFileWatching(NULL);
     bEnableSaveSettings = true;
@@ -8022,8 +8090,12 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
 
     // Install watching of the current file
-    if (!bReload && bResetFileWatching)
-      iFileWatchingMode = 0;
+    if (!bReload && g_bResetFileWatching) {
+      if (g_bChasingDocTail) {
+        SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
+      }
+      g_iFileWatchingMode = 0;
+    }
     InstallFileWatching(g_wchCurFile);
 
     // the .LOG feature ...
@@ -8103,7 +8175,7 @@ bool FileRevert(LPCWSTR szFileName)
 
     if (FileLoad(true,false,true,false,true,tchFileName2))
     {
-      if (bIsTail && iFileWatchingMode == 2) {
+      if (bIsTail && g_iFileWatchingMode == 2) {
         SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
@@ -8261,8 +8333,12 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
 
       _SetDocumentModified(false);
       // Install watching of the current file
-      if (bSaveAs && bResetFileWatching)
-        iFileWatchingMode = 0;
+      if (bSaveAs && g_bResetFileWatching) {
+        if (g_bChasingDocTail) {
+          SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
+        }
+        g_iFileWatchingMode = 0;
+      }
       InstallFileWatching(g_wchCurFile);
     }
   }
@@ -8942,23 +9018,23 @@ void InstallFileWatching(LPCWSTR lpszFile)
   HANDLE hFind;
 
   // Terminate
-  if (!iFileWatchingMode || !lpszFile || StringCchLen(lpszFile,MAX_PATH) == 0)
+  if (!g_iFileWatchingMode || !lpszFile || StringCchLen(lpszFile,MAX_PATH) == 0)
   {
-    if (bRunningWatch)
+    if (g_bRunningWatch)
     {
       if (hChangeHandle) {
         FindCloseChangeNotification(hChangeHandle);
         hChangeHandle = NULL;
       }
       KillTimer(NULL,ID_WATCHTIMER);
-      bRunningWatch = false;
+      g_bRunningWatch = false;
       dwChangeNotifyTime = 0;
     }
   }
   else  // Install
   {
     // Terminate previous watching
-    if (bRunningWatch) {
+    if (g_bRunningWatch) {
       if (hChangeHandle) {
         FindCloseChangeNotification(hChangeHandle);
         hChangeHandle = NULL;
@@ -8987,7 +9063,7 @@ void InstallFileWatching(LPCWSTR lpszFile)
       FILE_NOTIFY_CHANGE_SIZE | \
       FILE_NOTIFY_CHANGE_LAST_WRITE);
 
-    bRunningWatch = true;
+    g_bRunningWatch = true;
     dwChangeNotifyTime = 0;
   }
   UpdateToolbar();
@@ -9001,7 +9077,7 @@ void InstallFileWatching(LPCWSTR lpszFile)
 //
 void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
-  if (bRunningWatch)
+  if (g_bRunningWatch)
   {
     if (dwChangeNotifyTime > 0 && GetTickCount() - dwChangeNotifyTime > dwAutoReloadTimeout)
     {
@@ -9010,7 +9086,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
         hChangeHandle = NULL;
       }
       KillTimer(NULL,ID_WATCHTIMER);
-      bRunningWatch = false;
+      g_bRunningWatch = false;
       dwChangeNotifyTime = 0;
       SendMessage(g_hwndMain,WM_CHANGENOTIFY,0,0);
     }
@@ -9037,13 +9113,13 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
           FindCloseChangeNotification(hChangeHandle);
           hChangeHandle = NULL;
         }
-        if (iFileWatchingMode == 2) {
-          bRunningWatch = true; /* ! */
+        if (g_iFileWatchingMode == 2) {
+          g_bRunningWatch = true; /* ! */
           dwChangeNotifyTime = GetTickCount();
         }
         else {
           KillTimer(NULL,ID_WATCHTIMER);
-          bRunningWatch = false;
+          g_bRunningWatch = false;
           dwChangeNotifyTime = 0;
           SendMessage(g_hwndMain,WM_CHANGENOTIFY,0,0);
         }

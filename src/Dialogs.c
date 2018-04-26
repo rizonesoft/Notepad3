@@ -1619,16 +1619,17 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //            102 Radio Button (Auto-Reload)
 //            103 Check Box    (Reset on New)
 //
-extern int iFileWatchingMode;
-extern bool bResetFileWatching;
+extern int g_iFileWatchingMode;
+extern bool g_bResetFileWatching;
+extern bool g_bChasingDocTail;
 
 INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   switch(umsg)
   {
     case WM_INITDIALOG:
-      CheckRadioButton(hwnd,100,102,100+iFileWatchingMode);
-      if (bResetFileWatching)
+      CheckRadioButton(hwnd,100,102,100+g_iFileWatchingMode);
+      if (g_bResetFileWatching)
         CheckDlgButton(hwnd,103,BST_CHECKED);
       CenterDlgInParent(hwnd);
       return true;
@@ -1638,12 +1639,16 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
       {
         case IDOK:
           if (IsDlgButtonChecked(hwnd,100) == BST_CHECKED)
-            iFileWatchingMode = 0;
+            g_iFileWatchingMode = 0;
           else if (IsDlgButtonChecked(hwnd,101) == BST_CHECKED)
-            iFileWatchingMode = 1;
+            g_iFileWatchingMode = 1;
           else
-            iFileWatchingMode = 2;
-          bResetFileWatching = (IsDlgButtonChecked(hwnd,103) == BST_CHECKED) ? true : false;
+            g_iFileWatchingMode = 2;
+
+          g_bResetFileWatching = (IsDlgButtonChecked(hwnd,103) == BST_CHECKED) ? true : false;
+
+          if (g_bChasingDocTail) { SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
+
           EndDialog(hwnd,IDOK);
           break;
 

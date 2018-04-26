@@ -342,6 +342,8 @@ BEGIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
         MENUITEM SEPARATOR
+        MENUITEM "Doc Tail Chasing",            IDM_VIEW_CHASING_DOCTAIL
+        MENUITEM SEPARATOR
         MENUITEM "Copy Position Args\tCtrl+Shift+K", CMD_COPYWINPOS
         MENUITEM "Snap to Default Position\tCtrl+Shift+P", CMD_DEFAULTWINPOS
         MENUITEM "Scroll Past End of &File",    IDM_VIEW_SCROLLPASTEOF
@@ -1523,12 +1525,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favorites"
-    IDT_FILE_ADDTOFAV       "Add to Favorites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
-    IDT_FILE_LAUNCH         "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW    "Focused View"
+    IDT_FILE_PRINT           "Print"
+    IDT_FILE_OPENFAV         "Favorites"
+    IDT_FILE_ADDTOFAV        "Add to Favorites"
+    IDT_VIEW_TOGGLEFOLDS     "Toggle Folds"
+    IDT_FILE_LAUNCH          "Execute Document"
+    IDT_VIEW_TOGGLE_VIEW     "Focused View"
+    IDT_VIEW_CHASING_DOCTAIL "Doc Tail Chasing"
 END
 
 STRINGTABLE
