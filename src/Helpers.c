@@ -1007,7 +1007,7 @@ LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
   SelectObject(hdc,hfold);
   ReleaseDC(hwnd,hdc);
 
-  return (size.cx + 12L);
+  return (size.cx + 8L);
 }
 
 
@@ -2887,8 +2887,8 @@ int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, in
   while (*p) {
     int iValue;
     if (swscanf_s(p, L"%i", &iValue) == 1) {
-      if ((n < iCount) && (iValue >= iMin) && (iValue <= iMax)) {
-        iVector[n++] = iValue;
+      if (n < iCount) {
+        iVector[n++] = min(max(iValue, iMin), iMax);
       }
     }
     p = StrEnd(p) + 1;

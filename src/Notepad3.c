@@ -742,29 +742,31 @@ static int g_aSBSOrder[STATUS_SECTOR_COUNT];
 //  _StatusbarSetSections()
 //
 //
-static void __fastcall _StatusbarSetSections(int cx)
+static void __fastcall _StatusbarSetSections(int width)
 {
-  static int lastCX = -1;
-  if (!bShowStatusbar || (cx == lastCX)) { return; } // static calculation
+  static int lastWinWidth = -1;
+  width -= STAUSBAR_RIGHT_MARGIN;
+
+  if (!bShowStatusbar || (width < 0) || (width == lastWinWidth)) { return; } // static calculation
 
   // prepare sector array
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
     g_vStatusbarSectionWidth[i] = -1;
-    g_aSBSOrder[i] = -1;
+    g_aSBSOrder[i] = i;
   }
 
   int vSections[STATUS_SECTOR_COUNT];
   ReadVectorFromString(g_tchStatusbarSections, vSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
 
   int vWeights[STATUS_SECTOR_COUNT];
-  ReadVectorFromString(g_tchStatusbarRelWidths, vWeights, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), 1);
+  ReadVectorFromString(g_tchStatusbarRelWidths, vWeights, STATUS_SECTOR_COUNT, 0, 4096, 1);
 
   int cnt = 0;
   int totalWeight = 0;
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
     int const iID = vSections[i];
     if (iID != -1) {
-      g_vStatusbarSectionWidth[iID] = (cx * vWeights[iID]);
+      g_vStatusbarSectionWidth[iID] = (width * vWeights[iID]);
       totalWeight += vWeights[iID];
       g_aSBSOrder[cnt++] = iID;
     }
@@ -777,7 +779,7 @@ static void __fastcall _StatusbarSetSections(int cx)
       }
     }
   }
-  lastCX = cx;
+  lastWinWidth = width;
 }
 
 
