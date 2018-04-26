@@ -733,82 +733,9 @@ bool InitApplication(HINSTANCE hInstance)
 
 }
 
-
-typedef WCHAR prefix_t[MICRO_BUFFER];
 static prefix_t g_mxStatusBarPrefix[STATUS_SECTOR_COUNT];
 static int g_vStatusbarSectionWidth[STATUS_SECTOR_COUNT];
 static int g_aSBSOrder[STATUS_SECTOR_COUNT];
-
-//=============================================================================
-//
-//  _ReadVectorFromString()
-//
-//
-static int __fastcall _ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault)
-{
-  static WCHAR wchTmpBuff[MIDSZ_BUFFER];
-
-  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchCSVStrg);
-  TrimString(wchTmpBuff);
-  // separate values
-  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
-  for (int i = 0; i < len; ++i) {
-    if (wchTmpBuff[i] == L',') { wchTmpBuff[i] = L'\0'; }
-  }
-  // fill default
-  for (int i = 0; i < iCount; ++i) { StringCchCopyW(sMatrix[i], (size_t)iLen, sDefault); }
-  // insert values
-  int n = 0;
-  WCHAR* p = wchTmpBuff;
-  while (*p) {
-    if (n < iCount) {
-      StringCchCopyW(sMatrix[n++], (size_t)iLen, p);
-    }
-    p = StrEnd(p) + 1;
-  }
-  return n;
-}
-
-
-//=============================================================================
-//
-//  _ReadVectorFromString()
-//
-//
-static int __fastcall _ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault)
-{
-  static WCHAR wchTmpBuff[SMALL_BUFFER];
-
-  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
-  TrimString(wchTmpBuff);
-  // ensure single spaces only
-  WCHAR *p = StrStr(wchTmpBuff, L"  ");
-  while (p) {
-    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
-    p = StrStr(wchTmpBuff, L"  ");  // next
-  }
-  // separate values
-  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
-  for (int i = 0; i < len; ++i) {
-    if (wchTmpBuff[i] == L' ') { wchTmpBuff[i] = L'\0'; }
-  }
-  // fill default
-  for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
-  // insert values
-  int n = 0;
-  p = wchTmpBuff;
-  while (*p) {
-    int iValue;
-    if (swscanf_s(p, L"%i", &iValue) == 1) {
-      if ((n < iCount) && (iValue >= iMin) && (iValue <= iMax)) {
-        iVector[n++] = iValue;
-      }
-    }
-    p = StrEnd(p) + 1;
-  }
-  return n;
-}
-
 
 //=============================================================================
 //
@@ -827,10 +754,10 @@ static void __fastcall _StatusbarSetSections(int cx)
   }
 
   int vSections[STATUS_SECTOR_COUNT];
-  _ReadVectorFromString(g_tchStatusbarSections, vSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
+  ReadVectorFromString(g_tchStatusbarSections, vSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
 
   int vWeights[STATUS_SECTOR_COUNT];
-  _ReadVectorFromString(g_tchStatusbarRelWidths, vWeights, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), 1);
+  ReadVectorFromString(g_tchStatusbarRelWidths, vWeights, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), 1);
 
   int cnt = 0;
   int totalWeight = 0;
@@ -954,7 +881,7 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
     }
   }
 
-  _ReadStrgsFromCSV(g_tchStatusbarPrefixes, g_mxStatusBarPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"");
+  ReadStrgsFromCSV(g_tchStatusbarPrefixes, g_mxStatusBarPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"");
 
   _StatusbarSetSections(g_WinInfo.cx);
 }

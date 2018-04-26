@@ -2826,6 +2826,76 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 }
 
 
+//=============================================================================
+//
+//  ReadStrgsFromCSV()
+//
+//
+int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault)
+{
+  static WCHAR wchTmpBuff[MIDSZ_BUFFER];
+
+  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchCSVStrg);
+  TrimString(wchTmpBuff);
+  // separate values
+  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
+  for (int i = 0; i < len; ++i) {
+    if (wchTmpBuff[i] == L',') { wchTmpBuff[i] = L'\0'; }
+  }
+  // fill default
+  for (int i = 0; i < iCount; ++i) { StringCchCopyW(sMatrix[i], (size_t)iLen, sDefault); }
+  // insert values
+  int n = 0;
+  WCHAR* p = wchTmpBuff;
+  while (*p) {
+    if (n < iCount) {
+      StringCchCopyW(sMatrix[n++], (size_t)iLen, p);
+    }
+    p = StrEnd(p) + 1;
+  }
+  return n;
+}
+
+
+//=============================================================================
+//
+//  ReadVectorFromString()
+//
+//
+int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault)
+{
+  static WCHAR wchTmpBuff[SMALL_BUFFER];
+
+  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
+  TrimString(wchTmpBuff);
+  // ensure single spaces only
+  WCHAR *p = StrStr(wchTmpBuff, L"  ");
+  while (p) {
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    p = StrStr(wchTmpBuff, L"  ");  // next
+  }
+  // separate values
+  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
+  for (int i = 0; i < len; ++i) {
+    if (wchTmpBuff[i] == L' ') { wchTmpBuff[i] = L'\0'; }
+  }
+  // fill default
+  for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
+  // insert values
+  int n = 0;
+  p = wchTmpBuff;
+  while (*p) {
+    int iValue;
+    if (swscanf_s(p, L"%i", &iValue) == 1) {
+      if ((n < iCount) && (iValue >= iMin) && (iValue <= iMax)) {
+        iVector[n++] = iValue;
+      }
+    }
+    p = StrEnd(p) + 1;
+  }
+  return n;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //

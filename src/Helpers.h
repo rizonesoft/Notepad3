@@ -389,8 +389,10 @@ __forceinline int GetHexDigit(char ch) {
 }
 
 
-
 void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
+
+int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault);
+int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
@@ -401,6 +403,8 @@ __forceinline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED
 __forceinline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
 __forceinline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
 __forceinline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
+
+
 
 // special Drag and Drop Handling
 
