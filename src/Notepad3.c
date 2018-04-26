@@ -375,12 +375,14 @@ static volatile LONG iNotifyChangeStackCounter = 0;
 
 void IgnoreNotifyChangeEvent() {
   InterlockedIncrement(&iNotifyChangeStackCounter);
+  BeginWaitCursor(NULL);
 }
 
 void ObserveNotifyChangeEvent() {
   if (iNotifyChangeStackCounter > 0L) {
     InterlockedDecrement(&iNotifyChangeStackCounter);
     if (iNotifyChangeStackCounter == 0L) {
+      EndWaitCursor();
       UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
@@ -407,8 +409,8 @@ static CmdMessageQueue_t* MessageQueue = NULL;
 
 static int msgcmp(void* mqc1, void* mqc2)
 {
-  const CmdMessageQueue_t* pMQC1 = (CmdMessageQueue_t*)mqc1;
-  const CmdMessageQueue_t* pMQC2 = (CmdMessageQueue_t*)mqc2;
+  CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
+  CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
 
   if ((pMQC1->hwnd == pMQC2->hwnd)
        && (pMQC1->cmd == pMQC2->cmd)
@@ -421,7 +423,8 @@ static int msgcmp(void* mqc1, void* mqc2)
 }
 // ----------------------------------------------------------------------------
 
-static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* pMsgQCmd, int delay)
+
+static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int delay)
 {
   CmdMessageQueue_t* pmqc = NULL;
   DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
@@ -432,18 +435,36 @@ static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* pMsgQCmd, int delay)
     pmqc->cmd = pMsgQCmd->cmd;
     pmqc->wparam = pMsgQCmd->wparam;
     pmqc->lparam = pMsgQCmd->lparam;
-    pmqc->delay = 0;
+    pmqc->delay = delay;
     DL_APPEND(MessageQueue, pmqc);
   }
 
   if (delay < 2) {
-    pmqc->delay = 0; // execute next
-    PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+    pmqc->delay = -1; // execute now (do not use PostMessage() here)
+    SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
   }
   else {
     pmqc->delay = (pmqc->delay + delay) / 2; // increase delay
   }
 }
+// ----------------------------------------------------------------------------
+
+static void __fastcall _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
+{
+  CmdMessageQueue_t* pmqc;
+
+  DL_FOREACH(MessageQueue, pmqc)
+  {
+    if ((pMsgQCmd->hwnd == pmqc->hwnd)
+      && (pMsgQCmd->cmd == pmqc->cmd)
+      && (pMsgQCmd->wparam == pmqc->wparam))
+    {
+      pmqc->delay = -1;
+    }
+  }
+}
+// ----------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------
 //
@@ -736,6 +757,41 @@ bool InitApplication(HINSTANCE hInstance)
   return RegisterClass(&wc);
 
 }
+
+
+//=============================================================================
+//
+//  BeginWaitCursor()
+//
+//
+void BeginWaitCursor(LPCWSTR text)
+{
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(CMD_WAITCURSOR, 1), (LPARAM)0, 0 };
+  mqc.hwnd = g_hwndMain;
+  mqc.lparam = (LPARAM)text;
+  _MQ_AppendCmd(&mqc, 500U);
+}
+
+
+//=============================================================================
+//
+//  EndWaitCursor()
+//
+//
+void EndWaitCursor()
+{
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(CMD_WAITCURSOR, 1), (LPARAM)0, 0 };
+  mqc.hwnd = g_hwndMain;
+  _MQ_RemoveCmd(&mqc);
+
+  POINT pt;
+  GetCursorPos(&pt); SetCursorPos(pt.x, pt.y);
+  StatusSetSimple(g_hwndStatus, false);
+  SciCall_SetCursor(SC_CURSORNORMAL);
+}
+
+
+
 
 static prefix_t g_mxStatusBarPrefix[STATUS_SECTOR_COUNT];
 static int g_vStatusbarSectionWidth[STATUS_SECTOR_COUNT];
@@ -2721,14 +2777,21 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
   switch(LOWORD(wParam))
   {
 
-  case IDT_TIMER_MAIN_MRKALL:
-    EditMarkAllOccurrences();
-    break;
+    case IDT_TIMER_MAIN_MRKALL:
+      EditMarkAllOccurrences();
+      break;
 
 
-  case IDT_TIMER_UPDATE_HOTSPOT:
-    EditUpdateVisibleUrlHotspot(g_bHyperlinkHotspot);
-    break;
+    case IDT_TIMER_UPDATE_HOTSPOT:
+      EditUpdateVisibleUrlHotspot(g_bHyperlinkHotspot);
+      break;
+
+
+    case CMD_WAITCURSOR:
+      SciCall_SetCursor(SC_CURSORWAIT);
+      StatusSetText(g_hwndStatus, STATUS_HELP, (LPCWSTR)lParam);
+      //StatusSetTextID(g_hwndStatus, STATUS_HELP, uid);
+      break;
 
 
     case IDM_FILE_NEW:
@@ -2995,7 +3058,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
         }
 
-        BeginWaitCursor(NULL);
+        IgnoreNotifyChangeEvent();
         if (EditSetNewEncoding(g_hwndEdit,
                                iNewEncoding,
                                (flagSetEncoding),
@@ -3010,9 +3073,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
               Encoding_HasChanged(CPI_NONE);
             Encoding_Current(iNewEncoding);
           }
-          UpdateToolbar();
         }
-        EndWaitCursor();
+        ObserveNotifyChangeEvent();
 
       }
       break;
@@ -3049,15 +3111,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_LINEENDINGS_LF:
     case IDM_LINEENDINGS_CR:
       {
-        BeginWaitCursor(NULL)
+        IgnoreNotifyChangeEvent();
         int iNewEOLMode = iLineEndings[LOWORD(wParam)-IDM_LINEENDINGS_CRLF];
         g_iEOLMode = iNewEOLMode;
         SendMessage(g_hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
         SendMessage(g_hwndEdit,SCI_CONVERTEOLS,g_iEOLMode,0);
         EditFixPositions(g_hwndEdit);
-        EndWaitCursor()
-        UpdateToolbar();
-        UpdateStatusbar();
+        ObserveNotifyChangeEvent();
       }
       break;
 
@@ -4761,7 +4821,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",g_wchIniFile)) {
 
-            BeginWaitCursorID(IDS_SAVINGSETTINGS);
+            BeginWaitCursor(L"Saving settings..."); // IDS_SAVINGSETTINGS
             SaveSettings(true);
             EndWaitCursor();
             MsgBox(MBINFO,IDS_SAVEDSETTINGS);
@@ -7321,6 +7381,10 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
   else
     return(0);
 }
+
+
+
+
 
 
 //=============================================================================
