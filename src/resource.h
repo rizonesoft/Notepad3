@@ -249,6 +249,7 @@
 #define CMD_ALTRIGHT                    20045
 #define CMD_TAB                         20046
 #define CMD_BACKTAB                     20047
+#define CMD_WAITCURSOR                  20048
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
 #define IDM_FILE_REVERT                 40002

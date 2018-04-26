@@ -113,6 +113,8 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(HINSTANCE);
 HWND InitInstance(HINSTANCE,LPSTR,int);
+void BeginWaitCursor(LPCWSTR text);
+void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR);

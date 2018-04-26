@@ -206,8 +206,8 @@ static CmdMessageQueue_t* MessageQueue = NULL;
 
 static int msgcmp(void* mqc1, void* mqc2)
 {
-  const CmdMessageQueue_t* pMQC1 = (CmdMessageQueue_t*)mqc1;
-  const CmdMessageQueue_t* pMQC2 = (CmdMessageQueue_t*)mqc2;
+  CmdMessageQueue_t* const pMQC1 = (CmdMessageQueue_t*)mqc1;
+  CmdMessageQueue_t* const pMQC2 = (CmdMessageQueue_t*)mqc2;
 
   if ((pMQC1->hwnd == pMQC2->hwnd)
       && (pMQC1->cmd == pMQC2->cmd)
@@ -219,7 +219,8 @@ static int msgcmp(void* mqc1, void* mqc2)
 }
 // ----------------------------------------------------------------------------
 
-static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* pMsgQCmd, int delay)
+
+static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int delay)
 {
   CmdMessageQueue_t* pmqc = NULL;
   DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
@@ -230,18 +231,37 @@ static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* pMsgQCmd, int delay)
     pmqc->cmd = pMsgQCmd->cmd;
     pmqc->wparam = pMsgQCmd->wparam;
     pmqc->lparam = pMsgQCmd->lparam;
-    pmqc->delay = 0;
+    pmqc->delay = delay;
     DL_APPEND(MessageQueue, pmqc);
   }
 
   if (delay < 2) {
-    pmqc->delay = 0; // execute next
-    PostMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
+    pmqc->delay = -1; // execute now (do not use PostMessage() here)
+    SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
   }
   else {
     pmqc->delay = (pmqc->delay + delay) / 2; // increase delay
   }
 }
+// ----------------------------------------------------------------------------
+
+
+static void __fastcall _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
+{
+  CmdMessageQueue_t* pmqc = NULL;
+
+  DL_FOREACH(MessageQueue, pmqc)
+  {
+    if ((pMsgQCmd->hwnd == pmqc->hwnd)
+      && (pMsgQCmd->cmd == pmqc->cmd)
+      && (pMsgQCmd->wparam == pmqc->wparam))
+    {
+      pmqc->delay = -1;
+    }
+  }
+}
+// ----------------------------------------------------------------------------
+
 
 // ----------------------------------------------------------------------------
 //
@@ -5956,14 +5976,7 @@ void EditMarkAllOccurrences()
   }
   if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
-  bool bWaitCursor = false;
-  if (g_iMarkOccurrencesCount > 2000) {
-    BeginWaitCursor(NULL);
-    bWaitCursor = true;
-  }
-  else {
-    IgnoreNotifyChangeEvent();
-  }
+  IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
   if (g_bMarkOccurrencesMatchVisible) {
@@ -5983,14 +5996,9 @@ void EditMarkAllOccurrences()
   else {
     EditMarkAll(g_hwndEdit, NULL, bMarkOccurrencesCurrentWord, 0, SciCall_GetTextLength(), bMarkOccurrencesMatchCase, bMarkOccurrencesMatchWords);
   }
+  
   EditLeaveTargetTransaction();
-
-  if (bWaitCursor) {
-    EndWaitCursor();
-  }
-  else {
-    ObserveNotifyChangeEvent();
-  }
+  ObserveNotifyChangeEvent();
 }
 
 
@@ -6004,7 +6012,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
   {
     if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
-    BeginWaitCursor(NULL);
+    IgnoreNotifyChangeEvent();
     EditEnterTargetTransaction();
 
     // get visible lines for update
@@ -6019,7 +6027,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
     EditUpdateUrlHotspots(g_hwndEdit, iPosStart, iPosEnd, bEnabled);
 
     EditLeaveTargetTransaction();
-    EndWaitCursor();
+    ObserveNotifyChangeEvent();
   }
 }
 
@@ -6251,20 +6259,14 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos currPos = SciCall_GetCurrentPos();
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
-  bool bWaitCursor = false;
 
-  if ((end - start) > (512 * 512)) {
-    BeginWaitCursor(NULL);
-    bWaitCursor = true;
-  }
+  IgnoreNotifyChangeEvent();
 
   int token = BeginUndoAction();
 
   iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
 
-  if (bWaitCursor) {
-    EndWaitCursor();
-  }
+  ObserveNotifyChangeEvent();
 
   if (iReplacedOccurrences <= 0) {
     EndUndoAction(token);
@@ -6349,7 +6351,7 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
 
   if (bToggleView) {
 
-    BeginWaitCursor(NULL);
+    IgnoreNotifyChangeEvent();
 
     if (!bHideNonMatchedLines) {
       bSaveFoldingAvailable = g_bCodeFoldingAvailable;
@@ -6377,7 +6379,7 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
       SciCall_SetReadOnly(false);
     }
 
-    EndWaitCursor();
+    ObserveNotifyChangeEvent();
   }
   return bHideNonMatchedLines;
 }

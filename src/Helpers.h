@@ -103,11 +103,6 @@ __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, D
   WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
-//extern HWND g_hwndEdit;
-#define BeginWaitCursor(TCH) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetText(g_hwndStatus,STATUS_HELP,(TCH)); IgnoreNotifyChangeEvent(); }
-#define BeginWaitCursorID(UID) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetTextID(g_hwndStatus,STATUS_HELP,(UID)); IgnoreNotifyChangeEvent(); }
-#define EndWaitCursor() { POINT pt; SciCall_SetCursor(SC_CURSORNORMAL); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); StatusSetSimple(g_hwndStatus,false); ObserveNotifyChangeEvent(); UpdateStatusbar(); }
-
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
 #define IsXP()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
