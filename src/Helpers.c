@@ -993,21 +993,21 @@ COLORREF GetBackgroundColor(HWND hwnd)
 //
 //  StatusCalcPaneWidth()
 //
-int StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
+LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
 {
-  SIZE  size;
-  HDC   hdc   = GetDC(hwnd);
-  HFONT hfont = (HFONT)SendMessage(hwnd,WM_GETFONT,0,0);
-  HFONT hfold = SelectObject(hdc,hfont);
-  int   mmode = SetMapMode(hdc,MM_TEXT);
+  HDC const hdc   = GetDC(hwnd);
+  HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd,WM_GETFONT,0,0);
+  HGDIOBJ const hfold = SelectObject(hdc,hfont);
+  int const mmode = SetMapMode(hdc,MM_TEXT);
 
+  SIZE size = { 0, 0 };
   GetTextExtentPoint32(hdc,lpsz,lstrlen(lpsz),&size);
 
   SetMapMode(hdc,mmode);
   SelectObject(hdc,hfold);
   ReleaseDC(hwnd,hdc);
 
-  return(size.cx + 9);
+  return (size.cx + 12L);
 }
 
 
@@ -1038,7 +1038,7 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 
 int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptbb,int ctbb)
 {
-  WCHAR tchButtons[LARGE_BUFFER];
+  WCHAR tchButtons[MIDSZ_BUFFER];
   int i,c;
   int iCmd;
 
@@ -1105,16 +1105,13 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 //
 int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
 {
+  static WCHAR pBuffer[XHUGE_BUFFER];
+  pBuffer[0] = L'\0';
 
-  WCHAR *p = LocalAlloc(LPTR,sizeof(WCHAR)*nOutput);
-
-  if (GetString(uIdFormat,p,nOutput))
-    StringCchVPrintf(lpOutput,nOutput,p,(LPVOID)((PUINT_PTR)&uIdFormat + 1));
-
-  LocalFree(p);
-
-  return (int)StringCchLen(lpOutput,nOutput);
-
+  if (GetString(uIdFormat, pBuffer, nOutput)) {
+    StringCchVPrintf(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+  }
+  return (int)StringCchLen(lpOutput, nOutput);
 }
 
 
@@ -2828,6 +2825,76 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 #endif
 }
 
+
+//=============================================================================
+//
+//  ReadStrgsFromCSV()
+//
+//
+int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault)
+{
+  static WCHAR wchTmpBuff[MIDSZ_BUFFER];
+
+  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchCSVStrg);
+  TrimString(wchTmpBuff);
+  // separate values
+  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
+  for (int i = 0; i < len; ++i) {
+    if (wchTmpBuff[i] == L',') { wchTmpBuff[i] = L'\0'; }
+  }
+  // fill default
+  for (int i = 0; i < iCount; ++i) { StringCchCopyW(sMatrix[i], (size_t)iLen, sDefault); }
+  // insert values
+  int n = 0;
+  WCHAR* p = wchTmpBuff;
+  while (*p) {
+    if (n < iCount) {
+      StringCchCopyW(sMatrix[n++], (size_t)iLen, p);
+    }
+    p = StrEnd(p) + 1;
+  }
+  return n;
+}
+
+
+//=============================================================================
+//
+//  ReadVectorFromString()
+//
+//
+int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault)
+{
+  static WCHAR wchTmpBuff[SMALL_BUFFER];
+
+  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
+  TrimString(wchTmpBuff);
+  // ensure single spaces only
+  WCHAR *p = StrStr(wchTmpBuff, L"  ");
+  while (p) {
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    p = StrStr(wchTmpBuff, L"  ");  // next
+  }
+  // separate values
+  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
+  for (int i = 0; i < len; ++i) {
+    if (wchTmpBuff[i] == L' ') { wchTmpBuff[i] = L'\0'; }
+  }
+  // fill default
+  for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
+  // insert values
+  int n = 0;
+  p = wchTmpBuff;
+  while (*p) {
+    int iValue;
+    if (swscanf_s(p, L"%i", &iValue) == 1) {
+      if ((n < iCount) && (iValue >= iMin) && (iValue <= iMax)) {
+        iVector[n++] = iValue;
+      }
+    }
+    p = StrEnd(p) + 1;
+  }
+  return n;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////

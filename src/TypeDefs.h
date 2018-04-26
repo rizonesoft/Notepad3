@@ -65,6 +65,7 @@ typedef enum BufferSizes
   LARGE_BUFFER = 512,
   HUGE_BUFFER = 1024,
   XHUGE_BUFFER = 2048,
+  XXXL_BUFFER = 4096,
 
   FILE_ARG_BUF = MAX_PATH + 2,
   FNDRPL_BUFFER = 1024,
@@ -76,6 +77,22 @@ typedef enum BufferSizes
 typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
 typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
 typedef enum { MBINFO = 0, MBWARN, MBYESNO, MBYESNOWARN, MBYESNOCANCEL, MBOKCANCEL, MBRETRYCANCEL } MBTYPES;
+
+
+//==== Statusbar ==============================================================
+
+typedef WCHAR prefix_t[MICRO_BUFFER];
+
+typedef enum {
+  STATUS_DOCLINE = 0, STATUS_DOCCOLUMN, STATUS_SELECTION, STATUS_SELCTLINES, STATUS_OCCURRENCE,
+  STATUS_DOCSIZE, STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF, STATUS_LEXER,
+  STATUS_SECTOR_COUNT,
+  STATUS_HELP = 255
+} STATUS_SECTOR_T;
+
+#define STATUSBAR_DEFAULT_IDS  L"0 1 2 3 4 5 6 7 8 9 10"
+#define STATUSBAR_SECTION_WIDTH L"2 2 3 2 2 2 2 1 1 1 3"
+#define STATUSBAR_EXTION_PREFIXES L"Ln  ,Col  ,Sel  ,SelLn  ,Occ  ,,,,,,,,"
 
 // --------------------------------------------------------------------------
 
