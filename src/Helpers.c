@@ -944,14 +944,12 @@ LRESULT SendWMSize(HWND hwnd)
 //
 //  StatusSetText()
 //
-bool StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
+void StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
 {
-
-  UINT uFlags = (nPart == (UINT)STATUS_HELP) ? nPart|SBT_NOBORDERS : nPart;
-  if (lpszText)
-    return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
-  else
-    return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)L"...");
+  if (lpszText) {
+    UINT uFlags = (nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+    SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
+  }
 }
 
 

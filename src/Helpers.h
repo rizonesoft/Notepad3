@@ -163,7 +163,7 @@ void DeleteBitmapButton(HWND,int);
 
 
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
-bool StatusSetText(HWND,UINT,LPCWSTR);
+void StatusSetText(HWND,UINT,LPCWSTR);
 bool StatusSetTextID(HWND,UINT,UINT);
 COLORREF GetBackgroundColor(HWND);
 LONG StatusCalcPaneWidth(HWND,LPCWSTR);

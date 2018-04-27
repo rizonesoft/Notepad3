@@ -371,28 +371,35 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 //
 //  IgnoreNotifyChangeEvent(), ObserveNotifyChangeEvent(), CheckNotifyChangeEvent()
 //
-static volatile LONG iNotifyChangeStackCounter = 0;
+static volatile LONG iNotifyChangeStackCounter = 0L;
 
-void IgnoreNotifyChangeEvent() {
-  InterlockedIncrement(&iNotifyChangeStackCounter);
-  BeginWaitCursor(NULL);
+bool CheckNotifyChangeEvent()
+{
+  return (InterlockedExchange(&iNotifyChangeStackCounter, iNotifyChangeStackCounter) == 0L);
 }
 
-void ObserveNotifyChangeEvent() {
-  if (iNotifyChangeStackCounter > 0L) {
+void IgnoreNotifyChangeEvent() 
+{
+  InterlockedIncrement(&iNotifyChangeStackCounter);
+}
+
+void ObserveNotifyChangeEvent() 
+{
+  if (!CheckNotifyChangeEvent()) {
     InterlockedDecrement(&iNotifyChangeStackCounter);
-    if (iNotifyChangeStackCounter == 0L) {
-      EndWaitCursor();
+  }
+  if (CheckNotifyChangeEvent()) {
       UpdateToolbar();
       UpdateStatusbar();
       UpdateLineNumberWidth();
-    }
   }
 }
 
-bool CheckNotifyChangeEvent() {
-  return (iNotifyChangeStackCounter == 0L);
+void ResetNotifyChangeEvent()
+{
+  InterlockedExchange(&iNotifyChangeStackCounter, 0L);
 }
+
 
 // SCN_UPDATEUI notification
 #define SC_UPDATE_NP3_INTERNAL_NOTIFY (SC_UPDATE_H_SCROLL << 1)
@@ -423,8 +430,9 @@ static int msgcmp(void* mqc1, void* mqc2)
 }
 // ----------------------------------------------------------------------------
 
+#define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
 
-static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int delay)
+static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
   CmdMessageQueue_t* pmqc = NULL;
   DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
@@ -435,16 +443,16 @@ static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int dela
     pmqc->cmd = pMsgQCmd->cmd;
     pmqc->wparam = pMsgQCmd->wparam;
     pmqc->lparam = pMsgQCmd->lparam;
-    pmqc->delay = delay;
+    pmqc->delay = cycles;
     DL_APPEND(MessageQueue, pmqc);
   }
 
-  if (delay < 2) {
+  if (cycles < 2) {
     pmqc->delay = -1; // execute now (do not use PostMessage() here)
     SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
   }
   else {
-    pmqc->delay = (pmqc->delay + delay) / 2; // increase delay
+    pmqc->delay = (pmqc->delay + cycles) / 2; // increase delay
   }
 }
 // ----------------------------------------------------------------------------
@@ -482,9 +490,10 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
   DL_FOREACH(MessageQueue, pmqc) 
   {
     if (pmqc->delay == 0) {
+      pmqc->delay = -1;
       SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
     }
-    if (pmqc->delay >= 0) {
+    else if (pmqc->delay >= 0) {
       pmqc->delay -= 1;
     }
   }
@@ -553,6 +562,7 @@ static void __fastcall _SetDocumentModified(bool bModified)
 //  WinMain()
 //
 //
+
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int nCmdShow)
 {
 
@@ -686,8 +696,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   UpdateLineNumberWidth();
   ObserveNotifyChangeEvent();
   
-  SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
-
+  SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
+  
   while (GetMessage(&msg,NULL,0,0))
   {
     if (IsWindow(g_hwndDlgFindReplace) && ((msg.hwnd == g_hwndDlgFindReplace) || IsChild(g_hwndDlgFindReplace, msg.hwnd))) 
@@ -705,8 +715,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
-    //MQ_ExecuteNext(); // delayed messages
   }
+
+  KillTimer(hwnd, IDT_TIMER_MRKALL);
 
   CmdMessageQueue_t* pmqc = NULL;
   CmdMessageQueue_t* dummy;
@@ -715,7 +726,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     DL_DELETE(MessageQueue, pmqc);
     FreeMem(pmqc);
   }
-  KillTimer(hwnd, IDT_TIMER_MRKALL);
 
   // Save Settings is done elsewhere
 
@@ -759,6 +769,25 @@ bool InitApplication(HINSTANCE hInstance)
 }
 
 
+
+//=============================================================================
+//
+//  WaitCursorStack
+//
+//
+static volatile LONG iWaitCursorStackCounter = 0L;
+
+//=============================================================================
+//
+//  CheckWaitCursorStack()
+//
+//
+static bool __fastcall CheckWaitCursorStack()
+{
+  return (InterlockedExchange(&iWaitCursorStackCounter, iWaitCursorStackCounter) == 0L);
+}
+
+
 //=============================================================================
 //
 //  BeginWaitCursor()
@@ -766,10 +795,13 @@ bool InitApplication(HINSTANCE hInstance)
 //
 void BeginWaitCursor(LPCWSTR text)
 {
-  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(CMD_WAITCURSOR, 1), (LPARAM)0, 0 };
-  mqc.hwnd = g_hwndMain;
-  mqc.lparam = (LPARAM)text;
-  _MQ_AppendCmd(&mqc, 500U);
+  if (CheckWaitCursorStack())
+  {
+    SciCall_SetCursor(SC_CURSORWAIT); // delayed to SCN_DWELLSTART
+    StatusSetText(g_hwndStatus, STATUS_HELP, (LPCWSTR)text);
+    //StatusSetTextID(g_hwndStatus, STATUS_HELP, uid);
+  }
+  InterlockedIncrement(&iWaitCursorStackCounter);
 }
 
 
@@ -780,16 +812,18 @@ void BeginWaitCursor(LPCWSTR text)
 //
 void EndWaitCursor()
 {
-  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(CMD_WAITCURSOR, 1), (LPARAM)0, 0 };
-  mqc.hwnd = g_hwndMain;
-  _MQ_RemoveCmd(&mqc);
-
-  POINT pt;
-  GetCursorPos(&pt); SetCursorPos(pt.x, pt.y);
-  StatusSetSimple(g_hwndStatus, false);
-  SciCall_SetCursor(SC_CURSORNORMAL);
+  if (!CheckWaitCursorStack()) {
+    InterlockedDecrement(&iWaitCursorStackCounter);
+  }
+  if (CheckWaitCursorStack()) 
+  {
+    POINT pt;
+    SciCall_SetCursor(SC_CURSORNORMAL);
+    GetCursorPos(&pt); SetCursorPos(pt.x, pt.y);
+    StatusSetSimple(g_hwndStatus, false);
+    UpdateStatusbar();
+  }
 }
-
 
 
 
@@ -1239,7 +1273,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_NCLBUTTONDOWN:
     case WM_WINDOWPOSCHANGING:
     case WM_WINDOWPOSCHANGED:
-      return DefWindowProc(hwnd,umsg,wParam,lParam);
+    case WM_TIMER:
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYDOWN:
       if (GetAsyncKeyState(VK_MENU) & SHRT_MIN)  // ALT-KEY DOWN
@@ -1492,6 +1527,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   // Properties
   SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
+  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)500, 0);
 
   #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
   if (iCurrentLineHorizontalSlop > 0)
@@ -2776,6 +2812,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   switch(LOWORD(wParam))
   {
+    case SCEN_CHANGE:
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+      break;
 
     case IDT_TIMER_MAIN_MRKALL:
       EditMarkAllOccurrences();
@@ -2785,14 +2824,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDT_TIMER_UPDATE_HOTSPOT:
       EditUpdateVisibleUrlHotspot(g_bHyperlinkHotspot);
       break;
-
-
-    case CMD_WAITCURSOR:
-      SciCall_SetCursor(SC_CURSORWAIT);
-      StatusSetText(g_hwndStatus, STATUS_HELP, (LPCWSTR)lParam);
-      //StatusSetTextID(g_hwndStatus, STATUS_HELP, uid);
-      break;
-
 
     case IDM_FILE_NEW:
       FileLoad(false,true,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
@@ -3058,6 +3089,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
         }
 
+        BeginWaitCursor(NULL);
         IgnoreNotifyChangeEvent();
         if (EditSetNewEncoding(g_hwndEdit,
                                iNewEncoding,
@@ -3075,7 +3107,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
         }
         ObserveNotifyChangeEvent();
-
+        EndWaitCursor();
       }
       break;
 
@@ -3111,6 +3143,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_LINEENDINGS_LF:
     case IDM_LINEENDINGS_CR:
       {
+        BeginWaitCursor(NULL);
         IgnoreNotifyChangeEvent();
         int iNewEOLMode = iLineEndings[LOWORD(wParam)-IDM_LINEENDINGS_CRLF];
         g_iEOLMode = iNewEOLMode;
@@ -3118,6 +3151,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SendMessage(g_hwndEdit,SCI_CONVERTEOLS,g_iEOLMode,0);
         EditFixPositions(g_hwndEdit);
         ObserveNotifyChangeEvent();
+        EndWaitCursor();
       }
       break;
 
@@ -5681,25 +5715,23 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
         }
         _SetDocumentModified(true);
-        return true;
       }
       else if (pnmh->code == SCN_SAVEPOINTREACHED) {
         _SetDocumentModified(false);
-        return true;
       }
       else if (pnmh->code == SCN_SAVEPOINTLEFT) {
         _SetDocumentModified(true);
-        return true;
       }
       else if (pnmh->code == SCN_MODIFYATTEMPTRO) {
         if (EditToggleView(g_hwndEdit, false)) {
           EditToggleView(g_hwndEdit, true);
         }
-        return true;
       }
     }
-    return false;
+    return true; // swallowed
   }
+
+  // --- check ALL events ---
 
   switch(pnmh->idFrom)
   {
@@ -5753,11 +5785,10 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
                 }
               }
-              else if (scn->updated & SC_UPDATE_CONTENT) {
-                MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
-              }
-              //else {
-              //  //MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+              // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
+              // using WM_COMMAND -> SCEN_CHANGE  instead!
+              //else if (scn->updated & SC_UPDATE_CONTENT) {
+              //  MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
               //}
             }
 
@@ -6430,10 +6461,10 @@ void LoadSettings()
   g_iMarkOccurrencesMaxCount = (g_iMarkOccurrencesMaxCount <= 0) ? INT_MAX : g_iMarkOccurrencesMaxCount;
 
   iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
-  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), 10) / (int)USER_TIMER_MINIMUM;
+  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), USER_TIMER_MINIMUM);
 
   iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
-  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), 10) / (int)USER_TIMER_MINIMUM;
+  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), USER_TIMER_MINIMUM);
 
   bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
   bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
@@ -7395,7 +7426,7 @@ void MarkAllOccurrences(int delay)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
   mqc.hwnd = g_hwndMain;
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : delay));
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
@@ -7407,7 +7438,7 @@ void UpdateVisibleUrlHotspot(int delay)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_HOTSPOT, 1), (LPARAM)0 , 0 };
   mqc.hwnd = g_hwndMain;
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : delay));
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
@@ -7473,6 +7504,8 @@ FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
 
 void UpdateStatusbar() 
 {
+  ResetNotifyChangeEvent();
+
   if (!bShowStatusbar) { return; }
 
   static WCHAR tchStatusBar[STATUS_SECTOR_COUNT][txtWidth];
@@ -8024,6 +8057,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
     g_bFileReadOnly = false;
     _SetDocumentModified(false);
+
     UpdateToolbar();
     UpdateStatusbar();
     UpdateLineNumberWidth();

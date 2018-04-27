@@ -219,8 +219,9 @@ static int msgcmp(void* mqc1, void* mqc2)
 }
 // ----------------------------------------------------------------------------
 
+#define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
 
-static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int delay)
+static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
   CmdMessageQueue_t* pmqc = NULL;
   DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
@@ -231,16 +232,16 @@ static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int dela
     pmqc->cmd = pMsgQCmd->cmd;
     pmqc->wparam = pMsgQCmd->wparam;
     pmqc->lparam = pMsgQCmd->lparam;
-    pmqc->delay = delay;
+    pmqc->delay = cycles;
     DL_APPEND(MessageQueue, pmqc);
   }
 
-  if (delay < 2) {
+  if (cycles < 2) {
     pmqc->delay = -1; // execute now (do not use PostMessage() here)
     SendMessage(pMsgQCmd->hwnd, pMsgQCmd->cmd, pMsgQCmd->wparam, pMsgQCmd->lparam);
   }
   else {
-    pmqc->delay = (pmqc->delay + delay) / 2; // increase delay
+    pmqc->delay = (pmqc->delay + cycles) / 2; // increase delay
   }
 }
 // ----------------------------------------------------------------------------
@@ -279,14 +280,14 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
   DL_FOREACH(MessageQueue, pmqc)
   {
     if (pmqc->delay == 0) {
+      pmqc->delay = -1;
       SendMessage(pmqc->hwnd, pmqc->cmd, pmqc->wparam, pmqc->lparam);
     }
-    if (pmqc->delay >= 0) {
+    else if (pmqc->delay >= 0) {
       pmqc->delay -= 1;
     }
   }
 }
-
 
 
 //=============================================================================
@@ -5012,7 +5013,7 @@ static void __fastcall _DelayMarkAll(HWND hwnd, int delay)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
   mqc.hwnd = hwnd;
-  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : delay));
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
 
@@ -5204,7 +5205,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
 
       _SetSearchFlags(hwnd, sg_pefrData);
-      _DelayMarkAll(hwnd, 5);
+      _DelayMarkAll(hwnd, 50);
     }
     return true;
 
@@ -5257,7 +5258,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !SciCall_IsSelectionEmpty());
       
         if (sg_pefrData->bMarkOccurences) {
-          _DelayMarkAll(hwnd,5);
+          _DelayMarkAll(hwnd,50);
         }
 
         //if (LOWORD(wParam) == WA_INACTIVE) {
@@ -5357,7 +5358,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
 
         _SetSearchFlags(hwnd, sg_pefrData);
-        _DelayMarkAll(hwnd, 5);
+        _DelayMarkAll(hwnd, 50);
       }
       break;
 
@@ -5622,7 +5623,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           break;
         }
       }
-      _DelayMarkAll(hwnd,5);
+      _DelayMarkAll(hwnd,50);
       break;
 
 
@@ -5641,7 +5642,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SetDlgItemTextW(hwnd, IDC_REPLACETEXT, wszFind);
         g_FindReplaceMatchFoundState = FND_NOP;
         _SetSearchFlags(hwnd, sg_pefrData);
-        _DelayMarkAll(hwnd,5);
+        _DelayMarkAll(hwnd,50);
       }
       break;
 
@@ -5976,6 +5977,7 @@ void EditMarkAllOccurrences()
   }
   if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
+  BeginWaitCursor(NULL);
   IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
@@ -5999,6 +6001,7 @@ void EditMarkAllOccurrences()
   
   EditLeaveTargetTransaction();
   ObserveNotifyChangeEvent();
+  EndWaitCursor();
 }
 
 
@@ -6012,6 +6015,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
   {
     if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
+    BeginWaitCursor(NULL);
     IgnoreNotifyChangeEvent();
     EditEnterTargetTransaction();
 
@@ -6028,6 +6032,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
 
     EditLeaveTargetTransaction();
     ObserveNotifyChangeEvent();
+    EndWaitCursor();
   }
 }
 
@@ -6260,6 +6265,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
 
+  BeginWaitCursor(NULL);
   IgnoreNotifyChangeEvent();
 
   int token = BeginUndoAction();
@@ -6267,6 +6273,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
 
   ObserveNotifyChangeEvent();
+  EndWaitCursor();
 
   if (iReplacedOccurrences <= 0) {
     EndUndoAction(token);
@@ -6351,6 +6358,7 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
 
   if (bToggleView) {
 
+    BeginWaitCursor(NULL);
     IgnoreNotifyChangeEvent();
 
     if (!bHideNonMatchedLines) {
@@ -6380,6 +6388,7 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
     }
 
     ObserveNotifyChangeEvent();
+    EndWaitCursor();
   }
   return bHideNonMatchedLines;
 }
@@ -6702,90 +6711,94 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
   IgnoreNotifyChangeEvent();
 
   if (!bHideLines) {
+    IgnoreNotifyChangeEvent();
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE);
-    DocLn const iLnCount = SciCall_GetLineCount();
-    for (DocLn iLine = 0; iLine < iLnCount; ++iLine) { SciCall_SetFoldLevel(iLine, SC_FOLDLEVELBASE); }
     if (!g_bCodeFoldingAvailable) { SciCall_SetProperty("fold", "0"); }
+    //DocLn const iLnCount = SciCall_GetLineCount();
+    //for (DocLn iLine = 0; iLine < iLnCount; ++iLine) { 
+    //  if ((SciCall_GetFoldLevel(iLine) & SC_FOLDLEVELNUMBERMASK) != SC_FOLDLEVELBASE) {
+    //    SciCall_SetFoldLevel(iLine, SC_FOLDLEVELBASE);
+    //  }
+    //}
+    SciCall_SetFoldFlags(0);
     Style_SetFolding(hwnd, g_bCodeFoldingAvailable && g_bShowCodeFolding);
     EditApplyLexerStyle(hwnd, 0, -1);
     SciCall_FoldAll(EXPAND);
-    ObserveNotifyChangeEvent();
-    return;
   }
-
-  EditApplyLexerStyle(hwnd, 0, -1); // reset
-
-  // prepare hidde (folding) settings
-  g_bCodeFoldingAvailable = true; // saved before
-  g_bShowCodeFolding = true;      // saved before
-  SciCall_SetProperty("fold", "1");
-  //SciCall_SetProperty("fold.compact", "1");
-  Style_SetFolding(hwnd, true);
-  SciCall_SetFoldFlags(0);
-  //SciCall_SetFoldFlags(SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // Debug
-
-
-  // hide lines without indicator
-  const int iOccBitMask = (1 << MARKER_NP3_OCCUR_LINE);
-  const int iStyleHideID = Style_GetInvisibleStyleID();
-
-  const DocLn iStartLine = SciCall_LineFromPosition(iStartPos);
-  const DocLn iEndLine = SciCall_LineFromPosition(iEndPos);
-
-  const int baseLevel = SciCall_GetFoldLevel(iStartLine) & SC_FOLDLEVELNUMBERMASK;
-
-  // clear levels to avoid multi rearangements on existing lexer provided levels
-  for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine)
+  else // =====   hide lines without marker   =====
   {
-    SciCall_SetFoldLevel(iLine, baseLevel);
-  }
+    EditApplyLexerStyle(hwnd, 0, -1); // reset
 
-  // 1st line
-  if ((SciCall_MarkerGet(iStartLine) & iOccBitMask) == 0) 
-  { // hide
-    const DocPos begPos = SciCall_PositionFromLine(iStartLine);
-    const DocPos lnLen = SciCall_LineLength(iStartLine);
-    SciCall_StartStyling(begPos);
-    SciCall_SetStyling((DocPosCR)lnLen, iStyleHideID);
-  }
+    // prepare hidden (folding) settings
+    g_bCodeFoldingAvailable = true; // saved before
+    g_bShowCodeFolding = true;      // saved before
+    SciCall_SetProperty("fold", "1");
+    //SciCall_SetProperty("fold.compact", "1");
+    Style_SetFolding(hwnd, true);
+    SciCall_SetFoldFlags(0);
+    //SciCall_SetFoldFlags(SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // Debug
 
-  int level = baseLevel;
-  for (DocLn iLine = iStartLine + 1; iLine <= iEndLine; ++iLine)
-  {
-    const int markerSet = SciCall_MarkerGet(iLine);
-    if (markerSet != -1) 
+    // hide lines without indicator
+    const int iOccBitMask = (1 << MARKER_NP3_OCCUR_LINE);
+    const int iStyleHideID = Style_GetInvisibleStyleID();
+
+    const DocLn iStartLine = SciCall_LineFromPosition(iStartPos);
+    const DocLn iEndLine = SciCall_LineFromPosition(iEndPos);
+
+    const int baseLevel = SciCall_GetFoldLevel(iStartLine) & SC_FOLDLEVELNUMBERMASK;
+
+    // clear levels to avoid multi rearangements on existing lexer provided levels
+    for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine)
     {
-      if (markerSet & iOccBitMask) // visible
-      {
-        while (level > baseLevel) { --level; }
-        SciCall_SetFoldLevel(iLine, level);
-      }
-      else // hide line
-      {
-        const DocPos begPos = SciCall_PositionFromLine(iLine);
-        const DocPos lnLen = SciCall_LineLength(iLine);
-        SciCall_StartStyling(begPos);
-        SciCall_SetStyling((DocPosCR)lnLen, iStyleHideID);
+      SciCall_SetFoldLevel(iLine, baseLevel);
+    }
 
-        if (level == baseLevel) {
-          SciCall_SetFoldLevel(iLine - 1, SC_FOLDLEVELHEADERFLAG | level++);
+    // 1st line
+    if ((SciCall_MarkerGet(iStartLine) & iOccBitMask) == 0)
+    { // hide
+      const DocPos begPos = SciCall_PositionFromLine(iStartLine);
+      const DocPos lnLen = SciCall_LineLength(iStartLine);
+      SciCall_StartStyling(begPos);
+      SciCall_SetStyling((DocPosCR)lnLen, iStyleHideID);
+    }
+
+    int level = baseLevel;
+    for (DocLn iLine = iStartLine + 1; iLine <= iEndLine; ++iLine)
+    {
+      const int markerSet = SciCall_MarkerGet(iLine);
+      if (markerSet != -1)
+      {
+        if (markerSet & iOccBitMask) // visible
+        {
+          while (level > baseLevel) { --level; }
+          SciCall_SetFoldLevel(iLine, level);
         }
-        SciCall_SetFoldLevel(iLine, SC_FOLDLEVELWHITEFLAG | level);
+        else // hide line
+        {
+          const DocPos begPos = SciCall_PositionFromLine(iLine);
+          const DocPos lnLen = SciCall_LineLength(iLine);
+          SciCall_StartStyling(begPos);
+          SciCall_SetStyling((DocPosCR)lnLen, iStyleHideID);
+
+          if (level == baseLevel) {
+            SciCall_SetFoldLevel(iLine - 1, SC_FOLDLEVELHEADERFLAG | level++);
+          }
+          SciCall_SetFoldLevel(iLine, SC_FOLDLEVELWHITEFLAG | level);
+        }
       }
     }
-  }
 
-  if (iEndPos < SciCall_GetTextLength()) {
-    const DocPos iStartStyling = SciCall_PositionFromLine(iEndLine + 1);
-    if ((iStartStyling >= 0) && (iStartStyling < SciCall_GetTextLength())) {
-      SciCall_StartStyling(iStartStyling);
-      EditFinalizeStyling(hwnd, -1);
+    if (iEndPos < SciCall_GetTextLength()) {
+      const DocPos iStartStyling = SciCall_PositionFromLine(iEndLine + 1);
+      if ((iStartStyling >= 0) && (iStartStyling < SciCall_GetTextLength())) {
+        SciCall_StartStyling(iStartStyling);
+        EditFinalizeStyling(hwnd, -1);
+      }
     }
+
+    SciCall_FoldAll(FOLD);
   }
-
   ObserveNotifyChangeEvent();
-
-  SciCall_FoldAll(SC_FOLDACTION_CONTRACT);
 }
 
 
