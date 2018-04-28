@@ -5977,7 +5977,8 @@ void EditMarkAllOccurrences()
   }
   if (EditIsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
-  BeginWaitCursor(NULL);
+  bool const bWaitCursor = (g_iMarkOccurrencesCount > 4000) ? true : false;
+  if (bWaitCursor) { BeginWaitCursor(NULL); }
   IgnoreNotifyChangeEvent();
   EditEnterTargetTransaction();
 
@@ -6001,7 +6002,7 @@ void EditMarkAllOccurrences()
   
   EditLeaveTargetTransaction();
   ObserveNotifyChangeEvent();
-  EndWaitCursor();
+  if (bWaitCursor) { EndWaitCursor(); } 
 }
 
 
@@ -6265,7 +6266,8 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
 
-  BeginWaitCursor(NULL);
+  bool const bWaitCursor = ((end - start) > (512 * 512)) ? true : false;
+  if (bWaitCursor) { BeginWaitCursor(NULL); }
   IgnoreNotifyChangeEvent();
 
   int token = BeginUndoAction();
@@ -6273,7 +6275,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
 
   ObserveNotifyChangeEvent();
-  EndWaitCursor();
+  if (bWaitCursor) { EndWaitCursor(); }
 
   if (iReplacedOccurrences <= 0) {
     EndUndoAction(token);
@@ -6356,9 +6358,10 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
   static bool bSaveFoldingAvailable = false;
   static bool bSaveShowFolding = false;
 
-  if (bToggleView) {
-
-    BeginWaitCursor(NULL);
+  if (bToggleView) 
+  {
+    bool const bWaitCursor = ((g_iMarkOccurrencesCount > 1000) || (SciCall_GetLineCount() > 2000)) ? true : false;
+    if (bWaitCursor) { BeginWaitCursor(NULL); }
     IgnoreNotifyChangeEvent();
 
     if (!bHideNonMatchedLines) {
@@ -6388,7 +6391,7 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
     }
 
     ObserveNotifyChangeEvent();
-    EndWaitCursor();
+    if (bWaitCursor) { EndWaitCursor(); }  
   }
   return bHideNonMatchedLines;
 }

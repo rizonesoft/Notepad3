@@ -397,6 +397,7 @@
     <ClInclude Include="src\EditModel.h" />
     <ClInclude Include="src\Editor.h" />
     <ClInclude Include="src\EditView.h" />
+    <ClInclude Include="src\ElapsedPeriod.h" />
     <ClInclude Include="src\ExternalLexer.h" />
     <ClInclude Include="src\FontQuality.h" />
     <ClInclude Include="src\Indicator.h" />

@@ -5785,11 +5785,11 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                   MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
                 }
               }
-              // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
-              // using WM_COMMAND -> SCEN_CHANGE  instead!
-              //else if (scn->updated & SC_UPDATE_CONTENT) {
-              //  MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
-              //}
+              else if (scn->updated & SC_UPDATE_CONTENT) {
+                // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
+                // using WM_COMMAND -> SCEN_CHANGE  instead!
+                //~MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+              }
             }
 
             if (g_bHyperlinkHotspot) {
