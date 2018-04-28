@@ -44,13 +44,15 @@ void DrawStyledText(Surface *surface, const ViewStyle &vs, int styleOffset, PRec
 
 typedef void (*DrawTabArrowFn)(Surface *surface, PRectangle rcTab, int ymid);
 
+class LineTabstops;
+
 /**
 * EditView draws the main text area.
 */
 class EditView {
 public:
 	PrintParameters printParameters;
-	std::unique_ptr<PerLine> ldTabstops;
+	std::unique_ptr<LineTabstops> ldTabstops;
 	int tabWidthMinimumPixels;
 
 	bool hideSelection;

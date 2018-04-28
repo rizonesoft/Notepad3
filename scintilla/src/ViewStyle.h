@@ -91,7 +91,7 @@ class ViewStyle {
 	FontMap fonts;
 public:
 	std::vector<Style> styles;
-	size_t nextExtendedStyle;
+	int nextExtendedStyle;
 	std::vector<LineMarker> markers;
 	int largestMarkerHeight;
 	std::vector<Indicator> indicators;

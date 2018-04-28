@@ -102,14 +102,6 @@ Action::Action() {
 	mayCoalesce = false;
 }
 
-Action::Action(Action &&other) {
-	at = other.at;
-	position = other.position;
-	data = std::move(other.data);
-	lenData = other.lenData;
-	mayCoalesce = other.mayCoalesce;
-}
-
 Action::~Action() {
 }
 

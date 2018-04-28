@@ -21,6 +21,7 @@
 #include <map>
 #include <algorithm>
 #include <memory>
+#include <chrono>
 
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0500
@@ -80,6 +81,7 @@
 #include "MarginView.h"
 #include "EditView.h"
 #include "Editor.h"
+#include "ElapsedPeriod.h"
 
 #include "AutoComplete.h"
 #include "ScintillaBase.h"
@@ -306,7 +308,7 @@ class ScintillaWin :
 	void StartDrag() override;
 	static int MouseModifiers(uptr_t wParam);
 
-	Sci::Position TargetAsUTF8(char *text);
+	Sci::Position TargetAsUTF8(char *text) const;
 	void AddCharUTF16(wchar_t const *wcs, unsigned int wclen);
 	Sci::Position EncodedFromUTF8(const char *utf8, char *encoded) const;
 	sptr_t WndPaint(uptr_t wParam);
@@ -747,7 +749,7 @@ static std::wstring StringMapCase(const std::wstring &ws, DWORD mapFlags) {
 
 // Returns the target converted to UTF8.
 // Return the length in bytes.
-Sci::Position ScintillaWin::TargetAsUTF8(char *text) {
+Sci::Position ScintillaWin::TargetAsUTF8(char *text) const {
 	Sci::Position targetLength = targetEnd - targetStart;
 	if (IsUnicodeMode()) {
 		if (text) {
@@ -813,7 +815,7 @@ void ScintillaWin::AddCharUTF16(wchar_t const *wcs, unsigned int wclen) {
 }
 
 sptr_t ScintillaWin::WndPaint(uptr_t wParam) {
-	//ElapsedTime et;
+	//ElapsedPeriod ep;
 
 	// Redirect assertions to debug output and save current state
 	const bool assertsPopup = Platform::ShowAssertionPopUps(false);
@@ -878,7 +880,7 @@ sptr_t ScintillaWin::WndPaint(uptr_t wParam) {
 	// Restore debug output state
 	Platform::ShowAssertionPopUps(assertsPopup);
 
-	//Platform::DebugPrintf("Paint took %g\n", et.Duration());
+	//Platform::DebugPrintf("Paint took %g\n", ep.Duration());
 	return 0l;
 }
 
@@ -1202,7 +1204,7 @@ sptr_t ScintillaWin::GetTextLength() {
 }
 
 sptr_t ScintillaWin::GetText(uptr_t wParam, sptr_t lParam) {
-	wchar_t *ptr = reinterpret_cast<wchar_t *>(lParam);
+	wchar_t *ptr = static_cast<wchar_t *>(PtrFromSPtr(lParam));
 	if (pdoc->Length() == 0) {
 		*ptr = L'\0';
 		return 0;
@@ -1674,7 +1676,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 		case EM_SETSEL: {
 				Sci::Position nStart = static_cast<Sci::Position>(wParam);
-				Sci::Position nEnd = static_cast<Sci::Position>(lParam);
+				Sci::Position nEnd = lParam;
 				if (nStart == 0 && nEnd == -1) {
 					nEnd = pdoc->Length();
 				}
@@ -1758,16 +1760,16 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 
 #ifdef SCI_LEXER
 		case SCI_LOADLEXERLIBRARY:
-			LexerManager::GetInstance()->Load(reinterpret_cast<const char *>(lParam));
+			LexerManager::GetInstance()->Load(ConstCharPtrFromSPtr(lParam));
 			break;
 #endif
 
 		case SCI_TARGETASUTF8:
-			return TargetAsUTF8(reinterpret_cast<char*>(lParam));
+			return TargetAsUTF8(CharPtrFromSPtr(lParam));
 
 		case SCI_ENCODEDFROMUTF8:
-			return EncodedFromUTF8(reinterpret_cast<const char*>(wParam),
-			        reinterpret_cast<char*>(lParam));
+			return EncodedFromUTF8(ConstCharPtrFromUPtr(wParam),
+				CharPtrFromSPtr(lParam));
 
 		default:
 			return ScintillaBase::WndProc(iMessage, wParam, lParam);
@@ -2703,7 +2705,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 	const int rcFeedLen = static_cast<int>(rcFeed.length()) * sizeof(wchar_t);
 	const int rcSize = sizeof(RECONVERTSTRING) + rcFeedLen + sizeof(wchar_t);
 
-	RECONVERTSTRING *rc = reinterpret_cast<RECONVERTSTRING *>(lParam);
+	RECONVERTSTRING *rc = static_cast<RECONVERTSTRING *>(PtrFromSPtr(lParam));
 	if (!rc)
 		return rcSize; // Immediately be back with rcSize of memory block.
 
@@ -3289,7 +3291,7 @@ LRESULT PASCAL ScintillaWin::CTWndProc(
 		if (sciThis == 0) {
 			if (iMessage == WM_CREATE) {
 				// Associate CallTip object with window
-				CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT *>(lParam);
+				CREATESTRUCT *pCreate = static_cast<CREATESTRUCT *>(PtrFromSPtr(lParam));
 				SetWindowPointer(hWnd, pCreate->lpCreateParams);
 				return 0;
 			} else {

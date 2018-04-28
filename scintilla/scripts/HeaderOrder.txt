@@ -44,6 +44,7 @@
 #include <iterator>
 #include <functional>
 #include <memory>
+#include <chrono>
 #include <regex>
 #include <iostream>
 #include <sstream>
@@ -144,6 +145,7 @@
 #include "MarginView.h"
 #include "EditView.h"
 #include "Editor.h"
+#include "ElapsedPeriod.h"
 
 #include "AutoComplete.h"
 #include "ScintillaBase.h"

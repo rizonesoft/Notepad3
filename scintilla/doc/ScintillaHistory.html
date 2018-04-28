@@ -543,7 +543,7 @@
 	Released 10 April 2018.
 	</li>
 	<li>
-	Add experimental SC_DOCUMENTOPTION_TEXT_LARGE option to accomodate documents larger than
+	Add experimental SC_DOCUMENTOPTION_TEXT_LARGE option to accommodate documents larger than
 	2 GigaBytes.
 	</li>
 	<li>
@@ -561,6 +561,17 @@
 	by incrementing the search position after replacing an empty match.
 	SciTE fixes a bug where replacing "^" always matched on the first line even when it was an
 	"in selection" replace and the selection started after the line start.
+	</li>
+	<li>
+	Bug fixed in SciTE where invalid numeric properties could crash.
+	</li>
+	<li>
+	Bug fixed with SciTE on macOS where corner debris appeared in the margin when scrolling.
+	Fixed by not completely hiding the status bar so the curved corner is no longer part of the
+	scrolling region.
+	By default, 4 pixels of the status bar remain visible and this can be changed with
+	the statusbar.minimum.height property or turned off if the debris are not a problem by
+	setting the property to 0.
 	</li>
     </ul>
     <h3>

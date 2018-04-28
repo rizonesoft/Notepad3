@@ -4015,7 +4015,7 @@ Sci::Position Editor::FindText(
     ///< @c SCFIND_WORDSTART, @c SCFIND_REGEXP or @c SCFIND_POSIX.
     sptr_t lParam) {	///< @c Sci_TextToFind structure: The text to search for in the given range.
 
-	Sci_TextToFind *ft = reinterpret_cast<Sci_TextToFind *>(lParam);
+	Sci_TextToFind *ft = static_cast<Sci_TextToFind *>(PtrFromSPtr(lParam));
 	Sci::Position lengthFound = strlen(ft->lpstrText);
 	if (!pdoc->HasCaseFolder())
 		pdoc->SetCaseFolder(CaseFolderForEncoding());
@@ -4063,7 +4063,7 @@ Sci::Position Editor::SearchText(
     ///< @c SCFIND_WORDSTART, @c SCFIND_REGEXP or @c SCFIND_POSIX.
     sptr_t lParam) {			///< The text to search for.
 
-	const char *txt = reinterpret_cast<char *>(lParam);
+	const char *txt = CharPtrFromSPtr(lParam);
 	Sci::Position pos;
 	Sci::Position lengthFound = strlen(txt);
 	if (!pdoc->HasCaseFolder())
@@ -5576,7 +5576,7 @@ Sci::Line Editor::WrapCount(Sci::Line line) {
 	}
 }
 
-void Editor::AddStyledText(char *buffer, Sci::Position appendLength) {
+void Editor::AddStyledText(const char *buffer, Sci::Position appendLength) {
 	// The buffer consists of alternating character bytes and style bytes
 	const Sci::Position textLength = appendLength / 2;
 	std::string text(textLength, '\0');
@@ -5595,10 +5595,6 @@ void Editor::AddStyledText(char *buffer, Sci::Position appendLength) {
 
 bool Editor::ValidMargin(uptr_t wParam) const {
 	return wParam < vs.ms.size();
-}
-
-static char *CharPtrFromSPtr(sptr_t lParam) {
-	return reinterpret_cast<char *>(lParam);
 }
 
 void Editor::StyleSetMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
@@ -5698,27 +5694,27 @@ void Editor::SetSelectionNMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 
 	switch (iMessage) {
 	case SCI_SETSELECTIONNCARET:
-		sel.Range(wParam).caret.SetPosition(static_cast<Sci::Position>(lParam));
+		sel.Range(wParam).caret.SetPosition(lParam);
 		break;
 
 	case SCI_SETSELECTIONNANCHOR:
-		sel.Range(wParam).anchor.SetPosition(static_cast<Sci::Position>(lParam));
+		sel.Range(wParam).anchor.SetPosition(lParam);
 		break;
 
 	case SCI_SETSELECTIONNCARETVIRTUALSPACE:
-		sel.Range(wParam).caret.SetVirtualSpace(static_cast<Sci::Position>(lParam));
+		sel.Range(wParam).caret.SetVirtualSpace(lParam);
 		break;
 
 	case SCI_SETSELECTIONNANCHORVIRTUALSPACE:
-		sel.Range(wParam).anchor.SetVirtualSpace(static_cast<Sci::Position>(lParam));
+		sel.Range(wParam).anchor.SetVirtualSpace(lParam);
 		break;
 
 	case SCI_SETSELECTIONNSTART:
-		sel.Range(wParam).anchor.SetPosition(static_cast<Sci::Position>(lParam));
+		sel.Range(wParam).anchor.SetPosition(lParam);
 		break;
 
 	case SCI_SETSELECTIONNEND:
-		sel.Range(wParam).caret.SetPosition(static_cast<Sci::Position>(lParam));
+		sel.Range(wParam).caret.SetPosition(lParam);
 		break;
 	}
 
@@ -5812,7 +5808,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_COPYRANGE:
-		CopyRangeToClipboard(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));
+		CopyRangeToClipboard(static_cast<Sci::Position>(wParam), lParam);
 		break;
 
 	case SCI_COPYTEXT:
@@ -5879,7 +5875,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_SETSEL: {
 			Sci::Position nStart = static_cast<Sci::Position>(wParam);
-			Sci::Position nEnd = static_cast<Sci::Position>(lParam);
+			Sci::Position nEnd = lParam;
 			if (nEnd < 0)
 				nEnd = pdoc->Length();
 			if (nStart < 0)
@@ -5963,7 +5959,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_SETTARGETRANGE:
 		targetStart = static_cast<Sci::Position>(wParam);
-		targetEnd = static_cast<Sci::Position>(lParam);
+		targetEnd = lParam;
 		break;
 
 	case SCI_TARGETWHOLEDOCUMENT:
@@ -6016,7 +6012,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_POSITIONRELATIVE:
 		return std::clamp(pdoc->GetRelativePosition(
-			static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam)),
+			static_cast<Sci::Position>(wParam), lParam),
 			static_cast<Sci::Position>(0), pdoc->Length());
 
 	case SCI_LINESCROLL:
@@ -6056,7 +6052,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		if (lParam < 0) {
 			return 0;
 		} else {
-			const Point pt = LocationFromPosition(static_cast<Sci::Position>(lParam));
+			const Point pt = LocationFromPosition(lParam);
 			// Convert to view-relative
 			return static_cast<int>(pt.x) - vs.textStart + vs.fixedColumnWidth;
 		}
@@ -6065,7 +6061,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		if (lParam < 0) {
 			return 0;
 		} else {
-			const Point pt = LocationFromPosition(static_cast<Sci::Position>(lParam));
+			const Point pt = LocationFromPosition(lParam);
 			return static_cast<int>(pt.y);
 		}
 
@@ -6075,7 +6071,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_GETTEXTRANGE: {
 			if (lParam == 0)
 				return 0;
-			Sci_TextRange *tr = reinterpret_cast<Sci_TextRange *>(lParam);
+			Sci_TextRange *tr = static_cast<Sci_TextRange *>(PtrFromSPtr(lParam));
 			Sci::Position cpMax = static_cast<Sci::Position>(tr->chrg.cpMax);
 			if (cpMax == -1)
 				cpMax = pdoc->Length();
@@ -6093,7 +6089,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_FORMATRANGE:
-		return FormatRange(wParam != 0, reinterpret_cast<Sci_RangeToFormat *>(lParam));
+		return FormatRange(wParam != 0, static_cast<Sci_RangeToFormat *>(PtrFromSPtr(lParam)));
 
 	case SCI_GETMARGINLEFT:
 		return vs.leftMarginWidth;
@@ -6158,7 +6154,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return 0;
 
 	case SCI_DELETERANGE:
-		pdoc->DeleteChars(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));
+		pdoc->DeleteChars(static_cast<Sci::Position>(wParam), lParam);
 		return 0;
 
 	case SCI_CLEARDOCUMENTSTYLE:
@@ -6188,33 +6184,33 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_GETWORDCHARS:
-		return pdoc->GetCharsOfClass(CharClassify::ccWord, reinterpret_cast<unsigned char *>(lParam));
+		return pdoc->GetCharsOfClass(CharClassify::ccWord, UCharPtrFromSPtr(lParam));
 
 	case SCI_SETWORDCHARS: {
 			pdoc->SetDefaultCharClasses(false);
 			if (lParam == 0)
 				return 0;
-			pdoc->SetCharClasses(reinterpret_cast<unsigned char *>(lParam), CharClassify::ccWord);
+			pdoc->SetCharClasses(ConstUCharPtrFromSPtr(lParam), CharClassify::ccWord);
 		}
 		break;
 
 	case SCI_GETWHITESPACECHARS:
-		return pdoc->GetCharsOfClass(CharClassify::ccSpace, reinterpret_cast<unsigned char *>(lParam));
+		return pdoc->GetCharsOfClass(CharClassify::ccSpace, UCharPtrFromSPtr(lParam));
 
 	case SCI_SETWHITESPACECHARS: {
 			if (lParam == 0)
 				return 0;
-			pdoc->SetCharClasses(reinterpret_cast<unsigned char *>(lParam), CharClassify::ccSpace);
+			pdoc->SetCharClasses(ConstUCharPtrFromSPtr(lParam), CharClassify::ccSpace);
 		}
 		break;
 
 	case SCI_GETPUNCTUATIONCHARS:
-		return pdoc->GetCharsOfClass(CharClassify::ccPunctuation, reinterpret_cast<unsigned char *>(lParam));
+		return pdoc->GetCharsOfClass(CharClassify::ccPunctuation, UCharPtrFromSPtr(lParam));
 
 	case SCI_SETPUNCTUATIONCHARS: {
 			if (lParam == 0)
 				return 0;
-			pdoc->SetCharClasses(reinterpret_cast<unsigned char *>(lParam), CharClassify::ccPunctuation);
+			pdoc->SetCharClasses(ConstUCharPtrFromSPtr(lParam), CharClassify::ccPunctuation);
 		}
 		break;
 
@@ -6318,7 +6314,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_GETSTYLEDTEXT: {
 			if (lParam == 0)
 				return 0;
-			Sci_TextRange *tr = reinterpret_cast<Sci_TextRange *>(lParam);
+			Sci_TextRange *tr = static_cast<Sci_TextRange *>(PtrFromSPtr(lParam));
 			int iPlace = 0;
 			for (long iChar = tr->chrg.cpMin; iChar < tr->chrg.cpMax; iChar++) {
 				tr->lpstrText[iPlace++] = pdoc->CharAt(iChar);
@@ -6531,7 +6527,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return pdoc->useTabs;
 
 	case SCI_SETLINEINDENTATION:
-		pdoc->SetLineIndentation(static_cast<Sci::Line>(wParam), static_cast<Sci::Position>(lParam));
+		pdoc->SetLineIndentation(static_cast<Sci::Line>(wParam), lParam);
 		break;
 
 	case SCI_GETLINEINDENTATION:
@@ -6569,7 +6565,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return pdoc->ExtendWordSelect(static_cast<Sci::Position>(wParam), 1, lParam != 0);
 
 	case SCI_ISRANGEWORD:
-		return pdoc->IsWordAt(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));
+		return pdoc->IsWordAt(static_cast<Sci::Position>(wParam), lParam);
 
 	case SCI_SETIDLESTYLING:
 		idleStyling = static_cast<int>(wParam);
@@ -6708,7 +6704,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return pdoc->GetColumn(static_cast<Sci::Position>(wParam));
 
 	case SCI_FINDCOLUMN:
-		return pdoc->FindColumn(static_cast<Sci::Line>(wParam), static_cast<Sci::Position>(lParam));
+		return pdoc->FindColumn(static_cast<Sci::Line>(wParam), lParam);
 
 	case SCI_SETHSCROLLBAR :
 		if (horizontalScrollBarVisible != (wParam != 0)) {
@@ -6881,7 +6877,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_MARKERDEFINERGBAIMAGE:
 		if (wParam <= MARKER_MAX) {
-			vs.markers[wParam].SetRGBAImage(sizeRGBAImage, scaleRGBAImage / 100.0f, reinterpret_cast<unsigned char *>(lParam));
+			vs.markers[wParam].SetRGBAImage(sizeRGBAImage, scaleRGBAImage / 100.0f, ConstUCharPtrFromSPtr(lParam));
 			vs.CalcLargestMarkerHeight();
 		}
 		InvalidateStyleData();
@@ -7178,7 +7174,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_SCROLLRANGE:
-		ScrollRange(SelectionRange(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam)));
+		ScrollRange(SelectionRange(static_cast<Sci::Position>(wParam), lParam));
 		break;
 
 	case SCI_SEARCHANCHOR:
@@ -7388,25 +7384,25 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_INDICATORFILLRANGE:
 		pdoc->DecorationFillRange(static_cast<Sci::Position>(wParam),
-			pdoc->decorations->GetCurrentValue(), static_cast<Sci::Position>(lParam));
+			pdoc->decorations->GetCurrentValue(), lParam);
 		break;
 
 	case SCI_INDICATORCLEARRANGE:
 		pdoc->DecorationFillRange(static_cast<Sci::Position>(wParam), 0,
-			static_cast<Sci::Position>(lParam));
+			lParam);
 		break;
 
 	case SCI_INDICATORALLONFOR:
 		return pdoc->decorations->AllOnFor(static_cast<Sci::Position>(wParam));
 
 	case SCI_INDICATORVALUEAT:
-		return pdoc->decorations->ValueAt(static_cast<int>(wParam), static_cast<Sci::Position>(lParam));
+		return pdoc->decorations->ValueAt(static_cast<int>(wParam), lParam);
 
 	case SCI_INDICATORSTART:
-		return pdoc->decorations->Start(static_cast<int>(wParam), static_cast<Sci::Position>(lParam));
+		return pdoc->decorations->Start(static_cast<int>(wParam), lParam);
 
 	case SCI_INDICATOREND:
-		return pdoc->decorations->End(static_cast<int>(wParam), static_cast<Sci::Position>(lParam));
+		return pdoc->decorations->End(static_cast<int>(wParam), lParam);
 
 	case SCI_LINEDOWN:
 	case SCI_LINEDOWNEXTEND:
@@ -7504,7 +7500,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return KeyCommand(iMessage);
 
 	case SCI_BRACEHIGHLIGHT:
-		SetBraceHighlight(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam), STYLE_BRACELIGHT);
+		SetBraceHighlight(static_cast<Sci::Position>(wParam), lParam, STYLE_BRACELIGHT);
 		break;
 
 	case SCI_BRACEHIGHLIGHTINDICATOR:
@@ -7528,7 +7524,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_BRACEMATCH:
 		// wParam is position of char to find brace for,
 		// lParam is maximum amount of text to restyle to find it
-		return pdoc->BraceMatch(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));
+		return pdoc->BraceMatch(static_cast<Sci::Position>(wParam), lParam);
 
 	case SCI_GETVIEWEOL:
 		return vs.viewEOL;
@@ -7593,7 +7589,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_SETDOCPOINTER:
 		CancelModes();
-		SetDocPointer(reinterpret_cast<Document *>(lParam));
+		SetDocPointer(static_cast<Document *>(PtrFromSPtr(lParam)));
 		return 0;
 
 	case SCI_CREATEDOCUMENT: {
@@ -7605,11 +7601,11 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		}
 
 	case SCI_ADDREFDOCUMENT:
-		(reinterpret_cast<Document *>(lParam))->AddRef();
+		(static_cast<Document *>(PtrFromSPtr(lParam)))->AddRef();
 		break;
 
 	case SCI_RELEASEDOCUMENT:
-		(reinterpret_cast<Document *>(lParam))->Release();
+		(static_cast<Document *>(PtrFromSPtr(lParam)))->Release();
 		break;
 
 	case SCI_GETDOCUMENTOPTIONS:
@@ -7755,12 +7751,12 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return vs.controlCharSymbol;
 
 	case SCI_SETREPRESENTATION:
-		reprs.SetRepresentation(reinterpret_cast<const char *>(wParam), CharPtrFromSPtr(lParam));
+		reprs.SetRepresentation(ConstCharPtrFromUPtr(wParam), ConstCharPtrFromSPtr(lParam));
 		break;
 
 	case SCI_GETREPRESENTATION: {
 			const Representation *repr = reprs.RepresentationFromCharacter(
-				reinterpret_cast<const char *>(wParam), UTF8MaxBytes);
+				ConstCharPtrFromUPtr(wParam), UTF8MaxBytes);
 			if (repr) {
 				return StringResult(lParam, repr->stringRep.c_str());
 			}
@@ -7768,7 +7764,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		}
 
 	case SCI_CLEARREPRESENTATION:
-		reprs.ClearRepresentation(reinterpret_cast<const char *>(wParam));
+		reprs.ClearRepresentation(ConstCharPtrFromUPtr(wParam));
 		break;
 
 	case SCI_STARTRECORD:
@@ -7837,7 +7833,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETRANGEPOINTER:
 		return reinterpret_cast<sptr_t>(pdoc->RangePointer(
-			static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam)));
+			static_cast<Sci::Position>(wParam), lParam));
 
 	case SCI_GETGAPPOSITION:
 		return pdoc->GapPosition();
@@ -7892,7 +7888,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		}
 
 	case SCI_MARGINSETSTYLES:
-		pdoc->MarginSetStyles(static_cast<Sci::Line>(wParam), reinterpret_cast<const unsigned char *>(lParam));
+		pdoc->MarginSetStyles(static_cast<Sci::Line>(wParam), ConstUCharPtrFromSPtr(lParam));
 		break;
 
 	case SCI_MARGINGETSTYLES: {
@@ -7923,7 +7919,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_ANNOTATIONSETSTYLES:
-		pdoc->AnnotationSetStyles(static_cast<Sci::Line>(wParam), reinterpret_cast<const unsigned char *>(lParam));
+		pdoc->AnnotationSetStyles(static_cast<Sci::Line>(wParam), ConstUCharPtrFromSPtr(lParam));
 		break;
 
 	case SCI_ANNOTATIONGETSTYLES: {
@@ -8023,12 +8019,12 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_SETSELECTION:
-		sel.SetSelection(SelectionRange(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam)));
+		sel.SetSelection(SelectionRange(static_cast<Sci::Position>(wParam), lParam));
 		Redraw();
 		break;
 
 	case SCI_ADDSELECTION:
-		sel.AddSelection(SelectionRange(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam)));
+		sel.AddSelection(SelectionRange(static_cast<Sci::Position>(wParam), lParam));
 		ContainerNeedsUpdate(SC_UPDATE_SELECTION);
 		Redraw();
 		break;
@@ -8175,7 +8171,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_CHANGELEXERSTATE:
-		pdoc->ChangeLexerState(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));
+		pdoc->ChangeLexerState(static_cast<Sci::Position>(wParam), lParam);
 		break;
 
 	case SCI_SETIDENTIFIER:
@@ -8193,7 +8189,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return technology;
 
 	case SCI_COUNTCHARACTERS:
-		return pdoc->CountCharacters(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));
+		return pdoc->CountCharacters(static_cast<Sci::Position>(wParam), lParam);
 
 	default:
 		return DefWndProc(iMessage, wParam, lParam);
