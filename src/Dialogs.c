@@ -2731,18 +2731,21 @@ void DialogFileBrowse(HWND hwnd)
 //  DialogUpdateCheck()
 //
 //
+extern WCHAR g_tchUpdateCheckerExe[];
+
 void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
 {
-  WCHAR tchExeFile[MAX_PATH+2];
-  WCHAR tchTemp[MAX_PATH+2];
+  WCHAR tchExe[MAX_PATH+2];
 
-  if (!IniGetString(L"Settings2", L"UpdateChecker.exe", L"", tchTemp, COUNTOF(tchTemp))) 
-  {
-    if (!SearchPath(NULL, L"wyUpdate.exe", NULL, COUNTOF(tchExeFile), tchExeFile, NULL)) {
-      GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
-      PathRemoveFileSpec(tchExeFile);
-      PathCchAppend(tchExeFile, COUNTOF(tchExeFile), L"wyUpdate.exe");
-    }
+  StringCchCopyW(tchExe, COUNTOF(tchExe), g_tchUpdateCheckerExe);
+  if (!StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
+
+  WCHAR tchExePath[MAX_PATH + 2];
+  if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
+    // try Notepad3's dir path
+    GetModuleFileName(NULL, tchExePath, COUNTOF(tchExePath));
+    PathRemoveFileSpec(tchExePath);
+    PathCchAppend(tchExePath, COUNTOF(tchExePath), tchExe);
   }
 
   SHELLEXECUTEINFO sei;
@@ -2751,7 +2754,7 @@ void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
   sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
   sei.hwnd = hwnd;
   sei.lpVerb = NULL;
-  sei.lpFile = tchExeFile;
+  sei.lpFile = tchExePath;
   sei.lpParameters = NULL; // tchParam;
   sei.lpDirectory = g_wchWorkingDirectory;
   sei.nShow = SW_SHOWNORMAL;

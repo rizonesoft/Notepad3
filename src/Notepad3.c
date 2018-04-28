@@ -132,6 +132,7 @@ WCHAR         g_tchFileDlgFilters[XXXL_BUFFER] = { L'\0' };
 WCHAR         g_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 WCHAR         g_tchOpenWithDir[MAX_PATH] = { L'\0' };
 WCHAR         g_tchFavoritesDir[MAX_PATH] = { L'\0' };
+WCHAR         g_tchUpdateCheckerExe[MAX_PATH] = { L'\0' };
 
 static WCHAR  g_tchDefaultExtension[64] = { L'\0' };
 static WCHAR  g_tchDefaultDir[MAX_PATH] = { L'\0' };
@@ -2768,6 +2769,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
     bIsHLink = (Style_GetHotspotStyleID() == (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, SciCall_GetCurrentPos(), 0));
   }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
+
+  i = StringCchLenW(g_tchUpdateCheckerExe, COUNTOF(g_tchUpdateCheckerExe));
+  EnableCmd(hmenu, IDM_HELP_UPDATEINSTALLER, i);
 
   UNUSED(lParam);
 }
@@ -6437,12 +6441,10 @@ void LoadSettings()
   bStickyWinPos = IniSectionGetInt(pIniSection,L"StickyWindowPosition",0);
   if (bStickyWinPos) bStickyWinPos = 1;
 
-  IniSectionGetString(pIniSection,L"DefaultExtension",L"txt",
-    g_tchDefaultExtension,COUNTOF(g_tchDefaultExtension));
+  IniSectionGetString(pIniSection,L"DefaultExtension",L"txt", g_tchDefaultExtension,COUNTOF(g_tchDefaultExtension));
   StrTrim(g_tchDefaultExtension,L" \t.\"");
 
-  IniSectionGetString(pIniSection,L"DefaultDirectory",L"",
-    g_tchDefaultDir,COUNTOF(g_tchDefaultDir));
+  IniSectionGetString(pIniSection,L"DefaultDirectory",L"", g_tchDefaultDir,COUNTOF(g_tchDefaultDir));
 
   ZeroMemory(g_tchFileDlgFilters,sizeof(WCHAR)*COUNTOF(g_tchFileDlgFilters));
   IniSectionGetString(pIniSection,L"FileDlgFilters",L"",
@@ -6474,6 +6476,8 @@ void LoadSettings()
 
   iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
   iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
+
+  IniSectionGetString(pIniSection, L"UpdateChecker.exe", L"", g_tchUpdateCheckerExe, COUNTOF(g_tchUpdateCheckerExe));
 
   // --------------------------------------------------------------------------
   LoadIniSection(L"Statusbar Settings", pIniSection, cchIniSection);
