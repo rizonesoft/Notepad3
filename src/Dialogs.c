@@ -330,6 +330,7 @@ static DWORD CALLBACK _LoadRtfCallback(
 static char* pAboutInfoResource = ABOUT_INFO_RTF;
 static char* pAboutInfo;
 
+
 //=============================================================================
 //
 //  AboutDlgProc()
@@ -343,25 +344,31 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   {
   case WM_INITDIALOG:
   {
-    SetDlgItemText(hwnd, IDC_VERSION, VERSION_FILEVERSION_LONG);
+    {
+      SetDlgItemText(hwnd, IDC_VERSION, VERSION_FILEVERSION_LONG);
+
+      if (hFontTitle) { DeleteObject(hFontTitle); }
+
+      if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
+        hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+      }
+
+      LOGFONT lf;
+      GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+      POINT res = GetSystemDpi();
+      lf.lfWeight = FW_BOLD;
+      lf.lfWidth = (8 * res.x) / 96L;
+      lf.lfHeight = (22 * res.y) / 96L;
+      // lf.lfQuality = ANTIALIASED_QUALITY;
+      hFontTitle = CreateFontIndirect(&lf);
+
+      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
+    }
+
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
     SetDlgItemText(hwnd, IDC_COPYRIGHT, VERSION_LEGALCOPYRIGHT);
     SetDlgItemText(hwnd, IDC_AUTHORNAME, VERSION_AUTHORNAME);
     SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
-
-    if (hFontTitle)
-      DeleteObject(hFontTitle);
-    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)))
-      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-    LOGFONT lf;
-    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-    lf.lfWeight = FW_BOLD;
-    lf.lfWidth = 8;
-    lf.lfHeight = 22;
-    // lf.lfQuality = ANTIALIASED_QUALITY;
-    hFontTitle = CreateFontIndirect(&lf);
-
-    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
 
     if (GetDlgItem(hwnd, IDC_WEBPAGE) == NULL) {
       SetDlgItemText(hwnd, IDC_WEBPAGE2, VERSION_WEBPAGEDISPLAY);
