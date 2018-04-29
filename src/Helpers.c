@@ -2861,6 +2861,7 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
   for (int i = 0; i < len; ++i) {
     if (wchTmpBuff[i] == L',') { wchTmpBuff[i] = L'\0'; }
   }
+  wchTmpBuff[len + 1] = L'\0'; // double zero at the end
   // fill default
   for (int i = 0; i < iCount; ++i) { StringCchCopyW(sMatrix[i], (size_t)iLen, sDefault); }
   // insert values
@@ -2881,7 +2882,7 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
 //  ReadVectorFromString()
 //
 //
-int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault)
+int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault)
 {
   static WCHAR wchTmpBuff[SMALL_BUFFER];
 
@@ -2898,6 +2899,8 @@ int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, in
   for (int i = 0; i < len; ++i) {
     if (wchTmpBuff[i] == L' ') { wchTmpBuff[i] = L'\0'; }
   }
+  wchTmpBuff[len + 1] = L'\0'; // double zero at the end
+
   // fill default
   for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
   // insert values

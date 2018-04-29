@@ -388,7 +388,7 @@ __forceinline int GetHexDigit(char ch) {
 void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
 
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault);
-int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault);
+int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 

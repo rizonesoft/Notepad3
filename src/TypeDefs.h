@@ -91,6 +91,7 @@ typedef enum {
 
 #define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } 
 #define SBS_INIT_MINUS { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 } 
+#define SBS_INIT_ORDER { 0, 1, 2, 3, 4, 5, 6, 7. 8. 9, 10, 11 }
 
 #define STATUSBAR_EXTION_PREFIXES L"Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,"
 #define STATUSBAR_DEFAULT_IDS  L"0 1 2 4 5 6 7 8 9 10 11"

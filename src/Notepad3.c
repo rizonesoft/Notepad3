@@ -143,12 +143,12 @@ static WCHAR  g_tchStatusbarPrefixes[MIDSZ_BUFFER] = { L'\0' };
 static prefix_t g_mxStatusBarPrefix[STATUS_SECTOR_COUNT];
 
 static WCHAR  g_tchStatusbarSections[SMALL_BUFFER] = { L'\0' };
-static int    g_iStatusbarSections[STATUS_SECTOR_COUNT];
-static bool   g_iStatusbarVisible[STATUS_SECTOR_COUNT];
-static int    g_vSBSOrder[STATUS_SECTOR_COUNT];
+static int    g_iStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
+static bool   g_iStatusbarVisible[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+static int    g_vSBSOrder[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
 static WCHAR  g_tchStatusbarWidthSpec[SMALL_BUFFER] = { L'\0' };
-static int    g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
+static int    g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 
 
 static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
@@ -7776,7 +7776,7 @@ void UpdateStatusbar()
 
   _CalculateStatusbarSections(g_vStatusbarSectionWidth, tchStatusBar);
 
-  int aStatusbarSections[STATUS_SECTOR_COUNT];
+  int aStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
   int cnt = 0;
   int totalWidth = 0;
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
