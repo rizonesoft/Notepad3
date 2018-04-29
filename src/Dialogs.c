@@ -2690,7 +2690,7 @@ void DialogFileBrowse(HWND hwnd)
   {
     ExtractFirstArgument(tchTemp, tchExeFile, tchParam, MAX_PATH+2);
     if (PathIsRelative(tchExeFile)) {
-      if (!SearchPath(NULL, tchExeFile, NULL, COUNTOF(tchTemp), tchTemp, NULL)) {
+      if (!SearchPath(NULL, tchExeFile, L".exe", COUNTOF(tchTemp), tchTemp, NULL)) {
         GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
         PathRemoveFileSpec(tchTemp);
         PathCchAppend(tchTemp, COUNTOF(tchTemp), tchExeFile);
@@ -2699,7 +2699,7 @@ void DialogFileBrowse(HWND hwnd)
     }
   }
   else {
-    if (!SearchPath(NULL, L"minipath.exe", NULL, COUNTOF(tchExeFile), tchExeFile, NULL)) {
+    if (!SearchPath(NULL, L"minipath.exe", L".exe", COUNTOF(tchExeFile), tchExeFile, NULL)) {
       GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
       PathRemoveFileSpec(tchExeFile);
       PathCchAppend(tchExeFile, COUNTOF(tchExeFile), L"minipath.exe");

@@ -1700,7 +1700,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   hbmp = NULL;
   if (StringCchLenW(g_tchToolbarBitmap,COUNTOF(g_tchToolbarBitmap)))
   {
-    if (!SearchPath(NULL,g_tchToolbarBitmap,NULL,COUNTOF(szTmp),szTmp,NULL))
+    if (!SearchPath(NULL,g_tchToolbarBitmap,L".bmp",COUNTOF(szTmp),szTmp,NULL))
       StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmap);
     hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE);
   }
@@ -1724,7 +1724,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   hbmp = NULL;
   if (StringCchLenW(g_tchToolbarBitmapHot,COUNTOF(g_tchToolbarBitmapHot)))
   {
-    if (!SearchPath(NULL,g_tchToolbarBitmapHot,NULL,COUNTOF(szTmp),szTmp,NULL))
+    if (!SearchPath(NULL,g_tchToolbarBitmapHot,L".bmp",COUNTOF(szTmp),szTmp,NULL))
       StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmapHot);
 
     hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
@@ -1742,7 +1742,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   hbmp = NULL;
   if (StringCchLenW(g_tchToolbarBitmapDisabled,COUNTOF(g_tchToolbarBitmapDisabled)))
   {
-    if (!SearchPath(NULL,g_tchToolbarBitmapDisabled,NULL,COUNTOF(szTmp),szTmp,NULL))
+    if (!SearchPath(NULL,g_tchToolbarBitmapDisabled,L".bmp",COUNTOF(szTmp),szTmp,NULL))
       StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmapDisabled);
 
     hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
@@ -3065,6 +3065,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         ObserveNotifyChangeEvent();
         EndWaitCursor();
+        UpdateStatusbar();
       }
       break;
 
@@ -3109,6 +3110,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         EditFixPositions(g_hwndEdit);
         ObserveNotifyChangeEvent();
         EndWaitCursor();
+        UpdateStatusbar();
       }
       break;
 
@@ -3382,6 +3384,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SendMessage(g_hwndEdit, SCI_DELETEBACK, 0, 0);
         EndUndoAction(token);
       }
+      break;
+
+    case CMD_VK_INSERT:
+      SendMessage(g_hwndEdit, SCI_EDITTOGGLEOVERTYPE, 0, 0);
+      UpdateStatusbar();
       break;
 
     case IDM_EDIT_ENCLOSESELECTION:
@@ -4277,6 +4284,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_GOTOLINE:
       EditLinenumDlg(g_hwndEdit);
+      UpdateStatusbar();
       break;
 
 
@@ -4304,6 +4312,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SetForegroundWindow(g_hwndDlgCustomizeSchemes);
       }
       PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
+      UpdateToolbar();
+      UpdateStatusbar();
+      UpdateLineNumberWidth();
       break;
 
 
@@ -6029,7 +6040,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case NM_DBLCLK:
           {
-            int i;
             LPNMMOUSE pnmm = (LPNMMOUSE)lParam;
 
             switch (g_vSBSOrder[pnmm->dwItemSpec])
@@ -6044,20 +6054,22 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 return true;
 
               case STATUS_EOLMODE:
-                if (g_iEOLMode == SC_EOL_CRLF)
-                  i = IDM_LINEENDINGS_CRLF;
-                else if (g_iEOLMode == SC_EOL_LF)
-                  i = IDM_LINEENDINGS_LF;
-                else
-                  i = IDM_LINEENDINGS_CR;
-                i++;
-                if (i > IDM_LINEENDINGS_CR)
-                  i = IDM_LINEENDINGS_CRLF;
-                PostMessage(hwnd,WM_COMMAND,MAKELONG(i,1),0);
+                {
+                  int i;
+                  if (g_iEOLMode == SC_EOL_CRLF)
+                    i = IDM_LINEENDINGS_CRLF;
+                  else if (g_iEOLMode == SC_EOL_LF)
+                    i = IDM_LINEENDINGS_LF;
+                  else
+                    i = IDM_LINEENDINGS_CR;
+                  i++;
+                  if (i > IDM_LINEENDINGS_CR) { i = IDM_LINEENDINGS_CRLF; }
+                  PostMessage(hwnd, WM_COMMAND, MAKELONG(i, 1), 0);
+                }
                 return true;
 
               case STATUS_OVRMODE:
-                SendMessage(g_hwndEdit,SCI_EDITTOGGLEOVERTYPE,0,0);
+                PostMessage(hwnd, WM_COMMAND, MAKELONG(CMD_VK_INSERT, 1), 0);
                 return true;
 
               case STATUS_2ND_DEF:
@@ -7219,7 +7231,7 @@ bool CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       }
     }
     // general
-    if (SearchPath(NULL,tchFileExpanded,NULL,COUNTOF(tchBuild),tchBuild,NULL)) {
+    if (SearchPath(NULL,tchFileExpanded,L".ini",COUNTOF(tchBuild),tchBuild,NULL)) {
       StringCchCopy(lpszFile,MAX_PATH,tchBuild);
       return true;
     }
@@ -7468,8 +7480,15 @@ void UpdateToolbar()
 #define txtWidth 80
 typedef WCHAR sectionTxt_t[txtWidth];
 
-static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchStatusBar[])
+static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchStatusBar[], bool* bIsUpdNeeded)
 {
+  static int s_iWinFormerWidth = -1;
+  if (s_iWinFormerWidth != g_WinCurrentWidth) {
+    *bIsUpdNeeded = true;
+    s_iWinFormerWidth = g_WinCurrentWidth;
+  }
+  if (!(*bIsUpdNeeded)) { return; }
+
   // count fixed and dynamic optimized pixels
   int pxCount = 0;
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
@@ -7527,6 +7546,8 @@ void UpdateStatusbar()
 
   if (!bShowStatusbar) { return; }
 
+  bool bIsUpdateNeeded = false;
+
   static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
   static WCHAR tchFRStatus[128] = { L'\0' };
   static WCHAR tchTmp[32] = { L'\0' };
@@ -7557,6 +7578,7 @@ void UpdateStatusbar()
     FormatString(tchStatusBar[STATUS_DOCLINE], txtWidth, IDS_STATUS_DOCLINE, g_mxStatusBarPrefix[STATUS_DOCLINE], tchLn, tchLines);
     s_iLnFromPos = iLnFromPos;
     s_iLnCnt = iLnCnt;
+    bIsUpdateNeeded = true;
   }
 
   // ------------------------------------------------------
@@ -7586,6 +7608,7 @@ void UpdateStatusbar()
     s_iCol = iCol;
     s_bmarkLongLines = bMarkLongLines;
     s_iLongLinesLimit = g_iLongLinesLimit;
+    bIsUpdateNeeded = true;
   }
 
   // ------------------------------------------------------
@@ -7594,7 +7617,6 @@ void UpdateStatusbar()
   // number of selected chars in statusbar
   static WCHAR tchSel[32] = { L'\0' };
   static WCHAR tchSelB[64] = { L'\0' };
-
 
   static bool s_bIsSelCountable = false;
   static DocPos s_iSelStart = -1;
@@ -7624,6 +7646,7 @@ void UpdateStatusbar()
     s_bIsSelCountable = bIsSelCountable;
     s_iSelStart = iSelStart;
     s_iSelEnd = iSelEnd;
+    bIsUpdateNeeded = true;
   }
 
   // ------------------------------------------------------
@@ -7657,6 +7680,7 @@ void UpdateStatusbar()
 
     s_bIsSelectionEmpty = bIsSelectionEmpty;
     s_iLinesSelected = iLinesSelected;
+    bIsUpdateNeeded = true;
   }
 
   // ------------------------------------------------------
@@ -7690,6 +7714,7 @@ void UpdateStatusbar()
 
     s_bMOVisible = g_bMarkOccurrencesMatchVisible;
     s_iMarkOccurrencesCount = g_iMarkOccurrencesCount;
+    bIsUpdateNeeded = true;
   }
 
   // ------------------------------------------------------
@@ -7702,6 +7727,7 @@ void UpdateStatusbar()
     StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
     FormatString(tchStatusBar[STATUS_DOCSIZE], txtWidth, IDS_STATUS_DOCSIZE, g_mxStatusBarPrefix[STATUS_DOCSIZE], tchBytes);
     s_iTextLength = iTextLength;
+    bIsUpdateNeeded = true;
   }
 
   static int s_iEncoding = -1;
@@ -7710,6 +7736,7 @@ void UpdateStatusbar()
     Encoding_SetLabel(iEncoding);
     StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s", g_mxStatusBarPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding));
     s_iEncoding = iEncoding;
+    bIsUpdateNeeded = true;
   }
 
   // ------------------------------------------------------
@@ -7728,6 +7755,7 @@ void UpdateStatusbar()
       StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR+LF", g_mxStatusBarPrefix[STATUS_EOLMODE]);
     }
     s_iEOLMode = g_iEOLMode;
+    bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------
 
@@ -7742,6 +7770,7 @@ void UpdateStatusbar()
       StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS", g_mxStatusBarPrefix[STATUS_OVRMODE]);
     }
     s_bIsOVR = bIsOVR;
+    bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------
 
@@ -7756,6 +7785,7 @@ void UpdateStatusbar()
       StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
     }
     s_bUse2ndDefault = bUse2ndDefault;
+    bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------
 
@@ -7767,6 +7797,7 @@ void UpdateStatusbar()
     Style_GetCurrentLexerName(tchLexerName, MINI_BUFFER);
     StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s", g_mxStatusBarPrefix[STATUS_LEXER], tchLexerName);
     s_iCurLexer = iCurLexer;
+    bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------
 
@@ -7774,34 +7805,35 @@ void UpdateStatusbar()
 
   int g_vStatusbarSectionWidth[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
-  _CalculateStatusbarSections(g_vStatusbarSectionWidth, tchStatusBar);
+  _CalculateStatusbarSections(g_vStatusbarSectionWidth, tchStatusBar, &bIsUpdateNeeded);
 
-  int aStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-  int cnt = 0;
-  int totalWidth = 0;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    int const id = g_vSBSOrder[i];
-    if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0))
-    {
-      totalWidth += g_vStatusbarSectionWidth[id];
-      aStatusbarSections[cnt++] = totalWidth;
+  if (bIsUpdateNeeded) {
+    int aStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+    int cnt = 0;
+    int totalWidth = 0;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+      int const id = g_vSBSOrder[i];
+      if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0))
+      {
+        totalWidth += g_vStatusbarSectionWidth[id];
+        aStatusbarSections[cnt++] = totalWidth;
+      }
     }
-  }
 
-  if (cnt > 0) { aStatusbarSections[cnt - 1] = -1; }
-  else { aStatusbarSections[0] = -1; bShowStatusbar = false; }
+    if (cnt > 0) { aStatusbarSections[cnt - 1] = -1; }
+    else { aStatusbarSections[0] = -1; bShowStatusbar = false; }
 
-  SendMessage(g_hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
+    SendMessage(g_hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
 
-  cnt = 0;
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    int const id = g_vSBSOrder[i];
-    if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0)) {
-      StatusSetText(g_hwndStatus, cnt++, tchStatusBar[id]);
+    cnt = 0;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+      int const id = g_vSBSOrder[i];
+      if ((id >= 0) && (g_vStatusbarSectionWidth[id] >= 0)) {
+        StatusSetText(g_hwndStatus, cnt++, tchStatusBar[id]);
+      }
     }
+    //InvalidateRect(g_hwndStatus,NULL,true);
   }
-  //InvalidateRect(g_hwndStatus,NULL,true);
-
   // --------------------------------------------------------------------------
 
   // update Find/Replace dialog (if any)
@@ -8928,16 +8960,18 @@ bool ActivatePrevInst()
         if (PathIsRelative(lpFileArg)) {
           StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
           PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
-          if (PathFileExists(tchTmp))
-            StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
+          if (PathFileExists(tchTmp)) {
+            StringCchCopy(lpFileArg, FILE_ARG_BUF, tchTmp);
+          }
           else {
-            if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-              StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
+            if (SearchPath(NULL, lpFileArg, NULL, COUNTOF(tchTmp), tchTmp, NULL)) {
+              StringCchCopy(lpFileArg, FILE_ARG_BUF, tchTmp);
+            }
           }
         }
-
-        else if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-          StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
+        else if (SearchPath(NULL, lpFileArg, NULL, COUNTOF(tchTmp), tchTmp, NULL)) {
+          StringCchCopy(lpFileArg, FILE_ARG_BUF, tchTmp);
+        }
 
         DWORD cb = sizeof(np3params);
         cb += (lstrlen(lpFileArg) + 1) * sizeof(WCHAR);
@@ -8946,9 +8980,9 @@ bool ActivatePrevInst()
           cb += (lstrlen(lpSchemeArg) + 1) * sizeof(WCHAR);
 
         int cchTitleExcerpt = (int)StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt));
-        if (cchTitleExcerpt)
+        if (cchTitleExcerpt) {
           cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
-
+        }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = true;
         StringCchCopy(&params->wchData,lstrlen(lpFileArg)+1,lpFileArg);
@@ -8959,8 +8993,9 @@ bool ActivatePrevInst()
           StringCchCopy(StrEnd(&params->wchData)+1,lstrlen(lpSchemeArg)+1,lpSchemeArg);
           params->iInitialLexer = -1;
         }
-        else
+        else {
           params->iInitialLexer = iInitialLexer;
+        }
         params->flagJumpTo = flagJumpTo;
         params->iInitialLine = iInitialLine;
         params->iInitialColumn = iInitialColumn;
@@ -8973,9 +9008,9 @@ bool ActivatePrevInst()
           StringCchCopy(StrEnd(&params->wchData)+1,cchTitleExcerpt+1,szTitleExcerpt);
           params->flagTitleExcerpt = 1;
         }
-        else
+        else {
           params->flagTitleExcerpt = 0;
-
+        }
         cds.dwData = DATA_NOTEPAD3_PARAMS;
         cds.cbData = (DWORD)SizeOfMem(params);
         cds.lpData = params;
