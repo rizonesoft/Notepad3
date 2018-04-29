@@ -7772,7 +7772,7 @@ extern int iIndentWidthG;
 extern bool g_bWordWrap;
 extern bool bWordWrapG;
 extern int iWordWrapMode;
-extern int iLongLinesLimit;
+extern int g_iLongLinesLimit;
 extern int iLongLinesLimitG;
 extern int iWrapCol;
 
@@ -7815,10 +7815,10 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
     SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
 
   if (lpfv->mask & FV_LONGLINESLIMIT)
-    iLongLinesLimit = lpfv->iLongLinesLimit;
+    g_iLongLinesLimit = lpfv->iLongLinesLimit;
   else
-    iLongLinesLimit = iLongLinesLimitG;
-  SendMessage(hwnd,SCI_SETEDGECOLUMN,iLongLinesLimit,0);
+    g_iLongLinesLimit = iLongLinesLimitG;
+  SendMessage(hwnd,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
 
   iWrapCol = 0;
 

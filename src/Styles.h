@@ -109,6 +109,7 @@ bool   Style_SelectFont(HWND,LPWSTR,int,LPCWSTR,LPCWSTR,bool,bool,bool,bool);
 bool   Style_SelectColor(HWND,bool,LPWSTR,int,bool);
 void   Style_SetStyles(HWND,int,LPCWSTR);
 void   Style_SetFontQuality(HWND,LPCWSTR);
+int    Style_GetCurrentLexerID();
 void   Style_GetCurrentLexerName(LPWSTR,int);
 int    Style_GetLexerIconId(PEDITLEXER);
 bool   Style_HasLexerForExt(LPCWSTR);

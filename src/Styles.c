@@ -5623,6 +5623,16 @@ void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
 
 //=============================================================================
 //
+//  Style_GetCurrentLexerID()
+//
+int Style_GetCurrentLexerID()
+{
+  return g_pLexCurrent->iLexer;
+}
+
+
+//=============================================================================
+//
 //  Style_GetCurrentLexerName()
 //
 void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
