@@ -186,8 +186,8 @@ EditView::EditView() {
 	llc.SetLevel(LineLayoutCache::llcCaret);
 	posCache.SetSize(0x400);
 	tabArrowHeight = 4;
-	customDrawTabArrow = NULL;
-	customDrawWrapMarker = NULL;
+	customDrawTabArrow = nullptr;
+	customDrawWrapMarker = nullptr;
 }
 
 EditView::~EditView() {
@@ -638,23 +638,6 @@ Range EditView::RangeDisplayLine(Surface *surface, const EditModel &model, Sci::
 	return rangeSubLine;
 }
 
-#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
-
-XYPOSITION EditView::EndSpaceWidth(const EditModel &model, const ViewStyle &vs, LineLayout *ll, Sci::Line line) {
-	int styleEnd = ll->EndLineStyle();
-	const bool bracesIgnoreStyle = ((vs.braceHighlightIndicatorSet && (model.bracesMatchStyle == STYLE_BRACELIGHT)) ||
-		(vs.braceBadLightIndicatorSet && (model.bracesMatchStyle == STYLE_BRACEBAD)));
-	if (!bracesIgnoreStyle) {
-		const Sci::Position lineLastCharacter = static_cast<Sci::Position>(model.pdoc->LineEnd(line)) - 1;
-		if ((lineLastCharacter == model.braces[0]) || (lineLastCharacter == model.braces[1])) {
-			styleEnd = model.bracesMatchStyle;
-		}
-	}
-	return vs.styles[styleEnd].spaceWidth;
-}
-#endif
-
-
 SelectionPosition EditView::SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid, bool charPosition, bool virtualSpace, const ViewStyle &vs) {
 	pt.x = pt.x - vs.textStart;
 	Sci::Line visibleLine = static_cast<int>(floor(pt.y / vs.lineHeight));
@@ -683,11 +666,7 @@ SelectionPosition EditView::SPositionFromLocation(Surface *surface, const EditMo
 				return SelectionPosition(model.pdoc->MovePositionOutsideChar(positionInLine + posLineStart, 1));
 			}
 			if (virtualSpace) {
-#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
-                const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
-#else
 				const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
-#endif
 				const int spaceOffset = static_cast<int>(
 					(pt.x + subLineStart - ll->positions[rangeSubLine.end] + spaceWidth / 2) / spaceWidth);
 				return SelectionPosition(rangeSubLine.end + posLineStart, spaceOffset);
@@ -721,11 +700,7 @@ SelectionPosition EditView::SPositionFromLineX(Surface *surface, const EditModel
 		if (positionInLine < rangeSubLine.end) {
 			return SelectionPosition(model.pdoc->MovePositionOutsideChar(positionInLine + posLineStart, 1));
 		}
-#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
-    const XYPOSITION spaceWidth = EndSpaceWidth(model,vs,ll,lineDoc);
-#else
 		const XYPOSITION spaceWidth = vs.styles[ll->EndLineStyle()].spaceWidth;
-#endif
 		const int spaceOffset = static_cast<int>(
 			(x + subLineStart - ll->positions[rangeSubLine.end] + spaceWidth / 2) / spaceWidth);
 		return SelectionPosition(rangeSubLine.end + posLineStart, spaceOffset);
@@ -1032,7 +1007,7 @@ void EditView::DrawEOL(Surface *surface, const EditModel &model, const ViewStyle
 			rcPlace.right = rcLine.right;
 			rcPlace.left = rcPlace.right - vsDraw.aveCharWidth;
 		}
-		if (customDrawWrapMarker == NULL) {
+		if (!customDrawWrapMarker) {
 			DrawWrapMarker(surface, rcPlace, true, vsDraw.WrapColour());
 		} else {
 			customDrawWrapMarker(surface, rcPlace, true, vsDraw.WrapColour());
@@ -1452,7 +1427,7 @@ static void DrawWrapIndentAndMarker(Surface *surface, const ViewStyle &vsDraw, c
 		else
 			rcPlace.right = rcPlace.left + vsDraw.aveCharWidth;
 
-		if (customDrawWrapMarker == NULL) {
+		if (!customDrawWrapMarker) {
 			DrawWrapMarker(surface, rcPlace, false, vsDraw.WrapColour());
 		} else {
 			customDrawWrapMarker(surface, rcPlace, false, vsDraw.WrapColour());
@@ -1738,10 +1713,11 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 							surface->PenColour(textFore);
 							const PRectangle rcTab(rcSegment.left + 1, rcSegment.top + tabArrowHeight,
 								rcSegment.right - 1, rcSegment.bottom - vsDraw.maxDescent);
-							if (customDrawTabArrow == NULL)
-								DrawTabArrow(surface, rcTab, static_cast<int>(rcSegment.top + vsDraw.lineHeight / 2), vsDraw);
+							const int segmentTop = static_cast<int>(rcSegment.top + vsDraw.lineHeight / 2);
+							if (!customDrawTabArrow)
+								DrawTabArrow(surface, rcTab, segmentTop, vsDraw);
 							else
-								customDrawTabArrow(surface, rcTab, static_cast<int>(rcSegment.top + vsDraw.lineHeight / 2));
+								customDrawTabArrow(surface, rcTab, segmentTop);
 						}
 					}
 				} else {

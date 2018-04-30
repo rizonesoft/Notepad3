@@ -6717,12 +6717,8 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     IgnoreNotifyChangeEvent();
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCUR_LINE);
     if (!g_bCodeFoldingAvailable) { SciCall_SetProperty("fold", "0"); }
-    //DocLn const iLnCount = SciCall_GetLineCount();
-    //for (DocLn iLine = 0; iLine < iLnCount; ++iLine) { 
-    //  if ((SciCall_GetFoldLevel(iLine) & SC_FOLDLEVELNUMBERMASK) != SC_FOLDLEVELBASE) {
-    //    SciCall_SetFoldLevel(iLine, SC_FOLDLEVELBASE);
-    //  }
-    //}
+    DocLn const iLnCount = SciCall_GetLineCount();
+    for (DocLn iLine = 0; iLine < iLnCount; ++iLine) { SciCall_SetFoldLevel(iLine, SC_FOLDLEVELBASE); }
     SciCall_SetFoldFlags(0);
     Style_SetFolding(hwnd, g_bCodeFoldingAvailable && g_bShowCodeFolding);
     EditApplyLexerStyle(hwnd, 0, -1);

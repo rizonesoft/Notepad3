@@ -10,8 +10,6 @@
 
 namespace Scintilla {
 
-#undef NP3_MATCH_BRACE_RECT_SEL_PATCH
-
 struct PrintParameters {
 	int magnification;
 	int colourMode;
@@ -94,7 +92,9 @@ public:
 	EditView();
 	// Deleted so EditView objects can not be copied.
 	EditView(const EditView &) = delete;
+	EditView(EditView &&) = delete;
 	void operator=(const EditView &) = delete;
+	void operator=(EditView &&) = delete;
 	virtual ~EditView();
 
 	bool SetTwoPhaseDraw(bool twoPhaseDraw);
@@ -119,9 +119,6 @@ public:
 	Point LocationFromPosition(Surface *surface, const EditModel &model, SelectionPosition pos, Sci::Line topLine,
 				   const ViewStyle &vs, PointEnd pe);
 	Range RangeDisplayLine(Surface *surface, const EditModel &model, Sci::Line lineVisible, const ViewStyle &vs);
-#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
-	XYPOSITION EndSpaceWidth(const EditModel &model, const ViewStyle &vs, LineLayout *ll, Sci::Line line);
-#endif
 	SelectionPosition SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid,
 		bool charPosition, bool virtualSpace, const ViewStyle &vs);
 	SelectionPosition SPositionFromLineX(Surface *surface, const EditModel &model, Sci::Line lineDoc, int x, const ViewStyle &vs);
@@ -164,8 +161,10 @@ class AutoLineLayout {
 	LineLayout *ll;
 public:
 	AutoLineLayout(LineLayoutCache &llc_, LineLayout *ll_) : llc(llc_), ll(ll_) {}
-	explicit AutoLineLayout(const AutoLineLayout &) = delete;
+	AutoLineLayout(const AutoLineLayout &) = delete;
+	AutoLineLayout(AutoLineLayout &&) = delete;
 	AutoLineLayout &operator=(const AutoLineLayout &) = delete;
+	AutoLineLayout &operator=(AutoLineLayout &&) = delete;
 	~AutoLineLayout() {
 		llc.Dispose(ll);
 		ll = 0;

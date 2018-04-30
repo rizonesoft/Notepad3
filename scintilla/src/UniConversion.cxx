@@ -105,9 +105,8 @@ constexpr unsigned char TrailByteValue(unsigned char c) {
 
 size_t UTF16FromUTF8(const char *s, size_t len, wchar_t *tbuf, size_t tlen) {
 	size_t ui = 0;
-	const unsigned char *us = reinterpret_cast<const unsigned char *>(s);
 	for (size_t i = 0; i < len;) {
-		unsigned char ch = us[i];
+		unsigned char ch = s[i];
 		const unsigned int byteCount = UTF8BytesOfLead[ch];
 		unsigned int value;
 
@@ -132,26 +131,26 @@ size_t UTF16FromUTF8(const char *s, size_t len, wchar_t *tbuf, size_t tlen) {
 			break;
 		case 2:
 			value = (ch & 0x1F) << 6;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch);
 			tbuf[ui] = static_cast<wchar_t>(value);
 			break;
 		case 3:
 			value = (ch & 0xF) << 12;
-			ch = us[i++];
+			ch = s[i++];
 			value += (TrailByteValue(ch) << 6);
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch);
 			tbuf[ui] = static_cast<wchar_t>(value);
 			break;
 		default:
 			// Outside the BMP so need two surrogates
 			value = (ch & 0x7) << 18;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch) << 12;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch) << 6;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch);
 			tbuf[ui] = static_cast<wchar_t>(((value - 0x10000) >> 10) + SURROGATE_LEAD_FIRST);
 			ui++;
@@ -165,9 +164,8 @@ size_t UTF16FromUTF8(const char *s, size_t len, wchar_t *tbuf, size_t tlen) {
 
 size_t UTF32FromUTF8(const char *s, size_t len, unsigned int *tbuf, size_t tlen) {
 	size_t ui = 0;
-	const unsigned char *us = reinterpret_cast<const unsigned char *>(s);
 	for (size_t i = 0; i < len;) {
-		unsigned char ch = us[i];
+		unsigned char ch = s[i];
 		const unsigned int byteCount = UTF8BytesOfLead[ch];
 		unsigned int value;
 
@@ -191,23 +189,23 @@ size_t UTF32FromUTF8(const char *s, size_t len, unsigned int *tbuf, size_t tlen)
 			break;
 		case 2:
 			value = (ch & 0x1F) << 6;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch);
 			break;
 		case 3:
 			value = (ch & 0xF) << 12;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch) << 6;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch);
 			break;
 		default:
 			value = (ch & 0x7) << 18;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch) << 12;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch) << 6;
-			ch = us[i++];
+			ch = s[i++];
 			value += TrailByteValue(ch);
 			break;
 		}
@@ -253,14 +251,14 @@ const unsigned char UTF8BytesOfLead[256] = {
 // the non-characters *FFFE, *FFFF and FDD0 .. FDEF return 3 or 4 as they can be
 // reasonably treated as code points in some circumstances. They will, however,
 // not have associated glyphs.
-int UTF8Classify(const unsigned char *us, int len) noexcept {
+int UTF8Classify(const unsigned char *us, size_t len) noexcept {
 	// For the rules: http://www.cl.cam.ac.uk/~mgk25/unicode.html#utf-8
 	if (us[0] < 0x80) {
 		// ASCII
 		return 1;
 	}
 
-	const int byteCount = UTF8BytesOfLead[us[0]];
+	const size_t byteCount = UTF8BytesOfLead[us[0]];
 	if (byteCount == 1 || byteCount > len) {
 		// Invalid lead byte
 		return UTF8MaskInvalid | 1;
@@ -332,19 +330,19 @@ int UTF8DrawBytes(const unsigned char *us, int len) noexcept {
 // Replace invalid bytes in UTF-8 with the replacement character
 std::string FixInvalidUTF8(const std::string &text) {
 	std::string result;
-	const unsigned char *us = reinterpret_cast<const unsigned char *>(text.c_str());
+	const char *s = text.c_str();
 	size_t remaining = text.size();
 	while (remaining > 0) {
-		const int utf8Status = UTF8Classify(us, static_cast<int>(remaining));
+		const int utf8Status = UTF8Classify(reinterpret_cast<const unsigned char *>(s), remaining);
 		if (utf8Status & UTF8MaskInvalid) {
 			// Replacement character 0xFFFD = UTF8:"efbfbd".
 			result.append("\xef\xbf\xbd");
-			us++;
+			s++;
 			remaining--;
 		} else {
-			const int len = utf8Status&UTF8MaskWidth;
-			result.append(reinterpret_cast<const char *>(us), len);
-			us += len;
+			const size_t len = utf8Status & UTF8MaskWidth;
+			result.append(s, len);
+			s += len;
 			remaining -= len;
 		}
 	}

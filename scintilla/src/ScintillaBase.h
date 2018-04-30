@@ -53,8 +53,10 @@ protected:
 
 	ScintillaBase();
 	// Deleted so ScintillaBase objects can not be copied.
-	explicit ScintillaBase(const ScintillaBase &) = delete;
+	ScintillaBase(const ScintillaBase &) = delete;
+	ScintillaBase(ScintillaBase &&) = delete;
 	ScintillaBase &operator=(const ScintillaBase &) = delete;
+	ScintillaBase &operator=(ScintillaBase &&) = delete;
 	~ScintillaBase() override;
 	void Initialise() override {}
 	void Finalise() override;

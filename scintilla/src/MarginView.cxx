@@ -100,7 +100,7 @@ void DrawWrapMarker(Surface *surface, PRectangle rcPlace,
 
 MarginView::MarginView() {
 	wrapMarkerPaddingRight = 3;
-	customDrawWrapMarker = NULL;
+	customDrawWrapMarker = nullptr;
 }
 
 void MarginView::DropGraphics(bool freeObjects) {
@@ -398,7 +398,7 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 						PRectangle rcWrapMarker = rcMarker;
 						rcWrapMarker.right -= wrapMarkerPaddingRight;
 						rcWrapMarker.left = rcWrapMarker.right - vs.styles[STYLE_LINENUMBER].aveCharWidth;
-						if (customDrawWrapMarker == NULL) {
+						if (!customDrawWrapMarker) {
 							DrawWrapMarker(surface, rcWrapMarker, false, vs.styles[STYLE_LINENUMBER].fore);
 						} else {
 							customDrawWrapMarker(surface, rcWrapMarker, false, vs.styles[STYLE_LINENUMBER].fore);

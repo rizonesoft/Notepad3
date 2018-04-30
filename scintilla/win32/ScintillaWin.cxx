@@ -131,7 +131,6 @@
 #define SCS_SETRECONVERTSTRING 0x00010000
 #endif
 
-typedef BOOL (WINAPI *TrackMouseEventSig)(LPTRACKMOUSEEVENT);
 typedef UINT_PTR (WINAPI *SetCoalescableTimerSig)(HWND hwnd, UINT_PTR nIDEvent,
 	UINT uElapse, TIMERPROC lpTimerFunc, ULONG uToleranceDelay);
 
@@ -217,6 +216,11 @@ public:
 	IMContext(HWND hwnd_) :
 		hwnd(hwnd_), hIMC(::ImmGetContext(hwnd_)) {
 	}
+	// Deleted so IMContext objects can not be copied.
+	IMContext(const IMContext &) = delete;
+	IMContext(IMContext &&) = delete;
+	IMContext &operator=(const IMContext &) = delete;
+	IMContext &operator=(IMContext &&) = delete;
 	~IMContext() {
 		if (hIMC)
 			::ImmReleaseContext(hwnd, hIMC);
@@ -284,7 +288,9 @@ class ScintillaWin :
 	explicit ScintillaWin(HWND hwnd);
 	// Deleted so ScintillaWin objects can not be copied.
 	ScintillaWin(const ScintillaWin &) = delete;
+	ScintillaWin(ScintillaWin &&) = delete;
 	ScintillaWin &operator=(const ScintillaWin &) = delete;
+	ScintillaWin &operator=(ScintillaWin &&) = delete;
 	~ScintillaWin() override;
 
 	void Init();
@@ -328,7 +334,7 @@ class ScintillaWin :
 	bool ValidCodePage(int codePage) const override;
 	sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) override;
 	bool SetIdle(bool on) override;
-	UINT_PTR timers[tickDwell+1];
+	UINT_PTR timers[tickDwell+1] {};
 	bool FineTickerRunning(TickReason reason) override;
 	void FineTickerStart(TickReason reason, int millis, int tolerance) override;
 	void FineTickerCancel(TickReason reason) override;
@@ -429,7 +435,7 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	capturedMouse = false;
 	trackedMouseLeave = false;
-	SetCoalescableTimerFn = 0;
+	SetCoalescableTimerFn = nullptr;
 
 	linesPerScroll = 0;
 	wheelDelta = 0;   // Wheel delta from roll
@@ -488,9 +494,6 @@ void ScintillaWin::Init() {
 		SetCoalescableTimerFn = (SetCoalescableTimerSig)::GetProcAddress(user32, "SetCoalescableTimer");
 	}
 
-	for (TickReason tr = tickCaret; tr <= tickDwell; tr = static_cast<TickReason>(tr + 1)) {
-		timers[tr] = 0;
-	}
 	vs.indicators[SC_INDICATOR_UNKNOWN] = Indicator(INDIC_HIDDEN, ColourDesired(0, 0, 0xff));
 	vs.indicators[SC_INDICATOR_INPUT] = Indicator(INDIC_DOTS, ColourDesired(0, 0, 0xff));
 	vs.indicators[SC_INDICATOR_CONVERTED] = Indicator(INDIC_COMPOSITIONTHICK, ColourDesired(0, 0, 0xff));
@@ -2175,6 +2178,11 @@ public:
 			ptr = ::GlobalLock(hand);
 		}
 	}
+	// Deleted so GlobalMemory objects can not be copied.
+	GlobalMemory(const GlobalMemory &) = delete;
+	GlobalMemory(GlobalMemory &&) = delete;
+	GlobalMemory &operator=(const GlobalMemory &) = delete;
+	GlobalMemory &operator=(GlobalMemory &&) = delete;
 	~GlobalMemory() {
 		PLATFORM_ASSERT(!ptr);
 		assert(!hand);

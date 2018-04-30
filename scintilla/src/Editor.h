@@ -256,8 +256,10 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 
 	Editor();
 	// Deleted so Editor objects can not be copied.
-	explicit Editor(const Editor &) = delete;
+	Editor(const Editor &) = delete;
+	Editor(Editor &&) = delete;
 	Editor &operator=(const Editor &) = delete;
+	Editor &operator=(Editor &&) = delete;
 	~Editor() override;
 	virtual void Initialise() = 0;
 	virtual void Finalise();

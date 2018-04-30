@@ -68,7 +68,9 @@ public:
 	UndoHistory();
 	// Deleted so UndoHistory objects can not be copied.
 	UndoHistory(const UndoHistory &) = delete;
+	UndoHistory(UndoHistory &&) = delete;
 	void operator=(const UndoHistory &) = delete;
+	void operator=(UndoHistory &&) = delete;
 	~UndoHistory();
 
 	const char *AppendAction(actionType at, Sci::Position position, const char *data, Sci::Position lengthData, bool &startSequence, bool mayCoalesce=true);
