@@ -7505,25 +7505,84 @@ static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionT
     }
   }
 
-  int const sbarTotalWidth = g_WinCurrentWidth - pxCount - STAUSBAR_RIGHT_MARGIN;
+  int const iPropSectTotalWidth = g_WinCurrentWidth - pxCount - STAUSBAR_RIGHT_MARGIN;
 
-  int vWeights[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
-  int totalCnt = 0;
+  // get min. required widths
+  int vMinWidth[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+  int iTotalMinWidth = 0;
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    if (g_iStatusbarVisible[i]) {
-      if (vSectionWidth[i] < 0) {
-        assert(g_iStatusbarWidthSpec[i] > 0);
-        vWeights[i] = (sbarTotalWidth > 1) ? (sbarTotalWidth * g_iStatusbarWidthSpec[i]) : g_iStatusbarWidthSpec[i];
-        totalCnt += g_iStatusbarWidthSpec[i];
+    if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+      assert(g_iStatusbarWidthSpec[i] > 0);
+      vMinWidth[i] = StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[i]);
+      iTotalMinWidth += vMinWidth[i];
+    }
+  }
+
+  if (iTotalMinWidth >= iPropSectTotalWidth) 
+  {
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+      if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+        vSectionWidth[i] = vMinWidth[i];
       }
     }
   }
-  // normalize
-  for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
-    if (g_iStatusbarVisible[i]) {
-      if (vSectionWidth[i] < 0) {
-        int const width = (totalCnt > 1) ? (vWeights[i] / totalCnt) : vWeights[i];
-        vSectionWidth[i] = max(width, StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[i]));
+  else // space left for proportional elements
+  {
+    int vPropWidth[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
+    int totalCnt = 0;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+      if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+        vPropWidth[i] = iPropSectTotalWidth * g_iStatusbarWidthSpec[i];
+        totalCnt += g_iStatusbarWidthSpec[i];
+      }
+    }
+    // normalize
+    int iTotalPropWidth = 0;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+      if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+        int const width = (totalCnt > 1) ? (vPropWidth[i] / totalCnt) : vPropWidth[i];
+        vPropWidth[i] = width;
+        iTotalPropWidth += width;
+      }
+    }
+    // check for fitting
+    int iOverlappingText = 0;
+    int iOvlCount = 0;
+    for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+      if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+        if (vMinWidth[i] > vPropWidth[i]) {
+          iOverlappingText += (vMinWidth[i] - vPropWidth[i]);
+          ++iOvlCount;
+        }
+      }
+    }
+    if (iOvlCount == 0) { // we are fine
+      for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+        if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+          vSectionWidth[i] = vPropWidth[i];
+        }
+      }
+    }
+    else // handling overlaps
+    {
+      while (iOverlappingText > 0) {
+        const int iCheck = iOverlappingText;
+        for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+          if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+            if (vMinWidth[i] < vPropWidth[i]) {
+              vPropWidth[i] -= 1;
+              --iOverlappingText;
+            }
+          }
+          if (iOverlappingText == 0) { break; }
+        }
+        // progress?
+        if (iCheck == iOverlappingText) { break; } 
+      }
+      for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
+        if ((g_iStatusbarVisible[i]) && (vSectionWidth[i] < 0)) {
+          vSectionWidth[i] = vPropWidth[i];
+        }
       }
     }
   }

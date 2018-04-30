@@ -1014,7 +1014,7 @@ COLORREF GetBackgroundColor(HWND hwnd)
 //
 LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
 {
-  HDC const hdc   = GetDC(hwnd);
+  HDC const hdc = GetDC(hwnd);
   HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd,WM_GETFONT,0,0);
   HGDIOBJ const hfold = SelectObject(hdc,hfont);
   int const mmode = SetMapMode(hdc,MM_TEXT);
