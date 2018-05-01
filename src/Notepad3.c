@@ -365,17 +365,6 @@ static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
-// Timer bitfield
-//static volatile LONG g_lInterlockBits = 0;
-//#define BIT_TIMER_MARK_OCC 1L
-//#define BIT_MARK_OCC_IN_PROGRESS 2L
-//#define BIT_TIMER_UPDATE_HYPER 4L
-//#define BIT_UPDATE_HYPER_IN_PROGRESS 8L
-
-//#define TEST_AND_SET(B)  InterlockedBitTestAndSet(&g_lInterlockBits, B)
-//#define TEST_AND_RESET(B)  InterlockedBitTestAndReset(&g_lInterlockBits, B)
-
-
 //=============================================================================
 //
 //  IgnoreNotifyChangeEvent(), ObserveNotifyChangeEvent(), CheckNotifyChangeEvent()
@@ -403,12 +392,6 @@ void ObserveNotifyChangeEvent()
       UpdateLineNumberWidth();
   }
 }
-
-void ResetNotifyChangeEvent()
-{
-  InterlockedExchange(&iNotifyChangeStackCounter, 0L);
-}
-
 
 // SCN_UPDATEUI notification
 #define SC_UPDATE_NP3_INTERNAL_NOTIFY (SC_UPDATE_H_SCROLL << 1)
@@ -3047,7 +3030,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
 
         BeginWaitCursor(NULL);
-        IgnoreNotifyChangeEvent();
+        _IGNORE_NOTIFY_CHANGE_;
         if (EditSetNewEncoding(g_hwndEdit,
                                iNewEncoding,
                                (flagSetEncoding),
@@ -3063,7 +3046,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             Encoding_Current(iNewEncoding);
           }
         }
-        ObserveNotifyChangeEvent();
+        _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
         UpdateStatusbar();
       }
@@ -3102,13 +3085,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_LINEENDINGS_CR:
       {
         BeginWaitCursor(NULL);
-        IgnoreNotifyChangeEvent();
+        _IGNORE_NOTIFY_CHANGE_;
         int iNewEOLMode = iLineEndings[LOWORD(wParam)-IDM_LINEENDINGS_CRLF];
         g_iEOLMode = iNewEOLMode;
         SendMessage(g_hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
         SendMessage(g_hwndEdit,SCI_CONVERTEOLS,g_iEOLMode,0);
         EditFixPositions(g_hwndEdit);
-        ObserveNotifyChangeEvent();
+        _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
         UpdateStatusbar();
       }
@@ -3121,16 +3104,16 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_UNDO:
-      IgnoreNotifyChangeEvent();
+      _IGNORE_NOTIFY_CHANGE_;
       SendMessage(g_hwndEdit, SCI_UNDO, 0, 0);
-      ObserveNotifyChangeEvent();
+      _OBSERVE_NOTIFY_CHANGE_;
       break;
 
 
     case IDM_EDIT_REDO:
-      IgnoreNotifyChangeEvent();
+      _IGNORE_NOTIFY_CHANGE_;
       SendMessage(g_hwndEdit, SCI_REDO, 0, 0);
-      ObserveNotifyChangeEvent();
+      _OBSERVE_NOTIFY_CHANGE_;
       break;
 
 
@@ -3583,10 +3566,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         int token = BeginUndoAction();
-        EditEnterTargetTransaction();
-        SciCall_TargetFromSelection();
-        SendMessage(g_hwndEdit,SCI_LINESSPLIT,0,0);
-        EditLeaveTargetTransaction();
+        EditSplitLines(g_hwndEdit);
         EndUndoAction(token);
         EndWaitCursor();
       }
@@ -7615,8 +7595,6 @@ FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
 
 void UpdateStatusbar()
 {
-  ResetNotifyChangeEvent();
-
   if (!bShowStatusbar) { return; }
 
   bool bIsUpdateNeeded = false;

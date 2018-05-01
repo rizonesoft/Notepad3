@@ -185,10 +185,13 @@ LRESULT MsgSysCommand(HWND, UINT, WPARAM, LPARAM);
 LRESULT MsgCommand(HWND, WPARAM, LPARAM);
 LRESULT MsgNotify(HWND, WPARAM, LPARAM);
 
+
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
 bool CheckNotifyChangeEvent();
-void ResetNotifyChangeEvent();
+#define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
+#define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
+
 
 #endif //_NP3_NOTEPAD3_H_
 ///   End of Notepad3.h   \\\
