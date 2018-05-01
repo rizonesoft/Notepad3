@@ -1962,13 +1962,18 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   GetClientRect(hwnd,&rc);
   SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,MAKELONG(rc.right,rc.bottom));
 
-  UpdateToolbar();
-  UpdateStatusbar();
-  UpdateLineNumberWidth();
+  EditFinalizeStyling(g_hwndEdit, -1);
+
+  if (EditToggleView(g_hwndEdit, false)) {
+    EditToggleView(g_hwndEdit, true);
+  }
   EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
   MarkAllOccurrences(0);
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
-  EditFinalizeStyling(g_hwndEdit, -1);
+
+  UpdateToolbar();
+  UpdateStatusbar();
+  UpdateLineNumberWidth();
 }
 
 
