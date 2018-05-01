@@ -70,8 +70,6 @@ public:
 	int codePage;
 	int characterSet;
 	SelectionText() : rectangular(false), lineCopy(false), codePage(0), characterSet(0) {}
-	~SelectionText() {
-	}
 	void Clear() {
 		s.clear();
 		rectangular = false;
@@ -633,13 +631,15 @@ public:
 	}
 	// Deleted so AutoSurface objects can not be copied.
 	AutoSurface(const AutoSurface &) = delete;
+	AutoSurface(AutoSurface &&) = delete;
 	void operator=(const AutoSurface &) = delete;
+	void operator=(AutoSurface &&) = delete;
 	~AutoSurface() {
 	}
-	Surface *operator->() const {
+	Surface *operator->() const noexcept {
 		return surf.get();
 	}
-	operator Surface *() const {
+	operator Surface *() const noexcept {
 		return surf.get();
 	}
 };

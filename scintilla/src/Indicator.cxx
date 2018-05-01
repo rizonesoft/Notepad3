@@ -16,6 +16,7 @@
 #include "Platform.h"
 
 #include "Scintilla.h"
+#include "IntegerRectangle.h"
 #include "Indicator.h"
 #include "XPM.h"
 
@@ -23,8 +24,8 @@ using namespace Scintilla;
 
 static PRectangle PixelGridAlign(const PRectangle &rc) {
 	// Move left and right side to nearest pixel to avoid blurry visuals
-	return PRectangle::FromInts(static_cast<int>(lround(rc.left)), static_cast<int>(rc.top),
-		static_cast<int>(lround(rc.right)), static_cast<int>(rc.bottom));
+	return PRectangle(round(rc.left), floor(rc.top),
+		round(rc.right), floor(rc.bottom));
 }
 
 void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &rcLine, const PRectangle &rcCharacter, DrawState drawState, int value) const {
@@ -35,13 +36,15 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 	if (drawState == drawHover) {
 		sacDraw = sacHover;
 	}
+	const IntegerRectangle irc(rc);
 	surface->PenColour(sacDraw.fore);
-	const int ymid = static_cast<int>(rc.bottom + rc.top) / 2;
+	const int ymid = (irc.bottom + irc.top) / 2;
 	if (sacDraw.style == INDIC_SQUIGGLE) {
-		int x = static_cast<int>(lround(rc.left));
-		const int xLast = static_cast<int>(lround(rc.right));
+		const IntegerRectangle ircSquiggle(PixelGridAlign(rc));
+		int x = ircSquiggle.left;
+		const int xLast = ircSquiggle.right;
 		int y = 0;
-		surface->MoveTo(x, static_cast<int>(rc.top) + y);
+		surface->MoveTo(x, irc.top + y);
 		while (x < xLast) {
 			if ((x + 2) > xLast) {
 				if (xLast > x)
@@ -51,7 +54,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 				x += 2;
 				y = 2 - y;
 			}
-			surface->LineTo(x, static_cast<int>(rc.top) + y);
+			surface->LineTo(x, irc.top + y);
 		}
 	} else if (sacDraw.style == INDIC_SQUIGGLEPIXMAP) {
 		const PRectangle rcSquiggle = PixelGridAlign(rc);
@@ -73,19 +76,19 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		}
 		surface->DrawRGBAImage(rcSquiggle, image.GetWidth(), image.GetHeight(), image.Pixels());
 	} else if (sacDraw.style == INDIC_SQUIGGLELOW) {
-		surface->MoveTo(static_cast<int>(rc.left), static_cast<int>(rc.top));
-		int x = static_cast<int>(rc.left) + 3;
+		surface->MoveTo(irc.left, irc.top);
+		int x = irc.left + 3;
 		int y = 0;
 		while (x < rc.right) {
-			surface->LineTo(x - 1, static_cast<int>(rc.top) + y);
+			surface->LineTo(x - 1, irc.top + y);
 			y = 1 - y;
-			surface->LineTo(x, static_cast<int>(rc.top) + y);
+			surface->LineTo(x, irc.top + y);
 			x += 3;
 		}
-		surface->LineTo(static_cast<int>(rc.right), static_cast<int>(rc.top) + y);	// Finish the line
+		surface->LineTo(irc.right, irc.top + y);	// Finish the line
 	} else if (sacDraw.style == INDIC_TT) {
-		surface->MoveTo(static_cast<int>(rc.left), ymid);
-		int x = static_cast<int>(rc.left) + 5;
+		surface->MoveTo(irc.left, ymid);
+		int x = irc.left + 5;
 		while (x < rc.right) {
 			surface->LineTo(x, ymid);
 			surface->MoveTo(x-3, ymid);
@@ -94,35 +97,36 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 			surface->MoveTo(x, ymid);
 			x += 5;
 		}
-		surface->LineTo(static_cast<int>(rc.right), ymid);	// Finish the line
+		surface->LineTo(irc.right, ymid);	// Finish the line
 		if (x - 3 <= rc.right) {
 			surface->MoveTo(x-3, ymid);
 			surface->LineTo(x-3, ymid+2);
 		}
 	} else if (sacDraw.style == INDIC_DIAGONAL) {
-		int x = static_cast<int>(rc.left);
+		int x = irc.left;
 		while (x < rc.right) {
-			surface->MoveTo(x, static_cast<int>(rc.top) + 2);
+			surface->MoveTo(x, irc.top + 2);
 			int endX = x+3;
-			int endY = static_cast<int>(rc.top) - 1;
+			int endY = irc.top - 1;
 			if (endX > rc.right) {
-				endY += endX - static_cast<int>(rc.right);
-				endX = static_cast<int>(rc.right);
+				endY += endX - irc.right;
+				endX = irc.right;
 			}
 			surface->LineTo(endX, endY);
 			x += 4;
 		}
 	} else if (sacDraw.style == INDIC_STRIKE) {
-		surface->MoveTo(static_cast<int>(rc.left), static_cast<int>(rc.top) - 4);
-		surface->LineTo(static_cast<int>(rc.right), static_cast<int>(rc.top) - 4);
+		surface->MoveTo(irc.left, irc.top - 4);
+		surface->LineTo(irc.right, irc.top - 4);
 	} else if ((sacDraw.style == INDIC_HIDDEN) || (sacDraw.style == INDIC_TEXTFORE)) {
 		// Draw nothing
 	} else if (sacDraw.style == INDIC_BOX) {
-		surface->MoveTo(static_cast<int>(rc.left), ymid + 1);
-		surface->LineTo(static_cast<int>(rc.right), ymid + 1);
-		surface->LineTo(static_cast<int>(rc.right), static_cast<int>(rcLine.top) + 1);
-		surface->LineTo(static_cast<int>(rc.left), static_cast<int>(rcLine.top) + 1);
-		surface->LineTo(static_cast<int>(rc.left), ymid + 1);
+		surface->MoveTo(irc.left, ymid + 1);
+		surface->LineTo(irc.right, ymid + 1);
+		const int lineTop = static_cast<int>(rcLine.top) + 1;
+		surface->LineTo(irc.right, lineTop);
+		surface->LineTo(irc.left, lineTop);
+		surface->LineTo(irc.left, ymid + 1);
 	} else if (sacDraw.style == INDIC_ROUNDBOX ||
 		sacDraw.style == INDIC_STRAIGHTBOX ||
 		sacDraw.style == INDIC_FULLBOX) {
@@ -137,32 +141,33 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		PRectangle rcBox = PixelGridAlign(rc);
 		rcBox.top = rcLine.top + 1;
 		rcBox.bottom = rcLine.bottom;
+		IntegerRectangle ircBox(rcBox);
 		// Cap width at 4000 to avoid large allocations when mistakes made
-		const int width = std::min(static_cast<int>(rcBox.Width()), 4000);
-		RGBAImage image(width, static_cast<int>(rcBox.Height()), 1.0, 0);
+		const int width = std::min(ircBox.Width(), 4000);
+		RGBAImage image(width, ircBox.Height(), 1.0, 0);
 		// Draw horizontal lines top and bottom
 		for (int x=0; x<width; x++) {
-			for (int y = 0; y<static_cast<int>(rcBox.Height()); y += static_cast<int>(rcBox.Height()) - 1) {
+			for (int y = 0; y<ircBox.Height(); y += ircBox.Height() - 1) {
 				image.SetPixel(x, y, sacDraw.fore, ((x + y) % 2) ? outlineAlpha : fillAlpha);
 			}
 		}
 		// Draw vertical lines left and right
-		for (int y = 1; y<static_cast<int>(rcBox.Height()); y++) {
+		for (int y = 1; y<ircBox.Height(); y++) {
 			for (int x=0; x<width; x += width-1) {
 				image.SetPixel(x, y, sacDraw.fore, ((x + y) % 2) ? outlineAlpha : fillAlpha);
 			}
 		}
 		surface->DrawRGBAImage(rcBox, image.GetWidth(), image.GetHeight(), image.Pixels());
 	} else if (sacDraw.style == INDIC_DASH) {
-		int x = static_cast<int>(rc.left);
+		int x = irc.left;
 		while (x < rc.right) {
 			surface->MoveTo(x, ymid);
-			surface->LineTo(std::min(x + 4, static_cast<int>(rc.right)), ymid);
+			surface->LineTo(std::min(x + 4, irc.right), ymid);
 			x += 7;
 		}
 	} else if (sacDraw.style == INDIC_DOTS) {
-		int x = static_cast<int>(rc.left);
-		while (x < static_cast<int>(rc.right)) {
+		int x = irc.left;
+		while (x < irc.right) {
 			const PRectangle rcDot = PRectangle::FromInts(x, ymid, x + 1, ymid + 1);
 			surface->FillRectangle(rcDot, sacDraw.fore);
 			x += 2;
@@ -175,20 +180,20 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		surface->FillRectangle(rcComposition, sacDraw.fore);
 	} else if (sacDraw.style == INDIC_POINT || sacDraw.style == INDIC_POINTCHARACTER) {
 		if (rcCharacter.Width() >= 0.1) {
-			const int pixelHeight = static_cast<int>(rc.Height() - 1.0f);	// 1 pixel onto next line if multiphase
+			const XYPOSITION pixelHeight = floor(rc.Height() - 1.0f);	// 1 pixel onto next line if multiphase
 			const XYPOSITION x = (sacDraw.style == INDIC_POINT) ? (rcCharacter.left) : ((rcCharacter.right + rcCharacter.left) / 2);
-			const int ix = static_cast<int>(lround(x));
-			const int iy = static_cast<int>(rc.top + 1.0f);
+			const XYPOSITION ix = round(x);
+			const XYPOSITION iy = floor(rc.top + 1.0f);
 			Point pts[] = {
-				Point::FromInts(ix - pixelHeight, iy + pixelHeight),	// Left
-				Point::FromInts(ix + pixelHeight, iy + pixelHeight),	// Right
-				Point::FromInts(ix, iy)									// Top
+				Point(ix - pixelHeight, iy + pixelHeight),	// Left
+				Point(ix + pixelHeight, iy + pixelHeight),	// Right
+				Point(ix, iy)								// Top
 			};
 			surface->Polygon(pts, 3, sacDraw.fore, sacDraw.fore);
 		}
 	} else {	// Either INDIC_PLAIN or unknown
-		surface->MoveTo(static_cast<int>(rc.left), ymid);
-		surface->LineTo(static_cast<int>(rc.right), ymid);
+		surface->MoveTo(irc.left, ymid);
+		surface->LineTo(irc.right, ymid);
 	}
 }
 

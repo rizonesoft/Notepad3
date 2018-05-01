@@ -19,7 +19,7 @@ public:
 	}
 	/// Return duration as floating point seconds
 	double Duration(bool reset=false) {
-		std::chrono::high_resolution_clock::time_point tpNow =
+		const std::chrono::high_resolution_clock::time_point tpNow =
 			std::chrono::high_resolution_clock::now();
 		const std::chrono::duration<double> stylingDuration =
 			std::chrono::duration_cast<std::chrono::duration<double>>(tpNow - tp);

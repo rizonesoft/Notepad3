@@ -674,5 +674,8 @@
     <ClInclude Include="src\ElapsedPeriod.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\IntegerRectangle.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

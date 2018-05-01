@@ -28,6 +28,7 @@
 
 #include "StringCopy.h"
 #include "Position.h"
+#include "IntegerRectangle.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
@@ -58,16 +59,18 @@ void DrawWrapMarker(Surface *surface, PRectangle rcPlace,
 	bool isEndMarker, ColourDesired wrapColour) {
 	surface->PenColour(wrapColour);
 
+	const IntegerRectangle ircPlace(rcPlace);
+
 	enum { xa = 1 }; // gap before start
-	const int w = static_cast<int>(rcPlace.right - rcPlace.left) - xa - 1;
+	const int w = ircPlace.Width() - xa - 1;
 
 	const bool xStraight = isEndMarker;  // x-mirrored symbol for start marker
 
-	const int x0 = static_cast<int>(xStraight ? rcPlace.left : rcPlace.right - 1);
-	const int y0 = static_cast<int>(rcPlace.top);
+	const int x0 = xStraight ? ircPlace.left : ircPlace.right - 1;
+	const int y0 = ircPlace.top;
 
-	const int dy = static_cast<int>(rcPlace.bottom - rcPlace.top) / 5;
-	const int y = static_cast<int>(rcPlace.bottom - rcPlace.top) / 2 + dy;
+	const int dy = ircPlace.Height() / 5;
+	const int y = ircPlace.Height() / 2 + dy;
 
 	struct Relative {
 		Surface *surface;

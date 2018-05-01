@@ -19,6 +19,7 @@
 
 #include "Scintilla.h"
 
+#include "IntegerRectangle.h"
 #include "StringCopy.h"
 #include "Position.h"
 #include "CallTip.h"
@@ -233,13 +234,14 @@ void CallTip::PaintCT(Surface *surfaceWindow) {
 #ifndef __APPLE__
 	// OSX doesn't put borders on "help tags"
 	// Draw a raised border around the edges of the window
-	surfaceWindow->MoveTo(0, static_cast<int>(rcClientSize.bottom) - 1);
+	const IntegerRectangle ircClientSize(rcClientSize);
+	surfaceWindow->MoveTo(0, ircClientSize.bottom - 1);
 	surfaceWindow->PenColour(colourShade);
-	surfaceWindow->LineTo(static_cast<int>(rcClientSize.right) - 1, static_cast<int>(rcClientSize.bottom) - 1);
-	surfaceWindow->LineTo(static_cast<int>(rcClientSize.right) - 1, 0);
+	surfaceWindow->LineTo(ircClientSize.right - 1, ircClientSize.bottom - 1);
+	surfaceWindow->LineTo(ircClientSize.right - 1, 0);
 	surfaceWindow->PenColour(colourLight);
 	surfaceWindow->LineTo(0, 0);
-	surfaceWindow->LineTo(0, static_cast<int>(rcClientSize.bottom) - 1);
+	surfaceWindow->LineTo(0, ircClientSize.bottom - 1);
 #endif
 }
 

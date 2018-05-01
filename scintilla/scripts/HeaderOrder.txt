@@ -115,6 +115,7 @@
 #include "Catalogue.h"
 
 #include "Position.h"
+#include "IntegerRectangle.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
 #include "Partitioning.h"

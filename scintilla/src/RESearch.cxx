@@ -289,17 +289,12 @@ void RESearch::ChSet(unsigned char c) {
 }
 
 void RESearch::ChSetWithCase(unsigned char c, bool caseSensitive) {
-	if (caseSensitive) {
-		ChSet(c);
-	} else {
+	ChSet(c);
+	if (!caseSensitive) {
 		if ((c >= 'a') && (c <= 'z')) {
-			ChSet(c);
-			ChSet(static_cast<unsigned char>(c - 'a' + 'A'));
+			ChSet(c - 'a' + 'A');
 		} else if ((c >= 'A') && (c <= 'Z')) {
-			ChSet(c);
-			ChSet(static_cast<unsigned char>(c - 'A' + 'a'));
-		} else {
-			ChSet(c);
+			ChSet(c - 'A' + 'a');
 		}
 	}
 }

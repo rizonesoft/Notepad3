@@ -160,19 +160,19 @@ class AutoLineLayout {
 	LineLayoutCache &llc;
 	LineLayout *ll;
 public:
-	AutoLineLayout(LineLayoutCache &llc_, LineLayout *ll_) : llc(llc_), ll(ll_) {}
+	AutoLineLayout(LineLayoutCache &llc_, LineLayout *ll_) noexcept : llc(llc_), ll(ll_) {}
 	AutoLineLayout(const AutoLineLayout &) = delete;
 	AutoLineLayout(AutoLineLayout &&) = delete;
 	AutoLineLayout &operator=(const AutoLineLayout &) = delete;
 	AutoLineLayout &operator=(AutoLineLayout &&) = delete;
 	~AutoLineLayout() {
 		llc.Dispose(ll);
-		ll = 0;
+		ll = nullptr;
 	}
-	LineLayout *operator->() const {
+	LineLayout *operator->() const noexcept {
 		return ll;
 	}
-	operator LineLayout *() const {
+	operator LineLayout *() const noexcept {
 		return ll;
 	}
 	void Set(LineLayout *ll_) {

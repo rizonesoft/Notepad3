@@ -1161,5 +1161,5 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 	default:
 		return Editor::WndProc(iMessage, wParam, lParam);
 	}
-	return 0l;
+	return 0;
 }

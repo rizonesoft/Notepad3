@@ -32,6 +32,7 @@
 #include "StringCopy.h"
 #include "CharacterSet.h"
 #include "Position.h"
+#include "IntegerRectangle.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
@@ -294,22 +295,23 @@ static const char *ControlCharacterString(unsigned char ch) {
 }
 
 static void DrawTabArrow(Surface *surface, PRectangle rcTab, int ymid, const ViewStyle &vsDraw) {
+	const IntegerRectangle ircTab(rcTab);
 	if ((rcTab.left + 2) < (rcTab.right - 1))
-		surface->MoveTo(static_cast<int>(rcTab.left) + 2, ymid);
+		surface->MoveTo(ircTab.left + 2, ymid);
 	else
-		surface->MoveTo(static_cast<int>(rcTab.right) - 1, ymid);
-	surface->LineTo(static_cast<int>(rcTab.right) - 1, ymid);
+		surface->MoveTo(ircTab.right - 1, ymid);
+	surface->LineTo(ircTab.right - 1, ymid);
 
 	// Draw the arrow head if needed
 	if (vsDraw.tabDrawMode == tdLongArrow) {
-		int ydiff = static_cast<int>(rcTab.bottom - rcTab.top) / 2;
-		int xhead = static_cast<int>(rcTab.right) - 1 - ydiff;
+		int ydiff = (ircTab.bottom - ircTab.top) / 2;
+		int xhead = ircTab.right - 1 - ydiff;
 		if (xhead <= rcTab.left) {
-			ydiff -= static_cast<int>(rcTab.left) - xhead - 1;
-			xhead = static_cast<int>(rcTab.left) - 1;
+			ydiff -= ircTab.left - xhead - 1;
+			xhead = ircTab.left - 1;
 		}
 		surface->LineTo(xhead, ymid - ydiff);
-		surface->MoveTo(static_cast<int>(rcTab.right) - 1, ymid);
+		surface->MoveTo(ircTab.right - 1, ymid);
 		surface->LineTo(xhead, ymid + ydiff);
 	}
 }
@@ -1165,14 +1167,15 @@ void EditView::DrawFoldDisplayText(Surface *surface, const EditModel &model, con
 			PRectangle rcBox = rcSegment;
 			rcBox.left = round(rcSegment.left);
 			rcBox.right = round(rcSegment.right);
-			surface->MoveTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.top));
-			surface->LineTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.bottom));
-			surface->MoveTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.top));
-			surface->LineTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.bottom));
-			surface->MoveTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.top));
-			surface->LineTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.top));
-			surface->MoveTo(static_cast<int>(rcBox.left), static_cast<int>(rcBox.bottom - 1));
-			surface->LineTo(static_cast<int>(rcBox.right), static_cast<int>(rcBox.bottom - 1));
+			const IntegerRectangle ircBox(rcBox);
+			surface->MoveTo(ircBox.left, ircBox.top);
+			surface->LineTo(ircBox.left, ircBox.bottom);
+			surface->MoveTo(ircBox.right, ircBox.top);
+			surface->LineTo(ircBox.right, ircBox.bottom);
+			surface->MoveTo(ircBox.left, ircBox.top);
+			surface->LineTo(ircBox.right, ircBox.top);
+			surface->MoveTo(ircBox.left, ircBox.bottom - 1);
+			surface->LineTo(ircBox.right, ircBox.bottom - 1);
 		}
 	}
 
@@ -1228,17 +1231,18 @@ void EditView::DrawAnnotation(Surface *surface, const EditModel &model, const Vi
 			stAnnotation, start, lengthAnnotation, phase);
 		if ((phase & drawBack) && (vsDraw.annotationVisible == ANNOTATION_BOXED)) {
 			surface->PenColour(vsDraw.styles[vsDraw.annotationStyleOffset].fore);
-			surface->MoveTo(static_cast<int>(rcSegment.left), static_cast<int>(rcSegment.top));
-			surface->LineTo(static_cast<int>(rcSegment.left), static_cast<int>(rcSegment.bottom));
-			surface->MoveTo(static_cast<int>(rcSegment.right), static_cast<int>(rcSegment.top));
-			surface->LineTo(static_cast<int>(rcSegment.right), static_cast<int>(rcSegment.bottom));
+			const IntegerRectangle ircSegment(rcSegment);
+			surface->MoveTo(ircSegment.left, ircSegment.top);
+			surface->LineTo(ircSegment.left, ircSegment.bottom);
+			surface->MoveTo(ircSegment.right, ircSegment.top);
+			surface->LineTo(ircSegment.right, ircSegment.bottom);
 			if (subLine == ll->lines) {
-				surface->MoveTo(static_cast<int>(rcSegment.left), static_cast<int>(rcSegment.top));
-				surface->LineTo(static_cast<int>(rcSegment.right), static_cast<int>(rcSegment.top));
+				surface->MoveTo(ircSegment.left, ircSegment.top);
+				surface->LineTo(ircSegment.right, ircSegment.top);
 			}
 			if (subLine == ll->lines + annotationLines - 1) {
-				surface->MoveTo(static_cast<int>(rcSegment.left), static_cast<int>(rcSegment.bottom - 1));
-				surface->LineTo(static_cast<int>(rcSegment.right), static_cast<int>(rcSegment.bottom - 1));
+				surface->MoveTo(ircSegment.left, ircSegment.bottom - 1);
+				surface->LineTo(ircSegment.right, ircSegment.bottom - 1);
 			}
 		}
 	}

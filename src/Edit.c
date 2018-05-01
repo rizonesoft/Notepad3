@@ -4930,7 +4930,7 @@ static DocPos __fastcall _FindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, 
   DocPos _start = *start;
   DocPos _end = *end;
   const bool bFindPrev = (_start > _end);
-  DocPos iPos;
+  DocPos iPos = 0;
 
   _ENTER_TARGET_TRANSACTION_;
 
