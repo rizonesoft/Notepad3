@@ -335,6 +335,7 @@ BEGIN
         MENUITEM "&Toggle Folds\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
         MENUITEM SEPARATOR
         MENUITEM "Show Tool&bar",               IDM_VIEW_TOOLBAR
+        MENUITEM "Toggle Toolbar",              IDM_VIEW_TOGGLETB
         MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
@@ -420,6 +421,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
+        MENUITEM "Toggle Toolbar",              IDM_VIEW_TOGGLETB
         MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
     END

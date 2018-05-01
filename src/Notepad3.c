@@ -67,6 +67,8 @@ HWND      hwndReBar = NULL;
 HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
 
+bool g_bExternalBitmap = false;
+
 #define INISECTIONBUFCNT 32
 
 TBBUTTON  tbbMainWnd[] = {  { 0,IDT_FILE_NEW,TBSTATE_ENABLED,TBSTYLE_BUTTON,0,0 },
@@ -1657,7 +1659,6 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   HBITMAP hbmp, hbmpCopy = NULL;
   HIMAGELIST himl;
   WCHAR szTmp[MAX_PATH] = { L'\0' };
-  bool bExternalBitmap = false;
 
   DWORD dwToolbarStyle = WS_TOOLBAR;
   DWORD dwReBarStyle = WS_REBAR;
@@ -1688,8 +1689,9 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE);
   }
 
-  if (hbmp)
-    bExternalBitmap = true;
+  if (hbmp) {
+    g_bExternalBitmap = true;
+  }
   else {
     LPWSTR toolBarIntRes = (iHighDpiToolBar > 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB2) : MAKEINTRESOURCE(IDR_MAINWNDTB);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
@@ -1736,11 +1738,11 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
       ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
       DeleteObject(hbmp);
       SendMessage(g_hwndToolbar,TB_SETDISABLEDIMAGELIST,0,(LPARAM)himl);
-      bExternalBitmap = true;
+      g_bExternalBitmap = true;
     }
   }
 
-  if (!bExternalBitmap) {
+  if (!g_bExternalBitmap) {
     bool fProcessed = false;
     if (flagToolbarLook == 1)
       fProcessed = BitmapAlphaBlend(hbmpCopy,GetSysColor(COLOR_3DFACE),0x60);
@@ -1909,6 +1911,10 @@ void MsgEndSession(HWND hwnd, UINT umsg)
 //
 void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
+  UNUSED(lParam);
+  UNUSED(wParam);
+  UNUSED(hwnd);
+  
   RECT rc, rc2;
   HINSTANCE hInstance = (HINSTANCE)(INT_PTR)GetWindowLongPtr(hwnd,GWLP_HINSTANCE);
 
@@ -1963,10 +1969,6 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   MarkAllOccurrences(0);
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
   EditFinalizeStyling(g_hwndEdit, -1);
-
-  UNUSED(lParam);
-  UNUSED(wParam);
-  UNUSED(hwnd);
 }
 
 
@@ -2695,6 +2697,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_NOPRESERVECARET,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,bEnableSaveSettings && i);
+
+  EnableCmd(hmenu, IDM_VIEW_TOGGLETB, !g_bExternalBitmap);
 
   i = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) > 0 || StringCchLenW(g_wchIniFile2,COUNTOF(g_wchIniFile2)) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,bEnableSaveSettings && i);
@@ -4610,6 +4614,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDM_VIEW_TOGGLETB:
+      iHighDpiToolBar = (iHighDpiToolBar <= 0) ? 1 : 0;
+      MsgThemeChanged(hwnd, 0, 0);
+      break;
+
     case IDM_VIEW_CUSTOMIZETB:
       SendMessage(g_hwndToolbar,TB_CUSTOMIZE,0,0);
       break;
@@ -6476,6 +6485,8 @@ void LoadSettings()
   if (iHighDpiToolBar < 0) { // undefined: determine high DPI (higher than Full-HD)
     if ((ResX > 1920) && (ResY > 1080))
       iHighDpiToolBar = 1;
+    else
+      iHighDpiToolBar = 0;
   }
 
   if (!flagPosParam /*|| bStickyWinPos*/) { // ignore window position if /p was specified
