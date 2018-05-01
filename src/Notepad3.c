@@ -2703,6 +2703,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,bEnableSaveSettings && i);
 
+  CheckCmd(hmenu, IDM_VIEW_TOGGLETB, (iHighDpiToolBar > 0));
   EnableCmd(hmenu, IDM_VIEW_TOGGLETB, !g_bExternalBitmap);
 
   i = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) > 0 || StringCchLenW(g_wchIniFile2,COUNTOF(g_wchIniFile2)) > 0);
