@@ -276,13 +276,15 @@ DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 //
 //  Margins
 //
-DeclareSciCallV2(SetMarginType, SETMARGINTYPEN, int, margin, int, type)
-DeclareSciCallV2(SetMarginWidth, SETMARGINWIDTHN, int, margin, int, pixelWidth)
-DeclareSciCallV2(SetMarginMask, SETMARGINMASKN, int, margin, int, mask)
-DeclareSciCallV2(SetMarginSensitive, SETMARGINSENSITIVEN, int, margin, bool, sensitive)
+DeclareSciCallV2(SetMarginTypeN, SETMARGINTYPEN, int, margin, int, type)
+DeclareSciCallR1(GetMarginWidthN, GETMARGINWIDTHN, int, int, margin)
+DeclareSciCallV2(SetMarginWidthN, SETMARGINWIDTHN, int, margin, int, pixelWidth)
+DeclareSciCallV2(SetMarginMaskN, SETMARGINMASKN, int, margin, int, mask)
+DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, int, margin, bool, sensitive)
 DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
+DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
 
 
 //=============================================================================

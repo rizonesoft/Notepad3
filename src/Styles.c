@@ -2261,11 +2261,11 @@ EDITLEXER lexLATEX = { SCLEX_LATEX, 63036, L"LaTeX Files", L"tex; latex; sty", L
 
 
 EDITLEXER lexANSI = { SCLEX_NULL, 63025, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console", L"" },
+                      { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console; none; size:10", L"" },
                       { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
                       { STYLE_BRACELIGHT, 63102, L"Matching Braces", L"size:+0", L"" },
                       { STYLE_BRACEBAD, 63103, L"Matching Braces Error", L"size:+0", L"" },
-                      { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, 63111, L"Extra Line Spacing (Size)", L"size:-4", L"" },
+                      { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, 63111, L"Extra Line Spacing (Size)", L"size:-2", L"" },
                       { -1, 00000, L"", L"", L"" } } };
 
 
@@ -4025,7 +4025,7 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 {
   float fSize = INITIAL_BASE_FONT_SIZE + 1.0;
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  SciCall_SetMarginWidth(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? (int)fSize : 0);
+  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? (int)fSize : 0);
   UNUSED(hwnd);
 }
 
@@ -4039,7 +4039,7 @@ void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
   UNUSED(hwnd);
   float fSize = INITIAL_BASE_FONT_SIZE + 1.0;
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  SciCall_SetMarginWidth(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? (int)fSize + 4 : 0);
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? (int)fSize + 4 : 0);
 
   // Depending on if the margin is visible or not, choose different bookmark indication
   if (bShowSelMargin) {
@@ -4081,6 +4081,8 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   //SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
 
 
+  //SCI_SETMARGINOPTIONS
+
   // ---  Bookmarks  ---
   COLORREF bmkFore = clrFore;
   COLORREF bmkBack = clrBack;
@@ -4104,9 +4106,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   
 
   // ---  Code folding  ---
-  SciCall_SetMarginType(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
-  SciCall_SetMarginMask(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
-  SciCall_SetMarginSensitive(MARGIN_SCI_FOLDING, true);
+  SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
+  SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
+  SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
   SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrBack);
 
   int fldStyleMrk = SC_CASE_LOWER;
@@ -4528,10 +4530,10 @@ bool Style_GetUse2ndDefault()
 //
 float Style_SetBaseFontSize(HWND hwnd, float fSize)
 {
-  static float fBaseFontSize = INITIAL_BASE_FONT_SIZE * 1.0;
+  static float fBaseFontSize = (float)INITIAL_BASE_FONT_SIZE;
 
   if (fSize >= 0.0) {
-    fBaseFontSize = (float)(((int)(fSize * 100 + 0.5)) / 100.0);
+    fBaseFontSize = (float)(((int)(fSize * 102)) / 100.0);  // bias 2%
     //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)iBaseFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
     
@@ -4552,10 +4554,10 @@ float Style_GetBaseFontSize(HWND hwnd)
 //
 float Style_SetCurrentFontSize(HWND hwnd, float fSize)
 {
-  static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE * 1.0;
+  static float fCurrentFontSize = (float)INITIAL_BASE_FONT_SIZE;
 
   if (fSize >= 0.0) {
-    fCurrentFontSize = (float)(((int)(fSize * 100 + 0.5)) / 100.0);
+    fCurrentFontSize = (float)(((int)(fSize * 102)) / 100.0); // bias 2%
     //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)iCurrentFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)((int)(fCurrentFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
 

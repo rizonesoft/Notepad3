@@ -1467,7 +1467,10 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   // Properties
   SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
-  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)500, 0);
+  
+  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, SC_TIME_FOREVER, 0); // default
+  //SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)500, 0);
+  
 
   #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
   if (iCurrentLineHorizontalSlop > 0)
@@ -1503,6 +1506,9 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, EDGE_NONE, 0);
 
   SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, g_iLongLinesLimit, 0);
+
+  // general margin
+  SendMessage(hwndEditCtrl, SCI_SETMARGINOPTIONS, SC_MARGINOPTION_SUBLINESELECT, 0);
 
   // Nonprinting characters
   SendMessage(hwndEditCtrl, SCI_SETVIEWWS, (bViewWhiteSpace) ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE, 0);
@@ -7935,15 +7941,15 @@ void UpdateLineNumberWidth()
     char chLines[32] = { '\0' };
     StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
 
-    int iLineMarginWidthNow = (int)SendMessage(g_hwndEdit, SCI_GETMARGINWIDTHN, MARGIN_SCI_LINENUM, 0);
-    int iLineMarginWidthFit = (int)SendMessage(g_hwndEdit, SCI_TEXTWIDTH, STYLE_LINENUMBER, (LPARAM)chLines);
+    int iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
+    int iLineMarginWidthFit = SciCall_TextWidth(STYLE_LINENUMBER, chLines);
 
     if (iLineMarginWidthNow != iLineMarginWidthFit) {
-      SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_SCI_LINENUM, iLineMarginWidthFit);
+      SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
     }
   }
   else {
-    SendMessage(g_hwndEdit, SCI_SETMARGINWIDTHN, MARGIN_SCI_LINENUM, 0);
+    SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
 }
 
