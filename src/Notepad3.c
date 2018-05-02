@@ -7860,11 +7860,13 @@ void UpdateStatusbar()
   static WCHAR tchLexerName[MINI_BUFFER];
 
   static int s_iCurLexer = -1;
+  static bool s_bIs2ndDefault = -1;
   int const iCurLexer = Style_GetCurrentLexerID();
-  if (s_iCurLexer != iCurLexer) {
+  if ((s_iCurLexer != iCurLexer) || (s_bIs2ndDefault != bUse2ndDefault)) {
     Style_GetCurrentLexerName(tchLexerName, MINI_BUFFER);
     StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s", g_mxStatusBarPrefix[STATUS_LEXER], tchLexerName);
     s_iCurLexer = iCurLexer;
+    s_bIs2ndDefault = bUse2ndDefault;
     bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------

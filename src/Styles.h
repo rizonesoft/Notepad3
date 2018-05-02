@@ -88,7 +88,7 @@ void   Style_SetLexerFromID(HWND,int);
 void   Style_SetDefaultFont(HWND,bool);
 void   Style_ToggleUse2ndDefault(HWND);
 bool   Style_GetUse2ndDefault();
-bool   Style_SetUse2ndDefault(int); // in:bool
+void   Style_SetUse2ndDefault(bool);
 float  Style_GetBaseFontSize(HWND);
 float  Style_SetBaseFontSize(HWND,float);
 float  Style_GetCurrentFontSize(HWND);

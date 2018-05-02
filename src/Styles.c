@@ -3848,7 +3848,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetUrlHotSpot(hwnd, g_bHyperlinkHotspot);
     EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
   }
-
+  UpdateStatusbar();
   UpdateLineNumberWidth();
 }
 
@@ -4500,19 +4500,16 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
 //
 //  Style_SetUse2ndDefault(), Style_GetUse2ndDefault()
 //
-bool Style_SetUse2ndDefault(int value)
-{
-  static bool bUse2ndDefaultStyle = false;
+static bool s_bUse2ndDefaultStyle = false;
 
-  if ((value == true) || (value == false)) {
-    bUse2ndDefaultStyle = (bool)value;
-  }
-  return bUse2ndDefaultStyle;
+void Style_SetUse2ndDefault(bool use2nd)
+{
+  s_bUse2ndDefaultStyle = use2nd;
 }
 
 bool Style_GetUse2ndDefault()
 {
-  return Style_SetUse2ndDefault(false - true);
+  return s_bUse2ndDefaultStyle;
 }
 
 
@@ -6573,7 +6570,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
     case WM_COMMAND:
       {
-        switch (LOWORD(wParam)) {
+        switch (LOWORD(wParam)) 
+        {
         case IDC_DEFAULTSCHEME:
           if (IsDlgButtonChecked(hwnd, IDC_DEFAULTSCHEME) == BST_CHECKED)
             iInternalDefault = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
@@ -6619,6 +6617,7 @@ void Style_SelectLexerDlg(HWND hwnd)
                                    MAKEINTRESOURCE(IDD_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
+    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd);
     Style_SetLexer(hwnd, g_pLexCurrent);
 }
 
