@@ -6865,7 +6865,7 @@ void EditApplyLexerStyle(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
 void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
   if (iEndPos <= 0) {
-    iEndPos = SciCall_GetTextLength();
+    iEndPos = SciCall_GetTextLength() - 1;
   }
 
   const DocPos iEndStyled = SciCall_GetEndStyled();

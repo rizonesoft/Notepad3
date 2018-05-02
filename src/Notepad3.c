@@ -5866,8 +5866,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             // Auto close tags
             else if (bAutoCloseTags && scn->ch == '>')
             {
-              //int iLexer = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
-              //if (iLexer == SCLEX_HTML || iLexer == SCLEX_XML)
+              //int lexerID = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
+              //if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
               {
                 const DocPos iCurPos = SciCall_GetCurrentPos();
                 const DocPos iHelper = iCurPos - (DocPos)(COUNTOF(g_pTempLineBufferMain) - 1);
@@ -7861,7 +7861,7 @@ void UpdateStatusbar(bool bUpdNeeded)
 
   static int s_iCurLexer = -1;
   static bool s_bIs2ndDefault = -1;
-  int const iCurLexer = Style_GetCurrentLexerID();
+  int const iCurLexer = Style_GetCurrentLexerRID();
   if ((s_iCurLexer != iCurLexer) || (s_bIs2ndDefault != bUse2ndDefault)) {
     Style_GetCurrentLexerName(tchLexerName, MINI_BUFFER);
     StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s", g_mxStatusBarPrefix[STATUS_LEXER], tchLexerName);
