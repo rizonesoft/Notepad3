@@ -63,7 +63,7 @@ HWND      g_hwndStatus = NULL;
 HWND      g_hwndToolbar = NULL;
 HWND      g_hwndDlgFindReplace = NULL;
 HWND      g_hwndDlgCustomizeSchemes = NULL;
-HWND      hwndReBar = NULL;
+HWND      g_hwndReBar = NULL;
 HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
 
@@ -390,7 +390,7 @@ void ObserveNotifyChangeEvent()
   }
   if (CheckNotifyChangeEvent()) {
       UpdateToolbar();
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       UpdateLineNumberWidth();
   }
 }
@@ -815,7 +815,7 @@ void EndWaitCursor()
     SciCall_SetCursor(SC_CURSORNORMAL);
     GetCursorPos(&pt); SetCursorPos(pt.x, pt.y);
     StatusSetSimple(g_hwndStatus, false);
-    UpdateStatusbar();
+    UpdateStatusbar(false);
   }
 }
 
@@ -1153,7 +1153,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
 
   UpdateToolbar();
-  UpdateStatusbar();
+  UpdateStatusbar(false);
   UpdateLineNumberWidth();
 
   // print file immediately and quit
@@ -1278,7 +1278,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_SETFOCUS:
       SetFocus(g_hwndEdit);
       //UpdateToolbar();
-      //UpdateStatusbar();
+      //UpdateStatusbar(false);
       //UpdateLineNumberWidth();
       //if (bPendingChangeNotify)
       //  PostMessage(hwnd,WM_CHANGENOTIFY,0,0);
@@ -1635,7 +1635,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   MRU_Load(g_pMRUreplace);
 
   if (g_hwndEdit == NULL || hwndEditFrame == NULL ||
-      g_hwndStatus == NULL || g_hwndToolbar == NULL || hwndReBar == NULL)
+      g_hwndStatus == NULL || g_hwndToolbar == NULL || g_hwndReBar == NULL)
     return(-1);
 
   UNUSED(wParam);
@@ -1800,13 +1800,13 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   g_hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
 
   // Create ReBar and add Toolbar
-  hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
+  g_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
                              0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
   rbi.cbSize = sizeof(REBARINFO);
   rbi.fMask  = 0;
   rbi.himl   = (HIMAGELIST)NULL;
-  SendMessage(hwndReBar,RB_SETBARINFO,0,(LPARAM)&rbi);
+  SendMessage(g_hwndReBar,RB_SETBARINFO,0,(LPARAM)&rbi);
 
   rbBand.cbSize  = sizeof(REBARBANDINFO);
   rbBand.fMask   = /*RBBIM_COLORS | RBBIM_TEXT | RBBIM_BACKGROUND | */
@@ -1820,10 +1820,10 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(tbbMainWnd);
   rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
   rbBand.cx         = 0;
-  SendMessage(hwndReBar,RB_INSERTBAND,(WPARAM)-1,(LPARAM)&rbBand);
+  SendMessage(g_hwndReBar,RB_INSERTBAND,(WPARAM)-1,(LPARAM)&rbBand);
 
-  SetWindowPos(hwndReBar,NULL,0,0,0,0,SWP_NOZORDER);
-  GetWindowRect(hwndReBar,&rc);
+  SetWindowPos(g_hwndReBar,NULL,0,0,0,0,SWP_NOZORDER);
+  GetWindowRect(g_hwndReBar,&rc);
   cyReBar = rc.bottom - rc.top;
 
   cyReBarFrame = bIsPrivAppThemed ? 0 : 2;
@@ -1955,12 +1955,11 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   Toolbar_GetButtons(g_hwndToolbar,IDT_FILE_NEW,g_tchToolbarButtons,COUNTOF(g_tchToolbarButtons));
 
   DestroyWindow(g_hwndToolbar);
-  DestroyWindow(hwndReBar);
+  DestroyWindow(g_hwndReBar);
   DestroyWindow(g_hwndStatus);
   CreateBars(hwnd,hInstance);
 
-  GetClientRect(hwnd,&rc);
-  SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,MAKELONG(rc.right,rc.bottom));
+  SendWMSize(hwnd);
 
   EditFinalizeStyling(g_hwndEdit, -1);
 
@@ -1971,8 +1970,9 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   MarkAllOccurrences(0);
   EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
 
+  UpdateUI();
   UpdateToolbar();
-  UpdateStatusbar();
+  UpdateStatusbar(true);
   UpdateLineNumberWidth();
 }
 
@@ -2002,13 +2002,13 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
     cy -= (rc.bottom - rc.top);*/
 
     //SendMessage(g_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
-    SetWindowPos(hwndReBar,NULL,0,0,LOWORD(lParam),cyReBar,SWP_NOZORDER);
+    SetWindowPos(g_hwndReBar,NULL,0,0,LOWORD(lParam),cyReBar,SWP_NOZORDER);
     // the ReBar automatically sets the correct height
     // calling SetWindowPos() with the height of one toolbar button
     // causes the control not to temporarily use the whole client area
     // and prevents flickering
 
-    //GetWindowRect(hwndReBar,&rc);
+    //GetWindowRect(g_hwndReBar,&rc);
     y = cyReBar + cyReBarFrame;    // define
     cy -= cyReBar + cyReBarFrame;  // border
   }
@@ -2035,7 +2035,7 @@ void MsgSize(HWND hwnd,WPARAM wParam,LPARAM lParam)
   g_WinCurrentWidth = cx;
 
   UpdateToolbar();
-  UpdateStatusbar();
+  UpdateStatusbar(false);
   UpdateLineNumberWidth();
 
   UNUSED(hwnd);
@@ -2230,7 +2230,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     LocalFree(params);
 
     UpdateToolbar();
-    UpdateStatusbar();
+    UpdateStatusbar(false);
     UpdateLineNumberWidth();
 
   }
@@ -3058,7 +3058,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -3103,7 +3103,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         EditFixPositions(g_hwndEdit);
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -3184,7 +3184,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         EndUndoAction(token);
         // Updates done by EditPasteClipboard():
         //~UpdateToolbar();
-        //~UpdateStatusbar();
+        //~UpdateStatusbar(false);
         //~UpdateLineNumberWidth();
       }
       break;
@@ -3197,7 +3197,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         EditPasteClipboard(g_hwndEdit, true, bSkipUnicodeDetection);
         EndUndoAction(token);
         UpdateToolbar();
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -3209,7 +3209,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SELECTALL:
         SendMessage(g_hwndEdit,SCI_SELECTALL,0,0);
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       break;
 
 
@@ -3247,7 +3247,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           const DocPos iLineEnd = SciCall_GetLineEndPosition(iLine);
           SciCall_SetSel(iLineStart, iLineEnd);
         }
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -3260,7 +3260,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         const DocPos iLineEnd = SciCall_LineFromPosition(iSelEnd);
         SciCall_SetSel(SciCall_PositionFromLine(iLineStart), SciCall_PositionFromLine(iLineEnd + 1));
         SciCall_ChooseCaretX();
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -3381,7 +3381,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_VK_INSERT:
       SendMessage(g_hwndEdit, SCI_EDITTOGGLEOVERTYPE, 0, 0);
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       break;
 
     case IDM_EDIT_ENCLOSESELECTION:
@@ -4124,7 +4124,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           SetForegroundWindow(g_hwndDlgFindReplace);
           PostMessage(g_hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(g_hwndDlgFindReplace, IDC_FINDTEXT)), 1);
         }
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -4145,7 +4145,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           SetForegroundWindow(g_hwndDlgFindReplace);
           PostMessage(g_hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(g_hwndDlgFindReplace, IDC_FINDTEXT)), 1);
         }
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -4274,14 +4274,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_GOTOLINE:
       EditLinenumDlg(g_hwndEdit);
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       break;
 
 
     case IDM_VIEW_SCHEME:
       Style_SelectLexerDlg(g_hwndEdit);
       UpdateToolbar();
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       UpdateLineNumberWidth();
       break;
 
@@ -4289,7 +4289,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_USE2NDDEFAULT:
       Style_ToggleUse2ndDefault(g_hwndEdit);
       UpdateToolbar();
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       UpdateLineNumberWidth();
       break;
 
@@ -4303,7 +4303,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
       UpdateToolbar();
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       UpdateLineNumberWidth();
       break;
 
@@ -4357,7 +4357,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SendMessage(g_hwndEdit,SCI_SETEDGEMODE,EDGE_NONE,0);
 
       UpdateToolbar();
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       break;
 
 
@@ -4370,7 +4370,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
         iLongLinesLimitG = g_iLongLinesLimit;
         UpdateToolbar();
-        UpdateStatusbar();
+        UpdateStatusbar(false);
       }
       break;
 
@@ -4609,12 +4609,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TOOLBAR:
       if (bShowToolbar) {
         bShowToolbar = 0;
-        ShowWindow(hwndReBar,SW_HIDE);
+        ShowWindow(g_hwndReBar,SW_HIDE);
       }
       else {
         bShowToolbar = 1;
         UpdateToolbar();
-        ShowWindow(hwndReBar,SW_SHOW);
+        ShowWindow(g_hwndReBar,SW_SHOW);
       }
       SendWMSize(hwnd);
       break;
@@ -4622,7 +4622,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_TOGGLETB:
       iHighDpiToolBar = (iHighDpiToolBar <= 0) ? 1 : 0;
-      MsgThemeChanged(hwnd, 0, 0);
+      SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
 
     case IDM_VIEW_CUSTOMIZETB:
@@ -4637,7 +4637,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       else {
         bShowStatusbar = 1;
-        UpdateStatusbar();
+        UpdateStatusbar(false);
         ShowWindow(g_hwndStatus,SW_SHOW);
       }
       SendWMSize(hwnd);
@@ -5034,7 +5034,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_LEXDEFAULT:
       Style_SetDefaultLexer(g_hwndEdit);
       UpdateToolbar();
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       UpdateLineNumberWidth();
       break;
 
@@ -5042,7 +5042,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_LEXHTML:
       Style_SetHTMLLexer(g_hwndEdit);
       UpdateToolbar();
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       UpdateLineNumberWidth();
       break;
 
@@ -5050,7 +5050,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_LEXXML:
       Style_SetXMLLexer(g_hwndEdit);
       UpdateToolbar();
-      UpdateStatusbar();
+      UpdateStatusbar(false);
       UpdateLineNumberWidth();
       break;
 
@@ -5189,7 +5189,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         g_iLongLinesLimit = max(min(g_iLongLinesLimit,4096),0);
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
         UpdateToolbar();
-        UpdateStatusbar();
+        UpdateStatusbar(false);
         iLongLinesLimitG = g_iLongLinesLimit;
       }
       break;
@@ -5759,7 +5759,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
             }
             UpdateToolbar();
-            UpdateStatusbar();
+            UpdateStatusbar(false);
           }
           else if (scn->updated & SC_UPDATE_V_SCROLL)
           {
@@ -5802,7 +5802,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             _SetDocumentModified(true);
 
             UpdateToolbar();
-            UpdateStatusbar();
+            UpdateStatusbar(false);
           }
           break;
 
@@ -7610,11 +7610,11 @@ const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", 
 FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
 
 
-void UpdateStatusbar()
+void UpdateStatusbar(bool bUpdNeeded)
 {
   if (!bShowStatusbar) { return; }
 
-  bool bIsUpdateNeeded = false;
+  bool bIsUpdateNeeded = bUpdNeeded;
 
   static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
   static WCHAR tchFRStatus[128] = { L'\0' };
@@ -8281,7 +8281,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     _SetDocumentModified(false);
 
     UpdateToolbar();
-    UpdateStatusbar();
+    UpdateStatusbar(false);
     UpdateLineNumberWidth();
 
     // Terminate file watching
@@ -8446,7 +8446,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     //bReadOnly = false;
     _SetDocumentModified(false);
     UpdateToolbar();
-    UpdateStatusbar();
+    UpdateStatusbar(false);
     UpdateLineNumberWidth();
     UpdateVisibleUrlHotspot(0);
 
@@ -8620,7 +8620,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
             StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
           Style_SetLexerFromFile(g_hwndEdit,g_wchCurFile);
           UpdateToolbar();
-          UpdateStatusbar();
+          UpdateStatusbar(false);
           UpdateLineNumberWidth();
         }
         else {

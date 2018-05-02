@@ -4461,7 +4461,7 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcA
   SciCall_ChooseCaretX();
 
   UpdateToolbar();
-  UpdateStatusbar();
+  UpdateStatusbar(false);
   UpdateLineNumberWidth();
 }
 
@@ -5865,7 +5865,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   }
   else if ((iPos < 0) && (start > 0) && !bExtendSelection) 
   {
-    UpdateStatusbar();
+    UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
       if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPFW)) {
         end = min(start, iTextLength);  start = 0;
@@ -5938,7 +5938,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   }
   else if ((iPos < 0) && (start <= iTextLength) &&  !bExtendSelection) 
   {
-    UpdateStatusbar();
+    UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) 
     {
       if (IDOK == InfoBox(MBOKCANCEL, L"MsgFindWrap2", IDS_FIND_WRAPRE)) {

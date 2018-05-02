@@ -140,7 +140,7 @@ int  CreateIniFileEx(LPCWSTR);
 
 void MarkAllOccurrences(int);
 void UpdateToolbar();
-void UpdateStatusbar();
+void UpdateStatusbar(bool);
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
 void UpdateVisibleUrlHotspot(int);

@@ -955,9 +955,9 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 //
 LRESULT SendWMSize(HWND hwnd)
 {
-  RECT rc; GetClientRect(hwnd, &rc);
-  return(SendMessage(hwnd, WM_SIZE, SIZE_RESTORED,
-    MAKELPARAM(rc.right, rc.bottom)));
+  RECT rc; 
+  GetClientRect(hwnd, &rc);
+  return (SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc.right, rc.bottom)));
 }
 
 
