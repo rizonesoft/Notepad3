@@ -95,7 +95,7 @@ typedef enum {
 
 #define STATUSBAR_EXTION_PREFIXES L"Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,"
 #define STATUSBAR_DEFAULT_IDS  L"0 1 2 4 5 6 7 8 9 10 11"
-#define STATUSBAR_SECTION_WIDTH_SPECS L"20 20 20 15 15 15 0 0 0 0 0 0"
+#define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0"
 #define STAUSBAR_RIGHT_MARGIN 20
 
 // --------------------------------------------------------------------------

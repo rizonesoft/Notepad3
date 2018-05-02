@@ -2261,11 +2261,11 @@ EDITLEXER lexLATEX = { SCLEX_LATEX, 63036, L"LaTeX Files", L"tex; latex; sty", L
 
 
 EDITLEXER lexANSI = { SCLEX_NULL, 63025, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console; none; size:10", L"" },
+                      { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console; none; size:10.5", L"" },
                       { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
                       { STYLE_BRACELIGHT, 63102, L"Matching Braces", L"size:+0", L"" },
                       { STYLE_BRACEBAD, 63103, L"Matching Braces Error", L"size:+0", L"" },
-                      { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, 63111, L"Extra Line Spacing (Size)", L"size:-2", L"" },
+                      { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, 63111, L"Extra Line Spacing (Size)", L"size:0", L"" },
                       { -1, 00000, L"", L"", L"" } } };
 
 
@@ -4266,8 +4266,8 @@ bool Style_HasLexerForExt(LPCWSTR lpszExt)
 //
 //  Style_SetLexerFromFile()
 //
-extern int flagNoHTMLGuess;
-extern int flagNoCGIGuess;
+extern int g_flagNoHTMLGuess;
+extern int g_flagNoCGIGuess;
 extern FILEVARS fvCurFile;
 
 void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
@@ -4284,7 +4284,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     MultiByteToWideCharStrg(Encoding_SciCP, fvCurFile.tchMode, wchMode);
 
-    if (!flagNoCGIGuess && (StringCchCompareIN(wchMode,COUNTOF(wchMode),L"cgi",-1) == 0 || 
+    if (!g_flagNoCGIGuess && (StringCchCompareIN(wchMode,COUNTOF(wchMode),L"cgi",-1) == 0 || 
                          StringCchCompareIN(wchMode,COUNTOF(wchMode),L"fcgi",-1) == 0)) {
       char tchText[256] = { L'\0' };
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
@@ -4322,7 +4322,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     if (*lpszExt == L'.') ++lpszExt;
 
-    if (!flagNoCGIGuess && (StringCchCompareIX(lpszExt,L"cgi") == 0 || StringCchCompareIX(lpszExt,L"fcgi") == 0)) {
+    if (!g_flagNoCGIGuess && (StringCchCompareIX(lpszExt,L"cgi") == 0 || StringCchCompareIX(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { L'\0' };
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
       StrTrimA(tchText," \t\n\r");
@@ -4366,11 +4366,11 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     bFound = true;
   }
 
-  if (!bFound && g_bAutoSelect && (!flagNoHTMLGuess || !flagNoCGIGuess)) {
+  if (!bFound && g_bAutoSelect && (!g_flagNoHTMLGuess || !g_flagNoCGIGuess)) {
     char tchText[512];
     SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
     StrTrimA(tchText," \t\n\r");
-    if (!flagNoCGIGuess) {
+    if (!g_flagNoCGIGuess) {
       if (tchText[0] == '<') {
         if (StrStrIA(tchText, "<html"))
           pLexNew = &lexHTML;
@@ -4533,7 +4533,7 @@ float Style_SetBaseFontSize(HWND hwnd, float fSize)
   static float fBaseFontSize = (float)INITIAL_BASE_FONT_SIZE;
 
   if (fSize >= 0.0) {
-    fBaseFontSize = (float)(((int)(fSize * 102)) / 100.0);  // bias 2%
+    fBaseFontSize = (float)(((int)(fSize * 100.0 + 50.0)) / 100.0);
     //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)iBaseFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
     
@@ -4557,7 +4557,7 @@ float Style_SetCurrentFontSize(HWND hwnd, float fSize)
   static float fCurrentFontSize = (float)INITIAL_BASE_FONT_SIZE;
 
   if (fSize >= 0.0) {
-    fCurrentFontSize = (float)(((int)(fSize * 102)) / 100.0); // bias 2%
+    fCurrentFontSize = (float)(((int)(fSize * 100.0 + 50.0)) / 100.0); // bias 2%
     //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)iCurrentFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)((int)(fCurrentFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
 
@@ -4577,13 +4577,13 @@ float Style_GetCurrentFontSize(HWND hwnd)
 //
 //  Style_SetIndentGuides()
 //
-extern int flagSimpleIndentGuides;
+extern int g_flagSimpleIndentGuides;
 
 void Style_SetIndentGuides(HWND hwnd,bool bShow)
 {
   int iIndentView = SC_IV_NONE;
   if (bShow) {
-    if (!flagSimpleIndentGuides) {
+    if (!g_flagSimpleIndentGuides) {
       switch (SendMessage(hwnd, SCI_GETLEXER, 0, 0)) {
       case SCLEX_PYTHON:
       case SCLEX_NIMROD:
