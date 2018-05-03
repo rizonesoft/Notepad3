@@ -2745,7 +2745,7 @@ void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
   WCHAR tchExe[MAX_PATH+2];
 
   StringCchCopyW(tchExe, COUNTOF(tchExe), g_tchUpdateCheckerExe);
-  if (!StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
+  if (bExecInstaller && !StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
 
   WCHAR tchExePath[MAX_PATH + 2];
   if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
