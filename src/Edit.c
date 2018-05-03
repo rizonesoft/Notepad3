@@ -7819,6 +7819,7 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
     g_iLongLinesLimit = lpfv->iLongLinesLimit;
   else
     g_iLongLinesLimit = iLongLinesLimitG;
+
   SendMessage(hwnd,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
 
   iWrapCol = 0;

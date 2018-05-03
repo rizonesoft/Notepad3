@@ -4371,7 +4371,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_LONGLINESETTINGS:
       if (LongLineSettingsDlg(hwnd,IDD_LONGLINES,&g_iLongLinesLimit)) {
         bMarkLongLines = true;
-        SendMessage(g_hwndEdit,SCI_SETEDGEMODE,(iLongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
+        SendMessage(g_hwndEdit, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
         Style_SetLongLineColors(g_hwndEdit);
         g_iLongLinesLimit = max(min(g_iLongLinesLimit,4096),0);
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);

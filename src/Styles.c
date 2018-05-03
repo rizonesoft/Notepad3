@@ -62,6 +62,7 @@ extern bool bUseOldStyleBraceMatching;
 extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
 
+// ============================================================================
 
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
@@ -3351,9 +3352,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   g_pLexCurrent = GetCurrentStdLexer();
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
 
-  // Clear
-  SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
-
   // Lexer 
   SendMessage(hwnd, SCI_SETLEXER, pLexNew->lexerID, 0);
 
@@ -3414,6 +3412,15 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // Idle Styling (very large text)
   SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
+
+  // --------------------------------------------------------------------------
+
+  // Clear
+  SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+
+  // Default Values are always set
+  SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
+
 
   // constants
   SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
@@ -5489,11 +5496,6 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
 
   // reset horizontal scrollbar width
   SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
-
-  if (!bInitDefault) {
-    // Default Values are always set
-    SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
-  }
 
   // Font
   WCHAR wchFontName[80] = { L'\0' };
