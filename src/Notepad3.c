@@ -229,7 +229,7 @@ bool      bTransparentModeAvailable;
 bool      bShowToolbar;
 bool      bShowStatusbar;
 int       iSciDirectWriteTech;
-int       iSciFontQuality;
+int       g_iSciFontQuality;
 int       iHighDpiToolBar;
 int       iUpdateDelayHyperlinkStyling;
 int       iUpdateDelayMarkAllCoccurrences;
@@ -6423,8 +6423,8 @@ void LoadSettings()
   iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech", DirectWriteTechnology[0]);
   iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
 
-  iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", FontQuality[3]);
-  iSciFontQuality = max(min(iSciFontQuality, 3), 0);
+  g_iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", FontQuality[3]);
+  g_iSciFontQuality = max(min(g_iSciFontQuality, 3), 0);
 
   g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
   g_iMarkOccurrencesMaxCount = (g_iMarkOccurrencesMaxCount <= 0) ? INT_MAX : g_iMarkOccurrencesMaxCount;
@@ -6529,8 +6529,8 @@ void LoadSettings()
 
   WCHAR tchSciFontQuality[64];
   StringCchPrintf(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
-  iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,iSciFontQuality);
-  iSciFontQuality = max(min(iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_TECHNOLOGY_DEFAULT);
+  g_iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,g_iSciFontQuality);
+  g_iSciFontQuality = max(min(g_iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_TECHNOLOGY_DEFAULT);
 
 
   LocalFree(pIniSection);
