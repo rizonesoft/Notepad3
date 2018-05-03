@@ -113,6 +113,8 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(HINSTANCE);
 HWND InitInstance(HINSTANCE,LPSTR,int);
+void BeginWaitCursor(LPCWSTR text);
+void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR);
@@ -138,7 +140,7 @@ int  CreateIniFileEx(LPCWSTR);
 
 void MarkAllOccurrences(int);
 void UpdateToolbar();
-void UpdateStatusbar();
+void UpdateStatusbar(bool);
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
 void UpdateVisibleUrlHotspot(int);
@@ -183,9 +185,13 @@ LRESULT MsgSysCommand(HWND, UINT, WPARAM, LPARAM);
 LRESULT MsgCommand(HWND, WPARAM, LPARAM);
 LRESULT MsgNotify(HWND, WPARAM, LPARAM);
 
+
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
 bool CheckNotifyChangeEvent();
+#define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
+#define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
+
 
 #endif //_NP3_NOTEPAD3_H_
 ///   End of Notepad3.h   \\\

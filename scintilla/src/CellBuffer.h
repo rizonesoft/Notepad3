@@ -45,8 +45,7 @@ public:
 	Action &operator=(const Action &other) = delete;
 	Action &operator=(const Action &&other) = delete;
 	// Move constructor allows vector to be resized without reallocating.
-	// Could use =default but MSVC 2013 warns.
-	Action(Action &&other);
+	Action(Action &&other) noexcept = default;
 	~Action();
 	void Create(actionType at_, Sci::Position position_=0, const char *data_=0, Sci::Position lenData_=0, bool mayCoalesce_=true);
 	void Clear();
@@ -69,7 +68,9 @@ public:
 	UndoHistory();
 	// Deleted so UndoHistory objects can not be copied.
 	UndoHistory(const UndoHistory &) = delete;
+	UndoHistory(UndoHistory &&) = delete;
 	void operator=(const UndoHistory &) = delete;
+	void operator=(UndoHistory &&) = delete;
 	~UndoHistory();
 
 	const char *AppendAction(actionType at, Sci::Position position, const char *data, Sci::Position lengthData, bool &startSequence, bool mayCoalesce=true);

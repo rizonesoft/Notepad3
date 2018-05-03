@@ -103,11 +103,6 @@ __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, D
   WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
-//extern HWND g_hwndEdit;
-#define BeginWaitCursor(TCH) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetText(g_hwndStatus,STATUS_HELP,(TCH)); IgnoreNotifyChangeEvent(); }
-#define BeginWaitCursorID(UID) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetTextID(g_hwndStatus,STATUS_HELP,(UID)); IgnoreNotifyChangeEvent(); }
-#define EndWaitCursor() { POINT pt; SciCall_SetCursor(SC_CURSORNORMAL); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); StatusSetSimple(g_hwndStatus,false); ObserveNotifyChangeEvent(); UpdateStatusbar(); }
-
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
 #define IsXP()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
@@ -147,6 +142,7 @@ bool BitmapAlphaBlend(HBITMAP,COLORREF,BYTE);
 bool BitmapGrayScale(HBITMAP);
 bool VerifyContrast(COLORREF,COLORREF);
 bool IsFontAvailable(LPCWSTR);
+POINT GetSystemDpi();
 
 
 bool SetWindowTitle(HWND,UINT,bool,UINT,LPCWSTR,int,bool,UINT,bool,LPCWSTR);
@@ -168,7 +164,7 @@ void DeleteBitmapButton(HWND,int);
 
 
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
-bool StatusSetText(HWND,UINT,LPCWSTR);
+void StatusSetText(HWND,UINT,LPCWSTR);
 bool StatusSetTextID(HWND,UINT,UINT);
 COLORREF GetBackgroundColor(HWND);
 LONG StatusCalcPaneWidth(HWND,LPCWSTR);
@@ -392,7 +388,7 @@ __forceinline int GetHexDigit(char ch) {
 void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
 
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault);
-int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault);
+int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 

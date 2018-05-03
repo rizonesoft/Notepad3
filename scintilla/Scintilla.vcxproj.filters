@@ -671,5 +671,11 @@
     <ClInclude Include="win32\ScintillaWin.h">
       <Filter>win32</Filter>
     </ClInclude>
+    <ClInclude Include="src\ElapsedPeriod.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IntegerRectangle.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

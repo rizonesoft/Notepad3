@@ -49,8 +49,8 @@ typedef struct _keywordlist
 #pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Struktur/Union
 typedef struct _editlexer
 {
-  int iLexer;
-  int rid;
+  int lexerID;
+  int resID;
   WCHAR* pszName;
   WCHAR* pszDefExt;
   WCHAR  szExtensions[BUFZIZE_STYLE_EXTENTIONS];
@@ -88,7 +88,7 @@ void   Style_SetLexerFromID(HWND,int);
 void   Style_SetDefaultFont(HWND,bool);
 void   Style_ToggleUse2ndDefault(HWND);
 bool   Style_GetUse2ndDefault();
-bool   Style_SetUse2ndDefault(int); // in:bool
+void   Style_SetUse2ndDefault(bool);
 float  Style_GetBaseFontSize(HWND);
 float  Style_SetBaseFontSize(HWND,float);
 float  Style_GetCurrentFontSize(HWND);
@@ -109,6 +109,7 @@ bool   Style_SelectFont(HWND,LPWSTR,int,LPCWSTR,LPCWSTR,bool,bool,bool,bool);
 bool   Style_SelectColor(HWND,bool,LPWSTR,int,bool);
 void   Style_SetStyles(HWND,int,LPCWSTR);
 void   Style_SetFontQuality(HWND,LPCWSTR);
+int    Style_GetCurrentLexerRID();
 void   Style_GetCurrentLexerName(LPWSTR,int);
 int    Style_GetLexerIconId(PEDITLEXER);
 bool   Style_HasLexerForExt(LPCWSTR);

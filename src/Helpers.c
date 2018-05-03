@@ -484,6 +484,27 @@ bool IsFontAvailable(LPCWSTR lpszFontName)
 }
 
 
+
+//=============================================================================
+//
+//  SetWindowTitle()
+//
+POINT GetSystemDpi()
+{
+  POINT result;
+
+  HDC hDC = GetDC(NULL);
+
+  result.x = GetDeviceCaps(hDC, LOGPIXELSX);
+  result.y = GetDeviceCaps(hDC, LOGPIXELSY);
+
+  ReleaseDC(NULL, hDC);
+
+  return result;
+}
+
+
+
 //=============================================================================
 //
 //  SetWindowTitle()
@@ -934,9 +955,9 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 //
 LRESULT SendWMSize(HWND hwnd)
 {
-  RECT rc; GetClientRect(hwnd, &rc);
-  return(SendMessage(hwnd, WM_SIZE, SIZE_RESTORED,
-    MAKELPARAM(rc.right, rc.bottom)));
+  RECT rc; 
+  GetClientRect(hwnd, &rc);
+  return (SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc.right, rc.bottom)));
 }
 
 
@@ -944,14 +965,12 @@ LRESULT SendWMSize(HWND hwnd)
 //
 //  StatusSetText()
 //
-bool StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
+void StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
 {
-
-  UINT uFlags = (nPart == (UINT)STATUS_HELP) ? nPart|SBT_NOBORDERS : nPart;
-  if (lpszText)
-    return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
-  else
-    return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)L"...");
+  if (lpszText) {
+    UINT uFlags = (nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+    SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
+  }
 }
 
 
@@ -995,7 +1014,7 @@ COLORREF GetBackgroundColor(HWND hwnd)
 //
 LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
 {
-  HDC const hdc   = GetDC(hwnd);
+  HDC const hdc = GetDC(hwnd);
   HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd,WM_GETFONT,0,0);
   HGDIOBJ const hfold = SelectObject(hdc,hfont);
   int const mmode = SetMapMode(hdc,MM_TEXT);
@@ -2842,6 +2861,7 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
   for (int i = 0; i < len; ++i) {
     if (wchTmpBuff[i] == L',') { wchTmpBuff[i] = L'\0'; }
   }
+  wchTmpBuff[len + 1] = L'\0'; // double zero at the end
   // fill default
   for (int i = 0; i < iCount; ++i) { StringCchCopyW(sMatrix[i], (size_t)iLen, sDefault); }
   // insert values
@@ -2862,7 +2882,7 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
 //  ReadVectorFromString()
 //
 //
-int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, int iMax, int iDefault)
+int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault)
 {
   static WCHAR wchTmpBuff[SMALL_BUFFER];
 
@@ -2879,6 +2899,8 @@ int ReadVectorFromString(LPCWSTR wchStrg, int* iVector, int iCount, int iMin, in
   for (int i = 0; i < len; ++i) {
     if (wchTmpBuff[i] == L' ') { wchTmpBuff[i] = L'\0'; }
   }
+  wchTmpBuff[len + 1] = L'\0'; // double zero at the end
+
   // fill default
   for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
   // insert values

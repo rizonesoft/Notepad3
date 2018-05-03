@@ -1,6 +1,6 @@
-// SciTE - Scintilla based Text Editor
+// Scintilla source code edit control
 /** @file PropSetSimple.cxx
- ** A Java style properties file module.
+ ** A basic string to string map.
  **/
 // Copyright 1998-2010 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.

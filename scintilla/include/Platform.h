@@ -438,7 +438,7 @@ public:
 	void Show(Point pt, Window &w);
 };
 
-class ElapsedTime {
+class[[deprecated("Use ElapsedPeriod")]] ElapsedTime {
 	long bigBit;
 	long littleBit;
 public:

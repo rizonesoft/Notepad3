@@ -19,6 +19,7 @@
 #include "Scintilla.h"
 
 #include "StringCopy.h"
+#include "IntegerRectangle.h"
 #include "XPM.h"
 #include "LineMarker.h"
 
@@ -151,21 +152,20 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 		surface->DrawRGBAImage(rcImage, image->GetWidth(), image->GetHeight(), image->Pixels());
 		return;
 	}
+	const IntegerRectangle ircWhole(rcWhole);
 	// Restrict most shapes a bit
-	PRectangle rc = rcWhole;
-	rc.top++;
-	rc.bottom--;
-	int minDim = std::min(static_cast<int>(rc.Width()), static_cast<int>(rc.Height()));
-	minDim--;	// Ensure does not go beyond edge
-	int centreX = static_cast<int>(floor((rc.right + rc.left) / 2.0));
-	const int centreY = static_cast<int>(floor((rc.bottom + rc.top) / 2.0));
+	const PRectangle rc(rcWhole.left, rcWhole.top + 1, rcWhole.right, rcWhole.bottom - 1);
+	// Ensure does not go beyond edge
+	const int minDim = std::min(ircWhole.Width(), ircWhole.Height()-2) - 1;
+	int centreX = (ircWhole.right + ircWhole.left) / 2;
+	const int centreY = (ircWhole.bottom + ircWhole.top) / 2;
 	const int dimOn2 = minDim / 2;
 	const int dimOn4 = minDim / 4;
 	const int blobSize = dimOn2-1;
 	const int armSize = dimOn2-2;
 	if (marginStyle == SC_MARGIN_NUMBER || marginStyle == SC_MARGIN_TEXT || marginStyle == SC_MARGIN_RTEXT) {
 		// On textual margins move marker to the left to try to avoid overlapping the text
-		centreX = static_cast<int>(rc.left) + dimOn2 + 1;
+		centreX = ircWhole.left + dimOn2 + 1;
 	}
 	if (markType == SC_MARK_ROUNDRECT) {
 		PRectangle rcRounded = rc;
@@ -235,46 +235,46 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 
 	} else if (markType == SC_MARK_VLINE) {
 		surface->PenColour(colourBody);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->MoveTo(centreX, ircWhole.top);
+		surface->LineTo(centreX, ircWhole.bottom);
 
 	} else if (markType == SC_MARK_LCORNER) {
 		surface->PenColour(colourTail);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
+		surface->MoveTo(centreX, ircWhole.top);
 		surface->LineTo(centreX, centreY);
-		surface->LineTo(static_cast<int>(rc.right) - 1, centreY);
+		surface->LineTo(ircWhole.right - 1, centreY);
 
 	} else if (markType == SC_MARK_TCORNER) {
 		surface->PenColour(colourTail);
 		surface->MoveTo(centreX, centreY);
-		surface->LineTo(static_cast<int>(rc.right) - 1, centreY);
+		surface->LineTo(ircWhole.right - 1, centreY);
 
 		surface->PenColour(colourBody);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
+		surface->MoveTo(centreX, ircWhole.top);
 		surface->LineTo(centreX, centreY + 1);
 
 		surface->PenColour(colourHead);
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->LineTo(centreX, ircWhole.bottom);
 
 	} else if (markType == SC_MARK_LCORNERCURVE) {
 		surface->PenColour(colourTail);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
+		surface->MoveTo(centreX, ircWhole.top);
 		surface->LineTo(centreX, centreY-3);
 		surface->LineTo(centreX+3, centreY);
-		surface->LineTo(static_cast<int>(rc.right) - 1, centreY);
+		surface->LineTo(ircWhole.right - 1, centreY);
 
 	} else if (markType == SC_MARK_TCORNERCURVE) {
 		surface->PenColour(colourTail);
 		surface->MoveTo(centreX, centreY-3);
 		surface->LineTo(centreX+3, centreY);
-		surface->LineTo(static_cast<int>(rc.right) - 1, centreY);
+		surface->LineTo(ircWhole.right - 1, centreY);
 
 		surface->PenColour(colourBody);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
+		surface->MoveTo(centreX, ircWhole.top);
 		surface->LineTo(centreX, centreY-2);
 
 		surface->PenColour(colourHead);
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->LineTo(centreX, ircWhole.bottom);
 
 	} else if (markType == SC_MARK_BOXPLUS) {
 		DrawBox(surface, centreX, centreY, blobSize, fore, colourHead);
@@ -286,10 +286,10 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 		else
 			surface->PenColour(colourBody);
 		surface->MoveTo(centreX, centreY + blobSize);
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->LineTo(centreX, ircWhole.bottom);
 
 		surface->PenColour(colourBody);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
+		surface->MoveTo(centreX, ircWhole.top);
 		surface->LineTo(centreX, centreY - blobSize);
 
 		DrawBox(surface, centreX, centreY, blobSize, fore, colourHead);
@@ -312,7 +312,7 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 
 		surface->PenColour(colourHead);
 		surface->MoveTo(centreX, centreY + blobSize);
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->LineTo(centreX, ircWhole.bottom);
 
 	} else if (markType == SC_MARK_BOXMINUSCONNECTED) {
 		DrawBox(surface, centreX, centreY, blobSize, fore, colourHead);
@@ -320,10 +320,10 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 
 		surface->PenColour(colourHead);
 		surface->MoveTo(centreX, centreY + blobSize);
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->LineTo(centreX, ircWhole.bottom);
 
 		surface->PenColour(colourBody);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
+		surface->MoveTo(centreX, ircWhole.top);
 		surface->LineTo(centreX, centreY - blobSize);
 
 		if (tFold == LineMarker::body) {
@@ -347,10 +347,10 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 		else
 			surface->PenColour(colourBody);
 		surface->MoveTo(centreX, centreY + blobSize);
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->LineTo(centreX, ircWhole.bottom);
 
 		surface->PenColour(colourBody);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
+		surface->MoveTo(centreX, ircWhole.top);
 		surface->LineTo(centreX, centreY - blobSize);
 
 		DrawCircle(surface, centreX, centreY, blobSize, fore, colourHead);
@@ -359,7 +359,7 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 	} else if (markType == SC_MARK_CIRCLEMINUS) {
 		surface->PenColour(colourHead);
 		surface->MoveTo(centreX, centreY + blobSize);
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->LineTo(centreX, ircWhole.bottom);
 
 		DrawCircle(surface, centreX, centreY, blobSize, fore, colourHead);
 		DrawMinus(surface, centreX, centreY, blobSize, colourTail);
@@ -367,10 +367,10 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 	} else if (markType == SC_MARK_CIRCLEMINUSCONNECTED) {
 		surface->PenColour(colourHead);
 		surface->MoveTo(centreX, centreY + blobSize);
-		surface->LineTo(centreX, static_cast<int>(rcWhole.bottom));
+		surface->LineTo(centreX, ircWhole.bottom);
 
 		surface->PenColour(colourBody);
-		surface->MoveTo(centreX, static_cast<int>(rcWhole.top));
+		surface->MoveTo(centreX, ircWhole.top);
 		surface->LineTo(centreX, centreY - blobSize);
 
 		DrawCircle(surface, centreX, centreY, blobSize, fore, colourHead);
@@ -380,9 +380,10 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 		char character[1];
 		character[0] = static_cast<char>(markType - SC_MARK_CHARACTER);
 		const XYPOSITION width = surface->WidthText(fontForCharacter, character, 1);
-		rc.left += (rc.Width() - width) / 2;
-		rc.right = rc.left + width;
-		surface->DrawTextClipped(rc, fontForCharacter, rc.bottom - 2,
+		PRectangle rcText = rc;
+		rcText.left += (rc.Width() - width) / 2;
+		rcText.right = rc.left + width;
+		surface->DrawTextClipped(rcText, fontForCharacter, rcText.bottom - 2,
 			character, 1, fore, back);
 
 	} else if (markType == SC_MARK_DOTDOTDOT) {
@@ -422,11 +423,11 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 	} else if (markType == SC_MARK_BOOKMARK) {
 		const int halfHeight = minDim / 3;
 		Point pts[] = {
-			Point::FromInts(static_cast<int>(rc.left), centreY-halfHeight),
-			Point::FromInts(static_cast<int>(rc.right) - 3, centreY - halfHeight),
-			Point::FromInts(static_cast<int>(rc.right) - 3 - halfHeight, centreY),
-			Point::FromInts(static_cast<int>(rc.right) - 3, centreY + halfHeight),
-			Point::FromInts(static_cast<int>(rc.left), centreY + halfHeight),
+			Point::FromInts(ircWhole.left, centreY-halfHeight),
+			Point::FromInts(ircWhole.right - 3, centreY - halfHeight),
+			Point::FromInts(ircWhole.right - 3 - halfHeight, centreY),
+			Point::FromInts(ircWhole.right - 3, centreY + halfHeight),
+			Point::FromInts(ircWhole.left, centreY + halfHeight),
 		};
 		surface->Polygon(pts, ELEMENTS(pts), fore, back);
 	} else { // SC_MARK_FULLRECT

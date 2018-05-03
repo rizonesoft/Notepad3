@@ -16,7 +16,6 @@
 
 #include <algorithm>
 
-#include "Platform.h"
 #include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"

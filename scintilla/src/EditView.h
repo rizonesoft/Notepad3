@@ -10,8 +10,6 @@
 
 namespace Scintilla {
 
-#undef NP3_MATCH_BRACE_RECT_SEL_PATCH
-
 struct PrintParameters {
 	int magnification;
 	int colourMode;
@@ -44,13 +42,15 @@ void DrawStyledText(Surface *surface, const ViewStyle &vs, int styleOffset, PRec
 
 typedef void (*DrawTabArrowFn)(Surface *surface, PRectangle rcTab, int ymid);
 
+class LineTabstops;
+
 /**
 * EditView draws the main text area.
 */
 class EditView {
 public:
 	PrintParameters printParameters;
-	std::unique_ptr<PerLine> ldTabstops;
+	std::unique_ptr<LineTabstops> ldTabstops;
 	int tabWidthMinimumPixels;
 
 	bool hideSelection;
@@ -92,7 +92,9 @@ public:
 	EditView();
 	// Deleted so EditView objects can not be copied.
 	EditView(const EditView &) = delete;
+	EditView(EditView &&) = delete;
 	void operator=(const EditView &) = delete;
+	void operator=(EditView &&) = delete;
 	virtual ~EditView();
 
 	bool SetTwoPhaseDraw(bool twoPhaseDraw);
@@ -117,9 +119,6 @@ public:
 	Point LocationFromPosition(Surface *surface, const EditModel &model, SelectionPosition pos, Sci::Line topLine,
 				   const ViewStyle &vs, PointEnd pe);
 	Range RangeDisplayLine(Surface *surface, const EditModel &model, Sci::Line lineVisible, const ViewStyle &vs);
-#ifdef NP3_MATCH_BRACE_RECT_SEL_PATCH
-	XYPOSITION EndSpaceWidth(const EditModel &model, const ViewStyle &vs, LineLayout *ll, Sci::Line line);
-#endif
 	SelectionPosition SPositionFromLocation(Surface *surface, const EditModel &model, PointDocument pt, bool canReturnInvalid,
 		bool charPosition, bool virtualSpace, const ViewStyle &vs);
 	SelectionPosition SPositionFromLineX(Surface *surface, const EditModel &model, Sci::Line lineDoc, int x, const ViewStyle &vs);
@@ -161,17 +160,19 @@ class AutoLineLayout {
 	LineLayoutCache &llc;
 	LineLayout *ll;
 public:
-	AutoLineLayout(LineLayoutCache &llc_, LineLayout *ll_) : llc(llc_), ll(ll_) {}
-	explicit AutoLineLayout(const AutoLineLayout &) = delete;
+	AutoLineLayout(LineLayoutCache &llc_, LineLayout *ll_) noexcept : llc(llc_), ll(ll_) {}
+	AutoLineLayout(const AutoLineLayout &) = delete;
+	AutoLineLayout(AutoLineLayout &&) = delete;
 	AutoLineLayout &operator=(const AutoLineLayout &) = delete;
+	AutoLineLayout &operator=(AutoLineLayout &&) = delete;
 	~AutoLineLayout() {
 		llc.Dispose(ll);
-		ll = 0;
+		ll = nullptr;
 	}
-	LineLayout *operator->() const {
+	LineLayout *operator->() const noexcept {
 		return ll;
 	}
-	operator LineLayout *() const {
+	operator LineLayout *() const noexcept {
 		return ll;
 	}
 	void Set(LineLayout *ll_) {

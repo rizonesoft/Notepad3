@@ -18,6 +18,7 @@
 #include <forward_list>
 #include <algorithm>
 #include <memory>
+#include <chrono>
 
 #ifndef NO_CXX11_REGEX
 #include <regex>
@@ -43,6 +44,7 @@
 #include "Document.h"
 #include "RESearch.h"
 #include "UniConversion.h"
+#include "ElapsedPeriod.h"
 
 using namespace Scintilla;
 
@@ -2108,9 +2110,9 @@ void Document::StyleToAdjustingLineDuration(Sci::Position pos) {
 	const double alpha = 0.25;
 
 	const Sci::Line lineFirst = SciLineFromPosition(GetEndStyled());
-	ElapsedTime etStyling;
+	ElapsedPeriod epStyling;
 	EnsureStyledTo(pos);
-	const double durationStyling = etStyling.Duration();
+	const double durationStyling = epStyling.Duration();
 	const Sci::Line lineLast = SciLineFromPosition(GetEndStyled());
 	if (lineLast >= lineFirst + 8) {
 		// Only adjust for styling multiple lines to avoid instability
@@ -2924,7 +2926,7 @@ Sci::Position Cxx11RegexFindText(const Document *doc, Sci::Position minPos, Sci:
 	bool caseSensitive, Sci::Position *length, RESearch &search) {
 	const RESearchRange resr(doc, minPos, maxPos);
 	try {
-		//ElapsedTime et;
+		//ElapsedPeriod ep;
 		std::regex::flag_type flagsRe = std::regex::ECMAScript;
 		// Flags that apper to have no effect:
 		// | std::regex::collate | std::regex::extended;
@@ -2969,7 +2971,7 @@ Sci::Position Cxx11RegexFindText(const Document *doc, Sci::Position minPos, Sci:
 		// Example - search in doc/ScintillaHistory.html for
 		// [[:upper:]]eta[[:space:]]
 		// On MacBook, normally around 1 second but with locale imbued -> 14 seconds.
-		//double durSearch = et.Duration(true);
+		//const double durSearch = ep.Duration(true);
 		//Platform::DebugPrintf("Search:%9.6g \n", durSearch);
 		return posMatch;
 	} catch (std::regex_error &) {

@@ -335,12 +335,15 @@ BEGIN
         MENUITEM "&Toggle Folds\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
         MENUITEM SEPARATOR
         MENUITEM "Show Tool&bar",               IDM_VIEW_TOOLBAR
+        MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
         MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
         MENUITEM "Zoom &In\tCtrl++",            IDM_VIEW_ZOOMIN
         MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
         MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
+        MENUITEM SEPARATOR
+        MENUITEM "Doc Tail Chasing",            IDM_VIEW_CHASING_DOCTAIL
         MENUITEM SEPARATOR
         MENUITEM "Copy Position Args\tCtrl+Shift+K", CMD_COPYWINPOS
         MENUITEM "Snap to Default Position\tCtrl+Shift+P", CMD_DEFAULTWINPOS
@@ -418,6 +421,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
+        MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
         MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
     END
@@ -628,6 +632,7 @@ BEGIN
     VK_TAB,         CMD_CTRLTAB,            VIRTKEY, CONTROL, NOINVERT
     VK_UP,          CMD_ALTUP,              VIRTKEY, ALT, NOINVERT
     VK_UP,          IDM_EDIT_MOVELINEUP,    VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_INSERT,      CMD_VK_INSERT,          VIRTKEY, NOINVERT
 END
 
 IDR_ACCFINDREPLACE ACCELERATORS
@@ -1469,8 +1474,9 @@ BEGIN
     IDS_STATUS_DOCLINE      "%s%s / %s"
     IDS_STATUS_DOCCOLUMN    "%s%s"
     IDS_STATUS_DOCCOLUMN2   "%s%s / %s"
-    IDS_STATUS_SELECTION    "%s%s (%s)"
+    IDS_STATUS_SELECTION    "%s%s"
     IDS_STATUS_SELCTLINES   "%s%s"
+    IDS_STATUS_SELCTBYTES   "%s%s"
     IDS_STATUS_OCCURRENCE   "%s%s"
     IDS_STATUS_DOCSIZE      "%s%s [UTF-8]"
     IDS_LOADFILE            "Loading ""%s""..."
@@ -1523,12 +1529,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favorites"
-    IDT_FILE_ADDTOFAV       "Add to Favorites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
-    IDT_FILE_LAUNCH         "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW    "Focused View"
+    IDT_FILE_PRINT           "Print"
+    IDT_FILE_OPENFAV         "Favorites"
+    IDT_FILE_ADDTOFAV        "Add to Favorites"
+    IDT_VIEW_TOGGLEFOLDS     "Toggle Folds"
+    IDT_FILE_LAUNCH          "Execute Document"
+    IDT_VIEW_TOGGLE_VIEW     "Focused View"
+    IDT_VIEW_CHASING_DOCTAIL "Doc Tail Chasing"
 END
 
 STRINGTABLE

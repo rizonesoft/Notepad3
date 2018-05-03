@@ -53,6 +53,11 @@ public:
 	LineVector() : starts(256), perLine(0) {
 		Init();
  	}
+	// Deleted so LineVector objects can not be copied.
+	LineVector(const LineVector &) = delete;
+	LineVector(LineVector &&) = delete;
+	LineVector &operator=(const LineVector &) = delete;
+	LineVector &operator=(LineVector &&) = delete;
 	~LineVector() override {
  	}
 	void Init() override {
@@ -100,14 +105,6 @@ Action::Action() {
 	position = 0;
 	lenData = 0;
 	mayCoalesce = false;
-}
-
-Action::Action(Action &&other) {
-	at = other.at;
-	position = other.position;
-	data = std::move(other.data);
-	lenData = other.lenData;
-	mayCoalesce = other.mayCoalesce;
 }
 
 Action::~Action() {

@@ -34,8 +34,10 @@ class FontAlias : public Font {
 public:
 	FontAlias();
 	// FontAlias objects can not be assigned except for initialization
-	FontAlias &operator=(const FontAlias &) = delete;
 	FontAlias(const FontAlias &);
+	FontAlias(FontAlias &&)  = delete;
+	FontAlias &operator=(const FontAlias &) = delete;
+	FontAlias &operator=(FontAlias &&) = delete;
 	~FontAlias() override;
 	void MakeAlias(Font &fontOrigin);
 	void ClearFont();
@@ -49,7 +51,7 @@ struct FontMeasurements {
 	XYPOSITION spaceWidth;
 	int sizeZoomed;
 	FontMeasurements();
-	void Clear();
+	void ClearMeasurements();
 };
 
 /**
@@ -70,8 +72,10 @@ public:
 
 	Style();
 	Style(const Style &source);
+	Style(Style &&) = delete;
 	~Style();
 	Style &operator=(const Style &source);
+	Style &operator=(Style &&) = delete;
 	void Clear(ColourDesired fore_, ColourDesired back_,
 	           int size_,
 	           const char *fontName_, int characterSet_,

@@ -242,15 +242,19 @@ DeclareSciCallV0(NewLine, NEWLINE)
 //
 //  Scrolling and automatic scrolling
 //
-DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
-DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
+DeclareSciCallV0(ScrollToStart, SCROLLTOSTART)
+DeclareSciCallV0(ScrollToEnd, SCROLLTOEND)
 DeclareSciCallV0(ScrollCaret, SCROLLCARET)
+DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
 DeclareSciCallV2(LineScroll, LINESCROLL, DocPos, columns, DocLn, lines)
 DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos)
 DeclareSciCallV1(SetScrollWidth, SETSCROLLWIDTH, int, width)
 DeclareSciCallV1(SetEndAtLastLine, SETENDATLASTLINE, bool, flag)
 DeclareSciCallR0(GetXoffset, GETXOFFSET, int)
 DeclareSciCallV1(SetXoffset, SETXOFFSET, int, offset)
+DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
+
+
 
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)
@@ -272,13 +276,15 @@ DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 //
 //  Margins
 //
-DeclareSciCallV2(SetMarginType, SETMARGINTYPEN, int, margin, int, type)
-DeclareSciCallV2(SetMarginWidth, SETMARGINWIDTHN, int, margin, int, pixelWidth)
-DeclareSciCallV2(SetMarginMask, SETMARGINMASKN, int, margin, int, mask)
-DeclareSciCallV2(SetMarginSensitive, SETMARGINSENSITIVEN, int, margin, bool, sensitive)
+DeclareSciCallV2(SetMarginTypeN, SETMARGINTYPEN, int, margin, int, type)
+DeclareSciCallR1(GetMarginWidthN, GETMARGINWIDTHN, int, int, margin)
+DeclareSciCallV2(SetMarginWidthN, SETMARGINWIDTHN, int, margin, int, pixelWidth)
+DeclareSciCallV2(SetMarginMaskN, SETMARGINMASKN, int, margin, int, mask)
+DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, int, margin, bool, sensitive)
 DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
+DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
 
 
 //=============================================================================

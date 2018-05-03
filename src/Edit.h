@@ -70,6 +70,7 @@ void  EditCompressSpaces(HWND);
 void  EditRemoveBlankLines(HWND,bool,bool);
 void  EditRemoveDuplicateLines(HWND,bool);
 void  EditWrapToColumn(HWND,DocPos);
+void  EditSplitLines(HWND hwnd);
 void  EditJoinLinesEx(HWND,bool,bool);
 void  EditSortLines(HWND,int);
 
@@ -111,10 +112,6 @@ void  EditFinalizeStyling(HWND, DocPos);
 void  EditMarkAllOccurrences();
 void  EditUpdateVisibleUrlHotspot(bool);
 void  EditHideNotMarkedLineRange(HWND, DocPos, DocPos, bool);
-
-void  EditEnterTargetTransaction();
-void  EditLeaveTargetTransaction();
-bool  EditIsInTargetTransaction();
 
 //void SciInitThemes(HWND);
 //LRESULT CALLBACK SciThemedWndProc(HWND,UINT,WPARAM,LPARAM);
