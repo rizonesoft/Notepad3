@@ -6670,7 +6670,7 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   DocPos start = startPos;
   DocPos end = endPos;
-  int iStyle = bActiveHotspot ? Style_GetHotspotStyleID() : STYLE_DEFAULT;
+  int const iStyle = Style_GetHotspotStyleID();
   
   do {
     DocPos iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
@@ -6684,7 +6684,10 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
     // mark this match
     SciCall_StartStyling(iPos);
-    SciCall_SetStyling((DocPosCR)mlen, iStyle);
+    if (bActiveHotspot)
+      SciCall_SetStyling((DocPosCR)mlen, iStyle);
+    else
+      EditFinalizeStyling(hwnd, endPos);
 
     // next occurrence
     start = end;
@@ -6692,11 +6695,8 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   } while (start < end);
 
+  SciCall_StartStyling(endPos);
 
-  if (bActiveHotspot) 
-    SciCall_StartStyling(endPos);
-  else
-    SciCall_StartStyling(startPos);
 }
 
 
@@ -7819,6 +7819,7 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
     g_iLongLinesLimit = lpfv->iLongLinesLimit;
   else
     g_iLongLinesLimit = iLongLinesLimitG;
+
   SendMessage(hwnd,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
 
   iWrapCol = 0;

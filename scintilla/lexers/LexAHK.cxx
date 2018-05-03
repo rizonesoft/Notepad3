@@ -32,6 +32,8 @@ using namespace Scintilla;
 #pragma warning(disable: 4100)
 #endif
 
+#define _isDigit(N) ((((N) >= 0) && ((N) <= 255)) ? isdigit(N) : false)
+
 static inline bool IsAWordChar(const int ch) {
 	return ch >= 0x80 || isalnum(ch) ||
 			ch == '_' || ch == '$' || ch == '[' || ch == ']' ||
@@ -363,7 +365,7 @@ static void ColouriseAHKDoc(
 				bInHexNumber = true;
 				sc.SetState(SCE_AHK_NUMBER);
 				sc.Forward(2);
-			} else if (isdigit(sc.ch) || (sc.ch == '.' && isdigit(sc.chNext))) {
+			} else if (_isDigit(sc.ch) || (sc.ch == '.' && _isDigit(sc.chNext))) {
 				sc.SetState(SCE_AHK_NUMBER);
 			} else if (IsAWordChar(sc.ch)) {
 				sc.SetState(SCE_AHK_IDENTIFIER);
