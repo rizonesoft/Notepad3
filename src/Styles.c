@@ -130,6 +130,17 @@ enum LexDefaultStyles {
 };
 
 
+
+EDITLEXER lexANSI = { SCLEX_NULL, 63025, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL,{
+  { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console; none; size:10.5", L"" },
+{ STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
+{ STYLE_BRACELIGHT, 63102, L"Matching Braces", L"size:+0", L"" },
+{ STYLE_BRACEBAD, 63103, L"Matching Braces Error", L"size:+0", L"" },
+{ SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63111, L"Extra Line Spacing (Size)", L"size:0", L"" },
+{ -1, 00000, L"", L"", L"" } } };
+
+
+
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_HTML = {
@@ -2260,15 +2271,6 @@ EDITLEXER lexLATEX = { SCLEX_LATEX, 63036, L"LaTeX Files", L"tex; latex; sty", L
                        { -1, 00000, L"", L"", L"" } } };
 
 
-EDITLEXER lexANSI = { SCLEX_NULL, 63025, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console; none; size:10.5", L"" },
-                      { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
-                      { STYLE_BRACELIGHT, 63102, L"Matching Braces", L"size:+0", L"" },
-                      { STYLE_BRACEBAD, 63103, L"Matching Braces Error", L"size:+0", L"" },
-                      { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63111, L"Extra Line Spacing (Size)", L"size:0", L"" },
-                      { -1, 00000, L"", L"", L"" } } };
-
-
 KEYWORDLIST KeyWords_AHK = {
 "break continue else exit exitapp gosub goto if ifequal ifexist ifgreater ifgreaterorequal "
 "ifinstring ifless iflessorequal ifmsgbox ifnotequal ifnotexist ifnotinstring ifwinactive "
@@ -3413,7 +3415,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
 
-  // Auto-select codepage according to charset
+  // constants
+  SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
+  SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)false);       // default hotspot off
+                                                                              // Auto-select codepage according to charset
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
@@ -3434,10 +3439,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(g_hwndDlgCustomizeSchemes));
   }
 
-  // constants
-  SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
-  SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)false);       // default hotspot off
-
   // Broadcast STYLE_DEFAULT as base style to all other styles
   SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
 
@@ -3447,16 +3448,12 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   
   // --------------------------------------------------------------------------
 
-  if (pLexNew != &lexANSI) {
-    Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].iStyle,
-                    pCurrentStandard->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
-  }
+  Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].iStyle,
+                  pCurrentStandard->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
 
   if (bUseOldStyleBraceMatching) {
-    if (pLexNew != &lexANSI) {
-      Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
-                      pCurrentStandard->Styles[STY_BRACE_OK].szValue, false); // brace light
-    }
+    Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
+      pCurrentStandard->Styles[STY_BRACE_OK].szValue, false); // brace light
   }
   else {
     if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_BRACE_OK].szValue, &dColor))
@@ -3476,10 +3473,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, iValue);
   }
   if (bUseOldStyleBraceMatching) {
-    if (pLexNew != &lexANSI) {
-      Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
-                      pCurrentStandard->Styles[STY_BRACE_BAD].szValue, false); // brace bad
-    }
+    Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
+      pCurrentStandard->Styles[STY_BRACE_BAD].szValue, false); // brace bad
   }
   else {
     if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &dColor))
@@ -3733,6 +3728,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     // -----------------------------------------------
     while (g_pLexCurrent->Styles[i].iStyle != -1) 
     {
+      // apply MULTI_STYLE() MACRO
       for (int j = 0; j < 4 && (g_pLexCurrent->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
         Style_SetStyles(hwnd, g_pLexCurrent->Styles[i].iStyle8[j], g_pLexCurrent->Styles[i].szValue, false);
       }
@@ -3852,7 +3848,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 //
 int Style_GetHotspotStyleID()
 {
-  return (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT);
+  return (STYLE_MAX - STY_URL_HOTSPOT);
 }
 
 
@@ -3895,7 +3891,7 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
     }
   }
   else {
-    const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
+    const WCHAR* const lpszStyleHotSpot = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
     Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot, false);
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)false);
   }
@@ -3910,7 +3906,7 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 int Style_GetInvisibleStyleID()
 {
   //return STYLE_FOLDDISPLAYTEXT;
-  return (STYLE_LASTPREDEFINED + STY_INVISIBLE);
+  return (STYLE_MAX - STY_INVISIBLE);
 }
 
 
@@ -5551,16 +5547,16 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
 
   // Size values are relative to BaseFontSize/CurrentFontSize
   float  fBaseFontSize = _GetCurrentFontSize();
-  if (Style_StrGetSize(lpszStyle, &fBaseFontSize) > 0.0) {
+  if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
     fBaseFontSize = (float)max(0.0, fBaseFontSize);
     //SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (int)fBaseFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
-    if (bInitDefault) {
-      _SetBaseFontSize(fBaseFontSize);
-    }
     if (iStyle == STYLE_DEFAULT) {
-      _SetCurrentFontSize(fBaseFontSize);
+      if (bInitDefault) {
+        _SetBaseFontSize(fBaseFontSize);
+      }
     }
+    _SetCurrentFontSize(fBaseFontSize);
   }
   else if (bInitDefault) {
     //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)((int)fBaseFontSize));
