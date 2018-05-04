@@ -458,7 +458,7 @@ void ViewStyle::CalcLargestMarkerHeight() {
 }
 
 int ViewStyle::GetFrameWidth() const {
-	return static_cast<int>(std::clamp(caretLineFrame, 1, lineHeight / 3));
+	return std::clamp(caretLineFrame, 1, lineHeight / 3);
 }
 
 bool ViewStyle::IsLineFrameOpaque(bool caretActive, bool lineContainsCaret) const {

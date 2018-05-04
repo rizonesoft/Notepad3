@@ -92,7 +92,7 @@ public:
 	void SetBracesHighlight(Range rangeLine, const Sci::Position braces[],
 		char bracesMatchStyle, int xHighlight, bool ignoreStyle);
 	void RestoreBracesHighlight(Range rangeLine, const Sci::Position braces[], bool ignoreStyle);
-	int FindBefore(XYPOSITION x, int lower, int upper) const;
+	int FindBefore(XYPOSITION x, Range range) const;
 	int FindPositionFromX(XYPOSITION x, Range range, bool charPosition) const;
 	Point PointFromPosition(int posInLine, int lineHeight, PointEnd pe) const;
 	int EndLineStyle() const;
@@ -160,7 +160,7 @@ public:
 	}
 };
 
-typedef std::map<int, Representation> MapRepresentation;
+typedef std::map<unsigned int, Representation> MapRepresentation;
 
 class SpecialRepresentations {
 	MapRepresentation mapReprs;
@@ -199,7 +199,7 @@ class BreakFinder {
 	const Document *pdoc;
 	EncodingFamily encodingFamily;
 	const SpecialRepresentations *preprs;
-	void Insert(int val);
+	void Insert(Sci::Position val);
 public:
 	// If a whole run is longer than lengthStartSubdivision then subdivide
 	// into smaller runs at spaces or punctuation.

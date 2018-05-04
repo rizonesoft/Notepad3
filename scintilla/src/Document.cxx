@@ -559,7 +559,7 @@ void Document::GetHighlightDelimiters(HighlightDelimiter &highlightDelimiter, Sc
 }
 
 Sci::Position Document::ClampPositionIntoDocument(Sci::Position pos) const {
-	return std::clamp(pos, static_cast<Sci::Position>(0), Length());
+	return std::clamp<Sci::Position>(pos, 0, Length());
 }
 
 bool Document::IsCrLf(Sci::Position pos) const {

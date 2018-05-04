@@ -284,7 +284,6 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	SelectionPosition ClampPositionIntoDocument(SelectionPosition sp) const;
 	Point LocationFromPosition(SelectionPosition pos, PointEnd pe=peDefault);
 	Point LocationFromPosition(Sci::Position pos, PointEnd pe=peDefault);
-	int XFromPosition(Sci::Position pos);
 	int XFromPosition(SelectionPosition sp);
 	SelectionPosition SPositionFromLocation(Point pt, bool canReturnInvalid=false, bool charPosition=false, bool virtualSpace=true);
 	Sci::Position PositionFromLocation(Point pt, bool canReturnInvalid = false, bool charPosition = false);

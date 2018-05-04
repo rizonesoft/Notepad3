@@ -177,9 +177,11 @@ void LineLayout::RestoreBracesHighlight(Range rangeLine, const Sci::Position bra
 	xHighlightGuide = 0;
 }
 
-int LineLayout::FindBefore(XYPOSITION x, int lower, int upper) const {
+int LineLayout::FindBefore(XYPOSITION x, Range range) const {
+	Sci::Position lower = range.start;
+	Sci::Position upper = range.end;
 	do {
-		const int middle = (upper + lower + 1) / 2; 	// Round high
+		const Sci::Position middle = (upper + lower + 1) / 2; 	// Round high
 		const XYPOSITION posMiddle = positions[middle];
 		if (x < posMiddle) {
 			upper = middle - 1;
@@ -187,12 +189,12 @@ int LineLayout::FindBefore(XYPOSITION x, int lower, int upper) const {
 			lower = middle;
 		}
 	} while (lower < upper);
-	return lower;
+	return static_cast<int>(lower);
 }
 
 
 int LineLayout::FindPositionFromX(XYPOSITION x, Range range, bool charPosition) const {
-	int pos = FindBefore(x, static_cast<int>(range.start), static_cast<int>(range.end));
+	int pos = FindBefore(x, range);
 	while (pos < range.end) {
 		if (charPosition) {
 			if (x < (positions[pos + 1])) {
@@ -367,25 +369,28 @@ void LineLayoutCache::Dispose(LineLayout *ll) {
 }
 
 // Simply pack the (maximum 4) character bytes into an int
-static inline int KeyFromString(const char *charBytes, size_t len) {
+static unsigned int KeyFromString(const char *charBytes, size_t len) {
 	PLATFORM_ASSERT(len <= 4);
-	int k=0;
+	unsigned int k=0;
 	for (size_t i=0; i<len && charBytes[i]; i++) {
 		k = k * 0x100;
-		k += static_cast<unsigned char>(charBytes[i]);
+		const unsigned char uc = charBytes[i];
+		k += uc;
 	}
 	return k;
 }
 
 SpecialRepresentations::SpecialRepresentations() {
-	std::fill(startByteHasReprs, std::end(startByteHasReprs), static_cast<short>(0));
+	const short none = 0;
+	std::fill(startByteHasReprs, std::end(startByteHasReprs), none);
 }
 
 void SpecialRepresentations::SetRepresentation(const char *charBytes, const char *value) {
 	MapRepresentation::iterator it = mapReprs.find(KeyFromString(charBytes, UTF8MaxBytes));
 	if (it == mapReprs.end()) {
 		// New entry so increment for first byte
-		startByteHasReprs[static_cast<unsigned char>(charBytes[0])]++;
+		const unsigned char ucStart = charBytes[0];
+		startByteHasReprs[ucStart]++;
 	}
 	mapReprs[KeyFromString(charBytes, UTF8MaxBytes)] = Representation(value);
 }
@@ -394,13 +399,15 @@ void SpecialRepresentations::ClearRepresentation(const char *charBytes) {
 	MapRepresentation::iterator it = mapReprs.find(KeyFromString(charBytes, UTF8MaxBytes));
 	if (it != mapReprs.end()) {
 		mapReprs.erase(it);
-		startByteHasReprs[static_cast<unsigned char>(charBytes[0])]--;
+		const unsigned char ucStart = charBytes[0];
+		startByteHasReprs[ucStart]--;
 	}
 }
 
 const Representation *SpecialRepresentations::RepresentationFromCharacter(const char *charBytes, size_t len) const {
 	PLATFORM_ASSERT(len <= 4);
-	if (!startByteHasReprs[static_cast<unsigned char>(charBytes[0])])
+	const unsigned char ucStart = charBytes[0];
+	if (!startByteHasReprs[ucStart])
 		return 0;
 	MapRepresentation::const_iterator it = mapReprs.find(KeyFromString(charBytes, len));
 	if (it != mapReprs.end()) {
@@ -411,7 +418,8 @@ const Representation *SpecialRepresentations::RepresentationFromCharacter(const 
 
 bool SpecialRepresentations::Contains(const char *charBytes, size_t len) const {
 	PLATFORM_ASSERT(len <= 4);
-	if (!startByteHasReprs[static_cast<unsigned char>(charBytes[0])])
+	const unsigned char ucStart = charBytes[0];
+	if (!startByteHasReprs[ucStart])
 		return false;
 	MapRepresentation::const_iterator it = mapReprs.find(KeyFromString(charBytes, len));
 	return it != mapReprs.end();
@@ -419,16 +427,18 @@ bool SpecialRepresentations::Contains(const char *charBytes, size_t len) const {
 
 void SpecialRepresentations::Clear() {
 	mapReprs.clear();
-	std::fill(startByteHasReprs, std::end(startByteHasReprs), static_cast<short>(0));
+	const short none = 0;
+	std::fill(startByteHasReprs, std::end(startByteHasReprs), none);
 }
 
-void BreakFinder::Insert(int val) {
-	if (val > nextBreak) {
-		const std::vector<int>::iterator it = std::lower_bound(selAndEdge.begin(), selAndEdge.end(), val);
+void BreakFinder::Insert(Sci::Position val) {
+	int posInLine = static_cast<int>(val);
+	if (posInLine > nextBreak) {
+		const std::vector<int>::iterator it = std::lower_bound(selAndEdge.begin(), selAndEdge.end(), posInLine);
 		if (it == selAndEdge.end()) {
-			selAndEdge.push_back(val);
-		} else if (*it != val) {
-			selAndEdge.insert(it, 1, val);
+			selAndEdge.push_back(posInLine);
+		} else if (*it != posInLine) {
+			selAndEdge.insert(it, 1, posInLine);
 		}
 	}
 }
@@ -449,7 +459,7 @@ BreakFinder::BreakFinder(const LineLayout *ll_, const Selection *psel, Range lin
 	// Search for first visible break
 	// First find the first visible character
 	if (xStart > 0.0f)
-		nextBreak = ll->FindBefore(static_cast<XYPOSITION>(xStart), static_cast<int>(lineRange.start), static_cast<int>(lineRange.end));
+		nextBreak = ll->FindBefore(static_cast<XYPOSITION>(xStart), lineRange);
 	// Now back to a style break
 	while ((nextBreak > lineRange.start) && (ll->styles[nextBreak] == ll->styles[nextBreak - 1])) {
 		nextBreak--;
@@ -463,9 +473,9 @@ BreakFinder::BreakFinder(const LineLayout *ll_, const Selection *psel, Range lin
 			const SelectionSegment portion = psel->Range(r).Intersect(segmentLine);
 			if (!(portion.start == portion.end)) {
 				if (portion.start.IsValid())
-					Insert(static_cast<int>(portion.start.Position() - posLineStart));
+					Insert(portion.start.Position() - posLineStart);
 				if (portion.end.IsValid())
-					Insert(static_cast<int>(portion.end.Position() - posLineStart));
+					Insert(portion.end.Position() - posLineStart);
 			}
 		}
 	}
@@ -474,14 +484,14 @@ BreakFinder::BreakFinder(const LineLayout *ll_, const Selection *psel, Range lin
 			if (pvsDraw->indicators[deco->Indicator()].OverridesTextFore()) {
 				Sci::Position startPos = deco->EndRun(posLineStart);
 				while (startPos < (posLineStart + lineRange.end)) {
-					Insert(static_cast<int>(startPos - posLineStart));
+					Insert(startPos - posLineStart);
 					startPos = deco->EndRun(startPos);
 				}
 			}
 		}
 	}
 	Insert(ll->edgeColumn);
-	Insert(static_cast<int>(lineRange.end));
+	Insert(lineRange.end);
 	saeNext = (!selAndEdge.empty()) ? selAndEdge[0] : -1;
 }
 

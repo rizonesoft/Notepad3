@@ -443,7 +443,7 @@ static int classifyFoldPointFortran(const char* s, const char* prevWord, const c
 	        || strcmp(s, "endsubroutine") == 0 || strcmp(s, "endtype") == 0
 	        || strcmp(s, "endwhere") == 0 || strcmp(s, "endcritical") == 0
 		|| (strcmp(prevWord, "module") == 0 && strcmp(s, "procedure") == 0)  // Take care of the "module procedure" statement
-		|| strcmp(s, "endsubmodule") == 0) {
+		|| strcmp(s, "endsubmodule") == 0 || strcmp(s, "endteam") == 0) {
 		lev = -1;
 	} else if (strcmp(prevWord, "end") == 0 && strcmp(s, "if") == 0){ // end if
 		lev = 0;
@@ -452,6 +452,8 @@ static int classifyFoldPointFortran(const char* s, const char* prevWord, const c
 	} else if ((strcmp(prevWord, "end") == 0 && strcmp(s, "procedure") == 0)
 			   || strcmp(s, "endprocedure") == 0) {
 			lev = 1; // level back to 0, because no folding support for "module procedure" in submodule
+	} else if (strcmp(prevWord, "change") == 0 && strcmp(s, "team") == 0){ // change team
+		lev = 1;
 	}
 	return lev;
 }

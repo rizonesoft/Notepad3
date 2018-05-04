@@ -376,11 +376,6 @@ Point Editor::LocationFromPosition(Sci::Position pos, PointEnd pe) {
 	return LocationFromPosition(SelectionPosition(pos), pe);
 }
 
-int Editor::XFromPosition(Sci::Position pos) {
-	const Point pt = LocationFromPosition(pos);
-	return static_cast<int>(pt.x) - vs.textStart + xOffset;
-}
-
 int Editor::XFromPosition(SelectionPosition sp) {
 	const Point pt = LocationFromPosition(sp);
 	return static_cast<int>(pt.x) - vs.textStart + xOffset;
@@ -906,11 +901,11 @@ SelectionPosition Editor::MovePositionSoVisible(SelectionPosition pos, int moveD
 		Sci::Line lineDisplay = pcs->DisplayFromDoc(lineDoc);
 		if (moveDir > 0) {
 			// lineDisplay is already line before fold as lines in fold use display line of line after fold
-			lineDisplay = std::clamp(lineDisplay, static_cast<Sci::Line>(0), pcs->LinesDisplayed());
+			lineDisplay = std::clamp<Sci::Line>(lineDisplay, 0, pcs->LinesDisplayed());
 			return SelectionPosition(
 				pdoc->LineStart(pcs->DocFromDisplay(lineDisplay)));
 		} else {
-			lineDisplay = std::clamp(lineDisplay - 1, static_cast<Sci::Line>(0), pcs->LinesDisplayed());
+			lineDisplay = std::clamp<Sci::Line>(lineDisplay - 1, 0, pcs->LinesDisplayed());
 			return SelectionPosition(
 				pdoc->LineEnd(pcs->DocFromDisplay(lineDisplay)));
 		}
@@ -935,7 +930,7 @@ void Editor::SetLastXChosen() {
 }
 
 void Editor::ScrollTo(Sci::Line line, bool moveThumb) {
-	const Sci::Line topLineNew = std::clamp(line, static_cast<Sci::Line>(0), MaxScrollPos());
+	const Sci::Line topLineNew = std::clamp<Sci::Line>(line, 0, MaxScrollPos());
 	if (topLineNew != topLine) {
 		// Try to optimise small scrolls
 #ifndef UNDER_CE
@@ -1169,7 +1164,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				} else {
 					// yMarginT must equal to caretYSlop, with a minimum of 1 and
 					// a maximum of slightly less than half the heigth of the text area.
-					yMarginT = std::clamp(static_cast<Sci::Line>(caretYSlop), static_cast<Sci::Line>(1), halfScreen);
+					yMarginT = std::clamp<Sci::Line>(caretYSlop, 1, halfScreen);
 					if (bEven) {
 						yMarginB = yMarginT;
 					} else {
@@ -1179,7 +1174,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				yMoveT = yMarginT;
 				if (bEven) {
 					if (bJump) {
-						yMoveT = std::clamp(static_cast<Sci::Line>(caretYSlop * 3), static_cast<Sci::Line>(1), halfScreen);
+						yMoveT = std::clamp<Sci::Line>(caretYSlop * 3, 1, halfScreen);
 					}
 					yMoveB = yMoveT;
 				} else {
@@ -1194,7 +1189,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				}
 			} else {	// Not strict
 				yMoveT = bJump ? caretYSlop * 3 : caretYSlop;
-				yMoveT = std::clamp(yMoveT, static_cast<Sci::Line>(1), halfScreen);
+				yMoveT = std::clamp<Sci::Line>(yMoveT, 1, halfScreen);
 				if (bEven) {
 					yMoveB = yMoveT;
 				} else {
@@ -1244,7 +1239,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 				newXY.topLine = std::min(newXY.topLine, lineCaret);
 			}
 		}
-		newXY.topLine = std::clamp(newXY.topLine, static_cast<Sci::Line>(0), MaxScrollPos());
+		newXY.topLine = std::clamp<Sci::Line>(newXY.topLine, 0, MaxScrollPos());
 	}
 
 	// Horizontal positioning
@@ -1567,7 +1562,7 @@ bool Editor::WrapLines(WrapScope ws) {
 
 	if (wrapOccurred) {
 		SetScrollBars();
-		SetTopLine(std::clamp(goodTopLine, static_cast<Sci::Line>(0), MaxScrollPos()));
+		SetTopLine(std::clamp<Sci::Line>(goodTopLine, 0, MaxScrollPos()));
 		SetVerticalScrollPos();
 	}
 
@@ -1819,7 +1814,7 @@ void Editor::SetScrollBars() {
 	// TODO: ensure always showing as many lines as possible
 	// May not be, if, for example, window made larger
 	if (topLine > MaxScrollPos()) {
-		SetTopLine(std::clamp(topLine, static_cast<Sci::Line>(0), MaxScrollPos()));
+		SetTopLine(std::clamp<Sci::Line>(topLine, 0, MaxScrollPos()));
 		SetVerticalScrollPos();
 		Redraw();
 	}
@@ -2150,8 +2145,8 @@ void Editor::PasteRectangular(SelectionPosition pos, const char *ptr, Sci::Posit
 			}
 			// Pad the end of lines with spaces if required
 			sel.RangeMain().caret.SetPosition(PositionFromLineX(line, xInsert));
-			if ((XFromPosition(sel.MainCaret()) < xInsert) && (i + 1 < len)) {
-				while (XFromPosition(sel.MainCaret()) < xInsert) {
+			if ((XFromPosition(sel.RangeMain().caret) < xInsert) && (i + 1 < len)) {
+				while (XFromPosition(sel.RangeMain().caret) < xInsert) {
 					assert(pdoc);
 					const Sci::Position lengthInserted = pdoc->InsertString(sel.MainCaret(), " ", 1);
 					sel.RangeMain().caret.Add(lengthInserted);
@@ -2624,7 +2619,7 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 		if (mh.linesAdded != 0) {
 			// Avoid scrolling of display if change before current display
 			if (mh.position < posTopLine && !CanDeferToLastStep(mh)) {
-				const Sci::Line newTop = std::clamp(topLine + mh.linesAdded, static_cast<Sci::Line>(0), MaxScrollPos());
+				const Sci::Line newTop = std::clamp<Sci::Line>(topLine + mh.linesAdded, 0, MaxScrollPos());
 				if (newTop != topLine) {
 					SetTopLine(newTop);
 					SetVerticalScrollPos();
@@ -2860,8 +2855,8 @@ void Editor::PageMove(int direction, Selection::selTypes selt, bool stuttered) {
 	} else {
 		const Point pt = LocationFromPosition(sel.MainCaret());
 
-		topLineNew = std::clamp(
-		            topLine + direction * LinesToScroll(), static_cast<Sci::Line>(0), MaxScrollPos());
+		topLineNew = std::clamp<Sci::Line>(
+		            topLine + direction * LinesToScroll(), 0, MaxScrollPos());
 		newPos = SPositionFromLocation(
 			Point::FromInts(lastXChosen - xOffset, static_cast<int>(pt.y) +
 				direction * (vs.lineHeight * static_cast<int>(LinesToScroll()))),
@@ -4233,10 +4228,10 @@ void Editor::DisplayCursor(Window::Cursor c) {
 }
 
 bool Editor::DragThreshold(Point ptStart, Point ptNow) {
-	const int xMove = static_cast<int>(ptStart.x - ptNow.x);
-	const int yMove = static_cast<int>(ptStart.y - ptNow.y);
-	const int distanceSquared = xMove * xMove + yMove * yMove;
-	return distanceSquared > 16;
+	const XYPOSITION xMove = ptStart.x - ptNow.x;
+	const XYPOSITION yMove = ptStart.y - ptNow.y;
+	const XYPOSITION distanceSquared = xMove * xMove + yMove * yMove;
+	return distanceSquared > 16.0f;
 }
 
 void Editor::StartDrag() {
@@ -5395,18 +5390,18 @@ void Editor::EnsureLineVisible(Sci::Line lineDoc, bool enforcePolicy) {
 		const Sci::Line lineDisplay = pcs->DisplayFromDoc(lineDoc);
 		if (visiblePolicy & VISIBLE_SLOP) {
 			if ((topLine > lineDisplay) || ((visiblePolicy & VISIBLE_STRICT) && (topLine + visibleSlop > lineDisplay))) {
-				SetTopLine(std::clamp(lineDisplay - visibleSlop, static_cast<Sci::Line>(0), MaxScrollPos()));
+				SetTopLine(std::clamp<Sci::Line>(lineDisplay - visibleSlop, 0, MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			} else if ((lineDisplay > topLine + LinesOnScreen() - 1) ||
 			        ((visiblePolicy & VISIBLE_STRICT) && (lineDisplay > topLine + LinesOnScreen() - 1 - visibleSlop))) {
-				SetTopLine(std::clamp(lineDisplay - LinesOnScreen() + 1 + visibleSlop, static_cast<Sci::Line>(0), MaxScrollPos()));
+				SetTopLine(std::clamp<Sci::Line>(lineDisplay - LinesOnScreen() + 1 + visibleSlop, 0, MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			}
 		} else {
 			if ((topLine > lineDisplay) || (lineDisplay > topLine + LinesOnScreen() - 1) || (visiblePolicy & VISIBLE_STRICT)) {
-				SetTopLine(std::clamp(lineDisplay - LinesOnScreen() / 2 + 1, static_cast<Sci::Line>(0), MaxScrollPos()));
+				SetTopLine(std::clamp<Sci::Line>(lineDisplay - LinesOnScreen() / 2 + 1, 0, MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
 			}
@@ -6008,9 +6003,9 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return pdoc->MovePositionOutsideChar(static_cast<Sci::Position>(wParam) + 1, 1, true);
 
 	case SCI_POSITIONRELATIVE:
-		return std::clamp(pdoc->GetRelativePosition(
+		return std::clamp<Sci::Position>(pdoc->GetRelativePosition(
 			static_cast<Sci::Position>(wParam), lParam),
-			static_cast<Sci::Position>(0), pdoc->Length());
+			0, pdoc->Length());
 
 	case SCI_LINESCROLL:
 		ScrollTo(topLine + static_cast<Sci::Line>(lParam));
