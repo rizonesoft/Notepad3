@@ -3193,7 +3193,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (g_flagPasteBoard)
           bLastCopyFromMe = true;
         int const token = BeginUndoAction();
+        _IGNORE_NOTIFY_CHANGE_;
         SciCall_Paste();
+        _OBSERVE_NOTIFY_CHANGE_;
         EndUndoAction(token);
         UpdateToolbar();
         UpdateStatusbar(false);
@@ -3206,7 +3208,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (g_flagPasteBoard)
           bLastCopyFromMe = true;
         int const token = BeginUndoAction();
+        _IGNORE_NOTIFY_CHANGE_;
         EditSwapClipboard(g_hwndEdit, bSkipUnicodeDetection);
+        _OBSERVE_NOTIFY_CHANGE_;
         EndUndoAction(token);
         UpdateToolbar();
         UpdateStatusbar(false);

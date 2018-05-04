@@ -737,8 +737,6 @@ bool EditClearClipboard(HWND hwnd)
 //
 bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
 {
-  _IGNORE_NOTIFY_CHANGE_;
-
   int lineCount = 0;
   int lenLastLine = 0;
   char* const pClip = EditGetClipboardText(hwnd, !bSkipUnicodeCheck, &lineCount, &lenLastLine);
@@ -777,9 +775,6 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
   }
 
   LocalFree(pClip);
-
-  _OBSERVE_NOTIFY_CHANGE_;
-
   return true;
 }
 
