@@ -2697,23 +2697,8 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 
   if (SciCall_IsSelectionRectangle()) 
   {
-    //if (cmd == SCI_TAB) {
-    //  if (g_bTabsAsSpaces) {
-    //    int size = (bFormatIndentation ? g_iIndentWidth : g_iTabWidth);
-    //    char* pPadStr = LocalAlloc(LPTR, size + 1);
-    //    FillMemory(pPadStr, size, ' ');
-    //    EditPaste2RectSel(hwnd, pPadStr);
-    //    LocalFree(pPadStr);
-    //  }
-    //  else {
-    //    EditPaste2RectSel(hwnd, "\t");
-    //  }
-    //  return;
-    //}
-    // better idea:  EditPaste2RectSel(hwnd, pPadStr, pText); pText==NULL => copy single sel
-
-    //TODO: workaround for rectangular selection: make stream selection
-    EditSelectEx(hwnd, SciCall_GetAnchor(), SciCall_GetCurrentPos(), -1, -1);
+    SendMessage(hwnd, cmd, 0, 0);
+    return;
   }
 
   const DocPos iCurPos = SciCall_GetCurrentPos();
