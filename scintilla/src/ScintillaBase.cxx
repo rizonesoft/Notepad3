@@ -703,7 +703,7 @@ const char *LexState::DescribeProperty(const char *name) {
 }
 
 void LexState::PropSet(const char *key, const char *val) {
-	props.Set(key, val);
+	props.Set(key, val, strlen(key), strlen(val));
 	if (instance) {
 		const Sci_Position firstModification = instance->PropertySet(key, val);
 		if (firstModification >= 0) {
