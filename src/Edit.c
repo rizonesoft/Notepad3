@@ -570,8 +570,8 @@ bool EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 //
 //  EditGetClipboardText()
 //
-char* EditGetClipboardText(HWND hwnd,bool bCheckEncoding,int* pLineCount,int* pLenLastLn) {
-
+char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int* pLenLastLn) 
+{
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd))) {
     char* pEmpty = StrDupA("");
     return (pEmpty);
@@ -613,7 +613,9 @@ char* EditGetClipboardText(HWND hwnd,bool bCheckEncoding,int* pLineCount,int* pL
 
   int lineCount = 0;
   int lenLastLine = 0;
-  if ((bool)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) {
+
+  if ((bool)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) 
+  {
     char* ptmp = LocalAlloc(LPTR,mlen * 2 + 2);
     if (ptmp) {
       char *s = pmch;
@@ -731,177 +733,47 @@ bool EditClearClipboard(HWND hwnd)
 
 //=============================================================================
 //
-//  EditPaste2RectSel()
+//  EditSwapClipboard()
 //
-void EditPaste2RectSel(HWND hwnd, char* pText)
-{
-  if (!SciCall_IsSelectionRectangle()) { return; }
-
-  const DocPos length = lstrlenA(pText); // '\0' terminated
-
-  _IGNORE_NOTIFY_CHANGE_;
-  _ENTER_TARGET_TRANSACTION_;
-
-  const DocPosU selCount = (DocPosU)SendMessage(hwnd, SCI_GETSELECTIONS, 0, 0);
-
-  char* pTextLine = pText;
-  // remove line-break from last line
-  if (*pTextLine != '\0') { StrTrimA(pTextLine, "\r\n"); }
-
-  for (DocPosU s = 0; s < selCount; ++s) {
-    // get lines from clip
-    char *ln = pTextLine;
-    int lnLen = 0;
-    while (*ln != '\0') {
-      if (s < (selCount - 1)) {
-        if (*ln == '\n' || *ln == '\r') {
-          if ((*ln == '\r') && (*(ln + 1) == '\n')) { ++ln; }
-          ++ln; // next line
-          break;
-        }
-        else { ++ln; ++lnLen; }
-      }
-      else { ++ln; ++lnLen; } // last line
-    }
-
-    const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
-    const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
-    const DocPos selCaretVspc = SciCall_GetSelectionNCaretVirtualSpace(s);
-    const DocPos selAnchorVspc = SciCall_GetSelectionNAnchorVirtualSpace(s);
-
-    DocPos virtualSpaceLen = 0;
-    DocPos selTargetStart = 0;
-    DocPos selTargetEnd = 0;
-    if (selCaretPos < selAnchorPos) {
-      selTargetStart = selCaretPos;
-      selTargetEnd = selAnchorPos;
-      virtualSpaceLen = selCaretVspc;
-    }
-    else {
-      selTargetStart = selAnchorPos;
-      selTargetEnd = selCaretPos;
-      virtualSpaceLen = selAnchorVspc;
-    }
-
-    if (virtualSpaceLen > 0) {
-      char* pPadStr = LocalAlloc(LPTR, (virtualSpaceLen + length + 1) * sizeof(char));
-      if (pPadStr) {
-        SIZE_T size = LocalSize(pPadStr) - sizeof(char);
-        FillMemory(pPadStr, virtualSpaceLen, ' ');
-        pPadStr[virtualSpaceLen] = '\0';
-        StringCchCatNA(pPadStr, size, pTextLine, lnLen);
-        SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-        SciCall_ReplaceTarget(lstrlenA(pPadStr), pPadStr);
-        LocalFree(pPadStr);
-      }
-      else {
-        SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-        SciCall_ReplaceTarget(lnLen, pTextLine);
-      }
-    }
-    else // no virtual space to pad
-    {
-      SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-      SciCall_ReplaceTarget(lnLen, pTextLine);
-    }
-
-    //SciCall_SetSelectionNAnchor(s, selTargetStart);
-    //SciCall_SetSelectionNCaret(s, selTargetStart);
-    //if (virtualSpaceLen > 0) {
-    //  SciCall_SetSelectionNCaretVirtualSpace(s, virtualSpaceLen);
-    //  SciCall_SetSelectionNAnchorVirtualSpace(s, virtualSpaceLen);
-    //}
-
-    if (*ln != '\0') {
-      pTextLine = ln; // next clip line
-    }
-    //else: rest of rect single selections are filled with last line
-  
-  } // for()
-
-  _LEAVE_TARGET_TRANSACTION_;
-  _OBSERVE_NOTIFY_CHANGE_;
-}
-
-
-//=============================================================================
-//
-//  EditPasteClipboard()
-//
-bool EditPasteClipboard(HWND hwnd, bool bSwapClipBoard, bool bSkipUnicodeCheck)
+bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
 {
   int lineCount = 0;
   int lenLastLine = 0;
-
-  char* pClip = EditGetClipboardText(hwnd, !bSkipUnicodeCheck, &lineCount, &lenLastLine);
+  char* const pClip = EditGetClipboardText(hwnd, !bSkipUnicodeCheck, &lineCount, &lenLastLine);
   if (!pClip) {
     return false; // recoding canceled
   }
-  const DocPos clipLen = lstrlenA(pClip);
+  DocPos const clipLen = lstrlenA(pClip);
 
-  const DocPos iCurPos = SciCall_GetCurrentPos();
-  const DocPos iAnchorPos = SciCall_GetAnchor();
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+  DocPos const iAnchorPos = SciCall_GetAnchor();
+  bool const bIsRectSel = SciCall_IsSelectionRectangle();
 
-  if (SciCall_IsSelectionEmpty() || (lineCount <= 1)) 
-  {
-    _IGNORE_NOTIFY_CHANGE_;
-
-    if (SciCall_IsSelectionEmpty()) // SC_SEL_THIN
-    {
-      SciCall_Paste();
-      if (bSwapClipBoard) { 
-        EditClearClipboard(hwnd);
-        EditSelectEx(hwnd, iAnchorPos, SciCall_GetCurrentPos(), -1, -1);
-      }
-      //else {
-      //  EditSelectEx(hwnd, SciCall_GetCurrentPos(), SciCall_GetCurrentPos(), -1, -1);
-      //}
-    }
-    else {
-      char* pszText = LocalAlloc(LPTR, SciCall_GetSelText(NULL));
-      SciCall_GetSelText(pszText);
-      if (clipLen == 0) { SciCall_Clear(); } else { SciCall_Paste(); }
-      if (bSwapClipBoard) {
-        EditSetClipboardText(hwnd, pszText);
-        if (iCurPos < iAnchorPos)
-          EditSelectEx(hwnd, SciCall_GetCurrentPos(), iCurPos, -1, -1);
-        else
-          EditSelectEx(hwnd, iAnchorPos, SciCall_GetCurrentPos(), -1, -1);
-      }
-      else {
-        if (iCurPos < iAnchorPos)
-          EditSelectEx(hwnd, iCurPos, iCurPos, -1, -1);
-      }
-      LocalFree(pszText);
-    }
-    _OBSERVE_NOTIFY_CHANGE_;
+  char* pszText = NULL;
+  SIZE_T const size = SciCall_GetSelText(NULL);
+  if (size > 0) {
+    pszText = LocalAlloc(LPTR, size);
+    SciCall_GetSelText(pszText);
+    SciCall_Paste();  //~SciCall_ReplaceSel(pClip);
+    EditSetClipboardText(hwnd, pszText);
   }
   else {
-    if (SciCall_IsSelectionRectangle()) 
-    {
-      if (bSwapClipBoard) { SciCall_Copy(); }
-      EditPaste2RectSel(hwnd, pClip);
-      //TODO: restore selection in case of swap clipboard 
-    }
-    else // Selection: SC_SEL_STREAM, SC_SEL_LINES
-    {
-      _IGNORE_NOTIFY_CHANGE_;
-      if (bSwapClipBoard) {
-        SciCall_Copy();
-        SciCall_ReplaceSel(pClip);
-        if (iCurPos < iAnchorPos)
-          EditSelectEx(hwnd, iCurPos + clipLen, iCurPos, -1, -1);
-        else
-          EditSelectEx(hwnd, iAnchorPos, iAnchorPos + clipLen, -1, -1);
-      }
-      else {
-        SciCall_ReplaceSel(pClip);
-        if (iCurPos < iAnchorPos)
-          EditSelectEx(hwnd, iCurPos, iCurPos, -1, -1);
-      }
-      _OBSERVE_NOTIFY_CHANGE_;
-    }
+    SciCall_Paste();  //~SciCall_ReplaceSel(pClip);
+    SciCall_Clear();
   }
+  if (pszText) { LocalFree(pszText); }
+
+  if (!bIsRectSel) {
+    //TODO: check for Rectangular Clipboard and skip selection restore
+    if (iCurPos < iAnchorPos)
+      EditSelectEx(hwnd, iCurPos + clipLen, iCurPos, -1, -1);
+    else
+      EditSelectEx(hwnd, iAnchorPos, iAnchorPos + clipLen, -1, -1);
+  }
+  else {
+    //TODO: restore selection in case of swap clipboard 
+  }
+
   LocalFree(pClip);
   return true;
 }
@@ -2697,23 +2569,8 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 
   if (SciCall_IsSelectionRectangle()) 
   {
-    //if (cmd == SCI_TAB) {
-    //  if (g_bTabsAsSpaces) {
-    //    int size = (bFormatIndentation ? g_iIndentWidth : g_iTabWidth);
-    //    char* pPadStr = LocalAlloc(LPTR, size + 1);
-    //    FillMemory(pPadStr, size, ' ');
-    //    EditPaste2RectSel(hwnd, pPadStr);
-    //    LocalFree(pPadStr);
-    //  }
-    //  else {
-    //    EditPaste2RectSel(hwnd, "\t");
-    //  }
-    //  return;
-    //}
-    // better idea:  EditPaste2RectSel(hwnd, pPadStr, pText); pText==NULL => copy single sel
-
-    //TODO: workaround for rectangular selection: make stream selection
-    EditSelectEx(hwnd, SciCall_GetAnchor(), SciCall_GetCurrentPos(), -1, -1);
+    SendMessage(hwnd, cmd, 0, 0);
+    return;
   }
 
   const DocPos iCurPos = SciCall_GetCurrentPos();
@@ -3242,7 +3099,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
 {
   if (SciCall_IsSelectionEmpty() || Sci_IsThinRectangleSelected()) { return; }
 
-  const int token = (!bNoUndoGroup ? BeginUndoAction() : -1);
+  int const token = (!bNoUndoGroup ? BeginUndoAction() : -1);
 
   if (SciCall_IsSelectionRectangle())
   {
@@ -5613,7 +5470,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDC_REPLACE:
           {
             bReplaceInitialized = true;
-            int token = BeginUndoAction();
+            int const token = BeginUndoAction();
             EditReplace(sg_pefrData->hwnd, sg_pefrData);
             EndUndoAction(token);
           }
@@ -6238,7 +6095,7 @@ bool EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
 
   BeginWaitCursor(NULL);
 
-  int token = BeginUndoAction();
+  int const token = BeginUndoAction();
 
   iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
 
@@ -6274,7 +6131,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
 
-  int token = BeginUndoAction();
+  int const token = BeginUndoAction();
 
   bool const bWaitCursor = ((end - start) > (512 * 512)) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }

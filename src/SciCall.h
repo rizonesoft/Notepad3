@@ -138,11 +138,7 @@ DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
 DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
 DeclareSciCallR0(CanUndo, CANUNDO, bool)
 DeclareSciCallR0(CanRedo, CANREDO, bool)
-
 DeclareSciCallR0(IsDocModified, GETMODIFY, bool)
-DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
-DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
-
 DeclareSciCallR0(CanPaste, CANPASTE, bool)
 
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
@@ -367,11 +363,12 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
 //
 //  Utilities
 //
+DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
+DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_IsStreamSelected() (SciCall_GetSelectionMode() == SC_SEL_STREAM)
 #define Sci_IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
 #define Sci_IsThinRectangleSelected() (SciCall_GetSelectionMode() == SC_SEL_THIN)
-#define Sci_IsSingleLineSelection() \
-(SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
+#define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 
 #define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
