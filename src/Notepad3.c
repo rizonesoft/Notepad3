@@ -1417,10 +1417,14 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   Encoding_Current(g_iDefaultNewFileEncoding);
 
   // general setup
+  //int const evtMask = SC_MODEVENTMASKALL;
+  int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_USER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO;
+  int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE | SC_STARTACTION;
+  SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
+
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 
   SendMessage(hwndEditCtrl, SCI_SETEOLMODE, SC_EOL_CRLF, 0);
   SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
-  SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK,/*SC_MODEVENTMASKALL*/SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_CONTAINER, 0);
   SendMessage(hwndEditCtrl, SCI_USEPOPUP, false, 0);
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTHTRACKING, true, 0);
@@ -5661,6 +5665,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 //
 //  MsgNotify() - Handles WM_NOTIFY
 //
+//  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
 LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 {
@@ -5672,6 +5677,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
       if (pnmh->code == SCN_MODIFIED) {
+        bool bModified = true;
         // check for ADDUNDOACTION step
         if (scn->modificationType & SC_MOD_CONTAINER)
         {
@@ -5682,7 +5688,15 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             RestoreAction(scn->token, REDO);
           }
         }
-        _SetDocumentModified(true);
+        else if ((scn->modificationType & SC_MOD_BEFOREINSERT) ||
+                 (scn->modificationType & SC_MOD_BEFOREDELETE)) {
+          if (!(scn->modificationType & SC_STARTACTION) && !SciCall_IsSelectionEmpty()) {
+            int const token = BeginUndoAction();
+            if (token >= 0) { EndUndoAction(token); }
+          }
+          bModified = false;  // not yet
+        }
+        if (bModified) { _SetDocumentModified(true); }
       }
       else if (pnmh->code == SCN_SAVEPOINTREACHED) {
         _SetDocumentModified(false);
@@ -5780,7 +5794,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         case SCN_MODIFIED:
           {
-            // check for ADDUNDOACTION step
+            bool bModified = true;
             if (scn->modificationType & SC_MOD_CONTAINER) {
               if (scn->modificationType & SC_PERFORMED_UNDO) {
                 RestoreAction(scn->token, UNDO);
@@ -5788,6 +5802,14 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               else if (scn->modificationType & SC_PERFORMED_REDO) {
                 RestoreAction(scn->token, REDO);
               }
+            }
+            else if ((scn->modificationType & SC_MOD_BEFOREINSERT) ||
+                     (scn->modificationType & SC_MOD_BEFOREDELETE)) {
+              if (!(scn->modificationType & SC_STARTACTION) && !SciCall_IsSelectionEmpty()) {
+                int const token = BeginUndoAction();
+                if (token >= 0) { EndUndoAction(token); }
+              }
+              bModified = false; // not yet
             }
             else if (scn->modificationType & SC_MOD_CHANGESTYLE) {
               const DocPos iStartPos = (DocPos)scn->position;
@@ -5804,7 +5826,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               UpdateLineNumberWidth();
             }
 
-            _SetDocumentModified(true);
+            if (bModified) { _SetDocumentModified(true); }
 
             UpdateToolbar();
             UpdateStatusbar(false);
