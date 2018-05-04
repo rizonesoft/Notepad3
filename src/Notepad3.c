@@ -516,7 +516,7 @@ static int g_flagRelativeFileMRU    = 0;
 static int g_flagPortableMyDocs     = 0;
 static int g_flagToolbarLook        = 0;
 static int g_flagPosParam           = 0;
-static int g_flagDefaultPos         = 2; // default window position
+static int g_flagDefaultPos         = 0;
 static int g_flagNewFromClipboard   = 0;
 static int g_flagPasteBoard         = 0;
 static int g_flagSetEncoding        = 0;
@@ -6518,6 +6518,13 @@ void LoadSettings()
     g_WinInfo.cy = IniSectionGetInt(pIniSection,tchSizeY,CW_USEDEFAULT);
     g_WinInfo.max = IniSectionGetInt(pIniSection,tchMaximized,0);
     if (g_WinInfo.max) g_WinInfo.max = 1;
+   
+    if (((g_WinInfo.x  & ~CW_USEDEFAULT) == 0) ||
+        ((g_WinInfo.y  & ~CW_USEDEFAULT) == 0) ||
+        ((g_WinInfo.cx & ~CW_USEDEFAULT) == 0) ||
+        ((g_WinInfo.cy & ~CW_USEDEFAULT) == 0)) {
+      g_flagDefaultPos = 2;
+    }
   }
 
   // ---  override by resolution specific settings  ---
