@@ -1239,6 +1239,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
+    case WM_KILLFOCUS:
+      if (bAltKeyIsDown) {
+        bAltKeyIsDown = false;
+        SciCall_SetVirtualSpaceOptions(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
+      }
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_CREATE:
       return MsgCreate(hwnd,wParam,lParam);
