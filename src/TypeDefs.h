@@ -144,7 +144,8 @@ typedef struct _cmq
 // --------------------------------------------------------------------------
 
 #define MARKER_NP3_BOOKMARK      1
-#define MARKER_NP3_OCCUR_LINE    2
+
+#define LINESTATE_OCCURRENCE_MARK 0x4
 
 #define INDIC_NP3_MARK_OCCURANCE 1
 #define INDIC_NP3_MATCH_BRACE    2

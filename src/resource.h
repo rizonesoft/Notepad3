@@ -137,6 +137,8 @@
 #define IDC_REMEMBERSEARCHPATTERN       233
 #define IDC_TOGGLE_VISIBILITY           234
 #define IDC_DOC_MODIFIED                235
+#define IDT_TIMER_UPDATE_STATUSBAR      236
+#define IDT_TIMER_UPDATE_TOOLBAR        237
 #define ___SCI_CMD__SCEN_KILLFOCUS___   256
 #define IDACC_FIND                      302
 #define IDACC_REPLACE                   303
