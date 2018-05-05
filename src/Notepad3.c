@@ -5699,12 +5699,14 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
       if (pnmh->code == SCN_MODIFIED) {
+        bool bModified = true;
         int const iModType = scn->modificationType;
         if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
           if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
             if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
               _SaveRedoSelection(_SaveUndoSelection());
           }
+          bModified = false; // not yet
         }
         // check for ADDUNDOACTION step
         if (iModType & SC_MOD_CONTAINER)
@@ -5716,7 +5718,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             RestoreAction(scn->token, REDO);
           }
         }
-        _SetDocumentModified(true);
+        if (bModified) {
+          _SetDocumentModified(true);
+        }
       }
       else if (pnmh->code == SCN_SAVEPOINTREACHED) {
         _SetDocumentModified(false);
@@ -5741,15 +5745,41 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
       switch (pnmh->code)
       {
-        case SCN_HOTSPOTCLICK:
+        case SCN_MODIFIED:
         {
-          if (scn->modifiers & SCMOD_CTRL) {
-            // open in browser
-            OpenHotSpotURL((int)scn->position, true);
+          int const iModType = scn->modificationType;
+          bool bModified = true;
+          if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
+            if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+              if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
+                _SaveRedoSelection(_SaveUndoSelection());
+            }
+            bModified = false; // not yet
           }
-          if (scn->modifiers & SCMOD_ALT) {
-            // open in application, if applicable (file://)
-            OpenHotSpotURL((int)scn->position, false);
+          if (iModType & SC_MOD_CONTAINER) {
+            if (iModType & SC_PERFORMED_UNDO) {
+              RestoreAction(scn->token, UNDO);
+            }
+            else if (iModType & SC_PERFORMED_REDO) {
+              RestoreAction(scn->token, REDO);
+            }
+          }
+          else if (iModType & SC_MOD_CHANGESTYLE) {
+            const DocPos iStartPos = (DocPos)scn->position;
+            const DocPos iEndPos = (DocPos)(scn->position + scn->length);
+            EditUpdateUrlHotspots(g_hwndEdit, iStartPos, iEndPos, g_bHyperlinkHotspot);
+          }
+          if (bModified) {
+            if (g_iMarkOccurrences > 0) {
+              EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
+              MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+            }
+            if (scn->linesAdded != 0) {
+              UpdateLineNumberWidth();
+            }
+            _SetDocumentModified(true);
+            UpdateToolbar();
+            UpdateStatusbar(false);
           }
         }
         break;
@@ -5815,44 +5845,18 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
 
-        case SCN_MODIFIED:
-          {
-            int const iModType = scn->modificationType;
-            if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
-              if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-                if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
-                  _SaveRedoSelection(_SaveUndoSelection());
-              }
-            }
-            if (iModType & SC_MOD_CONTAINER) {
-              if (iModType & SC_PERFORMED_UNDO) {
-                RestoreAction(scn->token, UNDO);
-              }
-              else if (iModType & SC_PERFORMED_REDO) {
-                RestoreAction(scn->token, REDO);
-              }
-            }
-            else if (iModType & SC_MOD_CHANGESTYLE) {
-              const DocPos iStartPos = (DocPos)scn->position;
-              const DocPos iEndPos = (DocPos)(scn->position + scn->length);
-              EditUpdateUrlHotspots(g_hwndEdit, iStartPos, iEndPos, g_bHyperlinkHotspot);
-            }
-
-            if (g_iMarkOccurrences > 0) {
-              EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-              MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
-            }
-
-            if (scn->linesAdded != 0) {
-              UpdateLineNumberWidth();
-            }
-
-            _SetDocumentModified(true);
-
-            UpdateToolbar();
-            UpdateStatusbar(false);
+        case SCN_HOTSPOTCLICK:
+        {
+          if (scn->modifiers & SCMOD_CTRL) {
+            // open in browser
+            OpenHotSpotURL((int)scn->position, true);
           }
-          break;
+          if (scn->modifiers & SCMOD_ALT) {
+            // open in application, if applicable (file://)
+            OpenHotSpotURL((int)scn->position, false);
+          }
+        }
+        break;
 
 
         case SCN_CHARADDED:
