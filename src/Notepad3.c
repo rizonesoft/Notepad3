@@ -5708,27 +5708,24 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
       if (pnmh->code == SCN_MODIFIED) {
-        bool bModified = true;
         int const iModType = scn->modificationType;
         if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
           if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
             if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
               _SaveRedoSelection(_SaveUndoSelection());
           }
-          bModified = false; // not yet
         }
         // check for ADDUNDOACTION step
         if (iModType & SC_MOD_CONTAINER)
         {
           if (iModType & SC_PERFORMED_UNDO) {
             RestoreAction(scn->token, UNDO);
+            _SetDocumentModified(true);
           }
           else if (iModType & SC_PERFORMED_REDO) {
             RestoreAction(scn->token, REDO);
+            _SetDocumentModified(true);
           }
-        }
-        if (bModified) {
-          _SetDocumentModified(true);
         }
       }
       else if (pnmh->code == SCN_SAVEPOINTREACHED) {
@@ -5777,6 +5774,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             const DocPos iStartPos = (DocPos)scn->position;
             const DocPos iEndPos = (DocPos)(scn->position + scn->length);
             EditUpdateUrlHotspots(g_hwndEdit, iStartPos, iEndPos, g_bHyperlinkHotspot);
+            bModified = false; // not yet
           }
           if (bModified) {
             if (g_iMarkOccurrences > 0) {
@@ -8826,6 +8824,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
         SHAddToRecentDocs(SHARD_PATHW,g_wchCurFile);
 
       _SetDocumentModified(false);
+
       // Install watching of the current file
       if (bSaveAs && g_bResetFileWatching) {
         if (g_bChasingDocTail) {
