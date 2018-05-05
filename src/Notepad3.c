@@ -361,7 +361,10 @@ static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
-static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* selection);
+static bool __fastcall _InUndoRedoTransaction();
+static void __fastcall _SaveRedoSelection(int token);
+static int __fastcall  _SaveUndoSelection();
+static int __fastcall  _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection);
 
 static CLIPFORMAT cfDrpF = CF_HDROP;
 static POINTL ptDummy = { 0, 0 };
@@ -3136,16 +3139,21 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_UNDO:
-      _IGNORE_NOTIFY_CHANGE_;
-      SendMessage(g_hwndEdit, SCI_UNDO, 0, 0);
-      _OBSERVE_NOTIFY_CHANGE_;
+      if (SciCall_CanUndo()) {
+        _IGNORE_NOTIFY_CHANGE_;
+        SciCall_Undo();
+        _OBSERVE_NOTIFY_CHANGE_;
+        UpdateToolbar();
+      }
       break;
 
-
     case IDM_EDIT_REDO:
-      _IGNORE_NOTIFY_CHANGE_;
-      SendMessage(g_hwndEdit, SCI_REDO, 0, 0);
-      _OBSERVE_NOTIFY_CHANGE_;
+      if (SciCall_CanRedo()) {
+        _IGNORE_NOTIFY_CHANGE_;
+        SciCall_Redo();
+        _OBSERVE_NOTIFY_CHANGE_;
+        UpdateToolbar();
+      }
       break;
 
 
@@ -5691,9 +5699,14 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
       if (pnmh->code == SCN_MODIFIED) {
-        bool bModified = true;
-        // check for ADDUNDOACTION step
         int const iModType = scn->modificationType;
+        if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
+          if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+            if (!_InUndoRedoTransaction())
+              _SaveRedoSelection(_SaveUndoSelection());
+          }
+        }
+        // check for ADDUNDOACTION step
         if (iModType & SC_MOD_CONTAINER)
         {
           if (iModType & SC_PERFORMED_UNDO) {
@@ -5703,14 +5716,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             RestoreAction(scn->token, REDO);
           }
         }
-        //else if ((iModType & SC_MOD_BEFOREINSERT) || (iModType & SC_MOD_BEFOREDELETE)) {
-        //  if ((iModType & SC_STARTACTION) && !SciCall_IsSelectionEmpty()) {
-        //    _BEGIN_UNDO_ACTION_;
-        //    _END_UNDO_ACTION_;
-        //  }
-        //  bModified = false;  // not yet
-        //}
-        if (bModified) { _SetDocumentModified(true); }
+        _SetDocumentModified(true);
       }
       else if (pnmh->code == SCN_SAVEPOINTREACHED) {
         _SetDocumentModified(false);
@@ -5758,58 +5764,66 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         //  break;
 
         case SCN_UPDATEUI:
-
-          //if (scn->updated & SC_UPDATE_NP3_INTERNAL_NOTIFY) {
-          //  // special case
-          //}
-          //else
-
-          if (scn->updated & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
           {
-            //~InvalidateSelections(); // fixed in SCI ?
+            int const iUpd = scn->updated;
+            //if (scn->updated & SC_UPDATE_NP3_INTERNAL_NOTIFY) {
+            //  // special case
+            //}
+            //else
 
-            // Brace Match
-            if (bMatchBraces) {
-              EditMatchBrace(g_hwndEdit);
-            }
+            if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT))
+            {
+              //~InvalidateSelections(); // fixed in SCI ?
 
-            if (g_iMarkOccurrences > 0) {
-              // clear marks only, if selection changed
-              if (scn->updated & SC_UPDATE_SELECTION) {
-                EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-                if (!SciCall_IsSelectionEmpty()) {
-                  MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+              // Brace Match
+              if (bMatchBraces) {
+                EditMatchBrace(g_hwndEdit);
+              }
+
+              if (g_iMarkOccurrences > 0) {
+                // clear marks only, if selection changed
+                if (iUpd & SC_UPDATE_SELECTION) {
+
+                  EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
+                  if (!SciCall_IsSelectionEmpty()) {
+                    MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+                  }
+                }
+                else if (iUpd & SC_UPDATE_CONTENT) {
+                  // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
+                  // using WM_COMMAND -> SCEN_CHANGE  instead!
+                  //~MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
                 }
               }
-              else if (scn->updated & SC_UPDATE_CONTENT) {
-                // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
-                // using WM_COMMAND -> SCEN_CHANGE  instead!
-                //~MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+
+              if (g_bHyperlinkHotspot) {
+                UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
+              }
+              UpdateToolbar();
+              UpdateStatusbar(false);
+            }
+            else if (iUpd & SC_UPDATE_V_SCROLL)
+            {
+              if ((g_iMarkOccurrences > 0) && g_bMarkOccurrencesMatchVisible) {
+                MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+              }
+              if (g_bHyperlinkHotspot) {
+                UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
               }
             }
-
-            if (g_bHyperlinkHotspot) {
-              UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
-            }
-            UpdateToolbar();
-            UpdateStatusbar(false);
-          }
-          else if (scn->updated & SC_UPDATE_V_SCROLL)
-          {
-            if ((g_iMarkOccurrences > 0) && g_bMarkOccurrencesMatchVisible) {
-              MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
-            }
-            if (g_bHyperlinkHotspot) {
-              UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
-            }
-          }
+        }
           break;
 
 
         case SCN_MODIFIED:
           {
-            bool bModified = true;
             int const iModType = scn->modificationType;
+            if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
+              if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+                if (!_InUndoRedoTransaction())
+                  _SaveRedoSelection(_SaveUndoSelection());
+              }
+            }
             if (iModType & SC_MOD_CONTAINER) {
               if (iModType & SC_PERFORMED_UNDO) {
                 RestoreAction(scn->token, UNDO);
@@ -5818,14 +5832,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 RestoreAction(scn->token, REDO);
               }
             }
-            //else if ((iModType & SC_MOD_BEFOREINSERT) || (iModType & SC_MOD_BEFOREDELETE)) 
-            //{
-            //  if ((iModType & SC_STARTACTION) && !SciCall_IsSelectionEmpty()) {
-            //    _BEGIN_UNDO_ACTION_;
-            //    _END_UNDO_ACTION_;
-            //  }
-            //  bModified = false; // not yet
-            //}
             else if (iModType & SC_MOD_CHANGESTYLE) {
               const DocPos iStartPos = (DocPos)scn->position;
               const DocPos iEndPos = (DocPos)(scn->position + scn->length);
@@ -5841,7 +5847,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               UpdateLineNumberWidth();
             }
 
-            if (bModified) { _SetDocumentModified(true); }
+            _SetDocumentModified(true);
 
             UpdateToolbar();
             UpdateStatusbar(false);
@@ -8034,12 +8040,18 @@ void UpdateUI()
 static volatile LONG UndoActionToken = UNDOREDO_BLOCKED; // block
 
 //=============================================================================
+
+static bool __fastcall _InUndoRedoTransaction() {
+  return (InterlockedExchange(&UndoActionToken, UndoActionToken) != UNDOREDO_FREE);
+}
+
+//=============================================================================
 //
-//  UndoRedoStart()
+//  UndoRedoRecordingStart()
 //
-void UndoRedoStart()
+void UndoRedoRecordingStart()
 {
-  InterlockedExchange(&UndoActionToken, UNDOREDO_FREE); // free
+  InterlockedExchange(&UndoActionToken, UNDOREDO_FREE); // clear
   _UndoRedoActionMap(-1, NULL);
   SciCall_SetUndoCollection(true);
 }
@@ -8047,9 +8059,9 @@ void UndoRedoStart()
 
 //=============================================================================
 //
-//  UndoRedoStop()
+//  UndoRedoRecordingStop()
 //
-void UndoRedoStop()
+void UndoRedoRecordingStop()
 {
   int const curToken = InterlockedExchange(&UndoActionToken, UndoActionToken);
   if (curToken >= 0) { EndUndoAction(curToken); }
@@ -8063,16 +8075,13 @@ void UndoRedoStop()
 
 //=============================================================================
 //
-//  BeginUndoAction()
+//  _SaveUndoSelection()
 //
 //
-
-int BeginUndoAction()
+static int __fastcall _SaveUndoSelection()
 {
-  if (InterlockedExchange(&UndoActionToken, UndoActionToken) != UNDOREDO_FREE) { return -1; } // already active
-
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
-  sel.selMode_undo = (int)SendMessage(g_hwndEdit,SCI_GETSELECTIONMODE,0,0);
+  sel.selMode_undo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
 
   switch (sel.selMode_undo)
   {
@@ -8095,29 +8104,26 @@ int BeginUndoAction()
   }
 
   int const token = _UndoRedoActionMap(-1, &sel);
- 
+
   if (token >= 0) {
-    SciCall_BeginUndoAction();
     SciCall_AddUndoAction(token, 0);
   }
-
-  InterlockedExchange(&UndoActionToken, (LONG)token);
+  
   return token;
 }
 
 
 //=============================================================================
 //
-//  EndUndoAction()
+//  _SaveRedoSelection()
 //
 //
-void EndUndoAction(int token)
+static void __fastcall _SaveRedoSelection(int token)
 {
-  if ((token >= 0) && (token == (int)InterlockedExchange(&UndoActionToken, UndoActionToken)))
-  {
+  if (token >= 0) {
     UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
 
-    if (_UndoRedoActionMap(token, &sel) >= 0) 
+    if (_UndoRedoActionMap(token, &sel) >= 0)
     {
       sel.selMode_redo = (int)SendMessage(g_hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
 
@@ -8139,9 +8145,43 @@ void EndUndoAction(int token)
         sel.curPos_redo = (DocPos)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
         break;
       }
+
+      _UndoRedoActionMap(token, &sel); // set with redo action filled
     }
-    
-    _UndoRedoActionMap(token, &sel); // set with redo action filled
+  }
+}
+
+
+//=============================================================================
+//
+//  BeginUndoAction()
+//
+//
+int BeginUndoAction()
+{
+  if (_InUndoRedoTransaction()) { return -1; }
+
+  SciCall_BeginUndoAction();
+
+  int const token = _SaveUndoSelection();
+
+  InterlockedExchange(&UndoActionToken, (LONG)token);
+
+  return token;
+}
+
+
+
+//=============================================================================
+//
+//  EndUndoAction()
+//
+//
+void EndUndoAction(int token)
+{
+  if ((token >= 0) && (token == (int)InterlockedExchange(&UndoActionToken, UndoActionToken)))
+  {
+    _SaveRedoSelection(token);
 
     SciCall_EndUndoAction();
     
@@ -8157,7 +8197,7 @@ void EndUndoAction(int token)
 //
 void RestoreAction(int token, DoAction doAct)
 {
-  if (InterlockedExchange(&UndoActionToken, UndoActionToken) != UNDOREDO_FREE) { return; } // in action recording
+  if (_InUndoRedoTransaction()) { return; }
 
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
 
@@ -8219,10 +8259,10 @@ void RestoreAction(int token, DoAction doAct)
 
 //=============================================================================
 //
-//  UndoSelectionMap()
+//  _UndoSelectionMap()
 //
 //
-static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
+static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection)
 {
   if (UndoRedoSelectionUTArray == NULL)  { return -1; }
 

@@ -364,7 +364,7 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 void __fastcall _ClearTextBuffer(HWND hwnd)
 {
-  UndoRedoStop();
+  UndoRedoRecordingStop();
 
   SendMessage(hwnd, SCI_CANCEL, 0, 0);
 
@@ -399,7 +399,7 @@ void __fastcall _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen
   SciCall_GotoPos(0);
   SciCall_ChooseCaretX();
 
-  UndoRedoStart();
+  UndoRedoRecordingStart();
 
   if (bSetSavePoint) { 
     SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0); 
