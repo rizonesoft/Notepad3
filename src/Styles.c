@@ -3842,7 +3842,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // update UI for hotspots
   if (g_bHyperlinkHotspot) {
     Style_SetUrlHotSpot(hwnd, g_bHyperlinkHotspot);
-    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
+    EditUpdateUrlHotspots(hwnd, 0, Sci_GetDocEndPosition(), g_bHyperlinkHotspot);
   }
   UpdateStatusbar(false);
   UpdateLineNumberWidth();
@@ -3924,7 +3924,7 @@ int Style_GetInvisibleStyleID()
 void Style_SetInvisible(HWND hwnd, bool bInvisible)
 {
   //SendMessage(hwnd, SCI_FOLDDISPLAYTEXTSETSTYLE, (WPARAM)SC_FOLDDISPLAYTEXT_BOXED, 0);
-  SciCall_MarkerDefine(MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
+  //SciCall_MarkerDefine(MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
   if (bInvisible) {
     SendMessage(hwnd, SCI_STYLESETVISIBLE, Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
   }

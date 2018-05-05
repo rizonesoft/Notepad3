@@ -138,7 +138,7 @@ int  CreateIniFile();
 int  CreateIniFileEx(LPCWSTR);
 
 
-void MarkAllOccurrences(int);
+void MarkAllOccurrences(int delay, bool bForceClear);
 void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateLineNumberWidth();

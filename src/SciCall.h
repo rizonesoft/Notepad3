@@ -180,6 +180,7 @@ DeclareSciCallV0(Cut, CUT)
 DeclareSciCallV0(Copy, COPY)
 DeclareSciCallV0(Paste, PASTE)
 DeclareSciCallV0(Clear, CLEAR)
+DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end)
 DeclareSciCallV0(Cancel, CANCEL)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
 DeclareSciCallV0(LineDelete, LINEDELETE)
@@ -301,6 +302,14 @@ DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
 
 //=============================================================================
 //
+//  Line State
+//
+DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state)
+DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line)
+DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
+
+//=============================================================================
+//
 //  Indicators
 //
 DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position)
@@ -379,6 +388,8 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 // length of line w/o line-end chars (full use SciCall_LineLength()
 #define Sci_GetNetLineLength(line)  (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
 
+///~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
+#define Sci_GetDocEndPosition() SciCall_GetTextLength()
 
 //=============================================================================
 

@@ -536,6 +536,12 @@ static int g_flagRelaunchElevated   = 0;
 static int g_flagDisplayHelp        = 0;
 static int g_flagBufferFile         = 0;
 
+//==============================================================================
+
+// decalarations 
+static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw);
+static void __fastcall _UpdateToolbarDelayed();
+
 
 //==============================================================================
 //
@@ -1279,8 +1285,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       UpdateLineNumberWidth();
-      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(0);
+      MarkAllOccurrences(0, true);
       UpdateVisibleUrlHotspot(0);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
@@ -1430,8 +1435,14 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   // general setup
   //int const evtMask = SC_MODEVENTMASKALL;
-  int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_USER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO;
-  int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE | SC_STARTACTION;
+  // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED: 
+  // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER, 
+  // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER, 
+  // SC_MOD_BEFOREINSERT, SC_MOD_BEFOREDELETE, SC_MULTILINEUNDOREDO, and SC_MODEVENTMASKALL.
+  //
+  int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_USER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MOD_CHANGESTYLE;
+  int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
+
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
 
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 
@@ -1989,9 +2000,8 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   if (EditToggleView(g_hwndEdit, false)) {
     EditToggleView(g_hwndEdit, true);
   }
-  EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-  MarkAllOccurrences(0);
-  EditUpdateUrlHotspots(g_hwndEdit, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
+  MarkAllOccurrences(0, true);
+  EditUpdateUrlHotspots(g_hwndEdit, 0, Sci_GetDocEndPosition(), g_bHyperlinkHotspot);
 
   UpdateUI();
   UpdateToolbar();
@@ -2788,13 +2798,20 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
   switch(LOWORD(wParam))
   {
     case SCEN_CHANGE:
-      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, false);
+      break;
+
+    case IDT_TIMER_UPDATE_STATUSBAR:
+      _UpdateStatusbarDelayed((bool)lParam);
+      break;
+
+    case IDT_TIMER_UPDATE_TOOLBAR:
+      _UpdateToolbarDelayed();
       break;
 
     case IDT_TIMER_MAIN_MRKALL:
-      EditMarkAllOccurrences();
+      EditMarkAllOccurrences(g_hwndEdit, (bool)lParam);
       break;
-
 
     case IDT_TIMER_UPDATE_HOTSPOT:
       EditUpdateVisibleUrlHotspot(g_bHyperlinkHotspot);
@@ -3190,7 +3207,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       {
         if (g_flagPasteBoard)
           bLastCopyFromMe = true;
-        SendMessage(g_hwndEdit,SCI_COPYRANGE,0,(LPARAM)SciCall_GetTextLength());
+        SciCall_CopyRange(0, Sci_GetDocEndPosition());
         UpdateToolbar();
       }
       break;
@@ -4477,29 +4494,25 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ACCELWORDNAV:
       bAccelWordNavigation = (bAccelWordNavigation) ? false : true;  // toggle  
       EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
-      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
       g_iMarkOccurrences = (g_iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
-      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(0);
+      MarkAllOccurrences(0, true);
       EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
       g_bMarkOccurrencesMatchVisible = (g_bMarkOccurrencesMatchVisible) ? false : true;
-      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(0);
+      MarkAllOccurrences(0, true);
       EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
       break;
 
     case IDM_VIEW_TOGGLE_VIEW:
       if (EditToggleView(g_hwndEdit, false)) {
         EditToggleView(g_hwndEdit, true);
-        EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-        MarkAllOccurrences(0);
+        MarkAllOccurrences(0, true);
       }
       else {
         EditToggleView(g_hwndEdit, true);
@@ -4510,29 +4523,25 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_MARKOCCUR_CASE:
       bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? false : true;
-      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_WNONE:
       bMarkOccurrencesMatchWords = false;
       bMarkOccurrencesCurrentWord = false;
-      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_WORD:
       bMarkOccurrencesMatchWords = true;
       bMarkOccurrencesCurrentWord = false;
-      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
       bMarkOccurrencesMatchWords = false;
       bMarkOccurrencesCurrentWord = true;
-      EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+      MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
     case IDM_VIEW_FOLDING:
@@ -5771,8 +5780,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           }
           if (bModified) {
             if (g_iMarkOccurrences > 0) {
-              EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
-              MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+              MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
             }
             if (scn->linesAdded != 0) {
               UpdateLineNumberWidth();
@@ -5812,17 +5820,19 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
               if (g_iMarkOccurrences > 0) {
                 // clear marks only, if selection changed
-                if (iUpd & SC_UPDATE_SELECTION) {
-
-                  EditClearAllOccurrenceMarkers(g_hwndEdit, 0, -1);
+                if (iUpd & SC_UPDATE_SELECTION) 
+                {
                   if (!SciCall_IsSelectionEmpty()) {
-                    MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+                    MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
+                  }
+                  else {
+                    EditClearAllOccurrenceMarkers(g_hwndEdit);
                   }
                 }
                 else if (iUpd & SC_UPDATE_CONTENT) {
                   // ignoring SC_UPDATE_CONTENT cause Style and Marker are out of scope here
                   // using WM_COMMAND -> SCEN_CHANGE  instead!
-                  //~MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+                  //~MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, false);
                 }
               }
 
@@ -5835,7 +5845,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else if (iUpd & SC_UPDATE_V_SCROLL)
             {
               if ((g_iMarkOccurrences > 0) && g_bMarkOccurrencesMatchVisible) {
-                MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences);
+                MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, false);
               }
               if (g_bHyperlinkHotspot) {
                 UpdateVisibleUrlHotspot(iUpdateDelayHyperlinkStyling);
@@ -7448,17 +7458,43 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
 
 
 
+//=============================================================================
+//
+//  DelayUpdateStatusbar()
+//  
+//
+static void __fastcall DelayUpdateStatusbar(int delay, bool bForceRedraw)
+{
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_STATUSBAR, 1), (LPARAM)0, 0 };
+  mqc.hwnd = g_hwndMain;
+  mqc.lparam = (LPARAM)bForceRedraw;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+}
 
+
+//=============================================================================
+//
+//  DelayUpdateToolbar()
+//  
+//
+static void __fastcall DelayUpdateToolbar(int delay)
+{
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_TOOLBAR, 1), (LPARAM)0, 0 };
+  mqc.hwnd = g_hwndMain;
+  //mqc.lparam = (LPARAM)bForceRedraw;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+}
 
 
 //=============================================================================
 //
 //  MarkAllOccurrences()
 // 
-void MarkAllOccurrences(int delay)
+void MarkAllOccurrences(int delay, bool bForceClear)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
   mqc.hwnd = g_hwndMain;
+  mqc.lparam = (LPARAM)bForceClear;
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
 }
 
@@ -7475,15 +7511,24 @@ void UpdateVisibleUrlHotspot(int delay)
 }
 
 
+
+
+
 //=============================================================================
 //
 //  UpdateToolbar()
 //
+void UpdateToolbar()
+{
+  DelayUpdateToolbar(40);
+}
+
+//=============================================================================
+
 #define EnableTool(id,b) SendMessage(g_hwndToolbar,TB_ENABLEBUTTON,id, MAKELONG(((b) ? 1 : 0), 0))
 #define CheckTool(id,b)  SendMessage(g_hwndToolbar,TB_CHECKBUTTON,id, MAKELONG((b),0))
 
-
-void UpdateToolbar()
+static void __fastcall _UpdateToolbarDelayed()
 {
   SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_UNTITLED, g_wchCurFile,
                  iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
@@ -7662,16 +7707,22 @@ static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionT
 //  UpdateStatusbar()
 //
 //
+void UpdateStatusbar(bool bForceRedraw)
+{
+  DelayUpdateStatusbar(40, bForceRedraw);
+}
+
+//=============================================================================
+
 const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
 
 FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
 
-
-void UpdateStatusbar(bool bUpdNeeded)
+static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 {
   if (!bShowStatusbar) { return; }
 
-  bool bIsUpdateNeeded = bUpdNeeded;
+  bool bIsUpdateNeeded = bForceRedraw;
 
   static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
   static WCHAR tchFRStatus[128] = { L'\0' };
@@ -8584,6 +8635,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
   else if (!(bFileTooBig || bUnknownExt))
     MsgBox(MBWARN,IDS_ERR_LOADFILE,szFileName);
+
+  UpdateStatusbar(true);
 
   return(fSuccess);
 }

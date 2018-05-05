@@ -97,7 +97,7 @@ bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
-void  EditClearAllOccurrenceMarkers(HWND, DocPos, DocPos);
+void  EditClearAllOccurrenceMarkers(HWND);
 bool  EditToggleView(HWND hwnd, bool bToggleView);
 void  EditMarkAll(HWND, char*, int, DocPos, DocPos, bool, bool);
 void  EditUpdateUrlHotspots(HWND, DocPos, DocPos, bool);
@@ -108,7 +108,7 @@ void  EditSetBookmarkList(HWND,LPCWSTR);
 void  EditApplyLexerStyle(HWND, DocPos, DocPos);
 void  EditFinalizeStyling(HWND, DocPos);
 
-void  EditMarkAllOccurrences();
+void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditUpdateVisibleUrlHotspot(bool);
 void  EditHideNotMarkedLineRange(HWND, DocPos, DocPos, bool);
 
