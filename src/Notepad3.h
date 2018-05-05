@@ -146,8 +146,8 @@ void UpdateSettingsCmds();
 void UpdateVisibleUrlHotspot(int);
 void UpdateUI();
 
-void UndoRedoStart();
-void UndoRedoStop();
+void UndoRedoRecordingStart();
+void UndoRedoRecordingStop();
 int  BeginUndoAction();
 void EndUndoAction(int);
 void RestoreAction(int,DoAction);

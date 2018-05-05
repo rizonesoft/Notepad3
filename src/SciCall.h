@@ -136,6 +136,8 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
 DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
+DeclareSciCallV0(Undo, UNDO)
+DeclareSciCallV0(Redo, REDO)
 DeclareSciCallR0(CanUndo, CANUNDO, bool)
 DeclareSciCallR0(CanRedo, CANREDO, bool)
 DeclareSciCallR0(IsDocModified, GETMODIFY, bool)
