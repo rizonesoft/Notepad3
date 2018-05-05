@@ -5702,7 +5702,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         int const iModType = scn->modificationType;
         if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
           if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-            if (!_InUndoRedoTransaction())
+            if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
               _SaveRedoSelection(_SaveUndoSelection());
           }
         }
@@ -5820,7 +5820,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             int const iModType = scn->modificationType;
             if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
               if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-                if (!_InUndoRedoTransaction())
+                if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
                   _SaveRedoSelection(_SaveUndoSelection());
               }
             }
