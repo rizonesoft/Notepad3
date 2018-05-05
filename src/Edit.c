@@ -364,14 +364,13 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 void __fastcall _ClearTextBuffer(HWND hwnd)
 {
+  UndoRedoStop();
+
   SendMessage(hwnd, SCI_CANCEL, 0, 0);
 
   _IGNORE_NOTIFY_CHANGE_;
   
   if (SciCall_GetReadOnly()) { SciCall_SetReadOnly(false); }
-
-  UndoRedoActionMap(-1, NULL); 
-  SciCall_SetUndoCollection(false);
 
   EditClearAllOccurrenceMarkers(hwnd, 0, -1);
   if (EditToggleView(g_hwndEdit, false)) {
@@ -380,8 +379,6 @@ void __fastcall _ClearTextBuffer(HWND hwnd)
 
   SendMessage(hwnd, SCI_CLEARALL, 0, 0);
   SendMessage(hwnd, SCI_MARKERDELETEALL, (WPARAM)MARKER_NP3_BOOKMARK, 0);
-
-  SciCall_SetUndoCollection(true);
 
   SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
   SendMessage(hwnd, SCI_SETXOFFSET, 0, 0);
@@ -396,19 +393,18 @@ void __fastcall _ClearTextBuffer(HWND hwnd)
 //
 void __fastcall _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
 {
-  SciCall_SetUndoCollection(false);
-
   if (textLen > 0) {
     SciCall_AddText(textLen, lpstrText);
   }
   SciCall_GotoPos(0);
   SciCall_ChooseCaretX();
 
-  SciCall_SetUndoCollection(true);
+  UndoRedoStart();
 
-  if (bSetSavePoint) { SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0); }
+  if (bSetSavePoint) { 
+    SendMessage(hwnd, SCI_SETSAVEPOINT, 0, 0); 
+  }
 }
-
 
 
 //=============================================================================
@@ -508,14 +504,14 @@ bool EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool bNoUI,bool bSetSavePoint
   
     if (SciCall_GetTextLength() == 0) {
 
-      bool bIsEmptyUndoHistory = (SendMessage(hwnd, SCI_CANUNDO, 0, 0) == 0 && SendMessage(hwnd, SCI_CANREDO, 0, 0) == 0);
+      bool bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
+      
 
       bool doNewEncoding = (!bIsEmptyUndoHistory && !bNoUI) ?
         (InfoBox(MBYESNO, L"MsgConv2", IDS_ASK_ENCODING2) == IDYES) : true;
 
       if (doNewEncoding) {
         return EditConvertText(hwnd,iCurrentEncoding,iNewEncoding,bSetSavePoint);
-
       }
     }
     else {
@@ -5470,9 +5466,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDC_REPLACE:
           {
             bReplaceInitialized = true;
-            int const token = BeginUndoAction();
+            _BEGIN_UNDO_ACTION_;
             EditReplace(sg_pefrData->hwnd, sg_pefrData);
-            EndUndoAction(token);
+            _END_UNDO_ACTION_;
           }
           break;
 
@@ -6095,11 +6091,11 @@ bool EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
 
   BeginWaitCursor(NULL);
 
-  int const token = BeginUndoAction();
+  _BEGIN_UNDO_ACTION_;
 
   iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
 
-  EndUndoAction(token);
+  _END_UNDO_ACTION_;
 
   EndWaitCursor();
 
@@ -6131,7 +6127,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   const DocPos anchorPos = SciCall_GetAnchor();
   DocPos enlargement = 0;
 
-  int const token = BeginUndoAction();
+  _BEGIN_UNDO_ACTION_;
 
   bool const bWaitCursor = ((end - start) > (512 * 512)) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
@@ -6140,24 +6136,21 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
   _OBSERVE_NOTIFY_CHANGE_;
   if (bWaitCursor) { EndWaitCursor(); }
 
-  if (iReplacedOccurrences <= 0) {
-    EndUndoAction(token);
-    return false;
-  }
-
-  if (currPos < anchorPos)
-    SciCall_SetSel(anchorPos + enlargement, currPos);
-  else
-    SciCall_SetSel(anchorPos, currPos + enlargement);
-
-  EndUndoAction(token);
-
-  if (bShowInfo) {
-    if (iReplacedOccurrences > 0)
-      InfoBox(0, L"MsgReplaceCount", IDS_REPLCOUNT, iReplacedOccurrences);
+  if (iReplacedOccurrences > 0) 
+  {
+    if (currPos < anchorPos)
+      SciCall_SetSel(anchorPos + enlargement, currPos);
     else
-      InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
+      SciCall_SetSel(anchorPos, currPos + enlargement);
+
+    if (bShowInfo) {
+      if (iReplacedOccurrences > 0)
+        InfoBox(0, L"MsgReplaceCount", IDS_REPLCOUNT, iReplacedOccurrences);
+      else
+        InfoBox(0, L"MsgNotFound", IDS_NOTFOUND);
+    }
   }
+  _END_UNDO_ACTION_;
 
   return (iReplacedOccurrences > 0) ? true : false;
 }

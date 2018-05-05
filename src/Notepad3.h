@@ -146,13 +146,15 @@ void UpdateSettingsCmds();
 void UpdateVisibleUrlHotspot(int);
 void UpdateUI();
 
-
-void InvalidateSelections();
-
-int BeginUndoAction();
+void UndoRedoStart();
+void UndoRedoStop();
+int  BeginUndoAction();
 void EndUndoAction(int);
 void RestoreAction(int,DoAction);
-int UndoRedoActionMap(int,UndoRedoSelection_t*);
+
+#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
+#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
+
 
 void OpenHotSpotURL(DocPos, bool);
 
