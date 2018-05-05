@@ -7749,7 +7749,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
     FormatNumberStr(tchLines);
   }
 
-  if ((s_iLnFromPos != iLnFromPos) || (s_iLnFromPos != iLnFromPos)) 
+  if ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt))
   {
     FormatString(tchStatusBar[STATUS_DOCLINE], txtWidth, IDS_STATUS_DOCLINE, g_mxStatusBarPrefix[STATUS_DOCLINE], tchLn, tchLines);
     s_iLnFromPos = iLnFromPos;
@@ -8455,7 +8455,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     _SetDocumentModified(false);
 
     UpdateToolbar();
-    UpdateStatusbar(false);
+    UpdateStatusbar(true);
     UpdateLineNumberWidth();
 
     // Terminate file watching
@@ -8620,7 +8620,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     //bReadOnly = false;
     _SetDocumentModified(false);
     UpdateToolbar();
-    UpdateStatusbar(false);
+    UpdateStatusbar(true);
     UpdateLineNumberWidth();
     UpdateVisibleUrlHotspot(0);
 
@@ -8635,8 +8635,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
   else if (!(bFileTooBig || bUnknownExt))
     MsgBox(MBWARN,IDS_ERR_LOADFILE,szFileName);
-
-  UpdateStatusbar(true);
 
   return(fSuccess);
 }
