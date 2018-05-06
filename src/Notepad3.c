@@ -1440,7 +1440,8 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER, 
   // SC_MOD_BEFOREINSERT, SC_MOD_BEFOREDELETE, SC_MULTILINEUNDOREDO, and SC_MODEVENTMASKALL.
   //
-  int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_USER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MOD_CHANGESTYLE;
+  ///~ Don't use: SC_PERFORMED_USER | SC_MOD_CHANGESTYLE;
+  int const evtMask1 = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO;
   int const evtMask2 = SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE;
 
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
@@ -5769,12 +5770,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else if (iModType & SC_PERFORMED_REDO) {
               RestoreAction(scn->token, REDO);
             }
-          }
-          else if (iModType & SC_MOD_CHANGESTYLE) {
-            const DocPos iStartPos = (DocPos)scn->position;
-            const DocPos iEndPos = (DocPos)(scn->position + scn->length);
-            EditUpdateUrlHotspots(g_hwndEdit, iStartPos, iEndPos, g_bHyperlinkHotspot);
-            bModified = false; // not yet
           }
           if (bModified) {
             if (g_iMarkOccurrences > 0) {
