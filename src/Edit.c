@@ -5250,7 +5250,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               _IGNORE_NOTIFY_CHANGE_;
               if (EditToggleView(g_hwndEdit, false)) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
               StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), sg_pefrData->szFind);
-              g_iMarkOccurrencesCount = 0;
               RegExResult_t match = _FindHasMatch(g_hwndEdit, sg_pefrData, (sg_pefrData->bMarkOccurences), false);
               if (regexMatch != match) {
                 regexMatch = match;
@@ -6689,6 +6688,7 @@ static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
 //=============================================================================
 //
 //  EditApplyLexerStyle()
+//  if iRangeEnd == -1 : apply style from iRangeStart to document end
 //
 void EditApplyLexerStyle(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
 {
@@ -6703,19 +6703,32 @@ void EditApplyLexerStyle(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
 //
 void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
 {
-  if (iEndPos <= 0) {
-    iEndPos = Sci_GetDocEndPosition();
-  }
-
   DocPos const iEndStyled = SciCall_GetEndStyled();
 
-  if (iEndStyled < iEndPos)
+  if ((iEndPos < 0) || (iEndStyled < iEndPos))
   {
-    DocLn const iStartLine = SciCall_LineFromPosition(iEndStyled) + 1;
-    DocPos const iStartStyling = SciCall_PositionFromLine(iStartLine);
-    EditApplyLexerStyle(hwnd, iStartStyling, iEndPos);
+    EditApplyLexerStyle(hwnd, iEndStyled, iEndPos);
   }
 }
+
+//void EditFinalizeStyling(HWND hwnd, DocPos iEndPos)
+//{
+//  if (iEndPos <= 0) {
+//    iEndPos = Sci_GetDocEndPosition();
+//  }
+//
+//  DocPos const iEndStyled = SciCall_GetEndStyled();
+//
+//  if (iEndStyled < iEndPos)
+//  {
+//    DocLn const iStartLine = SciCall_LineFromPosition(iEndStyled) + 1;
+//    DocPos const iStartStyling = SciCall_PositionFromLine(iStartLine);
+//    EditApplyLexerStyle(hwnd, iStartStyling, iEndPos);
+//  }
+//}
+//
+
+
 
 
 //=============================================================================
