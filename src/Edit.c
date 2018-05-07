@@ -5103,21 +5103,17 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           g_iMarkOccurrences = iSaveMarkOcc;
           g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
 
-          if (g_iMarkOccurrences > 0) {
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, !g_bMarkOccurrencesMatchVisible);
-          }
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
+          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
+          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
+          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
 
           iReplacedOccurrences = 0;
           g_FindReplaceMatchFoundState = FND_NOP;
 
-          if ((g_iMarkOccurrences <= 0) || g_bMarkOccurrencesMatchVisible) {
-            if (EditToggleView(g_hwndEdit, false)) {
-              EditToggleView(g_hwndEdit, true);
-              EditClearAllOccurrenceMarkers(g_hwndEdit);
-            }
+          if (EditToggleView(g_hwndEdit, false)) {
+            EditToggleView(g_hwndEdit, true);
           }
+          MarkAllOccurrences(50, true);
 
           EditEnsureSelectionVisible(g_hwndEdit);
 
@@ -5136,6 +5132,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DeleteObject(hBrushBlue);
       }
       return false;
+
 
     case WM_ACTIVATE:
       {
@@ -5269,6 +5266,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               _OBSERVE_NOTIFY_CHANGE_;
             }
           }
+          else {
+            MarkAllOccurrences(50, true);
+          }
         }
         return false;
 
@@ -5285,23 +5285,25 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             g_iMarkOccurrences = 0;
             g_bMarkOccurrencesMatchVisible = false;
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
+
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
           }
           else {  // switched OFF
             g_iMarkOccurrences = iSaveMarkOcc;
             g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
-
+            //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+            DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
             if (EditToggleView(g_hwndEdit, false)) {
-              EditToggleView(g_hwndEdit, true);
-              sg_pefrData->bStateChanged = true;
+              PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
             }
-            DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
-            EditClearAllOccurrenceMarkers(g_hwndEdit);
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
-          }
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, (g_iMarkOccurrences > 0));
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
 
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
+            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
+          }
           _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         }
         break;
@@ -5310,8 +5312,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       case IDC_TOGGLE_VISIBILITY:
         if (EditToggleView(g_hwndEdit, false)) {
           EditToggleView(g_hwndEdit, true);
-          EditClearAllOccurrenceMarkers(g_hwndEdit);
           sg_pefrData->bStateChanged = true;
+          EditClearAllOccurrenceMarkers(g_hwndEdit);
           _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         }
         else {
@@ -5855,14 +5857,15 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
 // 
 void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 {
-  if (g_iMarkOccurrences <= 0) {
-    g_iMarkOccurrencesCount = -1;
-    return;
-  }
   if (_IsInTargetTransaction()) { return; }  // do not block, next event occurs for sure
 
   if (bForceClear) {
     EditClearAllOccurrenceMarkers(hwnd);
+  }
+
+  if (g_iMarkOccurrences <= 0) {
+    g_iMarkOccurrencesCount = -1;
+    return;
   }
 
   bool const bWaitCursor = (g_iMarkOccurrencesCount > 4000) ? true : false;

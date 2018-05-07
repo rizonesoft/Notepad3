@@ -95,10 +95,10 @@ static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
       
       CenterDlgInParent(hChildWnd);
     }
+    PostMessage(hChildWnd, WM_SETFOCUS, 0, 0);
+
     // exit _MsgBoxProc hook
     UnhookWindowsHookEx(hhkMsgBox);
-
-    
   }
   else // otherwise, continue with any possible chained hooks
   {
@@ -146,23 +146,119 @@ int MsgBox(int iType,UINT uIdMsg,...)
 
   int iIcon = MB_ICONHAND;
   switch (iType) {
-    case MBINFO: iIcon = MB_ICONINFORMATION; break;
-    case MBWARN: iIcon = MB_ICONWARNING; break;
+    case MBINFO: iIcon = MB_ICONINFORMATION | MB_OK; break;
+    case MBWARN: iIcon = MB_ICONWARNING | MB_OK; break;
     case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
     case MBYESNOCANCEL: iIcon = MB_ICONINFORMATION | MB_YESNOCANCEL; break;
     case MBYESNOWARN: iIcon = MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON1; break;
     case MBOKCANCEL: iIcon = MB_ICONEXCLAMATION | MB_OKCANCEL; break;
     case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
-    default: iIcon = MB_ICONSTOP | MB_TOPMOST | MB_OK; break;
+    default: iIcon = MB_ICONSTOP | MB_OK; break;
   }
+  iIcon |= (MB_TOPMOST | MB_SETFOREGROUND);
+
+  // center message box to main
+  HWND focus = GetFocus();
+  HWND hwnd = focus ? focus : g_hwndMain;
+  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+
+ 
+  return  MessageBox(hwnd, szText, szTitle, iIcon);
+  //return MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
+}
+
+
+//=============================================================================
+//
+//  InfoBoxDlgProc()
+//
+//
+typedef struct _infobox {
+  LPWSTR lpstrMessage;
+  LPWSTR lpstrSetting;
+  bool   bDisableCheckBox;
+} INFOBOX, *LPINFOBOX;
+
+INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+  LPINFOBOX lpib;
+
+  switch (umsg)
+  {
+  case WM_INITDIALOG:
+    lpib = (LPINFOBOX)lParam;
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON,
+      (WPARAM)LoadIcon(NULL, IDI_EXCLAMATION), 0);
+    SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpib->lpstrMessage);
+    if (lpib->bDisableCheckBox)
+      DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false);
+    LocalFree(lpib->lpstrMessage);
+    CenterDlgInParent(hwnd);
+    return true;
+
+  case WM_COMMAND:
+    switch (LOWORD(wParam))
+    {
+    case IDOK:
+    case IDCANCEL:
+    case IDYES:
+    case IDNO:
+      lpib = (LPINFOBOX)GetWindowLongPtr(hwnd, DWLP_USER);
+      if (IsDlgButtonChecked(hwnd, IDC_INFOBOXCHECK))
+        IniSetInt(L"Suppressed Messages", lpib->lpstrSetting, 1);
+      EndDialog(hwnd, LOWORD(wParam));
+      break;
+    }
+    return true;
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
+//  InfoBox()
+//
+//
+extern WCHAR g_wchIniFile[MAX_PATH];
+
+INT_PTR InfoBox(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
+{
+  int iMode = IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
+
+  if (lstrlen(lpstrSetting) > 0 && iMode == 1)
+    return (iType == MBYESNO) ? IDYES : IDOK;
+
+  WCHAR wchFormat[LARGE_BUFFER];
+  if (!GetString(uidMessage, wchFormat, COUNTOF(wchFormat)))
+    return(-1);
+
+  INFOBOX ib;
+  ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
+  StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
+  ib.lpstrSetting = (LPWSTR)lpstrSetting;
+  ib.bDisableCheckBox = (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? true : false;
+
+  int idDlg;
+  switch (iType) {
+  case MBYESNO:
+    idDlg = IDD_INFOBOX2;
+    break;
+  case MBOKCANCEL:
+    idDlg = IDD_INFOBOX3;
+    break;
+  default:
+    idDlg = IDD_INFOBOX;
+    break;
+  }
+
+  MessageBeep(MB_ICONEXCLAMATION);
 
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : g_hwndMain;
 
-  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
-
-  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-
+  return ThemedDialogBoxParam(g_hInstance, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
 }
 
 
@@ -2525,54 +2621,6 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
 }
 
 
-//=============================================================================
-//
-//  InfoBoxDlgProc()
-//
-//
-typedef struct _infobox {
-  LPWSTR lpstrMessage;
-  LPWSTR lpstrSetting;
-  bool   bDisableCheckBox;
-} INFOBOX, *LPINFOBOX;
-
-INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
-{
-  LPINFOBOX lpib;
-
-  switch(umsg)
-  {
-    case WM_INITDIALOG:
-      lpib = (LPINFOBOX)lParam;
-      SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
-      SendDlgItemMessage(hwnd,IDC_INFOBOXICON,STM_SETICON,
-        (WPARAM)LoadIcon(NULL,IDI_EXCLAMATION),0);
-      SetDlgItemText(hwnd,IDC_INFOBOXTEXT,lpib->lpstrMessage);
-      if (lpib->bDisableCheckBox)
-        DialogEnableWindow(hwnd,IDC_INFOBOXCHECK,false);
-      LocalFree(lpib->lpstrMessage);
-      CenterDlgInParent(hwnd);
-      return true;
-
-    case WM_COMMAND:
-      switch(LOWORD(wParam))
-      {
-        case IDOK:
-        case IDCANCEL:
-        case IDYES:
-        case IDNO:
-          lpib = (LPINFOBOX)GetWindowLongPtr(hwnd,DWLP_USER);
-          if (IsDlgButtonChecked(hwnd,IDC_INFOBOXCHECK))
-            IniSetInt(L"Suppressed Messages",lpib->lpstrSetting,1);
-          EndDialog(hwnd,LOWORD(wParam));
-          break;
-      }
-      return true;
-  }
-  return false;
-}
-
-
 
 //=============================================================================
 //
@@ -2781,52 +2829,6 @@ void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
     sei.lpFile = VERSION_UPDATE_CHECK;
     ShellExecuteEx(&sei);
   }
-}
-
-
-//=============================================================================
-//
-//  InfoBox()
-//
-//
-extern WCHAR g_wchIniFile[MAX_PATH];
-
-INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
-{
-  int iMode = IniGetInt(L"Suppressed Messages",lpstrSetting,0);
-
-  if (lstrlen(lpstrSetting) > 0 && iMode == 1)
-    return (iType == MBYESNO) ? IDYES : IDOK;
-
-  WCHAR wchFormat[LARGE_BUFFER];
-  if (!GetString(uidMessage,wchFormat,COUNTOF(wchFormat)))
-    return(-1);
-
-  INFOBOX ib;
-  ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
-  StringCchVPrintfW(ib.lpstrMessage,HUGE_BUFFER,wchFormat,(LPVOID)((PUINT_PTR)&uidMessage + 1));
-  ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? true : false;
-
-  int idDlg;
-  switch (iType) {
-  case MBYESNO:
-    idDlg = IDD_INFOBOX2;
-    break;
-  case MBOKCANCEL:
-    idDlg = IDD_INFOBOX3;
-    break;
-  default:
-    idDlg = IDD_INFOBOX;
-    break;
-  }
-
-  HWND focus = GetFocus();
-  HWND hwnd = focus ? focus : g_hwndMain;
-
-  MessageBeep(MB_ICONEXCLAMATION);
-
-  return ThemedDialogBoxParam(g_hInstance, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
 }
 
 //  End of Dialogs.c
