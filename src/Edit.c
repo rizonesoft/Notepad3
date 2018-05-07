@@ -70,7 +70,7 @@ extern DWORD dwLastIOError;
 extern bool bReplaceInitialized;
 extern bool bUseOldStyleBraceMatching;
 extern bool bUseDefaultForFileEncoding;
-extern bool bFindReplCopySelOrClip;
+extern bool g_bFindReplCopySelOrClip;
 
 static EDITFINDREPLACE efrSave;
 static bool bSwitchedFindReplace = false;
@@ -5147,7 +5147,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
         }
         //if (LOWORD(wParam) == WA_INACTIVE) {
-        //  bFindReplCopySelOrClip = true;
+        //  g_bFindReplCopySelOrClip = true;
         //}
       }
       return false;
@@ -5166,7 +5166,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       case IDC_FINDTEXT:
       case IDC_REPLACETEXT:
       {
-        if (bFindReplCopySelOrClip)
+        if (g_bFindReplCopySelOrClip)
         {
           char *lpszSelection = NULL;
           char szFind[FNDRPL_BUFFER] = { '\0' };
@@ -5219,7 +5219,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
             GetDlgItemTextW2MB(hwnd, IDC_FINDTEXT, szFind, FNDRPL_BUFFER);
           }
-          bFindReplCopySelOrClip = false;
+          g_bFindReplCopySelOrClip = false;
         }
 
         bool bEnableF = (GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT)) ||

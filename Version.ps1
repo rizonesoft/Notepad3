@@ -32,7 +32,7 @@ function DebugOutput($msg)
 
 try 
 {
-	$Major = 3
+	$Major = 4
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format MMdd)
 	if ($AppVeyorEnv) {

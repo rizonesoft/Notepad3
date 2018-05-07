@@ -1158,9 +1158,9 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 //
 //
 extern LPMRULIST g_pFileMRU;
-extern bool bSaveRecentFiles;
-extern bool bPreserveCaretPos;
-extern bool bSaveFindReplace;
+extern bool g_bSaveRecentFiles;
+extern bool g_bPreserveCaretPos;
+extern bool g_bSaveFindReplace;
 extern int  cxFileMRUDlg;
 extern int  cyFileMRUDlg;
 extern int  g_flagNoFadeHidden;
@@ -1300,11 +1300,11 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         // Update view
         SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-        CheckDlgButton(hwnd, IDC_SAVEMRU, bSaveRecentFiles ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, IDC_PRESERVECARET, bPreserveCaretPos ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, bSaveFindReplace ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_SAVEMRU, g_bSaveRecentFiles ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_PRESERVECARET, g_bPreserveCaretPos ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, g_bSaveFindReplace ? BST_CHECKED : BST_UNCHECKED);
 
-        //if (!bSaveRecentFiles) {
+        //if (!g_bSaveRecentFiles) {
         //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
         //  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, false);
         //}
@@ -1331,9 +1331,9 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         RemoveProp(hwnd,L"it");
         GlobalFree(lpit);
 
-        bSaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
-        bPreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
-        bSaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
+        g_bSaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
+        g_bPreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
+        g_bSaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
 
         ResizeDlg_Destroy(hwnd,&cxFileMRUDlg,&cyFileMRUDlg);
       }

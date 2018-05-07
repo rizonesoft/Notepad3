@@ -122,12 +122,13 @@ WCHAR         g_wchIniFile[MAX_PATH] = { L'\0' };
 WCHAR         g_wchIniFile2[MAX_PATH] = { L'\0' };
 static WCHAR  g_szTmpFilePath[MAX_PATH] = { L'\0' };
 
-bool          bSaveSettings;
-bool          bEnableSaveSettings;
-bool          bSaveRecentFiles;
-bool          bPreserveCaretPos;
-bool          bSaveFindReplace;
-bool          bFindReplCopySelOrClip = true;
+static bool   g_bSaveSettings;
+static bool   g_bEnableSaveSettings;
+bool          g_bIniFileFromScratch = false;
+bool          g_bSaveRecentFiles;
+bool          g_bPreserveCaretPos;
+bool          g_bSaveFindReplace;
+bool          g_bFindReplCopySelOrClip = true;
 
 WCHAR         g_tchFileDlgFilters[XXXL_BUFFER] = { L'\0' };
 
@@ -1905,7 +1906,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
     if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) != 0) {
 
       // Cleanup unwanted MRU's
-      if (!bSaveRecentFiles) {
+      if (!g_bSaveRecentFiles) {
         MRU_Empty(g_pFileMRU);
         MRU_Save(g_pFileMRU);
       }
@@ -1914,7 +1915,7 @@ void MsgEndSession(HWND hwnd, UINT umsg)
 
       MRU_Destroy(g_pFileMRU);
 
-      if (!bSaveFindReplace) {
+      if (!g_bSaveFindReplace) {
         MRU_Empty(g_pMRUfind);
         MRU_Empty(g_pMRUreplace);
         MRU_Save(g_pMRUfind);
@@ -2701,9 +2702,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentMode && bTransparentModeAvailable);
   EnableCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentModeAvailable);
 
-  CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT,bSaveRecentFiles);
-  CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, bPreserveCaretPos);
-  CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,bSaveFindReplace);
+  CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT,g_bSaveRecentFiles);
+  CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, g_bPreserveCaretPos);
+  CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,g_bSaveFindReplace);
   CheckCmd(hmenu,IDM_VIEW_SAVEBEFORERUNNINGTOOLS,bSaveBeforeRunningTools);
 
   CheckCmd(hmenu,IDM_VIEW_CHANGENOTIFY,g_iFileWatchingMode);
@@ -2727,7 +2728,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckMenuRadioItem(hmenu,IDM_VIEW_NOESCFUNC,IDM_VIEW_ESCEXIT,i,MF_BYCOMMAND);
 
   i = (int)StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile));
-  CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,bSaveSettings && i);
+  CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,g_bSaveSettings && i);
 
   EnableCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
   EnableCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
@@ -2735,13 +2736,13 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_NOSAVERECENT,i);
   EnableCmd(hmenu,IDM_VIEW_NOPRESERVECARET,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
-  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,bEnableSaveSettings && i);
+  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,g_bEnableSaveSettings && i);
 
   CheckCmd(hmenu, IDM_VIEW_TOGGLETB, (iHighDpiToolBar > 0));
   EnableCmd(hmenu, IDM_VIEW_TOGGLETB, !g_bExternalBitmap);
 
   i = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) > 0 || StringCchLenW(g_wchIniFile2,COUNTOF(g_wchIniFile2)) > 0);
-  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,bEnableSaveSettings && i);
+  EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,g_bEnableSaveSettings && i);
 
   bool bIsHLink = false;
   if ((bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) 
@@ -4163,11 +4164,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_FIND:
       if (!IsWindow(g_hwndDlgFindReplace)) {
-        bFindReplCopySelOrClip = true;
+        g_bFindReplCopySelOrClip = true;
         g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, false);
       }
       else {
-        bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
+        g_bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
         if (GetDlgItem(g_hwndDlgFindReplace, IDC_REPLACE)) {
           SendMessage(g_hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDMSG_SWITCHTOFIND, 1), 0);
           DestroyWindow(g_hwndDlgFindReplace);
@@ -4184,11 +4185,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_REPLACE:
       if (!IsWindow(g_hwndDlgFindReplace)) {
-        bFindReplCopySelOrClip = true;
+        g_bFindReplCopySelOrClip = true;
         g_hwndDlgFindReplace = EditFindReplaceDlg(g_hwndEdit, &g_efrData, true);
       }
       else {
-        bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
+        g_bFindReplCopySelOrClip = (GetForegroundWindow() != g_hwndDlgFindReplace);
         if (!GetDlgItem(g_hwndDlgFindReplace, IDC_REPLACE)) {
           SendMessage(g_hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDMSG_SWITCHTOREPLACE, 1), 0);
           DestroyWindow(g_hwndDlgFindReplace);
@@ -4793,17 +4794,17 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_NOSAVERECENT:
-      bSaveRecentFiles = (bSaveRecentFiles) ? false : true;
+      g_bSaveRecentFiles = (g_bSaveRecentFiles) ? false : true;
       break;
 
 
     case IDM_VIEW_NOPRESERVECARET:
-      bPreserveCaretPos = (bPreserveCaretPos) ? false : true;
+      g_bPreserveCaretPos = (g_bPreserveCaretPos) ? false : true;
       break;
 
 
     case IDM_VIEW_NOSAVEFINDREPL:
-      bSaveFindReplace = (bSaveFindReplace) ? false : true;
+      g_bSaveFindReplace = (g_bSaveFindReplace) ? false : true;
       break;
 
 
@@ -4835,7 +4836,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_SAVESETTINGS:
       if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS))
-        bSaveSettings = (bSaveSettings) ? false : true;
+        g_bSaveSettings = (g_bSaveSettings) ? false : true;
       break;
 
 
@@ -6229,11 +6230,11 @@ void LoadSettings()
   LoadIniSection(L"Settings", pIniSection, cchIniSection);
   // --------------------------------------------------------------------------
 
-  bEnableSaveSettings = true;
-  bSaveSettings = IniSectionGetBool(pIniSection,L"SaveSettings",true);
-  bSaveRecentFiles = IniSectionGetBool(pIniSection,L"SaveRecentFiles",false);
-  bPreserveCaretPos = IniSectionGetBool(pIniSection, L"PreserveCaretPos",false);
-  bSaveFindReplace = IniSectionGetBool(pIniSection,L"SaveFindReplace",false);
+  g_bEnableSaveSettings = true; // false: if settings-file is loaded in editor
+  g_bSaveSettings = IniSectionGetBool(pIniSection,L"SaveSettings",true);
+  g_bSaveRecentFiles = IniSectionGetBool(pIniSection,L"SaveRecentFiles",true);
+  g_bPreserveCaretPos = IniSectionGetBool(pIniSection, L"PreserveCaretPos",false);
+  g_bSaveFindReplace = IniSectionGetBool(pIniSection,L"SaveFindReplace",false);
 
   g_efrData.bFindClose = IniSectionGetBool(pIniSection,L"CloseFind", false);
   g_efrData.bReplaceClose = IniSectionGetBool(pIniSection,L"CloseReplace", false);
@@ -6260,7 +6261,7 @@ void LoadSettings()
     PathAbsoluteFromApp(g_tchFavoritesDir, NULL, COUNTOF(g_tchFavoritesDir), true);
   }
 
-  iPathNameFormat = IniSectionGetInt(pIniSection,L"PathNameFormat",0);
+  iPathNameFormat = IniSectionGetInt(pIniSection,L"PathNameFormat",1);
   iPathNameFormat = max(min(iPathNameFormat,2),0);
 
   g_bWordWrap = IniSectionGetBool(pIniSection,L"WordWrap",false);
@@ -6295,7 +6296,7 @@ void LoadSettings()
 
   bShowIndentGuides = IniSectionGetBool(pIniSection,L"ShowIndentGuides",false);
 
-  g_bTabsAsSpaces = IniSectionGetBool(pIniSection,L"TabsAsSpaces",true);
+  g_bTabsAsSpaces = IniSectionGetBool(pIniSection,L"TabsAsSpaces",false);
   bTabsAsSpacesG = g_bTabsAsSpaces;
 
   g_bTabIndents = IniSectionGetBool(pIniSection,L"TabIndents",true);
@@ -6303,7 +6304,7 @@ void LoadSettings()
 
   bBackspaceUnindents = IniSectionGetBool(pIniSection,L"BackspaceUnindents",false);
 
-  g_iTabWidth = IniSectionGetInt(pIniSection,L"TabWidth",2);
+  g_iTabWidth = IniSectionGetInt(pIniSection,L"TabWidth",4);
   g_iTabWidth = max(min(g_iTabWidth,256),1);
   iTabWidthG = g_iTabWidth;
 
@@ -6311,9 +6312,9 @@ void LoadSettings()
   g_iIndentWidth = max(min(g_iIndentWidth,256),0);
   iIndentWidthG = g_iIndentWidth;
 
-  bMarkLongLines = IniSectionGetBool(pIniSection,L"MarkLongLines",false);
+  bMarkLongLines = IniSectionGetBool(pIniSection,L"MarkLongLines",true);
 
-  g_iLongLinesLimit = IniSectionGetInt(pIniSection,L"LongLinesLimit",72);
+  g_iLongLinesLimit = IniSectionGetInt(pIniSection,L"LongLinesLimit",80);
   g_iLongLinesLimit = max(min(g_iLongLinesLimit,4096),0);
   iLongLinesLimitG = g_iLongLinesLimit;
 
@@ -6358,7 +6359,7 @@ void LoadSettings()
   g_iDefaultEOLMode = IniSectionGetInt(pIniSection,L"DefaultEOLMode",0);
   g_iDefaultEOLMode = max(min(g_iDefaultEOLMode,2),0);
 
-  bFixLineEndings = IniSectionGetBool(pIniSection,L"FixLineEndings",true);
+  bFixLineEndings = IniSectionGetBool(pIniSection,L"FixLineEndings",false);
 
   bAutoStripBlanks = IniSectionGetBool(pIniSection,L"FixTrailingBlanks",false);
 
@@ -6632,23 +6633,23 @@ void SaveSettings(bool bSaveSettingsNow) {
   if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0)
     return;
 
-  if (!bEnableSaveSettings)
+  if (!g_bEnableSaveSettings)
     return; 
 
   CreateIniFile();
 
-  if (!bSaveSettings && !bSaveSettingsNow) {
-    IniSetInt(L"Settings", L"SaveSettings", bSaveSettings);
+  if (!g_bSaveSettings && !bSaveSettingsNow) {
+    IniSetInt(L"Settings", L"SaveSettings", g_bSaveSettings);
     return;
   }
 
   pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
   //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
-  IniSectionSetBool(pIniSection, L"SaveSettings", bSaveSettings);
-  IniSectionSetBool(pIniSection, L"SaveRecentFiles", bSaveRecentFiles);
-  IniSectionSetBool(pIniSection, L"PreserveCaretPos", bPreserveCaretPos);
-  IniSectionSetBool(pIniSection, L"SaveFindReplace", bSaveFindReplace);
+  IniSectionSetBool(pIniSection, L"SaveSettings", g_bSaveSettings);
+  IniSectionSetBool(pIniSection, L"SaveRecentFiles", g_bSaveRecentFiles);
+  IniSectionSetBool(pIniSection, L"PreserveCaretPos", g_bPreserveCaretPos);
+  IniSectionSetBool(pIniSection, L"SaveFindReplace", g_bSaveFindReplace);
   IniSectionSetBool(pIniSection, L"CloseFind", g_efrData.bFindClose);
   IniSectionSetBool(pIniSection, L"CloseReplace", g_efrData.bReplaceClose);
   IniSectionSetBool(pIniSection, L"NoFindWrap", g_efrData.bNoFindWrap);
@@ -6744,6 +6745,11 @@ void SaveSettings(bool bSaveSettingsNow) {
   SaveIniSection(L"Settings", pIniSection);
   LocalFree(pIniSection);
 
+  
+  // Scintilla Styles
+  Style_Save();
+
+
   /*
     SaveSettingsNow(): query Window Dimensions
   */
@@ -6777,8 +6783,6 @@ void SaveSettings(bool bSaveSettingsNow) {
     IniSetInt(L"Window",tchMaximized,g_WinInfo.max);
   }
 
-  // Scintilla Styles
-  Style_Save();
 
 }
 
@@ -7412,14 +7416,14 @@ int TestIniFile() {
 }
 
 
-int CreateIniFile() {
-
+int CreateIniFile() 
+{
   return(CreateIniFileEx(g_wchIniFile));
 }
 
 
-int CreateIniFileEx(LPCWSTR lpszIniFile) {
-
+int CreateIniFileEx(LPCWSTR lpszIniFile) 
+{
   if (*lpszIniFile) {
 
     WCHAR *pwchTail = StrRChrW(lpszIniFile, NULL, L'\\');
@@ -7437,6 +7441,7 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
       if (GetFileSize(hFile,NULL) == 0) {
         DWORD dw;
         WriteFile(hFile,(LPCVOID)L"\xFEFF[Notepad3]\r\n",26,&dw,NULL);
+        g_bIniFileFromScratch = true;
       }
       CloseHandle(hFile);
       return(1);
@@ -7444,7 +7449,6 @@ int CreateIniFileEx(LPCWSTR lpszIniFile) {
     else
       return(0);
   }
-
   else
     return(0);
 }
@@ -8058,9 +8062,9 @@ void UpdateSettingsCmds()
 {
     HMENU hmenu = GetSystemMenu(g_hwndMain, false);
     bool hasIniFile = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) > 0 || StringCchLenW(g_wchIniFile2,COUNTOF(g_wchIniFile2)) > 0);
-    CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, bSaveSettings && bEnableSaveSettings);
-    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && bEnableSaveSettings);
-    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && bEnableSaveSettings);
+    CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, g_bSaveSettings && g_bEnableSaveSettings);
+    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && g_bEnableSaveSettings);
+    EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && g_bEnableSaveSettings);
 }
 
 
@@ -8085,8 +8089,7 @@ void UpdateUI()
 
 #define UNDOREDO_FREE (-1L)
 #define UNDOREDO_BLOCKED (-2L)
-static volatile LONG UndoActionToken = UNDOREDO_BLOCKED;
-static volatile LONG UndoRedoStackHeadToken = 0L;
+static volatile LONG UndoActionToken = UNDOREDO_BLOCKED; // block
 
 //=============================================================================
 
@@ -8252,15 +8255,8 @@ void RestoreAction(int token, DoAction doAct)
 
   if (_UndoRedoActionMap(token, &sel) >= 0)
   {
-    #ifdef DEBUG
-      LONG const chkToken =
-    #endif
-    // push/pop stack operation
-    InterlockedExchange(&UndoRedoStackHeadToken, ((doAct == UNDO) ? (UndoRedoStackHeadToken - 1L) : (UndoRedoStackHeadToken + 1L)));
-    assert((doAct == UNDO) ? (token == (chkToken - 1L)) : (token == chkToken));
-
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-    #define ISSUE_MESSAGE PostMessage
+  #define ISSUE_MESSAGE PostMessage
 
     DocPos const _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     DocPos const _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
@@ -8271,6 +8267,7 @@ void RestoreAction(int token, DoAction doAct)
     DocLn const currPosLine = SciCall_LineFromPosition(_curPos);
     ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
     if (anchorPosLine != currPosLine) { ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
+
 
     int const selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
@@ -8285,6 +8282,7 @@ void RestoreAction(int token, DoAction doAct)
       ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)_anchorPos, 0);
       ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)_curPos, 0);
       // fall-through
+
     case SC_SEL_THIN:
       {
         DocPos const anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
@@ -8302,12 +8300,11 @@ void RestoreAction(int token, DoAction doAct)
       // nothing to do here
       break;
     }
-
     ISSUE_MESSAGE(g_hwndEdit, SCI_SCROLLCARET, 0, 0);
     ISSUE_MESSAGE(g_hwndEdit, SCI_CHOOSECARETX, 0, 0);
-    //ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
+    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
 
-    #undef ISSUE_MASSAGE
+  #undef ISSUE_MASSAGE
   }
 }
 
@@ -8321,24 +8318,26 @@ static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* const s
 {
   if (UndoRedoSelectionUTArray == NULL)  { return -1; }
 
-  if (selection == NULL) { // reset / clear
-    // finalize transaction
+  static unsigned int uiTokenCnt = 0U;
+
+  // indexing is unsigned
+  unsigned int utoken = (token >= 0) ? (unsigned int)token : 0U;
+
+  if (selection == NULL) {
+    // reset / clear
     int const curToken = InterlockedExchange(&UndoActionToken, UndoActionToken);
     if (curToken >= 0) { EndUndoAction(curToken); }
     utarray_clear(UndoRedoSelectionUTArray);
     utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
+    uiTokenCnt = 0U;
     InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
-    InterlockedExchange(&UndoRedoStackHeadToken, 0L);
     return -1;
   }
 
   if (!SciCall_GetUndoCollection()) { return -1; }
 
-  unsigned int headToken = (unsigned int)InterlockedExchange(&UndoRedoStackHeadToken, UndoRedoStackHeadToken);
-  unsigned int const utoken = (token >= 0) ? (unsigned int)token : 0;
-
   // get or set map item request ?
-  if ((token >= 0) && (utoken <= headToken))
+  if ((token >= 0) && (utoken < uiTokenCnt)) 
   {
     if (selection->anchorPos_undo < 0) {
       // this is a get request
@@ -8352,10 +8351,9 @@ static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* const s
   }
   else if (token < 0) {
     // set map new item request
-    utarray_insert(UndoRedoSelectionUTArray, (void*)selection, headToken);
-    token = (int)headToken;
-    headToken = (headToken < (unsigned int)INT_MAX) ? (headToken + 1) : 0;  // round robin next
-    InterlockedExchange(&UndoRedoStackHeadToken, (LONG)headToken);
+    token = (int)uiTokenCnt;
+    utarray_insert(UndoRedoSelectionUTArray, (void*)selection, uiTokenCnt);
+    uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
   }
   return token;
 }
@@ -8386,7 +8384,7 @@ bool FileIO(bool fLoad,LPCWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANS
     int idx;
     if (MRU_FindFile(g_pFileMRU,pszFileName,&idx)) {
       g_pFileMRU->iEncoding[idx] = *ienc;
-      g_pFileMRU->iCaretPos[idx] = (bPreserveCaretPos ? SciCall_GetCurrentPos() : 0);
+      g_pFileMRU->iCaretPos[idx] = (g_bPreserveCaretPos ? SciCall_GetCurrentPos() : 0);
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(g_hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       if (g_pFileMRU->pszBookMarks[idx])
@@ -8465,7 +8463,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       g_iFileWatchingMode = 0;
     }
     InstallFileWatching(NULL);
-    bEnableSaveSettings = true;
+    g_bEnableSaveSettings = true;
     UpdateSettingsCmds();
     return true;
   }
@@ -8624,7 +8622,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     UpdateVisibleUrlHotspot(0);
 
     // consistent settings file handling (if loaded in editor)
-    bEnableSaveSettings = (StringCchCompareINW(g_wchCurFile, COUNTOF(g_wchCurFile), g_wchIniFile, COUNTOF(g_wchIniFile)) == 0) ? false : true;
+    g_bEnableSaveSettings = (StringCchCompareINW(g_wchCurFile, COUNTOF(g_wchCurFile), g_wchIniFile, COUNTOF(g_wchIniFile)) == 0) ? false : true;
     UpdateSettingsCmds();
 
     // Show warning: Unicode file loaded as ANSI
@@ -8723,7 +8721,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
     int idx;
     if (MRU_FindFile(g_pFileMRU,g_wchCurFile,&idx)) {
       g_pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
-      g_pFileMRU->iCaretPos[idx] = (bPreserveCaretPos) ? SciCall_GetCurrentPos() : 0;
+      g_pFileMRU->iCaretPos[idx] = (g_bPreserveCaretPos) ? SciCall_GetCurrentPos() : 0;
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(g_hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       if (g_pFileMRU->pszBookMarks[idx])
