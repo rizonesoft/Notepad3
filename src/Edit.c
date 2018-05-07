@@ -4850,6 +4850,7 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
   if (bFirstMatchOnly && !bReplaceInitialized) {
     if (GetForegroundWindow() == g_hwndDlgFindReplace) {
       if (iPos >= 0) {
+        SciCall_SetSel(start, end);
         SciCall_ScrollRange(iPos, iPos);
       }
       else {
