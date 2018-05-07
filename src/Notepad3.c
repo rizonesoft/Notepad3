@@ -8085,7 +8085,8 @@ void UpdateUI()
 
 #define UNDOREDO_FREE (-1L)
 #define UNDOREDO_BLOCKED (-2L)
-static volatile LONG UndoActionToken = UNDOREDO_BLOCKED; // block
+static volatile LONG UndoActionToken = UNDOREDO_BLOCKED;
+static volatile LONG UndoRedoStackHeadToken = 0L;
 
 //=============================================================================
 
@@ -8251,8 +8252,15 @@ void RestoreAction(int token, DoAction doAct)
 
   if (_UndoRedoActionMap(token, &sel) >= 0)
   {
+    #ifdef DEBUG
+      LONG const chkToken =
+    #endif
+    // push/pop stack operation
+    InterlockedExchange(&UndoRedoStackHeadToken, ((doAct == UNDO) ? (UndoRedoStackHeadToken - 1L) : (UndoRedoStackHeadToken + 1L)));
+    assert((doAct == UNDO) ? (token == (chkToken - 1L)) : (token == chkToken));
+
     // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-  #define ISSUE_MESSAGE PostMessage
+    #define ISSUE_MESSAGE PostMessage
 
     DocPos const _anchorPos = (doAct == UNDO ? sel.anchorPos_undo : sel.anchorPos_redo);
     DocPos const _curPos = (doAct == UNDO ? sel.curPos_undo : sel.curPos_redo);
@@ -8263,7 +8271,6 @@ void RestoreAction(int token, DoAction doAct)
     DocLn const currPosLine = SciCall_LineFromPosition(_curPos);
     ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
     if (anchorPosLine != currPosLine) { ISSUE_MESSAGE(g_hwndEdit, SCI_ENSUREVISIBLE, currPosLine, 0); }
-
 
     int const selectionMode = (doAct == UNDO ? sel.selMode_undo : sel.selMode_redo);
     ISSUE_MESSAGE(g_hwndEdit, SCI_SETSELECTIONMODE, (WPARAM)selectionMode, 0);
@@ -8278,7 +8285,6 @@ void RestoreAction(int token, DoAction doAct)
       ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)_anchorPos, 0);
       ISSUE_MESSAGE(g_hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)_curPos, 0);
       // fall-through
-
     case SC_SEL_THIN:
       {
         DocPos const anchorVS = (doAct == UNDO ? sel.anchorVS_undo : sel.anchorVS_redo);
@@ -8296,11 +8302,12 @@ void RestoreAction(int token, DoAction doAct)
       // nothing to do here
       break;
     }
+
     ISSUE_MESSAGE(g_hwndEdit, SCI_SCROLLCARET, 0, 0);
     ISSUE_MESSAGE(g_hwndEdit, SCI_CHOOSECARETX, 0, 0);
-    ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
+    //ISSUE_MESSAGE(g_hwndEdit, SCI_CANCEL, 0, 0);
 
-  #undef ISSUE_MASSAGE
+    #undef ISSUE_MASSAGE
   }
 }
 
@@ -8314,26 +8321,24 @@ static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* const s
 {
   if (UndoRedoSelectionUTArray == NULL)  { return -1; }
 
-  static unsigned int uiTokenCnt = 0U;
-
-  // indexing is unsigned
-  unsigned int utoken = (token >= 0) ? (unsigned int)token : 0U;
-
-  if (selection == NULL) {
-    // reset / clear
+  if (selection == NULL) { // reset / clear
+    // finalize transaction
     int const curToken = InterlockedExchange(&UndoActionToken, UndoActionToken);
     if (curToken >= 0) { EndUndoAction(curToken); }
     utarray_clear(UndoRedoSelectionUTArray);
     utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
-    uiTokenCnt = 0U;
     InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
+    InterlockedExchange(&UndoRedoStackHeadToken, 0L);
     return -1;
   }
 
   if (!SciCall_GetUndoCollection()) { return -1; }
 
+  unsigned int headToken = (unsigned int)InterlockedExchange(&UndoRedoStackHeadToken, UndoRedoStackHeadToken);
+  unsigned int const utoken = (token >= 0) ? (unsigned int)token : 0;
+
   // get or set map item request ?
-  if ((token >= 0) && (utoken < uiTokenCnt)) 
+  if ((token >= 0) && (utoken <= headToken))
   {
     if (selection->anchorPos_undo < 0) {
       // this is a get request
@@ -8347,9 +8352,10 @@ static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* const s
   }
   else if (token < 0) {
     // set map new item request
-    token = (int)uiTokenCnt;
-    utarray_insert(UndoRedoSelectionUTArray, (void*)selection, uiTokenCnt);
-    uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
+    utarray_insert(UndoRedoSelectionUTArray, (void*)selection, headToken);
+    token = (int)headToken;
+    headToken = (headToken < (unsigned int)INT_MAX) ? (headToken + 1) : 0;  // round robin next
+    InterlockedExchange(&UndoRedoStackHeadToken, (LONG)headToken);
   }
   return token;
 }
