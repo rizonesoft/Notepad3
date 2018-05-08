@@ -169,6 +169,8 @@ void EditFoldClick(DocLn, int);
 void EditFoldAltArrow(FOLD_MOVE, FOLD_ACTION);
 
 
+#define NP3_BRACES_TO_MATCH "()[]{}"
+
 #endif //_NP3_EDIT_H_
 
 ///   End of Edit.h   \\\

@@ -55,6 +55,7 @@ extern const int FontQuality[4];
 extern bool g_bCodeFoldingAvailable;
 extern bool g_bShowCodeFolding;
 extern bool g_bShowSelectionMargin;
+extern bool g_bIniFileFromScratch;
 
 extern int  g_iMarkOccurrences;
 extern bool bUseOldStyleBraceMatching;
@@ -2946,8 +2947,8 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexAVS,           // AviSynth Script
   &lexAwk,           // Awk Script
   &lexBAT,           // Batch Files
-  &lexCPP,           // C/C++ Source Code
   &lexCS,            // C# Source Code
+  &lexCPP,           // C/C++ Source Code
   &lexCmake,         // Cmake Script
   &lexCOFFEESCRIPT,  // Coffeescript
   &lexPROPS,         // Configuration Files
@@ -2970,16 +2971,16 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexPL,            // Perl Script
   &lexPS,            // PowerShell Script
   &lexPY,            // Python Script
-  &lexR,             // R Statistics Code
   &lexRegistry,      // Registry Files
   &lexRC,            // Resource Script
+  &lexR,             // R Statistics Code
   &lexRUBY,          // Ruby Script
   &lexBASH,          // Shell Script
   &lexSQL,           // SQL Query
   &lexTCL,           // Tcl Script
-  &lexVB,            // Visual Basic
   &lexVBS,           // VBScript
   &lexVHDL,          // VHDL
+  &lexVB,            // Visual Basic
   &lexHTML,          // Web Source Code
   &lexXML,           // XML Document
   &lexYAML           // YAML
@@ -3208,6 +3209,11 @@ void Style_Save()
   ZeroMemory(pIniSection,LocalSize(pIniSection));
 
   if (!g_fStylesModified) {
+    if (g_bIniFileFromScratch) {
+      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        SaveIniSection(g_pLexArray[iLexer]->pszName, L"\0");
+      }
+    }
     LocalFree(pIniSection);
     return;
   }
@@ -3219,7 +3225,6 @@ void Style_Save()
       IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, g_pLexArray[iLexer]->Styles[i].szValue);
       i++;
     }
-
     SaveIniSection(g_pLexArray[iLexer]->pszName,pIniSection);
     ZeroMemory(pIniSection,LocalSize(pIniSection));
   }
@@ -3341,9 +3346,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = GetDefaultLexer();  //GetCurrentStdLexer();
+    pLexNew = GetDefaultLexer();
   }
-  else if (IsLexerStandard(pLexNew)) {
+  if (IsLexerStandard(pLexNew)) {
     pLexNew = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
   }
   const WCHAR* const wchNewLexerStyleStrg = pLexNew->Styles[STY_DEFAULT].szValue;

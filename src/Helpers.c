@@ -1853,8 +1853,8 @@ UINT CharSetFromCodePage(UINT uCodePage) {
 }
 
 
-extern bool bPreserveCaretPos;
-extern bool bSaveFindReplace;
+extern bool g_bPreserveCaretPos;
+extern bool g_bSaveFindReplace;
 
 //=============================================================================
 //
@@ -1910,7 +1910,7 @@ bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBo
   pmru->pszItems[0] = StrDup(pszNew);
 
   pmru->iEncoding[0] = iEnc;
-  pmru->iCaretPos[0] = (bPreserveCaretPos ? iPos : 0);
+  pmru->iCaretPos[0] = (g_bPreserveCaretPos ? iPos : 0);
   pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);
   return true;
 }
@@ -1964,7 +1964,7 @@ bool MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool bRelativePath,bool bUnexpan
     pmru->pszItems[0] = StrDup(pszFile);
   }
   pmru->iEncoding[0] = iEnc;
-  pmru->iCaretPos[0] = (bPreserveCaretPos ? iPos : 0);
+  pmru->iCaretPos[0] = (g_bPreserveCaretPos ? iPos : 0);
   pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);
 
   return true;
@@ -2080,7 +2080,7 @@ bool MRU_Load(LPMRULIST pmru)
         pmru->iEncoding[n] = Encoding_MapIniSetting(true,iCP);
 
         StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
-        pmru->iCaretPos[n] = (bPreserveCaretPos) ? IniSectionGetInt(pIniSection,tchName,0) : 0;
+        pmru->iCaretPos[n] = (g_bPreserveCaretPos) ? IniSectionGetInt(pIniSection,tchName,0) : 0;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
         IniSectionGetString(pIniSection, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
