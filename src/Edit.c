@@ -3102,9 +3102,6 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
     DocPos const selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
     DocPos const selCaretMainPos = SciCall_GetRectangularSelectionCaret();
 
-    //DocPos const vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
-    //DocPos const vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
-
     DocPos const iAnchorColumn = SciCall_GetColumn(SciCall_GetSelectionNAnchor(0)) + SciCall_GetSelectionNAnchorVirtualSpace(0);
     DocPos const iCaretColumn = SciCall_GetColumn(SciCall_GetSelectionNCaret(0)) + SciCall_GetSelectionNCaretVirtualSpace(0);
     bool const bSelLeft2Right = (iAnchorColumn <= iCaretColumn);
@@ -3114,12 +3111,16 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
     DocLn const iLineCount = abs(iRcCaretLine - iRcAnchorLine) + 1;
 
     // lots of spaces
-    FillMemory(g_pTempLineBuffer, COUNTOF(g_pTempLineBuffer) * sizeof(char), ' ');
+    DocPos const spBufSize = max(iAnchorColumn, selCaretMainPos);
+    char* pSpaceBuffer = (char*)AllocMem((spBufSize + 1) * sizeof(char), HEAP_ZERO_MEMORY);
+    FillMemory(pSpaceBuffer, spBufSize * sizeof(char), ' ');
 
-    DocPos* pVspVec = (int*)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
+    DocPos* pVspAVec = (int*)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
+    DocPos* pVspCVec = (int*)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
 
     for (DocLn i = 0; i < iLineCount; ++i) {
-      pVspVec[i] = bSelLeft2Right ? SciCall_GetSelectionNCaretVirtualSpace(i) : SciCall_GetSelectionNAnchorVirtualSpace(i);
+      pVspAVec[i] = SciCall_GetSelectionNAnchorVirtualSpace(i); 
+      pVspCVec[i] = SciCall_GetSelectionNCaretVirtualSpace(i);
     }
 
     DocPosU i = 0;
@@ -3129,31 +3130,34 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
     do {
       iLine += iLnIncr;
       DocPos const iInsPos = SciCall_GetLineEndPosition(iLine);
-      DocPos const cntVSp = pVspVec[i++];
+      DocPos const cntVSp = bSelLeft2Right ? pVspCVec[i++] : pVspAVec[i++];
+      bool const bSkip = (bSkipEmpty && (iInsPos <= SciCall_PositionFromLine(iLine)));
 
-      if ((cntVSp > 0) && (cntVSp < TEMPLINE_BUFFER)) {
-        g_pTempLineBuffer[cntVSp] = '\0';
-        SciCall_InsertText(iInsPos, g_pTempLineBuffer);
-        g_pTempLineBuffer[cntVSp] = ' ';
+      if ((cntVSp > 0) && !bSkip) {
+        pSpaceBuffer[cntVSp] = '\0';
+        SciCall_InsertText(iInsPos, pSpaceBuffer);
+        pSpaceBuffer[cntVSp] = ' ';
         iSpcCount += cntVSp;
       }
     } while (iLine != iRcCaretLine);
 
-    FreeMem(pVspVec);
+    FreeMem(pSpaceBuffer);
 
     if (iRcAnchorLine <= iRcCaretLine) {
       if (bSelLeft2Right)
-        EditSelectEx(hwnd, selAnchorMainPos, selCaretMainPos + iSpcCount, 0, 0);
+        EditSelectEx(hwnd, selAnchorMainPos + pVspAVec[0], selCaretMainPos + iSpcCount, 0, 0);
       else
-        EditSelectEx(hwnd, selAnchorMainPos + pVspVec[0], selCaretMainPos + iSpcCount - pVspVec[iLineCount - 1], 0, 0);
+        EditSelectEx(hwnd, selAnchorMainPos + pVspAVec[0], selCaretMainPos + pVspCVec[iLineCount - 1] + iSpcCount - pVspAVec[iLineCount - 1], 0, 0);
     }
     else {
       if (bSelLeft2Right)
-        EditSelectEx(hwnd, selAnchorMainPos + iSpcCount - pVspVec[0], selCaretMainPos + pVspVec[iLineCount - 1], 0, 0);
+        EditSelectEx(hwnd, selAnchorMainPos + pVspAVec[0] + iSpcCount - pVspCVec[0], selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
       else
-        EditSelectEx(hwnd, selAnchorMainPos + iSpcCount, selCaretMainPos, 0, 0);
+        EditSelectEx(hwnd, selAnchorMainPos + iSpcCount, selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
     }
-    
+
+    FreeMem(pVspCVec);
+    FreeMem(pVspAVec);
   }
   else  // SC_SEL_LINES | SC_SEL_STREAM
   {
