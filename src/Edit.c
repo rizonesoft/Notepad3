@@ -5498,7 +5498,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
         case IDC_REPLACEALL:
           bReplaceInitialized = true;
+          _BEGIN_UNDO_ACTION_;
           EditReplaceAll(sg_pefrData->hwnd, sg_pefrData, true);
+          _END_UNDO_ACTION_;
           break;
 
         case IDC_REPLACEINSEL:
@@ -6119,13 +6121,7 @@ bool EditReplaceAll(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowInfo)
   DocPos enlargement = 0;
 
   BeginWaitCursor(NULL);
-
-  _BEGIN_UNDO_ACTION_;
-
   iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
-
-  _END_UNDO_ACTION_;
-
   EndWaitCursor();
 
   if (bShowInfo) {
@@ -6160,9 +6156,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bShowIn
 
   bool const bWaitCursor = ((end - start) > (512 * 512)) ? true : false;
   if (bWaitCursor) { BeginWaitCursor(NULL); }
-  _IGNORE_NOTIFY_CHANGE_;
   iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
-  _OBSERVE_NOTIFY_CHANGE_;
   if (bWaitCursor) { EndWaitCursor(); }
 
   if (iReplacedOccurrences > 0) 

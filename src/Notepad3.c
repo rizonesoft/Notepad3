@@ -543,7 +543,6 @@ static int g_flagBufferFile         = 0;
 static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw);
 static void __fastcall _UpdateToolbarDelayed();
 
-
 //==============================================================================
 //
 //  Document Modified Flag
@@ -556,6 +555,7 @@ static void __fastcall _SetDocumentModified(bool bModified)
   if (IsDocumentModified != bModified) {
     IsDocumentModified = bModified;
     UpdateToolbar();
+    UpdateStatusbar(false);
   }
   if (bModified) {
     if (IsWindow(g_hwndDlgFindReplace)) {
@@ -5695,7 +5695,6 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 }
 
 
-
 //=============================================================================
 //
 //  MsgNotify() - Handles WM_NOTIFY
@@ -5712,25 +5711,26 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
       if (pnmh->code == SCN_MODIFIED) {
+        bool bModified = true;
         int const iModType = scn->modificationType;
         if ((iModType & SC_MOD_BEFOREINSERT) || ((iModType & SC_MOD_BEFOREDELETE))) {
           if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
             if (!SciCall_IsSelectionEmpty() && !_InUndoRedoTransaction())
               _SaveRedoSelection(_SaveUndoSelection());
           }
+          bModified = false; // not yet
         }
         // check for ADDUNDOACTION step
         if (iModType & SC_MOD_CONTAINER)
         {
           if (iModType & SC_PERFORMED_UNDO) {
             RestoreAction(scn->token, UNDO);
-            _SetDocumentModified(true);
           }
           else if (iModType & SC_PERFORMED_REDO) {
             RestoreAction(scn->token, REDO);
-            _SetDocumentModified(true);
           }
         }
+        if (bModified) { _SetDocumentModified(true); }
       }
       else if (pnmh->code == SCN_SAVEPOINTREACHED) {
         _SetDocumentModified(false);
