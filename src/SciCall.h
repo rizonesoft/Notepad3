@@ -374,6 +374,7 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
 //
 //  Utilities
 //
+DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_IsStreamSelected() (SciCall_GetSelectionMode() == SC_SEL_STREAM)

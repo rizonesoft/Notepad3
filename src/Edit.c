@@ -1913,14 +1913,14 @@ void EditFindMatchingBrace(HWND hwnd)
   DocPos iMatchingBracePos = (DocPos)-1;
   const DocPos iCurPos = SciCall_GetCurrentPos();
   const char c = SciCall_GetCharAt(iCurPos);
-  if (StrChrA("()[]{}", c)) {
-    iMatchingBracePos = (DocPos)SendMessage(hwnd, SCI_BRACEMATCH, iCurPos, 0);
+  if (StrChrA(NP3_BRACES_TO_MATCH, c)) {
+    iMatchingBracePos = SciCall_BraceMatch(iCurPos);
   }
   else { // Try one before
     const DocPos iPosBefore = SciCall_PositionBefore(iCurPos);
     const char cb = SciCall_GetCharAt(iPosBefore);
-    if (StrChrA("()[]{}", cb)) {
-      iMatchingBracePos = (DocPos)SendMessage(hwnd, SCI_BRACEMATCH, iPosBefore, 0);
+    if (StrChrA(NP3_BRACES_TO_MATCH, cb)) {
+      iMatchingBracePos = SciCall_BraceMatch(iPosBefore);
     }
     bIsAfter = true;
   }
@@ -1941,14 +1941,14 @@ void EditSelectToMatchingBrace(HWND hwnd)
   DocPos iMatchingBracePos = -1;
   const DocPos iCurPos = SciCall_GetCurrentPos();
   const char c = SciCall_GetCharAt(iCurPos);
-  if (StrChrA("()[]{}", c)) {
-    iMatchingBracePos = (DocPos)SendMessage(hwnd, SCI_BRACEMATCH, iCurPos, 0);
+  if (StrChrA(NP3_BRACES_TO_MATCH, c)) {
+    iMatchingBracePos = SciCall_BraceMatch(iCurPos);
   }
   else { // Try one before
     const DocPos iPosBefore = SciCall_PositionBefore(iCurPos);
     const char cb = SciCall_GetCharAt(iPosBefore);
-    if (StrChrA("()[]{}", cb)) {
-      iMatchingBracePos = (DocPos)SendMessage(hwnd, SCI_BRACEMATCH, iPosBefore, 0);
+    if (StrChrA(NP3_BRACES_TO_MATCH, cb)) {
+      iMatchingBracePos = SciCall_BraceMatch(iPosBefore);
     }
     bIsAfter = true;
   }
@@ -6673,8 +6673,8 @@ static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
 
   char c = SciCall_GetCharAt(iPos);
   
-  if (StrChrA("()[]{}", c)) {
-    DocPos iBrace2 = (DocPos)SendMessage(hwnd, SCI_BRACEMATCH, iPos, 0);
+  if (StrChrA(NP3_BRACES_TO_MATCH, c)) {
+    DocPos iBrace2 = SciCall_BraceMatch(iPos);
     if (iBrace2 != -1) {
       DocPos col1 = SciCall_GetColumn(iPos);
       DocPos col2 = SciCall_GetColumn(iBrace2);
