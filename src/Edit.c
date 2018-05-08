@@ -3097,41 +3097,63 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
 
   int const token = (!bNoUndoGroup ? BeginUndoAction() : -1);
 
-  if (SciCall_IsSelectionRectangle())
+  if (SciCall_IsSelectionRectangle() && !SciCall_IsSelectionEmpty())
   {
-    const DocPos selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
-    const DocPos selCaretMainPos = SciCall_GetRectangularSelectionCaret();
-    const DocPos vSpcAnchorMainPos = 0; // SciCall_GetRectangularSelectionAnchorVirtualSpace();
-    const DocPos vSpcCaretMainPos = 0; // SciCall_GetRectangularSelectionCaretVirtualSpace();
+    DocPos const selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
+    DocPos const selCaretMainPos = SciCall_GetRectangularSelectionCaret();
 
-    const DocLn iRcCurLine = SciCall_LineFromPosition(selCaretMainPos);
-    const DocLn iRcAnchorLine = SciCall_LineFromPosition(selAnchorMainPos);
+    //DocPos const vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+    //DocPos const vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
 
-    DocLn iStartLine = 0;
-    DocLn iEndLine = 0;
-    if (iRcAnchorLine == iRcCurLine) {
-      iEndLine = SciCall_GetLineCount() - 1;
+    DocPos const iAnchorColumn = SciCall_GetColumn(SciCall_GetSelectionNAnchor(0)) + SciCall_GetSelectionNAnchorVirtualSpace(0);
+    DocPos const iCaretColumn = SciCall_GetColumn(SciCall_GetSelectionNCaret(0)) + SciCall_GetSelectionNCaretVirtualSpace(0);
+    bool const bSelLeft2Right = (iAnchorColumn <= iCaretColumn);
+
+    DocLn iRcAnchorLine = SciCall_LineFromPosition(selAnchorMainPos);
+    DocLn iRcCaretLine = SciCall_LineFromPosition(selCaretMainPos);
+    DocLn const iLineCount = abs(iRcCaretLine - iRcAnchorLine) + 1;
+
+    // lots of spaces
+    FillMemory(g_pTempLineBuffer, COUNTOF(g_pTempLineBuffer) * sizeof(char), ' ');
+
+    DocPos* pVspVec = (int*)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
+
+    for (DocLn i = 0; i < iLineCount; ++i) {
+      pVspVec[i] = bSelLeft2Right ? SciCall_GetSelectionNCaretVirtualSpace(i) : SciCall_GetSelectionNAnchorVirtualSpace(i);
+    }
+
+    DocPosU i = 0;
+    DocPos iSpcCount = 0;
+    DocLn const iLnIncr = (iRcAnchorLine <= iRcCaretLine) ? (DocLn)+1 : (DocLn)-1;
+    DocLn iLine = iRcAnchorLine - iLnIncr;
+    do {
+      iLine += iLnIncr;
+      DocPos const iInsPos = SciCall_GetLineEndPosition(iLine);
+      DocPos const cntVSp = pVspVec[i++];
+
+      if ((cntVSp > 0) && (cntVSp < TEMPLINE_BUFFER)) {
+        g_pTempLineBuffer[cntVSp] = '\0';
+        SciCall_InsertText(iInsPos, g_pTempLineBuffer);
+        g_pTempLineBuffer[cntVSp] = ' ';
+        iSpcCount += cntVSp;
+      }
+    } while (iLine != iRcCaretLine);
+
+    FreeMem(pVspVec);
+
+    if (iRcAnchorLine <= iRcCaretLine) {
+      if (bSelLeft2Right)
+        EditSelectEx(hwnd, selAnchorMainPos, selCaretMainPos + iSpcCount, 0, 0);
+      else
+        EditSelectEx(hwnd, selAnchorMainPos + pVspVec[0], selCaretMainPos + iSpcCount - pVspVec[iLineCount - 1], 0, 0);
     }
     else {
-      iStartLine = (iRcCurLine < iRcAnchorLine) ? iRcCurLine : iRcAnchorLine;
-      iEndLine = (iRcCurLine < iRcAnchorLine) ?  iRcAnchorLine : iRcCurLine;
+      if (bSelLeft2Right)
+        EditSelectEx(hwnd, selAnchorMainPos + iSpcCount - pVspVec[0], selCaretMainPos + pVspVec[iLineCount - 1], 0, 0);
+      else
+        EditSelectEx(hwnd, selAnchorMainPos + iSpcCount, selCaretMainPos, 0, 0);
     }
-
-    DocPos iMaxColumn = 0;
-    for (DocLn iLine = iStartLine; iLine <= iEndLine; iLine++) {
-      const DocPos iPos = SciCall_GetLineSelEndPosition(iLine);
-      if (iPos != INVALID_POSITION) {
-        iMaxColumn = max(iMaxColumn, SciCall_GetColumn(iPos));
-      }
-    }
-    if (iMaxColumn <= 0) { return; }
-
-    const DocPos iSpcCount = _AppendSpaces(hwnd, iStartLine, iEndLine, iMaxColumn, bSkipEmpty);
-
-    if (iRcCurLine < iRcAnchorLine)
-      EditSelectEx(hwnd, selAnchorMainPos + iSpcCount, selCaretMainPos, vSpcAnchorMainPos, vSpcCaretMainPos);
-    else
-      EditSelectEx(hwnd, selAnchorMainPos, selCaretMainPos + iSpcCount, vSpcAnchorMainPos, vSpcCaretMainPos);
+    
   }
   else  // SC_SEL_LINES | SC_SEL_STREAM
   {
