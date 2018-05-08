@@ -394,7 +394,7 @@ BEGIN
     BEGIN
         MENUITEM "&Online Documentation\tF1",   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Launch &Update Installer...", IDM_HELP_UPDATEINSTALLER
+        MENUITEM "Launch Administration &Tool...",       IDM_HELP_ADMINEXE
         MENUITEM "Check &Website for Update",   IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
         MENUITEM "&Command Line Help...",       IDM_HELP_CMD
@@ -1574,7 +1574,7 @@ BEGIN
     IDS_REGEX_INVALID       "Error evaluating regular expression. Expression is invalid!"
     IDS_DROP_NO_FILE        "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
     IDS_APPLY_DEFAULT_FONT  "Apply these font settings to current ('%s') scheme's default text also?"
-    IDS_ERR_UPDATECHECKER   "No update installer executable found.\nCheck for update on website https://rizonesoft.com ?"
+    IDS_ERR_ADMINEXE        "No administration executable found.\nCheck website https://rizonesoft.com ?"
 END
 
 STRINGTABLE

@@ -42,7 +42,7 @@ WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
 
 void DialogNewWindow(HWND,bool,bool);
 void DialogFileBrowse(HWND);
-void DialogUpdateCheck(HWND,bool);
+void DialogAdminExe(HWND,bool);
 INT_PTR InfoBox(int,LPCWSTR,int,...);
 
 
