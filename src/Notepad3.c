@@ -700,10 +700,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
   hAccCoustomizeSchemes = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCCUSTOMSCHEMES));
-
-  UpdateLineNumberWidth();
-  ObserveNotifyChangeEvent();
-  
+ 
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
   while (GetMessage(&msg,NULL,0,0))
@@ -1673,6 +1670,11 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   if (g_hwndEdit == NULL || hwndEditFrame == NULL ||
       g_hwndStatus == NULL || g_hwndToolbar == NULL || g_hwndReBar == NULL)
     return(-1);
+
+  Style_SetDefaultLexer(g_hwndEdit);
+
+  UpdateLineNumberWidth();
+  ObserveNotifyChangeEvent();
 
   UNUSED(wParam);
   return(0);
@@ -8436,17 +8438,17 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     StringCchCopy(g_wchCurFile,COUNTOF(g_wchCurFile),L"");
     SetDlgItemText(g_hwndMain,IDC_FILENAME,g_wchCurFile);
     SetDlgItemInt(g_hwndMain,IDC_REUSELOCK,GetTickCount(),false);
-    if (!fKeepTitleExcerpt)
-      StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
+    if (!fKeepTitleExcerpt) { StringCchCopy(szTitleExcerpt, COUNTOF(szTitleExcerpt), L""); }
     FileVars_Init(NULL,0,&fvCurFile);
-    EditSetNewText(g_hwndEdit,"",0);
-    Style_SetLexer(g_hwndEdit,NULL);
+    EditSetNewText(g_hwndEdit, "", 0);
 
     g_iEOLMode = iLineEndings[g_iDefaultEOLMode];
     SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
     Encoding_Current(g_iDefaultNewFileEncoding);
     Encoding_HasChanged(g_iDefaultNewFileEncoding);
-    EditSetNewText(g_hwndEdit,"",0);
+    
+    EditSetNewText(g_hwndEdit, "", 0);
+    Style_SetLexer(g_hwndEdit, NULL);
 
     g_bFileReadOnly = false;
     _SetDocumentModified(false);

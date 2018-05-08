@@ -3346,9 +3346,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = GetDefaultLexer();  //GetCurrentStdLexer();
+    pLexNew = GetDefaultLexer();
   }
-  else if (IsLexerStandard(pLexNew)) {
+  if (IsLexerStandard(pLexNew)) {
     pLexNew = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
   }
   const WCHAR* const wchNewLexerStyleStrg = pLexNew->Styles[STY_DEFAULT].szValue;
