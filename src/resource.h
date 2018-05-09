@@ -167,7 +167,7 @@
 #define IDC_EDIT3                       412
 #define IDS_PASS_FAILURE                413
 #define IDS_NOPASS                      414
-#define IDM_HELP_UPDATEINSTALLER        415
+#define IDM_HELP_ADMINEXE               415
 #define IDM_HELP_UPDATEWEBSITE          416
 #define IDS_FR_STATUS_TEXT              417
 #define IDC_CHECK4                      418
@@ -519,7 +519,7 @@
 #define IDS_REGEX_INVALID               50043
 #define IDS_DROP_NO_FILE                50044
 #define IDS_APPLY_DEFAULT_FONT          50045
-#define IDS_ERR_UPDATECHECKER           50046
+#define IDS_ERR_ADMINEXE                50046
 #define IDS_CMDLINEHELP                 60000
 #define IDM_EDIT_INSERT_GUID            60001
 #define IDC_STATIC                      -1

@@ -3097,41 +3097,67 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
 
   int const token = (!bNoUndoGroup ? BeginUndoAction() : -1);
 
-  if (SciCall_IsSelectionRectangle())
+  if (SciCall_IsSelectionRectangle() && !SciCall_IsSelectionEmpty())
   {
-    const DocPos selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
-    const DocPos selCaretMainPos = SciCall_GetRectangularSelectionCaret();
-    const DocPos vSpcAnchorMainPos = 0; // SciCall_GetRectangularSelectionAnchorVirtualSpace();
-    const DocPos vSpcCaretMainPos = 0; // SciCall_GetRectangularSelectionCaretVirtualSpace();
+    DocPos const selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
+    DocPos const selCaretMainPos = SciCall_GetRectangularSelectionCaret();
 
-    const DocLn iRcCurLine = SciCall_LineFromPosition(selCaretMainPos);
-    const DocLn iRcAnchorLine = SciCall_LineFromPosition(selAnchorMainPos);
+    DocPos const iAnchorColumn = SciCall_GetColumn(SciCall_GetSelectionNAnchor(0)) + SciCall_GetSelectionNAnchorVirtualSpace(0);
+    DocPos const iCaretColumn = SciCall_GetColumn(SciCall_GetSelectionNCaret(0)) + SciCall_GetSelectionNCaretVirtualSpace(0);
+    bool const bSelLeft2Right = (iAnchorColumn <= iCaretColumn);
 
-    DocLn iStartLine = 0;
-    DocLn iEndLine = 0;
-    if (iRcAnchorLine == iRcCurLine) {
-      iEndLine = SciCall_GetLineCount() - 1;
+    DocLn iRcAnchorLine = SciCall_LineFromPosition(selAnchorMainPos);
+    DocLn iRcCaretLine = SciCall_LineFromPosition(selCaretMainPos);
+    DocLn const iLineCount = abs(iRcCaretLine - iRcAnchorLine) + 1;
+
+    // lots of spaces
+    DocPos const spBufSize = max(iAnchorColumn, selCaretMainPos);
+    char* pSpaceBuffer = (char*)AllocMem((spBufSize + 1) * sizeof(char), HEAP_ZERO_MEMORY);
+    FillMemory(pSpaceBuffer, spBufSize * sizeof(char), ' ');
+
+    DocPos* pVspAVec = (int*)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
+    DocPos* pVspCVec = (int*)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
+
+    for (DocLn i = 0; i < iLineCount; ++i) {
+      pVspAVec[i] = SciCall_GetSelectionNAnchorVirtualSpace(i); 
+      pVspCVec[i] = SciCall_GetSelectionNCaretVirtualSpace(i);
+    }
+
+    DocPosU i = 0;
+    DocPos iSpcCount = 0;
+    DocLn const iLnIncr = (iRcAnchorLine <= iRcCaretLine) ? (DocLn)+1 : (DocLn)-1;
+    DocLn iLine = iRcAnchorLine - iLnIncr;
+    do {
+      iLine += iLnIncr;
+      DocPos const iInsPos = SciCall_GetLineEndPosition(iLine);
+      DocPos const cntVSp = bSelLeft2Right ? pVspCVec[i++] : pVspAVec[i++];
+      bool const bSkip = (bSkipEmpty && (iInsPos <= SciCall_PositionFromLine(iLine)));
+
+      if ((cntVSp > 0) && !bSkip) {
+        pSpaceBuffer[cntVSp] = '\0';
+        SciCall_InsertText(iInsPos, pSpaceBuffer);
+        pSpaceBuffer[cntVSp] = ' ';
+        iSpcCount += cntVSp;
+      }
+    } while (iLine != iRcCaretLine);
+
+    FreeMem(pSpaceBuffer);
+
+    if (iRcAnchorLine <= iRcCaretLine) {
+      if (bSelLeft2Right)
+        EditSelectEx(hwnd, selAnchorMainPos + pVspAVec[0], selCaretMainPos + iSpcCount, 0, 0);
+      else
+        EditSelectEx(hwnd, selAnchorMainPos + pVspAVec[0], selCaretMainPos + pVspCVec[iLineCount - 1] + iSpcCount - pVspAVec[iLineCount - 1], 0, 0);
     }
     else {
-      iStartLine = (iRcCurLine < iRcAnchorLine) ? iRcCurLine : iRcAnchorLine;
-      iEndLine = (iRcCurLine < iRcAnchorLine) ?  iRcAnchorLine : iRcCurLine;
+      if (bSelLeft2Right)
+        EditSelectEx(hwnd, selAnchorMainPos + pVspAVec[0] + iSpcCount - pVspCVec[0], selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
+      else
+        EditSelectEx(hwnd, selAnchorMainPos + iSpcCount, selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
     }
 
-    DocPos iMaxColumn = 0;
-    for (DocLn iLine = iStartLine; iLine <= iEndLine; iLine++) {
-      const DocPos iPos = SciCall_GetLineSelEndPosition(iLine);
-      if (iPos != INVALID_POSITION) {
-        iMaxColumn = max(iMaxColumn, SciCall_GetColumn(iPos));
-      }
-    }
-    if (iMaxColumn <= 0) { return; }
-
-    const DocPos iSpcCount = _AppendSpaces(hwnd, iStartLine, iEndLine, iMaxColumn, bSkipEmpty);
-
-    if (iRcCurLine < iRcAnchorLine)
-      EditSelectEx(hwnd, selAnchorMainPos + iSpcCount, selCaretMainPos, vSpcAnchorMainPos, vSpcCaretMainPos);
-    else
-      EditSelectEx(hwnd, selAnchorMainPos, selCaretMainPos + iSpcCount, vSpcAnchorMainPos, vSpcCaretMainPos);
+    FreeMem(pVspCVec);
+    FreeMem(pVspAVec);
   }
   else  // SC_SEL_LINES | SC_SEL_STREAM
   {
@@ -4910,6 +4936,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 {
   static LPEDITFINDREPLACE sg_pefrData = NULL;
   static DocPos s_InitialSearchStart = 0;
+  static DocPos s_InitialAnchortPos = 0;
+  static DocPos s_InitialCaretPos = 0;
   static RegExResult_t regexMatch = INVALID;
 
   static COLORREF rgbRed = RGB(255, 170, 170);
@@ -5089,6 +5117,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       _SetSearchFlags(hwnd, sg_pefrData);
       s_InitialSearchStart = SciCall_GetSelectionStart();
+      s_InitialAnchortPos = SciCall_GetAnchor();
+      s_InitialCaretPos = SciCall_GetCurrentPos();
       _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
     }
     return true;
@@ -5115,6 +5145,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
           MarkAllOccurrences(50, true);
 
+          EditSelectEx(g_hwndEdit, s_InitialAnchortPos, s_InitialCaretPos, -1, -1);
           EditEnsureSelectionVisible(g_hwndEdit);
 
           CmdMessageQueue_t* pmqc = NULL;
@@ -5137,6 +5168,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_ACTIVATE:
       {
         s_InitialSearchStart = SciCall_GetSelectionStart();
+        s_InitialAnchortPos = SciCall_GetAnchor();
+        s_InitialCaretPos = SciCall_GetCurrentPos();
 
         DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !SciCall_IsSelectionEmpty());
       
@@ -5158,6 +5191,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       case IDC_DOC_MODIFIED:
         sg_pefrData->bStateChanged = true;
         s_InitialSearchStart = SciCall_GetSelectionStart();
+        s_InitialAnchortPos = SciCall_GetAnchor();
+        s_InitialCaretPos = SciCall_GetCurrentPos();
         break;
 
       case IDC_FINDTEXT:
@@ -5254,14 +5289,16 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               if (EditToggleView(g_hwndEdit, false)) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
               StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), sg_pefrData->szFind);
               RegExResult_t match = _FindHasMatch(g_hwndEdit, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
-              if (regexMatch != match) {
-                regexMatch = match;
-              }
+              if (regexMatch != match) { regexMatch = match; }
               // we have to set Sci's regex instance to first find (have substitution in place)
               DocPos const iStartPos = (DocPos)lParam;
               _FindHasMatch(g_hwndEdit, sg_pefrData, iStartPos, false, true);
               sg_pefrData->bStateChanged = false;
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
+              if (match != MATCH) { 
+                EditClearAllOccurrenceMarkers(g_hwndEdit); 
+                EditSelectEx(g_hwndEdit, s_InitialAnchortPos, s_InitialCaretPos, -1, -1); 
+              }
               if (EditToggleView(g_hwndEdit, false)) { EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, true); }
               _OBSERVE_NOTIFY_CHANGE_;
             }
@@ -5477,6 +5514,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionEnd(hwnd); }
           EditFindNext(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTONEXT), HIBYTE(GetKeyState(VK_F3)));
           s_InitialSearchStart = SciCall_GetSelectionStart();
+          s_InitialAnchortPos = SciCall_GetAnchor();
+          s_InitialCaretPos = SciCall_GetCurrentPos();
           break;
 
         case IDC_FINDPREV: // find previous
@@ -5485,6 +5524,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionStart(hwnd);  }
           EditFindPrev(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTOPREV), HIBYTE(GetKeyState(VK_F3)));
           s_InitialSearchStart = SciCall_GetSelectionStart();
+          s_InitialAnchortPos = SciCall_GetAnchor();
+          s_InitialCaretPos = SciCall_GetCurrentPos();
           break;
 
         case IDC_REPLACE:

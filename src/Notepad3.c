@@ -135,7 +135,7 @@ WCHAR         g_tchFileDlgFilters[XXXL_BUFFER] = { L'\0' };
 WCHAR         g_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 WCHAR         g_tchOpenWithDir[MAX_PATH] = { L'\0' };
 WCHAR         g_tchFavoritesDir[MAX_PATH] = { L'\0' };
-WCHAR         g_tchUpdateCheckerExe[MAX_PATH] = { L'\0' };
+WCHAR         g_tchAdministrationExe[MAX_PATH] = { L'\0' };
 
 static WCHAR  g_tchDefaultExtension[64] = { L'\0' };
 static WCHAR  g_tchDefaultDir[MAX_PATH] = { L'\0' };
@@ -2753,8 +2753,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
-  i = StringCchLenW(g_tchUpdateCheckerExe, COUNTOF(g_tchUpdateCheckerExe));
-  EnableCmd(hmenu, IDM_HELP_UPDATEINSTALLER, i);
+  i = StringCchLenW(g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
+  EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
   UNUSED(lParam);
 }
@@ -5153,12 +5153,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_HELP_UPDATEINSTALLER:
-      DialogUpdateCheck(hwnd, true);
+    case IDM_HELP_ADMINEXE:
+      DialogAdminExe(hwnd, true);
       break;
 
     case IDM_HELP_UPDATEWEBSITE:
-      DialogUpdateCheck(hwnd, false);
+      DialogAdminExe(hwnd, false);
       break;
 
     case CMD_WEBACTION1:
@@ -6495,7 +6495,7 @@ void LoadSettings()
   iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
   iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
 
-  IniSectionGetString(pIniSection, L"UpdateChecker.exe", L"", g_tchUpdateCheckerExe, COUNTOF(g_tchUpdateCheckerExe));
+  IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
 
   // --------------------------------------------------------------------------
   LoadIniSection(L"Statusbar Settings", pIniSection, cchIniSection);
@@ -7950,7 +7950,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   static bool s_bUse2ndDefault = -1;
-  bool const bUse2ndDefault = Style_GetUse2ndDefault();
+  bool bUse2ndDefault = Style_GetUse2ndDefault();
   if (s_bUse2ndDefault != bUse2ndDefault) {
     if (bUse2ndDefault)
     {

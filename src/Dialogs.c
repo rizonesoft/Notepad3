@@ -2783,16 +2783,16 @@ void DialogFileBrowse(HWND hwnd)
 
 //=============================================================================
 //
-//  DialogUpdateCheck()
+//  DialogAdminExe()
 //
 //
-extern WCHAR g_tchUpdateCheckerExe[];
+extern WCHAR g_tchAdministrationExe[];
 
-void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
+void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 {
   WCHAR tchExe[MAX_PATH+2];
 
-  StringCchCopyW(tchExe, COUNTOF(tchExe), g_tchUpdateCheckerExe);
+  StringCchCopyW(tchExe, COUNTOF(tchExe), g_tchAdministrationExe);
   if (bExecInstaller && !StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
 
   WCHAR tchExePath[MAX_PATH + 2];
@@ -2818,7 +2818,7 @@ void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
     ShellExecuteEx(&sei);
     if ((INT_PTR)sei.hInstApp < 32)
     {
-      if (IDOK == InfoBox(MBOKCANCEL, L"NoUpdateChecker", IDS_ERR_UPDATECHECKER))
+      if (IDOK == InfoBox(MBOKCANCEL, L"NoAdminTool", IDS_ERR_ADMINEXE))
       {
         sei.lpFile = VERSION_UPDATE_CHECK;
         ShellExecuteEx(&sei);
