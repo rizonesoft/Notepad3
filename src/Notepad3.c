@@ -7950,7 +7950,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   static bool s_bUse2ndDefault = -1;
-  bool const bUse2ndDefault = Style_GetUse2ndDefault();
+  bool bUse2ndDefault = Style_GetUse2ndDefault();
   if (s_bUse2ndDefault != bUse2ndDefault) {
     if (bUse2ndDefault)
     {

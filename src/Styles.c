@@ -3135,7 +3135,7 @@ void Style_Load()
   LoadIniSection(L"Styles",pIniSection,cchIniSection);
 
   // 2nd default
-  Style_SetUse2ndDefault(IniSectionGetBool(pIniSection, L"Use2ndDefaultStyle", 0));
+  Style_SetUse2ndDefault(IniSectionGetBool(pIniSection, L"Use2ndDefaultStyle", false));
 
   // default scheme
   g_iDefaultLexer = IniSectionGetInt(pIniSection,L"DefaultScheme",0);
@@ -3348,13 +3348,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (!pLexNew) {
     pLexNew = GetDefaultLexer();
   }
-  if (IsLexerStandard(pLexNew)) {
-    pLexNew = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
-  }
   const WCHAR* const wchNewLexerStyleStrg = pLexNew->Styles[STY_DEFAULT].szValue;
 
   // first set standard lexer's default values
-  g_pLexCurrent = GetCurrentStdLexer();
+  if (IsLexerStandard(pLexNew))
+    g_pLexCurrent = pLexNew;
+  else 
+    g_pLexCurrent = GetCurrentStdLexer();
+
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
 
   // Lexer 
@@ -4463,7 +4464,7 @@ void Style_SetLexerFromID(HWND hwnd,int id)
 //
 void Style_ToggleUse2ndDefault(HWND hwnd)
 {
-  bool use2ndDefStyle = Style_GetUse2ndDefault();
+  bool const use2ndDefStyle = Style_GetUse2ndDefault();
   Style_SetUse2ndDefault(use2ndDefStyle ? false : true); // swap
   Style_SetLexer(hwnd,g_pLexCurrent);
 }
@@ -4477,8 +4478,8 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
 {
   WCHAR newStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-  const PEDITLEXER pLexer = bGlobalDefault ? GetCurrentStdLexer() : g_pLexCurrent;
-  const PEDITSTYLE pLexerDefStyle = &(pLexer->Styles[STY_DEFAULT]);
+  PEDITLEXER const pLexer = bGlobalDefault ? GetCurrentStdLexer() : g_pLexCurrent;
+  PEDITSTYLE const pLexerDefStyle = &(pLexer->Styles[STY_DEFAULT]);
 
   StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[STY_DEFAULT].szValue);
 
@@ -5661,13 +5662,8 @@ int Style_GetCurrentLexerRID()
 //
 void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
 {
-  if (IsLexerStandard(g_pLexCurrent)) {
-    StringCchPrintfW(lpszName, cchName, L" %s", GetCurrentStdLexer()->pszName);
-  }
-  else {
-    if (!GetString(g_pLexCurrent->resID, lpszName, cchName)) {
-      StringCchCopyW(lpszName, cchName, g_pLexCurrent->pszName);
-    }
+  if (!GetString(g_pLexCurrent->resID, lpszName, cchName)) {
+    StringCchCopyW(lpszName, cchName, g_pLexCurrent->pszName);
   }
 }
 
@@ -6644,7 +6640,6 @@ void Style_SelectLexerDlg(HWND hwnd)
                                    MAKEINTRESOURCE(IDD_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
-    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd);
     Style_SetLexer(hwnd, g_pLexCurrent);
 }
 
