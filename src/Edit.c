@@ -5280,14 +5280,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               if (EditToggleView(g_hwndEdit, false)) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
               StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), sg_pefrData->szFind);
               RegExResult_t match = _FindHasMatch(g_hwndEdit, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
-              if (regexMatch != match) {
-                regexMatch = match;
-              }
+              if (regexMatch != match) { regexMatch = match; }
               // we have to set Sci's regex instance to first find (have substitution in place)
               DocPos const iStartPos = (DocPos)lParam;
               _FindHasMatch(g_hwndEdit, sg_pefrData, iStartPos, false, true);
               sg_pefrData->bStateChanged = false;
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
+              if (match != MATCH) { EditClearAllOccurrenceMarkers(g_hwndEdit); }
               if (EditToggleView(g_hwndEdit, false)) { EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, true); }
               _OBSERVE_NOTIFY_CHANGE_;
             }
