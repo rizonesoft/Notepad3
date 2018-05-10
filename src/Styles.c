@@ -3043,6 +3043,17 @@ PEDITLEXER __fastcall GetDefaultLexer()
 }
 
 
+
+//=============================================================================
+//
+//  IsLexerStandard()
+//
+bool Style_IsCurLexerStandard()
+{
+  return IsLexerStandard(g_pLexCurrent);
+}
+
+
 //=============================================================================
 //
 //  _SetBaseFontSize(), _GetBaseFontSize()
@@ -3358,10 +3369,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   const WCHAR* const wchNewLexerStyleStrg = pLexNew->Styles[STY_DEFAULT].szValue;
 
   // first set standard lexer's default values
-  if (IsLexerStandard(pLexNew))
+  if (IsLexerStandard(pLexNew)) {
     g_pLexCurrent = pLexNew;
-  else 
+    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, false);
+  }
+  else {
     g_pLexCurrent = GetCurrentStdLexer();
+    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, true);
+  }
 
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
 
