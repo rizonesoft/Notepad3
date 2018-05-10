@@ -2747,9 +2747,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,g_bEnableSaveSettings && i);
 
   bool bIsHLink = false;
-  if ((bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) 
+  if ((bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0))
   {
-    bIsHLink = (Style_GetHotspotStyleID() == (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, SciCall_GetCurrentPos(), 0));
+    bIsHLink = (SciCall_GetStyleAt(SciCall_GetCurrentPos()) == (char)Style_GetHotspotStyleID());
   }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
@@ -5610,28 +5610,25 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 {
-  int iStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, position, 0);
+  char const cStyle = SciCall_GetStyleAt(position);
 
-  if (Style_GetHotspotStyleID() != iStyle)
-    return; 
-
-  if (!(bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0))
-    return;
+  if (cStyle != (char)Style_GetHotspotStyleID()) { return; }
+  if (!(bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) { return; }
 
   // get left most position of style
   DocPos pos = position;
-  int iNewStyle = iStyle;
-  while ((iNewStyle == iStyle) && (--pos > 0)) {
-    iNewStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, pos, 0);
+  char cNewStyle = cStyle;
+  while ((cNewStyle == cStyle) && (--pos > 0)) {
+    cNewStyle = SciCall_GetStyleAt(pos);
   }
   DocPos firstPos = (pos != 0) ? (pos + 1) : 0;
 
   // get right most position of style
   pos = position;
-  iNewStyle = iStyle;
+  cNewStyle = cStyle;
   DocPos posTextLength = SciCall_GetTextLength();
-  while ((iNewStyle == iStyle) && (++pos < posTextLength)) {
-    iNewStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, pos, 0);
+  while ((cNewStyle == cStyle) && (++pos < posTextLength)) {
+    cNewStyle = SciCall_GetStyleAt(pos);
   }
   DocPos lastPos = pos;
   DocPos length = (lastPos - firstPos);

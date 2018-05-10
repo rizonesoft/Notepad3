@@ -111,7 +111,8 @@ EDITLEXER lexStandard2nd = { SCLEX_NULL, 63266, L"2nd Default Text", L"txt; text
                           { -1, 00000, L"", L"", L"" } } };
 
 
-enum LexDefaultStyles {
+
+typedef enum {
   STY_DEFAULT = 0,
   STY_MARGIN = 1,
   STY_BRACE_OK = 2,
@@ -129,7 +130,13 @@ enum LexDefaultStyles {
   STY_URL_HOTSPOT = 14,
   STY_INVISIBLE = 15,
   STY_READONLY = 16
-};
+
+  // MAX = 127
+}
+LexDefaultStyles;
+
+
+// ----------------------------------------------------------------------------
 
 
 
@@ -3855,6 +3862,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 }
 
 
+
 //=============================================================================
 //
 //  Style_GetHotspotStyleID()
@@ -3871,18 +3879,17 @@ int Style_GetHotspotStyleID()
 //
 void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 {
-  // Hot Spot settings
-  const int iStyleHotSpot = Style_GetHotspotStyleID();
+  int const cHotSpotStyleID = Style_GetHotspotStyleID();
 
   if (bHotSpot)
   {
     const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
 
-    SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)true);
+    SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)true);
     SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, false, 0);
 
     // Font
-    Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot, false);
+    Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
 
     //if (StrStrI(lpszStyleHotSpot, L"underline") != NULL)
     //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
@@ -3894,19 +3901,19 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
     // Fore
     if (Style_StrGetColor(true, lpszStyleHotSpot, &rgb)) {
       COLORREF inactiveFG = (COLORREF)((rgb * 75 + 50) / 100);
-      SendMessage(hwnd, SCI_STYLESETFORE, iStyleHotSpot, (LPARAM)inactiveFG);
+      SendMessage(hwnd, SCI_STYLESETFORE, cHotSpotStyleID, (LPARAM)inactiveFG);
       SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, true, (LPARAM)rgb);
     }
     // Back
     if (Style_StrGetColor(false, lpszStyleHotSpot, &rgb)) {
-      SendMessage(hwnd, SCI_STYLESETBACK, iStyleHotSpot, (LPARAM)rgb);
+      SendMessage(hwnd, SCI_STYLESETBACK, cHotSpotStyleID, (LPARAM)rgb);
       SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, true, (LPARAM)rgb);
     }
   }
   else {
     const WCHAR* const lpszStyleHotSpot = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
-    Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot, false);
-    SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)false);
+    Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
+    SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)false);
   }
 
 }
@@ -3932,7 +3939,7 @@ void Style_SetInvisible(HWND hwnd, bool bInvisible)
   //SendMessage(hwnd, SCI_FOLDDISPLAYTEXTSETSTYLE, (WPARAM)SC_FOLDDISPLAYTEXT_BOXED, 0);
   //SciCall_MarkerDefine(MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
   if (bInvisible) {
-    SendMessage(hwnd, SCI_STYLESETVISIBLE, Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
+    SendMessage(hwnd, SCI_STYLESETVISIBLE, (WPARAM)Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
   }
 }
 
@@ -3944,7 +3951,7 @@ void Style_SetInvisible(HWND hwnd, bool bInvisible)
 //
 int Style_GetReadonlyStyleID()
 {
-  return (STYLE_LASTPREDEFINED + STY_READONLY);
+  return (STYLE_MAX - STY_READONLY);
 }
 
 
@@ -3954,7 +3961,7 @@ int Style_GetReadonlyStyleID()
 //
 void Style_SetReadonly(HWND hwnd, bool bReadonly)
 {
-  SendMessage(hwnd, SCI_STYLESETCHANGEABLE, Style_GetReadonlyStyleID(), (LPARAM)!bReadonly);
+  SendMessage(hwnd, SCI_STYLESETCHANGEABLE, (WPARAM)Style_GetReadonlyStyleID(), (LPARAM)!bReadonly);
 }
 
 

@@ -6559,7 +6559,6 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
 
   DocPos start = startPos;
   DocPos end = endPos;
-  int const iStyle = Style_GetHotspotStyleID();
   
   do {
     DocPos iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
@@ -6574,7 +6573,7 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
     // mark this match
     SciCall_StartStyling(iPos);
     if (bActiveHotspot)
-      SciCall_SetStyling((DocPosCR)mlen, iStyle);
+      SciCall_SetStyling((DocPosCR)mlen, (char)Style_GetHotspotStyleID());
     else
       EditFinalizeStyling(hwnd, endPos);
 
@@ -6631,8 +6630,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     SciCall_SetFoldFlags(0);
     //SciCall_SetFoldFlags(SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // Debug
 
-    // hide lines without indicator
-    const int iStyleHideID = Style_GetInvisibleStyleID();
+    // --- hide lines without indicator ---
 
     const DocLn iStartLine = SciCall_LineFromPosition(iStartPos);
     const DocLn iEndLine = SciCall_LineFromPosition(iEndPos);
@@ -6651,7 +6649,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
       const DocPos begPos = SciCall_PositionFromLine(iStartLine);
       const DocPos lnLen = SciCall_LineLength(iStartLine);
       SciCall_StartStyling(begPos);
-      SciCall_SetStyling((DocPosCR)lnLen, iStyleHideID);
+      SciCall_SetStyling((DocPosCR)lnLen, (char)Style_GetInvisibleStyleID());
     }
 
     int level = baseLevel;
@@ -6667,7 +6665,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
         const DocPos begPos = SciCall_PositionFromLine(iLine);
         const DocPos lnLen = SciCall_LineLength(iLine);
         SciCall_StartStyling(begPos);
-        SciCall_SetStyling((DocPosCR)lnLen, iStyleHideID);
+        SciCall_SetStyling((DocPosCR)lnLen, (char)Style_GetInvisibleStyleID());
 
         if (level == baseLevel) {
           SciCall_SetFoldLevel(iLine - 1, SC_FOLDLEVELHEADERFLAG | level++);
