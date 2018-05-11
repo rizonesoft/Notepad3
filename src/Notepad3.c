@@ -2747,9 +2747,9 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,g_bEnableSaveSettings && i);
 
   bool bIsHLink = false;
-  if ((bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) 
+  if ((bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0))
   {
-    bIsHLink = (Style_GetHotspotStyleID() == (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, SciCall_GetCurrentPos(), 0));
+    bIsHLink = (SciCall_GetStyleAt(SciCall_GetCurrentPos()) == (char)Style_GetHotspotStyleID());
   }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
@@ -5610,28 +5610,25 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 {
-  int iStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, position, 0);
+  char const cStyle = SciCall_GetStyleAt(position);
 
-  if (Style_GetHotspotStyleID() != iStyle)
-    return; 
-
-  if (!(bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0))
-    return;
+  if (cStyle != (char)Style_GetHotspotStyleID()) { return; }
+  if (!(bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) { return; }
 
   // get left most position of style
   DocPos pos = position;
-  int iNewStyle = iStyle;
-  while ((iNewStyle == iStyle) && (--pos > 0)) {
-    iNewStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, pos, 0);
+  char cNewStyle = cStyle;
+  while ((cNewStyle == cStyle) && (--pos > 0)) {
+    cNewStyle = SciCall_GetStyleAt(pos);
   }
   DocPos firstPos = (pos != 0) ? (pos + 1) : 0;
 
   // get right most position of style
   pos = position;
-  iNewStyle = iStyle;
+  cNewStyle = cStyle;
   DocPos posTextLength = SciCall_GetTextLength();
-  while ((iNewStyle == iStyle) && (++pos < posTextLength)) {
-    iNewStyle = (int)SendMessage(g_hwndEdit, SCI_GETSTYLEAT, pos, 0);
+  while ((cNewStyle == cStyle) && (++pos < posTextLength)) {
+    cNewStyle = SciCall_GetStyleAt(pos);
   }
   DocPos lastPos = pos;
   DocPos length = (lastPos - firstPos);
@@ -6126,7 +6123,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 return true;
 
               case STATUS_2ND_DEF:
-                PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
+                if (!Style_IsCurLexerStandard()) {
+                  PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
+                }
                 return true;
 
               case STATUS_LEXER:
@@ -7269,7 +7268,7 @@ void LoadFlags()
 //  FindIniFile()
 //
 //
-bool CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
+static bool __fastcall _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
   WCHAR tchBuild[MAX_PATH] = { L'\0' };
@@ -7279,12 +7278,20 @@ bool CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
     // program directory
     StringCchCopy(tchBuild,COUNTOF(tchBuild),lpszModule);
     StringCchCopy(PathFindFileName(tchBuild),COUNTOF(tchBuild),tchFileExpanded);
-
     if (PathFileExists(tchBuild)) {
       StringCchCopy(lpszFile,MAX_PATH,tchBuild);
       return true;
     }
-    // %appdata%
+    // sub directory (.\np3\) 
+    StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
+    PathRemoveFileSpec(tchBuild);
+    StringCchCat(tchBuild,COUNTOF(tchBuild),L"\\np3\\");
+    StringCchCat(tchBuild,COUNTOF(tchBuild),tchFileExpanded);
+    if (PathFileExists(tchBuild)) {
+      StringCchCopy(lpszFile, MAX_PATH, tchBuild);
+      return true;
+    }
+    // %APPDATA%
     //if (S_OK == SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
     if (GetKnownFolderPath(&FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
       PathCchAppend(tchBuild,COUNTOF(tchBuild),tchFileExpanded);
@@ -7299,20 +7306,19 @@ bool CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       return true;
     }
   }
-
   else if (PathFileExists(tchFileExpanded)) {
     StringCchCopy(lpszFile,MAX_PATH,tchFileExpanded);
     return true;
   }
-
   return false;
 }
 
-bool CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
+
+static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
   if (GetPrivateProfileString(L"Notepad3",L"Notepad3.ini",L"",tch,COUNTOF(tch),lpszFile)) {
-    if (CheckIniFile(tch,lpszModule)) {
+    if (_CheckIniFile(tch,lpszModule)) {
       StringCchCopy(lpszFile,MAX_PATH,tch);
       return true;
     }
@@ -7333,44 +7339,51 @@ bool CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
   return false;
 }
 
+
 int FindIniFile() {
 
-  WCHAR tchTest[MAX_PATH] = { L'\0' };
+  WCHAR tchPath[MAX_PATH] = { L'\0' };
   WCHAR tchModule[MAX_PATH] = { L'\0' };
+  
   GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
+
+  // set env path to module dir
+  StringCchCopy(tchPath, COUNTOF(tchPath), tchModule);
+  PathRemoveFileSpec(tchPath);
+  SetEnvironmentVariable(L"NOTEPAD3MODULEDIR", tchPath);
 
   if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile))) {
     if (StringCchCompareIX(g_wchIniFile,L"*?") == 0)
       return(0);
     else {
-      if (!CheckIniFile(g_wchIniFile,tchModule)) {
+      if (!_CheckIniFile(g_wchIniFile,tchModule)) {
         ExpandEnvironmentStringsEx(g_wchIniFile,COUNTOF(g_wchIniFile));
         if (PathIsRelative(g_wchIniFile)) {
-          StringCchCopy(tchTest,COUNTOF(tchTest),tchModule);
-          PathRemoveFileSpec(tchTest);
-          PathCchAppend(tchTest,COUNTOF(tchTest),g_wchIniFile);
-          StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchTest);
+          StringCchCopy(tchPath,COUNTOF(tchPath),tchModule);
+          PathRemoveFileSpec(tchPath);
+          PathCchAppend(tchPath,COUNTOF(tchPath),g_wchIniFile);
+          StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchPath);
         }
       }
     }
   }
   else {
-    StringCchCopy(tchTest,COUNTOF(tchTest),PathFindFileName(tchModule));
-    PathCchRenameExtension(tchTest,COUNTOF(tchTest),L".ini");
-    bool bFound = CheckIniFile(tchTest,tchModule);
+    StringCchCopy(tchPath,COUNTOF(tchPath),PathFindFileName(tchModule));
+    PathCchRenameExtension(tchPath,COUNTOF(tchPath),L".ini");
+    bool bFound = _CheckIniFile(tchPath,tchModule);
 
     if (!bFound) {
-      StringCchCopy(tchTest,COUNTOF(tchTest),L"Notepad3.ini");
-      bFound = CheckIniFile(tchTest,tchModule);
+      StringCchCopy(tchPath,COUNTOF(tchPath),L"Notepad3.ini");
+      bFound = _CheckIniFile(tchPath,tchModule);
     }
 
     if (bFound) {
 
       // allow two redirections: administrator -> user -> custom
-      if (CheckIniFileRedirect(tchTest,tchModule))
-        CheckIniFileRedirect(tchTest,tchModule);
+      if (_CheckIniFileRedirect(tchPath,tchModule))
+        _CheckIniFileRedirect(tchPath,tchModule);
 
-      StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchTest);
+      StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchPath);
     }
     else {
       StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchModule);
@@ -7949,17 +7962,25 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  static bool s_bUse2ndDefault = -1;
-  bool bUse2ndDefault = Style_GetUse2ndDefault();
-  if (s_bUse2ndDefault != bUse2ndDefault) {
-    if (bUse2ndDefault)
-    {
-      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
-    }
-    else {
+  static int s_iUse2ndDefault = -1;
+  int iUse2ndDefault = Style_IsCurLexerStandard() ? 0 : (Style_GetUse2ndDefault() ? 2 : 1);
+
+  if (s_iUse2ndDefault != iUse2ndDefault) {
+    switch (iUse2ndDefault) {
+    case 0:
+      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
+      break;
+    case 1:
       StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
+      break;
+    case 2:
+      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
+      break;
+    default:
+      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sXXX", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
+      break;
     }
-    s_bUse2ndDefault = bUse2ndDefault;
+    s_iUse2ndDefault = iUse2ndDefault;
     bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------
@@ -7967,13 +7988,11 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchLexerName[MINI_BUFFER];
 
   static int s_iCurLexer = -1;
-  static bool s_bIs2ndDefault = -1;
   int const iCurLexer = Style_GetCurrentLexerRID();
-  if ((s_iCurLexer != iCurLexer) || (s_bIs2ndDefault != bUse2ndDefault)) {
+  if (s_iCurLexer != iCurLexer) {
     Style_GetCurrentLexerName(tchLexerName, MINI_BUFFER);
     StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s", g_mxStatusBarPrefix[STATUS_LEXER], tchLexerName);
     s_iCurLexer = iCurLexer;
-    s_bIs2ndDefault = bUse2ndDefault;
     bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------

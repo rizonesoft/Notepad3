@@ -265,9 +265,10 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 //
 //  Style definition
 //
-DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, styleNumber)
-DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, styleNumber)
-DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, int, style)
+DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, char, style)
+DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, char, style)
+DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)
+DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, char, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 

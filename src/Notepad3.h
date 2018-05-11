@@ -130,8 +130,6 @@ void LoadSettings();
 void SaveSettings(bool);
 void ParseCommandLine();
 void LoadFlags();
-bool CheckIniFile(LPWSTR,LPCWSTR);
-bool CheckIniFileRedirect(LPWSTR,LPCWSTR);
 int  FindIniFile();
 int  TestIniFile();
 int  CreateIniFile();

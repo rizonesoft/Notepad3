@@ -41,7 +41,8 @@ static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
 // Tests for BATCH Operators
 static bool IsBOperator(char ch) {
 	return (ch == '=') || (ch == '+') || (ch == '>') || (ch == '<') ||
-		(ch == '|') || (ch == '?') || (ch == '*');
+		(ch == '|') || (ch == '?') || (ch == '*') || 
+    (ch == '(') || (ch == ')') || (ch == '[') || (ch == ']');
 }
 
 // Tests for BATCH Separators
