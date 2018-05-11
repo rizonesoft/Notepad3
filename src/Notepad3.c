@@ -7268,7 +7268,7 @@ void LoadFlags()
 //  FindIniFile()
 //
 //
-bool CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
+static bool __fastcall _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
   WCHAR tchBuild[MAX_PATH] = { L'\0' };
@@ -7278,12 +7278,20 @@ bool CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
     // program directory
     StringCchCopy(tchBuild,COUNTOF(tchBuild),lpszModule);
     StringCchCopy(PathFindFileName(tchBuild),COUNTOF(tchBuild),tchFileExpanded);
-
     if (PathFileExists(tchBuild)) {
       StringCchCopy(lpszFile,MAX_PATH,tchBuild);
       return true;
     }
-    // %appdata%
+    // sub directory (.\np3\) 
+    StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
+    PathRemoveFileSpec(tchBuild);
+    StringCchCat(tchBuild,COUNTOF(tchBuild),L"\\np3\\");
+    StringCchCat(tchBuild,COUNTOF(tchBuild),tchFileExpanded);
+    if (PathFileExists(tchBuild)) {
+      StringCchCopy(lpszFile, MAX_PATH, tchBuild);
+      return true;
+    }
+    // %APPDATA%
     //if (S_OK == SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
     if (GetKnownFolderPath(&FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
       PathCchAppend(tchBuild,COUNTOF(tchBuild),tchFileExpanded);
@@ -7298,20 +7306,19 @@ bool CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       return true;
     }
   }
-
   else if (PathFileExists(tchFileExpanded)) {
     StringCchCopy(lpszFile,MAX_PATH,tchFileExpanded);
     return true;
   }
-
   return false;
 }
 
-bool CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
+
+static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
   if (GetPrivateProfileString(L"Notepad3",L"Notepad3.ini",L"",tch,COUNTOF(tch),lpszFile)) {
-    if (CheckIniFile(tch,lpszModule)) {
+    if (_CheckIniFile(tch,lpszModule)) {
       StringCchCopy(lpszFile,MAX_PATH,tch);
       return true;
     }
@@ -7332,44 +7339,51 @@ bool CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
   return false;
 }
 
+
 int FindIniFile() {
 
-  WCHAR tchTest[MAX_PATH] = { L'\0' };
+  WCHAR tchPath[MAX_PATH] = { L'\0' };
   WCHAR tchModule[MAX_PATH] = { L'\0' };
+  
   GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
+
+  // set env path to module dir
+  StringCchCopy(tchPath, COUNTOF(tchPath), tchModule);
+  PathRemoveFileSpec(tchPath);
+  SetEnvironmentVariable(L"NOTEPAD3MODULEDIR", tchPath);
 
   if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile))) {
     if (StringCchCompareIX(g_wchIniFile,L"*?") == 0)
       return(0);
     else {
-      if (!CheckIniFile(g_wchIniFile,tchModule)) {
+      if (!_CheckIniFile(g_wchIniFile,tchModule)) {
         ExpandEnvironmentStringsEx(g_wchIniFile,COUNTOF(g_wchIniFile));
         if (PathIsRelative(g_wchIniFile)) {
-          StringCchCopy(tchTest,COUNTOF(tchTest),tchModule);
-          PathRemoveFileSpec(tchTest);
-          PathCchAppend(tchTest,COUNTOF(tchTest),g_wchIniFile);
-          StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchTest);
+          StringCchCopy(tchPath,COUNTOF(tchPath),tchModule);
+          PathRemoveFileSpec(tchPath);
+          PathCchAppend(tchPath,COUNTOF(tchPath),g_wchIniFile);
+          StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchPath);
         }
       }
     }
   }
   else {
-    StringCchCopy(tchTest,COUNTOF(tchTest),PathFindFileName(tchModule));
-    PathCchRenameExtension(tchTest,COUNTOF(tchTest),L".ini");
-    bool bFound = CheckIniFile(tchTest,tchModule);
+    StringCchCopy(tchPath,COUNTOF(tchPath),PathFindFileName(tchModule));
+    PathCchRenameExtension(tchPath,COUNTOF(tchPath),L".ini");
+    bool bFound = _CheckIniFile(tchPath,tchModule);
 
     if (!bFound) {
-      StringCchCopy(tchTest,COUNTOF(tchTest),L"Notepad3.ini");
-      bFound = CheckIniFile(tchTest,tchModule);
+      StringCchCopy(tchPath,COUNTOF(tchPath),L"Notepad3.ini");
+      bFound = _CheckIniFile(tchPath,tchModule);
     }
 
     if (bFound) {
 
       // allow two redirections: administrator -> user -> custom
-      if (CheckIniFileRedirect(tchTest,tchModule))
-        CheckIniFileRedirect(tchTest,tchModule);
+      if (_CheckIniFileRedirect(tchPath,tchModule))
+        _CheckIniFileRedirect(tchPath,tchModule);
 
-      StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchTest);
+      StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchPath);
     }
     else {
       StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchModule);
