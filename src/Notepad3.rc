@@ -136,7 +136,7 @@ BEGIN
             MENUITEM "&Add Current File...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Manage...\tAlt+F9",          IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Recent (&History)...\tAlt+H", IDM_FILE_RECENT
+        MENUITEM "Recent (&History)...\tCtrl+Alt+H", IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "E&xit\tAlt+F4",               IDM_FILE_EXIT
     END
@@ -308,7 +308,7 @@ BEGIN
         MENUITEM "Show Line &Endings\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
         MENUITEM "Show Wra&p Symbols\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
-        MENUITEM "H&yperlink Hotspots\tCtrl+Alt+H", IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "H&yperlink Hotspots\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         MENUITEM "Hi&ghlight Current Line\tCtrl+Shift+I", IDM_VIEW_HILITECURRENTLINE
         POPUP "Mar&k Occurrences"
@@ -390,7 +390,7 @@ BEGIN
         MENUITEM "Save Settings &Now\tF7",      IDM_VIEW_SAVESETTINGSNOW
         MENUITEM "&Open Settings File\tCtrl+F7", CMD_OPENINIFILE
     END
-    POPUP "&?"
+    POPUP "&Help"
     BEGIN
         MENUITEM "&Online Documentation\tF1",   IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
@@ -479,9 +479,8 @@ BEGIN
     "G",            IDM_VIEW_SHOWINDENTGUIDES, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "G",            IDM_VIEW_TRANSPARENT,   VIRTKEY, ALT, NOINVERT
     "H",            IDM_EDIT_REPLACE,       VIRTKEY, CONTROL, NOINVERT
-    "H",            IDM_FILE_RECENT,        VIRTKEY, ALT, NOINVERT
+    "H",            IDM_FILE_RECENT,        VIRTKEY, CONTROL, ALT, NOINVERT
     "H",            IDM_VIEW_AUTOCLOSETAGS, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "H",            IDM_VIEW_HYPERLINKHOTSPOTS, VIRTKEY, CONTROL, ALT, NOINVERT
     "I",            IDM_EDIT_SPLITLINES,    VIRTKEY, CONTROL, NOINVERT
     "I",            IDM_FILE_OPENFAV,       VIRTKEY, ALT, NOINVERT
     "I",            IDM_EDIT_TITLECASE,     VIRTKEY, CONTROL, ALT, NOINVERT
@@ -534,6 +533,7 @@ BEGIN
     "W",            IDM_VIEW_WORDWRAP,      VIRTKEY, CONTROL, NOINVERT
     "W",            IDM_EDIT_TRIMLINES,     VIRTKEY, ALT, NOINVERT
     "W",            IDM_EDIT_COLUMNWRAP,    VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "W",            IDM_VIEW_HYPERLINKHOTSPOTS, VIRTKEY, CONTROL, ALT, NOINVERT
     "X",            IDM_EDIT_CUT,           VIRTKEY, CONTROL, NOINVERT
     "X",            IDM_EDIT_INSERT_TAG,    VIRTKEY, ALT, NOINVERT
     "X",            IDM_EDIT_CHAR2HEX,      VIRTKEY, CONTROL, ALT, NOINVERT

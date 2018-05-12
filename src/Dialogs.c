@@ -2631,7 +2631,6 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 {
   WINDOWPLACEMENT wndpl;
   wndpl.length = sizeof(WINDOWPLACEMENT);
-
   GetWindowPlacement(hwnd, &wndpl);
 
   WININFO wi;
@@ -2639,7 +2638,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   wi.y = wndpl.rcNormalPosition.top;
   wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
   wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-  wi.max = (IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
+  wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
 
   if (hMonitorInfo)
   {
