@@ -89,7 +89,7 @@ CHECK_ABOUT_BOX:
 WinActivate, ahk_pid %v_Notepad3_PID%
 
 ; This will select File->Open in Notepad:
-WinMenuSelectItem, ahk_pid %v_Notepad3_PID%, , ?, About...
+WinMenuSelectItem, ahk_pid %v_Notepad3_PID%, , Help, About...
 
 WinWait, About %v_NP3Name%, , 1
 v_ErrLevel = %ErrorLevel%
