@@ -133,10 +133,6 @@ Source: {#bindir}\Release_x86_v141\minipath.exe;   DestDir: {app};              
 Source: minipath.ini;                              DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
 Source: {#bindir}\Release_x64_v141\np3encrypt.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v141\np3encrypt.exe; DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: Update\wyUpdate\64\wyUpdate.exe; DestDir: {app};                                       Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: Update\wyUpdate\86\wyUpdate.exe; DestDir: {app};                                       Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: Update\wyUpdate\64\client.wyc; DestDir: {app};                                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: Update\wyUpdate\86\client.wyc; DestDir: {app};                                         Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 
 [Dirs]
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
