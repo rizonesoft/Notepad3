@@ -45,12 +45,12 @@
 #include "version.h"
 #include "helpers.h"
 #include "encoding.h"
+#include "SciCall.h"
 
 #include "dialogs.h"
 
 
 extern HWND  g_hwndMain;
-extern HWND  g_hwndEdit;
 extern HINSTANCE g_hInstance;
 extern WCHAR g_wchWorkingDirectory[];
 extern WCHAR g_wchCurFile[];
@@ -451,10 +451,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
       LOGFONT lf;
       GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-      POINT res = GetSystemDpi();
+      POINT dpi = GetSystemDpi();
       lf.lfWeight = FW_BOLD;
-      lf.lfWidth = (8 * res.x) / 96L;
-      lf.lfHeight = (22 * res.y) / 96L;
+      lf.lfWidth  = MulDiv(8,  dpi.x, USER_DEFAULT_SCREEN_DPI);
+      lf.lfHeight = MulDiv(22, dpi.y, USER_DEFAULT_SCREEN_DPI);
       // lf.lfQuality = ANTIALIASED_QUALITY;
       hFontTitle = CreateFontIndirect(&lf);
 
@@ -2639,6 +2639,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
   wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
   wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
+  wi.zoom = SciCall_GetZoom();
 
   if (hMonitorInfo)
   {

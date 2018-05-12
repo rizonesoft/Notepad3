@@ -5576,9 +5576,11 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Size values are relative to BaseFontSize/CurrentFontSize
+  POINT dpi = GetSystemDpi();
   float  fBaseFontSize = _GetCurrentFontSize();
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
     fBaseFontSize = (float)max(0.0, fBaseFontSize);
+    fBaseFontSize = (float)MulDiv((int)fBaseFontSize, (dpi.x + dpi.y)/2, USER_DEFAULT_SCREEN_DPI);
     //SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (int)fBaseFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
     if (iStyle == STYLE_DEFAULT) {

@@ -253,10 +253,10 @@ const int FontQuality[4] = {
   , SC_EFF_QUALITY_LCD_OPTIMIZED
 };
 
-static  WININFO g_WinInfo = { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0 };
+static  WININFO g_WinInfo = INIT_WININFO;
 static  int     g_WinCurrentWidth = 0;
 
-bool    bStickyWinPos;
+bool    g_bStickyWinPos;
 
 bool    bIsAppThemed;
 int     cyReBar;
@@ -853,6 +853,7 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
   {
     g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
     g_WinInfo.max = 0;
+    g_WinInfo.zoom = 0;
   }
   else if (g_flagDefaultPos >= 4) 
   {
@@ -883,6 +884,8 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
       g_WinInfo.y += (g_flagDefaultPos & 32) ? 4 : 8;
       g_WinInfo.cy -= (g_flagDefaultPos & (16 | 32)) ? 12 : 16;
       g_WinInfo.max = 1;
+      g_WinInfo.zoom = 0;
+
     }
   }
   else if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
@@ -960,15 +963,18 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
                hInstance,
                NULL);
 
-  if (g_WinInfo.max)
+  if (g_WinInfo.max) {
     nCmdShow = SW_SHOWMAXIMIZED;
-
+  }
   if ((bAlwaysOnTop || g_flagAlwaysOnTop == 2) && g_flagAlwaysOnTop != 1) {
     SetWindowPos(g_hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
-  if (bTransparentMode)
-    SetWindowTransparentMode(g_hwndMain,true);
-
+  if (bTransparentMode) {
+    SetWindowTransparentMode(g_hwndMain, true);
+  }
+  if (g_WinInfo.zoom) {
+    SciCall_SetZoom(g_WinInfo.zoom);
+  }
   // Current file information -- moved in front of ShowWindow()
   FileLoad(true,true,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
 
@@ -2698,8 +2704,8 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
   i = IniGetInt(L"Settings2",L"SingleFileInstance",0);
   CheckCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
-  bStickyWinPos = IniGetInt(L"Settings2",L"StickyWindowPosition",0);
-  CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,bStickyWinPos);
+  g_bStickyWinPos = IniGetBool(L"Settings2",L"StickyWindowPosition",false);
+  CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,g_bStickyWinPos);
   CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((bAlwaysOnTop || g_flagAlwaysOnTop == 2) && g_flagAlwaysOnTop != 1));
   CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,bMinimizeToTray);
   CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentMode && bTransparentModeAvailable);
@@ -4605,17 +4611,17 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_ZOOMIN:
-      SendMessage(g_hwndEdit,SCI_ZOOMIN,0,0);
+      SciCall_ZoomIn();
       UpdateLineNumberWidth();
       break;
 
     case IDM_VIEW_ZOOMOUT:
-      SendMessage(g_hwndEdit,SCI_ZOOMOUT,0,0);
+      SciCall_ZoomOut();
       UpdateLineNumberWidth();
       break;
 
     case IDM_VIEW_RESETZOOM:
-      SendMessage(g_hwndEdit,SCI_SETZOOM,0,0);
+      SciCall_SetZoom(0);
       UpdateLineNumberWidth();
       break;
 
@@ -4694,10 +4700,10 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_STICKYWINPOS:
-      bStickyWinPos = IniGetInt(L"Settings2",L"StickyWindowPosition",bStickyWinPos);
-      if (!bStickyWinPos) 
+      g_bStickyWinPos = IniGetBool(L"Settings2",L"StickyWindowPosition",g_bStickyWinPos);
+      if (!g_bStickyWinPos) 
       {
-        WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
+        WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
         int ResX = GetSystemMetrics(SM_CXSCREEN);
         int ResY = GetSystemMetrics(SM_CYSCREEN);
@@ -4707,8 +4713,9 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         StringCchPrintf(tchSizeX,COUNTOF(tchSizeX),L"%ix%i SizeX",ResX,ResY);
         StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
         StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
+        StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-        bStickyWinPos = 1;
+        g_bStickyWinPos = true;
         IniSetInt(L"Settings2",L"StickyWindowPosition",1);
 
         // GetWindowPlacement
@@ -4718,11 +4725,12 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         IniSetInt(L"Window",tchSizeX,wi.cx);
         IniSetInt(L"Window",tchSizeY,wi.cy);
         IniSetInt(L"Window",tchMaximized,wi.max);
+        IniSetInt(L"Window", tchZoom, wi.zoom);
 
         InfoBox(0,L"MsgStickyWinPos",IDS_STICKYWINPOS);
       }
       else {
-        bStickyWinPos = 0;
+        g_bStickyWinPos = false;
         IniSetInt(L"Settings2",L"StickyWindowPosition",0);
       }
       break;
@@ -6456,8 +6464,7 @@ void LoadSettings()
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
   // --------------------------------------------------------------------------
 
-  bStickyWinPos = IniSectionGetInt(pIniSection,L"StickyWindowPosition",0);
-  if (bStickyWinPos) bStickyWinPos = 1;
+  g_bStickyWinPos = IniSectionGetBool(pIniSection,L"StickyWindowPosition",false);
 
   IniSectionGetString(pIniSection,L"DefaultExtension",L"txt", g_tchDefaultExtension,COUNTOF(g_tchDefaultExtension));
   StrTrim(g_tchDefaultExtension,L" \t.\"");
@@ -6553,15 +6560,16 @@ void LoadSettings()
       iHighDpiToolBar = 0;
   }
 
-  if (!g_flagPosParam /*|| bStickyWinPos*/) { // ignore window position if /p was specified
+  if (!g_flagPosParam /*|| g_bStickyWinPos*/) { // ignore window position if /p was specified
 
-    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
+    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
     StringCchPrintf(tchPosX,COUNTOF(tchPosX),L"%ix%i PosX",ResX,ResY);
     StringCchPrintf(tchPosY,COUNTOF(tchPosY),L"%ix%i PosY",ResX,ResY);
     StringCchPrintf(tchSizeX,COUNTOF(tchSizeX),L"%ix%i SizeX",ResX,ResY);
     StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
     StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
+    StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
     g_WinInfo.x = IniSectionGetInt(pIniSection,tchPosX,INT_MAX - 1);
     g_WinInfo.y = IniSectionGetInt(pIniSection,tchPosY, INT_MAX - 1);
@@ -6569,7 +6577,8 @@ void LoadSettings()
     g_WinInfo.cy = IniSectionGetInt(pIniSection,tchSizeY, INT_MAX - 1);
     g_WinInfo.max = IniSectionGetInt(pIniSection,tchMaximized,0);
     if (g_WinInfo.max) g_WinInfo.max = 1;
-   
+    g_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, 0);
+
 
     if (((g_WinInfo.x  & ~CW_USEDEFAULT) == (INT_MAX - 1)) ||
         ((g_WinInfo.y  & ~CW_USEDEFAULT) == (INT_MAX - 1)) ||
@@ -6771,19 +6780,21 @@ void SaveSettings(bool bSaveSettingsNow) {
 
   if (!IniGetInt(L"Settings2",L"StickyWindowPosition",0)) {
 
-    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32];
+    WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
     StringCchPrintf(tchPosX,COUNTOF(tchPosX),L"%ix%i PosX",ResX,ResY);
     StringCchPrintf(tchPosY,COUNTOF(tchPosY),L"%ix%i PosY",ResX,ResY);
     StringCchPrintf(tchSizeX,COUNTOF(tchSizeX),L"%ix%i SizeX",ResX,ResY);
     StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
     StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
+    StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
 
     IniSetInt(L"Window",tchPosX,g_WinInfo.x);
     IniSetInt(L"Window",tchPosY,g_WinInfo.y);
     IniSetInt(L"Window",tchSizeX,g_WinInfo.cx);
     IniSetInt(L"Window",tchSizeY,g_WinInfo.cy);
     IniSetInt(L"Window",tchMaximized,g_WinInfo.max);
+    IniSetInt(L"Window",tchZoom, g_WinInfo.zoom);
   }
 
 
@@ -9447,6 +9458,7 @@ void SnapToDefaultPos(HWND hwnd)
     //OffsetRect(&wndpl.rcNormalPosition,mi.rcMonitor.left - mi.rcWork.left,mi.rcMonitor.top - mi.rcWork.top);
   }
   SetWindowPlacement(hwnd,&wndpl);
+  SciCall_SetZoom(g_WinInfo.zoom);
 }
 
 
