@@ -778,6 +778,7 @@ typedef struct _resizedlg {
   int mmiPtMinY;
 } RESIZEDLG, *PRESIZEDLG;
 
+
 void ResizeDlg_Init(HWND hwnd,int cxFrame,int cyFrame,int nIdGrip)
 {
   RECT rc;

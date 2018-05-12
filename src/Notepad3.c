@@ -930,6 +930,7 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
       g_WinInfo.x = mi.rcWork.right - g_WinInfo.cx - 16;
     }
   }
+
   g_WinCurrentWidth = g_WinInfo.cx;
 }
 
@@ -962,9 +963,9 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (g_WinInfo.max)
     nCmdShow = SW_SHOWMAXIMIZED;
 
-  if ((bAlwaysOnTop || g_flagAlwaysOnTop == 2) && g_flagAlwaysOnTop != 1)
-    SetWindowPos(g_hwndMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
-
+  if ((bAlwaysOnTop || g_flagAlwaysOnTop == 2) && g_flagAlwaysOnTop != 1) {
+    SetWindowPos(g_hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+  }
   if (bTransparentMode)
     SetWindowTransparentMode(g_hwndMain,true);
 
@@ -6562,17 +6563,18 @@ void LoadSettings()
     StringCchPrintf(tchSizeY,COUNTOF(tchSizeY),L"%ix%i SizeY",ResX,ResY);
     StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
 
-    g_WinInfo.x = IniSectionGetInt(pIniSection,tchPosX,CW_USEDEFAULT);
-    g_WinInfo.y = IniSectionGetInt(pIniSection,tchPosY,CW_USEDEFAULT);
-    g_WinInfo.cx = IniSectionGetInt(pIniSection,tchSizeX,CW_USEDEFAULT);
-    g_WinInfo.cy = IniSectionGetInt(pIniSection,tchSizeY,CW_USEDEFAULT);
+    g_WinInfo.x = IniSectionGetInt(pIniSection,tchPosX,INT_MAX - 1);
+    g_WinInfo.y = IniSectionGetInt(pIniSection,tchPosY, INT_MAX - 1);
+    g_WinInfo.cx = IniSectionGetInt(pIniSection,tchSizeX, INT_MAX - 1);
+    g_WinInfo.cy = IniSectionGetInt(pIniSection,tchSizeY, INT_MAX - 1);
     g_WinInfo.max = IniSectionGetInt(pIniSection,tchMaximized,0);
     if (g_WinInfo.max) g_WinInfo.max = 1;
    
-    if (((g_WinInfo.x  & ~CW_USEDEFAULT) == 0) ||
-        ((g_WinInfo.y  & ~CW_USEDEFAULT) == 0) ||
-        ((g_WinInfo.cx & ~CW_USEDEFAULT) == 0) ||
-        ((g_WinInfo.cy & ~CW_USEDEFAULT) == 0)) {
+
+    if (((g_WinInfo.x  & ~CW_USEDEFAULT) == (INT_MAX - 1)) ||
+        ((g_WinInfo.y  & ~CW_USEDEFAULT) == (INT_MAX - 1)) ||
+        ((g_WinInfo.cx & ~CW_USEDEFAULT) == (INT_MAX - 1)) ||
+        ((g_WinInfo.cy & ~CW_USEDEFAULT) == (INT_MAX - 1))) {
       g_flagDefaultPos = 2;
     }
   }
