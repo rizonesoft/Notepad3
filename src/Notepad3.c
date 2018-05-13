@@ -35,6 +35,7 @@
 #include <string.h>
 //#include <pathcch.h>
 #include <time.h>
+#include <muiload.h>
 
 #include "scintilla.h"
 #include "scilexer.h"
@@ -129,6 +130,9 @@ bool          g_bSaveRecentFiles;
 bool          g_bPreserveCaretPos;
 bool          g_bSaveFindReplace;
 bool          g_bFindReplCopySelOrClip = true;
+
+WCHAR         g_tchUserDefinedLanguages[LARGE_BUFFER];
+HMODULE       g_hLngResContainer = NULL;
 
 WCHAR         g_tchFileDlgFilters[XXXL_BUFFER] = { L'\0' };
 
@@ -542,6 +546,7 @@ static int g_flagBufferFile         = 0;
 // decalarations 
 static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw);
 static void __fastcall _UpdateToolbarDelayed();
+static HMODULE __fastcall _LoadLanguageResources();
 
 //==============================================================================
 //
@@ -564,6 +569,47 @@ static void __fastcall _SetDocumentModified(bool bModified)
   }
 }
 
+//==============================================================================
+
+
+static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
+{
+  bool rtnVal = true;
+  
+  size_t strLen = (size_t)lstrlenW(pLngStr);
+
+  if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0))
+  {
+    WCHAR* lngMultiStrPtr = pLngMultiStr;
+    WCHAR* last = pLngStr + (pLngStr[0] == 0xFEFF ? 1 : 0); // if read from unicode (UTF-16 LE) file
+    while (last && rtnVal)
+    {
+      // make sure you validate the user input
+      WCHAR* next = StrNextTok(last, L",; :");
+      if (next) { *next = L'\0'; }
+      strLen = (size_t)StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
+      if ((strLen > 0) && IsValidLocaleName(last))
+      {
+        lngMultiStrPtr[0] = L'\0';
+        rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr)), last));
+        lngMultiStrPtr += strLen + 1;
+      }
+      last = (next ? next + 1 : next);
+    }
+    if (rtnVal && (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr))) // make sure there is a double null term for the multi-string
+    {
+      lngMultiStrPtr[0] = L'\0';
+    }
+    else // fail and guard anyone whom might use the multi-string
+    {
+      lngMultiStrPtr[0] = L'\0';
+      lngMultiStrPtr[1] = L'\0';
+    }
+  }
+  return rtnVal;
+}
+
+
 
 //=============================================================================
 //
@@ -573,6 +619,7 @@ static void __fastcall _SetDocumentModified(bool bModified)
 
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int nCmdShow)
 {
+  UNUSED(hPrevInst);
 
   MSG msg;
   HWND hwnd;
@@ -599,8 +646,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
-  // check if running at least on Windows XP
-  if (!IsXP()) {
+  // check if running at least on Windows 7
+  if (!IsWin7()) {
     LPVOID lpMsgBuf;
     FormatMessage(
         FORMAT_MESSAGE_ALLOCATE_BUFFER|
@@ -614,7 +661,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
         NULL);
     MessageBox(NULL,(LPCWSTR)lpMsgBuf,L"Notepad3",MB_OK|MB_ICONEXCLAMATION);
     LocalFree(lpMsgBuf);
-    return(0);
+    return 1; // exit
   }
 
   // Check if running with elevated privileges
@@ -629,6 +676,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   TestIniFile();
   CreateIniFile();
   LoadFlags();
+
+  // Load Settings
+  LoadSettings();
 
   // set AppUserModelID
   PrivateSetCurrentProcessExplicitAppUserModelID(g_wchAppUserModelID);
@@ -657,9 +707,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   if (ActivatePrevInst())
     return(0);
 
+  // MultiLingual
+  g_hLngResContainer = _LoadLanguageResources();
+
   // Init OLE and Common Controls
   OleInitialize(NULL);
-
   icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
   icex.dwICC  = ICC_WIN95_CLASSES|ICC_COOL_CLASSES|ICC_BAR_CLASSES|ICC_USEREX_CLASSES;
   InitCommonControlsEx(&icex);
@@ -673,9 +725,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   //hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
 
   Scintilla_RegisterClasses(hInstance);
-
-  // Load Settings
-  LoadSettings();
 
   if (!InitApplication(hInstance))
     return false;
@@ -737,12 +786,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   Scintilla_ReleaseResources();
   UnregisterClass(wchWndClass,hInstance);
 
-  if (hModUxTheme)
-    FreeLibrary(hModUxTheme);
+  if (hModUxTheme) { FreeLibrary(hModUxTheme); }
 
   OleUninitialize();
 
-  UNUSED(hPrevInst);
+  FreeMUILibrary(g_hLngResContainer);
 
   return(int)(msg.wParam);
 }
@@ -773,6 +821,107 @@ bool InitApplication(HINSTANCE hInstance)
 
 }
 
+
+//=============================================================================
+//
+//  _LoadLanguageResources
+//
+//
+
+static HMODULE __fastcall _LoadLanguageResources()
+{
+  HMODULE hLangResourceContainer = NULL;
+  
+  WCHAR tchUserLangMultiStrg[LARGE_BUFFER];
+
+  if (!_LngStrToMultiLngStr(g_tchUserDefinedLanguages, tchUserLangMultiStrg, LARGE_BUFFER))
+  {
+    LPVOID lpMsgBuf;
+    FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER |
+      FORMAT_MESSAGE_FROM_SYSTEM |
+      FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      ERROR_MUI_INVALID_LOCALE_NAME,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      (LPWSTR)&lpMsgBuf,
+      0,
+      NULL);
+    MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
+    LocalFree(lpMsgBuf);
+    return NULL; // exit
+  }
+
+
+  // set the appropriate fallback list
+  DWORD langCount = 0;
+  // using SetProcessPreferredUILanguages is recomended for new applications (esp. multi-threaded applications)
+  if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
+  {
+    LPVOID lpMsgBuf;
+    FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER |
+      FORMAT_MESSAGE_FROM_SYSTEM |
+      FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      ERROR_MUI_INTLSETTINGS_INVALID_LOCALE_NAME,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      (LPWSTR)&lpMsgBuf,
+      0,
+      NULL);
+    MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
+    LocalFree(lpMsgBuf);
+    return NULL; // exit
+  }
+
+  // NOTES:
+  // an application developer that makes the assumption the fallback list provided by the
+  // system / OS is entirely sufficient may or may not be making a good assumption based  mostly on:
+  // A. your choice of languages installed with your application
+  // B. the languages on the OS at application install time
+  // C. the OS users propensity to install/uninstall language packs
+  // D. the OS users propensity to change laguage settings
+
+  // obtains access to the proper resource container 
+  // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
+
+  hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, GetUserDefaultUILanguage());
+  //hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, 0x0407);
+
+  if (!hLangResourceContainer)
+  {
+    LPVOID lpMsgBuf;
+    FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER |
+      FORMAT_MESSAGE_FROM_SYSTEM |
+      FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      ERROR_MUI_FILE_NOT_LOADED,
+      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+      (LPWSTR)&lpMsgBuf,
+      0,
+      NULL);
+    MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
+    LocalFree(lpMsgBuf);
+    return NULL; // exit
+  }
+
+  //// 3. Application parses the resource container to find the appropriate item
+  //WCHAR szUntitled[SMALL_BUFFER];
+  //if (LoadStringW(hLangResourceContainer, IDS_MUI_UNTITLED, szUntitled, SMALL_BUFFER) == 0)
+  //{
+  //  MsgBox(MBWARN, IDS_PRINT_EMPTY);
+  //  FreeMUILibrary(hLangResourceContainer);
+  //  return NULL; // exit
+  //}
+
+  //// 4. Application presents the discovered resource to the user via UI
+  //WCHAR displayBuffer[LARGE_BUFFER];
+  //StringCchPrintfW(displayBuffer, LARGE_BUFFER, L"%s MUI", szUntitled);
+  //MessageBoxW(NULL, displayBuffer, L"HelloMUI", MB_OK | MB_ICONINFORMATION);
+
+  return hLangResourceContainer;
+}
 
 
 //=============================================================================
@@ -1187,7 +1336,8 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
       pszTitle = shfi.szDisplayName;
     }
     else {
-      GetString(IDS_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
+      //GetString(IDS_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
+      GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
       pszTitle = tchUntitled;
     }
 
@@ -2964,7 +3114,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           pszTitle = shfi.szDisplayName;
         }
         else {
-          GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
+          //GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
+          GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszTitle = tchUntitled;
         }
 
@@ -3870,7 +4021,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             pszInsert = g_wchCurFile;
         }
         else {
-          GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
+          //GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
+          GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
         }
 
@@ -5339,7 +5491,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)))
           pszCopy = g_wchCurFile;
         else {
-          GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
+          //GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
+          GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszCopy = tchUntitled;
         }
         SetClipboardTextW(hwnd, pszCopy);
@@ -6464,6 +6617,9 @@ void LoadSettings()
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
   // --------------------------------------------------------------------------
 
+  IniSectionGetString(pIniSection, L"UserDefinedLanguages", L"de-DE", // L"fr-FR es-ES de-DE en-US", 
+    g_tchUserDefinedLanguages, COUNTOF(g_tchUserDefinedLanguages));
+    
   g_bStickyWinPos = IniSectionGetBool(pIniSection,L"StickyWindowPosition",false);
 
   IniSectionGetString(pIniSection,L"DefaultExtension",L"txt", g_tchDefaultExtension,COUNTOF(g_tchDefaultExtension));
@@ -6472,8 +6628,7 @@ void LoadSettings()
   IniSectionGetString(pIniSection,L"DefaultDirectory",L"", g_tchDefaultDir,COUNTOF(g_tchDefaultDir));
 
   ZeroMemory(g_tchFileDlgFilters,sizeof(WCHAR)*COUNTOF(g_tchFileDlgFilters));
-  IniSectionGetString(pIniSection,L"FileDlgFilters",L"",
-    g_tchFileDlgFilters,COUNTOF(g_tchFileDlgFilters)-2);
+  IniSectionGetString(pIniSection,L"FileDlgFilters",L"", g_tchFileDlgFilters,COUNTOF(g_tchFileDlgFilters)-2);
 
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
@@ -7555,9 +7710,14 @@ void UpdateToolbar()
 
 static void __fastcall _UpdateToolbarDelayed()
 {
-  SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_UNTITLED, g_wchCurFile,
+  //SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_UNTITLED, g_wchCurFile,
+  //               iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
+  //               IDS_READONLY, g_bFileReadOnly, szTitleExcerpt);
+
+  SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_MUI_UNTITLED, g_wchCurFile,
                  iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
                  IDS_READONLY, g_bFileReadOnly, szTitleExcerpt);
+
 
   if (!bShowToolbar) { return; }
 
@@ -8769,11 +8929,13 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
   {
     // File or "Untitled" ...
     WCHAR tch[MAX_PATH] = { L'\0' };
-    if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)))
-      StringCchCopy(tch,COUNTOF(tch),g_wchCurFile);
-    else
-      GetString(IDS_UNTITLED,tch,COUNTOF(tch));
-
+    if (StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile))) {
+      StringCchCopy(tch, COUNTOF(tch), g_wchCurFile);
+    }
+    else {
+      //GetString(IDS_UNTITLED, tch, COUNTOF(tch));
+      GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
+    }
     switch (MsgBox(MBYESNOCANCEL,IDS_ASK_SAVE,tch)) {
       case IDCANCEL:
         return false;
@@ -9522,9 +9684,10 @@ void SetNotifyIconTitle(HWND hwnd)
       &shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
     PathCompactPathEx(tchTitle,shfi.szDisplayName,COUNTOF(tchTitle)-4,0);
   }
-  else
-    GetString(IDS_UNTITLED,tchTitle,COUNTOF(tchTitle)-4);
-
+  else {
+    //GetString(IDS_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
+    GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
+  }
   if (IsDocumentModified || Encoding_HasChanged(CPI_GET))
     StringCchCopy(nid.szTip,COUNTOF(nid.szTip),L"* ");
   else

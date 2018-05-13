@@ -41,6 +41,7 @@
 //=============================================================================
 
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
 
 //=============================================================================
 //
@@ -71,6 +72,42 @@ WCHAR* _StrCutIW(WCHAR* s,const WCHAR* pattern)
     }
   } while (p);
   return s;
+}
+
+//=============================================================================
+
+
+//=============================================================================
+//
+//  Find next token in string
+//
+
+CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
+{
+  CHAR* n = NULL;
+  const CHAR* t = tokens;
+  while (t && *t) {
+    CHAR* const f = StrChrA(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
+}
+
+WCHAR* _StrNextTokW(WCHAR* strg, const WCHAR* tokens)
+{
+  WCHAR* n = NULL;
+  const WCHAR* t = tokens;
+  while (t && *t) {
+    WCHAR* const f = StrChrW(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
 }
 
 
@@ -532,9 +569,14 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
   if (bFreezeAppTitle)
     return false;
 
+  //if (!GetString(uIDAppName,szAppName,COUNTOF(szAppName)) ||
+  //    !GetString(uIDUntitled,szUntitled,COUNTOF(szUntitled)))
+  //  return false;
+
   if (!GetString(uIDAppName,szAppName,COUNTOF(szAppName)) ||
-      !GetString(uIDUntitled,szUntitled,COUNTOF(szUntitled)))
+      !GetLngString(uIDUntitled,szUntitled,COUNTOF(szUntitled)))
     return false;
+
 
   if (bIsElevated) {
     FormatString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_APPTITLE_ELEVATED,szAppName);

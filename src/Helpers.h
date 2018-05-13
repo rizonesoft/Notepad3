@@ -187,6 +187,7 @@ bool IsCmdEnabled(HWND, UINT);
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
+#define GetLngString(id,pb,cb) LoadString((g_hLngResContainer ? g_hLngResContainer : g_hInstance),(id),(pb),(cb))
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 
@@ -308,7 +309,7 @@ bool GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
 
-//==== strCut methods ===================
+//==== StrCut methods ===================
 
 CHAR*  _StrCutIA(CHAR*,const CHAR*);
 WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
@@ -317,6 +318,17 @@ WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
 #else
 #define StrCutI _StrCutIA
 #endif
+
+
+//==== StrNextTok methods ===================
+CHAR*  _StrNextTokA(CHAR*, const CHAR*);
+WCHAR* _StrNextTokW(WCHAR*, const WCHAR*);
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrNextTok _StrNextTokW
+#else
+#define StrNextTok _StrNextTokA
+#endif
+
 
 //==== StrSafe lstrlen() =======================================================
 __forceinline DocPos StringCchLenA(LPCSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, m, &len)) ? len : m)); }
