@@ -582,8 +582,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 {
   UNUSED(hPrevInst);
 
-  MSG msg;
-  HWND hwnd;
   HACCEL hAccMain;
   HACCEL hAccFindReplace;
   HACCEL hAccCoustomizeSchemes;
@@ -638,16 +636,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   CreateIniFile();
   LoadFlags();
 
-  // Load Settings
-  LoadSettings();
-
   // set AppUserModelID
   PrivateSetCurrentProcessExplicitAppUserModelID(g_wchAppUserModelID);
 
   // Command Line Help Dialog
   if (g_flagDisplayHelp) {
     DisplayCmdLineHelp(NULL);
-    return(0);
+    return 0;
   }
 
   // Adapt window class name
@@ -658,15 +653,18 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   // Relaunch with elevated privileges
   if (RelaunchElevated(NULL))
-    return(0);
+    return 0;
 
   // Try to run multiple instances
   if (RelaunchMultiInst())
-    return(0);
+    return 0;
 
   // Try to activate another window
   if (ActivatePrevInst())
-    return(0);
+    return 0;
+
+  // Load Settings
+  LoadSettings();
 
   // MultiLingual
   g_hLngResContainer = _LoadLanguageResources();
@@ -679,20 +677,17 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
 
-  if (!IsWin8()) {
-    hModUxTheme = LoadLibrary(L"uxtheme.dll");
-  }
+  if (!IsWin8()) { hModUxTheme = LoadLibrary(L"uxtheme.dll"); }
+
   hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use "RichEdit20W" for control in .rc
   //hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
 
-  Scintilla_RegisterClasses(hInstance);
+  Scintilla_RegisterClasses(g_hInstance);
 
-  if (!InitApplication(hInstance))
-    return false;
+  if (!InitApplication(g_hInstance)) { return 1; }
   
-  hwnd = InitInstance(hInstance, lpCmdLine, nCmdShow);
-  if (!hwnd)
-    return false;
+  HWND hwnd = InitInstance(g_hInstance, lpCmdLine, nCmdShow);
+  if (!hwnd) { return 1; }
   
   // init DragnDrop handler
   DragAndDropInit(NULL);
@@ -713,6 +708,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
  
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
+  MSG msg;
   while (GetMessage(&msg,NULL,0,0))
   {
     if (IsWindow(g_hwndDlgFindReplace) && ((msg.hwnd == g_hwndDlgFindReplace) || IsChild(g_hwndDlgFindReplace, msg.hwnd))) 
@@ -745,15 +741,15 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // Save Settings is done elsewhere
 
   Scintilla_ReleaseResources();
-  UnregisterClass(wchWndClass,hInstance);
+  UnregisterClass(wchWndClass, g_hInstance);
 
   if (hModUxTheme) { FreeLibrary(hModUxTheme); }
 
   OleUninitialize();
 
-  FreeMUILibrary(g_hLngResContainer);
+  if (g_hLngResContainer != g_hInstance) { FreeMUILibrary(g_hLngResContainer); }
 
-  return(int)(msg.wParam);
+  return (int)(msg.wParam);
 }
 
 
@@ -883,8 +879,9 @@ static HMODULE __fastcall _LoadLanguageResources()
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
-  HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, GetUserDefaultUILanguage());
-  //hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, 0x0407);
+  LANGID const langID = GetUserDefaultUILanguage();
+  //hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, 0x0407);;
+  HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_ID, langID);
 
   if (!hLangResourceContainer)
   {

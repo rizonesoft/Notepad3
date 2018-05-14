@@ -110,6 +110,14 @@
     <ResourceCompile>
       <Culture>0x0407</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(TargetDir)..\de-DE"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\de-DE\np3lng.dll.mui"
+</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>MUI Split</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -127,6 +135,14 @@
     <ResourceCompile>
       <Culture>0x0407</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(TargetDir)..\de-DE"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\de-DE\np3lng.dll.mui"
+</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>MUI Split</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -148,6 +164,14 @@
     <ResourceCompile>
       <Culture>0x0407</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(TargetDir)..\de-DE"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\de-DE\np3lng.dll.mui"
+</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>MUI Split</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -169,6 +193,14 @@
     <ResourceCompile>
       <Culture>0x0407</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(TargetDir)..\de-DE"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\de-DE\np3lng.dll.mui"
+</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>MUI Split</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

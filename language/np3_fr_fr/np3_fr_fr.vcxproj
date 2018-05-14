@@ -108,8 +108,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <ResourceCompile>
-      <Culture>0x000c</Culture>
+      <Culture>0x040c</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(TargetDir)..\fr-FR"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\fr-FR\np3lng.dll.mui"
+</Command>
+      <Message>MUI Split</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -125,8 +131,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <ResourceCompile>
-      <Culture>0x000c</Culture>
+      <Culture>0x040c</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(TargetDir)..\fr-FR"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\fr-FR\np3lng.dll.mui"
+</Command>
+      <Message>MUI Split</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -146,8 +158,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <ResourceCompile>
-      <Culture>0x000c</Culture>
+      <Culture>0x040c</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(TargetDir)..\fr-FR"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\fr-FR\np3lng.dll.mui"
+</Command>
+      <Message>MUI Split</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -167,8 +185,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <ResourceCompile>
-      <Culture>0x000c</Culture>
+      <Culture>0x040c</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(TargetDir)..\fr-FR"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\fr-FR\np3lng.dll.mui"
+</Command>
+      <Message>MUI Split</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

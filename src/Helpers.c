@@ -573,10 +573,10 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
   //    !GetString(uIDUntitled,szUntitled,COUNTOF(szUntitled)))
   //  return false;
 
-  if (!GetString(uIDAppName,szAppName,COUNTOF(szAppName)) ||
-      !GetLngString(uIDUntitled,szUntitled,COUNTOF(szUntitled)))
+  if (!GetString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
+    !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
-
+  }
 
   if (bIsElevated) {
     FormatString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_APPTITLE_ELEVATED,szAppName);
