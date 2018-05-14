@@ -187,7 +187,7 @@ bool IsCmdEnabled(HWND, UINT);
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
-#define GetLngString(id,pb,cb) LoadString((g_hLngResContainer ? g_hLngResContainer : g_hInstance),(id),(pb),(cb))
+#define GetLngString(id,pb,cb) LoadString(g_hLngResContainer,(id),(pb),(cb))
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 

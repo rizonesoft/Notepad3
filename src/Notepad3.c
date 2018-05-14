@@ -572,45 +572,6 @@ static void __fastcall _SetDocumentModified(bool bModified)
 //==============================================================================
 
 
-static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
-{
-  bool rtnVal = true;
-  
-  size_t strLen = (size_t)lstrlenW(pLngStr);
-
-  if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0))
-  {
-    WCHAR* lngMultiStrPtr = pLngMultiStr;
-    WCHAR* last = pLngStr + (pLngStr[0] == 0xFEFF ? 1 : 0); // if read from unicode (UTF-16 LE) file
-    while (last && rtnVal)
-    {
-      // make sure you validate the user input
-      WCHAR* next = StrNextTok(last, L",; :");
-      if (next) { *next = L'\0'; }
-      strLen = (size_t)StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
-      if ((strLen > 0) && IsValidLocaleName(last))
-      {
-        lngMultiStrPtr[0] = L'\0';
-        rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr)), last));
-        lngMultiStrPtr += strLen + 1;
-      }
-      last = (next ? next + 1 : next);
-    }
-    if (rtnVal && (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr))) // make sure there is a double null term for the multi-string
-    {
-      lngMultiStrPtr[0] = L'\0';
-    }
-    else // fail and guard anyone whom might use the multi-string
-    {
-      lngMultiStrPtr[0] = L'\0';
-      lngMultiStrPtr[1] = L'\0';
-    }
-  }
-  return rtnVal;
-}
-
-
-
 //=============================================================================
 //
 //  WinMain()
@@ -824,14 +785,52 @@ bool InitApplication(HINSTANCE hInstance)
 
 //=============================================================================
 //
+//  _LngStrToMultiLngStr
+//
+//
+static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
+{
+  bool rtnVal = true;
+
+  size_t strLen = (size_t)lstrlenW(pLngStr);
+
+  if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
+    WCHAR* lngMultiStrPtr = pLngMultiStr;
+    WCHAR* last = pLngStr + (pLngStr[0] == 0xFEFF ? 1 : 0); // if read from unicode (UTF-16 LE) file
+    while (last && rtnVal) {
+      // make sure you validate the user input
+      WCHAR* next = StrNextTok(last, L",; :");
+      if (next) { *next = L'\0'; }
+      strLen = (size_t)StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
+      if ((strLen > 0) && IsValidLocaleName(last)) {
+        lngMultiStrPtr[0] = L'\0';
+        rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr)), last));
+        lngMultiStrPtr += strLen + 1;
+      }
+      last = (next ? next + 1 : next);
+    }
+    if (rtnVal && (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr))) // make sure there is a double null term for the multi-string
+    {
+      lngMultiStrPtr[0] = L'\0';
+    }
+    else // fail and guard anyone whom might use the multi-string
+    {
+      lngMultiStrPtr[0] = L'\0';
+      lngMultiStrPtr[1] = L'\0';
+    }
+  }
+  return rtnVal;
+}
+
+
+//=============================================================================
+//
 //  _LoadLanguageResources
 //
 //
-
 static HMODULE __fastcall _LoadLanguageResources()
 {
-  HMODULE hLangResourceContainer = NULL;
-  
+ 
   WCHAR tchUserLangMultiStrg[LARGE_BUFFER];
 
   if (!_LngStrToMultiLngStr(g_tchUserDefinedLanguages, tchUserLangMultiStrg, LARGE_BUFFER))
@@ -849,13 +848,12 @@ static HMODULE __fastcall _LoadLanguageResources()
       NULL);
     MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
     LocalFree(lpMsgBuf);
-    return NULL; // exit
+    return g_hInstance; // default lang
   }
-
 
   // set the appropriate fallback list
   DWORD langCount = 0;
-  // using SetProcessPreferredUILanguages is recomended for new applications (esp. multi-threaded applications)
+  // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
   if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
   {
     LPVOID lpMsgBuf;
@@ -871,7 +869,7 @@ static HMODULE __fastcall _LoadLanguageResources()
       NULL);
     MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
     LocalFree(lpMsgBuf);
-    return NULL; // exit
+    return g_hInstance; // default lang
   }
 
   // NOTES:
@@ -885,7 +883,7 @@ static HMODULE __fastcall _LoadLanguageResources()
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
-  hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, GetUserDefaultUILanguage());
+  HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, GetUserDefaultUILanguage());
   //hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, 0x0407);
 
   if (!hLangResourceContainer)
@@ -903,7 +901,7 @@ static HMODULE __fastcall _LoadLanguageResources()
       NULL);
     MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
     LocalFree(lpMsgBuf);
-    return NULL; // exit
+    return g_hInstance; // default lang
   }
 
   //// 3. Application parses the resource container to find the appropriate item
