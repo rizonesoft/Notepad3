@@ -8,6 +8,7 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #include <winresrc.h>
+
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
@@ -17,6 +18,7 @@
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -64,12 +66,13 @@ IDR_RIZBITMAP           BITMAP                  "..\\res\\rizonesoft.bmp"
 IDC_COPY                CURSOR                  "..\\res\\Copy.cur"
 
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
 //
 
-IDR_MAINWND MENU
+IDR_MUI_MAINMENU MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -402,7 +405,7 @@ BEGIN
     END
 END
 
-IDR_POPUPMENU MENU
+IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
@@ -1450,18 +1453,20 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// String Table
+// String Table  MUI
 //
 
 STRINGTABLE
 BEGIN
-    IDS_PASS_FAILURE        "The Passphrase is incorrect.\nRetry another Passphrase?"
+    IDS_MUI_UNTITLED        "Untitled"
 END
 
-STRINGTABLE
-BEGIN
-    IDS_NOPASS              "Decryption Cancelled!\nRead encrypted raw data?"
-END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
 
 STRINGTABLE
 BEGIN
@@ -1607,6 +1612,8 @@ BEGIN
     IDS_SAVEPOS             "&Save Position\tCtrl+S"
     IDS_RESETPOS            "&Reset Position\tCtrl+R"
     IDS_PREVIEW             "&Preview Settings\tCtrl+P"
+    IDS_PASS_FAILURE        "The Passphrase is incorrect.\nRetry another Passphrase?"
+    IDS_NOPASS              "Decryption Cancelled!\nRead encrypted raw data?"
 END
 
 STRINGTABLE
@@ -2007,13 +2014,6 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 
-/////////////////////////////////////////////////////////////////////////////
-// German (Switzerland) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
-LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
-#pragma code_page(1252)
-
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2036,9 +2036,6 @@ BEGIN
 END
 
 #endif    // APSTUDIO_INVOKED
-
-#endif    // German (Switzerland) resources
-/////////////////////////////////////////////////////////////////////////////
 
 
 

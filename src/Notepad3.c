@@ -362,6 +362,7 @@ bool      g_bFileReadOnly = false;
 // temporary line buffer for fast line ops 
 static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
 
+// declarations
 
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
@@ -376,7 +377,6 @@ static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
-// declarations
 
 //=============================================================================
 //
@@ -546,7 +546,8 @@ static int g_flagBufferFile         = 0;
 // decalarations 
 static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw);
 static void __fastcall _UpdateToolbarDelayed();
-static HMODULE __fastcall _LoadLanguageResources();
+static HMODULE __fastcall _LoadLanguageResources(LANGID const langID);
+static bool __fastcall _RegisterWndClass(HINSTANCE hInstance);
 
 //==============================================================================
 //
@@ -585,6 +586,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   HACCEL hAccMain;
   HACCEL hAccFindReplace;
   HACCEL hAccCoustomizeSchemes;
+  HMENU  hMainMenu;
+
   INITCOMMONCONTROLSEX icex;
   //HMODULE hSciLexer;
   WCHAR wchAppDir[2*MAX_PATH+4] = { L'\0' };
@@ -607,19 +610,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   // check if running at least on Windows 7
   if (!IsWin7()) {
-    LPVOID lpMsgBuf;
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER|
-        FORMAT_MESSAGE_FROM_SYSTEM|
-        FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
-        ERROR_OLD_WIN_VERSION,
-        MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT), // Default language
-        (LPWSTR)&lpMsgBuf,
-        0,
-        NULL);
-    MessageBox(NULL,(LPCWSTR)lpMsgBuf,L"Notepad3",MB_OK|MB_ICONEXCLAMATION);
-    LocalFree(lpMsgBuf);
+    GetLastErrorToMsgBox(L"WinMain", ERROR_OLD_WIN_VERSION);
     return 1; // exit
   }
 
@@ -666,8 +657,19 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // Load Settings
   LoadSettings();
 
+
+  // ----------------------------------------------------
+
   // MultiLingual
-  g_hLngResContainer = _LoadLanguageResources();
+  
+  //LANGID const langID = GetUserDefaultUILanguage();
+    LANGID const langID = 0x0407;
+  g_hLngResContainer = _LoadLanguageResources(langID);
+
+  //g_hLngResContainer = hInstance; //TODO: Test Only
+
+  // ----------------------------------------------------
+
 
   // Init OLE and Common Controls
   OleInitialize(NULL);
@@ -682,13 +684,23 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use "RichEdit20W" for control in .rc
   //hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
 
+
+  if (!_RegisterWndClass(g_hInstance)) { return 1; }
+
   Scintilla_RegisterClasses(g_hInstance);
 
-  if (!InitApplication(g_hInstance)) { return 1; }
-  
+  hMainMenu = LoadMenu(g_hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+  if (!hMainMenu) {
+    GetLastErrorToMsgBox(L"LoadMenu()", 0);
+  }
+
   HWND hwnd = InitInstance(g_hInstance, lpCmdLine, nCmdShow);
   if (!hwnd) { return 1; }
-  
+
+  if (hMainMenu) {
+    SetMenu(hwnd, hMainMenu);
+  }
+
   // init DragnDrop handler
   DragAndDropInit(NULL);
 
@@ -740,6 +752,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   // Save Settings is done elsewhere
 
+  DestroyMenu(hMainMenu);
   Scintilla_ReleaseResources();
   UnregisterClass(wchWndClass, g_hInstance);
 
@@ -755,13 +768,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
 //=============================================================================
 //
-//  InitApplication()
+//  _RegisterWndClass()
 //
 //
-bool InitApplication(HINSTANCE hInstance)
+static bool __fastcall _RegisterWndClass(HINSTANCE hInstance)
 {
-
-  WNDCLASS   wc;
+  WNDCLASS wc;
+  ZeroMemory(&wc, sizeof(WNDCLASS));
 
   wc.style         = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
   wc.lpfnWndProc   = (WNDPROC)MainWndProc;
@@ -771,11 +784,10 @@ bool InitApplication(HINSTANCE hInstance)
   wc.hIcon         = LoadIcon(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   wc.hCursor       = LoadCursor(NULL,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
-  wc.lpszMenuName  = MAKEINTRESOURCE(IDR_MAINWND);
+  wc.lpszMenuName  = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = wchWndClass;
 
   return RegisterClass(&wc);
-
 }
 
 
@@ -824,26 +836,14 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 //  _LoadLanguageResources
 //
 //
-static HMODULE __fastcall _LoadLanguageResources()
+static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
 {
  
   WCHAR tchUserLangMultiStrg[LARGE_BUFFER];
 
   if (!_LngStrToMultiLngStr(g_tchUserDefinedLanguages, tchUserLangMultiStrg, LARGE_BUFFER))
   {
-    LPVOID lpMsgBuf;
-    FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER |
-      FORMAT_MESSAGE_FROM_SYSTEM |
-      FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,
-      ERROR_MUI_INVALID_LOCALE_NAME,
-      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (LPWSTR)&lpMsgBuf,
-      0,
-      NULL);
-    MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
-    LocalFree(lpMsgBuf);
+    GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
     return g_hInstance; // default lang
   }
 
@@ -852,19 +852,7 @@ static HMODULE __fastcall _LoadLanguageResources()
   // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
   if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
   {
-    LPVOID lpMsgBuf;
-    FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER |
-      FORMAT_MESSAGE_FROM_SYSTEM |
-      FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,
-      ERROR_MUI_INTLSETTINGS_INVALID_LOCALE_NAME,
-      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (LPWSTR)&lpMsgBuf,
-      0,
-      NULL);
-    MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
-    LocalFree(lpMsgBuf);
+    GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
     return g_hInstance; // default lang
   }
 
@@ -879,25 +867,11 @@ static HMODULE __fastcall _LoadLanguageResources()
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
-  LANGID const langID = GetUserDefaultUILanguage();
-  //hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, 0x0407);;
-  HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_ID, langID);
+  HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_ID, langID); // en-US
 
   if (!hLangResourceContainer)
   {
-    LPVOID lpMsgBuf;
-    FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER |
-      FORMAT_MESSAGE_FROM_SYSTEM |
-      FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,
-      ERROR_MUI_FILE_NOT_LOADED,
-      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (LPWSTR)&lpMsgBuf,
-      0,
-      NULL);
-    MessageBox(NULL, (LPCWSTR)lpMsgBuf, L"Notepad3", MB_OK | MB_ICONEXCLAMATION);
-    LocalFree(lpMsgBuf);
+    GetLastErrorToMsgBox(L"LoadMUILibraryW()", 0);
     return g_hInstance; // default lang
   }
 
@@ -1116,6 +1090,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (bTransparentMode) {
     SetWindowTransparentMode(g_hwndMain, true);
   }
+  
   if (g_WinInfo.zoom) {
     SciCall_SetZoom(g_WinInfo.zoom);
   }
@@ -2444,7 +2419,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
     return DefWindowProc(hwnd, umsg, wParam, lParam);
 
-  hmenu = LoadMenu(g_hInstance, MAKEINTRESOURCE(IDR_POPUPMENU));
+  hmenu = LoadMenu(g_hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
   //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
 
   pt.x = (int)(short)LOWORD(lParam);
@@ -2542,7 +2517,7 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
   case WM_RBUTTONUP:
     {
 
-      HMENU hMenu = LoadMenu(g_hInstance, MAKEINTRESOURCE(IDR_POPUPMENU));
+      HMENU hMenu = LoadMenu(g_hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
       HMENU hMenuPopup = GetSubMenu(hMenu, 2);
 
       POINT pt;
@@ -6612,7 +6587,7 @@ void LoadSettings()
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
   // --------------------------------------------------------------------------
 
-  IniSectionGetString(pIniSection, L"UserDefinedLanguages", L"de-DE", // L"fr-FR es-ES de-DE en-US", 
+  IniSectionGetString(pIniSection, L"UserDefinedLanguages", L"af-AF fr-FR es-ES de-DE en-US", 
     g_tchUserDefinedLanguages, COUNTOF(g_tchUserDefinedLanguages));
     
   g_bStickyWinPos = IniSectionGetBool(pIniSection,L"StickyWindowPosition",false);
