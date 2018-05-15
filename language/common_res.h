@@ -1,3 +1,5 @@
+#ifndef _COMMON_RES_H_
+#define _COMMON_RES_H_
 //{{NO_DEPENDENCIES}}
 // common language (MUI) defines
 //
@@ -256,3 +258,5 @@
 #define IDM_HELP_ADMINEXE               40603
 #define IDM_HELP_UPDATEWEBSITE          40604
 #define IDM_EDIT_INSERT_GUID            40605
+
+#endif

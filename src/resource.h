@@ -178,7 +178,6 @@
 #define ___SCI_CMD__SCEN_CHANGE___      768
 
 
-
 #define IDS_READONLY                    10005
 #define IDS_STATUS_DOCLINE              10006
 #define IDS_STATUS_DOCCOLUMN            10007

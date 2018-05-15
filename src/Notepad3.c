@@ -132,6 +132,7 @@ bool          g_bSaveFindReplace;
 bool          g_bFindReplCopySelOrClip = true;
 
 WCHAR         g_tchPrefLngLocName[MINI_BUFFER];
+LANGID        g_iPrefLngLocID = 1033; // en-US
 HMODULE       g_hLngResContainer = NULL;
 static WCHAR* const   g_tchAvailableLanguages = L"af-AF fr-FR de-DE es-ES en-UK";
 static LANGID const  g_iAvailableLanguages[5] = { 1078, 1036, 1031, 3082, 2057 };
@@ -661,22 +662,22 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // ----------------------------------------------------
   // MultiLingual
   //
-  LANGID langID = GetUserDefaultUILanguage();
+  g_iPrefLngLocID = GetUserDefaultUILanguage();
   bool bPrefLngNotAvail = false;
 
   if (StringCchLenW(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName)) > 0)
   {
     DWORD dwLangID = 0;
     GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
-    langID = (LANGID)dwLangID;
+    g_iPrefLngLocID = (LANGID)dwLangID;
   }
 
-  g_hLngResContainer = _LoadLanguageResources(langID);
+  g_hLngResContainer = _LoadLanguageResources(g_iPrefLngLocID);
 
   if (!g_hLngResContainer) // fallback en-US (1033)
   {
     g_hLngResContainer = g_hInstance; 
-    if (langID != 1033) { bPrefLngNotAvail = true; }
+    if (g_iPrefLngLocID != 1033) { bPrefLngNotAvail = true; }
   }
   // ----------------------------------------------------
 
