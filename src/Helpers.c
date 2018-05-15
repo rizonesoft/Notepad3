@@ -609,17 +609,13 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
   if (bFreezeAppTitle)
     return false;
 
-  //if (!GetString(uIDAppName,szAppName,COUNTOF(szAppName)) ||
-  //    !GetString(uIDUntitled,szUntitled,COUNTOF(szUntitled)))
-  //  return false;
-
-  if (!GetString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
+  if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
     !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
   }
 
   if (bIsElevated) {
-    FormatString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_APPTITLE_ELEVATED,szAppName);
+    FormatLngString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_MUI_APPTITLE_ELEVATED,szAppName);
     StringCchCopyN(szAppName,COUNTOF(szAppName),szElevatedAppName,COUNTOF(szElevatedAppName));
   }
 
@@ -629,7 +625,7 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
     StringCchCopy(szTitle,COUNTOF(szTitle),L"");
 
   if (lstrlen(lpszExcerpt)) {
-    GetString(IDS_TITLEEXCERPT,szExcrptFmt,COUNTOF(szExcrptFmt));
+    GetLngString(IDS_MUI_TITLEEXCERPT,szExcrptFmt,COUNTOF(szExcrptFmt));
     StringCchPrintf(szExcrptQuot,COUNTOF(szExcrptQuot),szExcrptFmt,lpszExcerpt);
     StringCchCat(szTitle,COUNTOF(szTitle),szExcrptQuot);
   }
@@ -1215,6 +1211,23 @@ int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
   }
   return (int)StringCchLen(lpOutput, nOutput);
 }
+
+//=============================================================================
+//
+//  FormatLngString()
+//
+int FormatLngString(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  static WCHAR pBuffer[XHUGE_BUFFER];
+  pBuffer[0] = L'\0';
+
+  if (GetLngString(uIdFormat, pBuffer, nOutput)) 
+  {
+    StringCchVPrintf(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+  }
+  return (int)StringCchLen(lpOutput, nOutput);
+}
+
 
 
 //=============================================================================

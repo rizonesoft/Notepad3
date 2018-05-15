@@ -50,8 +50,10 @@
 #include "dialogs.h"
 
 
-extern HWND  g_hwndMain;
+extern HWND      g_hwndMain;
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
+
 extern WCHAR g_wchWorkingDirectory[];
 extern WCHAR g_wchCurFile[];
 extern WCHAR g_wchAppUserModelID[];
@@ -142,7 +144,7 @@ int MsgBox(int iType,UINT uIdMsg,...)
       StringCchCat(szText,COUNTOF(szText),L".");
   }
 
-  GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));
+  GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
 
   int iIcon = MB_ICONHAND;
   switch (iType) {
@@ -273,7 +275,7 @@ void DisplayCmdLineHelp(HWND hwnd)
   WCHAR szTitle[32] = { L'\0' };
   WCHAR szText[2048] = { L'\0' };
 
-  GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));
+  GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
   GetString(IDS_CMDLINEHELP,szText,COUNTOF(szText));
 
   mbp.cbSize = sizeof(MSGBOXPARAMS);

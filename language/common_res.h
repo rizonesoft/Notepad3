@@ -1,8 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Von Microsoft Visual C++ generierte Includedatei.
-// Verwendet durch np3_en_us.rc
+// common language (MUI) defines
 //
-
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
 #define CMD_SHIFTCTRLENTER              20002
@@ -52,6 +50,20 @@
 #define CMD_TAB                         20046
 #define CMD_BACKTAB                     20047
 #define CMD_VK_INSERT                   20048
+
+
+#define IDR_MUI_MAINMENU                30001
+#define IDR_MUI_POPUPMENU               30002
+
+
+#define IDS_MUI_APPTITLE                30011
+#define IDS_MUI_APPTITLE_ELEVATED       30012
+#define IDS_MUI_APPTITLE_PASTEBOARD     30013
+#define IDS_MUI_UNTITLED                30014
+#define IDS_MUI_TITLEEXCERPT            30015
+
+
+
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
@@ -244,10 +256,3 @@
 #define IDM_HELP_ADMINEXE               40603
 #define IDM_HELP_UPDATEWEBSITE          40604
 #define IDM_EDIT_INSERT_GUID            40605
-
-
-#define IDR_MUI_MAINMENU                30001
-#define IDR_MUI_POPUPMENU               30002
-
-#define IDS_MUI_UNTITLED                30011
-

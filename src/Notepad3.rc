@@ -12,6 +12,33 @@
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+"resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+"#include <winresrc.h>\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+"#include ""Notepad3.ver""\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////
 // English (United States) resources
 
@@ -434,18 +461,6 @@ BEGIN
         MENUITEM "Exit Notepad3",               IDM_TRAY_EXIT
     END
 END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table  MUI
-//
-
-STRINGTABLE
-BEGIN
-    IDS_MUI_UNTITLED        "Untitled"
-END
-
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1464,6 +1479,25 @@ END
 
 
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table  MUI
+//
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_APPTITLE             "Notepad3(US)"
+    IDS_MUI_APPTITLE_ELEVATED    "%s (Administrator)"
+    IDS_MUI_APPTITLE_PASTEBOARD  "Notepad3(US) : Paste Board"
+    IDS_MUI_UNTITLED             "Untitled"
+    IDS_MUI_TITLEEXCERPT         """%s"""
+END
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
@@ -1476,11 +1510,6 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_APPTITLE            "Notepad3"
-    IDS_APPTITLE_ELEVATED   "%s (Administrator)"
-    IDS_APPTITLE_PASTEBOARD "Notepad3 : Paste Board"
-    IDS_UNTITLED            "Untitled"
-    IDS_TITLEEXCERPT        """%s"""
     IDS_READONLY            "(Read Only)"
     IDS_STATUS_DOCLINE      "%s%s / %s"
     IDS_STATUS_DOCCOLUMN    "%s%s"
@@ -2018,30 +2047,6 @@ END
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
-
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE 
-BEGIN
-    "#include <winresrc.h>\0"
-END
-
-3 TEXTINCLUDE 
-BEGIN
-    "#include ""Notepad3.ver""\0"
-END
-
-#endif    // APSTUDIO_INVOKED
 
 
 

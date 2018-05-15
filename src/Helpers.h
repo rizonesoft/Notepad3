@@ -188,12 +188,15 @@ bool IsCmdEnabled(HWND, UINT);
 #define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
+#define StrEnd(pStart) (pStart + lstrlen(pStart))
+
+
 #define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 #define GetLngString(id,pb,cb) LoadString(g_hLngResContainer,(id),(pb),(cb))
 
-#define StrEnd(pStart) (pStart + lstrlen(pStart))
-
 int FormatString(LPWSTR,int,UINT,...);
+int FormatLngString(LPWSTR, int, UINT, ...);
+
 
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
 void PathRelativeToApp(LPWSTR,LPWSTR,int,bool,bool,bool);

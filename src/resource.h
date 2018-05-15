@@ -176,11 +176,9 @@
 #define IDR_RIZBITMAP                   554
 #define IDC_RIZONEBMP                   555
 #define ___SCI_CMD__SCEN_CHANGE___      768
-#define IDS_APPTITLE                    10000
-#define IDS_APPTITLE_ELEVATED           10001
-#define IDS_APPTITLE_PASTEBOARD         10002
-#define IDS_UNTITLED                    10003
-#define IDS_TITLEEXCERPT                10004
+
+
+
 #define IDS_READONLY                    10005
 #define IDS_STATUS_DOCLINE              10006
 #define IDS_STATUS_DOCCOLUMN            10007

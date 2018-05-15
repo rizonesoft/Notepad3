@@ -404,6 +404,7 @@
     <ClInclude Include="..\crypto\rijndael-alg-fst.h" />
     <ClInclude Include="..\crypto\rijndael-api-fst.h" />
     <ClInclude Include="..\crypto\sha-256.h" />
+    <ClInclude Include="..\language\common_res.h" />
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />

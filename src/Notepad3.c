@@ -313,7 +313,7 @@ int       iInitialLexer;
 bool      bLastCopyFromMe = false;
 DWORD     dwLastCopyTime;
 
-UINT      uidsAppTitle = IDS_APPTITLE;
+UINT      uidsAppTitle = IDS_MUI_APPTITLE;
 WCHAR     szTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 int       fKeepTitleExcerpt = 0;
 
@@ -1286,7 +1286,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (g_flagPasteBoard) {
     bLastCopyFromMe = true;
     hwndNextCBChain = SetClipboardViewer(g_hwndMain);
-    uidsAppTitle = IDS_APPTITLE_PASTEBOARD;
+    uidsAppTitle = IDS_MUI_APPTITLE_PASTEBOARD;
     bLastCopyFromMe = false;
 
     dwLastCopyTime = 0;
@@ -1328,7 +1328,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
       pszTitle = shfi.szDisplayName;
     }
     else {
-      //GetString(IDS_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
       GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
       pszTitle = tchUntitled;
     }
@@ -3106,7 +3105,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
           pszTitle = shfi.szDisplayName;
         }
         else {
-          //GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszTitle = tchUntitled;
         }
@@ -4013,7 +4011,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
             pszInsert = g_wchCurFile;
         }
         else {
-          //GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
         }
@@ -5483,7 +5480,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)))
           pszCopy = g_wchCurFile;
         else {
-          //GetString(IDS_UNTITLED,tchUntitled,COUNTOF(tchUntitled));
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszCopy = tchUntitled;
         }
@@ -7702,14 +7698,9 @@ void UpdateToolbar()
 
 static void __fastcall _UpdateToolbarDelayed()
 {
-  //SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_UNTITLED, g_wchCurFile,
-  //               iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
-  //               IDS_READONLY, g_bFileReadOnly, szTitleExcerpt);
-
   SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_MUI_UNTITLED, g_wchCurFile,
                  iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
                  IDS_READONLY, g_bFileReadOnly, szTitleExcerpt);
-
 
   if (!bShowToolbar) { return; }
 
@@ -8925,7 +8916,6 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       StringCchCopy(tch, COUNTOF(tch), g_wchCurFile);
     }
     else {
-      //GetString(IDS_UNTITLED, tch, COUNTOF(tch));
       GetLngString(IDS_MUI_UNTITLED, tch, COUNTOF(tch));
     }
     switch (MsgBox(MBYESNOCANCEL,IDS_ASK_SAVE,tch)) {
@@ -9667,7 +9657,7 @@ void SetNotifyIconTitle(HWND hwnd)
   nid.uFlags = NIF_TIP;
 
   if (StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt))) {
-    GetString(IDS_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
+    GetLngString(IDS_MUI_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
     StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,szTitleExcerpt);
   }
 
@@ -9677,7 +9667,6 @@ void SetNotifyIconTitle(HWND hwnd)
     PathCompactPathEx(tchTitle,shfi.szDisplayName,COUNTOF(tchTitle)-4,0);
   }
   else {
-    //GetString(IDS_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
     GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
   }
   if (IsDocumentModified || Encoding_HasChanged(CPI_GET))
