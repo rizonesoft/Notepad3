@@ -282,8 +282,20 @@
 #define IDS_DROP_NO_FILE                50044
 #define IDS_APPLY_DEFAULT_FONT          50045
 #define IDS_ERR_ADMINEXE                50046
+#define IDS_WARN_PREF_LNG_NOT_AVAIL     50047
 #define IDS_CMDLINEHELP                 60000
 #define IDC_STATIC                      -1
 
 
-#include "../language/np3_en_us/resource.h"
+#include "../language/common_res.h"
+
+// Next default values for new objects
+// 
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NEXT_RESOURCE_VALUE        50047
+#define _APS_NEXT_COMMAND_VALUE         40606
+#define _APS_NEXT_CONTROL_VALUE         1001
+#define _APS_NEXT_SYMED_VALUE           101
+#endif
+#endif

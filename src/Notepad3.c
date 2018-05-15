@@ -131,8 +131,10 @@ bool          g_bPreserveCaretPos;
 bool          g_bSaveFindReplace;
 bool          g_bFindReplCopySelOrClip = true;
 
-WCHAR         g_tchUserDefinedLanguages[LARGE_BUFFER];
+WCHAR         g_tchPrefLngLocName[MINI_BUFFER];
 HMODULE       g_hLngResContainer = NULL;
+static WCHAR* const   g_tchAvailableLanguages = L"af-AF fr-FR de-DE es-ES en-UK";
+static LANGID const  g_iAvailableLanguages[5] = { 1078, 1036, 1031, 3082, 2057 };
 
 WCHAR         g_tchFileDlgFilters[XXXL_BUFFER] = { L'\0' };
 
@@ -586,7 +588,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   HACCEL hAccMain;
   HACCEL hAccFindReplace;
   HACCEL hAccCoustomizeSchemes;
-  HMENU  hMainMenu;
 
   INITCOMMONCONTROLSEX icex;
   //HMODULE hSciLexer;
@@ -657,19 +658,27 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // Load Settings
   LoadSettings();
 
-
   // ----------------------------------------------------
-
   // MultiLingual
-  
-  //LANGID const langID = GetUserDefaultUILanguage();
-    LANGID const langID = 0x0407;
+  //
+  LANGID langID = GetUserDefaultUILanguage();
+  bool bPrefLngNotAvail = false;
+
+  if (StringCchLenW(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName)) > 0)
+  {
+    DWORD dwLangID = 0;
+    GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
+    langID = (LANGID)dwLangID;
+  }
+
   g_hLngResContainer = _LoadLanguageResources(langID);
 
-  //g_hLngResContainer = hInstance; //TODO: Test Only
-
+  if (!g_hLngResContainer) // fallback en-US (1033)
+  {
+    g_hLngResContainer = g_hInstance; 
+    if (langID != 1033) { bPrefLngNotAvail = true; }
+  }
   // ----------------------------------------------------
-
 
   // Init OLE and Common Controls
   OleInitialize(NULL);
@@ -684,22 +693,22 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use "RichEdit20W" for control in .rc
   //hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
 
-
   if (!_RegisterWndClass(g_hInstance)) { return 1; }
 
   Scintilla_RegisterClasses(g_hInstance);
 
-  hMainMenu = LoadMenu(g_hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
-  if (!hMainMenu) {
-    GetLastErrorToMsgBox(L"LoadMenu()", 0);
+  HMENU  hMainMenu = NULL;
+  if (g_hLngResContainer != g_hInstance) {
+    hMainMenu = LoadMenu(g_hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+    if (!hMainMenu) {
+      GetLastErrorToMsgBox(L"LoadMenu()", 0);
+    }
   }
 
   HWND hwnd = InitInstance(g_hInstance, lpCmdLine, nCmdShow);
   if (!hwnd) { return 1; }
 
-  if (hMainMenu) {
-    SetMenu(hwnd, hMainMenu);
-  }
+  if (hMainMenu) { SetMenu(hwnd, hMainMenu); }
 
   // init DragnDrop handler
   DragAndDropInit(NULL);
@@ -708,7 +717,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     // Current platforms perform window buffering so it is almost always better for this option to be turned off.
     // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
     //~SciCall_SetBufferedDraw(true);  // default is true 
-
     if (iSciDirectWriteTech >= 0) {
       SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
     }
@@ -720,6 +728,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
  
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
+  if (bPrefLngNotAvail) {
+    InfoBox(MBWARN, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL);
+  }
+
   MSG msg;
   while (GetMessage(&msg,NULL,0,0))
   {
@@ -838,23 +850,33 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 //
 static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
 {
- 
-  WCHAR tchUserLangMultiStrg[LARGE_BUFFER];
+  bool bLngAvailable = false;
+  for (int i = 0; i < 5; ++i) {
+    if (g_iAvailableLanguages[i] == langID) {
+      bLngAvailable = true;
+      break;
+    }
+  }
+  if (!bLngAvailable) { return NULL; }
 
-  if (!_LngStrToMultiLngStr(g_tchUserDefinedLanguages, tchUserLangMultiStrg, LARGE_BUFFER))
+  WCHAR tchAvailLngs[SMALL_BUFFER] = { L'\0' };
+  StringCchCopyW(tchAvailLngs, SMALL_BUFFER, g_tchAvailableLanguages);
+  WCHAR tchUserLangMultiStrg[SMALL_BUFFER] = { L'\0' };
+  if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, LARGE_BUFFER))
   {
     GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
-    return g_hInstance; // default lang
+    return NULL;
   }
 
   // set the appropriate fallback list
   DWORD langCount = 0;
   // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
-  if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
+  if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
   {
     GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
-    return g_hInstance; // default lang
+    return NULL;
   }
+  SetThreadUILanguage(langID);
 
   // NOTES:
   // an application developer that makes the assumption the fallback list provided by the
@@ -862,17 +884,17 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
   // A. your choice of languages installed with your application
   // B. the languages on the OS at application install time
   // C. the OS users propensity to install/uninstall language packs
-  // D. the OS users propensity to change laguage settings
+  // D. the OS users propensity to change language settings
 
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
-
-  HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_ID, langID); // en-US
+ 
+  HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, langID);
 
   if (!hLangResourceContainer)
   {
     GetLastErrorToMsgBox(L"LoadMUILibraryW()", 0);
-    return g_hInstance; // default lang
+    return NULL;
   }
 
   //// 3. Application parses the resource container to find the appropriate item
@@ -6587,8 +6609,8 @@ void LoadSettings()
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
   // --------------------------------------------------------------------------
 
-  IniSectionGetString(pIniSection, L"UserDefinedLanguages", L"af-AF fr-FR es-ES de-DE en-US", 
-    g_tchUserDefinedLanguages, COUNTOF(g_tchUserDefinedLanguages));
+  IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
+                      g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
     
   g_bStickyWinPos = IniSectionGetBool(pIniSection,L"StickyWindowPosition",false);
 

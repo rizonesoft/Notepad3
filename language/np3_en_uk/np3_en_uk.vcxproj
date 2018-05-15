@@ -108,12 +108,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\en-US"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-US\np3lng.mui"</Command>
+      <Command>mkdir "$(TargetDir)..\en-UK"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-UK\np3lng.dll.mui"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
     </PostBuildEvent>
+    <ResourceCompile>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -129,12 +132,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\en-US"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-US\np3lng.mui"</Command>
+      <Command>mkdir "$(TargetDir)..\en-UK"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-UK\np3lng.dll.mui"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
     </PostBuildEvent>
+    <ResourceCompile>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -154,12 +160,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\en-US"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-US\np3lng.mui"</Command>
+      <Command>mkdir "$(TargetDir)..\en-UK"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-UK\np3lng.dll.mui"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
     </PostBuildEvent>
+    <ResourceCompile>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -179,12 +188,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(TargetDir)..\en-US"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x $(LangID) -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-US\np3lng.mui"</Command>
+      <Command>mkdir "$(TargetDir)..\en-UK"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-UK\np3lng.dll.mui"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
     </PostBuildEvent>
+    <ResourceCompile>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -193,7 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="np3_en_us.cpp" />
+    <ClCompile Include="np3_en_uk.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -202,7 +214,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="np3_en_us.rc" />
+    <ResourceCompile Include="np3_en_uk.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
