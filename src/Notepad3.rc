@@ -8,8 +8,36 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #include <winresrc.h>
+
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+"resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+"#include <winresrc.h>\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+"#include ""Notepad3.ver""\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 // English (United States) resources
@@ -17,6 +45,7 @@
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -64,12 +93,13 @@ IDR_RIZBITMAP           BITMAP                  "..\\res\\rizonesoft.bmp"
 IDC_COPY                CURSOR                  "..\\res\\Copy.cur"
 
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
 //
 
-IDR_MAINWND MENU
+IDR_MUI_MAINMENU MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -402,7 +432,7 @@ BEGIN
     END
 END
 
-IDR_POPUPMENU MENU
+IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
@@ -1450,53 +1480,57 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// String Table  MUI
+//
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_APPTITLE             "Notepad3(US)"
+    IDS_MUI_APPTITLE_ELEVATED    "%s (Administrator)"
+    IDS_MUI_APPTITLE_PASTEBOARD  "Notepad3(US) : Paste Board"
+    IDS_MUI_UNTITLED             "Untitled"
+    IDS_MUI_TITLEEXCERPT         """%s"""
+    IDS_MUI_READONLY             "(Read Only)"
+    IDS_MUI_LOADFILE             "Loading ""%s""..."
+    IDS_MUI_SAVEFILE             "Saving ""%s""..."
+    IDS_MUI_PRINTFILE            "Printing page %i..."
+    IDS_MUI_SAVINGSETTINGS       "Saving settings..."
+    IDS_MUI_LINKDESCRIPTION      "Edit with Notepad3"
+    IDS_MUI_FILTER_ALL           "All files (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE           "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI           "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_OPENWITH             "Select the directory with links to your favorite applications."
+    IDS_MUI_FAVORITES            "Select the directory with links to your favorite files."
+
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
 STRINGTABLE
 BEGIN
-    IDS_PASS_FAILURE        "The Passphrase is incorrect.\nRetry another Passphrase?"
+    IDS_WARN_PREF_LNG_NOT_AVAIL  "Sorry, your prefered language is not available."
+    IDS_STATUS_DOCLINE           "%s%s / %s"
+    IDS_STATUS_DOCCOLUMN         "%s%s"
+    IDS_STATUS_DOCCOLUMN2        "%s%s / %s"
+    IDS_STATUS_SELECTION         "%s%s"
+    IDS_STATUS_SELCTLINES        "%s%s"
+    IDS_STATUS_SELCTBYTES        "%s%s"
+    IDS_STATUS_OCCURRENCE        "%s%s"
+    IDS_STATUS_DOCSIZE           "%s%s [UTF-8]"
+    IDS_FR_STATUS_FMT            " Ln %s / %s     Col %s     Sel %s     Occ %s     Repl %s     (  %s  )              "
+      
 END
+
 
 STRINGTABLE
 BEGIN
-    IDS_NOPASS              "Decryption Cancelled!\nRead encrypted raw data?"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_APPTITLE            "Notepad3"
-    IDS_APPTITLE_ELEVATED   "%s (Administrator)"
-    IDS_APPTITLE_PASTEBOARD "Notepad3 : Paste Board"
-    IDS_UNTITLED            "Untitled"
-    IDS_TITLEEXCERPT        """%s"""
-    IDS_READONLY            "(Read Only)"
-    IDS_STATUS_DOCLINE      "%s%s / %s"
-    IDS_STATUS_DOCCOLUMN    "%s%s"
-    IDS_STATUS_DOCCOLUMN2   "%s%s / %s"
-    IDS_STATUS_SELECTION    "%s%s"
-    IDS_STATUS_SELCTLINES   "%s%s"
-    IDS_STATUS_SELCTBYTES   "%s%s"
-    IDS_STATUS_OCCURRENCE   "%s%s"
-    IDS_STATUS_DOCSIZE      "%s%s [UTF-8]"
-    IDS_LOADFILE            "Loading ""%s""..."
-    IDS_SAVEFILE            "Saving ""%s""..."
-    IDS_PRINTFILE           "Printing page %i..."
-    IDS_SAVINGSETTINGS      "Saving settings..."
-    IDS_LINKDESCRIPTION     "Edit with Notepad3"
-    IDS_FILTER_ALL          "All files (*.*)|*.*|"
-    IDS_FILTER_EXE          "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_FILTER_INI          "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_OPENWITH            "Select the directory with links to your favorite applications."
-    IDS_FAVORITES           "Select the directory with links to your favorite files."
     IDS_BACKSLASHHELP       "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_REGEXPHELP          "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_WILDCARDHELP        "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
-    IDS_FR_STATUS_FMT       " Ln %s / %s     Col %s     Sel %s     Occ %s     Repl %s     (  %s  )              "
 END
 
 STRINGTABLE
@@ -1607,6 +1641,8 @@ BEGIN
     IDS_SAVEPOS             "&Save Position\tCtrl+S"
     IDS_RESETPOS            "&Reset Position\tCtrl+R"
     IDS_PREVIEW             "&Preview Settings\tCtrl+P"
+    IDS_PASS_FAILURE        "The Passphrase is incorrect.\nRetry another Passphrase?"
+    IDS_NOPASS              "Decryption Cancelled!\nRead encrypted raw data?"
 END
 
 STRINGTABLE
@@ -2004,40 +2040,6 @@ BEGIN
 END
 
 #endif    // English (United States) resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// German (Switzerland) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DES)
-LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
-#pragma code_page(1252)
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE 
-BEGIN
-    "#include <winresrc.h>\0"
-END
-
-3 TEXTINCLUDE 
-BEGIN
-    "#include ""Notepad3.ver""\0"
-END
-
-#endif    // APSTUDIO_INVOKED
-
-#endif    // German (Switzerland) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

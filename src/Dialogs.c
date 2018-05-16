@@ -45,13 +45,15 @@
 #include "version.h"
 #include "helpers.h"
 #include "encoding.h"
+#include "SciCall.h"
 
 #include "dialogs.h"
 
 
-extern HWND  g_hwndMain;
-extern HWND  g_hwndEdit;
+extern HWND      g_hwndMain;
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
+
 extern WCHAR g_wchWorkingDirectory[];
 extern WCHAR g_wchCurFile[];
 extern WCHAR g_wchAppUserModelID[];
@@ -142,7 +144,7 @@ int MsgBox(int iType,UINT uIdMsg,...)
       StringCchCat(szText,COUNTOF(szText),L".");
   }
 
-  GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));
+  GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
 
   int iIcon = MB_ICONHAND;
   switch (iType) {
@@ -273,7 +275,7 @@ void DisplayCmdLineHelp(HWND hwnd)
   WCHAR szTitle[32] = { L'\0' };
   WCHAR szText[2048] = { L'\0' };
 
-  GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));
+  GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
   GetString(IDS_CMDLINEHELP,szText,COUNTOF(szText));
 
   mbp.cbSize = sizeof(MSGBOXPARAMS);
@@ -309,13 +311,13 @@ int CALLBACK BFFCallBack(HWND hwnd,UINT umsg,LPARAM lParam,LPARAM lpData)
 //
 //  GetDirectory()
 //
-bool GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool bNewDialogStyle)
+bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool bNewDialogStyle)
 {
   BROWSEINFO bi;
   WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };;
   WCHAR szBase[MAX_PATH] = { L'\0' };
 
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  GetLngString(uiTitle,szTitle,COUNTOF(szTitle));
 
   if (!pszBase || !*pszBase)
     GetCurrentDirectory(MAX_PATH, szBase);
@@ -451,10 +453,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
       LOGFONT lf;
       GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-      POINT res = GetSystemDpi();
+      POINT dpi = GetSystemDpi();
       lf.lfWeight = FW_BOLD;
-      lf.lfWidth = (8 * res.x) / 96L;
-      lf.lfHeight = (22 * res.y) / 96L;
+      lf.lfWidth  = MulDiv(8,  dpi.x, USER_DEFAULT_SCREEN_DPI);
+      lf.lfHeight = MulDiv(22, dpi.y, USER_DEFAULT_SCREEN_DPI);
       // lf.lfQuality = ANTIALIASED_QUALITY;
       hFontTitle = CreateFontIndirect(&lf);
 
@@ -658,7 +660,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             ExpandEnvironmentStringsEx(szArgs,COUNTOF(szArgs));
             ExtractFirstArgument(szArgs,szFile,szArg2,MAX_PATH);
 
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_MUI_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -894,7 +896,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
         case IDC_GETOPENWITHDIR:
           {
-            if (GetDirectory(hwnd,IDS_OPENWITH,g_tchOpenWithDir,g_tchOpenWithDir,true))
+            if (GetDirectory(hwnd,IDS_MUI_OPENWITH,g_tchOpenWithDir,g_tchOpenWithDir,true))
             {
               DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),g_tchOpenWithDir,DL_ALLOBJECTS,NULL,false,g_flagNoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
@@ -1091,7 +1093,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
         case IDC_GETFAVORITESDIR:
           {
-            if (GetDirectory(hwnd,IDS_FAVORITES,g_tchFavoritesDir,g_tchFavoritesDir,true))
+            if (GetDirectory(hwnd,IDS_MUI_FAVORITES,g_tchFavoritesDir,g_tchFavoritesDir,true))
             {
               DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),g_tchFavoritesDir,DL_ALLOBJECTS,NULL,false,g_flagNoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
@@ -2639,6 +2641,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
   wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
   wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
+  wi.zoom = SciCall_GetZoom();
 
   if (hMonitorInfo)
   {

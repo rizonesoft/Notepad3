@@ -41,6 +41,7 @@
 //=============================================================================
 
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
 
 //=============================================================================
 //
@@ -71,6 +72,42 @@ WCHAR* _StrCutIW(WCHAR* s,const WCHAR* pattern)
     }
   } while (p);
   return s;
+}
+
+//=============================================================================
+
+
+//=============================================================================
+//
+//  Find next token in string
+//
+
+CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
+{
+  CHAR* n = NULL;
+  const CHAR* t = tokens;
+  while (t && *t) {
+    CHAR* const f = StrChrA(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
+}
+
+WCHAR* _StrNextTokW(WCHAR* strg, const WCHAR* tokens)
+{
+  WCHAR* n = NULL;
+  const WCHAR* t = tokens;
+  while (t && *t) {
+    WCHAR* const f = StrChrW(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
 }
 
 
@@ -219,6 +256,46 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
     return(true);
   }
   return(false);
+}
+
+
+
+//=============================================================================
+//
+//  GetLastErrorToMsgBox()
+//
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
+{
+  // Retrieve the system error message for the last-error code
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
+
+  LPVOID lpMsgBuf;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwErrID,
+    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // g_iPrefLngLocID ?
+    (LPTSTR)&lpMsgBuf,
+    0, NULL);
+
+  // Display the error message and exit the process
+
+  LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+    (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 40) * sizeof(WCHAR));
+
+  StringCchPrintf((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(WCHAR),
+    L"'%s'  failed with error %d:\n%s", lpszFunction, dwErrID, lpMsgBuf);
+
+  MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
+
+  LocalFree(lpMsgBuf);
+  LocalFree(lpDisplayBuf);
+
+  return dwErrID;
 }
 
 
@@ -532,12 +609,13 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
   if (bFreezeAppTitle)
     return false;
 
-  if (!GetString(uIDAppName,szAppName,COUNTOF(szAppName)) ||
-      !GetString(uIDUntitled,szUntitled,COUNTOF(szUntitled)))
+  if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
+    !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
+  }
 
   if (bIsElevated) {
-    FormatString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_APPTITLE_ELEVATED,szAppName);
+    FormatLngString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_MUI_APPTITLE_ELEVATED,szAppName);
     StringCchCopyN(szAppName,COUNTOF(szAppName),szElevatedAppName,COUNTOF(szElevatedAppName));
   }
 
@@ -547,7 +625,7 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
     StringCchCopy(szTitle,COUNTOF(szTitle),L"");
 
   if (lstrlen(lpszExcerpt)) {
-    GetString(IDS_TITLEEXCERPT,szExcrptFmt,COUNTOF(szExcrptFmt));
+    GetLngString(IDS_MUI_TITLEEXCERPT,szExcrptFmt,COUNTOF(szExcrptFmt));
     StringCchPrintf(szExcrptQuot,COUNTOF(szExcrptQuot),szExcrptFmt,lpszExcerpt);
     StringCchCat(szTitle,COUNTOF(szTitle),szExcrptQuot);
   }
@@ -583,7 +661,7 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
     StringCchCat(szTitle,COUNTOF(szTitle),szUntitled);
   }
 
-  if (bReadOnly && GetString(uIDReadOnly,szReadOnly,COUNTOF(szReadOnly)))
+  if (bReadOnly && GetLngString(uIDReadOnly,szReadOnly,COUNTOF(szReadOnly)))
   {
     StringCchCat(szTitle,COUNTOF(szTitle),L" ");
     StringCchCat(szTitle,COUNTOF(szTitle),szReadOnly);
@@ -1134,6 +1212,23 @@ int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
   return (int)StringCchLen(lpOutput, nOutput);
 }
 
+//=============================================================================
+//
+//  FormatLngString()
+//
+int FormatLngString(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  static WCHAR pBuffer[XHUGE_BUFFER];
+  pBuffer[0] = L'\0';
+
+  if (GetLngString(uIdFormat, pBuffer, nOutput)) 
+  {
+    StringCchVPrintf(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+  }
+  return (int)StringCchLen(lpOutput, nOutput);
+}
+
+
 
 //=============================================================================
 //
@@ -1409,7 +1504,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
   //SHGetSpecialFolderPath(NULL,tchLinkDir,CSIDL_DESKTOPDIRECTORY,true);
   GetKnownFolderPath(&FOLDERID_Desktop, tchLinkDir, COUNTOF(tchLinkDir));
 
-  GetString(IDS_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
+  GetLngString(IDS_MUI_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
 
   // Try to construct a valid filename...
   if (!SHGetNewLinkInfo(pszDocument,tchLinkDir,tchLnkFileName,&fMustCopy,SHGNLI_PREFIXNAME))

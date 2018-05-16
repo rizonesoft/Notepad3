@@ -44,6 +44,7 @@
 #include "styles.h"
 
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
 
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
@@ -3261,7 +3262,7 @@ bool Style_Import(HWND hwnd)
   OPENFILENAME ofn;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetString(IDS_FILTER_INI,szFilter,COUNTOF(szFilter));
+  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -3311,7 +3312,7 @@ bool Style_Export(HWND hwnd)
   DWORD dwError = ERROR_SUCCESS;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetString(IDS_FILTER_INI,szFilter,COUNTOF(szFilter));
+  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -3371,11 +3372,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // first set standard lexer's default values
   if (IsLexerStandard(pLexNew)) {
     g_pLexCurrent = pLexNew;
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, false);
+    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd); // sync
   }
   else {
     g_pLexCurrent = GetCurrentStdLexer();
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, true);
   }
 
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
@@ -4488,6 +4488,9 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 {
   bool const use2ndDefStyle = Style_GetUse2ndDefault();
   Style_SetUse2ndDefault(use2ndDefStyle ? false : true); // swap
+  if (IsLexerStandard(g_pLexCurrent)) {
+    g_pLexCurrent = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard; // sync
+  }
   Style_SetLexer(hwnd,g_pLexCurrent);
 }
 
@@ -4602,7 +4605,7 @@ extern WCHAR g_tchFileDlgFilters[XXXL_BUFFER];
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
   if (StringCchLenW(g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters)) == 0) {
-    GetString(IDS_FILTER_ALL, lpszFilter, cchFilter);
+    GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
   }
   else {
     StringCchCopyN(lpszFilter,cchFilter,g_tchFileDlgFilters,cchFilter - 2);
@@ -5576,9 +5579,11 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Size values are relative to BaseFontSize/CurrentFontSize
+  POINT dpi = GetSystemDpi();
   float  fBaseFontSize = _GetCurrentFontSize();
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
     fBaseFontSize = (float)max(0.0, fBaseFontSize);
+    fBaseFontSize = (float)MulDiv((int)fBaseFontSize, (dpi.x + dpi.y)/2, USER_DEFAULT_SCREEN_DPI);
     //SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (int)fBaseFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
     if (iStyle == STYLE_DEFAULT) {

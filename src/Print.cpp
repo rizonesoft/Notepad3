@@ -69,7 +69,7 @@ void StatusUpdatePrintPage(int iPageNum)
 {
   WCHAR tch[32] = { L'\0' };
 
-  FormatString(tch,COUNTOF(tch),IDS_PRINTFILE,iPageNum);
+  FormatLngString(tch,COUNTOF(tch),IDS_MUI_PRINTFILE,iPageNum);
 
   StatusSetText(g_hwndStatus,255,tch);
   StatusSetSimple(g_hwndStatus,true);

@@ -52,7 +52,10 @@ typedef struct _wi
   int cx;
   int cy;
   int max;
+  int zoom;
 } WININFO;
+
+#define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0 }
 
 // --------------------------------------------------------------------------
 
