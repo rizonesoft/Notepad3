@@ -6132,9 +6132,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 return true;
 
               case STATUS_2ND_DEF:
-                if (!Style_IsCurLexerStandard()) {
-                  PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
-                }
+                PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
                 return true;
 
               case STATUS_LEXER:
@@ -7975,25 +7973,16 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  static int s_iUse2ndDefault = -1;
-  int iUse2ndDefault = Style_IsCurLexerStandard() ? 0 : (Style_GetUse2ndDefault() ? 2 : 1);
-
-  if (s_iUse2ndDefault != iUse2ndDefault) {
-    switch (iUse2ndDefault) {
-    case 0:
-      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
-      break;
-    case 1:
-      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
-      break;
-    case 2:
+  static bool s_bUse2ndDefault = -1;
+  bool const bUse2ndDefault = Style_GetUse2ndDefault();
+  if (s_bUse2ndDefault != bUse2ndDefault) 
+  {
+    if (bUse2ndDefault)
       StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
-      break;
-    default:
-      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sXXX", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
-      break;
-    }
-    s_iUse2ndDefault = iUse2ndDefault;
+    else
+      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
+
+    s_bUse2ndDefault = bUse2ndDefault;
     bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------
