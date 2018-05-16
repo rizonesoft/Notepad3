@@ -22,6 +22,39 @@
 #define IDS_MUI_FILTER_INI              10018
 #define IDS_MUI_OPENWITH                10019
 #define IDS_MUI_FAVORITES               10020
+#define IDS_MUI_BACKSLASHHELP           10021
+#define IDS_MUI_REGEXPHELP              10022
+#define IDS_MUI_WILDCARDHELP            10023
+
+#define IDT_FILE_NEW                    16000
+#define IDT_FILE_OPEN                   16001
+#define IDT_FILE_BROWSE                 16002
+#define IDT_FILE_SAVE                   16003
+#define IDT_EDIT_UNDO                   16004
+#define IDT_EDIT_REDO                   16005
+#define IDT_EDIT_CUT                    16006
+#define IDT_EDIT_COPY                   16007
+#define IDT_EDIT_PASTE                  16008
+#define IDT_EDIT_FIND                   16009
+#define IDT_EDIT_REPLACE                16010
+#define IDT_VIEW_WORDWRAP               16011
+#define IDT_VIEW_ZOOMIN                 16012
+#define IDT_VIEW_ZOOMOUT                16013
+#define IDT_VIEW_SCHEME                 16014
+#define IDT_VIEW_SCHEMECONFIG           16015
+#define IDT_FILE_EXIT                   16016
+#define IDT_FILE_SAVEAS                 16017
+#define IDT_FILE_SAVECOPY               16018
+#define IDT_EDIT_CLEAR                  16019
+#define IDT_FILE_PRINT                  16020
+#define IDT_FILE_OPENFAV                16021
+#define IDT_FILE_ADDTOFAV               16022
+#define IDT_VIEW_TOGGLEFOLDS            16023
+#define IDT_FILE_LAUNCH                 16024
+#define IDT_VIEW_TOGGLE_VIEW            16025
+#define IDT_VIEW_CHASING_DOCTAIL        16026
+
+
 
 
 
@@ -267,4 +300,4 @@
 #define IDM_HELP_UPDATEWEBSITE          40604
 #define IDM_EDIT_INSERT_GUID            40605
 
-#endif
+#endif //_COMMON_RES_H_

@@ -177,6 +177,7 @@
 #define IDC_RIZONEBMP                   555
 #define ___SCI_CMD__SCEN_CHANGE___      768
 
+#define IDS_FR_STATUS_FMT               5000
 #define IDS_STATUS_DOCLINE              5001
 #define IDS_STATUS_DOCCOLUMN            5002
 #define IDS_STATUS_DOCCOLUMN2           5003
@@ -187,39 +188,7 @@
 #define IDS_STATUS_DOCSIZE              5018
 
 
-#define IDS_BACKSLASHHELP               10024
-#define IDS_REGEXPHELP                  10025
-#define IDS_WILDCARDHELP                10026
-#define IDS_FR_STATUS_FMT               10027
 
-
-#define IDT_FILE_NEW                    40700
-#define IDT_FILE_OPEN                   40701
-#define IDT_FILE_BROWSE                 40702
-#define IDT_FILE_SAVE                   40703
-#define IDT_EDIT_UNDO                   40704
-#define IDT_EDIT_REDO                   40705
-#define IDT_EDIT_CUT                    40706
-#define IDT_EDIT_COPY                   40707
-#define IDT_EDIT_PASTE                  40708
-#define IDT_EDIT_FIND                   40709
-#define IDT_EDIT_REPLACE                40710
-#define IDT_VIEW_WORDWRAP               40711
-#define IDT_VIEW_ZOOMIN                 40712
-#define IDT_VIEW_ZOOMOUT                40713
-#define IDT_VIEW_SCHEME                 40714
-#define IDT_VIEW_SCHEMECONFIG           40715
-#define IDT_FILE_EXIT                   40716
-#define IDT_FILE_SAVEAS                 40717
-#define IDT_FILE_SAVECOPY               40718
-#define IDT_EDIT_CLEAR                  40719
-#define IDT_FILE_PRINT                  40720
-#define IDT_FILE_OPENFAV                40721
-#define IDT_FILE_ADDTOFAV               40722
-#define IDT_VIEW_TOGGLEFOLDS            40723
-#define IDT_FILE_LAUNCH                 40724
-#define IDT_VIEW_TOGGLE_VIEW            40725
-#define IDT_VIEW_CHASING_DOCTAIL        40726
 #define IDS_SAVEPOS                     40800
 #define IDS_RESETPOS                    40801
 #define IDS_PREVIEW                     40802

@@ -53,6 +53,7 @@
 extern HWND      g_hwndMain;
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
+extern LANGID    g_iPrefLngLocID;
 
 extern WCHAR g_wchWorkingDirectory[];
 extern WCHAR g_wchCurFile[];
@@ -165,6 +166,65 @@ int MsgBox(int iType,UINT uIdMsg,...)
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
  
+  return  MessageBox(hwnd, szText, szTitle, iIcon);
+  //return MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
+}
+
+
+int MsgBoxLng(int iType, UINT uIdMsg, ...)
+{
+  WCHAR szText[HUGE_BUFFER] = { L'\0' };
+  WCHAR szBuf[HUGE_BUFFER] = { L'\0' };
+  WCHAR szTitle[64] = { L'\0' };
+
+  if (!GetLngString(uIdMsg, szBuf, COUNTOF(szBuf)))
+    return(0);
+
+  StringCchVPrintfW(szText, COUNTOF(szText), szBuf, (LPVOID)((PUINT_PTR)&uIdMsg + 1));
+
+  if (uIdMsg == IDS_ERR_LOADFILE || uIdMsg == IDS_ERR_SAVEFILE ||
+    uIdMsg == IDS_CREATEINI_FAIL || uIdMsg == IDS_WRITEINI_FAIL ||
+    uIdMsg == IDS_EXPORT_FAIL) {
+    LPVOID lpMsgBuf;
+    WCHAR wcht;
+    FormatMessage(
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+      NULL,
+      dwLastIOError,
+      g_iPrefLngLocID,
+      (LPTSTR)&lpMsgBuf,
+      0,
+      NULL);
+    StrTrim(lpMsgBuf, L" \a\b\f\n\r\t\v");
+    StringCchCat(szText, COUNTOF(szText), L"\n");
+    StringCchCat(szText, COUNTOF(szText), lpMsgBuf);
+    LocalFree(lpMsgBuf);
+    wcht = *CharPrev(szText, StrEnd(szText));
+    if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
+      StringCchCat(szText, COUNTOF(szText), L".");
+  }
+
+  GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
+
+  int iIcon = MB_ICONHAND;
+  switch (iType) {
+  case MBINFO: iIcon = MB_ICONINFORMATION | MB_OK; break;
+  case MBWARN: iIcon = MB_ICONWARNING | MB_OK; break;
+  case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
+  case MBYESNOCANCEL: iIcon = MB_ICONINFORMATION | MB_YESNOCANCEL; break;
+  case MBYESNOWARN: iIcon = MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON1; break;
+  case MBOKCANCEL: iIcon = MB_ICONEXCLAMATION | MB_OKCANCEL; break;
+  case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
+  default: iIcon = MB_ICONSTOP | MB_OK; break;
+  }
+  iIcon |= (MB_TOPMOST | MB_SETFOREGROUND);
+
+  // center message box to main
+  HWND focus = GetFocus();
+  HWND hwnd = focus ? focus : g_hwndMain;
+  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+
+
   return  MessageBox(hwnd, szText, szTitle, iIcon);
   //return MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
 }

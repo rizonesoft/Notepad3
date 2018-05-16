@@ -39,6 +39,7 @@
 #include "styles.h"
 #include "dialogs.h"
 #include "resource.h"
+
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
 #include "../uthash/utlist.h"
@@ -5661,13 +5662,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
           // Display help messages in the find/replace windows
           else if (pnmhdr->idFrom == IDC_BACKSLASHHELP) {
-            MsgBox(MBINFO, IDS_BACKSLASHHELP);
+            MsgBoxLng(MBINFO, IDS_MUI_BACKSLASHHELP);
           }
           else if (pnmhdr->idFrom == IDC_REGEXPHELP) {
-            MsgBox(MBINFO, IDS_REGEXPHELP);
+            MsgBoxLng(MBINFO, IDS_MUI_REGEXPHELP);
           }
           else if (pnmhdr->idFrom == IDC_WILDCARDHELP) {
-            MsgBox(MBINFO, IDS_WILDCARDHELP);
+            MsgBoxLng(MBINFO, IDS_MUI_WILDCARDHELP);
           }
           break;
 

@@ -36,7 +36,6 @@
 //#include <pathcch.h>
 #include <time.h>
 #include <muiload.h>
-
 #include "scintilla.h"
 #include "scilexer.h"
 #include "edit.h"
@@ -132,7 +131,7 @@ bool          g_bSaveFindReplace;
 bool          g_bFindReplCopySelOrClip = true;
 
 WCHAR         g_tchPrefLngLocName[MINI_BUFFER];
-LANGID        g_iPrefLngLocID = 1033; // en-US
+LANGID        g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
 HMODULE       g_hLngResContainer = NULL;
 static WCHAR* const   g_tchAvailableLanguages = L"af-AF fr-FR de-DE es-ES en-UK";
 static LANGID const  g_iAvailableLanguages[5] = { 1078, 1036, 1031, 3082, 2057 };
@@ -6189,8 +6188,8 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
           {
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(tbbMainWnd))
             {
-              WCHAR tch[MIDSZ_BUFFER] = { L'\0' };
-              GetString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
+              WCHAR tch[SMALL_BUFFER] = { L'\0' };
+              GetLngString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
               StringCchCopyN(((LPTBNOTIFY)lParam)->pszText,((LPTBNOTIFY)lParam)->cchText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
               return true;
