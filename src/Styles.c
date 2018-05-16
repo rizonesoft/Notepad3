@@ -3371,11 +3371,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // first set standard lexer's default values
   if (IsLexerStandard(pLexNew)) {
     g_pLexCurrent = pLexNew;
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, false);
+    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd); // sync
   }
   else {
     g_pLexCurrent = GetCurrentStdLexer();
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, true);
   }
 
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
@@ -4488,6 +4487,9 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 {
   bool const use2ndDefStyle = Style_GetUse2ndDefault();
   Style_SetUse2ndDefault(use2ndDefStyle ? false : true); // swap
+  if (IsLexerStandard(g_pLexCurrent)) {
+    g_pLexCurrent = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard; // sync
+  }
   Style_SetLexer(hwnd,g_pLexCurrent);
 }
 
