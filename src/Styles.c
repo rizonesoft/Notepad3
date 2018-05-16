@@ -44,6 +44,7 @@
 #include "styles.h"
 
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
 
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
@@ -3261,7 +3262,7 @@ bool Style_Import(HWND hwnd)
   OPENFILENAME ofn;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetString(IDS_FILTER_INI,szFilter,COUNTOF(szFilter));
+  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -3311,7 +3312,7 @@ bool Style_Export(HWND hwnd)
   DWORD dwError = ERROR_SUCCESS;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetString(IDS_FILTER_INI,szFilter,COUNTOF(szFilter));
+  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -4604,7 +4605,7 @@ extern WCHAR g_tchFileDlgFilters[XXXL_BUFFER];
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
   if (StringCchLenW(g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters)) == 0) {
-    GetString(IDS_FILTER_ALL, lpszFilter, cchFilter);
+    GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
   }
   else {
     StringCchCopyN(lpszFilter,cchFilter,g_tchFileDlgFilters,cchFilter - 2);

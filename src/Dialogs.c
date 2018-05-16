@@ -311,13 +311,13 @@ int CALLBACK BFFCallBack(HWND hwnd,UINT umsg,LPARAM lParam,LPARAM lpData)
 //
 //  GetDirectory()
 //
-bool GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool bNewDialogStyle)
+bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool bNewDialogStyle)
 {
   BROWSEINFO bi;
   WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };;
   WCHAR szBase[MAX_PATH] = { L'\0' };
 
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  GetLngString(uiTitle,szTitle,COUNTOF(szTitle));
 
   if (!pszBase || !*pszBase)
     GetCurrentDirectory(MAX_PATH, szBase);
@@ -660,7 +660,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             ExpandEnvironmentStringsEx(szArgs,COUNTOF(szArgs));
             ExtractFirstArgument(szArgs,szFile,szArg2,MAX_PATH);
 
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_MUI_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -896,7 +896,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
         case IDC_GETOPENWITHDIR:
           {
-            if (GetDirectory(hwnd,IDS_OPENWITH,g_tchOpenWithDir,g_tchOpenWithDir,true))
+            if (GetDirectory(hwnd,IDS_MUI_OPENWITH,g_tchOpenWithDir,g_tchOpenWithDir,true))
             {
               DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),g_tchOpenWithDir,DL_ALLOBJECTS,NULL,false,g_flagNoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
@@ -1093,7 +1093,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
         case IDC_GETFAVORITESDIR:
           {
-            if (GetDirectory(hwnd,IDS_FAVORITES,g_tchFavoritesDir,g_tchFavoritesDir,true))
+            if (GetDirectory(hwnd,IDS_MUI_FAVORITES,g_tchFavoritesDir,g_tchFavoritesDir,true))
             {
               DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),g_tchFavoritesDir,DL_ALLOBJECTS,NULL,false,g_flagNoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));

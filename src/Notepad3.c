@@ -5016,10 +5016,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (!bCreateFailure) {
 
           if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",g_wchIniFile)) {
-
-            BeginWaitCursor(L"Saving settings..."); // IDS_SAVINGSETTINGS
             SaveSettings(true);
-            EndWaitCursor();
             MsgBox(MBINFO,IDS_SAVEDSETTINGS);
           }
           else {
@@ -6784,11 +6781,9 @@ void SaveSettings(bool bSaveSettingsNow) {
 
   WCHAR wchTmp[MAX_PATH] = { L'\0' };
 
-  if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0)
-    return;
+  if (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0) { return; }
 
-  if (!g_bEnableSaveSettings)
-    return; 
+  if (!g_bEnableSaveSettings) { return; }
 
   CreateIniFile();
 
@@ -6796,6 +6791,10 @@ void SaveSettings(bool bSaveSettingsNow) {
     IniSetInt(L"Settings", L"SaveSettings", g_bSaveSettings);
     return;
   }
+
+  WCHAR tchMsg[80];
+  GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
+  BeginWaitCursor(tchMsg);
 
   pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
   //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
@@ -6939,7 +6938,7 @@ void SaveSettings(bool bSaveSettingsNow) {
     IniSetInt(L"Window",tchZoom, g_WinInfo.zoom);
   }
 
-
+  EndWaitCursor();
 }
 
 
@@ -7699,7 +7698,7 @@ static void __fastcall _UpdateToolbarDelayed()
 {
   SetWindowTitle(g_hwndMain, uidsAppTitle, flagIsElevated, IDS_MUI_UNTITLED, g_wchCurFile,
                  iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
-                 IDS_READONLY, g_bFileReadOnly, szTitleExcerpt);
+                 IDS_MUI_READONLY, g_bFileReadOnly, szTitleExcerpt);
 
   if (!bShowToolbar) { return; }
 
@@ -8540,7 +8539,7 @@ bool FileIO(bool fLoad,LPCWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANS
   bool fSuccess;
   DWORD dwFileAttributes;
 
-  FormatString(tch,COUNTOF(tch),(fLoad) ? IDS_LOADFILE : IDS_SAVEFILE, PathFindFileName(pszFileName));
+  FormatLngString(tch,COUNTOF(tch),(fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, PathFindFileName(pszFileName));
 
   BeginWaitCursor(tch);
 

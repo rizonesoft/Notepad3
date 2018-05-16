@@ -177,30 +177,21 @@
 #define IDC_RIZONEBMP                   555
 #define ___SCI_CMD__SCEN_CHANGE___      768
 
+#define IDS_STATUS_DOCLINE              5001
+#define IDS_STATUS_DOCCOLUMN            5002
+#define IDS_STATUS_DOCCOLUMN2           5003
+#define IDS_STATUS_SELECTION            5004
+#define IDS_STATUS_SELCTLINES           5015
+#define IDS_STATUS_SELCTBYTES           5016
+#define IDS_STATUS_OCCURRENCE           5017
+#define IDS_STATUS_DOCSIZE              5018
 
-#define IDS_READONLY                    10005
-#define IDS_STATUS_DOCLINE              10006
-#define IDS_STATUS_DOCCOLUMN            10007
-#define IDS_STATUS_DOCCOLUMN2           10008
-#define IDS_STATUS_SELECTION            10009
-#define IDS_STATUS_SELCTLINES           10010
-#define IDS_STATUS_SELCTBYTES           10011
-#define IDS_STATUS_OCCURRENCE           10012
-#define IDS_STATUS_DOCSIZE              10013
-#define IDS_LOADFILE                    10014
-#define IDS_SAVEFILE                    10015
-#define IDS_PRINTFILE                   10016
-#define IDS_SAVINGSETTINGS              10017
-#define IDS_LINKDESCRIPTION             10018
-#define IDS_FILTER_ALL                  10019
-#define IDS_FILTER_EXE                  10020
-#define IDS_FILTER_INI                  10021
-#define IDS_OPENWITH                    10022
-#define IDS_FAVORITES                   10023
+
 #define IDS_BACKSLASHHELP               10024
 #define IDS_REGEXPHELP                  10025
 #define IDS_WILDCARDHELP                10026
 #define IDS_FR_STATUS_FMT               10027
+
 
 #define IDT_FILE_NEW                    40700
 #define IDT_FILE_OPEN                   40701
@@ -282,7 +273,6 @@
 #define IDS_WARN_PREF_LNG_NOT_AVAIL     50047
 #define IDS_CMDLINEHELP                 60000
 #define IDC_STATIC                      -1
-
 
 #include "../language/common_res.h"
 

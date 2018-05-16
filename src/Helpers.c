@@ -661,7 +661,7 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
     StringCchCat(szTitle,COUNTOF(szTitle),szUntitled);
   }
 
-  if (bReadOnly && GetString(uIDReadOnly,szReadOnly,COUNTOF(szReadOnly)))
+  if (bReadOnly && GetLngString(uIDReadOnly,szReadOnly,COUNTOF(szReadOnly)))
   {
     StringCchCat(szTitle,COUNTOF(szTitle),L" ");
     StringCchCat(szTitle,COUNTOF(szTitle),szReadOnly);
@@ -1504,7 +1504,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
   //SHGetSpecialFolderPath(NULL,tchLinkDir,CSIDL_DESKTOPDIRECTORY,true);
   GetKnownFolderPath(&FOLDERID_Desktop, tchLinkDir, COUNTOF(tchLinkDir));
 
-  GetString(IDS_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
+  GetLngString(IDS_MUI_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
 
   // Try to construct a valid filename...
   if (!SHGetNewLinkInfo(pszDocument,tchLinkDir,tchLnkFileName,&fMustCopy,SHGNLI_PREFIXNAME))

@@ -3,6 +3,28 @@
 //{{NO_DEPENDENCIES}}
 // common language (MUI) defines
 //
+#define IDR_MUI_MAINMENU                10001
+#define IDR_MUI_POPUPMENU               10002
+
+#define IDS_MUI_APPTITLE                10005
+#define IDS_MUI_APPTITLE_ELEVATED       10006
+#define IDS_MUI_APPTITLE_PASTEBOARD     10007
+#define IDS_MUI_UNTITLED                10008
+#define IDS_MUI_TITLEEXCERPT            10009
+#define IDS_MUI_READONLY                10010
+#define IDS_MUI_LOADFILE                10011
+#define IDS_MUI_SAVEFILE                10012
+#define IDS_MUI_PRINTFILE               10013
+#define IDS_MUI_SAVINGSETTINGS          10014
+#define IDS_MUI_LINKDESCRIPTION         10015
+#define IDS_MUI_FILTER_ALL              10016
+#define IDS_MUI_FILTER_EXE              10017
+#define IDS_MUI_FILTER_INI              10018
+#define IDS_MUI_OPENWITH                10019
+#define IDS_MUI_FAVORITES               10020
+
+
+
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
 #define CMD_SHIFTCTRLENTER              20002
@@ -52,20 +74,6 @@
 #define CMD_TAB                         20046
 #define CMD_BACKTAB                     20047
 #define CMD_VK_INSERT                   20048
-
-
-#define IDR_MUI_MAINMENU                30001
-#define IDR_MUI_POPUPMENU               30002
-
-
-#define IDS_MUI_APPTITLE                30011
-#define IDS_MUI_APPTITLE_ELEVATED       30012
-#define IDS_MUI_APPTITLE_PASTEBOARD     30013
-#define IDS_MUI_UNTITLED                30014
-#define IDS_MUI_TITLEEXCERPT            30015
-
-
-
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
