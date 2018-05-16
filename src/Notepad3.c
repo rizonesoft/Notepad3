@@ -1962,6 +1962,10 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
       tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
     }
     else {
+      GetLngString(tbbMainWnd[i].idCommand, tchDesc, COUNTOF(tchDesc));
+      tbbMainWnd[i].iString = SendMessage(g_hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc); // tooltip
+      tbbMainWnd[i].fsStyle |= TBSTYLE_TOOLTIPS;
+      //TODO: @@@ check why LNG tooltip is not working
       tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
     }
   }
