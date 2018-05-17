@@ -113,6 +113,7 @@
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\fr-FR"
 "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x040C -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\fr-FR\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\fr-FR\np3lng.dll.mui"
 </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
@@ -136,6 +137,7 @@
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\fr-FR"
 "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x040C -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\fr-FR\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\fr-FR\np3lng.dll.mui"
 </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
@@ -163,6 +165,7 @@
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\fr-FR"
 "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x040C -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\fr-FR\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\fr-FR\np3lng.dll.mui"
 </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
@@ -190,6 +193,7 @@
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\fr-FR"
 "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x040C -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\fr-FR\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\fr-FR\np3lng.dll.mui"
 </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>

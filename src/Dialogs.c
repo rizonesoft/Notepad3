@@ -777,7 +777,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 void RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 {
-  ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_RUN),hwnd,RunDlgProc,(LPARAM)lpstrDefault);
+  ThemedDialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_RUN), hwnd, RunDlgProc, (LPARAM)lpstrDefault);
 }
 
 

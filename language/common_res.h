@@ -111,6 +111,14 @@
 #define IDS_MUI_CMDLINEHELP             16000
 
 
+#define IDD_MUI_RUN                     17000
+#define IDI_MUI_RUN                     17001
+
+
+
+
+#define IDC_COMMANDLINE                 18000
+#define IDC_SEARCHEXE                   18001
 
 
 

@@ -153,12 +153,8 @@
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)de-DE\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)fr-FR\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)es-ES\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)af-AF\np3lng.dll.mui"
-
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Merge MUIs</Message>
@@ -219,12 +215,8 @@
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)de-DE\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)fr-FR\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)es-ES\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)af-AF\np3lng.dll.mui"
-
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Merge MUIs</Message>
@@ -287,12 +279,8 @@
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)de-DE\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)fr-FR\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)es-ES\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)af-AF\np3lng.dll.mui"
-
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Merge MUIs</Message>
@@ -354,12 +342,8 @@
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)de-DE\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)fr-FR\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)es-ES\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)af-AF\np3lng.dll.mui"
-
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Merge MUIs</Message>

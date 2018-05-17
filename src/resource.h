@@ -8,7 +8,6 @@
 #define IDR_MAINWND                     100
 #define IDC_FINDTEXT                    101
 #define IDC_LINENUM                     102
-#define IDC_COMMANDLINE                 103
 #define IDD_ABOUT                       104
 #define IDC_VERSION                     105
 #define IDC_OPENWITHDIR                 106
@@ -19,13 +18,11 @@
 #define IDC_INFOBOXICON                 111
 #define IDC_COPY                        112
 #define IDC_ENCODINGLIST                113
-#define IDC_SEARCHEXE                   114
 #define IDR_POPUPMENU                   115
 #define IDC_GETOPENWITHDIR              116
 #define IDC_RESIZEGRIP                  117
 #define IDD_OPENWITH                    118
 #define IDC_REPLACETEXT                 119
-#define IDI_RUN                         120
 #define IDC_COLNUM                      121
 #define IDC_DEFAULTSCHEME               122
 #define IDC_GETFAVORITESDIR             123

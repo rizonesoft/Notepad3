@@ -56,7 +56,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 IDR_MAINWND             ICON                    "..\\res\\Notepad3.ico"
 
-IDI_RUN                 ICON                    "..\\res\\Run.ico"
+IDI_MUI_RUN             ICON                    "..\\res\\Run.ico"
 
 IDR_MAINWND128          ICON                    "..\\res\\Notepad3_128.ico"
 
@@ -776,12 +776,12 @@ BEGIN
     PUSHBUTTON      "Focused &View",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
 
-IDD_RUN DIALOGEX 0, 0, 229, 96
+IDD_MUI_RUN DIALOGEX 0, 0, 229, 96
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Run"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    ICON            IDI_RUN,IDC_STATIC,10,7,21,20
+    ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
     LTEXT           "Type the name of a program, folder, document, or internet resource, and Windows will open it for you.",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Browse...",IDC_SEARCHEXE,163,69,55,16
