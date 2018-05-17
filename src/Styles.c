@@ -5697,6 +5697,18 @@ void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
 
 //=============================================================================
 //
+//  Style_GetStdLexerName()
+//
+void Style_GetStdLexerName(LPWSTR lpszName, int cchName)
+{
+  if (!GetString(lexStandard.resID, lpszName, cchName)) {
+    StringCchCopyW(lpszName, cchName, lexStandard.pszName);
+  }
+}
+
+
+//=============================================================================
+//
 //  Style_GetLexerIconId()
 //
 int Style_GetLexerIconId(PEDITLEXER plex)
