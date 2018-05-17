@@ -76,7 +76,7 @@ extern int g_flagUseSystemMRU;
 
 //=============================================================================
 //
-//  MsgBox()
+//  MsgBoxLng()
 //
 static HHOOK hhkMsgBox = NULL;
 
@@ -112,65 +112,6 @@ static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
 // -----------------------------------------------------------------------------
 
 
-int MsgBox(int iType,UINT uIdMsg,...)
-{
-  WCHAR szText [HUGE_BUFFER] = { L'\0' };
-  WCHAR szBuf  [HUGE_BUFFER] = { L'\0' };
-  WCHAR szTitle[64] = { L'\0' };
-
-  if (!GetString(uIdMsg,szBuf,COUNTOF(szBuf)))
-    return(0);
-
-  StringCchVPrintfW(szText,COUNTOF(szText),szBuf,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
-
-  if (uIdMsg == IDS_ERR_LOADFILE || uIdMsg == IDS_ERR_SAVEFILE ||
-      uIdMsg == IDS_CREATEINI_FAIL || uIdMsg == IDS_WRITEINI_FAIL ||
-      uIdMsg == IDS_EXPORT_FAIL) {
-    LPVOID lpMsgBuf;
-    WCHAR wcht;
-    FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,
-      NULL,
-      dwLastIOError,
-      MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
-      (LPTSTR)&lpMsgBuf,
-      0,
-      NULL);
-    StrTrim(lpMsgBuf,L" \a\b\f\n\r\t\v");
-    StringCchCat(szText,COUNTOF(szText),L"\n");
-    StringCchCat(szText,COUNTOF(szText),lpMsgBuf);
-    LocalFree(lpMsgBuf);
-    wcht = *CharPrev(szText,StrEnd(szText));
-    if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
-      StringCchCat(szText,COUNTOF(szText),L".");
-  }
-
-  GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
-
-  int iIcon = MB_ICONHAND;
-  switch (iType) {
-    case MBINFO: iIcon = MB_ICONINFORMATION | MB_OK; break;
-    case MBWARN: iIcon = MB_ICONWARNING | MB_OK; break;
-    case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
-    case MBYESNOCANCEL: iIcon = MB_ICONINFORMATION | MB_YESNOCANCEL; break;
-    case MBYESNOWARN: iIcon = MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON1; break;
-    case MBOKCANCEL: iIcon = MB_ICONEXCLAMATION | MB_OKCANCEL; break;
-    case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
-    default: iIcon = MB_ICONSTOP | MB_OK; break;
-  }
-  iIcon |= (MB_TOPMOST | MB_SETFOREGROUND);
-
-  // center message box to main
-  HWND focus = GetFocus();
-  HWND hwnd = focus ? focus : g_hwndMain;
-  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
-
- 
-  return  MessageBox(hwnd, szText, szTitle, iIcon);
-  //return MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-}
-
-
 int MsgBoxLng(int iType, UINT uIdMsg, ...)
 {
   WCHAR szText[HUGE_BUFFER] = { L'\0' };
@@ -182,9 +123,9 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
 
   StringCchVPrintfW(szText, COUNTOF(szText), szBuf, (LPVOID)((PUINT_PTR)&uIdMsg + 1));
 
-  if (uIdMsg == IDS_ERR_LOADFILE || uIdMsg == IDS_ERR_SAVEFILE ||
-    uIdMsg == IDS_CREATEINI_FAIL || uIdMsg == IDS_WRITEINI_FAIL ||
-    uIdMsg == IDS_EXPORT_FAIL) {
+  if (uIdMsg == IDS_MUI_ERR_LOADFILE || uIdMsg == IDS_MUI_ERR_SAVEFILE ||
+    uIdMsg == IDS_MUI_CREATEINI_FAIL || uIdMsg == IDS_MUI_WRITEINI_FAIL ||
+    uIdMsg == IDS_MUI_EXPORT_FAIL) {
     LPVOID lpMsgBuf;
     WCHAR wcht;
     FormatMessage(
@@ -223,7 +164,6 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : g_hwndMain;
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
-
 
   return  MessageBox(hwnd, szText, szTitle, iIcon);
   //return MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
@@ -280,12 +220,12 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
 
 //=============================================================================
 //
-//  InfoBox()
+//  InfoBoxLng()
 //
 //
 extern WCHAR g_wchIniFile[MAX_PATH];
 
-INT_PTR InfoBox(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
+INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
 {
   int iMode = IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
 
@@ -293,7 +233,7 @@ INT_PTR InfoBox(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
     return (iType == MBYESNO) ? IDYES : IDOK;
 
   WCHAR wchFormat[LARGE_BUFFER];
-  if (!GetString(uidMessage, wchFormat, COUNTOF(wchFormat)))
+  if (!GetLngString(uidMessage, wchFormat, COUNTOF(wchFormat)))
     return(-1);
 
   INFOBOX ib;
@@ -336,7 +276,7 @@ void DisplayCmdLineHelp(HWND hwnd)
   WCHAR szText[2048] = { L'\0' };
 
   GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
-  GetString(IDS_CMDLINEHELP,szText,COUNTOF(szText));
+  GetLngString(IDS_MUI_CMDLINEHELP,szText,COUNTOF(szText));
 
   mbp.cbSize = sizeof(MSGBOXPARAMS);
   mbp.hwndOwner = hwnd;
@@ -1294,12 +1234,11 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
   if (iResult == IDOK)
   {
     if (!PathCreateFavLnk(pszName,lpszTarget,g_tchFavoritesDir)) {
-      MsgBox(MBWARN,IDS_FAV_FAILURE);
+      MsgBoxLng(MBWARN,IDS_MUI_FAV_FAILURE);
       return false;
     }
-
     else {
-      MsgBox(MBINFO,IDS_FAV_SUCCESS);
+      MsgBoxLng(MBINFO,IDS_MUI_FAV_SUCCESS);
       return true;
     }
   }
@@ -1712,7 +1651,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 }
 
                 // Ask...
-                int answ = (LOWORD(wParam) == IDOK) ? MsgBox(MBYESNOWARN, IDS_ERR_MRUDLG) 
+                int answ = (LOWORD(wParam) == IDOK) ? MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_MRUDLG) 
                                                     : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                 if (IDYES == answ) {
@@ -2336,7 +2275,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         case IDOK: {
             if (Encoding_GetFromComboboxEx(GetDlgItem(hwnd,IDC_ENCODINGLIST),&pdd->idEncoding)) {
               if (pdd->idEncoding < 0) {
-                MsgBox(MBWARN,IDS_ERR_ENCODINGNA);
+                MsgBoxLng(MBWARN,IDS_MUI_ERR_ENCODINGNA);
                 EndDialog(hwnd,IDCANCEL);
               }
               else {
@@ -2497,7 +2436,7 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         case IDOK:
           if (Encoding_GetFromListView(hwndLV,&pdd->idEncoding)) {
             if (pdd->idEncoding < 0) {
-              MsgBox(MBWARN,IDS_ERR_ENCODINGNA);
+              MsgBoxLng(MBWARN,IDS_MUI_ERR_ENCODINGNA);
               EndDialog(hwnd,IDCANCEL);
             }
             else
@@ -2838,7 +2777,7 @@ void DialogFileBrowse(HWND hwnd)
   ShellExecuteEx(&sei);
 
   if ((INT_PTR)sei.hInstApp < 32)
-    MsgBox(MBWARN, IDS_ERR_BROWSE);
+    MsgBoxLng(MBWARN, IDS_MUI_ERR_BROWSE);
 
 }
 
@@ -2880,7 +2819,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     ShellExecuteEx(&sei);
     if ((INT_PTR)sei.hInstApp < 32)
     {
-      if (IDOK == InfoBox(MBOKCANCEL, L"NoAdminTool", IDS_ERR_ADMINEXE))
+      if (IDOK == InfoBoxLng(MBOKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))
       {
         sei.lpFile = VERSION_UPDATE_CHECK;
         ShellExecuteEx(&sei);

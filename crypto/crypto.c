@@ -417,7 +417,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
                   *resultlen = (DWORD)nb;
                 }
                 else {
-                  bRetryPassPhrase = (MsgBox(MBRETRYCANCEL, IDS_PASS_FAILURE) == IDRETRY);
+                  bRetryPassPhrase = (MsgBoxLng(MBRETRYCANCEL, IDS_MUI_PASS_FAILURE) == IDRETRY);
                   if (!bRetryPassPhrase) {
                     // enable raw encryption read
                     *resultlen = readsize;

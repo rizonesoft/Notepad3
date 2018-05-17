@@ -2,7 +2,9 @@
 // Microsoft Visual C++ generated include file.
 // Used by Notepad3.rc
 //
+#define IDC_STATIC                      -1
 #define IDR_RT_MANIFEST                 1
+
 #define IDR_MAINWND                     100
 #define IDC_FINDTEXT                    101
 #define IDC_LINENUM                     102
@@ -164,8 +166,6 @@
 #define IDC_CHECK3                      409
 #define IDD_PASSWORDS                   411
 #define IDC_EDIT3                       412
-#define IDS_PASS_FAILURE                413
-#define IDS_NOPASS                      414
 #define IDS_FR_STATUS_TEXT              417
 #define IDC_CHECK4                      418
 #define ___SCI_CMD__SCEN_SETFOCUS___    512
@@ -176,6 +176,8 @@
 #define IDR_RIZBITMAP                   554
 #define IDC_RIZONEBMP                   555
 #define ___SCI_CMD__SCEN_CHANGE___      768
+
+#define IDS_WARN_PREF_LNG_NOT_AVAIL     4000
 
 #define IDS_FR_STATUS_FMT               5000
 #define IDS_STATUS_DOCLINE              5001
@@ -188,60 +190,6 @@
 #define IDS_STATUS_DOCSIZE              5018
 
 
-
-#define IDS_SAVEPOS                     40800
-#define IDS_RESETPOS                    40801
-#define IDS_PREVIEW                     40802
-#define IDS_ERR_LOADFILE                50000
-#define IDS_ERR_SAVEFILE                50001
-#define IDS_ERR_BROWSE                  50002
-#define IDS_ERR_MRUDLG                  50003
-#define IDS_ERR_CREATELINK              50004
-#define IDS_ERR_PREVWINDISABLED         50005
-#define IDS_SELRECT                     50006
-#define IDS_BUFFERTOOSMALL              50007
-#define IDS_FIND_WRAPFW                 50008
-#define IDS_FIND_WRAPRE                 50009
-#define IDS_NOTFOUND                    50010
-#define IDS_REPLCOUNT                   50011
-#define IDS_ASK_ENCODING                50012
-#define IDS_ASK_ENCODING2               50013
-#define IDS_ERR_ENCODINGNA              50014
-#define IDS_ERR_UNICODE                 50015
-#define IDS_ERR_UNICODE2                50016
-#define IDS_WARN_LOAD_BIG_FILE          50017
-#define IDS_ERR_DROP                    50018
-#define IDS_ASK_SAVE                    50019
-#define IDS_ASK_REVERT                  50020
-#define IDS_ASK_RECODE                  50021
-#define IDS_ASK_CREATE                  50022
-#define IDS_PRINT_HEADER                50023
-#define IDS_PRINT_FOOTER                50024
-#define IDS_PRINT_COLOR                 50025
-#define IDS_PRINT_PAGENUM               50026
-#define IDS_PRINT_EMPTY                 50027
-#define IDS_PRINT_ERROR                 50028
-#define IDS_FAV_SUCCESS                 50029
-#define IDS_FAV_FAILURE                 50030
-#define IDS_READONLY_MODIFY             50031
-#define IDS_READONLY_SAVE               50032
-#define IDS_FILECHANGENOTIFY            50033
-#define IDS_FILECHANGENOTIFY2           50034
-#define IDS_STICKYWINPOS                50035
-#define IDS_SAVEDSETTINGS               50036
-#define IDS_CREATEINI_FAIL              50037
-#define IDS_WRITEINI_FAIL               50038
-#define IDS_SETTINGSNOTSAVED            50039
-#define IDS_EXPORT_FAIL                 50040
-#define IDS_ERR_ACCESSDENIED            50041
-#define IDS_WARN_UNKNOWN_EXT            50042
-#define IDS_REGEX_INVALID               50043
-#define IDS_DROP_NO_FILE                50044
-#define IDS_APPLY_DEFAULT_FONT          50045
-#define IDS_ERR_ADMINEXE                50046
-#define IDS_WARN_PREF_LNG_NOT_AVAIL     50047
-#define IDS_CMDLINEHELP                 60000
-#define IDC_STATIC                      -1
 
 #include "../language/common_res.h"
 
