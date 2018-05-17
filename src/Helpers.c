@@ -288,14 +288,10 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
   LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
     (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 40) * sizeof(WCHAR));
 
-  WCHAR fmtErrMsg[128];
-  GetLngString(IDS_MUI_ERR_GETLASTERROR, fmtErrMsg, COUNTOF(fmtErrMsg));
   StringCchPrintf((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(WCHAR),
-                  fmtErrMsg, lpszFunction, dwErrID, lpMsgBuf);
+    L"Error: '%s' failed with error id %d:\n%s", lpszFunction, dwErrID, lpMsgBuf);
 
-  WCHAR appTitle[80];
-  GetLngString(IDS_MUI_APPTITLE, appTitle, COUNTOF(appTitle));
-  MessageBox(NULL, (LPCWSTR)lpDisplayBuf, appTitle, MB_OK | MB_ICONEXCLAMATION);
+  MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
 
   LocalFree(lpMsgBuf);
   LocalFree(lpDisplayBuf);

@@ -68,7 +68,6 @@
 #define IDS_MUI_ERR_ADMINEXE            13011
 #define IDS_MUI_WARN_LOAD_BIG_FILE      13012
 #define IDS_MUI_WARN_UNKNOWN_EXT        13013
-#define IDS_MUI_ERR_GETLASTERROR        13014
 
 #define IDS_MUI_SELRECT                 14000
 #define IDS_MUI_BUFFERTOOSMALL          14001

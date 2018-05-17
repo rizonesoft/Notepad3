@@ -50,7 +50,6 @@
 #define IDC_FINDCASE                    142
 #define IDC_OPENWITHDESCR               143
 #define IDC_SAVEMRU                     144
-#define IDD_RUN                         145
 #define IDC_AUTOSELECT                  146
 #define IDC_FAVORITESDESCR              147
 #define IDC_INFOBOXCHECK                148

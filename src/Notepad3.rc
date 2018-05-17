@@ -1583,7 +1583,6 @@ BEGIN
     IDS_MUI_ERR_DROP            "Only one file can be dropped at the same time!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "Are you sure you want to open this large file?"
     IDS_MUI_WARN_UNKNOWN_EXT    "Unknown file name extension (%s) !\nLoading data anyway ?"
-    IDS_MUI_ERR_GETLASTERROR    "Error: '%s' failed with error id %d:\n%s"
 END
 
 
