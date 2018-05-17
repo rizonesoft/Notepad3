@@ -7991,8 +7991,13 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
   static int s_iCurLexer = -1;
   int const iCurLexer = Style_GetCurrentLexerRID();
-  if (s_iCurLexer != iCurLexer) {
-    Style_GetCurrentLexerName(tchLexerName, MINI_BUFFER);
+  if (s_iCurLexer != iCurLexer) 
+  {
+    if (Style_IsCurLexerStandard())
+      Style_GetStdLexerName(tchLexerName, MINI_BUFFER);
+    else
+      Style_GetCurrentLexerName(tchLexerName, MINI_BUFFER);
+
     StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s", g_mxStatusBarPrefix[STATUS_LEXER], tchLexerName);
     s_iCurLexer = iCurLexer;
     bIsUpdateNeeded = true;
