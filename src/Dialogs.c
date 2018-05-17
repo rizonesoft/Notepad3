@@ -165,8 +165,9 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
   HWND hwnd = focus ? focus : g_hwndMain;
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
-  return  MessageBox(hwnd, szText, szTitle, iIcon);
-  //return MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
+  //return  MessageBox(hwnd, szText, szTitle, iIcon);
+  //return  MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
+  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, g_iPrefLngLocID);
 }
 
 
@@ -776,10 +777,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 void RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 {
-
-  ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_RUN),
-    hwnd,RunDlgProc,(LPARAM)lpstrDefault);
-
+  ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_RUN),hwnd,RunDlgProc,(LPARAM)lpstrDefault);
 }
 
 
