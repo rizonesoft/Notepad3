@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include <winresrc.h>
+#include "winres.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -21,22 +21,25 @@
 
 1 TEXTINCLUDE
 BEGIN
-"resource.h\0"
+  "resource.h\0"
 END
 
 2 TEXTINCLUDE
 BEGIN
-"#include <winresrc.h>\0"
+  "#include ""winres.h""\r\n"
+  "\0"
 END
 
 3 TEXTINCLUDE
 BEGIN
-"#include ""Notepad3.ver""\0"
+  "#include ""Notepad3.ver""\r\n"
+  "#include ""../language/common_res.rc""\r\n"
+  "#include ""../language/np3_en_us/menu_en_us.rc""\r\n"
+  "#include ""../language/np3_en_us/strings_en_us.rc""\r\n"
+  "\0"
 END
 
 #endif    // APSTUDIO_INVOKED
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -44,54 +47,6 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDR_MAINWND             ICON                    "..\\res\\Notepad3.ico"
-
-IDI_MUI_RUN             ICON                    "..\\res\\Run.ico"
-
-IDR_MAINWND128          ICON                    "..\\res\\Notepad3_128.ico"
-
-IDI_STYLES              ICON                    "..\\res\\Styles.ico"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDR_MAINWNDTB           BITMAP                  "..\\res\\Toolbar.bmp"
-
-IDB_OPEN                BITMAP                  "..\\res\\Open.bmp"
-
-IDB_NEXT                BITMAP                  "..\\res\\Next.bmp"
-
-IDB_PREV                BITMAP                  "..\\res\\Prev.bmp"
-
-IDB_PICK                BITMAP                  "..\\res\\Pick.bmp"
-
-IDB_ENCODING            BITMAP                  "..\\res\\Encoding.bmp"
-
-IDR_MAINWNDTB2          BITMAP                  "..\\res\\Toolbar2.bmp"
-
-IDR_RIZBITMAP           BITMAP                  "..\\res\\rizonesoft.bmp"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Cursor
-//
-
-IDC_COPY                CURSOR                  "..\\res\\Copy.cur"
-
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -316,376 +271,6 @@ BEGIN
     "R",            IDACC_RESETPOS,         VIRTKEY, CONTROL, NOINVERT
     "S",            IDACC_PREVIEW,          VIRTKEY, CONTROL, NOINVERT
     VK_F12,         IDACC_VIEWSCHEMECONFIG, VIRTKEY, CONTROL, NOINVERT
-END
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MUI_MAINMENU MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "&New\tCtrl+N",                IDM_FILE_NEW
-        MENUITEM "&Open...\tCtrl+O",            IDM_FILE_OPEN
-        MENUITEM "Re&vert\tF5",                 IDM_FILE_REVERT
-        MENUITEM "&Save\tCtrl+S",               IDM_FILE_SAVE
-        MENUITEM "Save &As...\tF6",             IDM_FILE_SAVEAS
-        MENUITEM "Save &Copy...\tCtrl+F6",      IDM_FILE_SAVECOPY
-        MENUITEM "&Read Only",                  IDM_FILE_READONLY
-        MENUITEM SEPARATOR
-        MENUITEM "Set Encr&yption Passphrase...", IDM_SETPASS
-        MENUITEM SEPARATOR
-        POPUP "&Launch"
-        BEGIN
-            MENUITEM "&New Window\tAlt+N",          IDM_FILE_NEWWINDOW
-            MENUITEM "&Empty Window\tAlt+Shift+N",  IDM_FILE_NEWWINDOW2
-            MENUITEM SEPARATOR
-            MENUITEM "Execute &Document\tCtrl+L",   IDM_FILE_LAUNCH
-            MENUITEM "&Open with...\tAlt+L",        IDM_FILE_OPENWITH
-            MENUITEM "&Command...\tCtrl+R",         IDM_FILE_RUN
-            MENUITEM SEPARATOR
-            MENUITEM "Web Template &1\tCtrl+Shift+1", CMD_WEBACTION1
-            MENUITEM "Web Template &2\tCtrl+Shift+2", CMD_WEBACTION2
-        END
-        MENUITEM SEPARATOR
-        POPUP "&Encoding"
-        BEGIN
-            MENUITEM "&ANSI",                       IDM_ENCODING_ANSI
-            MENUITEM "&Unicode",                    IDM_ENCODING_UNICODE
-            MENUITEM "Unicode &Big Endian",         IDM_ENCODING_UNICODEREV
-            MENUITEM "UTF-&8\tShift+F8",            IDM_ENCODING_UTF8
-            MENUITEM "UTF-8 with &Signature",       IDM_ENCODING_UTF8SIGN
-            MENUITEM "&More...\tF9",                IDM_ENCODING_SELECT
-            MENUITEM SEPARATOR
-            MENUITEM "Recode to &Default\tCtrl-Alt-F", CMD_RECODEDEFAULT
-            MENUITEM "Recode to &ANSI\tCtrl-Shift+A", CMD_RECODEANSI
-            MENUITEM "Recode to &OEM\tCtrl+Shift+O", CMD_RECODEOEM
-            MENUITEM "ASCII as UTF-&8\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
-            MENUITEM "Ignore Encoding &Tags\tAlt+F8", CMD_RELOADNOFILEVARS
-            MENUITEM "&Recode...\tF8",              IDM_ENCODING_RECODE
-            MENUITEM SEPARATOR
-            MENUITEM "Set &Default...",             IDM_ENCODING_SETDEFAULT
-        END
-        POPUP "Line Endin&gs"
-        BEGIN
-            MENUITEM "&Windows (CR+LF)",            IDM_LINEENDINGS_CRLF
-            MENUITEM "&Unix (LF)",                  IDM_LINEENDINGS_LF
-            MENUITEM "&Mac (CR)",                   IDM_LINEENDINGS_CR
-            MENUITEM SEPARATOR
-            MENUITEM "&Default...",                 IDM_LINEENDINGS_SETDEFAULT
-        END
-        MENUITEM SEPARATOR
-        MENUITEM "Page Se&tup...",              IDM_FILE_PAGESETUP
-        MENUITEM "&Print...\tCtrl+P",           IDM_FILE_PRINT
-        MENUITEM SEPARATOR
-        MENUITEM "Propert&ies...",              IDM_FILE_PROPERTIES
-        MENUITEM "Create &Desktop Link",        IDM_FILE_CREATELINK
-        MENUITEM SEPARATOR
-        MENUITEM "&Browse...\tCtrl+M",          IDM_FILE_BROWSE
-        POPUP "&Favorites"
-        BEGIN
-            MENUITEM "&Open Favorites...\tAlt+I",   IDM_FILE_OPENFAV
-            MENUITEM "&Add Current File...\tAlt+K", IDM_FILE_ADDTOFAV
-            MENUITEM "&Manage...\tAlt+F9",          IDM_FILE_MANAGEFAV
-        END
-        MENUITEM "Recent (&History)...\tCtrl+Alt+H", IDM_FILE_RECENT
-        MENUITEM SEPARATOR
-        MENUITEM "E&xit\tAlt+F4",               IDM_FILE_EXIT
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               IDM_EDIT_UNDO
-        MENUITEM "&Redo\tCtrl+Y",               IDM_EDIT_REDO
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                IDM_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               IDM_EDIT_COPY
-        MENUITEM "Copy &All\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "Cop&y Add\tCtrl+E",           IDM_EDIT_COPYADD
-        MENUITEM "&Paste\tCtrl+V",              IDM_EDIT_PASTE
-        MENUITEM "S&wap\tCtrl+K",               IDM_EDIT_SWAP
-        MENUITEM "&Delete\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "Cl&ear Clipboard",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "&Select All\tCtrl+A",         IDM_EDIT_SELECTALL
-        MENUITEM SEPARATOR
-        POPUP "W&ords"
-        BEGIN
-            MENUITEM "&Complete Word\tCtrl+Alt+Enter", IDM_EDIT_COMPLETEWORD
-            MENUITEM SEPARATOR
-            MENUITEM "Cursor Word &Left\tCtrl+Left", CMD_CTRLLEFT
-            MENUITEM "Cursor Word &Right\tCtrl+Right", CMD_CTRLRIGHT
-            MENUITEM "&Delete Word Left\tCtrl+Back", CMD_CTRLBACK
-            MENUITEM "Delete &Word Right\tCtrl+Del", CMD_CTRLDEL
-        END
-        POPUP "&Lines"
-        BEGIN
-            MENUITEM "Move &Up\tCtrl+Shift+Up",     IDM_EDIT_MOVELINEUP
-            MENUITEM "&Move Down\tCtrl+Shift+Down", IDM_EDIT_MOVELINEDOWN
-            MENUITEM SEPARATOR
-            MENUITEM "Cut &Line\tCtrl[+Shift]+X",   IDM_EDIT_CUTLINE
-            MENUITEM "&Copy Line\tCtrl[+Shift]+C",  IDM_EDIT_COPYLINE
-            MENUITEM "&Duplicate Line\tCtrl+D",     IDM_EDIT_DUPLICATELINE
-            MENUITEM "D&elete Line\tCtrl+Shift+D",  IDM_EDIT_DELETELINE
-            MENUITEM SEPARATOR
-            MENUITEM "Delete Line Left\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
-            MENUITEM "Delete Line Right\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
-            MENUITEM SEPARATOR
-            MENUITEM "Column &Wrap...\tCtrl+Shift+W", IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Split Lines\tCtrl+I",        IDM_EDIT_SPLITLINES
-            MENUITEM "&Join Lines\tCtrl+J",         IDM_EDIT_JOINLINES
-            MENUITEM "&Fuse Lines\tCtrl+Alt+J",     IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Mer&ge Empty Lines\tAlt+Y",   IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Merge Whitespace Lines\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Remove Empty Lines\tAlt+R",  IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Remove Whitespace Lines\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Rem&ove Duplicate Lines\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
-        END
-        POPUP "&Block"
-        BEGIN
-            MENUITEM "&Indent",                     IDM_EDIT_INDENT
-            MENUITEM "&Unindent",                   IDM_EDIT_UNINDENT
-            MENUITEM SEPARATOR
-            POPUP "&Enclose Selection"
-            BEGIN
-                MENUITEM "&Single Quotes\tCtrl+1",      CMD_STRINGIFY
-                MENUITEM "&Double Quotes\tCtrl+2",      CMD_STRINGIFY2
-                MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                 CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                 CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                 CMD_EMBRACE3
-                MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",          CMD_EMBRACE4
-                MENUITEM SEPARATOR
-                MENUITEM "&With...\tAlt+Q",             IDM_EDIT_ENCLOSESELECTION
-            END
-            MENUITEM "&Duplicate Selection\tAlt+D", IDM_EDIT_SELECTIONDUPLICATE
-            MENUITEM SEPARATOR
-            MENUITEM "&Pad With Spaces\tAlt+B",     IDM_EDIT_PADWITHSPACES
-            MENUITEM "Strip &First Character\tAlt+Z", IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Strip &Last Character\tAlt+U", IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Strip &Trailing Whitespaces\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Compress &Whitespace\tAlt+P", IDM_EDIT_COMPRESSWS
-            MENUITEM SEPARATOR
-            MENUITEM "&Modify Lines...\tAlt+M",     IDM_EDIT_MODIFYLINES
-            MENUITEM "&Align Lines...\tAlt+J",      IDM_EDIT_ALIGN
-            MENUITEM "&Sort Lines...\tAlt+O",       IDM_EDIT_SORTLINES
-        END
-        POPUP "Co&nvert"
-        BEGIN
-            MENUITEM "&Uppercase\tCtrl+Shift+U",    IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&Lowercase\tCtrl+U",          IDM_EDIT_CONVERTLOWERCASE
-            MENUITEM SEPARATOR
-            MENUITEM "&Invert Case\tCtrl+Alt+U",    IDM_EDIT_INVERTCASE
-            MENUITEM "Title &Case\tCtrl+Alt+I",     IDM_EDIT_TITLECASE
-            MENUITEM "&Sentence Case\tCtrl+Alt+O",  IDM_EDIT_SENTENCECASE
-            MENUITEM SEPARATOR
-            MENUITEM "&Tabify Selection\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
-            MENUITEM "U&ntabify Selection\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
-            MENUITEM SEPARATOR
-            MENUITEM "Ta&bify Indent\tCtrl+Alt+T",  IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Untabi&fy Indent\tCtrl+Alt+S", IDM_EDIT_CONVERTTABS2
-        END
-        POPUP "&Insert"
-        BEGIN
-            MENUITEM "&New Line Above\tCtrl+Enter", CMD_CTRLENTER
-            MENUITEM SEPARATOR
-            MENUITEM "&HTML/XML Tag...\tAlt+X",     IDM_EDIT_INSERT_TAG
-            MENUITEM SEPARATOR
-            MENUITEM "&Encoding Identifier\tCtrl+F8", IDM_EDIT_INSERT_ENCODING
-            MENUITEM SEPARATOR
-            MENUITEM "&Time/Date (Short Form)\tCtrl+F5", IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Time/Date (&Long Form)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "&Update Timestamps\tShift+F5", CMD_TIMESTAMPS
-            MENUITEM SEPARATOR
-            MENUITEM "&Filename\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
-            MENUITEM "&Path and Filename\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&GUID\tCtrl+Shift+.",         IDM_EDIT_INSERT_GUID
-        END
-        POPUP "&Miscellaneous"
-        BEGIN
-            MENUITEM "&Line Comment (Toggle)\tCtrl+Q", IDM_EDIT_LINECOMMENT
-            MENUITEM "&Stream Comment\tCtrl+Shift+Q", IDM_EDIT_STREAMCOMMENT
-            MENUITEM SEPARATOR
-            MENUITEM "&URL Encode\tCtrl+Shift+E",   IDM_EDIT_URLENCODE
-            MENUITEM "URL &Decode\tCtrl+Shift+R",   IDM_EDIT_URLDECODE
-            MENUITEM SEPARATOR
-            MENUITEM "&Escape C Chars\tCtrl+Alt+E", IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C Chars\tCtrl+Alt+R", IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "&Char To Hex\tCtrl+Alt+X",    IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",    IDM_EDIT_HEX2CHAR
-            MENUITEM SEPARATOR
-            MENUITEM "&Find Matching Brace\tCtrl+B", IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Select To &Matching Brace\tCtrl+Shift+B", IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "Select To &Next\tCtrl+Alt+F2", IDM_EDIT_SELTONEXT
-            MENUITEM "Select To &Previous\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
-        END
-        MENUITEM SEPARATOR
-        POPUP "Boo&kmarks"
-        BEGIN
-            MENUITEM "&Toggle\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
-            MENUITEM SEPARATOR
-            MENUITEM "Goto &Next\tF2",              BME_EDIT_BOOKMARKNEXT
-            MENUITEM "Goto &Previous\tShift+F2",    BME_EDIT_BOOKMARKPREV
-            MENUITEM SEPARATOR
-            MENUITEM "&Clear All\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
-        END
-        MENUITEM SEPARATOR
-        MENUITEM "&Find...\tCtrl+F",            IDM_EDIT_FIND
-        MENUITEM "Save Find Text\tAlt+F3",      IDM_EDIT_SAVEFIND
-        MENUITEM "Find Ne&xt\tF3",              IDM_EDIT_FINDNEXT
-        MENUITEM "Find Pre&vious\tShift+F3",    IDM_EDIT_FINDPREV
-        MENUITEM "Find Next Selected\tCtrl+F3", CMD_FINDNEXTSEL
-        MENUITEM "Find Previous Selected\tCtrl+Shift+F3", CMD_FINDPREVSEL
-        MENUITEM "&Replace...\tCtrl+H",         IDM_EDIT_REPLACE
-        MENUITEM "Replace Ne&xt\tF4",           IDM_EDIT_REPLACENEXT
-        MENUITEM "&Goto...\tCtrl+G",            IDM_EDIT_GOTOLINE
-    END
-    POPUP "&View"
-    BEGIN
-        MENUITEM "Synta&x Scheme...\tF12",      IDM_VIEW_SCHEME
-        MENUITEM "&2nd Default Scheme\tShift+F12", IDM_VIEW_USE2NDDEFAULT
-        MENUITEM "&Customize Schemes...\tCtrl+F12", IDM_VIEW_SCHEMECONFIG
-        MENUITEM "Global &Default Font...\tAlt+F12", IDM_VIEW_FONT
-        MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
-        MENUITEM SEPARATOR
-        MENUITEM "Word W&rap\tCtrl+W",          IDM_VIEW_WORDWRAP
-        MENUITEM "&Long Line Marker\tCtrl+Shift+L", IDM_VIEW_LONGLINEMARKER
-        MENUITEM "Indent&ation Guides\tCtrl+Shift+G", IDM_VIEW_SHOWINDENTGUIDES
-        MENUITEM SEPARATOR
-        MENUITEM "Show &Whitespace\tCtrl+Shift+8", IDM_VIEW_SHOWWHITESPACE
-        MENUITEM "Show Line &Endings\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
-        MENUITEM "Show Wra&p Symbols\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM SEPARATOR
-        MENUITEM "H&yperlink Hotspots\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
-        MENUITEM "Hi&ghlight Current Line\tCtrl+Shift+I", IDM_VIEW_HILITECURRENTLINE
-        POPUP "Mar&k Occurrences"
-        BEGIN
-            MENUITEM "&Active\tAlt+A",              IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM SEPARATOR
-            MENUITEM "Match Visible Only",          IDM_VIEW_MARKOCCUR_VISIBLE
-            MENUITEM SEPARATOR
-            MENUITEM "Match &Case Sensitive",       IDM_VIEW_MARKOCCUR_CASE
-            POPUP "Match &Whole Word Only"
-            BEGIN
-                MENUITEM "OFF",                         IDM_VIEW_MARKOCCUR_WNONE
-                MENUITEM "Match &Selected Word",        IDM_VIEW_MARKOCCUR_WORD
-                MENUITEM "Match &Current Word",         IDM_VIEW_MARKOCCUR_CURRENT
-            END
-        END
-        MENUITEM SEPARATOR
-        MENUITEM "Focused View\tCtrl+Alt+V",     IDM_VIEW_TOGGLE_VIEW
-        MENUITEM SEPARATOR
-        MENUITEM "Line &Numbers\tCtrl+Shift+N", IDM_VIEW_LINENUMBERS
-        MENUITEM "Selection &Margin\tCtrl+Shift+M", IDM_VIEW_MARGIN
-        MENUITEM SEPARATOR
-        MENUITEM "Code &Folding\tCtrl+Shift+Alt+F", IDM_VIEW_FOLDING
-        MENUITEM "&Toggle Folds\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
-        MENUITEM SEPARATOR
-        MENUITEM "Show Tool&bar",               IDM_VIEW_TOOLBAR
-        MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
-        MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
-        MENUITEM SEPARATOR
-        MENUITEM "Zoom &In\tCtrl++",            IDM_VIEW_ZOOMIN
-        MENUITEM "Zoom &Out\tCtrl+-",           IDM_VIEW_ZOOMOUT
-        MENUITEM "Reset &Zoom\tCtrl+0",         IDM_VIEW_RESETZOOM
-        MENUITEM SEPARATOR
-        MENUITEM "Doc Tail Chasing",            IDM_VIEW_CHASING_DOCTAIL
-        MENUITEM SEPARATOR
-        MENUITEM "Copy Position Args\tCtrl+Shift+K", CMD_COPYWINPOS
-        MENUITEM "Snap to Default Position\tCtrl+Shift+P", CMD_DEFAULTWINPOS
-        MENUITEM "Scroll Past End of &File",    IDM_VIEW_SCROLLPASTEOF
-    END
-    POPUP "&Settings"
-    BEGIN
-        MENUITEM "Insert Tabs as &Spaces",      IDM_VIEW_TABSASSPACES
-        MENUITEM "&Tab Settings...\tCtrl+T",    IDM_VIEW_TABSETTINGS
-        MENUITEM "&Word Wrap Settings...",      IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "&Long Line Settings...",      IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "Auto In&dent Text",           IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "Auto Close &HTML/XML\tCtrl+Shift+H", IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "A&uto Complete Words",        IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "Accelerated Word Navi&gation", IDM_VIEW_ACCELWORDNAV
-        MENUITEM SEPARATOR
-        MENUITEM "&Reuse Window",               IDM_VIEW_REUSEWINDOW
-        MENUITEM "Sticky Window &Position",     IDM_VIEW_STICKYWINPOS
-        MENUITEM "&Always On Top\tAlt+T",       IDM_VIEW_ALWAYSONTOP
-        MENUITEM "Minimi&ze To Tray",           IDM_VIEW_MINTOTRAY
-        MENUITEM "Transparent &Mode\tAlt+G",    IDM_VIEW_TRANSPARENT
-        MENUITEM SEPARATOR
-        MENUITEM "Single &File Instance",       IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "File &Change Notification...\tAlt+F5", IDM_VIEW_CHANGENOTIFY
-        POPUP "Window Title Displa&y"
-        BEGIN
-            MENUITEM "Filename &Only",              IDM_VIEW_SHOWFILENAMEONLY
-            MENUITEM "Filename and &Directory",     IDM_VIEW_SHOWFILENAMEFIRST
-            MENUITEM "Full &Pathname",              IDM_VIEW_SHOWFULLPATH
-            MENUITEM "&Text Excerpt\tCtrl+9",       IDM_VIEW_SHOWEXCERPT
-        END
-        POPUP "Esc &Key Function"
-        BEGIN
-            MENUITEM "&None",                       IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimize Notepad3",          IDM_VIEW_ESCMINIMIZE
-            MENUITEM "E&xit Notepad3",              IDM_VIEW_ESCEXIT
-        END
-        MENUITEM "Save &Before Running Tools",  IDM_VIEW_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Remember Recent F&iles",      IDM_VIEW_NOSAVERECENT
-        MENUITEM "Preser&ve Caret Position",    IDM_VIEW_NOPRESERVECARET
-        MENUITEM "Remember S&earch Pattern",    IDM_VIEW_NOSAVEFINDREPL
-        MENUITEM SEPARATOR
-        MENUITEM "Save Settings On E&xit",      IDM_VIEW_SAVESETTINGS
-        MENUITEM "Save Settings &Now\tF7",      IDM_VIEW_SAVESETTINGSNOW
-        MENUITEM "&Open Settings File\tCtrl+F7", CMD_OPENINIFILE
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&Online Documentation\tF1",   IDM_HELP_ONLINEDOCUMENTATION
-        MENUITEM SEPARATOR
-        MENUITEM "Launch Administration &Tool...",       IDM_HELP_ADMINEXE
-        MENUITEM "Check &Website for Update",   IDM_HELP_UPDATEWEBSITE
-        MENUITEM SEPARATOR
-        MENUITEM "&Command Line Help...",       IDM_HELP_CMD
-        MENUITEM "&About...\tShift+F1",         IDM_HELP_ABOUT
-    END
-END
-
-IDR_MUI_POPUPMENU MENU
-BEGIN
-    POPUP "+"
-    BEGIN
-        MENUITEM "&Undo",                       IDM_EDIT_UNDO
-        MENUITEM "&Redo",                       IDM_EDIT_REDO
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t",                        IDM_EDIT_CUT
-        MENUITEM "&Copy",                       IDM_EDIT_COPY
-        MENUITEM "&Paste",                      IDM_EDIT_PASTE
-        MENUITEM "&Delete",                     IDM_EDIT_CLEAR
-        MENUITEM SEPARATOR
-        MENUITEM "&Select All",                 IDM_EDIT_SELECTALL
-        MENUITEM SEPARATOR
-        MENUITEM "Open &Hyperlink",             CMD_OPEN_HYPERLINK
-    END
-    POPUP "+"
-    BEGIN
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
-        MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
-    END
-    POPUP "+"
-    BEGIN
-        MENUITEM "Open Notepad3",               IDM_TRAY_RESTORE
-        MENUITEM "Exit Notepad3",               IDM_TRAY_EXIT
-    END
 END
 
 
@@ -1503,143 +1088,6 @@ BEGIN
 END
 
 
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table  MUI
-//
-
-STRINGTABLE
-BEGIN
-    IDS_MUI_APPTITLE             "Notepad3(US)"
-    IDS_MUI_APPTITLE_ELEVATED    "%s (Administrator)"
-    IDS_MUI_APPTITLE_PASTEBOARD  "Notepad3(US) : Paste Board"
-    IDS_MUI_UNTITLED             "Untitled"
-    IDS_MUI_TITLEEXCERPT         """%s"""
-    IDS_MUI_READONLY             "(Read Only)"
-    IDS_MUI_LOADFILE             "Loading ""%s""..."
-    IDS_MUI_SAVEFILE             "Saving ""%s""..."
-    IDS_MUI_PRINTFILE            "Printing page %i..."
-    IDS_MUI_SAVINGSETTINGS       "Saving settings..."
-    IDS_MUI_LINKDESCRIPTION      "Edit with Notepad3"
-    IDS_MUI_FILTER_ALL           "All files (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE           "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI           "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH             "Select the directory with links to your favorite applications."
-    IDS_MUI_FAVORITES            "Select the directory with links to your favorite files."
-    IDS_MUI_BACKSLASHHELP        "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP           "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP         "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
-
-END
-
-
-STRINGTABLE
-BEGIN
-    IDT_FILE_NEW                 "New"
-    IDT_FILE_OPEN                "Open"
-    IDT_FILE_BROWSE              "Browse"
-    IDT_FILE_SAVE                "Save"
-    IDT_EDIT_UNDO                "Undo"
-    IDT_EDIT_REDO                "Redo"
-    IDT_EDIT_CUT                 "Cut"
-    IDT_EDIT_COPY                "Copy"
-    IDT_EDIT_PASTE               "Paste"
-    IDT_EDIT_FIND                "Find"
-    IDT_EDIT_REPLACE             "Replace"
-    IDT_VIEW_WORDWRAP            "Word Wrap"
-    IDT_VIEW_ZOOMIN              "Zoom In"
-    IDT_VIEW_ZOOMOUT             "Zoom Out"
-    IDT_VIEW_SCHEME              "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG        "Customize Schemes"
-    IDT_FILE_EXIT                "Exit"
-    IDT_FILE_SAVEAS              "Save As"
-    IDT_FILE_SAVECOPY            "Save Copy"
-    IDT_EDIT_CLEAR               "Delete"
-    IDT_FILE_PRINT               "Print"
-    IDT_FILE_OPENFAV             "Favorites"
-    IDT_FILE_ADDTOFAV            "Add to Favorites"
-    IDT_VIEW_TOGGLEFOLDS         "Toggle Folds"
-    IDT_FILE_LAUNCH              "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW         "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL     "Doc Tail Chasing"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_MUI_ERR_LOADFILE        "Error loading ""%s""."
-    IDS_MUI_ERR_SAVEFILE        "Error saving ""%s""."
-    IDS_MUI_ERR_BROWSE          "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG          "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK      "Error creating the Desktop link."
-    IDS_MUI_ERR_PREVWINDISABLED "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
-    IDS_MUI_ERR_ENCODINGNA      "Code page conversion tables for the selected encoding are not available on your system."
-    IDS_MUI_ERR_UNICODE         "Error converting this Unicode file.\nData will be lost if the file is saved!"
-    IDS_MUI_ERR_ADMINEXE        "No administration executable found.\nCheck website https://rizonesoft.com ?"
-    IDS_MUI_ERR_ACCESSDENIED    "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch Notepad3 as Administrator?"
-    IDS_MUI_ERR_UNICODE2        "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
-    IDS_MUI_ERR_DROP            "Only one file can be dropped at the same time!"
-    IDS_MUI_WARN_LOAD_BIG_FILE  "Are you sure you want to open this large file?"
-    IDS_MUI_WARN_UNKNOWN_EXT    "Unknown file name extension (%s) !\nLoading data anyway ?"
-END
-
-
-STRINGTABLE
-BEGIN
-    IDS_MUI_SELRECT             "This operation can't be perfomed within a rectangular selection."
-    IDS_MUI_BUFFERTOOSMALL      "This operation can't be performed (lines too long)."
-    IDS_MUI_FIND_WRAPFW         "Reached the end of the document, restarting search at the beginning."
-    IDS_MUI_FIND_WRAPRE         "Reached the beginning of the document, restarting search at the end."
-    IDS_MUI_NOTFOUND            "The specified text was not found."
-    IDS_MUI_REPLCOUNT           "%i occurrences of the specified text have been replaced."
-    IDS_MUI_ASK_ENCODING        "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2       "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronized with the new encoding. Continue?"
-    IDS_MUI_READONLY_SAVE       """%s"" is read only. Save to a different file?"
-    IDS_MUI_FILECHANGENOTIFY    "The current file has been modified by an external program. Reload?"
-    IDS_MUI_FILECHANGENOTIFY2   "The current file has been deleted. Save now?"
-    IDS_MUI_STICKYWINPOS        "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
-    IDS_MUI_SAVEDSETTINGS       "The current program settings have been saved."
-    IDS_MUI_CREATEINI_FAIL      "Error creating configuration file."
-    IDS_MUI_WRITEINI_FAIL       "Error writing settings to configuration file."
-    IDS_MUI_SETTINGSNOTSAVED    "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
-    IDS_MUI_EXPORT_FAIL         "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID       "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE        "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
-END
-
-
-STRINGTABLE
-BEGIN
-    IDS_MUI_ASK_SAVE            "Save changes to ""%s""?"
-    IDS_MUI_ASK_REVERT          "Revert file to last saved state? Your changes will be lost!"
-    IDS_MUI_ASK_RECODE          "Recoding requires reloading file from disk, unsaved changes will be lost!"
-    IDS_MUI_ASK_CREATE          """%s"" not found.\nWould you like to create this file?"
-    IDS_MUI_PRINT_HEADER        "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
-    IDS_MUI_PRINT_FOOTER        "Page Number|Leave blank"
-    IDS_MUI_PRINT_COLOR         "Normal|Invert light (dark background)|Black on white|Color on white|Color on white (except line numbers)"
-    IDS_MUI_PRINT_PAGENUM       "Page %i"
-    IDS_MUI_PRINT_EMPTY         "This document doesn't contain any text to be printed."
-    IDS_MUI_PRINT_ERROR         "Error printing ""%s""!"
-    IDS_MUI_FAV_SUCCESS         "A shortcut to the current file has been created in the favorites directory."
-    IDS_MUI_FAV_FAILURE         "The shortcut to the current file could not be created.\nMake sure there's no other file with the same name."
-    IDS_MUI_READONLY_MODIFY     "The attributes of ""%s"" could not be modified."
-    IDS_MUI_SAVEPOS             "&Save Position\tCtrl+S"
-    IDS_MUI_RESETPOS            "&Reset Position\tCtrl+R"
-    IDS_MUI_PREVIEW             "&Preview Settings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE        "The Passphrase is incorrect.\nRetry another Passphrase?"
-    IDS_MUI_NOPASS              "Decryption Cancelled!\nRead encrypted raw data?"
-END
-
-
-STRINGTABLE
-BEGIN
-    IDS_MUI_CMDLINEHELP         "Command Line Help\n\nfile\tMust be the last argument, no quoted spaces by default.\n+\tAccept multiple file arguments (with quoted spaces).\n-\tAccept single file argument (without quoted spaces).\n…\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\n…\tLine ending mode (/crlf, /lf, /cr).\n/e\tFile source encoding.\n/g\tJump to specified position (/g -1 end of file).\n/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\n/l\tAuto-reload modified files.\n/q\tForce creation of new files without prompt.\n/s\tSelect specified syntax scheme.\n/d\tSelect default text scheme.\n/h\tSelect Web Source Code scheme.\n/x\tSelect XML Document scheme.\n/c\tOpen new window and paste clipboard contents.\n/b\tOpen new paste board to collect clipboard entries.\n/n\tAlways open a new window (/ns single file instance).\n/r\tReuse window (/rs single file instance).\n/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\n/t\tSet window title.\n/i\tStart as tray icon.\n/o\tKeep window on top.\n/f\tSpecify ini-file (/f0 no ini-file).\n/u\tLaunch with elevated privileges.\n/v\tPrint file immediately and quit.\n/vd\tPrint file (open printer dialog).\n/z\tSkip next (usable for registry-based Notepad replacement)."
-END
-
-
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
@@ -2050,6 +1498,10 @@ END
 // Generated from the TEXTINCLUDE 3 resource.
 //
 #include "Notepad3.ver"
+#include "../language/common_res.rc"
+#include "../language/np3_en_us/menu_en_us.rc"
+#include "../language/np3_en_us/strings_en_us.rc"
+
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

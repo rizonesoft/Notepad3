@@ -109,6 +109,7 @@
     </Link>
     <ResourceCompile>
       <Culture>0x040c</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\fr-FR"
@@ -133,6 +134,7 @@
     </Link>
     <ResourceCompile>
       <Culture>0x040c</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\fr-FR"
@@ -161,6 +163,7 @@
     </Link>
     <ResourceCompile>
       <Culture>0x040c</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\fr-FR"
@@ -189,6 +192,7 @@
     </Link>
     <ResourceCompile>
       <Culture>0x040c</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\fr-FR"

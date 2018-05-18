@@ -109,6 +109,7 @@
     </Link>
     <ResourceCompile>
       <Culture>0x0c0a</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\es-ES"
@@ -135,6 +136,7 @@
     </Link>
     <ResourceCompile>
       <Culture>0x0c0a</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\es-ES"
@@ -165,6 +167,7 @@
     </Link>
     <ResourceCompile>
       <Culture>0x0c0a</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\es-ES"
@@ -195,6 +198,7 @@
     </Link>
     <ResourceCompile>
       <Culture>0x0c0a</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\es-ES"
