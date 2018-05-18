@@ -946,7 +946,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
   DLITEM dliOpenWith;
   dliOpenWith.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_OPENWITH),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
                              hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
   {
     WCHAR szParam[MAX_PATH] = { L'\0' };
@@ -1703,7 +1703,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 {
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FILEMRU),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FILEMRU),
                 hwnd,FileMRUDlgProc,(LPARAM)lpstrFile))
     return true;
   else
@@ -1776,8 +1776,8 @@ bool ChangeNotifyDlg(HWND hwnd)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCEW(IDD_CHANGENOTIFY),
+              g_hLngResContainer,
+              MAKEINTRESOURCEW(IDD_MUI_CHANGENOTIFY),
               hwnd,
               ChangeNotifyDlgProc,
               0);
@@ -2315,8 +2315,8 @@ bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
   dd.idEncoding = *pidREncoding;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_DEFENCODING),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_DEFENCODING),
               hwnd,
               SelectDefEncodingDlgProc,
               (LPARAM)&dd);
@@ -2609,8 +2609,8 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_DEFEOLMODE),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_DEFEOLMODE),
               hwnd,
               SelectDefLineEndingDlgProc,
               (LPARAM)iOption);

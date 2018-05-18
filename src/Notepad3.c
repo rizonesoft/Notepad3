@@ -891,11 +891,12 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
  
   HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, langID);
 
-  if (!hLangResourceContainer)
-  {
-    GetLastErrorToMsgBox(L"LoadMUILibraryW()", 0);
-    return NULL;
-  }
+  //if (!hLangResourceContainer)
+  //{
+  //  GetLastErrorToMsgBox(L"LoadMUILibrary", 0);
+  //  return NULL;
+  //}
+
   return hLangResourceContainer;
 }
 

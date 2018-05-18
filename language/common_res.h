@@ -111,10 +111,21 @@
 #define IDS_MUI_CMDLINEHELP             16000
 
 
+
 #define IDD_MUI_RUN                     17000
 #define IDI_MUI_RUN                     17001
 #define IDD_MUI_FIND                    17002
 #define IDD_MUI_REPLACE                 17003
+#define IDD_MUI_OPENWITH                17004
+#define IDD_MUI_DEFENCODING             17005
+#define IDD_MUI_DEFEOLMODE              17006
+#define IDD_MUI_LINENUM                 17007
+#define IDD_MUI_FILEMRU                 17008
+#define IDD_MUI_CHANGENOTIFY            17009
+#define IDD_MUI_STYLESELECT             17010
+#define IDI_MUI_STYLES                  17011
+#define IDD_MUI_STYLECONFIG             17012
+
 
 
 #define IDC_COMMANDLINE                 18000
@@ -142,6 +153,44 @@
 #define IDC_WILDCARDHELP                18022
 #define IDS_FR_STATUS_TEXT              18023
 #define IDC_TOGGLE_VISIBILITY           18024
+#define IDC_OPENWITHDIR                 18025
+#define IDC_GETOPENWITHDIR              18026
+#define IDC_OPENWITHDESCR               18027
+#define IDC_RESIZEGRIP3                 18028
+#define IDC_ENCODINGLIST                18029
+#define IDC_USEASREADINGFALLBACK        18030
+#define IDC_NOANSICPDETECTION           18031
+#define IDC_NOUNICODEDETECTION          18032
+#define IDC_ASCIIASUTF8                 18033
+#define IDC_NFOASOEM                    18034
+#define IDC_ENCODINGFROMFILEVARS        18035
+#define IDC_CONSISTENTEOLS              18036
+#define IDC_AUTOSTRIPBLANKS             18037
+#define IDC_LINENUM                     18038
+#define IDC_COLNUM                      18039
+#define IDC_FILEMRU                     18040
+#define IDC_PRESERVECARET               18041
+#define IDC_SAVEMRU                     18042
+#define IDC_REMOVE                      18043
+#define IDC_RESIZEGRIP                  18044
+#define IDC_REMEMBERSEARCHPATTERN       18045
+#define IDC_STYLELIST                   18046
+#define IDC_DEFAULTSCHEME               18047
+#define IDC_AUTOSELECT                  18048
+#define IDC_STYLELABEL_ROOT             18049
+#define IDC_STYLEEDIT_ROOT              18050
+#define IDC_STYLELABEL                  18051
+#define IDC_STYLEFORE                   18052
+#define IDC_STYLEBACK                   18053
+#define IDC_STYLEFONT                   18054
+#define IDC_PREVIEW                     18055
+#define IDC_STYLEDEFAULT                18056
+#define IDC_PREVSTYLE                   18057
+#define IDC_NEXTSTYLE                   18058
+#define IDC_IMPORT                      18059
+#define IDC_EXPORT                      18060
+#define IDC_TITLE                       18061
+#define IDC_STYLEEDIT                   18062
 
 
 

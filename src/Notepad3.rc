@@ -36,6 +36,7 @@ BEGIN
   "#include ""../language/common_res.rc""\r\n"
   "#include ""../language/np3_en_us/menu_en_us.rc""\r\n"
   "#include ""../language/np3_en_us/strings_en_us.rc""\r\n"
+  "#include ""../language/np3_en_us/dialogs_en_us.rc""\r\n"
   "\0"
 END
 
@@ -297,153 +298,8 @@ BEGIN
     CONTROL         "",IDC_RICHEDITABOUT,"RichEdit20W",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,360,168
 END
 
-IDD_MUI_RUN DIALOGEX 0, 0, 229, 96
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Run"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Type the name of a program, folder, document, or internet resource, and Windows will open it for you.",IDC_STATIC,39,7,179,17
-    EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "Browse...",IDC_SEARCHEXE,163,69,55,16
-    DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
-    PUSHBUTTON      "Cancel",IDCANCEL,105,69,55,16
-END
 
-IDD_OPENWITH DIALOGEX 0, 0, 165, 129
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Open with..."
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
-    PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Click here to specify the directory with links to your favorite applications.",IDC_OPENWITHDESCR,26,83,132,18
-    DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,108,108,50,14
-    SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
-END
 
-IDD_DEFENCODING DIALOGEX 0, 0, 197, 159
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Encoding"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    GROUPBOX        "Default Encoding (new file):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
-    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Use as &fallback on detection failure.",IDC_USEASREADINGFALLBACK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Encoding Detection: ",IDC_STATIC,7,58,183,77,0,WS_EX_TRANSPARENT
-    CONTROL         "Skip &ANSI Code Page detection.",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,122,10
-    CONTROL         "Skip &UNICODE detection.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,122,10
-    CONTROL         "Open 7-bit &ASCII files in UTF-8 mode.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,136,10
-    CONTROL         "Open 8-bit *.&nfo/diz files in DOS-437 mode.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,155,10
-    CONTROL         "Don't parse encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,126,10
-    DEFPUSHBUTTON   "OK",IDOK,87,138,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,140,138,50,14
-END
-
-IDD_DEFEOLMODE DIALOGEX 0, 0, 180, 78
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Line Endings"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "&Default line ending mode:",IDC_STATIC,7,7,82,8
-    COMBOBOX        100,7,20,98,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "&Ensure consistent line endings when saving.",IDC_CONSISTENTEOLS,
-                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,48,157,10
-    CONTROL         "&Strip trailing blanks when saving.",IDC_AUTOSTRIPBLANKS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,121,10
-    DEFPUSHBUTTON   "OK",IDOK,123,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,123,24,50,14
-END
-
-IDD_LINENUM DIALOGEX 0, 0, 186, 47
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Goto"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    LTEXT           "&Line:",IDC_STATIC,7,7,16,8
-    EDITTEXT        IDC_LINENUM,7,24,46,14,ES_AUTOHSCROLL
-    LTEXT           "&Column:",IDC_STATIC,63,7,27,8
-    EDITTEXT        IDC_COLNUM,63,24,46,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
-END
-
-IDD_FILEMRU DIALOGEX 0, 0, 269, 160
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Open Recent File"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Preserve caret position.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
-    CONTROL         "&Save recent file list on exit.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
-    PUSHBUTTON      "Discard",IDC_REMOVE,212,107,50,14,WS_DISABLED
-    DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
-    PUSHBUTTON      "Cancel",IDCANCEL,212,139,50,14
-    SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
-    CONTROL         "&Remember search pattern.",IDC_REMEMBERSEARCHPATTERN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
-END
-
-IDD_CHANGENOTIFY DIALOGEX 0, 0, 184, 65
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "File Change Notification"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    CONTROL         "&None.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
-    CONTROL         "&Display message.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
-    CONTROL         "&Auto-reload (unmodified).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Reset if a new file is opened.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,127,24,50,14
-END
-
-IDD_STYLESELECT DIALOGEX 0, 0, 165, 134
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Select Scheme"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
-    CONTROL         "Set selected scheme as &default.",IDC_DEFAULTSCHEME,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,118,10
-    CONTROL         "&Auto-select by filename extension.",IDC_AUTOSELECT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
-    DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
-    PUSHBUTTON      "Cancel",IDCANCEL,108,113,50,14
-    SCROLLBAR       IDC_RESIZEGRIP3,7,117,10,10
-END
-
-IDD_STYLECONFIG DIALOGEX 0, 0, 467, 254
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Customize Schemes"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,240
-    LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
-    EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
-    LTEXT           "",IDC_STYLELABEL,181,171,279,8
-    EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "For&e...",IDC_STYLEFORE,181,201,46,14
-    PUSHBUTTON      "&Back...",IDC_STYLEBACK,232,201,46,14
-    PUSHBUTTON      "&Font...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "&Preview",IDC_PREVIEW,330,201,42,14
-    PUSHBUTTON      "&Reset",IDC_STYLEDEFAULT,377,201,42,14
-    PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14
-    PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14
-    PUSHBUTTON      "&Import...",IDC_IMPORT,181,233,50,14
-    PUSHBUTTON      "E&xport...",IDC_EXPORT,237,233,50,14
-    DEFPUSHBUTTON   "OK",IDOK,355,233,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,410,233,50,14
-    GROUPBOX        "Info",IDC_STATIC,180,7,280,127
-    ICON            IDI_STYLES,IDC_STATIC,189,19,20,20
-    LTEXT           "Customize Schemes",IDC_TITLE,220,25,200,12
-    LTEXT           "Filename extensions must be separated by ;\n\nStyle format:\nfont:Name;size:nn;bold;italic;underline;fore:#ffffff;back:#bbbbbb;eolfilled\n\nStyle properties can be copied using copy and paste or drag and drop.\n\nThe ""Preview"" button will not apply any changes.",IDC_STATIC,197,50,252,70
-END
 
 IDD_TABSETTINGS DIALOGEX 0, 0, 174, 90
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
@@ -758,70 +614,6 @@ BEGIN
         VERTGUIDE, 340
         TOPMARGIN, 7
         BOTTOMMARGIN, 270
-    END
-
-    IDD_OPENWITH, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 158
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 122
-    END
-
-    IDD_DEFENCODING, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 190
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 152
-    END
-
-    IDD_DEFEOLMODE, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 173
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 71
-    END
-
-    IDD_LINENUM, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 179
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 40
-    END
-
-    IDD_FILEMRU, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 262
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 153
-    END
-
-    IDD_CHANGENOTIFY, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 177
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 58
-    END
-
-    IDD_STYLESELECT, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 158
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 127
-    END
-
-    IDD_STYLECONFIG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 460
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 247
     END
 
     IDD_TABSETTINGS, DIALOG
@@ -1412,6 +1204,7 @@ END
 #include "../language/common_res.rc"
 #include "../language/np3_en_us/menu_en_us.rc"
 #include "../language/np3_en_us/strings_en_us.rc"
+#include "../language/np3_en_us/dialogs_en_us.rc"
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED

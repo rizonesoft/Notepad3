@@ -6424,8 +6424,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 //
 HWND Style_CustomizeSchemesDlg(HWND hwnd)
 {
-  HWND hDlg = CreateThemedDialogParam(g_hInstance,
-                                      MAKEINTRESOURCE(IDD_STYLECONFIG),
+  HWND hDlg = CreateThemedDialogParam(g_hLngResContainer,
+                                      MAKEINTRESOURCE(IDD_MUI_STYLECONFIG),
                                       GetParent(hwnd),
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
@@ -6675,8 +6675,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 //
 void Style_SelectLexerDlg(HWND hwnd)
 {
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,
-                                   MAKEINTRESOURCE(IDD_STYLESELECT),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,
+                                   MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
     Style_SetLexer(hwnd, g_pLexCurrent);

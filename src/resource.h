@@ -5,62 +5,30 @@
 #define IDR_RT_MANIFEST                 1
 
 #define IDR_MAINWND                     100
-
-
-#define IDC_LINENUM                     102
 #define IDD_ABOUT                       104
 #define IDC_VERSION                     105
-#define IDC_OPENWITHDIR                 106
-#define IDC_FILEMRU                     107
-#define IDC_STYLELIST                   108
+
+
+
+
+
 #define IDC_FAVORITESDIR                109
 #define IDC_COLUMNWRAP                  110
 #define IDC_INFOBOXICON                 111
 #define IDC_COPY                        112
-#define IDC_ENCODINGLIST                113
 #define IDR_POPUPMENU                   115
-#define IDC_GETOPENWITHDIR              116
-#define IDC_RESIZEGRIP                  117
-#define IDD_OPENWITH                    118
-#define IDC_COLNUM                      121
-#define IDC_DEFAULTSCHEME               122
 #define IDC_GETFAVORITESDIR             123
 #define IDC_INFOBOXTEXT                 124
 #define IDB_OPEN                        125
 #define IDR_ACCFINDREPLACE              126
-#define IDC_STYLELABEL_ROOT             127
-#define IDC_STYLELABEL                  128
-#define IDC_STYLEEDIT_ROOT              129
-#define IDC_STYLEEDIT                   130
-#define IDC_STYLEBACK                   131
-#define IDC_STYLEFONT                   132
-#define IDC_STYLEDEFAULT                133
-#define IDC_PREVIEW                     134
-#define IDC_PREVSTYLE                   135
-#define IDC_NEXTSTYLE                   136
-#define IDC_IMPORT                      137
-#define IDC_EXPORT                      138
 #define IDC_RESIZEGRIP4                 139
-#define IDC_NOUNICODEDETECTION          140
 #define IDC_COPYRIGHT                   141
-#define IDC_OPENWITHDESCR               143
-#define IDC_SAVEMRU                     144
-#define IDC_AUTOSELECT                  146
 #define IDC_FAVORITESDESCR              147
 #define IDC_INFOBOXCHECK                148
-#define IDC_CONSISTENTEOLS              149
 #define IDB_PREV                        150
-#define IDI_STYLES                      151
-#define IDC_ASCIIASUTF8                 152
 #define IDC_WEBPAGE                     153
-#define IDD_DEFENCODING                 154
-#define IDC_RESIZEGRIP3                 156
 #define IDB_NEXT                        157
-#define IDC_STYLEFORE                   158
-#define IDC_AUTOSTRIPBLANKS             159
-#define IDC_ENCODINGFROMFILEVARS        160
 #define IDC_WEBPAGE2                    161
-#define IDC_PRESERVECARET               162
 #define IDC_MODWEBPAGE2                 163
 #define IDD_ENCODING                    164
 #define IDC_MOD_PAGE2                   165
@@ -72,26 +40,19 @@
 #define IDB_ENCODING                    173
 #define IDC_EMAIL                       174
 #define IDC_NOTE2WEBPAGE                175
-#define IDD_DEFEOLMODE                  176
 #define IDC_EMAIL2                      178
 #define IDC_NOTE2WEBPAGE2               179
 #define IDD_FAVORITES                   180
 #define IDD_ADDTOFAV                    182
 #define IDC_EMAIL3                      184
-#define IDD_FILEMRU                     186
-#define IDD_CHANGENOTIFY                188
 #define IDD_MODIFYLINES                 189
 #define IDC_MOD_PAGE                    190
-#define IDC_TITLE                       192
 #define IDD_ALIGN                       193
 #define IDC_WEBPAGE3                    194
 #define IDD_ENCLOSESELECTION            195
 #define IDD_INSERTTAG                   198
 #define IDD_SORT                        200
 #define IDD_COLUMNWRAP                  202
-#define IDD_LINENUM                     203
-#define IDD_STYLESELECT                 206
-#define IDD_STYLECONFIG                 207
 #define IDD_WORDWRAP                    208
 #define IDD_LONGLINES                   209
 #define IDD_TABSETTINGS                 210
@@ -104,13 +65,9 @@
 #define IDT_TIMER_UPDATE_HOTSPOT        219
 #define IDC_SCI_VERSION                 224
 #define IDR_MAINWNDTB                   225
-#define IDC_REMOVE                      226
 #define IDC_CHECK_OCC                   228
 #define IDC_PRINTER                     229
-#define IDC_USEASREADINGFALLBACK        230
 #define IDR_ACCCUSTOMSCHEMES            231
-#define IDC_NOANSICPDETECTION           232
-#define IDC_REMEMBERSEARCHPATTERN       233
 #define IDC_DOC_MODIFIED                235
 #define IDT_TIMER_UPDATE_STATUSBAR      236
 #define IDT_TIMER_UPDATE_TOOLBAR        237
@@ -127,7 +84,6 @@
 #define IDACC_SELTOPREV                 311
 #define IDACC_VIEWSCHEMECONFIG          312
 #define IDACC_PREVIEW                   313
-#define IDC_NFOASOEM                    400
 #define IDC_COMPILER                    401
 #define IDC_SETCURLEXERTV               402
 #define IDD_READPW                      403
