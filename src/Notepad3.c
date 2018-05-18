@@ -3753,7 +3753,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
 
         UINT uWrpCol = 0;
-        if (ColumnWrapDlg(hwnd,IDD_COLUMNWRAP,&uWrpCol))
+        if (ColumnWrapDlg(hwnd,IDD_MUI_COLUMNWRAP,&uWrpCol))
         {
           iWrapCol = (DocPos)max(min(uWrpCol,(UINT)g_iLongLinesLimit),1);
           BeginWaitCursor(NULL);
@@ -5024,7 +5024,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_HELP_ABOUT:
-        ThemedDialogBox(g_hInstance, MAKEINTRESOURCE(IDD_ABOUT), hwnd, AboutDlgProc);
+        ThemedDialogBox(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
       break;
 
     case IDM_SETPASS:

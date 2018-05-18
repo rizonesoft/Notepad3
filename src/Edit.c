@@ -7087,8 +7087,8 @@ bool EditModifyLinesDlg(HWND hwnd,LPWSTR pwsz1,LPWSTR pwsz2)
   data.pwsz1 = pwsz1;  data.pwsz2 = pwsz2;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCEW(IDD_MODIFYLINES),
+              g_hLngResContainer,
+              MAKEINTRESOURCEW(IDD_MUI_MODIFYLINES),
               hwnd,
               EditModifyLinesDlgProc,
               (LPARAM)&data);
@@ -7158,8 +7158,8 @@ bool EditAlignDlg(HWND hwnd,int *piAlignMode)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCEW(IDD_ALIGN),
+              g_hLngResContainer,
+              MAKEINTRESOURCEW(IDD_MUI_ALIGN),
               hwnd,
               EditAlignDlgProc,
               (LPARAM)piAlignMode);
@@ -7228,8 +7228,8 @@ bool EditEncloseSelectionDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
   data.pwsz1 = pwszOpen;  data.pwsz2 = pwszClose;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCEW(IDD_ENCLOSESELECTION),
+              g_hLngResContainer,
+              MAKEINTRESOURCEW(IDD_MUI_ENCLOSESELECTION),
               hwnd,
               EditEncloseSelectionDlgProc,
               (LPARAM)&data);
@@ -7356,8 +7356,8 @@ bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
   data.pwsz1 = pwszOpen;  data.pwsz2 = pwszClose;
   
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCEW(IDD_INSERTTAG),
+              g_hLngResContainer,
+              MAKEINTRESOURCEW(IDD_MUI_INSERTTAG),
               hwnd,
               EditInsertTagDlgProc,
               (LPARAM)&data);
@@ -7488,8 +7488,8 @@ bool EditSortDlg(HWND hwnd,int *piSortFlags)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCEW(IDD_SORT),
+              g_hLngResContainer,
+              MAKEINTRESOURCEW(IDD_MUI_SORT),
               hwnd,
               EditSortDlgProc,
               (LPARAM)piSortFlags);

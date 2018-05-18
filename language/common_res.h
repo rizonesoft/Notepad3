@@ -109,21 +109,36 @@
 #define IDS_MUI_PREVIEW                 15015
 #define IDS_MUI_PASS_FAILURE            15016
 #define IDS_MUI_NOPASS                  15017
+#define IDS_MUI_CMDLINEHELP             15018
 
-#define IDS_MUI_CMDLINEHELP             16000
+#define IDR_MAINWND                     16000
+#define IDR_MAINWND128                  16001
+#define IDR_MAINWNDTB                   16002
+#define IDR_MAINWNDTB2                  16003
 
-#define IDD_MUI_RUN                     17000
-#define IDI_MUI_RUN                     17001
-#define IDD_MUI_FIND                    17002
-#define IDD_MUI_REPLACE                 17003
-#define IDD_MUI_OPENWITH                17004
-#define IDD_MUI_DEFENCODING             17005
-#define IDD_MUI_DEFEOLMODE              17006
-#define IDD_MUI_LINENUM                 17007
-#define IDD_MUI_FILEMRU                 17008
-#define IDD_MUI_CHANGENOTIFY            17009
-#define IDD_MUI_STYLESELECT             17010
-#define IDI_MUI_STYLES                  17011
+#define IDI_MUI_RUN                     16100
+#define IDI_MUI_STYLES                  16101
+
+#define IDB_OPEN                        16200
+#define IDB_NEXT                        16201
+#define IDB_PREV                        16202
+#define IDB_PICK                        16203
+#define IDB_ENCODING                    16204
+
+#define IDC_COPY                        16300
+
+
+#define IDD_MUI_ABOUT                   17001
+#define IDD_MUI_RUN                     17002
+#define IDD_MUI_FIND                    17003
+#define IDD_MUI_REPLACE                 17004
+#define IDD_MUI_OPENWITH                17005
+#define IDD_MUI_DEFENCODING             17006
+#define IDD_MUI_DEFEOLMODE              17007
+#define IDD_MUI_LINENUM                 17008
+#define IDD_MUI_FILEMRU                 17009
+#define IDD_MUI_CHANGENOTIFY            17010
+#define IDD_MUI_STYLESELECT             17011
 #define IDD_MUI_STYLECONFIG             17012
 #define IDD_MUI_TABSETTINGS             17013
 #define IDD_MUI_LONGLINES               17014
@@ -133,7 +148,17 @@
 #define IDD_MUI_ADDTOFAV                17018
 #define IDD_MUI_PASSWORDS               17019
 #define IDD_MUI_READPW                  17020
-
+#define IDD_MUI_COLUMNWRAP              17021
+#define IDD_MUI_MODIFYLINES             17022
+#define IDD_MUI_INSERTTAG               17023
+#define IDD_MUI_ENCLOSESELECTION        17024
+#define IDD_MUI_INFOBOX                 17025
+#define IDD_MUI_INFOBOX2                17026
+#define IDD_MUI_INFOBOX3                17027
+#define IDD_MUI_SORT                    17028
+#define IDD_MUI_RECODE                  17029
+#define IDD_MUI_ENCODING                17030
+#define IDD_MUI_ALIGN                   17031
 
 
 #define IDC_COMMANDLINE                 18000
@@ -211,11 +236,23 @@
 #define IDC_PWD_CHECK3                  18072
 #define IDC_PWD_CHECK4                  18073
 #define IDC_PWD_STATMPW                 18074
+#define IDC_COLUMNWRAP                  18075
+#define IDC_INFOBOXTEXT                 18076
+#define IDC_INFOBOXCHECK                18077
+#define IDC_INFOBOXICON                 18078
+#define IDC_RESIZEGRIP4                 18079
+#define IDC_VERSION                     18080
+#define IDC_SCI_VERSION                 18081
+#define IDC_COMPILER                    18082
+#define IDC_COPYRIGHT                   18083
+#define IDC_WEBPAGE2                    18084
+#define IDC_WEBPAGE                     18085
+#define IDR_RIZBITMAP                   18086
+#define IDC_RIZONEBMP                   18087
+#define IDC_COPYVERSTRG                 18088
+#define IDC_RICHEDITABOUT               18089
 
-                                        
-                                        
-                                        
-                                        
+
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
 #define CMD_SHIFTCTRLENTER              20002

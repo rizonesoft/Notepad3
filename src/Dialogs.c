@@ -246,13 +246,13 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
   int idDlg;
   switch (iType) {
   case MBYESNO:
-    idDlg = IDD_INFOBOX2;
+    idDlg = IDD_MUI_INFOBOX2;
     break;
   case MBOKCANCEL:
-    idDlg = IDD_INFOBOX3;
+    idDlg = IDD_MUI_INFOBOX3;
     break;
   default:
-    idDlg = IDD_INFOBOX;
+    idDlg = IDD_MUI_INFOBOX;
     break;
   }
 
@@ -261,7 +261,7 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : g_hwndMain;
 
-  return ThemedDialogBoxParam(g_hInstance, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
+  return ThemedDialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
 }
 
 
@@ -1865,7 +1865,7 @@ bool ColumnWrapDlg(HWND hwnd,UINT uidDlg, UINT *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
+              g_hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               ColumnWrapDlgProc,(LPARAM)iNumber);
@@ -2480,8 +2480,8 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
   dd.cyDlg = cyEncodingDlg;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_ENCODING),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_ENCODING),
               hwnd,
               SelectEncodingDlgProc,
               (LPARAM)&dd);
@@ -2518,8 +2518,8 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
   dd.cyDlg = cyRecodeDlg;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_RECODE),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_RECODE),
               hwnd,
               SelectEncodingDlgProc,
               (LPARAM)&dd);
