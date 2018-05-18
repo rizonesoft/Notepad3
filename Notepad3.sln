@@ -22,25 +22,30 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ced", "ced\ced.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_de_de", "language\np3_de_de\np3_de_de.vcxproj", "{146D0122-33C6-4C1B-9E7A-178DEC80842E}"
 	ProjectSection(ProjectDependencies) = postProject
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E} = {ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_fr_fr", "language\np3_fr_fr\np3_fr_fr.vcxproj", "{EC255B64-2C2F-4CB6-9D40-4542893FE5E6}"
 	ProjectSection(ProjectDependencies) = postProject
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E} = {ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_es", "language\np3_es_es\np3_es_es.vcxproj", "{3B8C289D-FF47-4237-AD7B-0702230F41A3}"
 	ProjectSection(ProjectDependencies) = postProject
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E} = {ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_af_af", "language\np3_af_af\np3_af_af.vcxproj", "{C8E80B4C-C0FD-4119-A05A-AB372A61007F}"
 	ProjectSection(ProjectDependencies) = postProject
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E} = {ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_uk", "language\np3_en_uk\np3_en_uk.vcxproj", "{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_us", "language\np3_en_us\np3_en_us.vcxproj", "{9DC82B0D-2484-4925-92AD-1237C64CCB78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -134,6 +139,14 @@ Global
 		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|Win32.Build.0 = Release|Win32
 		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|x64.ActiveCfg = Release|x64
 		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|x64.Build.0 = Release|x64
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Debug|Win32.Build.0 = Debug|Win32
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Debug|x64.ActiveCfg = Debug|x64
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Debug|x64.Build.0 = Debug|x64
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Release|Win32.ActiveCfg = Release|Win32
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Release|Win32.Build.0 = Release|Win32
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Release|x64.ActiveCfg = Release|x64
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
