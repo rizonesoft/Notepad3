@@ -11,19 +11,15 @@
 
 
 
-
-#define IDC_FAVORITESDIR                109
 #define IDC_COLUMNWRAP                  110
 #define IDC_INFOBOXICON                 111
 #define IDC_COPY                        112
 #define IDR_POPUPMENU                   115
-#define IDC_GETFAVORITESDIR             123
 #define IDC_INFOBOXTEXT                 124
 #define IDB_OPEN                        125
 #define IDR_ACCFINDREPLACE              126
 #define IDC_RESIZEGRIP4                 139
 #define IDC_COPYRIGHT                   141
-#define IDC_FAVORITESDESCR              147
 #define IDC_INFOBOXCHECK                148
 #define IDB_PREV                        150
 #define IDC_WEBPAGE                     153
@@ -42,8 +38,6 @@
 #define IDC_NOTE2WEBPAGE                175
 #define IDC_EMAIL2                      178
 #define IDC_NOTE2WEBPAGE2               179
-#define IDD_FAVORITES                   180
-#define IDD_ADDTOFAV                    182
 #define IDC_EMAIL3                      184
 #define IDD_MODIFYLINES                 189
 #define IDC_MOD_PAGE                    190
@@ -53,10 +47,6 @@
 #define IDD_INSERTTAG                   198
 #define IDD_SORT                        200
 #define IDD_COLUMNWRAP                  202
-#define IDD_WORDWRAP                    208
-#define IDD_LONGLINES                   209
-#define IDD_TABSETTINGS                 210
-#define IDD_PAGESETUP                   211
 #define IDD_INFOBOX                     212
 #define IDD_INFOBOX2                    213
 #define IDD_INFOBOX3                    214
@@ -66,7 +56,6 @@
 #define IDC_SCI_VERSION                 224
 #define IDR_MAINWNDTB                   225
 #define IDC_CHECK_OCC                   228
-#define IDC_PRINTER                     229
 #define IDR_ACCCUSTOMSCHEMES            231
 #define IDC_DOC_MODIFIED                235
 #define IDT_TIMER_UPDATE_STATUSBAR      236
@@ -86,16 +75,6 @@
 #define IDACC_PREVIEW                   313
 #define IDC_COMPILER                    401
 #define IDC_SETCURLEXERTV               402
-#define IDD_READPW                      403
-#define IDC_CHECK1                      404
-#define IDC_EDIT1                       405
-#define IDC_EDIT2                       406
-#define IDC_CHECK2                      407
-#define IDC_STATICPW                    408
-#define IDC_CHECK3                      409
-#define IDD_PASSWORDS                   411
-#define IDC_EDIT3                       412
-#define IDC_CHECK4                      418
 #define ___SCI_CMD__SCEN_SETFOCUS___    512
 #define IDR_MAINWNDTB2                  550
 #define IDR_MAINWND128                  551

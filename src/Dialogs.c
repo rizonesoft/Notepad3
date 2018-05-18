@@ -1143,7 +1143,7 @@ bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
   ZeroMemory(&dliFavorite, sizeof(DLITEM));
   dliFavorite.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FAVORITES),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
                              hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite))
   {
     StringCchCopyN(lpstrFile,MAX_PATH,dliFavorite.szFileName,MAX_PATH);
@@ -1224,8 +1224,8 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
   StringCchCopy(pszName,COUNTOF(pszName),lpszName);
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_ADDTOFAV),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_ADDTOFAV),
               hwnd,
               AddToFavDlgProc,(LPARAM)pszName);
 
@@ -1986,7 +1986,7 @@ bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
+              g_hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               WordWrapSettingsDlgProc,(LPARAM)iNumber);
@@ -2085,7 +2085,7 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
+              g_hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               LongLineSettingsDlgProc,(LPARAM)iNumber);
@@ -2200,7 +2200,7 @@ bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
+              g_hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               TabSettingsDlgProc,(LPARAM)iNumber);

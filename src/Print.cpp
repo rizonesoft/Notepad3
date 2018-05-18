@@ -562,8 +562,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
 extern "C" void EditPrintSetup(HWND hwnd)
 {
-  DLGTEMPLATE* pDlgTemplate =
-    LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_PAGESETUP),g_hInstance);
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_MUI_PAGESETUP),g_hLngResContainer);
 
   PAGESETUPDLG pdlg;
   ZeroMemory(&pdlg,sizeof(PAGESETUPDLG));

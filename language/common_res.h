@@ -3,6 +3,8 @@
 //{{NO_DEPENDENCIES}}
 // common language (MUI) defines
 //
+#define IDC_STATIC                       (-1)
+
 #define IDR_MUI_MAINMENU                10001
 #define IDR_MUI_POPUPMENU               10002
 
@@ -110,8 +112,6 @@
 
 #define IDS_MUI_CMDLINEHELP             16000
 
-
-
 #define IDD_MUI_RUN                     17000
 #define IDI_MUI_RUN                     17001
 #define IDD_MUI_FIND                    17002
@@ -125,6 +125,14 @@
 #define IDD_MUI_STYLESELECT             17010
 #define IDI_MUI_STYLES                  17011
 #define IDD_MUI_STYLECONFIG             17012
+#define IDD_MUI_TABSETTINGS             17013
+#define IDD_MUI_LONGLINES               17014
+#define IDD_MUI_WORDWRAP                17015
+#define IDD_MUI_PAGESETUP               17016
+#define IDD_MUI_FAVORITES               17017
+#define IDD_MUI_ADDTOFAV                17018
+#define IDD_MUI_PASSWORDS               17019
+#define IDD_MUI_READPW                  17020
 
 
 
@@ -191,9 +199,23 @@
 #define IDC_EXPORT                      18060
 #define IDC_TITLE                       18061
 #define IDC_STYLEEDIT                   18062
+#define IDC_PRINTER                     18063
+#define IDC_FAVORITESDIR                18064
+#define IDC_GETFAVORITESDIR             18065
+#define IDC_FAVORITESDESCR              18066
+#define IDC_PWD_EDIT1                   18067
+#define IDC_PWD_EDIT2                   18068
+#define IDC_PWD_EDIT3                   18069
+#define IDC_PWD_CHECK1                  18070
+#define IDC_PWD_CHECK2                  18071
+#define IDC_PWD_CHECK3                  18072
+#define IDC_PWD_CHECK4                  18073
+#define IDC_PWD_STATMPW                 18074
 
-
-
+                                        
+                                        
+                                        
+                                        
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
 #define CMD_SHIFTCTRLENTER              20002

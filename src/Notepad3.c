@@ -4529,7 +4529,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_WORDWRAPSETTINGS:
-      if (WordWrapSettingsDlg(hwnd,IDD_WORDWRAP,&iWordWrapIndent)) {
+      if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP,&iWordWrapIndent)) {
         _SetWordWrapping(g_hwndEdit);
       }
       break;
@@ -4556,7 +4556,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_LONGLINESETTINGS:
-      if (LongLineSettingsDlg(hwnd,IDD_LONGLINES,&g_iLongLinesLimit)) {
+      if (LongLineSettingsDlg(hwnd,IDD_MUI_LONGLINES,&g_iLongLinesLimit)) {
         bMarkLongLines = true;
         SendMessage(g_hwndEdit, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
         Style_SetLongLineColors(g_hwndEdit);
@@ -4577,7 +4577,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TABSETTINGS:
-      if (TabSettingsDlg(hwnd,IDD_TABSETTINGS,NULL))
+      if (TabSettingsDlg(hwnd,IDD_MUI_TABSETTINGS,NULL))
       {
         SendMessage(g_hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
         SendMessage(g_hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
