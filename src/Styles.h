@@ -108,6 +108,7 @@ void   Style_SetStyles(HWND,int,LPCWSTR,bool);
 bool   Style_IsCurLexerStandard();
 int    Style_GetCurrentLexerRID();
 void   Style_GetCurrentLexerName(LPWSTR,int);
+void   Style_GetStdLexerName(LPWSTR lpszName, int cchName);
 int    Style_GetLexerIconId(PEDITLEXER);
 bool   Style_HasLexerForExt(LPCWSTR);
 HTREEITEM Style_AddLexerToTreeView(HWND,PEDITLEXER);

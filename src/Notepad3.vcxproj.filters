@@ -182,6 +182,9 @@
     <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.h">
       <Filter>CED\compact_enc_det</Filter>
     </ClInclude>
+    <ClInclude Include="..\language\common_res.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">
@@ -240,6 +243,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Notepad3.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\language\common_res.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

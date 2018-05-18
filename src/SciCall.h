@@ -174,6 +174,11 @@ DeclareSciCallV2(SetSelectionNAnchor, SETSELECTIONNANCHOR, DocPosU, selnum, DocP
 DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 
+// Zoom
+DeclareSciCallR0(GetZoom, GETZOOM, int)
+DeclareSciCallV1(SetZoom, SETZOOM, int, zoom)
+DeclareSciCallV0(ZoomIn, ZOOMIN)
+DeclareSciCallV0(ZoomOut, ZOOMOUT)
 
 // Operations
 DeclareSciCallV0(Cut, CUT)

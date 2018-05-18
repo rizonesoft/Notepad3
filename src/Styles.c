@@ -44,6 +44,7 @@
 #include "styles.h"
 
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
 
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
@@ -3261,7 +3262,7 @@ bool Style_Import(HWND hwnd)
   OPENFILENAME ofn;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetString(IDS_FILTER_INI,szFilter,COUNTOF(szFilter));
+  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -3311,7 +3312,7 @@ bool Style_Export(HWND hwnd)
   DWORD dwError = ERROR_SUCCESS;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetString(IDS_FILTER_INI,szFilter,COUNTOF(szFilter));
+  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -3342,7 +3343,7 @@ bool Style_Export(HWND hwnd)
     LocalFree(pIniSection);
 
     if (dwError != ERROR_SUCCESS) {
-      MsgBox(MBINFO,IDS_EXPORT_FAIL,szFile);
+      MsgBoxLng(MBINFO,IDS_MUI_EXPORT_FAIL,szFile);
     }
     return(true);
   }
@@ -3371,11 +3372,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // first set standard lexer's default values
   if (IsLexerStandard(pLexNew)) {
     g_pLexCurrent = pLexNew;
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, false);
+    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd); // sync
   }
   else {
     g_pLexCurrent = GetCurrentStdLexer();
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, true);
   }
 
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
@@ -4488,6 +4488,9 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 {
   bool const use2ndDefStyle = Style_GetUse2ndDefault();
   Style_SetUse2ndDefault(use2ndDefStyle ? false : true); // swap
+  if (IsLexerStandard(g_pLexCurrent)) {
+    g_pLexCurrent = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard; // sync
+  }
   Style_SetLexer(hwnd,g_pLexCurrent);
 }
 
@@ -4602,7 +4605,7 @@ extern WCHAR g_tchFileDlgFilters[XXXL_BUFFER];
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
   if (StringCchLenW(g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters)) == 0) {
-    GetString(IDS_FILTER_ALL, lpszFilter, cchFilter);
+    GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
   }
   else {
     StringCchCopyN(lpszFilter,cchFilter,g_tchFileDlgFilters,cchFilter - 2);
@@ -5576,9 +5579,11 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Size values are relative to BaseFontSize/CurrentFontSize
+  POINT dpi = GetSystemDpi();
   float  fBaseFontSize = _GetCurrentFontSize();
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
     fBaseFontSize = (float)max(0.0, fBaseFontSize);
+    fBaseFontSize = (float)MulDiv((int)fBaseFontSize, (dpi.x + dpi.y)/2, USER_DEFAULT_SCREEN_DPI);
     //SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (int)fBaseFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
     if (iStyle == STYLE_DEFAULT) {
@@ -5686,6 +5691,18 @@ void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
 {
   if (!GetString(g_pLexCurrent->resID, lpszName, cchName)) {
     StringCchCopyW(lpszName, cchName, g_pLexCurrent->pszName);
+  }
+}
+
+
+//=============================================================================
+//
+//  Style_GetStdLexerName()
+//
+void Style_GetStdLexerName(LPWSTR lpszName, int cchName)
+{
+  if (!GetString(lexStandard.resID, lpszName, cchName)) {
+    StringCchCopyW(lpszName, cchName, lexStandard.pszName);
   }
 }
 
@@ -5897,13 +5914,13 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           SetDlgPos(hwnd, xCustomSchemesDlg, yCustomSchemesDlg);
 
         HMENU hmenu = GetSystemMenu(hwnd, false);
-        GetString(IDS_PREVIEW, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_PREVIEW, tchBuf);
+        GetLngString(IDS_MUI_PREVIEW, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchBuf);
         InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-        GetString(IDS_SAVEPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
-        GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
+        GetLngString(IDS_MUI_SAVEPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SAVEPOS, tchBuf);
+        GetLngString(IDS_MUI_RESETPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, tchBuf);
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
       }
       return true;
@@ -5965,11 +5982,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
     case WM_SYSCOMMAND:
-      if (wParam == IDS_SAVEPOS) {
+      if (wParam == IDS_MUI_SAVEPOS) {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_SAVEPOS, 0), 0);
         return true;
       }
-      else if (wParam == IDS_RESETPOS) {
+      else if (wParam == IDS_MUI_RESETPOS) {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_RESETPOS, 0), 0);
         return true;
       }
@@ -6338,7 +6355,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           APPLY_DIALOG_ITEM_TEXT;
           g_fStylesModified = true;
           if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0)) {
-            MsgBox(MBWARN, IDS_SETTINGSNOTSAVED);
+            MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
             g_fWarnedNoIniFile = true;
           }
           //EndDialog(hwnd,IDOK);
@@ -6407,8 +6424,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 //
 HWND Style_CustomizeSchemesDlg(HWND hwnd)
 {
-  HWND hDlg = CreateThemedDialogParam(g_hInstance,
-                                      MAKEINTRESOURCE(IDD_STYLECONFIG),
+  HWND hDlg = CreateThemedDialogParam(g_hLngResContainer,
+                                      MAKEINTRESOURCE(IDD_MUI_STYLECONFIG),
                                       GetParent(hwnd),
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
@@ -6658,8 +6675,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 //
 void Style_SelectLexerDlg(HWND hwnd)
 {
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,
-                                   MAKEINTRESOURCE(IDD_STYLESELECT),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,
+                                   MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
     Style_SetLexer(hwnd, g_pLexCurrent);

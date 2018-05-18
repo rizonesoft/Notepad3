@@ -70,15 +70,14 @@ typedef enum {
 
 
 //==== Toolbar Style ==========================================================
-#define WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | \
-                    TBSTYLE_TOOLTIPS | TBSTYLE_FLAT | TBSTYLE_ALTDRAG | \
-                    TBSTYLE_LIST | CCS_NODIVIDER | CCS_NOPARENTALIGN | \
-                    CCS_ADJUSTABLE)
+#define NP3_WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | \
+                        TBSTYLE_TOOLTIPS | TBSTYLE_FLAT | TBSTYLE_ALTDRAG | TBSTYLE_LIST | \
+                        CCS_NODIVIDER | CCS_NOPARENTALIGN | CCS_ADJUSTABLE)
 
 
 //==== ReBar Style ============================================================
-#define WS_REBAR (WS_CHILD | WS_CLIPCHILDREN | WS_BORDER | RBS_VARHEIGHT | \
-                  RBS_BANDBORDERS | CCS_NODIVIDER | CCS_NOPARENTALIGN)
+#define NP3_WS_REBAR (WS_CHILD | WS_CLIPCHILDREN | WS_BORDER | RBS_VARHEIGHT | \
+                      RBS_BANDBORDERS | CCS_NODIVIDER | CCS_NOPARENTALIGN)
 
 
 //==== Ids ====================================================================
