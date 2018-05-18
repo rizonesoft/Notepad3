@@ -42,6 +42,7 @@
 
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
+extern LANGID    g_iPrefLngLocID;
 
 //=============================================================================
 //
@@ -278,7 +279,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     FORMAT_MESSAGE_IGNORE_INSERTS,
     NULL,
     dwErrID,
-    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // g_iPrefLngLocID ?
+    g_iPrefLngLocID,
     (LPTSTR)&lpMsgBuf,
     0, NULL);
 
@@ -288,7 +289,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 40) * sizeof(WCHAR));
 
   StringCchPrintf((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(WCHAR),
-    L"'%s'  failed with error %d:\n%s", lpszFunction, dwErrID, lpMsgBuf);
+    L"Error: '%s' failed with error id %d:\n%s", lpszFunction, dwErrID, lpMsgBuf);
 
   MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
 

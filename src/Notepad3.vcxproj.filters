@@ -245,6 +245,9 @@
     <ResourceCompile Include="Notepad3.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+    <ResourceCompile Include="..\language\common_res.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="..\res\Notepad3.exe.manifest">

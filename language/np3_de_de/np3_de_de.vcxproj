@@ -109,10 +109,12 @@
     </Link>
     <ResourceCompile>
       <Culture>0x0407</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\de-DE"
 "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0407 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\de-DE\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\de-DE\np3lng.dll.mui"
 </Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -134,10 +136,12 @@
     </Link>
     <ResourceCompile>
       <Culture>0x0407</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\de-DE"
 "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0407 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\de-DE\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\de-DE\np3lng.dll.mui"
 </Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -163,10 +167,12 @@
     </Link>
     <ResourceCompile>
       <Culture>0x0407</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\de-DE"
 "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0407 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\de-DE\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\de-DE\np3lng.dll.mui"
 </Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -192,10 +198,12 @@
     </Link>
     <ResourceCompile>
       <Culture>0x0407</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\de-DE"
 "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0407 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\de-DE\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\de-DE\np3lng.dll.mui"
 </Command>
     </PostBuildEvent>
     <PostBuildEvent>
@@ -218,7 +226,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="dialogs_de_de.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ResourceCompile>
+    <ResourceCompile Include="menu_de_de.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ResourceCompile>
     <ResourceCompile Include="np3_de_de.rc" />
+    <ResourceCompile Include="strings_de_de.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

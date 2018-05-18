@@ -134,6 +134,7 @@
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;BOOKMARK_EDITION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
@@ -153,12 +154,8 @@
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)de-DE\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)fr-FR\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)es-ES\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)af-AF\np3lng.dll.mui"
-
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Merge MUIs</Message>
@@ -200,6 +197,7 @@
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>_WIN64;BOOKMARK_EDITION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
@@ -219,12 +217,8 @@
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)de-DE\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)fr-FR\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)es-ES\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)af-AF\np3lng.dll.mui"
-
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Merge MUIs</Message>
@@ -268,6 +262,7 @@
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;BOOKMARK_EDITION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
@@ -287,12 +282,8 @@
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)de-DE\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)fr-FR\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)es-ES\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)af-AF\np3lng.dll.mui"
-
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Merge MUIs</Message>
@@ -335,6 +326,7 @@
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>_WIN64;BOOKMARK_EDITION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <ProjectReference>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
@@ -354,12 +346,8 @@
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)de-DE\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)fr-FR\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)es-ES\np3lng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)np3lng.dll" -e "$(TargetDir)af-AF\np3lng.dll.mui"
-
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Merge MUIs</Message>
@@ -434,6 +422,12 @@
     <None Include="Notepad3.ver" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="..\language\common_res.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ResourceCompile>
     <ResourceCompile Include="Notepad3.rc" />
   </ItemGroup>
   <ItemGroup>

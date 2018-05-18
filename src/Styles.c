@@ -3343,7 +3343,7 @@ bool Style_Export(HWND hwnd)
     LocalFree(pIniSection);
 
     if (dwError != ERROR_SUCCESS) {
-      MsgBox(MBINFO,IDS_EXPORT_FAIL,szFile);
+      MsgBoxLng(MBINFO,IDS_MUI_EXPORT_FAIL,szFile);
     }
     return(true);
   }
@@ -5697,6 +5697,18 @@ void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
 
 //=============================================================================
 //
+//  Style_GetStdLexerName()
+//
+void Style_GetStdLexerName(LPWSTR lpszName, int cchName)
+{
+  if (!GetString(lexStandard.resID, lpszName, cchName)) {
+    StringCchCopyW(lpszName, cchName, lexStandard.pszName);
+  }
+}
+
+
+//=============================================================================
+//
 //  Style_GetLexerIconId()
 //
 int Style_GetLexerIconId(PEDITLEXER plex)
@@ -5902,13 +5914,13 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           SetDlgPos(hwnd, xCustomSchemesDlg, yCustomSchemesDlg);
 
         HMENU hmenu = GetSystemMenu(hwnd, false);
-        GetString(IDS_PREVIEW, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_PREVIEW, tchBuf);
+        GetLngString(IDS_MUI_PREVIEW, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchBuf);
         InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-        GetString(IDS_SAVEPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
-        GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
+        GetLngString(IDS_MUI_SAVEPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SAVEPOS, tchBuf);
+        GetLngString(IDS_MUI_RESETPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, tchBuf);
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
       }
       return true;
@@ -5970,11 +5982,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
     case WM_SYSCOMMAND:
-      if (wParam == IDS_SAVEPOS) {
+      if (wParam == IDS_MUI_SAVEPOS) {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_SAVEPOS, 0), 0);
         return true;
       }
-      else if (wParam == IDS_RESETPOS) {
+      else if (wParam == IDS_MUI_RESETPOS) {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_RESETPOS, 0), 0);
         return true;
       }
@@ -6343,7 +6355,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           APPLY_DIALOG_ITEM_TEXT;
           g_fStylesModified = true;
           if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0)) {
-            MsgBox(MBWARN, IDS_SETTINGSNOTSAVED);
+            MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
             g_fWarnedNoIniFile = true;
           }
           //EndDialog(hwnd,IDOK);
@@ -6412,8 +6424,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 //
 HWND Style_CustomizeSchemesDlg(HWND hwnd)
 {
-  HWND hDlg = CreateThemedDialogParam(g_hInstance,
-                                      MAKEINTRESOURCE(IDD_STYLECONFIG),
+  HWND hDlg = CreateThemedDialogParam(g_hLngResContainer,
+                                      MAKEINTRESOURCE(IDD_MUI_STYLECONFIG),
                                       GetParent(hwnd),
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
@@ -6663,8 +6675,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 //
 void Style_SelectLexerDlg(HWND hwnd)
 {
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,
-                                   MAKEINTRESOURCE(IDD_STYLESELECT),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,
+                                   MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
     Style_SetLexer(hwnd, g_pLexCurrent);

@@ -109,13 +109,16 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-UK"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-UK\np3lng.dll.mui"</Command>
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-UK\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\en-UK\np3lng.dll.mui"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
       <Culture>0x0809</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -133,13 +136,16 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-UK"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-UK\np3lng.dll.mui"</Command>
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-UK\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\en-UK\np3lng.dll.mui"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
       <Culture>0x0809</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -161,13 +167,16 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-UK"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-UK\np3lng.dll.mui"</Command>
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-UK\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\en-UK\np3lng.dll.mui"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
       <Culture>0x0809</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -189,13 +198,16 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-UK"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\en-UK\np3lng.dll.mui"</Command>
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-UK\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\en-UK\np3lng.dll.mui"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
       <Culture>0x0809</Culture>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
