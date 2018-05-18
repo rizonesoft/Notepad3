@@ -113,12 +113,35 @@
 
 #define IDD_MUI_RUN                     17000
 #define IDI_MUI_RUN                     17001
-
-
+#define IDD_MUI_FIND                    17002
+#define IDD_MUI_REPLACE                 17003
 
 
 #define IDC_COMMANDLINE                 18000
 #define IDC_SEARCHEXE                   18001
+#define IDC_FINDTEXT                    18002
+#define IDC_REPLACETEXT                 18003
+#define IDC_FINDCASE                    18004
+#define IDC_FINDWORD                    18005
+#define IDC_FINDSTART                   18006
+#define IDC_FINDTRANSFORMBS             18007
+#define IDC_FINDREGEXP                  18008
+#define IDC_DOT_MATCH_ALL               18009
+#define IDC_NOWRAP                      18010
+#define IDC_FINDCLOSE                   18011
+#define IDC_ALL_OCCURRENCES             18012
+#define IDC_WILDCARDSEARCH              18013
+#define IDC_FINDPREV                    18014
+#define IDC_REPLACE                     18015
+#define IDC_REPLACEINSEL                18016
+#define IDC_REPLACEALL                  18017
+#define IDC_SWAPSTRG                    18018
+#define IDC_TOGGLEFINDREPLACE           18019
+#define IDC_BACKSLASHHELP               18020
+#define IDC_REGEXPHELP                  18021
+#define IDC_WILDCARDHELP                18022
+#define IDS_FR_STATUS_TEXT              18023
+#define IDC_TOGGLE_VISIBILITY           18024
 
 
 
