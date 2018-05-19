@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Von Microsoft Visual C++ generierte Includedatei.
-// Verwendet durch np3_af_af.rc
+// Verwendet durch np3_af_za.rc
 //
 
 // Next default values for new objects
