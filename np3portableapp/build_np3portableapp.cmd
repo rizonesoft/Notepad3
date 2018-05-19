@@ -35,7 +35,7 @@ set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\Portab
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
-set NP3_LANGUAGE_SET=af-AF de-DE en-UK es-ES fr-FR
+set NP3_LANGUAGE_SET=af-ZA de-DE en-UK es-ES fr-FR
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141

@@ -133,8 +133,8 @@ bool          g_bFindReplCopySelOrClip = true;
 WCHAR         g_tchPrefLngLocName[MINI_BUFFER];
 LANGID        g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
 HMODULE       g_hLngResContainer = NULL;
-static WCHAR* const   g_tchAvailableLanguages = L"af-AF fr-FR de-DE es-ES en-UK";
-static LANGID const  g_iAvailableLanguages[5] = { 1078, 1036, 1031, 3082, 2057 };
+static WCHAR* const   g_tchAvailableLanguages = L"af-ZA fr-FR de-DE es-ES en-UK"; // en-US internal
+static LANGID const  g_iAvailableLanguages[5] = { 1078, 1036, 1031, 3082, 2057 }; // 1033 internal
 
 WCHAR         g_tchFileDlgFilters[XXXL_BUFFER] = { L'\0' };
 
