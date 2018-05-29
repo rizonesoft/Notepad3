@@ -38,7 +38,9 @@
 #include "encoding.h"
 
 
-extern HINSTANCE g_hInstance;
+//extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
+
 extern bool bLoadASCIIasUTF8;
 
 //=============================================================================
@@ -470,7 +472,7 @@ void Encoding_SetLabel(int iEncoding) {
   if (g_Encodings[iEncoding].wchLabel[0] == L'\0') {
     WCHAR wch1[128] = { L'\0' };
     WCHAR wch2[128] = { L'\0' };
-    GetString(g_Encodings[iEncoding].idsName, wch1, COUNTOF(wch1));
+    GetLngString(g_Encodings[iEncoding].idsName, wch1, COUNTOF(wch1));
     WCHAR *pwsz = StrChr(wch1, L';');
     if (pwsz) {
       pwsz = StrChr(CharNext(pwsz), L';');
@@ -576,7 +578,7 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
   PENCODINGENTRY pEE = LocalAlloc(LPTR, COUNTOF(g_Encodings) * sizeof(ENCODINGENTRY));
   for (i = 0; i < COUNTOF(g_Encodings); i++) {
     pEE[i].id = i;
-    GetString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
+    GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
   }
   qsort(pEE, COUNTOF(g_Encodings), sizeof(ENCODINGENTRY), CmpEncoding);
 
@@ -662,7 +664,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
   PENCODINGENTRY pEE = LocalAlloc(LPTR, COUNTOF(g_Encodings) * sizeof(ENCODINGENTRY));
   for (i = 0; i < COUNTOF(g_Encodings); i++) {
     pEE[i].id = i;
-    GetString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
+    GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
   }
   qsort(pEE, COUNTOF(g_Encodings), sizeof(ENCODINGENTRY), CmpEncoding);
 

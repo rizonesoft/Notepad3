@@ -1070,7 +1070,7 @@ bool StatusSetTextID(HWND hwnd,UINT nPart,UINT uID)
     return true;
   }
 
-  if (!GetString(uID,szText,256))
+  if (!GetLngString(uID,szText,256))
     return false;
 
   return (bool)SendMessage(hwnd,SB_SETTEXT,uFlags,(LPARAM)szText);
@@ -1195,22 +1195,6 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
   else
     return (!(ustate & (MF_GRAYED|MF_DISABLED)));
 
-}
-
-
-//=============================================================================
-//
-//  FormatString()
-//
-int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
-{
-  static WCHAR pBuffer[XHUGE_BUFFER];
-  pBuffer[0] = L'\0';
-
-  if (GetString(uIdFormat, pBuffer, nOutput)) {
-    StringCchVPrintf(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
-  }
-  return (int)StringCchLen(lpOutput, nOutput);
 }
 
 //=============================================================================

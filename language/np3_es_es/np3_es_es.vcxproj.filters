@@ -52,5 +52,8 @@
     <ResourceCompile Include="strings_es_es.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+    <ResourceCompile Include="lexer_es_es.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
