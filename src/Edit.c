@@ -4939,8 +4939,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 {
   static LPEDITFINDREPLACE sg_pefrData = NULL;
   static DocPos s_InitialSearchStart = 0;
-  static DocPos s_InitialAnchortPos = 0;
-  static DocPos s_InitialCaretPos = 0;
+  static DocLn  s_InitialTopLine = -1;
+
   static RegExResult_t regexMatch = INVALID;
 
   static COLORREF rgbRed = RGB(255, 170, 170);
@@ -5114,14 +5114,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       hBrushGreen = CreateSolidBrush(rgbGreen);
       hBrushBlue = CreateSolidBrush(rgbBlue);
 
-      EditEnsureSelectionVisible(hwnd);
+      s_InitialSearchStart = SciCall_GetSelectionStart();
 
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
 
       _SetSearchFlags(hwnd, sg_pefrData);
-      s_InitialSearchStart = SciCall_GetSelectionStart();
-      s_InitialAnchortPos = SciCall_GetAnchor();
-      s_InitialCaretPos = SciCall_GetCurrentPos();
       _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
     }
     return true;
@@ -5148,8 +5145,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
           MarkAllOccurrences(50, true);
 
-          EditSelectEx(g_hwndEdit, s_InitialAnchortPos, s_InitialCaretPos, -1, -1);
-          EditEnsureSelectionVisible(g_hwndEdit);
+          if (s_InitialTopLine >= 0) { 
+            SciCall_SetFirstVisibleLine(s_InitialTopLine); 
+            s_InitialTopLine = -1;
+          }
 
           CmdMessageQueue_t* pmqc = NULL;
           CmdMessageQueue_t* dummy;
@@ -5170,18 +5169,31 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
     case WM_ACTIVATE:
       {
-        s_InitialSearchStart = SciCall_GetSelectionStart();
-        s_InitialAnchortPos = SciCall_GetAnchor();
-        s_InitialCaretPos = SciCall_GetCurrentPos();
+        switch (LOWORD(wParam)) 
+        {
+        case WA_INACTIVE:
+          //~s_InitialTopLine = -1;
+          //~g_bFindReplCopySelOrClip = true;
+          break;
 
-        DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !SciCall_IsSelectionEmpty());
-      
-        if (sg_pefrData->bMarkOccurences) {
-          _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
+        case WA_CLICKACTIVE:
+          // mouse click activation
+        case WA_ACTIVE:
+        default:
+
+          s_InitialSearchStart = SciCall_GetSelectionStart();
+
+          if (s_InitialTopLine < 0) {
+            s_InitialTopLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+          }
+
+          DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !SciCall_IsSelectionEmpty());
+
+          if (sg_pefrData->bMarkOccurences) {
+            _DelayMarkAll(hwnd, 50, s_InitialSearchStart);
+          }
+          break;
         }
-        //if (LOWORD(wParam) == WA_INACTIVE) {
-        //  g_bFindReplCopySelOrClip = true;
-        //}
       }
       return false;
 
@@ -5194,8 +5206,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       case IDC_DOC_MODIFIED:
         sg_pefrData->bStateChanged = true;
         s_InitialSearchStart = SciCall_GetSelectionStart();
-        s_InitialAnchortPos = SciCall_GetAnchor();
-        s_InitialCaretPos = SciCall_GetCurrentPos();
+        s_InitialTopLine = -1;
         break;
 
       case IDC_FINDTEXT:
@@ -5300,7 +5311,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
               if (match != MATCH) { 
                 EditClearAllOccurrenceMarkers(g_hwndEdit); 
-                EditSelectEx(g_hwndEdit, s_InitialAnchortPos, s_InitialCaretPos, -1, -1); 
+                if (s_InitialTopLine >= 0) { SciCall_SetFirstVisibleLine(s_InitialTopLine); }
               }
               if (EditToggleView(g_hwndEdit, false)) { EditHideNotMarkedLineRange(g_hwndEdit, -1, -1, true); }
               _OBSERVE_NOTIFY_CHANGE_;
@@ -5517,8 +5528,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionEnd(hwnd); }
           EditFindNext(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTONEXT), HIBYTE(GetKeyState(VK_F3)));
           s_InitialSearchStart = SciCall_GetSelectionStart();
-          s_InitialAnchortPos = SciCall_GetAnchor();
-          s_InitialCaretPos = SciCall_GetCurrentPos();
+          s_InitialTopLine = -1;
           break;
 
         case IDC_FINDPREV: // find previous
@@ -5527,8 +5537,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionStart(hwnd);  }
           EditFindPrev(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTOPREV), HIBYTE(GetKeyState(VK_F3)));
           s_InitialSearchStart = SciCall_GetSelectionStart();
-          s_InitialAnchortPos = SciCall_GetAnchor();
-          s_InitialCaretPos = SciCall_GetCurrentPos();
+          s_InitialTopLine = -1;
           break;
 
         case IDC_REPLACE:
