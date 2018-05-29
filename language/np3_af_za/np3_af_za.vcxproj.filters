@@ -46,7 +46,10 @@
     <ResourceCompile Include="menu_af_za.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="strings_af_za.rc">
+    <ResourceCompile Include="strings_af-ZAf_za.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="encode_af_za.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
