@@ -174,6 +174,11 @@ DeclareSciCallV2(SetSelectionNAnchor, SETSELECTIONNANCHOR, DocPosU, selnum, DocP
 DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 
+// Zoom
+DeclareSciCallR0(GetZoom, GETZOOM, int)
+DeclareSciCallV1(SetZoom, SETZOOM, int, zoom)
+DeclareSciCallV0(ZoomIn, ZOOMIN)
+DeclareSciCallV0(ZoomOut, ZOOMOUT)
 
 // Operations
 DeclareSciCallV0(Cut, CUT)
@@ -253,11 +258,10 @@ DeclareSciCallR0(GetXoffset, GETXOFFSET, int)
 DeclareSciCallV1(SetXoffset, SETXOFFSET, int, offset)
 DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
 
-
-
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)
 DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line)
+DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line)
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 
 

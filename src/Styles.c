@@ -3371,11 +3371,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // first set standard lexer's default values
   if (IsLexerStandard(pLexNew)) {
     g_pLexCurrent = pLexNew;
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, false);
+    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd); // sync
   }
   else {
     g_pLexCurrent = GetCurrentStdLexer();
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_USE2NDDEFAULT, true);
   }
 
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
@@ -4488,6 +4487,9 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 {
   bool const use2ndDefStyle = Style_GetUse2ndDefault();
   Style_SetUse2ndDefault(use2ndDefStyle ? false : true); // swap
+  if (IsLexerStandard(g_pLexCurrent)) {
+    g_pLexCurrent = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard; // sync
+  }
   Style_SetLexer(hwnd,g_pLexCurrent);
 }
 
@@ -5576,9 +5578,11 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Size values are relative to BaseFontSize/CurrentFontSize
+  POINT dpi = GetSystemDpi();
   float  fBaseFontSize = _GetCurrentFontSize();
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
     fBaseFontSize = (float)max(0.0, fBaseFontSize);
+    fBaseFontSize = (float)MulDiv((int)fBaseFontSize, (dpi.x + dpi.y)/2, USER_DEFAULT_SCREEN_DPI);
     //SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (int)fBaseFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
     if (iStyle == STYLE_DEFAULT) {
@@ -5686,6 +5690,18 @@ void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
 {
   if (!GetString(g_pLexCurrent->resID, lpszName, cchName)) {
     StringCchCopyW(lpszName, cchName, g_pLexCurrent->pszName);
+  }
+}
+
+
+//=============================================================================
+//
+//  Style_GetStdLexerName()
+//
+void Style_GetStdLexerName(LPWSTR lpszName, int cchName)
+{
+  if (!GetString(lexStandard.resID, lpszName, cchName)) {
+    StringCchCopyW(lpszName, cchName, lexStandard.pszName);
   }
 }
 
