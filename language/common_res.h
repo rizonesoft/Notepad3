@@ -821,8 +821,6 @@
 #define IDS_LEX_STR_63289               63289
 #define IDS_LEX_STR_63290               63290
 #define IDS_LEX_STR_63291               63291
-
-
 #define IDS_LEX_STR_63292               63292
 #define IDS_LEX_STR_63293               63293
 #define IDS_LEX_STR_63294               63294
@@ -874,45 +872,5 @@
 #define IDS_LEX_STR_63340               63340
 #define IDS_LEX_STR_63341               63341
 #define IDS_LEX_STR_63342               63342
-#define IDS_LEX_STR_63343               63343
-#define IDS_LEX_STR_63344               63344
-#define IDS_LEX_STR_63345               63345
-#define IDS_LEX_STR_63346               63346
-#define IDS_LEX_STR_63347               63347
-#define IDS_LEX_STR_63348               63348
-#define IDS_LEX_STR_63349               63349
-#define IDS_LEX_STR_63350               63350
-#define IDS_LEX_STR_63351               63351
-#define IDS_LEX_STR_63352               63352
-#define IDS_LEX_STR_63353               63353
-#define IDS_LEX_STR_63354               63354
-#define IDS_LEX_STR_63355               63355
-#define IDS_LEX_STR_63356               63356
-#define IDS_LEX_STR_63357               63357
-#define IDS_LEX_STR_63358               63358
-#define IDS_LEX_STR_63359               63359
-#define IDS_LEX_STR_63360               63360
-#define IDS_LEX_STR_63361               63361
-#define IDS_LEX_STR_63362               63362
-#define IDS_LEX_STR_63363               63363
-#define IDS_LEX_STR_63364               63364
-#define IDS_LEX_STR_63365               63365
-#define IDS_LEX_STR_63366               63366
-#define IDS_LEX_STR_63367               63367
-#define IDS_LEX_STR_63368               63368
-#define IDS_LEX_STR_63369               63369
-#define IDS_LEX_STR_63370               63370
-#define IDS_LEX_STR_63371               63371
-#define IDS_LEX_STR_63372               63372
-#define IDS_LEX_STR_63373               63373
-#define IDS_LEX_STR_63374               63374
-#define IDS_LEX_STR_63375               63375
-#define IDS_LEX_STR_63376               63376
-#define IDS_LEX_STR_63377               63377
-#define IDS_LEX_STR_63378               63378
-#define IDS_LEX_STR_63379               63379
-#define IDS_LEX_STR_63380               63380
-#define IDS_LEX_STR_63381               63381
-#define IDS_LEX_STR_63382               63382
 
 #endif //_COMMON_RES_H_
