@@ -2560,7 +2560,7 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
 
         // Load options
         for (i = 0; i < 3; i++) {
-          GetString(IDS_EOLMODENAME0+i,wch,COUNTOF(wch));
+          GetLngString(IDS_EOL_WIN+i,wch,COUNTOF(wch));
           SendDlgItemMessage(hwnd,100,CB_ADDSTRING,0,(LPARAM)wch);
         }
 

@@ -68,9 +68,6 @@ extern int g_DOSEncoding;
 
 #define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
 
-#define IDS_ENCODINGNAME0  61000
-#define IDS_EOLMODENAME0   62000
-
 typedef struct _np2encoding {
   UINT    uFlags;
   UINT    uCodePage;
