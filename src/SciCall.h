@@ -390,12 +390,14 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
 #define Sci_GetCurrentLine() SciCall_LineFromPosition(SciCall_GetCurrentPos())
+#define Sci_GetLastDocLine() (SciCall_GetLineCount() - 1)
 
 // length of line w/o line-end chars (full use SciCall_LineLength()
 #define Sci_GetNetLineLength(line)  (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
 
 ///~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
 #define Sci_GetDocEndPosition() SciCall_GetTextLength()
+
 
 //=============================================================================
 
