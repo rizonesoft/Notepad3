@@ -3715,7 +3715,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 
           if (iCurLnLen == iCmpLnLen) {
             if (StringCchCompareNA(pCurrentLine, iCurLnLen, pCompareLine, iCmpLnLen) == 0) {
-              const DocPos iLenToDel = iCmpLnLen + ((iCompareLine != Sci_GetLastDocLine()) ? Sci_GetEOLLen() : 0);
+              const DocPos iLenToDel = (iCompareLine != Sci_GetLastDocLine() ? SciCall_GetLine(iCompareLine, NULL) : iCmpLnLen);
               SciCall_SetTargetRange(iBegCmpLine, iBegCmpLine + iLenToDel);
               SciCall_ReplaceTarget(0, "");
               --iCompareLine; // proactive preventing progress to avoid comparison line skip
