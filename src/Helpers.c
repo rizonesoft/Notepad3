@@ -1197,6 +1197,21 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 
 }
 
+
+//=============================================================================
+//
+//  LoadLngString()
+//
+
+int LoadLngString(UINT uID, LPTSTR lpBuffer, int nBufferMax) 
+{
+  const int nLen = LoadString(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+
+  return (nLen != 0) ? nLen : LoadString(g_hInstance, uID, lpBuffer, nBufferMax);
+}
+
+
+
 //=============================================================================
 //
 //  FormatLngString()
@@ -1206,7 +1221,7 @@ int FormatLngString(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
   static WCHAR pBuffer[XHUGE_BUFFER];
   pBuffer[0] = L'\0';
 
-  if (GetLngString(uIdFormat, pBuffer, nOutput)) 
+  if (LoadLngString(uIdFormat, pBuffer, nOutput))
   {
     StringCchVPrintf(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
   }
