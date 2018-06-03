@@ -288,9 +288,11 @@ void DisplayCmdLineHelp(HWND hwnd)
   mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
   mbp.dwContextHelpId = 0;
   mbp.lpfnMsgBoxCallback = NULL;
-  mbp.dwLanguageId = MAKELANGID(LANG_NEUTRAL,SUBLANG_NEUTRAL);
+  mbp.dwLanguageId = g_iPrefLngLocID;
 
   MessageBoxIndirect(&mbp);
+  //MsgBoxLng(MBINFO, IDS_MUI_CMDLINEHELP);
+
 }
 
 
