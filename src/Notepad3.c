@@ -133,8 +133,9 @@ bool          g_bFindReplCopySelOrClip = true;
 WCHAR         g_tchPrefLngLocName[MINI_BUFFER];
 LANGID        g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
 HMODULE       g_hLngResContainer = NULL;
-static WCHAR* const   g_tchAvailableLanguages = L"af-ZA fr-FR de-DE es-ES en-UK"; // en-US internal
-static LANGID const  g_iAvailableLanguages[5] = { 1078, 1036, 1031, 3082, 2057 }; // 1033 internal
+#define       LNG_AVAILABLE_COUNT 6
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-UK fr-FR nl-NL"; // en-US internal
+static LANGID const  g_iAvailableLanguages[LNG_AVAILABLE_COUNT] = { 1078, 1031, 3082, 2057, 1036, 1043 }; // 1033 internal
 
 WCHAR         g_tchFileDlgFilters[XXXL_BUFFER] = { L'\0' };
 
@@ -851,7 +852,7 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
 {
   bool bLngAvailable = false;
-  for (int i = 0; i < 5; ++i) {
+  for (int i = 0; i < COUNTOF(g_iAvailableLanguages); ++i) {
     if (g_iAvailableLanguages[i] == langID) {
       bLngAvailable = true;
       break;

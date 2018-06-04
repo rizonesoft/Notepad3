@@ -190,8 +190,9 @@ bool IsCmdEnabled(HWND, UINT);
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 
-#define GetLngString(id,pb,cb) LoadString(g_hLngResContainer,(id),(pb),(cb))
 
+#define GetLngString(id,pb,cb) LoadLngString((id),(pb),(cb))
+int LoadLngString(UINT uID, LPWSTR lpBuffer, int nBufferMax);
 int FormatLngString(LPWSTR, int, UINT, ...);
 
 
