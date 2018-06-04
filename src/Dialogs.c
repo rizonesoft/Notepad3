@@ -287,6 +287,8 @@ void DisplayCmdLineHelp(HWND hwnd)
   mbp.lpfnMsgBoxCallback = NULL;
   mbp.dwLanguageId = MAKELANGID(LANG_NEUTRAL,SUBLANG_NEUTRAL);
 
+  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+
   MessageBoxIndirect(&mbp);
 }
 
