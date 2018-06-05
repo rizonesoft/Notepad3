@@ -292,6 +292,8 @@ void DisplayCmdLineHelp(HWND hwnd)
 
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
+  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+
   MessageBoxIndirect(&mbp);
   //MsgBoxLng(MBINFO, IDS_MUI_CMDLINEHELP);
 }
