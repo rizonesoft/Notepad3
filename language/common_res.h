@@ -627,6 +627,7 @@
 #define IDS_LEX_MATLAB                  63043
 #define IDS_LEX_NIM_SRC                 63044
 #define IDS_LEX_R_STAT                  63045
+#define IDS_LEX_RUST_SRC                63046
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101
@@ -872,5 +873,9 @@
 #define IDS_LEX_STR_63340               63340
 #define IDS_LEX_STR_63341               63341
 #define IDS_LEX_STR_63342               63342
+#define IDS_LEX_STR_63343               63343
+#define IDS_LEX_STR_63344               63344
+#define IDS_LEX_STR_63345               63345
+#define IDS_LEX_STR_63346               63346
 
 #endif //_COMMON_RES_H_
