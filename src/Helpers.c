@@ -286,10 +286,10 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
   // Display the error message and exit the process
 
   LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
-    (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 40) * sizeof(WCHAR));
+    (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 80) * sizeof(WCHAR));
 
   StringCchPrintf((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(WCHAR),
-    L"Error: '%s' failed with error id %d:\n%s", lpszFunction, dwErrID, lpMsgBuf);
+    L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, lpMsgBuf);
 
   MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
 
