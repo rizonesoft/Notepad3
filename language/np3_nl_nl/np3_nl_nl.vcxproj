@@ -109,7 +109,9 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\nl-NL"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0413 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\nl-NL\np3lng.dll.mui"</Command>
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0413 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\nl-NL\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\nl-NL\np3lng.dll.mui"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
@@ -134,7 +136,9 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\nl-NL"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0413 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\nl-NL\np3lng.dll.mui"</Command>
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0413 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\nl-NL\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\nl-NL\np3lng.dll.mui"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
@@ -163,7 +167,9 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\nl-NL"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0413 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\nl-NL\np3lng.dll.mui"</Command>
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0413 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\nl-NL\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\nl-NL\np3lng.dll.mui"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>
@@ -192,7 +198,9 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\nl-NL"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0413 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)..\np3lng.dll" "$(TargetDir)..\nl-NL\np3lng.dll.mui"</Command>
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(SolutionDir)language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0413 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\nl-NL\np3lng.dll.mui"
+"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\np3lng.dll" -e "$(TargetDir)..\nl-NL\np3lng.dll.mui"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>MUI Split</Message>

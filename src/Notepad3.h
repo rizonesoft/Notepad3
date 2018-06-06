@@ -19,7 +19,6 @@
 #include "TypeDefs.h"
 
 //==== Main Window ============================================================
-#define WC_NOTEPAD3 L"Notepad3"
 
 #define ONLINE_HELP_WEBSITE L"https://www.rizonesoft.com/documents/notepad3/"
 

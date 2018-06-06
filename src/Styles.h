@@ -61,7 +61,7 @@ typedef struct _editlexer
 
 
 // Number of Lexers in pLexArray
-#define NUMLEXERS 47
+#define NUMLEXERS 48
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
 

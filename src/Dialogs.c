@@ -447,7 +447,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   case WM_INITDIALOG:
   {
     {
-      SetDlgItemText(hwnd, IDC_VERSION, VERSION_FILEVERSION_LONG);
+      SetDlgItemText(hwnd, IDC_VERSION, L"" VERSION_FILEVERSION_LONG);
 
       if (hFontTitle) { DeleteObject(hFontTitle); }
 
@@ -599,7 +599,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     case IDC_COPYVERSTRG:
       {
         WCHAR wchVerInfo[1024] = { L'\0' };
-        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), VERSION_FILEVERSION_LONG);
+        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), L"" VERSION_FILEVERSION_LONG);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
         SetClipboardTextW(g_hwndMain, wchVerInfo);
@@ -718,7 +718,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
               ExtractFirstArgument(arg1,arg1,arg2,MAX_PATH);
 
-              if (StringCchCompareIN(arg1,COUNTOF(arg1),L"notepad3",-1) == 0 ||
+              if (StringCchCompareIN(arg1,COUNTOF(arg1), TSTRG(APPNAME),-1) == 0 ||
                   StringCchCompareIN(arg1,COUNTOF(arg1),L"notepad3.exe",-1) == 0) {
                 GetModuleFileName(NULL,arg1,COUNTOF(arg1));
                 bQuickExit = true;

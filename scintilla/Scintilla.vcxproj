@@ -297,6 +297,7 @@
     <ClCompile Include="lexers\LexR.cxx" />
     <ClCompile Include="lexers\LexRegistry.cxx" />
     <ClCompile Include="lexers\LexRuby.cxx" />
+    <ClCompile Include="lexers\LexRust.cxx" />
     <ClCompile Include="lexers\LexSQL.cxx" />
     <ClCompile Include="lexers\LexTCL.cxx" />
     <ClCompile Include="lexers\LexVB.cxx" />
