@@ -47,10 +47,10 @@
 #include "../uthash/utlist.h"
 #include "encoding.h"
 #include "helpers.h"
+#include "VersionEx.h"
 #include "SciCall.h"
 
 #include "notepad3.h"
-
 
 
 /******************************************************************************
@@ -348,7 +348,7 @@ int   iSortOptions = 0;
 int   iAlignMode   = 0;
 
 bool      flagIsElevated = false;
-WCHAR     wchWndClass[16] = WC_NOTEPAD3;
+WCHAR     wchWndClass[16] = L"" APPNAME;
 
 
 HINSTANCE g_hInstance = NULL;
@@ -1079,7 +1079,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   g_hwndMain = CreateWindowEx(
                0,
                wchWndClass,
-               L"Notepad3",
+               L"" APPNAME,
                WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                g_WinInfo.x,
                g_WinInfo.y,
@@ -7012,7 +7012,7 @@ void ParseCommandLine()
                        lp1 + CSTRLEN(L"appid="),len - CSTRLEN(L"appid="));
         StrTrim(g_wchAppUserModelID,L" ");
         if (StringCchLenW(g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID)) == 0)
-          StringCchCopy(g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID),L"Notepad3");
+          StringCchCopy(g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID), L"" APPNAME);
       }
 
       else if (StrCmpNI(lp1,L"sysmru=",CSTRLEN(L"sysmru=")) == 0) {
@@ -7393,7 +7393,7 @@ void LoadFlags()
     g_flagNoFileVariables = 1;
 
   if (StringCchLenW(g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID)) == 0) {
-    IniSectionGetString(pIniSection,L"ShellAppUserModelID",L"Notepad3",
+    IniSectionGetString(pIniSection,L"ShellAppUserModelID", L"" APPNAME,
       g_wchAppUserModelID,COUNTOF(g_wchAppUserModelID));
   }
 
@@ -7461,7 +7461,7 @@ static bool __fastcall _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
-  if (GetPrivateProfileString(L"Notepad3",L"Notepad3.ini",L"",tch,COUNTOF(tch),lpszFile)) {
+  if (GetPrivateProfileString(L"" APPNAME, L"" APPNAME ".ini",L"",tch,COUNTOF(tch),lpszFile)) {
     if (_CheckIniFile(tch,lpszModule)) {
       StringCchCopy(lpszFile,MAX_PATH,tch);
       return true;
@@ -9611,7 +9611,7 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
   nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
   nid.uCallbackMessage = WM_TRAYMESSAGE;
   nid.hIcon = hIcon;
-  StringCchCopy(nid.szTip,COUNTOF(nid.szTip),L"Notepad3");
+  StringCchCopy(nid.szTip,COUNTOF(nid.szTip), L"" APPNAME);
 
   if(bAdd)
     Shell_NotifyIcon(NIM_ADD,&nid);
