@@ -4275,8 +4275,8 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
   WCHAR  tch[COUNTOF(g_pLexArray[0]->szExtensions)] = { L'\0' };
   WCHAR  *p1,*p2;
 
-  if (!bCheckNames) {
-
+  if (!bCheckNames) 
+  {
     for (i = 0; i < COUNTOF(g_pLexArray); i++) {
       ZeroMemory(tch,sizeof(WCHAR)*COUNTOF(tch));
       StringCchCopy(tch,COUNTOF(tch),g_pLexArray[i]->szExtensions);
@@ -4294,12 +4294,9 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
       }
     }
   }
-
   else {
-
     int cch = lstrlen(lpszMatch);
     if (cch >= 3) {
-
       for (i = 0; i < COUNTOF(g_pLexArray); i++) {
         if (StrCmpNI(g_pLexArray[i]->pszName,lpszMatch,cch) == 0)
           return(g_pLexArray[i]);
@@ -4548,13 +4545,18 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
 {
   WCHAR newStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+  WCHAR lexerName[BUFSIZE_STYLE_VALUE] = { L'\0' };
+  WCHAR styleName[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   PEDITLEXER const pLexer = bGlobalDefault ? GetCurrentStdLexer() : g_pLexCurrent;
   PEDITSTYLE const pLexerDefStyle = &(pLexer->Styles[STY_DEFAULT]);
 
   StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[STY_DEFAULT].szValue);
 
-  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), pLexer->pszName, pLexer->Styles[STY_DEFAULT].pszName,
+  GetLngString(pLexer->resID, lexerName, COUNTOF(lexerName));
+  GetLngString(pLexer->Styles[STY_DEFAULT].rid, styleName, COUNTOF(styleName));
+
+  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), lexerName, styleName,
                        IsStyleStandardDefault(pLexerDefStyle), IsStyleSchemeDefault(pLexerDefStyle), false, true))
   {
     // set new styles to current lexer's default text
@@ -5291,21 +5293,21 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   if (bGlobalDefaultStyle) {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ BASE (%s) +++", sStyleName);
+      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELBASE, sStyleName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" BASE (%s)", sStyleName);
+      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXBASE, sStyleName);
   }
   else if (bCurrentDefaultStyle) {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ %s: %s Style +++", sLexerName, sStyleName);
+      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELCUR, sLexerName, sStyleName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" %s: %s Style", sLexerName, sStyleName);
+      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXCUR, sLexerName, sStyleName);
   }
   else {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ Style '%s' (%s) +++", sStyleName, sLexerName);
+      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELARB, sStyleName, sLexerName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" Style '%s' (%s)", sStyleName, sLexerName);
+      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXARB, sStyleName, sLexerName);
   }
 
   if (bWithEffects)
@@ -5721,6 +5723,16 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
 
 //=============================================================================
 //
+//  Style_GetCurrentLexerPtr()
+//
+PEDITLEXER Style_GetCurrentLexerPtr()
+{
+  return g_pLexCurrent;
+}
+
+
+//=============================================================================
+//
 //  Style_GetCurrentLexerRID()
 //
 int Style_GetCurrentLexerRID()
@@ -5731,24 +5743,30 @@ int Style_GetCurrentLexerRID()
 
 //=============================================================================
 //
-//  Style_GetCurrentLexerName()
+//  Style_GetLexerDisplayName()
 //
-void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
+void Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName)
 {
-  if (!GetLngString(g_pLexCurrent->resID, lpszName, cchName)) {
-    StringCchCopyW(lpszName, cchName, g_pLexCurrent->pszName);
+  if (!pLexer) {
+    //pLexer = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
+    pLexer = &lexStandard; // don't distinguish between STD/2ND
+  }
+  if (!GetLngString(pLexer->resID, lpszName, cchName)) {
+    StringCchCopyW(lpszName, cchName, pLexer->pszName);
   }
 }
 
 
 //=============================================================================
 //
-//  Style_GetStdLexerName()
+//  Style_GetStyleDisplayName()
 //
-void Style_GetStdLexerName(LPWSTR lpszName, int cchName)
+void Style_GetStyleDisplayName(PEDITSTYLE pStyle, LPWSTR lpszName, int cchName)
 {
-  if (!GetLngString(lexStandard.resID, lpszName, cchName)) {
-    StringCchCopyW(lpszName, cchName, lexStandard.pszName);
+  if (pStyle) {
+    if (!GetLngString(pStyle->rid, lpszName, cchName)) {
+      StringCchCopyW(lpszName, cchName, pStyle->pszName);
+    }
   }
 }
 
@@ -5908,7 +5926,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         // findlexer
         int found = -1;
         for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-          //if (StringCchCompareX(g_pLexArray[i]->pszName, g_pLexCurrent->pszName) == 0) {
           if (g_pLexArray[i] == g_pLexCurrent) {
             found = i;
             break;
@@ -6055,6 +6072,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 APPLY_DIALOG_ITEM_TEXT;
               }
 
+              WCHAR name[80] = { L'\0' };
               WCHAR label[128] = { L'\0' };
 
               //DialogEnableWindow(hwnd, IDC_STYLEEDIT, true);
@@ -6081,16 +6099,18 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
 
                     if (pCurrentStyle->rid == IDS_LEX_STD_STYLE) {
-                      StringCchCopyW(label, COUNTOF(label), L"BASE (Default Style):");
+                      GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
                     }
                     else {
-                      StringCchCopyW(label, COUNTOF(label), L"BASE (2nd Default Style):");
+                      GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
                       DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, false);
                     }
                   }
                   else {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
-                    StringCchPrintfW(label, COUNTOF(label), L"%s: Default style:", pCurrentLexer->pszName);
+                    GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
+
+                    StringCchPrintfW(label, COUNTOF(label), L"%s: Default Style:", name);
                   }
                   SetDlgItemText(hwnd, IDC_STYLELABEL, label);
                   SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
@@ -6110,12 +6130,13 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 if (IsLexerStandard(pCurrentLexer)) 
                 {
                   if (pCurrentLexer->Styles[STY_DEFAULT].rid == IDS_LEX_STD_STYLE)
-                    StringCchCopyW(label, COUNTOF(label), L"BASE (Default Style):");
+                    GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
                   else
-                    StringCchCopyW(label, COUNTOF(label), L"BASE (2nd Default Style):");
+                    GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
                 }
                 else {
-                  StringCchPrintfW(label, COUNTOF(label), L"%s: Default style:", pCurrentLexer->pszName);
+                  GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
+                  FormatLngString(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
                 }
                 SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, label);
 
@@ -6127,7 +6148,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 if (pCurrentStyle)
                 {
                   bIsStyleSelected = true;
-                  StringCchPrintfW(label, COUNTOF(label), L"%s's style:", pCurrentStyle->pszName);
+                  GetLngString(pCurrentStyle->rid, name, COUNTOF(name));
+                  FormatLngString(label, COUNTOF(label), IDS_MUI_STY_LEXSTYLE, name);
                   SetDlgItemText(hwnd, IDC_STYLELABEL, label);
                   SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
                 }
@@ -6298,9 +6320,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         case IDC_STYLEFONT:
           if (pCurrentStyle) {
             WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+            WCHAR lexerName[BUFSIZE_STYLE_VALUE] = { L'\0' };
+            WCHAR styleName[BUFSIZE_STYLE_VALUE] = { L'\0' };
             GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
-
-            if (Style_SelectFont(hwnd, tch, COUNTOF(tch), pCurrentLexer->pszName, pCurrentStyle->pszName,
+            GetLngString(pCurrentLexer->resID, lexerName, COUNTOF(lexerName));
+            GetLngString(pCurrentStyle->rid, styleName, COUNTOF(styleName));
+            if (Style_SelectFont(hwnd, tch, COUNTOF(tch), lexerName, styleName,
                                  IsStyleStandardDefault(pCurrentStyle), IsStyleSchemeDefault(pCurrentStyle), false, true)) {
               SetDlgItemText(hwnd, IDC_STYLEEDIT, tch);
             }
@@ -6564,7 +6589,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         for (int i = 0; i < lvItems; i++) {
           lvi.iItem = i;
           ListView_GetItem(hwndLV,&lvi);
-          if (StringCchCompareX(((PEDITLEXER)lvi.lParam)->pszName, g_pLexCurrent->pszName) == 0) 
+          if (((PEDITLEXER)lvi.lParam)->lexerID == g_pLexCurrent->lexerID)
           {
             ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
             ListView_EnsureVisible(hwndLV,i,false);
