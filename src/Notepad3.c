@@ -890,7 +890,7 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
  
-  HMODULE hLangResourceContainer = LoadMUILibraryW(L"np3lng.dll", MUI_LANGUAGE_NAME, langID);
+  HMODULE hLangResourceContainer = LoadMUILibraryW(L"lng/np3lng.dll", MUI_LANGUAGE_NAME, langID);
 
   //if (!hLangResourceContainer)
   //{
