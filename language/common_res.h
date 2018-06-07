@@ -110,6 +110,16 @@
 #define IDS_MUI_PASS_FAILURE            15016
 #define IDS_MUI_NOPASS                  15017
 #define IDS_MUI_CMDLINEHELP             15018
+#define IDS_MUI_STY_BASESTD             15019
+#define IDS_MUI_STY_BASE2ND             15020
+#define IDS_MUI_STY_LEXDEF              15021
+#define IDS_MUI_STY_LEXSTYLE            15022
+#define IDS_MUI_TITLE_RELBASE           15023
+#define IDS_MUI_TITLE_FIXBASE           15024
+#define IDS_MUI_TITLE_RELCUR            15025
+#define IDS_MUI_TITLE_FIXCUR            15026
+#define IDS_MUI_TITLE_RELARB            15027
+#define IDS_MUI_TITLE_FIXARB            15028
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND128                  16001
