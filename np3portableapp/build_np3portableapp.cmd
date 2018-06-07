@@ -78,10 +78,10 @@ copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\setting
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
 
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
-  mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\%%d"
-  copy /B "%NP3_WIN32_DIR%\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\%%d\" /Y /V
+  mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d"
+  copy /B "%NP3_WIN32_DIR%\lng\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d\" /Y /V
 )
-copy /B "%NP3_WIN32_DIR%\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+copy /B "%NP3_WIN32_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\" /Y /V
 
 copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
@@ -91,12 +91,11 @@ copy /B "%NP3_WIN32_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 
-
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
-  mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\%%d"
-  copy /B "%NP3_X64_DIR%\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\%%d\" /Y /V
+  mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d"
+  copy /B "%NP3_X64_DIR%\lng\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d\" /Y /V
 )
-copy /B "%NP3_X64_DIR%\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
 copy /B "%NP3_X64_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
