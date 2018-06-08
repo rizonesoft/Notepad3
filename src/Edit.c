@@ -148,15 +148,16 @@ enum AlignMask {
 };
 
 enum SortOrderMask {
-  SORT_ASCENDING = 0,
-  SORT_DESCENDING = 1,
-  SORT_SHUFFLE = 2,
-  SORT_MERGEDUP = 4,
-  SORT_UNIQDUP = 8,
-  SORT_UNIQUNIQ = 16,
-  SORT_NOCASE = 32,
-  SORT_LOGICAL = 64,
-  SORT_COLUMN = 128
+  SORT_ASCENDING  = 0x001,
+  SORT_DESCENDING = 0x002,
+  SORT_SHUFFLE    = 0x004,
+  SORT_MERGEDUP   = 0x008,
+  SORT_UNIQDUP    = 0x010,
+  SORT_UNIQUNIQ   = 0x020,
+  SORT_REMZEROLEN = 0x040,
+  SORT_NOCASE     = 0x080,
+  SORT_LOGICAL    = 0x100,
+  SORT_COLUMN     = 0x200 
 };
 
 
@@ -4020,8 +4021,10 @@ typedef struct _SORTLINE {
   WCHAR *pwszSortEntry;
 } SORTLINE;
 
-static FARPROC pfnStrCmpLogicalW;
-typedef int (__stdcall *FNSTRCMP)(LPCWSTR,LPCWSTR);
+typedef int (__stdcall * FNSTRCMP)(LPCWSTR,LPCWSTR);
+typedef int (__stdcall * FNSTRLOGCMP)(LPCWSTR, LPCWSTR);
+//static FARPROC pfnStrCmpLogicalW;
+static FNSTRLOGCMP pfnStrCmpLogicalW = NULL;
 
 int CmpStd(const void *s1, const void *s2) {
   int cmp = StrCmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
@@ -4076,23 +4079,13 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   DocPos cchTotal = 0;
   DocPos ichlMax = 3;
 
-  SORTLINE *pLines = NULL;
-  char  *pmszResult = NULL;
-  char  *pmszBuf = NULL;
-
-  int cEOLMode = 0;
-  char mszEOL[] = "\r\n";
-
   int iTabWidth = 0;
-
   bool bLastDup = false;
-  FNSTRCMP pfnStrCmp;
 
-  if ((bool)SendMessage(hwnd, SCI_GETSELECTIONEMPTY, 0, 0))
-    return; // no selection
-
-  pfnStrCmpLogicalW = GetProcAddress(GetModuleHandle(L"shlwapi"), "StrCmpLogicalW");
-  pfnStrCmp = (iSortFlags & SORT_NOCASE) ? StrCmpIW : StrCmpW;
+  if (SciCall_IsSelectionEmpty()) { return; } // no selection
+  
+  FNSTRCMP pfnStrCmp = (iSortFlags & SORT_NOCASE) ? StrCmpIW : StrCmpW;
+  pfnStrCmpLogicalW = StrCmpLogicalW; //  GetProcAddress(GetModuleHandle(L"shlwapi"), "StrCmpLogicalW");
 
   if (SciCall_IsSelectionRectangle()) {
 
@@ -4135,17 +4128,17 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     iSortColumn = (UINT)SciCall_GetColumn(iCurPos);
   }
 
-  DocLn iLineCount = iLineEnd - iLineStart + 1;
-  if (iLineCount < 2)
-    return;
+  DocLn const iLineCount = iLineEnd - iLineStart + 1;
+  if (iLineCount < 2) { return; }
 
-  cEOLMode = SciCall_GetEOLMode();
+  int const cEOLMode = SciCall_GetEOLMode();
+  char mszEOL[] = "\r\n";
   if (cEOLMode == SC_EOL_CR) {
-    mszEOL[1] = 0;
+    mszEOL[1] = '\0';
   }
   else if (cEOLMode == SC_EOL_LF) {
     mszEOL[0] = '\n';
-    mszEOL[1] = 0;
+    mszEOL[1] = '\0';
   }
 
   iTabWidth = (int)SendMessage(hwnd, SCI_GETTABWIDTH, 0, 0);
@@ -4160,15 +4153,16 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     iAnchorPosVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
   }
 
-  pLines = LocalAlloc(LPTR, sizeof(SORTLINE) * iLineCount);
+  SORTLINE* pLines = AllocMem(sizeof(SORTLINE) * iLineCount, HEAP_ZERO_MEMORY);
   if (!pLines) { return; }
 
-  DocLn i = 0;
-  for (iLine = iLineStart; iLine <= iLineEnd; iLine++) {
+  DocLn iLn = 0;
+  DocLn iZeroLenLineCount = 0;
+  for (iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
 
     const DocPos cchm = SciCall_GetLine(iLine, NULL);
 
-    char* pmsz = LocalAlloc(LPTR, cchm + 1);
+    char* pmsz = AllocMem(cchm + 1, HEAP_ZERO_MEMORY);
     SciCall_GetLine(iLine, pmsz);
 
     StrTrimA(pmsz, "\r\n");
@@ -4178,16 +4172,17 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     int cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0) - 1;
     if (cchw > 0) {
       int col = 0, tabs = iTabWidth;
-      pLines[i].pwszLine = LocalAlloc(LPTR, sizeof(WCHAR) * (cchw + 1));
-      MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[i].pwszLine, (int)LocalSize(pLines[i].pwszLine) / sizeof(WCHAR));
-      pLines[i].pwszSortEntry = pLines[i].pwszLine;
+      int const lnLen = (int)sizeof(WCHAR) * (cchw + 1);
+      pLines[iLn].pwszLine = AllocMem(lnLen, HEAP_ZERO_MEMORY);
+      MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[iLn].pwszLine, lnLen / (int)sizeof(WCHAR));
+      pLines[iLn].pwszSortEntry = pLines[iLn].pwszLine;
       if (iSortFlags & SORT_COLUMN) {
-        while (*(pLines[i].pwszSortEntry)) {
-          if (*(pLines[i].pwszSortEntry) == L'\t') {
+        while (*(pLines[iLn].pwszSortEntry)) {
+          if (*(pLines[iLn].pwszSortEntry) == L'\t') {
             if (col + tabs <= iSortColumn) {
               col += tabs;
               tabs = iTabWidth;
-              pLines[i].pwszSortEntry = CharNext(pLines[i].pwszSortEntry);
+              pLines[iLn].pwszSortEntry = CharNext(pLines[iLn].pwszSortEntry);
             }
             else
               break;
@@ -4196,7 +4191,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
             col++;
             if (--tabs == 0)
               tabs = iTabWidth;
-            pLines[i].pwszSortEntry = CharNext(pLines[i].pwszSortEntry);
+            pLines[iLn].pwszSortEntry = CharNext(pLines[iLn].pwszSortEntry);
           }
           else
             break;
@@ -4204,11 +4199,12 @@ void EditSortLines(HWND hwnd, int iSortFlags)
       }
     }
     else {
-      pLines[i].pwszLine = StrDup(L"");
-      pLines[i].pwszSortEntry = pLines[i].pwszLine;
+      pLines[iLn].pwszLine = StrDup(L"");
+      pLines[iLn].pwszSortEntry = pLines[iLn].pwszLine;
+      ++iZeroLenLineCount;
     }
-    LocalFree(pmsz);
-    i++;
+    FreeMem(pmsz);
+    ++iLn;
   }
 
   if (iSortFlags & SORT_DESCENDING) {
@@ -4219,7 +4215,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
   else if (iSortFlags & SORT_SHUFFLE) {
     srand((UINT)GetTickCount());
-    for (i = iLineCount - 1; i > 0; i--) {
+    for (DocLn i = (iLineCount - 1); i > 0; --i) {
       int j = rand() % i;
       SORTLINE sLine;
       sLine.pwszLine = pLines[i].pwszLine;
@@ -4235,18 +4231,27 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     else
       qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
   }
-  
 
-  DocLn lenRes = cchTotal + 2 * iLineCount + 1;
-  pmszResult = LocalAlloc(LPTR, lenRes);
-  pmszBuf = LocalAlloc(LPTR, ichlMax + 1);
+  DocLn const lenRes = cchTotal + (2 * iLineCount) + 1;
+  char* pmszResult = AllocMem(lenRes, HEAP_ZERO_MEMORY);
+  char* pmszResOffset = pmszResult;
+  char* pmszBuf = AllocMem(ichlMax + 1, HEAP_ZERO_MEMORY);
 
-  for (i = 0; i < iLineCount; i++) {
+  // Handle empty lines
+  if ((iSortFlags & SORT_UNIQDUP) && (iZeroLenLineCount > 1)) { iZeroLenLineCount = 1; };
+  if (!(iSortFlags & SORT_REMZEROLEN) && (iSortFlags & SORT_ASCENDING)) {
+    for (DocLn i = 0; i < iZeroLenLineCount; ++i) {
+      StringCchCatA(pmszResult, lenRes, mszEOL);
+      pmszResOffset += ((cEOLMode == SC_EOL_CRLF) ? 2 : 1);
+    }
+  }
+
+  for (DocLn i = 0; i < iLineCount; ++i) {
     bool bDropLine = false;
     if (pLines[i].pwszLine && ((iSortFlags & SORT_SHUFFLE) || lstrlen(pLines[i].pwszLine))) {
       if (!(iSortFlags & SORT_SHUFFLE)) {
         if (iSortFlags & SORT_MERGEDUP || iSortFlags & SORT_UNIQDUP || iSortFlags & SORT_UNIQUNIQ) {
-          if (i < iLineCount - 1) {
+          if (i < (iLineCount - 1)) {
             if (pfnStrCmp(pLines[i].pwszLine, pLines[i + 1].pwszLine) == 0) {
               bLastDup = true;
               bDropLine = (iSortFlags & SORT_MERGEDUP || iSortFlags & SORT_UNIQDUP);
@@ -4263,22 +4268,30 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         }
       }
       if (!bDropLine) {
-        WideCharToMultiByte(Encoding_SciCP, 0, pLines[i].pwszLine, -1, pmszBuf, (int)LocalSize(pmszBuf), NULL, NULL);
+        WideCharToMultiByte(Encoding_SciCP, 0, pLines[i].pwszLine, -1, pmszBuf, (ichlMax + 1), NULL, NULL);
         StringCchCatA(pmszResult, lenRes, pmszBuf);
         StringCchCatA(pmszResult, lenRes, mszEOL);
       }
     }
   }
+  FreeMem(pmszBuf);
 
-  LocalFree(pmszBuf);
-
-  for (i = 0; i < iLineCount; i++) {
-    if (pLines[i].pwszLine)
-      LocalFree(pLines[i].pwszLine);
+  // Handle empty lines
+  if (!(iSortFlags & SORT_UNIQDUP) || (iZeroLenLineCount == 0)) {
+    StrTrimA(pmszResOffset, "\r\n"); // trim end only
   }
-  LocalFree(pLines);
+  if (!(iSortFlags & SORT_REMZEROLEN) && (iSortFlags & SORT_DESCENDING)) {
+    for (DocLn i = 0; i < iZeroLenLineCount; ++i) {
+      StringCchCatA(pmszResult, lenRes, mszEOL);
+    }
+  }
 
-  DocPos iResultLength = StringCchLenA(pmszResult, lenRes);
+  for (DocLn i = 0; i < iLineCount; ++i) {
+    if (pLines[i].pwszLine) { FreeMem(pLines[i].pwszLine); }
+  }
+  FreeMem(pLines);
+
+  DocPos const iResultLength = StringCchLenA(pmszResult, lenRes);
   if (!bIsRectangular) {
     if (iAnchorPos > iCurPos) {
       iCurPos = iSelStart;
@@ -4289,14 +4302,13 @@ void EditSortLines(HWND hwnd, int iSortFlags)
       iCurPos = iSelStart + iResultLength;
     }
   }
+
   _ENTER_TARGET_TRANSACTION_;
-
-  SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLineStart), SciCall_PositionFromLine(iLineEnd + 1));
-  SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)-1, (LPARAM)pmszResult);
-
+  //SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_PositionFromLine(iLineEnd + 1));
+  SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_GetLineEndPosition(iLineEnd));
+  SciCall_ReplaceTarget(-1, pmszResult);
   _LEAVE_TARGET_TRANSACTION_;
-
-  LocalFree(pmszResult);
+  FreeMem(pmszResult);
 
   if (bIsRectangular)
     EditSelectEx(hwnd, iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
@@ -7414,20 +7426,20 @@ bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
 //  EditSortDlgProc()
 //
 //  Controls: 100-102 Radio Button
-//            103-108 Check Box
+//            103-109 Check Box
 //
 INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-  static int *piSortFlags;
-  static bool bEnableLogicalSort;
-
+  static int* piSortFlags;
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
         piSortFlags = (int*)lParam;
-        if (*piSortFlags & SORT_DESCENDING)
-          CheckRadioButton(hwnd,100,102,101);
+
+        if (*piSortFlags & SORT_DESCENDING) {
+          CheckRadioButton(hwnd, 100, 102, 101);
+        }
         else if (*piSortFlags & SORT_SHUFFLE) {
           CheckRadioButton(hwnd,100,102,102);
           DialogEnableWindow(hwnd,103,false);
@@ -7435,9 +7447,11 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           DialogEnableWindow(hwnd,105,false);
           DialogEnableWindow(hwnd,106,false);
           DialogEnableWindow(hwnd,107,false);
+          DialogEnableWindow(hwnd,108,false);
         }
         else
           CheckRadioButton(hwnd,100,102,100);
+
         if (*piSortFlags & SORT_MERGEDUP)
           CheckDlgButton(hwnd,103,BST_CHECKED);
         if (*piSortFlags & SORT_UNIQDUP) {
@@ -7446,24 +7460,20 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         }
         if (*piSortFlags & SORT_UNIQUNIQ)
           CheckDlgButton(hwnd,105,BST_CHECKED);
+        if (*piSortFlags & SORT_REMZEROLEN)
+          CheckDlgButton(hwnd, 106, BST_CHECKED);
         if (*piSortFlags & SORT_NOCASE)
-          CheckDlgButton(hwnd,106,BST_CHECKED);
-        if (GetProcAddress(GetModuleHandle(L"shlwapi"),"StrCmpLogicalW")) {
-          if (*piSortFlags & SORT_LOGICAL)
-            CheckDlgButton(hwnd,107,BST_CHECKED);
-          bEnableLogicalSort = true;
-        }
-        else {
-          DialogEnableWindow(hwnd,107,false);
-          bEnableLogicalSort = false;
-        }
+          CheckDlgButton(hwnd,107,BST_CHECKED);
+        if (*piSortFlags & SORT_LOGICAL)
+          CheckDlgButton(hwnd,108,BST_CHECKED);
+
         if (!SciCall_IsSelectionRectangle()) {
           *piSortFlags &= ~SORT_COLUMN;
-          DialogEnableWindow(hwnd,108,false);
+          DialogEnableWindow(hwnd,109,false);
         }
         else {
           *piSortFlags |= SORT_COLUMN;
-          CheckDlgButton(hwnd,108,BST_CHECKED);
+          CheckDlgButton(hwnd,109,BST_CHECKED);
         }
         CenterDlgInParent(hwnd);
       }
@@ -7473,6 +7483,8 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
       {
         case IDOK: {
             *piSortFlags = 0;
+            if (IsDlgButtonChecked(hwnd,100) == BST_CHECKED)
+              *piSortFlags |= SORT_ASCENDING;
             if (IsDlgButtonChecked(hwnd,101) == BST_CHECKED)
               *piSortFlags |= SORT_DESCENDING;
             if (IsDlgButtonChecked(hwnd,102) == BST_CHECKED)
@@ -7484,10 +7496,12 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
             if (IsDlgButtonChecked(hwnd,105) == BST_CHECKED)
               *piSortFlags |= SORT_UNIQUNIQ;
             if (IsDlgButtonChecked(hwnd,106) == BST_CHECKED)
-              *piSortFlags |= SORT_NOCASE;
+              *piSortFlags |= SORT_REMZEROLEN;
             if (IsDlgButtonChecked(hwnd,107) == BST_CHECKED)
-              *piSortFlags |= SORT_LOGICAL;
+              *piSortFlags |= SORT_NOCASE;
             if (IsDlgButtonChecked(hwnd,108) == BST_CHECKED)
+              *piSortFlags |= SORT_LOGICAL;
+            if (IsDlgButtonChecked(hwnd,109) == BST_CHECKED)
               *piSortFlags |= SORT_COLUMN;
             EndDialog(hwnd,IDOK);
           }
@@ -7501,7 +7515,8 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           DialogEnableWindow(hwnd,104,true);
           DialogEnableWindow(hwnd,105,true);
           DialogEnableWindow(hwnd,106,true);
-          DialogEnableWindow(hwnd,107,bEnableLogicalSort);
+          DialogEnableWindow(hwnd,107,true);
+          DialogEnableWindow(hwnd,108,true);
           break;
         case 102:
           DialogEnableWindow(hwnd,103,false);
@@ -7509,6 +7524,7 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           DialogEnableWindow(hwnd,105,false);
           DialogEnableWindow(hwnd,106,false);
           DialogEnableWindow(hwnd,107,false);
+          DialogEnableWindow(hwnd,108,false);
           break;
         case 104:
           DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,104) != BST_CHECKED);
@@ -7524,7 +7540,7 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 //
 //  EditSortDlg()
 //
-bool EditSortDlg(HWND hwnd,int *piSortFlags)
+bool EditSortDlg(HWND hwnd,int* piSortFlags)
 {
 
   INT_PTR iResult;
@@ -7543,7 +7559,7 @@ bool EditSortDlg(HWND hwnd,int *piSortFlags)
 
 //=============================================================================
 //
-//  EditSortDlg()
+//  EditSetAccelWordNav()
 //
 void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
 {
