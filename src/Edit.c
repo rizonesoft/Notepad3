@@ -4071,11 +4071,10 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   DocPos iAnchorPosVS = 0;
   DocPos iSelStart = 0;
   DocPos iSelEnd = 0;
-  DocLn iLineStart = 0;
-  DocLn iLineEnd = 0;
+  DocLn  iLineStart = 0;
+  DocLn  iLineEnd = 0;
   DocPos iSortColumn = 0;
 
-  DocLn  iLine = 0;
   DocPos cchTotal = 0;
   DocPos ichlMax = 3;
 
@@ -4099,11 +4098,11 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     iSelStart = SciCall_GetSelectionStart();
     iSelEnd = SciCall_GetSelectionEnd();
 
-    DocLn iRcCurLine = SciCall_LineFromPosition(iCurPos);
-    DocLn iRcAnchorLine = SciCall_LineFromPosition(iAnchorPos);
+    DocLn const iRcCurLine = SciCall_LineFromPosition(iCurPos);
+    DocLn const iRcAnchorLine = SciCall_LineFromPosition(iAnchorPos);
 
-    DocPos iRcCurCol = SciCall_GetColumn(iCurPos);
-    DocPos iRcAnchorCol = SciCall_GetColumn(iAnchorPos);
+    DocPos const iRcCurCol = SciCall_GetColumn(iCurPos);
+    DocPos const iRcAnchorCol = SciCall_GetColumn(iAnchorPos);
 
     iLineStart = min(iRcCurLine, iRcAnchorLine);
     iLineEnd = max(iRcCurLine, iRcAnchorLine);
@@ -4118,7 +4117,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     iSelStart = SciCall_GetSelectionStart();
     iSelEnd = SciCall_GetSelectionEnd();
  
-    iLine = SciCall_LineFromPosition(iSelStart);
+    DocLn const iLine = SciCall_LineFromPosition(iSelStart);
     iSelStart = SciCall_PositionFromLine(iLine);
     iLineStart = SciCall_LineFromPosition(iSelStart);
     iLineEnd = SciCall_LineFromPosition(iSelEnd);
@@ -4146,7 +4145,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   if (bIsRectangular) 
   {
     EditPadWithSpaces(hwnd, !(iSortFlags & SORT_SHUFFLE), true);
-
+    // changed rectangular selection
     iCurPos = SciCall_GetRectangularSelectionCaret();
     iAnchorPos = SciCall_GetRectangularSelectionAnchor();
     iCurPosVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
@@ -4156,16 +4155,15 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   SORTLINE* pLines = AllocMem(sizeof(SORTLINE) * iLineCount, HEAP_ZERO_MEMORY);
   if (!pLines) { return; }
 
-  DocLn iLn = 0;
   DocLn iZeroLenLineCount = 0;
-  for (iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
+  for (DocLn i = 0, iLn = iLineStart; iLn <= iLineEnd; ++iLn, ++i) {
 
-    const DocPos cchm = SciCall_GetLine(iLine, NULL);
+    const DocPos cchm = SciCall_GetLine(iLn, NULL);
 
     char* pmsz = AllocMem(cchm + 1, HEAP_ZERO_MEMORY);
-    SciCall_GetLine(iLine, pmsz);
+    SciCall_GetLine(iLn, pmsz);
 
-    StrTrimA(pmsz, "\r\n");
+    StrTrimA(pmsz, "\r\n"); // ignore line-breaks
     cchTotal += cchm;
     ichlMax = max(ichlMax, cchm);
 
@@ -4173,16 +4171,16 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     if (cchw > 0) {
       int col = 0, tabs = iTabWidth;
       int const lnLen = (int)sizeof(WCHAR) * (cchw + 1);
-      pLines[iLn].pwszLine = AllocMem(lnLen, HEAP_ZERO_MEMORY);
-      MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[iLn].pwszLine, lnLen / (int)sizeof(WCHAR));
-      pLines[iLn].pwszSortEntry = pLines[iLn].pwszLine;
+      pLines[i].pwszLine = AllocMem(lnLen, HEAP_ZERO_MEMORY);
+      MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[i].pwszLine, lnLen / (int)sizeof(WCHAR));
+      pLines[i].pwszSortEntry = pLines[i].pwszLine;
       if (iSortFlags & SORT_COLUMN) {
-        while (*(pLines[iLn].pwszSortEntry)) {
-          if (*(pLines[iLn].pwszSortEntry) == L'\t') {
+        while (*(pLines[i].pwszSortEntry)) {
+          if (*(pLines[i].pwszSortEntry) == L'\t') {
             if (col + tabs <= iSortColumn) {
               col += tabs;
               tabs = iTabWidth;
-              pLines[iLn].pwszSortEntry = CharNext(pLines[iLn].pwszSortEntry);
+              pLines[i].pwszSortEntry = CharNext(pLines[i].pwszSortEntry);
             }
             else
               break;
@@ -4191,7 +4189,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
             col++;
             if (--tabs == 0)
               tabs = iTabWidth;
-            pLines[iLn].pwszSortEntry = CharNext(pLines[iLn].pwszSortEntry);
+            pLines[i].pwszSortEntry = CharNext(pLines[i].pwszSortEntry);
           }
           else
             break;
@@ -4199,12 +4197,9 @@ void EditSortLines(HWND hwnd, int iSortFlags)
       }
     }
     else {
-      pLines[iLn].pwszLine = StrDup(L"");
-      pLines[iLn].pwszSortEntry = pLines[iLn].pwszLine;
       ++iZeroLenLineCount;
     }
     FreeMem(pmsz);
-    ++iLn;
   }
 
   if (iSortFlags & SORT_DESCENDING) {
@@ -4291,7 +4286,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
   FreeMem(pLines);
 
-  DocPos const iResultLength = StringCchLenA(pmszResult, lenRes);
+  DocPos const iResultLength = StringCchLenA(pmszResult, lenRes) + ((cEOLMode == SC_EOL_CRLF) ? 2 : 1);
   if (!bIsRectangular) {
     if (iAnchorPos > iCurPos) {
       iCurPos = iSelStart;
