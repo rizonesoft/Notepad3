@@ -344,8 +344,8 @@ WCHAR wchAppendSelection[256] = { L'\0' };
 WCHAR wchPrefixLines[256] = { L'\0' };
 WCHAR wchAppendLines[256] = { L'\0' };
 
-int   iSortOptions = 0;
-int   iAlignMode   = 0;
+static int iSortOptions = SORT_ASCENDING;
+static int iAlignMode   = 0;
 
 bool      flagIsElevated = false;
 WCHAR     wchWndClass[16] = L"" APPNAME;
