@@ -429,7 +429,7 @@ static DWORD CALLBACK _LoadRtfCallback(
 // ----------------------------------------------------------------------------
 
 
-static char* pAboutInfoResource = ABOUT_INFO_RTF;
+static char pAboutResource[8192] = { '\0' };
 static char* pAboutInfo;
 
 
@@ -504,9 +504,19 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
   #if true
+
+    char pAboutRes1[4000];
+    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes1, COUNTOF(pAboutRes1));
+    char pAboutRes2[4000];
+    GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes2, COUNTOF(pAboutRes2));
+
+    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes1);
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes2);
+
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
-    pAboutInfo = pAboutInfoResource;
+    pAboutInfo = pAboutResource;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+
     
     //DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
     //if (dwSize != 0) {

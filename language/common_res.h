@@ -120,6 +120,8 @@
 #define IDS_MUI_TITLE_FIXCUR            15026
 #define IDS_MUI_TITLE_RELARB            15027
 #define IDS_MUI_TITLE_FIXARB            15028
+#define IDS_MUI_ABOUT_RTF_1             15029
+#define IDS_MUI_ABOUT_RTF_2             15030
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND128                  16001

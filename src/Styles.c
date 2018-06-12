@@ -5293,21 +5293,21 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   if (bGlobalDefaultStyle) {
     if (bRelFontSize)
-      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELBASE, sStyleName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELBASE, sStyleName);
     else
-      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXBASE, sStyleName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXBASE, sStyleName);
   }
   else if (bCurrentDefaultStyle) {
     if (bRelFontSize)
-      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELCUR, sLexerName, sStyleName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELCUR, sLexerName, sStyleName);
     else
-      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXCUR, sLexerName, sStyleName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXCUR, sLexerName, sStyleName);
   }
   else {
     if (bRelFontSize)
-      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELARB, sStyleName, sLexerName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELARB, sStyleName, sLexerName);
     else
-      FormatLngString(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXARB, sStyleName, sLexerName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXARB, sStyleName, sLexerName);
   }
 
   if (bWithEffects)
@@ -6136,7 +6136,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 }
                 else {
                   GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
-                  FormatLngString(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
+                  FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
                 }
                 SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, label);
 
@@ -6149,7 +6149,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 {
                   bIsStyleSelected = true;
                   GetLngString(pCurrentStyle->rid, name, COUNTOF(name));
-                  FormatLngString(label, COUNTOF(label), IDS_MUI_STY_LEXSTYLE, name);
+                  FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXSTYLE, name);
                   SetDlgItemText(hwnd, IDC_STYLELABEL, label);
                   SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
                 }
