@@ -3676,7 +3676,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
     if (iSelEnd <= SciCall_PositionFromLine(iEndLine)) { --iEndLine; }
   }
   else {
-    iEndLine = SciCall_GetLineCount() - 1; // last line
+    iEndLine = Sci_GetLastDocLine();
   }
 
   if ((iEndLine - iStartLine) <= 1) { return; }
@@ -3697,22 +3697,26 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 
   for (DocLn iCurLine = iStartLine; iCurLine < iEndLine; ++iCurLine)
   {
-    const DocPos iCurLnLen = SciCall_GetLine(iCurLine, pCurrentLine);
+    SciCall_GetLine(iCurLine, pCurrentLine);
+    const DocPos iCurLnLen = Sci_GetNetLineLength(iCurLine);
+    pCurrentLine[iCurLnLen] = '\0';
+
 
     if (bRemoveEmptyLines || (iCurLnLen > iEmptyLnLen)) {
 
-      for (DocLn iCompareLine = iCurLine + 1; iCompareLine < iEndLine; ++iCompareLine) 
+      for (DocLn iCompareLine = iCurLine + 1; iCompareLine <= iEndLine; ++iCompareLine) 
       {
-        const DocPos iCmpLnLen = SciCall_GetLine(iCompareLine, NULL);
+        const DocPos iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
 
         if (bRemoveEmptyLines || (iCmpLnLen > iEmptyLnLen)) {
 
           const DocPos iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
-          const char* pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen + 2);
+          const char* pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen + 1);
 
           if (iCurLnLen == iCmpLnLen) {
             if (StringCchCompareNA(pCurrentLine, iCurLnLen, pCompareLine, iCmpLnLen) == 0) {
-              SciCall_SetTargetRange(iBegCmpLine, iBegCmpLine + iCmpLnLen);
+              const DocPos iLenToDel = (iCompareLine != Sci_GetLastDocLine() ? SciCall_GetLine(iCompareLine, NULL) : iCmpLnLen);
+              SciCall_SetTargetRange(iBegCmpLine, iBegCmpLine + iLenToDel);
               SciCall_ReplaceTarget(0, "");
               --iCompareLine; // proactive preventing progress to avoid comparison line skip
               --iEndLine;
