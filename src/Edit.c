@@ -148,16 +148,17 @@ enum AlignMask {
 };
 
 enum SortOrderMask {
-  SORT_ASCENDING  = 0x001,
-  SORT_DESCENDING = 0x002,
-  SORT_SHUFFLE    = 0x004,
-  SORT_MERGEDUP   = 0x008,
-  SORT_UNIQDUP    = 0x010,
-  SORT_UNIQUNIQ   = 0x020,
-  SORT_REMZEROLEN = 0x040,
-  SORT_NOCASE     = 0x080,
-  SORT_LOGICAL    = 0x100,
-  SORT_COLUMN     = 0x200 
+  SORT_ASCENDING   = 0x001,
+  SORT_DESCENDING  = 0x002,
+  SORT_SHUFFLE     = 0x004,
+  SORT_MERGEDUP    = 0x008,
+  SORT_UNIQDUP     = 0x010,
+  SORT_UNIQUNIQ    = 0x020,
+  SORT_REMZEROLEN  = 0x040,
+  SORT_REMWSPACELN = 0x080,
+  SORT_NOCASE      = 0x100,
+  SORT_LOGICAL     = 0x200,
+  SORT_COLUMN      = 0x400 
 };
 
 
@@ -4159,13 +4160,22 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   for (DocLn i = 0, iLn = iLineStart; iLn <= iLineEnd; ++iLn, ++i) {
 
     const DocPos cchm = SciCall_GetLine(iLn, NULL);
+    cchTotal += cchm;
+    ichlMax = max(ichlMax, cchm);
 
     char* pmsz = AllocMem(cchm + 1, HEAP_ZERO_MEMORY);
     SciCall_GetLine(iLn, pmsz);
 
-    StrTrimA(pmsz, "\r\n"); // ignore line-breaks
-    cchTotal += cchm;
-    ichlMax = max(ichlMax, cchm);
+    if (iSortFlags & SORT_REMWSPACELN) {
+      StrTrimA(pmsz, "\t\v \r\n"); // try clean line
+      if (StringCchLenA(pmsz, cchm) == 0) {
+        // white-space only - remove
+        FreeMem(pmsz);
+        continue;
+      }
+      SciCall_GetLine(iLn, pmsz);
+    }
+    StrTrimA(pmsz, "\r\n"); // ignore line-breaks 
 
     int cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0) - 1;
     if (cchw > 0) {
@@ -4232,15 +4242,6 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   char* pmszResOffset = pmszResult;
   char* pmszBuf = AllocMem(ichlMax + 1, HEAP_ZERO_MEMORY);
 
-  // Handle empty lines
-  if ((iSortFlags & SORT_UNIQDUP) && (iZeroLenLineCount > 1)) { iZeroLenLineCount = 1; };
-  if (!(iSortFlags & SORT_REMZEROLEN) && (iSortFlags & SORT_ASCENDING)) {
-    for (DocLn i = 0; i < iZeroLenLineCount; ++i) {
-      StringCchCatA(pmszResult, lenRes, mszEOL);
-      pmszResOffset += ((cEOLMode == SC_EOL_CRLF) ? 2 : 1);
-    }
-  }
-
   for (DocLn i = 0; i < iLineCount; ++i) {
     bool bDropLine = false;
     if (pLines[i].pwszLine && ((iSortFlags & SORT_SHUFFLE) || lstrlen(pLines[i].pwszLine))) {
@@ -4271,11 +4272,14 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
   FreeMem(pmszBuf);
 
-  // Handle empty lines
+  // Handle empty (no whitespace or other char) lines (always at the end)
   if (!(iSortFlags & SORT_UNIQDUP) || (iZeroLenLineCount == 0)) {
     StrTrimA(pmszResOffset, "\r\n"); // trim end only
   }
-  if (!(iSortFlags & SORT_REMZEROLEN) && (iSortFlags & SORT_DESCENDING)) {
+  if ((iSortFlags & SORT_UNIQDUP) && (iZeroLenLineCount > 1)) { 
+    iZeroLenLineCount = 1; // removes duplicate empty lines
+  }
+  if (!(iSortFlags & SORT_REMZEROLEN)) {
     for (DocLn i = 0; i < iZeroLenLineCount; ++i) {
       StringCchCatA(pmszResult, lenRes, mszEOL);
     }
@@ -7432,6 +7436,10 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
       {
         piSortFlags = (int*)lParam;
 
+        if (*piSortFlags == 0) {
+          *piSortFlags = SORT_ASCENDING | SORT_REMZEROLEN;
+        }
+
         if (*piSortFlags & SORT_DESCENDING) {
           CheckRadioButton(hwnd, 100, 102, 101);
         }
@@ -7443,42 +7451,53 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           DialogEnableWindow(hwnd,106,false);
           DialogEnableWindow(hwnd,107,false);
           DialogEnableWindow(hwnd,108,false);
-        }
-        else
-          CheckRadioButton(hwnd,100,102,100);
-
-        if (*piSortFlags & SORT_MERGEDUP)
-          CheckDlgButton(hwnd,103,BST_CHECKED);
-        if (*piSortFlags & SORT_UNIQDUP) {
-          CheckDlgButton(hwnd,104,BST_CHECKED);
-          DialogEnableWindow(hwnd,103,false);
-        }
-        if (*piSortFlags & SORT_UNIQUNIQ)
-          CheckDlgButton(hwnd,105,BST_CHECKED);
-        if (*piSortFlags & SORT_REMZEROLEN)
-          CheckDlgButton(hwnd, 106, BST_CHECKED);
-        if (*piSortFlags & SORT_NOCASE)
-          CheckDlgButton(hwnd,107,BST_CHECKED);
-        if (*piSortFlags & SORT_LOGICAL)
-          CheckDlgButton(hwnd,108,BST_CHECKED);
-
-        if (!SciCall_IsSelectionRectangle()) {
-          *piSortFlags &= ~SORT_COLUMN;
           DialogEnableWindow(hwnd,109,false);
         }
         else {
+          CheckRadioButton(hwnd, 100, 102, 100);
+        }
+        if (*piSortFlags & SORT_MERGEDUP) {
+          CheckDlgButton(hwnd, 103, BST_CHECKED);
+        }
+        if (*piSortFlags & SORT_UNIQDUP) {
+          CheckDlgButton(hwnd, 104, BST_CHECKED);
+          DialogEnableWindow(hwnd, 103, false);
+        }
+        if (*piSortFlags & SORT_UNIQUNIQ) {
+          CheckDlgButton(hwnd, 105, BST_CHECKED);
+        }
+        if (*piSortFlags & SORT_REMZEROLEN) {
+          CheckDlgButton(hwnd, 106, BST_CHECKED);
+        }
+        if (*piSortFlags & SORT_REMWSPACELN) {
+          CheckDlgButton(hwnd, 107, BST_CHECKED);
+          CheckDlgButton(hwnd, 106, BST_CHECKED);
+          DialogEnableWindow(hwnd, 106, false);
+        }
+        if (*piSortFlags & SORT_NOCASE) {
+          CheckDlgButton(hwnd, 108, BST_CHECKED);
+        }
+        if (*piSortFlags & SORT_LOGICAL) {
+          CheckDlgButton(hwnd, 109, BST_CHECKED);
+        }
+        if (!SciCall_IsSelectionRectangle()) {
+          *piSortFlags &= ~SORT_COLUMN;
+          DialogEnableWindow(hwnd,110,false);
+        }
+        else {
           *piSortFlags |= SORT_COLUMN;
-          CheckDlgButton(hwnd,109,BST_CHECKED);
+          CheckDlgButton(hwnd,110,BST_CHECKED);
         }
         CenterDlgInParent(hwnd);
       }
       return true;
+
     case WM_COMMAND:
       switch(LOWORD(wParam))
       {
         case IDOK: {
             *piSortFlags = 0;
-            if (IsDlgButtonChecked(hwnd,100) == BST_CHECKED)
+            if (IsDlgButtonChecked(hwnd, 100) == BST_CHECKED)
               *piSortFlags |= SORT_ASCENDING;
             if (IsDlgButtonChecked(hwnd,101) == BST_CHECKED)
               *piSortFlags |= SORT_DESCENDING;
@@ -7493,17 +7512,21 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
             if (IsDlgButtonChecked(hwnd,106) == BST_CHECKED)
               *piSortFlags |= SORT_REMZEROLEN;
             if (IsDlgButtonChecked(hwnd,107) == BST_CHECKED)
-              *piSortFlags |= SORT_NOCASE;
+              *piSortFlags |= SORT_REMWSPACELN;
             if (IsDlgButtonChecked(hwnd,108) == BST_CHECKED)
-              *piSortFlags |= SORT_LOGICAL;
+              *piSortFlags |= SORT_NOCASE;
             if (IsDlgButtonChecked(hwnd,109) == BST_CHECKED)
+              *piSortFlags |= SORT_LOGICAL;
+            if (IsDlgButtonChecked(hwnd,110) == BST_CHECKED)
               *piSortFlags |= SORT_COLUMN;
             EndDialog(hwnd,IDOK);
           }
           break;
+
         case IDCANCEL:
           EndDialog(hwnd,IDCANCEL);
           break;
+
         case 100:
         case 101:
           DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,105) != BST_CHECKED);
@@ -7512,6 +7535,7 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           DialogEnableWindow(hwnd,106,true);
           DialogEnableWindow(hwnd,107,true);
           DialogEnableWindow(hwnd,108,true);
+          DialogEnableWindow(hwnd,109,true);
           break;
         case 102:
           DialogEnableWindow(hwnd,103,false);
@@ -7520,9 +7544,21 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           DialogEnableWindow(hwnd,106,false);
           DialogEnableWindow(hwnd,107,false);
           DialogEnableWindow(hwnd,108,false);
+          DialogEnableWindow(hwnd,109,false);
           break;
         case 104:
           DialogEnableWindow(hwnd,103,IsDlgButtonChecked(hwnd,104) != BST_CHECKED);
+          break;
+        case 107:
+          if (IsDlgButtonChecked(hwnd, 107) == BST_CHECKED) {
+            CheckDlgButton(hwnd, 106, BST_CHECKED);
+            DialogEnableWindow(hwnd, 106, false);
+          }
+          else {
+            DialogEnableWindow(hwnd, 106, true);
+          }
+          break;
+        default:
           break;
       }
       return true;
