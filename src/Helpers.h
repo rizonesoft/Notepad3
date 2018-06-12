@@ -191,9 +191,12 @@ bool IsCmdEnabled(HWND, UINT);
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 
 
-#define GetLngString(id,pb,cb) LoadLngString((id),(pb),(cb))
-int LoadLngString(UINT uID, LPWSTR lpBuffer, int nBufferMax);
-int FormatLngString(LPWSTR, int, UINT, ...);
+#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
+#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
+int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
+int FormatLngStringW(LPWSTR, int, UINT, ...);
+int FormatLngStringA(LPSTR, int, UINT, ...);
 
 
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);

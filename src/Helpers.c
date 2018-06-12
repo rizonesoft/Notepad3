@@ -616,7 +616,7 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
   }
 
   if (bIsElevated) {
-    FormatLngString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_MUI_APPTITLE_ELEVATED,szAppName);
+    FormatLngStringW(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_MUI_APPTITLE_ELEVATED,szAppName);
     StringCchCopyN(szAppName,COUNTOF(szAppName),szElevatedAppName,COUNTOF(szElevatedAppName));
   }
 
@@ -1200,34 +1200,57 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 
 //=============================================================================
 //
-//  LoadLngString()
+//  LoadLngStringW()
 //
-
-int LoadLngString(UINT uID, LPTSTR lpBuffer, int nBufferMax) 
+int LoadLngStringW(UINT uID, LPTSTR lpBuffer, int nBufferMax) 
 {
-  const int nLen = LoadString(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  const int nLen = LoadStringW(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  return (nLen != 0) ? nLen : LoadStringW(g_hInstance, uID, lpBuffer, nBufferMax);
+}
 
-  return (nLen != 0) ? nLen : LoadString(g_hInstance, uID, lpBuffer, nBufferMax);
+//=============================================================================
+//
+//  LoadLngStringA()
+//
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
+{
+  const int nLen = LoadStringA(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  return (nLen != 0) ? nLen : LoadStringA(g_hInstance, uID, lpBuffer, nBufferMax);
 }
 
 
 
 //=============================================================================
 //
-//  FormatLngString()
+//  FormatLngStringW()
 //
-int FormatLngString(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
 {
   static WCHAR pBuffer[XHUGE_BUFFER];
   pBuffer[0] = L'\0';
 
-  if (LoadLngString(uIdFormat, pBuffer, nOutput))
+  if (LoadLngStringW(uIdFormat, pBuffer, nOutput))
   {
-    StringCchVPrintf(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+    StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
   }
-  return (int)StringCchLen(lpOutput, nOutput);
+  return (int)StringCchLenW(lpOutput, nOutput);
 }
 
+//=============================================================================
+//
+//  FormatLngStringA()
+//
+int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  static CHAR pBuffer[XHUGE_BUFFER];
+  pBuffer[0] = L'\0';
+
+  if (LoadLngStringA(uIdFormat, pBuffer, nOutput))
+  {
+    StringCchVPrintfA(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+  }
+  return (int)StringCchLenA(lpOutput, nOutput);
+}
 
 
 //=============================================================================
