@@ -4276,7 +4276,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   if (!(iSortFlags & SORT_UNIQDUP) || (iZeroLenLineCount == 0)) {
     StrTrimA(pmszResOffset, "\r\n"); // trim end only
   }
-  if ((iSortFlags & SORT_UNIQDUP) && (iZeroLenLineCount > 1)) { 
+  if (((iSortFlags & SORT_UNIQDUP) && (iZeroLenLineCount > 1)) || (iSortFlags & SORT_MERGEDUP)) {
     iZeroLenLineCount = 1; // removes duplicate empty lines
   }
   if (!(iSortFlags & SORT_REMZEROLEN)) {
@@ -5143,6 +5143,15 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       {
         if (!bSwitchedFindReplace)
         {
+          if (s_anyMatch == MATCH) {
+            // Save MRUs
+            if (StringCchLenA(sg_pefrData->szFind, COUNTOF(sg_pefrData->szFind))) {
+              if (GetDlgItemText(hwnd, IDC_FINDTEXT, tchBuf, COUNTOF(tchBuf))) {
+                MRU_Add(g_pMRUfind, tchBuf, 0, 0, NULL);
+                SetFindPattern(tchBuf);
+              }
+            }
+          }
           sg_pefrData->szFind[0] = '\0';
 
           g_iMarkOccurrences = iSaveMarkOcc;
