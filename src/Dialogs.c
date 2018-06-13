@@ -505,13 +505,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
   #if true
 
-    char pAboutRes1[4000];
-    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes1, COUNTOF(pAboutRes1));
-    char pAboutRes2[4000];
-    GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes2, COUNTOF(pAboutRes2));
-
-    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes1);
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes2);
+    char pAboutRes[4000];
+    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
 
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
     pAboutInfo = pAboutResource;
