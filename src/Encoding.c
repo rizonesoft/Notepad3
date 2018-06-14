@@ -38,7 +38,6 @@
 #include "encoding.h"
 
 
-//extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
 
 extern bool bLoadASCIIasUTF8;
