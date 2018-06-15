@@ -5023,7 +5023,7 @@ static WCHAR* IndicatorTypes[22] = {
 bool Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
 {
   if (*idx < 0) { // retrieve indicator style from string
-    for (int i = 0; i < COUNTOF(IndicatorTypes); i++) {
+    for (int i = COUNTOF(IndicatorTypes) - 1;  0 <= i;  --i) {
       if (StrStrI(lpszStyle, IndicatorTypes[i])) {
         *idx = i;
         return true;
