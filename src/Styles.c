@@ -4994,7 +4994,7 @@ bool Style_StrGetCase(LPCWSTR lpszStyle, int* i)
 //  Style_GetIndicatorType()
 //
 
-static WCHAR* IndicatorTypes[20] = {
+static WCHAR* IndicatorTypes[22] = {
   L"indic_plain",
   L"indic_squiggle",
   L"indic_tt",
@@ -5014,8 +5014,11 @@ static WCHAR* IndicatorTypes[20] = {
   L"indic_fullbox",
   L"indic_textfore",
   L"indic_point",
-  L"indic_pointcharacter"
+  L"indic_pointcharacter",
+  L"indic_gradient",
+  L"indic_gradientcentre"
 };
+
 
 bool Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
 {

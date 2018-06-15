@@ -8,9 +8,11 @@
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -45,6 +47,11 @@
 
 using namespace Scintilla;
 
+void BidiData::Resize(size_t maxLineLength_) {
+	stylesFonts.resize(maxLineLength_ + 1);
+	widthReprs.resize(maxLineLength_ + 1);
+}
+
 LineLayout::LineLayout(int maxLineLength_) :
 	lenLineStarts(0),
 	lineNumber(-1),
@@ -57,12 +64,11 @@ LineLayout::LineLayout(int maxLineLength_) :
 	highlightColumn(false),
 	containsCaret(false),
 	edgeColumn(0),
+	bracePreviousStyles{},
 	hotspot(0,0),
 	widthLine(wrapWidthInfinite),
 	lines(1),
 	wrapIndent(0) {
-	bracePreviousStyles[0] = 0;
-	bracePreviousStyles[1] = 0;
 	Resize(maxLineLength_);
 }
 
@@ -78,7 +84,18 @@ void LineLayout::Resize(int maxLineLength_) {
 		// Extra position allocated as sometimes the Windows
 		// GetTextExtentExPoint API writes an extra element.
 		positions = std::make_unique<XYPOSITION []>(maxLineLength_ + 1 + 1);
+		if (bidiData) {
+			bidiData->Resize(maxLineLength_);
+		}
+
 		maxLineLength = maxLineLength_;
+	}
+}
+
+void LineLayout::EnsureBidiData() {
+	if (!bidiData) {
+		bidiData = std::make_unique<BidiData>();
+		bidiData->Resize(maxLineLength);
 	}
 }
 
@@ -87,6 +104,7 @@ void LineLayout::Free() {
 	styles.reset();
 	positions.reset();
 	lineStarts.reset();
+	bidiData.reset();
 }
 
 void LineLayout::Invalidate(validLevel validity_) {
@@ -104,23 +122,52 @@ int LineLayout::LineStart(int line) const {
 	}
 }
 
-int LineLayout::LineLastVisible(int line) const {
+int Scintilla::LineLayout::LineLength(int line) const {
+	if (!lineStarts) {
+		return numCharsInLine;
+	} if (line >= lines - 1) {
+		return numCharsInLine - lineStarts[line];
+	} else {
+		return lineStarts[line + 1] - lineStarts[line];
+	}
+}
+
+int LineLayout::LineLastVisible(int line, Scope scope) const {
 	if (line < 0) {
 		return 0;
 	} else if ((line >= lines-1) || !lineStarts) {
-		return numCharsBeforeEOL;
+		return scope == Scope::visibleOnly ? numCharsBeforeEOL : numCharsInLine;
 	} else {
 		return lineStarts[line+1];
 	}
 }
 
-Range LineLayout::SubLineRange(int subLine) const {
-	return Range(LineStart(subLine), LineLastVisible(subLine));
+Range LineLayout::SubLineRange(int subLine, Scope scope) const {
+	return Range(LineStart(subLine), LineLastVisible(subLine, scope));
 }
 
 bool LineLayout::InLine(int offset, int line) const {
 	return ((offset >= LineStart(line)) && (offset < LineStart(line + 1))) ||
 		((offset == numCharsInLine) && (line == (lines-1)));
+}
+
+int LineLayout::SubLineFromPosition(int posInLine, PointEnd pe) const {
+	if (!lineStarts || (posInLine > maxLineLength)) {
+		return lines - 1;
+	}
+
+	for (int line = 0; line < lines; line++) {
+		if (pe & peSubLineEnd) {
+			// Return subline not start of next
+			if (lineStarts[line + 1] <= posInLine + 1)
+				return line;
+		} else {
+			if (lineStarts[line + 1] <= posInLine)
+				return line;
+		}
+	}
+
+	return lines - 1;
 }
 
 void LineLayout::SetLineStart(int line, int start) {
@@ -218,7 +265,7 @@ Point LineLayout::PointFromPosition(int posInLine, int lineHeight, PointEnd pe) 
 	}
 
 	for (int subLine = 0; subLine < lines; subLine++) {
-		const Range rangeSubLine = SubLineRange(subLine);
+		const Range rangeSubLine = SubLineRange(subLine, Scope::visibleOnly);
 		if (posInLine >= rangeSubLine.start) {
 			pt.y = static_cast<XYPOSITION>(subLine*lineHeight);
 			if (posInLine <= rangeSubLine.end) {
@@ -241,6 +288,67 @@ Point LineLayout::PointFromPosition(int posInLine, int lineHeight, PointEnd pe) 
 
 int LineLayout::EndLineStyle() const {
 	return styles[numCharsBeforeEOL > 0 ? numCharsBeforeEOL-1 : 0];
+}
+
+ScreenLine::ScreenLine(
+	const LineLayout *ll_,
+	int subLine,
+	const ViewStyle &vs,
+	XYPOSITION width_,
+	int tabWidthMinimumPixels_) :
+	ll(ll_),
+	start(ll->LineStart(subLine)),
+	len(ll->LineLength(subLine)),
+	width(width_),
+	height(static_cast<float>(vs.lineHeight)),
+	ctrlCharPadding(vs.ctrlCharPadding),
+	tabWidth(vs.tabWidth),
+	tabWidthMinimumPixels(tabWidthMinimumPixels_) {
+}
+
+ScreenLine::~ScreenLine() {
+}
+
+std::string_view ScreenLine::Text() const {
+	return std::string_view(&ll->chars[start], len);
+}
+
+size_t ScreenLine::Length() const {
+	return len;
+}
+
+size_t ScreenLine::RepresentationCount() const {
+	return std::count_if(&ll->bidiData->widthReprs[start],
+		&ll->bidiData->widthReprs[start + len],
+		[](XYPOSITION w) {return w > 0.0f; });
+}
+
+XYPOSITION ScreenLine::Width() const {
+	return width;
+}
+
+XYPOSITION ScreenLine::Height() const {
+	return height;
+}
+
+XYPOSITION ScreenLine::TabWidth() const {
+	return tabWidth;
+}
+
+XYPOSITION ScreenLine::TabWidthMinimumPixels() const {
+	return static_cast<XYPOSITION>(tabWidthMinimumPixels);
+}
+
+const Font *ScreenLine::FontOfPosition(size_t position) const {
+	return &ll->bidiData->stylesFonts[start + position];
+}
+
+XYPOSITION ScreenLine::RepresentationWidth(size_t position) const {
+	return ll->bidiData->widthReprs[start + position];
+}
+
+XYPOSITION ScreenLine::TabPositionAfter(XYPOSITION xPosition) const {
+	return (floor((xPosition + TabWidthMinimumPixels()) / TabWidth()) + 1) * TabWidth();
 }
 
 LineLayoutCache::LineLayoutCache() :
@@ -318,7 +426,7 @@ LineLayout *LineLayoutCache::Retrieve(Sci::Line lineNumber, Sci::Line lineCaret,
 	}
 	allInvalidated = false;
 	Sci::Position pos = -1;
-	LineLayout *ret = 0;
+	LineLayout *ret = nullptr;
 	if (level == llcCaret) {
 		pos = 0;
 	} else if (level == llcPage) {
@@ -408,12 +516,12 @@ const Representation *SpecialRepresentations::RepresentationFromCharacter(const 
 	PLATFORM_ASSERT(len <= 4);
 	const unsigned char ucStart = charBytes[0];
 	if (!startByteHasReprs[ucStart])
-		return 0;
+		return nullptr;
 	MapRepresentation::const_iterator it = mapReprs.find(KeyFromString(charBytes, len));
 	if (it != mapReprs.end()) {
 		return &(it->second);
 	}
-	return 0;
+	return nullptr;
 }
 
 bool SpecialRepresentations::Contains(const char *charBytes, size_t len) const {
@@ -432,7 +540,7 @@ void SpecialRepresentations::Clear() {
 }
 
 void BreakFinder::Insert(Sci::Position val) {
-	int posInLine = static_cast<int>(val);
+	const int posInLine = static_cast<int>(val);
 	if (posInLine > nextBreak) {
 		const std::vector<int>::iterator it = std::lower_bound(selAndEdge.begin(), selAndEdge.end(), posInLine);
 		if (it == selAndEdge.end()) {
@@ -507,7 +615,8 @@ TextSegment BreakFinder::Next() {
 				charWidth = UTF8DrawBytes(reinterpret_cast<unsigned char *>(&ll->chars[nextBreak]),
 					static_cast<int>(lineRange.end - nextBreak));
 			else if (encodingFamily == efDBCS)
-				charWidth = pdoc->IsDBCSLeadByteNoExcept(ll->chars[nextBreak]) ? 2 : 1;
+				charWidth = pdoc->DBCSDrawBytes(
+					std::string_view(&ll->chars[nextBreak], lineRange.end - nextBreak));
 			const Representation *repr = preprs->RepresentationFromCharacter(&ll->chars[nextBreak], charWidth);
 			if (((nextBreak > 0) && (ll->styles[nextBreak] != ll->styles[nextBreak - 1])) ||
 					repr ||
@@ -521,7 +630,7 @@ TextSegment BreakFinder::Next() {
 					if (nextBreak == prev) {
 						nextBreak += charWidth;
 					} else {
-						repr = 0;	// Optimize -> should remember repr
+						repr = nullptr;	// Optimize -> should remember repr
 					}
 					if ((nextBreak - prev) < lengthStartSubdivision) {
 						return TextSegment(prev, nextBreak - prev, repr);
@@ -690,7 +799,7 @@ void PositionCache::MeasureWidths(Surface *surface, const ViewStyle &vstyle, uns
 		while (startSegment < len) {
 			const unsigned int lenSegment = pdoc->SafeSegment(s + startSegment, len - startSegment, BreakFinder::lengthEachSubdivision);
 			FontAlias fontStyle = vstyle.styles[styleNumber].font;
-			surface->MeasureWidths(fontStyle, s + startSegment, lenSegment, positions + startSegment);
+			surface->MeasureWidths(fontStyle, std::string_view(s + startSegment, lenSegment), positions + startSegment);
 			for (unsigned int inSeg = 0; inSeg < lenSegment; inSeg++) {
 				positions[startSegment + inSeg] += xStartSegment;
 			}
@@ -699,7 +808,7 @@ void PositionCache::MeasureWidths(Surface *surface, const ViewStyle &vstyle, uns
 		}
 	} else {
 		FontAlias fontStyle = vstyle.styles[styleNumber].font;
-		surface->MeasureWidths(fontStyle, s, len, positions);
+		surface->MeasureWidths(fontStyle, std::string_view(s, len), positions);
 	}
 	if (probe < pces.size()) {
 		// Store into cache

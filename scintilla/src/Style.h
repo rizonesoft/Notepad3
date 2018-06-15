@@ -18,7 +18,7 @@ struct FontSpecification {
 	int characterSet;
 	int extraFontFlag;
 	FontSpecification() :
-		fontName(0),
+		fontName(nullptr),
 		weight(SC_WEIGHT_NORMAL),
 		italic(false),
 		size(10 * SC_FONT_SIZE_MULTIPLIER),
@@ -39,7 +39,7 @@ public:
 	FontAlias &operator=(const FontAlias &) = delete;
 	FontAlias &operator=(FontAlias &&) = delete;
 	~FontAlias() override;
-	void MakeAlias(Font &fontOrigin);
+	void MakeAlias(const Font &fontOrigin);
 	void ClearFont();
 };
 

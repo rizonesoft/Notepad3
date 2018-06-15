@@ -1,6 +1,6 @@
 // Scintilla source code edit control
 /** @file ExternalLexer.h
- ** Support external lexers in DLLs.
+ ** Support external lexers in DLLs or shared libraries.
  **/
 // Copyright 2001 Simon Steele <ss@pnotepad.org>, portions copyright Neil Hodgson.
 // The License.txt file describes the conditions under which this software may be distributed.
@@ -28,9 +28,9 @@ protected:
 	std::string name;
 public:
 	ExternalLexerModule(int language_, LexerFunction fnLexer_,
-		const char *languageName_=0, LexerFunction fnFolder_=0) :
-		LexerModule(language_, fnLexer_, 0, fnFolder_),
-		fneFactory(0), name(languageName_){
+		const char *languageName_=nullptr, LexerFunction fnFolder_=nullptr) :
+		LexerModule(language_, fnLexer_, nullptr, fnFolder_),
+		fneFactory(nullptr), name(languageName_){
 		languageName = name.c_str();
 	}
 	virtual void SetExternal(GetLexerFactoryFunction fFactory, int index);

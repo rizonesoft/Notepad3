@@ -78,6 +78,14 @@ static void ColouriseDiffLine(char *lineBuffer, Sci_Position endLine, Accessor &
 		styler.ColourTo(endLine, SCE_DIFF_POSITION);
 	} else if (lineBuffer[0] >= '0' && lineBuffer[0] <= '9') {
 		styler.ColourTo(endLine, SCE_DIFF_POSITION);
+	} else if (0 == strncmp(lineBuffer, "++", 2)) {
+		styler.ColourTo(endLine, SCE_DIFF_PATCH_ADD);
+	} else if (0 == strncmp(lineBuffer, "+-", 2)) {
+		styler.ColourTo(endLine, SCE_DIFF_PATCH_DELETE);
+	} else if (0 == strncmp(lineBuffer, "-+", 2)) {
+		styler.ColourTo(endLine, SCE_DIFF_REMOVED_PATCH_ADD);
+	} else if (0 == strncmp(lineBuffer, "--", 2)) {
+		styler.ColourTo(endLine, SCE_DIFF_REMOVED_PATCH_DELETE);
 	} else if (lineBuffer[0] == '-' || lineBuffer[0] == '<') {
 		styler.ColourTo(endLine, SCE_DIFF_DELETED);
 	} else if (lineBuffer[0] == '+' || lineBuffer[0] == '>') {

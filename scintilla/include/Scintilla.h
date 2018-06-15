@@ -288,6 +288,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define INDIC_TEXTFORE 17
 #define INDIC_POINT 18
 #define INDIC_POINTCHARACTER 19
+#define INDIC_GRADIENT 20
+#define INDIC_GRADIENTCENTRE 21
 #define INDIC_IME 32
 #define INDIC_IME_MAX 35
 #define INDIC_MAX 35
@@ -547,6 +549,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_WRAPINDENT_FIXED 0
 #define SC_WRAPINDENT_SAME 1
 #define SC_WRAPINDENT_INDENT 2
+#define SC_WRAPINDENT_DEEPINDENT 3
 #define SCI_SETWRAPINDENTMODE 2472
 #define SCI_GETWRAPINDENTMODE 2473
 #define SC_CACHE_NONE 0

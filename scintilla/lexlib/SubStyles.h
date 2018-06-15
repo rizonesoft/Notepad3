@@ -120,11 +120,11 @@ public:
 	}
 
 	int Allocate(int styleBase, int numberStyles) {
-		int block = BlockFromBaseStyle(styleBase);
+		const int block = BlockFromBaseStyle(styleBase);
 		if (block >= 0) {
 			if ((allocated + numberStyles) > stylesAvailable)
 				return -1;
-			int startBlock = styleFirst + allocated;
+			const int startBlock = styleFirst + allocated;
 			allocated += numberStyles;
 			classifiers[block].Allocate(startBlock, numberStyles);
 			return startBlock;
@@ -134,17 +134,17 @@ public:
 	}
 
 	int Start(int styleBase) {
-		int block = BlockFromBaseStyle(styleBase);
+		const int block = BlockFromBaseStyle(styleBase);
 		return (block >= 0) ? classifiers[block].Start() : -1;
 	}
 
 	int Length(int styleBase) {
-		int block = BlockFromBaseStyle(styleBase);
+		const int block = BlockFromBaseStyle(styleBase);
 		return (block >= 0) ? classifiers[block].Length() : 0;
 	}
 
 	int BaseStyle(int subStyle) const {
-		int block = BlockFromStyle(subStyle);
+		const int block = BlockFromStyle(subStyle);
 		if (block >= 0)
 			return classifiers[block].Base();
 		else
@@ -174,7 +174,7 @@ public:
 	}
 
 	void SetIdentifiers(int style, const char *identifiers) {
-		int block = BlockFromStyle(style);
+		const int block = BlockFromStyle(style);
 		if (block >= 0)
 			classifiers[block].SetIdentifiers(style, identifiers);
 	}

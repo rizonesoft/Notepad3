@@ -44,6 +44,7 @@
 #include <iterator>
 #include <functional>
 #include <memory>
+#include <numeric>
 #include <chrono>
 #include <regex>
 #include <iostream>

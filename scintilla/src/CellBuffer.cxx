@@ -12,6 +12,7 @@
 #include <cstdarg>
 
 #include <stdexcept>
+#include <string_view>
 #include <vector>
 #include <algorithm>
 #include <memory>

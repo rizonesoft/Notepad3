@@ -68,7 +68,7 @@ public:
 	bool isSet;
 	ColourOptional(ColourDesired colour_=ColourDesired(0,0,0), bool isSet_=false) : ColourDesired(colour_), isSet(isSet_) {
 	}
-	ColourOptional(uptr_t wParam, sptr_t lParam) : ColourDesired(static_cast<long>(lParam)), isSet(wParam != 0) {
+	ColourOptional(uptr_t wParam, sptr_t lParam) : ColourDesired(static_cast<int>(lParam)), isSet(wParam != 0) {
 	}
 };
 
@@ -84,7 +84,7 @@ struct EdgeProperties {
 		column(column_), colour(colour_) {
 	}
 	EdgeProperties(uptr_t wParam, sptr_t lParam) :
-		column(static_cast<int>(wParam)), colour(static_cast<long>(lParam)) {
+		column(static_cast<int>(wParam)), colour(static_cast<int>(lParam)) {
 	}
 };
 

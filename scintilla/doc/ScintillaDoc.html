@@ -119,7 +119,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 17 April 2018 NH</p>
+    <p>Last edited 6 June 2018 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -157,9 +157,10 @@
     <p>Scintilla also builds with Cocoa on OS X and with Qt, and follows the conventions of
     those platforms.</p>
 
-    <p>Scintilla does not properly support right-to-left languages like Arabic and Hebrew.
-    While text in these languages may appear correct, it is not possible to interact with this text
-    as is normal with other editing components.</p>
+    <p>Scintilla provides only limited experimental support on Windows for right-to-left languages
+    like Arabic and Hebrew.
+    While text in these languages may appear correct, interaction with this text may not work
+    correctly as occurs with other editors.</p>
 
     <p>This documentation describes the individual messages and notifications used by Scintilla. It
     does not describe how to link them together to form a useful editor. For now, the best way to
@@ -3724,19 +3725,22 @@ struct Sci_TextToFind {
      Scintilla may ignore this call in some cases. For example, the inline behaviour might only be supported for some languages.</p>
 
 <div  class="provisional">
-    <a href="#ProvisionalMessages">These bidirectional features are not yet implemented and the API is provisional</a><br />
+    <a href="#ProvisionalMessages">These bidirectional features are experimental and incomplete.</a><br />
     <p><b id="SCI_SETBIDIRECTIONAL">SCI_SETBIDIRECTIONAL(int bidirectional)</b><br />
      <b id="SCI_GETBIDIRECTIONAL">SCI_GETBIDIRECTIONAL &rarr; int</b><br />
      Some languages, like Arabic and Hebrew, are written from right to left instead of from left to right as English is.
      Documents that use multiple languages may contain both directions and this is termed "bidirectional".
      The default text direction may be right to left or left to right.
-     Scintilla only correctly displays bidirectional text on some platforms and there can be additional processing and storage
-     costs to this.
-     Currently, bidirectional text only works on Win32 using DirectWrite.
+     Scintilla only correctly displays bidirectional text on some platforms.
+     Currently, there is experimental support for bidirectional text on Win32 using DirectWrite and on macOS using Cocoa.
+     Only UTF-8 documents will show bidirectional behaviour and only in <code>SC_BIDIRECTIONAL_L2R</code> mode.
+     Some features, such as virtual space may not work with
+     bidirectional text or may work only in some circumstances.</p>
+     <p>There are additional processing and storage costs to bidirectional text.
      As some applications may not want to pay the costs, bidirectional support must be explicitly enabled by calling
      <code>SCI_SETBIDIRECTIONAL(SC_BIDIRECTIONAL_L2R)</code> (1) which chooses left to right as the default direction or
      <code>SCI_SETBIDIRECTIONAL(SC_BIDIRECTIONAL_R2L)</code> (2) for default right to left.
-     This should be done after setting the technology to <code>SC_TECHNOLOGY_DIRECTWRITE</code>,
+     On Win32, this should be done after setting the technology to <code>SC_TECHNOLOGY_DIRECTWRITE</code>,
      <code>SC_TECHNOLOGY_DIRECTWRITERETAIN</code>, or
      <code>SC_TECHNOLOGY_DIRECTWRITEDC</code>.</p>
      <p>If the call succeeded <code>SCI_GETBIDIRECTIONAL</code> will return the same value otherwise
@@ -4468,6 +4472,23 @@ struct Sci_TextToFind {
               <a class="seealso" href="#SCI_INDICSETOUTLINEALPHA">SCI_INDICSETOUTLINEALPHA</a>
               control the alpha transparency values. The default values are 30 for alpha and 50 for outline alpha.
               To avoid excessive memory allocation the maximum width of a dotted box is 4000 pixels.</td>
+        </tr>
+
+        <tr>
+          <td align="left"><code>INDIC_GRADIENT</code></td>
+
+          <td align="center">20</td>
+
+          <td>A vertical gradient between a colour and alpha at top to fully transparent at bottom.</td>
+        </tr>
+
+        <tr>
+          <td align="left"><code>INDIC_GRADIENTCENTRE</code></td>
+
+          <td align="center">21</td>
+
+          <td>A vertical gradient with the specified colour and alpha in the middle
+          fading to fully transparent at top and bottom.</td>
         </tr>
 
         <tr>
@@ -6409,8 +6430,10 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
         <tr>
           <td align="left"><code>SC_WRAPINDENT_FIXED</code></td>
           <td align="center">0</td>
-          <td>Wrapped sublines aligned to left of window plus amount set by
-	  <a class="seealso" href="#SCI_SETWRAPSTARTINDENT">SCI_SETWRAPSTARTINDENT</a></td>
+          <td>
+              Wrapped sublines aligned to left of window plus amount set by
+              <a class="seealso" href="#SCI_SETWRAPSTARTINDENT">SCI_SETWRAPSTARTINDENT</a>
+          </td>
         </tr>
 
         <tr>
@@ -6423,6 +6446,12 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
           <td align="left"><code>SC_WRAPINDENT_INDENT</code></td>
           <td align="center">2</td>
           <td>Wrapped sublines are aligned to first subline indent plus one more level of indentation</td>
+        </tr>
+
+        <tr>
+          <td align="left"><code>SC_WRAPINDENT_DEEPINDENT</code></td>
+          <td align="center">3</td>
+          <td>Wrapped sublines are aligned to first subline indent plus two more levels of indentation</td>
         </tr>
       </tbody>
     </table>
