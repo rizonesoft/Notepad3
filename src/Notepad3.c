@@ -236,8 +236,6 @@ bool      bTransparentMode;
 bool      bTransparentModeAvailable;
 bool      bShowToolbar;
 bool      bShowStatusbar;
-int       iSciDirectWriteTech;
-int       g_iSciFontQuality;
 int       iHighDpiToolBar;
 int       iUpdateDelayHyperlinkStyling;
 int       iUpdateDelayMarkAllCoccurrences;
@@ -245,6 +243,8 @@ int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
 
+static int       g_iSciDirectWriteTech = 0;
+static bool      bEnableBidirectionalSupport = false;
 
 const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
@@ -252,6 +252,8 @@ const int DirectWriteTechnology[4] = {
   , SC_TECHNOLOGY_DIRECTWRITERETAIN
   , SC_TECHNOLOGY_DIRECTWRITEDC
 };
+
+int       g_iSciFontQuality;
 
 const int FontQuality[4] = {
     SC_EFF_QUALITY_DEFAULT
@@ -713,15 +715,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   // init DragnDrop handler
   DragAndDropInit(NULL);
-
-  if (IsVista()) {
-    // Current platforms perform window buffering so it is almost always better for this option to be turned off.
-    // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
-    //~SciCall_SetBufferedDraw(true);  // default is true 
-    if (iSciDirectWriteTech >= 0) {
-      SciCall_SetTechnology(DirectWriteTechnology[iSciDirectWriteTech]);
-    }
-  }
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
@@ -1564,9 +1557,20 @@ static void __fastcall _SetWordWrapping(HWND hwndEditCtrl)
 //
 static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
+  if (IsVista()) {
+    // Current platforms perform window buffering so it is almost always better for this option to be turned off.
+    // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
+    //~SciCall_SetBufferedDraw(true);  // default is true 
+    if (g_iSciDirectWriteTech >= 0) {
+      SciCall_SetTechnology(DirectWriteTechnology[g_iSciDirectWriteTech]);
+      // experimental
+      if (bEnableBidirectionalSupport) {
+        SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, SC_BIDIRECTIONAL_L2R, 0);
+      }
+    }
+  }
   Encoding_Current(g_iDefaultNewFileEncoding);
 
-  // general setup
   //int const evtMask = SC_MODEVENTMASKALL;
   // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED: 
   // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER, 
@@ -6607,9 +6611,11 @@ void LoadSettings()
   dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
 
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech", DirectWriteTechnology[0]);
-  iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
+  g_iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech", DirectWriteTechnology[0]);
+  g_iSciDirectWriteTech = max(min(g_iSciDirectWriteTech,3),-1);
 
+  bEnableBidirectionalSupport = IniSectionGetBool(pIniSection, L"EnableBidirectionalSupport", false);
+  
   g_iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", FontQuality[3]);
   g_iSciFontQuality = max(min(g_iSciFontQuality, 3), 0);
 
@@ -6721,8 +6727,8 @@ void LoadSettings()
 
   WCHAR tchSciDirectWriteTech[64];
   StringCchPrintf(tchSciDirectWriteTech,COUNTOF(tchSciDirectWriteTech),L"%ix%i SciDirectWriteTech",ResX,ResY);
-  iSciDirectWriteTech = IniSectionGetInt(pIniSection,tchSciDirectWriteTech,iSciDirectWriteTech);
-  iSciDirectWriteTech = max(min(iSciDirectWriteTech,3),-1);
+  g_iSciDirectWriteTech = IniSectionGetInt(pIniSection,tchSciDirectWriteTech,g_iSciDirectWriteTech);
+  g_iSciDirectWriteTech = max(min(g_iSciDirectWriteTech,3),-1);
 
   WCHAR tchSciFontQuality[64];
   StringCchPrintf(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
