@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2007-2017, Troy D. Hanson   http://troydhanson.github.com/uthash/
+Copyright (c) 2007-2018, Troy D. Hanson   http://troydhanson.github.com/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -358,8 +358,8 @@ do {                                                                            
 do {                                                                                           \
   LDECLTYPE(head) _tmp;                                                                        \
   if (head) {                                                                                  \
-    LL_LOWER_BOUND(head, _tmp, add, cmp);                                                      \
-    LL_APPEND_ELEM(head, _tmp, add);                                                           \
+    LL_LOWER_BOUND2(head, _tmp, add, cmp, next);                                               \
+    LL_APPEND_ELEM2(head, _tmp, add, next);                                                    \
   } else {                                                                                     \
     (head) = (add);                                                                            \
     (head)->next = NULL;                                                                       \
@@ -651,14 +651,14 @@ do {                                                                            
 } while (0)
 
 #define DL_INSERT_INORDER(head,add,cmp)                                                        \
-    DL_INSERT_INORDER2(head,add,cmp,next)
+    DL_INSERT_INORDER2(head,add,cmp,prev,next)
 
-#define DL_INSERT_INORDER2(head,add,cmp,next)                                                  \
+#define DL_INSERT_INORDER2(head,add,cmp,prev,next)                                             \
 do {                                                                                           \
   LDECLTYPE(head) _tmp;                                                                        \
   if (head) {                                                                                  \
-    DL_LOWER_BOUND(head, _tmp, add, cmp);                                                      \
-    DL_APPEND_ELEM(head, _tmp, add);                                                           \
+    DL_LOWER_BOUND2(head, _tmp, add, cmp, next);                                               \
+    DL_APPEND_ELEM2(head, _tmp, add, prev, next);                                              \
   } else {                                                                                     \
     (head) = (add);                                                                            \
     (head)->prev = (head);                                                                     \
@@ -825,7 +825,7 @@ do {                                                                            
 /* Here are VS2008 / NO_DECLTYPE replacements for a few functions */
 
 #undef DL_INSERT_INORDER2
-#define DL_INSERT_INORDER2(head,add,cmp,next)                                                  \
+#define DL_INSERT_INORDER2(head,add,cmp,prev,next)                                             \
 do {                                                                                           \
   if ((head) == NULL) {                                                                        \
     (add)->prev = (add);                                                                       \
@@ -838,7 +838,7 @@ do {                                                                            
     (head) = (add);                                                                            \
   } else {                                                                                     \
     char *_tmp = (char*)(head);                                                                \
-    while ((char*)(head)->next != _tmp && (cmp((head)->next, add)) < 0) {                      \
+    while ((head)->next && (cmp((head)->next, add)) < 0) {                                     \
       (head) = (head)->next;                                                                   \
     }                                                                                          \
     (add)->prev = (head);                                                                      \
@@ -892,14 +892,14 @@ do {                                                                            
 } while (0)
 
 #define CDL_INSERT_INORDER(head,add,cmp)                                                       \
-    CDL_INSERT_INORDER2(head,add,cmp,next)
+    CDL_INSERT_INORDER2(head,add,cmp,prev,next)
 
-#define CDL_INSERT_INORDER2(head,add,cmp,next)                                                 \
+#define CDL_INSERT_INORDER2(head,add,cmp,prev,next)                                            \
 do {                                                                                           \
   LDECLTYPE(head) _tmp;                                                                        \
   if (head) {                                                                                  \
-    CDL_LOWER_BOUND(head, _tmp, add, cmp);                                                     \
-    CDL_APPEND_ELEM(head, _tmp, add);                                                          \
+    CDL_LOWER_BOUND2(head, _tmp, add, cmp, next);                                              \
+    CDL_APPEND_ELEM2(head, _tmp, add, prev, next);                                             \
   } else {                                                                                     \
     (head) = (add);                                                                            \
     (head)->next = (head);                                                                     \
@@ -1044,7 +1044,7 @@ do {                                                                            
 /* Here are VS2008 / NO_DECLTYPE replacements for a few functions */
 
 #undef CDL_INSERT_INORDER2
-#define CDL_INSERT_INORDER2(head,add,cmp,next)                                                 \
+#define CDL_INSERT_INORDER2(head,add,cmp,prev,next)                                            \
 do {                                                                                           \
   if ((head) == NULL) {                                                                        \
     (add)->prev = (add);                                                                       \

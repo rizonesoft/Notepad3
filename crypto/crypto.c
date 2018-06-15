@@ -31,7 +31,8 @@ see ecryption-doc.txt for details
 #include "rijndael-api-fst.h"
 #include "crypto.h"
 
-extern HINSTANCE g_hInstance;
+//extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
 
 #define WKEY_LEN 256
 #define KEY_LEN  512
@@ -111,15 +112,15 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
     case WM_INITDIALOG:
     {
-        SetDlgItemText(hDlg, IDC_EDIT1, unicodeFileKey);
-        SetDlgItemText(hDlg, IDC_EDIT2, unicodeMasterKey);
-        ShowWindow(GetDlgItem(hDlg, IDC_CHECK3), hasMasterFileKey);
-        CheckDlgButton(hDlg, IDC_CHECK3, hasMasterFileKey ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hDlg, IDC_CHECK2, (hasBinFileKey | useFileKey) ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hDlg, IDC_CHECK1, useMasterKey ? BST_CHECKED : BST_UNCHECKED);
+        SetDlgItemText(hDlg, IDC_PWD_EDIT1, unicodeFileKey);
+        SetDlgItemText(hDlg, IDC_PWD_EDIT2, unicodeMasterKey);
+        ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), hasMasterFileKey);
+        CheckDlgButton(hDlg, IDC_PWD_CHECK3, hasMasterFileKey ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hDlg, IDC_PWD_CHECK2, (hasBinFileKey | useFileKey) ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hDlg, IDC_PWD_CHECK1, useMasterKey ? BST_CHECKED : BST_UNCHECKED);
         CenterDlgInParent(hDlg);
-        // Don't use: SetFocus( GetDlgItem( hDlg, IDC_EDIT1 ) );
-        SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_EDIT1));
+        // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT1 ) );
+        SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT1));
     }
 
     return true;
@@ -128,15 +129,15 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     case WM_COMMAND:
 
         switch (LOWORD(wParam)) {
-        case IDC_CHECK4:
+        case IDC_PWD_CHECK4:
           {
-            if (IsDlgButtonChecked(hDlg, IDC_CHECK4) == BST_CHECKED) {
-              SendDlgItemMessage(hDlg, IDC_EDIT1, EM_SETPASSWORDCHAR, 0, 0);
-              SendDlgItemMessage(hDlg, IDC_EDIT2, EM_SETPASSWORDCHAR, 0, 0);
+            if (IsDlgButtonChecked(hDlg, IDC_PWD_CHECK4) == BST_CHECKED) {
+              SendDlgItemMessage(hDlg, IDC_PWD_EDIT1, EM_SETPASSWORDCHAR, 0, 0);
+              SendDlgItemMessage(hDlg, IDC_PWD_EDIT2, EM_SETPASSWORDCHAR, 0, 0);
             }
             else {
-              SendDlgItemMessage(hDlg, IDC_EDIT1, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
-              SendDlgItemMessage(hDlg, IDC_EDIT2, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+              SendDlgItemMessage(hDlg, IDC_PWD_EDIT1, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+              SendDlgItemMessage(hDlg, IDC_PWD_EDIT2, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
             }
             InvalidateRect(hDlg, NULL, TRUE);
           }
@@ -145,14 +146,14 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
         case IDOK:
         {
-            bool useMas = IsDlgButtonChecked(hDlg, IDC_CHECK1) == BST_CHECKED;
-            bool useFil = IsDlgButtonChecked(hDlg, IDC_CHECK2) == BST_CHECKED;
-            bool reuseMas = IsDlgButtonChecked(hDlg, IDC_CHECK3) == BST_CHECKED;
+            bool useMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK1) == BST_CHECKED;
+            bool useFil = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK2) == BST_CHECKED;
+            bool reuseMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK3) == BST_CHECKED;
             WCHAR newFileKey[WKEY_LEN] = { 0 };
             WCHAR newMasKey[WKEY_LEN] = { 0 };
             hasMasterFileKey &= reuseMas;
-            GetDlgItemText(hDlg, IDC_EDIT1, newFileKey, COUNTOF(newFileKey));
-            GetDlgItemText(hDlg, IDC_EDIT2, newMasKey, COUNTOF(newMasKey));
+            GetDlgItemText(hDlg, IDC_PWD_EDIT1, newFileKey, COUNTOF(newFileKey));
+            GetDlgItemText(hDlg, IDC_PWD_EDIT2, newMasKey, COUNTOF(newMasKey));
             useFileKey = !((newFileKey[0] <= ' ') || !useFil);
             useMasterKey = !((newMasKey[0] <= ' ') || !useMas);
             //@@@lstrcpyn(fileKey, newFileKey, WKEY_LEN);
@@ -167,43 +168,43 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
         break;
 
-        case IDC_EDIT1:
+        case IDC_PWD_EDIT1:
         {
             WCHAR newFileKey[WKEY_LEN] = { 0 };
-            GetDlgItemText(hDlg, IDC_EDIT1, newFileKey, COUNTOF(newFileKey));
-            CheckDlgButton(hDlg, IDC_CHECK2, (newFileKey[0] <= ' ') ? BST_UNCHECKED : BST_CHECKED);
+            GetDlgItemText(hDlg, IDC_PWD_EDIT1, newFileKey, COUNTOF(newFileKey));
+            CheckDlgButton(hDlg, IDC_PWD_CHECK2, (newFileKey[0] <= ' ') ? BST_UNCHECKED : BST_CHECKED);
         }
 
         break;
 
-        case IDC_EDIT2:
+        case IDC_PWD_EDIT2:
         {
             WCHAR newMasKey[WKEY_LEN] = { 0 };
-            GetDlgItemText(hDlg, IDC_EDIT2, newMasKey, COUNTOF(newMasKey));
+            GetDlgItemText(hDlg, IDC_PWD_EDIT2, newMasKey, COUNTOF(newMasKey));
             {
                 bool newuse = (newMasKey[0] > ' ');	// no leading whitespace or empty passwords
-                CheckDlgButton(hDlg, IDC_CHECK1, newuse ? BST_CHECKED : BST_UNCHECKED);
+                CheckDlgButton(hDlg, IDC_PWD_CHECK1, newuse ? BST_CHECKED : BST_UNCHECKED);
 
-                if (newuse) { CheckDlgButton(hDlg, IDC_CHECK3, BST_UNCHECKED); }
+                if (newuse) { CheckDlgButton(hDlg, IDC_PWD_CHECK3, BST_UNCHECKED); }
             }
         }
 
         break;
 
-        case IDC_CHECK3:  // check reuse, uncheck set new and inverse
+        case IDC_PWD_CHECK3:  // check reuse, uncheck set new and inverse
         {
-            bool reuseMas = IsDlgButtonChecked(hDlg, IDC_CHECK3) == BST_CHECKED;
+            bool reuseMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK3) == BST_CHECKED;
 
-            if (reuseMas) { CheckDlgButton(hDlg, IDC_CHECK1, reuseMas ? BST_UNCHECKED : BST_CHECKED); }
+            if (reuseMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK1, reuseMas ? BST_UNCHECKED : BST_CHECKED); }
         }
 
         break;
 
-        case IDC_CHECK1:
+        case IDC_PWD_CHECK1:
         {
-            bool useMas = IsDlgButtonChecked(hDlg, IDC_CHECK1) == BST_CHECKED;
+            bool useMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK1) == BST_CHECKED;
 
-            if (useMas) { CheckDlgButton(hDlg, IDC_CHECK3, useMas ? BST_UNCHECKED : BST_CHECKED); }
+            if (useMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK3, useMas ? BST_UNCHECKED : BST_CHECKED); }
         }
 
         break;
@@ -238,14 +239,14 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     case WM_INITDIALOG:
       {
           int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
-          ShowWindow(GetDlgItem(hDlg, IDC_STATICPW), vis);
-          ShowWindow(GetDlgItem(hDlg, IDC_CHECK3), vis);
-          //@@@SetDlgItemText( hDlg, IDC_EDIT3, fileKey );
-          SetDlgItemText(hDlg, IDC_EDIT3, unicodeFileKey);
-          CheckDlgButton(hDlg, IDC_CHECK3, BST_UNCHECKED);
+          ShowWindow(GetDlgItem(hDlg, IDC_PWD_STATMPW), vis);
+          ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), vis);
+          //@@@SetDlgItemText( hDlg, IDC_PWD_EDIT3, fileKey );
+          SetDlgItemText(hDlg, IDC_PWD_EDIT3, unicodeFileKey);
+          CheckDlgButton(hDlg, IDC_PWD_CHECK3, BST_UNCHECKED);
           CenterDlgInParent(hDlg);
-          // Don't use: SetFocus( GetDlgItem( hDlg, IDC_EDIT3 ) );
-          SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_EDIT3));
+          // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT3 ) );
+          SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT3));
       }
       return true;
       break;
@@ -254,13 +255,13 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
         switch (LOWORD(wParam)) 
         {
-        case IDC_CHECK4:
+        case IDC_PWD_CHECK4:
           {
-            if (IsDlgButtonChecked(hDlg, IDC_CHECK4) == BST_CHECKED) {
-              SendDlgItemMessage(hDlg, IDC_EDIT3, EM_SETPASSWORDCHAR, 0, 0);
+            if (IsDlgButtonChecked(hDlg, IDC_PWD_CHECK4) == BST_CHECKED) {
+              SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, 0, 0);
             }
             else {
-              SendDlgItemMessage(hDlg, IDC_EDIT3, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
+              SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
             }
             InvalidateRect(hDlg, NULL, TRUE);
             return(true);
@@ -268,9 +269,9 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
           }
         case IDOK:
           {
-              bool useMas = (IsDlgButtonChecked(hDlg, IDC_CHECK3) == BST_CHECKED);
+              bool useMas = (IsDlgButtonChecked(hDlg, IDC_PWD_CHECK3) == BST_CHECKED);
               WCHAR newKey[WKEY_LEN] = L"\0";
-              GetDlgItemText(hDlg, IDC_EDIT3, newKey, COUNTOF(newKey));
+              GetDlgItemText(hDlg, IDC_PWD_EDIT3, newKey, COUNTOF(newKey));
 
               if (useMas) {
                   memcpy(unicodeMasterKey, newKey, sizeof(unicodeMasterKey));
@@ -302,7 +303,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 // set passphrases for output
 bool GetFileKey(HWND hwnd)
 {
-    return (IDOK == DialogBoxParam(g_hInstance, MAKEINTRESOURCE(IDD_PASSWORDS),
+    return (IDOK == DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
                                    GetParent(hwnd), SetKeysDlgProc, (LPARAM)hwnd));
 }
 
@@ -310,7 +311,7 @@ bool GetFileKey(HWND hwnd)
 bool ReadFileKey(HWND hwnd, bool master)
 {
     masterKeyAvailable = master;
-    return (IDOK == DialogBoxParam(g_hInstance, MAKEINTRESOURCE(IDD_READPW),
+    return (IDOK == DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
                                    GetParent(hwnd), GetKeysDlgProc, (LPARAM)hwnd));
 }
 
@@ -417,7 +418,7 @@ int ReadAndDecryptFile(HWND hwnd, HANDLE hFile, DWORD size, void** result, DWORD
                   *resultlen = (DWORD)nb;
                 }
                 else {
-                  bRetryPassPhrase = (MsgBox(MBRETRYCANCEL, IDS_PASS_FAILURE) == IDRETRY);
+                  bRetryPassPhrase = (MsgBoxLng(MBRETRYCANCEL, IDS_MUI_PASS_FAILURE) == IDRETRY);
                   if (!bRetryPassPhrase) {
                     // enable raw encryption read
                     *resultlen = readsize;

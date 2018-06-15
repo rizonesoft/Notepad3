@@ -103,6 +103,8 @@ __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, D
   WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
+
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
 #define IsXP()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
@@ -186,11 +188,16 @@ bool IsCmdEnabled(HWND, UINT);
 #define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
-#define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
-
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 
-int FormatString(LPWSTR,int,UINT,...);
+
+#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
+#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
+int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
+int FormatLngStringW(LPWSTR, int, UINT, ...);
+int FormatLngStringA(LPSTR, int, UINT, ...);
+
 
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
 void PathRelativeToApp(LPWSTR,LPWSTR,int,bool,bool,bool);
@@ -308,7 +315,7 @@ bool GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
 
-//==== strCut methods ===================
+//==== StrCut methods ===================
 
 CHAR*  _StrCutIA(CHAR*,const CHAR*);
 WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
@@ -317,6 +324,17 @@ WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
 #else
 #define StrCutI _StrCutIA
 #endif
+
+
+//==== StrNextTok methods ===================
+CHAR*  _StrNextTokA(CHAR*, const CHAR*);
+WCHAR* _StrNextTokW(WCHAR*, const WCHAR*);
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrNextTok _StrNextTokW
+#else
+#define StrNextTok _StrNextTokA
+#endif
+
 
 //==== StrSafe lstrlen() =======================================================
 __forceinline DocPos StringCchLenA(LPCSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, m, &len)) ? len : m)); }

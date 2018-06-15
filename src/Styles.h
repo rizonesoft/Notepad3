@@ -61,7 +61,7 @@ typedef struct _editlexer
 
 
 // Number of Lexers in pLexArray
-#define NUMLEXERS 47
+#define NUMLEXERS 48
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
 
@@ -106,9 +106,10 @@ bool   Style_SelectFont(HWND,LPWSTR,int,LPCWSTR,LPCWSTR,bool,bool,bool,bool);
 bool   Style_SelectColor(HWND,bool,LPWSTR,int,bool);
 void   Style_SetStyles(HWND,int,LPCWSTR,bool);
 bool   Style_IsCurLexerStandard();
+PEDITLEXER Style_GetCurrentLexerPtr();
 int    Style_GetCurrentLexerRID();
-void   Style_GetCurrentLexerName(LPWSTR,int);
-void   Style_GetStdLexerName(LPWSTR lpszName, int cchName);
+void   Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName);
+void   Style_GetStyleDisplayName(PEDITSTYLE pStyle, LPWSTR lpszName, int cchName);
 int    Style_GetLexerIconId(PEDITLEXER);
 bool   Style_HasLexerForExt(LPCWSTR);
 HTREEITEM Style_AddLexerToTreeView(HWND,PEDITLEXER);
