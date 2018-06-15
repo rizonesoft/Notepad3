@@ -31,7 +31,7 @@ see ecryption-doc.txt for details
 #include "rijndael-api-fst.h"
 #include "crypto.h"
 
-extern HINSTANCE g_hInstance;
+//extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
 
 #define WKEY_LEN 256

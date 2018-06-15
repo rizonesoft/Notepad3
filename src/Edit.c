@@ -59,7 +59,6 @@
 // find free bits in scintilla.h SCFIND_ defines
 #define SCFIND_NP3_REGEX (SCFIND_REGEXP | SCFIND_POSIX)
 
-extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
 
 extern HWND  g_hwndMain;
@@ -6963,6 +6962,7 @@ typedef struct _modlinesdata {
   LPWSTR pwsz2;
 } MODLINESDATA, *PMODLINESDATA;
 
+extern HINSTANCE g_hInstance;
 
 INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
