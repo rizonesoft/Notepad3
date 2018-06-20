@@ -37,11 +37,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_es", "language\np3_e
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_uk", "language\np3_en_uk\np3_en_uk.vcxproj", "{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_us", "language\np3_en_us\np3_en_us.vcxproj", "{9DC82B0D-2484-4925-92AD-1237C64CCB78}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_af_za", "language\np3_af_za\np3_af_za.vcxproj", "{C8E80B4C-C0FD-4119-A05A-AB372A61007F}"
@@ -50,6 +45,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_af_za", "language\np3_a
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_nl_nl", "language\np3_nl_nl\np3_nl_nl.vcxproj", "{9B31015C-CB08-4B4B-A957-313A93F862F5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_gb", "language\np3_en_gb\np3_en_gb.vcxproj", "{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
@@ -130,14 +130,6 @@ Global
 		{3B8C289D-FF47-4237-AD7B-0702230F41A3}.Release|Win32.Build.0 = Release|Win32
 		{3B8C289D-FF47-4237-AD7B-0702230F41A3}.Release|x64.ActiveCfg = Release|x64
 		{3B8C289D-FF47-4237-AD7B-0702230F41A3}.Release|x64.Build.0 = Release|x64
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Debug|Win32.Build.0 = Debug|Win32
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Debug|x64.ActiveCfg = Debug|x64
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Debug|x64.Build.0 = Debug|x64
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|Win32.ActiveCfg = Release|Win32
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|Win32.Build.0 = Release|Win32
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|x64.ActiveCfg = Release|x64
-		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|x64.Build.0 = Release|x64
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Debug|Win32.ActiveCfg = Debug|Win32
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Debug|Win32.Build.0 = Debug|Win32
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78}.Debug|x64.ActiveCfg = Debug|x64
@@ -162,6 +154,14 @@ Global
 		{9B31015C-CB08-4B4B-A957-313A93F862F5}.Release|Win32.Build.0 = Release|Win32
 		{9B31015C-CB08-4B4B-A957-313A93F862F5}.Release|x64.ActiveCfg = Release|x64
 		{9B31015C-CB08-4B4B-A957-313A93F862F5}.Release|x64.Build.0 = Release|x64
+		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Debug|Win32.Build.0 = Debug|Win32
+		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Debug|x64.ActiveCfg = Debug|x64
+		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Debug|x64.Build.0 = Debug|x64
+		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|Win32.ActiveCfg = Release|Win32
+		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|Win32.Build.0 = Release|Win32
+		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|x64.ActiveCfg = Release|x64
+		{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
