@@ -9,6 +9,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 
 #include "UniConversion.h"
 
@@ -16,10 +17,10 @@ using namespace Scintilla;
 
 namespace Scintilla {
 
-size_t UTF8Length(const wchar_t *uptr, size_t tlen) {
+size_t UTF8Length(std::wstring_view wsv) {
 	size_t len = 0;
-	for (size_t i = 0; i < tlen && uptr[i];) {
-		const unsigned int uch = uptr[i];
+	for (size_t i = 0; i < wsv.length() && wsv[i];) {
+		const unsigned int uch = wsv[i];
 		if (uch < 0x80) {
 			len++;
 		} else if (uch < 0x800) {
@@ -36,10 +37,22 @@ size_t UTF8Length(const wchar_t *uptr, size_t tlen) {
 	return len;
 }
 
-void UTF8FromUTF16(const wchar_t *uptr, size_t tlen, char *putf, size_t len) {
+size_t UTF8PositionFromUTF16Position(std::string_view u8Text, size_t positionUTF16) noexcept {
+	size_t positionUTF8 = 0;
+	for (size_t lengthUTF16 = 0; (positionUTF8 < u8Text.length()) && (lengthUTF16 < positionUTF16);) {
+		const unsigned char uch = u8Text[positionUTF8];
+		const unsigned int byteCount = UTF8BytesOfLead[uch];
+		lengthUTF16 += UTF16LengthFromUTF8ByteCount(byteCount);
+		positionUTF8 += byteCount;
+	}
+
+	return positionUTF8;
+}
+
+void UTF8FromUTF16(std::wstring_view wsv, char *putf, size_t len) {
 	size_t k = 0;
-	for (size_t i = 0; i < tlen && uptr[i];) {
-		const unsigned int uch = uptr[i];
+	for (size_t i = 0; i < wsv.length() && wsv[i];) {
+		const unsigned int uch = wsv[i];
 		if (uch < 0x80) {
 			putf[k++] = static_cast<char>(uch);
 		} else if (uch < 0x800) {
@@ -49,7 +62,7 @@ void UTF8FromUTF16(const wchar_t *uptr, size_t tlen, char *putf, size_t len) {
 			(uch <= SURROGATE_TRAIL_LAST)) {
 			// Half a surrogate pair
 			i++;
-			const unsigned int xch = 0x10000 + ((uch & 0x3ff) << 10) + (uptr[i] & 0x3ff);
+			const unsigned int xch = 0x10000 + ((uch & 0x3ff) << 10) + (wsv[i] & 0x3ff);
 			putf[k++] = static_cast<char>(0xF0 | (xch >> 18));
 			putf[k++] = static_cast<char>(0x80 | ((xch >> 12) & 0x3f));
 			putf[k++] = static_cast<char>(0x80 | ((xch >> 6) & 0x3f));
@@ -85,14 +98,14 @@ void UTF8FromUTF32Character(int uch, char *putf) {
 	putf[k] = '\0';
 }
 
-size_t UTF16Length(const char *s, size_t len) {
+size_t UTF16Length(std::string_view sv) {
 	size_t ulen = 0;
-	for (size_t i = 0; i < len;) {
-		const unsigned char ch = s[i];
+	for (size_t i = 0; i<sv.length();) {
+		const unsigned char ch = sv[i];
 		const unsigned int byteCount = UTF8BytesOfLead[ch];
 		const unsigned int utf16Len = UTF16LengthFromUTF8ByteCount(byteCount);
 		i += byteCount;
-		ulen += (i > len) ? 1 : utf16Len;
+		ulen += (i > sv.length()) ? 1 : utf16Len;
 	}
 	return ulen;
 }
@@ -103,14 +116,14 @@ constexpr unsigned char TrailByteValue(unsigned char c) {
 	return c & 0b0011'1111;
 }
 
-size_t UTF16FromUTF8(const char *s, size_t len, wchar_t *tbuf, size_t tlen) {
+size_t UTF16FromUTF8(std::string_view sv, wchar_t *tbuf, size_t tlen) {
 	size_t ui = 0;
-	for (size_t i = 0; i < len;) {
-		unsigned char ch = s[i];
+	for (size_t i = 0; i < sv.length();) {
+		unsigned char ch = sv[i];
 		const unsigned int byteCount = UTF8BytesOfLead[ch];
 		unsigned int value;
 
-		if (i + byteCount > len) {
+		if (i + byteCount > sv.length()) {
 			// Trying to read past end but still have space to write
 			if (ui < tlen) {
 				tbuf[ui] = ch;
@@ -131,26 +144,26 @@ size_t UTF16FromUTF8(const char *s, size_t len, wchar_t *tbuf, size_t tlen) {
 			break;
 		case 2:
 			value = (ch & 0x1F) << 6;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch);
 			tbuf[ui] = static_cast<wchar_t>(value);
 			break;
 		case 3:
 			value = (ch & 0xF) << 12;
-			ch = s[i++];
+			ch = sv[i++];
 			value += (TrailByteValue(ch) << 6);
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch);
 			tbuf[ui] = static_cast<wchar_t>(value);
 			break;
 		default:
 			// Outside the BMP so need two surrogates
 			value = (ch & 0x7) << 18;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch) << 12;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch) << 6;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch);
 			tbuf[ui] = static_cast<wchar_t>(((value - 0x10000) >> 10) + SURROGATE_LEAD_FIRST);
 			ui++;
@@ -162,14 +175,14 @@ size_t UTF16FromUTF8(const char *s, size_t len, wchar_t *tbuf, size_t tlen) {
 	return ui;
 }
 
-size_t UTF32FromUTF8(const char *s, size_t len, unsigned int *tbuf, size_t tlen) {
+size_t UTF32FromUTF8(std::string_view sv, unsigned int *tbuf, size_t tlen) {
 	size_t ui = 0;
-	for (size_t i = 0; i < len;) {
-		unsigned char ch = s[i];
+	for (size_t i = 0; i < sv.length();) {
+		unsigned char ch = sv[i];
 		const unsigned int byteCount = UTF8BytesOfLead[ch];
 		unsigned int value;
 
-		if (i + byteCount > len) {
+		if (i + byteCount > sv.length()) {
 			// Trying to read past end but still have space to write
 			if (ui < tlen) {
 				tbuf[ui] = ch;
@@ -189,23 +202,23 @@ size_t UTF32FromUTF8(const char *s, size_t len, unsigned int *tbuf, size_t tlen)
 			break;
 		case 2:
 			value = (ch & 0x1F) << 6;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch);
 			break;
 		case 3:
 			value = (ch & 0xF) << 12;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch) << 6;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch);
 			break;
 		default:
 			value = (ch & 0x7) << 18;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch) << 12;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch) << 6;
-			ch = s[i++];
+			ch = sv[i++];
 			value += TrailByteValue(ch);
 			break;
 		}

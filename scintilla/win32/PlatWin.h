@@ -13,7 +13,7 @@ namespace Scintilla {
 extern void Platform_Initialise(void *hInstance);
 extern void Platform_Finalise(bool fromDllMain);
 
-RECT RectFromPRectangle(PRectangle prc);
+RECT RectFromPRectangle(PRectangle prc) noexcept;
 
 #if defined(USE_D2D)
 extern bool LoadD2D();

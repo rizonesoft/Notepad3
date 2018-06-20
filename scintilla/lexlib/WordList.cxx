@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <iterator>
 
-#include "StringCopy.h"
 #include "WordList.h"
 
 using namespace Scintilla;

@@ -524,6 +524,12 @@
       </tr><tr>
 	<td>Gunter Königsmann</td>
 	<td>Nicholai Benalal</td>
+	<td>Uniface</td>
+	<td>Raghda Morsy</td>
+      </tr><tr>
+	<td>Giuseppe Corbelli</td>
+	<td>Andreas Rönnquist</td>
+	<td>Henrik Hank</td>
     </tr>
     </table>
     <p>
@@ -534,6 +540,56 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scite410.zip">Release 4.1.0</a>
+    </h3>
+    <ul>
+	<li>
+	Released 19 June 2018.
+	</li>
+	<li>
+	Experimental and incomplete support added for bidirectional text on Windows using DirectWrite and Cocoa for
+	UTF-8 documents by calling SCI_SETBIDIRECTIONAL(SC_BIDIRECTIONAL_L2R).
+	This allows documents that contain Arabic or Hebrew to be edited more easily in a way that is similar
+	to other editors.
+	</li>
+	<li>
+	INDIC_GRADIENT and INDIC_GRADIENTCENTRE indicator types added.
+	INDIC_GRADIENT starts with a specified colour and alpha at top of line and fades
+	to fully transparent at bottom.
+	INDIC_GRADIENTCENTRE starts with a specified colour and alpha at centre of line and fades
+	to fully transparent at top and bottom.
+	</li>
+	<li>
+	Wrap indent mode SC_WRAPINDENT_DEEPINDENT added which indents two tabs from previous line.
+	</li>
+	<li>
+	Indicators are drawn for line end characters when displayed.
+	</li>
+	<li>
+	Most invalid bytes in DBCS encodings are displayed as blobs to make problems clear
+	and ensure something is shown.
+	</li>
+	<li>
+	On Cocoa, invalid text in DBCS encodings will be interpreted through the
+	single-byte MacRoman encoding as that will accept any byte.
+	</li>
+	<li>
+	Diff lexer adds styles for diffs containing patches.
+	</li>
+	<li>
+	Crashes fixed on macOS for invalid DBCS characters when dragging text,
+	changing case of text, case-insensitive searching, and retrieving text as UTF-8.
+	</li>
+	<li>
+	Regular expression crash fixed on macOS when linking to libstdc++.
+	</li>
+	<li>
+	SciTE on GTK+, when running in single-instance mode, now forwards all command line arguments
+	to the already running instance.
+	This allows "SciTE filename -goto:line" to work.
+	</li>
     </ul>
     <h3>
        <a href="https://www.scintilla.org/scite405.zip">Release 4.0.5</a>
