@@ -50,6 +50,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_nl_nl", "language\np3_n
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_en_gb", "language\np3_en_gb\np3_en_gb.vcxproj", "{ADCA49F0-D91B-4AB9-913A-5840DCA8C79E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
