@@ -12,15 +12,17 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
-#include <stdio.h>
-#include <string.h>
+#include <strsafe.h>
+#include <muiload.h>
 #include "helpers.h"
 #include "dlapi.h"
 #include "dialogs.h"
@@ -149,6 +151,14 @@ HINSTANCE g_hInstance;
 UINT16    g_uWinVer;
 
 
+WCHAR                g_tchPrefLngLocName[64];
+LANGID               g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
+HMODULE              g_hLngResContainer = NULL;
+#define              LNG_AVAILABLE_COUNT 6
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR nl-NL"; // en-US internal
+static LANGID const  g_iAvailableLanguages[LNG_AVAILABLE_COUNT] = { 1078, 1031, 3082, 2057, 1036, 1043 }; // 1033 internal
+
+
 //=============================================================================
 //
 // Flags
@@ -161,6 +171,102 @@ int flagNoFadeHidden    = 0;
 int flagToolbarLook     = 0;
 int flagPosParam        = 0;
 
+
+
+//=============================================================================
+//
+//  _LngStrToMultiLngStr
+//
+//
+static BOOL __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
+{
+  BOOL rtnVal = TRUE;
+
+  size_t strLen = (size_t)lstrlen(pLngStr);
+
+  if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
+    WCHAR* lngMultiStrPtr = pLngMultiStr;
+    WCHAR* last = pLngStr + (pLngStr[0] == 0xFEFF ? 1 : 0); // if read from unicode (UTF-16 LE) file
+    while (last && rtnVal) {
+      // make sure you validate the user input
+      WCHAR* next = StrNextTok(last, L",; :");
+      if (next) { *next = L'\0'; }
+      strLen = (size_t)lstrlen(last);
+      if ((strLen > 0) && IsValidLocaleName(last)) {
+        lngMultiStrPtr[0] = L'\0';
+        rtnVal &= (lstrcat(lngMultiStrPtr, last) != NULL);
+        lngMultiStrPtr += strLen + 1;
+      }
+      last = (next ? next + 1 : next);
+    }
+    if (rtnVal && (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr))) // make sure there is a double null term for the multi-string
+    {
+      lngMultiStrPtr[0] = L'\0';
+    }
+    else // fail and guard anyone whom might use the multi-string
+    {
+      lngMultiStrPtr[0] = L'\0';
+      lngMultiStrPtr[1] = L'\0';
+    }
+  }
+  return rtnVal;
+}
+
+
+//=============================================================================
+//
+//  _LoadLanguageResources
+//
+//
+static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
+{
+  BOOL bLngAvailable = FALSE;
+  for (int i = 0; i < COUNTOF(g_iAvailableLanguages); ++i) {
+    if (g_iAvailableLanguages[i] == langID) {
+      bLngAvailable = TRUE;
+      break;
+    }
+  }
+  if (!bLngAvailable) { return NULL; }
+
+  WCHAR tchAvailLngs[256] = { L'\0' };
+  lstrcpy(tchAvailLngs, g_tchAvailableLanguages);
+  WCHAR tchUserLangMultiStrg[128] = { L'\0' };
+  if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, 512)) {
+    ErrorMessage(2, IDS_ERR_LANG_NOT_AVAIL, g_tchPrefLngLocName);
+    return NULL;
+  }
+
+  // set the appropriate fallback list
+  DWORD langCount = 0;
+  // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
+  if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
+    ErrorMessage(2, IDS_ERR_LANG_NOT_AVAIL, g_tchPrefLngLocName);
+    return NULL;
+  }
+  SetThreadUILanguage(langID);
+
+  // NOTES:
+  // an application developer that makes the assumption the fallback list provided by the
+  // system / OS is entirely sufficient may or may not be making a good assumption based  mostly on:
+  // A. your choice of languages installed with your application
+  // B. the languages on the OS at application install time
+  // C. the OS users propensity to install/uninstall language packs
+  // D. the OS users propensity to change language settings
+
+  // obtains access to the proper resource container 
+  // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
+
+  HMODULE hLangResourceContainer = LoadMUILibraryW(L"lng/mplng.dll", MUI_LANGUAGE_NAME, langID);
+
+  //if (!hLangResourceContainer)
+  //{
+  //  GetLastErrorToMsgBox(L"LoadMUILibrary", 0);
+  //  return NULL;
+  //}
+
+  return hLangResourceContainer;
+}
 
 
 //=============================================================================
@@ -212,6 +318,27 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   // Load Settings
   LoadSettings();
+
+  // ----------------------------------------------------
+  // MultiLingual
+  //
+  g_iPrefLngLocID = GetUserDefaultUILanguage();
+  BOOLEAN bPrefLngNotAvail = FALSE;
+
+  if (lstrlen(g_tchPrefLngLocName)) {
+    DWORD dwLangID = 0;
+    GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
+    g_iPrefLngLocID = (LANGID)dwLangID;
+  }
+
+  g_hLngResContainer = _LoadLanguageResources(g_iPrefLngLocID);
+
+  if (!g_hLngResContainer) // fallback en-US (1033)
+  {
+    g_hLngResContainer = g_hInstance;
+    if (g_iPrefLngLocID != 1033) { bPrefLngNotAvail = TRUE; }
+  }
+  // ----------------------------------------------------
 
   if (!InitApplication(hInstance))
     return FALSE;
@@ -3061,6 +3188,9 @@ void LoadFlags()
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
+  IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
+                      g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+
   if (!flagNoReuseWindow) {
 
     if (!IniSectionGetInt(pIniSection,L"ReuseWindow",1))
@@ -3675,7 +3805,6 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
     IniSectionGetString(pIniSection,L"DDEApplication",szDDEApp,szDDEApp,COUNTOF(szDDEApp));
     IniSectionGetString(pIniSection,L"DDETopic",szDDETopic,szDDETopic,COUNTOF(szDDETopic));
   }
-
   else if (iUseTargetApplication && lstrlen(szTargetApplication) == 0) {
     iUseTargetApplication = 1;
     iTargetApplicationMode = 1;

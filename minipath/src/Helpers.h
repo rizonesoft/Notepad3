@@ -118,6 +118,16 @@ BOOL DirList_IsFileSelected(HWND);
 
 BOOL ExecDDECommand(LPCWSTR,LPCWSTR,LPCWSTR,LPCWSTR);
 
+
+//==== StrNextTok methods ===================
+CHAR*  _StrNextTokA(CHAR*, const CHAR*);
+WCHAR* _StrNextTokW(WCHAR*, const WCHAR*);
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrNextTok _StrNextTokW
+#else
+#define StrNextTok _StrNextTokA
+#endif
+
 //==== History Functions ======================================================
 #define HISTORY_ITEMS 50
 

@@ -12,20 +12,19 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601
 #include <windows.h>
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <commctrl.h>
 #include <uxtheme.h>
-#include <stdio.h>
-#include <string.h>
+#include <strsafe.h>
 #include "dlapi.h"
 #include "helpers.h"
 #include "resource.h"
 
 
+extern LANGID g_iPrefLngLocID;
 
 //=============================================================================
 //
@@ -2034,6 +2033,38 @@ VOID RestoreWndFromTray(HWND hWnd)
   // properly until DAR finished
 }
 
+//=============================================================================
+//
+//  Find next token in string
+//
+
+CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
+{
+  CHAR* n = NULL;
+  const CHAR* t = tokens;
+  while (t && *t) {
+    CHAR* const f = StrChrA(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
+}
+
+WCHAR* _StrNextTokW(WCHAR* strg, const WCHAR* tokens)
+{
+  WCHAR* n = NULL;
+  const WCHAR* t = tokens;
+  while (t && *t) {
+    WCHAR* const f = StrChrW(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
+}
 
 
 ///   End of Helpers.c   \\\

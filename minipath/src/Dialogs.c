@@ -14,24 +14,25 @@
 *******************************************************************************/
 
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601
 #endif
-//#define _WIN32_WINNT 0x501
-#define _WIN32_IE 0x500
+#define _WIN32_IE 0x601
 #define OEMRESOURCE  // use OBM_ resource constants
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
-#include <string.h>
+#include <strsafe.h>
 #include "minipath.h"
 #include "dlapi.h"
 #include "helpers.h"
 #include "dialogs.h"
 #include "resource.h"
-#include "version.h"
 
+#include "version.h"
 
 
 //=============================================================================
@@ -41,6 +42,7 @@
 //  L"Title\nMessage Text"
 //
 extern HWND hwndMain;
+extern LANGID g_iPrefLngLocID;
 
 int ErrorMessage(int iLevel,UINT uIdMsg,...)
 {
@@ -73,8 +75,7 @@ int ErrorMessage(int iLevel,UINT uIdMsg,...)
   HWND focus = GetFocus();
   hwnd = focus ? focus : hwndMain;
 
-  return MessageBoxEx(hwnd,szText,szTitle,MB_SETFOREGROUND | iIcon,
-                      MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT));
+  return MessageBoxEx(hwnd,szText,szTitle,MB_SETFOREGROUND | iIcon, g_iPrefLngLocID);
 
 }
 
