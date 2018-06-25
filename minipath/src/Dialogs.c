@@ -44,21 +44,20 @@
 extern HWND hwndMain;
 extern LANGID g_iPrefLngLocID;
 
-int ErrorMessage(int iLevel,UINT uIdMsg,...)
+int ErrorMessage(int iLevel, UINT uIdMsg, ...)
 {
 
-  WCHAR szText [256*2];
-  WCHAR szTitle[256*2];
-  WCHAR *c;
+  WCHAR szText[256 * 2] = { L'\0' };
+  WCHAR szTitle[256 * 2] = { L'\0' };
   int iIcon;
-  HWND hwnd;
 
   if (!GetString(uIdMsg,szText,COUNTOF(szText)))
     return(0);
 
-  wvsprintf(szTitle,szText,(LPVOID)(&uIdMsg + 1));
+  int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  szTitle[t] = L'\0';
 
-  c = StrChr(szTitle,L'\n');
+  WCHAR* c = StrChr(szTitle,L'\n');
   if (c)
   {
     lstrcpy(szText,(c + 1));
@@ -73,10 +72,9 @@ int ErrorMessage(int iLevel,UINT uIdMsg,...)
   iIcon = (iLevel > 1) ? MB_ICONEXCLAMATION : MB_ICONINFORMATION;
 
   HWND focus = GetFocus();
-  hwnd = focus ? focus : hwndMain;
+  HWND hwnd = focus ? focus : hwndMain;
 
-  return MessageBoxEx(hwnd,szText,szTitle,MB_SETFOREGROUND | iIcon, g_iPrefLngLocID);
-
+  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLngLocID);
 }
 
 

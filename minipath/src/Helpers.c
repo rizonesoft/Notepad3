@@ -139,6 +139,44 @@ void EndWaitCursor()
 
 //=============================================================================
 //
+//  GetLastErrorToMsgBox()
+//
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
+{
+  // Retrieve the system error message for the last-error code
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
+
+  LPVOID lpMsgBuf;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwErrID,
+    g_iPrefLngLocID,
+    (LPTSTR)&lpMsgBuf,
+    0, NULL);
+
+  // Display the error message and exit the process
+
+  LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+    (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 80) * sizeof(WCHAR));
+
+  wsprintf((LPWSTR)lpDisplayBuf, L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, (LPWSTR)lpMsgBuf);
+
+  MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
+
+  LocalFree(lpMsgBuf);
+  LocalFree(lpDisplayBuf);
+
+  return dwErrID;
+}
+
+
+//=============================================================================
+//
 //  ExeNameFromWnd()
 //
 DWORD WINAPI GetModuleFileNameExW(HANDLE,HMODULE,LPTSTR,DWORD);

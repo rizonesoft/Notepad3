@@ -207,7 +207,8 @@
 #define IDS_ERR_INIOPEN                 50018
 #define IDS_ERR_INICREATE               50019
 #define IDS_ERR_INIWRITE                50020
-#define IDS_ERR_LANG_NOT_AVAIL          50021
+#define IDS_WARN_PREF_LNG_NOT_AVAIL     50021
+
 #define SC_ALWAYSONTOP                  60001
 #define SC_ABOUT                        60002
 

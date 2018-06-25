@@ -88,6 +88,8 @@ LRESULT SendWMSize(HWND);
 
 int FormatString(LPWSTR,int,UINT,...);
 
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
+
 void PathRelativeToApp(LPWSTR,LPWSTR,int,BOOL,BOOL,BOOL);
 void PathAbsoluteFromApp(LPWSTR,LPWSTR,int,BOOL);
 

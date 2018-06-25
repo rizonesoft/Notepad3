@@ -233,7 +233,7 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
   lstrcpy(tchAvailLngs, g_tchAvailableLanguages);
   WCHAR tchUserLangMultiStrg[128] = { L'\0' };
   if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, 512)) {
-    ErrorMessage(2, IDS_ERR_LANG_NOT_AVAIL, g_tchPrefLngLocName);
+    GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
     return NULL;
   }
 
@@ -241,7 +241,7 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
   DWORD langCount = 0;
   // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
   if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
-    ErrorMessage(2, IDS_ERR_LANG_NOT_AVAIL, g_tchPrefLngLocName);
+    GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
     return NULL;
   }
   SetThreadUILanguage(langID);
@@ -348,6 +348,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     return FALSE;
 
   hAcc = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+
+  if (bPrefLngNotAvail) {
+    ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, g_tchPrefLngLocName);
+  }
 
   while (GetMessage(&msg,NULL,0,0))
   {
