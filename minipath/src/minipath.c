@@ -147,13 +147,13 @@ WCHAR szDDEMsg[256] = L"";
 WCHAR szDDEApp[256] = L"";
 WCHAR szDDETopic[256] = L"";
 
-HINSTANCE g_hInstance;
 UINT16    g_uWinVer;
 
+HINSTANCE            g_hInstance = NULL;
+HMODULE              g_hLngResContainer = NULL;
 
 WCHAR                g_tchPrefLngLocName[64];
 LANGID               g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
-HMODULE              g_hLngResContainer = NULL;
 #define              LNG_AVAILABLE_COUNT 6
 static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR nl-NL"; // en-US internal
 static LANGID const  g_iAvailableLanguages[LNG_AVAILABLE_COUNT] = { 1078, 1031, 3082, 2057, 1036, 1043 }; // 1033 internal
@@ -276,6 +276,7 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
 //
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int nCmdShow)
 {
+  UNUSED(hPrevInst);
 
   MSG    msg;
   HWND   hwnd;
@@ -304,8 +305,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   LoadFlags();
 
   // Try to activate another window
-  if (ActivatePrevInst())
-    return(0);
+  if (ActivatePrevInst()) { return(0); }
 
   // Init OLE and Common Controls
   OleInitialize(NULL);
@@ -323,9 +323,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // MultiLingual
   //
   g_iPrefLngLocID = GetUserDefaultUILanguage();
-  BOOLEAN bPrefLngNotAvail = FALSE;
-
-  if (lstrlen(g_tchPrefLngLocName)) {
+  BOOL bPrefLngDefined = (lstrlen(g_tchPrefLngLocName) > 0) ? TRUE : FALSE;
+  BOOL bPrefLngNotAvail = FALSE;
+  if (bPrefLngDefined) {
+    bPrefLngDefined = TRUE;
     DWORD dwLangID = 0;
     GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
     g_iPrefLngLocID = (LANGID)dwLangID;
@@ -340,23 +341,20 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   }
   // ----------------------------------------------------
 
-  if (!InitApplication(hInstance))
-    return FALSE;
+  if (!InitApplication(hInstance)) { return FALSE; }
 
   hwnd = InitInstance(hInstance, lpCmdLine, nCmdShow);
-  if (!hwnd)
-    return FALSE;
+  if (!hwnd) { return FALSE; }
 
   hAcc = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
 
-  if (bPrefLngNotAvail) {
+  if (bPrefLngDefined && bPrefLngNotAvail) {
     ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, g_tchPrefLngLocName);
   }
 
   while (GetMessage(&msg,NULL,0,0))
   {
-    if (!TranslateAccelerator(hwnd,hAcc,&msg))
-    {
+    if (!TranslateAccelerator(hwnd,hAcc,&msg)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
@@ -364,8 +362,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   
   OleUninitialize();
 
-  UNUSED(hPrevInst);
-  
   return(int)(msg.wParam);
 }
 
@@ -715,7 +711,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           nID != IDC_REBAR)
         return DefWindowProc(hwnd,umsg,wParam,lParam);
 
-      hmenu = LoadMenu(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+      hmenu = LoadMenu(g_hLngResContainer,MAKEINTRESOURCE(IDR_MAINWND));
       SetMenuDefaultItem(GetSubMenu(hmenu,0),IDM_FILE_OPEN,FALSE);
 
       switch(nID)
@@ -809,7 +805,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         case WM_RBUTTONUP: {
 
-            HMENU hMenu = LoadMenu(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+            HMENU hMenu = LoadMenu(g_hLngResContainer,MAKEINTRESOURCE(IDR_MAINWND));
             HMENU hMenuPopup = GetSubMenu(hMenu,4);
 
             POINT pt;
@@ -971,9 +967,9 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SetMenuItemInfo(hmenu,SC_MINIMIZE,FALSE,&mii);
 
   // Add specific items
-  GetString(SC_ALWAYSONTOP,tch,COUNTOF(tch));
+  GetLngString(SC_ALWAYSONTOP,tch,COUNTOF(tch));
   InsertMenu(hmenu,SC_MOVE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_ALWAYSONTOP,tch);
-  GetString(SC_ABOUT,tch,COUNTOF(tch));
+  GetLngString(SC_ABOUT,tch,COUNTOF(tch));
   InsertMenu(hmenu,SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_ABOUT,tch);
   InsertMenu(hmenu,SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
 
@@ -1121,7 +1117,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
     else if ((n == 5 || n == 8) && lstrcmpi(tchDesc,L"(none)") != 0) {
 
-      GetString(42000+n,tchDesc,COUNTOF(tchDesc));
+      GetLngString(42000+n,tchDesc,COUNTOF(tchDesc));
       tbbMainWnd[i].iString = SendMessage(hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
       tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
     }
@@ -1603,9 +1599,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WCHAR szPath[MAX_PATH];
 
         lstrcpy(szNewFile,L"");
-        GetString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
+        GetLngString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
         PrepareFilterStr(szFilter);
-        GetString(IDS_NEWFILE,szTitle,COUNTOF(szTitle));
+        GetLngString(IDS_NEWFILE,szTitle,COUNTOF(szTitle));
 
         ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
@@ -1704,7 +1700,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
         lstrcpy(szNewFile,dli.szFileName);
-        GetString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
+        GetLngString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
         PrepareFilterStr(szFilter);
 
         ZeroMemory(&ofn,sizeof(OPENFILENAME));
@@ -1723,7 +1719,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         BeginWaitCursor();
 
-        FormatString(tch,COUNTOF(tch),IDS_SAVEFILE,dli.szDisplayName);
+        FormatLngStringW(tch,COUNTOF(tch),IDS_SAVEFILE,dli.szDisplayName);
         StatusSetText(hwndStatus,ID_MENUHELP,tch);
         StatusSetSimple(hwndStatus,TRUE);
         InvalidateRect(hwndStatus,NULL,TRUE);
@@ -2544,8 +2540,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               {
                 wsprintf(tchnum,L"%u",ListView_GetItemCount(hwndDirList));
                 FormatNumberStr(tchnum);
-                FormatString(tch,COUNTOF(tch),
-                  (lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
+                FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
               }
 
               StatusSetText(hwndStatus,ID_FILEINFO,tch);
@@ -2620,7 +2615,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(tbbMainWnd))
             {
               WCHAR tch[256];
-              GetString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
+              GetLngString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
               lstrcpyn(((LPTBNOTIFY)lParam)->pszText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
               return TRUE;
@@ -2659,7 +2654,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             else
             {
-              GetString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
+              GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
               lstrcpyn(((LPTOOLTIPTEXT)lParam)->szText,tch,80);
             }
           }
@@ -2759,8 +2754,7 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
 
     wsprintf(tchnum,L"%u",cItems);
     FormatNumberStr(tchnum);
-    FormatString(tch,COUNTOF(tch),
-      (lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
+    FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
     StatusSetText(hwndStatus,ID_FILEINFO,tch);
 
     // Update History
@@ -3700,7 +3694,7 @@ BOOL ActivatePrevInst()
       WCHAR *c;
 
       // Prepare message
-      GetString(IDS_ERR_PREVWINDISABLED,szBuf,COUNTOF(szBuf));
+      GetLngString(IDS_ERR_PREVWINDISABLED,szBuf,COUNTOF(szBuf));
       c = StrChr(szBuf,L'\n');
       if (c)
       {
@@ -3865,7 +3859,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
         WCHAR *c;
 
         // Prepare message
-        GetString(IDS_ERR_TARGETDISABLED,szBuf,COUNTOF(szBuf));
+        GetLngString(IDS_ERR_TARGETDISABLED,szBuf,COUNTOF(szBuf));
         c = StrChr(szBuf,L'\n');
         if (c) {
           *c = 0;

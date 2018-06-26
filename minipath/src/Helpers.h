@@ -44,6 +44,8 @@ __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
 
+#define StrEnd(pStart) (pStart + lstrlen(pStart))
+
 void BeginWaitCursor();
 void EndWaitCursor();
 
@@ -82,11 +84,13 @@ LRESULT SendWMSize(HWND);
 #define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)\
                                ?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 
-#define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 
-#define StrEnd(pStart) (pStart + lstrlen(pStart))
-
-int FormatString(LPWSTR,int,UINT,...);
+#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
+#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
+int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
+int FormatLngStringW(LPWSTR, int, UINT, ...);
+int FormatLngStringA(LPSTR, int, UINT, ...);
 
 DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 

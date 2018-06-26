@@ -51,10 +51,11 @@ int ErrorMessage(int iLevel, UINT uIdMsg, ...)
   WCHAR szTitle[256 * 2] = { L'\0' };
   int iIcon;
 
-  if (!GetString(uIdMsg,szText,COUNTOF(szText)))
+  if (!GetLngString(uIdMsg,szText,COUNTOF(szText)))
     return(0);
 
-  int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  int t = vswprintf_s(szTitle,COUNTOF(szTitle),szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
   szTitle[t] = L'\0';
 
   WCHAR* c = StrChr(szTitle,L'\n');
@@ -107,7 +108,7 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
   BOOL fOk = FALSE;
 
   lstrcpy(szTitle,L"");
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
   if (!pszBase || !*pszBase)
     GetCurrentDirectory(MAX_PATH,szBase);
@@ -149,7 +150,7 @@ BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
   BOOL fOk = FALSE;
 
   lstrcpy(szTitle,L"");
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
   if (NOERROR != SHGetSpecialFolderLocation(hwndParent,iBase,&pidlRoot)) {
     CoTaskMemFree(pidlRoot);
@@ -240,8 +241,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             ExpandEnvironmentStringsEx(szArgs,COUNTOF(szArgs));
             ExtractFirstArgument(szArgs,szFile,szArg2);
 
-            GetString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -1154,8 +1155,8 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             GetDlgItemText(hwnd,IDC_QUICKVIEW,tchBuf,COUNTOF(tchBuf));
             ExtractFirstArgument(tchBuf,szFile,szParams);
 
-            GetString(IDS_GETQUICKVIEWER,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_GETQUICKVIEWER,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -2648,8 +2649,8 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             PathAbsoluteFromApp(szFile,szFile,COUNTOF(szFile),TRUE);
 
             // Strings laden
-            GetString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             // ofn ausfüllen
