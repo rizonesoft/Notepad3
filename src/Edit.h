@@ -30,8 +30,7 @@ bool  EditIsRecodingNeeded(WCHAR*,int);
 char* EditGetClipboardText(HWND,bool,int*,int*);
 bool  EditSetClipboardText(HWND, const char*);
 bool  EditClearClipboard(HWND);
-void  EditPaste2RectSel(HWND,char*);
-bool  EditPasteClipboard(HWND,bool,bool);
+bool  EditSwapClipboard(HWND,bool);
 bool  EditCopyAppend(HWND,bool);
 int   EditDetectEOLMode(HWND,char*,DWORD);
 bool  EditLoadFile(HWND,LPCWSTR,bool,bool,int*,int*,bool*,bool*,bool*);
@@ -70,6 +69,7 @@ void  EditCompressSpaces(HWND);
 void  EditRemoveBlankLines(HWND,bool,bool);
 void  EditRemoveDuplicateLines(HWND,bool);
 void  EditWrapToColumn(HWND,DocPos);
+void  EditSplitLines(HWND hwnd);
 void  EditJoinLinesEx(HWND,bool,bool);
 void  EditSortLines(HWND,int);
 
@@ -97,7 +97,7 @@ bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
 void  EditMatchBrace(HWND);
-void  EditClearAllOccurrenceMarkers(HWND, DocPos, DocPos);
+void  EditClearAllOccurrenceMarkers(HWND);
 bool  EditToggleView(HWND hwnd, bool bToggleView);
 void  EditMarkAll(HWND, char*, int, DocPos, DocPos, bool, bool);
 void  EditUpdateUrlHotspots(HWND, DocPos, DocPos, bool);
@@ -108,13 +108,9 @@ void  EditSetBookmarkList(HWND,LPCWSTR);
 void  EditApplyLexerStyle(HWND, DocPos, DocPos);
 void  EditFinalizeStyling(HWND, DocPos);
 
-void  EditMarkAllOccurrences();
+void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditUpdateVisibleUrlHotspot(bool);
 void  EditHideNotMarkedLineRange(HWND, DocPos, DocPos, bool);
-
-void  EditEnterTargetTransaction();
-void  EditLeaveTargetTransaction();
-bool  EditIsInTargetTransaction();
 
 //void SciInitThemes(HWND);
 //LRESULT CALLBACK SciThemedWndProc(HWND,UINT,WPARAM,LPARAM);
@@ -157,9 +153,9 @@ int  FileVars_GetEncoding(LPFILEVARS);
 //  Folding Functions
 //
 typedef enum {
-  EXPAND = 1,
-  SNIFF = 0,
-  FOLD = -1
+  FOLD = SC_FOLDACTION_CONTRACT,
+  EXPAND = SC_FOLDACTION_EXPAND,
+  SNIFF = SC_FOLDACTION_TOGGLE
 } FOLD_ACTION;
 
 typedef enum {
@@ -168,10 +164,12 @@ typedef enum {
   DOWN = 1
 } FOLD_MOVE;
 
-void EditFoldToggleAll(FOLD_ACTION);
+void EditToggleFolds(FOLD_ACTION,bool);
 void EditFoldClick(DocLn, int);
 void EditFoldAltArrow(FOLD_MOVE, FOLD_ACTION);
 
+
+#define NP3_BRACES_TO_MATCH "()[]{}"
 
 #endif //_NP3_EDIT_H_
 

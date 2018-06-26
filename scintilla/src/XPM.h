@@ -14,17 +14,21 @@ namespace Scintilla {
  * Hold a pixmap in XPM format.
  */
 class XPM {
-	int height;
-	int width;
-	int nColours;
+	int height=1;
+	int width=1;
+	int nColours=1;
 	std::vector<unsigned char> pixels;
 	ColourDesired colourCodeTable[256];
-	char codeTransparent;
+	char codeTransparent=' ';
 	ColourDesired ColourFromCode(int ch) const;
 	void FillRun(Surface *surface, int code, int startX, int y, int x) const;
 public:
 	explicit XPM(const char *textForm);
 	explicit XPM(const char *const *linesForm);
+	XPM(const XPM &) = delete;
+	XPM(XPM &&) = delete;
+	XPM &operator=(const XPM &) = delete;
+	XPM &operator=(XPM &&) = delete;
 	~XPM();
 	void Init(const char *textForm);
 	void Init(const char *const *linesForm);
@@ -50,7 +54,9 @@ public:
 	explicit RGBAImage(const XPM &xpm);
 	// Deleted so RGBAImage objects can not be copied.
 	RGBAImage(const RGBAImage &) = delete;
+	RGBAImage(RGBAImage &&) = delete;
 	RGBAImage &operator=(const RGBAImage &) = delete;
+	RGBAImage &operator=(RGBAImage &&) = delete;
 	virtual ~RGBAImage();
 	int GetHeight() const { return height; }
 	int GetWidth() const { return width; }
@@ -59,7 +65,7 @@ public:
 	float GetScaledWidth() const { return width / scale; }
 	int CountBytes() const;
 	const unsigned char *Pixels() const;
-	void SetPixel(int x, int y, ColourDesired colour, int alpha=0xff);
+	void SetPixel(int x, int y, ColourDesired colour, int alpha);
 };
 
 /**
@@ -72,6 +78,11 @@ class RGBAImageSet {
 	mutable int width;	///< Memorize largest width of the set.
 public:
 	RGBAImageSet();
+	// Deleted so RGBAImageSet objects can not be copied.
+	RGBAImageSet(const RGBAImageSet &) = delete;
+	RGBAImageSet(RGBAImageSet &&) = delete;
+	RGBAImageSet &operator=(const RGBAImageSet &) = delete;
+	RGBAImageSet &operator=(RGBAImageSet &&) = delete;
 	~RGBAImageSet();
 	/// Remove all images.
 	void Clear();

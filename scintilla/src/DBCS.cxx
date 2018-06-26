@@ -11,9 +11,9 @@ using namespace Scintilla;
 
 namespace Scintilla {
 
-bool DBCSIsLeadByte(int codePage, char ch) {
+bool DBCSIsLeadByte(int codePage, char ch) noexcept {
 	// Byte ranges found in Wikipedia articles with relevant search strings in each case
-	const unsigned char uch = static_cast<unsigned char>(ch);
+	const unsigned char uch = ch;
 	switch (codePage) {
 	case 932:
 		// Shift_jis

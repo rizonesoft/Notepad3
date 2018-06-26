@@ -15,6 +15,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -26,8 +27,8 @@
 #include "ILexer.h"
 #include "Scintilla.h"
 
-#include "StringCopy.h"
 #include "Position.h"
+#include "IntegerRectangle.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
@@ -58,16 +59,18 @@ void DrawWrapMarker(Surface *surface, PRectangle rcPlace,
 	bool isEndMarker, ColourDesired wrapColour) {
 	surface->PenColour(wrapColour);
 
+	const IntegerRectangle ircPlace(rcPlace);
+
 	enum { xa = 1 }; // gap before start
-	const int w = static_cast<int>(rcPlace.right - rcPlace.left) - xa - 1;
+	const int w = ircPlace.Width() - xa - 1;
 
 	const bool xStraight = isEndMarker;  // x-mirrored symbol for start marker
 
-	const int x0 = static_cast<int>(xStraight ? rcPlace.left : rcPlace.right - 1);
-	const int y0 = static_cast<int>(rcPlace.top);
+	const int x0 = xStraight ? ircPlace.left : ircPlace.right - 1;
+	const int y0 = ircPlace.top;
 
-	const int dy = static_cast<int>(rcPlace.bottom - rcPlace.top) / 5;
-	const int y = static_cast<int>(rcPlace.bottom - rcPlace.top) / 2 + dy;
+	const int dy = ircPlace.Height() / 5;
+	const int y = ircPlace.Height() / 2 + dy;
 
 	struct Relative {
 		Surface *surface;
@@ -100,7 +103,7 @@ void DrawWrapMarker(Surface *surface, PRectangle rcPlace,
 
 MarginView::MarginView() {
 	wrapMarkerPaddingRight = 3;
-	customDrawWrapMarker = NULL;
+	customDrawWrapMarker = nullptr;
 }
 
 void MarginView::DropGraphics(bool freeObjects) {
@@ -389,16 +392,16 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 						}
 						PRectangle rcNumber = rcMarker;
 						// Right justify
-						const XYPOSITION width = surface->WidthText(fontLineNumber, sNumber.c_str(), static_cast<int>(sNumber.length()));
+						const XYPOSITION width = surface->WidthText(fontLineNumber, sNumber);
 						const XYPOSITION xpos = rcNumber.right - width - vs.marginNumberPadding;
 						rcNumber.left = xpos;
 						DrawTextNoClipPhase(surface, rcNumber, vs.styles[STYLE_LINENUMBER],
-							rcNumber.top + vs.maxAscent, sNumber.c_str(), static_cast<int>(sNumber.length()), drawAll);
+							rcNumber.top + vs.maxAscent, sNumber, drawAll);
 					} else if (vs.wrapVisualFlags & SC_WRAPVISUALFLAG_MARGIN) {
 						PRectangle rcWrapMarker = rcMarker;
 						rcWrapMarker.right -= wrapMarkerPaddingRight;
 						rcWrapMarker.left = rcWrapMarker.right - vs.styles[STYLE_LINENUMBER].aveCharWidth;
-						if (customDrawWrapMarker == NULL) {
+						if (!customDrawWrapMarker) {
 							DrawWrapMarker(surface, rcWrapMarker, false, vs.styles[STYLE_LINENUMBER].fore);
 						} else {
 							customDrawWrapMarker(surface, rcWrapMarker, false, vs.styles[STYLE_LINENUMBER].fore);

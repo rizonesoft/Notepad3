@@ -12,6 +12,7 @@
 #include <cstdarg>
 
 #include <stdexcept>
+#include <string_view>
 #include <vector>
 #include <algorithm>
 #include <memory>
@@ -35,9 +36,9 @@ public:
 	virtual void InsertLine(Sci::Line line, Sci::Position position, bool lineStart) = 0;
 	virtual void SetLineStart(Sci::Line line, Sci::Position position) = 0;
 	virtual void RemoveLine(Sci::Line line) = 0;
-	virtual Sci::Line Lines() const = 0;
-	virtual Sci::Line LineFromPosition(Sci::Position pos) const = 0;
-	virtual Sci::Position LineStart(Sci::Line line) const = 0;
+	virtual Sci::Line Lines() const noexcept = 0;
+	virtual Sci::Line LineFromPosition(Sci::Position pos) const noexcept = 0;
+	virtual Sci::Position LineStart(Sci::Line line) const noexcept = 0;
 	virtual ~ILineVector() {}
 };
 
@@ -53,6 +54,11 @@ public:
 	LineVector() : starts(256), perLine(0) {
 		Init();
  	}
+	// Deleted so LineVector objects can not be copied.
+	LineVector(const LineVector &) = delete;
+	LineVector(LineVector &&) = delete;
+	LineVector &operator=(const LineVector &) = delete;
+	LineVector &operator=(LineVector &&) = delete;
 	~LineVector() override {
  	}
 	void Init() override {
@@ -84,13 +90,13 @@ public:
 			perLine->RemoveLine(line);
 		}
 	}
-	Sci::Line Lines() const override {
+	Sci::Line Lines() const noexcept override {
 		return static_cast<Sci::Line>(starts.Partitions());
 	}
-	Sci::Line LineFromPosition(Sci::Position pos) const override {
+	Sci::Line LineFromPosition(Sci::Position pos) const noexcept override {
 		return static_cast<Sci::Line>(starts.PartitionFromPosition(static_cast<POS>(pos)));
 	}
-	Sci::Position LineStart(Sci::Line line) const override {
+	Sci::Position LineStart(Sci::Line line) const noexcept override {
 		return starts.PositionFromPartition(static_cast<POS>(line));
 	}
 };
@@ -100,14 +106,6 @@ Action::Action() {
 	position = 0;
 	lenData = 0;
 	mayCoalesce = false;
-}
-
-Action::Action(Action &&other) {
-	at = other.at;
-	position = other.position;
-	data = std::move(other.data);
-	lenData = other.lenData;
-	mayCoalesce = other.mayCoalesce;
 }
 
 Action::~Action() {
@@ -377,12 +375,12 @@ CellBuffer::CellBuffer(bool hasStyles_, bool largeDocument_) :
 CellBuffer::~CellBuffer() {
 }
 
-char CellBuffer::CharAt(Sci::Position position) const {
+char CellBuffer::CharAt(Sci::Position position) const noexcept {
 	return substance.ValueAt(position);
 }
 
-unsigned char CellBuffer::UCharAt(Sci::Position position) const {
-	return static_cast<unsigned char>(substance.ValueAt(position));
+unsigned char CellBuffer::UCharAt(Sci::Position position) const noexcept {
+	return substance.ValueAt(position);
 }
 
 void CellBuffer::GetCharRange(char *buffer, Sci::Position position, Sci::Position lengthRetrieve) const {
@@ -398,7 +396,7 @@ void CellBuffer::GetCharRange(char *buffer, Sci::Position position, Sci::Positio
 	substance.GetRange(buffer, position, lengthRetrieve);
 }
 
-char CellBuffer::StyleAt(Sci::Position position) const {
+char CellBuffer::StyleAt(Sci::Position position) const noexcept {
 	return hasStyles ? style.ValueAt(position) : 0;
 }
 
@@ -496,7 +494,7 @@ const char *CellBuffer::DeleteChars(Sci::Position position, Sci::Position delete
 	return data;
 }
 
-Sci::Position CellBuffer::Length() const {
+Sci::Position CellBuffer::Length() const noexcept {
 	return substance.Length();
 }
 
@@ -537,11 +535,11 @@ void CellBuffer::SetPerLine(PerLine *pl) {
 	plv->SetPerLine(pl);
 }
 
-Sci::Line CellBuffer::Lines() const {
+Sci::Line CellBuffer::Lines() const noexcept {
 	return plv->Lines();
 }
 
-Sci::Position CellBuffer::LineStart(Sci::Line line) const {
+Sci::Position CellBuffer::LineStart(Sci::Line line) const noexcept {
 	if (line < 0)
 		return 0;
 	else if (line >= Lines())
@@ -550,7 +548,7 @@ Sci::Position CellBuffer::LineStart(Sci::Line line) const {
 		return plv->LineStart(line);
 }
 
-Sci::Line CellBuffer::LineFromPosition(Sci::Position pos) const {
+Sci::Line CellBuffer::LineFromPosition(Sci::Position pos) const noexcept {
 	return plv->LineFromPosition(pos);
 }
 

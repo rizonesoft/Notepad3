@@ -13,6 +13,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -24,7 +25,6 @@
 #include "ILexer.h"
 #include "Scintilla.h"
 
-#include "StringCopy.h"
 #include "Position.h"
 #include "UniqueString.h"
 #include "SplitVector.h"
@@ -51,7 +51,7 @@ using namespace Scintilla;
 Caret::Caret() :
 	active(false), on(false), period(500) {}
 
-EditModel::EditModel() {
+EditModel::EditModel() : braces{} {
 	inOverstrike = false;
 	xOffset = 0;
 	trackLineWidth = false;
@@ -76,4 +76,13 @@ EditModel::EditModel() {
 EditModel::~EditModel() {
 	pdoc->Release();
 	pdoc = 0;
+}
+
+bool EditModel::BidirectionalEnabled() const {
+	return (bidirectional != Bidirectional::bidiDisabled) &&
+		(SC_CP_UTF8 == pdoc->dbcsCodePage);
+}
+
+bool EditModel::BidirectionalR2L() const {
+	return bidirectional == Bidirectional::bidiR2L;
 }

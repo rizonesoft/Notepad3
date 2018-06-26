@@ -14,24 +14,25 @@
 *******************************************************************************/
 
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601
 #endif
-//#define _WIN32_WINNT 0x501
-#define _WIN32_IE 0x500
+#define _WIN32_IE 0x601
 #define OEMRESOURCE  // use OBM_ resource constants
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
-#include <string.h>
+#include <strsafe.h>
 #include "minipath.h"
 #include "dlapi.h"
 #include "helpers.h"
 #include "dialogs.h"
 #include "resource.h"
-#include "version.h"
 
+#include "version.h"
 
 
 //=============================================================================
@@ -41,22 +42,23 @@
 //  L"Title\nMessage Text"
 //
 extern HWND hwndMain;
+extern LANGID g_iPrefLngLocID;
 
-int ErrorMessage(int iLevel,UINT uIdMsg,...)
+int ErrorMessage(int iLevel, UINT uIdMsg, ...)
 {
 
-  WCHAR szText [256*2];
-  WCHAR szTitle[256*2];
-  WCHAR *c;
+  WCHAR szText[256 * 2] = { L'\0' };
+  WCHAR szTitle[256 * 2] = { L'\0' };
   int iIcon;
-  HWND hwnd;
 
-  if (!GetString(uIdMsg,szText,COUNTOF(szText)))
+  if (!GetLngString(uIdMsg,szText,COUNTOF(szText)))
     return(0);
 
-  wvsprintf(szTitle,szText,(LPVOID)(&uIdMsg + 1));
+  //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  int t = vswprintf_s(szTitle,COUNTOF(szTitle),szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  szTitle[t] = L'\0';
 
-  c = StrChr(szTitle,L'\n');
+  WCHAR* c = StrChr(szTitle,L'\n');
   if (c)
   {
     lstrcpy(szText,(c + 1));
@@ -71,11 +73,9 @@ int ErrorMessage(int iLevel,UINT uIdMsg,...)
   iIcon = (iLevel > 1) ? MB_ICONEXCLAMATION : MB_ICONINFORMATION;
 
   HWND focus = GetFocus();
-  hwnd = focus ? focus : hwndMain;
+  HWND hwnd = focus ? focus : hwndMain;
 
-  return MessageBoxEx(hwnd,szText,szTitle,MB_SETFOREGROUND | iIcon,
-                      MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT));
-
+  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLngLocID);
 }
 
 
@@ -108,7 +108,7 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
   BOOL fOk = FALSE;
 
   lstrcpy(szTitle,L"");
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
   if (!pszBase || !*pszBase)
     GetCurrentDirectory(MAX_PATH,szBase);
@@ -150,7 +150,7 @@ BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
   BOOL fOk = FALSE;
 
   lstrcpy(szTitle,L"");
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
   if (NOERROR != SHGetSpecialFolderLocation(hwndParent,iBase,&pidlRoot)) {
     CoTaskMemFree(pidlRoot);
@@ -241,8 +241,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             ExpandEnvironmentStringsEx(szArgs,COUNTOF(szArgs));
             ExtractFirstArgument(szArgs,szFile,szArg2);
 
-            GetString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -354,8 +354,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 void RunDlg(HWND hwnd)
 {
 
-  ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_RUN),
-    hwnd,RunDlgProc);
+  ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_RUN),hwnd,RunDlgProc);
 
 }
 
@@ -550,8 +549,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 void GotoDlg(HWND hwnd)
 {
 
-  ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_GOTO),
-    hwnd,GotoDlgProc);
+  ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_GOTO),hwnd,GotoDlgProc);
 
 }
 
@@ -1155,8 +1153,8 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             GetDlgItemText(hwnd,IDC_QUICKVIEW,tchBuf,COUNTOF(tchBuf));
             ExtractFirstArgument(tchBuf,szFile,szParams);
 
-            GetString(IDS_GETQUICKVIEWER,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_GETQUICKVIEWER,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -1522,8 +1520,7 @@ BOOL GetFilterDlg(HWND hwnd)
   lstrcpy(tchOldFilter,tchFilter);
   bOldNegFilter = bNegFilter;
 
-  if (IDOK == ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_FILTER),
-                        hwnd,GetFilterDlgProc))
+  if (IDOK == ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_FILTER),hwnd,GetFilterDlgProc))
   {
     if (!lstrcmpi(tchFilter,tchOldFilter) && (bOldNegFilter == bNegFilter))
       return(FALSE); // Old and new filters are identical
@@ -1632,8 +1629,7 @@ BOOL RenameFileDlg(HWND hwnd)
   else
    return FALSE;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_RENAME),
-                        hwnd,RenameFileDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_RENAME),hwnd,RenameFileDlgProc,(LPARAM)&fod))
   {
     ZeroMemory(&shfos,sizeof(SHFILEOPSTRUCT));
     shfos.hwnd = hwnd;
@@ -1902,8 +1898,7 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
   else
    return FALSE;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_COPYMOVE),
-                        hwnd,CopyMoveDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_COPYMOVE),hwnd,CopyMoveDlgProc,(LPARAM)&fod))
   {
     ZeroMemory(&shfos,sizeof(SHFILEOPSTRUCT));
     shfos.hwnd = hwnd;
@@ -2188,8 +2183,7 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
   DLITEM dliOpenWith;
   dliOpenWith.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_OPENWITH),
-                             hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_OPENWITH),hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
   {
 
     WCHAR szDestination[MAX_PATH+4];
@@ -2329,8 +2323,7 @@ BOOL NewDirDlg(HWND hwnd,LPWSTR pszNewDir)
 
   FILEOPDLGDATA fod;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_NEWDIR),
-                        hwnd,NewDirDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_NEWDIR),hwnd,NewDirDlgProc,(LPARAM)&fod))
   {
     lstrcpy(pszNewDir,fod.szDestination);
 
@@ -2521,8 +2514,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
         int   cbIniSection;
 
         // ToolTip for browse button
-        hwndToolTip = CreateWindowEx(0,TOOLTIPS_CLASS,NULL,0,0,0,0,0,hwnd,
-                                     NULL,g_hInstance,NULL);
+        hwndToolTip = CreateWindowEx(0,TOOLTIPS_CLASS,NULL,0,0,0,0,0,hwnd,NULL,g_hInstance,NULL);
 
         ZeroMemory(&ti,sizeof(TOOLINFO));
         ti.cbSize   = sizeof(TOOLINFO);
@@ -2649,8 +2641,8 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             PathAbsoluteFromApp(szFile,szFile,COUNTOF(szFile),TRUE);
 
             // Strings laden
-            GetString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             // ofn ausfüllen
@@ -2737,8 +2729,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             ShowWindow(hwnd,SW_HIDE);
             ShowWindow(hwndMain,SW_HIDE);
 
-            ThemedDialogBoxParam(g_hInstance,
-                MAKEINTRESOURCE(IDD_FINDWIN),hwnd,FindWinDlgProc,(LPARAM)szTargetWndClass);
+            ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDWIN),hwnd,FindWinDlgProc,(LPARAM)szTargetWndClass);
 
             ShowWindow(hwndMain,SW_SHOWNORMAL);
             ShowWindow(hwnd,SW_SHOWNORMAL);

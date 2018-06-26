@@ -18,7 +18,7 @@
 
 #include "TypeDefs.h"
 
-int  MsgBox(int,UINT,...);
+int  MsgBoxLng(int, UINT, ...);
 void DisplayCmdLineHelp(HWND);
 bool GetDirectory(HWND,int,LPWSTR,LPCWSTR,bool);
 INT_PTR CALLBACK AboutDlgProc(HWND,UINT,WPARAM,LPARAM);
@@ -42,8 +42,7 @@ WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
 
 void DialogNewWindow(HWND,bool,bool);
 void DialogFileBrowse(HWND);
-void DialogUpdateCheck(HWND,bool);
-INT_PTR InfoBox(int,LPCWSTR,int,...);
-
+void DialogAdminExe(HWND,bool);
+INT_PTR InfoBoxLng(int, LPCWSTR, int, ...);
 
 #endif //_NP3_DIALOGS_H_

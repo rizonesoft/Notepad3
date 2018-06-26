@@ -44,17 +44,19 @@
 #include "styles.h"
 
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
 
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
 extern EDITFINDREPLACE g_efrData;
 
-extern int iSciFontQuality;
+extern int g_iSciFontQuality;
 extern const int FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;
 extern bool g_bShowCodeFolding;
 extern bool g_bShowSelectionMargin;
+extern bool g_bIniFileFromScratch;
 
 extern int  g_iMarkOccurrences;
 extern bool bUseOldStyleBraceMatching;
@@ -62,54 +64,56 @@ extern bool bUseOldStyleBraceMatching;
 extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
 
+// ============================================================================
 
 #define MULTI_STYLE(a,b,c,d) ((a)|(b<<8)|(c<<16)|(d<<24))
 
-#define INITIAL_BASE_FONT_SIZE (10)
+#define INITIAL_BASE_FONT_SIZE ((float)10.0)
 
 KEYWORDLIST KeyWords_NULL = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexStandard = { SCLEX_NULL, 63000, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL, {
-                /*  0 */ { STYLE_DEFAULT, 63100, L"Default Style", L"font:Default; size:10", L"" },
-                /*  1 */ { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"size:-2; fore:#FF0000", L"" },
-                /*  2 */ { STYLE_BRACELIGHT, 63102, L"Matching Braces (Indicator)", L"fore:#00FF40; alpha:40; alpha2:40; indic_roundbox", L"" },
-                /*  3 */ { STYLE_BRACEBAD, 63103, L"Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:140; indic_roundbox", L"" },
-                /*  4 */ { STYLE_CONTROLCHAR, 63104, L"Control Characters (Font)", L"size:-1", L"" },
-                /*  5 */ { STYLE_INDENTGUIDE, 63105, L"Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
-                /*  6 */ { SCI_SETSELFORE+SCI_SETSELBACK, 63106, L"Selected Text (Colors)", L"back:#0A246A; eolfilled; alpha:95", L"" },
-                /*  7 */ { SCI_SETWHITESPACEFORE+SCI_SETWHITESPACEBACK+SCI_SETWHITESPACESIZE, 63107, L"Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
-                /*  8 */ { SCI_SETCARETLINEBACK, 63108, L"Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
-                /*  9 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, 63109, L"Caret (Color, Size 1-3)", L"", L"" },
-                /* 10 */ { SCI_SETEDGECOLOUR, 63110, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
-                /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, 63111, L"Extra Line Spacing (Size)", L"size:2", L"" },
-                /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, 63124, L"Bookmarks and Folding (Colors)", L"fore:#000000; back:#808080; alpha:80", L"" },
-                /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, 63262, L"Mark Occurrences (Indicator)", L"indic_roundbox", L"" },
-                /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63264, L"Hyperlink Hotspots", L"italic; fore:#0000FF", L"" },
+EDITLEXER lexStandard = { SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL, {
+                /*  0 */ { STYLE_DEFAULT, IDS_LEX_STD_STYLE, L"Default Style", L"font:Default; size:10", L"" },
+                /*  1 */ { STYLE_LINENUMBER, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"size:-2; fore:#FF0000", L"" },
+                /*  2 */ { STYLE_BRACELIGHT, IDS_LEX_STD_BRACE, L"Matching Braces (Indicator)", L"fore:#00FF40; alpha:40; alpha2:40; indic_roundbox", L"" },
+                /*  3 */ { STYLE_BRACEBAD, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:140; indic_roundbox", L"" },
+                /*  4 */ { STYLE_CONTROLCHAR, IDS_LEX_STD_CTRL_CHAR, L"Control Characters (Font)", L"size:-1", L"" },
+                /*  5 */ { STYLE_INDENTGUIDE, IDS_LEX_STD_INDENT, L"Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
+                /*  6 */ { SCI_SETSELFORE+SCI_SETSELBACK, IDS_LEX_STD_SEL, L"Selected Text (Colors)", L"back:#0A246A; eolfilled; alpha:95", L"" },
+                /*  7 */ { SCI_SETWHITESPACEFORE+SCI_SETWHITESPACEBACK+SCI_SETWHITESPACESIZE, IDS_LEX_STD_WSPC, L"Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
+                /*  8 */ { SCI_SETCARETLINEBACK, IDS_LEX_STD_LN_BACKGR, L"Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
+                /*  9 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, IDS_LEX_STD_CARET, L"Caret (Color, Size 1-3)", L"", L"" },
+                /* 10 */ { SCI_SETEDGECOLOUR, IDS_LEX_STD_LONG_LN, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
+                /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:2", L"" },
+                /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors)", L"fore:#000000; back:#808080; alpha:80", L"" },
+                /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"indic_roundbox", L"" },
+                /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"italic; fore:#0000FF", L"" },
                          { -1, 00000, L"", L"", L"" } } };
 
 
-EDITLEXER lexStandard2nd = { SCLEX_NULL, 63266, L"2nd Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL,{
-                /*  0 */ { STYLE_DEFAULT, 63112, L"2nd Default Style", L"font:Courier New; size:10", L"" },
-                /*  1 */ { STYLE_LINENUMBER, 63113, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
-                /*  2 */ { STYLE_BRACELIGHT, 63114, L"2nd Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
-                /*  3 */ { STYLE_BRACEBAD, 63115, L"2nd Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:220; indic_roundbox", L"" },
-                /*  4 */ { STYLE_CONTROLCHAR, 63116, L"2nd Control Characters (Font)", L"size:-1", L"" },
-                /*  5 */ { STYLE_INDENTGUIDE, 63117, L"2nd Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
-                /*  6 */ { SCI_SETSELFORE + SCI_SETSELBACK, 63118, L"2nd Selected Text (Colors)", L"eolfilled", L"" },
-                /*  7 */ { SCI_SETWHITESPACEFORE + SCI_SETWHITESPACEBACK + SCI_SETWHITESPACESIZE, 63119, L"2nd Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
-                /*  8 */ { SCI_SETCARETLINEBACK, 63120, L"2nd Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
-                /*  9 */ { SCI_SETCARETFORE + SCI_SETCARETWIDTH, 63121, L"2nd Caret (Color, Size 1-3)", L"", L"" },
-                /* 10 */ { SCI_SETEDGECOLOUR, 63122, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
-                /* 11 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, 63123, L"2nd Extra Line Spacing (Size)", L"", L"" },
-                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, 63125, L"2nd Bookmarks and Folding (Colors)", L"fore:#000000; back:#808080; alpha:80; charset:2; case:U", L"" },
-                /* 13 */ { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, 63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0x000000; alpha:100; alpha2:220; indic_box", L"" },
-                /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, 63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
+EDITLEXER lexStandard2nd = { SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; wtx; log; asc; doc", L"", &KeyWords_NULL,{
+                /*  0 */ { STYLE_DEFAULT, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Courier New; size:10", L"" },
+                /*  1 */ { STYLE_LINENUMBER, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
+                /*  2 */ { STYLE_BRACELIGHT, IDS_LEX_2ND_BRACE, L"2nd Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
+                /*  3 */ { STYLE_BRACEBAD, IDS_LEX_2ND_BRACE_FAIL, L"2nd Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:220; indic_roundbox", L"" },
+                /*  4 */ { STYLE_CONTROLCHAR, IDS_LEX_2ND_CTRL_CHAR, L"2nd Control Characters (Font)", L"size:-1", L"" },
+                /*  5 */ { STYLE_INDENTGUIDE, IDS_LEX_2ND_INDENT, L"2nd Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
+                /*  6 */ { SCI_SETSELFORE + SCI_SETSELBACK, IDS_LEX_2ND_SEL, L"2nd Selected Text (Colors)", L"eolfilled", L"" },
+                /*  7 */ { SCI_SETWHITESPACEFORE + SCI_SETWHITESPACEBACK + SCI_SETWHITESPACESIZE, IDS_LEX_2ND_WSPC, L"2nd Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
+                /*  8 */ { SCI_SETCARETLINEBACK, IDS_LEX_2ND_LN_BACKGR, L"2nd Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
+                /*  9 */ { SCI_SETCARETFORE + SCI_SETCARETWIDTH, IDS_LEX_2ND_CARET, L"2nd Caret (Color, Size 1-3)", L"", L"" },
+                /* 10 */ { SCI_SETEDGECOLOUR, IDS_LEX_2ND_LONG_LN, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
+                /* 11 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, IDS_LEX_2ND_X_SPC, L"2nd Extra Line Spacing (Size)", L"", L"" },
+                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors)", L"fore:#000000; back:#808080; alpha:80; charset:2; case:U", L"" },
+                /* 13 */ { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0x000000; alpha:100; alpha2:220; indic_box", L"" },
+                /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
                           { -1, 00000, L"", L"", L"" } } };
 
 
-enum LexDefaultStyles {
+
+typedef enum {
   STY_DEFAULT = 0,
   STY_MARGIN = 1,
   STY_BRACE_OK = 2,
@@ -127,7 +131,24 @@ enum LexDefaultStyles {
   STY_URL_HOTSPOT = 14,
   STY_INVISIBLE = 15,
   STY_READONLY = 16
-};
+
+  // MAX = 127
+}
+LexDefaultStyles;
+
+
+// ----------------------------------------------------------------------------
+
+
+
+EDITLEXER lexANSI = { SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL,{
+  { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; none; size:10.5", L"" },
+{ STYLE_LINENUMBER, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
+{ STYLE_BRACELIGHT, IDS_LEX_STD_BRACE, L"Matching Braces", L"size:+0", L"" },
+{ STYLE_BRACEBAD, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error", L"size:+0", L"" },
+{ SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:0", L"" },
+{ -1, 00000, L"", L"", L"" } } };
+
 
 
 // ----------------------------------------------------------------------------
@@ -189,62 +210,62 @@ KEYWORDLIST KeyWords_HTML = {
 "", "", "", "" };
 
 
-EDITLEXER lexHTML = { SCLEX_HTML, 63001, L"Web Source Code", L"html; htm; asp; aspx; shtml; htd; xhtml; php; php3; phtml; htt; cfm; tpl; dtd; hta; htc", L"", &KeyWords_HTML, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      { MULTI_STYLE(SCE_H_TAG,SCE_H_TAGEND,0,0), 63136, L"HTML Tag", L"fore:#648000", L"" },
-                      { SCE_H_TAGUNKNOWN, 63137, L"HTML Unknown Tag", L"fore:#C80000; back:#FFFF80", L"" },
-                      { SCE_H_ATTRIBUTE, 63138, L"HTML Attribute", L"fore:#FF4000", L"" },
-                      { SCE_H_ATTRIBUTEUNKNOWN, 63139, L"HTML Unknown Attribute", L"fore:#C80000; back:#FFFF80", L"" },
-                      { SCE_H_VALUE, 63140, L"HTML Value", L"fore:#3A6EA5", L"" },
-                      { MULTI_STYLE(SCE_H_DOUBLESTRING,SCE_H_SINGLESTRING,0,0), 63141, L"HTML String", L"fore:#3A6EA5", L"" },
-                      { SCE_H_OTHER, 63142, L"HTML Other Inside Tag", L"fore:#3A6EA5", L"" },
-                      { MULTI_STYLE(SCE_H_COMMENT,SCE_H_XCCOMMENT,0,0), 63143, L"HTML Comment", L"fore:#646464", L"" },
-                      { SCE_H_ENTITY, 63144, L"HTML Entity", L"fore:#B000B0", L"" },
-                      { SCE_H_DEFAULT, 63256, L"HTML Element Text", L"", L"" },
-                      { MULTI_STYLE(SCE_H_XMLSTART,SCE_H_XMLEND,0,0), 63145, L"XML Identifier", L"bold; fore:#881280", L"" },
-                      { SCE_H_SGML_DEFAULT, 63237, L"SGML", L"fore:#881280", L"" },
-                      { SCE_H_CDATA, 63147, L"CDATA", L"fore:#646464", L"" },
-                      { MULTI_STYLE(SCE_H_ASP,SCE_H_ASPAT,0,0), 63146, L"ASP Start Tag", L"bold; fore:#000080", L"" },
+EDITLEXER lexHTML = { SCLEX_HTML, IDS_LEX_WEB_SRC, L"Web Source Code", L"html; htm; asp; aspx; shtml; htd; xhtml; php; php3; phtml; htt; cfm; tpl; dtd; hta; htc", L"", &KeyWords_HTML, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { MULTI_STYLE(SCE_H_TAG,SCE_H_TAGEND,0,0), IDS_LEX_STR_63136, L"HTML Tag", L"fore:#648000", L"" },
+                      { SCE_H_TAGUNKNOWN, IDS_LEX_STR_63137, L"HTML Unknown Tag", L"fore:#C80000; back:#FFFF80", L"" },
+                      { SCE_H_ATTRIBUTE, IDS_LEX_STR_63138, L"HTML Attribute", L"fore:#FF4000", L"" },
+                      { SCE_H_ATTRIBUTEUNKNOWN, IDS_LEX_STR_63139, L"HTML Unknown Attribute", L"fore:#C80000; back:#FFFF80", L"" },
+                      { SCE_H_VALUE, IDS_LEX_STR_63140, L"HTML Value", L"fore:#3A6EA5", L"" },
+                      { MULTI_STYLE(SCE_H_DOUBLESTRING,SCE_H_SINGLESTRING,0,0), IDS_LEX_STR_63141, L"HTML String", L"fore:#3A6EA5", L"" },
+                      { SCE_H_OTHER, IDS_LEX_STR_63142, L"HTML Other Inside Tag", L"fore:#3A6EA5", L"" },
+                      { MULTI_STYLE(SCE_H_COMMENT,SCE_H_XCCOMMENT,0,0), IDS_LEX_STR_63143, L"HTML Comment", L"fore:#646464", L"" },
+                      { SCE_H_ENTITY, IDS_LEX_STR_63144, L"HTML Entity", L"fore:#B000B0", L"" },
+                      { SCE_H_DEFAULT, IDS_LEX_STR_63256, L"HTML Element Text", L"", L"" },
+                      { MULTI_STYLE(SCE_H_XMLSTART,SCE_H_XMLEND,0,0), IDS_LEX_STR_63145, L"XML Identifier", L"bold; fore:#881280", L"" },
+                      { SCE_H_SGML_DEFAULT, IDS_LEX_STR_63237, L"SGML", L"fore:#881280", L"" },
+                      { SCE_H_CDATA, IDS_LEX_STR_63147, L"CDATA", L"fore:#646464", L"" },
+                      { MULTI_STYLE(SCE_H_ASP,SCE_H_ASPAT,0,0), IDS_LEX_STR_63146, L"ASP Start Tag", L"bold; fore:#000080", L"" },
                       //{ SCE_H_SCRIPT, L"Script", L"", L"" },
-                      { SCE_H_QUESTION, 63148, L"PHP Start Tag", L"bold; fore:#000080", L"" },
-                      { SCE_HPHP_DEFAULT, 63149, L"PHP Default", L"", L"" },
-                      { MULTI_STYLE(SCE_HPHP_COMMENT,SCE_HPHP_COMMENTLINE,0,0), 63157, L"PHP Comment", L"fore:#FF8000", L"" },
-                      { SCE_HPHP_WORD, 63152, L"PHP Keyword", L"bold; fore:#A46000", L"" },
-                      { SCE_HPHP_HSTRING, 63150, L"PHP String", L"fore:#008000", L"" },
-                      { SCE_HPHP_SIMPLESTRING, 63151, L"PHP Simple String", L"fore:#008000", L"" },
-                      { SCE_HPHP_NUMBER, 63153, L"PHP Number", L"fore:#FF0000", L"" },
-                      { SCE_HPHP_OPERATOR, 63158, L"PHP Operator", L"fore:#B000B0", L"" },
-                      { SCE_HPHP_VARIABLE, 63154, L"PHP Variable", L"italic; fore:#000080", L"" },
-                      { SCE_HPHP_HSTRING_VARIABLE, 63155, L"PHP String Variable", L"italic; fore:#000080", L"" },
-                      { SCE_HPHP_COMPLEX_VARIABLE, 63156, L"PHP Complex Variable", L"italic; fore:#000080", L"" },
-                      { MULTI_STYLE(SCE_HJ_DEFAULT,SCE_HJ_START,0,0), 63159, L"JS Default", L"", L"" },
-                      { MULTI_STYLE(SCE_HJ_COMMENT,SCE_HJ_COMMENTLINE,SCE_HJ_COMMENTDOC,0), 63160, L"JS Comment", L"fore:#646464", L"" },
-                      { SCE_HJ_KEYWORD, 63163, L"JS Keyword", L"bold; fore:#A46000", L"" },
-                      { SCE_HJ_WORD, 63162, L"JS Identifier", L"", L"" },
-                      { MULTI_STYLE(SCE_HJ_DOUBLESTRING,SCE_HJ_SINGLESTRING,SCE_HJ_STRINGEOL,0), 63164, L"JS String", L"fore:#008000", L"" },
-                      { SCE_HJ_REGEX, 63166, L"JS Regex", L"fore:#006633; back:#FFF1A8", L"" },
-                      { SCE_HJ_NUMBER, 63161, L"JS Number", L"fore:#FF0000", L"" },
-                      { SCE_HJ_SYMBOLS, 63165, L"JS Symbols", L"fore:#B000B0", L"" },
-                      { MULTI_STYLE(SCE_HJA_DEFAULT,SCE_HJA_START,0,0), 63167, L"ASP JS Default", L"", L"" },
-                      { MULTI_STYLE(SCE_HJA_COMMENT,SCE_HJA_COMMENTLINE,SCE_HJA_COMMENTDOC,0), 63168, L"ASP JS Comment", L"fore:#646464", L"" },
-                      { SCE_HJA_KEYWORD, 63171, L"ASP JS Keyword", L"bold; fore:#A46000", L"" },
-                      { SCE_HJA_WORD, 63170, L"ASP JS Identifier", L"", L"" },
-                      { MULTI_STYLE(SCE_HJA_DOUBLESTRING,SCE_HJA_SINGLESTRING,SCE_HJA_STRINGEOL,0), 63172, L"ASP JS String", L"fore:#008000", L"" },
-                      { SCE_HJA_REGEX, 63174, L"ASP JS Regex", L"fore:#006633; back:#FFF1A8", L"" },
-                      { SCE_HJA_NUMBER, 63169, L"ASP JS Number", L"fore:#FF0000", L"" },
-                      { SCE_HJA_SYMBOLS, 63173, L"ASP JS Symbols", L"fore:#B000B0", L"" },
-                      { MULTI_STYLE(SCE_HB_DEFAULT,SCE_HB_START,0,0), 63175, L"VBS Default", L"", L"" },
-                      { SCE_HB_COMMENTLINE, 63176, L"VBS Comment", L"fore:#646464", L"" },
-                      { SCE_HB_WORD, 63178, L"VBS Keyword", L"bold; fore:#B000B0", L"" },
-                      { SCE_HB_IDENTIFIER, 63180, L"VBS Identifier", L"", L"" },
-                      { MULTI_STYLE(SCE_HB_STRING,SCE_HB_STRINGEOL,0,0), 63179, L"VBS String", L"fore:#008000", L"" },
-                      { SCE_HB_NUMBER, 63177, L"VBS Number", L"fore:#FF0000", L"" },
-                      { MULTI_STYLE(SCE_HBA_DEFAULT,SCE_HBA_START,0,0), 63181, L"ASP VBS Default", L"", L"" },
-                      { SCE_HBA_COMMENTLINE, 63182, L"ASP VBS Comment", L"fore:#646464", L"" },
-                      { SCE_HBA_WORD, 63184, L"ASP VBS Keyword", L"bold; fore:#B000B0", L"" },
-                      { SCE_HBA_IDENTIFIER, 63186, L"ASP VBS Identifier", L"", L"" },
-                      { MULTI_STYLE(SCE_HBA_STRING,SCE_HBA_STRINGEOL,0,0), 63185, L"ASP VBS String", L"fore:#008000", L"" },
-                      { SCE_HBA_NUMBER, 63183, L"ASP VBS Number", L"fore:#FF0000", L"" },
+                      { SCE_H_QUESTION, IDS_LEX_STR_63148, L"PHP Start Tag", L"bold; fore:#000080", L"" },
+                      { SCE_HPHP_DEFAULT, IDS_LEX_STR_63149, L"PHP Default", L"", L"" },
+                      { MULTI_STYLE(SCE_HPHP_COMMENT,SCE_HPHP_COMMENTLINE,0,0), IDS_LEX_STR_63157, L"PHP Comment", L"fore:#FF8000", L"" },
+                      { SCE_HPHP_WORD, IDS_LEX_STR_63152, L"PHP Keyword", L"bold; fore:#A46000", L"" },
+                      { SCE_HPHP_HSTRING, IDS_LEX_STR_63150, L"PHP String", L"fore:#008000", L"" },
+                      { SCE_HPHP_SIMPLESTRING, IDS_LEX_STR_63151, L"PHP Simple String", L"fore:#008000", L"" },
+                      { SCE_HPHP_NUMBER, IDS_LEX_STR_63153, L"PHP Number", L"fore:#FF0000", L"" },
+                      { SCE_HPHP_OPERATOR, IDS_LEX_STR_63158, L"PHP Operator", L"fore:#B000B0", L"" },
+                      { SCE_HPHP_VARIABLE, IDS_LEX_STR_63154, L"PHP Variable", L"italic; fore:#000080", L"" },
+                      { SCE_HPHP_HSTRING_VARIABLE, IDS_LEX_STR_63155, L"PHP String Variable", L"italic; fore:#000080", L"" },
+                      { SCE_HPHP_COMPLEX_VARIABLE, IDS_LEX_STR_63156, L"PHP Complex Variable", L"italic; fore:#000080", L"" },
+                      { MULTI_STYLE(SCE_HJ_DEFAULT,SCE_HJ_START,0,0), IDS_LEX_STR_63159, L"JS Default", L"", L"" },
+                      { MULTI_STYLE(SCE_HJ_COMMENT,SCE_HJ_COMMENTLINE,SCE_HJ_COMMENTDOC,0), IDS_LEX_STR_63160, L"JS Comment", L"fore:#646464", L"" },
+                      { SCE_HJ_KEYWORD, IDS_LEX_STR_63163, L"JS Keyword", L"bold; fore:#A46000", L"" },
+                      { SCE_HJ_WORD, IDS_LEX_STR_63162, L"JS Identifier", L"", L"" },
+                      { MULTI_STYLE(SCE_HJ_DOUBLESTRING,SCE_HJ_SINGLESTRING,SCE_HJ_STRINGEOL,0), IDS_LEX_STR_63164, L"JS String", L"fore:#008000", L"" },
+                      { SCE_HJ_REGEX, IDS_LEX_STR_63166, L"JS Regex", L"fore:#006633; back:#FFF1A8", L"" },
+                      { SCE_HJ_NUMBER, IDS_LEX_STR_63161, L"JS Number", L"fore:#FF0000", L"" },
+                      { SCE_HJ_SYMBOLS, IDS_LEX_STR_63165, L"JS Symbols", L"fore:#B000B0", L"" },
+                      { MULTI_STYLE(SCE_HJA_DEFAULT,SCE_HJA_START,0,0), IDS_LEX_STR_63167, L"ASP JS Default", L"", L"" },
+                      { MULTI_STYLE(SCE_HJA_COMMENT,SCE_HJA_COMMENTLINE,SCE_HJA_COMMENTDOC,0), IDS_LEX_STR_63168, L"ASP JS Comment", L"fore:#646464", L"" },
+                      { SCE_HJA_KEYWORD, IDS_LEX_STR_63171, L"ASP JS Keyword", L"bold; fore:#A46000", L"" },
+                      { SCE_HJA_WORD, IDS_LEX_STR_63170, L"ASP JS Identifier", L"", L"" },
+                      { MULTI_STYLE(SCE_HJA_DOUBLESTRING,SCE_HJA_SINGLESTRING,SCE_HJA_STRINGEOL,0), IDS_LEX_STR_63172, L"ASP JS String", L"fore:#008000", L"" },
+                      { SCE_HJA_REGEX, IDS_LEX_STR_63174, L"ASP JS Regex", L"fore:#006633; back:#FFF1A8", L"" },
+                      { SCE_HJA_NUMBER, IDS_LEX_STR_63169, L"ASP JS Number", L"fore:#FF0000", L"" },
+                      { SCE_HJA_SYMBOLS, IDS_LEX_STR_63173, L"ASP JS Symbols", L"fore:#B000B0", L"" },
+                      { MULTI_STYLE(SCE_HB_DEFAULT,SCE_HB_START,0,0), IDS_LEX_STR_63175, L"VBS Default", L"", L"" },
+                      { SCE_HB_COMMENTLINE, IDS_LEX_STR_63176, L"VBS Comment", L"fore:#646464", L"" },
+                      { SCE_HB_WORD, IDS_LEX_STR_63178, L"VBS Keyword", L"bold; fore:#B000B0", L"" },
+                      { SCE_HB_IDENTIFIER, IDS_LEX_STR_63180, L"VBS Identifier", L"", L"" },
+                      { MULTI_STYLE(SCE_HB_STRING,SCE_HB_STRINGEOL,0,0), IDS_LEX_STR_63179, L"VBS String", L"fore:#008000", L"" },
+                      { SCE_HB_NUMBER, IDS_LEX_STR_63177, L"VBS Number", L"fore:#FF0000", L"" },
+                      { MULTI_STYLE(SCE_HBA_DEFAULT,SCE_HBA_START,0,0), IDS_LEX_STR_63181, L"ASP VBS Default", L"", L"" },
+                      { SCE_HBA_COMMENTLINE, IDS_LEX_STR_63182, L"ASP VBS Comment", L"fore:#646464", L"" },
+                      { SCE_HBA_WORD, IDS_LEX_STR_63184, L"ASP VBS Keyword", L"bold; fore:#B000B0", L"" },
+                      { SCE_HBA_IDENTIFIER, IDS_LEX_STR_63186, L"ASP VBS Identifier", L"", L"" },
+                      { MULTI_STYLE(SCE_HBA_STRING,SCE_HBA_STRINGEOL,0,0), IDS_LEX_STR_63185, L"ASP VBS String", L"fore:#008000", L"" },
+                      { SCE_HBA_NUMBER, IDS_LEX_STR_63183, L"ASP VBS Number", L"fore:#FF0000", L"" },
                       //{ SCE_HP_START, L"Phyton Start", L"", L"" },
                       //{ SCE_HP_DEFAULT, L"Phyton Default", L"", L"" },
                       //{ SCE_HP_COMMENTLINE, L"Phyton Comment Line", L"", L"" },
@@ -278,19 +299,19 @@ KEYWORDLIST KeyWords_XML = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexXML = { SCLEX_XML, 63002, L"XML Document", L"xml; xsl; rss; svg; xul; xsd; xslt; axl; rdf; xaml; vcproj", L"", &KeyWords_XML, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     { MULTI_STYLE(SCE_H_TAG,SCE_H_TAGUNKNOWN,SCE_H_TAGEND,0), 63187, L"XML Tag", L"fore:#881280", L"" },
-                     { MULTI_STYLE(SCE_H_ATTRIBUTE,SCE_H_ATTRIBUTEUNKNOWN,0,0), 63188, L"XML Attribute", L"fore:#994500", L"" },
-                     { SCE_H_VALUE, 63189, L"XML Value", L"fore:#1A1AA6", L"" },
-                     { MULTI_STYLE(SCE_H_DOUBLESTRING,SCE_H_SINGLESTRING,0,0), 63190, L"XML String", L"fore:#1A1AA6", L"" },
-                     { SCE_H_OTHER, 63191, L"XML Other Inside Tag", L"fore:#1A1AA6", L"" },
-                     { MULTI_STYLE(SCE_H_COMMENT,SCE_H_XCCOMMENT,0,0), 63192, L"XML Comment", L"fore:#646464", L"" },
-                     { SCE_H_ENTITY, 63193, L"XML Entity", L"fore:#B000B0", L"" },
-                     { SCE_H_DEFAULT, 63257, L"XML Element Text", L"", L"" },
-                     { MULTI_STYLE(SCE_H_XMLSTART,SCE_H_XMLEND,0,0), 63145, L"XML Identifier", L"bold; fore:#881280", L"" },
-                     { SCE_H_SGML_DEFAULT, 63237, L"SGML", L"fore:#881280", L"" },
-                     { SCE_H_CDATA, 63147, L"CDATA", L"fore:#646464", L"" },
+EDITLEXER lexXML = { SCLEX_XML, IDS_LEX_XML_DOC, L"XML Document", L"xml; xsl; rss; svg; xul; xsd; xslt; axl; rdf; xaml; vcproj", L"", &KeyWords_XML, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { MULTI_STYLE(SCE_H_TAG,SCE_H_TAGUNKNOWN,SCE_H_TAGEND,0), IDS_LEX_STR_63187, L"XML Tag", L"fore:#881280", L"" },
+                     { MULTI_STYLE(SCE_H_ATTRIBUTE,SCE_H_ATTRIBUTEUNKNOWN,0,0), IDS_LEX_STR_63188, L"XML Attribute", L"fore:#994500", L"" },
+                     { SCE_H_VALUE, IDS_LEX_STR_63189, L"XML Value", L"fore:#1A1AA6", L"" },
+                     { MULTI_STYLE(SCE_H_DOUBLESTRING,SCE_H_SINGLESTRING,0,0), IDS_LEX_STR_63190, L"XML String", L"fore:#1A1AA6", L"" },
+                     { SCE_H_OTHER, IDS_LEX_STR_63191, L"XML Other Inside Tag", L"fore:#1A1AA6", L"" },
+                     { MULTI_STYLE(SCE_H_COMMENT,SCE_H_XCCOMMENT,0,0), IDS_LEX_STR_63192, L"XML Comment", L"fore:#646464", L"" },
+                     { SCE_H_ENTITY, IDS_LEX_STR_63193, L"XML Entity", L"fore:#B000B0", L"" },
+                     { SCE_H_DEFAULT, IDS_LEX_STR_63257, L"XML Element Text", L"", L"" },
+                     { MULTI_STYLE(SCE_H_XMLSTART,SCE_H_XMLEND,0,0), IDS_LEX_STR_63145, L"XML Identifier", L"bold; fore:#881280", L"" },
+                     { SCE_H_SGML_DEFAULT, IDS_LEX_STR_63237, L"SGML", L"fore:#881280", L"" },
+                     { SCE_H_CDATA, IDS_LEX_STR_63147, L"CDATA", L"fore:#646464", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -355,26 +376,26 @@ KEYWORDLIST KeyWords_CSS = {
 "" };
 
 
-EDITLEXER lexCSS = { SCLEX_CSS, 63003, L"CSS Style Sheets", L"css; less; sass; scss", L"", &KeyWords_CSS, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_CSS_DEFAULT, 63126, L"CSS Default", L"", L"" },
-                     { SCE_CSS_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
-                     { SCE_CSS_TAG, 63136, L"HTML Tag", L"bold; fore:#0A246A", L"" },
-                     { SCE_CSS_CLASS, 63194, L"Tag-Class", L"fore:#648000", L"" },
-                     { SCE_CSS_ID, 63195, L"Tag-ID", L"fore:#648000", L"" },
-                     { SCE_CSS_ATTRIBUTE, 63196, L"Tag-Attribute", L"italic; fore:#648000", L"" },
-                     { MULTI_STYLE(SCE_CSS_PSEUDOCLASS,SCE_CSS_EXTENDED_PSEUDOCLASS,0,0), 63197, L"Pseudo-Class", L"fore:#B000B0", L"" },
-                     { MULTI_STYLE(SCE_CSS_PSEUDOELEMENT,SCE_CSS_EXTENDED_PSEUDOELEMENT,0,0), 63361, L"Pseudo-Element", L"fore:#B00050", L"" },
-                     { MULTI_STYLE(SCE_CSS_IDENTIFIER,SCE_CSS_IDENTIFIER2,SCE_CSS_IDENTIFIER3,SCE_CSS_EXTENDED_IDENTIFIER), 63199, L"CSS Property", L"fore:#FF4000", L"" },
-                     { MULTI_STYLE(SCE_CSS_DOUBLESTRING,SCE_CSS_SINGLESTRING,0,0), 63131, L"String", L"fore:#008000", L"" },
-                     { SCE_CSS_VALUE, 63201, L"Value", L"fore:#3A6EA5", L"" },
-                     { SCE_CSS_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-                     { SCE_CSS_IMPORTANT, 63202, L"Important", L"bold; fore:#C80000", L"" },
-                     { SCE_CSS_DIRECTIVE, 63203, L"Directive", L"bold; fore:#000000; back:#FFF1A8", L"" },
-                     { SCE_CSS_MEDIA, 63382, L"Media", L"bold; fore:#0A246A", L"" },
-                     { SCE_CSS_VARIABLE, 63249, L"Variable", L"bold; fore:#FF4000", L"" },
-                     { SCE_CSS_UNKNOWN_PSEUDOCLASS, 63198, L"Unknown Pseudo-Class", L"fore:#C80000; back:#FFFF80", L"" },
-                     { SCE_CSS_UNKNOWN_IDENTIFIER, 63200, L"Unknown Property", L"fore:#C80000; back:#FFFF80", L"" },
+EDITLEXER lexCSS = { SCLEX_CSS, IDS_LEX_CSS_STYLE, L"CSS Style Sheets", L"css; less; sass; scss", L"", &KeyWords_CSS, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_CSS_DEFAULT, IDS_LEX_STR_63126, L"CSS Default", L"", L"" },
+                     { SCE_CSS_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+                     { SCE_CSS_TAG, IDS_LEX_STR_63136, L"HTML Tag", L"bold; fore:#0A246A", L"" },
+                     { SCE_CSS_CLASS, IDS_LEX_STR_63194, L"Tag-Class", L"fore:#648000", L"" },
+                     { SCE_CSS_ID, IDS_LEX_STR_63195, L"Tag-ID", L"fore:#648000", L"" },
+                     { SCE_CSS_ATTRIBUTE, IDS_LEX_STR_63196, L"Tag-Attribute", L"italic; fore:#648000", L"" },
+                     { MULTI_STYLE(SCE_CSS_PSEUDOCLASS,SCE_CSS_EXTENDED_PSEUDOCLASS,0,0), IDS_LEX_STR_63197, L"Pseudo-Class", L"fore:#B000B0", L"" },
+                     { MULTI_STYLE(SCE_CSS_PSEUDOELEMENT,SCE_CSS_EXTENDED_PSEUDOELEMENT,0,0), IDS_LEX_STR_63302, L"Pseudo-Element", L"fore:#B00050", L"" },
+                     { MULTI_STYLE(SCE_CSS_IDENTIFIER,SCE_CSS_IDENTIFIER2,SCE_CSS_IDENTIFIER3,SCE_CSS_EXTENDED_IDENTIFIER), IDS_LEX_STR_63199, L"CSS Property", L"fore:#FF4000", L"" },
+                     { MULTI_STYLE(SCE_CSS_DOUBLESTRING,SCE_CSS_SINGLESTRING,0,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                     { SCE_CSS_VALUE, IDS_LEX_STR_63201, L"Value", L"fore:#3A6EA5", L"" },
+                     { SCE_CSS_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+                     { SCE_CSS_IMPORTANT, IDS_LEX_STR_63202, L"Important", L"bold; fore:#C80000", L"" },
+                     { SCE_CSS_DIRECTIVE, IDS_LEX_STR_63203, L"Directive", L"bold; fore:#000000; back:#FFF1A8", L"" },
+                     { SCE_CSS_MEDIA, IDS_LEX_STR_63303, L"Media", L"bold; fore:#0A246A", L"" },
+                     { SCE_CSS_VARIABLE, IDS_LEX_STR_63249, L"Variable", L"bold; fore:#FF4000", L"" },
+                     { SCE_CSS_UNKNOWN_PSEUDOCLASS, IDS_LEX_STR_63198, L"Unknown Pseudo-Class", L"fore:#C80000; back:#FFFF80", L"" },
+                     { SCE_CSS_UNKNOWN_IDENTIFIER, IDS_LEX_STR_63200, L"Unknown Property", L"fore:#C80000; back:#FFFF80", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -410,18 +431,18 @@ KEYWORDLIST KeyWords_CPP = {
   "" 
 };
 
-EDITLEXER lexCPP = { SCLEX_CPP, 63004, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; m; mm; idl; inl; odl", L"", &KeyWords_CPP, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
-                     { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                     { SCE_C_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                     { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-                     { SCE_C_WORD2, 63260, L"Keyword 2nd", L"bold; italic; fore:#3C6CDD", L"" },
-                     { SCE_C_GLOBALCLASS, 63258, L"Typedefs/Classes", L"bold; italic; fore:#800000", L"" },
-                     { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,SCE_C_VERBATIM), 63131, L"String", L"fore:#008000", L"" },
-                     { SCE_C_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                     { SCE_C_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-                     { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), 63133, L"Preprocessor", L"fore:#FF8000", L"" },
+EDITLEXER lexCPP = { SCLEX_CPP, IDS_LEX_CPP_SRC, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; m; mm; idl; inl; odl", L"", &KeyWords_CPP, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { SCE_C_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                     { SCE_C_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { SCE_C_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                     { SCE_C_WORD2, IDS_LEX_STR_63260, L"Keyword 2nd", L"bold; italic; fore:#3C6CDD", L"" },
+                     { SCE_C_GLOBALCLASS, IDS_LEX_STR_63258, L"Typedefs/Classes", L"bold; italic; fore:#800000", L"" },
+                     { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,SCE_C_VERBATIM), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                     { SCE_C_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                     { SCE_C_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+                     { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
                      //{ SCE_C_UUID, L"UUID", L"", L"" },
                      //{ SCE_C_REGEX, L"Regex", L"", L"" },
                      { -1, 00000, L"", L"", L"" } } };
@@ -562,21 +583,21 @@ KEYWORDLIST KeyWords_CS = {
 "", "", "", "", "" };
 
 
-EDITLEXER lexCS = { SCLEX_CPP, 63005, L"C# Source Code", L"cs", L"", &KeyWords_CS, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_C_DEFAULT, 63126, L"C Default", L"", L"" },
-                    { SCE_C_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                    { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#804000", L"" },
-                    { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,0), 63131, L"String", L"fore:#008000", L"" },
-                    { SCE_C_VERBATIM, 63134, L"Verbatim String", L"fore:#008000", L"" },
-                    { SCE_C_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_C_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-                    { SCE_C_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF8000", L"" },
+EDITLEXER lexCS = { SCLEX_CPP, IDS_LEX_CSHARP_SRC, L"C# Source Code", L"cs", L"", &KeyWords_CS, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"C Default", L"", L"" },
+                    { SCE_C_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                    { SCE_C_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#804000", L"" },
+                    { SCE_C_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                    { SCE_C_VERBATIM, IDS_LEX_STR_63134, L"Verbatim String", L"fore:#008000", L"" },
+                    { SCE_C_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_C_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+                    { SCE_C_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
                     //{ SCE_C_UUID, L"UUID", L"", L"" },
                     //{ SCE_C_REGEX, L"Regex", L"", L"" },
                     //{ SCE_C_WORD2, L"Word 2", L"", L"" },
-                    { SCE_C_GLOBALCLASS, 63337, L"Global Class", L"fore:#2B91AF", L"" },
+                    { SCE_C_GLOBALCLASS, IDS_LEX_STR_63304, L"Global Class", L"fore:#2B91AF", L"" },
                     { -1, 00000, L"", L"", L"" } } };
 
 
@@ -592,16 +613,16 @@ KEYWORDLIST KeyWords_RC = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexRC = { SCLEX_CPP, 63006, L"Resource Script", L"rc; rc2; rct; rh; r; dlg", L"", &KeyWords_RC, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
-                    { SCE_C_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                    { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-                    { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,SCE_C_VERBATIM), 63131, L"String", L"fore:#008000", L"" },
-                    { SCE_C_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_C_OPERATOR, 63132, L"Operator", L"fore:#0A246A", L"" },
-                    { SCE_C_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF8000", L"" },
+EDITLEXER lexRC = { SCLEX_CPP, IDS_LEX_RESOURCE_SCR, L"Resource Script", L"rc; rc2; rct; rh; r; dlg", L"", &KeyWords_RC, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { SCE_C_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                    { SCE_C_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                    { SCE_C_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,SCE_C_VERBATIM), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                    { SCE_C_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_C_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#0A246A", L"" },
+                    { SCE_C_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
                     //{ SCE_C_UUID, L"UUID", L"", L"" },
                     //{ SCE_C_REGEX, L"Regex", L"", L"" },
                     //{ SCE_C_WORD2, L"Word 2", L"", L"" },
@@ -613,14 +634,14 @@ KEYWORDLIST KeyWords_MAK = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexMAK = { SCLEX_MAKEFILE, 63007, L"Makefiles", L"mak; make; mk; dsp; msc; msvc", L"", &KeyWords_MAK, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_MAKE_DEFAULT, 63126, L"Default", L"", L"" },
-                     { SCE_MAKE_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                     { MULTI_STYLE(SCE_MAKE_IDENTIFIER,SCE_MAKE_IDEOL,0,0), 63129, L"Identifier", L"fore:#003CE6", L"" },
-                     { SCE_MAKE_OPERATOR, 63132, L"Operator", L"", L"" },
-                     { SCE_MAKE_TARGET, 63204, L"Target", L"fore:#003CE6; back:#FFC000", L"" },
-                     { SCE_MAKE_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF8000", L"" },
+EDITLEXER lexMAK = { SCLEX_MAKEFILE, IDS_LEX_MAKEFILES, L"Makefiles", L"mak; make; mk; dsp; msc; msvc", L"", &KeyWords_MAK, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_MAKE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { SCE_MAKE_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { MULTI_STYLE(SCE_MAKE_IDENTIFIER,SCE_MAKE_IDEOL,0,0), IDS_LEX_STR_63129, L"Identifier", L"fore:#003CE6", L"" },
+                     { SCE_MAKE_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                     { SCE_MAKE_TARGET, IDS_LEX_STR_63204, L"Target", L"fore:#003CE6; back:#FFC000", L"" },
+                     { SCE_MAKE_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -634,16 +655,16 @@ KEYWORDLIST KeyWords_VBS = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexVBS = { SCLEX_VBSCRIPT, 63008, L"VBScript", L"vbs; dsm", L"", &KeyWords_VBS, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_B_DEFAULT, 63126, L"Default", L"", L"" },
-                    { SCE_B_COMMENT, 63127, L"Comment", L"fore:#808080", L"" },
-                    { SCE_B_KEYWORD, 63128, L"Keyword", L"bold; fore:#B000B0", L"" },
-                    { SCE_B_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_B_STRING,SCE_B_STRINGEOL,0,0), 63131, L"String", L"fore:#008000", L"" },
-                    { SCE_B_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_B_OPERATOR, 63132, L"Operator", L"", L"" },
-                    //{ SCE_B_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF9C00", L"" },
+EDITLEXER lexVBS = { SCLEX_VBSCRIPT, IDS_LEX_VB_SCR, L"VBScript", L"vbs; dsm", L"", &KeyWords_VBS, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_B_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { SCE_B_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#808080", L"" },
+                    { SCE_B_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#B000B0", L"" },
+                    { SCE_B_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_B_STRING,SCE_B_STRINGEOL,0,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                    { SCE_B_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_B_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                    //{ SCE_B_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF9C00", L"" },
                     //{ SCE_B_CONSTANT, L"Constant", L"", L"" },
                     //{ SCE_B_DATE, L"Date", L"", L"" },
                     //{ SCE_B_KEYWORD2, L"Keyword 2", L"", L"" },
@@ -668,16 +689,16 @@ KEYWORDLIST KeyWords_VB = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexVB = { SCLEX_VB, 63009, L"Visual Basic", L"vb; bas; frm; cls; ctl; pag; dsr; dob", L"", &KeyWords_VB, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_B_DEFAULT, 63126, L"Default", L"", L"" },
-                    { SCE_B_COMMENT, 63127, L"Comment", L"fore:#808080", L"" },
-                    { SCE_B_KEYWORD, 63128, L"Keyword", L"bold; fore:#B000B0", L"" },
-                    { SCE_B_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_B_STRING,SCE_B_STRINGEOL,0,0), 63131, L"String", L"fore:#008000", L"" },
-                    { MULTI_STYLE(SCE_B_NUMBER,SCE_B_DATE,0,0), 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_B_OPERATOR, 63132, L"Operator", L"", L"" },
-                    { SCE_B_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF9C00", L"" },
+EDITLEXER lexVB = { SCLEX_VB, IDS_LEX_VIS_BAS, L"Visual Basic", L"vb; bas; frm; cls; ctl; pag; dsr; dob", L"", &KeyWords_VB, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_B_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { SCE_B_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#808080", L"" },
+                    { SCE_B_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#B000B0", L"" },
+                    { SCE_B_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_B_STRING,SCE_B_STRINGEOL,0,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                    { MULTI_STYLE(SCE_B_NUMBER,SCE_B_DATE,0,0), IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_B_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                    { SCE_B_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF9C00", L"" },
                     //{ SCE_B_CONSTANT, L"Constant", L"", L"" },
                     //{ SCE_B_KEYWORD2, L"Keyword 2", L"", L"" },
                     //{ SCE_B_KEYWORD3, L"Keyword 3", L"", L"" },
@@ -695,16 +716,16 @@ KEYWORDLIST KeyWords_JS = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexJS = { SCLEX_CPP, 63010, L"JavaScript", L"js; jse; jsm; as", L"", &KeyWords_JS, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
-                    { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
-                    { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#A46000", L"" },
-                    { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,SCE_C_VERBATIM), 63131, L"String", L"fore:#008000", L"" },
-                    { SCE_C_REGEX, 63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
-                    { SCE_C_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_C_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+EDITLEXER lexJS = { SCLEX_CPP, IDS_LEX_J_SCR, L"JavaScript", L"js; jse; jsm; as", L"", &KeyWords_JS, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { SCE_C_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+                    { SCE_C_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#A46000", L"" },
+                    { SCE_C_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,SCE_C_VERBATIM), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                    { SCE_C_REGEX, IDS_LEX_STR_63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
+                    { SCE_C_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_C_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
                     //{ SCE_C_UUID, L"UUID", L"", L"" },
                     //{ SCE_C_PREPROCESSOR, L"Preprocessor", L"fore:#FF8000", L"" },
                     //{ SCE_C_WORD2, L"Word 2", L"", L"" },
@@ -718,16 +739,16 @@ KEYWORDLIST KeyWords_JSON = {
 "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexJSON = { SCLEX_JSON, 63029, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", &KeyWords_JSON, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
-                    { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
-                    { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#A46000", L"" },
-                    { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { SCE_JSON_STRING, 63131, L"String", L"fore:#008000", L"" },
-                    { SCE_C_REGEX, 63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
-                    { SCE_JSON_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_C_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+EDITLEXER lexJSON = { SCLEX_JSON, IDS_LEX_JSON, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", &KeyWords_JSON, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { SCE_C_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+                    { SCE_C_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#A46000", L"" },
+                    { SCE_C_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { SCE_JSON_STRING, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                    { SCE_C_REGEX, IDS_LEX_STR_63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
+                    { SCE_JSON_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_C_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
                     { -1, 00000, L"", L"", L"" } } };
 
 /*
@@ -771,16 +792,16 @@ KEYWORDLIST KeyWords_JAVA = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexJAVA = { SCLEX_CPP, 63011, L"Java Source Code", L"java", L"", &KeyWords_JAVA, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_C_DEFAULT, 63126, L"Default", L"", L"" },
-                      { SCE_C_COMMENT, 63127, L"Comment", L"fore:#646464", L"" },
-                      { SCE_C_WORD, 63128, L"Keyword", L"bold; fore:#A46000", L"" },
-                      { SCE_C_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                      { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,SCE_C_VERBATIM), 63131, L"String", L"fore:#008000", L"" },
-                      { SCE_C_REGEX, 63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
-                      { SCE_C_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                      { SCE_C_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+EDITLEXER lexJAVA = { SCLEX_CPP, IDS_LEX_JAVA_SRC, L"Java Source Code", L"java", L"", &KeyWords_JAVA, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { SCE_C_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+                      { SCE_C_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#A46000", L"" },
+                      { SCE_C_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                      { MULTI_STYLE(SCE_C_STRING,SCE_C_CHARACTER,SCE_C_STRINGEOL,SCE_C_VERBATIM), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                      { SCE_C_REGEX, IDS_LEX_STR_63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
+                      { SCE_C_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                      { SCE_C_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
                       //{ SCE_C_UUID, L"UUID", L"", L"" },
                       //{ SCE_C_PREPROCESSOR, L"Preprocessor", L"fore:#FF8000", L"" },
                       //{ SCE_C_WORD2, L"Word 2", L"", L"" },
@@ -798,17 +819,17 @@ KEYWORDLIST KeyWords_PAS = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexPAS = { SCLEX_PASCAL, 63012, L"Pascal Source Code", L"pas; dpr; dpk; dfm; inc; pp", L"", &KeyWords_PAS, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_PAS_DEFAULT, 63126, L"Default", L"", L"" },
-                     { MULTI_STYLE(SCE_PAS_COMMENT,SCE_PAS_COMMENT2,SCE_PAS_COMMENTLINE,0), 63127, L"Comment", L"fore:#646464", L"" },
-                     { SCE_PAS_WORD, 63128, L"Keyword", L"bold; fore:#800080", L"" },
-                     { SCE_PAS_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                     { MULTI_STYLE(SCE_PAS_STRING,SCE_PAS_CHARACTER,SCE_PAS_STRINGEOL,0), 63131, L"String", L"fore:#008000", L"" },
-                     { MULTI_STYLE(SCE_PAS_NUMBER,SCE_PAS_HEXNUMBER,0,0), 63130, L"Number", L"fore:#FF0000", L"" },
-                     { SCE_PAS_OPERATOR, 63132, L"Operator", L"bold", L"" },
-                     { SCE_PAS_ASM, 63205, L"Inline Asm", L"fore:#0000FF", L"" },
-                     { MULTI_STYLE(SCE_PAS_PREPROCESSOR,SCE_PAS_PREPROCESSOR2,0,0), 63133, L"Preprocessor", L"fore:#FF00FF", L"" },
+EDITLEXER lexPAS = { SCLEX_PASCAL, IDS_LEX_PASCAL_SRC, L"Pascal Source Code", L"pas; dpr; dpk; dfm; inc; pp", L"", &KeyWords_PAS, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_PAS_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { MULTI_STYLE(SCE_PAS_COMMENT,SCE_PAS_COMMENT2,SCE_PAS_COMMENTLINE,0), IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+                     { SCE_PAS_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#800080", L"" },
+                     { SCE_PAS_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                     { MULTI_STYLE(SCE_PAS_STRING,SCE_PAS_CHARACTER,SCE_PAS_STRINGEOL,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                     { MULTI_STYLE(SCE_PAS_NUMBER,SCE_PAS_HEXNUMBER,0,0), IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                     { SCE_PAS_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
+                     { SCE_PAS_ASM, IDS_LEX_STR_63205, L"Inline Asm", L"fore:#0000FF", L"" },
+                     { MULTI_STYLE(SCE_PAS_PREPROCESSOR,SCE_PAS_PREPROCESSOR2,0,0), IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF00FF", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -902,20 +923,20 @@ KEYWORDLIST KeyWords_ASM = {
 "", "", "" };
 
 
-EDITLEXER lexASM = { SCLEX_ASM, 63013, L"Assembly Script", L"asm", L"", &KeyWords_ASM, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_ASM_DEFAULT, 63126, L"Default", L"", L"" },
-                     { MULTI_STYLE(SCE_ASM_COMMENT,SCE_ASM_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
-                     { SCE_ASM_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                     { MULTI_STYLE(SCE_ASM_STRING,SCE_ASM_CHARACTER,SCE_ASM_STRINGEOL,0), 63131, L"String", L"fore:#008000", L"" },
-                     { SCE_ASM_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                     { SCE_ASM_OPERATOR, 63132, L"Operator", L"fore:#0A246A", L"" },
-                     { SCE_ASM_CPUINSTRUCTION, 63206, L"CPU Instruction", L"fore:#0A246A", L"" },
-                     { SCE_ASM_MATHINSTRUCTION, 63207, L"FPU Instruction", L"fore:#0A246A", L"" },
-                     { SCE_ASM_EXTINSTRUCTION, 63210, L"Extended Instruction", L"fore:#0A246A", L"" },
-                     { SCE_ASM_DIRECTIVE, 63203, L"Directive", L"fore:#0A246A", L"" },
-                     { SCE_ASM_DIRECTIVEOPERAND, 63209, L"Directive Operand", L"fore:#0A246A", L"" },
-                     { SCE_ASM_REGISTER, 63208, L"Register", L"fore:#FF8000", L"" },
+EDITLEXER lexASM = { SCLEX_ASM, IDS_LEX_ASM_SCR, L"Assembly Script", L"asm", L"", &KeyWords_ASM, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_ASM_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { MULTI_STYLE(SCE_ASM_COMMENT,SCE_ASM_COMMENTBLOCK,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { SCE_ASM_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                     { MULTI_STYLE(SCE_ASM_STRING,SCE_ASM_CHARACTER,SCE_ASM_STRINGEOL,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                     { SCE_ASM_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                     { SCE_ASM_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#0A246A", L"" },
+                     { SCE_ASM_CPUINSTRUCTION, IDS_LEX_STR_63206, L"CPU Instruction", L"fore:#0A246A", L"" },
+                     { SCE_ASM_MATHINSTRUCTION, IDS_LEX_STR_63207, L"FPU Instruction", L"fore:#0A246A", L"" },
+                     { SCE_ASM_EXTINSTRUCTION, IDS_LEX_STR_63210, L"Extended Instruction", L"fore:#0A246A", L"" },
+                     { SCE_ASM_DIRECTIVE, IDS_LEX_STR_63203, L"Directive", L"fore:#0A246A", L"" },
+                     { SCE_ASM_DIRECTIVEOPERAND, IDS_LEX_STR_63209, L"Directive Operand", L"fore:#0A246A", L"" },
+                     { SCE_ASM_REGISTER, IDS_LEX_STR_63208, L"Register", L"fore:#FF8000", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -943,39 +964,39 @@ KEYWORDLIST KeyWords_PL = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexPL = { SCLEX_PERL, 63014, L"Perl Script", L"pl; pm; cgi; pod", L"", &KeyWords_PL, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_PL_DEFAULT, 63126, L"Default", L"", L"" },
-                    { SCE_PL_COMMENTLINE, 63127, L"Comment", L"fore:#646464", L"" },
-                    { SCE_PL_WORD, 63128, L"Keyword", L"bold; fore:#804000", L"" },
-                    { SCE_PL_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { SCE_PL_STRING, 63211, L"String Double Quoted", L"fore:#008000", L"" },
-                    { SCE_PL_CHARACTER, 63212, L"String Single Quoted", L"fore:#008000", L"" },
-                    { SCE_PL_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_PL_OPERATOR, 63132, L"Operator", L"bold", L"" },
-                    { SCE_PL_SCALAR, 63215, L"Scalar $var", L"fore:#0A246A", L"" },
-                    { SCE_PL_ARRAY, 63216, L"Array @var", L"fore:#003CE6", L"" },
-                    { SCE_PL_HASH, 63217, L"Hash %var", L"fore:#B000B0", L"" },
-                    { SCE_PL_SYMBOLTABLE, 63218, L"Symbol Table *var", L"fore:#3A6EA5", L"" },
-                    { SCE_PL_REGEX, 63219, L"Regex /re/ or m{re}", L"fore:#006633; back:#FFF1A8", L"" },
-                    { SCE_PL_REGSUBST, 63220, L"Substitution s/re/ore/", L"fore:#006633; back:#FFF1A8", L"" },
-                    { SCE_PL_BACKTICKS, 63221, L"Back Ticks", L"fore:#E24000; back:#FFF1A8", L"" },
-                    { SCE_PL_HERE_DELIM, 63223, L"Here-Doc (Delimiter)", L"fore:#648000", L"" },
-                    { SCE_PL_HERE_Q, 63224, L"Here-Doc (Single Quoted, q)", L"fore:#648000", L"" },
-                    { SCE_PL_HERE_QQ, 63225, L"Here-Doc (Double Quoted, qq)", L"fore:#648000", L"" },
-                    { SCE_PL_HERE_QX, 63226, L"Here-Doc (Back Ticks, qx)", L"fore:#E24000; back:#FFF1A8", L"" },
-                    { SCE_PL_STRING_Q, 63227, L"Single Quoted String (Generic, q)", L"fore:#008000", L"" },
-                    { SCE_PL_STRING_QQ, 63228, L"Double Quoted String (qq)", L"fore:#008000", L"" },
-                    { SCE_PL_STRING_QX, 63229, L"Back Ticks (qx)", L"fore:#E24000; back:#FFF1A8", L"" },
-                    { SCE_PL_STRING_QR, 63230, L"Regex (qr)", L"fore:#006633; back:#FFF1A8", L"" },
-                    { SCE_PL_STRING_QW, 63231, L"Array (qw)", L"fore:#003CE6", L"" },
-                    { SCE_PL_SUB_PROTOTYPE, 63253, L"Prototype", L"fore:#800080; back:#FFE2FF", L"" },
-                    { SCE_PL_FORMAT_IDENT, 63254, L"Format Identifier", L"bold; fore:#648000; back:#FFF1A8", L"" },
-                    { SCE_PL_FORMAT, 63255, L"Format Body", L"fore:#648000; back:#FFF1A8", L"" },
-                    { SCE_PL_POD, 63213, L"POD (Common)", L"fore:#A46000; back:#FFFFC0; eolfilled", L"" },
-                    { SCE_PL_POD_VERB, 63214, L"POD (Verbatim)", L"fore:#A46000; back:#FFFFC0; eolfilled", L"" },
-                    { SCE_PL_DATASECTION, 63222, L"Data Section", L"fore:#A46000; back:#FFFFC0; eolfilled", L"" },
-                    { SCE_PL_ERROR, 63252, L"Parsing Error", L"fore:#C80000; back:#FFFF80", L"" },
+EDITLEXER lexPL = { SCLEX_PERL, IDS_LEX_PERL_SCR, L"Perl Script", L"pl; pm; cgi; pod", L"", &KeyWords_PL, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_PL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { SCE_PL_COMMENTLINE, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+                    { SCE_PL_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#804000", L"" },
+                    { SCE_PL_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { SCE_PL_STRING, IDS_LEX_STR_63211, L"String Double Quoted", L"fore:#008000", L"" },
+                    { SCE_PL_CHARACTER, IDS_LEX_STR_63212, L"String Single Quoted", L"fore:#008000", L"" },
+                    { SCE_PL_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_PL_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
+                    { SCE_PL_SCALAR, IDS_LEX_STR_63215, L"Scalar $var", L"fore:#0A246A", L"" },
+                    { SCE_PL_ARRAY, IDS_LEX_STR_63216, L"Array @var", L"fore:#003CE6", L"" },
+                    { SCE_PL_HASH, IDS_LEX_STR_63217, L"Hash %var", L"fore:#B000B0", L"" },
+                    { SCE_PL_SYMBOLTABLE, IDS_LEX_STR_63218, L"Symbol Table *var", L"fore:#3A6EA5", L"" },
+                    { SCE_PL_REGEX, IDS_LEX_STR_63219, L"Regex /re/ or m{re}", L"fore:#006633; back:#FFF1A8", L"" },
+                    { SCE_PL_REGSUBST, IDS_LEX_STR_63220, L"Substitution s/re/ore/", L"fore:#006633; back:#FFF1A8", L"" },
+                    { SCE_PL_BACKTICKS, IDS_LEX_STR_63221, L"Back Ticks", L"fore:#E24000; back:#FFF1A8", L"" },
+                    { SCE_PL_HERE_DELIM, IDS_LEX_STR_63223, L"Here-Doc (Delimiter)", L"fore:#648000", L"" },
+                    { SCE_PL_HERE_Q, IDS_LEX_STR_63224, L"Here-Doc (Single Quoted, q)", L"fore:#648000", L"" },
+                    { SCE_PL_HERE_QQ, IDS_LEX_STR_63225, L"Here-Doc (Double Quoted, qq)", L"fore:#648000", L"" },
+                    { SCE_PL_HERE_QX, IDS_LEX_STR_63226, L"Here-Doc (Back Ticks, qx)", L"fore:#E24000; back:#FFF1A8", L"" },
+                    { SCE_PL_STRING_Q, IDS_LEX_STR_63227, L"Single Quoted String (Generic, q)", L"fore:#008000", L"" },
+                    { SCE_PL_STRING_QQ, IDS_LEX_STR_63228, L"Double Quoted String (qq)", L"fore:#008000", L"" },
+                    { SCE_PL_STRING_QX, IDS_LEX_STR_63229, L"Back Ticks (qx)", L"fore:#E24000; back:#FFF1A8", L"" },
+                    { SCE_PL_STRING_QR, IDS_LEX_STR_63230, L"Regex (qr)", L"fore:#006633; back:#FFF1A8", L"" },
+                    { SCE_PL_STRING_QW, IDS_LEX_STR_63231, L"Array (qw)", L"fore:#003CE6", L"" },
+                    { SCE_PL_SUB_PROTOTYPE, IDS_LEX_STR_63253, L"Prototype", L"fore:#800080; back:#FFE2FF", L"" },
+                    { SCE_PL_FORMAT_IDENT, IDS_LEX_STR_63254, L"Format Identifier", L"bold; fore:#648000; back:#FFF1A8", L"" },
+                    { SCE_PL_FORMAT, IDS_LEX_STR_63255, L"Format Body", L"fore:#648000; back:#FFF1A8", L"" },
+                    { SCE_PL_POD, IDS_LEX_STR_63213, L"POD (Common)", L"fore:#A46000; back:#FFFFC0; eolfilled", L"" },
+                    { SCE_PL_POD_VERB, IDS_LEX_STR_63214, L"POD (Verbatim)", L"fore:#A46000; back:#FFFFC0; eolfilled", L"" },
+                    { SCE_PL_DATASECTION, IDS_LEX_STR_63222, L"Data Section", L"fore:#A46000; back:#FFFFC0; eolfilled", L"" },
+                    { SCE_PL_ERROR, IDS_LEX_STR_63252, L"Parsing Error", L"fore:#C80000; back:#FFFF80", L"" },
                     //{ SCE_PL_PUNCTUATION, L"Symbols / Punctuation (not used)", L"", L"" },
                     //{ SCE_PL_PREPROCESSOR, L"Preprocessor (not used)", L"", L"" },
                     //{ SCE_PL_LONGQUOTE, L"Long Quote (qq, qr, qw, qx) (not used)", L"", L"" },
@@ -986,13 +1007,13 @@ KEYWORDLIST KeyWords_PROPS = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexPROPS = { SCLEX_PROPERTIES, 63015, L"Configuration Files", L"ini; inf; cfg; properties; oem; sif; url; sed; theme", L"", &KeyWords_PROPS, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_PROPS_DEFAULT, 63126, L"Default", L"", L"" },
-                     { SCE_PROPS_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                     { SCE_PROPS_SECTION, 63232, L"Section", L"fore:#000000; back:#FF8040; bold; eolfilled", L"" },
-                     { SCE_PROPS_ASSIGNMENT, 63233, L"Assignment", L"fore:#FF0000", L"" },
-                     { SCE_PROPS_DEFVAL, 63234, L"Default Value", L"fore:#FF0000", L"" },
+EDITLEXER lexPROPS = { SCLEX_PROPERTIES, IDS_LEX_CONF, L"Configuration Files", L"ini; inf; cfg; properties; oem; sif; url; sed; theme", L"", &KeyWords_PROPS, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_PROPS_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { SCE_PROPS_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { SCE_PROPS_SECTION, IDS_LEX_STR_63232, L"Section", L"fore:#000000; back:#FF8040; bold; eolfilled", L"" },
+                     { SCE_PROPS_ASSIGNMENT, IDS_LEX_STR_63233, L"Assignment", L"fore:#FF0000", L"" },
+                     { SCE_PROPS_DEFVAL, IDS_LEX_STR_63234, L"Default Value", L"fore:#FF0000", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1010,15 +1031,15 @@ KEYWORDLIST KeyWords_BAT = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexBAT = { SCLEX_BATCH, 63016, L"Batch Files", L"bat; cmd", L"", &KeyWords_BAT, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_BAT_DEFAULT, 63126, L"Default", L"", L"" },
-                     { SCE_BAT_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                     { SCE_BAT_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-                     { SCE_BAT_IDENTIFIER, 63129, L"Identifier", L"fore:#003CE6; back:#FFF1A8", L"" },
-                     { SCE_BAT_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-                     { MULTI_STYLE(SCE_BAT_COMMAND,SCE_BAT_HIDE,0,0), 63236, L"Command", L"bold", L"" },
-                     { SCE_BAT_LABEL, 63235, L"Label", L"fore:#C80000; back:#F4F4F4; eolfilled", L"" },
+EDITLEXER lexBAT = { SCLEX_BATCH, IDS_LEX_BATCH, L"Batch Files", L"bat; cmd", L"", &KeyWords_BAT, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_BAT_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { SCE_BAT_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { SCE_BAT_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                     { SCE_BAT_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"fore:#003CE6; back:#FFF1A8", L"" },
+                     { SCE_BAT_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+                     { MULTI_STYLE(SCE_BAT_COMMAND,SCE_BAT_HIDE,0,0), IDS_LEX_STR_63236, L"Command", L"bold", L"" },
+                     { SCE_BAT_LABEL, IDS_LEX_STR_63235, L"Label", L"fore:#C80000; back:#F4F4F4; eolfilled", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1026,16 +1047,16 @@ KEYWORDLIST KeyWords_DIFF = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexDIFF = { SCLEX_DIFF, 63017, L"Diff Files", L"diff; patch", L"", &KeyWords_DIFF, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_DIFF_DEFAULT, 63126, L"Default", L"", L"" },
-                      { SCE_DIFF_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                      { SCE_DIFF_COMMAND, 63236, L"Command", L"bold; fore:#0A246A", L"" },
-                      { SCE_DIFF_HEADER, 63238, L"Source and Destination", L"fore:#C80000; back:#FFF1A8; eolfilled", L"" },
-                      { SCE_DIFF_POSITION, 63239, L"Position Setting", L"fore:#0000FF", L"" },
-                      { SCE_DIFF_ADDED, 63240, L"Line Addition", L"fore:#002000; back:#80FF80; eolfilled", L"" },
-                      { SCE_DIFF_DELETED, 63241, L"Line Removal", L"fore:#200000; back:#FF8080; eolfilled", L"" },
-                      { SCE_DIFF_CHANGED, 63242, L"Line Change", L"fore:#000020; back:#8080FF; eolfilled", L"" },
+EDITLEXER lexDIFF = { SCLEX_DIFF, IDS_LEX_DIFF, L"Diff Files", L"diff; patch", L"", &KeyWords_DIFF, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      //{ SCE_DIFF_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { SCE_DIFF_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                      { SCE_DIFF_COMMAND, IDS_LEX_STR_63236, L"Command", L"bold; fore:#0A246A", L"" },
+                      { SCE_DIFF_HEADER, IDS_LEX_STR_63238, L"Source and Destination", L"fore:#C80000; back:#FFF1A8; eolfilled", L"" },
+                      { SCE_DIFF_POSITION, IDS_LEX_STR_63239, L"Position Setting", L"fore:#0000FF", L"" },
+                      { SCE_DIFF_ADDED, IDS_LEX_STR_63240, L"Line Addition", L"fore:#002000; back:#80FF80; eolfilled", L"" },
+                      { SCE_DIFF_DELETED, IDS_LEX_STR_63241, L"Line Removal", L"fore:#200000; back:#FF8080; eolfilled", L"" },
+                      { SCE_DIFF_CHANGED, IDS_LEX_STR_63242, L"Line Change", L"fore:#000020; back:#8080FF; eolfilled", L"" },
                       { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1065,16 +1086,16 @@ KEYWORDLIST KeyWords_SQL = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexSQL = { SCLEX_SQL, 63018, L"SQL Query", L"sql", L"", &KeyWords_SQL, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_SQL_DEFAULT, 63126, L"Default", L"", L"" },
-                     { SCE_SQL_COMMENT, 63127, L"Comment", L"fore:#505050", L"" },
-                     { SCE_SQL_WORD, 63128, L"Keyword", L"bold; fore:#800080", L"" },
-                     { MULTI_STYLE(SCE_SQL_STRING,SCE_SQL_CHARACTER,0,0), 63131, L"String", L"fore:#008000; back:#FFF1A8", L"" },
-                     { SCE_SQL_IDENTIFIER, 63129, L"Identifier", L"fore:#800080", L"" },
-                     { SCE_SQL_QUOTEDIDENTIFIER, 63243, L"Quoted Identifier", L"fore:#800080; back:#FFCCFF", L"" },
-                     { SCE_SQL_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                     { SCE_SQL_OPERATOR, 63132, L"Operator", L"bold; fore:#800080", L"" },
+EDITLEXER lexSQL = { SCLEX_SQL, IDS_LEX_SQL, L"SQL Query", L"sql", L"", &KeyWords_SQL, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_SQL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { SCE_SQL_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#505050", L"" },
+                     { SCE_SQL_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#800080", L"" },
+                     { MULTI_STYLE(SCE_SQL_STRING,SCE_SQL_CHARACTER,0,0), IDS_LEX_STR_63131, L"String", L"fore:#008000; back:#FFF1A8", L"" },
+                     { SCE_SQL_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"fore:#800080", L"" },
+                     { SCE_SQL_QUOTEDIDENTIFIER, IDS_LEX_STR_63243, L"Quoted Identifier", L"fore:#800080; back:#FFCCFF", L"" },
+                     { SCE_SQL_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                     { SCE_SQL_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#800080", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1085,20 +1106,20 @@ KEYWORDLIST KeyWords_PY = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexPY = { SCLEX_PYTHON, 63019, L"Python Script", L"py; pyw", L"", &KeyWords_PY, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_P_DEFAULT, 63126, L"Default", L"", L"" },
-                    { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#880000", L"" },
-                    { SCE_P_WORD, 63128, L"Keyword", L"fore:#000088", L"" },
-                    { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,0,0), 63211, L"String Double Quoted", L"fore:#008800", L"" },
-                    { SCE_P_CHARACTER, 63212, L"String Single Quoted", L"fore:#008800", L"" },
-                    { SCE_P_TRIPLEDOUBLE, 63244, L"String Triple Double Quotes", L"fore:#008800", L"" },
-                    { SCE_P_TRIPLE, 63245, L"String Triple Single Quotes", L"fore:#008800", L"" },
-                    { SCE_P_NUMBER, 63130, L"Number", L"fore:#FF4000", L"" },
-                    { SCE_P_OPERATOR, 63132, L"Operator", L"bold; fore:#666600", L"" },
-                    { SCE_P_DEFNAME, 63247, L"Function Name", L"fore:#660066", L"" },
-                    { SCE_P_CLASSNAME, 63246, L"Class Name", L"fore:#660066", L"" },
+EDITLEXER lexPY = { SCLEX_PYTHON, IDS_LEX_PYTHON, L"Python Script", L"py; pyw", L"", &KeyWords_PY, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_P_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#880000", L"" },
+                    { SCE_P_WORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#000088", L"" },
+                    { SCE_P_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,0,0), IDS_LEX_STR_63211, L"String Double Quoted", L"fore:#008800", L"" },
+                    { SCE_P_CHARACTER, IDS_LEX_STR_63212, L"String Single Quoted", L"fore:#008800", L"" },
+                    { SCE_P_TRIPLEDOUBLE, IDS_LEX_STR_63244, L"String Triple Double Quotes", L"fore:#008800", L"" },
+                    { SCE_P_TRIPLE, IDS_LEX_STR_63245, L"String Triple Single Quotes", L"fore:#008800", L"" },
+                    { SCE_P_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF4000", L"" },
+                    { SCE_P_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#666600", L"" },
+                    { SCE_P_DEFNAME, IDS_LEX_STR_63247, L"Function Name", L"fore:#660066", L"" },
+                    { SCE_P_CLASSNAME, IDS_LEX_STR_63246, L"Class Name", L"fore:#660066", L"" },
                     { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1215,14 +1236,14 @@ KEYWORDLIST KeyWords_CONF = {
 "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexCONF = { SCLEX_CONF, 63020, L"Apache Config Files", L"conf; htaccess", L"", &KeyWords_CONF, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_CONF_DEFAULT, 63126, L"Default", L"", L"" },
-                      { SCE_CONF_COMMENT, 63127, L"Comment", L"fore:#648000", L"" },
-                      { SCE_CONF_STRING, 63131, L"String", L"fore:#B000B0", L"" },
-                      { SCE_CONF_NUMBER, 63130, L"Number", L"fore:#FF4000", L"" },
-                      { SCE_CONF_DIRECTIVE, 63203, L"Directive", L"fore:#003CE6", L"" },
-                      { SCE_CONF_IP, 63248, L"IP Address", L"bold; fore:#FF4000", L"" },
+EDITLEXER lexCONF = { SCLEX_CONF, IDS_LEX_APC_CFG, L"Apache Config Files", L"conf; htaccess", L"", &KeyWords_CONF, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      //{ SCE_CONF_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { SCE_CONF_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#648000", L"" },
+                      { SCE_CONF_STRING, IDS_LEX_STR_63131, L"String", L"fore:#B000B0", L"" },
+                      { SCE_CONF_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF4000", L"" },
+                      { SCE_CONF_DIRECTIVE, IDS_LEX_STR_63203, L"Directive", L"fore:#003CE6", L"" },
+                      { SCE_CONF_IP, IDS_LEX_STR_63248, L"IP Address", L"bold; fore:#FF4000", L"" },
 // Not used by lexer  { SCE_CONF_IDENTIFIER, L"Identifier", L"", L"" },
 // Lexer is buggy     { SCE_CONF_OPERATOR, L"Operator", L"", L"" },
 // Lexer is buggy     { SCE_CONF_PARAMETER, L"Runtime Directive Parameter", L"", L"" },
@@ -1286,18 +1307,18 @@ KEYWORDLIST KeyWords_PS = {
 "", "", "", "", "" };
 
 
-EDITLEXER lexPS = { SCLEX_POWERSHELL, 63021, L"PowerShell Script", L"ps1; psd1; psm1", L"", &KeyWords_PS, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_POWERSHELL_DEFAULT, 63126, L"Default", L"", L"" },
-                    { MULTI_STYLE(SCE_POWERSHELL_COMMENT,SCE_POWERSHELL_COMMENTSTREAM,0,0), 63127, L"Comment", L"fore:#646464", L"" },
-                    { SCE_POWERSHELL_KEYWORD, 63128, L"Keyword", L"bold; fore:#804000", L"" },
-                    { SCE_POWERSHELL_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_POWERSHELL_STRING,SCE_POWERSHELL_CHARACTER,0,0), 63131, L"String", L"fore:#008000", L"" },
-                    { SCE_POWERSHELL_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_POWERSHELL_OPERATOR, 63132, L"Operator", L"bold", L"" },
-                    { SCE_POWERSHELL_VARIABLE, 63249, L"Variable", L"fore:#0A246A", L"" },
-                    { MULTI_STYLE(SCE_POWERSHELL_CMDLET,SCE_POWERSHELL_FUNCTION,0,0), 63250, L"Cmdlet", L"fore:#804000; back:#FFF1A8", L"" },
-                    { SCE_POWERSHELL_ALIAS, 63251, L"Alias", L"bold; fore:#0A246A", L"" },
+EDITLEXER lexPS = { SCLEX_POWERSHELL, IDS_LEX_PWRSHELL, L"PowerShell Script", L"ps1; psd1; psm1", L"", &KeyWords_PS, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_POWERSHELL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { MULTI_STYLE(SCE_POWERSHELL_COMMENT,SCE_POWERSHELL_COMMENTSTREAM,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+                    { SCE_POWERSHELL_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#804000", L"" },
+                    { SCE_POWERSHELL_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_POWERSHELL_STRING,SCE_POWERSHELL_CHARACTER,0,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                    { SCE_POWERSHELL_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_POWERSHELL_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
+                    { SCE_POWERSHELL_VARIABLE, IDS_LEX_STR_63249, L"Variable", L"fore:#0A246A", L"" },
+                    { MULTI_STYLE(SCE_POWERSHELL_CMDLET,SCE_POWERSHELL_FUNCTION,0,0), IDS_LEX_STR_63250, L"Cmdlet", L"fore:#804000; back:#FFF1A8", L"" },
+                    { SCE_POWERSHELL_ALIAS, IDS_LEX_STR_63251, L"Alias", L"bold; fore:#0A246A", L"" },
                     { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1355,23 +1376,23 @@ KEYWORDLIST KeyWords_NSIS = {
 "", "", "", "", "", "" };
 
 
-EDITLEXER lexNSIS = { SCLEX_NSIS, 63030, L"NSIS Script", L"nsi; nsh", L"", &KeyWords_NSIS, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //,{ SCE_NSIS_DEFAULT, 63126, L"Default", L"", L"" },
-                      { MULTI_STYLE(SCE_NSIS_COMMENT,SCE_NSIS_COMMENTBOX,0,0), 63127, L"Comment", L"fore:#008000", L"" },
-                      { MULTI_STYLE(SCE_NSIS_STRINGDQ,SCE_NSIS_STRINGLQ,SCE_NSIS_STRINGRQ,0), 63131, L"String", L"fore:#666666; back:#EEEEEE", L"" },
-                      { SCE_NSIS_FUNCTION, 63277, L"Function", L"fore:#0033CC", L"" },
-                      { SCE_NSIS_VARIABLE, 63249, L"Variable", L"fore:#CC3300", L"" },
-                      { SCE_NSIS_STRINGVAR, 63285, L"Variable within String", L"fore:#CC3300; back:#EEEEEE", L"" },
-                      { SCE_NSIS_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                      { SCE_NSIS_LABEL, 63286, L"Constant", L"fore:#FF9900", L"" },
-                      { SCE_NSIS_SECTIONDEF, 63232, L"Section", L"fore:#0033CC", L"" },
-                      { SCE_NSIS_SUBSECTIONDEF, 63287, L"Sub Section", L"fore:#0033CC", L"" },
-                      { SCE_NSIS_SECTIONGROUP, 63288, L"Section Group", L"fore:#0033CC", L"" },
-                      { SCE_NSIS_FUNCTIONDEF, 63289, L"Function Definition", L"fore:#0033CC", L"" },
-                      { SCE_NSIS_PAGEEX, 63290, L"PageEx", L"fore:#0033CC", L"" },
-                      { SCE_NSIS_IFDEFINEDEF, 63291, L"If Definition", L"fore:#0033CC", L"" },
-                      { SCE_NSIS_MACRODEF, 63292, L"Macro Definition", L"fore:#0033CC", L"" },
+EDITLEXER lexNSIS = { SCLEX_NSIS, IDS_LEX_NSIS, L"NSIS Script", L"nsi; nsh", L"", &KeyWords_NSIS, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      //,{ SCE_NSIS_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { MULTI_STYLE(SCE_NSIS_COMMENT,SCE_NSIS_COMMENTBOX,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                      { MULTI_STYLE(SCE_NSIS_STRINGDQ,SCE_NSIS_STRINGLQ,SCE_NSIS_STRINGRQ,0), IDS_LEX_STR_63131, L"String", L"fore:#666666; back:#EEEEEE", L"" },
+                      { SCE_NSIS_FUNCTION, IDS_LEX_STR_63273, L"Function", L"fore:#0033CC", L"" },
+                      { SCE_NSIS_VARIABLE, IDS_LEX_STR_63249, L"Variable", L"fore:#CC3300", L"" },
+                      { SCE_NSIS_STRINGVAR, IDS_LEX_STR_63267, L"Variable within String", L"fore:#CC3300; back:#EEEEEE", L"" },
+                      { SCE_NSIS_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                      { SCE_NSIS_LABEL, IDS_LEX_STR_63274, L"Constant", L"fore:#FF9900", L"" },
+                      { SCE_NSIS_SECTIONDEF, IDS_LEX_STR_63232, L"Section", L"fore:#0033CC", L"" },
+                      { SCE_NSIS_SUBSECTIONDEF, IDS_LEX_STR_63275, L"Sub Section", L"fore:#0033CC", L"" },
+                      { SCE_NSIS_SECTIONGROUP, IDS_LEX_STR_63276, L"Section Group", L"fore:#0033CC", L"" },
+                      { SCE_NSIS_FUNCTIONDEF, IDS_LEX_STR_63277, L"Function Definition", L"fore:#0033CC", L"" },
+                      { SCE_NSIS_PAGEEX, IDS_LEX_STR_63278, L"PageEx", L"fore:#0033CC", L"" },
+                      { SCE_NSIS_IFDEFINEDEF, IDS_LEX_STR_63279, L"If Definition", L"fore:#0033CC", L"" },
+                      { SCE_NSIS_MACRODEF, IDS_LEX_STR_63280, L"Macro Definition", L"fore:#0033CC", L"" },
                       //{ SCE_NSIS_USERDEFINED, L"User Defined", L"", L"" },
                       { -1, 00000, L"", L"", L"" } } };
 
@@ -1413,19 +1434,19 @@ KEYWORDLIST KeyWords_INNO = {
 "", "", "", "" };
 
 
-EDITLEXER lexINNO = { SCLEX_INNOSETUP, 63031, L"Inno Setup Script", L"iss; isl; islu", L"", &KeyWords_INNO, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_INNO_DEFAULT, 63126, L"Default", L"", L"" },
-                      { SCE_INNO_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                      { SCE_INNO_KEYWORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
-                      { SCE_INNO_PARAMETER, 63294, L"Parameter", L"fore:#0000FF", L"" },
-                      { SCE_INNO_SECTION, 63232, L"Section", L"fore:#000080; bold", L"" },
-                      { SCE_INNO_PREPROC, 63133, L"Preprocessor", L"fore:#CC0000", L"" },
-                      { SCE_INNO_INLINE_EXPANSION, 63295, L"Inline Expansion", L"fore:#800080", L"" },
-                      { SCE_INNO_COMMENT_PASCAL, 63296, L"Pascal Comment", L"fore:#008000", L"" },
-                      { SCE_INNO_KEYWORD_PASCAL, 63297, L"Pascal Keyword", L"fore:#0000FF", L"" },
-                      { MULTI_STYLE(SCE_INNO_STRING_DOUBLE,SCE_INNO_STRING_SINGLE,0,0), 63131, L"String", L"", L"" },
-                      //{ SCE_INNO_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+EDITLEXER lexINNO = { SCLEX_INNOSETUP, IDS_LEX_INNO, L"Inno Setup Script", L"iss; isl; islu", L"", &KeyWords_INNO, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      //{ SCE_INNO_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { SCE_INNO_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                      { SCE_INNO_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
+                      { SCE_INNO_PARAMETER, IDS_LEX_STR_63281, L"Parameter", L"fore:#0000FF", L"" },
+                      { SCE_INNO_SECTION, IDS_LEX_STR_63232, L"Section", L"fore:#000080; bold", L"" },
+                      { SCE_INNO_PREPROC, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#CC0000", L"" },
+                      { SCE_INNO_INLINE_EXPANSION, IDS_LEX_STR_63282, L"Inline Expansion", L"fore:#800080", L"" },
+                      { SCE_INNO_COMMENT_PASCAL, IDS_LEX_STR_63283, L"Pascal Comment", L"fore:#008000", L"" },
+                      { SCE_INNO_KEYWORD_PASCAL, IDS_LEX_STR_63284, L"Pascal Keyword", L"fore:#0000FF", L"" },
+                      { MULTI_STYLE(SCE_INNO_STRING_DOUBLE,SCE_INNO_STRING_SINGLE,0,0), IDS_LEX_STR_63131, L"String", L"", L"" },
+                      //{ SCE_INNO_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
                       //{ SCE_INNO_KEYWORD_USER, L"User Defined", L"", L"" },
                       { -1, 00000, L"", L"", L"" } } };
 
@@ -1436,24 +1457,24 @@ KEYWORDLIST KeyWords_RUBY = {
 "undef unless until when while yield",
 "", "", "", "", "", "", "", "" };
 
-EDITLEXER lexRUBY = { SCLEX_RUBY, 63032, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; Rakefile; gemspec", L"", &KeyWords_RUBY, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_RB_DEFAULT, 63126, L"Default", L"", L"" },
-                      { MULTI_STYLE(SCE_RB_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
-                      { SCE_RB_WORD, 63128, L"Keyword", L"fore:#00007F", L"" },
-                      { SCE_RB_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                      { SCE_RB_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
-                      { SCE_RB_OPERATOR, 63132, L"Operator", L"", L"" },
-                      { MULTI_STYLE(SCE_RB_STRING,SCE_RB_CHARACTER,SCE_P_STRINGEOL,0), 63131, L"String", L"fore:#FF8000", L"" },
-                      { SCE_RB_CLASSNAME, 63246, L"Class Name", L"fore:#0000FF", L"" },
-                      { SCE_RB_DEFNAME, 63247, L"Function Name", L"fore:#007F7F", L"" },
-                      { SCE_RB_POD, 63314, L"POD", L"fore:#004000; back:#C0FFC0; eolfilled", L"" },
-                      { SCE_RB_REGEX, 63315, L"Regex", L"fore:#000000; back:#A0FFA0", L"" },
-                      { SCE_RB_SYMBOL, 63316, L"Symbol", L"fore:#C0A030", L"" },
-                      { SCE_RB_MODULE_NAME, 63317, L"Module Name", L"fore:#A000A0", L"" },
-                      { SCE_RB_INSTANCE_VAR, 63318, L"Instance Var", L"fore:#B00080", L"" },
-                      { SCE_RB_CLASS_VAR, 63319, L"Class Var", L"fore:#8000B0", L"" },
-                      { SCE_RB_DATASECTION, 63320, L"Data Section", L"fore:#600000; back:#FFF0D8; eolfilled", L"" },
+EDITLEXER lexRUBY = { SCLEX_RUBY, IDS_LEX_RUBY, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; Rakefile; gemspec", L"", &KeyWords_RUBY, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      //{ SCE_RB_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { MULTI_STYLE(SCE_RB_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                      { SCE_RB_WORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#00007F", L"" },
+                      { SCE_RB_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                      { SCE_RB_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+                      { SCE_RB_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                      { MULTI_STYLE(SCE_RB_STRING,SCE_RB_CHARACTER,SCE_P_STRINGEOL,0), IDS_LEX_STR_63131, L"String", L"fore:#FF8000", L"" },
+                      { SCE_RB_CLASSNAME, IDS_LEX_STR_63246, L"Class Name", L"fore:#0000FF", L"" },
+                      { SCE_RB_DEFNAME, IDS_LEX_STR_63247, L"Function Name", L"fore:#007F7F", L"" },
+                      { SCE_RB_POD, IDS_LEX_STR_63292, L"POD", L"fore:#004000; back:#C0FFC0; eolfilled", L"" },
+                      { SCE_RB_REGEX, IDS_LEX_STR_63135, L"Regex", L"fore:#000000; back:#A0FFA0", L"" },
+                      { SCE_RB_SYMBOL, IDS_LEX_STR_63293, L"Symbol", L"fore:#C0A030", L"" },
+                      { SCE_RB_MODULE_NAME, IDS_LEX_STR_63294, L"Module Name", L"fore:#A000A0", L"" },
+                      { SCE_RB_INSTANCE_VAR, IDS_LEX_STR_63295, L"Instance Var", L"fore:#B00080", L"" },
+                      { SCE_RB_CLASS_VAR, IDS_LEX_STR_63296, L"Class Var", L"fore:#8000B0", L"" },
+                      { SCE_RB_DATASECTION, IDS_LEX_STR_63222, L"Data Section", L"fore:#600000; back:#FFF0D8; eolfilled", L"" },
                       { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1486,21 +1507,21 @@ KEYWORDLIST KeyWords_LUA = {
 "", "", "", "", "" };
 
 
-EDITLEXER lexLUA = { SCLEX_LUA, 63033, L"Lua Script", L"lua", L"", &KeyWords_LUA, {
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_LUA_DEFAULT, 63126, L"Default", L"", L"" },
-                    { MULTI_STYLE(SCE_LUA_COMMENT,SCE_LUA_COMMENTLINE,SCE_LUA_COMMENTDOC,0), 63127, L"Comment", L"fore:#008000", L"" },
-                    { SCE_LUA_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
-                    { SCE_LUA_WORD, 63128, L"Keyword", L"fore:#00007F", L"" },
-                    { SCE_LUA_WORD2, 63321, L"Basic Functions", L"fore:#00007F", L"" },
-                    { SCE_LUA_WORD3, 63322, L"String, Table & Math Functions", L"fore:#00007F", L"" },
-                    { SCE_LUA_WORD4, 63323, L"Input, Output & System Facilities", L"fore:#00007F", L"" },
-                    { MULTI_STYLE(SCE_LUA_STRING,SCE_LUA_STRINGEOL,SCE_LUA_CHARACTER,0), 63131, L"String", L"fore:#B000B0", L"" },
-                    { SCE_LUA_LITERALSTRING, 63302, L"Literal String", L"fore:#B000B0", L"" },
-                    { SCE_LUA_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF8000", L"" },
-                    { SCE_LUA_OPERATOR, 63132, L"Operator", L"", L"" },
-                    { SCE_LUA_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { SCE_LUA_LABEL, 63235, L"Label", L"fore:#808000", L"" },
+EDITLEXER lexLUA = { SCLEX_LUA, IDS_LEX_LUA, L"Lua Script", L"lua", L"", &KeyWords_LUA, {
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_LUA_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { MULTI_STYLE(SCE_LUA_COMMENT,SCE_LUA_COMMENTLINE,SCE_LUA_COMMENTDOC,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                    { SCE_LUA_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+                    { SCE_LUA_WORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#00007F", L"" },
+                    { SCE_LUA_WORD2, IDS_LEX_STR_63298, L"Basic Functions", L"fore:#00007F", L"" },
+                    { SCE_LUA_WORD3, IDS_LEX_STR_63299, L"String, Table & Math Functions", L"fore:#00007F", L"" },
+                    { SCE_LUA_WORD4, IDS_LEX_STR_63300, L"Input, Output & System Facilities", L"fore:#00007F", L"" },
+                    { MULTI_STYLE(SCE_LUA_STRING,SCE_LUA_STRINGEOL,SCE_LUA_CHARACTER,0), IDS_LEX_STR_63131, L"String", L"fore:#B000B0", L"" },
+                    { SCE_LUA_LITERALSTRING, IDS_LEX_STR_63301, L"Literal String", L"fore:#B000B0", L"" },
+                    { SCE_LUA_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
+                    { SCE_LUA_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                    { SCE_LUA_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { SCE_LUA_LABEL, IDS_LEX_STR_63235, L"Label", L"fore:#808000", L"" },
                     { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1521,22 +1542,22 @@ KEYWORDLIST KeyWords_BASH = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexBASH = { SCLEX_BASH, 63026, L"Shell Script", L"sh", L"", &KeyWords_BASH, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_SH_DEFAULT, 63126, L"Default", L"", L"" },
-                      { SCE_SH_ERROR, 63261, L"Error", L"", L"" },
-                      { SCE_SH_COMMENTLINE, 63127, L"Comment", L"fore:#008000", L"" },
-                      { SCE_SH_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
-                      { SCE_SH_WORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
-                      { SCE_SH_STRING, 63211, L"String Double Quoted", L"fore:#008080", L"" },
-                      { SCE_SH_CHARACTER, 63212, L"String Single Quoted", L"fore:#800080", L"" },
-                      { SCE_SH_OPERATOR, 63132, L"Operator", L"", L"" },
-                      { SCE_SH_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                      { SCE_SH_SCALAR, 63268, L"Scalar", L"fore:#808000", L"" },
-                      { SCE_SH_PARAM, 63269, L"Parameter Expansion", L"fore:#808000; back:#FFFF99", L"" },
-                      { SCE_SH_BACKTICKS, 63270, L"Back Ticks", L"fore:#FF0080", L"" },
-                      { SCE_SH_HERE_DELIM, 63271, L"Here-Doc (Delimiter)", L"", L"" },
-                      { SCE_SH_HERE_Q, 63272, L"Here-Doc (Single Quoted, q)", L"fore:#008080", L"" },
+EDITLEXER lexBASH = { SCLEX_BASH, IDS_LEX_SHELL_SCR, L"Shell Script", L"sh", L"", &KeyWords_BASH, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      //{ SCE_SH_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { SCE_SH_ERROR, IDS_LEX_STR_63261, L"Error", L"", L"" },
+                      { SCE_SH_COMMENTLINE, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                      { SCE_SH_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+                      { SCE_SH_WORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
+                      { SCE_SH_STRING, IDS_LEX_STR_63211, L"String Double Quoted", L"fore:#008080", L"" },
+                      { SCE_SH_CHARACTER, IDS_LEX_STR_63212, L"String Single Quoted", L"fore:#800080", L"" },
+                      { SCE_SH_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                      { SCE_SH_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                      { SCE_SH_SCALAR, IDS_LEX_STR_63268, L"Scalar", L"fore:#808000", L"" },
+                      { SCE_SH_PARAM, IDS_LEX_STR_63269, L"Parameter Expansion", L"fore:#808000; back:#FFFF99", L"" },
+                      { SCE_SH_BACKTICKS, IDS_LEX_STR_63270, L"Back Ticks", L"fore:#FF0080", L"" },
+                      { SCE_SH_HERE_DELIM, IDS_LEX_STR_63271, L"Here-Doc (Delimiter)", L"", L"" },
+                      { SCE_SH_HERE_Q, IDS_LEX_STR_63272, L"Here-Doc (Single Quoted, q)", L"fore:#008080", L"" },
                       { -1, 00000, L"", L"", L"" } } };
 
 
@@ -1570,17 +1591,17 @@ KEYWORDLIST KeyWords_TCL = {
 #define SCE_TCL__MULTI_SUBSTITUTION MULTI_STYLE(SCE_TCL_SUBSTITUTION,SCE_TCL_SUB_BRACE,0,0)
 
 
-EDITLEXER lexTCL = { SCLEX_TCL, 63034, L"Tcl Script", L"tcl; itcl", L"", &KeyWords_TCL, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_TCL_DEFAULT, 63126, L"Default", L"", L"" },
-                     { SCE_TCL__MULTI_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                     { SCE_TCL__MULTI_KEYWORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
-                     { SCE_TCL_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
-                     { SCE_TCL_IN_QUOTE, 63131, L"String", L"fore:#008080", L"" },
-                     { SCE_TCL_OPERATOR, 63132, L"Operator", L"", L"" },
-                     { SCE_TCL_IDENTIFIER, 63129, L"Identifier", L"fore:#800080", L"" },
-                     { SCE_TCL__MULTI_SUBSTITUTION, 63274, L"Substitution", L"fore:#CC0000", L"" },
-                     { SCE_TCL_MODIFIER, 63275, L"Modifier", L"fore:#FF00FF", L"" },
+EDITLEXER lexTCL = { SCLEX_TCL, IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl", L"", &KeyWords_TCL, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_TCL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { SCE_TCL__MULTI_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { SCE_TCL__MULTI_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
+                     { SCE_TCL_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+                     { SCE_TCL_IN_QUOTE, IDS_LEX_STR_63131, L"String", L"fore:#008080", L"" },
+                     { SCE_TCL_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                     { SCE_TCL_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"fore:#800080", L"" },
+                     { SCE_TCL__MULTI_SUBSTITUTION, IDS_LEX_STR_63274, L"Substitution", L"fore:#CC0000", L"" },
+                     { SCE_TCL_MODIFIER, IDS_LEX_STR_63275, L"Modifier", L"fore:#FF00FF", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2230,42 +2251,34 @@ KEYWORDLIST KeyWords_AU3 = {
 "" };
 
 
-EDITLEXER lexAU3 = { SCLEX_AU3, 63035, L"AutoIt3 Script", L"au3", L"", &KeyWords_AU3, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_AU3_DEFAULT, 63126, L"Default", L"", L"" },
-                     { MULTI_STYLE(SCE_AU3_COMMENT,SCE_AU3_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
-                     { SCE_AU3_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
-                     { SCE_AU3_FUNCTION, 63277, L"Function", L"fore:#0000FF", L"" },
-                     { SCE_AU3_UDF, 63360, L"User-Defined Function", L"fore:#0000FF", L"" },
-                     { SCE_AU3_KEYWORD, 63128, L"Keyword", L"fore:#0000FF", L"" },
-                     { SCE_AU3_MACRO, 63278, L"Macro", L"fore:#0080FF", L"" },
-                     { SCE_AU3_STRING, 63131, L"String", L"fore:#008080", L"" },
-                     { SCE_AU3_OPERATOR, 63132, L"Operator", L"fore:#C000C0", L"" },
-                     { SCE_AU3_VARIABLE, 63249, L"Variable", L"fore:#808000", L"" },
-                     { SCE_AU3_SENT, 63279, L"Send Key", L"fore:#FF0000", L"" },
-                     { SCE_AU3_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF8000", L"" },
-                     { SCE_AU3_SPECIAL, 63280, L"Special", L"fore:#FF8000", L"" },
+EDITLEXER lexAU3 = { SCLEX_AU3, IDS_LEX_AUTOIT3, L"AutoIt3 Script", L"au3", L"", &KeyWords_AU3, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_AU3_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { MULTI_STYLE(SCE_AU3_COMMENT,SCE_AU3_COMMENTBLOCK,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { SCE_AU3_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+                     { SCE_AU3_FUNCTION, IDS_LEX_STR_63277, L"Function", L"fore:#0000FF", L"" },
+                     { SCE_AU3_UDF, IDS_LEX_STR_63305, L"User-Defined Function", L"fore:#0000FF", L"" },
+                     { SCE_AU3_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
+                     { SCE_AU3_MACRO, IDS_LEX_STR_63278, L"Macro", L"fore:#0080FF", L"" },
+                     { SCE_AU3_STRING, IDS_LEX_STR_63131, L"String", L"fore:#008080", L"" },
+                     { SCE_AU3_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#C000C0", L"" },
+                     { SCE_AU3_VARIABLE, IDS_LEX_STR_63249, L"Variable", L"fore:#808000", L"" },
+                     { SCE_AU3_SENT, IDS_LEX_STR_63279, L"Send Key", L"fore:#FF0000", L"" },
+                     { SCE_AU3_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
+                     { SCE_AU3_SPECIAL, IDS_LEX_STR_63280, L"Special", L"fore:#FF8000", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
-EDITLEXER lexLATEX = { SCLEX_LATEX, 63036, L"LaTeX Files", L"tex; latex; sty", L"", &KeyWords_NULL, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                       //{ SCE_L_DEFAULT, 63126, L"Default", L"", L"" },
-                       { MULTI_STYLE(SCE_L_COMMAND,SCE_L_SHORTCMD,SCE_L_CMDOPT,0), 63236, L"Command", L"fore:#0000FF", L"" },
-                       { MULTI_STYLE(SCE_L_COMMENT,SCE_L_COMMENT2,0,0), 63127, L"Comment", L"fore:#008000", L"" },
-                       { MULTI_STYLE(SCE_L_MATH,SCE_L_MATH2,0,0), 63283, L"Math", L"fore:#FF0000", L"" },
-                       { SCE_L_SPECIAL, 63330, L"Special Char", L"fore:#AAAA00", L"" },
-                       { MULTI_STYLE(SCE_L_TAG,SCE_L_TAG2,0,0), 63282, L"Tag", L"fore:#0000FF", L"" },
-                       { SCE_L_VERBATIM, 63331, L"Verbatim Segment", L"fore:#666666", L"" },
+EDITLEXER lexLATEX = { SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty", L"", &KeyWords_NULL, {
+                       { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       //{ SCE_L_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       { MULTI_STYLE(SCE_L_COMMAND,SCE_L_SHORTCMD,SCE_L_CMDOPT,0), IDS_LEX_STR_63236, L"Command", L"fore:#0000FF", L"" },
+                       { MULTI_STYLE(SCE_L_COMMENT,SCE_L_COMMENT2,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                       { MULTI_STYLE(SCE_L_MATH,SCE_L_MATH2,0,0), IDS_LEX_STR_63283, L"Math", L"fore:#FF0000", L"" },
+                       { SCE_L_SPECIAL, IDS_LEX_STR_63306, L"Special Char", L"fore:#AAAA00", L"" },
+                       { MULTI_STYLE(SCE_L_TAG,SCE_L_TAG2,0,0), IDS_LEX_STR_63282, L"Tag", L"fore:#0000FF", L"" },
+                       { SCE_L_VERBATIM, IDS_LEX_STR_63307, L"Verbatim Segment", L"fore:#666666", L"" },
                        { -1, 00000, L"", L"", L"" } } };
-
-
-EDITLEXER lexANSI = { SCLEX_NULL, 63025, L"ANSI Art", L"nfo; diz", L"", &KeyWords_NULL, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"font:Lucida Console", L"" },
-                      { STYLE_LINENUMBER, 63101, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
-                      { STYLE_BRACELIGHT, 63102, L"Matching Braces", L"size:+0", L"" },
-                      { STYLE_BRACEBAD, 63103, L"Matching Braces Error", L"size:+0", L"" },
-                      { -1, 00000, L"", L"", L"" } } };
 
 
 KEYWORDLIST KeyWords_AHK = {
@@ -2375,28 +2388,28 @@ KEYWORDLIST KeyWords_AHK = {
 "", "" };
 
 
-EDITLEXER lexAHK = { SCLEX_AHK, 63037, L"AutoHotkey Script", L"ahk; ia; scriptlet", L"", &KeyWords_AHK, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_AHK_DEFAULT, 63126, L"Default", L"", L"" },
-                     { MULTI_STYLE(SCE_AHK_COMMENTLINE,SCE_AHK_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#008000", L"" },
-                     { SCE_AHK_ESCAPE, 63306, L"Escape", L"fore:#FF8000", L"" },
-                     { SCE_AHK_SYNOPERATOR, 63307, L"Syntax Operator", L"fore:#7F200F", L"" },
-                     { SCE_AHK_EXPOPERATOR, 63308, L"Expression Operator", L"fore:#FF4F00", L"" },
-                     { SCE_AHK_STRING, 63131, L"String", L"fore:#404040", L"" },
-                     { SCE_AHK_NUMBER, 63130, L"Number", L"fore:#2F4F7F", L"" },
-                     { SCE_AHK_IDENTIFIER, 63129, L"Identifier", L"fore:#CF2F0F", L"" },
-                     { SCE_AHK_VARREF, 63309, L"Variable Dereferencing", L"fore:#CF2F0F; back:#E4FFE4", L"" },
-                     { SCE_AHK_LABEL, 63235, L"Label", L"fore:#000000; back:#FFFFA1", L"" },
-                     { SCE_AHK_WORD_CF, 63310, L"Flow of Control", L"fore:#480048; bold", L"" },
-                     { SCE_AHK_WORD_CMD, 63236, L"Command", L"fore:#004080", L"" },
-                     { SCE_AHK_WORD_FN, 63277, L"Function", L"fore:#0F707F; italic", L"" },
-                     { SCE_AHK_WORD_DIR, 63203, L"Directive", L"fore:#F04020; italic", L"" },
-                     { SCE_AHK_WORD_KB, 63311, L"Keys & Buttons", L"fore:#FF00FF; bold", L"" },
-                     { SCE_AHK_WORD_VAR, 63312, L"Built-In Variables", L"fore:#CF00CF; italic", L"" },
-                     { SCE_AHK_WORD_SP, 63280, L"Special", L"fore:#0000FF; italic", L"" },
-                     //{ SCE_AHK_WORD_UD, 63106, L"User Defined", L"fore:#800020", L"" },
-                     { SCE_AHK_VARREFKW, 63313, L"Variable Keyword", L"fore:#CF00CF; italic; back:#F9F9FF", L"" },
-                     { SCE_AHK_ERROR, 63261, L"Error", L"back:#FFC0C0", L"" },
+EDITLEXER lexAHK = { SCLEX_AHK, IDS_LEX_AHK, L"AutoHotkey Script", L"ahk; ia; scriptlet", L"", &KeyWords_AHK, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_AHK_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { MULTI_STYLE(SCE_AHK_COMMENTLINE,SCE_AHK_COMMENTBLOCK,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { SCE_AHK_ESCAPE, IDS_LEX_STR_63306, L"Escape", L"fore:#FF8000", L"" },
+                     { SCE_AHK_SYNOPERATOR, IDS_LEX_STR_63307, L"Syntax Operator", L"fore:#7F200F", L"" },
+                     { SCE_AHK_EXPOPERATOR, IDS_LEX_STR_63308, L"Expression Operator", L"fore:#FF4F00", L"" },
+                     { SCE_AHK_STRING, IDS_LEX_STR_63131, L"String", L"fore:#404040", L"" },
+                     { SCE_AHK_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#2F4F7F", L"" },
+                     { SCE_AHK_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"fore:#CF2F0F", L"" },
+                     { SCE_AHK_VARREF, IDS_LEX_STR_63309, L"Variable Dereferencing", L"fore:#CF2F0F; back:#E4FFE4", L"" },
+                     { SCE_AHK_LABEL, IDS_LEX_STR_63235, L"Label", L"fore:#000000; back:#FFFFA1", L"" },
+                     { SCE_AHK_WORD_CF, IDS_LEX_STR_63310, L"Flow of Control", L"fore:#480048; bold", L"" },
+                     { SCE_AHK_WORD_CMD, IDS_LEX_STR_63236, L"Command", L"fore:#004080", L"" },
+                     { SCE_AHK_WORD_FN, IDS_LEX_STR_63277, L"Function", L"fore:#0F707F; italic", L"" },
+                     { SCE_AHK_WORD_DIR, IDS_LEX_STR_63203, L"Directive", L"fore:#F04020; italic", L"" },
+                     { SCE_AHK_WORD_KB, IDS_LEX_STR_63311, L"Keys & Buttons", L"fore:#FF00FF; bold", L"" },
+                     { SCE_AHK_WORD_VAR, IDS_LEX_STR_63312, L"Built-In Variables", L"fore:#CF00CF; italic", L"" },
+                     { SCE_AHK_WORD_SP, IDS_LEX_STR_63280, L"Special", L"fore:#0000FF; italic", L"" },
+                     //{ SCE_AHK_WORD_UD, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
+                     { SCE_AHK_VARREFKW, IDS_LEX_STR_63313, L"Variable Keyword", L"fore:#CF00CF; italic; back:#F9F9FF", L"" },
+                     { SCE_AHK_ERROR, IDS_LEX_STR_63261, L"Error", L"back:#FFC0C0", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2429,21 +2442,21 @@ KEYWORDLIST KeyWords_CMAKE = {
 "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexCmake = { SCLEX_CMAKE, 63038, L"Cmake Script", L"cmake; ctest", L"", &KeyWords_CMAKE, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                       //{ SCE_CMAKE_DEFAULT, 63126, L"Default", L"", L"" },
-                       { SCE_CMAKE_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                       { MULTI_STYLE(SCE_CMAKE_STRINGDQ,SCE_CMAKE_STRINGLQ,SCE_CMAKE_STRINGRQ,0), 63131, L"String", L"back:#EEEEEE; fore:#7F007F", L"" },
-                       { SCE_CMAKE_COMMANDS, 63277, L"Function", L"fore:#00007F", L"" },
-                       { SCE_CMAKE_PARAMETERS, 63294, L"Parameter", L"fore:#7F200F", L"" },
-                       { SCE_CMAKE_VARIABLE, 63249, L"Variable", L"fore:#CC3300", L"" },
-                       { SCE_CMAKE_WHILEDEF, 63325, L"While Def", L"fore:#00007F", L"" },
-                       { SCE_CMAKE_FOREACHDEF, 63326, L"For Each Def", L"fore:#00007F", L"" },
-                       { SCE_CMAKE_IFDEFINEDEF, 63327, L"If Def", L"fore:#00007F", L"" },
-                       { SCE_CMAKE_MACRODEF, 63328, L"Macro Def", L"fore:#00007F", L"" },
-                       { SCE_CMAKE_STRINGVAR, 63267, L"Variable within String", L"back:#EEEEEE; fore:#CC3300", L"" },
-                       { SCE_CMAKE_NUMBER, 63130, L"Number", L"fore:#008080", L"" },
-                       //{ SCE_CMAKE_USERDEFINED, 63106, L"User Defined", L"fore:#800020", L"" },
+EDITLEXER lexCmake = { SCLEX_CMAKE, IDS_LEX_CMAKE, L"Cmake Script", L"cmake; ctest", L"", &KeyWords_CMAKE, {
+                       { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       //{ SCE_CMAKE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       { SCE_CMAKE_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                       { MULTI_STYLE(SCE_CMAKE_STRINGDQ,SCE_CMAKE_STRINGLQ,SCE_CMAKE_STRINGRQ,0), IDS_LEX_STR_63131, L"String", L"back:#EEEEEE; fore:#7F007F", L"" },
+                       { SCE_CMAKE_COMMANDS, IDS_LEX_STR_63277, L"Function", L"fore:#00007F", L"" },
+                       { SCE_CMAKE_PARAMETERS, IDS_LEX_STR_63281, L"Parameter", L"fore:#7F200F", L"" },
+                       { SCE_CMAKE_VARIABLE, IDS_LEX_STR_63249, L"Variable", L"fore:#CC3300", L"" },
+                       { SCE_CMAKE_WHILEDEF, IDS_LEX_STR_63325, L"While Def", L"fore:#00007F", L"" },
+                       { SCE_CMAKE_FOREACHDEF, IDS_LEX_STR_63326, L"For Each Def", L"fore:#00007F", L"" },
+                       { SCE_CMAKE_IFDEFINEDEF, IDS_LEX_STR_63327, L"If Def", L"fore:#00007F", L"" },
+                       { SCE_CMAKE_MACRODEF, IDS_LEX_STR_63328, L"Macro Def", L"fore:#00007F", L"" },
+                       { SCE_CMAKE_STRINGVAR, IDS_LEX_STR_63267, L"Variable within String", L"back:#EEEEEE; fore:#CC3300", L"" },
+                       { SCE_CMAKE_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+                       //{ SCE_CMAKE_USERDEFINED, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
                        { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2522,19 +2535,19 @@ KEYWORDLIST KeyWords_AVS = {
 "", "", "", "" };
 
 
-EDITLEXER lexAVS = { SCLEX_AVS, 63039, L"AviSynth Script", L"avs; avsi", L"", &KeyWords_AVS, {
-                     { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                     //{ SCE_AVS_DEFAULT, 63126, L"Default", L"", L"" },
-                     { MULTI_STYLE(SCE_AVS_COMMENTLINE,SCE_AVS_COMMENTBLOCK,SCE_AVS_COMMENTBLOCKN,0), 63127, L"Comment", L"fore:#008000", L"" },
-                     { SCE_AVS_OPERATOR, 63132, L"Operator", L"", L"" },
-                     { MULTI_STYLE(SCE_AVS_STRING,SCE_AVS_TRIPLESTRING,0,0), 63131, L"String", L"fore:#7F007F", L"" },
-                     { SCE_AVS_NUMBER, 63130, L"Number", L"fore:#007F7F", L"" },
-                     { SCE_AVS_KEYWORD, 63128, L"Keyword", L"fore:#00007F; bold", L"" },
-                     { SCE_AVS_FILTER, 63333, L"Filter", L"fore:#00007F; bold", L"" },
-                     { SCE_AVS_PLUGIN, 63334, L"Plugin", L"fore:#0080C0; bold", L"" },
-                     { SCE_AVS_FUNCTION, 63277, L"Function", L"fore:#007F7F", L"" },
-                     { SCE_AVS_CLIPPROP, 63335, L"Clip Property", L"fore:#00007F", L"" },
-                     //{ SCE_AVS_USERDFN, 63106, L"User Defined", L"fore:#8000FF", L"" },
+EDITLEXER lexAVS = { SCLEX_AVS, IDS_LEX_AVI_SYNTH, L"AviSynth Script", L"avs; avsi", L"", &KeyWords_AVS, {
+                     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     //{ SCE_AVS_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                     { MULTI_STYLE(SCE_AVS_COMMENTLINE,SCE_AVS_COMMENTBLOCK,SCE_AVS_COMMENTBLOCKN,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                     { SCE_AVS_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                     { MULTI_STYLE(SCE_AVS_STRING,SCE_AVS_TRIPLESTRING,0,0), IDS_LEX_STR_63131, L"String", L"fore:#7F007F", L"" },
+                     { SCE_AVS_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#007F7F", L"" },
+                     { SCE_AVS_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#00007F; bold", L"" },
+                     { SCE_AVS_FILTER, IDS_LEX_STR_63314, L"Filter", L"fore:#00007F; bold", L"" },
+                     { SCE_AVS_PLUGIN, IDS_LEX_STR_63315, L"Plugin", L"fore:#0080C0; bold", L"" },
+                     { SCE_AVS_FUNCTION, IDS_LEX_STR_63277, L"Function", L"fore:#007F7F", L"" },
+                     { SCE_AVS_CLIPPROP, IDS_LEX_STR_63316, L"Clip Property", L"fore:#00007F", L"" },
+                     //{ SCE_AVS_USERDFN, IDS_LEX_STR_63106, L"User Defined", L"fore:#8000FF", L"" },
                      { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2542,44 +2555,44 @@ KEYWORDLIST KeyWords_MARKDOWN = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexMARKDOWN = { SCLEX_MARKDOWN, 63040, L"Markdown", L"md; markdown; mdown; mkdn; mkd", L"", &KeyWords_MARKDOWN, {
-                          { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                          //{ SCE_MARKDOWN_DEFAULT, 63126, L"Default", L"", L"" },
-                          { SCE_MARKDOWN_LINE_BEGIN, 63338, L"Line Begin", L"", L"" },
-                          { MULTI_STYLE(SCE_MARKDOWN_STRONG1,SCE_MARKDOWN_STRONG2,0,0), 63339, L"Strong", L"bold", L"" },
-                          { MULTI_STYLE(SCE_MARKDOWN_EM1,SCE_MARKDOWN_EM2,0,0), 63340, L"Emphasis", L"italic", L"" },
-                          { SCE_MARKDOWN_HEADER1, 63341, L"Header 1", L"fore:#FF0088; bold", L"" },
-                          { SCE_MARKDOWN_HEADER2, 63342, L"Header 2", L"fore:#FF0088; bold", L"" },
-                          { SCE_MARKDOWN_HEADER3, 63343, L"Header 3", L"fore:#FF0088; bold", L"" },
-                          { SCE_MARKDOWN_HEADER4, 63344, L"Header 4", L"fore:#FF0088; bold", L"" },
-                          { SCE_MARKDOWN_HEADER5, 63345, L"Header 5", L"fore:#FF0088; bold", L"" },
-                          { SCE_MARKDOWN_HEADER6, 63346, L"Header 6", L"fore:#FF0088; bold", L"" },
-                          { SCE_MARKDOWN_PRECHAR, 63347, L"Pre Char", L"fore:#00007F", L"" },
-                          { SCE_MARKDOWN_ULIST_ITEM, 63348, L"Unordered List", L"fore:#0080FF; bold", L"" },
-                          { SCE_MARKDOWN_OLIST_ITEM, 63268, L"Ordered List", L"fore:#0080FF; bold", L"" },
-                          { SCE_MARKDOWN_BLOCKQUOTE, 63350, L"Block Quote", L"fore:#00007F", L"" },
-                          { SCE_MARKDOWN_STRIKEOUT, 63351, L"Strikeout", L"", L"" },
-                          { SCE_MARKDOWN_HRULE, 63352, L"Horizontal Rule", L"bold", L"" },
-                          { SCE_MARKDOWN_LINK, 63353, L"Link", L"fore:#0000FF", L"" },
-                          { MULTI_STYLE(SCE_MARKDOWN_CODE,SCE_MARKDOWN_CODE2,SCE_MARKDOWN_CODEBK,0), 63354, L"Code", L"fore:#00007F; back:#EBEBEB", L"" },
+EDITLEXER lexMARKDOWN = { SCLEX_MARKDOWN, IDS_LEX_MARKDOWN, L"Markdown", L"md; markdown; mdown; mkdn; mkd", L"", &KeyWords_MARKDOWN, {
+                          { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                          //{ SCE_MARKDOWN_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                          { SCE_MARKDOWN_LINE_BEGIN, IDS_LEX_STR_63317, L"Line Begin", L"", L"" },
+                          { MULTI_STYLE(SCE_MARKDOWN_STRONG1,SCE_MARKDOWN_STRONG2,0,0), IDS_LEX_STR_63318, L"Strong", L"bold", L"" },
+                          { MULTI_STYLE(SCE_MARKDOWN_EM1,SCE_MARKDOWN_EM2,0,0), IDS_LEX_STR_63319, L"Emphasis", L"italic", L"" },
+                          { SCE_MARKDOWN_HEADER1, IDS_LEX_STR_63320, L"Header 1", L"fore:#FF0088; bold", L"" },
+                          { SCE_MARKDOWN_HEADER2, IDS_LEX_STR_63321, L"Header 2", L"fore:#FF0088; bold", L"" },
+                          { SCE_MARKDOWN_HEADER3, IDS_LEX_STR_63322, L"Header 3", L"fore:#FF0088; bold", L"" },
+                          { SCE_MARKDOWN_HEADER4, IDS_LEX_STR_63323, L"Header 4", L"fore:#FF0088; bold", L"" },
+                          { SCE_MARKDOWN_HEADER5, IDS_LEX_STR_63324, L"Header 5", L"fore:#FF0088; bold", L"" },
+                          { SCE_MARKDOWN_HEADER6, IDS_LEX_STR_63325, L"Header 6", L"fore:#FF0088; bold", L"" },
+                          { SCE_MARKDOWN_PRECHAR, IDS_LEX_STR_63326, L"Pre Char", L"fore:#00007F", L"" },
+                          { SCE_MARKDOWN_ULIST_ITEM, IDS_LEX_STR_63327, L"Unordered List", L"fore:#0080FF; bold", L"" },
+                          { SCE_MARKDOWN_OLIST_ITEM, IDS_LEX_STR_63268, L"Ordered List", L"fore:#0080FF; bold", L"" },
+                          { SCE_MARKDOWN_BLOCKQUOTE, IDS_LEX_STR_63328, L"Block Quote", L"fore:#00007F", L"" },
+                          { SCE_MARKDOWN_STRIKEOUT, IDS_LEX_STR_63329, L"Strikeout", L"", L"" },
+                          { SCE_MARKDOWN_HRULE, IDS_LEX_STR_63330, L"Horizontal Rule", L"bold", L"" },
+                          { SCE_MARKDOWN_LINK, IDS_LEX_STR_63331, L"Link", L"fore:#0000FF", L"" },
+                          { MULTI_STYLE(SCE_MARKDOWN_CODE,SCE_MARKDOWN_CODE2,SCE_MARKDOWN_CODEBK,0), IDS_LEX_STR_63332, L"Code", L"fore:#00007F; back:#EBEBEB", L"" },
                           { -1, 00000, L"", L"", L"" } } };
 
 
 KEYWORDLIST KeyWords_YAML = {
 "y n yes no on off true false", "", "", "", "", "", "", "", "" };
 
-EDITLEXER lexYAML = { SCLEX_YAML, 63041, L"YAML", L"yaml; yml", L"", &KeyWords_YAML, {
-                      { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                      //{ SCE_YAML_DEFAULT, 63126, L"Default", L"", L"" },
-                      { SCE_YAML_COMMENT, 63127, L"Comment", L"fore:#008800", L"" },
-                      { SCE_YAML_IDENTIFIER, 63129, L"Identifier", L"bold; fore:#0A246A", L"" },
-                      { SCE_YAML_KEYWORD, 63128, L"Keyword", L"fore:#880088", L"" },
-                      { SCE_YAML_NUMBER, 63130, L"Number", L"fore:#FF8000", L"" },
-                      { SCE_YAML_REFERENCE, 63356, L"Reference", L"fore:#008888", L"" },
-                      { SCE_YAML_DOCUMENT, 63357, L"Document", L"fore:#FFFFFF; bold; back:#000088; eolfilled", L"" },
-                      { SCE_YAML_TEXT, 63358, L"Text", L"fore:#404040", L"" },
-                      { SCE_YAML_ERROR, 63359, L"Error", L"fore:#FFFFFF; bold; italic; back:#FF0000; eolfilled", L"" },
-                      { SCE_YAML_OPERATOR, 63132, L"Operator", L"fore:#333366", L"" },
+EDITLEXER lexYAML = { SCLEX_YAML, IDS_LEX_YAML, L"YAML", L"yaml; yml", L"", &KeyWords_YAML, {
+                      { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      //{ SCE_YAML_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                      { SCE_YAML_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },
+                      { SCE_YAML_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"bold; fore:#0A246A", L"" },
+                      { SCE_YAML_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#880088", L"" },
+                      { SCE_YAML_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF8000", L"" },
+                      { SCE_YAML_REFERENCE, IDS_LEX_STR_63333, L"Reference", L"fore:#008888", L"" },
+                      { SCE_YAML_DOCUMENT, IDS_LEX_STR_63334, L"Document", L"fore:#FFFFFF; bold; back:#000088; eolfilled", L"" },
+                      { SCE_YAML_TEXT, IDS_LEX_STR_63335, L"Text", L"fore:#404040", L"" },
+                      { SCE_YAML_ERROR, IDS_LEX_STR_63261, L"Error", L"fore:#FFFFFF; bold; italic; back:#FF0000; eolfilled", L"" },
+                      { SCE_YAML_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#333366", L"" },
                       { -1, 00000, L"", L"", L"" } } };
 
 KEYWORDLIST KeyWords_VHDL = {
@@ -2600,40 +2613,40 @@ KEYWORDLIST KeyWords_VHDL = {
 "file_open_status line text side width std_ulogic std_ulogic_vector std_logic std_logic_vector X01 X01Z UX01 UX01Z unsigned signed",
 "", "", "" };
 
-EDITLEXER lexVHDL = { SCLEX_VHDL, 63028, L"VHDL", L"vhdl; vhd", L"", &KeyWords_VHDL, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                       //{ SCE_VHDL_DEFAULT, 63126, L"Default", L"", L"" },
-                       { MULTI_STYLE(SCE_VHDL_COMMENTLINEBANG, SCE_VHDL_COMMENT, SCE_VHDL_BLOCK_COMMENT, 0), 63127, L"Comment", L"fore:#008800", L"" },
-                       { SCE_VHDL_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                       { MULTI_STYLE(SCE_VHDL_STRING, SCE_VHDL_STRINGEOL, 0, 0), 63131, L"String", L"fore:#008000", L"" },
-                       { SCE_VHDL_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-                       { SCE_VHDL_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                       { SCE_VHDL_KEYWORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-                       { SCE_VHDL_STDOPERATOR, 63371, L"Standard Operator", L"bold; fore:#0A246A", L"" },
-                       { SCE_VHDL_ATTRIBUTE, 63372, L"Attribute", L"", L"" },
-                       { SCE_VHDL_STDFUNCTION, 63373, L"Standard Function", L"", L"" },
-                       { SCE_VHDL_STDPACKAGE, 63374, L"Standard Package", L"", L"" },
-                       { SCE_VHDL_STDTYPE, 63375, L"Standard Type", L"fore:#FF8000", L"" },
+EDITLEXER lexVHDL = { SCLEX_VHDL, IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"", &KeyWords_VHDL, {
+                       { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       //{ SCE_VHDL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       { MULTI_STYLE(SCE_VHDL_COMMENTLINEBANG, SCE_VHDL_COMMENT, SCE_VHDL_BLOCK_COMMENT, 0), IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },
+                       { SCE_VHDL_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                       { MULTI_STYLE(SCE_VHDL_STRING, SCE_VHDL_STRINGEOL, 0, 0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                       { SCE_VHDL_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+                       { SCE_VHDL_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                       { SCE_VHDL_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                       { SCE_VHDL_STDOPERATOR, IDS_LEX_STR_63336, L"Standard Operator", L"bold; fore:#0A246A", L"" },
+                       { SCE_VHDL_ATTRIBUTE, IDS_LEX_STR_63337, L"Attribute", L"", L"" },
+                       { SCE_VHDL_STDFUNCTION, IDS_LEX_STR_63338, L"Standard Function", L"", L"" },
+                       { SCE_VHDL_STDPACKAGE, IDS_LEX_STR_63339, L"Standard Package", L"", L"" },
+                       { SCE_VHDL_STDTYPE, IDS_LEX_STR_63340, L"Standard Type", L"fore:#FF8000", L"" },
                        { -1, 00000, L"", L"", L"" } } };
 
 
 KEYWORDLIST KeyWords_Registry = {
 "", "", "", "", "", "", "", "", "" };
 
-EDITLEXER lexRegistry = { SCLEX_REGISTRY, 63027, L"Registry Files", L"reg", L"", &KeyWords_Registry, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                       //{ SCE_REG_DEFAULT, 63126, L"Default", L"", L"" },
-                       { SCE_REG_COMMENT, 63127, L"Comment", L"fore:#008800", L"" },
-                       { SCE_REG_VALUENAME, 63376, L"Value Name", L"", L"" },
-                       { MULTI_STYLE(SCE_REG_STRING,SCE_REG_STRING_GUID,0,0), 63131, L"String", L"fore:#008000", L"" },
-                       { SCE_REG_VALUETYPE, 63377, L"Value Type", L"bold; fore:#00007F", L"" },
-                       { SCE_REG_HEXDIGIT, 63378, L"Hex", L"fore:#7F0B0C", L"" },
-                       { SCE_REG_ADDEDKEY, 63379, L"Added Key", L"fore:#000000; back:#FF8040; bold; eolfilled", L"" }, //fore:#530155
-                       { SCE_REG_DELETEDKEY, 63380, L"Deleted Key", L"fore:#FF0000", L"" },
-                       { SCE_REG_ESCAPED, 63381, L"Escaped", L"bold; fore:#7D8187", L"" },
-                       { SCE_REG_KEYPATH_GUID, 63382, L"GUID in Key Path", L"fore:#7B5F15", L"" },
-                       { SCE_REG_PARAMETER, 63294, L"Parameter", L"fore:#0B6561", L"" },
-                       { SCE_REG_OPERATOR, 63132, L"Operator", L"bold", L"" },
+EDITLEXER lexRegistry = { SCLEX_REGISTRY, IDS_LEX_REG_FILES, L"Registry Files", L"reg", L"", &KeyWords_Registry, {
+                       { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       //{ SCE_REG_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       { SCE_REG_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },
+                       { SCE_REG_VALUENAME, IDS_LEX_STR_63285, L"Value Name", L"", L"" },
+                       { MULTI_STYLE(SCE_REG_STRING,SCE_REG_STRING_GUID,0,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                       { SCE_REG_VALUETYPE, IDS_LEX_STR_63286, L"Value Type", L"bold; fore:#00007F", L"" },
+                       { SCE_REG_HEXDIGIT, IDS_LEX_STR_63287, L"Hex", L"fore:#7F0B0C", L"" },
+                       { SCE_REG_ADDEDKEY, IDS_LEX_STR_63288, L"Added Key", L"fore:#000000; back:#FF8040; bold; eolfilled", L"" }, //fore:#530155
+                       { SCE_REG_DELETEDKEY, IDS_LEX_STR_63289, L"Deleted Key", L"fore:#FF0000", L"" },
+                       { SCE_REG_ESCAPED, IDS_LEX_STR_63290, L"Escaped", L"bold; fore:#7D8187", L"" },
+                       { SCE_REG_KEYPATH_GUID, IDS_LEX_STR_63291, L"GUID in Key Path", L"fore:#7B5F15", L"" },
+                       { SCE_REG_PARAMETER, IDS_LEX_STR_63281, L"Parameter", L"fore:#0B6561", L"" },
+                       { SCE_REG_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
                        { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2641,21 +2654,21 @@ KEYWORDLIST KeyWords_COFFEESCRIPT = {
 "", "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexCOFFEESCRIPT = { SCLEX_COFFEESCRIPT, 63042, L"Coffeescript", L"coffee; Cakefile", L"", &KeyWords_COFFEESCRIPT, {
-                       { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                       //{ SCE_COFFEESCRIPT_DEFAULT, 63126, L"Default", L"", L"" },
-                       { MULTI_STYLE(SCE_COFFEESCRIPT_COMMENT,SCE_COFFEESCRIPT_COMMENTLINE,SCE_COFFEESCRIPT_COMMENTDOC,SCE_COFFEESCRIPT_COMMENTBLOCK), 63127, L"Comment", L"fore:#646464", L"" },
-                       { MULTI_STYLE(SCE_COFFEESCRIPT_STRING,SCE_COFFEESCRIPT_STRINGEOL,SCE_COFFEESCRIPT_STRINGRAW,0), 63131, L"String", L"fore:#008000", L"" },
-                       { SCE_COFFEESCRIPT_PREPROCESSOR, 63133, L"Preprocessor", L"fore:#FF8000", L"" },
-                       { SCE_COFFEESCRIPT_IDENTIFIER, 63129, L"Identifier", L"bold; fore:#0A246A", L"" },
-                       { SCE_COFFEESCRIPT_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-                       { SCE_COFFEESCRIPT_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                       //{ SCE_COFFEESCRIPT_CHARACTER, 63376, L"Character", L"", L"" },
-                       { MULTI_STYLE(SCE_COFFEESCRIPT_REGEX,SCE_COFFEESCRIPT_VERBOSE_REGEX,SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT,0), 63315, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
-                       { SCE_COFFEESCRIPT_GLOBALCLASS, 63378, L"Global Class", L"", L"" },
-                       //{ MULTI_STYLE(SCE_COFFEESCRIPT_COMMENTLINEDOC,SCE_COFFEESCRIPT_COMMENTDOCKEYWORD,SCE_COFFEESCRIPT_COMMENTDOCKEYWORDERROR,0), 63379, L"Comment line", L"fore:#646464", L"" },
-                       { MULTI_STYLE(SCE_COFFEESCRIPT_WORD,SCE_COFFEESCRIPT_WORD2,0,0), 63380, L"Word", L"", L"" },
-                       { MULTI_STYLE(SCE_COFFEESCRIPT_VERBATIM,SCE_COFFEESCRIPT_TRIPLEVERBATIM,0,0), 63381, L"Verbatim", L"", L"" },
+EDITLEXER lexCOFFEESCRIPT = { SCLEX_COFFEESCRIPT, IDS_LEX_COFFEE_SCR, L"Coffeescript", L"coffee; Cakefile", L"", &KeyWords_COFFEESCRIPT, {
+                       { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       //{ SCE_COFFEESCRIPT_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                       { MULTI_STYLE(SCE_COFFEESCRIPT_COMMENT,SCE_COFFEESCRIPT_COMMENTLINE,SCE_COFFEESCRIPT_COMMENTDOC,SCE_COFFEESCRIPT_COMMENTBLOCK), IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+                       { MULTI_STYLE(SCE_COFFEESCRIPT_STRING,SCE_COFFEESCRIPT_STRINGEOL,SCE_COFFEESCRIPT_STRINGRAW,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                       { SCE_COFFEESCRIPT_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
+                       { SCE_COFFEESCRIPT_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"bold; fore:#0A246A", L"" },
+                       { SCE_COFFEESCRIPT_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+                       { SCE_COFFEESCRIPT_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                       //{ SCE_COFFEESCRIPT_CHARACTER, IDS_LEX_STR_63376, L"Character", L"", L"" },
+                       { MULTI_STYLE(SCE_COFFEESCRIPT_REGEX,SCE_COFFEESCRIPT_VERBOSE_REGEX,SCE_COFFEESCRIPT_VERBOSE_REGEX_COMMENT,0), IDS_LEX_STR_63315, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
+                       { SCE_COFFEESCRIPT_GLOBALCLASS, IDS_LEX_STR_63304, L"Global Class", L"", L"" },
+                       //{ MULTI_STYLE(SCE_COFFEESCRIPT_COMMENTLINEDOC,SCE_COFFEESCRIPT_COMMENTDOCKEYWORD,SCE_COFFEESCRIPT_COMMENTDOCKEYWORDERROR,0), IDS_LEX_STR_63379, L"Comment line", L"fore:#646464", L"" },
+                       { MULTI_STYLE(SCE_COFFEESCRIPT_WORD,SCE_COFFEESCRIPT_WORD2,0,0), IDS_LEX_STR_63341, L"Word", L"", L"" },
+                       { MULTI_STYLE(SCE_COFFEESCRIPT_VERBATIM,SCE_COFFEESCRIPT_TRIPLEVERBATIM,0,0), IDS_LEX_STR_63342, L"Verbatim", L"", L"" },
                        { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2665,16 +2678,16 @@ KEYWORDLIST KeyWords_MATLAB = {
 "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexMATLAB = { SCLEX_MATLAB, 63043, L"MATLAB", L"matlab", L"", &KeyWords_MATLAB, {
-                        { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                        //{ SCE_MATLAB_DEFAULT, 63126, L"Default", L"", L"" },
-                        { SCE_MATLAB_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                        { SCE_MATLAB_COMMAND, 63236, L"Command", L"bold", L"" },
-                        { SCE_MATLAB_NUMBER, 63130, L"Number", L"fore:#FF8000", L"" },
-                        { SCE_MATLAB_KEYWORD, 63128, L"Keyword", L"fore:#00007F; bold", L"" },
-                        { MULTI_STYLE(SCE_MATLAB_STRING,SCE_MATLAB_DOUBLEQUOTESTRING,0,0), 63131, L"String", L"fore:#7F007F", L"" },
-                        { SCE_MATLAB_OPERATOR, 63132, L"Operator", L"", L"" },
-                        { SCE_MATLAB_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+EDITLEXER lexMATLAB = { SCLEX_MATLAB, IDS_LEX_MATLAB, L"MATLAB", L"matlab", L"", &KeyWords_MATLAB, {
+                        { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                        //{ SCE_MATLAB_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                        { SCE_MATLAB_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                        { SCE_MATLAB_COMMAND, IDS_LEX_STR_63236, L"Command", L"bold", L"" },
+                        { SCE_MATLAB_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF8000", L"" },
+                        { SCE_MATLAB_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#00007F; bold", L"" },
+                        { MULTI_STYLE(SCE_MATLAB_STRING,SCE_MATLAB_DOUBLEQUOTESTRING,0,0), IDS_LEX_STR_63131, L"String", L"fore:#7F007F", L"" },
+                        { SCE_MATLAB_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+                        { SCE_MATLAB_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
                         { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2707,22 +2720,22 @@ KEYWORDLIST KeyWords_D = {
 };
 
 
-EDITLEXER lexD = { SCLEX_D, 63022, L"D Source Code", L"d; dd; di", L"", &KeyWords_D, {
-                   { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                   //{ SCE_D_DEFAULT, 63126, L"Default", L"", L"" },
-                   { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
-                   { SCE_D_COMMENTDOC, 63259, L"Comment Doc", L"fore:#040A0", L"" },
-                   { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                   { SCE_D_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-                   { SCE_D_WORD2, 63260, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
-                   //{ SCE_D_WORD3, 63128, L"Keyword 3", L"bold; fore:#0A246A", L"" },
-                   //{ SCE_D_WORD5, 63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
-                   //{ SCE_D_WORD6, 63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
-                   //{ SCE_D_WORD7, 63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
-                   { SCE_D_TYPEDEF, 63258, L"Typedef", L"italic; fore:#0A246A", L"" },
-                   { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,0), 63131, L"String", L"italic; fore:#3C6CDD", L"" },
-                   { SCE_D_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-                   { SCE_D_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+EDITLEXER lexD = { SCLEX_D, IDS_LEX_D_SRC, L"D Source Code", L"d; dd; di", L"", &KeyWords_D, {
+                   { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                   //{ SCE_D_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                   { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                   { SCE_D_COMMENTDOC, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#040A0", L"" },
+                   { SCE_D_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                   { SCE_D_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                   { SCE_D_WORD2, IDS_LEX_STR_63260, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD3, IDS_LEX_STR_63128, L"Keyword 3", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD5, IDS_LEX_STR_63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD6, IDS_LEX_STR_63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
+                   //{ SCE_D_WORD7, IDS_LEX_STR_63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
+                   { SCE_D_TYPEDEF, IDS_LEX_STR_63258, L"Typedef", L"italic; fore:#0A246A", L"" },
+                   { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,0), IDS_LEX_STR_63131, L"String", L"italic; fore:#3C6CDD", L"" },
+                   { SCE_D_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+                   { SCE_D_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
                    //{ SCE_D_COMMENTLINEDOC, L"Default", L"", L"" },
                    //{ SCE_D_COMMENTDOCKEYWORD, L"Default", L"", L"" },
                    //{ SCE_D_STRINGB, L"Default", L"", L"" },
@@ -2751,27 +2764,27 @@ KEYWORDLIST KeyWords_Go = {
 };
 
 
-EDITLEXER lexGo = { SCLEX_D, 63023, L"Go Source Code", L"go", L"", &KeyWords_Go,{
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_D_DEFAULT, 63126, L"Default", L"", L"" },
-                    { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), 63127, L"Comment", L"fore:#008000", L"" },
-                    //{ SCE_D_COMMENTDOC, 63259, L"Comment Doc", L"fore:#040A0", L"" },
-                    { SCE_D_NUMBER, 63130, L"Number", L"fore:#FF0000", L"" },
-                    { SCE_D_WORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-                    { SCE_D_WORD2, 63260, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
-                    //{ SCE_D_WORD3, 63128, L"Keyword 3", L"bold; fore:#0A246A", L"" },
-                    //{ SCE_D_WORD5, 63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
-                    //{ SCE_D_WORD6, 63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
-                    //{ SCE_D_WORD7, 63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
-                    { SCE_D_TYPEDEF, 63258, L"Typedef", L"italic; fore:#0A246A", L"" },
-                    { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,0), 63131, L"String", L"italic; fore:#3C6CDD", L"" },
-                    { SCE_D_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
-                    { SCE_D_IDENTIFIER, 63129, L"Identifier", L"", L"" },
+EDITLEXER lexGo = { SCLEX_D, IDS_LEX_GO_SRC, L"Go Source Code", L"go", L"", &KeyWords_Go,{
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_D_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { MULTI_STYLE(SCE_D_COMMENT,SCE_D_COMMENTLINE,SCE_D_COMMENTNESTED,0), IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                    //{ SCE_D_COMMENTDOC, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#040A0", L"" },
+                    { SCE_D_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+                    { SCE_D_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                    { SCE_D_WORD2, IDS_LEX_STR_63260, L"Keyword 2nd", L"bold; fore:#0A246A", L"" },
+                    //{ SCE_D_WORD3, IDS_LEX_STR_63128, L"Keyword 3", L"bold; fore:#0A246A", L"" },
+                    //{ SCE_D_WORD5, IDS_LEX_STR_63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
+                    //{ SCE_D_WORD6, IDS_LEX_STR_63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
+                    //{ SCE_D_WORD7, IDS_LEX_STR_63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
+                    { SCE_D_TYPEDEF, IDS_LEX_STR_63258, L"Typedef", L"italic; fore:#0A246A", L"" },
+                    { MULTI_STYLE(SCE_D_STRING,SCE_D_CHARACTER,SCE_D_STRINGEOL,0), IDS_LEX_STR_63131, L"String", L"italic; fore:#3C6CDD", L"" },
+                    { SCE_D_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+                    { SCE_D_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
                     //{ SCE_D_COMMENTLINEDOC, L"Default", L"", L"" },
                     //{ SCE_D_COMMENTDOCKEYWORD, L"Default", L"", L"" },
                     //{ SCE_D_STRINGB, L"Default", L"", L"" },
                     //{ SCE_D_STRINGR, L"Default", L"", L"" },
-                    //C++: { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), 63133, L"Preprocessor", L"fore:#FF8000", L"" },
+                    //C++: { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
                     { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2793,16 +2806,16 @@ KEYWORDLIST KeyWords_Awk = {
 };
 
 
-EDITLEXER lexAwk = { SCLEX_PYTHON,  63024, L"Awk Script", L"awk", L"", &KeyWords_Awk,{
-                    { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                    //{ SCE_P_DEFAULT, 63126, L"Default", L"", L"" },
-                    { SCE_P_WORD, 63128, L"Keyword", L"bold; fore:#0000A0", L"" },
-                    { SCE_P_WORD2, 63260, L"Keyword 2nd", L"bold; italic; fore:#6666FF", L"" },
-                    { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                    { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), 63127, L"Comment", L"fore:#808080", L"" },
-                    { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,SCE_P_CHARACTER,0), 63131, L"String", L"fore:#008000", L"" },
-                    { SCE_P_NUMBER, 63130, L"Number", L"fore:#C04000", L"" },
-                    { SCE_P_OPERATOR, 63132, L"Operator", L"fore:#B000B0", L"" },
+EDITLEXER lexAwk = { SCLEX_PYTHON,  IDS_LEX_AWK_SCR, L"Awk Script", L"awk", L"", &KeyWords_Awk,{
+                    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    //{ SCE_P_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                    { SCE_P_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0000A0", L"" },
+                    { SCE_P_WORD2, IDS_LEX_STR_63260, L"Keyword 2nd", L"bold; italic; fore:#6666FF", L"" },
+                    { SCE_P_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                    { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,0,0), IDS_LEX_STR_63127, L"Comment", L"fore:#808080", L"" },
+                    { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,SCE_P_CHARACTER,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+                    { SCE_P_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#C04000", L"" },
+                    { SCE_P_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
                     { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2816,20 +2829,20 @@ KEYWORDLIST KeyWords_Nimrod = {
   "", "", "", "", "", "", "", "" };
 
 
-EDITLEXER lexNimrod = { SCLEX_NIMROD, 63044, L"Nim Source Code", L"nim; nimrod", L"", &KeyWords_Nimrod,{
-                        { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                        //{ SCE_P_DEFAULT, 63126, L"Default", L"", L"" },
-                        { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,SCE_C_COMMENTLINEDOC,0), 63127, L"Comment", L"fore:#880000", L"" },
-                        { SCE_P_WORD, 63128, L"Keyword", L"bold; fore:#000088", L"" },
-                        { SCE_P_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                        { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,0,0), 63211, L"String Double Quoted", L"fore:#008800", L"" },
-                        { SCE_P_CHARACTER, 63212, L"String Single Quoted", L"fore:#008800", L"" },
-                        { SCE_P_TRIPLEDOUBLE, 63244, L"String Triple Double Quotes", L"fore:#008800", L"" },
-                        { SCE_P_TRIPLE, 63245, L"String Triple Single Quotes", L"fore:#008800", L"" },
-                        { SCE_P_NUMBER, 63130, L"Number", L"fore:#FF4000", L"" },
-                        { SCE_P_OPERATOR, 63132, L"Operator", L"bold; fore:#666600", L"" },
-                        //{ SCE_P_DEFNAME, 63247, L"Function name", L"fore:#660066", L"" },
-                        //{ SCE_P_CLASSNAME, 63246, L"Class name", L"fore:#660066", L"" },
+EDITLEXER lexNimrod = { SCLEX_NIMROD, IDS_LEX_NIM_SRC, L"Nim Source Code", L"nim; nimrod", L"", &KeyWords_Nimrod,{
+                        { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                        //{ SCE_P_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                        { MULTI_STYLE(SCE_P_COMMENTLINE,SCE_P_COMMENTBLOCK,SCE_C_COMMENTLINEDOC,0), IDS_LEX_STR_63127, L"Comment", L"fore:#880000", L"" },
+                        { SCE_P_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#000088", L"" },
+                        { SCE_P_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                        { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,0,0), IDS_LEX_STR_63211, L"String Double Quoted", L"fore:#008800", L"" },
+                        { SCE_P_CHARACTER, IDS_LEX_STR_63212, L"String Single Quoted", L"fore:#008800", L"" },
+                        { SCE_P_TRIPLEDOUBLE, IDS_LEX_STR_63244, L"String Triple Double Quotes", L"fore:#008800", L"" },
+                        { SCE_P_TRIPLE, IDS_LEX_STR_63245, L"String Triple Single Quotes", L"fore:#008800", L"" },
+                        { SCE_P_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF4000", L"" },
+                        { SCE_P_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#666600", L"" },
+                        //{ SCE_P_DEFNAME, IDS_LEX_STR_63247, L"Function name", L"fore:#660066", L"" },
+                        //{ SCE_P_CLASSNAME, IDS_LEX_STR_63246, L"Class name", L"fore:#660066", L"" },
                         { -1, 00000, L"", L"", L"" } } };
 
 
@@ -2910,20 +2923,65 @@ KEYWORDLIST KeyWords_R = {
 };
 
 
-EDITLEXER lexR = { SCLEX_R, 63045, L"R-S-SPlus Statistics Code", L"R", L"", &KeyWords_R,{
-                  { STYLE_DEFAULT, 63126, L"Default", L"", L"" },
-                  //{ SCE_R_DEFAULT, 63126, L"Default", L"", L"" },
-                  { SCE_R_COMMENT, 63127, L"Comment", L"fore:#008000", L"" },
-                  { SCE_R_KWORD, 63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-                  { SCE_R_BASEKWORD, 63271, L"Base Package Functions", L"bold; fore:#7f0000", L"" },
-                  { SCE_R_OTHERKWORD, 63272, L"Other Package Functions", L"bold; fore:#7f007F", L"" },
-                  { SCE_R_NUMBER, 63130, L"Number", L"fore:#0000FF", L"" },
-                  { MULTI_STYLE(SCE_R_STRING,SCE_R_STRING2,0,0), 63131, L"String", L"italic; fore:#3C6CDD", L"" },
-                  { SCE_R_OPERATOR, 63132, L"Operator", L"bold; fore:#B000B0", L"" },
-                  { SCE_R_IDENTIFIER, 63129, L"Identifier", L"", L"" },
-                  { SCE_R_INFIX, 63269, L"Infix", L"fore:#660066", L"" },
-                  { SCE_R_INFIXEOL, 63270, L"Infix EOL", L"fore:#FF4000; ,back:#E0C0E0; eolfilled", L"" },
+EDITLEXER lexR = { SCLEX_R, IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"R", L"", &KeyWords_R,{
+                  { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                  //{ SCE_R_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+                  { SCE_R_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+                  { SCE_R_KWORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+                  { SCE_R_BASEKWORD, IDS_LEX_STR_63271, L"Base Package Functions", L"bold; fore:#7f0000", L"" },
+                  { SCE_R_OTHERKWORD, IDS_LEX_STR_63272, L"Other Package Functions", L"bold; fore:#7f007F", L"" },
+                  { SCE_R_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#0000FF", L"" },
+                  { MULTI_STYLE(SCE_R_STRING,SCE_R_STRING2,0,0), IDS_LEX_STR_63131, L"String", L"italic; fore:#3C6CDD", L"" },
+                  { SCE_R_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#B000B0", L"" },
+                  { SCE_R_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+                  { SCE_R_INFIX, IDS_LEX_STR_63269, L"Infix", L"fore:#660066", L"" },
+                  { SCE_R_INFIXEOL, IDS_LEX_STR_63270, L"Infix EOL", L"fore:#FF4000; ,back:#E0C0E0; eolfilled", L"" },
                   { -1, 00000, L"", L"", L"" } } };
+
+
+
+KEYWORDLIST KeyWords_Rust = {
+  // Primary keywords and identifiers
+  "as be break const continue crate else enum extern false fn for "
+  "if impl in let loop match mod mut once pub ref return self "
+  "static struct super trait true type unsafe use while",
+  // Built in types
+  "bool char f32 f64 i16 i32 i64 i8 int str u16 u32 u64 u8 uint",
+  // Other keywords
+  "abstract alignof become box do final macro offsetof override "
+  "priv proc pure sizeof typeof unsized virtual yield",
+  // Keywords 4
+  "",
+  // Keywords 5
+  "",
+  // Keywords 6
+  "", 
+  // Keywords 7
+  "",
+  // 0
+  "" };
+
+
+EDITLEXER lexRust = { SCLEX_RUST, IDS_LEX_RUST_SRC, L"Rust Source Code", L"rs; rust", L"", &KeyWords_Rust,{
+  { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+  //{ SCE_RUST_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
+  { SCE_RUST_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+  { SCE_RUST_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#248112", L"" },
+  { SCE_RUST_WORD2, IDS_LEX_STR_63343, L"Build-In Type", L"fore:#A9003D", L"" },
+  { SCE_RUST_WORD3, IDS_LEX_STR_63345, L"Other Keyword", L"italic; fore:#248112", L"" },
+  //{ SCE_RUST_WORD4, IDS_LEX_STR_63128, L"Keyword 4", L"bold; fore:#0A246A", L"" },
+  //{ SCE_RUST_WORD5, IDS_LEX_STR_63128, L"Keyword 5", L"bold; fore:#0A246A", L"" },
+  //{ SCE_RUST_WORD6, IDS_LEX_STR_63128, L"Keyword 6", L"bold; fore:#0A246A", L"" },
+  //{ SCE_RUST_WORD7, IDS_LEX_STR_63128, L"Keyword 7", L"bold; fore:#0A246A", L"" },
+  { SCE_RUST_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#666666", L"" },
+  { MULTI_STYLE(SCE_RUST_COMMENTBLOCK,SCE_RUST_COMMENTLINE,SCE_RUST_COMMENTBLOCKDOC,SCE_RUST_COMMENTLINEDOC), IDS_LEX_STR_63127, L"Comment", L"italic; fore:#488080", L"" },
+  { MULTI_STYLE(SCE_RUST_STRING,SCE_RUST_STRINGR,SCE_RUST_CHARACTER,0), IDS_LEX_STR_63131, L"String", L"fore:#B31C1B", L"" },
+  { SCE_RUST_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#666666", L"" },
+  { SCE_RUST_MACRO, IDS_LEX_STR_63280, L"Macro Definition", L"fore:#0A246A", L"" },
+  { SCE_RUST_LIFETIME, IDS_LEX_STR_63346, L"Rust Lifetime", L"fore:#B000B0", L"" },
+  { SCE_RUST_LEXERROR, IDS_LEX_STR_63252, L"Parsing Error", L"fore:#F0F0F0; back:#F00000", L"" },
+  { MULTI_STYLE(SCE_RUST_BYTESTRING,SCE_RUST_BYTESTRINGR,SCE_RUST_BYTECHARACTER,0), IDS_LEX_STR_63344, L"Byte String", L"fore:#C0C0C0", L"" },
+  { -1, 00000, L"", L"", L"" } } };
 
 
 
@@ -2942,8 +3000,8 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexAVS,           // AviSynth Script
   &lexAwk,           // Awk Script
   &lexBAT,           // Batch Files
-  &lexCPP,           // C/C++ Source Code
   &lexCS,            // C# Source Code
+  &lexCPP,           // C/C++ Source Code
   &lexCmake,         // Cmake Script
   &lexCOFFEESCRIPT,  // Coffeescript
   &lexPROPS,         // Configuration Files
@@ -2966,16 +3024,17 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexPL,            // Perl Script
   &lexPS,            // PowerShell Script
   &lexPY,            // Python Script
-  &lexR,             // R Statistics Code
   &lexRegistry,      // Registry Files
   &lexRC,            // Resource Script
+  &lexR,             // R Statistics Code
   &lexRUBY,          // Ruby Script
+  &lexRust,          // Rust Script
   &lexBASH,          // Shell Script
   &lexSQL,           // SQL Query
   &lexTCL,           // Tcl Script
-  &lexVB,            // Visual Basic
   &lexVBS,           // VBScript
   &lexVHDL,          // VHDL
+  &lexVB,            // Visual Basic
   &lexHTML,          // Web Source Code
   &lexXML,           // XML Document
   &lexYAML           // YAML
@@ -3017,17 +3076,68 @@ PEDITLEXER __fastcall GetCurrentStdLexer()
 
 bool __fastcall IsStyleStandardDefault(PEDITSTYLE pStyle)
 {
-  return (pStyle && ((pStyle->rid == 63100) || (pStyle->rid == 63112)));
+  return (pStyle && ((pStyle->rid == IDS_LEX_STD_STYLE) || (pStyle->rid == IDS_LEX_2ND_STYLE)));
 }
 
 bool __fastcall IsStyleSchemeDefault(PEDITSTYLE pStyle)
 {
-  return (pStyle && (pStyle->rid == 63126));
+  return (pStyle && (pStyle->rid == IDS_LEX_STR_63126));
 }
 
 PEDITLEXER __fastcall GetDefaultLexer()
 {
   return g_pLexArray[g_iDefaultLexer];
+}
+
+
+
+//=============================================================================
+//
+//  IsLexerStandard()
+//
+bool Style_IsCurLexerStandard()
+{
+  return IsLexerStandard(g_pLexCurrent);
+}
+
+
+//=============================================================================
+//
+//  _SetBaseFontSize(), _GetBaseFontSize()
+//
+static float __fastcall _SetBaseFontSize(float fSize)
+{
+  static float fBaseFontSize = INITIAL_BASE_FONT_SIZE;
+
+  if (fSize >= 0.0) {
+    fBaseFontSize = (float)(((int)((fSize * 100.0) + 0.5)) / 100.0);
+  }
+  return fBaseFontSize;
+}
+
+static float __fastcall _GetBaseFontSize()
+{
+return _SetBaseFontSize(-1.0);
+}
+
+
+//=============================================================================
+//
+//  _SetCurrentFontSize(), _GetCurrentFontSize()
+//
+static float __fastcall _SetCurrentFontSize(float fSize)
+{
+  static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
+
+  if (fSize >= 0.0) {
+    fCurrentFontSize = (float)(((int)((fSize * 100.0) + 0.5)) / 100.0);
+  }
+  return fCurrentFontSize;
+}
+
+static float __fastcall _GetCurrentFontSize()
+{
+  return _SetCurrentFontSize(-1.0);
 }
 
 
@@ -3090,7 +3200,7 @@ void Style_Load()
   LoadIniSection(L"Styles",pIniSection,cchIniSection);
 
   // 2nd default
-  Style_SetUse2ndDefault(IniSectionGetBool(pIniSection, L"Use2ndDefaultStyle", 0));
+  Style_SetUse2ndDefault(IniSectionGetBool(pIniSection, L"Use2ndDefaultStyle", false));
 
   // default scheme
   g_iDefaultLexer = IniSectionGetInt(pIniSection,L"DefaultScheme",0);
@@ -3164,6 +3274,11 @@ void Style_Save()
   ZeroMemory(pIniSection,LocalSize(pIniSection));
 
   if (!g_fStylesModified) {
+    if (g_bIniFileFromScratch) {
+      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        SaveIniSection(g_pLexArray[iLexer]->pszName, L"\0");
+      }
+    }
     LocalFree(pIniSection);
     return;
   }
@@ -3175,7 +3290,6 @@ void Style_Save()
       IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, g_pLexArray[iLexer]->Styles[i].szValue);
       i++;
     }
-
     SaveIniSection(g_pLexArray[iLexer]->pszName,pIniSection);
     ZeroMemory(pIniSection,LocalSize(pIniSection));
   }
@@ -3194,7 +3308,7 @@ bool Style_Import(HWND hwnd)
   OPENFILENAME ofn;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetString(IDS_FILTER_INI,szFilter,COUNTOF(szFilter));
+  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -3244,7 +3358,7 @@ bool Style_Export(HWND hwnd)
   DWORD dwError = ERROR_SUCCESS;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
-  GetString(IDS_FILTER_INI,szFilter,COUNTOF(szFilter));
+  GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
   PrepareFilterStr(szFilter);
 
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -3275,7 +3389,7 @@ bool Style_Export(HWND hwnd)
     LocalFree(pIniSection);
 
     if (dwError != ERROR_SUCCESS) {
-      MsgBox(MBINFO,IDS_EXPORT_FAIL,szFile);
+      MsgBoxLng(MBINFO,IDS_MUI_EXPORT_FAIL,szFile);
     }
     return(true);
   }
@@ -3293,52 +3407,56 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   COLORREF rgb;
   COLORREF dColor;
 
-  WCHAR wchFontName[64] = { '\0' };
   WCHAR wchSpecificStyle[80] = { L'\0' };
 
   // Select standard if NULL is specified
   if (!pLexNew) {
-    pLexNew = GetDefaultLexer();  //GetCurrentStdLexer();
+    pLexNew = GetDefaultLexer();
   }
-  else if (IsLexerStandard(pLexNew)) {
-    pLexNew = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
-  }
+  const WCHAR* const wchNewLexerStyleStrg = pLexNew->Styles[STY_DEFAULT].szValue;
 
   // first set standard lexer's default values
-  g_pLexCurrent = GetCurrentStdLexer();
+  if (IsLexerStandard(pLexNew)) {
+    g_pLexCurrent = pLexNew;
+    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd); // sync
+  }
+  else {
+    g_pLexCurrent = GetCurrentStdLexer();
+  }
+
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
 
   // Lexer 
-  SendMessage(hwnd, SCI_SETLEXER, pLexNew->iLexer, 0);
+  SendMessage(hwnd, SCI_SETLEXER, pLexNew->lexerID, 0);
 
   // Lexer very specific styles
-  if (pLexNew->iLexer == SCLEX_XML)
+  if (pLexNew->lexerID == SCLEX_XML)
     SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.xml.allow.scripts", (LPARAM)"1");
-  if (pLexNew->iLexer == SCLEX_CPP) {
+  if (pLexNew->lexerID == SCLEX_CPP) {
     SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"styling.within.preprocessor", (LPARAM)"1");
     SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.cpp.track.preprocessor", (LPARAM)"0");
     SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.cpp.update.preprocessor", (LPARAM)"0");
   }
-  else if (pLexNew->iLexer == SCLEX_PASCAL)
+  else if (pLexNew->lexerID == SCLEX_PASCAL)
     SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.pascal.smart.highlighting", (LPARAM)"1");
-  else if (pLexNew->iLexer == SCLEX_SQL) {
+  else if (pLexNew->lexerID == SCLEX_SQL) {
     SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"sql.backslash.escapes", (LPARAM)"1");
     SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.sql.backticks.identifier", (LPARAM)"1");
     SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.sql.numbersign.comment", (LPARAM)"1");
   }
-  else if (pLexNew->iLexer == SCLEX_NSIS)
+  else if (pLexNew->lexerID == SCLEX_NSIS)
     SciCall_SetProperty("nsis.ignorecase", "1");
-  else if (pLexNew->iLexer == SCLEX_CSS) {
+  else if (pLexNew->lexerID == SCLEX_CSS) {
     SciCall_SetProperty("lexer.css.scss.language", "1");
     SciCall_SetProperty("lexer.css.less.language", "1");
   }
-  else if (pLexNew->iLexer == SCLEX_JSON) {
+  else if (pLexNew->lexerID == SCLEX_JSON) {
     SciCall_SetProperty("json.allow.comments", "1");
     SciCall_SetProperty("json.escape.sequence", "1");
   }
 
   // Code folding
-  switch (pLexNew->iLexer)
+  switch (pLexNew->lexerID)
   {
   case SCLEX_NULL:
   case SCLEX_CONTAINER:
@@ -3365,92 +3483,44 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_SETKEYWORDS, i, (LPARAM)pLexNew->pKeyWords->pszKeyWords[i]);
   }
 
-  // Clear
-  SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
-
   // Idle Styling (very large text)
   SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
 
+  // --------------------------------------------------------------------------
+
+  // Clear
+  SendMessage(hwnd, SCI_CLEARDOCUMENTSTYLE, 0, 0);
+
   // Default Values are always set
   SendMessage(hwnd, SCI_STYLERESETDEFAULT, 0, 0);
 
-  if (!Style_StrGetColor(true, wchStandardStyleStrg, &dColor))
-    SendMessage(hwnd, SCI_STYLESETFORE, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOWTEXT));   // default text color
-  if (!Style_StrGetColor(false, wchStandardStyleStrg, &dColor))
-    SendMessage(hwnd, SCI_STYLESETBACK, STYLE_DEFAULT, (LPARAM)GetSysColor(COLOR_WINDOW));       // default window color
-
-  // Auto-select codepage according to charset
-  //~Style_SetACPfromCharSet(hwnd);
-
-  // ---- Font & More  ---
 
   // constants
-
-  Style_SetFontQuality(hwnd, wchStandardStyleStrg);
   SendMessage(hwnd, SCI_STYLESETVISIBLE, STYLE_DEFAULT, (LPARAM)true);
   SendMessage(hwnd, SCI_STYLESETHOTSPOT, STYLE_DEFAULT, (LPARAM)false);       // default hotspot off
+                                                                              // Auto-select codepage according to charset
+  //~Style_SetACPfromCharSet(hwnd);
 
-
-  // customizable 
-
-  if (!Style_StrGetFont(wchStandardStyleStrg, wchFontName, COUNTOF(wchFontName))) 
-  {
-    char   chFontName[64] = { '\0' };
-    Style_StrGetFont(L"font:Default", wchFontName, COUNTOF(wchFontName));
-    WideCharToMultiByteStrg(Encoding_SciCP, wchFontName, chFontName);
-    SendMessage(hwnd, SCI_STYLESETFONT, STYLE_DEFAULT, (LPARAM)chFontName);
-  }
-
-  float fBaseFontSize = INITIAL_BASE_FONT_SIZE * 1.0; // init
-  Style_StrGetSize(wchStandardStyleStrg, &fBaseFontSize);
-  fBaseFontSize = (float)max(0.0, fBaseFontSize);
-  Style_SetBaseFontSize(hwnd, fBaseFontSize);
-  Style_SetCurrentFontSize(hwnd, fBaseFontSize);
-
-  if (!Style_StrGetCharSet(wchStandardStyleStrg, &iValue)) {
-    SendMessage(hwnd, SCI_STYLESETCHARACTERSET, STYLE_DEFAULT, (LPARAM)DEFAULT_CHARSET);
-  }
-  
-  if (!Style_StrGetWeightValue(wchStandardStyleStrg, &iValue)) {
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, STYLE_DEFAULT, (LPARAM)FW_NORMAL);
-  }
-  
-  if (!Style_StrGetCase(wchStandardStyleStrg, &iValue)) {
-    SendMessage(hwnd, SCI_STYLESETCASE, STYLE_DEFAULT, (LPARAM)SC_CASE_MIXED);
-  }
-
-  if (!StrStrI(wchStandardStyleStrg, L"italic"))
-    SendMessage(hwnd, SCI_STYLESETITALIC, STYLE_DEFAULT, (LPARAM)false);
-
-  if (!StrStrI(wchStandardStyleStrg, L"underline"))
-    SendMessage(hwnd, SCI_STYLESETUNDERLINE, STYLE_DEFAULT, (LPARAM)false);
-  
-  if (!StrStrI(wchStandardStyleStrg, L"eolfilled"))
-    SendMessage(hwnd, SCI_STYLESETEOLFILLED, STYLE_DEFAULT, (LPARAM)false);
-
-
-  // ---  apply default style  ---
-  Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg);
+  // ---  apply/init  default style  ---
+  _SetBaseFontSize(INITIAL_BASE_FONT_SIZE);
+  _SetCurrentFontSize(INITIAL_BASE_FONT_SIZE);
+  Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg, true);
 
   // ---  apply current scheme specific settings to default style  ---
-  if (!IsLexerStandard(pLexNew))
+  if (IsLexerStandard(pLexNew))
   {
-    const WCHAR* const wchCurrentLexerStyleStrg = pLexNew->Styles[STY_DEFAULT].szValue;
-    // merge lexer styles
-    Style_SetStyles(hwnd, STYLE_DEFAULT, wchCurrentLexerStyleStrg);
-    // use this font size as current lexer's base
-    fBaseFontSize = Style_GetBaseFontSize(hwnd);
-    Style_StrGetSize(wchCurrentLexerStyleStrg, &fBaseFontSize);
-    fBaseFontSize = (float)max(0.0, fBaseFontSize);
-    Style_SetCurrentFontSize(hwnd, fBaseFontSize);
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(g_hwndDlgCustomizeSchemes));
-  }
-  else {
+    // styles ar already set
     EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, false);
   }
+  else {
+    // merge lexer default styles
+    Style_SetStyles(hwnd, STYLE_DEFAULT, wchNewLexerStyleStrg, false);
 
-  // Broadcast STYLE_DEFAULT as base style to all other style
+    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(g_hwndDlgCustomizeSchemes));
+  }
+
+  // Broadcast STYLE_DEFAULT as base style to all other styles
   SendMessage(hwnd, SCI_STYLECLEARALL, 0, 0);
 
   // --------------------------------------------------------------------------
@@ -3464,7 +3534,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   if (bUseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
-                    pCurrentStandard->Styles[STY_BRACE_OK].szValue); // brace light
+      pCurrentStandard->Styles[STY_BRACE_OK].szValue, false); // brace light
   }
   else {
     if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_BRACE_OK].szValue, &dColor))
@@ -3485,7 +3555,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   if (bUseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
-                    pCurrentStandard->Styles[STY_BRACE_BAD].szValue); // brace bad
+      pCurrentStandard->Styles[STY_BRACE_BAD].szValue, false); // brace bad
   }
   else {
     if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &dColor))
@@ -3551,10 +3621,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // More default values...
 
-  if (pLexNew != &lexANSI)
-    Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue); // control char
-
-  Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue); // indent guide
+  if (pLexNew != &lexANSI) {
+    Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_CTRL_CHR].iStyle, pCurrentStandard->Styles[STY_CTRL_CHR].szValue, false); // control char
+  }
+  Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue, false); // indent guide
 
   if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_SEL_TXT].szValue, &rgb)) { // selection fore
     SendMessage(hwnd, SCI_SETSELFORE, true, rgb);
@@ -3668,8 +3738,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_SETADDITIONALCARETSBLINK, ((uCaretBlinkTime != 0) ? true : false), 0);
   }
   // caret fore
-  if (!Style_StrGetColor(true,pCurrentStandard->Styles[STY_CARET].szValue,&rgb))
+  if (!Style_StrGetColor(true, pCurrentStandard->Styles[STY_CARET].szValue, &rgb)) {
     rgb = GetSysColor(COLOR_WINDOWTEXT);
+  }
   else {
     WCHAR wch[32] = { L'\0' };
     StringCchPrintf(wch,COUNTOF(wch),L"; fore:#%02X%02X%02X",
@@ -3679,8 +3750,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
   }
-  if (!VerifyContrast(rgb,(COLORREF)SendMessage(hwnd,SCI_STYLEGETBACK,0,0)))
-    rgb = (int)SendMessage(hwnd,SCI_STYLEGETFORE,0,0);
+  if (!VerifyContrast(rgb, (COLORREF)SendMessage(hwnd, SCI_STYLEGETBACK, 0, 0))) {
+    rgb = (int)SendMessage(hwnd, SCI_STYLEGETFORE, 0, 0);
+  }
   SendMessage(hwnd,SCI_SETCARETFORE,rgb,0);
   SendMessage(hwnd,SCI_SETADDITIONALCARETFORE,rgb,0);
 
@@ -3702,101 +3774,98 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
   }
 
-  // Extra Line Spacing
-  iValue = 0;
-  fValue = 0.0;
-  if (Style_StrGetSize(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue,&fValue) && (pLexNew != &lexANSI)) {
-    iValue = (int)fValue;
-    const int iCurFontSizeDbl = (int)(2.0 * Style_GetCurrentFontSize(hwnd));
-    int iValAdj = min(max(iValue,(0 - iCurFontSizeDbl)), 256 * iCurFontSizeDbl);
-    if (iValAdj != iValue)
-      StringCchPrintf(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, 
-                      COUNTOF(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue), L"size:%i", iValAdj);
+  Style_SetExtraLineSpace(hwnd, pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, 
+                          COUNTOF(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue));
 
-    int iAscent = 0;
-    int iDescent = 0;
-    if ((iValAdj % 2) != 0) {
-      iAscent++;
-      iValAdj--;
-    }
-    iAscent += (iValAdj / 2);
-    iDescent += (iValAdj / 2);
-    SendMessage(hwnd,SCI_SETEXTRAASCENT,(WPARAM)iAscent,0);
-    SendMessage(hwnd,SCI_SETEXTRADESCENT,(WPARAM)iDescent,0);
+  if (SendMessage(hwnd, SCI_GETINDENTATIONGUIDES, 0, 0) != SC_IV_NONE) {
+    Style_SetIndentGuides(hwnd, true);
   }
-  else {
-    SendMessage(hwnd,SCI_SETEXTRAASCENT,0,0);
-    SendMessage(hwnd,SCI_SETEXTRADESCENT,0,0);
-  }
-
-  if (SendMessage(hwnd,SCI_GETINDENTATIONGUIDES,0,0) != SC_IV_NONE)
-    Style_SetIndentGuides(hwnd,true);
 
   // here: global define current lexer (used in subsequent calls)
   g_pLexCurrent = pLexNew;
 
-  if (g_pLexCurrent->iLexer != SCLEX_NULL || g_pLexCurrent == &lexANSI)
+  if (g_pLexCurrent == &lexANSI) { // special ANSI-Art style
+
+    Style_SetMargin(hwnd, g_pLexCurrent->Styles[STY_MARGIN].iStyle,
+                    g_pLexCurrent->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
+
+    if (bUseOldStyleBraceMatching) {
+      Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
+                      pCurrentStandard->Styles[STY_BRACE_OK].szValue, false);
+
+      Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
+                      pCurrentStandard->Styles[STY_BRACE_BAD].szValue, false);
+    }
+
+    // (SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT) at pos STY_CTRL_CHR(4) ) 
+    Style_SetExtraLineSpace(hwnd, g_pLexCurrent->Styles[STY_CTRL_CHR].szValue,
+                            COUNTOF(g_pLexCurrent->Styles[STY_CTRL_CHR].szValue));
+
+  }
+  else if (g_pLexCurrent->lexerID != SCLEX_NULL)
   {
-    int j;
+    // -----------------------------------------------
     int i = 1; // don't re-apply lexer's default style
+    // -----------------------------------------------
     while (g_pLexCurrent->Styles[i].iStyle != -1) 
     {
-      for (j = 0; j < 4 && (g_pLexCurrent->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
-        Style_SetStyles(hwnd, g_pLexCurrent->Styles[i].iStyle8[j], g_pLexCurrent->Styles[i].szValue);
+      // apply MULTI_STYLE() MACRO
+      for (int j = 0; j < 4 && (g_pLexCurrent->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
+        Style_SetStyles(hwnd, g_pLexCurrent->Styles[i].iStyle8[j], g_pLexCurrent->Styles[i].szValue, false);
       }
 
-      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HPHP_DEFAULT) {
+      if (g_pLexCurrent->lexerID == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HPHP_DEFAULT) {
         int iRelated[] = { SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING, SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER,
                            SCE_HPHP_OPERATOR, SCE_HPHP_VARIABLE, SCE_HPHP_HSTRING_VARIABLE, SCE_HPHP_COMPLEX_VARIABLE };
-        for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++)
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue, false);
       }
 
-      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HJ_DEFAULT) {
+      if (g_pLexCurrent->lexerID == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HJ_DEFAULT) {
         int iRelated[] = { SCE_HJ_COMMENT, SCE_HJ_COMMENTLINE, SCE_HJ_COMMENTDOC, SCE_HJ_KEYWORD, SCE_HJ_WORD, SCE_HJ_DOUBLESTRING,
                            SCE_HJ_SINGLESTRING, SCE_HJ_STRINGEOL, SCE_HJ_REGEX, SCE_HJ_NUMBER, SCE_HJ_SYMBOLS };
-        for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++)
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue, false);
       }
 
-      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HJA_DEFAULT) {
+      if (g_pLexCurrent->lexerID == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HJA_DEFAULT) {
         int iRelated[] = { SCE_HJA_COMMENT, SCE_HJA_COMMENTLINE, SCE_HJA_COMMENTDOC, SCE_HJA_KEYWORD, SCE_HJA_WORD, SCE_HJA_DOUBLESTRING,
                            SCE_HJA_SINGLESTRING, SCE_HJA_STRINGEOL, SCE_HJA_REGEX, SCE_HJA_NUMBER, SCE_HJA_SYMBOLS };
-        for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++)
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue, false);
       }
 
-      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HB_DEFAULT) {
+      if (g_pLexCurrent->lexerID == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HB_DEFAULT) {
         int iRelated[] = { SCE_HB_COMMENTLINE, SCE_HB_WORD, SCE_HB_IDENTIFIER, SCE_HB_STRING, SCE_HB_STRINGEOL, SCE_HB_NUMBER };
-        for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++)
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue, false);
       }
 
-      if (g_pLexCurrent->iLexer == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HBA_DEFAULT) {
+      if (g_pLexCurrent->lexerID == SCLEX_HTML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_HBA_DEFAULT) {
         int iRelated[] = { SCE_HBA_COMMENTLINE, SCE_HBA_WORD, SCE_HBA_IDENTIFIER, SCE_HBA_STRING, SCE_HBA_STRINGEOL, SCE_HBA_NUMBER };
-        for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++)
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue, false);
       }
 
-      if ((g_pLexCurrent->iLexer == SCLEX_HTML || g_pLexCurrent->iLexer == SCLEX_XML) && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_SGML_DEFAULT) {
+      if ((g_pLexCurrent->lexerID == SCLEX_HTML || g_pLexCurrent->lexerID == SCLEX_XML) && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_SGML_DEFAULT) {
         int iRelated[] = { SCE_H_SGML_COMMAND, SCE_H_SGML_1ST_PARAM, SCE_H_SGML_DOUBLESTRING, SCE_H_SGML_SIMPLESTRING, SCE_H_SGML_ERROR,
                            SCE_H_SGML_SPECIAL, SCE_H_SGML_ENTITY, SCE_H_SGML_COMMENT, SCE_H_SGML_1ST_PARAM_COMMENT, SCE_H_SGML_BLOCK_DEFAULT };
-        for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++)
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue, false);
       }
 
-      if ((g_pLexCurrent->iLexer == SCLEX_HTML || g_pLexCurrent->iLexer == SCLEX_XML) && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_CDATA) {
+      if ((g_pLexCurrent->lexerID == SCLEX_HTML || g_pLexCurrent->lexerID == SCLEX_XML) && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_CDATA) {
         int iRelated[] = { SCE_HP_START, SCE_HP_DEFAULT, SCE_HP_COMMENTLINE, SCE_HP_NUMBER, SCE_HP_STRING,
                            SCE_HP_CHARACTER, SCE_HP_WORD, SCE_HP_TRIPLE, SCE_HP_TRIPLEDOUBLE, SCE_HP_CLASSNAME,
                            SCE_HP_DEFNAME, SCE_HP_OPERATOR, SCE_HP_IDENTIFIER, SCE_HPA_START, SCE_HPA_DEFAULT,
                            SCE_HPA_COMMENTLINE, SCE_HPA_NUMBER, SCE_HPA_STRING, SCE_HPA_CHARACTER, SCE_HPA_WORD,
                            SCE_HPA_TRIPLE, SCE_HPA_TRIPLEDOUBLE, SCE_HPA_CLASSNAME, SCE_HPA_DEFNAME, SCE_HPA_OPERATOR,
                            SCE_HPA_IDENTIFIER };
-        for (j = 0; j < COUNTOF(iRelated); j++)
-          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++)
+          Style_SetStyles(hwnd,iRelated[j],g_pLexCurrent->Styles[i].szValue, false);
       }
 
-      if (g_pLexCurrent->iLexer == SCLEX_XML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_CDATA) {
+      if (g_pLexCurrent->lexerID == SCLEX_XML && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_H_CDATA) {
         int iRelated[] = { SCE_H_SCRIPT, SCE_H_ASP, SCE_H_ASPAT, SCE_H_QUESTION,
                            SCE_HPHP_DEFAULT, SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING,
                            SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER, SCE_HPHP_OPERATOR, SCE_HPHP_VARIABLE,
@@ -3815,25 +3884,26 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
                            SCE_HPA_STRING, SCE_HPA_CHARACTER, SCE_HPA_WORD, SCE_HPA_TRIPLE, SCE_HPA_TRIPLEDOUBLE,
                            SCE_HPA_CLASSNAME, SCE_HPA_DEFNAME, SCE_HPA_OPERATOR, SCE_HPA_IDENTIFIER };
 
-        for (j = 0; j < COUNTOF(iRelated); j++) {
-          Style_SetStyles(hwnd, iRelated[j], g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++) {
+          Style_SetStyles(hwnd, iRelated[j], g_pLexCurrent->Styles[i].szValue, false);
         }
       }
 
-      if (g_pLexCurrent->iLexer == SCLEX_CPP && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_C_COMMENT) {
+      if (g_pLexCurrent->lexerID == SCLEX_CPP && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_C_COMMENT) {
         int iRelated[] = { SCE_C_COMMENTLINE, SCE_C_COMMENTDOC, SCE_C_COMMENTLINEDOC, SCE_C_COMMENTDOCKEYWORD, SCE_C_COMMENTDOCKEYWORDERROR };
-        for (j = 0; j < COUNTOF(iRelated); j++) {
-          Style_SetStyles(hwnd, iRelated[j], g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++) {
+          Style_SetStyles(hwnd, iRelated[j], g_pLexCurrent->Styles[i].szValue, false);
         }
       }
 
-      if (g_pLexCurrent->iLexer == SCLEX_SQL && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_SQL_COMMENT) {
+      if (g_pLexCurrent->lexerID == SCLEX_SQL && g_pLexCurrent->Styles[i].iStyle8[0] == SCE_SQL_COMMENT) {
         int iRelated[] = { SCE_SQL_COMMENTLINE, SCE_SQL_COMMENTDOC, SCE_SQL_COMMENTLINEDOC, SCE_SQL_COMMENTDOCKEYWORD, SCE_SQL_COMMENTDOCKEYWORDERROR };
-        for (j = 0; j < COUNTOF(iRelated); j++) {
-          Style_SetStyles(hwnd, iRelated[j], g_pLexCurrent->Styles[i].szValue);
+        for (int j = 0; j < COUNTOF(iRelated); j++) {
+          Style_SetStyles(hwnd, iRelated[j], g_pLexCurrent->Styles[i].szValue, false);
         }
       }
-      i++;
+
+      ++i;
     }
   }
 
@@ -3846,11 +3916,12 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // update UI for hotspots
   if (g_bHyperlinkHotspot) {
     Style_SetUrlHotSpot(hwnd, g_bHyperlinkHotspot);
-    EditUpdateUrlHotspots(hwnd, 0, SciCall_GetTextLength(), g_bHyperlinkHotspot);
+    EditUpdateUrlHotspots(hwnd, 0, Sci_GetDocEndPosition(), g_bHyperlinkHotspot);
   }
-
+  UpdateStatusbar(false);
   UpdateLineNumberWidth();
 }
+
 
 
 //=============================================================================
@@ -3859,7 +3930,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 //
 int Style_GetHotspotStyleID()
 {
-  return (STYLE_LASTPREDEFINED + STY_URL_HOTSPOT);
+  return (STYLE_MAX - STY_URL_HOTSPOT);
 }
 
 
@@ -3869,18 +3940,17 @@ int Style_GetHotspotStyleID()
 //
 void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 {
-  // Hot Spot settings
-  const int iStyleHotSpot = Style_GetHotspotStyleID();
+  int const cHotSpotStyleID = Style_GetHotspotStyleID();
 
   if (bHotSpot)
   {
     const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_URL_HOTSPOT].szValue;
 
-    SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)true);
+    SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)true);
     SendMessage(hwnd, SCI_SETHOTSPOTSINGLELINE, false, 0);
 
     // Font
-    Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
+    Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
 
     //if (StrStrI(lpszStyleHotSpot, L"underline") != NULL)
     //  SendMessage(hwnd, SCI_SETHOTSPOTACTIVEUNDERLINE, true, 0);
@@ -3892,19 +3962,19 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
     // Fore
     if (Style_StrGetColor(true, lpszStyleHotSpot, &rgb)) {
       COLORREF inactiveFG = (COLORREF)((rgb * 75 + 50) / 100);
-      SendMessage(hwnd, SCI_STYLESETFORE, iStyleHotSpot, (LPARAM)inactiveFG);
+      SendMessage(hwnd, SCI_STYLESETFORE, cHotSpotStyleID, (LPARAM)inactiveFG);
       SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, true, (LPARAM)rgb);
     }
     // Back
     if (Style_StrGetColor(false, lpszStyleHotSpot, &rgb)) {
-      SendMessage(hwnd, SCI_STYLESETBACK, iStyleHotSpot, (LPARAM)rgb);
+      SendMessage(hwnd, SCI_STYLESETBACK, cHotSpotStyleID, (LPARAM)rgb);
       SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, true, (LPARAM)rgb);
     }
   }
   else {
-    const WCHAR* const lpszStyleHotSpot = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
-    Style_SetStyles(hwnd, iStyleHotSpot, lpszStyleHotSpot);
-    SendMessage(hwnd, SCI_STYLESETHOTSPOT, iStyleHotSpot, (LPARAM)false);
+    const WCHAR* const lpszStyleHotSpot = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
+    Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
+    SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)false);
   }
 
 }
@@ -3917,7 +3987,7 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 int Style_GetInvisibleStyleID()
 {
   //return STYLE_FOLDDISPLAYTEXT;
-  return (STYLE_LASTPREDEFINED + STY_INVISIBLE);
+  return (STYLE_MAX - STY_INVISIBLE);
 }
 
 
@@ -3928,9 +3998,9 @@ int Style_GetInvisibleStyleID()
 void Style_SetInvisible(HWND hwnd, bool bInvisible)
 {
   //SendMessage(hwnd, SCI_FOLDDISPLAYTEXTSETSTYLE, (WPARAM)SC_FOLDDISPLAYTEXT_BOXED, 0);
-  SciCall_MarkerDefine(MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
+  //SciCall_MarkerDefine(MARKER_NP3_OCCUR_LINE, SC_MARK_EMPTY);  // occurrences marker
   if (bInvisible) {
-    SendMessage(hwnd, SCI_STYLESETVISIBLE, Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
+    SendMessage(hwnd, SCI_STYLESETVISIBLE, (WPARAM)Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
   }
 }
 
@@ -3942,7 +4012,7 @@ void Style_SetInvisible(HWND hwnd, bool bInvisible)
 //
 int Style_GetReadonlyStyleID()
 {
-  return (STYLE_LASTPREDEFINED + STY_READONLY);
+  return (STYLE_MAX - STY_READONLY);
 }
 
 
@@ -3952,7 +4022,7 @@ int Style_GetReadonlyStyleID()
 //
 void Style_SetReadonly(HWND hwnd, bool bReadonly)
 {
-  SendMessage(hwnd, SCI_STYLESETCHANGEABLE, Style_GetReadonlyStyleID(), (LPARAM)!bReadonly);
+  SendMessage(hwnd, SCI_STYLESETCHANGEABLE, (WPARAM)Style_GetReadonlyStyleID(), (LPARAM)!bReadonly);
 }
 
 
@@ -4017,7 +4087,7 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 {
   float fSize = INITIAL_BASE_FONT_SIZE + 1.0;
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  SciCall_SetMarginWidth(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? (int)fSize : 0);
+  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? (int)fSize : 0);
   UNUSED(hwnd);
 }
 
@@ -4031,7 +4101,7 @@ void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
   UNUSED(hwnd);
   float fSize = INITIAL_BASE_FONT_SIZE + 1.0;
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  SciCall_SetMarginWidth(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? (int)fSize + 4 : 0);
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? (int)fSize + 4 : 0);
 
   // Depending on if the margin is visible or not, choose different bookmark indication
   if (bShowSelMargin) {
@@ -4061,7 +4131,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   };
 
   if (iStyle == STYLE_LINENUMBER) {
-    Style_SetStyles(hwnd, iStyle, lpszStyle);   // line numbers
+    Style_SetStyles(hwnd, iStyle, lpszStyle, false);   // line numbers
   }
 
   COLORREF clrFore = SciCall_StyleGetFore(STYLE_LINENUMBER);
@@ -4071,7 +4141,6 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   Style_StrGetColor(false, lpszStyle, &clrBack);
   
   //SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
-
 
   // ---  Bookmarks  ---
   COLORREF bmkFore = clrFore;
@@ -4096,9 +4165,9 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   
 
   // ---  Code folding  ---
-  SciCall_SetMarginType(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
-  SciCall_SetMarginMask(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
-  SciCall_SetMarginSensitive(MARGIN_SCI_FOLDING, true);
+  SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
+  SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
+  SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
   SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrBack);
 
   int fldStyleMrk = SC_CASE_LOWER;
@@ -4206,8 +4275,8 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
   WCHAR  tch[COUNTOF(g_pLexArray[0]->szExtensions)] = { L'\0' };
   WCHAR  *p1,*p2;
 
-  if (!bCheckNames) {
-
+  if (!bCheckNames) 
+  {
     for (i = 0; i < COUNTOF(g_pLexArray); i++) {
       ZeroMemory(tch,sizeof(WCHAR)*COUNTOF(tch));
       StringCchCopy(tch,COUNTOF(tch),g_pLexArray[i]->szExtensions);
@@ -4225,12 +4294,9 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
       }
     }
   }
-
   else {
-
     int cch = lstrlen(lpszMatch);
     if (cch >= 3) {
-
       for (i = 0; i < COUNTOF(g_pLexArray); i++) {
         if (StrCmpNI(g_pLexArray[i]->pszName,lpszMatch,cch) == 0)
           return(g_pLexArray[i]);
@@ -4256,8 +4322,8 @@ bool Style_HasLexerForExt(LPCWSTR lpszExt)
 //
 //  Style_SetLexerFromFile()
 //
-extern int flagNoHTMLGuess;
-extern int flagNoCGIGuess;
+extern int g_flagNoHTMLGuess;
+extern int g_flagNoCGIGuess;
 extern FILEVARS fvCurFile;
 
 void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
@@ -4274,7 +4340,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     MultiByteToWideCharStrg(Encoding_SciCP, fvCurFile.tchMode, wchMode);
 
-    if (!flagNoCGIGuess && (StringCchCompareIN(wchMode,COUNTOF(wchMode),L"cgi",-1) == 0 || 
+    if (!g_flagNoCGIGuess && (StringCchCompareIN(wchMode,COUNTOF(wchMode),L"cgi",-1) == 0 || 
                          StringCchCompareIN(wchMode,COUNTOF(wchMode),L"fcgi",-1) == 0)) {
       char tchText[256] = { L'\0' };
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
@@ -4312,7 +4378,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     if (*lpszExt == L'.') ++lpszExt;
 
-    if (!flagNoCGIGuess && (StringCchCompareIX(lpszExt,L"cgi") == 0 || StringCchCompareIX(lpszExt,L"fcgi") == 0)) {
+    if (!g_flagNoCGIGuess && (StringCchCompareIX(lpszExt,L"cgi") == 0 || StringCchCompareIX(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { L'\0' };
       SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
       StrTrimA(tchText," \t\n\r");
@@ -4356,11 +4422,11 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     bFound = true;
   }
 
-  if (!bFound && g_bAutoSelect && (!flagNoHTMLGuess || !flagNoCGIGuess)) {
+  if (!bFound && g_bAutoSelect && (!g_flagNoHTMLGuess || !g_flagNoCGIGuess)) {
     char tchText[512];
     SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
     StrTrimA(tchText," \t\n\r");
-    if (!flagNoCGIGuess) {
+    if (!g_flagNoCGIGuess) {
       if (tchText[0] == '<') {
         if (StrStrIA(tchText, "<html"))
           pLexNew = &lexHTML;
@@ -4463,11 +4529,13 @@ void Style_SetLexerFromID(HWND hwnd,int id)
 //
 void Style_ToggleUse2ndDefault(HWND hwnd)
 {
-  bool use2ndDefStyle = Style_GetUse2ndDefault();
+  bool const use2ndDefStyle = Style_GetUse2ndDefault();
   Style_SetUse2ndDefault(use2ndDefStyle ? false : true); // swap
+  if (IsLexerStandard(g_pLexCurrent)) {
+    g_pLexCurrent = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard; // sync
+  }
   Style_SetLexer(hwnd,g_pLexCurrent);
 }
-
 
 
 //=============================================================================
@@ -4477,13 +4545,18 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
 void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
 {
   WCHAR newStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+  WCHAR lexerName[BUFSIZE_STYLE_VALUE] = { L'\0' };
+  WCHAR styleName[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-  const PEDITLEXER pLexer = bGlobalDefault ? GetCurrentStdLexer() : g_pLexCurrent;
-  const PEDITSTYLE pLexerDefStyle = &(pLexer->Styles[STY_DEFAULT]);
+  PEDITLEXER const pLexer = bGlobalDefault ? GetCurrentStdLexer() : g_pLexCurrent;
+  PEDITSTYLE const pLexerDefStyle = &(pLexer->Styles[STY_DEFAULT]);
 
   StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[STY_DEFAULT].szValue);
 
-  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), pLexer->pszName, pLexer->Styles[STY_DEFAULT].pszName,
+  GetLngString(pLexer->resID, lexerName, COUNTOF(lexerName));
+  GetLngString(pLexer->Styles[STY_DEFAULT].rid, styleName, COUNTOF(styleName));
+
+  if (Style_SelectFont(hwnd, newStyle, COUNTOF(newStyle), lexerName, styleName,
                        IsStyleStandardDefault(pLexerDefStyle), IsStyleSchemeDefault(pLexerDefStyle), false, true))
   {
     // set new styles to current lexer's default text
@@ -4495,88 +4568,34 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
 }
 
 
-
 //=============================================================================
 //
 //  Style_SetUse2ndDefault(), Style_GetUse2ndDefault()
 //
-bool Style_SetUse2ndDefault(int value)
-{
-  static bool bUse2ndDefaultStyle = false;
+static bool s_bUse2ndDefaultStyle = false;
 
-  if ((value == true) || (value == false)) {
-    bUse2ndDefaultStyle = (bool)value;
-  }
-  return bUse2ndDefaultStyle;
+void Style_SetUse2ndDefault(bool use2nd)
+{
+  s_bUse2ndDefaultStyle = use2nd;
 }
 
 bool Style_GetUse2ndDefault()
 {
-  return Style_SetUse2ndDefault(false - true);
+  return s_bUse2ndDefaultStyle;
 }
-
-
-
-//=============================================================================
-//
-//  Style_SetBaseFontSize(), Style_GetBaseFontSize()
-//
-float Style_SetBaseFontSize(HWND hwnd, float fSize)
-{
-  static float fBaseFontSize = INITIAL_BASE_FONT_SIZE * 1.0;
-
-  if (fSize >= 0.0) {
-    fBaseFontSize = (float)(((int)(fSize * 100 + 0.5)) / 100.0);
-    //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)iBaseFontSize);
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
-    
-  }
-  return fBaseFontSize;
-}
-
-float Style_GetBaseFontSize(HWND hwnd)
-{
-  return Style_SetBaseFontSize(hwnd, -1.0);
-}
-
-
-
-//=============================================================================
-//
-//  Style_SetCurrentFontSize(), Style_GetCurrentFontSize()
-//
-float Style_SetCurrentFontSize(HWND hwnd, float fSize)
-{
-  static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE * 1.0;
-
-  if (fSize >= 0.0) {
-    fCurrentFontSize = (float)(((int)(fSize * 100 + 0.5)) / 100.0);
-    //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)iCurrentFontSize);
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)((int)(fCurrentFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
-
-  }
-  return fCurrentFontSize;
-}
-
-float Style_GetCurrentFontSize(HWND hwnd)
-{
-  return Style_SetCurrentFontSize(hwnd, -1.0);
-}
-
-
 
 
 //=============================================================================
 //
 //  Style_SetIndentGuides()
 //
-extern int flagSimpleIndentGuides;
+extern int g_flagSimpleIndentGuides;
 
 void Style_SetIndentGuides(HWND hwnd,bool bShow)
 {
   int iIndentView = SC_IV_NONE;
   if (bShow) {
-    if (!flagSimpleIndentGuides) {
+    if (!g_flagSimpleIndentGuides) {
       switch (SendMessage(hwnd, SCI_GETLEXER, 0, 0)) {
       case SCLEX_PYTHON:
       case SCLEX_NIMROD:
@@ -4596,16 +4615,48 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
 
 //=============================================================================
 //
+//  Style_SetExtraLineSpace()
+//
+void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int size)
+{
+  float fValue = 0.0;
+  bool const  bHasLnSpaceDef = Style_StrGetSize(lpszStyle, &fValue);
+
+  int iAscent = 0;
+  int iDescent = 0;
+
+  if (bHasLnSpaceDef) {
+    int iValue = (int)fValue;
+    const int iCurFontSizeDbl = (int)(2.0 * _GetCurrentFontSize());
+    int iValAdj = min(max(iValue, (0 - iCurFontSizeDbl)), 256 * iCurFontSizeDbl);
+    if ((iValAdj != iValue) && (size > 0)) {
+      StringCchPrintf(lpszStyle, size, L"size:%i", iValAdj);
+    }
+    if ((iValAdj % 2) != 0) {
+      iAscent++;
+      iValAdj--;
+    }
+    iAscent += (iValAdj / 2);
+    iDescent += (iValAdj / 2);
+  }
+  SendMessage(hwnd, SCI_SETEXTRAASCENT, (WPARAM)iAscent, 0);
+  SendMessage(hwnd, SCI_SETEXTRADESCENT, (WPARAM)iDescent, 0);
+}
+
+
+//=============================================================================
+//
 //  Style_GetFileOpenDlgFilter()
 //
-extern WCHAR tchFileDlgFilters[5*1024];
+extern WCHAR g_tchFileDlgFilters[XXXL_BUFFER];
 
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
-  if (StringCchLenW(tchFileDlgFilters,COUNTOF(tchFileDlgFilters)) == 0)
-    GetString(IDS_FILTER_ALL,lpszFilter,cchFilter);
+  if (StringCchLenW(g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters)) == 0) {
+    GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
+  }
   else {
-    StringCchCopyN(lpszFilter,cchFilter,tchFileDlgFilters,cchFilter - 2);
+    StringCchCopyN(lpszFilter,cchFilter,g_tchFileDlgFilters,cchFilter - 2);
     StringCchCat(lpszFilter,cchFilter,L"||");
   }
   PrepareFilterStr(lpszFilter);
@@ -4943,7 +4994,7 @@ bool Style_StrGetCase(LPCWSTR lpszStyle, int* i)
 //  Style_GetIndicatorType()
 //
 
-static WCHAR* IndicatorTypes[20] = {
+static WCHAR* IndicatorTypes[22] = {
   L"indic_plain",
   L"indic_squiggle",
   L"indic_tt",
@@ -4963,13 +5014,16 @@ static WCHAR* IndicatorTypes[20] = {
   L"indic_fullbox",
   L"indic_textfore",
   L"indic_point",
-  L"indic_pointcharacter"
+  L"indic_pointcharacter",
+  L"indic_gradient",
+  L"indic_gradientcentre"
 };
+
 
 bool Style_GetIndicatorType(LPWSTR lpszStyle, int cchSize, int* idx)
 {
   if (*idx < 0) { // retrieve indicator style from string
-    for (int i = 0; i < COUNTOF(IndicatorTypes); i++) {
+    for (int i = COUNTOF(IndicatorTypes) - 1;  0 <= i;  --i) {
       if (StrStrI(lpszStyle, IndicatorTypes[i])) {
         *idx = i;
         return true;
@@ -5187,8 +5241,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // is "size:" definition relative ?
   bool bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
-  const float fBaseFontSize = (float)(bGlobalDefaultStyle ? (INITIAL_BASE_FONT_SIZE * 1.0) :
-    (bCurrentDefaultStyle ? Style_GetBaseFontSize(hwnd) : Style_GetCurrentFontSize(hwnd)));
+  const float fBaseFontSize = (bGlobalDefaultStyle ? INITIAL_BASE_FONT_SIZE : (bCurrentDefaultStyle ? _GetBaseFontSize() : _GetCurrentFontSize()));
 
   // Font Height
   int iFontHeight = 0;
@@ -5243,21 +5296,21 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   if (bGlobalDefaultStyle) {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ BASE (%s) +++", sStyleName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELBASE, sStyleName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" BASE (%s)", sStyleName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXBASE, sStyleName);
   }
   else if (bCurrentDefaultStyle) {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ %s: %s Style +++", sLexerName, sStyleName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELCUR, sLexerName, sStyleName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" %s: %s Style", sLexerName, sStyleName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXCUR, sLexerName, sStyleName);
   }
   else {
     if (bRelFontSize)
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" +++ Style '%s' (%s) +++", sStyleName, sLexerName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_RELARB, sStyleName, sLexerName);
     else
-      StringCchPrintfW(FontSelTitle, COUNTOF(FontSelTitle), L" Style '%s' (%s)", sStyleName, sLexerName);
+      FormatLngStringW(FontSelTitle, COUNTOF(FontSelTitle), IDS_MUI_TITLE_FIXARB, sStyleName, sLexerName);
   }
 
   if (bWithEffects)
@@ -5516,122 +5569,206 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
 //
 //  Style_SetStyles()
 //
-void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
+void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault)
 {
-  WCHAR tch[64] = { L'\0' };
+  if (!bInitDefault && lstrlen(lpszStyle) == 0) { return; }
 
-  if (lstrlen(lpszStyle) == 0) { return; }
+  int iValue = 0;
+  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   // reset horizontal scrollbar width
   SendMessage(hwnd, SCI_SETSCROLLWIDTH, 1, 0);
 
   // Font
-  if (Style_StrGetFont(lpszStyle, tch, COUNTOF(tch))) {
-    if (lstrlen(tch) > 0) {
-      char chFont[64] = { '\0' };
-      WideCharToMultiByteStrg(Encoding_SciCP, tch, chFont);
-      SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFont);
+  WCHAR wchFontName[80] = { L'\0' };
+  char chFontName[80] = { '\0' };
+  if (Style_StrGetFont(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
+    if (StringCchLenW(wchFontName, COUNTOF(wchFontName)) > 0) {
+      WideCharToMultiByteStrg(Encoding_SciCP, wchFontName, chFontName);
+      SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
     }
   }
+  else if (bInitDefault) {
+    Style_StrGetFont(L"font:Default", wchFontName, COUNTOF(wchFontName));
+    WideCharToMultiByteStrg(Encoding_SciCP, wchFontName, chFontName);
+    SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
+  }
+  
+  // Font Quality
+  if (Style_StrGetFontQuality(lpszStyle, tch, COUNTOF(tch)))
+  {
+    WPARAM wQuality = SC_EFF_QUALITY_DEFAULT;
 
-  // Size values are relative to fBaseFontSize
-  float  fValue = IsLexerStandard(g_pLexCurrent) ? Style_GetBaseFontSize(hwnd) : Style_GetCurrentFontSize(hwnd);
+    if (StringCchCompareIN(tch, COUNTOF(tch), L"default", -1) == 0)
+      wQuality = SC_EFF_QUALITY_DEFAULT;
+    else if (StringCchCompareIN(tch, COUNTOF(tch), L"none", -1) == 0)
+      wQuality = SC_EFF_QUALITY_NON_ANTIALIASED;
+    else if (StringCchCompareIN(tch, COUNTOF(tch), L"standard", -1) == 0)
+      wQuality = SC_EFF_QUALITY_ANTIALIASED;
+    else if (StringCchCompareIN(tch, COUNTOF(tch), L"cleartype", -1) == 0)
+      wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
 
-  if (Style_StrGetSize(lpszStyle, &fValue) > 0.0) {
-    //SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (LPARAM)iValue);
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)((int)(fValue * SC_FONT_SIZE_MULTIPLIER + 0.5)));
+    SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
+  }
+  else if (bInitDefault) {
+    WPARAM wQuality = (WPARAM)FontQuality[g_iSciFontQuality];
+    if (wQuality == SC_EFF_QUALITY_DEFAULT) {
+      // undefined, use general settings, except for special fonts
+      if (StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Calibri", -1) == 0 ||
+          StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Cambria", -1) == 0 ||
+          StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Candara", -1) == 0 ||
+          StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Consolas", -1) == 0 ||
+          StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Constantia", -1) == 0 ||
+          StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Corbel", -1) == 0 ||
+          StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Segoe UI", -1) == 0 ||
+          StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Source Code Pro", -1) == 0) 
+      {
+        wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
+      }
+    }
+    SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
   }
 
-  int iValue = 0;
-  COLORREF dColor = 0L;
-  // Fore
-  if (Style_StrGetColor(true,lpszStyle,&dColor))
-    SendMessage(hwnd,SCI_STYLESETFORE,iStyle,(LPARAM)dColor);
-
-  // Back
-  if (Style_StrGetColor(false,lpszStyle,&dColor))
-    SendMessage(hwnd,SCI_STYLESETBACK,iStyle,(LPARAM)dColor);
-
-  // Weight
-  if (Style_StrGetWeightValue(lpszStyle,&iValue))
-    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)iValue);
-
-  // Italic
-  if (StrStrI(lpszStyle, L"italic"))
-    SendMessage(hwnd,SCI_STYLESETITALIC,iStyle,(LPARAM)true);
-
-  // Underline
-  if (StrStrI(lpszStyle, L"underline"))
-    SendMessage(hwnd,SCI_STYLESETUNDERLINE,iStyle,(LPARAM)true);
-
-  // StrikeOut does not exist in scintilla ???  / Hide instead (no good idea)
-  //if (StrStrI(lpszStyle, L"strikeout"))
-  //  SendMessage(hwnd, SCI_STYLESETVISIBLE,iStyle,(LPARAM)false);
-
-  // EOL Filled
-  if (StrStrI(lpszStyle, L"eolfilled"))
-    SendMessage(hwnd,SCI_STYLESETEOLFILLED,iStyle,(LPARAM)true);
-
-  // Case
-  if (Style_StrGetCase(lpszStyle, &iValue))
-    SendMessage(hwnd,SCI_STYLESETCASE,iStyle,(LPARAM)iValue);
+  // Size values are relative to BaseFontSize/CurrentFontSize
+  POINT dpi = GetSystemDpi();
+  float  fBaseFontSize = _GetCurrentFontSize();
+  if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
+    fBaseFontSize = (float)max(0.0, fBaseFontSize);
+    fBaseFontSize = (float)MulDiv((int)fBaseFontSize, (dpi.x + dpi.y)/2, USER_DEFAULT_SCREEN_DPI);
+    //SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (int)fBaseFontSize);
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
+    if (iStyle == STYLE_DEFAULT) {
+      if (bInitDefault) {
+        _SetBaseFontSize(fBaseFontSize);
+      }
+    }
+    _SetCurrentFontSize(fBaseFontSize);
+  }
+  else if (bInitDefault) {
+    //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)((int)fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
+  }
 
   // Character Set
-  if (Style_StrGetCharSet(lpszStyle, &iValue))
-    SendMessage(hwnd,SCI_STYLESETCHARACTERSET,iStyle,(LPARAM)iValue);
+  if (Style_StrGetCharSet(lpszStyle, &iValue)) {
+    SendMessage(hwnd, SCI_STYLESETCHARACTERSET, iStyle, (LPARAM)iValue);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETCHARACTERSET, iStyle, (LPARAM)SC_CHARSET_DEFAULT);
+  }
 
+  COLORREF dColor = 0L;
+  // Fore
+  if (Style_StrGetColor(true, lpszStyle, &dColor)) {
+    SendMessage(hwnd, SCI_STYLESETFORE, iStyle, (LPARAM)dColor);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETFORE, iStyle, (LPARAM)GetSysColor(COLOR_WINDOWTEXT));   // default text color
+  }
+
+  // Back
+  if (Style_StrGetColor(false, lpszStyle, &dColor)) {
+    SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)dColor);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)GetSysColor(COLOR_WINDOW));       // default window color
+  }
+
+  // Weight
+  if (Style_StrGetWeightValue(lpszStyle, &iValue)) {
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)iValue);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETWEIGHT, iStyle, (LPARAM)SC_WEIGHT_NORMAL);
+  }
+
+  // Italic
+  if (StrStrI(lpszStyle, L"italic")) {
+    SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)true);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETITALIC, iStyle, (LPARAM)false);
+  }
+
+  // Underline
+  if (StrStrI(lpszStyle, L"underline")) {
+    SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)true);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETUNDERLINE, iStyle, (LPARAM)false);
+  }
+
+  // StrikeOut does not exist in scintilla ???  / Hide instead (no good idea)
+  //if (StrStrI(lpszStyle, L"strikeout")) {
+  //  SendMessage(hwnd, SCI_STYLESETVISIBLE,iStyle,(LPARAM)false);
+  //}
+  //else if (bInitDefault) {
+  //  SendMessage(hwnd, SCI_STYLESETVISIBLE,iStyle,(LPARAM)true);
+  //}
+
+  // EOL Filled
+  if (StrStrI(lpszStyle, L"eolfilled")) {
+    SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)true);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETEOLFILLED, iStyle, (LPARAM)false);
+  }
+
+  // Case
+  if (Style_StrGetCase(lpszStyle, &iValue)) {
+    SendMessage(hwnd, SCI_STYLESETCASE, iStyle, (LPARAM)iValue);
+  }
+  else if (bInitDefault) {
+    SendMessage(hwnd, SCI_STYLESETCASE, iStyle, (LPARAM)SC_CASE_MIXED);
+  }
 }
 
 
 //=============================================================================
 //
-//  Style_SetFontQuality()
+//  Style_GetCurrentLexerPtr()
 //
-void Style_SetFontQuality(HWND hwnd,LPCWSTR lpszStyle) {
-
-  WPARAM wQuality = (WPARAM)FontQuality[iSciFontQuality];
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-
-  if (Style_StrGetFontQuality(lpszStyle,tch,COUNTOF(tch))) {
-    if (StringCchCompareIN(tch,COUNTOF(tch),L"default",-1) == 0)
-      wQuality = SC_EFF_QUALITY_DEFAULT;
-    else if (StringCchCompareIN(tch,COUNTOF(tch),L"none",-1) == 0)
-      wQuality = SC_EFF_QUALITY_NON_ANTIALIASED;
-    else if (StringCchCompareIN(tch,COUNTOF(tch),L"standard",-1) == 0)
-      wQuality = SC_EFF_QUALITY_ANTIALIASED;
-    else if (StringCchCompareIN(tch,COUNTOF(tch),L"cleartype",-1) == 0)
-      wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
-  }
-  else if (wQuality == SC_EFF_QUALITY_DEFAULT) { 
-    // undefined, use general settings, except for special fonts
-    if (Style_StrGetFont(lpszStyle,tch,COUNTOF(tch))) {
-      if (StringCchCompareIN(tch,COUNTOF(tch),L"Calibri",-1) == 0 ||
-          StringCchCompareIN(tch,COUNTOF(tch),L"Cambria",-1) == 0 ||
-          StringCchCompareIN(tch,COUNTOF(tch),L"Candara",-1) == 0 ||
-          StringCchCompareIN(tch,COUNTOF(tch),L"Consolas",-1) == 0 ||
-          StringCchCompareIN(tch,COUNTOF(tch),L"Constantia",-1) == 0 ||
-          StringCchCompareIN(tch,COUNTOF(tch),L"Corbel",-1) == 0 ||
-          StringCchCompareIN(tch,COUNTOF(tch),L"Segoe UI",-1) == 0 ||
-          StringCchCompareIN(tch,COUNTOF(tch),L"Source Code Pro",-1) == 0)
-        wQuality = SC_EFF_QUALITY_LCD_OPTIMIZED;
-    }
-  }
-  SendMessage(hwnd,SCI_SETFONTQUALITY,wQuality,0);
-}
-
-
-//=============================================================================
-//
-//  Style_GetCurrentLexerName()
-//
-void Style_GetCurrentLexerName(LPWSTR lpszName, int cchName)
+PEDITLEXER Style_GetCurrentLexerPtr()
 {
-  if (IsLexerStandard(g_pLexCurrent)) {
-    StringCchPrintfW(lpszName, cchName, L" %s", GetCurrentStdLexer()->pszName);
+  return g_pLexCurrent;
+}
+
+
+//=============================================================================
+//
+//  Style_GetCurrentLexerRID()
+//
+int Style_GetCurrentLexerRID()
+{
+  return g_pLexCurrent->resID;
+}
+
+
+//=============================================================================
+//
+//  Style_GetLexerDisplayName()
+//
+void Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName)
+{
+  if (!pLexer) {
+    //pLexer = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
+    pLexer = &lexStandard; // don't distinguish between STD/2ND
   }
-  else {
-    if (!GetString(g_pLexCurrent->rid, lpszName, cchName)) {
-      StringCchCopyW(lpszName, cchName, g_pLexCurrent->pszName);
+  if (!GetLngString(pLexer->resID, lpszName, cchName)) {
+    StringCchCopyW(lpszName, cchName, pLexer->pszName);
+  }
+}
+
+
+//=============================================================================
+//
+//  Style_GetStyleDisplayName()
+//
+void Style_GetStyleDisplayName(PEDITSTYLE pStyle, LPWSTR lpszName, int cchName)
+{
+  if (pStyle) {
+    if (!GetLngString(pStyle->rid, lpszName, cchName)) {
+      StringCchCopyW(lpszName, cchName, pStyle->pszName);
     }
   }
 }
@@ -5688,7 +5825,7 @@ HTREEITEM Style_AddLexerToTreeView(HWND hwnd,PEDITLEXER plex)
 
   tvis.item.mask = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
 
-  if (GetString(plex->rid,tch,COUNTOF(tch)))
+  if (GetLngString(plex->resID,tch,COUNTOF(tch)))
     tvis.item.pszText = tch;
   else
     tvis.item.pszText = plex->pszName;
@@ -5708,7 +5845,7 @@ HTREEITEM Style_AddLexerToTreeView(HWND hwnd,PEDITLEXER plex)
   int i = 1; // default style is handled separately
   while (plex->Styles[i].iStyle != -1) {
 
-    if (GetString(plex->Styles[i].rid,tch,COUNTOF(tch)))
+    if (GetLngString(plex->Styles[i].rid,tch,COUNTOF(tch)))
       tvis.item.pszText = tch;
     else
       tvis.item.pszText = plex->Styles[i].pszName;
@@ -5733,7 +5870,7 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 
   lvi.mask = LVIF_IMAGE | LVIF_PARAM | LVIF_TEXT;
   lvi.iItem = ListView_GetItemCount(hwnd);
-  if (GetString(plex->rid,tch,COUNTOF(tch)))
+  if (GetLngString(plex->resID,tch,COUNTOF(tch)))
     lvi.pszText = tch;
   else
     lvi.pszText = plex->pszName;
@@ -5792,7 +5929,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         // findlexer
         int found = -1;
         for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-          //if (StringCchCompareX(g_pLexArray[i]->pszName, g_pLexCurrent->pszName) == 0) {
           if (g_pLexArray[i] == g_pLexCurrent) {
             found = i;
             break;
@@ -5844,13 +5980,13 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           SetDlgPos(hwnd, xCustomSchemesDlg, yCustomSchemesDlg);
 
         HMENU hmenu = GetSystemMenu(hwnd, false);
-        GetString(IDS_PREVIEW, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_PREVIEW, tchBuf);
+        GetLngString(IDS_MUI_PREVIEW, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchBuf);
         InsertMenu(hmenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
-        GetString(IDS_SAVEPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_SAVEPOS, tchBuf);
-        GetString(IDS_RESETPOS, tchBuf, COUNTOF(tchBuf));
-        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_RESETPOS, tchBuf);
+        GetLngString(IDS_MUI_SAVEPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 2, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SAVEPOS, tchBuf);
+        GetLngString(IDS_MUI_RESETPOS, tchBuf, COUNTOF(tchBuf));
+        InsertMenu(hmenu, 3, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, tchBuf);
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
       }
       return true;
@@ -5912,11 +6048,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
     case WM_SYSCOMMAND:
-      if (wParam == IDS_SAVEPOS) {
+      if (wParam == IDS_MUI_SAVEPOS) {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_SAVEPOS, 0), 0);
         return true;
       }
-      else if (wParam == IDS_RESETPOS) {
+      else if (wParam == IDS_MUI_RESETPOS) {
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDACC_RESETPOS, 0), 0);
         return true;
       }
@@ -5939,6 +6075,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 APPLY_DIALOG_ITEM_TEXT;
               }
 
+              WCHAR name[80] = { L'\0' };
               WCHAR label[128] = { L'\0' };
 
               //DialogEnableWindow(hwnd, IDC_STYLEEDIT, true);
@@ -5964,17 +6101,19 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                   {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
 
-                    if (pCurrentStyle->rid == 63100) {
-                      StringCchCopyW(label, COUNTOF(label), L"BASE (Default Style):");
+                    if (pCurrentStyle->rid == IDS_LEX_STD_STYLE) {
+                      GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
                     }
                     else {
-                      StringCchCopyW(label, COUNTOF(label), L"BASE (2nd Default Style):");
+                      GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
                       DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, false);
                     }
                   }
                   else {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
-                    StringCchPrintfW(label, COUNTOF(label), L"%s: Default style:", pCurrentLexer->pszName);
+                    GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
+
+                    StringCchPrintfW(label, COUNTOF(label), L"%s: Default Style:", name);
                   }
                   SetDlgItemText(hwnd, IDC_STYLELABEL, label);
                   SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
@@ -5993,13 +6132,14 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
               {
                 if (IsLexerStandard(pCurrentLexer)) 
                 {
-                  if (pCurrentLexer->Styles[STY_DEFAULT].rid == 63100)
-                    StringCchCopyW(label, COUNTOF(label), L"BASE (Default Style):");
+                  if (pCurrentLexer->Styles[STY_DEFAULT].rid == IDS_LEX_STD_STYLE)
+                    GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
                   else
-                    StringCchCopyW(label, COUNTOF(label), L"BASE (2nd Default Style):");
+                    GetLngString(IDS_MUI_STY_BASE2ND, label, COUNTOF(label));
                 }
                 else {
-                  StringCchPrintfW(label, COUNTOF(label), L"%s: Default style:", pCurrentLexer->pszName);
+                  GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
+                  FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
                 }
                 SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, label);
 
@@ -6011,7 +6151,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 if (pCurrentStyle)
                 {
                   bIsStyleSelected = true;
-                  StringCchPrintfW(label, COUNTOF(label), L"%s's style:", pCurrentStyle->pszName);
+                  GetLngString(pCurrentStyle->rid, name, COUNTOF(name));
+                  FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXSTYLE, name);
                   SetDlgItemText(hwnd, IDC_STYLELABEL, label);
                   SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
                 }
@@ -6182,9 +6323,12 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         case IDC_STYLEFONT:
           if (pCurrentStyle) {
             WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+            WCHAR lexerName[BUFSIZE_STYLE_VALUE] = { L'\0' };
+            WCHAR styleName[BUFSIZE_STYLE_VALUE] = { L'\0' };
             GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
-
-            if (Style_SelectFont(hwnd, tch, COUNTOF(tch), pCurrentLexer->pszName, pCurrentStyle->pszName,
+            GetLngString(pCurrentLexer->resID, lexerName, COUNTOF(lexerName));
+            GetLngString(pCurrentStyle->rid, styleName, COUNTOF(styleName));
+            if (Style_SelectFont(hwnd, tch, COUNTOF(tch), lexerName, styleName,
                                  IsStyleStandardDefault(pCurrentStyle), IsStyleSchemeDefault(pCurrentStyle), false, true)) {
               SetDlgItemText(hwnd, IDC_STYLEEDIT, tch);
             }
@@ -6285,7 +6429,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           APPLY_DIALOG_ITEM_TEXT;
           g_fStylesModified = true;
           if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0)) {
-            MsgBox(MBWARN, IDS_SETTINGSNOTSAVED);
+            MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
             g_fWarnedNoIniFile = true;
           }
           //EndDialog(hwnd,IDOK);
@@ -6354,8 +6498,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 //
 HWND Style_CustomizeSchemesDlg(HWND hwnd)
 {
-  HWND hDlg = CreateThemedDialogParam(g_hInstance,
-                                      MAKEINTRESOURCE(IDD_STYLECONFIG),
+  HWND hDlg = CreateThemedDialogParam(g_hLngResContainer,
+                                      MAKEINTRESOURCE(IDD_MUI_STYLECONFIG),
                                       GetParent(hwnd),
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
@@ -6448,7 +6592,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         for (int i = 0; i < lvItems; i++) {
           lvi.iItem = i;
           ListView_GetItem(hwndLV,&lvi);
-          if (StringCchCompareX(((PEDITLEXER)lvi.lParam)->pszName, g_pLexCurrent->pszName) == 0) 
+          if (((PEDITLEXER)lvi.lParam)->lexerID == g_pLexCurrent->lexerID)
           {
             ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
             ListView_EnsureVisible(hwndLV,i,false);
@@ -6562,7 +6706,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
     case WM_COMMAND:
       {
-        switch (LOWORD(wParam)) {
+        switch (LOWORD(wParam)) 
+        {
         case IDC_DEFAULTSCHEME:
           if (IsDlgButtonChecked(hwnd, IDC_DEFAULTSCHEME) == BST_CHECKED)
             iInternalDefault = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
@@ -6604,8 +6749,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 //
 void Style_SelectLexerDlg(HWND hwnd)
 {
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,
-                                   MAKEINTRESOURCE(IDD_STYLESELECT),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,
+                                   MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
     Style_SetLexer(hwnd, g_pLexCurrent);

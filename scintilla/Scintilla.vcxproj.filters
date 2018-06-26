@@ -450,6 +450,9 @@
     <ClCompile Include="win32\ScintillaDLL.cxx">
       <Filter>win32</Filter>
     </ClCompile>
+    <ClCompile Include="lexers\LexRust.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -670,6 +673,12 @@
     </ClInclude>
     <ClInclude Include="win32\ScintillaWin.h">
       <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ElapsedPeriod.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IntegerRectangle.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

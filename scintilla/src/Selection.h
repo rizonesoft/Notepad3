@@ -173,7 +173,7 @@ public:
 	void AddSelectionWithoutTrim(SelectionRange range);
 	void DropSelection(size_t r);
 	void DropAdditionalRanges();
-	void TentativeSelection(const SelectionRange &range);
+  void TentativeSelection(const SelectionRange &range);
 	void CommitTentative();
 	int CharacterInSelection(Sci::Position posCharacter) const;
 	int InSelectionForEOL(Sci::Position pos) const;

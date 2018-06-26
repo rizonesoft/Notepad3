@@ -18,9 +18,6 @@ private:
 	std::unique_ptr<Partitioning<Sci::Position>> starts;
 	std::unique_ptr<SplitVector<T>> values;
 	T empty;
-	// Deleted so SparseVector objects can not be copied.
-	SparseVector(const SparseVector &) = delete;
-	void operator=(const SparseVector &) = delete;
 	void ClearValue(Sci::Position partition) {
 		values->SetValueAt(partition, T());
 	}
@@ -30,6 +27,11 @@ public:
 		values = std::make_unique<SplitVector<T>>();
 		values->InsertEmpty(0, 2);
 	}
+	// Deleted so SparseVector objects can not be copied.
+	SparseVector(const SparseVector &) = delete;
+	SparseVector(SparseVector &&) = delete;
+	void operator=(const SparseVector &) = delete;
+	void operator=(SparseVector &&) = delete;
 	~SparseVector() {
 		starts.reset();
 		// starts dead here but not used by ClearValue.
@@ -77,11 +79,11 @@ public:
 			if (position == startPartition) {
 				// Already a value at this position, so replace
 				ClearValue(partition);
-				values->SetValueAt(partition, std::move(value));
+				values->SetValueAt(partition, std::forward<ParamType>(value));
 			} else {
 				// Insert a new element
 				starts->InsertPartition(partition + 1, position);
-				values->Insert(partition + 1, std::move(value));
+				values->Insert(partition + 1, std::forward<ParamType>(value));
 			}
 		}
 	}

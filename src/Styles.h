@@ -49,8 +49,8 @@ typedef struct _keywordlist
 #pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Struktur/Union
 typedef struct _editlexer
 {
-  int iLexer;
-  int rid;
+  int lexerID;
+  int resID;
   WCHAR* pszName;
   WCHAR* pszDefExt;
   WCHAR  szExtensions[BUFZIZE_STYLE_EXTENTIONS];
@@ -61,7 +61,7 @@ typedef struct _editlexer
 
 
 // Number of Lexers in pLexArray
-#define NUMLEXERS 47
+#define NUMLEXERS 48
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
 
@@ -88,12 +88,9 @@ void   Style_SetLexerFromID(HWND,int);
 void   Style_SetDefaultFont(HWND,bool);
 void   Style_ToggleUse2ndDefault(HWND);
 bool   Style_GetUse2ndDefault();
-bool   Style_SetUse2ndDefault(int); // in:bool
-float  Style_GetBaseFontSize(HWND);
-float  Style_SetBaseFontSize(HWND,float);
-float  Style_GetCurrentFontSize(HWND);
-float  Style_SetCurrentFontSize(HWND,float);
+void   Style_SetUse2ndDefault(bool);
 void   Style_SetIndentGuides(HWND,bool);
+void   Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int size);
 bool   Style_GetOpenDlgFilterStr(LPWSTR,int);
 bool   Style_StrGetFont(LPCWSTR,LPWSTR,int);
 bool   Style_StrGetFontQuality(LPCWSTR,LPWSTR,int);
@@ -107,9 +104,12 @@ bool   Style_GetIndicatorType(LPWSTR,int,int*);
 void   Style_CopyStyles_IfNotDefined(LPWSTR,LPWSTR,int,bool,bool);
 bool   Style_SelectFont(HWND,LPWSTR,int,LPCWSTR,LPCWSTR,bool,bool,bool,bool);
 bool   Style_SelectColor(HWND,bool,LPWSTR,int,bool);
-void   Style_SetStyles(HWND,int,LPCWSTR);
-void   Style_SetFontQuality(HWND,LPCWSTR);
-void   Style_GetCurrentLexerName(LPWSTR,int);
+void   Style_SetStyles(HWND,int,LPCWSTR,bool);
+bool   Style_IsCurLexerStandard();
+PEDITLEXER Style_GetCurrentLexerPtr();
+int    Style_GetCurrentLexerRID();
+void   Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName);
+void   Style_GetStyleDisplayName(PEDITSTYLE pStyle, LPWSTR lpszName, int cchName);
 int    Style_GetLexerIconId(PEDITLEXER);
 bool   Style_HasLexerForExt(LPCWSTR);
 HTREEITEM Style_AddLexerToTreeView(HWND,PEDITLEXER);

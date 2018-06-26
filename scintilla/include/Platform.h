@@ -71,13 +71,13 @@
 
 #endif
 
+#include <vector>
+#include <string_view>
+
 namespace Scintilla {
 
 typedef float XYPOSITION;
 typedef double XYACCUMULATOR;
-inline int RoundXYPosition(XYPOSITION xyPos) {
-	return static_cast<int>(xyPos + 0.5);
-}
 
 // Underlying the implementation of the platform classes are platform specific types.
 // Sometimes these need to be passed around by client code so they are defined here
@@ -99,10 +99,10 @@ public:
 	XYPOSITION x;
 	XYPOSITION y;
 
-	explicit Point(XYPOSITION x_=0, XYPOSITION y_=0) : x(x_), y(y_) {
+	constexpr explicit Point(XYPOSITION x_=0, XYPOSITION y_=0) noexcept : x(x_), y(y_) {
 	}
 
-	static Point FromInts(int x_, int y_) {
+	static Point FromInts(int x_, int y_) noexcept {
 		return Point(static_cast<XYPOSITION>(x_), static_cast<XYPOSITION>(y_));
 	}
 
@@ -111,7 +111,7 @@ public:
 
 /**
  * A geometric rectangle class.
- * PRectangle is similar to the Win32 RECT.
+ * PRectangle is similar to Win32 RECT.
  * PRectangles contain their top and left sides, but not their right and bottom sides.
  */
 class PRectangle {
@@ -121,112 +121,146 @@ public:
 	XYPOSITION right;
 	XYPOSITION bottom;
 
-	explicit PRectangle(XYPOSITION left_=0, XYPOSITION top_=0, XYPOSITION right_=0, XYPOSITION bottom_ = 0) :
+	constexpr explicit PRectangle(XYPOSITION left_=0, XYPOSITION top_=0, XYPOSITION right_=0, XYPOSITION bottom_ = 0) noexcept :
 		left(left_), top(top_), right(right_), bottom(bottom_) {
 	}
 
-	static PRectangle FromInts(int left_, int top_, int right_, int bottom_) {
+	static PRectangle FromInts(int left_, int top_, int right_, int bottom_) noexcept {
 		return PRectangle(static_cast<XYPOSITION>(left_), static_cast<XYPOSITION>(top_),
 			static_cast<XYPOSITION>(right_), static_cast<XYPOSITION>(bottom_));
 	}
 
 	// Other automatically defined methods (assignment, copy constructor, destructor) are fine
 
-	bool operator==(const PRectangle &rc) const {
+	bool operator==(const PRectangle &rc) const noexcept {
 		return (rc.left == left) && (rc.right == right) &&
 			(rc.top == top) && (rc.bottom == bottom);
 	}
-	bool Contains(Point pt) const {
+	bool Contains(Point pt) const noexcept {
 		return (pt.x >= left) && (pt.x <= right) &&
 			(pt.y >= top) && (pt.y <= bottom);
 	}
-	bool ContainsWholePixel(Point pt) const {
+	bool ContainsWholePixel(Point pt) const noexcept {
 		// Does the rectangle contain all of the pixel to left/below the point
 		return (pt.x >= left) && ((pt.x+1) <= right) &&
 			(pt.y >= top) && ((pt.y+1) <= bottom);
 	}
-	bool Contains(PRectangle rc) const {
+	bool Contains(PRectangle rc) const noexcept {
 		return (rc.left >= left) && (rc.right <= right) &&
 			(rc.top >= top) && (rc.bottom <= bottom);
 	}
-	bool Intersects(PRectangle other) const {
+	bool Intersects(PRectangle other) const noexcept {
 		return (right > other.left) && (left < other.right) &&
 			(bottom > other.top) && (top < other.bottom);
 	}
-	void Move(XYPOSITION xDelta, XYPOSITION yDelta) {
+	void Move(XYPOSITION xDelta, XYPOSITION yDelta) noexcept {
 		left += xDelta;
 		top += yDelta;
 		right += xDelta;
 		bottom += yDelta;
 	}
-	XYPOSITION Width() const { return right - left; }
-	XYPOSITION Height() const { return bottom - top; }
-	bool Empty() const {
+	XYPOSITION Width() const noexcept { return right - left; }
+	XYPOSITION Height() const noexcept { return bottom - top; }
+	bool Empty() const noexcept {
 		return (Height() <= 0) || (Width() <= 0);
 	}
 };
 
 /**
- * Holds a desired RGB colour.
+ * Holds an RGB colour with 8 bits for each component.
  */
+constexpr const float componentMaximum = 255.0f;
 class ColourDesired {
-	long co;
+	int co;
 public:
-	ColourDesired(long lcol=0) {
-		co = lcol;
+	explicit ColourDesired(int co_=0) noexcept : co(co_) {
 	}
 
-	ColourDesired(unsigned int red, unsigned int green, unsigned int blue) {
-		Set(red, green, blue);
+	ColourDesired(unsigned int red, unsigned int green, unsigned int blue) noexcept :
+		co(red | (green << 8) | (blue << 16)) {
 	}
 
-	bool operator==(const ColourDesired &other) const {
+	bool operator==(const ColourDesired &other) const noexcept {
 		return co == other.co;
 	}
 
-	void Set(long lcol) {
-		co = lcol;
-	}
-
-	void Set(unsigned int red, unsigned int green, unsigned int blue) {
-		co = red | (green << 8) | (blue << 16);
-	}
-
-	static inline unsigned int ValueOfHex(const char ch) {
-		if (ch >= '0' && ch <= '9')
-			return ch - '0';
-		else if (ch >= 'A' && ch <= 'F')
-			return ch - 'A' + 10;
-		else if (ch >= 'a' && ch <= 'f')
-			return ch - 'a' + 10;
-		else
-			return 0;
-	}
-
-	void Set(const char *val) {
-		if (*val == '#') {
-			val++;
-		}
-		unsigned int r = ValueOfHex(val[0]) * 16 + ValueOfHex(val[1]);
-		unsigned int g = ValueOfHex(val[2]) * 16 + ValueOfHex(val[3]);
-		unsigned int b = ValueOfHex(val[4]) * 16 + ValueOfHex(val[5]);
-		Set(r, g, b);
-	}
-
-	long AsLong() const {
+	int AsInteger() const noexcept {
 		return co;
 	}
 
-	unsigned int GetRed() const {
+	// Red, green and blue values as bytes 0..255
+	unsigned char GetRed() const noexcept {
 		return co & 0xff;
 	}
-
-	unsigned int GetGreen() const {
+	unsigned char GetGreen() const noexcept {
 		return (co >> 8) & 0xff;
 	}
-
-	unsigned int GetBlue() const {
+	unsigned char GetBlue() const noexcept {
 		return (co >> 16) & 0xff;
+	}
+
+	// Red, green and blue values as float 0..1.0
+	float GetRedComponent() const noexcept {
+		return GetRed() / componentMaximum;
+	}
+	float GetGreenComponent() const noexcept {
+		return GetGreen() / componentMaximum;
+	}
+	float GetBlueComponent() const noexcept {
+		return GetBlue() / componentMaximum;
+	}
+};
+
+/**
+* Holds an RGBA colour.
+*/
+class ColourAlpha : public ColourDesired {
+public:
+	explicit ColourAlpha(int co_ = 0) noexcept : ColourDesired(co_) {
+	}
+
+	ColourAlpha(unsigned int red, unsigned int green, unsigned int blue) noexcept :
+		ColourDesired(red | (green << 8) | (blue << 16)) {
+	}
+
+	ColourAlpha(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha) noexcept :
+		ColourDesired(red | (green << 8) | (blue << 16) | (alpha << 24)) {
+	}
+
+	ColourAlpha(ColourDesired cd, unsigned int alpha) noexcept :
+		ColourDesired(cd.AsInteger() | (alpha << 24)) {
+	}
+
+	ColourDesired GetColour() const noexcept {
+		return ColourDesired(AsInteger() & 0xffffff);
+	}
+
+	unsigned char GetAlpha() const noexcept {
+		return (AsInteger() >> 24) & 0xff;
+	}
+
+	float GetAlphaComponent() const noexcept {
+		return GetAlpha() / componentMaximum;
+	}
+
+	ColourAlpha MixedWith(ColourAlpha other) const noexcept {
+		const unsigned int red = (GetRed() + other.GetRed()) / 2;
+		const unsigned int green = (GetGreen() + other.GetGreen()) / 2;
+		const unsigned int blue = (GetBlue() + other.GetBlue()) / 2;
+		const unsigned int alpha = (GetAlpha() + other.GetAlpha()) / 2;
+		return ColourAlpha(red, green, blue, alpha);
+	}
+};
+
+/**
+* Holds an element of a gradient with an RGBA colour and a relative position.
+*/
+class ColourStop {
+public:
+	float position;
+	ColourAlpha colour;
+	ColourStop(float position_, ColourAlpha colour_) noexcept :
+		position(position_), colour(colour_) {
 	}
 };
 
@@ -250,7 +284,7 @@ struct FontParameters {
 		bool italic_=false,
 		int extraFontFlag_=0,
 		int technology_=0,
-		int characterSet_=0) :
+		int characterSet_=0) noexcept :
 
 		faceName(faceName_),
 		size(size_),
@@ -267,33 +301,62 @@ struct FontParameters {
 class Font {
 protected:
 	FontID fid;
-	// Private so Font objects can not be copied
-	Font(const Font &);
-	Font &operator=(const Font &);
 public:
-	Font();
+	Font() noexcept;
+	// Deleted so Font objects can not be copied
+	Font(const Font &) = delete;
+	Font(Font &&) = delete;
+	Font &operator=(const Font &) = delete;
+	Font &operator=(Font &&) = delete;
 	virtual ~Font();
 
 	virtual void Create(const FontParameters &fp);
 	virtual void Release();
 
-	FontID GetID() { return fid; }
+	FontID GetID() const noexcept { return fid; }
 	// Alias another font - caller guarantees not to Release
-	void SetID(FontID fid_) { fid = fid_; }
+	void SetID(FontID fid_) noexcept { fid = fid_; }
 	friend class Surface;
 	friend class SurfaceImpl;
+};
+
+class IScreenLine {
+public:
+	virtual std::string_view Text() const = 0;
+	virtual size_t Length() const = 0;
+	virtual size_t RepresentationCount() const = 0;
+	virtual XYPOSITION Width() const = 0;
+	virtual XYPOSITION Height() const = 0;
+	virtual XYPOSITION TabWidth() const = 0;
+	virtual XYPOSITION TabWidthMinimumPixels() const = 0;
+	virtual const Font *FontOfPosition(size_t position) const = 0;
+	virtual XYPOSITION RepresentationWidth(size_t position) const = 0;
+	virtual XYPOSITION TabPositionAfter(XYPOSITION xPosition) const = 0;
+};
+
+struct Interval {
+	XYPOSITION left;
+	XYPOSITION right;
+};
+
+class IScreenLineLayout {
+public:
+	virtual ~IScreenLineLayout() = default;
+	virtual size_t PositionFromX(XYPOSITION xDistance, bool charPosition) = 0;
+	virtual XYPOSITION XFromPosition(size_t caretPosition) = 0;
+	virtual std::vector<Interval> FindRangeIntervals(size_t start, size_t end) = 0;
 };
 
 /**
  * A surface abstracts a place to draw.
  */
 class Surface {
-private:
-	// Private so Surface objects can not be copied
-	Surface(const Surface &) {}
-	Surface &operator=(const Surface &) { return *this; }
 public:
-	Surface() {}
+	Surface() noexcept = default;
+	Surface(const Surface &) = delete;
+	Surface(Surface &&) = delete;
+	Surface &operator=(const Surface &) = delete;
+	Surface &operator=(Surface &&) = delete;
 	virtual ~Surface() {}
 	static Surface *Allocate(int technology);
 
@@ -308,23 +371,26 @@ public:
 	virtual int DeviceHeightFont(int points)=0;
 	virtual void MoveTo(int x_, int y_)=0;
 	virtual void LineTo(int x_, int y_)=0;
-	virtual void Polygon(Point *pts, int npts, ColourDesired fore, ColourDesired back)=0;
+	virtual void Polygon(Point *pts, size_t npts, ColourDesired fore, ColourDesired back)=0;
 	virtual void RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
 	virtual void FillRectangle(PRectangle rc, ColourDesired back)=0;
 	virtual void FillRectangle(PRectangle rc, Surface &surfacePattern)=0;
 	virtual void RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
 	virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fill, int alphaFill,
 		ColourDesired outline, int alphaOutline, int flags)=0;
+	enum class GradientOptions { leftToRight, topToBottom };
+	virtual void GradientRectangle(PRectangle rc, const std::vector<ColourStop> &stops, GradientOptions options)=0;
 	virtual void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) = 0;
 	virtual void Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
 	virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource)=0;
 
-	virtual void DrawTextNoClip(PRectangle rc, Font &font_, XYPOSITION ybase, const char *s, int len, ColourDesired fore, ColourDesired back)=0;
-	virtual void DrawTextClipped(PRectangle rc, Font &font_, XYPOSITION ybase, const char *s, int len, ColourDesired fore, ColourDesired back)=0;
-	virtual void DrawTextTransparent(PRectangle rc, Font &font_, XYPOSITION ybase, const char *s, int len, ColourDesired fore)=0;
-	virtual void MeasureWidths(Font &font_, const char *s, int len, XYPOSITION *positions)=0;
-	virtual XYPOSITION WidthText(Font &font_, const char *s, int len)=0;
-	virtual XYPOSITION WidthChar(Font &font_, char ch)=0;
+	virtual std::unique_ptr<IScreenLineLayout> Layout(const IScreenLine *screenLine) = 0;
+
+	virtual void DrawTextNoClip(PRectangle rc, Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore, ColourDesired back) = 0;
+	virtual void DrawTextClipped(PRectangle rc, Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore, ColourDesired back) = 0;
+	virtual void DrawTextTransparent(PRectangle rc, Font &font_, XYPOSITION ybase, std::string_view text, ColourDesired fore) = 0;
+	virtual void MeasureWidths(Font &font_, std::string_view text, XYPOSITION *positions) = 0;
+	virtual XYPOSITION WidthText(Font &font_, std::string_view text) = 0;
 	virtual XYPOSITION Ascent(Font &font_)=0;
 	virtual XYPOSITION Descent(Font &font_)=0;
 	virtual XYPOSITION InternalLeading(Font &font_)=0;
@@ -336,12 +402,8 @@ public:
 
 	virtual void SetUnicodeMode(bool unicodeMode_)=0;
 	virtual void SetDBCSMode(int codePage)=0;
+	virtual void SetBidiR2L(bool bidiR2L_)=0;
 };
-
-/**
- * A simple callback action passing one piece of untyped user data.
- */
-typedef void (*CallBackAction)(void*);
 
 /**
  * Class to hide the details of window manipulation.
@@ -351,30 +413,25 @@ class Window {
 protected:
 	WindowID wid;
 public:
-	Window() : wid(0), cursorLast(cursorInvalid) {
+	Window() noexcept : wid(nullptr), cursorLast(cursorInvalid) {
 	}
-	Window(const Window &source) : wid(source.wid), cursorLast(cursorInvalid) {
-	}
-	virtual ~Window();
-	Window &operator=(WindowID wid_) {
+	Window(const Window &source) = delete;
+	Window(Window &&) = delete;
+	Window &operator=(WindowID wid_) noexcept {
 		wid = wid_;
 		cursorLast = cursorInvalid;
 		return *this;
 	}
-	Window &operator=(const Window &other) {
-		if (this != &other) {
-			wid = other.wid;
-			cursorLast = other.cursorLast;
-		}
-		return *this;
-	}
-	WindowID GetID() const { return wid; }
-	bool Created() const { return wid != 0; }
+	Window &operator=(const Window &) = delete;
+	Window &operator=(Window &&) = delete;
+	virtual ~Window();
+	WindowID GetID() const noexcept { return wid; }
+	bool Created() const noexcept { return wid != nullptr; }
 	void Destroy();
-	PRectangle GetPosition();
+	PRectangle GetPosition() const;
 	void SetPosition(PRectangle rc);
-	void SetPositionRelative(PRectangle rc, Window relativeTo);
-	PRectangle GetClientPosition();
+	void SetPositionRelative(PRectangle rc, const Window *relativeTo);
+	PRectangle GetClientPosition() const;
 	void Show(bool show=true);
 	void InvalidateAll();
 	void InvalidateRectangle(PRectangle rc);
@@ -394,7 +451,7 @@ private:
 
 struct ListBoxEvent {
 	enum class EventType { selectionChange, doubleClick } event;
-	ListBoxEvent(EventType event_) : event(event_) {
+	ListBoxEvent(EventType event_) noexcept : event(event_) {
 	}
 };
 
@@ -405,7 +462,7 @@ public:
 
 class ListBox : public Window {
 public:
-	ListBox();
+	ListBox() noexcept;
 	~ListBox() override;
 	static ListBox *Allocate();
 
@@ -436,19 +493,11 @@ public:
 class Menu {
 	MenuID mid;
 public:
-	Menu();
-	MenuID GetID() { return mid; }
+	Menu() noexcept;
+	MenuID GetID() const noexcept { return mid; }
 	void CreatePopUp();
 	void Destroy();
 	void Show(Point pt, Window &w);
-};
-
-class ElapsedTime {
-	long bigBit;
-	long littleBit;
-public:
-	ElapsedTime();
-	double Duration(bool reset=false);
 };
 
 /**
@@ -456,7 +505,7 @@ public:
  */
 class DynamicLibrary {
 public:
-	virtual ~DynamicLibrary() {}
+	virtual ~DynamicLibrary() = default;
 
 	/// @return Pointer to function "name", or NULL on failure.
 	virtual Function FindFunction(const char *name) = 0;
@@ -483,21 +532,20 @@ public:
  * and chrome colour. Not a creatable object, more of a module with several functions.
  */
 class Platform {
-	// Private so Platform objects can not be copied
-	Platform(const Platform &) {}
-	Platform &operator=(const Platform &) { return *this; }
 public:
-	// Should be private because no new Platforms are ever created
-	// but gcc warns about this
-	Platform() {}
-	~Platform() {}
+	Platform() = default;
+	Platform(const Platform &) = delete;
+	Platform(Platform &&) = delete;
+	Platform &operator=(const Platform &) = delete;
+	Platform &operator=(Platform &&) = delete;
+	~Platform() = default;
 	static ColourDesired Chrome();
 	static ColourDesired ChromeHighlight();
 	static const char *DefaultFont();
 	static int DefaultFontSize();
 	static unsigned int DoubleClickTime();
 	static void DebugDisplay(const char *s);
-	static long LongFromTwoShorts(short a,short b) {
+	static constexpr long LongFromTwoShorts(short a,short b) noexcept {
 		return (a) | ((b) << 16);
 	}
 

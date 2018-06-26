@@ -53,7 +53,9 @@ public:
 	CallTip();
 	// Deleted so CallTip objects can not be copied.
 	CallTip(const CallTip &) = delete;
+	CallTip(CallTip &&) = delete;
 	CallTip &operator=(const CallTip &) = delete;
+	CallTip &operator=(CallTip &&) = delete;
 	~CallTip();
 
 	void PaintCT(Surface *surfaceWindow);
@@ -63,7 +65,7 @@ public:
 	/// Setup the calltip and return a rectangle of the area required.
 	PRectangle CallTipStart(Sci::Position pos, Point pt, int textHeight, const char *defn,
 		const char *faceName, int size, int codePage_,
-		int characterSet, int technology, Window &wParent);
+		int characterSet, int technology, const Window &wParent);
 
 	void CallTipCancel();
 

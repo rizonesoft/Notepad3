@@ -35,14 +35,19 @@ set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\Portab
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
+set NP3_LANGUAGE_SET=af-ZA de-DE en-GB es-ES fr-FR nl-NL
+
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
 set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 
 set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable
 set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo
+set NP3_PORTAPP_INSTALL=%NP3_PORTAPP_DIR%\App\AppInfo\installer
+
 
 set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
+set NP3_BUILD_NAME=%SCRIPT_DIR%_buildname.txt
 
 :: --------------------------------------------------------------------------------------------------------------------
 
@@ -51,14 +56,14 @@ set MM=00
 set DD=00
 call :GETDATE
 set BUILD=0
+set DEVNAME=
 call :GETBUILD
 
 :: VERSION fallback from build date
-set VERSION=3.%YY%.%MM%%DD%.%BUILD%
+set VERSION=4.%YY%.%MM%%DD%.%BUILD%
 
 set FILEVER=
 call :GETFILEVER "%NP3_WIN32_DIR%\Notepad3.exe"
-
 if defined FILEVER set VERSION=%FILEVER%
 
 ::echo.VERSION=%VERSION%
@@ -72,21 +77,51 @@ if defined FILEVER set VERSION=%FILEVER%
 copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
 
-copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
-copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
-copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
-copy /B "%NP3_WIN32_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
-copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
-copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
+for /d %%d in (%NP3_LANGUAGE_SET%) do (
+  mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d"
+  copy /B "%NP3_WIN32_DIR%\lng\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d\" /Y /V
+)
+copy /B "%NP3_WIN32_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\" /Y /V
+copy /B "%NP3_WIN32_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\" /Y /V
+
+copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+copy /B "%NP3_WIN32_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+
+::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
+::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
+
+for /d %%d in (%NP3_LANGUAGE_SET%) do (
+  mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d"
+  copy /B "%NP3_X64_DIR%\lng\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d\" /Y /V
+)
+copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
+copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
 copy /B "%NP3_X64_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 copy /B "%NP3_X64_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
-call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP3_PORTAPP_INFO%.ini"
+::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+
+
+call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP3_PORTAPP_INFO%_tmp.ini"
+
+:: DEVNAME need some mor PortableApps preparation, so set empty for now
+set DEVNAME=
+
+if defined DEVNAME (
+  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "_%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
+  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "_%DEVNAME%" "%NP3_PORTAPP_INSTALL%.ini"
+) else (
+  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "" "%NP3_PORTAPP_INFO%.ini"
+  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "" "%NP3_PORTAPP_INSTALL%.ini"
+)
+
+del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 
 :: --------------------------------------------------------------------------------------------------------------------
 
@@ -100,6 +135,8 @@ call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP
 
 :: - build Installer -
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
+
+
 
 
 :: ====================================================================================================================
@@ -148,6 +185,7 @@ goto:EOF
 :GETBUILD
 set /p nxbuild=<%NP3_BUILD_VER%
 set /a BUILD = %nxbuild% - 1
+set /p DEVNAME=<%NP3_BUILD_NAME%
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 

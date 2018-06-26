@@ -136,13 +136,11 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 
 DeclareSciCallR0(GetReadOnly, GETREADONLY, bool)
 DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag)
+DeclareSciCallV0(Undo, UNDO)
+DeclareSciCallV0(Redo, REDO)
 DeclareSciCallR0(CanUndo, CANUNDO, bool)
 DeclareSciCallR0(CanRedo, CANREDO, bool)
-
 DeclareSciCallR0(IsDocModified, GETMODIFY, bool)
-DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
-DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
-
 DeclareSciCallR0(CanPaste, CANPASTE, bool)
 
 DeclareSciCallR0(GetCurrentPos, GETCURRENTPOS, DocPos)
@@ -176,12 +174,18 @@ DeclareSciCallV2(SetSelectionNAnchor, SETSELECTIONNANCHOR, DocPosU, selnum, DocP
 DeclareSciCallV2(SetSelectionNCaretVirtualSpace, SETSELECTIONNCARETVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 DeclareSciCallV2(SetSelectionNAnchorVirtualSpace, SETSELECTIONNANCHORVIRTUALSPACE, DocPosU, selnum, DocPos, position)
 
+// Zoom
+DeclareSciCallR0(GetZoom, GETZOOM, int)
+DeclareSciCallV1(SetZoom, SETZOOM, int, zoom)
+DeclareSciCallV0(ZoomIn, ZOOMIN)
+DeclareSciCallV0(ZoomOut, ZOOMOUT)
 
 // Operations
 DeclareSciCallV0(Cut, CUT)
 DeclareSciCallV0(Copy, COPY)
 DeclareSciCallV0(Paste, PASTE)
 DeclareSciCallV0(Clear, CLEAR)
+DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end)
 DeclareSciCallV0(Cancel, CANCEL)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
 DeclareSciCallV0(LineDelete, LINEDELETE)
@@ -242,19 +246,22 @@ DeclareSciCallV0(NewLine, NEWLINE)
 //
 //  Scrolling and automatic scrolling
 //
-DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
-DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
+DeclareSciCallV0(ScrollToStart, SCROLLTOSTART)
+DeclareSciCallV0(ScrollToEnd, SCROLLTOEND)
 DeclareSciCallV0(ScrollCaret, SCROLLCARET)
+DeclareSciCallV0(ChooseCaretX, CHOOSECARETX)
 DeclareSciCallV2(LineScroll, LINESCROLL, DocPos, columns, DocLn, lines)
 DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos)
 DeclareSciCallV1(SetScrollWidth, SETSCROLLWIDTH, int, width)
 DeclareSciCallV1(SetEndAtLastLine, SETENDATLASTLINE, bool, flag)
 DeclareSciCallR0(GetXoffset, GETXOFFSET, int)
 DeclareSciCallV1(SetXoffset, SETXOFFSET, int, offset)
+DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
 
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)
 DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line)
+DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line)
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 
 
@@ -262,9 +269,10 @@ DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line)
 //
 //  Style definition
 //
-DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, styleNumber)
-DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, styleNumber)
-DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, int, style)
+DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, char, style)
+DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, char, style)
+DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)
+DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, char, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 
@@ -272,13 +280,15 @@ DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 //
 //  Margins
 //
-DeclareSciCallV2(SetMarginType, SETMARGINTYPEN, int, margin, int, type)
-DeclareSciCallV2(SetMarginWidth, SETMARGINWIDTHN, int, margin, int, pixelWidth)
-DeclareSciCallV2(SetMarginMask, SETMARGINMASKN, int, margin, int, mask)
-DeclareSciCallV2(SetMarginSensitive, SETMARGINSENSITIVEN, int, margin, bool, sensitive)
+DeclareSciCallV2(SetMarginTypeN, SETMARGINTYPEN, int, margin, int, type)
+DeclareSciCallR1(GetMarginWidthN, GETMARGINWIDTHN, int, int, margin)
+DeclareSciCallV2(SetMarginWidthN, SETMARGINWIDTHN, int, margin, int, pixelWidth)
+DeclareSciCallV2(SetMarginMaskN, SETMARGINMASKN, int, margin, int, mask)
+DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, int, margin, bool, sensitive)
 DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
+DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
 
 
 //=============================================================================
@@ -297,6 +307,14 @@ DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
 
 //=============================================================================
 //
+//  Line State
+//
+DeclareSciCallV2(SetLineState, SETLINESTATE, DocLn, line, int, state)
+DeclareSciCallR1(GetLineState, GETLINESTATE, int, DocLn, line)
+DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
+
+//=============================================================================
+//
 //  Indicators
 //
 DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position)
@@ -309,12 +327,13 @@ DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPo
 //
 //
 DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line)
-DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, flags)
+DeclareSciCallV2(SetFoldLevel, SETFOLDLEVEL, DocLn, line, int, level)
 DeclareSciCallR1(GetFoldLevel, GETFOLDLEVEL, int, DocLn, line)
 DeclareSciCallV1(SetFoldFlags, SETFOLDFLAGS, int, flags)
 DeclareSciCallV1(FoldDisplayTextSetStyle, FOLDDISPLAYTEXTSETSTYLE, int, flags)
-DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, int, DocLn, line)
-DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, int, DocLn, line)
+DeclareSciCallR1(GetFoldParent, GETFOLDPARENT, DocLn, DocLn, line)
+DeclareSciCallR2(GetLastChild, GETLASTCHILD, DocLn, DocLn, line, int, level)
+DeclareSciCallR1(GetFoldExpanded, GETFOLDEXPANDED, bool, DocLn, line)
 DeclareSciCallV1(ToggleFold, TOGGLEFOLD, DocLn, line)
 DeclareSciCallV1(FoldAll, FOLDALL, int, flags)
 DeclareSciCallV1(EnsureVisible, ENSUREVISIBLE, DocLn, line)
@@ -360,18 +379,24 @@ DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
 //
 //  Utilities
 //
+DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
+DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
+DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 #define Sci_IsStreamSelected() (SciCall_GetSelectionMode() == SC_SEL_STREAM)
 #define Sci_IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
 #define Sci_IsThinRectangleSelected() (SciCall_GetSelectionMode() == SC_SEL_THIN)
-#define Sci_IsSingleLineSelection() \
-(SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
+#define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 
 #define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 
 #define Sci_GetCurrentLine() SciCall_LineFromPosition(SciCall_GetCurrentPos())
+#define Sci_GetLastDocLine() (SciCall_GetLineCount() - 1)
 
 // length of line w/o line-end chars (full use SciCall_LineLength()
 #define Sci_GetNetLineLength(line)  (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
+
+///~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
+#define Sci_GetDocEndPosition() SciCall_GetTextLength()
 
 
 //=============================================================================

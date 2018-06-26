@@ -12,12 +12,12 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shlwapi.h>
-#include <string.h>
+#include <strsafe.h>
 #include "helpers.h"
 #include "dlapi.h"
 

@@ -14,10 +14,12 @@
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <forward_list>
 #include <algorithm>
 #include <memory>
+#include <chrono>
 
 #ifndef NO_CXX11_REGEX
 #include <regex>
@@ -43,6 +45,7 @@
 #include "Document.h"
 #include "RESearch.h"
 #include "UniConversion.h"
+#include "ElapsedPeriod.h"
 
 using namespace Scintilla;
 
@@ -387,7 +390,7 @@ Sci_Position SCI_METHOD Document::LineFromPosition(Sci_Position pos) const {
 	return cb.LineFromPosition(pos);
 }
 
-Sci::Line Document::SciLineFromPosition(Sci::Position pos) const {
+Sci::Line Document::SciLineFromPosition(Sci::Position pos) const noexcept {
 	// Avoids casting in callers for this very common function
 	return cb.LineFromPosition(pos);
 }
@@ -557,7 +560,7 @@ void Document::GetHighlightDelimiters(HighlightDelimiter &highlightDelimiter, Sc
 }
 
 Sci::Position Document::ClampPositionIntoDocument(Sci::Position pos) const {
-	return std::clamp(pos, static_cast<Sci::Position>(0), Length());
+	return std::clamp<Sci::Position>(pos, 0, Length());
 }
 
 bool Document::IsCrLf(Sci::Position pos) const {
@@ -582,13 +585,13 @@ int Document::LenChar(Sci::Position pos) {
 		else
 			return widthCharBytes;
 	} else if (dbcsCodePage) {
-		return IsDBCSLeadByte(cb.CharAt(pos)) ? 2 : 1;
+		return IsDBCSLeadByteNoExcept(cb.CharAt(pos)) ? 2 : 1;
 	} else {
 		return 1;
 	}
 }
 
-bool Document::InGoodUTF8(Sci::Position pos, Sci::Position &start, Sci::Position &end) const {
+bool Document::InGoodUTF8(Sci::Position pos, Sci::Position &start, Sci::Position &end) const noexcept {
 	Sci::Position trail = pos;
 	while ((trail>0) && (pos-trail < UTF8MaxBytes) && UTF8IsTrailByte(cb.UCharAt(trail-1)))
 		trail--;
@@ -604,10 +607,10 @@ bool Document::InGoodUTF8(Sci::Position pos, Sci::Position &start, Sci::Position
 		if (len > trailBytes)
 			// pos too far from lead
 			return false;
-		char charBytes[UTF8MaxBytes] = {static_cast<char>(leadByte),0,0,0};
-		for (Sci::Position b=1; b<widthCharBytes && ((start+b) < Length()); b++)
+		unsigned char charBytes[UTF8MaxBytes] = {leadByte,0,0,0};
+		for (Sci::Position b=1; b<widthCharBytes && ((start+b) < cb.Length()); b++)
 			charBytes[b] = cb.CharAt(start+b);
-		const int utf8status = UTF8Classify(reinterpret_cast<const unsigned char *>(charBytes), widthCharBytes);
+		const int utf8status = UTF8Classify(charBytes, widthCharBytes);
 		if (utf8status & UTF8MaskInvalid)
 			return false;
 		end = start + widthCharBytes;
@@ -661,12 +664,12 @@ Sci::Position Document::MovePositionOutsideChar(Sci::Position pos, Sci::Position
 
 			// Step back until a non-lead-byte is found.
 			Sci::Position posCheck = pos;
-			while ((posCheck > posStartLine) && IsDBCSLeadByte(cb.CharAt(posCheck-1)))
+			while ((posCheck > posStartLine) && IsDBCSLeadByteNoExcept(cb.CharAt(posCheck-1)))
 				posCheck--;
 
 			// Check from known start of character.
 			while (posCheck < pos) {
-				const int mbsize = IsDBCSLeadByte(cb.CharAt(posCheck)) ? 2 : 1;
+				const int mbsize = IsDBCSLeadByteNoExcept(cb.CharAt(posCheck)) ? 2 : 1;
 				if (posCheck + mbsize == pos) {
 					return pos;
 				} else if (posCheck + mbsize > pos) {
@@ -687,13 +690,13 @@ Sci::Position Document::MovePositionOutsideChar(Sci::Position pos, Sci::Position
 // NextPosition moves between valid positions - it can not handle a position in the middle of a
 // multi-byte character. It is used to iterate through text more efficiently than MovePositionOutsideChar.
 // A \r\n pair is treated as two characters.
-Sci::Position Document::NextPosition(Sci::Position pos, int moveDir) const {
+Sci::Position Document::NextPosition(Sci::Position pos, int moveDir) const noexcept {
 	// If out of range, just return minimum/maximum value.
 	const int increment = (moveDir > 0) ? 1 : -1;
 	if (pos + increment <= 0)
 		return 0;
-	if (pos + increment >= Length())
-		return Length();
+	if (pos + increment >= cb.Length())
+		return cb.Length();
 
 	if (dbcsCodePage) {
 		if (SC_CP_UTF8 == dbcsCodePage) {
@@ -705,10 +708,10 @@ Sci::Position Document::NextPosition(Sci::Position pos, int moveDir) const {
 					pos++;
 				} else {
 					const int widthCharBytes = UTF8BytesOfLead[leadByte];
-					char charBytes[UTF8MaxBytes] = {static_cast<char>(leadByte),0,0,0};
+					unsigned char charBytes[UTF8MaxBytes] = {leadByte,0,0,0};
 					for (int b=1; b<widthCharBytes; b++)
 						charBytes[b] = cb.CharAt(pos+b);
-					const int utf8status = UTF8Classify(reinterpret_cast<const unsigned char *>(charBytes), widthCharBytes);
+					const int utf8status = UTF8Classify(charBytes, widthCharBytes);
 					if (utf8status & UTF8MaskInvalid)
 						pos++;
 					else
@@ -731,25 +734,25 @@ Sci::Position Document::NextPosition(Sci::Position pos, int moveDir) const {
 			}
 		} else {
 			if (moveDir > 0) {
-				const int mbsize = IsDBCSLeadByte(cb.CharAt(pos)) ? 2 : 1;
+				const int mbsize = IsDBCSLeadByteNoExcept(cb.CharAt(pos)) ? 2 : 1;
 				pos += mbsize;
-				if (pos > Length())
-					pos = Length();
+				if (pos > cb.Length())
+					pos = cb.Length();
 			} else {
 				// Anchor DBCS calculations at start of line because start of line can
 				// not be a DBCS trail byte.
-				const Sci::Position posStartLine = LineStart(LineFromPosition(pos));
+				const Sci::Position posStartLine = cb.LineStart(cb.LineFromPosition(pos));
 				// See http://msdn.microsoft.com/en-us/library/cc194792%28v=MSDN.10%29.aspx
 				// http://msdn.microsoft.com/en-us/library/cc194790.aspx
 				if ((pos - 1) <= posStartLine) {
 					return pos - 1;
-				} else if (IsDBCSLeadByte(cb.CharAt(pos - 1))) {
+				} else if (IsDBCSLeadByteNoExcept(cb.CharAt(pos - 1))) {
 					// Must actually be trail byte
 					return pos - 2;
 				} else {
 					// Otherwise, step back until a non-lead-byte is found.
 					Sci::Position posTemp = pos - 1;
-					while (posStartLine <= --posTemp && IsDBCSLeadByte(cb.CharAt(posTemp)))
+					while (posStartLine <= --posTemp && IsDBCSLeadByteNoExcept(cb.CharAt(posTemp)))
 						;
 					// Now posTemp+1 must point to the beginning of a character,
 					// so figure out whether we went back an even or an odd
@@ -765,7 +768,7 @@ Sci::Position Document::NextPosition(Sci::Position pos, int moveDir) const {
 	return pos;
 }
 
-bool Document::NextCharacter(Sci::Position &pos, int moveDir) const {
+bool Document::NextCharacter(Sci::Position &pos, int moveDir) const noexcept {
 	// Returns true if pos changed
 	Sci::Position posNext = NextPosition(pos, moveDir);
 	if (posNext == pos) {
@@ -798,7 +801,7 @@ Document::CharacterExtracted Document::CharacterAfter(Sci::Position position) co
 			return CharacterExtracted(UnicodeFromUTF8(charBytes), utf8status & UTF8MaskWidth);
 		}
 	} else {
-		if (IsDBCSLeadByte(leadByte) && ((position + 1) < Length())) {
+		if (IsDBCSLeadByteNoExcept(leadByte) && ((position + 1) < Length())) {
 			return CharacterExtracted::DBCS(leadByte, cb.UCharAt(position + 1));
 		} else {
 			return CharacterExtracted(leadByte, 1);
@@ -912,7 +915,7 @@ int SCI_METHOD Document::GetCharacterAndWidth(Sci_Position position, Sci_Positio
 				}
 			}
 		} else {
-			if (IsDBCSLeadByte(leadByte)) {
+			if (IsDBCSLeadByteNoExcept(leadByte)) {
 				bytesInCharacter = 2;
 				character = (leadByte << 8) | cb.UCharAt(position+1);
 			} else {
@@ -933,8 +936,14 @@ int SCI_METHOD Document::CodePage() const {
 }
 
 bool SCI_METHOD Document::IsDBCSLeadByte(char ch) const {
+	// Used by lexers so must match IDocument method exactly
+	return IsDBCSLeadByteNoExcept(ch);
+}
+
+bool Document::IsDBCSLeadByteNoExcept(char ch) const noexcept {
+	// Used inside core Scintilla
 	// Byte ranges found in Wikipedia articles with relevant search strings in each case
-	const unsigned char uch = static_cast<unsigned char>(ch);
+	const unsigned char uch = ch;
 	switch (dbcsCodePage) {
 		case 932:
 			// Shift_jis
@@ -960,7 +969,94 @@ bool SCI_METHOD Document::IsDBCSLeadByte(char ch) const {
 	return false;
 }
 
-static inline bool IsSpaceOrTab(int ch) {
+bool Document::IsDBCSLeadByteInvalid(char ch) const noexcept {
+	const unsigned char lead = ch;
+	switch (dbcsCodePage) {
+	case 932:
+		// Shift_jis
+		return
+			(lead == 0x85) ||
+			(lead == 0x86) ||
+			(lead == 0xEB) ||
+			(lead == 0xEC) ||
+			(lead == 0xEF) ||
+			(lead == 0xFA) ||
+			(lead == 0xFB) ||
+			(lead == 0xFC);
+	case 936:
+		// GBK
+		return (lead == 0x80) || (lead == 0xFF);
+	case 949:
+		// Korean Wansung KS C-5601-1987
+		return (lead == 0x80) || (lead == 0xC9) || (lead >= 0xFE);
+	case 950:
+		// Big5
+		return
+			((lead >= 0x80) && (lead <= 0xA0)) ||
+			(lead == 0xC8) ||
+			(lead >= 0xFA);
+	case 1361:
+		// Korean Johab KS C-5601-1992
+		return
+			((lead >= 0x80) && (lead <= 0x83)) ||
+			((lead >= 0xD4) && (lead <= 0xD8)) ||
+			(lead == 0xDF) ||
+			(lead >= 0xFA);
+	}
+	return false;
+}
+
+bool Document::IsDBCSTrailByteInvalid(char ch) const noexcept {
+	const unsigned char trail = ch;
+	switch (dbcsCodePage) {
+	case 932:
+		// Shift_jis
+		return
+			(trail <= 0x3F) ||
+			(trail == 0x7F) ||
+			(trail >= 0xFD);
+	case 936:
+		// GBK
+		return
+			(trail <= 0x3F) ||
+			(trail == 0x7F) ||
+			(trail == 0xFF);
+	case 949:
+		// Korean Wansung KS C-5601-1987
+		return
+			(trail <= 0x40) ||
+			((trail >= 0x5B) && (trail <= 0x60)) ||
+			((trail >= 0x7B) && (trail <= 0x80)) ||
+			(trail == 0xFF);
+	case 950:
+		// Big5
+		return
+			(trail <= 0x3F) ||
+			((trail >= 0x7F) && (trail <= 0xA0)) ||
+			(trail == 0xFF);
+	case 1361:
+		// Korean Johab KS C-5601-1992
+		return
+			(trail <= 0x30) ||
+			(trail == 0x7F) ||
+			(trail == 0x80) ||
+			(trail == 0xFF);
+	}
+	return false;
+}
+
+int Document::DBCSDrawBytes(std::string_view text) const noexcept {
+	if (text.length() <= 1) {
+		return static_cast<int>(text.length());
+	}
+	if (IsDBCSLeadByteNoExcept(text[0])) {
+		return IsDBCSTrailByteInvalid(text[1]) ? 1 : 2;
+	} else {
+		return 1;
+	}
+}
+
+static inline bool IsSpaceOrTab(int ch) noexcept {
 	return ch == ' ' || ch == '\t';
 }
 
@@ -975,14 +1071,14 @@ static inline bool IsSpaceOrTab(int ch) {
 //   2) Break before punctuation
 //   3) Break after whole character
 
-int Document::SafeSegment(const char *text, int length, int lengthSegment) const {
+int Document::SafeSegment(const char *text, int length, int lengthSegment) const noexcept {
 	if (length <= lengthSegment)
 		return length;
 	int lastSpaceBreak = -1;
 	int lastPunctuationBreak = -1;
 	int lastEncodingAllowedBreak = 0;
 	for (int j=0; j < lengthSegment;) {
-		const unsigned char ch = static_cast<unsigned char>(text[j]);
+		const unsigned char ch = text[j];
 		if (j > 0) {
 			if (IsSpaceOrTab(text[j - 1]) && !IsSpaceOrTab(text[j])) {
 				lastSpaceBreak = j;
@@ -996,7 +1092,7 @@ int Document::SafeSegment(const char *text, int length, int lengthSegment) const
 		if (dbcsCodePage == SC_CP_UTF8) {
 			j += UTF8BytesOfLead[ch];
 		} else if (dbcsCodePage) {
-			j += IsDBCSLeadByte(ch) ? 2 : 1;
+			j += IsDBCSLeadByteNoExcept(ch) ? 2 : 1;
 		} else {
 			j++;
 		}
@@ -1009,7 +1105,7 @@ int Document::SafeSegment(const char *text, int length, int lengthSegment) const
 	return lastEncodingAllowedBreak;
 }
 
-EncodingFamily Document::CodePageFamily() const {
+EncodingFamily Document::CodePageFamily() const noexcept {
 	if (SC_CP_UTF8 == dbcsCodePage)
 		return efUnicode;
 	else if (dbcsCodePage)
@@ -1018,7 +1114,7 @@ EncodingFamily Document::CodePageFamily() const {
 		return efEightBit;
 }
 
-void Document::ModifiedAt(Sci::Position pos) {
+void Document::ModifiedAt(Sci::Position pos) noexcept {
 	if (endStyled > pos)
 		endStyled = pos;
 }
@@ -1306,7 +1402,7 @@ void Document::DelCharBack(Sci::Position pos) {
 	}
 }
 
-static Sci::Position NextTab(Sci::Position pos, Sci::Position tabSize) {
+static Sci::Position NextTab(Sci::Position pos, Sci::Position tabSize) noexcept {
 	return ((pos / tabSize) + 1) * tabSize;
 }
 
@@ -1810,7 +1906,7 @@ bool Document::MatchesWordOptions(bool word, bool wordStart, Sci::Position pos, 
 			(wordStart && IsWordStartAt(pos));
 }
 
-bool Document::HasCaseFolder() const {
+bool Document::HasCaseFolder() const noexcept {
 	return pcf != nullptr;
 }
 
@@ -1818,7 +1914,7 @@ void Document::SetCaseFolder(CaseFolder *pcf_) {
 	pcf.reset(pcf_);
 }
 
-Document::CharacterExtracted Document::ExtractCharacter(Sci::Position position) const {
+Document::CharacterExtracted Document::ExtractCharacter(Sci::Position position) const noexcept {
 	const unsigned char leadByte = cb.UCharAt(position);
 	if (UTF8IsAscii(leadByte)) {
 		// Common case: ASCII character
@@ -1894,8 +1990,8 @@ Sci::Position Document::FindText(Sci::Position minPos, Sci::Position maxPos, con
 			std::vector<char> searchThing((lengthFind+1) * UTF8MaxBytes * maxFoldingExpansion + 1);
 			const size_t lenSearch =
 				pcf->Fold(&searchThing[0], searchThing.size(), search, lengthFind);
-			char bytes[UTF8MaxBytes + 1];
-			char folded[UTF8MaxBytes * maxFoldingExpansion + 1];
+			char bytes[UTF8MaxBytes + 1] = "";
+			char folded[UTF8MaxBytes * maxFoldingExpansion + 1] = "";
 			while (forward ? (pos < endPos) : (pos >= endPos)) {
 				int widthFirstCharacter = 0;
 				Sci::Position posIndexDocument = pos;
@@ -1955,7 +2051,7 @@ Sci::Position Document::FindText(Sci::Position minPos, Sci::Position maxPos, con
 					(indexSearch < lenSearch)) {
 					char bytes[maxBytesCharacter + 1];
 					bytes[0] = cb.CharAt(pos + indexDocument);
-					const Sci::Position widthChar = IsDBCSLeadByte(bytes[0]) ? 2 : 1;
+					const Sci::Position widthChar = IsDBCSLeadByteNoExcept(bytes[0]) ? 2 : 1;
 					if (widthChar == 2)
 						bytes[1] = cb.CharAt(pos + indexDocument + 1);
 					if ((pos + indexDocument + widthChar) > limitPos)
@@ -2009,7 +2105,7 @@ const char *Document::SubstituteByPosition(const char *text, Sci::Position *leng
 		return 0;
 }
 
-Sci::Line Document::LinesTotal() const {
+Sci::Line Document::LinesTotal() const noexcept {
 	return cb.Lines();
 }
 
@@ -2102,9 +2198,9 @@ void Document::StyleToAdjustingLineDuration(Sci::Position pos) {
 	const double alpha = 0.25;
 
 	const Sci::Line lineFirst = SciLineFromPosition(GetEndStyled());
-	ElapsedTime etStyling;
+	ElapsedPeriod epStyling;
 	EnsureStyledTo(pos);
-	const double durationStyling = etStyling.Duration();
+	const double durationStyling = epStyling.Duration();
 	const Sci::Line lineLast = SciLineFromPosition(GetEndStyled());
 	if (lineLast >= lineFirst + 8) {
 		// Only adjust for styling multiple lines to avoid instability
@@ -2233,7 +2329,7 @@ void Document::AnnotationClearAll() {
 	Annotations()->ClearAll();
 }
 
-void Document::IncrementStyleClock() {
+void Document::IncrementStyleClock() noexcept {
 	styleClock = (styleClock + 1) % 0x100000;
 }
 
@@ -2295,7 +2391,7 @@ void Document::NotifyModified(DocModification mh) {
 }
 
 // Used for word part navigation.
-static bool IsASCIIPunctuationCharacter(unsigned int ch) {
+static bool IsASCIIPunctuationCharacter(unsigned int ch) noexcept {
 	switch (ch) {
 	case '!':
 	case '"':
@@ -2429,7 +2525,7 @@ Sci::Position Document::WordPartRight(Sci::Position pos) const {
 	return pos;
 }
 
-static bool IsLineEndChar(char c) {
+static bool IsLineEndChar(char c) noexcept {
 	return (c == '\n' || c == '\r');
 }
 
@@ -2446,7 +2542,7 @@ Sci::Position Document::ExtendStyleRange(Sci::Position pos, int delta, bool sing
 	return pos;
 }
 
-static char BraceOpposite(char ch) {
+static char BraceOpposite(char ch) noexcept {
 	switch (ch) {
 	case '(':
 		return ')';
@@ -2506,9 +2602,11 @@ Sci::Position Document::BraceMatch(Sci::Position position, Sci::Position /*maxRe
 class BuiltinRegex : public RegexSearchBase {
 public:
 	explicit BuiltinRegex(CharClassify *charClassTable) : search(charClassTable) {}
-
-	~BuiltinRegex() override {
-	}
+	BuiltinRegex(const BuiltinRegex &) = delete;
+	BuiltinRegex(BuiltinRegex &&) = delete;
+	BuiltinRegex &operator=(const BuiltinRegex &) = delete;
+	BuiltinRegex &operator=(BuiltinRegex &&) = delete;
+	~BuiltinRegex() override = default;
 
 	Sci::Position FindText(Document *doc, Sci::Position minPos, Sci::Position maxPos, const char *s,
                         bool caseSensitive, bool word, bool wordStart, int flags,
@@ -2569,14 +2667,18 @@ class DocumentIndexer : public CharacterIndexer {
 	Document *pdoc;
 	Sci::Position end;
 public:
-	DocumentIndexer(Document *pdoc_, Sci::Position end_) :
+	DocumentIndexer(Document *pdoc_, Sci::Position end_) noexcept :
 		pdoc(pdoc_), end(end_) {
 	}
 
-	~DocumentIndexer() override {
-	}
+	DocumentIndexer(const DocumentIndexer &) = delete;
+	DocumentIndexer(DocumentIndexer &&) = delete;
+	DocumentIndexer &operator=(const DocumentIndexer &) = delete;
+	DocumentIndexer &operator=(DocumentIndexer &&) = delete;
 
-	char CharAt(Sci::Position index) const override {
+	~DocumentIndexer() override = default;
+
+	char CharAt(Sci::Position index) const noexcept override {
 		if (index < 0 || index >= end)
 			return 0;
 		else
@@ -2596,45 +2698,53 @@ public:
 
 	const Document *doc;
 	Sci::Position position;
-	ByteIterator(const Document *doc_ = 0, Sci::Position position_ = 0) : doc(doc_), position(position_) {
+
+	ByteIterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+		doc(doc_), position(position_) {
 	}
 	ByteIterator(const ByteIterator &other) noexcept {
 		doc = other.doc;
 		position = other.position;
 	}
-	ByteIterator &operator=(const ByteIterator &other) {
+	ByteIterator(ByteIterator &&other) noexcept {
+		doc = other.doc;
+		position = other.position;
+	}
+	ByteIterator &operator=(const ByteIterator &other) noexcept {
 		if (this != &other) {
 			doc = other.doc;
 			position = other.position;
 		}
 		return *this;
 	}
-	char operator*() const {
+	ByteIterator &operator=(ByteIterator &&) noexcept = default;
+	~ByteIterator() = default;
+	char operator*() const noexcept {
 		return doc->CharAt(position);
 	}
-	ByteIterator &operator++() {
+	ByteIterator &operator++() noexcept {
 		position++;
 		return *this;
 	}
-	ByteIterator operator++(int) {
+	ByteIterator operator++(int) noexcept {
 		ByteIterator retVal(*this);
 		position++;
 		return retVal;
 	}
-	ByteIterator &operator--() {
+	ByteIterator &operator--() noexcept {
 		position--;
 		return *this;
 	}
-	bool operator==(const ByteIterator &other) const {
+	bool operator==(const ByteIterator &other) const noexcept {
 		return doc == other.doc && position == other.position;
 	}
-	bool operator!=(const ByteIterator &other) const {
+	bool operator!=(const ByteIterator &other) const noexcept {
 		return doc != other.doc || position != other.position;
 	}
-	Sci::Position Pos() const {
+	Sci::Position Pos() const noexcept {
 		return position;
 	}
-	Sci::Position PosRoundUp() const {
+	Sci::Position PosRoundUp() const noexcept {
 		return position;
 	}
 };
@@ -2671,15 +2781,15 @@ public:
 	typedef wchar_t* pointer;
 	typedef wchar_t& reference;
 
-	UTF8Iterator(const Document *doc_ = 0, Sci::Position position_ = 0) :
-		doc(doc_), position(position_), characterIndex(0), lenBytes(0), lenCharacters(0) {
+	UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+		doc(doc_), position(position_), characterIndex(0), lenBytes(0), lenCharacters(0), buffered{} {
 		buffered[0] = 0;
 		buffered[1] = 0;
 		if (doc) {
 			ReadCharacter();
 		}
 	}
-	UTF8Iterator(const UTF8Iterator &other) {
+	UTF8Iterator(const UTF8Iterator &other) noexcept : buffered{} {
 		doc = other.doc;
 		position = other.position;
 		characterIndex = other.characterIndex;
@@ -2688,7 +2798,8 @@ public:
 		buffered[0] = other.buffered[0];
 		buffered[1] = other.buffered[1];
 	}
-	UTF8Iterator &operator=(const UTF8Iterator &other) {
+	UTF8Iterator(UTF8Iterator &&other) noexcept = default;
+	UTF8Iterator &operator=(const UTF8Iterator &other) noexcept {
 		if (this != &other) {
 			doc = other.doc;
 			position = other.position;
@@ -2700,11 +2811,13 @@ public:
 		}
 		return *this;
 	}
-	wchar_t operator*() const {
+	UTF8Iterator &operator=(UTF8Iterator &&) noexcept = default;
+	~UTF8Iterator() = default;
+	wchar_t operator*() const noexcept {
 		assert(lenCharacters != 0);
 		return buffered[characterIndex];
 	}
-	UTF8Iterator &operator++() {
+	UTF8Iterator &operator++() noexcept {
 		if ((characterIndex + 1) < (lenCharacters)) {
 			characterIndex++;
 		} else {
@@ -2714,7 +2827,7 @@ public:
 		}
 		return *this;
 	}
-	UTF8Iterator operator++(int) {
+	UTF8Iterator operator++(int) noexcept {
 		UTF8Iterator retVal(*this);
 		if ((characterIndex + 1) < (lenCharacters)) {
 			characterIndex++;
@@ -2725,7 +2838,7 @@ public:
 		}
 		return retVal;
 	}
-	UTF8Iterator &operator--() {
+	UTF8Iterator &operator--() noexcept {
 		if (characterIndex) {
 			characterIndex--;
 		} else {
@@ -2735,29 +2848,29 @@ public:
 		}
 		return *this;
 	}
-	bool operator==(const UTF8Iterator &other) const {
+	bool operator==(const UTF8Iterator &other) const noexcept {
 		// Only test the determining fields, not the character widths and values derived from this
 		return doc == other.doc &&
 			position == other.position &&
 			characterIndex == other.characterIndex;
 	}
-	bool operator!=(const UTF8Iterator &other) const {
+	bool operator!=(const UTF8Iterator &other) const noexcept {
 		// Only test the determining fields, not the character widths and values derived from this
 		return doc != other.doc ||
 			position != other.position ||
 			characterIndex != other.characterIndex;
 	}
-	Sci::Position Pos() const {
+	Sci::Position Pos() const noexcept {
 		return position;
 	}
-	Sci::Position PosRoundUp() const {
+	Sci::Position PosRoundUp() const noexcept {
 		if (characterIndex)
 			return position + lenBytes;	// Force to end of character
 		else
 			return position;
 	}
 private:
-	void ReadCharacter() {
+	void ReadCharacter() noexcept {
 		const Document::CharacterExtracted charExtracted = doc->ExtractCharacter(position);
 		lenBytes = charExtracted.widthBytes;
 		if (charExtracted.character == unicodeReplacementChar) {
@@ -2783,46 +2896,50 @@ public:
 	typedef wchar_t* pointer;
 	typedef wchar_t& reference;
 
-	UTF8Iterator(const Document *doc_=0, Sci::Position position_=0) : doc(doc_), position(position_) {
+	UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+		doc(doc_), position(position_) {
 	}
 	UTF8Iterator(const UTF8Iterator &other) noexcept {
 		doc = other.doc;
 		position = other.position;
 	}
-	UTF8Iterator &operator=(const UTF8Iterator &other) {
+	UTF8Iterator(UTF8Iterator &&other) noexcept = default;
+	UTF8Iterator &operator=(const UTF8Iterator &other) noexcept {
 		if (this != &other) {
 			doc = other.doc;
 			position = other.position;
 		}
 		return *this;
 	}
-	wchar_t operator*() const {
-		Document::CharacterExtracted charExtracted = doc->ExtractCharacter(position);
+	UTF8Iterator &operator=(UTF8Iterator &&) noexcept = default;
+	~UTF8Iterator() = default;
+	wchar_t operator*() const noexcept {
+		const Document::CharacterExtracted charExtracted = doc->ExtractCharacter(position);
 		return charExtracted.character;
 	}
-	UTF8Iterator &operator++() {
+	UTF8Iterator &operator++() noexcept {
 		position = doc->NextPosition(position, 1);
 		return *this;
 	}
-	UTF8Iterator operator++(int) {
+	UTF8Iterator operator++(int) noexcept {
 		UTF8Iterator retVal(*this);
 		position = doc->NextPosition(position, 1);
 		return retVal;
 	}
-	UTF8Iterator &operator--() {
+	UTF8Iterator &operator--() noexcept {
 		position = doc->NextPosition(position, -1);
 		return *this;
 	}
-	bool operator==(const UTF8Iterator &other) const {
+	bool operator==(const UTF8Iterator &other) const noexcept {
 		return doc == other.doc && position == other.position;
 	}
-	bool operator!=(const UTF8Iterator &other) const {
+	bool operator!=(const UTF8Iterator &other) const noexcept {
 		return doc != other.doc || position != other.position;
 	}
-	Sci::Position Pos() const {
+	Sci::Position Pos() const noexcept {
 		return position;
 	}
-	Sci::Position PosRoundUp() const {
+	Sci::Position PosRoundUp() const noexcept {
 		return position;
 	}
 };
@@ -2843,14 +2960,19 @@ bool MatchOnLines(const Document *doc, const Regex &regexp, const RESearchRange 
 	bool matched = false;
 	std::match_results<Iterator> match;
 
-	// MSVC and libc++ have problems with ^ and $ matching line ends inside a range
-	// If they didn't then the line by line iteration could be removed for the forwards
-	// case and replaced with the following 4 lines:
-	//	Iterator uiStart(doc, startPos);
-	//	Iterator uiEnd(doc, endPos);
-	//	flagsMatch = MatchFlags(doc, startPos, endPos);
-	//	matched = std::regex_search(uiStart, uiEnd, match, regexp, flagsMatch);
-
+	// MSVC and libc++ have problems with ^ and $ matching line ends inside a range.
+	// CRLF line ends are also a problem as ^ and $ only treat LF as a line end.
+	// The std::regex::multiline option was added to C++17 to improve behaviour but
+	// has not been implemented by compiler runtimes with MSVC always in multiline
+	// mode and libc++ and libstdc++ always in single-line mode.
+	// If multiline regex worked well then the line by line iteration could be removed
+	// for the forwards case and replaced with the following 4 lines:
+#ifdef REGEX_MULTILINE
+	Iterator itStart(doc, resr.startPos);
+	Iterator itEnd(doc, resr.endPos);
+	const std::regex_constants::match_flag_type flagsMatch = MatchFlags(doc, resr.startPos, resr.endPos);
+	matched = std::regex_search(itStart, itEnd, match, regexp, flagsMatch);
+#else
 	// Line by line.
 	for (Sci::Line line = resr.lineRangeStart; line != resr.lineRangeBreak; line += resr.increment) {
 		const Range lineRange = resr.LineRange(line);
@@ -2879,6 +3001,7 @@ bool MatchOnLines(const Document *doc, const Regex &regexp, const RESearchRange 
 			break;
 		}
 	}
+#endif
 	if (matched) {
 		for (size_t co = 0; co < match.size(); co++) {
 			search.bopat[co] = match[co].first.Pos();
@@ -2893,11 +3016,11 @@ bool MatchOnLines(const Document *doc, const Regex &regexp, const RESearchRange 
 	return matched;
 }
 
-Sci::Position Cxx11RegexFindText(Document *doc, Sci::Position minPos, Sci::Position maxPos, const char *s,
+Sci::Position Cxx11RegexFindText(const Document *doc, Sci::Position minPos, Sci::Position maxPos, const char *s,
 	bool caseSensitive, Sci::Position *length, RESearch &search) {
 	const RESearchRange resr(doc, minPos, maxPos);
 	try {
-		//ElapsedTime et;
+		//ElapsedPeriod ep;
 		std::regex::flag_type flagsRe = std::regex::ECMAScript;
 		// Flags that apper to have no effect:
 		// | std::regex::collate | std::regex::extended;
@@ -2909,22 +3032,16 @@ Sci::Position Cxx11RegexFindText(Document *doc, Sci::Position minPos, Sci::Posit
 
 		bool matched = false;
 		if (SC_CP_UTF8 == doc->dbcsCodePage) {
-			const size_t lenS = strlen(s);
-			std::vector<wchar_t> ws(lenS + 1);
+			const std::string_view sv(s);
+			const size_t lenS = sv.length();
+			std::vector<wchar_t> ws(sv.length() + 1);
 #if WCHAR_T_IS_16
-			const size_t outLen = UTF16FromUTF8(s, lenS, &ws[0], lenS);
+			const size_t outLen = UTF16FromUTF8(sv, &ws[0], lenS);
 #else
-			const size_t outLen = UTF32FromUTF8(s, lenS, reinterpret_cast<unsigned int *>(&ws[0]), lenS);
+			const size_t outLen = UTF32FromUTF8(sv, reinterpret_cast<unsigned int *>(&ws[0]), lenS);
 #endif
 			ws[outLen] = 0;
 			std::wregex regexp;
-#if defined(__APPLE__)
-			// Using a UTF-8 locale doesn't change to Unicode over a byte buffer so '.'
-			// is one byte not one character.
-			// However, on OS X this makes wregex act as Unicode
-			std::locale localeU("en_US.UTF-8");
-			regexp.imbue(localeU);
-#endif
 			regexp.assign(&ws[0], flagsRe);
 			matched = MatchOnLines<UTF8Iterator>(doc, regexp, resr, search);
 
@@ -2942,7 +3059,7 @@ Sci::Position Cxx11RegexFindText(Document *doc, Sci::Position minPos, Sci::Posit
 		// Example - search in doc/ScintillaHistory.html for
 		// [[:upper:]]eta[[:space:]]
 		// On MacBook, normally around 1 second but with locale imbued -> 14 seconds.
-		//double durSearch = et.Duration(true);
+		//const double durSearch = ep.Duration(true);
 		//Platform::DebugPrintf("Search:%9.6g \n", durSearch);
 		return posMatch;
 	} catch (std::regex_error &) {

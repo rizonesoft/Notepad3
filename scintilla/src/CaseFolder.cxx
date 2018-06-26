@@ -17,7 +17,7 @@ using namespace Scintilla;
 CaseFolder::~CaseFolder() {
 }
 
-CaseFolderTable::CaseFolderTable() {
+CaseFolderTable::CaseFolderTable() : mapping{}  {
 	for (size_t iChar=0; iChar<sizeof(mapping); iChar++) {
 		mapping[iChar] = static_cast<char>(iChar);
 	}

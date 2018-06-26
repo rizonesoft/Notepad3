@@ -14,7 +14,8 @@
 *******************************************************************************/
 
 extern HINSTANCE g_hInstance;
-extern UINT16 g_uWinVer;
+extern HMODULE   g_hLngResContainer;
+extern UINT16    g_uWinVer;
 
 #define UNUSED(expr) (void)(expr)
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
@@ -43,6 +44,8 @@ BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
 __inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
+
+#define StrEnd(pStart) (pStart + lstrlen(pStart))
 
 void BeginWaitCursor();
 void EndWaitCursor();
@@ -82,11 +85,15 @@ LRESULT SendWMSize(HWND);
 #define CheckCmd(hmenu,id,b)  CheckMenuItem(hmenu,id,(b)\
                                ?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 
-#define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
 
-#define StrEnd(pStart) (pStart + lstrlen(pStart))
+#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
+#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
+int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
+int FormatLngStringW(LPWSTR, int, UINT, ...);
+int FormatLngStringA(LPSTR, int, UINT, ...);
 
-int FormatString(LPWSTR,int,UINT,...);
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 void PathRelativeToApp(LPWSTR,LPWSTR,int,BOOL,BOOL,BOOL);
 void PathAbsoluteFromApp(LPWSTR,LPWSTR,int,BOOL);
@@ -117,6 +124,16 @@ HDROP CreateDropHandle(LPCWSTR);
 BOOL DirList_IsFileSelected(HWND);
 
 BOOL ExecDDECommand(LPCWSTR,LPCWSTR,LPCWSTR,LPCWSTR);
+
+
+//==== StrNextTok methods ===================
+CHAR*  _StrNextTokA(CHAR*, const CHAR*);
+WCHAR* _StrNextTokW(WCHAR*, const WCHAR*);
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrNextTok _StrNextTokW
+#else
+#define StrNextTok _StrNextTokA
+#endif
 
 //==== History Functions ======================================================
 #define HISTORY_ITEMS 50

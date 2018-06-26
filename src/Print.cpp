@@ -43,6 +43,8 @@ extern "C" {
 
 
 extern "C" HINSTANCE g_hInstance;
+extern "C" HMODULE   g_hLngResContainer;
+
 extern "C" HWND g_hwndEdit;
 
 // Global settings...
@@ -51,7 +53,7 @@ extern "C" int iPrintFooter;
 extern "C" int iPrintColor;
 extern "C" int iPrintZoom;
 extern "C" RECT pagesetupMargin;
-extern "C" int flagPrintFileAndLeave;
+extern "C" int g_flagPrintFileAndLeave;
 
 
 // Stored objects...
@@ -69,7 +71,7 @@ void StatusUpdatePrintPage(int iPageNum)
 {
   WCHAR tch[32] = { L'\0' };
 
-  FormatString(tch,COUNTOF(tch),IDS_PRINTFILE,iPageNum);
+  FormatLngStringW(tch,COUNTOF(tch),IDS_MUI_PRINTFILE,iPageNum);
 
   StatusSetText(g_hwndStatus,255,tch);
   StatusSetSimple(g_hwndStatus,true);
@@ -84,7 +86,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
   // Don't print empty documents
   if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0) {
-    MsgBox(MBWARN,IDS_PRINT_EMPTY);
+    MsgBoxLng(MBWARN,IDS_MUI_PRINT_EMPTY);
     return true;
   }
 
@@ -151,7 +153,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   }
 
   // |= 0 - Don't display dialog box, just use the default printer and options
-  pdlg.Flags |= (flagPrintFileAndLeave == 1) ? PD_RETURNDEFAULT : 0;
+  pdlg.Flags |= (g_flagPrintFileAndLeave == 1) ? PD_RETURNDEFAULT : 0;
 
   if (!PrintDlg(&pdlg)) {
     return true; // False means error...
@@ -295,12 +297,14 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   }
 
   // Set print color mode
-  int printColorModes[5] = {
+  int printColorModes[6] = {
     SC_PRINT_NORMAL,
     SC_PRINT_INVERTLIGHT,
     SC_PRINT_BLACKONWHITE,
     SC_PRINT_COLOURONWHITE,
-    SC_PRINT_COLOURONWHITEDEFAULTBG };
+    SC_PRINT_COLOURONWHITEDEFAULTBG,
+    SC_PRINT_SCREENCOLOURS };
+
   SendMessage(hwnd,SCI_SETPRINTCOLOURMODE,printColorModes[iPrintColor],0);
 
   // Set print zoom...
@@ -479,7 +483,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         SendDlgItemMessage(hwnd,31,UDM_SETPOS,0,MAKELONG((short)iPrintZoom,0));
 
         // Set header options
-        GetString(IDS_PRINT_HEADER,tch,COUNTOF(tch));
+        GetLngString(IDS_MUI_PRINT_HEADER,tch,COUNTOF(tch));
         StringCchCat(tch,COUNTOF(tch),L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
@@ -493,7 +497,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         SendDlgItemMessage(hwnd,32,CB_SETCURSEL,(WPARAM)iPrintHeader,0);
 
         // Set footer options
-        GetString(IDS_PRINT_FOOTER,tch,COUNTOF(tch));
+        GetLngString(IDS_MUI_PRINT_FOOTER,tch,COUNTOF(tch));
         StringCchCat(tch,COUNTOF(tch),L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
@@ -507,7 +511,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         SendDlgItemMessage(hwnd,33,CB_SETCURSEL,(WPARAM)iPrintFooter,0);
 
         // Set color options
-        GetString(IDS_PRINT_COLOR,tch,COUNTOF(tch));
+        GetLngString(IDS_MUI_PRINT_COLOR,tch,COUNTOF(tch));
         StringCchCat(tch,COUNTOF(tch),L"|");
         p1 = tch;
         p2 = StrChr(p1, L'|');
@@ -560,8 +564,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
 extern "C" void EditPrintSetup(HWND hwnd)
 {
-  DLGTEMPLATE* pDlgTemplate =
-    LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_PAGESETUP),g_hInstance);
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_MUI_PAGESETUP),g_hLngResContainer);
 
   PAGESETUPDLG pdlg;
   ZeroMemory(&pdlg,sizeof(PAGESETUPDLG));

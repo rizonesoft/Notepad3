@@ -32,7 +32,8 @@ function DebugOutput($msg)
 
 try 
 {
-	$Major = 3
+  $AppName = "Notepad3"
+	$Major = 4
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format MMdd)
 	if ($AppVeyorEnv) {
@@ -53,6 +54,7 @@ try
 if ($VerPatch) { $VerPatch = " $VerPatch" }  # ensure space in front of string
 
 	Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAJOR\$', "$Major" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MINOR\$', "$Minor" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content "src\VersionEx.h"
@@ -60,10 +62,11 @@ if ($VerPatch) { $VerPatch = " $VerPatch" }  # ensure space in front of string
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$ONIGMOVER\$', "$OnigmoVer" } | Set-Content "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "src\VersionEx.h"
 	
 	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
-	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', $CompleteVer } | Set-Content "res\Notepad3.exe.manifest.conf"
+	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content "res\Notepad3.exe.manifest.conf"
+	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "res\Notepad3.exe.manifest.conf"
+	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', "$CompleteVer" } | Set-Content "res\Notepad3.exe.manifest.conf"
 	if ($AppVeyorEnv) {
 		Update-AppveyorBuild -Version $CompleteVer
   }

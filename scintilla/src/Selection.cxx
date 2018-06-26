@@ -5,11 +5,14 @@
 // Copyright 2009 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
+#include <cstddef>
 #include <cstdlib>
 
 #include <stdexcept>
+#include <string_view>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 #include "Platform.h"
 

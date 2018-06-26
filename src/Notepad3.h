@@ -19,7 +19,6 @@
 #include "TypeDefs.h"
 
 //==== Main Window ============================================================
-#define WC_NOTEPAD3 L"Notepad3"
 
 #define ONLINE_HELP_WEBSITE L"https://www.rizonesoft.com/documents/notepad3/"
 
@@ -70,15 +69,14 @@ typedef enum {
 
 
 //==== Toolbar Style ==========================================================
-#define WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | \
-                    TBSTYLE_TOOLTIPS | TBSTYLE_FLAT | TBSTYLE_ALTDRAG | \
-                    TBSTYLE_LIST | CCS_NODIVIDER | CCS_NOPARENTALIGN | \
-                    CCS_ADJUSTABLE)
+#define NP3_WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | \
+                        TBSTYLE_TOOLTIPS | TBSTYLE_FLAT | TBSTYLE_ALTDRAG | TBSTYLE_LIST | \
+                        CCS_NODIVIDER | CCS_NOPARENTALIGN | CCS_ADJUSTABLE)
 
 
 //==== ReBar Style ============================================================
-#define WS_REBAR (WS_CHILD | WS_CLIPCHILDREN | WS_BORDER | RBS_VARHEIGHT | \
-                  RBS_BANDBORDERS | CCS_NODIVIDER | CCS_NOPARENTALIGN)
+#define NP3_WS_REBAR (WS_CHILD | WS_CLIPCHILDREN | WS_BORDER | RBS_VARHEIGHT | \
+                      RBS_BANDBORDERS | CCS_NODIVIDER | CCS_NOPARENTALIGN)
 
 
 //==== Ids ====================================================================
@@ -90,16 +88,6 @@ typedef enum {
 #define IDC_FILENAME     0xFB05
 #define IDC_REUSELOCK    0xFB06
 
-
-//==== Statusbar ==============================================================
-#define STATUS_DOCPOS    0
-#define STATUS_DOCSIZE   1
-#define STATUS_CODEPAGE  2
-#define STATUS_EOLMODE   3
-#define STATUS_OVRMODE   4
-#define STATUS_2ND_DEF   5
-#define STATUS_LEXER     6
-#define STATUS_HELP    255
 
 
 //==== Change Notifications ===================================================
@@ -123,6 +111,8 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(HINSTANCE);
 HWND InitInstance(HINSTANCE,LPSTR,int);
+void BeginWaitCursor(LPCWSTR text);
+void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR);
@@ -138,29 +128,29 @@ void LoadSettings();
 void SaveSettings(bool);
 void ParseCommandLine();
 void LoadFlags();
-bool CheckIniFile(LPWSTR,LPCWSTR);
-bool CheckIniFileRedirect(LPWSTR,LPCWSTR);
 int  FindIniFile();
 int  TestIniFile();
 int  CreateIniFile();
 int  CreateIniFileEx(LPCWSTR);
 
 
-void MarkAllOccurrences(int);
+void MarkAllOccurrences(int delay, bool bForceClear);
 void UpdateToolbar();
-void UpdateStatusbar();
+void UpdateStatusbar(bool);
 void UpdateLineNumberWidth();
 void UpdateSettingsCmds();
 void UpdateVisibleUrlHotspot(int);
 void UpdateUI();
 
-
-void InvalidateSelections();
-
-int BeginUndoAction();
+void UndoRedoRecordingStart();
+void UndoRedoRecordingStop();
+int  BeginUndoAction();
 void EndUndoAction(int);
 void RestoreAction(int,DoAction);
-int UndoRedoActionMap(int,UndoRedoSelection_t*);
+
+#define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
+#define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
+
 
 void OpenHotSpotURL(DocPos, bool);
 
@@ -193,9 +183,13 @@ LRESULT MsgSysCommand(HWND, UINT, WPARAM, LPARAM);
 LRESULT MsgCommand(HWND, WPARAM, LPARAM);
 LRESULT MsgNotify(HWND, WPARAM, LPARAM);
 
+
 void IgnoreNotifyChangeEvent();
 void ObserveNotifyChangeEvent();
 bool CheckNotifyChangeEvent();
+#define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
+#define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
+
 
 #endif //_NP3_NOTEPAD3_H_
 ///   End of Notepad3.h   \\\

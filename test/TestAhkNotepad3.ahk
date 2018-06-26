@@ -33,10 +33,13 @@ if (v_ErrLevel != 0)
 ; -----------------------------------------------------------------------------
 
 GoSub CHECK_NP3_STARTS
+Sleep, 500
 GoSub CHECK_WIN_TITLE
+Sleep, 500
 GoSub CHECK_ABOUT_BOX
-Goto LABEL_END
 
+
+Goto LABEL_END
 ; =============================================================================
 
 ; =============================================================================
@@ -86,7 +89,7 @@ CHECK_ABOUT_BOX:
 WinActivate, ahk_pid %v_Notepad3_PID%
 
 ; This will select File->Open in Notepad:
-WinMenuSelectItem, ahk_pid %v_Notepad3_PID%, , ?, About...
+WinMenuSelectItem, ahk_pid %v_Notepad3_PID%, , Help, About...
 
 WinWait, About %v_NP3Name%, , 1
 v_ErrLevel = %ErrorLevel%

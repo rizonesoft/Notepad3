@@ -57,6 +57,9 @@
     <ClInclude Include="src\minipath.h">
       <Filter>H Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="language\common_res.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Hover.cur">
@@ -117,6 +120,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\minipath.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="language\common_res.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

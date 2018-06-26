@@ -41,6 +41,8 @@
 //=============================================================================
 
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
+extern LANGID    g_iPrefLngLocID;
 
 //=============================================================================
 //
@@ -71,6 +73,42 @@ WCHAR* _StrCutIW(WCHAR* s,const WCHAR* pattern)
     }
   } while (p);
   return s;
+}
+
+//=============================================================================
+
+
+//=============================================================================
+//
+//  Find next token in string
+//
+
+CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
+{
+  CHAR* n = NULL;
+  const CHAR* t = tokens;
+  while (t && *t) {
+    CHAR* const f = StrChrA(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
+}
+
+WCHAR* _StrNextTokW(WCHAR* strg, const WCHAR* tokens)
+{
+  WCHAR* n = NULL;
+  const WCHAR* t = tokens;
+  while (t && *t) {
+    WCHAR* const f = StrChrW(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
 }
 
 
@@ -219,6 +257,46 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
     return(true);
   }
   return(false);
+}
+
+
+
+//=============================================================================
+//
+//  GetLastErrorToMsgBox()
+//
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
+{
+  // Retrieve the system error message for the last-error code
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
+
+  LPVOID lpMsgBuf;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwErrID,
+    g_iPrefLngLocID,
+    (LPTSTR)&lpMsgBuf,
+    0, NULL);
+
+  // Display the error message and exit the process
+
+  LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+    (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 80) * sizeof(WCHAR));
+
+  StringCchPrintf((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(WCHAR),
+    L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, lpMsgBuf);
+
+  MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
+
+  LocalFree(lpMsgBuf);
+  LocalFree(lpDisplayBuf);
+
+  return dwErrID;
 }
 
 
@@ -484,6 +562,27 @@ bool IsFontAvailable(LPCWSTR lpszFontName)
 }
 
 
+
+//=============================================================================
+//
+//  SetWindowTitle()
+//
+POINT GetSystemDpi()
+{
+  POINT result;
+
+  HDC hDC = GetDC(NULL);
+
+  result.x = GetDeviceCaps(hDC, LOGPIXELSX);
+  result.y = GetDeviceCaps(hDC, LOGPIXELSY);
+
+  ReleaseDC(NULL, hDC);
+
+  return result;
+}
+
+
+
 //=============================================================================
 //
 //  SetWindowTitle()
@@ -511,12 +610,13 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
   if (bFreezeAppTitle)
     return false;
 
-  if (!GetString(uIDAppName,szAppName,COUNTOF(szAppName)) ||
-      !GetString(uIDUntitled,szUntitled,COUNTOF(szUntitled)))
+  if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
+    !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
+  }
 
   if (bIsElevated) {
-    FormatString(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_APPTITLE_ELEVATED,szAppName);
+    FormatLngStringW(szElevatedAppName,COUNTOF(szElevatedAppName),IDS_MUI_APPTITLE_ELEVATED,szAppName);
     StringCchCopyN(szAppName,COUNTOF(szAppName),szElevatedAppName,COUNTOF(szElevatedAppName));
   }
 
@@ -526,7 +626,7 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
     StringCchCopy(szTitle,COUNTOF(szTitle),L"");
 
   if (lstrlen(lpszExcerpt)) {
-    GetString(IDS_TITLEEXCERPT,szExcrptFmt,COUNTOF(szExcrptFmt));
+    GetLngString(IDS_MUI_TITLEEXCERPT,szExcrptFmt,COUNTOF(szExcrptFmt));
     StringCchPrintf(szExcrptQuot,COUNTOF(szExcrptQuot),szExcrptFmt,lpszExcerpt);
     StringCchCat(szTitle,COUNTOF(szTitle),szExcrptQuot);
   }
@@ -562,7 +662,7 @@ bool SetWindowTitle(HWND hwnd,UINT uIDAppName,bool bIsElevated,UINT uIDUntitled,
     StringCchCat(szTitle,COUNTOF(szTitle),szUntitled);
   }
 
-  if (bReadOnly && GetString(uIDReadOnly,szReadOnly,COUNTOF(szReadOnly)))
+  if (bReadOnly && GetLngString(uIDReadOnly,szReadOnly,COUNTOF(szReadOnly)))
   {
     StringCchCat(szTitle,COUNTOF(szTitle),L" ");
     StringCchCat(szTitle,COUNTOF(szTitle),szReadOnly);
@@ -757,6 +857,7 @@ typedef struct _resizedlg {
   int mmiPtMinY;
 } RESIZEDLG, *PRESIZEDLG;
 
+
 void ResizeDlg_Init(HWND hwnd,int cxFrame,int cyFrame,int nIdGrip)
 {
   RECT rc;
@@ -934,9 +1035,9 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 //
 LRESULT SendWMSize(HWND hwnd)
 {
-  RECT rc; GetClientRect(hwnd, &rc);
-  return(SendMessage(hwnd, WM_SIZE, SIZE_RESTORED,
-    MAKELPARAM(rc.right, rc.bottom)));
+  RECT rc; 
+  GetClientRect(hwnd, &rc);
+  return (SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc.right, rc.bottom)));
 }
 
 
@@ -944,14 +1045,12 @@ LRESULT SendWMSize(HWND hwnd)
 //
 //  StatusSetText()
 //
-bool StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
+void StatusSetText(HWND hwnd,UINT nPart,LPCWSTR lpszText)
 {
-
-  UINT uFlags = (nPart == (UINT)STATUS_HELP) ? nPart|SBT_NOBORDERS : nPart;
-  if (lpszText)
-    return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
-  else
-    return (bool)SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)L"...");
+  if (lpszText) {
+    UINT uFlags = (nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+    SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
+  }
 }
 
 
@@ -971,7 +1070,7 @@ bool StatusSetTextID(HWND hwnd,UINT nPart,UINT uID)
     return true;
   }
 
-  if (!GetString(uID,szText,256))
+  if (!GetLngString(uID,szText,256))
     return false;
 
   return (bool)SendMessage(hwnd,SB_SETTEXT,uFlags,(LPARAM)szText);
@@ -993,21 +1092,21 @@ COLORREF GetBackgroundColor(HWND hwnd)
 //
 //  StatusCalcPaneWidth()
 //
-int StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
+LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
 {
-  SIZE  size;
-  HDC   hdc   = GetDC(hwnd);
-  HFONT hfont = (HFONT)SendMessage(hwnd,WM_GETFONT,0,0);
-  HFONT hfold = SelectObject(hdc,hfont);
-  int   mmode = SetMapMode(hdc,MM_TEXT);
+  HDC const hdc = GetDC(hwnd);
+  HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd,WM_GETFONT,0,0);
+  HGDIOBJ const hfold = SelectObject(hdc,hfont);
+  int const mmode = SetMapMode(hdc,MM_TEXT);
 
+  SIZE size = { 0, 0 };
   GetTextExtentPoint32(hdc,lpsz,lstrlen(lpsz),&size);
 
   SetMapMode(hdc,mmode);
   SelectObject(hdc,hfold);
   ReleaseDC(hwnd,hdc);
 
-  return(size.cx + 9);
+  return (size.cx + 8L);
 }
 
 
@@ -1038,7 +1137,7 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 
 int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptbb,int ctbb)
 {
-  WCHAR tchButtons[LARGE_BUFFER];
+  WCHAR tchButtons[MIDSZ_BUFFER];
   int i,c;
   int iCmd;
 
@@ -1101,20 +1200,59 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 
 //=============================================================================
 //
-//  FormatString()
+//  LoadLngStringW()
 //
-int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
+int LoadLngStringW(UINT uID, LPTSTR lpBuffer, int nBufferMax) 
 {
+  const int nLen = LoadStringW(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  return (nLen != 0) ? nLen : LoadStringW(g_hInstance, uID, lpBuffer, nBufferMax);
+}
 
-  WCHAR *p = LocalAlloc(LPTR,sizeof(WCHAR)*nOutput);
+//=============================================================================
+//
+//  LoadLngStringA()
+//
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
+{
+  const int nLen = LoadStringA(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  return (nLen != 0) ? nLen : LoadStringA(g_hInstance, uID, lpBuffer, nBufferMax);
+}
 
-  if (GetString(uIdFormat,p,nOutput))
-    StringCchVPrintf(lpOutput,nOutput,p,(LPVOID)((PUINT_PTR)&uIdFormat + 1));
 
-  LocalFree(p);
+//=============================================================================
+//
+//  FormatLngStringW()
+//
+int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  WCHAR* pBuffer = AllocMem(sizeof(WCHAR)*nOutput, HEAP_ZERO_MEMORY);
+  if (pBuffer) {
+    if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
+      StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+    }
+    FreeMem(pBuffer);
+    return (int)StringCchLenW(lpOutput, nOutput);
+  }
+  else
+    return 0;
+}
 
-  return (int)StringCchLen(lpOutput,nOutput);
-
+//=============================================================================
+//
+//  FormatLngStringA()
+//
+int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  CHAR* pBuffer = AllocMem(sizeof(CHAR)*nOutput, HEAP_ZERO_MEMORY);
+  if (pBuffer) {
+    if (LoadLngStringA(uIdFormat, pBuffer, nOutput)) {
+      StringCchVPrintfA(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+    }
+    FreeMem(pBuffer);
+    return (int)StringCchLenA(lpOutput, nOutput);
+  }
+  else 
+    return 0;
 }
 
 
@@ -1392,7 +1530,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
   //SHGetSpecialFolderPath(NULL,tchLinkDir,CSIDL_DESKTOPDIRECTORY,true);
   GetKnownFolderPath(&FOLDERID_Desktop, tchLinkDir, COUNTOF(tchLinkDir));
 
-  GetString(IDS_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
+  GetLngString(IDS_MUI_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));
 
   // Try to construct a valid filename...
   if (!SHGetNewLinkInfo(pszDocument,tchLinkDir,tchLnkFileName,&fMustCopy,SHGNLI_PREFIXNAME))
@@ -1837,8 +1975,8 @@ UINT CharSetFromCodePage(UINT uCodePage) {
 }
 
 
-extern bool bPreserveCaretPos;
-extern bool bSaveFindReplace;
+extern bool g_bPreserveCaretPos;
+extern bool g_bSaveFindReplace;
 
 //=============================================================================
 //
@@ -1894,7 +2032,7 @@ bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBo
   pmru->pszItems[0] = StrDup(pszNew);
 
   pmru->iEncoding[0] = iEnc;
-  pmru->iCaretPos[0] = (bPreserveCaretPos ? iPos : 0);
+  pmru->iCaretPos[0] = (g_bPreserveCaretPos ? iPos : 0);
   pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);
   return true;
 }
@@ -1948,7 +2086,7 @@ bool MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool bRelativePath,bool bUnexpan
     pmru->pszItems[0] = StrDup(pszFile);
   }
   pmru->iEncoding[0] = iEnc;
-  pmru->iCaretPos[0] = (bPreserveCaretPos ? iPos : 0);
+  pmru->iCaretPos[0] = (g_bPreserveCaretPos ? iPos : 0);
   pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);
 
   return true;
@@ -2064,7 +2202,7 @@ bool MRU_Load(LPMRULIST pmru)
         pmru->iEncoding[n] = Encoding_MapIniSetting(true,iCP);
 
         StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
-        pmru->iCaretPos[n] = (bPreserveCaretPos) ? IniSectionGetInt(pIniSection,tchName,0) : 0;
+        pmru->iCaretPos[n] = (g_bPreserveCaretPos) ? IniSectionGetInt(pIniSection,tchName,0) : 0;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
         IniSectionGetString(pIniSection, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
@@ -2828,6 +2966,79 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 #endif
 }
 
+
+//=============================================================================
+//
+//  ReadStrgsFromCSV()
+//
+//
+int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault)
+{
+  static WCHAR wchTmpBuff[MIDSZ_BUFFER];
+
+  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchCSVStrg);
+  TrimString(wchTmpBuff);
+  // separate values
+  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
+  for (int i = 0; i < len; ++i) {
+    if (wchTmpBuff[i] == L',') { wchTmpBuff[i] = L'\0'; }
+  }
+  wchTmpBuff[len + 1] = L'\0'; // double zero at the end
+  // fill default
+  for (int i = 0; i < iCount; ++i) { StringCchCopyW(sMatrix[i], (size_t)iLen, sDefault); }
+  // insert values
+  int n = 0;
+  WCHAR* p = wchTmpBuff;
+  while (*p) {
+    if (n < iCount) {
+      StringCchCopyW(sMatrix[n++], (size_t)iLen, p);
+    }
+    p = StrEnd(p) + 1;
+  }
+  return n;
+}
+
+
+//=============================================================================
+//
+//  ReadVectorFromString()
+//
+//
+int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault)
+{
+  static WCHAR wchTmpBuff[SMALL_BUFFER];
+
+  StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
+  TrimString(wchTmpBuff);
+  // ensure single spaces only
+  WCHAR *p = StrStr(wchTmpBuff, L"  ");
+  while (p) {
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    p = StrStr(wchTmpBuff, L"  ");  // next
+  }
+  // separate values
+  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
+  for (int i = 0; i < len; ++i) {
+    if (wchTmpBuff[i] == L' ') { wchTmpBuff[i] = L'\0'; }
+  }
+  wchTmpBuff[len + 1] = L'\0'; // double zero at the end
+
+  // fill default
+  for (int i = 0; i < iCount; ++i) { iVector[i] = iDefault; }
+  // insert values
+  int n = 0;
+  p = wchTmpBuff;
+  while (*p) {
+    int iValue;
+    if (swscanf_s(p, L"%i", &iValue) == 1) {
+      if (n < iCount) {
+        iVector[n++] = min(max(iValue, iMin), iMax);
+      }
+    }
+    p = StrEnd(p) + 1;
+  }
+  return n;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -45,13 +45,16 @@
 #include "version.h"
 #include "helpers.h"
 #include "encoding.h"
+#include "SciCall.h"
 
 #include "dialogs.h"
 
 
-extern HWND  g_hwndMain;
-extern HWND  g_hwndEdit;
+extern HWND      g_hwndMain;
 extern HINSTANCE g_hInstance;
+extern HMODULE   g_hLngResContainer;
+extern LANGID    g_iPrefLngLocID;
+
 extern WCHAR g_wchWorkingDirectory[];
 extern WCHAR g_wchCurFile[];
 extern WCHAR g_wchAppUserModelID[];
@@ -66,14 +69,14 @@ extern bool bNoEncodingTags;
 extern bool bFixLineEndings;
 extern bool bAutoStripBlanks;
 
-extern int flagNoFileVariables;
-extern int flagUseSystemMRU;
+extern int g_flagNoFileVariables;
+extern int g_flagUseSystemMRU;
 
 
 
 //=============================================================================
 //
-//  MsgBox()
+//  MsgBoxLng()
 //
 static HHOOK hhkMsgBox = NULL;
 
@@ -95,10 +98,10 @@ static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
       
       CenterDlgInParent(hChildWnd);
     }
+    PostMessage(hChildWnd, WM_SETFOCUS, 0, 0);
+
     // exit _MsgBoxProc hook
     UnhookWindowsHookEx(hhkMsgBox);
-
-    
   }
   else // otherwise, continue with any possible chained hooks
   {
@@ -109,60 +112,156 @@ static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
 // -----------------------------------------------------------------------------
 
 
-int MsgBox(int iType,UINT uIdMsg,...)
+int MsgBoxLng(int iType, UINT uIdMsg, ...)
 {
-  WCHAR szText [HUGE_BUFFER] = { L'\0' };
-  WCHAR szBuf  [HUGE_BUFFER] = { L'\0' };
+  WCHAR szText[HUGE_BUFFER] = { L'\0' };
+  WCHAR szBuf[HUGE_BUFFER] = { L'\0' };
   WCHAR szTitle[64] = { L'\0' };
 
-  if (!GetString(uIdMsg,szBuf,COUNTOF(szBuf)))
+  if (!GetLngString(uIdMsg, szBuf, COUNTOF(szBuf)))
     return(0);
 
-  StringCchVPrintfW(szText,COUNTOF(szText),szBuf,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  StringCchVPrintfW(szText, COUNTOF(szText), szBuf, (LPVOID)((PUINT_PTR)&uIdMsg + 1));
 
-  if (uIdMsg == IDS_ERR_LOADFILE || uIdMsg == IDS_ERR_SAVEFILE ||
-      uIdMsg == IDS_CREATEINI_FAIL || uIdMsg == IDS_WRITEINI_FAIL ||
-      uIdMsg == IDS_EXPORT_FAIL) {
+  if (uIdMsg == IDS_MUI_ERR_LOADFILE || uIdMsg == IDS_MUI_ERR_SAVEFILE ||
+    uIdMsg == IDS_MUI_CREATEINI_FAIL || uIdMsg == IDS_MUI_WRITEINI_FAIL ||
+    uIdMsg == IDS_MUI_EXPORT_FAIL) {
     LPVOID lpMsgBuf;
     WCHAR wcht;
     FormatMessage(
-      FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,
+      FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       dwLastIOError,
-      MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),
+      g_iPrefLngLocID,
       (LPTSTR)&lpMsgBuf,
       0,
       NULL);
-    StrTrim(lpMsgBuf,L" \a\b\f\n\r\t\v");
-    StringCchCat(szText,COUNTOF(szText),L"\n");
-    StringCchCat(szText,COUNTOF(szText),lpMsgBuf);
+    StrTrim(lpMsgBuf, L" \a\b\f\n\r\t\v");
+    StringCchCat(szText, COUNTOF(szText), L"\n");
+    StringCchCat(szText, COUNTOF(szText), lpMsgBuf);
     LocalFree(lpMsgBuf);
-    wcht = *CharPrev(szText,StrEnd(szText));
+    wcht = *CharPrev(szText, StrEnd(szText));
     if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
-      StringCchCat(szText,COUNTOF(szText),L".");
+      StringCchCat(szText, COUNTOF(szText), L".");
   }
 
-  GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));
+  GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
 
   int iIcon = MB_ICONHAND;
   switch (iType) {
-    case MBINFO: iIcon = MB_ICONINFORMATION; break;
-    case MBWARN: iIcon = MB_ICONWARNING; break;
-    case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
-    case MBYESNOCANCEL: iIcon = MB_ICONINFORMATION | MB_YESNOCANCEL; break;
-    case MBYESNOWARN: iIcon = MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON1; break;
-    case MBOKCANCEL: iIcon = MB_ICONEXCLAMATION | MB_OKCANCEL; break;
-    case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
-    default: iIcon = MB_ICONSTOP | MB_TOPMOST | MB_OK; break;
+  case MBINFO: iIcon = MB_ICONINFORMATION | MB_OK; break;
+  case MBWARN: iIcon = MB_ICONWARNING | MB_OK; break;
+  case MBYESNO: iIcon = MB_ICONQUESTION | MB_YESNO; break;
+  case MBYESNOCANCEL: iIcon = MB_ICONINFORMATION | MB_YESNOCANCEL; break;
+  case MBYESNOWARN: iIcon = MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON1; break;
+  case MBOKCANCEL: iIcon = MB_ICONEXCLAMATION | MB_OKCANCEL; break;
+  case MBRETRYCANCEL: iIcon = MB_ICONQUESTION | MB_RETRYCANCEL; break;
+  default: iIcon = MB_ICONSTOP | MB_OK; break;
   }
+  iIcon |= (MB_TOPMOST | MB_SETFOREGROUND);
+
+  // center message box to main
+  HWND focus = GetFocus();
+  HWND hwnd = focus ? focus : g_hwndMain;
+  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
+
+  //return  MessageBox(hwnd, szText, szTitle, iIcon);
+  //return  MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
+  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, g_iPrefLngLocID);
+}
+
+
+//=============================================================================
+//
+//  InfoBoxDlgProc()
+//
+//
+typedef struct _infobox {
+  LPWSTR lpstrMessage;
+  LPWSTR lpstrSetting;
+  bool   bDisableCheckBox;
+} INFOBOX, *LPINFOBOX;
+
+INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+  LPINFOBOX lpib;
+
+  switch (umsg)
+  {
+  case WM_INITDIALOG:
+    lpib = (LPINFOBOX)lParam;
+    SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+    SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON,
+      (WPARAM)LoadIcon(NULL, IDI_EXCLAMATION), 0);
+    SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpib->lpstrMessage);
+    if (lpib->bDisableCheckBox)
+      DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false);
+    LocalFree(lpib->lpstrMessage);
+    CenterDlgInParent(hwnd);
+    return true;
+
+  case WM_COMMAND:
+    switch (LOWORD(wParam))
+    {
+    case IDOK:
+    case IDCANCEL:
+    case IDYES:
+    case IDNO:
+      lpib = (LPINFOBOX)GetWindowLongPtr(hwnd, DWLP_USER);
+      if (IsDlgButtonChecked(hwnd, IDC_INFOBOXCHECK))
+        IniSetInt(L"Suppressed Messages", lpib->lpstrSetting, 1);
+      EndDialog(hwnd, LOWORD(wParam));
+      break;
+    }
+    return true;
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
+//  InfoBoxLng()
+//
+//
+extern WCHAR g_wchIniFile[MAX_PATH];
+
+INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
+{
+  int iMode = IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
+
+  if (lstrlen(lpstrSetting) > 0 && iMode == 1)
+    return (iType == MBYESNO) ? IDYES : IDOK;
+
+  WCHAR wchFormat[LARGE_BUFFER];
+  if (!GetLngString(uidMessage, wchFormat, COUNTOF(wchFormat)))
+    return(-1);
+
+  INFOBOX ib;
+  ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
+  StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
+  ib.lpstrSetting = (LPWSTR)lpstrSetting;
+  ib.bDisableCheckBox = (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? true : false;
+
+  int idDlg;
+  switch (iType) {
+  case MBYESNO:
+    idDlg = IDD_MUI_INFOBOX2;
+    break;
+  case MBOKCANCEL:
+    idDlg = IDD_MUI_INFOBOX3;
+    break;
+  default:
+    idDlg = IDD_MUI_INFOBOX;
+    break;
+  }
+
+  MessageBeep(MB_ICONEXCLAMATION);
 
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : g_hwndMain;
 
-  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
-
-  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-
+  return ThemedDialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
 }
 
 
@@ -177,8 +276,8 @@ void DisplayCmdLineHelp(HWND hwnd)
   WCHAR szTitle[32] = { L'\0' };
   WCHAR szText[2048] = { L'\0' };
 
-  GetString(IDS_APPTITLE,szTitle,COUNTOF(szTitle));
-  GetString(IDS_CMDLINEHELP,szText,COUNTOF(szText));
+  GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
+  GetLngString(IDS_MUI_CMDLINEHELP,szText,COUNTOF(szText));
 
   mbp.cbSize = sizeof(MSGBOXPARAMS);
   mbp.hwndOwner = hwnd;
@@ -189,9 +288,12 @@ void DisplayCmdLineHelp(HWND hwnd)
   mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
   mbp.dwContextHelpId = 0;
   mbp.lpfnMsgBoxCallback = NULL;
-  mbp.dwLanguageId = MAKELANGID(LANG_NEUTRAL,SUBLANG_NEUTRAL);
+  mbp.dwLanguageId = g_iPrefLngLocID;
+
+  hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
   MessageBoxIndirect(&mbp);
+  //MsgBoxLng(MBINFO, IDS_MUI_CMDLINEHELP);
 }
 
 
@@ -213,13 +315,13 @@ int CALLBACK BFFCallBack(HWND hwnd,UINT umsg,LPARAM lParam,LPARAM lpData)
 //
 //  GetDirectory()
 //
-bool GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool bNewDialogStyle)
+bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool bNewDialogStyle)
 {
   BROWSEINFO bi;
   WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };;
   WCHAR szBase[MAX_PATH] = { L'\0' };
 
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  GetLngString(uiTitle,szTitle,COUNTOF(szTitle));
 
   if (!pszBase || !*pszBase)
     GetCurrentDirectory(MAX_PATH, szBase);
@@ -327,8 +429,9 @@ static DWORD CALLBACK _LoadRtfCallback(
 // ----------------------------------------------------------------------------
 
 
-static char* pAboutInfoResource = ABOUT_INFO_RTF;
+static char pAboutResource[8192] = { '\0' };
 static char* pAboutInfo;
+
 
 //=============================================================================
 //
@@ -343,25 +446,31 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   {
   case WM_INITDIALOG:
   {
-    SetDlgItemText(hwnd, IDC_VERSION, VERSION_FILEVERSION_LONG);
+    {
+      SetDlgItemText(hwnd, IDC_VERSION, L"" VERSION_FILEVERSION_LONG);
+
+      if (hFontTitle) { DeleteObject(hFontTitle); }
+
+      if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
+        hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+      }
+
+      LOGFONT lf;
+      GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+      POINT dpi = GetSystemDpi();
+      lf.lfWeight = FW_BOLD;
+      lf.lfWidth  = MulDiv(8,  dpi.x, USER_DEFAULT_SCREEN_DPI);
+      lf.lfHeight = MulDiv(22, dpi.y, USER_DEFAULT_SCREEN_DPI);
+      // lf.lfQuality = ANTIALIASED_QUALITY;
+      hFontTitle = CreateFontIndirect(&lf);
+
+      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
+    }
+
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
     SetDlgItemText(hwnd, IDC_COPYRIGHT, VERSION_LEGALCOPYRIGHT);
     SetDlgItemText(hwnd, IDC_AUTHORNAME, VERSION_AUTHORNAME);
     SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
-
-    if (hFontTitle)
-      DeleteObject(hFontTitle);
-    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0)))
-      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-    LOGFONT lf;
-    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-    lf.lfWeight = FW_BOLD;
-    lf.lfWidth = 8;
-    lf.lfHeight = 22;
-    // lf.lfQuality = ANTIALIASED_QUALITY;
-    hFontTitle = CreateFontIndirect(&lf);
-
-    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
 
     if (GetDlgItem(hwnd, IDC_WEBPAGE) == NULL) {
       SetDlgItemText(hwnd, IDC_WEBPAGE2, VERSION_WEBPAGEDISPLAY);
@@ -395,9 +504,17 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
   #if true
+
+    char pAboutRes[4000];
+    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
-    pAboutInfo = pAboutInfoResource;
+    pAboutInfo = pAboutResource;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
+
     
     //DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
     //if (dwSize != 0) {
@@ -490,7 +607,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     case IDC_COPYVERSTRG:
       {
         WCHAR wchVerInfo[1024] = { L'\0' };
-        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), VERSION_FILEVERSION_LONG);
+        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), L"" VERSION_FILEVERSION_LONG);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
         SetClipboardTextW(g_hwndMain, wchVerInfo);
@@ -555,7 +672,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             ExpandEnvironmentStringsEx(szArgs,COUNTOF(szArgs));
             ExtractFirstArgument(szArgs,szFile,szArg2,MAX_PATH);
 
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_MUI_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -609,7 +726,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
               ExtractFirstArgument(arg1,arg1,arg2,MAX_PATH);
 
-              if (StringCchCompareIN(arg1,COUNTOF(arg1),L"notepad3",-1) == 0 ||
+              if (StringCchCompareIN(arg1,COUNTOF(arg1), TSTRG(APPNAME),-1) == 0 ||
                   StringCchCompareIN(arg1,COUNTOF(arg1),L"notepad3.exe",-1) == 0) {
                 GetModuleFileName(NULL,arg1,COUNTOF(arg1));
                 bQuickExit = true;
@@ -671,10 +788,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 void RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 {
-
-  ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_RUN),
-    hwnd,RunDlgProc,(LPARAM)lpstrDefault);
-
+  ThemedDialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_RUN), hwnd, RunDlgProc, (LPARAM)lpstrDefault);
 }
 
 
@@ -682,8 +796,8 @@ void RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 //
 //  OpenWithDlgProc()
 //
-extern WCHAR tchOpenWithDir[MAX_PATH];
-extern int  flagNoFadeHidden;
+extern WCHAR g_tchOpenWithDir[MAX_PATH];
+extern int  g_flagNoFadeHidden;
 
 extern int cxOpenWithDlg;
 extern int cyOpenWithDlg;
@@ -706,7 +820,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_OPENWITHDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
         ListView_InsertColumn(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,&lvc);
         DirList_Init(GetDlgItem(hwnd,IDC_OPENWITHDIR),NULL);
-        DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),tchOpenWithDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
+        DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),g_tchOpenWithDir,DL_ALLOBJECTS,NULL,false,g_flagNoFadeHidden,DS_NAME,false);
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
@@ -761,7 +875,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
           switch(pnmh->code)
           {
             case LVN_GETDISPINFO:
-              DirList_GetDispInfo(GetDlgItem(hwnd,IDC_OPENWITHDIR),lParam,flagNoFadeHidden);
+              DirList_GetDispInfo(GetDlgItem(hwnd,IDC_OPENWITHDIR),lParam,g_flagNoFadeHidden);
               break;
 
             case LVN_DELETEITEM:
@@ -791,9 +905,9 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
         case IDC_GETOPENWITHDIR:
           {
-            if (GetDirectory(hwnd,IDS_OPENWITH,tchOpenWithDir,tchOpenWithDir,true))
+            if (GetDirectory(hwnd,IDS_MUI_OPENWITH,g_tchOpenWithDir,g_tchOpenWithDir,true))
             {
-              DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),tchOpenWithDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
+              DirList_Fill(GetDlgItem(hwnd,IDC_OPENWITHDIR),g_tchOpenWithDir,DL_ALLOBJECTS,NULL,false,g_flagNoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
               ListView_EnsureVisible(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,false);
               ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -843,7 +957,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
   DLITEM dliOpenWith;
   dliOpenWith.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_OPENWITH),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
                              hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
   {
     WCHAR szParam[MAX_PATH] = { L'\0' };
@@ -882,7 +996,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 //
 //  FavoritesDlgProc()
 //
-extern WCHAR tchFavoritesDir[MAX_PATH];
+extern WCHAR g_tchFavoritesDir[MAX_PATH];
 
 extern int cxFavoritesDlg;
 extern int cyFavoritesDlg;
@@ -904,7 +1018,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_FAVORITESDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
         ListView_InsertColumn(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,&lvc);
         DirList_Init(GetDlgItem(hwnd,IDC_FAVORITESDIR),NULL);
-        DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),tchFavoritesDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
+        DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),g_tchFavoritesDir,DL_ALLOBJECTS,NULL,false,g_flagNoFadeHidden,DS_NAME,false);
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
@@ -958,7 +1072,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
           switch(pnmh->code)
           {
             case LVN_GETDISPINFO:
-              DirList_GetDispInfo(GetDlgItem(hwnd,IDC_OPENWITHDIR),lParam,flagNoFadeHidden);
+              DirList_GetDispInfo(GetDlgItem(hwnd,IDC_OPENWITHDIR),lParam,g_flagNoFadeHidden);
               break;
 
             case LVN_DELETEITEM:
@@ -988,9 +1102,9 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
         case IDC_GETFAVORITESDIR:
           {
-            if (GetDirectory(hwnd,IDS_FAVORITES,tchFavoritesDir,tchFavoritesDir,true))
+            if (GetDirectory(hwnd,IDS_MUI_FAVORITES,g_tchFavoritesDir,g_tchFavoritesDir,true))
             {
-              DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),tchFavoritesDir,DL_ALLOBJECTS,NULL,false,flagNoFadeHidden,DS_NAME,false);
+              DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),g_tchFavoritesDir,DL_ALLOBJECTS,NULL,false,g_flagNoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
               ListView_EnsureVisible(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,false);
               ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -1040,7 +1154,7 @@ bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
   ZeroMemory(&dliFavorite, sizeof(DLITEM));
   dliFavorite.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FAVORITES),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
                              hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite))
   {
     StringCchCopyN(lpstrFile,MAX_PATH,dliFavorite.szFileName,MAX_PATH);
@@ -1121,20 +1235,19 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
   StringCchCopy(pszName,COUNTOF(pszName),lpszName);
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_ADDTOFAV),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_ADDTOFAV),
               hwnd,
               AddToFavDlgProc,(LPARAM)pszName);
 
   if (iResult == IDOK)
   {
-    if (!PathCreateFavLnk(pszName,lpszTarget,tchFavoritesDir)) {
-      MsgBox(MBWARN,IDS_FAV_FAILURE);
+    if (!PathCreateFavLnk(pszName,lpszTarget,g_tchFavoritesDir)) {
+      MsgBoxLng(MBWARN,IDS_MUI_FAV_FAILURE);
       return false;
     }
-
     else {
-      MsgBox(MBINFO,IDS_FAV_SUCCESS);
+      MsgBoxLng(MBINFO,IDS_MUI_FAV_SUCCESS);
       return true;
     }
   }
@@ -1151,12 +1264,12 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 //
 //
 extern LPMRULIST g_pFileMRU;
-extern bool bSaveRecentFiles;
-extern bool bPreserveCaretPos;
-extern bool bSaveFindReplace;
+extern bool g_bSaveRecentFiles;
+extern bool g_bPreserveCaretPos;
+extern bool g_bSaveFindReplace;
 extern int  cxFileMRUDlg;
 extern int  cyFileMRUDlg;
-extern int  flagNoFadeHidden;
+extern int  g_flagNoFadeHidden;
 
 typedef struct tagIconThreadInfo
 {
@@ -1231,7 +1344,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
       else
         dwAttr = GetFileAttributes(tch);
 
-      if (!flagNoFadeHidden &&
+      if (!g_flagNoFadeHidden &&
           dwAttr != INVALID_FILE_ATTRIBUTES &&
           dwAttr & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) {
         lvi.mask |= LVIF_STATE;
@@ -1293,11 +1406,11 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         // Update view
         SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-        CheckDlgButton(hwnd, IDC_SAVEMRU, bSaveRecentFiles ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, IDC_PRESERVECARET, bPreserveCaretPos ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, bSaveFindReplace ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_SAVEMRU, g_bSaveRecentFiles ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_PRESERVECARET, g_bPreserveCaretPos ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, g_bSaveFindReplace ? BST_CHECKED : BST_UNCHECKED);
 
-        //if (!bSaveRecentFiles) {
+        //if (!g_bSaveRecentFiles) {
         //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
         //  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, false);
         //}
@@ -1324,9 +1437,9 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         RemoveProp(hwnd,L"it");
         GlobalFree(lpit);
 
-        bSaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
-        bPreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
-        bSaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
+        g_bSaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
+        g_bPreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
+        g_bSaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
 
         ResizeDlg_Destroy(hwnd,&cxFileMRUDlg,&cyFileMRUDlg);
       }
@@ -1424,7 +1537,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
               dwAttr = GetFileAttributes(tch);
 
-              if (!flagNoFadeHidden &&
+              if (!g_flagNoFadeHidden &&
                   dwAttr != INVALID_FILE_ATTRIBUTES &&
                   dwAttr & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) {
                 lpdi->item.mask |= LVIF_STATE;
@@ -1547,7 +1660,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 }
 
                 // Ask...
-                int answ = (LOWORD(wParam) == IDOK) ? MsgBox(MBYESNOWARN, IDS_ERR_MRUDLG) 
+                int answ = (LOWORD(wParam) == IDOK) ? MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_MRUDLG) 
                                                     : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                 if (IDYES == answ) {
@@ -1601,7 +1714,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 {
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FILEMRU),
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FILEMRU),
                 hwnd,FileMRUDlgProc,(LPARAM)lpstrFile))
     return true;
   else
@@ -1619,16 +1732,17 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //            102 Radio Button (Auto-Reload)
 //            103 Check Box    (Reset on New)
 //
-extern int iFileWatchingMode;
-extern bool bResetFileWatching;
+extern int g_iFileWatchingMode;
+extern bool g_bResetFileWatching;
+extern bool g_bChasingDocTail;
 
 INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   switch(umsg)
   {
     case WM_INITDIALOG:
-      CheckRadioButton(hwnd,100,102,100+iFileWatchingMode);
-      if (bResetFileWatching)
+      CheckRadioButton(hwnd,100,102,100+g_iFileWatchingMode);
+      if (g_bResetFileWatching)
         CheckDlgButton(hwnd,103,BST_CHECKED);
       CenterDlgInParent(hwnd);
       return true;
@@ -1638,12 +1752,16 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lP
       {
         case IDOK:
           if (IsDlgButtonChecked(hwnd,100) == BST_CHECKED)
-            iFileWatchingMode = 0;
+            g_iFileWatchingMode = 0;
           else if (IsDlgButtonChecked(hwnd,101) == BST_CHECKED)
-            iFileWatchingMode = 1;
+            g_iFileWatchingMode = 1;
           else
-            iFileWatchingMode = 2;
-          bResetFileWatching = (IsDlgButtonChecked(hwnd,103) == BST_CHECKED) ? true : false;
+            g_iFileWatchingMode = 2;
+
+          g_bResetFileWatching = (IsDlgButtonChecked(hwnd,103) == BST_CHECKED) ? true : false;
+
+          if (g_bChasingDocTail) { SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
+
           EndDialog(hwnd,IDOK);
           break;
 
@@ -1669,8 +1787,8 @@ bool ChangeNotifyDlg(HWND hwnd)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCEW(IDD_CHANGENOTIFY),
+              g_hLngResContainer,
+              MAKEINTRESOURCEW(IDD_MUI_CHANGENOTIFY),
               hwnd,
               ChangeNotifyDlgProc,
               0);
@@ -1758,7 +1876,7 @@ bool ColumnWrapDlg(HWND hwnd,UINT uidDlg, UINT *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
+              g_hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               ColumnWrapDlgProc,(LPARAM)iNumber);
@@ -1879,7 +1997,7 @@ bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
+              g_hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               WordWrapSettingsDlgProc,(LPARAM)iNumber);
@@ -1978,7 +2096,7 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
+              g_hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               LongLineSettingsDlgProc,(LPARAM)iNumber);
@@ -2093,7 +2211,7 @@ bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
+              g_hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               TabSettingsDlgProc,(LPARAM)iNumber);
@@ -2166,7 +2284,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         case IDOK: {
             if (Encoding_GetFromComboboxEx(GetDlgItem(hwnd,IDC_ENCODINGLIST),&pdd->idEncoding)) {
               if (pdd->idEncoding < 0) {
-                MsgBox(MBWARN,IDS_ERR_ENCODINGNA);
+                MsgBoxLng(MBWARN,IDS_MUI_ERR_ENCODINGNA);
                 EndDialog(hwnd,IDCANCEL);
               }
               else {
@@ -2208,8 +2326,8 @@ bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
   dd.idEncoding = *pidREncoding;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_DEFENCODING),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_DEFENCODING),
               hwnd,
               SelectDefEncodingDlgProc,
               (LPARAM)&dd);
@@ -2327,7 +2445,7 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         case IDOK:
           if (Encoding_GetFromListView(hwndLV,&pdd->idEncoding)) {
             if (pdd->idEncoding < 0) {
-              MsgBox(MBWARN,IDS_ERR_ENCODINGNA);
+              MsgBoxLng(MBWARN,IDS_MUI_ERR_ENCODINGNA);
               EndDialog(hwnd,IDCANCEL);
             }
             else
@@ -2373,8 +2491,8 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
   dd.cyDlg = cyEncodingDlg;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_ENCODING),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_ENCODING),
               hwnd,
               SelectEncodingDlgProc,
               (LPARAM)&dd);
@@ -2411,8 +2529,8 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
   dd.cyDlg = cyRecodeDlg;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_RECODE),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_RECODE),
               hwnd,
               SelectEncodingDlgProc,
               (LPARAM)&dd);
@@ -2453,7 +2571,7 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
 
         // Load options
         for (i = 0; i < 3; i++) {
-          GetString(IDS_EOLMODENAME0+i,wch,COUNTOF(wch));
+          GetLngString(IDS_EOL_WIN+i,wch,COUNTOF(wch));
           SendDlgItemMessage(hwnd,100,CB_ADDSTRING,0,(LPARAM)wch);
         }
 
@@ -2502,62 +2620,14 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hInstance,
-              MAKEINTRESOURCE(IDD_DEFEOLMODE),
+              g_hLngResContainer,
+              MAKEINTRESOURCE(IDD_MUI_DEFEOLMODE),
               hwnd,
               SelectDefLineEndingDlgProc,
               (LPARAM)iOption);
 
   return (iResult == IDOK) ? true : false;
 
-}
-
-
-//=============================================================================
-//
-//  InfoBoxDlgProc()
-//
-//
-typedef struct _infobox {
-  LPWSTR lpstrMessage;
-  LPWSTR lpstrSetting;
-  bool   bDisableCheckBox;
-} INFOBOX, *LPINFOBOX;
-
-INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
-{
-  LPINFOBOX lpib;
-
-  switch(umsg)
-  {
-    case WM_INITDIALOG:
-      lpib = (LPINFOBOX)lParam;
-      SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
-      SendDlgItemMessage(hwnd,IDC_INFOBOXICON,STM_SETICON,
-        (WPARAM)LoadIcon(NULL,IDI_EXCLAMATION),0);
-      SetDlgItemText(hwnd,IDC_INFOBOXTEXT,lpib->lpstrMessage);
-      if (lpib->bDisableCheckBox)
-        DialogEnableWindow(hwnd,IDC_INFOBOXCHECK,false);
-      LocalFree(lpib->lpstrMessage);
-      CenterDlgInParent(hwnd);
-      return true;
-
-    case WM_COMMAND:
-      switch(LOWORD(wParam))
-      {
-        case IDOK:
-        case IDCANCEL:
-        case IDYES:
-        case IDNO:
-          lpib = (LPINFOBOX)GetWindowLongPtr(hwnd,DWLP_USER);
-          if (IsDlgButtonChecked(hwnd,IDC_INFOBOXCHECK))
-            IniSetInt(L"Suppressed Messages",lpib->lpstrSetting,1);
-          EndDialog(hwnd,LOWORD(wParam));
-          break;
-      }
-      return true;
-  }
-  return false;
 }
 
 
@@ -2571,7 +2641,6 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 {
   WINDOWPLACEMENT wndpl;
   wndpl.length = sizeof(WINDOWPLACEMENT);
-
   GetWindowPlacement(hwnd, &wndpl);
 
   WININFO wi;
@@ -2579,7 +2648,8 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   wi.y = wndpl.rcNormalPosition.top;
   wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
   wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
-  wi.max = (IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED));
+  wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
+  wi.zoom = SciCall_GetZoom();
 
   if (hMonitorInfo)
   {
@@ -2611,7 +2681,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", g_wchAppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
 
-  StringCchPrintf(tch, COUNTOF(tch), L" \"-sysmru=%i\"", (flagUseSystemMRU == 2) ? 1 : 0);
+  StringCchPrintf(tch, COUNTOF(tch), L" \"-sysmru=%i\"", (g_flagUseSystemMRU == 2) ? 1 : 0);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
@@ -2678,7 +2748,7 @@ void DialogFileBrowse(HWND hwnd)
   {
     ExtractFirstArgument(tchTemp, tchExeFile, tchParam, MAX_PATH+2);
     if (PathIsRelative(tchExeFile)) {
-      if (!SearchPath(NULL, tchExeFile, NULL, COUNTOF(tchTemp), tchTemp, NULL)) {
+      if (!SearchPath(NULL, tchExeFile, L".exe", COUNTOF(tchTemp), tchTemp, NULL)) {
         GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
         PathRemoveFileSpec(tchTemp);
         PathCchAppend(tchTemp, COUNTOF(tchTemp), tchExeFile);
@@ -2687,7 +2757,7 @@ void DialogFileBrowse(HWND hwnd)
     }
   }
   else {
-    if (!SearchPath(NULL, L"minipath.exe", NULL, COUNTOF(tchExeFile), tchExeFile, NULL)) {
+    if (!SearchPath(NULL, L"minipath.exe", L".exe", COUNTOF(tchExeFile), tchExeFile, NULL)) {
       GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
       PathRemoveFileSpec(tchExeFile);
       PathCchAppend(tchExeFile, COUNTOF(tchExeFile), L"minipath.exe");
@@ -2716,28 +2786,31 @@ void DialogFileBrowse(HWND hwnd)
   ShellExecuteEx(&sei);
 
   if ((INT_PTR)sei.hInstApp < 32)
-    MsgBox(MBWARN, IDS_ERR_BROWSE);
+    MsgBoxLng(MBWARN, IDS_MUI_ERR_BROWSE);
 
 }
 
 
 //=============================================================================
 //
-//  DialogUpdateCheck()
+//  DialogAdminExe()
 //
 //
-void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
-{
-  WCHAR tchExeFile[MAX_PATH+2];
-  WCHAR tchTemp[MAX_PATH+2];
+extern WCHAR g_tchAdministrationExe[];
 
-  if (!IniGetString(L"Settings2", L"UpdateChecker.exe", L"", tchTemp, COUNTOF(tchTemp))) 
-  {
-    if (!SearchPath(NULL, L"wyUpdate.exe", NULL, COUNTOF(tchExeFile), tchExeFile, NULL)) {
-      GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
-      PathRemoveFileSpec(tchExeFile);
-      PathCchAppend(tchExeFile, COUNTOF(tchExeFile), L"wyUpdate.exe");
-    }
+void DialogAdminExe(HWND hwnd, bool bExecInstaller)
+{
+  WCHAR tchExe[MAX_PATH+2];
+
+  StringCchCopyW(tchExe, COUNTOF(tchExe), g_tchAdministrationExe);
+  if (bExecInstaller && !StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
+
+  WCHAR tchExePath[MAX_PATH + 2];
+  if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
+    // try Notepad3's dir path
+    GetModuleFileName(NULL, tchExePath, COUNTOF(tchExePath));
+    PathRemoveFileSpec(tchExePath);
+    PathCchAppend(tchExePath, COUNTOF(tchExePath), tchExe);
   }
 
   SHELLEXECUTEINFO sei;
@@ -2746,7 +2819,7 @@ void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
   sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
   sei.hwnd = hwnd;
   sei.lpVerb = NULL;
-  sei.lpFile = tchExeFile;
+  sei.lpFile = tchExePath;
   sei.lpParameters = NULL; // tchParam;
   sei.lpDirectory = g_wchWorkingDirectory;
   sei.nShow = SW_SHOWNORMAL;
@@ -2755,7 +2828,7 @@ void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
     ShellExecuteEx(&sei);
     if ((INT_PTR)sei.hInstApp < 32)
     {
-      if (IDOK == InfoBox(MBOKCANCEL, L"NoUpdateChecker", IDS_ERR_UPDATECHECKER))
+      if (IDOK == InfoBoxLng(MBOKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))
       {
         sei.lpFile = VERSION_UPDATE_CHECK;
         ShellExecuteEx(&sei);
@@ -2766,52 +2839,6 @@ void DialogUpdateCheck(HWND hwnd, bool bExecInstaller)
     sei.lpFile = VERSION_UPDATE_CHECK;
     ShellExecuteEx(&sei);
   }
-}
-
-
-//=============================================================================
-//
-//  InfoBox()
-//
-//
-extern WCHAR g_wchIniFile[MAX_PATH];
-
-INT_PTR InfoBox(int iType,LPCWSTR lpstrSetting,int uidMessage,...)
-{
-  int iMode = IniGetInt(L"Suppressed Messages",lpstrSetting,0);
-
-  if (lstrlen(lpstrSetting) > 0 && iMode == 1)
-    return (iType == MBYESNO) ? IDYES : IDOK;
-
-  WCHAR wchFormat[LARGE_BUFFER];
-  if (!GetString(uidMessage,wchFormat,COUNTOF(wchFormat)))
-    return(-1);
-
-  INFOBOX ib;
-  ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
-  StringCchVPrintfW(ib.lpstrMessage,HUGE_BUFFER,wchFormat,(LPVOID)((PUINT_PTR)&uidMessage + 1));
-  ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? true : false;
-
-  int idDlg;
-  switch (iType) {
-  case MBYESNO:
-    idDlg = IDD_INFOBOX2;
-    break;
-  case MBOKCANCEL:
-    idDlg = IDD_INFOBOX3;
-    break;
-  default:
-    idDlg = IDD_INFOBOX;
-    break;
-  }
-
-  HWND focus = GetFocus();
-  HWND hwnd = focus ? focus : g_hwndMain;
-
-  MessageBeep(MB_ICONEXCLAMATION);
-
-  return ThemedDialogBoxParam(g_hInstance, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
 }
 
 //  End of Dialogs.c

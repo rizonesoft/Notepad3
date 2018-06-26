@@ -1,6 +1,6 @@
 // Scintilla source code edit control
 /** @file ExternalLexer.cxx
- ** Support external lexers in DLLs.
+ ** Support external lexers in DLLs or shared libraries.
  **/
 // Copyright 2001 Simon Steele <ss@pnotepad.org>, portions copyright Neil Hodgson.
 // The License.txt file describes the conditions under which this software may be distributed.
@@ -11,6 +11,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <memory>
 

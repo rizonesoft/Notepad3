@@ -52,7 +52,10 @@ typedef struct _wi
   int cx;
   int cy;
   int max;
+  int zoom;
 } WININFO;
+
+#define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0 }
 
 // --------------------------------------------------------------------------
 
@@ -65,6 +68,7 @@ typedef enum BufferSizes
   LARGE_BUFFER = 512,
   HUGE_BUFFER = 1024,
   XHUGE_BUFFER = 2048,
+  XXXL_BUFFER = 4096,
 
   FILE_ARG_BUF = MAX_PATH + 2,
   FNDRPL_BUFFER = 1024,
@@ -76,6 +80,26 @@ typedef enum BufferSizes
 typedef enum { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
 typedef enum { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
 typedef enum { MBINFO = 0, MBWARN, MBYESNO, MBYESNOWARN, MBYESNOCANCEL, MBOKCANCEL, MBRETRYCANCEL } MBTYPES;
+
+//==== Statusbar ==============================================================
+
+typedef WCHAR prefix_t[MICRO_BUFFER];
+
+typedef enum {
+  STATUS_DOCLINE = 0, STATUS_DOCCOLUMN, STATUS_SELECTION, STATUS_SELCTBYTES, STATUS_SELCTLINES, STATUS_OCCURRENCE,
+  STATUS_DOCSIZE, STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF, STATUS_LEXER,
+  STATUS_SECTOR_COUNT,
+  STATUS_HELP = 255
+} STATUS_SECTOR_T;
+
+#define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } 
+#define SBS_INIT_MINUS { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 } 
+#define SBS_INIT_ORDER { 0, 1, 2, 3, 4, 5, 6, 7. 8. 9, 10, 11 }
+
+#define STATUSBAR_EXTION_PREFIXES L"Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,"
+#define STATUSBAR_DEFAULT_IDS  L"0 1 2 4 5 6 7 8 9 10 11"
+#define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0"
+#define STAUSBAR_RIGHT_MARGIN 20
 
 // --------------------------------------------------------------------------
 
@@ -123,7 +147,8 @@ typedef struct _cmq
 // --------------------------------------------------------------------------
 
 #define MARKER_NP3_BOOKMARK      1
-#define MARKER_NP3_OCCUR_LINE    2
+
+#define LINESTATE_OCCURRENCE_MARK 0x4
 
 #define INDIC_NP3_MARK_OCCURANCE 1
 #define INDIC_NP3_MATCH_BRACE    2

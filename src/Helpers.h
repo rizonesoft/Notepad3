@@ -20,7 +20,7 @@
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
 #include <shlwapi.h>
-#include <VersionHelpers.h>
+#include <versionhelpers.h>
 
 #include "typedefs.h"
 
@@ -31,7 +31,7 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 
 // ============================================================================
 
-#define STRGFY(X)     L##X
+#define STRGFY(X)     L##(X)
 #define MKWSTRG(strg) STRGFY(strg)
 
 #define UNUSED(expr) (void)(expr)
@@ -103,10 +103,7 @@ __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, D
   WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
-//extern HWND g_hwndEdit;
-#define BeginWaitCursor(TCH) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetText(g_hwndStatus,STATUS_HELP,(TCH)); IgnoreNotifyChangeEvent(); }
-#define BeginWaitCursorID(UID) { SciCall_SetCursor(SC_CURSORWAIT); StatusSetTextID(g_hwndStatus,STATUS_HELP,(UID)); IgnoreNotifyChangeEvent(); }
-#define EndWaitCursor() { POINT pt; SciCall_SetCursor(SC_CURSORNORMAL); GetCursorPos(&pt); SetCursorPos(pt.x,pt.y); StatusSetSimple(g_hwndStatus,false); ObserveNotifyChangeEvent(); UpdateStatusbar(); }
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
@@ -147,6 +144,7 @@ bool BitmapAlphaBlend(HBITMAP,COLORREF,BYTE);
 bool BitmapGrayScale(HBITMAP);
 bool VerifyContrast(COLORREF,COLORREF);
 bool IsFontAvailable(LPCWSTR);
+POINT GetSystemDpi();
 
 
 bool SetWindowTitle(HWND,UINT,bool,UINT,LPCWSTR,int,bool,UINT,bool,LPCWSTR);
@@ -168,10 +166,10 @@ void DeleteBitmapButton(HWND,int);
 
 
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
-bool StatusSetText(HWND,UINT,LPCWSTR);
+void StatusSetText(HWND,UINT,LPCWSTR);
 bool StatusSetTextID(HWND,UINT,UINT);
 COLORREF GetBackgroundColor(HWND);
-int  StatusCalcPaneWidth(HWND,LPCWSTR);
+LONG StatusCalcPaneWidth(HWND,LPCWSTR);
 
 int Toolbar_GetButtons(HWND,int,LPWSTR,int);
 int Toolbar_SetButtons(HWND,int,LPCWSTR,void*,int);
@@ -190,11 +188,16 @@ bool IsCmdEnabled(HWND, UINT);
 #define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
-#define GetString(id,pb,cb) LoadString(g_hInstance,id,pb,cb)
-
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 
-int FormatString(LPWSTR,int,UINT,...);
+
+#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
+#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
+int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
+int FormatLngStringW(LPWSTR, int, UINT, ...);
+int FormatLngStringA(LPSTR, int, UINT, ...);
+
 
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
 void PathRelativeToApp(LPWSTR,LPWSTR,int,bool,bool,bool);
@@ -312,7 +315,7 @@ bool GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
 
-//==== strCut methods ===================
+//==== StrCut methods ===================
 
 CHAR*  _StrCutIA(CHAR*,const CHAR*);
 WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
@@ -321,6 +324,17 @@ WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
 #else
 #define StrCutI _StrCutIA
 #endif
+
+
+//==== StrNextTok methods ===================
+CHAR*  _StrNextTokA(CHAR*, const CHAR*);
+WCHAR* _StrNextTokW(WCHAR*, const WCHAR*);
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrNextTok _StrNextTokW
+#else
+#define StrNextTok _StrNextTokA
+#endif
+
 
 //==== StrSafe lstrlen() =======================================================
 __forceinline DocPos StringCchLenA(LPCSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, m, &len)) ? len : m)); }
@@ -389,8 +403,10 @@ __forceinline int GetHexDigit(char ch) {
 }
 
 
-
 void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
+
+int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault);
+int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
@@ -401,6 +417,8 @@ __forceinline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED
 __forceinline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
 __forceinline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
 __forceinline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
+
+
 
 // special Drag and Drop Handling
 

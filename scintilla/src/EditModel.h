@@ -54,13 +54,17 @@ public:
 
 	EditModel();
 	// Deleted so EditModel objects can not be copied.
-	explicit EditModel(const EditModel &) = delete;
+	EditModel(const EditModel &) = delete;
+	EditModel(EditModel &&) = delete;
 	EditModel &operator=(const EditModel &) = delete;
+	EditModel &operator=(EditModel &&) = delete;
 	virtual ~EditModel();
 	virtual Sci::Line TopLineOfMain() const = 0;
 	virtual Point GetVisibleOriginInMain() const = 0;
 	virtual Sci::Line LinesOnScreen() const = 0;
 	virtual Range GetHotSpotRange() const = 0;
+	bool BidirectionalEnabled() const;
+	bool BidirectionalR2L() const;
 };
 
 }

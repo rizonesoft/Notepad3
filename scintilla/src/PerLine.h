@@ -30,11 +30,13 @@ public:
 	MarkerHandleSet();
 	// Deleted so MarkerHandleSet objects can not be copied.
 	MarkerHandleSet(const MarkerHandleSet &) = delete;
+	MarkerHandleSet(MarkerHandleSet &&) = delete;
 	void operator=(const MarkerHandleSet &) = delete;
+	void operator=(MarkerHandleSet &&) = delete;
 	~MarkerHandleSet();
-	bool Empty() const;
-	int MarkValue() const;	///< Bit set of marker numbers.
-	bool Contains(int handle) const;
+	bool Empty() const noexcept;
+	int MarkValue() const noexcept;	///< Bit set of marker numbers.
+	bool Contains(int handle) const noexcept;
 	bool InsertHandle(int handle, int markerNum);
 	void RemoveHandle(int handle);
 	bool RemoveNumber(int markerNum, bool all);
@@ -48,15 +50,17 @@ class LineMarkers : public PerLine {
 public:
 	LineMarkers() : handleCurrent(0) {
 	}
-	// Deleted so Worker objects can not be copied.
+	// Deleted so LineMarkers objects can not be copied.
 	LineMarkers(const LineMarkers &) = delete;
+	LineMarkers(LineMarkers &&) = delete;
 	void operator=(const LineMarkers &) = delete;
+	void operator=(LineMarkers &&) = delete;
 	~LineMarkers() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
 	void RemoveLine(Sci::Line line) override;
 
-	int MarkValue(Sci::Line line);
+	int MarkValue(Sci::Line line) noexcept;
 	Sci::Line MarkerNext(Sci::Line lineStart, int mask) const;
 	int AddMark(Sci::Line line, int markerNum, Sci::Line lines);
 	void MergeMarkers(Sci::Line line);
@@ -70,9 +74,11 @@ class LineLevels : public PerLine {
 public:
 	LineLevels() {
 	}
-	// Deleted so Worker objects can not be copied.
+	// Deleted so LineLevels objects can not be copied.
 	LineLevels(const LineLevels &) = delete;
+	LineLevels(LineLevels &&) = delete;
 	void operator=(const LineLevels &) = delete;
+	void operator=(LineLevels &&) = delete;
 	~LineLevels() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
@@ -89,9 +95,11 @@ class LineState : public PerLine {
 public:
 	LineState() {
 	}
-	// Deleted so Worker objects can not be copied.
+	// Deleted so LineState objects can not be copied.
 	LineState(const LineState &) = delete;
+	LineState(LineState &&) = delete;
 	void operator=(const LineState &) = delete;
+	void operator=(LineState &&) = delete;
 	~LineState() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
@@ -107,9 +115,11 @@ class LineAnnotation : public PerLine {
 public:
 	LineAnnotation() {
 	}
-	// Deleted so Worker objects can not be copied.
+	// Deleted so LineAnnotation objects can not be copied.
 	LineAnnotation(const LineAnnotation &) = delete;
+	LineAnnotation(LineAnnotation &&) = delete;
 	void operator=(const LineAnnotation &) = delete;
+	void operator=(LineAnnotation &&) = delete;
 	~LineAnnotation() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
@@ -134,9 +144,11 @@ class LineTabstops : public PerLine {
 public:
 	LineTabstops() {
 	}
-	// Deleted so Worker objects can not be copied.
+	// Deleted so LineTabstops objects can not be copied.
 	LineTabstops(const LineTabstops &) = delete;
+	LineTabstops(LineTabstops &&) = delete;
 	void operator=(const LineTabstops &) = delete;
+	void operator=(LineTabstops &&) = delete;
 	~LineTabstops() override;
 	void Init() override;
 	void InsertLine(Sci::Line line) override;
