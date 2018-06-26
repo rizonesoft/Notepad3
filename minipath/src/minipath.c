@@ -12,15 +12,17 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
-#include <stdio.h>
-#include <string.h>
+#include <strsafe.h>
+#include <muiload.h>
 #include "helpers.h"
 #include "dlapi.h"
 #include "dialogs.h"
@@ -145,8 +147,16 @@ WCHAR szDDEMsg[256] = L"";
 WCHAR szDDEApp[256] = L"";
 WCHAR szDDETopic[256] = L"";
 
-HINSTANCE g_hInstance;
 UINT16    g_uWinVer;
+
+HINSTANCE            g_hInstance = NULL;
+HMODULE              g_hLngResContainer = NULL;
+
+WCHAR                g_tchPrefLngLocName[64];
+LANGID               g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
+#define              LNG_AVAILABLE_COUNT 6
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR nl-NL"; // en-US internal
+static LANGID const  g_iAvailableLanguages[LNG_AVAILABLE_COUNT] = { 1078, 1031, 3082, 2057, 1036, 1043 }; // 1033 internal
 
 
 //=============================================================================
@@ -165,11 +175,108 @@ int flagPosParam        = 0;
 
 //=============================================================================
 //
+//  _LngStrToMultiLngStr
+//
+//
+static BOOL __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
+{
+  BOOL rtnVal = TRUE;
+
+  size_t strLen = (size_t)lstrlen(pLngStr);
+
+  if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
+    WCHAR* lngMultiStrPtr = pLngMultiStr;
+    WCHAR* last = pLngStr + (pLngStr[0] == 0xFEFF ? 1 : 0); // if read from unicode (UTF-16 LE) file
+    while (last && rtnVal) {
+      // make sure you validate the user input
+      WCHAR* next = StrNextTok(last, L",; :");
+      if (next) { *next = L'\0'; }
+      strLen = (size_t)lstrlen(last);
+      if ((strLen > 0) && IsValidLocaleName(last)) {
+        lngMultiStrPtr[0] = L'\0';
+        rtnVal &= (lstrcat(lngMultiStrPtr, last) != NULL);
+        lngMultiStrPtr += strLen + 1;
+      }
+      last = (next ? next + 1 : next);
+    }
+    if (rtnVal && (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr))) // make sure there is a double null term for the multi-string
+    {
+      lngMultiStrPtr[0] = L'\0';
+    }
+    else // fail and guard anyone whom might use the multi-string
+    {
+      lngMultiStrPtr[0] = L'\0';
+      lngMultiStrPtr[1] = L'\0';
+    }
+  }
+  return rtnVal;
+}
+
+
+//=============================================================================
+//
+//  _LoadLanguageResources
+//
+//
+static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
+{
+  BOOL bLngAvailable = FALSE;
+  for (int i = 0; i < COUNTOF(g_iAvailableLanguages); ++i) {
+    if (g_iAvailableLanguages[i] == langID) {
+      bLngAvailable = TRUE;
+      break;
+    }
+  }
+  if (!bLngAvailable) { return NULL; }
+
+  WCHAR tchAvailLngs[256] = { L'\0' };
+  lstrcpy(tchAvailLngs, g_tchAvailableLanguages);
+  WCHAR tchUserLangMultiStrg[128] = { L'\0' };
+  if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, 512)) {
+    GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
+    return NULL;
+  }
+
+  // set the appropriate fallback list
+  DWORD langCount = 0;
+  // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
+  if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
+    GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
+    return NULL;
+  }
+  SetThreadUILanguage(langID);
+
+  // NOTES:
+  // an application developer that makes the assumption the fallback list provided by the
+  // system / OS is entirely sufficient may or may not be making a good assumption based  mostly on:
+  // A. your choice of languages installed with your application
+  // B. the languages on the OS at application install time
+  // C. the OS users propensity to install/uninstall language packs
+  // D. the OS users propensity to change language settings
+
+  // obtains access to the proper resource container 
+  // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
+
+  HMODULE hLangResourceContainer = LoadMUILibraryW(L"lng/mplng.dll", MUI_LANGUAGE_NAME, langID);
+
+  //if (!hLangResourceContainer)
+  //{
+  //  GetLastErrorToMsgBox(L"LoadMUILibrary", 0);
+  //  return NULL;
+  //}
+
+  return hLangResourceContainer;
+}
+
+
+//=============================================================================
+//
 //  WinMain()
 //
 //
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int nCmdShow)
 {
+  UNUSED(hPrevInst);
 
   MSG    msg;
   HWND   hwnd;
@@ -198,8 +305,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   LoadFlags();
 
   // Try to activate another window
-  if (ActivatePrevInst())
-    return(0);
+  if (ActivatePrevInst()) { return(0); }
 
   // Init OLE and Common Controls
   OleInitialize(NULL);
@@ -213,19 +319,42 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // Load Settings
   LoadSettings();
 
-  if (!InitApplication(hInstance))
-    return FALSE;
+  // ----------------------------------------------------
+  // MultiLingual
+  //
+  g_iPrefLngLocID = GetUserDefaultUILanguage();
+  BOOL bPrefLngDefined = (lstrlen(g_tchPrefLngLocName) > 0) ? TRUE : FALSE;
+  BOOL bPrefLngNotAvail = FALSE;
+  if (bPrefLngDefined) {
+    bPrefLngDefined = TRUE;
+    DWORD dwLangID = 0;
+    GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
+    g_iPrefLngLocID = (LANGID)dwLangID;
+  }
+
+  g_hLngResContainer = _LoadLanguageResources(g_iPrefLngLocID);
+
+  if (!g_hLngResContainer) // fallback en-US (1033)
+  {
+    g_hLngResContainer = g_hInstance;
+    if (g_iPrefLngLocID != 1033) { bPrefLngNotAvail = TRUE; }
+  }
+  // ----------------------------------------------------
+
+  if (!InitApplication(hInstance)) { return FALSE; }
 
   hwnd = InitInstance(hInstance, lpCmdLine, nCmdShow);
-  if (!hwnd)
-    return FALSE;
+  if (!hwnd) { return FALSE; }
 
   hAcc = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
 
+  if (bPrefLngDefined && bPrefLngNotAvail) {
+    ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, g_tchPrefLngLocName);
+  }
+
   while (GetMessage(&msg,NULL,0,0))
   {
-    if (!TranslateAccelerator(hwnd,hAcc,&msg))
-    {
+    if (!TranslateAccelerator(hwnd,hAcc,&msg)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
@@ -233,8 +362,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   
   OleUninitialize();
 
-  UNUSED(hPrevInst);
-  
   return(int)(msg.wParam);
 }
 
@@ -584,7 +711,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           nID != IDC_REBAR)
         return DefWindowProc(hwnd,umsg,wParam,lParam);
 
-      hmenu = LoadMenu(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+      hmenu = LoadMenu(g_hLngResContainer,MAKEINTRESOURCE(IDR_MAINWND));
       SetMenuDefaultItem(GetSubMenu(hmenu,0),IDM_FILE_OPEN,FALSE);
 
       switch(nID)
@@ -663,8 +790,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           break;
 
         case SC_ABOUT:
-          ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_ABOUT),
-            hwnd,AboutDlgProc);
+          ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_ABOUT),hwnd,AboutDlgProc);
           break;
 
         default:
@@ -678,7 +804,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         case WM_RBUTTONUP: {
 
-            HMENU hMenu = LoadMenu(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+            HMENU hMenu = LoadMenu(g_hLngResContainer,MAKEINTRESOURCE(IDR_MAINWND));
             HMENU hMenuPopup = GetSubMenu(hMenu,4);
 
             POINT pt;
@@ -840,9 +966,9 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SetMenuItemInfo(hmenu,SC_MINIMIZE,FALSE,&mii);
 
   // Add specific items
-  GetString(SC_ALWAYSONTOP,tch,COUNTOF(tch));
+  GetLngString(SC_ALWAYSONTOP,tch,COUNTOF(tch));
   InsertMenu(hmenu,SC_MOVE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_ALWAYSONTOP,tch);
-  GetString(SC_ABOUT,tch,COUNTOF(tch));
+  GetLngString(SC_ABOUT,tch,COUNTOF(tch));
   InsertMenu(hmenu,SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_ABOUT,tch);
   InsertMenu(hmenu,SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
 
@@ -990,7 +1116,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
     else if ((n == 5 || n == 8) && lstrcmpi(tchDesc,L"(none)") != 0) {
 
-      GetString(42000+n,tchDesc,COUNTOF(tchDesc));
+      GetLngString(42000+n,tchDesc,COUNTOF(tchDesc));
       tbbMainWnd[i].iString = SendMessage(hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
       tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
     }
@@ -1472,9 +1598,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WCHAR szPath[MAX_PATH];
 
         lstrcpy(szNewFile,L"");
-        GetString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
+        GetLngString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
         PrepareFilterStr(szFilter);
-        GetString(IDS_NEWFILE,szTitle,COUNTOF(szTitle));
+        GetLngString(IDS_NEWFILE,szTitle,COUNTOF(szTitle));
 
         ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
@@ -1573,7 +1699,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
         lstrcpy(szNewFile,dli.szFileName);
-        GetString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
+        GetLngString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
         PrepareFilterStr(szFilter);
 
         ZeroMemory(&ofn,sizeof(OPENFILENAME));
@@ -1592,7 +1718,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         BeginWaitCursor();
 
-        FormatString(tch,COUNTOF(tch),IDS_SAVEFILE,dli.szDisplayName);
+        FormatLngStringW(tch,COUNTOF(tch),IDS_SAVEFILE,dli.szDisplayName);
         StatusSetText(hwndStatus,ID_MENUHELP,tch);
         StatusSetSimple(hwndStatus,TRUE);
         InvalidateRect(hwndStatus,NULL,TRUE);
@@ -1949,8 +2075,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_FINDTARGET:
-      ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-        hwnd,FindTargetDlgProc,(LPARAM)NULL);
+      ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwnd,FindTargetDlgProc,(LPARAM)NULL);
       break;
 
 
@@ -2098,8 +2223,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case ACC_SELECTTARGET:
-      ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-        hwnd,FindTargetDlgProc,(LPARAM)NULL);
+      ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwnd,FindTargetDlgProc,(LPARAM)NULL);
       break;
 
 
@@ -2413,8 +2537,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               {
                 wsprintf(tchnum,L"%u",ListView_GetItemCount(hwndDirList));
                 FormatNumberStr(tchnum);
-                FormatString(tch,COUNTOF(tch),
-                  (lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
+                FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
               }
 
               StatusSetText(hwndStatus,ID_FILEINFO,tch);
@@ -2489,7 +2612,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(tbbMainWnd))
             {
               WCHAR tch[256];
-              GetString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
+              GetLngString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
               lstrcpyn(((LPTBNOTIFY)lParam)->pszText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
               return TRUE;
@@ -2528,7 +2651,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             else
             {
-              GetString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
+              GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
               lstrcpyn(((LPTOOLTIPTEXT)lParam)->szText,tch,80);
             }
           }
@@ -2628,8 +2751,7 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
 
     wsprintf(tchnum,L"%u",cItems);
     FormatNumberStr(tchnum);
-    FormatString(tch,COUNTOF(tch),
-      (lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
+    FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
     StatusSetText(hwndStatus,ID_FILEINFO,tch);
 
     // Update History
@@ -3060,6 +3182,9 @@ void LoadFlags()
   int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
+
+  IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
+                      g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
 
   if (!flagNoReuseWindow) {
 
@@ -3566,7 +3691,7 @@ BOOL ActivatePrevInst()
       WCHAR *c;
 
       // Prepare message
-      GetString(IDS_ERR_PREVWINDISABLED,szBuf,COUNTOF(szBuf));
+      GetLngString(IDS_ERR_PREVWINDISABLED,szBuf,COUNTOF(szBuf));
       c = StrChr(szBuf,L'\n');
       if (c)
       {
@@ -3600,10 +3725,9 @@ void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
   static HICON hIcon;
   NOTIFYICONDATA nid;
 
-  if (!hIcon)
-    hIcon = LoadImage(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND),
-                      IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
-
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+  }
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
   nid.hWnd = hwnd;
@@ -3675,7 +3799,6 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
     IniSectionGetString(pIniSection,L"DDEApplication",szDDEApp,szDDEApp,COUNTOF(szDDEApp));
     IniSectionGetString(pIniSection,L"DDETopic",szDDETopic,szDDETopic,COUNTOF(szDDETopic));
   }
-
   else if (iUseTargetApplication && lstrlen(szTargetApplication) == 0) {
     iUseTargetApplication = 1;
     iTargetApplicationMode = 1;
@@ -3691,8 +3814,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
 
   if (iUseTargetApplication == 4 ||
      (iUseTargetApplication && lstrlen(szTargetApplication) == 0)) {
-    ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-      hwndMain,FindTargetDlgProc,(LPARAM)NULL);
+    ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwndMain,FindTargetDlgProc,(LPARAM)NULL);
     return;
   }
 
@@ -3732,7 +3854,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
         WCHAR *c;
 
         // Prepare message
-        GetString(IDS_ERR_TARGETDISABLED,szBuf,COUNTOF(szBuf));
+        GetLngString(IDS_ERR_TARGETDISABLED,szBuf,COUNTOF(szBuf));
         c = StrChr(szBuf,L'\n');
         if (c) {
           *c = 0;

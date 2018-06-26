@@ -1219,21 +1219,22 @@ int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
 }
 
 
-
 //=============================================================================
 //
 //  FormatLngStringW()
 //
 int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
 {
-  static WCHAR pBuffer[XHUGE_BUFFER];
-  pBuffer[0] = L'\0';
-
-  if (LoadLngStringW(uIdFormat, pBuffer, nOutput))
-  {
-    StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+  WCHAR* pBuffer = AllocMem(sizeof(WCHAR)*nOutput, HEAP_ZERO_MEMORY);
+  if (pBuffer) {
+    if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
+      StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+    }
+    FreeMem(pBuffer);
+    return (int)StringCchLenW(lpOutput, nOutput);
   }
-  return (int)StringCchLenW(lpOutput, nOutput);
+  else
+    return 0;
 }
 
 //=============================================================================
@@ -1242,14 +1243,16 @@ int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
 //
 int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
 {
-  static CHAR pBuffer[XHUGE_BUFFER];
-  pBuffer[0] = L'\0';
-
-  if (LoadLngStringA(uIdFormat, pBuffer, nOutput))
-  {
-    StringCchVPrintfA(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+  CHAR* pBuffer = AllocMem(sizeof(CHAR)*nOutput, HEAP_ZERO_MEMORY);
+  if (pBuffer) {
+    if (LoadLngStringA(uIdFormat, pBuffer, nOutput)) {
+      StringCchVPrintfA(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+    }
+    FreeMem(pBuffer);
+    return (int)StringCchLenA(lpOutput, nOutput);
   }
-  return (int)StringCchLenA(lpOutput, nOutput);
+  else 
+    return 0;
 }
 
 

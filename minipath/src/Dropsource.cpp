@@ -12,8 +12,9 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601
 #include <windows.h>
+//#include <strsafe.h>
 #include "helpers.h"
 #include "dropsource.h"
 

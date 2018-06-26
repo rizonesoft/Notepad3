@@ -723,7 +723,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
   if (bPrefLngNotAvail) {
-    InfoBoxLng(MBWARN, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL);
+    InfoBoxLng(MBWARN, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, g_tchPrefLngLocName);
   }
 
   MSG msg;
@@ -7467,7 +7467,7 @@ static bool __fastcall _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
-  if (GetPrivateProfileString(L"" APPNAME, L"" APPNAME ".ini",L"",tch,COUNTOF(tch),lpszFile)) {
+  if (GetPrivateProfileString( L"" APPNAME, L"" APPNAME ".ini", L"",tch,COUNTOF(tch),lpszFile)) {
     if (_CheckIniFile(tch,lpszModule)) {
       StringCchCopy(lpszFile,MAX_PATH,tch);
       return true;

@@ -20,7 +20,7 @@
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
 #include <shlwapi.h>
-#include <VersionHelpers.h>
+#include <versionhelpers.h>
 
 #include "typedefs.h"
 
@@ -31,7 +31,7 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 
 // ============================================================================
 
-#define STRGFY(X)     L##X
+#define STRGFY(X)     L##(X)
 #define MKWSTRG(strg) STRGFY(strg)
 
 #define UNUSED(expr) (void)(expr)

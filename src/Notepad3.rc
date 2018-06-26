@@ -285,7 +285,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_WARN_PREF_LNG_NOT_AVAIL  "Sorry, your prefered language is not available."
+    IDS_WARN_PREF_LNG_NOT_AVAIL  "Sorry, your prefered language (%s) is not available."
     IDS_STATUS_DOCLINE           "%s%s / %s"
     IDS_STATUS_DOCCOLUMN         "%s%s"
     IDS_STATUS_DOCCOLUMN2        "%s%s / %s"

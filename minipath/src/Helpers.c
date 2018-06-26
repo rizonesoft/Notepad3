@@ -12,20 +12,18 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-
-#define _WIN32_WINNT 0x501
+#define _WIN32_WINNT 0x601
 #include <windows.h>
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <commctrl.h>
 #include <uxtheme.h>
-#include <stdio.h>
-#include <string.h>
+#include <strsafe.h>
 #include "dlapi.h"
 #include "helpers.h"
 #include "resource.h"
 
-
+extern LANGID    g_iPrefLngLocID;
 
 //=============================================================================
 //
@@ -135,6 +133,104 @@ void EndWaitCursor()
     SetCursor(
     LoadCursor(NULL,IDC_ARROW)));
 
+}
+
+
+//=============================================================================
+//
+//  LoadLngStringW()
+//
+int LoadLngStringW(UINT uID, LPTSTR lpBuffer, int nBufferMax)
+{
+  const int nLen = LoadStringW(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  return (nLen != 0) ? nLen : LoadStringW(g_hInstance, uID, lpBuffer, nBufferMax);
+}
+
+//=============================================================================
+//
+//  LoadLngStringA()
+//
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
+{
+  const int nLen = LoadStringA(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  return (nLen != 0) ? nLen : LoadStringA(g_hInstance, uID, lpBuffer, nBufferMax);
+}
+
+
+//=============================================================================
+//
+//  FormatLngStringW()
+//
+int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  WCHAR* pBuffer = LocalAlloc(LPTR, sizeof(WCHAR)*nOutput);
+  if (pBuffer) {
+    if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
+      int t = vswprintf_s(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+      lpOutput[t] = L'\0';
+    }
+    LocalFree(pBuffer);
+    return (int)lstrlen(lpOutput);
+  }
+  else
+    return 0;
+}
+
+//=============================================================================
+//
+//  FormatLngStringA()
+//
+int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  CHAR* pBuffer = LocalAlloc(LPTR, sizeof(CHAR)*nOutput);
+  if (pBuffer) {
+    if (LoadLngStringA(uIdFormat, pBuffer, nOutput)) {
+      int t = vsprintf_s(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+      lpOutput[t] = '\0';
+    }
+    LocalFree(pBuffer);
+    return (int)strlen(lpOutput);
+  }
+  else
+    return 0;
+}
+
+
+//=============================================================================
+//
+//  GetLastErrorToMsgBox()
+//
+DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
+{
+  // Retrieve the system error message for the last-error code
+  if (!dwErrID) {
+    dwErrID = GetLastError();
+  }
+
+  LPVOID lpMsgBuf;
+  FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    dwErrID,
+    g_iPrefLngLocID,
+    (LPTSTR)&lpMsgBuf,
+    0, NULL);
+
+  // Display the error message and exit the process
+
+  LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+    (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 80) * sizeof(WCHAR));
+
+  wsprintf((LPWSTR)lpDisplayBuf, L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, (LPWSTR)lpMsgBuf);
+
+  MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
+
+  LocalFree(lpMsgBuf);
+  LocalFree(lpDisplayBuf);
+
+  return dwErrID;
 }
 
 
@@ -620,25 +716,6 @@ LRESULT SendWMSize(HWND hwnd)
   RECT rc; GetClientRect(hwnd,&rc);
   return(SendMessage(hwnd,WM_SIZE,SIZE_RESTORED,
          MAKELPARAM(rc.right,rc.bottom)));
-}
-
-
-//=============================================================================
-//
-//  FormatString()
-//
-int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
-{
-
-  WCHAR *p = LocalAlloc(LPTR,sizeof(WCHAR)*nOutput);
-
-  if (GetString(uIdFormat,p,nOutput))
-    wvsprintf(lpOutput,p,(LPVOID)((PUINT_PTR)&uIdFormat+1));
-
-  LocalFree(p);
-
-  return lstrlen(lpOutput);
-
 }
 
 
@@ -2034,6 +2111,38 @@ VOID RestoreWndFromTray(HWND hWnd)
   // properly until DAR finished
 }
 
+//=============================================================================
+//
+//  Find next token in string
+//
+
+CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
+{
+  CHAR* n = NULL;
+  const CHAR* t = tokens;
+  while (t && *t) {
+    CHAR* const f = StrChrA(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
+}
+
+WCHAR* _StrNextTokW(WCHAR* strg, const WCHAR* tokens)
+{
+  WCHAR* n = NULL;
+  const WCHAR* t = tokens;
+  while (t && *t) {
+    WCHAR* const f = StrChrW(strg, *t);
+    if (!n || (f && (f < n))) {
+      n = f;
+    }
+    ++t;
+  }
+  return n;
+}
 
 
 ///   End of Helpers.c   \\\
