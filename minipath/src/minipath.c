@@ -790,8 +790,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           break;
 
         case SC_ABOUT:
-          ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_ABOUT),
-            hwnd,AboutDlgProc);
+          ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_ABOUT),hwnd,AboutDlgProc);
           break;
 
         default:
@@ -2076,8 +2075,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_FINDTARGET:
-      ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-        hwnd,FindTargetDlgProc,(LPARAM)NULL);
+      ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwnd,FindTargetDlgProc,(LPARAM)NULL);
       break;
 
 
@@ -2225,8 +2223,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case ACC_SELECTTARGET:
-      ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-        hwnd,FindTargetDlgProc,(LPARAM)NULL);
+      ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwnd,FindTargetDlgProc,(LPARAM)NULL);
       break;
 
 
@@ -3728,10 +3725,9 @@ void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
   static HICON hIcon;
   NOTIFYICONDATA nid;
 
-  if (!hIcon)
-    hIcon = LoadImage(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND),
-                      IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
-
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+  }
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
   nid.hWnd = hwnd;
@@ -3818,8 +3814,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
 
   if (iUseTargetApplication == 4 ||
      (iUseTargetApplication && lstrlen(szTargetApplication) == 0)) {
-    ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-      hwndMain,FindTargetDlgProc,(LPARAM)NULL);
+    ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwndMain,FindTargetDlgProc,(LPARAM)NULL);
     return;
   }
 

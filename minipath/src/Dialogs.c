@@ -354,8 +354,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 void RunDlg(HWND hwnd)
 {
 
-  ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_RUN),
-    hwnd,RunDlgProc);
+  ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_RUN),hwnd,RunDlgProc);
 
 }
 
@@ -550,8 +549,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 void GotoDlg(HWND hwnd)
 {
 
-  ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_GOTO),
-    hwnd,GotoDlgProc);
+  ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_GOTO),hwnd,GotoDlgProc);
 
 }
 
@@ -1522,8 +1520,7 @@ BOOL GetFilterDlg(HWND hwnd)
   lstrcpy(tchOldFilter,tchFilter);
   bOldNegFilter = bNegFilter;
 
-  if (IDOK == ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_FILTER),
-                        hwnd,GetFilterDlgProc))
+  if (IDOK == ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_FILTER),hwnd,GetFilterDlgProc))
   {
     if (!lstrcmpi(tchFilter,tchOldFilter) && (bOldNegFilter == bNegFilter))
       return(FALSE); // Old and new filters are identical
@@ -1632,8 +1629,7 @@ BOOL RenameFileDlg(HWND hwnd)
   else
    return FALSE;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_RENAME),
-                        hwnd,RenameFileDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_RENAME),hwnd,RenameFileDlgProc,(LPARAM)&fod))
   {
     ZeroMemory(&shfos,sizeof(SHFILEOPSTRUCT));
     shfos.hwnd = hwnd;
@@ -1902,8 +1898,7 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
   else
    return FALSE;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_COPYMOVE),
-                        hwnd,CopyMoveDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_COPYMOVE),hwnd,CopyMoveDlgProc,(LPARAM)&fod))
   {
     ZeroMemory(&shfos,sizeof(SHFILEOPSTRUCT));
     shfos.hwnd = hwnd;
@@ -2188,8 +2183,7 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
   DLITEM dliOpenWith;
   dliOpenWith.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_OPENWITH),
-                             hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_OPENWITH),hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
   {
 
     WCHAR szDestination[MAX_PATH+4];
@@ -2329,8 +2323,7 @@ BOOL NewDirDlg(HWND hwnd,LPWSTR pszNewDir)
 
   FILEOPDLGDATA fod;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_NEWDIR),
-                        hwnd,NewDirDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_NEWDIR),hwnd,NewDirDlgProc,(LPARAM)&fod))
   {
     lstrcpy(pszNewDir,fod.szDestination);
 
@@ -2521,8 +2514,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
         int   cbIniSection;
 
         // ToolTip for browse button
-        hwndToolTip = CreateWindowEx(0,TOOLTIPS_CLASS,NULL,0,0,0,0,0,hwnd,
-                                     NULL,g_hInstance,NULL);
+        hwndToolTip = CreateWindowEx(0,TOOLTIPS_CLASS,NULL,0,0,0,0,0,hwnd,NULL,g_hInstance,NULL);
 
         ZeroMemory(&ti,sizeof(TOOLINFO));
         ti.cbSize   = sizeof(TOOLINFO);
@@ -2737,8 +2729,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             ShowWindow(hwnd,SW_HIDE);
             ShowWindow(hwndMain,SW_HIDE);
 
-            ThemedDialogBoxParam(g_hInstance,
-                MAKEINTRESOURCE(IDD_FINDWIN),hwnd,FindWinDlgProc,(LPARAM)szTargetWndClass);
+            ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDWIN),hwnd,FindWinDlgProc,(LPARAM)szTargetWndClass);
 
             ShowWindow(hwndMain,SW_SHOWNORMAL);
             ShowWindow(hwnd,SW_SHOWNORMAL);

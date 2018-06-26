@@ -14,7 +14,8 @@
 *******************************************************************************/
 
 extern HINSTANCE g_hInstance;
-extern UINT16 g_uWinVer;
+extern HMODULE   g_hLngResContainer;
+extern UINT16    g_uWinVer;
 
 #define UNUSED(expr) (void)(expr)
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))

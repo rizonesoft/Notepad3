@@ -23,8 +23,6 @@
 #include "helpers.h"
 #include "resource.h"
 
-extern HINSTANCE g_hInstance;
-extern HMODULE   g_hLngResContainer;
 extern LANGID    g_iPrefLngLocID;
 
 //=============================================================================
