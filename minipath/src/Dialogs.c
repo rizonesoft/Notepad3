@@ -103,11 +103,11 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
 
   BROWSEINFO bi;
   LPITEMIDLIST pidl;
-  WCHAR szTitle[256];
-  WCHAR szBase[MAX_PATH];
+  WCHAR szTitle[256] = { L'\0' };
+  WCHAR szBase[MAX_PATH] = { L'\0' };
   BOOL fOk = FALSE;
 
-  lstrcpy(szTitle,L"");
+  lstrcpy(szTitle, L"");
   GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
   if (!pszBase || !*pszBase)
@@ -146,7 +146,7 @@ BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
 
   BROWSEINFO bi;
   LPITEMIDLIST pidl,pidlRoot;
-  WCHAR szTitle[256];
+  WCHAR szTitle[256] = { L'\0' };
   BOOL fOk = FALSE;
 
   lstrcpy(szTitle,L"");
@@ -175,7 +175,6 @@ BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
   CoTaskMemFree(pidlRoot);
 
   return fOk;
-
 }
 
 
@@ -548,9 +547,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 void GotoDlg(HWND hwnd)
 {
-
   ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_GOTO),hwnd,GotoDlgProc);
-
 }
 
 
