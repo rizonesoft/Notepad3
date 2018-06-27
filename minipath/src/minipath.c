@@ -2080,7 +2080,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_OPTIONS:
-      OptionsPropSheet(hwnd,g_hInstance);
+      OptionsPropSheet(hwnd, g_hLngResContainer);
       break;
 
 
