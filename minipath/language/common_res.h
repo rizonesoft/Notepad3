@@ -5,7 +5,10 @@
 //
 #define IDC_STATIC                       (-1)
 
-#define IDR_MAINWND                     100
+#define IDR_MAINWND                     80
+#define IDR_MAINWND128                  81
+#define IDR_MAINWND64                   82
+#define IDR_MAINWND48                   83
 #define IDC_COMMANDLINE                 100
 #define IDD_ABOUT                       100
 #define IDC_VERSION                     100

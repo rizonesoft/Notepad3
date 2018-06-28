@@ -384,7 +384,7 @@ BOOL InitApplication(HINSTANCE hInstance)
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInstance;
-  wc.hIcon         = LoadIcon(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+  wc.hIcon         = LoadIcon(hInstance,MAKEINTRESOURCE(IDR_MAINWND128));
   wc.hCursor       = LoadCursor(hInstance,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
   wc.lpszMenuName  = NULL;
@@ -3787,7 +3787,7 @@ void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
   NOTIFYICONDATA nid;
 
   if (!hIcon) {
-    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND48), IMAGE_ICON, 32, 32, LR_DEFAULTCOLOR);
   }
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
