@@ -72,15 +72,18 @@ HISTORY   mHistory;
 
 WCHAR      g_wchIniFile[MAX_PATH] = L"";
 WCHAR      g_wchIniFile2[MAX_PATH] = L"";
+WCHAR      g_wchNP3IniFile[MAX_PATH] = L"";
+
 BOOL      bSaveSettings;
-WCHAR      szQuickview[MAX_PATH];
-WCHAR      szQuickviewParams[MAX_PATH];
-WCHAR      tchFavoritesDir[MAX_PATH];
-WCHAR      tchOpenWithDir[MAX_PATH];
-WCHAR      tchToolbarButtons[512];
-WCHAR      tchToolbarBitmap[MAX_PATH];
-WCHAR      tchToolbarBitmapHot[MAX_PATH];
-WCHAR      tchToolbarBitmapDisabled[MAX_PATH];
+WCHAR     szQuickview[MAX_PATH] = L"";
+WCHAR     szQuickviewParams[MAX_PATH] = L"";
+WCHAR     g_tchFavoritesDir[MAX_PATH] = L"";
+BOOL      bNP3sFavoritesSettings = FALSE;
+WCHAR     tchOpenWithDir[MAX_PATH] = L"";
+WCHAR     tchToolbarButtons[512] = L"";
+WCHAR     tchToolbarBitmap[MAX_PATH] = L"";
+WCHAR     tchToolbarBitmapHot[MAX_PATH] = L"";
+WCHAR     tchToolbarBitmapDisabled[MAX_PATH] = L"";
 BOOL      bClearReadOnly;
 BOOL      bRenameOnCollision;
 BOOL      bSingleClick;
@@ -500,12 +503,12 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
         ErrorMessage(2,IDS_ERR_STARTUPDIR);
     }
     else
-      DisplayPath(tchFavoritesDir,IDS_ERR_STARTUPDIR);
+      DisplayPath(g_tchFavoritesDir,IDS_ERR_STARTUPDIR);
   }
 
   // Favorites
   else if (flagGotoFavorites)
-    DisplayPath(tchFavoritesDir,IDS_ERR_FAVORITES);
+    DisplayPath(g_tchFavoritesDir,IDS_ERR_FAVORITES);
 
   // Update Dirlist
   if (!ListView_GetItemCount(hwndDirList))
@@ -1970,7 +1973,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_FAVORITES:
       // Goto Favorites Directory
-      DisplayPath(tchFavoritesDir,IDS_ERR_FAVORITES);
+      DisplayPath(g_tchFavoritesDir,IDS_ERR_FAVORITES);
       break;
 
 
@@ -1981,7 +1984,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.fMask = 0;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = tchFavoritesDir;
+        sei.lpFile = g_tchFavoritesDir;
         sei.lpParameters = NULL;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
@@ -2043,7 +2046,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         BOOL bCreateFailure = FALSE;
 
         if (lstrlen(g_wchIniFile) == 0) {
-
           if (lstrlen(g_wchIniFile2) > 0) {
             if (CreateIniFileEx(g_wchIniFile2)) {
               lstrcpy(g_wchIniFile,g_wchIniFile2);
@@ -2052,13 +2054,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else
               bCreateFailure = TRUE;
           }
-
           else
             break;
         }
 
-        if (!bCreateFailure) {
-
+        if (!bCreateFailure) 
+        {
           if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",g_wchIniFile)) {
             BeginWaitCursor();
             SaveSettings(TRUE);
@@ -2826,11 +2827,17 @@ void LoadSettings()
   iStartupDir = IniSectionGetInt(pIniSection,L"StartupDirectory",2);
   iStartupDir = max(min(iStartupDir,2),0);
 
-  if (!IniSectionGetString(pIniSection,L"Favorites",L"",
-        tchFavoritesDir,COUNTOF(tchFavoritesDir)))
-    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,tchFavoritesDir);
+  if (!IniSectionGetString(pIniSection, L"Favorites", L"",
+                           g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir))) {
+    // try to fetch Locale Name from Notepad3.ini
+    GetPrivateProfileString(L"Settings", L"Favorites", L"",
+                            g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir), g_wchNP3IniFile);
+    if (lstrlen(g_wchNP3IniFile)) { bNP3sFavoritesSettings = TRUE; }
+  }
+  if (!lstrlen(g_tchFavoritesDir))
+    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,g_tchFavoritesDir);
   else
-    PathAbsoluteFromApp(tchFavoritesDir,NULL,COUNTOF(tchFavoritesDir),TRUE);
+    PathAbsoluteFromApp(g_tchFavoritesDir,NULL,COUNTOF(g_tchFavoritesDir),TRUE);
 
   if (!IniSectionGetString(pIniSection,L"Quikview.exe",L"",
         szQuickview,COUNTOF(szQuickview))) {
@@ -2997,8 +3004,10 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(pIniSection,L"StartupDirectory",iStartupDir);
   if (iStartupDir == 1)
     IniSectionSetString(pIniSection,L"MRUDirectory",szCurDir);
-  PathRelativeToApp(tchFavoritesDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
-  IniSectionSetString(pIniSection,L"Favorites",wchTmp);
+  if (!bNP3sFavoritesSettings) { 
+    PathRelativeToApp(g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+    IniSectionSetString(pIniSection, L"Favorites", wchTmp);
+  }
   PathRelativeToApp(szQuickview,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
   IniSectionSetString(pIniSection,L"Quikview.exe",wchTmp);
   IniSectionSetString(pIniSection,L"QuikviewParams",szQuickviewParams);
@@ -3183,8 +3192,13 @@ void LoadFlags()
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
-  IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
-                      g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+  if (!IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
+                           g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) 
+  {
+    // try to fetch Locale Name from Notepad3.ini
+    GetPrivateProfileString(L"Settings2", L"PreferedLanguageLocaleName", L"",
+                            g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), g_wchNP3IniFile);
+  }
 
   if (!flagNoReuseWindow) {
 
@@ -3224,6 +3238,15 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       lstrcpy(lpszFile,tchBuild);
       return(1);
     }
+    // sub directory (.\np3\) 
+    lstrcpy(tchBuild,lpszModule);
+    PathRemoveFileSpec(tchBuild);
+    lstrcat(tchBuild,L"\\np3\\");
+    lstrcat(tchBuild,tchFileExpanded);
+    if (PathFileExists(tchBuild)) {
+      lstrcpy(lpszFile,tchBuild);
+      return(1);
+    }
     // %appdata%
     if (S_OK == SHGetFolderPath(NULL,CSIDL_APPDATA,NULL,SHGFP_TYPE_CURRENT,tchBuild)) {
       PathAppend(tchBuild,tchFileExpanded);
@@ -3238,7 +3261,6 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       return(1);
     }
   }
-
   else if (PathFileExists(tchFileExpanded)) {
     lstrcpy(lpszFile,tchFileExpanded);
     return(1);
@@ -3247,10 +3269,10 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
   return(0);
 }
 
-int CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
+int CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH];
-  if (GetPrivateProfileString(L"minipath",L"minipath.ini",L"",tch,COUNTOF(tch),lpszFile)) {
+  if (GetPrivateProfileString(lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch), lpszFile)) {
     if (CheckIniFile(tch,lpszModule)) {
       lstrcpy(lpszFile,tch);
       return(1);
@@ -3307,17 +3329,37 @@ int FindIniFile() {
 
   if (bFound) {
     // allow two redirections: administrator -> user -> custom
-    if (CheckIniFileRedirect(tchTest,tchModule))
-      CheckIniFileRedirect(tchTest,tchModule);
+    if (CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule))
+      CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest,tchModule);
     lstrcpy(g_wchIniFile,tchTest);
   }
-
   else {
     lstrcpy(g_wchIniFile,tchModule);
     PathRenameExtension(g_wchIniFile,L".ini");
   }
 
-  return(1);
+  // --- check for Notepad3.ini to synchronize some settings ---
+  PathRemoveFileSpec(tchModule);
+  lstrcat(tchModule, L"\\Notepad3.exe");
+  lstrcpy(tchTest, PathFindFileName(tchModule));
+  PathRenameExtension(tchTest, L".ini");
+  bFound = CheckIniFile(tchTest,tchModule);
+  if (!bFound) {
+    lstrcpy(tchTest, L"notepad3.ini");
+    bFound = CheckIniFile(tchTest,tchModule);
+  }
+  if (bFound) {
+    // allow two redirections: administrator -> user -> custom
+    if (CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule)) {
+      CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule);
+    }
+    lstrcpy(g_wchNP3IniFile, tchTest);
+  }
+  else {
+    lstrcpy(g_wchNP3IniFile, tchModule);
+    PathRenameExtension(g_wchNP3IniFile, L".ini");
+  }
+  return (bFound ? 1 : 0);
 }
 
 
@@ -3341,6 +3383,25 @@ int TestIniFile() {
         PathRenameExtension(g_wchIniFile,L".ini");
       }
     }
+  }
+  // --- test for Notepad3.ini ---
+  if (PathIsDirectory(g_wchNP3IniFile) || *CharPrev(g_wchNP3IniFile, StrEnd(g_wchNP3IniFile)) == L'\\') {
+    WCHAR wchModule[MAX_PATH];
+    GetModuleFileName(NULL, wchModule, COUNTOF(wchModule));
+    PathRemoveFileSpec(wchModule);
+    lstrcat(wchModule, L"\\Notepad3.exe");
+    PathAppend(g_wchNP3IniFile, PathFindFileName(wchModule));
+    PathRenameExtension(g_wchNP3IniFile, L".ini");
+    if (!PathFileExists(g_wchNP3IniFile)) {
+      lstrcpy(PathFindFileName(g_wchNP3IniFile), L"notepad3.ini");
+      if (!PathFileExists(g_wchNP3IniFile)) {
+        lstrcpy(PathFindFileName(g_wchNP3IniFile), PathFindFileName(wchModule));
+        PathRenameExtension(g_wchNP3IniFile, L".ini");
+      }
+    }
+  }
+  if (!PathFileExists(g_wchNP3IniFile) || PathIsDirectory(g_wchNP3IniFile)) {
+    lstrcpy(g_wchNP3IniFile, L"");
   }
 
   if (!PathFileExists(g_wchIniFile) || PathIsDirectory(g_wchIniFile)) {

@@ -116,7 +116,7 @@
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x0409</Culture>
+      <Culture>0x0413</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -142,7 +142,7 @@
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x0409</Culture>
+      <Culture>0x0413</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -172,7 +172,7 @@
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x0409</Culture>
+      <Culture>0x0413</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -202,7 +202,7 @@
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
-      <Culture>0x0409</Culture>
+      <Culture>0x0413</Culture>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>

@@ -649,7 +649,8 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 extern BOOL bSaveSettings;
 extern WCHAR szQuickview[MAX_PATH];
 extern WCHAR szQuickviewParams[MAX_PATH];
-extern WCHAR tchFavoritesDir[MAX_PATH];
+extern WCHAR g_tchFavoritesDir[MAX_PATH];
+extern BOOL bNP3sFavoritesSettings;
 extern BOOL bClearReadOnly;
 extern BOOL bRenameOnCollision;
 extern BOOL bSingleClick;
@@ -1119,7 +1120,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SHAutoComplete(GetDlgItem(hwnd,IDC_QUICKVIEW),SHACF_FILESYSTEM);
 
         SendDlgItemMessage(hwnd,IDC_FAVORITES,EM_LIMITTEXT,MAX_PATH - 2,0);
-        SetDlgItemText(hwnd,IDC_FAVORITES,tchFavoritesDir);
+        SetDlgItemText(hwnd,IDC_FAVORITES,g_tchFavoritesDir);
         SHAutoComplete(GetDlgItem(hwnd,IDC_FAVORITES),SHACF_FILESYSTEM);
       }
       return TRUE;
@@ -1184,9 +1185,9 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             GetDlgItemText(hwnd,IDC_FAVORITES,tch,COUNTOF(tch));
             StrTrim(tch,L" \"");
 
-            if (GetDirectory(hwnd,IDS_FAVORITES,tch,tch,FALSE))
-              SetDlgItemText(hwnd,IDC_FAVORITES,tch);
-
+            if (GetDirectory(hwnd, IDS_FAVORITES, tch, tch, FALSE)) {
+              SetDlgItemText(hwnd, IDC_FAVORITES, tch);
+            }
             PostMessage(hwnd,WM_NEXTDLGCTL,1,0);
           }
           break;
@@ -1203,7 +1204,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         case PSN_APPLY: {
 
-            WCHAR tch[MAX_PATH];
+            WCHAR tch[MAX_PATH] = L"";
 
             if (!GetDlgItemText(hwnd,IDC_QUICKVIEW,tch,MAX_PATH)) {
 
@@ -1216,21 +1217,22 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             else
               ExtractFirstArgument(tch,szQuickview,szQuickviewParams);
 
-            if (!GetDlgItemText(hwnd,IDC_FAVORITES,tchFavoritesDir,MAX_PATH))
-              GetDefaultFavoritesDir(tchFavoritesDir,COUNTOF(tchFavoritesDir));
+            lstrcpy(tch, g_tchFavoritesDir);
+            if (!GetDlgItemText(hwnd, IDC_FAVORITES, g_tchFavoritesDir, MAX_PATH)) {
+              GetDefaultFavoritesDir(g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir));
+            }
             else
-              StrTrim(tchFavoritesDir,L" \"");
+              StrTrim(g_tchFavoritesDir,L" \"");
+
+            if (lstrcmpi(tch, g_tchFavoritesDir) != 0) { bNP3sFavoritesSettings = FALSE; }
 
             SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
+            
           }
           return TRUE;
-
       }
-
   }
-
   return FALSE;
-
 }
 
 
