@@ -481,6 +481,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       SetDlgItemText(hwnd, IDC_WEBPAGE, wch);
     }
 
+    GetLngString(IDS_MUI_TRANSL_AUTHOR, wch, COUNTOF(wch));
+    SetDlgItemText(hwnd, IDC_TRANSL_AUTH, wch);
+
+
     // --- Rich Edit Control ---
     //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetBackgroundColor(hwnd));
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetSysColor(COLOR_3DFACE));

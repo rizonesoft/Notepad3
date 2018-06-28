@@ -102,6 +102,8 @@
 #define IDPP_ADVANCED                   111
 #define IDPP_ITEMS                      112
 #define IDPP_PROG                       113
+#define IDC_TRANSL_AUTH                 114
+
 #define IDR_MAINWND48                   200
 #define IDS_APPTITLE                    10000
 #define IDS_NUMFILES                    10001
@@ -209,6 +211,7 @@
 #define IDS_ERR_INICREATE               50019
 #define IDS_ERR_INIWRITE                50020
 #define IDS_WARN_PREF_LNG_NOT_AVAIL     50021
+#define IDS_MUI_TRANSL_AUTHOR           50022
 
 #define SC_ALWAYSONTOP                  60001
 #define SC_ABOUT                        60002
