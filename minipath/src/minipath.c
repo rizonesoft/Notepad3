@@ -376,15 +376,20 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 //
 BOOL InitApplication(HINSTANCE hInstance)
 {
+  static HICON hIcon = NULL;
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR);
+  }
 
   WNDCLASS wc;
+  ZeroMemory(&wc, sizeof(WNDCLASS));
 
   wc.style         = CS_BYTEALIGNWINDOW;
   wc.lpfnWndProc   = (WNDPROC)MainWndProc;
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInstance;
-  wc.hIcon         = LoadIcon(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+  wc.hIcon         = hIcon;
   wc.hCursor       = LoadCursor(hInstance,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
   wc.lpszMenuName  = NULL;
@@ -3782,13 +3787,11 @@ BOOL ActivatePrevInst()
 //
 void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
 {
-
-  static HICON hIcon;
-  NOTIFYICONDATA nid;
-
+  static HICON hIcon = NULL;
   if (!hIcon) {
     hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
   }
+  NOTIFYICONDATA nid;
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
   nid.hWnd = hwnd;
@@ -3802,7 +3805,6 @@ void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
     Shell_NotifyIcon(NIM_ADD,&nid);
   else
     Shell_NotifyIcon(NIM_DELETE,&nid);
-
 }
 
 

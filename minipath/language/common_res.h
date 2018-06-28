@@ -102,6 +102,7 @@
 #define IDPP_ADVANCED                   111
 #define IDPP_ITEMS                      112
 #define IDPP_PROG                       113
+#define IDR_MAINWND48                   200
 #define IDS_APPTITLE                    10000
 #define IDS_NUMFILES                    10001
 #define IDS_NUMFILES2                   10002
