@@ -601,6 +601,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           SetDlgItemText(hwnd,IDC_EMAIL,wch);
         }
 
+        GetLngString(IDS_MUI_TRANSL_AUTHOR, wch, COUNTOF(wch));
+        SetDlgItemText(hwnd, IDC_TRANSL_AUTH, wch);
+
         CenterDlgInParent(hwnd);
       }
       return TRUE;
