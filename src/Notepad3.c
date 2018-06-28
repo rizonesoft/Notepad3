@@ -779,15 +779,19 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 //
 static bool __fastcall _RegisterWndClass(HINSTANCE hInstance)
 {
+  static HICON hIcon = NULL;
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR);
+  }
+
   WNDCLASS wc;
   ZeroMemory(&wc, sizeof(WNDCLASS));
-
   wc.style         = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
   wc.lpfnWndProc   = (WNDPROC)MainWndProc;
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInstance;
-  wc.hIcon         = LoadIcon(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+  wc.hIcon         = hIcon;
   wc.hCursor       = LoadCursor(NULL,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
   wc.lpszMenuName  = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
@@ -9603,13 +9607,11 @@ void SnapToDefaultPos(HWND hwnd)
 //
 void ShowNotifyIcon(HWND hwnd,bool bAdd)
 {
-
-  static HICON hIcon;
+  static HICON hIcon = NULL;
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND128), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+  }
   NOTIFYICONDATA nid;
-
-  if (!hIcon)
-    hIcon = LoadImage(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND),IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
-
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
   nid.hWnd = hwnd;
