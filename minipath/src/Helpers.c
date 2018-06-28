@@ -23,8 +23,7 @@
 #include "helpers.h"
 #include "resource.h"
 
-
-extern LANGID g_iPrefLngLocID;
+extern LANGID    g_iPrefLngLocID;
 
 //=============================================================================
 //
@@ -134,6 +133,66 @@ void EndWaitCursor()
     SetCursor(
     LoadCursor(NULL,IDC_ARROW)));
 
+}
+
+
+//=============================================================================
+//
+//  LoadLngStringW()
+//
+int LoadLngStringW(UINT uID, LPTSTR lpBuffer, int nBufferMax)
+{
+  const int nLen = LoadStringW(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  return (nLen != 0) ? nLen : LoadStringW(g_hInstance, uID, lpBuffer, nBufferMax);
+}
+
+//=============================================================================
+//
+//  LoadLngStringA()
+//
+int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
+{
+  const int nLen = LoadStringA(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  return (nLen != 0) ? nLen : LoadStringA(g_hInstance, uID, lpBuffer, nBufferMax);
+}
+
+
+//=============================================================================
+//
+//  FormatLngStringW()
+//
+int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  WCHAR* pBuffer = LocalAlloc(LPTR, sizeof(WCHAR)*nOutput);
+  if (pBuffer) {
+    if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
+      int t = vswprintf_s(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+      lpOutput[t] = L'\0';
+    }
+    LocalFree(pBuffer);
+    return (int)lstrlen(lpOutput);
+  }
+  else
+    return 0;
+}
+
+//=============================================================================
+//
+//  FormatLngStringA()
+//
+int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
+{
+  CHAR* pBuffer = LocalAlloc(LPTR, sizeof(CHAR)*nOutput);
+  if (pBuffer) {
+    if (LoadLngStringA(uIdFormat, pBuffer, nOutput)) {
+      int t = vsprintf_s(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
+      lpOutput[t] = '\0';
+    }
+    LocalFree(pBuffer);
+    return (int)strlen(lpOutput);
+  }
+  else
+    return 0;
 }
 
 
@@ -662,25 +721,6 @@ LRESULT SendWMSize(HWND hwnd)
 
 //=============================================================================
 //
-//  FormatString()
-//
-int FormatString(LPWSTR lpOutput,int nOutput,UINT uIdFormat,...)
-{
-
-  WCHAR *p = LocalAlloc(LPTR,sizeof(WCHAR)*nOutput);
-
-  if (GetString(uIdFormat,p,nOutput))
-    wvsprintf(lpOutput,p,(LPVOID)((PUINT_PTR)&uIdFormat+1));
-
-  LocalFree(p);
-
-  return lstrlen(lpOutput);
-
-}
-
-
-//=============================================================================
-//
 //  PathRelativeToApp()
 //
 void PathRelativeToApp(
@@ -1128,7 +1168,7 @@ void PathCanonicalizeEx(LPWSTR lpSrc)
 //
 //  This Expansion also searches the L"Favorites" folder
 //
-extern WCHAR tchFavoritesDir[MAX_PATH];
+extern WCHAR g_tchFavoritesDir[MAX_PATH];
 extern WCHAR szCurDir[MAX_PATH];
 
 DWORD SearchPathEx(LPCWSTR lpPath,LPCWSTR lpFileName,LPCWSTR lpExtension,
@@ -1154,7 +1194,7 @@ DWORD SearchPathEx(LPCWSTR lpPath,LPCWSTR lpFileName,LPCWSTR lpExtension,
 
     // Search L"Favorites" if no result
     if (!dwRetVal)
-      dwRetVal = SearchPath(tchFavoritesDir,lpFileName,lpExtension,
+      dwRetVal = SearchPath(g_tchFavoritesDir,lpFileName,lpExtension,
                             nBufferLength,lpBuffer,lpFilePart);
   }
 
@@ -1203,19 +1243,15 @@ int FormatNumberStr(LPWSTR lpNumberStr)
 //
 void GetDefaultFavoritesDir(LPWSTR lpFavDir,int cchFavDir)
 {
-
   LPITEMIDLIST pidl;
-
   if (NOERROR == SHGetSpecialFolderLocation(
                    NULL,CSIDL_PERSONAL,&pidl))
   {
     SHGetPathFromIDList(pidl,lpFavDir);
     CoTaskMemFree(pidl);
   }
-
   else
     GetWindowsDirectory(lpFavDir,cchFavDir);
-
 }
 
 

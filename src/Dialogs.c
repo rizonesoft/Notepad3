@@ -271,21 +271,21 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
 //
 void DisplayCmdLineHelp(HWND hwnd)
 {
-  MSGBOXPARAMS mbp;
-
   WCHAR szTitle[32] = { L'\0' };
   WCHAR szText[2048] = { L'\0' };
 
   GetLngString(IDS_MUI_APPTITLE,szTitle,COUNTOF(szTitle));
   GetLngString(IDS_MUI_CMDLINEHELP,szText,COUNTOF(szText));
 
+  MSGBOXPARAMS mbp;
+  ZeroMemory(&mbp, sizeof(MSGBOXPARAMS));
   mbp.cbSize = sizeof(MSGBOXPARAMS);
   mbp.hwndOwner = hwnd;
   mbp.hInstance = g_hInstance;
   mbp.lpszText = szText;
   mbp.lpszCaption = szTitle;
   mbp.dwStyle = MB_OK | MB_USERICON | MB_SETFOREGROUND;
-  mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
+  mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND48);
   mbp.dwContextHelpId = 0;
   mbp.lpfnMsgBoxCallback = NULL;
   mbp.dwLanguageId = g_iPrefLngLocID;

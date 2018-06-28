@@ -779,15 +779,19 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 //
 static bool __fastcall _RegisterWndClass(HINSTANCE hInstance)
 {
+  static HICON hIcon = NULL;
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR);
+  }
+
   WNDCLASS wc;
   ZeroMemory(&wc, sizeof(WNDCLASS));
-
   wc.style         = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
   wc.lpfnWndProc   = (WNDPROC)MainWndProc;
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInstance;
-  wc.hIcon         = LoadIcon(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+  wc.hIcon         = hIcon;
   wc.hCursor       = LoadCursor(NULL,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
   wc.lpszMenuName  = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
@@ -7464,10 +7468,10 @@ static bool __fastcall _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 }
 
 
-static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
+static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
-  if (GetPrivateProfileString( L"" APPNAME, L"" APPNAME ".ini", L"",tch,COUNTOF(tch),lpszFile)) {
+  if (GetPrivateProfileString(lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch), lpszFile)) {
     if (_CheckIniFile(tch,lpszModule)) {
       StringCchCopy(lpszFile,MAX_PATH,tch);
       return true;
@@ -7530,9 +7534,9 @@ int FindIniFile() {
     if (bFound) {
 
       // allow two redirections: administrator -> user -> custom
-      if (_CheckIniFileRedirect(tchPath,tchModule))
-        _CheckIniFileRedirect(tchPath,tchModule);
-
+      if (_CheckIniFileRedirect(L"" APPNAME, L"" APPNAME ".ini", tchPath, tchModule)) {
+        _CheckIniFileRedirect(L"" APPNAME, L"" APPNAME ".ini", tchPath, tchModule);
+      }
       StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchPath);
     }
     else {
@@ -9603,13 +9607,11 @@ void SnapToDefaultPos(HWND hwnd)
 //
 void ShowNotifyIcon(HWND hwnd,bool bAdd)
 {
-
-  static HICON hIcon;
+  static HICON hIcon = NULL;
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND128), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+  }
   NOTIFYICONDATA nid;
-
-  if (!hIcon)
-    hIcon = LoadImage(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND),IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
-
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
   nid.hWnd = hwnd;

@@ -51,10 +51,11 @@ int ErrorMessage(int iLevel, UINT uIdMsg, ...)
   WCHAR szTitle[256 * 2] = { L'\0' };
   int iIcon;
 
-  if (!GetString(uIdMsg,szText,COUNTOF(szText)))
+  if (!GetLngString(uIdMsg,szText,COUNTOF(szText)))
     return(0);
 
-  int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  //int t = wvsprintf(szTitle,szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
+  int t = vswprintf_s(szTitle,COUNTOF(szTitle),szText,(LPVOID)((PUINT_PTR)&uIdMsg + 1));
   szTitle[t] = L'\0';
 
   WCHAR* c = StrChr(szTitle,L'\n');
@@ -102,12 +103,12 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
 
   BROWSEINFO bi;
   LPITEMIDLIST pidl;
-  WCHAR szTitle[256];
-  WCHAR szBase[MAX_PATH];
+  WCHAR szTitle[256] = { L'\0' };
+  WCHAR szBase[MAX_PATH] = { L'\0' };
   BOOL fOk = FALSE;
 
-  lstrcpy(szTitle,L"");
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  lstrcpy(szTitle, L"");
+  GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
   if (!pszBase || !*pszBase)
     GetCurrentDirectory(MAX_PATH,szBase);
@@ -145,11 +146,11 @@ BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
 
   BROWSEINFO bi;
   LPITEMIDLIST pidl,pidlRoot;
-  WCHAR szTitle[256];
+  WCHAR szTitle[256] = { L'\0' };
   BOOL fOk = FALSE;
 
   lstrcpy(szTitle,L"");
-  GetString(iTitle,szTitle,COUNTOF(szTitle));
+  GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
   if (NOERROR != SHGetSpecialFolderLocation(hwndParent,iBase,&pidlRoot)) {
     CoTaskMemFree(pidlRoot);
@@ -174,7 +175,6 @@ BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
   CoTaskMemFree(pidlRoot);
 
   return fOk;
-
 }
 
 
@@ -240,8 +240,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             ExpandEnvironmentStringsEx(szArgs,COUNTOF(szArgs));
             ExtractFirstArgument(szArgs,szFile,szArg2);
 
-            GetString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -353,8 +353,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 void RunDlg(HWND hwnd)
 {
 
-  ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_RUN),
-    hwnd,RunDlgProc);
+  ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_RUN),hwnd,RunDlgProc);
 
 }
 
@@ -548,10 +547,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 void GotoDlg(HWND hwnd)
 {
-
-  ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_GOTO),
-    hwnd,GotoDlgProc);
-
+  ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_GOTO),hwnd,GotoDlgProc);
 }
 
 
@@ -653,7 +649,8 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 extern BOOL bSaveSettings;
 extern WCHAR szQuickview[MAX_PATH];
 extern WCHAR szQuickviewParams[MAX_PATH];
-extern WCHAR tchFavoritesDir[MAX_PATH];
+extern WCHAR g_tchFavoritesDir[MAX_PATH];
+extern BOOL bNP3sFavoritesSettings;
 extern BOOL bClearReadOnly;
 extern BOOL bRenameOnCollision;
 extern BOOL bSingleClick;
@@ -1123,7 +1120,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SHAutoComplete(GetDlgItem(hwnd,IDC_QUICKVIEW),SHACF_FILESYSTEM);
 
         SendDlgItemMessage(hwnd,IDC_FAVORITES,EM_LIMITTEXT,MAX_PATH - 2,0);
-        SetDlgItemText(hwnd,IDC_FAVORITES,tchFavoritesDir);
+        SetDlgItemText(hwnd,IDC_FAVORITES,g_tchFavoritesDir);
         SHAutoComplete(GetDlgItem(hwnd,IDC_FAVORITES),SHACF_FILESYSTEM);
       }
       return TRUE;
@@ -1154,8 +1151,8 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             GetDlgItemText(hwnd,IDC_QUICKVIEW,tchBuf,COUNTOF(tchBuf));
             ExtractFirstArgument(tchBuf,szFile,szParams);
 
-            GetString(IDS_GETQUICKVIEWER,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_GETQUICKVIEWER,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             ofn.lStructSize = sizeof(OPENFILENAME);
@@ -1188,9 +1185,9 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             GetDlgItemText(hwnd,IDC_FAVORITES,tch,COUNTOF(tch));
             StrTrim(tch,L" \"");
 
-            if (GetDirectory(hwnd,IDS_FAVORITES,tch,tch,FALSE))
-              SetDlgItemText(hwnd,IDC_FAVORITES,tch);
-
+            if (GetDirectory(hwnd, IDS_FAVORITES, tch, tch, FALSE)) {
+              SetDlgItemText(hwnd, IDC_FAVORITES, tch);
+            }
             PostMessage(hwnd,WM_NEXTDLGCTL,1,0);
           }
           break;
@@ -1207,7 +1204,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         case PSN_APPLY: {
 
-            WCHAR tch[MAX_PATH];
+            WCHAR tch[MAX_PATH] = L"";
 
             if (!GetDlgItemText(hwnd,IDC_QUICKVIEW,tch,MAX_PATH)) {
 
@@ -1220,21 +1217,22 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             else
               ExtractFirstArgument(tch,szQuickview,szQuickviewParams);
 
-            if (!GetDlgItemText(hwnd,IDC_FAVORITES,tchFavoritesDir,MAX_PATH))
-              GetDefaultFavoritesDir(tchFavoritesDir,COUNTOF(tchFavoritesDir));
+            lstrcpy(tch, g_tchFavoritesDir);
+            if (!GetDlgItemText(hwnd, IDC_FAVORITES, g_tchFavoritesDir, MAX_PATH)) {
+              GetDefaultFavoritesDir(g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir));
+            }
             else
-              StrTrim(tchFavoritesDir,L" \"");
+              StrTrim(g_tchFavoritesDir,L" \"");
+
+            if (lstrcmpi(tch, g_tchFavoritesDir) != 0) { bNP3sFavoritesSettings = FALSE; }
 
             SetWindowLongPtr(hwnd,DWLP_MSGRESULT,PSNRET_NOERROR);
+            
           }
           return TRUE;
-
       }
-
   }
-
   return FALSE;
-
 }
 
 
@@ -1521,8 +1519,7 @@ BOOL GetFilterDlg(HWND hwnd)
   lstrcpy(tchOldFilter,tchFilter);
   bOldNegFilter = bNegFilter;
 
-  if (IDOK == ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_FILTER),
-                        hwnd,GetFilterDlgProc))
+  if (IDOK == ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_FILTER),hwnd,GetFilterDlgProc))
   {
     if (!lstrcmpi(tchFilter,tchOldFilter) && (bOldNegFilter == bNegFilter))
       return(FALSE); // Old and new filters are identical
@@ -1631,8 +1628,7 @@ BOOL RenameFileDlg(HWND hwnd)
   else
    return FALSE;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_RENAME),
-                        hwnd,RenameFileDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_RENAME),hwnd,RenameFileDlgProc,(LPARAM)&fod))
   {
     ZeroMemory(&shfos,sizeof(SHFILEOPSTRUCT));
     shfos.hwnd = hwnd;
@@ -1901,8 +1897,7 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
   else
    return FALSE;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_COPYMOVE),
-                        hwnd,CopyMoveDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_COPYMOVE),hwnd,CopyMoveDlgProc,(LPARAM)&fod))
   {
     ZeroMemory(&shfos,sizeof(SHFILEOPSTRUCT));
     shfos.hwnd = hwnd;
@@ -2187,8 +2182,7 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
   DLITEM dliOpenWith;
   dliOpenWith.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_OPENWITH),
-                             hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_OPENWITH),hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
   {
 
     WCHAR szDestination[MAX_PATH+4];
@@ -2328,8 +2322,7 @@ BOOL NewDirDlg(HWND hwnd,LPWSTR pszNewDir)
 
   FILEOPDLGDATA fod;
 
-  if (IDOK == ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_NEWDIR),
-                        hwnd,NewDirDlgProc,(LPARAM)&fod))
+  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_NEWDIR),hwnd,NewDirDlgProc,(LPARAM)&fod))
   {
     lstrcpy(pszNewDir,fod.szDestination);
 
@@ -2520,8 +2513,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
         int   cbIniSection;
 
         // ToolTip for browse button
-        hwndToolTip = CreateWindowEx(0,TOOLTIPS_CLASS,NULL,0,0,0,0,0,hwnd,
-                                     NULL,g_hInstance,NULL);
+        hwndToolTip = CreateWindowEx(0,TOOLTIPS_CLASS,NULL,0,0,0,0,0,hwnd,NULL,g_hInstance,NULL);
 
         ZeroMemory(&ti,sizeof(TOOLINFO));
         ti.cbSize   = sizeof(TOOLINFO);
@@ -2648,8 +2640,8 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             PathAbsoluteFromApp(szFile,szFile,COUNTOF(szFile),TRUE);
 
             // Strings laden
-            GetString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
-            GetString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
+            GetLngString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
+            GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
             // ofn ausfüllen
@@ -2736,8 +2728,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             ShowWindow(hwnd,SW_HIDE);
             ShowWindow(hwndMain,SW_HIDE);
 
-            ThemedDialogBoxParam(g_hInstance,
-                MAKEINTRESOURCE(IDD_FINDWIN),hwnd,FindWinDlgProc,(LPARAM)szTargetWndClass);
+            ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDWIN),hwnd,FindWinDlgProc,(LPARAM)szTargetWndClass);
 
             ShowWindow(hwndMain,SW_SHOWNORMAL);
             ShowWindow(hwnd,SW_SHOWNORMAL);

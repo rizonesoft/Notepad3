@@ -72,15 +72,18 @@ HISTORY   mHistory;
 
 WCHAR      g_wchIniFile[MAX_PATH] = L"";
 WCHAR      g_wchIniFile2[MAX_PATH] = L"";
+WCHAR      g_wchNP3IniFile[MAX_PATH] = L"";
+
 BOOL      bSaveSettings;
-WCHAR      szQuickview[MAX_PATH];
-WCHAR      szQuickviewParams[MAX_PATH];
-WCHAR      tchFavoritesDir[MAX_PATH];
-WCHAR      tchOpenWithDir[MAX_PATH];
-WCHAR      tchToolbarButtons[512];
-WCHAR      tchToolbarBitmap[MAX_PATH];
-WCHAR      tchToolbarBitmapHot[MAX_PATH];
-WCHAR      tchToolbarBitmapDisabled[MAX_PATH];
+WCHAR     szQuickview[MAX_PATH] = L"";
+WCHAR     szQuickviewParams[MAX_PATH] = L"";
+WCHAR     g_tchFavoritesDir[MAX_PATH] = L"";
+BOOL      bNP3sFavoritesSettings = FALSE;
+WCHAR     tchOpenWithDir[MAX_PATH] = L"";
+WCHAR     tchToolbarButtons[512] = L"";
+WCHAR     tchToolbarBitmap[MAX_PATH] = L"";
+WCHAR     tchToolbarBitmapHot[MAX_PATH] = L"";
+WCHAR     tchToolbarBitmapDisabled[MAX_PATH] = L"";
 BOOL      bClearReadOnly;
 BOOL      bRenameOnCollision;
 BOOL      bSingleClick;
@@ -147,13 +150,13 @@ WCHAR szDDEMsg[256] = L"";
 WCHAR szDDEApp[256] = L"";
 WCHAR szDDETopic[256] = L"";
 
-HINSTANCE g_hInstance;
 UINT16    g_uWinVer;
 
+HINSTANCE            g_hInstance = NULL;
+HMODULE              g_hLngResContainer = NULL;
 
 WCHAR                g_tchPrefLngLocName[64];
 LANGID               g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
-HMODULE              g_hLngResContainer = NULL;
 #define              LNG_AVAILABLE_COUNT 6
 static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR nl-NL"; // en-US internal
 static LANGID const  g_iAvailableLanguages[LNG_AVAILABLE_COUNT] = { 1078, 1031, 3082, 2057, 1036, 1043 }; // 1033 internal
@@ -276,6 +279,7 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
 //
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int nCmdShow)
 {
+  UNUSED(hPrevInst);
 
   MSG    msg;
   HWND   hwnd;
@@ -304,8 +308,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   LoadFlags();
 
   // Try to activate another window
-  if (ActivatePrevInst())
-    return(0);
+  if (ActivatePrevInst()) { return(0); }
 
   // Init OLE and Common Controls
   OleInitialize(NULL);
@@ -323,9 +326,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // MultiLingual
   //
   g_iPrefLngLocID = GetUserDefaultUILanguage();
-  BOOLEAN bPrefLngNotAvail = FALSE;
-
-  if (lstrlen(g_tchPrefLngLocName)) {
+  BOOL bPrefLngDefined = (lstrlen(g_tchPrefLngLocName) > 0) ? TRUE : FALSE;
+  BOOL bPrefLngNotAvail = FALSE;
+  if (bPrefLngDefined) {
+    bPrefLngDefined = TRUE;
     DWORD dwLangID = 0;
     GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
     g_iPrefLngLocID = (LANGID)dwLangID;
@@ -340,23 +344,20 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   }
   // ----------------------------------------------------
 
-  if (!InitApplication(hInstance))
-    return FALSE;
+  if (!InitApplication(hInstance)) { return FALSE; }
 
   hwnd = InitInstance(hInstance, lpCmdLine, nCmdShow);
-  if (!hwnd)
-    return FALSE;
+  if (!hwnd) { return FALSE; }
 
   hAcc = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
 
-  if (bPrefLngNotAvail) {
+  if (bPrefLngDefined && bPrefLngNotAvail) {
     ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, g_tchPrefLngLocName);
   }
 
   while (GetMessage(&msg,NULL,0,0))
   {
-    if (!TranslateAccelerator(hwnd,hAcc,&msg))
-    {
+    if (!TranslateAccelerator(hwnd,hAcc,&msg)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
@@ -364,8 +365,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   
   OleUninitialize();
 
-  UNUSED(hPrevInst);
-  
   return(int)(msg.wParam);
 }
 
@@ -377,15 +376,20 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 //
 BOOL InitApplication(HINSTANCE hInstance)
 {
+  static HICON hIcon = NULL;
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR);
+  }
 
   WNDCLASS wc;
+  ZeroMemory(&wc, sizeof(WNDCLASS));
 
   wc.style         = CS_BYTEALIGNWINDOW;
   wc.lpfnWndProc   = (WNDPROC)MainWndProc;
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInstance;
-  wc.hIcon         = LoadIcon(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+  wc.hIcon         = hIcon;
   wc.hCursor       = LoadCursor(hInstance,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
   wc.lpszMenuName  = NULL;
@@ -504,12 +508,12 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
         ErrorMessage(2,IDS_ERR_STARTUPDIR);
     }
     else
-      DisplayPath(tchFavoritesDir,IDS_ERR_STARTUPDIR);
+      DisplayPath(g_tchFavoritesDir,IDS_ERR_STARTUPDIR);
   }
 
   // Favorites
   else if (flagGotoFavorites)
-    DisplayPath(tchFavoritesDir,IDS_ERR_FAVORITES);
+    DisplayPath(g_tchFavoritesDir,IDS_ERR_FAVORITES);
 
   // Update Dirlist
   if (!ListView_GetItemCount(hwndDirList))
@@ -715,7 +719,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           nID != IDC_REBAR)
         return DefWindowProc(hwnd,umsg,wParam,lParam);
 
-      hmenu = LoadMenu(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+      hmenu = LoadMenu(g_hLngResContainer,MAKEINTRESOURCE(IDR_MAINWND));
       SetMenuDefaultItem(GetSubMenu(hmenu,0),IDM_FILE_OPEN,FALSE);
 
       switch(nID)
@@ -794,8 +798,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           break;
 
         case SC_ABOUT:
-          ThemedDialogBox(g_hInstance,MAKEINTRESOURCE(IDD_ABOUT),
-            hwnd,AboutDlgProc);
+          ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_ABOUT),hwnd,AboutDlgProc);
           break;
 
         default:
@@ -809,7 +812,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         case WM_RBUTTONUP: {
 
-            HMENU hMenu = LoadMenu(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND));
+            HMENU hMenu = LoadMenu(g_hLngResContainer,MAKEINTRESOURCE(IDR_MAINWND));
             HMENU hMenuPopup = GetSubMenu(hMenu,4);
 
             POINT pt;
@@ -971,9 +974,9 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
   SetMenuItemInfo(hmenu,SC_MINIMIZE,FALSE,&mii);
 
   // Add specific items
-  GetString(SC_ALWAYSONTOP,tch,COUNTOF(tch));
+  GetLngString(SC_ALWAYSONTOP,tch,COUNTOF(tch));
   InsertMenu(hmenu,SC_MOVE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_ALWAYSONTOP,tch);
-  GetString(SC_ABOUT,tch,COUNTOF(tch));
+  GetLngString(SC_ABOUT,tch,COUNTOF(tch));
   InsertMenu(hmenu,SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_ABOUT,tch);
   InsertMenu(hmenu,SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
 
@@ -1121,7 +1124,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
     else if ((n == 5 || n == 8) && lstrcmpi(tchDesc,L"(none)") != 0) {
 
-      GetString(42000+n,tchDesc,COUNTOF(tchDesc));
+      GetLngString(42000+n,tchDesc,COUNTOF(tchDesc));
       tbbMainWnd[i].iString = SendMessage(hwndToolbar,TB_ADDSTRING,0,(LPARAM)tchDesc);
       tbbMainWnd[i].fsStyle |= BTNS_AUTOSIZE | BTNS_SHOWTEXT;
     }
@@ -1603,9 +1606,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         WCHAR szPath[MAX_PATH];
 
         lstrcpy(szNewFile,L"");
-        GetString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
+        GetLngString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
         PrepareFilterStr(szFilter);
-        GetString(IDS_NEWFILE,szTitle,COUNTOF(szTitle));
+        GetLngString(IDS_NEWFILE,szTitle,COUNTOF(szTitle));
 
         ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
@@ -1704,7 +1707,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
           break;
 
         lstrcpy(szNewFile,dli.szFileName);
-        GetString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
+        GetLngString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
         PrepareFilterStr(szFilter);
 
         ZeroMemory(&ofn,sizeof(OPENFILENAME));
@@ -1723,7 +1726,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
         BeginWaitCursor();
 
-        FormatString(tch,COUNTOF(tch),IDS_SAVEFILE,dli.szDisplayName);
+        FormatLngStringW(tch,COUNTOF(tch),IDS_SAVEFILE,dli.szDisplayName);
         StatusSetText(hwndStatus,ID_MENUHELP,tch);
         StatusSetSimple(hwndStatus,TRUE);
         InvalidateRect(hwndStatus,NULL,TRUE);
@@ -1975,7 +1978,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_FAVORITES:
       // Goto Favorites Directory
-      DisplayPath(tchFavoritesDir,IDS_ERR_FAVORITES);
+      DisplayPath(g_tchFavoritesDir,IDS_ERR_FAVORITES);
       break;
 
 
@@ -1986,7 +1989,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         sei.fMask = 0;
         sei.hwnd = hwnd;
         sei.lpVerb = NULL;
-        sei.lpFile = tchFavoritesDir;
+        sei.lpFile = g_tchFavoritesDir;
         sei.lpParameters = NULL;
         sei.lpDirectory = NULL;
         sei.nShow = SW_SHOWNORMAL;
@@ -2048,7 +2051,6 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         BOOL bCreateFailure = FALSE;
 
         if (lstrlen(g_wchIniFile) == 0) {
-
           if (lstrlen(g_wchIniFile2) > 0) {
             if (CreateIniFileEx(g_wchIniFile2)) {
               lstrcpy(g_wchIniFile,g_wchIniFile2);
@@ -2057,13 +2059,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
             else
               bCreateFailure = TRUE;
           }
-
           else
             break;
         }
 
-        if (!bCreateFailure) {
-
+        if (!bCreateFailure) 
+        {
           if (WritePrivateProfileString(L"Settings",L"WriteTest",L"ok",g_wchIniFile)) {
             BeginWaitCursor();
             SaveSettings(TRUE);
@@ -2080,13 +2081,12 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case IDM_VIEW_FINDTARGET:
-      ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-        hwnd,FindTargetDlgProc,(LPARAM)NULL);
+      ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwnd,FindTargetDlgProc,(LPARAM)NULL);
       break;
 
 
     case IDM_VIEW_OPTIONS:
-      OptionsPropSheet(hwnd,g_hInstance);
+      OptionsPropSheet(hwnd, g_hLngResContainer);
       break;
 
 
@@ -2229,8 +2229,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case ACC_SELECTTARGET:
-      ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-        hwnd,FindTargetDlgProc,(LPARAM)NULL);
+      ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwnd,FindTargetDlgProc,(LPARAM)NULL);
       break;
 
 
@@ -2544,8 +2543,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
               {
                 wsprintf(tchnum,L"%u",ListView_GetItemCount(hwndDirList));
                 FormatNumberStr(tchnum);
-                FormatString(tch,COUNTOF(tch),
-                  (lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
+                FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
               }
 
               StatusSetText(hwndStatus,ID_FILEINFO,tch);
@@ -2620,7 +2618,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
             if (((LPTBNOTIFY)lParam)->iItem < COUNTOF(tbbMainWnd))
             {
               WCHAR tch[256];
-              GetString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
+              GetLngString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
               lstrcpyn(((LPTBNOTIFY)lParam)->pszText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
               return TRUE;
@@ -2659,7 +2657,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             else
             {
-              GetString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
+              GetLngString((UINT)pnmh->idFrom,tch,COUNTOF(tch));
               lstrcpyn(((LPTOOLTIPTEXT)lParam)->szText,tch,80);
             }
           }
@@ -2759,8 +2757,7 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
 
     wsprintf(tchnum,L"%u",cItems);
     FormatNumberStr(tchnum);
-    FormatString(tch,COUNTOF(tch),
-      (lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
+    FormatLngStringW(tch,COUNTOF(tch),(lstrcmp(tchFilter,L"*.*") || bNegFilter)?IDS_NUMFILES2:IDS_NUMFILES,tchnum);
     StatusSetText(hwndStatus,ID_FILEINFO,tch);
 
     // Update History
@@ -2835,11 +2832,17 @@ void LoadSettings()
   iStartupDir = IniSectionGetInt(pIniSection,L"StartupDirectory",2);
   iStartupDir = max(min(iStartupDir,2),0);
 
-  if (!IniSectionGetString(pIniSection,L"Favorites",L"",
-        tchFavoritesDir,COUNTOF(tchFavoritesDir)))
-    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,tchFavoritesDir);
+  if (!IniSectionGetString(pIniSection, L"Favorites", L"",
+                           g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir))) {
+    // try to fetch Locale Name from Notepad3.ini
+    GetPrivateProfileString(L"Settings", L"Favorites", L"",
+                            g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir), g_wchNP3IniFile);
+    if (lstrlen(g_wchNP3IniFile)) { bNP3sFavoritesSettings = TRUE; }
+  }
+  if (!lstrlen(g_tchFavoritesDir))
+    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,g_tchFavoritesDir);
   else
-    PathAbsoluteFromApp(tchFavoritesDir,NULL,COUNTOF(tchFavoritesDir),TRUE);
+    PathAbsoluteFromApp(g_tchFavoritesDir,NULL,COUNTOF(g_tchFavoritesDir),TRUE);
 
   if (!IniSectionGetString(pIniSection,L"Quikview.exe",L"",
         szQuickview,COUNTOF(szQuickview))) {
@@ -3006,8 +3009,10 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(pIniSection,L"StartupDirectory",iStartupDir);
   if (iStartupDir == 1)
     IniSectionSetString(pIniSection,L"MRUDirectory",szCurDir);
-  PathRelativeToApp(tchFavoritesDir,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
-  IniSectionSetString(pIniSection,L"Favorites",wchTmp);
+  if (!bNP3sFavoritesSettings) { 
+    PathRelativeToApp(g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), FALSE, TRUE, flagPortableMyDocs);
+    IniSectionSetString(pIniSection, L"Favorites", wchTmp);
+  }
   PathRelativeToApp(szQuickview,wchTmp,COUNTOF(wchTmp),FALSE,TRUE,flagPortableMyDocs);
   IniSectionSetString(pIniSection,L"Quikview.exe",wchTmp);
   IniSectionSetString(pIniSection,L"QuikviewParams",szQuickviewParams);
@@ -3192,8 +3197,13 @@ void LoadFlags()
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
-  IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
-                      g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+  if (!IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
+                           g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) 
+  {
+    // try to fetch Locale Name from Notepad3.ini
+    GetPrivateProfileString(L"Settings2", L"PreferedLanguageLocaleName", L"",
+                            g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), g_wchNP3IniFile);
+  }
 
   if (!flagNoReuseWindow) {
 
@@ -3233,6 +3243,15 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       lstrcpy(lpszFile,tchBuild);
       return(1);
     }
+    // sub directory (.\np3\) 
+    lstrcpy(tchBuild,lpszModule);
+    PathRemoveFileSpec(tchBuild);
+    lstrcat(tchBuild,L"\\np3\\");
+    lstrcat(tchBuild,tchFileExpanded);
+    if (PathFileExists(tchBuild)) {
+      lstrcpy(lpszFile,tchBuild);
+      return(1);
+    }
     // %appdata%
     if (S_OK == SHGetFolderPath(NULL,CSIDL_APPDATA,NULL,SHGFP_TYPE_CURRENT,tchBuild)) {
       PathAppend(tchBuild,tchFileExpanded);
@@ -3247,7 +3266,6 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       return(1);
     }
   }
-
   else if (PathFileExists(tchFileExpanded)) {
     lstrcpy(lpszFile,tchFileExpanded);
     return(1);
@@ -3256,10 +3274,10 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
   return(0);
 }
 
-int CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
+int CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH];
-  if (GetPrivateProfileString(L"minipath",L"minipath.ini",L"",tch,COUNTOF(tch),lpszFile)) {
+  if (GetPrivateProfileString(lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch), lpszFile)) {
     if (CheckIniFile(tch,lpszModule)) {
       lstrcpy(lpszFile,tch);
       return(1);
@@ -3316,17 +3334,37 @@ int FindIniFile() {
 
   if (bFound) {
     // allow two redirections: administrator -> user -> custom
-    if (CheckIniFileRedirect(tchTest,tchModule))
-      CheckIniFileRedirect(tchTest,tchModule);
+    if (CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest, tchModule))
+      CheckIniFileRedirect(L"minipath", L"minipath.ini", tchTest,tchModule);
     lstrcpy(g_wchIniFile,tchTest);
   }
-
   else {
     lstrcpy(g_wchIniFile,tchModule);
     PathRenameExtension(g_wchIniFile,L".ini");
   }
 
-  return(1);
+  // --- check for Notepad3.ini to synchronize some settings ---
+  PathRemoveFileSpec(tchModule);
+  lstrcat(tchModule, L"\\Notepad3.exe");
+  lstrcpy(tchTest, PathFindFileName(tchModule));
+  PathRenameExtension(tchTest, L".ini");
+  bFound = CheckIniFile(tchTest,tchModule);
+  if (!bFound) {
+    lstrcpy(tchTest, L"notepad3.ini");
+    bFound = CheckIniFile(tchTest,tchModule);
+  }
+  if (bFound) {
+    // allow two redirections: administrator -> user -> custom
+    if (CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule)) {
+      CheckIniFileRedirect(L"notepad3", L"notepad3.ini", tchTest, tchModule);
+    }
+    lstrcpy(g_wchNP3IniFile, tchTest);
+  }
+  else {
+    lstrcpy(g_wchNP3IniFile, tchModule);
+    PathRenameExtension(g_wchNP3IniFile, L".ini");
+  }
+  return (bFound ? 1 : 0);
 }
 
 
@@ -3350,6 +3388,25 @@ int TestIniFile() {
         PathRenameExtension(g_wchIniFile,L".ini");
       }
     }
+  }
+  // --- test for Notepad3.ini ---
+  if (PathIsDirectory(g_wchNP3IniFile) || *CharPrev(g_wchNP3IniFile, StrEnd(g_wchNP3IniFile)) == L'\\') {
+    WCHAR wchModule[MAX_PATH];
+    GetModuleFileName(NULL, wchModule, COUNTOF(wchModule));
+    PathRemoveFileSpec(wchModule);
+    lstrcat(wchModule, L"\\Notepad3.exe");
+    PathAppend(g_wchNP3IniFile, PathFindFileName(wchModule));
+    PathRenameExtension(g_wchNP3IniFile, L".ini");
+    if (!PathFileExists(g_wchNP3IniFile)) {
+      lstrcpy(PathFindFileName(g_wchNP3IniFile), L"notepad3.ini");
+      if (!PathFileExists(g_wchNP3IniFile)) {
+        lstrcpy(PathFindFileName(g_wchNP3IniFile), PathFindFileName(wchModule));
+        PathRenameExtension(g_wchNP3IniFile, L".ini");
+      }
+    }
+  }
+  if (!PathFileExists(g_wchNP3IniFile) || PathIsDirectory(g_wchNP3IniFile)) {
+    lstrcpy(g_wchNP3IniFile, L"");
   }
 
   if (!PathFileExists(g_wchIniFile) || PathIsDirectory(g_wchIniFile)) {
@@ -3700,7 +3757,7 @@ BOOL ActivatePrevInst()
       WCHAR *c;
 
       // Prepare message
-      GetString(IDS_ERR_PREVWINDISABLED,szBuf,COUNTOF(szBuf));
+      GetLngString(IDS_ERR_PREVWINDISABLED,szBuf,COUNTOF(szBuf));
       c = StrChr(szBuf,L'\n');
       if (c)
       {
@@ -3730,14 +3787,11 @@ BOOL ActivatePrevInst()
 //
 void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
 {
-
-  static HICON hIcon;
+  static HICON hIcon = NULL;
+  if (!hIcon) {
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+  }
   NOTIFYICONDATA nid;
-
-  if (!hIcon)
-    hIcon = LoadImage(g_hInstance,MAKEINTRESOURCE(IDR_MAINWND),
-                      IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
-
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
   nid.hWnd = hwnd;
@@ -3751,7 +3805,6 @@ void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
     Shell_NotifyIcon(NIM_ADD,&nid);
   else
     Shell_NotifyIcon(NIM_DELETE,&nid);
-
 }
 
 
@@ -3824,8 +3877,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
 
   if (iUseTargetApplication == 4 ||
      (iUseTargetApplication && lstrlen(szTargetApplication) == 0)) {
-    ThemedDialogBoxParam(g_hInstance,MAKEINTRESOURCE(IDD_FINDTARGET),
-      hwndMain,FindTargetDlgProc,(LPARAM)NULL);
+    ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwndMain,FindTargetDlgProc,(LPARAM)NULL);
     return;
   }
 
@@ -3865,7 +3917,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
         WCHAR *c;
 
         // Prepare message
-        GetString(IDS_ERR_TARGETDISABLED,szBuf,COUNTOF(szBuf));
+        GetLngString(IDS_ERR_TARGETDISABLED,szBuf,COUNTOF(szBuf));
         c = StrChr(szBuf,L'\n');
         if (c) {
           *c = 0;
