@@ -1168,7 +1168,7 @@ void PathCanonicalizeEx(LPWSTR lpSrc)
 //
 //  This Expansion also searches the L"Favorites" folder
 //
-extern WCHAR tchFavoritesDir[MAX_PATH];
+extern WCHAR g_tchFavoritesDir[MAX_PATH];
 extern WCHAR szCurDir[MAX_PATH];
 
 DWORD SearchPathEx(LPCWSTR lpPath,LPCWSTR lpFileName,LPCWSTR lpExtension,
@@ -1194,7 +1194,7 @@ DWORD SearchPathEx(LPCWSTR lpPath,LPCWSTR lpFileName,LPCWSTR lpExtension,
 
     // Search L"Favorites" if no result
     if (!dwRetVal)
-      dwRetVal = SearchPath(tchFavoritesDir,lpFileName,lpExtension,
+      dwRetVal = SearchPath(g_tchFavoritesDir,lpFileName,lpExtension,
                             nBufferLength,lpBuffer,lpFilePart);
   }
 
@@ -1243,19 +1243,15 @@ int FormatNumberStr(LPWSTR lpNumberStr)
 //
 void GetDefaultFavoritesDir(LPWSTR lpFavDir,int cchFavDir)
 {
-
   LPITEMIDLIST pidl;
-
   if (NOERROR == SHGetSpecialFolderLocation(
                    NULL,CSIDL_PERSONAL,&pidl))
   {
     SHGetPathFromIDList(pidl,lpFavDir);
     CoTaskMemFree(pidl);
   }
-
   else
     GetWindowsDirectory(lpFavDir,cchFavDir);
-
 }
 
 

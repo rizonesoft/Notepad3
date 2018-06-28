@@ -7464,10 +7464,10 @@ static bool __fastcall _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 }
 
 
-static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszFile,LPCWSTR lpszModule)
+static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
-  if (GetPrivateProfileString( L"" APPNAME, L"" APPNAME ".ini", L"",tch,COUNTOF(tch),lpszFile)) {
+  if (GetPrivateProfileString(lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch), lpszFile)) {
     if (_CheckIniFile(tch,lpszModule)) {
       StringCchCopy(lpszFile,MAX_PATH,tch);
       return true;
@@ -7530,9 +7530,9 @@ int FindIniFile() {
     if (bFound) {
 
       // allow two redirections: administrator -> user -> custom
-      if (_CheckIniFileRedirect(tchPath,tchModule))
-        _CheckIniFileRedirect(tchPath,tchModule);
-
+      if (_CheckIniFileRedirect(L"" APPNAME, L"" APPNAME ".ini", tchPath, tchModule)) {
+        _CheckIniFileRedirect(L"" APPNAME, L"" APPNAME ".ini", tchPath, tchModule);
+      }
       StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),tchPath);
     }
     else {
