@@ -66,6 +66,7 @@ HWND      g_hwndDlgCustomizeSchemes = NULL;
 HWND      g_hwndReBar = NULL;
 HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
+HICON     g_hDlgIcon = NULL;
 
 bool g_bExternalBitmap = false;
 
@@ -164,6 +165,7 @@ static int    g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
+
 
 int       iPathNameFormat;
 bool      g_bWordWrap;
@@ -779,9 +781,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 //
 static bool __fastcall _RegisterWndClass(HINSTANCE hInstance)
 {
-  static HICON hIcon = NULL;
-  if (!hIcon) {
-    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR);
+  if (!g_hDlgIcon) {
+    g_hDlgIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
+                      GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
   }
 
   WNDCLASS wc;
@@ -791,7 +793,7 @@ static bool __fastcall _RegisterWndClass(HINSTANCE hInstance)
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInstance;
-  wc.hIcon         = hIcon;
+  wc.hIcon         = g_hDlgIcon;
   wc.hCursor       = LoadCursor(NULL,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
   wc.lpszMenuName  = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
@@ -9609,7 +9611,8 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
 {
   static HICON hIcon = NULL;
   if (!hIcon) {
-    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND128), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND128), IMAGE_ICON, 
+                      GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
   }
   NOTIFYICONDATA nid;
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
