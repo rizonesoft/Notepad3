@@ -990,7 +990,6 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
   }
 
   return(FALSE);
-
 }
 
 
@@ -1001,15 +1000,16 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 //
 //  Create a valid DL_FILTER structure
 //
-void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
-                          BOOL bExcludeFilter)
+void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,BOOL bExcludeFilter)
 {
   ZeroMemory(pdlf,sizeof(DL_FILTER));
-  lstrcpyn(pdlf->tFilterBuf,lpszFileSpec,(DL_FILTER_BUFSIZE-1));
+  
+  if (lpszFileSpec)
+    lstrcpyn(pdlf->tFilterBuf, lpszFileSpec, (DL_FILTER_BUFSIZE - 1));
+
   pdlf->bExcludeFilter = bExcludeFilter;
 
-  if (!lstrcmp(lpszFileSpec,L"*.*") || !lstrlen(lpszFileSpec))
-    return;
+  if (!lpszFileSpec || !lstrcmp(lpszFileSpec, L"*.*") || !lstrlen(lpszFileSpec)) { return; }
 
   pdlf->nCount = 1;
   pdlf->pFilter[0] = &pdlf->tFilterBuf[0];    // Zeile zum Ausprobieren
@@ -1022,7 +1022,6 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,
     p = StrChr(pdlf->pFilter[pdlf->nCount], L';');
     pdlf->nCount++;                          // Increase number of filters
   }
-
 }
 
 
@@ -1540,7 +1539,6 @@ LPITEMIDLIST IL_Create(LPCITEMIDLIST pidl1,UINT cb1,
 //
 UINT IL_GetSize(LPCITEMIDLIST pidl)
 {
-
   LPITEMIDLIST pidlTmp;
   UINT cb = 0;
 
@@ -1553,9 +1551,7 @@ UINT IL_GetSize(LPCITEMIDLIST pidl)
 
     cb += pidlTmp->mkid.cb;
 
-
   return cb;
-
 }
 
 
@@ -1572,21 +1568,15 @@ BOOL IL_GetDisplayName(LPSHELLFOLDER lpsf,
                        LPWSTR lpszDisplayName,
                        int nDisplayName)
 {
-
   STRRET str;
-
-  if (NOERROR == lpsf->lpVtbl->GetDisplayNameOf(lpsf,
-                                                pidl,
-                                                dwFlags,
-                                                &str))
+  if (NOERROR == lpsf->lpVtbl->GetDisplayNameOf(lpsf,pidl,dwFlags,&str))
   {
-
     // Shlwapi.dll provides new function:
     return StrRetToBuf(&str,pidl,lpszDisplayName,nDisplayName);
+
     // ...but I suppose my version is faster ;-)
     /*switch (str.uType)
     {
-
       case STRRET_WSTR:
         WideCharToMultiByte(CP_ACP,
                             0,
@@ -1610,7 +1600,6 @@ BOOL IL_GetDisplayName(LPSHELLFOLDER lpsf,
         break;
 
     }
-
     return TRUE;*/
   }
 

@@ -122,11 +122,13 @@
 #define IDS_MUI_TITLE_FIXARB            15028
 #define IDS_MUI_ABOUT_RTF_1             15029
 #define IDS_MUI_ABOUT_RTF_2             15030
+#define IDS_MUI_TRANSL_AUTHOR           15031
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND128                  16001
-#define IDR_MAINWNDTB                   16002
-#define IDR_MAINWNDTB2                  16003
+#define IDR_MAINWND48                   16002
+#define IDR_MAINWNDTB                   16003
+#define IDR_MAINWNDTB2                  16004
 
 #define IDI_MUI_RUN                     16100
 #define IDI_MUI_STYLES                  16101
@@ -263,6 +265,7 @@
 #define IDC_RIZONEBMP                   18087
 #define IDC_COPYVERSTRG                 18088
 #define IDC_RICHEDITABOUT               18089
+#define IDC_TRANSL_AUTH                 18090
 
 
 #define CMD_ESCAPE                      20000

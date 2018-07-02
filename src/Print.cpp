@@ -44,6 +44,7 @@ extern "C" {
 
 extern "C" HINSTANCE g_hInstance;
 extern "C" HMODULE   g_hLngResContainer;
+extern "C" HICON     g_hDlgIcon;
 
 extern "C" HWND g_hwndEdit;
 
@@ -476,6 +477,8 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       {
         WCHAR tch[512];
         WCHAR *p1,*p2;
+
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
         SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);
 

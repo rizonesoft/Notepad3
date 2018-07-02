@@ -94,7 +94,7 @@ void SaveSettings(BOOL);
 void ParseCommandLine();
 void LoadFlags();
 int  CheckIniFile(LPWSTR,LPCWSTR);
-int  CheckIniFileRedirect(LPWSTR,LPCWSTR);
+int  CheckIniFileRedirect(LPWSTR,LPWSTR,LPWSTR,LPCWSTR);
 int  FindIniFile();
 int  TestIniFile();
 int  CreateIniFile();

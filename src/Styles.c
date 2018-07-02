@@ -45,6 +45,7 @@
 
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
+extern HICON     g_hDlgIcon;
 
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
@@ -5906,6 +5907,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     case WM_INITDIALOG:
       {
         // Backup Styles
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
         ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
@@ -6527,15 +6529,13 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
   {
     case WM_INITDIALOG:
       {
-        int lvItems;
-        LVITEM lvi;
-        SHFILEINFO shfi;
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
-        RECT rc;
         WCHAR tch[MAX_PATH] = { L'\0' };
-        int cGrip;
 
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
+        RECT rc;
         GetClientRect(hwnd,&rc);
         cxClient = rc.right - rc.left;
         cyClient = rc.bottom - rc.top;
@@ -6560,12 +6560,14 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP3),GWL_STYLE,
           GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP3),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
-        cGrip = GetSystemMetrics(SM_CXHTHUMB);
+        int cGrip = GetSystemMetrics(SM_CXHTHUMB);
         SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP3),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 
         hwndLV = GetDlgItem(hwnd,IDC_STYLELIST);
 
+        SHFILEINFO shfi;
+        ZeroMemory(&shfi, sizeof(SHFILEINFO));
         ListView_SetImageList(hwndLV,
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
             &shfi,sizeof(SHFILEINFO),SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
@@ -6587,7 +6589,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
 
         // Select current lexer
-        lvItems = ListView_GetItemCount(hwndLV);
+        int lvItems = ListView_GetItemCount(hwndLV);
+        LVITEM lvi;
         lvi.mask = LVIF_PARAM;
         for (int i = 0; i < lvItems; i++) {
           lvi.iItem = i;
