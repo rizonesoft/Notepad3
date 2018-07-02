@@ -30,15 +30,17 @@
 #include "resource.h"
 
 
+HICON     g_hDlgIcon = NULL;
 
 /******************************************************************************
 *
 * Local Variables for minipath.c
 *
 */
-HWND      hwndStatus;
-HWND      hwndToolbar;
-HWND      hwndReBar;
+static HWND      hwndStatus;
+static HWND      hwndToolbar;
+static HWND      hwndReBar;
+
 
 #define NUMTOOLBITMAPS  15
 #define NUMINITIALTOOLS  6
@@ -376,9 +378,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 //
 BOOL InitApplication(HINSTANCE hInstance)
 {
-  static HICON hIcon = NULL;
-  if (!hIcon) {
-    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 256, 256, LR_DEFAULTCOLOR);
+  if (!g_hDlgIcon) {
+    g_hDlgIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
+                           GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
   }
 
   WNDCLASS wc;
@@ -389,7 +391,7 @@ BOOL InitApplication(HINSTANCE hInstance)
   wc.cbClsExtra    = 0;
   wc.cbWndExtra    = 0;
   wc.hInstance     = hInstance;
-  wc.hIcon         = hIcon;
+  wc.hIcon         = g_hDlgIcon;
   wc.hCursor       = LoadCursor(hInstance,IDC_ARROW);
   wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
   wc.lpszMenuName  = NULL;

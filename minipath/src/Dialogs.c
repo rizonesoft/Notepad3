@@ -43,6 +43,8 @@
 //
 extern HWND hwndMain;
 extern LANGID g_iPrefLngLocID;
+extern HICON  g_hDlgIcon;
+
 
 int ErrorMessage(int iLevel, UINT uIdMsg, ...)
 {
@@ -195,15 +197,16 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_INITDIALOG:
       {
-        DLITEM dli;
-        LPWSTR psz;
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
         MakeBitmapButton(hwnd,IDC_SEARCHEXE,g_hInstance,IDB_OPEN);
 
+        DLITEM dli;
+        ZeroMemory(&dli, sizeof(DLITEM));
         dli.mask = DLI_FILENAME;
         if (DirList_GetItem(hwndDirList,-1,&dli) != -1)
         {
-          psz = GetFilenameStr(dli.szFileName);
+          LPWSTR psz = GetFilenameStr(dli.szFileName);
           QuotateFilenameStr(psz);
           SetDlgItemText(hwnd,IDC_COMMANDLINE,psz);
         }
@@ -379,11 +382,9 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_INITDIALOG:
       {
-        int i;
-        RECT rc;
         WCHAR tch[64];
-        int cGrip;
 
+        RECT rc;
         GetClientRect(hwnd,&rc);
         cxClient = rc.right - rc.left;
         cyClient = rc.bottom - rc.top;
@@ -399,6 +400,8 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
         GetMenuString(GetSystemMenu(GetParent(hwnd),FALSE),SC_SIZE,tch,COUNTOF(tch),MF_BYCOMMAND);
         InsertMenu(GetSystemMenu(hwnd,FALSE),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
         InsertMenu(GetSystemMenu(hwnd,FALSE),SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
@@ -406,14 +409,14 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE,
           GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
-        cGrip = GetSystemMetrics(SM_CXHTHUMB);
+        int cGrip = GetSystemMetrics(SM_CXHTHUMB);
         SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 
         SendDlgItemMessage(hwnd,IDC_GOTO,CB_LIMITTEXT,MAX_PATH-1,0);
         SendDlgItemMessage(hwnd,IDC_GOTO,CB_SETEXTENDEDUI,TRUE,0);
 
-        for (i = 0; i < HISTORY_ITEMS; i++) {
+        for (int i = 0; i < HISTORY_ITEMS; i++) {
           if (mHistory.psz[i]) {
             int iItem = (int)SendDlgItemMessage(hwnd,IDC_GOTO,
                           CB_FINDSTRINGEXACT,(WPARAM)-1,(LPARAM)mHistory.psz[i]);
@@ -567,6 +570,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         WCHAR wch[256];
         LOGFONT lf;
 
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
         SetDlgItemText(hwnd,IDC_VERSION,VERSION_FILEVERSION_LONG);
         SetDlgItemText(hwnd,IDC_COPYRIGHT,VERSION_LEGALCOPYRIGHT_LONG);
         SetDlgItemText(hwnd,IDC_AUTHORNAME,VERSION_AUTHORNAME);
@@ -675,6 +680,8 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
     case WM_INITDIALOG:
 
+      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
       if (lstrlen(g_wchIniFile)) {
         if (bSaveSettings)
           CheckDlgButton(hwnd,IDC_SAVESETTINGS,BST_CHECKED);
@@ -781,6 +788,8 @@ INT_PTR CALLBACK AdvancedPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
   {
 
     case WM_INITDIALOG:
+
+      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
       if (bClearReadOnly)
         CheckDlgButton(hwnd,IDC_CLEARREADONLY,BST_CHECKED);
@@ -948,6 +957,8 @@ INT_PTR CALLBACK ItemsPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_INITDIALOG:
 
+      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
       m_bDefCrNoFilt = bDefCrNoFilt;
       m_bDefCrFilter = bDefCrFilter;
 
@@ -1109,6 +1120,8 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         WCHAR tch[MAX_PATH];
 
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
         MakeBitmapButton(hwnd,IDC_BROWSE_Q,g_hInstance,IDB_OPEN);
         MakeBitmapButton(hwnd,IDC_BROWSE_F,g_hInstance,IDB_OPEN);
 
@@ -1253,11 +1266,7 @@ extern BOOL bNegFilter;
 INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
 {
 
-  PROPSHEETHEADER psh;
   PROPSHEETPAGE   psp[4];
-  INT_PTR nResult;
-
-  ZeroMemory(&psh,sizeof(PROPSHEETHEADER));
   ZeroMemory(psp,sizeof(PROPSHEETPAGE)*4);
 
   psp[0].dwSize      = sizeof(PROPSHEETPAGE);
@@ -1284,17 +1293,19 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
   psp[3].pResource   = LoadThemedDialogTemplate(MAKEINTRESOURCE(IDPP_PROG),hInstance);
   psp[3].pfnDlgProc  = ProgPageProc;
 
+  PROPSHEETHEADER psh;
+  ZeroMemory(&psh, sizeof(PROPSHEETHEADER));
   psh.dwSize      = sizeof(PROPSHEETHEADER);
-  psh.dwFlags     = PSH_PROPSHEETPAGE | PSH_NOAPPLYNOW | \
-                    PSH_PROPTITLE;
+  psh.dwFlags     = PSH_PROPSHEETPAGE | PSH_NOAPPLYNOW | PSH_PROPTITLE | PSH_USEHICON;
   psh.hwndParent  = hwnd;
   psh.hInstance   = hInstance;
+  psh.hIcon       = g_hDlgIcon;
   psh.pszCaption  = L"MiniPath";
   psh.nPages      = 4;
   psh.nStartPage  = 0;
   psh.ppsp        = psp;
 
-  nResult = PropertySheet(&psh);
+  INT_PTR nResult = PropertySheet(&psh);
 
   if (psp[0].pResource) LocalFree((HLOCAL)psp[0].pResource);
   if (psp[1].pResource) LocalFree((HLOCAL)psp[1].pResource);
@@ -1304,7 +1315,6 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
   // Apply the results
   if (nResult)
   {
-
     if (bAlwaysOnTop)
       SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
     else
@@ -1342,9 +1352,7 @@ INT_PTR OptionsPropSheet(HWND hwnd,HINSTANCE hInstance)
     }
 
   }
-
   return(nResult);
-
 }
 
 
@@ -1365,6 +1373,8 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
     case WM_INITDIALOG:
       {
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
         MakeBitmapButton(hwnd,IDC_BROWSEFILTER,NULL,OBM_COMBO);
 
         SendDlgItemMessage(hwnd,IDC_FILTER,EM_LIMITTEXT,COUNTOF(tchFilter)-1,0);
@@ -1561,6 +1571,8 @@ INT_PTR CALLBACK RenameFileDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
       lpfod = (LPFILEOPDLGDATA)lParam;
       SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lpfod);
 
+      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
       SetDlgItemText(hwnd,IDC_OLDNAME,lpfod->szSource);
       SetDlgItemText(hwnd,IDC_NEWNAME,lpfod->szSource);
       SendDlgItemMessage(hwnd,IDC_NEWNAME,EM_LIMITTEXT,MAX_PATH-1,0);
@@ -1713,6 +1725,8 @@ INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
+
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
         GetMenuString(GetSystemMenu(GetParent(hwnd),FALSE),SC_SIZE,tch,COUNTOF(tch),MF_BYCOMMAND);
         InsertMenu(GetSystemMenu(hwnd,FALSE),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
@@ -1999,6 +2013,8 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
         GetMenuString(GetSystemMenu(GetParent(hwnd),FALSE),SC_SIZE,tch,COUNTOF(tch),MF_BYCOMMAND);
         InsertMenu(GetSystemMenu(hwnd,FALSE),SC_CLOSE,MF_BYCOMMAND|MF_STRING|MF_ENABLED,SC_SIZE,tch);
         InsertMenu(GetSystemMenu(hwnd,FALSE),SC_CLOSE,MF_BYCOMMAND|MF_SEPARATOR,0,NULL);
@@ -2275,6 +2291,8 @@ INT_PTR CALLBACK NewDirDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       lpfod = (LPFILEOPDLGDATA)lParam;
       SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lpfod);
 
+      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
       SendDlgItemMessage(hwnd,IDC_NEWDIR,EM_LIMITTEXT,MAX_PATH-1,0);
 
       CenterDlgInParent(hwnd);
@@ -2362,6 +2380,9 @@ INT_PTR CALLBACK FindWinDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       hIconCross1 = LoadIcon(g_hInstance,MAKEINTRESOURCE(IDI_CROSS1));
       hIconCross2 = LoadIcon(g_hInstance,MAKEINTRESOURCE(IDI_CROSS2));
       hCursorCross = LoadCursor(g_hInstance,MAKEINTRESOURCE(IDC_CROSSHAIR));
+
+      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
       CenterDlgInParent(hwnd);
       bHasCapture = FALSE;
       return TRUE;
@@ -2543,6 +2564,8 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
         //if (!SendMessage(hwndToolTip,TTM_ADDTOOL,0,(LPARAM)&ti))
         //  DestroyWindow(hwndToolTip);
+
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
         // Bitmap für den Browse-Button
         MakeBitmapButton(hwnd,IDC_BROWSE,g_hInstance,IDB_OPEN);

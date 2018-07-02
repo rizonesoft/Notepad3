@@ -61,10 +61,11 @@
 
 extern HMODULE   g_hLngResContainer;
 
-extern HWND  g_hwndMain;
-extern HWND  g_hwndStatus;
-extern HWND  g_hwndDlgFindReplace;
+extern HWND    g_hwndMain;
+extern HWND    g_hwndStatus;
+extern HWND    g_hwndDlgFindReplace;
 extern WININFO g_WinInfo;
+extern HICON   g_hDlgIcon;
 
 //extern LPMALLOC  g_lpMalloc;
 
@@ -4981,6 +4982,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     {
       // the global static Find/Replace data structure
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
+
+      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
       //sg_pefrData = (LPEDITFINDREPLACE)lParam;
       sg_pefrData = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
 
@@ -6872,6 +6876,8 @@ INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
   {
     case WM_INITDIALOG:
       {
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+
         DocLn iCurLine = SciCall_LineFromPosition(SciCall_GetCurrentPos())+1;
         DocPos iCurColumn = SciCall_GetColumn(SciCall_GetCurrentPos()) + 1;
 
@@ -6985,6 +6991,8 @@ INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
         id_hover = 0;
         id_capture = 0;
+
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
         if (NULL == (hFontNormal = (HFONT)SendDlgItemMessage(hwnd,200,WM_GETFONT,0,0)))
           hFontNormal = GetStockObject(DEFAULT_GUI_FONT);
@@ -7178,6 +7186,7 @@ INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
     case WM_INITDIALOG:
       {
         piAlignMode = (int*)lParam;
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
         CheckRadioButton(hwnd,100,104,*piAlignMode+100);
         CenterDlgInParent(hwnd);
       }
@@ -7252,6 +7261,7 @@ INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
     case WM_INITDIALOG:
       {
         pdata = (PENCLOSESELDATA)lParam;
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,255,0);
         SetDlgItemTextW(hwnd,100,pdata->pwsz1);
         SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,255,0);
@@ -7322,6 +7332,7 @@ INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM l
     case WM_INITDIALOG:
       {
         pdata = (PTAGSDATA)lParam;
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,254,0);
         SetDlgItemTextW(hwnd,100,L"<tag>");
         SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,255,0);
@@ -7448,6 +7459,8 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         if (*piSortFlags == 0) {
           *piSortFlags = SORT_ASCENDING | SORT_REMZEROLEN;
         }
+
+        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
         if (*piSortFlags & SORT_DESCENDING) {
           CheckRadioButton(hwnd, 100, 102, 101);
