@@ -9611,7 +9611,7 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
 {
   static HICON hIcon = NULL;
   if (!hIcon) {
-    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND128), IMAGE_ICON, 
+    hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 
                       GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
   }
   NOTIFYICONDATA nid;

@@ -234,9 +234,6 @@
     <Image Include="..\res\Toolbar2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\res\Notepad3_128.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="..\res\rizonesoft.bmp">
       <Filter>Resource Files</Filter>
     </Image>
