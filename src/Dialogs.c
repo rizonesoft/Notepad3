@@ -444,12 +444,17 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 {
   WCHAR wch[256] = { L'\0' };
   static HFONT hFontTitle;
-  
+  static HICON hIcon = NULL;
+
   switch (umsg)
   {
   case WM_INITDIALOG:
   {
     {
+      if (!hIcon) {
+        hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
+      }
+
       SetDlgItemText(hwnd, IDC_VERSION, L"" VERSION_FILEVERSION_LONG);
 
       if (hFontTitle) { DeleteObject(hFontTitle); }
@@ -552,6 +557,18 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     CenterDlgInParent(hwnd);
   }
   return true;
+
+
+  case WM_PAINT:
+    if (hIcon) {
+      RECT rt;
+      GetWindowRect(hwnd, &rt);
+      HDC hdc = GetWindowDC(hwnd);
+      DrawIconEx(hdc, 16, 32, hIcon, 128, 128, 0, NULL, DI_NORMAL);
+      ReleaseDC(hwnd, hdc);
+    }
+    return 0;
+
 
   case WM_NOTIFY:
   {
