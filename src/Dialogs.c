@@ -631,9 +631,13 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     case IDC_COPYVERSTRG:
       {
         WCHAR wchVerInfo[1024] = { L'\0' };
+        WCHAR wchAuthInfo[128] = { L'\0' };
         StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), L"" VERSION_FILEVERSION_LONG);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
+        GetLngString(IDS_MUI_TRANSL_AUTHOR, wchAuthInfo, COUNTOF(wchAuthInfo));
+        StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchAuthInfo);
         SetClipboardTextW(g_hwndMain, wchVerInfo);
       }
       break;
