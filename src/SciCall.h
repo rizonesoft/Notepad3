@@ -77,7 +77,7 @@ extern HANDLE g_hwndEdit;
 #ifdef SCI_DIRECTFUNCTION_INTERFACE
 
 LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
-#define SciCall(m, w, l) Scintilla_DirectFunction(g_hScintilla, m, w, l)
+#define SciCall(m, w, l) Scintilla_DirectFunction(g_hScintilla, (m), (w), (l))
 
 #else
 
@@ -257,6 +257,7 @@ DeclareSciCallV1(SetEndAtLastLine, SETENDATLASTLINE, bool, flag)
 DeclareSciCallR0(GetXoffset, GETXOFFSET, int)
 DeclareSciCallV1(SetXoffset, SETXOFFSET, int, offset)
 DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
+DeclareSciCallV0(MoveCaretInsideView, MOVECARETINSIDEVIEW)
 
 DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn)
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn)

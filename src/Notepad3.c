@@ -1645,13 +1645,14 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   
 
   #define _CARET_SYMETRY CARET_EVEN /// CARET_EVEN or 0
+  #define _CARET_ENFORCE CARET_STRICT /// CARET_STRICT or 0
   if (iCurrentLineHorizontalSlop > 0)
-    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | CARET_STRICT), iCurrentLineHorizontalSlop);
+    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), iCurrentLineHorizontalSlop);
   else
-    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | CARET_STRICT), (LPARAM)0);
+    SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), (LPARAM)0);
 
   if (iCurrentLineVerticalSlop > 0)
-    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | CARET_STRICT), iCurrentLineVerticalSlop);
+    SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), iCurrentLineVerticalSlop);
   else
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
 
@@ -6152,7 +6153,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
         case SCN_SAVEPOINTREACHED:
-          SciCall_SetScrollWidth(1);
           _SetDocumentModified(false);
           break;
 
@@ -8882,10 +8882,10 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
     if (cchText == 0)
       bIsEmptyNewFile = true;
     else if (cchText < 1023) {
-      char tchText[1024];
-      SendMessage(g_hwndEdit,SCI_GETTEXT,(WPARAM)1023,(LPARAM)tchText);
-      StrTrimA(tchText," \t\n\r");
-      if (lstrlenA(tchText) == 0)
+      char chTextBuf[1024];
+      SciCall_GetText(1023, chTextBuf);
+      StrTrimA(chTextBuf," \t\n\r");
+      if (lstrlenA(chTextBuf) == 0)
         bIsEmptyNewFile = true;
     }
   }
@@ -8993,9 +8993,9 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(g_hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
       MRU_AddFile(g_pFileMRU,g_wchCurFile,g_flagRelativeFileMRU,g_flagPortableMyDocs,iCurrEnc,iCaretPos,wchBookMarks);
-      if (g_flagUseSystemMRU == 2)
-        SHAddToRecentDocs(SHARD_PATHW,g_wchCurFile);
-
+      if (g_flagUseSystemMRU == 2) {
+        SHAddToRecentDocs(SHARD_PATHW, g_wchCurFile);
+      }
       _SetDocumentModified(false);
 
       // Install watching of the current file
@@ -9067,6 +9067,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       MsgBoxLng(MBWARN,IDS_MUI_ERR_SAVEFILE,tchFile);
     }
   }
+  //@@@EditEnsureSelectionVisible(g_hwndEdit);
   return(fSuccess);
 }
 

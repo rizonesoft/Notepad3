@@ -1261,7 +1261,7 @@ bool EditSaveFile(
   // get text
   cbData = (DWORD)SciCall_GetTextLength();
   lpData = AllocMem(cbData + 4, HEAP_ZERO_MEMORY); //fix: +bom
-  SendMessage(hwnd,SCI_GETTEXT,SizeOfMem(lpData),(LPARAM)lpData);
+  SciCall_GetText((DocPos)SizeOfMem(lpData), lpData);
 
   if (cbData == 0) {
     bWriteSuccess = SetEndOfFile(hFile);
@@ -4371,6 +4371,7 @@ void EditSelectEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcA
 void EditEnsureSelectionVisible(HWND hwnd)
 {
   UNUSED(hwnd);
+
   DocPos iAnchorPos = 0;
   DocPos iCurrentPos = 0;
   DocPos iAnchorPosVS = -1;
@@ -4386,6 +4387,11 @@ void EditEnsureSelectionVisible(HWND hwnd)
   else {
     iAnchorPos = SciCall_GetAnchor();
     iCurrentPos = SciCall_GetCurrentPos();
+    if (SciCall_IsSelectionEmpty()) {
+      SciCall_ScrollCaret();
+      SciCall_ChooseCaretX();
+      return;
+    }
   }
   EditSelectEx(hwnd, iAnchorPos, iCurrentPos, iAnchorPosVS, iCurPosVS);
 }
