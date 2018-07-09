@@ -6153,7 +6153,6 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
         case SCN_SAVEPOINTREACHED:
-          SciCall_SetScrollWidth(1);
           _SetDocumentModified(false);
           break;
 
