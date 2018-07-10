@@ -123,6 +123,7 @@
 #define IDS_MUI_ABOUT_RTF_1             15029
 #define IDS_MUI_ABOUT_RTF_2             15030
 #define IDS_MUI_TRANSL_AUTHOR           15031
+#define IDS_MUI_ASSOCIATED_EXT          15032
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001

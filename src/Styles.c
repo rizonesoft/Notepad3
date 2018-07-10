@@ -6094,7 +6094,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 if (pCurrentLexer)
                 {
                   bIsStyleSelected = false;
-                  SetDlgItemText(hwnd,IDC_STYLELABEL_ROOT, L"Associated filename extensions:");
+                  GetLngString(IDS_MUI_ASSOCIATED_EXT, label, COUNTOF(label));
+                  SetDlgItemText(hwnd,IDC_STYLELABEL_ROOT, label);
                   DialogEnableWindow(hwnd,IDC_STYLEEDIT_ROOT,true);
                   SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
                   DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, true);
@@ -6114,8 +6115,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                   else {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
                     GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
-
-                    StringCchPrintfW(label, COUNTOF(label), L"%s: Default Style:", name);
+                    FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
                   }
                   SetDlgItemText(hwnd, IDC_STYLELABEL, label);
                   SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->szValue);
@@ -6141,6 +6141,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 }
                 else {
                   GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
+
                   FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
                 }
                 SetDlgItemText(hwnd, IDC_STYLELABEL_ROOT, label);
