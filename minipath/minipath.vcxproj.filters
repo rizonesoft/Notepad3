@@ -71,6 +71,9 @@
     <None Include="src\minipath.ver">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\Build\minipath.ini">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Folder.ico">
