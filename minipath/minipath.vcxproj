@@ -292,6 +292,7 @@
     <ResourceCompile Include="src\minipath.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Build\minipath.ini" />
     <None Include="res\crosshair.cur" />
     <None Include="res\Hover.cur" />
     <None Include="src\minipath.ver" />
