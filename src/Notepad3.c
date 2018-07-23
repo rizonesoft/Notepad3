@@ -2982,7 +2982,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-      if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBOKCANCEL,IDS_MUI_ASK_REVERT) != IDOK) {
+      if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBYESNO,IDS_MUI_ASK_REVERT) != IDYES) {
         return(0);
       }
       FileRevert(g_wchCurFile);
@@ -3267,7 +3267,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
           int iNewEncoding = Encoding_MapUnicode(Encoding_Current(CPI_GET));
 
-          if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBOKCANCEL,IDS_MUI_ASK_RECODE) != IDOK)
+          if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBYESNO,IDS_MUI_ASK_RECODE) != IDYES)
             return(0);
 
           if (RecodeDlg(hwnd,&iNewEncoding)) 
