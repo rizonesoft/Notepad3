@@ -4387,11 +4387,6 @@ void EditEnsureSelectionVisible(HWND hwnd)
   else {
     iAnchorPos = SciCall_GetAnchor();
     iCurrentPos = SciCall_GetCurrentPos();
-    if (SciCall_IsSelectionEmpty()) {
-      SciCall_ScrollCaret();
-      SciCall_ChooseCaretX();
-      return;
-    }
   }
   EditSelectEx(hwnd, iAnchorPos, iCurrentPos, iAnchorPosVS, iCurPosVS);
 }
@@ -8103,7 +8098,7 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
       }
     }
   }
-  if (fToggled) { SciCall_ScrollCaret(); }
+  if (fToggled) { EditEnsureSelectionVisible(g_hwndEdit); }
 }
 
 

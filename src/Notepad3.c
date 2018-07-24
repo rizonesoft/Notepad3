@@ -4531,10 +4531,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAP:
       g_bWordWrap = (g_bWordWrap) ? false : true;
-      if (!g_bWordWrap)
-        SendMessage(g_hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
-      else
-        SendMessage(g_hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
+      if (!g_bWordWrap) {
+        SciCall_SetWrapMode(SC_WRAP_NONE);
+      }
+      else {
+        SciCall_SetWrapMode((iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR);
+      }
+      EditEnsureSelectionVisible(g_hwndEdit);
       bWordWrapG = g_bWordWrap;
       UpdateToolbar();
       break;
