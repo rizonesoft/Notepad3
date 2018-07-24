@@ -65,7 +65,7 @@ void  EditToggleLineComments(HWND,LPCWSTR,bool);
 void  EditPadWithSpaces(HWND,bool,bool);
 void  EditStripFirstCharacter(HWND);
 void  EditStripLastCharacter(HWND,bool,bool);
-void  EditCompressSpaces(HWND);
+void  EditCompressBlanks(HWND);
 void  EditRemoveBlankLines(HWND,bool,bool);
 void  EditRemoveDuplicateLines(HWND,bool);
 void  EditWrapToColumn(HWND,DocPos);

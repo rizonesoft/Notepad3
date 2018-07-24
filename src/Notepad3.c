@@ -2694,7 +2694,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_STRIPLASTCHAR,!ro);
   EnableCmd(hmenu,IDM_EDIT_TRIMLINES,!ro);
   EnableCmd(hmenu, IDM_EDIT_SELECTIONDUPLICATE, !ro);
-  EnableCmd(hmenu, IDM_EDIT_COMPRESSWS, !ro);
+  EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
   EnableCmd(hmenu, IDM_EDIT_ALIGN, !ro);
@@ -2827,7 +2827,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   EnableCmdPos(GetSubMenu(GetSubMenu(GetMenu(g_hwndMain), 2), 17), 5, i);
 
 
-  CheckCmd(hmenu,IDM_VIEW_SHOWWHITESPACE,bViewWhiteSpace);
+  CheckCmd(hmenu,IDM_VIEW_SHOWBLANKS,bViewWhiteSpace);
   CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,bViewEOLs);
   CheckCmd(hmenu,IDM_VIEW_WORDWRAPSYMBOLS,bShowWordWrapSymbols);
   CheckCmd(hmenu,IDM_VIEW_MATCHBRACES,bMatchBraces);
@@ -3654,11 +3654,11 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_EDIT_COMPRESSWS:
+    case IDM_EDIT_COMPRESS_BLANKS:
       {
         BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
-        EditCompressSpaces(g_hwndEdit);
+        EditCompressBlanks(g_hwndEdit);
         _END_UNDO_ACTION_;
         EndWaitCursor();
       }
@@ -4711,7 +4711,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_VIEW_SHOWWHITESPACE:
+    case IDM_VIEW_SHOWBLANKS:
       bViewWhiteSpace = (bViewWhiteSpace) ? false : true;
       SendMessage(g_hwndEdit,SCI_SETVIEWWS,(bViewWhiteSpace)?SCWS_VISIBLEALWAYS:SCWS_INVISIBLE,0);
       break;
