@@ -130,7 +130,7 @@ static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
 
 // Is the character a white space char?
-//#define IsWhiteSpace(ch)  (((ch) == ' ') || ((ch) == '\t'))
+#define IsBlankChar(ch)  (((ch)==' ') || ((ch)=='\t'))
 #define IsWhiteSpace(ch)  StrChrA(WhiteSpaceCharsDefault, (ch))
 #define IsAccelWhiteSpace(ch)  StrChrA(WhiteSpaceCharsAccelerated, (ch))
 
@@ -3336,7 +3336,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
             DocPos i = end;
             while (--i >= 0) {
               const char ch = g_pTempLineBuffer[i];
-              if (IsWhiteSpace(ch)) {
+              if (IsBlankChar(ch)) {
                 g_pTempLineBuffer[i] = '\0';
               }
               else
@@ -3400,7 +3400,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
         char ch = '\0';
         do {
           ch = SciCall_GetCharAt(--i);
-        } while ((i >= iStartPos) && IsWhiteSpace(ch));
+        } while ((i >= iStartPos) && IsBlankChar(ch));
         if ((++i) < iEndPos) {
           SciCall_SetTargetRange(i, iEndPos);
           SciCall_ReplaceTarget(0, "");
@@ -3424,7 +3424,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
 //
 //  EditCompressSpaces()
 //
-void EditCompressSpaces(HWND hwnd)
+void EditCompressBlanks(HWND hwnd)
 {
   const bool bIsSelEmpty = SciCall_IsSelectionEmpty();
 
@@ -3462,9 +3462,9 @@ void EditCompressSpaces(HWND hwnd)
         DocPos i = 0;
         while (pText < pEnd) {
           const char ch = *pText++;
-          if (IsWhiteSpace(ch)) {
+          if (IsBlankChar(ch)) {
             g_pTempLineBuffer[i++] = ' ';
-            while (IsWhiteSpace(*pText)) { ++pText; }
+            while (IsBlankChar(*pText)) { ++pText; }
           }
           else { g_pTempLineBuffer[i++] = ch; }
         }
@@ -3522,9 +3522,9 @@ void EditCompressSpaces(HWND hwnd)
       char* co = (char*)pszOut;
       DocPos remWSuntilCaretPos = 0;
       for (int i = 0; i < cch; ++i) {
-        if (IsWhiteSpace(pszIn[i])) {
+        if (IsBlankChar(pszIn[i])) {
           if (pszIn[i] == '\t') { bModified = true; }
-          while (IsWhiteSpace(pszIn[i + 1])) {
+          while (IsBlankChar(pszIn[i + 1])) {
             if (bIsSelEmpty && (i < iSelStartPos)) { ++remWSuntilCaretPos; }
             ++i;
             bModified = true;
@@ -3628,7 +3628,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
         const char* pLine = SciCall_GetRangePointer(posLnBeg, iLnLength);
         DocPos i = 0;
         for (; i < iLnLength; ++i) {
-          if (!IsWhiteSpace(pLine[i])) {
+          if (!IsBlankChar(pLine[i])) {
             break;
           }
         }
