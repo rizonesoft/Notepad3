@@ -1202,7 +1202,7 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 //
 //  LoadLngStringW()
 //
-int LoadLngStringW(UINT uID, LPTSTR lpBuffer, int nBufferMax) 
+int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax) 
 {
   const int nLen = LoadStringW(g_hLngResContainer, uID, lpBuffer, nBufferMax);
   return (nLen != 0) ? nLen : LoadStringW(g_hInstance, uID, lpBuffer, nBufferMax);
