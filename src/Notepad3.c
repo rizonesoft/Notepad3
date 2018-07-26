@@ -2451,19 +2451,18 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   switch (nID) {
   case IDC_EDIT:
     {
-      if (SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0) && (pt.x != -1) && (pt.y != -1)) {
-        DocPos iNewPos;
+      if (SciCall_IsSelectionEmpty() && (pt.x != -1) && (pt.y != -1)) {
         POINT ptc;
         ptc.x = pt.x;  ptc.y = pt.y;
         ScreenToClient(g_hwndEdit, &ptc);
-        iNewPos = (DocPos)SendMessage(g_hwndEdit, SCI_POSITIONFROMPOINT, (WPARAM)ptc.x, (LPARAM)ptc.y);
+        DocPos iNewPos = SciCall_PositionFromPoint(ptc.x, ptc.y);
         EditSelectEx(g_hwndEdit, iNewPos, iNewPos, -1, -1);
       }
 
       if (pt.x == -1 && pt.y == -1) {
-        DocPos iCurrentPos = (DocPos)SendMessage(g_hwndEdit, SCI_GETCURRENTPOS, 0, 0);
-        pt.x = (LONG)SendMessage(g_hwndEdit, SCI_POINTXFROMPOSITION, 0, (LPARAM)iCurrentPos);
-        pt.y = (LONG)SendMessage(g_hwndEdit, SCI_POINTYFROMPOSITION, 0, (LPARAM)iCurrentPos);
+        DocPos iCurrentPos = SciCall_GetCurrentPos();
+        pt.x = (LONG)SciCall_PointXFromPosition(iCurrentPos);
+        pt.y = (LONG)SciCall_PointYFromPosition(iCurrentPos);
         ClientToScreen(g_hwndEdit, &pt);
       }
       imenu = 0;

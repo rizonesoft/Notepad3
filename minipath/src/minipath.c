@@ -531,6 +531,55 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
 //=============================================================================
 //
+// _SetTargetAppMenuEntry()
+//
+// Change "Open" Context Menu Item
+//
+static void __fastcall _SetTargetAppMenuEntry(HMENU hMenu)
+{
+  if (!hMenu) { return; }
+
+  static int iUseTargetApp = -1;
+  static WCHAR wchMenuEntry[MAX_PATH] = { L'\0' };
+
+  if (iUseTargetApp < 0) 
+  {
+    WCHAR wchTargetAppName[MAX_PATH] = { L'\0' };
+
+    iUseTargetApp = IniGetInt(L"Target Application", L"UseTargetApplication", 0xFB);
+    if (iUseTargetApp != 0xFB) {
+      IniGetString(L"Target Application", L"TargetApplicationPath", L"", wchTargetAppName, COUNTOF(wchTargetAppName));
+      PathStripPath(wchTargetAppName);
+      PathRemoveExtension(wchTargetAppName);
+    }
+    else if (iUseTargetApp && lstrlen(wchTargetAppName) == 0) {
+      iUseTargetApp = 1;
+      lstrcpy(wchTargetAppName, L"Notepad3");
+    }
+    if (iUseTargetApp == 4 || (iUseTargetApp && lstrlen(wchTargetAppName) == 0)) {
+      lstrcpy(wchTargetAppName, L"...");
+    }
+    FormatLngStringW(wchMenuEntry, COUNTOF(wchMenuEntry), IDS_OPEN_FILE_WITH, wchTargetAppName);
+  }
+
+  DLITEM dli = { DLI_ALL, L"", L"", DLE_NONE };
+  DirList_GetItem(hwndDirList, -1, &dli);
+  if (dli.ntype != DLE_DIR) {
+    MENUITEMINFO menuitem;
+    ZeroMemory(&menuitem, sizeof(MENUITEMINFO));
+    menuitem.cbSize = sizeof(MENUITEMINFO);
+    menuitem.fMask = MIIM_TYPE | MIIM_DATA;
+    GetMenuItemInfo(hMenu, IDM_FILE_OPEN, FALSE, &menuitem);
+    menuitem.dwTypeData = wchMenuEntry;
+    SetMenuItemInfo(hMenu, IDM_FILE_OPEN, FALSE, &menuitem);
+  }
+  SetMenuDefaultItem(GetSubMenu(hMenu, 0), IDM_FILE_OPEN, FALSE);
+}
+
+
+
+//=============================================================================
+//
 //  MainWndProc()
 //
 //  Messages are distributed to the MsgXXX-handlers
@@ -711,7 +760,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
     case WM_CONTEXTMENU:
     {
-      HMENU hmenu;
       int   imenu = 0;
       DWORD dwpts;
       int   nID = GetDlgCtrlID((HWND)wParam);
@@ -721,8 +769,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           nID != IDC_REBAR)
         return DefWindowProc(hwnd,umsg,wParam,lParam);
 
-      hmenu = LoadMenu(g_hLngResContainer,MAKEINTRESOURCE(IDR_MAINWND));
-      SetMenuDefaultItem(GetSubMenu(hmenu,0),IDM_FILE_OPEN,FALSE);
+      HMENU hmenu = LoadMenu(g_hLngResContainer,MAKEINTRESOURCE(IDR_MAINWND));
+      _SetTargetAppMenuEntry(hmenu);
 
       switch(nID)
       {

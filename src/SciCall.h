@@ -151,6 +151,10 @@ DeclareSciCallR0(GetSelectionEnd, GETSELECTIONEND, DocPos)
 DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn, line)
 DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocLn, line)
 
+DeclareSciCallR2(PositionFromPoint, POSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
+DeclareSciCallR01(PointXFromPosition, POINTXFROMPOSITION, int, DocPos, position)
+DeclareSciCallR01(PointYFromPosition, POINTYFROMPOSITION, int, DocPos, position)
+
 // Rectangular selection with virtual space
 DeclareSciCallR0(GetRectangularSelectionCaret, GETRECTANGULARSELECTIONCARET, DocPos)
 DeclareSciCallV1(SetRectangularSelectionCaret, SETRECTANGULARSELECTIONCARET, DocPos, position)

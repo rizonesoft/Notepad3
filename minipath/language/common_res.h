@@ -109,6 +109,7 @@
 #define IDS_NUMFILES                    10001
 #define IDS_NUMFILES2                   10002
 #define IDS_SAVEFILE                    10003
+#define IDS_OPEN_FILE_WITH              10004
 #define IDS_SEARCHEXE                   11000
 #define IDS_GETQUICKVIEWER              11001
 #define IDS_GETTARGET                   11002
