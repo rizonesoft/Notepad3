@@ -539,39 +539,35 @@ static void __fastcall _SetTargetAppMenuEntry(HMENU hMenu)
 {
   if (!hMenu) { return; }
 
-  static int iUseTargetApp = -1;
-  static WCHAR wchMenuEntry[MAX_PATH] = { L'\0' };
-
-  if (iUseTargetApp < 0) 
-  {
-    WCHAR wchTargetAppName[MAX_PATH] = { L'\0' };
-
-    iUseTargetApp = IniGetInt(L"Target Application", L"UseTargetApplication", 0xFB);
-    if (iUseTargetApp != 0xFB) {
-      IniGetString(L"Target Application", L"TargetApplicationPath", L"", wchTargetAppName, COUNTOF(wchTargetAppName));
-      PathStripPath(wchTargetAppName);
-      PathRemoveExtension(wchTargetAppName);
-    }
-    else if (iUseTargetApp && lstrlen(wchTargetAppName) == 0) {
-      iUseTargetApp = 1;
-      lstrcpy(wchTargetAppName, L"Notepad3");
-    }
-    if (iUseTargetApp == 4 || (iUseTargetApp && lstrlen(wchTargetAppName) == 0)) {
-      lstrcpy(wchTargetAppName, L"...");
-    }
-    FormatLngStringW(wchMenuEntry, COUNTOF(wchMenuEntry), IDS_OPEN_FILE_WITH, wchTargetAppName);
-  }
+  LoadTargetParamsOnce();
 
   DLITEM dli = { DLI_ALL, L"", L"", DLE_NONE };
   DirList_GetItem(hwndDirList, -1, &dli);
   if (dli.ntype != DLE_DIR) {
-    MENUITEMINFO menuitem;
-    ZeroMemory(&menuitem, sizeof(MENUITEMINFO));
-    menuitem.cbSize = sizeof(MENUITEMINFO);
-    menuitem.fMask = MIIM_TYPE | MIIM_DATA;
-    GetMenuItemInfo(hMenu, IDM_FILE_OPEN, FALSE, &menuitem);
-    menuitem.dwTypeData = wchMenuEntry;
-    SetMenuItemInfo(hMenu, IDM_FILE_OPEN, FALSE, &menuitem);
+    WCHAR wchMenuEntry[MAX_PATH] = { L'\0' };
+    WCHAR wchTargetAppName[MAX_PATH] = { L'\0' };
+    if (iUseTargetApplication != 0xFB) {
+      lstrcpy(wchTargetAppName, szTargetApplication);
+      PathStripPath(wchTargetAppName);
+      PathRemoveExtension(wchTargetAppName);
+    }
+    else if (iUseTargetApplication && wchTargetAppName[0] == 0) {
+      iUseTargetApplication = 1;
+      lstrcpy(wchTargetAppName, L"Notepad3");
+    }
+    if (iUseTargetApplication == 4 || (iUseTargetApplication && wchTargetAppName[0] == 0)) {
+      lstrcpy(wchTargetAppName, L"...");
+    }
+    if (wchTargetAppName[0] != 0){
+      FormatLngStringW(wchMenuEntry, COUNTOF(wchMenuEntry), IDS_OPEN_FILE_WITH, wchTargetAppName);
+      MENUITEMINFO menuitem;
+      ZeroMemory(&menuitem, sizeof(MENUITEMINFO));
+      menuitem.cbSize = sizeof(MENUITEMINFO);
+      menuitem.fMask = MIIM_TYPE | MIIM_DATA;
+      GetMenuItemInfo(hMenu, IDM_FILE_OPEN, FALSE, &menuitem);
+      menuitem.dwTypeData = wchMenuEntry;
+      SetMenuItemInfo(hMenu, IDM_FILE_OPEN, FALSE, &menuitem);
+    }
   }
   SetMenuDefaultItem(GetSubMenu(hMenu, 0), IDM_FILE_OPEN, FALSE);
 }
@@ -3858,14 +3854,6 @@ void ShowNotifyIcon(HWND hwnd,BOOL bAdd)
 }
 
 
-//=============================================================================
-//
-//  LaunchTarget()
-//
-//  Launches the selected file in an existing target window
-//  Runs target.exe if necessary
-//
-//
 WCHAR szGlobalWndClass[256] = L"";
 
 BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
@@ -3890,15 +3878,17 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
 
 }
 
-
-void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
+void LoadTargetParamsOnce(void)
 {
+  static BOOL fLoaded;
+  WCHAR *pIniSection;
+  int   cbIniSection;
 
-  HWND  hwnd  = NULL;
-  HDROP hDrop = NULL;
+  if (fLoaded)
+    return;
 
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  int   cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+  pIniSection  = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
+  cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
   LoadIniSection(L"Target Application",pIniSection,cbIniSection);
 
@@ -3924,6 +3914,24 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
   }
 
   LocalFree(pIniSection);
+  fLoaded = TRUE;
+}
+
+//=============================================================================
+//
+//  LaunchTarget()
+//
+//  Launches the selected file in an existing target window
+//  Runs target.exe if necessary
+//
+//
+void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
+{
+
+  HWND  hwnd  = NULL;
+  HDROP hDrop = NULL;
+
+  LoadTargetParamsOnce();
 
   if (iUseTargetApplication == 4 ||
      (iUseTargetApplication && lstrlen(szTargetApplication) == 0)) {
