@@ -2533,9 +2533,6 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
         int i;
         WCHAR wch[MAX_PATH];
 
-        WCHAR *pIniSection;
-        int   cbIniSection;
-
         // ToolTip for browse button
         hwndToolTip = CreateWindowEx(0,TOOLTIPS_CLASS,NULL,0,0,0,0,0,hwnd,NULL,g_hInstance,NULL);
 
@@ -2579,34 +2576,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
         SendDlgItemMessage(hwnd,IDC_DDEAPP,EM_LIMITTEXT,128,0);
         SendDlgItemMessage(hwnd,IDC_DDETOPIC,EM_LIMITTEXT,128,0);
 
-        pIniSection  = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-        cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
-
-        LoadIniSection(L"Target Application",pIniSection,cbIniSection);
-
-        if (IniSectionGetInt(pIniSection,L"UseTargetApplication",0xFB) != 0xFB) {
-          iUseTargetApplication = IniSectionGetInt(pIniSection,L"UseTargetApplication",iUseTargetApplication);
-          iTargetApplicationMode = IniSectionGetInt(pIniSection,L"TargetApplicationMode",iTargetApplicationMode);
-          IniSectionGetString(pIniSection,L"TargetApplicationPath",szTargetApplication,szTargetApplication,COUNTOF(szTargetApplication));
-          IniSectionGetString(pIniSection,L"TargetApplicationParams",szTargetApplicationParams,szTargetApplicationParams,COUNTOF(szTargetApplicationParams));
-          IniSectionGetString(pIniSection,L"TargetApplicationWndClass",szTargetApplicationWndClass,szTargetApplicationWndClass,COUNTOF(szTargetApplicationWndClass));
-          IniSectionGetString(pIniSection,L"DDEMessage",szDDEMsg,szDDEMsg,COUNTOF(szDDEMsg));
-          IniSectionGetString(pIniSection,L"DDEApplication",szDDEApp,szDDEApp,COUNTOF(szDDEApp));
-          IniSectionGetString(pIniSection,L"DDETopic",szDDETopic,szDDETopic,COUNTOF(szDDETopic));
-        }
-
-        else if (iUseTargetApplication && lstrlen(szTargetApplication) == 0) {
-          iUseTargetApplication = 1;
-          iTargetApplicationMode = 1;
-          lstrcpy(szTargetApplication,L"Notepad3.exe");
-          lstrcpy(szTargetApplicationParams,L"");
-          lstrcpy(szTargetApplicationWndClass,L"Notepad3");
-          lstrcpy(szDDEMsg,L"");
-          lstrcpy(szDDEApp,L"");
-          lstrcpy(szDDETopic,L"");
-        }
-
-        LocalFree(pIniSection);
+        LoadTargetParamsOnce();
 
         if (iUseTargetApplication)
           CheckRadioButton(hwnd,IDC_LAUNCH,IDC_TARGET,IDC_TARGET);

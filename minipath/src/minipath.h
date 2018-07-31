@@ -103,6 +103,7 @@ int  CreateIniFileEx(LPCWSTR);
 BOOL DisplayPath(LPCWSTR,UINT);
 BOOL DisplayLnkFile(LPCWSTR);
 
+void LoadTargetParamsOnce(void);
 void LaunchTarget(LPCWSTR,BOOL);
 void SnapToTarget(HWND);
 void SnapToDefaultPos(HWND);
