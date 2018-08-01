@@ -50,6 +50,7 @@ extern HICON     g_hDlgIcon;
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
 extern EDITFINDREPLACE g_efrData;
+extern UINT g_uCurrentDPI;
 
 extern int g_iSciFontQuality;
 extern const int FontQuality[4];
@@ -5567,6 +5568,14 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
 
 
 //=============================================================================
+
+inline static int _GetDPIAwareFractFontSize(float fFontSize)
+{
+  return MulDiv((int)(fFontSize + 0.5), (SC_FONT_SIZE_MULTIPLIER * g_uCurrentDPI), USER_DEFAULT_SCREEN_DPI);
+}
+
+
+//=============================================================================
 //
 //  Style_SetStyles()
 //
@@ -5631,13 +5640,10 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Size values are relative to BaseFontSize/CurrentFontSize
-  POINT dpi = GetSystemDpi();
   float  fBaseFontSize = _GetCurrentFontSize();
+  fBaseFontSize = (float)max(0.0, fBaseFontSize);
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
-    fBaseFontSize = (float)max(0.0, fBaseFontSize);
-    fBaseFontSize = (float)MulDiv((int)fBaseFontSize, (dpi.x + dpi.y)/2, USER_DEFAULT_SCREEN_DPI);
-    //SendMessage(hwnd, SCI_STYLESETSIZE, iStyle, (int)fBaseFontSize);
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)_GetDPIAwareFractFontSize(fBaseFontSize));
     if (iStyle == STYLE_DEFAULT) {
       if (bInitDefault) {
         _SetBaseFontSize(fBaseFontSize);
@@ -5647,7 +5653,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
   else if (bInitDefault) {
     //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)((int)fBaseFontSize));
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)((int)(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER + 0.5)));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)_GetDPIAwareFractFontSize(fBaseFontSize));
   }
 
   // Character Set

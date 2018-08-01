@@ -28,7 +28,6 @@
 
 extern WCHAR g_wchIniFile[MAX_PATH];
 
-
 // ============================================================================
 
 #define STRGFY(X)     L##(X)
@@ -132,6 +131,9 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 bool SetClipboardTextW(HWND, LPCWSTR);
 
+UINT GetCurrentDPI(HWND hwnd);
+HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
+
 bool PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
 bool IsElevated();
@@ -174,7 +176,7 @@ LONG StatusCalcPaneWidth(HWND,LPCWSTR);
 int Toolbar_GetButtons(HWND,int,LPWSTR,int);
 int Toolbar_SetButtons(HWND,int,LPCWSTR,void*,int);
 
-LRESULT SendWMSize(HWND);
+LRESULT SendWMSize(HWND, RECT*);
 
 bool IsCmdEnabled(HWND, UINT);
 
