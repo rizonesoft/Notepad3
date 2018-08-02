@@ -2829,7 +2829,6 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
 //
 void LoadSettings()
 {
-
   WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
   int   cbIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
@@ -2880,7 +2879,7 @@ void LoadSettings()
 
   if (!IniSectionGetString(pIniSection, L"Favorites", L"",
                            g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir))) {
-    // try to fetch Locale Name from Notepad3.ini
+    // try to fetch Favorites dir from Notepad3.ini
     GetPrivateProfileString(L"Settings", L"Favorites", L"",
                             g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir), g_wchNP3IniFile);
     if (lstrlen(g_wchNP3IniFile)) { bNP3sFavoritesSettings = TRUE; }
@@ -2902,9 +2901,15 @@ void LoadSettings()
   IniSectionGetString(pIniSection,L"QuikviewParams",L"",
     szQuickviewParams,COUNTOF(szQuickviewParams));
 
-  if (!IniSectionGetString(pIniSection,L"OpenWithDir",L"",
-        tchOpenWithDir,COUNTOF(tchOpenWithDir)))
-    SHGetSpecialFolderPath(NULL,tchOpenWithDir,CSIDL_DESKTOPDIRECTORY,TRUE);
+  if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"",
+                           tchOpenWithDir, COUNTOF(tchOpenWithDir))) {
+
+    // try to fetch Open With dir from Notepad3.ini
+    GetPrivateProfileString(L"Settings", L"OpenWithDir", L"",
+                            tchOpenWithDir, COUNTOF(tchOpenWithDir), g_wchNP3IniFile);
+  }
+  if (!lstrlen(tchOpenWithDir))
+    SHGetSpecialFolderPath(NULL, tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, TRUE);
   else
     PathAbsoluteFromApp(tchOpenWithDir,NULL,COUNTOF(tchOpenWithDir),TRUE);
 
