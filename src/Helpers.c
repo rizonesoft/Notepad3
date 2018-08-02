@@ -627,27 +627,6 @@ bool IsFontAvailable(LPCWSTR lpszFontName)
 }
 
 
-
-//=============================================================================
-//
-//  SetWindowTitle()
-//
-POINT GetSystemDpi()
-{
-  POINT result;
-
-  HDC hDC = GetDC(NULL);
-
-  result.x = GetDeviceCaps(hDC, LOGPIXELSX);
-  result.y = GetDeviceCaps(hDC, LOGPIXELSY);
-
-  ReleaseDC(NULL, hDC);
-
-  return result;
-}
-
-
-
 //=============================================================================
 //
 //  SetWindowTitle()

@@ -55,6 +55,7 @@ extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
 extern LANGID    g_iPrefLngLocID;
 extern HICON     g_hDlgIcon;
+extern UINT      g_uCurrentDPI;
 
 extern WCHAR g_wchWorkingDirectory[];
 extern WCHAR g_wchCurFile[];
@@ -465,10 +466,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
       LOGFONT lf;
       GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-      POINT dpi = GetSystemDpi();
       lf.lfWeight = FW_BOLD;
-      lf.lfWidth  = MulDiv(8,  dpi.x, USER_DEFAULT_SCREEN_DPI);
-      lf.lfHeight = MulDiv(22, dpi.y, USER_DEFAULT_SCREEN_DPI);
+      lf.lfWidth  = MulDiv(8, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+      lf.lfHeight = MulDiv(22, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
       // lf.lfQuality = ANTIALIASED_QUALITY;
       hFontTitle = CreateFontIndirect(&lf);
 

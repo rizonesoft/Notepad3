@@ -146,12 +146,9 @@ bool BitmapAlphaBlend(HBITMAP,COLORREF,BYTE);
 bool BitmapGrayScale(HBITMAP);
 bool VerifyContrast(COLORREF,COLORREF);
 bool IsFontAvailable(LPCWSTR);
-POINT GetSystemDpi();
-
 
 bool SetWindowTitle(HWND,UINT,bool,UINT,LPCWSTR,int,bool,UINT,bool,LPCWSTR);
 void SetWindowTransparentMode(HWND,bool);
-
 
 void CenterDlgInParent(HWND);
 void GetDlgPos(HWND,LPINT,LPINT);
