@@ -5571,7 +5571,8 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
 
 inline static int _GetDPIAwareFractFontSize(float fFontSize)
 {
-  return MulDiv((int)(fFontSize + 0.5), (SC_FONT_SIZE_MULTIPLIER * g_uCurrentDPI), USER_DEFAULT_SCREEN_DPI);
+  float const fracSizeDPI = fFontSize * (float)SC_FONT_SIZE_MULTIPLIER;
+  return MulDiv((int)(fracSizeDPI + 0.5), g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
 }
 
 
