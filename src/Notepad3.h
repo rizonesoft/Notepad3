@@ -172,6 +172,7 @@ LRESULT MsgCreate(HWND, WPARAM, LPARAM);
 void    MsgEndSession(HWND, UINT);
 void    CreateBars(HWND, HINSTANCE);
 void    MsgThemeChanged(HWND, WPARAM, LPARAM);
+void    MsgDPIChanged(HWND, WPARAM, LPARAM);
 void    MsgSize(HWND, WPARAM, LPARAM);
 void    MsgDropFiles(HWND, WPARAM, LPARAM);
 LRESULT MsgCopyData(HWND, WPARAM, LPARAM);

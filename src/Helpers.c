@@ -43,6 +43,7 @@
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
 extern LANGID    g_iPrefLngLocID;
+extern UINT      g_uCurrentDPI;
 
 //=============================================================================
 //
@@ -298,6 +299,70 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 
   return dwErrID;
 }
+
+
+
+//=============================================================================
+//
+//  GetCurrentDPI()
+//
+UINT GetCurrentDPI(HWND hwnd) {
+  UINT dpi = 0;
+  if (IsWin10()) {
+    FARPROC pfnGetDpiForWindow = GetProcAddress(GetModuleHandle(L"user32.dll"), "GetDpiForWindow");
+    if (pfnGetDpiForWindow) {
+      dpi = (UINT)pfnGetDpiForWindow(hwnd);
+    }
+  }
+
+  if (dpi == 0 && IsWin81()) {
+    HMODULE hShcore = LoadLibrary(L"shcore.dll");
+    if (hShcore) {
+      FARPROC pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
+      if (pfnGetDpiForMonitor) {
+        HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+        UINT dpiX = 0, dpiY = 0;
+        if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
+          dpi = dpiX;
+        }
+      }
+      FreeLibrary(hShcore);
+    }
+  }
+
+  if (dpi == 0) {
+    // FIXME: seems always get 96
+    HDC hDC = GetDC(hwnd);
+    dpi = GetDeviceCaps(hDC, LOGPIXELSX);
+    ReleaseDC(hwnd, hDC);
+  }
+
+  dpi = max(dpi, USER_DEFAULT_SCREEN_DPI);
+  return dpi;
+}
+
+
+
+//=============================================================================
+//
+//  ResizeImageForCurrentDPI()
+//
+HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp) 
+{
+  if (hbmp) {
+    BITMAP bmp;
+    if (g_uCurrentDPI > USER_DEFAULT_SCREEN_DPI && GetObject(hbmp, sizeof(BITMAP), &bmp)) {
+      int width = MulDiv(bmp.bmWidth, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+      int height = MulDiv(bmp.bmHeight, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+      HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_COPYRETURNORG | LR_COPYDELETEORG);
+      if (hCopy) {
+        hbmp = hCopy;
+      }
+    }
+  }
+  return hbmp;
+}
+
 
 
 //=============================================================================
@@ -952,6 +1017,7 @@ void MakeBitmapButton(HWND hwnd,int nCtlId,HINSTANCE hInstance,UINT uBmpId)
   BITMAP bmp;
   BUTTON_IMAGELIST bi;
   HBITMAP hBmp = LoadImage(hInstance,MAKEINTRESOURCE(uBmpId),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+  hBmp = ResizeImageForCurrentDPI(hBmp);
   GetObject(hBmp,sizeof(BITMAP),&bmp);
   bi.himl = ImageList_Create(bmp.bmWidth,bmp.bmHeight,ILC_COLOR32|ILC_MASK,1,0);
   ImageList_AddMasked(bi.himl,hBmp,CLR_DEFAULT);
@@ -960,6 +1026,7 @@ void MakeBitmapButton(HWND hwnd,int nCtlId,HINSTANCE hInstance,UINT uBmpId)
   bi.uAlign = BUTTON_IMAGELIST_ALIGN_CENTER;
   SendMessage(hwndCtl,BCM_SETIMAGELIST,0,(LPARAM)&bi);
 }
+
 
 
 //=============================================================================
@@ -1033,11 +1100,14 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 //
 //  SendWMSize()
 //
-LRESULT SendWMSize(HWND hwnd)
+LRESULT SendWMSize(HWND hwnd, RECT* rc)
 {
-  RECT rc; 
-  GetClientRect(hwnd, &rc);
-  return (SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc.right, rc.bottom)));
+  if (!rc) {
+    RECT _rc;
+    GetClientRect(hwnd, &_rc);
+    return (SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(_rc.right, _rc.bottom)));
+  }
+  return (SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom)));
 }
 
 

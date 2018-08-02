@@ -67,6 +67,7 @@ HWND      g_hwndReBar = NULL;
 HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
 HICON     g_hDlgIcon = NULL;
+UINT		  g_uCurrentDPI = USER_DEFAULT_SCREEN_DPI;
 
 bool g_bExternalBitmap = false;
 
@@ -1414,6 +1415,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       MsgThemeChanged(hwnd,wParam,lParam);
       break;
 
+    case WM_DPICHANGED:
+      MsgDPIChanged(hwnd, wParam, lParam);
+      break;
+
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       UpdateLineNumberWidth();
@@ -1710,6 +1715,8 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   HINSTANCE hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
+  g_uCurrentDPI = GetCurrentDPI(hwnd);
+
   // Setup edit control
   g_hwndEdit = CreateWindowEx(
     WS_EX_CLIENTEDGE,
@@ -1870,6 +1877,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     if (!SearchPath(NULL,g_tchToolbarBitmap,L".bmp",COUNTOF(szTmp),szTmp,NULL))
       StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmap);
     hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE);
+    hbmp = ResizeImageForCurrentDPI(hbmp);
   }
 
   if (hbmp) {
@@ -1878,8 +1886,10 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   else {
     LPWSTR toolBarIntRes = (iHighDpiToolBar > 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB2) : MAKEINTRESOURCE(IDR_MAINWNDTB);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    hbmp = ResizeImageForCurrentDPI(hbmp);
     hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
+
   GetObject(hbmp,sizeof(BITMAP),&bmp);
   if (!IsXP())
     BitmapMergeAlpha(hbmp,GetSysColor(COLOR_3DFACE));
@@ -1896,6 +1906,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
       StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmapHot);
 
     hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    hbmp = ResizeImageForCurrentDPI(hbmp);
     if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
@@ -1914,6 +1925,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
       StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmapDisabled);
 
     hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    hbmp = ResizeImageForCurrentDPI(hbmp);
     if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
@@ -2092,6 +2104,46 @@ void MsgEndSession(HWND hwnd, UINT umsg)
 }
 
 
+
+//=============================================================================
+//
+// MsgDPIChanged() - Handle WM_DPICHANGED
+//
+//
+void MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam) 
+{
+  g_uCurrentDPI = HIWORD(wParam);
+  DocPos const pos = SciCall_GetCurrentPos();
+
+  HINSTANCE hInstance = (HINSTANCE)(INT_PTR)GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
+
+#if 0
+  char buf[64];
+  sprintf_s(buf, COUNTOF(buf), "WM_DPICHANGED: dpi=%u\n", g_uCurrentDPI);
+  SendMessage(g_hwndEdit, SCI_INSERTTEXT, 0, (LPARAM)buf);
+#endif
+
+  Style_ResetCurrentLexer(g_hwndEdit);
+  SciCall_GotoPos(pos);
+  
+  // recreate toolbar and statusbar
+  Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
+
+  DestroyWindow(g_hwndToolbar);
+  DestroyWindow(g_hwndReBar);
+  DestroyWindow(g_hwndStatus);
+  CreateBars(hwnd, hInstance);
+
+  RECT* const rc = (RECT*)lParam;
+  SendWMSize(hwnd, rc);
+
+  UpdateUI();
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateLineNumberWidth();
+}
+
+
 //=============================================================================
 //
 //  MsgThemeChanged() - Handle WM_THEMECHANGED
@@ -2147,7 +2199,7 @@ void MsgThemeChanged(HWND hwnd,WPARAM wParam,LPARAM lParam)
   DestroyWindow(g_hwndStatus);
   CreateBars(hwnd,hInstance);
 
-  SendWMSize(hwnd);
+  SendWMSize(hwnd, NULL);
 
   EditFinalizeStyling(g_hwndEdit, -1);
 
@@ -4816,7 +4868,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         UpdateToolbar();
         ShowWindow(g_hwndReBar,SW_SHOW);
       }
-      SendWMSize(hwnd);
+      SendWMSize(hwnd, NULL);
       break;
 
 
@@ -4840,7 +4892,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         UpdateStatusbar(false);
         ShowWindow(g_hwndStatus,SW_SHOW);
       }
-      SendWMSize(hwnd);
+      SendWMSize(hwnd, NULL);
       break;
 
 
@@ -8225,7 +8277,14 @@ void UpdateLineNumberWidth()
   else {
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
+
+  int const widthBM = g_bShowSelectionMargin ? MulDiv(16, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI) : 0;
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, widthBM);
+
+  int const widthCF = (g_bCodeFoldingAvailable && g_bShowCodeFolding) ? MulDiv(13, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI) : 0;
+  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, widthCF);
 }
+
 
 
 //=============================================================================
