@@ -8278,11 +8278,8 @@ void UpdateLineNumberWidth()
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
 
-  int const widthBM = g_bShowSelectionMargin ? MulDiv(16, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI) : 0;
-  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, widthBM);
-
-  int const widthCF = (g_bCodeFoldingAvailable && g_bShowCodeFolding) ? MulDiv(13, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI) : 0;
-  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, widthCF);
+  Style_SetFolding(g_hwndEdit, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  Style_SetBookmark(g_hwndEdit, g_bShowSelectionMargin);
 }
 
 

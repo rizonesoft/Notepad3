@@ -89,7 +89,7 @@ EDITLEXER lexStandard = { SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; t
                 /*  9 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, IDS_LEX_STD_CARET, L"Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, IDS_LEX_STD_LONG_LN, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:2", L"" },
-                /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors)", L"fore:#000000; back:#808080; alpha:80", L"" },
+                /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors)", L"size:+1; fore:#000000; back:#808080; alpha:80", L"" },
                 /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"indic_roundbox", L"" },
                 /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"italic; fore:#0000FF", L"" },
                          { -1, 00000, L"", L"", L"" } } };
@@ -108,7 +108,7 @@ EDITLEXER lexStandard2nd = { SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text",
                 /*  9 */ { SCI_SETCARETFORE + SCI_SETCARETWIDTH, IDS_LEX_2ND_CARET, L"2nd Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, IDS_LEX_2ND_LONG_LN, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, IDS_LEX_2ND_X_SPC, L"2nd Extra Line Spacing (Size)", L"", L"" },
-                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors)", L"fore:#000000; back:#808080; alpha:80; charset:2; case:U", L"" },
+                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors)", L"size:+1; fore:#000000; back:#808080; alpha:80; charset:2; case:U", L"" },
                 /* 13 */ { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0x000000; alpha:100; alpha2:220; indic_box", L"" },
                 /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
                           { -1, 00000, L"", L"", L"" } } };
@@ -3113,7 +3113,7 @@ static float __fastcall _SetBaseFontSize(float fSize)
 {
   static float fBaseFontSize = INITIAL_BASE_FONT_SIZE;
 
-  if (fSize >= 0.0) {
+  if (fSize >= 0.0f) {
     fBaseFontSize = RoundFractionCent(fSize);
   }
   return fBaseFontSize;
@@ -3121,7 +3121,7 @@ static float __fastcall _SetBaseFontSize(float fSize)
 
 static float __fastcall _GetBaseFontSize()
 {
-return _SetBaseFontSize(-1.0);
+  return _SetBaseFontSize(-1.0);
 }
 
 
@@ -3133,7 +3133,7 @@ static float __fastcall _SetCurrentFontSize(float fSize)
 {
   static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
 
-  if (fSize >= 0.0) {
+  if (fSize >= 0.0f) {
     fCurrentFontSize = RoundFractionCent(fSize);
   }
   return fCurrentFontSize;
@@ -3141,7 +3141,7 @@ static float __fastcall _SetCurrentFontSize(float fSize)
 
 static float __fastcall _GetCurrentFontSize()
 {
-  return _SetCurrentFontSize(-1.0);
+  return _SetCurrentFontSize(-1.0f);
 }
 
 
@@ -4089,10 +4089,13 @@ void Style_SetCurrentLineBackground(HWND hwnd, bool bHiLitCurrLn)
 //
 void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 {
-  float fSize = INITIAL_BASE_FONT_SIZE;
-  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? (int)(fSize + .5f) : 0);
   UNUSED(hwnd);
+  float fSize = _GetBaseFontSize();
+  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
+  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
+
+  int const iSizeDPI = MulDiv(F2INT(fSize), g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? iSizeDPI : 0);
 }
 
 
@@ -4103,9 +4106,12 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 {
   UNUSED(hwnd);
-  float fSize = INITIAL_BASE_FONT_SIZE;
+  float fSize = _GetBaseFontSize();
+  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? (int)(fSize + .5f) + 4 : 0);
+
+  int const iSizeDPI = MulDiv(F2INT(fSize)+3, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? iSizeDPI : 0);
 
   // Depending on if the margin is visible or not, choose different bookmark indication
   if (bShowSelMargin) {
@@ -4159,7 +4165,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   Style_StrGetAlpha(wchBookMarkStyleStrg, &alpha, true);
 
   COLORREF bckgrnd = clrBack;
-  Style_StrGetColor(false, GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &bckgrnd);
+  Style_StrGetColor(false, lpszStyle, &bckgrnd);
   bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, min(0xFF, alpha));
 
   SciCall_MarkerSetFore(MARKER_NP3_BOOKMARK, bmkFore);
@@ -4621,7 +4627,7 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
 //
 //  Style_SetExtraLineSpace()
 //
-void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int size)
+void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 {
   float fValue = 0.0f;
   bool const  bHasLnSpaceDef = Style_StrGetSize(lpszStyle, &fValue);
@@ -4630,18 +4636,18 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int size)
   int iDescent = 0;
 
   if (bHasLnSpaceDef) {
-    int iValue = (int)fValue;
-    const int iCurFontSizeDbl = (int)(2.0 * _GetCurrentFontSize());
+    int const iValue = F2INT(fValue);
+    const int iCurFontSizeDbl = F2INT(_GetCurrentFontSize() * 2.0f);
     int iValAdj = min(max(iValue, (0 - iCurFontSizeDbl)), 256 * iCurFontSizeDbl);
-    if ((iValAdj != iValue) && (size > 0)) {
-      StringCchPrintf(lpszStyle, size, L"size:%i", iValAdj);
+    if ((iValAdj != iValue) && (cch > 0)) {
+      StringCchPrintf(lpszStyle, cch, L"size:%i", iValAdj);
     }
     if ((iValAdj % 2) != 0) {
       iAscent++;
       iValAdj--;
     }
-    iAscent += (iValAdj / 2);
-    iDescent += (iValAdj / 2);
+    iAscent += (iValAdj >> 1);
+    iDescent += (iValAdj >> 1);
   }
   SendMessage(hwnd, SCI_SETEXTRAASCENT, (WPARAM)iAscent, 0);
   SendMessage(hwnd, SCI_SETEXTRADESCENT, (WPARAM)iDescent, 0);
@@ -5245,19 +5251,20 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // is "size:" definition relative ?
   bool bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
-  const float fBaseFontSize = (bGlobalDefaultStyle ? INITIAL_BASE_FONT_SIZE : (bCurrentDefaultStyle ? _GetBaseFontSize() : _GetCurrentFontSize()));
+  const float fBaseFontSize = (bGlobalDefaultStyle ? INITIAL_BASE_FONT_SIZE : \
+    (bCurrentDefaultStyle ? _GetBaseFontSize() : _GetCurrentFontSize()));
 
   // Font Height
   int iFontHeight = 0;
   float fFontSize = fBaseFontSize;
   if (Style_StrGetSize(lpszStyle, &fFontSize)) {
     HDC hdc = GetDC(hwnd);
-    iFontHeight = -MulDiv((int)(fFontSize * 100 + .5f), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
+    iFontHeight = -MulDiv(F2INT(fFontSize * 100), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
     ReleaseDC(hwnd,hdc);
   }
   else {
     HDC hdc = GetDC(hwnd);
-    iFontHeight = -MulDiv((int)(fBaseFontSize * 100 + .5f), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
+    iFontHeight = -MulDiv(F2INT(fBaseFontSize * 100), GetDeviceCaps(hdc, LOGPIXELSY), 7200);
     ReleaseDC(hwnd, hdc);
   }
 
@@ -5573,7 +5580,8 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
 
 inline static int _GetDPIAwareFractFontSize(float fFontSize)
 {
-  return MulDiv((int)(fFontSize * SC_FONT_SIZE_MULTIPLIER + .5f), g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+  int const fractFontSizeDPI = F2INT(fFontSize * SC_FONT_SIZE_MULTIPLIER * g_uCurrentDPI);
+  return (fractFontSizeDPI + (USER_DEFAULT_SCREEN_DPI >> 1)) / USER_DEFAULT_SCREEN_DPI;
 }
 
 
@@ -5642,8 +5650,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Size values are relative to BaseFontSize/CurrentFontSize
-  float  fBaseFontSize = _GetCurrentFontSize();
-  fBaseFontSize = (float)max(0.0f, fBaseFontSize);
+  float fBaseFontSize = _GetCurrentFontSize();
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)_GetDPIAwareFractFontSize(fBaseFontSize));
     if (iStyle == STYLE_DEFAULT) {
