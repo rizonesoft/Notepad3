@@ -18,6 +18,7 @@
 
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
+#include <math.h>
 #include <strsafe.h>
 #include <shlwapi.h>
 #include <versionhelpers.h>
@@ -41,10 +42,9 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 __forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
-#define F2INT(F) ((int)((F)+.5f))
+#define F2INT(F) ((int)lroundf(F))
 __forceinline float RoundFractionCent(float f) { return (float)(F2INT(f * 100) / 100); }
 __forceinline bool HasFractionCent(float f) { return ((F2INT(f * 100) % 100) != 0); }
-
 
 
 // direct heap allocation
