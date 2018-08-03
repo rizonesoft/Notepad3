@@ -41,7 +41,8 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 __forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
-__forceinline bool HasFractionCent(float f) { return ((((int)(f * 100.0)) % 100) != 0); }
+__forceinline float RoundFractionCent(float f) { return (float)(((int)(f * 100 + .5f)) / 100); }
+__forceinline bool HasFractionCent(float f) { return ((((int)(f * 100 + .5f)) % 100) != 0); }
 
 
 
