@@ -39,8 +39,19 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
+
+// swap 
 __forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
+
+// Is the character an octal digit?
+__forceinline bool IsDigit(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
+__forceinline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
+
+// Is the character a white space char?
+__forceinline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
+__forceinline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
+
 
 #define F2INT(F) ((int)lroundf(F))
 __forceinline float RoundFractionCent(float f) { return (float)(F2INT(f * 100) / 100); }
@@ -72,7 +83,7 @@ __forceinline size_t SizeOfMem(LPVOID lpMemory)
 #define IniDeleteSection(lpSection) \
   WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
 
-__inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
+__forceinline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
 
@@ -130,6 +141,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 #define IsWinServer() IsWindowsServer()          // Indicates if the current OS is a Windows Server release.
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
+
 
 bool SetClipboardTextW(HWND, LPCWSTR);
 
@@ -227,7 +239,6 @@ void  PathCanonicalizeEx(LPWSTR,int);
 DWORD GetLongPathNameEx(LPWSTR,DWORD);
 DWORD NormalizePathEx(LPWSTR,int);
 DWORD_PTR SHGetFileInfo2(LPCWSTR,DWORD,SHFILEINFO*,UINT,UINT);
-
 
 int  FormatNumberStr(LPWSTR);
 bool SetDlgItemIntEx(HWND,int,UINT);
@@ -408,6 +419,8 @@ void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
 
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault);
 int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
+
+bool Char2FloatW(WCHAR* wnumber, float* fresult);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 

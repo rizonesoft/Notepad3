@@ -554,7 +554,7 @@ static int g_flagBufferFile         = 0;
 // decalarations 
 static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw);
 static void __fastcall _UpdateToolbarDelayed();
-static HMODULE __fastcall _LoadLanguageResources(LANGID const langID);
+static HMODULE __fastcall _LoadLanguageResources(LANGID const langID, const WCHAR* locName);
 static bool __fastcall _RegisterWndClass(HINSTANCE hInstance);
 
 //==============================================================================
@@ -677,7 +677,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
     g_iPrefLngLocID = (LANGID)dwLangID;
   }
 
-  g_hLngResContainer = _LoadLanguageResources(g_iPrefLngLocID);
+  g_hLngResContainer = _LoadLanguageResources(g_iPrefLngLocID, g_tchPrefLngLocName);
 
   if (!g_hLngResContainer) // fallback en-US (1033)
   {
@@ -849,8 +849,9 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 //  _LoadLanguageResources
 //
 //
-static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
+static HMODULE __fastcall _LoadLanguageResources(LANGID const langID, const WCHAR* locName)
 {
+  UNUSED(locName);
   bool bLngAvailable = false;
   for (int i = 0; i < COUNTOF(g_iAvailableLanguages); ++i) {
     if (g_iAvailableLanguages[i] == langID) {
@@ -877,7 +878,10 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
     GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
     return NULL;
   }
+
   SetThreadUILanguage(langID);
+
+
 
   // NOTES:
   // an application developer that makes the assumption the fallback list provided by the
