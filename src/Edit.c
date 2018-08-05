@@ -113,20 +113,22 @@ extern int  g_iIndentWidth;
 
 extern FR_STATES g_FindReplaceMatchFoundState;
 
-#define DELIM_BUFFER 258
-static char DelimChars[DELIM_BUFFER] = { '\0' };
-static char DelimCharsAccel[DELIM_BUFFER] = { '\0' };
-static char WordCharsDefault[DELIM_BUFFER] = { '\0' };
-static char WhiteSpaceCharsDefault[DELIM_BUFFER] = { '\0' };
-static char PunctuationCharsDefault[DELIM_BUFFER] = { '\0' };
-static char WordCharsAccelerated[DELIM_BUFFER] = { '\0' };
-static char WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { '\0' };
+#define ANSI_CAHR_BUFFER 258
+static char DelimChars[ANSI_CAHR_BUFFER] = { '\0' };
+static char DelimCharsAccel[ANSI_CAHR_BUFFER] = { '\0' };
+static char WordCharsDefault[ANSI_CAHR_BUFFER] = { '\0' };
+static char WhiteSpaceCharsDefault[ANSI_CAHR_BUFFER] = { '\0' };
+static char PunctuationCharsDefault[ANSI_CAHR_BUFFER] = { '\0' };
+static char WordCharsAccelerated[ANSI_CAHR_BUFFER] = { '\0' };
+static char WhiteSpaceCharsAccelerated[ANSI_CAHR_BUFFER] = { '\0' };
 static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
-//static WCHAR W_DelimChars[DELIM_BUFFER] = { L'\0' };
-//static WCHAR W_DelimCharsAccel[DELIM_BUFFER] = { L'\0' };
-//static WCHAR W_WhiteSpaceCharsDefault[DELIM_BUFFER] = { L'\0' };
-//static WCHAR W_WhiteSpaceCharsAccelerated[DELIM_BUFFER] = { L'\0' };
+static char AutoCompleteWordASCII[ANSI_CAHR_BUFFER] = { '\0' };
+
+//static WCHAR W_DelimChars[ANSI_CAHR_BUFFER] = { L'\0' };
+//static WCHAR W_DelimCharsAccel[ANSI_CAHR_BUFFER] = { L'\0' };
+//static WCHAR W_WhiteSpaceCharsDefault[ANSI_CAHR_BUFFER] = { L'\0' };
+//static WCHAR W_WhiteSpaceCharsAccelerated[ANSI_CAHR_BUFFER] = { L'\0' };
 
 
 // Is the character a white space char?
@@ -317,11 +319,11 @@ void EditInitWordDelimiter(HWND hwnd)
   StringCchCatA(DelimChars, COUNTOF(DelimChars), lineEnds);
 
   // 2nd get user settings
-  WCHAR buffer[DELIM_BUFFER] = { L'\0' };
-  ZeroMemory(buffer, DELIM_BUFFER * sizeof(WCHAR));
+  WCHAR buffer[ANSI_CAHR_BUFFER] = { L'\0' };
+  ZeroMemory(buffer, ANSI_CAHR_BUFFER * sizeof(WCHAR));
 
   IniGetString(L"Settings2", L"ExtendedWhiteSpaceChars", L"", buffer, COUNTOF(buffer));
-  char whitesp[DELIM_BUFFER] = { '\0' };
+  char whitesp[ANSI_CAHR_BUFFER] = { '\0' };
   if (StringCchLen(buffer, COUNTOF(buffer)) > 0) {
     WideCharToMultiByteStrg(CP_ACP, buffer, whitesp);
   }
@@ -352,6 +354,22 @@ void EditInitWordDelimiter(HWND hwnd)
   // construct accelerated delimiters
   StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
   StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
+
+
+  IniGetString(L"Settings2", L"AutoCompleteWordASCII", L"", buffer, COUNTOF(buffer));
+  char autocompl[ANSI_CAHR_BUFFER] = { '\0' };
+  if (StringCchLen(buffer, COUNTOF(buffer)) > 0) {
+    WideCharToMultiByteStrg(CP_ACP, buffer, autocompl);
+  }
+  // add only 7-bit-ASCII chars to accelerated whitespace list
+  for (size_t i = 0; i < strlen(autocompl); i++) {
+    if (autocompl[i] & 0x7F) {
+      if (!StrChrA(AutoCompleteWordASCII, autocompl[i])) {
+        StringCchCatNA(AutoCompleteWordASCII, COUNTOF(AutoCompleteWordASCII), &(autocompl[i]), 1);
+      }
+    }
+  }
+
 
   // constuct wide char arrays
   //MultiByteToWideChar(Encoding_SciCP, 0, DelimChars, -1, W_DelimChars, COUNTOF(W_DelimChars));
@@ -6479,19 +6497,24 @@ struct WLIST {
 
 void EditCompleteWord(HWND hwnd, bool autoInsert) 
 {
-  const char* NON_WORD = bAccelWordNavigation ? DelimCharsAccel : DelimChars;
+  // OLD: "_abcdefghijklmnopqrstuvwxyz0123456789"
+  char const * ALLOWED_WORD_CHARS = AutoCompleteWordASCII;
 
-  const DocPos iCurrentPos = SciCall_GetCurrentPos();
-  const DocLn iLine = SciCall_LineFromPosition(iCurrentPos);
-  const DocPos iLineStart = SciCall_PositionFromLine(iLine);
-  const DocPos iCurrentLinePos = iCurrentPos - iLineStart;
+  if (ALLOWED_WORD_CHARS[0] == '\0') {
+    ALLOWED_WORD_CHARS = bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault;
+  }
+
+  DocPos const iCurrentPos = SciCall_GetCurrentPos();
+  DocLn  const iLine = SciCall_LineFromPosition(iCurrentPos);
+  DocPos const iLineStart = SciCall_PositionFromLine(iLine);
+  DocPos const iCurrentLinePos = iCurrentPos - iLineStart;
 
   DocPos iLineLen = SciCall_GetLine(iLine, NULL);
   const char* pLine = SciCall_GetRangePointer(iLineStart, iLineLen);
 
   bool bWordAllNumbers = true;
   DocPos iStartWordPos = iCurrentLinePos;
-  while (iStartWordPos > 0 && !StrChrIA(NON_WORD, pLine[iStartWordPos - 1])) {
+  while (iStartWordPos > 0 && StrChrIA(ALLOWED_WORD_CHARS, pLine[iStartWordPos - 1])) {
     iStartWordPos--;
     if (pLine[iStartWordPos] < '0' || pLine[iStartWordPos] > '9') {
       bWordAllNumbers = false;
@@ -6525,7 +6548,7 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
 
     if (iPosFind != iCurrentPos - iRootLen) 
     {
-      while ((wordEnd < iDocLen) && !StrChrIA(NON_WORD, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
+      while ((wordEnd < iDocLen) && StrChrIA(ALLOWED_WORD_CHARS, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
 
       wordLength = wordEnd - iPosFind;
       if (wordLength > iRootLen) {
