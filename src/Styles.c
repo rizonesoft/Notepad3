@@ -89,7 +89,7 @@ EDITLEXER lexStandard = { SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; t
                 /*  9 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, IDS_LEX_STD_CARET, L"Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, IDS_LEX_STD_LONG_LN, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT+SCI_SETEXTRADESCENT, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:2", L"" },
-                /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors)", L"size:+1; fore:#000000; back:#808080; alpha:80", L"" },
+                /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors, Size)", L"size:+0; fore:#000000; back:#808080; alpha:80", L"" },
                 /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"indic_roundbox", L"" },
                 /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"italic; fore:#0000FF", L"" },
                          { -1, 00000, L"", L"", L"" } } };
@@ -108,7 +108,7 @@ EDITLEXER lexStandard2nd = { SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text",
                 /*  9 */ { SCI_SETCARETFORE + SCI_SETCARETWIDTH, IDS_LEX_2ND_CARET, L"2nd Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, IDS_LEX_2ND_LONG_LN, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
                 /* 11 */ { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, IDS_LEX_2ND_X_SPC, L"2nd Extra Line Spacing (Size)", L"", L"" },
-                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors)", L"size:+1; fore:#000000; back:#808080; alpha:80; charset:2; case:U", L"" },
+                /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors, Size)", L"size:+0; fore:#000000; back:#808080; alpha:80; charset:2; case:U", L"" },
                 /* 13 */ { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0x000000; alpha:100; alpha2:220; indic_box", L"" },
                 /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
                           { -1, 00000, L"", L"", L"" } } };
@@ -4094,7 +4094,7 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
 
-  int const iSizeDPI = MulDiv(F2INT(fSize), g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+  int const iSizeDPI = MulDiv(F2INT(fSize)+4, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
   SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? iSizeDPI : 0);
 }
 
@@ -4110,7 +4110,7 @@ void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
 
-  int const iSizeDPI = MulDiv(F2INT(fSize)+3, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+  int const iSizeDPI = MulDiv(F2INT(fSize)+6, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
   SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? iSizeDPI : 0);
 
   // Depending on if the margin is visible or not, choose different bookmark indication
@@ -4785,9 +4785,9 @@ bool Style_StrGetSize(LPCWSTR lpszStyle, float* f)
     p = StrChr(tch, L';');
     if (p) { *p = L'\0'; }
     TrimString(tch);
-    float fValue = 0;
-    const int itok = swscanf_s(tch,L"%f",&fValue);
-    if (itok == 1)
+    
+    float fValue = 0.0;
+    if (Char2FloatW(tch, &fValue))
     {
       if (fSign == 0.0)
         *f = fValue;

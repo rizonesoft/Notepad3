@@ -45,6 +45,7 @@ extern HMODULE   g_hLngResContainer;
 extern LANGID    g_iPrefLngLocID;
 extern UINT      g_uCurrentDPI;
 
+
 //=============================================================================
 //
 //  Cut of substrings defined by pattern
@@ -2934,15 +2935,6 @@ VOID RestoreWndFromTray(HWND hWnd)
 
 
 
-/**
-* Is the character an octal digit?
-*/
-static bool IsDigit(WCHAR wch)
-{
-  return ((wch >= L'0') && (wch <= L'9'));
-}
-
-
 //=============================================================================
 //
 //  UrlUnescapeEx()
@@ -2981,7 +2973,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
     // HTML encoded
     else if ((lpURL[posIn] == L'&') && (lpURL[posIn + 1] == L'#')) {
       int n = 0;
-      while (IsDigit(lpURL[posIn + 2 + n]) && (n < 4)) {
+      while (IsDigitW(lpURL[posIn + 2 + n]) && (n < 4)) {
         buf[n] = lpURL[posIn + 2 + n];
         ++n;
       }
@@ -3088,6 +3080,59 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
   }
   return n;
 }
+
+
+//=============================================================================
+//
+//  Char2FloatW()
+//  Locale indpendant simple character to tloat conversion
+//
+bool Char2FloatW(WCHAR* wnumber, float* fresult)
+{
+  if (!wnumber || !fresult) { return false; }
+
+  int i = 0;
+  for (; IsBlankCharW(wnumber[i]); ++i); // skip spaces
+
+  // determine sign
+  int const sign = (wnumber[i] == L'-') ? -1 : 1;
+  if (wnumber[i] == L'-' || wnumber[i] == L'+') { ++i; }
+
+  // must be digit now
+  if (!IsDigitW(wnumber[i])) { return false; }
+
+  // digits before decimal
+  float val = 0.0f;
+  while (IsDigitW(wnumber[i])) {
+    val = (val * 10) + (wnumber[i] - L'0');
+    ++i;
+  }
+
+  // skip decimal point (or comma) if present
+  if ((wnumber[i] == L'.') || (wnumber[i] == L',')) { ++i; }
+
+  //digits after decimal
+  int place = 1;
+  while (IsDigitW(wnumber[i])) {
+    val = val * 10 + (wnumber[i] - L'0');
+    place *= 10;
+    ++i;
+  }
+
+  // the extended part for scientific notations
+  float exponent = 1.0f;
+  if (wnumber[i] == L'e' || wnumber[i] == L'E') {
+    ++i;
+    float fexp = 0.0f;
+    if (Char2FloatW(&(wnumber[i]), &fexp)) {
+      exponent = powf(10, fexp);
+    }
+  }
+
+  *fresult = ((sign*val*exponent) / (place));
+  return true;
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////

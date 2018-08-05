@@ -130,7 +130,6 @@ static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
 
 // Is the character a white space char?
-#define IsBlankChar(ch)  (((ch)==' ') || ((ch)=='\t'))
 #define IsWhiteSpace(ch)  StrChrA(WhiteSpaceCharsDefault, (ch))
 #define IsAccelWhiteSpace(ch)  StrChrA(WhiteSpaceCharsAccelerated, (ch))
 
