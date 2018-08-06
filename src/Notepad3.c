@@ -151,15 +151,13 @@ static WCHAR  g_tchDefaultDir[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarButtons[MIDSZ_BUFFER] = { L'\0' };
 
 
-static WCHAR  g_tchStatusbarPrefixes[MIDSZ_BUFFER] = { L'\0' };
-static prefix_t g_mxStatusBarPrefix[STATUS_SECTOR_COUNT];
+static prefix_t g_mxSBPrefix[STATUS_SECTOR_COUNT];
+static prefix_t g_mxSBPostfix[STATUS_SECTOR_COUNT];
 
-static WCHAR  g_tchStatusbarSections[SMALL_BUFFER] = { L'\0' };
 static int    g_iStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 static bool   g_iStatusbarVisible[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 static int    g_vSBSOrder[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
-static WCHAR  g_tchStatusbarWidthSpec[SMALL_BUFFER] = { L'\0' };
 static int    g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 
 
@@ -6707,11 +6705,16 @@ void LoadSettings()
   LoadIniSection(L"Statusbar Settings", pIniSection, cchIniSection);
   // --------------------------------------------------------------------------
 
-  IniSectionGetString(pIniSection, L"SectionPrefixes", STATUSBAR_EXTION_PREFIXES, g_tchStatusbarPrefixes, COUNTOF(g_tchStatusbarPrefixes));
-  ReadStrgsFromCSV(g_tchStatusbarPrefixes, g_mxStatusBarPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"");
+  WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
 
-  IniSectionGetString(pIniSection, L"VisibleSections", STATUSBAR_DEFAULT_IDS, g_tchStatusbarSections, COUNTOF(g_tchStatusbarSections));
-  ReadVectorFromString(g_tchStatusbarSections, g_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
+  IniSectionGetString(pIniSection, L"SectionPrefixes", STATUSBAR_SECTION_PREFIXES, tchStatusBar, COUNTOF(tchStatusBar));
+  ReadStrgsFromCSV(tchStatusBar, g_mxSBPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"");
+
+  IniSectionGetString(pIniSection, L"SectionPostfixes", STATUSBAR_SECTION_POSTFIXES, tchStatusBar, COUNTOF(tchStatusBar));
+  ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"");
+
+  IniSectionGetString(pIniSection, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
+  ReadVectorFromString(tchStatusBar, g_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
 
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
     g_iStatusbarVisible[i] = false;
@@ -6726,8 +6729,8 @@ void LoadSettings()
     }
   }
 
-  IniSectionGetString(pIniSection, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, g_tchStatusbarWidthSpec, COUNTOF(g_tchStatusbarWidthSpec));
-  ReadVectorFromString(g_tchStatusbarWidthSpec, g_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0);
+  IniSectionGetString(pIniSection, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
+  ReadVectorFromString(tchStatusBar, g_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0);
  
 
   // --------------------------------------------------------------------------
@@ -7977,7 +7980,8 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt))
   {
-    FormatLngStringW(tchStatusBar[STATUS_DOCLINE], txtWidth, IDS_STATUS_DOCLINE, g_mxStatusBarPrefix[STATUS_DOCLINE], tchLn, tchLines);
+    StringCchPrintf(tchStatusBar[STATUS_DOCLINE], txtWidth, L"%s%s / %s%s",
+      g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines, g_mxSBPostfix[STATUS_DOCLINE]);
     s_iLnFromPos = iLnFromPos;
     s_iLnCnt = iLnCnt;
     bIsUpdateNeeded = true;
@@ -8001,11 +8005,13 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
     if (bMarkLongLines) {
       StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", g_iLongLinesLimit);
       FormatNumberStr(tchCols);
-      FormatLngStringW(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, IDS_STATUS_DOCCOLUMN2, g_mxStatusBarPrefix[STATUS_DOCCOLUMN], tchCol, tchCols);
+      StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
+        g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
     }
     else {
       tchCols[0] = L'\0';
-      FormatLngStringW(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, IDS_STATUS_DOCCOLUMN, g_mxStatusBarPrefix[STATUS_DOCCOLUMN], tchCol);
+      StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, g_mxSBPostfix[STATUS_DOCCOLUMN]);
     }
     s_iCol = iCol;
     s_bmarkLongLines = bMarkLongLines;
@@ -8041,9 +8047,10 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
       tchSel[0] = L'-'; tchSel[1] = L'-'; tchSel[2] = L'\0';
       tchSelB[0] = L'0'; tchSelB[1] = L'\0';
     }
-
-    FormatLngStringW(tchStatusBar[STATUS_SELECTION], txtWidth, IDS_STATUS_SELECTION, g_mxStatusBarPrefix[STATUS_SELECTION], tchSel);
-    FormatLngStringW(tchStatusBar[STATUS_SELCTBYTES], txtWidth, IDS_STATUS_SELCTBYTES, g_mxStatusBarPrefix[STATUS_SELCTBYTES], tchSelB);
+    StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_SELECTION], tchSel, g_mxSBPostfix[STATUS_SELECTION]);
+    StringCchPrintf(tchStatusBar[STATUS_SELCTBYTES], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, g_mxSBPostfix[STATUS_SELCTBYTES]);
 
     s_bIsSelCountable = bIsSelCountable;
     s_iSelStart = iSelStart;
@@ -8077,8 +8084,8 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
       StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
       FormatNumberStr(tchLinesSelected);
     }
-
-    FormatLngStringW(tchStatusBar[STATUS_SELCTLINES], txtWidth, IDS_STATUS_SELCTLINES, g_mxStatusBarPrefix[STATUS_SELCTLINES], tchLinesSelected);
+    StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, g_mxSBPostfix[STATUS_SELCTLINES]);
 
     s_bIsSelectionEmpty = bIsSelectionEmpty;
     s_iLinesSelected = iLinesSelected;
@@ -8112,7 +8119,8 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
       StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
     }
 
-    FormatLngStringW(tchStatusBar[STATUS_OCCURRENCE], txtWidth, IDS_STATUS_OCCURRENCE, g_mxStatusBarPrefix[STATUS_OCCURRENCE], tchOcc);
+    StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, g_mxSBPostfix[STATUS_OCCURRENCE]);
 
     s_bMOVisible = g_bMarkOccurrencesMatchVisible;
     s_iMarkOccurrencesCount = g_iMarkOccurrencesCount;
@@ -8127,7 +8135,10 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   DocPos const iTextLength = SciCall_GetTextLength();
   if (s_iTextLength != iTextLength) {
     StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
-    FormatLngStringW(tchStatusBar[STATUS_DOCSIZE], txtWidth, IDS_STATUS_DOCSIZE, g_mxStatusBarPrefix[STATUS_DOCSIZE], tchBytes);
+
+    StringCchPrintf(tchStatusBar[STATUS_DOCSIZE], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_DOCSIZE], tchBytes, g_mxSBPostfix[STATUS_DOCSIZE]);
+
     s_iTextLength = iTextLength;
     bIsUpdateNeeded = true;
   }
@@ -8136,7 +8147,10 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   int const iEncoding = Encoding_Current(CPI_GET);
   if (s_iEncoding != iEncoding) {
     Encoding_SetLabel(iEncoding);
-    StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s", g_mxStatusBarPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding));
+
+    StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), g_mxSBPostfix[STATUS_CODEPAGE]);
+
     s_iEncoding = iEncoding;
     bIsUpdateNeeded = true;
   }
@@ -8147,14 +8161,17 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_iEOLMode != g_iEOLMode) {
     if (g_iEOLMode == SC_EOL_CR)
     {
-      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR", g_mxStatusBarPrefix[STATUS_EOLMODE]);
+      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR%s",
+        g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
     }
     else if (g_iEOLMode == SC_EOL_LF)
     {
-      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF", g_mxStatusBarPrefix[STATUS_EOLMODE]);
+      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF%s",
+        g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
     }
     else {
-      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR+LF", g_mxStatusBarPrefix[STATUS_EOLMODE]);
+      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR+LF%s",
+        g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
     }
     s_iEOLMode = g_iEOLMode;
     bIsUpdateNeeded = true;
@@ -8166,10 +8183,12 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_bIsOVR != bIsOVR) {
     if (bIsOVR)
     {
-      StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR", g_mxStatusBarPrefix[STATUS_OVRMODE]);
+      StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",
+        g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
     }
     else {
-      StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS", g_mxStatusBarPrefix[STATUS_OVRMODE]);
+      StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS%s",
+        g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
     }
     s_bIsOVR = bIsOVR;
     bIsUpdateNeeded = true;
@@ -8181,9 +8200,11 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_bUse2ndDefault != bUse2ndDefault) 
   {
     if (bUse2ndDefault)
-      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
+      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND%s",
+        g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
     else
-      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD", g_mxStatusBarPrefix[STATUS_2ND_DEF]);
+      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD%s",
+        g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
 
     s_bUse2ndDefault = bUse2ndDefault;
     bIsUpdateNeeded = true;
@@ -8201,7 +8222,9 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
     else
       Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), tchLexerName, MINI_BUFFER);
 
-    StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s", g_mxStatusBarPrefix[STATUS_LEXER], tchLexerName);
+    StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_LEXER], tchLexerName, g_mxSBPostfix[STATUS_LEXER]);
+
     s_iCurLexer = iCurLexer;
     bIsUpdateNeeded = true;
   }
@@ -8250,8 +8273,15 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
     else
       StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
 
-    FormatLngStringW(tchFRStatus, COUNTOF(tchFRStatus), IDS_FR_STATUS_FMT,
-                    tchLn, tchLines, tchCol, tchSel, tchOcc, tchReplOccs, FR_Status[g_FindReplaceMatchFoundState]);
+    const WCHAR* SBFMT = L" %s%s / %s     %s%s     %s%s     %s%s     %s%s     (  %s  )              ";
+
+    StringCchPrintf(tchFRStatus, COUNTOF(tchFRStatus), SBFMT,
+      g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines,
+      g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol,
+      g_mxSBPrefix[STATUS_SELECTION], tchSel,
+      g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc,
+      g_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
+      FR_Status[g_FindReplaceMatchFoundState]);
 
     SetWindowText(GetDlgItem(g_hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
   }

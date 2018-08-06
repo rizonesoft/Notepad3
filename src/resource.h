@@ -52,16 +52,6 @@
 
 #define IDS_WARN_PREF_LNG_NOT_AVAIL     4000
 
-#define IDS_FR_STATUS_FMT               5000
-#define IDS_STATUS_DOCLINE              5001
-#define IDS_STATUS_DOCCOLUMN            5002
-#define IDS_STATUS_DOCCOLUMN2           5003
-#define IDS_STATUS_SELECTION            5004
-#define IDS_STATUS_SELCTLINES           5015
-#define IDS_STATUS_SELCTBYTES           5016
-#define IDS_STATUS_OCCURRENCE           5017
-#define IDS_STATUS_DOCSIZE              5018
-
 
 
 #include "../language/common_res.h"
