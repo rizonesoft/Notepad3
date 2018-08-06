@@ -2718,7 +2718,7 @@ KEYWORDLIST KeyWords_D = {
   // Keywords 7
   "",
   // ---
-  ""
+  "", ""
 };
 
 
@@ -2762,7 +2762,7 @@ KEYWORDLIST KeyWords_Go = {
   // Keywords 7
   "",
   // ---
-  ""
+  "", ""
 };
 
 
@@ -2804,7 +2804,7 @@ KEYWORDLIST KeyWords_Awk = {
   "ARGC ARGIND ARGV FILENAME FNR FS NF NR OFMT OFS ORS RLENGTH RS RSTART SUBSEP TEXTDOMAIN "
   "BINMODE CONVFMT FIELDWIDTHS FPAT IGNORECASE LINT TEXTDOMAiN ENVIRON ERRNO PROCINFO RT",
 
-  ""
+  "", "", "", "", "", "" ,""
 };
 
 
@@ -2961,7 +2961,7 @@ KEYWORDLIST KeyWords_Rust = {
   // Keywords 7
   "",
   // 0
-  "" };
+  "", "" };
 
 
 EDITLEXER lexRust = { SCLEX_RUST, IDS_LEX_RUST_SRC, L"Rust Source Code", L"rs; rust", L"", &KeyWords_Rust,{
@@ -4454,9 +4454,9 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     }
   }
 
-  if (!bFound && Encoding_Current(CPI_GET) == g_DOSEncoding)
+  if (!bFound && Encoding_Current(CPI_GET) == g_DOSEncoding) {
     pLexNew = &lexANSI;
-
+  }
   // Apply the new lexer
   Style_SetLexer(hwnd,pLexNew);
 }

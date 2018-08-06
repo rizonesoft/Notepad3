@@ -87,18 +87,19 @@ typedef WCHAR prefix_t[MICRO_BUFFER];
 
 typedef enum {
   STATUS_DOCLINE = 0, STATUS_DOCCOLUMN, STATUS_SELECTION, STATUS_SELCTBYTES, STATUS_SELCTLINES, STATUS_OCCURRENCE,
-  STATUS_DOCSIZE, STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF, STATUS_LEXER,
+  STATUS_DOCSIZE, STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF, STATUS_LEXER, STATUS_OCCREPLACE,
   STATUS_SECTOR_COUNT,
   STATUS_HELP = 255
 } STATUS_SECTOR_T;
 
-#define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } 
-#define SBS_INIT_MINUS { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 } 
-#define SBS_INIT_ORDER { 0, 1, 2, 3, 4, 5, 6, 7. 8. 9, 10, 11 }
+#define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } 
+#define SBS_INIT_MINUS { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 } 
+#define SBS_INIT_ORDER { 0, 1, 2, 3, 4, 5, 6, 7. 8. 9, 10, 11, 12 }
 
-#define STATUSBAR_EXTION_PREFIXES L"Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,"
-#define STATUSBAR_DEFAULT_IDS  L"0 1 2 4 5 6 7 8 9 10 11"
-#define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0"
+#define STATUSBAR_SECTION_PREFIXES L"Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Repl  ,"
+#define STATUSBAR_SECTION_POSTFIXES L",,, [UTF-8],,, [UTF-8],,,,,,,"
+#define STATUSBAR_DEFAULT_IDS  L"0 1 2 4 5 6 7 8 9 10 11 12"
+#define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0 0"
 #define STAUSBAR_RIGHT_MARGIN 20
 
 // --------------------------------------------------------------------------

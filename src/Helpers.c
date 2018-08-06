@@ -3019,22 +3019,24 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
 
   StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchCSVStrg);
   TrimString(wchTmpBuff);
-  // separate values
-  int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
-  for (int i = 0; i < len; ++i) {
-    if (wchTmpBuff[i] == L',') { wchTmpBuff[i] = L'\0'; }
-  }
-  wchTmpBuff[len + 1] = L'\0'; // double zero at the end
   // fill default
-  for (int i = 0; i < iCount; ++i) { StringCchCopyW(sMatrix[i], (size_t)iLen, sDefault); }
+  for (int i = 0; i < iCount; ++i) {
+    if (sDefault && *sDefault)
+      StringCchCopyW(sMatrix[i], (size_t)iLen, sDefault);
+    else
+      sMatrix[i][0] = L'\0';
+  }
   // insert values
   int n = 0;
   WCHAR* p = wchTmpBuff;
-  while (*p) {
+  while (p && *p) {
+    WCHAR* q = StrStrW(p, L",");
+    if (q > p) { *q = L'\0'; }
     if (n < iCount) {
-      StringCchCopyW(sMatrix[n++], (size_t)iLen, p);
+      if (*p != L',') { StringCchCopyW(sMatrix[n], (size_t)iLen, p); }
     }
-    p = StrEnd(p) + 1;
+    p = (q > p) ? (q + 1) : (p + 1);
+    ++n;
   }
   return n;
 }

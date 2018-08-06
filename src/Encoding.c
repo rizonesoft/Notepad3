@@ -40,8 +40,6 @@
 
 extern HMODULE   g_hLngResContainer;
 
-extern bool bLoadASCIIasUTF8;
-
 //=============================================================================
 
 #define ENC_PARSE_NAM_ANSI                 "ansi,system,ascii,"
@@ -281,7 +279,8 @@ int Encoding_CountOf()
 //  Encoding Helper Functions
 //
 
-int g_DOSEncoding;
+int g_DOSEncoding = CPI_NONE;
+bool g_bForceCompEncDetection = false;
 
 // Supported Encodings
 WCHAR wchANSI[16] = { L'\0' };
