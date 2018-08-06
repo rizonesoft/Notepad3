@@ -1029,8 +1029,8 @@ bool EditLoadFile(
                                 Encoding_Analyze(lpData, cbNbytes4Analysis, &bIsReliable);
 
   int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-  int iForcedEncoding = Encoding_SrcCmdLn(CPI_GET);
 
+  int iForcedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
   if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
     iForcedEncoding = iAnalyzedEncoding;
   }
