@@ -22,6 +22,7 @@ size_t UTF16Length(std::string_view sv);
 size_t UTF16FromUTF8(std::string_view sv, wchar_t *tbuf, size_t tlen);
 size_t UTF32FromUTF8(std::string_view sv, unsigned int *tbuf, size_t tlen);
 unsigned int UTF16FromUTF32Character(unsigned int val, wchar_t *tbuf) noexcept;
+bool UTF8IsValid(std::string_view sv) noexcept;
 std::string FixInvalidUTF8(const std::string &text);
 
 extern const unsigned char UTF8BytesOfLead[256];
@@ -49,6 +50,9 @@ inline constexpr bool UTF8IsAscii(int ch) noexcept {
 
 enum { UTF8MaskWidth=0x7, UTF8MaskInvalid=0x8 };
 int UTF8Classify(const unsigned char *us, size_t len) noexcept;
+inline int UTF8Classify(std::string_view sv) noexcept {
+	return UTF8Classify(reinterpret_cast<const unsigned char *>(sv.data()), sv.length());
+}
 
 // Similar to UTF8Classify but returns a length of 1 for invalid bytes
 // instead of setting the invalid flag

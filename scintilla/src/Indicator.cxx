@@ -48,8 +48,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		surface->MoveTo(x, irc.top + y);
 		while (x < xLast) {
 			if ((x + 2) > xLast) {
-				if (xLast > x)
-					y = 1;
+				y = 1;
 				x = xLast;
 			} else {
 				x += 2;

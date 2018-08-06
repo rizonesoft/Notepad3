@@ -340,6 +340,22 @@ int UTF8DrawBytes(const unsigned char *us, int len) noexcept {
 	return (utf8StatusNext & UTF8MaskInvalid) ? 1 : (utf8StatusNext & UTF8MaskWidth);
 }
 
+bool UTF8IsValid(std::string_view sv) noexcept {
+	const unsigned char *us = reinterpret_cast<const unsigned char *>(sv.data());
+	size_t remaining = sv.length();
+	while (remaining > 0) {
+		const int utf8Status = UTF8Classify(us, remaining);
+		if (utf8Status & UTF8MaskInvalid) {
+			return false;
+		} else {
+			const int lenChar = utf8Status & UTF8MaskWidth;
+			us += lenChar;
+			remaining -= lenChar;
+		}
+	}
+	return remaining == 0;
+}
+
 // Replace invalid bytes in UTF-8 with the replacement character
 std::string FixInvalidUTF8(const std::string &text) {
 	std::string result;

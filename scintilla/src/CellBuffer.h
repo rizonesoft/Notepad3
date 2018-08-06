@@ -115,6 +115,7 @@ private:
 	SplitVector<char> substance;
 	SplitVector<char> style;
 	bool readOnly;
+	bool utf8Substance;
 	int utf8LineEnds;
 
 	bool collectingUndo;
@@ -123,7 +124,9 @@ private:
 	std::unique_ptr<ILineVector> plv;
 
 	bool UTF8LineEndOverlaps(Sci::Position position) const;
+	bool UTF8IsCharacterBoundary(Sci::Position position) const;
 	void ResetLineEnds();
+	void RecalculateIndexLineStarts(Sci::Line lineFirst, Sci::Line lineLast);
 	/// Actions without undo
 	void BasicInsertString(Sci::Position position, const char *s, Sci::Position insertLength);
 	void BasicDeleteChars(Sci::Position position, Sci::Position deleteLength);
@@ -150,13 +153,19 @@ public:
 
 	Sci::Position Length() const noexcept;
 	void Allocate(Sci::Position newSize);
+	void SetUTF8Substance(bool utf8Substance_);
 	int GetLineEndTypes() const { return utf8LineEnds; }
 	void SetLineEndTypes(int utf8LineEnds_);
 	bool ContainsLineEnd(const char *s, Sci::Position length) const;
 	void SetPerLine(PerLine *pl);
+	int LineCharacterIndex() const noexcept;
+	void AllocateLineCharacterIndex(int lineCharacterIndex);
+	void ReleaseLineCharacterIndex(int lineCharacterIndex);
 	Sci::Line Lines() const noexcept;
 	Sci::Position LineStart(Sci::Line line) const noexcept;
+	Sci::Position IndexLineStart(Sci::Line line, int lineCharacterIndex) const noexcept;
 	Sci::Line LineFromPosition(Sci::Position pos) const noexcept;
+	Sci::Line LineFromPositionIndex(Sci::Position pos, int lineCharacterIndex) const noexcept;
 	void InsertLine(Sci::Line line, Sci::Position position, bool lineStart);
 	void RemoveLine(Sci::Line line);
 	const char *InsertString(Sci::Position position, const char *s, Sci::Position insertLength, bool &startSequence);
