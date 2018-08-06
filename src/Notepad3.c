@@ -5271,13 +5271,13 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_RELOADFORCEDETECTION:
     {
       WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
-      g_CompEncDetection = CPI_GET;
+      g_bForceCompEncDetection = true;
       if (StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile))) {
         bLoadASCIIasUTF8 = false;
         StringCchCopy(tchCurFile2, COUNTOF(tchCurFile2), g_wchCurFile);
         FileLoad(false, false, true, false, false, tchCurFile2);
       }
-      g_CompEncDetection = CPI_NONE;
+      g_bForceCompEncDetection = false;
     }
     break;
 

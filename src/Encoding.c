@@ -280,7 +280,7 @@ int Encoding_CountOf()
 //
 
 int g_DOSEncoding = CPI_NONE;
-int g_CompEncDetection = CPI_NONE;
+bool g_bForceCompEncDetection = false;
 
 // Supported Encodings
 WCHAR wchANSI[16] = { L'\0' };

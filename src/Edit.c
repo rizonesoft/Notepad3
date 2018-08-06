@@ -1024,27 +1024,30 @@ bool EditLoadFile(
 
   // if not skipped, analyze bytes
   bool bIsReliable = false;
- int const iAnalyzedEncoding = (bSkipANSICPDetection  && Encoding_IsNONE(g_CompEncDetection)) ? CPI_NONE :
+
+  int const iAnalyzedEncoding = (bSkipANSICPDetection  && !g_bForceCompEncDetection) ? CPI_NONE :
                                 Encoding_Analyze(lpData, cbNbytes4Analysis, &bIsReliable);
 
- int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
- int iForcedEncoding = Encoding_SrcCmdLn(CPI_GET);
+  int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
+  int iForcedEncoding = Encoding_SrcCmdLn(CPI_GET);
 
- if (!Encoding_IsNONE(g_CompEncDetection) && !Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
+  if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
     iForcedEncoding = iAnalyzedEncoding;
   }
 
   // choose best encoding guess
-  int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
-
+  int iPreferedEncoding = CPI_NONE;
   if (!Encoding_IsNONE(iForcedEncoding))
     iPreferedEncoding = iForcedEncoding;
   else if (iFileEncWeak != CPI_NONE)
     iPreferedEncoding = iFileEncWeak;
   else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection)
     iPreferedEncoding = iAnalyzedEncoding;
-  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable)
+  else if (!Encoding_IsNONE(iAnalyzedEncoding))
     iPreferedEncoding = iAnalyzedEncoding;
+  else
+    iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : 
+                        (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
 
 
   bool bBOM = false;
