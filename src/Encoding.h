@@ -35,6 +35,7 @@
 #define _NP3_ENCODING_H_
 
 extern int g_DOSEncoding;
+extern int g_CompEncDetection;
 
 #define NCP_DEFAULT            1
 #define NCP_UTF8               2

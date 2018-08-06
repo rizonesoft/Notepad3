@@ -2654,6 +2654,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   int i = (int)StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile));
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
+  EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, i);
   EnableCmd(hmenu, CMD_RECODEANSI, i);
   EnableCmd(hmenu, CMD_RECODEOEM, i);
   EnableCmd(hmenu, CMD_RELOADNOFILEVARS, i);
@@ -5256,16 +5257,29 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     case CMD_RELOADASCIIASUTF8:
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
-        bool _bLoadASCIIasUTF8 = bLoadASCIIasUTF8;
+        bool _bLoadASCIIasUTF8 = bLoadASCIIasUTF8; // remember
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          bLoadASCIIasUTF8 = 1;
+          bLoadASCIIasUTF8 = true;
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
-          FileLoad(false,false,true,false,true,tchCurFile2);
-          bLoadASCIIasUTF8 = _bLoadASCIIasUTF8;
+          FileLoad(false, false, true, true, true, tchCurFile2);
+          bLoadASCIIasUTF8 = _bLoadASCIIasUTF8; // restore
         }
       }
       break;
 
+
+    case CMD_RELOADFORCEDETECTION:
+    {
+      WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
+      g_CompEncDetection = CPI_GET;
+      if (StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile))) {
+        bLoadASCIIasUTF8 = false;
+        StringCchCopy(tchCurFile2, COUNTOF(tchCurFile2), g_wchCurFile);
+        FileLoad(false, false, true, false, false, tchCurFile2);
+      }
+      g_CompEncDetection = CPI_NONE;
+    }
+    break;
 
     case CMD_RELOADNOFILEVARS:
       {
@@ -7990,6 +8004,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   static WCHAR tchCol[32] = { L'\0' };
+  static WCHAR tchCols[32] = { L'\0' };
 
   static DocPos s_iCol = -1;
   DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0) + 1;
@@ -7998,24 +8013,19 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
     FormatNumberStr(tchCol);
   }
 
-  static WCHAR tchCols[32] = { L'\0' };
-  static bool s_bmarkLongLines = false;
-  static int s_iLongLinesLimit = -1;
-  if ((s_bmarkLongLines != bMarkLongLines) || (s_iCol != iCol) || (s_iLongLinesLimit != g_iLongLinesLimit)) {
-    if (bMarkLongLines) {
-      StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", g_iLongLinesLimit);
-      FormatNumberStr(tchCols);
-      StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
-        g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
-    }
-    else {
-      tchCols[0] = L'\0';
-      StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s%s",
-        g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, g_mxSBPostfix[STATUS_DOCCOLUMN]);
-    }
+  static DocPos s_iLineLen = -1;
+  DocPos const iLineLen = Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) + 1;
+  if (s_iLineLen != iLineLen) {
+    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iLineLen);
+    FormatNumberStr(tchCols);
+  }
+
+  if ((s_iCol != iCol) || (s_iLineLen != iLineLen)) {
+    StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
+      g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
+  
     s_iCol = iCol;
-    s_bmarkLongLines = bMarkLongLines;
-    s_iLongLinesLimit = g_iLongLinesLimit;
+    s_iLineLen = iLineLen;
     bIsUpdateNeeded = true;
   }
 

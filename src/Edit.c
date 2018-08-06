@@ -1020,23 +1020,30 @@ bool EditLoadFile(
       bPreferOEM = true;
   }
 
-  const int iForcedEncoding = Encoding_SrcCmdLn(CPI_GET);
-  const int iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-  
-  const size_t cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
+  size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
+
+  // if not skipped, analyze bytes
   bool bIsReliable = false;
-  const int iAnalyzedEncoding = bSkipANSICPDetection ? CPI_NONE : Encoding_Analyze(lpData, cbNbytes4Analysis, &bIsReliable);
+ int const iAnalyzedEncoding = (bSkipANSICPDetection  && Encoding_IsNONE(g_CompEncDetection)) ? CPI_NONE :
+                                Encoding_Analyze(lpData, cbNbytes4Analysis, &bIsReliable);
+
+ int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
+ int iForcedEncoding = Encoding_SrcCmdLn(CPI_GET);
+
+ if (!Encoding_IsNONE(g_CompEncDetection) && !Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
+    iForcedEncoding = iAnalyzedEncoding;
+  }
 
   // choose best encoding guess
   int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
 
-  if (iForcedEncoding != CPI_NONE)
+  if (!Encoding_IsNONE(iForcedEncoding))
     iPreferedEncoding = iForcedEncoding;
   else if (iFileEncWeak != CPI_NONE)
     iPreferedEncoding = iFileEncWeak;
   else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection)
     iPreferedEncoding = iAnalyzedEncoding;
-  else if (iAnalyzedEncoding != CPI_NONE)
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable)
     iPreferedEncoding = iAnalyzedEncoding;
 
 
@@ -3698,7 +3705,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
     if (iSelEnd <= SciCall_PositionFromLine(iEndLine)) { --iEndLine; }
   }
   else {
-    iEndLine = Sci_GetLastDocLine();
+    iEndLine = Sci_GetLastDocLineNumber();
   }
 
   if ((iEndLine - iStartLine) <= 1) { return; }
@@ -6369,7 +6376,7 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
       SciCall_SetReadOnly(true);
     }
     else {
-      EditScrollTo(hwnd, Sci_GetCurrentLine(), true);
+      EditScrollTo(hwnd, Sci_GetCurrentLineNumber(), true);
       SciCall_SetReadOnly(false);
     }
 
