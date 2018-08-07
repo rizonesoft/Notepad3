@@ -61,7 +61,7 @@ extern bool g_bShowSelectionMargin;
 extern bool g_bIniFileFromScratch;
 
 extern int  g_iMarkOccurrences;
-extern bool bUseOldStyleBraceMatching;
+extern bool g_bUseOldStyleBraceMatching;
 
 extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
@@ -3536,7 +3536,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].iStyle,
                   pCurrentStandard->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
 
-  if (bUseOldStyleBraceMatching) {
+  if (g_bUseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
       pCurrentStandard->Styles[STY_BRACE_OK].szValue, false); // brace light
   }
@@ -3557,7 +3557,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, iValue);
   }
-  if (bUseOldStyleBraceMatching) {
+  if (g_bUseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
       pCurrentStandard->Styles[STY_BRACE_BAD].szValue, false); // brace bad
   }
@@ -3793,7 +3793,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetMargin(hwnd, g_pLexCurrent->Styles[STY_MARGIN].iStyle,
                     g_pLexCurrent->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
 
-    if (bUseOldStyleBraceMatching) {
+    if (g_bUseOldStyleBraceMatching) {
       Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
                       pCurrentStandard->Styles[STY_BRACE_OK].szValue, false);
 
