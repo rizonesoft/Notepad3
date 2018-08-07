@@ -189,25 +189,27 @@ int       g_iTabWidth;
 int       iTabWidthG;
 int       g_iIndentWidth;
 int       iIndentWidthG;
-bool      bMarkLongLines;
+bool      g_bMarkLongLines;
 int       g_iLongLinesLimit;
 int       iLongLinesLimitG;
 int       iLongLineMode;
 int       iWrapCol = 0;
 bool      g_bShowSelectionMargin;
-bool      bShowLineNumbers;
-int       iReplacedOccurrences;
+bool      g_bShowLineNumbers;
+bool      g_bZeroBasedColumnIndex;
+bool      g_bZeroBasedCharacterCount;
+int       g_iReplacedOccurrences;
 int       g_iMarkOccurrences;
 int       g_iMarkOccurrencesCount;
 int       g_iMarkOccurrencesMaxCount;
 bool      g_bMarkOccurrencesMatchVisible;
-bool      bMarkOccurrencesMatchCase;
-bool      bMarkOccurrencesMatchWords;
-bool      bMarkOccurrencesCurrentWord;
-bool      bUseOldStyleBraceMatching;
-bool      bAutoCompleteWords;
-bool      bAccelWordNavigation;
-bool      bDenyVirtualSpaceAccess;
+bool      g_bMarkOccurrencesMatchCase;
+bool      g_bMarkOccurrencesMatchWords;
+bool      g_bMarkOccurrencesCurrentWord;
+bool      g_bUseOldStyleBraceMatching;
+bool      g_bAutoCompleteWords;
+bool      g_bAccelWordNavigation;
+bool      g_bDenyVirtualSpaceAccess;
 bool      g_bCodeFoldingAvailable;
 bool      g_bShowCodeFolding;
 bool      bViewWhiteSpace;
@@ -1297,7 +1299,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (g_flagStartAsTrayIcon)
     SetNotifyIconTitle(g_hwndMain);
 
-  iReplacedOccurrences = 0;
+  g_iReplacedOccurrences = 0;
   g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
 
   UpdateToolbar();
@@ -1369,7 +1371,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         if (!bAltKeyIsDown) {
           bAltKeyIsDown = true;
-          if (!bDenyVirtualSpaceAccess) {
+          if (!g_bDenyVirtualSpaceAccess) {
             SciCall_SetVirtualSpaceOptions(SCVS_RECTANGULARSELECTION | SCVS_NOWRAPLINESTART | SCVS_USERACCESSIBLE);
           }
         }
@@ -1381,7 +1383,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
       {
         if (bAltKeyIsDown) {
           bAltKeyIsDown = false;
-          SciCall_SetVirtualSpaceOptions(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
+          SciCall_SetVirtualSpaceOptions(g_bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
         }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
@@ -1389,7 +1391,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_KILLFOCUS:
       if (bAltKeyIsDown) {
         bAltKeyIsDown = false;
-        SciCall_SetVirtualSpaceOptions(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
+        SciCall_SetVirtualSpaceOptions(g_bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
@@ -1663,7 +1665,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   else
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
 
-  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
+  SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(g_bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((bScrollPastEOF) ? 0 : 1), 0);
 
   // Tabs
@@ -1680,7 +1682,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   _SetWordWrapping(hwndEditCtrl);
 
   // Long Lines
-  if (bMarkLongLines)
+  if (g_bMarkLongLines)
     SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
   else
     SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, EDGE_NONE, 0);
@@ -1696,7 +1698,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   // word delimiter handling
   EditInitWordDelimiter(hwndEditCtrl);
-  EditSetAccelWordNav(hwndEditCtrl, bAccelWordNavigation);
+  EditSetAccelWordNav(hwndEditCtrl, g_bAccelWordNavigation);
 
   // Init default values for printing
   EditPrintInit();
@@ -2843,28 +2845,28 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
   CheckCmd(hmenu,IDM_VIEW_WORDWRAP,g_bWordWrap);
-  CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,bMarkLongLines);
+  CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,g_bMarkLongLines);
   CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,g_bTabsAsSpaces);
   CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,bShowIndentGuides);
   CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,bAutoIndent);
-  CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,bShowLineNumbers);
+  CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,g_bShowLineNumbers);
   CheckCmd(hmenu,IDM_VIEW_MARGIN,g_bShowSelectionMargin);
   CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!e && !ro);
-  CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,bAutoCompleteWords && !ro);
-  CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,bAccelWordNavigation);
+  CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,g_bAutoCompleteWords && !ro);
+  CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,g_bAccelWordNavigation);
 
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (g_iMarkOccurrences > 0));
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, bMarkOccurrencesMatchCase);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, g_bMarkOccurrencesMatchCase);
 
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, EditToggleView(g_hwndEdit, false));
 
-  if (bMarkOccurrencesMatchWords)
+  if (g_bMarkOccurrencesMatchWords)
     i = IDM_VIEW_MARKOCCUR_WORD;
-  else if (bMarkOccurrencesCurrentWord)
+  else if (g_bMarkOccurrencesCurrentWord)
     i = IDM_VIEW_MARKOCCUR_CURRENT;
   else
     i = IDM_VIEW_MARKOCCUR_WNONE;
@@ -4611,8 +4613,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_LONGLINEMARKER:
-      bMarkLongLines = (bMarkLongLines) ? false: true;
-      if (bMarkLongLines) {
+      g_bMarkLongLines = (g_bMarkLongLines) ? false: true;
+      if (g_bMarkLongLines) {
         SendMessage(g_hwndEdit,SCI_SETEDGEMODE,(iLongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
         Style_SetLongLineColors(g_hwndEdit);
       }
@@ -4626,7 +4628,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_LONGLINESETTINGS:
       if (LongLineSettingsDlg(hwnd,IDD_MUI_LONGLINES,&g_iLongLinesLimit)) {
-        bMarkLongLines = true;
+        g_bMarkLongLines = true;
         SendMessage(g_hwndEdit, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
         Style_SetLongLineColors(g_hwndEdit);
         g_iLongLinesLimit = max(min(g_iLongLinesLimit,4096),0);
@@ -4685,7 +4687,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_LINENUMBERS:
-      bShowLineNumbers = (bShowLineNumbers) ? false : true;
+      g_bShowLineNumbers = (g_bShowLineNumbers) ? false : true;
       UpdateLineNumberWidth();
       break;
 
@@ -4697,14 +4699,14 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
-      bAutoCompleteWords = (bAutoCompleteWords) ? false : true;  // toggle
-      if (!bAutoCompleteWords)
+      g_bAutoCompleteWords = (g_bAutoCompleteWords) ? false : true;  // toggle
+      if (!g_bAutoCompleteWords)
         SendMessage(g_hwndEdit, SCI_AUTOCCANCEL, 0, 0);  // close the auto completion list
       break;
 
     case IDM_VIEW_ACCELWORDNAV:
-      bAccelWordNavigation = (bAccelWordNavigation) ? false : true;  // toggle  
-      EditSetAccelWordNav(g_hwndEdit,bAccelWordNavigation);
+      g_bAccelWordNavigation = (g_bAccelWordNavigation) ? false : true;  // toggle  
+      EditSetAccelWordNav(g_hwndEdit,g_bAccelWordNavigation);
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
@@ -4733,25 +4735,25 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_MARKOCCUR_CASE:
-      bMarkOccurrencesMatchCase = (bMarkOccurrencesMatchCase) ? false : true;
+      g_bMarkOccurrencesMatchCase = (g_bMarkOccurrencesMatchCase) ? false : true;
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_WNONE:
-      bMarkOccurrencesMatchWords = false;
-      bMarkOccurrencesCurrentWord = false;
+      g_bMarkOccurrencesMatchWords = false;
+      g_bMarkOccurrencesCurrentWord = false;
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_WORD:
-      bMarkOccurrencesMatchWords = true;
-      bMarkOccurrencesCurrentWord = false;
+      g_bMarkOccurrencesMatchWords = true;
+      g_bMarkOccurrencesCurrentWord = false;
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
     case IDM_VIEW_MARKOCCUR_CURRENT:
-      bMarkOccurrencesMatchWords = false;
-      bMarkOccurrencesCurrentWord = true;
+      g_bMarkOccurrencesMatchWords = false;
+      g_bMarkOccurrencesCurrentWord = true;
       MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
       break;
 
@@ -5446,7 +5448,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case CMD_INCLINELIMIT:
     case CMD_DECLINELIMIT:
-      if (!bMarkLongLines)
+      if (!g_bMarkLongLines)
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_LONGLINEMARKER,1),0);
       else {
         if (LOWORD(wParam) == CMD_INCLINELIMIT)
@@ -6191,7 +6193,7 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
                 }
               }
             }
-            else if (bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
+            else if (g_bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
               EditCompleteWord(g_hwndEdit, false);
             }
           }
@@ -6507,9 +6509,9 @@ void LoadSettings()
 
   bAutoIndent = IniSectionGetBool(pIniSection,L"AutoIndent",true);
 
-  bAutoCompleteWords = IniSectionGetBool(pIniSection,L"AutoCompleteWords",false);
+  g_bAutoCompleteWords = IniSectionGetBool(pIniSection,L"AutoCompleteWords",false);
 
-  bAccelWordNavigation = IniSectionGetBool(pIniSection, L"AccelWordNavigation", false);
+  g_bAccelWordNavigation = IniSectionGetBool(pIniSection, L"AccelWordNavigation", false);
 
   bShowIndentGuides = IniSectionGetBool(pIniSection,L"ShowIndentGuides",false);
 
@@ -6529,7 +6531,7 @@ void LoadSettings()
   g_iIndentWidth = max(min(g_iIndentWidth,256),0);
   iIndentWidthG = g_iIndentWidth;
 
-  bMarkLongLines = IniSectionGetBool(pIniSection,L"MarkLongLines",true);
+  g_bMarkLongLines = IniSectionGetBool(pIniSection,L"MarkLongLines",true);
 
   g_iLongLinesLimit = IniSectionGetInt(pIniSection,L"LongLinesLimit",80);
   g_iLongLinesLimit = max(min(g_iLongLinesLimit,4096),0);
@@ -6540,17 +6542,17 @@ void LoadSettings()
 
   g_bShowSelectionMargin = IniSectionGetBool(pIniSection,L"ShowSelectionMargin",false);
 
-  bShowLineNumbers = IniSectionGetBool(pIniSection,L"ShowLineNumbers", true);
+  g_bShowLineNumbers = IniSectionGetBool(pIniSection,L"ShowLineNumbers", true);
 
   g_bShowCodeFolding = IniSectionGetBool(pIniSection,L"ShowCodeFolding", true);
 
   g_iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",1);
   g_iMarkOccurrences = max(min(g_iMarkOccurrences, 3), 0);
   g_bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", false);
-  bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",false);
-  bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",true);
-  bMarkOccurrencesCurrentWord = IniSectionGetBool(pIniSection, L"MarkOccurrencesCurrentWord", !bMarkOccurrencesMatchWords);
-  bMarkOccurrencesCurrentWord = bMarkOccurrencesCurrentWord && !bMarkOccurrencesMatchWords;
+  g_bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",false);
+  g_bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",true);
+  g_bMarkOccurrencesCurrentWord = IniSectionGetBool(pIniSection, L"MarkOccurrencesCurrentWord", !g_bMarkOccurrencesMatchWords);
+  g_bMarkOccurrencesCurrentWord = g_bMarkOccurrencesCurrentWord && !g_bMarkOccurrencesMatchWords;
 
   bViewWhiteSpace = IniSectionGetBool(pIniSection,L"ViewWhiteSpace", false);
 
@@ -6704,8 +6706,8 @@ void LoadSettings()
   iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
   iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), USER_TIMER_MINIMUM);
 
-  bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
-  bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
+  g_bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
+  g_bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
   
   iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 40);
   iCurrentLineHorizontalSlop = max(min(iCurrentLineHorizontalSlop, 2000), 0);
@@ -6714,6 +6716,7 @@ void LoadSettings()
   iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
 
   IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
+
 
   // --------------------------------------------------------------------------
   LoadIniSection(L"Statusbar Settings", pIniSection, cchIniSection);
@@ -6745,7 +6748,10 @@ void LoadSettings()
 
   IniSectionGetString(pIniSection, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
   ReadVectorFromString(tchStatusBar, g_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0);
- 
+
+  g_bZeroBasedColumnIndex = IniSectionGetBool(pIniSection, L"ZeroBasedColumnIndex", false);
+  g_bZeroBasedCharacterCount = IniSectionGetBool(pIniSection, L"ZeroBasedCharacterCount", false);
+  
 
   // --------------------------------------------------------------------------
   LoadIniSection(L"Toolbar Images",pIniSection,cchIniSection);
@@ -6760,6 +6766,7 @@ void LoadSettings()
 
   int ResX = GetSystemMetrics(SM_CXSCREEN);
   int ResY = GetSystemMetrics(SM_CYSCREEN);
+
 
   // --------------------------------------------------------------------------
   LoadIniSection(L"Window", pIniSection, cchIniSection);
@@ -6905,25 +6912,25 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"HyperlinkHotspot", g_bHyperlinkHotspot);
   IniSectionSetBool(pIniSection, L"ScrollPastEOF", bScrollPastEOF);
   IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
-  IniSectionSetBool(pIniSection, L"AutoCompleteWords", bAutoCompleteWords);
-  IniSectionSetBool(pIniSection, L"AccelWordNavigation", bAccelWordNavigation);
+  IniSectionSetBool(pIniSection, L"AutoCompleteWords", g_bAutoCompleteWords);
+  IniSectionSetBool(pIniSection, L"AccelWordNavigation", g_bAccelWordNavigation);
   IniSectionSetBool(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
   IniSectionSetBool(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
   IniSectionSetBool(pIniSection, L"TabIndents", bTabIndentsG);
   IniSectionSetBool(pIniSection, L"BackspaceUnindents", bBackspaceUnindents);
   IniSectionSetInt(pIniSection, L"TabWidth", iTabWidthG);
   IniSectionSetInt(pIniSection, L"IndentWidth", iIndentWidthG);
-  IniSectionSetBool(pIniSection, L"MarkLongLines", bMarkLongLines);
+  IniSectionSetBool(pIniSection, L"MarkLongLines", g_bMarkLongLines);
   IniSectionSetPos(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
   IniSectionSetInt(pIniSection, L"LongLineMode", iLongLineMode);
   IniSectionSetBool(pIniSection, L"ShowSelectionMargin", g_bShowSelectionMargin);
-  IniSectionSetBool(pIniSection, L"ShowLineNumbers", bShowLineNumbers);
+  IniSectionSetBool(pIniSection, L"ShowLineNumbers", g_bShowLineNumbers);
   IniSectionSetBool(pIniSection, L"ShowCodeFolding", g_bShowCodeFolding);
   IniSectionSetInt(pIniSection, L"MarkOccurrences", g_iMarkOccurrences);
   IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", g_bMarkOccurrencesMatchVisible);
-  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", bMarkOccurrencesMatchCase);
-  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", bMarkOccurrencesMatchWords);
-  IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", bMarkOccurrencesCurrentWord);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", g_bMarkOccurrencesMatchCase);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", g_bMarkOccurrencesMatchWords);
+  IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", g_bMarkOccurrencesCurrentWord);
   IniSectionSetBool(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
   IniSectionSetBool(pIniSection, L"ViewEOLs", bViewEOLs);
   IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(false, g_iDefaultNewFileEncoding));
@@ -8006,10 +8013,12 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchCol[32] = { L'\0' };
   static WCHAR tchCols[32] = { L'\0' };
 
+  DocPos const colOffset = g_bZeroBasedColumnIndex ? 0 : 1;
+  
   static DocPos s_iCol = -1;
   DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
   if (s_iCol != iCol) {
-    StringCchPrintf(tchCol, COUNTOF(tchCol), L"%td", iCol + 1);
+    StringCchPrintf(tchCol, COUNTOF(tchCol), L"%td", iCol + colOffset);
     FormatNumberStr(tchCol);
   }
 
@@ -8017,7 +8026,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   DocPos const iLineBack = SciCall_GetLineEndPosition(iLnFromPos);
   DocPos const iCols = SciCall_GetColumn(iLineBack);
   if (s_iCols != iCols) {
-    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iCols + 1);
+    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iCols + colOffset);
     FormatNumberStr(tchCols);
   }
 
@@ -8036,18 +8045,20 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchChr[32] = { L'\0' };
   static WCHAR tchChrs[32] = { L'\0' };
 
+  DocPos const chrOffset = g_bZeroBasedCharacterCount ? 0 : 1;
+
   static DocPos s_iChr = -1;
   DocPos const iLineBegin = SciCall_PositionFromLine(iLnFromPos);
   DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
   if (s_iChr != iChr) {
-    StringCchPrintf(tchChr, COUNTOF(tchChr), L"%td", iChr);
+    StringCchPrintf(tchChr, COUNTOF(tchChr), L"%td", iChr + chrOffset);
     FormatNumberStr(tchChr);
   }
 
   static DocPos s_iChrs = -1;
   DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
   if (s_iChrs != iChrs) {
-    StringCchPrintf(tchChrs, COUNTOF(tchChrs), L"%td", iChrs);
+    StringCchPrintf(tchChrs, COUNTOF(tchChrs), L"%td", iChrs + chrOffset);
     FormatNumberStr(tchChrs);
   }
 
@@ -8165,6 +8176,31 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
     s_bMOVisible = g_bMarkOccurrencesMatchVisible;
     s_iMarkOccurrencesCount = g_iMarkOccurrencesCount;
+    bIsUpdateNeeded = true;
+  }
+
+  // ------------------------------------------------------
+
+  // number of replaced pattern
+  static WCHAR tchRepl[32] = { L'\0' };
+  
+  static int s_iReplacedOccurrences = -1;
+
+  if (s_iReplacedOccurrences != g_iReplacedOccurrences)
+  {
+    if (g_iReplacedOccurrences > 0)
+    {
+      StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", g_iReplacedOccurrences);
+      FormatNumberStr(tchRepl);
+    }
+    else {
+      StringCchCopy(tchRepl, COUNTOF(tchRepl), L"--");
+    }
+
+    StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, g_mxSBPostfix[STATUS_OCCREPLACE]);
+
+    s_iReplacedOccurrences = g_iReplacedOccurrences;
     bIsUpdateNeeded = true;
   }
 
@@ -8309,8 +8345,8 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   // update Find/Replace dialog (if any)
   static WCHAR tchReplOccs[32] = { L'\0' };
   if (g_hwndDlgFindReplace) {
-    if (iReplacedOccurrences > 0)
-      StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", iReplacedOccurrences);
+    if (g_iReplacedOccurrences > 0)
+      StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", g_iReplacedOccurrences);
     else
       StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
 
@@ -8337,7 +8373,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 //
 void UpdateLineNumberWidth()
 {
-  if (bShowLineNumbers)
+  if (g_bShowLineNumbers)
   {
     char chLines[32] = { '\0' };
     StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
@@ -8447,7 +8483,7 @@ static int __fastcall _SaveUndoSelection()
   case SC_SEL_THIN:
     sel.anchorPos_undo = (DocPos)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
     sel.curPos_undo = (DocPos)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-    if (!bDenyVirtualSpaceAccess) {
+    if (!g_bDenyVirtualSpaceAccess) {
       sel.anchorVS_undo = (DocPos)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
       sel.curVS_undo = (DocPos)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE, 0, 0);
     }
@@ -8491,7 +8527,7 @@ static void __fastcall _SaveRedoSelection(int token)
       case SC_SEL_THIN:
         sel.anchorPos_redo = (DocPos)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHOR, 0, 0);
         sel.curPos_redo = (DocPos)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONCARET, 0, 0);
-        if (!bDenyVirtualSpaceAccess) {
+        if (!g_bDenyVirtualSpaceAccess) {
           sel.anchorVS_redo = (DocPos)SendMessage(g_hwndEdit, SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, 0, 0);
         }
         break;
