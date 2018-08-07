@@ -8013,19 +8013,20 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
     FormatNumberStr(tchCol);
   }
 
-  static DocPos s_iLineLen = -1;
-  DocPos const iLineLen = Sci_GetNetLineLength(Sci_GetCurrentLineNumber());
-  if (s_iLineLen != iLineLen) {
-    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iLineLen + 1);
+  static DocPos s_iCols = -1;
+  DocPos const iLineBack = SciCall_GetLineEndPosition(iLnFromPos);
+  DocPos const iCols = SciCall_GetColumn(iLineBack);
+  if (s_iCols != iCols) {
+    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iCols + 1);
     FormatNumberStr(tchCols);
   }
 
-  if ((s_iCol != iCol) || (s_iLineLen != iLineLen)) {
+  if ((s_iCol != iCol) || (s_iCols != iCols)) {
     StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
       g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
   
     s_iCol = iCol;
-    s_iLineLen = iLineLen;
+    s_iCols = iCols;
     bIsUpdateNeeded = true;
   }
 
@@ -8044,7 +8045,6 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   }
 
   static DocPos s_iChrs = -1;
-  DocPos const iLineBack = SciCall_GetLineEndPosition(iLnFromPos);
   DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
   if (s_iChrs != iChrs) {
     StringCchPrintf(tchChrs, COUNTOF(tchChrs), L"%td", iChrs);
