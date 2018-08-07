@@ -665,7 +665,7 @@ void SurfaceGDI::InitPixMap(int width, int height, Surface *surface_, WindowID) 
 	hdc = ::CreateCompatibleDC(psurfOther->hdc);
 	hdcOwned = true;
 	bitmap = ::CreateCompatibleBitmap(psurfOther->hdc, width, height);
-	bitmapOld = static_cast<HBITMAP>(::SelectObject(hdc, bitmap));
+	bitmapOld = SelectBitmap(hdc, bitmap);
 	::SetTextAlign(hdc, TA_BASELINE);
 	SetUnicodeMode(psurfOther->unicodeMode);
 	SetDBCSMode(psurfOther->codePage);
@@ -679,7 +679,7 @@ void SurfaceGDI::PenColour(ColourDesired fore) {
 		penOld = 0;
 	}
 	pen = ::CreatePen(0,1,fore.AsInteger());
-	penOld = static_cast<HPEN>(::SelectObject(hdc, pen));
+	penOld = SelectPen(hdc, pen);
 }
 
 void SurfaceGDI::BrushColor(ColourDesired back) {
@@ -699,9 +699,9 @@ void SurfaceGDI::SetFont(Font &font_) {
 		const FormatAndMetrics *pfm = FamFromFontID(font_.GetID());
 		PLATFORM_ASSERT(pfm->technology == SCWIN_TECH_GDI);
 		if (fontOld) {
-			::SelectObject(hdc, pfm->hfont);
+			SelectFont(hdc, pfm->hfont);
 		} else {
-			fontOld = static_cast<HFONT>(::SelectObject(hdc, pfm->hfont));
+			fontOld = SelectFont(hdc, pfm->hfont);
 		}
 		font = pfm->hfont;
 	}
@@ -1844,6 +1844,10 @@ ScreenLineLayout::ScreenLineLayout(const IScreenLine *screenLine) {
 }
 
 ScreenLineLayout::~ScreenLineLayout() {
+	if (textLayout) {
+		textLayout->Release();
+		textLayout = nullptr;
+	}
 }
 
 // Get the position from the provided x
@@ -1888,7 +1892,6 @@ size_t ScreenLineLayout::PositionFromX(XYPOSITION xDistance, bool charPosition) 
 		);
 	}
 
-	textLayout->Release();
 	size_t pos;
 	if (charPosition) {
 		pos = isTrailingHit ? hitTestMetrics.textPosition : caretMetrics.textPosition;
@@ -1920,8 +1923,6 @@ XYPOSITION ScreenLineLayout::XFromPosition(size_t caretPosition) {
 		&pt.y,
 		&caretMetrics
 	);
-
-	textLayout->Release();
 
 	return pt.x;
 }
@@ -2341,9 +2342,9 @@ namespace {
 void FlipBitmap(HBITMAP bitmap, int width, int height) {
 	HDC hdc = ::CreateCompatibleDC(NULL);
 	if (hdc) {
-		HGDIOBJ prevBmp = ::SelectObject(hdc, bitmap);
+		HBITMAP prevBmp = SelectBitmap(hdc, bitmap);
 		::StretchBlt(hdc, width - 1, 0, -width, height, hdc, 0, 0, width, height, SRCCOPY);
-		::SelectObject(hdc, prevBmp);
+		SelectBitmap(hdc, prevBmp);
 		::DeleteDC(hdc);
 	}
 }
@@ -3087,13 +3088,13 @@ void ListBoxX::Paint(HDC hDC) {
 	// The list background is mainly erased during painting, but can be a small
 	// unpainted area when at the end of a non-integrally sized list with a
 	// vertical scroll bar
-	RECT rc = { 0, 0, extent.x, extent.y };
+	const RECT rc = { 0, 0, extent.x, extent.y };
 	::FillRect(bitmapDC, &rc, reinterpret_cast<HBRUSH>(COLOR_WINDOW+1));
 	// Paint the entire client area and vertical scrollbar
 	::SendMessage(lb, WM_PRINT, reinterpret_cast<WPARAM>(bitmapDC), PRF_CLIENT|PRF_NONCLIENT);
 	::BitBlt(hDC, 0, 0, extent.x, extent.y, bitmapDC, 0, 0, SRCCOPY);
 	// Select a stock brush to prevent warnings from BoundsChecker
-	::SelectObject(bitmapDC, GetStockFont(WHITE_BRUSH));
+	SelectBrush(bitmapDC, GetStockBrush(WHITE_BRUSH));
 	SelectBitmap(bitmapDC, hBitmapOld);
 	::DeleteDC(bitmapDC);
 	::DeleteObject(hBitmap);

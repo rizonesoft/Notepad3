@@ -25,6 +25,7 @@
 #define PLAT_FOX 0
 #define PLAT_CURSES 0
 #define PLAT_TK 0
+#define PLAT_HAIKU 0
 
 #if defined(FOX)
 #undef PLAT_FOX
@@ -37,6 +38,10 @@
 #elif defined(CURSES)
 #undef PLAT_CURSES
 #define PLAT_CURSES 1
+
+#elif defined(__HAIKU__)
+#undef PLAT_HAIKU
+#define PLAT_HAIKU 1
 
 #elif defined(SCINTILLA_QT)
 #undef PLAT_QT

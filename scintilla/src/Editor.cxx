@@ -6020,6 +6020,11 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 			static_cast<Sci::Position>(wParam), lParam),
 			0, pdoc->Length());
 
+	case SCI_POSITIONRELATIVECODEUNITS:
+		return std::clamp<Sci::Position>(pdoc->GetRelativePositionUTF16(
+			static_cast<Sci::Position>(wParam), lParam),
+			0, pdoc->Length());
+
 	case SCI_LINESCROLL:
 		ScrollTo(topLine + static_cast<Sci::Line>(lParam));
 		HorizontalScrollTo(xOffset + static_cast<int>(wParam) * static_cast<int>(vs.spaceWidth));
@@ -6784,6 +6789,23 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETBIDIRECTIONAL:
 		return static_cast<sptr_t>(bidirectional);
+
+	case SCI_GETLINECHARACTERINDEX:
+		return pdoc->LineCharacterIndex();
+
+	case SCI_ALLOCATELINECHARACTERINDEX:
+		pdoc->AllocateLineCharacterIndex(static_cast<int>(wParam));
+		break;
+
+	case SCI_RELEASELINECHARACTERINDEX:
+		pdoc->ReleaseLineCharacterIndex(static_cast<int>(wParam));
+		break;
+
+	case SCI_LINEFROMINDEXPOSITION:
+		return pdoc->LineFromPositionIndex(static_cast<Sci::Position>(wParam), static_cast<int>(lParam));
+
+	case SCI_INDEXPOSITIONFROMLINE:
+		return pdoc->IndexLineStart(static_cast<Sci::Line>(wParam), static_cast<int>(lParam));
 
 		// Marker definition and setting
 	case SCI_MARKERDEFINE:
@@ -8190,6 +8212,10 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_COUNTCHARACTERS:
 		return pdoc->CountCharacters(static_cast<Sci::Position>(wParam), lParam);
+		//return pdoc->CountCharacters(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));
+
+	case SCI_COUNTCODEUNITS:
+		return pdoc->CountUTF16(static_cast<Sci::Position>(wParam), lParam);
 
 	default:
 		return DefWndProc(iMessage, wParam, lParam);

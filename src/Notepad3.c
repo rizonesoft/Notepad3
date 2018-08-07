@@ -6722,10 +6722,10 @@ void LoadSettings()
   WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
 
   IniSectionGetString(pIniSection, L"SectionPrefixes", STATUSBAR_SECTION_PREFIXES, tchStatusBar, COUNTOF(tchStatusBar));
-  ReadStrgsFromCSV(tchStatusBar, g_mxSBPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"");
+  ReadStrgsFromCSV(tchStatusBar, g_mxSBPrefix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_PRFX_");
 
   IniSectionGetString(pIniSection, L"SectionPostfixes", STATUSBAR_SECTION_POSTFIXES, tchStatusBar, COUNTOF(tchStatusBar));
-  ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"");
+  ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
 
   IniSectionGetString(pIniSection, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
   ReadVectorFromString(tchStatusBar, g_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1);
@@ -7978,9 +7978,9 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
   static WCHAR tchLn[32] = { L'\0' };
   static DocLn s_iLnFromPos = -1;
-  DocLn const iLnFromPos = SciCall_LineFromPosition(iPos) + 1;
+  DocLn const iLnFromPos = SciCall_LineFromPosition(iPos);
   if (s_iLnFromPos != iLnFromPos) {
-    StringCchPrintf(tchLn, COUNTOF(tchLn), L"%td", iLnFromPos);
+    StringCchPrintf(tchLn, COUNTOF(tchLn), L"%td", iLnFromPos + 1);
     FormatNumberStr(tchLn);
   }
 
@@ -8007,25 +8007,56 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchCols[32] = { L'\0' };
 
   static DocPos s_iCol = -1;
-  DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0) + 1;
+  DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
   if (s_iCol != iCol) {
-    StringCchPrintf(tchCol, COUNTOF(tchCol), L"%td", iCol);
+    StringCchPrintf(tchCol, COUNTOF(tchCol), L"%td", iCol + 1);
     FormatNumberStr(tchCol);
   }
 
-  static DocPos s_iLineLen = -1;
-  DocPos const iLineLen = Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) + 1;
-  if (s_iLineLen != iLineLen) {
-    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iLineLen);
+  static DocPos s_iCols = -1;
+  DocPos const iLineBack = SciCall_GetLineEndPosition(iLnFromPos);
+  DocPos const iCols = SciCall_GetColumn(iLineBack);
+  if (s_iCols != iCols) {
+    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iCols + 1);
     FormatNumberStr(tchCols);
   }
 
-  if ((s_iCol != iCol) || (s_iLineLen != iLineLen)) {
+  if ((s_iCol != iCol) || (s_iCols != iCols)) {
     StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
       g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
   
     s_iCol = iCol;
-    s_iLineLen = iLineLen;
+    s_iCols = iCols;
+    bIsUpdateNeeded = true;
+  }
+
+  // ------------------------------------------------------
+
+
+  static WCHAR tchChr[32] = { L'\0' };
+  static WCHAR tchChrs[32] = { L'\0' };
+
+  static DocPos s_iChr = -1;
+  DocPos const iLineBegin = SciCall_PositionFromLine(iLnFromPos);
+  DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
+  if (s_iChr != iChr) {
+    StringCchPrintf(tchChr, COUNTOF(tchChr), L"%td", iChr);
+    FormatNumberStr(tchChr);
+  }
+
+  static DocPos s_iChrs = -1;
+  DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
+  if (s_iChrs != iChrs) {
+    StringCchPrintf(tchChrs, COUNTOF(tchChrs), L"%td", iChrs);
+    FormatNumberStr(tchChrs);
+  }
+
+  if ((s_iChr != iChr) || (s_iChrs != iChrs)) {
+    StringCchPrintf(tchStatusBar[STATUS_DOCCHAR], txtWidth, L"%s%s / %s%s",
+      g_mxSBPrefix[STATUS_DOCCHAR], tchChr, tchChrs, g_mxSBPostfix[STATUS_DOCCHAR]);
+
+    s_iChr = iChr;
+    s_iChrs = iChrs;
     bIsUpdateNeeded = true;
   }
 

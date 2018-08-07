@@ -222,6 +222,7 @@ DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
 
+DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, DocPos, endpos)
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, DocLn)
 DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos)
 DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocLn, line)

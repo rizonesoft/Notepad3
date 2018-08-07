@@ -3033,7 +3033,12 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
     WCHAR* q = StrStrW(p, L",");
     if (q > p) { *q = L'\0'; }
     if (n < iCount) {
-      if (*p != L',') { StringCchCopyW(sMatrix[n], (size_t)iLen, p); }
+      if (*p != L',') { 
+        StringCchCopyW(sMatrix[n], (size_t)iLen, p); 
+      }
+      else {
+        sMatrix[n][0] = L'\0';
+      }
     }
     p = (q > p) ? (q + 1) : (p + 1);
     ++n;
