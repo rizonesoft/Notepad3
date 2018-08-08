@@ -1755,6 +1755,8 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 #else
 						return 0;
 #endif
+					} else {
+						bidirectional = EditModel::Bidirectional::bidiDisabled;
 					}
 #if defined(USE_D2D)
 					DropRenderTarget();

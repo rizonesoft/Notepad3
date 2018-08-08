@@ -1998,7 +1998,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       GetLngString(tbbMainWnd[i].idCommand, tchDesc, COUNTOF(tchDesc));
       tbbMainWnd[i].iString = SendMessage(g_hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc); // tooltip
       tbbMainWnd[i].fsStyle &= ~(BTNS_AUTOSIZE | BTNS_SHOWTEXT);
-      //TODO: @@@ check why LNG tooltip is not working
     }
   }
   LocalFree(pIniSection);
@@ -3852,7 +3851,7 @@ bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
         UINT uWrpCol = 0;
         if (ColumnWrapDlg(hwnd,IDD_MUI_COLUMNWRAP,&uWrpCol))
         {
-          iWrapCol = (DocPos)max(min(uWrpCol,(UINT)g_iLongLinesLimit),1);
+          iWrapCol = (DocPos)clampi((int)uWrpCol, 1, g_iLongLinesLimit);
           BeginWaitCursor(NULL);
           _BEGIN_UNDO_ACTION_;
           EditWrapToColumn(g_hwndEdit,iWrapCol);
@@ -4660,7 +4659,7 @@ bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
         g_bMarkLongLines = true;
         SendMessage(g_hwndEdit, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
         Style_SetLongLineColors(g_hwndEdit);
-        g_iLongLinesLimit = max(min(g_iLongLinesLimit,4096),0);
+        g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, 4096);
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
         iLongLinesLimitG = g_iLongLinesLimit;
         UpdateToolbar();
@@ -4682,8 +4681,8 @@ bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
         SendMessage(g_hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
         SendMessage(g_hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
         SendMessage(g_hwndEdit,SCI_SETBACKSPACEUNINDENTS,bBackspaceUnindents,0);
-        g_iTabWidth = max(min(g_iTabWidth,256),1);
-        g_iIndentWidth = max(min(g_iIndentWidth,256),0);
+        g_iTabWidth = clampi(g_iTabWidth, 1, 256);
+        g_iIndentWidth = clampi(g_iIndentWidth, 0, 256);
         SendMessage(g_hwndEdit,SCI_SETTABWIDTH,g_iTabWidth,0);
         SendMessage(g_hwndEdit,SCI_SETINDENT,g_iIndentWidth,0);
         bTabsAsSpacesG = g_bTabsAsSpaces;
@@ -5483,7 +5482,7 @@ bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
           g_iLongLinesLimit++;
         else
           g_iLongLinesLimit--;
-        g_iLongLinesLimit = max(min(g_iLongLinesLimit,4096),0);
+        g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, 4096);
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
         UpdateToolbar();
         UpdateStatusbar(false);
@@ -6538,7 +6537,7 @@ void LoadSettings()
     IniSetString(L"Settings2", L"SciDirectWriteTech", NULL);
     IniSetInt(L"Settings", L"RenderingTechnology", g_iRenderingTechnology);
   }
-  g_iRenderingTechnology = max(min(g_iRenderingTechnology, 3), 0);
+  g_iRenderingTechnology = clampi(g_iRenderingTechnology, 0, 3);
 
   // deprecated
   g_iBidirectional = IniSectionGetInt(pIniSection, L"EnableBidirectionalSupport", -111);
@@ -6547,28 +6546,28 @@ void LoadSettings()
     IniSetString(L"Settings2", L"EnableBidirectionalSupport", NULL);
     IniSetInt(L"Settings", L"Bidirectional", g_iBidirectional);
   }
-  g_iBidirectional = (max(min(g_iBidirectional, 2), 0) > 0) ? 2 : 0;
+  g_iBidirectional = (clampi(g_iBidirectional, 0, 2) > 0) ? 2 : 0;
 
   g_iSciFontQuality = IniSectionGetInt(pIniSection, L"SciFontQuality", FontQuality[3]);
-  g_iSciFontQuality = max(min(g_iSciFontQuality, 3), 0);
+  g_iSciFontQuality = clampi(g_iSciFontQuality, 0, 3);
 
   g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection, L"MarkOccurrencesMaxCount", 2000);
   g_iMarkOccurrencesMaxCount = (g_iMarkOccurrencesMaxCount <= 0) ? INT_MAX : g_iMarkOccurrencesMaxCount;
 
   iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
-  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), USER_TIMER_MINIMUM);
+  iUpdateDelayHyperlinkStyling = clampi(iUpdateDelayHyperlinkStyling, USER_TIMER_MINIMUM, 10000);
 
   iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
-  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), USER_TIMER_MINIMUM);
+  iUpdateDelayMarkAllCoccurrences = clampi(iUpdateDelayMarkAllCoccurrences, USER_TIMER_MINIMUM, 10000);
 
   g_bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
   g_bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
 
   iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 40);
-  iCurrentLineHorizontalSlop = max(min(iCurrentLineHorizontalSlop, 2000), 0);
+  iCurrentLineHorizontalSlop = clampi(iCurrentLineHorizontalSlop, 0, 2000);
 
   iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
-  iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
+  iCurrentLineVerticalSlop = clampi(iCurrentLineVerticalSlop, 0, 200);
 
   IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
 
@@ -6607,19 +6606,20 @@ void LoadSettings()
   }
 
   iPathNameFormat = IniSectionGetInt(pIniSection,L"PathNameFormat",1);
-  iPathNameFormat = max(min(iPathNameFormat,2),0);
+  iPathNameFormat = clampi(iPathNameFormat, 0, 2);
 
   g_bWordWrap = IniSectionGetBool(pIniSection,L"WordWrap",false);
   bWordWrapG = g_bWordWrap;
 
   iWordWrapMode = IniSectionGetInt(pIniSection,L"WordWrapMode",0);
-  iWordWrapMode = max(min(iWordWrapMode,1),0);
+  iWordWrapMode = clampi(iWordWrapMode, 0, 1);
 
   iWordWrapIndent = IniSectionGetInt(pIniSection,L"WordWrapIndent",0);
-  iWordWrapIndent = max(min(iWordWrapIndent,6),0);
+  iWordWrapIndent = clampi(iWordWrapIndent, 0, 6);
 
   iWordWrapSymbols = IniSectionGetInt(pIniSection,L"WordWrapSymbols",22);
-  iWordWrapSymbols = max(min(iWordWrapSymbols%10,2),0)+max(min((iWordWrapSymbols%100-iWordWrapSymbols%10)/10,2),0)*10;
+  iWordWrapSymbols = clampi(iWordWrapSymbols % 10, 0, 2) + 
+                     clampi((iWordWrapSymbols % 100 - iWordWrapSymbols % 10) / 10, 0, 2) * 10;
 
   bShowWordWrapSymbols = IniSectionGetBool(pIniSection,L"ShowWordWrapSymbols",0);
 
@@ -6650,21 +6650,21 @@ void LoadSettings()
   bBackspaceUnindents = IniSectionGetBool(pIniSection,L"BackspaceUnindents",false);
 
   g_iTabWidth = IniSectionGetInt(pIniSection,L"TabWidth",4);
-  g_iTabWidth = max(min(g_iTabWidth,256),1);
+  g_iTabWidth = clampi(g_iTabWidth, 1, 256);
   iTabWidthG = g_iTabWidth;
 
   g_iIndentWidth = IniSectionGetInt(pIniSection,L"IndentWidth",0);
-  g_iIndentWidth = max(min(g_iIndentWidth,256),0);
+  g_iIndentWidth = clampi(g_iIndentWidth, 0, 256);
   iIndentWidthG = g_iIndentWidth;
 
   g_bMarkLongLines = IniSectionGetBool(pIniSection,L"MarkLongLines",true);
 
   g_iLongLinesLimit = IniSectionGetInt(pIniSection,L"LongLinesLimit",80);
-  g_iLongLinesLimit = max(min(g_iLongLinesLimit,4096),0);
+  g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, 4096);
   iLongLinesLimitG = g_iLongLinesLimit;
 
   iLongLineMode = IniSectionGetInt(pIniSection,L"LongLineMode",EDGE_LINE);
-  iLongLineMode = max(min(iLongLineMode,EDGE_BACKGROUND),EDGE_LINE);
+  iLongLineMode = clampi(iLongLineMode, EDGE_LINE, EDGE_BACKGROUND);
 
   g_bShowSelectionMargin = IniSectionGetBool(pIniSection,L"ShowSelectionMargin",false);
 
@@ -6673,7 +6673,8 @@ void LoadSettings()
   g_bShowCodeFolding = IniSectionGetBool(pIniSection,L"ShowCodeFolding", true);
 
   g_iMarkOccurrences = IniSectionGetInt(pIniSection,L"MarkOccurrences",1);
-  g_iMarkOccurrences = max(min(g_iMarkOccurrences, 3), 0);
+  g_iMarkOccurrences = clampi(g_iMarkOccurrences, 0, 3);
+
   g_bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", false);
   g_bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchCase",false);
   g_bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection,L"MarkOccurrencesMatchWholeWords",true);
@@ -6702,23 +6703,23 @@ void LoadSettings()
   bNoEncodingTags = IniSectionGetBool(pIniSection,L"NoEncodingTags", false);
 
   g_iDefaultEOLMode = IniSectionGetInt(pIniSection,L"DefaultEOLMode",0);
-  g_iDefaultEOLMode = max(min(g_iDefaultEOLMode,2),0);
+  g_iDefaultEOLMode = clampi(g_iDefaultEOLMode, 0, 2);
 
   bFixLineEndings = IniSectionGetBool(pIniSection,L"FixLineEndings",false);
 
   bAutoStripBlanks = IniSectionGetBool(pIniSection,L"FixTrailingBlanks",false);
 
   iPrintHeader = IniSectionGetInt(pIniSection,L"PrintHeader",1);
-  iPrintHeader = max(min(iPrintHeader,3),0);
+  iPrintHeader = clampi(iPrintHeader, 0, 3);
 
   iPrintFooter = IniSectionGetInt(pIniSection,L"PrintFooter",0);
-  iPrintFooter = max(min(iPrintFooter,1),0);
+  iPrintFooter = clampi(iPrintFooter, 0, 1);
 
   iPrintColor = IniSectionGetInt(pIniSection,L"PrintColorMode",3);
-  iPrintColor = max(min(iPrintColor,4),0);
+  iPrintColor = clampi(iPrintColor, 0, 4);
 
-  iPrintZoom = IniSectionGetInt(pIniSection,L"PrintZoom",10)-10;
-  iPrintZoom = max(min(iPrintZoom,20),-10);
+  iPrintZoom = IniSectionGetInt(pIniSection,L"PrintZoom", 10);
+  iPrintZoom = clampi(iPrintZoom - 10, -10, 20);
 
   pagesetupMargin.left = IniSectionGetInt(pIniSection,L"PrintMarginLeft",-1);
   pagesetupMargin.left = max(pagesetupMargin.left,-1);
@@ -6735,12 +6736,12 @@ void LoadSettings()
   bSaveBeforeRunningTools = IniSectionGetBool(pIniSection,L"SaveBeforeRunningTools",false);
 
   g_iFileWatchingMode = IniSectionGetInt(pIniSection,L"FileWatchingMode",0);
-  g_iFileWatchingMode = max(min(g_iFileWatchingMode,2),0);
+  g_iFileWatchingMode = clampi(g_iFileWatchingMode, 0, 2);
 
   g_bResetFileWatching = IniSectionGetBool(pIniSection,L"ResetFileWatching",true);
 
   iEscFunction = IniSectionGetInt(pIniSection,L"EscFunction",0);
-  iEscFunction = max(min(iEscFunction,2),0);
+  iEscFunction = clampi(iEscFunction, 0, 2);
 
   bAlwaysOnTop = IniSectionGetBool(pIniSection,L"AlwaysOnTop",false);
 
@@ -6749,14 +6750,13 @@ void LoadSettings()
   bTransparentMode = IniSectionGetBool(pIniSection,L"TransparentMode",false);
 
   g_iRenderingTechnology = IniSectionGetInt(pIniSection, L"RenderingTechnology", g_iRenderingTechnology);
-  g_iRenderingTechnology = max(min(g_iRenderingTechnology, 3), 0);
+  g_iRenderingTechnology = clampi(g_iRenderingTechnology, 0, 3);
 
   g_iBidirectional = IniSectionGetInt(pIniSection, L"Bidirectional", g_iBidirectional);
-  g_iBidirectional = max(min(g_iBidirectional, 2), 0);
+  g_iBidirectional = clampi(g_iBidirectional, 0, 2);
 
   // Check if SetLayeredWindowAttributes() is available
-  bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
-  bTransparentModeAvailable = (bTransparentModeAvailable) ? true : false;
+  bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL) ? true : false;
 
   // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
   IniSectionGetString(pIniSection,L"ToolbarButtons", L"", g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
@@ -6858,7 +6858,7 @@ void LoadSettings()
   WCHAR tchHighDpiToolBar[32] = { L'\0' };
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
   iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
-  iHighDpiToolBar = max(min(iHighDpiToolBar, 1), -1);
+  iHighDpiToolBar = clampi(iHighDpiToolBar, -1, 1);
   if (iHighDpiToolBar < 0) { // undefined: determine high DPI (higher than Full-HD)
     if ((ResX > 1920) && (ResY > 1080))
       iHighDpiToolBar = 1;
@@ -6898,12 +6898,12 @@ void LoadSettings()
   WCHAR tchSciDirectWriteTech[64];
   StringCchPrintf(tchSciDirectWriteTech,COUNTOF(tchSciDirectWriteTech),L"%ix%i RenderingTechnology",ResX,ResY);
   g_iRenderingTechnology = IniSectionGetInt(pIniSection,tchSciDirectWriteTech,g_iRenderingTechnology);
-  g_iRenderingTechnology = max(min(g_iRenderingTechnology,3),0);
+  g_iRenderingTechnology = clampi(g_iRenderingTechnology, 0, 3);
 
   WCHAR tchSciFontQuality[64];
   StringCchPrintf(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
   g_iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,g_iSciFontQuality);
-  g_iSciFontQuality = max(min(g_iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_TECHNOLOGY_DEFAULT);
+  g_iSciFontQuality = clampi(g_iSciFontQuality, 0, 3);
 
   LocalFree(pIniSection);
 
@@ -7555,7 +7555,7 @@ void LoadFlags()
     g_flagNoFadeHidden = 1;
 
   g_flagToolbarLook = IniSectionGetInt(pIniSection,L"ToolbarLook",IsXP() ? 1 : 2);
-  g_flagToolbarLook = max(min(g_flagToolbarLook,2),0);
+  g_flagToolbarLook = clampi(g_flagToolbarLook, 0, 2);
 
   if (IniSectionGetInt(pIniSection,L"SimpleIndentGuides",0))
     g_flagSimpleIndentGuides = 1;

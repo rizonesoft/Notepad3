@@ -3080,7 +3080,7 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
     int iValue;
     if (swscanf_s(p, L"%i", &iValue) == 1) {
       if (n < iCount) {
-        iVector[n++] = min(max(iValue, iMin), iMax);
+        iVector[n++] = clampi(iValue, iMin, iMax);
       }
     }
     p = StrEnd(p) + 1;

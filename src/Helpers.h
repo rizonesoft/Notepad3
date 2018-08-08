@@ -44,6 +44,12 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 __forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
+// clamp
+__forceinline int clampi(int x, int lower, int upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
+
+
 // Is the character an octal digit?
 __forceinline bool IsDigit(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
 __forceinline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }

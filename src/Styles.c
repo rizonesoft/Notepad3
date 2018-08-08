@@ -84,7 +84,7 @@ EDITLEXER lexStandard = { SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; t
                 /*  4 */ { STYLE_CONTROLCHAR, IDS_LEX_STD_CTRL_CHAR, L"Control Characters (Font)", L"size:-1", L"" },
                 /*  5 */ { STYLE_INDENTGUIDE, IDS_LEX_STD_INDENT, L"Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
                 /*  6 */ { SCI_SETSELFORE+SCI_SETSELBACK, IDS_LEX_STD_SEL, L"Selected Text (Colors)", L"back:#0A246A; eolfilled; alpha:95", L"" },
-                /*  7 */ { SCI_SETWHITESPACEFORE+SCI_SETWHITESPACEBACK+SCI_SETWHITESPACESIZE, IDS_LEX_STD_WSPC, L"Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
+                /*  7 */ { SCI_SETWHITESPACEFORE+SCI_SETWHITESPACEBACK+SCI_SETWHITESPACESIZE, IDS_LEX_STD_WSPC, L"Whitespace (Colors, Size 0-12)", L"fore:#FF4000", L"" },
                 /*  8 */ { SCI_SETCARETLINEBACK, IDS_LEX_STD_LN_BACKGR, L"Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
                 /*  9 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, IDS_LEX_STD_CARET, L"Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, IDS_LEX_STD_LONG_LN, L"Long Line Marker (Colors)", L"fore:#FFC000", L"" },
@@ -103,7 +103,7 @@ EDITLEXER lexStandard2nd = { SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text",
                 /*  4 */ { STYLE_CONTROLCHAR, IDS_LEX_2ND_CTRL_CHAR, L"2nd Control Characters (Font)", L"size:-1", L"" },
                 /*  5 */ { STYLE_INDENTGUIDE, IDS_LEX_2ND_INDENT, L"2nd Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
                 /*  6 */ { SCI_SETSELFORE + SCI_SETSELBACK, IDS_LEX_2ND_SEL, L"2nd Selected Text (Colors)", L"eolfilled", L"" },
-                /*  7 */ { SCI_SETWHITESPACEFORE + SCI_SETWHITESPACEBACK + SCI_SETWHITESPACESIZE, IDS_LEX_2ND_WSPC, L"2nd Whitespace (Colors, Size 0-5)", L"fore:#FF4000", L"" },
+                /*  7 */ { SCI_SETWHITESPACEFORE + SCI_SETWHITESPACEBACK + SCI_SETWHITESPACESIZE, IDS_LEX_2ND_WSPC, L"2nd Whitespace (Colors, Size 0-12)", L"fore:#FF4000", L"" },
                 /*  8 */ { SCI_SETCARETLINEBACK, IDS_LEX_2ND_LN_BACKGR, L"2nd Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
                 /*  9 */ { SCI_SETCARETFORE + SCI_SETCARETWIDTH, IDS_LEX_2ND_CARET, L"2nd Caret (Color, Size 1-3)", L"", L"" },
                 /* 10 */ { SCI_SETEDGECOLOUR, IDS_LEX_2ND_LONG_LN, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
@@ -3208,7 +3208,7 @@ void Style_Load()
 
   // default scheme
   g_iDefaultLexer = IniSectionGetInt(pIniSection,L"DefaultScheme",0);
-  g_iDefaultLexer = min(max(g_iDefaultLexer,0),COUNTOF(g_pLexArray)-1);
+  g_iDefaultLexer = clampi(g_iDefaultLexer, 0, COUNTOF(g_pLexArray) - 1);
 
   // auto select
   g_bAutoSelect = (IniSectionGetInt(pIniSection,L"AutoSelect",1)) ? 1 : 0;
@@ -3677,7 +3677,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   float fValue = 1.0;
   if (Style_StrGetSize(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) 
   {
-    iValue = (int)max(min(fValue, 5.0f), 0.0f);
+    iValue = clampi(F2INT(fValue), 0, 12);
 
     WCHAR tch[32] = { L'\0' };
     WCHAR wchStyle[BUFSIZE_STYLE_VALUE];
@@ -3725,11 +3725,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     iValue = 1;
     fValue = 1.0f;  // default caret width
     if (Style_StrGetSize(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
-      iValue = (int)max(min(fValue,3.0f),1.0f);
+      iValue = clampi(F2INT(fValue), 1, 3); // don't allow invisible 0
       StringCchPrintf(wch,COUNTOF(wch),L"size:%i",iValue);
       StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
     }
-    SendMessage(hwnd,SCI_SETCARETWIDTH,iValue,0);
+    SendMessage(hwnd, SCI_SETCARETWIDTH, iValue, 0);
   }
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"noblink")) {
     SendMessage(hwnd,SCI_SETCARETPERIOD,(WPARAM)0,0);
@@ -4638,7 +4638,7 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
   if (bHasLnSpaceDef) {
     int const iValue = F2INT(fValue);
     const int iCurFontSizeDbl = F2INT(_GetCurrentFontSize() * 2.0f);
-    int iValAdj = min(max(iValue, (0 - iCurFontSizeDbl)), 256 * iCurFontSizeDbl);
+    int iValAdj = clampi(iValue, (0 - iCurFontSizeDbl), 256 * iCurFontSizeDbl);
     if ((iValAdj != iValue) && (cch > 0)) {
       StringCchPrintf(lpszStyle, cch, L"size:%i", iValAdj);
     }
@@ -4944,7 +4944,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st)
     int iValue = 0;
     int itok = swscanf_s(tch, L"%i", &iValue);
     if (itok == 1) {
-      *i = min(max(SC_ALPHA_TRANSPARENT, iValue), SC_ALPHA_OPAQUE);
+      *i = clampi(iValue, SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE);
       return true;
     }
   }

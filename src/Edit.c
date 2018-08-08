@@ -7730,12 +7730,12 @@ static void __fastcall _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
     if (!bDisableFileVar) {
 
       if (FileVars_ParseInt(tch, "tab-width", &i)) {
-        lpfv->iTabWidth = max(min(i, 256), 1);
+        lpfv->iTabWidth = clampi(i, 1, 256);
         lpfv->mask |= FV_TABWIDTH;
       }
 
       if (FileVars_ParseInt(tch, "c-basic-indent", &i)) {
-        lpfv->iIndentWidth = max(min(i, 256), 0);
+        lpfv->iIndentWidth = clampi(i, 0, 256);
         lpfv->mask |= FV_INDENTWIDTH;
       }
 
@@ -7755,7 +7755,7 @@ static void __fastcall _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
       }
 
       if (FileVars_ParseInt(tch, "fill-column", &i)) {
-        lpfv->iLongLinesLimit = max(min(i, 4096), 0);
+        lpfv->iLongLinesLimit = clampi(i, 0, 4096);
         lpfv->mask |= FV_LONGLINESLIMIT;
       }
     }
