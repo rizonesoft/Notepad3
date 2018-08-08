@@ -246,9 +246,8 @@ int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
 
-static int       g_iSciDirectWriteTech = 0;
-static bool      bEnableBidirectionalSupport = false;
 
+static int  g_iRenderingTechnology = 0;
 const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
   , SC_TECHNOLOGY_DIRECTWRITE
@@ -256,14 +255,24 @@ const int DirectWriteTechnology[4] = {
   , SC_TECHNOLOGY_DIRECTWRITEDC
 };
 
-int       g_iSciFontQuality;
 
+static int  g_iBidirectional = 0;
+const int SciBidirectional[3] = {
+  SC_BIDIRECTIONAL_DISABLED
+  , SC_BIDIRECTIONAL_L2R
+  , SC_BIDIRECTIONAL_R2L
+};
+
+
+int g_iSciFontQuality = 0;
 const int FontQuality[4] = {
     SC_EFF_QUALITY_DEFAULT
   , SC_EFF_QUALITY_NON_ANTIALIASED
   , SC_EFF_QUALITY_ANTIALIASED
   , SC_EFF_QUALITY_LCD_OPTIMIZED
 };
+
+
 
 static  WININFO g_WinInfo = INIT_WININFO;
 static  int     g_WinCurrentWidth = 0;
@@ -1588,12 +1597,11 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
     // Current platforms perform window buffering so it is almost always better for this option to be turned off.
     // There are some older platforms and unusual modes where buffering may still be useful - so keep it ON
     //~SciCall_SetBufferedDraw(true);  // default is true 
-    if (g_iSciDirectWriteTech >= 0) {
-      SciCall_SetTechnology(DirectWriteTechnology[g_iSciDirectWriteTech]);
+    if (g_iRenderingTechnology > 0) {
+      SciCall_SetTechnology(DirectWriteTechnology[g_iRenderingTechnology]);
+      SciCall_SetBufferedDraw(false);
       // experimental
-      if (bEnableBidirectionalSupport) {
-        SendMessage(hwndEditCtrl, SCI_SETBIDIRECTIONAL, SC_BIDIRECTIONAL_L2R, 0);
-      }
+      SciCall_SetBidirectional(SciBidirectional[g_iBidirectional]);
     }
   }
   Encoding_Current(g_iDefaultNewFileEncoding);
@@ -2945,6 +2953,21 @@ bool MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,bMinimizeToTray);
   CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentMode && bTransparentModeAvailable);
   EnableCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentModeAvailable);
+
+  i = IDM_SET_RENDER_TECH_DEFAULT + g_iRenderingTechnology;
+  CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_DEFAULT, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
+  
+  if (g_iRenderingTechnology > 0) {
+    i = IDM_SET_BIDIRECTIONAL_NONE + g_iBidirectional;
+    CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
+  }
+  else {
+    i = IDM_SET_BIDIRECTIONAL_NONE;
+    CheckMenuRadioItem(hmenu, IDM_SET_BIDIRECTIONAL_NONE, IDM_SET_BIDIRECTIONAL_R2L, i, MF_BYCOMMAND);
+  }
+  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_NONE, (g_iRenderingTechnology > 0));
+  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_L2R, (g_iRenderingTechnology > 0));
+  EnableCmd(hmenu, IDM_SET_BIDIRECTIONAL_R2L, (g_iRenderingTechnology > 0));
 
   CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT,g_bSaveRecentFiles);
   CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, g_bPreserveCaretPos);
@@ -4984,23 +5007,30 @@ bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
       SetWindowTransparentMode(hwnd,bTransparentMode);
       break;
 
+    case IDM_SET_RENDER_TECH_DEFAULT:
+    case IDM_SET_RENDER_TECH_D2D:
+    case IDM_SET_RENDER_TECH_D2DRETAIN:
+    case IDM_SET_RENDER_TECH_D2DDC:
+      g_iRenderingTechnology = (int)LOWORD(wParam) - IDM_SET_RENDER_TECH_DEFAULT;
+      if (g_iRenderingTechnology == 0) {
+        SciCall_SetBidirectional(SciBidirectional[0]);
+      }
+      SciCall_SetBufferedDraw((g_iRenderingTechnology == 0));
+      SciCall_SetTechnology(DirectWriteTechnology[g_iRenderingTechnology]);
+      break;
 
+    case IDM_SET_BIDIRECTIONAL_NONE:
+    case IDM_SET_BIDIRECTIONAL_L2R:
+    case IDM_SET_BIDIRECTIONAL_R2L:
+      g_iBidirectional = (int)LOWORD(wParam) - IDM_SET_BIDIRECTIONAL_NONE;
+      SciCall_SetBidirectional(SciBidirectional[g_iBidirectional]);
+      break;
+
+    
     case IDM_VIEW_SHOWFILENAMEONLY:
-      iPathNameFormat = 0;
-      StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
-      UpdateToolbar();
-      break;
-
-
     case IDM_VIEW_SHOWFILENAMEFIRST:
-      iPathNameFormat = 1;
-      StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
-      UpdateToolbar();
-      break;
-
-
     case IDM_VIEW_SHOWFULLPATH:
-      iPathNameFormat = 2;
+      iPathNameFormat = (int)LOWORD(wParam) - IDM_VIEW_SHOWFILENAMEONLY;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
       UpdateToolbar();
       break;
@@ -5039,17 +5069,9 @@ bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_NOESCFUNC:
-      iEscFunction = 0;
-      break;
-
-
     case IDM_VIEW_ESCMINIMIZE:
-      iEscFunction = 1;
-      break;
-
-
     case IDM_VIEW_ESCEXIT:
-      iEscFunction = 2;
+      iEscFunction = (int)LOWORD(wParam) - IDM_VIEW_NOESCFUNC;
       break;
 
 
@@ -6485,12 +6507,76 @@ void LoadSettings()
   WCHAR *pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
   int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
+  g_bEnableSaveSettings = true; // false: if settings-file is loaded in editor
+  g_bSaveSettings = IniGetBool(L"Settings2", L"SaveSettings", true);
+
+  // first load "hard coded" .ini-Settings
+  // --------------------------------------------------------------------------
+  LoadIniSection(L"Settings2", pIniSection, cchIniSection);
+  // --------------------------------------------------------------------------
+
+  IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
+    g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+
+  g_bStickyWinPos = IniSectionGetBool(pIniSection, L"StickyWindowPosition", false);
+
+  IniSectionGetString(pIniSection, L"DefaultExtension", L"txt", g_tchDefaultExtension, COUNTOF(g_tchDefaultExtension));
+  StrTrim(g_tchDefaultExtension, L" \t.\"");
+
+  IniSectionGetString(pIniSection, L"DefaultDirectory", L"", g_tchDefaultDir, COUNTOF(g_tchDefaultDir));
+
+  ZeroMemory(g_tchFileDlgFilters, sizeof(WCHAR)*COUNTOF(g_tchFileDlgFilters));
+  IniSectionGetString(pIniSection, L"FileDlgFilters", L"", g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters) - 2);
+
+  dwFileCheckInverval = IniSectionGetInt(pIniSection, L"FileCheckInverval", 2000);
+  dwAutoReloadTimeout = IniSectionGetInt(pIniSection, L"AutoReloadTimeout", 2000);
+ 
+  // deprecated
+  g_iRenderingTechnology = IniSectionGetInt(pIniSection, L"SciDirectWriteTech", -111);
+  if ((g_iRenderingTechnology != -111) && g_bSaveSettings) {
+    // cleanup
+    IniSetString(L"Settings2", L"SciDirectWriteTech", NULL);
+    IniSetInt(L"Settings", L"RenderingTechnology", g_iRenderingTechnology);
+  }
+  g_iRenderingTechnology = max(min(g_iRenderingTechnology, 3), 0);
+
+  // deprecated
+  g_iBidirectional = IniSectionGetInt(pIniSection, L"EnableBidirectionalSupport", -111);
+  if ((g_iBidirectional != -111) && g_bSaveSettings) {
+    // cleanup
+    IniSetString(L"Settings2", L"EnableBidirectionalSupport", NULL);
+    IniSetInt(L"Settings", L"Bidirectional", g_iBidirectional);
+  }
+  g_iBidirectional = (max(min(g_iBidirectional, 2), 0) > 0) ? 2 : 0;
+
+  g_iSciFontQuality = IniSectionGetInt(pIniSection, L"SciFontQuality", FontQuality[3]);
+  g_iSciFontQuality = max(min(g_iSciFontQuality, 3), 0);
+
+  g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection, L"MarkOccurrencesMaxCount", 2000);
+  g_iMarkOccurrencesMaxCount = (g_iMarkOccurrencesMaxCount <= 0) ? INT_MAX : g_iMarkOccurrencesMaxCount;
+
+  iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
+  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), USER_TIMER_MINIMUM);
+
+  iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
+  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), USER_TIMER_MINIMUM);
+
+  g_bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
+  g_bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
+
+  iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 40);
+  iCurrentLineHorizontalSlop = max(min(iCurrentLineHorizontalSlop, 2000), 0);
+
+  iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
+  iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
+
+  IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
+
+
   // --------------------------------------------------------------------------
   LoadIniSection(L"Settings", pIniSection, cchIniSection);
   // --------------------------------------------------------------------------
 
-  g_bEnableSaveSettings = true; // false: if settings-file is loaded in editor
-  g_bSaveSettings = IniSectionGetBool(pIniSection,L"SaveSettings",true);
   g_bSaveRecentFiles = IniSectionGetBool(pIniSection,L"SaveRecentFiles",true);
   g_bPreserveCaretPos = IniSectionGetBool(pIniSection, L"PreserveCaretPos",false);
   g_bSaveFindReplace = IniSectionGetBool(pIniSection,L"SaveFindReplace",false);
@@ -6662,6 +6748,12 @@ void LoadSettings()
 
   bTransparentMode = IniSectionGetBool(pIniSection,L"TransparentMode",false);
 
+  g_iRenderingTechnology = IniSectionGetInt(pIniSection, L"RenderingTechnology", g_iRenderingTechnology);
+  g_iRenderingTechnology = max(min(g_iRenderingTechnology, 3), 0);
+
+  g_iBidirectional = IniSectionGetInt(pIniSection, L"Bidirectional", g_iBidirectional);
+  g_iBidirectional = max(min(g_iBidirectional, 2), 0);
+
   // Check if SetLayeredWindowAttributes() is available
   bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL);
   bTransparentModeAvailable = (bTransparentModeAvailable) ? true : false;
@@ -6708,55 +6800,6 @@ void LoadSettings()
 
   xCustomSchemesDlg = IniSectionGetInt(pIniSection, L"CustomSchemesDlgPosX", 0);
   yCustomSchemesDlg = IniSectionGetInt(pIniSection, L"CustomSchemesDlgPosY", 0);
-
-  // --------------------------------------------------------------------------
-  LoadIniSection(L"Settings2",pIniSection,cchIniSection);
-  // --------------------------------------------------------------------------
-
-  IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
-                      g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
-    
-  g_bStickyWinPos = IniSectionGetBool(pIniSection,L"StickyWindowPosition",false);
-
-  IniSectionGetString(pIniSection,L"DefaultExtension",L"txt", g_tchDefaultExtension,COUNTOF(g_tchDefaultExtension));
-  StrTrim(g_tchDefaultExtension,L" \t.\"");
-
-  IniSectionGetString(pIniSection,L"DefaultDirectory",L"", g_tchDefaultDir,COUNTOF(g_tchDefaultDir));
-
-  ZeroMemory(g_tchFileDlgFilters,sizeof(WCHAR)*COUNTOF(g_tchFileDlgFilters));
-  IniSectionGetString(pIniSection,L"FileDlgFilters",L"", g_tchFileDlgFilters,COUNTOF(g_tchFileDlgFilters)-2);
-
-  dwFileCheckInverval = IniSectionGetInt(pIniSection,L"FileCheckInverval",2000);
-  dwAutoReloadTimeout = IniSectionGetInt(pIniSection,L"AutoReloadTimeout",2000);
-
-  g_iSciDirectWriteTech = IniSectionGetInt(pIniSection,L"SciDirectWriteTech", DirectWriteTechnology[0]);
-  g_iSciDirectWriteTech = max(min(g_iSciDirectWriteTech,3),-1);
-
-  bEnableBidirectionalSupport = IniSectionGetBool(pIniSection, L"EnableBidirectionalSupport", false);
-  
-  g_iSciFontQuality = IniSectionGetInt(pIniSection,L"SciFontQuality", FontQuality[3]);
-  g_iSciFontQuality = max(min(g_iSciFontQuality, 3), 0);
-
-  g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection,L"MarkOccurrencesMaxCount",2000);
-  g_iMarkOccurrencesMaxCount = (g_iMarkOccurrencesMaxCount <= 0) ? INT_MAX : g_iMarkOccurrencesMaxCount;
-
-  iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
-  iUpdateDelayHyperlinkStyling = max(min(iUpdateDelayHyperlinkStyling, 10000), USER_TIMER_MINIMUM);
-
-  iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
-  iUpdateDelayMarkAllCoccurrences = max(min(iUpdateDelayMarkAllCoccurrences, 10000), USER_TIMER_MINIMUM);
-
-  g_bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
-  g_bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
-  
-  iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 40);
-  iCurrentLineHorizontalSlop = max(min(iCurrentLineHorizontalSlop, 2000), 0);
-
-  iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
-  iCurrentLineVerticalSlop = max(min(iCurrentLineVerticalSlop, 200), 0);
-
-  IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
-
 
   // --------------------------------------------------------------------------
   LoadIniSection(L"Statusbar Settings", pIniSection, cchIniSection);
@@ -6852,17 +6895,15 @@ void LoadSettings()
   }
 
   // ---  override by resolution specific settings  ---
-
   WCHAR tchSciDirectWriteTech[64];
-  StringCchPrintf(tchSciDirectWriteTech,COUNTOF(tchSciDirectWriteTech),L"%ix%i SciDirectWriteTech",ResX,ResY);
-  g_iSciDirectWriteTech = IniSectionGetInt(pIniSection,tchSciDirectWriteTech,g_iSciDirectWriteTech);
-  g_iSciDirectWriteTech = max(min(g_iSciDirectWriteTech,3),-1);
+  StringCchPrintf(tchSciDirectWriteTech,COUNTOF(tchSciDirectWriteTech),L"%ix%i RenderingTechnology",ResX,ResY);
+  g_iRenderingTechnology = IniSectionGetInt(pIniSection,tchSciDirectWriteTech,g_iRenderingTechnology);
+  g_iRenderingTechnology = max(min(g_iRenderingTechnology,3),0);
 
   WCHAR tchSciFontQuality[64];
   StringCchPrintf(tchSciFontQuality,COUNTOF(tchSciFontQuality),L"%ix%i SciFontQuality",ResX,ResY);
   g_iSciFontQuality = IniSectionGetInt(pIniSection,tchSciFontQuality,g_iSciFontQuality);
   g_iSciFontQuality = max(min(g_iSciFontQuality, SC_EFF_QUALITY_LCD_OPTIMIZED), SC_TECHNOLOGY_DEFAULT);
-
 
   LocalFree(pIniSection);
 
@@ -6998,6 +7039,8 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
   IniSectionSetBool(pIniSection, L"MinimizeToTray", bMinimizeToTray);
   IniSectionSetBool(pIniSection, L"TransparentMode", bTransparentMode);
+  IniSectionSetInt(pIniSection, L"RenderingTechnology", g_iRenderingTechnology);
+  IniSectionSetInt(pIniSection, L"Bidirectional", g_iBidirectional);
   IniSectionSetBool(pIniSection, L"ShowToolbar", bShowToolbar);
   IniSectionSetBool(pIniSection, L"ShowStatusbar", bShowStatusbar);
   IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
