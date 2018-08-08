@@ -500,6 +500,13 @@
 #define IDM_VIEW_TOGGLE_VIEW            40459
 #define IDM_VIEW_CHASING_DOCTAIL        40460
 #define IDM_VIEW_TOGGLETB               40461
+#define IDM_SET_RENDER_TECH_DEFAULT     40462
+#define IDM_SET_RENDER_TECH_D2D         40463
+#define IDM_SET_RENDER_TECH_D2DRETAIN   40464
+#define IDM_SET_RENDER_TECH_D2DDC       40465
+#define IDM_SET_BIDIRECTIONAL_NONE      40466
+#define IDM_SET_BIDIRECTIONAL_L2R       40467
+#define IDM_SET_BIDIRECTIONAL_R2L       40468
 #define IDM_HELP_ABOUT                  40500
 #define IDM_HELP_CMD                    40501
 #define IDM_HELP_ONLINEDOCUMENTATION    40502
@@ -509,6 +516,8 @@
 #define IDM_HELP_ADMINEXE               40603
 #define IDM_HELP_UPDATEWEBSITE          40604
 #define IDM_EDIT_INSERT_GUID            40605
+
+
 
 
 #define IDS_ENC_ANSI                    61000
