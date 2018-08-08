@@ -168,21 +168,22 @@ bool OpenFileDlg(HWND,LPWSTR,int,LPCWSTR);
 bool SaveFileDlg(HWND,LPWSTR,int,LPCWSTR);
 
 LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
-LRESULT MsgCreate(HWND, WPARAM, LPARAM);
-void    MsgEndSession(HWND, UINT);
+bool    MsgCreate(HWND, WPARAM, LPARAM);
+bool    MsgEndSession(HWND, UINT, WPARAM, LPARAM);
 void    CreateBars(HWND, HINSTANCE);
-void    MsgThemeChanged(HWND, WPARAM, LPARAM);
-void    MsgDPIChanged(HWND, WPARAM, LPARAM);
-void    MsgSize(HWND, WPARAM, LPARAM);
-void    MsgDropFiles(HWND, WPARAM, LPARAM);
-LRESULT MsgCopyData(HWND, WPARAM, LPARAM);
-LRESULT MsgContextMenu(HWND, UINT, WPARAM, LPARAM);
-void    MsgInitMenu(HWND, WPARAM, LPARAM);
-void    MsgChangeNotify(HWND, WPARAM, LPARAM);
-LRESULT MsgTrayMessage(HWND, WPARAM, LPARAM);
+bool    MsgThemeChanged(HWND, WPARAM, LPARAM);
+bool    MsgDPIChanged(HWND, WPARAM, LPARAM);
+bool    MsgSize(HWND, WPARAM, LPARAM);
+bool    MsgDropFiles(HWND, WPARAM, LPARAM);
+bool    MsgCopyData(HWND, WPARAM, LPARAM);
+bool    MsgContextMenu(HWND, WPARAM, LPARAM);
+bool    MsgInitMenu(HWND, WPARAM, LPARAM);
+bool    MsgNotify(HWND, WPARAM, LPARAM);
+bool    MsgChangeNotify(HWND, WPARAM, LPARAM);
+bool    MsgTrayMessage(HWND, WPARAM, LPARAM);
+bool    MsgCommand(HWND, WPARAM, LPARAM);
+
 LRESULT MsgSysCommand(HWND, UINT, WPARAM, LPARAM);
-LRESULT MsgCommand(HWND, WPARAM, LPARAM);
-LRESULT MsgNotify(HWND, WPARAM, LPARAM);
 
 
 void IgnoreNotifyChangeEvent();

@@ -110,6 +110,7 @@ extern bool g_bTabsAsSpaces;
 extern bool g_bTabIndents;
 extern int  g_iTabWidth;
 extern int  g_iIndentWidth;
+extern bool g_bZeroBasedColumnIndex;
 
 extern FR_STATES g_FindReplaceMatchFoundState;
 
@@ -4452,8 +4453,10 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
   // Line maximum is iMaxLine - 1 (doc line count starts with 0)
   iNewLine = (min(iNewLine, iMaxLine) - 1);
   const DocPos iLineEndPos = SciCall_GetLineEndPosition(iNewLine);
+  
   // Column minimum is 1
-  iNewCol = max(0, min((iNewCol - 1), iLineEndPos));
+  DocPos const colOffset = g_bZeroBasedColumnIndex ? 0 : 1;
+  iNewCol = max(0, min((iNewCol - colOffset), iLineEndPos));
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
