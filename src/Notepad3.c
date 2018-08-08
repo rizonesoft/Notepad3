@@ -36,6 +36,7 @@
 //#include <pathcch.h>
 #include <time.h>
 #include <muiload.h>
+
 #include "scintilla.h"
 #include "scilexer.h"
 #include "edit.h"
@@ -45,6 +46,7 @@
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
 #include "../uthash/utlist.h"
+#include "../tinyexpr/tinyexpr.h"
 #include "encoding.h"
 #include "helpers.h"
 #include "VersionEx.h"
@@ -375,6 +377,9 @@ WCHAR     g_wchCurFile[FILE_ARG_BUF] = { L'\0' };
 FILEVARS  fvCurFile;
 bool      g_bFileReadOnly = false;
 
+// for tiny expression calculation
+static double g_dExpression = 0.0;
+static int    g_iExprError = -1;
 
 // temporary line buffer for fast line ops 
 static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
@@ -6414,6 +6419,22 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_SCHEME, 1), 0);
                 break;
 
+              case STATUS_TINYEXPR:
+                {
+                  char chBuf[80];
+                  if (g_iExprError == 0) {
+                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "%.6g", g_dExpression);
+                    SciCall_CopyText((DocPos)strlen(chBuf), chBuf);
+                  }
+                  else if (g_iExprError > 0) {
+                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[%i]", g_iExprError);
+                    SciCall_CopyText((DocPos)strlen(chBuf), chBuf);
+                  }
+                  else
+                    SciCall_CopyText(0, "");
+                }
+                break;
+
               default:
                 return false;
             }
@@ -8156,7 +8177,6 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
   // ------------------------------------------------------
 
-
   // number of selected chars in statusbar
   static WCHAR tchSel[32] = { L'\0' };
   static WCHAR tchSelB[64] = { L'\0' };
@@ -8224,6 +8244,52 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
     s_bIsSelectionEmpty = bIsSelectionEmpty;
     s_iLinesSelected = iLinesSelected;
+    bIsUpdateNeeded = true;
+  }
+
+  // ------------------------------------------------------
+
+  // try calculate expression of selection
+  static WCHAR tchExpression[32] = { L'\0' };
+
+  static int s_iExprError = -3;
+
+  g_dExpression = 0.0;
+  tchExpression[0] = L'-';
+  tchExpression[1] = L'-';
+  tchExpression[2] = L'\0';
+
+  if (bIsSelCountable)
+  {
+    char chExpression[2048] = { '\0' };
+    if (SciCall_GetSelText(NULL) < COUNTOF(chExpression))
+    {
+      SciCall_GetSelText(chExpression);
+      StrDelChrA(chExpression, " \r\n\t\v");
+
+      g_dExpression = te_interp(chExpression, &g_iExprError);
+
+      if (!g_iExprError) {
+        if (fabs(g_dExpression) > 99999999.9999)
+          StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.4E", g_dExpression);
+        else
+          StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6g", g_dExpression);
+      }
+      else
+        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%i]", g_iExprError);
+    }
+    else
+      g_iExprError = -1;
+  }
+  else 
+    g_iExprError = -2;
+
+  if (!g_iExprError || (s_iExprError != g_iExprError)) {
+
+    StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s",
+      g_mxSBPrefix[STATUS_TINYEXPR], tchExpression, g_mxSBPostfix[STATUS_TINYEXPR]);
+
+    s_iExprError = g_iExprError;
     bIsUpdateNeeded = true;
   }
 

@@ -80,6 +80,31 @@ WCHAR* _StrCutIW(WCHAR* s,const WCHAR* pattern)
 //=============================================================================
 
 
+
+//=============================================================================
+//
+//  StrDelChrA()
+//
+bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove)
+{
+  if (!pszSource || !pCharsToRemove)
+    return false;
+
+  LPSTR pch = pszSource;
+  while (*pch) {
+    LPSTR prem = pch;
+    while (StrChrA(pCharsToRemove, *prem)) {
+      ++prem;
+    }
+    if (prem > pch) {
+      MoveMemory(pch, prem, sizeof(CHAR)*(strlen(prem) + 1));
+    }
+    ++pch;
+  }
+  return true;
+}
+
+
 //=============================================================================
 //
 //  Find next token in string
@@ -1677,19 +1702,17 @@ bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
 //
 bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars)
 {
-  LPWSTR psz;
-
   if (!pszSource || !*pszSource)
     return false;
 
-  psz = pszSource;
-  while (StrChrI(pszTrimChars,*psz))
-    psz++;
+  LPWSTR psz = pszSource;
+  while (StrChrI(pszTrimChars, *psz)) { ++psz; }
 
   MoveMemory(pszSource,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
 
   return true;
 }
+
 
 
 //=============================================================================
@@ -1698,28 +1721,26 @@ bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars)
 //
 bool TrimString(LPWSTR lpString)
 {
-
-  LPWSTR psz;
-
   if (!lpString || !*lpString)
     return false;
 
   // Trim left
-  psz = lpString;
+  LPWSTR psz = lpString;
 
-  while (*psz == L' ')
-    psz = CharNext(psz);
+  while (*psz == L' ') { psz = CharNext(psz); }
 
   MoveMemory(lpString,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
 
   // Trim right
   psz = StrEnd(lpString);
 
-  while (*(psz = CharPrev(lpString,psz)) == L' ')
+  while (*(psz = CharPrev(lpString, psz)) == L' ') {
     *psz = L'\0';
-
+  }
   return true;
 }
+
+
 
 
 //=============================================================================

@@ -343,6 +343,8 @@ WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
 #define StrCutI _StrCutIA
 #endif
 
+bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
+
 
 //==== StrNextTok methods ===================
 CHAR*  _StrNextTokA(CHAR*, const CHAR*);

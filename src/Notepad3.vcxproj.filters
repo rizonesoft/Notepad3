@@ -34,6 +34,9 @@
     <Filter Include="CED\util\languages">
       <UniqueIdentifier>{fd5165c7-e622-408b-95f0-666d494aa8f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tinyexpr">
+      <UniqueIdentifier>{1de8e161-7393-4043-be9d-7bd2d0cb02df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="EncodingCED.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tinyexpr\tinyexpr.c">
+      <Filter>tinyexpr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="..\language\common_res.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tinyexpr\tinyexpr.h">
+      <Filter>tinyexpr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
