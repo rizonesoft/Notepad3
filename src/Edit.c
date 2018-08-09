@@ -3962,16 +3962,19 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
     return;
   }
 
-  DocPos iCurPos    = SciCall_GetCurrentPos();
+  DocPos const iSelStart = SciCall_GetSelectionStart();
+  DocPos const iSelEnd = SciCall_GetSelectionEnd();
+  DocPos const iSelLength = (iSelEnd - iSelStart);
+  DocPos iCurPos = SciCall_GetCurrentPos();
   DocPos iAnchorPos = SciCall_GetAnchor();
 
-  DocPos iSelStart = SciCall_GetSelectionStart();
-  DocPos iSelEnd = SciCall_GetSelectionEnd();
-  DocPos iSelLength = (iSelEnd - iSelStart);
+  DocPos cchJoin = (DocPos)-1;
+  char* pszJoin = NULL;
+
 
   char* pszText = (char*)SciCall_GetRangePointer(iSelStart, iSelLength);
 
-  char* pszJoin = LocalAlloc(LPTR, iSelLength+1);
+  pszJoin = LocalAlloc(LPTR, iSelLength + 1);
   if (pszJoin == NULL) {
     return;
   }
@@ -3980,40 +3983,33 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
   int  cchEOL = 2;
   switch (SciCall_GetEOLMode())
   {
-    case SC_EOL_LF:
-      szEOL[0] = '\n';
-      szEOL[1] = '\0';
-      cchEOL = 1;
-      break;
-    case SC_EOL_CR:
-      szEOL[1] = '\0';
-      cchEOL = 1;
-      break;
-    case SC_EOL_CRLF:
-    default:
-      break;
+  case SC_EOL_LF:
+    szEOL[0] = '\n';
+    szEOL[1] = '\0';
+    cchEOL = 1;
+    break;
+  case SC_EOL_CR:
+    szEOL[1] = '\0';
+    cchEOL = 1;
+    break;
+  case SC_EOL_CRLF:
+  default:
+    break;
   }
 
-  DocPos cchJoin = (DocPos)-1;
   for (int i = 0; i < iSelLength; ++i)
   {
-    if ((pszText[i] == '\r') || (pszText[i] == '\n')) 
-    {
-      if ((pszText[i+1] == '\r') || (pszText[i+1] == '\n')) { ++i;  }
+    int j = i;
+    // try to swallow next line-breaks
+    while (StrChrA("\r\n", pszText[j])) { ++j; }
 
-      int j = ++i;
-      while (StrChrA("\r\n", pszText[j])) { ++j; }  // swallow all next line-breaks
-   
-      if ((i < j) && (j < iSelLength) && pszText[j] && bPreserveParagraphs)
-      {
-        for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
-        if (bCRLF2Space) {
-          for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
-        }
+    if (i < j) {
+      // swallowed!
+      if (((j - i) >= 2*cchEOL) && bPreserveParagraphs) {
+        for (int k = 0; k < 2*cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k % cchEOL]; }
       }
-      else if ((j < iSelLength) && pszText[j] && bCRLF2Space) 
-      { 
-        pszJoin[++cchJoin] = ' '; 
+      else if (bCRLF2Space) {
+        pszJoin[++cchJoin] = ' ';
       }
       i = j;
       bModified = true;
@@ -4041,7 +4037,8 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
 
     EditSelectEx(hwnd, iAnchorPos, iCurPos, -1, -1);
   }
-  LocalFree(pszJoin);
+
+  if (pszJoin) { LocalFree(pszJoin); }
 }
 
 
