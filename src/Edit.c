@@ -1023,32 +1023,36 @@ bool EditLoadFile(
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
-  // if not skipped, analyze bytes
-  bool bIsReliable = false;
-
-  int const iAnalyzedEncoding = (bSkipANSICPDetection  && !g_bForceCompEncDetection) ? CPI_NONE :
-                                Encoding_Analyze(lpData, cbNbytes4Analysis, &bIsReliable);
-
   int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
+
+  int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding :
+    ((bUseDefaultForFileEncoding || (cbNbytes4Analysis < 1)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
+
+  // --------------------------------------------------------------------------
+  bool bIsReliable = false;
+  int iAnalyzedEncoding = (bSkipANSICPDetection && !g_bForceCompEncDetection) ? CPI_NONE : 
+    Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+  // correct analysis based on preferred encoding
+  if (iAnalyzedEncoding == CPI_ANSI_DEFAULT) {
+    iAnalyzedEncoding = iPreferedEncoding; // stay on prefered
+  }
+  // --------------------------------------------------------------------------
 
   int iForcedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
   if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
     iForcedEncoding = iAnalyzedEncoding;
   }
+  // --------------------------------------------------------------------------
 
   // choose best encoding guess
-  int iPreferedEncoding = CPI_NONE;
   if (!Encoding_IsNONE(iForcedEncoding))
     iPreferedEncoding = iForcedEncoding;
-  else if (iFileEncWeak != CPI_NONE)
-    iPreferedEncoding = iFileEncWeak;
   else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection)
     iPreferedEncoding = iAnalyzedEncoding;
+  else if (iFileEncWeak != CPI_NONE)
+    iPreferedEncoding = iFileEncWeak;
   else if (!Encoding_IsNONE(iAnalyzedEncoding))
     iPreferedEncoding = iAnalyzedEncoding;
-  else
-    iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding : 
-                        (bUseDefaultForFileEncoding ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
 
 
   bool bBOM = false;
