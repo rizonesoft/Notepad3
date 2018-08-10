@@ -2180,11 +2180,11 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
   DocPos iCurPos = SciCall_GetCurrentPos();
   DocPos iAnchorPos = SciCall_GetAnchor();
 
-  DocPos iSelStart = SciCall_GetSelectionStart();
+  DocPos const iSelStart = SciCall_GetSelectionStart();
   //DocLn iLine = SciCall_LineFromPosition(iSelStart);
   //iSelStart = SciCall_PositionFromLine(iLine);   // re-base selection to start of line
-  DocPos iSelEnd = SciCall_GetSelectionEnd();
-  DocPos iSelCount = (iSelEnd - iSelStart);
+  DocPos const iSelEnd = SciCall_GetSelectionEnd();
+  DocPos const iSelCount = (iSelEnd - iSelStart);
 
   const char* pszText = SciCall_GetRangePointer(iSelStart, iSelCount);
 
@@ -2277,18 +2277,61 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
 }
 
 
+
+//=============================================================================
+//
+//  _EditMoveLines()
+//
+static void __fastcall _EditMoveLines(bool bMoveUp)
+{
+  if (SciCall_IsSelectionRectangle()) {
+    MsgBoxLng(MBWARN, IDS_MUI_SELRECT);
+  }
+  else {
+
+    DocPos const iSelBeg = SciCall_GetSelectionStart();
+    DocPos const iSelEnd = SciCall_GetSelectionEnd();
+    DocLn  const iBegLine = SciCall_LineFromPosition(iSelBeg);
+    DocLn  const iEndLine = SciCall_LineFromPosition(iSelEnd);
+
+    DocLn lastLine = Sci_GetLastDocLineNumber();
+
+    if (Sci_GetNetLineLength(lastLine) == 0) { --lastLine; }
+
+    bool const bCanMove = bMoveUp ? (iBegLine > 0) : (iEndLine < lastLine);
+    if (bCanMove) {
+
+      bool const bForwardSelection = Sci_IsForwardSelection();
+      int const direction = (bMoveUp ? -1 : 1);
+
+      DocPos const iBegChCount = SciCall_CountCharacters(SciCall_PositionFromLine(iBegLine), iSelBeg);
+      DocPos const iEndChCount = SciCall_CountCharacters(SciCall_PositionFromLine(iEndLine), iSelEnd);
+
+      if (bMoveUp)
+        SciCall_MoveSelectedLinesUp();
+      else
+        SciCall_MoveSelectedLinesDown();
+
+      DocPos const iNewSelBeg = SciCall_PositionRelative(SciCall_PositionFromLine(iBegLine + direction), iBegChCount);
+      DocPos const iNewSelEnd = SciCall_PositionRelative(SciCall_PositionFromLine(iEndLine + direction), iEndChCount);
+
+      if (bForwardSelection)
+        SciCall_SetSel(iNewSelBeg, iNewSelEnd);
+      else
+        SciCall_SetSel(iNewSelEnd, iNewSelBeg);
+    }
+  }
+}
+
+
 //=============================================================================
 //
 //  EditMoveUp()
 //
 void EditMoveUp(HWND hwnd)
 {
-  if (SciCall_IsSelectionRectangle()) {
-    MsgBoxLng(MBWARN, IDS_MUI_SELRECT);
-  }
-  else {
-    SendMessage(hwnd, SCI_MOVESELECTEDLINESUP, 0, 0);
-  }
+  UNUSED(hwnd);
+  _EditMoveLines(true);
 }
 
 
@@ -2298,12 +2341,8 @@ void EditMoveUp(HWND hwnd)
 //
 void EditMoveDown(HWND hwnd)
 {
-  if (SciCall_IsSelectionRectangle()) {
-    MsgBoxLng(MBWARN, IDS_MUI_SELRECT);
-  }
-  else {
-    SendMessage(hwnd, SCI_MOVESELECTEDLINESDOWN, 0, 0);
-  }
+  UNUSED(hwnd);
+  _EditMoveLines(false);
 }
 
 
@@ -3130,7 +3169,7 @@ static DocPos __fastcall _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineE
 //
 void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
 {
-  if (SciCall_IsSelectionEmpty() || Sci_IsThinRectangleSelected()) { return; }
+  if (SciCall_IsSelectionEmpty()) { return; }
 
   int const token = (!bNoUndoGroup ? BeginUndoAction() : -1);
 
@@ -3962,16 +4001,19 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
     return;
   }
 
-  DocPos iCurPos    = SciCall_GetCurrentPos();
+  DocPos const iSelStart = SciCall_GetSelectionStart();
+  DocPos const iSelEnd = SciCall_GetSelectionEnd();
+  DocPos const iSelLength = (iSelEnd - iSelStart);
+  DocPos iCurPos = SciCall_GetCurrentPos();
   DocPos iAnchorPos = SciCall_GetAnchor();
 
-  DocPos iSelStart = SciCall_GetSelectionStart();
-  DocPos iSelEnd = SciCall_GetSelectionEnd();
-  DocPos iSelLength = (iSelEnd - iSelStart);
+  DocPos cchJoin = (DocPos)-1;
+  char* pszJoin = NULL;
+
 
   char* pszText = (char*)SciCall_GetRangePointer(iSelStart, iSelLength);
 
-  char* pszJoin = LocalAlloc(LPTR, iSelLength+1);
+  pszJoin = LocalAlloc(LPTR, iSelLength + 1);
   if (pszJoin == NULL) {
     return;
   }
@@ -3980,40 +4022,33 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
   int  cchEOL = 2;
   switch (SciCall_GetEOLMode())
   {
-    case SC_EOL_LF:
-      szEOL[0] = '\n';
-      szEOL[1] = '\0';
-      cchEOL = 1;
-      break;
-    case SC_EOL_CR:
-      szEOL[1] = '\0';
-      cchEOL = 1;
-      break;
-    case SC_EOL_CRLF:
-    default:
-      break;
+  case SC_EOL_LF:
+    szEOL[0] = '\n';
+    szEOL[1] = '\0';
+    cchEOL = 1;
+    break;
+  case SC_EOL_CR:
+    szEOL[1] = '\0';
+    cchEOL = 1;
+    break;
+  case SC_EOL_CRLF:
+  default:
+    break;
   }
 
-  DocPos cchJoin = (DocPos)-1;
   for (int i = 0; i < iSelLength; ++i)
   {
-    if ((pszText[i] == '\r') || (pszText[i] == '\n')) 
-    {
-      if ((pszText[i+1] == '\r') || (pszText[i+1] == '\n')) { ++i;  }
+    int j = i;
+    // try to swallow next line-breaks
+    while (StrChrA("\r\n", pszText[j])) { ++j; }
 
-      int j = ++i;
-      while (StrChrA("\r\n", pszText[j])) { ++j; }  // swallow all next line-breaks
-   
-      if ((i < j) && (j < iSelLength) && pszText[j] && bPreserveParagraphs)
-      {
-        for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
-        if (bCRLF2Space) {
-          for (int k = 0; k < cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k]; }
-        }
+    if (i < j) {
+      // swallowed!
+      if (((j - i) >= 2*cchEOL) && bPreserveParagraphs) {
+        for (int k = 0; k < 2*cchEOL; ++k) { pszJoin[++cchJoin] = szEOL[k % cchEOL]; }
       }
-      else if ((j < iSelLength) && pszText[j] && bCRLF2Space) 
-      { 
-        pszJoin[++cchJoin] = ' '; 
+      else if (bCRLF2Space) {
+        pszJoin[++cchJoin] = ' ';
       }
       i = j;
       bModified = true;
@@ -4041,7 +4076,8 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
 
     EditSelectEx(hwnd, iAnchorPos, iCurPos, -1, -1);
   }
-  LocalFree(pszJoin);
+
+  if (pszJoin) { LocalFree(pszJoin); }
 }
 
 
