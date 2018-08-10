@@ -8104,378 +8104,418 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   static WCHAR tchFRStatus[128] = { L'\0' };
   static WCHAR tchTmp[32] = { L'\0' };
 
-  DocPos const iPos = SciCall_GetCurrentPos();
-  bool const bIsSelectionEmpty = SciCall_IsSelectionEmpty();
+
+  // ------------------------------------------------------
+  // common calculations 
+  // ------------------------------------------------------
+  DocPos const iPos              = SciCall_GetCurrentPos();
+  DocLn  const iLnFromPos        = SciCall_LineFromPosition(iPos);
+  DocPos const iLineBegin        = SciCall_PositionFromLine(iLnFromPos);
+  DocPos const iLineBack         = SciCall_GetLineEndPosition(iLnFromPos);
+  DocPos const iSelStart         = SciCall_GetSelectionStart();
+  DocPos const iSelEnd           = SciCall_GetSelectionEnd();
+
+
+  bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
+  bool const   bIsSelCountable   = !(bIsSelectionEmpty || SciCall_IsSelectionRectangle());
 
   // ------------------------------------------------------
 
   static WCHAR tchLn[32] = { L'\0' };
   static DocLn s_iLnFromPos = -1;
-  DocLn const iLnFromPos = SciCall_LineFromPosition(iPos);
-  if (s_iLnFromPos != iLnFromPos) {
-    StringCchPrintf(tchLn, COUNTOF(tchLn), L"%td", iLnFromPos + 1);
-    FormatNumberStr(tchLn);
-  }
-
   static WCHAR tchLines[32] = { L'\0' };
   static DocLn s_iLnCnt = -1;
-  DocLn const iLnCnt = SciCall_GetLineCount();
-  if (s_iLnCnt != iLnCnt) {
-    StringCchPrintf(tchLines, COUNTOF(tchLines), L"%td", iLnCnt);
-    FormatNumberStr(tchLines);
-  }
 
-  if ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt))
+  if (g_iStatusbarVisible[STATUS_DOCLINE] || g_hwndDlgFindReplace)
   {
-    StringCchPrintf(tchStatusBar[STATUS_DOCLINE], txtWidth, L"%s%s / %s%s",
-      g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines, g_mxSBPostfix[STATUS_DOCLINE]);
-    s_iLnFromPos = iLnFromPos;
-    s_iLnCnt = iLnCnt;
-    bIsUpdateNeeded = true;
-  }
+    if (s_iLnFromPos != iLnFromPos) {
+      StringCchPrintf(tchLn, COUNTOF(tchLn), L"%td", iLnFromPos + 1);
+      FormatNumberStr(tchLn);
+    }
 
+    DocLn const  iLnCnt = SciCall_GetLineCount();
+    if (s_iLnCnt != iLnCnt) {
+      StringCchPrintf(tchLines, COUNTOF(tchLines), L"%td", iLnCnt);
+      FormatNumberStr(tchLines);
+    }
+
+    if ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt))
+    {
+      StringCchPrintf(tchStatusBar[STATUS_DOCLINE], txtWidth, L"%s%s / %s%s",
+        g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines, g_mxSBPostfix[STATUS_DOCLINE]);
+      s_iLnFromPos = iLnFromPos;
+      s_iLnCnt = iLnCnt;
+      bIsUpdateNeeded = true;
+    }
+  }
   // ------------------------------------------------------
 
   static WCHAR tchCol[32] = { L'\0' };
   static WCHAR tchCols[32] = { L'\0' };
 
-  DocPos const colOffset = g_bZeroBasedColumnIndex ? 0 : 1;
-  
-  static DocPos s_iCol = -1;
-  DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
-  if (s_iCol != iCol) {
-    StringCchPrintf(tchCol, COUNTOF(tchCol), L"%td", iCol + colOffset);
-    FormatNumberStr(tchCol);
-  }
+  if (g_iStatusbarVisible[STATUS_DOCCOLUMN] || g_hwndDlgFindReplace)
+  {
+    DocPos const colOffset = g_bZeroBasedColumnIndex ? 0 : 1;
 
-  static DocPos s_iCols = -1;
-  DocPos const iLineBack = SciCall_GetLineEndPosition(iLnFromPos);
-  DocPos const iCols = SciCall_GetColumn(iLineBack);
-  if (s_iCols != iCols) {
-    StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iCols);
-    FormatNumberStr(tchCols);
-  }
+    static DocPos s_iCol = -1;
+    DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
+    if (s_iCol != iCol) {
+      StringCchPrintf(tchCol, COUNTOF(tchCol), L"%td", iCol + colOffset);
+      FormatNumberStr(tchCol);
+    }
 
-  if ((s_iCol != iCol) || (s_iCols != iCols)) {
-    StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
-      g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
-  
-    s_iCol = iCol;
-    s_iCols = iCols;
-    bIsUpdateNeeded = true;
-  }
+    static DocPos s_iCols = -1;
+    DocPos const iCols = SciCall_GetColumn(iLineBack);
+    if (s_iCols != iCols) {
+      StringCchPrintf(tchCols, COUNTOF(tchCols), L"%td", iCols);
+      FormatNumberStr(tchCols);
+    }
 
+    if ((s_iCol != iCol) || (s_iCols != iCols)) {
+      StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
+        g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, g_mxSBPostfix[STATUS_DOCCOLUMN]);
+
+      s_iCol = iCol;
+      s_iCols = iCols;
+      bIsUpdateNeeded = true;
+    }
+  }
   // ------------------------------------------------------
-
 
   static WCHAR tchChr[32] = { L'\0' };
   static WCHAR tchChrs[32] = { L'\0' };
 
-  DocPos const chrOffset = g_bZeroBasedCharacterCount ? 0 : 1;
+  if (g_iStatusbarVisible[STATUS_DOCCHAR])
+  {
+    DocPos const chrOffset = g_bZeroBasedCharacterCount ? 0 : 1;
 
-  static DocPos s_iChr = -1;
-  DocPos const iLineBegin = SciCall_PositionFromLine(iLnFromPos);
-  DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
-  if (s_iChr != iChr) {
-    StringCchPrintf(tchChr, COUNTOF(tchChr), L"%td", iChr + chrOffset);
-    FormatNumberStr(tchChr);
+    static DocPos s_iChr = -1;
+    DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
+    if (s_iChr != iChr) {
+      StringCchPrintf(tchChr, COUNTOF(tchChr), L"%td", iChr + chrOffset);
+      FormatNumberStr(tchChr);
+    }
+
+    static DocPos s_iChrs = -1;
+    DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
+    if (s_iChrs != iChrs) {
+      StringCchPrintf(tchChrs, COUNTOF(tchChrs), L"%td", iChrs);
+      FormatNumberStr(tchChrs);
+    }
+
+    if ((s_iChr != iChr) || (s_iChrs != iChrs)) {
+      StringCchPrintf(tchStatusBar[STATUS_DOCCHAR], txtWidth, L"%s%s / %s%s",
+        g_mxSBPrefix[STATUS_DOCCHAR], tchChr, tchChrs, g_mxSBPostfix[STATUS_DOCCHAR]);
+
+      s_iChr = iChr;
+      s_iChrs = iChrs;
+      bIsUpdateNeeded = true;
+    }
   }
-
-  static DocPos s_iChrs = -1;
-  DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
-  if (s_iChrs != iChrs) {
-    StringCchPrintf(tchChrs, COUNTOF(tchChrs), L"%td", iChrs);
-    FormatNumberStr(tchChrs);
-  }
-
-  if ((s_iChr != iChr) || (s_iChrs != iChrs)) {
-    StringCchPrintf(tchStatusBar[STATUS_DOCCHAR], txtWidth, L"%s%s / %s%s",
-      g_mxSBPrefix[STATUS_DOCCHAR], tchChr, tchChrs, g_mxSBPostfix[STATUS_DOCCHAR]);
-
-    s_iChr = iChr;
-    s_iChrs = iChrs;
-    bIsUpdateNeeded = true;
-  }
-
   // ------------------------------------------------------
 
   // number of selected chars in statusbar
   static WCHAR tchSel[32] = { L'\0' };
   static WCHAR tchSelB[64] = { L'\0' };
-
   static bool s_bIsSelCountable = false;
   static DocPos s_iSelStart = -1;
   static DocPos s_iSelEnd = -1;
 
-  bool const bIsSelCountable = !(bIsSelectionEmpty || SciCall_IsSelectionRectangle());
-  DocPos const iSelStart = (!bIsSelCountable ? 0 : SciCall_GetSelectionStart());
-  DocPos const iSelEnd = (!bIsSelCountable ? 0 : SciCall_GetSelectionEnd());
+  if (g_iStatusbarVisible[STATUS_SELECTION] || g_iStatusbarVisible[STATUS_SELCTBYTES] || g_hwndDlgFindReplace)
+  {
+    if ((s_bIsSelCountable != bIsSelCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)) {
 
-  if ((s_bIsSelCountable != bIsSelCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)) {
+      if (bIsSelCountable)
+      {
+        const DocPos iSel = (DocPos)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
+        StringCchPrintf(tchSel, COUNTOF(tchSel), L"%td", iSel);
+        FormatNumberStr(tchSel);
+        StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
+      }
+      else {
+        tchSel[0] = L'-'; tchSel[1] = L'-'; tchSel[2] = L'\0';
+        tchSelB[0] = L'0'; tchSelB[1] = L'\0';
+      }
+      StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_SELECTION], tchSel, g_mxSBPostfix[STATUS_SELECTION]);
 
-    if (bIsSelCountable)
-    {
-      const DocPos iSel = (DocPos)SendMessage(g_hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
-      StringCchPrintf(tchSel, COUNTOF(tchSel), L"%td", iSel);
-      FormatNumberStr(tchSel);
-      StrFormatByteSize((iSelEnd - iSelStart), tchSelB, COUNTOF(tchSelB));
+      StringCchPrintf(tchStatusBar[STATUS_SELCTBYTES], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, g_mxSBPostfix[STATUS_SELCTBYTES]);
+
+      s_bIsSelCountable = bIsSelCountable;
+      s_iSelStart = iSelStart;
+      s_iSelEnd = iSelEnd;
+      bIsUpdateNeeded = true;
     }
-    else {
-      tchSel[0] = L'-'; tchSel[1] = L'-'; tchSel[2] = L'\0';
-      tchSelB[0] = L'0'; tchSelB[1] = L'\0';
-    }
-    StringCchPrintf(tchStatusBar[STATUS_SELECTION], txtWidth, L"%s%s%s",
-      g_mxSBPrefix[STATUS_SELECTION], tchSel, g_mxSBPostfix[STATUS_SELECTION]);
-    StringCchPrintf(tchStatusBar[STATUS_SELCTBYTES], txtWidth, L"%s%s%s",
-      g_mxSBPrefix[STATUS_SELCTBYTES], tchSelB, g_mxSBPostfix[STATUS_SELCTBYTES]);
-
-    s_bIsSelCountable = bIsSelCountable;
-    s_iSelStart = iSelStart;
-    s_iSelEnd = iSelEnd;
-    bIsUpdateNeeded = true;
   }
-
   // ------------------------------------------------------
 
   // number of selected lines in statusbar
   static WCHAR tchLinesSelected[32] = { L'\0' };
-
   static bool s_bIsSelectionEmpty = true;
   static DocLn s_iLinesSelected = -1;
 
-  DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
-  DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
-  DocPos const iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
-
-  DocLn const iLinesSelected = ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) ? ((iLineEnd - iLineStart) + 1) : (iLineEnd - iLineStart);
-
-  if ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected))
+  if (g_iStatusbarVisible[STATUS_SELCTLINES])
   {
-    if (bIsSelectionEmpty) {
-      tchLinesSelected[0] = L'-';
-      tchLinesSelected[1] = L'-';
-      tchLinesSelected[2] = L'\0';
-    }
-    else {
+    DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
+    DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
+    DocPos const iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
 
-      StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
-      FormatNumberStr(tchLinesSelected);
-    }
-    StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
-      g_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, g_mxSBPostfix[STATUS_SELCTLINES]);
+    DocLn const iLinesSelected = ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) ? ((iLineEnd - iLineStart) + 1) : (iLineEnd - iLineStart);
 
-    s_bIsSelectionEmpty = bIsSelectionEmpty;
-    s_iLinesSelected = iLinesSelected;
-    bIsUpdateNeeded = true;
+    if ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected))
+    {
+      if (bIsSelectionEmpty) {
+        tchLinesSelected[0] = L'-';
+        tchLinesSelected[1] = L'-';
+        tchLinesSelected[2] = L'\0';
+      }
+      else {
+        StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
+        FormatNumberStr(tchLinesSelected);
+      }
+      StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_SELCTLINES], tchLinesSelected, g_mxSBPostfix[STATUS_SELCTLINES]);
+
+      s_bIsSelectionEmpty = bIsSelectionEmpty;
+      s_iLinesSelected = iLinesSelected;
+      bIsUpdateNeeded = true;
+    }
   }
-
   // ------------------------------------------------------
 
   // try calculate expression of selection
   static WCHAR tchExpression[32] = { L'\0' };
-
   static int s_iExprError = -3;
 
-  g_dExpression = 0.0;
-  tchExpression[0] = L'-';
-  tchExpression[1] = L'-';
-  tchExpression[2] = L'\0';
-
-  if (bIsSelCountable)
+  if (g_iStatusbarVisible[STATUS_TINYEXPR])
   {
-    char chExpression[1024] = { '\0' };
-    if (SciCall_GetSelText(NULL) < COUNTOF(chExpression))
+    g_dExpression = 0.0;
+    tchExpression[0] = L'-';
+    tchExpression[1] = L'-';
+    tchExpression[2] = L'\0';
+
+    if (bIsSelCountable)
     {
-      SciCall_GetSelText(chExpression);
-      //StrDelChrA(chExpression, " \r\n\t\v");
-      StrDelChrA(chExpression, "\r\n");
+      char chExpression[1024] = { '\0' };
+      if (SciCall_GetSelText(NULL) < COUNTOF(chExpression))
+      {
+        SciCall_GetSelText(chExpression);
+        //StrDelChrA(chExpression, " \r\n\t\v");
+        StrDelChrA(chExpression, "\r\n");
 
-      g_dExpression = te_interp(chExpression, &g_iExprError);
+        g_dExpression = te_interp(chExpression, &g_iExprError);
 
-      if (!g_iExprError) {
-        if (fabs(g_dExpression) > 99999999.9999)
-          StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.4E", g_dExpression);
+        if (!g_iExprError) {
+          if (fabs(g_dExpression) > 99999999.9999)
+            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.4E", g_dExpression);
+          else
+            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6g", g_dExpression);
+        }
         else
-          StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6g", g_dExpression);
+          StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%i]", g_iExprError);
       }
       else
-        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%i]", g_iExprError);
+        g_iExprError = -1;
     }
     else
-      g_iExprError = -1;
+      g_iExprError = -2;
+
+    if (!g_iExprError || (s_iExprError != g_iExprError)) {
+
+      StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s ",
+        g_mxSBPrefix[STATUS_TINYEXPR], tchExpression, g_mxSBPostfix[STATUS_TINYEXPR]);
+
+      s_iExprError = g_iExprError;
+      bIsUpdateNeeded = true;
+    }
   }
-  else 
-    g_iExprError = -2;
-
-  if (!g_iExprError || (s_iExprError != g_iExprError)) {
-
-    StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s ",
-      g_mxSBPrefix[STATUS_TINYEXPR], tchExpression, g_mxSBPostfix[STATUS_TINYEXPR]);
-
-    s_iExprError = g_iExprError;
-    bIsUpdateNeeded = true;
-  }
-
   // ------------------------------------------------------
 
   // number of occurrence marks found
   static WCHAR tchOcc[32] = { L'\0' };
-
   static int s_iMarkOccurrencesCount = -111;
   static bool s_bMOVisible = false;
 
-  if ((s_bMOVisible != g_bMarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != g_iMarkOccurrencesCount))
+  if (g_iStatusbarVisible[STATUS_OCCURRENCE] || g_hwndDlgFindReplace)
   {
-    if ((g_iMarkOccurrencesCount >= 0) && !g_bMarkOccurrencesMatchVisible)
+    if ((s_bMOVisible != g_bMarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != g_iMarkOccurrencesCount))
     {
-      if ((g_iMarkOccurrencesMaxCount < 0) || (g_iMarkOccurrencesCount < g_iMarkOccurrencesMaxCount))
+      if ((g_iMarkOccurrencesCount >= 0) && !g_bMarkOccurrencesMatchVisible)
       {
-        StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", g_iMarkOccurrencesCount);
-        FormatNumberStr(tchOcc);
+        if ((g_iMarkOccurrencesMaxCount < 0) || (g_iMarkOccurrencesCount < g_iMarkOccurrencesMaxCount))
+        {
+          StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", g_iMarkOccurrencesCount);
+          FormatNumberStr(tchOcc);
+        }
+        else {
+          StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", g_iMarkOccurrencesCount);
+          FormatNumberStr(tchTmp);
+          StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
+        }
       }
       else {
-        StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", g_iMarkOccurrencesCount);
-        FormatNumberStr(tchTmp);
-        StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
+        StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
       }
-    }
-    else {
-      StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
-    }
 
-    StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
-      g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, g_mxSBPostfix[STATUS_OCCURRENCE]);
+      StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, g_mxSBPostfix[STATUS_OCCURRENCE]);
 
-    s_bMOVisible = g_bMarkOccurrencesMatchVisible;
-    s_iMarkOccurrencesCount = g_iMarkOccurrencesCount;
-    bIsUpdateNeeded = true;
+      s_bMOVisible = g_bMarkOccurrencesMatchVisible;
+      s_iMarkOccurrencesCount = g_iMarkOccurrencesCount;
+      bIsUpdateNeeded = true;
+    }
   }
-
   // ------------------------------------------------------
 
   // number of replaced pattern
   static WCHAR tchRepl[32] = { L'\0' };
-  
   static int s_iReplacedOccurrences = -1;
 
-  if (s_iReplacedOccurrences != g_iReplacedOccurrences)
+  if (g_iStatusbarVisible[STATUS_OCCREPLACE] || g_hwndDlgFindReplace)
   {
-    if (g_iReplacedOccurrences > 0)
+    if (s_iReplacedOccurrences != g_iReplacedOccurrences)
     {
-      StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", g_iReplacedOccurrences);
-      FormatNumberStr(tchRepl);
-    }
-    else {
-      StringCchCopy(tchRepl, COUNTOF(tchRepl), L"--");
-    }
+      if (g_iReplacedOccurrences > 0)
+      {
+        StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", g_iReplacedOccurrences);
+        FormatNumberStr(tchRepl);
+      }
+      else {
+        StringCchCopy(tchRepl, COUNTOF(tchRepl), L"--");
+      }
 
-    StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
-      g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, g_mxSBPostfix[STATUS_OCCREPLACE]);
+      StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, g_mxSBPostfix[STATUS_OCCREPLACE]);
 
-    s_iReplacedOccurrences = g_iReplacedOccurrences;
-    bIsUpdateNeeded = true;
+      s_iReplacedOccurrences = g_iReplacedOccurrences;
+      bIsUpdateNeeded = true;
+    }
   }
-
   // ------------------------------------------------------
 
   // get number of bytes in current encoding
   static WCHAR tchBytes[32] = { L'\0' };
   static DocPos s_iTextLength = -1;
-  DocPos const iTextLength = SciCall_GetTextLength();
-  if (s_iTextLength != iTextLength) {
-    StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
 
-    StringCchPrintf(tchStatusBar[STATUS_DOCSIZE], txtWidth, L"%s%s%s",
-      g_mxSBPrefix[STATUS_DOCSIZE], tchBytes, g_mxSBPostfix[STATUS_DOCSIZE]);
+  if (g_iStatusbarVisible[STATUS_DOCSIZE])
+  {
+    DocPos const iTextLength = SciCall_GetTextLength();
+    if (s_iTextLength != iTextLength) {
+      StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
 
-    s_iTextLength = iTextLength;
-    bIsUpdateNeeded = true;
+      StringCchPrintf(tchStatusBar[STATUS_DOCSIZE], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_DOCSIZE], tchBytes, g_mxSBPostfix[STATUS_DOCSIZE]);
+
+      s_iTextLength = iTextLength;
+      bIsUpdateNeeded = true;
+    }
   }
+  // ------------------------------------------------------
 
   static int s_iEncoding = -1;
-  int const iEncoding = Encoding_Current(CPI_GET);
-  if (s_iEncoding != iEncoding) {
-    Encoding_SetLabel(iEncoding);
 
-    StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
-      g_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), g_mxSBPostfix[STATUS_CODEPAGE]);
+  if (g_iStatusbarVisible[STATUS_CODEPAGE])
+  {
+    int const iEncoding = Encoding_Current(CPI_GET);
+    if (s_iEncoding != iEncoding) {
+      Encoding_SetLabel(iEncoding);
 
-    s_iEncoding = iEncoding;
-    bIsUpdateNeeded = true;
+      StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), g_mxSBPostfix[STATUS_CODEPAGE]);
+
+      s_iEncoding = iEncoding;
+      bIsUpdateNeeded = true;
+    }
   }
-
   // ------------------------------------------------------
 
   static int s_iEOLMode = -1;
-  if (s_iEOLMode != g_iEOLMode) {
-    if (g_iEOLMode == SC_EOL_CR)
-    {
-      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR%s",
-        g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
+
+  if (g_iStatusbarVisible[STATUS_EOLMODE])
+  {
+    if (s_iEOLMode != g_iEOLMode) {
+      if (g_iEOLMode == SC_EOL_CR)
+      {
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR%s",
+          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
+      }
+      else if (g_iEOLMode == SC_EOL_LF)
+      {
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF%s",
+          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
+      }
+      else {
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR+LF%s",
+          g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
+      }
+      s_iEOLMode = g_iEOLMode;
+      bIsUpdateNeeded = true;
     }
-    else if (g_iEOLMode == SC_EOL_LF)
-    {
-      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF%s",
-        g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
-    }
-    else {
-      StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR+LF%s",
-        g_mxSBPrefix[STATUS_EOLMODE], g_mxSBPostfix[STATUS_EOLMODE]);
-    }
-    s_iEOLMode = g_iEOLMode;
-    bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------
 
   static bool s_bIsOVR = -1;
-  bool const bIsOVR = (bool)SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0);
-  if (s_bIsOVR != bIsOVR) {
-    if (bIsOVR)
-    {
-      StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",
-        g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
+
+  if (g_iStatusbarVisible[STATUS_OVRMODE])
+  {
+    bool const bIsOVR = (bool)SendMessage(g_hwndEdit, SCI_GETOVERTYPE, 0, 0);
+    if (s_bIsOVR != bIsOVR) {
+      if (bIsOVR)
+      {
+        StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",
+          g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
+      }
+      else {
+        StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS%s",
+          g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
+      }
+      s_bIsOVR = bIsOVR;
+      bIsUpdateNeeded = true;
     }
-    else {
-      StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS%s",
-        g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
-    }
-    s_bIsOVR = bIsOVR;
-    bIsUpdateNeeded = true;
   }
   // ------------------------------------------------------
 
   static bool s_bUse2ndDefault = -1;
-  bool const bUse2ndDefault = Style_GetUse2ndDefault();
-  if (s_bUse2ndDefault != bUse2ndDefault) 
-  {
-    if (bUse2ndDefault)
-      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND%s",
-        g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
-    else
-      StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD%s",
-        g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
 
-    s_bUse2ndDefault = bUse2ndDefault;
-    bIsUpdateNeeded = true;
+  if (g_iStatusbarVisible[STATUS_2ND_DEF])
+  {
+    bool const bUse2ndDefault = Style_GetUse2ndDefault();
+    if (s_bUse2ndDefault != bUse2ndDefault)
+    {
+      if (bUse2ndDefault)
+        StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND%s",
+          g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
+      else
+        StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%sSTD%s",
+          g_mxSBPrefix[STATUS_2ND_DEF], g_mxSBPostfix[STATUS_2ND_DEF]);
+
+      s_bUse2ndDefault = bUse2ndDefault;
+      bIsUpdateNeeded = true;
+    }
   }
   // ------------------------------------------------------
 
+  static int s_iCurLexer = -1;
   static WCHAR tchLexerName[MINI_BUFFER];
 
-  static int s_iCurLexer = -1;
-  int const iCurLexer = Style_GetCurrentLexerRID();
-  if (s_iCurLexer != iCurLexer) 
+  if (g_iStatusbarVisible[STATUS_LEXER])
   {
-    if (Style_IsCurLexerStandard())
-      Style_GetLexerDisplayName(NULL, tchLexerName, MINI_BUFFER); // don't distinguish between STD/2ND
-    else
-      Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), tchLexerName, MINI_BUFFER);
 
-    StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s%s",
-      g_mxSBPrefix[STATUS_LEXER], tchLexerName, g_mxSBPostfix[STATUS_LEXER]);
+    int const iCurLexer = Style_GetCurrentLexerRID();
+    if (s_iCurLexer != iCurLexer)
+    {
+      if (Style_IsCurLexerStandard())
+        Style_GetLexerDisplayName(NULL, tchLexerName, MINI_BUFFER); // don't distinguish between STD/2ND
+      else
+        Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), tchLexerName, MINI_BUFFER);
 
-    s_iCurLexer = iCurLexer;
-    bIsUpdateNeeded = true;
+      StringCchPrintf(tchStatusBar[STATUS_LEXER], txtWidth, L"%s%s%s",
+        g_mxSBPrefix[STATUS_LEXER], tchLexerName, g_mxSBPostfix[STATUS_LEXER]);
+
+      s_iCurLexer = iCurLexer;
+      bIsUpdateNeeded = true;
+    }
   }
   // ------------------------------------------------------
 
