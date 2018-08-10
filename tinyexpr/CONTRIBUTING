@@ -1,0 +1,10 @@
+A core strength of TinyExpr is that it is small and simple. This makes it easy
+to add new features. However, if we keep adding new features, it'll no longer
+be small or simple. In other words, each new feature corrodes away at the core
+strength of TinyExpr.
+
+If you want to add a new feature, and you expect me to merge it, please discuss
+it with me before you go to that work. Open an issue at
+https://github.com/codeplea/tinyexpr and let us know what you're proposing.
+
+Bug fixes are always welcome and appreciated, of course.
