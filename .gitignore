@@ -22,8 +22,10 @@ Thumbs.db
 *.suo
 *.tlog
 *.user
+*.VC.db*
 
 /.vs
+/minipath/.vs
 /Bin
 /build.user.bat
 /Build/.vs
@@ -40,7 +42,6 @@ Thumbs.db
 /Build/Signing/Password.txt
 /distrib/Notepad3*.exe
 
-/Notepad3.VC.db
 /Notepad3.VC.VC.opendb
 
 /res/Notepad3.exe.manifest.conf
@@ -52,6 +53,7 @@ Thumbs.db
 /Versions/build.txt
 /np3portableapp/_buildname.txt
 
+/np3portableapp/*.7z
 /np3portableapp/*.paf.exe
 /np3portableapp/Notepad3Portable/Notepad3Portable.exe
 /np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
