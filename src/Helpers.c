@@ -80,6 +80,31 @@ WCHAR* _StrCutIW(WCHAR* s,const WCHAR* pattern)
 //=============================================================================
 
 
+
+//=============================================================================
+//
+//  StrDelChrA()
+//
+bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove)
+{
+  if (!pszSource || !pCharsToRemove)
+    return false;
+
+  LPSTR pch = pszSource;
+  while (*pch) {
+    LPSTR prem = pch;
+    while (StrChrA(pCharsToRemove, *prem)) {
+      ++prem;
+    }
+    if (prem > pch) {
+      MoveMemory(pch, prem, sizeof(CHAR)*(strlen(prem) + 1));
+    }
+    ++pch;
+  }
+  return true;
+}
+
+
 //=============================================================================
 //
 //  Find next token in string
@@ -1130,38 +1155,6 @@ bool StatusSetTextID(HWND hwnd,UINT nPart,UINT uID)
 
 //=============================================================================
 //
-//  StatusCalcPaneWidth()
-//
-COLORREF GetBackgroundColor(HWND hwnd)
-{
-  return GetBkColor(GetDC(hwnd));
-}
-
-
-//=============================================================================
-//
-//  StatusCalcPaneWidth()
-//
-LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
-{
-  HDC const hdc = GetDC(hwnd);
-  HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd,WM_GETFONT,0,0);
-  HGDIOBJ const hfold = SelectObject(hdc,hfont);
-  int const mmode = SetMapMode(hdc,MM_TEXT);
-
-  SIZE size = { 0, 0 };
-  GetTextExtentPoint32(hdc,lpsz,lstrlen(lpsz),&size);
-
-  SetMapMode(hdc,mmode);
-  SelectObject(hdc,hfold);
-  ReleaseDC(hwnd,hdc);
-
-  return (size.cx + 8L);
-}
-
-
-//=============================================================================
-//
 //  Toolbar_Get/SetButtons()
 //
 int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
@@ -1677,19 +1670,17 @@ bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
 //
 bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars)
 {
-  LPWSTR psz;
-
   if (!pszSource || !*pszSource)
     return false;
 
-  psz = pszSource;
-  while (StrChrI(pszTrimChars,*psz))
-    psz++;
+  LPWSTR psz = pszSource;
+  while (StrChrI(pszTrimChars, *psz)) { ++psz; }
 
   MoveMemory(pszSource,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
 
   return true;
 }
+
 
 
 //=============================================================================
@@ -1698,28 +1689,26 @@ bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars)
 //
 bool TrimString(LPWSTR lpString)
 {
-
-  LPWSTR psz;
-
   if (!lpString || !*lpString)
     return false;
 
   // Trim left
-  psz = lpString;
+  LPWSTR psz = lpString;
 
-  while (*psz == L' ')
-    psz = CharNext(psz);
+  while (*psz == L' ') { psz = CharNext(psz); }
 
   MoveMemory(lpString,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
 
   // Trim right
   psz = StrEnd(lpString);
 
-  while (*(psz = CharPrev(lpString,psz)) == L' ')
+  while (*(psz = CharPrev(lpString, psz)) == L' ') {
     *psz = L'\0';
-
+  }
   return true;
 }
+
+
 
 
 //=============================================================================
@@ -3080,7 +3069,7 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
     int iValue;
     if (swscanf_s(p, L"%i", &iValue) == 1) {
       if (n < iCount) {
-        iVector[n++] = min(max(iValue, iMin), iMax);
+        iVector[n++] = clampi(iValue, iMin, iMax);
       }
     }
     p = StrEnd(p) + 1;

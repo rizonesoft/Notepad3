@@ -1,0 +1,8 @@
+digraph G {
+    "+" -> "sin";
+    "+" -> div;
+    "sin" -> "x";
+    div -> "1";
+    div -> "4";
+    div [label="&#247;"]
+}

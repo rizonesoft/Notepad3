@@ -348,11 +348,18 @@ FontCached::FontCached(const FontParameters &fp) :
 		UTF16FromUTF8(fp.faceName, wszFace, faceSize);
 		const FLOAT fHeight = fp.size;
 		const DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
-		HRESULT hr = pIDWriteFactory->CreateTextFormat(wszFace, nullptr,
-			static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
-			style,
-			DWRITE_FONT_STRETCH_NORMAL, fHeight, L"en-us", &pTextFormat);
-		if (SUCCEEDED(hr)) {
+
+    //HRESULT hr = pIDWriteFactory->CreateTextFormat(wszFace, nullptr,
+		//	static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
+		//	style,
+		//	DWRITE_FONT_STRETCH_NORMAL, fHeight, L"en-us", &pTextFormat);
+    // patch for rendering chineese fonts: (https://sourceforge.net/p/scintilla/bugs/2027/)
+    HRESULT hr = pIDWriteFactory->CreateTextFormat(wszFace, nullptr,
+      static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
+      style,
+      DWRITE_FONT_STRETCH_NORMAL, fHeight, L"", &pTextFormat);
+
+    if (SUCCEEDED(hr)) {
 			pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
 			FLOAT yAscent = 1.0f;

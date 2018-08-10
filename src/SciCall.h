@@ -222,7 +222,6 @@ DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
 
-DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, DocPos, endpos)
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, DocLn)
 DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos)
 DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocLn, line)
@@ -232,6 +231,8 @@ DeclareSciCallR1(GetLineEndPosition, GETLINEENDPOSITION, DocPos, DocLn, line)
 DeclareSciCallR1(GetColumn, GETCOLUMN, DocPos, DocPos, position)
 DeclareSciCallR2(FindColumn, FINDCOLUMN, DocPos, DocLn, line, DocPos, column)
 DeclareSciCallR1(GetLineIndentPosition, GETLINEINDENTPOSITION, DocPos, DocLn, line)
+DeclareSciCallR2(CountCharacters, COUNTCHARACTERS, DocPos, DocPos, startpos, DocPos, endpos)
+DeclareSciCallR2(PositionRelative, POSITIONRELATIVE, DocPos, DocPos, startpos, DocPos, relative)
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char* const, DocPos, start, DocPos, length)
 DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, char* const)
@@ -246,6 +247,8 @@ DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
 //  Commands
 //
 DeclareSciCallV0(NewLine, NEWLINE)
+DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP)
+DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN)
 
 
 //=============================================================================
@@ -353,7 +356,7 @@ DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, 
 //
 //  Lexer
 //
-DeclareSciCallV2(SetProperty, SETPROPERTY, const char *, key, const char *, value)
+DeclareSciCallV2(SetProperty, SETPROPERTY, const char*, key, const char*, value)
 DeclareSciCallV2(Colourise, COLOURISE, DocPos, startPos, DocPos, endPos)
 
 
@@ -391,10 +394,9 @@ DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction)
 DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
-#define Sci_IsStreamSelected() (SciCall_GetSelectionMode() == SC_SEL_STREAM)
-#define Sci_IsFullLineSelected() (SciCall_GetSelectionMode() == SC_SEL_LINES)
-#define Sci_IsThinRectangleSelected() (SciCall_GetSelectionMode() == SC_SEL_THIN)
+
 #define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
+#define Sci_IsForwardSelection() (SciCall_GetAnchor() <= SciCall_GetCurrentPos())
 
 #define Sci_GetEOLLen() ((SciCall_GetEOLMode() == SC_EOL_CRLF) ? 2 : 1)
 

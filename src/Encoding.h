@@ -50,8 +50,9 @@ extern bool g_bForceCompEncDetection;
 #define NCP_EXTERNAL_8BIT    512
 #define NCP_RECODE          1024
 
-#define CPI_GET               -2
-#define CPI_NONE              -1
+#define CED_NO_MAPPING       (-3)
+#define CPI_GET              (-2)
+#define CPI_NONE             (-1)
 #define CPI_ANSI_DEFAULT       0
 #define CPI_OEM                1
 #define CPI_UNICODEBOM         2
@@ -69,11 +70,13 @@ extern bool g_bForceCompEncDetection;
 
 #define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
 
+
 typedef struct _np2encoding {
   UINT    uFlags;
   UINT    uCodePage;
   char*   pszParseNames;
   int     idsName;
+  int     iCEDEncoding;
   WCHAR   wchLabel[64];
 } NP2ENCODING;
 
@@ -130,7 +133,10 @@ size_t UTF8_mbslen(LPCSTR utf8_string, size_t byte_length);
 bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length);
 
 // Google's "Compact Encoding Detection" 
-int Encoding_Analyze(const char* const text, const size_t len, bool* isReliable);
+extern NP2ENCODING g_Encodings[];
+int Encoding_CountOf();
+void ChangeEncodingCodePage(int cpi, UINT newCP);
+int Encoding_Analyze(const char* const text, const size_t len, const int encodingHint, bool* isReliable);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 

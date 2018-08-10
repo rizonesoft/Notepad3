@@ -44,6 +44,12 @@ extern WCHAR g_wchIniFile[MAX_PATH];
 __forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
+// clamp
+__forceinline int clampi(int x, int lower, int upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
+
+
 // Is the character an octal digit?
 __forceinline bool IsDigit(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
 __forceinline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
@@ -115,6 +121,8 @@ __forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, D
   WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
+__forceinline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
+
 DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 
@@ -181,8 +189,6 @@ void DeleteBitmapButton(HWND,int);
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
 void StatusSetText(HWND,UINT,LPCWSTR);
 bool StatusSetTextID(HWND,UINT,UINT);
-COLORREF GetBackgroundColor(HWND);
-LONG StatusCalcPaneWidth(HWND,LPCWSTR);
 
 int Toolbar_GetButtons(HWND,int,LPWSTR,int);
 int Toolbar_SetButtons(HWND,int,LPCWSTR,void*,int);
@@ -336,6 +342,8 @@ WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
 #else
 #define StrCutI _StrCutIA
 #endif
+
+bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 
 
 //==== StrNextTok methods ===================
