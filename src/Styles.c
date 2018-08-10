@@ -3416,17 +3416,21 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   // Select standard if NULL is specified
   if (!pLexNew) {
     pLexNew = GetDefaultLexer();
+    if (IsLexerStandard(pLexNew)) {
+      pLexNew = GetCurrentStdLexer();
+    }
   }
   const WCHAR* const wchNewLexerStyleStrg = pLexNew->Styles[STY_DEFAULT].szValue;
 
   // first set standard lexer's default values
   if (IsLexerStandard(pLexNew)) {
     g_pLexCurrent = pLexNew;
-    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd); // sync
+    Style_SetUse2ndDefault(g_pLexCurrent == &lexStandard2nd); // sync if forced
   }
   else {
     g_pLexCurrent = GetCurrentStdLexer();
   }
+
 
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
 
@@ -4340,8 +4344,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
   LPWSTR lpszExt = PathFindExtension(lpszFile);
   bool  bFound = false;
-  PEDITLEXER pLexNew = g_pLexArray[g_iDefaultLexer];
-  PEDITLEXER pLexSniffed;
+  PEDITLEXER pLexNew = NULL;
+  PEDITLEXER pLexSniffed = NULL;
 
   if ((fvCurFile.mask & FV_MODE) && fvCurFile.tchMode[0]) {
 
@@ -4458,7 +4462,12 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     pLexNew = &lexANSI;
   }
   // Apply the new lexer
-  Style_SetLexer(hwnd,pLexNew);
+  if (IsLexerStandard(pLexNew)) {
+    Style_SetLexer(hwnd, NULL);
+  }
+  else {
+    Style_SetLexer(hwnd, pLexNew);
+  }
 }
 
 
@@ -4497,7 +4506,7 @@ void Style_ResetCurrentLexer(HWND hwnd)
 //
 void Style_SetDefaultLexer(HWND hwnd)
 {
-  Style_SetLexer(hwnd, g_pLexArray[g_iDefaultLexer]);
+  Style_SetLexer(hwnd, NULL);
 }
 
 
@@ -4544,7 +4553,7 @@ void Style_ToggleUse2ndDefault(HWND hwnd)
   if (IsLexerStandard(g_pLexCurrent)) {
     g_pLexCurrent = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard; // sync
   }
-  Style_SetLexer(hwnd,g_pLexCurrent);
+  Style_ResetCurrentLexer(hwnd);
 }
 
 
@@ -4572,8 +4581,7 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
     // set new styles to current lexer's default text
     StringCchCopyW(pLexerDefStyle->szValue, COUNTOF(pLexerDefStyle->szValue), newStyle);
     g_fStylesModified = true;
-    // redraw current(!) lexer
-    Style_SetLexer(hwnd, g_pLexCurrent);
+    Style_ResetCurrentLexer(hwnd);
   }
 }
 
@@ -6041,7 +6049,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       }
       return false;
 
-    #define APPLY_DIALOG_ITEM_TEXT { \
+#define APPLY_DIALOG_ITEM_TEXT { \
       bool bChgNfy = false; \
       WCHAR szBuf[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)]; \
       GetDlgItemText(hwnd, IDC_STYLEEDIT, szBuf, COUNTOF(szBuf)); \
@@ -6059,7 +6067,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         } \
       } \
       if (bChgNfy && ( IsLexerStandard(pCurrentLexer) || (pCurrentLexer == g_pLexCurrent))) { \
-        Style_SetLexer(g_hwndEdit, g_pLexCurrent); \
+        Style_ResetCurrentLexer(hwnd); \
       } \
     }
 
@@ -6394,7 +6402,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
               }
               TreeView_Select(hwndTV, TreeView_GetRoot(hwndTV), TVGN_CARET);
-              Style_SetLexer(g_hwndEdit, g_pLexCurrent);
+              Style_ResetCurrentLexer(hwnd);
             }
           }
           break;
@@ -6473,7 +6481,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 ++i;
               }
             }
-            Style_SetLexer(g_hwndEdit, g_pLexCurrent);
+            Style_ResetCurrentLexer(hwnd);
             //EndDialog(hwnd,IDCANCEL);
             DestroyWindow(hwnd);
           }
@@ -6772,7 +6780,7 @@ void Style_SelectLexerDlg(HWND hwnd)
                                    MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
-    Style_SetLexer(hwnd, g_pLexCurrent);
+    Style_ResetCurrentLexer(hwnd);
 }
 
 // End of Styles.c

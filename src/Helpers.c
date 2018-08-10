@@ -1155,38 +1155,6 @@ bool StatusSetTextID(HWND hwnd,UINT nPart,UINT uID)
 
 //=============================================================================
 //
-//  StatusCalcPaneWidth()
-//
-COLORREF GetBackgroundColor(HWND hwnd)
-{
-  return GetBkColor(GetDC(hwnd));
-}
-
-
-//=============================================================================
-//
-//  StatusCalcPaneWidth()
-//
-LONG StatusCalcPaneWidth(HWND hwnd,LPCWSTR lpsz)
-{
-  HDC const hdc = GetDC(hwnd);
-  HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd,WM_GETFONT,0,0);
-  HGDIOBJ const hfold = SelectObject(hdc,hfont);
-  int const mmode = SetMapMode(hdc,MM_TEXT);
-
-  SIZE size = { 0, 0 };
-  GetTextExtentPoint32(hdc,lpsz,lstrlen(lpsz),&size);
-
-  SetMapMode(hdc,mmode);
-  SelectObject(hdc,hfold);
-  ReleaseDC(hwnd,hdc);
-
-  return (size.cx + 8L);
-}
-
-
-//=============================================================================
-//
 //  Toolbar_Get/SetButtons()
 //
 int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)

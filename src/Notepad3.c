@@ -7924,6 +7924,28 @@ static void __fastcall _UpdateToolbarDelayed()
 
 
 
+//=============================================================================
+//
+//  _StatusCalcPaneWidth()
+//
+static LONG __fastcall _StatusCalcPaneWidth(HWND hwnd, LPCWSTR lpsz)
+{
+  HDC const hdc = GetDC(hwnd);
+  HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd, WM_GETFONT, 0, 0);
+  HGDIOBJ const hfold = SelectObject(hdc, hfont);
+  int const mmode = SetMapMode(hdc, MM_TEXT);
+
+  SIZE size = { 0L, 0L };
+  GetTextExtentPoint32(hdc, lpsz, lstrlen(lpsz), &size);
+
+  SetMapMode(hdc, mmode);
+  SelectObject(hdc, hfold);
+  ReleaseDC(hwnd, hdc);
+
+  return (size.cx + 8L);
+}
+
+
 
 //=============================================================================
 //
@@ -7947,7 +7969,7 @@ static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionT
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
     if (g_iStatusbarVisible[i]) {
       if (g_iStatusbarWidthSpec[i] == 0) { // dynamic optimized
-        vSectionWidth[i] = StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[i]);
+        vSectionWidth[i] = _StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[i]);
       }
       else if (g_iStatusbarWidthSpec[i] < -1) { // fixed pixel count
         vSectionWidth[i] = -(g_iStatusbarWidthSpec[i]);
@@ -7974,7 +7996,7 @@ static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionT
   int iTotalMinWidth = 0;
   for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
     if (bIsPropSection[i]) {
-      int const iMinWidth = StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[i]);
+      int const iMinWidth = _StatusCalcPaneWidth(g_hwndStatus, tchStatusBar[i]);
       vMinWidth[i] = iMinWidth;
       iTotalMinWidth += iMinWidth;
     }
@@ -8261,11 +8283,12 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (bIsSelCountable)
   {
-    char chExpression[2048] = { '\0' };
+    char chExpression[1024] = { '\0' };
     if (SciCall_GetSelText(NULL) < COUNTOF(chExpression))
     {
       SciCall_GetSelText(chExpression);
-      StrDelChrA(chExpression, " \r\n\t\v");
+      //StrDelChrA(chExpression, " \r\n\t\v");
+      StrDelChrA(chExpression, "\r\n");
 
       g_dExpression = te_interp(chExpression, &g_iExprError);
 
@@ -8286,7 +8309,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (!g_iExprError || (s_iExprError != g_iExprError)) {
 
-    StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s",
+    StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s ",
       g_mxSBPrefix[STATUS_TINYEXPR], tchExpression, g_mxSBPostfix[STATUS_TINYEXPR]);
 
     s_iExprError = g_iExprError;
@@ -8937,7 +8960,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     Encoding_HasChanged(g_iDefaultNewFileEncoding);
     
     EditSetNewText(g_hwndEdit, "", 0);
-    Style_SetLexer(g_hwndEdit, NULL);
+    Style_SetDefaultLexer(g_hwndEdit);
 
     g_bFileReadOnly = false;
     _SetDocumentModified(false);
@@ -9006,7 +9029,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       if (fSuccess) {
         FileVars_Init(NULL,0,&fvCurFile);
         EditSetNewText(g_hwndEdit,"",0);
-        Style_SetLexer(g_hwndEdit,NULL);
+        Style_SetDefaultLexer(g_hwndEdit);
         g_iEOLMode = iLineEndings[g_iDefaultEOLMode];
         SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
         if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
