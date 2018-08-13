@@ -359,6 +359,7 @@ class ScintillaWin :
 	int GetCtrlID() override;
 	void NotifyParent(SCNotification scn) override;
 	void NotifyDoubleClick(Point pt, int modifiers) override;
+	void NotifyURIDropped(const char *list);
 	CaseFolder *CaseFolderForEncoding() override;
 	std::string CaseMapString(const std::string &s, int caseMapping) override;
 	void Copy() override;
@@ -2032,6 +2033,13 @@ void ScintillaWin::NotifyDoubleClick(Point pt, int modifiers) {
 			  MAKELPARAM(pt.x, pt.y));
 }
 
+void ScintillaWin::NotifyURIDropped(const char *list) {
+	SCNotification scn = {};
+	scn.nmhdr.code = SCN_URIDROPPED;
+	scn.text = list;
+	NotifyParent(scn);
+}
+
 class CaseFolderDBCS : public CaseFolderTable {
 	// Allocate the expandable storage here so that it does not need to be reallocated
 	// for each call to Fold.
@@ -3051,6 +3059,11 @@ STDMETHODIMP ScintillaWin::DragEnter(LPDATAOBJECT pIDataSource, DWORD grfKeyStat
 		hasOKText = (hrHasText == S_OK);
 	}
 	if (!hasOKText) {
+		FORMATETC fmtd = { CF_HDROP, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+		const HRESULT hrHasText = pIDataSource->QueryGetData(&fmtd);
+		hasOKText = (hrHasText == S_OK);
+	}
+	if (!hasOKText) {
 		*pdwEffect = DROPEFFECT_NONE;
 		return S_OK;
 	}
@@ -3103,6 +3116,7 @@ STDMETHODIMP ScintillaWin::Drop(LPDATAOBJECT pIDataSource, DWORD grfKeyState,
 		STGMEDIUM medium = {0, {0}, 0};
 
 		std::vector<char> data;	// Includes terminating NUL
+		bool fileDrop = false;
 
 		FORMATETC fmtu = {CF_UNICODETEXT, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 		HRESULT hr = pIDataSource->GetData(&fmtu, &medium);
@@ -3131,14 +3145,44 @@ STDMETHODIMP ScintillaWin::Drop(LPDATAOBJECT pIDataSource, DWORD grfKeyState,
 			}
 			memUDrop.Unlock();
 		} else {
-			FORMATETC fmte = {CF_TEXT, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+			FORMATETC fmte = { CF_TEXT, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 			hr = pIDataSource->GetData(&fmte, &medium);
 			if (SUCCEEDED(hr) && medium.hGlobal) {
 				GlobalMemory memDrop(medium.hGlobal);
 				const char *cdata = static_cast<const char *>(memDrop.ptr);
-				if (cdata)
-					data.assign(cdata, cdata+strlen(cdata));
+				if (cdata) {
+					const size_t len = strlen(cdata);
+					// In Unicode mode, convert text to UTF-8
+					if (IsUnicodeMode()) {
+						std::vector<wchar_t> uptr(len + 1);
+
+						const int ilen = static_cast<int>(len);
+						const size_t ulen = WideCharFromMultiByte(CP_ACP,
+							std::string_view(cdata, ilen), &uptr[0], ilen + 1);
+
+						const std::wstring_view wsv(&uptr[0], ulen);
+						const size_t mlen = UTF8Length(wsv);
+						data.resize(mlen + 1);
+						UTF8FromUTF16(wsv, &data[0], mlen);
+					} else {
+						data.assign(cdata, cdata + len);
+					}
+				}
 				memDrop.Unlock();
+			} else {
+				FORMATETC fmtd = { CF_HDROP, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+				hr = pIDataSource->GetData(&fmtd, &medium);
+				if (SUCCEEDED(hr) && medium.hGlobal) {
+					fileDrop = true;
+					WCHAR pathDropped[MAX_PATH];
+					if (::DragQueryFileW(static_cast<HDROP>(medium.hGlobal), 0, pathDropped, MAX_PATH) > 0) {
+						// Convert UTF-16 to UTF-8
+						const std::wstring_view wsv(pathDropped);
+						const size_t dataLen = UTF8Length(wsv);
+						data.resize(dataLen + 1); // NUL
+						UTF8FromUTF16(wsv, &data[0], dataLen);
+					}
+				}
 			}
 		}
 
@@ -3147,14 +3191,18 @@ STDMETHODIMP ScintillaWin::Drop(LPDATAOBJECT pIDataSource, DWORD grfKeyState,
 			return hr;
 		}
 
-		FORMATETC fmtr = {cfColumnSelect, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL};
+		if (fileDrop) {
+			NotifyURIDropped(data.data());
+		} else {
+		FORMATETC fmtr = { cfColumnSelect, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 		const HRESULT hrRectangular = pIDataSource->QueryGetData(&fmtr);
 
-		POINT rpt = {pt.x, pt.y};
+		POINT rpt = { pt.x, pt.y };
 		::ScreenToClient(MainHWND(), &rpt);
 		const SelectionPosition movePos = SPositionFromLocation(PointFromPOINT(rpt), false, false, UserVirtualSpace());
 
 		DropAt(movePos, &data[0], data.size(), *pdwEffect == DROPEFFECT_MOVE, hrRectangular == S_OK);
+		}
 
 		// Free data
 		if (medium.pUnkForRelease)
@@ -3172,7 +3220,8 @@ STDMETHODIMP ScintillaWin::Drop(LPDATAOBJECT pIDataSource, DWORD grfKeyState,
 /// Implement important part of IDataObject
 STDMETHODIMP ScintillaWin::GetData(FORMATETC *pFEIn, STGMEDIUM *pSTM) {
 	const bool formatOK = (pFEIn->cfFormat == CF_TEXT) ||
-		((pFEIn->cfFormat == CF_UNICODETEXT) && IsUnicodeMode());
+		((pFEIn->cfFormat == CF_UNICODETEXT) && IsUnicodeMode()) ||
+		(pFEIn->cfFormat == CF_HDROP);
 	if (!formatOK ||
 	    pFEIn->ptd != 0 ||
 	    (pFEIn->dwAspect & DVASPECT_CONTENT) == 0 ||

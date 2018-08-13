@@ -394,10 +394,13 @@ static void __fastcall _SaveRedoSelection(int token);
 static int __fastcall  _SaveUndoSelection();
 static int __fastcall  _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection);
 
+
+#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 static CLIPFORMAT cfDrpF = CF_HDROP;
 static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
+#endif
 
 
 //=============================================================================
@@ -730,8 +733,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
 
   if (hMainMenu) { SetMenu(hwnd, hMainMenu); }
 
-  // init DragnDrop handler
+#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
   DragAndDropInit(NULL);
+#endif
 
   hAccMain = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
   hAccFindReplace = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_ACCFINDREPLACE));
@@ -1452,6 +1456,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_DROPFILES:
       return MsgDropFiles(hwnd, wParam, lParam);
+      // see SCN_URIDROPP
+      break;
 
     case WM_COPYDATA:
       return MsgCopyData(hwnd, wParam, lParam);
@@ -1815,7 +1821,9 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   // Drag & Drop
   DragAcceptFiles(hwnd,true);
+#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
   pDropTarget = RegisterDragAndDrop(hwnd, &cfDrpF, 1, WM_NULL, DropFilesProc, (void*)g_hwndEdit);
+#endif
 
   // File MRU
   g_pFileMRU = MRU_Create(L"Recent Files", MRU_NOCASE, MRU_ITEMSFILE);
@@ -2059,8 +2067,10 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     // GetWindowPlacement
     g_WinInfo = GetMyWindowPlacement(hwnd, NULL);
 
-    DragAcceptFiles(hwnd, false);
+    DragAcceptFiles(hwnd, true);
+#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
     RevokeDragAndDrop(pDropTarget);
+#endif
 
     // Terminate clipboard watching
     if (g_flagPasteBoard) {
@@ -2301,7 +2311,6 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 }
 
 
-
 //=============================================================================
 //
 //  MsgDropFiles() - Handles WM_DROPFILES
@@ -2329,11 +2338,16 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if (OpenFileDlg(g_hwndMain, tchFile, COUNTOF(tchFile), szBuf))
       FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
   }
-  else if (PathFileExists(szBuf))
+  else if (PathFileExists(szBuf)) {
     FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, szBuf);
-  else
+  }
+  else {
+#ifndef _EXTRA_DRAG_N_DROP_HANDLER_
     // Windows Bug: wParam (HDROP) pointer is corrupted if dropped from 32-bit App
     MsgBoxLng(MBWARN, IDS_MUI_DROP_NO_FILE);
+#endif
+    // delegated to SCN_URIDROPPED
+  }
 
   if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
     MsgBoxLng(MBWARN, IDS_MUI_ERR_DROP);
@@ -2342,7 +2356,6 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   return 0LL;
 }
-
 
 
 //=============================================================================
@@ -6284,6 +6297,28 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           UpdateLineNumberWidth();
           break;
 
+        case SCN_URIDROPPED: 
+          {
+            // see WM_DROPFILES
+            WCHAR szBuf[MAX_PATH + 40];
+            if (MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, szBuf, COUNTOF(szBuf)) > 0) 
+            {
+              if (IsIconic(hwnd)) {
+                ShowWindow(hwnd, SW_RESTORE);
+              }
+              //SetForegroundWindow(hwnd);
+              if (PathIsDirectory(szBuf)) {
+                WCHAR tchFile[MAX_PATH];
+                if (OpenFileDlg(g_hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
+                  FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
+                }
+              }
+              else if (PathFileExists(szBuf)) {
+                FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, szBuf);
+              }
+            }
+          }
+          break;
 
         default:
           return 0LL;
@@ -9428,7 +9463,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       MsgBoxLng(MBWARN,IDS_MUI_ERR_SAVEFILE,tchFile);
     }
   }
-  //@@@EditEnsureSelectionVisible(g_hwndEdit);
+  //???EditEnsureSelectionVisible(g_hwndEdit);
   return(fSuccess);
 }
 

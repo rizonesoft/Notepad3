@@ -3140,7 +3140,7 @@ void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
   if (!lpszStrg) { return; };
   fValue = Round100th(fValue);
   if (HasNonZeroFraction(fValue))
-    StringCchPrintf(lpszStrg, cchSize, L"%.2f", fValue);
+    StringCchPrintf(lpszStrg, cchSize, L"%.4g", fValue);
   else
     StringCchPrintf(lpszStrg, cchSize, L"%i", float2int(fValue));
 }
@@ -3493,7 +3493,5 @@ PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget)
 
   return NULL;
 }
-
-
 
 ///   End of Helpers.c   \\\

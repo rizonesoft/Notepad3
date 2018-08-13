@@ -5321,6 +5321,23 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   bool bIsUnderline = (StrStrI(lpszStyle, L"underline")) ? true : false;
   bool bIsStrikeout = (StrStrI(lpszStyle, L"strikeout")) ? true : false;
 
+  int iQuality = FontQuality[g_iSciFontQuality];
+  switch (iQuality) {
+  case SC_EFF_QUALITY_NON_ANTIALIASED:
+    iQuality = NONANTIALIASED_QUALITY;
+    break;
+  case SC_EFF_QUALITY_ANTIALIASED:
+    iQuality = ANTIALIASED_QUALITY;
+    break;
+  case SC_EFF_QUALITY_LCD_OPTIMIZED:
+    iQuality = CLEARTYPE_QUALITY;
+    break;
+  default:
+  case SC_EFF_QUALITY_DEFAULT:
+    iQuality = DEFAULT_QUALITY;
+    break;
+  }
+
   // --------------------------------------------------------------------------
 
   LOGFONT lf;
@@ -5332,7 +5349,10 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   lf.lfItalic = (BYTE)bIsItalic;
   lf.lfUnderline = (BYTE)bIsUnderline;
   lf.lfStrikeOut = (BYTE)bIsStrikeout;
-  
+  lf.lfQuality = (BYTE)iQuality;
+  lf.lfClipPrecision = (BYTE)CLIP_DEFAULT_PRECIS;
+  lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
+
 
   COLORREF color = 0L;
   Style_StrGetColor(true, lpszStyle, &color);
@@ -5340,6 +5360,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // Init cf
   CHOOSEFONT cf;
   ZeroMemory(&cf, sizeof(CHOOSEFONT));
+  //cf.nSizeMin = 4;
+  //cf.nSizeMax = 128;
   cf.lStructSize = sizeof(CHOOSEFONT);
   cf.hwndOwner = hwnd;
   cf.rgbColors = color;
@@ -5426,13 +5448,13 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
     if (fNewRelSize >= 0.0) {
       if (HasNonZeroFraction(fNewRelSize))
-        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%.2f", fNewRelSize);
+        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%.4g", fNewRelSize);
       else
         StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%i", float2int(fNewRelSize));
     }
     else {
       if (HasNonZeroFraction(fNewRelSize))
-        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%.2f", (0.0f - fNewRelSize));
+        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%.4g", (0.0f - fNewRelSize));
       else 
         StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%i", float2int(0.0f - fNewRelSize));
     }
@@ -5444,14 +5466,14 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     if (fNewFontSize == fFontSize) {
       if (StrStrI(lpszStyle, L"size:")) {
         if (HasNonZeroFraction(fNewFontSize))
-          StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%.2f", fNewFontSize);
+          StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%.4g", fNewFontSize);
         else
           StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%i", float2int(fNewFontSize));
       }
     }
     else {
       if (HasNonZeroFraction(fNewFontSize))
-        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%.2f", fNewFontSize);
+        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%.4g", fNewFontSize);
       else
         StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%i", float2int(fNewFontSize));
     }

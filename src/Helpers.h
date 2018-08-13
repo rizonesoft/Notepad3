@@ -442,6 +442,9 @@ __forceinline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED
 __forceinline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
 
+#define _EXTRA_DRAG_N_DROP_HANDLER_ 1
+
+#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 
 // special Drag and Drop Handling
 
@@ -460,6 +463,8 @@ typedef DWORD(*DNDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKey
 void DragAndDropInit(HANDLE hHeap);
 PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK, void *pUserData);
 PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget);
+
+#endif
 
 
 #endif //_NP3_HELPERS_H_
