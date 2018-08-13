@@ -1747,8 +1747,9 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				(wParam == SC_TECHNOLOGY_DIRECTWRITERETAIN) ||
 				(wParam == SC_TECHNOLOGY_DIRECTWRITEDC) ||
 				(wParam == SC_TECHNOLOGY_DIRECTWRITE)) {
-				if (technology != static_cast<int>(wParam)) {
-					if (static_cast<int>(wParam) > SC_TECHNOLOGY_DEFAULT) {
+				const int technologyNew = static_cast<int>(wParam);
+				if (technology != technologyNew) {
+					if (technologyNew > SC_TECHNOLOGY_DEFAULT) {
 #if defined(USE_D2D)
 						if (!LoadD2D())
 							// Failed to load Direct2D or DirectWrite so no effect
@@ -1762,7 +1763,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 #if defined(USE_D2D)
 					DropRenderTarget();
 #endif
-					technology = static_cast<int>(wParam);
+					technology = technologyNew;
 					// Invalidate all cached information including layout.
 					DropGraphics(true);
 					InvalidateStyleRedraw();
