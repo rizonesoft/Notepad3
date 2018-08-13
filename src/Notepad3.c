@@ -1362,8 +1362,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   static bool bAltKeyIsDown = false;
 
-  bool bMsgHandled = true;
-
   switch(umsg)
   {
     // Quickly handle painting and sizing messages, found in ScintillaWin.cxx
@@ -1380,8 +1378,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_WINDOWPOSCHANGING:
     case WM_WINDOWPOSCHANGED:
     case WM_TIMER:
-      bMsgHandled = false;
-      break;
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYDOWN:
       if (GetAsyncKeyState(VK_MENU) & SHRT_MIN)  // ALT-KEY DOWN
@@ -1393,9 +1390,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           }
         }
       }
-      bMsgHandled = false;
-      break;
-
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
+       
     case WM_SYSKEYUP:
       if (!(GetAsyncKeyState(VK_MENU) & SHRT_MIN))  // NOT ALT-KEY DOWN
       {
@@ -1404,87 +1400,73 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_SetVirtualSpaceOptions(g_bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
         }
       }
-      bMsgHandled = false;
-      break;
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_KILLFOCUS:
       if (bAltKeyIsDown) {
         bAltKeyIsDown = false;
         SciCall_SetVirtualSpaceOptions(g_bDenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION);
       }
-      bMsgHandled = false;
-      break;
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_CREATE:
-      bMsgHandled = MsgCreate(hwnd, wParam, lParam);
-      break;
+      return MsgCreate(hwnd, wParam, lParam);
+
 
     case WM_DESTROY:
     case WM_ENDSESSION:
-      bMsgHandled = MsgEndSession(hwnd, umsg, wParam, lParam);
-      break;
+      return MsgEndSession(hwnd, umsg, wParam, lParam);
 
     case WM_CLOSE:
       if (FileSave(false, true, false, false)) {
-        bMsgHandled = DestroyWindow(hwnd);
+        DestroyWindow(hwnd);
       }
       break;
 
     case WM_QUERYENDSESSION:
-      if (FileSave(false,true,false,false))
-        bMsgHandled = true;
-      else
-        bMsgHandled = false;
+      if (FileSave(false, true, false, false)) {
+        return 1LL;
+      }
       break;
 
     // Reinitialize theme-dependent values and resize windows
     case WM_THEMECHANGED:
-      bMsgHandled = MsgThemeChanged(hwnd, wParam, lParam);
-      break;
+      return MsgThemeChanged(hwnd, wParam, lParam);
 
     case WM_DPICHANGED:
-      bMsgHandled = MsgDPIChanged(hwnd, wParam, lParam);
-      break;
+      return MsgDPIChanged(hwnd, wParam, lParam);
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
       UpdateLineNumberWidth();
       MarkAllOccurrences(0, true);
       UpdateVisibleUrlHotspot(0);
-      bMsgHandled = false;
-      break;
+      return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
-      bMsgHandled = MsgSize(hwnd, wParam, lParam);
-      break;
+      return MsgSize(hwnd, wParam, lParam);
 
     case WM_SETFOCUS:
       SetFocus(g_hwndEdit);
       break;
 
     case WM_DROPFILES:
-      bMsgHandled = MsgDropFiles(hwnd, wParam, lParam);
-      break;
+      return MsgDropFiles(hwnd, wParam, lParam);
 
     case WM_COPYDATA:
-      bMsgHandled = MsgCopyData(hwnd, wParam, lParam);
-      break;
+      return MsgCopyData(hwnd, wParam, lParam);
 
     case WM_CONTEXTMENU:
-      bMsgHandled = MsgContextMenu(hwnd, wParam, lParam);
-      break;
+      return MsgContextMenu(hwnd, umsg, wParam, lParam);
 
     case WM_INITMENU:
-      bMsgHandled = MsgInitMenu(hwnd, wParam, lParam);
-      break;
+      return MsgInitMenu(hwnd, wParam, lParam);
 
     case WM_NOTIFY:
-      bMsgHandled = MsgNotify(hwnd, wParam, lParam);
-      break;
+      return MsgNotify(hwnd, wParam, lParam);
 
     case WM_CHANGENOTIFY:
-      bMsgHandled = MsgChangeNotify(hwnd, wParam, lParam);
-      break;
+      return MsgChangeNotify(hwnd, wParam, lParam);
 
     //case WM_PARENTNOTIFY:
     //  if (LOWORD(wParam) & WM_DESTROY) {
@@ -1495,12 +1477,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  break;
 
     case WM_COMMAND:
-      bMsgHandled = MsgCommand(hwnd, wParam, lParam);
-      break;
+      return MsgCommand(hwnd, umsg, wParam, lParam);
 
     case WM_TRAYMESSAGE:
-      bMsgHandled = MsgTrayMessage(hwnd, wParam, lParam);
-      break;
+      return MsgTrayMessage(hwnd, wParam, lParam);
 
     //// This message is posted before Notepad3 reactivates itself
     //case WM_CHANGENOTIFYCLEAR:
@@ -1530,14 +1510,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     default:
       if (umsg == msgTaskbarCreated) {
-        if (!IsWindowVisible(hwnd))
-          ShowNotifyIcon(hwnd,true);
+        if (!IsWindowVisible(hwnd)) { ShowNotifyIcon(hwnd, true); }
         SetNotifyIconTitle(hwnd);
       }
-      bMsgHandled = false;
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
-  // 0 = swallow message
-  return  bMsgHandled ? 0 : DefWindowProc(hwnd, umsg, wParam, lParam);
+  return 0; // 0 = swallow message
 }
 
 
@@ -1739,7 +1717,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
 //  MsgCreate() - Handles WM_CREATE
 //
 //
-bool MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
+LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 {
   UNUSED(wParam);
 
@@ -1852,14 +1830,14 @@ bool MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   if (g_hwndEdit == NULL || hwndEditFrame == NULL ||
     g_hwndStatus == NULL || g_hwndToolbar == NULL || g_hwndReBar == NULL)
-    return false;
+    return -1LL;
 
   Style_SetDefaultLexer(g_hwndEdit);
 
   UpdateLineNumberWidth();
   ObserveNotifyChangeEvent();
 
-  return true;
+  return 0LL;
 }
 
 
@@ -2020,12 +1998,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   SendMessage(g_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
   //SendMessage(g_hwndToolbar,TB_SETINDENT,2,0);
 
+
+  // Create Statusbar 
   DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
 
   if (bShowStatusbar) {
     dwStatusbarStyle |= WS_VISIBLE;
   }
   g_hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
+
 
   // Create ReBar and add Toolbar
   g_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
@@ -2063,7 +2044,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 //  MsgEndSession() - Handle WM_ENDSESSION,WM_DESTROY
 //
 //
-bool MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
   UNUSED(lParam);
@@ -2133,7 +2114,7 @@ bool MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   if (umsg == WM_DESTROY)
     PostQuitMessage(0);
 
-  return true;
+  return 0LL;
 }
 
 
@@ -2143,7 +2124,7 @@ bool MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 // MsgDPIChanged() - Handle WM_DPICHANGED
 //
 //
-bool MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam) 
+LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   g_uCurrentDPI = HIWORD(wParam);
   DocPos const pos = SciCall_GetCurrentPos();
@@ -2175,7 +2156,7 @@ bool MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UpdateStatusbar(true);
   UpdateLineNumberWidth();
   
-  return true;
+  return 0LL;
 }
 
 
@@ -2184,7 +2165,7 @@ bool MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  MsgThemeChanged() - Handle WM_THEMECHANGED
 //
 //
-bool MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
+LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 {
   UNUSED(hwnd);
   UNUSED(lParam);
@@ -2249,7 +2230,7 @@ bool MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   UpdateStatusbar(true);
   UpdateLineNumberWidth();
 
-  return true;
+  return 0LL;
 }
 
 
@@ -2258,12 +2239,12 @@ bool MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 //  MsgSize() - Handles WM_SIZE
 //
 //
-bool MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(hwnd);
   UNUSED(lParam);
 
-  if (wParam == SIZE_MINIMIZED) { return false; }
+  if (wParam == SIZE_MINIMIZED) { return 0LL; }
 
   int x = 0;
   int y = 0;
@@ -2316,7 +2297,7 @@ bool MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UpdateStatusbar(false);
   UpdateLineNumberWidth();
 
-  return true;
+  return 0LL;
 }
 
 
@@ -2326,7 +2307,7 @@ bool MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  MsgDropFiles() - Handles WM_DROPFILES
 //
 //
-bool MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
@@ -2359,7 +2340,7 @@ bool MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   DragFinish(hDrop);
 
-  return true;
+  return 0LL;
 }
 
 
@@ -2412,7 +2393,7 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
 //  MsgCopyData() - Handles WM_COPYDATA
 //
 //
-bool MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
 
@@ -2516,7 +2497,7 @@ bool MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   }
 
-  return false; // not handled completely
+  return 0LL;
 }
 
 //=============================================================================
@@ -2524,7 +2505,7 @@ bool MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  MsgContextMenu() - Handles WM_CONTEXTMENU
 //
 //
-bool MsgContextMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   HMENU hmenu;
   int imenu = 0;
@@ -2533,7 +2514,7 @@ bool MsgContextMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   if ((nID != IDC_EDIT) && (nID != IDC_STATUSBAR) &&
     (nID != IDC_REBAR) && (nID != IDC_TOOLBAR))
-    return false;
+    return DefWindowProc(hwnd, umsg, wParam, lParam);
 
   hmenu = LoadMenu(g_hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
   //SetMenuDefaultItem(GetSubMenu(hmenu,1),0,false);
@@ -2576,7 +2557,7 @@ bool MsgContextMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   DestroyMenu(hmenu);
 
-  return true;
+  return 0LL;
 }
 
 
@@ -2586,7 +2567,7 @@ bool MsgContextMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  MsgChangeNotify() - Handles WM_CHANGENOTIFY
 //
 //
-bool MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
   UNUSED(lParam);
@@ -2620,8 +2601,7 @@ bool MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     InstallFileWatching(g_wchCurFile);
   }
 
-  return true;
-
+  return 0LL;
 }
 
 
@@ -2630,7 +2610,7 @@ bool MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  MsgTrayMessage() - Handles WM_TRAYMESSAGE
 //
 //
-bool MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
 
@@ -2677,10 +2657,10 @@ bool MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     default:
-      return false;
+      return 1LL;
 
   }
-  return true;
+  return 0LL;
 }
 
 
@@ -2690,7 +2670,7 @@ bool MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  MsgInitMenu() - Handles WM_INITMENU
 //
 //
-bool MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
@@ -3025,7 +3005,7 @@ bool MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = StringCchLenW(g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
   EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
-  return true;
+  return 0LL;
 }
 
 
@@ -3034,10 +3014,8 @@ bool MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //  MsgCommand() - Handles WM_COMMAND
 //
 //
-bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
+LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  bool bMsgHandled = true;
-
   switch(LOWORD(wParam))
   {
     case SCEN_CHANGE:
@@ -4909,7 +4887,6 @@ bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
       SendWMSize(hwnd, NULL);
       break;
 
-
     case IDM_VIEW_TOGGLETB:
       iHighDpiToolBar = (iHighDpiToolBar <= 0) ? 1 : 0;
       SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
@@ -5852,11 +5829,10 @@ bool MsgCommand(HWND hwnd,WPARAM wParam, LPARAM lParam)
       break;
 
     default:
-      bMsgHandled = false;
-
+      return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
 
-  return bMsgHandled;
+  return 0LL;
 }
 
 
@@ -5874,17 +5850,19 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       MinimizeWndToTray(hwnd);
       ShowNotifyIcon(hwnd, true);
       SetNotifyIconTitle(hwnd);
-      return 0; // swallowed
+      return 0LL; // swallowed
     }
     break;
 
   case SC_RESTORE:
-  {
-    LRESULT lrv = DefWindowProc(hwnd, umsg, wParam, lParam);
-    ShowOwnedPopups(hwnd, true);
-    return(lrv);
-  }
-  //break;
+    {
+      LRESULT lrv = DefWindowProc(hwnd, umsg, wParam, lParam);
+      ShowOwnedPopups(hwnd, true);
+      return(lrv);
+    }
+
+  default:
+    break;
   }
   return DefWindowProc(hwnd, umsg, wParam, lParam);
 }
@@ -5985,7 +5963,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 //
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
-bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(wParam);
 
@@ -6030,7 +6008,7 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
       }
     }
-    return true; // swallowed
+    return 1;
   }
 
   // --- check ALL events ---
@@ -6308,9 +6286,9 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
         default:
-          return false;
+          return 0LL;
       }
-      break;
+      return -1LL;
 
 
     case IDC_TOOLBAR:
@@ -6333,10 +6311,10 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               GetLngString(tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
               StringCchCopyN(((LPTBNOTIFY)lParam)->pszText,((LPTBNOTIFY)lParam)->cchText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
-              return true;
+              return 1LL;
             }
           }
-          return false;
+          return 0LL;
 
         case TBN_RESET:
           {
@@ -6345,14 +6323,13 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               SendMessage(g_hwndToolbar, TB_DELETEBUTTON, 0, 0);
             }
             SendMessage(g_hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
-            return true;
           }
-          break;
+          return 0LL;
 
         default:
-          return false;
+          return 0LL;
       }
-      break;
+      return 1LL;
 
 
     case IDC_STATUSBAR:
@@ -6369,10 +6346,10 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               case STATUS_EOLMODE:
                 SendMessage(g_hwndEdit,SCI_CONVERTEOLS, SciCall_GetEOLMode(),0);
                 EditFixPositions(g_hwndEdit);
-                break;
+                return 1LL;
 
               default:
-                return false;
+                return 0LL;
             }
           }
           break;
@@ -6386,11 +6363,11 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               case STATUS_DOCLINE:
               case STATUS_DOCCOLUMN:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_EDIT_GOTOLINE,1),0);
-                break;
+                return 1LL;
 
               case STATUS_CODEPAGE:
                 PostMessage(hwnd,WM_COMMAND,MAKELONG(IDM_ENCODING_SELECT,1),0);
-                break;
+                return 1LL;
 
               case STATUS_EOLMODE:
                 {
@@ -6405,19 +6382,19 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                   if (i > IDM_LINEENDINGS_CR) { i = IDM_LINEENDINGS_CRLF; }
                   PostMessage(hwnd, WM_COMMAND, MAKELONG(i, 1), 0);
                 }
-                break;
+                return 1LL;
 
               case STATUS_OVRMODE:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(CMD_VK_INSERT, 1), 0);
-                break;
+                return 1LL;
 
               case STATUS_2ND_DEF:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
-                break;
+                return 1LL;
 
               case STATUS_LEXER:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_SCHEME, 1), 0);
-                break;
+                return 1LL;
 
               case STATUS_TINYEXPR:
                 {
@@ -6436,13 +6413,13 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 break;
 
               default:
-                return false;
+                return 0LL;
             }
           }
           break;
 
         default:
-          return false;
+          break;
       }
       break;
 
@@ -6459,12 +6436,15 @@ bool MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               StringCchCopyN(((LPTOOLTIPTEXT)lParam)->szText,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText),tch,COUNTOF(((LPTOOLTIPTEXT)lParam)->szText));
             }
           }
-          return true;
+          break;
+          
+        default:
+          break;
       }
-      return false;
+      break;
 
   }
-  return true;
+  return 0LL;
 }
 
 

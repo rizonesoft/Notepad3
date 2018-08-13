@@ -3166,7 +3166,7 @@ void Style_Load()
 {
   int i,iLexer;
   WCHAR tch[32] = { L'\0' };
-  WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
+  //WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   WCHAR *pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100) ;
   int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
@@ -3228,13 +3228,18 @@ void Style_Load()
       g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
     i = 0;
     while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-      szTmpStyle[0] = L'\0'; // clear
+      //szTmpStyle[0] = L'\0'; // clear
+      //IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
+      //  g_pLexArray[iLexer]->Styles[i].pszDefault,
+      //  szTmpStyle, COUNTOF(szTmpStyle));
+      //// normalize
+      //Style_CopyStyles_IfNotDefined(szTmpStyle, g_pLexArray[iLexer]->Styles[i].szValue,
+      //  COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), true, true);
       IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
         g_pLexArray[iLexer]->Styles[i].pszDefault,
-        szTmpStyle, COUNTOF(szTmpStyle));
-      // normalize
-      Style_CopyStyles_IfNotDefined(szTmpStyle, g_pLexArray[iLexer]->Styles[i].szValue,
-        COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), true, true);
+        g_pLexArray[iLexer]->Styles[i].szValue,
+        COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue));
+
       ++i;
     }
   }
