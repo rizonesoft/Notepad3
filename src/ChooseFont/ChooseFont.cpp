@@ -20,6 +20,9 @@ IDWriteFactory* g_dwrite = nullptr;
 static HINSTANCE g_hInstanceNP3;
 extern "C" HMODULE g_hLngResContainer;
 
+extern "C" void CenterDlgInParent(HWND hDlg);
+
+
 //=============================================================================
 //
 //  LoadLngString()
@@ -43,7 +46,7 @@ class ChooseFontDialog
 {
 public:
 
-    explicit ChooseFontDialog(const WCHAR* localeName, const UINT dpi, LPCHOOSEFONT lpCFGDI);
+    explicit ChooseFontDialog(HWND hParent, const WCHAR* localeName, const UINT dpi, LPCHOOSEFONT lpCFGDI);
     virtual ~ChooseFontDialog();
     ChooseFontDialog() = delete;
 
@@ -52,6 +55,7 @@ public:
 
 private:
 
+    HWND                    m_parent;
     HWND                    m_dialog;
     WCHAR                   m_localeName[LOCALE_NAME_MAX_LENGTH];
     UINT                    m_currentDPI;
@@ -86,13 +90,14 @@ private:
 *                                                                 *
 ******************************************************************/
 
-ChooseFontDialog::ChooseFontDialog(const WCHAR* localeName, const UINT dpi, LPCHOOSEFONT lpCFGDI)
-    :   m_chooseFontStruct(lpCFGDI),
-        m_dialog(nullptr),
-        m_currentDPI(dpi),
-        m_fontCollection(nullptr),
-        m_currentTextFormat(nullptr),
-        m_renderTextFormat(nullptr)
+ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const UINT dpi, LPCHOOSEFONT lpCFGDI)
+  : m_parent(hParent)
+  , m_dialog(nullptr)
+  , m_currentDPI(dpi)
+  , m_chooseFontStruct(lpCFGDI)
+  , m_fontCollection(nullptr)
+  , m_currentTextFormat(nullptr)
+  , m_renderTextFormat(nullptr)
 {
   if (localeName != nullptr) {
     StringCchCopy(m_localeName, _ARRAYSIZE(m_localeName), localeName);
@@ -166,10 +171,10 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
     if (SUCCEEDED(hr))
     {
       if (g_hLngResContainer) {
-        hr = (HRESULT)DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), nullptr, CFDialogProc, (LPARAM)this);
+        hr = (HRESULT)DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
       }
       else {
-        hr = (HRESULT)DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), nullptr, CFDialogProc, (LPARAM)this);
+        hr = (HRESULT)DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
       }
     }
 
@@ -211,10 +216,10 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat* textFormatIn, IDWrite
     if (SUCCEEDED(hr))
     {
       if (g_hLngResContainer) {
-        hr = (HRESULT)DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), nullptr, CFDialogProc, (LPARAM)this);
+        hr = (HRESULT)DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
       }
       else {
-        hr = (HRESULT)DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), nullptr, CFDialogProc, (LPARAM)this);
+        hr = (HRESULT)DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
       }
     }
 
@@ -737,6 +742,8 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
 
     OnFontFamilySelect();
 
+    CenterDlgInParent(m_dialog);
+
     return TRUE;
 }
 
@@ -821,7 +828,7 @@ static void __fastcall SetChosenFontFromTextFormat(
 }
 // ============================================================================
 
-extern "C" bool ChooseFontDirectWrite(const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCFGDI)
+extern "C" bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCFGDI)
 {
     if (!lpCFGDI) { return false; }
 
@@ -838,7 +845,7 @@ extern "C" bool ChooseFontDirectWrite(const WCHAR* localeName, UINT dpi, LPCHOOS
     DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown **) &g_dwrite);
 
     IDWriteTextFormat* textFormatOut = nullptr;
-    ChooseFontDialog chooseFont(localeName, dpi, lpCFGDI);
+    ChooseFontDialog chooseFont(hwnd, localeName, dpi, lpCFGDI);
     chooseFont.GetTextFormat(&textFormatOut);
 
     SetChosenFontFromTextFormat(textFormatOut, lpCFGDI, dpi);
