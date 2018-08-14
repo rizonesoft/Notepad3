@@ -685,12 +685,14 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   //
   bool bPrefLngNotAvail = false;
 
-  DWORD dwLocID = 0;
-  int const res = GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLocID, sizeof(DWORD));
-  if (res == 0) {
+  DWORD dwLocID = 0UL;
+  if (StringCchLen(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName)) > 0) {
+    GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLocID, sizeof(DWORD));
+  }
+  if (dwLocID == 0UL) {
     //GetLocaleInfoEx(LOCALE_USER_DEFAULT, LOCALE_SNAME, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
     GetUserDefaultLocaleName(&g_tchPrefLngLocName[0], COUNTOF(g_tchPrefLngLocName));
-    g_iPrefLngLocID = GetUserDefaultLangID();
+    g_iPrefLngLocID = GetUserDefaultUILanguage();
   }
   else {
     g_iPrefLngLocID = (LANGID)dwLocID;
