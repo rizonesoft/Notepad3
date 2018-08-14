@@ -3248,11 +3248,11 @@ void LoadFlags()
 
   LoadIniSection(L"Settings2",pIniSection,cchIniSection);
 
-  if (!IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
+  if (!IniSectionGetString(pIniSection, L"PreferredLanguageLocaleName", L"",
                            g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName))) 
   {
     // try to fetch Locale Name from Notepad3.ini
-    GetPrivateProfileString(L"Settings2", L"PreferedLanguageLocaleName", L"",
+    GetPrivateProfileString(L"Settings2", L"PreferredLanguageLocaleName", L"",
                             g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), g_wchNP3IniFile);
   }
 

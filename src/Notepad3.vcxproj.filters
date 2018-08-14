@@ -37,6 +37,9 @@
     <Filter Include="tinyexpr">
       <UniqueIdentifier>{1de8e161-7393-4043-be9d-7bd2d0cb02df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ChooseFont">
+      <UniqueIdentifier>{a6270a0b-5c38-4e68-b38c-5795ccb57302}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -92,6 +95,15 @@
     </ClCompile>
     <ClCompile Include="..\tinyexpr\tinyexpr.c">
       <Filter>tinyexpr</Filter>
+    </ClCompile>
+    <ClCompile Include="ChooseFont\ChooseFont.cpp">
+      <Filter>ChooseFont</Filter>
+    </ClCompile>
+    <ClCompile Include="ChooseFont\FontEnumeration.cpp">
+      <Filter>ChooseFont</Filter>
+    </ClCompile>
+    <ClCompile Include="ChooseFont\GdiTextRenderer.cpp">
+      <Filter>ChooseFont</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +205,15 @@
     </ClInclude>
     <ClInclude Include="..\tinyexpr\tinyexpr.h">
       <Filter>tinyexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="ChooseFont\ChooseFont.h">
+      <Filter>ChooseFont</Filter>
+    </ClInclude>
+    <ClInclude Include="ChooseFont\FontEnumeration.h">
+      <Filter>ChooseFont</Filter>
+    </ClInclude>
+    <ClInclude Include="ChooseFont\GdiTextRenderer.h">
+      <Filter>ChooseFont</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

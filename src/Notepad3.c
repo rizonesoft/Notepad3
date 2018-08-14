@@ -24,7 +24,6 @@
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
-
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -134,7 +133,7 @@ bool          g_bPreserveCaretPos;
 bool          g_bSaveFindReplace;
 bool          g_bFindReplCopySelOrClip = true;
 
-WCHAR         g_tchPrefLngLocName[MINI_BUFFER];
+WCHAR         g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH];
 LANGID        g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
 HMODULE       g_hLngResContainer = NULL;
 #define       LNG_AVAILABLE_COUNT 8
@@ -249,7 +248,7 @@ int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
 
 
-static int  g_iRenderingTechnology = 0;
+int  g_iRenderingTechnology = 0;
 const int DirectWriteTechnology[4] = {
     SC_TECHNOLOGY_DEFAULT
   , SC_TECHNOLOGY_DIRECTWRITE
@@ -684,14 +683,17 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int n
   // ----------------------------------------------------
   // MultiLingual
   //
-  g_iPrefLngLocID = GetUserDefaultUILanguage();
   bool bPrefLngNotAvail = false;
 
-  if (StringCchLenW(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName)) > 0)
-  {
-    DWORD dwLangID = 0;
-    GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
-    g_iPrefLngLocID = (LANGID)dwLangID;
+  DWORD dwLocID = 0;
+  int const res = GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLocID, sizeof(DWORD));
+  if (res == 0) {
+    //GetLocaleInfoEx(LOCALE_USER_DEFAULT, LOCALE_SNAME, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
+    GetUserDefaultLocaleName(&g_tchPrefLngLocName[0], COUNTOF(g_tchPrefLngLocName));
+    g_iPrefLngLocID = GetUserDefaultLangID();
+  }
+  else {
+    g_iPrefLngLocID = (LANGID)dwLocID;
   }
 
   g_hLngResContainer = _LoadLanguageResources(g_iPrefLngLocID, g_tchPrefLngLocName);
@@ -6550,7 +6552,7 @@ void LoadSettings()
   LoadIniSection(L"Settings2", pIniSection, cchIniSection);
   // --------------------------------------------------------------------------
 
-  IniSectionGetString(pIniSection, L"PreferedLanguageLocaleName", L"",
+  IniSectionGetString(pIniSection, L"PreferredLanguageLocaleName", L"",
     g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
 
   g_bStickyWinPos = IniSectionGetBool(pIniSection, L"StickyWindowPosition", false);

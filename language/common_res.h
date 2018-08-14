@@ -124,6 +124,7 @@
 #define IDS_MUI_ABOUT_RTF_2             15030
 #define IDS_MUI_TRANSL_AUTHOR           15031
 #define IDS_MUI_ASSOCIATED_EXT          15032
+#define IDS_MUI_EXAMPLE_TEXT            15033
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
@@ -141,6 +142,10 @@
 
 #define IDC_COPY                        16300
 
+#define IDC_FONT_FAMILY_NAMES           16400
+#define IDC_FONT_FACE_NAMES             16401
+#define IDC_FONT_SIZE                   16402
+#define IDC_SAMPLE_BOX                  16403
 
 #define IDD_MUI_ABOUT                   17001
 #define IDD_MUI_RUN                     17002
@@ -173,6 +178,7 @@
 #define IDD_MUI_RECODE                  17029
 #define IDD_MUI_ENCODING                17030
 #define IDD_MUI_ALIGN                   17031
+#define IDD_MUI_CHOOSEFONT              17032
 
 
 #define IDC_COMMANDLINE                 18000

@@ -118,7 +118,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;dwrite.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -181,7 +181,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;dwrite.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
@@ -243,7 +243,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;dwrite.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
@@ -307,7 +307,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msimg32.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;dwrite.lib;scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
@@ -363,6 +363,9 @@
     <ClCompile Include="..\crypto\rijndael-api-fst.c" />
     <ClCompile Include="..\crypto\sha-256.c" />
     <ClCompile Include="..\tinyexpr\tinyexpr.c" />
+    <ClCompile Include="ChooseFont\ChooseFont.cpp" />
+    <ClCompile Include="ChooseFont\FontEnumeration.cpp" />
+    <ClCompile Include="ChooseFont\GdiTextRenderer.cpp" />
     <ClCompile Include="Dialogs.c" />
     <ClCompile Include="Dlapi.c" />
     <ClCompile Include="Edit.c" />
@@ -395,6 +398,9 @@
     <ClInclude Include="..\crypto\sha-256.h" />
     <ClInclude Include="..\language\common_res.h" />
     <ClInclude Include="..\tinyexpr\tinyexpr.h" />
+    <ClInclude Include="ChooseFont\ChooseFont.h" />
+    <ClInclude Include="ChooseFont\FontEnumeration.h" />
+    <ClInclude Include="ChooseFont\GdiTextRenderer.h" />
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />

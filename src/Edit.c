@@ -24,6 +24,7 @@
 #endif
 
 #define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 
 #include <shlwapi.h>
@@ -32,6 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <shellapi.h>
 
 #include "scintilla.h"
 #include "scilexer.h"

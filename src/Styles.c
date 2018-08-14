@@ -23,11 +23,12 @@
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
 #define VC_EXTRALEAN 1
-
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
 #include <commdlg.h>
 #include <shlobj.h>
+#include <shellapi.h>
 #include <shlwapi.h>
 #include <stdio.h>
 
@@ -51,7 +52,9 @@ extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
 extern EDITFINDREPLACE g_efrData;
 extern UINT g_uCurrentDPI;
+extern WCHAR g_tchPrefLngLocName[];
 
+extern int g_iRenderingTechnology;
 extern int g_iSciFontQuality;
 extern const int FontQuality[4];
 
@@ -65,6 +68,9 @@ extern bool g_bUseOldStyleBraceMatching;
 
 extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
+
+
+bool ChooseFontDirectWrite(const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCF);
 
 // ============================================================================
 
@@ -5273,6 +5279,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
                       bool bWithEffects, bool bPreserveStyles)
 {
   // Map lpszStyle to LOGFONT
+
   WCHAR wchFontName[64] = { L'\0' };
   if (!Style_StrGetFont(lpszStyle, wchFontName, COUNTOF(wchFontName))) 
   {
@@ -5353,7 +5360,6 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   lf.lfClipPrecision = (BYTE)CLIP_DEFAULT_PRECIS;
   lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 
-
   COLORREF color = 0L;
   Style_StrGetColor(true, lpszStyle, &color);
 
@@ -5364,6 +5370,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   //cf.nSizeMax = 128;
   cf.lStructSize = sizeof(CHOOSEFONT);
   cf.hwndOwner = hwnd;
+  cf.hInstance = g_hInstance; // ChooseFontDirectWrite
   cf.rgbColors = color;
   cf.lpLogFont = &lf;
   cf.iPointSize = iPointSize;
@@ -5409,7 +5416,15 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
 
-  if (!ChooseFont(&cf) || (lf.lfFaceName[0] == L'\0')) { return false; }
+  if (g_iRenderingTechnology > 0) {
+    if (!ChooseFontDirectWrite(g_tchPrefLngLocName, g_uCurrentDPI, &cf) ||
+        (lf.lfFaceName[0] == L'\0')) { 
+      return false; 
+    }
+  }
+  else {
+    if (!ChooseFont(&cf) || (lf.lfFaceName[0] == L'\0')) { return false; }
+  }
 
   // ---  map back to lpszStyle  ---
 
