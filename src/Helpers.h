@@ -59,9 +59,9 @@ __forceinline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); 
 __forceinline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
 
 
-#define F2INT(F) ((int)lroundf(F))
-__forceinline float RoundFractionCent(float f) { return (float)(F2INT(f * 100) / 100); }
-__forceinline bool HasFractionCent(float f) { return ((F2INT(f * 100) % 100) != 0); }
+__forceinline int float2int(float f) { return (int)lroundf(f); }
+__forceinline float Round100th(float f) { return (float)float2int(f * 100.0f) / 100; }
+__forceinline bool HasNonZeroFraction(float f) { return ((float2int(f * 100.0f) % 100) != 0); }
 
 
 // direct heap allocation
@@ -429,6 +429,7 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
 int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
 
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
+void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
@@ -441,6 +442,9 @@ __forceinline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED
 __forceinline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
 
+#define _EXTRA_DRAG_N_DROP_HANDLER_ 1
+
+#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 
 // special Drag and Drop Handling
 
@@ -459,6 +463,8 @@ typedef DWORD(*DNDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKey
 void DragAndDropInit(HANDLE hHeap);
 PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK, void *pUserData);
 PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget);
+
+#endif
 
 
 #endif //_NP3_HELPERS_H_

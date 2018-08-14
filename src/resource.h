@@ -49,9 +49,7 @@
 #define ___SCI_CMD__SCEN_CHANGE___      768
 // ------------------------------------------
 
-
 #define IDS_WARN_PREF_LNG_NOT_AVAIL     4000
-
 
 
 #include "../language/common_res.h"
