@@ -6719,7 +6719,8 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         for (int i = 0; i < lvItems; i++) {
           lvi.iItem = i;
           ListView_GetItem(hwndLV,&lvi);
-          if (((PEDITLEXER)lvi.lParam)->lexerID == g_pLexCurrent->lexerID)
+
+          if (((PEDITLEXER)lvi.lParam)->resID == g_pLexCurrent->resID)
           {
             ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
             ListView_EnsureVisible(hwndLV,i,false);

@@ -6545,7 +6545,7 @@ void LoadSettings()
   int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
 
   g_bEnableSaveSettings = true; // false: if settings-file is loaded in editor
-  g_bSaveSettings = IniGetBool(L"Settings2", L"SaveSettings", true);
+  g_bSaveSettings = IniGetBool(L"Settings", L"SaveSettings", true);
 
   // first load "hard coded" .ini-Settings
   // --------------------------------------------------------------------------
