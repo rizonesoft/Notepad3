@@ -2599,7 +2599,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if ((g_iFileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
       MsgBoxLng(MBYESNOWARN,IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
-      FileRevert(g_wchCurFile);
+      FileRevert(g_wchCurFile, Encoding_HasChanged(CPI_GET));
       
       if (g_bChasingDocTail) 
       {
@@ -3070,7 +3070,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBYESNO,IDS_MUI_ASK_REVERT) != IDYES) {
         break;
       }
-      FileRevert(g_wchCurFile);
+      FileRevert(g_wchCurFile, Encoding_HasChanged(CPI_GET));
       break;
 
 
@@ -9219,7 +9219,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 //  FileRevert()
 //
 //
-bool FileRevert(LPCWSTR szFileName) 
+bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc) 
 {
   if (StringCchLen(szFileName, MAX_PATH) != 0) {
 
@@ -9235,6 +9235,9 @@ bool FileRevert(LPCWSTR szFileName)
     const int   iXOffset = SciCall_GetXoffset();
     const bool bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
 
+    if (bIgnoreCmdLnEnc) { 
+      Encoding_SrcCmdLn(CPI_NONE); // ignore history too
+    }
     Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
     WCHAR tchFileName2[MAX_PATH] = { L'\0' };

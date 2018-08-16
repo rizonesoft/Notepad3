@@ -1026,12 +1026,8 @@ bool EditLoadFile(
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
-  int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-
-  int iForcedEncoding = bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
-
   int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding :
-    ((bUseDefaultForFileEncoding || (cbNbytes4Analysis < 1)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
+    ((bUseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
@@ -1042,12 +1038,15 @@ bool EditLoadFile(
   }
   // --------------------------------------------------------------------------
 
+  int iForcedEncoding = bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
+
   if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
     iForcedEncoding = iAnalyzedEncoding;
   }
   // --------------------------------------------------------------------------
 
   // choose best encoding guess
+  int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
   if (!Encoding_IsNONE(iForcedEncoding))
     iPreferedEncoding = iForcedEncoding;
   else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection)
@@ -1056,8 +1055,8 @@ bool EditLoadFile(
     iPreferedEncoding = iFileEncWeak;
   else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable)
     iPreferedEncoding = iAnalyzedEncoding;
-  //else 
-    //iPreferedEncoding = iPreferedEncoding;
+  else if (Encoding_IsNONE(iPreferedEncoding))
+    iPreferedEncoding = CPI_ANSI_DEFAULT;
 
   // --------------------------------------------------------------------------
 
