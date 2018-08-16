@@ -1042,7 +1042,7 @@ bool EditLoadFile(
   }
   // --------------------------------------------------------------------------
 
-  if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
+  if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
     iForcedEncoding = iAnalyzedEncoding;
   }
   // --------------------------------------------------------------------------
@@ -1054,8 +1054,10 @@ bool EditLoadFile(
     iPreferedEncoding = iAnalyzedEncoding;
   else if (iFileEncWeak != CPI_NONE)
     iPreferedEncoding = iFileEncWeak;
-  else if (!Encoding_IsNONE(iAnalyzedEncoding))
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable)
     iPreferedEncoding = iAnalyzedEncoding;
+  //else 
+    //iPreferedEncoding = iPreferedEncoding;
 
   // --------------------------------------------------------------------------
 
