@@ -94,6 +94,7 @@ extern bool bAutoStripBlanks;
 extern int g_iDefaultNewFileEncoding;
 extern int g_iDefaultCharSet;
 extern bool bLoadASCIIasUTF8;
+extern bool bForceLoadASCIIasUTF8;
 extern bool bLoadNFOasOEM;
 
 extern bool g_bAccelWordNavigation;
@@ -1027,6 +1028,8 @@ bool EditLoadFile(
 
   int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
 
+  int iForcedEncoding = bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
+
   int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding :
     ((bUseDefaultForFileEncoding || (cbNbytes4Analysis < 1)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
 
@@ -1034,13 +1037,11 @@ bool EditLoadFile(
   bool bIsReliable = false;
   int iAnalyzedEncoding = (bSkipANSICPDetection && !g_bForceCompEncDetection) ? CPI_NONE : 
     Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
-  // correct analysis based on preferred encoding
-  if (iAnalyzedEncoding == CPI_ANSI_DEFAULT) {
-    iAnalyzedEncoding = iPreferedEncoding; // stay on prefered
+  if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
+    iAnalyzedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
   }
   // --------------------------------------------------------------------------
 
-  int iForcedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
   if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
     iForcedEncoding = iAnalyzedEncoding;
   }
@@ -1056,6 +1057,7 @@ bool EditLoadFile(
   else if (!Encoding_IsNONE(iAnalyzedEncoding))
     iPreferedEncoding = iAnalyzedEncoding;
 
+  // --------------------------------------------------------------------------
 
   bool bBOM = false;
   bool bReverse = false;
@@ -1144,7 +1146,6 @@ bool EditLoadFile(
         FileVars_IsUTF8(&fvCurFile) || 
         (Encoding_IsUTF8(iForcedEncoding) || 
          Encoding_IsUTF8(iAnalyzedEncoding) ||
-         (!bPreferOEM && bLoadASCIIasUTF8) ||  // from menu "Reload As UTF-8"
          (IsUTF8(lpData,cbData) && ((UTF8_ContainsInvalidChars(lpData, cbData) ||
          (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))))))) && 
        !(FileVars_IsNonUTF8(&fvCurFile) && !Encoding_IsUTF8(iForcedEncoding))))

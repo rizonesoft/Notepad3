@@ -287,15 +287,86 @@ static int __fastcall MapCPI2Encoding(const int iNP3Encoding)
 
 
 
+static int __fastcall FindCodePage(const Encoding& encoding)
+{
+  int iCodePage = -1;
+
+  // TODO: find more default ANSI mappings...
+
+  switch (encoding) {
+
+  case ISO_8859_1:
+  case ISO_8859_15:
+  case MSFT_CP1252:
+    iCodePage = 1252;
+    break;
+  case ISO_8859_2:
+  case MSFT_CP1250:
+    iCodePage = 1250;
+    break;
+  case ISO_8859_3:
+    // türkisch ?
+    break;
+  case ISO_8859_4:
+    iCodePage = 1257;
+    break;
+  case ISO_8859_5:
+  case RUSSIAN_CP1251:
+    iCodePage = 1251;
+    break;
+  case ISO_8859_6:
+  case MSFT_CP1256:
+    iCodePage = 1256;
+    break;
+  case ISO_8859_7:
+  case MSFT_CP1253:
+    iCodePage = 1253;
+    break;
+  case ISO_8859_8:
+  case MSFT_CP1255:
+    iCodePage = 1255;
+    break;
+  case ISO_8859_9:
+  case MSFT_CP1254:
+    iCodePage = 1254;
+    break;
+  case ISO_8859_10:
+    // ???
+    break;
+  case MSFT_CP1257:
+    iCodePage = 1257;
+    break;
+  default:
+    for (int i = 0; i < Encoding_CountOf(); ++i) {
+      if (encoding == g_Encodings[i].iCEDEncoding) {
+        iCodePage = (int)g_Encodings[i].uCodePage;
+        break;
+      }
+    }
+  }
+  return iCodePage;
+
+}
+// ============================================================================
+
+
+
 static int __fastcall MapEncoding2CPI(const Encoding& encoding, bool* pIsReliable)
 {
   int iNP3Encoding = CPI_NONE;
 
-  if ((encoding == ISO_8859_1) || (encoding == ASCII_7BIT)) {
-    // ASCII -> ANSI default
-    iNP3Encoding = CPI_ANSI_DEFAULT;
+  // preprocessing: special cases
+  if (encoding == ASCII_7BIT) {
+    iNP3Encoding = CPI_ASCII_7BIT;
   }
-  else {
+  else { // check for default ANSI
+    if (FindCodePage(encoding) == (int)g_Encodings[CPI_ANSI_DEFAULT].uCodePage) {
+      iNP3Encoding = CPI_ANSI_DEFAULT;
+    }
+  }
+
+  if (iNP3Encoding == CPI_NONE)
+  {
     for (int i = 0; i < Encoding_CountOf(); ++i) {
       if (encoding == g_Encodings[i].iCEDEncoding) {
         iNP3Encoding = i;
@@ -304,7 +375,7 @@ static int __fastcall MapEncoding2CPI(const Encoding& encoding, bool* pIsReliabl
     }
   }
 
-  // not found, guess a mapping:
+  // postrocessing:  not found, guess a mapping:
   if (iNP3Encoding == CPI_NONE)
   {
     switch (encoding) {
