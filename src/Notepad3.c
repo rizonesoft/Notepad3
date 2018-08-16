@@ -218,7 +218,8 @@ bool      bViewEOLs;
 bool      bUseDefaultForFileEncoding;
 bool      bSkipUnicodeDetection;
 bool      bSkipANSICodePageDetection;
-bool      bLoadASCIIasUTF8;
+bool      bLoadASCIIasUTF8 = false;
+bool      bForceLoadASCIIasUTF8 = false;
 bool      bLoadNFOasOEM;
 bool      bNoEncodingTags;
 bool      bFixLineEndings;
@@ -2598,7 +2599,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     if ((g_iFileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
       MsgBoxLng(MBYESNOWARN,IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
-      FileRevert(g_wchCurFile);
+      FileRevert(g_wchCurFile, Encoding_HasChanged(CPI_GET));
       
       if (g_bChasingDocTail) 
       {
@@ -3069,7 +3070,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if ((IsDocumentModified || Encoding_HasChanged(CPI_GET)) && MsgBoxLng(MBYESNO,IDS_MUI_ASK_REVERT) != IDYES) {
         break;
       }
-      FileRevert(g_wchCurFile);
+      FileRevert(g_wchCurFile, Encoding_HasChanged(CPI_GET));
       break;
 
 
@@ -3119,6 +3120,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2:
+      //~SaveSettings(false); 
       DialogNewWindow(hwnd, bSaveBeforeRunningTools, (LOWORD(wParam) != IDM_FILE_NEWWINDOW2));
       break;
 
@@ -5074,8 +5076,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_SAVESETTINGS:
-      if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS))
+      if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS)) {
         g_bSaveSettings = (g_bSaveSettings) ? false : true;
+        IniSetInt(L"Settings", L"SaveSettings", g_bSaveSettings);
+      }
       break;
 
 
@@ -5285,12 +5289,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_RELOADASCIIASUTF8:
       {
         WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
-        bool _bLoadASCIIasUTF8 = bLoadASCIIasUTF8; // remember
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          bLoadASCIIasUTF8 = true;
+          bForceLoadASCIIasUTF8 = true;
           StringCchCopy(tchCurFile2,COUNTOF(tchCurFile2),g_wchCurFile);
           FileLoad(false, false, true, true, true, tchCurFile2);
-          bLoadASCIIasUTF8 = _bLoadASCIIasUTF8; // restore
+          bForceLoadASCIIasUTF8 = false;
         }
       }
       break;
@@ -5301,7 +5304,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       WCHAR tchCurFile2[MAX_PATH] = { L'\0' };
       g_bForceCompEncDetection = true;
       if (StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile))) {
-        bLoadASCIIasUTF8 = false;
+        bForceLoadASCIIasUTF8 = false;
         StringCchCopy(tchCurFile2, COUNTOF(tchCurFile2), g_wchCurFile);
         FileLoad(false, false, true, false, false, tchCurFile2);
       }
@@ -5604,7 +5607,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_OPENINIFILE:
       if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile))) {
-        CreateIniFile();
+        SaveSettings(false);
         FileLoad(false,false,false,false,true,g_wchIniFile);
       }
       break;
@@ -7004,7 +7007,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
   //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
-  IniSectionSetBool(pIniSection, L"SaveSettings", g_bSaveSettings);
+  IniSectionSetBool(pIniSection, L"SaveSettings", g_bSaveSettings); 
   IniSectionSetBool(pIniSection, L"SaveRecentFiles", g_bSaveRecentFiles);
   IniSectionSetBool(pIniSection, L"PreserveCaretPos", g_bPreserveCaretPos);
   IniSectionSetBool(pIniSection, L"SaveFindReplace", g_bSaveFindReplace);
@@ -9216,7 +9219,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 //  FileRevert()
 //
 //
-bool FileRevert(LPCWSTR szFileName) 
+bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc) 
 {
   if (StringCchLen(szFileName, MAX_PATH) != 0) {
 
@@ -9232,6 +9235,9 @@ bool FileRevert(LPCWSTR szFileName)
     const int   iXOffset = SciCall_GetXoffset();
     const bool bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
 
+    if (bIgnoreCmdLnEnc) { 
+      Encoding_SrcCmdLn(CPI_NONE); // ignore history too
+    }
     Encoding_SrcWeak(Encoding_Current(CPI_GET));
 
     WCHAR tchFileName2[MAX_PATH] = { L'\0' };

@@ -50,7 +50,8 @@ extern bool g_bForceCompEncDetection;
 #define NCP_EXTERNAL_8BIT    512
 #define NCP_RECODE          1024
 
-#define CED_NO_MAPPING       (-3)
+#define CED_NO_MAPPING       (-4)
+#define CPI_ASCII_7BIT       (-3)
 #define CPI_GET              (-2)
 #define CPI_NONE             (-1)
 #define CPI_ANSI_DEFAULT       0

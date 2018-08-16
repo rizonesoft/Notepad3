@@ -94,6 +94,7 @@ extern bool bAutoStripBlanks;
 extern int g_iDefaultNewFileEncoding;
 extern int g_iDefaultCharSet;
 extern bool bLoadASCIIasUTF8;
+extern bool bForceLoadASCIIasUTF8;
 extern bool bLoadNFOasOEM;
 
 extern bool g_bAccelWordNavigation;
@@ -1025,37 +1026,39 @@ bool EditLoadFile(
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
-  int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-
   int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding :
-    ((bUseDefaultForFileEncoding || (cbNbytes4Analysis < 1)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
+    ((bUseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
   int iAnalyzedEncoding = (bSkipANSICPDetection && !g_bForceCompEncDetection) ? CPI_NONE : 
     Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
-  // correct analysis based on preferred encoding
-  if (iAnalyzedEncoding == CPI_ANSI_DEFAULT) {
-    iAnalyzedEncoding = iPreferedEncoding; // stay on prefered
+  if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
+    iAnalyzedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
   }
   // --------------------------------------------------------------------------
 
-  int iForcedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
-  if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
+  int iForcedEncoding = bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
+
+  if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
     iForcedEncoding = iAnalyzedEncoding;
   }
   // --------------------------------------------------------------------------
 
   // choose best encoding guess
+  int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
   if (!Encoding_IsNONE(iForcedEncoding))
     iPreferedEncoding = iForcedEncoding;
   else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection)
     iPreferedEncoding = iAnalyzedEncoding;
   else if (iFileEncWeak != CPI_NONE)
     iPreferedEncoding = iFileEncWeak;
-  else if (!Encoding_IsNONE(iAnalyzedEncoding))
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable)
     iPreferedEncoding = iAnalyzedEncoding;
+  else if (Encoding_IsNONE(iPreferedEncoding))
+    iPreferedEncoding = CPI_ANSI_DEFAULT;
 
+  // --------------------------------------------------------------------------
 
   bool bBOM = false;
   bool bReverse = false;
@@ -1144,7 +1147,6 @@ bool EditLoadFile(
         FileVars_IsUTF8(&fvCurFile) || 
         (Encoding_IsUTF8(iForcedEncoding) || 
          Encoding_IsUTF8(iAnalyzedEncoding) ||
-         (!bPreferOEM && bLoadASCIIasUTF8) ||  // from menu "Reload As UTF-8"
          (IsUTF8(lpData,cbData) && ((UTF8_ContainsInvalidChars(lpData, cbData) ||
          (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))))))) && 
        !(FileVars_IsNonUTF8(&fvCurFile) && !Encoding_IsUTF8(iForcedEncoding))))

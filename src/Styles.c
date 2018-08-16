@@ -70,7 +70,7 @@ extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
 
 
-bool ChooseFontDirectWrite(const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCF);
+bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCF);
 
 // ============================================================================
 
@@ -5417,7 +5417,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // ---  open systems Font Selection dialog  ---
 
   if (g_iRenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(g_tchPrefLngLocName, g_uCurrentDPI, &cf) ||
+    if (!ChooseFontDirectWrite(g_hwndMain, g_tchPrefLngLocName, g_uCurrentDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }

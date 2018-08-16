@@ -162,7 +162,7 @@ void GetFindPatternMB(LPSTR, size_t);
 
 bool FileIO(bool,LPCWSTR,bool,bool,int*,int*,bool*,bool*,bool*,bool*,bool);
 bool FileLoad(bool,bool,bool,bool,bool,LPCWSTR);
-bool FileRevert(LPCWSTR);
+bool FileRevert(LPCWSTR,bool);
 bool FileSave(bool,bool,bool,bool);
 bool OpenFileDlg(HWND,LPWSTR,int,LPCWSTR);
 bool SaveFileDlg(HWND,LPWSTR,int,LPCWSTR);
