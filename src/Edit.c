@@ -888,27 +888,30 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 //
 //  EditDetectEOLMode() - moved here to handle Unicode files correctly
 //
-int EditDetectEOLMode(HWND hwnd,char* lpData,DWORD cbData)
+int EditDetectEOLMode(HWND hwnd, char* lpData)
 {
-  int iEOLMode = iLineEndings[g_iDefaultEOLMode];
-  char *cp = (char*)lpData;
-
-  if (!cp)
-    return (iEOLMode);
-
-  while (*cp && (*cp != '\x0D' && *cp != '\x0A')) cp++;
-
-  if (*cp == '\x0D' && *(cp+1) == '\x0A')
-    iEOLMode = SC_EOL_CRLF;
-  else if (*cp == '\x0D' && *(cp+1) != '\x0A')
-    iEOLMode = SC_EOL_CR;
-  else if (*cp == '\x0A')
-    iEOLMode = SC_EOL_LF;
-
   UNUSED(hwnd);
-  UNUSED(cbData);
+  int iEOLMode = iLineEndings[g_iDefaultEOLMode];
 
-  return (iEOLMode);
+  LPCSTR cp = lpData ? StrPBrkA(lpData, "\r\n") : NULL;
+
+  if (!cp) {
+    return iEOLMode;
+  }
+
+  if (*cp == '\r') {
+    if (*(cp + 1) == '\n') {
+      iEOLMode = SC_EOL_CRLF;
+    }
+    else {
+      iEOLMode = SC_EOL_CR;
+    }
+  }
+  else {
+    iEOLMode = SC_EOL_LF;
+  }
+
+  return iEOLMode;
 }
 
 
@@ -1125,7 +1128,7 @@ bool EditLoadFile(
       EditSetNewText(hwnd,"",0);
       FileVars_Init(lpDataUTF8,convCnt - 1,&fvCurFile);
       EditSetNewText(hwnd,lpDataUTF8,convCnt - 1);
-      *iEOLMode = EditDetectEOLMode(hwnd,lpDataUTF8,convCnt - 1);
+      *iEOLMode = EditDetectEOLMode(hwnd,lpDataUTF8);
       FreeMem(lpDataUTF8);
     }
     else {
@@ -1155,12 +1158,12 @@ bool EditLoadFile(
       if (IsUTF8Signature(lpData)) {
         EditSetNewText(hwnd,UTF8StringStart(lpData),cbData-3);
         *iEncoding = CPI_UTF8SIGN;
-        *iEOLMode = EditDetectEOLMode(hwnd,UTF8StringStart(lpData),cbData-3);
+        *iEOLMode = EditDetectEOLMode(hwnd,UTF8StringStart(lpData));
       }
       else {
         EditSetNewText(hwnd,lpData,cbData);
         *iEncoding = CPI_UTF8;
-        *iEOLMode = EditDetectEOLMode(hwnd,lpData,cbData);
+        *iEOLMode = EditDetectEOLMode(hwnd,lpData);
       }
       FreeMem(lpData);
     }
@@ -1197,7 +1200,7 @@ bool EditLoadFile(
             FreeMem(lpDataWide);
             EditSetNewText(hwnd,"",0);
             EditSetNewText(hwnd,lpData,cbData);
-            *iEOLMode = EditDetectEOLMode(hwnd,lpData,cbData);
+            *iEOLMode = EditDetectEOLMode(hwnd,lpData);
             FreeMem(lpData);
           }
           else {
@@ -1220,7 +1223,7 @@ bool EditLoadFile(
         *iEncoding = Encoding_IsValid(iForcedEncoding) ? iForcedEncoding : iPreferedEncoding;
         EditSetNewText(hwnd,"",0);
         EditSetNewText(hwnd,lpData,cbData);
-        *iEOLMode = EditDetectEOLMode(hwnd,lpData,cbData);
+        *iEOLMode = EditDetectEOLMode(hwnd,lpData);
         FreeMem(lpData);
       }
     }
