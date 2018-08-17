@@ -279,7 +279,7 @@ static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
 //  WinMain()
 //
 //
-int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int nCmdShow)
 {
   UNUSED(hPrevInst);
 
@@ -407,8 +407,9 @@ BOOL InitApplication(HINSTANCE hInstance)
 //  InitInstance()
 //
 //
-HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
+HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 {
+  UNUSED(pszCmdLine);
 
   RECT rc;
   rc.left = wi.x;  rc.top = wi.y;  rc.right = wi.x + wi.cx;  rc.bottom = wi.y + wi.cy;
@@ -521,11 +522,7 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
   if (!ListView_GetItemCount(hwndDirList))
     PostMessage(hwndMain,WM_COMMAND,MAKELONG(IDM_VIEW_UPDATE,1),0);
 
-
-  UNUSED(pszCmdLine);
-
   return(hwndMain);
-
 }
 
 

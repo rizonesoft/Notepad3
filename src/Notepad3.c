@@ -604,7 +604,7 @@ static void __fastcall _SetDocumentModified(bool bModified)
 //
 //
 
-int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int nCmdShow)
 {
   UNUSED(hPrevInst);
 
@@ -1097,8 +1097,10 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
 //  InitInstance()
 //
 //
-HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
+HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 {
+  UNUSED(pszCmdLine);
+
   g_hwndMain = NULL;
 
   _InitWindowPosition(g_hwndMain);
@@ -1353,9 +1355,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
     PostMessage(g_hwndMain, WM_CLOSE, 0, 0);
   }
-
-  UNUSED(pszCmdLine);
-
   return(g_hwndMain);
 }
 

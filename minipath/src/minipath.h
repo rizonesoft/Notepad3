@@ -83,7 +83,7 @@
 
 //==== Function Declarations ==================================================
 BOOL InitApplication(HINSTANCE);
-HWND InitInstance(HINSTANCE,LPSTR,int);
+HWND InitInstance(HINSTANCE,LPWSTR,int);
 BOOL ActivatePrevInst();
 void ShowNotifyIcon(HWND,BOOL);
 
