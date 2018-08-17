@@ -122,9 +122,9 @@ void Encoding_SetDefaultFlag(int);
 const WCHAR* Encoding_GetLabel(int);
 const char* Encoding_GetParseNames(int);
 
-bool IsUnicode(const char*, int, bool*, bool*);
-bool IsUTF8(const char*, int);
-bool IsUTF7(const char*, int);
+bool IsUnicode(const char*, size_t, bool*, bool*);
+bool IsUTF8(const char*, size_t);
+bool IsUTF7(const char*, size_t);
 
 #define IsUTF8Signature(p) ((*((p)+0) == '\xEF' && *((p)+1) == '\xBB' && *((p)+2) == '\xBF'))
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)

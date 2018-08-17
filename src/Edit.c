@@ -1044,27 +1044,35 @@ bool EditLoadFile(
   int iForcedEncoding = bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
 
   if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
-    iForcedEncoding = iAnalyzedEncoding;
+    iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced)
   }
   // --------------------------------------------------------------------------
 
   // choose best encoding guess
   int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
-  if (!Encoding_IsNONE(iForcedEncoding))
+
+  if (!Encoding_IsNONE(iForcedEncoding)) {
     iPreferedEncoding = iForcedEncoding;
-  else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection)
+  }
+  else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection) {
     iPreferedEncoding = iAnalyzedEncoding;
-  else if (iFileEncWeak != CPI_NONE)
+  }
+  else if (iFileEncWeak != CPI_NONE) {
     iPreferedEncoding = iFileEncWeak;
-  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable)
+  }
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable ) {
     iPreferedEncoding = iAnalyzedEncoding;
-  else if (Encoding_IsNONE(iPreferedEncoding))
+  } 
+  else if (Encoding_IsNONE(iPreferedEncoding)) {
     iPreferedEncoding = CPI_ANSI_DEFAULT;
+  }
 
   // --------------------------------------------------------------------------
 
   bool bBOM = false;
   bool bReverse = false;
+
+  bool const bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&fvCurFile);
@@ -1083,13 +1091,15 @@ bool EditLoadFile(
     FreeMem(lpData);
   }
   // ===  UNICODE  ===
-  else if (!bSkipUTFDetection &&  //TODO: use Encoding_IsUNICODE(iAnalyzedEncoding) here ???
-      (Encoding_IsUNICODE(iForcedEncoding) || (iForcedEncoding == CPI_NONE)) &&
-      (Encoding_IsUNICODE(iForcedEncoding) || IsUnicode(lpData,cbData,&bBOM,&bReverse)) &&
-      (Encoding_IsUNICODE(iForcedEncoding) || !IsUTF8Signature(lpData))) // check for UTF-8 signature
+  else if (Encoding_IsUNICODE(iForcedEncoding) ||
+    (!bSkipUTFDetection && !bIsUTF8Sig
+      && Encoding_IsNONE(iForcedEncoding)
+      && (IsUnicode(lpData, cbData, &bBOM, &bReverse)
+        || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable)
+        )
+      )
+    )
   {
-    char* lpDataUTF8;
-
     if (iForcedEncoding == CPI_UNICODE) {
       bBOM = (*((UNALIGNED PWCHAR)lpData) == 0xFEFF);
       bReverse = false;
@@ -1111,7 +1121,7 @@ bool EditLoadFile(
         *iEncoding = CPI_UNICODE;
     }
 
-    lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
+    char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
 
     DWORD convCnt = (DWORD)WideCharToMultiByte(Encoding_SciCP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
               (bBOM) ? (cbData)/sizeof(WCHAR) : cbData/sizeof(WCHAR) + 1,lpDataUTF8,(int)SizeOfMem(lpDataUTF8),NULL,NULL);
@@ -1145,17 +1155,20 @@ bool EditLoadFile(
     FileVars_Init(lpData,cbData,&fvCurFile);
 
     // ===  UTF-8  ===
-    if (!bSkipUTFDetection && (Encoding_IsNONE(iForcedEncoding) || Encoding_IsUTF8(iForcedEncoding)) &&
-      ((IsUTF8Signature(lpData) || 
-        FileVars_IsUTF8(&fvCurFile) || 
-        (Encoding_IsUTF8(iForcedEncoding) || 
-         Encoding_IsUTF8(iAnalyzedEncoding) ||
-         (IsUTF8(lpData,cbData) && ((UTF8_ContainsInvalidChars(lpData, cbData) ||
-         (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))))))) && 
-       !(FileVars_IsNonUTF8(&fvCurFile) && !Encoding_IsUTF8(iForcedEncoding))))
+    if (Encoding_IsUTF8(iForcedEncoding) || 
+      (!bSkipUTFDetection && !FileVars_IsNonUTF8(&fvCurFile)
+        && Encoding_IsNONE(iForcedEncoding)
+        && (bIsUTF8Sig
+          || FileVars_IsUTF8(&fvCurFile)
+          || (Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable)
+          || (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))
+          )
+        && (IsUTF8(lpData, cbData) && !UTF8_ContainsInvalidChars(lpData, cbData))
+        )
+      )
     {
       EditSetNewText(hwnd,"",0);
-      if (IsUTF8Signature(lpData)) {
+      if (bIsUTF8Sig) {
         EditSetNewText(hwnd,UTF8StringStart(lpData),cbData-3);
         *iEncoding = CPI_UTF8SIGN;
         *iEOLMode = EditDetectEOLMode(hwnd,UTF8StringStart(lpData));
