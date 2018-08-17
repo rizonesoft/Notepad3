@@ -59,9 +59,9 @@ __forceinline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); 
 __forceinline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
 
 
-#define F2INT(F) ((int)lroundf(F))
-__forceinline float RoundFractionCent(float f) { return (float)(F2INT(f * 100) / 100); }
-__forceinline bool HasFractionCent(float f) { return ((F2INT(f * 100) % 100) != 0); }
+__forceinline int float2int(float f) { return (int)lroundf(f); }
+__forceinline float Round100th(float f) { return (float)float2int(f * 100.0f) / 100; }
+__forceinline bool HasNonZeroFraction(float f) { return ((float2int(f * 100.0f) % 100) != 0); }
 
 
 // direct heap allocation
@@ -169,32 +169,6 @@ bool BitmapGrayScale(HBITMAP);
 bool VerifyContrast(COLORREF,COLORREF);
 bool IsFontAvailable(LPCWSTR);
 
-bool SetWindowTitle(HWND,UINT,bool,UINT,LPCWSTR,int,bool,UINT,bool,LPCWSTR);
-void SetWindowTransparentMode(HWND,bool);
-
-void CenterDlgInParent(HWND);
-void GetDlgPos(HWND,LPINT,LPINT);
-void SetDlgPos(HWND,int,int);
-//void SnapToDefaultButton(HWND);
-void ResizeDlg_Init(HWND,int,int,int);
-void ResizeDlg_Destroy(HWND,int*,int*);
-void ResizeDlg_Size(HWND,LPARAM,int*,int*);
-void ResizeDlg_GetMinMaxInfo(HWND,LPARAM);
-HDWP DeferCtlPos(HDWP,HWND,int,int,int,UINT);
-void MakeBitmapButton(HWND,int,HINSTANCE,UINT);
-void MakeColorPickButton(HWND,int,HINSTANCE,COLORREF);
-void DeleteBitmapButton(HWND,int);
-
-
-#define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
-void StatusSetText(HWND,UINT,LPCWSTR);
-bool StatusSetTextID(HWND,UINT,UINT);
-
-int Toolbar_GetButtons(HWND,int,LPWSTR,int);
-int Toolbar_SetButtons(HWND,int,LPCWSTR,void*,int);
-
-LRESULT SendWMSize(HWND, RECT*);
-
 bool IsCmdEnabled(HWND, UINT);
 
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
@@ -296,33 +270,6 @@ int       MRU_Enum(LPMRULIST,int,LPWSTR,int);
 bool      MRU_Load(LPMRULIST);
 bool      MRU_Save(LPMRULIST);
 bool      MRU_MergeSave(LPMRULIST,bool,bool,bool);
-
-
-//==== Themed Dialogs =========================================================
-#ifndef DLGTEMPLATEEX
-#pragma pack(push, 1)
-typedef struct {
-  WORD      dlgVer;
-  WORD      signature;
-  DWORD     helpID;
-  DWORD     exStyle;
-  DWORD     style;
-  WORD      cDlgItems;
-  short     x;
-  short     y;
-  short     cx;
-  short     cy;
-} DLGTEMPLATEEX;
-#pragma pack(pop)
-#endif
-
-bool GetThemedDialogFont(LPWSTR,WORD*);
-DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR,HINSTANCE);
-#define ThemedDialogBox(hInstance,lpTemplate,hWndParent,lpDialogFunc) \
-  ThemedDialogBoxParam(hInstance,lpTemplate,hWndParent,lpDialogFunc,0)
-INT_PTR ThemedDialogBoxParam(HINSTANCE,LPCTSTR,HWND,DLGPROC,LPARAM);
-HWND    CreateThemedDialogParam(HINSTANCE,LPCTSTR,HWND,DLGPROC,LPARAM);
-
 
 //==== UnSlash Functions ======================================================
 void TransformBackslashes(char*,bool,UINT,int*);
@@ -429,6 +376,7 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
 int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
 
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
+void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
@@ -441,6 +389,9 @@ __forceinline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED
 __forceinline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
 
+#define _EXTRA_DRAG_N_DROP_HANDLER_ 1
+
+#ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 
 // special Drag and Drop Handling
 
@@ -459,6 +410,8 @@ typedef DWORD(*DNDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKey
 void DragAndDropInit(HANDLE hHeap);
 PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK, void *pUserData);
 PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget);
+
+#endif
 
 
 #endif //_NP3_HELPERS_H_

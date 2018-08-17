@@ -22,8 +22,10 @@ see ecryption-doc.txt for details
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
 #define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <intsafe.h>
+#include <shellapi.h>
 #include <time.h>
 #include "..\src\Dialogs.h"
 #include "..\src\Helpers.h"
