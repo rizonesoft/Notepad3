@@ -47,47 +47,47 @@ extern "C" {
 #define ENC_PARSE_NAM_UTF8SIG              "utf-8,utf8,"
 #define ENC_PARSE_NAM_UTF7                 "utf-7,utf7,"
 #define ENC_PARSE_NAM_DOS_720              "DOS-720,dos720,"
-#define ENC_PARSE_NAM_ISO_8859_6           "iso-8859-6,iso88596,arabic,csisolatinarabic,ecma114,isoir127,"
+#define ENC_PARSE_NAM_ISO_8859_6           "ISO-8859-6,iso88596,arabic,csisolatinarabic,ecma114,isoir127,"
 #define ENC_PARSE_NAM_MAC_ARABIC           "x-mac-arabic,xmacarabic,"
-#define ENC_PARSE_NAM_WIN_1256             "windows-1256,windows1256,cp1256"
+#define ENC_PARSE_NAM_WIN_1256             "Windows-1256,windows1256,cp1256,ansiarabic"
 #define ENC_PARSE_NAM_DOS_775              "ibm775,ibm775,cp500,"
-#define ENC_PARSE_NAM_ISO_8859_4           "iso-8859-4,iso88594,csisolatin4,isoir110,l4,latin4,"
-#define ENC_PARSE_NAM_WIN_1257             "windows-1257,windows1257,"
+#define ENC_PARSE_NAM_ISO_8859_4           "ISO-8859-4,iso88594,csisolatin4,isoir110,l4,latin4,"
+#define ENC_PARSE_NAM_WIN_1257             "Windows-1257,windows1257,ansibaltic,"
 #define ENC_PARSE_NAM_DOS_852              "ibm852,ibm852,cp852,"
-#define ENC_PARSE_NAM_ISO_8859_2           "iso-8859-2,iso88592,csisolatin2,isoir101,latin2,l2,"
+#define ENC_PARSE_NAM_ISO_8859_2           "ISO-8859-2,iso88592,csisolatin2,isoir101,latin2,l2,"
 #define ENC_PARSE_NAM_MAC_CENTRAL_EUROP    "x-mac-ce,xmacce,"
-#define ENC_PARSE_NAM_WIN_1250             "windows-1250,windows1250,xcp1250,"
-#define ENC_PARSE_NAM_GBK_2312             "gb2312,gb2312,chinese,cngb,csgb2312,csgb231280,gb231280,gbk,"
+#define ENC_PARSE_NAM_WIN_1250             "Windows-1250,windows1250,xcp1250,"
+#define ENC_PARSE_NAM_GBK_2312             "GB2312,gb2312,chinese,cngb,csgb2312,csgb231280,gb231280,gbk,"
 #define ENC_PARSE_NAM_MAC_ZH_CN            "x-mac-chinesesimp,xmacchinesesimp,"
 #define ENC_PARSE_NAM_BIG5                 "big5,big5,cnbig5,csbig5,xxbig5,"
 #define ENC_PARSE_NAM_MAC_ZH_TW            "x-mac-chinesetrad,xmacchinesetrad,"
 #define ENC_PARSE_NAM_MAC_CROATIAN         "x-mac-croatian,xmaccroatian,"
 #define ENC_PARSE_NAM_DOS_866              "cp866,cp866,ibm866,"
-#define ENC_PARSE_NAM_ISO_8859_5           "iso-8859-5,iso88595,csisolatin5,csisolatincyrillic,cyrillic,isoir144,"
+#define ENC_PARSE_NAM_ISO_8859_5           "ISO-8859-5,iso88595,csisolatin5,csisolatincyrillic,cyrillic,isoir144,"
 #define ENC_PARSE_NAM_KOI8_R               "koi8-r,koi8r,cskoi8r,koi,koi8,"
 #define ENC_PARSE_NAM_KOI8_U               "koi8-u,koi8u,koi8ru,"
 #define ENC_PARSE_NAM_MAC_CYRILLIC         "x-mac-cyrillic,xmaccyrillic,"
-#define ENC_PARSE_NAM_WIN_1251             "windows-1251,windows1251,xcp1251,"
-#define ENC_PARSE_NAM_ISO_8859_13          "iso-8859-13,iso885913,"
+#define ENC_PARSE_NAM_WIN_1251             "Windows-1251,windows1251,xcp1251,"
+#define ENC_PARSE_NAM_ISO_8859_13          "ISO-8859-13,iso885913,"
 #define ENC_PARSE_NAM_DOS_863              "ibm863,ibm863,"
 #define ENC_PARSE_NAM_DOS_737              "ibm737,ibm737,"
-#define ENC_PARSE_NAM_ISO_8859_7           "iso-8859-7,iso88597,csisolatingreek,ecma118,elot928,greek,greek8,isoir126,"
+#define ENC_PARSE_NAM_ISO_8859_7           "ISO-8859-7,iso88597,csisolatingreek,ecma118,elot928,greek,greek8,isoir126,"
 #define ENC_PARSE_NAM_MAC_GREEK            "x-mac-greek,xmacgreek,"
-#define ENC_PARSE_NAM_WIN_1253             "windows-1253,windows1253,"
+#define ENC_PARSE_NAM_WIN_1253             "Windows-1253,windows1253,"
 #define ENC_PARSE_NAM_DOS_869              "ibm869,ibm869,"
 #define ENC_PARSE_NAM_DOS_862              "DOS-862,dos862,"
-#define ENC_PARSE_NAM_ISO_8859_8_I         "iso-8859-8-i,iso88598i,logical,"
-#define ENC_PARSE_NAM_ISO_8859_8           "iso-8859-8,iso88598,csisolatinhebrew,hebrew,isoir138,visual,"
+#define ENC_PARSE_NAM_ISO_8859_8_I         "ISO-8859-8-i,iso88598i,logical,"
+#define ENC_PARSE_NAM_ISO_8859_8           "ISO-8859-8,iso88598,csisolatinhebrew,hebrew,isoir138,visual,"
 #define ENC_PARSE_NAM_MAC_HEBREW           "x-mac-hebrew,xmachebrew,"
-#define ENC_PARSE_NAM_WIN_1255             "windows-1255,windows1255,"
+#define ENC_PARSE_NAM_WIN_1255             "Windows-1255,windows1255,"
 #define ENC_PARSE_NAM_DOS_861              "ibm861,ibm861,"
 #define ENC_PARSE_NAM_MAC_ICELANDIC        "x-mac-icelandic,xmacicelandic,"
 #define ENC_PARSE_NAM_MAC_JAPANESE         "x-mac-japanese,xmacjapanese,"
 #define ENC_PARSE_NAM_SHIFT_JIS            "shift_jis,shiftjis,shiftjs,csshiftjis,cswindows31j,mskanji,xmscp932,xsjis,"
 #define ENC_PARSE_NAM_MAC_KOREAN           "x-mac-korean,xmackorean,"
 #define ENC_PARSE_NAM_WIN_949              "Windows-949,Windows949,ksx1001,ksc56011987,csksc5601,euckr,isoir149,korean,ksc56011989"  // ANSI/OEM Korean (Unified Hangul Code)
-#define ENC_PARSE_NAM_ISO_8859_3           "iso-8859-3,iso88593,latin3,isoir109,l3,"
-#define ENC_PARSE_NAM_ISO_8859_15          "iso-8859-15,iso885915,latin9,l9,"
+#define ENC_PARSE_NAM_ISO_8859_3           "ISO-8859-3,iso88593,latin3,isoir109,l3,"
+#define ENC_PARSE_NAM_ISO_8859_15          "ISO-8859-15,iso885915,latin9,l9,"
 #define ENC_PARSE_NAM_DOS_865              "ibm865,ibm865,"
 #define ENC_PARSE_NAM_DOS_437              "ibm437,ibm437,437,cp437,cspc8,codepage437,"
 #define ENC_PARSE_NAM_DOS_858              "ibm858,ibm858,ibm00858,"
@@ -96,42 +96,31 @@ extern "C" {
 #define ENC_PARSE_NAM_MAC_THAI             "x-mac-thai,xmacthai,"
 #define ENC_PARSE_NAM_WIN_874              "Windows-874,Windows874,dos874,iso885911,tis-620,tis620,isoir166"
 #define ENC_PARSE_NAM_DOS_857              "ibm857,ibm857,"
-#define ENC_PARSE_NAM_ISO_8859_9           "iso-8859-9,iso88599,latin5,isoir148,l5,"
+#define ENC_PARSE_NAM_ISO_8859_9           "ISO-8859-9,iso88599,latin5,isoir148,l5,"
 #define ENC_PARSE_NAM_MAC_TURKISH          "x-mac-turkish,xmacturkish,"
-#define ENC_PARSE_NAM_WIN_1254             "windows-1254,windows1254,"
+#define ENC_PARSE_NAM_WIN_1254             "Windows-1254,windows1254,"
 #define ENC_PARSE_NAM_MAC_UKRAINIAN        "x-mac-ukrainian,xmacukrainian,"
-#define ENC_PARSE_NAM_WIN_1258             "windows-1258,windows-258,"
+#define ENC_PARSE_NAM_WIN_1258             "Windows-1258,Windows-258,ansivietnamese"
 #define ENC_PARSE_NAM_DOS_850              "ibm850,ibm850,"
-#define ENC_PARSE_NAM_ISO_8859_1           "iso-8859-1,iso88591,cp819,latin1,ibm819,isoir100,latin1,l1,"
+#define ENC_PARSE_NAM_ISO_8859_1           "ISO-8859-1,iso88591,cp819,latin1,ibm819,isoir100,latin1,l1,"
 #define ENC_PARSE_NAM_MAC_WESTERN_EUROP    "macintosh,macintosh,"
-#define ENC_PARSE_NAM_WIN_1252             "windows-1252,windows1252,cp367,cp819,ibm367,us,xansi,"
+#define ENC_PARSE_NAM_WIN_1252             "Windows-1252,windows1252,cp367,cp819,ibm367,us,xansi,"
 #define ENC_PARSE_NAM_IBM_EBCDIC_US        "ebcdic-cp-us,ebcdiccpus,ebcdiccpca,ebcdiccpwt,ebcdiccpnl,ibm037,cp037,"
 #define ENC_PARSE_NAM_IBM_EBCDIC_INT       "x-ebcdic-international,xebcdicinternational,"
 #define ENC_PARSE_NAM_IBM_EBCDIC_GR        "x-EBCDIC-GreekModern,xebcdicgreekmodern,"
 #define ENC_PARSE_NAM_IBM_EBCDIC_LAT_5     "CP1026,cp1026,csibm1026,ibm1026,"
-#define ENC_PARSE_NAM_GB18030              "gb18030,gb18030,"
+#define ENC_PARSE_NAM_GB18030              "GB18030,GB18030,"
 #define ENC_PARSE_NAM_EUC_JAPANESE         "euc-jp,eucjp,xeuc,xeucjp,"
 #define ENC_PARSE_NAM_EUC_KOREAN           "euc-kr,euckr,cseuckr,"
-#define ENC_PARSE_NAM_ISO_2022_CN          "iso-2022-cn,iso2022cn,"
+#define ENC_PARSE_NAM_ISO_2022_CN          "ISO-2022-cn,iso2022cn,"
 #define ENC_PARSE_NAM_HZ_GB2312            "hz-gb-2312,hzgb2312,hz,"
-#define ENC_PARSE_NAM_ISO_2022_JP          "iso-2022-jp,iso2022jp,"
-#define ENC_PARSE_NAM_ISO_2022_KR          "iso-2022-kr,iso2022kr,csiso2022kr,"
+#define ENC_PARSE_NAM_ISO_2022_JP          "ISO-2022-jp,iso2022jp,"
+#define ENC_PARSE_NAM_ISO_2022_KR          "ISO-2022-kr,iso2022kr,csiso2022kr,"
 #define ENC_PARSE_NAM_X_CHINESE_CNS        "x-Chinese-CNS,xchinesecns,"
 #define ENC_PARSE_NAM_JOHAB                "johab,johab,"
-#define ENC_PARSE_NAM_ISO_8859_10          "iso-8859-10,iso885910,Windows-28600,Windows28600,"
+#define ENC_PARSE_NAM_ISO_8859_10          "ISO-8859-10,iso885910,Windows-28600,Windows28600,"
+#define ENC_PARSE_NAM_BIG5_HKSCS           "big5hkscs,cnbig5hkscs,xxbig5hkscs,"
 //=============================================================================
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -182,7 +171,7 @@ extern "C" NP2ENCODING g_Encodings[] = {
   /* 043 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 861,   ENC_PARSE_NAM_DOS_861,           IDS_ENC_DOS_861,           CED_NO_MAPPING,     L"" },
   /* 044 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 10079, ENC_PARSE_NAM_MAC_ICELANDIC,     IDS_ENC_MAC_ICELANDIC,     CED_NO_MAPPING,     L"" },
   /* 045 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 10001, ENC_PARSE_NAM_MAC_JAPANESE,      IDS_ENC_MAC_JAPANESE,      CED_NO_MAPPING,     L"" },
-  /* 046 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 932,   ENC_PARSE_NAM_SHIFT_JIS,         IDS_ENC_SHIFT_JIS,         JAPANESE_CP932,     L"" },
+  /* 046 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 932,   ENC_PARSE_NAM_SHIFT_JIS,         IDS_ENC_SHIFT_JIS,         JAPANESE_SHIFT_JIS, L"" },
   /* 047 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 10003, ENC_PARSE_NAM_MAC_KOREAN,        IDS_ENC_MAC_KOREAN,        CED_NO_MAPPING,     L"" },
   /* 048 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 949,   ENC_PARSE_NAM_WIN_949,           IDS_ENC_WIN_949,           KOREAN_EUC_KR,      L"" },
   /* 049 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28593, ENC_PARSE_NAM_ISO_8859_3,        IDS_ENC_ISO_8859_3,        ISO_8859_3,         L"" },
@@ -209,7 +198,7 @@ extern "C" NP2ENCODING g_Encodings[] = {
   /* 070 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 875,   ENC_PARSE_NAM_IBM_EBCDIC_GR,     IDS_ENC_IBM_EBCDIC_GR,     CED_NO_MAPPING,     L"" },
   /* 071 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 1026,  ENC_PARSE_NAM_IBM_EBCDIC_LAT_5,  IDS_ENC_IBM_EBCDIC_LAT_5,  CED_NO_MAPPING,     L"" },
   /* 072 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 54936, ENC_PARSE_NAM_GB18030,           IDS_ENC_GB18030,           GB18030,            L"" }, // Chinese Simplified (GB18030)
-  /* 073 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 51932, ENC_PARSE_NAM_EUC_JAPANESE,      IDS_ENC_EUC_JAPANESE,      JAPANESE_EUC_JP,    L"" }, // Japanese (EUC)
+  /* 073 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 20932, ENC_PARSE_NAM_EUC_JAPANESE,      IDS_ENC_EUC_JAPANESE,      JAPANESE_EUC_JP,    L"" }, // Japanese (EUC)
   /* 074 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 51949, ENC_PARSE_NAM_EUC_KOREAN,        IDS_ENC_EUC_KOREAN,        KOREAN_EUC_KR,      L"" }, // Korean (EUC)
   /* 075 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 50229, ENC_PARSE_NAM_ISO_2022_CN,       IDS_ENC_ISO_2022_CN,       ISO_2022_CN,        L"" }, // Chinese Traditional (ISO-2022-CN)
   /* 076 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 52936, ENC_PARSE_NAM_HZ_GB2312,         IDS_ENC_HZ_GB2312,         HZ_GB_2312,         L"" }, // Chinese Simplified (HZ-GB2312)
@@ -217,44 +206,19 @@ extern "C" NP2ENCODING g_Encodings[] = {
   /* 078 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 50225, ENC_PARSE_NAM_ISO_2022_KR,       IDS_ENC_ISO_2022_KR,       ISO_2022_KR,        L"" }, // Korean (ISO-2022-KR)
   /* 079 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 20000, ENC_PARSE_NAM_X_CHINESE_CNS,     IDS_ENC_X_CHINESE_CNS,     CHINESE_CNS,        L"" }, // Chinese Traditional (CNS)
   /* 080 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 1361,  ENC_PARSE_NAM_JOHAB,             IDS_ENC_JOHAB,             CED_NO_MAPPING,     L"" }, // Korean (Johab)
-  /* 081 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28600, ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       ISO_8859_10,        L"" }  // Nordic (ISO 8859-10)
+  /* 081 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28600, ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       ISO_8859_10,        L"" },  // Nordic (ISO 8859-10)
 
-
-
+  
 #if 0
   NP2ENCODING mEncoding[] = {
-  { NCP_8BIT | NCP_RECODE, 28596, "ISO-8859-6,ISO88596,arabic,csisolatinarabic,ECMA114,isoir127,", 61010, L"" },// Arabic (ISO 8859-6 Visual)
   { NCP_8BIT | NCP_RECODE, 38596, "ISO-8859-6-I,ISO88596I,", 61011, L"" },// Arabic (ISO 8859-6-I Logical)
-  { NCP_8BIT | NCP_RECODE, 1256, "Windows-1256,Windows1256,CP1256", 61012, L"" },// ANSI Arabic; Arabic (Windows)
-  { NCP_8BIT | NCP_RECODE, 28594, "ISO-8859-4,ISO88594,csisolatin4,isoir110,l4,Latin4,", 61014, L"" },// Baltic (ISO 8859-4); North European
-  { NCP_8BIT | NCP_RECODE, 1257, "Windows-1257,Windows1257,", 61015, L"" },// ANSI Baltic; Baltic (Windows)
-  { NCP_8BIT | NCP_RECODE, 28592, "ISO-8859-2,ISO88592,csisolatin2,isoir101,latin2,l2,", 61017, L"" },// Central European (ISO 8859-2); Central European (ISO)
-  { NCP_8BIT | NCP_RECODE, 1250, "Windows-1250,Windows1250,xcp1250,", 61019, L"" },// ANSI Central European; Central European (Windows)
   { NCP_8BIT | NCP_RECODE, 28604, "ISO-8859-14,ISO885914,Windows-28604,Windows28604,", 61055, L"" },// Celtic (ISO 8859-14)
-  { NCP_8BIT | NCP_RECODE, 936, "GB2312,GB2312,chinese,cngb,csgb2312,csgb231280,gb231280,gbk,", 61020, L"" },// ANSI/OEM Simplified Chinese (PRC, Singapore); Chinese Simplified (GB2312)
-  { NCP_8BIT | NCP_RECODE, 28595, "ISO-8859-5,ISO88595,csisolatin5,csisolatincyrillic,cyrillic,isoir144,", 61026, L"" },// Cyrillic (ISO 8859-5)
-  { NCP_8BIT | NCP_RECODE, 28603, "ISO-8859-13,ISO885913,", 61031, L"" },// Estonian (ISO 8859-13)
-  { NCP_8BIT | NCP_RECODE, 28597, "ISO-8859-7,ISO88597,csisolatingreek,ecma118,elot928,greek,greek8,isoir126,", 61034, L"" },// Greek (ISO 8859-7)
   { NCP_8BIT | NCP_RECODE, 28606, "ISO-8859-16,ISO885916,Windows-28606,Windows28606", 61054, L"" },// Latin-10 (ISO 8859-16)
-  { NCP_8BIT | NCP_RECODE, 28599, "iso-8859-9,iso88599,latin5,isoir148,l5,", 61059, L"" },// Turkish (ISO 8859-9)
-  { NCP_8BIT | NCP_RECODE, 1258, "Windows-1258,Windows-258,", 61063, L"" },// ANSI/OEM Vietnamese; Vietnamese (Windows)
-  { NCP_8BIT | NCP_RECODE, 28591, "ISO-8859-1,ISO88591,cp819,latin1,ibm819,isoir100,latin1,l1,", 61065, L"" },// ISO 8859-1 Latin 1; Western European (ISO)
-  { NCP_8BIT | NCP_RECODE, 1252, "Windows-1252,Windows1252,cp367,cp819,ibm367,us,xansi,", 61067, L"" },// ANSI Latin 1; Western European (Windows)
-  { NCP_8BIT | NCP_RECODE, 54936, "GB18030,GB18030,", 61021, L"" },// Chinese GB18030
-  { NCP_8BIT | NCP_RECODE, 20932, "euc-jp,euc-jp,", 61052, L"" },// Japanese (JIS X 0208-1990 & 0212-1990)
-  { NCP_8BIT | NCP_RECODE, 50220, "iso-2022-jp,iso2022jp,", 61045, L"" },// ISO 2022 Japanese with no halfwidth Katakana; Japanese (JIS)
-  { NCP_8BIT | NCP_RECODE, 51949, "euc-kr,euckr,cseuckr,", 61053, L"" },// Korean (EUC)
 };
 #endif
 
 
-
-
-
-
-
-
-
+  /* 082 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 951, ENC_PARSE_NAM_BIG5_HKSCS, IDS_ENC_BIG5_HKSCS, BIG5_HKSCS, L"" }  // Chinese (Hong Kong Supplementary Character Set)
 
   /* 073 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 870,   "CP870,cp870,ebcdiccproece,ebcdiccpyu,csibm870,ibm870,",                          00000, L"" }, // IBM EBCDIC (Multilingual Latin-2)
   /* 074 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1047,  "IBM01047,ibm01047,",                                                             00000, L"" }, // IBM EBCDIC (Open System Latin-1)
@@ -299,7 +263,7 @@ extern "C" NP2ENCODING g_Encodings[] = {
   /* 114 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20936, "x-cp20936,xcp20936,",                                                            00000, L"" }, // Chinese Simplified (GB2312)
   /* 115 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20932, "euc-jp,,",                                                                       00000, L"" }, // Japanese (JIS X 0208-1990 & 0212-1990)
   /* 117 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50221, "csISO2022JP,csiso2022jp,",                                                       00000, L"" }, // Japanese (JIS-Allow 1 byte Kana)
-  /* 118 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50222, "_iso-2022-jp$SIO,iso2022jpSIO,",                                                 00000, L"" }, // Japanese (JIS-Allow 1 byte Kana - SO/SI)
+  /* 118 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50222, "_ISO-2022-jp$SIO,iso2022jpSIO,",                                                 00000, L"" }, // Japanese (JIS-Allow 1 byte Kana - SO/SI)
   /* 120 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50227, "x-cp50227,xcp50227,",                                                            00000, L"" }, // Chinese Simplified (ISO-2022)
   /* 123 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20002, "x-Chinese-Eten,xchineseeten,",                                                   00000, L"" }, // Chinese Traditional (Eten)
   /* 125 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 51936, "euc-cn,euccn,xeuccn,",                                                           00000, L"" }, // Chinese Simplified (EUC)
@@ -347,18 +311,17 @@ static int __fastcall FindCodePage(const Encoding& encoding)
   // TODO: find more default ANSI mappings...
 
   switch (encoding) {
-
+  case UTF8UTF8:
+    iCodePage = CP_UTF8;
+    break;
   case ISO_8859_1:  //CP-28591
   case ISO_8859_15:
-  case MSFT_CP1252:
     iCodePage = 1252;
     break;
   case ISO_8859_2:
-  case MSFT_CP1250:
     iCodePage = 1250;
     break;
   case ISO_8859_4:
-  case MSFT_CP1257:
     iCodePage = 1257;
     break;
   case ISO_8859_5:
@@ -366,28 +329,37 @@ static int __fastcall FindCodePage(const Encoding& encoding)
     iCodePage = 1251;
     break;
   case ISO_8859_6:
-  case MSFT_CP1256:
     iCodePage = 1256;
     break;
   case ISO_8859_7:
-  case MSFT_CP1253:
     iCodePage = 1253;
     break;
   case ISO_8859_8:
-  case MSFT_CP1255:
     iCodePage = 1255;
     break;
   case ISO_8859_9:
-  case MSFT_CP1254:
     iCodePage = 1254;
     break;
   case ISO_8859_11:
-  case MSFT_CP874:
     iCodePage = 874;
     break;
-  case KOREAN_EUC_KR:
-    iCodePage = 949;
+  case JAPANESE_JIS:
+  case JAPANESE_CP932:
+    iCodePage = 932;
     break;
+  case CHINESE_BIG5:
+    iCodePage = 950;
+    break;
+  case CHINESE_GB:
+    iCodePage = 54936;
+    break;
+  case BIG5_HKSCS:
+    iCodePage = 951;
+    break;
+  case HEBREW_VISUAL:
+    iCodePage = 28598;
+    break;
+
   default:
     for (int i = 0; i < Encoding_CountOf(); ++i) {
       if (encoding == g_Encodings[i].iCEDEncoding) {
