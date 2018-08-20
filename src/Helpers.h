@@ -50,6 +50,9 @@ __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b =
 __forceinline int clampi(int x, int lower, int upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
+__forceinline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
 
 
 // Is the character an octal digit?
