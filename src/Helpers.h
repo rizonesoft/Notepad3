@@ -27,7 +27,9 @@
 
 // ============================================================================
 
-extern WCHAR g_wchIniFile[MAX_PATH];
+extern WCHAR   g_wchIniFile[MAX_PATH];
+extern UINT    g_uCurrentDPI;
+extern UINT    g_uCurrentPPI;
 
 // ============================================================================
 
@@ -62,7 +64,6 @@ __forceinline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'
 __forceinline int float2int(float f) { return (int)lroundf(f); }
 __forceinline float Round100th(float f) { return (float)float2int(f * 100.0f) / 100; }
 __forceinline bool HasNonZeroFraction(float f) { return ((float2int(f * 100.0f) % 100) != 0); }
-
 
 // direct heap allocation
 __forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
@@ -154,7 +155,11 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 bool SetClipboardTextW(HWND, LPCWSTR);
 
 UINT GetCurrentDPI(HWND hwnd);
+UINT GetCurrentPPI(HWND hwnd);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
+#define ScaleIntFontSize(val) MulDiv((val), g_uCurrentDPI, g_uCurrentPPI)
+__forceinline int ScaleFontSize(float fSize) { return float2int((fSize * g_uCurrentDPI) / (float)g_uCurrentPPI); }
+__forceinline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * g_uCurrentDPI) / (float)g_uCurrentPPI) * 10; }
 
 bool PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);

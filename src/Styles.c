@@ -51,7 +51,6 @@ extern HICON     g_hDlgIcon;
 extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
 extern EDITFINDREPLACE g_efrData;
-extern UINT g_uCurrentDPI;
 extern WCHAR g_tchPrefLngLocName[];
 
 extern int g_iRenderingTechnology;
@@ -4118,7 +4117,7 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
 
-  int const iSizeDPI = MulDiv(float2int(fSize)+4, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+  int const iSizeDPI = ScaleFontSize(fSize + 3.0f);
   SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? iSizeDPI : 0);
 }
 
@@ -4134,7 +4133,7 @@ void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
 
-  int const iSizeDPI = MulDiv(float2int(fSize)+6, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
+  int const iSizeDPI = ScaleFontSize(fSize + 6.0f);
   SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? iSizeDPI : 0);
 
   // Depending on if the margin is visible or not, choose different bookmark indication
@@ -5415,7 +5414,6 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
 
   // ---  open systems Font Selection dialog  ---
-
   if (g_iRenderingTechnology > 0) {
     if (!ChooseFontDirectWrite(g_hwndMain, g_tchPrefLngLocName, g_uCurrentDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
@@ -5463,13 +5461,13 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
     if (fNewRelSize >= 0.0) {
       if (HasNonZeroFraction(fNewRelSize))
-        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%.4g", fNewRelSize);
+        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%.3G", fNewRelSize);
       else
         StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:+%i", float2int(fNewRelSize));
     }
     else {
       if (HasNonZeroFraction(fNewRelSize))
-        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%.4g", (0.0f - fNewRelSize));
+        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%.3G", (0.0f - fNewRelSize));
       else 
         StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:-%i", float2int(0.0f - fNewRelSize));
     }
@@ -5481,14 +5479,14 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     if (fNewFontSize == fFontSize) {
       if (StrStrI(lpszStyle, L"size:")) {
         if (HasNonZeroFraction(fNewFontSize))
-          StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%.4g", fNewFontSize);
+          StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%.3G", fNewFontSize);
         else
           StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%i", float2int(fNewFontSize));
       }
     }
     else {
       if (HasNonZeroFraction(fNewFontSize))
-        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%.4g", fNewFontSize);
+        StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%.3G", fNewFontSize);
       else
         StringCchPrintfW(newSize, COUNTOF(newSize), L"; size:%i", float2int(fNewFontSize));
     }
@@ -5668,14 +5666,6 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
 }
 
 
-//=============================================================================
-
-inline static int _GetDPIAwareFractFontSize(float fFontSize)
-{
-  int const fractFontSizeDPI = float2int(fFontSize * SC_FONT_SIZE_MULTIPLIER * g_uCurrentDPI);
-  return (fractFontSizeDPI + (USER_DEFAULT_SCREEN_DPI >> 1)) / USER_DEFAULT_SCREEN_DPI;
-}
-
 
 //=============================================================================
 //
@@ -5743,8 +5733,9 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
 
   // Size values are relative to BaseFontSize/CurrentFontSize
   float fBaseFontSize = _GetCurrentFontSize();
+
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)_GetDPIAwareFractFontSize(fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));
     if (iStyle == STYLE_DEFAULT) {
       if (bInitDefault) {
         _SetBaseFontSize(fBaseFontSize);
@@ -5753,8 +5744,8 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     _SetCurrentFontSize(fBaseFontSize);
   }
   else if (bInitDefault) {
-    //SendMessage(hwnd, SCI_STYLESETSIZE, STYLE_DEFAULT, (LPARAM)((int)fBaseFontSize));
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)_GetDPIAwareFractFontSize(fBaseFontSize));
+    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));
+    _SetBaseFontSize(fBaseFontSize);
   }
 
   // Character Set
