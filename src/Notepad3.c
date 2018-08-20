@@ -69,6 +69,7 @@ HWND      hwndEditFrame = NULL;
 HWND      hwndNextCBChain = NULL;
 HICON     g_hDlgIcon = NULL;
 UINT		  g_uCurrentDPI = USER_DEFAULT_SCREEN_DPI;
+UINT		  g_uCurrentPPI = USER_DEFAULT_SCREEN_DPI;
 
 bool g_bExternalBitmap = false;
 
@@ -604,7 +605,7 @@ static void __fastcall _SetDocumentModified(bool bModified)
 //
 //
 
-int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPSTR lpCmdLine,int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int nCmdShow)
 {
   UNUSED(hPrevInst);
 
@@ -1097,8 +1098,10 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
 //  InitInstance()
 //
 //
-HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
+HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 {
+  UNUSED(pszCmdLine);
+
   g_hwndMain = NULL;
 
   _InitWindowPosition(g_hwndMain);
@@ -1353,9 +1356,6 @@ HWND InitInstance(HINSTANCE hInstance,LPSTR pszCmdLine,int nCmdShow)
 
     PostMessage(g_hwndMain, WM_CLOSE, 0, 0);
   }
-
-  UNUSED(pszCmdLine);
-
   return(g_hwndMain);
 }
 
@@ -1735,6 +1735,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
   HINSTANCE hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
   g_uCurrentDPI = GetCurrentDPI(hwnd);
+  g_uCurrentPPI = GetCurrentPPI(hwnd);
 
   // Setup edit control
   g_hwndEdit = CreateWindowEx(
@@ -2142,13 +2143,15 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   g_uCurrentDPI = HIWORD(wParam);
+  g_uCurrentPPI = GetCurrentPPI(hwnd);
+
   DocPos const pos = SciCall_GetCurrentPos();
 
   HINSTANCE hInstance = (HINSTANCE)(INT_PTR)GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
 
 #if 0
-  char buf[64];
-  sprintf_s(buf, COUNTOF(buf), "WM_DPICHANGED: dpi=%u\n", g_uCurrentDPI);
+  char buf[128];
+  sprintf(buf, "WM_DPICHANGED: dpi=%u, %u\n", g_uCurrentDPI, g_uCurrentPPI);
   SendMessage(g_hwndEdit, SCI_INSERTTEXT, 0, (LPARAM)buf);
 #endif
 
@@ -6442,7 +6445,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 {
                   char chBuf[80];
                   if (g_iExprError == 0) {
-                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "%.6g", g_dExpression);
+                    StringCchPrintfA(chBuf, COUNTOF(chBuf), "%.6G", g_dExpression);
                     SciCall_CopyText((DocPos)strlen(chBuf), chBuf);
                   }
                   else if (g_iExprError > 0) {
@@ -8332,7 +8335,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
           if (fabs(g_dExpression) > 99999999.9999)
             StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.4E", g_dExpression);
           else
-            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6g", g_dExpression);
+            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6G", g_dExpression);
         }
         else
           StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%i]", g_iExprError);

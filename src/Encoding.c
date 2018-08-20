@@ -587,7 +587,7 @@ const char* Encoding_GetParseNames(int iEncoding) {
 // ============================================================================
 
 
-bool IsUnicode(const char* pBuffer, int cb, bool* lpbBOM, bool* lpbReverse) {
+bool IsUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbReverse) {
   int i = 0xFFFF;
 
   bool bIsTextUnicode;
@@ -598,7 +598,7 @@ bool IsUnicode(const char* pBuffer, int cb, bool* lpbBOM, bool* lpbReverse) {
   if (!pBuffer || cb < 2)
     return false;
 
-  bIsTextUnicode = IsTextUnicode(pBuffer, cb, &i);
+  bIsTextUnicode = IsTextUnicode(pBuffer, (int)cb, &i);
 
   bHasBOM = (*((UNALIGNED PWCHAR)pBuffer) == 0xFEFF);
   bHasRBOM = (*((UNALIGNED PWCHAR)pBuffer) == 0xFFFE);
@@ -631,7 +631,25 @@ bool IsUnicode(const char* pBuffer, int cb, bool* lpbBOM, bool* lpbReverse) {
 // ============================================================================
 
 
-bool IsUTF8(const char* pTest, int nLength)
+bool IsUTF7(const char* pTest, size_t nLength) {
+  const char *pt = pTest;
+
+  for (size_t i = 0; i < nLength; i++) {
+    if (*pt & 0x80 || !*pt)
+      return false;
+    pt++;
+  }
+
+  return true;
+}
+// ============================================================================
+
+
+#undef _OLD_UTF8_VALIDATOR_
+//#define _OLD_UTF8_VALIDATOR_ 1
+#ifdef _OLD_UTF8_VALIDATOR_
+
+bool IsUTF8(const char* pTest, size_t nLength)
 {
   static int byte_class_table[256] = {
     /*       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  */
@@ -677,12 +695,11 @@ bool IsUTF8(const char* pTest, int nLength)
 #define NEXT_STATE(b,cur) (state_table[(BYTE_CLASS(b) * kNumOfStates) + (cur)])
 
   utf8_state current = kSTART;
-  int i;
 
   const char* pt = pTest;
-  int len = nLength;
+  size_t len = nLength;
 
-  for (i = 0; i < len; i++, pt++) {
+  for (size_t i = 0; i < len; i++, pt++) {
 
     current = NEXT_STATE(*pt, current);
     if (kERROR == current)
@@ -691,24 +708,8 @@ bool IsUTF8(const char* pTest, int nLength)
 
   return (current == kSTART) ? true : false;
 }
+
 // ============================================================================
-
-
-
-bool IsUTF7(const char* pTest, int nLength) {
-  int i;
-  const char *pt = pTest;
-
-  for (i = 0; i < nLength; i++) {
-    if (*pt & 0x80 || !*pt)
-      return false;
-    pt++;
-  }
-
-  return true;
-}
-// ============================================================================
-
 
 /* byte length of UTF-8 sequence based on value of first byte.
 for UTF-16 (21-bit space), max. code length is 4, so we only need to look
@@ -722,8 +723,8 @@ static const size_t utf8_lengths[16] =
   3,                      /* 1110 : 3 bytes */
   4                       /* 1111 : 4 bytes */
 };
-// ============================================================================
 
+// ----------------------------------------------------------------------------
 
 /*++
 Function :
@@ -744,7 +745,7 @@ size_t UTF8_mbslen_bytes(LPCSTR utf8_string)
   size_t code_size;
   BYTE byte;
 
-  while (*utf8_string) 
+  while (*utf8_string)
   {
     byte = (BYTE)*utf8_string;
 
@@ -763,8 +764,7 @@ size_t UTF8_mbslen_bytes(LPCSTR utf8_string)
   length++; /* include NULL terminator */
   return length;
 }
-// ============================================================================
-
+// ----------------------------------------------------------------------------
 
 /*++
 Function :
@@ -815,14 +815,90 @@ size_t UTF8_mbslen(LPCSTR utf8_string, size_t byte_length)
   }
   return wchar_length;
 }
-// ============================================================================
-
-
+// ----------------------------------------------------------------------------
 
 bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
 {
-  return ((UTF8_mbslen_bytes(UTF8StringStart(utf8_string)) - 1) != 
-           UTF8_mbslen(UTF8StringStart(utf8_string), IsUTF8Signature(utf8_string) ? (byte_length - 3) : byte_length));
+  return ((UTF8_mbslen_bytes(UTF8StringStart(utf8_string)) - 1) !=
+    UTF8_mbslen(UTF8StringStart(utf8_string), IsUTF8Signature(utf8_string) ? (byte_length - 3) : byte_length));
 }
+
+
 // ============================================================================
+#else  // new UTF-8 validator
+// ============================================================================
+
+
+// Copyright (c) 2008-2010 Bjoern Hoehrmann <bjoern@hoehrmann.de>
+// See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
+
+
+enum {
+  UTF8_ACCEPT = 0,
+  UTF8_REJECT = 12,
+  UTF8_NOTEST = 113
+};
+
+static UINT s_State = UTF8_NOTEST;
+
+bool IsUTF8(const char* pTest, size_t nLength)
+{
+  static const unsigned char utf8_dfa[] = {
+    // The first part of the table maps bytes to character classes that
+    // to reduce the size of the transition table and create bitmasks.
+     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,  9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
+     7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+     8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    10,3,3,3,3,3,3,3,3,3,3,3,3,4,3,3, 11,6,6,6,5,8,8,8,8,8,8,8,8,8,8,8,
+
+    // The second part is a transition table that maps a combination
+    // of a state of the automaton and a character class to a state.
+     0,12,24,36,60,96,84,12,12,12,48,72, 12,12,12,12,12,12,12,12,12,12,12,12,
+    12, 0,12,12,12,12,12, 0,12, 0,12,12, 12,24,12,12,12,12,12,24,12,24,12,12,
+    12,12,12,12,12,12,12,24,12,12,12,12, 12,24,12,12,12,12,12,12,12,24,12,12,
+    12,12,12,12,12,12,12,36,12,36,12,12, 12,36,12,12,12,12,12,36,12,36,12,12,
+    12,36,12,12,12,12,12,12,12,12,12,12,
+  };
+
+  const unsigned char *pt = (const unsigned char *)pTest;
+  const unsigned char *end = pt + nLength;
+
+  s_State = UTF8_ACCEPT;
+  while (pt < end && *pt) {
+    s_State = utf8_dfa[256 + s_State + utf8_dfa[*pt++]];
+    if (s_State == UTF8_REJECT) {
+      return false;
+    }
+  }
+  return (s_State == UTF8_ACCEPT);
+}
+
+// ----------------------------------------------------------------------------
+
+bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
+{
+  bool result = true;
+  if (s_State != UTF8_NOTEST) {
+    result = (s_State == UTF8_REJECT);
+  }
+  else {
+    result = IsUTF8(utf8_string, byte_length);
+  }
+  s_State = UTF8_NOTEST; // reset: old way, call IsUTF8() before 
+  return result;
+}
+
+
+// ----------------------------------------------------------------------------
+
+#endif
+
+// ============================================================================
+
+
+
 

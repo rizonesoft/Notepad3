@@ -606,6 +606,9 @@
 #define IDS_ENC_ISO_2022_JP             61077
 #define IDS_ENC_ISO_2022_KR             61078
 #define IDS_ENC_X_CHINESE_CNS           61079
+#define IDS_ENC_JOHAB                   61080
+#define IDS_ENC_ISO_8859_10             61081
+#define IDS_ENC_BIG5_HKSCS              61082
 
 #define IDS_EOL_WIN                     62000
 #define IDS_EOL_UNIX                    62001

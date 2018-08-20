@@ -44,8 +44,6 @@
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
 extern LANGID    g_iPrefLngLocID;
-extern UINT      g_uCurrentDPI;
-
 
 //=============================================================================
 //
@@ -342,7 +340,7 @@ UINT GetCurrentDPI(HWND hwnd) {
     }
   }
 
-  if (dpi == 0 && IsWin81()) {
+  if ((dpi == 0) && IsWin81()) {
     HMODULE hShcore = LoadLibrary(L"shcore.dll");
     if (hShcore) {
       FARPROC pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
@@ -358,15 +356,27 @@ UINT GetCurrentDPI(HWND hwnd) {
   }
 
   if (dpi == 0) {
-    // FIXME: seems always get 96
     HDC hDC = GetDC(hwnd);
-    dpi = GetDeviceCaps(hDC, LOGPIXELSX);
+    dpi = GetDeviceCaps(hDC, LOGPIXELSY);
     ReleaseDC(hwnd, hDC);
   }
 
-  dpi = max(dpi, USER_DEFAULT_SCREEN_DPI);
-  return dpi;
+  return max(dpi, USER_DEFAULT_SCREEN_DPI);
 }
+
+
+//=============================================================================
+//
+//  GetCurrentPPI()
+//  (font size) points per inch
+//
+UINT GetCurrentPPI(HWND hwnd) {
+  HDC const hDC = GetDC(hwnd);
+  UINT const ppi = GetDeviceCaps(hDC, LOGPIXELSY);
+  ReleaseDC(hwnd, hDC);
+  return max(ppi, USER_DEFAULT_SCREEN_DPI);
+}
+
 
 
 
