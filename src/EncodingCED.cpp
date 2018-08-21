@@ -375,7 +375,7 @@ static int __fastcall FindCodePage(const Encoding& encoding)
 
 
 
-static int __fastcall MapEncoding2CPI(const Encoding& encoding, bool* pIsReliable)
+static int __fastcall MapEncoding2CPI(const char* const text, const size_t len, const Encoding& encoding, bool* pIsReliable)
 {
   int iNP3Encoding = CPI_NONE;
 
@@ -399,24 +399,43 @@ static int __fastcall MapEncoding2CPI(const Encoding& encoding, bool* pIsReliabl
     }
   }
 
-  // postrocessing:  not found, guess a mapping:
+  // ===  special Unicode analysis  ===
+
+  switch (encoding) 
+  {
+  case UNICODE:
+    iNP3Encoding = CPI_UNICODE;
+  case UTF16LE:
+  case UTF16BE:
+    {
+      bool bBOM;
+      bool bReverse;
+      if (IsUnicode(text, len, &bBOM, &bReverse)) {
+        iNP3Encoding = bBOM ? (bReverse ? CPI_UNICODEBEBOM : CPI_UNICODEBOM) : (bReverse ? CPI_UNICODEBE : CPI_UNICODE);
+      }
+    }
+    break;
+
+  case UTF8UTF8:
+    iNP3Encoding = CPI_UTF8;
+    break;
+  case UTF32BE:
+    iNP3Encoding = CPI_UTF32BE;
+    break;
+  case UTF32LE:
+    iNP3Encoding = CPI_UTF32;
+    break;
+
+  default:
+    break;
+  }
+
+  // ===  postrocessing:  not found, guess a mapping:  ===
+
   if (iNP3Encoding == CPI_NONE)
   {
-    switch (encoding) {
-
-    case UNICODE:
-      iNP3Encoding = CPI_UNICODE;
-      break;
-    case UTF8UTF8:
-      iNP3Encoding = CPI_UTF8;
-      break;
-    case UTF32BE:
-      iNP3Encoding = CPI_UTF32BE;
-      break;
-    case UTF32LE:
-      iNP3Encoding = CPI_UTF32;
-      break;
-
+    switch (encoding) 
+    {
     case ISO_8859_10:
       iNP3Encoding = CPI_NONE;
       break;
@@ -498,13 +517,11 @@ extern "C" int Encoding_Analyze(const char* const text, const size_t len, const 
     text, static_cast<int>(len),
     nullptr, nullptr, nullptr,
     MapCPI2Encoding(encodingHint),
-    UNKNOWN_LANGUAGE,
-    CompactEncDet::WEB_CORPUS,
-    false,
+    UNKNOWN_LANGUAGE, CompactEncDet::QUERY_CORPUS, true,
     &bytes_consumed,
     pIsReliable);
 
-  return MapEncoding2CPI(encoding, pIsReliable);
+  return MapEncoding2CPI(text, len, encoding, pIsReliable);
 }
 // ============================================================================
 

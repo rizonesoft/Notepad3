@@ -1020,16 +1020,16 @@ bool EditLoadFile(
     return false;
   }
 
-  bool bPreferOEM = false;
+  bool bNfoDizDetected = false;
   if (bLoadNFOasOEM)
   {
     if (lpszExt && !(StringCchCompareIX(lpszExt,L".nfo") && StringCchCompareIX(lpszExt,L".diz")))
-      bPreferOEM = true;
+      bNfoDizDetected = true;
   }
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
-  int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding :
+  int iPreferedEncoding = (bNfoDizDetected) ? g_DOSEncoding :
     ((bUseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
@@ -1042,7 +1042,9 @@ bool EditLoadFile(
   // --------------------------------------------------------------------------
 
   int iForcedEncoding = bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
-
+  if (Encoding_IsNONE(iForcedEncoding) && bNfoDizDetected) {
+    iForcedEncoding = g_DOSEncoding;
+  }
   if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
     iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced)
   }
@@ -1077,48 +1079,34 @@ bool EditLoadFile(
   if (cbData == 0) {
     FileVars_Init(NULL,0,&fvCurFile);
     *iEOLMode = iLineEndings[g_iDefaultEOLMode];
-    if (iForcedEncoding == CPI_NONE) {
-      if (bLoadASCIIasUTF8 && !bPreferOEM)
-        *iEncoding = CPI_UTF8;
-      else
-        *iEncoding = iPreferedEncoding;
-    }
-    else
-      *iEncoding = iForcedEncoding;
-
+    *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
     SendMessage(hwnd,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
     FreeMem(lpData);
   }
   // ===  UNICODE  ===
   else if (Encoding_IsUNICODE(iForcedEncoding) ||
-    (!bSkipUTFDetection && !bIsUTF8Sig
-      && Encoding_IsNONE(iForcedEncoding)
-      && (IsUnicode(lpData, cbData, &bBOM, &bReverse)
-        || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable)
-        )
+    (Encoding_IsNONE(iForcedEncoding) && !bSkipUTFDetection && !bIsUTF8Sig
+      && (IsUnicode(lpData, cbData, &bBOM, &bReverse) || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable))
       )
     )
   {
     if (iForcedEncoding == CPI_UNICODE) {
-      bBOM = (*((UNALIGNED PWCHAR)lpData) == 0xFEFF);
+      bBOM = Has_UTF16_LE_BOM(lpData);
       bReverse = false;
     }
-    else if (iForcedEncoding == CPI_UNICODEBE)
-      bBOM = (*((UNALIGNED PWCHAR)lpData) == 0xFFFE);
+    else if (iForcedEncoding == CPI_UNICODEBE) {
+      bBOM = Has_UTF16_BE_BOM(lpData);
+      bReverse = true;
+    }
 
-    if (iForcedEncoding == CPI_UNICODEBE || bReverse) {
+    if (bReverse) 
+    {
       _swab(lpData,lpData,cbData);
-      if (bBOM)
-        *iEncoding = CPI_UNICODEBEBOM;
-      else
-        *iEncoding = CPI_UNICODEBE;
+      *iEncoding = (bBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
     }
     else {
-      if (bBOM)
-        *iEncoding = CPI_UNICODEBOM;
-      else
-        *iEncoding = CPI_UNICODE;
+      *iEncoding = (bBOM ? CPI_UNICODEBOM : CPI_UNICODE);
     }
 
     char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
@@ -1156,12 +1144,11 @@ bool EditLoadFile(
 
     // ===  UTF-8  ===
     if (Encoding_IsUTF8(iForcedEncoding) || 
-      (!bSkipUTFDetection && !FileVars_IsNonUTF8(&fvCurFile)
-        && Encoding_IsNONE(iForcedEncoding)
+      (Encoding_IsNONE(iForcedEncoding) && !bSkipUTFDetection && !FileVars_IsNonUTF8(&fvCurFile)
         && (bIsUTF8Sig
           || FileVars_IsUTF8(&fvCurFile)
           || (Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable)
-          || (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))
+          || (!bNfoDizDetected && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))
           )
         && (IsUTF8(lpData, cbData) && !UTF8_ContainsInvalidChars(lpData, cbData))
         )
@@ -1187,12 +1174,9 @@ bool EditLoadFile(
         *iEncoding = iForcedEncoding;
       else {
         *iEncoding = FileVars_GetEncoding(&fvCurFile);
-        if (Encoding_IsNONE(*iEncoding)) {
-          if (fvCurFile.mask & FV_ENCODING)
-            *iEncoding = CPI_ANSI_DEFAULT;
-          else {
-            *iEncoding = iPreferedEncoding;
-          }
+        if (Encoding_IsNONE(*iEncoding)) 
+        {
+          *iEncoding = ((fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferedEncoding);
         }
       }
 

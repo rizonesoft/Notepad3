@@ -4477,7 +4477,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     }
   }
 
-  if (!bFound && Encoding_Current(CPI_GET) == g_DOSEncoding) {
+  if (!bFound && (Encoding_Current(CPI_GET) == g_DOSEncoding)) {
     pLexNew = &lexANSI;
   }
   // Apply the new lexer

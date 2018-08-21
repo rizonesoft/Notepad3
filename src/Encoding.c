@@ -587,46 +587,45 @@ const char* Encoding_GetParseNames(int iEncoding) {
 // ============================================================================
 
 
-bool IsUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbReverse) {
-  int i = 0xFFFF;
+bool IsUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbReverse) 
+{
+  if (!pBuffer || cb < 2) { return false; }
 
-  bool bIsTextUnicode;
+  // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
+  // IS_TEXT_UNICODE_REVERSE_MASK -> IS_TEXT_UNICODE_REVERSE_ASCII16, IS_TEXT_UNICODE_REVERSE_STATISTICS, IS_TEXT_UNICODE_REVERSE_CONTROLS, IS_TEXT_UNICODE_REVERSE_SIGNATURE.
+  // IS_TEXT_UNICODE_NOT_UNICODE_MASK -> IS_TEXT_UNICODE_ILLEGAL_CHARS, IS_TEXT_UNICODE_ODD_LENGTH, and two currently unused bit flags.
+  // IS_TEXT_UNICODE_NOT_ASCII_MASK -> IS_TEXT_UNICODE_NULL_BYTES and three currently unused bit flags.
+  //
+  int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
 
-  bool bHasBOM;
-  bool bHasRBOM;
+  int iTest = iAllTests;
+  (void) IsTextUnicode(pBuffer, (int)cb, &iTest);
+ 
+  if (iTest == iAllTests) {
+    iTest = 0; // iTest doesn't seem to have been modified ...
+  }
 
-  if (!pBuffer || cb < 2)
-    return false;
+  bool const bHasBOM = Has_UTF16_LE_BOM(pBuffer) && (iTest & IS_TEXT_UNICODE_SIGNATURE);
+  bool const bHasRBOM = Has_UTF16_BE_BOM(pBuffer) && (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
 
-  bIsTextUnicode = IsTextUnicode(pBuffer, (int)cb, &i);
+  bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
+  bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
+  bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_NOT_UNICODE_MASK);
 
-  bHasBOM = (*((UNALIGNED PWCHAR)pBuffer) == 0xFEFF);
-  bHasRBOM = (*((UNALIGNED PWCHAR)pBuffer) == 0xFFFE);
+  //bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
 
-  if (i == 0xFFFF) // i doesn't seem to have been modified ...
-    i = 0;
-
-  if (bIsTextUnicode || bHasBOM || bHasRBOM ||
-    ((i & (IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK)) &&
-      !((i & IS_TEXT_UNICODE_UNICODE_MASK) && (i & IS_TEXT_UNICODE_REVERSE_MASK)) &&
-      !(i & IS_TEXT_UNICODE_ODD_LENGTH) &&
-      !(i & IS_TEXT_UNICODE_ILLEGAL_CHARS && !(i & IS_TEXT_UNICODE_REVERSE_SIGNATURE)) &&
-      !((i & IS_TEXT_UNICODE_REVERSE_MASK) == IS_TEXT_UNICODE_REVERSE_STATISTICS))) {
-
-    if (lpbBOM)
-      *lpbBOM = (bHasBOM || bHasRBOM ||
-      (i & (IS_TEXT_UNICODE_SIGNATURE | IS_TEXT_UNICODE_REVERSE_SIGNATURE)))
-      ? true : false;
-
-    if (lpbReverse)
-      *lpbReverse = (bHasRBOM || (i & IS_TEXT_UNICODE_REVERSE_MASK)) ? true : false;
-
+  if (bHasBOM || bHasRBOM || ((bIsUnicode || bIsReverse) && !bIsIllegal && !(bIsUnicode && bIsReverse))) 
+  {
+    if (lpbBOM) {
+      *lpbBOM = (bHasBOM || bHasRBOM);
+    }
+    if (lpbReverse) {
+      *lpbReverse = (bHasRBOM || bIsReverse);
+    }
     return true;
   }
 
-  else
-
-    return false;
+  return false;
 }
 // ============================================================================
 
