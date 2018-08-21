@@ -96,6 +96,7 @@ extern int g_iDefaultCharSet;
 extern bool bLoadASCIIasUTF8;
 extern bool bForceLoadASCIIasUTF8;
 extern bool bLoadNFOasOEM;
+extern bool bNoEncodingTags;
 
 extern bool g_bAccelWordNavigation;
 
@@ -1056,13 +1057,10 @@ bool EditLoadFile(
   if (!Encoding_IsNONE(iForcedEncoding)) {
     iPreferedEncoding = iForcedEncoding;
   }
-  else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection) {
-    iPreferedEncoding = iAnalyzedEncoding;
-  }
   else if (iFileEncWeak != CPI_NONE) {
     iPreferedEncoding = iFileEncWeak;
   }
-  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable ) {
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
     iPreferedEncoding = iAnalyzedEncoding;
   } 
   else if (Encoding_IsNONE(iPreferedEncoding)) {
@@ -1087,7 +1085,8 @@ bool EditLoadFile(
   // ===  UNICODE  ===
   else if (Encoding_IsUNICODE(iForcedEncoding) ||
     (Encoding_IsNONE(iForcedEncoding) && !bSkipUTFDetection && !bIsUTF8Sig
-      && (IsUnicode(lpData, cbData, &bBOM, &bReverse) || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable))
+      && (IsValidUnicode(lpData, cbData, &bBOM, &bReverse) 
+        || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable))
       )
     )
   {
@@ -1143,16 +1142,16 @@ bool EditLoadFile(
     FileVars_Init(lpData,cbData,&fvCurFile);
 
     // ===  UTF-8  ===
-    if (Encoding_IsUTF8(iForcedEncoding) || 
-      (Encoding_IsNONE(iForcedEncoding) && !bSkipUTFDetection && !FileVars_IsNonUTF8(&fvCurFile)
-        && (bIsUTF8Sig
-          || FileVars_IsUTF8(&fvCurFile)
-          || (Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable)
-          || (!bNfoDizDetected && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))
-          )
-        && (IsUTF8(lpData, cbData) && !UTF8_ContainsInvalidChars(lpData, cbData))
-        )
-      )
+    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&fvCurFile) && !bNoEncodingTags);
+    bool const bForcedNonUTF8 = !Encoding_IsNONE(iForcedEncoding) && !Encoding_IsUTF8(iForcedEncoding);
+
+    bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
+    bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
+    bool const bSoftHintUTF8 = (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8);
+
+    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&fvCurFile) && !bNoEncodingTags);
+
+    if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8)))
     {
       EditSetNewText(hwnd,"",0);
       if (bIsUTF8Sig) {
@@ -1181,7 +1180,7 @@ bool EditLoadFile(
       }
 
       if (((Encoding_GetCodePage(*iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(*iEncoding)) ||
-          ((Encoding_GetCodePage(*iEncoding) == CP_UTF7) && IsUTF7(lpData,cbData))) {
+          ((Encoding_GetCodePage(*iEncoding) == CP_UTF7) && IsValidUTF7(lpData,cbData))) {
 
         UINT uCodePage = Encoding_GetCodePage(*iEncoding);
 
