@@ -1380,7 +1380,7 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         SendDlgItemMessage(hwnd,IDC_FILTER,EM_LIMITTEXT,COUNTOF(tchFilter)-1,0);
         SetDlgItemText(hwnd,IDC_FILTER,tchFilter);
 
-        CheckDlgButton(hwnd,IDC_NEGFILTER,bNegFilter);
+        CheckDlgButton(hwnd,IDC_NEGFILTER, DlgBtnChk(bNegFilter));
 
         CenterDlgInParent(hwnd);
       }
@@ -1466,14 +1466,14 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
                   {
                     if (tchValue[1]) {
                       SetDlgItemText(hwnd,IDC_FILTER,&tchValue[1]);
-                      CheckDlgButton(hwnd,IDC_NEGFILTER,TRUE);
+                      CheckDlgButton(hwnd,IDC_NEGFILTER,BST_CHECKED);
                     }
                     else
                       MessageBeep(0);
                   }
                   else {
                     SetDlgItemText(hwnd,IDC_FILTER,tchValue);
-                    CheckDlgButton(hwnd,IDC_NEGFILTER,FALSE);
+                    CheckDlgButton(hwnd,IDC_NEGFILTER,BST_UNCHECKED);
                   }
                 }
 

@@ -1035,10 +1035,20 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
-  int iAnalyzedEncoding = (bSkipANSICPDetection && !g_bForceCompEncDetection) ? CPI_NONE : 
-    Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
-  if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
-    iAnalyzedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
+  int iAnalyzedEncoding = Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+
+  if (!g_bForceCompEncDetection) 
+  {
+    bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
+
+    if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
+      iAnalyzedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
+    }
+    else {
+      if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
+        iAnalyzedEncoding = CPI_NONE;
+      }
+    }
   }
   // --------------------------------------------------------------------------
 
@@ -1047,7 +1057,7 @@ bool EditLoadFile(
     iForcedEncoding = g_DOSEncoding;
   }
   if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
-    iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced)
+    iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced unreliable detection)
   }
   // --------------------------------------------------------------------------
 
@@ -5502,14 +5512,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         {
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, true);
           CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED); // Can not use wildcard search together with regexp
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (bSaveTFBackSlashes) ? BST_CHECKED : BST_UNCHECKED);
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED); // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (bSaveTFBackSlashes) ? BST_CHECKED : BST_UNCHECKED);
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
@@ -5525,13 +5535,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         {
           CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (bSaveTFBackSlashes) ? BST_CHECKED : BST_UNCHECKED);
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);  // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (bSaveTFBackSlashes) ? BST_CHECKED : BST_UNCHECKED);
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);

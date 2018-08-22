@@ -179,6 +179,9 @@ bool IsFontAvailable(LPCWSTR);
 
 bool IsCmdEnabled(HWND, UINT);
 
+
+#define DlgBtnChk(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
+
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 

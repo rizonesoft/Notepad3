@@ -79,6 +79,8 @@ void Toolbar_SetButtonImage(HWND,int,int);
 
 LRESULT SendWMSize(HWND);
 
+#define DlgBtnChk(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
+
 #define EnableCmd(hmenu,id,b) EnableMenuItem(hmenu,id,(b)\
                                ?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 

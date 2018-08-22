@@ -1428,9 +1428,9 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         // Update view
         SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-        CheckDlgButton(hwnd, IDC_SAVEMRU, g_bSaveRecentFiles ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, IDC_PRESERVECARET, g_bPreserveCaretPos ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, g_bSaveFindReplace ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd, IDC_SAVEMRU, DlgBtnChk(g_bSaveRecentFiles));
+        CheckDlgButton(hwnd, IDC_PRESERVECARET, DlgBtnChk(g_bPreserveCaretPos));
+        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, DlgBtnChk(g_bSaveFindReplace));
 
         //if (!g_bSaveRecentFiles) {
         //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
@@ -2250,23 +2250,12 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         Encoding_AddToComboboxEx(GetDlgItem(hwnd,IDC_ENCODINGLIST),pdd->idEncoding,0);
 
-        if (bUseDefaultForFileEncoding)
-          CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, BST_CHECKED);
-
-        if (bSkipUnicodeDetection)
-          CheckDlgButton(hwnd,IDC_NOUNICODEDETECTION,BST_CHECKED);
-
-        if (bSkipANSICodePageDetection)
-          CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, BST_CHECKED);
-
-        if (bLoadASCIIasUTF8)
-          CheckDlgButton(hwnd,IDC_ASCIIASUTF8,BST_CHECKED);
-
-        if (bLoadNFOasOEM)
-          CheckDlgButton(hwnd,IDC_NFOASOEM,BST_CHECKED);
-
-        if (bNoEncodingTags)
-          CheckDlgButton(hwnd,IDC_ENCODINGFROMFILEVARS,BST_CHECKED);
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(bUseDefaultForFileEncoding));
+        CheckDlgButton(hwnd,IDC_NOUNICODEDETECTION, DlgBtnChk(bSkipUnicodeDetection));
+        CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, DlgBtnChk(bSkipANSICodePageDetection));
+        CheckDlgButton(hwnd,IDC_ASCIIASUTF8, DlgBtnChk(bLoadASCIIasUTF8));
+        CheckDlgButton(hwnd,IDC_NFOASOEM, DlgBtnChk(bLoadNFOasOEM));
+        CheckDlgButton(hwnd,IDC_ENCODINGFROMFILEVARS, DlgBtnChk(bNoEncodingTags));
 
         CenterDlgInParent(hwnd);
       }
@@ -2579,11 +2568,8 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
         SendDlgItemMessage(hwnd,100,CB_SETCURSEL,(WPARAM)*piOption,0);
         SendDlgItemMessage(hwnd,100,CB_SETEXTENDEDUI,true,0);
 
-        if (bFixLineEndings)
-          CheckDlgButton(hwnd,IDC_CONSISTENTEOLS,BST_CHECKED);
-
-        if (bAutoStripBlanks)
-          CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, BST_CHECKED);
+        CheckDlgButton(hwnd,IDC_CONSISTENTEOLS, DlgBtnChk(bFixLineEndings));
+        CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, DlgBtnChk(bAutoStripBlanks));
 
         CenterDlgInParent(hwnd);
       }
@@ -2595,8 +2581,8 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
       {
         case IDOK: {
             *piOption = (int)SendDlgItemMessage(hwnd,100,CB_GETCURSEL,0,0);
-            bFixLineEndings = (IsDlgButtonChecked(hwnd,IDC_CONSISTENTEOLS) == BST_CHECKED) ? 1 : 0;
-            bAutoStripBlanks = (IsDlgButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS) == BST_CHECKED) ? 1 : 0;
+            bFixLineEndings = (IsDlgButtonChecked(hwnd,IDC_CONSISTENTEOLS) == BST_CHECKED);
+            bAutoStripBlanks = (IsDlgButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS) == BST_CHECKED);
             EndDialog(hwnd,IDOK);
           }
           break;
