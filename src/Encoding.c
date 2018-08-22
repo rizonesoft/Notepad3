@@ -587,51 +587,50 @@ const char* Encoding_GetParseNames(int iEncoding) {
 // ============================================================================
 
 
-bool IsUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbReverse) {
-  int i = 0xFFFF;
+bool IsValidUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbReverse) 
+{
+  if (!pBuffer || cb < 2) { return false; }
 
-  bool bIsTextUnicode;
+  // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
+  // IS_TEXT_UNICODE_REVERSE_MASK -> IS_TEXT_UNICODE_REVERSE_ASCII16, IS_TEXT_UNICODE_REVERSE_STATISTICS, IS_TEXT_UNICODE_REVERSE_CONTROLS, IS_TEXT_UNICODE_REVERSE_SIGNATURE.
+  // IS_TEXT_UNICODE_NOT_UNICODE_MASK -> IS_TEXT_UNICODE_ILLEGAL_CHARS, IS_TEXT_UNICODE_ODD_LENGTH, and two currently unused bit flags.
+  // IS_TEXT_UNICODE_NOT_ASCII_MASK -> IS_TEXT_UNICODE_NULL_BYTES and three currently unused bit flags.
+  //
+  int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
 
-  bool bHasBOM;
-  bool bHasRBOM;
+  int iTest = iAllTests;
+  (void) IsTextUnicode(pBuffer, (int)cb, &iTest);
+ 
+  if (iTest == iAllTests) {
+    iTest = 0; // iTest doesn't seem to have been modified ...
+  }
 
-  if (!pBuffer || cb < 2)
-    return false;
+  bool const bHasBOM = Has_UTF16_LE_BOM(pBuffer) && (iTest & IS_TEXT_UNICODE_SIGNATURE);
+  bool const bHasRBOM = Has_UTF16_BE_BOM(pBuffer) && (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
 
-  bIsTextUnicode = IsTextUnicode(pBuffer, (int)cb, &i);
+  bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
+  bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
+  bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_NOT_UNICODE_MASK);
 
-  bHasBOM = (*((UNALIGNED PWCHAR)pBuffer) == 0xFEFF);
-  bHasRBOM = (*((UNALIGNED PWCHAR)pBuffer) == 0xFFFE);
+  //bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
 
-  if (i == 0xFFFF) // i doesn't seem to have been modified ...
-    i = 0;
-
-  if (bIsTextUnicode || bHasBOM || bHasRBOM ||
-    ((i & (IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK)) &&
-      !((i & IS_TEXT_UNICODE_UNICODE_MASK) && (i & IS_TEXT_UNICODE_REVERSE_MASK)) &&
-      !(i & IS_TEXT_UNICODE_ODD_LENGTH) &&
-      !(i & IS_TEXT_UNICODE_ILLEGAL_CHARS && !(i & IS_TEXT_UNICODE_REVERSE_SIGNATURE)) &&
-      !((i & IS_TEXT_UNICODE_REVERSE_MASK) == IS_TEXT_UNICODE_REVERSE_STATISTICS))) {
-
-    if (lpbBOM)
-      *lpbBOM = (bHasBOM || bHasRBOM ||
-      (i & (IS_TEXT_UNICODE_SIGNATURE | IS_TEXT_UNICODE_REVERSE_SIGNATURE)))
-      ? true : false;
-
-    if (lpbReverse)
-      *lpbReverse = (bHasRBOM || (i & IS_TEXT_UNICODE_REVERSE_MASK)) ? true : false;
-
+  if (bHasBOM || bHasRBOM || ((bIsUnicode || bIsReverse) && !bIsIllegal && !(bIsUnicode && bIsReverse))) 
+  {
+    if (lpbBOM) {
+      *lpbBOM = (bHasBOM || bHasRBOM);
+    }
+    if (lpbReverse) {
+      *lpbReverse = (bHasRBOM || bIsReverse);
+    }
     return true;
   }
 
-  else
-
-    return false;
+  return false;
 }
 // ============================================================================
 
 
-bool IsUTF7(const char* pTest, size_t nLength) {
+bool IsValidUTF7(const char* pTest, size_t nLength) {
   const char *pt = pTest;
 
   for (size_t i = 0; i < nLength; i++) {
@@ -639,7 +638,6 @@ bool IsUTF7(const char* pTest, size_t nLength) {
       return false;
     pt++;
   }
-
   return true;
 }
 // ============================================================================
@@ -649,7 +647,124 @@ bool IsUTF7(const char* pTest, size_t nLength) {
 //#define _OLD_UTF8_VALIDATOR_ 1
 #ifdef _OLD_UTF8_VALIDATOR_
 
-bool IsUTF8(const char* pTest, size_t nLength)
+// ============================================================================
+
+/* byte length of UTF-8 sequence based on value of first byte.
+for UTF-16 (21-bit space), max. code length is 4, so we only need to look
+at 4 upper bits.
+*/
+static const size_t utf8_lengths[16] =
+{
+  1,1,1,1,1,1,1,1,        /* 0000 to 0111 : 1 byte (plain ASCII) */
+  0,0,0,0,                /* 1000 to 1011 : not valid */
+  2,2,                    /* 1100, 1101 : 2 bytes */
+  3,                      /* 1110 : 3 bytes */
+  4                       /* 1111 : 4 bytes */
+};
+
+// ----------------------------------------------------------------------------
+
+/*++
+Function :
+UTF8_mbslen_bytes [INTERNAL]
+
+Calculates the byte size of a NULL-terminated UTF-8 string.
+
+Parameters :
+char *utf8_string : string to examine
+
+Return value :
+size (in bytes) of a NULL-terminated UTF-8 string.
+-1 if invalid NULL-terminated UTF-8 string
+--*/
+size_t __fastcall UTF8_mbslen_bytes(LPCSTR utf8_string)
+{
+  size_t length = 0;
+  size_t code_size;
+  BYTE byte;
+
+  while (*utf8_string)
+  {
+    byte = (BYTE)*utf8_string;
+
+    if ((byte <= 0xF7) && (0 != (code_size = utf8_lengths[byte >> 4]))) {
+      length += code_size;
+      utf8_string += code_size;
+    }
+    else {
+      /* we got an invalid byte value but need to count it,
+      it will be later ignored during the string conversion */
+      //WARN("invalid first byte value 0x%02X in UTF-8 sequence!\n",byte);
+      length++;
+      utf8_string++;
+    }
+  }
+  length++; /* include NULL terminator */
+  return length;
+}
+// ----------------------------------------------------------------------------
+
+/*++
+Function :
+UTF8_mbslen [INTERNAL]
+
+Calculates the character size of a NULL-terminated UTF-8 string.
+
+Parameters :
+char *utf8_string : string to examine
+int byte_length : byte size of string
+
+Return value :
+size (in characters) of a UTF-8 string.
+-1 if invalid UTF-8 string
+--*/
+size_t __fastcall UTF8_mbslen(LPCSTR utf8_string, size_t byte_length)
+{
+  size_t wchar_length = 0;
+  size_t code_size;
+  BYTE byte;
+
+  while (byte_length > 0) {
+    byte = (BYTE)*utf8_string;
+
+    /* UTF-16 can't encode 5-byte and 6-byte sequences, so maximum value
+    for first byte is 11110111. Use lookup table to determine sequence
+    length based on upper 4 bits of first byte */
+    if ((byte <= 0xF7) && (0 != (code_size = utf8_lengths[byte >> 4]))) {
+      /* 1 sequence == 1 character */
+      wchar_length++;
+
+      if (code_size == 4)
+        wchar_length++;
+
+      utf8_string += code_size;        /* increment pointer */
+      byte_length -= code_size;   /* decrement counter*/
+    }
+    else {
+      /*
+      unlike UTF8_mbslen_bytes, we ignore the invalid characters.
+      we only report the number of valid characters we have encountered
+      to match the Windows behavior.
+      */
+      //WARN("invalid byte 0x%02X in UTF-8 sequence, skipping it!\n", byte);
+      utf8_string++;
+      byte_length--;
+    }
+  }
+  return wchar_length;
+}
+// ----------------------------------------------------------------------------
+
+bool __fastcall UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
+{
+  return ((UTF8_mbslen_bytes(UTF8StringStart(utf8_string)) - 1) !=
+    UTF8_mbslen(UTF8StringStart(utf8_string), IsUTF8Signature(utf8_string) ? (byte_length - 3) : byte_length));
+}
+
+// ----------------------------------------------------------------------------
+
+
+bool IsValidUTF8(const char* pTest, size_t nLength)
 {
   static int byte_class_table[256] = {
     /*       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  */
@@ -706,121 +821,7 @@ bool IsUTF8(const char* pTest, size_t nLength)
       break;
   }
 
-  return (current == kSTART) ? true : false;
-}
-
-// ============================================================================
-
-/* byte length of UTF-8 sequence based on value of first byte.
-for UTF-16 (21-bit space), max. code length is 4, so we only need to look
-at 4 upper bits.
-*/
-static const size_t utf8_lengths[16] =
-{
-  1,1,1,1,1,1,1,1,        /* 0000 to 0111 : 1 byte (plain ASCII) */
-  0,0,0,0,                /* 1000 to 1011 : not valid */
-  2,2,                    /* 1100, 1101 : 2 bytes */
-  3,                      /* 1110 : 3 bytes */
-  4                       /* 1111 : 4 bytes */
-};
-
-// ----------------------------------------------------------------------------
-
-/*++
-Function :
-UTF8_mbslen_bytes [INTERNAL]
-
-Calculates the byte size of a NULL-terminated UTF-8 string.
-
-Parameters :
-char *utf8_string : string to examine
-
-Return value :
-size (in bytes) of a NULL-terminated UTF-8 string.
--1 if invalid NULL-terminated UTF-8 string
---*/
-size_t UTF8_mbslen_bytes(LPCSTR utf8_string)
-{
-  size_t length = 0;
-  size_t code_size;
-  BYTE byte;
-
-  while (*utf8_string)
-  {
-    byte = (BYTE)*utf8_string;
-
-    if ((byte <= 0xF7) && (0 != (code_size = utf8_lengths[byte >> 4]))) {
-      length += code_size;
-      utf8_string += code_size;
-    }
-    else {
-      /* we got an invalid byte value but need to count it,
-      it will be later ignored during the string conversion */
-      //WARN("invalid first byte value 0x%02X in UTF-8 sequence!\n",byte);
-      length++;
-      utf8_string++;
-    }
-  }
-  length++; /* include NULL terminator */
-  return length;
-}
-// ----------------------------------------------------------------------------
-
-/*++
-Function :
-UTF8_mbslen [INTERNAL]
-
-Calculates the character size of a NULL-terminated UTF-8 string.
-
-Parameters :
-char *utf8_string : string to examine
-int byte_length : byte size of string
-
-Return value :
-size (in characters) of a UTF-8 string.
--1 if invalid UTF-8 string
---*/
-size_t UTF8_mbslen(LPCSTR utf8_string, size_t byte_length)
-{
-  size_t wchar_length = 0;
-  size_t code_size;
-  BYTE byte;
-
-  while (byte_length > 0) {
-    byte = (BYTE)*utf8_string;
-
-    /* UTF-16 can't encode 5-byte and 6-byte sequences, so maximum value
-    for first byte is 11110111. Use lookup table to determine sequence
-    length based on upper 4 bits of first byte */
-    if ((byte <= 0xF7) && (0 != (code_size = utf8_lengths[byte >> 4]))) {
-      /* 1 sequence == 1 character */
-      wchar_length++;
-
-      if (code_size == 4)
-        wchar_length++;
-
-      utf8_string += code_size;        /* increment pointer */
-      byte_length -= code_size;   /* decrement counter*/
-    }
-    else {
-      /*
-      unlike UTF8_mbslen_bytes, we ignore the invalid characters.
-      we only report the number of valid characters we have encountered
-      to match the Windows behavior.
-      */
-      //WARN("invalid byte 0x%02X in UTF-8 sequence, skipping it!\n", byte);
-      utf8_string++;
-      byte_length--;
-    }
-  }
-  return wchar_length;
-}
-// ----------------------------------------------------------------------------
-
-bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
-{
-  return ((UTF8_mbslen_bytes(UTF8StringStart(utf8_string)) - 1) !=
-    UTF8_mbslen(UTF8StringStart(utf8_string), IsUTF8Signature(utf8_string) ? (byte_length - 3) : byte_length));
+  return (current == kSTART) && !UTF8_ContainsInvalidChars(pTest, nLength);
 }
 
 
@@ -832,17 +833,13 @@ bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
 // Copyright (c) 2008-2010 Bjoern Hoehrmann <bjoern@hoehrmann.de>
 // See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
 
-
-enum {
-  UTF8_ACCEPT = 0,
-  UTF8_REJECT = 12,
-  UTF8_NOTEST = 113
-};
-
-static UINT s_State = UTF8_NOTEST;
-
-bool IsUTF8(const char* pTest, size_t nLength)
+bool IsValidUTF8(const char* pTest, size_t nLength)
 {
+  enum {
+    UTF8_ACCEPT = 0,
+    UTF8_REJECT = 12
+  };
+
   static const unsigned char utf8_dfa[] = {
     // The first part of the table maps bytes to character classes that
     // to reduce the size of the transition table and create bitmasks.
@@ -867,31 +864,15 @@ bool IsUTF8(const char* pTest, size_t nLength)
   const unsigned char *pt = (const unsigned char *)pTest;
   const unsigned char *end = pt + nLength;
 
-  s_State = UTF8_ACCEPT;
+  UINT state = UTF8_ACCEPT;
   while (pt < end && *pt) {
-    s_State = utf8_dfa[256 + s_State + utf8_dfa[*pt++]];
-    if (s_State == UTF8_REJECT) {
+    state = utf8_dfa[256 + state + utf8_dfa[*pt++]];
+    if (state == UTF8_REJECT) {
       return false;
     }
   }
-  return (s_State == UTF8_ACCEPT);
+  return (state == UTF8_ACCEPT);
 }
-
-// ----------------------------------------------------------------------------
-
-bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
-{
-  bool result = true;
-  if (s_State != UTF8_NOTEST) {
-    result = (s_State == UTF8_REJECT);
-  }
-  else {
-    result = IsUTF8(utf8_string, byte_length);
-  }
-  s_State = UTF8_NOTEST; // reset: old way, call IsUTF8() before 
-  return result;
-}
-
 
 // ----------------------------------------------------------------------------
 

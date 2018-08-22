@@ -117,9 +117,9 @@ extern "C" {
 #define ENC_PARSE_NAM_ISO_2022_JP          "ISO-2022-jp,iso2022jp,"
 #define ENC_PARSE_NAM_ISO_2022_KR          "ISO-2022-kr,iso2022kr,csiso2022kr,"
 #define ENC_PARSE_NAM_X_CHINESE_CNS        "x-Chinese-CNS,xchinesecns,"
-#define ENC_PARSE_NAM_JOHAB                "johab,johab,"
-#define ENC_PARSE_NAM_ISO_8859_10          "ISO-8859-10,iso885910,Windows-28600,Windows28600,"
-#define ENC_PARSE_NAM_BIG5_HKSCS           "big5hkscs,cnbig5hkscs,xxbig5hkscs,"
+//#define ENC_PARSE_NAM_JOHAB                "johab,johab,"
+//#define ENC_PARSE_NAM_ISO_8859_10          "ISO-8859-10,iso885910,Windows-28600,Windows28600,"
+//#define ENC_PARSE_NAM_BIG5_HKSCS           "big5hkscs,cnbig5hkscs,xxbig5hkscs,"
 //=============================================================================
 
 
@@ -204,10 +204,10 @@ extern "C" NP2ENCODING g_Encodings[] = {
   /* 076 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 52936, ENC_PARSE_NAM_HZ_GB2312,         IDS_ENC_HZ_GB2312,         HZ_GB_2312,         L"" }, // Chinese Simplified (HZ-GB2312)
   /* 077 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 50220, ENC_PARSE_NAM_ISO_2022_JP,       IDS_ENC_ISO_2022_JP,       KDDI_ISO_2022_JP,   L"" }, // Japanese (JIS)
   /* 078 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 50225, ENC_PARSE_NAM_ISO_2022_KR,       IDS_ENC_ISO_2022_KR,       ISO_2022_KR,        L"" }, // Korean (ISO-2022-KR)
-  /* 079 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 20000, ENC_PARSE_NAM_X_CHINESE_CNS,     IDS_ENC_X_CHINESE_CNS,     CHINESE_CNS,        L"" }, // Chinese Traditional (CNS)
-  /* 080 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 1361,  ENC_PARSE_NAM_JOHAB,             IDS_ENC_JOHAB,             CED_NO_MAPPING,     L"" }, // Korean (Johab)
-  /* 081 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28600, ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       ISO_8859_10,        L"" }, // Nordic (ISO 8859-10)
-  /* 082 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 951,   ENC_PARSE_NAM_BIG5_HKSCS,        IDS_ENC_BIG5_HKSCS,        BIG5_HKSCS,         L"" }  // Chinese (Hong Kong Supplementary Character Set)
+  /* 079 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 20000, ENC_PARSE_NAM_X_CHINESE_CNS,     IDS_ENC_X_CHINESE_CNS,     CHINESE_CNS,        L"" } // Chinese Traditional (CNS)
+  ///* 080 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 1361,  ENC_PARSE_NAM_JOHAB,             IDS_ENC_JOHAB,             CED_NO_MAPPING,     L"" }, // Korean (Johab)
+  ///* 081 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28600, ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       ISO_8859_10,        L"" }, // Nordic (ISO 8859-10)
+  ///* 082 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 951,   ENC_PARSE_NAM_BIG5_HKSCS,        IDS_ENC_BIG5_HKSCS,        BIG5_HKSCS,         L"" }  // Chinese (Hong Kong Supplementary Character Set)
 
   
 #if 0
@@ -322,6 +322,7 @@ static int __fastcall FindCodePage(const Encoding& encoding)
     iCodePage = 1250;
     break;
   case ISO_8859_4:
+  case ISO_8859_10:
     iCodePage = 1257;
     break;
   case ISO_8859_5:
@@ -375,7 +376,7 @@ static int __fastcall FindCodePage(const Encoding& encoding)
 
 
 
-static int __fastcall MapEncoding2CPI(const Encoding& encoding, bool* pIsReliable)
+static int __fastcall MapEncoding2CPI(const char* const text, const size_t len, const Encoding& encoding, bool* pIsReliable)
 {
   int iNP3Encoding = CPI_NONE;
 
@@ -399,24 +400,43 @@ static int __fastcall MapEncoding2CPI(const Encoding& encoding, bool* pIsReliabl
     }
   }
 
-  // postrocessing:  not found, guess a mapping:
+  // ===  special Unicode analysis  ===
+
+  switch (encoding) 
+  {
+  case UNICODE:
+    iNP3Encoding = CPI_UNICODE;
+  case UTF16LE:
+  case UTF16BE:
+    {
+      bool bBOM;
+      bool bReverse;
+      if (IsValidUnicode(text, len, &bBOM, &bReverse)) {
+        iNP3Encoding = bBOM ? (bReverse ? CPI_UNICODEBEBOM : CPI_UNICODEBOM) : (bReverse ? CPI_UNICODEBE : CPI_UNICODE);
+      }
+    }
+    break;
+
+  case UTF8UTF8:
+    iNP3Encoding = CPI_UTF8;
+    break;
+  case UTF32BE:
+    iNP3Encoding = CPI_UTF32BE;
+    break;
+  case UTF32LE:
+    iNP3Encoding = CPI_UTF32;
+    break;
+
+  default:
+    break;
+  }
+
+  // ===  postrocessing:  not found, guess a mapping:  ===
+
   if (iNP3Encoding == CPI_NONE)
   {
-    switch (encoding) {
-
-    case UNICODE:
-      iNP3Encoding = CPI_UNICODE;
-      break;
-    case UTF8UTF8:
-      iNP3Encoding = CPI_UTF8;
-      break;
-    case UTF32BE:
-      iNP3Encoding = CPI_UTF32BE;
-      break;
-    case UTF32LE:
-      iNP3Encoding = CPI_UTF32;
-      break;
-
+    switch (encoding) 
+    {
     case ISO_8859_10:
       iNP3Encoding = CPI_NONE;
       break;
@@ -498,13 +518,11 @@ extern "C" int Encoding_Analyze(const char* const text, const size_t len, const 
     text, static_cast<int>(len),
     nullptr, nullptr, nullptr,
     MapCPI2Encoding(encodingHint),
-    UNKNOWN_LANGUAGE,
-    CompactEncDet::WEB_CORPUS,
-    false,
+    UNKNOWN_LANGUAGE, CompactEncDet::QUERY_CORPUS, true,
     &bytes_consumed,
     pIsReliable);
 
-  return MapEncoding2CPI(encoding, pIsReliable);
+  return MapEncoding2CPI(text, len, encoding, pIsReliable);
 }
 // ============================================================================
 

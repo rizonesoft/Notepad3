@@ -122,16 +122,15 @@ void Encoding_SetDefaultFlag(int);
 const WCHAR* Encoding_GetLabel(int);
 const char* Encoding_GetParseNames(int);
 
-bool IsUnicode(const char*, size_t, bool*, bool*);
-bool IsUTF8(const char*, size_t);
-bool IsUTF7(const char*, size_t);
-
 #define IsUTF8Signature(p) ((*((p)+0) == '\xEF' && *((p)+1) == '\xBB' && *((p)+2) == '\xBF'))
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-size_t UTF8_mbslen_bytes(LPCSTR utf8_string);
-size_t UTF8_mbslen(LPCSTR utf8_string, size_t byte_length);
-bool UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length);
+#define Has_UTF16_LE_BOM(p) (*((UNALIGNED wchar_t*)(p)) == 0xFEFF)
+#define Has_UTF16_BE_BOM(p) (*((UNALIGNED wchar_t*)(p)) == 0xFFFE) /* reverse */
+
+bool IsValidUnicode(const char*, size_t, bool*, bool*);
+bool IsValidUTF7(const char*, size_t);
+bool IsValidUTF8(const char*, size_t);
 
 // Google's "Compact Encoding Detection" 
 extern NP2ENCODING g_Encodings[];

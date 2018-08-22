@@ -841,7 +841,7 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 
   if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
     WCHAR* lngMultiStrPtr = pLngMultiStr;
-    WCHAR* last = pLngStr + (pLngStr[0] == 0xFEFF ? 1 : 0); // if read from unicode (UTF-16 LE) file
+    WCHAR* last = pLngStr + (Has_UTF16_LE_BOM(pLngStr) ? 1 : 0);
     while (last && rtnVal) {
       // make sure you validate the user input
       WCHAR* next = StrNextTok(last, L",; :");
@@ -1867,8 +1867,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   REBARINFO rbi;
   REBARBANDINFO rbBand;
 
-  BITMAP bmp;
-  HBITMAP hbmp, hbmpCopy = NULL;
   HIMAGELIST himl;
   WCHAR szTmp[MAX_PATH] = { L'\0' };
 
@@ -1891,14 +1889,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   SendMessage(g_hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
-  // Add normal Toolbar Bitmap
-  hbmp = NULL;
+  // Add Toolbar Bitmap
+  BITMAP bmp;
+  HBITMAP hbmp = NULL;
+  HBITMAP hbmpCopy = NULL;
   if (StringCchLenW(g_tchToolbarBitmap,COUNTOF(g_tchToolbarBitmap)))
   {
     if (!SearchPath(NULL,g_tchToolbarBitmap,L".bmp",COUNTOF(szTmp),szTmp,NULL))
       StringCchCopy(szTmp,COUNTOF(szTmp),g_tchToolbarBitmap);
     hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE);
-    hbmp = ResizeImageForCurrentDPI(hbmp);
   }
 
   if (hbmp) {
@@ -1907,13 +1906,16 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   else {
     LPWSTR toolBarIntRes = (iHighDpiToolBar > 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB2) : MAKEINTRESOURCE(IDR_MAINWNDTB);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
-    hbmp = ResizeImageForCurrentDPI(hbmp);
-    hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
+  hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+
+  // adjust to current DPI
+  hbmp = ResizeImageForCurrentDPI(hbmp);
+  hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
+ 
+
   GetObject(hbmp,sizeof(BITMAP),&bmp);
-  if (!IsXP())
-    BitmapMergeAlpha(hbmp,GetSysColor(COLOR_3DFACE));
   himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
   ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
   DeleteObject(hbmp);
@@ -1972,8 +1974,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
       SendMessage(g_hwndToolbar,TB_SETDISABLEDIMAGELIST,0,(LPARAM)himl);
     }
   }
-  if (hbmpCopy)
+  if (hbmpCopy) {
     DeleteObject(hbmpCopy);
+  }
 
   // Load toolbar labels
   pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
@@ -6906,10 +6909,7 @@ void LoadSettings()
   iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
   iHighDpiToolBar = clampi(iHighDpiToolBar, -1, 1);
   if (iHighDpiToolBar < 0) { // undefined: determine high DPI (higher than Full-HD)
-    if ((ResX > 1920) && (ResY > 1080))
-      iHighDpiToolBar = 1;
-    else
-      iHighDpiToolBar = 0;
+    iHighDpiToolBar = ((ResX > 1920) && (ResY > 1080)) ? 1 : 0;
   }
 
   if (!g_flagPosParam /*|| g_bStickyWinPos*/) { // ignore window position if /p was specified

@@ -388,12 +388,17 @@ HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
 {
   if (hbmp) {
     BITMAP bmp;
-    if (g_uCurrentDPI > USER_DEFAULT_SCREEN_DPI && GetObject(hbmp, sizeof(BITMAP), &bmp)) {
-      int width = MulDiv(bmp.bmWidth, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
-      int height = MulDiv(bmp.bmHeight, g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI);
-      HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_COPYRETURNORG | LR_COPYDELETEORG);
-      if (hCopy) {
-        hbmp = hCopy;
+    if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
+      UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
+      UINT uDPIScaleFactor = max(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
+      UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
+      if (g_uCurrentDPI > (uDPIBase + uDPIUnit)) {
+        int width = MulDiv(bmp.bmWidth, (g_uCurrentDPI - uDPIBase), uDPIUnit);
+        int height = MulDiv(bmp.bmHeight, (g_uCurrentDPI - uDPIBase), uDPIUnit);
+        HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
+        if (hCopy) {
+          hbmp = hCopy;
+        }
       }
     }
   }
@@ -536,23 +541,22 @@ bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest)
 {
   BITMAP bmp;
   if (GetObject(hbmp,sizeof(BITMAP),&bmp)) {
-
     if (bmp.bmBitsPixel == 32) {
-
       int x,y;
       RGBQUAD *prgba = bmp.bmBits;
-
-      for (y = 0; y < bmp.bmHeight; y++) {
-        for (x = 0; x < bmp.bmWidth; x++) {
-          BYTE alpha = prgba[x].rgbReserved;
-          prgba[x].rgbRed = ((prgba[x].rgbRed * alpha) + (GetRValue(crDest) * (255-alpha))) >> 8;
-          prgba[x].rgbGreen = ((prgba[x].rgbGreen * alpha) + (GetGValue(crDest) * (255-alpha))) >> 8;
-          prgba[x].rgbBlue = ((prgba[x].rgbBlue * alpha) + (GetBValue(crDest) * (255-alpha))) >> 8;
-          prgba[x].rgbReserved = 0xFF;
+      if (prgba) {
+        for (y = 0; y < bmp.bmHeight; y++) {
+          for (x = 0; x < bmp.bmWidth; x++) {
+            BYTE alpha = prgba[x].rgbReserved;
+            prgba[x].rgbRed = ((prgba[x].rgbRed * alpha) + (GetRValue(crDest) * (255 - alpha))) >> 8;
+            prgba[x].rgbGreen = ((prgba[x].rgbGreen * alpha) + (GetGValue(crDest) * (255 - alpha))) >> 8;
+            prgba[x].rgbBlue = ((prgba[x].rgbBlue * alpha) + (GetBValue(crDest) * (255 - alpha))) >> 8;
+            prgba[x].rgbReserved = 0xFF;
+          }
+          prgba = (RGBQUAD*)((LPBYTE)prgba + bmp.bmWidthBytes);
         }
-        prgba = (RGBQUAD*)((LPBYTE)prgba + bmp.bmWidthBytes);
+        return true;
       }
-      return true;
     }
   }
   return false;
@@ -568,21 +572,20 @@ bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha)
 {
   BITMAP bmp;
   if (GetObject(hbmp,sizeof(BITMAP),&bmp)) {
-
     if (bmp.bmBitsPixel == 32) {
-
       int x,y;
       RGBQUAD *prgba = bmp.bmBits;
-
-      for (y = 0; y < bmp.bmHeight; y++) {
-        for (x = 0; x < bmp.bmWidth; x++) {
-          prgba[x].rgbRed = ((prgba[x].rgbRed * alpha) + (GetRValue(crDest) * (255-alpha))) >> 8;
-          prgba[x].rgbGreen = ((prgba[x].rgbGreen * alpha) + (GetGValue(crDest) * (255-alpha))) >> 8;
-          prgba[x].rgbBlue = ((prgba[x].rgbBlue * alpha) + (GetBValue(crDest) * (255-alpha))) >> 8;
+      if (prgba) {
+        for (y = 0; y < bmp.bmHeight; y++) {
+          for (x = 0; x < bmp.bmWidth; x++) {
+            prgba[x].rgbRed = ((prgba[x].rgbRed * alpha) + (GetRValue(crDest) * (255 - alpha))) >> 8;
+            prgba[x].rgbGreen = ((prgba[x].rgbGreen * alpha) + (GetGValue(crDest) * (255 - alpha))) >> 8;
+            prgba[x].rgbBlue = ((prgba[x].rgbBlue * alpha) + (GetBValue(crDest) * (255 - alpha))) >> 8;
+          }
+          prgba = (RGBQUAD*)((LPBYTE)prgba + bmp.bmWidthBytes);
         }
-        prgba = (RGBQUAD*)((LPBYTE)prgba + bmp.bmWidthBytes);
+        return true;
       }
-      return true;
     }
   }
   return false;
@@ -598,20 +601,19 @@ bool BitmapGrayScale(HBITMAP hbmp)
 {
   BITMAP bmp;
   if (GetObject(hbmp,sizeof(BITMAP),&bmp)) {
-
     if (bmp.bmBitsPixel == 32) {
-
       int x,y;
       RGBQUAD *prgba = bmp.bmBits;
-
-      for (y = 0; y < bmp.bmHeight; y++) {
-        for (x = 0; x < bmp.bmWidth; x++) {
-          prgba[x].rgbRed = prgba[x].rgbGreen = prgba[x].rgbBlue =
-          (((BYTE)((prgba[x].rgbRed * 38 + prgba[x].rgbGreen * 75 + prgba[x].rgbBlue * 15) >> 7) * 0x80) + (0xD0 * (255-0x80))) >> 8;
+      if (prgba) {
+        for (y = 0; y < bmp.bmHeight; y++) {
+          for (x = 0; x < bmp.bmWidth; x++) {
+            prgba[x].rgbRed = prgba[x].rgbGreen = prgba[x].rgbBlue =
+              (((BYTE)((prgba[x].rgbRed * 38 + prgba[x].rgbGreen * 75 + prgba[x].rgbBlue * 15) >> 7) * 0x80) + (0xD0 * (255 - 0x80))) >> 8;
+          }
+          prgba = (RGBQUAD*)((LPBYTE)prgba + bmp.bmWidthBytes);
         }
-        prgba = (RGBQUAD*)((LPBYTE)prgba + bmp.bmWidthBytes);
+        return true;
       }
-      return true;
     }
   }
   return false;

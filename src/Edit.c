@@ -96,6 +96,7 @@ extern int g_iDefaultCharSet;
 extern bool bLoadASCIIasUTF8;
 extern bool bForceLoadASCIIasUTF8;
 extern bool bLoadNFOasOEM;
+extern bool bNoEncodingTags;
 
 extern bool g_bAccelWordNavigation;
 
@@ -1020,31 +1021,43 @@ bool EditLoadFile(
     return false;
   }
 
-  bool bPreferOEM = false;
+  bool bNfoDizDetected = false;
   if (bLoadNFOasOEM)
   {
     if (lpszExt && !(StringCchCompareIX(lpszExt,L".nfo") && StringCchCompareIX(lpszExt,L".diz")))
-      bPreferOEM = true;
+      bNfoDizDetected = true;
   }
 
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
-  int iPreferedEncoding = (bPreferOEM) ? g_DOSEncoding :
+  int iPreferedEncoding = (bNfoDizDetected) ? g_DOSEncoding :
     ((bUseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
-  int iAnalyzedEncoding = (bSkipANSICPDetection && !g_bForceCompEncDetection) ? CPI_NONE : 
-    Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
-  if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
-    iAnalyzedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
+  int iAnalyzedEncoding = Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+
+  if (!g_bForceCompEncDetection) 
+  {
+    bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
+
+    if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
+      iAnalyzedEncoding = bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
+    }
+    else {
+      if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
+        iAnalyzedEncoding = CPI_NONE;
+      }
+    }
   }
   // --------------------------------------------------------------------------
 
   int iForcedEncoding = bForceLoadASCIIasUTF8 ? CPI_UTF8 : Encoding_SrcCmdLn(CPI_GET);
-
+  if (Encoding_IsNONE(iForcedEncoding) && bNfoDizDetected) {
+    iForcedEncoding = g_DOSEncoding;
+  }
   if (g_bForceCompEncDetection && !Encoding_IsNONE(iAnalyzedEncoding)) {
-    iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced)
+    iForcedEncoding = iAnalyzedEncoding;  // no bIsReliable check (forced unreliable detection)
   }
   // --------------------------------------------------------------------------
 
@@ -1054,13 +1067,10 @@ bool EditLoadFile(
   if (!Encoding_IsNONE(iForcedEncoding)) {
     iPreferedEncoding = iForcedEncoding;
   }
-  else if (Encoding_IsUNICODE(iAnalyzedEncoding) && !bSkipUTFDetection) {
-    iPreferedEncoding = iAnalyzedEncoding;
-  }
   else if (iFileEncWeak != CPI_NONE) {
     iPreferedEncoding = iFileEncWeak;
   }
-  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable ) {
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
     iPreferedEncoding = iAnalyzedEncoding;
   } 
   else if (Encoding_IsNONE(iPreferedEncoding)) {
@@ -1077,48 +1087,35 @@ bool EditLoadFile(
   if (cbData == 0) {
     FileVars_Init(NULL,0,&fvCurFile);
     *iEOLMode = iLineEndings[g_iDefaultEOLMode];
-    if (iForcedEncoding == CPI_NONE) {
-      if (bLoadASCIIasUTF8 && !bPreferOEM)
-        *iEncoding = CPI_UTF8;
-      else
-        *iEncoding = iPreferedEncoding;
-    }
-    else
-      *iEncoding = iForcedEncoding;
-
+    *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
     SendMessage(hwnd,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
     FreeMem(lpData);
   }
   // ===  UNICODE  ===
   else if (Encoding_IsUNICODE(iForcedEncoding) ||
-    (!bSkipUTFDetection && !bIsUTF8Sig
-      && Encoding_IsNONE(iForcedEncoding)
-      && (IsUnicode(lpData, cbData, &bBOM, &bReverse)
-        || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable)
-        )
+    (Encoding_IsNONE(iForcedEncoding) && !bSkipUTFDetection && !bIsUTF8Sig
+      && (IsValidUnicode(lpData, cbData, &bBOM, &bReverse) 
+        || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable))
       )
     )
   {
     if (iForcedEncoding == CPI_UNICODE) {
-      bBOM = (*((UNALIGNED PWCHAR)lpData) == 0xFEFF);
+      bBOM = Has_UTF16_LE_BOM(lpData);
       bReverse = false;
     }
-    else if (iForcedEncoding == CPI_UNICODEBE)
-      bBOM = (*((UNALIGNED PWCHAR)lpData) == 0xFFFE);
+    else if (iForcedEncoding == CPI_UNICODEBE) {
+      bBOM = Has_UTF16_BE_BOM(lpData);
+      bReverse = true;
+    }
 
-    if (iForcedEncoding == CPI_UNICODEBE || bReverse) {
+    if (bReverse) 
+    {
       _swab(lpData,lpData,cbData);
-      if (bBOM)
-        *iEncoding = CPI_UNICODEBEBOM;
-      else
-        *iEncoding = CPI_UNICODEBE;
+      *iEncoding = (bBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
     }
     else {
-      if (bBOM)
-        *iEncoding = CPI_UNICODEBOM;
-      else
-        *iEncoding = CPI_UNICODE;
+      *iEncoding = (bBOM ? CPI_UNICODEBOM : CPI_UNICODE);
     }
 
     char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
@@ -1155,17 +1152,16 @@ bool EditLoadFile(
     FileVars_Init(lpData,cbData,&fvCurFile);
 
     // ===  UTF-8  ===
-    if (Encoding_IsUTF8(iForcedEncoding) || 
-      (!bSkipUTFDetection && !FileVars_IsNonUTF8(&fvCurFile)
-        && Encoding_IsNONE(iForcedEncoding)
-        && (bIsUTF8Sig
-          || FileVars_IsUTF8(&fvCurFile)
-          || (Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable)
-          || (!bPreferOEM && (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8))
-          )
-        && (IsUTF8(lpData, cbData) && !UTF8_ContainsInvalidChars(lpData, cbData))
-        )
-      )
+    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&fvCurFile) && !bNoEncodingTags);
+    bool const bForcedNonUTF8 = !Encoding_IsNONE(iForcedEncoding) && !Encoding_IsUTF8(iForcedEncoding);
+
+    bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
+    bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
+    bool const bSoftHintUTF8 = (Encoding_IsUTF8(iPreferedEncoding) || bLoadASCIIasUTF8);
+
+    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&fvCurFile) && !bNoEncodingTags);
+
+    if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8)))
     {
       EditSetNewText(hwnd,"",0);
       if (bIsUTF8Sig) {
@@ -1187,17 +1183,14 @@ bool EditLoadFile(
         *iEncoding = iForcedEncoding;
       else {
         *iEncoding = FileVars_GetEncoding(&fvCurFile);
-        if (Encoding_IsNONE(*iEncoding)) {
-          if (fvCurFile.mask & FV_ENCODING)
-            *iEncoding = CPI_ANSI_DEFAULT;
-          else {
-            *iEncoding = iPreferedEncoding;
-          }
+        if (Encoding_IsNONE(*iEncoding)) 
+        {
+          *iEncoding = ((fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferedEncoding);
         }
       }
 
       if (((Encoding_GetCodePage(*iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(*iEncoding)) ||
-          ((Encoding_GetCodePage(*iEncoding) == CP_UTF7) && IsUTF7(lpData,cbData))) {
+          ((Encoding_GetCodePage(*iEncoding) == CP_UTF7) && IsValidUTF7(lpData,cbData))) {
 
         UINT uCodePage = Encoding_GetCodePage(*iEncoding);
 
@@ -5519,14 +5512,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         {
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, true);
           CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED); // Can not use wildcard search together with regexp
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (bSaveTFBackSlashes) ? BST_CHECKED : BST_UNCHECKED);
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED); // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (bSaveTFBackSlashes) ? BST_CHECKED : BST_UNCHECKED);
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
@@ -5542,13 +5535,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         {
           CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
           DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (bSaveTFBackSlashes) ? BST_CHECKED : BST_UNCHECKED);
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
           CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, BST_CHECKED);  // transform BS handled by regex
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, false);
         }
         else { // unchecked
           DialogEnableWindow(hwnd, IDC_FINDTRANSFORMBS, true);
-          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, (bSaveTFBackSlashes) ? BST_CHECKED : BST_UNCHECKED);
+          CheckDlgButton(hwnd, IDC_FINDTRANSFORMBS, DlgBtnChk(bSaveTFBackSlashes));
         }
         _SetSearchFlags(hwnd, sg_pefrData);
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);

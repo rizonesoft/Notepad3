@@ -118,9 +118,9 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         SetDlgItemText(hDlg, IDC_PWD_EDIT1, unicodeFileKey);
         SetDlgItemText(hDlg, IDC_PWD_EDIT2, unicodeMasterKey);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), hasMasterFileKey);
-        CheckDlgButton(hDlg, IDC_PWD_CHECK3, hasMasterFileKey ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hDlg, IDC_PWD_CHECK2, (hasBinFileKey | useFileKey) ? BST_CHECKED : BST_UNCHECKED);
-        CheckDlgButton(hDlg, IDC_PWD_CHECK1, useMasterKey ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hDlg, IDC_PWD_CHECK3, DlgBtnChk(hasMasterFileKey));
+        CheckDlgButton(hDlg, IDC_PWD_CHECK2, DlgBtnChk(hasBinFileKey | useFileKey));
+        CheckDlgButton(hDlg, IDC_PWD_CHECK1, DlgBtnChk(useMasterKey));
         CenterDlgInParent(hDlg);
         // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT1 ) );
         SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT1));
@@ -175,7 +175,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         {
             WCHAR newFileKey[WKEY_LEN] = { 0 };
             GetDlgItemText(hDlg, IDC_PWD_EDIT1, newFileKey, COUNTOF(newFileKey));
-            CheckDlgButton(hDlg, IDC_PWD_CHECK2, (newFileKey[0] <= ' ') ? BST_UNCHECKED : BST_CHECKED);
+            CheckDlgButton(hDlg, IDC_PWD_CHECK2, DlgBtnChk(newFileKey[0] > ' '));
         }
 
         break;
@@ -186,7 +186,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
             GetDlgItemText(hDlg, IDC_PWD_EDIT2, newMasKey, COUNTOF(newMasKey));
             {
                 bool newuse = (newMasKey[0] > ' ');	// no leading whitespace or empty passwords
-                CheckDlgButton(hDlg, IDC_PWD_CHECK1, newuse ? BST_CHECKED : BST_UNCHECKED);
+                CheckDlgButton(hDlg, IDC_PWD_CHECK1, DlgBtnChk(newuse));
 
                 if (newuse) { CheckDlgButton(hDlg, IDC_PWD_CHECK3, BST_UNCHECKED); }
             }
@@ -196,18 +196,16 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
         case IDC_PWD_CHECK3:  // check reuse, uncheck set new and inverse
         {
-            bool reuseMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK3) == BST_CHECKED;
-
-            if (reuseMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK1, reuseMas ? BST_UNCHECKED : BST_CHECKED); }
+            bool const reuseMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK3) == BST_CHECKED;
+            if (reuseMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK1, DlgBtnChk(!reuseMas)); }
         }
 
         break;
 
         case IDC_PWD_CHECK1:
         {
-            bool useMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK1) == BST_CHECKED;
-
-            if (useMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK3, useMas ? BST_UNCHECKED : BST_CHECKED); }
+            bool const useMas = IsDlgButtonChecked(hDlg, IDC_PWD_CHECK1) == BST_CHECKED;
+            if (useMas) { CheckDlgButton(hDlg, IDC_PWD_CHECK3, DlgBtnChk(!useMas)); }
         }
 
         break;

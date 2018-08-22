@@ -50,6 +50,9 @@ __forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b =
 __forceinline int clampi(int x, int lower, int upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
+__forceinline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
 
 
 // Is the character an octal digit?
@@ -175,6 +178,9 @@ bool VerifyContrast(COLORREF,COLORREF);
 bool IsFontAvailable(LPCWSTR);
 
 bool IsCmdEnabled(HWND, UINT);
+
+
+#define DlgBtnChk(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
 
 #define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
 #define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)

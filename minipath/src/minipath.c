@@ -191,7 +191,7 @@ static BOOL __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 
   if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
     WCHAR* lngMultiStrPtr = pLngMultiStr;
-    WCHAR* last = pLngStr + (pLngStr[0] == 0xFEFF ? 1 : 0); // if read from unicode (UTF-16 LE) file
+    WCHAR* last = pLngStr + (Has_UTF16_LE_BOM(pLngStr) ? 1 : 0);
     while (last && rtnVal) {
       // make sure you validate the user input
       WCHAR* next = StrNextTok(last, L",; :");

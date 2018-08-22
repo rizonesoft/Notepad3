@@ -4477,7 +4477,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     }
   }
 
-  if (!bFound && Encoding_Current(CPI_GET) == g_DOSEncoding) {
+  if (!bFound && (Encoding_Current(CPI_GET) == g_DOSEncoding)) {
     pLexNew = &lexANSI;
   }
   // Apply the new lexer
@@ -6715,17 +6715,13 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           {
             ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
             ListView_EnsureVisible(hwndLV,i,false);
-            if (g_iDefaultLexer == i) {
-              CheckDlgButton(hwnd,IDC_DEFAULTSCHEME,BST_CHECKED);
-            }
+            CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, DlgBtnChk(g_iDefaultLexer == i));
             break;
           }
         }
 
         iInternalDefault = g_iDefaultLexer;
-
-        if (g_bAutoSelect)
-          CheckDlgButton(hwnd,IDC_AUTOSELECT,BST_CHECKED);
+        CheckDlgButton(hwnd,IDC_AUTOSELECT, DlgBtnChk(g_bAutoSelect));
 
         CenterDlgInParent(hwnd);
       }
@@ -6809,10 +6805,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
           case LVN_DELETEITEM:
             {
               int i = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
-              if (iInternalDefault == i)
-                CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, BST_CHECKED);
-              else
-                CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, BST_UNCHECKED);
+              CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, DlgBtnChk(iInternalDefault == i));
               DialogEnableWindow(hwnd, IDC_DEFAULTSCHEME, i != -1);
               DialogEnableWindow(hwnd, IDOK, i != -1);
             }
