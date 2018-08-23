@@ -5983,6 +5983,154 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 }
 
 
+
+//=============================================================================
+//
+//  _HandleAutoCloseTags()
+//
+static void __fastcall _HandleAutoIndent(int const charAdded) {
+  // in CRLF mode handle LF only...
+  if (((SC_EOL_CRLF == g_iEOLMode) && (charAdded != '\r')) || (SC_EOL_CRLF != g_iEOLMode))
+  {
+    DocPos const iCurPos = SciCall_GetCurrentPos();
+    DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
+
+    // Move bookmark along with line if inserting lines (pressing return within indent area of line) because Scintilla does not do this for us
+    if (iCurLine > 0)
+    {
+      //DocPos const iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
+      if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1))
+      {
+        int const bitmask = SciCall_MarkerGet(iCurLine - 1);
+        if (bitmask & (1 << MARKER_NP3_BOOKMARK))
+        {
+          SciCall_MarkerDelete(iCurLine - 1, MARKER_NP3_BOOKMARK);
+          SciCall_MarkerAdd(iCurLine, MARKER_NP3_BOOKMARK);
+        }
+      }
+    }
+
+    if (iCurLine > 0/* && iLineLength <= 2*/)
+    {
+      DocPos const iPrevLineLength = SciCall_LineLength(iCurLine - 1);
+      char* pLineBuf = NULL;
+      bool bAllocLnBuf = false;
+      if (iPrevLineLength < TEMPLINE_BUFFER) {
+        pLineBuf = g_pTempLineBufferMain;
+      }
+      else {
+        bAllocLnBuf = true;
+        pLineBuf = AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
+      }
+      if (pLineBuf)
+      {
+        SciCall_GetLine(iCurLine - 1, pLineBuf);
+        *(pLineBuf + iPrevLineLength) = '\0';
+        for (char* pPos = pLineBuf; *pPos; pPos++) {
+          if (*pPos != ' ' && *pPos != '\t')
+            *pPos = '\0';
+        }
+        if (*pLineBuf) {
+          _BEGIN_UNDO_ACTION_;
+          SciCall_AddText(lstrlenA(pLineBuf), pLineBuf);
+          _END_UNDO_ACTION_;
+        }
+        if (bAllocLnBuf) { FreeMem(pLineBuf); }
+      }
+    }
+  }
+}
+
+
+//=============================================================================
+//
+//  _HandleAutoCloseTags()
+//
+static void __fastcall _HandleAutoCloseTags()
+{
+  //int lexerID = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
+  //if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
+  {
+    DocPos const iCurPos = SciCall_GetCurrentPos();
+    DocPos const iHelper = iCurPos - (DocPos)(COUNTOF(g_pTempLineBufferMain) - 1);
+    DocPos const iStartPos = max(0, iHelper);
+    DocPos const iSize = iCurPos - iStartPos;
+
+    if (iSize >= 3)
+    {
+      const char* pBegin = SciCall_GetRangePointer(iStartPos, iSize);
+
+      if (pBegin[iSize - 2] != '/') {
+
+        const char* pCur = &pBegin[iSize - 2];
+
+        while (pCur > pBegin && *pCur != '<' && *pCur != '>') { --pCur; }
+
+        int  cchIns = 2;
+        StringCchCopyA(g_pTempLineBufferMain, FNDRPL_BUFFER, "</");
+        if (*pCur == '<') {
+          pCur++;
+          while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
+            g_pTempLineBufferMain[cchIns++] = *pCur;
+            pCur++;
+          }
+        }
+        g_pTempLineBufferMain[cchIns++] = '>';
+        g_pTempLineBufferMain[cchIns] = '\0';
+
+        if (cchIns > 3 &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</base>", -1) &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</bgsound>", -1) &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</br>", -1) &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</embed>", -1) &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</hr>", -1) &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</img>", -1) &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</input>", -1) &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</link>", -1) &&
+          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</meta>", -1))
+        {
+          _BEGIN_UNDO_ACTION_;
+          SciCall_ReplaceSel(g_pTempLineBufferMain);
+          SciCall_SetSel(iCurPos, iCurPos);
+          _END_UNDO_ACTION_;
+        }
+      }
+    }
+  }
+}
+
+
+//=============================================================================
+//
+//  _HandleTinyExpr() - called on '?' insert
+//
+static void __fastcall _HandleTinyExpr()
+{
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+  DocPos const iPosBefore = SciCall_PositionBefore(iCurPos);
+  char const chBefore = SciCall_GetCharAt(iPosBefore - 1);
+  if (chBefore == '=') // got "=?" evaluate expression trigger
+  {
+    DocPos const iLnCaretPos = SciCall_GetCurLine(COUNTOF(g_pTempLineBufferMain), g_pTempLineBufferMain);
+    g_pTempLineBufferMain[(iLnCaretPos > 1) ? (iLnCaretPos-2) : 0] = '\0'; // breakbefore "=?"
+
+    int iExprErr = 1;
+    const char* pBegin = &g_pTempLineBufferMain[0];
+    double dExprEval = 0.0;
+
+    while (*pBegin && iExprErr) {
+      dExprEval = te_interp(pBegin++, &iExprErr);
+    }
+    if (*pBegin && !iExprErr) {
+      char chExpr[64] = { '\0' };
+      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
+      SciCall_SetSel(iPosBefore, iCurPos);
+      SciCall_ReplaceSel(chExpr);
+    }
+  }
+}
+
+
 //=============================================================================
 //
 //  MsgNotify() - Handles WM_NOTIFY
@@ -6158,112 +6306,17 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case SCN_CHARADDED:
           {
             // Auto indent
-            if (bAutoIndent && (scn->ch == '\x0D' || scn->ch == '\x0A'))
+            if (bAutoIndent && (scn->ch == '\r' || scn->ch == '\n'))
             {
-              // in CRLF mode handle LF only...
-              if ((SC_EOL_CRLF == g_iEOLMode && scn->ch != '\x0A') || SC_EOL_CRLF != g_iEOLMode)
-              {
-                const DocPos iCurPos = SciCall_GetCurrentPos();
-                const DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
-
-                // Move bookmark along with line if inserting lines (pressing return within indent area of line) because Scintilla does not do this for us
-                if (iCurLine > 0)
-                {
-                  //const DocPos iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
-                  if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1))
-                  {
-                    int bitmask = SciCall_MarkerGet(iCurLine - 1);
-                    if (bitmask & (1 << MARKER_NP3_BOOKMARK))
-                    {
-                      SciCall_MarkerDelete(iCurLine - 1, MARKER_NP3_BOOKMARK);
-                      SciCall_MarkerAdd(iCurLine, MARKER_NP3_BOOKMARK);
-                    }
-                  }
-                }
-                
-                if (iCurLine > 0/* && iLineLength <= 2*/)
-                {
-                  const DocPos iPrevLineLength = SciCall_LineLength(iCurLine - 1);
-                  char* pLineBuf = NULL;
-                  bool bAllocLnBuf = false;
-                  if (iPrevLineLength < TEMPLINE_BUFFER) {
-                    pLineBuf = g_pTempLineBufferMain;
-                  }
-                  else {
-                    bAllocLnBuf = true;
-                    pLineBuf = AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
-                  }
-                  if (pLineBuf)
-                  {
-                    SciCall_GetLine(iCurLine - 1, pLineBuf);
-                    *(pLineBuf + iPrevLineLength) = '\0';
-                    for (char* pPos = pLineBuf; *pPos; pPos++) {
-                      if (*pPos != ' ' && *pPos != '\t')
-                        *pPos = '\0';
-                    }
-                    if (*pLineBuf) {
-                      _BEGIN_UNDO_ACTION_;
-                      SciCall_AddText(lstrlenA(pLineBuf), pLineBuf);
-                      _END_UNDO_ACTION_;
-                    }
-                    if (bAllocLnBuf) { FreeMem(pLineBuf); }
-                  }
-                }
-              }
+              _HandleAutoIndent(scn->ch);
             }
             // Auto close tags
             else if (bAutoCloseTags && scn->ch == '>')
             {
-              //int lexerID = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
-              //if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
-              {
-                const DocPos iCurPos = SciCall_GetCurrentPos();
-                const DocPos iHelper = iCurPos - (DocPos)(COUNTOF(g_pTempLineBufferMain) - 1);
-                const DocPos iStartPos = max(0, iHelper);
-                const DocPos iSize = iCurPos - iStartPos;
-
-                if (iSize >= 3) 
-                {
-                  const char* pBegin = SciCall_GetRangePointer(iStartPos, iSize);
-
-                  if (pBegin[iSize - 2] != '/') {
-
-                    const char* pCur = &pBegin[iSize - 2];
-
-                    while (pCur > pBegin && *pCur != '<' && *pCur != '>')
-                      --pCur;
-
-                    int  cchIns = 2;
-                    StringCchCopyA(g_pTempLineBufferMain, FNDRPL_BUFFER, "</");
-                    if (*pCur == '<') {
-                      pCur++;
-                      while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
-                        g_pTempLineBufferMain[cchIns++] = *pCur;
-                        pCur++;
-                      }
-                    }
-                    g_pTempLineBufferMain[cchIns++] = '>';
-                    g_pTempLineBufferMain[cchIns] = '\0';
-
-                    if (cchIns > 3 &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</base>", -1) &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</bgsound>", -1) &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</br>", -1) &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</embed>", -1) &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</hr>", -1) &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</img>", -1) &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</input>", -1) &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</link>", -1) &&
-                      StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</meta>", -1))
-                    {
-                      _BEGIN_UNDO_ACTION_;
-                      SciCall_ReplaceSel(g_pTempLineBufferMain);
-                      SciCall_SetSel(iCurPos, iCurPos);
-                      _END_UNDO_ACTION_;
-                    }
-                  }
-                }
-              }
+              _HandleAutoCloseTags();
+            }
+            else if (scn->ch == '?') {
+              _HandleTinyExpr();
             }
             else if (g_bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
               EditCompleteWord(g_hwndEdit, false);
@@ -8312,6 +8365,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   // try calculate expression of selection
   static WCHAR tchExpression[32] = { L'\0' };
   static int s_iExprError = -3;
+  static char chExpression[1024] = { '\0' };
 
   if (g_iStatusbarVisible[STATUS_TINYEXPR])
   {
@@ -8322,13 +8376,12 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bIsSelCountable)
     {
-      char chExpression[1024] = { '\0' };
+      
       if (SciCall_GetSelText(NULL) < COUNTOF(chExpression))
       {
         SciCall_GetSelText(chExpression);
         //StrDelChrA(chExpression, " \r\n\t\v");
         StrDelChrA(chExpression, "\r\n");
-
         g_dExpression = te_interp(chExpression, &g_iExprError);
 
         if (!g_iExprError) {
