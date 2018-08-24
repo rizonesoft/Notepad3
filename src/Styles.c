@@ -417,7 +417,7 @@ KEYWORDLIST KeyWords_CPP = {
   "alignof defined naked noreturn",
   // Secondary keywords
   "asm __abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
-  "__except __except__try __fastcall __finally __forceinline __gc __hook __identifier "
+  "__except __except__try __fastcall __finally inline __gc __hook __identifier "
   "__if_exists __if_not_exists __inline __interface __leave "
   "__multiple_inheritance __nogc __noop __pin __property __raise "
   "__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
@@ -3119,7 +3119,7 @@ static float __fastcall _SetBaseFontSize(float fSize)
   static float fBaseFontSize = INITIAL_BASE_FONT_SIZE;
 
   if (fSize >= 0.0f) {
-    fBaseFontSize = Round100th(fSize);
+    fBaseFontSize = Round10th(fSize);
   }
   return fBaseFontSize;
 }
@@ -3139,7 +3139,7 @@ static float __fastcall _SetCurrentFontSize(float fSize)
   static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
 
   if (fSize >= 0.0f) {
-    fCurrentFontSize = Round100th(fSize);
+    fCurrentFontSize = Round10th(fSize);
   }
   return fCurrentFontSize;
 }
@@ -4821,7 +4821,7 @@ bool Style_StrGetSize(LPCWSTR lpszStyle, float* f)
         float const base = *f; // base is input
         fValue = (base + (fSign * fValue)); // can be negative
       }
-      *f = Round100th(fValue);
+      *f = Round10th(fValue);
       return true;
     }
   }
@@ -5457,7 +5457,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   if (bRelFontSize)
   {
-    float fNewRelSize = Round100th(fNewFontSize - fBaseFontSize);
+    float fNewRelSize = Round10th(fNewFontSize - fBaseFontSize);
 
     if (fNewRelSize >= 0.0) {
       if (HasNonZeroFraction(fNewRelSize))
@@ -5473,8 +5473,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
   }
   else {
-    fFontSize = Round100th(fFontSize);
-    fNewFontSize = Round100th(fNewFontSize);
+    fFontSize = Round10th(fFontSize);
+    fNewFontSize = Round10th(fNewFontSize);
 
     if (fNewFontSize == fFontSize) {
       if (StrStrI(lpszStyle, L"size:")) {
@@ -5673,7 +5673,7 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
 //
 void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault)
 {
-  if (!bInitDefault && lstrlen(lpszStyle) == 0) { return; }
+  if (!bInitDefault && StrIsEmpty(lpszStyle)) { return; }
 
   int iValue = 0;
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };

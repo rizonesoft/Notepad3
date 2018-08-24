@@ -45,12 +45,30 @@ extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
 extern LANGID    g_iPrefLngLocID;
 
+
+//=============================================================================
+
+#ifdef DEBUG
+#ifndef NDEBUG
+void DbgLog(const char *fmt, ...) {
+  char buf[1024] = "";
+  va_list va;
+  va_start(va, fmt);
+  wvsprintfA(buf, fmt, va);
+  va_end(va);
+  OutputDebugStringA(buf);
+}
+#endif
+#endif
+
+
+
 //=============================================================================
 //
 //  Cut of substrings defined by pattern
 //
 
-CHAR* _StrCutIA(CHAR* s,const CHAR* pattern)
+CHAR* StrCutIA(CHAR* s,const CHAR* pattern)
 {
   CHAR* p = NULL;
   do {
@@ -63,7 +81,7 @@ CHAR* _StrCutIA(CHAR* s,const CHAR* pattern)
   return s;
 }
 
-WCHAR* _StrCutIW(WCHAR* s,const WCHAR* pattern)
+WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern)
 {
   WCHAR* p = NULL;
   do {
@@ -109,7 +127,7 @@ bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove)
 //  Find next token in string
 //
 
-CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
+CHAR* StrNextTokA(CHAR* strg, const CHAR* tokens)
 {
   CHAR* n = NULL;
   const CHAR* t = tokens;
@@ -123,7 +141,7 @@ CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
   return n;
 }
 
-WCHAR* _StrNextTokW(WCHAR* strg, const WCHAR* tokens)
+WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
 {
   WCHAR* n = NULL;
   const WCHAR* t = tokens;
@@ -334,7 +352,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 UINT GetCurrentDPI(HWND hwnd) {
   UINT dpi = 0;
   if (IsWin10()) {
-    FARPROC pfnGetDpiForWindow = GetProcAddress(GetModuleHandle(L"user32.dll"), "GetDpiForWindow");
+    FARPROC pfnGetDpiForWindow = GetProcAddress(GetModuleHandle(_T("user32.dll")), "GetDpiForWindow");
     if (pfnGetDpiForWindow) {
       dpi = (UINT)pfnGetDpiForWindow(hwnd);
     }
@@ -377,6 +395,17 @@ UINT GetCurrentPPI(HWND hwnd) {
   return max(ppi, USER_DEFAULT_SCREEN_DPI);
 }
 
+/*
+if (!bSucceed) {
+  NONCLIENTMETRICS ncm;
+  ncm.cbSize = sizeof(NONCLIENTMETRICS);
+  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
+  if (ncm.lfMessageFont.lfHeight < 0)
+  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
+  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
+  if (*wSize == 0)
+    *wSize = 8;
+}*/
 
 
 
@@ -435,22 +464,11 @@ bool PrivateIsAppThemed()
 //
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
 {
-  FARPROC pfnSetCurrentProcessExplicitAppUserModelID;
+  if (StrIsEmpty(AppID)) { return(S_OK); }
 
-  if (lstrlen(AppID) == 0)
-    return(S_OK);
+  if (StringCchCompareIX(AppID, L"(default)") == 0) { return(S_OK); }
 
-  if (StringCchCompareIX(AppID,L"(default)") == 0)
-    return(S_OK);
-
-  pfnSetCurrentProcessExplicitAppUserModelID =
-    GetProcAddress(GetModuleHandleA("shell32.dll"),"SetCurrentProcessExplicitAppUserModelID");
-
-  if (pfnSetCurrentProcessExplicitAppUserModelID)
-    return((HRESULT)pfnSetCurrentProcessExplicitAppUserModelID(AppID));
-
-  else
-    return(S_OK);
+  return SetCurrentProcessExplicitAppUserModelID(AppID);
 }
 
 
@@ -1352,7 +1370,8 @@ int FormatNumberStr(LPWSTR lpNumberStr)
   static WCHAR szGrp[11] = { L'\0' };
   static int iPlace[4] = {-1,-1,-1,-1};
 
-  if (!lstrlen(lpNumberStr)) { return 0; }
+  if (StrIsEmpty(lpNumberStr)) { return 0; }
+
   StrTrim(lpNumberStr, L" \t");
 
   if (szSep[0] == L'\0') {
@@ -2383,9 +2402,9 @@ bool Char2FloatW(WCHAR* wnumber, float* fresult)
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
 {
   if (!lpszStrg) { return; };
-  fValue = Round100th(fValue);
+  fValue = Round10th(fValue);
   if (HasNonZeroFraction(fValue))
-    StringCchPrintf(lpszStrg, cchSize, L"%.4g", fValue);
+    StringCchPrintf(lpszStrg, cchSize, L"%.3G", fValue);
   else
     StringCchPrintf(lpszStrg, cchSize, L"%i", float2int(fValue));
 }

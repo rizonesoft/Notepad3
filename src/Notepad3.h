@@ -160,7 +160,7 @@ void SetFindPatternMB(LPCSTR);
 void GetFindPattern(LPWSTR, size_t);
 void GetFindPatternMB(LPSTR, size_t);
 
-bool FileIO(bool,LPCWSTR,bool,bool,int*,int*,bool*,bool*,bool*,bool*,bool);
+bool FileIO(bool,LPWSTR,bool,bool,int*,int*,bool*,bool*,bool*,bool*,bool);
 bool FileLoad(bool,bool,bool,bool,bool,LPCWSTR);
 bool FileRevert(LPCWSTR,bool);
 bool FileSave(bool,bool,bool,bool);

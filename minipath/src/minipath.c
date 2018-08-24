@@ -328,7 +328,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   // MultiLingual
   //
   g_iPrefLngLocID = GetUserDefaultUILanguage();
-  BOOL bPrefLngDefined = (lstrlen(g_tchPrefLngLocName) > 0) ? TRUE : FALSE;
+  BOOL bPrefLngDefined = StrIsNotEmpty(g_tchPrefLngLocName);
   BOOL bPrefLngNotAvail = FALSE;
   if (bPrefLngDefined) {
     bPrefLngDefined = TRUE;
@@ -1070,7 +1070,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Add normal Toolbar Bitmap
   hbmp = NULL;
-  if (lstrlen(tchToolbarBitmap))
+  if (StrIsNotEmpty(tchToolbarBitmap))
   {
     if (!SearchPath(NULL,tchToolbarBitmap,NULL,COUNTOF(szTmp),szTmp,NULL))
       lstrcpy(szTmp,tchToolbarBitmap);
@@ -1092,7 +1092,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Optionally add hot Toolbar Bitmap
   hbmp = NULL;
-  if (lstrlen(tchToolbarBitmapHot))
+  if (StrIsNotEmpty(tchToolbarBitmapHot))
   {
     if (!SearchPath(NULL,tchToolbarBitmapHot,NULL,COUNTOF(szTmp),szTmp,NULL))
       lstrcpy(szTmp,tchToolbarBitmapHot);
@@ -1110,7 +1110,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
   // Optionally add disabled Toolbar Bitmap
   hbmp = NULL;
-  if (lstrlen(tchToolbarBitmapDisabled))
+  if (StrIsNotEmpty(tchToolbarBitmapDisabled))
   {
     if (!SearchPath(NULL,tchToolbarBitmapDisabled,NULL,COUNTOF(szTmp),szTmp,NULL))
       lstrcpy(szTmp,tchToolbarBitmapDisabled);
@@ -1399,7 +1399,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   CheckCmd(hmenu,SC_ALWAYSONTOP,bAlwaysOnTop);
 
-  i = (lstrlen(g_wchIniFile) > 0 || lstrlen(g_wchIniFile2) > 0);
+  i = (StrIsNotEmpty(g_wchIniFile) || StrIsNotEmpty(g_wchIniFile2));
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,i);
 
   UNUSED(hwnd);
@@ -1594,7 +1594,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         else
           GetShortPathName(dli.szFileName,szTmp,COUNTOF(szTmp));
 
-        if (lstrlen(szQuickviewParams)) {
+        if (StrIsNotEmpty(szQuickviewParams)) {
           StrCatBuff(szParam,szQuickviewParams,COUNTOF(szParam));
           StrCatBuff(szParam,L" ",COUNTOF(szParam));
         }
@@ -1904,7 +1904,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
         PathQuoteSpaces(szParameters);
 
         lstrcat(szParameters,L" -f");
-        if (lstrlen(g_wchIniFile)) {
+        if (StrIsNotEmpty(g_wchIniFile)) {
           lstrcat(szParameters,L" \"");
           lstrcat(szParameters,g_wchIniFile);
           lstrcat(szParameters,L"\"");
@@ -2093,8 +2093,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       {
         BOOL bCreateFailure = FALSE;
 
-        if (lstrlen(g_wchIniFile) == 0) {
-          if (lstrlen(g_wchIniFile2) > 0) {
+        if (StrIsEmpty(g_wchIniFile)) {
+          if (StrIsNotEmpty(g_wchIniFile2)) {
             if (CreateIniFileEx(g_wchIniFile2)) {
               lstrcpy(g_wchIniFile,g_wchIniFile2);
               lstrcpy(g_wchIniFile2,L"");
@@ -2292,7 +2292,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case ACC_SELECTINIFILE:
-      if (lstrlen(g_wchIniFile)) {
+      if (StrIsNotEmpty(g_wchIniFile)) {
         CreateIniFile();
         DisplayPath(g_wchIniFile,IDS_ERR_INIOPEN);
       }
@@ -2879,9 +2879,9 @@ void LoadSettings()
     // try to fetch Favorites dir from Notepad3.ini
     GetPrivateProfileString(L"Settings", L"Favorites", L"",
                             g_tchFavoritesDir, COUNTOF(g_tchFavoritesDir), g_wchNP3IniFile);
-    if (lstrlen(g_wchNP3IniFile)) { bNP3sFavoritesSettings = TRUE; }
+    if (StrIsNotEmpty(g_wchNP3IniFile)) { bNP3sFavoritesSettings = TRUE; }
   }
-  if (!lstrlen(g_tchFavoritesDir))
+  if (StrIsEmpty(g_tchFavoritesDir))
     SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,g_tchFavoritesDir);
   else
     PathAbsoluteFromApp(g_tchFavoritesDir,NULL,COUNTOF(g_tchFavoritesDir),TRUE);
@@ -2905,7 +2905,7 @@ void LoadSettings()
     GetPrivateProfileString(L"Settings", L"OpenWithDir", L"",
                             tchOpenWithDir, COUNTOF(tchOpenWithDir), g_wchNP3IniFile);
   }
-  if (!lstrlen(tchOpenWithDir))
+  if (StrIsEmpty(tchOpenWithDir))
     SHGetSpecialFolderPath(NULL, tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, TRUE);
   else
     PathAbsoluteFromApp(tchOpenWithDir,NULL,COUNTOF(tchOpenWithDir),TRUE);
@@ -3026,7 +3026,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
 {
   WCHAR wchTmp[MAX_PATH];
 
-  if (lstrlen(g_wchIniFile) == 0)
+  if (StrIsEmpty(g_wchIniFile))
     return;
 
   CreateIniFile();
@@ -3136,7 +3136,7 @@ void ParseCommandLine()
   LPWSTR lpCmdLine = GetCommandLine();
   LPWSTR lp1,lp2;
 
-  if (lstrlen(lpCmdLine) == 0)
+  if (StrIsEmpty(lpCmdLine))
     return;
 
   // Good old console can also send args separated by Tabs
@@ -3354,7 +3354,7 @@ int FindIniFile() {
   WCHAR tchModule[MAX_PATH];
   GetModuleFileName(NULL,tchModule,COUNTOF(tchModule));
 
-  if (lstrlen(g_wchIniFile)) {
+  if (StrIsNotEmpty(g_wchIniFile)) {
     if (lstrcmpi(g_wchIniFile,L"*?") == 0)
       return(0);
     else {
@@ -3516,7 +3516,7 @@ BOOL DisplayPath(LPCWSTR lpPath,UINT uIdError)
   WCHAR  szPath[MAX_PATH];
   WCHAR  szTmp[MAX_PATH];
 
-  if (!lstrlen(lpPath))
+  if (StrIsEmpty(lpPath))
     return FALSE;
 
   lstrcpy(szTmp,lpPath);
@@ -3904,7 +3904,7 @@ void LoadTargetParamsOnce(void)
     IniSectionGetString(pIniSection,L"DDEApplication",szDDEApp,szDDEApp,COUNTOF(szDDEApp));
     IniSectionGetString(pIniSection,L"DDETopic",szDDETopic,szDDETopic,COUNTOF(szDDETopic));
   }
-  else if (iUseTargetApplication && lstrlen(szTargetApplication) == 0) {
+  else if (iUseTargetApplication && StrIsEmpty(szTargetApplication)) {
     iUseTargetApplication = 1;
     iTargetApplicationMode = 1;
     lstrcpy(szTargetApplication,L"Notepad3.exe");
@@ -3936,7 +3936,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
   LoadTargetParamsOnce();
 
   if (iUseTargetApplication == 4 ||
-     (iUseTargetApplication && lstrlen(szTargetApplication) == 0)) {
+     (iUseTargetApplication && StrIsEmpty(szTargetApplication))) {
     ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDTARGET),hwndMain,FindTargetDlgProc,(LPARAM)NULL);
     return;
   }
@@ -4001,7 +4001,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       //else
         GetShortPathName(lpParam,lpParam,MAX_PATH);
 
-      if (lstrlen(szTargetApplicationParams)) {
+      if (StrIsNotEmpty(szTargetApplicationParams)) {
         StrCpyN(szParam,szTargetApplicationParams,COUNTOF(szParam));
         StrCatBuff(szParam,L" ",COUNTOF(szParam));
       }
@@ -4043,7 +4043,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
         ExecDDECommand(lpFileName,szDDEMsg,szDDEApp,szDDETopic))
       return;
 
-    if (!iUseTargetApplication && lstrlen(lpFileName) == 0)
+    if (!iUseTargetApplication && StrIsEmpty(lpFileName))
       return;
 
     else {
@@ -4059,7 +4059,7 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       //else
         GetShortPathName(lpParam,lpParam,MAX_PATH);
 
-      if (lstrlen(szTargetApplicationParams)) {
+      if (StrIsNotEmpty(szTargetApplicationParams)) {
         StrCpyN(szParam,szTargetApplicationParams,COUNTOF(szParam));
         StrCatBuff(szParam,L" ",COUNTOF(szParam));
       }
@@ -4123,7 +4123,7 @@ void SnapToTarget(HWND hwnd)
     IniGetString(L"Target Application",L"TargetApplicationWndClass",
       szTargetApplicationWndClass,szTargetApplicationWndClass,COUNTOF(szTargetApplicationWndClass));
 
-    if (!lstrlen(szTargetApplicationWndClass))
+    if (StrIsEmpty(szTargetApplicationWndClass))
       return;
 
     else

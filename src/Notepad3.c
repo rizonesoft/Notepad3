@@ -239,7 +239,6 @@ int       iEscFunction;
 bool      bAlwaysOnTop;
 bool      bMinimizeToTray;
 bool      bTransparentMode;
-bool      bTransparentModeAvailable;
 bool      bShowToolbar;
 bool      bShowStatusbar;
 int       iHighDpiToolBar;
@@ -1275,7 +1274,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 
   // Match Text
   if (g_flagMatchText && lpMatchArg) {
-    if (lstrlen(lpMatchArg) && SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0)) {
+    if (StrIsNotEmpty(lpMatchArg) && SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0)) {
 
       WideCharToMultiByteStrg(Encoding_SciCP,lpMatchArg,g_efrData.szFind);
 
@@ -1533,44 +1532,76 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  SetWordWrapping() - WordWrapSettings
+//  _SetWrapStartIndent()
 //
-static void __fastcall _SetWordWrapping(HWND hwndEditCtrl)
+static void __fastcall _SetWrapStartIndent(HWND hwndEditCtrl)
 {
-  // Word wrap
-  if (g_bWordWrap)
-    SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, (iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR, 0);
-  else
-    SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
+  int i = 0;
+  switch (iWordWrapIndent) {
+  case 1: i = 1; break;
+  case 2: i = 2; break;
+  case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
+  case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
+  }
+  SendMessage(hwndEditCtrl, SCI_SETWRAPSTARTINDENT, i, 0);
+}
 
-  if (iWordWrapIndent == 5)
+
+//=============================================================================
+//
+//  _SetWrapIndentMode()
+//
+static void __fastcall _SetWrapIndentMode(HWND hwndEditCtrl)
+{
+  int const wrap_mode = (!g_bWordWrap ? SC_WRAP_NONE : ((iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
+
+  SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, wrap_mode, 0);
+
+  if (iWordWrapIndent == 5) {
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_SAME, 0);
-  else if (iWordWrapIndent == 6)
+  }
+  else if (iWordWrapIndent == 6) {
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_INDENT, 0);
+  }
+  else if (iWordWrapIndent == 7) {
+    SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_DEEPINDENT, 0);
+  }
   else {
-    int i = 0;
-    switch (iWordWrapIndent) {
-    case 1: i = 1; break;
-    case 2: i = 2; break;
-    case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
-    case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
-    }
-    SendMessage(hwndEditCtrl, SCI_SETWRAPSTARTINDENT, i, 0);
+    _SetWrapStartIndent(hwndEditCtrl);
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_FIXED, 0);
   }
+}
 
+
+//=============================================================================
+//
+//  _SetWrapVisualFlags()
+//
+static void __fastcall _SetWrapVisualFlags(HWND hwndEditCtrl)
+{
   if (bShowWordWrapSymbols) {
     int wrapVisualFlags = 0;
     int wrapVisualFlagsLocation = 0;
-    if (iWordWrapSymbols == 0)
+    if (iWordWrapSymbols == 0) {
       iWordWrapSymbols = 22;
+    }
     switch (iWordWrapSymbols % 10) {
-    case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT; break;
-    case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
+    case 1:
+      wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
+      wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT;
+      break;
+    case 2:
+      wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
+      break;
     }
     switch (((iWordWrapSymbols % 100) - (iWordWrapSymbols % 10)) / 10) {
-    case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
-    case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
+    case 1:
+      wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
+      wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT;
+      break;
+    case 2:
+      wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
+      break;
     }
     SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
     SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
@@ -1579,6 +1610,7 @@ static void __fastcall _SetWordWrapping(HWND hwndEditCtrl)
     SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, 0, 0);
   }
 }
+
 
 
 //=============================================================================
@@ -1693,7 +1725,8 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   Style_SetIndentGuides(hwndEditCtrl, bShowIndentGuides);
 
   // Word Wrap
-  _SetWordWrapping(hwndEditCtrl);
+  _SetWrapIndentMode(hwndEditCtrl);
+  _SetWrapVisualFlags(hwndEditCtrl);
 
   // Long Lines
   if (g_bMarkLongLines)
@@ -1862,37 +1895,16 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
-  RECT rc;
-
-  REBARINFO rbi;
-  REBARBANDINFO rbBand;
-
-  HIMAGELIST himl;
-  WCHAR szTmp[MAX_PATH] = { L'\0' };
-
   DWORD dwToolbarStyle = NP3_WS_TOOLBAR;
-  DWORD dwReBarStyle = NP3_WS_REBAR;
-
-  bool bIsPrivAppThemed = PrivateIsAppThemed();
-
-  int i,n;
-  WCHAR tchDesc[256] = { L'\0' };
-  WCHAR tchIndex[256] = { L'\0' };
-
-  WCHAR *pIniSection = NULL;
-  int   cchIniSection = 0;
-
-  if (bShowToolbar) { dwReBarStyle |= WS_VISIBLE; }
-
   g_hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
   SendMessage(g_hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
   // Add Toolbar Bitmap
-  BITMAP bmp;
   HBITMAP hbmp = NULL;
   HBITMAP hbmpCopy = NULL;
+  WCHAR szTmp[MAX_PATH] = { L'\0' };
   if (StringCchLenW(g_tchToolbarBitmap,COUNTOF(g_tchToolbarBitmap)))
   {
     if (!SearchPath(NULL,g_tchToolbarBitmap,L".bmp",COUNTOF(szTmp),szTmp,NULL))
@@ -1915,8 +1927,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
  
 
+  BITMAP bmp;
   GetObject(hbmp,sizeof(BITMAP),&bmp);
-  himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
+  HIMAGELIST himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
   ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
   DeleteObject(hbmp);
   SendMessage(g_hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
@@ -1979,14 +1992,16 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   }
 
   // Load toolbar labels
-  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
-  cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+  WCHAR* pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
+  int cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
   LoadIniSection(L"Toolbar Labels",pIniSection,cchIniSection);
-  for (i = 0; i < COUNTOF(tbbMainWnd); ++i) 
+  WCHAR tchDesc[256] = { L'\0' };
+  WCHAR tchIndex[256] = { L'\0' };
+  for (int i = 0; i < COUNTOF(tbbMainWnd); ++i) 
   {
     if (tbbMainWnd[i].fsStyle == BTNS_SEP) { continue; }
 
-    n = tbbMainWnd[i].iBitmap + 1;
+    int n = tbbMainWnd[i].iBitmap + 1;
     StringCchPrintf(tchIndex,COUNTOF(tchIndex),L"%02i",n);
 
     if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc)) > 0) 
@@ -2012,34 +2027,36 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (Toolbar_SetButtons(g_hwndToolbar, IDT_FILE_NEW, g_tchToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
     SendMessage(g_hwndToolbar, TB_ADDBUTTONS, NUMINITIALTOOLS, (LPARAM)tbbMainWnd);
   }
+  RECT rc;
   SendMessage(g_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
   //SendMessage(g_hwndToolbar,TB_SETINDENT,2,0);
 
 
   // Create Statusbar 
-  DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
-
-  if (bShowStatusbar) {
-    dwStatusbarStyle |= WS_VISIBLE;
-  }
+  DWORD const dwStatusbarStyle = bShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
   g_hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
 
 
   // Create ReBar and add Toolbar
+  DWORD const dwReBarStyle = bShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
   g_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
                              0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
+  REBARINFO rbi;
   rbi.cbSize = sizeof(REBARINFO);
   rbi.fMask  = 0;
   rbi.himl   = (HIMAGELIST)NULL;
   SendMessage(g_hwndReBar,RB_SETBARINFO,0,(LPARAM)&rbi);
 
+
+  REBARBANDINFO rbBand;
+  bool const bIsPrivAppThemed = PrivateIsAppThemed();
+
   rbBand.cbSize  = sizeof(REBARBANDINFO);
   rbBand.fMask   = /*RBBIM_COLORS | RBBIM_TEXT | RBBIM_BACKGROUND | */
                    RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
-  rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
-  if (bIsPrivAppThemed)
-    rbBand.fStyle |= RBBS_CHILDEDGE;
+  //rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
+  rbBand.fStyle = bIsPrivAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
   rbBand.hbmBack = NULL;
   rbBand.lpText     = L"Toolbar";
   rbBand.hwndChild  = g_hwndToolbar;
@@ -2756,7 +2773,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_LINEENDINGS_CR;
   CheckMenuRadioItem(hmenu,IDM_LINEENDINGS_CRLF,IDM_LINEENDINGS_CR,i,MF_BYCOMMAND);
 
-  EnableCmd(hmenu,IDM_FILE_RECENT,(MRU_Enum(g_pFileMRU,0,NULL,0) > 0));
+  EnableCmd(hmenu,IDM_FILE_RECENT,(MRU_Count(g_pFileMRU) > 0));
 
   EnableCmd(hmenu,IDM_EDIT_UNDO,SciCall_CanUndo() && !ro);
   EnableCmd(hmenu,IDM_EDIT_REDO,SciCall_CanRedo() && !ro);
@@ -2959,8 +2976,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,g_bStickyWinPos);
   CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((bAlwaysOnTop || g_flagAlwaysOnTop == 2) && g_flagAlwaysOnTop != 1));
   CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,bMinimizeToTray);
-  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentMode && bTransparentModeAvailable);
-  EnableCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentModeAvailable);
+  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentMode);
 
   i = IDM_SET_RENDER_TECH_DEFAULT + g_iRenderingTechnology;
   CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_DEFAULT, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
@@ -3292,7 +3308,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_RECENT:
-      if (MRU_Enum(g_pFileMRU,0,NULL,0) > 0) {
+      if (MRU_Count(g_pFileMRU) > 0) {
         if (FileSave(false,true,false,false)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (FileMRUDlg(hwnd,tchFile))
@@ -3329,9 +3345,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        if (EditSetNewEncoding(g_hwndEdit,
-                               iNewEncoding,
-                               (g_flagSetEncoding),
+        if (EditSetNewEncoding(g_hwndEdit, iNewEncoding, g_flagSetEncoding,
                                StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)) == 0)) {
 
           if (SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0) == 0) {
@@ -4623,12 +4637,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAP:
       g_bWordWrap = (g_bWordWrap) ? false : true;
-      if (!g_bWordWrap) {
-        SciCall_SetWrapMode(SC_WRAP_NONE);
-      }
-      else {
-        SciCall_SetWrapMode((iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR);
-      }
+      _SetWrapIndentMode(g_hwndEdit);
       EditEnsureSelectionVisible(g_hwndEdit);
       bWordWrapG = g_bWordWrap;
       UpdateToolbar();
@@ -4637,14 +4646,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAPSETTINGS:
       if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP,&iWordWrapIndent)) {
-        _SetWordWrapping(g_hwndEdit);
+        _SetWrapIndentMode(g_hwndEdit);
+        _SetWrapVisualFlags(g_hwndEdit);
       }
       break;
 
 
     case IDM_VIEW_WORDWRAPSYMBOLS:
       bShowWordWrapSymbols = (bShowWordWrapSymbols) ? false : true;
-      _SetWordWrapping(g_hwndEdit);
+      _SetWrapVisualFlags(g_hwndEdit);
       break;
 
 
@@ -4697,15 +4707,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         bTabIndentsG   = g_bTabIndents;
         iTabWidthG     = g_iTabWidth;
         iIndentWidthG  = g_iIndentWidth;
-        if (SendMessage(g_hwndEdit,SCI_GETWRAPINDENTMODE,0,0) == SC_WRAPINDENT_FIXED) {
-          int i = 0;
-          switch (iWordWrapIndent) {
-            case 1: i = 1; break;
-            case 2: i = 2; break;
-            case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
-            case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
-          }
-          SendMessage(g_hwndEdit,SCI_SETWRAPSTARTINDENT,i,0);
+        if (SendMessage(g_hwndEdit, SCI_GETWRAPINDENTMODE, 0, 0) == SC_WRAPINDENT_FIXED) {
+          _SetWrapStartIndent(g_hwndEdit);
         }
       }
       break;
@@ -6857,9 +6860,6 @@ void LoadSettings()
   g_iBidirectional = IniSectionGetInt(pIniSection, L"Bidirectional", g_iBidirectional);
   g_iBidirectional = clampi(g_iBidirectional, 0, 2);
 
-  // Check if SetLayeredWindowAttributes() is available
-  bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL) ? true : false;
-
   // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
   IniSectionGetString(pIniSection,L"ToolbarButtons", L"", g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
 
@@ -7208,11 +7208,6 @@ void SaveSettings(bool bSaveSettingsNow) {
 }
 
 
-
-
-
-
-
 //=============================================================================
 //
 //  ParseCommandLine()
@@ -7227,8 +7222,7 @@ void ParseCommandLine()
 
   LPWSTR lpCmdLine = GetCommandLine();
 
-  if (lstrlen(lpCmdLine) == 0)
-    return;
+  if (StrIsEmpty(lpCmdLine)) { return; }
 
   // Good old console can also send args separated by Tabs
   StrTab2Space(lpCmdLine);
@@ -8996,7 +8990,7 @@ static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* const s
 //  FileIO()
 //
 //
-bool FileIO(bool fLoad,LPCWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSICPDetection,
+bool FileIO(bool fLoad,LPWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSICPDetection,
             int *ienc,int *ieol,
             bool *pbUnicodeErr,bool *pbFileTooBig, bool* pbUnknownExt,
             bool *pbCancelDataLoss,bool bSaveCopy)
@@ -9100,7 +9094,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     return true;
   }
 
-  if (!lpszFile || lstrlen(lpszFile) == 0) {
+  if (StrIsEmpty(lpszFile)) {
     if (!OpenFileDlg(g_hwndMain,tch,COUNTOF(tch),NULL))
       return false;
   }
@@ -9604,7 +9598,7 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   StringCchCopy(szNewFile,COUNTOF(szNewFile),lpstrFile);
   Style_GetOpenDlgFilterStr(szFilter,COUNTOF(szFilter));
 
-  if (lstrlen(lpstrInitialDir))
+  if (StrIsNotEmpty(lpstrInitialDir))
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),lpstrInitialDir);
   else if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),g_wchCurFile);
@@ -10011,7 +10005,7 @@ bool RelaunchElevated(LPWSTR lpArgs) {
       StringCchCopy(szArguments,COUNTOF(szArguments),szArgs);
   }
 
-  if (lstrlen(szArguments)) {
+  if (StrIsNotEmpty(szArguments)) {
     SHELLEXECUTEINFO sei;
     ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
     sei.cbSize = sizeof(SHELLEXECUTEINFO);
