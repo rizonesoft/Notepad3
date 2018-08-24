@@ -352,7 +352,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 UINT GetCurrentDPI(HWND hwnd) {
   UINT dpi = 0;
   if (IsWin10()) {
-    FARPROC pfnGetDpiForWindow = GetProcAddress(GetModuleHandle(L"user32.dll"), "GetDpiForWindow");
+    FARPROC pfnGetDpiForWindow = GetProcAddress(GetModuleHandle(_T("user32.dll")), "GetDpiForWindow");
     if (pfnGetDpiForWindow) {
       dpi = (UINT)pfnGetDpiForWindow(hwnd);
     }
@@ -395,6 +395,17 @@ UINT GetCurrentPPI(HWND hwnd) {
   return max(ppi, USER_DEFAULT_SCREEN_DPI);
 }
 
+/*
+if (!bSucceed) {
+  NONCLIENTMETRICS ncm;
+  ncm.cbSize = sizeof(NONCLIENTMETRICS);
+  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
+  if (ncm.lfMessageFont.lfHeight < 0)
+  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
+  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
+  if (*wSize == 0)
+    *wSize = 8;
+}*/
 
 
 
@@ -453,20 +464,11 @@ bool PrivateIsAppThemed()
 //
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
 {
-  FARPROC pfnSetCurrentProcessExplicitAppUserModelID;
-
   if (StrIsEmpty(AppID)) { return(S_OK); }
 
   if (StringCchCompareIX(AppID, L"(default)") == 0) { return(S_OK); }
 
-  pfnSetCurrentProcessExplicitAppUserModelID =
-    GetProcAddress(GetModuleHandle(_T("shell32.dll")),"SetCurrentProcessExplicitAppUserModelID");
-
-  if (pfnSetCurrentProcessExplicitAppUserModelID) {
-    return((HRESULT)pfnSetCurrentProcessExplicitAppUserModelID(AppID));
-  }
-
-  return(S_OK);
+  return SetCurrentProcessExplicitAppUserModelID(AppID);
 }
 
 

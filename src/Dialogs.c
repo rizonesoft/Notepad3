@@ -29,6 +29,7 @@
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
+#include <uxtheme.h>
 #include <commdlg.h>
 #include <string.h>
 
@@ -2933,18 +2934,12 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode)
 {
   if (bTransparentMode) {
-    FARPROC fp = GetProcAddress(GetModuleHandle(L"User32"), "SetLayeredWindowAttributes");
-    if (fp) {
-      SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-
-      // get opacity level from registry
-      int iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
-      if (iAlphaPercent < 0 || iAlphaPercent > 100)
-        iAlphaPercent = 75;
-      BYTE bAlpha = (BYTE)(iAlphaPercent * 255 / 100);
-
-      fp(hwnd, 0, bAlpha, LWA_ALPHA);
-    }
+    SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+    // get opacity level from registry
+    int iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
+    iAlphaPercent = clampi(iAlphaPercent, 0, 100);
+    BYTE const bAlpha = (BYTE)MulDiv(iAlphaPercent, 255, 100);
+    SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
   }
   else
     SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED);
@@ -3404,68 +3399,42 @@ Based on code of MFC helper class CDialogTemplate
 
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-  HDC hDC;
-  int iLogPixelsY;
-  HTHEME hTheme;
-  LOGFONT lf;
   bool bSucceed = false;
+  UINT ppi = GetCurrentPPI(NULL);
 
-  hDC = GetDC(NULL);
-  iLogPixelsY = GetDeviceCaps(hDC, LOGPIXELSY);
-  ReleaseDC(NULL, hDC);
-
-  HMODULE hLocalModUxTheme = GetModuleHandle(L"uxtheme.dll");
-  if (hLocalModUxTheme) {
-    if ((bool)(GetProcAddress(hLocalModUxTheme, "IsAppThemed"))()) {
-      hTheme = (HTHEME)(INT_PTR)(GetProcAddress(hLocalModUxTheme, "OpenThemeData"))(NULL, L"WINDOWSTYLE;WINDOW");
-      if (hTheme) {
-        if (S_OK == (HRESULT)(GetProcAddress(hLocalModUxTheme, "GetThemeSysFont"))(hTheme,/*TMT_MSGBOXFONT*/805, &lf)) {
-          if (lf.lfHeight < 0)
-            lf.lfHeight = -lf.lfHeight;
-          *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
-          if (*wSize == 0)
-            *wSize = 8;
-          StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
-          bSucceed = true;
-        }
-        (GetProcAddress(hLocalModUxTheme, "CloseThemeData"))(hTheme);
+  HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+  if (hTheme) {
+    LOGFONT lf;
+    if (S_OK == GetThemeSysFont(hTheme,/*TMT_MSGBOXFONT*/805, &lf)) {
+      if (lf.lfHeight < 0) {
+        lf.lfHeight = -lf.lfHeight;
       }
+      *wSize = (WORD)MulDiv(lf.lfHeight, 72, ppi);
+      if (*wSize == 0) { *wSize = 8; }
+      StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
+      bSucceed = true;
     }
+    CloseThemeData(hTheme);
   }
-
-  /*
-  if (!bSucceed) {
-  NONCLIENTMETRICS ncm;
-  ncm.cbSize = sizeof(NONCLIENTMETRICS);
-  SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS),&ncm,0);
-  if (ncm.lfMessageFont.lfHeight < 0)
-  ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
-  *wSize = (WORD)MulDiv(ncm.lfMessageFont.lfHeight,72,iLogPixelsY);
-  if (*wSize == 0)
-  *wSize = 8;
-  StringCchCopyN(lpFaceName,LF_FACESIZE,ncm.lfMessageFont.lfFaceName,LF_FACESIZE);
-  }*/
-
   return(bSucceed);
 }
 
-__inline bool DialogTemplate_IsDialogEx(const DLGTEMPLATE* pTemplate) {
 
+inline bool DialogTemplate_IsDialogEx(const DLGTEMPLATE* pTemplate) {
   return ((DLGTEMPLATEEX*)pTemplate)->signature == 0xFFFF;
 }
 
-__inline bool DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate) {
-
+inline bool DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate) {
   return (DS_SETFONT &
     (DialogTemplate_IsDialogEx(pTemplate) ? ((DLGTEMPLATEEX*)pTemplate)->style : pTemplate->style));
 }
 
-__inline int DialogTemplate_FontAttrSize(bool bDialogEx) {
-
+inline int DialogTemplate_FontAttrSize(bool bDialogEx) {
   return (int)sizeof(WORD) * (bDialogEx ? 3 : 1);
 }
 
-__inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
+
+inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
 
   bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
   WORD* pw;

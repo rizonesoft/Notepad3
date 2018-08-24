@@ -274,9 +274,9 @@ BOOL ExeNameFromWnd(HWND hwnd,LPWSTR szExeName,int cchExeName)
 
   else
   {
-    fpCreateToolhelp32Snapshot = GetProcAddress(GetModuleHandle(L"Kernel32"),"CreateToolhelp32Snapshot");
-    fpProcess32First = GetProcAddress(GetModuleHandle(L"Kernel32"),"Process32First");
-    fpProcess32Next = GetProcAddress(GetModuleHandle(L"Kernel32"),"Process32Next");
+    fpCreateToolhelp32Snapshot = GetProcAddress(GetModuleHandle(_T("kernel32.dll")),"CreateToolhelp32Snapshot");
+    fpProcess32First = GetProcAddress(GetModuleHandle(_T("kernel32.dll")),"Process32First");
+    fpProcess32Next = GetProcAddress(GetModuleHandle(_T("kernel32.dll")),"Process32Next");
 
     if (fpCreateToolhelp32Snapshot)
     {
@@ -346,39 +346,11 @@ BOOL PrivateIsAppThemed()
 
 //=============================================================================
 //
-//  SetExplorerTheme()
-//
-//BOOL SetExplorerTheme(HWND hwnd)
-//{
-//  HMODULE hModUxTheme;
-//  FARPROC pfnSetWindowTheme;
-//
-//  if (IsVista()) {
-//    if (hModUxTheme = GetModuleHandle(L"uxtheme")) {
-//      pfnSetWindowTheme = GetProcAddress(hModUxTheme,"SetWindowTheme");
-//
-//      if (pfnSetWindowTheme)
-//        return (S_OK == pfnSetWindowTheme(hwnd,L"Explorer",NULL));
-//    }
-//  }
-//  return FALSE;
-//}
-
-
-//=============================================================================
-//
 //  SetTheme()
 //
-BOOL SetTheme(HWND hwnd,LPCWSTR lpszTheme)
+BOOL SetTheme(HWND hwnd, LPCWSTR lpszTheme)
 {
-  HMODULE hModUxTheme = GetModuleHandle(L"uxtheme");
-  if (hModUxTheme) {
-    FARPROC pfnSetWindowTheme = GetProcAddress(hModUxTheme,"SetWindowTheme");
-
-    if (pfnSetWindowTheme)
-      return (S_OK == pfnSetWindowTheme(hwnd,lpszTheme,NULL));
-  }
-  return FALSE;
+  return (S_OK == SetWindowTheme(hwnd, lpszTheme, NULL));
 }
 
 
@@ -594,24 +566,18 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 void SetWindowTransparentMode(HWND hwnd,BOOL bTransparentMode)
 {
   if (bTransparentMode) {
-    FARPROC fp = GetProcAddress(GetModuleHandle(L"User32"), "SetLayeredWindowAttributes");
-    if (fp) {
-      SetWindowLongPtr(hwnd,GWL_EXSTYLE,
-        GetWindowLongPtr(hwnd,GWL_EXSTYLE) | WS_EX_LAYERED);
+    SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
 
-      // get opacity level from registry
-      int iAlphaPercent = IniGetInt(L"Settings2",L"OpacityLevel",75);
-      if (iAlphaPercent < 0 || iAlphaPercent > 100)
-        iAlphaPercent = 75;
-      BYTE bAlpha = (BYTE)(iAlphaPercent * 255 / 100);
+    // get opacity level from registry
+    int iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
+    iAlphaPercent = clampi(iAlphaPercent, 0, 100);
 
-      fp(hwnd,0,bAlpha,LWA_ALPHA);
-    }
+    BYTE const bAlpha = (BYTE)MulDiv(iAlphaPercent, 255, 100);
+
+    SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
   }
-
   else
-    SetWindowLongPtr(hwnd,GWL_EXSTYLE,
-      GetWindowLongPtr(hwnd,GWL_EXSTYLE) & ~WS_EX_LAYERED);
+    SetWindowLongPtr(hwnd,GWL_EXSTYLE, GetWindowLongPtr(hwnd,GWL_EXSTYLE) & ~WS_EX_LAYERED);
 }
 
 
@@ -1732,35 +1698,27 @@ void MRU_AddOneItem(LPCWSTR pszKey,LPCWSTR pszNewItem)
 
 */
 
-BOOL GetThemedDialogFont(LPWSTR lpFaceName,WORD* wSize)
+BOOL GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
-  HDC hDC;
-  int iLogPixelsY;
-  HTHEME hTheme;
-  LOGFONT lf;
   BOOL bSucceed = FALSE;
 
-  hDC = GetDC(NULL);
-  iLogPixelsY = GetDeviceCaps(hDC,LOGPIXELSY);
-  ReleaseDC(NULL,hDC);
+  HDC hDC = GetDC(NULL);
+  int const iLogPixelsY = GetDeviceCaps(hDC, LOGPIXELSY);
+  ReleaseDC(NULL, hDC);
 
-  HMODULE hModUxTheme = GetModuleHandle(L"uxtheme.dll");
-  if (hModUxTheme) {
-    if ((BOOL)(GetProcAddress(hModUxTheme,"IsAppThemed"))()) {
-      hTheme = (HTHEME)(INT_PTR)(GetProcAddress(hModUxTheme,"OpenThemeData"))(NULL,L"WINDOWSTYLE;WINDOW");
-      if (hTheme) {
-        if (S_OK == (HRESULT)(GetProcAddress(hModUxTheme,"GetThemeSysFont"))(hTheme,/*TMT_MSGBOXFONT*/805,&lf)) {
-          if (lf.lfHeight < 0)
-            lf.lfHeight = -lf.lfHeight;
-          *wSize = (WORD)MulDiv(lf.lfHeight,72,iLogPixelsY);
-          if (*wSize == 0)
-            *wSize = 8;
-          StrCpyN(lpFaceName,lf.lfFaceName,LF_FACESIZE);
-          bSucceed = TRUE;
-        }
-        (GetProcAddress(hModUxTheme,"CloseThemeData"))(hTheme);
+  HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
+  if (hTheme) {
+    LOGFONT lf;
+    if (S_OK == GetThemeSysFont(hTheme,/*TMT_MSGBOXFONT*/805, &lf)) {
+      if (lf.lfHeight < 0) {
+        lf.lfHeight = -lf.lfHeight;
       }
+      *wSize = (WORD)MulDiv(lf.lfHeight, 72, iLogPixelsY);
+      if (*wSize == 0) { *wSize = 8; }
+      StrCpyN(lpFaceName, lf.lfFaceName, LF_FACESIZE);
+      bSucceed = TRUE;
     }
+    CloseThemeData(hTheme);
   }
 
   /*

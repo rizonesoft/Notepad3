@@ -39,6 +39,11 @@ inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
 
+// clamp
+static inline int clampi(int x, int lower, int upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
+
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 
 void BeginWaitCursor();

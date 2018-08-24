@@ -426,13 +426,10 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           }
         }
 
-        FARPROC fp = GetProcAddress(GetModuleHandle(L"User32"), "GetComboBoxInfo");
-        if (fp) {
-          COMBOBOXINFO cbi;
-          cbi.cbSize = sizeof(COMBOBOXINFO);
-          if (fp(GetDlgItem(hwnd,IDC_GOTO),&cbi))
-            SHAutoComplete(cbi.hwndItem,SHACF_FILESYSTEM);
-        }
+        COMBOBOXINFO cbi;
+        cbi.cbSize = sizeof(COMBOBOXINFO);
+        if (GetComboBoxInfo(GetDlgItem(hwnd,IDC_GOTO),&cbi))
+          SHAutoComplete(cbi.hwndItem,SHACF_FILESYSTEM);
 
         CenterDlgInParent(hwnd);
       }

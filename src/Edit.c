@@ -4101,8 +4101,6 @@ typedef struct _SORTLINE {
 
 typedef int (__stdcall * FNSTRCMP)(LPCWSTR,LPCWSTR);
 typedef int (__stdcall * FNSTRLOGCMP)(LPCWSTR, LPCWSTR);
-//static FARPROC pfnStrCmpLogicalW;
-static FNSTRLOGCMP pfnStrCmpLogicalW = NULL;
 
 int CmpStd(const void *s1, const void *s2) {
   int cmp = StrCmp(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
@@ -4115,9 +4113,9 @@ int CmpStdRev(const void *s1, const void *s2) {
 }
 
 int CmpLogical(const void *s1, const void *s2) {
-  int cmp = (int)pfnStrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
+  int cmp = (int)StrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
   if (cmp == 0)
-    cmp = (int)pfnStrCmpLogicalW(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
+    cmp = (int)StrCmpLogicalW(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
   if (cmp)
     return cmp;
   else {
@@ -4127,9 +4125,9 @@ int CmpLogical(const void *s1, const void *s2) {
 }
 
 int CmpLogicalRev(const void *s1, const void *s2) {
-  int cmp = -1 * (int)pfnStrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
+  int cmp = -1 * (int)StrCmpLogicalW(((SORTLINE*)s1)->pwszSortEntry,((SORTLINE*)s2)->pwszSortEntry);
   if (cmp == 0)
-    cmp = -1 * (int)pfnStrCmpLogicalW(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
+    cmp = -1 * (int)StrCmpLogicalW(((SORTLINE*)s1)->pwszLine,((SORTLINE*)s2)->pwszLine);
   if (cmp)
     return cmp;
   else {
@@ -4162,7 +4160,6 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   if (SciCall_IsSelectionEmpty()) { return; } // no selection
   
   FNSTRCMP pfnStrCmp = (iSortFlags & SORT_NOCASE) ? StrCmpIW : StrCmpW;
-  pfnStrCmpLogicalW = StrCmpLogicalW; //  GetProcAddress(GetModuleHandle(L"shlwapi"), "StrCmpLogicalW");
 
   if (SciCall_IsSelectionRectangle()) {
 
@@ -4290,7 +4287,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
 
   if (iSortFlags & SORT_DESCENDING) {
-    if (iSortFlags & SORT_LOGICAL && pfnStrCmpLogicalW)
+    if (iSortFlags & SORT_LOGICAL)
       qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLogicalRev);
     else
       qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
@@ -4308,7 +4305,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     }
   }
   else {
-    if ((iSortFlags & SORT_LOGICAL) && pfnStrCmpLogicalW)
+    if ((iSortFlags & SORT_LOGICAL))
       qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLogical);
     else
       qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStd);

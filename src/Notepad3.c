@@ -239,7 +239,6 @@ int       iEscFunction;
 bool      bAlwaysOnTop;
 bool      bMinimizeToTray;
 bool      bTransparentMode;
-bool      bTransparentModeAvailable;
 bool      bShowToolbar;
 bool      bShowStatusbar;
 int       iHighDpiToolBar;
@@ -2943,8 +2942,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,g_bStickyWinPos);
   CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((bAlwaysOnTop || g_flagAlwaysOnTop == 2) && g_flagAlwaysOnTop != 1));
   CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,bMinimizeToTray);
-  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentMode && bTransparentModeAvailable);
-  EnableCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentModeAvailable);
+  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentMode);
 
   i = IDM_SET_RENDER_TECH_DEFAULT + g_iRenderingTechnology;
   CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_DEFAULT, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
@@ -6840,9 +6838,6 @@ void LoadSettings()
 
   g_iBidirectional = IniSectionGetInt(pIniSection, L"Bidirectional", g_iBidirectional);
   g_iBidirectional = clampi(g_iBidirectional, 0, 2);
-
-  // Check if SetLayeredWindowAttributes() is available
-  bTransparentModeAvailable = (GetProcAddress(GetModuleHandle(L"User32"),"SetLayeredWindowAttributes") != NULL) ? true : false;
 
   // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
   IniSectionGetString(pIniSection,L"ToolbarButtons", L"", g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
