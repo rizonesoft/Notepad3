@@ -33,6 +33,14 @@ extern UINT    g_uCurrentPPI;
 
 // ============================================================================
 
+#ifndef _T
+#if !defined(ISPP_INVOKED) && (defined(UNICODE) || defined(_UNICODE))
+#define _T(text) L##text
+#else
+#define _T(text) text
+#endif
+#endif
+
 #define STRGFY(X)     L##(X)
 #define MKWSTRG(strg) STRGFY(strg)
 
@@ -41,93 +49,106 @@ extern UINT    g_uCurrentPPI;
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
+#define NOOP ((void)0)
+
+// ============================================================================
+
+#if defined(DEBUG) && !defined(NDEBUG)
+void DbgLog(const char *fmt, ...);
+#else
+#define DbgLog(fmt, ...) NOOP
+#endif
+
+// ============================================================================
 
 // swap 
-__forceinline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
-__forceinline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
+static inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
+static inline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
 // clamp
-__forceinline int clampi(int x, int lower, int upper) {
+static inline int clampi(int x, int lower, int upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
-__forceinline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
+
+static inline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
 
 // Is the character an octal digit?
-__forceinline bool IsDigit(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
-__forceinline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
+static inline bool IsDigit(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
+static inline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
 
 // Is the character a white space char?
-__forceinline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
-__forceinline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
+static inline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
+static inline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
 
 
-__forceinline int float2int(float f) { return (int)lroundf(f); }
-__forceinline float Round100th(float f) { return (float)float2int(f * 100.0f) / 100; }
-__forceinline bool HasNonZeroFraction(float f) { return ((float2int(f * 100.0f) % 100) != 0); }
+static inline int float2int(float f) { return (int)lroundf(f); }
+static inline float Round100th(float f) { return (float)float2int(f * 100.0f) / 100; }
+static inline bool HasNonZeroFraction(float f) { return ((float2int(f * 100.0f) % 100) != 0); }
+
 
 // direct heap allocation
-__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
+static inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 {
   return HeapAlloc(GetProcessHeap(), (dwFlags | HEAP_GENERATE_EXCEPTIONS), numBytes);
 }
-__forceinline bool FreeMem(LPVOID lpMemory)
+
+static inline bool FreeMem(LPVOID lpMemory)
 {
   return ((lpMemory != NULL) ? HeapFree(GetProcessHeap(), 0, lpMemory) : true);
 }
-__forceinline size_t SizeOfMem(LPVOID lpMemory)
+
+static inline size_t SizeOfMem(LPVOID lpMemory)
 {
   return ((lpMemory != NULL) ? HeapSize(GetProcessHeap(), 0, lpMemory) : 0);
 }
 
-#define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
-  GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),g_wchIniFile)
-#define IniGetInt(lpSection,lpName,nDefault) \
-  GetPrivateProfileInt(lpSection,lpName,(nDefault),g_wchIniFile)
-#define IniGetBool(lpSection,lpName,nDefault) \
-  (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),g_wchIniFile) ? true : false)
-#define IniSetString(lpSection,lpName,lpString) \
-  WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
-#define IniDeleteSection(lpSection) \
-  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
+// ----------------------------------------------------------------------------
 
-__forceinline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
+#define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),g_wchIniFile)
+#define IniGetInt(lpSection,lpName,nDefault)                         GetPrivateProfileInt(lpSection,lpName,(nDefault),g_wchIniFile)
+#define IniGetBool(lpSection,lpName,nDefault)                        (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),g_wchIniFile) ? true : false)
+#define IniSetString(lpSection,lpName,lpString)                      WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
+#define IniDeleteSection(lpSection)                                  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
+
+static inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
 
-#define IniSetBool(lpSection,lpName,nValue) \
-  IniSetInt(lpSection,lpName,((nValue) ? 1 : 0))
-#define LoadIniSection(lpSection,lpBuf,cchBuf) \
-  GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),g_wchIniFile)
-#define SaveIniSection(lpSection,lpBuf) \
-  WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
+#define IniSetBool(lpSection,lpName,nValue)    IniSetInt(lpSection,lpName,((nValue) ? 1 : 0))
+#define LoadIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),g_wchIniFile)
+#define SaveIniSection(lpSection,lpBuf)        WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
 
 int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
 int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
 UINT IniSectionGetUInt(LPCWSTR, LPCWSTR, UINT);
 DocPos IniSectionGetPos(LPCWSTR, LPCWSTR, DocPos);
-__forceinline bool IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, bool bDefault) {
+static inline bool IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, bool bDefault) {
   return (IniSectionGetInt(lpCachedIniSection, lpName, ((bDefault) ? 1 : 0)) ? true : false);
 }
 
 bool IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
 
-__forceinline bool IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
+inline bool IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
   WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
-__forceinline bool IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, bool b) {
+inline bool IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, bool b) {
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
-__forceinline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos)
+inline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos)
 {
   WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
-__forceinline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
+// ----------------------------------------------------------------------------
+
+static inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
 
 DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
+
+// ----------------------------------------------------------------------------
 
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
@@ -161,8 +182,8 @@ UINT GetCurrentDPI(HWND hwnd);
 UINT GetCurrentPPI(HWND hwnd);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
 #define ScaleIntFontSize(val) MulDiv((val), g_uCurrentDPI, g_uCurrentPPI)
-__forceinline int ScaleFontSize(float fSize) { return float2int((fSize * g_uCurrentDPI) / (float)g_uCurrentPPI); }
-__forceinline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * g_uCurrentDPI) / (float)g_uCurrentPPI) * 10; }
+inline int ScaleFontSize(float fSize) { return float2int((fSize * g_uCurrentDPI) / (float)g_uCurrentPPI); }
+inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * g_uCurrentDPI) / (float)g_uCurrentPPI) * 10; }
 
 bool PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
@@ -191,8 +212,6 @@ bool IsCmdEnabled(HWND, UINT);
 
 #define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
-
-#define StrEnd(pStart) (pStart + lstrlen(pStart))
 
 
 #define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
@@ -293,30 +312,43 @@ VOID RestoreWndFromTray(HWND hWnd);
 
 //==== StrCut methods ===================
 
-CHAR*  _StrCutIA(CHAR*,const CHAR*);
-WCHAR* _StrCutIW(WCHAR*,const WCHAR*);
+CHAR*  StrCutIA(CHAR*,const CHAR*);
+WCHAR* StrCutIW(WCHAR*,const WCHAR*);
 #if defined(UNICODE) || defined(_UNICODE)  
-#define StrCutI _StrCutIW
+#define StrCutI StrCutIW
 #else
 #define StrCutI _StrCutIA
 #endif
 
+
+//==== StrNextTok methods ===================
+CHAR*  StrNextTokA(CHAR*, const CHAR*);
+WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrNextTok StrNextTokW
+#else
+#define StrNextTok StrNextTokA
+#endif
+
+// ----------------------------------------------------------------------------
+
+#define StrEndW(pStart) (pStart + lstrlen(pStart))
+#define StrEndA(pStart) (pStart + strlen(pStart))
+
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrEnd(s) StrEndW(s)
+#else
+#define StrEnd(s) StrEndA(s)
+#endif
+
+// ----------------------------------------------------------------------------
+
 bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 
 
-//==== StrNextTok methods ===================
-CHAR*  _StrNextTokA(CHAR*, const CHAR*);
-WCHAR* _StrNextTokW(WCHAR*, const WCHAR*);
-#if defined(UNICODE) || defined(_UNICODE)  
-#define StrNextTok _StrNextTokW
-#else
-#define StrNextTok _StrNextTokA
-#endif
-
-
 //==== StrSafe lstrlen() =======================================================
-__forceinline DocPos StringCchLenA(LPCSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, m, &len)) ? len : m)); }
-__forceinline DocPos StringCchLenW(LPCWSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, m, &len)) ? len : m)); }
+inline DocPos StringCchLenA(LPCSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, m, &len)) ? len : m)); }
+inline DocPos StringCchLenW(LPCWSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, m, &len)) ? len : m)); }
 
 #if defined(UNICODE) || defined(_UNICODE)  
 #define StringCchLen(s,n)  StringCchLenW((s),(n))
@@ -325,7 +357,7 @@ __forceinline DocPos StringCchLenW(LPCWSTR s,size_t m) { size_t len; return (Doc
 #endif
 
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
-__forceinline int _StringCchCmpNA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
+inline int _StringCchCmpNA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
 {
   return (CompareStringA(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? (int)StringCchLenA(s1,l1) : -1),
                          s2,(l2 >= 0 ? (int)StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
@@ -333,7 +365,7 @@ __forceinline int _StringCchCmpNA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
 #define StringCchCompareNA(s1,l1,s2,l2)  _StringCchCmpNA((s1),(l1),(s2),(l2))
 #define StringCchCompareXA(s1,s2)        _StringCchCmpNA((s1),-1,(s2),-1)
 
-__forceinline int _StringCchCmpINA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
+inline int _StringCchCmpINA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
 {
   return (CompareStringA(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? (int)StringCchLenA(s1,l1) : -1),
                          s2,(l2 >= 0 ? (int)StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
@@ -341,14 +373,14 @@ __forceinline int _StringCchCmpINA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
 #define StringCchCompareINA(s1,l1,s2,l2)  _StringCchCmpINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIXA(s1,s2)        _StringCchCmpINA((s1),-1,(s2),-1)
 
-__forceinline int _StringCchCmpNW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
+inline int _StringCchCmpNW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
   return (CompareStringW(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? (int)StringCchLenW(s1,l1) : -1),
                          s2,(l2 >= 0 ? (int)StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
 #define StringCchCompareNW(s1,l1,s2,l2)  _StringCchCmpNW((s1),(l1),(s2),(l2))
 #define StringCchCompareXW(s1,s2)        _StringCchCmpNW((s1),-1,(s2),-1)
 
-__forceinline int _StringCchCmpINW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
+inline int _StringCchCmpINW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
   return (CompareStringW(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? (int)StringCchLenW(s1,l1) : -1),
                          s2,(l2 >= 0 ? (int)StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
@@ -368,18 +400,33 @@ __forceinline int _StringCchCmpINW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) 
 #define StringCchCompareIX(s1,s2)        StringCchCompareIXA((s1),(s2))
 #endif
 
+//==== StrIs(Not)Empty() =============================================
+
+static inline bool StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
+static inline bool StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
+
+#if defined(UNICODE) || defined(_UNICODE)
+#define StrIsEmpty(s)     StrIsEmptyW(s)
+#define StrIsNotEmpty(s)  (!StrIsEmptyW(s))
+#else
+#define StrIsEmpty(s)     StrIsEmptyA(s)
+#define StrIsNotEmpty(s)  (!StrIsEmptyA(s))
+#endif
+
+// ----------------------------------------------------------------------------
 
 // Is the character an octal digit?
 #define IsOctalDigit(ch) (((ch) >= '0') && ((ch) <= '7'))
 
 // If the character is an hexa digit, get its value.
-__forceinline int GetHexDigit(char ch) {
+inline int GetHexDigit(char ch) {
   if (ch >= '0' && ch <= '9') { return ch - '0'; }
   if (ch >= 'A' && ch <= 'F') { return ch - 'A' + 10; }
   if (ch >= 'a' && ch <= 'f') { return ch - 'a' + 10; }
   return -1;
 }
 
+// ----------------------------------------------------------------------------
 
 void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
 
@@ -389,15 +436,15 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 
-// --------------------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 // including <pathcch.h> and linking against pathcch.lib
 // api-ms-win-core-path-l1-1-0.dll  library : Minimum supported client is Windows 8 :-/
 // so switch back to previous (deprecated) methods:
-__forceinline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); return (PathAppend(p,a) ? S_OK : E_FAIL); }
-__forceinline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
-__forceinline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
-__forceinline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
+inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); return (PathAppend(p,a) ? S_OK : E_FAIL); }
+inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
+inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
+inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
 
 
 #define _EXTRA_DRAG_N_DROP_HANDLER_ 1

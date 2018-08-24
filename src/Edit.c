@@ -2401,10 +2401,8 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
   DocPos iSelStart = SciCall_GetSelectionStart();
   DocPos iSelEnd = SciCall_GetSelectionEnd();
 
-  if (lstrlen(pwszPrefix))
-    WideCharToMultiByteStrg(Encoding_SciCP,pwszPrefix,mszPrefix1);
-  if (lstrlen(pwszAppend))
-    WideCharToMultiByteStrg(Encoding_SciCP,pwszAppend,mszAppend1);
+  if (StrIsNotEmpty(pwszPrefix)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszPrefix, mszPrefix1); }
+  if (StrIsNotEmpty(pwszAppend)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszAppend, mszAppend1); }
 
   if (!SciCall_IsSelectionRectangle())
   {
@@ -2577,7 +2575,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
     {
       DocPos iPos;
 
-      if (lstrlen(pwszPrefix)) {
+      if (StrIsNotEmpty(pwszPrefix)) {
 
         char mszInsert[512*3] = { '\0' };
         StringCchCopyA(mszInsert,COUNTOF(mszInsert),mszPrefix1);
@@ -2596,7 +2594,7 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
         SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)-1, (LPARAM)mszInsert);
       }
 
-      if (lstrlen(pwszAppend)) {
+      if (StrIsNotEmpty(pwszAppend)) {
 
         char mszInsert[512*3] = { '\0' };
         StringCchCopyA(mszInsert,COUNTOF(mszInsert),mszAppend1);
@@ -2982,10 +2980,8 @@ void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
   const DocPos iSelStart = SciCall_GetSelectionStart();
   const DocPos iSelEnd = SciCall_GetSelectionEnd();
 
-  if (lstrlen(pwszOpen))
-    WideCharToMultiByteStrg(Encoding_SciCP, pwszOpen, mszOpen);
-  if (lstrlen(pwszClose))
-    WideCharToMultiByteStrg(Encoding_SciCP, pwszClose, mszClose);
+  if (StrIsNotEmpty(pwszOpen)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszOpen, mszOpen); }
+  if (StrIsNotEmpty(pwszClose)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszClose, mszClose); }
 
   const DocPos iLenOpen = StringCchLenA(mszOpen, COUNTOF(mszOpen));
   const DocPos iLenClose = StringCchLenA(mszClose, COUNTOF(mszClose));
@@ -3024,7 +3020,7 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 
   char mszComment[32 * 3] = { '\0' };
 
-  if (lstrlen(pwszComment)) {
+  if (StrIsNotEmpty(pwszComment)) {
     WideCharToMultiByte(Encoding_SciCP, 0, pwszComment, -1, mszComment, COUNTOF(mszComment), NULL, NULL);
   }
   const DocPos cchComment = StringCchLenA(mszComment, COUNTOF(mszComment));
@@ -4325,7 +4321,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
   for (DocLn i = 0; i < iLineCount; ++i) {
     bool bDropLine = false;
-    if (pLines[i].pwszLine && ((iSortFlags & SORT_SHUFFLE) || lstrlen(pLines[i].pwszLine))) {
+    if (pLines[i].pwszLine && ((iSortFlags & SORT_SHUFFLE) || StrIsNotEmpty(pLines[i].pwszLine))) {
       if (!(iSortFlags & SORT_SHUFFLE)) {
         if (iSortFlags & SORT_MERGEDUP || iSortFlags & SORT_UNIQDUP || iSortFlags & SORT_UNIQUNIQ) {
           if (i < (iLineCount - 1)) {
@@ -8093,7 +8089,7 @@ int FileVars_GetEncoding(LPFILEVARS lpfv) {
 #define FOLD_CHILDREN SCMOD_CTRL
 #define FOLD_SIBLINGS SCMOD_SHIFT
 
-bool __forceinline _FoldToggleNode(DocLn ln, FOLD_ACTION action)
+bool inline _FoldToggleNode(DocLn ln, FOLD_ACTION action)
 {
   bool const fExpanded = SciCall_GetFoldExpanded(ln);
   if ((action == SNIFF) || ((action == FOLD) && fExpanded) || ((action == EXPAND) && !fExpanded))

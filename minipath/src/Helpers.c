@@ -481,7 +481,7 @@ BOOL SetWindowPathTitle(HWND hwnd,LPCWSTR lpszFile)
 {
   WCHAR szTitle[MAX_PATH + 120] = { L'\0' };
 
-  if (lstrlen(lpszFile))
+  if (StrIsNotEmpty(lpszFile))
   {
     if (!PathIsRoot(lpszFile))
     {
@@ -895,7 +895,7 @@ BOOL PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
   }
 
   // This additional check seems reasonable
-  if (!lstrlen(pszResPath))
+  if (StrIsEmpty(pszResPath))
     bSucceeded = FALSE;
 
   if (bSucceeded)
@@ -1212,7 +1212,7 @@ int FormatNumberStr(LPWSTR lpNumberStr)
   WCHAR szSep[8];
   int  i = 0;
 
-  if (!lstrlen(lpNumberStr))
+  if (StrIsEmpty(lpNumberStr))
     return(0);
 
   if (!GetLocaleInfo(LOCALE_USER_DEFAULT,
@@ -1369,8 +1369,8 @@ BOOL ExecDDECommand(LPCWSTR lpszCmdLine,
   HCONV hConv;
   BOOL bSuccess = TRUE;
 
-  if (lstrlen(lpszCmdLine) == 0 || lstrlen(lpszDDEMsg) == 0 ||
-      lstrlen(lpszDDEApp) == 0 || lstrlen(lpszDDETopic) == 0)
+  if (StrIsEmpty(lpszCmdLine) || StrIsEmpty(lpszDDEMsg) ||
+    StrIsEmpty(lpszDDEApp) || StrIsEmpty(lpszDDETopic))
     return FALSE;
 
   lstrcpyn(lpszDDEMsgBuf,lpszDDEMsg,COUNTOF(lpszDDEMsgBuf));
@@ -1714,7 +1714,7 @@ void MRU_LoadToCombobox(HWND hwnd,LPCWSTR pszKey)
 
 void MRU_AddOneItem(LPCWSTR pszKey,LPCWSTR pszNewItem)
 {
-  if (lstrlen(pszNewItem) > 0) {
+  if (StrIsNotEmpty(pszNewItem)) {
     LPMRULIST pmru = MRU_Create(pszKey,MRU_NOCASE,8);
     MRU_Load(pmru);
     MRU_Add(pmru,pszNewItem);
@@ -2112,7 +2112,7 @@ VOID RestoreWndFromTray(HWND hWnd)
 //  Find next token in string
 //
 
-CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
+CHAR* StrNextTokA(CHAR* strg, const CHAR* tokens)
 {
   CHAR* n = NULL;
   const CHAR* t = tokens;
@@ -2126,7 +2126,7 @@ CHAR* _StrNextTokA(CHAR* strg, const CHAR* tokens)
   return n;
 }
 
-WCHAR* _StrNextTokW(WCHAR* strg, const WCHAR* tokens)
+WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
 {
   WCHAR* n = NULL;
   const WCHAR* t = tokens;

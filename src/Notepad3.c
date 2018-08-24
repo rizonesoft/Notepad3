@@ -1275,7 +1275,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 
   // Match Text
   if (g_flagMatchText && lpMatchArg) {
-    if (lstrlen(lpMatchArg) && SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0)) {
+    if (StrIsNotEmpty(lpMatchArg) && SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0)) {
 
       WideCharToMultiByteStrg(Encoding_SciCP,lpMatchArg,g_efrData.szFind);
 
@@ -7192,11 +7192,6 @@ void SaveSettings(bool bSaveSettingsNow) {
 }
 
 
-
-
-
-
-
 //=============================================================================
 //
 //  ParseCommandLine()
@@ -7211,8 +7206,7 @@ void ParseCommandLine()
 
   LPWSTR lpCmdLine = GetCommandLine();
 
-  if (lstrlen(lpCmdLine) == 0)
-    return;
+  if (StrIsEmpty(lpCmdLine)) { return; }
 
   // Good old console can also send args separated by Tabs
   StrTab2Space(lpCmdLine);
@@ -9084,7 +9078,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     return true;
   }
 
-  if (!lpszFile || lstrlen(lpszFile) == 0) {
+  if (StrIsEmpty(lpszFile)) {
     if (!OpenFileDlg(g_hwndMain,tch,COUNTOF(tch),NULL))
       return false;
   }
@@ -9588,7 +9582,7 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
   StringCchCopy(szNewFile,COUNTOF(szNewFile),lpstrFile);
   Style_GetOpenDlgFilterStr(szFilter,COUNTOF(szFilter));
 
-  if (lstrlen(lpstrInitialDir))
+  if (StrIsNotEmpty(lpstrInitialDir))
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),lpstrInitialDir);
   else if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
     StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),g_wchCurFile);
@@ -9995,7 +9989,7 @@ bool RelaunchElevated(LPWSTR lpArgs) {
       StringCchCopy(szArguments,COUNTOF(szArguments),szArgs);
   }
 
-  if (lstrlen(szArguments)) {
+  if (StrIsNotEmpty(szArguments)) {
     SHELLEXECUTEINFO sei;
     ZeroMemory(&sei,sizeof(SHELLEXECUTEINFO));
     sei.cbSize = sizeof(SHELLEXECUTEINFO);

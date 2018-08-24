@@ -260,8 +260,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             {
               QuotateFilenameStr(szFile);
 
-              if (lstrlen(szArg2)) {
-
+              if (StrIsNotEmpty(szArg2)) {
                 lstrcat(szFile,L" ");
                 lstrcat(szFile,szArg2);
               }
@@ -280,7 +279,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             if (GetDlgItemText(hwnd,IDC_COMMANDLINE,args,MAX_PATH))
               if (ExtractFirstArgument(args,args,NULL))
-                if (lstrlen(args))
+                if (StrIsNotEmpty(args))
                   bEnableOK = TRUE;
 
             EnableWindow(GetDlgItem(hwnd,IDOK),bEnableOK);
@@ -682,7 +681,7 @@ INT_PTR CALLBACK GeneralPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
       if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
-      if (lstrlen(g_wchIniFile)) {
+      if (StrIsNotEmpty(g_wchIniFile)) {
         if (bSaveSettings)
           CheckDlgButton(hwnd,IDC_SAVESETTINGS,BST_CHECKED);
       }
@@ -1127,7 +1126,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         lstrcpy(tch,szQuickview);
         PathQuoteSpaces(tch);
-        if (lstrlen(szQuickviewParams)) {
+        if (StrIsNotEmpty(szQuickviewParams)) {
           StrCatBuff(tch,L" ",COUNTOF(tch));
           StrCatBuff(tch,szQuickviewParams,COUNTOF(tch));
         }
@@ -1183,7 +1182,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             if (GetOpenFileName(&ofn)) {
               StrCpyN(tchBuf,szFile,COUNTOF(tchBuf));
               PathQuoteSpaces(tchBuf);
-              if (lstrlen(szParams)) {
+              if (StrIsNotEmpty(szParams)) {
                 StrCatBuff(tchBuf,L" ",COUNTOF(tchBuf));
                 StrCatBuff(tchBuf,szParams,COUNTOF(tchBuf));
               }
@@ -2585,7 +2584,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
         lstrcpy(wch,szTargetApplication);
         PathQuoteSpaces(wch);
-        if (lstrlen(szTargetApplicationParams)) {
+        if (StrIsNotEmpty(szTargetApplicationParams)) {
           StrCatBuff(wch,L" ",COUNTOF(wch));
           StrCatBuff(wch,szTargetApplicationParams,COUNTOF(wch));
         }
@@ -2655,7 +2654,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
               StrCpyN(tchBuf,szFile,COUNTOF(tchBuf));
               PathRelativeToApp(tchBuf,tchBuf,COUNTOF(tchBuf),TRUE,TRUE,flagPortableMyDocs);
               PathQuoteSpaces(tchBuf);
-              if (lstrlen(szParams)) {
+              if (StrIsNotEmpty(szParams)) {
                 StrCatBuff(tchBuf,L" ",COUNTOF(tchBuf));
                 StrCatBuff(tchBuf,szParams,COUNTOF(tchBuf));
               }
@@ -2677,7 +2676,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
         //    if (GetDlgItemText(hwnd,IDC_COMMANDLINE,tchArgs,COUNTOF(tchArgs)))
         //      if (ExtractFirstArgument(tchArgs,tchArgs,NULL))
-        //        if (lstrlen(tchArgs))
+        //        if (StrIsNotEmpty(tchArgs))
         //          bEnableOK = TRUE;
 
         //    // OK Button enablen und disablen
@@ -2742,7 +2741,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
             // input validation
             if ((IsDlgButtonChecked(hwnd,IDC_TARGET) && GetDlgItemText(hwnd,IDC_TARGETPATH,tch,COUNTOF(tch)) == 0) ||
-                (IsDlgButtonChecked(hwnd,IDC_SENDDROPMSG) && lstrlen(szTargetWndClass) == 0) ||
+                (IsDlgButtonChecked(hwnd,IDC_SENDDROPMSG) && StrIsEmpty(szTargetWndClass)) ||
                 (IsDlgButtonChecked(hwnd,IDC_USEDDE) &&
                   (GetDlgItemText(hwnd,IDC_DDEMSG,tch,COUNTOF(tch)) == 0 ||
                    GetDlgItemText(hwnd,IDC_DDEAPP,tch,COUNTOF(tch)) == 0 ||

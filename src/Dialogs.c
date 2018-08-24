@@ -235,9 +235,9 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
 {
   int iMode = IniGetInt(L"Suppressed Messages", lpstrSetting, 0);
 
-  if (lstrlen(lpstrSetting) > 0 && iMode == 1)
+  if (StrIsNotEmpty(lpstrSetting) && iMode == 1) {
     return (iType == MBYESNO) ? IDYES : IDOK;
-
+  }
   WCHAR wchFormat[LARGE_BUFFER];
   if (!GetLngString(uidMessage, wchFormat, COUNTOF(wchFormat)))
     return(-1);
@@ -246,7 +246,7 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
   ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
   StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0 || lstrlen(lpstrSetting) == 0 || iMode == 2) ? true : false;
+  ib.bDisableCheckBox = (StrIsEmpty(g_wchIniFile) || StrIsEmpty(lpstrSetting) || iMode == 2) ? true : false;
 
   int idDlg;
   switch (iType) {
@@ -2875,7 +2875,7 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   else
     StringCchCopy(szTitle, COUNTOF(szTitle), L"");
 
-  if (lstrlen(lpszExcerpt)) {
+  if (StrIsNotEmpty(lpszExcerpt)) {
     GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
     StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
     StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);

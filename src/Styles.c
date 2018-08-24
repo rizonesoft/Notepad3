@@ -417,7 +417,7 @@ KEYWORDLIST KeyWords_CPP = {
   "alignof defined naked noreturn",
   // Secondary keywords
   "asm __abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
-  "__except __except__try __fastcall __finally __forceinline __gc __hook __identifier "
+  "__except __except__try __fastcall __finally inline __gc __hook __identifier "
   "__if_exists __if_not_exists __inline __interface __leave "
   "__multiple_inheritance __nogc __noop __pin __property __raise "
   "__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
@@ -5673,7 +5673,7 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
 //
 void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault)
 {
-  if (!bInitDefault && lstrlen(lpszStyle) == 0) { return; }
+  if (!bInitDefault && StrIsEmpty(lpszStyle)) { return; }
 
   int iValue = 0;
   WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };

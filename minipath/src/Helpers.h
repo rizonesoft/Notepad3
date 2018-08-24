@@ -22,26 +22,20 @@ extern UINT16    g_uWinVer;
 
 extern WCHAR g_wchIniFile[MAX_PATH];
 
-#define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) \
-  GetPrivateProfileString(lpSection,lpName,lpDefault,lpReturnedStr,nSize,g_wchIniFile)
-#define IniGetInt(lpSection,lpName,nDefault) \
-  GetPrivateProfileInt(lpSection,lpName,nDefault,g_wchIniFile)
-#define IniSetString(lpSection,lpName,lpString) \
-  WritePrivateProfileString(lpSection,lpName,lpString,g_wchIniFile)
-#define IniDeleteSection(lpSection) \
-  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
-__inline BOOL IniSetInt(LPCWSTR lpSection,LPCWSTR lpName,int i) {
+#define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) GetPrivateProfileString(lpSection,lpName,lpDefault,lpReturnedStr,nSize,g_wchIniFile)
+#define IniGetInt(lpSection,lpName,nDefault)                         GetPrivateProfileInt(lpSection,lpName,nDefault,g_wchIniFile)
+#define IniSetString(lpSection,lpName,lpString)                      WritePrivateProfileString(lpSection,lpName,lpString,g_wchIniFile)
+#define IniDeleteSection(lpSection)                                  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
+inline BOOL IniSetInt(LPCWSTR lpSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]; wsprintf(tch,L"%i",i); 
   return WritePrivateProfileString(lpSection,lpName,tch,g_wchIniFile);
 }
-#define LoadIniSection(lpSection,lpBuf,cchBuf) \
-  GetPrivateProfileSection(lpSection,lpBuf,cchBuf,g_wchIniFile);
-#define SaveIniSection(lpSection,lpBuf) \
-  WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
+#define LoadIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,cchBuf,g_wchIniFile);
+#define SaveIniSection(lpSection,lpBuf)        WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
 int IniSectionGetString(LPCWSTR,LPCWSTR,LPCWSTR,LPWSTR,int);
 int IniSectionGetInt(LPCWSTR,LPCWSTR,int);
 BOOL IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
-__inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
+inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
   WCHAR tch[32]; wsprintf(tch,L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
 }
 
@@ -132,13 +126,27 @@ BOOL ExecDDECommand(LPCWSTR,LPCWSTR,LPCWSTR,LPCWSTR);
 
 
 //==== StrNextTok methods ===================
-CHAR*  _StrNextTokA(CHAR*, const CHAR*);
-WCHAR* _StrNextTokW(WCHAR*, const WCHAR*);
+CHAR*  StrNextTokA(CHAR*, const CHAR*);
+WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
 #if defined(UNICODE) || defined(_UNICODE)  
-#define StrNextTok _StrNextTokW
+#define StrNextTok StrNextTokW
 #else
 #define StrNextTok _StrNextTokA
 #endif
+
+//==== StrIs(Not)Empty() =============================================
+
+static inline BOOL StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
+static inline BOOL StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
+
+#if defined(UNICODE) || defined(_UNICODE)
+#define StrIsEmpty(s)     StrIsEmptyW(s)
+#define StrIsNotEmpty(s)  (!StrIsEmptyW(s))
+#else
+#define StrIsEmpty(s)     StrIsEmptyA(s)
+#define StrIsNotEmpty(s)  (!StrIsEmptyA(s))
+#endif
+
 
 //==== History Functions ======================================================
 #define HISTORY_ITEMS 50

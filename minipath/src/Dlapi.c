@@ -958,12 +958,12 @@ BOOL DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 
   int i = -1;
 
-  if (!lpszFullPath || !lstrlen(lpszFullPath))
+  if (StrIsEmpty(lpszFullPath))
     return(FALSE);
   else
     GetShortPathName(lpszFullPath,szShortPath,MAX_PATH);
 
-  if (!lpszDisplayName || !lstrlen(lpszDisplayName))
+  if (StrIsEmpty(lpszDisplayName))
     SHGetFileInfo(lpszFullPath,0,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME);
   else
     lstrcpyn(shfi.szDisplayName,lpszDisplayName,MAX_PATH);
@@ -1009,7 +1009,7 @@ void DirList_CreateFilter(PDL_FILTER pdlf,LPCWSTR lpszFileSpec,BOOL bExcludeFilt
 
   pdlf->bExcludeFilter = bExcludeFilter;
 
-  if (!lpszFileSpec || !lstrcmp(lpszFileSpec, L"*.*") || !lstrlen(lpszFileSpec)) { return; }
+  if (StrIsEmpty(lpszFileSpec) || !lstrcmp(lpszFileSpec, L"*.*")) { return; }
 
   pdlf->nCount = 1;
   pdlf->pFilter[0] = &pdlf->tFilterBuf[0];    // Zeile zum Ausprobieren
