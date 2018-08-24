@@ -95,36 +95,36 @@ LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
 //  0-2: Number of parameters to define
 //
 #define DeclareSciCallR0(fn, msg, ret)                             \
-inline ret SciCall_##fn() {                                 \
+__forceinline ret SciCall_##fn() {                                 \
   return((ret)SciCall(SCI_##msg, 0, 0));                           \
 }
 #define DeclareSciCallR1(fn, msg, ret, type1, var1)                \
-inline ret SciCall_##fn(type1 var1) {                       \
+__forceinline ret SciCall_##fn(type1 var1) {                       \
   return((ret)SciCall(SCI_##msg, (WPARAM)(var1), 0));              \
 }
 #define DeclareSciCallR01(fn, msg, ret, type2, var2)               \
-inline ret SciCall_##fn(type2 var2) {                       \
+__forceinline ret SciCall_##fn(type2 var2) {                       \
   return((ret)SciCall(SCI_##msg, 0, (LPARAM)(var2)));              \
 }
 #define DeclareSciCallR2(fn, msg, ret, type1, var1, type2, var2)   \
-inline ret SciCall_##fn(type1 var1, type2 var2) {           \
+__forceinline ret SciCall_##fn(type1 var1, type2 var2) {           \
   return((ret)SciCall(SCI_##msg, (WPARAM)(var1), (LPARAM)(var2))); \
 }
 
 #define DeclareSciCallV0(fn, msg)                                  \
-inline LRESULT SciCall_##fn() {                             \
+__forceinline LRESULT SciCall_##fn() {                             \
   return(SciCall(SCI_##msg, 0, 0));                                \
 }
 #define DeclareSciCallV1(fn, msg, type1, var1)                     \
-inline LRESULT SciCall_##fn(type1 var1) {                   \
+__forceinline LRESULT SciCall_##fn(type1 var1) {                   \
   return(SciCall(SCI_##msg, (WPARAM)(var1), 0));                   \
 }
 #define DeclareSciCallV01(fn, msg, type2, var2)                    \
-inline LRESULT SciCall_##fn(type2 var2) {                   \
+__forceinline LRESULT SciCall_##fn(type2 var2) {                   \
   return(SciCall(SCI_##msg, 0, (LPARAM)(var2)));                   \
 }
 #define DeclareSciCallV2(fn, msg, type1, var1, type2, var2)        \
-inline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
+__forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
   return(SciCall(SCI_##msg, (WPARAM)(var1), (LPARAM)(var2)));      \
 }
 

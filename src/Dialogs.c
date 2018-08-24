@@ -1625,7 +1625,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             lvi.iImage = shfi.iIcon;
 
-            for (i = 0; i < MRU_Enum(g_pFileMRU,0,NULL,0); i++) {
+            for (i = 0; i < MRU_Count(g_pFileMRU); i++) {
               MRU_Enum(g_pFileMRU,i,tch,COUNTOF(tch));
               PathAbsoluteFromApp(tch,NULL,0,true);
               //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_ADDSTRING,0,(LPARAM)tch); }
@@ -1952,15 +1952,12 @@ INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
 
     case IDOK:
       {
-
-        int iSel, iSel2;
-
-        iSel = (int)SendDlgItemMessage(hwnd, 100, CB_GETCURSEL, 0, 0);
+        int iSel = (int)SendDlgItemMessage(hwnd, 100, CB_GETCURSEL, 0, 0);
         iWordWrapIndent = iSel;
 
         bShowWordWrapSymbols = false;
         iSel = (int)SendDlgItemMessage(hwnd, 101, CB_GETCURSEL, 0, 0);
-        iSel2 = (int)SendDlgItemMessage(hwnd, 102, CB_GETCURSEL, 0, 0);
+        int iSel2 = (int)SendDlgItemMessage(hwnd, 102, CB_GETCURSEL, 0, 0);
         if (iSel > 0 || iSel2 > 0) {
           bShowWordWrapSymbols = true;
           iWordWrapSymbols = iSel + iSel2 * 10;

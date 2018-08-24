@@ -1532,44 +1532,76 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  SetWordWrapping() - WordWrapSettings
+//  _SetWrapStartIndent()
 //
-static void __fastcall _SetWordWrapping(HWND hwndEditCtrl)
+static void __fastcall _SetWrapStartIndent(HWND hwndEditCtrl)
 {
-  // Word wrap
-  if (g_bWordWrap)
-    SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, (iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR, 0);
-  else
-    SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, SC_WRAP_NONE, 0);
+  int i = 0;
+  switch (iWordWrapIndent) {
+  case 1: i = 1; break;
+  case 2: i = 2; break;
+  case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
+  case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
+  }
+  SendMessage(hwndEditCtrl, SCI_SETWRAPSTARTINDENT, i, 0);
+}
 
-  if (iWordWrapIndent == 5)
+
+//=============================================================================
+//
+//  _SetWrapIndentMode()
+//
+static void __fastcall _SetWrapIndentMode(HWND hwndEditCtrl)
+{
+  int const wrap_mode = (!g_bWordWrap ? SC_WRAP_NONE : ((iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
+
+  SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, wrap_mode, 0);
+
+  if (iWordWrapIndent == 5) {
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_SAME, 0);
-  else if (iWordWrapIndent == 6)
+  }
+  else if (iWordWrapIndent == 6) {
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_INDENT, 0);
+  }
+  else if (iWordWrapIndent == 7) {
+    SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_DEEPINDENT, 0);
+  }
   else {
-    int i = 0;
-    switch (iWordWrapIndent) {
-    case 1: i = 1; break;
-    case 2: i = 2; break;
-    case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
-    case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
-    }
-    SendMessage(hwndEditCtrl, SCI_SETWRAPSTARTINDENT, i, 0);
+    _SetWrapStartIndent(hwndEditCtrl);
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_FIXED, 0);
   }
+}
 
+
+//=============================================================================
+//
+//  _SetWrapVisualFlags()
+//
+static void __fastcall _SetWrapVisualFlags(HWND hwndEditCtrl)
+{
   if (bShowWordWrapSymbols) {
     int wrapVisualFlags = 0;
     int wrapVisualFlagsLocation = 0;
-    if (iWordWrapSymbols == 0)
+    if (iWordWrapSymbols == 0) {
       iWordWrapSymbols = 22;
+    }
     switch (iWordWrapSymbols % 10) {
-    case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT; break;
-    case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_END; break;
+    case 1:
+      wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
+      wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT;
+      break;
+    case 2:
+      wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
+      break;
     }
     switch (((iWordWrapSymbols % 100) - (iWordWrapSymbols % 10)) / 10) {
-    case 1: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT; break;
-    case 2: wrapVisualFlags |= SC_WRAPVISUALFLAG_START; break;
+    case 1:
+      wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
+      wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT;
+      break;
+    case 2:
+      wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
+      break;
     }
     SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGSLOCATION, wrapVisualFlagsLocation, 0);
     SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, wrapVisualFlags, 0);
@@ -1578,6 +1610,7 @@ static void __fastcall _SetWordWrapping(HWND hwndEditCtrl)
     SendMessage(hwndEditCtrl, SCI_SETWRAPVISUALFLAGS, 0, 0);
   }
 }
+
 
 
 //=============================================================================
@@ -1692,7 +1725,8 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   Style_SetIndentGuides(hwndEditCtrl, bShowIndentGuides);
 
   // Word Wrap
-  _SetWordWrapping(hwndEditCtrl);
+  _SetWrapIndentMode(hwndEditCtrl);
+  _SetWrapVisualFlags(hwndEditCtrl);
 
   // Long Lines
   if (g_bMarkLongLines)
@@ -2739,7 +2773,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_LINEENDINGS_CR;
   CheckMenuRadioItem(hmenu,IDM_LINEENDINGS_CRLF,IDM_LINEENDINGS_CR,i,MF_BYCOMMAND);
 
-  EnableCmd(hmenu,IDM_FILE_RECENT,(MRU_Enum(g_pFileMRU,0,NULL,0) > 0));
+  EnableCmd(hmenu,IDM_FILE_RECENT,(MRU_Count(g_pFileMRU) > 0));
 
   EnableCmd(hmenu,IDM_EDIT_UNDO,SciCall_CanUndo() && !ro);
   EnableCmd(hmenu,IDM_EDIT_REDO,SciCall_CanRedo() && !ro);
@@ -3274,7 +3308,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_RECENT:
-      if (MRU_Enum(g_pFileMRU,0,NULL,0) > 0) {
+      if (MRU_Count(g_pFileMRU) > 0) {
         if (FileSave(false,true,false,false)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (FileMRUDlg(hwnd,tchFile))
@@ -3311,9 +3345,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        if (EditSetNewEncoding(g_hwndEdit,
-                               iNewEncoding,
-                               (g_flagSetEncoding),
+        if (EditSetNewEncoding(g_hwndEdit, iNewEncoding, g_flagSetEncoding,
                                StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile)) == 0)) {
 
           if (SendMessage(g_hwndEdit,SCI_GETLENGTH,0,0) == 0) {
@@ -4605,12 +4637,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAP:
       g_bWordWrap = (g_bWordWrap) ? false : true;
-      if (!g_bWordWrap) {
-        SciCall_SetWrapMode(SC_WRAP_NONE);
-      }
-      else {
-        SciCall_SetWrapMode((iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR);
-      }
+      _SetWrapIndentMode(g_hwndEdit);
       EditEnsureSelectionVisible(g_hwndEdit);
       bWordWrapG = g_bWordWrap;
       UpdateToolbar();
@@ -4619,14 +4646,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAPSETTINGS:
       if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP,&iWordWrapIndent)) {
-        _SetWordWrapping(g_hwndEdit);
+        _SetWrapIndentMode(g_hwndEdit);
+        _SetWrapVisualFlags(g_hwndEdit);
       }
       break;
 
 
     case IDM_VIEW_WORDWRAPSYMBOLS:
       bShowWordWrapSymbols = (bShowWordWrapSymbols) ? false : true;
-      _SetWordWrapping(g_hwndEdit);
+      _SetWrapVisualFlags(g_hwndEdit);
       break;
 
 
@@ -4679,15 +4707,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         bTabIndentsG   = g_bTabIndents;
         iTabWidthG     = g_iTabWidth;
         iIndentWidthG  = g_iIndentWidth;
-        if (SendMessage(g_hwndEdit,SCI_GETWRAPINDENTMODE,0,0) == SC_WRAPINDENT_FIXED) {
-          int i = 0;
-          switch (iWordWrapIndent) {
-            case 1: i = 1; break;
-            case 2: i = 2; break;
-            case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
-            case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
-          }
-          SendMessage(g_hwndEdit,SCI_SETWRAPSTARTINDENT,i,0);
+        if (SendMessage(g_hwndEdit, SCI_GETWRAPINDENTMODE, 0, 0) == SC_WRAPINDENT_FIXED) {
+          _SetWrapStartIndent(g_hwndEdit);
         }
       }
       break;
@@ -8969,7 +8990,7 @@ static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* const s
 //  FileIO()
 //
 //
-bool FileIO(bool fLoad,LPCWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSICPDetection,
+bool FileIO(bool fLoad,LPWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSICPDetection,
             int *ienc,int *ieol,
             bool *pbUnicodeErr,bool *pbFileTooBig, bool* pbUnknownExt,
             bool *pbCancelDataLoss,bool bSaveCopy)

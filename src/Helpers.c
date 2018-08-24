@@ -2402,9 +2402,9 @@ bool Char2FloatW(WCHAR* wnumber, float* fresult)
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
 {
   if (!lpszStrg) { return; };
-  fValue = Round100th(fValue);
+  fValue = Round10th(fValue);
   if (HasNonZeroFraction(fValue))
-    StringCchPrintf(lpszStrg, cchSize, L"%.4G", fValue);
+    StringCchPrintf(lpszStrg, cchSize, L"%.3G", fValue);
   else
     StringCchPrintf(lpszStrg, cchSize, L"%i", float2int(fValue));
 }

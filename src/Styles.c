@@ -3119,7 +3119,7 @@ static float __fastcall _SetBaseFontSize(float fSize)
   static float fBaseFontSize = INITIAL_BASE_FONT_SIZE;
 
   if (fSize >= 0.0f) {
-    fBaseFontSize = Round100th(fSize);
+    fBaseFontSize = Round10th(fSize);
   }
   return fBaseFontSize;
 }
@@ -3139,7 +3139,7 @@ static float __fastcall _SetCurrentFontSize(float fSize)
   static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
 
   if (fSize >= 0.0f) {
-    fCurrentFontSize = Round100th(fSize);
+    fCurrentFontSize = Round10th(fSize);
   }
   return fCurrentFontSize;
 }
@@ -4821,7 +4821,7 @@ bool Style_StrGetSize(LPCWSTR lpszStyle, float* f)
         float const base = *f; // base is input
         fValue = (base + (fSign * fValue)); // can be negative
       }
-      *f = Round100th(fValue);
+      *f = Round10th(fValue);
       return true;
     }
   }
@@ -5457,7 +5457,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   if (bRelFontSize)
   {
-    float fNewRelSize = Round100th(fNewFontSize - fBaseFontSize);
+    float fNewRelSize = Round10th(fNewFontSize - fBaseFontSize);
 
     if (fNewRelSize >= 0.0) {
       if (HasNonZeroFraction(fNewRelSize))
@@ -5473,8 +5473,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
   }
   else {
-    fFontSize = Round100th(fFontSize);
-    fNewFontSize = Round100th(fNewFontSize);
+    fFontSize = Round10th(fFontSize);
+    fNewFontSize = Round10th(fNewFontSize);
 
     if (fNewFontSize == fFontSize) {
       if (StrStrI(lpszStyle, L"size:")) {

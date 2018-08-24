@@ -515,8 +515,8 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
 //
 //  EditSetNewEncoding()
 //
-bool EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool bNoUI,bool bSetSavePoint) {
-
+bool EditSetNewEncoding(HWND hwnd, int iNewEncoding, bool bNoUI, bool bSetSavePoint) 
+{
   int iCurrentEncoding = Encoding_Current(CPI_GET);
 
   if (iCurrentEncoding != iNewEncoding) {
@@ -529,6 +529,12 @@ bool EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool bNoUI,bool bSetSavePoint
       //return false; // commented out ? : allow conversion between arbitrary encodings
     //}
   
+    // suppress recoding messaged for certain encodings
+    if ((Encoding_GetCodePage(iCurrentEncoding) == 936) && (Encoding_GetCodePage(iNewEncoding) == 54936)) {
+      bNoUI = true;
+    }
+    // and vice versa ???
+
     if (SciCall_GetTextLength() == 0) {
 
       bool bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
@@ -923,7 +929,7 @@ int EditDetectEOLMode(HWND hwnd, char* lpData)
 //
 bool EditLoadFile(
        HWND hwnd,
-       LPCWSTR pszFile,
+       LPWSTR pszFile,
        bool bSkipUTFDetection,
        bool bSkipANSICPDetection,
        int* iEncoding,
@@ -981,6 +987,19 @@ bool EditLoadFile(
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return false;
+    }
+  }
+
+  // display real path name (by zufuliu)
+  WCHAR realPath[MAX_PATH] = L"";
+  if (GetFinalPathNameByHandleW(hFile, realPath, MAX_PATH, /*FILE_NAME_OPENED*/0x8) > 0) {
+    if (StrCmpN(realPath, L"\\\\?\\", 4) == 0) {
+      WCHAR* p = realPath + 4;
+      if (StrCmpN(p, L"UNC\\", 4) == 0) {
+        p += 2;
+        *p = L'\\';
+      }
+      StringCchCopyW(pszFile, MAX_PATH, p);
     }
   }
 
@@ -5075,11 +5094,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
 
       // Load MRUs
-      for (int i = 0; i < MRU_Enum(g_pMRUfind, 0, NULL, 0); i++) {
+      for (int i = 0; i < MRU_Count(g_pMRUfind); i++) {
         MRU_Enum(g_pMRUfind, i, tchBuf, COUNTOF(tchBuf));
         SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_ADDSTRING, 0, (LPARAM)tchBuf);
       }
-      for (int i = 0; i < MRU_Enum(g_pMRUreplace, 0, NULL, 0); i++) {
+      for (int i = 0; i < MRU_Count(g_pMRUreplace); i++) {
         MRU_Enum(g_pMRUreplace, i, tchBuf, COUNTOF(tchBuf));
         SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)tchBuf);
       }
@@ -5617,11 +5636,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_RESETCONTENT, 0, 0);
         SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_RESETCONTENT, 0, 0);
 
-        for (int i = 0; i < MRU_Enum(g_pMRUfind, 0, NULL, 0); i++) {
+        for (int i = 0; i < MRU_Count(g_pMRUfind); i++) {
           MRU_Enum(g_pMRUfind, i, tchBuf2, COUNTOF(tchBuf2));
           SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_ADDSTRING, 0, (LPARAM)tchBuf2);
         }
-        for (int i = 0; i < MRU_Enum(g_pMRUreplace, 0, NULL, 0); i++) {
+        for (int i = 0; i < MRU_Count(g_pMRUreplace); i++) {
           MRU_Enum(g_pMRUreplace, i, tchBuf2, COUNTOF(tchBuf2));
           SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)tchBuf2);
         }
@@ -6661,6 +6680,7 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
     }
 
     SendMessage(hwnd, SCI_AUTOCSETIGNORECASE, 1, 0);
+    //SendMessage(hwnd, SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 1, 0);
     SendMessage(hwnd, SCI_AUTOCSETSEPARATOR, ' ', 0);
     SendMessage(hwnd, SCI_AUTOCSETFILLUPS, 0, (LPARAM)"\t\n\r");
     SendMessage(hwnd, SCI_AUTOCSETCHOOSESINGLE, autoInsert, 0);

@@ -85,8 +85,8 @@ static inline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'
 
 
 static inline int float2int(float f) { return (int)lroundf(f); }
-static inline float Round100th(float f) { return (float)float2int(f * 100.0f) / 100; }
-static inline bool HasNonZeroFraction(float f) { return ((float2int(f * 100.0f) % 100) != 0); }
+static inline float Round10th(float f) { return (float)float2int(f * 10.0f) / 10; }
+static inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) != 0); }
 
 
 // direct heap allocation
@@ -300,6 +300,7 @@ int       MRU_Enum(LPMRULIST,int,LPWSTR,int);
 bool      MRU_Load(LPMRULIST);
 bool      MRU_Save(LPMRULIST);
 bool      MRU_MergeSave(LPMRULIST,bool,bool,bool);
+#define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 
 //==== UnSlash Functions ======================================================
 void TransformBackslashes(char*,bool,UINT,int*);

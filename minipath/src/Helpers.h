@@ -196,6 +196,7 @@ BOOL      MRU_Load(LPMRULIST);
 BOOL      MRU_Save(LPMRULIST);
 void      MRU_LoadToCombobox(HWND,LPCWSTR);
 void      MRU_AddOneItem(LPCWSTR,LPCWSTR);
+#define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 
 //==== Themed Dialogs =========================================================
 #ifndef DLGTEMPLATEEX

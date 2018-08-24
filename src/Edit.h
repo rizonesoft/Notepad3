@@ -33,7 +33,7 @@ bool  EditClearClipboard(HWND);
 bool  EditSwapClipboard(HWND,bool);
 bool  EditCopyAppend(HWND,bool);
 int   EditDetectEOLMode(HWND,char*);
-bool  EditLoadFile(HWND,LPCWSTR,bool,bool,int*,int*,bool*,bool*,bool*);
+bool  EditLoadFile(HWND,LPWSTR,bool,bool,int*,int*,bool*,bool*,bool*);
 bool  EditSaveFile(HWND,LPCWSTR,int,bool*,bool);
 
 void  EditInvertCase(HWND);
