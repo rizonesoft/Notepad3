@@ -1862,37 +1862,16 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 void CreateBars(HWND hwnd, HINSTANCE hInstance)
 {
-  RECT rc;
-
-  REBARINFO rbi;
-  REBARBANDINFO rbBand;
-
-  HIMAGELIST himl;
-  WCHAR szTmp[MAX_PATH] = { L'\0' };
-
   DWORD dwToolbarStyle = NP3_WS_TOOLBAR;
-  DWORD dwReBarStyle = NP3_WS_REBAR;
-
-  bool bIsPrivAppThemed = PrivateIsAppThemed();
-
-  int i,n;
-  WCHAR tchDesc[256] = { L'\0' };
-  WCHAR tchIndex[256] = { L'\0' };
-
-  WCHAR *pIniSection = NULL;
-  int   cchIniSection = 0;
-
-  if (bShowToolbar) { dwReBarStyle |= WS_VISIBLE; }
-
   g_hwndToolbar = CreateWindowEx(0,TOOLBARCLASSNAME,NULL,dwToolbarStyle,
                                0,0,0,0,hwnd,(HMENU)IDC_TOOLBAR,hInstance,NULL);
 
   SendMessage(g_hwndToolbar,TB_BUTTONSTRUCTSIZE,(WPARAM)sizeof(TBBUTTON),0);
 
   // Add Toolbar Bitmap
-  BITMAP bmp;
   HBITMAP hbmp = NULL;
   HBITMAP hbmpCopy = NULL;
+  WCHAR szTmp[MAX_PATH] = { L'\0' };
   if (StringCchLenW(g_tchToolbarBitmap,COUNTOF(g_tchToolbarBitmap)))
   {
     if (!SearchPath(NULL,g_tchToolbarBitmap,L".bmp",COUNTOF(szTmp),szTmp,NULL))
@@ -1915,8 +1894,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
  
 
+  BITMAP bmp;
   GetObject(hbmp,sizeof(BITMAP),&bmp);
-  himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
+  HIMAGELIST himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
   ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
   DeleteObject(hbmp);
   SendMessage(g_hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
@@ -1979,14 +1959,16 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   }
 
   // Load toolbar labels
-  pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
-  cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
+  WCHAR* pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 32 * 1024);
+  int cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
   LoadIniSection(L"Toolbar Labels",pIniSection,cchIniSection);
-  for (i = 0; i < COUNTOF(tbbMainWnd); ++i) 
+  WCHAR tchDesc[256] = { L'\0' };
+  WCHAR tchIndex[256] = { L'\0' };
+  for (int i = 0; i < COUNTOF(tbbMainWnd); ++i) 
   {
     if (tbbMainWnd[i].fsStyle == BTNS_SEP) { continue; }
 
-    n = tbbMainWnd[i].iBitmap + 1;
+    int n = tbbMainWnd[i].iBitmap + 1;
     StringCchPrintf(tchIndex,COUNTOF(tchIndex),L"%02i",n);
 
     if (IniSectionGetString(pIniSection,tchIndex,L"",tchDesc,COUNTOF(tchDesc)) > 0) 
@@ -2012,34 +1994,36 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   if (Toolbar_SetButtons(g_hwndToolbar, IDT_FILE_NEW, g_tchToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
     SendMessage(g_hwndToolbar, TB_ADDBUTTONS, NUMINITIALTOOLS, (LPARAM)tbbMainWnd);
   }
+  RECT rc;
   SendMessage(g_hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
   //SendMessage(g_hwndToolbar,TB_SETINDENT,2,0);
 
 
   // Create Statusbar 
-  DWORD dwStatusbarStyle = WS_CHILD | WS_CLIPSIBLINGS;
-
-  if (bShowStatusbar) {
-    dwStatusbarStyle |= WS_VISIBLE;
-  }
+  DWORD const dwStatusbarStyle = bShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
   g_hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
 
 
   // Create ReBar and add Toolbar
+  DWORD const dwReBarStyle = bShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
   g_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
                              0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
+  REBARINFO rbi;
   rbi.cbSize = sizeof(REBARINFO);
   rbi.fMask  = 0;
   rbi.himl   = (HIMAGELIST)NULL;
   SendMessage(g_hwndReBar,RB_SETBARINFO,0,(LPARAM)&rbi);
 
+
+  REBARBANDINFO rbBand;
+  bool const bIsPrivAppThemed = PrivateIsAppThemed();
+
   rbBand.cbSize  = sizeof(REBARBANDINFO);
   rbBand.fMask   = /*RBBIM_COLORS | RBBIM_TEXT | RBBIM_BACKGROUND | */
                    RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
-  rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
-  if (bIsPrivAppThemed)
-    rbBand.fStyle |= RBBS_CHILDEDGE;
+  //rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
+  rbBand.fStyle = bIsPrivAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
   rbBand.hbmBack = NULL;
   rbBand.lpText     = L"Toolbar";
   rbBand.hwndChild  = g_hwndToolbar;

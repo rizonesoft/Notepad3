@@ -417,7 +417,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void NotifyFocus(bool focus);
 	virtual void SetCtrlID(int identifier);
 	virtual int GetCtrlID() { return ctrlID; }
-	virtual void NotifyParent(SCNotification scn) = 0;
+	virtual void NotifyParent(SCNotification &scn) = 0;
 	virtual void NotifyStyleToNeeded(Sci::Position endStyleNeeded);
 	void NotifyChar(int ch);
 	void NotifySavePoint(bool isSavePoint);
