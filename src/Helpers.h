@@ -235,8 +235,16 @@ bool PathCreateFavLnk(LPCWSTR,LPCWSTR,LPCWSTR);
 
 
 bool StrLTrim(LPWSTR,LPCWSTR);
-inline bool TrimStringA(LPSTR lpString) { return StrTrimA(lpString, " "); };
-inline bool TrimStringW(LPWSTR lpString) { return StrTrimW(lpString, L" "); };
+inline bool TrimStringA(LPSTR lpString) {
+  if (!lpString || !*lpString) { return false; }
+  StrTrimA(lpString, " ");
+  return true;
+};
+inline bool TrimStringW(LPWSTR lpString) {
+  if (!lpString || !*lpString) { return false; }
+  StrTrimW(lpString, L" ");
+  return true;
+};
 bool ExtractFirstArgument(LPCWSTR, LPWSTR, LPWSTR, int);
 
 void PrepareFilterStr(LPWSTR);
