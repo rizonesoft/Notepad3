@@ -1150,33 +1150,53 @@ bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars)
 }
 
 
+#if 0
 
 //=============================================================================
 //
-//  TrimString()
+//  TrimStringA()
 //
-bool TrimString(LPWSTR lpString)
+bool TrimStringA(LPSTR lpString)
 {
-  if (!lpString || !*lpString)
-    return false;
+  if (!lpString || !*lpString) { return false; }
 
   // Trim left
-  LPWSTR psz = lpString;
+  LPSTR psz = lpString;
+  while (*psz == ' ') { psz = CharNextA(psz); }
 
-  while (*psz == L' ') { psz = CharNext(psz); }
-
-  MoveMemory(lpString,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
+  MoveMemory(lpString, psz, sizeof(CHAR)*(strlen(psz) + 1));
 
   // Trim right
-  psz = StrEnd(lpString);
+  psz = StrEndA(lpString);
+  while (*(psz = CharPrevA(lpString, psz)) == ' ') { *psz = '\0'; }
 
-  while (*(psz = CharPrev(lpString, psz)) == L' ') {
-    *psz = L'\0';
-  }
   return true;
 }
 
 
+
+//=============================================================================
+//
+//  TrimStringW()
+//
+bool TrimStringW(LPWSTR lpString)
+{
+  if (!lpString || !*lpString) { return false; }
+
+  // Trim left
+  LPWSTR psz = lpString;
+  while (*psz == L' ') { psz = CharNextW(psz); }
+
+  MoveMemory(lpString,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
+
+  // Trim right
+  psz = StrEndW(lpString);
+  while (*(psz = CharPrevW(lpString, psz)) == L' ') { *psz = L'\0'; }
+
+  return true;
+}
+
+#endif
 
 
 //=============================================================================
@@ -1194,13 +1214,13 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
   if (lpArg2)
     *lpArg2 = L'\0';
 
-  if (!TrimString(lpArg1))
+  if (!TrimStringW(lpArg1))
     return false;
 
   if (*lpArg1 == L'\"')
   {
     *lpArg1 = L' ';
-    TrimString(lpArg1);
+    TrimStringW(lpArg1);
     bQuoted = true;
   }
 
@@ -1216,10 +1236,10 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
       StringCchCopy(lpArg2, len, psz + 1);
   }
 
-  TrimString(lpArg1);
+  TrimStringW(lpArg1);
 
   if (lpArg2)
-    TrimString(lpArg2);
+    TrimStringW(lpArg2);
 
   return true;
 }
@@ -2271,7 +2291,7 @@ int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, i
   static WCHAR wchTmpBuff[MIDSZ_BUFFER];
 
   StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchCSVStrg);
-  TrimString(wchTmpBuff);
+  TrimStringW(wchTmpBuff);
   // fill default
   for (int i = 0; i < iCount; ++i) {
     if (sDefault && *sDefault)
@@ -2310,7 +2330,7 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
   static WCHAR wchTmpBuff[SMALL_BUFFER];
 
   StringCchCopyW(wchTmpBuff, COUNTOF(wchTmpBuff), wchStrg);
-  TrimString(wchTmpBuff);
+  TrimStringW(wchTmpBuff);
   // ensure single spaces only
   WCHAR *p = StrStr(wchTmpBuff, L"  ");
   while (p) {

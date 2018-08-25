@@ -107,7 +107,7 @@ BOOL PathGetLnkPath(LPCWSTR,LPWSTR,int);
 BOOL PathIsLnkToDirectory(LPCWSTR,LPWSTR,int);
 BOOL PathCreateLnk(LPCWSTR,LPCWSTR);
 
-BOOL TrimString(LPWSTR);
+BOOL TrimStringW(LPWSTR);
 BOOL ExtractFirstArgument(LPCWSTR, LPWSTR, LPWSTR);
 
 LPWSTR QuotateFilenameStr(LPWSTR);

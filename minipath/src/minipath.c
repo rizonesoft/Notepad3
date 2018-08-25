@@ -3177,7 +3177,7 @@ void ParseCommandLine()
             lstrcpy(g_wchIniFile,L"*?");
           else if (ExtractFirstArgument(lp2,lp1,lp2)) {
             StrCpyN(g_wchIniFile,lp1,COUNTOF(g_wchIniFile));
-            TrimString(g_wchIniFile);
+            TrimStringW(g_wchIniFile);
             PathUnquoteSpaces(g_wchIniFile);
           }
           break;

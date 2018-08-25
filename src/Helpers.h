@@ -235,7 +235,8 @@ bool PathCreateFavLnk(LPCWSTR,LPCWSTR,LPCWSTR);
 
 
 bool StrLTrim(LPWSTR,LPCWSTR);
-bool TrimString(LPWSTR);
+inline bool TrimStringA(LPSTR lpString) { return StrTrimA(lpString, " "); };
+inline bool TrimStringW(LPWSTR lpString) { return StrTrimW(lpString, L" "); };
 bool ExtractFirstArgument(LPCWSTR, LPWSTR, LPWSTR, int);
 
 void PrepareFilterStr(LPWSTR);
