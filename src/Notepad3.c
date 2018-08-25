@@ -7299,7 +7299,7 @@ void ParseCommandLine()
       else if (StrCmpNI(lp1,L"tmpfbuf=",CSTRLEN(L"tmpfbuf=")) == 0) {
         StringCchCopyN(g_szTmpFilePath,COUNTOF(g_szTmpFilePath),
           lp1 + CSTRLEN(L"tmpfbuf="),len - CSTRLEN(L"tmpfbuf="));
-        TrimString(g_szTmpFilePath);
+        TrimStringW(g_szTmpFilePath);
         PathUnquoteSpaces(g_szTmpFilePath);
         NormalizePathEx(g_szTmpFilePath,COUNTOF(g_szTmpFilePath));
         g_flagBufferFile = 1;
@@ -7331,7 +7331,7 @@ void ParseCommandLine()
             StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),L"*?");
           else if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
             StringCchCopyN(g_wchIniFile,COUNTOF(g_wchIniFile),lp1,len);
-            TrimString(g_wchIniFile);
+            TrimStringW(g_wchIniFile);
             PathUnquoteSpaces(g_wchIniFile);
             NormalizePathEx(g_wchIniFile,COUNTOF(g_wchIniFile));
           }
@@ -8150,6 +8150,45 @@ static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionT
 }
 
 
+
+//=============================================================================
+//
+//  _InterpRectSelTinyExpr()
+//
+//
+static double __fastcall _InterpRectSelTinyExpr(int* piExprError)
+{
+  #define _tmpBufCnt 256
+  char tmpRectSelN[_tmpBufCnt] = { '\0' };
+
+  g_pTempLineBufferMain[0] = '\0';
+  size_t const tmpLineBufSize = COUNTOF(g_pTempLineBufferMain);
+
+  DocPosU const selCount = SciCall_GetSelections();
+
+  bool bLastCharWasDigit = false;
+  for (DocPosU i = 0; i < selCount; ++i)
+  {
+    DocPos const posSelStart = SciCall_GetSelectionNStart(i);
+    DocPos const posSelEnd = SciCall_GetSelectionNEnd(i);
+    size_t const cchToCopy = (size_t)(posSelEnd - posSelStart);
+    StringCchCopyNA(tmpRectSelN, _tmpBufCnt, SciCall_GetRangePointer(posSelStart, (DocPos)cchToCopy), cchToCopy);
+    StrTrimA(tmpRectSelN, " ");
+
+    if (!StrIsEmptyA(tmpRectSelN))
+    {
+      if (IsDigit(tmpRectSelN[0]) && bLastCharWasDigit) {
+        StringCchCatA(g_pTempLineBufferMain, tmpLineBufSize, "+"); // default: add numbers
+      }
+      bLastCharWasDigit = IsDigit(tmpRectSelN[strlen(tmpRectSelN) - 1]);
+      StringCchCatA(g_pTempLineBufferMain, tmpLineBufSize, tmpRectSelN);
+    }
+  }
+
+  return te_interp(g_pTempLineBufferMain, piExprError);
+}
+
+
 //=============================================================================
 //
 //  UpdateStatusbar()
@@ -8359,7 +8398,6 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
   // try calculate expression of selection
   static WCHAR tchExpression[32] = { L'\0' };
   static int s_iExprError = -3;
-  static char chExpression[1024] = { '\0' };
 
   if (g_iStatusbarVisible[STATUS_TINYEXPR])
   {
@@ -8370,28 +8408,34 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bIsSelCountable)
     {
-      
-      if (SciCall_GetSelText(NULL) < COUNTOF(chExpression))
+      if (SciCall_GetSelText(NULL) < COUNTOF(g_pTempLineBufferMain))
       {
-        SciCall_GetSelText(chExpression);
+        SciCall_GetSelText(g_pTempLineBufferMain);
         //StrDelChrA(chExpression, " \r\n\t\v");
-        StrDelChrA(chExpression, "\r\n");
-        g_dExpression = te_interp(chExpression, &g_iExprError);
-
-        if (!g_iExprError) {
-          if (fabs(g_dExpression) > 99999999.9999)
-            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.4E", g_dExpression);
-          else
-            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6G", g_dExpression);
-        }
-        else
-          StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%i]", g_iExprError);
+        StrDelChrA(g_pTempLineBufferMain, "\r\n");
+        g_dExpression = te_interp(g_pTempLineBufferMain, &g_iExprError);
       }
-      else
+      else {
         g_iExprError = -1;
+      }
+    }
+    else if (SciCall_IsSelectionRectangle() && !bIsSelectionEmpty)
+    {
+      g_dExpression = _InterpRectSelTinyExpr(&g_iExprError);
     }
     else
       g_iExprError = -2;
+
+
+    if (!g_iExprError) {
+      if (fabs(g_dExpression) > 99999999.9999)
+        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.4E", g_dExpression);
+      else
+        StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.6G", g_dExpression);
+    }
+    else if (g_iExprError > 0) {
+      StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%i]", g_iExprError);
+    }
 
     if (!g_iExprError || (s_iExprError != g_iExprError)) {
 

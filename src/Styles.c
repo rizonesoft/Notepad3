@@ -4715,7 +4715,7 @@ bool Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
-    TrimString(tch);
+    TrimStringW(tch);
 
     if (StringCchCompareIN(tch,COUNTOF(tch),L"Default",-1) == 0)
     {
@@ -4748,7 +4748,7 @@ bool Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
-    TrimString(tch);
+    TrimStringW(tch);
     if (StringCchCompareIN(tch,COUNTOF(tch),L"none",-1) == 0 ||
         StringCchCompareIN(tch,COUNTOF(tch),L"standard",-1) == 0 ||
         StringCchCompareIN(tch,COUNTOF(tch),L"cleartype",-1) == 0 ||
@@ -4775,7 +4775,7 @@ bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
     StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"charset:"));
     p = StrChr(tch, L';');
     if (p) { *p = L'\0'; }
-    TrimString(tch);
+    TrimStringW(tch);
     int iValue = 0;
     if (1 == swscanf_s(tch, L"%i", &iValue))
     {
@@ -4811,7 +4811,7 @@ bool Style_StrGetSize(LPCWSTR lpszStyle, float* f)
     }
     p = StrChr(tch, L';');
     if (p) { *p = L'\0'; }
-    TrimString(tch);
+    TrimStringW(tch);
     
     float fValue = 0.0;
     if (Char2FloatW(tch, &fValue))
@@ -4845,7 +4845,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
     StringCchCopy(tch, COUNTOF(tch), (p + CSTRLEN(L"size:")));
     p = StrChr(tch, L';');
     if (p) { *p = L'\0'; }
-    TrimString(tch);
+    TrimStringW(tch);
 
     float fValue = 0.0f;
     if (Char2FloatW(tch, &fValue)) {
@@ -4953,7 +4953,7 @@ bool Style_StrGetColor(bool bFore, LPCWSTR lpszStyle, COLORREF* rgb)
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
-    TrimString(tch);
+    TrimStringW(tch);
     int iValue = 0;
     int itok = swscanf_s(tch, L"%x", &iValue);
     if (itok == 1)
@@ -4981,7 +4981,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st)
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
-    TrimString(tch);
+    TrimStringW(tch);
     int iValue = 0;
     int itok = swscanf_s(tch, L"%i", &iValue);
     if (itok == 1) {
@@ -5006,7 +5006,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st)
 //    p = StrChr(tch, L';');
 //    if (p)
 //      *p = L'\0';
-//    TrimString(tch);
+//    TrimStringW(tch);
 //    if (1 == swscanf_s(tch, L"%i", val)) { return true; }
 //  }
 //  return false;
@@ -5026,7 +5026,7 @@ bool Style_StrGetCase(LPCWSTR lpszStyle, int* i)
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
-    TrimString(tch);
+    TrimStringW(tch);
     if (tch[0] == L'u' || tch[0] == L'U') {
       *i = SC_CASE_UPPER;
       return true;

@@ -614,7 +614,7 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
       (tbb.idCommand==0)?0:tbb.idCommand-cmdBase+1);
     lstrcat(tchButtons,tchItem);
   }
-  TrimString(tchButtons);
+  TrimStringW(tchButtons);
   lstrcpyn(lpszButtons,tchButtons,cchButtons);
   return(c);
 }
@@ -627,7 +627,7 @@ int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptb
 
   ZeroMemory(tchButtons,COUNTOF(tchButtons)*sizeof(tchButtons[0]));
   lstrcpyn(tchButtons,lpszButtons,COUNTOF(tchButtons)-2);
-  TrimString(tchButtons);
+  TrimStringW(tchButtons);
   WCHAR *p = StrStr(tchButtons, L"  ");
   while (p) {
     MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
@@ -964,9 +964,9 @@ BOOL PathCreateLnk(LPCWSTR pszLnkDir,LPCWSTR pszPath)
 
 //=============================================================================
 //
-//  TrimString()
+//  TrimStringW()
 //
-BOOL TrimString(LPWSTR lpString)
+BOOL TrimStringW(LPWSTR lpString)
 {
 
   LPWSTR psz;
@@ -1007,13 +1007,13 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2)
   if (lpArg2)
     *lpArg2 = L'\0';
 
-  if (!TrimString(lpArg1))
+  if (!TrimStringW(lpArg1))
     return FALSE;
 
   if (*lpArg1 == L'\"')
   {
     *lpArg1 = L' ';
-    TrimString(lpArg1);
+    TrimStringW(lpArg1);
     bQuoted = TRUE;
   }
 
@@ -1029,10 +1029,10 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2)
       lstrcpy(lpArg2,psz + 1);
   }
 
-  TrimString(lpArg1);
+  TrimStringW(lpArg1);
 
   if (lpArg2)
-    TrimString(lpArg2);
+    TrimStringW(lpArg2);
 
   return TRUE;
 
