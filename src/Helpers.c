@@ -1413,7 +1413,7 @@ size_t FormatNumberStr(LPWSTR lpNumberStr)
     return StringCchLen(lpNumberStr,0);
   }
 
-  if (StringCchLen(lpNumberStr,0) > iPlace[0]) {
+  if ((int)StringCchLen(lpNumberStr,0) > iPlace[0]) {
 
     WCHAR* ch = StrEnd(lpNumberStr,0);
 
@@ -2224,7 +2224,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   }
   int outLen = (int)LocalSize(outBuffer) - 1;
 
-  int posIn = 0;
+  size_t posIn = 0;
   WCHAR buf[5] = { L'\0' };
   size_t lastEsc = StringCchLenW(lpURL,0) - 2;
   int code;
