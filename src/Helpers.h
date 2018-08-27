@@ -62,46 +62,43 @@ void DbgLog(const char *fmt, ...);
 // ============================================================================
 
 // swap 
-static inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
-static inline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
+inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
+inline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
 
 // clamp
-static inline int clampi(int x, int lower, int upper) {
+inline int clampi(int x, int lower, int upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-static inline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
+inline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
 
 // Is the character an octal digit?
-static inline bool IsDigit(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
-static inline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
+inline bool IsDigitA(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
+inline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
 
 // Is the character a white space char?
-static inline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
-static inline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
+inline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
+inline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
 
 
-static inline int float2int(float f) { return (int)lroundf(f); }
-static inline float Round10th(float f) { return (float)float2int(f * 10.0f) / 10; }
-static inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) != 0); }
+inline int float2int(float f) { return (int)lroundf(f); }
+inline float Round10th(float f) { return (float)float2int(f * 10.0f) / 10; }
+inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) != 0); }
 
 
 // direct heap allocation
-static inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
-{
+inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags) {
   return HeapAlloc(GetProcessHeap(), (dwFlags | HEAP_GENERATE_EXCEPTIONS), numBytes);
 }
 
-static inline bool FreeMem(LPVOID lpMemory)
-{
+inline bool FreeMem(LPVOID lpMemory) {
   return ((lpMemory != NULL) ? HeapFree(GetProcessHeap(), 0, lpMemory) : true);
 }
 
-static inline size_t SizeOfMem(LPVOID lpMemory)
-{
+inline size_t SizeOfMem(LPVOID lpMemory) {
   return ((lpMemory != NULL) ? HeapSize(GetProcessHeap(), 0, lpMemory) : 0);
 }
 
@@ -113,7 +110,7 @@ static inline size_t SizeOfMem(LPVOID lpMemory)
 #define IniSetString(lpSection,lpName,lpString)                      WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
 #define IniDeleteSection(lpSection)                                  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
 
-static inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
+inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
 
@@ -125,7 +122,7 @@ int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
 int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
 UINT IniSectionGetUInt(LPCWSTR, LPCWSTR, UINT);
 DocPos IniSectionGetPos(LPCWSTR, LPCWSTR, DocPos);
-static inline bool IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, bool bDefault) {
+inline bool IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, bool bDefault) {
   return (IniSectionGetInt(lpCachedIniSection, lpName, ((bDefault) ? 1 : 0)) ? true : false);
 }
 
@@ -137,14 +134,13 @@ inline bool IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
 inline bool IniSectionSetBool(LPWSTR lpCachedIniSection, LPCWSTR lpName, bool b) {
   return IniSectionSetInt(lpCachedIniSection, lpName, (b ? 1 : 0));
 }
-inline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos)
-{
+inline bool IniSectionSetPos(LPWSTR lpCachedIniSection, LPCWSTR lpName, DocPos pos){
   WCHAR tch[64] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%td", (long long)pos); return IniSectionSetString(lpCachedIniSection, lpName, tch);
 }
 
 // ----------------------------------------------------------------------------
 
-static inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
+inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
 
 DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
@@ -259,7 +255,7 @@ DWORD GetLongPathNameEx(LPWSTR,DWORD);
 DWORD NormalizePathEx(LPWSTR,int);
 DWORD_PTR SHGetFileInfo2(LPCWSTR,DWORD,SHFILEINFO*,UINT,UINT);
 
-int  FormatNumberStr(LPWSTR);
+size_t FormatNumberStr(LPWSTR);
 bool SetDlgItemIntEx(HWND,int,UINT);
 
 
@@ -342,29 +338,39 @@ WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
 
 // ----------------------------------------------------------------------------
 
-#define StrEndW(pStart) (pStart + lstrlen(pStart))
-#define StrEndA(pStart) (pStart + strlen(pStart))
-
-#if defined(UNICODE) || defined(_UNICODE)  
-#define StrEnd(s) StrEndW(s)
-#else
-#define StrEnd(s) StrEndA(s)
-#endif
-
-// ----------------------------------------------------------------------------
-
 bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 
 
 //==== StrSafe lstrlen() =======================================================
-inline DocPos StringCchLenA(LPCSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, m, &len)) ? len : m)); }
-inline DocPos StringCchLenW(LPCWSTR s,size_t m) { size_t len; return (DocPos)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, m, &len)) ? len : m)); }
+inline size_t StringCchLenA(LPCSTR s, size_t n) { 
+  size_t len; return (size_t)(!s ? 0 : (!n ? strlen(s) : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n)));
+}
+inline size_t StringCchLenW(LPCWSTR s, size_t n) { 
+  size_t len; return (size_t)(!s ? 0 : (!n ? lstrlen(s) : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n)));
+}
 
 #if defined(UNICODE) || defined(_UNICODE)  
 #define StringCchLen(s,n)  StringCchLenW((s),(n))
 #else
 #define StringCchLen(s,n)  StringCchLenA((s),(n))
 #endif
+
+// ----------------------------------------------------------------------------
+
+inline char* StrEndA(const char* pStart, size_t siz) {
+  return (char*)(pStart + StringCchLenA(pStart, siz));
+}
+
+inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
+  return (WCHAR*)(pStart + StringCchLenW(pStart, siz));
+}
+
+#if defined(UNICODE) || defined(_UNICODE)  
+#define StrEnd(s,n) StrEndW((s),(n))
+#else
+#define StrEnd(s,n) StrEndA((s),(n))
+#endif
+
 
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
 inline int _StringCchCmpNA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
@@ -383,7 +389,7 @@ inline int _StringCchCmpINA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
 #define StringCchCompareINA(s1,l1,s2,l2)  _StringCchCmpINA((s1),(l1),(s2),(l2))
 #define StringCchCompareIXA(s1,s2)        _StringCchCmpINA((s1),-1,(s2),-1)
 
-inline int _StringCchCmpNW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
+inline int _StringCchCmpNW(PCNZWCH s1, DocPos l1, PCNZWCH s2, DocPos l2) {
   return (CompareStringW(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? (int)StringCchLenW(s1,l1) : -1),
                          s2,(l2 >= 0 ? (int)StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
 }
@@ -412,8 +418,8 @@ inline int _StringCchCmpINW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
 
 //==== StrIs(Not)Empty() =============================================
 
-static inline bool StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
-static inline bool StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
+inline bool StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
+inline bool StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')); }
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrIsEmpty(s)     StrIsEmptyW(s)

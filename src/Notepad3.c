@@ -302,8 +302,8 @@ int     yFindReplaceDlg;
 int     xCustomSchemesDlg;
 int     yCustomSchemesDlg;
 
-
-LPWSTR    lpFileList[32] = { NULL };
+#define FILE_LIST_SIZE 32
+LPWSTR    lpFileList[FILE_LIST_SIZE] = { NULL };
 int       cFileList = 0;
 int       cchiFileList = 0;
 LPWSTR    lpFileArg = NULL;
@@ -2506,7 +2506,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (params->flagLexerSpecified) {
           if (params->iInitialLexer < 0) {
             WCHAR wchExt[32] = L".";
-            StringCchCopyN(CharNext(wchExt), 32, StrEnd(&params->wchData) + 1, 31);
+            StringCchCopyN(CharNext(wchExt), 32, StrEnd(&params->wchData,0) + 1, 31);
             Style_SetLexerFromName(g_hwndEdit, &params->wchData, wchExt);
           }
           else if (params->iInitialLexer >= 0 && params->iInitialLexer < NUMLEXERS)
@@ -2514,7 +2514,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
 
         if (params->flagTitleExcerpt) {
-          StringCchCopyN(szTitleExcerpt, COUNTOF(szTitleExcerpt), StrEnd(&params->wchData) + 1, COUNTOF(szTitleExcerpt));
+          StringCchCopyN(szTitleExcerpt, COUNTOF(szTitleExcerpt), StrEnd(&params->wchData,0) + 1, COUNTOF(szTitleExcerpt));
         }
       }
       // reset
@@ -3042,7 +3042,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
-  i = StringCchLenW(g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
+  i = (int)StringCchLenW(g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
   EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
   return 0LL;
@@ -5940,14 +5940,14 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
     MultiByteToWideCharStrg(Encoding_SciCP, chURL, wchURL);
 
     const WCHAR* chkPreFix = L"file://";
-    const int len = lstrlen(chkPreFix);
+    size_t const len = StringCchLenW(chkPreFix,0);
 
     if (!bForceBrowser && (StrStrIW(wchURL, chkPreFix) == wchURL))
     {
       WCHAR* szFileName = &(wchURL[len]);
       StrTrimW(szFileName, L"/");
 
-      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - len);
+      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - (int)len);
 
       if (PathIsDirectory(szFileName))
       {
@@ -6505,11 +6505,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                   char chBuf[80];
                   if (g_iExprError == 0) {
                     StringCchPrintfA(chBuf, COUNTOF(chBuf), "%.6G", g_dExpression);
-                    SciCall_CopyText((DocPos)strlen(chBuf), chBuf);
+                    SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
                   }
                   else if (g_iExprError > 0) {
                     StringCchPrintfA(chBuf, COUNTOF(chBuf), "^[%i]", g_iExprError);
-                    SciCall_CopyText((DocPos)strlen(chBuf), chBuf);
+                    SciCall_CopyText((DocPos)StringCchLenA(chBuf,80), chBuf);
                   }
                   else
                     SciCall_CopyText(0, "");
@@ -7227,15 +7227,15 @@ void ParseCommandLine()
   // Good old console can also send args separated by Tabs
   StrTab2Space(lpCmdLine);
 
-  int len = lstrlen(lpCmdLine) + 2;
+  DocPos const len = (DocPos)(StringCchLenW(lpCmdLine,0) + 2UL);
   lp1 = LocalAlloc(LPTR,sizeof(WCHAR)*len);
   lp2 = LocalAlloc(LPTR,sizeof(WCHAR)*len);
   lp3 = LocalAlloc(LPTR,sizeof(WCHAR)*len);
 
   // Start with 2nd argument
-  ExtractFirstArgument(lpCmdLine,lp1,lp3,len);
+  ExtractFirstArgument(lpCmdLine,lp1,lp3,(int)len);
 
-  while (bContinue && ExtractFirstArgument(lp3,lp1,lp2,len))
+  while (bContinue && ExtractFirstArgument(lp3,lp1,lp2,(int)len))
   {
     // options
     if (!bIsFileArg && (StringCchCompareN(lp1,len,L"+",-1) == 0)) {
@@ -7329,7 +7329,7 @@ void ParseCommandLine()
         case L'F':
           if (*(lp1+1) == L'0' || *CharUpper(lp1+1) == L'O')
             StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),L"*?");
-          else if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
+          else if (ExtractFirstArgument(lp2,lp1,lp2,(int)len)) {
             StringCchCopyN(g_wchIniFile,COUNTOF(g_wchIniFile),lp1,len);
             TrimStringW(g_wchIniFile);
             PathUnquoteSpaces(g_wchIniFile);
@@ -7359,7 +7359,7 @@ void ParseCommandLine()
               lp += 1;
             else if (bIsNotepadReplacement) {
               if (*(lp1+1) == L'T')
-                ExtractFirstArgument(lp2,lp1,lp2,len);
+                ExtractFirstArgument(lp2,lp1,lp2,(int)len);
               break;
             }
             if (*(lp+1) == L'0' || *CharUpper(lp+1) == L'O') {
@@ -7405,7 +7405,7 @@ void ParseCommandLine()
                 p = CharNext(p);
               }
             }
-            else if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
+            else if (ExtractFirstArgument(lp2,lp1,lp2,(int)len)) {
               int itok =
                 swscanf_s(lp1,L"%i,%i,%i,%i,%i",&g_WinInfo.x,&g_WinInfo.y,&g_WinInfo.cx,&g_WinInfo.cy,&g_WinInfo.max);
               if (itok == 4 || itok == 5) { // scan successful
@@ -7422,7 +7422,7 @@ void ParseCommandLine()
           break;
 
         case L'T':
-          if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
+          if (ExtractFirstArgument(lp2,lp1,lp2,(int)len)) {
             StringCchCopyN(szTitleExcerpt,COUNTOF(szTitleExcerpt),lp1,len);
             fKeepTitleExcerpt = 1;
           }
@@ -7437,7 +7437,7 @@ void ParseCommandLine()
           break;
 
         case L'E':
-          if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
+          if (ExtractFirstArgument(lp2,lp1,lp2,(int)len)) {
             if (lpEncodingArg)
               LocalFree(lpEncodingArg);
             lpEncodingArg = StrDup(lp1);
@@ -7445,7 +7445,7 @@ void ParseCommandLine()
           break;
 
         case L'G':
-          if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
+          if (ExtractFirstArgument(lp2,lp1,lp2,(int)len)) {
             int itok =
               swscanf_s(lp1,L"%i,%i",&iInitialLine,&iInitialColumn);
             if (itok == 1 || itok == 2) { // scan successful
@@ -7467,7 +7467,7 @@ void ParseCommandLine()
             if (StrChr(lp1,L'B'))
               bTransBS = true;
 
-            if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
+            if (ExtractFirstArgument(lp2,lp1,lp2,(int)len)) {
               if (lpMatchArg)
                 LocalFree(lpMatchArg);
               lpMatchArg = StrDup(lp1);
@@ -7501,7 +7501,7 @@ void ParseCommandLine()
           break;
 
         case L'S':
-          if (ExtractFirstArgument(lp2,lp1,lp2,len)) {
+          if (ExtractFirstArgument(lp2,lp1,lp2,(int)len)) {
             if (lpSchemeArg)
               LocalFree(lpSchemeArg);
             lpSchemeArg = StrDup(lp1);
@@ -7541,7 +7541,7 @@ void ParseCommandLine()
           break;
 
         case L'Z':
-          ExtractFirstArgument(lp2,lp1,lp2,len);
+          ExtractFirstArgument(lp2,lp1,lp2,(int)len);
           g_flagMultiFileArg = 1;
           bIsNotepadReplacement = true;
           break;
@@ -7568,7 +7568,7 @@ void ParseCommandLine()
     {
       LPWSTR lpFileBuf = LocalAlloc(LPTR,sizeof(WCHAR)*len);
 
-      cchiFileList = lstrlen(lpCmdLine) - lstrlen(lp3);
+      cchiFileList = (int)(StringCchLenW(lpCmdLine, len-2) - StringCchLenW(lp3,len));
 
       if (lpFileArg) {
         FreeMem(lpFileArg);
@@ -7591,7 +7591,7 @@ void ParseCommandLine()
 
       StrTrim(lpFileArg,L" \"");
 
-      while (cFileList < 32 && ExtractFirstArgument(lp3,lpFileBuf,lp3,len)) {
+      while ((cFileList < FILE_LIST_SIZE) && ExtractFirstArgument(lp3,lpFileBuf,lp3,(int)len)) {
         PathQuoteSpaces(lpFileBuf);
         lpFileList[cFileList++] = StrDup(lpFileBuf);
       }
@@ -7819,7 +7819,7 @@ int TestIniFile() {
     return(0);
   }
 
-  if (PathIsDirectory(g_wchIniFile) || *CharPrev(g_wchIniFile,StrEnd(g_wchIniFile)) == L'\\') {
+  if (PathIsDirectory(g_wchIniFile) || *CharPrev(g_wchIniFile,StrEnd(g_wchIniFile, COUNTOF(g_wchIniFile))) == L'\\') {
     WCHAR wchModule[MAX_PATH] = { L'\0' };
     GetModuleFileName(NULL,wchModule,COUNTOF(wchModule));
     PathCchAppend(g_wchIniFile,COUNTOF(g_wchIniFile),PathFindFileName(wchModule));
@@ -7981,7 +7981,7 @@ static void __fastcall _UpdateToolbarDelayed()
 
   EnableTool(IDT_EDIT_FIND, b2);
   //EnableTool(IDT_EDIT_FINDNEXT,b2);
-  //EnableTool(IDT_EDIT_FINDPREV,b2 && strlen(g_efrData.szFind));
+  //EnableTool(IDT_EDIT_FINDPREV,b2 && StringCchLenA(g_efrData.szFind,0));
   EnableTool(IDT_EDIT_REPLACE, b2 && !ro);
 
   EnableTool(IDT_EDIT_CUT, !b1 && !ro);
@@ -8008,7 +8008,7 @@ static LONG __fastcall _StatusCalcPaneWidth(HWND hwnd, LPCWSTR lpsz)
   int const mmode = SetMapMode(hdc, MM_TEXT);
 
   SIZE size = { 0L, 0L };
-  GetTextExtentPoint32(hdc, lpsz, lstrlen(lpsz), &size);
+  GetTextExtentPoint32(hdc, lpsz, (int)StringCchLenW(lpsz,0), &size);
 
   SetMapMode(hdc, mmode);
   SelectObject(hdc, hfold);
@@ -8177,10 +8177,10 @@ static double __fastcall _InterpRectSelTinyExpr(int* piExprError)
 
     if (!StrIsEmptyA(tmpRectSelN))
     {
-      if (IsDigit(tmpRectSelN[0]) && bLastCharWasDigit) {
+      if (IsDigitA(tmpRectSelN[0]) && bLastCharWasDigit) {
         StringCchCatA(g_pTempLineBufferMain, tmpLineBufSize, "+"); // default: add numbers
       }
-      bLastCharWasDigit = IsDigit(tmpRectSelN[strlen(tmpRectSelN) - 1]);
+      bLastCharWasDigit = IsDigitA(tmpRectSelN[StringCchLenA(tmpRectSelN,COUNTOF(tmpRectSelN)) - 1]);
       StringCchCatA(g_pTempLineBufferMain, tmpLineBufSize, tmpRectSelN);
     }
   }
@@ -9527,10 +9527,10 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
             //~Encoding_Current(fileEncoding); // save should not change encoding
             WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
-            int wlen = lstrlen(lpCmdLine) + 2;
+            size_t const wlen = StringCchLenW(lpCmdLine,0) + 2;
             LPWSTR lpExe = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
             LPWSTR lpArgs = LocalAlloc(LPTR,sizeof(WCHAR)*wlen);
-            ExtractFirstArgument(lpCmdLine,lpExe,lpArgs,wlen);
+            ExtractFirstArgument(lpCmdLine,lpExe,lpArgs,(int)wlen);
             // remove relaunch elevated, we are doing this here already
             lpArgs = StrCutI(lpArgs,L"/u ");
             lpArgs = StrCutI(lpArgs,L"-u ");
@@ -9796,17 +9796,17 @@ bool ActivatePrevInst()
 
         SetForegroundWindow(hwnd);
 
-        DWORD cb = sizeof(np3params);
-        if (lpSchemeArg)
-          cb += (lstrlen(lpSchemeArg) + 1) * sizeof(WCHAR);
-
+        size_t cb = sizeof(np3params);
+        if (lpSchemeArg) {
+          cb += ((StringCchLen(lpSchemeArg, 0) + 1) * sizeof(WCHAR));
+        }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = false;
         params->flagChangeNotify = 0;
         params->flagQuietCreate = false;
         params->flagLexerSpecified = g_flagLexerSpecified;
         if (g_flagLexerSpecified && lpSchemeArg) {
-          StringCchCopy(StrEnd(&params->wchData)+1,(lstrlen(lpSchemeArg)+1),lpSchemeArg);
+          StringCchCopy(StrEnd(&params->wchData,0)+1,(StringCchLen(lpSchemeArg,0)+1),lpSchemeArg);
           params->iInitialLexer = -1;
         }
         else
@@ -9890,24 +9890,24 @@ bool ActivatePrevInst()
           StringCchCopy(lpFileArg, FILE_ARG_BUF, tchTmp);
         }
 
-        DWORD cb = sizeof(np3params);
-        cb += (lstrlen(lpFileArg) + 1) * sizeof(WCHAR);
+        size_t cb = sizeof(np3params);
+        cb += (StringCchLenW(lpFileArg,0) + 1) * sizeof(WCHAR);
 
         if (lpSchemeArg)
-          cb += (lstrlen(lpSchemeArg) + 1) * sizeof(WCHAR);
+          cb += (StringCchLenW(lpSchemeArg,0) + 1) * sizeof(WCHAR);
 
-        int cchTitleExcerpt = (int)StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt));
+        size_t cchTitleExcerpt = StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt));
         if (cchTitleExcerpt) {
           cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
         }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = true;
-        StringCchCopy(&params->wchData,lstrlen(lpFileArg)+1,lpFileArg);
+        StringCchCopy(&params->wchData, StringCchLenW(lpFileArg,0)+1,lpFileArg);
         params->flagChangeNotify = g_flagChangeNotify;
         params->flagQuietCreate = g_flagQuietCreate;
         params->flagLexerSpecified = g_flagLexerSpecified;
         if (g_flagLexerSpecified && lpSchemeArg) {
-          StringCchCopy(StrEnd(&params->wchData)+1,lstrlen(lpSchemeArg)+1,lpSchemeArg);
+          StringCchCopy(StrEnd(&params->wchData,0)+1, StringCchLen(lpSchemeArg,0)+1,lpSchemeArg);
           params->iInitialLexer = -1;
         }
         else {
@@ -9922,7 +9922,7 @@ bool ActivatePrevInst()
         params->flagSetEOLMode = g_flagSetEOLMode;
 
         if (cchTitleExcerpt) {
-          StringCchCopy(StrEnd(&params->wchData)+1,cchTitleExcerpt+1,szTitleExcerpt);
+          StringCchCopy(StrEnd(&params->wchData,0)+1,cchTitleExcerpt+1,szTitleExcerpt);
           params->flagTitleExcerpt = 1;
         }
         else {
@@ -9964,14 +9964,14 @@ bool RelaunchMultiInst() {
     PROCESS_INFORMATION pi;
 
     LPWSTR lpCmdLineNew = StrDup(GetCommandLine());
-    int len = lstrlen(lpCmdLineNew) + 1;
+    size_t len = StringCchLen(lpCmdLineNew,0) + 1UL;
     LPWSTR lp1 = LocalAlloc(LPTR,sizeof(WCHAR)*len);
     LPWSTR lp2 = LocalAlloc(LPTR,sizeof(WCHAR)*len);
 
     StrTab2Space(lpCmdLineNew);
     StringCchCopy(lpCmdLineNew + cchiFileList,2,L"");
 
-    pwch = CharPrev(lpCmdLineNew,StrEnd(lpCmdLineNew));
+    pwch = CharPrev(lpCmdLineNew,StrEnd(lpCmdLineNew,len));
     while (*pwch == L' ' || *pwch == L'-' || *pwch == L'+') {
       *pwch = L' ';
       pwch = CharPrev(lpCmdLineNew,pwch);
@@ -10027,13 +10027,13 @@ bool RelaunchElevated(LPWSTR lpArgs) {
   GetStartupInfo(&si);
 
   LPWSTR lpCmdLine = GetCommandLine();
-  int wlen = lstrlen(lpCmdLine) + 2;
+  size_t wlen = StringCchLenW(lpCmdLine,0) + 2UL;
 
   WCHAR lpExe[MAX_PATH + 2] = { L'\0' };
   WCHAR szArgs[2032] = { L'\0' };
   WCHAR szArguments[2032] = { L'\0' };
 
-  ExtractFirstArgument(lpCmdLine,lpExe,szArgs,wlen);
+  ExtractFirstArgument(lpCmdLine,lpExe,szArgs,(int)wlen);
 
   if (lpArgs) {
     StringCchCopy(szArgs,COUNTOF(szArgs),lpArgs); // override

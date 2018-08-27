@@ -4319,7 +4319,7 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
         if (p2)
           *p2 = L'\0';
         else
-          p2 = StrEnd(p1);
+          p2 = StrEnd(p1,0);
         StrTrim(p1,L" .");
         if (StringCchCompareIX(p1,lpszMatch) == 0)
           return(g_pLexArray[i]);
@@ -4328,7 +4328,7 @@ PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
     }
   }
   else {
-    int cch = lstrlen(lpszMatch);
+    int cch = (int)StringCchLenW(lpszMatch,0);
     if (cch >= 3) {
       for (i = 0; i < COUNTOF(g_pLexArray); i++) {
         if (StrCmpNI(g_pLexArray[i]->pszName,lpszMatch,cch) == 0)
@@ -4947,7 +4947,7 @@ bool Style_StrGetColor(bool bFore, LPCWSTR lpszStyle, COLORREF* rgb)
   WCHAR *p = StrStrI(lpszStyle, pItem);
   if (p)
   {
-    StringCchCopy(tch, COUNTOF(tch), p + lstrlen(pItem));
+    StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(pItem,0));
     if (tch[0] == L'#')
       tch[0] = L' ';
     p = StrChr(tch, L';');
@@ -4977,7 +4977,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st)
   WCHAR* p = StrStrI(lpszStyle, strAlpha);
   if (p) {
     WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-    StringCchCopy(tch, COUNTOF(tch), p + lstrlen(strAlpha));
+    StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(strAlpha,0));
     p = StrChr(tch, L';');
     if (p)
       *p = L'\0';
@@ -5002,7 +5002,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* i, bool bAlpha1st)
 //  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 //  WCHAR *p = StrStrI(lpszStyle, lpszProperty);
 //  if (p) {
-//    StringCchCopy(tch, COUNTOF(tch), (p + lstrlen(lpszProperty)));
+//    StringCchCopy(tch, COUNTOF(tch), (p + StringCchLenW(lpszProperty,0)));
 //    p = StrChr(tch, L';');
 //    if (p)
 //      *p = L'\0';
