@@ -74,6 +74,9 @@ inline unsigned clampu(unsigned x, unsigned lower, unsigned upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
+inline unsigned clampul(unsigned long x, unsigned long lower, unsigned long upper) {
+  return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
 
 // Is the character an octal digit?
 inline bool IsDigitA(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }

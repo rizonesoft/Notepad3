@@ -1183,7 +1183,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 
 		MoveImeCarets(-CurrentPosition() + imeCaretPosDoc);
 
-		if (KoreanIME()) {
+		if (KoreanIME() || imeInteraction == imeInline) {
 			view.imeCaretBlockOverride = true;
 		}
 	} else if (lParam & GCS_RESULTSTR) {

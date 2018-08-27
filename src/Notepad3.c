@@ -318,6 +318,7 @@ DWORD     dwLastIOError;
 
 int       g_iDefaultNewFileEncoding;
 int       g_iDefaultCharSet;
+int       g_IMEInteraction;
 
 int       g_iEOLMode;
 int       g_iDefaultEOLMode;
@@ -1645,6 +1646,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETMODEVENTMASK, (WPARAM)(evtMask1 | evtMask2), 0);
 
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 
+
   SendMessage(hwndEditCtrl, SCI_SETEOLMODE, SC_EOL_CRLF, 0);
   SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
   SendMessage(hwndEditCtrl, SCI_USEPOPUP, false, 0);
@@ -1658,7 +1660,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
-
+  
   // assign command keys
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_PRIOR + (SCMOD_CTRL << 16)), SCI_PARAUP);
@@ -1692,10 +1694,10 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETAUTOMATICFOLD, (WPARAM)(SC_AUTOMATICFOLD_SHOW | SC_AUTOMATICFOLD_CHANGE), 0);
 
   // Properties
-  SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, SC_CARETSTICKY_OFF, 0);
+  SendMessage(hwndEditCtrl, SCI_SETCARETSTICKY, (WPARAM)SC_CARETSTICKY_OFF, 0);
   //SendMessage(hwndEditCtrl,SCI_SETCARETSTICKY,SC_CARETSTICKY_WHITESPACE,0);
   
-  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, SC_TIME_FOREVER, 0); // default
+  SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)SC_TIME_FOREVER, 0); // default
   //SendMessage(hwndEditCtrl, SCI_SETMOUSEDWELLTIME, (WPARAM)500, 0);
   
 
@@ -1715,11 +1717,11 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((bScrollPastEOF) ? 0 : 1), 0);
 
   // Tabs
-  SendMessage(hwndEditCtrl, SCI_SETUSETABS, !g_bTabsAsSpaces, 0);
-  SendMessage(hwndEditCtrl, SCI_SETTABINDENTS, g_bTabIndents, 0);
-  SendMessage(hwndEditCtrl, SCI_SETBACKSPACEUNINDENTS, bBackspaceUnindents, 0);
-  SendMessage(hwndEditCtrl, SCI_SETTABWIDTH, g_iTabWidth, 0);
-  SendMessage(hwndEditCtrl, SCI_SETINDENT, g_iIndentWidth, 0);
+  SendMessage(hwndEditCtrl, SCI_SETUSETABS, (WPARAM)!g_bTabsAsSpaces, 0);
+  SendMessage(hwndEditCtrl, SCI_SETTABINDENTS, (WPARAM)g_bTabIndents, 0);
+  SendMessage(hwndEditCtrl, SCI_SETBACKSPACEUNINDENTS, (WPARAM)bBackspaceUnindents, 0);
+  SendMessage(hwndEditCtrl, SCI_SETTABWIDTH, (WPARAM)g_iTabWidth, 0);
+  SendMessage(hwndEditCtrl, SCI_SETINDENT, (WPARAM)g_iIndentWidth, 0);
 
   // Indent Guides
   Style_SetIndentGuides(hwndEditCtrl, bShowIndentGuides);
@@ -1730,18 +1732,21 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   // Long Lines
   if (g_bMarkLongLines)
-    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
+    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)((iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND), 0);
   else
-    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, EDGE_NONE, 0);
+    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)EDGE_NONE, 0);
 
-  SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, g_iLongLinesLimit, 0);
+  SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)g_iLongLinesLimit, 0);
 
   // general margin
-  SendMessage(hwndEditCtrl, SCI_SETMARGINOPTIONS, SC_MARGINOPTION_SUBLINESELECT, 0);
+  SendMessage(hwndEditCtrl, SCI_SETMARGINOPTIONS, (WPARAM)SC_MARGINOPTION_SUBLINESELECT, 0);
 
   // Nonprinting characters
-  SendMessage(hwndEditCtrl, SCI_SETVIEWWS, (bViewWhiteSpace) ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE, 0);
-  SendMessage(hwndEditCtrl, SCI_SETVIEWEOL, bViewEOLs, 0);
+  SendMessage(hwndEditCtrl, SCI_SETVIEWWS, (WPARAM)(bViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE), 0);
+  SendMessage(hwndEditCtrl, SCI_SETVIEWEOL, (WPARAM)bViewEOLs, 0);
+
+  // IME Interaction
+  SendMessage(hwndEditCtrl, SCI_SETIMEINTERACTION, (WPARAM)(g_IMEInteraction ? SC_IME_INLINE : SC_IME_WINDOWED), 0);
 
   // word delimiter handling
   EditInitWordDelimiter(hwndEditCtrl);
@@ -6622,6 +6627,9 @@ void LoadSettings()
   IniSectionGetString(pIniSection, L"PreferredLanguageLocaleName", L"",
     g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
 
+  g_IMEInteraction = IniSectionGetInt(pIniSection, L"IMEInteraction", 0);
+  g_IMEInteraction = clampi(g_IMEInteraction, 0, 1);
+
   g_bStickyWinPos = IniSectionGetBool(pIniSection, L"StickyWindowPosition", false);
 
   IniSectionGetString(pIniSection, L"DefaultExtension", L"txt", g_tchDefaultExtension, COUNTOF(g_tchDefaultExtension));
@@ -6633,8 +6641,11 @@ void LoadSettings()
   IniSectionGetString(pIniSection, L"FileDlgFilters", L"", g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters) - 2);
 
   dwFileCheckInverval = IniSectionGetInt(pIniSection, L"FileCheckInverval", 2000);
+  dwFileCheckInverval = clampul(dwFileCheckInverval, 250, 300000);
+
   dwAutoReloadTimeout = IniSectionGetInt(pIniSection, L"AutoReloadTimeout", 2000);
- 
+  dwAutoReloadTimeout = clampul(dwAutoReloadTimeout, 250, 300000);
+
   // deprecated
   g_iRenderingTechnology = IniSectionGetInt(pIniSection, L"SciDirectWriteTech", -111);
   if ((g_iRenderingTechnology != -111) && g_bSaveSettings) {
