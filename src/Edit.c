@@ -1119,11 +1119,11 @@ bool EditLoadFile(
     )
   {
     if (iForcedEncoding == CPI_UNICODE) {
-      bBOM = Has_UTF16_LE_BOM(lpData);
+      bBOM = Has_UTF16_LE_BOM(lpData, clampi((int)cbData, 0, 8));
       bReverse = false;
     }
     else if (iForcedEncoding == CPI_UNICODEBE) {
-      bBOM = Has_UTF16_BE_BOM(lpData);
+      bBOM = Has_UTF16_BE_BOM(lpData, clampi((int)cbData, 0, 8));
       bReverse = true;
     }
 

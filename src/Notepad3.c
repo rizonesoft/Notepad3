@@ -839,7 +839,7 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 
   if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
     WCHAR* lngMultiStrPtr = pLngMultiStr;
-    WCHAR* last = pLngStr + (Has_UTF16_LE_BOM(pLngStr) ? 1 : 0);
+    WCHAR* last = pLngStr + (Has_UTF16_LE_BOM((char*)pLngStr,clampi((int)strLen,0,8)) ? 1 : 0);
     while (last && rtnVal) {
       // make sure you validate the user input
       WCHAR* next = StrNextTok(last, L",; :");

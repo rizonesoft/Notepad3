@@ -122,11 +122,13 @@ void Encoding_SetDefaultFlag(int);
 const WCHAR* Encoding_GetLabel(int);
 const char* Encoding_GetParseNames(int);
 
-#define IsUTF8Signature(p) ((*((p)+0) == '\xEF' && *((p)+1) == '\xBB' && *((p)+2) == '\xBF'))
-#define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
+bool Has_UTF16_LE_BOM(const char* pBuf, int cnt);
+bool Has_UTF16_BE_BOM(const char* pBuf, int cnt);
 
-#define Has_UTF16_LE_BOM(p) (*((UNALIGNED wchar_t*)(p)) == 0xFEFF)
-#define Has_UTF16_BE_BOM(p) (*((UNALIGNED wchar_t*)(p)) == 0xFFFE) /* reverse */
+inline bool IsUTF8Signature(const char* p) {
+  return ((p[0] == '\xEF') && (p[1] == '\xBB') && (p[2] == '\xBF'));
+}
+#define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
 bool IsValidUnicode(const char*, size_t, bool*, bool*);
 bool IsValidUTF7(const char*, size_t);

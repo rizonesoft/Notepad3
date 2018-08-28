@@ -588,6 +588,23 @@ const char* Encoding_GetParseNames(int iEncoding) {
 // ============================================================================
 
 
+bool Has_UTF16_LE_BOM(const char* pBuf, int cnt)
+{
+  int iTest = IS_TEXT_UNICODE_SIGNATURE;
+  bool const ok = IsTextUnicode(pBuf, cnt, &iTest);
+  return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
+}
+// ----------------------------------------------------------------------------
+
+bool Has_UTF16_BE_BOM(const char* pBuf, int cnt)
+{
+  int iTest = IS_TEXT_UNICODE_REVERSE_SIGNATURE;
+  bool const ok = IsTextUnicode(pBuf, cnt, &iTest);
+  return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
+}
+// ============================================================================
+
+
 bool IsValidUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbReverse) 
 {
   if (!pBuffer || cb < 2) { return false; }
@@ -606,8 +623,8 @@ bool IsValidUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbRever
     iTest = 0; // iTest doesn't seem to have been modified ...
   }
 
-  bool const bHasBOM = Has_UTF16_LE_BOM(pBuffer) && (iTest & IS_TEXT_UNICODE_SIGNATURE);
-  bool const bHasRBOM = Has_UTF16_BE_BOM(pBuffer) && (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
+  bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
+  bool const bHasRBOM = (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
 
   bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
   bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
