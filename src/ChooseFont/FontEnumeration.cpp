@@ -51,7 +51,7 @@ HRESULT GetLocalizedName(IDWriteLocalizedStrings* names, const WCHAR* locale, OU
 
         if (SUCCEEDED(hr))
         {
-            familyName.resize(nameLength + 1);
+            familyName.resize((size_t)nameLength + 1);
             hr = names->GetString(nameIndex, &familyName[0], (UINT32) familyName.size());
         }
     }

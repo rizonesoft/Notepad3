@@ -53,6 +53,7 @@
 #ifndef _NP3_SCICALL_H_
 #define _NP3_SCICALL_H_
 
+#include "Scintilla.h"
 #include "TypeDefs.h"
 
 extern HANDLE g_hScintilla;

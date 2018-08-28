@@ -16,6 +16,7 @@
 #ifndef _NP3_EDIT_H_
 #define _NP3_EDIT_H_
 
+#include "Scintilla.h"
 #include "TypeDefs.h"
 
 // extern "C" declarations of Scintilla functions

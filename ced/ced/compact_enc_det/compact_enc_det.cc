@@ -14,6 +14,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+// ---------------------------------------------------------------------
+// ---  Disable/Enable some CodeAnalysis Warnings  ---
+#pragma warning ( disable: 26451)
+//#pragma warning ( enable : 6001 )
+// ---------------------------------------------------------------------
+
 #include "compact_enc_det/compact_enc_det.h"
 
 #include <math.h>                       // for sqrt
@@ -334,11 +340,11 @@ static int doing_used = 0;
 // For debugging only -- about 256B/entry times about 500 = 128KB
 // TODO: only allocate this if being used
 typedef struct {
-  int offset;
-  int best_enc;     // Best ranked encoding for this bigram, or
-                    // -1 for overhead entries
-  string label;
-  int detail_enc_prob[NUM_RANKEDENCODING];
+  int offset = 0;
+  int best_enc = -1;  // Best ranked encoding for this bigram, or
+                      // -1 for overhead entries
+  string label = "";
+  int detail_enc_prob[NUM_RANKEDENCODING] = {};
 } DetailEntry;
 
 static int watch1_rankedenc = -1;     // Debug. not threadsafe
@@ -1495,7 +1501,7 @@ int ApplyCompressedProb(const unsigned char* iprob, int len,
   // Continue with first byte and subsequent ones
   while (prob < problimit) {
     int skiptake = *prob++;
-    int skip = (skiptake & 0xf0) >> 4;
+    ptrdiff_t skip = (skiptake & 0xf0) >> 4;
     int take = skiptake & 0x0f;
     if (skiptake == 00) {
       break;

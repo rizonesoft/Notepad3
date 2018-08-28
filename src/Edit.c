@@ -35,8 +35,6 @@
 #include <limits.h>
 #include <shellapi.h>
 
-#include "scintilla.h"
-#include "scilexer.h"
 #include "notepad3.h"
 #include "styles.h"
 #include "dialogs.h"
@@ -50,6 +48,7 @@
 #include "encoding.h"
 
 #include "SciCall.h"
+#include "scilexer.h"
 
 #include "edit.h"
 
@@ -184,7 +183,7 @@ static volatile LONG s_lTargetTransactionGuard = 0L;
 
 static bool __fastcall _IsInTargetTransaction()
 {
-  return (InterlockedExchange(&s_lTargetTransactionGuard, s_lTargetTransactionGuard) != 0L);
+  return (InterlockedOr(&s_lTargetTransactionGuard, 0L) != 0L);
 }
 
 static void __fastcall _EnterTargetTransaction()
@@ -339,7 +338,7 @@ void EditInitWordDelimiter(HWND hwnd)
   StringCchCopyA(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated), WhiteSpaceCharsDefault);
 
   // add only 7-bit-ASCII chars to accelerated whitespace list
-  for (size_t i = 0; i < strlen(whitesp); i++) {
+  for (size_t i = 0; i < StringCchLenA(whitesp, ANSI_CAHR_BUFFER); i++) {
     if (whitesp[i] & 0x7F) {
       if (!StrChrA(WhiteSpaceCharsAccelerated, whitesp[i])) {
         StringCchCatNA(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated), &(whitesp[i]), 1);
@@ -350,7 +349,7 @@ void EditInitWordDelimiter(HWND hwnd)
   // construct word char array
   StringCchCopyA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), WordCharsDefault); // init
   // add punctuation chars not listed in white-space array
-  for (size_t i = 0; i < strlen(PunctuationCharsDefault); i++) {
+  for (size_t i = 0; i < StringCchLenA(PunctuationCharsDefault, ANSI_CAHR_BUFFER); i++) {
     if (!StrChrA(WhiteSpaceCharsAccelerated, PunctuationCharsDefault[i])) {
       StringCchCatNA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), &(PunctuationCharsDefault[i]), 1);
     }
@@ -367,7 +366,7 @@ void EditInitWordDelimiter(HWND hwnd)
     WideCharToMultiByteStrg(CP_ACP, buffer, autocompl);
   }
   // add only 7-bit-ASCII chars to accelerated whitespace list
-  for (size_t i = 0; i < strlen(autocompl); i++) {
+  for (size_t i = 0; i < StringCchLenA(autocompl, ANSI_CAHR_BUFFER); i++) {
     if (autocompl[i] & 0x7F) {
       if (!StrChrA(AutoCompleteWordASCII, autocompl[i])) {
         StringCchCatNA(AutoCompleteWordASCII, COUNTOF(AutoCompleteWordASCII), &(autocompl[i]), 1);
@@ -721,7 +720,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
 bool EditSetClipboardText(HWND hwnd, const char* pszText)
 {
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
-    SciCall_CopyText((DocPos)strlen(pszText), pszText);
+    SciCall_CopyText((DocPos)StringCchLenA(pszText,0), pszText);
     return true;
   }
 
@@ -861,19 +860,19 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   HANDLE hOld   = GetClipboardData(CF_UNICODETEXT);
   WCHAR* pszOld = GlobalLock(hOld);
 
-  int sizeNew = 0;
+  size_t sizeNew = 0;
   if (pszOld && pszTextW)
-    sizeNew = lstrlen(pszOld) + lstrlen(pszTextW) + 1;
+    sizeNew = StringCchLen(pszOld,0) + StringCchLen(pszTextW,0) + 1;
 
   const  WCHAR *pszSep = L"\r\n";
-  sizeNew += (int)lstrlen(pszSep);
+  sizeNew += StringCchLen(pszSep,0);
 
   // Copy Clip
   WCHAR* pszNewTextW = LocalAlloc(LPTR, sizeof(WCHAR) * sizeNew);
   
-  if (pszOld && pszNewTextW)
+  if (pszOld && pszNewTextW) {
     StringCchCopy(pszNewTextW, sizeNew, pszOld);
-
+  }
   GlobalUnlock(hOld);
   CloseClipboard();
 
@@ -1120,11 +1119,11 @@ bool EditLoadFile(
     )
   {
     if (iForcedEncoding == CPI_UNICODE) {
-      bBOM = Has_UTF16_LE_BOM(lpData);
+      bBOM = Has_UTF16_LE_BOM(lpData, clampi((int)cbData, 0, 8));
       bReverse = false;
     }
     else if (iForcedEncoding == CPI_UNICODEBE) {
-      bBOM = Has_UTF16_BE_BOM(lpData);
+      bBOM = Has_UTF16_BE_BOM(lpData, clampi((int)cbData, 0, 8));
       bReverse = true;
     }
 
@@ -1888,7 +1887,7 @@ void EditChar2Hex(HWND hwnd) {
   }
   SendMessage(hwnd, SCI_REPLACESEL, 0, (LPARAM)ch);
 
-  const DocPos iReplLen = StringCchLenA(ch, COUNTOF(ch));
+  DocPos const iReplLen = (DocPos)StringCchLenA(ch, COUNTOF(ch));
 
   if (iCurPos < iAnchorPos) {
     EditSelectEx(hwnd, iCurPos + iReplLen, iCurPos, -1, -1);
@@ -2067,7 +2066,7 @@ void EditModifyNumber(HWND hwnd,bool bIncrease) {
           StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%0%ii", iWidth);
           StringCchPrintfA(chNumber, COUNTOF(chNumber), chFormat, iNumber);
           SciCall_ReplaceSel(chNumber);
-          SciCall_SetSel(iSelStart, iSelStart + StringCchLenA(chNumber, COUNTOF(chNumber)));
+          SciCall_SetSel(iSelStart, iSelStart + (DocPos)StringCchLenA(chNumber, COUNTOF(chNumber)));
         }
       }
       else if (sscanf_s(chNumber, "%x", &iNumber) == 1) {
@@ -2093,7 +2092,7 @@ void EditModifyNumber(HWND hwnd,bool bIncrease) {
 
           StringCchPrintfA(chNumber, COUNTOF(chNumber), chFormat, iNumber);
           SciCall_ReplaceSel(chNumber);
-          SciCall_SetSel(iSelStart, iSelStart + StringCchLenA(chNumber, COUNTOF(chNumber)));
+          SciCall_SetSel(iSelStart, iSelStart + (DocPos)StringCchLenA(chNumber, COUNTOF(chNumber)));
         }
       }
     }
@@ -2747,6 +2746,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 void EditAlignText(HWND hwnd,int nMode)
 {
   #define BUFSIZE_ALIGN 512
+  WCHAR wchNewLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
 
   const DocPos iSelStart  = SciCall_GetSelectionStart();
   const DocPos iSelEnd    = SciCall_GetSelectionEnd();
@@ -2757,6 +2757,7 @@ void EditAlignText(HWND hwnd,int nMode)
   {
     DocLn iLine;
     DocPos iMinIndent = BUFSIZE_ALIGN;
+
     DocPos iMaxLength = 0;
 
     DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
@@ -2809,7 +2810,7 @@ void EditAlignText(HWND hwnd,int nMode)
         }
         else {
           g_pTempLineBuffer[0] = '\0';
-          WCHAR wchLineBuf[BUFSIZE_ALIGN*3] = L"";
+          WCHAR wchLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
           WCHAR *pWords[BUFSIZE_ALIGN*3/2];
           WCHAR *p = wchLineBuf;
 
@@ -2863,10 +2864,9 @@ void EditAlignText(HWND hwnd,int nMode)
                 DocPos iExtraSpaces = (iMaxLength - iMinIndent - iWordsLength) % iGaps;
                 int i,j;
 
-                WCHAR wchNewLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
                 int length = BUFSIZE_ALIGN * 3;
                 StringCchCopy(wchNewLineBuf,COUNTOF(wchNewLineBuf),pWords[0]);
-                p = StrEnd(wchNewLineBuf);
+                p = StrEnd(wchNewLineBuf, COUNTOF(wchNewLineBuf));
 
                 for (i = 1; i < iWords; i++) {
                   for (j = 0; j < iSpacesPerGap; j++) {
@@ -2878,7 +2878,7 @@ void EditAlignText(HWND hwnd,int nMode)
                     *p = 0;
                   }
                   StringCchCat(p,(length - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),pWords[i]);
-                  p = StrEnd(p);
+                  p = StrEnd(p,0);
                 }
 
                 int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
@@ -2890,15 +2890,14 @@ void EditAlignText(HWND hwnd,int nMode)
               }
               else {
 
-                WCHAR wchNewLineBuf[BUFSIZE_ALIGN] = { L'\0' };
                 StringCchCopy(wchNewLineBuf,COUNTOF(wchNewLineBuf),pWords[0]);
-                p = StrEnd(wchNewLineBuf);
+                p = StrEnd(wchNewLineBuf, COUNTOF(wchNewLineBuf));
 
                 for (int i = 1; i < iWords; i++) {
                   *p++ = L' ';
                   *p = 0;
                   StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),pWords[i]);
-                  p = StrEnd(p);
+                  p = StrEnd(p,0);
                 }
 
                 int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
@@ -2916,7 +2915,6 @@ void EditAlignText(HWND hwnd,int nMode)
               int i;
               DocPos iPos;
 
-              WCHAR wchNewLineBuf[BUFSIZE_ALIGN*3] = L"";
               p = wchNewLineBuf;
 
               if (nMode == ALIGN_RIGHT) {
@@ -2937,7 +2935,7 @@ void EditAlignText(HWND hwnd,int nMode)
                   StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),L" ");
                   iOddSpaces--;
                 }
-                p = StrEnd(p);
+                p = StrEnd(p,0);
               }
 
               int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
@@ -3002,8 +3000,8 @@ void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
   if (StrIsNotEmpty(pwszOpen)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszOpen, mszOpen); }
   if (StrIsNotEmpty(pwszClose)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszClose, mszClose); }
 
-  const DocPos iLenOpen = StringCchLenA(mszOpen, COUNTOF(mszOpen));
-  const DocPos iLenClose = StringCchLenA(mszClose, COUNTOF(mszClose));
+  DocPos const iLenOpen = (DocPos)StringCchLenA(mszOpen, COUNTOF(mszOpen));
+  DocPos const iLenClose = (DocPos)StringCchLenA(mszClose, COUNTOF(mszClose));
 
   _ENTER_TARGET_TRANSACTION_;
 
@@ -3042,7 +3040,7 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
   if (StrIsNotEmpty(pwszComment)) {
     WideCharToMultiByte(Encoding_SciCP, 0, pwszComment, -1, mszComment, COUNTOF(mszComment), NULL, NULL);
   }
-  const DocPos cchComment = StringCchLenA(mszComment, COUNTOF(mszComment));
+  DocPos const cchComment = (DocPos)StringCchLenA(mszComment, COUNTOF(mszComment));
 
   if (cchComment == 0) { return; }
 
@@ -3661,7 +3659,7 @@ void EditCompressBlanks(HWND hwnd)
 
         _LEAVE_TARGET_TRANSACTION_;
 
-        const DocPos iNewLen = StringCchLenA(pszOut, LocalSize(pszOut));
+        DocPos const iNewLen = (DocPos)StringCchLenA(pszOut, LocalSize(pszOut));
 
         if (iCurPos < iAnchorPos) {
           EditSelectEx(hwnd, iCurPos + iNewLen, iCurPos, -1, -1);
@@ -4383,7 +4381,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
   FreeMem(pLines);
 
-  DocPos const iResultLength = StringCchLenA(pmszResult, lenRes) + ((cEOLMode == SC_EOL_CRLF) ? 2 : 1);
+  DocPos const iResultLength = (DocPos)StringCchLenA(pmszResult, lenRes) + ((cEOLMode == SC_EOL_CRLF) ? 2 : 1);
   if (!bIsRectangular) {
     if (iAnchorPos > iCurPos) {
       iCurPos = iSelStart;
@@ -4617,7 +4615,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   if (cch == 1)
     StringCchCopy(tch,COUNTOF(tch),L" ... ");
 
-  if (cch > cchExcerpt) {
+  if ((cch > cchExcerpt) && (cchExcerpt >= 4)) {
     tch[cchExcerpt-2] = L'.';
     tch[cchExcerpt-3] = L'.';
     tch[cchExcerpt-4] = L'.';
@@ -5109,7 +5107,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       COMBOBOXINFO infoF = { sizeof(COMBOBOXINFO) };
       GetComboBoxInfo(GetDlgItem(hwnd, IDC_FINDTEXT), &infoF);
       //SHAutoComplete(infoF.hwndItem, SHACF_DEFAULT);
-      SHAutoComplete(infoF.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
+      if (infoF.hwndItem)
+        SHAutoComplete(infoF.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
 
       if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
         SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
@@ -5891,7 +5890,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 //
 HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
 {
-  CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+  (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
 
   lpefr->hwnd = hwnd;
   HWND hDlg = CreateThemedDialogParam(g_hLngResContainer,
@@ -6171,7 +6170,7 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   DocPos _start = start;
   g_iReplacedOccurrences = 0;
 
-  const DocPos iPos = _FindInTarget(hwnd, lpefr->szFind, StringCchLenA(lpefr->szFind, FRMOD_NORM), 
+  DocPos const iPos = _FindInTarget(hwnd, lpefr->szFind, (DocPos)StringCchLenA(lpefr->szFind, FRMOD_NORM),
     (int)(lpefr->fuFlags), &start, &end, false, false);
 
   // w/o selection, replacement string is put into current position
@@ -6520,7 +6519,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
     flags |= (bMatchCase ? SCFIND_MATCHCASE : 0);
   }
   else {
-    iFindLength = StringCchLenA(pszFind, FNDRPL_BUFFER);
+    iFindLength = (DocPos)StringCchLenA(pszFind, FNDRPL_BUFFER);
   }
 
   if (iFindLength > 0) {
@@ -6616,14 +6615,13 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
   char pWord[1024];
   while ((iPosFind >= 0) && (iPosFind < iDocLen)) 
   {
-    DocPos wordLength;
     DocPos wordEnd = (DocPosCR)(iPosFind + iRootLen);
 
-    if (iPosFind != iCurrentPos - iRootLen) 
+    if (iPosFind != (iCurrentPos - iRootLen)) 
     {
       while ((wordEnd < iDocLen) && StrChrIA(ALLOWED_WORD_CHARS, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
 
-      wordLength = wordEnd - iPosFind;
+      DocPos const wordLength = (wordEnd - iPosFind);
       if (wordLength > iRootLen) {
         struct WLIST* p = lListHead;
         struct WLIST* t = NULL;
@@ -6632,31 +6630,33 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
         StringCchCopyNA(pWord, COUNTOF(pWord), SciCall_GetRangePointer(iPosFind, wordLength), wordLength);
 
         while (p) {
-          int cmp = lstrcmpA(pWord, p->word);
-          if (!cmp) {
-            found = true;
-            break;
-          }
-          else if (cmp < 0) {
-            break;
+          if (p->word) {
+            int cmp = lstrcmpA(pWord, p->word);
+            if (!cmp) {
+              found = true;
+              break;
+            }
+            else if (cmp < 0) {
+              break;
+            }
           }
           t = p;
           p = p->next;
         }
         if (!found) {
           struct WLIST* el = (struct WLIST*)LocalAlloc(LPTR, sizeof(struct WLIST));
-          const DocPos wSize = (wordEnd - iPosFind) + 1;
-          el->word = LocalAlloc(LPTR, wSize+1);
-          StringCchCopyA(el->word, wSize+1, pWord);
-          el->next = p;
-          if (t) {
-            t->next = el;
+          if (el) {
+            el->word = StrDupA(pWord);
+            el->next = p;
+            if (t) {
+              t->next = el;
+            }
+            else {
+              lListHead = el;
+            }
+            ++iNumWords;
+            iWListSize += (wordLength + 1);
           }
-          else {
-            lListHead = el;
-          }
-          ++iNumWords;
-          iWListSize += wSize;
         }
       }
     }
@@ -6670,22 +6670,25 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
     struct WLIST* t;
 
     pList = LocalAlloc(LPTR, iWListSize + 1);
-    while (p) {
-      lstrcatA(pList, " ");
-      lstrcatA(pList, p->word);
-      LocalFree(p->word);
-      t = p;
-      p = p->next;
-      LocalFree(t);
+    if (pList) {
+      while (p) {
+        if (p->word) {
+          lstrcatA(pList, " ");
+          lstrcatA(pList, p->word);
+          LocalFree(p->word);
+        }
+        t = p;
+        p = p->next;
+        LocalFree(t);
+      }
+      SendMessage(hwnd, SCI_AUTOCSETIGNORECASE, 1, 0);
+      //SendMessage(hwnd, SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 1, 0);
+      SendMessage(hwnd, SCI_AUTOCSETSEPARATOR, ' ', 0);
+      SendMessage(hwnd, SCI_AUTOCSETFILLUPS, 0, (LPARAM)"\t\n\r");
+      SendMessage(hwnd, SCI_AUTOCSETCHOOSESINGLE, autoInsert, 0);
+      SendMessage(hwnd, SCI_AUTOCSHOW, iRootLen, (LPARAM)(pList + 1));
+      LocalFree(pList);
     }
-
-    SendMessage(hwnd, SCI_AUTOCSETIGNORECASE, 1, 0);
-    //SendMessage(hwnd, SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 1, 0);
-    SendMessage(hwnd, SCI_AUTOCSETSEPARATOR, ' ', 0);
-    SendMessage(hwnd, SCI_AUTOCSETFILLUPS, 0, (LPARAM)"\t\n\r");
-    SendMessage(hwnd, SCI_AUTOCSETCHOOSESINGLE, autoInsert, 0);
-    SendMessage(hwnd, SCI_AUTOCSHOW, iRootLen, (LPARAM)(pList + 1));
-    LocalFree(pList);
   }
 
 //  LocalFree(pRoot);
@@ -6711,11 +6714,11 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[-A-Z0-9+&@#/%=~_|$?!:,.])*"
     "(?:\\([-A-Z0-9+&@#/%=~_|$?!:,.]*\\)|[A-Z0-9+&@#/%=~_|$])";
 
-  const int iRegExLen = (int)strlen(pszUrlRegEx);
+  int const iRegExLen = (int)StringCchLenA(pszUrlRegEx,0);
 
   if (startPos < 0) { // current line only
-    DocPos currPos = SciCall_GetCurrentPos();
-    DocLn lineNo = SciCall_LineFromPosition(currPos);
+    DocPos const currPos = SciCall_GetCurrentPos();
+    DocLn const lineNo = SciCall_LineFromPosition(currPos);
     startPos = SciCall_PositionFromLine(lineNo);
     endPos = SciCall_GetLineEndPosition(lineNo);
   }
@@ -6726,11 +6729,11 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
   DocPos end = endPos;
   
   do {
-    DocPos iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
+    DocPos const iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
 
-    if (iPos < 0)
+    if (iPos < 0) {
       break; // not found
-
+    }
     DocPos mlen = end - start;
     if ((mlen <= 0) || ((iPos + mlen) > endPos))
       break; // wrong match
@@ -7763,7 +7766,7 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
   while (*p1) {
     const WCHAR* p2 = StrChr(p1, L';');
     if (!p2)
-      p2 = StrEnd(p1);
+      p2 = StrEnd(p1,0);
     StringCchCopyNW(lnNum, COUNTOF(lnNum), p1, min((int)(p2 - p1), 16));
     long long iLine = 0;
     if (swscanf_s(lnNum, L"%lld", &iLine) == 1) {

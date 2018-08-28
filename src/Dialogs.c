@@ -38,7 +38,6 @@
 #include <richedit.h>
 #pragma warning( pop ) 
 
-#include "scintilla.h"
 #include "notepad3.h"
 #include "edit.h"
 #include "dlapi.h"
@@ -144,7 +143,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
       StringCchCat(szText, COUNTOF(szText), lpMsgBuf);
       LocalFree(lpMsgBuf);
     }
-    wcht = *CharPrev(szText, StrEnd(szText));
+    wcht = *CharPrev(szText, StrEnd(szText, COUNTOF(szText)));
     if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
       StringCchCat(szText, COUNTOF(szText), L".");
   }
@@ -245,7 +244,8 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
 
   INFOBOX ib;
   ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
-  StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
+  if (ib.lpstrMessage)
+    StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
   ib.bDisableCheckBox = (StrIsEmpty(g_wchIniFile) || StrIsEmpty(lpstrSetting) || iMode == 2) ? true : false;
 
@@ -415,7 +415,7 @@ static DWORD CALLBACK _LoadRtfCallback(
 )
 {
   LPSTR* pstr = (LPSTR*)dwCookie;
-  LONG len = (LONG)strlen(*pstr);
+  LONG len = (LONG)StringCchLenA(*pstr,0);
 
   if (len < cb)
   {
@@ -597,7 +597,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         ENLINK* penLink = (ENLINK *)lParam;
         if (penLink->msg == WM_LBUTTONDOWN) 
         {
-          WCHAR hLink[256];
+          WCHAR hLink[256] = { L'\0' };
           TEXTRANGE txtRng;
           txtRng.chrg = penLink->chrg;
           txtRng.lpstrText = hLink;
@@ -1314,7 +1314,7 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
   HWND hwnd = lpit->hwnd;
   int iMaxItem = ListView_GetItemCount(hwnd);
 
-  CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+  (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
 
   int iItem = 0;
   while (iItem < iMaxItem && WaitForSingleObject(lpit->hExitThread,0) != WAIT_OBJECT_0) {
@@ -1397,17 +1397,19 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_INITDIALOG:
       {
         SHFILEINFO shfi;
+        ZeroMemory(&shfi, sizeof(SHFILEINFO));
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
         if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
         LPICONTHREADINFO lpit = (LPICONTHREADINFO)GlobalAlloc(GPTR,sizeof(ICONTHREADINFO));
-        SetProp(hwnd,L"it",(HANDLE)lpit);
-        lpit->hwnd = GetDlgItem(hwnd,IDC_FILEMRU);
-        lpit->hThread = NULL;
-        lpit->hExitThread = CreateEvent(NULL,true,false,NULL);
-        lpit->hTerminatedThread = CreateEvent(NULL,true,true,NULL);
-
+        if (lpit) {
+          SetProp(hwnd, L"it", (HANDLE)lpit);
+          lpit->hwnd = GetDlgItem(hwnd, IDC_FILEMRU);
+          lpit->hThread = NULL;
+          lpit->hExitThread = CreateEvent(NULL, true, false, NULL);
+          lpit->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
+        }
         SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
 
         ResizeDlg_Init(hwnd,cxFileMRUDlg,cyFileMRUDlg,IDC_RESIZEGRIP);
@@ -1599,6 +1601,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             WCHAR tch[MAX_PATH] = { L'\0' };
             LV_ITEM lvi;
             SHFILEINFO shfi;
+            ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
             DWORD dwtid;
             LPICONTHREADINFO lpit = (LPVOID)GetProp(hwnd,L"it");
@@ -3100,41 +3103,43 @@ typedef struct _resizedlg {
 
 void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
 {
-  RECT rc;
   WCHAR wch[64] = { L'\0' };
-  int cGrip;
-  RESIZEDLG *pm = LocalAlloc(LPTR, sizeof(RESIZEDLG));
 
+  RECT rc;
   GetClientRect(hwnd, &rc);
-  pm->cxClient = rc.right - rc.left;
-  pm->cyClient = rc.bottom - rc.top;
 
-  pm->cxFrame = cxFrame;
-  pm->cyFrame = cyFrame;
+  RESIZEDLG* pm = LocalAlloc(LPTR, sizeof(RESIZEDLG));
+  if (pm) {
+    pm->cxClient = rc.right - rc.left;
+    pm->cyClient = rc.bottom - rc.top;
 
-  AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, false, 0);
-  pm->mmiPtMinX = rc.right - rc.left;
-  pm->mmiPtMinY = rc.bottom - rc.top;
+    pm->cxFrame = cxFrame;
+    pm->cyFrame = cyFrame;
 
-  if (pm->cxFrame < (rc.right - rc.left))
-    pm->cxFrame = rc.right - rc.left;
-  if (pm->cyFrame < (rc.bottom - rc.top))
-    pm->cyFrame = rc.bottom - rc.top;
+    AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, false, 0);
+    pm->mmiPtMinX = rc.right - rc.left;
+    pm->mmiPtMinY = rc.bottom - rc.top;
 
-  SetProp(hwnd, L"ResizeDlg", (HANDLE)pm);
+    if (pm->cxFrame < (rc.right - rc.left))
+      pm->cxFrame = rc.right - rc.left;
+    if (pm->cyFrame < (rc.bottom - rc.top))
+      pm->cyFrame = rc.bottom - rc.top;
 
-  SetWindowPos(hwnd, NULL, rc.left, rc.top, pm->cxFrame, pm->cyFrame, SWP_NOZORDER);
+    SetProp(hwnd, L"ResizeDlg", (HANDLE)pm);
 
-  SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
-  SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-  GetMenuString(GetSystemMenu(GetParent(hwnd), false), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
-  InsertMenu(GetSystemMenu(hwnd, false), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
-  InsertMenu(GetSystemMenu(hwnd, false), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
+    SetWindowPos(hwnd, NULL, rc.left, rc.top, pm->cxFrame, pm->cyFrame, SWP_NOZORDER);
 
-  SetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE,
-    GetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
-  cGrip = GetSystemMetrics(SM_CXHTHUMB);
-  SetWindowPos(GetDlgItem(hwnd, nIdGrip), NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+    SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
+    SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+    GetMenuString(GetSystemMenu(GetParent(hwnd), false), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
+    InsertMenu(GetSystemMenu(hwnd, false), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
+    InsertMenu(GetSystemMenu(hwnd, false), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
+
+    SetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE,
+                     GetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+    int const cGrip = GetSystemMetrics(SM_CXHTHUMB);
+    SetWindowPos(GetDlgItem(hwnd, nIdGrip), NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+  }
 }
 
 void ResizeDlg_Destroy(HWND hwnd, int *cxFrame, int *cyFrame)
@@ -3359,7 +3364,7 @@ int Toolbar_SetButtons(HWND hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON 
   TrimStringW(tchButtons);
   WCHAR *p = StrStr(tchButtons, L"  ");
   while (p) {
-    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLen(p,0) + 1) * sizeof(WCHAR));
     p = StrStr(tchButtons, L"  ");  // next
   }
   c = (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0);
@@ -3380,7 +3385,7 @@ int Toolbar_SetButtons(HWND hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON 
         }
       }
     }
-    p = StrEnd(p) + 1;
+    p = StrEnd(p,0) + 1;
   }
   return((int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
 }
@@ -3460,8 +3465,8 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
 
   HRSRC hRsrc;
   HGLOBAL hRsrcMem;
-  DLGTEMPLATE *pRsrcMem;
-  DLGTEMPLATE *pTemplate;
+  DLGTEMPLATE *pRsrcMem = NULL;
+  DLGTEMPLATE *pTemplate = NULL;
   UINT dwTemplateSize = 0;
   WCHAR wchFaceName[LF_FACESIZE];
   WORD wFontSize;
@@ -3481,51 +3486,50 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
     return(NULL);
 
   hRsrcMem = LoadResource(hInstance, hRsrc);
-  pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
-  dwTemplateSize = (UINT)SizeofResource(hInstance, hRsrc);
-
-  if ((dwTemplateSize == 0) ||
-    (pTemplate = LocalAlloc(LPTR, dwTemplateSize + LF_FACESIZE * 2)) == NULL) {
+  if (hRsrcMem) {
+    pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
+    dwTemplateSize = (UINT)SizeofResource(hInstance, hRsrc);
+    if ((dwTemplateSize == 0) ||
+      (pTemplate = LocalAlloc(LPTR, dwTemplateSize + LF_FACESIZE * 2)) == NULL) {
+      UnlockResource(hRsrcMem);
+      FreeResource(hRsrcMem);
+      return(NULL);
+    }
+    CopyMemory((BYTE*)pTemplate, pRsrcMem, (size_t)dwTemplateSize);
     UnlockResource(hRsrcMem);
     FreeResource(hRsrcMem);
-    return(NULL);
+
+    if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
+      return(pTemplate);
+    }
+    bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
+    bHasFont = DialogTemplate_HasFont(pTemplate);
+    cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
+
+    if (bDialogEx)
+      ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
+    else
+      pTemplate->style |= DS_SHELLFONT;
+
+    cbNew = cbFontAttr + (((int)StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+    pbNew = (BYTE*)wchFaceName;
+
+    pb = DialogTemplate_GetFontSizeField(pTemplate);
+    cbOld = (int)(bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
+
+    pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
+    pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
+
+    nCtrl = bDialogEx ?
+      (WORD)((DLGTEMPLATEEX*)pTemplate)->cDlgItems :
+      (WORD)pTemplate->cdit;
+
+    if (cbNew != cbOld && nCtrl > 0)
+      MoveMemory(pNewControls, pOldControls, (size_t)(dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
+
+    *(WORD*)pb = wFontSize;
+    MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
   }
-
-  CopyMemory((BYTE*)pTemplate, pRsrcMem, (size_t)dwTemplateSize);
-  UnlockResource(hRsrcMem);
-  FreeResource(hRsrcMem);
-
-  if (!GetThemedDialogFont(wchFaceName, &wFontSize))
-    return(pTemplate);
-
-  bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
-  bHasFont = DialogTemplate_HasFont(pTemplate);
-  cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
-
-  if (bDialogEx)
-    ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
-  else
-    pTemplate->style |= DS_SHELLFONT;
-
-  cbNew = cbFontAttr + (((int)StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
-  pbNew = (BYTE*)wchFaceName;
-
-  pb = DialogTemplate_GetFontSizeField(pTemplate);
-  cbOld = (int)(bHasFont ? cbFontAttr + 2 * (lstrlen((WCHAR*)(pb + cbFontAttr)) + 1) : 0);
-
-  pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
-  pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
-
-  nCtrl = bDialogEx ?
-    (WORD)((DLGTEMPLATEEX*)pTemplate)->cDlgItems :
-    (WORD)pTemplate->cdit;
-
-  if (cbNew != cbOld && nCtrl > 0)
-    MoveMemory(pNewControls, pOldControls, (size_t)(dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
-
-  *(WORD*)pb = wFontSize;
-  MoveMemory(pb + cbFontAttr, pbNew, (size_t)(cbNew - cbFontAttr));
-
   return(pTemplate);
 }
 

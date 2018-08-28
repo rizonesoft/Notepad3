@@ -74,7 +74,7 @@ CHAR* StrCutIA(CHAR* s,const CHAR* pattern)
   do {
     p = StrStrIA(s,pattern);
     if (p) {
-      CHAR* q = p + strlen(pattern);
+      CHAR* q = p + StringCchLenA(pattern,0);
       while (*p != '\0') { *p++ = *q++; }
     }
   } while (p);
@@ -87,7 +87,7 @@ WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern)
   do {
     p = StrStrIW(s,pattern);
     if (p) {
-      WCHAR* q = p + lstrlen(pattern);
+      WCHAR* q = p + StringCchLen(pattern,0);
       while (*p != L'\0') { *p++ = *q++; }
     }
   } while (p);
@@ -114,7 +114,7 @@ bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove)
       ++prem;
     }
     if (prem > pch) {
-      MoveMemory(pch, prem, sizeof(CHAR)*(strlen(prem) + 1));
+      MoveMemory(pch, prem, sizeof(CHAR)*(StringCchLenA(prem,0) + 1));
     }
     ++pch;
   }
@@ -165,18 +165,21 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW)
   if (!OpenClipboard(hwnd)) {
     return false;
   }
-
-  int cchTextW = lstrlen(pszTextW) + 1;
+  size_t cchTextW = StringCchLenW(pszTextW,0) + 1;
   HANDLE hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(WCHAR) * cchTextW);
-  WCHAR* pszNew = GlobalLock(hData);
-
-  StringCchCopy(pszNew, cchTextW, pszTextW);
-  GlobalUnlock(hData);
-
-  EmptyClipboard();
-  SetClipboardData(CF_UNICODETEXT, hData);
+  if (hData) {
+    WCHAR* pszNew = GlobalLock(hData);
+    if (pszNew) {
+      StringCchCopy(pszNew, cchTextW, pszTextW);
+      GlobalUnlock(hData);
+      EmptyClipboard();
+      SetClipboardData(CF_UNICODETEXT, hData);
+    }
+    CloseClipboard();
+    return true;
+  }
   CloseClipboard();
-  return true;
+  return false;
 }
 
 
@@ -204,7 +207,7 @@ int IniSectionGetString(
         return((int)StringCchLen(lpReturnedString, cchReturnedString));
       }
       else
-        p = StrEnd(p) + 1;
+        p = StrEnd(p,0) + 1;
     }
   }
   StringCchCopyN(lpReturnedString, cchReturnedString, lpDefault, cchReturnedString);
@@ -230,7 +233,7 @@ int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault)
           return(iDefault);
       }
       else
-        p = StrEnd(p) + 1;
+        p = StrEnd(p,0) + 1;
     }
   }
   return(iDefault);
@@ -255,7 +258,7 @@ UINT IniSectionGetUInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, UINT uDefault
           return(uDefault);
       }
       else
-        p = StrEnd(p) + 1;
+        p = StrEnd(p,0) + 1;
     }
   }
   return(uDefault);
@@ -279,7 +282,7 @@ DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDe
           return (DocPos)posDefault;
       }
       else
-        p = StrEnd(p) + 1;
+        p = StrEnd(p,0) + 1;
     }
   }
   return (DocPos)posDefault;
@@ -292,15 +295,15 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
   WCHAR* p = lpCachedIniSection;
   if (p) {
     while (*p) {
-      p = StrEnd(p) + 1;
+      p = StrEnd(p,0) + 1;
     }
     StringCchPrintf(tch,COUNTOF(tch),L"%s=%s",lpName,lpString);
     StringCchCopy(p,COUNTOF(tch),tch);
-    p = StrEnd(p) + 1;
-    *p = 0;
-    return(true);
+    p = StrEnd(p,0) + 1;
+    *p = L'\0';
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -316,7 +319,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     dwErrID = GetLastError();
   }
 
-  LPVOID lpMsgBuf;
+  LPVOID lpMsgBuf = NULL;
   FormatMessage(
     FORMAT_MESSAGE_ALLOCATE_BUFFER |
     FORMAT_MESSAGE_FROM_SYSTEM |
@@ -327,19 +330,21 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     (LPTSTR)&lpMsgBuf,
     0, NULL);
 
-  // Display the error message and exit the process
+  if (lpMsgBuf) {
+    // Display the error message and exit the process
+    LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+      (StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80) * sizeof(WCHAR));
 
-  LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
-    (lstrlen((LPCWSTR)lpMsgBuf) + lstrlen((LPCWSTR)lpszFunction) + 80) * sizeof(WCHAR));
+    if (lpDisplayBuf) {
+      StringCchPrintf((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(WCHAR),
+                      L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
 
-  StringCchPrintf((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(WCHAR),
-    L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, lpMsgBuf);
+      MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
 
-  MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
-
-  LocalFree(lpMsgBuf);
-  LocalFree(lpDisplayBuf);
-
+      LocalFree(lpDisplayBuf);
+    }
+    LocalFree(lpMsgBuf);
+  }
   return dwErrID;
 }
 
@@ -352,18 +357,21 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 UINT GetCurrentDPI(HWND hwnd) {
   UINT dpi = 0;
   if (IsWin10()) {
-    FARPROC pfnGetDpiForWindow = GetProcAddress(GetModuleHandle(_T("user32.dll")), "GetDpiForWindow");
-    if (pfnGetDpiForWindow) {
-      dpi = (UINT)pfnGetDpiForWindow(hwnd);
+    HMODULE const hModule = GetModuleHandle(_T("user32.dll"));
+    if (hModule) {
+      FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
+      if (pfnGetDpiForWindow) {
+        dpi = (UINT)pfnGetDpiForWindow(hwnd);
+      }
     }
   }
 
   if ((dpi == 0) && IsWin81()) {
     HMODULE hShcore = LoadLibrary(L"shcore.dll");
     if (hShcore) {
-      FARPROC pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
+      FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
       if (pfnGetDpiForMonitor) {
-        HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+        HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
         UINT dpiX = 0, dpiY = 0;
         if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
           dpi = dpiX;
@@ -805,7 +813,7 @@ void PathRelativeToApp(
   GetModuleFileName(NULL,wchAppPath,COUNTOF(wchAppPath));
   PathCanonicalizeEx(wchAppPath,MAX_PATH);
   PathCchRemoveFileSpec(wchAppPath,COUNTOF(wchAppPath));
-  GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
+  (void)GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
   //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
   GetKnownFolderPath(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
@@ -1144,7 +1152,7 @@ bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars)
   LPWSTR psz = pszSource;
   while (StrChrI(pszTrimChars, *psz)) { ++psz; }
 
-  MoveMemory(pszSource,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
+  MoveMemory(pszSource,psz,sizeof(WCHAR)*(StringCchLenW(psz,0) + 1));
 
   return true;
 }
@@ -1164,10 +1172,10 @@ bool TrimStringA(LPSTR lpString)
   LPSTR psz = lpString;
   while (*psz == ' ') { psz = CharNextA(psz); }
 
-  MoveMemory(lpString, psz, sizeof(CHAR)*(strlen(psz) + 1));
+  MoveMemory(lpString, psz, sizeof(CHAR)*(StringCchLenA(psz,0) + 1));
 
   // Trim right
-  psz = StrEndA(lpString);
+  psz = StrEndA(lpString,0);
   while (*(psz = CharPrevA(lpString, psz)) == ' ') { *psz = '\0'; }
 
   return true;
@@ -1187,10 +1195,10 @@ bool TrimStringW(LPWSTR lpString)
   LPWSTR psz = lpString;
   while (*psz == L' ') { psz = CharNextW(psz); }
 
-  MoveMemory(lpString,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
+  MoveMemory(lpString,psz,sizeof(WCHAR)*(StringCchLenA(psz,0) + 1));
 
   // Trim right
-  psz = StrEndW(lpString);
+  psz = StrEndW(lpString,0);
   while (*(psz = CharPrevW(lpString, psz)) == L' ') { *psz = L'\0'; }
 
   return true;
@@ -1251,7 +1259,7 @@ bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len)
 //
 void PrepareFilterStr(LPWSTR lpFilter)
 {
-  LPWSTR psz = StrEnd(lpFilter);
+  LPWSTR psz = StrEnd(lpFilter,0);
   while (psz != lpFilter)
   {
     if (*(psz = CharPrev(lpFilter,psz)) == L'|')
@@ -1384,7 +1392,7 @@ DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,
 //
 //  FormatNumberStr()
 //
-int FormatNumberStr(LPWSTR lpNumberStr)
+size_t FormatNumberStr(LPWSTR lpNumberStr)
 {
   static WCHAR szSep[5] = { L'\0' };
   static WCHAR szGrp[11] = { L'\0' };
@@ -1410,18 +1418,18 @@ int FormatNumberStr(LPWSTR lpNumberStr)
     swscanf_s(szGrp, L"%i;%i;%i;%i", &iPlace[0], &iPlace[1], &iPlace[2], &iPlace[3]);
   }
   if (iPlace[0] <= 0) {
-    return lstrlen(lpNumberStr); 
+    return StringCchLen(lpNumberStr,0);
   }
 
-  if (lstrlen(lpNumberStr) > iPlace[0]) {
+  if ((int)StringCchLen(lpNumberStr,0) > iPlace[0]) {
 
-    WCHAR* ch = StrEnd(lpNumberStr);
+    WCHAR* ch = StrEnd(lpNumberStr,0);
 
     int  iCnt = 0;
     int  i = 0;
     while ((ch = CharPrev(lpNumberStr, ch)) != lpNumberStr) {
       if (((++iCnt) % iPlace[i]) == 0) {
-        MoveMemory(ch + 1, ch, sizeof(WCHAR)*(lstrlen(ch) + 1));
+        MoveMemory(ch + 1, ch, sizeof(WCHAR)*(StringCchLen(ch,0) + 1));
         *ch = szSep[0];
         i = (i < 3) ? (i + 1) : 3;
         if (iPlace[i] == 0) { --i; } else if (iPlace[i] < 0) { break; }
@@ -1429,7 +1437,7 @@ int FormatNumberStr(LPWSTR lpNumberStr)
       }
     }
   }
-  return lstrlen(lpNumberStr);
+  return StringCchLen(lpNumberStr,0);
 }
 
 
@@ -1510,13 +1518,15 @@ extern bool g_bSaveFindReplace;
 //
 //  MRU functions
 //
-LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize) {
-
+LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize) 
+{
   LPMRULIST pmru = LocalAlloc(LPTR,sizeof(MRULIST));
-  ZeroMemory(pmru,sizeof(MRULIST));
-  StringCchCopyN(pmru->szRegKey,COUNTOF(pmru->szRegKey),pszRegKey,COUNTOF(pmru->szRegKey));
-  pmru->iFlags = iFlags;
-  pmru->iSize = min(iSize,MRU_MAXITEMS);
+  if (pmru) {
+    ZeroMemory(pmru, sizeof(MRULIST));
+    StringCchCopyN(pmru->szRegKey, COUNTOF(pmru->szRegKey), pszRegKey, COUNTOF(pmru->szRegKey));
+    pmru->iFlags = iFlags;
+    pmru->iSize = min(iSize, MRU_MAXITEMS);
+  }
   return(pmru);
 }
 
@@ -1709,38 +1719,41 @@ bool MRU_Load(LPMRULIST pmru)
   WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
 
   WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 2 * MRU_MAXITEMS * 1024);
-  MRU_Empty(pmru);
-  LoadIniSection(pmru->szRegKey,pIniSection,(int)LocalSize(pIniSection)/sizeof(WCHAR));
+  if (pIniSection) {
+    MRU_Empty(pmru);
+    LoadIniSection(pmru->szRegKey, pIniSection, (int)LocalSize(pIniSection) / sizeof(WCHAR));
 
-  int n = 0;
-  for (int i = 0; i < pmru->iSize; i++) {
-    StringCchPrintf(tchName,COUNTOF(tchName),L"%.2i",i+1);
-    if (IniSectionGetString(pIniSection,tchName,L"",tchItem,COUNTOF(tchItem))) {
-      /*if (pmru->iFlags & MRU_UTF8) {
-        WCHAR wchItem[1024];
-        int cbw = MultiByteToWideCharStrg(CP_UTF7,tchItem,wchItem);
-        WideCharToMultiByte(Encoding_SciCP,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
+    int n = 0;
+    for (int i = 0; i < pmru->iSize; i++) {
+      StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+      if (IniSectionGetString(pIniSection, tchName, L"", tchItem, COUNTOF(tchItem))) {
+        /*if (pmru->iFlags & MRU_UTF8) {
+          WCHAR wchItem[1024];
+          int cbw = MultiByteToWideCharStrg(CP_UTF7,tchItem,wchItem);
+          WideCharToMultiByte(Encoding_SciCP,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
+          pmru->pszItems[n] = StrDup(tchItem);
+        }
+        else*/
         pmru->pszItems[n] = StrDup(tchItem);
-      }
-      else*/
-        pmru->pszItems[n] = StrDup(tchItem);
 
-        StringCchPrintf(tchName,COUNTOF(tchName),L"ENC%.2i",i + 1);
-        int iCP = IniSectionGetInt(pIniSection,tchName,0);
-        pmru->iEncoding[n] = Encoding_MapIniSetting(true,iCP);
+        StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
+        int iCP = IniSectionGetInt(pIniSection, tchName, 0);
+        pmru->iEncoding[n] = Encoding_MapIniSetting(true, iCP);
 
-        StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
-        pmru->iCaretPos[n] = (g_bPreserveCaretPos) ? IniSectionGetInt(pIniSection,tchName,0) : 0;
+        StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
+        pmru->iCaretPos[n] = (g_bPreserveCaretPos) ? IniSectionGetInt(pIniSection, tchName, 0) : 0;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
         IniSectionGetString(pIniSection, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
         pmru->pszBookMarks[n] = StrDup(wchBookMarks);
 
         ++n;
+      }
     }
+    LocalFree(pIniSection);
+    return true;
   }
-  LocalFree(pIniSection);
-  return true;
+  return false;
 }
 
 bool MRU_Save(LPMRULIST pmru) {
@@ -1748,40 +1761,42 @@ bool MRU_Save(LPMRULIST pmru) {
   int i;
   WCHAR tchName[32] = { L'\0' };
   WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 2 * MRU_MAXITEMS * 1024);
+  if (pIniSection) {
+    //IniDeleteSection(pmru->szRegKey);
 
-  //IniDeleteSection(pmru->szRegKey);
+    for (i = 0; i < pmru->iSize; i++) {
+      if (pmru->pszItems[i]) {
+        StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+        /*if (pmru->iFlags & MRU_UTF8) {
+          WCHAR  tchItem[1024];
+          WCHAR wchItem[1024];
+          int cbw = MultiByteToWideCharStrg(Encoding_SciCP,pmru->pszItems[i],wchItem);
+          WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
+          IniSectionSetString(pIniSection,tchName,tchItem);
+        }
+        else*/
+        IniSectionSetString(pIniSection, tchName, pmru->pszItems[i]);
 
-  for (i = 0; i < pmru->iSize; i++) {
-    if (pmru->pszItems[i]) {
-      StringCchPrintf(tchName,COUNTOF(tchName),L"%.2i",i + 1);
-      /*if (pmru->iFlags & MRU_UTF8) {
-        WCHAR  tchItem[1024];
-        WCHAR wchItem[1024];
-        int cbw = MultiByteToWideCharStrg(Encoding_SciCP,pmru->pszItems[i],wchItem);
-        WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
-        IniSectionSetString(pIniSection,tchName,tchItem);
-      }
-      else*/
-      IniSectionSetString(pIniSection,tchName,pmru->pszItems[i]);
-
-      if (pmru->iEncoding[i] > 0) {
-        StringCchPrintf(tchName,COUNTOF(tchName),L"ENC%.2i",i + 1);
-        int iCP = Encoding_MapIniSetting(false,pmru->iEncoding[i]);
-        IniSectionSetInt(pIniSection,tchName,iCP);
-      }
-      if (pmru->iCaretPos[i] > 0) {
-        StringCchPrintf(tchName,COUNTOF(tchName),L"POS%.2i",i + 1);
-        IniSectionSetPos(pIniSection,tchName,pmru->iCaretPos[i]);
-      }
-      if (pmru->pszBookMarks[i] && (StringCchLenW(pmru->pszBookMarks[i], MRU_BMRK_SIZE) > 0)) {
-        StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
-        IniSectionSetString(pIniSection, tchName, pmru->pszBookMarks[i]);
+        if (pmru->iEncoding[i] > 0) {
+          StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
+          int iCP = Encoding_MapIniSetting(false, pmru->iEncoding[i]);
+          IniSectionSetInt(pIniSection, tchName, iCP);
+        }
+        if (pmru->iCaretPos[i] > 0) {
+          StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
+          IniSectionSetPos(pIniSection, tchName, pmru->iCaretPos[i]);
+        }
+        if (pmru->pszBookMarks[i] && (StringCchLenW(pmru->pszBookMarks[i], MRU_BMRK_SIZE) > 0)) {
+          StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
+          IniSectionSetString(pIniSection, tchName, pmru->pszBookMarks[i]);
+        }
       }
     }
+    SaveIniSection(pmru->szRegKey, pIniSection);
+    LocalFree(pIniSection);
+    return true;
   }
-  SaveIniSection(pmru->szRegKey,pIniSection);
-  LocalFree(pIniSection);
-  return true;
+  return false;
 }
 
 
@@ -2224,9 +2239,9 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   }
   int outLen = (int)LocalSize(outBuffer) - 1;
 
-  int posIn = 0;
+  size_t posIn = 0;
   WCHAR buf[5] = { L'\0' };
-  int lastEsc = lstrlen(lpURL) - 2;
+  size_t lastEsc = StringCchLenW(lpURL,0) - 2;
   int code;
 
   while ((posIn < lastEsc) && (posOut < outLen))
@@ -2334,7 +2349,7 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
   // ensure single spaces only
   WCHAR *p = StrStr(wchTmpBuff, L"  ");
   while (p) {
-    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLenW(p,0) + 1) * sizeof(WCHAR));
     p = StrStr(wchTmpBuff, L"  ");  // next
   }
   // separate values
@@ -2356,7 +2371,7 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
         iVector[n++] = clampi(iValue, iMin, iMax);
       }
     }
-    p = StrEnd(p) + 1;
+    p = StrEnd(p,0) + 1;
   }
   return n;
 }

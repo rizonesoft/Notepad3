@@ -87,8 +87,7 @@ LRESULT SendWMSize(HWND);
                                ?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
 
 
-#define Has_UTF16_LE_BOM(p) (*((UNALIGNED wchar_t*)(p)) == 0xFEFF)
-#define Has_UTF16_BE_BOM(p) (*((UNALIGNED wchar_t*)(p)) == 0xFFFE) /* reverse */
+#define Has_UTF16_BOM(p) ((*((UNALIGNED wchar_t*)(p)) == 0xFEFF) || (*((UNALIGNED wchar_t*)(p)) == 0xFFFE) /* reverse */)
 
 #define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
 #define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))

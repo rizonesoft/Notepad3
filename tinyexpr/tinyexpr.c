@@ -23,7 +23,7 @@
  */
 
 // TODO: remove warnings
-#pragma warning( disable : 4090 4152 4201 4204 4244 )
+#pragma warning( disable : 4090 4152 4201 4204 4244 26451)
 
 /* COMPILE TIME OPTIONS */
 
@@ -88,13 +88,15 @@ static te_expr *new_expr(const int type, const te_expr *parameters[]) {
     const int arity = ARITY(type);
     const int psize = sizeof(void*) * arity;
     const int size = (sizeof(te_expr) - sizeof(void*)) + psize + (IS_CLOSURE(type) ? sizeof(void*) : 0);
-    te_expr *ret = malloc(size);
-    memset(ret, 0, size);
-    if (arity && parameters) {
+    te_expr* ret = malloc(size);
+    if (ret) {
+      memset(ret, 0, size);
+      if (arity && parameters) {
         memcpy(ret->parameters, parameters, psize);
+      }
+      ret->type = type;
+      ret->bound = 0;
     }
-    ret->type = type;
-    ret->bound = 0;
     return ret;
 }
 
