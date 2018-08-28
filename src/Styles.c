@@ -426,7 +426,7 @@ KEYWORDLIST KeyWords_CPP = {
   "",
   // Global classes and typedefs
   "complex imaginary int8_t int16_t int32_t int64_t intptr_t intmax_t ptrdiff_t size_t "
-  "uint8_t uint16_t uint32_t uint64_t uintptr_t uintmax_t"
+  "uint8_t uint16_t uint32_t uint64_t uintptr_t uintmax_t "
   "__int16 __int32 __int64 __int8 __m128 __m128d __m128i __m64 __wchar_t "
   "_Alignas _Alignof _Atomic _Bool _Complex _Generic _Imaginary _Noreturn _Pragma _Static_assert _Thread_local",
   // Preprocessor definitions
