@@ -70,48 +70,51 @@ static const WCHAR *pDirListProp = L"DirListData";
 //
 bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 {
+  UNUSED(pszHeader);
+
   HIMAGELIST hil;
   SHFILEINFO shfi;
+  ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
   // Allocate DirListData Property
   LPDLDATA lpdl = (LPVOID)GlobalAlloc(GPTR,sizeof(DLDATA));
-  SetProp(hwnd,pDirListProp,(HANDLE)lpdl);
+  if (lpdl) {
+    SetProp(hwnd, pDirListProp, (HANDLE)lpdl);
 
-  // Setup dl
-  lpdl->hwnd = hwnd;
-  lpdl->cbidl = 0;
-  lpdl->pidl = NULL;
-  lpdl->lpsf = NULL;
-  StringCchCopy(lpdl->szPath,COUNTOF(lpdl->szPath),L"");
+    // Setup dl
+    lpdl->hwnd = hwnd;
+    lpdl->cbidl = 0;
+    lpdl->pidl = NULL;
+    lpdl->lpsf = NULL;
+    StringCchCopy(lpdl->szPath, COUNTOF(lpdl->szPath), L"");
 
-  // Add Imagelists
-  hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
-                    SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
+    // Add Imagelists
+    hil = (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
+                                    SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
 
-  ListView_SetImageList(hwnd,hil,LVSIL_SMALL);
+    ListView_SetImageList(hwnd, hil, LVSIL_SMALL);
 
-  hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
-                    SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
+    hil = (HIMAGELIST)SHGetFileInfo(L"C:\\", FILE_ATTRIBUTE_DIRECTORY, &shfi, sizeof(SHFILEINFO),
+                                    SHGFI_LARGEICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
 
-  ListView_SetImageList(hwnd,hil,LVSIL_NORMAL);
+    ListView_SetImageList(hwnd, hil, LVSIL_NORMAL);
 
-  // Initialize default icons - done in DirList_Fill()
-  //SHGetFileInfo(L"Icon",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
-  //  SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
-  //lpdl->iDefIconFolder = shfi.iIcon;
+    // Initialize default icons - done in DirList_Fill()
+    //SHGetFileInfo(L"Icon",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
+    //  SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
+    //lpdl->iDefIconFolder = shfi.iIcon;
 
-  //SHGetFileInfo(L"Icon",FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
-  //  SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
-  //lpdl->iDefIconFile = shfi.iIcon;
+    //SHGetFileInfo(L"Icon",FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
+    //  SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON | SHGFI_SYSICONINDEX);
+    //lpdl->iDefIconFile = shfi.iIcon;
 
-  lpdl->iDefIconFolder = 0;
-  lpdl->iDefIconFile = 0;
+    lpdl->iDefIconFolder = 0;
+    lpdl->iDefIconFile = 0;
 
-  // Icon thread control
-  lpdl->hExitThread = CreateEvent(NULL,true,false,NULL);
-  lpdl->hTerminatedThread = CreateEvent(NULL,true,true,NULL);
-
-  UNUSED(pszHeader);
+    // Icon thread control
+    lpdl->hExitThread = CreateEvent(NULL, true, false, NULL);
+    lpdl->hTerminatedThread = CreateEvent(NULL, true, true, NULL);
+  }
 
   return true;
 }
@@ -343,22 +346,22 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
               {
 
                 LPLV_ITEMDATA lplvid = CoTaskMemAlloc(sizeof(LV_ITEMDATA));
+                if (lplvid) {
+                  lplvid->pidl = pidlEntry;
+                  lplvid->lpsf = lpsf;
 
-                lplvid->pidl = pidlEntry;
-                lplvid->lpsf = lpsf;
+                  lpsf->lpVtbl->AddRef(lpsf);
 
-                lpsf->lpVtbl->AddRef(lpsf);
+                  lvi.lParam = (LPARAM)lplvid;
 
-                lvi.lParam = (LPARAM)lplvid;
+                  // Setup default Icon - Folder or File
+                  lvi.iImage = (dwAttributes & SFGAO_FOLDER) ?
+                    lpdl->iDefIconFolder : lpdl->iDefIconFile;
 
-                // Setup default Icon - Folder or File
-                lvi.iImage = (dwAttributes & SFGAO_FOLDER) ?
-                  lpdl->iDefIconFolder : lpdl->iDefIconFile;
+                  ListView_InsertItem(hwnd, &lvi);
 
-                ListView_InsertItem(hwnd,&lvi);
-
-                lvi.iItem++;
-
+                  lvi.iItem++;
+                }
               }
 
             }
@@ -427,7 +430,7 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
   HWND hwnd = lpdl->hwnd;
   int iMaxItem = ListView_GetItemCount(hwnd);
 
-  CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+  (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
 
   // Get IShellIcon
   IShellIcon* lpshi = NULL;
@@ -443,6 +446,8 @@ DWORD WINAPI DirList_IconThread(LPVOID lpParam)
     if (ListView_GetItem(hwnd,&lvi)) {
 
       SHFILEINFO shfi;
+      ZeroMemory(&shfi, sizeof(SHFILEINFO));
+
       LPITEMIDLIST pidl;
       DWORD dwAttributes = SFGAO_LINK | SFGAO_SHARE;
 
@@ -879,6 +884,7 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 
   WCHAR szShortPath[MAX_PATH] = { L'\0' };
   SHFILEINFO  shfi;
+  ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
   LV_FINDINFO lvfi;
   DLITEM dli;
@@ -1030,6 +1036,7 @@ typedef struct tagDC_ITEMDATA
 bool DriveBox_Init(HWND hwnd)
 {
   SHFILEINFO shfi;
+  ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
   HIMAGELIST hil = (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,&shfi,sizeof(SHFILEINFO),
                                   SHGFI_SMALLICON | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES);
@@ -1135,29 +1142,26 @@ int DriveBox_Fill(HWND hwnd)
               if (hr != NOERROR || (di.dwDescriptionId >= SHDID_COMPUTER_DRIVE35 &&
                                     di.dwDescriptionId <= SHDID_COMPUTER_OTHER))
               {
-
                 lpdcid = CoTaskMemAlloc(sizeof(DC_ITEMDATA));
+                if (lpdcid) {
+                  //lpdcid->pidl = IL_Copy(pidlEntry);
+                  lpdcid->pidl = pidlEntry;
+                  lpdcid->lpsf = lpsf;
 
-                //lpdcid->pidl = IL_Copy(pidlEntry);
-                lpdcid->pidl = pidlEntry;
-                lpdcid->lpsf = lpsf;
+                  lpsf->lpVtbl->AddRef(lpsf);
 
-                lpsf->lpVtbl->AddRef(lpsf);
-
-                // Insert sorted ...
-                {
+                  // Insert sorted ...
                   COMBOBOXEXITEM cbei2;
                   cbei2.mask = CBEIF_LPARAM;
                   cbei2.iItem = 0;
 
-                  while ((SendMessage(hwnd,CBEM_GETITEM,0,(LPARAM)&cbei2)))
-                  {
+                  while ((SendMessage(hwnd, CBEM_GETITEM, 0, (LPARAM)&cbei2))) {
                     LPDC_ITEMDATA lpdcid2 = (LPDC_ITEMDATA)cbei2.lParam;
                     HRESULT hr2 = (lpdcid->lpsf->lpVtbl->CompareIDs(
-                                lpdcid->lpsf,
-                                0,
-                                lpdcid->pidl,
-                                lpdcid2->pidl));
+                      lpdcid->lpsf,
+                      0,
+                      lpdcid->pidl,
+                      lpdcid2->pidl));
 
                     if ((short)(SCODE_CODE(GetScode(hr2))) < 0)
                       break;
@@ -1167,14 +1171,10 @@ int DriveBox_Fill(HWND hwnd)
 
                   cbei.iItem = cbei2.iItem;
                   cbei.lParam = (LPARAM)lpdcid;
-                  SendMessage(hwnd,CBEM_INSERTITEM,0,(LPARAM)&cbei);
-
+                  SendMessage(hwnd, CBEM_INSERTITEM, 0, (LPARAM)&cbei);
                 }
-
               }
-
             }
-
           } // IEnumIDList::Next()
 
           lpe->lpVtbl->Release(lpe);
@@ -1383,6 +1383,8 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
   NMCOMBOBOXEX *lpnmcbe;
   LPDC_ITEMDATA lpdcid;
   SHFILEINFO shfi;
+  ZeroMemory(&shfi, sizeof(SHFILEINFO));
+
   WCHAR szTemp[MAX_PATH] = { L'\0' };
 
   lpnmcbe = (LPVOID)lParam;
@@ -1457,14 +1459,14 @@ LPITEMIDLIST IL_Create(LPCITEMIDLIST pidl1,UINT cb1,
   pidl = CoTaskMemAlloc(cb1 + cb2);
 
   // Init new ITEMIDLIST
-  if (pidl1)
+  if (pidl && pidl1)
     CopyMemory(pidl,pidl1,cb1);
 
   // pidl2 can't be NULL here
-  CopyMemory((LPBYTE)pidl + cb1,pidl2,cb2);
+  if (pidl)
+    CopyMemory((LPBYTE)pidl + cb1, pidl2, cb2);
 
   return pidl;
-
 }
 
 

@@ -118,7 +118,7 @@ static const char* kWordLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 string MakeChar44(const string& str) {
   string res("________");     // eight underscores
   int l_ptr = 0;
-  int d_ptr = 0;
+  size_t d_ptr = 0;
   for (char ch : str) {
     auto uc = static_cast<uint8>(ch);
     if (kIsAlpha[uc]) {
@@ -128,7 +128,7 @@ string MakeChar44(const string& str) {
       }
     } else if (kIsDigit[uc]) {
       if (d_ptr < 4) {
-        res[4 + d_ptr] = kCharsetToLowerTbl[uc];
+        res[d_ptr + 4] = kCharsetToLowerTbl[uc];
       } else {
         // Keep last 4 digits by shifting left
         res[4] = res[5];

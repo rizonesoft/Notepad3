@@ -26,6 +26,12 @@
 #include "typedefs.h"
 
 // ============================================================================
+// ---  Disable/Enable some CodeAnalysis Warnings  ---
+
+#pragma warning ( disable: 26451 28159)
+//#pragma warning ( enable : 6001 )
+
+// ============================================================================
 
 extern WCHAR   g_wchIniFile[MAX_PATH];
 extern UINT    g_uCurrentDPI;

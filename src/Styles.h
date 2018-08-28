@@ -23,6 +23,8 @@
 #define MARGIN_SCI_BOOKMRK 1
 #define MARGIN_SCI_FOLDING 2
 
+#include "Scintilla.h"
+
 typedef struct _editstyle
 {
   #pragma warning(disable : 4201)  // MS's Non-Std: Struktur/Union ohne Namen

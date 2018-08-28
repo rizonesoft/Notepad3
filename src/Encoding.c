@@ -344,53 +344,53 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = LocalAlloc(LPTR, Encoding_CountOf() * sizeof(ENCODINGENTRY));
-  for (i = 0; i < Encoding_CountOf(); i++) {
-    pEE[i].id = i;
-    GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
-  }
-  qsort(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
-
-  ZeroMemory(&lvi, sizeof(LVITEM));
-  lvi.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
-  lvi.pszText = wchBuf;
-
-  for (i = 0; i < Encoding_CountOf(); i++) {
-
-    int id = pEE[i].id;
-    if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
-
-      lvi.iItem = ListView_GetItemCount(hwnd);
-
-      WCHAR *pwsz = StrChr(pEE[i].wch, L';');
-      if (pwsz) {
-        StringCchCopyN(wchBuf, COUNTOF(wchBuf), CharNext(pwsz), COUNTOF(wchBuf));
-        pwsz = StrChr(wchBuf, L';');
-        if (pwsz)
-          *pwsz = 0;
-      }
-      else
-        StringCchCopyN(wchBuf, COUNTOF(wchBuf), pEE[i].wch, COUNTOF(wchBuf));
-
-      if (Encoding_IsANSI(id))
-        StringCchCatN(wchBuf, COUNTOF(wchBuf), wchANSI, COUNTOF(wchANSI));
-      else if (Encoding_IsOEM(id))
-        StringCchCatN(wchBuf, COUNTOF(wchBuf), wchOEM, COUNTOF(wchOEM));
-
-      if (Encoding_IsValid(id))
-        lvi.iImage = 0;
-      else
-        lvi.iImage = 1;
-
-      lvi.lParam = (LPARAM)id;
-      ListView_InsertItem(hwnd, &lvi);
-
-      if (idSel == id)
-        iSelItem = lvi.iItem;
+  if (pEE) {
+    for (i = 0; i < Encoding_CountOf(); i++) {
+      pEE[i].id = i;
+      GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
+    qsort(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
+
+    ZeroMemory(&lvi, sizeof(LVITEM));
+    lvi.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
+    lvi.pszText = wchBuf;
+
+    for (i = 0; i < Encoding_CountOf(); i++) {
+
+      int id = pEE[i].id;
+      if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
+
+        lvi.iItem = ListView_GetItemCount(hwnd);
+
+        WCHAR *pwsz = StrChr(pEE[i].wch, L';');
+        if (pwsz) {
+          StringCchCopyN(wchBuf, COUNTOF(wchBuf), CharNext(pwsz), COUNTOF(wchBuf));
+          pwsz = StrChr(wchBuf, L';');
+          if (pwsz)
+            *pwsz = 0;
+        }
+        else
+          StringCchCopyN(wchBuf, COUNTOF(wchBuf), pEE[i].wch, COUNTOF(wchBuf));
+
+        if (Encoding_IsANSI(id))
+          StringCchCatN(wchBuf, COUNTOF(wchBuf), wchANSI, COUNTOF(wchANSI));
+        else if (Encoding_IsOEM(id))
+          StringCchCatN(wchBuf, COUNTOF(wchBuf), wchOEM, COUNTOF(wchOEM));
+
+        if (Encoding_IsValid(id))
+          lvi.iImage = 0;
+        else
+          lvi.iImage = 1;
+
+        lvi.lParam = (LPARAM)id;
+        ListView_InsertItem(hwnd, &lvi);
+
+        if (idSel == id)
+          iSelItem = lvi.iItem;
+      }
+    }
+    LocalFree(pEE);
   }
-
-  LocalFree(pEE);
-
   if (iSelItem != -1) {
     ListView_SetItemState(hwnd, iSelItem, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
     ListView_EnsureVisible(hwnd, iSelItem, false);
@@ -430,53 +430,54 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = LocalAlloc(LPTR, Encoding_CountOf() * sizeof(ENCODINGENTRY));
-  for (i = 0; i < Encoding_CountOf(); i++) {
-    pEE[i].id = i;
-    GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
-  }
-  qsort(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
-
-  ZeroMemory(&cbei, sizeof(COMBOBOXEXITEM));
-  cbei.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE | CBEIF_LPARAM;
-  cbei.pszText = wchBuf;
-  cbei.cchTextMax = COUNTOF(wchBuf);
-  cbei.iImage = 0;
-  cbei.iSelectedImage = 0;
-
-  for (i = 0; i < Encoding_CountOf(); i++) {
-
-    int id = pEE[i].id;
-    if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
-
-      cbei.iItem = SendMessage(hwnd, CB_GETCOUNT, 0, 0);
-
-      WCHAR *pwsz = StrChr(pEE[i].wch, L';');
-      if (pwsz) {
-        StringCchCopyN(wchBuf, COUNTOF(wchBuf), CharNext(pwsz), COUNTOF(wchBuf));
-        pwsz = StrChr(wchBuf, L';');
-        if (pwsz)
-          *pwsz = 0;
-      }
-      else
-        StringCchCopyN(wchBuf, COUNTOF(wchBuf), pEE[i].wch, COUNTOF(wchBuf));
-
-      if (Encoding_IsANSI(id))
-        StringCchCatN(wchBuf, COUNTOF(wchBuf), wchANSI, COUNTOF(wchANSI));
-      else if (id == CPI_OEM)
-        StringCchCatN(wchBuf, COUNTOF(wchBuf), wchOEM, COUNTOF(wchOEM));
-
-      cbei.iImage = (Encoding_IsValid(id) ? 0 : 1);
-
-      cbei.lParam = (LPARAM)id;
-      SendMessage(hwnd, CBEM_INSERTITEM, 0, (LPARAM)&cbei);
-
-      if (idSel == id)
-        iSelItem = (int)cbei.iItem;
+  if (pEE) {
+    for (i = 0; i < Encoding_CountOf(); i++) {
+      pEE[i].id = i;
+      GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
+    qsort(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
+
+    ZeroMemory(&cbei, sizeof(COMBOBOXEXITEM));
+    cbei.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE | CBEIF_LPARAM;
+    cbei.pszText = wchBuf;
+    cbei.cchTextMax = COUNTOF(wchBuf);
+    cbei.iImage = 0;
+    cbei.iSelectedImage = 0;
+
+    for (i = 0; i < Encoding_CountOf(); i++) {
+
+      int id = pEE[i].id;
+      if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
+
+        cbei.iItem = SendMessage(hwnd, CB_GETCOUNT, 0, 0);
+
+        WCHAR *pwsz = StrChr(pEE[i].wch, L';');
+        if (pwsz) {
+          StringCchCopyN(wchBuf, COUNTOF(wchBuf), CharNext(pwsz), COUNTOF(wchBuf));
+          pwsz = StrChr(wchBuf, L';');
+          if (pwsz)
+            *pwsz = 0;
+        }
+        else
+          StringCchCopyN(wchBuf, COUNTOF(wchBuf), pEE[i].wch, COUNTOF(wchBuf));
+
+        if (Encoding_IsANSI(id))
+          StringCchCatN(wchBuf, COUNTOF(wchBuf), wchANSI, COUNTOF(wchANSI));
+        else if (id == CPI_OEM)
+          StringCchCatN(wchBuf, COUNTOF(wchBuf), wchOEM, COUNTOF(wchOEM));
+
+        cbei.iImage = (Encoding_IsValid(id) ? 0 : 1);
+
+        cbei.lParam = (LPARAM)id;
+        SendMessage(hwnd, CBEM_INSERTITEM, 0, (LPARAM)&cbei);
+
+        if (idSel == id)
+          iSelItem = (int)cbei.iItem;
+      }
+    }
+
+    LocalFree(pEE);
   }
-
-  LocalFree(pEE);
-
   if (iSelItem != -1)
     SendMessage(hwnd, CB_SETCURSEL, (WPARAM)iSelItem, 0);
 }

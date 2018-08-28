@@ -27,6 +27,8 @@
   typedef Sci_PositionU  DocPosU;
   typedef Sci_PositionCR DocCR;
   typedef Sci_Line       DocLn;
+  #define DOCPOSFMTA "%ti"
+  #define DOCPOSFMTW L"%ti"
 #else
 
   #ifdef NP3_COMPILE_TEST
@@ -34,11 +36,15 @@
     typedef size_t DocPosU;
     typedef long DocPosCR;
     typedef ptrdiff_t DocLn;
+    #define DOCPOSFMTA "%ti"
+    #define DOCPOSFMTW L"%ti"
   #else
     typedef int  DocPos;
     typedef unsigned int DocPosU;
     typedef long DocPosCR;
     typedef int  DocLn;
+    #define DOCPOSFMTA "%i"
+    #define DOCPOSFMTW L"%i"
   #endif
 
 #endif

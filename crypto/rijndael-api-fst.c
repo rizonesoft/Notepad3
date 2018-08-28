@@ -60,6 +60,13 @@
 #include "sha-256.h"
 #include "rijndael-alg-fst.h"
 #include "rijndael-api-fst.h"
+
+// ---------------------------------------------------------------------
+// ---  Disable/Enable some CodeAnalysis Warnings  ---
+#pragma warning ( disable: 26451)
+//#pragma warning ( enable : 6001 )
+// ---------------------------------------------------------------------
+
 /* @func
  Generate a 256 bit AES key from a passphrase, using reasonably acceptable
  procedures to obfustate the original passphrase.  The resulting key can be
