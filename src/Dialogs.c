@@ -144,7 +144,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
       StringCchCat(szText, COUNTOF(szText), lpMsgBuf);
       LocalFree(lpMsgBuf);
     }
-    wcht = *CharPrev(szText, StrEnd(szText));
+    wcht = *CharPrev(szText, StrEnd(szText, COUNTOF(szText)));
     if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
       StringCchCat(szText, COUNTOF(szText), L".");
   }
@@ -415,7 +415,7 @@ static DWORD CALLBACK _LoadRtfCallback(
 )
 {
   LPSTR* pstr = (LPSTR*)dwCookie;
-  LONG len = (LONG)strlen(*pstr);
+  LONG len = (LONG)StringCchLenA(*pstr,0);
 
   if (len < cb)
   {
@@ -3359,7 +3359,7 @@ int Toolbar_SetButtons(HWND hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON 
   TrimStringW(tchButtons);
   WCHAR *p = StrStr(tchButtons, L"  ");
   while (p) {
-    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+    MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLen(p,0) + 1) * sizeof(WCHAR));
     p = StrStr(tchButtons, L"  ");  // next
   }
   c = (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0);
@@ -3380,7 +3380,7 @@ int Toolbar_SetButtons(HWND hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON 
         }
       }
     }
-    p = StrEnd(p) + 1;
+    p = StrEnd(p,0) + 1;
   }
   return((int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
 }
@@ -3511,7 +3511,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
   pbNew = (BYTE*)wchFaceName;
 
   pb = DialogTemplate_GetFontSizeField(pTemplate);
-  cbOld = (int)(bHasFont ? cbFontAttr + 2 * (lstrlen((WCHAR*)(pb + cbFontAttr)) + 1) : 0);
+  cbOld = (int)(bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr),0) + 1) : 0);
 
   pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
   pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);

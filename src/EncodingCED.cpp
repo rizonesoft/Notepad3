@@ -117,7 +117,7 @@ extern "C" {
 #define ENC_PARSE_NAM_ISO_2022_JP          "ISO-2022-jp,iso2022jp,"
 #define ENC_PARSE_NAM_ISO_2022_KR          "ISO-2022-kr,iso2022kr,csiso2022kr,"
 #define ENC_PARSE_NAM_X_CHINESE_CNS        "x-Chinese-CNS,xchinesecns,"
-//#define ENC_PARSE_NAM_JOHAB                "johab,johab,"
+#define ENC_PARSE_NAM_JOHAB                "johab,johab,"
 //#define ENC_PARSE_NAM_ISO_8859_10          "ISO-8859-10,iso885910,Windows-28600,Windows28600,"
 //#define ENC_PARSE_NAM_BIG5_HKSCS           "big5hkscs,cnbig5hkscs,xxbig5hkscs,"
 //=============================================================================
@@ -204,8 +204,8 @@ extern "C" NP2ENCODING g_Encodings[] = {
   /* 076 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 52936, ENC_PARSE_NAM_HZ_GB2312,         IDS_ENC_HZ_GB2312,         HZ_GB_2312,         L"" }, // Chinese Simplified (HZ-GB2312)
   /* 077 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 50220, ENC_PARSE_NAM_ISO_2022_JP,       IDS_ENC_ISO_2022_JP,       KDDI_ISO_2022_JP,   L"" }, // Japanese (JIS)
   /* 078 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 50225, ENC_PARSE_NAM_ISO_2022_KR,       IDS_ENC_ISO_2022_KR,       ISO_2022_KR,        L"" }, // Korean (ISO-2022-KR)
-  /* 079 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 20000, ENC_PARSE_NAM_X_CHINESE_CNS,     IDS_ENC_X_CHINESE_CNS,     CHINESE_CNS,        L"" } // Chinese Traditional (CNS)
-  ///* 080 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 1361,  ENC_PARSE_NAM_JOHAB,             IDS_ENC_JOHAB,             CED_NO_MAPPING,     L"" }, // Korean (Johab)
+  /* 079 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 20000, ENC_PARSE_NAM_X_CHINESE_CNS,     IDS_ENC_X_CHINESE_CNS,     CHINESE_CNS,        L"" }, // Chinese Traditional (CNS)
+  /* 080 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 1361,  ENC_PARSE_NAM_JOHAB,             IDS_ENC_JOHAB,             CED_NO_MAPPING,     L"" } // Korean (Johab)
   ///* 081 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28600, ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       ISO_8859_10,        L"" }, // Nordic (ISO 8859-10)
   ///* 082 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 951,   ENC_PARSE_NAM_BIG5_HKSCS,        IDS_ENC_BIG5_HKSCS,        BIG5_HKSCS,         L"" }  // Chinese (Hong Kong Supplementary Character Set)
 

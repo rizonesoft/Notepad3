@@ -377,7 +377,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       {
         ExtTextOut(hdc, frPrint.rc.left + 5, frPrint.rc.top - headerLineHeight / 2,
                       /*ETO_OPAQUE*/0, &rcw, pszDocTitle,
-                      lstrlen(pszDocTitle), nullptr);
+                   (UINT)StringCchLenW(pszDocTitle,0), nullptr);
       }
 
       // Print date in header
