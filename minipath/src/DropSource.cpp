@@ -6,6 +6,7 @@
 * Dropsource.cpp                                                              *
 *   OLE drop source functionality                                             *
 *   Based on code from metapath, (c) Florian Balmer 1996-2011                 *
+*                                    and ZuFu Liu                             *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2016   *
 *                                                    https://rizonesoft.com   *
@@ -15,88 +16,70 @@
 #define _WIN32_WINNT 0x601
 #include <windows.h>
 //#include <strsafe.h>
-#include "helpers.h"
-#include "dropsource.h"
-
+#include "DropSource.h"
 
 /******************************************************************************
 *
 * IUnknown Implementation
 *
 ******************************************************************************/
-STDMETHODIMP CDropSource::QueryInterface(REFIID iid, void FAR* FAR* ppv)
-{
-  if (iid == IID_IUnknown || iid == IID_IDropSource)
-  {
+STDMETHODIMP CDropSource::QueryInterface(REFIID iid, PVOID *ppv) noexcept {
+  if (iid == IID_IUnknown || iid == IID_IDropSource) {
     *ppv = this;
-    ++m_refs;
+    AddRef();
     return NOERROR;
   }
-  *ppv = NULL;
+  *ppv = nullptr;
   return E_NOINTERFACE;
 }
 
-
-STDMETHODIMP_(ULONG) CDropSource::AddRef()
-{
+STDMETHODIMP_(ULONG) CDropSource::AddRef() noexcept {
   return ++m_refs;
 }
 
-
-STDMETHODIMP_(ULONG) CDropSource::Release()
-{
-  if(--m_refs == 0)
-  {
+STDMETHODIMP_(ULONG) CDropSource::Release() noexcept {
+  const ULONG refs = --m_refs;
+  if (refs == 0) {
     delete this;
-    return 0;
   }
-  return m_refs;
+  return refs;
 }
-
 
 /******************************************************************************
 *
 * CDropSource Constructor
 *
 ******************************************************************************/
-CDropSource::CDropSource()
-{
+CDropSource::CDropSource() noexcept {
   m_refs = 1;
 }
-
 
 /******************************************************************************
 *
 * IDropSource Implementation
 *
 ******************************************************************************/
-STDMETHODIMP CDropSource::QueryContinueDrag(BOOL fEscapePressed,
-                                            DWORD grfKeyState)
-{
-  if (fEscapePressed)
+STDMETHODIMP CDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState) noexcept {
+  if (fEscapePressed) {
     return DRAGDROP_S_CANCEL;
-
-  else if (!(grfKeyState & MK_LBUTTON) && !(grfKeyState & MK_RBUTTON))
+  }
+  if (!(grfKeyState & MK_LBUTTON) && !(grfKeyState & MK_RBUTTON)) {
     return DRAGDROP_S_DROP;
-
-  else
-    return NOERROR;
+  }
+  return NOERROR;
 }
 
-
-STDMETHODIMP CDropSource::GiveFeedback(DWORD dwEffect)
-{
+STDMETHODIMP CDropSource::GiveFeedback(DWORD dwEffect) noexcept {
   UNUSED(dwEffect);
   return DRAGDROP_S_USEDEFAULTCURSORS;
 }
 
-
 extern "C" {
-LPDROPSOURCE CreateDropSource()
-{
+
+LPDROPSOURCE CreateDropSource(void) {
   return ((LPDROPSOURCE) new CDropSource);
 }
+
 }
 
-
-// End of Dropsource.cpp
+// End of DropSource.cpp

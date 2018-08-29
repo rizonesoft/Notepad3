@@ -265,7 +265,7 @@
   <ItemGroup>
     <ClCompile Include="src\Dialogs.c" />
     <ClCompile Include="src\Dlapi.c" />
-    <ClCompile Include="src\Dropsource.cpp" />
+    <ClCompile Include="src\DropSource.cpp" />
     <ClCompile Include="src\Helpers.c" />
     <ClCompile Include="src\minipath.c" />
   </ItemGroup>
@@ -273,7 +273,7 @@
     <ClInclude Include="language\common_res.h" />
     <ClInclude Include="src\Dialogs.h" />
     <ClInclude Include="src\Dlapi.h" />
-    <ClInclude Include="src\Dropsource.h" />
+    <ClInclude Include="src\DropSource.h" />
     <ClInclude Include="src\Helpers.h" />
     <ClInclude Include="src\minipath.h" />
     <ClInclude Include="src\resource.h" />
