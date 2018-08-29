@@ -2711,6 +2711,22 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 }
 
 
+static bool __fastcall _IsInlineIMEActive()
+{
+  bool result = false;
+  if (g_IMEInteraction) {
+    HIMC himc = ImmGetContext(g_hwndEdit);
+    if (himc) {
+      DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
+      if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
+        result = !(dwConversion == IME_CMODE_ALPHANUMERIC);
+      }
+      ImmReleaseContext(g_hwndEdit, himc);
+    }
+  }
+  return result;
+}
+
 
 //=============================================================================
 //
@@ -5973,7 +5989,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 
 //=============================================================================
 //
-//  _HandleAutoCloseTags()
+//  _HandleAutoIndent()
 //
 static void __fastcall _HandleAutoIndent(int const charAdded) {
   // in CRLF mode handle LF only...

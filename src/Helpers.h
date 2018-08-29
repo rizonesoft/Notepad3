@@ -186,6 +186,8 @@ bool SetClipboardTextW(HWND, LPCWSTR);
 UINT GetCurrentDPI(HWND hwnd);
 UINT GetCurrentPPI(HWND hwnd);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
+#define ScaleIntToCurrentDPI(val) MulDiv((val), g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI)
+inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * g_uCurrentDPI) / (float)USER_DEFAULT_SCREEN_DPI); }
 #define ScaleIntFontSize(val) MulDiv((val), g_uCurrentDPI, g_uCurrentPPI)
 inline int ScaleFontSize(float fSize) { return float2int((fSize * g_uCurrentDPI) / (float)g_uCurrentPPI); }
 inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * g_uCurrentDPI) / (float)g_uCurrentPPI) * 10; }

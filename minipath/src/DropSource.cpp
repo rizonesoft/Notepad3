@@ -6,7 +6,6 @@
 * Dropsource.cpp                                                              *
 *   OLE drop source functionality                                             *
 *   Based on code from metapath, (c) Florian Balmer 1996-2011                 *
-*                                    and ZuFu Liu                             *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2016   *
 *                                                    https://rizonesoft.com   *
@@ -70,7 +69,7 @@ STDMETHODIMP CDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeySta
 }
 
 STDMETHODIMP CDropSource::GiveFeedback(DWORD dwEffect) noexcept {
-  UNUSED(dwEffect);
+  (void)(dwEffect);
   return DRAGDROP_S_USEDEFAULTCURSORS;
 }
 
