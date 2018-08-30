@@ -2689,10 +2689,9 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
         RestoreWndFromTray(hwnd);
         ShowOwnedPopups(hwnd, true);
       }
-
       else if (iCmd == IDM_TRAY_EXIT) {
         //ShowNotifyIcon(hwnd,false);
-        SendMessage(hwnd, WM_CLOSE, 0, 0);
+        PostMessage(hwnd, WM_CLOSE, 0, 0);
       }
     }
     break;
@@ -3336,7 +3335,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_EXIT:
-      SendMessage(hwnd,WM_CLOSE,0,0);
+      PostMessage(hwnd,WM_CLOSE,0,0);
       break;
 
 
@@ -4749,8 +4748,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
       g_bAutoCompleteWords = (g_bAutoCompleteWords) ? false : true;  // toggle
-      if (!g_bAutoCompleteWords)
-        SendMessage(g_hwndEdit, SCI_AUTOCCANCEL, 0, 0);  // close the auto completion list
+      if (!g_bAutoCompleteWords) {
+        SciCall_AutoCCancel();  // close the auto completion list
+      }
       break;
 
     case IDM_VIEW_ACCELWORDNAV:
@@ -5159,18 +5159,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_ESCAPE:
       //close the autocomplete box
-      SendMessage(g_hwndEdit,SCI_AUTOCCANCEL,0, 0);
+      SciCall_AutoCCancel();
 
-      if (iEscFunction == 1)
-        SendMessage(hwnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
-      else if (iEscFunction == 2)
-        SendMessage(hwnd,WM_CLOSE,0,0);
+      if (iEscFunction == 1) {
+        SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+      }
+      else if (iEscFunction == 2) {
+        PostMessage(hwnd, WM_CLOSE, 0, 0);
+      }
       break;
 
 
     case CMD_SHIFTESC:
-      if (FileSave(true,false,false,false))
-        SendMessage(hwnd,WM_CLOSE,0,0);
+      if (FileSave(true, false, false, false)) {
+        PostMessage(hwnd, WM_CLOSE, 0, 0);
+      }
       break;
 
 
@@ -5782,7 +5785,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDT_FILE_EXIT:
-      SendMessage(hwnd,WM_CLOSE,0,0);
+      PostMessage(hwnd,WM_CLOSE,0,0);
       break;
 
 
@@ -6321,7 +6324,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             else if (scn->ch == '?') {
               _HandleTinyExpr();
             }
-            else if (g_bAutoCompleteWords && !SendMessage(g_hwndEdit, SCI_AUTOCACTIVE, 0, 0)) {
+            else if (g_bAutoCompleteWords && !SciCall_AutoCActive() && !_IsInlineIMEActive()) {
               EditCompleteWord(g_hwndEdit, false);
             }
           }

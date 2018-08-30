@@ -6682,11 +6682,12 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
         LocalFree(t);
       }
       SendMessage(hwnd, SCI_AUTOCSETIGNORECASE, 1, 0);
-      //SendMessage(hwnd, SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 1, 0);
-      SendMessage(hwnd, SCI_AUTOCSETSEPARATOR, ' ', 0);
-      SendMessage(hwnd, SCI_AUTOCSETFILLUPS, 0, (LPARAM)"\t\n\r");
-      SendMessage(hwnd, SCI_AUTOCSETCHOOSESINGLE, autoInsert, 0);
-      SendMessage(hwnd, SCI_AUTOCSHOW, iRootLen, (LPARAM)(pList + 1));
+      SciCall_AutoCSetIgnoreCase(true);
+      //SendMessage(hwnd, SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR, (WPARAM)SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 0);
+      SciCall_AutoCSetSeperator(' ');
+      SciCall_AutoCSetFillups("\t\n\r");
+      SciCall_AutoCSetChooseSingle(autoInsert);
+      SciCall_AutoCShow(iRootLen, (pList + 1));
       LocalFree(pList);
     }
   }
