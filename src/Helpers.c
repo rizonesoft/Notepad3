@@ -2156,8 +2156,7 @@ static VOID GetTrayWndRect(LPRECT lpTrayRect)
     return;
   }
 
-  // OK. Haven't found a thing. Provide a default rect based on the current work
-  // area
+  // OK. Haven't found a thing. Provide a default rect based on the current work area
   SystemParametersInfo(SPI_GETWORKAREA,0,lpTrayRect,0);
   lpTrayRect->left=lpTrayRect->right-DEFAULT_RECT_WIDTH;
   lpTrayRect->top=lpTrayRect->bottom-DEFAULT_RECT_HEIGHT;

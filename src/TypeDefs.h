@@ -63,6 +63,22 @@ typedef struct _wi
 
 #define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0 }
 
+inline WININFO _GetWinInfo(HWND hwnd, int max, int zoom)
+{
+  WININFO winfo = INIT_WININFO;
+  RECT rc; GetWindowRect(hwnd, &rc);
+  winfo.x = rc.left;
+  winfo.y = rc.top;
+  winfo.cx = rc.right - rc.left;
+  winfo.cy = rc.bottom - rc.top;
+  winfo.max = max;
+  winfo.zoom = zoom;
+  return winfo;
+}
+// ----------------------------------------------------------------------------
+
+
+
 // --------------------------------------------------------------------------
 
 typedef enum BufferSizes

@@ -38,6 +38,8 @@ bool RecodeDlg(HWND,int *);
 bool SelectDefLineEndingDlg(HWND,int *);
 
 WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
+RECT FitIntoMonitorWorkArea(RECT*, WININFO*);
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND, const WININFO* const);
 
 void DialogNewWindow(HWND,bool,bool);
 void DialogFileBrowse(HWND);

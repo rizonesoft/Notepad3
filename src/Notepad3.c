@@ -274,7 +274,6 @@ const int FontQuality[4] = {
 };
 
 
-
 static  WININFO g_WinInfo = INIT_WININFO;
 static  int     g_WinCurrentWidth = 0;
 
@@ -989,18 +988,25 @@ void EndWaitCursor()
 //  _InitWindowPosition()
 //
 //
-static void __fastcall _InitWindowPosition(HWND hwnd)
+static RECT __fastcall _InitDefaultWndPos()
+{
+  RECT rc = { CW_USEDEFAULT, CW_USEDEFAULT , CW_USEDEFAULT , CW_USEDEFAULT };
+  SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
+  rc = FitIntoMonitorWorkArea(&rc, NULL);
+  g_WinInfo.y = rc.top + 16;
+  g_WinInfo.cy = rc.bottom - rc.top - 32;
+  g_WinInfo.cx = (rc.right - rc.left) / 2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
+  g_WinInfo.x = rc.right - g_WinInfo.cx - 16;
+  return rc;
+}
+
+static void __fastcall _InitWindowPosition()
 {
   RECT rc;
-  if (hwnd) {
-    GetWindowRect(hwnd, &rc);
-  }
-  else {
-    rc.left = g_WinInfo.x;  
-    rc.top = g_WinInfo.y;  
-    rc.right = g_WinInfo.x + g_WinInfo.cx;  
-    rc.bottom = g_WinInfo.y + g_WinInfo.cy;
-  }
+  rc.left = g_WinInfo.x;  
+  rc.top = g_WinInfo.y;  
+  rc.right = g_WinInfo.x + g_WinInfo.cx;  
+  rc.bottom = g_WinInfo.y + g_WinInfo.cy;
 
   if (g_flagDefaultPos == 1) 
   {
@@ -1011,6 +1017,7 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
   else if (g_flagDefaultPos >= 4) 
   {
     SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
+    rc = FitIntoMonitorWorkArea(&rc, NULL);
     if (g_flagDefaultPos & 8)
       g_WinInfo.x = (rc.right - rc.left) / 2;
     else
@@ -1038,55 +1045,29 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
       g_WinInfo.cy -= (g_flagDefaultPos & (16 | 32)) ? 12 : 16;
       g_WinInfo.max = 1;
       g_WinInfo.zoom = 0;
-
     }
   }
   else if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
   {
-    SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
-    g_WinInfo.y = rc.top + 16;
-    g_WinInfo.cy = rc.bottom - rc.top - 32;
-    g_WinInfo.cx = (rc.right - rc.left)/2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
-    g_WinInfo.x = (g_flagDefaultPos == 3) ? rc.left + 16 : rc.right - g_WinInfo.cx - 16;
+    //SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
+    //rc = FitIntoMonitorWorkArea(&rc, NULL);
+    //g_WinInfo.y = rc.top + 16;
+    //g_WinInfo.cy = rc.bottom - rc.top - 32;
+    //g_WinInfo.cx = (rc.right - rc.left)/2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
+    //g_WinInfo.x = (g_flagDefaultPos == 3) ? rc.left + 16 : rc.right - g_WinInfo.cx - 16;
+    rc = _InitDefaultWndPos();
+    if (g_flagDefaultPos == 3) { g_WinInfo.x = rc.left + 16; }
   }
   else {  // fit window into working area of current monitor
-
-    MONITORINFO mi;
-    mi.cbSize = sizeof(mi);
-    HMONITOR hMonitor = MonitorFromRect(&rc, MONITOR_DEFAULTTONEAREST);
-    GetMonitorInfo(hMonitor, &mi);
-   
-    g_WinInfo.x += (mi.rcWork.left - mi.rcMonitor.left);
-    g_WinInfo.y += (mi.rcWork.top - mi.rcMonitor.top);
-    if (g_WinInfo.x < mi.rcWork.left)
-      g_WinInfo.x = mi.rcWork.left;
-    if (g_WinInfo.y < mi.rcWork.top)
-      g_WinInfo.y = mi.rcWork.top;
-    if (g_WinInfo.x + g_WinInfo.cx > mi.rcWork.right) {
-      g_WinInfo.x -= (g_WinInfo.x + g_WinInfo.cx - mi.rcWork.right);
-      if (g_WinInfo.x < mi.rcWork.left)
-        g_WinInfo.x = mi.rcWork.left;
-      if (g_WinInfo.x + g_WinInfo.cx > mi.rcWork.right)
-        g_WinInfo.cx = mi.rcWork.right - g_WinInfo.x;
-    }
-    if (g_WinInfo.y + g_WinInfo.cy > mi.rcWork.bottom) {
-      g_WinInfo.y -= (g_WinInfo.y + g_WinInfo.cy - mi.rcWork.bottom);
-      if (g_WinInfo.y < mi.rcWork.top)
-        g_WinInfo.y = mi.rcWork.top;
-      if (g_WinInfo.y + g_WinInfo.cy > mi.rcWork.bottom)
-        g_WinInfo.cy = mi.rcWork.bottom - g_WinInfo.y;
-    }
-    SetRect(&rc, g_WinInfo.x, g_WinInfo.y, g_WinInfo.x + g_WinInfo.cx, g_WinInfo.y + g_WinInfo.cy);
-
+    RECT rcWork = FitIntoMonitorWorkArea(&rc, &g_WinInfo);
     RECT rc2;
-    if (!IntersectRect(&rc2, &rc, &mi.rcWork)) {
-      g_WinInfo.y = mi.rcWork.top + 16;
-      g_WinInfo.cy = mi.rcWork.bottom - mi.rcWork.top - 32;
-      g_WinInfo.cx = min(mi.rcWork.right - mi.rcWork.left - 32, g_WinInfo.cy);
-      g_WinInfo.x = mi.rcWork.right - g_WinInfo.cx - 16;
+    if (!IntersectRect(&rc2, &rc, &rcWork)) {
+      g_WinInfo.y = rcWork.top + 16;
+      g_WinInfo.cy = rcWork.bottom - rcWork.top - 32;
+      g_WinInfo.cx = min(rcWork.right - rcWork.left - 32, g_WinInfo.cy);
+      g_WinInfo.x = rcWork.right - g_WinInfo.cx - 16;
     }
   }
-
   g_WinCurrentWidth = g_WinInfo.cx;
 }
 
@@ -1099,10 +1080,7 @@ static void __fastcall _InitWindowPosition(HWND hwnd)
 HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
-
-  g_hwndMain = NULL;
-
-  _InitWindowPosition(g_hwndMain);
+  _InitWindowPosition();
 
   g_hwndMain = CreateWindowEx(
                0,
@@ -1124,6 +1102,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   if ((bAlwaysOnTop || g_flagAlwaysOnTop == 2) && g_flagAlwaysOnTop != 1) {
     SetWindowPos(g_hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
+
   if (bTransparentMode) {
     SetWindowTransparentMode(g_hwndMain, true);
   }
@@ -1142,6 +1121,8 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     ShowWindow(g_hwndMain,SW_HIDE);    // trick ShowWindow()
     ShowNotifyIcon(g_hwndMain,true);
   }
+
+  //SnapToWinInfoPos(g_hwndMain, false);
 
   // Source Encoding
   if (lpEncodingArg)
@@ -4913,15 +4894,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOOLBAR:
-      if (bShowToolbar) {
-        bShowToolbar = 0;
-        ShowWindow(g_hwndReBar,SW_HIDE);
-      }
-      else {
-        bShowToolbar = 1;
-        UpdateToolbar();
-        ShowWindow(g_hwndReBar,SW_SHOW);
-      }
+      bShowToolbar = !bShowToolbar;
+      ShowWindow(g_hwndReBar, (bShowToolbar ? SW_SHOW : SW_HIDE));
+      UpdateToolbar();
       SendWMSize(hwnd, NULL);
       break;
 
@@ -4934,17 +4909,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       SendMessage(g_hwndToolbar,TB_CUSTOMIZE,0,0);
       break;
 
-
     case IDM_VIEW_STATUSBAR:
-      if (bShowStatusbar) {
-        bShowStatusbar = 0;
-        ShowWindow(g_hwndStatus,SW_HIDE);
-      }
-      else {
-        bShowStatusbar = 1;
-        UpdateStatusbar(false);
-        ShowWindow(g_hwndStatus,SW_SHOW);
-      }
+      bShowStatusbar = !bShowStatusbar;
+      ShowWindow(g_hwndStatus, (bShowStatusbar ? SW_SHOW : SW_HIDE));
+      UpdateStatusbar(bShowStatusbar);
       SendWMSize(hwnd, NULL);
       break;
 
@@ -5353,20 +5321,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case CMD_LEXHTML:
-      Style_SetHTMLLexer(g_hwndEdit);
-      UpdateToolbar();
-      UpdateStatusbar(false);
-      UpdateLineNumberWidth();
-      break;
+    //case CMD_LEXHTML:
+    //  Style_SetHTMLLexer(g_hwndEdit);
+    //  UpdateToolbar();
+    //  UpdateStatusbar(false);
+    //  UpdateLineNumberWidth();
+    //  break;
 
 
-    case CMD_LEXXML:
-      Style_SetXMLLexer(g_hwndEdit);
-      UpdateToolbar();
-      UpdateStatusbar(false);
-      UpdateLineNumberWidth();
-      break;
+    //case CMD_LEXXML:
+    //  Style_SetXMLLexer(g_hwndEdit);
+    //  UpdateToolbar();
+    //  UpdateStatusbar(false);
+    //  UpdateLineNumberWidth();
+    //  break;
 
 
     case CMD_TIMESTAMPS:
@@ -5612,8 +5580,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case CMD_INITIALWINPOS:
+      SnapToWinInfoPos(hwnd,false);
+      break;
+
+    case CMD_FULLSCRWINPOS:
+      SnapToWinInfoPos(hwnd, true);
+      break;
+
     case CMD_DEFAULTWINPOS:
-      SnapToDefaultPos(hwnd);
+      _InitDefaultWndPos();
+      SnapToWinInfoPos(hwnd, false);
       break;
 
 
@@ -6986,20 +6963,20 @@ void LoadSettings()
       StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
       StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-      g_WinInfo.x = IniSectionGetInt(pIniSection, tchPosX, INT_MAX - 1);
-      g_WinInfo.y = IniSectionGetInt(pIniSection, tchPosY, INT_MAX - 1);
-      g_WinInfo.cx = IniSectionGetInt(pIniSection, tchSizeX, INT_MAX - 1);
-      g_WinInfo.cy = IniSectionGetInt(pIniSection, tchSizeY, INT_MAX - 1);
+      g_WinInfo.x = IniSectionGetInt(pIniSection, tchPosX, (INT_MAX >> 1));
+      g_WinInfo.y = IniSectionGetInt(pIniSection, tchPosY, (INT_MAX >> 1));
+      g_WinInfo.cx = IniSectionGetInt(pIniSection, tchSizeX, (INT_MAX >> 1));
+      g_WinInfo.cy = IniSectionGetInt(pIniSection, tchSizeY, (INT_MAX >> 1));
       g_WinInfo.max = IniSectionGetInt(pIniSection, tchMaximized, 0);
-      if (g_WinInfo.max) g_WinInfo.max = 1;
+      g_WinInfo.max = clampi(g_WinInfo.max, 0, 1);
       g_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, 0);
+      g_WinInfo.zoom = clampi(g_WinInfo.zoom, -10, 20);
 
-
-      if (((g_WinInfo.x  & ~CW_USEDEFAULT) == (INT_MAX - 1)) ||
-        ((g_WinInfo.y  & ~CW_USEDEFAULT) == (INT_MAX - 1)) ||
-          ((g_WinInfo.cx & ~CW_USEDEFAULT) == (INT_MAX - 1)) ||
-          ((g_WinInfo.cy & ~CW_USEDEFAULT) == (INT_MAX - 1))) {
-        g_flagDefaultPos = 2;
+      if (((g_WinInfo.x  & ~CW_USEDEFAULT) == (INT_MAX >> 1)) ||
+          ((g_WinInfo.y  & ~CW_USEDEFAULT) == (INT_MAX >> 1)) ||
+          ((g_WinInfo.cx & ~CW_USEDEFAULT) == (INT_MAX >> 1)) ||
+          ((g_WinInfo.cy & ~CW_USEDEFAULT) == (INT_MAX >> 1))) {
+        g_flagDefaultPos = 2; // std. default position (CmdLn: /pd)
       }
     }
 
@@ -7419,7 +7396,6 @@ void ParseCommandLine()
               if (itok == 4 || itok == 5) { // scan successful
                 g_flagPosParam = 1;
                 g_flagDefaultPos = 0;
-
                 if (g_WinInfo.cx < 1) g_WinInfo.cx = CW_USEDEFAULT;
                 if (g_WinInfo.cy < 1) g_WinInfo.cy = CW_USEDEFAULT;
                 if (g_WinInfo.max) g_WinInfo.max = 1;
@@ -10077,37 +10053,50 @@ bool RelaunchElevated(LPWSTR lpArgs) {
 
 //=============================================================================
 //
-//  SnapToDefaultPos()
-//
+//  SnapToWinInfoPos()
 //  Aligns Notepad3 to the default window position on the current screen
 //
-//
-void SnapToDefaultPos(HWND hwnd)
-{  
-  RECT rcOld; GetWindowRect(hwnd, &rcOld);
-
-  RECT rc; SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
-
-  g_flagDefaultPos = 2;
-  _InitWindowPosition(hwnd);
+void SnapToWinInfoPos(HWND hwnd, bool bFullWorkArea)
+{
+  static WINDOWPLACEMENT s_wndplPrev;
+  static bool s_bPrevFullWAFlag = false;
+  static bool s_bPrevShowToolbar = true;
+  static bool s_bPrevShowStatusbar = true;
 
   WINDOWPLACEMENT wndpl;
-  ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
-  wndpl.length = sizeof(WINDOWPLACEMENT);
-  wndpl.flags = WPF_ASYNCWINDOWPLACEMENT;
-  wndpl.showCmd = SW_RESTORE;
+  RECT rcCurrent; GetWindowRect(hwnd, &rcCurrent);
 
-  wndpl.rcNormalPosition.left = g_WinInfo.x - rc.left;
-  wndpl.rcNormalPosition.top = g_WinInfo.y - rc.top;
-  wndpl.rcNormalPosition.right = g_WinInfo.x - rc.left + g_WinInfo.cx;
-  wndpl.rcNormalPosition.bottom = g_WinInfo.y - rc.top + g_WinInfo.cy;
+  if (bFullWorkArea) {
+    if (s_bPrevFullWAFlag) { // snap to previous rect
+      bShowToolbar = s_bPrevShowToolbar;
+      bShowStatusbar = s_bPrevShowStatusbar;
+      wndpl = s_wndplPrev;
+    }
+    else {
+      GetWindowPlacement(hwnd, &s_wndplPrev);
+      s_bPrevShowToolbar = bShowToolbar;
+      s_bPrevShowStatusbar = bShowStatusbar;
+      bShowToolbar = bShowStatusbar = false;
+      wndpl = WindowPlacementFromInfo(hwnd, NULL);
+    }
+    s_bPrevFullWAFlag = !s_bPrevFullWAFlag;
+  }
+  else {
+    wndpl = WindowPlacementFromInfo(hwnd, &g_WinInfo);
+    s_bPrevFullWAFlag = false;
+  }
 
   if (GetDoAnimateMinimize()) {
-    DrawAnimatedRects(hwnd,IDANI_CAPTION,&rcOld,&wndpl.rcNormalPosition);
+    DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
     //OffsetRect(&wndpl.rcNormalPosition,mi.rcMonitor.left - mi.rcWork.left,mi.rcMonitor.top - mi.rcWork.top);
   }
-  SetWindowPlacement(hwnd,&wndpl);
+
+  SetWindowPlacement(hwnd, &wndpl);
   SciCall_SetZoom(g_WinInfo.zoom);
+
+  UpdateToolbar();
+  UpdateStatusbar(true);
+  UpdateLineNumberWidth();
 }
 
 

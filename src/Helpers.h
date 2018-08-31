@@ -97,7 +97,6 @@ inline int float2int(float f) { return (int)lroundf(f); }
 inline float Round10th(float f) { return (float)float2int(f * 10.0f) / 10; }
 inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) != 0); }
 
-
 // direct heap allocation
 inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags) {
   return HeapAlloc(GetProcessHeap(), (dwFlags | HEAP_GENERATE_EXCEPTIONS), numBytes);

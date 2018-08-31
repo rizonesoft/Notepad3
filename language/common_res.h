@@ -312,7 +312,7 @@
 #define CMD_JUMP2SELEND                 20036
 #define CMD_COPYPATHNAME                20037
 #define CMD_COPYWINPOS                  20038
-#define CMD_DEFAULTWINPOS               20039
+#define CMD_INITIALWINPOS               20039
 #define CMD_OPENINIFILE                 20040
 #define CMD_CTRLENTER                   20041
 #define CMD_OPEN_HYPERLINK              20042
@@ -323,6 +323,8 @@
 #define CMD_TAB                         20047
 #define CMD_BACKTAB                     20048
 #define CMD_VK_INSERT                   20049
+#define CMD_FULLSCRWINPOS               20050
+#define CMD_DEFAULTWINPOS               20051
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001

@@ -2647,7 +2647,76 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   }
   return wi;
 }
+// ----------------------------------------------------------------------------
 
+
+//=============================================================================
+//
+//  FitIntoMonitorWorkArea()
+//
+//
+RECT FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo)
+{
+  MONITORINFO mi;
+  ZeroMemory(&mi, sizeof(MONITORINFO));
+  mi.cbSize = sizeof(MONITORINFO);
+  HMONITOR const hMonitor = MonitorFromRect(pRect, MONITOR_DEFAULTTONEAREST);
+  GetMonitorInfo(hMonitor, &mi);
+
+  if (pWinInfo) {
+    pWinInfo->x += (mi.rcWork.left - mi.rcMonitor.left);
+    pWinInfo->y += (mi.rcWork.top - mi.rcMonitor.top);
+
+    if (pWinInfo->x < mi.rcWork.left) { pWinInfo->x = mi.rcWork.left; }
+    if (pWinInfo->y < mi.rcWork.top) { pWinInfo->y = mi.rcWork.top; }
+    if ((pWinInfo->x + pWinInfo->cx) > mi.rcWork.right) {
+      pWinInfo->x -= (pWinInfo->x + pWinInfo->cx - mi.rcWork.right);
+      if (pWinInfo->x < mi.rcWork.left) { pWinInfo->x = mi.rcWork.left; }
+      if ((pWinInfo->x + pWinInfo->cx) > mi.rcWork.right) { pWinInfo->cx = mi.rcWork.right - pWinInfo->x; }
+    }
+    if ((pWinInfo->y + pWinInfo->cy) > mi.rcWork.bottom) {
+      pWinInfo->y -= (pWinInfo->y + pWinInfo->cy - mi.rcWork.bottom);
+      if (pWinInfo->y < mi.rcWork.top) { pWinInfo->y = mi.rcWork.top; }
+      if ((pWinInfo->y + pWinInfo->cy) > mi.rcWork.bottom) { pWinInfo->cy = mi.rcWork.bottom - pWinInfo->y; }
+    }
+    SetRect(pRect, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy);
+  }
+  
+  RECT rcPlacement;
+  rcPlacement.left = mi.rcMonitor.left;
+  rcPlacement.right = (mi.rcMonitor.left + (mi.rcWork.right - mi.rcWork.left));
+  rcPlacement.top = mi.rcMonitor.top;
+  rcPlacement.bottom = (mi.rcMonitor.top + (mi.rcWork.bottom - mi.rcWork.top));
+  return rcPlacement;
+}
+// ----------------------------------------------------------------------------
+
+
+//=============================================================================
+//
+//  WindowPlacementFromInfo()
+//
+//
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* const pWinInfo)
+{
+  WINDOWPLACEMENT wndpl;
+  ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
+  wndpl.length = sizeof(WINDOWPLACEMENT);
+  wndpl.flags = WPF_ASYNCWINDOWPLACEMENT;
+  wndpl.showCmd = SW_RESTORE;
+  if (pWinInfo) {
+    wndpl.rcNormalPosition.left = pWinInfo->x;
+    wndpl.rcNormalPosition.top = pWinInfo->y;
+    wndpl.rcNormalPosition.right = pWinInfo->x + pWinInfo->cx;
+    wndpl.rcNormalPosition.bottom = pWinInfo->y + pWinInfo->cy;
+    if (pWinInfo->max) { wndpl.flags &= WPF_RESTORETOMAXIMIZED; }
+  }
+  else {
+    RECT rc; GetWindowRect(hwnd, &rc);
+    wndpl.rcNormalPosition = FitIntoMonitorWorkArea(&rc, NULL);
+  }
+  return wndpl;
+}
 
 
 //=============================================================================
@@ -3050,41 +3119,6 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 
   SetWindowPos(hDlg, NULL, max(xMin, min(xMax, x)), max(yMin, min(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
-
-/*
-
-... only if we are working with nonstandard dialog boxes ...
-
-//=============================================================================
-//
-//  SnapToDefaultButton()
-//
-// Why doesn't the "Automatically move pointer to the default button in a dialog box"
-// work for nonstandard dialog boxes, and how do I add it to my own nonstandard dialog boxes?
-// https://blogs.msdn.microsoft.com/oldnewthing/20130826-00/?p=3413/
-//
-void SnapToDefaultButton(HWND hwndBox)
-{
-bool bSnapToDefButton = false;
-if (SystemParametersInfo(SPI_GETSNAPTODEFBUTTON, 0, &bSnapToDefButton, 0) && bSnapToDefButton) {
-// get child window at the top of the Z order.
-// for all our MessageBoxs it's the OK or YES button or NULL.
-HWND btn = GetWindow(hwndBox, GW_CHILD);
-if (btn != NULL) {
-WCHAR className[32] = L"";
-GetClassName(btn, className, COUNTOF(className));
-if (lstrcmpi(className, L"Button") == 0) {
-RECT rect;
-int x, y;
-GetWindowRect(btn, &rect);
-x = rect.left + (rect.right - rect.left) / 2;
-y = rect.top + (rect.bottom - rect.top) / 2;
-SetCursorPos(x, y);
-}
-}
-}
-}
-*/
 
 
 //=============================================================================
