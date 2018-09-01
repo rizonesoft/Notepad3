@@ -988,16 +988,28 @@ void EndWaitCursor()
 //  _InitWindowPosition()
 //
 //
-static void __fastcall _InitWindowPosition()
-{
-  int const iBdrOff = IsWin10() ? 8 : 16;
+#define _BORDEROFFSET (IsWin10() ? 8 : 16)
 
-  RECT rcMon = RectFromWinInfo(&g_WinInfo);
+
+static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
+{
+  RECT rcMon = RectFromWinInfo(pWinInfo);
   SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
 
   WININFO wiWorkArea = INIT_WININFO;
   FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
   RECT const rc = RectFromWinInfo(&wiWorkArea); // use Work Area as RECT
+
+  pWinInfo->y = rc.top + _BORDEROFFSET;
+  pWinInfo->cy = rc.bottom - rc.top - (_BORDEROFFSET * 2);
+  pWinInfo->cx = (rc.right - rc.left) / 2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
+  pWinInfo->x = (g_flagDefaultPos == 3) ? rc.left + _BORDEROFFSET : rc.right - g_WinInfo.cx - _BORDEROFFSET;
+}
+// ----------------------------------------------------------------------------
+
+
+static void __fastcall _InitWindowPosition()
+{
 
   if (g_flagDefaultPos == 1) 
   {
@@ -1007,6 +1019,13 @@ static void __fastcall _InitWindowPosition()
   }
   else if (g_flagDefaultPos >= 4) 
   {
+    RECT rcMon = RectFromWinInfo(&g_WinInfo);
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
+
+    WININFO wiWorkArea = INIT_WININFO;
+    FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
+    RECT const rc = RectFromWinInfo(&wiWorkArea); // use Work Area as RECT
+
     if (g_flagDefaultPos & 8)
       g_WinInfo.x = (rc.right - rc.left) / 2;
     else
@@ -1038,15 +1057,16 @@ static void __fastcall _InitWindowPosition()
   }
   else if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
   {
-    g_WinInfo.y = rc.top + iBdrOff;
-    g_WinInfo.cy = rc.bottom - rc.top - (iBdrOff * 2);
-    g_WinInfo.cx = (rc.right - rc.left) / 2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
-    g_WinInfo.x = (g_flagDefaultPos == 3) ? rc.left + 16 : rc.right - g_WinInfo.cx - 16;
+    _InitDefaultWndPos(&g_WinInfo);
   }
   else { // restore window, move upper left corner to Work Area 
     
-    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = iBdrOff * 2; // really small
+    RECT rcMon = RectFromWinInfo(&g_WinInfo);
+    SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
+
+    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = _BORDEROFFSET * 2; // really small
     FitIntoMonitorWorkArea(&rcMon, &wiWin, false);
+
     g_WinInfo.x = wiWin.x;
     g_WinInfo.y = wiWin.y;
 
@@ -5568,17 +5588,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_INITIALWINPOS:
-      SnapToWinInfoPos(hwnd,false);
+      SnapToWinInfoPos(hwnd, &g_WinInfo, false);
       break;
 
     case CMD_FULLSCRWINPOS:
-      SnapToWinInfoPos(hwnd, true);
+      SnapToWinInfoPos(hwnd, &g_WinInfo, true);
       break;
 
     case CMD_DEFAULTWINPOS:
-      g_flagDefaultPos = 2;
-      _InitWindowPosition();
-      SnapToWinInfoPos(hwnd, false);
+      {
+        WININFO winfo = g_WinInfo;
+        _InitDefaultWndPos(&winfo);
+        SnapToWinInfoPos(hwnd, &winfo, false);
+      }
       break;
 
 
@@ -10044,7 +10066,7 @@ bool RelaunchElevated(LPWSTR lpArgs) {
 //  SnapToWinInfoPos()
 //  Aligns Notepad3 to the default window position on the current screen
 //
-void SnapToWinInfoPos(HWND hwnd, bool bFullWorkArea)
+void SnapToWinInfoPos(HWND hwnd, const WININFO* const pWinInfo, bool bFullWorkArea)
 {
   static WINDOWPLACEMENT s_wndplPrev;
   static bool s_bPrevFullWAFlag = false;
@@ -10070,7 +10092,11 @@ void SnapToWinInfoPos(HWND hwnd, bool bFullWorkArea)
     s_bPrevFullWAFlag = !s_bPrevFullWAFlag;
   }
   else {
-    wndpl = WindowPlacementFromInfo(hwnd, &g_WinInfo);
+    wndpl = WindowPlacementFromInfo(hwnd, pWinInfo);
+    if (s_bPrevFullWAFlag) {
+      bShowToolbar = s_bPrevShowToolbar;
+      bShowStatusbar = s_bPrevShowStatusbar;
+    }
     s_bPrevFullWAFlag = false;
   }
 
@@ -10080,7 +10106,7 @@ void SnapToWinInfoPos(HWND hwnd, bool bFullWorkArea)
   }
 
   SetWindowPlacement(hwnd, &wndpl);
-  SciCall_SetZoom(g_WinInfo.zoom);
+  SciCall_SetZoom(pWinInfo->zoom);
 
   UpdateToolbar();
   UpdateStatusbar(true);

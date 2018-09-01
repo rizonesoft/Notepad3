@@ -2748,6 +2748,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* const pWinInfo
   else {
     RECT rc; GetWindowRect(hwnd, &rc);
     FitIntoMonitorWorkArea(&rc, &winfo, true);
+    // TODO: maximize ?
   }
   wndpl.rcNormalPosition = RectFromWinInfo(&winfo);
   return wndpl;

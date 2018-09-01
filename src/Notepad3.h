@@ -116,7 +116,7 @@ void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPWSTR);
-void SnapToWinInfoPos(HWND,bool);
+void SnapToWinInfoPos(HWND, const WININFO* const, bool);
 void ShowNotifyIcon(HWND,bool);
 void SetNotifyIconTitle(HWND);
 void InstallFileWatching(LPCWSTR);
