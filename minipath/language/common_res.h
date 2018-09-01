@@ -105,11 +105,13 @@
 #define IDC_TRANSL_AUTH                 114
 
 #define IDR_MAINWND48                   200
+
 #define IDS_APPTITLE                    10000
 #define IDS_NUMFILES                    10001
 #define IDS_NUMFILES2                   10002
 #define IDS_SAVEFILE                    10003
 #define IDS_OPEN_FILE_WITH              10004
+
 #define IDS_SEARCHEXE                   11000
 #define IDS_GETQUICKVIEWER              11001
 #define IDS_GETTARGET                   11002
@@ -122,6 +124,7 @@
 #define IDS_COPYMOVE                    11009
 #define IDS_CREATELINK                  11010
 #define IDS_SAVESETTINGS                11011
+
 #define IDM_FILE_OPEN                   40001
 #define IDM_FILE_OPENNEW                40002
 #define IDM_FILE_RUN                    40003
@@ -141,6 +144,7 @@
 #define IDM_FILE_CHANGEDIR              40017
 #define IDM_FILE_PROPERTIES             40018
 #define IDM_FILE_DRIVEPROP              40019
+
 #define IDM_VIEW_NEWWINDOW              40201
 #define IDM_VIEW_FOLDERS                40202
 #define IDM_VIEW_FILES                  40203
@@ -157,14 +161,17 @@
 #define IDM_VIEW_SAVESETTINGS           40214
 #define IDM_VIEW_FINDTARGET             40215
 #define IDM_VIEW_OPTIONS                40216
+
 #define IDM_SORT_NAME                   40301
 #define IDM_SORT_SIZE                   40302
 #define IDM_SORT_TYPE                   40303
 #define IDM_SORT_DATE                   40304
 #define IDM_SORT_REVERSE                40305
+
 #define IDM_POP_COPYNAME                40501
 #define IDM_TRAY_RESTORE                40601
 #define IDM_TRAY_EXIT                   40602
+
 #define ACC_ESCAPE                      41001
 #define ACC_NEXTCTL                     41002
 #define ACC_PREVCTL                     41003
@@ -176,6 +183,7 @@
 #define ACC_SNAPTOTARGET                41009
 #define ACC_DEFAULTWINPOS               41010
 #define ACC_SELECTINIFILE               41011
+
 #define IDT_HISTORY_BACK                42001
 #define IDT_HISTORY_FORWARD             42002
 #define IDT_UPDIR                       42003
@@ -190,6 +198,7 @@
 #define IDT_FILE_DELETE                 42012
 #define IDT_FILE_DELETE2                42013
 #define IDT_VIEW_FILTER                 42014
+
 #define IDS_ERR_CD                      50000
 #define IDS_ERR_FILE                    50001
 #define IDS_ERR_NEW                     50002

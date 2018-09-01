@@ -13,25 +13,28 @@
 *                                                                             *
 *******************************************************************************/
 
-class FAR CDropSource : public IDropSource
-{
+#ifndef METAPATH_DROPSOURCE_H_
+#define METAPATH_DROPSOURCE_H_
 
+class CDropSource : public IDropSource {
 public:
-  CDropSource();
+	CDropSource() noexcept;
+	virtual ~CDropSource() = default;
 
-  /* IUnknown methods */
-  STDMETHOD(QueryInterface)(REFIID riid,void FAR* FAR* ppvObj);
-  STDMETHOD_(ULONG,AddRef)();
-  STDMETHOD_(ULONG,Release)();
+	/* IUnknown methods */
+	STDMETHODIMP QueryInterface(REFIID riid, PVOID *ppv) noexcept override;
+	STDMETHODIMP_(ULONG)AddRef() noexcept override;
+	STDMETHODIMP_(ULONG)Release() noexcept override;
 
-  /* IDropSource methods */
-  STDMETHOD(QueryContinueDrag)(BOOL fEscapePressed,DWORD grfKeyState);
-  STDMETHOD(GiveFeedback)(DWORD dwEffect);
+	/* IDropSource methods */
+	STDMETHODIMP QueryContinueDrag(BOOL fEsc, DWORD grfKeyState) noexcept override;
+	STDMETHODIMP GiveFeedback(DWORD) noexcept override;
 
 private:
-  ULONG m_refs;
-
+	ULONG m_refs;
 };
+
+#endif // METAPATH_DROPSOURCE_H_
 
 
 // End of Dropsource.h

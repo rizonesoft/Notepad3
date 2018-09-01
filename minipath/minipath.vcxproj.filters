@@ -25,13 +25,13 @@
     <ClCompile Include="src\Dlapi.c">
       <Filter>C/C++ Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dropsource.cpp">
-      <Filter>C/C++ Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Helpers.c">
       <Filter>C/C++ Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\minipath.c">
+      <Filter>C/C++ Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DropSource.cpp">
       <Filter>C/C++ Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -40,9 +40,6 @@
       <Filter>H Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Dlapi.h">
-      <Filter>H Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Dropsource.h">
       <Filter>H Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Helpers.h">
@@ -58,6 +55,9 @@
       <Filter>H Source Files</Filter>
     </ClInclude>
     <ClInclude Include="language\common_res.h">
+      <Filter>H Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DropSource.h">
       <Filter>H Source Files</Filter>
     </ClInclude>
   </ItemGroup>

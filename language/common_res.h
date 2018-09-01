@@ -312,7 +312,7 @@
 #define CMD_JUMP2SELEND                 20036
 #define CMD_COPYPATHNAME                20037
 #define CMD_COPYWINPOS                  20038
-#define CMD_DEFAULTWINPOS               20039
+#define CMD_INITIALWINPOS               20039
 #define CMD_OPENINIFILE                 20040
 #define CMD_CTRLENTER                   20041
 #define CMD_OPEN_HYPERLINK              20042
@@ -323,6 +323,8 @@
 #define CMD_TAB                         20047
 #define CMD_BACKTAB                     20048
 #define CMD_VK_INSERT                   20049
+#define CMD_FULLSCRWINPOS               20050
+#define CMD_DEFAULTWINPOS               20051
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
@@ -346,6 +348,7 @@
 #define IDM_FILE_MANAGEFAV              40019
 #define IDM_FILE_RECENT                 40020
 #define IDM_FILE_EXIT                   40021
+
 #define IDM_ENCODING_ANSI               40100
 #define IDM_ENCODING_UNICODE            40101
 #define IDM_ENCODING_UNICODEREV         40102
@@ -366,6 +369,7 @@
 #define BME_EDIT_BOOKMARKNEXT           40255
 #define BME_EDIT_BOOKMARKCLEAR          40256
 #define BME_EDIT_BOOKMARKPREV           40257
+
 #define IDM_EDIT_UNDO                   40300
 #define IDM_EDIT_REDO                   40301
 #define IDM_EDIT_CUT                    40302
@@ -444,6 +448,7 @@
 #define IDM_EDIT_REMOVEDUPLICATELINES   40375
 #define IDM_EDIT_REMOVEEMPTYLINES       40376
 #define IDM_EDIT_MERGEEMPTYLINES        40377
+
 #define IDM_VIEW_SCHEME                 40400
 #define IDM_VIEW_USE2NDDEFAULT          40401
 #define IDM_VIEW_SCHEMECONFIG           40402
@@ -513,17 +518,17 @@
 #define IDM_SET_BIDIRECTIONAL_NONE      40466
 #define IDM_SET_BIDIRECTIONAL_L2R       40467
 #define IDM_SET_BIDIRECTIONAL_R2L       40468
+
 #define IDM_HELP_ABOUT                  40500
 #define IDM_HELP_CMD                    40501
 #define IDM_HELP_ONLINEDOCUMENTATION    40502
+
 #define IDM_TRAY_RESTORE                40600
 #define IDM_TRAY_EXIT                   40601
 #define IDM_SETPASS                     40602
 #define IDM_HELP_ADMINEXE               40603
 #define IDM_HELP_UPDATEWEBSITE          40604
 #define IDM_EDIT_INSERT_GUID            40605
-
-
 
 
 #define IDS_ENC_ANSI                    61000

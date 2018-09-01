@@ -97,7 +97,6 @@ inline int float2int(float f) { return (int)lroundf(f); }
 inline float Round10th(float f) { return (float)float2int(f * 10.0f) / 10; }
 inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) != 0); }
 
-
 // direct heap allocation
 inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags) {
   return HeapAlloc(GetProcessHeap(), (dwFlags | HEAP_GENERATE_EXCEPTIONS), numBytes);
@@ -186,6 +185,8 @@ bool SetClipboardTextW(HWND, LPCWSTR);
 UINT GetCurrentDPI(HWND hwnd);
 UINT GetCurrentPPI(HWND hwnd);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
+#define ScaleIntToCurrentDPI(val) MulDiv((val), g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI)
+inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * g_uCurrentDPI) / (float)USER_DEFAULT_SCREEN_DPI); }
 #define ScaleIntFontSize(val) MulDiv((val), g_uCurrentDPI, g_uCurrentPPI)
 inline int ScaleFontSize(float fSize) { return float2int((fSize * g_uCurrentDPI) / (float)g_uCurrentPPI); }
 inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * g_uCurrentDPI) / (float)g_uCurrentPPI) * 10; }

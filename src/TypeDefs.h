@@ -63,6 +63,15 @@ typedef struct _wi
 
 #define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0 }
 
+
+inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
+  RECT rc; SetRect(&rc, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy); return rc;
+}
+
+// ----------------------------------------------------------------------------
+
+
+
 // --------------------------------------------------------------------------
 
 typedef enum BufferSizes

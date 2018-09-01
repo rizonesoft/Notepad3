@@ -881,7 +881,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             else if (iCmd == IDM_TRAY_EXIT) {
               ShowNotifyIcon(hwnd,FALSE);
-              SendMessage(hwnd,WM_CLOSE,0,0);
+              PostMessage(hwnd,WM_CLOSE,0,0);
             }
           }
           return TRUE;
@@ -2194,7 +2194,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       else if (iEscFunction == 1)
         SendMessage(hwnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
       else if (iEscFunction == 2)
-        SendMessage(hwnd,WM_CLOSE,0,0);
+        PostMessage(hwnd,WM_CLOSE,0,0);
       break;
 
 

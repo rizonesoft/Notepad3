@@ -1679,7 +1679,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			break;
 
 		case WM_IME_STARTCOMPOSITION: 	// dbcs
-			if (KoreanIME() || imeInteraction == imeInline) {
+			if (imeInteraction == imeInline) {
 				return 0;
 			} else {
 				ImeStartComposition();
@@ -1691,7 +1691,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 		case WM_IME_COMPOSITION:
-			if (KoreanIME() || imeInteraction == imeInline) {
+			if (imeInteraction == imeInline) {
 				return HandleCompositionInline(wParam, lParam);
 			} else {
 				return HandleCompositionWindowed(wParam, lParam);
@@ -1730,7 +1730,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			return 0;
 
 		case WM_IME_SETCONTEXT:
-			if (KoreanIME() || imeInteraction == imeInline) {
+			if (imeInteraction == imeInline) {
 				if (wParam) {
 					LPARAM NoImeWin = lParam;
 					NoImeWin = NoImeWin & (~ISC_SHOWUICOMPOSITIONWINDOW);

@@ -2619,11 +2619,46 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
 }
 
 
+//=============================================================================
+//
+//  GetMonitorInfoFromRect()
+//
+static void __fastcall GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
+{
+  if (hMonitorInfo) {
+    HMONITOR const hMonitor = MonitorFromRect(rc, MONITOR_DEFAULTTONEAREST);
+    ZeroMemory(hMonitorInfo, sizeof(MONITORINFO));
+    hMonitorInfo->cbSize = sizeof(MONITORINFO);
+    GetMonitorInfo(hMonitor, hMonitorInfo);
+  }
+}
+// ----------------------------------------------------------------------------
+
+
+
+//=============================================================================
+//
+//  WinInfoToScreen()
+//
+void WinInfoToScreen(WININFO* pWinInfo)
+{
+  if (pWinInfo) {
+    MONITORINFO mi;
+    RECT rc = RectFromWinInfo(pWinInfo);
+    GetMonitorInfoFromRect(&rc, &mi);
+
+    WININFO winfo = *pWinInfo;
+    winfo.x += (mi.rcWork.left - mi.rcMonitor.left);
+    winfo.y += (mi.rcWork.top - mi.rcMonitor.top);
+    
+    *pWinInfo = winfo;
+  }
+}
+
 
 //=============================================================================
 //
 //  GetMyWindowPlacement()
-//
 //
 WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 {
@@ -2639,15 +2674,85 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
   wi.zoom = SciCall_GetZoom();
 
-  if (hMonitorInfo)
-  {
-    HMONITOR hMonitor = MonitorFromRect(&wndpl.rcNormalPosition, MONITOR_DEFAULTTONEAREST);
-    hMonitorInfo->cbSize = sizeof(MONITORINFO);
-    GetMonitorInfo(hMonitor, hMonitorInfo);
-  }
+  GetMonitorInfoFromRect(&(wndpl.rcNormalPosition), hMonitorInfo);
+
   return wi;
 }
+// ----------------------------------------------------------------------------
 
+
+//=============================================================================
+//
+//  FitIntoMonitorWorkArea()
+//
+//
+void FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
+{
+  MONITORINFO mi;
+  GetMonitorInfoFromRect(pRect, &mi);
+
+  if (bFullWorkArea) {
+    SetRect(pRect, mi.rcWork.left, mi.rcWork.top, mi.rcWork.right, mi.rcWork.bottom);
+    // monitor coord -> work area coord
+    pWinInfo->x = mi.rcWork.left - (mi.rcWork.left - mi.rcMonitor.left);
+    pWinInfo->y = mi.rcWork.top - (mi.rcWork.top - mi.rcMonitor.top);
+    pWinInfo->cx = (mi.rcWork.right - mi.rcWork.left);
+    pWinInfo->cy = (mi.rcWork.bottom - mi.rcWork.top);
+  }
+  else {
+    WININFO wi = *pWinInfo;
+    WinInfoToScreen(&wi);
+    // fit into area
+    if (wi.x < mi.rcWork.left) { wi.x = mi.rcWork.left; }
+    if (wi.y < mi.rcWork.top) { wi.y = mi.rcWork.top; }
+    if ((wi.x + wi.cx) > mi.rcWork.right) {
+      wi.x -= (wi.x + wi.cx - mi.rcWork.right);
+      if (wi.x < mi.rcWork.left) { wi.x = mi.rcWork.left; }
+      if ((wi.x + wi.cx) > mi.rcWork.right) { wi.cx = mi.rcWork.right - wi.x; }
+    }
+    if ((wi.y + wi.cy) > mi.rcWork.bottom) {
+      wi.y -= (wi.y + wi.cy - mi.rcWork.bottom);
+      if (wi.y < mi.rcWork.top) { wi.y = mi.rcWork.top; }
+      if ((wi.y + wi.cy) > mi.rcWork.bottom) { wi.cy = mi.rcWork.bottom - wi.y; }
+    }
+    SetRect(pRect, wi.x, wi.y, wi.x + wi.cx, wi.y + wi.cy);
+    // monitor coord -> work area coord
+    pWinInfo->x = wi.x - (mi.rcWork.left - mi.rcMonitor.left);
+    pWinInfo->y = wi.y - (mi.rcWork.top - mi.rcMonitor.top);
+    pWinInfo->cx = wi.cx;
+    pWinInfo->cy = wi.cy;
+  }
+}
+// ----------------------------------------------------------------------------
+
+
+//=============================================================================
+//
+//  WindowPlacementFromInfo()
+//
+//
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* const pWinInfo)
+{
+  WINDOWPLACEMENT wndpl;
+  ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
+  wndpl.length = sizeof(WINDOWPLACEMENT);
+  wndpl.flags = WPF_ASYNCWINDOWPLACEMENT;
+  wndpl.showCmd = SW_RESTORE;
+  WININFO winfo = INIT_WININFO;
+  if (pWinInfo) {
+    RECT rc = RectFromWinInfo(pWinInfo);
+    winfo = *pWinInfo;
+    FitIntoMonitorWorkArea(&rc, &winfo, false);
+    if (pWinInfo->max) { wndpl.flags &= WPF_RESTORETOMAXIMIZED; }
+  }
+  else {
+    RECT rc; GetWindowRect(hwnd, &rc);
+    FitIntoMonitorWorkArea(&rc, &winfo, true);
+    // TODO: maximize ?
+  }
+  wndpl.rcNormalPosition = RectFromWinInfo(&winfo);
+  return wndpl;
+}
 
 
 //=============================================================================
@@ -3050,41 +3155,6 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 
   SetWindowPos(hDlg, NULL, max(xMin, min(xMax, x)), max(yMin, min(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
-
-/*
-
-... only if we are working with nonstandard dialog boxes ...
-
-//=============================================================================
-//
-//  SnapToDefaultButton()
-//
-// Why doesn't the "Automatically move pointer to the default button in a dialog box"
-// work for nonstandard dialog boxes, and how do I add it to my own nonstandard dialog boxes?
-// https://blogs.msdn.microsoft.com/oldnewthing/20130826-00/?p=3413/
-//
-void SnapToDefaultButton(HWND hwndBox)
-{
-bool bSnapToDefButton = false;
-if (SystemParametersInfo(SPI_GETSNAPTODEFBUTTON, 0, &bSnapToDefButton, 0) && bSnapToDefButton) {
-// get child window at the top of the Z order.
-// for all our MessageBoxs it's the OK or YES button or NULL.
-HWND btn = GetWindow(hwndBox, GW_CHILD);
-if (btn != NULL) {
-WCHAR className[32] = L"";
-GetClassName(btn, className, COUNTOF(className));
-if (lstrcmpi(className, L"Button") == 0) {
-RECT rect;
-int x, y;
-GetWindowRect(btn, &rect);
-x = rect.left + (rect.right - rect.left) / 2;
-y = rect.top + (rect.bottom - rect.top) / 2;
-SetCursorPos(x, y);
-}
-}
-}
-}
-*/
 
 
 //=============================================================================
