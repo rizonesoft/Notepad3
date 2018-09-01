@@ -37,8 +37,9 @@ bool SelectEncodingDlg(HWND,int *);
 bool RecodeDlg(HWND,int *);
 bool SelectDefLineEndingDlg(HWND,int *);
 
+void WinInfoToScreen(WININFO*);
 WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
-RECT FitIntoMonitorWorkArea(RECT*, WININFO*, bool);
+void FitIntoMonitorWorkArea(RECT*, WININFO*, bool);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND, const WININFO* const);
 
 void DialogNewWindow(HWND,bool,bool);

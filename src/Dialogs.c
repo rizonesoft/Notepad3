@@ -2619,11 +2619,46 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
 }
 
 
+//=============================================================================
+//
+//  GetMonitorInfoFromRect()
+//
+static void __fastcall GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
+{
+  if (hMonitorInfo) {
+    HMONITOR const hMonitor = MonitorFromRect(rc, MONITOR_DEFAULTTONEAREST);
+    ZeroMemory(hMonitorInfo, sizeof(MONITORINFO));
+    hMonitorInfo->cbSize = sizeof(MONITORINFO);
+    GetMonitorInfo(hMonitor, hMonitorInfo);
+  }
+}
+// ----------------------------------------------------------------------------
+
+
+
+//=============================================================================
+//
+//  WinInfoToScreen()
+//
+void WinInfoToScreen(WININFO* pWinInfo)
+{
+  if (pWinInfo) {
+    MONITORINFO mi;
+    RECT rc = RectFromWinInfo(pWinInfo);
+    GetMonitorInfoFromRect(&rc, &mi);
+
+    WININFO winfo = *pWinInfo;
+    winfo.x += (mi.rcWork.left - mi.rcMonitor.left);
+    winfo.y += (mi.rcWork.top - mi.rcMonitor.top);
+    
+    *pWinInfo = winfo;
+  }
+}
+
 
 //=============================================================================
 //
 //  GetMyWindowPlacement()
-//
 //
 WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 {
@@ -2639,12 +2674,8 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
   wi.zoom = SciCall_GetZoom();
 
-  if (hMonitorInfo)
-  {
-    HMONITOR hMonitor = MonitorFromRect(&(wndpl.rcNormalPosition), MONITOR_DEFAULTTONEAREST);
-    hMonitorInfo->cbSize = sizeof(MONITORINFO);
-    GetMonitorInfo(hMonitor, hMonitorInfo);
-  }
+  GetMonitorInfoFromRect(&(wndpl.rcNormalPosition), hMonitorInfo);
+
   return wi;
 }
 // ----------------------------------------------------------------------------
@@ -2655,13 +2686,10 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 //  FitIntoMonitorWorkArea()
 //
 //
-RECT FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
+void FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
 {
   MONITORINFO mi;
-  ZeroMemory(&mi, sizeof(MONITORINFO));
-  mi.cbSize = sizeof(MONITORINFO);
-  HMONITOR const hMonitor = MonitorFromRect(pRect, MONITOR_DEFAULTTONEAREST);
-  GetMonitorInfo(hMonitor, &mi);
+  GetMonitorInfoFromRect(pRect, &mi);
 
   if (bFullWorkArea) {
     SetRect(pRect, mi.rcWork.left, mi.rcWork.top, mi.rcWork.right, mi.rcWork.bottom);
@@ -2673,9 +2701,7 @@ RECT FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
   }
   else {
     WININFO wi = *pWinInfo;
-    // work area coord -> monitor coord
-    wi.x += (mi.rcWork.left - mi.rcMonitor.left);
-    wi.y += (mi.rcWork.top - mi.rcMonitor.top);
+    WinInfoToScreen(&wi);
     // fit into area
     if (wi.x < mi.rcWork.left) { wi.x = mi.rcWork.left; }
     if (wi.y < mi.rcWork.top) { wi.y = mi.rcWork.top; }
@@ -2696,8 +2722,6 @@ RECT FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
     pWinInfo->cx = wi.cx;
     pWinInfo->cy = wi.cy;
   }
-
-  return mi.rcWork;
 }
 // ----------------------------------------------------------------------------
 

@@ -65,7 +65,6 @@ extern HMODULE   g_hLngResContainer;
 extern HWND    g_hwndMain;
 extern HWND    g_hwndStatus;
 extern HWND    g_hwndDlgFindReplace;
-extern WININFO g_WinInfo;
 extern HICON   g_hDlgIcon;
 
 //extern LPMALLOC  g_lpMalloc;

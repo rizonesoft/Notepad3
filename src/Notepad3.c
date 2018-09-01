@@ -990,12 +990,14 @@ void EndWaitCursor()
 //
 static void __fastcall _InitWindowPosition()
 {
-  RECT rc = RectFromWinInfo(&g_WinInfo);
+  int const iBdrOff = IsWin10() ? 8 : 16;
 
-  SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
-  WININFO winfo = INIT_WININFO;
-  FitIntoMonitorWorkArea(&rc, &winfo, true); // get work area
-  rc = RectFromWinInfo(&winfo);
+  RECT rcMon = RectFromWinInfo(&g_WinInfo);
+  SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
+
+  WININFO wiWorkArea = INIT_WININFO;
+  FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
+  RECT const rc = RectFromWinInfo(&wiWorkArea); // use Work Area as RECT
 
   if (g_flagDefaultPos == 1) 
   {
@@ -1036,23 +1038,20 @@ static void __fastcall _InitWindowPosition()
   }
   else if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
   {
-    g_WinInfo.y = rc.top + 16;
-    g_WinInfo.cy = rc.bottom - rc.top - 32;
-    g_WinInfo.cx = (rc.right - rc.left)/2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
+    g_WinInfo.y = rc.top + iBdrOff;
+    g_WinInfo.cy = rc.bottom - rc.top - (iBdrOff * 2);
+    g_WinInfo.cx = (rc.right - rc.left) / 2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
     g_WinInfo.x = (g_flagDefaultPos == 3) ? rc.left + 16 : rc.right - g_WinInfo.cx - 16;
   }
-  else {  // fit window into working area of current monitor
+  else { // restore window, move upper left corner to Work Area 
     
-    FitIntoMonitorWorkArea(&rc, &g_WinInfo, false);
-    //rc = RectFromWinInfo(&g_WinInfo);
-    //RECT rc2;
-    //if (!IntersectRect(&rc2, &rc, &rcWork)) {
-    //  g_WinInfo.y = rcWork.top + 16;
-    //  g_WinInfo.cy = rcWork.bottom - rcWork.top - 32;
-    //  g_WinInfo.cx = min(rcWork.right - rcWork.left - 32, g_WinInfo.cy);
-    //  g_WinInfo.x = rcWork.right - g_WinInfo.cx - 16;
-    //}
+    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = iBdrOff * 2; // really small
+    FitIntoMonitorWorkArea(&rcMon, &wiWin, false);
+    g_WinInfo.x = wiWin.x;
+    g_WinInfo.y = wiWin.y;
+
   }
+
   g_WinCurrentWidth = g_WinInfo.cx;
 }
 
@@ -1065,21 +1064,22 @@ static void __fastcall _InitWindowPosition()
 HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
+ 
   _InitWindowPosition();
-
+  
   // get monitor coordinates from g_WinInfo
-  RECT rc = RectFromWinInfo(&g_WinInfo);
-  FitIntoMonitorWorkArea(&rc, &g_WinInfo, false);
+  WININFO srcninfo = g_WinInfo;
+  WinInfoToScreen(&srcninfo);
 
   g_hwndMain = CreateWindowEx(
                0,
                wchWndClass,
-               L"" APPNAME,
+               TEXT(APPNAME),
                WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-               rc.left,
-               rc.top,
-               rc.right - rc.left,
-               rc.bottom - rc.top,
+               srcninfo.x,
+               srcninfo.y,
+               srcninfo.cx,
+               srcninfo.cy,
                NULL,
                NULL,
                hInstance,
