@@ -780,7 +780,7 @@ void SurfaceGDI::RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesir
 namespace {
 
 // Plot a point into a DWORD buffer symmetrically to all 4 quadrants
-void AllFour(DWORD *pixels, int width, int height, int x, int y, DWORD val) {
+void __forceinline AllFour(DWORD *pixels, int width, int height, int x, int y, DWORD val) {
 	pixels[y*width+x] = val;
 	pixels[y*width+width-1-x] = val;
 	pixels[(height-1-y)*width+x] = val;

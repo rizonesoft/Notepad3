@@ -2641,7 +2641,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 
   if (hMonitorInfo)
   {
-    HMONITOR hMonitor = MonitorFromRect(&wndpl.rcNormalPosition, MONITOR_DEFAULTTONEAREST);
+    HMONITOR hMonitor = MonitorFromRect(&(wndpl.rcNormalPosition), MONITOR_DEFAULTTONEAREST);
     hMonitorInfo->cbSize = sizeof(MONITORINFO);
     GetMonitorInfo(hMonitor, hMonitorInfo);
   }
@@ -2655,7 +2655,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 //  FitIntoMonitorWorkArea()
 //
 //
-RECT FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo)
+RECT FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
 {
   MONITORINFO mi;
   ZeroMemory(&mi, sizeof(MONITORINFO));
@@ -2663,31 +2663,41 @@ RECT FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo)
   HMONITOR const hMonitor = MonitorFromRect(pRect, MONITOR_DEFAULTTONEAREST);
   GetMonitorInfo(hMonitor, &mi);
 
-  if (pWinInfo) {
-    pWinInfo->x += (mi.rcWork.left - mi.rcMonitor.left);
-    pWinInfo->y += (mi.rcWork.top - mi.rcMonitor.top);
-
-    if (pWinInfo->x < mi.rcWork.left) { pWinInfo->x = mi.rcWork.left; }
-    if (pWinInfo->y < mi.rcWork.top) { pWinInfo->y = mi.rcWork.top; }
-    if ((pWinInfo->x + pWinInfo->cx) > mi.rcWork.right) {
-      pWinInfo->x -= (pWinInfo->x + pWinInfo->cx - mi.rcWork.right);
-      if (pWinInfo->x < mi.rcWork.left) { pWinInfo->x = mi.rcWork.left; }
-      if ((pWinInfo->x + pWinInfo->cx) > mi.rcWork.right) { pWinInfo->cx = mi.rcWork.right - pWinInfo->x; }
-    }
-    if ((pWinInfo->y + pWinInfo->cy) > mi.rcWork.bottom) {
-      pWinInfo->y -= (pWinInfo->y + pWinInfo->cy - mi.rcWork.bottom);
-      if (pWinInfo->y < mi.rcWork.top) { pWinInfo->y = mi.rcWork.top; }
-      if ((pWinInfo->y + pWinInfo->cy) > mi.rcWork.bottom) { pWinInfo->cy = mi.rcWork.bottom - pWinInfo->y; }
-    }
-    SetRect(pRect, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy);
+  if (bFullWorkArea) {
+    SetRect(pRect, mi.rcWork.left, mi.rcWork.top, mi.rcWork.right, mi.rcWork.bottom);
+    // monitor coord -> work area coord
+    pWinInfo->x = mi.rcWork.left - (mi.rcWork.left - mi.rcMonitor.left);
+    pWinInfo->y = mi.rcWork.top - (mi.rcWork.top - mi.rcMonitor.top);
+    pWinInfo->cx = (mi.rcWork.right - mi.rcWork.left);
+    pWinInfo->cy = (mi.rcWork.bottom - mi.rcWork.top);
   }
-  
-  RECT rcPlacement;
-  rcPlacement.left = mi.rcMonitor.left;
-  rcPlacement.right = (mi.rcMonitor.left + (mi.rcWork.right - mi.rcWork.left));
-  rcPlacement.top = mi.rcMonitor.top;
-  rcPlacement.bottom = (mi.rcMonitor.top + (mi.rcWork.bottom - mi.rcWork.top));
-  return rcPlacement;
+  else {
+    WININFO wi = *pWinInfo;
+    // work area coord -> monitor coord
+    wi.x += (mi.rcWork.left - mi.rcMonitor.left);
+    wi.y += (mi.rcWork.top - mi.rcMonitor.top);
+    // fit into area
+    if (wi.x < mi.rcWork.left) { wi.x = mi.rcWork.left; }
+    if (wi.y < mi.rcWork.top) { wi.y = mi.rcWork.top; }
+    if ((wi.x + wi.cx) > mi.rcWork.right) {
+      wi.x -= (wi.x + wi.cx - mi.rcWork.right);
+      if (wi.x < mi.rcWork.left) { wi.x = mi.rcWork.left; }
+      if ((wi.x + wi.cx) > mi.rcWork.right) { wi.cx = mi.rcWork.right - wi.x; }
+    }
+    if ((wi.y + wi.cy) > mi.rcWork.bottom) {
+      wi.y -= (wi.y + wi.cy - mi.rcWork.bottom);
+      if (wi.y < mi.rcWork.top) { wi.y = mi.rcWork.top; }
+      if ((wi.y + wi.cy) > mi.rcWork.bottom) { wi.cy = mi.rcWork.bottom - wi.y; }
+    }
+    SetRect(pRect, wi.x, wi.y, wi.x + wi.cx, wi.y + wi.cy);
+    // monitor coord -> work area coord
+    pWinInfo->x = wi.x - (mi.rcWork.left - mi.rcMonitor.left);
+    pWinInfo->y = wi.y - (mi.rcWork.top - mi.rcMonitor.top);
+    pWinInfo->cx = wi.cx;
+    pWinInfo->cy = wi.cy;
+  }
+
+  return mi.rcWork;
 }
 // ----------------------------------------------------------------------------
 
@@ -2704,17 +2714,18 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* const pWinInfo
   wndpl.length = sizeof(WINDOWPLACEMENT);
   wndpl.flags = WPF_ASYNCWINDOWPLACEMENT;
   wndpl.showCmd = SW_RESTORE;
+  WININFO winfo = INIT_WININFO;
   if (pWinInfo) {
-    wndpl.rcNormalPosition.left = pWinInfo->x;
-    wndpl.rcNormalPosition.top = pWinInfo->y;
-    wndpl.rcNormalPosition.right = pWinInfo->x + pWinInfo->cx;
-    wndpl.rcNormalPosition.bottom = pWinInfo->y + pWinInfo->cy;
+    RECT rc = RectFromWinInfo(pWinInfo);
+    winfo = *pWinInfo;
+    FitIntoMonitorWorkArea(&rc, &winfo, false);
     if (pWinInfo->max) { wndpl.flags &= WPF_RESTORETOMAXIMIZED; }
   }
   else {
     RECT rc; GetWindowRect(hwnd, &rc);
-    wndpl.rcNormalPosition = FitIntoMonitorWorkArea(&rc, NULL);
+    FitIntoMonitorWorkArea(&rc, &winfo, true);
   }
+  wndpl.rcNormalPosition = RectFromWinInfo(&winfo);
   return wndpl;
 }
 

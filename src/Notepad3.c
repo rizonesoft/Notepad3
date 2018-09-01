@@ -988,25 +988,14 @@ void EndWaitCursor()
 //  _InitWindowPosition()
 //
 //
-static RECT __fastcall _InitDefaultWndPos()
-{
-  RECT rc = { CW_USEDEFAULT, CW_USEDEFAULT , CW_USEDEFAULT , CW_USEDEFAULT };
-  SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
-  rc = FitIntoMonitorWorkArea(&rc, NULL);
-  g_WinInfo.y = rc.top + 16;
-  g_WinInfo.cy = rc.bottom - rc.top - 32;
-  g_WinInfo.cx = (rc.right - rc.left) / 2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
-  g_WinInfo.x = rc.right - g_WinInfo.cx - 16;
-  return rc;
-}
-
 static void __fastcall _InitWindowPosition()
 {
-  RECT rc;
-  rc.left = g_WinInfo.x;  
-  rc.top = g_WinInfo.y;  
-  rc.right = g_WinInfo.x + g_WinInfo.cx;  
-  rc.bottom = g_WinInfo.y + g_WinInfo.cy;
+  RECT rc = RectFromWinInfo(&g_WinInfo);
+
+  SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
+  WININFO winfo = INIT_WININFO;
+  FitIntoMonitorWorkArea(&rc, &winfo, true); // get work area
+  rc = RectFromWinInfo(&winfo);
 
   if (g_flagDefaultPos == 1) 
   {
@@ -1016,8 +1005,6 @@ static void __fastcall _InitWindowPosition()
   }
   else if (g_flagDefaultPos >= 4) 
   {
-    SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
-    rc = FitIntoMonitorWorkArea(&rc, NULL);
     if (g_flagDefaultPos & 8)
       g_WinInfo.x = (rc.right - rc.left) / 2;
     else
@@ -1049,24 +1036,22 @@ static void __fastcall _InitWindowPosition()
   }
   else if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
   {
-    //SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
-    //rc = FitIntoMonitorWorkArea(&rc, NULL);
-    //g_WinInfo.y = rc.top + 16;
-    //g_WinInfo.cy = rc.bottom - rc.top - 32;
-    //g_WinInfo.cx = (rc.right - rc.left)/2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
-    //g_WinInfo.x = (g_flagDefaultPos == 3) ? rc.left + 16 : rc.right - g_WinInfo.cx - 16;
-    rc = _InitDefaultWndPos();
-    if (g_flagDefaultPos == 3) { g_WinInfo.x = rc.left + 16; }
+    g_WinInfo.y = rc.top + 16;
+    g_WinInfo.cy = rc.bottom - rc.top - 32;
+    g_WinInfo.cx = (rc.right - rc.left)/2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
+    g_WinInfo.x = (g_flagDefaultPos == 3) ? rc.left + 16 : rc.right - g_WinInfo.cx - 16;
   }
   else {  // fit window into working area of current monitor
-    RECT rcWork = FitIntoMonitorWorkArea(&rc, &g_WinInfo);
-    RECT rc2;
-    if (!IntersectRect(&rc2, &rc, &rcWork)) {
-      g_WinInfo.y = rcWork.top + 16;
-      g_WinInfo.cy = rcWork.bottom - rcWork.top - 32;
-      g_WinInfo.cx = min(rcWork.right - rcWork.left - 32, g_WinInfo.cy);
-      g_WinInfo.x = rcWork.right - g_WinInfo.cx - 16;
-    }
+    
+    FitIntoMonitorWorkArea(&rc, &g_WinInfo, false);
+    //rc = RectFromWinInfo(&g_WinInfo);
+    //RECT rc2;
+    //if (!IntersectRect(&rc2, &rc, &rcWork)) {
+    //  g_WinInfo.y = rcWork.top + 16;
+    //  g_WinInfo.cy = rcWork.bottom - rcWork.top - 32;
+    //  g_WinInfo.cx = min(rcWork.right - rcWork.left - 32, g_WinInfo.cy);
+    //  g_WinInfo.x = rcWork.right - g_WinInfo.cx - 16;
+    //}
   }
   g_WinCurrentWidth = g_WinInfo.cx;
 }
@@ -1082,15 +1067,19 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   UNUSED(pszCmdLine);
   _InitWindowPosition();
 
+  // get monitor coordinates from g_WinInfo
+  RECT rc = RectFromWinInfo(&g_WinInfo);
+  FitIntoMonitorWorkArea(&rc, &g_WinInfo, false);
+
   g_hwndMain = CreateWindowEx(
                0,
                wchWndClass,
                L"" APPNAME,
                WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-               g_WinInfo.x,
-               g_WinInfo.y,
-               g_WinInfo.cx,
-               g_WinInfo.cy,
+               rc.left,
+               rc.top,
+               rc.right - rc.left,
+               rc.bottom - rc.top,
                NULL,
                NULL,
                hInstance,
@@ -1121,8 +1110,6 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     ShowWindow(g_hwndMain,SW_HIDE);    // trick ShowWindow()
     ShowNotifyIcon(g_hwndMain,true);
   }
-
-  //SnapToWinInfoPos(g_hwndMain, false);
 
   // Source Encoding
   if (lpEncodingArg)
@@ -5589,7 +5576,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case CMD_DEFAULTWINPOS:
-      _InitDefaultWndPos();
+      g_flagDefaultPos = 2;
+      _InitWindowPosition();
       SnapToWinInfoPos(hwnd, false);
       break;
 
