@@ -4850,18 +4850,27 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_ZOOMIN:
-      SciCall_ZoomIn();
-      UpdateLineNumberWidth();
+      {
+        SciCall_ZoomIn();
+        UpdateLineNumberWidth();
+        EditShowZoomCallTip(g_hwndEdit);
+      }
       break;
 
     case IDM_VIEW_ZOOMOUT:
-      SciCall_ZoomOut();
-      UpdateLineNumberWidth();
+      {
+        SciCall_ZoomOut();
+        UpdateLineNumberWidth();
+        EditShowZoomCallTip(g_hwndEdit);
+      }
       break;
 
     case IDM_VIEW_RESETZOOM:
-      SciCall_SetZoom(0);
-      UpdateLineNumberWidth();
+      {
+        SciCall_SetZoom(0);
+        UpdateLineNumberWidth();
+        EditShowZoomCallTip(g_hwndEdit);
+      }
       break;
 
     case IDM_VIEW_CHASING_DOCTAIL: 

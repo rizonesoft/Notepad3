@@ -8292,6 +8292,29 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
 }
 
 
+//=============================================================================
+//
+//  EditShowZoomCallTip()
+//
+void EditShowZoomCallTip(HWND hwnd)
+{
+  int const zoom = SciCall_GetZoom();
+
+  //Style_GetFon
+
+  char chToolTip[32] = { '\0' };
+  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i pt", zoom);
+
+  //DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+  WININFO const winfo = GetMyWindowPlacement(hwnd, NULL);
+  POINT ptc; ptc.x = winfo.x + (SciCall_GetXoffset() / (12 + zoom)); ptc.y = winfo.y;
+  ScreenToClient(hwnd, &ptc); //ptc.x += (SciCall_GetXoffset() / (12+zoom));
+  DocPos const iPos = SciCall_CharPositionFromPoint(ptc.x, ptc.y);
+
+  SciCall_CallTipShow(iPos, chToolTip);
+}
+
+
 
 //=============================================================================
 //

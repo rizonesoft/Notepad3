@@ -4184,6 +4184,10 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   
   //SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
 
+    // CallTips
+  SciCall_CallTipSetFore(clrFore);
+  SciCall_CallTipSetBack(clrBack);
+
   // ---  Bookmarks  ---
   COLORREF bmkFore = clrFore;
   COLORREF bmkBack = clrBack;
@@ -4205,7 +4209,6 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha);
   SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
   
-
   // ---  Code folding  ---
   SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
   SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
