@@ -120,6 +120,10 @@ typedef enum {
 
 // --------------------------------------------------------------------------
 
+typedef enum { CT_NONE = 0, CT_ZOOM } CALLTIPTYPE;
+
+// --------------------------------------------------------------------------
+
 typedef struct _editfindreplace
 {
   char szFind[FNDRPL_BUFFER];

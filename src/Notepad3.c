@@ -161,11 +161,12 @@ static int    g_vSBSOrder[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
 static int    g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 
-
 static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
+static  WININFO g_WinInfo = INIT_WININFO;
+static  int     g_WinCurrentWidth = 0;
 
 int       iPathNameFormat;
 bool      g_bWordWrap;
@@ -247,6 +248,8 @@ int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
 
+CALLTIPTYPE g_CallTipType = CT_NONE;
+
 
 int  g_iRenderingTechnology = 0;
 const int DirectWriteTechnology[4] = {
@@ -272,10 +275,6 @@ const int FontQuality[4] = {
   , SC_EFF_QUALITY_ANTIALIASED
   , SC_EFF_QUALITY_LCD_OPTIMIZED
 };
-
-
-static  WININFO g_WinInfo = INIT_WININFO;
-static  int     g_WinCurrentWidth = 0;
 
 bool    g_bStickyWinPos;
 
@@ -6306,6 +6305,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case SCN_CHARADDED:
           {
+            if (g_CallTipType == CT_ZOOM) {
+              SciCall_CallTipCancel();
+              g_CallTipType = CT_NONE;
+            }
+
             // Auto indent
             if (bAutoIndent && (scn->ch == '\r' || scn->ch == '\n'))
             {
@@ -8739,6 +8743,7 @@ void UpdateSettingsCmds()
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, g_bSaveSettings && g_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && g_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && g_bEnableSaveSettings);
+    if (SciCall_GetZoom() != 0) { EditShowZoomCallTip(g_hwndEdit); }
 }
 
 
@@ -9330,7 +9335,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     const DocPos iCurColumn = SciCall_GetColumn(iCurPos);
     const DocLn iVisTopLine = SciCall_GetFirstVisibleLine();
     const DocLn iDocTopLine = SciCall_DocLineFromVisible(iVisTopLine);
-    const int   iXOffset = SciCall_GetXoffset();
+    const int   iXOffset = SciCall_GetXOffset();
     const bool bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
 
     if (bIgnoreCmdLnEnc) { 
@@ -9358,7 +9363,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
           SciCall_EnsureVisible(iDocTopLine);
           const DocLn iNewTopLine = SciCall_GetFirstVisibleLine();
           SciCall_LineScroll(0,iVisTopLine - iNewTopLine);
-          SciCall_SetXoffset(iXOffset);
+          SciCall_SetXOffset(iXOffset);
         }
       }
       return true;

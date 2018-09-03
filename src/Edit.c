@@ -114,6 +114,8 @@ extern int  g_iTabWidth;
 extern int  g_iIndentWidth;
 extern bool g_bZeroBasedColumnIndex;
 
+extern CALLTIPTYPE g_CallTipType;
+
 extern FR_STATES g_FindReplaceMatchFoundState;
 
 #define ANSI_CAHR_BUFFER 258
@@ -4490,13 +4492,13 @@ void EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop)
 {
   UNUSED(hwnd);
 
-  const int iXoff = SciCall_GetXoffset();
+  const int iXoff = SciCall_GetXOffset();
   const DocLn iLinesOnScreen = SciCall_LinesOnScreen();
   const DocLn iSlopLines = ((iSlop < 0) || (iSlop >= iLinesOnScreen)) ? (iLinesOnScreen/2) : iSlop;
 
   SciCall_SetVisiblePolicy((VISIBLE_SLOP | VISIBLE_STRICT), iSlopLines);
   SciCall_EnsureVisibleEnforcePolicy(iScrollToLine);
-  SciCall_SetXoffset(iXoff);
+  SciCall_SetXOffset(iXoff);
 }
 
 
@@ -8298,20 +8300,23 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
 //
 void EditShowZoomCallTip(HWND hwnd)
 {
-  int const zoom = SciCall_GetZoom();
+  UNUSED(hwnd);
 
-  //Style_GetFon
+  int const iZoomLevel = SciCall_GetZoom();
+  float const fSize = Style_GetCurrentFontSize();
+  int const iZoomPercent = float2int((100.0f * ((float)iZoomLevel + fSize)) / fSize);
 
   char chToolTip[32] = { '\0' };
-  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i pt", zoom);
+  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomPercent);
 
-  //DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
-  WININFO const winfo = GetMyWindowPlacement(hwnd, NULL);
-  POINT ptc; ptc.x = winfo.x + (SciCall_GetXoffset() / (12 + zoom)); ptc.y = winfo.y;
-  ScreenToClient(hwnd, &ptc); //ptc.x += (SciCall_GetXoffset() / (12+zoom));
-  DocPos const iPos = SciCall_CharPositionFromPoint(ptc.x, ptc.y);
+  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
 
+  int const iXOff = SciCall_GetXOffset();
+  SciCall_SetXOffset(0);
   SciCall_CallTipShow(iPos, chToolTip);
+  SciCall_SetXOffset(iXOff);
+
+  g_CallTipType = CT_ZOOM;
 }
 
 

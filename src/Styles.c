@@ -3131,34 +3131,34 @@ static float __fastcall _GetBaseFontSize()
 
 //=============================================================================
 //
-//  _SetCurrentFontSize(), _GetCurrentFontSize()
-//
-static float __fastcall _SetCurrentFontSize(float fSize)
-{
-  static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
-
-  if (fSize >= 0.0f) {
-    fCurrentFontSize = Round10th(fSize);
-  }
-  return fCurrentFontSize;
-}
-
-static float __fastcall _GetCurrentFontSize()
-{
-  return _SetCurrentFontSize(-1.0f);
-}
-
-
-//=============================================================================
-//
 //  Style_RgbAlpha()
 //
 int __fastcall Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 {
   return (int)RGB(\
     (0xFF - alpha) * (int)GetRValue(rgbBack) / 0xFF + alpha * (int)GetRValue(rgbFore) / 0xFF, \
-    (0xFF - alpha) * (int)GetGValue(rgbBack) / 0xFF + alpha * (int)GetGValue(rgbFore) / 0xFF, \
-    (0xFF - alpha) * (int)GetBValue(rgbBack) / 0xFF + alpha * (int)GetBValue(rgbFore) / 0xFF);
+                  (0xFF - alpha) * (int)GetGValue(rgbBack) / 0xFF + alpha * (int)GetGValue(rgbFore) / 0xFF, \
+                  (0xFF - alpha) * (int)GetBValue(rgbBack) / 0xFF + alpha * (int)GetBValue(rgbFore) / 0xFF);
+}
+
+
+//=============================================================================
+//
+//  _SetCurrentFontSize(), _GetCurrentFontSize()
+//
+static float __fastcall _SetCurrentFontSize(float fSize)
+{
+  static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
+
+  if (signbit(fSize) == 0) {
+    fCurrentFontSize = max(Round10th(fSize), 0.5f);
+  }
+  return fCurrentFontSize;
+}
+
+float Style_GetCurrentFontSize()
+{
+  return _SetCurrentFontSize(-1.0f);
 }
 
 
@@ -4676,7 +4676,7 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 
   if (bHasLnSpaceDef) {
     int const iValue = float2int(fValue);
-    const int iCurFontSizeDbl = float2int(_GetCurrentFontSize() * 2.0f);
+    const int iCurFontSizeDbl = float2int(Style_GetCurrentFontSize() * 2.0f);
     int iValAdj = clampi(iValue, (0 - iCurFontSizeDbl), 256 * iCurFontSizeDbl);
     if ((iValAdj != iValue) && (cch > 0)) {
       StringCchPrintf(lpszStyle, cch, L"size:%i", iValAdj);
@@ -5309,7 +5309,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   bool bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
   const float fBaseFontSize = (bGlobalDefaultStyle ? INITIAL_BASE_FONT_SIZE : \
-    (bCurrentDefaultStyle ? _GetBaseFontSize() : _GetCurrentFontSize()));
+    (bCurrentDefaultStyle ? _GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
 
@@ -5744,7 +5744,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Size values are relative to BaseFontSize/CurrentFontSize
-  float fBaseFontSize = _GetCurrentFontSize();
+  float fBaseFontSize = Style_GetCurrentFontSize();
 
   if (Style_StrGetSize(lpszStyle, &fBaseFontSize)) {
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));

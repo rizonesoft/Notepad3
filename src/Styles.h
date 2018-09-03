@@ -65,11 +65,11 @@ typedef struct _editlexer
 #define NUMLEXERS 48
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
-
 void   Style_Load();
 void   Style_Save();
 bool   Style_Import(HWND);
 bool   Style_Export(HWND);
+float  Style_GetCurrentFontSize();
 void   Style_SetLexer(HWND,PEDITLEXER);
 void   Style_SetUrlHotSpot(HWND, bool);
 void   Style_SetInvisible(HWND, bool);
