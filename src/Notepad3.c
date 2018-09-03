@@ -992,12 +992,8 @@ void EndWaitCursor()
 
 static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 {
-  RECT rcMon = RectFromWinInfo(pWinInfo);
-  GetMonitorWorkArea(&rcMon);
-
-  WININFO wiWorkArea = INIT_WININFO;
-  FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
-  RECT const rc = RectFromWinInfo(&wiWorkArea); // use Work Area as RECT
+  RECT rc = RectFromWinInfo(pWinInfo);
+  GetMonitorWorkArea(&rc);
 
   pWinInfo->y = rc.top + _BORDEROFFSET;
   pWinInfo->cy = rc.bottom - rc.top - (_BORDEROFFSET * 2);
@@ -5599,12 +5595,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case CMD_FULLSCRWINPOS:
-      SnapToWinInfoPos(hwnd, &g_WinInfo, true);
+      {
+        WININFO winfo = GetMyWindowPlacement(g_hwndMain, NULL);
+        SnapToWinInfoPos(hwnd, &winfo, true);
+      }
       break;
 
     case CMD_DEFAULTWINPOS:
       {
-        WININFO winfo = g_WinInfo;
+        WININFO winfo = GetMyWindowPlacement(g_hwndMain, NULL);
         _InitDefaultWndPos(&winfo);
         SnapToWinInfoPos(hwnd, &winfo, false);
       }
