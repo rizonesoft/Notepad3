@@ -5936,6 +5936,8 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
       bSuppressNotFound = true;
   }
 
+  SciCall_CallTipCancel();
+
   DocPos iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, true, FRMOD_NORM);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
@@ -5974,6 +5976,10 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   }
   else {
     EditSelectEx(hwnd, start, end, -1, -1);
+  }
+
+  if (start == end) {
+    EditShowZeroLengthCallTip(hwnd, start);
   }
   return true;
 }
@@ -8317,6 +8323,23 @@ void EditShowZoomCallTip(HWND hwnd)
   SciCall_SetXOffset(iXOff);
 
   g_CallTipType = CT_ZOOM;
+}
+
+
+//=============================================================================
+//
+//  EditShowZoomCallTip()
+//
+static char s_chZeroLenCT[80] = { '\0' };
+
+void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition)
+{
+  UNUSED(hwnd);
+  if (s_chZeroLenCT[0] == '\0') {
+    GetLngStringW2MB(IDS_MUI_ZERO_LEN_MATCH, s_chZeroLenCT, COUNTOF(s_chZeroLenCT));
+  }
+  SciCall_CallTipShow(iPosition, s_chZeroLenCT);
+  g_CallTipType = CT_ZEROLEN_MATCH;
 }
 
 

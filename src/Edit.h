@@ -170,6 +170,7 @@ void EditFoldClick(DocLn, int);
 void EditFoldAltArrow(FOLD_MOVE, FOLD_ACTION);
 
 void EditShowZoomCallTip(HWND hwnd);
+void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 
 #define NP3_BRACES_TO_MATCH "()[]{}"
 

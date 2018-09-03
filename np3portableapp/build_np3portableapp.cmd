@@ -66,6 +66,7 @@ set FILEVER=
 call :GETFILEVER "%NP3_WIN32_DIR%\Notepad3.exe"
 if defined FILEVER set VERSION=%FILEVER%
 
+
 ::echo.VERSION=%VERSION%
 ::pause
 ::goto :END
@@ -110,16 +111,11 @@ copy /B "%NP3_X64_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP3_PORTAPP_INFO%_tmp.ini"
 
-:: DEVNAME need some mor PortableApps preparation, so set empty for now
-set DEVNAME=
-
-if defined DEVNAME (
-  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "_%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
-  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "_%DEVNAME%" "%NP3_PORTAPP_INSTALL%.ini"
-) else (
-  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "" "%NP3_PORTAPP_INFO%.ini"
-  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "" "%NP3_PORTAPP_INSTALL%.ini"
-)
+:: DEVNAME need some more PortableApps preparation
+::~  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "_%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
+::~  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "_%DEVNAME%" "%NP3_PORTAPP_INSTALL%.ini"
+call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "" "%NP3_PORTAPP_INFO%.ini"
+call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "" "%NP3_PORTAPP_INSTALL%.ini"
 
 del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 
@@ -136,8 +132,8 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 :: - build Installer -
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
-
-
+:: rename
+rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%_English.paf.exe" "Notepad3Portable_%DEVNAME%_%VERSION%_English.paf.exe"
 
 :: ====================================================================================================================
 goto :END
@@ -180,7 +176,6 @@ for /F "tokens=2 delims==" %%a in ('
 ::echo %file% = %FILEVER% 
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
-
 
 :GETBUILD
 set /p nxbuild=<%NP3_BUILD_VER%

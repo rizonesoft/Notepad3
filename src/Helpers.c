@@ -716,7 +716,6 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 
 }
 
-
 //=============================================================================
 //
 //  LoadLngStringW()
@@ -725,6 +724,19 @@ int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax)
 {
   const int nLen = LoadStringW(g_hLngResContainer, uID, lpBuffer, nBufferMax);
   return (nLen != 0) ? nLen : LoadStringW(g_hInstance, uID, lpBuffer, nBufferMax);
+}
+
+//=============================================================================
+//
+//  LoadLngStringW2MB()
+//
+static WCHAR s_tmpStringBuffer[512];
+
+int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax)
+{
+  const int nLen = LoadStringW(g_hLngResContainer, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer));
+  if (nLen == 0) { LoadStringW(g_hInstance, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer)); }
+  return WideCharToMultiByte(CP_UTF8, 0, s_tmpStringBuffer, -1, lpBuffer, nBufferMax, NULL, NULL);
 }
 
 //=============================================================================

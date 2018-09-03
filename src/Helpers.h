@@ -220,12 +220,16 @@ bool IsCmdEnabled(HWND, UINT);
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
 
-#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
-#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
 int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
 int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
 int FormatLngStringW(LPWSTR, int, UINT, ...);
 int FormatLngStringA(LPSTR, int, UINT, ...);
+int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
+
+#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
+#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
+#define GetLngStringW2MB(id,pb,cb) LoadLngStringW2MB((id),(pb),(cb))
+
 
 
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
