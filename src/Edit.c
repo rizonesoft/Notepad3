@@ -6014,6 +6014,8 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
       bSuppressNotFound = true;
   }
 
+  SciCall_CallTipCancel();
+
   DocPos iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, true, FRMOD_NORM);
 
   if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) 
@@ -6054,6 +6056,10 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   }
   else {
     EditSelectEx(hwnd, end, start, -1, -1);
+  }
+
+  if (start == end) {
+    EditShowZeroLengthCallTip(hwnd, start);
   }
   return true;
 }
