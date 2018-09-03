@@ -2623,14 +2623,15 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
 //
 //  GetMonitorInfoFromRect()
 //
-static void __fastcall GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
+static bool __fastcall GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
 {
   if (hMonitorInfo) {
     HMONITOR const hMonitor = MonitorFromRect(rc, MONITOR_DEFAULTTONEAREST);
     ZeroMemory(hMonitorInfo, sizeof(MONITORINFO));
     hMonitorInfo->cbSize = sizeof(MONITORINFO);
-    GetMonitorInfo(hMonitor, hMonitorInfo);
+    return GetMonitorInfo(hMonitor, hMonitorInfo);
   }
+  return false;
 }
 // ----------------------------------------------------------------------------
 
@@ -2645,13 +2646,12 @@ void WinInfoToScreen(WININFO* pWinInfo)
   if (pWinInfo) {
     MONITORINFO mi;
     RECT rc = RectFromWinInfo(pWinInfo);
-    GetMonitorInfoFromRect(&rc, &mi);
-
-    WININFO winfo = *pWinInfo;
-    winfo.x += (mi.rcWork.left - mi.rcMonitor.left);
-    winfo.y += (mi.rcWork.top - mi.rcMonitor.top);
-    
-    *pWinInfo = winfo;
+    if (GetMonitorInfoFromRect(&rc, &mi)) {
+      WININFO winfo = *pWinInfo;
+      winfo.x += (mi.rcWork.left - mi.rcMonitor.left);
+      winfo.y += (mi.rcWork.top - mi.rcMonitor.top);
+      *pWinInfo = winfo;
+    }
   }
 }
 
@@ -2683,8 +2683,26 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 
 //=============================================================================
 //
-//  FitIntoMonitorWorkArea()
+//  GetMonitorWorkArea()
 //
+void GetMonitorWorkArea(RECT* pRect)
+{
+  MONITORINFO mi;
+  if (GetMonitorInfoFromRect(pRect, &mi)) {
+    SetRect(pRect, mi.rcWork.left, mi.rcWork.top, mi.rcWork.right, mi.rcWork.bottom);
+  }
+  else {
+    RECT rc = { 0, 0, 0, 0 };
+    if (SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0) != 0) {
+      SetRect(pRect, rc.left, rc.top, rc.right, rc.bottom);
+    }
+  }
+}
+
+
+//=============================================================================
+//
+//  FitIntoMonitorWorkArea()
 //
 void FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
 {

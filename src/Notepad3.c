@@ -994,7 +994,7 @@ void EndWaitCursor()
 static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 {
   RECT rcMon = RectFromWinInfo(pWinInfo);
-  SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
+  GetMonitorWorkArea(&rcMon);
 
   WININFO wiWorkArea = INIT_WININFO;
   FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
@@ -1010,7 +1010,6 @@ static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 
 static void __fastcall _InitWindowPosition()
 {
-
   if (g_flagDefaultPos == 1) 
   {
     g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
@@ -1020,7 +1019,7 @@ static void __fastcall _InitWindowPosition()
   else if (g_flagDefaultPos >= 4) 
   {
     RECT rcMon = RectFromWinInfo(&g_WinInfo);
-    SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
+    GetMonitorWorkArea(&rcMon);
 
     WININFO wiWorkArea = INIT_WININFO;
     FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
@@ -1062,7 +1061,7 @@ static void __fastcall _InitWindowPosition()
   else { // restore window, move upper left corner to Work Area 
     
     RECT rcMon = RectFromWinInfo(&g_WinInfo);
-    SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
+    GetMonitorWorkArea(&rcMon);
 
     WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = _BORDEROFFSET * 2; // really small
     FitIntoMonitorWorkArea(&rcMon, &wiWin, false);
