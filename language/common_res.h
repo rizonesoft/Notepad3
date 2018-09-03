@@ -125,6 +125,7 @@
 #define IDS_MUI_TRANSL_AUTHOR           15031
 #define IDS_MUI_ASSOCIATED_EXT          15032
 #define IDS_MUI_EXAMPLE_TEXT            15033
+#define IDS_MUI_ZERO_LEN_MATCH          15034
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001

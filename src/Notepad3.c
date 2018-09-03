@@ -6304,8 +6304,8 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case SCN_CHARADDED:
           {
-            if (g_CallTipType == CT_ZOOM) {
-              SciCall_CallTipCancel();
+            if (g_CallTipType != CT_NONE) { 
+              SciCall_CallTipCancel();   
               g_CallTipType = CT_NONE;
             }
 
