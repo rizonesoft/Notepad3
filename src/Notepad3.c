@@ -161,11 +161,12 @@ static int    g_vSBSOrder[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
 static int    g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
 
-
 static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
+static  WININFO g_WinInfo = INIT_WININFO;
+static  int     g_WinCurrentWidth = 0;
 
 int       iPathNameFormat;
 bool      g_bWordWrap;
@@ -247,6 +248,8 @@ int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
 
+CALLTIPTYPE g_CallTipType = CT_NONE;
+
 
 int  g_iRenderingTechnology = 0;
 const int DirectWriteTechnology[4] = {
@@ -272,10 +275,6 @@ const int FontQuality[4] = {
   , SC_EFF_QUALITY_ANTIALIASED
   , SC_EFF_QUALITY_LCD_OPTIMIZED
 };
-
-
-static  WININFO g_WinInfo = INIT_WININFO;
-static  int     g_WinCurrentWidth = 0;
 
 bool    g_bStickyWinPos;
 
@@ -993,12 +992,8 @@ void EndWaitCursor()
 
 static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 {
-  RECT rcMon = RectFromWinInfo(pWinInfo);
-  SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
-
-  WININFO wiWorkArea = INIT_WININFO;
-  FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
-  RECT const rc = RectFromWinInfo(&wiWorkArea); // use Work Area as RECT
+  RECT rc = RectFromWinInfo(pWinInfo);
+  GetMonitorWorkArea(&rc);
 
   pWinInfo->y = rc.top + _BORDEROFFSET;
   pWinInfo->cy = rc.bottom - rc.top - (_BORDEROFFSET * 2);
@@ -1010,7 +1005,6 @@ static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 
 static void __fastcall _InitWindowPosition()
 {
-
   if (g_flagDefaultPos == 1) 
   {
     g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
@@ -1020,7 +1014,7 @@ static void __fastcall _InitWindowPosition()
   else if (g_flagDefaultPos >= 4) 
   {
     RECT rcMon = RectFromWinInfo(&g_WinInfo);
-    SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
+    GetMonitorWorkArea(&rcMon);
 
     WININFO wiWorkArea = INIT_WININFO;
     FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
@@ -1062,7 +1056,7 @@ static void __fastcall _InitWindowPosition()
   else { // restore window, move upper left corner to Work Area 
     
     RECT rcMon = RectFromWinInfo(&g_WinInfo);
-    SystemParametersInfo(SPI_GETWORKAREA, 0, &rcMon, 0);
+    GetMonitorWorkArea(&rcMon);
 
     WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = _BORDEROFFSET * 2; // really small
     FitIntoMonitorWorkArea(&rcMon, &wiWin, false);
@@ -4850,18 +4844,27 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_ZOOMIN:
-      SciCall_ZoomIn();
-      UpdateLineNumberWidth();
+      {
+        SciCall_ZoomIn();
+        UpdateLineNumberWidth();
+        EditShowZoomCallTip(g_hwndEdit);
+      }
       break;
 
     case IDM_VIEW_ZOOMOUT:
-      SciCall_ZoomOut();
-      UpdateLineNumberWidth();
+      {
+        SciCall_ZoomOut();
+        UpdateLineNumberWidth();
+        EditShowZoomCallTip(g_hwndEdit);
+      }
       break;
 
     case IDM_VIEW_RESETZOOM:
-      SciCall_SetZoom(0);
-      UpdateLineNumberWidth();
+      {
+        SciCall_SetZoom(0);
+        UpdateLineNumberWidth();
+        EditShowZoomCallTip(g_hwndEdit);
+      }
       break;
 
     case IDM_VIEW_CHASING_DOCTAIL: 
@@ -5592,12 +5595,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case CMD_FULLSCRWINPOS:
-      SnapToWinInfoPos(hwnd, &g_WinInfo, true);
+      {
+        WININFO winfo = GetMyWindowPlacement(g_hwndMain, NULL);
+        SnapToWinInfoPos(hwnd, &winfo, true);
+      }
       break;
 
     case CMD_DEFAULTWINPOS:
       {
-        WININFO winfo = g_WinInfo;
+        WININFO winfo = GetMyWindowPlacement(g_hwndMain, NULL);
         _InitDefaultWndPos(&winfo);
         SnapToWinInfoPos(hwnd, &winfo, false);
       }
@@ -6298,6 +6304,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case SCN_CHARADDED:
           {
+            if (g_CallTipType == CT_ZOOM) {
+              SciCall_CallTipCancel();
+              g_CallTipType = CT_NONE;
+            }
+
             // Auto indent
             if (bAutoIndent && (scn->ch == '\r' || scn->ch == '\n'))
             {
@@ -8731,6 +8742,7 @@ void UpdateSettingsCmds()
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, g_bSaveSettings && g_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && g_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && g_bEnableSaveSettings);
+    if (SciCall_GetZoom() != 0) { EditShowZoomCallTip(g_hwndEdit); }
 }
 
 
@@ -9322,7 +9334,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
     const DocPos iCurColumn = SciCall_GetColumn(iCurPos);
     const DocLn iVisTopLine = SciCall_GetFirstVisibleLine();
     const DocLn iDocTopLine = SciCall_DocLineFromVisible(iVisTopLine);
-    const int   iXOffset = SciCall_GetXoffset();
+    const int   iXOffset = SciCall_GetXOffset();
     const bool bIsTail = (iCurPos == iAnchorPos) && (iCurrLine >= (SciCall_GetLineCount() - 1));
 
     if (bIgnoreCmdLnEnc) { 
@@ -9350,7 +9362,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
           SciCall_EnsureVisible(iDocTopLine);
           const DocLn iNewTopLine = SciCall_GetFirstVisibleLine();
           SciCall_LineScroll(0,iVisTopLine - iNewTopLine);
-          SciCall_SetXoffset(iXOffset);
+          SciCall_SetXOffset(iXOffset);
         }
       }
       return true;

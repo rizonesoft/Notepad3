@@ -39,6 +39,7 @@ bool SelectDefLineEndingDlg(HWND,int *);
 
 void WinInfoToScreen(WININFO*);
 WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
+void GetMonitorWorkArea(RECT*);
 void FitIntoMonitorWorkArea(RECT*, WININFO*, bool);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND, const WININFO* const);
 

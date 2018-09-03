@@ -153,6 +153,7 @@ DeclareSciCallR1(GetLineSelStartPosition, GETLINESELSTARTPOSITION, DocPos, DocLn
 DeclareSciCallR1(GetLineSelEndPosition, GETLINESELENDPOSITION, DocPos, DocLn, line)
 
 DeclareSciCallR2(PositionFromPoint, POSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
+DeclareSciCallR2(CharPositionFromPoint, CHARPOSITIONFROMPOINT, DocPos, int, pt_x, int, pt_y)
 DeclareSciCallR01(PointXFromPosition, POINTXFROMPOSITION, int, DocPos, position)
 DeclareSciCallR01(PointYFromPosition, POINTYFROMPOSITION, int, DocPos, position)
 
@@ -277,8 +278,8 @@ DeclareSciCallV2(LineScroll, LINESCROLL, DocPos, columns, DocLn, lines)
 DeclareSciCallV2(ScrollRange, SCROLLRANGE, DocPos, secondaryPos, DocPos, primaryPos)
 DeclareSciCallV1(SetScrollWidth, SETSCROLLWIDTH, int, width)
 DeclareSciCallV1(SetEndAtLastLine, SETENDATLASTLINE, bool, flag)
-DeclareSciCallR0(GetXoffset, GETXOFFSET, int)
-DeclareSciCallV1(SetXoffset, SETXOFFSET, int, offset)
+DeclareSciCallR0(GetXOffset, GETXOFFSET, int)
+DeclareSciCallV1(SetXOffset, SETXOFFSET, int, offset)
 DeclareSciCallV2(SetVisiblePolicy, SETVISIBLEPOLICY, int, flags, DocLn, lines)
 DeclareSciCallV0(MoveCaretInsideView, MOVECARETINSIDEVIEW)
 
@@ -315,6 +316,12 @@ DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
+
+
+DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour)
+DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour)
+DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text)
+DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL)
 
 
 //=============================================================================
