@@ -416,11 +416,16 @@ KEYWORDLIST KeyWords_CPP = {
   "alignof defined naked noreturn",
   // Secondary keywords
   "asm __abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
-  "__except __except__try __fastcall __finally inline __gc __hook __identifier "
+  "__except __except__try __fastcall __finally __gc __hook __identifier "
   "__if_exists __if_not_exists __inline __interface __leave "
   "__multiple_inheritance __nogc __noop __pin __property __raise "
   "__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
-  "__virtual_inheritance",
+  "__virtual_inheritance "
+  "override final __VA_ARGS__ __has_include "
+  "__STDC__ __STDC_HOSTED__ __STDC_VERSION__ __cplusplus "
+  "__STDC_ISO_10646__ __STDC_MB_MIGHT_NEQ_WC__ __STDC_UTF_16__ __STDC_UTF_32__ "
+  "__STDCPP_DEFAULT_NEW_ALIGNMENT__ __STDCPP_STRICT_POINTER_SAFETY__ __STDCPP_THREADS__ "
+  "__DATE__ __TIME__ __FILE__ __LINE__",
   // Documentation comment keywords
   "",
   // Global classes and typedefs
