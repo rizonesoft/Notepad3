@@ -422,7 +422,7 @@ KEYWORDLIST KeyWords_CPP = {
   "__multiple_inheritance __nogc __noop __pin __property __raise "
   "__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
   "__virtual_inheritance "
-  "override final __VA_ARGS__ __has_include _Pragma "
+  "override final __VA_ARGS__ __VA_OPT__ __has_include _Pragma "
   "__STDC__ __STDC_HOSTED__ __STDC_VERSION__ __cplusplus "
   "__STDC_ISO_10646__ __STDC_MB_MIGHT_NEQ_WC__ __STDC_UTF_16__ __STDC_UTF_32__ "
   "__STDCPP_DEFAULT_NEW_ALIGNMENT__ __STDCPP_STRICT_POINTER_SAFETY__ __STDCPP_THREADS__ "
