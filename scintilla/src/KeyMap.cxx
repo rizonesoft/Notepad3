@@ -46,6 +46,10 @@ unsigned int KeyMap::Find(int key, int modifiers) const {
 	return (it == kmap.end()) ? 0 : it->second;
 }
 
+const std::map<KeyModifiers, unsigned int> &KeyMap::GetKeyMap() const {
+	return kmap;
+}
+
 #if PLAT_GTK_MACOSX
 #define OS_X_KEYS 1
 #else
