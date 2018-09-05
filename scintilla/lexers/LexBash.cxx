@@ -824,6 +824,8 @@ static void FoldBashDoc(Sci_PositionU startPos, Sci_Position length, int, WordLi
 	int levelCurrent = levelPrev;
 	char chNext = styler[startPos];
 	int styleNext = styler.StyleAt(startPos);
+	char word[8] = { '\0' }; // we're not interested in long words anyway
+	unsigned int wordlen = 0;
 	for (Sci_PositionU i = startPos; i < endPos; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
@@ -839,6 +841,19 @@ static void FoldBashDoc(Sci_PositionU startPos, Sci_Position length, int, WordLi
 			else if (IsCommentLine(lineCurrent - 1, styler)
 					 && !IsCommentLine(lineCurrent + 1, styler))
 				levelCurrent--;
+		}
+		if (style == SCE_SH_WORD) {
+			if ((wordlen + 1) < sizeof(word))
+				word[wordlen++] = ch;
+			if (styleNext != style) {
+				word[wordlen] = '\0';
+				wordlen = 0;
+				if (strcmp(word, "if") == 0 || strcmp(word, "case") == 0 || strcmp(word, "do") == 0) {
+					levelCurrent++;
+				} else if (strcmp(word, "fi") == 0 || strcmp(word, "esac") == 0 || strcmp(word, "done") == 0) {
+					levelCurrent--;
+				}
+			}
 		}
 		if (style == SCE_SH_OPERATOR) {
 			if (ch == '{') {

@@ -152,7 +152,7 @@ EDITLEXER lexANSI = { SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"
 { STYLE_LINENUMBER, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
 { STYLE_BRACELIGHT, IDS_LEX_STD_BRACE, L"Matching Braces", L"size:+0", L"" },
 { STYLE_BRACEBAD, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error", L"size:+0", L"" },
-{ SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:0", L"" },
+{ SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
 { -1, 00000, L"", L"", L"" } } };
 
 
@@ -5739,6 +5739,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
           StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Consolas", -1) == 0 ||
           StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Constantia", -1) == 0 ||
           StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Corbel", -1) == 0 ||
+          StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"DejaVu Sans Mono", -1) == 0 ||
           StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Segoe UI", -1) == 0 ||
           StringCchCompareIN(wchFontName, COUNTOF(wchFontName), L"Source Code Pro", -1) == 0) 
       {
