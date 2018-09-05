@@ -413,21 +413,26 @@ KEYWORDLIST KeyWords_CPP = {
   "private protected public register reinterpret_cast restrict return short signed sizeof static "
   "static_assert static_cast struct switch template this thread_local throw true try typedef typeid typename "
   "union unsigned using virtual void volatile wchar_t while "
-  "alignof defined naked noreturn",
+  "alignof defined naked noreturn "
+  "_Alignas _Alignof _Atomic _Bool _Complex _Generic _Imaginary _Noreturn _Static_assert _Thread_local",
   // Secondary keywords
   "asm __abstract __alignof __asm __assume __based __box __cdecl __declspec __delegate __event "
-  "__except __except__try __fastcall __finally inline __gc __hook __identifier "
+  "__except __except__try __fastcall __finally __gc __hook __identifier "
   "__if_exists __if_not_exists __inline __interface __leave "
   "__multiple_inheritance __nogc __noop __pin __property __raise "
   "__sealed __single_inheritance __stdcall __super __try __try_cast __unhook __uuidof __value "
-  "__virtual_inheritance",
+  "__virtual_inheritance "
+  "override final __VA_ARGS__ __VA_OPT__ __has_include _Pragma "
+  "__STDC__ __STDC_HOSTED__ __STDC_VERSION__ __cplusplus "
+  "__STDC_ISO_10646__ __STDC_MB_MIGHT_NEQ_WC__ __STDC_UTF_16__ __STDC_UTF_32__ "
+  "__STDCPP_DEFAULT_NEW_ALIGNMENT__ __STDCPP_STRICT_POINTER_SAFETY__ __STDCPP_THREADS__ "
+  "__DATE__ __TIME__ __FILE__ __LINE__",
   // Documentation comment keywords
   "",
   // Global classes and typedefs
   "complex imaginary int8_t int16_t int32_t int64_t intptr_t intmax_t ptrdiff_t size_t "
   "uint8_t uint16_t uint32_t uint64_t uintptr_t uintmax_t "
-  "__int16 __int32 __int64 __int8 __m128 __m128d __m128i __m64 __wchar_t "
-  "_Alignas _Alignof _Atomic _Bool _Complex _Generic _Imaginary _Noreturn _Pragma _Static_assert _Thread_local",
+  "__int16 __int32 __int64 __int8 __m128 __m128d __m128i __m64 __wchar_t ",
   // Preprocessor definitions
   "DEBUG NDEBUG UNICODE _DEBUG _UNICODE _MSC_VER", 
   // Task marker and error marker keywords
