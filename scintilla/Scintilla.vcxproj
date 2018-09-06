@@ -345,7 +345,6 @@
     <ClCompile Include="src\XPM.cxx" />
     <ClCompile Include="win32\HanjaDic.cxx" />
     <ClCompile Include="win32\PlatWin.cxx" />
-    <ClCompile Include="win32\ScintillaDLL.cxx" />
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>

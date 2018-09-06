@@ -99,7 +99,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
@@ -163,7 +163,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
@@ -226,7 +226,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>WIN32;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -291,7 +291,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\ced\ced;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>_WIN64;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -374,6 +374,51 @@
     <ClCompile Include="Helpers.c" />
     <ClCompile Include="Notepad3.c" />
     <ClCompile Include="Print.cpp" />
+    <ClCompile Include="StyleLexers\styleLexAHK.c" />
+    <ClCompile Include="StyleLexers\styleLexASM.c" />
+    <ClCompile Include="StyleLexers\styleLexAU3.c" />
+    <ClCompile Include="StyleLexers\styleLexAVS.c" />
+    <ClCompile Include="StyleLexers\styleLexAwk.c" />
+    <ClCompile Include="StyleLexers\styleLexBASH.c" />
+    <ClCompile Include="StyleLexers\styleLexBAT.c" />
+    <ClCompile Include="StyleLexers\styleLexCMAKE.c" />
+    <ClCompile Include="StyleLexers\styleLexCOFFEESCRIPT.c" />
+    <ClCompile Include="StyleLexers\styleLexCONF.c" />
+    <ClCompile Include="StyleLexers\styleLexCPP.c" />
+    <ClCompile Include="StyleLexers\styleLexCS.c" />
+    <ClCompile Include="StyleLexers\styleLexCSS.c" />
+    <ClCompile Include="StyleLexers\styleLexD.c" />
+    <ClCompile Include="StyleLexers\styleLexDIFF.c" />
+    <ClCompile Include="StyleLexers\styleLexGo.c" />
+    <ClCompile Include="StyleLexers\styleLexHTML.c" />
+    <ClCompile Include="StyleLexers\styleLexINNO.c" />
+    <ClCompile Include="StyleLexers\styleLexJAVA.c" />
+    <ClCompile Include="StyleLexers\styleLexJS.c" />
+    <ClCompile Include="StyleLexers\styleLexJSON.c" />
+    <ClCompile Include="StyleLexers\styleLexLUA.c" />
+    <ClCompile Include="StyleLexers\styleLexMAK.c" />
+    <ClCompile Include="StyleLexers\styleLexMARKDOWN.c" />
+    <ClCompile Include="StyleLexers\styleLexMATLAB.c" />
+    <ClCompile Include="StyleLexers\styleLexNimrod.c" />
+    <ClCompile Include="StyleLexers\styleLexNSIS.c" />
+    <ClCompile Include="StyleLexers\styleLexPAS.c" />
+    <ClCompile Include="StyleLexers\styleLexPL.c" />
+    <ClCompile Include="StyleLexers\styleLexPROPS.c" />
+    <ClCompile Include="StyleLexers\styleLexPS.c" />
+    <ClCompile Include="StyleLexers\styleLexPY.c" />
+    <ClCompile Include="StyleLexers\styleLexR.c" />
+    <ClCompile Include="StyleLexers\styleLexRC.c" />
+    <ClCompile Include="StyleLexers\styleLexRegistry.c" />
+    <ClCompile Include="StyleLexers\styleLexRUBY.c" />
+    <ClCompile Include="StyleLexers\styleLexRust.c" />
+    <ClCompile Include="StyleLexers\styleLexSQL.c" />
+    <ClCompile Include="StyleLexers\styleLexStandard.c" />
+    <ClCompile Include="StyleLexers\styleLexTCL.c" />
+    <ClCompile Include="StyleLexers\styleLexVB.c" />
+    <ClCompile Include="StyleLexers\styleLexVBS.c" />
+    <ClCompile Include="StyleLexers\styleLexVHDL.c" />
+    <ClCompile Include="StyleLexers\styleLexXML.c" />
+    <ClCompile Include="StyleLexers\styleLexYAML.c" />
     <ClCompile Include="Styles.c" />
   </ItemGroup>
   <ItemGroup>
@@ -408,6 +453,8 @@
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Notepad3.h" />
     <ClInclude Include="SciCall.h" />
+    <ClInclude Include="StyleLexers\EditLexer.h" />
+    <ClInclude Include="StyleLexers\StyleLexers.h" />
     <ClInclude Include="Styles.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TypeDefs.h" />

@@ -16,54 +16,18 @@
 #ifndef _NP3_STYLES_H_
 #define _NP3_STYLES_H_
 
-#define BUFSIZE_STYLE_VALUE 256
-#define BUFZIZE_STYLE_EXTENTIONS 512
+#include "Scintilla.h"
+#include "StyleLexers/EditLexer.h"
+
 
 #define MARGIN_SCI_LINENUM 0
 #define MARGIN_SCI_BOOKMRK 1
 #define MARGIN_SCI_FOLDING 2
 
-#include "Scintilla.h"
-
-typedef struct _editstyle
-{
-  #pragma warning(disable : 4201)  // MS's Non-Std: Struktur/Union ohne Namen
-  union
-  {
-    INT32 iStyle;
-    UINT8 iStyle8[4];
-  };
-  int rid;
-  WCHAR* pszName;
-  WCHAR* pszDefault;
-  WCHAR  szValue[BUFSIZE_STYLE_VALUE];
-
-} EDITSTYLE, *PEDITSTYLE;
-
-
-typedef struct _keywordlist
-{
-  char *pszKeyWords[KEYWORDSET_MAX + 1];
-
-} KEYWORDLIST, *PKEYWORDLIST;
-
-#pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Struktur/Union
-typedef struct _editlexer
-{
-  int lexerID;
-  int resID;
-  WCHAR* pszName;
-  WCHAR* pszDefExt;
-  WCHAR  szExtensions[BUFZIZE_STYLE_EXTENTIONS];
-  PKEYWORDLIST pKeyWords;
-  EDITSTYLE    Styles[];
-
-} EDITLEXER, *PEDITLEXER;
-
-
 // Number of Lexers in pLexArray
 #define NUMLEXERS 48
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
+
 
 void   Style_Load();
 void   Style_Save();

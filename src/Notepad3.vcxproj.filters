@@ -40,6 +40,9 @@
     <Filter Include="ChooseFont">
       <UniqueIdentifier>{a6270a0b-5c38-4e68-b38c-5795ccb57302}</UniqueIdentifier>
     </Filter>
+    <Filter Include="StyleLexers">
+      <UniqueIdentifier>{82f9cc2d-9173-4af4-8967-5fd2e5f8aef7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -104,6 +107,141 @@
     </ClCompile>
     <ClCompile Include="ChooseFont\GdiTextRenderer.cpp">
       <Filter>ChooseFont</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexAHK.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexASM.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexAU3.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexAVS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexAwk.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexBASH.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexBAT.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexCMAKE.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexCOFFEESCRIPT.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexCONF.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexCPP.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexCS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexCSS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexD.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexDIFF.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexGo.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexHTML.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexINNO.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexJAVA.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexJS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexJSON.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexLUA.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexMAK.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexMARKDOWN.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexMATLAB.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexNimrod.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexNSIS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexPAS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexPL.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexPROPS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexPS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexPY.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexR.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexRC.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexRegistry.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexRUBY.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexRust.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexSQL.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexStandard.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexTCL.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexVB.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexVBS.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexVHDL.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexXML.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexYAML.c">
+      <Filter>StyleLexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +352,12 @@
     </ClInclude>
     <ClInclude Include="ChooseFont\GdiTextRenderer.h">
       <Filter>ChooseFont</Filter>
+    </ClInclude>
+    <ClInclude Include="StyleLexers\EditLexer.h">
+      <Filter>StyleLexers</Filter>
+    </ClInclude>
+    <ClInclude Include="StyleLexers\StyleLexers.h">
+      <Filter>StyleLexers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
