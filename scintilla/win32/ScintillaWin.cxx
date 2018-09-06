@@ -946,7 +946,7 @@ sptr_t ScintillaWin::WndPaint(uptr_t wParam) {
 	PAINTSTRUCT *pps;
 
 	const bool IsOcxCtrl = (wParam != 0); // if wParam != 0, it contains
-								   // a PAINTSTRUCT* from the OCX
+									 // a PAINTSTRUCT* from the OCX
 	// Removed since this interferes with reporting other assertions as it occurs repeatedly
 	//PLATFORM_ASSERT(hRgnUpdate == nullptr);
 	hRgnUpdate = ::CreateRectRgn(0, 0, 0, 0);
@@ -1463,6 +1463,8 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 					} else {
 						KeyCommand(SCI_ZOOMOUT);
 					}
+					// send to main window too !
+					::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 				} else {
 					// Scroll
 					ScrollTo(topLine + linesToScroll);

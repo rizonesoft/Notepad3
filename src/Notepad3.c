@@ -1500,6 +1500,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return MsgSysCommand(hwnd, umsg, wParam, lParam);
       break;
 
+    case WM_MOUSEWHEEL:
+      if (wParam & MK_CONTROL) { EditShowZoomCallTip(g_hwndEdit); }
+      break;
+
     default:
       if (umsg == msgTaskbarCreated) {
         if (!IsWindowVisible(hwnd)) { ShowNotifyIcon(hwnd, true); }
