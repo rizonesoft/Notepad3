@@ -65,7 +65,9 @@ static constexpr bool IsControlCharacter(int ch) noexcept {
 }
 
 PrintParameters::PrintParameters() {
-	magnification = 0;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	magnification = 100;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	colourMode = SC_PRINT_NORMAL;
 	wrapState = eWrapWord;
 }

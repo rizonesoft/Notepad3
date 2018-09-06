@@ -70,11 +70,18 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
 
 // ----------------------------------------------------------------------------
 
+// keep backward compatible with older settings-file versions
+typedef enum
+{
+  CFG_VER_NONE = 0, /// old version
+  CFG_VER_0001 = 1,  /// ZoomLevel and PrintZoom changed from relative font size in point to absolute percentage.
 
+  CFG_VER_CURRENT = CFG_VER_0001
+} CFG_VERSION;
 
 // --------------------------------------------------------------------------
 
-typedef enum BufferSizes
+typedef enum 
 {
   MICRO_BUFFER = 32,
   MINI_BUFFER = 64,

@@ -4127,9 +4127,9 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
   float fSize = _GetBaseFontSize();
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  float const zoomPoints = (float)SciCall_GetZoom();
+  float const zoomPercent = (float)SciCall_GetZoom();
 
-  int const iSizeDPI = ScaleToCurrentDPI(fSize + zoomPoints);
+  int const iSizeDPI = ScaleToCurrentDPI((fSize * zoomPercent) / 100.0f);
   SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? iSizeDPI : 0);
 }
 
@@ -4144,9 +4144,9 @@ void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
   float fSize = _GetBaseFontSize();
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  float const zoomPoints = (float)SciCall_GetZoom();
+  float const zoomPercent = (float)SciCall_GetZoom();
 
-  int const iSizeDPI = ScaleToCurrentDPI(fSize + zoomPoints);
+  int const iSizeDPI = ScaleToCurrentDPI((fSize * zoomPercent) / 100.0f);
   SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? iSizeDPI : 0);
 
   // Depending on if the margin is visible or not, choose different bookmark indication

@@ -125,6 +125,7 @@ WCHAR         g_wchIniFile[MAX_PATH] = { L'\0' };
 WCHAR         g_wchIniFile2[MAX_PATH] = { L'\0' };
 static WCHAR  g_szTmpFilePath[MAX_PATH] = { L'\0' };
 
+static int    g_iSettingsVersion = CFG_VER_NONE;
 static bool   g_bSaveSettings;
 static bool   g_bEnableSaveSettings;
 bool          g_bIniFileFromScratch = false;
@@ -1009,7 +1010,7 @@ static void __fastcall _InitWindowPosition()
   {
     g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
     g_WinInfo.max = 0;
-    g_WinInfo.zoom = 0;
+    g_WinInfo.zoom = 100;
   }
   else if (g_flagDefaultPos >= 4) 
   {
@@ -1046,7 +1047,7 @@ static void __fastcall _InitWindowPosition()
       g_WinInfo.y += (g_flagDefaultPos & 32) ? 4 : 8;
       g_WinInfo.cy -= (g_flagDefaultPos & (16 | 32)) ? 12 : 16;
       g_WinInfo.max = 1;
-      g_WinInfo.zoom = 0;
+      g_WinInfo.zoom = 100;
     }
   }
   else if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
@@ -4861,7 +4862,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_RESETZOOM:
       {
-        SciCall_SetZoom(0);
+        SciCall_SetZoom(100);
         UpdateLineNumberWidth();
         EditShowZoomCallTip(g_hwndEdit);
       }
@@ -6610,11 +6611,15 @@ void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
 void LoadSettings()
 {
   WCHAR *pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
-  if (pIniSection) {
-    int   cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
+  if (pIniSection) 
+  {
+    int const cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
+
+    g_iSettingsVersion = IniGetInt(L"Settings", L"SettingsVersion", CFG_VER_NONE);
 
     g_bEnableSaveSettings = true; // false: if settings-file is loaded in editor
     g_bSaveSettings = IniGetBool(L"Settings", L"SaveSettings", true);
+
 
     // first load "hard coded" .ini-Settings
     // --------------------------------------------------------------------------
@@ -6831,8 +6836,9 @@ void LoadSettings()
     iPrintColor = IniSectionGetInt(pIniSection, L"PrintColorMode", 3);
     iPrintColor = clampi(iPrintColor, 0, 4);
 
-    iPrintZoom = IniSectionGetInt(pIniSection, L"PrintZoom", 10);
-    iPrintZoom = clampi(iPrintZoom - 10, -10, 20);
+    iPrintZoom = IniSectionGetInt(pIniSection, L"PrintZoom", (g_iSettingsVersion < CFG_VER_0001) ? 10 : 100);
+    if (g_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom-10) * 10; }
+    iPrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
     pagesetupMargin.left = IniSectionGetInt(pIniSection, L"PrintMarginLeft", -1);
     pagesetupMargin.left = max(pagesetupMargin.left, -1);
@@ -6990,8 +6996,9 @@ void LoadSettings()
       g_WinInfo.cy = IniSectionGetInt(pIniSection, tchSizeY, (INT_MAX >> 1));
       g_WinInfo.max = IniSectionGetInt(pIniSection, tchMaximized, 0);
       g_WinInfo.max = clampi(g_WinInfo.max, 0, 1);
-      g_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, 0);
-      g_WinInfo.zoom = clampi(g_WinInfo.zoom, -10, 20);
+      g_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, (g_iSettingsVersion < CFG_VER_0001) ? 0 : 100);
+      if (g_iSettingsVersion < CFG_VER_0001) { g_WinInfo.zoom = (g_WinInfo.zoom + 10) * 10; }
+      g_WinInfo.zoom = clampi(g_WinInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
       if (((g_WinInfo.x  & ~CW_USEDEFAULT) == (INT_MAX >> 1)) ||
           ((g_WinInfo.y  & ~CW_USEDEFAULT) == (INT_MAX >> 1)) ||
@@ -7060,7 +7067,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   CreateIniFile();
 
   if (!g_bSaveSettings && !bSaveSettingsNow) {
-    IniSetInt(L"Settings", L"SaveSettings", g_bSaveSettings);
+    IniSetBool(L"Settings", L"SaveSettings", g_bSaveSettings);
     return;
   }
 
@@ -7071,6 +7078,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
   //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
+  IniSectionSetInt(pIniSection, L"SettingsVersion", CFG_VER_CURRENT);
   IniSectionSetBool(pIniSection, L"SaveSettings", g_bSaveSettings); 
   IniSectionSetBool(pIniSection, L"SaveRecentFiles", g_bSaveRecentFiles);
   IniSectionSetBool(pIniSection, L"PreserveCaretPos", g_bPreserveCaretPos);
@@ -7134,7 +7142,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"PrintHeader", iPrintHeader);
   IniSectionSetInt(pIniSection, L"PrintFooter", iPrintFooter);
   IniSectionSetInt(pIniSection, L"PrintColorMode", iPrintColor);
-  IniSectionSetInt(pIniSection, L"PrintZoom", iPrintZoom + 10);
+  IniSectionSetInt(pIniSection, L"PrintZoom", iPrintZoom);
   IniSectionSetInt(pIniSection, L"PrintMarginLeft", pagesetupMargin.left);
   IniSectionSetInt(pIniSection, L"PrintMarginTop", pagesetupMargin.top);
   IniSectionSetInt(pIniSection, L"PrintMarginRight", pagesetupMargin.right);
@@ -8742,7 +8750,7 @@ void UpdateSettingsCmds()
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, g_bSaveSettings && g_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && g_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && g_bEnableSaveSettings);
-    if (SciCall_GetZoom() != 0) { EditShowZoomCallTip(g_hwndEdit); }
+    if (SciCall_GetZoom() != 100) { EditShowZoomCallTip(g_hwndEdit); }
 }
 
 

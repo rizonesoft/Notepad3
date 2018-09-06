@@ -484,8 +484,10 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
         SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);
 
-        SendDlgItemMessage(hwnd,31,UDM_SETRANGE,0,MAKELONG((short)20,(short)-10));
-        SendDlgItemMessage(hwnd,31,UDM_SETPOS,0,MAKELONG((short)iPrintZoom,0));
+        UDACCEL const acc[1] = { { 0, 10 } };
+        SendDlgItemMessage(hwnd,31,UDM_SETACCEL,1,(WPARAM)acc);
+        SendDlgItemMessage(hwnd,31,UDM_SETRANGE32,SC_MIN_ZOOM_LEVEL,SC_MAX_ZOOM_LEVEL);
+        SendDlgItemMessage(hwnd,31,UDM_SETPOS32,0,iPrintZoom);
 
         // Set header options
         GetLngString(IDS_MUI_PRINT_HEADER,tch,COUNTOF(tch));
@@ -527,7 +529,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
           p1 = p2;
           p2 = StrChr(p1, L'|');  // next
         }
-        SendDlgItemMessage(hwnd,34,CB_SETCURSEL,(WPARAM)iPrintColor,0);
+        SendDlgItemMessage(hwnd,34,CB_SETCURSEL,(LPARAM)iPrintColor,0);
 
         // Make combos handier
         SendDlgItemMessage(hwnd,32,CB_SETEXTENDEDUI,true,0);
@@ -541,11 +543,9 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
     case WM_COMMAND:
       if (LOWORD(wParam) == IDOK)
       {
-        int iPos = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS,0,0);
-        if (HIWORD(iPos) == 0)
-          iPrintZoom = (int)(short)LOWORD(iPos);
-        else
-          iPrintZoom = 0;
+        BOOL bError = FALSE;
+        int const iPos = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
+        iPrintZoom = bError ? 100 : iPos;
 
         iPrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
         iPrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);

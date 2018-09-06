@@ -3826,15 +3826,17 @@ int Editor::KeyCommand(unsigned int iMessage) {
 		AddChar('\f');
 		break;
 	case SCI_ZOOMIN:
-		if (vs.zoomLevel < 20) {
-			vs.zoomLevel++;
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (vs.ZoomIn()) {
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			InvalidateStyleRedraw();
 			NotifyZoom();
 		}
 		break;
 	case SCI_ZOOMOUT:
-		if (vs.zoomLevel > -10) {
-			vs.zoomLevel--;
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (vs.ZoomOut()) {
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			InvalidateStyleRedraw();
 			NotifyZoom();
 		}
@@ -6283,7 +6285,9 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_SETPRINTMAGNIFICATION:
-		view.printParameters.magnification = static_cast<int>(wParam);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		view.printParameters.magnification = std::clamp(static_cast<int>(wParam), SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		break;
 
 	case SCI_GETPRINTMAGNIFICATION:
@@ -7557,7 +7561,9 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_SETZOOM:
-		vs.zoomLevel = static_cast<int>(wParam);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		vs.zoomLevel = std::clamp(static_cast<int>(wParam), SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		InvalidateStyleRedraw();
 		NotifyZoom();
 		break;
