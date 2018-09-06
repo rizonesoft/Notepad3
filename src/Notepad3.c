@@ -6615,7 +6615,7 @@ void LoadSettings()
   {
     int const cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
-    g_iSettingsVersion = IniSectionGetInt(pIniSection, L"SettingsVersion", CFG_VER_NONE);
+    g_iSettingsVersion = IniGetInt(L"Settings", L"SettingsVersion", CFG_VER_NONE);
 
     g_bEnableSaveSettings = true; // false: if settings-file is loaded in editor
     g_bSaveSettings = IniGetBool(L"Settings", L"SaveSettings", true);
@@ -6836,7 +6836,7 @@ void LoadSettings()
     iPrintColor = IniSectionGetInt(pIniSection, L"PrintColorMode", 3);
     iPrintColor = clampi(iPrintColor, 0, 4);
 
-    iPrintZoom = IniSectionGetInt(pIniSection, L"PrintZoom", 100);
+    iPrintZoom = IniSectionGetInt(pIniSection, L"PrintZoom", (g_iSettingsVersion < CFG_VER_0001) ? 10 : 100);
     if (g_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom-10) * 10; }
     iPrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
@@ -6996,7 +6996,7 @@ void LoadSettings()
       g_WinInfo.cy = IniSectionGetInt(pIniSection, tchSizeY, (INT_MAX >> 1));
       g_WinInfo.max = IniSectionGetInt(pIniSection, tchMaximized, 0);
       g_WinInfo.max = clampi(g_WinInfo.max, 0, 1);
-      g_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, 0);
+      g_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, (g_iSettingsVersion < CFG_VER_0001) ? 0 : 100);
       if (g_iSettingsVersion < CFG_VER_0001) { g_WinInfo.zoom = (g_WinInfo.zoom + 10) * 10; }
       g_WinInfo.zoom = clampi(g_WinInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
