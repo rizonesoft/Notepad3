@@ -24,6 +24,13 @@
 #include <memory>
 #include <chrono>
 
+#if !defined(NOMINMAX)
+// Want to use std::min and std::max so don't want Windows.h version of min and max
+#define NOMINMAX
+#endif
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
+
 #include <windows.h>
 #include <commctrl.h>
 #include <richedit.h>
@@ -2729,9 +2736,7 @@ void ScintillaWin::ImeStartComposition() {
 			// The logfont for the IME is recreated here.
 			const int styleHere = pdoc->StyleIndexAt(sel.MainCaret());
 			LOGFONTW lf = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, L"" };
-			int sizeZoomed = vs.styles[styleHere].size + vs.zoomLevel * SC_FONT_SIZE_MULTIPLIER;
-			if (sizeZoomed <= 2 * SC_FONT_SIZE_MULTIPLIER)	// Hangs if sizeZoomed <= 1
-				sizeZoomed = 2 * SC_FONT_SIZE_MULTIPLIER;
+			int sizeZoomed = GetFontSizeZoomed(vs.styles[styleHere].size, vs.zoomLevel);
 			AutoSurface surface(this);
 			int deviceHeight = sizeZoomed;
 			if (surface) {
@@ -3614,13 +3619,11 @@ sptr_t ScintillaWin::DirectFunction(
 	return reinterpret_cast<ScintillaWin *>(ptr)->WndProc(iMessage, wParam, lParam);
 }
 
-
 extern "C"
 sptr_t __stdcall Scintilla_DirectFunction(
 	ScintillaWin *sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
 	return sci->WndProc(iMessage, wParam, lParam);
 }
-
 
 LRESULT PASCAL ScintillaWin::SWndProc(
 	HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
@@ -3668,7 +3671,7 @@ int Scintilla_RegisterClasses(void *hInstance) {
 
 namespace Scintilla {
 
-int ResourcesRelease(bool fromDllMain) {
+int ResourcesRelease(bool fromDllMain) noexcept {
 	const bool result = ScintillaWin::Unregister();
 	Platform_Finalise(fromDllMain);
 	return result;

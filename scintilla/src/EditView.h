@@ -11,7 +11,7 @@
 namespace Scintilla {
 
 struct PrintParameters {
-	int magnification;
+	int magnification;     /// @ 2018-09-06 Changed to a percent value
 	int colourMode;
 	WrapMode wrapState;
 	PrintParameters();

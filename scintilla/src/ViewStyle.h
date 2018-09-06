@@ -63,6 +63,14 @@ typedef std::map<FontSpecification, std::unique_ptr<FontRealised>> FontMap;
 
 enum WrapMode { eWrapNone, eWrapWord, eWrapChar, eWrapWhitespace };
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+constexpr int GetFontSizeZoomed(int size, int zoomLevel) noexcept {
+	size = (size * zoomLevel + 50) / 100;
+	// Hangs if sizeZoomed (in point) <= 1
+	return std::max(size, 2 * SC_FONT_SIZE_MULTIPLIER);
+}
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 class ColourOptional : public ColourDesired {
 public:
 	bool isSet;
@@ -135,7 +143,7 @@ public:
 	int fixedColumnWidth;	///< Total width of margins
 	bool marginInside;	///< true: margin included in text view, false: separate views
 	int textStart;	///< Starting x position of text within the view
-	int zoomLevel;
+	int zoomLevel;  /// @ 2018-09-06 Changed to a percent value
 	WhiteSpaceVisibility viewWhitespace;
 	TabDrawMode tabDrawMode;
 	int whitespaceSize;
@@ -211,6 +219,11 @@ public:
 	bool SetWrapIndentMode(int wrapIndentMode_);
 
 	bool WhiteSpaceVisible(bool inIndent) const;
+
+  // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+  bool ViewStyle::ZoomIn() noexcept;
+  bool ViewStyle::ZoomOut() noexcept;
+  // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 private:
 	void AllocStyles(size_t sizeNew);

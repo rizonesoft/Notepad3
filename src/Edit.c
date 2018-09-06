@@ -8314,12 +8314,10 @@ void EditShowZoomCallTip(HWND hwnd)
 {
   UNUSED(hwnd);
 
-  int const iZoomLevel = SciCall_GetZoom();
-  float const fSize = Style_GetCurrentFontSize();
-  int const iZoomPercent = float2int((100.0f * ((float)iZoomLevel + fSize)) / fSize);
+  int const iZoomLevelPercent = SciCall_GetZoom();
 
   char chToolTip[32] = { '\0' };
-  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomPercent);
+  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
 
   DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
 
