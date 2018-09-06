@@ -447,9 +447,6 @@
     <ClCompile Include="lexers\LexR.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="win32\ScintillaDLL.cxx">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="lexers\LexRust.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
