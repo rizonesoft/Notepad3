@@ -33,6 +33,7 @@
 #include <stdio.h>
 
 #include "SciLexer.h"
+#include "SciXLexer.h"
 
 #include "Notepad3.h"
 #include "Edit.h"

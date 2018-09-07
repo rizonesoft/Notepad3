@@ -5,6 +5,7 @@
 
 #include "Scintilla.h"
 #include "SciLexer.h"
+#include "../sciXlexers/SciXLexer.h"
 
 #include "resource.h"
 

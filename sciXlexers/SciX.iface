@@ -1,0 +1,30 @@
+## This file defines the interface to ScintillaX Lexers
+## -----------------------------------------------------------------------------
+
+val SCLEX_AHK=200
+
+## -----------------------------------------------------------------------------
+
+# Lexical states for SCLEX_AHK
+lex AHK=SCLEX_AHK SCE_AHK_
+val SCE_AHK_DEFAULT=0
+val SCE_AHK_COMMENTLINE=1
+val SCE_AHK_COMMENTBLOCK=2
+val SCE_AHK_ESCAPE=3
+val SCE_AHK_SYNOPERATOR=4
+val SCE_AHK_EXPOPERATOR=5
+val SCE_AHK_STRING=6
+val SCE_AHK_NUMBER=7
+val SCE_AHK_IDENTIFIER=8
+val SCE_AHK_VARREF=9
+val SCE_AHK_LABEL=10
+val SCE_AHK_WORD_CF=11
+val SCE_AHK_WORD_CMD=12
+val SCE_AHK_WORD_FN=13
+val SCE_AHK_WORD_DIR=14
+val SCE_AHK_WORD_KB=15
+val SCE_AHK_WORD_VAR=16
+val SCE_AHK_WORD_SP=17
+val SCE_AHK_WORD_UD=18
+val SCE_AHK_VARREFKW=19
+val SCE_AHK_ERROR=20
