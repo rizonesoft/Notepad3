@@ -265,6 +265,7 @@
     <ClCompile Include="..\onigmo\st.c" />
     <ClCompile Include="..\scionigmo\OnigmoRegExEngine.cxx" />
     <ClCompile Include="..\sciXlexers\LexAHK.cxx" />
+    <ClCompile Include="..\sciXlexers\LexAHKL.cxx" />
     <ClCompile Include="lexers\LexAsm.cxx" />
     <ClCompile Include="lexers\LexAU3.cxx" />
     <ClCompile Include="lexers\LexAVS.cxx" />

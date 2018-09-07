@@ -243,6 +243,9 @@
     <ClCompile Include="StyleLexers\styleLexYAML.c">
       <Filter>StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexAHKL.c">
+      <Filter>StyleLexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">
