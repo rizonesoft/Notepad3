@@ -3771,6 +3771,9 @@ struct Sci_TextToFind {
      <p>The windowed behaviour can be chosen with <code>SCI_SETIMEINTERACTION(SC_IME_WINDOWED)</code>
      and the inline behaviour with <code>SCI_SETIMEINTERACTION(SC_IME_INLINE)</code>.
      Scintilla may ignore this call in some cases. For example, the inline behaviour might only be supported for some languages.</p>
+     <p>When the inline IME mode is active, characters are added tentatively before being finalised and an
+     <a class="message" href="#SCN_CHARADDED">SCN_CHARADDED</a>
+     notification is sent for each character.</p>
 
 <div  class="provisional">
     <a href="#ProvisionalMessages">These bidirectional features are experimental and incomplete.</a><br />

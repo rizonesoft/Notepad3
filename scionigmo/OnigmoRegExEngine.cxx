@@ -93,7 +93,7 @@ public:
   }
 
   virtual Sci::Position FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
-                                 bool caseSensitive, bool word, bool wordStart, int flags, Sci::Position* length) override;
+                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position* length) override;
 
   virtual const char* SubstituteByPosition(Document* doc, const char* text, Sci::Position* length) override;
 

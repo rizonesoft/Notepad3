@@ -34,11 +34,11 @@
     <Filter Include="onigmo\win32">
       <UniqueIdentifier>{4fc7e856-11b1-431c-aac8-9bb9c28d1b86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sciXlexers">
+      <UniqueIdentifier>{3e51698b-084e-40cf-8dee-860bd61d7a2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lexers\LexAHK.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
     <ClCompile Include="lexers\LexAsm.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -450,6 +450,9 @@
     <ClCompile Include="lexers\LexRust.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\sciXlexers\LexAHK.cxx">
+      <Filter>sciXlexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -676,6 +679,9 @@
     </ClInclude>
     <ClInclude Include="src\IntegerRectangle.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sciXlexers\SciXLexer.h">
+      <Filter>sciXlexers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

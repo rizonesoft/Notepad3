@@ -16,7 +16,7 @@
 
 #include "ILexer.h"
 #include "Scintilla.h"
-#include "SciLexer.h"
+#include "SciXLexer.h"
 
 #include "WordList.h"
 #include "LexAccessor.h"
@@ -252,7 +252,7 @@ static void ColouriseAHKDoc(
 			if (bOnlySpaces && sc.Match('*', '/')) {
 				// End of comment at start of line (skipping white space)
 				sc.Forward();
-				sc.ForwardSetState(SCE_C_DEFAULT);
+				sc.ForwardSetState(SCE_AHK_DEFAULT);
 			}
 		} else if (sc.state == SCE_AHK_EXPOPERATOR) {
 			if (!IsExpOperator(sc.ch)) {
@@ -403,7 +403,7 @@ static void ColouriseAHKDoc(
 }
 
 static void FoldAHKDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
-                            WordList *[], Accessor &styler) {
+														WordList *[], Accessor &styler) {
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	Sci_PositionU endPos = startPos + length;
