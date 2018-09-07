@@ -682,7 +682,7 @@ void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, 
 {
 	LexAccessor styler(pAccess);
 
-	int visibleChars = 0;
+	//int visibleChars = 0;
 	int lineCurrent = styler.GetLine(startPos);
 	int levelCurrent = SC_FOLDLEVELBASE;
 	int styleNext = styler.StyleAt(startPos);
@@ -736,8 +736,8 @@ void SCI_METHOD LexerAHKL::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, 
 
 		}
 
-		if (!isspace(ch))
-			visibleChars++;
+		//if (!isspace(ch))
+		//	visibleChars++;
 
 		if (atEOL || (i == endPos-1)) {
 
