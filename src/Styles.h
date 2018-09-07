@@ -25,7 +25,7 @@
 #define MARGIN_SCI_FOLDING 2
 
 // Number of Lexers in pLexArray
-#define NUMLEXERS 48
+#define NUMLEXERS 49
 #define AVG_NUM_OF_STYLES_PER_LEXER 20
 
 

@@ -111,6 +111,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexCONF,          // Apache Config Files
   &lexASM,           // Assembly Script
   &lexAHK,           // AutoHotkey Script
+  &lexAHKL,          // AutoHotkey L Script
   &lexAU3,           // AutoIt3 Script
   &lexAVS,           // AviSynth Script
   &lexAwk,           // Awk Script
