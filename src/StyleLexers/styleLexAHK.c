@@ -108,7 +108,7 @@ KEYWORDLIST KeyWords_AHK = {
 
 
 EDITLEXER lexAHK = { 
-SCLEX_AHK, IDS_LEX_AHK, L"AutoHotkey Script", L"ahk; ia; scriptlet", L"", 
+SCLEX_AHK, IDS_LEX_AHK, L"AutoHotkey Script", L"", L"", 
 &KeyWords_AHK, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_AHK_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

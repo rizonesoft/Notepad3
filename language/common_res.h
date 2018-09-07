@@ -667,6 +667,7 @@
 #define IDS_LEX_NIM_SRC                 63044
 #define IDS_LEX_R_STAT                  63045
 #define IDS_LEX_RUST_SRC                63046
+#define IDS_LEX_AHKL                    63047
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101
@@ -916,5 +917,10 @@
 #define IDS_LEX_STR_63344               63344
 #define IDS_LEX_STR_63345               63345
 #define IDS_LEX_STR_63346               63346
+#define IDS_LEX_STR_63347               63347
+#define IDS_LEX_STR_63348               63348
+#define IDS_LEX_STR_63349               63349
+#define IDS_LEX_STR_63350               63350
+#define IDS_LEX_STR_63351               63351
 
 #endif //_COMMON_RES_H_

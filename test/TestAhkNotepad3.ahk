@@ -43,7 +43,7 @@ Goto LABEL_END
 ; =============================================================================
 
 ; =============================================================================
-CHECK_NP3_STARTS: 
+CHECK_NP3_STARTS:
 ; check that NP3 starts up
 WinWait ahk_pid %v_Notepad3_PID%, , 3
 v_ErrLevel = %ErrorLevel%
