@@ -474,7 +474,7 @@ HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
 {
   if (StrIsEmpty(AppID)) { return(S_OK); }
 
-  if (StringCchCompareIX(AppID, L"(default)") == 0) { return(S_OK); }
+  if (StringCchCompareXI(AppID, L"(default)") == 0) { return(S_OK); }
 
   return SetCurrentProcessExplicitAppUserModelID(AppID);
 }
@@ -925,7 +925,7 @@ bool PathIsLnkFile(LPCWSTR pszPath)
   if (!pszPath || !*pszPath)
     return false;
 
-  if (StringCchCompareIX(PathFindExtension(pszPath),L".lnk"))
+  if (StringCchCompareXI(PathFindExtension(pszPath),L".lnk"))
     return false;
   else
     return PathGetLnkPath(pszPath,tchResPath,COUNTOF(tchResPath));
@@ -1559,7 +1559,7 @@ bool MRU_Destroy(LPMRULIST pmru)
 int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2) 
 {
   if (pmru->iFlags & MRU_NOCASE)
-    return(StringCchCompareIX(psz1,psz2));
+    return(StringCchCompareXI(psz1,psz2));
   else
     return(StringCchCompareX(psz1,psz2));
 }
@@ -1595,13 +1595,13 @@ bool MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex) {
       *iIndex = i;
       return false;
     }
-    else if (StringCchCompareIX(pmru->pszItems[i],pszFile) == 0) {
+    else if (StringCchCompareXI(pmru->pszItems[i],pszFile) == 0) {
       *iIndex = i;
       return true;
     }
     else {
       PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),true);
-      if (StringCchCompareIN(wchItem,COUNTOF(wchItem),pszFile,-1) == 0) {
+      if (StringCchCompareXI(wchItem,pszFile) == 0) {
         *iIndex = i;
         return true;
       }
@@ -1680,7 +1680,7 @@ bool MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile) {
   while (MRU_Enum(pmruStore,i,wchItem,COUNTOF(wchItem)) != -1) 
   {
     PathAbsoluteFromApp(wchItem,wchItem,COUNTOF(wchItem),true);
-    if (StringCchCompareIN(wchItem,COUNTOF(wchItem),pszFile,-1) == 0)
+    if (StringCchCompareXI(wchItem,pszFile) == 0)
       MRU_Delete(pmruStore,i);
     else
       i++;
@@ -2454,6 +2454,46 @@ void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
   else
     StringCchPrintf(lpszStrg, cchSize, L"%i", float2int(fValue));
 }
+
+
+
+//=============================================================================
+//
+//  faststrcmpl()
+//  
+int faststrcmpl(const char* ptr0, const char* ptr1, size_t len)
+{
+  size_t fast = len / sizeof(size_t) + 1;
+  size_t offset = (fast - 1) * sizeof(size_t);
+  size_t cur_block = 0;
+
+  if (len <= sizeof(size_t)) { fast = 0; }
+
+  size_t* lptr0 = (size_t*)ptr0;
+  size_t* lptr1 = (size_t*)ptr1;
+
+  while (cur_block < fast) {
+    if ((lptr0[cur_block] ^ lptr1[cur_block])) {
+      for (size_t pos = cur_block * sizeof(size_t); pos < len; ++pos) {
+        if ((ptr0[pos] ^ ptr1[pos]) || (ptr0[pos] == 0) || (ptr1[pos] == 0)) {
+          return  (int)((unsigned char)ptr0[pos] - (unsigned char)ptr1[pos]);
+        }
+      }
+    }
+    ++cur_block;
+  }
+
+  while (len > offset) {
+    if ((ptr0[offset] ^ ptr1[offset])) {
+      return (int)((unsigned char)ptr0[offset] - (unsigned char)ptr1[offset]);
+    }
+    ++offset;
+  }
+
+  return 0;
+}
+
+
 
 
 

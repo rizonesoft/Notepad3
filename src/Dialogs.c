@@ -755,8 +755,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
               ExtractFirstArgument(arg1,arg1,arg2,MAX_PATH);
 
-              if (StringCchCompareIN(arg1,COUNTOF(arg1), TSTRG(APPNAME),-1) == 0 ||
-                  StringCchCompareIN(arg1,COUNTOF(arg1),L"notepad3.exe",-1) == 0) {
+              if (StringCchCompareNI(arg1,COUNTOF(arg1), TSTRG(APPNAME),CSTRLEN(TSTRG(APPNAME))) == 0 ||
+                  StringCchCompareNI(arg1,COUNTOF(arg1),L"notepad3.exe", CSTRLEN(L"notepad3.exe")) == 0) {
                 GetModuleFileName(NULL,arg1,COUNTOF(arg1));
                 bQuickExit = true;
               }

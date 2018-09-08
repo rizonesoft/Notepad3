@@ -912,7 +912,7 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
     DirList_GetItem(hwnd,i,&dli);
     GetShortPathName(dli.szFileName,dli.szFileName,MAX_PATH);
 
-    if (!StringCchCompareIN(dli.szFileName,COUNTOF(dli.szFileName),szShortPath,COUNTOF(szShortPath)))
+    if (!StringCchCompareNI(dli.szFileName,COUNTOF(dli.szFileName),szShortPath,COUNTOF(szShortPath)))
     {
       ListView_SetItemState(hwnd,i,LVIS_FLAGS,LVIS_FLAGS);
       ListView_EnsureVisible(hwnd,i,false);

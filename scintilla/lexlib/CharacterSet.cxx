@@ -8,6 +8,7 @@
 
 #include <cstdlib>
 #include <cassert>
+#include <cstring>
 
 #include "CharacterSet.h"
 
@@ -15,7 +16,21 @@ using namespace Scintilla;
 
 namespace Scintilla {
 
-int CompareCaseInsensitive(const char *a, const char *b) {
+CharacterSet::CharacterSet(setBase base, const char *initialSet, int size_, bool valueAfter_) {
+	size = size_;
+	valueAfter = valueAfter_;
+	bset = new bool[size]();
+	AddString(initialSet);
+	if (base & setLower)
+		AddString("abcdefghijklmnopqrstuvwxyz");
+	if (base & setUpper)
+		AddString("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	if (base & setDigits)
+		AddString("0123456789");
+}
+
+#if 0
+int CompareCaseInsensitive(const char *a, const char *b) noexcept {
 	while (*a && *b) {
 		if (*a != *b) {
 			const char upperA = MakeUpperCase(*a);
@@ -30,7 +45,7 @@ int CompareCaseInsensitive(const char *a, const char *b) {
 	return *a - *b;
 }
 
-int CompareNCaseInsensitive(const char *a, const char *b, size_t len) {
+int CompareNCaseInsensitive(const char *a, const char *b, size_t len) noexcept {
 	while (*a && *b && len) {
 		if (*a != *b) {
 			const char upperA = MakeUpperCase(*a);
@@ -48,5 +63,5 @@ int CompareNCaseInsensitive(const char *a, const char *b, size_t len) {
 		// Either *a or *b is nul
 		return *a - *b;
 }
-
+#endif
 }

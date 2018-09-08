@@ -43,6 +43,9 @@
     <Filter Include="StyleLexers">
       <UniqueIdentifier>{82f9cc2d-9173-4af4-8967-5fd2e5f8aef7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="uthash">
+      <UniqueIdentifier>{24604833-5c1e-421c-813a-34c6a48bf6f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -361,6 +364,21 @@
     </ClInclude>
     <ClInclude Include="StyleLexers\StyleLexers.h">
       <Filter>StyleLexers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uthash\utarray.h">
+      <Filter>uthash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uthash\uthash.h">
+      <Filter>uthash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uthash\utlist.h">
+      <Filter>uthash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uthash\utringbuffer.h">
+      <Filter>uthash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uthash\utstring.h">
+      <Filter>uthash</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

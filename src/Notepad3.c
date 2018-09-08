@@ -834,7 +834,7 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 {
   bool rtnVal = true;
 
-  size_t strLen = (size_t)lstrlenW(pLngStr);
+  size_t strLen = StringCchLenW(pLngStr,0);
 
   if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
     WCHAR* lngMultiStrPtr = pLngMultiStr;
@@ -843,8 +843,8 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
       // make sure you validate the user input
       WCHAR* next = StrNextTok(last, L",; :");
       if (next) { *next = L'\0'; }
-      strLen = (size_t)StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
-      if ((strLen > 0) && IsValidLocaleName(last)) {
+      strLen = StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
+      if (strLen && IsValidLocaleName(last)) {
         lngMultiStrPtr[0] = L'\0';
         rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr)), last));
         lngMultiStrPtr += strLen + 1;
@@ -2564,7 +2564,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ptc.x = pt.x;  ptc.y = pt.y;
         ScreenToClient(g_hwndEdit, &ptc);
         DocPos iNewPos = SciCall_PositionFromPoint(ptc.x, ptc.y);
-        EditSelectEx(g_hwndEdit, iNewPos, iNewPos, -1, -1);
+        EditSetSelectionEx(g_hwndEdit, iNewPos, iNewPos, -1, -1);
       }
 
       if (pt.x == -1 && pt.y == -1) {
@@ -5140,15 +5140,29 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       DisplayCmdLineHelp(hwnd);
       break;
 
-    case CMD_ESCAPE:
-      //close the autocomplete box
-      SciCall_AutoCCancel();
 
+    case CMD_ESCAPE:
+      if (SciCall_CallTipActive()) {
+        SciCall_CallTipCancel();
+        break;
+      }
+      if (SciCall_AutoCActive()) {
+        SciCall_AutoCCancel();
+        break;
+      }
+      if (!SciCall_IsSelectionEmpty()) {
+        DocPos const iCurPos = SciCall_GetCurrentPos();
+        EditSetSelectionEx(g_hwndEdit, iCurPos, iCurPos, -1, -1);
+        break;
+      }
       if (iEscFunction == 1) {
         SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
       }
       else if (iEscFunction == 2) {
         PostMessage(hwnd, WM_CLOSE, 0, 0);
+      }
+      else {
+        SciCall_Cancel();
       }
       break;
 
@@ -6036,7 +6050,7 @@ static void __fastcall _HandleAutoIndent(int const charAdded) {
         }
         if (*pLineBuf) {
           _BEGIN_UNDO_ACTION_;
-          SciCall_AddText(lstrlenA(pLineBuf), pLineBuf);
+          SciCall_AddText((DocPos)StringCchLenA(pLineBuf,0), pLineBuf);
           _END_UNDO_ACTION_;
         }
         if (bAllocLnBuf) { FreeMem(pLineBuf); }
@@ -6083,15 +6097,15 @@ static void __fastcall _HandleAutoCloseTags()
         g_pTempLineBufferMain[cchIns] = '\0';
 
         if (cchIns > 3 &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</base>", -1) &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</bgsound>", -1) &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</br>", -1) &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</embed>", -1) &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</hr>", -1) &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</img>", -1) &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</input>", -1) &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</link>", -1) &&
-          StringCchCompareINA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</meta>", -1))
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</base>", CSTRLEN("</base>")) &&
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</bgsound>", CSTRLEN("</bgsound>")) &&
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</br>", CSTRLEN("</br>")) &&
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</embed>", CSTRLEN("</embed>")) &&
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</hr>", CSTRLEN("</hr>")) &&
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</img>", CSTRLEN("</img>")) &&
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</input>", CSTRLEN("</input>")) &&
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</link>", CSTRLEN("</link>")) &&
+          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</meta>", CSTRLEN("</meta>")))
         {
           _BEGIN_UNDO_ACTION_;
           SciCall_ReplaceSel(g_pTempLineBufferMain);
@@ -7258,12 +7272,12 @@ void ParseCommandLine()
 
     while (bContinue && ExtractFirstArgument(lp3, lp1, lp2, (int)len)) {
       // options
-      if (!bIsFileArg && (StringCchCompareN(lp1, len, L"+", -1) == 0)) {
+      if (!bIsFileArg && (StringCchCompareN(lp1, len, L"+", 1) == 0)) {
         g_flagMultiFileArg = 2;
         bIsFileArg = true;
       }
 
-      else if (!bIsFileArg && (StringCchCompareN(lp1, len, L"-", -1) == 0)) {
+      else if (!bIsFileArg && (StringCchCompareN(lp1, len, L"-", 1) == 0)) {
         g_flagMultiFileArg = 1;
         bIsFileArg = true;
       }
@@ -7274,25 +7288,25 @@ void ParseCommandLine()
         StrLTrim(lp1, L"-/");
 
         // Encoding
-        if (StringCchCompareIX(lp1, L"ANSI") == 0 || StringCchCompareIX(lp1, L"A") == 0 || StringCchCompareIX(lp1, L"MBCS") == 0)
+        if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0)
           g_flagSetEncoding = IDM_ENCODING_ANSI - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareIX(lp1, L"UNICODE") == 0 || StringCchCompareIX(lp1, L"W") == 0)
+        else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0)
           g_flagSetEncoding = IDM_ENCODING_UNICODE - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareIX(lp1, L"UNICODEBE") == 0 || StringCchCompareIX(lp1, L"UNICODE-BE") == 0)
+        else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0)
           g_flagSetEncoding = IDM_ENCODING_UNICODEREV - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareIX(lp1, L"UTF8") == 0 || StringCchCompareIX(lp1, L"UTF-8") == 0)
+        else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0)
           g_flagSetEncoding = IDM_ENCODING_UTF8 - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareIX(lp1, L"UTF8SIG") == 0 || StringCchCompareIX(lp1, L"UTF-8SIG") == 0 ||
-                 StringCchCompareIX(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareIX(lp1, L"UTF-8SIGNATURE") == 0 ||
-                 StringCchCompareIX(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareIX(lp1, L"UTF-8-SIGNATURE") == 0)
+        else if (StringCchCompareXI(lp1, L"UTF8SIG") == 0 || StringCchCompareXI(lp1, L"UTF-8SIG") == 0 ||
+                 StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
+                 StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0)
           g_flagSetEncoding = IDM_ENCODING_UTF8SIGN - IDM_ENCODING_ANSI + 1;
 
         // EOL Mode
-        else if (StringCchCompareIX(lp1, L"CRLF") == 0 || StringCchCompareIX(lp1, L"CR+LF") == 0)
+        else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0)
           g_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
-        else if (StringCchCompareIX(lp1, L"LF") == 0)
+        else if (StringCchCompareXI(lp1, L"LF") == 0)
           g_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
-        else if (StringCchCompareIX(lp1, L"CR") == 0)
+        else if (StringCchCompareXI(lp1, L"CR") == 0)
           g_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
 
         // Shell integration
@@ -7786,7 +7800,7 @@ int FindIniFile() {
   SetEnvironmentVariable(L"NOTEPAD3MODULEDIR", tchPath);
 
   if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile))) {
-    if (StringCchCompareIX(g_wchIniFile,L"*?") == 0)
+    if (StringCchCompareXI(g_wchIniFile,L"*?") == 0)
       return(0);
     else {
       if (!_CheckIniFile(g_wchIniFile,tchModule)) {
@@ -7832,7 +7846,7 @@ int FindIniFile() {
 
 int TestIniFile() {
 
-  if (StringCchCompareIX(g_wchIniFile,L"*?") == 0) {
+  if (StringCchCompareXI(g_wchIniFile,L"*?") == 0) {
     StringCchCopy(g_wchIniFile2,COUNTOF(g_wchIniFile2),L"");
     StringCchCopy(g_wchIniFile,COUNTOF(g_wchIniFile),L"");
     return(0);
@@ -9312,7 +9326,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     UpdateVisibleUrlHotspot(0);
 
     // consistent settings file handling (if loaded in editor)
-    g_bEnableSaveSettings = (StringCchCompareINW(g_wchCurFile, COUNTOF(g_wchCurFile), g_wchIniFile, COUNTOF(g_wchIniFile)) == 0) ? false : true;
+    g_bEnableSaveSettings = (StringCchCompareNIW(g_wchCurFile, COUNTOF(g_wchCurFile), g_wchIniFile, COUNTOF(g_wchIniFile)) == 0) ? false : true;
     UpdateSettingsCmds();
 
     // Show warning: Unicode file loaded as ANSI
@@ -9369,7 +9383,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
         SciCall_GetText(5, tch);
         if (StringCchCompareXA(tch,".LOG") != 0) {
           SciCall_ClearSelections();
-          //~EditSelectEx(g_hwndEdit, iAnchorPos, iCurPos, vSpcAnchorPos, vSpcCaretPos);
+          //~EditSetSelectionEx(g_hwndEdit, iAnchorPos, iCurPos, vSpcAnchorPos, vSpcCaretPos);
           EditJumpTo(g_hwndEdit, iCurrLine+1, iCurColumn+1);
           SciCall_EnsureVisible(iDocTopLine);
           const DocLn iNewTopLine = SciCall_GetFirstVisibleLine();
@@ -9405,7 +9419,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       char chTextBuf[1024];
       SciCall_GetText(1023, chTextBuf);
       StrTrimA(chTextBuf," \t\n\r");
-      if (lstrlenA(chTextBuf) == 0)
+      if (StringCchLenA(chTextBuf,COUNTOF(chTextBuf)) == 0)
         bIsEmptyNewFile = true;
     }
   }
@@ -9718,7 +9732,7 @@ BOOL CALLBACK EnumWndProc(HWND hwnd,LPARAM lParam)
 
   if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
 
-    if (StringCchCompareINW(szClassName,COUNTOF(szClassName),wchWndClass,COUNTOF(wchWndClass)) == 0) {
+    if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),wchWndClass,COUNTOF(wchWndClass)) == 0) {
 
       DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,FALSE);
       if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
@@ -9739,7 +9753,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
 
   if (GetClassName(hwnd,szClassName,COUNTOF(szClassName)))
 
-    if (StringCchCompareINW(szClassName,COUNTOF(szClassName),wchWndClass,COUNTOF(wchWndClass)) == 0) {
+    if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),wchWndClass,COUNTOF(wchWndClass)) == 0) {
 
       DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,false);
       if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
@@ -9750,7 +9764,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
           bContinue = FALSE;
 
         GetDlgItemText(hwnd,IDC_FILENAME,tchFileName,COUNTOF(tchFileName));
-        if (StringCchCompareIN(tchFileName,COUNTOF(tchFileName),lpFileArg,-1) == 0)
+        if (StringCchCompareXI(tchFileName,lpFileArg) == 0)
           *(HWND*)lParam = hwnd;
         else
           bContinue = TRUE;

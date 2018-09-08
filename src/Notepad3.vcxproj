@@ -444,6 +444,11 @@
     <ClInclude Include="..\crypto\sha-256.h" />
     <ClInclude Include="..\language\common_res.h" />
     <ClInclude Include="..\tinyexpr\tinyexpr.h" />
+    <ClInclude Include="..\uthash\utarray.h" />
+    <ClInclude Include="..\uthash\uthash.h" />
+    <ClInclude Include="..\uthash\utlist.h" />
+    <ClInclude Include="..\uthash\utringbuffer.h" />
+    <ClInclude Include="..\uthash\utstring.h" />
     <ClInclude Include="ChooseFont\ChooseFont.h" />
     <ClInclude Include="ChooseFont\FontEnumeration.h" />
     <ClInclude Include="ChooseFont\GdiTextRenderer.h" />

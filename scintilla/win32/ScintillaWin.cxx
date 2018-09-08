@@ -443,7 +443,6 @@ class ScintillaWin :
 	bool CanPaste() override;
 	void Paste() override;
 	void CreateCallTipWindow(const PRectangle &rc) noexcept override;
-	void AddToPopUp(const char *label, int cmd = 0, bool enabled = true) noexcept override;
 	void ClaimSelection() noexcept override;
 
 	// DBCS
@@ -753,12 +752,12 @@ namespace {
 int InputCodePage() noexcept {
 	HKL const inputLocale = ::GetKeyboardLayout(0);
 	const LANGID inputLang = LOWORD(inputLocale);
-	char sCodePage[10];
-	const int res = ::GetLocaleInfoA(MAKELCID(inputLang, SORT_DEFAULT),
-		LOCALE_IDEFAULTANSICODEPAGE, sCodePage, sizeof(sCodePage));
+	WCHAR sCodePage[10];
+	const int res = ::GetLocaleInfo(MAKELCID(inputLang, SORT_DEFAULT),
+		LOCALE_IDEFAULTANSICODEPAGE, sCodePage, sizeof(sCodePage) / sizeof(WCHAR));
 	if (!res)
 		return 0;
-	return atoi(sCodePage);
+	return StrToInt(sCodePage);
 }
 
 /** Map the key codes to their equivalent SCK_ form. */
@@ -946,7 +945,7 @@ sptr_t ScintillaWin::WndPaint(uptr_t wParam) {
 	PAINTSTRUCT *pps;
 
 	const bool IsOcxCtrl = (wParam != 0); // if wParam != 0, it contains
-									      // a PAINTSTRUCT* from the OCX
+								   // a PAINTSTRUCT* from the OCX
 	// Removed since this interferes with reporting other assertions as it occurs repeatedly
 	//PLATFORM_ASSERT(hRgnUpdate == nullptr);
 	hRgnUpdate = ::CreateRectRgn(0, 0, 0, 0);
@@ -1706,28 +1705,8 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 				return HandleCompositionWindowed(wParam, lParam);
 			}
 
-		case WM_CONTEXTMENU: {
-			Point pt = PointFromLParam(lParam);
-			POINT rpt = POINTFromPoint(pt);
-			::ScreenToClient(MainHWND(), &rpt);
-			const Point ptClient = PointFromPOINT(rpt);
-			if (ShouldDisplayPopup(ptClient)) {
-				if ((pt.x == -1) && (pt.y == -1)) {
-					// Caused by keyboard so display menu near caret
-					pt = PointMainCaret();
-					POINT spt = POINTFromPoint(pt);
-					::ClientToScreen(MainHWND(), &spt);
-					pt = PointFromPOINT(spt);
-				}
-				ContextMenu(pt);
-				return 0;
-			}
-		}
-		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
-
+		case WM_CONTEXTMENU:
 		case WM_INPUTLANGCHANGE:
-			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
-
 		case WM_INPUTLANGCHANGEREQUEST:
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
@@ -2447,16 +2426,6 @@ void ScintillaWin::CreateCallTipWindow(const PRectangle&) noexcept {
 		ct.wCallTip = wnd;
 		ct.wDraw = wnd;
 	}
-}
-
-void ScintillaWin::AddToPopUp(const char *label, int cmd, bool enabled) noexcept {
-	HMENU hmenuPopup = static_cast<HMENU>(popup.GetID());
-	if (!label[0])
-		::AppendMenuA(hmenuPopup, MF_SEPARATOR, 0, "");
-	else if (enabled)
-		::AppendMenuA(hmenuPopup, MF_STRING, cmd, label);
-	else
-		::AppendMenuA(hmenuPopup, MF_STRING | MF_DISABLED | MF_GRAYED, cmd, label);
 }
 
 void ScintillaWin::ClaimSelection() noexcept {
@@ -3684,4 +3653,8 @@ int ResourcesRelease(bool fromDllMain) noexcept {
 // This function is externally visible so it can be called from container when building statically.
 int Scintilla_ReleaseResources(void) {
 	return Scintilla::ResourcesRelease(false);
+}
+
+int Scintilla_InputCodePage(void) {
+	return InputCodePage();
 }
