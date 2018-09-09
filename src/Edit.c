@@ -97,6 +97,8 @@ extern bool bForceLoadASCIIasUTF8;
 extern bool bLoadNFOasOEM;
 extern bool bNoEncodingTags;
 
+extern bool g_bAutoCompleteWords;
+extern bool g_bAutoCLexerKeyWords;
 extern bool g_bAccelWordNavigation;
 
 extern int  g_iReplacedOccurrences;
@@ -6595,12 +6597,41 @@ static int __fastcall wordcmpi(PWLIST a, PWLIST b) {
 
 // ----------------------------------------------
 
+static const char* __fastcall _strNextLexKeyWord(const char* strg, const char* const wdroot, DocPosCR* pwdlen)
+{
+  char const sep = ' ';
+  bool found = false;
+  const char* start = strg;
+  do {
+    start = StrStrIA(start, wdroot);
+    if (start) {
+      if ((start == strg) || (start[-1] == sep)) { // word begin
+        found = true;
+        break;
+      }
+      ++start;
+    }
+  } while (start && *start);
+
+  if (found) {
+    DocPosCR len = *pwdlen;
+    while (start[len] && (start[len] != sep)) { ++len; }
+    *pwdlen = len;
+  }
+  else {
+    *pwdlen = 0;
+  }
+  return (found ? start : NULL);
+}
+
+// ----------------------------------------------
+
 void EditCompleteWord(HWND hwnd, bool autoInsert)
 {
   UNUSED(hwnd);
 
   // OLD: "_abcdefghijklmnopqrstuvwxyz0123456789"
-  char const * ALLOWED_WORD_CHARS = AutoCompleteWordASCII;
+  char const* ALLOWED_WORD_CHARS = AutoCompleteWordASCII;
 
   if (ALLOWED_WORD_CHARS[0] == '\0') {
     ALLOWED_WORD_CHARS = g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault;
@@ -6632,53 +6663,94 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
 
   StringCchCopyNA(pRoot, COUNTOF(pRoot), pLine + iStartWordPos, (size_t)iRootLen);
 
-
-  DocPosCR const iDocLen = (DocPosCR)SciCall_GetTextLength();
-  struct Sci_TextToFind ft = { { 0, 0 }, 0, { 0, 0 } };
-  ft.lpstrText = pRoot;
-  ft.chrg.cpMax = iDocLen;
-
-  DocPos iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
-
   int iNumWords = 0;
   size_t iWListSize = 0;
 
-  PWLIST pwlWord = NULL;
-  PWLIST pWLItem = NULL;
   PWLIST pListHead = NULL;
 
-  while ((iPosFind >= 0) && (iPosFind < iDocLen))
+  if (g_bAutoCompleteWords)
   {
-    DocPos wordEnd = (DocPosCR)(iPosFind + iRootLen);
+    DocPosCR const iDocLen = (DocPosCR)SciCall_GetTextLength();
+    struct Sci_TextToFind ft = { { 0, 0 }, 0, { 0, 0 } };
+    ft.lpstrText = pRoot;
+    ft.chrg.cpMax = iDocLen;
 
-    if (iPosFind != (iCurrentPos - iRootLen))
+    DocPos iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
+    PWLIST pwlNewWord = NULL;
+    while ((iPosFind >= 0) && (iPosFind < iDocLen))
     {
-      while ((wordEnd < iDocLen) && StrChrIA(ALLOWED_WORD_CHARS, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
+      DocPos wordEnd = (DocPosCR)(iPosFind + iRootLen);
 
-      DocPos const wordLength = (wordEnd - iPosFind);
-      if (wordLength > iRootLen) 
+      if (iPosFind != (iCurrentPos - iRootLen))
       {
-        if (!pwlWord) { pwlWord = (PWLIST)AllocMem(sizeof(WLIST), HEAP_ZERO_MEMORY); }
-        if (pwlWord) 
-        {
-          StringCchCopyNA(pwlWord->word, _MAX_AUTOC_WORD_LEN, SciCall_GetRangePointer(iPosFind, wordLength), wordLength);
+        while ((wordEnd < iDocLen) && StrChrIA(ALLOWED_WORD_CHARS, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
 
-          PWLIST pPrev = NULL;
-          LL_SEARCH_ORDERED(pListHead, pPrev, pWLItem, pwlWord, wordcmp);
-          if (!pWLItem) { // not found
-            //LL_INSERT_INORDER(pListHead, pwlWord, wordcmpi);
-            LL_APPEND_ELEM(pListHead, pPrev, pwlWord);
-            ++iNumWords;
-            iWListSize += (wordLength + 1);
-            pwlWord = NULL; // alloc new
+        DocPos const wordLength = (wordEnd - iPosFind);
+        if (wordLength > iRootLen)
+        {
+          if (!pwlNewWord) { pwlNewWord = (PWLIST)AllocMem(sizeof(WLIST), HEAP_ZERO_MEMORY); }
+          if (pwlNewWord)
+          {
+            StringCchCopyNA(pwlNewWord->word, _MAX_AUTOC_WORD_LEN, SciCall_GetRangePointer(iPosFind, wordLength), wordLength);
+
+            PWLIST pPrev = NULL;
+            PWLIST pWLItem = NULL;
+            LL_SEARCH_ORDERED(pListHead, pPrev, pWLItem, pwlNewWord, wordcmp);
+            if (!pWLItem) { // not found
+              //LL_INSERT_INORDER(pListHead, pwlNewWord, wordcmpi);
+              LL_APPEND_ELEM(pListHead, pPrev, pwlNewWord);
+              ++iNumWords;
+              iWListSize += (wordLength + 1);
+              pwlNewWord = NULL; // alloc new
+            }
           }
         }
       }
+      ft.chrg.cpMin = (DocPosCR)wordEnd;
+      iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
     }
-    ft.chrg.cpMin = (DocPosCR)wordEnd;
-    iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
+    if (pwlNewWord) { FreeMem(pwlNewWord); pwlNewWord = NULL; }
   }
-  if (pwlWord) { FreeMem(pwlWord); pwlWord = NULL; }
+
+  // --------------------------------------------------------------------------
+
+  if (g_bAutoCLexerKeyWords)
+  {
+    PKEYWORDLIST const pKeyWordList = Style_GetCurrentLexerPtr()->pKeyWords;
+
+    PWLIST pwlNewWord = NULL;
+    for (int i = 0; i <= KEYWORDSET_MAX; ++i) {
+      const char* word = pKeyWordList->pszKeyWords[i];
+      do {
+        DocPosCR wlen = iRootLen;
+        word = _strNextLexKeyWord(word, pRoot, &wlen);
+        if (word) {
+          if (wlen > iRootLen) {
+            if (!pwlNewWord) { pwlNewWord = (PWLIST)AllocMem(sizeof(WLIST), HEAP_ZERO_MEMORY); }
+            if (pwlNewWord)
+            {
+              StringCchCopyNA(pwlNewWord->word, _MAX_AUTOC_WORD_LEN, word, wlen);
+
+              PWLIST pPrev = NULL;
+              PWLIST pWLItem = NULL;
+              LL_SEARCH_ORDERED(pListHead, pPrev, pWLItem, pwlNewWord, wordcmp);
+              if (!pWLItem) { // not found
+                //LL_INSERT_INORDER(pListHead, pwlNewWord, wordcmpi);
+                LL_APPEND_ELEM(pListHead, pPrev, pwlNewWord);
+                ++iNumWords;
+                iWListSize += (wlen + 1);
+                pwlNewWord = NULL; // alloc new
+              }
+            }
+          }
+          word += (wlen ? wlen : 1);
+        }
+      } while (word && word[0]);
+    }
+    if (pwlNewWord) { FreeMem(pwlNewWord); pwlNewWord = NULL; }
+  }
+
+  // --------------------------------------------------------------------------
 
   if (iNumWords > 0) 
   {
@@ -6696,6 +6768,7 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
     char* const pList = AllocMem(iWListSize, HEAP_ZERO_MEMORY);
     if (pList) {
       PWLIST pTmp = NULL;
+      PWLIST pWLItem = NULL;
       LL_FOREACH_SAFE(pListHead, pWLItem, pTmp) {
         if (pWLItem->word[0]) {
           StringCchCatA(pList, iWListSize, sep);

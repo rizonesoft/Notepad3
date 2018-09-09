@@ -211,6 +211,7 @@ bool      g_bMarkOccurrencesMatchWords;
 bool      g_bMarkOccurrencesCurrentWord;
 bool      g_bUseOldStyleBraceMatching;
 bool      g_bAutoCompleteWords;
+bool      g_bAutoCLexerKeyWords;
 bool      g_bAccelWordNavigation;
 bool      g_bDenyVirtualSpaceAccess;
 bool      g_bCodeFoldingAvailable;
@@ -2932,6 +2933,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!e && !ro);
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,g_bAutoCompleteWords && !ro);
+  CheckCmd(hmenu,IDM_VIEW_AUTOCLEXKEYWORDS, g_bAutoCLexerKeyWords && !ro);
+  
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,g_bAccelWordNavigation);
 
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (g_iMarkOccurrences > 0));
@@ -4735,9 +4738,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
       g_bAutoCompleteWords = (g_bAutoCompleteWords) ? false : true;  // toggle
-      if (!g_bAutoCompleteWords) {
-        SciCall_AutoCCancel();  // close the auto completion list
-      }
+      SciCall_AutoCCancel();
+      break;
+
+    case IDM_VIEW_AUTOCLEXKEYWORDS:
+      g_bAutoCLexerKeyWords = (g_bAutoCLexerKeyWords) ? false : true;  // toggle
+      SciCall_AutoCCancel();
       break;
 
     case IDM_VIEW_ACCELWORDNAV:
@@ -6341,7 +6347,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             else if (scn->ch == '?') {
               _HandleTinyExpr();
             }
-            else if (g_bAutoCompleteWords && !SciCall_AutoCActive() && !_IsInlineIMEActive()) {
+            else if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords) && !SciCall_AutoCActive() && !_IsInlineIMEActive()) {
               EditCompleteWord(g_hwndEdit, false);
             }
           }
@@ -6772,6 +6778,8 @@ void LoadSettings()
     bAutoIndent = IniSectionGetBool(pIniSection, L"AutoIndent", true);
 
     g_bAutoCompleteWords = IniSectionGetBool(pIniSection, L"AutoCompleteWords", false);
+    
+    g_bAutoCLexerKeyWords = IniSectionGetBool(pIniSection, L"AutoCLexerKeyWords", false);
 
     g_bAccelWordNavigation = IniSectionGetBool(pIniSection, L"AccelWordNavigation", false);
 
@@ -7127,6 +7135,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetBool(pIniSection, L"ScrollPastEOF", bScrollPastEOF);
   IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
   IniSectionSetBool(pIniSection, L"AutoCompleteWords", g_bAutoCompleteWords);
+  IniSectionSetBool(pIniSection, L"AutoCLexerKeyWords", g_bAutoCLexerKeyWords);
   IniSectionSetBool(pIniSection, L"AccelWordNavigation", g_bAccelWordNavigation);
   IniSectionSetBool(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
   IniSectionSetBool(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
