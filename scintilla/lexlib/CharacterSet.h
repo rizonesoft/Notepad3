@@ -23,22 +23,9 @@ public:
 		setAlpha=setLower|setUpper,
 		setAlphaNum=setAlpha|setDigits
 	};
-	CharacterSet(setBase base=setNone, const char *initialSet="", int size_=0x80, bool valueAfter_=false) {
-		size = size_;
-		valueAfter = valueAfter_;
-		bset = new bool[size];
-		for (int i=0; i < size; i++) {
-			bset[i] = false;
-		}
-		AddString(initialSet);
-		if (base & setLower)
-			AddString("abcdefghijklmnopqrstuvwxyz");
-		if (base & setUpper)
-			AddString("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		if (base & setDigits)
-			AddString("0123456789");
-	}
-	CharacterSet(const CharacterSet &other) {
+	CharacterSet(setBase base=setNone, const char *initialSet="", int size_=0x80, bool valueAfter_=false);
+
+    CharacterSet(const CharacterSet &other) {
 		size = other.size;
 		valueAfter = other.valueAfter;
 		bset = new bool[size];
@@ -80,15 +67,15 @@ public:
 		assert(val < size);
 		bset[val] = true;
 	}
-	void AddString(const char *setToAdd) {
-		for (const char *cp=setToAdd; *cp; cp++) {
+	void CharacterSet::AddString(const char *setToAdd) noexcept {
+		for (const char *cp = setToAdd; *cp; cp++) {
 			int val = static_cast<unsigned char>(*cp);
 			assert(val >= 0);
 			assert(val < size);
 			bset[val] = true;
 		}
 	}
-	bool Contains(int val) const {
+	bool Contains(int val) const noexcept {
 		assert(val >= 0);
 		if (val < 0) return false;
 		return (val < size) ? bset[val] : valueAfter;
@@ -97,19 +84,25 @@ public:
 
 // Functions for classifying characters
 
-inline bool IsASpace(int ch) {
+constexpr bool IsASpace(int ch) noexcept {
     return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
 }
 
-inline bool IsASpaceOrTab(int ch) {
+constexpr bool IsASpaceOrTab(int ch) noexcept {
 	return (ch == ' ') || (ch == '\t');
 }
 
-inline bool IsADigit(int ch) {
+constexpr bool IsADigit(int ch) noexcept  {
 	return (ch >= '0') && (ch <= '9');
 }
 
-inline bool IsADigit(int ch, int base) {
+constexpr bool IsHexDigit(int ch) noexcept {
+	return (ch >= '0' && ch <= '9')
+		|| (ch >= 'A' && ch <= 'F')
+		|| (ch >= 'a' && ch <= 'f');
+}
+
+inline bool IsADigit(int ch, int base) noexcept {
 	if (base <= 10) {
 		return (ch >= '0') && (ch < '0' + base);
 	} else {
@@ -119,19 +112,24 @@ inline bool IsADigit(int ch, int base) {
 	}
 }
 
-inline bool IsASCII(int ch) {
+constexpr bool IsASCII(int ch) noexcept {
 	return (ch >= 0) && (ch < 0x80);
 }
 
-inline bool IsLowerCase(int ch) {
+constexpr bool IsLowerCase(int ch) noexcept {
 	return (ch >= 'a') && (ch <= 'z');
 }
 
-inline bool IsUpperCase(int ch) {
+constexpr bool IsUpperCase(int ch) noexcept {
 	return (ch >= 'A') && (ch <= 'Z');
 }
 
-inline bool IsAlphaNumeric(int ch) {
+constexpr bool IsAlpha(int ch) noexcept {
+	return 	((ch >= 'a') && (ch <= 'z')) ||
+			((ch >= 'A') && (ch <= 'Z'));
+}
+
+constexpr bool IsAlphaNumeric(int ch) noexcept {
 	return
 		((ch >= '0') && (ch <= '9')) ||
 		((ch >= 'a') && (ch <= 'z')) ||
@@ -142,35 +140,34 @@ inline bool IsAlphaNumeric(int ch) {
  * Check if a character is a space.
  * This is ASCII specific but is safe with chars >= 0x80.
  */
-inline bool isspacechar(int ch) {
+constexpr bool isspacechar(int ch) noexcept {
     return (ch == ' ') || ((ch >= 0x09) && (ch <= 0x0d));
 }
 
-inline bool iswordchar(int ch) {
+constexpr bool iswordchar(int ch) noexcept {
 	return IsAlphaNumeric(ch) || ch == '.' || ch == '_';
 }
 
-inline bool iswordstart(int ch) {
+constexpr bool iswordstart(int ch) noexcept {
 	return IsAlphaNumeric(ch) || ch == '_';
 }
 
-inline bool isoperator(int ch) {
+inline bool isoperator(int ch) noexcept {
 	if (IsAlphaNumeric(ch))
 		return false;
 	if (ch == '%' || ch == '^' || ch == '&' || ch == '*' ||
-	        ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
-	        ch == '=' || ch == '|' || ch == '{' || ch == '}' ||
-	        ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
-	        ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
-	        ch == '?' || ch == '!' || ch == '.' || ch == '~')
+		ch == '(' || ch == ')' || ch == '-' || ch == '+' ||
+		ch == '=' || ch == '|' || ch == '{' || ch == '}' ||
+		ch == '[' || ch == ']' || ch == ':' || ch == ';' ||
+		ch == '<' || ch == '>' || ch == ',' || ch == '/' ||
+		ch == '?' || ch == '!' || ch == '.' || ch == '~')
 		return true;
 	return false;
 }
 
-// Simple case functions for ASCII supersets.
-
+// Simple case functions for ASCII.
 template <typename T>
-inline T MakeUpperCase(T ch) {
+constexpr T MakeUpperCase(T ch) noexcept {
 	if (ch < 'a' || ch > 'z')
 		return ch;
 	else
@@ -178,15 +175,20 @@ inline T MakeUpperCase(T ch) {
 }
 
 template <typename T>
-inline T MakeLowerCase(T ch) {
+constexpr T MakeLowerCase(T ch) noexcept {
 	if (ch < 'A' || ch > 'Z')
 		return ch;
 	else
 		return ch - 'A' + 'a';
 }
 
-int CompareCaseInsensitive(const char *a, const char *b);
-int CompareNCaseInsensitive(const char *a, const char *b, size_t len);
+#if 0
+int CompareCaseInsensitive(const char *a, const char *b) noexcept;
+int CompareNCaseInsensitive(const char *a, const char *b, size_t len) noexcept;
+#else
+#define CompareCaseInsensitive		_stricmp
+#define CompareNCaseInsensitive		_strnicmp
+#endif
 
 }
 

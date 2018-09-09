@@ -438,9 +438,26 @@ do {                                                                            
 #define LL_SEARCH2(head,out,elt,cmp,next)                                                      \
 do {                                                                                           \
     LL_FOREACH2(head,out,next) {                                                               \
-      if ((cmp(out,elt))==0) break;                                                            \
+      if ((cmp(out,elt)) == 0) break;                                                          \
     }                                                                                          \
 } while (0)
+
+// >>>>>>>>  begin patch: search in ordered list  >>>>>>>>
+
+#define LL_SEARCH_ORDERED(head,prv,out,elt,cmp)                                                \
+    LL_SEARCH_ORDERED2(head,prv,out,elt,cmp,next)
+
+#define LL_SEARCH_ORDERED2(head,prv,out,elt,cmp,next)                                          \
+do {                                                                                           \
+    LL_FOREACH2(head,out,next) {                                                               \
+      int const res = (cmp(out,elt));                                                          \
+      if (res == 0) break;                                                                     \
+      else if (res > 0) { (out) = NULL; break; }                                               \
+      (prv) = (out);                                                                           \
+    }                                                                                          \
+} while (0)
+
+// <<<<<<<<  end patch: search in ordered list  <<<<<<<<<<
 
 #define LL_REPLACE_ELEM2(head, el, add, next)                                                  \
 do {                                                                                           \
@@ -749,6 +766,8 @@ do {                                                                            
 #define DL_SEARCH LL_SEARCH
 #define DL_SEARCH_SCALAR2 LL_SEARCH_SCALAR2
 #define DL_SEARCH2 LL_SEARCH2
+#define DL_SEARCH_ORDERED LL_SEARCH_ORDERED
+#define DL_SEARCH_ORDERED2 LL_SEARCH_ORDERED2
 
 #define DL_REPLACE_ELEM2(head, el, add, prev, next)                                            \
 do {                                                                                           \

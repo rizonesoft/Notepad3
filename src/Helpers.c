@@ -474,7 +474,7 @@ HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
 {
   if (StrIsEmpty(AppID)) { return(S_OK); }
 
-  if (StringCchCompareIX(AppID, L"(default)") == 0) { return(S_OK); }
+  if (StringCchCompareXI(AppID, L"(default)") == 0) { return(S_OK); }
 
   return SetCurrentProcessExplicitAppUserModelID(AppID);
 }
@@ -925,7 +925,7 @@ bool PathIsLnkFile(LPCWSTR pszPath)
   if (!pszPath || !*pszPath)
     return false;
 
-  if (StringCchCompareIX(PathFindExtension(pszPath),L".lnk"))
+  if (StringCchCompareXI(PathFindExtension(pszPath),L".lnk"))
     return false;
   else
     return PathGetLnkPath(pszPath,tchResPath,COUNTOF(tchResPath));
@@ -1559,7 +1559,7 @@ bool MRU_Destroy(LPMRULIST pmru)
 int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2) 
 {
   if (pmru->iFlags & MRU_NOCASE)
-    return(StringCchCompareIX(psz1,psz2));
+    return(StringCchCompareXI(psz1,psz2));
   else
     return(StringCchCompareX(psz1,psz2));
 }
@@ -1595,13 +1595,13 @@ bool MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex) {
       *iIndex = i;
       return false;
     }
-    else if (StringCchCompareIX(pmru->pszItems[i],pszFile) == 0) {
+    else if (StringCchCompareXI(pmru->pszItems[i],pszFile) == 0) {
       *iIndex = i;
       return true;
     }
     else {
       PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),true);
-      if (StringCchCompareIN(wchItem,COUNTOF(wchItem),pszFile,-1) == 0) {
+      if (StringCchCompareXI(wchItem,pszFile) == 0) {
         *iIndex = i;
         return true;
       }
@@ -1680,7 +1680,7 @@ bool MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile) {
   while (MRU_Enum(pmruStore,i,wchItem,COUNTOF(wchItem)) != -1) 
   {
     PathAbsoluteFromApp(wchItem,wchItem,COUNTOF(wchItem),true);
-    if (StringCchCompareIN(wchItem,COUNTOF(wchItem),pszFile,-1) == 0)
+    if (StringCchCompareXI(wchItem,pszFile) == 0)
       MRU_Delete(pmruStore,i);
     else
       i++;
@@ -2454,7 +2454,6 @@ void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
   else
     StringCchPrintf(lpszStrg, cchSize, L"%i", float2int(fValue));
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -357,10 +357,10 @@ bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 
 //==== StrSafe lstrlen() =======================================================
 inline size_t StringCchLenA(LPCSTR s, size_t n) { 
-  size_t len; return (size_t)(!s ? 0 : (!n ? strlen(s) : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n)));
+  size_t len; return (size_t)(!s ? 0 : (!n ? lstrlenA(s) : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n)));
 }
 inline size_t StringCchLenW(LPCWSTR s, size_t n) { 
-  size_t len; return (size_t)(!s ? 0 : (!n ? lstrlen(s) : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n)));
+  size_t len; return (size_t)(!s ? 0 : (!n ? lstrlenW(s) : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n)));
 }
 
 #if defined(UNICODE) || defined(_UNICODE)  
@@ -385,49 +385,37 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 #define StrEnd(s,n) StrEndA((s),(n))
 #endif
 
-
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
-inline int _StringCchCmpNA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
-{
-  return (CompareStringA(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? (int)StringCchLenA(s1,l1) : -1),
-                         s2,(l2 >= 0 ? (int)StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
-}
-#define StringCchCompareNA(s1,l1,s2,l2)  _StringCchCmpNA((s1),(l1),(s2),(l2))
-#define StringCchCompareXA(s1,s2)        _StringCchCmpNA((s1),-1,(s2),-1)
 
-inline int _StringCchCmpINA(PCNZCH s1, DocPos l1,PCNZCH s2, DocPos l2)
-{
-  return (CompareStringA(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? (int)StringCchLenA(s1,l1) : -1),
-                         s2,(l2 >= 0 ? (int)StringCchLenA(s2,l2) : -1)) - CSTR_EQUAL);
-}
-#define StringCchCompareINA(s1,l1,s2,l2)  _StringCchCmpINA((s1),(l1),(s2),(l2))
-#define StringCchCompareIXA(s1,s2)        _StringCchCmpINA((s1),-1,(s2),-1)
+// NOTE: !!! differences in AutoCompleteList depending compare functions (CRT vs. Shlwapi)) !!!
 
-inline int _StringCchCmpNW(PCNZWCH s1, DocPos l1, PCNZWCH s2, DocPos l2) {
-  return (CompareStringW(LOCALE_INVARIANT,0,s1,(l1 >= 0 ? (int)StringCchLenW(s1,l1) : -1),
-                         s2,(l2 >= 0 ? (int)StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
-}
-#define StringCchCompareNW(s1,l1,s2,l2)  _StringCchCmpNW((s1),(l1),(s2),(l2))
-#define StringCchCompareXW(s1,s2)        _StringCchCmpNW((s1),-1,(s2),-1)
+#define StringCchCompareNA(s1,l1,s2,l2)   StrCmpNA((s1),(s2),min((l1),(l2)))
+//#define StringCchCompareNA(s1,l1,s2,l2)   strncmp((s1),(s2),min((l1),(l2)))
+#define StringCchCompareXA(s1,s2)         StrCmpA((s1),(s2))
+//#define StringCchCompareXA(s1,s2)         strcmp((s1),(s2))
 
-inline int _StringCchCmpINW(PCNZWCH s1, DocPos l1,PCNZWCH s2, DocPos l2) {
-  return (CompareStringW(LOCALE_INVARIANT,NORM_IGNORECASE,s1,(l1 >= 0 ? (int)StringCchLenW(s1,l1) : -1),
-                         s2,(l2 >= 0 ? (int)StringCchLenW(s2,l2) : -1)) - CSTR_EQUAL);
-}
-#define StringCchCompareINW(s1,l1,s2,l2)  _StringCchCmpINW((s1),(l1),(s2),(l2))
-#define StringCchCompareIXW(s1,s2)        _StringCchCmpINW((s1),-1,(s2),-1)
+#define StringCchCompareNIA(s1,l1,s2,l2)  StrCmpNIA((s1),(s2),min((l1),(l2)))
+//#define StringCchCompareNIA(s1,l1,s2,l2)  _strnicmp((s1),(s2),min((l1),(l2)))
+#define StringCchCompareXIA(s1,s2)        StrCmpIA((s1),(s2))
+//#define StringCchCompareXIA(s1,s2)        _stricmp((s1),(s2))
 
+
+#define StringCchCompareNW(s1,l1,s2,l2)   StrCmpNW((s1),(s2),min((l1),(l2)))
+#define StringCchCompareXW(s1,s2)         StrCmpW((s1),(s2))
+
+#define StringCchCompareNIW(s1,l1,s2,l2)  StrCmpNIW((s1),(s2),min((l1),(l2)))
+#define StringCchCompareXIW(s1,s2)        StrCmpIW((s1),(s2))
 
 #if defined(UNICODE) || defined(_UNICODE)  
 #define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNW((s1),(l1),(s2),(l2))
 #define StringCchCompareX(s1,s2)         StringCchCompareXW((s1),(s2))
-#define StringCchCompareIN(s1,l1,s2,l2)  StringCchCompareINW((s1),(l1),(s2),(l2))
-#define StringCchCompareIX(s1,s2)        StringCchCompareIXW((s1),(s2))
+#define StringCchCompareNI(s1,l1,s2,l2)  StringCchCompareNIW((s1),(l1),(s2),(l2))
+#define StringCchCompareXI(s1,s2)        StringCchCompareXIW((s1),(s2))
 #else
 #define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNA((s1),(l1),(s2),(l2))
 #define StringCchCompareX(s1,s2)         StringCchCompareXA((s1),(s2))
-#define StringCchCompareIN(s1,l1,s2,l2)  StringCchCompareINA((s1),(l1),(s2),(l2))
-#define StringCchCompareIX(s1,s2)        StringCchCompareIXA((s1),(s2))
+#define StringCchCompareNI(s1,l1,s2,l2)  StringCchCompareNIA((s1),(l1),(s2),(l2))
+#define StringCchCompareXI(s1,s2)        StringCchCompareXIA((s1),(s2))
 #endif
 
 //==== StrIs(Not)Empty() =============================================

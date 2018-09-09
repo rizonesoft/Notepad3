@@ -247,6 +247,16 @@ DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const cha
 DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
 
 
+//=============================================================================
+//
+//  CallTip and AutoComplete
+//
+DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour)
+DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour)
+DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text)
+DeclareSciCallR0(CallTipActive, CALLTIPACTIVE, bool)
+DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL)
+
 DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool)
 DeclareSciCallV0(AutoCComplete, AUTOCCOMPLETE)
 DeclareSciCallV0(AutoCCancel, AUTOCCANCEL)
@@ -254,6 +264,7 @@ DeclareSciCallV1(AutoCSetIgnoreCase, AUTOCSETIGNORECASE, bool, flag)
 DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator)
 DeclareSciCallV01(AutoCSetFillups, AUTOCSETFILLUPS, const char*, text)
 DeclareSciCallV1(AutoCSetChooseSingle, AUTOCSETCHOOSESINGLE, bool, flag)
+DeclareSciCallV1(AutoCSetOrder, AUTOCSETORDER, int, options)
 DeclareSciCallV2(AutoCShow, AUTOCSHOW, int, len, const char*, list)
 
 
@@ -264,6 +275,8 @@ DeclareSciCallV2(AutoCShow, AUTOCSHOW, int, len, const char*, list)
 DeclareSciCallV0(NewLine, NEWLINE)
 DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP)
 DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN)
+
+DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
 
 
 //=============================================================================
@@ -303,6 +316,7 @@ DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, char, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 
+
 //=============================================================================
 //
 //  Margins
@@ -316,12 +330,6 @@ DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
-
-
-DeclareSciCallV1(CallTipSetFore, CALLTIPSETFORE, COLORREF, colour)
-DeclareSciCallV1(CallTipSetBack, CALLTIPSETBACK, COLORREF, colour)
-DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text)
-DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL)
 
 
 //=============================================================================
