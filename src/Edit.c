@@ -6576,9 +6576,12 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
 //  EditCompleteWord()
 //  Auto-complete words (by Aleksandar Lekov)
 //
+
+#define _MAX_AUTOC_WORD_LEN 240
+
 typedef struct WLIST {
-  char* word;
   struct WLIST* next;
+  char word[_MAX_AUTOC_WORD_LEN];
 } WLIST, *PWLIST;
 
 
@@ -6624,7 +6627,7 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
     return;
   }
 
-  char pRoot[256];
+  char pRoot[_MAX_AUTOC_WORD_LEN];
   DocPosCR const iRootLen = (DocPosCR)(iCurrentLinePos - iStartWordPos);
 
   StringCchCopyNA(pRoot, COUNTOF(pRoot), pLine + iStartWordPos, (size_t)iRootLen);
@@ -6638,12 +6641,9 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
   DocPos iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
 
   int iNumWords = 0;
-  DocPos iWListSize = 0;
+  size_t iWListSize = 0;
 
-  char pWord[256];
-  WLIST wlWord = { NULL, NULL };
-  wlWord.word = pWord;
-
+  PWLIST pwlWord = NULL;
   PWLIST pWLItem = NULL;
   PWLIST pListHead = NULL;
 
@@ -6656,20 +6656,21 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
       while ((wordEnd < iDocLen) && StrChrIA(ALLOWED_WORD_CHARS, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
 
       DocPos const wordLength = (wordEnd - iPosFind);
-      if (wordLength > iRootLen) {
+      if (wordLength > iRootLen) 
+      {
+        if (!pwlWord) { pwlWord = (PWLIST)AllocMem(sizeof(WLIST), HEAP_ZERO_MEMORY); }
+        if (pwlWord) 
+        {
+          StringCchCopyNA(pwlWord->word, _MAX_AUTOC_WORD_LEN, SciCall_GetRangePointer(iPosFind, wordLength), wordLength);
 
-        StringCchCopyNA(wlWord.word, COUNTOF(pWord), SciCall_GetRangePointer(iPosFind, wordLength), wordLength);
-
-        PWLIST pPrev = NULL;
-        LL_SEARCH_ORDERED(pListHead, pPrev, pWLItem, &wlWord, wordcmpi);
-        if (!pWLItem) {
-          PWLIST pNewWord = (PWLIST)LocalAlloc(LPTR, sizeof(WLIST));
-          if (pNewWord) {
-            pNewWord->word = StrDupA(pWord);
-            //LL_INSERT_INORDER(pListHead, pNewWord, wordcmpi);
-            LL_APPEND_ELEM(pListHead, pPrev, pNewWord);
+          PWLIST pPrev = NULL;
+          LL_SEARCH_ORDERED(pListHead, pPrev, pWLItem, pwlWord, wordcmp);
+          if (!pWLItem) { // not found
+            //LL_INSERT_INORDER(pListHead, pwlWord, wordcmpi);
+            LL_APPEND_ELEM(pListHead, pPrev, pwlWord);
             ++iNumWords;
             iWListSize += (wordLength + 1);
+            pwlWord = NULL; // alloc new
           }
         }
       }
@@ -6677,9 +6678,10 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
     ft.chrg.cpMin = (DocPosCR)wordEnd;
     iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
   }
+  if (pwlWord) { FreeMem(pwlWord); pwlWord = NULL; }
 
-  if (iNumWords > 0) {
-
+  if (iNumWords > 0) 
+  {
     const char* const sep = " ";
     SciCall_AutoCCancel();
     SciCall_AutoCSetSeperator(sep[0]);
@@ -6690,21 +6692,21 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
     SciCall_AutoCSetFillups("\t\n\r");
     //SciCall_AutoCSetFillups(g_bAccelWordNavigation ? WhiteSpaceCharsDefault : WhiteSpaceCharsAccelerated);
 
-    char* pList = LocalAlloc(LPTR, iWListSize + 1);
+    ++iWListSize; // zero termination
+    char* const pList = AllocMem(iWListSize, HEAP_ZERO_MEMORY);
     if (pList) {
       PWLIST pTmp = NULL;
       LL_FOREACH_SAFE(pListHead, pWLItem, pTmp) {
-        if (pWLItem->word) {
-          lstrcatA(pList, sep);
-          lstrcatA(pList, pWLItem->word);
-          LocalFree(pWLItem->word);
+        if (pWLItem->word[0]) {
+          StringCchCatA(pList, iWListSize, sep);
+          StringCchCatA(pList, iWListSize, pWLItem->word);
         }
         LL_DELETE(pListHead, pWLItem);
-        LocalFree(pWLItem);
+        FreeMem(pWLItem);
       }
       
       SciCall_AutoCShow(iRootLen, (pList + 1));
-      LocalFree(pList);
+      FreeMem(pList);
     }
   }
 }

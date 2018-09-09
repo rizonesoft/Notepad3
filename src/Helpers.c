@@ -2456,47 +2456,6 @@ void Float2String(float fValue, LPWSTR lpszStrg, int cchSize)
 }
 
 
-
-//=============================================================================
-//
-//  faststrcmpl()
-//  
-int faststrcmpl(const char* ptr0, const char* ptr1, size_t len)
-{
-  size_t fast = len / sizeof(size_t) + 1;
-  size_t offset = (fast - 1) * sizeof(size_t);
-  size_t cur_block = 0;
-
-  if (len <= sizeof(size_t)) { fast = 0; }
-
-  size_t* lptr0 = (size_t*)ptr0;
-  size_t* lptr1 = (size_t*)ptr1;
-
-  while (cur_block < fast) {
-    if ((lptr0[cur_block] ^ lptr1[cur_block])) {
-      for (size_t pos = cur_block * sizeof(size_t); pos < len; ++pos) {
-        if ((ptr0[pos] ^ ptr1[pos]) || (ptr0[pos] == 0) || (ptr1[pos] == 0)) {
-          return  (int)((unsigned char)ptr0[pos] - (unsigned char)ptr1[pos]);
-        }
-      }
-    }
-    ++cur_block;
-  }
-
-  while (len > offset) {
-    if ((ptr0[offset] ^ ptr1[offset])) {
-      return (int)((unsigned char)ptr0[offset] - (unsigned char)ptr1[offset]);
-    }
-    ++offset;
-  }
-
-  return 0;
-}
-
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 //
 //   Drag N Drop helpers

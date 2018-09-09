@@ -387,19 +387,18 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
 
-  //return strcmp(a->word, b->word);
-  //return _strcmpi(a->word, b->word);
+// NOTE: !!! differences in AutoCompleteList depending compare functions (CRT vs. Shlwapi)) !!!
 
-//#define StringCchCompareNA(s1,l1,s2,l2)   StrCmpNA((s1),(s2),min((l1),(l2)))
+#define StringCchCompareNA(s1,l1,s2,l2)   StrCmpNA((s1),(s2),min((l1),(l2)))
 //#define StringCchCompareNA(s1,l1,s2,l2)   strncmp((s1),(s2),min((l1),(l2)))
-#define StringCchCompareNA(s1,l1,s2,l2)   faststrcmpl((s1),(s2),min((l1),(l2)))
-//#define StringCchCompareXA(s1,s2)         StrCmpA((s1),(s2))
+#define StringCchCompareXA(s1,s2)         StrCmpA((s1),(s2))
 //#define StringCchCompareXA(s1,s2)         strcmp((s1),(s2))
-#define StringCchCompareXA(s1,s2)         faststrcmp((s1),(s2))
 
 #define StringCchCompareNIA(s1,l1,s2,l2)  StrCmpNIA((s1),(s2),min((l1),(l2)))
 //#define StringCchCompareNIA(s1,l1,s2,l2)  _strnicmp((s1),(s2),min((l1),(l2)))
 #define StringCchCompareXIA(s1,s2)        StrCmpIA((s1),(s2))
+//#define StringCchCompareXIA(s1,s2)        _stricmp((s1),(s2))
+
 
 #define StringCchCompareNW(s1,l1,s2,l2)   StrCmpNW((s1),(s2),min((l1),(l2)))
 #define StringCchCompareXW(s1,s2)         StrCmpW((s1),(s2))
@@ -454,9 +453,6 @@ int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, i
 
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
-
-#define faststrcmp(p1,p2) faststrcmpl((p1),(p2), strlen(p1))
-int faststrcmpl(const char *ptr0, const char *ptr1, size_t len);
 
 // ----------------------------------------------------------------------------
 
