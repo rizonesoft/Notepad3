@@ -319,6 +319,19 @@ DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
 
 //=============================================================================
 //
+// Indentation Guides
+//
+DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
+DeclareSciCallV2(BraceHighLight, BRACEHIGHLIGHT, DocPos, pos1, DocPos, pos2)
+DeclareSciCallV1(BraceBadLight, BRACEBADLIGHT, DocPos, pos)
+DeclareSciCallV2(BraceHighLightIndicator, BRACEHIGHLIGHTINDICATOR, bool, use, int, indic)
+DeclareSciCallV2(BraceBadLightIndicator, BRACEBADLIGHTINDICATOR, bool, use, int, indic)
+DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
+DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos)
+
+
+//=============================================================================
+//
 //  Margins
 //
 DeclareSciCallV2(SetMarginTypeN, SETMARGINTYPEN, int, margin, int, type)
@@ -329,8 +342,8 @@ DeclareSciCallV2(SetMarginSensitiveN, SETMARGINSENSITIVEN, int, margin, bool, se
 DeclareSciCallV2(SetMarginBackN, SETMARGINBACKN, int, margin, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour)
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour)
+DeclareSciCallV1(MarkerEnableHighlight, MARKERENABLEHIGHLIGHT, bool, flag)
 DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char*, text)
-
 
 //=============================================================================
 //
@@ -420,7 +433,6 @@ DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction)
 //
 //  Utilities
 //
-DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 

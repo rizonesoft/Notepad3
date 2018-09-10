@@ -2809,8 +2809,8 @@ void EditAlignText(HWND hwnd,int nMode)
         DocPos iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if ((iIndentPos == iEndPos) && (iEndPos > 0)) {
-          SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLine), iEndPos);
-          SendMessage(hwnd, SCI_REPLACETARGET, 0, (LPARAM)"");
+          SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), iEndPos);
+          SciCall_ReplaceTarget(0, "");
         }
         else {
           g_pTempLineBuffer[0] = '\0';
@@ -2843,26 +2843,25 @@ void EditAlignText(HWND hwnd,int nMode)
             if (nMode == ALIGN_JUSTIFY || nMode == ALIGN_JUSTIFY_EX) {
 
               bool bNextLineIsBlank = false;
-              if (nMode == ALIGN_JUSTIFY_EX) {
-
+              if (nMode == ALIGN_JUSTIFY_EX) 
+              {
                 if (SciCall_GetLineCount() <= iLine + 1) {
                   bNextLineIsBlank = true;
                 }
                 else {
-                  
                   DocPos iLineEndPos    = SciCall_GetLineEndPosition(iLine + 1);
                   DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine + 1);
-
-                  if (iLineIndentPos == iLineEndPos)
+                  if (iLineIndentPos == iLineEndPos) {
                     bNextLineIsBlank = true;
+                  }
                 }
               }
 
               if ((nMode == ALIGN_JUSTIFY || nMode == ALIGN_JUSTIFY_EX) &&
                   iWords > 1 && iWordsLength >= 2 &&
                   ((nMode != ALIGN_JUSTIFY_EX || !bNextLineIsBlank || iLineStart == iLineEnd) ||
-                  (bNextLineIsBlank && iWordsLength > (iMaxLength - iMinIndent) * 0.75))) {
-
+                  (bNextLineIsBlank && iWordsLength > (iMaxLength - iMinIndent) * 0.75))) 
+              {
                 int iGaps = iWords - 1;
                 DocPos iSpacesPerGap = (iMaxLength - iMinIndent - iWordsLength) / iGaps;
                 DocPos iExtraSpaces = (iMaxLength - iMinIndent - iWordsLength) % iGaps;
@@ -2884,16 +2883,8 @@ void EditAlignText(HWND hwnd,int nMode)
                   StringCchCat(p,(length - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),pWords[i]);
                   p = StrEnd(p,0);
                 }
-
-                int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
-
-                SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
-                SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)g_pTempLineBuffer);
-
-                SendMessage(hwnd,SCI_SETLINEINDENTATION,(WPARAM)iLine,(LPARAM)iMinIndent);
               }
               else {
-
                 StringCchCopy(wchNewLineBuf,COUNTOF(wchNewLineBuf),pWords[0]);
                 p = StrEnd(wchNewLineBuf, COUNTOF(wchNewLineBuf));
 
@@ -2903,35 +2894,30 @@ void EditAlignText(HWND hwnd,int nMode)
                   StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),pWords[i]);
                   p = StrEnd(p,0);
                 }
-
-                int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
-
-                SendMessage(hwnd, SCI_SETTARGETRANGE, SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
-                SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)g_pTempLineBuffer);
-
-                SendMessage(hwnd, SCI_SETLINEINDENTATION, (WPARAM)iLine, (LPARAM)iMinIndent);
               }
+              int cch = WideCharToMultiByteStrg(Encoding_SciCP, wchNewLineBuf, g_pTempLineBuffer) - 1;
+              SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
+              SciCall_ReplaceTarget(cch, g_pTempLineBuffer);
+              SciCall_SetLineIndentation(iLine, iMinIndent);
             }
             else {
-
-              DocPos iExtraSpaces = iMaxLength - iMinIndent - iWordsLength - iWords + 1;
-              DocPos iOddSpaces   = iExtraSpaces % 2;
-              int i;
-              DocPos iPos;
-
+              wchNewLineBuf[0] = L'\0';
               p = wchNewLineBuf;
 
+              DocPos iExtraSpaces = iMaxLength - iMinIndent - iWordsLength - iWords + 1;
               if (nMode == ALIGN_RIGHT) {
-                for (i = 0; i < iExtraSpaces; i++)
+                for (int i = 0; i < iExtraSpaces; i++)
                   *p++ = L' ';
                 *p = 0;
               }
+
+              DocPos iOddSpaces = iExtraSpaces % 2;
               if (nMode == ALIGN_CENTER) {
-                for (i = 1; i < iExtraSpaces - iOddSpaces; i+=2)
+                for (int i = 1; i < iExtraSpaces - iOddSpaces; i+=2)
                   *p++ = L' ';
                 *p = 0;
               }
-              for (i = 0; i < iWords; i++) {
+              for (int i = 0; i < iWords; i++) {
                 StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),pWords[i]);
                 if (i < iWords - 1)
                   StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),L" ");
@@ -2944,18 +2930,20 @@ void EditAlignText(HWND hwnd,int nMode)
 
               int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
 
+              DocPos iPos = 0;
               if (nMode == ALIGN_RIGHT || nMode == ALIGN_CENTER) {
-                SendMessage(hwnd,SCI_SETLINEINDENTATION,(WPARAM)iLine,(LPARAM)iMinIndent);
+                SciCall_SetLineIndentation(iLine, iMinIndent);
                 iPos = SciCall_GetLineIndentPosition(iLine);
               }
-              else
+              else {
                 iPos = SciCall_PositionFromLine(iLine);
-              
-              SendMessage(hwnd, SCI_SETTARGETRANGE, iPos, SciCall_GetLineEndPosition(iLine));
-              SendMessage(hwnd, SCI_REPLACETARGET, (WPARAM)cch, (LPARAM)g_pTempLineBuffer);
+              }
+              SciCall_SetTargetRange(iPos, SciCall_GetLineEndPosition(iLine));
+              SciCall_ReplaceTarget(cch, g_pTempLineBuffer);
 
-              if (nMode == ALIGN_LEFT)
-                SendMessage(hwnd, SCI_SETLINEINDENTATION, (WPARAM)iLine, (LPARAM)iMinIndent);
+              if (nMode == ALIGN_LEFT) {
+                SciCall_SetLineIndentation(iLine, iMinIndent);
+              }
             }
           }
         }
@@ -5060,9 +5048,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   static RegExResult_t s_anyMatch = NO_MATCH;
   static RegExResult_t s_fwrdMatch = NO_MATCH;
 
-  static COLORREF rgbRed = RGB(255, 170, 170);
-  static COLORREF rgbGreen = RGB(170, 255, 170);
-  static COLORREF rgbBlue = RGB(170, 200, 255);
   static HBRUSH hBrushRed;
   static HBRUSH hBrushGreen;
   static HBRUSH hBrushBlue;
@@ -5230,9 +5215,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       InsertMenu(hmenu, 1, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_RESETPOS, tchBuf);
       InsertMenu(hmenu, 2, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 
-      hBrushRed = CreateSolidBrush(rgbRed);
-      hBrushGreen = CreateSolidBrush(rgbGreen);
-      hBrushBlue = CreateSolidBrush(rgbBlue);
+      hBrushRed = CreateSolidBrush(rgbRedColorRef);
+      hBrushGreen = CreateSolidBrush(rgbGreenColorRef);
+      hBrushBlue = CreateSolidBrush(rgbBlueColorRef);
 
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
     }
@@ -5858,18 +5843,18 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             switch (s_anyMatch) {
             case MATCH:
               //SetTextColor(hDC, green);
-              SetBkColor(hDC, rgbGreen);
+              SetBkColor(hDC, rgbGreenColorRef);
               hBrush = (INT_PTR)hBrushGreen;
               break;
             case NO_MATCH:
               //SetTextColor(hDC, blue);
-              SetBkColor(hDC, rgbBlue);
+              SetBkColor(hDC, rgbBlueColorRef);
               hBrush = (INT_PTR)hBrushBlue;
               break;
             case INVALID:
             default:
               //SetTextColor(hDC, red);
-              SetBkColor(hDC, rgbRed);
+              SetBkColor(hDC, rgbRedColorRef);
               hBrush = (INT_PTR)hBrushRed;
               break;
             }
@@ -6882,7 +6867,10 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     g_bCodeFoldingAvailable = true; // saved before
     g_bShowCodeFolding = true;      // saved before
     SciCall_SetProperty("fold", "1");
-    //SciCall_SetProperty("fold.compact", "1");
+    SciCall_SetProperty("fold.foldsyntaxbased", "1");
+    SciCall_SetProperty("fold.comment", "1");
+    SciCall_SetProperty("fold.preprocessor", "1");
+    SciCall_SetProperty("fold.compact", "0");
     Style_SetFolding(hwnd, true);
     SciCall_SetFoldFlags(0);
     //SciCall_SetFoldFlags(SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // Debug
@@ -6952,12 +6940,13 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 //
 static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
 {
+  UNUSED(hwnd);
   if (iPos < 0) {
     // clear indicator
-    SendMessage(hwnd, SCI_BRACEBADLIGHT, (WPARAM)INVALID_POSITION, 0);
-    SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
+    SciCall_BraceBadLight(INVALID_POSITION);
+    SciCall_SetHighLightGuide(0);
     if (!g_bUseOldStyleBraceMatching)
-      SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 0, INDIC_NP3_BAD_BRACE);
+      SciCall_BraceBadLightIndicator(false, INDIC_NP3_BAD_BRACE);
     return true;
   }
 
@@ -6968,17 +6957,17 @@ static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
     if (iBrace2 != -1) {
       DocPos col1 = SciCall_GetColumn(iPos);
       DocPos col2 = SciCall_GetColumn(iBrace2);
-      SendMessage(hwnd, SCI_BRACEHIGHLIGHT, iPos, iBrace2);
-      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, min(col1, col2), 0);
+      SciCall_BraceHighLight(iPos, iBrace2);
+      SciCall_SetHighLightGuide(min(col1, col2));
       if (!g_bUseOldStyleBraceMatching) {
-        SendMessage(hwnd, SCI_BRACEHIGHLIGHTINDICATOR, 1, INDIC_NP3_MATCH_BRACE);
+        SciCall_BraceHighLightIndicator(true, INDIC_NP3_MATCH_BRACE);
       }
     }
     else {
-      SendMessage(hwnd, SCI_BRACEBADLIGHT, iPos, 0);
-      SendMessage(hwnd, SCI_SETHIGHLIGHTGUIDE, 0, 0);
+      SciCall_BraceBadLight(iPos);
+      SciCall_SetHighLightGuide(0);
       if (!g_bUseOldStyleBraceMatching) {
-        SendMessage(hwnd, SCI_BRACEBADLIGHTINDICATOR, 1, INDIC_NP3_BAD_BRACE);
+        SciCall_BraceHighLightIndicator(true, INDIC_NP3_BAD_BRACE);
       }
     }
     return true;
