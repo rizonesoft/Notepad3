@@ -145,6 +145,7 @@ static char AutoCompleteWordASCII[ANSI_CAHR_BUFFER] = { '\0' };
 
 
 // temporary line buffer for fast line ops 
+// make sure to handle it in closed loops locally only
 static char  g_pTempLineBuffer[TEMPLINE_BUFFER];
 
 
@@ -2759,31 +2760,26 @@ void EditAlignText(HWND hwnd,int nMode)
 
   if (!SciCall_IsSelectionRectangle())
   {
-    DocLn iLine;
     DocPos iMinIndent = BUFSIZE_ALIGN;
-
     DocPos iMaxLength = 0;
 
-    DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
+    DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn iLineEnd   = SciCall_LineFromPosition(iSelEnd);
     
     if (iSelEnd <= SciCall_PositionFromLine(iLineEnd))
     {
-      if ((iLineEnd - iLineStart) >= 1)
-        --iLineEnd;
+      if ((iLineEnd - iLineStart) >= 1) { --iLineEnd; }
     }
 
-    for (iLine = iLineStart; iLine <= iLineEnd; iLine++) {
+    for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++) {
 
       DocPos iLineEndPos    = SciCall_GetLineEndPosition(iLine);
       const DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine);
 
       if (iLineIndentPos != iLineEndPos) 
       {
-        const DocPos iIndentCol = (DocPos)SendMessage(hwnd,SCI_GETLINEINDENTATION,(WPARAM)iLine,0);
-        DocPos iTail;
-
-        iTail = iLineEndPos-1;
+        DocPos const iIndentCol = (DocPos)SendMessage(hwnd,SCI_GETLINEINDENTATION,(WPARAM)iLine,0);
+        DocPos iTail = iLineEndPos-1;
         char ch = (char)SendMessage(hwnd,SCI_GETCHARAT,(WPARAM)iTail,0);
         while (iTail >= iLineStart && (ch == ' ' || ch == '\t'))
         {
@@ -2800,42 +2796,44 @@ void EditAlignText(HWND hwnd,int nMode)
 
     if (iMaxLength < BUFSIZE_ALIGN) {
 
+      WCHAR wchLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
+      WCHAR* pWords[BUFSIZE_ALIGN * 3 / 2];
+
       _IGNORE_NOTIFY_CHANGE_;
       _ENTER_TARGET_TRANSACTION_;
 
-      for (iLine = iLineStart; iLine <= iLineEnd; iLine++)
+      for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++)
       {
-        DocPos iEndPos = SciCall_GetLineEndPosition(iLine);
-        DocPos iIndentPos = SciCall_GetLineIndentPosition(iLine);
+        DocPos const iStartPos = SciCall_PositionFromLine(iLine);
+        DocPos const iEndPos = SciCall_GetLineEndPosition(iLine);
+        DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
         if ((iIndentPos == iEndPos) && (iEndPos > 0)) {
-          SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), iEndPos);
+          SciCall_SetTargetRange(iStartPos, iEndPos);
           SciCall_ReplaceTarget(0, "");
         }
         else {
-          g_pTempLineBuffer[0] = '\0';
-          WCHAR wchLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
-          WCHAR *pWords[BUFSIZE_ALIGN*3/2];
-          WCHAR *p = wchLineBuf;
-
           int iWords = 0;
           int iWordsLength = 0;
-          DocPos cchLine = SciCall_GetLine(iLine, g_pTempLineBuffer);
-
-          MultiByteToWideChar(Encoding_SciCP,0,g_pTempLineBuffer,(int)cchLine,wchLineBuf,COUNTOF(wchLineBuf));
+          int const cchLine = SciCall_LineLength(iLine);
+          int const cwch = MultiByteToWideChar(Encoding_SciCP, 0, 
+                                               SciCall_GetRangePointer(iStartPos, cchLine),
+                                               cchLine, wchLineBuf, COUNTOF(wchLineBuf));
+          wchLineBuf[cwch] = L'\0';
           StrTrim(wchLineBuf,L"\r\n\t ");
 
+          WCHAR* p = wchLineBuf;
           while (*p) {
-            if (*p != L' ' && *p != L'\t') {
+            if ((*p != L' ') && (*p != L'\t')) {
               pWords[iWords++] = p++;
               iWordsLength++;
-              while (*p && *p != L' ' && *p != L'\t') {
+              while (*p && (*p != L' ') && (*p != L'\t')) {
                 p++;
                 iWordsLength++;
               }
             }
             else
-              *p++ = 0;
+              *p++ = L'\0';
           }
 
           if (iWords > 0) {
@@ -2849,8 +2847,8 @@ void EditAlignText(HWND hwnd,int nMode)
                   bNextLineIsBlank = true;
                 }
                 else {
-                  DocPos iLineEndPos    = SciCall_GetLineEndPosition(iLine + 1);
-                  DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine + 1);
+                  DocPos const iLineEndPos    = SciCall_GetLineEndPosition(iLine + 1);
+                  DocPos const iLineIndentPos = SciCall_GetLineIndentPosition(iLine + 1);
                   if (iLineIndentPos == iLineEndPos) {
                     bNextLineIsBlank = true;
                   }
@@ -2863,16 +2861,15 @@ void EditAlignText(HWND hwnd,int nMode)
                   (bNextLineIsBlank && iWordsLength > (iMaxLength - iMinIndent) * 0.75))) 
               {
                 int iGaps = iWords - 1;
-                DocPos iSpacesPerGap = (iMaxLength - iMinIndent - iWordsLength) / iGaps;
-                DocPos iExtraSpaces = (iMaxLength - iMinIndent - iWordsLength) % iGaps;
-                int i,j;
+                DocPos const iSpacesPerGap = (iMaxLength - iMinIndent - iWordsLength) / iGaps;
+                DocPos const iExtraSpaces = (iMaxLength - iMinIndent - iWordsLength) % iGaps;
 
                 int length = BUFSIZE_ALIGN * 3;
                 StringCchCopy(wchNewLineBuf,COUNTOF(wchNewLineBuf),pWords[0]);
                 p = StrEnd(wchNewLineBuf, COUNTOF(wchNewLineBuf));
 
-                for (i = 1; i < iWords; i++) {
-                  for (j = 0; j < iSpacesPerGap; j++) {
+                for (int i = 1; i < iWords; i++) {
+                  for (int j = 0; j < iSpacesPerGap; j++) {
                     *p++ = L' ';
                     *p = 0;
                   }
@@ -2895,7 +2892,8 @@ void EditAlignText(HWND hwnd,int nMode)
                   p = StrEnd(p,0);
                 }
               }
-              int cch = WideCharToMultiByteStrg(Encoding_SciCP, wchNewLineBuf, g_pTempLineBuffer) - 1;
+
+              int const cch = WideCharToMultiByteStrg(Encoding_SciCP, wchNewLineBuf, g_pTempLineBuffer) - 1;
               SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
               SciCall_ReplaceTarget(cch, g_pTempLineBuffer);
               SciCall_SetLineIndentation(iLine, iMinIndent);
@@ -2904,7 +2902,7 @@ void EditAlignText(HWND hwnd,int nMode)
               wchNewLineBuf[0] = L'\0';
               p = wchNewLineBuf;
 
-              DocPos iExtraSpaces = iMaxLength - iMinIndent - iWordsLength - iWords + 1;
+              DocPos const iExtraSpaces = iMaxLength - iMinIndent - iWordsLength - iWords + 1;
               if (nMode == ALIGN_RIGHT) {
                 for (int i = 0; i < iExtraSpaces; i++)
                   *p++ = L' ';
@@ -3774,24 +3772,15 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
   }
 
   if ((iEndLine - iStartLine) <= 1) { return; }
-
-  DocPos iMaxLineLen = 0;
-  for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine) {
-    DocPos iLnLen = SciCall_GetLine(iLine, NULL);
-    if (iLnLen > iMaxLineLen)
-      iMaxLineLen = iLnLen;
-  }
-
-  char* pCurrentLine = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
   
   _IGNORE_NOTIFY_CHANGE_;
   _ENTER_TARGET_TRANSACTION_;
 
   for (DocLn iCurLine = iStartLine; iCurLine < iEndLine; ++iCurLine)
   {
-    SciCall_GetLine(iCurLine, pCurrentLine);
     DocPos const iCurLnLen = Sci_GetNetLineLength(iCurLine);
-    pCurrentLine[iCurLnLen] = '\0';
+    DocPos const iBegCurLine = SciCall_PositionFromLine(iCurLine);
+    const char* const pCurrentLine = SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1);
 
     if (bRemoveEmptyLines || (iCurLnLen > 0)) 
     {
@@ -3800,11 +3789,10 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
       for (DocLn iCompareLine = iCurLine + 1; iCompareLine <= iEndLine; ++iCompareLine) 
       {
         DocPos const iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
-
-        if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
-
+        if (bRemoveEmptyLines || (iCmpLnLen > 0)) 
+        {
           DocPos const iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
-          char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen + 1);
+          const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen + 1);
 
           if (iCurLnLen == iCmpLnLen) 
           {
@@ -3824,8 +3812,6 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 
   _LEAVE_TARGET_TRANSACTION_;
   _OBSERVE_NOTIFY_CHANGE_;
-
-  FreeMem(pCurrentLine);
 }
 
 
@@ -4239,28 +4225,28 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   SORTLINE* pLines = AllocMem(sizeof(SORTLINE) * iLineCount, HEAP_ZERO_MEMORY);
   if (!pLines) { return; }
 
+  DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
+  char* pmsz = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
+
   DocLn iZeroLenLineCount = 0;
   for (DocLn i = 0, iLn = iLineStart; iLn <= iLineEnd; ++iLn, ++i) {
 
-    const DocPos cchm = SciCall_GetLine(iLn, NULL);
+    DocPos const cchm = SciCall_LineLength(iLn);
     cchTotal += cchm;
     ichlMax = max(ichlMax, cchm);
 
-    char* pmsz = AllocMem(cchm + 1, HEAP_ZERO_MEMORY);
-    SciCall_GetLine(iLn, pmsz);
+    SciCall_GetLine_Safe(iLn, pmsz);
 
     if (iSortFlags & SORT_REMWSPACELN) {
       StrTrimA(pmsz, "\t\v \r\n"); // try clean line
       if (StringCchLenA(pmsz, cchm) == 0) {
         // white-space only - remove
-        FreeMem(pmsz);
         continue;
       }
-      SciCall_GetLine(iLn, pmsz);
     }
     StrTrimA(pmsz, "\r\n"); // ignore line-breaks 
 
-    int cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0) - 1;
+    int const cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0) - 1;
     if (cchw > 0) {
       int col = 0, tabs = iTabWidth;
       int const lnLen = (int)sizeof(WCHAR) * (cchw + 1);
@@ -4292,8 +4278,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     else {
       ++iZeroLenLineCount;
     }
-    FreeMem(pmsz);
   }
+  FreeMem(pmsz);
 
   if (iSortFlags & SORT_DESCENDING) {
     if (iSortFlags & SORT_LOGICAL)
@@ -6627,7 +6613,7 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
   DocPos const iLineStart = SciCall_PositionFromLine(iLine);
   DocPos const iCurrentLinePos = iCurrentPos - iLineStart;
 
-  DocPos iLineLen = SciCall_GetLine(iLine, NULL);
+  DocPos iLineLen = SciCall_LineLength(iLine);
   const char* pLine = SciCall_GetRangePointer(iLineStart, iLineLen);
 
   bool bWordAllNumbers = true;

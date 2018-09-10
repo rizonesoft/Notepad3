@@ -381,8 +381,6 @@ bool      g_bFileReadOnly = false;
 static double g_dExpression = 0.0;
 static int    g_iExprError = -1;
 
-// temporary line buffer for fast line ops 
-static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
 
 // declarations
 
@@ -401,6 +399,12 @@ static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 #endif
+
+//=============================================================================
+
+// temporary line buffer for fast line ops
+// make sure to handle it in closed loops locally only
+static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
 
 
 //=============================================================================
@@ -6012,7 +6016,9 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 //
 //  _HandleAutoIndent()
 //
-static void __fastcall _HandleAutoIndent(int const charAdded) {
+static void __fastcall _HandleAutoIndent(int const charAdded) 
+{
+  // TODO: handle indent after '{' and un-indent on '}' in C/C++ ?
   // in CRLF mode handle LF only...
   if (((SC_EOL_CRLF == g_iEOLMode) && (charAdded != '\r')) || (SC_EOL_CRLF != g_iEOLMode))
   {
@@ -6048,15 +6054,16 @@ static void __fastcall _HandleAutoIndent(int const charAdded) {
       }
       if (pLineBuf)
       {
-        SciCall_GetLine(iCurLine - 1, pLineBuf);
-        *(pLineBuf + iPrevLineLength) = '\0';
+        SciCall_GetLine_Safe(iCurLine - 1, pLineBuf);
         for (char* pPos = pLineBuf; *pPos; pPos++) {
-          if (*pPos != ' ' && *pPos != '\t')
+          if ((*pPos != ' ') && (*pPos != '\t')) {
             *pPos = '\0';
+            break;
+          }
         }
         if (*pLineBuf) {
           _BEGIN_UNDO_ACTION_;
-          SciCall_AddText((DocPos)StringCchLenA(pLineBuf,0), pLineBuf);
+          SciCall_AddText((DocPos)StringCchLenA(pLineBuf, iPrevLineLength), pLineBuf);
           _END_UNDO_ACTION_;
         }
         if (bAllocLnBuf) { FreeMem(pLineBuf); }
