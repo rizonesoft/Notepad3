@@ -4829,7 +4829,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (bMatchBraces)
         EditMatchBrace(g_hwndEdit);
       else
-        SendMessage(g_hwndEdit,SCI_BRACEHIGHLIGHT,(WPARAM)-1,(LPARAM)-1);
+        SciCall_BraceHighLight(INVALID_POSITION, INVALID_POSITION);
       break;
 
 

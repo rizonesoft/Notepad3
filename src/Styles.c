@@ -1350,6 +1350,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   SciCall_SetFoldMarginColour(true, clrBack);    // background
   SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
+  SciCall_MarkerEnableHighlight(true);
 
   //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
 
@@ -1369,8 +1370,8 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   }
 
   for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
-    SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore);
-    SciCall_MarkerSetFore(iMarkerIDs[i], bmkBack);
+    SciCall_MarkerSetFore(iMarkerIDs[i], bmkBack); // (!)
+    SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore); // (!)
   }
 
   // set width
