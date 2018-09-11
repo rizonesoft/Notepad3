@@ -24,9 +24,9 @@ typedef struct _editstyle
     UINT8 iStyle8[4];
   };
   int rid;
-  WCHAR* pszName;
-  WCHAR* pszDefault;
-  WCHAR  szValue[BUFSIZE_STYLE_VALUE];
+  LPCWSTR pszName;
+  LPCWSTR pszDefault;
+  WCHAR   szValue[BUFSIZE_STYLE_VALUE];
 
 } EDITSTYLE, *PEDITSTYLE;
 
@@ -43,8 +43,8 @@ typedef struct _editlexer
 {
   int lexerID;
   int resID;
-  WCHAR* pszName;
-  WCHAR* pszDefExt;
+  LPCWSTR pszName;
+  LPCWSTR pszDefExt;
   WCHAR  szExtensions[BUFZIZE_STYLE_EXTENTIONS];
   PKEYWORDLIST pKeyWords;
   EDITSTYLE    Styles[];

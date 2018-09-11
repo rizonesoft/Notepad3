@@ -167,6 +167,8 @@ DeclareSciCallV1(SetRectangularSelectionCaretVirtualSpace, SETRECTANGULARSELECTI
 DeclareSciCallR0(GetRectangularSelectionAnchorVirtualSpace, GETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos)
 DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, DocPos, position)
 
+DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
+
 // Multiselections (Lines of Rectangular selection)
 DeclareSciCallV0(ClearSelections, CLEARSELECTIONS)
 DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET)
@@ -241,10 +243,13 @@ DeclareSciCallR2(PositionRelative, POSITIONRELATIVE, DocPos, DocPos, startpos, D
 
 DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char* const, DocPos, start, DocPos, length)
 DeclareSciCallR0(GetCharacterPointer, GETCHARACTERPOINTER, char* const)
+
 DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text)
 DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const char*, text)
 
-DeclareSciCallV1(SetVirtualSpaceOptions, SETVIRTUALSPACEOPTIONS, int, options)
+inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf) {
+  DocPos const iLen = SciCall_GetLine(iLine, pTxtBuf);  if (pTxtBuf) pTxtBuf[iLen] = '\0';  return iLen;
+}
 
 
 //=============================================================================
@@ -315,7 +320,7 @@ DeclareSciCallR1(GetStyleAt, GETSTYLEAT, char, DocPos, position)
 DeclareSciCallV2(SetStyling, SETSTYLING, DocPosCR, length, char, style)
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position)
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos)
-
+DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, iStyle)
 
 //=============================================================================
 //
@@ -436,6 +441,8 @@ DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction)
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 
+#define Sci_GetLine_Safe(ln, bu)
+
 #define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 #define Sci_IsForwardSelection() (SciCall_GetAnchor() <= SciCall_GetCurrentPos())
 
@@ -450,6 +457,15 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 ///~#define Sci_GetDocEndPosition() (SciCall_GetTextLength() - 1)
 #define Sci_GetDocEndPosition() SciCall_GetTextLength()
 
+// max. line length in range (incl. line-breaks)
+inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
+  DocPos iMaxLineLen = 0;
+  for (DocLn iLine = iBeginLine; iLine <= iEndLine; ++iLine) {
+    DocPos const iLnLen = SciCall_LineLength(iLine);
+    if (iLnLen > iMaxLineLen) { iMaxLineLen = iLnLen; }
+  }
+  return iMaxLineLen;
+}
 
 //=============================================================================
 

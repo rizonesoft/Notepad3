@@ -36,26 +36,20 @@ int IniSectionGetString(
       LPWSTR lpReturnedString,
       int cchReturnedString)
 {
-  WCHAR *p = (WCHAR *)lpCachedIniSection;
-  WCHAR tch[256];
-  int  ich;
-
+  LPWSTR p = (LPWSTR)lpCachedIniSection;
   if (p) {
-    lstrcpy(tch,lpName);
-    lstrcat(tch,L"=");
-    ich = lstrlen(tch);
-
+    int const ich = lstrlen(lpName);
     while (*p) {
-      if (StrCmpNI(p,tch,ich) == 0) {
-        lstrcpyn(lpReturnedString,p + ich,cchReturnedString);
-        return(lstrlen(lpReturnedString));
+      if ((StrCmpNI(p,lpName,ich) == 0) && (p[ich] == L'=')) {
+        lstrcpyn(lpReturnedString,(p+ich+1),cchReturnedString);
+        return lstrlen(lpReturnedString);
       }
       else
         p = StrEnd(p) + 1;
     }
   }
   lstrcpyn(lpReturnedString,lpDefault,cchReturnedString);
-  return(lstrlen(lpReturnedString));
+  return lstrlen(lpReturnedString);
 }
 
 
@@ -64,19 +58,13 @@ int IniSectionGetInt(
       LPCWSTR lpName,
       int iDefault)
 {
-  WCHAR *p = (WCHAR *)lpCachedIniSection;
-  WCHAR tch[256];
-  int  ich;
-  int  i;
-
+  LPWSTR p = (LPWSTR)lpCachedIniSection;
   if (p) {
-    lstrcpy(tch,lpName);
-    lstrcat(tch,L"=");
-    ich = lstrlen(tch);
-
+    int const ich = lstrlen(lpName);
     while (*p) {
-      if (StrCmpNI(p,tch,ich) == 0) {
-        if (swscanf_s(p + ich,L"%i",&i) == 1)
+      if ((StrCmpNI(p,lpName,ich) == 0) && (p[ich] == L'=')) {
+        int  i;
+        if (swscanf_s((p+ich+1),L"%i",&i) == 1)
           return(i);
         else
           return(iDefault);
@@ -91,15 +79,12 @@ int IniSectionGetInt(
 
 BOOL IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString)
 {
-  WCHAR tch[256];
-  WCHAR *p = lpCachedIniSection;
-
+  LPWSTR p = lpCachedIniSection;
   if (p) {
     while (*p) {
       p = StrEnd(p) + 1;
     }
-    wsprintf(tch,L"%s=%s",lpName,lpString);
-    lstrcpy(p,tch);
+    wsprintf(p,L"%s=%s",lpName,lpString);
     p = StrEnd(p) + 1;
     *p = 0;
     return(TRUE);
@@ -744,9 +729,9 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
   WCHAR wchPath[MAX_PATH];
   WCHAR wchResult[MAX_PATH];
 
-  if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",COUNTOF("%CSIDL:MYDOCUMENTS%")-1) == 0) {
+  if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CSTRLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
     SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
-    PathAppend(wchPath,lpszSrc+COUNTOF("%CSIDL:MYDOCUMENTS%")-1);
+    PathAppend(wchPath,lpszSrc+ CSTRLEN("%CSIDL:MYDOCUMENTS%"));
   }
   else
     lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
@@ -1534,7 +1519,7 @@ BOOL MRU_Destroy(LPMRULIST pmru) {
   int i;
   for (i = 0; i < pmru->iSize; i++) {
     if (pmru->pszItems[i])
-      LocalFree(pmru->pszItems[i]);
+      LocalFree((LPWSTR)pmru->pszItems[i]);
     }
   ZeroMemory(pmru,sizeof(MRULIST));
   LocalFree(pmru);
@@ -1554,7 +1539,7 @@ BOOL MRU_Add(LPMRULIST pmru,LPCWSTR pszNew) {
   int i;
   for (i = 0; i < pmru->iSize; i++) {
     if (MRU_Compare(pmru,pmru->pszItems[i],pszNew) == 0) {
-      LocalFree(pmru->pszItems[i]);
+      LocalFree((LPWSTR)pmru->pszItems[i]);
       break;
     }
   }
@@ -1571,7 +1556,7 @@ BOOL MRU_Delete(LPMRULIST pmru,int iIndex) {
   if (iIndex < 0 || iIndex > pmru->iSize-1)
     return(0);
   if (pmru->pszItems[iIndex])
-    LocalFree(pmru->pszItems[iIndex]);
+    LocalFree((LPWSTR)pmru->pszItems[iIndex]);
   for (i = iIndex; i < pmru->iSize-1; i++) {
     pmru->pszItems[i] = pmru->pszItems[i+1];
     pmru->pszItems[i+1] = NULL;
@@ -1584,7 +1569,7 @@ BOOL MRU_Empty(LPMRULIST pmru) {
   int i;
   for (i = 0; i < pmru->iSize; i++) {
     if (pmru->pszItems[i]) {
-      LocalFree(pmru->pszItems[i]);
+      LocalFree((LPWSTR)pmru->pszItems[i]);
       pmru->pszItems[i] = NULL;
     }
   }
@@ -1688,7 +1673,6 @@ void MRU_AddOneItem(LPCWSTR pszKey,LPCWSTR pszNewItem)
     MRU_Destroy(pmru);
   }
 }
-
 
 /*
 

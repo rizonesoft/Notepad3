@@ -19,6 +19,7 @@ extern UINT16    g_uWinVer;
 
 #define UNUSED(expr) (void)(expr)
 #define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
+#define CSTRLEN(s)  (COUNTOF(s)-1)
 
 extern WCHAR g_wchIniFile[MAX_PATH];
 
@@ -181,7 +182,7 @@ typedef struct _mrulist {
   WCHAR  szRegKey[256];
   int   iFlags;
   int   iSize;
-  LPWSTR pszItems[MRU_MAXITEMS];
+  LPCWSTR pszItems[MRU_MAXITEMS];
 
 } MRULIST, *PMRULIST, *LPMRULIST;
 
@@ -225,7 +226,5 @@ INT_PTR ThemedDialogBoxParam(HINSTANCE,LPCTSTR,HWND,DLGPROC,LPARAM);
 BOOL GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
-
-
 
 ///   End of Helpers.h   \\\

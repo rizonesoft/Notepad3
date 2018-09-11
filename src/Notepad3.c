@@ -381,8 +381,6 @@ bool      g_bFileReadOnly = false;
 static double g_dExpression = 0.0;
 static int    g_iExprError = -1;
 
-// temporary line buffer for fast line ops 
-static char g_pTempLineBufferMain[TEMPLINE_BUFFER];
 
 // declarations
 
@@ -401,6 +399,8 @@ static POINTL ptDummy = { 0, 0 };
 static PDROPTARGET pDropTarget = NULL;
 static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 #endif
+
+//=============================================================================
 
 
 //=============================================================================
@@ -2729,7 +2729,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   HMENU hmenu = (HMENU)wParam;
 
-  bool ro = SciCall_GetReadOnly();
+  bool const ro = SciCall_GetReadOnly();
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+  DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
 
   int i = (int)StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile));
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
@@ -2810,6 +2812,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_MOVELINEUP,!ro);
   EnableCmd(hmenu,IDM_EDIT_MOVELINEDOWN,!ro);
   EnableCmd(hmenu,IDM_EDIT_DUPLICATELINE,!ro);
+  EnableCmd(hmenu,IDM_EDIT_LINETRANSPOSE,!ro);
   EnableCmd(hmenu,IDM_EDIT_CUTLINE,!ro);
   EnableCmd(hmenu,IDM_EDIT_COPYLINE,true);
   EnableCmd(hmenu,IDM_EDIT_DELETELINE,!ro);
@@ -2916,9 +2919,13 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(g_hwndDlgCustomizeSchemes));
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(g_hwndDlgCustomizeSchemes));
 
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
-  CheckCmd(hmenu,IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
   EnableCmd(hmenu, IDM_VIEW_FOLDING, g_bCodeFoldingAvailable);
+  CheckCmd(hmenu, IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+
+  bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
+  bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
+  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !e && (g_bCodeFoldingAvailable && g_bShowCodeFolding) && (bF || bH));
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
@@ -3047,9 +3054,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,g_bEnableSaveSettings && i);
 
   bool bIsHLink = false;
-  if ((bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0))
-  {
-    bIsHLink = (SciCall_GetStyleAt(SciCall_GetCurrentPos()) == (char)Style_GetHotspotStyleID());
+  int const iHotSpotStyleID = Style_GetHotspotStyleID();
+  char const ccStyleAt = SciCall_GetStyleAt(iCurPos);
+  if (SciCall_StyleGetHotspot(iHotSpotStyleID)) {
+    bIsHLink = (ccStyleAt == (char)iHotSpotStyleID);
   }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
@@ -3067,7 +3075,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  WCHAR tchMaxPathBuffer[MAX_PATH+4] = { L'\0' };
+  char chMaxPathBuffer[MAX_PATH + 1] = { '\0' };
+  WCHAR tchMaxPathBuffer[MAX_PATH + 1] = { L'\0' };
 
   switch(LOWORD(wParam))
   {
@@ -3604,6 +3613,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
+    case IDM_EDIT_LINETRANSPOSE:
+      SendMessage(g_hwndEdit, SCI_LINETRANSPOSE,0,0);
+      break;
+
     case IDM_EDIT_CUTLINE:
       {
         if (g_flagPasteBoard)
@@ -4094,10 +4107,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
           StringCchPrintf(tchDateTime,COUNTOF(tchDateTime),L"%s %s",tchTime,tchDate);
         }
-
-        WideCharToMultiByteStrg(Encoding_SciCP,tchDateTime, g_pTempLineBufferMain);
+        char chDateTime[128] = { '\0' };
+        WideCharToMultiByteStrg(Encoding_SciCP,tchDateTime, chDateTime);
         _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)g_pTempLineBufferMain);
+        SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)chDateTime);
         _END_UNDO_ACTION_;
       }
       break;
@@ -4111,10 +4124,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         WCHAR tchUntitled[32];
         //int   iSelStart;
 
-        if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
+        if (StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile))) {
           if (LOWORD(wParam) == IDM_EDIT_INSERT_FILENAME) {
-            SHGetFileInfo2(g_wchCurFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),
-              SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
+            SHGetFileInfo2(g_wchCurFile, FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO),
+                           SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
             pszInsert = shfi.szDisplayName;
           }
           else
@@ -4124,12 +4137,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
         }
-
-        WideCharToMultiByteStrg(Encoding_SciCP,pszInsert, g_pTempLineBufferMain);
+        char chPath[MAX_PATH + 1];
+        WideCharToMultiByteStrg(Encoding_SciCP, pszInsert, chPath);
         _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)g_pTempLineBufferMain);
+        SendMessage(g_hwndEdit, SCI_REPLACESEL, 0, (LPARAM)chPath);
         _END_UNDO_ACTION_;
-    }
+      }
       break;
 
 
@@ -4139,9 +4152,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SUCCEEDED(CoCreateGuid(&guid))) {  
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
             StrTrimW(tchMaxPathBuffer, L"{}");
-            if (WideCharToMultiByteStrg(Encoding_SciCP, tchMaxPathBuffer, g_pTempLineBufferMain)) {
+            if (WideCharToMultiByteStrg(Encoding_SciCP, tchMaxPathBuffer, chMaxPathBuffer)) {
               _BEGIN_UNDO_ACTION_;
-              SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)g_pTempLineBufferMain);
+              SendMessage(g_hwndEdit,SCI_REPLACESEL,0,(LPARAM)chMaxPathBuffer);
               _END_UNDO_ACTION_;
             }
           }
@@ -4676,7 +4689,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         g_bMarkLongLines = true;
         SendMessage(g_hwndEdit, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
         Style_SetLongLineColors(g_hwndEdit);
-        g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, 4096);
+        g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
         iLongLinesLimitG = g_iLongLinesLimit;
         UpdateToolbar();
@@ -4808,9 +4821,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TOGGLEFOLDS:
+      EditToggleFolds(SNIFF, true);
+      break;
+      
+    case IDM_VIEW_TOGGLE_CURRENT_FOLD:
       EditToggleFolds(SNIFF, false);
       break;
-
 
     case IDM_VIEW_SHOWBLANKS:
       bViewWhiteSpace = (bViewWhiteSpace) ? false : true;
@@ -5501,7 +5517,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           g_iLongLinesLimit++;
         else
           g_iLongLinesLimit--;
-        g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, 4096);
+        g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
         SendMessage(g_hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
         UpdateToolbar();
         UpdateStatusbar(false);
@@ -5928,7 +5944,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
   char const cStyle = SciCall_GetStyleAt(position);
 
   if (cStyle != (char)Style_GetHotspotStyleID()) { return; }
-  if (!(bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) { return; }
+  if (!SciCall_StyleGetHotspot(Style_GetHotspotStyleID())) { return; }
 
   // get left most position of style
   DocPos pos = position;
@@ -6012,7 +6028,9 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 //
 //  _HandleAutoIndent()
 //
-static void __fastcall _HandleAutoIndent(int const charAdded) {
+static void __fastcall _HandleAutoIndent(int const charAdded) 
+{
+  // TODO: handle indent after '{' and un-indent on '}' in C/C++ ?
   // in CRLF mode handle LF only...
   if (((SC_EOL_CRLF == g_iEOLMode) && (charAdded != '\r')) || (SC_EOL_CRLF != g_iEOLMode))
   {
@@ -6037,29 +6055,22 @@ static void __fastcall _HandleAutoIndent(int const charAdded) {
     if (iCurLine > 0/* && iLineLength <= 2*/)
     {
       DocPos const iPrevLineLength = SciCall_LineLength(iCurLine - 1);
-      char* pLineBuf = NULL;
-      bool bAllocLnBuf = false;
-      if (iPrevLineLength < TEMPLINE_BUFFER) {
-        pLineBuf = g_pTempLineBufferMain;
-      }
-      else {
-        bAllocLnBuf = true;
-        pLineBuf = AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
-      }
+      char* pLineBuf = (char*)AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
       if (pLineBuf)
       {
-        SciCall_GetLine(iCurLine - 1, pLineBuf);
-        *(pLineBuf + iPrevLineLength) = '\0';
+        SciCall_GetLine_Safe(iCurLine - 1, pLineBuf);
         for (char* pPos = pLineBuf; *pPos; pPos++) {
-          if (*pPos != ' ' && *pPos != '\t')
+          if ((*pPos != ' ') && (*pPos != '\t')) {
             *pPos = '\0';
+            break;
+          }
         }
         if (*pLineBuf) {
           _BEGIN_UNDO_ACTION_;
-          SciCall_AddText((DocPos)StringCchLenA(pLineBuf,0), pLineBuf);
+          SciCall_AddText((DocPos)StringCchLenA(pLineBuf, iPrevLineLength), pLineBuf);
           _END_UNDO_ACTION_;
         }
-        if (bAllocLnBuf) { FreeMem(pLineBuf); }
+        FreeMem(pLineBuf);
       }
     }
   }
@@ -6072,11 +6083,12 @@ static void __fastcall _HandleAutoIndent(int const charAdded) {
 //
 static void __fastcall _HandleAutoCloseTags()
 {
-  //int lexerID = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
-  //if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
+  ///int lexerID = (int)SendMessage(g_hwndEdit,SCI_GETLEXER,0,0);
+  ///if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
+  DocPos const maxSearchBackward = 4096;
   {
     DocPos const iCurPos = SciCall_GetCurrentPos();
-    DocPos const iHelper = iCurPos - (DocPos)(COUNTOF(g_pTempLineBufferMain) - 1);
+    DocPos const iHelper = iCurPos - maxSearchBackward;
     DocPos const iStartPos = max(0, iHelper);
     DocPos const iSize = iCurPos - iStartPos;
 
@@ -6084,37 +6096,38 @@ static void __fastcall _HandleAutoCloseTags()
     {
       const char* pBegin = SciCall_GetRangePointer(iStartPos, iSize);
 
-      if (pBegin[iSize - 2] != '/') {
-
+      if (pBegin[iSize - 2] != '/') 
+      {
         const char* pCur = &pBegin[iSize - 2];
-
         while (pCur > pBegin && *pCur != '<' && *pCur != '>') { --pCur; }
 
         int  cchIns = 2;
-        StringCchCopyA(g_pTempLineBufferMain, FNDRPL_BUFFER, "</");
+        char replaceBuf[FNDRPL_BUFFER+2];
+        StringCchCopyA(replaceBuf, FNDRPL_BUFFER, "</");
         if (*pCur == '<') {
-          pCur++;
-          while (StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) {
-            g_pTempLineBufferMain[cchIns++] = *pCur;
-            pCur++;
+          ++pCur;
+          while ((StrChrA(":_-.", *pCur) || IsCharAlphaNumericA(*pCur)) && (cchIns < (FNDRPL_BUFFER-2))) {
+            replaceBuf[cchIns++] = *pCur;
+            ++pCur;
           }
         }
-        g_pTempLineBufferMain[cchIns++] = '>';
-        g_pTempLineBufferMain[cchIns] = '\0';
+        replaceBuf[cchIns++] = '>';
+        replaceBuf[cchIns] = '\0';
 
+        // except tags w/o closing tags
         if (cchIns > 3 &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</base>", CSTRLEN("</base>")) &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</bgsound>", CSTRLEN("</bgsound>")) &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</br>", CSTRLEN("</br>")) &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</embed>", CSTRLEN("</embed>")) &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</hr>", CSTRLEN("</hr>")) &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</img>", CSTRLEN("</img>")) &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</input>", CSTRLEN("</input>")) &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</link>", CSTRLEN("</link>")) &&
-          StringCchCompareNIA(g_pTempLineBufferMain, COUNTOF(g_pTempLineBufferMain), "</meta>", CSTRLEN("</meta>")))
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</base>", CSTRLEN("</base>")) &&
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</bgsound>", CSTRLEN("</bgsound>")) &&
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</br>", CSTRLEN("</br>")) &&
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</embed>", CSTRLEN("</embed>")) &&
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</hr>", CSTRLEN("</hr>")) &&
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</img>", CSTRLEN("</img>")) &&
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</input>", CSTRLEN("</input>")) &&
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</link>", CSTRLEN("</link>")) &&
+          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</meta>", CSTRLEN("</meta>")))
         {
           _BEGIN_UNDO_ACTION_;
-          SciCall_ReplaceSel(g_pTempLineBufferMain);
+          SciCall_ReplaceSel(replaceBuf);
           SciCall_SetSel(iCurPos, iCurPos);
           _END_UNDO_ACTION_;
         }
@@ -6135,21 +6148,26 @@ static void __fastcall _HandleTinyExpr()
   char const chBefore = SciCall_GetCharAt(iPosBefore - 1);
   if (chBefore == '=') // got "=?" evaluate expression trigger
   {
-    DocPos const iLnCaretPos = SciCall_GetCurLine(COUNTOF(g_pTempLineBufferMain), g_pTempLineBufferMain);
-    g_pTempLineBufferMain[(iLnCaretPos > 1) ? (iLnCaretPos-2) : 0] = '\0'; // breakbefore "=?"
+    DocPos lineLen = SciCall_LineLength(SciCall_LineFromPosition(iCurPos));
+    char* lineBuf = (char*)AllocMem(lineLen + 1, HEAP_ZERO_MEMORY);
+    if (lineBuf) {
+      DocPos const iLnCaretPos = SciCall_GetCurLine(lineLen, lineBuf);
+      lineBuf[(iLnCaretPos > 1) ? (iLnCaretPos - 2) : 0] = '\0'; // break before "=?"
 
-    int iExprErr = 1;
-    const char* pBegin = &g_pTempLineBufferMain[0];
-    double dExprEval = 0.0;
+      int iExprErr = 1;
+      const char* pBegin = lineBuf;
+      double dExprEval = 0.0;
 
-    while (*pBegin && iExprErr) {
-      dExprEval = te_interp(pBegin++, &iExprErr);
-    }
-    if (*pBegin && !iExprErr) {
-      char chExpr[64] = { '\0' };
-      StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
-      SciCall_SetSel(iPosBefore, iCurPos);
-      SciCall_ReplaceSel(chExpr);
+      while (*pBegin && iExprErr) {
+        dExprEval = te_interp(pBegin++, &iExprErr);
+      }
+      if (*pBegin && !iExprErr) {
+        char chExpr[64] = { '\0' };
+        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.6G", dExprEval);
+        SciCall_SetSel(iPosBefore, iCurPos);
+        SciCall_ReplaceSel(chExpr);
+      }
+      FreeMem(lineBuf);
     }
   }
 }
@@ -6804,7 +6822,7 @@ void LoadSettings()
     g_bMarkLongLines = IniSectionGetBool(pIniSection, L"MarkLongLines", true);
 
     g_iLongLinesLimit = IniSectionGetInt(pIniSection, L"LongLinesLimit", 80);
-    g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, 4096);
+    g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
     iLongLinesLimitG = g_iLongLinesLimit;
 
     iLongLineMode = IniSectionGetInt(pIniSection, L"LongLineMode", EDGE_LINE);
@@ -7101,7 +7119,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
   BeginWaitCursor(tchMsg);
 
-  pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
+  pIniSection = AllocMem(sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER, HEAP_ZERO_MEMORY);
   //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
   IniSectionSetInt(pIniSection, L"SettingsVersion", CFG_VER_CURRENT);
@@ -7205,7 +7223,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetString(pIniSection, L"ToolbarButtons", g_tchToolbarButtons);
 
   SaveIniSection(L"Settings", pIniSection);
-  LocalFree(pIniSection);
+  FreeMem(pIniSection);
 
   
   // Scintilla Styles
@@ -8200,13 +8218,12 @@ static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionT
 //
 static double __fastcall _InterpRectSelTinyExpr(int* piExprError)
 {
-  #define _tmpBufCnt 256
+  #define _tmpBufCnt 128
   char tmpRectSelN[_tmpBufCnt] = { '\0' };
-
-  g_pTempLineBufferMain[0] = '\0';
-  size_t const tmpLineBufSize = COUNTOF(g_pTempLineBufferMain);
-
+  
   DocPosU const selCount = SciCall_GetSelections();
+  DocPosU const calcBufSize = _tmpBufCnt * selCount;
+  char* calcBuffer = (char*)AllocMem(calcBufSize + 1, HEAP_ZERO_MEMORY);
 
   bool bLastCharWasDigit = false;
   for (DocPosU i = 0; i < selCount; ++i)
@@ -8220,14 +8237,13 @@ static double __fastcall _InterpRectSelTinyExpr(int* piExprError)
     if (!StrIsEmptyA(tmpRectSelN))
     {
       if (IsDigitA(tmpRectSelN[0]) && bLastCharWasDigit) {
-        StringCchCatA(g_pTempLineBufferMain, tmpLineBufSize, "+"); // default: add numbers
+        StringCchCatA(calcBuffer, calcBufSize, "+"); // default: add numbers
       }
       bLastCharWasDigit = IsDigitA(tmpRectSelN[StringCchLenA(tmpRectSelN,COUNTOF(tmpRectSelN)) - 1]);
-      StringCchCatA(g_pTempLineBufferMain, tmpLineBufSize, tmpRectSelN);
+      StringCchCatA(calcBuffer, calcBufSize, tmpRectSelN);
     }
   }
-
-  return te_interp(g_pTempLineBufferMain, piExprError);
+  return te_interp(calcBuffer, piExprError);
 }
 
 
@@ -8450,12 +8466,17 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bIsSelCountable)
     {
-      if (SciCall_GetSelText(NULL) < COUNTOF(g_pTempLineBufferMain))
+      DocPos const iSelCharCount = SciCall_GetSelText(NULL);
+      if (iSelCharCount < 2048) // should be fast !
       {
-        SciCall_GetSelText(g_pTempLineBufferMain);
-        //StrDelChrA(chExpression, " \r\n\t\v");
-        StrDelChrA(g_pTempLineBufferMain, "\r\n");
-        g_dExpression = te_interp(g_pTempLineBufferMain, &g_iExprError);
+        char* selectionBuffer = (char*)AllocMem(iSelCharCount + 1, HEAP_ZERO_MEMORY);
+        if (selectionBuffer) {
+          SciCall_GetSelText(selectionBuffer);
+          //StrDelChrA(chExpression, " \r\n\t\v");
+          StrDelChrA(selectionBuffer, "\r\n");
+          g_dExpression = te_interp(selectionBuffer, &g_iExprError);
+          FreeMem(selectionBuffer);
+        }
       }
       else {
         g_iExprError = -1;
