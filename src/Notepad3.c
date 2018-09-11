@@ -2812,6 +2812,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_MOVELINEUP,!ro);
   EnableCmd(hmenu,IDM_EDIT_MOVELINEDOWN,!ro);
   EnableCmd(hmenu,IDM_EDIT_DUPLICATELINE,!ro);
+  EnableCmd(hmenu,IDM_EDIT_LINETRANSPOSE,!ro);
   EnableCmd(hmenu,IDM_EDIT_CUTLINE,!ro);
   EnableCmd(hmenu,IDM_EDIT_COPYLINE,true);
   EnableCmd(hmenu,IDM_EDIT_DELETELINE,!ro);
@@ -3611,6 +3612,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       SendMessage(g_hwndEdit,SCI_LINEDUPLICATE,0,0);
       break;
 
+
+    case IDM_EDIT_LINETRANSPOSE:
+      SendMessage(g_hwndEdit, SCI_LINETRANSPOSE,0,0);
+      break;
 
     case IDM_EDIT_CUTLINE:
       {

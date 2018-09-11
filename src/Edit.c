@@ -5242,11 +5242,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case WA_INACTIVE:
           //~s_InitialTopLine = -1;
           //~g_bFindReplCopySelOrClip = true;
+          SetWindowTransparentMode(hwnd, true);
           break;
 
         case WA_CLICKACTIVE:
           // mouse click activation
         case WA_ACTIVE:
+          SetWindowTransparentMode(hwnd, false);
         default:
           s_fwrdMatch = NO_MATCH;
           s_InitialSearchStart = SciCall_GetSelectionStart();
