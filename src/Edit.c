@@ -144,11 +144,6 @@ static char AutoCompleteWordASCII[ANSI_CAHR_BUFFER] = { '\0' };
 #define IsAccelWhiteSpace(ch)  StrChrA(WhiteSpaceCharsAccelerated, (ch))
 
 
-// temporary line buffer for fast line ops 
-// make sure to handle it in closed loops locally only
-static char  g_pTempLineBuffer[TEMPLINE_BUFFER];
-
-
 enum AlignMask {
   ALIGN_LEFT = 0,
   ALIGN_RIGHT = 1,
@@ -2751,6 +2746,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 void EditAlignText(HWND hwnd,int nMode)
 {
   #define BUFSIZE_ALIGN 512
+  char  chNewLineBuf[BUFSIZE_ALIGN * 3] = { '\0' };
   WCHAR wchNewLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
 
   const DocPos iSelStart  = SciCall_GetSelectionStart();
@@ -2893,9 +2889,10 @@ void EditAlignText(HWND hwnd,int nMode)
                 }
               }
 
-              int const cch = WideCharToMultiByteStrg(Encoding_SciCP, wchNewLineBuf, g_pTempLineBuffer) - 1;
+
+              int const cch = WideCharToMultiByteStrg(Encoding_SciCP, wchNewLineBuf, chNewLineBuf) - 1;
               SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
-              SciCall_ReplaceTarget(cch, g_pTempLineBuffer);
+              SciCall_ReplaceTarget(cch, chNewLineBuf);
               SciCall_SetLineIndentation(iLine, iMinIndent);
             }
             else {
@@ -2926,7 +2923,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 p = StrEnd(p,0);
               }
 
-              int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,g_pTempLineBuffer) - 1;
+              int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,chNewLineBuf) - 1;
 
               DocPos iPos = 0;
               if (nMode == ALIGN_RIGHT || nMode == ALIGN_CENTER) {
@@ -2937,7 +2934,7 @@ void EditAlignText(HWND hwnd,int nMode)
                 iPos = SciCall_PositionFromLine(iLine);
               }
               SciCall_SetTargetRange(iPos, SciCall_GetLineEndPosition(iLine));
-              SciCall_ReplaceTarget(cch, g_pTempLineBuffer);
+              SciCall_ReplaceTarget(cch, chNewLineBuf);
 
               if (nMode == ALIGN_LEFT) {
                 SciCall_SetLineIndentation(iLine, iMinIndent);
@@ -3295,8 +3292,10 @@ void EditStripFirstCharacter(HWND hwnd)
 {
   UNUSED(hwnd);
 
-  DocPos iSelStart = 0;
-  DocPos iSelEnd = 0;
+  DocPos const iSelStart = SciCall_IsSelectionEmpty() ? 0 : SciCall_GetSelectionStart();
+  DocPos const iSelEnd = SciCall_IsSelectionEmpty() ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd();
+  DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
+  DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
   _IGNORE_NOTIFY_CHANGE_;
   _ENTER_TARGET_TRANSACTION_;
@@ -3312,31 +3311,27 @@ void EditStripFirstCharacter(HWND hwnd)
       const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
       const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
 
+      DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
+      char* lineBuffer = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
       DocPos remCount = 0;
-      const DocPosU selCount = SciCall_GetSelections();
-      for (DocPosU s = 0; s < selCount; ++s) {
-        const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
-        const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
-        //const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
-        //const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
-
-        const DocPos selTargetStart = (selAnchorPos < selCaretPos) ? selAnchorPos : selCaretPos;
-        const DocPos selTargetEnd = (selAnchorPos < selCaretPos) ? selCaretPos : selAnchorPos;
-        //const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
-
-        const DocPos nextPos = (selTargetStart < selTargetEnd) ? SciCall_PositionAfter(selTargetStart) : selTargetEnd;
-        const DocPos diff = (nextPos <= selTargetEnd) ? (nextPos - selTargetStart) : 0;
-
-        const DocPos len = (selTargetEnd - nextPos);
-        if ((len >= 0) && (len < TEMPLINE_BUFFER)) //TODO: @@@ alloc memory dynamically
+      if (lineBuffer) {
+        DocPosU const selCount = SciCall_GetSelections();
+        for (DocPosU s = 0; s < selCount; ++s) 
         {
-          StringCchCopyNA(g_pTempLineBuffer, TEMPLINE_BUFFER, SciCall_GetRangePointer(nextPos, len + 1), len);
-          SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-          SciCall_ReplaceTarget(len, g_pTempLineBuffer);
-        }
-        remCount += diff;
-      } // for()
-
+          DocPos const selTargetStart = SciCall_GetSelectionNStart(s);
+          DocPos const selTargetEnd = SciCall_GetSelectionNEnd(s);
+          DocPos const nextPos = SciCall_PositionAfter(selTargetStart);
+          DocPos const len = (selTargetEnd - nextPos);
+          if (len > 0) {
+            StringCchCopyNA(lineBuffer, iMaxLineLen, SciCall_GetRangePointer(nextPos, len + 1), len);
+            SciCall_SetTargetRange(selTargetStart, selTargetEnd);
+            SciCall_ReplaceTarget(len, lineBuffer);
+          }
+          remCount += (nextPos - selTargetStart);
+        } // for()
+        FreeMem(lineBuffer);
+      }
+      
       SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
       if (vSpcAnchorMainPos > 0)
         SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchorMainPos);
@@ -3348,18 +3343,6 @@ void EditStripFirstCharacter(HWND hwnd)
   }
   else  // SC_SEL_LINES | SC_SEL_STREAM
   {
-    if (SciCall_IsSelectionEmpty())
-    {
-      iSelEnd = Sci_GetDocEndPosition();
-    }
-    else {
-      iSelStart = SciCall_GetSelectionStart();
-      iSelEnd = SciCall_GetSelectionEnd();
-    }
-
-    const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
-    const DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
-
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
       const DocPos iPos = SciCall_PositionFromLine(iLine);
       if (iPos < SciCall_GetLineEndPosition(iLine)) {
@@ -3381,13 +3364,16 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
 {
   UNUSED(hwnd);
 
-  DocPos iSelStart = 0;
-  DocPos iSelEnd = 0;
+  DocPos const iSelStart = (SciCall_IsSelectionEmpty() || bIgnoreSelection) ? 0 : SciCall_GetSelectionStart();
+  DocPos const iSelEnd = (SciCall_IsSelectionEmpty() || bIgnoreSelection) ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd();
+  DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
+  DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
   _IGNORE_NOTIFY_CHANGE_;
   _ENTER_TARGET_TRANSACTION_;
 
-  if (SciCall_IsSelectionRectangle() && !bIgnoreSelection) {
+  if (SciCall_IsSelectionRectangle() && !bIgnoreSelection) 
+  {
     if (SciCall_IsSelectionEmpty()) {
       SciCall_Clear();
     }
@@ -3397,62 +3383,54 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
       const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
       const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
 
+      DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
+      char* lineBuffer = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
       DocPos remCount = 0;
-      const DocPosU selCount = SciCall_GetSelections();
-      for (DocPosU s = 0; s < selCount; ++s)
-      {
-        const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
-        const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
-        //const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
-        //const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
-
-        const DocPos selTargetStart = (selAnchorPos < selCaretPos) ? selAnchorPos : selCaretPos;
-        const DocPos selTargetEnd = (selAnchorPos < selCaretPos) ? selCaretPos : selAnchorPos;
-        //const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
-
-        DocPos diff = 0;
-        DocPos len = 0;
-
-        if (bTrailingBlanksOnly)
+      if (lineBuffer) {
+        const DocPosU selCount = SciCall_GetSelections();
+        for (DocPosU s = 0; s < selCount; ++s) 
         {
-          len = (selTargetEnd - selTargetStart);
-          if ((len >= 0) && (len < TEMPLINE_BUFFER))
-          {
-            StringCchCopyNA(g_pTempLineBuffer, TEMPLINE_BUFFER, SciCall_GetRangePointer(selTargetStart, len + 1), len);
-            DocPos end = (DocPos)StrCSpnA(g_pTempLineBuffer, "\r\n");
-            DocPos i = end;
-            while (--i >= 0) {
-              const char ch = g_pTempLineBuffer[i];
-              if (IsBlankChar(ch)) {
-                g_pTempLineBuffer[i] = '\0';
+          DocPos const selTargetStart = SciCall_GetSelectionNStart(s);
+          DocPos const selTargetEnd = SciCall_GetSelectionNEnd(s);
+
+          DocPos diff = 0;
+          DocPos len = 0;
+          if (bTrailingBlanksOnly) {
+            len = (selTargetEnd - selTargetStart);
+            if (len > 0) {
+              StringCchCopyNA(lineBuffer, iMaxLineLen, SciCall_GetRangePointer(selTargetStart, len + 1), len);
+              DocPos end = (DocPos)StrCSpnA(lineBuffer, "\r\n");
+              DocPos i = end;
+              while (--i >= 0) {
+                const char ch = lineBuffer[i];
+                if (IsBlankChar(ch)) {
+                  lineBuffer[i] = '\0';
+                }
+                else
+                  break;
               }
-              else
-                break;
+              while (end < len) {
+                lineBuffer[++i] = lineBuffer[end++];  // add "\r\n" if any
+              }
+              diff = len - (++i);
+              SciCall_SetTargetRange(selTargetStart, selTargetEnd);
+              SciCall_ReplaceTarget(-1, lineBuffer);
             }
-            while (end < len) {
-              g_pTempLineBuffer[++i] = g_pTempLineBuffer[end++];  // add "\r\n" if anny
+          }
+          else {
+            DocPos const prevPos = SciCall_PositionBefore(selTargetEnd);
+            diff = (selTargetEnd - prevPos);
+            len = (prevPos - selTargetStart);
+            if (len > 0) {
+              StringCchCopyNA(lineBuffer, iMaxLineLen, SciCall_GetRangePointer(selTargetStart, len + 1), len);
+              SciCall_SetTargetRange(selTargetStart, selTargetEnd);
+              SciCall_ReplaceTarget(len, lineBuffer);
             }
-            diff = len - (++i);
-            SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-            SciCall_ReplaceTarget(-1, g_pTempLineBuffer);
           }
-        }
-        else {
-
-          const DocPos prevPos = (selTargetStart < selTargetEnd) ? SciCall_PositionBefore(selTargetEnd) : selTargetStart;
-          diff = (prevPos >= selTargetStart) ? (selTargetEnd - prevPos) : 0;
-          len = (prevPos - selTargetStart);
-
-          if ((len >= 0) && (len < TEMPLINE_BUFFER))
-          {
-            StringCchCopyNA(g_pTempLineBuffer, TEMPLINE_BUFFER, SciCall_GetRangePointer(selTargetStart, len + 1), len);
-            SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-            SciCall_ReplaceTarget(len, g_pTempLineBuffer);
-          }
-        }
-        remCount += diff;
-
-      } // for()
+          remCount += diff;
+        } // for()
+        FreeMem(lineBuffer);
+      }
 
       SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
       if (vSpcAnchorMainPos > 0)
@@ -3465,21 +3443,10 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
   }
   else  // SC_SEL_LINES | SC_SEL_STREAM
   {
-    if (SciCall_IsSelectionEmpty() || bIgnoreSelection) {
-      iSelEnd = Sci_GetDocEndPosition();
-    }
-    else {
-      iSelStart = SciCall_GetSelectionStart();
-      iSelEnd = SciCall_GetSelectionEnd();
-    }
-
-    const DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
-    const DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
-
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine)
     {
-      const DocPos iStartPos = SciCall_PositionFromLine(iLine);
-      const DocPos iEndPos = SciCall_GetLineEndPosition(iLine);
+      DocPos const iStartPos = SciCall_PositionFromLine(iLine);
+      DocPos const iEndPos = SciCall_GetLineEndPosition(iLine);
 
       if (bTrailingBlanksOnly)
       {
@@ -3515,6 +3482,11 @@ void EditCompressBlanks(HWND hwnd)
 {
   const bool bIsSelEmpty = SciCall_IsSelectionEmpty();
 
+  const DocPos iSelStartPos = SciCall_GetSelectionStart();
+  const DocPos iSelEndPos = SciCall_GetSelectionEnd();
+  const DocLn iLineStart = SciCall_LineFromPosition(iSelStartPos);
+  const DocLn iLineEnd = SciCall_LineFromPosition(iSelEndPos);
+
   if (SciCall_IsSelectionRectangle()) {
     if (bIsSelEmpty) {
       return;
@@ -3525,44 +3497,44 @@ void EditCompressBlanks(HWND hwnd)
     const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
     const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
 
+    DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
+    char* lineBuffer = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
     DocPos remCount = 0;
-    const DocPosU selCount = SciCall_GetSelections();
-    for (DocPosU s = 0; s < selCount; ++s)
-    {
-      const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
-      const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
-      //const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
-      //const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
+    if (lineBuffer) {
+      const DocPosU selCount = SciCall_GetSelections();
+      for (DocPosU s = 0; s < selCount; ++s) {
+        const DocPos selCaretPos = SciCall_GetSelectionNCaret(s);
+        const DocPos selAnchorPos = SciCall_GetSelectionNAnchor(s);
+        //const DocPos vSpcCaretPos = SciCall_GetSelectionNCaretVirtualSpace(s);
+        //const DocPos vSpcAnchorPos = SciCall_GetSelectionNAnchorVirtualSpace(s);
 
-      const DocPos selTargetStart = (selAnchorPos < selCaretPos) ? selAnchorPos : selCaretPos;
-      const DocPos selTargetEnd = (selAnchorPos < selCaretPos) ? selCaretPos : selAnchorPos;
-      //const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
+        const DocPos selTargetStart = (selAnchorPos < selCaretPos) ? selAnchorPos : selCaretPos;
+        const DocPos selTargetEnd = (selAnchorPos < selCaretPos) ? selCaretPos : selAnchorPos;
+        //const DocPos vSpcLength = (selAnchorPos < selCaretPos) ? (vSpcCaretPos - vSpcAnchorPos) : (vSpcAnchorPos - vSpcCaretPos);
 
-      DocPos diff = 0;
-      DocPos len = 0;
-
-      len = (selTargetEnd - selTargetStart);
-      if ((len >= 0) && (len < TEMPLINE_BUFFER))
-      {
-        char* pText = SciCall_GetRangePointer(selTargetStart, len + 1);
-        const char* pEnd = (pText + len);
-        DocPos i = 0;
-        while (pText < pEnd) {
-          const char ch = *pText++;
-          if (IsBlankChar(ch)) {
-            g_pTempLineBuffer[i++] = ' ';
-            while (IsBlankChar(*pText)) { ++pText; }
+        DocPos diff = 0;
+        DocPos const len = (selTargetEnd - selTargetStart);
+        if (len >= 0) {
+          char* pText = SciCall_GetRangePointer(selTargetStart, len + 1);
+          const char* pEnd = (pText + len);
+          DocPos i = 0;
+          while (pText < pEnd) {
+            const char ch = *pText++;
+            if (IsBlankChar(ch)) {
+              lineBuffer[i++] = ' ';
+              while (IsBlankChar(*pText)) { ++pText; }
+            }
+            else { lineBuffer[i++] = ch; }
           }
-          else { g_pTempLineBuffer[i++] = ch; }
+          lineBuffer[i] = '\0';
+          diff = len - i;
+          SciCall_SetTargetRange(selTargetStart, selTargetEnd);
+          SciCall_ReplaceTarget(-1, lineBuffer);
         }
-        g_pTempLineBuffer[i] = '\0';
-        diff = len - i;
-        SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-        SciCall_ReplaceTarget(-1, g_pTempLineBuffer);
-      }
-      remCount += diff;
-
-    } // for()
+        remCount += diff;
+      } // for()
+      FreeMem(lineBuffer);
+    }
 
     SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
     if (vSpcAnchorMainPos > 0)
@@ -3577,12 +3549,7 @@ void EditCompressBlanks(HWND hwnd)
   {
     const DocPos iCurPos = SciCall_GetCurrentPos();
     const DocPos iAnchorPos = SciCall_GetAnchor();
-    const DocPos iSelStartPos = SciCall_GetSelectionStart();
-    const DocPos iSelEndPos = SciCall_GetSelectionEnd();
     const DocPos iSelLength = (iSelEndPos - iSelStartPos);
-
-    const DocLn iLineStart = SciCall_LineFromPosition(iSelStartPos);
-    const DocLn iLineEnd = SciCall_LineFromPosition(iSelEndPos);
     const DocPos iTxtLength = SciCall_GetTextLength();
 
     bool bIsLineStart = true;
@@ -3598,7 +3565,7 @@ void EditCompressBlanks(HWND hwnd)
       pszOut = AllocMem(cch + 1, HEAP_ZERO_MEMORY);
     }
     else {
-      pszIn = (const char*)SciCall_GetRangePointer(iSelStartPos, iSelLength);
+      pszIn = (const char*)SciCall_GetRangePointer(iSelStartPos, iSelLength + 1);
       cch = SciCall_GetSelText(NULL) - 1;
       pszOut = AllocMem(cch + 1, HEAP_ZERO_MEMORY);
       bIsLineStart = (iSelStartPos == SciCall_PositionFromLine(iLineStart));
@@ -3606,7 +3573,7 @@ void EditCompressBlanks(HWND hwnd)
     }
 
     if (pszIn && pszOut) {
-      char* co = (char*)pszOut;
+      char* co = pszOut;
       DocPos remWSuntilCaretPos = 0;
       for (int i = 0; i < cch; ++i) {
         if (IsBlankChar(pszIn[i])) {
@@ -7888,7 +7855,7 @@ static void __fastcall _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
       }
 
       if (FileVars_ParseInt(tch, "fill-column", &i)) {
-        lpfv->iLongLinesLimit = clampi(i, 0, 4096);
+        lpfv->iLongLinesLimit = clampi(i, 0, LONG_LINES_MARKER_LIMIT);
         lpfv->mask |= FV_LONGLINESLIMIT;
       }
     }

@@ -59,7 +59,7 @@ extern UINT    g_uCurrentPPI;
 
 // ============================================================================
 
-#if defined(DEBUG) && !defined(NDEBUG)
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
 void DbgLog(const char *fmt, ...);
 #else
 #define DbgLog(fmt, ...) NOOP
@@ -92,22 +92,23 @@ inline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
 inline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
 inline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
 
-
 inline int float2int(float f) { return (int)lroundf(f); }
 inline float Round10th(float f) { return (float)float2int(f * 10.0f) / 10; }
 inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) != 0); }
 
+
 // direct heap allocation
-inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags) {
-  return HeapAlloc(GetProcessHeap(), (dwFlags | HEAP_GENERATE_EXCEPTIONS), numBytes);
+#define DEFAULT_ALLOC_FLAGS (0) ///~ HEAP_GENERATE_EXCEPTIONS
+__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags) {
+  return HeapAlloc(GetProcessHeap(), (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
-inline bool FreeMem(LPVOID lpMemory) {
-  return ((lpMemory != NULL) ? HeapFree(GetProcessHeap(), 0, lpMemory) : true);
+__forceinline bool FreeMem(LPVOID lpMemory) {
+  return (lpMemory ? HeapFree(GetProcessHeap(), 0, lpMemory) : true);
 }
 
-inline size_t SizeOfMem(LPVOID lpMemory) {
-  return ((lpMemory != NULL) ? HeapSize(GetProcessHeap(), 0, lpMemory) : 0);
+__forceinline size_t SizeOfMem(LPCVOID lpMemory) {
+  return (lpMemory ? HeapSize(GetProcessHeap(), 0, lpMemory) : 0);
 }
 
 // ----------------------------------------------------------------------------

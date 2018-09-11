@@ -48,8 +48,7 @@ extern LANGID    g_iPrefLngLocID;
 
 //=============================================================================
 
-#ifdef DEBUG
-#ifndef NDEBUG
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
 void DbgLog(const char *fmt, ...) {
   char buf[1024] = "";
   va_list va;
@@ -59,9 +58,6 @@ void DbgLog(const char *fmt, ...) {
   OutputDebugStringA(buf);
 }
 #endif
-#endif
-
-
 
 //=============================================================================
 //
