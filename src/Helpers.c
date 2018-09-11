@@ -190,46 +190,38 @@ int IniSectionGetString(
   LPWSTR lpReturnedString,
   int cchReturnedString)
 {
-  WCHAR tch[1024] = { L'\0' };
-  WCHAR *p = (WCHAR *)lpCachedIniSection;
+  LPWSTR p = (LPWSTR)lpCachedIniSection;
   if (p) {
-    StringCchCopy(tch, COUNTOF(tch), lpName);
-    StringCchCat(tch, COUNTOF(tch), L"=");
-    int ich = (int)StringCchLenW(tch, COUNTOF(tch));
-
+    int const ich = (int)StringCchLen(lpName,0);
     while (*p) {
-      if (StrCmpNI(p, tch, ich) == 0) {
-        StringCchCopyN(lpReturnedString, cchReturnedString, p + ich, cchReturnedString);
-        return((int)StringCchLen(lpReturnedString, cchReturnedString));
+      if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
+        StringCchCopyN(lpReturnedString, cchReturnedString, (p+ich+1), cchReturnedString);
+        return (int)StringCchLen(lpReturnedString, cchReturnedString);
       }
       else
-        p = StrEnd(p,0) + 1;
+        p = StrEnd(p,0) + 1; // skip '\0's
     }
   }
   StringCchCopyN(lpReturnedString, cchReturnedString, lpDefault, cchReturnedString);
-  return((int)StringCchLen(lpReturnedString, cchReturnedString));
+  return (int)StringCchLen(lpReturnedString, cchReturnedString);
 }
 
 
 int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault)
 {
-  WCHAR tch[64] = { L'\0' };
-  WCHAR *p = (WCHAR *)lpCachedIniSection;
+  LPWSTR p = (LPWSTR)lpCachedIniSection;
   if (p) {
-    StringCchCopy(tch, COUNTOF(tch), lpName);
-    StringCchCat(tch, COUNTOF(tch), L"=");
-    int ich = (int)StringCchLenW(tch, COUNTOF(tch));
-
+    int ich = (int)StringCchLen(lpName,0);
     while (*p) {
-      if (StrCmpNI(p, tch, ich) == 0) {
+      if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
         int i = 0;
-        if (swscanf_s(p + ich, L"%i", &i) == 1)
+        if (swscanf_s((p+ich+1), L"%i", &i) == 1)
           return(i);
         else
           return(iDefault);
       }
       else
-        p = StrEnd(p,0) + 1;
+        p = StrEnd(p,0) + 1; // skip '\0's
     }
   }
   return(iDefault);
@@ -240,21 +232,17 @@ UINT IniSectionGetUInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, UINT uDefault
 {
   WCHAR *p = (WCHAR *)lpCachedIniSection;
   if (p) {
-    WCHAR tch[64] = { L'\0' };
-    StringCchCopy(tch, COUNTOF(tch), lpName);
-    StringCchCat(tch, COUNTOF(tch), L"=");
-    int ich = (int)StringCchLenW(tch, COUNTOF(tch));
-
+    int const ich = (int)StringCchLen(lpName,0);
     while (*p) {
-      if (StrCmpNI(p, tch, ich) == 0) {
+      if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
         UINT u;
-        if (swscanf_s(p + ich, L"%u", &u) == 1)
+        if (swscanf_s((p+ich+1), L"%u", &u) == 1)
           return(u);
         else
           return(uDefault);
       }
       else
-        p = StrEnd(p,0) + 1;
+        p = StrEnd(p,0) + 1; // skip '\0's
     }
   }
   return(uDefault);
@@ -263,22 +251,19 @@ UINT IniSectionGetUInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, UINT uDefault
 
 DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDefault)
 {
-  WCHAR tch[64] = { L'\0' };
   WCHAR *p = (WCHAR *)lpCachedIniSection;
   if (p) {
-    StringCchCopy(tch, COUNTOF(tch), lpName);
-    StringCchCat(tch, COUNTOF(tch), L"=");
-    int ich = (int)StringCchLenW(tch, COUNTOF(tch));
+    int const ich = (int)StringCchLen(lpName,0);
     while (*p) {
-      if (StrCmpNI(p, tch, ich) == 0) {
+      if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
         long long pos = 0;
-        if (swscanf_s(p + ich, L"%lld", &pos) == 1)
+        if (swscanf_s((p+ich+1), L"%lli", &pos) == 1)
           return (DocPos)pos;
         else
           return (DocPos)posDefault;
       }
       else
-        p = StrEnd(p,0) + 1;
+        p = StrEnd(p,0) + 1; // skip '\0's
     }
   }
   return (DocPos)posDefault;
@@ -287,16 +272,15 @@ DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDe
 
 bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString)
 {
-  WCHAR tch[64+1024];
+  // TODO: length limit of lpCachedIniSection
   WCHAR* p = lpCachedIniSection;
   if (p) {
     while (*p) {
-      p = StrEnd(p,0) + 1;
+      p = StrEnd(p,0) + 1; // skip '\0\0's
     }
-    StringCchPrintf(tch,COUNTOF(tch),L"%s=%s",lpName,lpString);
-    StringCchCopy(p,COUNTOF(tch),tch);
+    StringCchPrintf(p,(96+1024),L"%s=%s",lpName,lpString);
     p = StrEnd(p,0) + 1;
-    *p = L'\0';
+    *p = L'\0'; // set '\0\0's for section end
     return true;
   }
   return false;

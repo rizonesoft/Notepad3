@@ -7114,7 +7114,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
   BeginWaitCursor(tchMsg);
 
-  pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
+  pIniSection = AllocMem(sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER, HEAP_ZERO_MEMORY);
   //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
 
   IniSectionSetInt(pIniSection, L"SettingsVersion", CFG_VER_CURRENT);
@@ -7218,7 +7218,7 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetString(pIniSection, L"ToolbarButtons", g_tchToolbarButtons);
 
   SaveIniSection(L"Settings", pIniSection);
-  LocalFree(pIniSection);
+  FreeMem(pIniSection);
 
   
   // Scintilla Styles

@@ -3005,7 +3005,7 @@ int Style_GetLexerIconId(PEDITLEXER plex)
 {
   WCHAR pszFile[MAX_PATH + BUFZIZE_STYLE_EXTENTIONS];
 
-  WCHAR *pszExtensions;
+  LPCWSTR pszExtensions;
   if (StringCchLenW(plex->szExtensions,COUNTOF(plex->szExtensions)))
     pszExtensions = plex->szExtensions;
   else
@@ -3051,7 +3051,7 @@ HTREEITEM Style_AddLexerToTreeView(HWND hwnd,PEDITLEXER plex)
   if (GetLngString(plex->resID,tch,COUNTOF(tch)))
     tvis.item.pszText = tch;
   else
-    tvis.item.pszText = plex->pszName;
+    tvis.item.pszText = (LPWSTR)plex->pszName;
 
   tvis.item.iImage = Style_GetLexerIconId(plex);
   tvis.item.iSelectedImage = tvis.item.iImage;
@@ -3071,7 +3071,7 @@ HTREEITEM Style_AddLexerToTreeView(HWND hwnd,PEDITLEXER plex)
     if (GetLngString(plex->Styles[i].rid,tch,COUNTOF(tch)))
       tvis.item.pszText = tch;
     else
-      tvis.item.pszText = plex->Styles[i].pszName;
+      tvis.item.pszText = (LPWSTR)plex->Styles[i].pszName;
     tvis.item.lParam = (LPARAM)(&plex->Styles[i]);
     TreeView_InsertItem(hwnd,&tvis);
     i++;
@@ -3096,7 +3096,7 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
   if (GetLngString(plex->resID,tch,COUNTOF(tch)))
     lvi.pszText = tch;
   else
-    lvi.pszText = plex->pszName;
+    lvi.pszText = (LPWSTR)plex->pszName;
   lvi.iImage = Style_GetLexerIconId(plex);
   lvi.lParam = (LPARAM)plex;
 
