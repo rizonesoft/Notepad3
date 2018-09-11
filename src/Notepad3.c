@@ -2729,7 +2729,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   HMENU hmenu = (HMENU)wParam;
 
-  bool ro = SciCall_GetReadOnly();
+  bool const ro = SciCall_GetReadOnly();
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+  DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
 
   int i = (int)StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile));
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
@@ -2916,9 +2918,13 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(g_hwndDlgCustomizeSchemes));
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(g_hwndDlgCustomizeSchemes));
 
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
-  CheckCmd(hmenu,IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
   EnableCmd(hmenu, IDM_VIEW_FOLDING, g_bCodeFoldingAvailable);
+  CheckCmd(hmenu, IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+
+  bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
+  bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
+  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !e && (g_bCodeFoldingAvailable && g_bShowCodeFolding) && (bF || bH));
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
@@ -3047,9 +3053,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,g_bEnableSaveSettings && i);
 
   bool bIsHLink = false;
-  if ((bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0))
-  {
-    bIsHLink = (SciCall_GetStyleAt(SciCall_GetCurrentPos()) == (char)Style_GetHotspotStyleID());
+  int const iHotSpotStyleID = Style_GetHotspotStyleID();
+  char const ccStyleAt = SciCall_GetStyleAt(iCurPos);
+  if (SciCall_StyleGetHotspot(iHotSpotStyleID)) {
+    bIsHLink = (ccStyleAt == (char)iHotSpotStyleID);
   }
   EnableCmd(hmenu, CMD_OPEN_HYPERLINK, bIsHLink);
 
@@ -4809,9 +4816,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TOGGLEFOLDS:
+      EditToggleFolds(SNIFF, true);
+      break;
+      
+    case IDM_VIEW_TOGGLE_CURRENT_FOLD:
       EditToggleFolds(SNIFF, false);
       break;
-
 
     case IDM_VIEW_SHOWBLANKS:
       bViewWhiteSpace = (bViewWhiteSpace) ? false : true;
@@ -5929,7 +5939,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
   char const cStyle = SciCall_GetStyleAt(position);
 
   if (cStyle != (char)Style_GetHotspotStyleID()) { return; }
-  if (!(bool)SendMessage(g_hwndEdit, SCI_STYLEGETHOTSPOT, Style_GetHotspotStyleID(), 0)) { return; }
+  if (!SciCall_StyleGetHotspot(Style_GetHotspotStyleID())) { return; }
 
   // get left most position of style
   DocPos pos = position;

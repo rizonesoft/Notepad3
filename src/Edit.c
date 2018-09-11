@@ -8140,7 +8140,7 @@ int FileVars_GetEncoding(LPFILEVARS lpfv) {
 #define FOLD_CHILDREN SCMOD_CTRL
 #define FOLD_SIBLINGS SCMOD_SHIFT
 
-bool inline _FoldToggleNode(DocLn ln, FOLD_ACTION action)
+inline bool _FoldToggleNode(DocLn ln, FOLD_ACTION action)
 {
   bool const fExpanded = SciCall_GetFoldExpanded(ln);
   if ((action == SNIFF) || ((action == FOLD) && fExpanded) || ((action == EXPAND) && !fExpanded))
@@ -8194,37 +8194,27 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
 void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 {
   static FOLD_ACTION sbLastSniffAllAction = EXPAND;
+  
+  bool fToggled = bForceAll;
+  DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+  DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
 
-  bool bAllLines = true;
-  DocLn iStartLine = 0;
-  DocLn iEndLine = SciCall_GetLineCount() - 1;
-
-  if (!bForceAll && !SciCall_IsSelectionEmpty())
-  {
-    DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
-    DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
-    // selection range must span at least two lines
-    if (iBegLn != iEndLn) {
-      iStartLine = iBegLn;
-      iEndLine = iEndLn;
-      bAllLines = false;
-    }
-  }
-
-  bool fToggled = false;
-
-  if (bAllLines) 
-  {
+  if (bForceAll) {
     SciCall_FoldAll(action);
-    fToggled = true;
   }
   else // in selection
   {
-    for (DocLn ln = iStartLine; ln <= iEndLine; ++ln)
-    {
-      if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-      {
-        if (_FoldToggleNode(ln, action)) { fToggled = !fToggled ? true : false; }
+    if (iBegLn == iEndLn) {
+      // single line
+      DocLn const ln = (SciCall_GetFoldLevel(iBegLn) & SC_FOLDLEVELHEADERFLAG) ? iBegLn : SciCall_GetFoldParent(iBegLn);
+      _FoldToggleNode(ln, action);
+    }
+    else {
+      // selection range spans at least two lines
+      for (DocLn ln = iBegLn; ln <= iEndLn; ++ln) {
+        if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) {
+          if (_FoldToggleNode(ln, action)) { fToggled = !fToggled ? true : false; }
+        }
       }
     }
   }
@@ -8309,12 +8299,13 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
     // Perform a fold/unfold operation
     DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
     DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
+
     // selection range must span at least two lines for action
     if (iBegLn != iEndLn) {
       EditToggleFolds(action, false);
     }
-    else if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)
-    {
+    else {
+      ln = (SciCall_GetFoldLevel(iBegLn) & SC_FOLDLEVELHEADERFLAG) ? iBegLn : SciCall_GetFoldParent(iBegLn);
       if (action != SNIFF) {
         _FoldToggleNode(ln, action);
       }
