@@ -3059,13 +3059,12 @@ void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode)
   if (bTransparentMode) {
     SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
     // get opacity level from registry
-    int iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
-    iAlphaPercent = clampi(iAlphaPercent, 0, 100);
+    int const iAlphaPercent = clampi(IniGetInt(L"Settings2", L"OpacityLevel", 75), 0, 100);
     BYTE const bAlpha = (BYTE)MulDiv(iAlphaPercent, 255, 100);
     SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
+    return;
   }
-  else
-    SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED);
+  SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED);
 }
 
 

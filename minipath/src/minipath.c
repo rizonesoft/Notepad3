@@ -95,7 +95,7 @@ int       iStartupDir;
 int       iEscFunction;
 BOOL      bFocusEdit;
 BOOL      bAlwaysOnTop;
-BOOL      bTransparentMode;
+BOOL      g_bTransparentMode;
 BOOL      bMinimizeToTray;
 BOOL      fUseRecycleBin;
 BOOL      fNoConfirmDelete;
@@ -480,7 +480,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   if (bAlwaysOnTop)
     SetWindowPos(hwndMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 
-  if (bTransparentMode)
+  if (g_bTransparentMode)
     SetWindowTransparentMode(hwndMain,TRUE);
 
   if (!flagStartAsTrayIcon) {
@@ -2233,8 +2233,8 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case ACC_SWITCHTRANSPARENCY:
-      bTransparentMode = bTransparentMode ? 0 : 1;
-      SetWindowTransparentMode(hwnd,bTransparentMode);
+      g_bTransparentMode = g_bTransparentMode ? 0 : 1;
+      SetWindowTransparentMode(hwnd,g_bTransparentMode);
       break;
 
 
@@ -2865,8 +2865,8 @@ void LoadSettings()
   bMinimizeToTray = IniSectionGetInt(pIniSection,L"MinimizeToTray",0);
   if (bMinimizeToTray) bMinimizeToTray = 1;
 
-  bTransparentMode = IniSectionGetInt(pIniSection,L"TransparentMode",0);
-  if (bTransparentMode) bTransparentMode = 1;
+  g_bTransparentMode = IniSectionGetInt(pIniSection,L"TransparentMode",0);
+  if (g_bTransparentMode) g_bTransparentMode = 1;
 
   iEscFunction = IniSectionGetInt(pIniSection,L"EscFunction",2);
   iEscFunction = max(min(iEscFunction,2),0);
@@ -3052,7 +3052,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(pIniSection,L"FocusEdit",bFocusEdit);
   IniSectionSetInt(pIniSection,L"AlwaysOnTop",bAlwaysOnTop);
   IniSectionSetInt(pIniSection,L"MinimizeToTray",bMinimizeToTray);
-  IniSectionSetInt(pIniSection,L"TransparentMode",bTransparentMode);
+  IniSectionSetInt(pIniSection,L"TransparentMode",g_bTransparentMode);
   IniSectionSetInt(pIniSection,L"EscFunction",iEscFunction);
   IniSectionSetInt(pIniSection,L"StartupDirectory",iStartupDir);
   if (iStartupDir == 1)

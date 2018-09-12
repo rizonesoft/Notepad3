@@ -240,7 +240,7 @@ DWORD     dwAutoReloadTimeout;
 int       iEscFunction;
 bool      bAlwaysOnTop;
 bool      bMinimizeToTray;
-bool      bTransparentMode;
+bool      g_bTransparentMode;
 bool      bShowToolbar;
 bool      bShowStatusbar;
 int       iHighDpiToolBar;
@@ -996,7 +996,6 @@ static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 {
   RECT rc = RectFromWinInfo(pWinInfo);
   GetMonitorWorkArea(&rc);
-
   pWinInfo->y = rc.top + _BORDEROFFSET;
   pWinInfo->cy = rc.bottom - rc.top - (_BORDEROFFSET * 2);
   pWinInfo->cx = (rc.right - rc.left) / 2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
@@ -1108,7 +1107,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     SetWindowPos(g_hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
 
-  if (bTransparentMode) {
+  if (g_bTransparentMode) {
     SetWindowTransparentMode(g_hwndMain, true);
   }
   
@@ -1732,7 +1731,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETVIEWEOL, (WPARAM)bViewEOLs, 0);
 
   // IME Interaction
-  SendMessage(hwndEditCtrl, SCI_SETIMEINTERACTION, (WPARAM)(g_IMEInteraction ? SC_IME_INLINE : SC_IME_WINDOWED), 0);
+  SendMessage(hwndEditCtrl, SCI_SETIMEINTERACTION, (WPARAM)g_IMEInteraction, 0);
 
   // word delimiter handling
   EditInitWordDelimiter(hwndEditCtrl);
@@ -2698,15 +2697,17 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 }
 
 
-static bool __fastcall _IsInlineIMEActive()
+static bool __fastcall _IsInlineIMECompositionActive()
 {
   bool result = false;
-  if (g_IMEInteraction) {
-    HIMC himc = ImmGetContext(g_hwndEdit);
+  if (g_IMEInteraction == SC_IME_INLINE) {
+    HIMC const himc = ImmGetContext(g_hwndEdit);
     if (himc) {
-      DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
-      if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
-        result = !(dwConversion == IME_CMODE_ALPHANUMERIC);
+      if (ImmGetOpenStatus(himc)) {
+        DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
+        if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
+          result = ((dwConversion & IME_CMODE_LANGUAGE) != IME_CMODE_ALPHANUMERIC);
+        }
       }
       ImmReleaseContext(g_hwndEdit, himc);
     }
@@ -2994,7 +2995,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,g_bStickyWinPos);
   CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((bAlwaysOnTop || g_flagAlwaysOnTop == 2) && g_flagAlwaysOnTop != 1));
   CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,bMinimizeToTray);
-  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,bTransparentMode);
+  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,g_bTransparentMode);
 
   i = IDM_SET_RENDER_TECH_DEFAULT + g_iRenderingTechnology;
   CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_DEFAULT, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
@@ -5027,8 +5028,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TRANSPARENT:
-      bTransparentMode =(bTransparentMode) ? false : true;
-      SetWindowTransparentMode(hwnd,bTransparentMode);
+      g_bTransparentMode =(g_bTransparentMode) ? false : true;
+      SetWindowTransparentMode(hwnd,g_bTransparentMode);
       break;
 
     case IDM_SET_RENDER_TECH_DEFAULT:
@@ -5050,7 +5051,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       SciCall_SetBidirectional(SciBidirectional[g_iBidirectional]);
       break;
 
-    
+    //case IDM_SET_INLINE_IME:
+    //  g_IMEInteraction = (g_IMEInteraction == SC_IME_WINDOWED) ? SC_IME_INLINE : SC_IME_WINDOWED;
+    //  SciCall_SetIMEInteraction(g_IMEInteraction);
+    //  break;
+
     case IDM_VIEW_SHOWFILENAMEONLY:
     case IDM_VIEW_SHOWFILENAMEFIRST:
     case IDM_VIEW_SHOWFULLPATH:
@@ -6365,8 +6370,13 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             else if (scn->ch == '?') {
               _HandleTinyExpr();
             }
-            else if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords) && !SciCall_AutoCActive() && !_IsInlineIMEActive()) {
-              EditCompleteWord(g_hwndEdit, false);
+            else if (g_bAutoCompleteWords || g_bAutoCLexerKeyWords) {
+              if (_IsInlineIMECompositionActive()) {
+                SciCall_AutoCCancel();
+              }
+              else if (!SciCall_AutoCActive()) {
+                EditCompleteWord(g_hwndEdit, false);
+              }
             }
           }
           break;
@@ -6671,9 +6681,6 @@ void LoadSettings()
     IniSectionGetString(pIniSection, L"PreferredLanguageLocaleName", L"",
                         g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
 
-    g_IMEInteraction = IniSectionGetInt(pIniSection, L"IMEInteraction", 0);
-    g_IMEInteraction = clampi(g_IMEInteraction, 0, 1);
-
     g_bStickyWinPos = IniSectionGetBool(pIniSection, L"StickyWindowPosition", false);
 
     IniSectionGetString(pIniSection, L"DefaultExtension", L"txt", g_tchDefaultExtension, COUNTOF(g_tchDefaultExtension));
@@ -6699,35 +6706,43 @@ void LoadSettings()
     }
     g_iRenderingTechnology = clampi(g_iRenderingTechnology, 0, 3);
 
-    // deprecated
+    // Settings2 deprecated
     g_iBidirectional = IniSectionGetInt(pIniSection, L"EnableBidirectionalSupport", -111);
     if ((g_iBidirectional != -111) && g_bSaveSettings) {
       // cleanup
       IniSetString(L"Settings2", L"EnableBidirectionalSupport", NULL);
       IniSetInt(L"Settings", L"Bidirectional", g_iBidirectional);
     }
-    g_iBidirectional = (clampi(g_iBidirectional, 0, 2) > 0) ? 2 : 0;
+    g_iBidirectional = (clampi(g_iBidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : 0;
 
-    g_iSciFontQuality = IniSectionGetInt(pIniSection, L"SciFontQuality", FontQuality[3]);
-    g_iSciFontQuality = clampi(g_iSciFontQuality, 0, 3);
+#if 0
+    // Settings2 deprecated
+    g_IMEInteraction = IniSectionGetInt(pIniSection, L"IMEInteraction", 111);
+    if ((g_IMEInteraction != 111) && g_bSaveSettings) {
+      // cleanup
+      IniSetString(L"Settings2", L"IMEInteraction", NULL);
+      IniSetInt(L"Settings", L"IMEInteraction", g_iBidirectional);
+    }
+    g_IMEInteraction = clampi(g_IMEInteraction, 0, 1);
+#else
+    g_IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", SC_IME_WINDOWED), SC_IME_WINDOWED, SC_IME_INLINE);
+#endif
+
+    g_iSciFontQuality = clampi(IniSectionGetInt(pIniSection, L"SciFontQuality", FontQuality[3]), 0, 3);
 
     g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection, L"MarkOccurrencesMaxCount", 2000);
     g_iMarkOccurrencesMaxCount = (g_iMarkOccurrencesMaxCount <= 0) ? INT_MAX : g_iMarkOccurrencesMaxCount;
 
-    iUpdateDelayHyperlinkStyling = IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100);
-    iUpdateDelayHyperlinkStyling = clampi(iUpdateDelayHyperlinkStyling, USER_TIMER_MINIMUM, 10000);
+    iUpdateDelayHyperlinkStyling = clampi(IniSectionGetInt(pIniSection, L"UpdateDelayHyperlinkStyling", 100), USER_TIMER_MINIMUM, 10000);
 
-    iUpdateDelayMarkAllCoccurrences = IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50);
-    iUpdateDelayMarkAllCoccurrences = clampi(iUpdateDelayMarkAllCoccurrences, USER_TIMER_MINIMUM, 10000);
+    iUpdateDelayMarkAllCoccurrences = clampi(IniSectionGetInt(pIniSection, L"UpdateDelayMarkAllCoccurrences", 50), USER_TIMER_MINIMUM, 10000);
 
     g_bDenyVirtualSpaceAccess = IniSectionGetBool(pIniSection, L"DenyVirtualSpaceAccess", false);
     g_bUseOldStyleBraceMatching = IniSectionGetBool(pIniSection, L"UseOldStyleBraceMatching", false);
 
-    iCurrentLineHorizontalSlop = IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 40);
-    iCurrentLineHorizontalSlop = clampi(iCurrentLineHorizontalSlop, 0, 2000);
+    iCurrentLineHorizontalSlop = clampi(IniSectionGetInt(pIniSection, L"CurrentLineHorizontalSlop", 40), 0, 240);
 
-    iCurrentLineVerticalSlop = IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5);
-    iCurrentLineVerticalSlop = clampi(iCurrentLineVerticalSlop, 0, 200);
+    iCurrentLineVerticalSlop = clampi(IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5), 0, 25);
 
     IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
 
@@ -6765,17 +6780,14 @@ void LoadSettings()
       PathAbsoluteFromApp(g_tchFavoritesDir, NULL, COUNTOF(g_tchFavoritesDir), true);
     }
 
-    iPathNameFormat = IniSectionGetInt(pIniSection, L"PathNameFormat", 1);
-    iPathNameFormat = clampi(iPathNameFormat, 0, 2);
+    iPathNameFormat = clampi(IniSectionGetInt(pIniSection, L"PathNameFormat", 1), 0, 2);
 
     g_bWordWrap = IniSectionGetBool(pIniSection, L"WordWrap", false);
     bWordWrapG = g_bWordWrap;
 
-    iWordWrapMode = IniSectionGetInt(pIniSection, L"WordWrapMode", 0);
-    iWordWrapMode = clampi(iWordWrapMode, 0, 1);
+    iWordWrapMode = clampi(IniSectionGetInt(pIniSection, L"WordWrapMode", 0), 0, 1);
 
-    iWordWrapIndent = IniSectionGetInt(pIniSection, L"WordWrapIndent", 0);
-    iWordWrapIndent = clampi(iWordWrapIndent, 0, 6);
+    iWordWrapIndent = clampi(IniSectionGetInt(pIniSection, L"WordWrapIndent", 0), 0, 6);
 
     iWordWrapSymbols = IniSectionGetInt(pIniSection, L"WordWrapSymbols", 22);
     iWordWrapSymbols = clampi(iWordWrapSymbols % 10, 0, 2) +
@@ -6811,22 +6823,18 @@ void LoadSettings()
 
     bBackspaceUnindents = IniSectionGetBool(pIniSection, L"BackspaceUnindents", false);
 
-    g_iTabWidth = IniSectionGetInt(pIniSection, L"TabWidth", 4);
-    g_iTabWidth = clampi(g_iTabWidth, 1, 256);
+    g_iTabWidth = clampi(IniSectionGetInt(pIniSection, L"TabWidth", 4), 1, 256);
     iTabWidthG = g_iTabWidth;
 
-    g_iIndentWidth = IniSectionGetInt(pIniSection, L"IndentWidth", 0);
-    g_iIndentWidth = clampi(g_iIndentWidth, 0, 256);
+    g_iIndentWidth = clampi(IniSectionGetInt(pIniSection, L"IndentWidth", 0), 0, 256);
     iIndentWidthG = g_iIndentWidth;
 
     g_bMarkLongLines = IniSectionGetBool(pIniSection, L"MarkLongLines", true);
 
-    g_iLongLinesLimit = IniSectionGetInt(pIniSection, L"LongLinesLimit", 80);
-    g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
+    g_iLongLinesLimit = clampi(IniSectionGetInt(pIniSection, L"LongLinesLimit", 80), 0, LONG_LINES_MARKER_LIMIT);
     iLongLinesLimitG = g_iLongLinesLimit;
 
-    iLongLineMode = IniSectionGetInt(pIniSection, L"LongLineMode", EDGE_LINE);
-    iLongLineMode = clampi(iLongLineMode, EDGE_LINE, EDGE_BACKGROUND);
+    iLongLineMode = clampi(IniSectionGetInt(pIniSection, L"LongLineMode", EDGE_LINE), EDGE_LINE, EDGE_BACKGROUND);
 
     g_bShowSelectionMargin = IniSectionGetBool(pIniSection, L"ShowSelectionMargin", false);
 
@@ -6834,8 +6842,7 @@ void LoadSettings()
 
     g_bShowCodeFolding = IniSectionGetBool(pIniSection, L"ShowCodeFolding", true);
 
-    g_iMarkOccurrences = IniSectionGetInt(pIniSection, L"MarkOccurrences", 1);
-    g_iMarkOccurrences = clampi(g_iMarkOccurrences, 0, 3);
+    g_iMarkOccurrences = clampi(IniSectionGetInt(pIniSection, L"MarkOccurrences", 1), 0, 3);
 
     g_bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", false);
     g_bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchCase", false);
@@ -6864,21 +6871,17 @@ void LoadSettings()
 
     bNoEncodingTags = IniSectionGetBool(pIniSection, L"NoEncodingTags", false);
 
-    g_iDefaultEOLMode = IniSectionGetInt(pIniSection, L"DefaultEOLMode", 0);
-    g_iDefaultEOLMode = clampi(g_iDefaultEOLMode, 0, 2);
+    g_iDefaultEOLMode = clampi(IniSectionGetInt(pIniSection, L"DefaultEOLMode", 0), 0, 2);
 
     bFixLineEndings = IniSectionGetBool(pIniSection, L"FixLineEndings", false);
 
     bAutoStripBlanks = IniSectionGetBool(pIniSection, L"FixTrailingBlanks", false);
 
-    iPrintHeader = IniSectionGetInt(pIniSection, L"PrintHeader", 1);
-    iPrintHeader = clampi(iPrintHeader, 0, 3);
+    iPrintHeader = clampi(IniSectionGetInt(pIniSection, L"PrintHeader", 1), 0, 3);
 
-    iPrintFooter = IniSectionGetInt(pIniSection, L"PrintFooter", 0);
-    iPrintFooter = clampi(iPrintFooter, 0, 1);
+    iPrintFooter = clampi(IniSectionGetInt(pIniSection, L"PrintFooter", 0), 0, 1);
 
-    iPrintColor = IniSectionGetInt(pIniSection, L"PrintColorMode", 3);
-    iPrintColor = clampi(iPrintColor, 0, 4);
+    iPrintColor = clampi(IniSectionGetInt(pIniSection, L"PrintColorMode", 3), 0, 4);
 
     iPrintZoom = IniSectionGetInt(pIniSection, L"PrintZoom", (g_iSettingsVersion < CFG_VER_0001) ? 10 : 100);
     if (g_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom-10) * 10; }
@@ -6898,31 +6901,28 @@ void LoadSettings()
 
     bSaveBeforeRunningTools = IniSectionGetBool(pIniSection, L"SaveBeforeRunningTools", false);
 
-    g_iFileWatchingMode = IniSectionGetInt(pIniSection, L"FileWatchingMode", 0);
-    g_iFileWatchingMode = clampi(g_iFileWatchingMode, 0, 2);
+    g_iFileWatchingMode = clampi(IniSectionGetInt(pIniSection, L"FileWatchingMode", 0), 0, 2);
 
     g_bResetFileWatching = IniSectionGetBool(pIniSection, L"ResetFileWatching", true);
 
-    iEscFunction = IniSectionGetInt(pIniSection, L"EscFunction", 0);
-    iEscFunction = clampi(iEscFunction, 0, 2);
+    iEscFunction = clampi(IniSectionGetInt(pIniSection, L"EscFunction", 0), 0, 2);
 
     bAlwaysOnTop = IniSectionGetBool(pIniSection, L"AlwaysOnTop", false);
 
     bMinimizeToTray = IniSectionGetBool(pIniSection, L"MinimizeToTray", false);
 
-    bTransparentMode = IniSectionGetBool(pIniSection, L"TransparentMode", false);
+    g_bTransparentMode = IniSectionGetBool(pIniSection, L"TransparentMode", false);
 
-    g_iRenderingTechnology = IniSectionGetInt(pIniSection, L"RenderingTechnology", g_iRenderingTechnology);
-    g_iRenderingTechnology = clampi(g_iRenderingTechnology, 0, 3);
+    g_iRenderingTechnology = clampi(IniSectionGetInt(pIniSection, L"RenderingTechnology", g_iRenderingTechnology), 0, 3);
 
-    g_iBidirectional = IniSectionGetInt(pIniSection, L"Bidirectional", g_iBidirectional);
-    g_iBidirectional = clampi(g_iBidirectional, 0, 2);
+    g_iBidirectional = clampi(IniSectionGetInt(pIniSection, L"Bidirectional", g_iBidirectional), 0, 2);
+
+    ///~g_IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", g_IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
     // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
     IniSectionGetString(pIniSection, L"ToolbarButtons", L"", g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
 
     bShowToolbar = IniSectionGetBool(pIniSection, L"ShowToolbar", true);
-
     bShowStatusbar = IniSectionGetBool(pIniSection, L"ShowStatusbar", true);
 
     cxEncodingDlg = IniSectionGetInt(pIniSection, L"EncodingDlgSizeX", 256);
@@ -7198,9 +7198,10 @@ void SaveSettings(bool bSaveSettingsNow) {
   IniSectionSetInt(pIniSection, L"EscFunction", iEscFunction);
   IniSectionSetBool(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
   IniSectionSetBool(pIniSection, L"MinimizeToTray", bMinimizeToTray);
-  IniSectionSetBool(pIniSection, L"TransparentMode", bTransparentMode);
+  IniSectionSetBool(pIniSection, L"TransparentMode", g_bTransparentMode);
   IniSectionSetInt(pIniSection, L"RenderingTechnology", g_iRenderingTechnology);
   IniSectionSetInt(pIniSection, L"Bidirectional", g_iBidirectional);
+  ///~IniSectionSetInt(pIniSection, L"IMEInteraction", g_IMEInteraction);
   IniSectionSetBool(pIniSection, L"ShowToolbar", bShowToolbar);
   IniSectionSetBool(pIniSection, L"ShowStatusbar", bShowStatusbar);
   IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
