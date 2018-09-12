@@ -55,7 +55,7 @@ void   Style_ToggleUse2ndDefault(HWND);
 bool   Style_GetUse2ndDefault();
 void   Style_SetUse2ndDefault(bool);
 void   Style_SetIndentGuides(HWND,bool);
-void   Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int size);
+void   Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch);
 bool   Style_GetOpenDlgFilterStr(LPWSTR,int);
 bool   Style_StrGetFont(LPCWSTR,LPWSTR,int);
 bool   Style_StrGetFontQuality(LPCWSTR,LPWSTR,int);

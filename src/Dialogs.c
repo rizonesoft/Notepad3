@@ -3580,6 +3580,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
       (pTemplate = LocalAlloc(LPTR, dwTemplateSize + LF_FACESIZE * 2)) == NULL) {
       UnlockResource(hRsrcMem);
       FreeResource(hRsrcMem);
+      // cppcheck-suppress memleak // pTemplate is not allocated here!
       return(NULL);
     }
     CopyMemory((BYTE*)pTemplate, pRsrcMem, (size_t)dwTemplateSize);

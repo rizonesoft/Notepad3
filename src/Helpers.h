@@ -358,10 +358,10 @@ bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 
 //==== StrSafe lstrlen() =======================================================
 inline size_t StringCchLenA(LPCSTR s, size_t n) { 
-  size_t len; return (size_t)(!s ? 0 : (!n ? lstrlenA(s) : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n)));
+  size_t len = (n ? n : STRSAFE_MAX_CCH); return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, len, &len)) ? len : n));
 }
 inline size_t StringCchLenW(LPCWSTR s, size_t n) { 
-  size_t len; return (size_t)(!s ? 0 : (!n ? lstrlenW(s) : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n)));
+  size_t len = (n ? n : STRSAFE_MAX_CCH); return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, len, &len)) ? len : n));
 }
 
 #if defined(UNICODE) || defined(_UNICODE)  

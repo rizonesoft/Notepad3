@@ -1930,7 +1930,7 @@ void EditHex2Char(HWND hwnd)
       return;
     }
 
-    if (StrCmpNIA(ch, "\\x", 2) == 0 || StrCmpNIA(ch, "\\u", 2) == 0) {
+    if (StrCmpNIA(ch, "0x", 2) == 0 || StrCmpNIA(ch, "\\x", 2) == 0 || StrCmpNIA(ch, "\\u", 2) == 0) {
       ch[0] = '0';
       ch[1] = 'x';
     }
@@ -1941,7 +1941,7 @@ void EditHex2Char(HWND hwnd)
     else
       return;
 
-    int i = 0;
+    unsigned int i = 0;
     if (sscanf_s(ch, "%x", &i) == 1) {
       int cch = 0;
       if (i == 0) {
@@ -2052,15 +2052,15 @@ void EditModifyNumber(HWND hwnd,bool bIncrease) {
       if (StrChrIA(chNumber, '-'))
         return;
 
-      int iNumber;
+      unsigned int iNumber;
       int iWidth;
       char chFormat[32] = { '\0' };
-      if (!StrChrIA(chNumber, 'x') && sscanf_s(chNumber, "%d", &iNumber) == 1) {
+      if (!StrChrIA(chNumber, 'x') && sscanf_s(chNumber, "%ui", &iNumber) == 1) {
         iWidth = (int)StringCchLenA(chNumber, COUNTOF(chNumber));
         if (iNumber >= 0) {
-          if (bIncrease && iNumber < INT_MAX)
+          if (bIncrease && (iNumber < INT_MAX))
             iNumber++;
-          if (!bIncrease && iNumber > 0)
+          if (!bIncrease && (iNumber > 0))
             iNumber--;
 
           StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%0%ii", iWidth);
