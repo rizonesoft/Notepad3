@@ -62,6 +62,7 @@ EditModel::EditModel() : braces{} {
 	highlightGuideColumn = 0;
 	primarySelection = true;
 	imeInteraction = imeWindowed;
+	isInlineIMEComposition = false;
 	bidirectional = Bidirectional::bidiDisabled;
 	foldFlags = 0;
 	foldDisplayTextStyle = SC_FOLDDISPLAYTEXT_HIDDEN;
@@ -75,7 +76,7 @@ EditModel::EditModel() : braces{} {
 
 EditModel::~EditModel() {
 	pdoc->Release();
-	pdoc = 0;
+	pdoc = nullptr;
 }
 
 bool EditModel::BidirectionalEnabled() const {

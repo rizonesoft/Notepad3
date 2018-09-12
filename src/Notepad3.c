@@ -2697,25 +2697,6 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
 }
 
 
-static bool __fastcall _IsInlineIMECompositionActive()
-{
-  bool result = false;
-  if (g_IMEInteraction == SC_IME_INLINE) {
-    HIMC const himc = ImmGetContext(g_hwndEdit);
-    if (himc) {
-      if (ImmGetOpenStatus(himc)) {
-        DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
-        if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
-          result = ((dwConversion & IME_CMODE_LANGUAGE) != IME_CMODE_ALPHANUMERIC);
-        }
-      }
-      ImmReleaseContext(g_hwndEdit, himc);
-    }
-  }
-  return result;
-}
-
-
 //=============================================================================
 //
 //  MsgInitMenu() - Handles WM_INITMENU
@@ -6120,16 +6101,14 @@ static void __fastcall _HandleAutoCloseTags()
         replaceBuf[cchIns] = '\0';
 
         // except tags w/o closing tags
-        if (cchIns > 3 &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</base>", CSTRLEN("</base>")) &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</bgsound>", CSTRLEN("</bgsound>")) &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</br>", CSTRLEN("</br>")) &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</embed>", CSTRLEN("</embed>")) &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</hr>", CSTRLEN("</hr>")) &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</img>", CSTRLEN("</img>")) &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</input>", CSTRLEN("</input>")) &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</link>", CSTRLEN("</link>")) &&
-          StringCchCompareNIA(replaceBuf, COUNTOF(replaceBuf), "</meta>", CSTRLEN("</meta>")))
+        const char* const nonClosingTags[9] = { "</base>", "</bgsound>", "</br>", "</embed>", "</hr>", "</img>", "</input>", "</link>", "</meta>" };
+        int const cntCount = COUNTOF(nonClosingTags);
+
+        bool isNonClosingTag = false;
+        for (int i = 0; ((i < cntCount) && !isNonClosingTag); ++i) {
+          isNonClosingTag = (StringCchCompareNIA(replaceBuf, cchIns, nonClosingTags[i], cchIns) == 0);
+        }
+        if ((cchIns > 3) && !isNonClosingTag)
         {
           _BEGIN_UNDO_ACTION_;
           SciCall_ReplaceSel(replaceBuf);
@@ -6357,26 +6336,24 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               g_CallTipType = CT_NONE;
             }
 
-            // Auto indent
-            if (bAutoIndent && (scn->ch == '\r' || scn->ch == '\n'))
-            {
-              _HandleAutoIndent(scn->ch);
-            }
-            // Auto close tags
-            else if (bAutoCloseTags && scn->ch == '>')
-            {
-              _HandleAutoCloseTags();
-            }
-            else if (scn->ch == '?') {
+            int const ich = scn->ch;
+            switch (ich) {
+            case '\r':
+            case '\n':
+              if (bAutoIndent) { _HandleAutoIndent(ich); }
+              break;
+            case '>':
+              if (bAutoCloseTags) { _HandleAutoCloseTags(); }
+              break;
+            case '?':
               _HandleTinyExpr();
+              break;
+            default:
+              break;
             }
-            else if (g_bAutoCompleteWords || g_bAutoCLexerKeyWords) {
-              if (_IsInlineIMECompositionActive()) {
-                SciCall_AutoCCancel();
-              }
-              else if (!SciCall_AutoCActive()) {
-                EditCompleteWord(g_hwndEdit, false);
-              }
+
+            if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords) && !SciCall_AutoCActive()) {
+              EditCompleteWord(g_hwndEdit, false);
             }
           }
           break;
