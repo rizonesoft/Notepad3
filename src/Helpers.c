@@ -172,9 +172,11 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW)
       SetClipboardData(CF_UNICODETEXT, hData);
     }
     CloseClipboard();
-    return true;
+    // cppcheck-suppress memleak // ClipBoard is owner now
+    return true; 
   }
   CloseClipboard();
+  // cppcheck-suppress memleak // ClipBoard is owner now
   return false;
 }
 
@@ -2233,7 +2235,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   size_t posIn = 0;
   WCHAR buf[5] = { L'\0' };
   size_t lastEsc = StringCchLenW(lpURL,0) - 2;
-  int code;
+  unsigned int code;
 
   while ((posIn < lastEsc) && (posOut < outLen))
   {
@@ -2257,7 +2259,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
         ++n;
       }
       buf[n] = L'\0';
-      if (swscanf_s(buf, L"%i", &code) == 1) {
+      if (swscanf_s(buf, L"%ui", &code) == 1) {
         if (code <= 0xFF) {
           outBuffer[posOut++] = (char)code;
           posIn += (2 + n);

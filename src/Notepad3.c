@@ -1821,7 +1821,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   // Window Initialization
 
-  CreateWindow(
+  (void)CreateWindow(
     WC_STATIC,
     NULL,
     WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
@@ -1833,7 +1833,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   SetDlgItemText(hwnd,IDC_FILENAME,g_wchCurFile);
 
-  CreateWindow(
+  (void)CreateWindow(
     WC_STATIC,
     NULL,
     WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,

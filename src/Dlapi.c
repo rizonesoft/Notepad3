@@ -1385,8 +1385,6 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
   SHFILEINFO shfi;
   ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
-  WCHAR szTemp[MAX_PATH] = { L'\0' };
-
   lpnmcbe = (LPVOID)lParam;
   lpdcid = (LPDC_ITEMDATA)lpnmcbe->ceItem.lParam;
 
@@ -1410,6 +1408,7 @@ LRESULT DriveBox_GetDispInfo(HWND hwnd,LPARAM lParam)
     else
       attr = FILE_ATTRIBUTE_NORMAL;
 
+    WCHAR szTemp[MAX_PATH] = { L'\0' };
     IL_GetDisplayName(lpdcid->lpsf,lpdcid->pidl,SHGDN_FORPARSING,szTemp,MAX_PATH);
     SHGetFileInfo(szTemp,attr,&shfi,sizeof(SHFILEINFO),
       SHGFI_SYSICONINDEX | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);

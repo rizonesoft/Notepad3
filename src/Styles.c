@@ -311,7 +311,7 @@ void Style_Load()
       StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
       if (IniSectionGetString(pIniSection, tch, L"", wch, COUNTOF(wch))) {
         if (wch[0] == L'#') {
-          int irgb;
+          unsigned int irgb;
           int itok = swscanf_s(CharNext(wch), L"%x", &irgb);
           if (itok == 1)
             g_colorCustom[i] = RGB((irgb & 0xFF0000) >> 16, (irgb & 0xFF00) >> 8, irgb & 0xFF);
@@ -2077,7 +2077,7 @@ bool Style_StrGetColor(bool bFore, LPCWSTR lpszStyle, COLORREF* rgb)
     if (p)
       *p = L'\0';
     TrimStringW(tch);
-    int iValue = 0;
+    unsigned int iValue = 0;
     int itok = swscanf_s(tch, L"%x", &iValue);
     if (itok == 1)
     {
