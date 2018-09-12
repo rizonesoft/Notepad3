@@ -6106,7 +6106,7 @@ static void __fastcall _HandleAutoCloseTags()
 
         bool isNonClosingTag = false;
         for (int i = 0; ((i < cntCount) && !isNonClosingTag); ++i) {
-          isNonClosingTag = (StringCchCompareNIA(replaceBuf, cchIns, nonClosingTags[i], cchIns) == 0);
+          isNonClosingTag = (StringCchCompareXIA(replaceBuf, nonClosingTags[i]) == 0);
         }
         if ((cchIns > 3) && !isNonClosingTag)
         {
