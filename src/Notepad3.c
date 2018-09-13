@@ -3592,12 +3592,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_DUPLICATELINE:
+      _BEGIN_UNDO_ACTION_;
       SendMessage(g_hwndEdit,SCI_LINEDUPLICATE,0,0);
+      _END_UNDO_ACTION_;
       break;
 
 
     case IDM_EDIT_LINETRANSPOSE:
+      _BEGIN_UNDO_ACTION_;
       SendMessage(g_hwndEdit, SCI_LINETRANSPOSE,0,0);
+      _END_UNDO_ACTION_;
       break;
 
     case IDM_EDIT_CUTLINE:
