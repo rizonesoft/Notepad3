@@ -120,6 +120,7 @@ extern bool g_bZeroBasedColumnIndex;
 extern CALLTIPTYPE g_CallTipType;
 
 extern FR_STATES g_FindReplaceMatchFoundState;
+extern bool g_bAutoCinASCIIModeOnly;
 
 #define ANSI_CAHR_BUFFER 258
 static char DelimChars[ANSI_CAHR_BUFFER] = { '\0' };
@@ -373,9 +374,9 @@ void EditInitWordDelimiter(HWND hwnd)
       }
     }
   }
+  g_bAutoCinASCIIModeOnly = (AutoCompleteWordASCII[0] != '\0');
 
-
-  // constuct wide char arrays
+  // construct wide char arrays
   //MultiByteToWideChar(Encoding_SciCP, 0, DelimChars, -1, W_DelimChars, COUNTOF(W_DelimChars));
   //MultiByteToWideChar(Encoding_SciCP, 0, DelimCharsAccel, -1, W_DelimCharsAccel, COUNTOF(W_DelimCharsAccel));
   //MultiByteToWideChar(Encoding_SciCP, 0, WhiteSpaceCharsDefault, -1, W_WhiteSpaceCharsDefault, COUNTOF(W_WhiteSpaceCharsDefault));
@@ -6569,13 +6570,8 @@ static const char* __fastcall _strNextLexKeyWord(const char* strg, const char* c
 void EditCompleteWord(HWND hwnd, bool autoInsert)
 {
   UNUSED(hwnd);
-
-  // OLD: "_abcdefghijklmnopqrstuvwxyz0123456789"
-  char const* ALLOWED_WORD_CHARS = AutoCompleteWordASCII;
-
-  if (ALLOWED_WORD_CHARS[0] == '\0') {
-    ALLOWED_WORD_CHARS = g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault;
-  }
+  char const* const pchAllowdWordChars = (g_bAutoCinASCIIModeOnly ? AutoCompleteWordASCII : 
+    (g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
 
   DocPos const iCurrentPos = SciCall_GetCurrentPos();
   DocLn  const iLine = SciCall_LineFromPosition(iCurrentPos);
@@ -6587,7 +6583,7 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
 
   bool bWordAllNumbers = true;
   DocPos iStartWordPos = iCurrentLinePos;
-  while (iStartWordPos > 0 && StrChrIA(ALLOWED_WORD_CHARS, pLine[iStartWordPos - 1])) {
+  while (iStartWordPos > 0 && StrChrIA(pchAllowdWordChars, pLine[iStartWordPos - 1])) {
     iStartWordPos--;
     if (pLine[iStartWordPos] < '0' || pLine[iStartWordPos] > '9') {
       bWordAllNumbers = false;
@@ -6623,7 +6619,7 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
 
       if (iPosFind != (iCurrentPos - iRootLen))
       {
-        while ((wordEnd < iDocLen) && StrChrIA(ALLOWED_WORD_CHARS, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
+        while ((wordEnd < iDocLen) && StrChrIA(pchAllowdWordChars, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
 
         DocPos const wordLength = (wordEnd - iPosFind);
         if (wordLength > iRootLen)

@@ -249,6 +249,7 @@ int       iUpdateDelayMarkAllCoccurrences;
 int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
+bool      g_bAutoCinASCIIModeOnly = false;
 
 CALLTIPTYPE g_CallTipType = CT_NONE;
 
@@ -6159,6 +6160,28 @@ static void __fastcall _HandleTinyExpr()
 
 //=============================================================================
 //
+//  _IsInlineIMEAsianLngMode()
+//
+static bool __fastcall _IsInlineIMEAsianLngMode()
+{
+  bool result = false;
+  if (g_IMEInteraction == SC_IME_INLINE) {
+    HIMC const himc = ImmGetContext(g_hwndEdit);
+    if (himc) {
+      if (ImmGetOpenStatus(himc)) {
+        DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
+        if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
+          result = ((dwConversion & IME_CMODE_LANGUAGE) != IME_CMODE_ALPHANUMERIC);
+        }
+      }
+      ImmReleaseContext(g_hwndEdit, himc);
+    }
+  }
+  return result;
+}
+
+//=============================================================================
+//
 //  MsgNotify() - Handles WM_NOTIFY
 //
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
@@ -6216,7 +6239,6 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   switch(pnmh->idFrom)
   {
     case IDC_EDIT:
-
       switch (pnmh->code)
       {
         case SCN_MODIFIED:
@@ -6331,12 +6353,13 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         case SCN_CHARADDED:
           {
-            if (g_CallTipType != CT_NONE) { 
+            int const ich = scn->ch;
+
+            if (g_CallTipType != CT_NONE) {
               SciCall_CallTipCancel();   
               g_CallTipType = CT_NONE;
             }
 
-            int const ich = scn->ch;
             switch (ich) {
             case '\r':
             case '\n':
@@ -6352,8 +6375,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               break;
             }
 
-            if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords) && !SciCall_AutoCActive()) {
-              EditCompleteWord(g_hwndEdit, false);
+            if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
+              if (g_bAutoCinASCIIModeOnly && ((ich > 0x7F) || _IsInlineIMEAsianLngMode())) {
+                SciCall_AutoCCancel();
+                return 0LL;
+              }
+              if (!SciCall_AutoCActive()) { EditCompleteWord(g_hwndEdit, false); }
             }
           }
           break;
