@@ -13,37 +13,37 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Crypto">
-      <UniqueIdentifier>{aad339da-f291-4358-9ab1-a0fdee012ac6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="templates">
       <UniqueIdentifier>{e817f780-f742-48b4-bc9c-2ab762ced6bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CED">
-      <UniqueIdentifier>{91d2fb70-4067-4692-b746-9a02db63f461}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CED\compact_enc_det">
-      <UniqueIdentifier>{8d78b8ca-ff0f-46cb-8da2-83c4bde259b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CED\util">
-      <UniqueIdentifier>{dbeb3dd1-1f65-45ec-a526-dc0e84e4c350}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CED\util\encodings">
-      <UniqueIdentifier>{1d7878c8-36e3-4bae-91d9-fda61101aa81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CED\util\languages">
-      <UniqueIdentifier>{fd5165c7-e622-408b-95f0-666d494aa8f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tinyexpr">
-      <UniqueIdentifier>{1de8e161-7393-4043-be9d-7bd2d0cb02df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ChooseFont">
-      <UniqueIdentifier>{a6270a0b-5c38-4e68-b38c-5795ccb57302}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="StyleLexers">
+    <Filter Include="Source Files\StyleLexers">
       <UniqueIdentifier>{82f9cc2d-9173-4af4-8967-5fd2e5f8aef7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="uthash">
+    <Filter Include="Source Files\Crypto">
+      <UniqueIdentifier>{aad339da-f291-4358-9ab1-a0fdee012ac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ChooseFont">
+      <UniqueIdentifier>{a6270a0b-5c38-4e68-b38c-5795ccb57302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CED">
+      <UniqueIdentifier>{91d2fb70-4067-4692-b746-9a02db63f461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CED\compact_enc_det">
+      <UniqueIdentifier>{8d78b8ca-ff0f-46cb-8da2-83c4bde259b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CED\util">
+      <UniqueIdentifier>{dbeb3dd1-1f65-45ec-a526-dc0e84e4c350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CED\util\encodings">
+      <UniqueIdentifier>{1d7878c8-36e3-4bae-91d9-fda61101aa81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CED\util\languages">
+      <UniqueIdentifier>{fd5165c7-e622-408b-95f0-666d494aa8f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tinyexpr">
+      <UniqueIdentifier>{1de8e161-7393-4043-be9d-7bd2d0cb02df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\uthash">
       <UniqueIdentifier>{24604833-5c1e-421c-813a-34c6a48bf6f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -70,184 +70,184 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\crypto\crypto.c">
-      <Filter>Crypto</Filter>
+      <Filter>Source Files\Crypto</Filter>
     </ClCompile>
     <ClCompile Include="..\crypto\rijndael-alg-fst.c">
-      <Filter>Crypto</Filter>
+      <Filter>Source Files\Crypto</Filter>
     </ClCompile>
     <ClCompile Include="..\crypto\rijndael-api-fst.c">
-      <Filter>Crypto</Filter>
+      <Filter>Source Files\Crypto</Filter>
     </ClCompile>
     <ClCompile Include="..\crypto\sha-256.c">
-      <Filter>Crypto</Filter>
+      <Filter>Source Files\Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Encoding.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\ced\ced\util\languages\languages.cc">
-      <Filter>CED\util\languages</Filter>
+      <Filter>Source Files\CED\util\languages</Filter>
     </ClCompile>
     <ClCompile Include="..\ced\ced\util\encodings\encodings.cc">
-      <Filter>CED\util\encodings</Filter>
+      <Filter>Source Files\CED\util\encodings</Filter>
     </ClCompile>
     <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det.cc">
-      <Filter>CED\compact_enc_det</Filter>
+      <Filter>Source Files\CED\compact_enc_det</Filter>
     </ClCompile>
     <ClCompile Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.cc">
-      <Filter>CED\compact_enc_det</Filter>
+      <Filter>Source Files\CED\compact_enc_det</Filter>
     </ClCompile>
     <ClCompile Include="EncodingCED.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\tinyexpr\tinyexpr.c">
-      <Filter>tinyexpr</Filter>
+      <Filter>Source Files\tinyexpr</Filter>
     </ClCompile>
     <ClCompile Include="ChooseFont\ChooseFont.cpp">
-      <Filter>ChooseFont</Filter>
+      <Filter>Source Files\ChooseFont</Filter>
     </ClCompile>
     <ClCompile Include="ChooseFont\FontEnumeration.cpp">
-      <Filter>ChooseFont</Filter>
+      <Filter>Source Files\ChooseFont</Filter>
     </ClCompile>
     <ClCompile Include="ChooseFont\GdiTextRenderer.cpp">
-      <Filter>ChooseFont</Filter>
+      <Filter>Source Files\ChooseFont</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexAHK.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexASM.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexAU3.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexAVS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexAwk.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexBASH.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexBAT.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexCMAKE.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexCOFFEESCRIPT.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexCONF.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexCPP.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexCS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexCSS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexD.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexDIFF.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexGo.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexHTML.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexINNO.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexJAVA.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexJS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexJSON.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexLUA.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexMAK.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexMARKDOWN.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexMATLAB.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexNimrod.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexNSIS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexPAS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexPL.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexPROPS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexPS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexPY.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexR.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexRC.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexRegistry.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexRUBY.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexRust.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexSQL.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexStandard.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexTCL.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexVB.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexVBS.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexVHDL.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexXML.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexYAML.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexAHKL.c">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -279,16 +279,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\crypto\crypto.h">
-      <Filter>Crypto</Filter>
+      <Filter>Source Files\Crypto</Filter>
     </ClInclude>
     <ClInclude Include="..\crypto\rijndael-alg-fst.h">
-      <Filter>Crypto</Filter>
+      <Filter>Source Files\Crypto</Filter>
     </ClInclude>
     <ClInclude Include="..\crypto\rijndael-api-fst.h">
-      <Filter>Crypto</Filter>
+      <Filter>Source Files\Crypto</Filter>
     </ClInclude>
     <ClInclude Include="..\crypto\sha-256.h">
-      <Filter>Crypto</Filter>
+      <Filter>Source Files\Crypto</Filter>
     </ClInclude>
     <ClInclude Include="VersionEx.h">
       <Filter>Resource Files</Filter>
@@ -300,85 +300,85 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\basictypes.h">
-      <Filter>CED\util</Filter>
+      <Filter>Source Files\CED\util</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\case_insensitive_hash.h">
-      <Filter>CED\util</Filter>
+      <Filter>Source Files\CED\util</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\commandlineflags.h">
-      <Filter>CED\util</Filter>
+      <Filter>Source Files\CED\util</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\logging.h">
-      <Filter>CED\util</Filter>
+      <Filter>Source Files\CED\util</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\port.h">
-      <Filter>CED\util</Filter>
+      <Filter>Source Files\CED\util</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\string_util.h">
-      <Filter>CED\util</Filter>
+      <Filter>Source Files\CED\util</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\varsetter.h">
-      <Filter>CED\util</Filter>
+      <Filter>Source Files\CED\util</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\languages\languages.h">
-      <Filter>CED\util\languages</Filter>
+      <Filter>Source Files\CED\util\languages</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\languages\languages.pb.h">
-      <Filter>CED\util\languages</Filter>
+      <Filter>Source Files\CED\util\languages</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\encodings\encodings.h">
-      <Filter>CED\util\encodings</Filter>
+      <Filter>Source Files\CED\util\encodings</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\util\encodings\encodings.pb.h">
-      <Filter>CED\util\encodings</Filter>
+      <Filter>Source Files\CED\util\encodings</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det.h">
-      <Filter>CED\compact_enc_det</Filter>
+      <Filter>Source Files\CED\compact_enc_det</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables.h">
-      <Filter>CED\compact_enc_det</Filter>
+      <Filter>Source Files\CED\compact_enc_det</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_generated_tables2.h">
-      <Filter>CED\compact_enc_det</Filter>
+      <Filter>Source Files\CED\compact_enc_det</Filter>
     </ClInclude>
     <ClInclude Include="..\ced\ced\compact_enc_det\compact_enc_det_hint_code.h">
-      <Filter>CED\compact_enc_det</Filter>
+      <Filter>Source Files\CED\compact_enc_det</Filter>
     </ClInclude>
     <ClInclude Include="..\language\common_res.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\tinyexpr\tinyexpr.h">
-      <Filter>tinyexpr</Filter>
+      <Filter>Source Files\tinyexpr</Filter>
     </ClInclude>
     <ClInclude Include="ChooseFont\ChooseFont.h">
-      <Filter>ChooseFont</Filter>
+      <Filter>Source Files\ChooseFont</Filter>
     </ClInclude>
     <ClInclude Include="ChooseFont\FontEnumeration.h">
-      <Filter>ChooseFont</Filter>
+      <Filter>Source Files\ChooseFont</Filter>
     </ClInclude>
     <ClInclude Include="ChooseFont\GdiTextRenderer.h">
-      <Filter>ChooseFont</Filter>
+      <Filter>Source Files\ChooseFont</Filter>
     </ClInclude>
     <ClInclude Include="StyleLexers\EditLexer.h">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClInclude>
     <ClInclude Include="StyleLexers\StyleLexers.h">
-      <Filter>StyleLexers</Filter>
+      <Filter>Source Files\StyleLexers</Filter>
     </ClInclude>
     <ClInclude Include="..\uthash\utarray.h">
-      <Filter>uthash</Filter>
+      <Filter>Source Files\uthash</Filter>
     </ClInclude>
     <ClInclude Include="..\uthash\uthash.h">
-      <Filter>uthash</Filter>
+      <Filter>Source Files\uthash</Filter>
     </ClInclude>
     <ClInclude Include="..\uthash\utlist.h">
-      <Filter>uthash</Filter>
+      <Filter>Source Files\uthash</Filter>
     </ClInclude>
     <ClInclude Include="..\uthash\utringbuffer.h">
-      <Filter>uthash</Filter>
+      <Filter>Source Files\uthash</Filter>
     </ClInclude>
     <ClInclude Include="..\uthash\utstring.h">
-      <Filter>uthash</Filter>
+      <Filter>Source Files\uthash</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
