@@ -249,6 +249,9 @@
     <ClCompile Include="StyleLexers\styleLexAHKL.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="AccelKeys.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">
@@ -379,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="..\uthash\utstring.h">
       <Filter>Source Files\uthash</Filter>
+    </ClInclude>
+    <ClInclude Include="AccelKeys.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
