@@ -4796,7 +4796,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TOGGLEFOLDS:
-      EditToggleFolds(SNIFF, true);
+      EditToggleFolds(SNIFF, SciCall_IsSelectionEmpty());
       break;
       
     case IDM_VIEW_TOGGLE_CURRENT_FOLD:

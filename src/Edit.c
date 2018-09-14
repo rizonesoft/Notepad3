@@ -8152,6 +8152,7 @@ inline bool _FoldToggleNode(DocLn ln, FOLD_ACTION action)
 
 void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
 {
+  bool fToggled = false;
   if (action == SNIFF) {
     action = SciCall_GetFoldExpanded(ln) ? FOLD : EXPAND;
   }
@@ -8180,12 +8181,13 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
       if (lv < lvStop || (lv == lvStop && fHeader && ln != lnNode))
         return;
       else if (fHeader && (lv == lvNode || (lv > lvNode && mode & FOLD_CHILDREN)))
-        _FoldToggleNode(ln, action);
+        fToggled |= _FoldToggleNode(ln, action);
     }
   }
   else {
-    _FoldToggleNode(ln, action);
+    fToggled = _FoldToggleNode(ln, action);
   }
+  if (fToggled) { SciCall_ScrollCaret(); }
 }
 
 
@@ -8193,7 +8195,6 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 {
   static FOLD_ACTION sbLastSniffAllAction = EXPAND;
   
-  bool fToggled = bForceAll;
   DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
   DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
 
@@ -8205,18 +8206,19 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
     if (iBegLn == iEndLn) {
       // single line
       DocLn const ln = (SciCall_GetFoldLevel(iBegLn) & SC_FOLDLEVELHEADERFLAG) ? iBegLn : SciCall_GetFoldParent(iBegLn);
-      _FoldToggleNode(ln, action);
+      if (_FoldToggleNode(ln, action)) { SciCall_ScrollCaret(); }
     }
     else {
       // selection range spans at least two lines
+      bool fToggled = bForceAll;
       for (DocLn ln = iBegLn; ln <= iEndLn; ++ln) {
         if (SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG) {
-          if (_FoldToggleNode(ln, action)) { fToggled = !fToggled ? true : false; }
+          fToggled |= _FoldToggleNode(ln, action);
         }
       }
+      if (fToggled) { EditEnsureSelectionVisible(g_hwndEdit); }
     }
   }
-  if (fToggled) { EditEnsureSelectionVisible(g_hwndEdit); }
 }
 
 
@@ -8305,7 +8307,7 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
     else {
       ln = (SciCall_GetFoldLevel(iBegLn) & SC_FOLDLEVELHEADERFLAG) ? iBegLn : SciCall_GetFoldParent(iBegLn);
       if (action != SNIFF) {
-        _FoldToggleNode(ln, action);
+        if (_FoldToggleNode(ln, action)) { SciCall_ScrollCaret(); }
       }
     }
   }
