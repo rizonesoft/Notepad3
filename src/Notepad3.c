@@ -6149,7 +6149,7 @@ static void __fastcall _HandleTinyExpr()
   }
 }
 
-
+#if 0
 //=============================================================================
 //
 //   _IsIMEOpenInNativeMode()
@@ -6169,6 +6169,7 @@ static bool __fastcall _IsIMEOpenInNativeMode()
   }
   return result;
 }
+#endif
 
 //=============================================================================
 //
@@ -6366,7 +6367,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
 
             if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
-              if ((g_bAutoCinASCIIModeOnly && (ich > 0x7F)) || (scn->modifiers != SC_CHARADDED_NORMAL)) {
+              if (g_bAutoCinASCIIModeOnly && ((ich > 0x7F) || (scn->modifiers != SC_CHARADDED_NORMAL))) {
                 SciCall_AutoCCancel();
                 return 0LL;
               }
