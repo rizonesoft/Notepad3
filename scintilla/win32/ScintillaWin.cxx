@@ -3659,6 +3659,6 @@ int Scintilla_ReleaseResources(void) {
 	return Scintilla::ResourcesRelease(false);
 }
 
-int Scintilla_InputCodePage() {
+int Scintilla_InputCodePage(void) {
 	return InputCodePage();
 }
