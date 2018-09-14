@@ -1,5 +1,8 @@
 
 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-
+    // >>>  NON STD SCI PATCH   <<<
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
+https://github.com/RaiKoHoff/notepad2
+https://github.com/zufuliu/notepad2

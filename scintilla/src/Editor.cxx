@@ -1894,6 +1894,7 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 
 		// Vector elements point into selection in order to change selection.
 		std::vector<SelectionRange *> selPtrs;
+		selPtrs.reserve(sel.Count());
 		for (size_t r = 0; r < sel.Count(); r++) {
 			selPtrs.push_back(&sel.Range(r));
 		}
@@ -1958,7 +1959,10 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 		SetLastXChosen();
 	}
 
-	if (!isInlineIMEComposition) {
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	// We don't handle inline IME tentative characters
+	if (charAddedSource != SC_CHARADDED_TENTATIVE) {
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		if (treatAsDBCS) {
 			NotifyChar((static_cast<unsigned char>(s[0]) << 8) |
 							static_cast<unsigned char>(s[1]));
@@ -1976,7 +1980,7 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 			}
 			NotifyChar(byte);
 		}
-	}
+	} // >>>  NON STD SCI PATCH   <<<
 	
 	if (recordingMacro) {
 		NotifyMacroRecord(SCI_REPLACESEL, 0, reinterpret_cast<sptr_t>(s));
@@ -2327,6 +2331,9 @@ void Editor::NotifyChar(int ch) {
 	SCNotification scn = {};
 	scn.nmhdr.code = SCN_CHARADDED;
 	scn.ch = ch;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	scn.modifiers = charAddedSource;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	NotifyParent(scn);
 }
 

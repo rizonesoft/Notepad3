@@ -62,7 +62,9 @@ EditModel::EditModel() : braces{} {
 	highlightGuideColumn = 0;
 	primarySelection = true;
 	imeInteraction = imeWindowed;
-	isInlineIMEComposition = false;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	charAddedSource = SC_CHARADDED_NORMAL;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	bidirectional = Bidirectional::bidiDisabled;
 	foldFlags = 0;
 	foldDisplayTextStyle = SC_FOLDDISPLAYTEXT_HIDDEN;
