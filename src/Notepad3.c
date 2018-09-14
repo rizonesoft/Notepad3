@@ -6164,22 +6164,20 @@ static void __fastcall _HandleTinyExpr()
 
 //=============================================================================
 //
-//  _IsInlineIMEAsianLngMode()
+//   _IsIMEOpenNativeMode()
 //
-static bool __fastcall _IsInlineIMEAsianLngMode()
+static bool __fastcall _IsIMEOpenNativeMode()
 {
   bool result = false;
-  if (g_IMEInteraction == SC_IME_INLINE) {
-    HIMC const himc = ImmGetContext(g_hwndEdit);
-    if (himc) {
-      if (ImmGetOpenStatus(himc)) {
-        DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
-        if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
-          result = ((dwConversion & IME_CMODE_LANGUAGE) != IME_CMODE_ALPHANUMERIC);
-        }
+  HIMC const himc = ImmGetContext(g_hwndEdit);
+  if (himc) {
+    if (ImmGetOpenStatus(himc)) {
+      DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
+      if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
+        result = ((dwConversion & IME_CMODE_LANGUAGE) != IME_CMODE_ALPHANUMERIC);
       }
-      ImmReleaseContext(g_hwndEdit, himc);
     }
+    ImmReleaseContext(g_hwndEdit, himc);
   }
   return result;
 }
@@ -6380,7 +6378,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
 
             if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
-              if (g_bAutoCinASCIIModeOnly && ((ich > 0x7F) || _IsInlineIMEAsianLngMode())) {
+              if ((g_bAutoCinASCIIModeOnly && ich > 0x7F) || _IsIMEOpenNativeMode()) {
                 SciCall_AutoCCancel();
                 return 0LL;
               }
