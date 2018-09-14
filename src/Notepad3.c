@@ -6164,9 +6164,9 @@ static void __fastcall _HandleTinyExpr()
 
 //=============================================================================
 //
-//   _IsIMEOpenNativeMode()
+//   _IsIMEOpenInNativeMode()
 //
-static bool __fastcall _IsIMEOpenNativeMode()
+static bool __fastcall _IsIMEOpenInNativeMode()
 {
   bool result = false;
   HIMC const himc = ImmGetContext(g_hwndEdit);
@@ -6174,7 +6174,7 @@ static bool __fastcall _IsIMEOpenNativeMode()
     if (ImmGetOpenStatus(himc)) {
       DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = 0;
       if (ImmGetConversionStatus(himc, &dwConversion, &dwSentence)) {
-        result = ((dwConversion & IME_CMODE_LANGUAGE) != IME_CMODE_ALPHANUMERIC);
+        result = (dwConversion != IME_CMODE_ALPHANUMERIC);
       }
     }
     ImmReleaseContext(g_hwndEdit, himc);
@@ -6378,7 +6378,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
 
             if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
-              if ((g_bAutoCinASCIIModeOnly && ich > 0x7F) || _IsIMEOpenNativeMode()) {
+              if ((g_bAutoCinASCIIModeOnly && (ich > 0x7F)) || (scn->modifiers != SC_CHARADDED_NORMAL)) {
                 SciCall_AutoCCancel();
                 return 0LL;
               }

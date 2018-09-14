@@ -152,8 +152,6 @@ Used by VSCode, Atom etc.
 typedef UINT_PTR (WINAPI *SetCoalescableTimerSig)(HWND hwnd, UINT_PTR nIDEvent,
 	UINT uElapse, TIMERPROC lpTimerFunc, ULONG uToleranceDelay);
 
-// GCC has trouble with the standard COM ABI so do it the old C way with explicit vtables.
-
 using namespace Scintilla;
 
 namespace {
@@ -1009,7 +1007,9 @@ sptr_t ScintillaWin::HandleCompositionWindowed(uptr_t wParam, sptr_t lParam) {
 	if (lParam & GCS_RESULTSTR) {
 		IMContext imc(MainHWND());
 		if (imc.hIMC) {
+			charAddedSource = SC_CHARADDED_IME;
 			AddWString(imc.GetCompositionString(GCS_RESULTSTR));
+			charAddedSource = SC_CHARADDED_NORMAL;
 
 			// Set new position after converted
 			const Point pos = PointMainCaret();
@@ -1215,7 +1215,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 
 		const bool tmpRecordingMacro = recordingMacro;
 		recordingMacro = false;
-		isInlineIMEComposition = true;
+		charAddedSource = SC_CHARADDED_TENTATIVE;
 		const int codePage = CodePageOfDocument();
 		for (size_t i = 0; i < wcs.size(); ) {
 			const size_t ucWidth = UTF16CharLength(wcs[i]);
@@ -1227,7 +1227,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 			DrawImeIndicator(imeIndicator[i], static_cast<unsigned int>(docChar.size()));
 			i += ucWidth;
 		}
-		isInlineIMEComposition = false;
+		charAddedSource = SC_CHARADDED_NORMAL;
 		recordingMacro = tmpRecordingMacro;
 
 		// Move IME caret from current last position to imeCaretPos.
@@ -1240,7 +1240,9 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 			view.imeCaretBlockOverride = true;
 		}
 	} else if (lParam & GCS_RESULTSTR) {
+		charAddedSource = SC_CHARADDED_IME;
 		AddWString(imc.GetCompositionString(GCS_RESULTSTR));
+		charAddedSource = SC_CHARADDED_NORMAL;
 	}
 	EnsureCaretVisible();
 	SetCandidateWindowPos();
@@ -1463,7 +1465,7 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 						KeyCommand(SCI_ZOOMIN);
 					} else {
 						KeyCommand(SCI_ZOOMOUT);
-					}
+					}				
 					// send to main window too !
 					::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 				} else {
@@ -3657,6 +3659,6 @@ int Scintilla_ReleaseResources(void) {
 	return Scintilla::ResourcesRelease(false);
 }
 
-int Scintilla_InputCodePage(void) {
+int Scintilla_InputCodePage() {
 	return InputCodePage();
 }
