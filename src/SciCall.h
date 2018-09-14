@@ -199,7 +199,6 @@ DeclareSciCallV0(Clear, CLEAR)
 DeclareSciCallV2(CopyRange, COPYRANGE, DocPos, start, DocPos, end)
 DeclareSciCallV0(Cancel, CANCEL)
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE)
-DeclareSciCallV0(LineDelete, LINEDELETE)
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text)
 DeclareSciCallV2(GetText, GETTEXT, DocPos, length, const char*, text)
 
@@ -278,8 +277,15 @@ DeclareSciCallV2(AutoCShow, AUTOCSHOW, int, len, const char*, list)
 //  Commands
 //
 DeclareSciCallV0(NewLine, NEWLINE)
+DeclareSciCallV0(LineDuplicate, LINEDUPLICATE)
+DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE)
+DeclareSciCallV0(LineTranspose, LINETRANSPOSE)
 DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP)
 DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN)
+DeclareSciCallV0(LineDelete, LINEDELETE)
+DeclareSciCallV0(DelLineLeft, DELLINELEFT)
+DeclareSciCallV0(DelLineRight, DELLINERIGHT)
+
 
 DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
 

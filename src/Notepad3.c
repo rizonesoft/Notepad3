@@ -2794,7 +2794,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_EDIT_MOVELINEUP,!ro);
   EnableCmd(hmenu,IDM_EDIT_MOVELINEDOWN,!ro);
-  EnableCmd(hmenu,IDM_EDIT_DUPLICATELINE,!ro);
+  EnableCmd(hmenu,IDM_EDIT_DUPLINEORSELECTION,!ro);
   EnableCmd(hmenu,IDM_EDIT_LINETRANSPOSE,!ro);
   EnableCmd(hmenu,IDM_EDIT_CUTLINE,!ro);
   EnableCmd(hmenu,IDM_EDIT_COPYLINE,true);
@@ -2813,7 +2813,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_STRIP1STCHAR,!ro);
   EnableCmd(hmenu,IDM_EDIT_STRIPLASTCHAR,!ro);
   EnableCmd(hmenu,IDM_EDIT_TRIMLINES,!ro);
-  EnableCmd(hmenu, IDM_EDIT_SELECTIONDUPLICATE, !ro);
   EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
@@ -3591,16 +3590,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_EDIT_DUPLICATELINE:
+    case IDM_EDIT_DUPLINEORSELECTION:
       _BEGIN_UNDO_ACTION_;
-      SendMessage(g_hwndEdit,SCI_LINEDUPLICATE,0,0);
+      if (SciCall_IsSelectionEmpty()) { SciCall_LineDuplicate(); } else { SciCall_SelectionDuplicate(); }
       _END_UNDO_ACTION_;
       break;
 
 
     case IDM_EDIT_LINETRANSPOSE:
       _BEGIN_UNDO_ACTION_;
-      SendMessage(g_hwndEdit, SCI_LINETRANSPOSE,0,0);
+      SciCall_LineTranspose();
       _END_UNDO_ACTION_;
       break;
 
@@ -3619,7 +3618,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_DELETELINE:
       {
         _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit, SCI_LINEDELETE, 0, 0);
+        SciCall_LineDelete();
         _END_UNDO_ACTION_;
       }
       break;
@@ -3628,7 +3627,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_DELETELINELEFT:
       {
         _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit, SCI_DELLINELEFT, 0, 0);
+        SciCall_DelLineLeft();
         _END_UNDO_ACTION_;
       }
       break;
@@ -3637,7 +3636,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_DELETELINERIGHT:
       {
         _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit, SCI_DELLINERIGHT, 0, 0);
+        SciCall_DelLineRight();
         _END_UNDO_ACTION_;
       }
       break;
@@ -3705,17 +3704,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
         EditEncloseSelection(g_hwndEdit,wchPrefixSelection,wchAppendSelection);
-        _END_UNDO_ACTION_;
-        EndWaitCursor();
-      }
-      break;
-
-
-    case IDM_EDIT_SELECTIONDUPLICATE:
-      {
-        BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit,SCI_SELECTIONDUPLICATE,0,0);
         _END_UNDO_ACTION_;
         EndWaitCursor();
       }
@@ -6721,18 +6709,13 @@ void LoadSettings()
     }
     g_iBidirectional = (clampi(g_iBidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : 0;
 
-#if 0
-    // Settings2 deprecated
-    g_IMEInteraction = IniSectionGetInt(pIniSection, L"IMEInteraction", 111);
-    if ((g_IMEInteraction != 111) && g_bSaveSettings) {
-      // cleanup
-      IniSetString(L"Settings2", L"IMEInteraction", NULL);
-      IniSetInt(L"Settings", L"IMEInteraction", g_iBidirectional);
+    g_IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", -1), -1, SC_IME_INLINE);
+    // Korean IME use inline mode by default
+    if (g_IMEInteraction == -1) { // auto detection once
+      // ScintillaWin::KoreanIME()
+      int const codePage = Scintilla_InputCodePage(); 
+      g_IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
     }
-    g_IMEInteraction = clampi(g_IMEInteraction, 0, 1);
-#else
-    g_IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", SC_IME_WINDOWED), SC_IME_WINDOWED, SC_IME_INLINE);
-#endif
 
     g_iSciFontQuality = clampi(IniSectionGetInt(pIniSection, L"SciFontQuality", FontQuality[3]), 0, 3);
 
