@@ -166,7 +166,7 @@ static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-static  WININFO g_WinInfo = INIT_WININFO;
+static  WININFO g_WinInfo = INIT_WININFO; // <= (g_flagDefaultPos == 1)
 static  int     g_WinCurrentWidth = 0;
 
 int       iPathNameFormat;
@@ -990,30 +990,23 @@ void EndWaitCursor()
 //  _InitWindowPosition()
 //
 //
-#define _BORDEROFFSET (IsWin10() ? 8 : 16)
-
-
 static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 {
-  RECT rc = RectFromWinInfo(pWinInfo);
-  GetMonitorWorkArea(&rc);
-  pWinInfo->y = rc.top + _BORDEROFFSET;
-  pWinInfo->cy = rc.bottom - rc.top - (_BORDEROFFSET * 2);
-  pWinInfo->cx = (rc.right - rc.left) / 2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
-  pWinInfo->x = (g_flagDefaultPos == 3) ? rc.left + _BORDEROFFSET : rc.right - g_WinInfo.cx - _BORDEROFFSET;
+  RECT rcMon = RectFromWinInfo(pWinInfo);
+  GetMonitorWorkArea(&rcMon);
+  pWinInfo->y = rcMon.top;
+  pWinInfo->cy = rcMon.bottom - rcMon.top;
+  pWinInfo->cx = (rcMon.right - rcMon.left) / 2; //min(rcMon.right - rcMon.left - 32, g_WinInfo.cy);
+  pWinInfo->x = (g_flagDefaultPos == 3) ? rcMon.left : rcMon.right - g_WinInfo.cx;
+
+  FitIntoMonitorWorkArea(&rcMon, pWinInfo, false);
 }
 // ----------------------------------------------------------------------------
 
 
 static void __fastcall _InitWindowPosition()
 {
-  if (g_flagDefaultPos == 1) 
-  {
-    g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
-    g_WinInfo.max = 0;
-    g_WinInfo.zoom = 100;
-  }
-  else if (g_flagDefaultPos >= 4) 
+  if (g_flagDefaultPos >= 4) 
   {
     RECT rcMon = RectFromWinInfo(&g_WinInfo);
     GetMonitorWorkArea(&rcMon);
@@ -1060,7 +1053,7 @@ static void __fastcall _InitWindowPosition()
     RECT rcMon = RectFromWinInfo(&g_WinInfo);
     GetMonitorWorkArea(&rcMon);
 
-    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = _BORDEROFFSET * 2; // really small
+    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = 32; // really small
     FitIntoMonitorWorkArea(&rcMon, &wiWin, false);
 
     g_WinInfo.x = wiWin.x;
@@ -2311,8 +2304,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   HDWP hdwp = BeginDeferWindowPos(2);
 
-  DeferWindowPos(hdwp,hwndEditFrame,NULL,x,y,cx,cy,
-                 SWP_NOZORDER | SWP_NOACTIVATE);
+  DeferWindowPos(hdwp,hwndEditFrame,NULL,x,y,cx,cy, SWP_NOZORDER | SWP_NOACTIVATE);
 
   DeferWindowPos(hdwp,g_hwndEdit,NULL,x+cxEditFrame,y+cyEditFrame,
                  cx-2*cxEditFrame,cy-2*cyEditFrame,
@@ -6735,7 +6727,6 @@ void LoadSettings()
     iCurrentLineVerticalSlop = clampi(IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5), 0, 25);
 
     IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
-
 
     // --------------------------------------------------------------------------
     LoadIniSection(L"Settings", pIniSection, cchIniSection);
