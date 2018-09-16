@@ -2696,6 +2696,8 @@ void GetMonitorWorkArea(RECT* pRect)
     if (SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0) != 0) {
       SetRect(pRect, rc.left, rc.top, rc.right, rc.bottom);
     }
+    else
+      SetRectEmpty(pRect);
   }
 }
 
