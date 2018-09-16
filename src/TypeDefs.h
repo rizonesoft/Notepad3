@@ -61,7 +61,7 @@ typedef struct _wi
   int zoom;
 } WININFO;
 
-#define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0 }
+#define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, 0, 100 }
 
 
 inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {

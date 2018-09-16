@@ -166,7 +166,7 @@ static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-static  WININFO g_WinInfo = INIT_WININFO;
+static  WININFO g_WinInfo = INIT_WININFO; // <= (g_flagDefaultPos == 1)
 static  int     g_WinCurrentWidth = 0;
 
 int       iPathNameFormat;
@@ -990,30 +990,23 @@ void EndWaitCursor()
 //  _InitWindowPosition()
 //
 //
-#define _BORDEROFFSET (IsWin10() ? 8 : 16)
-
-
 static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 {
-  RECT rc = RectFromWinInfo(pWinInfo);
-  GetMonitorWorkArea(&rc);
-  pWinInfo->y = rc.top + _BORDEROFFSET;
-  pWinInfo->cy = rc.bottom - rc.top - (_BORDEROFFSET * 2);
-  pWinInfo->cx = (rc.right - rc.left) / 2; //min(rc.right - rc.left - 32, g_WinInfo.cy);
-  pWinInfo->x = (g_flagDefaultPos == 3) ? rc.left + _BORDEROFFSET : rc.right - g_WinInfo.cx - _BORDEROFFSET;
+  RECT rcMon = RectFromWinInfo(pWinInfo);
+  GetMonitorWorkArea(&rcMon);
+  pWinInfo->y = rcMon.top;
+  pWinInfo->cy = rcMon.bottom - rcMon.top;
+  pWinInfo->cx = (rcMon.right - rcMon.left) / 2; //min(rcMon.right - rcMon.left - 32, g_WinInfo.cy);
+  pWinInfo->x = (g_flagDefaultPos == 3) ? rcMon.left : rcMon.right - g_WinInfo.cx;
+
+  FitIntoMonitorWorkArea(&rcMon, pWinInfo, false);
 }
 // ----------------------------------------------------------------------------
 
 
 static void __fastcall _InitWindowPosition()
 {
-  if (g_flagDefaultPos == 1) 
-  {
-    g_WinInfo.x = g_WinInfo.y = g_WinInfo.cx = g_WinInfo.cy = CW_USEDEFAULT;
-    g_WinInfo.max = 0;
-    g_WinInfo.zoom = 100;
-  }
-  else if (g_flagDefaultPos >= 4) 
+  if (g_flagDefaultPos >= 4) 
   {
     RECT rcMon = RectFromWinInfo(&g_WinInfo);
     GetMonitorWorkArea(&rcMon);
@@ -1060,7 +1053,7 @@ static void __fastcall _InitWindowPosition()
     RECT rcMon = RectFromWinInfo(&g_WinInfo);
     GetMonitorWorkArea(&rcMon);
 
-    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = _BORDEROFFSET * 2; // really small
+    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = 32; // really small
     FitIntoMonitorWorkArea(&rcMon, &wiWin, false);
 
     g_WinInfo.x = wiWin.x;
@@ -2311,8 +2304,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   HDWP hdwp = BeginDeferWindowPos(2);
 
-  DeferWindowPos(hdwp,hwndEditFrame,NULL,x,y,cx,cy,
-                 SWP_NOZORDER | SWP_NOACTIVATE);
+  DeferWindowPos(hdwp,hwndEditFrame,NULL,x,y,cx,cy, SWP_NOZORDER | SWP_NOACTIVATE);
 
   DeferWindowPos(hdwp,g_hwndEdit,NULL,x+cxEditFrame,y+cyEditFrame,
                  cx-2*cxEditFrame,cy-2*cyEditFrame,
@@ -2794,7 +2786,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_EDIT_MOVELINEUP,!ro);
   EnableCmd(hmenu,IDM_EDIT_MOVELINEDOWN,!ro);
-  EnableCmd(hmenu,IDM_EDIT_DUPLICATELINE,!ro);
+  EnableCmd(hmenu,IDM_EDIT_DUPLINEORSELECTION,!ro);
   EnableCmd(hmenu,IDM_EDIT_LINETRANSPOSE,!ro);
   EnableCmd(hmenu,IDM_EDIT_CUTLINE,!ro);
   EnableCmd(hmenu,IDM_EDIT_COPYLINE,true);
@@ -2813,7 +2805,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_STRIP1STCHAR,!ro);
   EnableCmd(hmenu,IDM_EDIT_STRIPLASTCHAR,!ro);
   EnableCmd(hmenu,IDM_EDIT_TRIMLINES,!ro);
-  EnableCmd(hmenu, IDM_EDIT_SELECTIONDUPLICATE, !ro);
   EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
@@ -3591,16 +3582,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
 
-    case IDM_EDIT_DUPLICATELINE:
+    case IDM_EDIT_DUPLINEORSELECTION:
       _BEGIN_UNDO_ACTION_;
-      SendMessage(g_hwndEdit,SCI_LINEDUPLICATE,0,0);
+      if (SciCall_IsSelectionEmpty()) { SciCall_LineDuplicate(); } else { SciCall_SelectionDuplicate(); }
       _END_UNDO_ACTION_;
       break;
 
 
     case IDM_EDIT_LINETRANSPOSE:
       _BEGIN_UNDO_ACTION_;
-      SendMessage(g_hwndEdit, SCI_LINETRANSPOSE,0,0);
+      SciCall_LineTranspose();
       _END_UNDO_ACTION_;
       break;
 
@@ -3619,7 +3610,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_DELETELINE:
       {
         _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit, SCI_LINEDELETE, 0, 0);
+        SciCall_LineDelete();
         _END_UNDO_ACTION_;
       }
       break;
@@ -3628,7 +3619,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_DELETELINELEFT:
       {
         _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit, SCI_DELLINELEFT, 0, 0);
+        SciCall_DelLineLeft();
         _END_UNDO_ACTION_;
       }
       break;
@@ -3637,7 +3628,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_DELETELINERIGHT:
       {
         _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit, SCI_DELLINERIGHT, 0, 0);
+        SciCall_DelLineRight();
         _END_UNDO_ACTION_;
       }
       break;
@@ -3705,17 +3696,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
         EditEncloseSelection(g_hwndEdit,wchPrefixSelection,wchAppendSelection);
-        _END_UNDO_ACTION_;
-        EndWaitCursor();
-      }
-      break;
-
-
-    case IDM_EDIT_SELECTIONDUPLICATE:
-      {
-        BeginWaitCursor(NULL);
-        _BEGIN_UNDO_ACTION_;
-        SendMessage(g_hwndEdit,SCI_SELECTIONDUPLICATE,0,0);
         _END_UNDO_ACTION_;
         EndWaitCursor();
       }
@@ -4808,7 +4788,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TOGGLEFOLDS:
-      EditToggleFolds(SNIFF, true);
+      EditToggleFolds(SNIFF, SciCall_IsSelectionEmpty());
       break;
       
     case IDM_VIEW_TOGGLE_CURRENT_FOLD:
@@ -6161,7 +6141,7 @@ static void __fastcall _HandleTinyExpr()
   }
 }
 
-
+#if 0
 //=============================================================================
 //
 //   _IsIMEOpenInNativeMode()
@@ -6181,6 +6161,7 @@ static bool __fastcall _IsIMEOpenInNativeMode()
   }
   return result;
 }
+#endif
 
 //=============================================================================
 //
@@ -6378,7 +6359,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
 
             if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
-              if ((g_bAutoCinASCIIModeOnly && (ich > 0x7F)) || (scn->modifiers != SC_CHARADDED_NORMAL)) {
+              if (g_bAutoCinASCIIModeOnly && ((ich > 0x7F) || (scn->modifiers != SC_CHARADDED_NORMAL))) {
                 SciCall_AutoCCancel();
                 return 0LL;
               }
@@ -6721,18 +6702,13 @@ void LoadSettings()
     }
     g_iBidirectional = (clampi(g_iBidirectional, SC_BIDIRECTIONAL_DISABLED, SC_BIDIRECTIONAL_R2L) > 0) ? SC_BIDIRECTIONAL_R2L : 0;
 
-#if 0
-    // Settings2 deprecated
-    g_IMEInteraction = IniSectionGetInt(pIniSection, L"IMEInteraction", 111);
-    if ((g_IMEInteraction != 111) && g_bSaveSettings) {
-      // cleanup
-      IniSetString(L"Settings2", L"IMEInteraction", NULL);
-      IniSetInt(L"Settings", L"IMEInteraction", g_iBidirectional);
+    g_IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", -1), -1, SC_IME_INLINE);
+    // Korean IME use inline mode by default
+    if (g_IMEInteraction == -1) { // auto detection once
+      // ScintillaWin::KoreanIME()
+      int const codePage = Scintilla_InputCodePage(); 
+      g_IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
     }
-    g_IMEInteraction = clampi(g_IMEInteraction, 0, 1);
-#else
-    g_IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", SC_IME_WINDOWED), SC_IME_WINDOWED, SC_IME_INLINE);
-#endif
 
     g_iSciFontQuality = clampi(IniSectionGetInt(pIniSection, L"SciFontQuality", FontQuality[3]), 0, 3);
 
@@ -6751,7 +6727,6 @@ void LoadSettings()
     iCurrentLineVerticalSlop = clampi(IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5), 0, 25);
 
     IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
-
 
     // --------------------------------------------------------------------------
     LoadIniSection(L"Settings", pIniSection, cchIniSection);
