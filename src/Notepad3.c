@@ -1422,9 +1422,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      UpdateMarginWidth();
       MarkAllOccurrences(0, true);
       UpdateVisibleUrlHotspot(0);
+      UpdateMarginWidth();
       return DefWindowProc(hwnd,umsg,wParam,lParam);
 
     case WM_SIZE:
@@ -1865,7 +1865,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   Style_SetDefaultLexer(g_hwndEdit);
 
-  UpdateMarginWidth();
   ObserveNotifyChangeEvent();
 
   return 0;
@@ -2521,7 +2520,6 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UpdateToolbar();
     UpdateStatusbar(false);
     UpdateMarginWidth();
-
   }
 
   return 0;
@@ -4381,13 +4379,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         int bitmask = SciCall_MarkerGet(iLine);
 
         if (bitmask & (1 << MARKER_NP3_BOOKMARK)) {
-          // unset
-          SciCall_MarkerDelete(iLine, MARKER_NP3_BOOKMARK);
+          SciCall_MarkerDelete(iLine, MARKER_NP3_BOOKMARK); // unset
         }
         else {
-          // set
-          SciCall_MarkerAdd(iLine, MARKER_NP3_BOOKMARK);
-          UpdateMarginWidth();
+          SciCall_MarkerAdd(iLine, MARKER_NP3_BOOKMARK);    // set
         }
         break;
       }
@@ -4572,7 +4567,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Style_SelectLexerDlg(g_hwndEdit);
       UpdateToolbar();
       UpdateStatusbar(false);
-      UpdateMarginWidth();
       break;
 
 
@@ -4580,7 +4574,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Style_ToggleUse2ndDefault(g_hwndEdit);
       UpdateToolbar();
       UpdateStatusbar(false);
-      UpdateMarginWidth();
       break;
 
 
@@ -4602,6 +4595,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!IsWindow(g_hwndDlgCustomizeSchemes))
         Style_SetDefaultFont(g_hwndEdit, true);
       UpdateToolbar();
+      UpdateStatusbar(false);
       UpdateMarginWidth();
       break;
 
@@ -4609,6 +4603,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!IsWindow(g_hwndDlgCustomizeSchemes))
         Style_SetDefaultFont(g_hwndEdit, false);
       UpdateToolbar();
+      UpdateStatusbar(false);
       UpdateMarginWidth();
       break;
 
@@ -5335,25 +5330,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_LEXDEFAULT:
       Style_SetDefaultLexer(g_hwndEdit);
-      UpdateToolbar();
-      UpdateStatusbar(false);
-      UpdateMarginWidth();
       break;
 
 
     //case CMD_LEXHTML:
     //  Style_SetHTMLLexer(g_hwndEdit);
-    //  UpdateToolbar();
-    //  UpdateStatusbar(false);
-    //  UpdateMarginWidth();
     //  break;
 
 
     //case CMD_LEXXML:
     //  Style_SetXMLLexer(g_hwndEdit);
-    //  UpdateToolbar();
-    //  UpdateStatusbar(false);
-    //  UpdateMarginWidth();
     //  break;
 
 
@@ -9508,9 +9494,6 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
           if (!fKeepTitleExcerpt)
             StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
           Style_SetLexerFromFile(g_hwndEdit,g_wchCurFile);
-          UpdateToolbar();
-          UpdateStatusbar(false);
-          UpdateMarginWidth();
         }
         else {
           StringCchCopy(g_tchLastSaveCopyDir,COUNTOF(g_tchLastSaveCopyDir),tchFile);

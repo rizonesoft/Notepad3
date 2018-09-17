@@ -4397,7 +4397,6 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
 
   UpdateToolbar();
   UpdateStatusbar(false);
-  UpdateMarginWidth();
 }
 
 
