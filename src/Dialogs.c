@@ -23,7 +23,7 @@
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
-
+#define NOMINMAX 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -3109,7 +3109,7 @@ void CenterDlgInParent(HWND hDlg)
   else
     y = rcParent.top + 60;
 
-  SetWindowPos(hDlg, NULL, max(xMin, min(xMax, x)), max(yMin, min(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+  SetWindowPos(hDlg, NULL, max_i(xMin, min_i(xMax, x)), max_i(yMin, min_i(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
   //SnapToDefaultButton(hDlg);
 }
@@ -3172,7 +3172,7 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
   x = rcParent.left + xDlg;
   y = rcParent.top + yDlg;
 
-  SetWindowPos(hDlg, NULL, max(xMin, min(xMax, x)), max(yMin, min(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+  SetWindowPos(hDlg, NULL, max_i(xMin, min_i(xMax, x)), max_i(yMin, min_i(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
 
 
@@ -3429,7 +3429,7 @@ int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButton
   TBBUTTON tbb;
 
   StringCchCopy(tchButtons, COUNTOF(tchButtons), L"");
-  c = min(50, (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
+  c = min_i(50, (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
 
   for (i = 0; i < c; i++) {
     SendMessage(hwnd, TB_GETBUTTON, (WPARAM)i, (LPARAM)&tbb);

@@ -24,6 +24,7 @@
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
+#define NOMINMAX 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -428,7 +429,7 @@ void ObserveNotifyChangeEvent()
   if (CheckNotifyChangeEvent()) {
       UpdateToolbar();
       UpdateStatusbar(false);
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
   }
 }
 
@@ -996,7 +997,7 @@ static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
   GetMonitorWorkArea(&rcMon);
   pWinInfo->y = rcMon.top;
   pWinInfo->cy = rcMon.bottom - rcMon.top;
-  pWinInfo->cx = (rcMon.right - rcMon.left) / 2; //min(rcMon.right - rcMon.left - 32, g_WinInfo.cy);
+  pWinInfo->cx = (rcMon.right - rcMon.left) / 2; //min_l(rcMon.right - rcMon.left - 32, g_WinInfo.cy);
   pWinInfo->x = (g_flagDefaultPos == 3) ? rcMon.left : rcMon.right - g_WinInfo.cx;
 
   FitIntoMonitorWorkArea(&rcMon, pWinInfo, false);
@@ -1152,7 +1153,6 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
             Style_SetLexerFromFile(g_hwndEdit,g_wchCurFile);
 
           _SetDocumentModified(true);
-          UpdateLineNumberWidth();
 
           // check for temp file and delete
           if (flagIsElevated && PathFileExists(g_szTmpFilePath)) {
@@ -1305,7 +1305,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 
   UpdateToolbar();
   UpdateStatusbar(false);
-  UpdateLineNumberWidth();
+  UpdateMarginWidth();
 
   // print file immediately and quit
   if (g_flagPrintFileAndLeave)
@@ -1422,7 +1422,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // update Scintilla colors
     case WM_SYSCOLORCHANGE:
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       MarkAllOccurrences(0, true);
       UpdateVisibleUrlHotspot(0);
       return DefWindowProc(hwnd,umsg,wParam,lParam);
@@ -1736,7 +1736,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   //SciInitThemes(hwndEditCtrl);
 
-  UpdateLineNumberWidth();
+  UpdateMarginWidth();
 }
 
 
@@ -1865,10 +1865,10 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   Style_SetDefaultLexer(g_hwndEdit);
 
-  UpdateLineNumberWidth();
+  UpdateMarginWidth();
   ObserveNotifyChangeEvent();
 
-  return 0LL;
+  return 0;
 }
 
 
@@ -2176,9 +2176,9 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UpdateUI();
   UpdateToolbar();
   UpdateStatusbar(true);
-  UpdateLineNumberWidth();
+  UpdateMarginWidth();
   
-  return 0LL;
+  return 0;
 }
 
 
@@ -2250,9 +2250,9 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   UpdateUI();
   UpdateToolbar();
   UpdateStatusbar(true);
-  UpdateLineNumberWidth();
+  UpdateMarginWidth();
 
-  return 0LL;
+  return 0;
 }
 
 
@@ -2316,9 +2316,9 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   UpdateToolbar();
   UpdateStatusbar(false);
-  UpdateLineNumberWidth();
+  UpdateMarginWidth();
 
-  return 0LL;
+  return 0;
 }
 
 
@@ -2520,11 +2520,11 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     UpdateToolbar();
     UpdateStatusbar(false);
-    UpdateLineNumberWidth();
+    UpdateMarginWidth();
 
   }
 
-  return 0LL;
+  return 0;
 }
 
 //=============================================================================
@@ -3480,7 +3480,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _END_UNDO_ACTION_;
         UpdateToolbar();
         UpdateStatusbar(false);
-        UpdateLineNumberWidth();
+        UpdateMarginWidth();
       }
       break;
 
@@ -3495,7 +3495,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _END_UNDO_ACTION_;
         UpdateToolbar();
         UpdateStatusbar(false);
-        UpdateLineNumberWidth();
+        UpdateMarginWidth();
       }
       break;
 
@@ -4385,10 +4385,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SciCall_MarkerDelete(iLine, MARKER_NP3_BOOKMARK);
         }
         else {
-          Style_SetBookmark(g_hwndEdit, g_bShowSelectionMargin);
           // set
           SciCall_MarkerAdd(iLine, MARKER_NP3_BOOKMARK);
-          UpdateLineNumberWidth();
+          UpdateMarginWidth();
         }
         break;
       }
@@ -4573,7 +4572,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Style_SelectLexerDlg(g_hwndEdit);
       UpdateToolbar();
       UpdateStatusbar(false);
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       break;
 
 
@@ -4581,7 +4580,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Style_ToggleUse2ndDefault(g_hwndEdit);
       UpdateToolbar();
       UpdateStatusbar(false);
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       break;
 
 
@@ -4595,7 +4594,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       PostMessage(g_hwndDlgCustomizeSchemes, WM_COMMAND, MAKELONG(IDC_SETCURLEXERTV, 1), 0);
       UpdateToolbar();
       UpdateStatusbar(false);
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       break;
 
 
@@ -4603,14 +4602,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (!IsWindow(g_hwndDlgCustomizeSchemes))
         Style_SetDefaultFont(g_hwndEdit, true);
       UpdateToolbar();
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       break;
 
     case IDM_VIEW_CURRENTSCHEME:
       if (!IsWindow(g_hwndDlgCustomizeSchemes))
         Style_SetDefaultFont(g_hwndEdit, false);
       UpdateToolbar();
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       break;
 
 
@@ -4706,14 +4705,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_LINENUMBERS:
       g_bShowLineNumbers = (g_bShowLineNumbers) ? false : true;
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       break;
 
 
     case IDM_VIEW_MARGIN:
       g_bShowSelectionMargin = (g_bShowSelectionMargin) ? false : true;
-      Style_SetBookmark(g_hwndEdit, g_bShowSelectionMargin);
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
@@ -4733,7 +4731,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
-      g_iMarkOccurrences = (g_iMarkOccurrences == 0) ? max(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
+      g_iMarkOccurrences = (g_iMarkOccurrences == 0) ? max_i(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
       MarkAllOccurrences(0, true);
       EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
       break;
@@ -4840,7 +4838,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ZOOMIN:
       {
         SciCall_ZoomIn();
-        UpdateLineNumberWidth();
+        UpdateMarginWidth();
         EditShowZoomCallTip(g_hwndEdit);
       }
       break;
@@ -4848,7 +4846,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_ZOOMOUT:
       {
         SciCall_ZoomOut();
-        UpdateLineNumberWidth();
+        UpdateMarginWidth();
         EditShowZoomCallTip(g_hwndEdit);
       }
       break;
@@ -4856,7 +4854,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_RESETZOOM:
       {
         SciCall_SetZoom(100);
-        UpdateLineNumberWidth();
+        UpdateMarginWidth();
         EditShowZoomCallTip(g_hwndEdit);
       }
       break;
@@ -5339,7 +5337,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Style_SetDefaultLexer(g_hwndEdit);
       UpdateToolbar();
       UpdateStatusbar(false);
-      UpdateLineNumberWidth();
+      UpdateMarginWidth();
       break;
 
 
@@ -5347,7 +5345,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  Style_SetHTMLLexer(g_hwndEdit);
     //  UpdateToolbar();
     //  UpdateStatusbar(false);
-    //  UpdateLineNumberWidth();
+    //  UpdateMarginWidth();
     //  break;
 
 
@@ -5355,7 +5353,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  Style_SetXMLLexer(g_hwndEdit);
     //  UpdateToolbar();
     //  UpdateStatusbar(false);
-    //  UpdateLineNumberWidth();
+    //  UpdateMarginWidth();
     //  break;
 
 
@@ -6060,7 +6058,7 @@ static void __fastcall _HandleAutoCloseTags()
   {
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocPos const iHelper = iCurPos - maxSearchBackward;
-    DocPos const iStartPos = max(0, iHelper);
+    DocPos const iStartPos = max_p(0, iHelper);
     DocPos const iSize = iCurPos - iStartPos;
 
     if (iSize >= 3)
@@ -6248,7 +6246,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, true);
             }
             if (scn->linesAdded != 0) {
-              UpdateLineNumberWidth();
+              UpdateMarginWidth();
             }
             _SetDocumentModified(true);
             UpdateToolbar();
@@ -6404,7 +6402,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
         case SCN_ZOOM:
-          UpdateLineNumberWidth();
+          UpdateMarginWidth();
           break;
 
         case SCN_URIDROPPED: 
@@ -6869,16 +6867,16 @@ void LoadSettings()
     iPrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
     pagesetupMargin.left = IniSectionGetInt(pIniSection, L"PrintMarginLeft", -1);
-    pagesetupMargin.left = max(pagesetupMargin.left, -1);
+    pagesetupMargin.left = max_l(pagesetupMargin.left, -1);
 
     pagesetupMargin.top = IniSectionGetInt(pIniSection, L"PrintMarginTop", -1);
-    pagesetupMargin.top = max(pagesetupMargin.top, -1);
+    pagesetupMargin.top = max_l(pagesetupMargin.top, -1);
 
     pagesetupMargin.right = IniSectionGetInt(pIniSection, L"PrintMarginRight", -1);
-    pagesetupMargin.right = max(pagesetupMargin.right, -1);
+    pagesetupMargin.right = max_l(pagesetupMargin.right, -1);
 
     pagesetupMargin.bottom = IniSectionGetInt(pIniSection, L"PrintMarginBottom", -1);
-    pagesetupMargin.bottom = max(pagesetupMargin.bottom, -1);
+    pagesetupMargin.bottom = max_l(pagesetupMargin.bottom, -1);
 
     bSaveBeforeRunningTools = IniSectionGetBool(pIniSection, L"SaveBeforeRunningTools", false);
 
@@ -6907,34 +6905,34 @@ void LoadSettings()
     bShowStatusbar = IniSectionGetBool(pIniSection, L"ShowStatusbar", true);
 
     cxEncodingDlg = IniSectionGetInt(pIniSection, L"EncodingDlgSizeX", 256);
-    cxEncodingDlg = max(cxEncodingDlg, 0);
+    cxEncodingDlg = max_i(cxEncodingDlg, 0);
 
     cyEncodingDlg = IniSectionGetInt(pIniSection, L"EncodingDlgSizeY", 262);
-    cyEncodingDlg = max(cyEncodingDlg, 0);
+    cyEncodingDlg = max_i(cyEncodingDlg, 0);
 
     cxRecodeDlg = IniSectionGetInt(pIniSection, L"RecodeDlgSizeX", 256);
-    cxRecodeDlg = max(cxRecodeDlg, 0);
+    cxRecodeDlg = max_i(cxRecodeDlg, 0);
 
     cyRecodeDlg = IniSectionGetInt(pIniSection, L"RecodeDlgSizeY", 262);
-    cyRecodeDlg = max(cyRecodeDlg, 0);
+    cyRecodeDlg = max_i(cyRecodeDlg, 0);
 
     cxFileMRUDlg = IniSectionGetInt(pIniSection, L"FileMRUDlgSizeX", 412);
-    cxFileMRUDlg = max(cxFileMRUDlg, 0);
+    cxFileMRUDlg = max_i(cxFileMRUDlg, 0);
 
     cyFileMRUDlg = IniSectionGetInt(pIniSection, L"FileMRUDlgSizeY", 376);
-    cyFileMRUDlg = max(cyFileMRUDlg, 0);
+    cyFileMRUDlg = max_i(cyFileMRUDlg, 0);
 
     cxOpenWithDlg = IniSectionGetInt(pIniSection, L"OpenWithDlgSizeX", 384);
-    cxOpenWithDlg = max(cxOpenWithDlg, 0);
+    cxOpenWithDlg = max_i(cxOpenWithDlg, 0);
 
     cyOpenWithDlg = IniSectionGetInt(pIniSection, L"OpenWithDlgSizeY", 386);
-    cyOpenWithDlg = max(cyOpenWithDlg, 0);
+    cyOpenWithDlg = max_i(cyOpenWithDlg, 0);
 
     cxFavoritesDlg = IniSectionGetInt(pIniSection, L"FavoritesDlgSizeX", 334);
-    cxFavoritesDlg = max(cxFavoritesDlg, 0);
+    cxFavoritesDlg = max_i(cxFavoritesDlg, 0);
 
     cyFavoritesDlg = IniSectionGetInt(pIniSection, L"FavoritesDlgSizeY", 316);
-    cyFavoritesDlg = max(cyFavoritesDlg, 0);
+    cyFavoritesDlg = max_i(cyFavoritesDlg, 0);
 
     xFindReplaceDlg = IniSectionGetInt(pIniSection, L"FindReplaceDlgPosX", 0);
     yFindReplaceDlg = IniSectionGetInt(pIniSection, L"FindReplaceDlgPosY", 0);
@@ -8741,10 +8739,10 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
 //=============================================================================
 //
-//  UpdateLineNumberWidth()
+//  UpdateMarginWidth()
 //
 //
-void UpdateLineNumberWidth()
+void UpdateMarginWidth()
 {
   if (g_bShowLineNumbers)
   {
@@ -9169,7 +9167,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
     UpdateToolbar();
     UpdateStatusbar(true);
-    UpdateLineNumberWidth();
+    UpdateMarginWidth();
 
     // Terminate file watching
     if (g_bResetFileWatching) {
@@ -9334,7 +9332,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     _SetDocumentModified(false);
     UpdateToolbar();
     UpdateStatusbar(true);
-    UpdateLineNumberWidth();
+    UpdateMarginWidth();
     UpdateVisibleUrlHotspot(0);
 
     // consistent settings file handling (if loaded in editor)
@@ -9512,7 +9510,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
           Style_SetLexerFromFile(g_hwndEdit,g_wchCurFile);
           UpdateToolbar();
           UpdateStatusbar(false);
-          UpdateLineNumberWidth();
+          UpdateMarginWidth();
         }
         else {
           StringCchCopy(g_tchLastSaveCopyDir,COUNTOF(g_tchLastSaveCopyDir),tchFile);
@@ -10160,7 +10158,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* const pWinInfo, bool bFullWorkAr
 
   UpdateToolbar();
   UpdateStatusbar(true);
-  UpdateLineNumberWidth();
+  UpdateMarginWidth();
 }
 
 
