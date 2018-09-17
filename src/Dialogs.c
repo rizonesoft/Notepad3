@@ -2623,15 +2623,25 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
 //
 //  GetMonitorInfoFromRect()
 //
-static bool __fastcall GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
+bool GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
 {
+  bool result = false;
   if (hMonitorInfo) {
     HMONITOR const hMonitor = MonitorFromRect(rc, MONITOR_DEFAULTTONEAREST);
     ZeroMemory(hMonitorInfo, sizeof(MONITORINFO));
     hMonitorInfo->cbSize = sizeof(MONITORINFO);
-    return GetMonitorInfo(hMonitor, hMonitorInfo);
+    if (!GetMonitorInfo(hMonitor, hMonitorInfo)) {
+      RECT _rc = { 0, 0, 0, 0 };
+      if (SystemParametersInfo(SPI_GETWORKAREA, 0, &_rc, 0) != 0) {
+        hMonitorInfo->rcWork = _rc;
+        SetRect(&(hMonitorInfo->rcMonitor), 0, 0, _rc.right, _rc.bottom);
+        result = true;
+      }
+    }
+    else
+      result = true;
   }
-  return false;
+  return result;
 }
 // ----------------------------------------------------------------------------
 
@@ -2678,28 +2688,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 
   return wi;
 }
-// ----------------------------------------------------------------------------
 
-
-//=============================================================================
-//
-//  GetMonitorWorkArea()
-//
-void GetMonitorWorkArea(RECT* pRect)
-{
-  MONITORINFO mi;
-  if (GetMonitorInfoFromRect(pRect, &mi)) {
-    SetRect(pRect, mi.rcWork.left, mi.rcWork.top, mi.rcWork.right, mi.rcWork.bottom);
-  }
-  else {
-    RECT rc = { 0, 0, 0, 0 };
-    if (SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0) != 0) {
-      SetRect(pRect, rc.left, rc.top, rc.right, rc.bottom);
-    }
-    else
-      SetRectEmpty(pRect);
-  }
-}
 
 
 //=============================================================================

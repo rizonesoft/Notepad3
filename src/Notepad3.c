@@ -986,6 +986,7 @@ void EndWaitCursor()
 }
 
 
+
 //=============================================================================
 //
 //  _InitWindowPosition()
@@ -993,69 +994,74 @@ void EndWaitCursor()
 //
 static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
 {
-  RECT rcMon = RectFromWinInfo(pWinInfo);
-  GetMonitorWorkArea(&rcMon);
-  pWinInfo->y = rcMon.top;
-  pWinInfo->cy = rcMon.bottom - rcMon.top;
-  pWinInfo->cx = (rcMon.right - rcMon.left) / 2; //min_l(rcMon.right - rcMon.left - 32, g_WinInfo.cy);
-  pWinInfo->x = (g_flagDefaultPos == 3) ? rcMon.left : rcMon.right - g_WinInfo.cx;
+  MONITORINFO mi;
+  RECT const rc = RectFromWinInfo(pWinInfo);
+  GetMonitorInfoFromRect(&rc, &mi);
 
-  FitIntoMonitorWorkArea(&rcMon, pWinInfo, false);
+  pWinInfo->y = mi.rcMonitor.top;
+  pWinInfo->cy = mi.rcWork.bottom - mi.rcWork.top;
+  pWinInfo->cx = (mi.rcWork.right - mi.rcWork.left) / 2;
+  pWinInfo->x = (g_flagDefaultPos == 3) ? mi.rcMonitor.left : pWinInfo->cx;
 }
 // ----------------------------------------------------------------------------
 
 
+
 static void __fastcall _InitWindowPosition()
 {
-  if (g_flagDefaultPos >= 4) 
+  if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
   {
-    RECT rcMon = RectFromWinInfo(&g_WinInfo);
-    GetMonitorWorkArea(&rcMon);
+    _InitDefaultWndPos(&g_WinInfo);
+  }
+  else if (g_flagDefaultPos >= 4)
+  {
+    MONITORINFO mi;
+    RECT const rc = RectFromWinInfo(&g_WinInfo);
+    GetMonitorInfoFromRect(&rc, &mi);
 
-    WININFO wiWorkArea = INIT_WININFO;
-    FitIntoMonitorWorkArea(&rcMon, &wiWorkArea, true); // get Monitor and Work Area 
-    RECT const rc = RectFromWinInfo(&wiWorkArea); // use Work Area as RECT
+    int const width = (mi.rcWork.right - mi.rcWork.left);
+    int const height = (mi.rcWork.bottom - mi.rcWork.top);
 
     if (g_flagDefaultPos & 8)
-      g_WinInfo.x = (rc.right - rc.left) / 2;
+      g_WinInfo.x = mi.rcMonitor.left + (width >> 1);
     else
-      g_WinInfo.x = rc.left;
-    g_WinInfo.cx = rc.right - rc.left;
+      g_WinInfo.x = mi.rcMonitor.left;
+
     if (g_flagDefaultPos & (4 | 8))
-      g_WinInfo.cx /= 2;
+      g_WinInfo.cx = (width >> 1);
+    else 
+      g_WinInfo.cx = width;
+
     if (g_flagDefaultPos & 32)
-      g_WinInfo.y = (rc.bottom - rc.top) / 2;
+      g_WinInfo.y = mi.rcMonitor.top + (height >> 1);
     else
-      g_WinInfo.y = rc.top;
-    g_WinInfo.cy = rc.bottom - rc.top;
+      g_WinInfo.y = mi.rcMonitor.top;
+
     if (g_flagDefaultPos & (16 | 32))
-      g_WinInfo.cy /= 2;
+      g_WinInfo.cy = (height >> 1);
+    else
+      g_WinInfo.cy = height;
+
     if (g_flagDefaultPos & 64) {
-      g_WinInfo.x = rc.left;
-      g_WinInfo.y = rc.top;
-      g_WinInfo.cx = rc.right - rc.left;
-      g_WinInfo.cy = rc.bottom - rc.top;
+      g_WinInfo.x = mi.rcMonitor.left;
+      g_WinInfo.y = mi.rcMonitor.top;
+      g_WinInfo.cx = width;
+      g_WinInfo.cy = height;
     }
     if (g_flagDefaultPos & 128) {
-      g_WinInfo.x += (g_flagDefaultPos & 8) ? 4 : 8;
-      g_WinInfo.cx -= (g_flagDefaultPos & (4 | 8)) ? 12 : 16;
-      g_WinInfo.y += (g_flagDefaultPos & 32) ? 4 : 8;
-      g_WinInfo.cy -= (g_flagDefaultPos & (16 | 32)) ? 12 : 16;
+      _InitDefaultWndPos(&g_WinInfo);
       g_WinInfo.max = 1;
       g_WinInfo.zoom = 100;
     }
   }
-  else if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
-  {
-    _InitDefaultWndPos(&g_WinInfo);
-  }
   else { // restore window, move upper left corner to Work Area 
     
-    RECT rcMon = RectFromWinInfo(&g_WinInfo);
-    GetMonitorWorkArea(&rcMon);
+    MONITORINFO mi;
+    RECT const rc = RectFromWinInfo(&g_WinInfo);
+    GetMonitorInfoFromRect(&rc, &mi);
 
-    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = 32; // really small
-    FitIntoMonitorWorkArea(&rcMon, &wiWin, false);
+    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = 16; // really small
+    FitIntoMonitorWorkArea(&(mi.rcWork), &wiWin, false);
 
     g_WinInfo.x = wiWin.x;
     g_WinInfo.y = wiWin.y;
