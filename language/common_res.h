@@ -326,6 +326,7 @@
 #define CMD_VK_INSERT                   20049
 #define CMD_FULLSCRWINPOS               20050
 #define CMD_DEFAULTWINPOS               20051
+#define CMD_SAVEASDEFWINPOS             20052
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001

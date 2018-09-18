@@ -2755,7 +2755,12 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* const pWinInfo
     if (pWinInfo->max) { wndpl.flags &= WPF_RESTORETOMAXIMIZED; }
   }
   else {
-    RECT rc; GetWindowRect(hwnd, &rc);
+    RECT rc; 
+    if (hwnd)
+      GetWindowRect(hwnd, &rc);
+    else
+      GetWindowRect(GetDesktopWindow(), &rc);
+
     FitIntoMonitorWorkArea(&rc, &winfo, true);
     // TODO: maximize ?
   }

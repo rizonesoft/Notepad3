@@ -167,8 +167,9 @@ static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-static  WININFO g_WinInfo = INIT_WININFO; // <= (g_flagDefaultPos == 1)
-static  int     g_WinCurrentWidth = 0;
+static WININFO g_WinInfo = INIT_WININFO;
+static WININFO g_DefWinInfo = INIT_WININFO;
+static int     g_WinCurrentWidth = 0;
 
 int       iPathNameFormat;
 bool      g_bWordWrap;
@@ -554,7 +555,7 @@ static int g_flagRelativeFileMRU    = 0;
 static int g_flagPortableMyDocs     = 0;
 static int g_flagToolbarLook        = 0;
 static int g_flagPosParam           = 0;
-static int g_flagDefaultPos         = 0;
+static int g_flagWindowPos          = 0;
 static int g_flagNewFromClipboard   = 0;
 static int g_flagPasteBoard         = 0;
 static int g_flagSetEncoding        = 0;
@@ -986,89 +987,99 @@ void EndWaitCursor()
 }
 
 
-
 //=============================================================================
 //
 //  _InitWindowPosition()
 //
 //
-static void __fastcall _InitDefaultWndPos(WININFO* pWinInfo)
+static WININFO __fastcall _InitDefaultWndPos(const int flagsPos)
 {
+  RECT rc;
+  GetWindowRect(GetDesktopWindow(), &rc);
   MONITORINFO mi;
-  RECT const rc = RectFromWinInfo(pWinInfo);
   GetMonitorInfoFromRect(&rc, &mi);
-
-  pWinInfo->y = mi.rcMonitor.top;
-  pWinInfo->cy = mi.rcWork.bottom - mi.rcWork.top;
-  pWinInfo->cx = (mi.rcWork.right - mi.rcWork.left) / 2;
-  pWinInfo->x = (g_flagDefaultPos == 3) ? mi.rcMonitor.left : pWinInfo->cx;
+  WININFO winfo = INIT_WININFO;
+  winfo.y = mi.rcMonitor.top;
+  winfo.cy = mi.rcWork.bottom - mi.rcWork.top;
+  winfo.cx = (mi.rcWork.right - mi.rcWork.left) / 2;
+  winfo.x = (flagsPos == 3) ? mi.rcMonitor.left : winfo.cx;
+  winfo.max = 0;
+  winfo.zoom = 100;
+  return winfo;
 }
 // ----------------------------------------------------------------------------
 
-
-
-static void __fastcall _InitWindowPosition()
+static void __fastcall _InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
 {
-  if (g_flagDefaultPos == 2 || g_flagDefaultPos == 3) // NP3 default window position
-  {
-    _InitDefaultWndPos(&g_WinInfo);
+  WININFO winfo = *pWinInfo;
+
+  if (flagsPos == 1) {
+    winfo.x = winfo.y = winfo.cx = winfo.cy = CW_USEDEFAULT;
+    winfo.max = false;
+    winfo.zoom = 100;
   }
-  else if (g_flagDefaultPos >= 4)
+  else if (flagsPos == 2)
   {
+    winfo = g_DefWinInfo; // NP3 default window position
+  }
+  else if (flagsPos == 3)
+  {
+    winfo = _InitDefaultWndPos(flagsPos);
+  }
+  else if (flagsPos >= 4)
+  {
+    RECT rc;
+    GetWindowRect(GetDesktopWindow(), &rc);
     MONITORINFO mi;
-    RECT const rc = RectFromWinInfo(&g_WinInfo);
     GetMonitorInfoFromRect(&rc, &mi);
 
     int const width = (mi.rcWork.right - mi.rcWork.left);
     int const height = (mi.rcWork.bottom - mi.rcWork.top);
 
-    if (g_flagDefaultPos & 8)
-      g_WinInfo.x = mi.rcMonitor.left + (width >> 1);
+    if (flagsPos & 8)
+      winfo.x = mi.rcMonitor.left + (width >> 1);
     else
-      g_WinInfo.x = mi.rcMonitor.left;
+      winfo.x = mi.rcMonitor.left;
 
-    if (g_flagDefaultPos & (4 | 8))
-      g_WinInfo.cx = (width >> 1);
+    if (flagsPos & (4 | 8))
+      winfo.cx = (width >> 1);
     else 
-      g_WinInfo.cx = width;
+      winfo.cx = width;
 
-    if (g_flagDefaultPos & 32)
-      g_WinInfo.y = mi.rcMonitor.top + (height >> 1);
+    if (flagsPos & 32)
+      winfo.y = mi.rcMonitor.top + (height >> 1);
     else
-      g_WinInfo.y = mi.rcMonitor.top;
+      winfo.y = mi.rcMonitor.top;
 
-    if (g_flagDefaultPos & (16 | 32))
-      g_WinInfo.cy = (height >> 1);
+    if (flagsPos & (16 | 32))
+      winfo.cy = (height >> 1);
     else
-      g_WinInfo.cy = height;
+      winfo.cy = height;
 
-    if (g_flagDefaultPos & 64) {
-      g_WinInfo.x = mi.rcMonitor.left;
-      g_WinInfo.y = mi.rcMonitor.top;
-      g_WinInfo.cx = width;
-      g_WinInfo.cy = height;
+    if (flagsPos & 64) {
+      winfo.x = mi.rcMonitor.left;
+      winfo.y = mi.rcMonitor.top;
+      winfo.cx = width;
+      winfo.cy = height;
     }
-    if (g_flagDefaultPos & 128) {
-      _InitDefaultWndPos(&g_WinInfo);
-      g_WinInfo.max = 1;
-      g_WinInfo.zoom = 100;
+    if (flagsPos & 128) {
+      winfo = g_DefWinInfo;
+      winfo.max = true;
+      winfo.zoom = 100;
     }
   }
   else { // restore window, move upper left corner to Work Area 
     
     MONITORINFO mi;
-    RECT const rc = RectFromWinInfo(&g_WinInfo);
+    RECT const rc = RectFromWinInfo(&winfo);
     GetMonitorInfoFromRect(&rc, &mi);
-
-    WININFO wiWin = g_WinInfo; wiWin.cx = wiWin.cy = 16; // really small
-    FitIntoMonitorWorkArea(&(mi.rcWork), &wiWin, false);
-
-    g_WinInfo.x = wiWin.x;
-    g_WinInfo.y = wiWin.y;
-
+    WININFO wi = winfo; wi.cx = wi.cy = 16; // really small
+    FitIntoMonitorWorkArea(&(mi.rcWork), &wi, false);
+    winfo.x = wi.x;
+    winfo.y = wi.y;
   }
 
-  g_WinCurrentWidth = g_WinInfo.cx;
+  *pWinInfo = winfo;
 }
 
 
@@ -1081,8 +1092,9 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
  
-  _InitWindowPosition();
-  
+  _InitWindowPosition(&g_WinInfo, g_flagWindowPos);
+  g_WinCurrentWidth = g_WinInfo.cx;
+
   // get monitor coordinates from g_WinInfo
   WININFO srcninfo = g_WinInfo;
   WinInfoToScreen(&srcninfo);
@@ -4945,7 +4957,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         IniSetInt(L"Window",tchPosY,wi.y);
         IniSetInt(L"Window",tchSizeX,wi.cx);
         IniSetInt(L"Window",tchSizeY,wi.cy);
-        IniSetInt(L"Window",tchMaximized,wi.max);
+        IniSetBool(L"Window",tchMaximized,wi.max);
         IniSetInt(L"Window", tchZoom, wi.zoom);
 
         InfoBoxLng(0,L"MsgStickyWinPos",IDS_MUI_STICKYWINPOS);
@@ -5598,19 +5610,23 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_FULLSCRWINPOS:
       {
-        WININFO winfo = GetMyWindowPlacement(g_hwndMain, NULL);
-        SnapToWinInfoPos(hwnd, &winfo, true);
+        WININFO const wi = GetMyWindowPlacement(g_hwndMain, NULL);
+        SnapToWinInfoPos(hwnd, &wi, true);
       }
       break;
 
     case CMD_DEFAULTWINPOS:
-      {
-        WININFO winfo = GetMyWindowPlacement(g_hwndMain, NULL);
-        _InitDefaultWndPos(&winfo);
-        SnapToWinInfoPos(hwnd, &winfo, false);
-      }
+      SnapToWinInfoPos(hwnd, &g_DefWinInfo, false);
       break;
 
+    case CMD_SAVEASDEFWINPOS:
+      {
+        WININFO const wi = GetMyWindowPlacement(g_hwndMain, NULL);
+        WCHAR tchDefWinPos[80];
+        StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), L"%i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
+        IniSetString(L"Settings2", L"DefaultWindowPosition", tchDefWinPos);
+      }
+      break;
 
     case CMD_OPENINIFILE:
       if (StringCchLenW(g_wchIniFile,COUNTOF(g_wchIniFile))) {
@@ -6639,11 +6655,12 @@ void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
 //
 void LoadSettings()
 {
-  WCHAR *pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER);
+  int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
+
+  WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
+  
   if (pIniSection) 
   {
-    int const cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
-
     g_iSettingsVersion = IniGetInt(L"Settings", L"SettingsVersion", CFG_VER_NONE);
 
     g_bEnableSaveSettings = true; // false: if settings-file is loaded in editor
@@ -6717,6 +6734,22 @@ void LoadSettings()
     iCurrentLineVerticalSlop = clampi(IniSectionGetInt(pIniSection, L"CurrentLineVerticalSlop", 5), 0, 25);
 
     IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
+
+    WCHAR tchDefWinPos[80];
+    IniSectionGetString(pIniSection, L"DefaultWindowPosition", L"", tchDefWinPos, COUNTOF(tchDefWinPos));
+    int bMaxi = 0;
+    int const itok = swscanf_s(tchDefWinPos, L"%i,%i,%i,%i,%i",
+                               &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
+    if (itok == 4 || itok == 5) { // scan successful
+      if (g_DefWinInfo.cx < 1) g_DefWinInfo.cx = CW_USEDEFAULT;
+      if (g_DefWinInfo.cy < 1) g_DefWinInfo.cy = CW_USEDEFAULT;
+      if (bMaxi) g_DefWinInfo.max = true;
+      if (itok == 4) g_DefWinInfo.max = false;
+      _InitWindowPosition(&g_DefWinInfo, 0);
+    }
+    else {
+      g_DefWinInfo = _InitDefaultWndPos(2);
+    }
 
     // --------------------------------------------------------------------------
     LoadIniSection(L"Settings", pIniSection, cchIniSection);
@@ -7005,22 +7038,23 @@ void LoadSettings()
       StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
       StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-      g_WinInfo.x = IniSectionGetInt(pIniSection, tchPosX, (INT_MAX >> 1));
-      g_WinInfo.y = IniSectionGetInt(pIniSection, tchPosY, (INT_MAX >> 1));
-      g_WinInfo.cx = IniSectionGetInt(pIniSection, tchSizeX, (INT_MAX >> 1));
-      g_WinInfo.cy = IniSectionGetInt(pIniSection, tchSizeY, (INT_MAX >> 1));
-      g_WinInfo.max = IniSectionGetInt(pIniSection, tchMaximized, 0);
+      g_WinInfo.x = IniSectionGetInt(pIniSection, tchPosX, CW_USEDEFAULT);
+      g_WinInfo.y = IniSectionGetInt(pIniSection, tchPosY, CW_USEDEFAULT);
+      g_WinInfo.cx = IniSectionGetInt(pIniSection, tchSizeX, CW_USEDEFAULT);
+      g_WinInfo.cy = IniSectionGetInt(pIniSection, tchSizeY, CW_USEDEFAULT);
+      g_WinInfo.max = IniSectionGetBool(pIniSection, tchMaximized, false);
       g_WinInfo.max = clampi(g_WinInfo.max, 0, 1);
       g_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, (g_iSettingsVersion < CFG_VER_0001) ? 0 : 100);
       if (g_iSettingsVersion < CFG_VER_0001) { g_WinInfo.zoom = (g_WinInfo.zoom + 10) * 10; }
       g_WinInfo.zoom = clampi(g_WinInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
-      if (((g_WinInfo.x  & ~CW_USEDEFAULT) == (INT_MAX >> 1)) ||
-          ((g_WinInfo.y  & ~CW_USEDEFAULT) == (INT_MAX >> 1)) ||
-          ((g_WinInfo.cx & ~CW_USEDEFAULT) == (INT_MAX >> 1)) ||
-          ((g_WinInfo.cy & ~CW_USEDEFAULT) == (INT_MAX >> 1))) {
-        g_flagDefaultPos = 2; // std. default position (CmdLn: /pd)
+      if ((g_WinInfo.x == CW_USEDEFAULT) || (g_WinInfo.y == CW_USEDEFAULT) ||
+        (g_WinInfo.cx == CW_USEDEFAULT) || (g_WinInfo.cy == CW_USEDEFAULT)) 
+      {
+        g_flagWindowPos = 2; // std. default position (CmdLn: /pd)
       }
+      else
+        g_flagWindowPos = 0; // init to g_WinInfo
     }
 
     // ---  override by resolution specific settings  ---
@@ -7034,7 +7068,7 @@ void LoadSettings()
     g_iSciFontQuality = IniSectionGetInt(pIniSection, tchSciFontQuality, g_iSciFontQuality);
     g_iSciFontQuality = clampi(g_iSciFontQuality, 0, 3);
 
-    LocalFree(pIniSection);
+    FreeMem(pIniSection);
   }
 
   // define scintilla internal codepage
@@ -7069,10 +7103,8 @@ void LoadSettings()
 //
 //  SaveSettings()
 //
-//
-void SaveSettings(bool bSaveSettingsNow) {
-  WCHAR *pIniSection = NULL;
-
+void SaveSettings(bool bSaveSettingsNow) 
+{
   WCHAR wchTmp[MAX_PATH] = { L'\0' };
 
   if (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0) { return; }
@@ -7090,117 +7122,118 @@ void SaveSettings(bool bSaveSettingsNow) {
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
   BeginWaitCursor(tchMsg);
 
-  pIniSection = AllocMem(sizeof(WCHAR) * INISECTIONBUFCNT * HUGE_BUFFER, HEAP_ZERO_MEMORY);
-  //int cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
+  int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
+  WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
 
-  IniSectionSetInt(pIniSection, L"SettingsVersion", CFG_VER_CURRENT);
-  IniSectionSetBool(pIniSection, L"SaveSettings", g_bSaveSettings); 
-  IniSectionSetBool(pIniSection, L"SaveRecentFiles", g_bSaveRecentFiles);
-  IniSectionSetBool(pIniSection, L"PreserveCaretPos", g_bPreserveCaretPos);
-  IniSectionSetBool(pIniSection, L"SaveFindReplace", g_bSaveFindReplace);
-  IniSectionSetBool(pIniSection, L"CloseFind", g_efrData.bFindClose);
-  IniSectionSetBool(pIniSection, L"CloseReplace", g_efrData.bReplaceClose);
-  IniSectionSetBool(pIniSection, L"NoFindWrap", g_efrData.bNoFindWrap);
-  IniSectionSetBool(pIniSection, L"FindTransformBS", g_efrData.bTransformBS);
-  IniSectionSetBool(pIniSection, L"WildcardSearch", g_efrData.bWildcardSearch);
-  IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", g_efrData.bMarkOccurences);
-  IniSectionSetBool(pIniSection, L"HideNonMatchedLines", g_efrData.bHideNonMatchedLines);
-  IniSectionSetBool(pIniSection, L"RegexDotMatchesAll", g_efrData.bDotMatchAll);
-  IniSectionSetInt(pIniSection, L"efrData_fuFlags", g_efrData.fuFlags);
-  PathRelativeToApp(g_tchOpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, g_flagPortableMyDocs);
-  IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
-  PathRelativeToApp(g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, g_flagPortableMyDocs);
-  IniSectionSetString(pIniSection, L"Favorites", wchTmp);
-  IniSectionSetInt(pIniSection, L"PathNameFormat", iPathNameFormat);
-  IniSectionSetBool(pIniSection, L"WordWrap", bWordWrapG);
-  IniSectionSetInt(pIniSection, L"WordWrapMode", iWordWrapMode);
-  IniSectionSetInt(pIniSection, L"WordWrapIndent", iWordWrapIndent);
-  IniSectionSetInt(pIniSection, L"WordWrapSymbols", iWordWrapSymbols);
-  IniSectionSetBool(pIniSection, L"ShowWordWrapSymbols", bShowWordWrapSymbols);
-  IniSectionSetBool(pIniSection, L"MatchBraces", bMatchBraces);
-  IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
-  IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
-  IniSectionSetBool(pIniSection, L"HyperlinkHotspot", g_bHyperlinkHotspot);
-  IniSectionSetBool(pIniSection, L"ScrollPastEOF", bScrollPastEOF);
-  IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
-  IniSectionSetBool(pIniSection, L"AutoCompleteWords", g_bAutoCompleteWords);
-  IniSectionSetBool(pIniSection, L"AutoCLexerKeyWords", g_bAutoCLexerKeyWords);
-  IniSectionSetBool(pIniSection, L"AccelWordNavigation", g_bAccelWordNavigation);
-  IniSectionSetBool(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
-  IniSectionSetBool(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
-  IniSectionSetBool(pIniSection, L"TabIndents", bTabIndentsG);
-  IniSectionSetBool(pIniSection, L"BackspaceUnindents", bBackspaceUnindents);
-  IniSectionSetInt(pIniSection, L"TabWidth", iTabWidthG);
-  IniSectionSetInt(pIniSection, L"IndentWidth", iIndentWidthG);
-  IniSectionSetBool(pIniSection, L"MarkLongLines", g_bMarkLongLines);
-  IniSectionSetPos(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
-  IniSectionSetInt(pIniSection, L"LongLineMode", iLongLineMode);
-  IniSectionSetBool(pIniSection, L"ShowSelectionMargin", g_bShowSelectionMargin);
-  IniSectionSetBool(pIniSection, L"ShowLineNumbers", g_bShowLineNumbers);
-  IniSectionSetBool(pIniSection, L"ShowCodeFolding", g_bShowCodeFolding);
-  IniSectionSetInt(pIniSection, L"MarkOccurrences", g_iMarkOccurrences);
-  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", g_bMarkOccurrencesMatchVisible);
-  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", g_bMarkOccurrencesMatchCase);
-  IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", g_bMarkOccurrencesMatchWords);
-  IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", g_bMarkOccurrencesCurrentWord);
-  IniSectionSetBool(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
-  IniSectionSetBool(pIniSection, L"ViewEOLs", bViewEOLs);
-  IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(false, g_iDefaultNewFileEncoding));
-  IniSectionSetBool(pIniSection, L"UseDefaultForFileEncoding", bUseDefaultForFileEncoding);
-  IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
-  IniSectionSetBool(pIniSection, L"SkipANSICodePageDetection", bSkipANSICodePageDetection);
-  IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", bLoadASCIIasUTF8);
-  IniSectionSetBool(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
-  IniSectionSetBool(pIniSection, L"NoEncodingTags", bNoEncodingTags);
-  IniSectionSetInt(pIniSection, L"DefaultEOLMode", g_iDefaultEOLMode);
-  IniSectionSetBool(pIniSection, L"FixLineEndings", bFixLineEndings);
-  IniSectionSetBool(pIniSection, L"FixTrailingBlanks", bAutoStripBlanks);
-  IniSectionSetInt(pIniSection, L"PrintHeader", iPrintHeader);
-  IniSectionSetInt(pIniSection, L"PrintFooter", iPrintFooter);
-  IniSectionSetInt(pIniSection, L"PrintColorMode", iPrintColor);
-  IniSectionSetInt(pIniSection, L"PrintZoom", iPrintZoom);
-  IniSectionSetInt(pIniSection, L"PrintMarginLeft", pagesetupMargin.left);
-  IniSectionSetInt(pIniSection, L"PrintMarginTop", pagesetupMargin.top);
-  IniSectionSetInt(pIniSection, L"PrintMarginRight", pagesetupMargin.right);
-  IniSectionSetInt(pIniSection, L"PrintMarginBottom", pagesetupMargin.bottom);
-  IniSectionSetBool(pIniSection, L"SaveBeforeRunningTools", bSaveBeforeRunningTools);
-  IniSectionSetInt(pIniSection, L"FileWatchingMode", g_iFileWatchingMode);
-  IniSectionSetBool(pIniSection, L"ResetFileWatching", g_bResetFileWatching);
-  IniSectionSetInt(pIniSection, L"EscFunction", iEscFunction);
-  IniSectionSetBool(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
-  IniSectionSetBool(pIniSection, L"MinimizeToTray", bMinimizeToTray);
-  IniSectionSetBool(pIniSection, L"TransparentMode", g_bTransparentMode);
-  IniSectionSetInt(pIniSection, L"RenderingTechnology", g_iRenderingTechnology);
-  IniSectionSetInt(pIniSection, L"Bidirectional", g_iBidirectional);
-  ///~IniSectionSetInt(pIniSection, L"IMEInteraction", g_IMEInteraction);
-  IniSectionSetBool(pIniSection, L"ShowToolbar", bShowToolbar);
-  IniSectionSetBool(pIniSection, L"ShowStatusbar", bShowStatusbar);
-  IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
-  IniSectionSetInt(pIniSection, L"EncodingDlgSizeY", cyEncodingDlg);
-  IniSectionSetInt(pIniSection, L"RecodeDlgSizeX", cxRecodeDlg);
-  IniSectionSetInt(pIniSection, L"RecodeDlgSizeY", cyRecodeDlg);
-  IniSectionSetInt(pIniSection, L"FileMRUDlgSizeX", cxFileMRUDlg);
-  IniSectionSetInt(pIniSection, L"FileMRUDlgSizeY", cyFileMRUDlg);
-  IniSectionSetInt(pIniSection, L"OpenWithDlgSizeX", cxOpenWithDlg);
-  IniSectionSetInt(pIniSection, L"OpenWithDlgSizeY", cyOpenWithDlg);
-  IniSectionSetInt(pIniSection, L"FavoritesDlgSizeX", cxFavoritesDlg);
-  IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
-  IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
-  IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
-  IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosX", xCustomSchemesDlg);
-  IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosY", yCustomSchemesDlg);
+  if (pIniSection) {
+    IniSectionSetInt(pIniSection, L"SettingsVersion", CFG_VER_CURRENT);
+    IniSectionSetBool(pIniSection, L"SaveSettings", g_bSaveSettings);
+    IniSectionSetBool(pIniSection, L"SaveRecentFiles", g_bSaveRecentFiles);
+    IniSectionSetBool(pIniSection, L"PreserveCaretPos", g_bPreserveCaretPos);
+    IniSectionSetBool(pIniSection, L"SaveFindReplace", g_bSaveFindReplace);
+    IniSectionSetBool(pIniSection, L"CloseFind", g_efrData.bFindClose);
+    IniSectionSetBool(pIniSection, L"CloseReplace", g_efrData.bReplaceClose);
+    IniSectionSetBool(pIniSection, L"NoFindWrap", g_efrData.bNoFindWrap);
+    IniSectionSetBool(pIniSection, L"FindTransformBS", g_efrData.bTransformBS);
+    IniSectionSetBool(pIniSection, L"WildcardSearch", g_efrData.bWildcardSearch);
+    IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", g_efrData.bMarkOccurences);
+    IniSectionSetBool(pIniSection, L"HideNonMatchedLines", g_efrData.bHideNonMatchedLines);
+    IniSectionSetBool(pIniSection, L"RegexDotMatchesAll", g_efrData.bDotMatchAll);
+    IniSectionSetInt(pIniSection, L"efrData_fuFlags", g_efrData.fuFlags);
+    PathRelativeToApp(g_tchOpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, g_flagPortableMyDocs);
+    IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
+    PathRelativeToApp(g_tchFavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, g_flagPortableMyDocs);
+    IniSectionSetString(pIniSection, L"Favorites", wchTmp);
+    IniSectionSetInt(pIniSection, L"PathNameFormat", iPathNameFormat);
+    IniSectionSetBool(pIniSection, L"WordWrap", bWordWrapG);
+    IniSectionSetInt(pIniSection, L"WordWrapMode", iWordWrapMode);
+    IniSectionSetInt(pIniSection, L"WordWrapIndent", iWordWrapIndent);
+    IniSectionSetInt(pIniSection, L"WordWrapSymbols", iWordWrapSymbols);
+    IniSectionSetBool(pIniSection, L"ShowWordWrapSymbols", bShowWordWrapSymbols);
+    IniSectionSetBool(pIniSection, L"MatchBraces", bMatchBraces);
+    IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
+    IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
+    IniSectionSetBool(pIniSection, L"HyperlinkHotspot", g_bHyperlinkHotspot);
+    IniSectionSetBool(pIniSection, L"ScrollPastEOF", bScrollPastEOF);
+    IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
+    IniSectionSetBool(pIniSection, L"AutoCompleteWords", g_bAutoCompleteWords);
+    IniSectionSetBool(pIniSection, L"AutoCLexerKeyWords", g_bAutoCLexerKeyWords);
+    IniSectionSetBool(pIniSection, L"AccelWordNavigation", g_bAccelWordNavigation);
+    IniSectionSetBool(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
+    IniSectionSetBool(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
+    IniSectionSetBool(pIniSection, L"TabIndents", bTabIndentsG);
+    IniSectionSetBool(pIniSection, L"BackspaceUnindents", bBackspaceUnindents);
+    IniSectionSetInt(pIniSection, L"TabWidth", iTabWidthG);
+    IniSectionSetInt(pIniSection, L"IndentWidth", iIndentWidthG);
+    IniSectionSetBool(pIniSection, L"MarkLongLines", g_bMarkLongLines);
+    IniSectionSetPos(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
+    IniSectionSetInt(pIniSection, L"LongLineMode", iLongLineMode);
+    IniSectionSetBool(pIniSection, L"ShowSelectionMargin", g_bShowSelectionMargin);
+    IniSectionSetBool(pIniSection, L"ShowLineNumbers", g_bShowLineNumbers);
+    IniSectionSetBool(pIniSection, L"ShowCodeFolding", g_bShowCodeFolding);
+    IniSectionSetInt(pIniSection, L"MarkOccurrences", g_iMarkOccurrences);
+    IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", g_bMarkOccurrencesMatchVisible);
+    IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", g_bMarkOccurrencesMatchCase);
+    IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", g_bMarkOccurrencesMatchWords);
+    IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", g_bMarkOccurrencesCurrentWord);
+    IniSectionSetBool(pIniSection, L"ViewWhiteSpace", bViewWhiteSpace);
+    IniSectionSetBool(pIniSection, L"ViewEOLs", bViewEOLs);
+    IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(false, g_iDefaultNewFileEncoding));
+    IniSectionSetBool(pIniSection, L"UseDefaultForFileEncoding", bUseDefaultForFileEncoding);
+    IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
+    IniSectionSetBool(pIniSection, L"SkipANSICodePageDetection", bSkipANSICodePageDetection);
+    IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", bLoadASCIIasUTF8);
+    IniSectionSetBool(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
+    IniSectionSetBool(pIniSection, L"NoEncodingTags", bNoEncodingTags);
+    IniSectionSetInt(pIniSection, L"DefaultEOLMode", g_iDefaultEOLMode);
+    IniSectionSetBool(pIniSection, L"FixLineEndings", bFixLineEndings);
+    IniSectionSetBool(pIniSection, L"FixTrailingBlanks", bAutoStripBlanks);
+    IniSectionSetInt(pIniSection, L"PrintHeader", iPrintHeader);
+    IniSectionSetInt(pIniSection, L"PrintFooter", iPrintFooter);
+    IniSectionSetInt(pIniSection, L"PrintColorMode", iPrintColor);
+    IniSectionSetInt(pIniSection, L"PrintZoom", iPrintZoom);
+    IniSectionSetInt(pIniSection, L"PrintMarginLeft", pagesetupMargin.left);
+    IniSectionSetInt(pIniSection, L"PrintMarginTop", pagesetupMargin.top);
+    IniSectionSetInt(pIniSection, L"PrintMarginRight", pagesetupMargin.right);
+    IniSectionSetInt(pIniSection, L"PrintMarginBottom", pagesetupMargin.bottom);
+    IniSectionSetBool(pIniSection, L"SaveBeforeRunningTools", bSaveBeforeRunningTools);
+    IniSectionSetInt(pIniSection, L"FileWatchingMode", g_iFileWatchingMode);
+    IniSectionSetBool(pIniSection, L"ResetFileWatching", g_bResetFileWatching);
+    IniSectionSetInt(pIniSection, L"EscFunction", iEscFunction);
+    IniSectionSetBool(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
+    IniSectionSetBool(pIniSection, L"MinimizeToTray", bMinimizeToTray);
+    IniSectionSetBool(pIniSection, L"TransparentMode", g_bTransparentMode);
+    IniSectionSetInt(pIniSection, L"RenderingTechnology", g_iRenderingTechnology);
+    IniSectionSetInt(pIniSection, L"Bidirectional", g_iBidirectional);
+    ///~IniSectionSetInt(pIniSection, L"IMEInteraction", g_IMEInteraction);
+    IniSectionSetBool(pIniSection, L"ShowToolbar", bShowToolbar);
+    IniSectionSetBool(pIniSection, L"ShowStatusbar", bShowStatusbar);
+    IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
+    IniSectionSetInt(pIniSection, L"EncodingDlgSizeY", cyEncodingDlg);
+    IniSectionSetInt(pIniSection, L"RecodeDlgSizeX", cxRecodeDlg);
+    IniSectionSetInt(pIniSection, L"RecodeDlgSizeY", cyRecodeDlg);
+    IniSectionSetInt(pIniSection, L"FileMRUDlgSizeX", cxFileMRUDlg);
+    IniSectionSetInt(pIniSection, L"FileMRUDlgSizeY", cyFileMRUDlg);
+    IniSectionSetInt(pIniSection, L"OpenWithDlgSizeX", cxOpenWithDlg);
+    IniSectionSetInt(pIniSection, L"OpenWithDlgSizeY", cyOpenWithDlg);
+    IniSectionSetInt(pIniSection, L"FavoritesDlgSizeX", cxFavoritesDlg);
+    IniSectionSetInt(pIniSection, L"FavoritesDlgSizeY", cyFavoritesDlg);
+    IniSectionSetInt(pIniSection, L"FindReplaceDlgPosX", xFindReplaceDlg);
+    IniSectionSetInt(pIniSection, L"FindReplaceDlgPosY", yFindReplaceDlg);
+    IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosX", xCustomSchemesDlg);
+    IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosY", yCustomSchemesDlg);
 
-  Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
-  if (StringCchCompareX(g_tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { g_tchToolbarButtons[0] = L'\0'; }
-  IniSectionSetString(pIniSection, L"ToolbarButtons", g_tchToolbarButtons);
+    Toolbar_GetButtons(g_hwndToolbar, IDT_FILE_NEW, g_tchToolbarButtons, COUNTOF(g_tchToolbarButtons));
+    if (StringCchCompareX(g_tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { g_tchToolbarButtons[0] = L'\0'; }
+    IniSectionSetString(pIniSection, L"ToolbarButtons", g_tchToolbarButtons);
 
-  SaveIniSection(L"Settings", pIniSection);
-  FreeMem(pIniSection);
+    SaveIniSection(L"Settings", pIniSection);
 
-  
+    FreeMem(pIniSection);
+  }
+
   // Scintilla Styles
   Style_Save();
-
 
   /*
     SaveSettingsNow(): query Window Dimensions
@@ -7233,7 +7266,7 @@ void SaveSettings(bool bSaveSettingsNow) {
     IniSetInt(L"Window",tchPosY,g_WinInfo.y);
     IniSetInt(L"Window",tchSizeX,g_WinInfo.cx);
     IniSetInt(L"Window",tchSizeY,g_WinInfo.cy);
-    IniSetInt(L"Window",tchMaximized,g_WinInfo.max);
+    IniSetBool(L"Window",tchMaximized,g_WinInfo.max);
     IniSetInt(L"Window",tchZoom, g_WinInfo.zoom);
   }
 
@@ -7396,57 +7429,57 @@ void ParseCommandLine()
             }
             if (*(lp + 1) == L'0' || *CharUpper(lp + 1) == L'O') {
               g_flagPosParam = 1;
-              g_flagDefaultPos = 1;
+              g_flagWindowPos = 1;
             }
             else if (*CharUpper(lp + 1) == L'D' || *CharUpper(lp + 1) == L'S') {
               g_flagPosParam = 1;
-              g_flagDefaultPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
+              g_flagWindowPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
             }
             else if (StrChrI(L"FLTRBM", *(lp + 1))) {
               WCHAR *p = (lp + 1);
               g_flagPosParam = 1;
-              g_flagDefaultPos = 0;
+              g_flagWindowPos = 0;
               while (*p) {
                 switch (*CharUpper(p)) {
                 case L'F':
-                  g_flagDefaultPos &= ~(4 | 8 | 16 | 32);
-                  g_flagDefaultPos |= 64;
+                  g_flagWindowPos &= ~(4 | 8 | 16 | 32);
+                  g_flagWindowPos |= 64;
                   break;
                 case L'L':
-                  g_flagDefaultPos &= ~(8 | 64);
-                  g_flagDefaultPos |= 4;
+                  g_flagWindowPos &= ~(8 | 64);
+                  g_flagWindowPos |= 4;
                   break;
                 case  L'R':
-                  g_flagDefaultPos &= ~(4 | 64);
-                  g_flagDefaultPos |= 8;
+                  g_flagWindowPos &= ~(4 | 64);
+                  g_flagWindowPos |= 8;
                   break;
                 case L'T':
-                  g_flagDefaultPos &= ~(32 | 64);
-                  g_flagDefaultPos |= 16;
+                  g_flagWindowPos &= ~(32 | 64);
+                  g_flagWindowPos |= 16;
                   break;
                 case L'B':
-                  g_flagDefaultPos &= ~(16 | 64);
-                  g_flagDefaultPos |= 32;
+                  g_flagWindowPos &= ~(16 | 64);
+                  g_flagWindowPos |= 32;
                   break;
                 case L'M':
-                  if (g_flagDefaultPos == 0)
-                    g_flagDefaultPos |= 64;
-                  g_flagDefaultPos |= 128;
+                  if (g_flagWindowPos == 0)
+                    g_flagWindowPos |= 64;
+                  g_flagWindowPos |= 128;
                   break;
                 }
                 p = CharNext(p);
               }
             }
             else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-              int itok =
-                swscanf_s(lp1, L"%i,%i,%i,%i,%i", &g_WinInfo.x, &g_WinInfo.y, &g_WinInfo.cx, &g_WinInfo.cy, &g_WinInfo.max);
+              int bMaximize = 0;
+              int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &g_WinInfo.x, &g_WinInfo.y, &g_WinInfo.cx, &g_WinInfo.cy, &bMaximize);
               if (itok == 4 || itok == 5) { // scan successful
                 g_flagPosParam = 1;
-                g_flagDefaultPos = 0;
+                g_flagWindowPos = 0;
                 if (g_WinInfo.cx < 1) g_WinInfo.cx = CW_USEDEFAULT;
                 if (g_WinInfo.cy < 1) g_WinInfo.cy = CW_USEDEFAULT;
-                if (g_WinInfo.max) g_WinInfo.max = 1;
-                if (itok == 4) g_WinInfo.max = 0;
+                if (bMaximize) g_WinInfo.max = true;
+                if (itok == 4) g_WinInfo.max = false;
               }
             }
           }
@@ -7650,10 +7683,12 @@ void ParseCommandLine()
 //
 void LoadFlags()
 {
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*32*1024);
-  if (pIniSection) {
-    int   cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
+  int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
 
+  WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
+
+  if (pIniSection) 
+  {
     LoadIniSection(L"Settings2", pIniSection, cchIniSection);
 
     if (!g_flagReuseWindow && !g_flagNoReuseWindow) {
@@ -7704,8 +7739,7 @@ void LoadFlags()
         g_flagUseSystemMRU = 2;
       }
     }
-
-    LocalFree(pIniSection);
+    FreeMem(pIniSection);
   }
 }
 
