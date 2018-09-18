@@ -401,6 +401,10 @@ class ScintillaWin :
 	sptr_t HandleCompositionWindowed(uptr_t wParam, sptr_t lParam);
 	sptr_t HandleCompositionInline(uptr_t wParam, sptr_t lParam);
 	static bool KoreanIME() noexcept;
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	bool IsIMEOpen();
+	DWORD GetIMEInputMode();
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	void MoveImeCarets(Sci::Position offset);
 	void DrawImeIndicator(int indicator, int len);
 	void SetCandidateWindowPos();
@@ -1007,9 +1011,7 @@ sptr_t ScintillaWin::HandleCompositionWindowed(uptr_t wParam, sptr_t lParam) {
 	if (lParam & GCS_RESULTSTR) {
 		IMContext imc(MainHWND());
 		if (imc.hIMC) {
-			charAddedSource = SC_CHARADDED_IME;
 			AddWString(imc.GetCompositionString(GCS_RESULTSTR));
-			charAddedSource = SC_CHARADDED_NORMAL;
 
 			// Set new position after converted
 			const Point pos = PointMainCaret();
@@ -1027,7 +1029,26 @@ bool ScintillaWin::KoreanIME() noexcept {
 	const int codePage = InputCodePage();
 	return codePage == 949 || codePage == 1361;
 }
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+bool ScintillaWin::IsIMEOpen() {
+	IMContext imc(MainHWND());
+	if (imc.hIMC) {
+		if (ImmGetOpenStatus(imc.hIMC))
+		  return true;
+	}
+	return false;
+}
 
+DWORD ScintillaWin::GetIMEInputMode() {
+	DWORD dwConversion, dwSentence;
+	IMContext imc(MainHWND());
+	if (imc.hIMC && ImmGetOpenStatus(imc.hIMC)) {
+		if (ImmGetConversionStatus(imc.hIMC, &dwConversion, &dwSentence))
+			return dwConversion;
+	}
+	return 0;
+}
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 void ScintillaWin::MoveImeCarets(Sci::Position offset) {
 	// Move carets relatively by bytes.
 	for (size_t r = 0; r < sel.Count(); r++) {
@@ -1215,7 +1236,6 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 
 		const bool tmpRecordingMacro = recordingMacro;
 		recordingMacro = false;
-		charAddedSource = SC_CHARADDED_TENTATIVE;
 		const int codePage = CodePageOfDocument();
 		for (size_t i = 0; i < wcs.size(); ) {
 			const size_t ucWidth = UTF16CharLength(wcs[i]);
@@ -1227,7 +1247,6 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 			DrawImeIndicator(imeIndicator[i], static_cast<unsigned int>(docChar.size()));
 			i += ucWidth;
 		}
-		charAddedSource = SC_CHARADDED_NORMAL;
 		recordingMacro = tmpRecordingMacro;
 
 		// Move IME caret from current last position to imeCaretPos.
@@ -1240,9 +1259,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 			view.imeCaretBlockOverride = true;
 		}
 	} else if (lParam & GCS_RESULTSTR) {
-		charAddedSource = SC_CHARADDED_IME;
 		AddWString(imc.GetCompositionString(GCS_RESULTSTR));
-		charAddedSource = SC_CHARADDED_NORMAL;
 	}
 	EnsureCaretVisible();
 	SetCandidateWindowPos();
@@ -1724,12 +1741,26 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		case WM_IME_SETCONTEXT:
 			if (imeInteraction == imeInline) {
 				if (wParam) {
-					LPARAM NoImeWin = lParam;
-					NoImeWin = NoImeWin & (~ISC_SHOWUICOMPOSITIONWINDOW);
-					return ::DefWindowProc(MainHWND(), iMessage, wParam, NoImeWin);
+					LPARAM noImeCompositeWindow = lParam;
+					noImeCompositeWindow = noImeCompositeWindow & (~ISC_SHOWUICOMPOSITIONWINDOW);
+					return ::DefWindowProc(MainHWND(), iMessage, wParam, noImeCompositeWindow);
 				}
 			}
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		case WM_IME_NOTIFY: {
+			if (wParam == IMN_SETOPENSTATUS) {
+				isIMEOpen = (IsIMEOpen() ? SC_IME_OPEN : SC_IME_CLOSE);
+			} 
+			if (wParam == IMN_SETOPENSTATUS || wParam == IMN_SETCONVERSIONMODE) {
+				DWORD dwIMEInputMode = GetIMEInputMode();
+				isIMEModeCJK = (dwIMEInputMode != IME_CMODE_ALPHANUMERIC ?
+																	SC_IME_MODE_CJK : SC_IME_MODE_NATIVE);
+			}
+			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
+		}
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 			// These are not handled in Scintilla and its faster to dispatch them here.
 			// Also moves time out to here so profile doesn't count lots of empty message calls.
@@ -1741,7 +1772,6 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 		case WM_NCPAINT:
 		case WM_NCMOUSEMOVE:
 		case WM_NCLBUTTONDOWN:
-		case WM_IME_NOTIFY:
 		case WM_SYSCOMMAND:
 		case WM_WINDOWPOSCHANGING:
 		case WM_WINDOWPOSCHANGED:
