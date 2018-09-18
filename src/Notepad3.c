@@ -6150,9 +6150,9 @@ static void __fastcall _HandleTinyExpr()
 #if 0
 //=============================================================================
 //
-//   _IsIMEOpenInNativeMode()
+//   _IsIMEOpenInNoNativeMode()
 //
-static bool __fastcall _IsIMEOpenInNativeMode()
+static bool __fastcall _IsIMEOpenInNoNativeMode()
 {
   bool result = false;
   HIMC const himc = ImmGetContext(g_hwndEdit);
@@ -6365,10 +6365,17 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
 
             if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
-              if (g_bAutoCinASCIIModeOnly && ((ich > 0x7F) || (scn->modifiers != SC_CHARADDED_NORMAL))) {
-                SciCall_AutoCCancel();
-                return 0LL;
-              }
+              //if (g_bAutoCinASCIIModeOnly && (ich > 0x7F) ) {
+                bool isIMEModeActive,
+                        bIMEOpen = (bool)SendMessage(g_hwndEdit, SCI_GETIMEOPEN, 0, 0);
+                if (bIMEOpen) { // || (scn->modifiers != SC_CHARADDED_NORMAL)
+                  isIMEModeActive = (bool)SendMessage(g_hwndEdit, SCI_GETIMEMODEACTIVE, 0, 0);
+                  if (isIMEModeActive ) {
+                    SciCall_AutoCCancel();
+                    return 0LL;
+                  }
+                }
+              //} //g_bAutoCinASCIIModeOnly section
               if (!SciCall_AutoCActive()) { EditCompleteWord(g_hwndEdit, false); }
             }
           }
