@@ -2768,9 +2768,10 @@ val SC_MODEVENTMASKALL=0x3FFFFF
 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 # modifiers for SCN_CHARADDED: normal input, inline IME tentative, IME full composited
-val SC_CHARADDED_NORMAL=0
-val SC_CHARADDED_TENTATIVE=1
-val SC_CHARADDED_IME=2
+val SC_IME_CLOSE=0
+val SC_IME_OPEN=1
+val SC_IME_MODE_NATIVE=0
+val SC_IME_MODE_CJK=1
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu Update=SC_UPDATE_
