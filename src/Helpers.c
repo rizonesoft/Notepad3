@@ -426,29 +426,6 @@ HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
 }
 
 
-
-//=============================================================================
-//
-//  PrivateIsAppThemed()
-//
-extern HMODULE hModUxTheme;
-
-bool PrivateIsAppThemed()
-{
-  bool bIsAppThemed = IsWin8() ? true : false;
-
-  if (hModUxTheme && !bIsAppThemed) 
-  {
-    FARPROC pfnIsAppThemed = GetProcAddress(hModUxTheme,"IsAppThemed");
-
-    if (pfnIsAppThemed) {
-      bIsAppThemed = (bool)pfnIsAppThemed();
-    }
-  }
-  return bIsAppThemed;
-}
-
-
 //=============================================================================
 //
 //  PrivateSetCurrentProcessExplicitAppUserModelID()
