@@ -1047,9 +1047,12 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MOD_CHANGETABSTOPS 0x200000
 #define SC_MODEVENTMASKALL 0x3FFFFF
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#define SC_CHARADDED_NORMAL 0
-#define SC_CHARADDED_TENTATIVE 1
-#define SC_CHARADDED_IME 2
+#define SC_IME_CLOSE 0
+#define SC_IME_OPEN 1
+#define SCI_GETIMEOPEN 3860 // to Neil: I do not know how to allocate number. Change it.
+#define SC_IME_MODE_NATIVE 0 // = IME_CMODE_ALPHANUMERIC
+#define SC_IME_MODE_CJK 1 // Other than IME_CMODE_ALPHANUMERIC
+#define SCI_GETIMEMODEACTIVE 3861 // to Neil: I do not know how to allocate number. Change it.
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SC_UPDATE_CONTENT 0x1
 #define SC_UPDATE_SELECTION 0x2
