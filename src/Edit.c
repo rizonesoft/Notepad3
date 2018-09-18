@@ -25,8 +25,8 @@
 
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
+#define NOMINMAX 1
 #include <windows.h>
-
 #include <shlwapi.h>
 #include <commctrl.h>
 #include <commdlg.h>
@@ -1668,7 +1668,7 @@ void EditURLEncode(HWND hwnd)
   const DocPos iAnchorPos = SciCall_GetAnchor();
   const DocPos iSelLength = SciCall_GetSelText(NULL);
 
-  const char* pszText = (const char*)SciCall_GetRangePointer(min(iCurPos, iAnchorPos), iSelLength);
+  const char* pszText = (const char*)SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelLength);
 
   LPWSTR pszTextW = LocalAlloc(LPTR, (iSelLength * sizeof(WCHAR)));
   if (pszTextW == NULL) {
@@ -1733,7 +1733,7 @@ void EditURLDecode(HWND hwnd)
   const DocPos iAnchorPos = SciCall_GetAnchor();
   const DocPos iSelLength = SciCall_GetSelText(NULL);
 
-  const char* pszText = (const char*)SciCall_GetRangePointer(min(iCurPos, iAnchorPos), iSelLength);
+  const char* pszText = (const char*)SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelLength);
 
   LPWSTR pszTextW = LocalAlloc(LPTR, (iSelLength * sizeof(WCHAR)));
   if (pszTextW == NULL) {
@@ -2786,8 +2786,8 @@ void EditAlignText(HWND hwnd,int nMode)
         }
         const DocPos iEndCol = SciCall_GetColumn(iLineEndPos);
 
-        iMinIndent = min(iMinIndent,iIndentCol);
-        iMaxLength = max(iMaxLength,iEndCol);
+        iMinIndent = min_p(iMinIndent,iIndentCol);
+        iMaxLength = max_p(iMaxLength,iEndCol);
       }
     }
 
@@ -3055,7 +3055,7 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
       const DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine);
       if (iLineIndentPos != iLineEndPos) {
         const DocPos iIndentColumn = SciCall_GetColumn(iLineIndentPos);
-        iCommentCol = min(iCommentCol, iIndentColumn);
+        iCommentCol = min_p(iCommentCol, iIndentColumn);
       }
     }
   }
@@ -3201,7 +3201,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
     DocLn const iLineCount = abs(iRcCaretLine - iRcAnchorLine) + 1;
 
     // lots of spaces
-    DocPos const spBufSize = max(iAnchorColumn, selCaretMainPos);
+    DocPos const spBufSize = max_p(iAnchorColumn, selCaretMainPos);
     char* pSpaceBuffer = (char*)AllocMem((spBufSize + 1) * sizeof(char), HEAP_ZERO_MEMORY);
     FillMemory(pSpaceBuffer, spBufSize * sizeof(char), ' ');
 
@@ -3269,7 +3269,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty, bool bNoUndoGroup)
 
     DocPos iMaxColumn = 0;
     for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine) {
-      iMaxColumn = max(iMaxColumn, SciCall_GetColumn(SciCall_GetLineEndPosition(iLine)));
+      iMaxColumn = max_p(iMaxColumn, SciCall_GetColumn(SciCall_GetLineEndPosition(iLine)));
     }
     if (iMaxColumn <= 0) { return; }
 
@@ -4142,10 +4142,10 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     DocPos const iRcCurCol = SciCall_GetColumn(iCurPos);
     DocPos const iRcAnchorCol = SciCall_GetColumn(iAnchorPos);
 
-    iLineStart = min(iRcCurLine, iRcAnchorLine);
-    iLineEnd = max(iRcCurLine, iRcAnchorLine);
+    iLineStart = min_ln(iRcCurLine, iRcAnchorLine);
+    iLineEnd = max_ln(iRcCurLine, iRcAnchorLine);
 
-    iSortColumn = min(iRcCurCol, iRcAnchorCol);
+    iSortColumn = min_p(iRcCurCol, iRcAnchorCol);
   }
   else { // stream selection
 
@@ -4201,7 +4201,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     DocPos const cchm = SciCall_LineLength(iLn);
     cchTotal += cchm;
-    ichlMax = max(ichlMax, cchm);
+    ichlMax = max_p(ichlMax, cchm);
 
     SciCall_GetLine_Safe(iLn, pmsz);
 
@@ -4397,7 +4397,6 @@ void EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos
 
   UpdateToolbar();
   UpdateStatusbar(false);
-  UpdateLineNumberWidth();
 }
 
 
@@ -4460,12 +4459,12 @@ void EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol)
   }
   const DocLn iMaxLine = SciCall_GetLineCount();
   // Line maximum is iMaxLine - 1 (doc line count starts with 0)
-  iNewLine = (min(iNewLine, iMaxLine) - 1);
+  iNewLine = (min_ln(iNewLine, iMaxLine) - 1);
   const DocPos iLineEndPos = SciCall_GetLineEndPosition(iNewLine);
   
   // Column minimum is 1
   DocPos const colOffset = g_bZeroBasedColumnIndex ? 0 : 1;
-  iNewCol = max(0, min((iNewCol - colOffset), iLineEndPos));
+  iNewCol = max_p(0, min_p((iNewCol - colOffset), iLineEndPos));
   const DocPos iNewPos = SciCall_FindColumn(iNewLine, iNewCol);
 
   SciCall_GotoPos(iNewPos);
@@ -4526,14 +4525,14 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   struct Sci_TextRange tr = { { 0, 0 }, NULL };
   /*if (iCurPos != iAnchorPos && !SciCall_IsSelectionRectangle()) {*/
   tr.chrg.cpMin = (DocPosCR)SciCall_GetSelectionStart();
-  tr.chrg.cpMax = min((tr.chrg.cpMin + (DocPosCR)COUNTOF(tch)), (DocPosCR)SciCall_GetSelectionEnd());
+  tr.chrg.cpMax = min_cr((tr.chrg.cpMin + (DocPosCR)COUNTOF(tch)), (DocPosCR)SciCall_GetSelectionEnd());
   /*}
   else {
     int iLine = SendMessage(hwnd,SCI_LINEFROMPOSITION,(WPARAM)iCurPos,0);
     tr.chrg.cpMin = SendMessage(hwnd,SCI_POSITIONFROMLINE,(WPARAM)iLine,0);
-    tr.chrg.cpMax = min(SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0),(LONG)(tr.chrg.cpMin + COUNTOF(tchBuf2)));
+    tr.chrg.cpMax = min_cr(SendMessage(hwnd,SCI_GETLINEENDPOSITION,(WPARAM)iLine,0),(LONG)(tr.chrg.cpMin + COUNTOF(tchBuf2)));
   }*/
-  tr.chrg.cpMax = min(tr.chrg.cpMax, (DocPosCR)Sci_GetDocEndPosition());
+  tr.chrg.cpMax = min_cr(tr.chrg.cpMax, (DocPosCR)Sci_GetDocEndPosition());
 
   char*  pszText  = LocalAlloc(LPTR,(tr.chrg.cpMax - tr.chrg.cpMin)+2);
   LPWSTR pszTextW = LocalAlloc(LPTR,((tr.chrg.cpMax - tr.chrg.cpMin)*2)+2);
@@ -5874,7 +5873,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
 
   if (start >= end) {
     if (IDOK == InfoBoxLng(MBOKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW)) {
-      end = min(start, iTextLength);  start = 0;
+      end = min_p(start, iTextLength);  start = 0;
     }
     else
       bSuppressNotFound = true;
@@ -5893,7 +5892,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
     UpdateStatusbar(false);
     if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
       if (IDOK == InfoBoxLng(MBOKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPFW)) {
-        end = min(start, iTextLength);  start = 0;
+        end = min_p(start, iTextLength);  start = 0;
 
         iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_WRAPED);
 
@@ -5916,7 +5915,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   if (bExtendSelection) {
     DocPos iSelPos = SciCall_GetCurrentPos();
     DocPos iSelAnchor = SciCall_GetAnchor();
-    EditSetSelectionEx(hwnd, min(iSelAnchor, iSelPos), end, -1, -1);
+    EditSetSelectionEx(hwnd, min_p(iSelAnchor, iSelPos), end, -1, -1);
   }
   else {
     EditSetSelectionEx(hwnd, start, end, -1, -1);
@@ -5994,9 +5993,9 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
   }
 
   if (bExtendSelection) {
-    DocPos iSelPos = SciCall_GetCurrentPos();
-    DocPos iSelAnchor = SciCall_GetAnchor();
-    EditSetSelectionEx(hwnd, max(iSelPos, iSelAnchor), start, -1, -1);
+    DocPos const iSelPos = SciCall_GetCurrentPos();
+    DocPos const iSelAnchor = SciCall_GetAnchor();
+    EditSetSelectionEx(hwnd, max_p(iSelPos, iSelAnchor), start, -1, -1);
   }
   else {
     EditSetSelectionEx(hwnd, end, start, -1, -1);
@@ -6033,13 +6032,13 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
   if (g_bMarkOccurrencesMatchVisible) {
     // get visible lines for update
-    DocLn iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
+    DocLn const iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
 
-    DocLn iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-    DocLn iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+    DocLn const iStartLine = max_ln(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+    DocLn const iEndLine = min_ln((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
 
-    DocPos iPosStart = SciCall_PositionFromLine(iStartLine);
-    DocPos iPosEnd = SciCall_GetLineEndPosition(iEndLine);
+    DocPos const iPosStart = SciCall_PositionFromLine(iStartLine);
+    DocPos const iPosEnd = SciCall_GetLineEndPosition(iEndLine);
 
     // !!! don't clear all marks, else this method is re-called
     // !!! on UpdateUI notification on drawing indicator mark
@@ -6071,8 +6070,8 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
     // get visible lines for update
     DocLn iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
 
-    DocLn iStartLine = max(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
-    DocLn iEndLine = min((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
+    DocLn iStartLine = max_ln(0, (iFirstVisibleLine - SciCall_LinesOnScreen()));
+    DocLn iEndLine = min_ln((iFirstVisibleLine + (SciCall_LinesOnScreen() << 1)), (SciCall_GetLineCount() - 1));
 
     DocPos iPosStart = SciCall_PositionFromLine(iStartLine);
     DocPos iPosEnd = SciCall_GetLineEndPosition(iEndLine);
@@ -6481,9 +6480,9 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
 
   if (iFindLength > 0) {
 
-    const DocPos iTextEnd = Sci_GetDocEndPosition();
-    rangeStart = max(0, rangeStart);
-    rangeEnd = min(rangeEnd, iTextEnd);
+    DocPos const iTextEnd = Sci_GetDocEndPosition();
+    rangeStart = max_p(0, rangeStart);
+    rangeEnd = min_p(rangeEnd, iTextEnd);
 
     DocPos start = rangeStart;
     DocPos end = rangeEnd;
@@ -6909,7 +6908,7 @@ static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
       DocPos col1 = SciCall_GetColumn(iPos);
       DocPos col2 = SciCall_GetColumn(iBrace2);
       SciCall_BraceHighLight(iPos, iBrace2);
-      SciCall_SetHighLightGuide(min(col1, col2));
+      SciCall_SetHighLightGuide(min_p(col1, col2));
       if (!g_bUseOldStyleBraceMatching) {
         SciCall_BraceHighLightIndicator(true, INDIC_NP3_MATCH_BRACE);
       }
@@ -7796,11 +7795,11 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
     const WCHAR* p2 = StrChr(p1, L';');
     if (!p2)
       p2 = StrEnd(p1,0);
-    StringCchCopyNW(lnNum, COUNTOF(lnNum), p1, min((int)(p2 - p1), 16));
-    long long iLine = 0;
-    if (swscanf_s(lnNum, L"%lld", &iLine) == 1) {
+    StringCchCopyNW(lnNum, COUNTOF(lnNum), p1, min_s((size_t)(p2 - p1), 16));
+    DocLn iLine = 0;
+    if (swscanf_s(lnNum, L"%i", &iLine) == 1) {
       if (iLine <= iLineMax) {
-        Sci_SendMsgV2(MARKERADD, iLine, MARKER_NP3_BOOKMARK);
+        SciCall_MarkerAdd(iLine, MARKER_NP3_BOOKMARK);
       }
     }
     p1 = (*p2) ? (p2 + 1) : p2;
@@ -7888,7 +7887,7 @@ bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
   if ((g_flagNoFileVariables && bNoEncodingTags) || !lpData || !cbData)
     return true;
 
-  StringCchCopyNA(tch,COUNTOF(tch),lpData,min(cbData + 1,COUNTOF(tch)));
+  StringCchCopyNA(tch,COUNTOF(tch),lpData,min_s(cbData + 1,COUNTOF(tch)));
   _SetFileVars(lpData, tch, lpfv);
 
   if (lpfv->mask == 0 && cbData > COUNTOF(tch)) {
@@ -8340,7 +8339,7 @@ void EditShowZoomCallTip(HWND hwnd)
 
 //=============================================================================
 //
-//  EditShowZoomCallTip()
+//  EditShowZeroLengthCallTip()
 //
 static char s_chZeroLenCT[80] = { '\0' };
 
@@ -8353,7 +8352,6 @@ void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition)
   SciCall_CallTipShow(iPosition, s_chZeroLenCT);
   g_CallTipType = CT_ZEROLEN_MATCH;
 }
-
 
 
 //=============================================================================

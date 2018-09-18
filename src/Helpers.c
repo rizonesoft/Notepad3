@@ -26,6 +26,7 @@
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
+#define NOMINMAX 1
 #include <windows.h>
 //#include <uxtheme.h>
 #include <shlobj.h>
@@ -369,7 +370,7 @@ UINT GetCurrentDPI(HWND hwnd) {
     ReleaseDC(hwnd, hDC);
   }
 
-  return max(dpi, USER_DEFAULT_SCREEN_DPI);
+  return max_u(dpi, USER_DEFAULT_SCREEN_DPI);
 }
 
 
@@ -382,7 +383,7 @@ UINT GetCurrentPPI(HWND hwnd) {
   HDC const hDC = GetDC(hwnd);
   UINT const ppi = GetDeviceCaps(hDC, LOGPIXELSY);
   ReleaseDC(hwnd, hDC);
-  return max(ppi, USER_DEFAULT_SCREEN_DPI);
+  return max_u(ppi, USER_DEFAULT_SCREEN_DPI);
 }
 
 /*
@@ -409,7 +410,7 @@ HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
     BITMAP bmp;
     if (GetObject(hbmp, sizeof(BITMAP), &bmp)) {
       UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
-      UINT uDPIScaleFactor = max(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
+      UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
       UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
       if (g_uCurrentDPI > (uDPIBase + uDPIUnit)) {
         int width = MulDiv(bmp.bmWidth, (g_uCurrentDPI - uDPIBase), uDPIUnit);
@@ -1519,7 +1520,7 @@ LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize)
     ZeroMemory(pmru, sizeof(MRULIST));
     StringCchCopyN(pmru->szRegKey, COUNTOF(pmru->szRegKey), pszRegKey, COUNTOF(pmru->szRegKey));
     pmru->iFlags = iFlags;
-    pmru->iSize = min(iSize, MRU_MAXITEMS);
+    pmru->iSize = min_i(iSize, MRU_MAXITEMS);
   }
   return(pmru);
 }
@@ -1555,7 +1556,7 @@ bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBo
       break;
     }
   }
-  i = min(i,pmru->iSize-1);
+  i = min_i(i,pmru->iSize-1);
   for (; i > 0; i--) {
     pmru->pszItems[i] = pmru->pszItems[i - 1];
     pmru->iEncoding[i] = pmru->iEncoding[i - 1];

@@ -23,7 +23,7 @@
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
-
+#define NOMINMAX 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
@@ -2623,15 +2623,25 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
 //
 //  GetMonitorInfoFromRect()
 //
-static bool __fastcall GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
+bool GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
 {
+  bool result = false;
   if (hMonitorInfo) {
     HMONITOR const hMonitor = MonitorFromRect(rc, MONITOR_DEFAULTTONEAREST);
     ZeroMemory(hMonitorInfo, sizeof(MONITORINFO));
     hMonitorInfo->cbSize = sizeof(MONITORINFO);
-    return GetMonitorInfo(hMonitor, hMonitorInfo);
+    if (!GetMonitorInfo(hMonitor, hMonitorInfo)) {
+      RECT _rc = { 0, 0, 0, 0 };
+      if (SystemParametersInfo(SPI_GETWORKAREA, 0, &_rc, 0) != 0) {
+        hMonitorInfo->rcWork = _rc;
+        SetRect(&(hMonitorInfo->rcMonitor), 0, 0, _rc.right, _rc.bottom);
+        result = true;
+      }
+    }
+    else
+      result = true;
   }
-  return false;
+  return result;
 }
 // ----------------------------------------------------------------------------
 
@@ -2678,28 +2688,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
 
   return wi;
 }
-// ----------------------------------------------------------------------------
 
-
-//=============================================================================
-//
-//  GetMonitorWorkArea()
-//
-void GetMonitorWorkArea(RECT* pRect)
-{
-  MONITORINFO mi;
-  if (GetMonitorInfoFromRect(pRect, &mi)) {
-    SetRect(pRect, mi.rcWork.left, mi.rcWork.top, mi.rcWork.right, mi.rcWork.bottom);
-  }
-  else {
-    RECT rc = { 0, 0, 0, 0 };
-    if (SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0) != 0) {
-      SetRect(pRect, rc.left, rc.top, rc.right, rc.bottom);
-    }
-    else
-      SetRectEmpty(pRect);
-  }
-}
 
 
 //=============================================================================
@@ -2766,7 +2755,12 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* const pWinInfo
     if (pWinInfo->max) { wndpl.flags &= WPF_RESTORETOMAXIMIZED; }
   }
   else {
-    RECT rc; GetWindowRect(hwnd, &rc);
+    RECT rc; 
+    if (hwnd)
+      GetWindowRect(hwnd, &rc);
+    else
+      GetWindowRect(GetDesktopWindow(), &rc);
+
     FitIntoMonitorWorkArea(&rc, &winfo, true);
     // TODO: maximize ?
   }
@@ -2790,11 +2784,12 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   if (bSaveOnRunTools && !FileSave(false, true, false, false)) { return; }
 
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
+  NormalizePathEx(szModuleName, COUNTOF(szModuleName));
 
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", g_wchAppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
 
-  StringCchPrintf(tch, COUNTOF(tch), L" \"-sysmru=%i\"", (g_flagUseSystemMRU == 2) ? 1 : 0);
+  StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (g_flagUseSystemMRU == 2) ? 1 : 0);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
@@ -3109,7 +3104,7 @@ void CenterDlgInParent(HWND hDlg)
   else
     y = rcParent.top + 60;
 
-  SetWindowPos(hDlg, NULL, max(xMin, min(xMax, x)), max(yMin, min(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+  SetWindowPos(hDlg, NULL, max_i(xMin, min_i(xMax, x)), max_i(yMin, min_i(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
   //SnapToDefaultButton(hDlg);
 }
@@ -3172,7 +3167,7 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
   x = rcParent.left + xDlg;
   y = rcParent.top + yDlg;
 
-  SetWindowPos(hDlg, NULL, max(xMin, min(xMax, x)), max(yMin, min(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+  SetWindowPos(hDlg, NULL, max_i(xMin, min_i(xMax, x)), max_i(yMin, min_i(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
 
 
@@ -3429,7 +3424,7 @@ int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButton
   TBBUTTON tbb;
 
   StringCchCopy(tchButtons, COUNTOF(tchButtons), L"");
-  c = min(50, (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
+  c = min_i(50, (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
 
   for (i = 0; i < c; i++) {
     SendMessage(hwnd, TB_GETBUTTON, (WPARAM)i, (LPARAM)&tbb);

@@ -12,7 +12,12 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x601
+#endif
+#define VC_EXTRALEAN 1
+//#define WIN32_LEAN_AND_MEAN 1
+//#define NOMINMAX 1
 #include <windows.h>
 #include <shlobj.h>
 #include <shlwapi.h>
@@ -506,7 +511,7 @@ void CenterDlgInParent(HWND hDlg)
   else
     y = rcParent.top + 60;
 
-  SetWindowPos(hDlg,NULL,max(xMin,min(xMax,x)),max(yMin,min(yMax,y)),0,0,SWP_NOZORDER|SWP_NOSIZE);
+  SetWindowPos(hDlg,NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax),0,0,SWP_NOZORDER|SWP_NOSIZE);
 
 }
 
@@ -587,13 +592,12 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
 {
   WCHAR tchButtons[512];
   WCHAR tchItem[32];
-  int i,c;
   TBBUTTON tbb;
 
   lstrcpy(tchButtons,L"");
-  c = min(50,(int)SendMessage(hwnd,TB_BUTTONCOUNT,0,0));
+  int const c = min(50,(int)SendMessage(hwnd,TB_BUTTONCOUNT,0,0));
 
-  for (i = 0; i < c; i++) {
+  for (int i = 0; i < c; i++) {
     SendMessage(hwnd,TB_GETBUTTON,(WPARAM)i,(LPARAM)&tbb);
     wsprintf(tchItem,L"%i ",
       (tbb.idCommand==0)?0:tbb.idCommand-cmdBase+1);
