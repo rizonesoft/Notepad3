@@ -24,6 +24,7 @@
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
+#define NOMINMAX 1
 #include <windows.h>
 #include <commctrl.h>
 #include <commdlg.h>
@@ -217,8 +218,6 @@ bool Style_IsCurLexerStandard()
 }
 
 
-
-
 //=============================================================================
 //
 //  _SetBaseFontSize(), _GetBaseFontSize()
@@ -261,7 +260,8 @@ static float __fastcall _SetCurrentFontSize(float fSize)
   static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
 
   if (signbit(fSize) == 0) {
-    fCurrentFontSize = max(Round10th(fSize), 0.5f);
+    float const fSizeR10th = Round10th(fSize);
+    fCurrentFontSize = (0.5f < fSizeR10th) ? fSizeR10th :  0.5f;
   }
   return fCurrentFontSize;
 }
@@ -333,10 +333,10 @@ void Style_Load()
 
     // scheme select dlg dimensions
     g_cxStyleSelectDlg = IniSectionGetInt(pIniSection, L"SelectDlgSizeX", 304);
-    g_cxStyleSelectDlg = max(g_cxStyleSelectDlg, 0);
+    g_cxStyleSelectDlg = max_i(g_cxStyleSelectDlg, 0);
 
     g_cyStyleSelectDlg = IniSectionGetInt(pIniSection, L"SelectDlgSizeY", 0);
-    g_cyStyleSelectDlg = max(g_cyStyleSelectDlg, 324);
+    g_cyStyleSelectDlg = max_i(g_cyStyleSelectDlg, 324);
 
     for (iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
       LoadIniSection(g_pLexArray[iLexer]->pszName, pIniSection, cchIniSection);
@@ -565,7 +565,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   else {
     g_pLexCurrent = GetCurrentStdLexer();
   }
-
 
   const WCHAR* const wchStandardStyleStrg = g_pLexCurrent->Styles[STY_DEFAULT].szValue;
 
@@ -1045,7 +1044,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
           Style_SetStyles(hwnd, iRelated[j], g_pLexCurrent->Styles[i].szValue, false);
         }
       }
-
       ++i;
     }
   }
@@ -1061,8 +1059,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetUrlHotSpot(hwnd, g_bHyperlinkHotspot);
     EditUpdateUrlHotspots(hwnd, 0, Sci_GetDocEndPosition(), g_bHyperlinkHotspot);
   }
+
+  UpdateToolbar();
   UpdateStatusbar(false);
-  UpdateLineNumberWidth();
+  UpdateMarginWidth();
 }
 
 
@@ -1224,20 +1224,26 @@ void Style_SetCurrentLineBackground(HWND hwnd, bool bHiLitCurrLn)
 
 //=============================================================================
 //
+//  _GetMarkerMarginWidth()
+//
+static int __fastcall _GetMarkerMarginWidth()
+{
+  float fSize = _GetBaseFontSize();
+  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
+  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
+  float const zoomPercent = (float)SciCall_GetZoom();
+  return ScaleToCurrentDPI((fSize * zoomPercent) / 100.0f);
+}
+
+//=============================================================================
+//
 //  Style_SetFolding()
 //
 void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 {
   UNUSED(hwnd);
-  float fSize = _GetBaseFontSize();
-  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
-  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  float const zoomPercent = (float)SciCall_GetZoom();
-
-  int const iSizeDPI = ScaleToCurrentDPI((fSize * zoomPercent) / 100.0f);
-  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding) ? iSizeDPI : 0);
+  SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowCodeFolding ? _GetMarkerMarginWidth() : 0));
 }
-
 
 //=============================================================================
 //
@@ -1246,22 +1252,7 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 {
   UNUSED(hwnd);
-  float fSize = _GetBaseFontSize();
-  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
-  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
-  float const zoomPercent = (float)SciCall_GetZoom();
-
-  int const iSizeDPI = ScaleToCurrentDPI((fSize * zoomPercent) / 100.0f);
-  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin) ? iSizeDPI : 0);
-
-  // Depending on if the margin is visible or not, choose different bookmark indication
-  if (bShowSelMargin) {
-    SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
-    //SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_SHORTARROW);
-  }
-  else {
-    SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BACKGROUND);
-  }
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth() : 0));
 }
 
 
@@ -1312,13 +1303,15 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   COLORREF bckgrnd = clrBack;
   Style_StrGetColor(false, lpszStyle, &bckgrnd);
-  bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, min(0xFF, alpha));
+  bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, min_i(0xFF, alpha));
 
+  SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
+  //SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_SHORTARROW);
   SciCall_MarkerSetFore(MARKER_NP3_BOOKMARK, bmkFore);
   SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, bmkBack);
   SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, alpha);
   SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
-  
+
   // ---  Code folding  ---
   SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
   SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
@@ -1902,7 +1895,7 @@ bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
     int iValue = 0;
     if (1 == swscanf_s(tch, L"%i", &iValue))
     {
-      *i = max(SC_CHARSET_ANSI, iValue);
+      *i = max_i(SC_CHARSET_ANSI, iValue);
       return true;
     }
   }

@@ -57,11 +57,11 @@ typedef struct _wi
   int y;
   int cx;
   int cy;
-  int max;
+  bool max;
   int zoom;
 } WININFO;
 
-#define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0 }
+#define INIT_WININFO { CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, false, 100 }
 
 
 inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {

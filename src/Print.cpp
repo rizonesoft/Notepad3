@@ -26,6 +26,7 @@
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
+#define NOMINMAX 1
 #include <windows.h>
 #include <commctrl.h>
 #include <shellapi.h>
@@ -219,10 +220,10 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     }
 
     // Dont reduce margins below the minimum printable area
-    rectMargins.left  = max(rectPhysMargins.left, rectSetup.left);
-    rectMargins.top  = max(rectPhysMargins.top, rectSetup.top);
-    rectMargins.right  = max(rectPhysMargins.right, rectSetup.right);
-    rectMargins.bottom  = max(rectPhysMargins.bottom, rectSetup.bottom);
+    rectMargins.left  = max_l(rectPhysMargins.left, rectSetup.left);
+    rectMargins.top  = max_l(rectPhysMargins.top, rectSetup.top);
+    rectMargins.right  = max_l(rectPhysMargins.right, rectSetup.right);
+    rectMargins.bottom  = max_l(rectPhysMargins.bottom, rectSetup.bottom);
   } else {
     rectMargins.left  = rectPhysMargins.left;
     rectMargins.top  = rectPhysMargins.top;

@@ -67,6 +67,25 @@ void DbgLog(const char *fmt, ...);
 
 // ============================================================================
 
+// min/max
+#define _min_(x,y) (((x) < (y)) ? (x) : (y))
+__forceinline int min_i(int x, int y) { return (x < y) ? x : y; }
+__forceinline unsigned int min_u(unsigned int x, unsigned int y) { return (x < y) ? x : y; }
+__forceinline long min_l(long x, long y) { return (x < y) ? x : y; }
+__forceinline size_t min_s(size_t x, size_t y) { return (x < y) ? x : y; }
+__forceinline DocPos min_p(DocPos x, DocPos y) { return (x < y) ? x : y; }
+__forceinline DocLn min_ln(DocLn x, DocLn y) { return (x < y) ? x : y; }
+__forceinline DocPosCR min_cr(DocPosCR x, DocPosCR y) { return (x < y) ? x : y; }
+
+#define _max_(x,y) (((x) > (y)) ? (x) : (y))
+__forceinline int max_i(int x, int y) { return (x > y) ? x : y; }
+__forceinline unsigned int max_u(unsigned int x, unsigned int y) { return (x > y) ? x : y; }
+__forceinline long max_l(long x, long y) { return (x > y) ? x : y; }
+__forceinline size_t max_s(size_t x, size_t y) { return (x > y) ? x : y; }
+__forceinline DocPos max_p(DocPos x, DocPos y) { return (x > y) ? x : y; }
+__forceinline DocLn max_ln(DocLn x, DocLn y) { return (x > y) ? x : y; }
+__forceinline DocPosCR max_cr(DocPosCR x, DocPosCR y) { return (x > y) ? x : y; }
+
 // swap 
 inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
 inline void swapos(DocPos* a, DocPos* b) { DocPos t = *a;  *a = *b;  *b = t; }
@@ -192,7 +211,6 @@ inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * g_uCurrentDP
 inline int ScaleFontSize(float fSize) { return float2int((fSize * g_uCurrentDPI) / (float)g_uCurrentPPI); }
 inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * g_uCurrentDPI) / (float)g_uCurrentPPI) * 10; }
 
-bool PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
 bool IsElevated();
 bool IsUserAdmin();
@@ -390,21 +408,21 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 
 // NOTE: !!! differences in AutoCompleteList depending compare functions (CRT vs. Shlwapi)) !!!
 
-#define StringCchCompareNA(s1,l1,s2,l2)   StrCmpNA((s1),(s2),min((l1),(l2)))
-//#define StringCchCompareNA(s1,l1,s2,l2)   strncmp((s1),(s2),min((l1),(l2)))
+#define StringCchCompareNA(s1,l1,s2,l2)   StrCmpNA((s1),(s2),min_i((l1),(l2)))
+//#define StringCchCompareNA(s1,l1,s2,l2)   strncmp((s1),(s2),min_s((l1),(l2)))
 #define StringCchCompareXA(s1,s2)         StrCmpA((s1),(s2))
 //#define StringCchCompareXA(s1,s2)         strcmp((s1),(s2))
 
-#define StringCchCompareNIA(s1,l1,s2,l2)  StrCmpNIA((s1),(s2),min((l1),(l2)))
-//#define StringCchCompareNIA(s1,l1,s2,l2)  _strnicmp((s1),(s2),min((l1),(l2)))
+#define StringCchCompareNIA(s1,l1,s2,l2)  StrCmpNIA((s1),(s2),min_i((l1),(l2)))
+//#define StringCchCompareNIA(s1,l1,s2,l2)  _strnicmp((s1),(s2),min_s((l1),(l2)))
 #define StringCchCompareXIA(s1,s2)        StrCmpIA((s1),(s2))
 //#define StringCchCompareXIA(s1,s2)        _stricmp((s1),(s2))
 
 
-#define StringCchCompareNW(s1,l1,s2,l2)   StrCmpNW((s1),(s2),min((l1),(l2)))
+#define StringCchCompareNW(s1,l1,s2,l2)   StrCmpNW((s1),(s2),min_i((l1),(l2)))
 #define StringCchCompareXW(s1,s2)         StrCmpW((s1),(s2))
 
-#define StringCchCompareNIW(s1,l1,s2,l2)  StrCmpNIW((s1),(s2),min((l1),(l2)))
+#define StringCchCompareNIW(s1,l1,s2,l2)  StrCmpNIW((s1),(s2),min_i((l1),(l2)))
 #define StringCchCompareXIW(s1,s2)        StrCmpIW((s1),(s2))
 
 #if defined(UNICODE) || defined(_UNICODE)  
