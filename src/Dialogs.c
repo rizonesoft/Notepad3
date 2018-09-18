@@ -2779,11 +2779,12 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   if (bSaveOnRunTools && !FileSave(false, true, false, false)) { return; }
 
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
+  NormalizePathEx(szModuleName, COUNTOF(szModuleName));
 
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", g_wchAppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
 
-  StringCchPrintf(tch, COUNTOF(tch), L" \"-sysmru=%i\"", (g_flagUseSystemMRU == 2) ? 1 : 0);
+  StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (g_flagUseSystemMRU == 2) ? 1 : 0);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");

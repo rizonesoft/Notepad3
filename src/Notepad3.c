@@ -7271,16 +7271,17 @@ void ParseCommandLine()
 
     while (bContinue && ExtractFirstArgument(lp3, lp1, lp2, (int)len)) {
       // options
-      if (!bIsFileArg && (StringCchCompareN(lp1, len, L"+", 1) == 0)) {
-        g_flagMultiFileArg = 2;
-        bIsFileArg = true;
-      }
+      if (lp1[1] == L'\0') {
+        if (!bIsFileArg && (lp1[0] == L'+')) {
+          g_flagMultiFileArg = 2;
+          bIsFileArg = true;
+        }
 
-      else if (!bIsFileArg && (StringCchCompareN(lp1, len, L"-", 1) == 0)) {
-        g_flagMultiFileArg = 1;
-        bIsFileArg = true;
+        else if (!bIsFileArg && (lp1[0] == L'-')) {
+          g_flagMultiFileArg = 1;
+          bIsFileArg = true;
+        }
       }
-
       else if (!bIsFileArg && ((*lp1 == L'/') || (*lp1 == L'-'))) {
 
         // LTrim
