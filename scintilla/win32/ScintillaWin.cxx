@@ -1044,7 +1044,7 @@ bool ScintillaWin::IsIMEOpen() {
 DWORD ScintillaWin::GetIMEInputMode() {
 	IMContext imc(MainHWND());
 	if (imc.hIMC && ImmGetOpenStatus(imc.hIMC)) {
-		DWORD dwConversion, dwSentence;
+		DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = IME_SMODE_NONE;
 		if (ImmGetConversionStatus(imc.hIMC, &dwConversion, &dwSentence)) {
 			return dwConversion;
 		}
