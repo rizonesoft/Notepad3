@@ -27,6 +27,7 @@
 #define NOMINMAX 1
 #include <windows.h>
 #include <commctrl.h>
+#include <uxtheme.h>
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <shellapi.h>
@@ -343,7 +344,6 @@ WIN32_FIND_DATA fdCurFile;
 
 UINT      msgTaskbarCreated = 0;
 
-HMODULE   hModUxTheme = NULL;
 HMODULE   hRichEdit = NULL;
 
 static bool g_bRunningWatch = false;
@@ -718,8 +718,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
 
   msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
 
-  if (!IsWin8()) { hModUxTheme = LoadLibrary(L"uxtheme.dll"); }
-
   hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use "RichEdit20W" for control in .rc
   //hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
 
@@ -789,8 +787,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
   if (hMainMenu) { DestroyMenu(hMainMenu); }
   Scintilla_ReleaseResources();
   UnregisterClass(wchWndClass, g_hInstance);
-
-  if (hModUxTheme) { FreeLibrary(hModUxTheme); }
 
   OleUninitialize();
 
@@ -1799,7 +1795,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
                     hInstance,
                     NULL);
 
-  if (PrivateIsAppThemed()) {
+  if (IsAppThemed()) {
 
     RECT rc, rc2;
 
@@ -2051,13 +2047,12 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
 
   REBARBANDINFO rbBand;
-  bool const bIsPrivAppThemed = PrivateIsAppThemed();
 
   rbBand.cbSize  = sizeof(REBARBANDINFO);
   rbBand.fMask   = /*RBBIM_COLORS | RBBIM_TEXT | RBBIM_BACKGROUND | */
                    RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE /*| RBBIM_SIZE*/;
   //rbBand.fStyle  = /*RBBS_CHILDEDGE |*//* RBBS_BREAK |*/ RBBS_FIXEDSIZE /*| RBBS_GRIPPERALWAYS*/;
-  rbBand.fStyle = bIsPrivAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
+  rbBand.fStyle = bIsAppThemed ? (RBBS_FIXEDSIZE | RBBS_CHILDEDGE) : RBBS_FIXEDSIZE;
   rbBand.hbmBack = NULL;
   rbBand.lpText     = L"Toolbar";
   rbBand.hwndChild  = g_hwndToolbar;
@@ -2070,7 +2065,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   GetWindowRect(g_hwndReBar,&rc);
   cyReBar = rc.bottom - rc.top;
 
-  cyReBarFrame = bIsPrivAppThemed ? 0 : 2;
+  cyReBarFrame = bIsAppThemed ? 0 : 2;
 }
 
 
@@ -2215,7 +2210,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
 
   // reinitialize edit frame
 
-  if (PrivateIsAppThemed()) {
+  if (IsAppThemed()) {
     bIsAppThemed = true;
 
     SetWindowLongPtr(g_hwndEdit,GWL_EXSTYLE,GetWindowLongPtr(g_hwndEdit,GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
@@ -6366,13 +6361,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
               //if (g_bAutoCinASCIIModeOnly && (ich > 0x7F) ) {
-                bool isIMEModeActive,
-                        bIMEOpen = (bool)SendMessage(g_hwndEdit, SCI_GETIMEOPEN, 0, 0);
-                if (bIMEOpen) { // || (scn->modifiers != SC_CHARADDED_NORMAL)
-                  isIMEModeActive = (bool)SendMessage(g_hwndEdit, SCI_GETIMEMODEACTIVE, 0, 0);
-                  if (isIMEModeActive ) {
+                if (SciCall_IsIMEOpen()) {
+                  if (SciCall_IsIMEModeCJK()) {
                     SciCall_AutoCCancel();
-                    return 0LL;
+                    return 0;
                   }
                 }
               //} //g_bAutoCinASCIIModeOnly section

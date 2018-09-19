@@ -211,7 +211,6 @@ inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * g_uCurrentDP
 inline int ScaleFontSize(float fSize) { return float2int((fSize * g_uCurrentDPI) / (float)g_uCurrentPPI); }
 inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * g_uCurrentDPI) / (float)g_uCurrentPPI) * 10; }
 
-bool PrivateIsAppThemed();
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
 bool IsElevated();
 bool IsUserAdmin();

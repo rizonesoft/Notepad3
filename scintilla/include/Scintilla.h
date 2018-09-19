@@ -103,6 +103,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_IME_INLINE 1
 #define SCI_GETIMEINTERACTION 2678
 #define SCI_SETIMEINTERACTION 2679
+#define SCI_ISIMEOPEN 2717
+#define SCI_ISIMEMODECJK 2718
 #define MARKER_MAX 31
 #define SC_MARK_CIRCLE 0
 #define SC_MARK_ROUNDRECT 1
@@ -399,9 +401,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_GETPRINTCOLOURMODE 2149
 #define SCFIND_WHOLEWORD 0x2
 #define SCFIND_MATCHCASE 0x4
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCFIND_DOT_MATCH_ALL 0x1000
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCFIND_WORDSTART 0x00100000
 #define SCFIND_REGEXP 0x00200000
 #define SCFIND_POSIX 0x00400000
@@ -691,10 +691,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_POPUP_TEXT 2
 #define SCI_USEPOPUP 2371
 #define SCI_SELECTIONISRECTANGLE 2372
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SC_MIN_ZOOM_LEVEL 10
 #define SC_MAX_ZOOM_LEVEL 500
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCI_SETZOOM 2373
 #define SCI_GETZOOM 2374
 #define SC_DOCUMENTOPTION_DEFAULT 0
@@ -1046,14 +1044,6 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MOD_INSERTCHECK 0x100000
 #define SC_MOD_CHANGETABSTOPS 0x200000
 #define SC_MODEVENTMASKALL 0x3FFFFF
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#define SC_IME_CLOSE 0
-#define SC_IME_OPEN 1
-#define SCI_GETIMEOPEN 3860 // to Neil: I do not know how to allocate number. Change it.
-#define SC_IME_MODE_NATIVE 0 // = IME_CMODE_ALPHANUMERIC
-#define SC_IME_MODE_CJK 1 // Other than IME_CMODE_ALPHANUMERIC
-#define SCI_GETIMEMODEACTIVE 3861 // to Neil: I do not know how to allocate number. Change it.
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SC_UPDATE_CONTENT 0x1
 #define SC_UPDATE_SELECTION 0x2
 #define SC_UPDATE_V_SCROLL 0x4

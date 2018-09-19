@@ -1029,26 +1029,30 @@ bool ScintillaWin::KoreanIME() noexcept {
 	const int codePage = InputCodePage();
 	return codePage == 949 || codePage == 1361;
 }
+
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 bool ScintillaWin::IsIMEOpen() {
 	IMContext imc(MainHWND());
 	if (imc.hIMC) {
-		if (ImmGetOpenStatus(imc.hIMC))
-		  return true;
+		if (ImmGetOpenStatus(imc.hIMC)) {
+			return true;
+		}
 	}
 	return false;
 }
 
 DWORD ScintillaWin::GetIMEInputMode() {
-	DWORD dwConversion, dwSentence;
 	IMContext imc(MainHWND());
 	if (imc.hIMC && ImmGetOpenStatus(imc.hIMC)) {
-		if (ImmGetConversionStatus(imc.hIMC, &dwConversion, &dwSentence))
+		DWORD dwConversion = IME_CMODE_ALPHANUMERIC, dwSentence = IME_SMODE_NONE;
+		if (ImmGetConversionStatus(imc.hIMC, &dwConversion, &dwSentence)) {
 			return dwConversion;
+		}
 	}
 	return 0;
 }
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 void ScintillaWin::MoveImeCarets(Sci::Position offset) {
 	// Move carets relatively by bytes.
 	for (size_t r = 0; r < sel.Count(); r++) {
@@ -1749,17 +1753,14 @@ sptr_t ScintillaWin::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		case WM_IME_NOTIFY: {
+		case WM_IME_NOTIFY:
 			if (wParam == IMN_SETOPENSTATUS) {
-				isIMEOpen = (IsIMEOpen() ? SC_IME_OPEN : SC_IME_CLOSE);
+				imeIsOpen = IsIMEOpen();
 			} 
 			if (wParam == IMN_SETOPENSTATUS || wParam == IMN_SETCONVERSIONMODE) {
-				DWORD dwIMEInputMode = GetIMEInputMode();
-				isIMEModeCJK = (dwIMEInputMode != IME_CMODE_ALPHANUMERIC ?
-																	SC_IME_MODE_CJK : SC_IME_MODE_NATIVE);
+				imeIsInModeCJK = (GetIMEInputMode() != IME_CMODE_ALPHANUMERIC);
 			}
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
-		}
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 			// These are not handled in Scintilla and its faster to dispatch them here.
