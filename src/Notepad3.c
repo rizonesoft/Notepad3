@@ -252,7 +252,6 @@ int       iUpdateDelayMarkAllCoccurrences;
 int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
-bool      g_bAutoCinASCIIModeOnly = false;
 
 CALLTIPTYPE g_CallTipType = CT_NONE;
 
@@ -319,9 +318,9 @@ LPMRULIST g_pMRUreplace;
 
 DWORD     dwLastIOError;
 
-int       g_iDefaultNewFileEncoding;
-int       g_iDefaultCharSet;
-int       g_IMEInteraction;
+int       g_iDefaultNewFileEncoding = 0;
+int       g_iDefaultCharSet = 0;
+int       g_IMEInteraction = 0;
 
 int       g_iEOLMode;
 int       g_iDefaultEOLMode;
@@ -6359,15 +6358,13 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               break;
             }
 
-            if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
-              //if (g_bAutoCinASCIIModeOnly && (ich > 0x7F) ) {
-                if (SciCall_IsIMEOpen()) {
-                  if (SciCall_IsIMEModeCJK()) {
-                    SciCall_AutoCCancel();
-                    return 0;
-                  }
-                }
-              //} //g_bAutoCinASCIIModeOnly section
+            if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) 
+            {
+              if (SciCall_IsIMEModeCJK()) 
+              {
+                  SciCall_AutoCCancel();
+                  return 0;
+              }
               if (!SciCall_AutoCActive()) { EditCompleteWord(g_hwndEdit, false); }
             }
           }

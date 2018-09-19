@@ -23,6 +23,7 @@
 int Scintilla_RegisterClasses(void*);
 int Scintilla_ReleaseResources();
 
+void  EditInitializeSciCtrl(HWND);
 void  EditInitWordDelimiter(HWND);
 void  EditSetNewText(HWND,char*,DWORD);
 bool  EditConvertText(HWND,int,int,bool);
