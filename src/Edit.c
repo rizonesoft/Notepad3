@@ -90,12 +90,13 @@ extern bool bFixLineEndings;
 extern bool bAutoStripBlanks;
 
 // Default Codepage and Character Set
-extern int g_iDefaultNewFileEncoding;
-extern int g_iDefaultCharSet;
+extern int  g_iDefaultNewFileEncoding;
+extern int  g_iDefaultCharSet;
 extern bool bLoadASCIIasUTF8;
 extern bool bForceLoadASCIIasUTF8;
 extern bool bLoadNFOasOEM;
 extern bool bNoEncodingTags;
+extern bool g_bUseLimitedAutoCCharSet;
 
 extern bool g_bAutoCompleteWords;
 extern bool g_bAutoCLexerKeyWords;
@@ -120,7 +121,6 @@ extern bool g_bZeroBasedColumnIndex;
 extern CALLTIPTYPE g_CallTipType;
 
 extern FR_STATES g_FindReplaceMatchFoundState;
-extern bool g_bAutoCinASCIIModeOnly;
 
 #define ANSI_CAHR_BUFFER 258
 static char DelimChars[ANSI_CAHR_BUFFER] = { '\0' };
@@ -132,7 +132,8 @@ static char WordCharsAccelerated[ANSI_CAHR_BUFFER] = { '\0' };
 static char WhiteSpaceCharsAccelerated[ANSI_CAHR_BUFFER] = { '\0' };
 static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
-static char AutoCompleteWordASCII[ANSI_CAHR_BUFFER] = { '\0' };
+#define W_AUTOC_WORD_ANSI1252 L"#$%&@0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
+static char AutoCompleteWordCharSet[ANSI_CAHR_BUFFER] = { L'\0' };
 
 //static WCHAR W_DelimChars[ANSI_CAHR_BUFFER] = { L'\0' };
 //static WCHAR W_DelimCharsAccel[ANSI_CAHR_BUFFER] = { L'\0' };
@@ -330,7 +331,7 @@ void EditInitWordDelimiter(HWND hwnd)
   IniGetString(L"Settings2", L"ExtendedWhiteSpaceChars", L"", buffer, COUNTOF(buffer));
   char whitesp[ANSI_CAHR_BUFFER] = { '\0' };
   if (StringCchLen(buffer, COUNTOF(buffer)) > 0) {
-    WideCharToMultiByteStrg(CP_ACP, buffer, whitesp);
+    WideCharToMultiByteStrg(Encoding_SciCP, buffer, whitesp);
   }
 
   // 3rd set accelerated arrays
@@ -360,21 +361,14 @@ void EditInitWordDelimiter(HWND hwnd)
   StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
   StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
 
-
-  IniGetString(L"Settings2", L"AutoCompleteWordASCII", L"", buffer, COUNTOF(buffer));
-  char autocompl[ANSI_CAHR_BUFFER] = { '\0' };
-  if (StringCchLen(buffer, COUNTOF(buffer)) > 0) {
-    WideCharToMultiByteStrg(CP_ACP, buffer, autocompl);
+  IniGetString(L"Settings2", L"AutoCompleteWordCharSet", L"", buffer, COUNTOF(buffer));
+  if (StringCchLen(buffer, COUNTOF(buffer)) > 0)
+  {
+    g_bUseLimitedAutoCCharSet = true;
+    WideCharToMultiByteStrg(Encoding_SciCP, buffer, AutoCompleteWordCharSet);
+  } else {
+    WideCharToMultiByteStrg(Encoding_SciCP, W_AUTOC_WORD_ANSI1252, AutoCompleteWordCharSet);
   }
-  // add only 7-bit-ASCII chars to accelerated whitespace list
-  for (size_t i = 0; i < StringCchLenA(autocompl, ANSI_CAHR_BUFFER); i++) {
-    if (autocompl[i] & 0x7F) {
-      if (!StrChrA(AutoCompleteWordASCII, autocompl[i])) {
-        StringCchCatNA(AutoCompleteWordASCII, COUNTOF(AutoCompleteWordASCII), &(autocompl[i]), 1);
-      }
-    }
-  }
-  g_bAutoCinASCIIModeOnly = (AutoCompleteWordASCII[0] != '\0');
 
   // construct wide char arrays
   //MultiByteToWideChar(Encoding_SciCP, 0, DelimChars, -1, W_DelimChars, COUNTOF(W_DelimChars));
@@ -6569,7 +6563,8 @@ static const char* __fastcall _strNextLexKeyWord(const char* strg, const char* c
 void EditCompleteWord(HWND hwnd, bool autoInsert)
 {
   UNUSED(hwnd);
-  char const* const pchAllowdWordChars = (g_bAutoCinASCIIModeOnly ? AutoCompleteWordASCII : 
+
+  char const* const pchAllowdWordChars = (g_bUseLimitedAutoCCharSet ? AutoCompleteWordCharSet :
     (g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
 
   DocPos const iCurrentPos = SciCall_GetCurrentPos();

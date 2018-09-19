@@ -31,6 +31,7 @@
 #include <shellapi.h>
 #include <commctrl.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "../uthash/utarray.h"
 
@@ -49,6 +50,7 @@ extern HMODULE   g_hLngResContainer;
 
 int g_DOSEncoding = CPI_NONE;
 bool g_bForceCompEncDetection = false;
+bool g_bUseLimitedAutoCCharSet = false;
 
 // Supported Encodings
 WCHAR wchANSI[16] = { L'\0' };
@@ -129,8 +131,11 @@ void Encoding_InitDefaults()
     65001  // (UTF-8)
   };
 
-  ChangeEncodingCodePage(CPI_ANSI_DEFAULT, GetACP()); // set ANSI system CP
-  StringCchPrintf(wchANSI, COUNTOF(wchANSI), L" (CP-%u)", g_Encodings[CPI_ANSI_DEFAULT].uCodePage);
+  UINT const ansiInputCP = GetACP();
+  ChangeEncodingCodePage(CPI_ANSI_DEFAULT, ansiInputCP); // set ANSI system CP ()
+  assert(g_Encodings[CPI_ANSI_DEFAULT].uCodePage == ansiInputCP);
+  StringCchPrintf(wchANSI, COUNTOF(wchANSI), L" (CP-%u)", ansiInputCP);
+  g_bUseLimitedAutoCCharSet = IsDBCSCodePage(ansiInputCP);
 
   for (int i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
     if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage)) {
