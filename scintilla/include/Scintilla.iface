@@ -266,6 +266,11 @@ get int GetIMEInteraction=2678(,)
 # Choose to display the the IME in a winow or inline.
 set void SetIMEInteraction=2679(int imeInteraction,)
 
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+get bool IsIMEOpen=2717(,)
+get bool IsIMEModeCJK=2718(,)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 enu MarkerSymbol=SC_MARK_
 val MARKER_MAX=31
 val SC_MARK_CIRCLE=0
@@ -949,6 +954,9 @@ get int GetPrintColourMode=2149(,)
 enu FindOption=SCFIND_
 val SCFIND_WHOLEWORD=0x2
 val SCFIND_MATCHCASE=0x4
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+val SCFIND_DOT_MATCH_ALL=0x1000
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 val SCFIND_WORDSTART=0x00100000
 val SCFIND_REGEXP=0x00200000
 val SCFIND_POSIX=0x00400000
@@ -2765,13 +2773,6 @@ val SC_MOD_LEXERSTATE=0x80000
 val SC_MOD_INSERTCHECK=0x100000
 val SC_MOD_CHANGETABSTOPS=0x200000
 val SC_MODEVENTMASKALL=0x3FFFFF
-
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-# modifiers for SCN_CHARADDED: normal input, inline IME tentative, IME full composited
-val SC_CHARADDED_NORMAL=0
-val SC_CHARADDED_TENTATIVE=1
-val SC_CHARADDED_IME=2
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu Update=SC_UPDATE_
 val SC_UPDATE_CONTENT=0x1
@@ -4909,29 +4910,6 @@ val SCE_SAS_MACRO_KEYWORD=12
 val SCE_SAS_BLOCK_KEYWORD=13
 val SCE_SAS_MACRO_FUNCTION=14
 val SCE_SAS_STATEMENT=15
-# Lexical states for SCLEX_AHK
-lex AHK=SCLEX_AHK SCE_AHK_
-val SCE_AHK_DEFAULT=0
-val SCE_AHK_COMMENTLINE=1
-val SCE_AHK_COMMENTBLOCK=2
-val SCE_AHK_ESCAPE=3
-val SCE_AHK_SYNOPERATOR=4
-val SCE_AHK_EXPOPERATOR=5
-val SCE_AHK_STRING=6
-val SCE_AHK_NUMBER=7
-val SCE_AHK_IDENTIFIER=8
-val SCE_AHK_VARREF=9
-val SCE_AHK_LABEL=10
-val SCE_AHK_WORD_CF=11
-val SCE_AHK_WORD_CMD=12
-val SCE_AHK_WORD_FN=13
-val SCE_AHK_WORD_DIR=14
-val SCE_AHK_WORD_KB=15
-val SCE_AHK_WORD_VAR=16
-val SCE_AHK_WORD_SP=17
-val SCE_AHK_WORD_UD=18
-val SCE_AHK_VARREFKW=19
-val SCE_AHK_ERROR=20
 
 # Events
 

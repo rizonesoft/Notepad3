@@ -296,7 +296,7 @@ Sci::Line Document::MarkerNext(Sci::Line lineStart, int mask) const {
 int Document::AddMark(Sci::Line line, int markerNum) {
 	if (line >= 0 && line <= LinesTotal()) {
 		const int prev = Markers()->AddMark(line, markerNum, LinesTotal());
-		const DocModification mh(SC_MOD_CHANGEMARKER, LineStart(line), 0, 0, 0, line);
+		const DocModification mh(SC_MOD_CHANGEMARKER, LineStart(line), 0, 0, nullptr, line);
 		NotifyModified(mh);
 		return prev;
 	} else {
@@ -313,19 +313,19 @@ void Document::AddMarkSet(Sci::Line line, int valueSet) {
 		if (m & 1)
 			Markers()->AddMark(line, i, LinesTotal());
 	}
-	const DocModification mh(SC_MOD_CHANGEMARKER, LineStart(line), 0, 0, 0, line);
+	const DocModification mh(SC_MOD_CHANGEMARKER, LineStart(line), 0, 0, nullptr, line);
 	NotifyModified(mh);
 }
 
 void Document::DeleteMark(Sci::Line line, int markerNum) {
 	Markers()->DeleteMark(line, markerNum, false);
-	const DocModification mh(SC_MOD_CHANGEMARKER, LineStart(line), 0, 0, 0, line);
+	const DocModification mh(SC_MOD_CHANGEMARKER, LineStart(line), 0, 0, nullptr, line);
 	NotifyModified(mh);
 }
 
 void Document::DeleteMarkFromHandle(int markerHandle) {
 	Markers()->DeleteMarkFromHandle(markerHandle);
-	DocModification mh(SC_MOD_CHANGEMARKER, 0, 0, 0, 0);
+	DocModification mh(SC_MOD_CHANGEMARKER);
 	mh.line = -1;
 	NotifyModified(mh);
 }
@@ -337,7 +337,7 @@ void Document::DeleteAllMarks(int markerNum) {
 			someChanges = true;
 	}
 	if (someChanges) {
-		DocModification mh(SC_MOD_CHANGEMARKER, 0, 0, 0, 0);
+		DocModification mh(SC_MOD_CHANGEMARKER);
 		mh.line = -1;
 		NotifyModified(mh);
 	}
@@ -435,7 +435,7 @@ int SCI_METHOD Document::SetLevel(Sci_Position line, int level) {
 	const int prev = Levels()->SetLevel(static_cast<Sci::Line>(line), level, LinesTotal());
 	if (prev != level) {
 		DocModification mh(SC_MOD_CHANGEFOLD | SC_MOD_CHANGEMARKER,
-		                   LineStart(line), 0, 0, 0, static_cast<Sci::Line>(line));
+		                   LineStart(line), 0, 0, nullptr, static_cast<Sci::Line>(line));
 		mh.foldLevelNow = level;
 		mh.foldLevelPrev = prev;
 		NotifyModified(mh);
@@ -2113,7 +2113,7 @@ const char *Document::SubstituteByPosition(const char *text, Sci::Position *leng
 	if (regex)
 		return regex->SubstituteByPosition(this, text, length);
 	else
-		return 0;
+		return nullptr;
 }
 
 int Document::LineCharacterIndex() const {
@@ -2255,7 +2255,7 @@ void Document::SetLexInterface(LexInterface *pLexInterface) {
 int SCI_METHOD Document::SetLineState(Sci_Position line, int state) {
 	const int statePrevious = States()->SetLineState(static_cast<Sci::Line>(line), state);
 	if (state != statePrevious) {
-		const DocModification mh(SC_MOD_CHANGELINESTATE, LineStart(line), 0, 0, 0,
+		const DocModification mh(SC_MOD_CHANGELINESTATE, LineStart(line), 0, 0, nullptr,
 			static_cast<Sci::Line>(line));
 		NotifyModified(mh);
 	}
@@ -2304,7 +2304,7 @@ void Document::MarginSetStyles(Sci::Line line, const unsigned char *styles) {
 void Document::MarginClearAll() {
 	const Sci::Line maxEditorLine = LinesTotal();
 	for (Sci::Line l=0; l<maxEditorLine; l++)
-		MarginSetText(l, 0);
+		MarginSetText(l, nullptr);
 	// Free remaining data
 	Margins()->ClearAll();
 }
@@ -2347,7 +2347,7 @@ int Document::AnnotationLines(Sci::Line line) const {
 void Document::AnnotationClearAll() {
 	const Sci::Line maxEditorLine = LinesTotal();
 	for (Sci::Line l=0; l<maxEditorLine; l++)
-		AnnotationSetText(l, 0);
+		AnnotationSetText(l, nullptr);
 	// Free remaining data
 	Annotations()->ClearAll();
 }
@@ -2980,7 +2980,6 @@ std::regex_constants::match_flag_type MatchFlags(const Document *doc, Sci::Posit
 
 template<typename Iterator, typename Regex>
 bool MatchOnLines(const Document *doc, const Regex &regexp, const RESearchRange &resr, RESearch &search) {
-	bool matched = false;
 	std::match_results<Iterator> match;
 
 	// MSVC and libc++ have problems with ^ and $ matching line ends inside a range.
@@ -2994,9 +2993,10 @@ bool MatchOnLines(const Document *doc, const Regex &regexp, const RESearchRange 
 	Iterator itStart(doc, resr.startPos);
 	Iterator itEnd(doc, resr.endPos);
 	const std::regex_constants::match_flag_type flagsMatch = MatchFlags(doc, resr.startPos, resr.endPos);
-	matched = std::regex_search(itStart, itEnd, match, regexp, flagsMatch);
+	const bool matched = std::regex_search(itStart, itEnd, match, regexp, flagsMatch);
 #else
 	// Line by line.
+	bool matched = false;
 	for (Sci::Line line = resr.lineRangeStart; line != resr.lineRangeBreak; line += resr.increment) {
 		const Range lineRange = resr.LineRange(line);
 		Iterator itStart(doc, lineRange.start);

@@ -63,7 +63,8 @@ EditModel::EditModel() : braces{} {
 	primarySelection = true;
 	imeInteraction = imeWindowed;
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	charAddedSource = SC_CHARADDED_NORMAL;
+	imeIsOpen = false;
+	imeIsInModeCJK = false;
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	bidirectional = Bidirectional::bidiDisabled;
 	foldFlags = 0;

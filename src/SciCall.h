@@ -439,7 +439,16 @@ DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo)
 DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value)
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology)
 DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction)
+
+
+//=============================================================================
+//
+//  IME
+//
 DeclareSciCallV1(SetIMEInteraction, SETIMEINTERACTION, int, interact)
+DeclareSciCallR0(IsIMEOpen, ISIMEOPEN, bool)
+DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool)
+
 
 //=============================================================================
 //

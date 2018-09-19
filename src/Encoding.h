@@ -125,6 +125,11 @@ int Encoding_CountOf();
 void ChangeEncodingCodePage(int cpi, UINT newCP);
 int Encoding_Analyze(const char* const text, const size_t len, const int encodingHint, bool* isReliable);
 
+// 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 1361 Johab
+inline bool IsDBCSCodePage(UINT cp) {
+  return ((cp == 932) || (cp == 936) || (cp == 949) || (cp == 950) || (cp == 1361));
+}
+
 // --------------------------------------------------------------------------------------------------------------------------------
 
 #endif //_NP3_ENCODING_H_

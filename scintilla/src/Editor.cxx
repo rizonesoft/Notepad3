@@ -1959,28 +1959,23 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 		SetLastXChosen();
 	}
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	// We don't handle inline IME tentative characters
-	if (charAddedSource != SC_CHARADDED_TENTATIVE) {
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-		if (treatAsDBCS) {
-			NotifyChar((static_cast<unsigned char>(s[0]) << 8) |
-							static_cast<unsigned char>(s[1]));
-		} else if (len > 0) {
-			int byte = static_cast<unsigned char>(s[0]);
-			if ((byte < 0xC0) || (1 == len)) {
-				// Handles UTF-8 characters between 0x01 and 0x7F and single byte
-				// characters when not in UTF-8 mode.
-				// Also treats \0 and naked trail bytes 0x80 to 0xBF as valid
-				// characters representing themselves.
-			} else {
-				unsigned int utf32[1] = { 0 };
-				UTF32FromUTF8(std::string_view(s, len), utf32, std::size(utf32));
-				byte = utf32[0];
-			}
-			NotifyChar(byte);
+	if (treatAsDBCS) {
+		NotifyChar((static_cast<unsigned char>(s[0]) << 8) |
+		        static_cast<unsigned char>(s[1]));
+	} else if (len > 0) {
+		int byte = static_cast<unsigned char>(s[0]);
+		if ((byte < 0xC0) || (1 == len)) {
+			// Handles UTF-8 characters between 0x01 and 0x7F and single byte
+			// characters when not in UTF-8 mode.
+			// Also treats \0 and naked trail bytes 0x80 to 0xBF as valid
+			// characters representing themselves.
+		} else {
+			unsigned int utf32[1] = { 0 };
+			UTF32FromUTF8(std::string_view(s, len), utf32, std::size(utf32));
+			byte = utf32[0];
 		}
-	} // >>>  NON STD SCI PATCH   <<<
+		NotifyChar(byte);
+	}
 	
 	if (recordingMacro) {
 		NotifyMacroRecord(SCI_REPLACESEL, 0, reinterpret_cast<sptr_t>(s));
@@ -2331,9 +2326,6 @@ void Editor::NotifyChar(int ch) {
 	SCNotification scn = {};
 	scn.nmhdr.code = SCN_CHARADDED;
 	scn.ch = ch;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	scn.modifiers = charAddedSource;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	NotifyParent(scn);
 }
 
@@ -6795,6 +6787,14 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETIMEINTERACTION:
 		return imeInteraction;
+		
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	case SCI_ISIMEOPEN:
+		return imeIsOpen;
+		
+	case SCI_ISIMEMODECJK:
+		return imeIsInModeCJK;
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	case SCI_SETBIDIRECTIONAL:
 		// SCI_SETBIDIRECTIONAL is implemented on platform subclasses if they support bidirectional text.
