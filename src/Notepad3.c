@@ -6361,13 +6361,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) {
               //if (g_bAutoCinASCIIModeOnly && (ich > 0x7F) ) {
-                bool isIMEModeActive,
-                        bIMEOpen = (bool)SendMessage(g_hwndEdit, SCI_GETIMEOPEN, 0, 0);
-                if (bIMEOpen) { // || (scn->modifiers != SC_CHARADDED_NORMAL)
-                  isIMEModeActive = (bool)SendMessage(g_hwndEdit, SCI_GETIMEMODEACTIVE, 0, 0);
-                  if (isIMEModeActive ) {
+                if (SciCall_IsIMEOpen()) {
+                  if (SciCall_IsIMEModeCJK()) {
                     SciCall_AutoCCancel();
-                    return 0LL;
+                    return 0;
                   }
                 }
               //} //g_bAutoCinASCIIModeOnly section

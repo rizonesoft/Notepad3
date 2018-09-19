@@ -6789,11 +6789,11 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return imeInteraction;
 		
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case SCI_GETIMEOPEN:
-		return isIMEOpen;
+	case SCI_ISIMEOPEN:
+		return imeIsOpen;
 		
-	case SCI_GETIMEMODEACTIVE:
-		return isIMEModeCJK;
+	case SCI_ISIMEMODECJK:
+		return imeIsInModeCJK;
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	case SCI_SETBIDIRECTIONAL:
