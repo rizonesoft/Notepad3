@@ -158,7 +158,7 @@ HINSTANCE            g_hInstance = NULL;
 HMODULE              g_hLngResContainer = NULL;
 
 WCHAR                g_tchPrefLngLocName[64];
-LANGID               g_iPrefLngLocID = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
+LANGID               g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 #define              LNG_AVAILABLE_COUNT 8
 static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR ja-JP nl-NL zh-CN"; // en-US internal
 static LANGID const  g_iAvailableLanguages[LNG_AVAILABLE_COUNT] = { 1078, 1031, 3082, 2057, 1036, 1041, 1043, 2052 }; // 1033 internal
@@ -327,22 +327,22 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   // ----------------------------------------------------
   // MultiLingual
   //
-  g_iPrefLngLocID = GetUserDefaultUILanguage();
+  g_iPrefLANGID = GetUserDefaultUILanguage();
   BOOL bPrefLngDefined = StrIsNotEmpty(g_tchPrefLngLocName);
   BOOL bPrefLngNotAvail = FALSE;
   if (bPrefLngDefined) {
     bPrefLngDefined = TRUE;
     DWORD dwLangID = 0;
     GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
-    g_iPrefLngLocID = (LANGID)dwLangID;
+    g_iPrefLANGID = (LANGID)dwLangID;
   }
 
-  g_hLngResContainer = _LoadLanguageResources(g_iPrefLngLocID);
+  g_hLngResContainer = _LoadLanguageResources(g_iPrefLANGID);
 
   if (!g_hLngResContainer) // fallback en-US (1033)
   {
     g_hLngResContainer = g_hInstance;
-    if (g_iPrefLngLocID != 1033) { bPrefLngNotAvail = TRUE; }
+    if (g_iPrefLANGID != 1033) { bPrefLngNotAvail = TRUE; }
   }
   // ----------------------------------------------------
 

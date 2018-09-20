@@ -42,7 +42,7 @@
 //  L"Title\nMessage Text"
 //
 extern HWND hwndMain;
-extern LANGID g_iPrefLngLocID;
+extern LANGID g_iPrefLANGID;
 extern HICON  g_hDlgIcon;
 
 
@@ -77,7 +77,7 @@ int ErrorMessage(int iLevel, UINT uIdMsg, ...)
   HWND focus = GetFocus();
   HWND hwnd = focus ? focus : hwndMain;
 
-  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLngLocID);
+  return MessageBoxEx(hwnd, szText, szTitle, MB_SETFOREGROUND | iIcon, g_iPrefLANGID);
 }
 
 
