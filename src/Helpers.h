@@ -59,6 +59,29 @@ extern UINT    g_uCurrentPPI;
 
 // ============================================================================
 
+// direct heap allocation
+
+#define DEFAULT_ALLOC_FLAGS (0) ///~ HEAP_GENERATE_EXCEPTIONS
+
+extern HANDLE g_hndlProcessHeap;
+
+__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
+{
+  return HeapAlloc(g_hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
+}
+
+__forceinline bool FreeMem(LPVOID lpMemory)
+{
+  return (lpMemory ? HeapFree(g_hndlProcessHeap, 0, lpMemory) : true);
+}
+
+__forceinline size_t SizeOfMem(LPCVOID lpMemory)
+{
+  return (lpMemory ? HeapSize(g_hndlProcessHeap, 0, lpMemory) : 0);
+}
+
+// ============================================================================
+
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
 void DbgLog(const char *fmt, ...);
 #else
@@ -114,21 +137,6 @@ inline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); 
 inline int float2int(float f) { return (int)lroundf(f); }
 inline float Round10th(float f) { return (float)float2int(f * 10.0f) / 10; }
 inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) != 0); }
-
-
-// direct heap allocation
-#define DEFAULT_ALLOC_FLAGS (0) ///~ HEAP_GENERATE_EXCEPTIONS
-__forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags) {
-  return HeapAlloc(GetProcessHeap(), (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
-}
-
-__forceinline bool FreeMem(LPVOID lpMemory) {
-  return (lpMemory ? HeapFree(GetProcessHeap(), 0, lpMemory) : true);
-}
-
-__forceinline size_t SizeOfMem(LPCVOID lpMemory) {
-  return (lpMemory ? HeapSize(GetProcessHeap(), 0, lpMemory) : 0);
-}
 
 // ----------------------------------------------------------------------------
 
@@ -313,15 +321,15 @@ UINT CharSetFromCodePage(UINT);
 #define MRU_UTF8      2
 #define MRU_BMRK_SIZE 512
 
-typedef struct _mrulist {
-
-  WCHAR  szRegKey[256];
-  int    iFlags;
-  int    iSize;
-  LPWSTR pszItems[MRU_MAXITEMS];
-  int    iEncoding[MRU_MAXITEMS];
-  DocPos iCaretPos[MRU_MAXITEMS];
-  LPWSTR pszBookMarks[MRU_MAXITEMS];
+typedef struct _mrulist 
+{
+  LPCWSTR szRegKey;
+  int     iFlags;
+  int     iSize;
+  LPWSTR  pszItems[MRU_MAXITEMS];
+  int     iEncoding[MRU_MAXITEMS];
+  DocPos  iCaretPos[MRU_MAXITEMS];
+  LPWSTR  pszBookMarks[MRU_MAXITEMS];
 } 
 MRULIST, *PMRULIST, *LPMRULIST;
 

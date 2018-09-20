@@ -349,7 +349,7 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
   LVITEM lvi;
   WCHAR wchBuf[256] = { L'\0' };
 
-  PENCODINGENTRY pEE = LocalAlloc(LPTR, Encoding_CountOf() * sizeof(ENCODINGENTRY));
+  PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
     for (i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
@@ -395,7 +395,7 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
           iSelItem = lvi.iItem;
       }
     }
-    LocalFree(pEE);
+    FreeMem(pEE);
   }
   if (iSelItem != -1) {
     ListView_SetItemState(hwnd, iSelItem, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
@@ -435,7 +435,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
   COMBOBOXEXITEM cbei;
   WCHAR wchBuf[256] = { L'\0' };
 
-  PENCODINGENTRY pEE = LocalAlloc(LPTR, Encoding_CountOf() * sizeof(ENCODINGENTRY));
+  PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
     for (i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
@@ -481,11 +481,11 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
           iSelItem = (int)cbei.iItem;
       }
     }
-
-    LocalFree(pEE);
+    FreeMem(pEE);
   }
-  if (iSelItem != -1)
+  if (iSelItem != -1) {
     SendMessage(hwnd, CB_SETCURSEL, (WPARAM)iSelItem, 0);
+  }
 }
 // ============================================================================
 

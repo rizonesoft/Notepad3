@@ -282,11 +282,10 @@ void Style_Load()
   WCHAR tch[32] = { L'\0' };
   //WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
-  WCHAR *pIniSection = LocalAlloc(LPTR, sizeof(WCHAR) * NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100) ;
+  size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
+  WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
-
-    int   cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
-
+    int const cchIniSection = (int)len;
     // Custom colors
     g_colorCustom[0] = RGB(0x00, 0x00, 0x00);
     g_colorCustom[1] = RGB(0x0A, 0x24, 0x6A);
@@ -359,7 +358,7 @@ void Style_Load()
         ++i;
       }
     }
-    LocalFree(pIniSection);
+    FreeMem(pIniSection);
   }
   // 2nd Default Style has same filename extension list as (1st) Default Style
   StringCchCopyW(lexStandard2nd.szExtensions, COUNTOF(lexStandard2nd.szExtensions), lexStandard.szExtensions);
@@ -374,10 +373,9 @@ void Style_Save()
 {
   WCHAR tch[32] = { L'\0' };;
   WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR)*NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100);
+  size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
+  WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
-    //int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
-
     // Custom colors
     for (int i = 0; i < 16; i++) {
       WCHAR wch[32] = { L'\0' };
@@ -387,7 +385,7 @@ void Style_Save()
       IniSectionSetString(pIniSection, tch, wch);
     }
     SaveIniSection(L"Custom Colors", pIniSection);
-    ZeroMemory(pIniSection, LocalSize(pIniSection));
+    ZeroMemory(pIniSection, len * sizeof(WCHAR));
 
     // auto select
     IniSectionSetBool(pIniSection, L"Use2ndDefaultStyle", Style_GetUse2ndDefault());
@@ -403,7 +401,7 @@ void Style_Save()
     IniSectionSetInt(pIniSection, L"SelectDlgSizeY", g_cyStyleSelectDlg);
 
     SaveIniSection(L"Styles", pIniSection);
-    ZeroMemory(pIniSection, LocalSize(pIniSection));
+    ZeroMemory(pIniSection, len * sizeof(WCHAR));
 
     if (!g_fStylesModified) {
       if (g_bIniFileFromScratch) {
@@ -411,7 +409,7 @@ void Style_Save()
           SaveIniSection(g_pLexArray[iLexer]->pszName, L"\0");
         }
       }
-      LocalFree(pIniSection);
+      FreeMem(pIniSection);
       return;
     }
 
@@ -426,9 +424,9 @@ void Style_Save()
         ++i;
       }
       SaveIniSection(g_pLexArray[iLexer]->pszName, pIniSection);
-      ZeroMemory(pIniSection, LocalSize(pIniSection));
+      ZeroMemory(pIniSection, len * sizeof(WCHAR));
     }
-    LocalFree(pIniSection);
+    FreeMem(pIniSection);
   }
 }
 
@@ -458,16 +456,16 @@ bool Style_Import(HWND hwnd)
 
   if (GetOpenFileName(&ofn))
   {
-    int i,iLexer;
-    WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100);
+    size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
+    WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pIniSection) {
-      int   cchIniSection = (int)LocalSize(pIniSection) / sizeof(WCHAR);
+      int const cchIniSection = (int)len;
 
-      for (iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
         if (GetPrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, cchIniSection, szFile)) {
           IniSectionGetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
                               g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
-          i = 0;
+          int i = 0;
           while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
             IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
                                 g_pLexArray[iLexer]->Styles[i].pszDefault,
@@ -477,7 +475,7 @@ bool Style_Import(HWND hwnd)
           }
         }
       }
-      LocalFree(pIniSection);
+      FreeMem(pIniSection);
       return(true);
     }
   }
@@ -508,12 +506,11 @@ bool Style_Export(HWND hwnd)
   ofn.Flags = /*OFN_FILEMUSTEXIST |*/ OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
             | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/ | OFN_OVERWRITEPROMPT;
 
-  if (GetSaveFileName(&ofn)) {
-
-    WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100);
+  if (GetSaveFileName(&ofn)) 
+  {
+    size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
+    WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pIniSection) {
-      //int   cchIniSection = (int)LocalSize(pIniSection)/sizeof(WCHAR);
-
       for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
         IniSectionSetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
         int i = 0;
@@ -523,9 +520,9 @@ bool Style_Export(HWND hwnd)
         }
         if (!WritePrivateProfileSection(g_pLexArray[iLexer]->pszName, pIniSection, szFile))
           dwError = GetLastError();
-        ZeroMemory(pIniSection, LocalSize(pIniSection));
+        ZeroMemory(pIniSection, len * sizeof(WCHAR));
       }
-      LocalFree(pIniSection);
+      FreeMem(pIniSection);
     }
     if (dwError != ERROR_SUCCESS) {
       MsgBoxLng(MBINFO,IDS_MUI_EXPORT_FAIL,szFile);
@@ -3260,14 +3257,14 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
           if (Style_StylesBackup[cnt]) {
-            LocalFree(Style_StylesBackup[cnt]);
+            LocalFree(Style_StylesBackup[cnt]);  // StrDup()
             Style_StylesBackup[cnt] = NULL;
           }
           ++cnt;
           int i = 0;
           while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
             if (Style_StylesBackup[cnt]) {
-              LocalFree(Style_StylesBackup[cnt]);
+              LocalFree(Style_StylesBackup[cnt]);  // StrDup()
               Style_StylesBackup[cnt] = NULL;
             }
             ++cnt;

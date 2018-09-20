@@ -77,7 +77,7 @@ bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
   ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
   // Allocate DirListData Property
-  LPDLDATA lpdl = (LPVOID)GlobalAlloc(GPTR,sizeof(DLDATA));
+  LPDLDATA lpdl = (LPVOID)AllocMem(sizeof(DLDATA),HEAP_ZERO_MEMORY);
   if (lpdl) {
     SetProp(hwnd, pDirListProp, (HANDLE)lpdl);
 
@@ -128,9 +128,7 @@ bool DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 //
 bool DirList_Destroy(HWND hwnd)
 {
-
   LPDLDATA lpdl = (LPVOID)GetProp(hwnd,pDirListProp);
-
   // Release multithreading objects
   DirList_TerminateIconThread(hwnd);
   CloseHandle(lpdl->hExitThread);
@@ -144,7 +142,7 @@ bool DirList_Destroy(HWND hwnd)
 
   // Free DirListData Property
   RemoveProp(hwnd,pDirListProp);
-  GlobalFree(lpdl);
+  FreeMem(lpdl);
 
   return false;
 }

@@ -605,7 +605,7 @@ extern "C" void EditPrintSetup(HWND hwnd)
     hDevNames = pdlg.hDevNames;
   }
 
-  LocalFree(pDlgTemplate);
+  FreeMem(pDlgTemplate);
 }
 
 
