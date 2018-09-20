@@ -97,6 +97,7 @@ extern bool bForceLoadASCIIasUTF8;
 extern bool bLoadNFOasOEM;
 extern bool bNoEncodingTags;
 extern bool g_bUseLimitedAutoCCharSet;
+extern bool g_bIsCJKInputCodePage;
 
 extern bool g_bAutoCompleteWords;
 extern bool g_bAutoCLexerKeyWords;
@@ -364,10 +365,11 @@ void EditInitWordDelimiter(HWND hwnd)
   IniGetString(L"Settings2", L"AutoCompleteWordCharSet", L"", buffer, COUNTOF(buffer));
   if (StringCchLen(buffer, COUNTOF(buffer)) > 0)
   {
-    g_bUseLimitedAutoCCharSet = true;
     WideCharToMultiByteStrg(Encoding_SciCP, buffer, AutoCompleteWordCharSet);
+    g_bUseLimitedAutoCCharSet = true;
   } else {
     WideCharToMultiByteStrg(Encoding_SciCP, W_AUTOC_WORD_ANSI1252, AutoCompleteWordCharSet);
+    g_bUseLimitedAutoCCharSet = false;
   }
 
   // construct wide char arrays
@@ -375,7 +377,6 @@ void EditInitWordDelimiter(HWND hwnd)
   //MultiByteToWideChar(Encoding_SciCP, 0, DelimCharsAccel, -1, W_DelimCharsAccel, COUNTOF(W_DelimCharsAccel));
   //MultiByteToWideChar(Encoding_SciCP, 0, WhiteSpaceCharsDefault, -1, W_WhiteSpaceCharsDefault, COUNTOF(W_WhiteSpaceCharsDefault));
   //MultiByteToWideChar(Encoding_SciCP, 0, WhiteSpaceCharsAccelerated, -1, W_WhiteSpaceCharsAccelerated, COUNTOF(W_WhiteSpaceCharsAccelerated));
-
 }
 
 
@@ -6570,8 +6571,9 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
 {
   UNUSED(hwnd);
 
-  char const* const pchAllowdWordChars = (g_bUseLimitedAutoCCharSet ? AutoCompleteWordCharSet :
-    (g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
+  char const* const pchAllowdWordChars = ((g_bIsCJKInputCodePage || g_bUseLimitedAutoCCharSet) ? 
+                                          AutoCompleteWordCharSet :
+                                          (g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
 
   DocPos const iCurrentPos = SciCall_GetCurrentPos();
   DocLn  const iLine = SciCall_LineFromPosition(iCurrentPos);

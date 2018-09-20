@@ -48,7 +48,7 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; wtx; log; asc; 
 EDITLEXER lexANSI = { 
 SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"", 
 &KeyWords_NULL,{
-    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; none; size:10.5", L"" },
+    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; none; size:11", L"" },
     { STYLE_LINENUMBER, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
     { STYLE_BRACELIGHT, IDS_LEX_STD_BRACE, L"Matching Braces", L"size:+0", L"" },
     { STYLE_BRACEBAD, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error", L"size:+0", L"" },
