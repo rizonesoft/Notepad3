@@ -44,7 +44,7 @@
 
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
-extern LANGID    g_iPrefLngLocID;
+extern LANGID    g_iPrefLANGID;
 
 
 //=============================================================================
@@ -308,7 +308,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     FORMAT_MESSAGE_IGNORE_INSERTS,
     NULL,
     dwErrID,
-    g_iPrefLngLocID,
+    g_iPrefLANGID,
     (LPTSTR)&lpMsgBuf,
     0, NULL);
 

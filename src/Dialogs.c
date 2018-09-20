@@ -53,7 +53,7 @@
 extern HWND      g_hwndMain;
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
-extern LANGID    g_iPrefLngLocID;
+extern LANGID    g_iPrefLANGID;
 extern HICON     g_hDlgIcon;
 
 extern WCHAR g_wchWorkingDirectory[];
@@ -133,7 +133,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       dwLastIOError,
-      g_iPrefLngLocID,
+      g_iPrefLANGID,
       (LPTSTR)&lpMsgBuf,
       0,
       NULL);
@@ -171,7 +171,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
 
   //return  MessageBox(hwnd, szText, szTitle, iIcon);
   //return  MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, g_iPrefLngLocID);
+  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, g_iPrefLANGID);
 }
 
 
@@ -295,7 +295,7 @@ void DisplayCmdLineHelp(HWND hwnd)
   mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND48);
   mbp.dwContextHelpId = 0;
   mbp.lpfnMsgBoxCallback = NULL;
-  mbp.dwLanguageId = g_iPrefLngLocID;
+  mbp.dwLanguageId = g_iPrefLANGID;
 
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
