@@ -596,14 +596,14 @@ bool EditIsRecodingNeeded(WCHAR* pszText, int cchLen)
 char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int* pLenLastLn) 
 {
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT) || !OpenClipboard(GetParent(hwnd))) {
-    char* pEmpty = StrDupA("");
-    return (pEmpty);
+    char* pEmpty = AllocMem(1, HEAP_ZERO_MEMORY);
+    return pEmpty;
   }
 
   // get clipboard
   HANDLE hmem = GetClipboardData(CF_UNICODETEXT);
   WCHAR* pwch = GlobalLock(hmem);
-  int wlen = (int)StringCchLenW(pwch,0);
+  int const wlen = (int)StringCchLenW(pwch,0);
 
   if (bCheckEncoding && EditIsRecodingNeeded(pwch,wlen)) 
   {
@@ -624,22 +624,29 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
   }
 
   // translate to SCI editor component codepage (default: UTF-8)
-  int mlen = WideCharToMultiByte(Encoding_SciCP,0,pwch,wlen,NULL,0,NULL,NULL);
-  char* pmch = LocalAlloc(LPTR,mlen + 1);
-  if (pmch && mlen != 0) {
-    int cnt = WideCharToMultiByte(Encoding_SciCP,0,pwch,wlen,pmch,mlen + 1,NULL,NULL);
-    if (cnt == 0)
-      return (pmch);
+  char* pmch = NULL;
+  int mlen = 0;
+  if (wlen > 0) {
+    mlen = WideCharToMultiByte(Encoding_SciCP, 0, pwch, wlen, NULL, 0, NULL, NULL);
+    pmch = (char*)AllocMem(mlen + 1, HEAP_ZERO_MEMORY);
+    if (pmch && mlen != 0) {
+      int cnt = WideCharToMultiByte(Encoding_SciCP, 0, pwch, wlen, pmch, mlen + 1, NULL, NULL);
+      if (cnt == 0)
+        return pmch;
+    }
+    else
+      return pmch;
   }
-  else 
-    return (pmch);
-
+  else {
+    pmch = AllocMem(1, HEAP_ZERO_MEMORY);
+    return pmch;
+  }
   int lineCount = 0;
   int lenLastLine = 0;
 
   if ((bool)SendMessage(hwnd,SCI_GETPASTECONVERTENDINGS,0,0)) 
   {
-    char* ptmp = LocalAlloc(LPTR,mlen * 2 + 2);
+    char* ptmp = (char*)AllocMem((mlen+1)*2, HEAP_ZERO_MEMORY);
     if (ptmp) {
       char *s = pmch;
       char *d = ptmp;
@@ -671,11 +678,11 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
       *d = '\0';
       int mlen2 = (int)(d - ptmp);
 
-      LocalFree(pmch);
-      pmch = LocalAlloc(LPTR,mlen2 + 1);
+      FreeMem(pmch);
+      pmch = AllocMem(mlen2 + 1, HEAP_ZERO_MEMORY);
       if (pmch) {
         StringCchCopyA(pmch, mlen2 + 1, ptmp);
-        LocalFree(ptmp);
+        FreeMem(ptmp);
       }
     }
   }
@@ -704,7 +711,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
   if (pLenLastLn)
     *pLenLastLn = lenLastLine;
 
-  return (pmch);
+  return pmch;
 }
 
 
@@ -722,13 +729,13 @@ bool EditSetClipboardText(HWND hwnd, const char* pszText)
   WCHAR* pszTextW = NULL;
   int cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, NULL, 0) + 1;
   if (cchTextW > 1) {
-    pszTextW = LocalAlloc(LPTR, sizeof(WCHAR)*cchTextW);
+    pszTextW = AllocMem(sizeof(WCHAR)*cchTextW, HEAP_ZERO_MEMORY);
     MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, pszTextW, cchTextW);
   }
 
   if (pszTextW) {
     SetClipboardTextW(GetParent(hwnd), pszTextW);
-    LocalFree(pszTextW);
+    FreeMem(pszTextW);
     return true;
   }
   return false;
@@ -775,7 +782,7 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
   char* pszText = NULL;
   SIZE_T const size = SciCall_GetSelText(NULL);
   if (size > 0) {
-    pszText = LocalAlloc(LPTR, size);
+    pszText = AllocMem(size, HEAP_ZERO_MEMORY);
     SciCall_GetSelText(pszText);
     SciCall_Paste();  //~SciCall_ReplaceSel(pClip);
     EditSetClipboardText(hwnd, pszText);
@@ -784,7 +791,7 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
     SciCall_Paste();  //~SciCall_ReplaceSel(pClip);
     SciCall_Clear();
   }
-  if (pszText) { LocalFree(pszText); }
+  if (pszText) { FreeMem(pszText); }
 
   if (!bIsRectSel) {
     //TODO: check for Rectangular Clipboard and skip selection restore
@@ -797,7 +804,7 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
     //TODO: restore selection in case of swap clipboard 
   }
 
-  LocalFree(pClip);
+  FreeMem(pClip);
   return true;
 }
 
@@ -818,15 +825,15 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
       return false;
     }
     else {
-      pszText = LocalAlloc(LPTR, SciCall_GetSelText(NULL));
+      pszText = AllocMem(SciCall_GetSelText(NULL), HEAP_ZERO_MEMORY);
       SciCall_GetSelText(pszText);
     }
   }
   else {
     DocPos cchText = SciCall_GetTextLength();
-    pszText = LocalAlloc(LPTR,cchText + 1);
+    pszText = AllocMem(cchText + 1,HEAP_ZERO_MEMORY);
     if (pszText) {
-      SciCall_GetText((DocPos)LocalSize(pszText), pszText);
+      SciCall_GetText(cchText + 1, pszText);
     }
   }
   WCHAR* pszTextW = NULL;
@@ -834,21 +841,21 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
     int cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, NULL, 0);
     if (cchTextW > 0) {
       int lenTxt = (cchTextW + 1);
-      pszTextW = LocalAlloc(LPTR, sizeof(WCHAR)*lenTxt);
+      pszTextW = AllocMem(sizeof(WCHAR)*lenTxt,HEAP_ZERO_MEMORY);
       MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, pszTextW, lenTxt);
     }
-    LocalFree(pszText);
+    FreeMem(pszText);
   }
   if (!bAppend) {
-    bool res = (bool)SetClipboardTextW(GetParent(hwnd), pszTextW);
-    LocalFree(pszTextW);
+    bool const res = (bool)SetClipboardTextW(GetParent(hwnd), pszTextW);
+    FreeMem(pszTextW);
     return res;
   }
 
   // --- Append to Clipboard ---
 
   if (!OpenClipboard(GetParent(hwnd))) {
-    LocalFree(pszTextW);
+    FreeMem(pszTextW);
     return false;
   }
 
@@ -863,7 +870,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   sizeNew += StringCchLen(pszSep,0);
 
   // Copy Clip
-  WCHAR* pszNewTextW = LocalAlloc(LPTR, sizeof(WCHAR) * sizeNew);
+  WCHAR* pszNewTextW = AllocMem(sizeof(WCHAR) * sizeNew, HEAP_ZERO_MEMORY);
   
   if (pszOld && pszNewTextW) {
     StringCchCopy(pszNewTextW, sizeNew, pszOld);
@@ -879,8 +886,8 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
     res = (bool)SetClipboardTextW(GetParent(hwnd), pszNewTextW);
   }
 
-  LocalFree(pszTextW);
-  LocalFree(pszNewTextW);
+  FreeMem(pszTextW);
+  FreeMem(pszNewTextW);
   return res;
 }
 
@@ -1543,7 +1550,7 @@ void EditTitleCase(HWND hwnd)
       int cchTextW = MultiByteToWideChar(Encoding_SciCP,0,pszText,(int)(iSelLength-1),pszTextW,(int)iSelLength);
 
       bool bChanged = false;
-      LPWSTR pszMappedW = LocalAlloc(LPTR,SizeOfMem(pszTextW));
+      LPWSTR pszMappedW = AllocMem(SizeOfMem(pszTextW),HEAP_ZERO_MEMORY);
       if (pszMappedW) {
         // first make lower case, before applying TitleCase
         if (LCMapString(LOCALE_SYSTEM_DEFAULT, (LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE), pszTextW, cchTextW, pszMappedW, (int)iSelLength)) {
@@ -1551,7 +1558,7 @@ void EditTitleCase(HWND hwnd)
             bChanged = true;
           }
         }
-        LocalFree(pszMappedW);
+        FreeMem(pszMappedW);
       }
 
       if (bChanged) {
@@ -1658,36 +1665,38 @@ void EditURLEncode(HWND hwnd)
     return;
   }
 
-  const DocPos iCurPos = SciCall_GetCurrentPos();
-  const DocPos iAnchorPos = SciCall_GetAnchor();
-  const DocPos iSelLength = SciCall_GetSelText(NULL);
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+  DocPos const iAnchorPos = SciCall_GetAnchor();
+  DocPos const iSelLength = SciCall_GetSelText(NULL);
 
   const char* pszText = (const char*)SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelLength);
 
-  LPWSTR pszTextW = LocalAlloc(LPTR, (iSelLength * sizeof(WCHAR)));
+  LPWSTR pszTextW = AllocMem(iSelLength * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pszTextW == NULL) {
     return;
   }
 
   /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)(iSelLength-1), pszTextW, (int)iSelLength);
 
-  char* pszEscaped = LocalAlloc(LPTR, iSelLength * 3);
+  size_t const cchEscaped = iSelLength * 3;
+  char* pszEscaped = (char*)AllocMem(cchEscaped, HEAP_ZERO_MEMORY);
   if (pszEscaped == NULL) {
-    LocalFree(pszTextW);
+    FreeMem(pszTextW);
     return;
   }
 
-  LPWSTR pszEscapedW = LocalAlloc(LPTR, LocalSize(pszTextW) * 3);
+  LPWSTR pszEscapedW = (LPWSTR)AllocMem(cchEscaped * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pszEscapedW == NULL) {
-    LocalFree(pszTextW);
-    LocalFree(pszEscaped);
+    FreeMem(pszTextW);
+    FreeMem(pszEscaped);
     return;
   }
 
-  DWORD cchEscapedW = (int)LocalSize(pszEscapedW) / sizeof(WCHAR);
+  DWORD cchEscapedW = (DWORD)cchEscaped;
   UrlEscape(pszTextW, pszEscapedW, &cchEscapedW, URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_PERCENT | URL_ESCAPE_AS_UTF8);
 
-  DWORD cchEscaped = WideCharToMultiByte(Encoding_SciCP, 0, pszEscapedW, cchEscapedW, pszEscaped, (int)LocalSize(pszEscaped), NULL, NULL);
+  DWORD const cchEscapedEnc = WideCharToMultiByte(Encoding_SciCP, 0, pszEscapedW, cchEscapedW, 
+                                                  pszEscaped, (int)cchEscaped, NULL, NULL);
 
   _ENTER_TARGET_TRANSACTION_;
   if (iCurPos < iAnchorPos)
@@ -1695,18 +1704,18 @@ void EditURLEncode(HWND hwnd)
   else
     SciCall_SetTargetRange(iAnchorPos, iCurPos);
 
-  SciCall_ReplaceTarget(cchEscaped, pszEscaped);
+  SciCall_ReplaceTarget(cchEscapedEnc, pszEscaped);
   _LEAVE_TARGET_TRANSACTION_;
   
 
   if (iCurPos < iAnchorPos)
-    EditSetSelectionEx(hwnd, iCurPos + cchEscaped, iCurPos, -1, -1);
+    EditSetSelectionEx(hwnd, iCurPos + cchEscapedEnc, iCurPos, -1, -1);
   else
-    EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cchEscaped, -1, -1);
+    EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cchEscapedEnc, -1, -1);
 
-  LocalFree(pszTextW);
-  LocalFree(pszEscaped);
-  LocalFree(pszEscapedW);
+  FreeMem(pszTextW);
+  FreeMem(pszEscaped);
+  FreeMem(pszEscapedW);
 }
 
 
@@ -1723,37 +1732,38 @@ void EditURLDecode(HWND hwnd)
     return;
   }
 
-  const DocPos iCurPos = SciCall_GetCurrentPos();
-  const DocPos iAnchorPos = SciCall_GetAnchor();
-  const DocPos iSelLength = SciCall_GetSelText(NULL);
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+  DocPos const iAnchorPos = SciCall_GetAnchor();
+  DocPos const iSelLength = SciCall_GetSelText(NULL);
 
   const char* pszText = (const char*)SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelLength);
 
-  LPWSTR pszTextW = LocalAlloc(LPTR, (iSelLength * sizeof(WCHAR)));
+  LPWSTR pszTextW = AllocMem(iSelLength * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pszTextW == NULL) {
     return;
   }
 
   /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)(iSelLength-1), pszTextW, (int)iSelLength);
 
-  char* pszUnescaped = LocalAlloc(LPTR, iSelLength * 3);
+  size_t const cchUnescaped = iSelLength * 3;
+  char* pszUnescaped = (char*)AllocMem(cchUnescaped, HEAP_ZERO_MEMORY);
   if (pszUnescaped == NULL) {
-    LocalFree(pszTextW);
+    FreeMem(pszTextW);
     return;
   }
 
-  LPWSTR pszUnescapedW = LocalAlloc(LPTR, LocalSize(pszTextW) * 3);
+  LPWSTR pszUnescapedW = (LPWSTR)AllocMem(cchUnescaped * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pszUnescapedW == NULL) {
-    LocalFree(pszTextW);
-    LocalFree(pszUnescaped);
+    FreeMem(pszTextW);
+    FreeMem(pszUnescaped);
     return;
   }
 
-  DWORD cchUnescapedW = (int)LocalSize(pszUnescapedW) / sizeof(WCHAR);
-
+  DWORD cchUnescapedW = (DWORD)cchUnescaped;
   UrlUnescapeEx(pszTextW, pszUnescapedW, &cchUnescapedW);
 
-  DWORD cchUnescaped = WideCharToMultiByte(Encoding_SciCP, 0, pszUnescapedW, cchUnescapedW, pszUnescaped, (int)LocalSize(pszUnescaped), NULL, NULL);
+  DWORD const cchUnescapedDec = WideCharToMultiByte(Encoding_SciCP, 0, pszUnescapedW, cchUnescapedW,
+                                                    pszUnescaped, (int)cchUnescaped, NULL, NULL);
 
   _ENTER_TARGET_TRANSACTION_;
   if (iCurPos < iAnchorPos)
@@ -1761,17 +1771,17 @@ void EditURLDecode(HWND hwnd)
   else
     SciCall_SetTargetRange(iAnchorPos, iCurPos);
 
-  SciCall_ReplaceTarget(cchUnescaped, pszUnescaped);
+  SciCall_ReplaceTarget(cchUnescapedDec, pszUnescaped);
   _LEAVE_TARGET_TRANSACTION_;
 
   if (iCurPos < iAnchorPos)
-    EditSetSelectionEx(hwnd, iCurPos + cchUnescaped, iCurPos, -1, -1);
+    EditSetSelectionEx(hwnd, iCurPos + cchUnescapedDec, iCurPos, -1, -1);
   else 
-    EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cchUnescaped, -1, -1);
+    EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + cchUnescapedDec, -1, -1);
 
-  LocalFree(pszTextW);
-  LocalFree(pszUnescaped);
-  LocalFree(pszUnescapedW);
+  FreeMem(pszTextW);
+  FreeMem(pszUnescaped);
+  FreeMem(pszUnescapedW);
 
 }
 
@@ -3611,7 +3621,7 @@ void EditCompressBlanks(HWND hwnd)
 
         _LEAVE_TARGET_TRANSACTION_;
 
-        DocPos const iNewLen = (DocPos)StringCchLenA(pszOut, LocalSize(pszOut));
+        DocPos const iNewLen = (DocPos)StringCchLenA(pszOut, cch + 1);
 
         if (iCurPos < iAnchorPos) {
           EditSetSelectionEx(hwnd, iCurPos + iNewLen, iCurPos, -1, -1);
@@ -3974,12 +3984,10 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
   DocPos iAnchorPos = SciCall_GetAnchor();
 
   DocPos cchJoin = (DocPos)-1;
-  char* pszJoin = NULL;
-
 
   char* pszText = (char*)SciCall_GetRangePointer(iSelStart, iSelLength);
 
-  pszJoin = LocalAlloc(LPTR, iSelLength + 1);
+  char* pszJoin = AllocMem(iSelLength + 1, HEAP_ZERO_MEMORY);
   if (pszJoin == NULL) {
     return;
   }
@@ -4043,7 +4051,7 @@ void EditJoinLinesEx(HWND hwnd, bool bPreserveParagraphs, bool bCRLF2Space)
     EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
   }
 
-  if (pszJoin) { LocalFree(pszJoin); }
+  if (pszJoin) { FreeMem(pszJoin); }
 }
 
 
@@ -4528,15 +4536,16 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   }*/
   tr.chrg.cpMax = min_cr(tr.chrg.cpMax, (DocPosCR)Sci_GetDocEndPosition());
 
-  char*  pszText  = LocalAlloc(LPTR,(tr.chrg.cpMax - tr.chrg.cpMin)+2);
-  LPWSTR pszTextW = LocalAlloc(LPTR,((tr.chrg.cpMax - tr.chrg.cpMin)*2)+2);
+  size_t const len = (tr.chrg.cpMax - tr.chrg.cpMin);
+  char*  pszText  = AllocMem(len+1, HEAP_ZERO_MEMORY);
+  LPWSTR pszTextW = AllocMem((len+1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
   DWORD cch = 0;
   if (pszText && pszTextW) 
   {
     tr.lpstrText = pszText;
     SendMessage(hwnd,SCI_GETTEXTRANGE,0,(LPARAM)&tr);
-    MultiByteToWideChar(Encoding_SciCP,0,pszText,tr.chrg.cpMax - tr.chrg.cpMin,pszTextW,(int)SizeOfMem(pszTextW)/sizeof(WCHAR));
+    MultiByteToWideChar(Encoding_SciCP,0,pszText,(int)len,pszTextW,(int)len);
 
     for (WCHAR* p = pszTextW; *p && cch < COUNTOF(tch)-1; p++) {
       if (*p == L'\r' || *p == L'\n' || *p == L'\t' || *p == L' ') {
@@ -4561,10 +4570,8 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
   }
   StringCchCopyN(lpszExcerpt,cchExcerpt,tch,cchExcerpt);
 
-  if (pszText)
-    LocalFree(pszText);
-  if (pszTextW)
-    LocalFree(pszTextW);
+  if (pszText) { FreeMem(pszText); }
+  if (pszTextW) { FreeMem(pszTextW); }
 }
 
 
@@ -5300,7 +5307,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
                 lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
                 StringCchCopyNA(lpszSelection, len + 1, pClip, len);
               }
-              LocalFree(pClip);
+              FreeMem(pClip);
             }
           }
 
@@ -6090,10 +6097,9 @@ static char* __fastcall _GetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, i
     pszReplace = EditGetClipboardText(hwnd, true, NULL, NULL);
   }
   else {
-    pszReplace = StrDupA(lpefr->szReplace);
-    if (!pszReplace) {
-      pszReplace = StrDupA("");
-    }
+    size_t const size = StringCchLenA(lpefr->szReplace,0) + 1;
+    pszReplace = (char*)AllocMem(size, HEAP_ZERO_MEMORY);
+    StringCchCopyA(pszReplace, size, lpefr->szReplace);
     bool bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
     if (lpefr->bTransformBS || bIsRegEx) {
       TransformBackslashes(pszReplace, bIsRegEx, Encoding_SciCP, iReplaceMsg);
@@ -6128,7 +6134,7 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   if (SciCall_IsSelectionEmpty()) {
     if ((iPos < 0) || (_start != start) || (_start != end)) {
       // empty-replace was not intended
-      LocalFree(pszReplace);
+      FreeMem(pszReplace);
       if (iPos < 0)
         return EditFindNext(hwnd, lpefr, false, false);
       else {
@@ -6151,7 +6157,7 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
 
   _LEAVE_TARGET_TRANSACTION_;
 
-  LocalFree(pszReplace);
+  FreeMem(pszReplace);
 
   return EditFindNext(hwnd, lpefr, false, false);
 }
@@ -6251,7 +6257,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
 
   utarray_clear(ReplPosUTArray);
   utarray_free(ReplPosUTArray);
-  LocalFree(pszReplace);
+  FreeMem(pszReplace);
 
   *enlargement = offset;
 
