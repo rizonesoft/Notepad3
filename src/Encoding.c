@@ -40,9 +40,6 @@
 #include "resource.h"
 #include "encoding.h"
 
-
-extern HMODULE   g_hLngResContainer;
-
 //=============================================================================
 //
 //  Encoding Helper Functions
@@ -50,14 +47,17 @@ extern HMODULE   g_hLngResContainer;
 
 int g_DOSEncoding = CPI_NONE;
 bool g_bForceCompEncDetection = false;
-bool g_bUseLimitedAutoCCharSet = false;
+
+extern HMODULE   g_hLngResContainer;
+extern bool g_bUseLimitedAutoCCharSet;
+
+// ============================================================================
 
 // Supported Encodings
 WCHAR wchANSI[16] = { L'\0' };
 WCHAR wchOEM[16] = { L'\0' };
 
 // ============================================================================
-
 
 int Encoding_Current(int iEncoding) 
 {
@@ -135,7 +135,8 @@ void Encoding_InitDefaults()
   ChangeEncodingCodePage(CPI_ANSI_DEFAULT, ansiInputCP); // set ANSI system CP ()
   assert(g_Encodings[CPI_ANSI_DEFAULT].uCodePage == ansiInputCP);
   StringCchPrintf(wchANSI, COUNTOF(wchANSI), L" (CP-%u)", ansiInputCP);
-  g_bUseLimitedAutoCCharSet = IsDBCSCodePage(ansiInputCP);
+
+  g_bUseLimitedAutoCCharSet = IsDBCSCodePage(Scintilla_InputCodePage());
 
   for (int i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
     if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage)) {

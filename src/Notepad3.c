@@ -257,6 +257,7 @@ int       iUpdateDelayMarkAllCoccurrences;
 int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
+bool      g_bUseLimitedAutoCCharSet = false;
 
 CALLTIPTYPE g_CallTipType = CT_NONE;
 
@@ -1511,6 +1512,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_MOUSEWHEEL:
       if (wParam & MK_CONTROL) { EditShowZoomCallTip(g_hwndEdit); }
+      break;
+
+    case WM_INPUTLANGCHANGE:
+      g_bUseLimitedAutoCCharSet = IsDBCSCodePage(Scintilla_InputCodePage());
       break;
 
     default:
