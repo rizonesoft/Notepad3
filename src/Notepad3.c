@@ -1746,11 +1746,6 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   EditInitWordDelimiter(hwndEditCtrl);
   EditSetAccelWordNav(hwndEditCtrl, g_bAccelWordNavigation);
 
-  // Init default values for printing
-  EditPrintInit();
-
-  //SciInitThemes(hwndEditCtrl);
-
   UpdateMarginWidth();
 }
 

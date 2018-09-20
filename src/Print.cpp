@@ -44,7 +44,6 @@ extern "C" {
 #include "helpers.h"
 }
 
-
 extern "C" HINSTANCE g_hInstance;
 extern "C" HMODULE   g_hLngResContainer;
 extern "C" HICON     g_hDlgIcon;
@@ -59,18 +58,19 @@ extern "C" int iPrintZoom;
 extern "C" RECT pagesetupMargin;
 extern "C" int g_flagPrintFileAndLeave;
 
+extern "C" HWND g_hwndStatus;
+
 
 // Stored objects...
 HGLOBAL hDevMode = nullptr;
 HGLOBAL hDevNames = nullptr;
 
+static void EditPrintInit();
 
 //=============================================================================
 //
 //  EditPrint() - Code from SciTE
 //
-extern "C" HWND g_hwndStatus;
-
 void StatusUpdatePrintPage(int iPageNum)
 {
   WCHAR tch[32] = { L'\0' };
@@ -194,6 +194,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
   // At this point, rectPhysMargins contains the widths of the
   // unprintable regions on all four sides of the page in device units.
+
+  EditPrintInit();
 
   // Take in account the page setup given by the user (if one value is not null)
   if (pagesetupMargin.left != 0 || pagesetupMargin.right != 0 ||
@@ -581,6 +583,8 @@ extern "C" void EditPrintSetup(HWND hwnd)
   pdlg.hwndOwner = GetParent(hwnd);
   pdlg.hInstance = g_hInstance;
 
+  EditPrintInit();
+
   if (pagesetupMargin.left != 0 || pagesetupMargin.right != 0 ||
           pagesetupMargin.top != 0 || pagesetupMargin.bottom != 0) {
     pdlg.Flags |= PSD_MARGINS;
@@ -613,7 +617,7 @@ extern "C" void EditPrintSetup(HWND hwnd)
 //
 //  EditPrintInit() - Setup default page margin if no values from registry
 //
-extern "C" void EditPrintInit()
+static void EditPrintInit()
 {
   if (pagesetupMargin.left == -1 || pagesetupMargin.top == -1 ||
       pagesetupMargin.right == -1 || pagesetupMargin.bottom == -1)
