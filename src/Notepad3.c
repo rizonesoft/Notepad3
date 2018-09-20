@@ -258,6 +258,7 @@ int       iCurrentLineHorizontalSlop = 0;
 int       iCurrentLineVerticalSlop = 0;
 bool      g_bChasingDocTail = false;
 bool      g_bUseLimitedAutoCCharSet = false;
+bool      g_bIsCJKInputCodePage = false;
 
 CALLTIPTYPE g_CallTipType = CT_NONE;
 
@@ -1515,7 +1516,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case WM_INPUTLANGCHANGE:
-      g_bUseLimitedAutoCCharSet = IsDBCSCodePage(Scintilla_InputCodePage());
+      g_bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
       break;
 
     default:
