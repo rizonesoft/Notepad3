@@ -144,9 +144,8 @@ bool          g_bFindReplCopySelOrClip = true;
 WCHAR         g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH];
 LANGID        g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 HMODULE       g_hLngResContainer = NULL;
-#define       LNG_AVAILABLE_COUNT 8
+
 static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR ja-JP nl-NL zh-CN"; // en-US internal
-static LANGID const  g_iAvailableLanguages[LNG_AVAILABLE_COUNT] = { 1078, 1031, 3082, 2057, 1036, 1041, 1043, 2052 }; // 1033 internal
 
 WCHAR         g_tchFileDlgFilters[XHUGE_BUFFER] = { L'\0' };
 

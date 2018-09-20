@@ -159,9 +159,7 @@ HMODULE              g_hLngResContainer = NULL;
 
 WCHAR                g_tchPrefLngLocName[64];
 LANGID               g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-#define              LNG_AVAILABLE_COUNT 8
 static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR ja-JP nl-NL zh-CN"; // en-US internal
-static LANGID const  g_iAvailableLanguages[LNG_AVAILABLE_COUNT] = { 1078, 1031, 3082, 2057, 1036, 1041, 1043, 2052 }; // 1033 internal
 
 
 //=============================================================================
@@ -223,20 +221,14 @@ static BOOL __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 //  _LoadLanguageResources
 //
 //
-static HMODULE __fastcall _LoadLanguageResources(LANGID const langID)
+static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID const langID)
 {
-  BOOL bLngAvailable = FALSE;
-  for (int i = 0; i < COUNTOF(g_iAvailableLanguages); ++i) {
-    if (g_iAvailableLanguages[i] == langID) {
-      bLngAvailable = TRUE;
-      break;
-    }
-  }
+  BOOL bLngAvailable = (StrStrIW(g_tchAvailableLanguages, localeName) != NULL);
   if (!bLngAvailable) { return NULL; }
 
-  WCHAR tchAvailLngs[256] = { L'\0' };
-  lstrcpy(tchAvailLngs, g_tchAvailableLanguages);
-  WCHAR tchUserLangMultiStrg[128] = { L'\0' };
+  WCHAR tchAvailLngs[512] = { L'\0' };
+  StringCchCopyW(tchAvailLngs, 512, g_tchAvailableLanguages);
+  WCHAR tchUserLangMultiStrg[512] = { L'\0' };
   if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, 512)) {
     GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
     return NULL;
@@ -327,24 +319,56 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   // ----------------------------------------------------
   // MultiLingual
   //
-  g_iPrefLANGID = GetUserDefaultUILanguage();
-  BOOL bPrefLngDefined = StrIsNotEmpty(g_tchPrefLngLocName);
   BOOL bPrefLngNotAvail = FALSE;
-  if (bPrefLngDefined) {
-    bPrefLngDefined = TRUE;
-    DWORD dwLangID = 0;
-    GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&dwLangID, sizeof(DWORD));
-    g_iPrefLANGID = (LANGID)dwLangID;
+
+  int res = 0;
+  if (lstrlenW(g_tchPrefLngLocName) > 0) {
+    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
+    res = ResolveLocaleName(g_tchPrefLngLocName, wchLngLocalName, LOCALE_NAME_MAX_LENGTH);
+    if (res > 0) {
+      StringCchCopy(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), wchLngLocalName); // put back resolved name
+    }
+    // get LANGID
+    g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+    res = GetLocaleInfoEx(g_tchPrefLngLocName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&g_iPrefLANGID, sizeof(LANGID));
   }
 
-  g_hLngResContainer = _LoadLanguageResources(g_iPrefLANGID);
+  if (res == 0) // No preferred language defined or retrievable, try to get User UI Language
+  {
+    //~GetUserDefaultLocaleName(&g_tchPrefLngLocName[0], COUNTOF(g_tchPrefLngLocName));
+    ULONG numLngs = 0;
+    DWORD cchLngsBuffer = 0;
+    BOOL hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer);
+    if (hr) {
+      WCHAR* pwszLngsBuffer = LocalAlloc(LPTR, (cchLngsBuffer + 2) * sizeof(WCHAR));
+      if (pwszLngsBuffer) {
+        hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer);
+        if (hr && (numLngs > 0)) {
+          // get the first 
+          StringCchCopy(g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), pwszLngsBuffer);
+          g_iPrefLANGID = LANGIDFROMLCID(LocaleNameToLCID(g_tchPrefLngLocName, 0));
+          res = 1;
+        }
+        LocalFree(pwszLngsBuffer);
+      }
+    }
+    if (res == 0) { // last try
+      g_iPrefLANGID = GetUserDefaultUILanguage();
+      LCID const lcid = MAKELCID(g_iPrefLANGID, SORT_DEFAULT);
+      res = LCIDToLocaleName(lcid, g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName), 0);
+    }
+  }
+
+  g_hLngResContainer = _LoadLanguageResources(g_tchPrefLngLocName, g_iPrefLANGID);
 
   if (!g_hLngResContainer) // fallback en-US (1033)
   {
+    LANGID const langID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
     g_hLngResContainer = g_hInstance;
-    if (g_iPrefLANGID != 1033) { bPrefLngNotAvail = TRUE; }
+    if (g_iPrefLANGID != langID) { bPrefLngNotAvail = TRUE; }
   }
   // ----------------------------------------------------
+
 
   if (!InitApplication(hInstance)) { return FALSE; }
 
@@ -353,7 +377,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
 
   hAcc = LoadAccelerators(hInstance,MAKEINTRESOURCE(IDR_MAINWND));
 
-  if (bPrefLngDefined && bPrefLngNotAvail) {
+  if (bPrefLngNotAvail) {
     ErrorMessage(2, IDS_WARN_PREF_LNG_NOT_AVAIL, g_tchPrefLngLocName);
   }
 
