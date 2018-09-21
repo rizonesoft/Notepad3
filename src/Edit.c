@@ -84,8 +84,8 @@ extern int yFindReplaceDlg;
 static int xFindReplaceDlgSave;
 static int yFindReplaceDlgSave;
 
-extern int g_iDefaultEOLMode;
-extern int iLineEndings[3];
+extern int  g_iDefaultEOLMode;
+extern int  g_iEOLMode;
 extern bool bFixLineEndings;
 extern bool bAutoStripBlanks;
 
@@ -173,9 +173,9 @@ enum SortOrderMask {
 extern LPMRULIST g_pMRUfind;
 extern LPMRULIST g_pMRUreplace;
 
-extern bool g_bMarkOccurrencesCurrentWord;
 extern bool g_bMarkOccurrencesMatchCase;
 extern bool g_bMarkOccurrencesMatchWords;
+extern bool g_bMarkOccurrencesCurrentWord;
 
 
 //=============================================================================
@@ -720,22 +720,25 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
 //
 //  EditSetClipboardText()
 //
-bool EditSetClipboardText(HWND hwnd, const char* pszText)
+bool EditSetClipboardText(HWND hwnd, const char* pszText, const size_t cchText)
 {
   if (!IsClipboardFormatAvailable(CF_UNICODETEXT)) {
-    SciCall_CopyText((DocPos)StringCchLenA(pszText,0), pszText);
+    SciCall_CopyText((DocPos)cchText, pszText);
     return true;
   }
 
   WCHAR* pszTextW = NULL;
-  int cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, NULL, 0) + 1;
+  int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)cchText, NULL, 0);
   if (cchTextW > 1) {
-    pszTextW = AllocMem(sizeof(WCHAR)*cchTextW, HEAP_ZERO_MEMORY);
-    MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, pszTextW, cchTextW);
+    pszTextW = AllocMem((cchTextW + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    if (pszTextW) {
+      MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)cchText, pszTextW, cchTextW);
+      pszTextW[cchTextW] = L'\0';
+    }
   }
 
   if (pszTextW) {
-    SetClipboardTextW(GetParent(hwnd), pszTextW);
+    SetClipboardTextW(GetParent(hwnd), pszTextW, cchTextW);
     FreeMem(pszTextW);
     return true;
   }
@@ -781,12 +784,12 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
   bool const bIsRectSel = SciCall_IsSelectionRectangle();
 
   char* pszText = NULL;
-  SIZE_T const size = SciCall_GetSelText(NULL);
+  size_t const size = SciCall_GetSelText(NULL);
   if (size > 0) {
     pszText = AllocMem(size, HEAP_ZERO_MEMORY);
     SciCall_GetSelText(pszText);
     SciCall_Paste();  //~SciCall_ReplaceSel(pClip);
-    EditSetClipboardText(hwnd, pszText);
+    EditSetClipboardText(hwnd, pszText, (size - 1));
   }
   else {
     SciCall_Paste();  //~SciCall_ReplaceSel(pClip);
@@ -802,7 +805,7 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
       EditSetSelectionEx(hwnd, iAnchorPos, iAnchorPos + clipLen, -1, -1);
   }
   else {
-    //TODO: restore selection in case of swap clipboard 
+    //TODO: restore rectangular selection in case of swap clipboard 
   }
 
   FreeMem(pClip);
@@ -816,39 +819,48 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
 //
 bool EditCopyAppend(HWND hwnd, bool bAppend)
 {
-  DocPos iCurPos = SciCall_GetCurrentPos();
-  DocPos iAnchorPos = SciCall_GetAnchor();
+  bool res = false;
+
+  DocPos const iSelStart = SciCall_GetSelectionStart();
+  DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
   char* pszText = NULL;
-  if (iCurPos != iAnchorPos) {
+  DocPos length = 0;
+
+  if (iSelStart != iSelEnd) {
     if (SciCall_IsSelectionRectangle()) {
       MsgBoxLng(MBWARN, IDS_MUI_SELRECT);
-      return false;
+      return res;
     }
     else {
-      pszText = AllocMem(SciCall_GetSelText(NULL), HEAP_ZERO_MEMORY);
-      SciCall_GetSelText(pszText);
+      length = (iSelEnd - iSelStart);
+      pszText = SciCall_GetRangePointer(iSelStart, length);
     }
   }
   else {
-    DocPos cchText = SciCall_GetTextLength();
-    pszText = AllocMem(cchText + 1,HEAP_ZERO_MEMORY);
-    if (pszText) {
-      SciCall_GetText(cchText + 1, pszText);
-    }
+    length = SciCall_GetTextLength();
+    pszText = SciCall_GetRangePointer(0, length);
   }
+  if (length == 0) {
+    res = true;  // nothing to copy or append
+    return res;
+  }
+
   WCHAR* pszTextW = NULL;
-  if (pszText) {
-    int cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, NULL, 0);
+  int cchTextW = 0;
+  if (pszText && *pszText) {
+    cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, length, NULL, 0);
     if (cchTextW > 0) {
-      int lenTxt = (cchTextW + 1);
-      pszTextW = AllocMem(sizeof(WCHAR)*lenTxt,HEAP_ZERO_MEMORY);
-      MultiByteToWideChar(Encoding_SciCP, 0, pszText, -1, pszTextW, lenTxt);
+      pszTextW = AllocMem((cchTextW + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+      if (pszTextW) {
+        MultiByteToWideChar(Encoding_SciCP, 0, pszText, length, pszTextW, cchTextW);
+        pszTextW[cchTextW] = L'\0';
+      }
     }
-    FreeMem(pszText);
   }
+
   if (!bAppend) {
-    bool const res = (bool)SetClipboardTextW(GetParent(hwnd), pszTextW);
+    res = (bool)SetClipboardTextW(GetParent(hwnd), pszTextW, cchTextW);
     FreeMem(pszTextW);
     return res;
   }
@@ -857,34 +869,32 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 
   if (!OpenClipboard(GetParent(hwnd))) {
     FreeMem(pszTextW);
-    return false;
+    return res;
   }
 
-  HANDLE hOld   = GetClipboardData(CF_UNICODETEXT);
-  WCHAR* pszOld = GlobalLock(hOld);
+  HANDLE const hOld   = GetClipboardData(CF_UNICODETEXT);
+  const WCHAR* pszOld = GlobalLock(hOld);
 
-  size_t sizeNew = 0;
-  if (pszOld && pszTextW)
-    sizeNew = StringCchLen(pszOld,0) + StringCchLen(pszTextW,0) + 1;
+  const WCHAR *pszSep = ((g_iEOLMode == SC_EOL_CRLF) ? L"\r\n" : ((g_iEOLMode == SC_EOL_CR) ? L"\r" : L"\n"));
 
-  const  WCHAR *pszSep = L"\r\n";
-  sizeNew += StringCchLen(pszSep,0);
+  size_t cchNewText = cchTextW;
+  if (pszOld && *pszOld) {
+    cchNewText += StringCchLen(pszOld, 0) + StringCchLen(pszSep, 0);
+  }
 
-  // Copy Clip
-  WCHAR* pszNewTextW = AllocMem(sizeof(WCHAR) * sizeNew, HEAP_ZERO_MEMORY);
-  
-  if (pszOld && pszNewTextW) {
-    StringCchCopy(pszNewTextW, sizeNew, pszOld);
+  // Copy Clip & add line break
+  WCHAR* pszNewTextW = AllocMem((cchNewText + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  if (pszOld && *pszOld && pszNewTextW) {
+    StringCchCopy(pszNewTextW, cchNewText + 1, pszOld);
+    StringCchCat(pszNewTextW, cchNewText + 1, pszSep);
   }
   GlobalUnlock(hOld);
   CloseClipboard();
 
   // Add New
-  bool res = false;
-  if (pszTextW && pszNewTextW) {
-    StringCchCat(pszNewTextW, sizeNew, pszSep);
-    StringCchCat(pszNewTextW, sizeNew, pszTextW);
-    res = (bool)SetClipboardTextW(GetParent(hwnd), pszNewTextW);
+  if (pszTextW && *pszTextW && pszNewTextW) {
+    StringCchCat(pszNewTextW, cchNewText+1, pszTextW);
+    res = (bool)SetClipboardTextW(GetParent(hwnd), pszNewTextW, cchNewText);
   }
 
   FreeMem(pszTextW);
@@ -900,7 +910,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 int EditDetectEOLMode(HWND hwnd, char* lpData)
 {
   UNUSED(hwnd);
-  int iEOLMode = iLineEndings[g_iDefaultEOLMode];
+  int iEOLMode = g_iDefaultEOLMode;
 
   LPCSTR cp = lpData ? StrPBrkA(lpData, "\r\n") : NULL;
 
@@ -1107,10 +1117,10 @@ bool EditLoadFile(
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&fvCurFile);
-    *iEOLMode = iLineEndings[g_iDefaultEOLMode];
+    *iEOLMode = g_iDefaultEOLMode;
     *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
-    SendMessage(hwnd,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
+    SendMessage(hwnd,SCI_SETEOLMODE,g_iDefaultEOLMode,0);
     FreeMem(lpData);
   }
   // ===  UNICODE  ===
@@ -1333,7 +1343,6 @@ bool EditSaveFile(
     bWriteSuccess = SetEndOfFile(hFile);
     dwLastIOError = GetLastError();
   }
-
   else {
 
   // FIXME: move checks in front of disk file access
@@ -1476,19 +1485,19 @@ void EditInvertCase(HWND hwnd)
     {
       const DocPos iSelStart = SciCall_GetSelectionStart();
       const DocPos iSelEnd = SciCall_GetSelectionEnd();
-      const DocPos iSelLength = SciCall_GetSelText(NULL);
-
-      char*  pszText  = AllocMem(iSelLength, HEAP_ZERO_MEMORY);
-      LPWSTR pszTextW = AllocMem((iSelLength*sizeof(WCHAR)), HEAP_ZERO_MEMORY);
-
-      if (pszText == NULL || pszTextW == NULL) {
+      const DocPos iSelSize = SciCall_GetSelText(NULL);
+      
+      LPSTR pszText = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+      LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+      if (!pszText || !pszTextW) {
         FreeMem(pszText);
         FreeMem(pszTextW);
-        return;
+        return; 
       }
+
       SciCall_GetSelText(pszText);
 
-      int cchTextW = MultiByteToWideChar(Encoding_SciCP,0,pszText,(int)(iSelLength-1),pszTextW,(int)iSelLength);
+      int const cchTextW = MultiByteToWideChar(Encoding_SciCP,0,pszText,(int)(iSelSize-1),pszTextW,(int)iSelSize);
 
       bool bChanged = false;
       for (int i = 0; i < cchTextW; i++) {
@@ -1503,14 +1512,11 @@ void EditInvertCase(HWND hwnd)
       }
 
       if (bChanged) {
-
         WideCharToMultiByte(Encoding_SciCP,0,pszTextW,cchTextW,pszText,(int)SizeOfMem(pszText),NULL,NULL);
-
         SciCall_Clear();
         SciCall_AddText((iSelEnd - iSelStart), pszText);
         SciCall_SetSel(iAnchorPos, iCurPos);
       }
-
       FreeMem(pszText);
       FreeMem(pszTextW);
     }
@@ -1536,10 +1542,10 @@ void EditTitleCase(HWND hwnd)
     {
       const DocPos iSelStart = SciCall_GetSelectionStart();
       const DocPos iSelEnd = SciCall_GetSelectionEnd();
-      const DocPos iSelLength = SciCall_GetSelText(NULL);
+      const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-      char*  pszText  = AllocMem(iSelLength, HEAP_ZERO_MEMORY);
-      LPWSTR pszTextW = AllocMem((iSelLength*sizeof(WCHAR)), HEAP_ZERO_MEMORY);
+      char*  pszText  = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+      LPWSTR pszTextW = AllocMem((iSelSize*sizeof(WCHAR)), HEAP_ZERO_MEMORY);
 
       if (pszText == NULL || pszTextW == NULL) {
         FreeMem(pszText);
@@ -1548,14 +1554,14 @@ void EditTitleCase(HWND hwnd)
       }
       SciCall_GetSelText(pszText);
 
-      int cchTextW = MultiByteToWideChar(Encoding_SciCP,0,pszText,(int)(iSelLength-1),pszTextW,(int)iSelLength);
+      int const cchTextW = MultiByteToWideChar(Encoding_SciCP,0,pszText,(int)(iSelSize-1),pszTextW,(int)iSelSize);
 
       bool bChanged = false;
       LPWSTR pszMappedW = AllocMem(SizeOfMem(pszTextW),HEAP_ZERO_MEMORY);
       if (pszMappedW) {
         // first make lower case, before applying TitleCase
-        if (LCMapString(LOCALE_SYSTEM_DEFAULT, (LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE), pszTextW, cchTextW, pszMappedW, (int)iSelLength)) {
-          if (LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_TITLECASE, pszMappedW, cchTextW, pszTextW, (int)iSelLength)) {
+        if (LCMapString(LOCALE_SYSTEM_DEFAULT, (LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE), pszTextW, cchTextW, pszMappedW, (int)iSelSize)) {
+          if (LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_TITLECASE, pszMappedW, cchTextW, pszTextW, (int)iSelSize)) {
             bChanged = true;
           }
         }
@@ -1596,10 +1602,10 @@ void EditSentenceCase(HWND hwnd)
     {
       const DocPos iSelStart = SciCall_GetSelectionStart();
       const DocPos iSelEnd = SciCall_GetSelectionEnd();
-      const DocPos iSelLength = SciCall_GetSelText(NULL);
+      const DocPos iSelSize = SciCall_GetSelText(NULL);
 
-      char*  pszText  = AllocMem(iSelLength, HEAP_ZERO_MEMORY);
-      LPWSTR pszTextW = AllocMem((iSelLength*sizeof(WCHAR)), HEAP_ZERO_MEMORY);
+      char*  pszText  = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
+      LPWSTR pszTextW = AllocMem((iSelSize*sizeof(WCHAR)), HEAP_ZERO_MEMORY);
 
       if (pszText == NULL || pszTextW == NULL) {
         FreeMem(pszText);
@@ -1608,7 +1614,7 @@ void EditSentenceCase(HWND hwnd)
       }
       SciCall_GetSelText(pszText);
 
-      int cchTextW = MultiByteToWideChar(Encoding_SciCP,0,pszText,(int)(iSelLength-1),pszTextW,(int)iSelLength);
+      int cchTextW = MultiByteToWideChar(Encoding_SciCP,0,pszText,(int)(iSelSize-1),pszTextW,(int)iSelSize);
 
       bool bChanged = false;
       bool bNewSentence = true;
@@ -1668,18 +1674,18 @@ void EditURLEncode(HWND hwnd)
 
   DocPos const iCurPos = SciCall_GetCurrentPos();
   DocPos const iAnchorPos = SciCall_GetAnchor();
-  DocPos const iSelLength = SciCall_GetSelText(NULL);
+  DocPos const iSelSize = SciCall_GetSelText(NULL);
 
-  const char* pszText = (const char*)SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelLength);
+  const char* pszText = (const char*)SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelSize);
 
-  LPWSTR pszTextW = AllocMem(iSelLength * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pszTextW == NULL) {
     return;
   }
 
-  /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)(iSelLength-1), pszTextW, (int)iSelLength);
+  /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)(iSelSize-1), pszTextW, (int)iSelSize);
 
-  size_t const cchEscaped = iSelLength * 3;
+  size_t const cchEscaped = iSelSize * 3;
   char* pszEscaped = (char*)AllocMem(cchEscaped, HEAP_ZERO_MEMORY);
   if (pszEscaped == NULL) {
     FreeMem(pszTextW);
@@ -1735,18 +1741,18 @@ void EditURLDecode(HWND hwnd)
 
   DocPos const iCurPos = SciCall_GetCurrentPos();
   DocPos const iAnchorPos = SciCall_GetAnchor();
-  DocPos const iSelLength = SciCall_GetSelText(NULL);
+  DocPos const iSelSize = SciCall_GetSelText(NULL);
 
-  const char* pszText = (const char*)SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelLength);
+  const char* pszText = SciCall_GetRangePointer(min_p(iCurPos, iAnchorPos), iSelSize);
 
-  LPWSTR pszTextW = AllocMem(iSelLength * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  LPWSTR pszTextW = AllocMem(iSelSize * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pszTextW == NULL) {
     return;
   }
 
-  /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)(iSelLength-1), pszTextW, (int)iSelLength);
+  /*int cchTextW =*/ MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)(iSelSize-1), pszTextW, (int)iSelSize);
 
-  size_t const cchUnescaped = iSelLength * 3;
+  size_t const cchUnescaped = iSelSize * 3;
   char* pszUnescaped = (char*)AllocMem(cchUnescaped, HEAP_ZERO_MEMORY);
   if (pszUnescaped == NULL) {
     FreeMem(pszTextW);
@@ -5292,10 +5298,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           char *lpszSelection = NULL;
           tchBuf[0] = L'\0';
 
-          DocPos cchSelection = (DocPos)SendMessage(sg_pefrData->hwnd, SCI_GETSELTEXT, 0, (LPARAM)NULL);
+          DocPos const cchSelection = SciCall_GetSelText(NULL);
           if (1 < cchSelection) {
             lpszSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
-            SendMessage(sg_pefrData->hwnd, SCI_GETSELTEXT, 0, (LPARAM)lpszSelection);
+            SciCall_GetSelText(lpszSelection);
           }
           else if (cchSelection <= 1) {
             // nothing is selected in the editor:
@@ -5303,7 +5309,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             // copy content clipboard to find box
             char* pClip = EditGetClipboardText(hwnd, false, NULL, NULL);
             if (pClip) {
-              size_t len = StringCchLenA(pClip,0);
+              size_t const len = StringCchLenA(pClip,0);
               if (len) {
                 lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
                 StringCchCopyNA(lpszSelection, len + 1, pClip, len);
@@ -6427,13 +6433,13 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
   else
     pszText = txtBuffer;
 
-  if (pszFind == NULL) {
-
+  if (pszFind == NULL) 
+  {
     if (SciCall_IsSelectionEmpty()) {
       if (flags) { // nothing selected, get word under caret if flagged
-        DocPos iCurrPos = SciCall_GetCurrentPos();
-        DocPos iWordStart = (DocPos)SendMessage(hwnd, SCI_WORDSTARTPOSITION, iCurrPos, (LPARAM)1);
-        DocPos iWordEnd = (DocPos)SendMessage(hwnd, SCI_WORDENDPOSITION, iCurrPos, (LPARAM)1);
+        DocPos const iCurrPos = SciCall_GetCurrentPos();
+        DocPos const iWordStart = SciCall_WordStartPosition(iCurrPos, true);
+        DocPos const iWordEnd = SciCall_WordEndPosition(iCurrPos, true);
         iFindLength = (iWordEnd - iWordStart);
         StringCchCopyNA(pszText, HUGE_BUFFER, SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
       }
@@ -6446,12 +6452,11 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       if (flags) { return; } // no current word matching if we have a selection 
 
       // get current selection
-      DocPos iSelStart = SciCall_GetSelectionStart();
-      DocPos iSelEnd = SciCall_GetSelectionEnd();
-      DocPos iSelCount = (iSelEnd - iSelStart);
+      DocPos const iSelStart = SciCall_GetSelectionStart();
+      DocPos const iSelEnd = SciCall_GetSelectionEnd();
+      DocPos const iSelCount = (iSelEnd - iSelStart);
 
       // if multiple lines are selected exit
-      
       if ((SciCall_LineFromPosition(iSelStart) != SciCall_LineFromPosition(iSelEnd)) || (iSelCount >= HUGE_BUFFER)) {
         return;
       }

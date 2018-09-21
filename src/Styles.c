@@ -1259,17 +1259,6 @@ void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 //
 void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 {
-  static const int iMarkerIDs[] =
-  {
-    SC_MARKNUM_FOLDEROPEN,
-    SC_MARKNUM_FOLDER,
-    SC_MARKNUM_FOLDERSUB,
-    SC_MARKNUM_FOLDERTAIL,
-    SC_MARKNUM_FOLDEREND,
-    SC_MARKNUM_FOLDEROPENMID,
-    SC_MARKNUM_FOLDERMIDTAIL
-  };
-
   if (iStyle == STYLE_LINENUMBER) {
     Style_SetStyles(hwnd, iStyle, lpszStyle, false);   // line numbers
   }
@@ -1289,6 +1278,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   // ---  Bookmarks  ---
   COLORREF bmkFore = clrFore;
   COLORREF bmkBack = clrBack;
+
   const WCHAR* wchBookMarkStyleStrg = GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue;
 
   Style_StrGetColor(true, wchBookMarkStyleStrg, &bmkFore);
@@ -1310,6 +1300,11 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrBack);
 
   // ---  Code folding  ---
+
+  COLORREF fldHiLight = clrFore;
+  const WCHAR* wchHighlightStyleStrg = GetCurrentStdLexer()->Styles[STY_SEL_TXT].szValue;
+  Style_StrGetColor(false, wchHighlightStyleStrg, &fldHiLight);
+
   SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
   SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
   SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
@@ -1338,10 +1333,26 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
     SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
   }
 
-  SciCall_SetFoldMarginColour(true, clrBack);    // background
-  SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
+  static const int iMarkerIDs[7] =
+  {
+    SC_MARKNUM_FOLDEROPEN,
+    SC_MARKNUM_FOLDER,
+    SC_MARKNUM_FOLDERSUB,
+    SC_MARKNUM_FOLDERTAIL,
+    SC_MARKNUM_FOLDEREND,
+    SC_MARKNUM_FOLDEROPENMID,
+    SC_MARKNUM_FOLDERMIDTAIL
+  };
+
+  for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
+    SciCall_MarkerSetFore(iMarkerIDs[i], bmkBack); // (!)
+    SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore); // (!)
+    SciCall_MarkerSetBackSelected(iMarkerIDs[i], fldHiLight);
+  }
   SciCall_MarkerEnableHighlight(true);
 
+  SciCall_SetFoldMarginColour(true, clrBack);    // background
+  SciCall_SetFoldMarginHiColour(true, clrBack);  // (!)
   //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
 
   int fldStyleLn = 0;
@@ -1359,11 +1370,6 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
     break;
   }
 
-  for (int i = 0; i < COUNTOF(iMarkerIDs); ++i) {
-    SciCall_MarkerSetFore(iMarkerIDs[i], bmkBack); // (!)
-    SciCall_MarkerSetBack(iMarkerIDs[i], bmkFore); // (!)
-  }
-
   // set width
   Style_SetBookmark(hwnd, g_bShowSelectionMargin);
   Style_SetFolding(hwnd, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
@@ -1374,7 +1380,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 //
 //  Style_SniffShebang()
 //
-PEDITLEXER __fastcall Style_SniffShebang(char *pchText)
+PEDITLEXER __fastcall Style_SniffShebang(char* pchText)
 {
   if (StrCmpNA(pchText,"#!",2) == 0) {
     char *pch = pchText + 2;
@@ -1407,7 +1413,6 @@ PEDITLEXER __fastcall Style_SniffShebang(char *pchText)
     else if ((pch - pchText) >= 4 && StrCmpNA(pch-4,"node",4) == 0)
       return(&lexJS);
   }
-
   return(NULL);
 }
 
@@ -1489,7 +1494,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     if (!g_flagNoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
       char tchText[256] = { L'\0' };
-      SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
+      SciCall_GetText(COUNTOF(tchText) - 1, tchText);
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
@@ -1525,8 +1530,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     if (*lpszExt == L'.') ++lpszExt;
 
     if (!g_flagNoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
-      char tchText[256] = { L'\0' };
-      SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
+      char tchText[256] = { '\0' };
+      SciCall_GetText(COUNTOF(tchText) - 1, tchText);
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
@@ -1570,7 +1575,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
   if (!bFound && g_bAutoSelect && (!g_flagNoHTMLGuess || !g_flagNoCGIGuess)) {
     char tchText[512];
-    SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
+    SciCall_GetText(COUNTOF(tchText) - 1, tchText);
     StrTrimA(tchText," \t\n\r");
     if (!g_flagNoCGIGuess) {
       if (tchText[0] == '<') {

@@ -157,6 +157,9 @@ DeclareSciCallR2(CharPositionFromPoint, CHARPOSITIONFROMPOINT, DocPos, int, pt_x
 DeclareSciCallR01(PointXFromPosition, POINTXFROMPOSITION, int, DocPos, position)
 DeclareSciCallR01(PointYFromPosition, POINTYFROMPOSITION, int, DocPos, position)
 
+DeclareSciCallR2(WordStartPosition, WORDSTARTPOSITION, DocPos, DocPos, pos, bool, onlyWordChars)
+DeclareSciCallR2(WordEndPosition, WORDENDPOSITION, DocPos, DocPos, pos, bool, onlyWordChars)
+
 // Rectangular selection with virtual space
 DeclareSciCallR0(GetRectangularSelectionCaret, GETRECTANGULARSELECTIONCARET, DocPos)
 DeclareSciCallV1(SetRectangularSelectionCaret, SETRECTANGULARSELECTIONCARET, DocPos, position)
@@ -368,7 +371,7 @@ DeclareSciCallV2(MarkerSetAlpha, MARKERSETALPHA, int, markerNumber, int, alpha)
 DeclareSciCallR2(MarkerAdd, MARKERADD, int, DocLn, line, int, markerNumber)
 DeclareSciCallV2(MarkerDelete, MARKERDELETE, DocLn, line, int, markerNumber)
 DeclareSciCallV1(MarkerDeleteAll, MARKERDELETEALL, int, markerNumber)
-
+DeclareSciCallV2(MarkerSetBackSelected, MARKERSETBACKSELECTED, int, markerNumber, int, colour)
 
 //=============================================================================
 //

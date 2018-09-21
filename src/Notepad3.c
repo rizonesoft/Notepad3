@@ -319,7 +319,6 @@ static LPWSTR    lpSchemeArg = NULL;
 static LPWSTR    lpMatchArg = NULL;
 static LPWSTR    lpEncodingArg = NULL;
 
-
 static WCHAR* const _s_RecentFiles = L"Recent Files";
 static WCHAR* const _s_RecentFind = L"Recent Find";
 static WCHAR* const _s_RecentReplace = L"Recent Replace";
@@ -327,19 +326,17 @@ LPMRULIST g_pFileMRU;
 LPMRULIST g_pMRUfind;
 LPMRULIST g_pMRUreplace;
 
+int       g_iEOLMode = SC_EOL_CRLF;
+int       g_iDefaultEOLMode = SC_EOL_CRLF;
 
-DWORD     dwLastIOError;
+DWORD     dwLastIOError = 0;
 
 int       g_iDefaultNewFileEncoding = 0;
 int       g_iDefaultCharSet = 0;
 int       g_IMEInteraction = 0;
 
-int       g_iEOLMode;
-int       g_iDefaultEOLMode;
-
 int       iInitialLine;
 int       iInitialColumn;
-
 int       iInitialLexer;
 
 bool      bLastCopyFromMe = false;
@@ -361,12 +358,6 @@ static bool g_bRunningWatch = false;
 
 static EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
 bool bReplaceInitialized = false;
-
-int iLineEndings[3] = {
-  SC_EOL_CRLF,
-  SC_EOL_LF,
-  SC_EOL_CR
-};
 
 WCHAR wchPrefixSelection[256] = { L'\0' };
 WCHAR wchAppendSelection[256] = { L'\0' };
@@ -2803,7 +2794,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_COPY, !e);             // allow Ctrl-C w/o selection
 
   EnableCmd(hmenu,IDM_EDIT_COPYALL, !e);
-  EnableCmd(hmenu,IDM_EDIT_COPYADD, !s);
+  EnableCmd(hmenu,IDM_EDIT_COPYADD, !e);
 
   EnableCmd(hmenu,IDM_EDIT_PASTE, b && !ro);
   EnableCmd(hmenu,IDM_EDIT_SWAP, (!s || b) && !ro);
@@ -3411,13 +3402,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_LINEENDINGS_CRLF:
-    case IDM_LINEENDINGS_LF:
     case IDM_LINEENDINGS_CR:
+    case IDM_LINEENDINGS_LF:
       {
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        int iNewEOLMode = iLineEndings[LOWORD(wParam)-IDM_LINEENDINGS_CRLF];
-        g_iEOLMode = iNewEOLMode;
+        g_iEOLMode = (LOWORD(wParam)-IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
         SendMessage(g_hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
         SendMessage(g_hwndEdit,SCI_CONVERTEOLS,g_iEOLMode,0);
         EditFixPositions(g_hwndEdit);
@@ -3549,13 +3539,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (SendMessage(g_hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0)) {
 
-          DocPos iWordStart = (DocPos)SendMessage(g_hwndEdit,SCI_WORDSTARTPOSITION,iPos,true);
-          DocPos iWordEnd   = (DocPos)SendMessage(g_hwndEdit,SCI_WORDENDPOSITION,iPos,true);
+          DocPos iWordStart = SciCall_WordStartPosition(iPos, true);
+          DocPos iWordEnd = SciCall_WordEndPosition(iPos, true);
 
           if (iWordStart == iWordEnd) // we are in whitespace salad...
           {
-            iWordStart = (DocPos)SendMessage(g_hwndEdit,SCI_WORDENDPOSITION,iPos,false);
-            iWordEnd   = (DocPos)SendMessage(g_hwndEdit,SCI_WORDENDPOSITION,iWordStart,true);
+            iWordStart = SciCall_WordEndPosition(iPos, false);
+            iWordEnd   = SciCall_WordEndPosition(iWordStart, true);
             if (iWordStart != iWordEnd) {
               SciCall_SetSel(iWordStart, iWordEnd);
             }
@@ -5443,7 +5433,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (bCmdEnabled) {
 
-          const DocPos cchSelection = SciCall_GetSelText(NULL);
+          DocPos const cchSelection = SciCall_GetSelText(NULL);
 
           char  mszSelection[512] = { '\0' };
           if ((1 < cchSelection) && (cchSelection < (DocPos)COUNTOF(mszSelection)))
@@ -5604,7 +5594,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszCopy = tchUntitled;
         }
-        SetClipboardTextW(hwnd, pszCopy);
+        SetClipboardTextW(hwnd, pszCopy, StringCchLen(pszCopy,0));
         UpdateToolbar();
       }
       break;
@@ -5613,7 +5603,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_COPYWINPOS: {
         WININFO wi = GetMyWindowPlacement(g_hwndMain,NULL);
         StringCchPrintf(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),L"/pos %i,%i,%i,%i,%i",wi.x,wi.y,wi.cx,wi.cy,wi.max);
-        SetClipboardTextW(hwnd, tchMaxPathBuffer);
+        SetClipboardTextW(hwnd, tchMaxPathBuffer, StringCchLen(tchMaxPathBuffer, 0));
         UpdateToolbar();
       }
       break;
@@ -6046,11 +6036,12 @@ static void __fastcall _HandleAutoIndent(int const charAdded)
 
     if (iCurLine > 0/* && iLineLength <= 2*/)
     {
-      DocPos const iPrevLineLength = SciCall_LineLength(iCurLine - 1);
+      DocLn const iPrevLine = iCurLine - 1;
+      DocPos const iPrevLineLength = SciCall_LineLength(iPrevLine);
       char* pLineBuf = (char*)AllocMem(iPrevLineLength + 1, HEAP_ZERO_MEMORY);
       if (pLineBuf)
       {
-        SciCall_GetLine_Safe(iCurLine - 1, pLineBuf);
+        SciCall_GetLine_Safe(iPrevLine, pLineBuf);
         for (char* pPos = pLineBuf; *pPos; pPos++) {
           if ((*pPos != ' ') && (*pPos != '\t')) {
             *pPos = '\0';
@@ -6456,8 +6447,13 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         default:
           return 0LL;
       }
+      // in any case 
+      if (g_bMarkOccurrencesCurrentWord && (g_iMarkOccurrences > 0)) {
+        MarkAllOccurrences(iUpdateDelayMarkAllCoccurrences, false);
+      }
       return -1LL;
 
+    // ------------------------------------------------------------------------
 
     case IDC_TOOLBAR:
 
@@ -6499,6 +6495,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       return 1LL;
 
+    // ------------------------------------------------------------------------
 
     case IDC_STATUSBAR:
 
@@ -6591,6 +6588,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+    // ------------------------------------------------------------------------
 
     default:
       switch(pnmh->code)
@@ -8487,10 +8485,10 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (bIsSelCountable)
     {
-      DocPos const iSelCharCount = SciCall_GetSelText(NULL);
-      if (iSelCharCount < 2048) // should be fast !
+      DocPos const iSelSize = SciCall_GetSelText(NULL);
+      if (iSelSize < 2048) // should be fast !
       {
-        char* selectionBuffer = (char*)AllocMem(iSelCharCount + 1, HEAP_ZERO_MEMORY);
+        char* selectionBuffer = AllocMem(iSelSize, HEAP_ZERO_MEMORY);
         if (selectionBuffer) {
           SciCall_GetSelText(selectionBuffer);
           //StrDelChrA(chExpression, " \r\n\t\v");
@@ -9195,8 +9193,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     FileVars_Init(NULL,0,&fvCurFile);
     EditSetNewText(g_hwndEdit, "", 0);
 
-    g_iEOLMode = iLineEndings[g_iDefaultEOLMode];
-    SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
+    g_iEOLMode = g_iDefaultEOLMode;
+    SendMessage(g_hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
     Encoding_Current(g_iDefaultNewFileEncoding);
     Encoding_HasChanged(g_iDefaultNewFileEncoding);
     
@@ -9271,8 +9269,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
         FileVars_Init(NULL,0,&fvCurFile);
         EditSetNewText(g_hwndEdit,"",0);
         Style_SetDefaultLexer(g_hwndEdit);
-        g_iEOLMode = iLineEndings[g_iDefaultEOLMode];
-        SendMessage(g_hwndEdit,SCI_SETEOLMODE,iLineEndings[g_iDefaultEOLMode],0);
+        g_iEOLMode = g_iDefaultEOLMode;
+        SendMessage(g_hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
         if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
           fileEncoding = Encoding_SrcCmdLn(CPI_GET);
           Encoding_Current(fileEncoding);
@@ -9346,8 +9344,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
     // the .LOG feature ...
     if (SciCall_GetTextLength() >= 4) {
-      char tchLog[5] = { '\0' };
-      SendMessage(g_hwndEdit,SCI_GETTEXT,5,(LPARAM)tchLog);
+      char tchLog[6] = { '\0','\0','\0','\0','\0','\0' };
+      SciCall_GetText(5, tchLog);
       if (StringCchCompareXA(tchLog,".LOG") == 0) {
         EditJumpTo(g_hwndEdit,-1,0);
         _BEGIN_UNDO_ACTION_;
@@ -9428,9 +9426,9 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
         SendMessage(g_hwndEdit, SCI_DOCUMENTEND, 0, 0);
         EditEnsureSelectionVisible(g_hwndEdit);
       }
-      else if (SciCall_GetTextLength() >= 4) {
-        char tch[5] = { '\0' };
-        
+      else if (SciCall_GetTextLength() >= 4) 
+      {
+        char tch[6] = { '\0','\0','\0','\0','\0','\0' };
         SciCall_GetText(5, tch);
         if (StringCchCompareXA(tch,".LOG") != 0) {
           SciCall_ClearSelections();
@@ -9467,7 +9465,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
     if (cchText == 0)
       bIsEmptyNewFile = true;
     else if (cchText < 1023) {
-      char chTextBuf[1024];
+      char chTextBuf[1024] = { '\0' };
       SciCall_GetText(1023, chTextBuf);
       StrTrimA(chTextBuf," \t\n\r");
       if (StringCchLenA(chTextBuf,COUNTOF(chTextBuf)) == 0)
