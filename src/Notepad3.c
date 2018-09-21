@@ -334,6 +334,8 @@ DWORD     dwLastIOError = 0;
 int       g_iDefaultNewFileEncoding = 0;
 int       g_iDefaultCharSet = 0;
 int       g_IMEInteraction = 0;
+int       g_iImeIndicatorInlineColorStd = -1;
+int       g_iImeIndicatorInlineColor2nd = -1;
 
 int       iInitialLine;
 int       iInitialColumn;
@@ -381,6 +383,8 @@ bool      g_bFileReadOnly = false;
 static double g_dExpression = 0.0;
 static int    g_iExprError = -1;
 
+//IME style
+static void __fastcall SetImeIndicatorInlineColor(HWND hwndEditCtrl, int const color);
 
 // declarations
 
@@ -1755,12 +1759,21 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   // IME Interaction
   SendMessage(hwndEditCtrl, SCI_SETIMEINTERACTION, (WPARAM)g_IMEInteraction, 0);
 
+  // IME Inline mode Indicator Color
+  if (Style_GetUse2ndDefault()) {
+    if (g_iImeIndicatorInlineColorStd != -1)
+      SetImeIndicatorInlineColor(hwndEditCtrl, g_iImeIndicatorInlineColorStd);
+  }
+  else if (g_iImeIndicatorInlineColorStd != -1)
+    SetImeIndicatorInlineColor(hwndEditCtrl, g_iImeIndicatorInlineColor2nd);
+
   // word delimiter handling
   EditInitWordDelimiter(hwndEditCtrl);
   EditSetAccelWordNav(hwndEditCtrl, g_bAccelWordNavigation);
 
   UpdateMarginWidth();
 }
+
 
 
 //=============================================================================
@@ -6175,6 +6188,25 @@ static bool __fastcall _IsIMEOpenInNoNativeMode()
 }
 #endif
 
+
+//=============================================================================
+//
+//  SetImeIndicatorInlineColor() - Handles WM_CREATE
+//
+//
+
+static void __fastcall SetImeIndicatorInlineColor(HWND hwndEditCtrl, int const color) {
+  unsigned char r, g, b;
+  r = GetRValue(color);
+  g = GetGValue(color);
+  b = GetBValue(color);
+  COLORREF rgb = RGB(r,g,b);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_IME, rgb);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_IME+1, rgb);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_IME+2, rgb);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_IME_MAX, rgb);
+}
+
 //=============================================================================
 //
 //  MsgNotify() - Handles WM_NOTIFY
@@ -6731,7 +6763,9 @@ void LoadSettings()
       int const codePage = Scintilla_InputCodePage(); 
       g_IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
     }
-
+    g_iImeIndicatorInlineColorStd = IniSectionGetInt(pIniSection, L"IMEInlineColor1", -1);
+    g_iImeIndicatorInlineColor2nd = IniSectionGetInt(pIniSection, L"IMEInlineColor2", -1);
+    
     g_iSciFontQuality = clampi(IniSectionGetInt(pIniSection, L"SciFontQuality", FontQuality[3]), 0, 3);
 
     g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection, L"MarkOccurrencesMaxCount", 2000);
