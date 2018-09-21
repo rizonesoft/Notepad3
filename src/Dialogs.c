@@ -641,7 +641,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
         GetLngString(IDS_MUI_TRANSL_AUTHOR, wchAuthInfo, COUNTOF(wchAuthInfo));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchAuthInfo);
-        SetClipboardTextW(g_hwndMain, wchVerInfo);
+        SetClipboardTextW(g_hwndMain, wchVerInfo, StringCchLen(wchVerInfo,0));
       }
       break;
 

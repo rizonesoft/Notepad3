@@ -156,17 +156,14 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
 //
 //  SetClipboardWchTextW()
 //
-bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW)
+bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
 {
-  if (!OpenClipboard(hwnd)) {
-    return false;
-  }
-  size_t cchTextW = StringCchLenW(pszTextW,0) + 1;
-  HANDLE hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(WCHAR) * cchTextW);
+  if (!OpenClipboard(hwnd)) { return false; }
+  HANDLE hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (cchTextW + 1) * sizeof(WCHAR));
   if (hData) {
     WCHAR* pszNew = GlobalLock(hData);
     if (pszNew) {
-      StringCchCopy(pszNew, cchTextW, pszTextW);
+      StringCchCopy(pszNew, cchTextW + 1, pszTextW);
       GlobalUnlock(hData);
       EmptyClipboard();
       SetClipboardData(CF_UNICODETEXT, hData);

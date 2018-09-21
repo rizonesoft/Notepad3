@@ -1374,7 +1374,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 //
 //  Style_SniffShebang()
 //
-PEDITLEXER __fastcall Style_SniffShebang(char *pchText)
+PEDITLEXER __fastcall Style_SniffShebang(char* pchText)
 {
   if (StrCmpNA(pchText,"#!",2) == 0) {
     char *pch = pchText + 2;
@@ -1407,7 +1407,6 @@ PEDITLEXER __fastcall Style_SniffShebang(char *pchText)
     else if ((pch - pchText) >= 4 && StrCmpNA(pch-4,"node",4) == 0)
       return(&lexJS);
   }
-
   return(NULL);
 }
 
@@ -1489,7 +1488,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     if (!g_flagNoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
       char tchText[256] = { L'\0' };
-      SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
+      SciCall_GetText(COUNTOF(tchText) - 1, tchText);
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
@@ -1525,8 +1524,8 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     if (*lpszExt == L'.') ++lpszExt;
 
     if (!g_flagNoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
-      char tchText[256] = { L'\0' };
-      SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
+      char tchText[256] = { '\0' };
+      SciCall_GetText(COUNTOF(tchText) - 1, tchText);
       StrTrimA(tchText," \t\n\r");
       pLexSniffed = Style_SniffShebang(tchText);
       if (pLexSniffed) {
@@ -1570,7 +1569,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
   if (!bFound && g_bAutoSelect && (!g_flagNoHTMLGuess || !g_flagNoCGIGuess)) {
     char tchText[512];
-    SendMessage(hwnd,SCI_GETTEXT,(WPARAM)COUNTOF(tchText)-1,(LPARAM)tchText);
+    SciCall_GetText(COUNTOF(tchText) - 1, tchText);
     StrTrimA(tchText," \t\n\r");
     if (!g_flagNoCGIGuess) {
       if (tchText[0] == '<') {

@@ -208,7 +208,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
 
 
-bool SetClipboardTextW(HWND, LPCWSTR);
+bool SetClipboardTextW(HWND, LPCWSTR, size_t);
 
 UINT GetCurrentDPI(HWND hwnd);
 UINT GetCurrentPPI(HWND hwnd);
@@ -490,7 +490,6 @@ inline HRESULT PathCchAppend(PWSTR p,size_t l,PCWSTR a)          { UNUSED(l); re
 inline HRESULT PathCchCanonicalize(PWSTR p,size_t l,PCWSTR a)    { UNUSED(l); return (PathCanonicalize(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRenameExtension(PWSTR p,size_t l,PCWSTR a) { UNUSED(l); return (PathRenameExtension(p,a) ? S_OK : E_FAIL); }
 inline HRESULT PathCchRemoveFileSpec(PWSTR p,size_t l)           { UNUSED(l); return (PathRemoveFileSpec(p) ? S_OK : E_FAIL); }
-
 
 #define _EXTRA_DRAG_N_DROP_HANDLER_ 1
 
