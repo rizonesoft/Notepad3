@@ -106,5 +106,5 @@ SCLEX_ASM, IDS_LEX_ASM_SCR, L"Assembly Script", L"asm", L"",
     { SCE_ASM_DIRECTIVE, IDS_LEX_STR_63203, L"Directive", L"fore:#0A246A", L"" },
     { SCE_ASM_DIRECTIVEOPERAND, IDS_LEX_STR_63209, L"Directive Operand", L"fore:#0A246A", L"" },
     { SCE_ASM_REGISTER, IDS_LEX_STR_63208, L"Register", L"fore:#FF8000", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 

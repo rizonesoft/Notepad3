@@ -19,4 +19,4 @@ SCLEX_REGISTRY, IDS_LEX_REG_FILES, L"Registry Files", L"reg", L"",
     { SCE_REG_KEYPATH_GUID, IDS_LEX_STR_63291, L"GUID in Key Path", L"fore:#7B5F15", L"" },
     { SCE_REG_PARAMETER, IDS_LEX_STR_63281, L"Parameter", L"fore:#0B6561", L"" },
     { SCE_REG_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

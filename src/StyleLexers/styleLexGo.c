@@ -44,4 +44,4 @@ SCLEX_D, IDS_LEX_GO_SRC, L"Go Source Code", L"go", L"",
     //{ SCE_D_STRINGB, L"Default", L"", L"" },
     //{ SCE_D_STRINGR, L"Default", L"", L"" },
     //C++: { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

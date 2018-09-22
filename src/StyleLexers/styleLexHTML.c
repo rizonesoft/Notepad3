@@ -141,5 +141,5 @@ SCLEX_HTML, IDS_LEX_WEB_SRC, L"Web Source Code", L"html; htm; asp; aspx; shtml; 
     //{ SCE_HPA_DEFNAME, L"ASP Phyton Def Name", L"", L"" },
     //{ SCE_HPA_OPERATOR, L"ASP Phyton Operator", L"", L"" },
     //{ SCE_HPA_IDENTIFIER, L"ASP Phyton Identifier", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 

@@ -21,7 +21,8 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; wtx; log; asc; doc", 
     /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#808080; alpha:80", L"" },
     /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"alpha:100; alpha2:100; indic_roundbox", L"" },
     /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"italic; fore:#0000FF", L"" },
-             { -1, 00000, L"", L"", L"" } } };
+    /* 15 */ { SCI_INDICSETFORE, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00FF00", L"" },
+             EDITLEXER_SENTINEL } };
 
 
 EDITLEXER lexStandard2nd = { 
@@ -42,7 +43,8 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; wtx; log; asc; 
     /* 12 */ { SCI_FOLDALL + SCI_MARKERSETALPHA, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#808080; alpha:80; charset:2; case:U", L"" },
     /* 13 */ { SCI_MARKERSETBACK + SCI_MARKERSETALPHA, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0x000000; alpha:100; alpha2:220; indic_box", L"" },
     /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"bold; fore:#FF0000", L"" },
-             { -1, 00000, L"", L"", L"" } } };
+    /* 15 */ { SCI_INDICSETFORE, IDS_LEX_STR_63353, L"2nd Inline-IME Color", L"fore:#FF0000", L"" },
+             EDITLEXER_SENTINEL } };
 
 
 EDITLEXER lexANSI = { 
@@ -53,7 +55,7 @@ SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"",
     { STYLE_BRACELIGHT, IDS_LEX_STD_BRACE, L"Matching Braces", L"size:+0", L"" },
     { STYLE_BRACEBAD, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error", L"size:+0", L"" },
     { SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 
 
 EDITLEXER lexLATEX = { 
@@ -67,7 +69,7 @@ SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty", L"",
     { SCE_L_SPECIAL, IDS_LEX_STR_63306, L"Special Char", L"fore:#AAAA00", L"" },
     { MULTI_STYLE(SCE_L_TAG,SCE_L_TAG2,0,0), IDS_LEX_STR_63282, L"Tag", L"fore:#0000FF", L"" },
     { SCE_L_VERBATIM, IDS_LEX_STR_63307, L"Verbatim Segment", L"fore:#666666", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 
 
 

@@ -26,4 +26,4 @@ SCLEX_RUBY, IDS_LEX_RUBY, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; Rakefile; 
     { SCE_RB_INSTANCE_VAR, IDS_LEX_STR_63295, L"Instance Var", L"fore:#B00080", L"" },
     { SCE_RB_CLASS_VAR, IDS_LEX_STR_63296, L"Class Var", L"fore:#8000B0", L"" },
     { SCE_RB_DATASECTION, IDS_LEX_STR_63222, L"Data Section", L"fore:#600000; back:#FFF0D8; eolfilled", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

@@ -25,4 +25,4 @@ SCLEX_BATCH, IDS_LEX_BATCH, L"Batch Files", L"bat; cmd", L"",
     { SCE_BAT_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
     { MULTI_STYLE(SCE_BAT_COMMAND,SCE_BAT_HIDE,0,0), IDS_LEX_STR_63236, L"Command", L"bold", L"" },
     { SCE_BAT_LABEL, IDS_LEX_STR_63235, L"Label", L"fore:#C80000; back:#F4F4F4; eolfilled", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

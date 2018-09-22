@@ -26,4 +26,4 @@ SCLEX_MARKDOWN, IDS_LEX_MARKDOWN, L"Markdown", L"md; markdown; mdown; mkdn; mkd"
     { SCE_MARKDOWN_HRULE, IDS_LEX_STR_63330, L"Horizontal Rule", L"bold", L"" },
     { SCE_MARKDOWN_LINK, IDS_LEX_STR_63331, L"Link", L"fore:#0000FF", L"" },
     { MULTI_STYLE(SCE_MARKDOWN_CODE,SCE_MARKDOWN_CODE2,SCE_MARKDOWN_CODEBK,0), IDS_LEX_STR_63332, L"Code", L"fore:#00007F; back:#EBEBEB", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

@@ -29,4 +29,4 @@ SCLEX_PYTHON,  IDS_LEX_AWK_SCR, L"Awk Script", L"awk", L"",
     { MULTI_STYLE(SCE_P_STRING,SCE_P_STRINGEOL,SCE_P_CHARACTER,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
     { SCE_P_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#C04000", L"" },
     { SCE_P_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

@@ -131,4 +131,4 @@ SCLEX_AHK, IDS_LEX_AHK, L"AutoHotkey Script", L"", L"",
     //{ SCE_AHK_WORD_UD, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
     { SCE_AHK_VARREFKW, IDS_LEX_STR_63313, L"Variable Keyword", L"fore:#CF00CF; italic; back:#F9F9FF", L"" },
     { SCE_AHK_ERROR, IDS_LEX_STR_63261, L"Error", L"back:#FFC0C0", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
