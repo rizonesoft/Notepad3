@@ -82,9 +82,6 @@ INT_PTR CALLBACK Styles_ConfigDlgProc(HWND,UINT,WPARAM,LPARAM);
 HWND   Style_CustomizeSchemesDlg(HWND);
 INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND,UINT,WPARAM,LPARAM);
 void   Style_SelectLexerDlg(HWND);
-int    Style_GetHotspotStyleID();
-int    Style_GetInvisibleStyleID();
-int    Style_GetReadonlyStyleID();
 bool   Style_StrGetWeightValue(LPCWSTR,int*);
 void   Style_AppendWeightStr(LPWSTR, int, int);
 

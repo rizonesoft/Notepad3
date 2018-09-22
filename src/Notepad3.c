@@ -5925,7 +5925,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 {
   char const cStyle = SciCall_GetStyleAt(position);
 
-  if (cStyle != (char)Style_GetHotspotStyleID()) { return; }
+  if ((int)cStyle != Style_GetHotspotStyleID()) { return; }
   if (!SciCall_StyleGetHotspot(Style_GetHotspotStyleID())) { return; }
 
   // get left most position of style

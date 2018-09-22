@@ -6773,7 +6773,7 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
     // mark this match
     SciCall_StartStyling(iPos);
     if (bActiveHotspot)
-      SciCall_SetStyling((DocPosCR)mlen, (char)Style_GetHotspotStyleID());
+      SciCall_SetStyling((DocPosCR)mlen, Style_GetHotspotStyleID());
     else
       EditFinalizeStyling(hwnd, endPos);
 
@@ -6852,7 +6852,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
       const DocPos begPos = SciCall_PositionFromLine(iStartLine);
       const DocPos lnLen = SciCall_LineLength(iStartLine);
       SciCall_StartStyling(begPos);
-      SciCall_SetStyling((DocPosCR)lnLen, (char)Style_GetInvisibleStyleID());
+      SciCall_SetStyling((DocPosCR)lnLen, Style_GetInvisibleStyleID());
     }
 
     int level = baseLevel;
@@ -6868,7 +6868,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
         const DocPos begPos = SciCall_PositionFromLine(iLine);
         const DocPos lnLen = SciCall_LineLength(iLine);
         SciCall_StartStyling(begPos);
-        SciCall_SetStyling((DocPosCR)lnLen, (char)Style_GetInvisibleStyleID());
+        SciCall_SetStyling((DocPosCR)lnLen, Style_GetInvisibleStyleID());
 
         if (level == baseLevel) {
           SciCall_SetFoldLevel(iLine - 1, SC_FOLDLEVELHEADERFLAG | level++);
