@@ -334,6 +334,8 @@ DWORD     dwLastIOError = 0;
 int       g_iDefaultNewFileEncoding = 0;
 int       g_iDefaultCharSet = 0;
 int       g_IMEInteraction = 0;
+WCHAR     g_wchIMEIndicatorInlineColorStd[12] = { L'\0' };
+WCHAR     g_wchIMEIndicatorInlineColor2nd[12] = { L'\0' };
 
 int       iInitialLine;
 int       iInitialColumn;
@@ -381,6 +383,9 @@ bool      g_bFileReadOnly = false;
 static double g_dExpression = 0.0;
 static int    g_iExprError = -1;
 
+//IME style
+static void __fastcall applyIMESetting(HWND hwndEditCtrl);
+static void __fastcall SetImeIndicatorInlineColor(HWND hwndEditCtrl, WCHAR wchColor[12]);
 
 // declarations
 
@@ -1755,12 +1760,16 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   // IME Interaction
   SendMessage(hwndEditCtrl, SCI_SETIMEINTERACTION, (WPARAM)g_IMEInteraction, 0);
 
+  // IME Inline mode Indicator Color
+  applyIMESetting(hwndEditCtrl);
+
   // word delimiter handling
   EditInitWordDelimiter(hwndEditCtrl);
   EditSetAccelWordNav(hwndEditCtrl, g_bAccelWordNavigation);
 
   UpdateMarginWidth();
 }
+
 
 
 //=============================================================================
@@ -4595,6 +4604,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_USE2NDDEFAULT:
       Style_ToggleUse2ndDefault(g_hwndEdit);
+      applyIMESetting(g_hwndEdit);
       UpdateToolbar();
       UpdateStatusbar(false);
       break;
@@ -6175,6 +6185,46 @@ static bool __fastcall _IsIMEOpenInNoNativeMode()
 }
 #endif
 
+
+
+//=============================================================================
+//
+//  applyIMESetting() - Handles WM_CREATE
+//
+//
+
+static void __fastcall applyIMESetting(HWND hwndEditCtrl) {
+  if (!g_IMEInteraction)
+    return;
+  if (Style_GetUse2ndDefault()) {
+    if (g_wchIMEIndicatorInlineColor2nd)
+      SetImeIndicatorInlineColor(hwndEditCtrl, g_wchIMEIndicatorInlineColor2nd);
+  }
+  else {
+    if (g_wchIMEIndicatorInlineColorStd)
+      SetImeIndicatorInlineColor(hwndEditCtrl, g_wchIMEIndicatorInlineColorStd);
+  }
+}
+
+
+//=============================================================================
+//
+//  SetImeIndicatorInlineColor() - Handles WM_CREATE
+//
+//
+
+static void __fastcall SetImeIndicatorInlineColor(HWND hwndEditCtrl, WCHAR wchColor[12]) {
+  long	irgb;
+  irgb = wcstol(wchColor,NULL,16);
+  unsigned char r, g, b;
+  r = GetRValue(irgb); g = GetGValue(irgb); b = GetBValue(irgb);
+  COLORREF rgb = RGB(b,g,r); // Blur, Green, Red is Correct. on September, 2018.
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_IME, rgb);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_IME+1, rgb);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_IME+2, rgb);
+  SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_IME_MAX, rgb);
+}
+
 //=============================================================================
 //
 //  MsgNotify() - Handles WM_NOTIFY
@@ -6731,7 +6781,9 @@ void LoadSettings()
       int const codePage = Scintilla_InputCodePage(); 
       g_IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
     }
-
+    IniSectionGetString(pIniSection, L"IMEInlineColor1",L"", g_wchIMEIndicatorInlineColorStd, COUNTOF(g_wchIMEIndicatorInlineColorStd));
+    IniSectionGetString(pIniSection, L"IMEInlineColor2",L"", g_wchIMEIndicatorInlineColor2nd, COUNTOF(g_wchIMEIndicatorInlineColor2nd));
+    
     g_iSciFontQuality = clampi(IniSectionGetInt(pIniSection, L"SciFontQuality", FontQuality[3]), 0, 3);
 
     g_iMarkOccurrencesMaxCount = IniSectionGetInt(pIniSection, L"MarkOccurrencesMaxCount", 2000);
