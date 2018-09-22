@@ -53,4 +53,4 @@ SCLEX_INNOSETUP, IDS_LEX_INNO, L"Inno Setup Script", L"iss; isl; islu", L"",
     { MULTI_STYLE(SCE_INNO_STRING_DOUBLE,SCE_INNO_STRING_SINGLE,0,0), IDS_LEX_STR_63131, L"String", L"", L"" },
     //{ SCE_INNO_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
     //{ SCE_INNO_KEYWORD_USER, L"User Defined", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

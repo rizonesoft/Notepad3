@@ -75,32 +75,6 @@ bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOS
 
 // ----------------------------------------------------------------------------
 
-
-typedef enum {
-  STY_DEFAULT = 0,
-  STY_MARGIN = 1,
-  STY_BRACE_OK = 2,
-  STY_BRACE_BAD = 3,
-  STY_CTRL_CHR = 4,
-  STY_INDENT_GUIDE = 5,
-  STY_SEL_TXT = 6,
-  STY_WHITESPACE = 7,
-  STY_CUR_LN_BCK = 8,
-  STY_CARET = 9,
-  STY_LONG_LN_MRK = 10,
-  STY_X_LN_SPACE = 11,
-  STY_BOOK_MARK = 12,
-  STY_MARK_OCC = 13,
-  STY_URL_HOTSPOT = 14,
-  STY_INVISIBLE = 15,
-  STY_READONLY = 16
-
-  // MAX = 127
-}
-LexDefaultStyles;
-
-
-
 // This array holds all the lexers...
 // Don't forget to change the number of the lexer for HTML and XML
 // in Notepad2.c ParseCommandLine() if you change this array!
@@ -758,6 +732,20 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MARK_OCCURANCE, iValue);
 
+
+  // Inline-IME Color
+  #define _SC_INDIC_IME_INPUT     (INDIC_IME + 0)
+  #define _SC_INDIC_IME_TARGET    (INDIC_IME + 1)
+  #define _SC_INDIC_IME_CONVERTED (INDIC_IME + 2)
+  #define _SC_INDIC_IME_UNKNOWN    INDIC_IME_MAX
+
+  if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_IME_COLOR].szValue, &dColor)) { // IME foregr
+    SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_INPUT, dColor);
+    SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_TARGET, dColor);
+    SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_CONVERTED, dColor);
+    SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_UNKNOWN, dColor);
+  }
+
   // More default values...
 
   if (pLexNew != &lexANSI) {
@@ -1066,16 +1054,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
 //=============================================================================
 //
-//  Style_GetHotspotStyleID()
-//
-int Style_GetHotspotStyleID()
-{
-  return (STYLE_MAX - STY_URL_HOTSPOT);
-}
-
-
-//=============================================================================
-//
 //  Style_SetUrlHotSpot()
 //
 void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
@@ -1120,16 +1098,6 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 }
 
 
-//=============================================================================
-//
-//  Style_GetInvisibleStyleID()
-//
-int Style_GetInvisibleStyleID()
-{
-  //return STYLE_FOLDDISPLAYTEXT;
-  return (STYLE_MAX - STY_INVISIBLE);
-}
-
 
 //=============================================================================
 //
@@ -1142,17 +1110,6 @@ void Style_SetInvisible(HWND hwnd, bool bInvisible)
   if (bInvisible) {
     SendMessage(hwnd, SCI_STYLESETVISIBLE, (WPARAM)Style_GetInvisibleStyleID(), (LPARAM)!bInvisible);
   }
-}
-
-
-
-//=============================================================================
-//
-//  Style_GetReadonlyStyleID()
-//
-int Style_GetReadonlyStyleID()
-{
-  return (STYLE_MAX - STY_READONLY);
 }
 
 

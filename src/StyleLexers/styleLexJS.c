@@ -25,5 +25,5 @@ SCLEX_CPP, IDS_LEX_J_SCR, L"JavaScript", L"js; jse; jsm; as", L"",
     //{ SCE_C_PREPROCESSOR, L"Preprocessor", L"fore:#FF8000", L"" },
     //{ SCE_C_WORD2, L"Word 2", L"", L"" },
     //{ SCE_C_GLOBALCLASS, L"Global Class", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 

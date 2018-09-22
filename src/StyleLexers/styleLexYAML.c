@@ -17,4 +17,4 @@ SCLEX_YAML, IDS_LEX_YAML, L"YAML", L"yaml; yml", L"",
     { SCE_YAML_TEXT, IDS_LEX_STR_63335, L"Text", L"fore:#404040", L"" },
     { SCE_YAML_ERROR, IDS_LEX_STR_63261, L"Error", L"fore:#FFFFFF; bold; italic; back:#FF0000; eolfilled", L"" },
     { SCE_YAML_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#333366", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

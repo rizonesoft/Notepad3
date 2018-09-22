@@ -481,11 +481,11 @@ static void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int init
 	int levelDeltaNext = 0;
 
 	const unsigned int nComL = 3; // defines how many comment lines should be before they are folded
-	Sci_Position nComColB[nComL];
+	Sci_Position nComColB[nComL] = {};
 	Sci_Position nComColF[nComL] = {};
-	Sci_Position nComCur;
-	bool comLineB[nComL];
-	bool comLineF[nComL];
+	Sci_Position nComCur = 0;
+	bool comLineB[nComL] = {};
+	bool comLineF[nComL] = {};
 	bool comLineCur;
 	Sci_Position nLineTotal = styler.GetLine(styler.Length()-1) + 1;
 	if (foldComment) {

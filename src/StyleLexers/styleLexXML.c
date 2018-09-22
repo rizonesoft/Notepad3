@@ -20,6 +20,6 @@ SCLEX_XML, IDS_LEX_XML_DOC, L"XML Document", L"xml; xsl; rss; svg; xul; xsd; xsl
     { MULTI_STYLE(SCE_H_XMLSTART,SCE_H_XMLEND,0,0), IDS_LEX_STR_63145, L"XML Identifier", L"bold; fore:#881280", L"" },
     { SCE_H_SGML_DEFAULT, IDS_LEX_STR_63237, L"SGML", L"fore:#881280", L"" },
     { SCE_H_CDATA, IDS_LEX_STR_63147, L"CDATA", L"fore:#646464", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 
 

@@ -16,4 +16,4 @@ SCLEX_DIFF, IDS_LEX_DIFF, L"Diff Files", L"diff; patch", L"",
     { MULTI_STYLE(SCE_DIFF_ADDED, SCE_DIFF_PATCH_ADD, SCE_DIFF_REMOVED_PATCH_ADD, 0), IDS_LEX_STR_63240, L"Line Addition", L"fore:#002000; back:#80FF80; eolfilled", L"" },
     { MULTI_STYLE(SCE_DIFF_DELETED, SCE_DIFF_PATCH_DELETE, SCE_DIFF_REMOVED_PATCH_DELETE, 0), IDS_LEX_STR_63241, L"Line Removal", L"fore:#200000; back:#FF8080; eolfilled", L"" },
     { SCE_DIFF_CHANGED, IDS_LEX_STR_63242, L"Line Change", L"fore:#000020; back:#8080FF; eolfilled", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

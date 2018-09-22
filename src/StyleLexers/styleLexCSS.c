@@ -84,6 +84,6 @@ SCLEX_CSS, IDS_LEX_CSS_STYLE, L"CSS Style Sheets", L"css; less; sass; scss", L""
     { SCE_CSS_VARIABLE, IDS_LEX_STR_63249, L"Variable", L"bold; fore:#FF4000", L"" },
     { SCE_CSS_UNKNOWN_PSEUDOCLASS, IDS_LEX_STR_63198, L"Unknown Pseudo-Class", L"fore:#C80000; back:#FFFF80", L"" },
     { SCE_CSS_UNKNOWN_IDENTIFIER, IDS_LEX_STR_63200, L"Unknown Property", L"fore:#C80000; back:#FFFF80", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 
 

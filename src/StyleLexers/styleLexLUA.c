@@ -46,4 +46,4 @@ SCLEX_LUA, IDS_LEX_LUA, L"Lua Script", L"lua", L"",
     { SCE_LUA_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
     { SCE_LUA_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
     { SCE_LUA_LABEL, IDS_LEX_STR_63235, L"Label", L"fore:#808000", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

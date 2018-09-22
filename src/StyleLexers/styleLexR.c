@@ -91,4 +91,4 @@ SCLEX_R, IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"R", L"",
     { SCE_R_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
     { SCE_R_INFIX, IDS_LEX_STR_63269, L"Infix", L"fore:#660066", L"" },
     { SCE_R_INFIXEOL, IDS_LEX_STR_63270, L"Infix EOL", L"fore:#FF4000; ,back:#E0C0E0; eolfilled", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

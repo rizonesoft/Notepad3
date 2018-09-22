@@ -927,5 +927,7 @@
 #define IDS_LEX_STR_63349               63349
 #define IDS_LEX_STR_63350               63350
 #define IDS_LEX_STR_63351               63351
+#define IDS_LEX_STR_63352               63352
+#define IDS_LEX_STR_63353               63353
 
 #endif //_COMMON_RES_H_

@@ -147,4 +147,4 @@ SCLEX_AHKL, IDS_LEX_AHKL, L"AutoHotkey_L Script", L"ahkl; ahk; ia; scriptlet", L
     //{ SCE_AHKL_USERDEFINED2, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
     { SCE_AHKL_ESCAPESEQ, IDS_LEX_STR_63306, L"Escape", L"fore:#660000; italic", L"" },
     { SCE_AHKL_ERROR, IDS_LEX_STR_63261, L"Error", L"back:#FF0000", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

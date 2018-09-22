@@ -663,4 +663,4 @@ SCLEX_AU3, IDS_LEX_AUTOIT3, L"AutoIt3 Script", L"au3", L"",
     { SCE_AU3_SENT, IDS_LEX_STR_63279, L"Send Key", L"fore:#FF0000", L"" },
     { SCE_AU3_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
     { SCE_AU3_SPECIAL, IDS_LEX_STR_63280, L"Special", L"fore:#FF8000", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

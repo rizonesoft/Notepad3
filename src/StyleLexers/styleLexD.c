@@ -50,4 +50,4 @@ SCLEX_D, IDS_LEX_D_SRC, L"D Source Code", L"d; dd; di", L"",
     //{ SCE_D_COMMENTDOCKEYWORD, L"Default", L"", L"" },
     //{ SCE_D_STRINGB, L"Default", L"", L"" },
     //{ SCE_D_STRINGR, L"Default", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

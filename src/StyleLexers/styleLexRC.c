@@ -28,4 +28,4 @@ SCLEX_CPP, IDS_LEX_RESOURCE_SCR, L"Resource Script", L"rc; rc2; rct; rh; r; dlg"
     //{ SCE_C_REGEX, L"Regex", L"", L"" },
     //{ SCE_C_WORD2, L"Word 2", L"", L"" },
     //{ SCE_C_GLOBALCLASS, L"Global Class", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

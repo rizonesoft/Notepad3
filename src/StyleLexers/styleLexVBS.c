@@ -28,4 +28,4 @@ SCLEX_VBSCRIPT, IDS_LEX_VB_SCR, L"VBScript", L"vbs; dsm", L"",
     //{ SCE_B_KEYWORD3, L"Keyword 3", L"", L"" },
     //{ SCE_B_KEYWORD4, L"Keyword 4", L"", L"" },
     //{ SCE_B_ASM, L"Inline Asm", L"fore:#FF8000", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

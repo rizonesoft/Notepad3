@@ -23,5 +23,5 @@ SCLEX_PASCAL, IDS_LEX_PASCAL_SRC, L"Pascal Source Code", L"pas; dpr; dpk; dfm; i
     { SCE_PAS_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
     { SCE_PAS_ASM, IDS_LEX_STR_63205, L"Inline Asm", L"fore:#0000FF", L"" },
     { MULTI_STYLE(SCE_PAS_PREPROCESSOR,SCE_PAS_PREPROCESSOR2,0,0), IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF00FF", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 

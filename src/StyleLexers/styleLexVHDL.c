@@ -34,4 +34,4 @@ SCLEX_VHDL, IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"",
     { SCE_VHDL_STDFUNCTION, IDS_LEX_STR_63338, L"Standard Function", L"", L"" },
     { SCE_VHDL_STDPACKAGE, IDS_LEX_STR_63339, L"Standard Package", L"", L"" },
     { SCE_VHDL_STDTYPE, IDS_LEX_STR_63340, L"Standard Type", L"fore:#FF8000", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

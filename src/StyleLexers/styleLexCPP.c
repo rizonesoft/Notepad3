@@ -53,5 +53,5 @@ SCLEX_CPP, IDS_LEX_CPP_SRC, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx
     { MULTI_STYLE(SCE_C_PREPROCESSOR,SCE_C_PREPROCESSORCOMMENT,SCE_C_PREPROCESSORCOMMENTDOC,0), IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
     //{ SCE_C_UUID, L"UUID", L"", L"" },
     //{ SCE_C_REGEX, L"Regex", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 
