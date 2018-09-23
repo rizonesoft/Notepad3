@@ -228,10 +228,10 @@ bool      bViewEOLs;
 bool      bUseDefaultForFileEncoding;
 bool      bSkipUnicodeDetection;
 bool      bSkipANSICodePageDetection;
-bool      bLoadASCIIasUTF8 = false;
-bool      bForceLoadASCIIasUTF8 = false;
-bool      bLoadNFOasOEM;
-bool      bNoEncodingTags;
+bool      g_bLoadASCIIasUTF8 = false;
+bool      g_bForceLoadASCIIasUTF8 = false;
+bool      g_bLoadNFOasOEM;
+bool      g_bNoEncodingTags;
 bool      bFixLineEndings;
 bool      bAutoStripBlanks;
 int       iPrintHeader;
@@ -5314,10 +5314,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_RELOADASCIIASUTF8:
       {
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
-          bForceLoadASCIIasUTF8 = true;
+          g_bForceLoadASCIIasUTF8 = true;
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),g_wchCurFile);
           FileLoad(false, false, true, true, true, tchMaxPathBuffer);
-          bForceLoadASCIIasUTF8 = false;
+          g_bForceLoadASCIIasUTF8 = false;
         }
       }
       break;
@@ -5327,7 +5327,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     {
       g_bForceCompEncDetection = true;
       if (StringCchLenW(g_wchCurFile, COUNTOF(g_wchCurFile))) {
-        bForceLoadASCIIasUTF8 = false;
+        g_bForceLoadASCIIasUTF8 = false;
         StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), g_wchCurFile);
         FileLoad(false, false, true, false, false, tchMaxPathBuffer);
       }
@@ -5339,13 +5339,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (StringCchLenW(g_wchCurFile,COUNTOF(g_wchCurFile))) {
           int _fNoFileVariables = g_flagNoFileVariables;
-          bool _bNoEncodingTags = bNoEncodingTags;
+          bool _bNoEncodingTags = g_bNoEncodingTags;
           g_flagNoFileVariables = 1;
-          bNoEncodingTags = 1;
+          g_bNoEncodingTags = 1;
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),g_wchCurFile);
           FileLoad(false,false,true, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchMaxPathBuffer);
           g_flagNoFileVariables = _fNoFileVariables;
-          bNoEncodingTags = _bNoEncodingTags;
+          g_bNoEncodingTags = _bNoEncodingTags;
         }
       }
       break;
@@ -6884,11 +6884,11 @@ void LoadSettings()
 
     bSkipANSICodePageDetection = IniSectionGetBool(pIniSection, L"SkipANSICodePageDetection", true);
 
-    bLoadASCIIasUTF8 = IniSectionGetBool(pIniSection, L"LoadASCIIasUTF8", false);
+    g_bLoadASCIIasUTF8 = IniSectionGetBool(pIniSection, L"LoadASCIIasUTF8", false);
 
-    bLoadNFOasOEM = IniSectionGetBool(pIniSection, L"LoadNFOasOEM", true);
+    g_bLoadNFOasOEM = IniSectionGetBool(pIniSection, L"LoadNFOasOEM", true);
 
-    bNoEncodingTags = IniSectionGetBool(pIniSection, L"NoEncodingTags", false);
+    g_bNoEncodingTags = IniSectionGetBool(pIniSection, L"NoEncodingTags", false);
 
     g_iDefaultEOLMode = clampi(IniSectionGetInt(pIniSection, L"DefaultEOLMode", 0), 0, 2);
 
@@ -7197,9 +7197,9 @@ void SaveSettings(bool bSaveSettingsNow)
     IniSectionSetBool(pIniSection, L"UseDefaultForFileEncoding", bUseDefaultForFileEncoding);
     IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
     IniSectionSetBool(pIniSection, L"SkipANSICodePageDetection", bSkipANSICodePageDetection);
-    IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", bLoadASCIIasUTF8);
-    IniSectionSetBool(pIniSection, L"LoadNFOasOEM", bLoadNFOasOEM);
-    IniSectionSetBool(pIniSection, L"NoEncodingTags", bNoEncodingTags);
+    IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", g_bLoadASCIIasUTF8);
+    IniSectionSetBool(pIniSection, L"LoadNFOasOEM", g_bLoadNFOasOEM);
+    IniSectionSetBool(pIniSection, L"NoEncodingTags", g_bNoEncodingTags);
     IniSectionSetInt(pIniSection, L"DefaultEOLMode", g_iDefaultEOLMode);
     IniSectionSetBool(pIniSection, L"FixLineEndings", bFixLineEndings);
     IniSectionSetBool(pIniSection, L"FixTrailingBlanks", bAutoStripBlanks);

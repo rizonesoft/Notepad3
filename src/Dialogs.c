@@ -64,9 +64,9 @@ extern DWORD dwLastIOError;
 extern bool bUseDefaultForFileEncoding;
 extern bool bSkipUnicodeDetection;
 extern bool bSkipANSICodePageDetection;
-extern bool bLoadASCIIasUTF8;
-extern bool bLoadNFOasOEM;
-extern bool bNoEncodingTags;
+extern bool g_bLoadASCIIasUTF8;
+extern bool g_bLoadNFOasOEM;
+extern bool g_bNoEncodingTags;
 extern bool bFixLineEndings;
 extern bool bAutoStripBlanks;
 
@@ -2255,9 +2255,9 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(bUseDefaultForFileEncoding));
         CheckDlgButton(hwnd,IDC_NOUNICODEDETECTION, DlgBtnChk(bSkipUnicodeDetection));
         CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, DlgBtnChk(bSkipANSICodePageDetection));
-        CheckDlgButton(hwnd,IDC_ASCIIASUTF8, DlgBtnChk(bLoadASCIIasUTF8));
-        CheckDlgButton(hwnd,IDC_NFOASOEM, DlgBtnChk(bLoadNFOasOEM));
-        CheckDlgButton(hwnd,IDC_ENCODINGFROMFILEVARS, DlgBtnChk(bNoEncodingTags));
+        CheckDlgButton(hwnd,IDC_ASCIIASUTF8, DlgBtnChk(g_bLoadASCIIasUTF8));
+        CheckDlgButton(hwnd,IDC_NFOASOEM, DlgBtnChk(g_bLoadNFOasOEM));
+        CheckDlgButton(hwnd,IDC_ENCODINGFROMFILEVARS, DlgBtnChk(g_bNoEncodingTags));
 
         CenterDlgInParent(hwnd);
       }
@@ -2277,9 +2277,9 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
                 bUseDefaultForFileEncoding = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED);
                 bSkipUnicodeDetection = (IsDlgButtonChecked(hwnd,IDC_NOUNICODEDETECTION) == BST_CHECKED);
                 bSkipANSICodePageDetection = (IsDlgButtonChecked(hwnd, IDC_NOANSICPDETECTION) == BST_CHECKED);
-                bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd,IDC_ASCIIASUTF8) == BST_CHECKED);
-                bLoadNFOasOEM = (IsDlgButtonChecked(hwnd,IDC_NFOASOEM) == BST_CHECKED);
-                bNoEncodingTags = (IsDlgButtonChecked(hwnd,IDC_ENCODINGFROMFILEVARS) == BST_CHECKED);
+                g_bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd,IDC_ASCIIASUTF8) == BST_CHECKED);
+                g_bLoadNFOasOEM = (IsDlgButtonChecked(hwnd,IDC_NFOASOEM) == BST_CHECKED);
+                g_bNoEncodingTags = (IsDlgButtonChecked(hwnd,IDC_ENCODINGFROMFILEVARS) == BST_CHECKED);
                 EndDialog(hwnd,IDOK);
               }
             }
