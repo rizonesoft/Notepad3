@@ -2,23 +2,28 @@
 
 // ----------------------------------------------------------------------------
 
-static int LexFunction(LexFunctionType type, int value)
+static __int64 LexFunction(LexFunctionType type, int value)
 {
-  static bool bStyleChanged = false;
+  static __int64 iStyleChanged = 0LL;
 
-  switch (type) {
+  switch (type)
+  {
   case FCT_SETTING_CHANGE:
-    if (value < 0)
-      return (bStyleChanged ? 1 : 0);
-    else {
-      bStyleChanged = (value > 0);
-      return 1;
+    if (value == 0) {
+      return iStyleChanged;
     }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
 
   default:
     break;
   }
-  return 0;
+  return (__int64)0;
 };
 
 // ----------------------------------------------------------------------------

@@ -26,6 +26,7 @@
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1
 #include <windows.h>
+#include <assert.h>
 #include <commctrl.h>
 #include <commdlg.h>
 #include <shlobj.h>
@@ -377,19 +378,22 @@ void Style_Save()
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
       LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
-      if ((*pLexFunction)(FCT_SETTING_CHANGE, -1)) {
+      if (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & (((__int64)1) << 1)) != 0LL) {
         IniSectionSetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
-        int i = 0;
-        while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+      }
+      int i = 0;
+      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+        if (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & (((__int64)1) << (i+2))) != 0LL) {
           // normalize
           szTmpStyle[0] = L'\0'; // clear
           Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
           IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
-          ++i;
         }
-        SaveIniSection(g_pLexArray[iLexer]->pszName, pIniSection);
-        ZeroMemory(pIniSection, len * sizeof(WCHAR));
+        ++i;
       }
+      SaveIniSection(g_pLexArray[iLexer]->pszName, pIniSection);
+      ZeroMemory(pIniSection, len * sizeof(WCHAR));
+      
     }
     FreeMem(pIniSection);
   }
@@ -1666,7 +1670,7 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
   {
     // set new styles to current lexer's default text
     StringCchCopyW(pLexerDefStyle->szValue, COUNTOF(pLexerDefStyle->szValue), newStyle);
-    (*pLexFunction)(FCT_SETTING_CHANGE, 1);
+    (*pLexFunction)(FCT_SETTING_CHANGE, STY_DEFAULT+2);
     Style_ResetCurrentLexer(hwnd);
   }
 }
@@ -3054,11 +3058,15 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 //  Style_CustomizeSchemesDlgProc()
 //
 static bool __fastcall _ApplyDialogItemText(HWND hwnd, 
-  PEDITLEXER pCurrentLexer, PEDITSTYLE pCurrentStyle, bool bIsStyleSelected)
+  PEDITLEXER pCurrentLexer, PEDITSTYLE pCurrentStyle, int iStyleID, bool bIsStyleSelected)
 {
   WCHAR szBuf[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)];
+
   LexFunctionPtr_t const pLexFunction = pCurrentLexer->pFctPtr;
-  bool bChgNfy = (*pLexFunction)(FCT_SETTING_CHANGE, -1) ? true : false;
+  int const bit = (!bIsStyleSelected ? 1 : (iStyleID + 2));
+  __int64 const mask = (((__int64)1) << bit);
+
+  bool bChgNfy = (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & mask) != 0);
 
   GetDlgItemText(hwnd, IDC_STYLEEDIT, szBuf, COUNTOF(szBuf));
 
@@ -3085,7 +3093,7 @@ static bool __fastcall _ApplyDialogItemText(HWND hwnd,
     Style_ResetCurrentLexer(g_hwndEdit);
   }
   if (bChgNfy) {
-    (*pLexFunction)(FCT_SETTING_CHANGE, 1);
+    (*pLexFunction)(FCT_SETTING_CHANGE, bit);
   }
   return bChgNfy;
 }
@@ -3099,15 +3107,16 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 {
   static HWND hwndTV;
   static bool fDragging;
-  static PEDITLEXER pCurrentLexer;
-  static PEDITSTYLE pCurrentStyle;
+  static PEDITLEXER pCurrentLexer = NULL;
+  static PEDITSTYLE pCurrentStyle = NULL;
+  static int iCurStyleIdx = -1;
   static HFONT hFontTitle;
   static HBRUSH hbrFore;
   static HBRUSH hbrBack;
   static bool bIsStyleSelected = false;
 
   static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
-  static int   Style_ChangedBackup[NUMLEXERS];
+  static __int64 Style_ChangedBackup[NUMLEXERS];
 
   WCHAR tchBuf[128] = { L'\0' };
 
@@ -3127,7 +3136,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             ++i;
           }
           LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
-          Style_ChangedBackup[iLexer] = (*pLexFunction)(FCT_SETTING_CHANGE, -1);
+          Style_ChangedBackup[iLexer] = (*pLexFunction)(FCT_SETTING_CHANGE, 0);
         }
 
         hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
@@ -3167,6 +3176,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         pCurrentLexer = (found >= 0) ? g_pLexCurrent : GetDefaultLexer();
         pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+        iCurStyleIdx = STY_DEFAULT;
 
         SendDlgItemMessage(hwnd,IDC_STYLEEDIT,EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)-1,0);
 
@@ -3174,9 +3184,9 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         MakeBitmapButton(hwnd,IDC_NEXTSTYLE,g_hInstance,IDB_NEXT);
 
         // Setup title font
-        if (hFontTitle)
+        if (hFontTitle) {
           DeleteObject(hFontTitle);
-
+        }
         if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd,IDC_TITLE,WM_GETFONT,0,0)))
           hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
 
@@ -3231,11 +3241,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             ++cnt;
             ++i;
           }
-          LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
-          (*pLexFunction)(FCT_SETTING_CHANGE, Style_ChangedBackup[iLexer]);
         }
         pCurrentLexer = NULL;
         pCurrentStyle = NULL;
+        iCurStyleIdx = -1;
       }
       return false;
 
@@ -3265,7 +3274,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           case TVN_SELCHANGED:
             {
               if (pCurrentLexer && pCurrentStyle) {
-                _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+                _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
               }
 
               WCHAR name[80] = { L'\0' };
@@ -3294,6 +3303,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                   if (IsLexerStandard(pCurrentLexer)) 
                   {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+                    iCurStyleIdx = STY_DEFAULT;
 
                     if (pCurrentStyle->rid == IDS_LEX_STD_STYLE) {
                       GetLngString(IDS_MUI_STY_BASESTD, label, COUNTOF(label));
@@ -3305,6 +3315,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                   }
                   else {
                     pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+                    iCurStyleIdx = STY_DEFAULT;
                     GetLngString(pCurrentLexer->resID, name, COUNTOF(name));
                     FormatLngStringW(label, COUNTOF(label), IDS_MUI_STY_LEXDEF, name);
                   }
@@ -3341,6 +3352,16 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                   DialogEnableWindow(hwnd, IDC_STYLEEDIT_ROOT, false);
 
                   pCurrentStyle = (PEDITSTYLE)lpnmtv->itemNew.lParam;
+                  iCurStyleIdx = -1;
+                  int i = 0;
+                  while (pCurrentLexer->Styles[i].iStyle != -1) {
+                    if (pCurrentLexer->Styles[i].rid == pCurrentStyle->rid) {
+                      iCurStyleIdx = i;
+                      break;
+                    }
+                    ++i;
+                  }
+                  assert(iCurStyleIdx != -1);
                 }
                 if (pCurrentStyle)
                 {
@@ -3352,6 +3373,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 }
                 else
                 {
+                  iCurStyleIdx = -1;
                   SetDlgItemText(hwnd, IDC_STYLELABEL, L"");
                   DialogEnableWindow(hwnd, IDC_STYLEEDIT, false);
                 }
@@ -3428,7 +3450,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
             // after select, this is new current item
             SetDlgItemText(hwnd,IDC_STYLEEDIT,tchCopy);
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
           }
           ReleaseCapture();
           DestroyCursor(SetCursor(LoadCursor(NULL,IDC_ARROW)));
@@ -3484,6 +3506,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
             pCurrentLexer = g_pLexCurrent;
             pCurrentStyle = &(pCurrentLexer->Styles[STY_DEFAULT]);
+            iCurStyleIdx = STY_DEFAULT;
 
             PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           }
@@ -3532,12 +3555,20 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
         case IDC_STYLEDEFAULT:
-          SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->pszDefault);
-          if (!bIsStyleSelected) {
-            SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->pszDefExt);
+          {
+            SetDlgItemText(hwnd, IDC_STYLEEDIT, pCurrentStyle->pszDefault);
+            if (!bIsStyleSelected) {
+              SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->pszDefExt);
+            }
+
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
+
+            LexFunctionPtr_t const pLexFunction = pCurrentLexer->pFctPtr;
+            int const bit = (!bIsStyleSelected ? 1 : (iCurStyleIdx + 2));
+            (*pLexFunction)(FCT_SETTING_CHANGE, -bit); // reset
+
+            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           }
-          _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
-          PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, IDC_STYLEEDIT)), 1);
           break;
 
 
@@ -3578,7 +3609,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         case IDC_EXPORT:
           {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
             Style_Export(hwnd);
           }
           break;
@@ -3586,14 +3617,14 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         case IDC_PREVIEW:
           {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
           }
           break;
 
 
         case IDC_PREVSTYLE:
           {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
             HTREEITEM hSel = TreeView_GetSelection(hwndTV);
             if (hSel) {
               HTREEITEM hPrev = TreeView_GetPrevVisible(hwndTV, hSel);
@@ -3607,7 +3638,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         case IDC_NEXTSTYLE:
           {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
             HTREEITEM hSel = TreeView_GetSelection(hwndTV);
             if (hSel) {
               HTREEITEM hNext = TreeView_GetNextVisible(hwndTV, hSel);
@@ -3621,7 +3652,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         case IDOK:
           {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
             if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0)) {
               MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
@@ -3638,21 +3669,32 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             SendMessage(hwnd, WM_CANCELMODE, 0, 0);
           }
           else {
-            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
             // Restore Styles
             int cnt = 0;
             for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+              LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
               StringCchCopy(g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions), Style_StylesBackup[cnt]);
+
+              if ((Style_ChangedBackup[iLexer] & (((__int64)1) << 1)) != 0LL)
+                (*pLexFunction)(FCT_SETTING_CHANGE,  1); 
+              else
+                (*pLexFunction)(FCT_SETTING_CHANGE, -1);
+
               ++cnt;
               int i = 0;
               while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
                 StringCchCopy(g_pLexArray[iLexer]->Styles[i].szValue, COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), Style_StylesBackup[cnt]);
+               
+                if ((Style_ChangedBackup[iLexer] & (((__int64)1) << (i+2))) != 0LL)
+                  (*pLexFunction)(FCT_SETTING_CHANGE,  (i+2));
+                else
+                  (*pLexFunction)(FCT_SETTING_CHANGE, -(i+2));
+
                 ++cnt;
                 ++i;
               }
-              LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
-              (*pLexFunction)(FCT_SETTING_CHANGE, Style_ChangedBackup[iLexer]);
             }
             Style_ResetCurrentLexer(g_hwndEdit);
             //EndDialog(hwnd,IDCANCEL);
