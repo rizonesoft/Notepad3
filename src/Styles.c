@@ -3383,8 +3383,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         if (fDragging && bIsStyleSelected)
         {
-          LONG xCur = LOWORD(lParam);
-          LONG yCur = HIWORD(lParam);
+          LONG xCur = (LONG)(short)LOWORD(lParam);
+          LONG yCur = (LONG)(short)HIWORD(lParam);
 
           //ImageList_DragMove(xCur,yCur);
           //ImageList_DragShowNolock(false);

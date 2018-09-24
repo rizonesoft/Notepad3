@@ -1279,7 +1279,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 							// Ensure only one chosen out of #if .. #elif .. #elif .. #else .. #endif
 							if (!preproc.CurrentIfTaken()) {
 								// Similar to #if
-								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 2, true);
+								std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 4, true);
 								const bool ifGood = EvaluateExpression(restOfLine, preprocessorDefinitions);
 								if (ifGood) {
 									preproc.InvertCurrentLevel();

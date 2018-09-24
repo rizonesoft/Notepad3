@@ -21,7 +21,7 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; wtx; log; asc; doc", 
     /* 12 */ { SCI_FOLDALL+SCI_MARKERSETALPHA, IDS_LEX_STD_BKMRK, L"Bookmarks and Folding (Colors, Size)", L"size:+2; fore:#000000; back:#808080; alpha:80", L"" },
     /* 13 */ { SCI_MARKERSETBACK+SCI_MARKERSETALPHA, IDS_LEX_STR_63262, L"Mark Occurrences (Indicator)", L"alpha:100; alpha2:100; indic_roundbox", L"" },
     /* 14 */ { SCI_SETHOTSPOTACTIVEFORE, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"italic; fore:#0000FF", L"" },
-    /* 15 */ { SCI_INDICSETFORE, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00FF00", L"" },
+    /* 15 */ { SCI_INDICSETFORE, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
              EDITLEXER_SENTINEL } };
 
 
