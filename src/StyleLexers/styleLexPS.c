@@ -1,5 +1,33 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  static __int64 iStyleChanged = 0LL;
+
+  switch (type)
+  {
+  case FCT_SETTING_CHANGE:
+    if (value == 0) {
+      return iStyleChanged;
+    }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
+
+  default:
+    break;
+  }
+  return (__int64)0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_PS = {
 "begin break catch continue data do dynamicparam else elseif end exit filter finally for foreach "
 "from function if in local param private process return switch throw trap try until where while",
@@ -58,6 +86,7 @@ KEYWORDLIST KeyWords_PS = {
 
 EDITLEXER lexPS = { 
 SCLEX_POWERSHELL, IDS_LEX_PWRSHELL, L"PowerShell Script", L"ps1; psd1; psm1", L"", 
+&LexFunction, // static
 &KeyWords_PS, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_POWERSHELL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

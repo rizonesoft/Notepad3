@@ -1,11 +1,39 @@
 ﻿#include "StyleLexers.h"
 
-KEYWORDLIST KeyWords_MAK = {
-"", "", "", "", "", "", "", "", "" };
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  static __int64 iStyleChanged = 0LL;
+
+  switch (type)
+  {
+  case FCT_SETTING_CHANGE:
+    if (value == 0) {
+      return iStyleChanged;
+    }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
+
+  default:
+    break;
+  }
+  return (__int64)0;
+};
+
+// ----------------------------------------------------------------------------
+
+KEYWORDLIST KeyWords_MAK = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexMAK = { 
 SCLEX_MAKEFILE, IDS_LEX_MAKEFILES, L"Makefiles", L"mak; make; mk; dsp; msc; msvc", L"", 
+&LexFunction, // static
 &KeyWords_MAK, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_MAKE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -1,5 +1,33 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  static __int64 iStyleChanged = 0LL;
+
+  switch (type)
+  {
+  case FCT_SETTING_CHANGE:
+    if (value == 0) {
+      return iStyleChanged;
+    }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
+
+  default:
+    break;
+  }
+  return (__int64)0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_VHDL = {
 "access after alias all architecture array assert attribute begin block body buffer bus case component configuration "
 "constant disconnect downto else elsif end entity exit file for function generate generic group guarded if impure in "
@@ -20,6 +48,7 @@ KEYWORDLIST KeyWords_VHDL = {
 
 EDITLEXER lexVHDL = { 
 SCLEX_VHDL, IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"", 
+&LexFunction, // static
 &KeyWords_VHDL, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_VHDL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

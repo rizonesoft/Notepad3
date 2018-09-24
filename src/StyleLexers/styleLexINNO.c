@@ -1,5 +1,33 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  static __int64 iStyleChanged = 0LL;
+
+  switch (type)
+  {
+  case FCT_SETTING_CHANGE:
+    if (value == 0) {
+      return iStyleChanged;
+    }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
+
+  default:
+    break;
+  }
+  return (__int64)0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_INNO = {
 "code components custommessages dirs files icons ini installdelete langoptions languages messages "
 "registry run setup types tasks uninstalldelete uninstallrun _istool",
@@ -39,6 +67,7 @@ KEYWORDLIST KeyWords_INNO = {
 
 EDITLEXER lexINNO = { 
 SCLEX_INNOSETUP, IDS_LEX_INNO, L"Inno Setup Script", L"iss; isl; islu", L"", 
+&LexFunction, // static
 &KeyWords_INNO, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_INNO_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

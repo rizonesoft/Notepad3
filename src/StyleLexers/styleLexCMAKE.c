@@ -1,5 +1,32 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  static __int64 iStyleChanged = 0LL;
+
+  switch (type)
+  {
+  case FCT_SETTING_CHANGE:
+    if (value == 0) {
+      return iStyleChanged;
+    }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
+
+  default:
+    break;
+  }
+  return (__int64)0;
+};
+
+// ----------------------------------------------------------------------------
 KEYWORDLIST KeyWords_CMAKE = {
 "add_custom_command add_custom_target add_definitions add_dependencies add_executable add_library "
 "add_subdirectory add_test aux_source_directory build_command build_name cmake_minimum_required "
@@ -31,6 +58,7 @@ KEYWORDLIST KeyWords_CMAKE = {
 
 EDITLEXER lexCmake = { 
 SCLEX_CMAKE, IDS_LEX_CMAKE, L"Cmake Script", L"cmake; ctest", L"", 
+&LexFunction, // static
 &KeyWords_CMAKE, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_CMAKE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

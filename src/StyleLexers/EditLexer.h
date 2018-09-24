@@ -6,6 +6,7 @@
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1
 #include <windows.h>
+
 #include "Scintilla.h"
 
 // -----------------------------------------------------------------------------
@@ -14,6 +15,18 @@
 
 #define BUFZIZE_STYLE_EXTENTIONS 512
 #define BUFSIZE_STYLE_VALUE 256
+
+// -----------------------------------------------------------------------------
+
+typedef enum
+{
+  FCT_SETTING_CHANGE, // value -b: rest style bit, 0: get bit-set, +b: set style bit
+  FCT_PASS
+}
+LexFunctionType;
+
+typedef __int64 (*LexFunctionPtr_t)(LexFunctionType type, int value);
+
 
 // -----------------------------------------------------------------------------
 
@@ -48,6 +61,7 @@ typedef struct _editlexer
   LPCWSTR pszName;
   LPCWSTR pszDefExt;
   WCHAR  szExtensions[BUFZIZE_STYLE_EXTENTIONS];
+  LexFunctionPtr_t pFctPtr;
   PKEYWORDLIST pKeyWords;
   EDITSTYLE    Styles[];
 

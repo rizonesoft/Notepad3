@@ -1,5 +1,33 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  static __int64 iStyleChanged = 0LL;
+
+  switch (type)
+  {
+  case FCT_SETTING_CHANGE:
+    if (value == 0) {
+      return iStyleChanged;
+    }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
+
+  default:
+    break;
+  }
+  return (__int64)0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_TCL = {
 // TCL Keywords
 "after append array auto_execok auto_import auto_load auto_load_index auto_qualify beep "
@@ -32,6 +60,7 @@ KEYWORDLIST KeyWords_TCL = {
 
 EDITLEXER lexTCL = { 
 SCLEX_TCL, IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl", L"", 
+&LexFunction, // static
 &KeyWords_TCL, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_TCL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -1,5 +1,33 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  static __int64 iStyleChanged = 0LL;
+
+  switch (type)
+  {
+  case FCT_SETTING_CHANGE:
+    if (value == 0) {
+      return iStyleChanged;
+    }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
+
+  default:
+    break;
+  }
+  return (__int64)0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_BASH = {
 "alias ar asa awk banner basename bash bc bdiff break bunzip2 bzip2 cal calendar case cat "
 "cc cd chmod cksum clear cmp col comm compress continue cp cpio crypt csplit ctags cut date "
@@ -19,6 +47,7 @@ KEYWORDLIST KeyWords_BASH = {
 
 EDITLEXER lexBASH = { 
 SCLEX_BASH, IDS_LEX_SHELL_SCR, L"Shell Script", L"sh", L"", 
+&LexFunction, // static
 &KeyWords_BASH, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_SH_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

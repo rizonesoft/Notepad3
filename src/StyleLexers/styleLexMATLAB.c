@@ -1,5 +1,32 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  static __int64 iStyleChanged = 0LL;
+
+  switch (type)
+  {
+  case FCT_SETTING_CHANGE:
+    if (value == 0) {
+      return iStyleChanged;
+    }
+    else if (value > 0) {
+      iStyleChanged |= (((__int64)1) << value);
+    }
+    else {  // value < 0
+      iStyleChanged &= ~(((__int64)1) << (0 - value));
+    }
+    break;
+
+  default:
+    break;
+  }
+  return (__int64)0;
+};
+
+// ----------------------------------------------------------------------------
 KEYWORDLIST KeyWords_MATLAB = {
 "break case catch continue else elseif end for function global if otherwise "
 "persistent return switch try while ",
@@ -8,6 +35,7 @@ KEYWORDLIST KeyWords_MATLAB = {
 
 EDITLEXER lexMATLAB = { 
 SCLEX_MATLAB, IDS_LEX_MATLAB, L"MATLAB", L"matlab", L"", 
+&LexFunction, // static
 &KeyWords_MATLAB, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_MATLAB_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
