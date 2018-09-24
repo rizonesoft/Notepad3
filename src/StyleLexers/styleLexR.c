@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_R = {
   // Language Keywords
   "if else repeat while function for in next break "
@@ -78,6 +101,7 @@ KEYWORDLIST KeyWords_R = {
 
 EDITLEXER lexR = { 
 SCLEX_R, IDS_LEX_R_STAT, L"R-S-SPlus Statistics Code", L"R", L"", 
+&LexFunction, // static
 &KeyWords_R,{
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_R_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

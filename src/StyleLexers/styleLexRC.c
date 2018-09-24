@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_RC = {
 "ACCELERATORS ALT AUTO3STATE AUTOCHECKBOX AUTORADIOBUTTON "
 "BEGIN BITMAP BLOCK BUTTON CAPTION CHARACTERISTICS CHECKBOX "
@@ -14,6 +37,7 @@ KEYWORDLIST KeyWords_RC = {
 
 EDITLEXER lexRC = { 
 SCLEX_CPP, IDS_LEX_RESOURCE_SCR, L"Resource Script", L"rc; rc2; rct; rh; r; dlg", L"", 
+&LexFunction, // static
 &KeyWords_RC, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

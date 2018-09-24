@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_VBS = {
 "alias and as attribute begin boolean byref byte byval call case class compare const continue "
 "currency date declare dim do double each else elseif empty end enum eqv erase error event exit "
@@ -12,6 +35,7 @@ KEYWORDLIST KeyWords_VBS = {
 
 EDITLEXER lexVBS = { 
 SCLEX_VBSCRIPT, IDS_LEX_VB_SCR, L"VBScript", L"vbs; dsm", L"", 
+&LexFunction, // static
 &KeyWords_VBS, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_B_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

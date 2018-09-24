@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_PAS = {
 "absolute abstract alias and array as asm assembler begin break case cdecl class const constructor continue cppdecl default "
 "destructor dispose div do downto else end end. except exit export exports external false far far16 file finalization finally for "
@@ -12,6 +35,7 @@ KEYWORDLIST KeyWords_PAS = {
 
 EDITLEXER lexPAS = { 
 SCLEX_PASCAL, IDS_LEX_PASCAL_SRC, L"Pascal Source Code", L"pas; dpr; dpk; dfm; inc; pp", L"", 
+&LexFunction, // static
 &KeyWords_PAS, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_PAS_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

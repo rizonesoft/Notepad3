@@ -1,10 +1,91 @@
 ﻿#include "StyleLexers.h"
 
-KEYWORDLIST KeyWords_NULL = { "", "", "", "", "", "", "", "", "" };
+// ----------------------------------------------------------------------------
 
+static int StdLexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+}
+
+static int Std2ndLexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+}
+
+static int AnsiLexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+}
+
+static int LatexLexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+}
+
+
+// ----------------------------------------------------------------------------
+
+KEYWORDLIST KeyWords_NULL = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexStandard = { 
 SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", 
+&StdLexFunction, // static
 &KeyWords_NULL, {
     /*  0 */ { STYLE_DEFAULT, IDS_LEX_STD_STYLE, L"Default Style", L"font:Default; size:10", L"" },
     /*  1 */ { STYLE_LINENUMBER, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"size:-2; fore:#FF0000", L"" },
@@ -27,6 +108,7 @@ SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; wtx; log; asc; doc", 
 
 EDITLEXER lexStandard2nd = { 
 SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; wtx; log; asc; doc", L"", 
+&Std2ndLexFunction, // static
 &KeyWords_NULL,{
     /*  0 */ { STYLE_DEFAULT, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Courier New; size:10", L"" },
     /*  1 */ { STYLE_LINENUMBER, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
@@ -49,6 +131,7 @@ SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; wtx; log; asc; 
 
 EDITLEXER lexANSI = { 
 SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"", 
+&AnsiLexFunction, // static
 &KeyWords_NULL,{
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; none; size:11", L"" },
     { STYLE_LINENUMBER, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
@@ -60,6 +143,7 @@ SCLEX_NULL, IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz", L"",
 
 EDITLEXER lexLATEX = { 
 SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty", L"", 
+&LatexLexFunction, // static
 &KeyWords_NULL, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_L_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
@@ -70,8 +154,4 @@ SCLEX_LATEX, IDS_LEX_LATEX, L"LaTeX Files", L"tex; latex; sty", L"",
     { MULTI_STYLE(SCE_L_TAG,SCE_L_TAG2,0,0), IDS_LEX_STR_63282, L"Tag", L"fore:#0000FF", L"" },
     { SCE_L_VERBATIM, IDS_LEX_STR_63307, L"Verbatim Segment", L"fore:#666666", L"" },
     EDITLEXER_SENTINEL } };
-
-
-
-
 

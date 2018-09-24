@@ -136,7 +136,6 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
 static int g_iDefaultLexer = 0;
 static PEDITLEXER g_pLexCurrent = &lexStandard;
 
-static bool g_fStylesModified  = false;
 static bool g_fWarnedNoIniFile = false;
 
 static COLORREF g_colorCustom[16];
@@ -252,9 +251,7 @@ float Style_GetCurrentFontSize()
 //
 void Style_Load()
 {
-  int i,iLexer;
   WCHAR tch[32] = { L'\0' };
-  //WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
@@ -279,7 +276,7 @@ void Style_Load()
     g_colorCustom[15] = RGB(0xB2, 0x8B, 0x40);
 
     LoadIniSection(L"Custom Colors", pIniSection, cchIniSection);
-    for (i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) {
       WCHAR wch[32] = { L'\0' };
       StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
       if (IniSectionGetString(pIniSection, tch, L"", wch, COUNTOF(wch))) {
@@ -311,19 +308,14 @@ void Style_Load()
     g_cyStyleSelectDlg = IniSectionGetInt(pIniSection, L"SelectDlgSizeY", 0);
     g_cyStyleSelectDlg = max_i(g_cyStyleSelectDlg, 324);
 
-    for (iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
       LoadIniSection(g_pLexArray[iLexer]->pszName, pIniSection, cchIniSection);
       IniSectionGetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->pszDefExt,
                           g_pLexArray[iLexer]->szExtensions, COUNTOF(g_pLexArray[iLexer]->szExtensions));
-      i = 0;
-      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-        //szTmpStyle[0] = L'\0'; // clear
-        //IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
-        //  g_pLexArray[iLexer]->Styles[i].pszDefault,
-        //  szTmpStyle, COUNTOF(szTmpStyle));
-        //// normalize
-        //Style_CopyStyles_IfNotDefined(szTmpStyle, g_pLexArray[iLexer]->Styles[i].szValue,
-        //  COUNTOF(g_pLexArray[iLexer]->Styles[i].szValue), true, true);
+      int i = 0;
+      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) 
+      {
         IniSectionGetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName,
                             g_pLexArray[iLexer]->Styles[i].pszDefault,
                             g_pLexArray[iLexer]->Styles[i].szValue,
@@ -377,28 +369,27 @@ void Style_Save()
     SaveIniSection(L"Styles", pIniSection);
     ZeroMemory(pIniSection, len * sizeof(WCHAR));
 
-    if (!g_fStylesModified) {
-      if (g_bIniFileFromScratch) {
-        for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-          SaveIniSection(g_pLexArray[iLexer]->pszName, L"\0");
-        }
+    if (g_bIniFileFromScratch) {
+      for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
+        SaveIniSection(g_pLexArray[iLexer]->pszName, L"\0");
       }
-      FreeMem(pIniSection);
-      return;
     }
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
-      IniSectionSetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
-      int i = 0;
-      while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
-        // normalize
-        szTmpStyle[0] = L'\0'; // clear
-        Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
-        IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
-        ++i;
+      LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
+      if ((*pLexFunction)(FCT_SETTING_CHANGE, -1)) {
+        IniSectionSetString(pIniSection, L"FileNameExtensions", g_pLexArray[iLexer]->szExtensions);
+        int i = 0;
+        while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+          // normalize
+          szTmpStyle[0] = L'\0'; // clear
+          Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
+          IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
+          ++i;
+        }
+        SaveIniSection(g_pLexArray[iLexer]->pszName, pIniSection);
+        ZeroMemory(pIniSection, len * sizeof(WCHAR));
       }
-      SaveIniSection(g_pLexArray[iLexer]->pszName, pIniSection);
-      ZeroMemory(pIniSection, len * sizeof(WCHAR));
     }
     FreeMem(pIniSection);
   }
@@ -1663,6 +1654,7 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
 
   PEDITLEXER const pLexer = bGlobalDefault ? GetCurrentStdLexer() : g_pLexCurrent;
   PEDITSTYLE const pLexerDefStyle = &(pLexer->Styles[STY_DEFAULT]);
+  LexFunctionPtr_t const pLexFunction = pLexer->pFctPtr;
 
   StringCchCopyW(newStyle, COUNTOF(newStyle), pLexer->Styles[STY_DEFAULT].szValue);
 
@@ -1674,7 +1666,7 @@ void Style_SetDefaultFont(HWND hwnd, bool bGlobalDefault)
   {
     // set new styles to current lexer's default text
     StringCchCopyW(pLexerDefStyle->szValue, COUNTOF(pLexerDefStyle->szValue), newStyle);
-    g_fStylesModified = true;
+    (*pLexFunction)(FCT_SETTING_CHANGE, 1);
     Style_ResetCurrentLexer(hwnd);
   }
 }
@@ -3061,11 +3053,12 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 //
 //  Style_CustomizeSchemesDlgProc()
 //
-static void __fastcall _ApplyDialogItemText(HWND hwnd, 
+static bool __fastcall _ApplyDialogItemText(HWND hwnd, 
   PEDITLEXER pCurrentLexer, PEDITSTYLE pCurrentStyle, bool bIsStyleSelected)
 {
-  bool bChgNfy = false;
   WCHAR szBuf[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)];
+  LexFunctionPtr_t const pLexFunction = pCurrentLexer->pFctPtr;
+  bool bChgNfy = (*pLexFunction)(FCT_SETTING_CHANGE, -1) ? true : false;
 
   GetDlgItemText(hwnd, IDC_STYLEEDIT, szBuf, COUNTOF(szBuf));
 
@@ -3075,22 +3068,26 @@ static void __fastcall _ApplyDialogItemText(HWND hwnd,
       COUNTOF(pCurrentStyle->szValue), true, true);
     bChgNfy = true;
   }
-  if (!bIsStyleSelected) {
-
-    if (!GetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, szBuf, COUNTOF(szBuf))) {
-
+  if (!bIsStyleSelected)
+  {
+    if (!GetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, szBuf, COUNTOF(szBuf))) 
+    {
       StringCchCopy(szBuf, COUNTOF(szBuf), pCurrentLexer->pszDefExt);
     }
-    if (StringCchCompareXIW(szBuf, pCurrentLexer->szExtensions) != 0) {
-
+    if (StringCchCompareXIW(szBuf, pCurrentLexer->szExtensions) != 0) 
+    {
       StringCchCopyW(pCurrentLexer->szExtensions, COUNTOF(pCurrentLexer->szExtensions), szBuf);
       bChgNfy = true;
     }
   }
-  if (bChgNfy && (IsLexerStandard(pCurrentLexer) || (pCurrentLexer == g_pLexCurrent))) {
-
+  if (bChgNfy && (IsLexerStandard(pCurrentLexer) || (pCurrentLexer == g_pLexCurrent))) 
+  {
     Style_ResetCurrentLexer(g_hwndEdit);
   }
+  if (bChgNfy) {
+    (*pLexFunction)(FCT_SETTING_CHANGE, 1);
+  }
+  return bChgNfy;
 }
 
 
@@ -3100,7 +3097,6 @@ static void __fastcall _ApplyDialogItemText(HWND hwnd,
 //
 INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
   static HWND hwndTV;
   static bool fDragging;
   static PEDITLEXER pCurrentLexer;
@@ -3111,6 +3107,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static bool bIsStyleSelected = false;
 
   static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
+  static int   Style_ChangedBackup[NUMLEXERS];
 
   WCHAR tchBuf[128] = { L'\0' };
 
@@ -3129,6 +3126,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             Style_StylesBackup[cnt++] = StrDup(g_pLexArray[iLexer]->Styles[i].szValue);
             ++i;
           }
+          LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
+          Style_ChangedBackup[iLexer] = (*pLexFunction)(FCT_SETTING_CHANGE, -1);
         }
 
         hwndTV = GetDlgItem(hwnd,IDC_STYLELIST);
@@ -3232,6 +3231,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
             ++cnt;
             ++i;
           }
+          LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
+          (*pLexFunction)(FCT_SETTING_CHANGE, Style_ChangedBackup[iLexer]);
         }
         pCurrentLexer = NULL;
         pCurrentStyle = NULL;
@@ -3619,14 +3620,16 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
 
         case IDOK:
-          _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
-          g_fStylesModified = true;
-          if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0)) {
-            MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
-            g_fWarnedNoIniFile = true;
+          {
+            _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+
+            if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0)) {
+              MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
+              g_fWarnedNoIniFile = true;
+            }
+            //EndDialog(hwnd,IDOK);
+            DestroyWindow(hwnd);
           }
-          //EndDialog(hwnd,IDOK);
-          DestroyWindow(hwnd);
           break;
 
 
@@ -3636,6 +3639,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           }
           else {
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, bIsStyleSelected);
+
             // Restore Styles
             int cnt = 0;
             for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
@@ -3647,6 +3651,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 ++cnt;
                 ++i;
               }
+              LexFunctionPtr_t const pLexFunction = g_pLexArray[iLexer]->pFctPtr;
+              (*pLexFunction)(FCT_SETTING_CHANGE, Style_ChangedBackup[iLexer]);
             }
             Style_ResetCurrentLexer(g_hwndEdit);
             //EndDialog(hwnd,IDCANCEL);

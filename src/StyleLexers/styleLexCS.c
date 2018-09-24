@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_CS = {
 "abstract add alias as ascending async await base bool break by byte case catch char checked "
 "class const continue decimal default delegate descending do double dynamic else "
@@ -137,6 +160,7 @@ KEYWORDLIST KeyWords_CS = {
 
 EDITLEXER lexCS = { 
 SCLEX_CPP, IDS_LEX_CSHARP_SRC, L"C# Source Code", L"cs", L"", 
+&LexFunction, // static
 &KeyWords_CS, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"C Default", L"", L"" },

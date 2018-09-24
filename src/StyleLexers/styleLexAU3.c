@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_AU3 = {
 "and byref case const continuecase continueloop default dim do else elseif endfunc endif "
 "endselect endswitch endwith enum exit exitloop false for func global if in local next not "
@@ -648,6 +671,7 @@ KEYWORDLIST KeyWords_AU3 = {
 
 EDITLEXER lexAU3 = { 
 SCLEX_AU3, IDS_LEX_AUTOIT3, L"AutoIt3 Script", L"au3", L"", 
+&LexFunction, // static
 &KeyWords_AU3, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_AU3_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

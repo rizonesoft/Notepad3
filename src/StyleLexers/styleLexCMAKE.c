@@ -1,5 +1,27 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
 KEYWORDLIST KeyWords_CMAKE = {
 "add_custom_command add_custom_target add_definitions add_dependencies add_executable add_library "
 "add_subdirectory add_test aux_source_directory build_command build_name cmake_minimum_required "
@@ -31,6 +53,7 @@ KEYWORDLIST KeyWords_CMAKE = {
 
 EDITLEXER lexCmake = { 
 SCLEX_CMAKE, IDS_LEX_CMAKE, L"Cmake Script", L"cmake; ctest", L"", 
+&LexFunction, // static
 &KeyWords_CMAKE, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_CMAKE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

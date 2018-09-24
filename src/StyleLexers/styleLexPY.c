@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_PY = {
 "and as assert break class continue def del elif else except "
 "exec False finally for from global if import in is lambda None "
@@ -9,6 +32,7 @@ KEYWORDLIST KeyWords_PY = {
 
 EDITLEXER lexPY = { 
 SCLEX_PYTHON, IDS_LEX_PYTHON, L"Python Script", L"py; pyw", L"", 
+&LexFunction, // static
 &KeyWords_PY, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_P_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

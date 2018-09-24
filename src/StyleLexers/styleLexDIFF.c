@@ -1,11 +1,34 @@
 ﻿#include "StyleLexers.h"
 
-KEYWORDLIST KeyWords_DIFF = {
-"", "", "", "", "", "", "", "", "" };
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
+KEYWORDLIST KeyWords_DIFF = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexDIFF = { 
 SCLEX_DIFF, IDS_LEX_DIFF, L"Diff Files", L"diff; patch", L"", 
+&LexFunction, // static
 &KeyWords_DIFF, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_DIFF_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

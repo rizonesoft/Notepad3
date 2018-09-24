@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_CSS = {
 "align-content align-items align-self alignment-adjust alignment-baseline animation animation-delay "
 "animation-direction animation-duration animation-fill-mode animation-iteration-count animation-name "
@@ -64,6 +87,7 @@ KEYWORDLIST KeyWords_CSS = {
 
 EDITLEXER lexCSS = { 
 SCLEX_CSS, IDS_LEX_CSS_STYLE, L"CSS Style Sheets", L"css; less; sass; scss", L"", 
+&LexFunction, // static
 &KeyWords_CSS, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_CSS_DEFAULT, IDS_LEX_STR_63126, L"CSS Default", L"", L"" },

@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_JSON = {
 "false true null",
 "@id @context @type @value @language @container @list @set @reverse @index @base @vocab @graph",
@@ -8,6 +31,7 @@ KEYWORDLIST KeyWords_JSON = {
 
 EDITLEXER lexJSON = { 
 SCLEX_JSON, IDS_LEX_JSON, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", 
+&LexFunction, // static
 &KeyWords_JSON, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

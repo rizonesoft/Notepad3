@@ -1,5 +1,28 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_LUA = {
 "and break do else elseif end false for function goto if "
 "in local nil not or repeat return then true until while",
@@ -31,6 +54,7 @@ KEYWORDLIST KeyWords_LUA = {
 
 EDITLEXER lexLUA = { 
 SCLEX_LUA, IDS_LEX_LUA, L"Lua Script", L"lua", L"", 
+&LexFunction, // static
 &KeyWords_LUA, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_LUA_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

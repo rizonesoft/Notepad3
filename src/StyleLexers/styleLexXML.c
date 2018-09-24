@@ -1,12 +1,34 @@
 ﻿#include "StyleLexers.h"
 
-KEYWORDLIST KeyWords_XML = {
-"", "", "", "", "", "", "", "", "" 
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
 };
+
+// ----------------------------------------------------------------------------
+
+KEYWORDLIST KeyWords_XML = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexXML = { 
 SCLEX_XML, IDS_LEX_XML_DOC, L"XML Document", L"xml; xsl; rss; svg; xul; xsd; xslt; axl; rdf; xaml; vcproj", L"", 
+&LexFunction, // static
 &KeyWords_XML, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     { MULTI_STYLE(SCE_H_TAG,SCE_H_TAGUNKNOWN,SCE_H_TAGEND,0), IDS_LEX_STR_63187, L"XML Tag", L"fore:#881280", L"" },
@@ -21,5 +43,4 @@ SCLEX_XML, IDS_LEX_XML_DOC, L"XML Document", L"xml; xsl; rss; svg; xul; xsd; xsl
     { SCE_H_SGML_DEFAULT, IDS_LEX_STR_63237, L"SGML", L"fore:#881280", L"" },
     { SCE_H_CDATA, IDS_LEX_STR_63147, L"CDATA", L"fore:#646464", L"" },
     EDITLEXER_SENTINEL } };
-
 

@@ -1,11 +1,34 @@
 ﻿#include "StyleLexers.h"
 
-KEYWORDLIST KeyWords_PROPS = {
-"", "", "", "", "", "", "", "", "" };
+// ----------------------------------------------------------------------------
+
+static int LexFunction(LexFunctionType type, int value)
+{
+  static bool bStyleChanged = false;
+
+  switch (type) {
+  case FCT_SETTING_CHANGE:
+    if (value < 0)
+      return (bStyleChanged ? 1 : 0);
+    else {
+      bStyleChanged = (value > 0);
+      return 1;
+    }
+
+  default:
+    break;
+  }
+  return 0;
+};
+
+// ----------------------------------------------------------------------------
+
+KEYWORDLIST KeyWords_PROPS = EMPTY_KEYWORDLIST;
 
 
 EDITLEXER lexPROPS = { 
 SCLEX_PROPERTIES, IDS_LEX_CONF, L"Configuration Files", L"ini; inf; cfg; properties; oem; sif; url; sed; theme", L"", 
+&LexFunction, // static
 &KeyWords_PROPS, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_PROPS_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
