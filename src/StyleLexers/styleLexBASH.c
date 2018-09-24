@@ -35,4 +35,4 @@ SCLEX_BASH, IDS_LEX_SHELL_SCR, L"Shell Script", L"sh", L"",
     { SCE_SH_BACKTICKS, IDS_LEX_STR_63270, L"Back Ticks", L"fore:#FF0080", L"" },
     { SCE_SH_HERE_DELIM, IDS_LEX_STR_63271, L"Here-Doc (Delimiter)", L"", L"" },
     { SCE_SH_HERE_Q, IDS_LEX_STR_63272, L"Here-Doc (Single Quoted, q)", L"fore:#008080", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

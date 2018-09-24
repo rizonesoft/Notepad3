@@ -312,7 +312,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_WARN_PREF_LNG_NOT_AVAIL  "Sorry, your prefered language (%s) is not available."
+    IDS_WARN_PREF_LNG_NOT_AVAIL  "Sorry, your preferred language (%s) is not available.\nIf you like, join our translation project."
 END
 
 

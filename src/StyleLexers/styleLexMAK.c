@@ -14,4 +14,4 @@ SCLEX_MAKEFILE, IDS_LEX_MAKEFILES, L"Makefiles", L"mak; make; mk; dsp; msc; msvc
     { SCE_MAKE_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
     { SCE_MAKE_TARGET, IDS_LEX_STR_63204, L"Target", L"fore:#003CE6; back:#FFC000", L"" },
     { SCE_MAKE_PREPROCESSOR, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

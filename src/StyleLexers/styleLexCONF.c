@@ -127,5 +127,5 @@ SCLEX_CONF, IDS_LEX_APC_CFG, L"Apache Config Files", L"conf; htaccess", L"",
 // Lexer is buggy     { SCE_CONF_OPERATOR, L"Operator", L"", L"" },
 // Lexer is buggy     { SCE_CONF_PARAMETER, L"Runtime Directive Parameter", L"", L"" },
 // Lexer is buggy     { SCE_CONF_EXTENSION, L"Extension", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 

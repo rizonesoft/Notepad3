@@ -46,4 +46,4 @@ SCLEX_CMAKE, IDS_LEX_CMAKE, L"Cmake Script", L"cmake; ctest", L"",
     { SCE_CMAKE_STRINGVAR, IDS_LEX_STR_63267, L"Variable within String", L"back:#EEEEEE; fore:#CC3300", L"" },
     { SCE_CMAKE_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
     //{ SCE_CMAKE_USERDEFINED, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

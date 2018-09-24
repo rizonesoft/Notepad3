@@ -360,8 +360,8 @@
 #define IDM_ENCODING_RECODE             40106
 #define IDM_ENCODING_SETDEFAULT         40107
 #define IDM_LINEENDINGS_CRLF            40200
-#define IDM_LINEENDINGS_LF              40201
-#define IDM_LINEENDINGS_CR              40202
+#define IDM_LINEENDINGS_CR              40201
+#define IDM_LINEENDINGS_LF              40202
 #define IDM_LINEENDINGS_SETDEFAULT      40203
 #define IDM_EDIT_BOOKMARKTOGGLE         40250
 #define IDM_EDIT_BOOKMARKNEXT           40251
@@ -926,5 +926,7 @@
 #define IDS_LEX_STR_63349               63349
 #define IDS_LEX_STR_63350               63350
 #define IDS_LEX_STR_63351               63351
+#define IDS_LEX_STR_63352               63352
+#define IDS_LEX_STR_63353               63353
 
 #endif //_COMMON_RES_H_

@@ -43,4 +43,4 @@ SCLEX_RUST, IDS_LEX_RUST_SRC, L"Rust Source Code", L"rs; rust", L"",
     { SCE_RUST_LIFETIME, IDS_LEX_STR_63346, L"Rust Lifetime", L"fore:#B000B0", L"" },
     { SCE_RUST_LEXERROR, IDS_LEX_STR_63252, L"Parsing Error", L"fore:#F0F0F0; back:#F00000", L"" },
     { MULTI_STYLE(SCE_RUST_BYTESTRING,SCE_RUST_BYTESTRINGR,SCE_RUST_BYTECHARACTER,0), IDS_LEX_STR_63344, L"Byte String", L"fore:#C0C0C0", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

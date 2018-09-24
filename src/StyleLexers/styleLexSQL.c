@@ -38,4 +38,4 @@ SCLEX_SQL, IDS_LEX_SQL, L"SQL Query", L"sql", L"",
     { SCE_SQL_QUOTEDIDENTIFIER, IDS_LEX_STR_63243, L"Quoted Identifier", L"fore:#800080; back:#FFCCFF", L"" },
     { SCE_SQL_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
     { SCE_SQL_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#800080", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

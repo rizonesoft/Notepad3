@@ -70,4 +70,4 @@ SCLEX_POWERSHELL, IDS_LEX_PWRSHELL, L"PowerShell Script", L"ps1; psd1; psm1", L"
     { SCE_POWERSHELL_VARIABLE, IDS_LEX_STR_63249, L"Variable", L"fore:#0A246A", L"" },
     { MULTI_STYLE(SCE_POWERSHELL_CMDLET,SCE_POWERSHELL_FUNCTION,0,0), IDS_LEX_STR_63250, L"Cmdlet", L"fore:#804000; back:#FFF1A8", L"" },
     { SCE_POWERSHELL_ALIAS, IDS_LEX_STR_63251, L"Alias", L"bold; fore:#0A246A", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

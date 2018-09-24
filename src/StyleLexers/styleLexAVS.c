@@ -90,4 +90,4 @@ SCLEX_AVS, IDS_LEX_AVI_SYNTH, L"AviSynth Script", L"avs; avsi", L"",
     { SCE_AVS_FUNCTION, IDS_LEX_STR_63277, L"Function", L"fore:#007F7F", L"" },
     { SCE_AVS_CLIPPROP, IDS_LEX_STR_63316, L"Clip Property", L"fore:#00007F", L"" },
     //{ SCE_AVS_USERDFN, IDS_LEX_STR_63106, L"User Defined", L"fore:#8000FF", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

@@ -74,5 +74,5 @@ SCLEX_NSIS, IDS_LEX_NSIS, L"NSIS Script", L"nsi; nsh", L"",
     { SCE_NSIS_IFDEFINEDEF, IDS_LEX_STR_63279, L"If Definition", L"fore:#0033CC", L"" },
     { SCE_NSIS_MACRODEF, IDS_LEX_STR_63280, L"Macro Definition", L"fore:#0033CC", L"" },
     //{ SCE_NSIS_USERDEFINED, L"User Defined", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 

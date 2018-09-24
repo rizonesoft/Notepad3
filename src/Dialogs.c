@@ -53,7 +53,7 @@
 extern HWND      g_hwndMain;
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
-extern LANGID    g_iPrefLngLocID;
+extern LANGID    g_iPrefLANGID;
 extern HICON     g_hDlgIcon;
 
 extern WCHAR g_wchWorkingDirectory[];
@@ -64,9 +64,9 @@ extern DWORD dwLastIOError;
 extern bool bUseDefaultForFileEncoding;
 extern bool bSkipUnicodeDetection;
 extern bool bSkipANSICodePageDetection;
-extern bool bLoadASCIIasUTF8;
-extern bool bLoadNFOasOEM;
-extern bool bNoEncodingTags;
+extern bool g_bLoadASCIIasUTF8;
+extern bool g_bLoadNFOasOEM;
+extern bool g_bNoEncodingTags;
 extern bool bFixLineEndings;
 extern bool bAutoStripBlanks;
 
@@ -133,15 +133,16 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       dwLastIOError,
-      g_iPrefLngLocID,
+      g_iPrefLANGID,
       (LPTSTR)&lpMsgBuf,
       0,
       NULL);
+
     if (lpMsgBuf) {
       StrTrim(lpMsgBuf, L" \a\b\f\n\r\t\v");
       StringCchCat(szText, COUNTOF(szText), L"\n");
       StringCchCat(szText, COUNTOF(szText), lpMsgBuf);
-      LocalFree(lpMsgBuf);
+      LocalFree(lpMsgBuf);  // LocalAlloc()
     }
     wcht = *CharPrev(szText, StrEnd(szText, COUNTOF(szText)));
     if (IsCharAlphaNumeric(wcht) || wcht == '"' || wcht == '\'')
@@ -170,7 +171,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
 
   //return  MessageBox(hwnd, szText, szTitle, iIcon);
   //return  MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, g_iPrefLngLocID);
+  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, g_iPrefLANGID);
 }
 
 
@@ -200,7 +201,7 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
       SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpib->lpstrMessage);
       if (lpib->bDisableCheckBox)
         DialogEnableWindow(hwnd, IDC_INFOBOXCHECK, false);
-      LocalFree(lpib->lpstrMessage);
+      FreeMem(lpib->lpstrMessage);
       CenterDlgInParent(hwnd);
     }
     return true;
@@ -243,7 +244,7 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
     return(-1);
 
   INFOBOX ib;
-  ib.lpstrMessage = LocalAlloc(LPTR, HUGE_BUFFER * sizeof(WCHAR));
+  ib.lpstrMessage = AllocMem(HUGE_BUFFER * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (ib.lpstrMessage)
     StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
@@ -294,7 +295,7 @@ void DisplayCmdLineHelp(HWND hwnd)
   mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND48);
   mbp.dwContextHelpId = 0;
   mbp.lpfnMsgBoxCallback = NULL;
-  mbp.dwLanguageId = g_iPrefLngLocID;
+  mbp.dwLanguageId = g_iPrefLANGID;
 
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
@@ -532,11 +533,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     
     //DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
     //if (dwSize != 0) {
-    //  char* pchBuffer = LocalAlloc(LPTR, dwSize + 1);
+    //  char* pchBuffer = AllocMem(dwSize + 1, HEAP_ZERO_MEMORY);
     //  pAboutInfo = pchBuffer;
     //  _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
     //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-    //  LocalFree(pchBuffer);
+    //  FreeMem(pchBuffer);
     //}
     //else {
     //  pAboutInfo = chErrMsg;
@@ -640,7 +641,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
         GetLngString(IDS_MUI_TRANSL_AUTHOR, wchAuthInfo, COUNTOF(wchAuthInfo));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchAuthInfo);
-        SetClipboardTextW(g_hwndMain, wchVerInfo);
+        SetClipboardTextW(g_hwndMain, wchVerInfo, StringCchLen(wchVerInfo,0));
       }
       break;
 
@@ -1402,7 +1403,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
         if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
-        LPICONTHREADINFO lpit = (LPICONTHREADINFO)GlobalAlloc(GPTR,sizeof(ICONTHREADINFO));
+        LPICONTHREADINFO lpit = (LPICONTHREADINFO)AllocMem(sizeof(ICONTHREADINFO),HEAP_ZERO_MEMORY);
         if (lpit) {
           SetProp(hwnd, L"it", (HANDLE)lpit);
           lpit->hwnd = GetDlgItem(hwnd, IDC_FILEMRU);
@@ -1460,7 +1461,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         CloseHandle(lpit->hTerminatedThread);
         lpit->hThread = NULL;
         RemoveProp(hwnd,L"it");
-        GlobalFree(lpit);
+        FreeMem(lpit);
 
         g_bSaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
         g_bPreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
@@ -2254,9 +2255,9 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(bUseDefaultForFileEncoding));
         CheckDlgButton(hwnd,IDC_NOUNICODEDETECTION, DlgBtnChk(bSkipUnicodeDetection));
         CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, DlgBtnChk(bSkipANSICodePageDetection));
-        CheckDlgButton(hwnd,IDC_ASCIIASUTF8, DlgBtnChk(bLoadASCIIasUTF8));
-        CheckDlgButton(hwnd,IDC_NFOASOEM, DlgBtnChk(bLoadNFOasOEM));
-        CheckDlgButton(hwnd,IDC_ENCODINGFROMFILEVARS, DlgBtnChk(bNoEncodingTags));
+        CheckDlgButton(hwnd,IDC_ASCIIASUTF8, DlgBtnChk(g_bLoadASCIIasUTF8));
+        CheckDlgButton(hwnd,IDC_NFOASOEM, DlgBtnChk(g_bLoadNFOasOEM));
+        CheckDlgButton(hwnd,IDC_ENCODINGFROMFILEVARS, DlgBtnChk(g_bNoEncodingTags));
 
         CenterDlgInParent(hwnd);
       }
@@ -2276,9 +2277,9 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
                 bUseDefaultForFileEncoding = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED);
                 bSkipUnicodeDetection = (IsDlgButtonChecked(hwnd,IDC_NOUNICODEDETECTION) == BST_CHECKED);
                 bSkipANSICodePageDetection = (IsDlgButtonChecked(hwnd, IDC_NOANSICPDETECTION) == BST_CHECKED);
-                bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd,IDC_ASCIIASUTF8) == BST_CHECKED);
-                bLoadNFOasOEM = (IsDlgButtonChecked(hwnd,IDC_NFOASOEM) == BST_CHECKED);
-                bNoEncodingTags = (IsDlgButtonChecked(hwnd,IDC_ENCODINGFROMFILEVARS) == BST_CHECKED);
+                g_bLoadASCIIasUTF8 = (IsDlgButtonChecked(hwnd,IDC_ASCIIASUTF8) == BST_CHECKED);
+                g_bLoadNFOasOEM = (IsDlgButtonChecked(hwnd,IDC_NFOASOEM) == BST_CHECKED);
+                g_bNoEncodingTags = (IsDlgButtonChecked(hwnd,IDC_ENCODINGFROMFILEVARS) == BST_CHECKED);
                 EndDialog(hwnd,IDOK);
               }
             }
@@ -3175,6 +3176,8 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 //
 //  Resize Dialog Helpers()
 //
+#define _RESISIZEDLG_PROP_NAME L"ResizeDlg"
+
 typedef struct _resizedlg {
   int cxClient;
   int cyClient;
@@ -3184,7 +3187,6 @@ typedef struct _resizedlg {
   int mmiPtMinY;
 } RESIZEDLG, *PRESIZEDLG;
 
-
 void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
 {
   WCHAR wch[64] = { L'\0' };
@@ -3192,26 +3194,26 @@ void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
   RECT rc;
   GetClientRect(hwnd, &rc);
 
-  RESIZEDLG* pm = LocalAlloc(LPTR, sizeof(RESIZEDLG));
-  if (pm) {
-    pm->cxClient = rc.right - rc.left;
-    pm->cyClient = rc.bottom - rc.top;
+  PRESIZEDLG pResizeDlg = AllocMem(sizeof(RESIZEDLG), HEAP_ZERO_MEMORY);
+  if (pResizeDlg) {
+    pResizeDlg->cxClient = rc.right - rc.left;
+    pResizeDlg->cyClient = rc.bottom - rc.top;
 
-    pm->cxFrame = cxFrame;
-    pm->cyFrame = cyFrame;
+    pResizeDlg->cxFrame = cxFrame;
+    pResizeDlg->cyFrame = cyFrame;
 
     AdjustWindowRectEx(&rc, GetWindowLong(hwnd, GWL_STYLE) | WS_THICKFRAME, false, 0);
-    pm->mmiPtMinX = rc.right - rc.left;
-    pm->mmiPtMinY = rc.bottom - rc.top;
+    pResizeDlg->mmiPtMinX = rc.right - rc.left;
+    pResizeDlg->mmiPtMinY = rc.bottom - rc.top;
 
-    if (pm->cxFrame < (rc.right - rc.left))
-      pm->cxFrame = rc.right - rc.left;
-    if (pm->cyFrame < (rc.bottom - rc.top))
-      pm->cyFrame = rc.bottom - rc.top;
+    if (pResizeDlg->cxFrame < (rc.right - rc.left))
+      pResizeDlg->cxFrame = rc.right - rc.left;
+    if (pResizeDlg->cyFrame < (rc.bottom - rc.top))
+      pResizeDlg->cyFrame = rc.bottom - rc.top;
 
-    SetProp(hwnd, L"ResizeDlg", (HANDLE)pm);
+    SetProp(hwnd, _RESISIZEDLG_PROP_NAME, (HANDLE)pResizeDlg);
 
-    SetWindowPos(hwnd, NULL, rc.left, rc.top, pm->cxFrame, pm->cyFrame, SWP_NOZORDER);
+    SetWindowPos(hwnd, NULL, rc.left, rc.top, pResizeDlg->cxFrame, pResizeDlg->cyFrame, SWP_NOZORDER);
 
     SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
     SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
@@ -3222,40 +3224,40 @@ void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
     SetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE,
                      GetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
     int const cGrip = GetSystemMetrics(SM_CXHTHUMB);
-    SetWindowPos(GetDlgItem(hwnd, nIdGrip), NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+    SetWindowPos(GetDlgItem(hwnd, nIdGrip), NULL, pResizeDlg->cxClient - cGrip, pResizeDlg->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
   }
 }
 
 void ResizeDlg_Destroy(HWND hwnd, int *cxFrame, int *cyFrame)
 {
-  RECT rc;
-  PRESIZEDLG pm = GetProp(hwnd, L"ResizeDlg");
+  PRESIZEDLG pResizeDlg = GetProp(hwnd, _RESISIZEDLG_PROP_NAME);
 
+  RECT rc;
   GetWindowRect(hwnd, &rc);
   *cxFrame = rc.right - rc.left;
   *cyFrame = rc.bottom - rc.top;
 
-  RemoveProp(hwnd, L"ResizeDlg");
-  LocalFree(pm);
+  RemoveProp(hwnd, _RESISIZEDLG_PROP_NAME);
+  FreeMem(pResizeDlg);
 }
 
 void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int *cx, int *cy)
 {
-  PRESIZEDLG pm = GetProp(hwnd, L"ResizeDlg");
+  PRESIZEDLG pResizeDlg = GetProp(hwnd, _RESISIZEDLG_PROP_NAME);
 
-  *cx = LOWORD(lParam) - pm->cxClient;
-  *cy = HIWORD(lParam) - pm->cyClient;
-  pm->cxClient = LOWORD(lParam);
-  pm->cyClient = HIWORD(lParam);
+  *cx = LOWORD(lParam) - pResizeDlg->cxClient;
+  *cy = HIWORD(lParam) - pResizeDlg->cyClient;
+  pResizeDlg->cxClient = LOWORD(lParam);
+  pResizeDlg->cyClient = HIWORD(lParam);
 }
 
 void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
 {
-  PRESIZEDLG pm = GetProp(hwnd, L"ResizeDlg");
+  PRESIZEDLG pResizeDlg = GetProp(hwnd, _RESISIZEDLG_PROP_NAME);
 
   LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
-  lpmmi->ptMinTrackSize.x = pm->mmiPtMinX;
-  lpmmi->ptMinTrackSize.y = pm->mmiPtMinY;
+  lpmmi->ptMinTrackSize.x = pResizeDlg->mmiPtMinX;
+  lpmmi->ptMinTrackSize.y = pResizeDlg->mmiPtMinY;
 }
 
 HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlags)
@@ -3545,69 +3547,51 @@ inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate) {
   return (BYTE*)pw;
 }
 
-DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance) {
+DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hInstance) 
+{
+  DLGTEMPLATE* pTemplate = NULL;
 
-  HRSRC hRsrc;
-  HGLOBAL hRsrcMem;
-  DLGTEMPLATE *pRsrcMem = NULL;
-  DLGTEMPLATE *pTemplate = NULL;
-  UINT dwTemplateSize = 0;
-  WCHAR wchFaceName[LF_FACESIZE];
-  WORD wFontSize;
-  bool bDialogEx;
-  bool bHasFont;
-  int cbFontAttr;
-  int cbNew;
-  int cbOld;
-  BYTE* pbNew;
-  BYTE* pb;
-  BYTE* pOldControls;
-  BYTE* pNewControls;
-  WORD nCtrl;
+  HRSRC hRsrc = FindResource(hInstance, lpDialogTemplateID, RT_DIALOG);
+  if (hRsrc == NULL) { return NULL; }
 
-  hRsrc = FindResource(hInstance, lpDialogTemplateID, RT_DIALOG);
-  if (hRsrc == NULL)
-    return(NULL);
-
-  hRsrcMem = LoadResource(hInstance, hRsrc);
+  HGLOBAL hRsrcMem = LoadResource(hInstance, hRsrc);
   if (hRsrcMem) {
-    pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
-    dwTemplateSize = (UINT)SizeofResource(hInstance, hRsrc);
-    if ((dwTemplateSize == 0) ||
-      (pTemplate = LocalAlloc(LPTR, dwTemplateSize + LF_FACESIZE * 2)) == NULL) {
+    DLGTEMPLATE* pRsrcMem = (DLGTEMPLATE*)LockResource(hRsrcMem);
+    size_t dwTemplateSize = (size_t)SizeofResource(hInstance, hRsrc);
+    if ((dwTemplateSize == 0) || (pTemplate = AllocMem(dwTemplateSize + LF_FACESIZE * 2, HEAP_ZERO_MEMORY)) == NULL) {
       UnlockResource(hRsrcMem);
       FreeResource(hRsrcMem);
       // cppcheck-suppress memleak // pTemplate is not allocated here!
-      return(NULL);
+      return NULL;
     }
-    CopyMemory((BYTE*)pTemplate, pRsrcMem, (size_t)dwTemplateSize);
+    CopyMemory((BYTE*)pTemplate, pRsrcMem, dwTemplateSize);
     UnlockResource(hRsrcMem);
     FreeResource(hRsrcMem);
 
+    WCHAR wchFaceName[LF_FACESIZE] = { L'\0' };
+    WORD wFontSize = 0;
     if (!GetThemedDialogFont(wchFaceName, &wFontSize)) {
       return(pTemplate);
     }
-    bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
-    bHasFont = DialogTemplate_HasFont(pTemplate);
-    cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
+    bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
+    bool bHasFont = DialogTemplate_HasFont(pTemplate);
+    int cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
 
     if (bDialogEx)
       ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
     else
       pTemplate->style |= DS_SHELLFONT;
 
-    cbNew = cbFontAttr + (((int)StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
-    pbNew = (BYTE*)wchFaceName;
+    int cbNew = cbFontAttr + (((int)StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+    BYTE* pbNew = (BYTE*)wchFaceName;
 
-    pb = DialogTemplate_GetFontSizeField(pTemplate);
-    cbOld = (int)(bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
+    BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
+    int cbOld = (int)(bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
 
-    pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
-    pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
+    BYTE* pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
+    BYTE* pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);
 
-    nCtrl = bDialogEx ?
-      (WORD)((DLGTEMPLATEEX*)pTemplate)->cDlgItems :
-      (WORD)pTemplate->cdit;
+    WORD nCtrl = (bDialogEx ? ((DLGTEMPLATEEX*)pTemplate)->cDlgItems : pTemplate->cdit);
 
     if (cbNew != cbOld && nCtrl > 0)
       MoveMemory(pNewControls, pOldControls, (size_t)(dwTemplateSize - (pOldControls - (BYTE*)pTemplate)));
@@ -3618,42 +3602,26 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
   return(pTemplate);
 }
 
-INT_PTR ThemedDialogBoxParam(
-  HINSTANCE hInstance,
-  LPCTSTR lpTemplate,
-  HWND hWndParent,
-  DLGPROC lpDialogFunc,
-  LPARAM dwInitParam) {
-
-  INT_PTR ret;
-  DLGTEMPLATE *pDlgTemplate;
-
-  pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
-  ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
-  if (pDlgTemplate)
-    LocalFree(pDlgTemplate);
-
-  return(ret);
+INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
+                             DLGPROC lpDialogFunc, LPARAM dwInitParam) 
+{
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  INT_PTR ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
+  if (pDlgTemplate) {
+    FreeMem(pDlgTemplate);
+  }
+  return ret;
 }
 
-HWND CreateThemedDialogParam(
-  HINSTANCE hInstance,
-  LPCTSTR lpTemplate,
-  HWND hWndParent,
-  DLGPROC lpDialogFunc,
-  LPARAM dwInitParam) {
-
-  HWND hwnd;
-  DLGTEMPLATE *pDlgTemplate;
-
-  pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
-  hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
-  if (pDlgTemplate)
-    LocalFree(pDlgTemplate);
-
+HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
+                             DLGPROC lpDialogFunc, LPARAM dwInitParam) 
+{
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  HWND hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
+  if (pDlgTemplate) {
+    FreeMem(pDlgTemplate);
+  }
   return(hwnd);
 }
-
-
 
 //  End of Dialogs.c

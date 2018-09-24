@@ -44,7 +44,7 @@
 
 extern HINSTANCE g_hInstance;
 extern HMODULE   g_hLngResContainer;
-extern LANGID    g_iPrefLngLocID;
+extern LANGID    g_iPrefLANGID;
 
 
 //=============================================================================
@@ -64,7 +64,6 @@ void DbgLog(const char *fmt, ...) {
 //
 //  Cut of substrings defined by pattern
 //
-
 CHAR* StrCutIA(CHAR* s,const CHAR* pattern)
 {
   CHAR* p = NULL;
@@ -157,17 +156,14 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
 //
 //  SetClipboardWchTextW()
 //
-bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW)
+bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
 {
-  if (!OpenClipboard(hwnd)) {
-    return false;
-  }
-  size_t cchTextW = StringCchLenW(pszTextW,0) + 1;
-  HANDLE hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof(WCHAR) * cchTextW);
+  if (!OpenClipboard(hwnd)) { return false; }
+  HANDLE hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, (cchTextW + 1) * sizeof(WCHAR));
   if (hData) {
     WCHAR* pszNew = GlobalLock(hData);
     if (pszNew) {
-      StringCchCopy(pszNew, cchTextW, pszTextW);
+      StringCchCopy(pszNew, cchTextW + 1, pszTextW);
       GlobalUnlock(hData);
       EmptyClipboard();
       SetClipboardData(CF_UNICODETEXT, hData);
@@ -309,24 +305,24 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     FORMAT_MESSAGE_IGNORE_INSERTS,
     NULL,
     dwErrID,
-    g_iPrefLngLocID,
+    g_iPrefLANGID,
     (LPTSTR)&lpMsgBuf,
     0, NULL);
 
   if (lpMsgBuf) {
     // Display the error message and exit the process
-    LPVOID lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
-      (StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80) * sizeof(WCHAR));
+    size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80;
+    LPVOID lpDisplayBuf = (LPVOID)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     if (lpDisplayBuf) {
-      StringCchPrintf((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(WCHAR),
-                      L"Error: '%s' failed with error id %d:\n%s.\n", lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
+      StringCchPrintf((LPWSTR)lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
+                      lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
 
       MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
 
-      LocalFree(lpDisplayBuf);
+      FreeMem(lpDisplayBuf);
     }
-    LocalFree(lpMsgBuf);
+    LocalFree(lpMsgBuf); // LocalAlloc()
   }
   return dwErrID;
 }
@@ -1492,10 +1488,10 @@ extern bool g_bSaveFindReplace;
 //
 LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize) 
 {
-  LPMRULIST pmru = LocalAlloc(LPTR,sizeof(MRULIST));
+  LPMRULIST pmru = AllocMem(sizeof(MRULIST), HEAP_ZERO_MEMORY);
   if (pmru) {
     ZeroMemory(pmru, sizeof(MRULIST));
-    StringCchCopyN(pmru->szRegKey, COUNTOF(pmru->szRegKey), pszRegKey, COUNTOF(pmru->szRegKey));
+    pmru->szRegKey = pszRegKey;
     pmru->iFlags = iFlags;
     pmru->iSize = min_i(iSize, MRU_MAXITEMS);
   }
@@ -1507,12 +1503,12 @@ bool MRU_Destroy(LPMRULIST pmru)
   int i;
   for (i = 0; i < pmru->iSize; i++) {
     if (pmru->pszItems[i])
-      LocalFree(pmru->pszItems[i]);
+      LocalFree(pmru->pszItems[i]);  // StrDup()
     if (pmru->pszBookMarks[i])
-      LocalFree(pmru->pszBookMarks[i]);
+      LocalFree(pmru->pszBookMarks[i]);  // StrDup()
   }
   ZeroMemory(pmru,sizeof(MRULIST));
-  LocalFree(pmru);
+  FreeMem(pmru);
   return true;
 }
 
@@ -1529,7 +1525,7 @@ bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBo
   int i;
   for (i = 0; i < pmru->iSize; i++) {
     if (MRU_Compare(pmru,pmru->pszItems[i],pszNew) == 0) {
-      LocalFree(pmru->pszItems[i]);
+      LocalFree(pmru->pszItems[i]); // StrDup()
       break;
     }
   }
@@ -1539,11 +1535,11 @@ bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBo
     pmru->iEncoding[i] = pmru->iEncoding[i - 1];
     pmru->iCaretPos[i] = pmru->iCaretPos[i - 1];
   }
-  pmru->pszItems[0] = StrDup(pszNew);
+  pmru->pszItems[0] = StrDup(pszNew); // LocalAlloc()
 
   pmru->iEncoding[0] = iEnc;
   pmru->iCaretPos[0] = (g_bPreserveCaretPos ? iPos : 0);
-  pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);
+  pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
   return true;
 }
 
@@ -1576,7 +1572,7 @@ bool MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool bRelativePath,bool bUnexpan
 
   int i = 0;
   if (MRU_FindFile(pmru,pszFile,&i)) {
-    LocalFree(pmru->pszItems[i]);
+    LocalFree(pmru->pszItems[i]);  // StrDup()
   }
   else {
     i = (i < pmru->iSize) ? i : (pmru->iSize - 1);
@@ -1590,14 +1586,14 @@ bool MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool bRelativePath,bool bUnexpan
   if (bRelativePath) {
     WCHAR wchFile[MAX_PATH] = { L'\0' };
     PathRelativeToApp((LPWSTR)pszFile,wchFile,COUNTOF(wchFile),true,true,bUnexpandMyDocs);
-    pmru->pszItems[0] = StrDup(wchFile);
+    pmru->pszItems[0] = StrDup(wchFile);  // LocalAlloc()
   }
   else {
-    pmru->pszItems[0] = StrDup(pszFile);
+    pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()
   }
   pmru->iEncoding[0] = iEnc;
   pmru->iCaretPos[0] = (g_bPreserveCaretPos ? iPos : 0);
-  pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);
+  pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
 
   return true;
 }
@@ -1609,10 +1605,10 @@ bool MRU_Delete(LPMRULIST pmru,int iIndex) {
     return false;
   }
   if (pmru->pszItems[iIndex]) {
-    LocalFree(pmru->pszItems[iIndex]);
+    LocalFree(pmru->pszItems[iIndex]);  // StrDup()
   }
   if (pmru->pszBookMarks[iIndex]) {
-    LocalFree(pmru->pszBookMarks[iIndex]);
+    LocalFree(pmru->pszBookMarks[iIndex]);  // StrDup()
   }
   for (i = iIndex; i < pmru->iSize-1; i++) {
     pmru->pszItems[i] = pmru->pszItems[i+1];
@@ -1654,12 +1650,12 @@ bool MRU_Empty(LPMRULIST pmru)
 {
   for (int i = 0; i < pmru->iSize; i++) {
     if (pmru->pszItems[i]) {
-      LocalFree(pmru->pszItems[i]);
+      LocalFree(pmru->pszItems[i]);  // StrDup()
       pmru->pszItems[i] = NULL;
       pmru->iEncoding[i] = 0;
       pmru->iCaretPos[i] = 0;
       if (pmru->pszBookMarks[i])
-        LocalFree(pmru->pszBookMarks[i]);
+        LocalFree(pmru->pszBookMarks[i]);  // StrDup()
       pmru->pszBookMarks[i] = NULL;
     }
   }
@@ -1690,10 +1686,11 @@ bool MRU_Load(LPMRULIST pmru)
   WCHAR tchItem[1024] = { L'\0' };
   WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
 
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 2 * MRU_MAXITEMS * 1024);
+  size_t const len = 2 * MRU_MAXITEMS * 1024;
+  WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
     MRU_Empty(pmru);
-    LoadIniSection(pmru->szRegKey, pIniSection, (int)LocalSize(pIniSection) / sizeof(WCHAR));
+    LoadIniSection(pmru->szRegKey, pIniSection, (int)len);
 
     int n = 0;
     for (int i = 0; i < pmru->iSize; i++) {
@@ -1722,7 +1719,7 @@ bool MRU_Load(LPMRULIST pmru)
         ++n;
       }
     }
-    LocalFree(pIniSection);
+    FreeMem(pIniSection);
     return true;
   }
   return false;
@@ -1730,13 +1727,14 @@ bool MRU_Load(LPMRULIST pmru)
 
 bool MRU_Save(LPMRULIST pmru) {
 
-  int i;
   WCHAR tchName[32] = { L'\0' };
-  WCHAR *pIniSection = LocalAlloc(LPTR,sizeof(WCHAR) * 2 * MRU_MAXITEMS * 1024);
+
+  size_t const len = 2 * MRU_MAXITEMS * 1024;
+  WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
     //IniDeleteSection(pmru->szRegKey);
 
-    for (i = 0; i < pmru->iSize; i++) {
+    for (int i = 0; i < pmru->iSize; i++) {
       if (pmru->pszItems[i]) {
         StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
         /*if (pmru->iFlags & MRU_UTF8) {
@@ -1765,7 +1763,7 @@ bool MRU_Save(LPMRULIST pmru) {
       }
     }
     SaveIniSection(pmru->szRegKey, pIniSection);
-    LocalFree(pIniSection);
+    FreeMem(pIniSection);
     return true;
   }
   return false;
@@ -2203,18 +2201,18 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 #if defined(URL_UNESCAPE_AS_UTF8)
   UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
 #else
-  int posOut = 0;
-  char* outBuffer = LocalAlloc(LPTR, *pcchUnescaped + 1);
+  char* outBuffer = AllocMem(*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
   if (outBuffer == NULL) {
     return;
   }
-  int outLen = (int)LocalSize(outBuffer) - 1;
+  int const outLen = (int)*pcchUnescaped;
 
   size_t posIn = 0;
   WCHAR buf[5] = { L'\0' };
   size_t lastEsc = StringCchLenW(lpURL,0) - 2;
   unsigned int code;
 
+  int posOut = 0;
   while ((posIn < lastEsc) && (posOut < outLen))
   {
     bool bOk = false;
@@ -2260,7 +2258,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
   outBuffer[posOut] = '\0';
 
   int iOut = MultiByteToWideChar(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, (int)*pcchUnescaped);
-  LocalFree(outBuffer);
+  FreeMem(outBuffer);
 
   *pcchUnescaped = ((iOut > 0) ? (iOut - 1) : 0);
 #endif

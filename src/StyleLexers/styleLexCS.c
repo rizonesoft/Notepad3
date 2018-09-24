@@ -152,4 +152,4 @@ SCLEX_CPP, IDS_LEX_CSHARP_SRC, L"C# Source Code", L"cs", L"",
     //{ SCE_C_REGEX, L"Regex", L"", L"" },
     //{ SCE_C_WORD2, L"Word 2", L"", L"" },
     { SCE_C_GLOBALCLASS, IDS_LEX_STR_63304, L"Global Class", L"fore:#2B91AF", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

@@ -6,6 +6,7 @@
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1
 #include <windows.h>
+#include "Scintilla.h"
 
 // -----------------------------------------------------------------------------
 
@@ -51,6 +52,39 @@ typedef struct _editlexer
   EDITSTYLE    Styles[];
 
 } EDITLEXER, *PEDITLEXER;
+
+// -----------------------------------------------------------------------------
+
+// Default Style (styleLexStandard.c) Indices
+typedef enum {
+  STY_DEFAULT = 0,
+  STY_MARGIN = 1,
+  STY_BRACE_OK = 2,
+  STY_BRACE_BAD = 3,
+  STY_CTRL_CHR = 4,
+  STY_INDENT_GUIDE = 5,
+  STY_SEL_TXT = 6,
+  STY_WHITESPACE = 7,
+  STY_CUR_LN_BCK = 8,
+  STY_CARET = 9,
+  STY_LONG_LN_MRK = 10,
+  STY_X_LN_SPACE = 11,
+  STY_BOOK_MARK = 12,
+  STY_MARK_OCC = 13,
+  STY_URL_HOTSPOT = 14,
+  STY_IME_COLOR = 15,
+  STY_INVISIBLE = 16,
+  STY_READONLY = 17
+
+  // MAX = 127
+}
+LexDefaultStyles;
+
+#define _STYLE_GETSTYLEID(ID) ((int)(STYLE_MAX - ID))
+#define Style_GetHotspotStyleID()   _STYLE_GETSTYLEID(STY_URL_HOTSPOT)
+#define Style_GetInvisibleStyleID() _STYLE_GETSTYLEID(STY_INVISIBLE)
+#define Style_GetReadonlyStyleID()  _STYLE_GETSTYLEID(STY_READONLY)
+
 
 // -----------------------------------------------------------------------------
 

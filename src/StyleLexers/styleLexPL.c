@@ -62,4 +62,4 @@ SCLEX_PERL, IDS_LEX_PERL_SCR, L"Perl Script", L"pl; pm; cgi; pod", L"",
     //{ SCE_PL_PUNCTUATION, L"Symbols / Punctuation (not used)", L"", L"" },
     //{ SCE_PL_PREPROCESSOR, L"Preprocessor (not used)", L"", L"" },
     //{ SCE_PL_LONGQUOTE, L"Long Quote (qq, qr, qw, qx) (not used)", L"", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };

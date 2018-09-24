@@ -358,7 +358,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
               isLinkNameDetecting = false;
             }
         }
-        
+
         // New state anywhere in doc
         if (sc.state == SCE_MARKDOWN_DEFAULT) {
             if (sc.atLineStart && sc.ch == '#') {

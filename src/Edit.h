@@ -30,7 +30,7 @@ bool  EditConvertText(HWND,int,int,bool);
 bool  EditSetNewEncoding(HWND,int,bool,bool);
 bool  EditIsRecodingNeeded(WCHAR*,int);
 char* EditGetClipboardText(HWND,bool,int*,int*);
-bool  EditSetClipboardText(HWND, const char*);
+bool  EditSetClipboardText(HWND, const char*, const size_t);
 bool  EditClearClipboard(HWND);
 bool  EditSwapClipboard(HWND,bool);
 bool  EditCopyAppend(HWND,bool);

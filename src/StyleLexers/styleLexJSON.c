@@ -18,7 +18,7 @@ SCLEX_JSON, IDS_LEX_JSON, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"",
     { SCE_C_REGEX, IDS_LEX_STR_63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
     { SCE_JSON_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
     { SCE_C_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
 
 /*
 # String

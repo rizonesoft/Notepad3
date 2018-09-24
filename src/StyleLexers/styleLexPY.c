@@ -23,4 +23,4 @@ SCLEX_PYTHON, IDS_LEX_PYTHON, L"Python Script", L"py; pyw", L"",
     { SCE_P_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#666600", L"" },
     { SCE_P_DEFNAME, IDS_LEX_STR_63247, L"Function Name", L"fore:#660066", L"" },
     { SCE_P_CLASSNAME, IDS_LEX_STR_63246, L"Class Name", L"fore:#660066", L"" },
-    { -1, 00000, L"", L"", L"" } } };
+    EDITLEXER_SENTINEL } };
