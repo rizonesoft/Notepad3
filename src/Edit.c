@@ -121,18 +121,17 @@ extern CALLTIPTYPE g_CallTipType;
 
 extern FR_STATES g_FindReplaceMatchFoundState;
 
-#define ANSI_CAHR_BUFFER 258
-static char DelimChars[ANSI_CAHR_BUFFER] = { '\0' };
-static char DelimCharsAccel[ANSI_CAHR_BUFFER] = { '\0' };
-static char WordCharsDefault[ANSI_CAHR_BUFFER] = { '\0' };
-static char WhiteSpaceCharsDefault[ANSI_CAHR_BUFFER] = { '\0' };
-static char PunctuationCharsDefault[ANSI_CAHR_BUFFER] = { '\0' };
-static char WordCharsAccelerated[ANSI_CAHR_BUFFER] = { '\0' };
-static char WhiteSpaceCharsAccelerated[ANSI_CAHR_BUFFER] = { '\0' };
+static char DelimChars[ANSI_CHAR_BUFFER] = { '\0' };
+static char DelimCharsAccel[ANSI_CHAR_BUFFER] = { '\0' };
+static char WordCharsDefault[ANSI_CHAR_BUFFER] = { '\0' };
+static char WhiteSpaceCharsDefault[ANSI_CHAR_BUFFER] = { '\0' };
+static char PunctuationCharsDefault[ANSI_CHAR_BUFFER] = { '\0' };
+static char WordCharsAccelerated[ANSI_CHAR_BUFFER] = { '\0' };
+static char WhiteSpaceCharsAccelerated[ANSI_CHAR_BUFFER] = { '\0' };
 static char PunctuationCharsAccelerated[1] = { '\0' }; // empty!
 
 #define W_AUTOC_WORD_ANSI1252 L"#$%&@0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
-static char AutoCompleteWordCharSet[ANSI_CAHR_BUFFER] = { L'\0' };
+static char AutoCompleteWordCharSet[ANSI_CHAR_BUFFER] = { L'\0' };
 
 //static WCHAR W_DelimChars[ANSI_CAHR_BUFFER] = { L'\0' };
 //static WCHAR W_DelimCharsAccel[ANSI_CAHR_BUFFER] = { L'\0' };
@@ -324,13 +323,10 @@ void EditInitWordDelimiter(HWND hwnd)
   StringCchCatA(DelimChars, COUNTOF(DelimChars), lineEnds);
 
   // 2nd get user settings
-  WCHAR buffer[ANSI_CAHR_BUFFER] = { L'\0' };
-  ZeroMemory(buffer, ANSI_CAHR_BUFFER * sizeof(WCHAR));
 
-  IniGetString(L"Settings2", L"ExtendedWhiteSpaceChars", L"", buffer, COUNTOF(buffer));
-  char whitesp[ANSI_CAHR_BUFFER] = { '\0' };
-  if (StringCchLen(buffer, COUNTOF(buffer)) > 0) {
-    WideCharToMultiByteStrg(Encoding_SciCP, buffer, whitesp);
+  char whitesp[ANSI_CHAR_BUFFER*2] = { '\0' };
+  if (StringCchLen(Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars)) > 0) {
+    WideCharToMultiByteStrg(Encoding_SciCP, Settings2.ExtendedWhiteSpaceChars, whitesp);
   }
 
   // 3rd set accelerated arrays
@@ -339,7 +335,7 @@ void EditInitWordDelimiter(HWND hwnd)
   StringCchCopyA(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated), WhiteSpaceCharsDefault);
 
   // add only 7-bit-ASCII chars to accelerated whitespace list
-  for (size_t i = 0; i < StringCchLenA(whitesp, ANSI_CAHR_BUFFER); i++) {
+  for (size_t i = 0; i < StringCchLenA(whitesp, ANSI_CHAR_BUFFER); i++) {
     if (whitesp[i] & 0x7F) {
       if (!StrChrA(WhiteSpaceCharsAccelerated, whitesp[i])) {
         StringCchCatNA(WhiteSpaceCharsAccelerated, COUNTOF(WhiteSpaceCharsAccelerated), &(whitesp[i]), 1);
@@ -350,7 +346,7 @@ void EditInitWordDelimiter(HWND hwnd)
   // construct word char array
   StringCchCopyA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), WordCharsDefault); // init
   // add punctuation chars not listed in white-space array
-  for (size_t i = 0; i < StringCchLenA(PunctuationCharsDefault, ANSI_CAHR_BUFFER); i++) {
+  for (size_t i = 0; i < StringCchLenA(PunctuationCharsDefault, ANSI_CHAR_BUFFER); i++) {
     if (!StrChrA(WhiteSpaceCharsAccelerated, PunctuationCharsDefault[i])) {
       StringCchCatNA(WordCharsAccelerated, COUNTOF(WordCharsAccelerated), &(PunctuationCharsDefault[i]), 1);
     }
@@ -360,10 +356,9 @@ void EditInitWordDelimiter(HWND hwnd)
   StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
   StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
 
-  IniGetString(L"Settings2", L"AutoCompleteWordCharSet", L"", buffer, COUNTOF(buffer));
-  if (StringCchLen(buffer, COUNTOF(buffer)) > 0)
+  if (StringCchLen(Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet)) > 0)
   {
-    WideCharToMultiByteStrg(Encoding_SciCP, buffer, AutoCompleteWordCharSet);
+    WideCharToMultiByteStrg(Encoding_SciCP, Settings2.AutoCompleteWordCharSet, AutoCompleteWordCharSet);
     g_bUseLimitedAutoCCharSet = true;
   } else {
     WideCharToMultiByteStrg(Encoding_SciCP, W_AUTOC_WORD_ANSI1252, AutoCompleteWordCharSet);
@@ -988,8 +983,8 @@ bool EditLoadFile(
   }
 
   // Check if a warning message should be displayed for large files
-  DWORD dwFileSizeLimit = IniGetInt(L"Settings2",L"FileLoadWarningMB",1);
-  if (dwFileSizeLimit != 0 && dwFileSizeLimit * 1024 * 1024 < dwFileSize) {
+  DWORD dwFileSizeLimit = Settings2.FileLoadWarningMB;
+  if ((dwFileSizeLimit != 0) && ((dwFileSizeLimit * 1024 * 1024) < dwFileSize)) {
     if (InfoBoxLng(MBYESNO,L"MsgFileSizeWarning",IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
       if (pbFileTooBig)

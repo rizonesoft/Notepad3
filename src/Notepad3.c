@@ -61,14 +61,14 @@
 *
 */
 GLOBALS_T   Globals;
-
 SETTINGS_T  Settings;
-SETTINGS_T  Defaults;
-
 SETTINGS2_T Settings2;
-SETTINGS2_T Defaults2;
-
 FLAGS_T     Flags;
+CONSTANTS_T Constants;
+
+static SETTINGS_T  Defaults;
+static SETTINGS2_T Defaults2;
+static FLAGS_T     DefaultFlags;
 
 // ------------------------------------
 
@@ -152,10 +152,9 @@ bool          g_bFindReplCopySelOrClip = true;
 WCHAR         g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH];
 LANGID        g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 
-static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR ja-JP nl-NL zh-CN"; // en-US internal
+static WCHAR* const  s_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR ja-JP nl-NL zh-CN"; // en-US internal
 
 WCHAR         g_tchFileDlgFilters[XHUGE_BUFFER] = { L'\0' };
-
 WCHAR         g_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 WCHAR         g_tchOpenWithDir[MAX_PATH] = { L'\0' };
 WCHAR         g_tchFavoritesDir[MAX_PATH] = { L'\0' };
@@ -179,9 +178,9 @@ static WCHAR  g_tchToolbarBitmap[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
 static WCHAR  g_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
-static WININFO g_WinInfo = INIT_WININFO;
-static WININFO g_DefWinInfo = INIT_WININFO;
-static int     g_WinCurrentWidth = 0;
+static WININFO s_WinInfo = INIT_WININFO;
+static WININFO s_DefWinInfo = INIT_WININFO;
+static int     s_WinCurrentWidth = 0;
 
 int       iPathNameFormat;
 bool      g_bWordWrap;
@@ -294,8 +293,6 @@ const int FontQuality[4] = {
   , SC_EFF_QUALITY_LCD_OPTIMIZED
 };
 
-bool    g_bStickyWinPos;
-
 bool    bIsAppThemed;
 int     cyReBar;
 int     cyReBarFrame;
@@ -378,8 +375,6 @@ static int iAlignMode   = 0;
 bool      flagIsElevated = false;
 WCHAR     wchWndClass[16] = L"" APPNAME;
 
-WCHAR     g_wchAppUserModelID[32] = { L'\0' };
-WCHAR     g_wchWorkingDirectory[MAX_PATH+2] = { L'\0' };
 WCHAR     g_wchCurFile[FILE_ARG_BUF] = { L'\0' };
 FILEVARS  fvCurFile;
 bool      g_bFileReadOnly = false;
@@ -590,6 +585,11 @@ static void __fastcall _SetDocumentModified(bool bModified)
 //==============================================================================
 
 
+static void __fastcall _InitConstants()
+{
+  Constants.FileBrowserMiniPath = L"minipath.exe";
+}
+
 //=============================================================================
 //
 //  WinMain()
@@ -597,6 +597,8 @@ static void __fastcall _SetDocumentModified(bool bModified)
 //
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
+  _InitConstants();
+
   // Set global variable Globals.hInstance
   Globals.hInstance = hInstance;
   Globals.hPrevInst = hPrevInst;
@@ -607,8 +609,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
   PathRemoveFileSpec(wchAppDir);
   PathCanonicalizeEx(wchAppDir,COUNTOF(wchAppDir));
 
-  if (!GetCurrentDirectory(COUNTOF(g_wchWorkingDirectory),g_wchWorkingDirectory)) {
-    StringCchCopy(g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory),wchAppDir);
+  if (!GetCurrentDirectory(COUNTOF(Globals.WorkingDirectory),Globals.WorkingDirectory)) {
+    StringCchCopy(Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory),wchAppDir);
   }
 
   // Don't keep working directory locked
@@ -636,7 +638,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
   LoadFlags();
 
   // set AppUserModelID
-  PrivateSetCurrentProcessExplicitAppUserModelID(g_wchAppUserModelID);
+  PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
 
   // Command Line Help Dialog
   if (s_flagDisplayHelp) {
@@ -882,11 +884,11 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 //
 static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID const langID)
 {
-  bool bLngAvailable = (StrStrIW(g_tchAvailableLanguages, localeName) != NULL);
+  bool bLngAvailable = (StrStrIW(s_tchAvailableLanguages, localeName) != NULL);
   if (!bLngAvailable) { return NULL; }
 
   WCHAR tchAvailLngs[LARGE_BUFFER] = { L'\0' };
-  StringCchCopyW(tchAvailLngs, LARGE_BUFFER, g_tchAvailableLanguages);
+  StringCchCopyW(tchAvailLngs, LARGE_BUFFER, s_tchAvailableLanguages);
   WCHAR tchUserLangMultiStrg[LARGE_BUFFER] = { L'\0' };
   if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, LARGE_BUFFER))
   {
@@ -1016,7 +1018,7 @@ static void __fastcall _InitWindowPosition(WININFO* pWinInfo, const int flagsPos
   }
   else if (flagsPos == 2)
   {
-    winfo = g_DefWinInfo; // NP3 default window position
+    winfo = s_DefWinInfo; // NP3 default window position
   }
   else if (flagsPos == 3)
   {
@@ -1059,7 +1061,7 @@ static void __fastcall _InitWindowPosition(WININFO* pWinInfo, const int flagsPos
       winfo.cy = height;
     }
     if (flagsPos & 128) {
-      winfo = g_DefWinInfo;
+      winfo = s_DefWinInfo;
       winfo.max = true;
       winfo.zoom = 100;
     }
@@ -1083,16 +1085,15 @@ static void __fastcall _InitWindowPosition(WININFO* pWinInfo, const int flagsPos
 //
 //  InitInstance()
 //
-//
 HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
  
-  _InitWindowPosition(&g_WinInfo, s_flagWindowPos);
-  g_WinCurrentWidth = g_WinInfo.cx;
+  _InitWindowPosition(&s_WinInfo, s_flagWindowPos);
+  s_WinCurrentWidth = s_WinInfo.cx;
 
   // get monitor coordinates from g_WinInfo
-  WININFO srcninfo = g_WinInfo;
+  WININFO srcninfo = s_WinInfo;
   WinInfoToScreen(&srcninfo);
 
   Globals.hwndMain = CreateWindowEx(
@@ -1109,7 +1110,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
                hInstance,
                NULL);
 
-  if (g_WinInfo.max) {
+  if (s_WinInfo.max) {
     nCmdShow = SW_SHOWMAXIMIZED;
   }
   if ((bAlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
@@ -1120,8 +1121,8 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     SetWindowTransparentMode(Globals.hwndMain, true);
   }
   
-  if (g_WinInfo.zoom) {
-    SciCall_SetZoom(g_WinInfo.zoom);
+  if (s_WinInfo.zoom) {
+    SciCall_SetZoom(s_WinInfo.zoom);
   }
   // Current file information -- moved in front of ShowWindow()
   FileLoad(true,true,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
@@ -2088,7 +2089,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     InstallFileWatching(NULL);
 
     // GetWindowPlacement
-    g_WinInfo = GetMyWindowPlacement(hwnd, NULL);
+    s_WinInfo = GetMyWindowPlacement(hwnd, NULL);
 
     DragAcceptFiles(hwnd, true);
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
@@ -2325,7 +2326,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EndDeferWindowPos(hdwp);
 
-  g_WinCurrentWidth = cx;
+  s_WinCurrentWidth = cx;
 
   UpdateToolbar();
   UpdateStatusbar(false);
@@ -2972,12 +2973,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, bScrollPastEOF);
  
 
-  i = IniGetInt(L"Settings2",L"ReuseWindow",0);
+  i = Flags.ReuseWindow;
   CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
-  i = IniGetInt(L"Settings2",L"SingleFileInstance",0);
+  i = Flags.SingleFileInstance;
   CheckCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
-  g_bStickyWinPos = IniGetBool(L"Settings2",L"StickyWindowPosition",false);
-  CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,g_bStickyWinPos);
+  i = Flags.StickyWindowPosition;
+  CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
   CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((bAlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
   CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,bMinimizeToTray);
   CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,g_bTransparentMode);
@@ -4062,9 +4063,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         GetLocalTime(&st);
 
-        if (IniGetString(L"Settings2",
-              (LOWORD(wParam) == IDM_EDIT_INSERT_SHORTDATE) ? L"DateTimeShort" : L"DateTimeLong",
-              L"",tchTemplate,COUNTOF(tchTemplate))) {
+        StringCchCopyW(tchTemplate, COUNTOF(tchTemplate),
+          (LOWORD(wParam) == IDM_EDIT_INSERT_SHORTDATE) ? Settings2.DateTimeLong : Settings2.DateTimeLong);
+
+        if (StringCchLenW(tchTemplate,0) > 0)
+        {
           struct tm sst;
           sst.tm_isdst       = -1;
           sst.tm_sec         = (int)st.wSecond;
@@ -4928,8 +4931,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_STICKYWINPOS:
-      g_bStickyWinPos = IniGetBool(L"Settings2",L"StickyWindowPosition",g_bStickyWinPos);
-      if (!g_bStickyWinPos) 
+
+      if (Flags.StickyWindowPosition == 0)
       {
         WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
@@ -4943,9 +4946,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
         StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-        g_bStickyWinPos = true;
-        IniSetInt(L"Settings2",L"StickyWindowPosition",1);
-
         // GetWindowPlacement
         WININFO wi = GetMyWindowPlacement(Globals.hwndMain,NULL);
         IniSetInt(L"Window",tchPosX,wi.x);
@@ -4955,28 +4955,36 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         IniSetBool(L"Window",tchMaximized,wi.max);
         IniSetInt(L"Window", tchZoom, wi.zoom);
 
+        Flags.StickyWindowPosition = 1;
         InfoBoxLng(0,L"MsgStickyWinPos",IDS_MUI_STICKYWINPOS);
       }
       else {
-        g_bStickyWinPos = false;
-        IniSetInt(L"Settings2",L"StickyWindowPosition",0);
+        Flags.StickyWindowPosition = 0;
       }
+      
+      if (Flags.StickyWindowPosition != DefaultFlags.StickyWindowPosition)
+        IniSetInt(L"Settings2", L"StickyWindowPosition", Flags.StickyWindowPosition);
+      else
+        IniSetString(L"Settings2", L"StickyWindowPosition", NULL);
+
       break;
 
 
     case IDM_VIEW_REUSEWINDOW:
-      if (IniGetInt(L"Settings2",L"ReuseWindow",0))
-        IniSetInt(L"Settings2",L"ReuseWindow",0);
+      Flags.ReuseWindow = (Flags.ReuseWindow != 0) ? 0 : 1; // reverse
+      if (Flags.ReuseWindow != DefaultFlags.ReuseWindow)
+        IniSetInt(L"Settings2", L"ReuseWindow", Flags.ReuseWindow);
       else
-        IniSetInt(L"Settings2",L"ReuseWindow",1);
+        IniSetString(L"Settings2", L"ReuseWindow", NULL);
       break;
 
 
     case IDM_VIEW_SINGLEFILEINSTANCE:
-      if (IniGetInt(L"Settings2",L"SingleFileInstance",0))
-        IniSetInt(L"Settings2",L"SingleFileInstance",0);
+      Flags.SingleFileInstance = (Flags.SingleFileInstance != 0) ? 0 : 1; // reverse
+      if (Flags.SingleFileInstance != DefaultFlags.SingleFileInstance)
+        IniSetInt(L"Settings2", L"SingleFileInstance", Flags.SingleFileInstance);
       else
-        IniSetInt(L"Settings2",L"SingleFileInstance",1);
+        IniSetString(L"Settings2", L"SingleFileInstance", NULL);
       break;
 
 
@@ -5369,7 +5377,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         efrTS.hwnd = g_hwndEdit;
         efrTS.fuFlags = SCFIND_REGEXP;
 
-        IniGetString(L"Settings2",L"TimeStamp",L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $",wchFind,COUNTOF(wchFind));
+        StringCchCopyW(wchFind, COUNTOF(wchFind), Settings2.TimeStamp);
 
         WCHAR *pwchSep = StrChr(wchFind, L'|');
         if (pwchSep) {
@@ -5417,11 +5425,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_WEBACTION1:
     case CMD_WEBACTION2:
       {
-        LPWSTR lpszTemplateName = (LOWORD(wParam) == CMD_WEBACTION1) ? L"WebTemplate1" : L"WebTemplate2";
+        StringCchCopyW(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer),
+          (LOWORD(wParam) == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate1);
 
-        bool bCmdEnabled = IniGetString(L"Settings2",lpszTemplateName,L"",tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer));
-
-        if (bCmdEnabled) {
+        if (StringCchLenW(tchMaxPathBuffer,0) > 0) {
 
           DocPos const cchSelection = SciCall_GetSelText(NULL);
 
@@ -5600,7 +5607,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_INITIALWINPOS:
-      SnapToWinInfoPos(hwnd, &g_WinInfo, false);
+      SnapToWinInfoPos(hwnd, &s_WinInfo, false);
       break;
 
     case CMD_FULLSCRWINPOS:
@@ -5611,7 +5618,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case CMD_DEFAULTWINPOS:
-      SnapToWinInfoPos(hwnd, &g_DefWinInfo, false);
+      SnapToWinInfoPos(hwnd, &s_DefWinInfo, false);
       break;
 
     case CMD_SAVEASDEFWINPOS:
@@ -6660,17 +6667,32 @@ void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
 //
 void LoadSettings()
 {
+
+  Defaults2.FileLoadWarningMB          = 1;
+  Defaults2.OpacityLevel               = 75;
+  Defaults2.FileBrowserPath[0]         = L'\0';
+  Defaults2.ExtendedWhiteSpaceChars[0] = L'\0';
+  Defaults2.AutoCompleteWordCharSet[0] = L'\0';
+  Defaults2.WebTemplate1[0]            = L'\0';
+  Defaults2.WebTemplate2[0]            = L'\0';
+  Defaults2.DateTimeShort[0]           = L'\0';
+  Defaults2.DateTimeLong[0]            = L'\0';
+  Defaults2.DefaultWindowPosition[0]   = L'\0';
+  StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), L"" APPNAME);
+  StringCchCopyW(Defaults2.TimeStamp, COUNTOF(Defaults2.TimeStamp), L"\\$Date:[^\\$]+\\$ | $Date: %Y/%m/%d %H:%M:%S $");
+
+  // --------------------------------------------------------------------------
+
   int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
 
   WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
   
   if (pIniSection) 
   {
-    g_iSettingsVersion = IniGetInt(L"Settings", L"SettingsVersion", CFG_VER_NONE);
-
+    // prerequisites 
     g_bEnableSaveSettings = true; // false: if settings-file is loaded in editor
     g_bSaveSettings = IniGetBool(L"Settings", L"SaveSettings", true);
-
+    g_iSettingsVersion = IniGetInt(L"Settings", L"SettingsVersion", CFG_VER_NONE);
 
     // first load "hard coded" .ini-Settings
     // --------------------------------------------------------------------------
@@ -6679,8 +6701,6 @@ void LoadSettings()
 
     IniSectionGetString(pIniSection, L"PreferredLanguageLocaleName", L"",
                         g_tchPrefLngLocName, COUNTOF(g_tchPrefLngLocName));
-
-    g_bStickyWinPos = IniSectionGetBool(pIniSection, L"StickyWindowPosition", false);
 
     IniSectionGetString(pIniSection, L"DefaultExtension", L"txt", g_tchDefaultExtension, COUNTOF(g_tchDefaultExtension));
     StrTrim(g_tchDefaultExtension, L" \t.\"");
@@ -6740,21 +6760,27 @@ void LoadSettings()
 
     IniSectionGetString(pIniSection, L"AdministrationTool.exe", L"", g_tchAdministrationExe, COUNTOF(g_tchAdministrationExe));
 
-    WCHAR tchDefWinPos[80];
-    IniSectionGetString(pIniSection, L"DefaultWindowPosition", L"", tchDefWinPos, COUNTOF(tchDefWinPos));
-    int bMaxi = 0;
-    int const itok = swscanf_s(tchDefWinPos, L"%i,%i,%i,%i,%i",
-                               &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
-    if (itok == 4 || itok == 5) { // scan successful
-      if (g_DefWinInfo.cx < 1) g_DefWinInfo.cx = CW_USEDEFAULT;
-      if (g_DefWinInfo.cy < 1) g_DefWinInfo.cy = CW_USEDEFAULT;
-      if (bMaxi) g_DefWinInfo.max = true;
-      if (itok == 4) g_DefWinInfo.max = false;
-      _InitWindowPosition(&g_DefWinInfo, 0);
-    }
-    else {
-      g_DefWinInfo = _InitDefaultWndPos(2);
-    }
+    IniSectionGetString(pIniSection, L"DefaultWindowPosition", Defaults2.DefaultWindowPosition,
+                        Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
+
+    bool const bExplicitDefaultWinPos = (StringCchLenW(Settings2.DefaultWindowPosition, 0) != 0);
+
+    Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(pIniSection, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
+    Settings2.OpacityLevel = clampi(IniSectionGetInt(pIniSection, L"OpacityLevel", Defaults2.OpacityLevel), 0, 100);
+
+    IniSectionGetString(pIniSection, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
+    IniSectionGetString(pIniSection, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
+    IniSectionGetString(pIniSection, L"ExtendedWhiteSpaceChars", Defaults2.ExtendedWhiteSpaceChars, 
+                        Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars));
+    IniSectionGetString(pIniSection, L"AutoCompleteWordCharSet", Defaults2.AutoCompleteWordCharSet,
+                        Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet));
+
+    IniSectionGetString(pIniSection, L"TimeStamp", Defaults2.TimeStamp, Settings2.TimeStamp, COUNTOF(Settings2.TimeStamp));
+    IniSectionGetString(pIniSection, L"DateTimeShort", Defaults2.DateTimeShort, Settings2.DateTimeShort, COUNTOF(Settings2.DateTimeShort));
+    IniSectionGetString(pIniSection, L"DateTimeLong", Defaults2.DateTimeLong, Settings2.DateTimeLong, COUNTOF(Settings2.DateTimeLong));
+    IniSectionGetString(pIniSection, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
+    IniSectionGetString(pIniSection, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
+
 
     // --------------------------------------------------------------------------
     LoadIniSection(L"Settings", pIniSection, cchIniSection);
@@ -7032,7 +7058,36 @@ void LoadSettings()
       iHighDpiToolBar = ((ResX > 1920) && (ResY > 1080)) ? 1 : 0;
     }
 
-    if (!s_flagPosParam /*|| g_bStickyWinPos*/) { // ignore window position if /p was specified
+    // --------------------------------------------------------------
+    // startup window  (ignore window position if /p was specified)
+    // --------------------------------------------------------------
+
+    // 1st set default window position 
+
+    s_DefWinInfo = _InitDefaultWndPos(2); // std. default position
+
+    if (bExplicitDefaultWinPos) {
+      int bMaxi = 0;
+      int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
+                                 &s_DefWinInfo.x, &s_DefWinInfo.y, &s_DefWinInfo.cx, &s_DefWinInfo.cy, &bMaxi);
+      if (itok == 4 || itok == 5) { // scan successful
+        if (s_DefWinInfo.cx < 1) s_DefWinInfo.cx = CW_USEDEFAULT;
+        if (s_DefWinInfo.cy < 1) s_DefWinInfo.cy = CW_USEDEFAULT;
+        if (bMaxi) s_DefWinInfo.max = true;
+        if (itok == 4) s_DefWinInfo.max = false;
+        _InitWindowPosition(&s_DefWinInfo, 0);
+      }
+      else {
+        // overwrite bad defined default position
+        StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
+                        L"%i,%i,%i,%i,%i", s_DefWinInfo.x, s_DefWinInfo.y, s_DefWinInfo.cx, s_DefWinInfo.cy, s_DefWinInfo.max);
+        IniSetString(L"Settings2", L"DefaultWindowPosition", Settings2.DefaultWindowPosition);
+      }
+    }
+
+    // 2nd set initial window position
+
+    if (!s_flagPosParam && !bExplicitDefaultWinPos /*|| g_bStickyWinPos*/) {
 
       WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
@@ -7043,24 +7098,26 @@ void LoadSettings()
       StringCchPrintf(tchMaximized, COUNTOF(tchMaximized), L"%ix%i Maximized", ResX, ResY);
       StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
 
-      g_WinInfo.x = IniSectionGetInt(pIniSection, tchPosX, CW_USEDEFAULT);
-      g_WinInfo.y = IniSectionGetInt(pIniSection, tchPosY, CW_USEDEFAULT);
-      g_WinInfo.cx = IniSectionGetInt(pIniSection, tchSizeX, CW_USEDEFAULT);
-      g_WinInfo.cy = IniSectionGetInt(pIniSection, tchSizeY, CW_USEDEFAULT);
-      g_WinInfo.max = IniSectionGetBool(pIniSection, tchMaximized, false);
-      g_WinInfo.max = clampi(g_WinInfo.max, 0, 1);
-      g_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, (g_iSettingsVersion < CFG_VER_0001) ? 0 : 100);
-      if (g_iSettingsVersion < CFG_VER_0001) { g_WinInfo.zoom = (g_WinInfo.zoom + 10) * 10; }
-      g_WinInfo.zoom = clampi(g_WinInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+      s_WinInfo.x = IniSectionGetInt(pIniSection, tchPosX, CW_USEDEFAULT);
+      s_WinInfo.y = IniSectionGetInt(pIniSection, tchPosY, CW_USEDEFAULT);
+      s_WinInfo.cx = IniSectionGetInt(pIniSection, tchSizeX, CW_USEDEFAULT);
+      s_WinInfo.cy = IniSectionGetInt(pIniSection, tchSizeY, CW_USEDEFAULT);
+      s_WinInfo.max = IniSectionGetBool(pIniSection, tchMaximized, false);
+      s_WinInfo.max = clampi(s_WinInfo.max, 0, 1);
+      s_WinInfo.zoom = IniSectionGetInt(pIniSection, tchZoom, (g_iSettingsVersion < CFG_VER_0001) ? 0 : 100);
+      if (g_iSettingsVersion < CFG_VER_0001) { s_WinInfo.zoom = (s_WinInfo.zoom + 10) * 10; }
+      s_WinInfo.zoom = clampi(s_WinInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
-      if ((g_WinInfo.x == CW_USEDEFAULT) || (g_WinInfo.y == CW_USEDEFAULT) ||
-        (g_WinInfo.cx == CW_USEDEFAULT) || (g_WinInfo.cy == CW_USEDEFAULT)) 
+      if ((s_WinInfo.x == CW_USEDEFAULT) || (s_WinInfo.y == CW_USEDEFAULT) ||
+        (s_WinInfo.cx == CW_USEDEFAULT) || (s_WinInfo.cy == CW_USEDEFAULT)) 
       {
         s_flagWindowPos = 2; // std. default position (CmdLn: /pd)
       }
       else
         s_flagWindowPos = 0; // init to g_WinInfo
     }
+
+    // ------------------------------------------------------------------------
 
     // ---  override by resolution specific settings  ---
     WCHAR tchSciDirectWriteTech[64];
@@ -7246,7 +7303,7 @@ void SaveSettings(bool bSaveSettingsNow)
 
   if (bSaveSettingsNow) {
     // GetWindowPlacement
-    g_WinInfo = GetMyWindowPlacement(Globals.hwndMain,NULL);
+    s_WinInfo = GetMyWindowPlacement(Globals.hwndMain,NULL);
   }
 
   int ResX = GetSystemMetrics(SM_CXSCREEN);
@@ -7256,7 +7313,7 @@ void SaveSettings(bool bSaveSettingsNow)
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
   IniSetInt(L"Window", tchHighDpiToolBar, iHighDpiToolBar);
 
-  if (!IniGetInt(L"Settings2",L"StickyWindowPosition",0)) {
+  if (Flags.StickyWindowPosition == 0) {
 
     WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
@@ -7267,12 +7324,12 @@ void SaveSettings(bool bSaveSettingsNow)
     StringCchPrintf(tchMaximized,COUNTOF(tchMaximized),L"%ix%i Maximized",ResX,ResY);
     StringCchPrintf(tchZoom, COUNTOF(tchMaximized), L"%ix%i Zoom", ResX, ResY);
 
-    IniSetInt(L"Window",tchPosX,g_WinInfo.x);
-    IniSetInt(L"Window",tchPosY,g_WinInfo.y);
-    IniSetInt(L"Window",tchSizeX,g_WinInfo.cx);
-    IniSetInt(L"Window",tchSizeY,g_WinInfo.cy);
-    IniSetBool(L"Window",tchMaximized,g_WinInfo.max);
-    IniSetInt(L"Window",tchZoom, g_WinInfo.zoom);
+    IniSetInt(L"Window",tchPosX,s_WinInfo.x);
+    IniSetInt(L"Window",tchPosY,s_WinInfo.y);
+    IniSetInt(L"Window",tchSizeX,s_WinInfo.cx);
+    IniSetInt(L"Window",tchSizeY,s_WinInfo.cy);
+    IniSetBool(L"Window",tchMaximized,s_WinInfo.max);
+    IniSetInt(L"Window",tchZoom, s_WinInfo.zoom);
   }
 
   EndWaitCursor();
@@ -7349,11 +7406,11 @@ void ParseCommandLine()
 
         // Shell integration
         else if (StrCmpNI(lp1, L"appid=", CSTRLEN(L"appid=")) == 0) {
-          StringCchCopyN(g_wchAppUserModelID, COUNTOF(g_wchAppUserModelID),
+          StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
                          lp1 + CSTRLEN(L"appid="), len - CSTRLEN(L"appid="));
-          StrTrim(g_wchAppUserModelID, L" ");
-          if (StringCchLenW(g_wchAppUserModelID, COUNTOF(g_wchAppUserModelID)) == 0)
-            StringCchCopy(g_wchAppUserModelID, COUNTOF(g_wchAppUserModelID), L"" APPNAME);
+          StrTrim(Settings2.AppUserModelID, L" ");
+          if (StringCchLenW(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID)) == 0)
+            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), L"" APPNAME);
         }
 
         else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0) {
@@ -7477,14 +7534,14 @@ void ParseCommandLine()
             }
             else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
               int bMaximize = 0;
-              int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &g_WinInfo.x, &g_WinInfo.y, &g_WinInfo.cx, &g_WinInfo.cy, &bMaximize);
+              int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &s_WinInfo.x, &s_WinInfo.y, &s_WinInfo.cx, &s_WinInfo.cy, &bMaximize);
               if (itok == 4 || itok == 5) { // scan successful
                 s_flagPosParam = 1;
                 s_flagWindowPos = 0;
-                if (g_WinInfo.cx < 1) g_WinInfo.cx = CW_USEDEFAULT;
-                if (g_WinInfo.cy < 1) g_WinInfo.cy = CW_USEDEFAULT;
-                if (bMaximize) g_WinInfo.max = true;
-                if (itok == 4) g_WinInfo.max = false;
+                if (s_WinInfo.cx < 1) s_WinInfo.cx = CW_USEDEFAULT;
+                if (s_WinInfo.cy < 1) s_WinInfo.cy = CW_USEDEFAULT;
+                if (bMaximize) s_WinInfo.max = true;
+                if (itok == 4) s_WinInfo.max = false;
               }
             }
           }
@@ -7646,10 +7703,10 @@ void ParseCommandLine()
           PathFixBackslashes(lpFileArg);
 
           if (!PathIsRelative(lpFileArg) && !PathIsUNC(lpFileArg) &&
-              PathGetDriveNumber(lpFileArg) == -1 /*&& PathGetDriveNumber(g_wchWorkingDirectory) != -1*/) {
+              PathGetDriveNumber(lpFileArg) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/) {
 
             WCHAR wchPath[FILE_ARG_BUF] = { L'\0' };
-            StringCchCopy(wchPath, COUNTOF(wchPath), g_wchWorkingDirectory);
+            StringCchCopy(wchPath, COUNTOF(wchPath), Globals.WorkingDirectory);
             PathStripToRoot(wchPath);
             PathCchAppend(wchPath, COUNTOF(wchPath), lpFileArg);
             StringCchCopy(lpFileArg, FILE_ARG_BUF, wchPath);
@@ -7683,11 +7740,9 @@ void ParseCommandLine()
 //  LoadFlags()
 //
 //
-
-static FLAGS_T DefaultFlags;
-
 void LoadFlags()
 {
+  DefaultFlags.StickyWindowPosition = 0;
   DefaultFlags.ReuseWindow = 0;
   DefaultFlags.NoReuseWindow = 1;
   DefaultFlags.SingleFileInstance = 0;
@@ -7703,8 +7758,6 @@ void LoadFlags()
   DefaultFlags.UseSystemMRU = 0;
   DefaultFlags.PrintFileAndLeave = 0;
 
-  StringCchCopyW(DefaultFlags.wchAppUserModelID, COUNTOF(DefaultFlags.wchAppUserModelID), L"" APPNAME);
-
   // --------------------------------------------------------------------------
 
   int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
@@ -7714,6 +7767,9 @@ void LoadFlags()
   if (pIniSection) 
   {
     LoadIniSection(L"Settings2", pIniSection, cchIniSection);
+
+    if (IniSectionGetInt(pIniSection, L"StickyWindowPosition", DefaultFlags.StickyWindowPosition))
+      Flags.StickyWindowPosition = 1;
 
     if (!Flags.ReuseWindow && !Flags.NoReuseWindow) {
 
@@ -7757,11 +7813,6 @@ void LoadFlags()
       if (IniSectionGetInt(pIniSection, L"ShellUseSystemMRU", DefaultFlags.UseSystemMRU)) {
         Flags.UseSystemMRU = 2;
       }
-    }
-
-    if (StringCchLenW(Flags.wchAppUserModelID, COUNTOF(Flags.wchAppUserModelID)) == 0) {
-      IniSectionGetString(pIniSection, L"ShellAppUserModelID", DefaultFlags.wchAppUserModelID,
-                          Flags.wchAppUserModelID, COUNTOF(Flags.wchAppUserModelID));
     }
 
     FreeMem(pIniSection);
@@ -8128,9 +8179,9 @@ typedef WCHAR sectionTxt_t[txtWidth];
 static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchStatusBar[], bool* bIsUpdNeeded)
 {
   static int s_iWinFormerWidth = -1;
-  if (s_iWinFormerWidth != g_WinCurrentWidth) {
+  if (s_iWinFormerWidth != s_WinCurrentWidth) {
     *bIsUpdNeeded = true;
-    s_iWinFormerWidth = g_WinCurrentWidth;
+    s_iWinFormerWidth = s_WinCurrentWidth;
   }
   if (!(*bIsUpdNeeded)) { return; }
 
@@ -8150,7 +8201,7 @@ static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionT
     }
   }
 
-  int const iPropSectTotalWidth = g_WinCurrentWidth - pxCount - STAUSBAR_RIGHT_MARGIN;
+  int const iPropSectTotalWidth = s_WinCurrentWidth - pxCount - STAUSBAR_RIGHT_MARGIN;
 
   // init proportional section checker
   bool bIsPropSection[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
@@ -9250,7 +9301,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
   ExpandEnvironmentStringsEx(tch,COUNTOF(tch));
 
   if (PathIsRelative(tch)) {
-    StringCchCopyN(szFileName,COUNTOF(szFileName),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
+    StringCchCopyN(szFileName,COUNTOF(szFileName),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
     PathCchAppend(szFileName,COUNTOF(szFileName),tch);
     if (!PathFileExists(szFileName)) {
       WCHAR wchFullPath[MAX_PATH] = { L'\0' };
@@ -9702,7 +9753,7 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
       }
     }
     else
-      StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),g_wchWorkingDirectory);
+      StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.WorkingDirectory);
   }
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
@@ -9758,7 +9809,7 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
     }
   }
   else
-    StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),g_wchWorkingDirectory);
+    StringCchCopy(tchInitialDir,COUNTOF(tchInitialDir),Globals.WorkingDirectory);
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
   ofn.lStructSize = sizeof(OPENFILENAME);
@@ -9855,7 +9906,7 @@ bool ActivatePrevInst()
     ExpandEnvironmentStringsEx(lpFileArg,(DWORD)SizeOfMem(lpFileArg)/sizeof(WCHAR));
 
     if (PathIsRelative(lpFileArg)) {
-      StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
+      StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
       PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
       if (PathFileExists(tchTmp))
         StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
@@ -9863,7 +9914,7 @@ bool ActivatePrevInst()
         if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
           StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
         else {
-          StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
+          StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
           PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
           StringCchCopy(lpFileArg,FILE_ARG_BUF,tchTmp);
         }
@@ -9974,7 +10025,7 @@ bool ActivatePrevInst()
         ExpandEnvironmentStringsEx(lpFileArg,(DWORD)SizeOfMem(lpFileArg)/sizeof(WCHAR));
 
         if (PathIsRelative(lpFileArg)) {
-          StringCchCopyN(tchTmp,COUNTOF(tchTmp),g_wchWorkingDirectory,COUNTOF(g_wchWorkingDirectory));
+          StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
           PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
           if (PathFileExists(tchTmp)) {
             StringCchCopy(lpFileArg, FILE_ARG_BUF, tchTmp);
@@ -10087,7 +10138,7 @@ bool RelaunchMultiInst() {
       PROCESS_INFORMATION pi;
       ZeroMemory(&pi,sizeof(PROCESS_INFORMATION));
 
-      CreateProcess(NULL,lpCmdLineNew,NULL,NULL,false,0,NULL,g_wchWorkingDirectory,&si,&pi);
+      CreateProcess(NULL,lpCmdLineNew,NULL,NULL,false,0,NULL,Globals.WorkingDirectory,&si,&pi);
     }
 
     LocalFree(lpCmdLineNew); // StrDup()
@@ -10155,7 +10206,7 @@ bool RelaunchElevated(LPWSTR lpArgs) {
     sei.lpVerb = L"runas";
     sei.lpFile = lpExe;
     sei.lpParameters = szArguments;
-    sei.lpDirectory = g_wchWorkingDirectory;
+    sei.lpDirectory = Globals.WorkingDirectory;
     sei.nShow = si.wShowWindow ? si.wShowWindow : SW_SHOWNORMAL;
     result = ShellExecuteEx(&sei);
   }

@@ -92,6 +92,7 @@ typedef enum
   XHUGE_BUFFER = 2048,
   XXXL_BUFFER = 4096,
 
+  ANSI_CHAR_BUFFER = 258,
   FILE_ARG_BUF = MAX_PATH + 2,
   FNDRPL_BUFFER = 1024,
   LONG_LINES_MARKER_LIMIT = 4096
@@ -188,6 +189,16 @@ typedef struct _cmq
 
 //=============================================================================
 
+typedef struct _constants_t
+{
+  const WCHAR* FileBrowserMiniPath;
+
+} CONSTANTS_T, *PCONSTANTS_T;
+
+extern CONSTANTS_T Constants;
+
+// ------------------------------------
+
 typedef struct _globals_t
 {
   HINSTANCE hInstance;
@@ -195,6 +206,8 @@ typedef struct _globals_t
   HMODULE   hLngResContainer;
   HWND      hwndMain;
   HANDLE    hndlProcessHeap;
+
+  WCHAR     WorkingDirectory[MAX_PATH + 1];
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -214,7 +227,19 @@ extern SETTINGS_T Settings;
 
 typedef struct _settings2_t
 {
-  bool bStickyWinPos;
+
+  int FileLoadWarningMB;
+  int OpacityLevel;
+  WCHAR FileBrowserPath[MAX_PATH + 1];
+  WCHAR AppUserModelID[32];
+  WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
+  WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
+  WCHAR TimeStamp[128];
+  WCHAR DateTimeShort[128];
+  WCHAR DateTimeLong[128];
+  WCHAR WebTemplate1[MAX_PATH + 1];
+  WCHAR WebTemplate2[MAX_PATH + 1];
+  WCHAR DefaultWindowPosition[64];
 
 } SETTINGS2_T, *PSETTINGS2_T;
 
@@ -224,6 +249,7 @@ extern SETTINGS2_T Settings2;
 
 typedef struct _flags_t
 {
+  int StickyWindowPosition;
   int ReuseWindow;
   int NoReuseWindow;
   int SingleFileInstance;
@@ -238,8 +264,6 @@ typedef struct _flags_t
   int NoFileVariables;
   int UseSystemMRU;
   int PrintFileAndLeave;
-
-  WCHAR wchAppUserModelID[32];
 
 } FLAGS_T, *PFLAGS_T;
 

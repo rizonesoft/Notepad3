@@ -54,9 +54,7 @@
 extern LANGID    g_iPrefLANGID;
 extern HICON     g_hDlgIcon;
 
-extern WCHAR g_wchWorkingDirectory[];
 extern WCHAR g_wchCurFile[];
-extern WCHAR g_wchAppUserModelID[];
 
 extern DWORD dwLastIOError;
 extern bool bUseDefaultForFileEncoding;
@@ -2780,7 +2778,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
   NormalizePathEx(szModuleName, COUNTOF(szModuleName));
 
-  StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", g_wchAppUserModelID);
+  StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
 
   StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (Flags.UseSystemMRU == 2) ? 1 : 0);
@@ -2828,7 +2826,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   sei.lpVerb = NULL;
   sei.lpFile = szModuleName;
   sei.lpParameters = szParameters;
-  sei.lpDirectory = g_wchWorkingDirectory;
+  sei.lpDirectory = Globals.WorkingDirectory;
   sei.nShow = SW_SHOWNORMAL;
   ShellExecuteEx(&sei);
 }
@@ -2842,11 +2840,13 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 //
 void DialogFileBrowse(HWND hwnd)
 {
-  WCHAR tchParam[MAX_PATH+2] = L"";
-  WCHAR tchExeFile[MAX_PATH+4];
-  WCHAR tchTemp[MAX_PATH+2];
+  WCHAR tchParam[MAX_PATH+1] = L"";
+  WCHAR tchExeFile[MAX_PATH+1];
+  WCHAR tchTemp[MAX_PATH+1];
 
-  if (IniGetString(L"Settings2", L"filebrowser.exe", L"", tchTemp, COUNTOF(tchTemp))) 
+  StringCchCopyW(tchTemp, COUNTOF(tchTemp), Settings2.FileBrowserPath);
+
+  if (StringCchLenW(Settings2.FileBrowserPath,0) > 0)
   {
     ExtractFirstArgument(tchTemp, tchExeFile, tchParam, MAX_PATH+2);
     if (PathIsRelative(tchExeFile)) {
@@ -2859,10 +2859,10 @@ void DialogFileBrowse(HWND hwnd)
     }
   }
   else {
-    if (!SearchPath(NULL, L"minipath.exe", L".exe", COUNTOF(tchExeFile), tchExeFile, NULL)) {
+    if (!SearchPath(NULL, Constants.FileBrowserMiniPath, L".exe", COUNTOF(tchExeFile), tchExeFile, NULL)) {
       GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
       PathRemoveFileSpec(tchExeFile);
-      PathCchAppend(tchExeFile, COUNTOF(tchExeFile), L"minipath.exe");
+      PathCchAppend(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
     }
   }
 
@@ -2923,7 +2923,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
   sei.lpVerb = NULL;
   sei.lpFile = tchExePath;
   sei.lpParameters = NULL; // tchParam;
-  sei.lpDirectory = g_wchWorkingDirectory;
+  sei.lpDirectory = Globals.WorkingDirectory;
   sei.nShow = SW_SHOWNORMAL;
 
   if (bExecInstaller) {
@@ -3050,7 +3050,7 @@ void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode)
   if (bTransparentMode) {
     SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
     // get opacity level from registry
-    int const iAlphaPercent = clampi(IniGetInt(L"Settings2", L"OpacityLevel", 75), 0, 100);
+    int const iAlphaPercent = Settings2.OpacityLevel;
     BYTE const bAlpha = (BYTE)MulDiv(iAlphaPercent, 255, 100);
     SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
     return;
