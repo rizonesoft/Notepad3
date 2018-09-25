@@ -1422,8 +1422,6 @@ bool Style_HasLexerForExt(LPCWSTR lpszExt)
 //
 //  Style_SetLexerFromFile()
 //
-extern int g_flagNoHTMLGuess;
-extern int g_flagNoCGIGuess;
 extern FILEVARS fvCurFile;
 
 void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
@@ -1440,7 +1438,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     MultiByteToWideCharStrg(Encoding_SciCP, fvCurFile.tchMode, wchMode);
 
-    if (!g_flagNoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
+    if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
       char tchText[256] = { L'\0' };
       SciCall_GetText(COUNTOF(tchText) - 1, tchText);
@@ -1478,7 +1476,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     if (*lpszExt == L'.') ++lpszExt;
 
-    if (!g_flagNoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
+    if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { '\0' };
       SciCall_GetText(COUNTOF(tchText) - 1, tchText);
       StrTrimA(tchText," \t\n\r");
@@ -1522,11 +1520,11 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     bFound = true;
   }
 
-  if (!bFound && g_bAutoSelect && (!g_flagNoHTMLGuess || !g_flagNoCGIGuess)) {
+  if (!bFound && g_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
     char tchText[512];
     SciCall_GetText(COUNTOF(tchText) - 1, tchText);
     StrTrimA(tchText," \t\n\r");
-    if (!g_flagNoCGIGuess) {
+    if (!Flags.NoCGIGuess) {
       if (tchText[0] == '<') {
         if (StrStrIA(tchText, "<html"))
           pLexNew = &lexHTML;
@@ -1694,14 +1692,14 @@ bool Style_GetUse2ndDefault()
 //
 //  Style_SetIndentGuides()
 //
-extern int g_flagSimpleIndentGuides;
 
 void Style_SetIndentGuides(HWND hwnd,bool bShow)
 {
+  UNUSED(hwnd);
   int iIndentView = SC_IV_NONE;
   if (bShow) {
-    if (!g_flagSimpleIndentGuides) {
-      switch (SendMessage(hwnd, SCI_GETLEXER, 0, 0)) {
+    if (!Flags.SimpleIndentGuides) {
+      switch (SciCall_GetLexer()) {
       case SCLEX_PYTHON:
       case SCLEX_NIMROD:
         iIndentView = SC_IV_LOOKFORWARD;
@@ -1714,7 +1712,7 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
     else
       iIndentView = SC_IV_REAL;
   }
-  SendMessage(hwnd,SCI_SETINDENTATIONGUIDES,iIndentView,0);
+  SciCall_SetIndentationGuides(iIndentView);
 }
 
 

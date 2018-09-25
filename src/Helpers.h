@@ -60,24 +60,25 @@ extern UINT    g_uCurrentPPI;
 // ============================================================================
 
 // direct heap allocation
-
-#define DEFAULT_ALLOC_FLAGS (0) ///~ HEAP_GENERATE_EXCEPTIONS
-
-extern HANDLE g_hndlProcessHeap;
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+  #define DEFAULT_ALLOC_FLAGS (HEAP_GENERATE_EXCEPTIONS)
+#else
+  #define DEFAULT_ALLOC_FLAGS (0)
+#endif
 
 __forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 {
-  return HeapAlloc(g_hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
+  return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
 __forceinline bool FreeMem(LPVOID lpMemory)
 {
-  return (lpMemory ? HeapFree(g_hndlProcessHeap, 0, lpMemory) : true);
+  return (lpMemory ? HeapFree(Globals.hndlProcessHeap, 0, lpMemory) : true);
 }
 
 __forceinline size_t SizeOfMem(LPCVOID lpMemory)
 {
-  return (lpMemory ? HeapSize(g_hndlProcessHeap, 0, lpMemory) : 0);
+  return (lpMemory ? HeapSize(Globals.hndlProcessHeap, 0, lpMemory) : 0);
 }
 
 // ============================================================================

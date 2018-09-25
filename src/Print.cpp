@@ -55,7 +55,6 @@ extern "C" int iPrintFooter;
 extern "C" int iPrintColor;
 extern "C" int iPrintZoom;
 extern "C" RECT pagesetupMargin;
-extern "C" int g_flagPrintFileAndLeave;
 
 extern "C" HWND g_hwndStatus;
 
@@ -156,7 +155,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   }
 
   // |= 0 - Don't display dialog box, just use the default printer and options
-  pdlg.Flags |= (g_flagPrintFileAndLeave == 1) ? PD_RETURNDEFAULT : 0;
+  pdlg.Flags |= (Flags.PrintFileAndLeave == 1) ? PD_RETURNDEFAULT : 0;
 
   if (!PrintDlg(&pdlg)) {
     return true; // False means error...

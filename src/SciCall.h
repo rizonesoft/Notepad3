@@ -289,7 +289,7 @@ DeclareSciCallV0(LineDelete, LINEDELETE)
 DeclareSciCallV0(DelLineLeft, DELLINELEFT)
 DeclareSciCallV0(DelLineRight, DELLINERIGHT)
 
-
+DeclareSciCallR0(GetLexer, GETLEXER, int)
 DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
 
 
@@ -342,6 +342,7 @@ DeclareSciCallV2(BraceHighLightIndicator, BRACEHIGHLIGHTINDICATOR, bool, use, in
 DeclareSciCallV2(BraceBadLightIndicator, BRACEBADLIGHTINDICATOR, bool, use, int, indic)
 DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
 DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos)
+DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview)
 
 
 //=============================================================================

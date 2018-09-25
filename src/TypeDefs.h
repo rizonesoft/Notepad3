@@ -191,8 +191,10 @@ typedef struct _cmq
 typedef struct _globals_t
 {
   HINSTANCE hInstance;
+  HINSTANCE hPrevInst;
   HMODULE   hLngResContainer;
   HWND      hwndMain;
+  HANDLE    hndlProcessHeap;
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -207,7 +209,6 @@ typedef struct _settings_t
 } SETTINGS_T, *PSETTINGS_T;
 
 extern SETTINGS_T Settings;
-extern SETTINGS_T Defaults;
 
 // ------------------------------------
 
@@ -218,7 +219,33 @@ typedef struct _settings2_t
 } SETTINGS2_T, *PSETTINGS2_T;
 
 extern SETTINGS2_T Settings2;
-extern SETTINGS_T Defaults2;
+
+// ------------------------------------
+
+typedef struct _flags_t
+{
+  int ReuseWindow;
+  int NoReuseWindow;
+  int SingleFileInstance;
+  int MultiFileArg;
+  int RelativeFileMRU;
+  int PortableMyDocs;
+  int NoFadeHidden;
+  int ToolbarLook;
+  int SimpleIndentGuides;
+  int NoHTMLGuess;
+  int NoCGIGuess;
+  int NoFileVariables;
+  int UseSystemMRU;
+  int PrintFileAndLeave;
+
+  WCHAR wchAppUserModelID[32];
+
+} FLAGS_T, *PFLAGS_T;
+
+extern FLAGS_T Flags;
+
+
 
 //=============================================================================
 
