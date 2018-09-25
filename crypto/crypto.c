@@ -34,7 +34,6 @@ see ecryption-doc.txt for details
 #include "rijndael-api-fst.h"
 #include "crypto.h"
 
-extern HMODULE   g_hLngResContainer;
 extern HICON     g_hDlgIcon;
 
 #define WKEY_LEN 256
@@ -306,7 +305,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 // set passphrases for output
 bool GetFileKey(HWND hwnd)
 {
-    return (IDOK == DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
+    return (IDOK == DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
                                    GetParent(hwnd), SetKeysDlgProc, (LPARAM)hwnd));
 }
 
@@ -314,7 +313,7 @@ bool GetFileKey(HWND hwnd)
 bool ReadFileKey(HWND hwnd, bool master)
 {
     masterKeyAvailable = master;
-    return (IDOK == DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
+    return (IDOK == DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
                                    GetParent(hwnd), GetKeysDlgProc, (LPARAM)hwnd));
 }
 

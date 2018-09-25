@@ -47,6 +47,7 @@
 
 #include "helpers.h"
 #include "encoding.h"
+#include "TypeDefs.h"
 
 #include "SciCall.h"
 #include "scilexer.h"
@@ -61,9 +62,6 @@
 // find free bits in scintilla.h SCFIND_ defines
 #define SCFIND_NP3_REGEX (SCFIND_REGEXP | SCFIND_POSIX)
 
-extern HMODULE   g_hLngResContainer;
-
-extern HWND    g_hwndMain;
 extern HWND    g_hwndStatus;
 extern HWND    g_hwndDlgFindReplace;
 extern HICON   g_hDlgIcon;
@@ -612,7 +610,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     const DocPos iAnchor = SciCall_GetAnchor();
 
     // switch encoding to universal UTF-8 codepage
-    SendMessage(g_hwndMain,WM_COMMAND,(WPARAM)MAKELONG(IDM_ENCODING_UTF8,1),0);
+    SendMessage(Globals.hwndMain,WM_COMMAND,(WPARAM)MAKELONG(IDM_ENCODING_UTF8,1),0);
 
     // restore and adjust selection
     if (iPos > iAnchor) {
@@ -5111,8 +5109,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         g_iMarkOccurrences = 0;
         g_bMarkOccurrencesMatchVisible = false;
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
-        EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
-        EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
+        EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
+        EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
         DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
       }
       else {
@@ -5120,7 +5118,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
         EditClearAllOccurrenceMarkers(g_hwndEdit);
       }
-      EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
+      EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
 
 
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
@@ -5204,9 +5202,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           g_iMarkOccurrences = iSaveMarkOcc;
           g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
 
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
-          EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
+          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
+          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
+          EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
 
           g_iReplacedOccurrences = 0;
           g_FindReplaceMatchFoundState = FND_NOP;
@@ -5434,9 +5432,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             g_bMarkOccurrencesMatchVisible = false;
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
 
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
+            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
+            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, false);
+            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
           }
           else {  // switched OFF
             g_iMarkOccurrences = iSaveMarkOcc;
@@ -5448,9 +5446,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             }
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
 
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
-            EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
+            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
+            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
+            EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, true);
           }
           _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         }
@@ -5704,14 +5702,14 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         break;
 
       case IDACC_FINDNEXT:
-        //SetFocus(g_hwndMain);
-        //SetForegroundWindow(g_hwndMain);
+        //SetFocus(Globals.hwndMain);
+        //SetForegroundWindow(Globals.hwndMain);
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDOK, 1), 0);
         break;
 
       case IDACC_FINDPREV:
-        //SetFocus(g_hwndMain);
-        //SetForegroundWindow(g_hwndMain);
+        //SetFocus(Globals.hwndMain);
+        //SetForegroundWindow(Globals.hwndMain);
         PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_FINDPREV, 1), 0);
         break;
 
@@ -5722,7 +5720,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       case IDACC_SAVEFIND:
         g_FindReplaceMatchFoundState = FND_NOP;
-        SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_EDIT_SAVEFIND, 1), 0);
+        SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_EDIT_SAVEFIND, 1), 0);
         SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
         CheckDlgButton(hwnd, IDC_FINDREGEXP, BST_UNCHECKED);
         CheckDlgButton(hwnd, IDC_DOT_MATCH_ALL, BST_UNCHECKED);
@@ -5846,7 +5844,7 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
   (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
 
   lpefr->hwnd = hwnd;
-  HWND hDlg = CreateThemedDialogParam(g_hLngResContainer,
+  HWND hDlg = CreateThemedDialogParam(Globals.hLngResContainer,
             (bReplace) ? MAKEINTRESOURCEW(IDD_MUI_REPLACE) : MAKEINTRESOURCEW(IDD_MUI_FIND),
             GetParent(hwnd),
             EditFindReplaceDlgProcW,
@@ -6394,7 +6392,7 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
       g_bShowCodeFolding = bSaveShowFolding;
       g_bHyperlinkHotspot = bSaveHyperlinkHotspots;
     }
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, g_bHyperlinkHotspot);
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, g_bHyperlinkHotspot);
 
     bHideNonMatchedLines = bHideNonMatchedLines ? false : true; // toggle
 
@@ -7083,7 +7081,7 @@ INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 bool EditLinenumDlg(HWND hwnd)
 {
 
-  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_LINENUM),
+  if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_LINENUM),
                              GetParent(hwnd),EditLinenumDlgProc,(LPARAM)hwnd))
     return true;
 
@@ -7105,7 +7103,6 @@ typedef struct _modlinesdata {
   LPWSTR pwsz2;
 } MODLINESDATA, *PMODLINESDATA;
 
-extern HINSTANCE g_hInstance;
 
 INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -7140,7 +7137,7 @@ INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         hCursorNormal = LoadCursor(NULL,IDC_ARROW);
         hCursorHover = LoadCursor(NULL,IDC_HAND);
         if (!hCursorHover)
-          hCursorHover = LoadCursor(g_hInstance, IDC_ARROW);
+          hCursorHover = LoadCursor(Globals.hInstance, IDC_ARROW);
 
         pdata = (PMODLINESDATA)lParam;
         SetDlgItemTextW(hwnd,100,pdata->pwsz1);
@@ -7294,7 +7291,7 @@ bool EditModifyLinesDlg(HWND hwnd,LPWSTR pwsz1,LPWSTR pwsz2)
   data.pwsz1 = pwsz1;  data.pwsz2 = pwsz2;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCEW(IDD_MUI_MODIFYLINES),
               hwnd,
               EditModifyLinesDlgProc,
@@ -7366,7 +7363,7 @@ bool EditAlignDlg(HWND hwnd,int *piAlignMode)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCEW(IDD_MUI_ALIGN),
               hwnd,
               EditAlignDlgProc,
@@ -7437,7 +7434,7 @@ bool EditEncloseSelectionDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
   data.pwsz1 = pwszOpen;  data.pwsz2 = pwszClose;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCEW(IDD_MUI_ENCLOSESELECTION),
               hwnd,
               EditEncloseSelectionDlgProc,
@@ -7566,7 +7563,7 @@ bool EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose)
   data.pwsz1 = pwszOpen;  data.pwsz2 = pwszClose;
   
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCEW(IDD_MUI_INSERTTAG),
               hwnd,
               EditInsertTagDlgProc,
@@ -7736,7 +7733,7 @@ bool EditSortDlg(HWND hwnd,int* piSortFlags)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCEW(IDD_MUI_SORT),
               hwnd,
               EditSortDlgProc,

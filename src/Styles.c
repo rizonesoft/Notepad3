@@ -47,11 +47,8 @@
 
 #include "Styles.h"
 
-extern HINSTANCE g_hInstance;
-extern HMODULE   g_hLngResContainer;
 extern HICON     g_hDlgIcon;
 
-extern HWND g_hwndMain;
 extern HWND g_hwndDlgCustomizeSchemes;
 extern EDITFINDREPLACE g_efrData;
 extern WCHAR g_tchPrefLngLocName[];
@@ -619,13 +616,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (IsLexerStandard(pLexNew))
   {
     // styles ar already set
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, false);
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, false);
   }
   else {
     // merge lexer default styles
     Style_SetStyles(hwnd, STYLE_DEFAULT, wchNewLexerStyleStrg, false);
 
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(g_hwndDlgCustomizeSchemes));
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(g_hwndDlgCustomizeSchemes));
   }
 
   // Broadcast STYLE_DEFAULT as base style to all other styles
@@ -2440,7 +2437,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   //cf.nSizeMax = 128;
   cf.lStructSize = sizeof(CHOOSEFONT);
   cf.hwndOwner = hwnd;
-  cf.hInstance = g_hInstance; // ChooseFontDirectWrite
+  cf.hInstance = Globals.hInstance; // ChooseFontDirectWrite
   cf.rgbColors = color;
   cf.lpLogFont = &lf;
   cf.iPointSize = iPointSize;
@@ -2486,7 +2483,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (g_iRenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(g_hwndMain, g_tchPrefLngLocName, g_uCurrentDPI, &cf) ||
+    if (!ChooseFontDirectWrite(Globals.hwndMain, g_tchPrefLngLocName, g_uCurrentDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }
@@ -3180,8 +3177,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         SendDlgItemMessage(hwnd,IDC_STYLEEDIT,EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)-1,0);
 
-        MakeBitmapButton(hwnd,IDC_PREVSTYLE,g_hInstance,IDB_PREV);
-        MakeBitmapButton(hwnd,IDC_NEXTSTYLE,g_hInstance,IDB_NEXT);
+        MakeBitmapButton(hwnd,IDC_PREVSTYLE,Globals.hInstance,IDB_PREV);
+        MakeBitmapButton(hwnd,IDC_NEXTSTYLE,Globals.hInstance,IDB_NEXT);
 
         // Setup title font
         if (hFontTitle) {
@@ -3386,7 +3383,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
               TreeView_Select(hwndTV,lpnmtv->itemNew.hItem,TVGN_CARET);
 
               if (bIsStyleSelected)
-                DestroyCursor(SetCursor(LoadCursor(g_hInstance,MAKEINTRESOURCE(IDC_COPY))));
+                DestroyCursor(SetCursor(LoadCursor(Globals.hInstance,MAKEINTRESOURCE(IDC_COPY))));
               else
                 DestroyCursor(SetCursor(LoadCursor(NULL,IDC_NO)));
 
@@ -3581,11 +3578,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
               COLORREF cr = (COLORREF)-1; // SciCall_StyleGetFore(STYLE_DEFAULT);
               Style_StrGetColor(true, tch, &cr);
-              MakeColorPickButton(hwnd, IDC_STYLEFORE, g_hInstance, cr);
+              MakeColorPickButton(hwnd, IDC_STYLEFORE, Globals.hInstance, cr);
 
               cr = (COLORREF)-1; // SciCall_StyleGetBack(STYLE_DEFAULT);
               Style_StrGetColor(false, tch, &cr);
-              MakeColorPickButton(hwnd, IDC_STYLEBACK, g_hInstance, cr);
+              MakeColorPickButton(hwnd, IDC_STYLEBACK, Globals.hInstance, cr);
             }
           }
           break;
@@ -3739,7 +3736,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 //
 HWND Style_CustomizeSchemesDlg(HWND hwnd)
 {
-  HWND hDlg = CreateThemedDialogParam(g_hLngResContainer,
+  HWND hDlg = CreateThemedDialogParam(Globals.hLngResContainer,
                                       MAKEINTRESOURCE(IDD_MUI_STYLECONFIG),
                                       GetParent(hwnd),
                                       Style_CustomizeSchemesDlgProc,
@@ -3985,7 +3982,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 //
 void Style_SelectLexerDlg(HWND hwnd)
 {
-  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,
+  if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,
                                    MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 

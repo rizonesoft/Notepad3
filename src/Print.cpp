@@ -42,10 +42,9 @@
 extern "C" {
 #include "dialogs.h"
 #include "helpers.h"
+#include "TypeDefs.h"
 }
 
-extern "C" HINSTANCE g_hInstance;
-extern "C" HMODULE   g_hLngResContainer;
 extern "C" HICON     g_hDlgIcon;
 
 extern "C" HWND g_hwndEdit;
@@ -136,7 +135,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   PRINTDLG pdlg = { sizeof(PRINTDLG), nullptr, nullptr, nullptr, nullptr, 
     0, 0, 0, 0, 0, 0, nullptr, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
   pdlg.hwndOwner = GetParent(hwnd);
-  pdlg.hInstance = g_hInstance;
+  pdlg.hInstance = Globals.hInstance;
   pdlg.Flags = PD_USEDEVMODECOPIES | PD_ALLPAGES | PD_RETURNDC;
   pdlg.nFromPage = 1;
   pdlg.nToPage = 1;
@@ -572,7 +571,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
 extern "C" void EditPrintSetup(HWND hwnd)
 {
-  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_MUI_PAGESETUP),g_hLngResContainer);
+  DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(MAKEINTRESOURCE(IDD_MUI_PAGESETUP),Globals.hLngResContainer);
 
   PAGESETUPDLG pdlg;
   ZeroMemory(&pdlg,sizeof(PAGESETUPDLG));
@@ -581,7 +580,7 @@ extern "C" void EditPrintSetup(HWND hwnd)
   pdlg.lpfnPageSetupHook = PageSetupHook;
   pdlg.hPageSetupTemplate = pDlgTemplate;
   pdlg.hwndOwner = GetParent(hwnd);
-  pdlg.hInstance = g_hInstance;
+  pdlg.hInstance = Globals.hInstance;
 
   EditPrintInit();
 

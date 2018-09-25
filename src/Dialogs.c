@@ -45,14 +45,12 @@
 #include "version.h"
 #include "helpers.h"
 #include "encoding.h"
+#include "TypeDefs.h"
 #include "SciCall.h"
 
 #include "dialogs.h"
 
 
-extern HWND      g_hwndMain;
-extern HINSTANCE g_hInstance;
-extern HMODULE   g_hLngResContainer;
 extern LANGID    g_iPrefLANGID;
 extern HICON     g_hDlgIcon;
 
@@ -166,7 +164,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
 
   // center message box to main
   HWND focus = GetFocus();
-  HWND hwnd = focus ? focus : g_hwndMain;
+  HWND hwnd = focus ? focus : Globals.hwndMain;
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
   //return  MessageBox(hwnd, szText, szTitle, iIcon);
@@ -266,9 +264,9 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
   MessageBeep(MB_ICONEXCLAMATION);
 
   HWND focus = GetFocus();
-  HWND hwnd = focus ? focus : g_hwndMain;
+  HWND hwnd = focus ? focus : Globals.hwndMain;
 
-  return ThemedDialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
+  return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, InfoBoxDlgProc, (LPARAM)&ib);
 }
 
 
@@ -288,7 +286,7 @@ void DisplayCmdLineHelp(HWND hwnd)
   ZeroMemory(&mbp, sizeof(MSGBOXPARAMS));
   mbp.cbSize = sizeof(MSGBOXPARAMS);
   mbp.hwndOwner = hwnd;
-  mbp.hInstance = g_hInstance;
+  mbp.hInstance = Globals.hInstance;
   mbp.lpszText = szText;
   mbp.lpszCaption = szTitle;
   mbp.dwStyle = MB_OK | MB_USERICON | MB_SETFOREGROUND;
@@ -366,16 +364,16 @@ static DWORD _LoadStringEx(UINT nResId, LPCTSTR pszRsType, LPSTR strOut)
 {
   LPTSTR pszResId = MAKEINTRESOURCE(nResId);
 
-  if (g_hInstance == NULL)
+  if (Globals.hInstance == NULL)
     return 0L;
 
-  HRSRC hRsrc = FindResource(g_hInstance, pszResId, pszRsType);
+  HRSRC hRsrc = FindResource(Globals.hInstance, pszResId, pszRsType);
 
   if (hRsrc == NULL) {
     return 0L;
   }
 
-  HGLOBAL hGlobal = LoadResource(g_hInstance, hRsrc);
+  HGLOBAL hGlobal = LoadResource(Globals.hInstance, hRsrc);
 
   if (hGlobal == NULL) {
     return 0L;
@@ -388,7 +386,7 @@ static DWORD _LoadStringEx(UINT nResId, LPCTSTR pszRsType, LPSTR strOut)
     return 0L;
   }
 
-  DWORD dwSize = SizeofResource(g_hInstance, hRsrc);
+  DWORD dwSize = SizeofResource(Globals.hInstance, hRsrc);
 
   if (strOut) {
     memcpy(strOut, (LPCSTR)pData, dwSize);
@@ -456,7 +454,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   {
     {
       if (!hIcon) {
-        hIcon = LoadImage(g_hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
+        hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
       }
 
       SetDlgItemText(hwnd, IDC_VERSION, L"" VERSION_FILEVERSION_LONG);
@@ -641,7 +639,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
         GetLngString(IDS_MUI_TRANSL_AUTHOR, wchAuthInfo, COUNTOF(wchAuthInfo));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchAuthInfo);
-        SetClipboardTextW(g_hwndMain, wchVerInfo, StringCchLen(wchVerInfo,0));
+        SetClipboardTextW(Globals.hwndMain, wchVerInfo, StringCchLen(wchVerInfo,0));
       }
       break;
 
@@ -669,7 +667,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
     case WM_INITDIALOG:
       {
         if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
-        // MakeBitmapButton(hwnd,IDC_SEARCHEXE,g_hInstance,IDB_OPEN);
+        // MakeBitmapButton(hwnd,IDC_SEARCHEXE,Globals.hInstance,IDB_OPEN);
         SendDlgItemMessage(hwnd,IDC_COMMANDLINE,EM_LIMITTEXT,MAX_PATH - 1,0);
         SetDlgItemText(hwnd,IDC_COMMANDLINE,(LPCWSTR)lParam);
         SHAutoComplete(GetDlgItem(hwnd,IDC_COMMANDLINE),SHACF_FILESYSTEM);
@@ -818,7 +816,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 void RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 {
-  ThemedDialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_RUN), hwnd, RunDlgProc, (LPARAM)lpstrDefault);
+  ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_RUN), hwnd, RunDlgProc, (LPARAM)lpstrDefault);
 }
 
 
@@ -856,7 +854,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_OPENWITHDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_OPENWITHDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
-        MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,g_hInstance,IDB_OPEN);
+        MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,Globals.hInstance,IDB_OPEN);
 
         CenterDlgInParent(hwnd);
       }
@@ -989,7 +987,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
   DLITEM dliOpenWith;
   dliOpenWith.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
+  if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
                              hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))
   {
     WCHAR szParam[MAX_PATH] = { L'\0' };
@@ -1056,7 +1054,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
-        MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,g_hInstance,IDB_OPEN);
+        MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,Globals.hInstance,IDB_OPEN);
 
         CenterDlgInParent(hwnd);
       }
@@ -1188,7 +1186,7 @@ bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
   ZeroMemory(&dliFavorite, sizeof(DLITEM));
   dliFavorite.mask = DLI_FILENAME;
 
-  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
+  if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
                              hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite))
   {
     StringCchCopyN(lpstrFile,MAX_PATH,dliFavorite.szFileName,MAX_PATH);
@@ -1259,7 +1257,7 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
   StringCchCopy(pszName,COUNTOF(pszName),lpszName);
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(IDD_MUI_ADDTOFAV),
               hwnd,
               AddToFavDlgProc,(LPARAM)pszName);
@@ -1741,7 +1739,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 {
 
-  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FILEMRU),
+  if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FILEMRU),
                 hwnd,FileMRUDlgProc,(LPARAM)lpstrFile))
     return true;
   else
@@ -1788,7 +1786,7 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
 
       g_bResetFileWatching = (IsDlgButtonChecked(hwnd, 103) == BST_CHECKED) ? true : false;
 
-      if (g_bChasingDocTail) { SendMessage(g_hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
+      if (g_bChasingDocTail) { SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
 
       EndDialog(hwnd, IDOK);
       break;
@@ -1815,7 +1813,7 @@ bool ChangeNotifyDlg(HWND hwnd)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCEW(IDD_MUI_CHANGENOTIFY),
               hwnd,
               ChangeNotifyDlgProc,
@@ -1888,7 +1886,7 @@ bool ColumnWrapDlg(HWND hwnd,UINT uidDlg, UINT *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               ColumnWrapDlgProc,(LPARAM)iNumber);
@@ -1998,7 +1996,7 @@ bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               WordWrapSettingsDlgProc,(LPARAM)iNumber);
@@ -2089,7 +2087,7 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               LongLineSettingsDlgProc,(LPARAM)iNumber);
@@ -2205,7 +2203,7 @@ bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(uidDlg),
               hwnd,
               TabSettingsDlgProc,(LPARAM)iNumber);
@@ -2241,7 +2239,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         pdd = (PENCODEDLG)lParam;
         if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
-        hbmp = LoadImage(g_hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+        hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
         hbmp = ResizeImageForCurrentDPI(hbmp);
 
         himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
@@ -2312,7 +2310,7 @@ bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
   dd.idEncoding = *pidREncoding;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(IDD_MUI_DEFENCODING),
               hwnd,
               SelectDefEncodingDlgProc,
@@ -2356,7 +2354,7 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
         hwndLV = GetDlgItem(hwnd,IDC_ENCODINGLIST);
 
-        hbmp = LoadImage(g_hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
+        hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
         hbmp = ResizeImageForCurrentDPI(hbmp);
 
         himl = ImageList_Create(16,16,ILC_COLOR32|ILC_MASK,0,0);
@@ -2481,7 +2479,7 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
   dd.cyDlg = cyEncodingDlg;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(IDD_MUI_ENCODING),
               hwnd,
               SelectEncodingDlgProc,
@@ -2519,7 +2517,7 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
   dd.cyDlg = cyRecodeDlg;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(IDD_MUI_RECODE),
               hwnd,
               SelectEncodingDlgProc,
@@ -2609,7 +2607,7 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
   INT_PTR iResult;
 
   iResult = ThemedDialogBoxParam(
-              g_hLngResContainer,
+              Globals.hLngResContainer,
               MAKEINTRESOURCE(IDD_MUI_DEFEOLMODE),
               hwnd,
               SelectDefLineEndingDlgProc,

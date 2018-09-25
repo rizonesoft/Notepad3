@@ -185,7 +185,40 @@ typedef struct _cmq
 #define INDIC_NP3_MATCH_BRACE    2
 #define INDIC_NP3_BAD_BRACE      3
 
-// --------------------------------------------------------------------------
+
+//=============================================================================
+
+typedef struct _globals_t
+{
+  HINSTANCE hInstance;
+  HMODULE   hLngResContainer;
+  HWND      hwndMain;
+
+} GLOBALS_T, *PGLOBALS_T;
+
+extern GLOBALS_T Globals;
+
+// ------------------------------------
+
+typedef struct _settings_t
+{
+  int iMarkOccurrences;
+
+} SETTINGS_T, *PSETTINGS_T;
+
+extern SETTINGS_T Settings;
+extern SETTINGS_T Defaults;
+
+// ------------------------------------
+
+typedef struct _settings2_t
+{
+  bool bStickyWinPos;
+
+} SETTINGS2_T, *PSETTINGS2_T;
+
+extern SETTINGS2_T Settings2;
+extern SETTINGS_T Defaults2;
 
 //=============================================================================
 

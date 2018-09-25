@@ -48,7 +48,6 @@
 int g_DOSEncoding = CPI_NONE;
 bool g_bForceCompEncDetection = false;
 
-extern HMODULE   g_hLngResContainer;
 extern bool g_bIsCJKInputCodePage;
 
 // ============================================================================
