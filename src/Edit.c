@@ -70,7 +70,6 @@ extern HICON   g_hDlgIcon;
 
 extern DWORD dwLastIOError;
 extern bool bReplaceInitialized;
-extern bool g_bUseOldStyleBraceMatching;
 extern bool bUseDefaultForFileEncoding;
 extern bool g_bFindReplCopySelOrClip;
 
@@ -104,7 +103,6 @@ extern bool g_bAccelWordNavigation;
 extern int  g_iReplacedOccurrences;
 extern int  g_iMarkOccurrences;
 extern int  g_iMarkOccurrencesCount;
-extern int  g_iMarkOccurrencesMaxCount;
 extern bool g_bMarkOccurrencesMatchVisible;
 
 extern bool g_bHyperlinkHotspot;
@@ -6508,7 +6506,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       start = end;
       end = rangeEnd;
 
-    } while ((++g_iMarkOccurrencesCount < g_iMarkOccurrencesMaxCount) && (start < end));
+    } while ((++g_iMarkOccurrencesCount < Settings2.MarkOccurrencesMaxCount) && (start < end));
   }
 }
 
@@ -6897,7 +6895,7 @@ static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
     // clear indicator
     SciCall_BraceBadLight(INVALID_POSITION);
     SciCall_SetHighLightGuide(0);
-    if (!g_bUseOldStyleBraceMatching)
+    if (!Settings2.UseOldStyleBraceMatching)
       SciCall_BraceBadLightIndicator(false, INDIC_NP3_BAD_BRACE);
     return true;
   }
@@ -6911,14 +6909,14 @@ static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
       DocPos col2 = SciCall_GetColumn(iBrace2);
       SciCall_BraceHighLight(iPos, iBrace2);
       SciCall_SetHighLightGuide(min_p(col1, col2));
-      if (!g_bUseOldStyleBraceMatching) {
+      if (!Settings2.UseOldStyleBraceMatching) {
         SciCall_BraceHighLightIndicator(true, INDIC_NP3_MATCH_BRACE);
       }
     }
     else {
       SciCall_BraceBadLight(iPos);
       SciCall_SetHighLightGuide(0);
-      if (!g_bUseOldStyleBraceMatching) {
+      if (!Settings2.UseOldStyleBraceMatching) {
         SciCall_BraceHighLightIndicator(true, INDIC_NP3_BAD_BRACE);
       }
     }

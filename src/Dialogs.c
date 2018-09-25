@@ -2781,7 +2781,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
 
-  StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (Flags.UseSystemMRU == 2) ? 1 : 0);
+  StringCchPrintf(tch, COUNTOF(tch), L"\" -sysmru=%i\"", (Flags.ShellUseSystemMRU == 2) ? 1 : 0);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
@@ -2898,13 +2898,12 @@ void DialogFileBrowse(HWND hwnd)
 //  DialogAdminExe()
 //
 //
-extern WCHAR g_tchAdministrationExe[];
 
 void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 {
   WCHAR tchExe[MAX_PATH+2];
 
-  StringCchCopyW(tchExe, COUNTOF(tchExe), g_tchAdministrationExe);
+  StringCchCopyW(tchExe, COUNTOF(tchExe), Settings2.AdministrationTool);
   if (bExecInstaller && !StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
 
   WCHAR tchExePath[MAX_PATH + 2];

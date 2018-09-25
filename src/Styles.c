@@ -51,10 +51,7 @@ extern HICON     g_hDlgIcon;
 
 extern HWND g_hwndDlgCustomizeSchemes;
 extern EDITFINDREPLACE g_efrData;
-extern WCHAR g_tchPrefLngLocName[];
 
-extern int g_iRenderingTechnology;
-extern int g_iSciFontQuality;
 extern const int FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;
@@ -63,7 +60,6 @@ extern bool g_bShowSelectionMargin;
 extern bool g_bIniFileFromScratch;
 
 extern int  g_iMarkOccurrences;
-extern bool g_bUseOldStyleBraceMatching;
 
 extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
@@ -637,7 +633,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].iStyle,
                   pCurrentStandard->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
 
-  if (g_bUseOldStyleBraceMatching) {
+  if (Settings2.UseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
       pCurrentStandard->Styles[STY_BRACE_OK].szValue, false); // brace light
   }
@@ -658,7 +654,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, iValue);
   }
-  if (g_bUseOldStyleBraceMatching) {
+  if (Settings2.UseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
       pCurrentStandard->Styles[STY_BRACE_BAD].szValue, false); // brace bad
   }
@@ -908,7 +904,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetMargin(hwnd, g_pLexCurrent->Styles[STY_MARGIN].iStyle,
                     g_pLexCurrent->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
 
-    if (g_bUseOldStyleBraceMatching) {
+    if (Settings2.UseOldStyleBraceMatching) {
       Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
                       pCurrentStandard->Styles[STY_BRACE_OK].szValue, false);
 
@@ -1751,15 +1747,14 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 //
 //  Style_GetFileOpenDlgFilter()
 //
-extern WCHAR g_tchFileDlgFilters[XXXL_BUFFER];
 
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
-  if (StringCchLenW(g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters)) == 0) {
+  if (StringCchLenW(Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters)) == 0) {
     GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
   }
   else {
-    StringCchCopyN(lpszFilter,cchFilter,g_tchFileDlgFilters,cchFilter - 2);
+    StringCchCopyN(lpszFilter,cchFilter,Settings2.FileDlgFilters,cchFilter - 2);
     StringCchCat(lpszFilter,cchFilter,L"||");
   }
   PrepareFilterStr(lpszFilter);
@@ -2393,7 +2388,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   bool bIsUnderline = (StrStrI(lpszStyle, L"underline")) ? true : false;
   bool bIsStrikeout = (StrStrI(lpszStyle, L"strikeout")) ? true : false;
 
-  int iQuality = FontQuality[g_iSciFontQuality];
+  int iQuality = FontQuality[Settings2.SciFontQuality];
   switch (iQuality) {
   case SC_EFF_QUALITY_NON_ANTIALIASED:
     iQuality = NONANTIALIASED_QUALITY;
@@ -2480,8 +2475,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
 
   // ---  open systems Font Selection dialog  ---
-  if (g_iRenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, g_tchPrefLngLocName, g_uCurrentDPI, &cf) ||
+  if (Settings.RenderingTechnology > 0) {
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, g_uCurrentDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }
@@ -2779,7 +2774,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
   }
   else if (bInitDefault) {
-    WPARAM wQuality = (WPARAM)FontQuality[g_iSciFontQuality];
+    WPARAM wQuality = (WPARAM)FontQuality[Settings2.SciFontQuality];
     if (wQuality == SC_EFF_QUALITY_DEFAULT) {
       // undefined, use general settings, except for special fonts
       if (StringCchCompareXI(wchFontName, L"Calibri") == 0 ||

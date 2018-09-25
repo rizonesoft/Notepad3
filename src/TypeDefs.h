@@ -217,7 +217,8 @@ extern GLOBALS_T Globals;
 
 typedef struct _settings_t
 {
-  int iMarkOccurrences;
+  int RenderingTechnology;
+  int Bidirectional;
 
 } SETTINGS_T, *PSETTINGS_T;
 
@@ -227,9 +228,25 @@ extern SETTINGS_T Settings;
 
 typedef struct _settings2_t
 {
+  int    FileLoadWarningMB;
+  int    OpacityLevel;
+  DWORD  FileCheckInverval;
+  DWORD  AutoReloadTimeout;
+  int    IMEInteraction;
+  int    SciFontQuality;
+  int    MarkOccurrencesMaxCount;
+  int    UpdateDelayHyperlinkStyling;
+  int    UpdateDelayMarkAllOccurrences;
+  bool   DenyVirtualSpaceAccess;
+  bool   UseOldStyleBraceMatching;
+  int    CurrentLineHorizontalSlop;
+  int    CurrentLineVerticalSlop;
 
-  int FileLoadWarningMB;
-  int OpacityLevel;
+  WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
+  WCHAR DefaultExtension[64];
+  WCHAR DefaultDirectory[MAX_PATH + 1];
+  WCHAR FileDlgFilters[XHUGE_BUFFER];
+
   WCHAR FileBrowserPath[MAX_PATH + 1];
   WCHAR AppUserModelID[32];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
@@ -239,6 +256,7 @@ typedef struct _settings2_t
   WCHAR DateTimeLong[128];
   WCHAR WebTemplate1[MAX_PATH + 1];
   WCHAR WebTemplate2[MAX_PATH + 1];
+  WCHAR AdministrationTool[MAX_PATH + 1];
   WCHAR DefaultWindowPosition[64];
 
 } SETTINGS2_T, *PSETTINGS2_T;
@@ -262,7 +280,7 @@ typedef struct _flags_t
   int NoHTMLGuess;
   int NoCGIGuess;
   int NoFileVariables;
-  int UseSystemMRU;
+  int ShellUseSystemMRU;
   int PrintFileAndLeave;
 
 } FLAGS_T, *PFLAGS_T;
