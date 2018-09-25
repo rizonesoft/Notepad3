@@ -51,11 +51,6 @@
 #include "dialogs.h"
 
 
-extern LANGID    g_iPrefLANGID;
-extern HICON     g_hDlgIcon;
-
-extern WCHAR g_wchCurFile[];
-
 extern DWORD dwLastIOError;
 extern bool bUseDefaultForFileEncoding;
 extern bool bSkipUnicodeDetection;
@@ -126,7 +121,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       dwLastIOError,
-      g_iPrefLANGID,
+      Globals.iPrefLANGID,
       (LPTSTR)&lpMsgBuf,
       0,
       NULL);
@@ -164,7 +159,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
 
   //return  MessageBox(hwnd, szText, szTitle, iIcon);
   //return  MessageBoxEx(hwnd, szText, szTitle, iIcon, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, g_iPrefLANGID);
+  return  MessageBoxEx(hwnd, szText, szTitle, iIcon, Globals.iPrefLANGID);
 }
 
 
@@ -187,7 +182,7 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
   {
   case WM_INITDIALOG:
     {
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       lpib = (LPINFOBOX)lParam;
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
       SendDlgItemMessage(hwnd, IDC_INFOBOXICON, STM_SETICON, (WPARAM)LoadIcon(NULL, IDI_EXCLAMATION), 0);
@@ -223,7 +218,6 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
 //  InfoBoxLng()
 //
 //
-extern WCHAR g_wchIniFile[MAX_PATH];
 
 INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
 {
@@ -241,7 +235,7 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
   if (ib.lpstrMessage)
     StringCchVPrintfW(ib.lpstrMessage, HUGE_BUFFER, wchFormat, (LPVOID)((PUINT_PTR)&uidMessage + 1));
   ib.lpstrSetting = (LPWSTR)lpstrSetting;
-  ib.bDisableCheckBox = (StrIsEmpty(g_wchIniFile) || StrIsEmpty(lpstrSetting) || iMode == 2) ? true : false;
+  ib.bDisableCheckBox = (StrIsEmpty(Globals.IniFile) || StrIsEmpty(lpstrSetting) || iMode == 2) ? true : false;
 
   int idDlg;
   switch (iType) {
@@ -288,7 +282,7 @@ void DisplayCmdLineHelp(HWND hwnd)
   mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND48);
   mbp.dwContextHelpId = 0;
   mbp.lpfnMsgBoxCallback = NULL;
-  mbp.dwLanguageId = g_iPrefLANGID;
+  mbp.dwLanguageId = Globals.iPrefLANGID;
 
   hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
 
@@ -661,7 +655,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
   {
     case WM_INITDIALOG:
       {
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         // MakeBitmapButton(hwnd,IDC_SEARCHEXE,Globals.hInstance,IDB_OPEN);
         SendDlgItemMessage(hwnd,IDC_COMMANDLINE,EM_LIMITTEXT,MAX_PATH - 1,0);
         SetDlgItemText(hwnd,IDC_COMMANDLINE,(LPCWSTR)lParam);
@@ -755,8 +749,8 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 bQuickExit = true;
               }
 
-              if (StringCchLenW(g_wchCurFile, FILE_ARG_BUF)) {
-                StringCchCopy(wchDirectory,COUNTOF(wchDirectory),g_wchCurFile);
+              if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+                StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
                 PathRemoveFileSpec(wchDirectory);
               }
 
@@ -832,7 +826,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
     case WM_INITDIALOG:
       {
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -987,8 +981,8 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     WCHAR szParam[MAX_PATH] = { L'\0' };
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
-    if (StringCchLenW(g_wchCurFile, FILE_ARG_BUF)) {
-      StringCchCopy(wchDirectory,COUNTOF(wchDirectory),g_wchCurFile);
+    if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+      StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
       PathRemoveFileSpec(wchDirectory);
     }
 
@@ -1020,8 +1014,6 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 //
 //  FavoritesDlgProc()
 //
-extern WCHAR g_tchFavoritesDir[MAX_PATH];
-
 extern int cxFavoritesDlg;
 extern int cyFavoritesDlg;
 
@@ -1032,7 +1024,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
     case WM_INITDIALOG:
       {
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
@@ -1044,7 +1036,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         ListView_SetExtendedListViewStyle(GetDlgItem(hwnd,IDC_FAVORITESDIR),/*LVS_EX_FULLROWSELECT|*/LVS_EX_DOUBLEBUFFER|LVS_EX_LABELTIP);
         ListView_InsertColumn(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,&lvc);
         DirList_Init(GetDlgItem(hwnd,IDC_FAVORITESDIR),NULL);
-        DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),g_tchFavoritesDir,DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
+        DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),Settings.FavoritesDir,DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
         DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
         ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
 
@@ -1128,9 +1120,9 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
         case IDC_GETFAVORITESDIR:
           {
-            if (GetDirectory(hwnd,IDS_MUI_FAVORITES,g_tchFavoritesDir,g_tchFavoritesDir,true))
+            if (GetDirectory(hwnd,IDS_MUI_FAVORITES,Settings.FavoritesDir,Settings.FavoritesDir,true))
             {
-              DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),g_tchFavoritesDir,DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
+              DirList_Fill(GetDlgItem(hwnd,IDC_FAVORITESDIR),Settings.FavoritesDir,DL_ALLOBJECTS,NULL,false,Flags.NoFadeHidden,DS_NAME,false);
               DirList_StartIconThread(GetDlgItem(hwnd,IDC_FAVORITESDIR));
               ListView_EnsureVisible(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,false);
               ListView_SetItemState(GetDlgItem(hwnd,IDC_FAVORITESDIR),0,LVIS_FOCUSED,LVIS_FOCUSED);
@@ -1206,7 +1198,7 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
       pszName = (LPWSTR)lParam;
       SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)pszName);
 
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, MAX_PATH - 1, 0);
       SetDlgItemText(hwnd, 100, pszName);
 
@@ -1258,7 +1250,7 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 
   if (iResult == IDOK)
   {
-    if (!PathCreateFavLnk(pszName,lpszTarget,g_tchFavoritesDir)) {
+    if (!PathCreateFavLnk(pszName,lpszTarget,Settings.FavoritesDir)) {
       MsgBoxLng(MBWARN,IDS_MUI_FAV_FAILURE);
       return false;
     }
@@ -1280,9 +1272,6 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 //
 //
 extern LPMRULIST g_pFileMRU;
-extern bool g_bSaveRecentFiles;
-extern bool g_bPreserveCaretPos;
-extern bool g_bSaveFindReplace;
 extern int  cxFileMRUDlg;
 extern int  cyFileMRUDlg;
 
@@ -1392,7 +1381,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         ZeroMemory(&shfi, sizeof(SHFILEINFO));
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         LPICONTHREADINFO lpit = (LPICONTHREADINFO)AllocMem(sizeof(ICONTHREADINFO),HEAP_ZERO_MEMORY);
         if (lpit) {
@@ -1423,11 +1412,11 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         // Update view
         SendMessage(hwnd,WM_COMMAND,MAKELONG(0x00A0,1),0);
 
-        CheckDlgButton(hwnd, IDC_SAVEMRU, DlgBtnChk(g_bSaveRecentFiles));
-        CheckDlgButton(hwnd, IDC_PRESERVECARET, DlgBtnChk(g_bPreserveCaretPos));
-        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, DlgBtnChk(g_bSaveFindReplace));
+        CheckDlgButton(hwnd, IDC_SAVEMRU, DlgBtnChk(Settings.SaveRecentFiles));
+        CheckDlgButton(hwnd, IDC_PRESERVECARET, DlgBtnChk(Settings.PreserveCaretPos));
+        CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, DlgBtnChk(Settings.SaveFindReplace));
 
-        //if (!g_bSaveRecentFiles) {
+        //if (!Settings.SaveRecentFiles) {
         //  DialogEnableWindow(hwnd,IDC_PRESERVECARET, false);
         //  DialogEnableWindow(hwnd,IDC_REMEMBERSEARCHPATTERN, false);
         //}
@@ -1454,9 +1443,9 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         RemoveProp(hwnd,L"it");
         FreeMem(lpit);
 
-        g_bSaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
-        g_bPreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
-        g_bSaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
+        Settings.SaveFindReplace = (IsDlgButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN)) ? true : false;
+        Settings.PreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
+        Settings.SaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
 
         ResizeDlg_Destroy(hwnd,&cxFileMRUDlg,&cyFileMRUDlg);
       }
@@ -1673,7 +1662,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
                 // don't remove myself
                 int iCur = 0;
-                if (!MRU_FindFile(g_pFileMRU, g_wchCurFile, &iCur)) {
+                if (!MRU_FindFile(g_pFileMRU, Globals.CurrentFile, &iCur)) {
                   iCur = -1;
                 }
 
@@ -1759,7 +1748,7 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
   switch (umsg) {
   case WM_INITDIALOG:
     {
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       CheckRadioButton(hwnd, 100, 102, 100 + g_iFileWatchingMode);
       if (g_bResetFileWatching)
         CheckDlgButton(hwnd, 103, BST_CHECKED);
@@ -1832,7 +1821,7 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
   case WM_INITDIALOG:
     {
       piNumber = (UINT*)lParam;
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       SetDlgItemInt(hwnd, IDC_COLUMNWRAP, *piNumber, false);
       SendDlgItemMessage(hwnd, IDC_COLUMNWRAP, EM_LIMITTEXT, 15, 0);
       CenterDlgInParent(hwnd);
@@ -1915,7 +1904,7 @@ INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
 
   case WM_INITDIALOG:
     {
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       WCHAR tch[512];
       for (int i = 0; i < 4; i++) {
         GetDlgItemText(hwnd, 200 + i, tch, COUNTOF(tch));
@@ -2017,7 +2006,7 @@ INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
 
   case WM_INITDIALOG:
     {
-      if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       piNumber = (int*)lParam;
       SetDlgItemInt(hwnd, 100, *piNumber, false);
       SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, 15, 0);
@@ -2114,7 +2103,7 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 
     case WM_INITDIALOG:
       {
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         SetDlgItemInt(hwnd,100,g_iTabWidth,false);
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,15,0);
@@ -2230,7 +2219,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         HIMAGELIST himl;
 
         pdd = (PENCODEDLG)lParam;
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         hbmp = LoadImage(Globals.hInstance,MAKEINTRESOURCE(IDB_ENCODING),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
         hbmp = ResizeImageForCurrentDPI(hbmp);
@@ -2341,7 +2330,7 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 
         pdd = (PENCODEDLG)lParam;
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         ResizeDlg_Init(hwnd,pdd->cxDlg,pdd->cyDlg,IDC_RESIZEGRIP4);
 
@@ -2550,7 +2539,7 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
 
         piOption = (int*)lParam;
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         // Load options
         for (i = 0; i < 3; i++) {
@@ -2785,9 +2774,9 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
   StringCchCat(szParameters, COUNTOF(szParameters), L" -f");
-  if (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile))) {
+  if (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile))) {
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
-    StringCchCat(szParameters, COUNTOF(szParameters), g_wchIniFile);
+    StringCchCat(szParameters, COUNTOF(szParameters), Globals.IniFile);
     StringCchCat(szParameters, COUNTOF(szParameters), L" \"");
   }
   else
@@ -2810,9 +2799,9 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
-  if (bSetCurFile && StringCchLenW(g_wchCurFile, FILE_ARG_BUF)) 
+  if (bSetCurFile && StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) 
   {
-    StringCchCopy(szFileName, COUNTOF(szFileName), g_wchCurFile);
+    StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);
     PathQuoteSpaces(szFileName);
     StringCchCat(szParameters, COUNTOF(szParameters), L" ");
     StringCchCat(szParameters, COUNTOF(szParameters), szFileName);
@@ -2866,11 +2855,11 @@ void DialogFileBrowse(HWND hwnd)
     }
   }
 
-  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(g_wchCurFile, FILE_ARG_BUF))
+  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(Globals.CurrentFile, (MAX_PATH+1)))
     StringCchCat(tchParam, COUNTOF(tchParam), L" ");
 
-  if (StringCchLenW(g_wchCurFile, FILE_ARG_BUF)) {
-    StringCchCopy(tchTemp, COUNTOF(tchTemp), g_wchCurFile);
+  if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+    StringCchCopy(tchTemp, COUNTOF(tchTemp), Globals.CurrentFile);
     PathQuoteSpaces(tchTemp);
     StringCchCat(tchParam, COUNTOF(tchParam), tchTemp);
   }

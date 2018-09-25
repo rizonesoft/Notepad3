@@ -93,7 +93,6 @@ typedef enum
   XXXL_BUFFER = 4096,
 
   ANSI_CHAR_BUFFER = 258,
-  FILE_ARG_BUF = MAX_PATH + 2,
   FNDRPL_BUFFER = 1024,
   LONG_LINES_MARKER_LIMIT = 4096
 
@@ -206,8 +205,19 @@ typedef struct _globals_t
   HMODULE   hLngResContainer;
   HWND      hwndMain;
   HANDLE    hndlProcessHeap;
+  HWND      hwndEdit;
+  HANDLE    hndlScintilla;
+  HWND      hwndStatus;
+  HICON     hDlgIcon;
+  HWND      hwndDlgFindReplace;
+  HWND      hwndDlgCustomizeSchemes;
+  UINT		  uCurrentDPI;
+  UINT		  uCurrentPPI;
+  LANGID    iPrefLANGID;
 
   WCHAR     WorkingDirectory[MAX_PATH + 1];
+  WCHAR     IniFile[MAX_PATH + 1];
+  WCHAR     CurrentFile[MAX_PATH + 1];
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -219,6 +229,12 @@ typedef struct _settings_t
 {
   int RenderingTechnology;
   int Bidirectional;
+  bool SaveRecentFiles;
+  bool PreserveCaretPos;
+  bool SaveFindReplace;
+
+  WCHAR FavoritesDir[MAX_PATH + 1];
+
 
 } SETTINGS_T, *PSETTINGS_T;
 

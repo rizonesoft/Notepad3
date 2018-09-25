@@ -47,9 +47,6 @@
 
 #include "Styles.h"
 
-extern HICON     g_hDlgIcon;
-
-extern HWND g_hwndDlgCustomizeSchemes;
 extern EDITFINDREPLACE g_efrData;
 
 extern const int FontQuality[4];
@@ -618,7 +615,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     // merge lexer default styles
     Style_SetStyles(hwnd, STYLE_DEFAULT, wchNewLexerStyleStrg, false);
 
-    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(g_hwndDlgCustomizeSchemes));
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(Globals.hwndDlgCustomizeSchemes));
   }
 
   // Broadcast STYLE_DEFAULT as base style to all other styles
@@ -2476,7 +2473,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, g_uCurrentDPI, &cf) ||
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.uCurrentDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }
@@ -3080,7 +3077,7 @@ static bool __fastcall _ApplyDialogItemText(HWND hwnd,
   }
   if (bChgNfy && (IsLexerStandard(pCurrentLexer) || (pCurrentLexer == g_pLexCurrent))) 
   {
-    Style_ResetCurrentLexer(g_hwndEdit);
+    Style_ResetCurrentLexer(Globals.hwndEdit);
   }
   if (bChgNfy) {
     (*pLexFunction)(FCT_SETTING_CHANGE, bit);
@@ -3115,7 +3112,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     case WM_INITDIALOG:
       {
         // Backup Styles
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
@@ -3591,7 +3588,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
               }
               TreeView_Select(hwndTV, TreeView_GetRoot(hwndTV), TVGN_CARET);
-              Style_ResetCurrentLexer(g_hwndEdit);
+              Style_ResetCurrentLexer(Globals.hwndEdit);
             }
           }
           break;
@@ -3644,7 +3641,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           {
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-            if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0)) {
+            if (!g_fWarnedNoIniFile && (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile)) == 0)) {
               MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
               g_fWarnedNoIniFile = true;
             }
@@ -3686,7 +3683,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 ++i;
               }
             }
-            Style_ResetCurrentLexer(g_hwndEdit);
+            Style_ResetCurrentLexer(Globals.hwndEdit);
             //EndDialog(hwnd,IDCANCEL);
             DestroyWindow(hwnd);
           }
@@ -3762,7 +3759,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         WCHAR tch[MAX_PATH] = { L'\0' };
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         RECT rc;
         GetClientRect(hwnd,&rc);
@@ -3979,7 +3976,7 @@ void Style_SelectLexerDlg(HWND hwnd)
                                    MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
-    Style_ResetCurrentLexer(g_hwndEdit);
+    Style_ResetCurrentLexer(Globals.hwndEdit);
 }
 
 // End of Styles.c

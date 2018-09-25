@@ -56,20 +56,17 @@
 #include "Scintilla.h"
 #include "TypeDefs.h"
 
-extern HANDLE g_hScintilla;
-extern HANDLE g_hwndEdit;
-
 //=============================================================================
 //
 //  Sci_SendMessage()  short version
 //
-#define Sci_SendMsgV0(CMD)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
-#define Sci_SendMsgV1(CMD,WP)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
-#define Sci_SendMsgV2(CMD,WP,LP)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
+#define Sci_SendMsgV0(CMD)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
+#define Sci_SendMsgV1(CMD,WP)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
+#define Sci_SendMsgV2(CMD,WP,LP)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
 
-#define Sci_PostMsgV0(CMD)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
-#define Sci_PostMsgV1(CMD,WP)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
-#define Sci_PostMsgV2(CMD,WP,LP)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
+#define Sci_PostMsgV0(CMD)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
+#define Sci_PostMsgV1(CMD,WP)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
+#define Sci_PostMsgV2(CMD,WP,LP)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
 
 //=============================================================================
 //
@@ -78,11 +75,11 @@ extern HANDLE g_hwndEdit;
 #ifdef SCI_DIRECTFUNCTION_INTERFACE
 
 LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
-#define SciCall(m, w, l) Scintilla_DirectFunction(g_hScintilla, (m), (w), (l))
+#define SciCall(m, w, l) Scintilla_DirectFunction(Globals.hndlScintilla, (m), (w), (l))
 
 #else
 
-#define SciCall(m, w, l) SendMessage(g_hwndEdit, m, w, l)
+#define SciCall(m, w, l) SendMessage(Globals.hwndEdit, m, w, l)
 
 #endif // SCI_DIRECTFUNCTION_INTERFACE
 

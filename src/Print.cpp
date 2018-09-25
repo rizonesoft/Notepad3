@@ -45,9 +45,6 @@ extern "C" {
 #include "TypeDefs.h"
 }
 
-extern "C" HICON     g_hDlgIcon;
-
-extern "C" HWND g_hwndEdit;
 
 // Global settings...
 extern "C" int iPrintHeader;
@@ -55,8 +52,6 @@ extern "C" int iPrintFooter;
 extern "C" int iPrintColor;
 extern "C" int iPrintZoom;
 extern "C" RECT pagesetupMargin;
-
-extern "C" HWND g_hwndStatus;
 
 
 // Stored objects...
@@ -75,11 +70,11 @@ void StatusUpdatePrintPage(int iPageNum)
 
   FormatLngStringW(tch,COUNTOF(tch),IDS_MUI_PRINTFILE,iPageNum);
 
-  StatusSetText(g_hwndStatus,255,tch);
-  StatusSetSimple(g_hwndStatus,true);
+  StatusSetText(Globals.hwndStatus,255,tch);
+  StatusSetSimple(Globals.hwndStatus,true);
 
-  InvalidateRect(g_hwndStatus,nullptr,true);
-  UpdateWindow(g_hwndStatus);
+  InvalidateRect(Globals.hwndStatus,nullptr,true);
+  UpdateWindow(Globals.hwndStatus);
 }
 
 
@@ -359,7 +354,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     if (printPage) {
 
       // Show wait cursor...
-      SendMessage(g_hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORWAIT, 0);
+      SendMessage(Globals.hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORWAIT, 0);
 
       // Display current page number in Statusbar
       StatusUpdatePrintPage(pageNum);
@@ -453,10 +448,10 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     DeleteObject(fontFooter);
 
   // Reset Statusbar to default mode
-  StatusSetSimple(g_hwndStatus,false);
+  StatusSetSimple(Globals.hwndStatus,false);
 
   // Remove wait cursor...
-  { POINT pt; SendMessage(g_hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORNORMAL, 0); GetCursorPos(&pt); SetCursorPos(pt.x, pt.y); }
+  { POINT pt; SendMessage(Globals.hwndEdit, SCI_SETCURSOR, (WPARAM)SC_CURSORNORMAL, 0); GetCursorPos(&pt); SetCursorPos(pt.x, pt.y); }
 
   return true;
 }
@@ -481,7 +476,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         WCHAR tch[512];
         WCHAR *p1,*p2;
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);
 

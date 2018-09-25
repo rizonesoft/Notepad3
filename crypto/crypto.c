@@ -34,8 +34,6 @@ see ecryption-doc.txt for details
 #include "rijndael-api-fst.h"
 #include "crypto.h"
 
-extern HICON     g_hDlgIcon;
-
 #define WKEY_LEN 256
 #define KEY_LEN  512
 #define PAD_SLOP 16
@@ -114,7 +112,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
     case WM_INITDIALOG:
     {
-        if (g_hDlgIcon) { SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         SetDlgItemText(hDlg, IDC_PWD_EDIT1, unicodeFileKey);
         SetDlgItemText(hDlg, IDC_PWD_EDIT2, unicodeMasterKey);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), hasMasterFileKey);
@@ -239,7 +237,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
 
     case WM_INITDIALOG:
       {
-        if (g_hDlgIcon) { SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_STATMPW), vis);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), vis);

@@ -42,9 +42,6 @@
 
 //=============================================================================
 
-extern LANGID    g_iPrefLANGID;
-
-//=============================================================================
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
 void DbgLog(const char *fmt, ...) {
@@ -302,7 +299,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
     FORMAT_MESSAGE_IGNORE_INSERTS,
     NULL,
     dwErrID,
-    g_iPrefLANGID,
+    Globals.iPrefLANGID,
     (LPTSTR)&lpMsgBuf,
     0, NULL);
 
@@ -405,9 +402,9 @@ HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
       UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
       UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
       UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
-      if (g_uCurrentDPI > (uDPIBase + uDPIUnit)) {
-        int width = MulDiv(bmp.bmWidth, (g_uCurrentDPI - uDPIBase), uDPIUnit);
-        int height = MulDiv(bmp.bmHeight, (g_uCurrentDPI - uDPIBase), uDPIUnit);
+      if (Globals.uCurrentDPI > (uDPIBase + uDPIUnit)) {
+        int width = MulDiv(bmp.bmWidth, (Globals.uCurrentDPI - uDPIBase), uDPIUnit);
+        int height = MulDiv(bmp.bmHeight, (Globals.uCurrentDPI - uDPIBase), uDPIUnit);
         HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
         if (hCopy) {
           hbmp = hCopy;
@@ -1288,7 +1285,7 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 //
 void PathCanonicalizeEx(LPWSTR lpszPath,int len)
 {
-  WCHAR szDst[FILE_ARG_BUF] = { L'\0' };
+  WCHAR szDst[(MAX_PATH+1)] = { L'\0' };
   if (PathCchCanonicalize(szDst,len,lpszPath) == S_OK)
     StringCchCopy(lpszPath,len,szDst);
 }
@@ -1476,9 +1473,6 @@ UINT CharSetFromCodePage(UINT uCodePage) {
 }
 
 
-extern bool g_bPreserveCaretPos;
-extern bool g_bSaveFindReplace;
-
 //=============================================================================
 //
 //  MRU functions
@@ -1535,7 +1529,7 @@ bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBo
   pmru->pszItems[0] = StrDup(pszNew); // LocalAlloc()
 
   pmru->iEncoding[0] = iEnc;
-  pmru->iCaretPos[0] = (g_bPreserveCaretPos ? iPos : 0);
+  pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : 0);
   pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
   return true;
 }
@@ -1589,7 +1583,7 @@ bool MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool bRelativePath,bool bUnexpan
     pmru->pszItems[0] = StrDup(pszFile);  // LocalAlloc()
   }
   pmru->iEncoding[0] = iEnc;
-  pmru->iCaretPos[0] = (g_bPreserveCaretPos ? iPos : 0);
+  pmru->iCaretPos[0] = (Settings.PreserveCaretPos ? iPos : 0);
   pmru->pszBookMarks[0] = (pszBookMarks ? StrDup(pszBookMarks) : NULL);  // LocalAlloc()
 
   return true;
@@ -1707,7 +1701,7 @@ bool MRU_Load(LPMRULIST pmru)
         pmru->iEncoding[n] = Encoding_MapIniSetting(true, iCP);
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
-        pmru->iCaretPos[n] = (g_bPreserveCaretPos) ? IniSectionGetInt(pIniSection, tchName, 0) : 0;
+        pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(pIniSection, tchName, 0) : 0;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
         IniSectionGetString(pIniSection, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
