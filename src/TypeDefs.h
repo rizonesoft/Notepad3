@@ -92,7 +92,7 @@ typedef enum
   XHUGE_BUFFER = 2048,
   XXXL_BUFFER = 4096,
 
-  FILE_ARG_BUF = MAX_PATH + 2,
+  ANSI_CHAR_BUFFER = 258,
   FNDRPL_BUFFER = 1024,
   LONG_LINES_MARKER_LIMIT = 4096
 
@@ -185,7 +185,132 @@ typedef struct _cmq
 #define INDIC_NP3_MATCH_BRACE    2
 #define INDIC_NP3_BAD_BRACE      3
 
-// --------------------------------------------------------------------------
+
+//=============================================================================
+
+typedef struct _constants_t
+{
+  const WCHAR* FileBrowserMiniPath;
+
+} CONSTANTS_T, *PCONSTANTS_T;
+
+extern CONSTANTS_T Constants;
+
+// ------------------------------------
+
+typedef struct _globals_t
+{
+  HINSTANCE hInstance;
+  HINSTANCE hPrevInst;
+  HMODULE   hLngResContainer;
+  HWND      hwndMain;
+  HANDLE    hndlProcessHeap;
+  HWND      hwndEdit;
+  HANDLE    hndlScintilla;
+  HWND      hwndStatus;
+  HICON     hDlgIcon;
+  HWND      hwndDlgFindReplace;
+  HWND      hwndDlgCustomizeSchemes;
+  UINT		  uCurrentDPI;
+  UINT		  uCurrentPPI;
+  LANGID    iPrefLANGID;
+
+  WCHAR     WorkingDirectory[MAX_PATH + 1];
+  WCHAR     IniFile[MAX_PATH + 1];
+  WCHAR     CurrentFile[MAX_PATH + 1];
+
+} GLOBALS_T, *PGLOBALS_T;
+
+extern GLOBALS_T Globals;
+
+// ------------------------------------
+
+typedef struct _settings_t
+{
+  int RenderingTechnology;
+  int Bidirectional;
+  bool SaveRecentFiles;
+  bool PreserveCaretPos;
+  bool SaveFindReplace;
+  int PathNameFormat;
+  bool WordWrap;
+  int WordWrapMode;
+  int WordWrapIndent;
+  int WordWrapSymbols;
+  bool ShowWordWrapSymbols;
+
+  EDITFINDREPLACE EFR_Data;
+  WCHAR OpenWithDir[MAX_PATH + 1];
+  WCHAR FavoritesDir[MAX_PATH + 1];
+
+} SETTINGS_T, *PSETTINGS_T;
+
+extern SETTINGS_T Settings;
+
+// ------------------------------------
+
+typedef struct _settings2_t
+{
+  int    FileLoadWarningMB;
+  int    OpacityLevel;
+  DWORD  FileCheckInverval;
+  DWORD  AutoReloadTimeout;
+  int    IMEInteraction;
+  int    SciFontQuality;
+  int    MarkOccurrencesMaxCount;
+  int    UpdateDelayHyperlinkStyling;
+  int    UpdateDelayMarkAllOccurrences;
+  bool   DenyVirtualSpaceAccess;
+  bool   UseOldStyleBraceMatching;
+  int    CurrentLineHorizontalSlop;
+  int    CurrentLineVerticalSlop;
+
+  WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
+  WCHAR DefaultExtension[64];
+  WCHAR DefaultDirectory[MAX_PATH + 1];
+  WCHAR FileDlgFilters[XHUGE_BUFFER];
+
+  WCHAR FileBrowserPath[MAX_PATH + 1];
+  WCHAR AppUserModelID[32];
+  WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
+  WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
+  WCHAR TimeStamp[128];
+  WCHAR DateTimeShort[128];
+  WCHAR DateTimeLong[128];
+  WCHAR WebTemplate1[MAX_PATH + 1];
+  WCHAR WebTemplate2[MAX_PATH + 1];
+  WCHAR AdministrationTool[MAX_PATH + 1];
+  WCHAR DefaultWindowPosition[64];
+
+} SETTINGS2_T, *PSETTINGS2_T;
+
+extern SETTINGS2_T Settings2;
+
+// ------------------------------------
+
+typedef struct _flags_t
+{
+  int StickyWindowPosition;
+  int ReuseWindow;
+  int NoReuseWindow;
+  int SingleFileInstance;
+  int MultiFileArg;
+  int RelativeFileMRU;
+  int PortableMyDocs;
+  int NoFadeHidden;
+  int ToolbarLook;
+  int SimpleIndentGuides;
+  int NoHTMLGuess;
+  int NoCGIGuess;
+  int NoFileVariables;
+  int ShellUseSystemMRU;
+  int PrintFileAndLeave;
+
+} FLAGS_T, *PFLAGS_T;
+
+extern FLAGS_T Flags;
+
+
 
 //=============================================================================
 

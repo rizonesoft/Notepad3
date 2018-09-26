@@ -157,7 +157,7 @@ UINT16    g_uWinVer;
 HINSTANCE            g_hInstance = NULL;
 HMODULE              g_hLngResContainer = NULL;
 
-WCHAR                g_tchPrefLngLocName[64];
+WCHAR                g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
 LANGID               g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
 static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR ja-JP nl-NL zh-CN"; // en-US internal
 

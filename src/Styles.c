@@ -47,17 +47,6 @@
 
 #include "Styles.h"
 
-extern HINSTANCE g_hInstance;
-extern HMODULE   g_hLngResContainer;
-extern HICON     g_hDlgIcon;
-
-extern HWND g_hwndMain;
-extern HWND g_hwndDlgCustomizeSchemes;
-extern EDITFINDREPLACE g_efrData;
-extern WCHAR g_tchPrefLngLocName[];
-
-extern int g_iRenderingTechnology;
-extern int g_iSciFontQuality;
 extern const int FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;
@@ -66,7 +55,6 @@ extern bool g_bShowSelectionMargin;
 extern bool g_bIniFileFromScratch;
 
 extern int  g_iMarkOccurrences;
-extern bool g_bUseOldStyleBraceMatching;
 
 extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
@@ -619,13 +607,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (IsLexerStandard(pLexNew))
   {
     // styles ar already set
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, false);
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, false);
   }
   else {
     // merge lexer default styles
     Style_SetStyles(hwnd, STYLE_DEFAULT, wchNewLexerStyleStrg, false);
 
-    EnableCmd(GetMenu(g_hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(g_hwndDlgCustomizeSchemes));
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CURRENTSCHEME, true && !IsWindow(Globals.hwndDlgCustomizeSchemes));
   }
 
   // Broadcast STYLE_DEFAULT as base style to all other styles
@@ -640,7 +628,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetMargin(hwnd, pCurrentStandard->Styles[STY_MARGIN].iStyle,
                   pCurrentStandard->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
 
-  if (g_bUseOldStyleBraceMatching) {
+  if (Settings2.UseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
       pCurrentStandard->Styles[STY_BRACE_OK].szValue, false); // brace light
   }
@@ -661,7 +649,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     SendMessage(hwnd, SCI_INDICSETSTYLE, INDIC_NP3_MATCH_BRACE, iValue);
   }
-  if (g_bUseOldStyleBraceMatching) {
+  if (Settings2.UseOldStyleBraceMatching) {
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
       pCurrentStandard->Styles[STY_BRACE_BAD].szValue, false); // brace bad
   }
@@ -911,7 +899,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetMargin(hwnd, g_pLexCurrent->Styles[STY_MARGIN].iStyle,
                     g_pLexCurrent->Styles[STY_MARGIN].szValue); // margin (line number, bookmarks, folding) style
 
-    if (g_bUseOldStyleBraceMatching) {
+    if (Settings2.UseOldStyleBraceMatching) {
       Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_OK].iStyle,
                       pCurrentStandard->Styles[STY_BRACE_OK].szValue, false);
 
@@ -1425,8 +1413,6 @@ bool Style_HasLexerForExt(LPCWSTR lpszExt)
 //
 //  Style_SetLexerFromFile()
 //
-extern int g_flagNoHTMLGuess;
-extern int g_flagNoCGIGuess;
 extern FILEVARS fvCurFile;
 
 void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
@@ -1443,7 +1429,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     MultiByteToWideCharStrg(Encoding_SciCP, fvCurFile.tchMode, wchMode);
 
-    if (!g_flagNoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
+    if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
       char tchText[256] = { L'\0' };
       SciCall_GetText(COUNTOF(tchText) - 1, tchText);
@@ -1481,7 +1467,7 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
     if (*lpszExt == L'.') ++lpszExt;
 
-    if (!g_flagNoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
+    if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
       char tchText[256] = { '\0' };
       SciCall_GetText(COUNTOF(tchText) - 1, tchText);
       StrTrimA(tchText," \t\n\r");
@@ -1525,11 +1511,11 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
     bFound = true;
   }
 
-  if (!bFound && g_bAutoSelect && (!g_flagNoHTMLGuess || !g_flagNoCGIGuess)) {
+  if (!bFound && g_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
     char tchText[512];
     SciCall_GetText(COUNTOF(tchText) - 1, tchText);
     StrTrimA(tchText," \t\n\r");
-    if (!g_flagNoCGIGuess) {
+    if (!Flags.NoCGIGuess) {
       if (tchText[0] == '<') {
         if (StrStrIA(tchText, "<html"))
           pLexNew = &lexHTML;
@@ -1697,14 +1683,14 @@ bool Style_GetUse2ndDefault()
 //
 //  Style_SetIndentGuides()
 //
-extern int g_flagSimpleIndentGuides;
 
 void Style_SetIndentGuides(HWND hwnd,bool bShow)
 {
+  UNUSED(hwnd);
   int iIndentView = SC_IV_NONE;
   if (bShow) {
-    if (!g_flagSimpleIndentGuides) {
-      switch (SendMessage(hwnd, SCI_GETLEXER, 0, 0)) {
+    if (!Flags.SimpleIndentGuides) {
+      switch (SciCall_GetLexer()) {
       case SCLEX_PYTHON:
       case SCLEX_NIMROD:
         iIndentView = SC_IV_LOOKFORWARD;
@@ -1717,7 +1703,7 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
     else
       iIndentView = SC_IV_REAL;
   }
-  SendMessage(hwnd,SCI_SETINDENTATIONGUIDES,iIndentView,0);
+  SciCall_SetIndentationGuides(iIndentView);
 }
 
 
@@ -1756,15 +1742,14 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 //
 //  Style_GetFileOpenDlgFilter()
 //
-extern WCHAR g_tchFileDlgFilters[XXXL_BUFFER];
 
 bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 {
-  if (StringCchLenW(g_tchFileDlgFilters, COUNTOF(g_tchFileDlgFilters)) == 0) {
+  if (StringCchLenW(Settings2.FileDlgFilters, COUNTOF(Settings2.FileDlgFilters)) == 0) {
     GetLngString(IDS_MUI_FILTER_ALL, lpszFilter, cchFilter);
   }
   else {
-    StringCchCopyN(lpszFilter,cchFilter,g_tchFileDlgFilters,cchFilter - 2);
+    StringCchCopyN(lpszFilter,cchFilter,Settings2.FileDlgFilters,cchFilter - 2);
     StringCchCat(lpszFilter,cchFilter,L"||");
   }
   PrepareFilterStr(lpszFilter);
@@ -2398,7 +2383,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   bool bIsUnderline = (StrStrI(lpszStyle, L"underline")) ? true : false;
   bool bIsStrikeout = (StrStrI(lpszStyle, L"strikeout")) ? true : false;
 
-  int iQuality = FontQuality[g_iSciFontQuality];
+  int iQuality = FontQuality[Settings2.SciFontQuality];
   switch (iQuality) {
   case SC_EFF_QUALITY_NON_ANTIALIASED:
     iQuality = NONANTIALIASED_QUALITY;
@@ -2440,7 +2425,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   //cf.nSizeMax = 128;
   cf.lStructSize = sizeof(CHOOSEFONT);
   cf.hwndOwner = hwnd;
-  cf.hInstance = g_hInstance; // ChooseFontDirectWrite
+  cf.hInstance = Globals.hInstance; // ChooseFontDirectWrite
   cf.rgbColors = color;
   cf.lpLogFont = &lf;
   cf.iPointSize = iPointSize;
@@ -2485,8 +2470,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
 
   // ---  open systems Font Selection dialog  ---
-  if (g_iRenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(g_hwndMain, g_tchPrefLngLocName, g_uCurrentDPI, &cf) ||
+  if (Settings.RenderingTechnology > 0) {
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.uCurrentDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }
@@ -2784,7 +2769,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
   }
   else if (bInitDefault) {
-    WPARAM wQuality = (WPARAM)FontQuality[g_iSciFontQuality];
+    WPARAM wQuality = (WPARAM)FontQuality[Settings2.SciFontQuality];
     if (wQuality == SC_EFF_QUALITY_DEFAULT) {
       // undefined, use general settings, except for special fonts
       if (StringCchCompareXI(wchFontName, L"Calibri") == 0 ||
@@ -3090,7 +3075,7 @@ static bool __fastcall _ApplyDialogItemText(HWND hwnd,
   }
   if (bChgNfy && (IsLexerStandard(pCurrentLexer) || (pCurrentLexer == g_pLexCurrent))) 
   {
-    Style_ResetCurrentLexer(g_hwndEdit);
+    Style_ResetCurrentLexer(Globals.hwndEdit);
   }
   if (bChgNfy) {
     (*pLexFunction)(FCT_SETTING_CHANGE, bit);
@@ -3125,7 +3110,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
     case WM_INITDIALOG:
       {
         // Backup Styles
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
         int cnt = 0;
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
@@ -3180,8 +3165,8 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         SendDlgItemMessage(hwnd,IDC_STYLEEDIT,EM_LIMITTEXT, max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)-1,0);
 
-        MakeBitmapButton(hwnd,IDC_PREVSTYLE,g_hInstance,IDB_PREV);
-        MakeBitmapButton(hwnd,IDC_NEXTSTYLE,g_hInstance,IDB_NEXT);
+        MakeBitmapButton(hwnd,IDC_PREVSTYLE,Globals.hInstance,IDB_PREV);
+        MakeBitmapButton(hwnd,IDC_NEXTSTYLE,Globals.hInstance,IDB_NEXT);
 
         // Setup title font
         if (hFontTitle) {
@@ -3386,7 +3371,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
               TreeView_Select(hwndTV,lpnmtv->itemNew.hItem,TVGN_CARET);
 
               if (bIsStyleSelected)
-                DestroyCursor(SetCursor(LoadCursor(g_hInstance,MAKEINTRESOURCE(IDC_COPY))));
+                DestroyCursor(SetCursor(LoadCursor(Globals.hInstance,MAKEINTRESOURCE(IDC_COPY))));
               else
                 DestroyCursor(SetCursor(LoadCursor(NULL,IDC_NO)));
 
@@ -3581,11 +3566,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
               COLORREF cr = (COLORREF)-1; // SciCall_StyleGetFore(STYLE_DEFAULT);
               Style_StrGetColor(true, tch, &cr);
-              MakeColorPickButton(hwnd, IDC_STYLEFORE, g_hInstance, cr);
+              MakeColorPickButton(hwnd, IDC_STYLEFORE, Globals.hInstance, cr);
 
               cr = (COLORREF)-1; // SciCall_StyleGetBack(STYLE_DEFAULT);
               Style_StrGetColor(false, tch, &cr);
-              MakeColorPickButton(hwnd, IDC_STYLEBACK, g_hInstance, cr);
+              MakeColorPickButton(hwnd, IDC_STYLEBACK, Globals.hInstance, cr);
             }
           }
           break;
@@ -3601,7 +3586,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 SetDlgItemText(hwnd, IDC_STYLEEDIT_ROOT, pCurrentLexer->szExtensions);
               }
               TreeView_Select(hwndTV, TreeView_GetRoot(hwndTV), TVGN_CARET);
-              Style_ResetCurrentLexer(g_hwndEdit);
+              Style_ResetCurrentLexer(Globals.hwndEdit);
             }
           }
           break;
@@ -3654,7 +3639,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
           {
             _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
-            if (!g_fWarnedNoIniFile && (StringCchLenW(g_wchIniFile, COUNTOF(g_wchIniFile)) == 0)) {
+            if (!g_fWarnedNoIniFile && (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile)) == 0)) {
               MsgBoxLng(MBWARN, IDS_MUI_SETTINGSNOTSAVED);
               g_fWarnedNoIniFile = true;
             }
@@ -3696,7 +3681,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
                 ++i;
               }
             }
-            Style_ResetCurrentLexer(g_hwndEdit);
+            Style_ResetCurrentLexer(Globals.hwndEdit);
             //EndDialog(hwnd,IDCANCEL);
             DestroyWindow(hwnd);
           }
@@ -3739,7 +3724,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 //
 HWND Style_CustomizeSchemesDlg(HWND hwnd)
 {
-  HWND hDlg = CreateThemedDialogParam(g_hLngResContainer,
+  HWND hDlg = CreateThemedDialogParam(Globals.hLngResContainer,
                                       MAKEINTRESOURCE(IDD_MUI_STYLECONFIG),
                                       GetParent(hwnd),
                                       Style_CustomizeSchemesDlgProc,
@@ -3772,7 +3757,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
         WCHAR tch[MAX_PATH] = { L'\0' };
 
-        if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
+        if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
         RECT rc;
         GetClientRect(hwnd,&rc);
@@ -3985,11 +3970,11 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 //
 void Style_SelectLexerDlg(HWND hwnd)
 {
-  if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,
+  if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,
                                    MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
                                    GetParent(hwnd), Style_SelectLexerDlgProc, 0))
 
-    Style_ResetCurrentLexer(g_hwndEdit);
+    Style_ResetCurrentLexer(Globals.hwndEdit);
 }
 
 // End of Styles.c
