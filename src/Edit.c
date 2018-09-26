@@ -91,16 +91,11 @@ extern bool g_bNoEncodingTags;
 extern bool g_bUseLimitedAutoCCharSet;
 extern bool g_bIsCJKInputCodePage;
 
-extern bool g_bAutoCompleteWords;
-extern bool g_bAutoCLexerKeyWords;
-extern bool g_bAccelWordNavigation;
-
 extern int  g_iReplacedOccurrences;
 extern int  g_iMarkOccurrences;
 extern int  g_iMarkOccurrencesCount;
 extern bool g_bMarkOccurrencesMatchVisible;
 
-extern bool g_bHyperlinkHotspot;
 extern bool g_bCodeFoldingAvailable;
 extern bool g_bShowCodeFolding;
 
@@ -3835,10 +3830,10 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
   DocPos iLineLength = 0;
 
   //#define W_DELIMITER  L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~"  // underscore counted as part of word
-  //WCHAR* W_DELIMITER  = g_bAccelWordNavigation ? W_DelimCharsAccel : W_DelimChars;
+  //WCHAR* W_DELIMITER  = Settings.AccelWordNavigation ? W_DelimCharsAccel : W_DelimChars;
   //#define ISDELIMITER(wc) StrChr(W_DELIMITER,wc)
 
-  //WCHAR* W_WHITESPACE = g_bAccelWordNavigation ? W_WhiteSpaceCharsAccelerated : W_WhiteSpaceCharsDefault;
+  //WCHAR* W_WHITESPACE = Settings.AccelWordNavigation ? W_WhiteSpaceCharsAccelerated : W_WhiteSpaceCharsDefault;
   //#define ISWHITE(wc) StrChr(W_WHITESPACE,wc)
   #define ISWHITE(wc) StrChr(L" \t\f",wc)
 
@@ -6372,15 +6367,15 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
     if (!bHideNonMatchedLines) {
       bSaveFoldingAvailable = g_bCodeFoldingAvailable;
       bSaveShowFolding = g_bShowCodeFolding;
-      bSaveHyperlinkHotspots = g_bHyperlinkHotspot;
-      g_bHyperlinkHotspot = false;
+      bSaveHyperlinkHotspots = Settings.HyperlinkHotspot;
+      Settings.HyperlinkHotspot = false;
     }
     else {
       g_bCodeFoldingAvailable = bSaveFoldingAvailable;
       g_bShowCodeFolding = bSaveShowFolding;
-      g_bHyperlinkHotspot = bSaveHyperlinkHotspots;
+      Settings.HyperlinkHotspot = bSaveHyperlinkHotspots;
     }
-    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, g_bHyperlinkHotspot);
+    EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
 
     bHideNonMatchedLines = bHideNonMatchedLines ? false : true; // toggle
 
@@ -6453,7 +6448,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
       // exit if selection is not a word and Match whole words only is enabled
       if (bMatchWords) {
         DocPos iSelStart2 = 0;
-        const char* delims = (g_bAccelWordNavigation ? DelimCharsAccel : DelimChars);
+        const char* delims = (Settings.AccelWordNavigation ? DelimCharsAccel : DelimChars);
         while ((iSelStart2 <= iSelCount) && pszText[iSelStart2]) {
           if (StrChrIA(delims, pszText[iSelStart2])) {
             return;
@@ -6508,7 +6503,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
 
 //=============================================================================
 //
-//  EditCompleteWord()
+//  EditAutoCompleteWord()
 //  Auto-complete words (by Aleksandar Lekov)
 //
 
@@ -6561,23 +6556,29 @@ static const char* __fastcall _strNextLexKeyWord(const char* strg, const char* c
 
 bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 {
-  UNUSED(hwnd);
-
   if (SciCall_IsIMEModeCJK()) {
     SciCall_AutoCCancel();
     return false;
   }
 
+  DocPos const iMinWdChCnt = 2;  // min number of typed chars before AutoC
+
   char const* const pchAllowdWordChars = 
     ((g_bIsCJKInputCodePage || g_bUseLimitedAutoCCharSet) ? AutoCompleteWordCharSet :
-    (g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
+    (Settings.AccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
   
   SciCall_SetWordChars(pchAllowdWordChars);
 
   DocPos const iDocEndPos = Sci_GetDocEndPosition();
   DocPos const iCurrentPos = SciCall_GetCurrentPos();
+  DocPos const iCol = SciCall_GetColumn(iCurrentPos);
   DocPos const iPosBefore = SciCall_PositionBefore(iCurrentPos);
   DocPos const iWordStartPos = SciCall_WordStartPosition(iPosBefore, true);
+
+  if ((iWordStartPos == iPosBefore) || (iCol < iMinWdChCnt) || ((iCurrentPos - iWordStartPos) < iMinWdChCnt)) {
+    EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
+    return true;
+  }
 
   DocPos iPos = iWordStartPos;
   bool bWordAllNumbers = true;
@@ -6588,10 +6589,11 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     }
     iPos = SciCall_PositionAfter(iPos);
   }
-  if ((iWordStartPos == iPosBefore) || bWordAllNumbers || ((iCurrentPos - iWordStartPos) < 2)) {
-    EditSetAccelWordNav(hwnd, g_bAccelWordNavigation);
+  if (bWordAllNumbers) {
+    EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
     return true;
   }
+
 
   char pRoot[_MAX_AUTOC_WORD_LEN];
   DocPos const iRootLen = (iCurrentPos - iWordStartPos);
@@ -6602,7 +6604,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
   PWLIST pListHead = NULL;
 
-  if (g_bAutoCompleteWords)
+  if (Settings.AutoCompleteWords)
   {
     struct Sci_TextToFind ft = { { 0, 0 }, 0, { 0, 0 } };
     ft.lpstrText = pRoot;
@@ -6645,7 +6647,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     if (pwlNewWord) { FreeMem(pwlNewWord); pwlNewWord = NULL; }
   }
   // --------------------------------------------------------------------------
-  if (g_bAutoCLexerKeyWords)
+  if (Settings.AutoCLexerKeyWords)
   // --------------------------------------------------------------------------
   {
     PKEYWORDLIST const pKeyWordList = Style_GetCurrentLexerPtr()->pKeyWords;
@@ -6694,7 +6696,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     SciCall_AutoCSetChooseSingle(autoInsert);
     //SciCall_AutoCSetOrder(SC_ORDER_PERFORMSORT); // already sorted
     SciCall_AutoCSetFillups("\t\n\r");
-    //SciCall_AutoCSetFillups(g_bAccelWordNavigation ? WhiteSpaceCharsDefault : WhiteSpaceCharsAccelerated);
+    //SciCall_AutoCSetFillups(Settings.AccelWordNavigation ? WhiteSpaceCharsDefault : WhiteSpaceCharsAccelerated);
 
     ++iWListSize; // zero termination
     char* const pList = AllocMem(iWListSize, HEAP_ZERO_MEMORY);
@@ -6715,7 +6717,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     }
   }
 
-  EditSetAccelWordNav(hwnd, g_bAccelWordNavigation);
+  EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
   return true;
 }
 
@@ -7742,8 +7744,8 @@ bool EditSortDlg(HWND hwnd,int* piSortFlags)
 void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
 {
   UNUSED(hwnd);
-  g_bAccelWordNavigation = bAccelWordNav;
-  if (g_bAccelWordNavigation) {
+  Settings.AccelWordNavigation = bAccelWordNav;
+  if (Settings.AccelWordNavigation) {
     SciCall_SetWordChars(WordCharsAccelerated);
     SciCall_SetWhitespaceChars(WhiteSpaceCharsAccelerated);
     SciCall_SetPunctuationChars(PunctuationCharsAccelerated);

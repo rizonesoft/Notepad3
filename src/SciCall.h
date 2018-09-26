@@ -463,8 +463,6 @@ DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool)
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
 
-#define Sci_GetLine_Safe(ln, bu)
-
 #define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 #define Sci_IsForwardSelection() (SciCall_GetAnchor() <= SciCall_GetCurrentPos())
 

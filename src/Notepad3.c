@@ -124,13 +124,6 @@ static WCHAR  s_tchLastSaveCopyDir[MAX_PATH + 1] = { L'\0' };
 bool      g_bWordWrapG;
 
 
-bool      bMatchBraces;
-bool      bAutoIndent;
-bool      bAutoCloseTags;
-bool      bShowIndentGuides;
-bool      bHiliteCurrentLine;
-bool      g_bHyperlinkHotspot;
-bool      bScrollPastEOF;
 bool      g_bTabsAsSpaces;
 bool      bTabsAsSpacesG;
 bool      g_bTabIndents;
@@ -156,9 +149,6 @@ bool      g_bMarkOccurrencesMatchVisible;
 bool      g_bMarkOccurrencesMatchCase;
 bool      g_bMarkOccurrencesMatchWords;
 bool      g_bMarkOccurrencesCurrentWord;
-bool      g_bAutoCompleteWords;
-bool      g_bAutoCLexerKeyWords;
-bool      g_bAccelWordNavigation;
 bool      g_bCodeFoldingAvailable;
 bool      g_bShowCodeFolding;
 bool      bViewWhiteSpace;
@@ -1187,8 +1177,8 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   // Check for /c [if no file is specified] -- even if a file is specified
   /*else */if (s_flagNewFromClipboard) {
     if (SendMessage(Globals.hwndEdit, SCI_CANPASTE, 0, 0)) {
-      bool bAutoIndent2 = bAutoIndent;
-      bAutoIndent = 0;
+      bool bAutoIndent2 = Settings.AutoIndent;
+      Settings.AutoIndent = 0;
       EditJumpTo(Globals.hwndEdit, -1, 0);
       _BEGIN_UNDO_ACTION_;
       if (SendMessage(Globals.hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
@@ -1197,7 +1187,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
       SendMessage(Globals.hwndEdit, SCI_PASTE, 0, 0);
       SendMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
       _END_UNDO_ACTION_;
-      bAutoIndent = bAutoIndent2;
+      Settings.AutoIndent = bAutoIndent2;
       if (s_flagJumpTo)
         EditJumpTo(Globals.hwndEdit, iInitialLine, iInitialColumn);
       else
@@ -1674,7 +1664,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
 
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
-  SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((bScrollPastEOF) ? 0 : 1), 0);
+  SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((Settings.ScrollPastEOF) ? 0 : 1), 0);
 
   // Tabs
   SendMessage(hwndEditCtrl, SCI_SETUSETABS, (WPARAM)!g_bTabsAsSpaces, 0);
@@ -1684,7 +1674,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETINDENT, (WPARAM)g_iIndentWidth, 0);
 
   // Indent Guides
-  Style_SetIndentGuides(hwndEditCtrl, bShowIndentGuides);
+  Style_SetIndentGuides(hwndEditCtrl, Settings.ShowIndentGuides);
 
   // Word Wrap
   _SetWrapIndentMode(hwndEditCtrl);
@@ -1710,7 +1700,7 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   // word delimiter handling
   EditInitWordDelimiter(hwndEditCtrl);
-  EditSetAccelWordNav(hwndEditCtrl, g_bAccelWordNavigation);
+  EditSetAccelWordNav(hwndEditCtrl, Settings.AccelWordNavigation);
 
   UpdateMarginWidth();
 }
@@ -2050,6 +2040,9 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     // Terminate file watching
     InstallFileWatching(NULL);
 
+    // remember window position
+    s_WinInfo = GetMyWindowPlacement(hwnd, NULL);
+
     DragAcceptFiles(hwnd, true);
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
     RevokeDragAndDrop(pDropTarget);
@@ -2219,7 +2212,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
     EditToggleView(Globals.hwndEdit, true);
   }
   MarkAllOccurrences(0, true);
-  EditUpdateUrlHotspots(Globals.hwndEdit, 0, Sci_GetDocEndPosition(), g_bHyperlinkHotspot);
+  EditUpdateUrlHotspots(Globals.hwndEdit, 0, Sci_GetDocEndPosition(), Settings.HyperlinkHotspot);
 
   UpdateUI();
   UpdateToolbar();
@@ -2879,17 +2872,17 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_WORDWRAP,Settings.WordWrap);
   CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,g_bMarkLongLines);
   CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,g_bTabsAsSpaces);
-  CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,bShowIndentGuides);
-  CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,bAutoIndent);
+  CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,Settings.ShowIndentGuides);
+  CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,Settings.AutoIndent);
   CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,g_bShowLineNumbers);
   CheckCmd(hmenu,IDM_VIEW_MARGIN,g_bShowSelectionMargin);
   CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!e && !ro);
-  CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,g_bAutoCompleteWords && !ro);
-  CheckCmd(hmenu,IDM_VIEW_AUTOCLEXKEYWORDS, g_bAutoCLexerKeyWords && !ro);
+  CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,Settings.AutoCompleteWords && !ro);
+  CheckCmd(hmenu,IDM_VIEW_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
   
-  CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,g_bAccelWordNavigation);
+  CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,Settings.AccelWordNavigation);
 
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (g_iMarkOccurrences > 0));
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
@@ -2920,17 +2913,17 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_SHOWBLANKS,bViewWhiteSpace);
   CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,bViewEOLs);
   CheckCmd(hmenu,IDM_VIEW_WORDWRAPSYMBOLS,Settings.ShowWordWrapSymbols);
-  CheckCmd(hmenu,IDM_VIEW_MATCHBRACES,bMatchBraces);
+  CheckCmd(hmenu,IDM_VIEW_MATCHBRACES,Settings.MatchBraces);
   CheckCmd(hmenu,IDM_VIEW_TOOLBAR,bShowToolbar);
   EnableCmd(hmenu,IDM_VIEW_CUSTOMIZETB,bShowToolbar);
   CheckCmd(hmenu,IDM_VIEW_STATUSBAR,bShowStatusbar);
 
   i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
-  CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, bAutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
-  CheckCmd(hmenu, IDM_VIEW_HILITECURRENTLINE, bHiliteCurrentLine);
-  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, g_bHyperlinkHotspot);
-  CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, bScrollPastEOF);
+  CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
+  CheckCmd(hmenu, IDM_VIEW_HILITECURRENTLINE, Settings.HighlightCurrentLine);
+  CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
+  CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
  
 
   i = Flags.ReuseWindow;
@@ -3044,7 +3037,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDT_TIMER_UPDATE_HOTSPOT:
-      EditUpdateVisibleUrlHotspot(g_bHyperlinkHotspot);
+      EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
       break;
 
     case IDM_FILE_NEW:
@@ -4663,13 +4656,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_SHOWINDENTGUIDES:
-      bShowIndentGuides = (bShowIndentGuides) ? false : true;
-      Style_SetIndentGuides(Globals.hwndEdit,bShowIndentGuides);
+      Settings.ShowIndentGuides = (Settings.ShowIndentGuides) ? false : true;
+      Style_SetIndentGuides(Globals.hwndEdit,Settings.ShowIndentGuides);
       break;
 
 
     case IDM_VIEW_AUTOINDENTTEXT:
-      bAutoIndent = (bAutoIndent) ? false : true;
+      Settings.AutoIndent = (Settings.AutoIndent) ? false : true;
       break;
 
 
@@ -4685,18 +4678,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_AUTOCOMPLETEWORDS:
-      g_bAutoCompleteWords = (g_bAutoCompleteWords) ? false : true;  // toggle
+      Settings.AutoCompleteWords = (Settings.AutoCompleteWords) ? false : true;  // toggle
       SciCall_AutoCCancel();
       break;
 
     case IDM_VIEW_AUTOCLEXKEYWORDS:
-      g_bAutoCLexerKeyWords = (g_bAutoCLexerKeyWords) ? false : true;  // toggle
+      Settings.AutoCLexerKeyWords = (Settings.AutoCLexerKeyWords) ? false : true;  // toggle
       SciCall_AutoCCancel();
       break;
 
     case IDM_VIEW_ACCELWORDNAV:
-      g_bAccelWordNavigation = (g_bAccelWordNavigation) ? false : true;  // toggle  
-      EditSetAccelWordNav(Globals.hwndEdit,g_bAccelWordNavigation);
+      Settings.AccelWordNavigation = (Settings.AccelWordNavigation) ? false : true;  // toggle  
+      EditSetAccelWordNav(Globals.hwndEdit,Settings.AccelWordNavigation);
       MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
       break;
 
@@ -4776,8 +4769,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_MATCHBRACES:
-      bMatchBraces = (bMatchBraces) ? false : true;
-      if (bMatchBraces)
+      Settings.MatchBraces = (Settings.MatchBraces) ? false : true;
+      if (Settings.MatchBraces)
         EditMatchBrace(Globals.hwndEdit);
       else
         SciCall_BraceHighLight(INVALID_POSITION, INVALID_POSITION);
@@ -4785,18 +4778,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_AUTOCLOSETAGS:
-      bAutoCloseTags = (bAutoCloseTags) ? false : true;
+      Settings.AutoCloseTags = (Settings.AutoCloseTags) ? false : true;
       break;
 
     case IDM_VIEW_HILITECURRENTLINE:
-      bHiliteCurrentLine = (bHiliteCurrentLine) ? false : true;
-      Style_SetCurrentLineBackground(Globals.hwndEdit, bHiliteCurrentLine);
+      Settings.HighlightCurrentLine = (Settings.HighlightCurrentLine) ? false : true;
+      Style_SetCurrentLineBackground(Globals.hwndEdit, Settings.HighlightCurrentLine);
       break;
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
-      g_bHyperlinkHotspot = (g_bHyperlinkHotspot) ? false : true;
-      Style_SetUrlHotSpot(Globals.hwndEdit, g_bHyperlinkHotspot);
-      if (g_bHyperlinkHotspot) {
+      Settings.HyperlinkHotspot = (Settings.HyperlinkHotspot) ? false : true;
+      Style_SetUrlHotSpot(Globals.hwndEdit, Settings.HyperlinkHotspot);
+      if (Settings.HyperlinkHotspot) {
         UpdateVisibleUrlHotspot(0);
       }
       else {
@@ -4861,8 +4854,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
     
     case IDM_VIEW_SCROLLPASTEOF:
-      bScrollPastEOF = (bScrollPastEOF) ? false : true;
-      SciCall_SetEndAtLastLine(!bScrollPastEOF);
+      Settings.ScrollPastEOF = (Settings.ScrollPastEOF) ? false : true;
+      SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
       break;
 
     case IDM_VIEW_TOOLBAR:
@@ -5161,9 +5154,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // Newline with toggled auto indent setting
     case CMD_SHIFTCTRLENTER:
-      bAutoIndent = (bAutoIndent) ? 0 : 1;
+      Settings.AutoIndent = !Settings.AutoIndent;
       SciCall_NewLine();
-      bAutoIndent = (bAutoIndent) ? 0 : 1;
+      Settings.AutoIndent = !Settings.AutoIndent;
       break;
 
 
@@ -6247,7 +6240,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             //~InvalidateSelections(); // fixed in SCI ?
 
             // Brace Match
-            if (bMatchBraces) {
+            if (Settings.MatchBraces) {
               EditMatchBrace(Globals.hwndEdit);
             }
 
@@ -6269,7 +6262,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               }
             }
 
-            if (g_bHyperlinkHotspot) {
+            if (Settings.HyperlinkHotspot) {
               UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
             }
             UpdateToolbar();
@@ -6280,7 +6273,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if ((g_iMarkOccurrences > 0) && g_bMarkOccurrencesMatchVisible) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
             }
-            if (g_bHyperlinkHotspot) {
+            if (Settings.HyperlinkHotspot) {
               UpdateVisibleUrlHotspot(Settings2.UpdateDelayHyperlinkStyling);
             }
           }
@@ -6314,10 +6307,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             switch (ich) {
             case '\r':
             case '\n':
-              if (bAutoIndent) { _HandleAutoIndent(ich); }
+              if (Settings.AutoIndent) { _HandleAutoIndent(ich); }
               break;
             case '>':
-              if (bAutoCloseTags) { _HandleAutoCloseTags(); }
+              if (Settings.AutoCloseTags) { _HandleAutoCloseTags(); }
               break;
             case '?':
               _HandleTinyExpr();
@@ -6326,7 +6319,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               break;
             }
 
-            if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) 
+            if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords)) 
             {
               if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
             }
@@ -6334,7 +6327,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           break;
 
         case SCN_AUTOCCHARDELETED:
-          if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) 
+          if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords)) 
           {
             if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
           }
@@ -6835,27 +6828,36 @@ void LoadSettings()
     Defaults.ShowWordWrapSymbols = false;
     Settings.ShowWordWrapSymbols = IniSectionGetBool(pIniSection, L"ShowWordWrapSymbols", Defaults.ShowWordWrapSymbols);
 
+    Defaults.MatchBraces = true;
+    Settings.MatchBraces = IniSectionGetBool(pIniSection, L"MatchBraces", Defaults.MatchBraces);
 
+    Defaults.AutoCloseTags = false;
+    Settings.AutoCloseTags = IniSectionGetBool(pIniSection, L"AutoCloseTags", Defaults.AutoCloseTags);
 
-    bMatchBraces = IniSectionGetBool(pIniSection, L"MatchBraces", true);
+    Defaults.HighlightCurrentLine = false;
+    Settings.HighlightCurrentLine = IniSectionGetBool(pIniSection, L"HighlightCurrentLine", Defaults.HighlightCurrentLine);
 
-    bAutoCloseTags = IniSectionGetBool(pIniSection, L"AutoCloseTags", false);
+    Defaults.HyperlinkHotspot = false;
+    Settings.HyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", Defaults.HyperlinkHotspot);
 
-    bHiliteCurrentLine = IniSectionGetBool(pIniSection, L"HighlightCurrentLine", false);
+    Defaults.ScrollPastEOF = false;
+    Settings.ScrollPastEOF = IniSectionGetBool(pIniSection, L"ScrollPastEOF", Defaults.ScrollPastEOF);
 
-    g_bHyperlinkHotspot = IniSectionGetBool(pIniSection, L"HyperlinkHotspot", false);
+    Defaults.AutoIndent = true;
+    Settings.AutoIndent = IniSectionGetBool(pIniSection, L"AutoIndent", Defaults.AutoIndent);
 
-    bScrollPastEOF = IniSectionGetBool(pIniSection, L"ScrollPastEOF", false);
+    Defaults.AutoCompleteWords = false;
+    Settings.AutoCompleteWords = IniSectionGetBool(pIniSection, L"AutoCompleteWords", Defaults.AutoCompleteWords);
 
-    bAutoIndent = IniSectionGetBool(pIniSection, L"AutoIndent", true);
+    Defaults.AutoCLexerKeyWords = false;
+    Settings.AutoCLexerKeyWords = IniSectionGetBool(pIniSection, L"AutoCLexerKeyWords", Defaults.AutoCLexerKeyWords);
 
-    g_bAutoCompleteWords = IniSectionGetBool(pIniSection, L"AutoCompleteWords", false);
-    
-    g_bAutoCLexerKeyWords = IniSectionGetBool(pIniSection, L"AutoCLexerKeyWords", false);
+    Defaults.AccelWordNavigation = false;
+    Settings.AccelWordNavigation = IniSectionGetBool(pIniSection, L"AccelWordNavigation", Defaults.AccelWordNavigation);
 
-    g_bAccelWordNavigation = IniSectionGetBool(pIniSection, L"AccelWordNavigation", false);
+    Defaults.ShowIndentGuides = false;
+    Settings.ShowIndentGuides = IniSectionGetBool(pIniSection, L"ShowIndentGuides", Defaults.ShowIndentGuides);
 
-    bShowIndentGuides = IniSectionGetBool(pIniSection, L"ShowIndentGuides", false);
 
     g_bTabsAsSpaces = IniSectionGetBool(pIniSection, L"TabsAsSpaces", false);
     bTabsAsSpacesG = g_bTabsAsSpaces;
@@ -7179,9 +7181,6 @@ void SaveSettings(bool bSaveSettingsNow)
 {
   WCHAR wchTmp[MAX_PATH] = { L'\0' };
 
-  // update window placement 
-  s_WinInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
-
   if (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile)) == 0) { return; }
 
   if (!s_bEnableSaveSettings) { return; }
@@ -7266,18 +7265,37 @@ void SaveSettings(bool bSaveSettingsNow)
     if (Settings.ShowWordWrapSymbols != Defaults.ShowWordWrapSymbols) {
       IniSectionSetBool(pIniSection, L"ShowWordWrapSymbols", Settings.ShowWordWrapSymbols);
     }
+    if (Settings.MatchBraces != Defaults.MatchBraces) {
+      IniSectionSetBool(pIniSection, L"MatchBraces", Settings.MatchBraces);
+    }
+    if (Settings.AutoCloseTags != Defaults.AutoCloseTags) {
+      IniSectionSetBool(pIniSection, L"AutoCloseTags", Settings.AutoCloseTags);
+    }
+    if (Settings.HighlightCurrentLine != Defaults.HighlightCurrentLine) {
+      IniSectionSetBool(pIniSection, L"HighlightCurrentLine", Settings.HighlightCurrentLine);
+    }
+    if (Settings.HyperlinkHotspot != Defaults.HyperlinkHotspot) {
+      IniSectionSetBool(pIniSection, L"HyperlinkHotspot", Settings.HyperlinkHotspot);
+    }
+    if (Settings.ScrollPastEOF != Defaults.ScrollPastEOF) {
+      IniSectionSetBool(pIniSection, L"ScrollPastEOF", Settings.ScrollPastEOF);
+    }
+    if (Settings.AutoIndent != Defaults.AutoIndent) {
+      IniSectionSetBool(pIniSection, L"AutoIndent", Settings.AutoIndent);
+    }
+    if (Settings.AutoCompleteWords != Defaults.AutoCompleteWords) {
+      IniSectionSetBool(pIniSection, L"AutoCompleteWords", Settings.AutoCompleteWords);
+    }
+    if (Settings.AutoCLexerKeyWords != Defaults.AutoCLexerKeyWords) {
+      IniSectionSetBool(pIniSection, L"AutoCLexerKeyWords", Settings.AutoCLexerKeyWords);
+    }
+    if (Settings.AccelWordNavigation != Defaults.AccelWordNavigation) {
+      IniSectionSetBool(pIniSection, L"AccelWordNavigation", Settings.AccelWordNavigation);
+    }
+    if (Settings.ShowIndentGuides != Defaults.ShowIndentGuides) {
+      IniSectionSetBool(pIniSection, L"ShowIndentGuides", Settings.ShowIndentGuides);
+    }
 
-
-    IniSectionSetBool(pIniSection, L"MatchBraces", bMatchBraces);
-    IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
-    IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
-    IniSectionSetBool(pIniSection, L"HyperlinkHotspot", g_bHyperlinkHotspot);
-    IniSectionSetBool(pIniSection, L"ScrollPastEOF", bScrollPastEOF);
-    IniSectionSetBool(pIniSection, L"AutoIndent", bAutoIndent);
-    IniSectionSetBool(pIniSection, L"AutoCompleteWords", g_bAutoCompleteWords);
-    IniSectionSetBool(pIniSection, L"AutoCLexerKeyWords", g_bAutoCLexerKeyWords);
-    IniSectionSetBool(pIniSection, L"AccelWordNavigation", g_bAccelWordNavigation);
-    IniSectionSetBool(pIniSection, L"ShowIndentGuides", bShowIndentGuides);
     IniSectionSetBool(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
     IniSectionSetBool(pIniSection, L"TabIndents", bTabIndentsG);
     IniSectionSetBool(pIniSection, L"BackspaceUnindents", bBackspaceUnindents);
@@ -7352,6 +7370,11 @@ void SaveSettings(bool bSaveSettingsNow)
 
   // Scintilla Styles
   Style_Save();
+
+  // update window placement 
+  if (bSaveSettingsNow) {
+    s_WinInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
+  }
 
   int ResX = GetSystemMetrics(SM_CXSCREEN);
   int ResY = GetSystemMetrics(SM_CYSCREEN);
@@ -10532,8 +10555,8 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 
     if (SendMessage(Globals.hwndEdit,SCI_CANPASTE,0,0)) {
 
-      bool bAutoIndent2 = bAutoIndent;
-      bAutoIndent = 0;
+      bool bAutoIndent2 = Settings.AutoIndent;
+      Settings.AutoIndent = 0;
       EditJumpTo(Globals.hwndEdit,-1,0);
       _BEGIN_UNDO_ACTION_;
       if (SendMessage(Globals.hwndEdit, SCI_GETLENGTH, 0, 0) > 0) {
@@ -10543,7 +10566,7 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
       SendMessage(Globals.hwndEdit,SCI_NEWLINE,0,0);
       _END_UNDO_ACTION_;
       EditEnsureSelectionVisible(Globals.hwndEdit);
-      bAutoIndent = bAutoIndent2;
+      Settings.AutoIndent = bAutoIndent2;
     }
     dwLastCopyTime = 0;
   }

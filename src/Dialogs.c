@@ -3345,9 +3345,9 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
   if (!rc) {
     RECT _rc;
     GetClientRect(hwnd, &_rc);
-    return (SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(_rc.right, _rc.bottom)));
+    return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(_rc.right, _rc.bottom));
   }
-  return (SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom)));
+  return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc->right, rc->bottom));
 }
 
 

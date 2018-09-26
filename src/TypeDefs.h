@@ -238,6 +238,17 @@ typedef struct _settings_t
   int WordWrapIndent;
   int WordWrapSymbols;
   bool ShowWordWrapSymbols;
+  bool MatchBraces;
+  bool AutoCloseTags;
+  bool HighlightCurrentLine;
+  bool HyperlinkHotspot;
+  bool ScrollPastEOF;
+  bool AutoIndent;
+  bool AutoCompleteWords;
+  bool AutoCLexerKeyWords;
+  bool AccelWordNavigation;
+  bool ShowIndentGuides;
+
 
   EDITFINDREPLACE EFR_Data;
   WCHAR OpenWithDir[MAX_PATH + 1];
