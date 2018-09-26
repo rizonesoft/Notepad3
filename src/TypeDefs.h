@@ -232,9 +232,16 @@ typedef struct _settings_t
   bool SaveRecentFiles;
   bool PreserveCaretPos;
   bool SaveFindReplace;
+  int PathNameFormat;
+  bool WordWrap;
+  int WordWrapMode;
+  int WordWrapIndent;
+  int WordWrapSymbols;
+  bool ShowWordWrapSymbols;
 
+  EDITFINDREPLACE EFR_Data;
+  WCHAR OpenWithDir[MAX_PATH + 1];
   WCHAR FavoritesDir[MAX_PATH + 1];
-
 
 } SETTINGS_T, *PSETTINGS_T;
 

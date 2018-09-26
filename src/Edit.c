@@ -6559,7 +6559,7 @@ static const char* __fastcall _strNextLexKeyWord(const char* strg, const char* c
 
 // ----------------------------------------------
 
-bool EditCompleteWord(HWND hwnd, bool autoInsert)
+bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 {
   UNUSED(hwnd);
 
@@ -6568,15 +6568,14 @@ bool EditCompleteWord(HWND hwnd, bool autoInsert)
     return false;
   }
 
-  char const* const pchAllowdWordChars = ((g_bIsCJKInputCodePage || g_bUseLimitedAutoCCharSet) ? 
-                                          AutoCompleteWordCharSet :
-                                          (g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
+  char const* const pchAllowdWordChars = 
+    ((g_bIsCJKInputCodePage || g_bUseLimitedAutoCCharSet) ? AutoCompleteWordCharSet :
+    (g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
   
   SciCall_SetWordChars(pchAllowdWordChars);
 
   DocPos const iDocEndPos = Sci_GetDocEndPosition();
   DocPos const iCurrentPos = SciCall_GetCurrentPos();
-
   DocPos const iPosBefore = SciCall_PositionBefore(iCurrentPos);
   DocPos const iWordStartPos = SciCall_WordStartPosition(iPosBefore, true);
 
@@ -6590,6 +6589,7 @@ bool EditCompleteWord(HWND hwnd, bool autoInsert)
     iPos = SciCall_PositionAfter(iPos);
   }
   if ((iWordStartPos == iPosBefore) || bWordAllNumbers || ((iCurrentPos - iWordStartPos) < 2)) {
+    EditSetAccelWordNav(hwnd, g_bAccelWordNavigation);
     return true;
   }
 
@@ -6604,22 +6604,20 @@ bool EditCompleteWord(HWND hwnd, bool autoInsert)
 
   if (g_bAutoCompleteWords)
   {
-    DocPosCR const iDocLen = (DocPosCR)SciCall_GetTextLength();
     struct Sci_TextToFind ft = { { 0, 0 }, 0, { 0, 0 } };
     ft.lpstrText = pRoot;
-    ft.chrg.cpMax = iDocLen;
+    ft.chrg.cpMax = (DocPosCR)iDocEndPos;
 
     DocPos iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
     PWLIST pwlNewWord = NULL;
-    while ((iPosFind >= 0) && (iPosFind < iDocLen))
+
+    while ((iPosFind >= 0) && ((iPosFind + iRootLen) < iDocEndPos))
     {
-      DocPos wordEnd = (DocPosCR)(iPosFind + iRootLen);
+      DocPos const iWordEndPos = SciCall_WordEndPosition(iPosFind + iRootLen, true);
 
       if (iPosFind != (iCurrentPos - iRootLen))
       {
-        while ((wordEnd < iDocLen) && StrChrIA(pchAllowdWordChars, SciCall_GetCharAt(wordEnd))) { ++wordEnd; }
-
-        DocPos const wordLength = (wordEnd - iPosFind);
+        DocPos const wordLength = (iWordEndPos - iPosFind);
         if (wordLength > iRootLen)
         {
           if (!pwlNewWord) { pwlNewWord = (PWLIST)AllocMem(sizeof(WLIST), HEAP_ZERO_MEMORY); }
@@ -6640,12 +6638,11 @@ bool EditCompleteWord(HWND hwnd, bool autoInsert)
           }
         }
       }
-      ft.chrg.cpMin = (DocPosCR)wordEnd;
+      
+      ft.chrg.cpMin = (DocPosCR)iWordEndPos;
       iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
     }
     if (pwlNewWord) { FreeMem(pwlNewWord); pwlNewWord = NULL; }
-    
-    EditSetAccelWordNav(hwnd, g_bAccelWordNavigation);
   }
   // --------------------------------------------------------------------------
   if (g_bAutoCLexerKeyWords)
@@ -6717,6 +6714,8 @@ bool EditCompleteWord(HWND hwnd, bool autoInsert)
       FreeMem(pList);
     }
   }
+
+  EditSetAccelWordNav(hwnd, g_bAccelWordNavigation);
   return true;
 }
 
@@ -7907,9 +7906,7 @@ extern bool bTabsAsSpacesG;
 extern bool bTabIndentsG;
 extern int iTabWidthG;
 extern int iIndentWidthG;
-extern bool g_bWordWrap;
-extern bool bWordWrapG;
-extern int iWordWrapMode;
+extern bool g_bWordWrapG;
 extern int g_iLongLinesLimit;
 extern int iLongLinesLimitG;
 extern int iWrapCol;
@@ -7943,14 +7940,14 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
   SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
 
   if (lpfv->mask & FV_WORDWRAP)
-    g_bWordWrap = lpfv->fWordWrap;
+    Settings.WordWrap = lpfv->fWordWrap;
   else
-    g_bWordWrap = bWordWrapG;
+    Settings.WordWrap = g_bWordWrapG;
 
-  if (!g_bWordWrap)
+  if (!Settings.WordWrap)
     SendMessage(Globals.hwndEdit,SCI_SETWRAPMODE,SC_WRAP_NONE,0);
   else
-    SendMessage(Globals.hwndEdit,SCI_SETWRAPMODE,(iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
+    SendMessage(Globals.hwndEdit,SCI_SETWRAPMODE,(Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
 
   if (lpfv->mask & FV_LONGLINESLIMIT)
     g_iLongLinesLimit = lpfv->iLongLinesLimit;

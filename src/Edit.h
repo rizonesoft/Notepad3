@@ -104,7 +104,7 @@ bool  EditToggleView(HWND hwnd, bool bToggleView);
 void  EditMarkAll(HWND, char*, int, DocPos, DocPos, bool, bool);
 void  EditUpdateUrlHotspots(HWND, DocPos, DocPos, bool);
 void  EditSetAccelWordNav(HWND,bool);
-bool  EditCompleteWord(HWND,bool);
+bool  EditAutoCompleteWord(HWND,bool);
 void  EditGetBookmarkList(HWND,LPWSTR,int);
 void  EditSetBookmarkList(HWND,LPCWSTR);
 void  EditApplyLexerStyle(HWND, DocPos, DocPos);

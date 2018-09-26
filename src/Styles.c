@@ -47,8 +47,6 @@
 
 #include "Styles.h"
 
-extern EDITFINDREPLACE g_efrData;
-
 extern const int FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;

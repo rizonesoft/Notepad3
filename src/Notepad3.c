@@ -120,20 +120,10 @@ static WCHAR* const _s_RecentReplace = L"Recent Replace";
 
 static WCHAR  s_tchLastSaveCopyDir[MAX_PATH + 1] = { L'\0' };
 
-
-bool          g_bIniFileFromScratch = false;
-bool          g_bFindReplCopySelOrClip = true;
-
-WCHAR         g_tchOpenWithDir[MAX_PATH + 1] = { L'\0' };
+// Globals <= @@@
+bool      g_bWordWrapG;
 
 
-int       iPathNameFormat;
-bool      g_bWordWrap;
-bool      bWordWrapG;
-int       iWordWrapMode;
-int       iWordWrapIndent;
-int       iWordWrapSymbols;
-bool      bShowWordWrapSymbols;
 bool      bMatchBraces;
 bool      bAutoIndent;
 bool      bAutoCloseTags;
@@ -201,7 +191,11 @@ bool      g_bChasingDocTail = false;
 bool      g_bUseLimitedAutoCCharSet = false;
 bool      g_bIsCJKInputCodePage = false;
 
+bool      g_bIniFileFromScratch = false;
+bool      g_bFindReplCopySelOrClip = true;
+
 CALLTIPTYPE g_CallTipType = CT_NONE;
+
 
 bool    bIsAppThemed;
 int     cyReBar;
@@ -257,7 +251,6 @@ HMODULE   hRichEdit = NULL;
 
 static bool g_bRunningWatch = false;
 
-static EDITFINDREPLACE g_efrData = EFR_INIT_DATA;
 bool bReplaceInitialized = false;
 
 WCHAR wchPrefixSelection[256] = { L'\0' };
@@ -1236,21 +1229,21 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   if (s_flagMatchText && lpMatchArg) {
     if (StrIsNotEmpty(lpMatchArg) && SendMessage(Globals.hwndEdit,SCI_GETLENGTH,0,0)) {
 
-      WideCharToMultiByteStrg(Encoding_SciCP,lpMatchArg,g_efrData.szFind);
+      WideCharToMultiByteStrg(Encoding_SciCP,lpMatchArg,Settings.EFR_Data.szFind);
 
       if (s_flagMatchText & 4)
-        g_efrData.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
+        Settings.EFR_Data.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
       else if (s_flagMatchText & 8)
-        g_efrData.bTransformBS = true;
+        Settings.EFR_Data.bTransformBS = true;
 
       if (s_flagMatchText & 2) {
         if (!s_flagJumpTo) { SendMessage(Globals.hwndEdit, SCI_DOCUMENTEND, 0, 0); }
-        EditFindPrev(Globals.hwndEdit,&g_efrData,false,false);
+        EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
       else {
         if (!s_flagJumpTo) { SendMessage(Globals.hwndEdit, SCI_DOCUMENTSTART, 0, 0); }
-        EditFindNext(Globals.hwndEdit,&g_efrData,false,false);
+        EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
     }
@@ -1505,7 +1498,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 static void __fastcall _SetWrapStartIndent(HWND hwndEditCtrl)
 {
   int i = 0;
-  switch (iWordWrapIndent) {
+  switch (Settings.WordWrapIndent) {
   case 1: i = 1; break;
   case 2: i = 2; break;
   case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
@@ -1521,17 +1514,17 @@ static void __fastcall _SetWrapStartIndent(HWND hwndEditCtrl)
 //
 static void __fastcall _SetWrapIndentMode(HWND hwndEditCtrl)
 {
-  int const wrap_mode = (!g_bWordWrap ? SC_WRAP_NONE : ((iWordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
+  int const wrap_mode = (!Settings.WordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
 
   SendMessage(hwndEditCtrl, SCI_SETWRAPMODE, wrap_mode, 0);
 
-  if (iWordWrapIndent == 5) {
+  if (Settings.WordWrapIndent == 5) {
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_SAME, 0);
   }
-  else if (iWordWrapIndent == 6) {
+  else if (Settings.WordWrapIndent == 6) {
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_INDENT, 0);
   }
-  else if (iWordWrapIndent == 7) {
+  else if (Settings.WordWrapIndent == 7) {
     SendMessage(hwndEditCtrl, SCI_SETWRAPINDENTMODE, SC_WRAPINDENT_DEEPINDENT, 0);
   }
   else {
@@ -1547,13 +1540,13 @@ static void __fastcall _SetWrapIndentMode(HWND hwndEditCtrl)
 //
 static void __fastcall _SetWrapVisualFlags(HWND hwndEditCtrl)
 {
-  if (bShowWordWrapSymbols) {
+  if (Settings.ShowWordWrapSymbols) {
     int wrapVisualFlags = 0;
     int wrapVisualFlagsLocation = 0;
-    if (iWordWrapSymbols == 0) {
-      iWordWrapSymbols = 22;
+    if (Settings.WordWrapSymbols == 0) {
+      Settings.WordWrapSymbols = 22;
     }
-    switch (iWordWrapSymbols % 10) {
+    switch (Settings.WordWrapSymbols % 10) {
     case 1:
       wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
       wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT;
@@ -1562,7 +1555,7 @@ static void __fastcall _SetWrapVisualFlags(HWND hwndEditCtrl)
       wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
       break;
     }
-    switch (((iWordWrapSymbols % 100) - (iWordWrapSymbols % 10)) / 10) {
+    switch (((Settings.WordWrapSymbols % 100) - (Settings.WordWrapSymbols % 10)) / 10) {
     case 1:
       wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
       wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT;
@@ -2883,7 +2876,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
-  CheckCmd(hmenu,IDM_VIEW_WORDWRAP,g_bWordWrap);
+  CheckCmd(hmenu,IDM_VIEW_WORDWRAP,Settings.WordWrap);
   CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,g_bMarkLongLines);
   CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,g_bTabsAsSpaces);
   CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,bShowIndentGuides);
@@ -2926,7 +2919,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   CheckCmd(hmenu,IDM_VIEW_SHOWBLANKS,bViewWhiteSpace);
   CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,bViewEOLs);
-  CheckCmd(hmenu,IDM_VIEW_WORDWRAPSYMBOLS,bShowWordWrapSymbols);
+  CheckCmd(hmenu,IDM_VIEW_WORDWRAPSYMBOLS,Settings.ShowWordWrapSymbols);
   CheckCmd(hmenu,IDM_VIEW_MATCHBRACES,bMatchBraces);
   CheckCmd(hmenu,IDM_VIEW_TOOLBAR,bShowToolbar);
   EnableCmd(hmenu,IDM_VIEW_CUSTOMIZETB,bShowToolbar);
@@ -2974,9 +2967,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   if (StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt)))
     i = IDM_VIEW_SHOWEXCERPT;
-  else if (iPathNameFormat == 0)
+  else if (Settings.PathNameFormat == 0)
     i = IDM_VIEW_SHOWFILENAMEONLY;
-  else if (iPathNameFormat == 1)
+  else if (Settings.PathNameFormat == 1)
     i = IDM_VIEW_SHOWFILENAMEFIRST;
   else
     i = IDM_VIEW_SHOWFULLPATH;
@@ -4379,14 +4372,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_FIND:
       if (!IsWindow(Globals.hwndDlgFindReplace)) {
         g_bFindReplCopySelOrClip = true;
-        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &g_efrData, false);
+        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, false);
       }
       else {
         g_bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
         if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
           SendMessage(Globals.hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDMSG_SWITCHTOFIND, 1), 0);
           DestroyWindow(Globals.hwndDlgFindReplace);
-          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &g_efrData, false);
+          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, false);
         }
         else {
           SetForegroundWindow(Globals.hwndDlgFindReplace);
@@ -4400,14 +4393,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_REPLACE:
       if (!IsWindow(Globals.hwndDlgFindReplace)) {
         g_bFindReplCopySelOrClip = true;
-        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &g_efrData, true);
+        Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, true);
       }
       else {
         g_bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
         if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
           SendMessage(Globals.hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDMSG_SWITCHTOREPLACE, 1), 0);
           DestroyWindow(Globals.hwndDlgFindReplace);
-          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &g_efrData, true);
+          Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, true);
         }
         else {
           SetForegroundWindow(Globals.hwndDlgFindReplace);
@@ -4427,7 +4420,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (SciCall_GetTextLength() == 0)
         break;
 
-      if (IsFindPatternEmpty() && !StringCchLenA(g_efrData.szFind, COUNTOF(g_efrData.szFind)))
+      if (IsFindPatternEmpty() && !StringCchLenA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind)))
       {
         if (LOWORD(wParam) != IDM_EDIT_REPLACENEXT)
           SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_FIND,1),0);
@@ -4442,19 +4435,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             if (!SciCall_IsSelectionEmpty()) {
               EditJumpToSelectionEnd(Globals.hwndEdit);
             }
-            EditFindNext(Globals.hwndEdit,&g_efrData,false,false);
+            EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,false,false);
             break;
 
           case IDM_EDIT_FINDPREV:
             if (!SciCall_IsSelectionEmpty()) {
               EditJumpToSelectionStart(Globals.hwndEdit);
             }
-            EditFindPrev(Globals.hwndEdit,&g_efrData,false,false);
+            EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,false,false);
             break;
 
           case IDM_EDIT_REPLACENEXT:
             if (bReplaceInitialized)
-              EditReplace(Globals.hwndEdit,&g_efrData);
+              EditReplace(Globals.hwndEdit,&Settings.EFR_Data);
             else
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_REPLACE,1),0);
             break;
@@ -4463,14 +4456,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             if (!SciCall_IsSelectionEmpty()) {
               EditJumpToSelectionEnd(Globals.hwndEdit);
             }
-            EditFindNext(Globals.hwndEdit,&g_efrData,true,false);
+            EditFindNext(Globals.hwndEdit,&Settings.EFR_Data,true,false);
             break;
 
           case IDM_EDIT_SELTOPREV:
             if (!SciCall_IsSelectionEmpty()) {
               EditJumpToSelectionStart(Globals.hwndEdit);
             }
-            EditFindPrev(Globals.hwndEdit,&g_efrData,true,false);
+            EditFindPrev(Globals.hwndEdit,&Settings.EFR_Data,true,false);
             break;
         }
       }
@@ -4501,9 +4494,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         lpsz = StrChrA(mszSelection, '\r');
         if (lpsz) *lpsz = '\0';
 
-        StringCchCopyA(g_efrData.szFind, COUNTOF(g_efrData.szFind), mszSelection);
-        g_efrData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
-        g_efrData.bTransformBS = false;
+        StringCchCopyA(Settings.EFR_Data.szFind, COUNTOF(Settings.EFR_Data.szFind), mszSelection);
+        Settings.EFR_Data.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
+        Settings.EFR_Data.bTransformBS = false;
 
         WCHAR wszBuf[FNDRPL_BUFFER];
         MultiByteToWideCharStrg(Encoding_SciCP, mszSelection, wszBuf);
@@ -4519,14 +4512,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           if (!SciCall_IsSelectionEmpty()) {
             EditJumpToSelectionEnd(Globals.hwndEdit);
           }
-          EditFindNext(Globals.hwndEdit, &g_efrData, false, false);
+          EditFindNext(Globals.hwndEdit, &Settings.EFR_Data, false, false);
           break;
 
         case CMD_FINDPREVSEL:
           if (!SciCall_IsSelectionEmpty()) {
             EditJumpToSelectionStart(Globals.hwndEdit);
           }
-          EditFindPrev(Globals.hwndEdit, &g_efrData, false, false);
+          EditFindPrev(Globals.hwndEdit, &Settings.EFR_Data, false, false);
           break;
         }
       }
@@ -4534,9 +4527,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     break;
 
 
-
     case IDM_EDIT_COMPLETEWORD:
-      EditCompleteWord(Globals.hwndEdit, true);
+      EditAutoCompleteWord(Globals.hwndEdit, true);
       break;
 
 
@@ -4592,16 +4584,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_WORDWRAP:
-      g_bWordWrap = (g_bWordWrap) ? false : true;
+      Settings.WordWrap = (Settings.WordWrap) ? false : true;
       _SetWrapIndentMode(Globals.hwndEdit);
       EditEnsureSelectionVisible(Globals.hwndEdit);
-      bWordWrapG = g_bWordWrap;
+      g_bWordWrapG = Settings.WordWrap;
       UpdateToolbar();
       break;
 
 
     case IDM_VIEW_WORDWRAPSETTINGS:
-      if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP,&iWordWrapIndent)) {
+      if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP,&Settings.WordWrapIndent)) {
         _SetWrapIndentMode(Globals.hwndEdit);
         _SetWrapVisualFlags(Globals.hwndEdit);
       }
@@ -4609,7 +4601,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_WORDWRAPSYMBOLS:
-      bShowWordWrapSymbols = (bShowWordWrapSymbols) ? false : true;
+      Settings.ShowWordWrapSymbols = (Settings.ShowWordWrapSymbols) ? false : true;
       _SetWrapVisualFlags(Globals.hwndEdit);
       break;
 
@@ -5006,7 +4998,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_SHOWFILENAMEONLY:
     case IDM_VIEW_SHOWFILENAMEFIRST:
     case IDM_VIEW_SHOWFULLPATH:
-      iPathNameFormat = (int)LOWORD(wParam) - IDM_VIEW_SHOWFILENAMEONLY;
+      Settings.PathNameFormat = (int)LOWORD(wParam) - IDM_VIEW_SHOWFILENAMEONLY;
       StringCchCopy(szTitleExcerpt,COUNTOF(szTitleExcerpt),L"");
       UpdateToolbar();
       break;
@@ -6238,7 +6230,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         //  {
         //    int lineNumber = SciCall_LineFromPosition(SciCall_GetEndStyled());
         //    EditUpdateUrlHotspots(Globals.hwndEdit, SciCall_PositionFromLine(lineNumber), (int)scn->position, bHyperlinkHotspot);
-        //    EditUpdateHiddenLineRange(hwnd, &g_efrData, 0, SciCall_GetLineCount());
+        //    EditUpdateHiddenLineRange(hwnd, &Settings.EFR_Data, 0, SciCall_GetLineCount());
         //  }
         //  break;
 
@@ -6336,16 +6328,17 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) 
             {
-              if (SciCall_IsIMEModeCJK()) 
-              {
-                  SciCall_AutoCCancel();
-                  return 0;
-              }
-              if (!SciCall_AutoCActive()) { EditCompleteWord(Globals.hwndEdit, false); }
+              if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
             }
           }
           break;
 
+        case SCN_AUTOCCHARDELETED:
+          if ((g_bAutoCompleteWords || g_bAutoCLexerKeyWords)) 
+          {
+            if (!EditAutoCompleteWord(Globals.hwndEdit, false)) { return 0; }
+          }
+          break;
 
         case SCN_NEEDSHOWN:
           {
@@ -6784,22 +6777,32 @@ void LoadSettings()
     Defaults.SaveFindReplace = false;
     Settings.SaveFindReplace = IniSectionGetBool(pIniSection, L"SaveFindReplace", Defaults.SaveFindReplace);
 
-    g_efrData.bFindClose = IniSectionGetBool(pIniSection, L"CloseFind", false);
-    g_efrData.bReplaceClose = IniSectionGetBool(pIniSection, L"CloseReplace", false);
-    g_efrData.bNoFindWrap = IniSectionGetBool(pIniSection, L"NoFindWrap", false);
-    g_efrData.bTransformBS = IniSectionGetBool(pIniSection, L"FindTransformBS", false);
-    g_efrData.bWildcardSearch = IniSectionGetBool(pIniSection, L"WildcardSearch", false);
-    g_efrData.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", false);
-    g_efrData.bHideNonMatchedLines = IniSectionGetBool(pIniSection, L"HideNonMatchedLines", false);
-    g_efrData.bDotMatchAll = IniSectionGetBool(pIniSection, L"RegexDotMatchesAll", false);
-    g_efrData.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", 0);
+    Defaults.EFR_Data.bFindClose = false;
+    Settings.EFR_Data.bFindClose = IniSectionGetBool(pIniSection, L"CloseFind", Defaults.EFR_Data.bFindClose);
+    Defaults.EFR_Data.bReplaceClose = false;
+    Settings.EFR_Data.bReplaceClose = IniSectionGetBool(pIniSection, L"CloseReplace", Defaults.EFR_Data.bReplaceClose);
+    Defaults.EFR_Data.bNoFindWrap = false;
+    Settings.EFR_Data.bNoFindWrap = IniSectionGetBool(pIniSection, L"NoFindWrap", Defaults.EFR_Data.bNoFindWrap);
+    Defaults.EFR_Data.bTransformBS = false;
+    Settings.EFR_Data.bTransformBS = IniSectionGetBool(pIniSection, L"FindTransformBS", Defaults.EFR_Data.bTransformBS);
+    Defaults.EFR_Data.bWildcardSearch = false;
+    Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(pIniSection, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
+    Defaults.EFR_Data.bMarkOccurences = false;
+    Settings.EFR_Data.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", Defaults.EFR_Data.bMarkOccurences);
+    Defaults.EFR_Data.bHideNonMatchedLines = false;
+    Settings.EFR_Data.bHideNonMatchedLines = IniSectionGetBool(pIniSection, L"HideNonMatchedLines", Defaults.EFR_Data.bHideNonMatchedLines);
+    Defaults.EFR_Data.bDotMatchAll = false;
+    Settings.EFR_Data.bDotMatchAll = IniSectionGetBool(pIniSection, L"RegexDotMatchesAll", Defaults.EFR_Data.bDotMatchAll);
+    Defaults.EFR_Data.fuFlags = 0;
+    Settings.EFR_Data.fuFlags = IniSectionGetUInt(pIniSection, L"efrData_fuFlags", Defaults.EFR_Data.fuFlags);
 
-    if (!IniSectionGetString(pIniSection, L"OpenWithDir", L"", g_tchOpenWithDir, COUNTOF(g_tchOpenWithDir))) {
-      //SHGetSpecialFolderPath(NULL, g_tchOpenWithDir, CSIDL_DESKTOPDIRECTORY, true);
-      GetKnownFolderPath(&FOLDERID_Desktop, g_tchOpenWithDir, COUNTOF(g_tchOpenWithDir));
+    Defaults.OpenWithDir[0] = L'\0';
+    if (!IniSectionGetString(pIniSection, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
+      //SHGetSpecialFolderPath(NULL, Settings.OpenWithDir, CSIDL_DESKTOPDIRECTORY, true);
+      GetKnownFolderPath(&FOLDERID_Desktop, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir));
     }
     else {
-      PathAbsoluteFromApp(g_tchOpenWithDir, NULL, COUNTOF(g_tchOpenWithDir), true);
+      PathAbsoluteFromApp(Settings.OpenWithDir, NULL, COUNTOF(Settings.OpenWithDir), true);
     }
 
     Defaults.FavoritesDir[0] = L'\0';
@@ -6812,20 +6815,27 @@ void LoadSettings()
       PathAbsoluteFromApp(Settings.FavoritesDir, NULL, COUNTOF(Settings.FavoritesDir), true);
     }
 
-    iPathNameFormat = clampi(IniSectionGetInt(pIniSection, L"PathNameFormat", 1), 0, 2);
+    Defaults.PathNameFormat = 1;
+    Settings.PathNameFormat = clampi(IniSectionGetInt(pIniSection, L"PathNameFormat", Defaults.PathNameFormat), 0, 2);
+   
+    Defaults.WordWrap = false;
+    Settings.WordWrap = IniSectionGetBool(pIniSection, L"WordWrap", Defaults.WordWrap);
+    g_bWordWrapG = Settings.WordWrap;
 
-    g_bWordWrap = IniSectionGetBool(pIniSection, L"WordWrap", false);
-    bWordWrapG = g_bWordWrap;
+    Defaults.WordWrapMode = 0;
+    Settings.WordWrapMode = clampi(IniSectionGetInt(pIniSection, L"WordWrapMode", Defaults.WordWrapMode), 0, 1);
 
-    iWordWrapMode = clampi(IniSectionGetInt(pIniSection, L"WordWrapMode", 0), 0, 1);
+    Defaults.WordWrapIndent = 0;
+    Settings.WordWrapIndent = clampi(IniSectionGetInt(pIniSection, L"WordWrapIndent", Defaults.WordWrapIndent), 0, 6);
 
-    iWordWrapIndent = clampi(IniSectionGetInt(pIniSection, L"WordWrapIndent", 0), 0, 6);
+    Defaults.WordWrapSymbols = 22;
+    int iWS = IniSectionGetInt(pIniSection, L"WordWrapSymbols", Defaults.WordWrapSymbols);
+    Settings.WordWrapSymbols = clampi(iWS % 10, 0, 2) + clampi((iWS % 100 - iWS % 10) / 10, 0, 2) * 10;
+    
+    Defaults.ShowWordWrapSymbols = false;
+    Settings.ShowWordWrapSymbols = IniSectionGetBool(pIniSection, L"ShowWordWrapSymbols", Defaults.ShowWordWrapSymbols);
 
-    iWordWrapSymbols = IniSectionGetInt(pIniSection, L"WordWrapSymbols", 22);
-    iWordWrapSymbols = clampi(iWordWrapSymbols % 10, 0, 2) +
-      clampi((iWordWrapSymbols % 100 - iWordWrapSymbols % 10) / 10, 0, 2) * 10;
 
-    bShowWordWrapSymbols = IniSectionGetBool(pIniSection, L"ShowWordWrapSymbols", 0);
 
     bMatchBraces = IniSectionGetBool(pIniSection, L"MatchBraces", true);
 
@@ -7193,6 +7203,7 @@ void SaveSettings(bool bSaveSettingsNow)
   if (pIniSection) {
     IniSectionSetInt(pIniSection, L"SettingsVersion", CFG_VER_CURRENT);
     IniSectionSetBool(pIniSection, L"SaveSettings", s_bSaveSettings);
+
     if (Settings.SaveRecentFiles != Defaults.SaveRecentFiles) {
       IniSectionSetBool(pIniSection, L"SaveRecentFiles", Settings.SaveRecentFiles);
     }
@@ -7202,27 +7213,61 @@ void SaveSettings(bool bSaveSettingsNow)
     if (Settings.SaveFindReplace != Defaults.SaveFindReplace) {
       IniSectionSetBool(pIniSection, L"SaveFindReplace", Settings.SaveFindReplace);
     }
-    
+    if (Settings.EFR_Data.bFindClose != Defaults.EFR_Data.bFindClose) {
+      IniSectionSetBool(pIniSection, L"CloseFind", Settings.EFR_Data.bFindClose);
+    }
+    if (Settings.EFR_Data.bReplaceClose != Defaults.EFR_Data.bReplaceClose) {
+      IniSectionSetBool(pIniSection, L"CloseReplace", Settings.EFR_Data.bReplaceClose);
+    }
+    if (Settings.EFR_Data.bNoFindWrap != Defaults.EFR_Data.bNoFindWrap) {
+      IniSectionSetBool(pIniSection, L"NoFindWrap", Settings.EFR_Data.bNoFindWrap);
+    }
+    if (Settings.EFR_Data.bTransformBS != Defaults.EFR_Data.bTransformBS) {
+      IniSectionSetBool(pIniSection, L"FindTransformBS", Settings.EFR_Data.bTransformBS);
+    }
+    if (Settings.EFR_Data.bWildcardSearch != Defaults.EFR_Data.bWildcardSearch) {
+      IniSectionSetBool(pIniSection, L"WildcardSearch", Settings.EFR_Data.bWildcardSearch);
+    }
+    if (Settings.EFR_Data.bMarkOccurences != Defaults.EFR_Data.bMarkOccurences) {
+      IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", Settings.EFR_Data.bMarkOccurences);
+    }
+    if (Settings.EFR_Data.bHideNonMatchedLines != Defaults.EFR_Data.bHideNonMatchedLines) {
+      IniSectionSetBool(pIniSection, L"HideNonMatchedLines", Settings.EFR_Data.bHideNonMatchedLines);
+    }
+    if (Settings.EFR_Data.bDotMatchAll != Defaults.EFR_Data.bDotMatchAll) {
+      IniSectionSetBool(pIniSection, L"RegexDotMatchesAll", Settings.EFR_Data.bDotMatchAll);
+    }
+    if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags) {
+      IniSectionSetInt(pIniSection, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);
+    }
+    if (StringCchCompareXIW(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
+      PathRelativeToApp(Settings.OpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
+      IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
+    }
+    if (StringCchCompareXIW(Settings.FavoritesDir, Defaults.FavoritesDir) != 0) {
+      PathRelativeToApp(Settings.FavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
+      IniSectionSetString(pIniSection, L"Favorites", wchTmp);
+    }
+    if (Settings.PathNameFormat != Defaults.PathNameFormat) {
+      IniSectionSetInt(pIniSection, L"PathNameFormat", Settings.PathNameFormat);
+    }
+    if (g_bWordWrapG != Defaults.WordWrap) {
+      IniSectionSetBool(pIniSection, L"WordWrap", g_bWordWrapG);
+    }
+    if (Settings.WordWrapMode != Defaults.WordWrapMode) {
+      IniSectionSetInt(pIniSection, L"WordWrapMode", Settings.WordWrapMode);
+    }
+    if (Settings.WordWrapIndent != Defaults.WordWrapIndent) {
+      IniSectionSetInt(pIniSection, L"WordWrapIndent", Settings.WordWrapIndent);
+    }
+    if (Settings.WordWrapSymbols != Defaults.WordWrapSymbols) {
+      IniSectionSetInt(pIniSection, L"WordWrapSymbols", Settings.WordWrapSymbols);
+    }
+    if (Settings.ShowWordWrapSymbols != Defaults.ShowWordWrapSymbols) {
+      IniSectionSetBool(pIniSection, L"ShowWordWrapSymbols", Settings.ShowWordWrapSymbols);
+    }
 
-    IniSectionSetBool(pIniSection, L"CloseFind", g_efrData.bFindClose);
-    IniSectionSetBool(pIniSection, L"CloseReplace", g_efrData.bReplaceClose);
-    IniSectionSetBool(pIniSection, L"NoFindWrap", g_efrData.bNoFindWrap);
-    IniSectionSetBool(pIniSection, L"FindTransformBS", g_efrData.bTransformBS);
-    IniSectionSetBool(pIniSection, L"WildcardSearch", g_efrData.bWildcardSearch);
-    IniSectionSetBool(pIniSection, L"FindMarkAllOccurrences", g_efrData.bMarkOccurences);
-    IniSectionSetBool(pIniSection, L"HideNonMatchedLines", g_efrData.bHideNonMatchedLines);
-    IniSectionSetBool(pIniSection, L"RegexDotMatchesAll", g_efrData.bDotMatchAll);
-    IniSectionSetInt(pIniSection, L"efrData_fuFlags", g_efrData.fuFlags);
-    PathRelativeToApp(g_tchOpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
-    IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
-    PathRelativeToApp(Settings.FavoritesDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
-    IniSectionSetString(pIniSection, L"Favorites", wchTmp);
-    IniSectionSetInt(pIniSection, L"PathNameFormat", iPathNameFormat);
-    IniSectionSetBool(pIniSection, L"WordWrap", bWordWrapG);
-    IniSectionSetInt(pIniSection, L"WordWrapMode", iWordWrapMode);
-    IniSectionSetInt(pIniSection, L"WordWrapIndent", iWordWrapIndent);
-    IniSectionSetInt(pIniSection, L"WordWrapSymbols", iWordWrapSymbols);
-    IniSectionSetBool(pIniSection, L"ShowWordWrapSymbols", bShowWordWrapSymbols);
+
     IniSectionSetBool(pIniSection, L"MatchBraces", bMatchBraces);
     IniSectionSetBool(pIniSection, L"AutoCloseTags", bAutoCloseTags);
     IniSectionSetBool(pIniSection, L"HighlightCurrentLine", bHiliteCurrentLine);
@@ -8110,14 +8155,14 @@ void UpdateToolbar()
 static void __fastcall _UpdateToolbarDelayed()
 {
   SetWindowTitle(Globals.hwndMain, uidsAppTitle, flagIsElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
-                 iPathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
+                 Settings.PathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
                  IDS_MUI_READONLY, g_bFileReadOnly, szTitleExcerpt);
 
   if (!bShowToolbar) { return; }
 
   EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)));
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
-  CheckTool(IDT_VIEW_WORDWRAP, g_bWordWrap);
+  CheckTool(IDT_VIEW_WORDWRAP, Settings.WordWrap);
   CheckTool(IDT_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
 
   bool b1 = SciCall_IsSelectionEmpty();
@@ -8134,7 +8179,7 @@ static void __fastcall _UpdateToolbarDelayed()
 
   EnableTool(IDT_EDIT_FIND, b2);
   //EnableTool(IDT_EDIT_FINDNEXT,b2);
-  //EnableTool(IDT_EDIT_FINDPREV,b2 && StringCchLenA(g_efrData.szFind,0));
+  //EnableTool(IDT_EDIT_FINDPREV,b2 && StringCchLenA(Settings.EFR_Data.szFind,0));
   EnableTool(IDT_EDIT_REPLACE, b2 && !ro);
 
   EnableTool(IDT_EDIT_CUT, !b1 && !ro);
