@@ -228,6 +228,11 @@ DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
 
+DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT)
+DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs)
+DeclareSciCallV01(SetWhitespaceChars, SETWHITESPACECHARS, const char*, chrs)
+DeclareSciCallV01(SetPunctuationChars, SETPUNCTUATIONCHARS, const char*, chrs)
+
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, DocLn)
 DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos)
 DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocLn, line)

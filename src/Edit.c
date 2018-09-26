@@ -6559,39 +6559,43 @@ static const char* __fastcall _strNextLexKeyWord(const char* strg, const char* c
 
 // ----------------------------------------------
 
-void EditCompleteWord(HWND hwnd, bool autoInsert)
+bool EditCompleteWord(HWND hwnd, bool autoInsert)
 {
   UNUSED(hwnd);
+
+  if (SciCall_IsIMEModeCJK()) {
+    SciCall_AutoCCancel();
+    return false;
+  }
 
   char const* const pchAllowdWordChars = ((g_bIsCJKInputCodePage || g_bUseLimitedAutoCCharSet) ? 
                                           AutoCompleteWordCharSet :
                                           (g_bAccelWordNavigation ? WordCharsAccelerated : WordCharsDefault));
+  
+  SciCall_SetWordChars(pchAllowdWordChars);
 
+  DocPos const iDocEndPos = Sci_GetDocEndPosition();
   DocPos const iCurrentPos = SciCall_GetCurrentPos();
-  DocLn  const iLine = SciCall_LineFromPosition(iCurrentPos);
-  DocPos const iLineStart = SciCall_PositionFromLine(iLine);
-  DocPos const iCurrentLinePos = iCurrentPos - iLineStart;
 
-  DocPos iLineLen = SciCall_LineLength(iLine);
-  const char* pLine = SciCall_GetRangePointer(iLineStart, iLineLen);
+  DocPos const iPosBefore = SciCall_PositionBefore(iCurrentPos);
+  DocPos const iWordStartPos = SciCall_WordStartPosition(iPosBefore, true);
 
+  DocPos iPos = iWordStartPos;
   bool bWordAllNumbers = true;
-  DocPos iStartWordPos = iCurrentLinePos;
-  while (iStartWordPos > 0 && StrChrIA(pchAllowdWordChars, pLine[iStartWordPos - 1])) {
-    iStartWordPos--;
-    if (pLine[iStartWordPos] < '0' || pLine[iStartWordPos] > '9') {
+  while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos != iDocEndPos)) {
+    char const ch = SciCall_GetCharAt(iPos);
+    if (ch < '0' || ch > '9') {
       bWordAllNumbers = false;
     }
+    iPos = SciCall_PositionAfter(iPos);
   }
-
-  if ((iStartWordPos == iCurrentLinePos) || bWordAllNumbers || ((iCurrentLinePos - iStartWordPos) < 2)) {
-    return;
+  if ((iWordStartPos == iPosBefore) || bWordAllNumbers || ((iCurrentPos - iWordStartPos) < 2)) {
+    return true;
   }
 
   char pRoot[_MAX_AUTOC_WORD_LEN];
-  DocPosCR const iRootLen = (DocPosCR)(iCurrentLinePos - iStartWordPos);
-
-  StringCchCopyNA(pRoot, COUNTOF(pRoot), pLine + iStartWordPos, (size_t)iRootLen);
+  DocPos const iRootLen = (iCurrentPos - iWordStartPos);
+  StringCchCopyNA(pRoot, COUNTOF(pRoot), SciCall_GetRangePointer(iWordStartPos, iRootLen), (size_t)iRootLen);
 
   int iNumWords = 0;
   size_t iWListSize = 0;
@@ -6640,11 +6644,12 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
       iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
     }
     if (pwlNewWord) { FreeMem(pwlNewWord); pwlNewWord = NULL; }
+    
+    EditSetAccelWordNav(hwnd, g_bAccelWordNavigation);
   }
-
   // --------------------------------------------------------------------------
-
   if (g_bAutoCLexerKeyWords)
+  // --------------------------------------------------------------------------
   {
     PKEYWORDLIST const pKeyWordList = Style_GetCurrentLexerPtr()->pKeyWords;
 
@@ -6712,6 +6717,7 @@ void EditCompleteWord(HWND hwnd, bool autoInsert)
       FreeMem(pList);
     }
   }
+  return true;
 }
 
 
@@ -6741,12 +6747,10 @@ void EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool bActi
     startPos = SciCall_PositionFromLine(lineNo);
     endPos = SciCall_GetLineEndPosition(lineNo);
   }
-  if (endPos == startPos)
-    return;
+  if (endPos == startPos) { return; }
 
   DocPos start = startPos;
   DocPos end = endPos;
-  
   do {
     DocPos const iPos = _FindInTarget(hwnd, pszUrlRegEx, iRegExLen, SCFIND_NP3_REGEX, &start, &end, false, FRMOD_IGNORE);
 
@@ -7738,15 +7742,15 @@ bool EditSortDlg(HWND hwnd,int* piSortFlags)
 //
 void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
 {
+  UNUSED(hwnd);
   g_bAccelWordNavigation = bAccelWordNav;
-
   if (g_bAccelWordNavigation) {
-    SendMessage(hwnd, SCI_SETWORDCHARS, 0, (LPARAM)WordCharsAccelerated);
-    SendMessage(hwnd, SCI_SETWHITESPACECHARS, 0,(LPARAM)WhiteSpaceCharsAccelerated);
-    SendMessage(hwnd, SCI_SETPUNCTUATIONCHARS,0,(LPARAM)PunctuationCharsAccelerated);
+    SciCall_SetWordChars(WordCharsAccelerated);
+    SciCall_SetWhitespaceChars(WhiteSpaceCharsAccelerated);
+    SciCall_SetPunctuationChars(PunctuationCharsAccelerated);
   }
   else
-    SendMessage(hwnd, SCI_SETCHARSDEFAULT, 0, 0);
+    SciCall_SetCharsDefault();
 }
 
 
