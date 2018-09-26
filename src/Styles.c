@@ -134,8 +134,6 @@ static int  g_cyStyleSelectDlg;
 
 
 extern int  g_iDefaultCharSet;
-extern bool bHiliteCurrentLine;
-extern bool g_bHyperlinkHotspot;
 
 
 //=============================================================================
@@ -814,7 +812,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   SendMessage(hwnd, SCI_SETWHITESPACESIZE, iValue, 0);
 
   // current line background
-  Style_SetCurrentLineBackground(hwnd, bHiliteCurrentLine);
+  Style_SetCurrentLineBackground(hwnd, Settings.HighlightCurrentLine);
 
   // bookmark line or marker
   Style_SetBookmark(hwnd, g_bShowSelectionMargin);
@@ -1023,9 +1021,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   EditApplyLexerStyle(hwnd, 0, -1);
 
   // update UI for hotspots
-  if (g_bHyperlinkHotspot) {
-    Style_SetUrlHotSpot(hwnd, g_bHyperlinkHotspot);
-    EditUpdateUrlHotspots(hwnd, 0, Sci_GetDocEndPosition(), g_bHyperlinkHotspot);
+  if (Settings.HyperlinkHotspot) {
+    Style_SetUrlHotSpot(hwnd, Settings.HyperlinkHotspot);
+    EditUpdateUrlHotspots(hwnd, 0, Sci_GetDocEndPosition(), Settings.HyperlinkHotspot);
   }
 
   UpdateToolbar();
