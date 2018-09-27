@@ -122,35 +122,27 @@ static WCHAR  s_tchLastSaveCopyDir[MAX_PATH + 1] = { L'\0' };
 
 // Globals <= @@@
 bool      g_bWordWrapG;
+bool      g_bTabsAsSpacesG;
+bool      g_bTabIndentsG;
+int       g_iTabWidthG;
+int       g_iIndentWidthG;
+int       g_iLongLinesLimitG;
 
 
-bool      g_bTabsAsSpaces;
-bool      bTabsAsSpacesG;
-bool      g_bTabIndents;
-bool      bTabIndentsG;
-bool      bBackspaceUnindents;
-int       g_iTabWidth;
-int       iTabWidthG;
-int       g_iIndentWidth;
-int       iIndentWidthG;
-bool      g_bMarkLongLines;
-int       g_iLongLinesLimit;
-int       iLongLinesLimitG;
-int       iLongLineMode;
+
+
 int       iWrapCol = 0;
-bool      g_bShowSelectionMargin;
-bool      g_bShowLineNumbers;
+
 bool      g_bZeroBasedColumnIndex;
 bool      g_bZeroBasedCharacterCount;
 int       g_iReplacedOccurrences;
-int       g_iMarkOccurrences;
 int       g_iMarkOccurrencesCount;
-bool      g_bMarkOccurrencesMatchVisible;
+
 bool      g_bMarkOccurrencesMatchCase;
 bool      g_bMarkOccurrencesMatchWords;
 bool      g_bMarkOccurrencesCurrentWord;
 bool      g_bCodeFoldingAvailable;
-bool      g_bShowCodeFolding;
+
 bool      bViewWhiteSpace;
 bool      bViewEOLs;
 bool      bUseDefaultForFileEncoding;
@@ -1268,7 +1260,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     SetNotifyIconTitle(Globals.hwndMain);
 
   g_iReplacedOccurrences = 0;
-  g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
+  g_iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
 
   UpdateToolbar();
   UpdateStatusbar(false);
@@ -1491,8 +1483,8 @@ static void __fastcall _SetWrapStartIndent(HWND hwndEditCtrl)
   switch (Settings.WordWrapIndent) {
   case 1: i = 1; break;
   case 2: i = 2; break;
-  case 3: i = (g_iIndentWidth) ? 1 * g_iIndentWidth : 1 * g_iTabWidth; break;
-  case 4: i = (g_iIndentWidth) ? 2 * g_iIndentWidth : 2 * g_iTabWidth; break;
+  case 3: i = (Settings.IndentWidth) ? 1 * Settings.IndentWidth : 1 * Settings.TabWidth; break;
+  case 4: i = (Settings.IndentWidth) ? 2 * Settings.IndentWidth : 2 * Settings.TabWidth; break;
   }
   SendMessage(hwndEditCtrl, SCI_SETWRAPSTARTINDENT, i, 0);
 }
@@ -1667,11 +1659,11 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((Settings.ScrollPastEOF) ? 0 : 1), 0);
 
   // Tabs
-  SendMessage(hwndEditCtrl, SCI_SETUSETABS, (WPARAM)!g_bTabsAsSpaces, 0);
-  SendMessage(hwndEditCtrl, SCI_SETTABINDENTS, (WPARAM)g_bTabIndents, 0);
-  SendMessage(hwndEditCtrl, SCI_SETBACKSPACEUNINDENTS, (WPARAM)bBackspaceUnindents, 0);
-  SendMessage(hwndEditCtrl, SCI_SETTABWIDTH, (WPARAM)g_iTabWidth, 0);
-  SendMessage(hwndEditCtrl, SCI_SETINDENT, (WPARAM)g_iIndentWidth, 0);
+  SendMessage(hwndEditCtrl, SCI_SETUSETABS, (WPARAM)!Settings.TabsAsSpaces, 0);
+  SendMessage(hwndEditCtrl, SCI_SETTABINDENTS, (WPARAM)Settings.TabIndents, 0);
+  SendMessage(hwndEditCtrl, SCI_SETBACKSPACEUNINDENTS, (WPARAM)Settings.BackspaceUnindents, 0);
+  SendMessage(hwndEditCtrl, SCI_SETTABWIDTH, (WPARAM)Settings.TabWidth, 0);
+  SendMessage(hwndEditCtrl, SCI_SETINDENT, (WPARAM)Settings.IndentWidth, 0);
 
   // Indent Guides
   Style_SetIndentGuides(hwndEditCtrl, Settings.ShowIndentGuides);
@@ -1681,12 +1673,12 @@ static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
   _SetWrapVisualFlags(hwndEditCtrl);
 
   // Long Lines
-  if (g_bMarkLongLines)
-    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)((iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND), 0);
+  if (Settings.MarkLongLines)
+    SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)((Settings.LongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND), 0);
   else
     SendMessage(hwndEditCtrl, SCI_SETEDGEMODE, (WPARAM)EDGE_NONE, 0);
 
-  SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)g_iLongLinesLimit, 0);
+  SendMessage(hwndEditCtrl, SCI_SETEDGECOLUMN, (WPARAM)Settings.LongLinesLimit, 0);
 
   // general margin
   SendMessage(hwndEditCtrl, SCI_SETMARGINOPTIONS, (WPARAM)SC_MARGINOPTION_SUBLINESELECT, 0);
@@ -2860,22 +2852,22 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
 
   EnableCmd(hmenu, IDM_VIEW_FOLDING, g_bCodeFoldingAvailable);
-  CheckCmd(hmenu, IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  CheckCmd(hmenu, IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
 
   bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
   bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
-  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !e && (g_bCodeFoldingAvailable && g_bShowCodeFolding) && (bF || bH));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !e && (g_bCodeFoldingAvailable && Settings.ShowCodeFolding) && (bF || bH));
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
   CheckCmd(hmenu,IDM_VIEW_WORDWRAP,Settings.WordWrap);
-  CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,g_bMarkLongLines);
-  CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,g_bTabsAsSpaces);
+  CheckCmd(hmenu,IDM_VIEW_LONGLINEMARKER,Settings.MarkLongLines);
+  CheckCmd(hmenu,IDM_VIEW_TABSASSPACES,Settings.TabsAsSpaces);
   CheckCmd(hmenu,IDM_VIEW_SHOWINDENTGUIDES,Settings.ShowIndentGuides);
   CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,Settings.AutoIndent);
-  CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,g_bShowLineNumbers);
-  CheckCmd(hmenu,IDM_VIEW_MARGIN,g_bShowSelectionMargin);
+  CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,Settings.ShowLineNumbers);
+  CheckCmd(hmenu,IDM_VIEW_MARGIN,Settings.ShowSelectionMargin);
   CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!e && !ro);
@@ -2884,11 +2876,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   
   CheckCmd(hmenu,IDM_VIEW_ACCELWORDNAV,Settings.AccelWordNavigation);
 
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (g_iMarkOccurrences > 0));
-  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, (Settings.MarkOccurrences > 0));
+  CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, g_bMarkOccurrencesMatchCase);
 
-  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+  EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, EditToggleView(Globals.hwndEdit, false));
 
   if (g_bMarkOccurrencesMatchWords)
@@ -2901,7 +2893,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
   CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 17), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
 
-  i = (int)(g_iMarkOccurrences > 0);
+  i = (int)(Settings.MarkOccurrences > 0);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
@@ -3637,8 +3629,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SendMessage(Globals.hwndEdit, SCI_SETUSETABS, true, 0);
         SendMessage(Globals.hwndEdit, SCI_SETTABINDENTS, false, 0);
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false);
-        SendMessage(Globals.hwndEdit, SCI_SETTABINDENTS, g_bTabIndents, 0);
-        SendMessage(Globals.hwndEdit, SCI_SETUSETABS, !g_bTabsAsSpaces, 0);
+        SendMessage(Globals.hwndEdit, SCI_SETTABINDENTS, Settings.TabIndents, 0);
+        SendMessage(Globals.hwndEdit, SCI_SETUSETABS, !Settings.TabsAsSpaces, 0);
         _END_UNDO_ACTION_;
       }
       break;
@@ -3816,13 +3808,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_COLUMNWRAP:
       {
         if (iWrapCol == 0) {
-          iWrapCol = g_iLongLinesLimit;
+          iWrapCol = Settings.LongLinesLimit;
         }
 
         UINT uWrpCol = 0;
         if (ColumnWrapDlg(hwnd,IDD_MUI_COLUMNWRAP,&uWrpCol))
         {
-          iWrapCol = (DocPos)clampi((int)uWrpCol, 1, g_iLongLinesLimit);
+          iWrapCol = (DocPos)clampi((int)uWrpCol, 1, Settings.LongLinesLimit);
           BeginWaitCursor(NULL);
           _BEGIN_UNDO_ACTION_;
           EditWrapToColumn(Globals.hwndEdit,iWrapCol);
@@ -3934,7 +3926,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
-        EditTabsToSpaces(Globals.hwndEdit, g_iTabWidth, false);
+        EditTabsToSpaces(Globals.hwndEdit, Settings.TabWidth, false);
         _END_UNDO_ACTION_;
         EndWaitCursor();
       }
@@ -3945,7 +3937,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
-        EditSpacesToTabs(Globals.hwndEdit, g_iTabWidth, false);
+        EditSpacesToTabs(Globals.hwndEdit, Settings.TabWidth, false);
         _END_UNDO_ACTION_;
         EndWaitCursor();
       }
@@ -3956,7 +3948,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
-        EditTabsToSpaces(Globals.hwndEdit, g_iTabWidth, true);
+        EditTabsToSpaces(Globals.hwndEdit, Settings.TabWidth, true);
         _END_UNDO_ACTION_;
         EndWaitCursor();
       }
@@ -3967,7 +3959,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         _BEGIN_UNDO_ACTION_;
-        EditSpacesToTabs(Globals.hwndEdit, g_iTabWidth, true);
+        EditSpacesToTabs(Globals.hwndEdit, Settings.TabWidth, true);
         _END_UNDO_ACTION_;
         EndWaitCursor();
       }
@@ -4600,9 +4592,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_LONGLINEMARKER:
-      g_bMarkLongLines = (g_bMarkLongLines) ? false: true;
-      if (g_bMarkLongLines) {
-        SendMessage(Globals.hwndEdit,SCI_SETEDGEMODE,(iLongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
+      Settings.MarkLongLines = (Settings.MarkLongLines) ? false: true;
+      if (Settings.MarkLongLines) {
+        SendMessage(Globals.hwndEdit,SCI_SETEDGEMODE,(Settings.LongLineMode == EDGE_LINE)?EDGE_LINE:EDGE_BACKGROUND,0);
         Style_SetLongLineColors(Globals.hwndEdit);
       }
       else
@@ -4614,13 +4606,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_LONGLINESETTINGS:
-      if (LongLineSettingsDlg(hwnd,IDD_MUI_LONGLINES,&g_iLongLinesLimit)) {
-        g_bMarkLongLines = true;
-        SendMessage(Globals.hwndEdit, SCI_SETEDGEMODE, (iLongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
+      if (LongLineSettingsDlg(hwnd,IDD_MUI_LONGLINES,&Settings.LongLinesLimit)) {
+        Settings.MarkLongLines = true;
+        SendMessage(Globals.hwndEdit, SCI_SETEDGEMODE, (Settings.LongLineMode == EDGE_LINE) ? EDGE_LINE : EDGE_BACKGROUND, 0);
         Style_SetLongLineColors(Globals.hwndEdit);
-        g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
-        SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
-        iLongLinesLimitG = g_iLongLinesLimit;
+        Settings.LongLinesLimit = clampi(Settings.LongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
+        SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
+        g_iLongLinesLimitG = Settings.LongLinesLimit;
         UpdateToolbar();
         UpdateStatusbar(false);
       }
@@ -4628,26 +4620,26 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_TABSASSPACES:
-      g_bTabsAsSpaces = (g_bTabsAsSpaces) ? false : true;
-      SendMessage(Globals.hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
-      bTabsAsSpacesG = g_bTabsAsSpaces;
+      Settings.TabsAsSpaces = (Settings.TabsAsSpaces) ? false : true;
+      SendMessage(Globals.hwndEdit,SCI_SETUSETABS,!Settings.TabsAsSpaces,0);
+      g_bTabsAsSpacesG = Settings.TabsAsSpaces;
       break;
 
 
     case IDM_VIEW_TABSETTINGS:
       if (TabSettingsDlg(hwnd,IDD_MUI_TABSETTINGS,NULL))
       {
-        SendMessage(Globals.hwndEdit,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
-        SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
-        SendMessage(Globals.hwndEdit,SCI_SETBACKSPACEUNINDENTS,bBackspaceUnindents,0);
-        g_iTabWidth = clampi(g_iTabWidth, 1, 256);
-        g_iIndentWidth = clampi(g_iIndentWidth, 0, 256);
-        SendMessage(Globals.hwndEdit,SCI_SETTABWIDTH,g_iTabWidth,0);
-        SendMessage(Globals.hwndEdit,SCI_SETINDENT,g_iIndentWidth,0);
-        bTabsAsSpacesG = g_bTabsAsSpaces;
-        bTabIndentsG   = g_bTabIndents;
-        iTabWidthG     = g_iTabWidth;
-        iIndentWidthG  = g_iIndentWidth;
+        SendMessage(Globals.hwndEdit,SCI_SETUSETABS,!Settings.TabsAsSpaces,0);
+        SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,Settings.TabIndents,0);
+        SendMessage(Globals.hwndEdit,SCI_SETBACKSPACEUNINDENTS,Settings.BackspaceUnindents,0);
+        Settings.TabWidth = clampi(Settings.TabWidth, 1, 256);
+        Settings.IndentWidth = clampi(Settings.IndentWidth, 0, 256);
+        SendMessage(Globals.hwndEdit,SCI_SETTABWIDTH,Settings.TabWidth,0);
+        SendMessage(Globals.hwndEdit,SCI_SETINDENT,Settings.IndentWidth,0);
+        g_bTabsAsSpacesG = Settings.TabsAsSpaces;
+        g_bTabIndentsG   = Settings.TabIndents;
+        g_iTabWidthG     = Settings.TabWidth;
+        g_iIndentWidthG  = Settings.IndentWidth;
         if (SendMessage(Globals.hwndEdit, SCI_GETWRAPINDENTMODE, 0, 0) == SC_WRAPINDENT_FIXED) {
           _SetWrapStartIndent(Globals.hwndEdit);
         }
@@ -4667,13 +4659,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_LINENUMBERS:
-      g_bShowLineNumbers = (g_bShowLineNumbers) ? false : true;
+      Settings.ShowLineNumbers = (Settings.ShowLineNumbers) ? false : true;
       UpdateMarginWidth();
       break;
 
 
     case IDM_VIEW_MARGIN:
-      g_bShowSelectionMargin = (g_bShowSelectionMargin) ? false : true;
+      Settings.ShowSelectionMargin = (Settings.ShowSelectionMargin) ? false : true;
       UpdateMarginWidth();
       break;
 
@@ -4694,15 +4686,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_MARKOCCUR_ONOFF:
-      g_iMarkOccurrences = (g_iMarkOccurrences == 0) ? max_i(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
+      Settings.MarkOccurrences = (Settings.MarkOccurrences == 0) ? max_i(1, IniGetInt(L"Settings", L"MarkOccurrences", 1)) : 0;
       MarkAllOccurrences(0, true);
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
       break;
 
     case IDM_VIEW_MARKOCCUR_VISIBLE:
-      g_bMarkOccurrencesMatchVisible = (g_bMarkOccurrencesMatchVisible) ? false : true;
+      Settings.MarkOccurrencesMatchVisible = (Settings.MarkOccurrencesMatchVisible) ? false : true;
       MarkAllOccurrences(0, true);
-      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+      EnableCmd(GetMenu(hwnd), IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
       break;
 
     case IDM_VIEW_TOGGLE_VIEW:
@@ -4741,9 +4733,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_FOLDING:
-      g_bShowCodeFolding = (g_bShowCodeFolding) ? false : true;
-      Style_SetFolding(Globals.hwndEdit, g_bShowCodeFolding);
-      if (!g_bShowCodeFolding) { EditToggleFolds(EXPAND, true); }
+      Settings.ShowCodeFolding = (Settings.ShowCodeFolding) ? false : true;
+      Style_SetFolding(Globals.hwndEdit, Settings.ShowCodeFolding);
+      if (!Settings.ShowCodeFolding) { EditToggleFolds(EXPAND, true); }
       UpdateToolbar();
       break;
 
@@ -5437,18 +5429,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_INCLINELIMIT:
     case CMD_DECLINELIMIT:
-      if (!g_bMarkLongLines)
+      if (!Settings.MarkLongLines)
         SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_VIEW_LONGLINEMARKER,1),0);
       else {
         if (LOWORD(wParam) == CMD_INCLINELIMIT)
-          g_iLongLinesLimit++;
+          Settings.LongLinesLimit++;
         else
-          g_iLongLinesLimit--;
-        g_iLongLinesLimit = clampi(g_iLongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
-        SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
+          Settings.LongLinesLimit--;
+        Settings.LongLinesLimit = clampi(Settings.LongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
+        SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
         UpdateToolbar();
         UpdateStatusbar(false);
-        iLongLinesLimitG = g_iLongLinesLimit;
+        g_iLongLinesLimitG = Settings.LongLinesLimit;
       }
       break;
 
@@ -6205,7 +6197,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
           }
           if (bModified) {
-            if (g_iMarkOccurrences > 0) {
+            if (Settings.MarkOccurrences > 0) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, true);
             }
             if (scn->linesAdded != 0) {
@@ -6244,7 +6236,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               EditMatchBrace(Globals.hwndEdit);
             }
 
-            if (g_iMarkOccurrences > 0) {
+            if (Settings.MarkOccurrences > 0) {
               // clear marks only, if selection changed
               if (iUpd & SC_UPDATE_SELECTION)
               {
@@ -6270,7 +6262,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           }
           else if (iUpd & SC_UPDATE_V_SCROLL)
           {
-            if ((g_iMarkOccurrences > 0) && g_bMarkOccurrencesMatchVisible) {
+            if ((Settings.MarkOccurrences > 0) && Settings.MarkOccurrencesMatchVisible) {
               MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
             }
             if (Settings.HyperlinkHotspot) {
@@ -6398,7 +6390,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           return 0LL;
       }
       // in any case 
-      if (g_bMarkOccurrencesCurrentWord && (g_iMarkOccurrences > 0)) {
+      if (g_bMarkOccurrencesCurrentWord && (Settings.MarkOccurrences > 0)) {
         MarkAllOccurrences(Settings2.UpdateDelayMarkAllOccurrences, false);
       }
       return -1LL;
@@ -6858,37 +6850,53 @@ void LoadSettings()
     Defaults.ShowIndentGuides = false;
     Settings.ShowIndentGuides = IniSectionGetBool(pIniSection, L"ShowIndentGuides", Defaults.ShowIndentGuides);
 
+    Defaults.TabsAsSpaces = false;
+    Settings.TabsAsSpaces = IniSectionGetBool(pIniSection, L"TabsAsSpaces", Defaults.TabsAsSpaces);
+    g_bTabsAsSpacesG = Settings.TabsAsSpaces;
 
-    g_bTabsAsSpaces = IniSectionGetBool(pIniSection, L"TabsAsSpaces", false);
-    bTabsAsSpacesG = g_bTabsAsSpaces;
+    Defaults.TabIndents = true;
+    Settings.TabIndents = IniSectionGetBool(pIniSection, L"TabIndents", Defaults.TabIndents);
+    g_bTabIndentsG = Settings.TabIndents;
+    
+    Defaults.BackspaceUnindents = false;
+    Settings.BackspaceUnindents = IniSectionGetBool(pIniSection, L"BackspaceUnindents", Defaults.BackspaceUnindents);
+    
+    Defaults.TabWidth = 4;
+    Settings.TabWidth = clampi(IniSectionGetInt(pIniSection, L"TabWidth", Defaults.TabWidth), 1, 256);
+    g_iTabWidthG = Settings.TabWidth;
 
-    g_bTabIndents = IniSectionGetBool(pIniSection, L"TabIndents", true);
-    bTabIndentsG = g_bTabIndents;
+    Defaults.IndentWidth = 0;
+    Settings.IndentWidth = clampi(IniSectionGetInt(pIniSection, L"IndentWidth", Defaults.IndentWidth), 0, 256);
+    g_iIndentWidthG = Settings.IndentWidth;
 
-    bBackspaceUnindents = IniSectionGetBool(pIniSection, L"BackspaceUnindents", false);
+    Defaults.MarkLongLines = true;
+    Settings.MarkLongLines = IniSectionGetBool(pIniSection, L"MarkLongLines", Defaults.MarkLongLines);
 
-    g_iTabWidth = clampi(IniSectionGetInt(pIniSection, L"TabWidth", 4), 1, 256);
-    iTabWidthG = g_iTabWidth;
+    Defaults.LongLinesLimit = 80;
+    Settings.LongLinesLimit = clampi(IniSectionGetInt(pIniSection, L"LongLinesLimit", Defaults.LongLinesLimit), 0, LONG_LINES_MARKER_LIMIT);
+    g_iIndentWidthG = Settings.LongLinesLimit;
 
-    g_iIndentWidth = clampi(IniSectionGetInt(pIniSection, L"IndentWidth", 0), 0, 256);
-    iIndentWidthG = g_iIndentWidth;
+    Defaults.LongLineMode = EDGE_LINE;
+    Settings.LongLineMode = clampi(IniSectionGetInt(pIniSection, L"LongLineMode", Defaults.LongLineMode), EDGE_LINE, EDGE_BACKGROUND);
 
-    g_bMarkLongLines = IniSectionGetBool(pIniSection, L"MarkLongLines", true);
+    Defaults.ShowSelectionMargin = true;
+    Settings.ShowSelectionMargin = IniSectionGetBool(pIniSection, L"ShowSelectionMargin", Defaults.ShowSelectionMargin);
 
-    g_iLongLinesLimit = clampi(IniSectionGetInt(pIniSection, L"LongLinesLimit", 80), 0, LONG_LINES_MARKER_LIMIT);
-    iLongLinesLimitG = g_iLongLinesLimit;
+    Defaults.ShowLineNumbers = true;
+    Settings.ShowLineNumbers = IniSectionGetBool(pIniSection, L"ShowLineNumbers", Defaults.ShowLineNumbers);
 
-    iLongLineMode = clampi(IniSectionGetInt(pIniSection, L"LongLineMode", EDGE_LINE), EDGE_LINE, EDGE_BACKGROUND);
+    Defaults.ShowCodeFolding = true;
+    Settings.ShowCodeFolding = IniSectionGetBool(pIniSection, L"ShowCodeFolding", Defaults.ShowCodeFolding);
 
-    g_bShowSelectionMargin = IniSectionGetBool(pIniSection, L"ShowSelectionMargin", false);
+    Defaults.MarkOccurrences = 1;
+    Settings.MarkOccurrences = clampi(IniSectionGetInt(pIniSection, L"MarkOccurrences", Defaults.MarkOccurrences), 0, 3);
 
-    g_bShowLineNumbers = IniSectionGetBool(pIniSection, L"ShowLineNumbers", true);
+    Defaults.MarkOccurrencesMatchVisible = false;
+    Settings.MarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", Defaults.MarkOccurrencesMatchVisible);
 
-    g_bShowCodeFolding = IniSectionGetBool(pIniSection, L"ShowCodeFolding", true);
 
-    g_iMarkOccurrences = clampi(IniSectionGetInt(pIniSection, L"MarkOccurrences", 1), 0, 3);
 
-    g_bMarkOccurrencesMatchVisible = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchVisible", false);
+
     g_bMarkOccurrencesMatchCase = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchCase", false);
     g_bMarkOccurrencesMatchWords = IniSectionGetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", true);
     g_bMarkOccurrencesCurrentWord = IniSectionGetBool(pIniSection, L"MarkOccurrencesCurrentWord", !g_bMarkOccurrencesMatchWords);
@@ -7295,20 +7303,48 @@ void SaveSettings(bool bSaveSettingsNow)
     if (Settings.ShowIndentGuides != Defaults.ShowIndentGuides) {
       IniSectionSetBool(pIniSection, L"ShowIndentGuides", Settings.ShowIndentGuides);
     }
+    if (g_bTabsAsSpacesG != Defaults.TabsAsSpaces) {
+      IniSectionSetBool(pIniSection, L"TabsAsSpaces", g_bTabsAsSpacesG);
+    }
+    if (g_bTabIndentsG != Defaults.TabIndents) {
+      IniSectionSetBool(pIniSection, L"TabIndents", g_bTabIndentsG);
+    }
+    if (Settings.BackspaceUnindents != Defaults.BackspaceUnindents) {
+      IniSectionSetBool(pIniSection, L"BackspaceUnindents", Settings.BackspaceUnindents);
+    }
+    if (g_iTabWidthG != Defaults.TabWidth) {
+      IniSectionSetInt(pIniSection, L"TabWidth", g_iTabWidthG);
+    }
+    if (g_iIndentWidthG != Defaults.TabWidth) {
+      IniSectionSetInt(pIniSection, L"IndentWidth", g_iIndentWidthG);
+    }
+    if (Settings.MarkLongLines != Defaults.MarkLongLines) {
+      IniSectionSetBool(pIniSection, L"MarkLongLines", Settings.MarkLongLines);
+    }
+    if (g_iLongLinesLimitG != Defaults.LongLinesLimit) {
+      IniSectionSetInt(pIniSection, L"LongLinesLimit", g_iLongLinesLimitG);
+    }
+    if (Settings.LongLineMode != Defaults.LongLineMode) {
+      IniSectionSetInt(pIniSection, L"LongLineMode", Settings.LongLineMode);
+    }
+    if (Settings.ShowSelectionMargin != Defaults.ShowSelectionMargin) {
+      IniSectionSetBool(pIniSection, L"ShowSelectionMargin", Settings.ShowSelectionMargin);
+    }
+    if (Settings.ShowLineNumbers != Defaults.ShowLineNumbers) {
+      IniSectionSetBool(pIniSection, L"ShowLineNumbers", Settings.ShowLineNumbers);
+    }
+    if (Settings.ShowCodeFolding != Defaults.ShowCodeFolding) {
+      IniSectionSetBool(pIniSection, L"ShowCodeFolding", Settings.ShowCodeFolding);
+    }
+    if (Settings.MarkOccurrences != Defaults.MarkOccurrences) {
+      IniSectionSetInt(pIniSection, L"MarkOccurrences", Settings.MarkOccurrences);
+    }
+    if (Settings.MarkOccurrencesMatchVisible != Defaults.MarkOccurrencesMatchVisible) {
+      IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", Settings.MarkOccurrencesMatchVisible);
+    }
 
-    IniSectionSetBool(pIniSection, L"TabsAsSpaces", bTabsAsSpacesG);
-    IniSectionSetBool(pIniSection, L"TabIndents", bTabIndentsG);
-    IniSectionSetBool(pIniSection, L"BackspaceUnindents", bBackspaceUnindents);
-    IniSectionSetInt(pIniSection, L"TabWidth", iTabWidthG);
-    IniSectionSetInt(pIniSection, L"IndentWidth", iIndentWidthG);
-    IniSectionSetBool(pIniSection, L"MarkLongLines", g_bMarkLongLines);
-    IniSectionSetPos(pIniSection, L"LongLinesLimit", iLongLinesLimitG);
-    IniSectionSetInt(pIniSection, L"LongLineMode", iLongLineMode);
-    IniSectionSetBool(pIniSection, L"ShowSelectionMargin", g_bShowSelectionMargin);
-    IniSectionSetBool(pIniSection, L"ShowLineNumbers", g_bShowLineNumbers);
-    IniSectionSetBool(pIniSection, L"ShowCodeFolding", g_bShowCodeFolding);
-    IniSectionSetInt(pIniSection, L"MarkOccurrences", g_iMarkOccurrences);
-    IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchVisible", g_bMarkOccurrencesMatchVisible);
+
+
     IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchCase", g_bMarkOccurrencesMatchCase);
     IniSectionSetBool(pIniSection, L"MarkOccurrencesMatchWholeWords", g_bMarkOccurrencesMatchWords);
     IniSectionSetBool(pIniSection, L"MarkOccurrencesCurrentWord", g_bMarkOccurrencesCurrentWord);
@@ -8209,9 +8245,9 @@ static void __fastcall _UpdateToolbarDelayed()
   EnableTool(IDT_EDIT_COPY, !b1 && !ro);
   EnableTool(IDT_EDIT_CLEAR, !b1 && !ro);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
 
-  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible));
+  EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible));
   CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
 }
 
@@ -8679,9 +8715,9 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (s_iStatusbarVisible[STATUS_OCCURRENCE] || Globals.hwndDlgFindReplace)
   {
-    if ((s_bMOVisible != g_bMarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != g_iMarkOccurrencesCount))
+    if ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != g_iMarkOccurrencesCount))
     {
-      if ((g_iMarkOccurrencesCount >= 0) && !g_bMarkOccurrencesMatchVisible)
+      if ((g_iMarkOccurrencesCount >= 0) && !Settings.MarkOccurrencesMatchVisible)
       {
         if ((Settings2.MarkOccurrencesMaxCount < 0) || (g_iMarkOccurrencesCount < Settings2.MarkOccurrencesMaxCount))
         {
@@ -8701,7 +8737,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
       StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
         s_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, s_mxSBPostfix[STATUS_OCCURRENCE]);
 
-      s_bMOVisible = g_bMarkOccurrencesMatchVisible;
+      s_bMOVisible = Settings.MarkOccurrencesMatchVisible;
       s_iMarkOccurrencesCount = g_iMarkOccurrencesCount;
       bIsUpdateNeeded = true;
     }
@@ -8925,7 +8961,7 @@ static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
 //
 void UpdateMarginWidth()
 {
-  if (g_bShowLineNumbers)
+  if (Settings.ShowLineNumbers)
   {
     char chLines[32] = { '\0' };
     StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)SciCall_GetLineCount());
@@ -8941,8 +8977,8 @@ void UpdateMarginWidth()
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
 
-  Style_SetFolding(Globals.hwndEdit, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
-  Style_SetBookmark(Globals.hwndEdit, g_bShowSelectionMargin);
+  Style_SetFolding(Globals.hwndEdit, (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  Style_SetBookmark(Globals.hwndEdit, Settings.ShowSelectionMargin);
 }
 
 

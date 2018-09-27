@@ -50,11 +50,7 @@
 extern const int FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;
-extern bool g_bShowCodeFolding;
-extern bool g_bShowSelectionMargin;
 extern bool g_bIniFileFromScratch;
-
-extern int  g_iMarkOccurrences;
 
 extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
@@ -673,7 +669,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (!Style_StrGetColor(true, pCurrentStandard->Styles[STY_MARK_OCC].szValue, &dColor))
   {
     WCHAR* sty = L"";
-    switch (g_iMarkOccurrences) {
+    switch (Settings.MarkOccurrences) {
     case 1:
       sty = L"fore:0xFF0000";
       dColor = RGB(0xFF, 0x00, 0x00);
@@ -815,7 +811,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetCurrentLineBackground(hwnd, Settings.HighlightCurrentLine);
 
   // bookmark line or marker
-  Style_SetBookmark(hwnd, g_bShowSelectionMargin);
+  Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
 
   // caret style and width
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"block")) {
@@ -1309,8 +1305,8 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   }
 
   // set width
-  Style_SetBookmark(hwnd, g_bShowSelectionMargin);
-  Style_SetFolding(hwnd, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
+  Style_SetFolding(hwnd, (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
 }
 
 

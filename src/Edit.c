@@ -92,17 +92,10 @@ extern bool g_bUseLimitedAutoCCharSet;
 extern bool g_bIsCJKInputCodePage;
 
 extern int  g_iReplacedOccurrences;
-extern int  g_iMarkOccurrences;
 extern int  g_iMarkOccurrencesCount;
-extern bool g_bMarkOccurrencesMatchVisible;
 
 extern bool g_bCodeFoldingAvailable;
-extern bool g_bShowCodeFolding;
 
-extern bool g_bTabsAsSpaces;
-extern bool g_bTabIndents;
-extern int  g_iTabWidth;
-extern int  g_iIndentWidth;
 extern bool g_bZeroBasedColumnIndex;
 
 extern CALLTIPTYPE g_CallTipType;
@@ -5017,8 +5010,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       g_iReplacedOccurrences = 0;
       g_FindReplaceMatchFoundState = FND_NOP;
 
-      iSaveMarkOcc = bSwitchedFindReplace ? iSaveMarkOcc : g_iMarkOccurrences;
-      bSaveOccVisible = bSwitchedFindReplace ? bSaveOccVisible : g_bMarkOccurrencesMatchVisible;
+      iSaveMarkOcc = bSwitchedFindReplace ? iSaveMarkOcc : Settings.MarkOccurrences;
+      bSaveOccVisible = bSwitchedFindReplace ? bSaveOccVisible : Settings.MarkOccurrencesMatchVisible;
 
       //const WORD wTabSpacing = (WORD)SendMessage(sg_pefrData->hwnd, SCI_GETTABWIDTH, 0, 0);;  // dialog box units
       //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
@@ -5089,8 +5082,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       }
 
       if (sg_pefrData->bMarkOccurences) {
-        g_iMarkOccurrences = 0;
-        g_bMarkOccurrencesMatchVisible = false;
+        Settings.MarkOccurrences = 0;
+        Settings.MarkOccurrencesMatchVisible = false;
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
@@ -5101,7 +5094,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
         EditClearAllOccurrenceMarkers(Globals.hwndEdit);
       }
-      EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
+      EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
 
 
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
@@ -5182,8 +5175,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
           sg_pefrData->szFind[0] = '\0';
 
-          g_iMarkOccurrences = iSaveMarkOcc;
-          g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
+          Settings.MarkOccurrences = iSaveMarkOcc;
+          Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
 
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
@@ -5408,11 +5401,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           if (IsDlgButtonChecked(hwnd, IDC_ALL_OCCURRENCES) == BST_CHECKED) 
           {
-            iSaveMarkOcc = g_iMarkOccurrences;
-            bSaveOccVisible = g_bMarkOccurrencesMatchVisible;
+            iSaveMarkOcc = Settings.MarkOccurrences;
+            bSaveOccVisible = Settings.MarkOccurrencesMatchVisible;
 
-            g_iMarkOccurrences = 0;
-            g_bMarkOccurrencesMatchVisible = false;
+            Settings.MarkOccurrences = 0;
+            Settings.MarkOccurrencesMatchVisible = false;
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
 
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
@@ -5420,9 +5413,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
           }
           else {  // switched OFF
-            g_iMarkOccurrences = iSaveMarkOcc;
-            g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
-            //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+            Settings.MarkOccurrences = iSaveMarkOcc;
+            Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
+            //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
             if (EditToggleView(Globals.hwndEdit, false)) {
               PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
@@ -6010,7 +6003,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
     EditClearAllOccurrenceMarkers(hwnd);
   }
 
-  if (g_iMarkOccurrences <= 0) {
+  if (Settings.MarkOccurrences <= 0) {
     g_iMarkOccurrencesCount = -1;
     return;
   }
@@ -6020,7 +6013,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   _IGNORE_NOTIFY_CHANGE_;
   _ENTER_TARGET_TRANSACTION_;
 
-  if (g_bMarkOccurrencesMatchVisible) {
+  if (Settings.MarkOccurrencesMatchVisible) {
     // get visible lines for update
     DocLn const iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
 
@@ -6337,7 +6330,7 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
     SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
     SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, SciCall_GetTextLength());
     _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK);
-    g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
+    g_iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
 
     _OBSERVE_NOTIFY_CHANGE_;
   }
@@ -6366,13 +6359,13 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
 
     if (!bHideNonMatchedLines) {
       bSaveFoldingAvailable = g_bCodeFoldingAvailable;
-      bSaveShowFolding = g_bShowCodeFolding;
+      bSaveShowFolding = Settings.ShowCodeFolding;
       bSaveHyperlinkHotspots = Settings.HyperlinkHotspot;
       Settings.HyperlinkHotspot = false;
     }
     else {
       g_bCodeFoldingAvailable = bSaveFoldingAvailable;
-      g_bShowCodeFolding = bSaveShowFolding;
+      Settings.ShowCodeFolding = bSaveShowFolding;
       Settings.HyperlinkHotspot = bSaveHyperlinkHotspots;
     }
     EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
@@ -6805,7 +6798,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     DocLn const iLnCount = SciCall_GetLineCount();
     for (DocLn iLine = 0; iLine < iLnCount; ++iLine) { SciCall_SetFoldLevel(iLine, SC_FOLDLEVELBASE); }
     SciCall_SetFoldFlags(0);
-    Style_SetFolding(hwnd, g_bCodeFoldingAvailable && g_bShowCodeFolding);
+    Style_SetFolding(hwnd, g_bCodeFoldingAvailable && Settings.ShowCodeFolding);
     EditApplyLexerStyle(hwnd, 0, -1);
     SciCall_FoldAll(EXPAND);
   }
@@ -6815,7 +6808,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
     // prepare hidden (folding) settings
     g_bCodeFoldingAvailable = true; // saved before
-    g_bShowCodeFolding = true;      // saved before
+    Settings.ShowCodeFolding = true;      // saved before
     SciCall_SetProperty("fold", "1");
     SciCall_SetProperty("fold.foldsyntaxbased", "1");
     SciCall_SetProperty("fold.comment", "1");
@@ -7904,42 +7897,41 @@ bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
 //
 //  FileVars_Apply()
 //
-extern bool bTabsAsSpacesG;
-extern bool bTabIndentsG;
-extern int iTabWidthG;
-extern int iIndentWidthG;
+extern bool g_bTabsAsSpacesG;
+extern bool g_bTabIndentsG;
+extern int g_iTabWidthG;
+extern int g_iIndentWidthG;
 extern bool g_bWordWrapG;
-extern int g_iLongLinesLimit;
-extern int iLongLinesLimitG;
+extern int g_iLongLinesLimitG;
 extern int iWrapCol;
 
 bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
 
   if (lpfv->mask & FV_TABWIDTH)
-    g_iTabWidth = lpfv->iTabWidth;
+    Settings.TabWidth = lpfv->iTabWidth;
   else
-    g_iTabWidth = iTabWidthG;
-  SendMessage(hwnd,SCI_SETTABWIDTH,g_iTabWidth,0);
+    Settings.TabWidth = g_iTabWidthG;
+  SendMessage(hwnd,SCI_SETTABWIDTH,Settings.TabWidth,0);
 
   if (lpfv->mask & FV_INDENTWIDTH)
-    g_iIndentWidth = lpfv->iIndentWidth;
+    Settings.IndentWidth = lpfv->iIndentWidth;
   else if (lpfv->mask & FV_TABWIDTH)
-    g_iIndentWidth = 0;
+    Settings.IndentWidth = 0;
   else
-    g_iIndentWidth = iIndentWidthG;
-  SendMessage(hwnd,SCI_SETINDENT,g_iIndentWidth,0);
+    Settings.IndentWidth = g_iIndentWidthG;
+  SendMessage(hwnd,SCI_SETINDENT,Settings.IndentWidth,0);
 
   if (lpfv->mask & FV_TABSASSPACES)
-    g_bTabsAsSpaces = lpfv->bTabsAsSpaces;
+    Settings.TabsAsSpaces = lpfv->bTabsAsSpaces;
   else
-    g_bTabsAsSpaces = bTabsAsSpacesG;
-  SendMessage(hwnd,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
+    Settings.TabsAsSpaces = g_bTabsAsSpacesG;
+  SendMessage(hwnd,SCI_SETUSETABS,!Settings.TabsAsSpaces,0);
 
   if (lpfv->mask & FV_TABINDENTS)
-    g_bTabIndents = lpfv->bTabIndents;
+    Settings.TabIndents = lpfv->bTabIndents;
   else
-    g_bTabIndents = bTabIndentsG;
-  SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
+    Settings.TabIndents = g_bTabIndentsG;
+  SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,Settings.TabIndents,0);
 
   if (lpfv->mask & FV_WORDWRAP)
     Settings.WordWrap = lpfv->fWordWrap;
@@ -7952,11 +7944,11 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
     SendMessage(Globals.hwndEdit,SCI_SETWRAPMODE,(Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
 
   if (lpfv->mask & FV_LONGLINESLIMIT)
-    g_iLongLinesLimit = lpfv->iLongLinesLimit;
+    Settings.LongLinesLimit = lpfv->iLongLinesLimit;
   else
-    g_iLongLinesLimit = iLongLinesLimitG;
+    Settings.LongLinesLimit = g_iLongLinesLimitG;
 
-  SendMessage(hwnd,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
+  SendMessage(hwnd,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
 
   iWrapCol = 0;
 
@@ -8262,7 +8254,7 @@ void EditFoldClick(DocLn ln, int mode)
 
 void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
 {
-  if (g_bCodeFoldingAvailable && g_bShowCodeFolding)
+  if (g_bCodeFoldingAvailable && Settings.ShowCodeFolding)
   {
     DocLn ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
 

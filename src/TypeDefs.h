@@ -248,6 +248,20 @@ typedef struct _settings_t
   bool AutoCLexerKeyWords;
   bool AccelWordNavigation;
   bool ShowIndentGuides;
+  bool TabsAsSpaces;
+  bool TabIndents;
+  bool BackspaceUnindents;
+  int TabWidth;
+  int IndentWidth;
+  bool MarkLongLines;
+  int LongLinesLimit;
+  int LongLineMode;
+  bool ShowSelectionMargin;
+  bool ShowLineNumbers;
+  bool ShowCodeFolding;
+  int MarkOccurrences;
+  bool MarkOccurrencesMatchVisible;
+
 
 
   EDITFINDREPLACE EFR_Data;
