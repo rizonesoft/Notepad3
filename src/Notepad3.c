@@ -6793,7 +6793,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, CPI_NONE, CED_NO_MAPPING, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, Encoding_MapIniSetting(true, (int)GetACP()), CED_NO_MAPPING, INT_MAX);
     // if DefaultEncoding is not defined set to system's current code-page 
     Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ?
       Encoding_MapIniSetting(true, (int)GetACP()) : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
