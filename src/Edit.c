@@ -169,17 +169,17 @@ extern bool g_bMarkOccurrencesCurrentWord;
 //
 static volatile LONG s_lTargetTransactionGuard = 0L;
 
-static bool __fastcall _IsInTargetTransaction()
+static bool  _IsInTargetTransaction()
 {
   return (InterlockedOr(&s_lTargetTransactionGuard, 0L) != 0L);
 }
 
-static void __fastcall _EnterTargetTransaction()
+static void  _EnterTargetTransaction()
 {
   InterlockedIncrement(&s_lTargetTransactionGuard);
 }
 
-static void __fastcall _LeaveTargetTransaction()
+static void  _LeaveTargetTransaction()
 {
   if (_IsInTargetTransaction()) {
     InterlockedDecrement(&s_lTargetTransactionGuard);
@@ -217,7 +217,7 @@ static int msgcmp(void* mqc1, void* mqc2)
 
 #define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
 
-static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
+static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
   CmdMessageQueue_t* pmqc = NULL;
   DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
@@ -243,7 +243,7 @@ static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycl
 // ----------------------------------------------------------------------------
 
 
-static void __fastcall _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
+static void  _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 {
   CmdMessageQueue_t* pmqc = NULL;
 
@@ -365,7 +365,7 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 //  _ClearTextBuffer()
 //
-void __fastcall _ClearTextBuffer(HWND hwnd)
+void  _ClearTextBuffer(HWND hwnd)
 {
   UndoRedoRecordingStop();
 
@@ -394,7 +394,7 @@ void __fastcall _ClearTextBuffer(HWND hwnd)
 //
 //  _InitTextBuffer()
 //
-void __fastcall _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
+void  _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
 {
   if (textLen > 0) {
     SciCall_AddText(textLen, lpstrText);
@@ -2307,7 +2307,7 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
 //
 //  _EditMoveLines()
 //
-static void __fastcall _EditMoveLines(bool bMoveUp)
+static void  _EditMoveLines(bool bMoveUp)
 {
   if (SciCall_IsSelectionRectangle()) {
     MsgBoxLng(MBWARN, IDS_MUI_SELRECT);
@@ -3127,7 +3127,7 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 //
 //  _AppendSpaces()
 //
-static DocPos __fastcall _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos iMaxColumn, bool bSkipEmpty)
+static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos iMaxColumn, bool bSkipEmpty)
 {
   UNUSED(hwnd);
 
@@ -4569,7 +4569,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 //
 //  _EditSetSearchFlags()
 //
-static void __fastcall _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
+static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 {
   char szBuf[FNDRPL_BUFFER];
 
@@ -4768,7 +4768,7 @@ static void __fastcall _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 // Wildcard search uses the regexp engine to perform a simple search with * ? as wildcards 
 // instead of more advanced and user-unfriendly regexp syntax
 // for speed, we only need POSIX syntax here
-static void __fastcall _EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
+static void  _EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 {
   char szWildcardEscaped[FNDRPL_BUFFER] = { '\0' };
   int iSource = 0;
@@ -4819,7 +4819,7 @@ static void __fastcall _EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 //
 //  _EditGetFindStrg()
 //
-static int __fastcall _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, int cchCnt)
+static int  _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, int cchCnt)
 {
   UNUSED(hwnd);
   if (StringCchLenA(lpefr->szFind, COUNTOF(lpefr->szFind))) {
@@ -4850,7 +4850,7 @@ static int __fastcall _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPST
 //
 //  _FindInTarget()
 //
-static DocPos __fastcall _FindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int flags, 
+static DocPos  _FindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int flags, 
                                    DocPos* start, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
 {
   DocPos _start = *start;
@@ -4908,7 +4908,7 @@ static DocPos __fastcall _FindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, 
 //
 typedef enum { MATCH = 0, NO_MATCH = 1, INVALID = 2 } RegExResult_t;
 
-static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, bool bMarkAll, bool bFirstMatchOnly)
+static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, bool bMarkAll, bool bFirstMatchOnly)
 {
   char szFind[FNDRPL_BUFFER];
   DocPos slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
@@ -4947,7 +4947,7 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
 //
 //  _DeleteLineStateAll()
 //
-static void __fastcall _DeleteLineStateAll(int const iLineStateBit)
+static void  _DeleteLineStateAll(int const iLineStateBit)
 {
   DocLn const iLastLine = SciCall_GetLineCount();
   for (DocLn iLine = 0; iLine < iLastLine; ++iLine) {
@@ -4964,7 +4964,7 @@ static void __fastcall _DeleteLineStateAll(int const iLineStateBit)
 //  _DelayMarkAll()
 //  
 //
-static void __fastcall _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
+static void  _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
   mqc.hwnd = hwnd;
@@ -6078,7 +6078,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
 //
 //  _GetReplaceString()
 //
-static char* __fastcall _GetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
+static char*  _GetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
 {
   char* pszReplace = NULL; // replace text of arbitrary size
   if (StringCchCompareNIA(lpefr->szReplace, FNDRPL_BUFFER, "^c", 2) == 0) {
@@ -6515,17 +6515,17 @@ typedef struct WLIST {
 } WLIST, *PWLIST;
 
 
-static int __fastcall wordcmp(PWLIST a, PWLIST b) {
+static int  wordcmp(PWLIST a, PWLIST b) {
   return StringCchCompareXA(a->word, b->word);
 }
 
-static int __fastcall wordcmpi(PWLIST a, PWLIST b) {
+static int  wordcmpi(PWLIST a, PWLIST b) {
   return StringCchCompareXIA(a->word, b->word);
 }
 
 // ----------------------------------------------
 
-static const char* __fastcall _strNextLexKeyWord(const char* strg, const char* const wdroot, DocPosCR* pwdlen)
+static const char*  _strNextLexKeyWord(const char* strg, const char* const wdroot, DocPosCR* pwdlen)
 {
   char const sep = ' ';
   bool found = false;
@@ -6888,7 +6888,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 //
 //  EditHighlightIfBrace()
 //
-static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
+static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
 {
   UNUSED(hwnd);
   if (iPos < 0) {
@@ -7812,7 +7812,7 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 //
 extern bool g_bNoEncodingTags;
 
-static void __fastcall _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
+static void  _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
 {
   int i;
   bool bDisableFileVar = false;

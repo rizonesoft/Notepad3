@@ -343,10 +343,10 @@ int const FontQuality[4] = {
 // undo / redo  selections
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), NULL, NULL, NULL };
 static UT_array* UndoRedoSelectionUTArray = NULL;
-static bool __fastcall _InUndoRedoTransaction();
-static void __fastcall _SaveRedoSelection(int token);
-static int __fastcall  _SaveUndoSelection();
-static int __fastcall  _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection);
+static bool  _InUndoRedoTransaction();
+static void  _SaveRedoSelection(int token);
+static int   _SaveUndoSelection();
+static int   _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection);
 
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
@@ -416,7 +416,7 @@ static int msgcmp(void* mqc1, void* mqc2)
 
 #define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
 
-static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
+static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
   CmdMessageQueue_t* pmqc = NULL;
   DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
@@ -441,7 +441,7 @@ static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycl
 }
 // ----------------------------------------------------------------------------
 
-static void __fastcall _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
+static void  _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 {
   CmdMessageQueue_t* pmqc;
 
@@ -508,10 +508,10 @@ static int s_flagBufferFile         = 0;
 //==============================================================================
 
 // static forward declarations 
-static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw);
-static void __fastcall _UpdateToolbarDelayed();
-static bool __fastcall _RegisterWndClass(HINSTANCE hInstance);
-static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID const langID);
+static void  _UpdateStatusbarDelayed(bool bForceRedraw);
+static void  _UpdateToolbarDelayed();
+static bool  _RegisterWndClass(HINSTANCE hInstance);
+static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID const langID);
 
 //==============================================================================
 //
@@ -520,7 +520,7 @@ static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID
 //
 static bool IsDocumentModified = false;
 
-static void __fastcall _SetDocumentModified(bool bModified)
+static void  _SetDocumentModified(bool bModified)
 {
   if (IsDocumentModified != bModified) {
     IsDocumentModified = bModified;
@@ -537,7 +537,7 @@ static void __fastcall _SetDocumentModified(bool bModified)
 //==============================================================================
 
 
-static void __fastcall _InitConstants()
+static void  _InitConstants()
 {
   Constants.FileBrowserMiniPath = L"minipath.exe";
 }
@@ -765,7 +765,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
 //  _RegisterWndClass()
 //
 //
-static bool __fastcall _RegisterWndClass(HINSTANCE hInstance)
+static bool  _RegisterWndClass(HINSTANCE hInstance)
 {
   if (!Globals.hDlgIcon) {
     Globals.hDlgIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
@@ -794,7 +794,7 @@ static bool __fastcall _RegisterWndClass(HINSTANCE hInstance)
 //  _LngStrToMultiLngStr
 //
 //
-static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
+static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
 {
   bool rtnVal = true;
 
@@ -834,7 +834,7 @@ static bool __fastcall _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr,
 //  _LoadLanguageResources
 //
 //
-static HMODULE __fastcall _LoadLanguageResources(const WCHAR* localeName, LANGID const langID)
+static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID const langID)
 {
   bool bLngAvailable = (StrStrIW(s_tchAvailableLanguages, localeName) != NULL);
   if (!bLngAvailable) { return NULL; }
@@ -893,7 +893,7 @@ static volatile LONG iWaitCursorStackCounter = 0L;
 //  CheckWaitCursorStack()
 //
 //
-static bool __fastcall CheckWaitCursorStack()
+static bool  CheckWaitCursorStack()
 {
   return (InterlockedOr(&iWaitCursorStackCounter, 0L) == 0L);
 }
@@ -942,7 +942,7 @@ void EndWaitCursor()
 //  _InitWindowPosition()
 //
 //
-static WININFO __fastcall _InitDefaultWndPos(const int flagsPos)
+static WININFO  _InitDefaultWndPos(const int flagsPos)
 {
   RECT rc;
   GetWindowRect(GetDesktopWindow(), &rc);
@@ -959,7 +959,7 @@ static WININFO __fastcall _InitDefaultWndPos(const int flagsPos)
 }
 // ----------------------------------------------------------------------------
 
-static void __fastcall _InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
+static void  _InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
 {
   WININFO winfo = *pWinInfo;
 
@@ -1485,7 +1485,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 //  _SetWrapStartIndent()
 //
-static void __fastcall _SetWrapStartIndent(HWND hwndEditCtrl)
+static void  _SetWrapStartIndent(HWND hwndEditCtrl)
 {
   int i = 0;
   switch (Settings.WordWrapIndent) {
@@ -1502,7 +1502,7 @@ static void __fastcall _SetWrapStartIndent(HWND hwndEditCtrl)
 //
 //  _SetWrapIndentMode()
 //
-static void __fastcall _SetWrapIndentMode(HWND hwndEditCtrl)
+static void  _SetWrapIndentMode(HWND hwndEditCtrl)
 {
   int const wrap_mode = (!Settings.WordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
 
@@ -1528,7 +1528,7 @@ static void __fastcall _SetWrapIndentMode(HWND hwndEditCtrl)
 //
 //  _SetWrapVisualFlags()
 //
-static void __fastcall _SetWrapVisualFlags(HWND hwndEditCtrl)
+static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
 {
   if (Settings.ShowWordWrapSymbols) {
     int wrapVisualFlags = 0;
@@ -1568,7 +1568,7 @@ static void __fastcall _SetWrapVisualFlags(HWND hwndEditCtrl)
 //
 //  InitializeSciEditCtrl()
 //
-static void __fastcall _InitializeSciEditCtrl(HWND hwndEditCtrl)
+static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 {
   if (IsVista()) {
     // Current platforms perform window buffering so it is almost always better for this option to be turned off.
@@ -5959,7 +5959,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 //
 //  _HandleAutoIndent()
 //
-static void __fastcall _HandleAutoIndent(int const charAdded) 
+static void  _HandleAutoIndent(int const charAdded) 
 {
   // TODO: handle indent after '{' and un-indent on '}' in C/C++ ?
   // in CRLF mode handle LF only...
@@ -6013,7 +6013,7 @@ static void __fastcall _HandleAutoIndent(int const charAdded)
 //
 //  _HandleAutoCloseTags()
 //
-static void __fastcall _HandleAutoCloseTags()
+static void  _HandleAutoCloseTags()
 {
   ///int lexerID = SciCall_GetLexer();
   ///if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
@@ -6071,7 +6071,7 @@ static void __fastcall _HandleAutoCloseTags()
 //
 //  _HandleTinyExpr() - called on '?' insert
 //
-static void __fastcall _HandleTinyExpr()
+static void  _HandleTinyExpr()
 {
   DocPos const iCurPos = SciCall_GetCurrentPos();
   DocPos const iPosBefore = SciCall_PositionBefore(iCurPos);
@@ -6107,7 +6107,7 @@ static void __fastcall _HandleTinyExpr()
 //
 //   _IsIMEOpenInNoNativeMode()
 //
-static bool __fastcall _IsIMEOpenInNoNativeMode()
+static bool  _IsIMEOpenInNoNativeMode()
 {
   bool result = false;
   HIMC const himc = ImmGetContext(Globals.hwndEdit);
@@ -7903,7 +7903,7 @@ void LoadFlags()
 //  FindIniFile()
 //
 //
-static bool __fastcall _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
+static bool  _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
   WCHAR tchBuild[MAX_PATH] = { L'\0' };
@@ -7949,7 +7949,7 @@ static bool __fastcall _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 }
 
 
-static bool __fastcall _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile,LPCWSTR lpszModule)
+static bool  _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
   if (GetPrivateProfileString(lpszAppName, lpszKeyName, L"", tch, COUNTOF(tch), lpszFile)) {
@@ -8110,7 +8110,7 @@ int CreateIniFileEx(LPCWSTR lpszIniFile)
 //  DelayUpdateStatusbar()
 //  
 //
-static void __fastcall DelayUpdateStatusbar(int delay, bool bForceRedraw)
+static void  DelayUpdateStatusbar(int delay, bool bForceRedraw)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_STATUSBAR, 1), (LPARAM)0, 0 };
   mqc.hwnd = Globals.hwndMain;
@@ -8124,7 +8124,7 @@ static void __fastcall DelayUpdateStatusbar(int delay, bool bForceRedraw)
 //  DelayUpdateToolbar()
 //  
 //
-static void __fastcall DelayUpdateToolbar(int delay)
+static void  DelayUpdateToolbar(int delay)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_TOOLBAR, 1), (LPARAM)0, 0 };
   mqc.hwnd = Globals.hwndMain;
@@ -8175,7 +8175,7 @@ void UpdateToolbar()
 #define EnableTool(id,b) SendMessage(s_hwndToolbar,TB_ENABLEBUTTON,id, MAKELONG(((b) ? 1 : 0), 0))
 #define CheckTool(id,b)  SendMessage(s_hwndToolbar,TB_CHECKBUTTON,id, MAKELONG((b),0))
 
-static void __fastcall _UpdateToolbarDelayed()
+static void  _UpdateToolbarDelayed()
 {
   SetWindowTitle(Globals.hwndMain, uidsAppTitle, flagIsElevated, IDS_MUI_UNTITLED, Globals.CurrentFile,
                  Settings.PathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
@@ -8221,7 +8221,7 @@ static void __fastcall _UpdateToolbarDelayed()
 //
 //  _StatusCalcPaneWidth()
 //
-static LONG __fastcall _StatusCalcPaneWidth(HWND hwnd, LPCWSTR lpsz)
+static LONG  _StatusCalcPaneWidth(HWND hwnd, LPCWSTR lpsz)
 {
   HDC const hdc = GetDC(hwnd);
   HGDIOBJ const hfont = (HGDIOBJ)SendMessage(hwnd, WM_GETFONT, 0, 0);
@@ -8248,7 +8248,7 @@ static LONG __fastcall _StatusCalcPaneWidth(HWND hwnd, LPCWSTR lpsz)
 #define txtWidth 80
 typedef WCHAR sectionTxt_t[txtWidth];
 
-static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchStatusBar[], bool* bIsUpdNeeded)
+static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchStatusBar[], bool* bIsUpdNeeded)
 {
   static int s_iWinFormerWidth = -1;
   if (s_iWinFormerWidth != s_WinCurrentWidth) {
@@ -8377,7 +8377,7 @@ static void __fastcall _CalculateStatusbarSections(int vSectionWidth[], sectionT
 //  _InterpRectSelTinyExpr()
 //
 //
-static double __fastcall _InterpRectSelTinyExpr(int* piExprError)
+static double  _InterpRectSelTinyExpr(int* piExprError)
 {
   #define _tmpBufCnt 128
   char tmpRectSelN[_tmpBufCnt] = { '\0' };
@@ -8424,7 +8424,7 @@ const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", 
 
 FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
 
-static void __fastcall _UpdateStatusbarDelayed(bool bForceRedraw)
+static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
   if (!bShowStatusbar) { return; }
 
@@ -8988,7 +8988,7 @@ static volatile LONG UndoActionToken = UNDOREDO_BLOCKED; // block
 
 //=============================================================================
 
-static bool __fastcall _InUndoRedoTransaction() {
+static bool  _InUndoRedoTransaction() {
   return (InterlockedOr(&UndoActionToken, 0L) != UNDOREDO_FREE);
 }
 
@@ -9025,7 +9025,7 @@ void UndoRedoRecordingStop()
 //  _SaveUndoSelection()
 //
 //
-static int __fastcall _SaveUndoSelection()
+static int  _SaveUndoSelection()
 {
   UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
   sel.selMode_undo = (int)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONMODE, 0, 0);
@@ -9065,7 +9065,7 @@ static int __fastcall _SaveUndoSelection()
 //  _SaveRedoSelection()
 //
 //
-static void __fastcall _SaveRedoSelection(int token)
+static void  _SaveRedoSelection(int token)
 {
   if (token >= 0) {
     UndoRedoSelection_t sel = INIT_UNDOREDOSEL;
@@ -9209,7 +9209,7 @@ void RestoreAction(int token, DoAction doAct)
 //  _UndoSelectionMap()
 //
 //
-static int __fastcall _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection)
+static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection)
 {
   if (UndoRedoSelectionUTArray == NULL)  { return -1; }
 

@@ -36,7 +36,7 @@
 // ============================================================================
 
 #ifndef _T
-#if !defined(ISPP_INVOKED) && (defined(UNICODE) || defined(_UNICODE))
+#if (defined(UNICODE) || defined(_UNICODE))
 #define _T(text) L##text
 #else
 #define _T(text) text
@@ -269,16 +269,25 @@ bool PathCreateFavLnk(LPCWSTR,LPCWSTR,LPCWSTR);
 
 
 bool StrLTrim(LPWSTR,LPCWSTR);
+
 inline bool TrimStringA(LPSTR lpString) {
   if (!lpString || !*lpString) { return false; }
   StrTrimA(lpString, " ");
   return true;
 };
+
 inline bool TrimStringW(LPWSTR lpString) {
   if (!lpString || !*lpString) { return false; }
   StrTrimW(lpString, L" ");
   return true;
 };
+
+#if (defined(UNICODE) || defined(_UNICODE))
+#define TrimString TrimStringW
+#else
+#define TrimString TrimStringA
+#endif
+
 bool ExtractFirstArgument(LPCWSTR, LPWSTR, LPWSTR, int);
 
 void PrepareFilterStr(LPWSTR);

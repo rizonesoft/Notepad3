@@ -804,7 +804,7 @@ void ChooseFontDialog::OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT* lpDrawItem)
 // ############################################################################
 
 
-static void __fastcall SetChosenFontFromTextFormat(
+static void  SetChosenFontFromTextFormat(
   IDWriteTextFormat* textFormat, 
   LPCHOOSEFONT lpCF, const UINT dpi)
 {
