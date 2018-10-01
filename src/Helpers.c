@@ -267,7 +267,7 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
 {
   // TODO: length limit of lpCachedIniSection
   WCHAR* p = lpCachedIniSection;
-  if (p) {
+  if (p && lpString) {
     while (*p) {
       p = StrEnd(p,0) + 1; // skip '\0\0's
     }
@@ -330,7 +330,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 UINT GetCurrentDPI(HWND hwnd) {
   UINT dpi = 0;
   if (IsWin10()) {
-    HMODULE const hModule = GetModuleHandle(_T("user32.dll"));
+    HMODULE const hModule = GetModuleHandle(MKWCS("user32.dll"));
     if (hModule) {
       FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
       if (pfnGetDpiForWindow) {

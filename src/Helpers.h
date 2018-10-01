@@ -35,16 +35,16 @@
 
 // ============================================================================
 
-#ifndef _T
-#if (defined(UNICODE) || defined(_UNICODE))
-#define _T(text) L##text
-#else
-#define _T(text) text
-#endif
+#ifndef _MKWCS
+#define _DO_STRINGIFYA(s) #s
+#define _DO_STRINGIFYW(s) L ## #s
+#define STRG(s)  _DO_STRINGIFYA(s)
+#define STRGW(s) _DO_STRINGIFYW(s)
+
+#define _MKWCS(s) L ## s
+#define MKWCS(s)  _MKWCS(s)
 #endif
 
-#define STRGFY(X)     L##(X)
-#define MKWSTRG(strg) STRGFY(strg)
 
 #define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)
@@ -320,25 +320,6 @@ UINT CharSetFromCodePage(UINT);
 
 
 //==== MRU Functions ==========================================================
-#define MRU_MAXITEMS    32
-#define MRU_ITEMSFILE   32
-#define MRU_ITEMSFNDRPL 16
-#define MRU_NOCASE    1
-#define MRU_UTF8      2
-#define MRU_BMRK_SIZE 512
-
-typedef struct _mrulist 
-{
-  LPCWSTR szRegKey;
-  int     iFlags;
-  int     iSize;
-  LPWSTR  pszItems[MRU_MAXITEMS];
-  int     iEncoding[MRU_MAXITEMS];
-  DocPos  iCaretPos[MRU_MAXITEMS];
-  LPWSTR  pszBookMarks[MRU_MAXITEMS];
-} 
-MRULIST, *PMRULIST, *LPMRULIST;
-
 
 LPMRULIST MRU_Create(LPCWSTR,int,int);
 bool      MRU_Destroy(LPMRULIST);

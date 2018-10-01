@@ -153,6 +153,28 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
+
+// --------------------------------------------------------------------------
+
+#define MRU_MAXITEMS    32
+#define MRU_ITEMSFILE   32
+#define MRU_ITEMSFNDRPL 16
+#define MRU_NOCASE    1
+#define MRU_UTF8      2
+#define MRU_BMRK_SIZE 512
+
+typedef struct _mrulist
+{
+  LPCWSTR szRegKey;
+  int     iFlags;
+  int     iSize;
+  LPWSTR  pszItems[MRU_MAXITEMS];
+  int     iEncoding[MRU_MAXITEMS];
+  DocPos  iCaretPos[MRU_MAXITEMS];
+  LPWSTR  pszBookMarks[MRU_MAXITEMS];
+}
+MRULIST, *PMRULIST, *LPMRULIST;
+
 // --------------------------------------------------------------------------
 
 typedef struct _cmq
@@ -215,6 +237,10 @@ typedef struct _globals_t
   UINT		  uCurrentPPI;
   LANGID    iPrefLANGID;
   int       iEOLMode;
+  LPMRULIST pFileMRU;
+  LPMRULIST pMRUfind;
+  LPMRULIST pMRUreplace;
+
 
   WCHAR     WorkingDirectory[MAX_PATH + 1];
   WCHAR     IniFile[MAX_PATH + 1];
@@ -290,7 +316,20 @@ typedef struct _settings_t
   int Bidirectional;
   bool ShowToolbar;
   bool ShowStatusbar;
-
+  int EncodingDlgSizeX;
+  int EncodingDlgSizeY;
+  int RecodeDlgSizeX;
+  int RecodeDlgSizeY;
+  int FileMRUDlgSizeX;
+  int FileMRUDlgSizeY;
+  int OpenWithDlgSizeX;
+  int OpenWithDlgSizeY;
+  int FavoritesDlgSizeX;
+  int FavoritesDlgSizeY;
+  int FindReplaceDlgPosX;
+  int FindReplaceDlgPosY;
+  int CustomSchemesDlgPosX;
+  int CustomSchemesDlgPosY;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
