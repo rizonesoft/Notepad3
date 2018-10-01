@@ -86,8 +86,6 @@ static int    s_iSettingsVersion = CFG_VER_NONE;
 static bool   s_bSaveSettings;
 static bool   s_bEnableSaveSettings;
 
-static WCHAR  s_tchToolbarButtons[MIDSZ_BUFFER] = { L'\0' };
-
 static prefix_t s_mxSBPrefix[STATUS_SECTOR_COUNT];
 static prefix_t s_mxSBPostfix[STATUS_SECTOR_COUNT];
 
@@ -140,8 +138,6 @@ bool      g_bZeroBasedCharacterCount;
 int       g_iReplacedOccurrences;
 int       g_iMarkOccurrencesCount;
 
-bool      bShowToolbar;
-bool      bShowStatusbar;
 int       iHighDpiToolBar;
 bool      g_bChasingDocTail = false;
 bool      g_bUseLimitedAutoCCharSet = false;
@@ -1937,7 +1933,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   SendMessage(s_hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)tbbMainWnd);
 
-  if (Toolbar_SetButtons(s_hwndToolbar, IDT_FILE_NEW, s_tchToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
+  if (Toolbar_SetButtons(s_hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, tbbMainWnd, COUNTOF(tbbMainWnd)) == 0) {
     SendMessage(s_hwndToolbar, TB_ADDBUTTONS, NUMINITIALTOOLS, (LPARAM)tbbMainWnd);
   }
   RECT rc;
@@ -1946,12 +1942,12 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
 
   // Create Statusbar 
-  DWORD const dwStatusbarStyle = bShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
+  DWORD const dwStatusbarStyle = Settings.ShowStatusbar ? (WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE) : (WS_CHILD | WS_CLIPSIBLINGS);
   Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle,NULL,hwnd,IDC_STATUSBAR);
 
 
   // Create ReBar and add Toolbar
-  DWORD const dwReBarStyle = bShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
+  DWORD const dwReBarStyle = Settings.ShowToolbar ? (NP3_WS_REBAR | WS_VISIBLE) : (NP3_WS_REBAR);
   s_hwndReBar = CreateWindowEx(WS_EX_TOOLWINDOW,REBARCLASSNAME,NULL,dwReBarStyle,
                              0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
@@ -2092,7 +2088,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   SciCall_GotoPos(pos);
   
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(s_hwndToolbar, IDT_FILE_NEW, s_tchToolbarButtons, COUNTOF(s_tchToolbarButtons));
+  Toolbar_GetButtons(s_hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
   DestroyWindow(s_hwndToolbar);
   DestroyWindow(s_hwndReBar);
@@ -2159,7 +2155,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam ,LPARAM lParam)
   }
 
   // recreate toolbar and statusbar
-  Toolbar_GetButtons(s_hwndToolbar,IDT_FILE_NEW,s_tchToolbarButtons,COUNTOF(s_tchToolbarButtons));
+  Toolbar_GetButtons(s_hwndToolbar,IDT_FILE_NEW,Settings.ToolbarButtons,COUNTOF(Settings.ToolbarButtons));
 
   DestroyWindow(s_hwndToolbar);
   DestroyWindow(s_hwndReBar);
@@ -2203,7 +2199,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   int cx = LOWORD(lParam);
   int cy = HIWORD(lParam);
 
-  if (bShowToolbar)
+  if (Settings.ShowToolbar)
   {
 /*  SendMessage(s_hwndToolbar,WM_SIZE,0,0);
     RECT rc;
@@ -2223,7 +2219,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     cy -= cyReBar + cyReBarFrame;  // border
   }
 
-  if (bShowStatusbar)
+  if (Settings.ShowStatusbar)
   {
     RECT rc;
     SendMessage(Globals.hwndStatus,WM_SIZE,0,0);
@@ -2876,9 +2872,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_SHOWEOLS,Settings.ViewEOLs);
   CheckCmd(hmenu,IDM_VIEW_WORDWRAPSYMBOLS,Settings.ShowWordWrapSymbols);
   CheckCmd(hmenu,IDM_VIEW_MATCHBRACES,Settings.MatchBraces);
-  CheckCmd(hmenu,IDM_VIEW_TOOLBAR,bShowToolbar);
-  EnableCmd(hmenu,IDM_VIEW_CUSTOMIZETB,bShowToolbar);
-  CheckCmd(hmenu,IDM_VIEW_STATUSBAR,bShowStatusbar);
+  CheckCmd(hmenu,IDM_VIEW_TOOLBAR,Settings.ShowToolbar);
+  EnableCmd(hmenu,IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
+  CheckCmd(hmenu,IDM_VIEW_STATUSBAR,Settings.ShowStatusbar);
 
   i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
@@ -4821,8 +4817,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOOLBAR:
-      bShowToolbar = !bShowToolbar;
-      ShowWindow(s_hwndReBar, (bShowToolbar ? SW_SHOW : SW_HIDE));
+      Settings.ShowToolbar = !Settings.ShowToolbar;
+      ShowWindow(s_hwndReBar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
       UpdateToolbar();
       SendWMSize(hwnd, NULL);
       break;
@@ -4837,9 +4833,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_STATUSBAR:
-      bShowStatusbar = !bShowStatusbar;
-      ShowWindow(Globals.hwndStatus, (bShowStatusbar ? SW_SHOW : SW_HIDE));
-      UpdateStatusbar(bShowStatusbar);
+      Settings.ShowStatusbar = !Settings.ShowStatusbar;
+      ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOW : SW_HIDE));
+      UpdateStatusbar(Settings.ShowStatusbar);
       SendWMSize(hwnd, NULL);
       break;
 
@@ -6963,15 +6959,18 @@ void LoadSettings()
 
     //~Defaults.Bidirectional = // set before
     Settings.Bidirectional = clampi(IniSectionGetInt(pIniSection, L"Bidirectional", Defaults.Bidirectional), 0, 2);
-
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
-
     // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
-    IniSectionGetString(pIniSection, L"ToolbarButtons", L"", s_tchToolbarButtons, COUNTOF(s_tchToolbarButtons));
+    StringCchCopyW(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), TBBUTTON_DEFAULT_IDS);
+    IniSectionGetString(pIniSection, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
-    bShowToolbar = IniSectionGetBool(pIniSection, L"ShowToolbar", true);
-    bShowStatusbar = IniSectionGetBool(pIniSection, L"ShowStatusbar", true);
+    Defaults.ShowToolbar = true;
+    Settings.ShowToolbar = IniSectionGetBool(pIniSection, L"ShowToolbar", Defaults.ShowToolbar);
+
+    Defaults.ShowStatusbar = true;
+    Settings.ShowStatusbar = IniSectionGetBool(pIniSection, L"ShowStatusbar", Defaults.ShowStatusbar);
+
 
     cxEncodingDlg = IniSectionGetInt(pIniSection, L"EncodingDlgSizeX", 256);
     cxEncodingDlg = max_i(cxEncodingDlg, 0);
@@ -7351,7 +7350,7 @@ void SaveSettings(bool bSaveSettingsNow)
       IniSectionSetBool(pIniSection, L"ViewEOLs", Settings.ViewEOLs);
     }
     if (Settings.DefaultEncoding != Defaults.DefaultEncoding) {
-      IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(false, Settings.DefaultEncoding) );
+      IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(false, Settings.DefaultEncoding));
     }
     if (Settings.UseDefaultForFileEncoding != Defaults.UseDefaultForFileEncoding) {
       IniSectionSetBool(pIniSection, L"UseDefaultForFileEncoding", Settings.UseDefaultForFileEncoding);
@@ -7432,10 +7431,20 @@ void SaveSettings(bool bSaveSettingsNow)
       IniSectionSetInt(pIniSection, L"Bidirectional", Settings.Bidirectional);
     }
     ///~IniSectionSetInt(pIniSection, L"IMEInteraction", Settings2.IMEInteraction);
+    Toolbar_GetButtons(s_hwndToolbar, IDT_FILE_NEW, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
+    if (StringCchCompareX(Settings.ToolbarButtons, Defaults.ToolbarButtons) == 0) {
+      IniSectionSetString(pIniSection, L"ToolbarButtons", NULL);
+    } else {
+      IniSectionSetString(pIniSection, L"ToolbarButtons", Settings.ToolbarButtons);
+    }
+    if (Settings.ShowToolbar != Defaults.ShowToolbar) {
+      IniSectionSetBool(pIniSection, L"ShowToolbar", Settings.ShowToolbar);
+    }
+    if (Settings.ShowStatusbar != Defaults.ShowStatusbar) {
+      IniSectionSetBool(pIniSection, L"ShowStatusbar", Settings.ShowStatusbar);
+    }
 
 
-    IniSectionSetBool(pIniSection, L"ShowToolbar", bShowToolbar);
-    IniSectionSetBool(pIniSection, L"ShowStatusbar", bShowStatusbar);
     IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
     IniSectionSetInt(pIniSection, L"EncodingDlgSizeY", cyEncodingDlg);
     IniSectionSetInt(pIniSection, L"RecodeDlgSizeX", cxRecodeDlg);
@@ -7451,9 +7460,6 @@ void SaveSettings(bool bSaveSettingsNow)
     IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosX", xCustomSchemesDlg);
     IniSectionSetInt(pIniSection, L"CustomSchemesDlgPosY", yCustomSchemesDlg);
 
-    Toolbar_GetButtons(s_hwndToolbar, IDT_FILE_NEW, s_tchToolbarButtons, COUNTOF(s_tchToolbarButtons));
-    if (StringCchCompareX(s_tchToolbarButtons, TBBUTTON_DEFAULT_IDS) == 0) { s_tchToolbarButtons[0] = L'\0'; }
-    IniSectionSetString(pIniSection, L"ToolbarButtons", s_tchToolbarButtons);
 
     SaveIniSection(L"Settings", pIniSection);
 
@@ -8273,7 +8279,7 @@ static void  _UpdateToolbarDelayed()
                  Settings.PathNameFormat, IsDocumentModified || Encoding_HasChanged(CPI_GET),
                  IDS_MUI_READONLY, g_bFileReadOnly, szTitleExcerpt);
 
-  if (!bShowToolbar) { return; }
+  if (!Settings.ShowToolbar) { return; }
 
   EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)));
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
@@ -8518,7 +8524,7 @@ FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
-  if (!bShowStatusbar) { return; }
+  if (!Settings.ShowStatusbar) { return; }
 
   bool bIsUpdateNeeded = bForceRedraw;
 
@@ -8971,7 +8977,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
 
     if (cnt > 0) { aStatusbarSections[cnt - 1] = -1; }
-    else { aStatusbarSections[0] = -1; bShowStatusbar = false; }
+    else { aStatusbarSections[0] = -1; Settings.ShowStatusbar = false; }
 
     SendMessage(Globals.hwndStatus, SB_SETPARTS, (WPARAM)cnt, (LPARAM)aStatusbarSections);
 
@@ -10396,15 +10402,15 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* const pWinInfo, bool bFullWorkAr
 
   if (bFullWorkArea) {
     if (s_bPrevFullWAFlag) { // snap to previous rect
-      bShowToolbar = s_bPrevShowToolbar;
-      bShowStatusbar = s_bPrevShowStatusbar;
+      Settings.ShowToolbar = s_bPrevShowToolbar;
+      Settings.ShowStatusbar = s_bPrevShowStatusbar;
       wndpl = s_wndplPrev;
     }
     else {
       GetWindowPlacement(hwnd, &s_wndplPrev);
-      s_bPrevShowToolbar = bShowToolbar;
-      s_bPrevShowStatusbar = bShowStatusbar;
-      bShowToolbar = bShowStatusbar = false;
+      s_bPrevShowToolbar = Settings.ShowToolbar;
+      s_bPrevShowStatusbar = Settings.ShowStatusbar;
+      Settings.ShowToolbar = Settings.ShowStatusbar = false;
       wndpl = WindowPlacementFromInfo(hwnd, NULL);
     }
     s_bPrevFullWAFlag = !s_bPrevFullWAFlag;
@@ -10412,8 +10418,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO* const pWinInfo, bool bFullWorkAr
   else {
     wndpl = WindowPlacementFromInfo(hwnd, pWinInfo);
     if (s_bPrevFullWAFlag) {
-      bShowToolbar = s_bPrevShowToolbar;
-      bShowStatusbar = s_bPrevShowStatusbar;
+      Settings.ShowToolbar = s_bPrevShowToolbar;
+      Settings.ShowStatusbar = s_bPrevShowStatusbar;
     }
     s_bPrevFullWAFlag = false;
   }

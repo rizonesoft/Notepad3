@@ -288,12 +288,15 @@ typedef struct _settings_t
   bool TransparentMode;
   int RenderingTechnology;
   int Bidirectional;
+  bool ShowToolbar;
+  bool ShowStatusbar;
 
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
   WCHAR OpenWithDir[MAX_PATH + 1];
   WCHAR FavoritesDir[MAX_PATH + 1];
+  WCHAR ToolbarButtons[MIDSZ_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
 
