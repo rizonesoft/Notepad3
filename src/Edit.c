@@ -75,17 +75,9 @@ extern int yFindReplaceDlg;
 static int xFindReplaceDlgSave;
 static int yFindReplaceDlgSave;
 
-extern int  g_iDefaultEOLMode;
-extern int  g_iEOLMode;
-extern bool bFixLineEndings;
-extern bool bAutoStripBlanks;
-
 // Default Codepage and Character Set
 extern int  g_iDefaultCharSet;
-extern bool g_bLoadASCIIasUTF8;
 extern bool g_bForceLoadASCIIasUTF8;
-extern bool g_bLoadNFOasOEM;
-extern bool g_bNoEncodingTags;
 extern bool g_bUseLimitedAutoCCharSet;
 extern bool g_bIsCJKInputCodePage;
 
@@ -843,7 +835,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   HANDLE const hOld   = GetClipboardData(CF_UNICODETEXT);
   const WCHAR* pszOld = GlobalLock(hOld);
 
-  const WCHAR *pszSep = ((g_iEOLMode == SC_EOL_CRLF) ? L"\r\n" : ((g_iEOLMode == SC_EOL_CR) ? L"\r" : L"\n"));
+  const WCHAR *pszSep = ((Globals.iEOLMode == SC_EOL_CRLF) ? L"\r\n" : ((Globals.iEOLMode == SC_EOL_CR) ? L"\r" : L"\n"));
 
   size_t cchNewText = cchTextW;
   if (pszOld && *pszOld) {
@@ -878,7 +870,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 int EditDetectEOLMode(HWND hwnd, char* lpData)
 {
   UNUSED(hwnd);
-  int iEOLMode = g_iDefaultEOLMode;
+  int iEOLMode = Settings.DefaultEOLMode;
 
   LPCSTR cp = lpData ? StrPBrkA(lpData, "\r\n") : NULL;
 
@@ -1021,7 +1013,7 @@ bool EditLoadFile(
   }
 
   bool bNfoDizDetected = false;
-  if (g_bLoadNFOasOEM)
+  if (Settings.LoadNFOasOEM)
   {
     if (lpszExt && !(StringCchCompareXI(lpszExt,L".nfo") && StringCchCompareXI(lpszExt,L".diz")))
       bNfoDizDetected = true;
@@ -1041,7 +1033,7 @@ bool EditLoadFile(
     bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
 
     if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
-      iAnalyzedEncoding = g_bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
+      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
     }
     else {
       if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
@@ -1085,10 +1077,10 @@ bool EditLoadFile(
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&fvCurFile);
-    *iEOLMode = g_iDefaultEOLMode;
-    *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (g_bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
+    *iEOLMode = Settings.DefaultEOLMode;
+    *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
-    SendMessage(hwnd,SCI_SETEOLMODE,g_iDefaultEOLMode,0);
+    SendMessage(hwnd,SCI_SETEOLMODE,Settings.DefaultEOLMode,0);
     FreeMem(lpData);
   }
   // ===  UNICODE  ===
@@ -1151,14 +1143,14 @@ bool EditLoadFile(
     FileVars_Init(lpData,cbData,&fvCurFile);
 
     // ===  UTF-8  ===
-    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&fvCurFile) && !g_bNoEncodingTags);
+    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&fvCurFile) && !Settings.NoEncodingTags);
     bool const bForcedNonUTF8 = !Encoding_IsNONE(iForcedEncoding) && !Encoding_IsUTF8(iForcedEncoding);
 
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
     bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
     bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUTF8(iPreferedEncoding); // non-reliable analysis = soft-hint
 
-    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&fvCurFile) && !g_bNoEncodingTags);
+    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&fvCurFile) && !Settings.NoEncodingTags);
 
     //if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8)))
     if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
@@ -1294,13 +1286,13 @@ bool EditSaveFile(
     return false;
 
   // ensure consistent line endings
-  if (bFixLineEndings) {
+  if (Settings.FixLineEndings) {
     SendMessage(hwnd,SCI_CONVERTEOLS, SciCall_GetEOLMode(),0);
     EditFixPositions(hwnd);
   }
 
   // strip trailing blanks
-  if (bAutoStripBlanks)
+  if (Settings.FixTrailingBlanks)
     EditStripLastCharacter(hwnd, true, true);
 
   // get text
@@ -7797,8 +7789,6 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 //
 //  _SetFileVars()
 //
-extern bool g_bNoEncodingTags;
-
 static void  _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
 {
   int i;
@@ -7843,7 +7833,7 @@ static void  _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
     }
   }
 
-  if (!IsUTF8Signature(lpData) && !g_bNoEncodingTags && !bDisableFileVar) {
+  if (!IsUTF8Signature(lpData) && !Settings.NoEncodingTags && !bDisableFileVar) {
 
     if (FileVars_ParseStr(tch, "encoding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
       lpfv->mask |= FV_ENCODING;
@@ -7869,7 +7859,7 @@ bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
   char tch[LARGE_BUFFER];
 
   ZeroMemory(lpfv,sizeof(FILEVARS));
-  if ((Flags.NoFileVariables && g_bNoEncodingTags) || !lpData || !cbData)
+  if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData)
     return true;
 
   StringCchCopyNA(tch,COUNTOF(tch),lpData,min_s(cbData + 1,COUNTOF(tch)));

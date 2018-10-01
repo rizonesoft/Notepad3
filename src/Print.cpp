@@ -47,12 +47,7 @@ extern "C" {
 
 
 // Global settings...
-extern "C" int iPrintHeader;
-extern "C" int iPrintFooter;
-extern "C" int iPrintColor;
-extern "C" int iPrintZoom;
-extern "C" RECT pagesetupMargin;
-
+extern "C" SETTINGS_T Settings;
 
 // Stored objects...
 HGLOBAL hDevMode = nullptr;
@@ -191,8 +186,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   EditPrintInit();
 
   // Take in account the page setup given by the user (if one value is not null)
-  if (pagesetupMargin.left != 0 || pagesetupMargin.right != 0 ||
-          pagesetupMargin.top != 0 || pagesetupMargin.bottom != 0) {
+  if (Settings.PrintMargin.left != 0 || Settings.PrintMargin.right != 0 ||
+          Settings.PrintMargin.top != 0 || Settings.PrintMargin.bottom != 0) {
 
     // Convert the hundredths of millimeters (HiMetric) or
     // thousandths of inches (HiEnglish) margin values
@@ -203,15 +198,15 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
 
     if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System
-      rectSetup.left = MulDiv (pagesetupMargin.left, ptDpi.x, 2540);
-      rectSetup.top = MulDiv (pagesetupMargin.top, ptDpi.y, 2540);
-      rectSetup.right  = MulDiv(pagesetupMargin.right, ptDpi.x, 2540);
-      rectSetup.bottom  = MulDiv(pagesetupMargin.bottom, ptDpi.y, 2540);
+      rectSetup.left = MulDiv (Settings.PrintMargin.left, ptDpi.x, 2540);
+      rectSetup.top = MulDiv (Settings.PrintMargin.top, ptDpi.y, 2540);
+      rectSetup.right  = MulDiv(Settings.PrintMargin.right, ptDpi.x, 2540);
+      rectSetup.bottom  = MulDiv(Settings.PrintMargin.bottom, ptDpi.y, 2540);
     } else {
-      rectSetup.left  = MulDiv(pagesetupMargin.left, ptDpi.x, 1000);
-      rectSetup.top  = MulDiv(pagesetupMargin.top, ptDpi.y, 1000);
-      rectSetup.right  = MulDiv(pagesetupMargin.right, ptDpi.x, 1000);
-      rectSetup.bottom  = MulDiv(pagesetupMargin.bottom, ptDpi.y, 1000);
+      rectSetup.left  = MulDiv(Settings.PrintMargin.left, ptDpi.x, 1000);
+      rectSetup.top  = MulDiv(Settings.PrintMargin.top, ptDpi.y, 1000);
+      rectSetup.right  = MulDiv(Settings.PrintMargin.right, ptDpi.x, 1000);
+      rectSetup.bottom  = MulDiv(Settings.PrintMargin.bottom, ptDpi.y, 1000);
     }
 
     // Dont reduce margins below the minimum printable area
@@ -249,7 +244,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   GetTextMetrics(hdc, &tm);
   headerLineHeight = tm.tmHeight + tm.tmExternalLeading;
 
-  if (iPrintHeader == 3)
+  if (Settings.PrintHeader == 3)
     headerLineHeight = 0;
 
   footerLineHeight = MulDiv(7,ptDpi.y, 72);
@@ -265,7 +260,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   GetTextMetrics(hdc, &tm);
   footerLineHeight = tm.tmHeight + tm.tmExternalLeading;
 
-  if (iPrintFooter == 1)
+  if (Settings.PrintFooter == 1)
     footerLineHeight = 0;
 
   di.lpszDocName = pszDocTitle;
@@ -287,7 +282,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   GetDateFormat(LOCALE_USER_DEFAULT,DATE_SHORTDATE,&st,nullptr,dateString,MIDSZ_BUFFER);
 
   // Get current time...
-  if (iPrintHeader == 0)
+  if (Settings.PrintHeader == 0)
   {
     WCHAR timeString[SMALL_BUFFER] = { L'\0' };
     GetTimeFormat(LOCALE_USER_DEFAULT,TIME_NOSECONDS,&st,nullptr,timeString,SMALL_BUFFER);
@@ -304,10 +299,10 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     SC_PRINT_COLOURONWHITEDEFAULTBG,
     SC_PRINT_SCREENCOLOURS };
 
-  SendMessage(hwnd,SCI_SETPRINTCOLOURMODE,printColorModes[iPrintColor],0);
+  SendMessage(hwnd,SCI_SETPRINTCOLOURMODE,printColorModes[Settings.PrintColorMode],0);
 
   // Set print zoom...
-  SendMessage(hwnd,SCI_SETPRINTMAGNIFICATION,(WPARAM)iPrintZoom,0);
+  SendMessage(hwnd,SCI_SETPRINTMAGNIFICATION,(WPARAM)Settings.PrintZoom,0);
 
   lengthDoc = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
   lengthDocMax = lengthDoc;
@@ -369,7 +364,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
                   frPrint.rc.right, frPrint.rc.top - headerLineHeight / 2};
       rcw.bottom = rcw.top + headerLineHeight;
 
-      if (iPrintHeader < 3)
+      if (Settings.PrintHeader < 3)
       {
         ExtTextOut(hdc, frPrint.rc.left + 5, frPrint.rc.top - headerLineHeight / 2,
                       /*ETO_OPAQUE*/0, &rcw, pszDocTitle,
@@ -377,7 +372,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       }
 
       // Print date in header
-      if (iPrintHeader == 0 || iPrintHeader == 1)
+      if (Settings.PrintHeader == 0 || Settings.PrintHeader == 1)
       {
         SIZE sizeInfo;
         SelectObject(hdc,fontFooter);
@@ -387,7 +382,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
                       (UINT)StringCchLenW(dateString,COUNTOF(dateString)), nullptr);
       }
 
-      if (iPrintHeader < 3)
+      if (Settings.PrintHeader < 3)
       {
         SetTextAlign(hdc, ta);
         pen = CreatePen(0, 1, RGB(0,0,0));
@@ -412,7 +407,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       RECT rcw = {frPrint.rc.left, frPrint.rc.bottom + footerLineHeight / 2,
                   frPrint.rc.right, frPrint.rc.bottom + footerLineHeight + footerLineHeight / 2};
 
-      if (iPrintFooter == 0)
+      if (Settings.PrintFooter == 0)
       {
         SIZE sizeFooter;
         GetTextExtentPoint32(hdc,pageString,(int)StringCchLenW(pageString,COUNTOF(pageString)),&sizeFooter);
@@ -483,7 +478,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         UDACCEL const acc[1] = { { 0, 10 } };
         SendDlgItemMessage(hwnd,31,UDM_SETACCEL,1,(WPARAM)acc);
         SendDlgItemMessage(hwnd,31,UDM_SETRANGE32,SC_MIN_ZOOM_LEVEL,SC_MAX_ZOOM_LEVEL);
-        SendDlgItemMessage(hwnd,31,UDM_SETPOS32,0,iPrintZoom);
+        SendDlgItemMessage(hwnd,31,UDM_SETPOS32,0,Settings.PrintZoom);
 
         // Set header options
         GetLngString(IDS_MUI_PRINT_HEADER,tch,COUNTOF(tch));
@@ -497,7 +492,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
           p1 = p2;
           p2 = StrChr(p1, L'|');  // next
         }
-        SendDlgItemMessage(hwnd,32,CB_SETCURSEL,(WPARAM)iPrintHeader,0);
+        SendDlgItemMessage(hwnd,32,CB_SETCURSEL,(WPARAM)Settings.PrintHeader,0);
 
         // Set footer options
         GetLngString(IDS_MUI_PRINT_FOOTER,tch,COUNTOF(tch));
@@ -511,7 +506,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
           p1 = p2;
           p2 = StrChr(p1, L'|');  // next
         }
-        SendDlgItemMessage(hwnd,33,CB_SETCURSEL,(WPARAM)iPrintFooter,0);
+        SendDlgItemMessage(hwnd,33,CB_SETCURSEL,(WPARAM)Settings.PrintFooter,0);
 
         // Set color options
         GetLngString(IDS_MUI_PRINT_COLOR,tch,COUNTOF(tch));
@@ -525,7 +520,7 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
           p1 = p2;
           p2 = StrChr(p1, L'|');  // next
         }
-        SendDlgItemMessage(hwnd,34,CB_SETCURSEL,(LPARAM)iPrintColor,0);
+        SendDlgItemMessage(hwnd,34,CB_SETCURSEL,(LPARAM)Settings.PrintColorMode,0);
 
         // Make combos handier
         SendDlgItemMessage(hwnd,32,CB_SETEXTENDEDUI,true,0);
@@ -541,11 +536,11 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       {
         BOOL bError = FALSE;
         int const iPos = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
-        iPrintZoom = bError ? 100 : iPos;
+        Settings.PrintZoom = bError ? 100 : iPos;
 
-        iPrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
-        iPrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
-        iPrintColor = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
+        Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
+        Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
+        Settings.PrintColorMode = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
       }
       else if (LOWORD(wParam) == IDC_PRINTER)
       {
@@ -578,14 +573,14 @@ extern "C" void EditPrintSetup(HWND hwnd)
 
   EditPrintInit();
 
-  if (pagesetupMargin.left != 0 || pagesetupMargin.right != 0 ||
-          pagesetupMargin.top != 0 || pagesetupMargin.bottom != 0) {
+  if (Settings.PrintMargin.left != 0 || Settings.PrintMargin.right != 0 ||
+          Settings.PrintMargin.top != 0 || Settings.PrintMargin.bottom != 0) {
     pdlg.Flags |= PSD_MARGINS;
 
-    pdlg.rtMargin.left = pagesetupMargin.left;
-    pdlg.rtMargin.top = pagesetupMargin.top;
-    pdlg.rtMargin.right = pagesetupMargin.right;
-    pdlg.rtMargin.bottom = pagesetupMargin.bottom;
+    pdlg.rtMargin.left = Settings.PrintMargin.left;
+    pdlg.rtMargin.top = Settings.PrintMargin.top;
+    pdlg.rtMargin.right = Settings.PrintMargin.right;
+    pdlg.rtMargin.bottom = Settings.PrintMargin.bottom;
   }
 
   pdlg.hDevMode = hDevMode;
@@ -593,10 +588,10 @@ extern "C" void EditPrintSetup(HWND hwnd)
 
   if (PageSetupDlg(&pdlg)) {
 
-    pagesetupMargin.left = pdlg.rtMargin.left;
-    pagesetupMargin.top = pdlg.rtMargin.top;
-    pagesetupMargin.right = pdlg.rtMargin.right;
-    pagesetupMargin.bottom = pdlg.rtMargin.bottom;
+    Settings.PrintMargin.left = pdlg.rtMargin.left;
+    Settings.PrintMargin.top = pdlg.rtMargin.top;
+    Settings.PrintMargin.right = pdlg.rtMargin.right;
+    Settings.PrintMargin.bottom = pdlg.rtMargin.bottom;
 
     hDevMode = pdlg.hDevMode;
     hDevNames = pdlg.hDevNames;
@@ -612,23 +607,23 @@ extern "C" void EditPrintSetup(HWND hwnd)
 //
 static void EditPrintInit()
 {
-  if (pagesetupMargin.left == -1 || pagesetupMargin.top == -1 ||
-      pagesetupMargin.right == -1 || pagesetupMargin.bottom == -1)
+  if (Settings.PrintMargin.left == -1 || Settings.PrintMargin.top == -1 ||
+      Settings.PrintMargin.right == -1 || Settings.PrintMargin.bottom == -1)
   {
     WCHAR localeInfo[3];
     GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
 
     if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System
-      pagesetupMargin.left = 2000;
-      pagesetupMargin.top = 2000;
-      pagesetupMargin.right = 2000;
-      pagesetupMargin.bottom = 2000; }
+      Settings.PrintMargin.left = 2000;
+      Settings.PrintMargin.top = 2000;
+      Settings.PrintMargin.right = 2000;
+      Settings.PrintMargin.bottom = 2000; }
 
     else {
-      pagesetupMargin.left = 1000;
-      pagesetupMargin.top = 1000;
-      pagesetupMargin.right = 1000;
-      pagesetupMargin.bottom = 1000; }
+      Settings.PrintMargin.left = 1000;
+      Settings.PrintMargin.top = 1000;
+      Settings.PrintMargin.right = 1000;
+      Settings.PrintMargin.bottom = 1000; }
   }
 }
 

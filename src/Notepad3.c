@@ -127,6 +127,8 @@ bool      g_bTabIndentsG;
 int       g_iTabWidthG;
 int       g_iIndentWidthG;
 int       g_iLongLinesLimitG;
+bool      g_bCodeFoldingAvailable;
+bool      g_bForceLoadASCIIasUTF8 = false;
 
 
 
@@ -138,28 +140,6 @@ bool      g_bZeroBasedCharacterCount;
 int       g_iReplacedOccurrences;
 int       g_iMarkOccurrencesCount;
 
-bool      g_bCodeFoldingAvailable;
-
-bool      bSkipUnicodeDetection;
-bool      bSkipANSICodePageDetection;
-bool      g_bLoadASCIIasUTF8 = false;
-bool      g_bForceLoadASCIIasUTF8 = false;
-bool      g_bLoadNFOasOEM;
-bool      g_bNoEncodingTags;
-bool      bFixLineEndings;
-bool      bAutoStripBlanks;
-int       iPrintHeader;
-int       iPrintFooter;
-int       iPrintColor;
-int       iPrintZoom;
-RECT      pagesetupMargin;
-bool      bSaveBeforeRunningTools;
-int       g_iFileWatchingMode;
-bool      g_bResetFileWatching;
-int       iEscFunction;
-bool      bAlwaysOnTop;
-bool      bMinimizeToTray;
-bool      g_bTransparentMode;
 bool      bShowToolbar;
 bool      bShowStatusbar;
 int       iHighDpiToolBar;
@@ -197,9 +177,6 @@ int     yCustomSchemesDlg;
 LPMRULIST g_pFileMRU;
 LPMRULIST g_pMRUfind;
 LPMRULIST g_pMRUreplace;
-
-int       g_iEOLMode = SC_EOL_CRLF;
-int       g_iDefaultEOLMode = SC_EOL_CRLF;
 
 DWORD     dwLastIOError = 0;
 
@@ -1050,11 +1027,11 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   if (s_WinInfo.max) {
     nCmdShow = SW_SHOWMAXIMIZED;
   }
-  if ((bAlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
+  if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
     SetWindowPos(Globals.hwndMain, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   }
 
-  if (g_bTransparentMode) {
+  if (Settings.TransparentMode) {
     SetWindowTransparentMode(Globals.hwndMain, true);
   }
   
@@ -1062,7 +1039,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     SciCall_SetZoom(s_WinInfo.zoom);
   }
   // Current file information -- moved in front of ShowWindow()
-  FileLoad(true,true,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
+  FileLoad(true,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,L"");
 
   if (!s_flagStartAsTrayIcon) {
     ShowWindow(Globals.hwndMain,nCmdShow);
@@ -1086,11 +1063,11 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     if (!s_flagBufferFile && PathIsDirectory(lpFileArg)) {
       WCHAR tchFile[MAX_PATH] = { L'\0' };
       if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), lpFileArg))
-        bOpened = FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
+        bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
     }
     else {
       LPCWSTR lpFileToOpen = s_flagBufferFile ? s_wchTmpFilePath : lpFileArg;
-      bOpened = FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, lpFileToOpen);
+      bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, lpFileToOpen);
       if (bOpened) {
         if (s_flagBufferFile) {
           if (lpFileArg) {
@@ -1122,8 +1099,8 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
     }
     if (bOpened) {
       if (s_flagChangeNotify == 1) {
-        g_iFileWatchingMode = 0;
-        g_bResetFileWatching = true;
+        Settings.FileWatchingMode = 0;
+        Settings.ResetFileWatching = true;
         InstallFileWatching(Globals.CurrentFile);
       }
       else if (s_flagChangeNotify == 2) {
@@ -1131,8 +1108,8 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
           SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); 
         }
         else {
-          g_iFileWatchingMode = 2;
-          g_bResetFileWatching = true;
+          Settings.FileWatchingMode = 2;
+          Settings.ResetFileWatching = true;
           InstallFileWatching(Globals.CurrentFile);
         }
       }
@@ -2299,10 +2276,10 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (PathIsDirectory(szBuf)) {
     WCHAR tchFile[MAX_PATH] = { L'\0' };
     if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf))
-      FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
+      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
   }
   else if (PathFileExists(szBuf)) {
-    FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, szBuf);
+    FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, szBuf);
   }
   else {
 #ifndef _EXTRA_DRAG_N_DROP_HANDLER_
@@ -2346,10 +2323,10 @@ static DWORD DropFilesProc(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyS
     if (PathIsDirectory(szBuf)) {
       WCHAR tchFile[MAX_PATH] = { L'\0' };
       if (OpenFileDlg(hWnd, tchFile, COUNTOF(tchFile), szBuf))
-        FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
+        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
     }
     else
-      FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, szBuf);
+      FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, szBuf);
 
     if (DragQueryFile(hDrop, (UINT)(-1), NULL, 0) > 1)
       MsgBoxLng(MBWARN, IDS_MUI_ERR_DROP);
@@ -2400,17 +2377,17 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (PathIsDirectory(&params->wchData)) {
           WCHAR tchFile[MAX_PATH] = { L'\0' };
           if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), &params->wchData))
-            bOpened = FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
+            bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
         }
 
         else
-          bOpened = FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, &params->wchData);
+          bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, &params->wchData);
 
         if (bOpened) {
 
           if (params->flagChangeNotify == 1) {
-            g_iFileWatchingMode = 0;
-            g_bResetFileWatching = true;
+            Settings.FileWatchingMode = 0;
+            Settings.ResetFileWatching = true;
             InstallFileWatching(Globals.CurrentFile);
           }
           else if (params->flagChangeNotify == 2) {
@@ -2418,8 +2395,8 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
               SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
             }
             else {
-              g_iFileWatchingMode = 2;
-              g_bResetFileWatching = true;
+              Settings.FileWatchingMode = 2;
+              Settings.ResetFileWatching = true;
               InstallFileWatching(Globals.CurrentFile);
             }
           }
@@ -2550,13 +2527,13 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(wParam);
   UNUSED(lParam);
 
-  if (g_iFileWatchingMode == 1 || IsDocumentModified || Encoding_HasChanged(CPI_GET)) {
+  if (Settings.FileWatchingMode == 1 || IsDocumentModified || Encoding_HasChanged(CPI_GET)) {
     SetForegroundWindow(hwnd);
   }
 
   if (PathFileExists(Globals.CurrentFile)) 
   {
-    if ((g_iFileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
+    if ((Settings.FileWatchingMode == 2 && !IsDocumentModified && !Encoding_HasChanged(CPI_GET)) ||
       MsgBoxLng(MBYESNOWARN,IDS_MUI_FILECHANGENOTIFY) == IDYES)
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
@@ -2702,9 +2679,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = -1;
   CheckMenuRadioItem(hmenu,IDM_ENCODING_ANSI,IDM_ENCODING_UTF8SIGN,i,MF_BYCOMMAND);
 
-  if (g_iEOLMode == SC_EOL_CRLF)
+  if (Globals.iEOLMode == SC_EOL_CRLF)
     i = IDM_LINEENDINGS_CRLF;
-  else if (g_iEOLMode == SC_EOL_LF)
+  else if (Globals.iEOLMode == SC_EOL_LF)
     i = IDM_LINEENDINGS_LF;
   else
     i = IDM_LINEENDINGS_CR;
@@ -2917,9 +2894,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
   i = Flags.StickyWindowPosition;
   CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
-  CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((bAlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
-  CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,bMinimizeToTray);
-  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,g_bTransparentMode);
+  CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
+  CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,Settings.MinimizeToTray);
+  CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,Settings.TransparentMode);
 
   i = IDM_SET_RENDER_TECH_DEFAULT + Settings.RenderingTechnology;
   CheckMenuRadioItem(hmenu, IDM_SET_RENDER_TECH_DEFAULT, IDM_SET_RENDER_TECH_D2DDC, i, MF_BYCOMMAND);
@@ -2939,9 +2916,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_NOSAVERECENT,Settings.SaveRecentFiles);
   CheckCmd(hmenu,IDM_VIEW_NOPRESERVECARET, Settings.PreserveCaretPos);
   CheckCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,Settings.SaveFindReplace);
-  CheckCmd(hmenu,IDM_VIEW_SAVEBEFORERUNNINGTOOLS,bSaveBeforeRunningTools);
+  CheckCmd(hmenu,IDM_VIEW_SAVEBEFORERUNNINGTOOLS,Settings.SaveBeforeRunningTools);
 
-  CheckCmd(hmenu,IDM_VIEW_CHANGENOTIFY,g_iFileWatchingMode);
+  CheckCmd(hmenu,IDM_VIEW_CHANGENOTIFY,Settings.FileWatchingMode);
 
   if (StringCchLenW(szTitleExcerpt,COUNTOF(szTitleExcerpt)))
     i = IDM_VIEW_SHOWEXCERPT;
@@ -2953,9 +2930,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i = IDM_VIEW_SHOWFULLPATH;
   CheckMenuRadioItem(hmenu,IDM_VIEW_SHOWFILENAMEONLY,IDM_VIEW_SHOWEXCERPT,i,MF_BYCOMMAND);
 
-  if (iEscFunction == 1)
+  if (Settings.EscFunction == 1)
     i = IDM_VIEW_ESCMINIMIZE;
-  else if (iEscFunction == 2)
+  else if (Settings.EscFunction == 2)
     i = IDM_VIEW_ESCEXIT;
   else
     i = IDM_VIEW_NOESCFUNC;
@@ -3026,12 +3003,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_FILE_NEW:
-      FileLoad(false,true,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
+      FileLoad(false,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,L"");
       break;
 
 
     case IDM_FILE_OPEN:
-      FileLoad(false,false,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,L"");
+      FileLoad(false,false,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,L"");
       break;
 
 
@@ -3090,7 +3067,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_NEWWINDOW:
     case IDM_FILE_NEWWINDOW2:
       //~SaveSettings(false); 
-      DialogNewWindow(hwnd, bSaveBeforeRunningTools, (LOWORD(wParam) != IDM_FILE_NEWWINDOW2));
+      DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, (LOWORD(wParam) != IDM_FILE_NEWWINDOW2));
       break;
 
 
@@ -3099,7 +3076,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)))
           break;
 
-        if (bSaveBeforeRunningTools && !FileSave(false,true,false,false))
+        if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false))
           break;
 
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
@@ -3124,7 +3101,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_RUN:
       {
-        if (bSaveBeforeRunningTools && !FileSave(false, true, false, false)) {
+        if (Settings.SaveBeforeRunningTools && !FileSave(false, true, false, false)) {
           break;
         }
         StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
@@ -3136,7 +3113,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_OPENWITH:
-      if (bSaveBeforeRunningTools && !FileSave(false,true,false,false))
+      if (Settings.SaveBeforeRunningTools && !FileSave(false,true,false,false))
         break;
       OpenWithDlg(hwnd,Globals.CurrentFile);
       break;
@@ -3210,10 +3187,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           if (PathIsDirectory(tchMaxPathBuffer))
           {
             if (OpenFileDlg(Globals.hwndMain, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),tchMaxPathBuffer))
-              FileLoad(true,false,false,bSkipUnicodeDetection,bSkipANSICodePageDetection, tchMaxPathBuffer);
+              FileLoad(true,false,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection, tchMaxPathBuffer);
           }
           else
-            FileLoad(true,false,false,bSkipUnicodeDetection,bSkipANSICodePageDetection,tchMaxPathBuffer);
+            FileLoad(true,false,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,tchMaxPathBuffer);
           }
         }
       break;
@@ -3336,9 +3313,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        g_iEOLMode = (LOWORD(wParam)-IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
-        SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
-        SendMessage(Globals.hwndEdit,SCI_CONVERTEOLS,g_iEOLMode,0);
+        Globals.iEOLMode = (LOWORD(wParam)-IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
+        SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,Globals.iEOLMode,0);
+        SendMessage(Globals.hwndEdit,SCI_CONVERTEOLS,Globals.iEOLMode,0);
         EditFixPositions(Globals.hwndEdit);
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
@@ -3348,7 +3325,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_LINEENDINGS_SETDEFAULT:
-      SelectDefLineEndingDlg(hwnd,&g_iDefaultEOLMode);
+      SelectDefLineEndingDlg(hwnd,&Settings.DefaultEOLMode);
       break;
 
 
@@ -3440,7 +3417,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           bLastCopyFromMe = true;
         _BEGIN_UNDO_ACTION_;
         _IGNORE_NOTIFY_CHANGE_;
-        EditSwapClipboard(Globals.hwndEdit, bSkipUnicodeDetection);
+        EditSwapClipboard(Globals.hwndEdit, Settings.SkipUnicodeDetection);
         _OBSERVE_NOTIFY_CHANGE_;
         _END_UNDO_ACTION_;
         UpdateToolbar();
@@ -4820,16 +4797,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         {
           SetForegroundWindow(hwnd);
           flagPrevChangeNotify = s_flagChangeNotify;
-          iPrevFileWatchingMode = g_iFileWatchingMode;
-          bPrevResetFileWatching = g_bResetFileWatching;
+          iPrevFileWatchingMode = Settings.FileWatchingMode;
+          bPrevResetFileWatching = Settings.ResetFileWatching;
           s_flagChangeNotify = 2;
-          g_iFileWatchingMode = 2;
-          g_bResetFileWatching = true;
+          Settings.FileWatchingMode = 2;
+          Settings.ResetFileWatching = true;
         }
         else {
           s_flagChangeNotify = flagPrevChangeNotify;
-          g_iFileWatchingMode = iPrevFileWatchingMode;
-          g_bResetFileWatching = bPrevResetFileWatching;
+          Settings.FileWatchingMode = iPrevFileWatchingMode;
+          Settings.ResetFileWatching = bPrevResetFileWatching;
         }
         if (!g_bRunningWatch) { InstallFileWatching(Globals.CurrentFile); }
 
@@ -4926,13 +4903,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_ALWAYSONTOP:
-      if ((bAlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
-        bAlwaysOnTop = 0;
+      if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
+        Settings.AlwaysOnTop = false;
         s_flagAlwaysOnTop = 0;
         SetWindowPos(hwnd,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
       }
       else {
-        bAlwaysOnTop = 1;
+        Settings.AlwaysOnTop = true;
         s_flagAlwaysOnTop = 0;
         SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
       }
@@ -4940,13 +4917,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_MINTOTRAY:
-      bMinimizeToTray =(bMinimizeToTray) ? false : true;
+      Settings.MinimizeToTray = !Settings.MinimizeToTray;
       break;
 
 
     case IDM_VIEW_TRANSPARENT:
-      g_bTransparentMode = !g_bTransparentMode;
-      SetWindowTransparentMode(hwnd,g_bTransparentMode);
+      Settings.TransparentMode = !Settings.TransparentMode;
+      SetWindowTransparentMode(hwnd,Settings.TransparentMode);
       break;
 
     case IDM_SET_RENDER_TECH_DEFAULT:
@@ -5004,7 +4981,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_SAVEBEFORERUNNINGTOOLS:
-      bSaveBeforeRunningTools = !bSaveBeforeRunningTools;
+      Settings.SaveBeforeRunningTools = !Settings.SaveBeforeRunningTools;
       break;
 
 
@@ -5017,7 +4994,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_NOESCFUNC:
     case IDM_VIEW_ESCMINIMIZE:
     case IDM_VIEW_ESCEXIT:
-      iEscFunction = (int)LOWORD(wParam) - IDM_VIEW_NOESCFUNC;
+      Settings.EscFunction = (int)LOWORD(wParam) - IDM_VIEW_NOESCFUNC;
       break;
 
 
@@ -5099,10 +5076,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
         break;
       }
-      if (iEscFunction == 1) {
+      if (Settings.EscFunction == 1) {
         SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
       }
-      else if (iEscFunction == 2) {
+      else if (Settings.EscFunction == 2) {
         PostMessage(hwnd, WM_CLOSE, 0, 0);
       }
       else {
@@ -5229,7 +5206,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
           Encoding_SrcCmdLn(CPI_ANSI_DEFAULT);
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          FileLoad(false,false,true,true,bSkipANSICodePageDetection,tchMaxPathBuffer);
+          FileLoad(false,false,true,true,Settings.SkipANSICodePageDetection,tchMaxPathBuffer);
         }
       }
       break;
@@ -5274,13 +5251,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
           int _fNoFileVariables = Flags.NoFileVariables;
-          bool _bNoEncodingTags = g_bNoEncodingTags;
+          bool _bNoEncodingTags = Settings.NoEncodingTags;
           Flags.NoFileVariables = 1;
-          g_bNoEncodingTags = 1;
+          Settings.NoEncodingTags = true;
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
-          FileLoad(false,false,true, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchMaxPathBuffer);
+          FileLoad(false,false,true, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchMaxPathBuffer);
           Flags.NoFileVariables = _fNoFileVariables;
-          g_bNoEncodingTags = _bNoEncodingTags;
+          Settings.NoEncodingTags = _bNoEncodingTags;
         }
       }
       break;
@@ -5828,7 +5805,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   switch (wParam) {
   case SC_MINIMIZE:
     ShowOwnedPopups(hwnd, false);
-    if (bMinimizeToTray) {
+    if (Settings.MinimizeToTray) {
       MinimizeWndToTray(hwnd);
       ShowNotifyIcon(hwnd, true);
       SetNotifyIconTitle(hwnd);
@@ -5907,10 +5884,10 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
         WCHAR tchFile[MAX_PATH + 1] = { L'\0' };
 
         if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
-          FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
+          FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
       }
       else
-        FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, szFileName);
+        FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, szFileName);
 
     }
     else { // open in web browser
@@ -5948,7 +5925,7 @@ static void  _HandleAutoIndent(int const charAdded)
 {
   // TODO: handle indent after '{' and un-indent on '}' in C/C++ ?
   // in CRLF mode handle LF only...
-  if (((SC_EOL_CRLF == g_iEOLMode) && (charAdded != '\r')) || (SC_EOL_CRLF != g_iEOLMode))
+  if (((SC_EOL_CRLF == Globals.iEOLMode) && (charAdded != '\r')) || (SC_EOL_CRLF != Globals.iEOLMode))
   {
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
@@ -6369,11 +6346,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               if (PathIsDirectory(szBuf)) {
                 WCHAR tchFile[MAX_PATH];
                 if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szBuf)) {
-                  FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, tchFile);
+                  FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
                 }
               }
               else if (PathFileExists(szBuf)) {
-                FileLoad(false, false, false, bSkipUnicodeDetection, bSkipANSICodePageDetection, szBuf);
+                FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, szBuf);
               }
             }
           }
@@ -6472,9 +6449,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               case STATUS_EOLMODE:
                 {
                   int i;
-                  if (g_iEOLMode == SC_EOL_CRLF)
+                  if (Globals.iEOLMode == SC_EOL_CRLF)
                     i = IDM_LINEENDINGS_CRLF;
-                  else if (g_iEOLMode == SC_EOL_LF)
+                  else if (Globals.iEOLMode == SC_EOL_LF)
                     i = IDM_LINEENDINGS_LF;
                   else
                     i = IDM_LINEENDINGS_CR;
@@ -6912,61 +6889,75 @@ void LoadSettings()
     Defaults.UseDefaultForFileEncoding = false;
     Settings.UseDefaultForFileEncoding = IniSectionGetBool(pIniSection, L"UseDefaultForFileEncoding", Defaults.UseDefaultForFileEncoding);
 
+    Defaults.SkipUnicodeDetection = false;
+    Settings.SkipUnicodeDetection = IniSectionGetBool(pIniSection, L"SkipUnicodeDetection", Defaults.SkipUnicodeDetection);
 
+    Defaults.SkipANSICodePageDetection = false;
+    Settings.SkipANSICodePageDetection = IniSectionGetBool(pIniSection, L"SkipANSICodePageDetection", Defaults.SkipANSICodePageDetection);
 
-    bSkipUnicodeDetection = IniSectionGetBool(pIniSection, L"SkipUnicodeDetection", false);
+    Defaults.LoadASCIIasUTF8 = false;
+    Settings.LoadASCIIasUTF8 = IniSectionGetBool(pIniSection, L"LoadASCIIasUTF8", Defaults.LoadASCIIasUTF8);
 
-    bSkipANSICodePageDetection = IniSectionGetBool(pIniSection, L"SkipANSICodePageDetection", true);
+    Defaults.LoadNFOasOEM = true;
+    Settings.LoadNFOasOEM = IniSectionGetBool(pIniSection, L"LoadNFOasOEM", Defaults.LoadNFOasOEM);
 
-    g_bLoadASCIIasUTF8 = IniSectionGetBool(pIniSection, L"LoadASCIIasUTF8", false);
+    Defaults.NoEncodingTags = false;
+    Settings.NoEncodingTags = IniSectionGetBool(pIniSection, L"NoEncodingTags", Defaults.NoEncodingTags);
 
-    g_bLoadNFOasOEM = IniSectionGetBool(pIniSection, L"LoadNFOasOEM", true);
+    Defaults.DefaultEOLMode = SC_EOL_CRLF;
+    Settings.DefaultEOLMode = clampi(IniSectionGetInt(pIniSection, L"DefaultEOLMode", Defaults.DefaultEOLMode), SC_EOL_CRLF, SC_EOL_LF);
+    Globals.iEOLMode = Settings.DefaultEOLMode;
 
-    g_bNoEncodingTags = IniSectionGetBool(pIniSection, L"NoEncodingTags", false);
+    Defaults.FixLineEndings = false;
+    Settings.FixLineEndings = IniSectionGetBool(pIniSection, L"FixLineEndings", Defaults.FixLineEndings);
 
-    g_iDefaultEOLMode = clampi(IniSectionGetInt(pIniSection, L"DefaultEOLMode", 0), 0, 2);
+    Defaults.FixTrailingBlanks = false;
+    Settings.FixTrailingBlanks = IniSectionGetBool(pIniSection, L"FixTrailingBlanks", Defaults.FixTrailingBlanks);
 
-    bFixLineEndings = IniSectionGetBool(pIniSection, L"FixLineEndings", false);
+    Defaults.PrintHeader = 1;
+    Settings.PrintHeader = clampi(IniSectionGetInt(pIniSection, L"PrintHeader", Defaults.PrintHeader), 0, 3);
 
-    bAutoStripBlanks = IniSectionGetBool(pIniSection, L"FixTrailingBlanks", false);
+    Defaults.PrintFooter = 0;
+    Settings.PrintFooter = clampi(IniSectionGetInt(pIniSection, L"PrintFooter", Defaults.PrintFooter), 0, 1);
 
-    iPrintHeader = clampi(IniSectionGetInt(pIniSection, L"PrintHeader", 1), 0, 3);
+    Defaults.PrintColorMode = 3;
+    Settings.PrintColorMode = clampi(IniSectionGetInt(pIniSection, L"PrintColorMode", Defaults.PrintColorMode), 0, 4);
 
-    iPrintFooter = clampi(IniSectionGetInt(pIniSection, L"PrintFooter", 0), 0, 1);
+    Defaults.PrintZoom = (s_iSettingsVersion < CFG_VER_0001) ? 10 : 100;
+    int iPrintZoom = clampi(IniSectionGetInt(pIniSection, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
+    if (s_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
+    Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
-    iPrintColor = clampi(IniSectionGetInt(pIniSection, L"PrintColorMode", 3), 0, 4);
+    Defaults.PrintMargin.left = -1;
+    Settings.PrintMargin.left = clampi(IniSectionGetInt(pIniSection, L"PrintMarginLeft", Defaults.PrintMargin.left), -1, 40000);
+    Defaults.PrintMargin.top = -1;
+    Settings.PrintMargin.top = clampi(IniSectionGetInt(pIniSection, L"PrintMarginTop", Defaults.PrintMargin.top), -1, 40000);
+    Defaults.PrintMargin.right = -1;
+    Settings.PrintMargin.right = clampi(IniSectionGetInt(pIniSection, L"PrintMarginRight", Defaults.PrintMargin.right), -1, 40000);
+    Defaults.PrintMargin.bottom = -1;
+    Settings.PrintMargin.bottom = clampi(IniSectionGetInt(pIniSection, L"PrintMarginBottom", Defaults.PrintMargin.bottom), -1, 40000);
 
-    iPrintZoom = IniSectionGetInt(pIniSection, L"PrintZoom", (s_iSettingsVersion < CFG_VER_0001) ? 10 : 100);
-    if (s_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom-10) * 10; }
-    iPrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+    Defaults.SaveBeforeRunningTools = false;
+    Settings.SaveBeforeRunningTools = IniSectionGetBool(pIniSection, L"SaveBeforeRunningTools", Defaults.SaveBeforeRunningTools);
 
-    pagesetupMargin.left = IniSectionGetInt(pIniSection, L"PrintMarginLeft", -1);
-    pagesetupMargin.left = max_l(pagesetupMargin.left, -1);
+    Defaults.FileWatchingMode = 0;
+    Settings.FileWatchingMode = clampi(IniSectionGetInt(pIniSection, L"FileWatchingMode", Defaults.FileWatchingMode), 0, 2);
 
-    pagesetupMargin.top = IniSectionGetInt(pIniSection, L"PrintMarginTop", -1);
-    pagesetupMargin.top = max_l(pagesetupMargin.top, -1);
+    Defaults.ResetFileWatching = true;
+    Settings.ResetFileWatching = IniSectionGetBool(pIniSection, L"ResetFileWatching", Defaults.ResetFileWatching);
 
-    pagesetupMargin.right = IniSectionGetInt(pIniSection, L"PrintMarginRight", -1);
-    pagesetupMargin.right = max_l(pagesetupMargin.right, -1);
+    Defaults.EscFunction = 0;
+    Settings.EscFunction = clampi(IniSectionGetInt(pIniSection, L"EscFunction", Defaults.EscFunction), 0, 2);
 
-    pagesetupMargin.bottom = IniSectionGetInt(pIniSection, L"PrintMarginBottom", -1);
-    pagesetupMargin.bottom = max_l(pagesetupMargin.bottom, -1);
+    Defaults.AlwaysOnTop = false;
+    Settings.AlwaysOnTop = IniSectionGetBool(pIniSection, L"AlwaysOnTop", Defaults.ResetFileWatching);
 
-    bSaveBeforeRunningTools = IniSectionGetBool(pIniSection, L"SaveBeforeRunningTools", false);
+    Defaults.MinimizeToTray = false;
+    Settings.MinimizeToTray = IniSectionGetBool(pIniSection, L"MinimizeToTray", Defaults.MinimizeToTray);
 
-    g_iFileWatchingMode = clampi(IniSectionGetInt(pIniSection, L"FileWatchingMode", 0), 0, 2);
+    Defaults.TransparentMode = false;
+    Settings.TransparentMode = IniSectionGetBool(pIniSection, L"TransparentMode", Defaults.TransparentMode);
 
-    g_bResetFileWatching = IniSectionGetBool(pIniSection, L"ResetFileWatching", true);
-
-    iEscFunction = clampi(IniSectionGetInt(pIniSection, L"EscFunction", 0), 0, 2);
-
-    bAlwaysOnTop = IniSectionGetBool(pIniSection, L"AlwaysOnTop", false);
-
-    bMinimizeToTray = IniSectionGetBool(pIniSection, L"MinimizeToTray", false);
-
-    g_bTransparentMode = IniSectionGetBool(pIniSection, L"TransparentMode", false);
-
-    
     //~Defaults.RenderingTechnology = // set before
     Settings.RenderingTechnology = clampi(IniSectionGetInt(pIniSection, L"RenderingTechnology", Defaults.RenderingTechnology), 0, 3);
 
@@ -6974,6 +6965,7 @@ void LoadSettings()
     Settings.Bidirectional = clampi(IniSectionGetInt(pIniSection, L"Bidirectional", Defaults.Bidirectional), 0, 2);
 
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
+
 
     // see TBBUTTON  tbbMainWnd[] for initial/reset set of buttons
     IniSectionGetString(pIniSection, L"ToolbarButtons", L"", s_tchToolbarButtons, COUNTOF(s_tchToolbarButtons));
@@ -7364,33 +7356,84 @@ void SaveSettings(bool bSaveSettingsNow)
     if (Settings.UseDefaultForFileEncoding != Defaults.UseDefaultForFileEncoding) {
       IniSectionSetBool(pIniSection, L"UseDefaultForFileEncoding", Settings.UseDefaultForFileEncoding);
     }
-
-    IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", bSkipUnicodeDetection);
-    IniSectionSetBool(pIniSection, L"SkipANSICodePageDetection", bSkipANSICodePageDetection);
-    IniSectionSetInt(pIniSection, L"LoadASCIIasUTF8", g_bLoadASCIIasUTF8);
-    IniSectionSetBool(pIniSection, L"LoadNFOasOEM", g_bLoadNFOasOEM);
-    IniSectionSetBool(pIniSection, L"NoEncodingTags", g_bNoEncodingTags);
-    IniSectionSetInt(pIniSection, L"DefaultEOLMode", g_iDefaultEOLMode);
-    IniSectionSetBool(pIniSection, L"FixLineEndings", bFixLineEndings);
-    IniSectionSetBool(pIniSection, L"FixTrailingBlanks", bAutoStripBlanks);
-    IniSectionSetInt(pIniSection, L"PrintHeader", iPrintHeader);
-    IniSectionSetInt(pIniSection, L"PrintFooter", iPrintFooter);
-    IniSectionSetInt(pIniSection, L"PrintColorMode", iPrintColor);
-    IniSectionSetInt(pIniSection, L"PrintZoom", iPrintZoom);
-    IniSectionSetInt(pIniSection, L"PrintMarginLeft", pagesetupMargin.left);
-    IniSectionSetInt(pIniSection, L"PrintMarginTop", pagesetupMargin.top);
-    IniSectionSetInt(pIniSection, L"PrintMarginRight", pagesetupMargin.right);
-    IniSectionSetInt(pIniSection, L"PrintMarginBottom", pagesetupMargin.bottom);
-    IniSectionSetBool(pIniSection, L"SaveBeforeRunningTools", bSaveBeforeRunningTools);
-    IniSectionSetInt(pIniSection, L"FileWatchingMode", g_iFileWatchingMode);
-    IniSectionSetBool(pIniSection, L"ResetFileWatching", g_bResetFileWatching);
-    IniSectionSetInt(pIniSection, L"EscFunction", iEscFunction);
-    IniSectionSetBool(pIniSection, L"AlwaysOnTop", bAlwaysOnTop);
-    IniSectionSetBool(pIniSection, L"MinimizeToTray", bMinimizeToTray);
-    IniSectionSetBool(pIniSection, L"TransparentMode", g_bTransparentMode);
-    IniSectionSetInt(pIniSection, L"RenderingTechnology", Settings.RenderingTechnology);
-    IniSectionSetInt(pIniSection, L"Bidirectional", Settings.Bidirectional);
+    if (Settings.SkipUnicodeDetection != Defaults.SkipUnicodeDetection) {
+      IniSectionSetBool(pIniSection, L"SkipUnicodeDetection", Settings.SkipUnicodeDetection);
+    }
+    if (Settings.SkipANSICodePageDetection != Defaults.SkipANSICodePageDetection) {
+      IniSectionSetBool(pIniSection, L"SkipANSICodePageDetection", Settings.SkipANSICodePageDetection);
+    }
+    if (Settings.LoadASCIIasUTF8 != Defaults.LoadASCIIasUTF8) {
+      IniSectionSetBool(pIniSection, L"LoadASCIIasUTF8", Settings.LoadASCIIasUTF8);
+    }
+    if (Settings.LoadNFOasOEM != Defaults.LoadNFOasOEM) {
+      IniSectionSetBool(pIniSection, L"LoadNFOasOEM", Settings.LoadNFOasOEM);
+    }
+    if (Settings.NoEncodingTags != Defaults.NoEncodingTags) {
+      IniSectionSetBool(pIniSection, L"NoEncodingTags", Settings.NoEncodingTags);
+    }
+    if (Settings.DefaultEOLMode != Defaults.DefaultEOLMode) {
+      IniSectionSetInt(pIniSection, L"DefaultEOLMode", Settings.DefaultEOLMode);
+    }
+    if (Settings.FixLineEndings != Defaults.FixLineEndings) {
+      IniSectionSetBool(pIniSection, L"FixLineEndings", Settings.FixLineEndings);
+    }
+    if (Settings.FixTrailingBlanks != Defaults.FixTrailingBlanks) {
+      IniSectionSetBool(pIniSection, L"FixTrailingBlanks", Settings.FixTrailingBlanks);
+    }
+    if (Settings.PrintHeader != Defaults.PrintHeader) {
+      IniSectionSetInt(pIniSection, L"PrintHeader", Settings.PrintHeader);
+    }
+    if (Settings.PrintFooter != Defaults.PrintFooter) {
+      IniSectionSetInt(pIniSection, L"PrintFooter", Settings.PrintFooter);
+    }
+    if (Settings.PrintColorMode != Defaults.PrintColorMode) {
+      IniSectionSetInt(pIniSection, L"PrintColorMode", Settings.PrintColorMode);
+    }
+    if (Settings.PrintZoom != Defaults.PrintZoom) {
+      IniSectionSetInt(pIniSection, L"PrintZoom", Settings.PrintZoom);
+    }
+    if (Settings.PrintMargin.left != Defaults.PrintMargin.left) {
+      IniSectionSetInt(pIniSection, L"PrintMarginLeft", Settings.PrintMargin.left);
+    }
+    if (Settings.PrintMargin.top != Defaults.PrintMargin.top) {
+      IniSectionSetInt(pIniSection, L"PrintMarginTop", Settings.PrintMargin.top);
+    }
+    if (Settings.PrintMargin.right != Defaults.PrintMargin.right) {
+      IniSectionSetInt(pIniSection, L"PrintMarginRight", Settings.PrintMargin.right);
+    }
+    if (Settings.PrintMargin.bottom != Defaults.PrintMargin.bottom) {
+      IniSectionSetInt(pIniSection, L"PrintMarginBottom", Settings.PrintMargin.bottom);
+    }
+    if (Settings.SaveBeforeRunningTools != Defaults.SaveBeforeRunningTools) {
+      IniSectionSetBool(pIniSection, L"SaveBeforeRunningTools", Settings.SaveBeforeRunningTools);
+    }
+    if (Settings.FileWatchingMode != Defaults.FileWatchingMode) {
+      IniSectionSetInt(pIniSection, L"FileWatchingMode", Settings.FileWatchingMode);
+    }
+    if (Settings.ResetFileWatching != Defaults.ResetFileWatching) {
+      IniSectionSetBool(pIniSection, L"ResetFileWatching", Settings.ResetFileWatching);
+    }
+    if (Settings.EscFunction != Defaults.EscFunction) {
+      IniSectionSetInt(pIniSection, L"EscFunction", Settings.EscFunction);
+    }
+    if (Settings.AlwaysOnTop != Defaults.AlwaysOnTop) {
+      IniSectionSetBool(pIniSection, L"AlwaysOnTop", Settings.AlwaysOnTop);
+    }
+    if (Settings.MinimizeToTray != Defaults.MinimizeToTray) {
+      IniSectionSetBool(pIniSection, L"MinimizeToTray", Settings.MinimizeToTray);
+    }
+    if (Settings.TransparentMode != Defaults.TransparentMode) {
+      IniSectionSetBool(pIniSection, L"TransparentMode", Settings.TransparentMode);
+    }
+    if (Settings.RenderingTechnology != Defaults.RenderingTechnology) {
+      IniSectionSetInt(pIniSection, L"RenderingTechnology", Settings.RenderingTechnology);
+    }
+    if (Settings.Bidirectional != Defaults.Bidirectional) {
+      IniSectionSetInt(pIniSection, L"Bidirectional", Settings.Bidirectional);
+    }
     ///~IniSectionSetInt(pIniSection, L"IMEInteraction", Settings2.IMEInteraction);
+
+
     IniSectionSetBool(pIniSection, L"ShowToolbar", bShowToolbar);
     IniSectionSetBool(pIniSection, L"ShowStatusbar", bShowStatusbar);
     IniSectionSetInt(pIniSection, L"EncodingDlgSizeX", cxEncodingDlg);
@@ -8823,13 +8866,13 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (s_iStatusbarVisible[STATUS_EOLMODE])
   {
-    if (s_iEOLMode != g_iEOLMode) {
-      if (g_iEOLMode == SC_EOL_CR)
+    if (s_iEOLMode != Globals.iEOLMode) {
+      if (Globals.iEOLMode == SC_EOL_CR)
       {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR%s",
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
-      else if (g_iEOLMode == SC_EOL_LF)
+      else if (Globals.iEOLMode == SC_EOL_LF)
       {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF%s",
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
@@ -8838,7 +8881,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR+LF%s",
           s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
-      s_iEOLMode = g_iEOLMode;
+      s_iEOLMode = Globals.iEOLMode;
       bIsUpdateNeeded = true;
     }
   }
@@ -9384,8 +9427,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     FileVars_Init(NULL,0,&fvCurFile);
     EditSetNewText(Globals.hwndEdit, "", 0);
 
-    g_iEOLMode = g_iDefaultEOLMode;
-    SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
+    Globals.iEOLMode = Settings.DefaultEOLMode;
+    SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,Globals.iEOLMode,0);
     Encoding_Current(Settings.DefaultEncoding);
     Encoding_HasChanged(Settings.DefaultEncoding);
     
@@ -9400,11 +9443,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     UpdateMarginWidth();
 
     // Terminate file watching
-    if (g_bResetFileWatching) {
+    if (Settings.ResetFileWatching) {
       if (g_bChasingDocTail) {
         SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
       }
-      g_iFileWatchingMode = 0;
+      Settings.FileWatchingMode = 0;
     }
     InstallFileWatching(NULL);
     s_bEnableSaveSettings = true;
@@ -9460,8 +9503,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
         FileVars_Init(NULL,0,&fvCurFile);
         EditSetNewText(Globals.hwndEdit,"",0);
         Style_SetDefaultLexer(Globals.hwndEdit);
-        g_iEOLMode = g_iDefaultEOLMode;
-        SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
+        Globals.iEOLMode = Settings.DefaultEOLMode;
+        SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,Globals.iEOLMode,0);
         if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
           fileEncoding = Encoding_SrcCmdLn(CPI_GET);
           Encoding_Current(fileEncoding);
@@ -9491,7 +9534,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     else
       fileEncoding = Encoding_Current(CPI_GET);
 
-    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fileEncoding,&g_iEOLMode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,false);
+    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fileEncoding,&Globals.iEOLMode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,false);
     if (fSuccess)
       Encoding_Current(fileEncoding); // load may change encoding
   }
@@ -9506,7 +9549,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     if (!s_flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(Globals.hwndEdit,Globals.CurrentFile);
 
-    SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,g_iEOLMode,0);
+    SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,Globals.iEOLMode,0);
     fileEncoding = Encoding_Current(CPI_GET);
     Encoding_HasChanged(fileEncoding);
     int idx = 0;
@@ -9525,11 +9568,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       SHAddToRecentDocs(SHARD_PATHW,szFileName);
 
     // Install watching of the current file
-    if (!bReload && g_bResetFileWatching) {
+    if (!bReload && Settings.ResetFileWatching) {
       if (g_bChasingDocTail) {
         SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
       }
-      g_iFileWatchingMode = 0;
+      Settings.FileWatchingMode = 0;
     }
     InstallFileWatching(Globals.CurrentFile);
 
@@ -9613,7 +9656,7 @@ bool FileRevert(LPCWSTR szFileName, bool bIgnoreCmdLnEnc)
 
     if (FileLoad(true,false,true,false,true,tchFileName2))
     {
-      if (bIsTail && g_iFileWatchingMode == 2) {
+      if (bIsTail && Settings.FileWatchingMode == 2) {
         SendMessage(Globals.hwndEdit, SCI_DOCUMENTEND, 0, 0);
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
@@ -9726,7 +9769,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
     if (SaveFileDlg(Globals.hwndMain,tchFile,COUNTOF(tchFile),tchInitialDir))
     {
       int fileEncoding = Encoding_Current(CPI_GET);
-      fSuccess = FileIO(false, tchFile, false, true, &fileEncoding, &g_iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
+      fSuccess = FileIO(false, tchFile, false, true, &fileEncoding, &Globals.iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
       //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
       if (fSuccess)
       {
@@ -9750,7 +9793,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
   }
   else {
     int fileEncoding = Encoding_Current(CPI_GET);
-    fSuccess = FileIO(false, Globals.CurrentFile, false, true, &fileEncoding, &g_iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, false);
+    fSuccess = FileIO(false, Globals.CurrentFile, false, true, &fileEncoding, &Globals.iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, false);
     //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
   }
 
@@ -9770,11 +9813,11 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       _SetDocumentModified(false);
 
       // Install watching of the current file
-      if (bSaveAs && g_bResetFileWatching) {
+      if (bSaveAs && Settings.ResetFileWatching) {
         if (g_bChasingDocTail) {
           SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
         }
-        g_iFileWatchingMode = 0;
+        Settings.FileWatchingMode = 0;
       }
       InstallFileWatching(Globals.CurrentFile);
     }
@@ -9794,7 +9837,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
             GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
           int fileEncoding = Encoding_Current(CPI_GET);
-          if (FileIO(false,szTempFileName,false,true,&fileEncoding,&g_iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,true)) {
+          if (FileIO(false,szTempFileName,false,true,&fileEncoding,&Globals.iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,true)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
             WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
@@ -10474,7 +10517,7 @@ void InstallFileWatching(LPCWSTR lpszFile)
   HANDLE hFind;
 
   // Terminate
-  if (!g_iFileWatchingMode || !lpszFile || StringCchLen(lpszFile,MAX_PATH) == 0)
+  if (!Settings.FileWatchingMode || !lpszFile || StringCchLen(lpszFile,MAX_PATH) == 0)
   {
     if (g_bRunningWatch)
     {
@@ -10569,7 +10612,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
           FindCloseChangeNotification(hChangeHandle);
           hChangeHandle = NULL;
         }
-        if (g_iFileWatchingMode == 2) {
+        if (Settings.FileWatchingMode == 2) {
           g_bRunningWatch = true; /* ! */
           dwChangeNotifyTime = GetTickCount();
         }
