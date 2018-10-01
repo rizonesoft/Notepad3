@@ -50,11 +50,7 @@
 extern const int FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;
-extern bool g_bShowCodeFolding;
-extern bool g_bShowSelectionMargin;
 extern bool g_bIniFileFromScratch;
-
-extern int  g_iMarkOccurrences;
 
 extern int xCustomSchemesDlg;
 extern int yCustomSchemesDlg;
@@ -141,27 +137,27 @@ extern int  g_iDefaultCharSet;
 //  IsLexerStandard()
 //
 
-bool __fastcall IsLexerStandard(PEDITLEXER pLexer)
+bool  IsLexerStandard(PEDITLEXER pLexer)
 {
   return ( pLexer && ((pLexer == &lexStandard) || (pLexer == &lexStandard2nd)) );
 }
 
-PEDITLEXER __fastcall GetCurrentStdLexer()
+PEDITLEXER  GetCurrentStdLexer()
 {
   return (Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard);
 }
 
-bool __fastcall IsStyleStandardDefault(PEDITSTYLE pStyle)
+bool  IsStyleStandardDefault(PEDITSTYLE pStyle)
 {
   return (pStyle && ((pStyle->rid == IDS_LEX_STD_STYLE) || (pStyle->rid == IDS_LEX_2ND_STYLE)));
 }
 
-bool __fastcall IsStyleSchemeDefault(PEDITSTYLE pStyle)
+bool  IsStyleSchemeDefault(PEDITSTYLE pStyle)
 {
   return (pStyle && (pStyle->rid == IDS_LEX_STR_63126));
 }
 
-PEDITLEXER __fastcall GetDefaultLexer()
+PEDITLEXER  GetDefaultLexer()
 {
   return g_pLexArray[g_iDefaultLexer];
 }
@@ -182,7 +178,7 @@ bool Style_IsCurLexerStandard()
 //
 //  _SetBaseFontSize(), _GetBaseFontSize()
 //
-static float __fastcall _SetBaseFontSize(float fSize)
+static float  _SetBaseFontSize(float fSize)
 {
   static float fBaseFontSize = INITIAL_BASE_FONT_SIZE;
 
@@ -192,7 +188,7 @@ static float __fastcall _SetBaseFontSize(float fSize)
   return fBaseFontSize;
 }
 
-static float __fastcall _GetBaseFontSize()
+static float  _GetBaseFontSize()
 {
   return _SetBaseFontSize(-1.0);
 }
@@ -202,7 +198,7 @@ static float __fastcall _GetBaseFontSize()
 //
 //  Style_RgbAlpha()
 //
-int __fastcall Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
+int  Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 {
   return (int)RGB(\
     (0xFF - alpha) * (int)GetRValue(rgbBack) / 0xFF + alpha * (int)GetRValue(rgbFore) / 0xFF, \
@@ -215,7 +211,7 @@ int __fastcall Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 //
 //  _SetCurrentFontSize(), _GetCurrentFontSize()
 //
-static float __fastcall _SetCurrentFontSize(float fSize)
+static float  _SetCurrentFontSize(float fSize)
 {
   static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
 
@@ -673,7 +669,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   if (!Style_StrGetColor(true, pCurrentStandard->Styles[STY_MARK_OCC].szValue, &dColor))
   {
     WCHAR* sty = L"";
-    switch (g_iMarkOccurrences) {
+    switch (Settings.MarkOccurrences) {
     case 1:
       sty = L"fore:0xFF0000";
       dColor = RGB(0xFF, 0x00, 0x00);
@@ -815,7 +811,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetCurrentLineBackground(hwnd, Settings.HighlightCurrentLine);
 
   // bookmark line or marker
-  Style_SetBookmark(hwnd, g_bShowSelectionMargin);
+  Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
 
   // caret style and width
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"block")) {
@@ -1161,7 +1157,7 @@ void Style_SetCurrentLineBackground(HWND hwnd, bool bHiLitCurrLn)
 //
 //  _GetMarkerMarginWidth()
 //
-static int __fastcall _GetMarkerMarginWidth()
+static int  _GetMarkerMarginWidth()
 {
   float fSize = _GetBaseFontSize();
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
@@ -1309,8 +1305,8 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   }
 
   // set width
-  Style_SetBookmark(hwnd, g_bShowSelectionMargin);
-  Style_SetFolding(hwnd, (g_bCodeFoldingAvailable && g_bShowCodeFolding));
+  Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
+  Style_SetFolding(hwnd, (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
 }
 
 
@@ -1318,7 +1314,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 //
 //  Style_SniffShebang()
 //
-PEDITLEXER __fastcall Style_SniffShebang(char* pchText)
+PEDITLEXER  Style_SniffShebang(char* pchText)
 {
   if (StrCmpNA(pchText,"#!",2) == 0) {
     char *pch = pchText + 2;
@@ -1359,7 +1355,7 @@ PEDITLEXER __fastcall Style_SniffShebang(char* pchText)
 //
 //  Style_MatchLexer()
 //
-PEDITLEXER __fastcall Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
+PEDITLEXER  Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
   int i;
   WCHAR  tch[COUNTOF(g_pLexArray[0]->szExtensions)] = { L'\0' };
   WCHAR  *p1,*p2;
@@ -2075,19 +2071,19 @@ bool Style_StrGetCase(LPCWSTR lpszStyle, int* i)
 {
   WCHAR *p = StrStrI(lpszStyle, L"case:");
   if (p) {
-    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-    StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"case:"));
-    p = StrChr(tch, L';');
-    if (p)
-      *p = L'\0';
-    TrimStringW(tch);
-    if (tch[0] == L'u' || tch[0] == L'U') {
+    p += CSTRLEN(L"case:");
+    p += StrSpn(p, L" ");
+    switch (*p) {
+    case L'u':
+    case L'U':
       *i = SC_CASE_UPPER;
       return true;
-    }
-    else if (tch[0] == L'l' || tch[0] == L'L') {
+    case L'l':
+    case L'L':
       *i = SC_CASE_LOWER;
       return true;
+    default:
+      break;
     }
   }
   return false;
@@ -2255,7 +2251,7 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
 
   if (Style_StrGetCase(lpszStyleSrc, &iValue) && !StrStrI(lpszStyleDest, L"case:")) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; case:");
-    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), (iValue == SC_CASE_UPPER) ? L"u" : L"");
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), (iValue == SC_CASE_UPPER) ? L"U" : L"L");
   }
 
   if (!StrStrI(lpszStyleDest, L"alpha:")) {
@@ -3040,7 +3036,7 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 //
 //  Style_CustomizeSchemesDlgProc()
 //
-static bool __fastcall _ApplyDialogItemText(HWND hwnd, 
+static bool  _ApplyDialogItemText(HWND hwnd, 
   PEDITLEXER pCurrentLexer, PEDITSTYLE pCurrentStyle, int iStyleID, bool bIsStyleSelected)
 {
   WCHAR szBuf[max(BUFSIZE_STYLE_VALUE, BUFZIZE_STYLE_EXTENTIONS)];

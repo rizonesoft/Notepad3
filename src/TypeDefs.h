@@ -214,6 +214,7 @@ typedef struct _globals_t
   UINT		  uCurrentDPI;
   UINT		  uCurrentPPI;
   LANGID    iPrefLANGID;
+  int       iEOLMode;
 
   WCHAR     WorkingDirectory[MAX_PATH + 1];
   WCHAR     IniFile[MAX_PATH + 1];
@@ -227,8 +228,6 @@ extern GLOBALS_T Globals;
 
 typedef struct _settings_t
 {
-  int RenderingTechnology;
-  int Bidirectional;
   bool SaveRecentFiles;
   bool PreserveCaretPos;
   bool SaveFindReplace;
@@ -248,8 +247,50 @@ typedef struct _settings_t
   bool AutoCLexerKeyWords;
   bool AccelWordNavigation;
   bool ShowIndentGuides;
+  bool TabsAsSpaces;
+  bool TabIndents;
+  bool BackspaceUnindents;
+  int TabWidth;
+  int IndentWidth;
+  bool MarkLongLines;
+  int LongLinesLimit;
+  int LongLineMode;
+  bool ShowSelectionMargin;
+  bool ShowLineNumbers;
+  bool ShowCodeFolding;
+  int MarkOccurrences;
+  bool MarkOccurrencesMatchVisible;
+  bool MarkOccurrencesMatchCase;
+  bool MarkOccurrencesMatchWholeWords;
+  bool MarkOccurrencesCurrentWord;
+  bool ViewWhiteSpace;
+  bool ViewEOLs;
+  int DefaultEncoding; // default new file encoding
+  bool UseDefaultForFileEncoding;
+  bool SkipUnicodeDetection;
+  bool SkipANSICodePageDetection;
+  bool LoadASCIIasUTF8;
+  bool LoadNFOasOEM;
+  bool NoEncodingTags;
+  int DefaultEOLMode;
+  bool FixLineEndings;
+  bool FixTrailingBlanks;
+  int PrintHeader;
+  int PrintFooter;
+  int PrintColorMode;
+  int PrintZoom;
+  bool SaveBeforeRunningTools;
+  int FileWatchingMode;
+  bool ResetFileWatching;
+  int EscFunction;
+  bool AlwaysOnTop;
+  bool MinimizeToTray;
+  bool TransparentMode;
+  int RenderingTechnology;
+  int Bidirectional;
 
 
+  RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
   WCHAR OpenWithDir[MAX_PATH + 1];
   WCHAR FavoritesDir[MAX_PATH + 1];

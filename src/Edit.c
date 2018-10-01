@@ -65,7 +65,6 @@
 
 extern DWORD dwLastIOError;
 extern bool bReplaceInitialized;
-extern bool bUseDefaultForFileEncoding;
 extern bool g_bFindReplCopySelOrClip;
 
 static EDITFINDREPLACE efrSave;
@@ -76,33 +75,17 @@ extern int yFindReplaceDlg;
 static int xFindReplaceDlgSave;
 static int yFindReplaceDlgSave;
 
-extern int  g_iDefaultEOLMode;
-extern int  g_iEOLMode;
-extern bool bFixLineEndings;
-extern bool bAutoStripBlanks;
-
 // Default Codepage and Character Set
-extern int  g_iDefaultNewFileEncoding;
 extern int  g_iDefaultCharSet;
-extern bool g_bLoadASCIIasUTF8;
 extern bool g_bForceLoadASCIIasUTF8;
-extern bool g_bLoadNFOasOEM;
-extern bool g_bNoEncodingTags;
 extern bool g_bUseLimitedAutoCCharSet;
 extern bool g_bIsCJKInputCodePage;
 
 extern int  g_iReplacedOccurrences;
-extern int  g_iMarkOccurrences;
 extern int  g_iMarkOccurrencesCount;
-extern bool g_bMarkOccurrencesMatchVisible;
 
 extern bool g_bCodeFoldingAvailable;
-extern bool g_bShowCodeFolding;
 
-extern bool g_bTabsAsSpaces;
-extern bool g_bTabIndents;
-extern int  g_iTabWidth;
-extern int  g_iIndentWidth;
 extern bool g_bZeroBasedColumnIndex;
 
 extern CALLTIPTYPE g_CallTipType;
@@ -158,10 +141,6 @@ enum SortOrderMask {
 extern LPMRULIST g_pMRUfind;
 extern LPMRULIST g_pMRUreplace;
 
-extern bool g_bMarkOccurrencesMatchCase;
-extern bool g_bMarkOccurrencesMatchWords;
-extern bool g_bMarkOccurrencesCurrentWord;
-
 
 //=============================================================================
 //
@@ -169,17 +148,17 @@ extern bool g_bMarkOccurrencesCurrentWord;
 //
 static volatile LONG s_lTargetTransactionGuard = 0L;
 
-static bool __fastcall _IsInTargetTransaction()
+static bool  _IsInTargetTransaction()
 {
   return (InterlockedOr(&s_lTargetTransactionGuard, 0L) != 0L);
 }
 
-static void __fastcall _EnterTargetTransaction()
+static void  _EnterTargetTransaction()
 {
   InterlockedIncrement(&s_lTargetTransactionGuard);
 }
 
-static void __fastcall _LeaveTargetTransaction()
+static void  _LeaveTargetTransaction()
 {
   if (_IsInTargetTransaction()) {
     InterlockedDecrement(&s_lTargetTransactionGuard);
@@ -217,7 +196,7 @@ static int msgcmp(void* mqc1, void* mqc2)
 
 #define _MQ_ms(T) ((T) / USER_TIMER_MINIMUM)
 
-static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
+static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
   CmdMessageQueue_t* pmqc = NULL;
   DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
@@ -243,7 +222,7 @@ static void __fastcall _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycl
 // ----------------------------------------------------------------------------
 
 
-static void __fastcall _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
+static void  _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 {
   CmdMessageQueue_t* pmqc = NULL;
 
@@ -365,7 +344,7 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 //  _ClearTextBuffer()
 //
-void __fastcall _ClearTextBuffer(HWND hwnd)
+void  _ClearTextBuffer(HWND hwnd)
 {
   UndoRedoRecordingStop();
 
@@ -394,7 +373,7 @@ void __fastcall _ClearTextBuffer(HWND hwnd)
 //
 //  _InitTextBuffer()
 //
-void __fastcall _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
+void  _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bSetSavePoint)
 {
   if (textLen > 0) {
     SciCall_AddText(textLen, lpstrText);
@@ -856,7 +835,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   HANDLE const hOld   = GetClipboardData(CF_UNICODETEXT);
   const WCHAR* pszOld = GlobalLock(hOld);
 
-  const WCHAR *pszSep = ((g_iEOLMode == SC_EOL_CRLF) ? L"\r\n" : ((g_iEOLMode == SC_EOL_CR) ? L"\r" : L"\n"));
+  const WCHAR *pszSep = ((Globals.iEOLMode == SC_EOL_CRLF) ? L"\r\n" : ((Globals.iEOLMode == SC_EOL_CR) ? L"\r" : L"\n"));
 
   size_t cchNewText = cchTextW;
   if (pszOld && *pszOld) {
@@ -891,7 +870,7 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 int EditDetectEOLMode(HWND hwnd, char* lpData)
 {
   UNUSED(hwnd);
-  int iEOLMode = g_iDefaultEOLMode;
+  int iEOLMode = Settings.DefaultEOLMode;
 
   LPCSTR cp = lpData ? StrPBrkA(lpData, "\r\n") : NULL;
 
@@ -1034,7 +1013,7 @@ bool EditLoadFile(
   }
 
   bool bNfoDizDetected = false;
-  if (g_bLoadNFOasOEM)
+  if (Settings.LoadNFOasOEM)
   {
     if (lpszExt && !(StringCchCompareXI(lpszExt,L".nfo") && StringCchCompareXI(lpszExt,L".diz")))
       bNfoDizDetected = true;
@@ -1043,7 +1022,7 @@ bool EditLoadFile(
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
   int iPreferedEncoding = (bNfoDizDetected) ? g_DOSEncoding :
-    ((bUseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
+    ((Settings.UseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
@@ -1054,7 +1033,7 @@ bool EditLoadFile(
     bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
 
     if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
-      iAnalyzedEncoding = g_bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
+      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
     }
     else {
       if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
@@ -1098,10 +1077,10 @@ bool EditLoadFile(
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&fvCurFile);
-    *iEOLMode = g_iDefaultEOLMode;
-    *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (g_bLoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
+    *iEOLMode = Settings.DefaultEOLMode;
+    *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
-    SendMessage(hwnd,SCI_SETEOLMODE,g_iDefaultEOLMode,0);
+    SendMessage(hwnd,SCI_SETEOLMODE,Settings.DefaultEOLMode,0);
     FreeMem(lpData);
   }
   // ===  UNICODE  ===
@@ -1164,14 +1143,14 @@ bool EditLoadFile(
     FileVars_Init(lpData,cbData,&fvCurFile);
 
     // ===  UTF-8  ===
-    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&fvCurFile) && !g_bNoEncodingTags);
+    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&fvCurFile) && !Settings.NoEncodingTags);
     bool const bForcedNonUTF8 = !Encoding_IsNONE(iForcedEncoding) && !Encoding_IsUTF8(iForcedEncoding);
 
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
     bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
     bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUTF8(iPreferedEncoding); // non-reliable analysis = soft-hint
 
-    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&fvCurFile) && !g_bNoEncodingTags);
+    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&fvCurFile) && !Settings.NoEncodingTags);
 
     //if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8)))
     if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
@@ -1307,13 +1286,13 @@ bool EditSaveFile(
     return false;
 
   // ensure consistent line endings
-  if (bFixLineEndings) {
+  if (Settings.FixLineEndings) {
     SendMessage(hwnd,SCI_CONVERTEOLS, SciCall_GetEOLMode(),0);
     EditFixPositions(hwnd);
   }
 
   // strip trailing blanks
-  if (bAutoStripBlanks)
+  if (Settings.FixTrailingBlanks)
     EditStripLastCharacter(hwnd, true, true);
 
   // get text
@@ -2307,7 +2286,7 @@ void EditSpacesToTabs(HWND hwnd,int nTabWidth,bool bOnlyIndentingWS)
 //
 //  _EditMoveLines()
 //
-static void __fastcall _EditMoveLines(bool bMoveUp)
+static void  _EditMoveLines(bool bMoveUp)
 {
   if (SciCall_IsSelectionRectangle()) {
     MsgBoxLng(MBWARN, IDS_MUI_SELRECT);
@@ -3127,7 +3106,7 @@ void EditToggleLineComments(HWND hwnd, LPCWSTR pwszComment, bool bInsertAtStart)
 //
 //  _AppendSpaces()
 //
-static DocPos __fastcall _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos iMaxColumn, bool bSkipEmpty)
+static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos iMaxColumn, bool bSkipEmpty)
 {
   UNUSED(hwnd);
 
@@ -4569,7 +4548,7 @@ void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt)
 //
 //  _EditSetSearchFlags()
 //
-static void __fastcall _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
+static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 {
   char szBuf[FNDRPL_BUFFER];
 
@@ -4768,7 +4747,7 @@ static void __fastcall _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 // Wildcard search uses the regexp engine to perform a simple search with * ? as wildcards 
 // instead of more advanced and user-unfriendly regexp syntax
 // for speed, we only need POSIX syntax here
-static void __fastcall _EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
+static void  _EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 {
   char szWildcardEscaped[FNDRPL_BUFFER] = { '\0' };
   int iSource = 0;
@@ -4819,7 +4798,7 @@ static void __fastcall _EscapeWildcards(char* szFind2, LPCEDITFINDREPLACE lpefr)
 //
 //  _EditGetFindStrg()
 //
-static int __fastcall _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, int cchCnt)
+static int  _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPSTR szFind, int cchCnt)
 {
   UNUSED(hwnd);
   if (StringCchLenA(lpefr->szFind, COUNTOF(lpefr->szFind))) {
@@ -4850,7 +4829,7 @@ static int __fastcall _EditGetFindStrg(HWND hwnd, LPCEDITFINDREPLACE lpefr, LPST
 //
 //  _FindInTarget()
 //
-static DocPos __fastcall _FindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int flags, 
+static DocPos  _FindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, int flags, 
                                    DocPos* start, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
 {
   DocPos _start = *start;
@@ -4908,7 +4887,7 @@ static DocPos __fastcall _FindInTarget(HWND hwnd, LPCSTR szFind, DocPos length, 
 //
 typedef enum { MATCH = 0, NO_MATCH = 1, INVALID = 2 } RegExResult_t;
 
-static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, bool bMarkAll, bool bFirstMatchOnly)
+static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos, bool bMarkAll, bool bFirstMatchOnly)
 {
   char szFind[FNDRPL_BUFFER];
   DocPos slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
@@ -4947,7 +4926,7 @@ static RegExResult_t __fastcall _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpef
 //
 //  _DeleteLineStateAll()
 //
-static void __fastcall _DeleteLineStateAll(int const iLineStateBit)
+static void  _DeleteLineStateAll(int const iLineStateBit)
 {
   DocLn const iLastLine = SciCall_GetLineCount();
   for (DocLn iLine = 0; iLine < iLastLine; ++iLine) {
@@ -4964,7 +4943,7 @@ static void __fastcall _DeleteLineStateAll(int const iLineStateBit)
 //  _DelayMarkAll()
 //  
 //
-static void __fastcall _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
+static void  _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_MAIN_MRKALL, 1), (LPARAM)0 , 0 };
   mqc.hwnd = hwnd;
@@ -5017,8 +4996,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       g_iReplacedOccurrences = 0;
       g_FindReplaceMatchFoundState = FND_NOP;
 
-      iSaveMarkOcc = bSwitchedFindReplace ? iSaveMarkOcc : g_iMarkOccurrences;
-      bSaveOccVisible = bSwitchedFindReplace ? bSaveOccVisible : g_bMarkOccurrencesMatchVisible;
+      iSaveMarkOcc = bSwitchedFindReplace ? iSaveMarkOcc : Settings.MarkOccurrences;
+      bSaveOccVisible = bSwitchedFindReplace ? bSaveOccVisible : Settings.MarkOccurrencesMatchVisible;
 
       //const WORD wTabSpacing = (WORD)SendMessage(sg_pefrData->hwnd, SCI_GETTABWIDTH, 0, 0);;  // dialog box units
       //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
@@ -5089,8 +5068,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       }
 
       if (sg_pefrData->bMarkOccurences) {
-        g_iMarkOccurrences = 0;
-        g_bMarkOccurrencesMatchVisible = false;
+        Settings.MarkOccurrences = 0;
+        Settings.MarkOccurrencesMatchVisible = false;
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, BST_CHECKED);
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
         EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
@@ -5101,7 +5080,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
         EditClearAllOccurrenceMarkers(Globals.hwndEdit);
       }
-      EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, g_bMarkOccurrencesMatchVisible);
+      EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, Settings.MarkOccurrencesMatchVisible);
 
 
       if (sg_pefrData->fuFlags & SCFIND_REGEXP) {
@@ -5182,8 +5161,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
           sg_pefrData->szFind[0] = '\0';
 
-          g_iMarkOccurrences = iSaveMarkOcc;
-          g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
+          Settings.MarkOccurrences = iSaveMarkOcc;
+          Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
 
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, true);
           EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_VISIBLE, true);
@@ -5408,11 +5387,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           if (IsDlgButtonChecked(hwnd, IDC_ALL_OCCURRENCES) == BST_CHECKED) 
           {
-            iSaveMarkOcc = g_iMarkOccurrences;
-            bSaveOccVisible = g_bMarkOccurrencesMatchVisible;
+            iSaveMarkOcc = Settings.MarkOccurrences;
+            bSaveOccVisible = Settings.MarkOccurrencesMatchVisible;
 
-            g_iMarkOccurrences = 0;
-            g_bMarkOccurrencesMatchVisible = false;
+            Settings.MarkOccurrences = 0;
+            Settings.MarkOccurrencesMatchVisible = false;
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, true);
 
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_MARKOCCUR_ONOFF, false);
@@ -5420,9 +5399,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_TOGGLE_VIEW, false);
           }
           else {  // switched OFF
-            g_iMarkOccurrences = iSaveMarkOcc;
-            g_bMarkOccurrencesMatchVisible = bSaveOccVisible;
-            //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (g_iMarkOccurrences > 0) && !g_bMarkOccurrencesMatchVisible);
+            Settings.MarkOccurrences = iSaveMarkOcc;
+            Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
+            //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
             if (EditToggleView(Globals.hwndEdit, false)) {
               PostMessage(hwnd, WM_COMMAND, MAKELONG(IDC_TOGGLE_VISIBILITY, 1), 0);
@@ -6010,7 +5989,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
     EditClearAllOccurrenceMarkers(hwnd);
   }
 
-  if (g_iMarkOccurrences <= 0) {
+  if (Settings.MarkOccurrences <= 0) {
     g_iMarkOccurrencesCount = -1;
     return;
   }
@@ -6020,7 +5999,7 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
   _IGNORE_NOTIFY_CHANGE_;
   _ENTER_TARGET_TRANSACTION_;
 
-  if (g_bMarkOccurrencesMatchVisible) {
+  if (Settings.MarkOccurrencesMatchVisible) {
     // get visible lines for update
     DocLn const iFirstVisibleLine = SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine());
 
@@ -6032,10 +6011,10 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
     // !!! don't clear all marks, else this method is re-called
     // !!! on UpdateUI notification on drawing indicator mark
-    EditMarkAll(hwnd, NULL, g_bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, g_bMarkOccurrencesMatchCase, g_bMarkOccurrencesMatchWords);
+    EditMarkAll(hwnd, NULL, Settings.MarkOccurrencesCurrentWord, iPosStart, iPosEnd, Settings.MarkOccurrencesMatchCase, Settings.MarkOccurrencesMatchWholeWords);
   }
   else {
-    EditMarkAll(hwnd, NULL, g_bMarkOccurrencesCurrentWord, 0, Sci_GetDocEndPosition(), g_bMarkOccurrencesMatchCase, g_bMarkOccurrencesMatchWords);
+    EditMarkAll(hwnd, NULL, Settings.MarkOccurrencesCurrentWord, 0, Sci_GetDocEndPosition(), Settings.MarkOccurrencesMatchCase, Settings.MarkOccurrencesMatchWholeWords);
   }
   
   _LEAVE_TARGET_TRANSACTION_;
@@ -6078,7 +6057,7 @@ void EditUpdateVisibleUrlHotspot(bool bEnabled)
 //
 //  _GetReplaceString()
 //
-static char* __fastcall _GetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
+static char*  _GetReplaceString(HWND hwnd, LPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
 {
   char* pszReplace = NULL; // replace text of arbitrary size
   if (StringCchCompareNIA(lpefr->szReplace, FNDRPL_BUFFER, "^c", 2) == 0) {
@@ -6337,7 +6316,7 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
     SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
     SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, SciCall_GetTextLength());
     _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK);
-    g_iMarkOccurrencesCount = (g_iMarkOccurrences > 0) ? 0 : -1;
+    g_iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
 
     _OBSERVE_NOTIFY_CHANGE_;
   }
@@ -6366,13 +6345,13 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
 
     if (!bHideNonMatchedLines) {
       bSaveFoldingAvailable = g_bCodeFoldingAvailable;
-      bSaveShowFolding = g_bShowCodeFolding;
+      bSaveShowFolding = Settings.ShowCodeFolding;
       bSaveHyperlinkHotspots = Settings.HyperlinkHotspot;
       Settings.HyperlinkHotspot = false;
     }
     else {
       g_bCodeFoldingAvailable = bSaveFoldingAvailable;
-      g_bShowCodeFolding = bSaveShowFolding;
+      Settings.ShowCodeFolding = bSaveShowFolding;
       Settings.HyperlinkHotspot = bSaveHyperlinkHotspots;
     }
     EnableCmd(GetMenu(Globals.hwndMain), IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
@@ -6515,17 +6494,17 @@ typedef struct WLIST {
 } WLIST, *PWLIST;
 
 
-static int __fastcall wordcmp(PWLIST a, PWLIST b) {
+static int  wordcmp(PWLIST a, PWLIST b) {
   return StringCchCompareXA(a->word, b->word);
 }
 
-static int __fastcall wordcmpi(PWLIST a, PWLIST b) {
+static int  wordcmpi(PWLIST a, PWLIST b) {
   return StringCchCompareXIA(a->word, b->word);
 }
 
 // ----------------------------------------------
 
-static const char* __fastcall _strNextLexKeyWord(const char* strg, const char* const wdroot, DocPosCR* pwdlen)
+static const char*  _strNextLexKeyWord(const char* strg, const char* const wdroot, DocPosCR* pwdlen)
 {
   char const sep = ' ';
   bool found = false;
@@ -6805,7 +6784,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     DocLn const iLnCount = SciCall_GetLineCount();
     for (DocLn iLine = 0; iLine < iLnCount; ++iLine) { SciCall_SetFoldLevel(iLine, SC_FOLDLEVELBASE); }
     SciCall_SetFoldFlags(0);
-    Style_SetFolding(hwnd, g_bCodeFoldingAvailable && g_bShowCodeFolding);
+    Style_SetFolding(hwnd, g_bCodeFoldingAvailable && Settings.ShowCodeFolding);
     EditApplyLexerStyle(hwnd, 0, -1);
     SciCall_FoldAll(EXPAND);
   }
@@ -6815,7 +6794,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
     // prepare hidden (folding) settings
     g_bCodeFoldingAvailable = true; // saved before
-    g_bShowCodeFolding = true;      // saved before
+    Settings.ShowCodeFolding = true;      // saved before
     SciCall_SetProperty("fold", "1");
     SciCall_SetProperty("fold.foldsyntaxbased", "1");
     SciCall_SetProperty("fold.comment", "1");
@@ -6888,7 +6867,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 //
 //  EditHighlightIfBrace()
 //
-static bool __fastcall _HighlightIfBrace(HWND hwnd, DocPos iPos)
+static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
 {
   UNUSED(hwnd);
   if (iPos < 0) {
@@ -7810,9 +7789,7 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 //
 //  _SetFileVars()
 //
-extern bool g_bNoEncodingTags;
-
-static void __fastcall _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
+static void  _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
 {
   int i;
   bool bDisableFileVar = false;
@@ -7856,7 +7833,7 @@ static void __fastcall _SetFileVars(char* lpData, char* tch, LPFILEVARS lpfv)
     }
   }
 
-  if (!IsUTF8Signature(lpData) && !g_bNoEncodingTags && !bDisableFileVar) {
+  if (!IsUTF8Signature(lpData) && !Settings.NoEncodingTags && !bDisableFileVar) {
 
     if (FileVars_ParseStr(tch, "encoding", lpfv->tchEncoding, COUNTOF(lpfv->tchEncoding)))
       lpfv->mask |= FV_ENCODING;
@@ -7882,7 +7859,7 @@ bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
   char tch[LARGE_BUFFER];
 
   ZeroMemory(lpfv,sizeof(FILEVARS));
-  if ((Flags.NoFileVariables && g_bNoEncodingTags) || !lpData || !cbData)
+  if ((Flags.NoFileVariables && Settings.NoEncodingTags) || !lpData || !cbData)
     return true;
 
   StringCchCopyNA(tch,COUNTOF(tch),lpData,min_s(cbData + 1,COUNTOF(tch)));
@@ -7904,42 +7881,41 @@ bool FileVars_Init(char *lpData, DWORD cbData, LPFILEVARS lpfv) {
 //
 //  FileVars_Apply()
 //
-extern bool bTabsAsSpacesG;
-extern bool bTabIndentsG;
-extern int iTabWidthG;
-extern int iIndentWidthG;
+extern bool g_bTabsAsSpacesG;
+extern bool g_bTabIndentsG;
+extern int g_iTabWidthG;
+extern int g_iIndentWidthG;
 extern bool g_bWordWrapG;
-extern int g_iLongLinesLimit;
-extern int iLongLinesLimitG;
+extern int g_iLongLinesLimitG;
 extern int iWrapCol;
 
 bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
 
   if (lpfv->mask & FV_TABWIDTH)
-    g_iTabWidth = lpfv->iTabWidth;
+    Settings.TabWidth = lpfv->iTabWidth;
   else
-    g_iTabWidth = iTabWidthG;
-  SendMessage(hwnd,SCI_SETTABWIDTH,g_iTabWidth,0);
+    Settings.TabWidth = g_iTabWidthG;
+  SendMessage(hwnd,SCI_SETTABWIDTH,Settings.TabWidth,0);
 
   if (lpfv->mask & FV_INDENTWIDTH)
-    g_iIndentWidth = lpfv->iIndentWidth;
+    Settings.IndentWidth = lpfv->iIndentWidth;
   else if (lpfv->mask & FV_TABWIDTH)
-    g_iIndentWidth = 0;
+    Settings.IndentWidth = 0;
   else
-    g_iIndentWidth = iIndentWidthG;
-  SendMessage(hwnd,SCI_SETINDENT,g_iIndentWidth,0);
+    Settings.IndentWidth = g_iIndentWidthG;
+  SendMessage(hwnd,SCI_SETINDENT,Settings.IndentWidth,0);
 
   if (lpfv->mask & FV_TABSASSPACES)
-    g_bTabsAsSpaces = lpfv->bTabsAsSpaces;
+    Settings.TabsAsSpaces = lpfv->bTabsAsSpaces;
   else
-    g_bTabsAsSpaces = bTabsAsSpacesG;
-  SendMessage(hwnd,SCI_SETUSETABS,!g_bTabsAsSpaces,0);
+    Settings.TabsAsSpaces = g_bTabsAsSpacesG;
+  SendMessage(hwnd,SCI_SETUSETABS,!Settings.TabsAsSpaces,0);
 
   if (lpfv->mask & FV_TABINDENTS)
-    g_bTabIndents = lpfv->bTabIndents;
+    Settings.TabIndents = lpfv->bTabIndents;
   else
-    g_bTabIndents = bTabIndentsG;
-  SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,g_bTabIndents,0);
+    Settings.TabIndents = g_bTabIndentsG;
+  SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,Settings.TabIndents,0);
 
   if (lpfv->mask & FV_WORDWRAP)
     Settings.WordWrap = lpfv->fWordWrap;
@@ -7952,11 +7928,11 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
     SendMessage(Globals.hwndEdit,SCI_SETWRAPMODE,(Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR,0);
 
   if (lpfv->mask & FV_LONGLINESLIMIT)
-    g_iLongLinesLimit = lpfv->iLongLinesLimit;
+    Settings.LongLinesLimit = lpfv->iLongLinesLimit;
   else
-    g_iLongLinesLimit = iLongLinesLimitG;
+    Settings.LongLinesLimit = g_iLongLinesLimitG;
 
-  SendMessage(hwnd,SCI_SETEDGECOLUMN,g_iLongLinesLimit,0);
+  SendMessage(hwnd,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
 
   iWrapCol = 0;
 
@@ -8262,7 +8238,7 @@ void EditFoldClick(DocLn ln, int mode)
 
 void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
 {
-  if (g_bCodeFoldingAvailable && g_bShowCodeFolding)
+  if (g_bCodeFoldingAvailable && Settings.ShowCodeFolding)
   {
     DocLn ln = SciCall_LineFromPosition(SciCall_GetCurrentPos());
 

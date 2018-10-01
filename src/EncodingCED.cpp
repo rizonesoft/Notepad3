@@ -291,7 +291,7 @@ extern "C" int Encoding_CountOf()
 
 // ============================================================================
 
-static int __fastcall MapCPI2Encoding(const int iNP3Encoding)
+static int  MapCPI2Encoding(const int iNP3Encoding)
 {
   if ((iNP3Encoding < 0) || (iNP3Encoding >= Encoding_CountOf())) {
     return UNKNOWN_ENCODING; // CPI_NONE, CPI_GET
@@ -305,7 +305,7 @@ static int __fastcall MapCPI2Encoding(const int iNP3Encoding)
 
 
 
-static int __fastcall FindCodePage(const Encoding& encoding)
+static int  FindCodePage(const Encoding& encoding)
 {
   int iCodePage = -1;
 
@@ -377,7 +377,7 @@ static int __fastcall FindCodePage(const Encoding& encoding)
 
 
 
-static int __fastcall MapEncoding2CPI(const char* const text, const size_t len, const Encoding& encoding, bool* pIsReliable)
+static int  MapEncoding2CPI(const char* const text, const size_t len, const Encoding& encoding, bool* pIsReliable)
 {
   int iNP3Encoding = CPI_NONE;
 
