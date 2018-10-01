@@ -1989,8 +1989,6 @@ bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //            101 Radio1
 //            102 Radio2
 //
-extern int iLongLineMode;
-
 INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
   static int *piNumber;
@@ -2004,7 +2002,7 @@ INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
       SetDlgItemInt(hwnd, 100, *piNumber, false);
       SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, 15, 0);
 
-      if (iLongLineMode == EDGE_LINE)
+      if (Settings.LongLineMode == EDGE_LINE)
         CheckRadioButton(hwnd, 101, 102, 101);
       else
         CheckRadioButton(hwnd, 101, 102, 102);
@@ -2029,7 +2027,7 @@ INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
         if (fTranslated) {
           *piNumber = iNewNumber;
 
-          iLongLineMode = (IsDlgButtonChecked(hwnd, 101)) ? EDGE_LINE : EDGE_BACKGROUND;
+          Settings.LongLineMode = (IsDlgButtonChecked(hwnd, 101)) ? EDGE_LINE : EDGE_BACKGROUND;
 
           EndDialog(hwnd, IDOK);
         }
@@ -2082,15 +2080,9 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 //            103 Check
 //            104 Check
 //
-extern int  g_iTabWidth;
-extern int  g_iIndentWidth;
-extern bool g_bTabsAsSpaces;
-extern bool g_bTabIndents;
-extern bool bBackspaceUnindents;
 
 INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
   switch(umsg)
   {
 
@@ -2098,19 +2090,19 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
       {
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        SetDlgItemInt(hwnd,100,g_iTabWidth,false);
+        SetDlgItemInt(hwnd,100,Settings.TabWidth,false);
         SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,15,0);
 
-        SetDlgItemInt(hwnd,101,g_iIndentWidth,false);
+        SetDlgItemInt(hwnd,101,Settings.IndentWidth,false);
         SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,15,0);
 
-        if (g_bTabsAsSpaces)
+        if (Settings.TabsAsSpaces)
           CheckDlgButton(hwnd,102,BST_CHECKED);
 
-        if (g_bTabIndents)
+        if (Settings.TabIndents)
           CheckDlgButton(hwnd,103,BST_CHECKED);
 
-        if (bBackspaceUnindents)
+        if (Settings.BackspaceUnindents)
           CheckDlgButton(hwnd,104,BST_CHECKED);
 
         CenterDlgInParent(hwnd);
@@ -2133,14 +2125,14 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 
           if (fTranslated1 && fTranslated2)
           {
-            g_iTabWidth = iNewTabWidth;
-            g_iIndentWidth = iNewIndentWidth;
+            Settings.TabWidth = iNewTabWidth;
+            Settings.IndentWidth = iNewIndentWidth;
 
-            g_bTabsAsSpaces = (IsDlgButtonChecked(hwnd,102)) ? true : false;
+            Settings.TabsAsSpaces = (IsDlgButtonChecked(hwnd,102)) ? true : false;
 
-            g_bTabIndents = (IsDlgButtonChecked(hwnd,103)) ? true : false;
+            Settings.TabIndents = (IsDlgButtonChecked(hwnd,103)) ? true : false;
 
-            bBackspaceUnindents = (IsDlgButtonChecked(hwnd,104)) ? true : false;
+            Settings.BackspaceUnindents = (IsDlgButtonChecked(hwnd,104)) ? true : false;
 
             EndDialog(hwnd,IDOK);
           }
