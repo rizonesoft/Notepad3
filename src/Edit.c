@@ -65,7 +65,6 @@
 
 extern DWORD dwLastIOError;
 extern bool bReplaceInitialized;
-extern bool bUseDefaultForFileEncoding;
 extern bool g_bFindReplCopySelOrClip;
 
 static EDITFINDREPLACE efrSave;
@@ -82,7 +81,6 @@ extern bool bFixLineEndings;
 extern bool bAutoStripBlanks;
 
 // Default Codepage and Character Set
-extern int  g_iDefaultNewFileEncoding;
 extern int  g_iDefaultCharSet;
 extern bool g_bLoadASCIIasUTF8;
 extern bool g_bForceLoadASCIIasUTF8;
@@ -150,10 +148,6 @@ enum SortOrderMask {
 
 extern LPMRULIST g_pMRUfind;
 extern LPMRULIST g_pMRUreplace;
-
-extern bool g_bMarkOccurrencesMatchCase;
-extern bool g_bMarkOccurrencesMatchWords;
-extern bool g_bMarkOccurrencesCurrentWord;
 
 
 //=============================================================================
@@ -1036,7 +1030,7 @@ bool EditLoadFile(
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
   int iPreferedEncoding = (bNfoDizDetected) ? g_DOSEncoding :
-    ((bUseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? g_iDefaultNewFileEncoding : CPI_ANSI_DEFAULT);
+    ((Settings.UseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
@@ -6025,10 +6019,10 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
     // !!! don't clear all marks, else this method is re-called
     // !!! on UpdateUI notification on drawing indicator mark
-    EditMarkAll(hwnd, NULL, g_bMarkOccurrencesCurrentWord, iPosStart, iPosEnd, g_bMarkOccurrencesMatchCase, g_bMarkOccurrencesMatchWords);
+    EditMarkAll(hwnd, NULL, Settings.MarkOccurrencesCurrentWord, iPosStart, iPosEnd, Settings.MarkOccurrencesMatchCase, Settings.MarkOccurrencesMatchWholeWords);
   }
   else {
-    EditMarkAll(hwnd, NULL, g_bMarkOccurrencesCurrentWord, 0, Sci_GetDocEndPosition(), g_bMarkOccurrencesMatchCase, g_bMarkOccurrencesMatchWords);
+    EditMarkAll(hwnd, NULL, Settings.MarkOccurrencesCurrentWord, 0, Sci_GetDocEndPosition(), Settings.MarkOccurrencesMatchCase, Settings.MarkOccurrencesMatchWholeWords);
   }
   
   _LEAVE_TARGET_TRANSACTION_;

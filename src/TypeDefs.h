@@ -261,6 +261,13 @@ typedef struct _settings_t
   bool ShowCodeFolding;
   int MarkOccurrences;
   bool MarkOccurrencesMatchVisible;
+  bool MarkOccurrencesMatchCase;
+  bool MarkOccurrencesMatchWholeWords;
+  bool MarkOccurrencesCurrentWord;
+  bool ViewWhiteSpace;
+  bool ViewEOLs;
+  int DefaultEncoding; // default new file encoding
+  bool UseDefaultForFileEncoding;
 
 
 
