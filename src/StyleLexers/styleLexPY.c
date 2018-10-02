@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_PY = {
 "and as assert break class continue def del elif else except "
 "exec False finally for from global if import in is lambda None "
@@ -9,6 +19,7 @@ KEYWORDLIST KeyWords_PY = {
 
 EDITLEXER lexPY = { 
 SCLEX_PYTHON, IDS_LEX_PYTHON, L"Python Script", L"py; pyw", L"", 
+&LexFunction, // static
 &KeyWords_PY, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_P_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

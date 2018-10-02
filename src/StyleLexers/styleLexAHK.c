@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_AHK = {
 "break continue else exit exitapp gosub goto if ifequal ifexist ifgreater ifgreaterorequal "
 "ifinstring ifless iflessorequal ifmsgbox ifnotequal ifnotexist ifnotinstring ifwinactive "
@@ -106,9 +116,11 @@ KEYWORDLIST KeyWords_AHK = {
 "useunsetlocal useunsetglobal useenv localsameasglobal",
 "", "" };
 
+// ----------------------------------------------------------------------------
 
 EDITLEXER lexAHK = { 
-SCLEX_AHK, IDS_LEX_AHK, L"AutoHotkey Script", L"", L"", 
+SCLEX_AHK, IDS_LEX_AHK, L"AutoHotkey Script", L"", L"",
+&LexFunction, // static
 &KeyWords_AHK, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_AHK_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -29,6 +29,7 @@ variableScope:scintilla/lexers/LexErlang.cxx
 variableScope:scintilla/lexers/LexGui4Cli.cxx
 variableScope:scintilla/lexers/LexInno.cxx
 variableScope:scintilla/lexers/LexLaTeX.cxx
+copyCtorAndEqOperator:scintilla/lexers/LexLaTeX.cxx
 variableScope:scintilla/lexers/LexMetapost.cxx
 variableScope:scintilla/lexers/LexModula.cxx
 variableScope:scintilla/lexers/LexNimrod.cxx

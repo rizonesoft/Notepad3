@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_Awk = {
   // Keywords
   "break case continue default do else exit function for if in next return switch while "
@@ -19,6 +29,7 @@ KEYWORDLIST KeyWords_Awk = {
 
 EDITLEXER lexAwk = { 
 SCLEX_PYTHON,  IDS_LEX_AWK_SCR, L"Awk Script", L"awk", L"", 
+&LexFunction, // static
 &KeyWords_Awk,{
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_P_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

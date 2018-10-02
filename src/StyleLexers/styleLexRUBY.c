@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_RUBY = {
 "__FILE__ __LINE__ alias and begin break case class def defined? do else elsif end ensure "
 "false for in if module next nil not or redo rescue retry return self super then true "
@@ -8,6 +18,7 @@ KEYWORDLIST KeyWords_RUBY = {
 
 EDITLEXER lexRUBY = { 
 SCLEX_RUBY, IDS_LEX_RUBY, L"Ruby Script", L"rb; ruby; rbw; rake; rjs; Rakefile; gemspec", L"", 
+&LexFunction, // static
 &KeyWords_RUBY, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_RB_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

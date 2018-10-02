@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_BASH = {
 "alias ar asa awk banner basename bash bc bdiff break bunzip2 bzip2 cal calendar case cat "
 "cc cd chmod cksum clear cmp col comm compress continue cp cpio crypt csplit ctags cut date "
@@ -19,6 +29,7 @@ KEYWORDLIST KeyWords_BASH = {
 
 EDITLEXER lexBASH = { 
 SCLEX_BASH, IDS_LEX_SHELL_SCR, L"Shell Script", L"sh", L"", 
+&LexFunction, // static
 &KeyWords_BASH, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_SH_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

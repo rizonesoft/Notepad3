@@ -11,14 +11,17 @@
 #include "ChooseFont.h"
 #include "FontEnumeration.h"
 #include "GdiTextRenderer.h"
+
+extern "C" {
 #include "../resource.h"
+#include "TypeDefs.h"
+}
 
 //----------------------------------------------------------------------------
 
 IDWriteFactory* g_dwrite = nullptr;
 
 static HINSTANCE g_hInstanceNP3;
-extern "C" HMODULE g_hLngResContainer;
 
 extern "C" void CenterDlgInParent(HWND hDlg);
 
@@ -29,7 +32,7 @@ extern "C" void CenterDlgInParent(HWND hDlg);
 //
 static int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax)
 {
-  const int nLen = LoadStringW(g_hLngResContainer, uID, lpBuffer, nBufferMax);
+  const int nLen = LoadStringW(Globals.hLngResContainer, uID, lpBuffer, nBufferMax);
   return (nLen != 0) ? nLen : LoadStringW(g_hInstanceNP3, uID, lpBuffer, nBufferMax);
 }
 
@@ -170,8 +173,8 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
     // Open the dialog
     if (SUCCEEDED(hr))
     {
-      if (g_hLngResContainer) {
-        hr = (HRESULT)DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
+      if (Globals.hLngResContainer) {
+        hr = (HRESULT)DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
       }
       else {
         hr = (HRESULT)DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
@@ -215,8 +218,8 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat* textFormatIn, IDWrite
     // Open the dialog
     if (SUCCEEDED(hr))
     {
-      if (g_hLngResContainer) {
-        hr = (HRESULT)DialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
+      if (Globals.hLngResContainer) {
+        hr = (HRESULT)DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
       }
       else {
         hr = (HRESULT)DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
@@ -801,7 +804,7 @@ void ChooseFontDialog::OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT* lpDrawItem)
 // ############################################################################
 
 
-static void __fastcall SetChosenFontFromTextFormat(
+static void  SetChosenFontFromTextFormat(
   IDWriteTextFormat* textFormat, 
   LPCHOOSEFONT lpCF, const UINT dpi)
 {

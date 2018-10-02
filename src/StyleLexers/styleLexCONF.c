@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_CONF = {
 "acceptfilter acceptmutex acceptpathinfo accessconfig accessfilename action addalt addaltbyencoding "
 "addaltbytype addcharset adddefaultcharset adddescription addencoding addhandler addicon addiconbyencoding "
@@ -115,6 +125,7 @@ KEYWORDLIST KeyWords_CONF = {
 
 EDITLEXER lexCONF = { 
 SCLEX_CONF, IDS_LEX_APC_CFG, L"Apache Config Files", L"conf; htaccess", L"", 
+&LexFunction, // static
 &KeyWords_CONF, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_CONF_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

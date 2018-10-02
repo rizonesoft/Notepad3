@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_AVS = {
 "true false return global",
 "addborders alignedsplice amplify amplifydb animate applyrange assumebff assumefieldbased assumefps "
@@ -77,6 +87,7 @@ KEYWORDLIST KeyWords_AVS = {
 
 EDITLEXER lexAVS = { 
 SCLEX_AVS, IDS_LEX_AVI_SYNTH, L"AviSynth Script", L"avs; avsi", L"", 
+&LexFunction, // static
 &KeyWords_AVS, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_AVS_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

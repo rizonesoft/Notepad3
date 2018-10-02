@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_Rust = {
   // Primary keywords and identifiers
   "as be break const continue crate else enum extern false fn for "
@@ -24,6 +34,7 @@ KEYWORDLIST KeyWords_Rust = {
 
 EDITLEXER lexRust = { 
 SCLEX_RUST, IDS_LEX_RUST_SRC, L"Rust Source Code", L"rs; rust", L"", 
+&LexFunction, // static
 &KeyWords_Rust,{
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_RUST_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

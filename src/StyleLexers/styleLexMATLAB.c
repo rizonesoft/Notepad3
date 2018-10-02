@@ -1,5 +1,14 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
 KEYWORDLIST KeyWords_MATLAB = {
 "break case catch continue else elseif end for function global if otherwise "
 "persistent return switch try while ",
@@ -8,6 +17,7 @@ KEYWORDLIST KeyWords_MATLAB = {
 
 EDITLEXER lexMATLAB = { 
 SCLEX_MATLAB, IDS_LEX_MATLAB, L"MATLAB", L"matlab", L"", 
+&LexFunction, // static
 &KeyWords_MATLAB, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_MATLAB_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

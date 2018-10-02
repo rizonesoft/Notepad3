@@ -1,10 +1,20 @@
 ﻿#include "StyleLexers.h"
 
-KEYWORDLIST KeyWords_Registry = {
-"", "", "", "", "", "", "", "", "" };
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
+KEYWORDLIST KeyWords_Registry = EMPTY_KEYWORDLIST;
 
 EDITLEXER lexRegistry = { 
 SCLEX_REGISTRY, IDS_LEX_REG_FILES, L"Registry Files", L"reg", L"", 
+&LexFunction, // static
 &KeyWords_Registry, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_REG_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_D = {
   // Primary keywords and identifiers
   "abstract alias align asm assert auto body break case cast catch class const continue "
@@ -30,6 +40,7 @@ KEYWORDLIST KeyWords_D = {
 
 EDITLEXER lexD = { 
 SCLEX_D, IDS_LEX_D_SRC, L"D Source Code", L"d; dd; di", L"", 
+&LexFunction, // static
 &KeyWords_D, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_D_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

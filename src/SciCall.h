@@ -56,20 +56,17 @@
 #include "Scintilla.h"
 #include "TypeDefs.h"
 
-extern HANDLE g_hScintilla;
-extern HANDLE g_hwndEdit;
-
 //=============================================================================
 //
 //  Sci_SendMessage()  short version
 //
-#define Sci_SendMsgV0(CMD)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
-#define Sci_SendMsgV1(CMD,WP)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
-#define Sci_SendMsgV2(CMD,WP,LP)  SendMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
+#define Sci_SendMsgV0(CMD)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
+#define Sci_SendMsgV1(CMD,WP)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
+#define Sci_SendMsgV2(CMD,WP,LP)  SendMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
 
-#define Sci_PostMsgV0(CMD)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
-#define Sci_PostMsgV1(CMD,WP)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
-#define Sci_PostMsgV2(CMD,WP,LP)  PostMessage(g_hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
+#define Sci_PostMsgV0(CMD)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)0, (LPARAM)0)
+#define Sci_PostMsgV1(CMD,WP)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)0)
+#define Sci_PostMsgV2(CMD,WP,LP)  PostMessage(Globals.hwndEdit, SCI_##CMD, (WPARAM)(WP), (LPARAM)(LP))
 
 //=============================================================================
 //
@@ -78,11 +75,11 @@ extern HANDLE g_hwndEdit;
 #ifdef SCI_DIRECTFUNCTION_INTERFACE
 
 LRESULT WINAPI Scintilla_DirectFunction(HANDLE, UINT, WPARAM, LPARAM);
-#define SciCall(m, w, l) Scintilla_DirectFunction(g_hScintilla, (m), (w), (l))
+#define SciCall(m, w, l) Scintilla_DirectFunction(Globals.hndlScintilla, (m), (w), (l))
 
 #else
 
-#define SciCall(m, w, l) SendMessage(g_hwndEdit, m, w, l)
+#define SciCall(m, w, l) SendMessage(Globals.hwndEdit, m, w, l)
 
 #endif // SCI_DIRECTFUNCTION_INTERFACE
 
@@ -231,6 +228,11 @@ DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
 
+DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT)
+DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs)
+DeclareSciCallV01(SetWhitespaceChars, SETWHITESPACECHARS, const char*, chrs)
+DeclareSciCallV01(SetPunctuationChars, SETPUNCTUATIONCHARS, const char*, chrs)
+
 DeclareSciCallR0(GetLineCount, GETLINECOUNT, DocLn)
 DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos)
 DeclareSciCallR1(LineLength, LINELENGTH, DocPos, DocLn, line)
@@ -289,7 +291,7 @@ DeclareSciCallV0(LineDelete, LINEDELETE)
 DeclareSciCallV0(DelLineLeft, DELLINELEFT)
 DeclareSciCallV0(DelLineRight, DELLINERIGHT)
 
-
+DeclareSciCallR0(GetLexer, GETLEXER, int)
 DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text)
 
 
@@ -342,6 +344,7 @@ DeclareSciCallV2(BraceHighLightIndicator, BRACEHIGHLIGHTINDICATOR, bool, use, in
 DeclareSciCallV2(BraceBadLightIndicator, BRACEBADLIGHTINDICATOR, bool, use, int, indic)
 DeclareSciCallV1(SetHighLightGuide, SETHIGHLIGHTGUIDE, int, column)
 DeclareSciCallV2(SetLineIndentation, SETLINEINDENTATION, DocLn, line, DocPos, pos)
+DeclareSciCallV1(SetIndentationGuides, SETINDENTATIONGUIDES, int, iview)
 
 
 //=============================================================================
@@ -459,8 +462,6 @@ DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool)
 //
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool)
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool)
-
-#define Sci_GetLine_Safe(ln, bu)
 
 #define Sci_IsSingleLineSelection() (SciCall_LineFromPosition(SciCall_GetCurrentPos()) == SciCall_LineFromPosition(SciCall_GetAnchor()))
 #define Sci_IsForwardSelection() (SciCall_GetAnchor() <= SciCall_GetCurrentPos())

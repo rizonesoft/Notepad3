@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_VBS = {
 "alias and as attribute begin boolean byref byte byval call case class compare const continue "
 "currency date declare dim do double each else elseif empty end enum eqv erase error event exit "
@@ -12,6 +22,7 @@ KEYWORDLIST KeyWords_VBS = {
 
 EDITLEXER lexVBS = { 
 SCLEX_VBSCRIPT, IDS_LEX_VB_SCR, L"VBScript", L"vbs; dsm", L"", 
+&LexFunction, // static
 &KeyWords_VBS, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_B_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -1,10 +1,20 @@
 ﻿#include "StyleLexers.h"
 
-KEYWORDLIST KeyWords_YAML = {
-"y n yes no on off true false", "", "", "", "", "", "", "", "" };
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
+KEYWORDLIST KeyWords_YAML = { "y n yes no on off true false", "", "", "", "", "", "", "", "" };
 
 EDITLEXER lexYAML = { 
 SCLEX_YAML, IDS_LEX_YAML, L"YAML", L"yaml; yml", L"", 
+&LexFunction, // static
 &KeyWords_YAML, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_YAML_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

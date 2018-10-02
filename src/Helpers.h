@@ -33,22 +33,18 @@
 
 // ============================================================================
 
-extern WCHAR   g_wchIniFile[MAX_PATH];
-extern UINT    g_uCurrentDPI;
-extern UINT    g_uCurrentPPI;
-
 // ============================================================================
 
-#ifndef _T
-#if !defined(ISPP_INVOKED) && (defined(UNICODE) || defined(_UNICODE))
-#define _T(text) L##text
-#else
-#define _T(text) text
-#endif
+#ifndef _MKWCS
+#define _DO_STRINGIFYA(s) #s
+#define _DO_STRINGIFYW(s) L ## #s
+#define STRG(s)  _DO_STRINGIFYA(s)
+#define STRGW(s) _DO_STRINGIFYW(s)
+
+#define _MKWCS(s) L ## s
+#define MKWCS(s)  _MKWCS(s)
 #endif
 
-#define STRGFY(X)     L##(X)
-#define MKWSTRG(strg) STRGFY(strg)
 
 #define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)
@@ -60,24 +56,25 @@ extern UINT    g_uCurrentPPI;
 // ============================================================================
 
 // direct heap allocation
-
-#define DEFAULT_ALLOC_FLAGS (0) ///~ HEAP_GENERATE_EXCEPTIONS
-
-extern HANDLE g_hndlProcessHeap;
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+  #define DEFAULT_ALLOC_FLAGS (HEAP_GENERATE_EXCEPTIONS)
+#else
+  #define DEFAULT_ALLOC_FLAGS (0)
+#endif
 
 __forceinline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 {
-  return HeapAlloc(g_hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
+  return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
 __forceinline bool FreeMem(LPVOID lpMemory)
 {
-  return (lpMemory ? HeapFree(g_hndlProcessHeap, 0, lpMemory) : true);
+  return (lpMemory ? HeapFree(Globals.hndlProcessHeap, 0, lpMemory) : true);
 }
 
 __forceinline size_t SizeOfMem(LPCVOID lpMemory)
 {
-  return (lpMemory ? HeapSize(g_hndlProcessHeap, 0, lpMemory) : 0);
+  return (lpMemory ? HeapSize(Globals.hndlProcessHeap, 0, lpMemory) : 0);
 }
 
 // ============================================================================
@@ -140,19 +137,19 @@ inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) !=
 
 // ----------------------------------------------------------------------------
 
-#define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),g_wchIniFile)
-#define IniGetInt(lpSection,lpName,nDefault)                         GetPrivateProfileInt(lpSection,lpName,(nDefault),g_wchIniFile)
-#define IniGetBool(lpSection,lpName,nDefault)                        (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),g_wchIniFile) ? true : false)
-#define IniSetString(lpSection,lpName,lpString)                      WritePrivateProfileString(lpSection,lpName,(lpString),g_wchIniFile)
-#define IniDeleteSection(lpSection)                                  WritePrivateProfileSection(lpSection,NULL,g_wchIniFile)
+#define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),Globals.IniFile)
+#define IniGetInt(lpSection,lpName,nDefault)                         GetPrivateProfileInt(lpSection,lpName,(nDefault),Globals.IniFile)
+#define IniGetBool(lpSection,lpName,nDefault)                        (GetPrivateProfileInt(lpSection,lpName,(int)(nDefault),Globals.IniFile) ? true : false)
+#define IniSetString(lpSection,lpName,lpString)                      WritePrivateProfileString(lpSection,lpName,(lpString),Globals.IniFile)
+#define IniDeleteSection(lpSection)                                  WritePrivateProfileSection(lpSection,NULL,Globals.IniFile)
 
 inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
   WCHAR tch[32] = { L'\0' }; StringCchPrintf(tch, COUNTOF(tch), L"%i", i); return IniSetString(lpSection, lpName, tch);
 }
 
 #define IniSetBool(lpSection,lpName,nValue)    IniSetInt(lpSection,lpName,((nValue) ? 1 : 0))
-#define LoadIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),g_wchIniFile)
-#define SaveIniSection(lpSection,lpBuf)        WritePrivateProfileSection(lpSection,lpBuf,g_wchIniFile)
+#define LoadIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),Globals.IniFile)
+#define SaveIniSection(lpSection,lpBuf)        WritePrivateProfileSection(lpSection,lpBuf,Globals.IniFile)
 
 int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
 int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
@@ -213,11 +210,11 @@ bool SetClipboardTextW(HWND, LPCWSTR, size_t);
 UINT GetCurrentDPI(HWND hwnd);
 UINT GetCurrentPPI(HWND hwnd);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
-#define ScaleIntToCurrentDPI(val) MulDiv((val), g_uCurrentDPI, USER_DEFAULT_SCREEN_DPI)
-inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * g_uCurrentDPI) / (float)USER_DEFAULT_SCREEN_DPI); }
-#define ScaleIntFontSize(val) MulDiv((val), g_uCurrentDPI, g_uCurrentPPI)
-inline int ScaleFontSize(float fSize) { return float2int((fSize * g_uCurrentDPI) / (float)g_uCurrentPPI); }
-inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * g_uCurrentDPI) / (float)g_uCurrentPPI) * 10; }
+#define ScaleIntToCurrentDPI(val) MulDiv((val), Globals.uCurrentDPI, USER_DEFAULT_SCREEN_DPI)
+inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.uCurrentDPI) / (float)USER_DEFAULT_SCREEN_DPI); }
+#define ScaleIntFontSize(val) MulDiv((val), Globals.uCurrentDPI, Globals.uCurrentPPI)
+inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.uCurrentDPI) / (float)Globals.uCurrentPPI); }
+inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.uCurrentDPI) / (float)Globals.uCurrentPPI) * 10; }
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
 bool IsElevated();
@@ -272,16 +269,25 @@ bool PathCreateFavLnk(LPCWSTR,LPCWSTR,LPCWSTR);
 
 
 bool StrLTrim(LPWSTR,LPCWSTR);
+
 inline bool TrimStringA(LPSTR lpString) {
   if (!lpString || !*lpString) { return false; }
   StrTrimA(lpString, " ");
   return true;
 };
+
 inline bool TrimStringW(LPWSTR lpString) {
   if (!lpString || !*lpString) { return false; }
   StrTrimW(lpString, L" ");
   return true;
 };
+
+#if (defined(UNICODE) || defined(_UNICODE))
+#define TrimString TrimStringW
+#else
+#define TrimString TrimStringA
+#endif
+
 bool ExtractFirstArgument(LPCWSTR, LPWSTR, LPWSTR, int);
 
 void PrepareFilterStr(LPWSTR);
@@ -314,25 +320,6 @@ UINT CharSetFromCodePage(UINT);
 
 
 //==== MRU Functions ==========================================================
-#define MRU_MAXITEMS    32
-#define MRU_ITEMSFILE   32
-#define MRU_ITEMSFNDRPL 16
-#define MRU_NOCASE    1
-#define MRU_UTF8      2
-#define MRU_BMRK_SIZE 512
-
-typedef struct _mrulist 
-{
-  LPCWSTR szRegKey;
-  int     iFlags;
-  int     iSize;
-  LPWSTR  pszItems[MRU_MAXITEMS];
-  int     iEncoding[MRU_MAXITEMS];
-  DocPos  iCaretPos[MRU_MAXITEMS];
-  LPWSTR  pszBookMarks[MRU_MAXITEMS];
-} 
-MRULIST, *PMRULIST, *LPMRULIST;
-
 
 LPMRULIST MRU_Create(LPCWSTR,int,int);
 bool      MRU_Destroy(LPMRULIST);

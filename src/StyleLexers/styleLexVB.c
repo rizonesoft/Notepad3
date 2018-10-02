@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_VB = {
 "addhandler addressof alias and andalso ansi any as assembly auto boolean byref byte byval call "
 "case catch cbool cbyte cchar cdate cdbl cdec char cint class clng cobj compare const cshort csng "
@@ -17,6 +27,7 @@ KEYWORDLIST KeyWords_VB = {
 
 EDITLEXER lexVB = { 
 SCLEX_VB, IDS_LEX_VIS_BAS, L"Visual Basic", L"vb; bas; frm; cls; ctl; pag; dsr; dob", L"", 
+&LexFunction, // static
 &KeyWords_VB, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_B_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

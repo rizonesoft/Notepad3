@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_JAVA = {
 "@interface abstract assert boolean break byte case catch char class const "
 "continue default do double else enum extends final finally float for future "
@@ -16,6 +26,7 @@ KEYWORDLIST KeyWords_JAVA = {
 
 EDITLEXER lexJAVA = { 
 SCLEX_CPP, IDS_LEX_JAVA_SRC, L"Java Source Code", L"java", L"", 
+&LexFunction, // static
 &KeyWords_JAVA, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_PL = {
 "__DATA__ __END__ __FILE__ __LINE__ __PACKAGE__ abs accept alarm and atan2 AUTOLOAD BEGIN "
 "bind binmode bless break caller chdir CHECK chmod chomp chop chown chr chroot close closedir "
@@ -26,6 +36,7 @@ KEYWORDLIST KeyWords_PL = {
 
 EDITLEXER lexPL = { 
 SCLEX_PERL, IDS_LEX_PERL_SCR, L"Perl Script", L"pl; pm; cgi; pod", L"", 
+&LexFunction, // static
 &KeyWords_PL, {
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_PL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },

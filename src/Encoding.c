@@ -48,7 +48,6 @@
 int g_DOSEncoding = CPI_NONE;
 bool g_bForceCompEncDetection = false;
 
-extern HMODULE   g_hLngResContainer;
 extern bool g_bIsCJKInputCodePage;
 
 // ============================================================================
@@ -702,7 +701,7 @@ Return value :
 size (in bytes) of a NULL-terminated UTF-8 string.
 -1 if invalid NULL-terminated UTF-8 string
 --*/
-size_t __fastcall UTF8_mbslen_bytes(LPCSTR utf8_string)
+size_t  UTF8_mbslen_bytes(LPCSTR utf8_string)
 {
   size_t length = 0;
   size_t code_size;
@@ -743,7 +742,7 @@ Return value :
 size (in characters) of a UTF-8 string.
 -1 if invalid UTF-8 string
 --*/
-size_t __fastcall UTF8_mbslen(LPCSTR utf8_string, size_t byte_length)
+size_t  UTF8_mbslen(LPCSTR utf8_string, size_t byte_length)
 {
   size_t wchar_length = 0;
   size_t code_size;
@@ -780,7 +779,7 @@ size_t __fastcall UTF8_mbslen(LPCSTR utf8_string, size_t byte_length)
 }
 // ----------------------------------------------------------------------------
 
-bool __fastcall UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
+bool  UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
 {
   return ((UTF8_mbslen_bytes(UTF8StringStart(utf8_string)) - 1) !=
     UTF8_mbslen(UTF8StringStart(utf8_string), IsUTF8Signature(utf8_string) ? (byte_length - 3) : byte_length));

@@ -1,5 +1,15 @@
 ﻿#include "StyleLexers.h"
 
+// ----------------------------------------------------------------------------
+
+static __int64 LexFunction(LexFunctionType type, int value)
+{
+  LEX_FUNCTION_BODY(type, value);
+  return 0LL;
+};
+
+// ----------------------------------------------------------------------------
+
 KEYWORDLIST KeyWords_Go = {
   // Primary keywords and identifiers
   "break default func interface select case defer go map struct chan else goto package switch const fallthrough if range type "
@@ -23,6 +33,7 @@ KEYWORDLIST KeyWords_Go = {
 
 EDITLEXER lexGo = { 
 SCLEX_D, IDS_LEX_GO_SRC, L"Go Source Code", L"go", L"", 
+&LexFunction, // static
 &KeyWords_Go,{
     { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
     //{ SCE_D_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
