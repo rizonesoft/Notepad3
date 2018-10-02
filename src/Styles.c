@@ -1367,40 +1367,37 @@ PEDITLEXER  Style_SniffShebang(char* pchText)
 //
 //  Style_MatchLexer()
 //
-PEDITLEXER  Style_MatchLexer(LPCWSTR lpszMatch,bool bCheckNames) {
-  int i;
-  WCHAR  tch[COUNTOF(g_pLexArray[0]->szExtensions)] = { L'\0' };
-  WCHAR  *p1,*p2;
+PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames) 
+{
+  int const cch = (int)StringCchLenW(lpszMatch, 0);
 
   if (!bCheckNames) 
   {
-    for (i = 0; i < COUNTOF(g_pLexArray); i++) {
-      ZeroMemory(tch,sizeof(WCHAR)*COUNTOF(tch));
-      StringCchCopy(tch,COUNTOF(tch),g_pLexArray[i]->szExtensions);
-      p1 = tch;
-      while (*p1) {
-        p2 = StrChr(p1,L';');
-        if (p2)
-          *p2 = L'\0';
-        else
-          p2 = StrEnd(p1,0);
-        StrTrim(p1,L" .");
-        if (StringCchCompareXI(p1,lpszMatch) == 0)
-          return(g_pLexArray[i]);
-        p1 = p2 + 1;
-      }
+    for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
+      LPCWSTR p1 = g_pLexArray[i]->szExtensions;
+      do {
+        LPCWSTR p2 = StrStrI(p1, lpszMatch);
+        if (p2 == NULL) {
+          break;
+        }
+        WCHAR const ch = (p2 == p1) ? L'\0' : p2[-1];
+        p2 += cch;
+        if ((ch == L';' || ch == ' ' || ch == L'\0') && (*p2 == L';' || *p2 == L' ' || *p2 == L'\0')) {
+          return g_pLexArray[i];
+        }
+        p1 = StrChr(p2, L';');
+      } while (p1 != NULL);
     }
   }
   else {
-    int cch = (int)StringCchLenW(lpszMatch,0);
     if (cch >= 3) {
-      for (i = 0; i < COUNTOF(g_pLexArray); i++) {
-        if (StrCmpNI(g_pLexArray[i]->pszName,lpszMatch,cch) == 0)
+      for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
+        if (StrCmpNI(g_pLexArray[i]->pszName, lpszMatch, cch) == 0)
           return(g_pLexArray[i]);
       }
     }
   }
-  return(NULL);
+  return NULL;
 }
 
 
@@ -1767,28 +1764,22 @@ bool Style_GetOpenDlgFilterStr(LPWSTR lpszFilter,int cchFilter)
 //
 //  Style_StrGetFont()
 //
-bool Style_StrGetFont(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont)
+bool Style_StrGetFont(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
 {
-  WCHAR tch[64] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"font:");
-  if (p)
-  {
-    StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"font:"));
-    p = StrChr(tch, L';');
-    if (p)
+  if (p) {
+    p += CSTRLEN(L"font:");
+    while (*p == L' ') { ++p; }
+    StringCchCopyN(lpszFont, cchFont, p, cchFont);
+    if ((p = StrChr(lpszFont, L';')) != NULL) {
       *p = L'\0';
-    TrimStringW(tch);
-
-    if (StringCchCompareNI(tch,COUNTOF(tch),L"Default",CSTRLEN(L"Default")) == 0)
-    {
-      if (IsFontAvailable(L"Consolas"))
-        StringCchCopyN(lpszFont,cchFont,L"Consolas",cchFont);
-      else
-        StringCchCopyN(lpszFont,cchFont,L"Lucida Console",cchFont);
     }
-    else
-    {
-      StringCchCopyN(lpszFont,cchFont,tch, COUNTOF(tch));
+    TrimStringW(lpszFont);
+    if (StringCchCompareNI(lpszFont, cchFont, L"Default", CSTRLEN(L"Default")) == 0) {
+      if (IsFontAvailable(L"Consolas"))
+        StringCchCopyN(lpszFont, cchFont, L"Consolas", cchFont);
+      else
+        StringCchCopyN(lpszFont, cchFont, L"Lucida Console", cchFont);
     }
     return true;
   }
