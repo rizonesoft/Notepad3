@@ -6,8 +6,8 @@
 * Encoding.c                                                                  *
 *   Handling and Helpers for File Encoding                                    *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
-*	                                                                            *
-*	                                                                            *
+*                                                                             *
+*                                                                             *
 *                                                                             *
 *                                                  (c) Rizonesoft 2015-2018   *
 *                                                    https://rizonesoft.com   *
