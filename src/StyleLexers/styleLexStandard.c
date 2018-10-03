@@ -35,13 +35,13 @@ EDITLEXER lexStandard = {
 SCLEX_NULL, IDS_LEX_DEF_TXT, L"Default Text", L"txt; text; wtx; log; asc; doc", L"", 
 &StdLexFunction, // static
 &KeyWords_NULL, {
-    /*  0 */ { STYLE_DEFAULT, IDS_LEX_STD_STYLE, L"Default Style", L"font:Default; size:10", L"" },
-    /*  1 */ { STYLE_LINENUMBER, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"size:-2; fore:#FF0000", L"" },
-    /*  2 */ { STYLE_BRACELIGHT, IDS_LEX_STD_BRACE, L"Matching Braces (Indicator)", L"fore:#00FF40; alpha:40; alpha2:40; indic_roundbox", L"" },
+    /*  0 */ { STYLE_DEFAULT, IDS_LEX_STD_STYLE, L"Default Style", L"font:Default; size:11", L"" },
+    /*  1 */ { STYLE_LINENUMBER, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"size:-2; fore:#008080", L"" },
+    /*  2 */ { STYLE_BRACELIGHT, IDS_LEX_STD_BRACE, L"Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:80; indic_roundbox", L"" },
     /*  3 */ { STYLE_BRACEBAD, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:140; indic_roundbox", L"" },
     /*  4 */ { STYLE_CONTROLCHAR, IDS_LEX_STD_CTRL_CHAR, L"Control Characters (Font)", L"size:-1", L"" },
     /*  5 */ { STYLE_INDENTGUIDE, IDS_LEX_STD_INDENT, L"Indentation Guide (Color)", L"fore:#A0A0A0", L"" },
-    /*  6 */ { SCI_SETSELFORE+SCI_SETSELBACK, IDS_LEX_STD_SEL, L"Selected Text (Colors)", L"back:#0A246A; eolfilled; alpha:95", L"" },
+    /*  6 */ { SCI_SETSELFORE+SCI_SETSELBACK, IDS_LEX_STD_SEL, L"Selected Text (Colors)", L"back:#4040FF; eolfilled; alpha:80", L"" },
     /*  7 */ { SCI_SETWHITESPACEFORE+SCI_SETWHITESPACEBACK+SCI_SETWHITESPACESIZE, IDS_LEX_STD_WSPC, L"Whitespace (Colors, Size 0-12)", L"fore:#FF4000", L"" },
     /*  8 */ { SCI_SETCARETLINEBACK, IDS_LEX_STD_LN_BACKGR, L"Current Line Background (Color)", L"back:#FFFF00; alpha:50", L"" },
     /*  9 */ { SCI_SETCARETFORE+SCI_SETCARETWIDTH, IDS_LEX_STD_CARET, L"Caret (Color, Size 1-3)", L"", L"" },
@@ -58,8 +58,8 @@ EDITLEXER lexStandard2nd = {
 SCLEX_NULL, IDS_LEX_STR_63266, L"2nd Default Text", L"txt; text; wtx; log; asc; doc", L"", 
 &Std2ndLexFunction, // static
 &KeyWords_NULL,{
-    /*  0 */ { STYLE_DEFAULT, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Courier New; size:10", L"" },
-    /*  1 */ { STYLE_LINENUMBER, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"font:Tahoma; size:-2; fore:#FF0000", L"" },
+    /*  0 */ { STYLE_DEFAULT, IDS_LEX_2ND_STYLE, L"2nd Default Style", L"font:Courier New; size:11", L"" },
+    /*  1 */ { STYLE_LINENUMBER, IDS_LEX_2ND_MARGIN, L"2nd Margins and Line Numbers", L"font:Courier New; size:-2; fore:#008080", L"" },
     /*  2 */ { STYLE_BRACELIGHT, IDS_LEX_2ND_BRACE, L"2nd Matching Braces (Indicator)", L"fore:#00FF40; alpha:80; alpha2:220; indic_roundbox", L"" },
     /*  3 */ { STYLE_BRACEBAD, IDS_LEX_2ND_BRACE_FAIL, L"2nd Matching Braces Error (Indicator)", L"fore:#FF0080; alpha:140; alpha2:220; indic_roundbox", L"" },
     /*  4 */ { STYLE_CONTROLCHAR, IDS_LEX_2ND_CTRL_CHAR, L"2nd Control Characters (Font)", L"size:-1", L"" },

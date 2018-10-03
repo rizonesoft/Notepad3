@@ -52,7 +52,7 @@
 #include "SciCall.h"
 #include "scilexer.h"
 
-#include "edit.h"
+#include "Edit.h"
 
 
 #ifndef LCMAP_TITLECASE
@@ -6307,12 +6307,14 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
   {
     _IGNORE_NOTIFY_CHANGE_;
 
-    SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
-    SendMessage(hwnd, SCI_INDICATORCLEARRANGE, 0, SciCall_GetTextLength());
+    SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
+    SciCall_IndicatorClearRange(0, SciCall_GetTextLength());
     _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK);
-    g_iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
+    EditFinalizeStyling(hwnd, -1);
 
     _OBSERVE_NOTIFY_CHANGE_;
+
+    g_iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
   }
 }
 
@@ -6448,7 +6450,7 @@ void EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos 
     DocPos start = rangeStart;
     DocPos end = rangeEnd;
 
-    SendMessage(hwnd, SCI_SETINDICATORCURRENT, INDIC_NP3_MARK_OCCURANCE, 0);
+    SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
     
     g_iMarkOccurrencesCount = 0;
     DocPos iPos = (DocPos)-1;
@@ -6896,18 +6898,6 @@ static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
     return true;
   }
   return false;
-}
-
-
-//=============================================================================
-//
-//  EditApplyLexerStyle()
-//  if iRangeEnd == -1 : apply style from iRangeStart to document end
-//
-void EditApplyLexerStyle(HWND hwnd, DocPos iRangeStart, DocPos iRangeEnd)
-{
-  UNUSED(hwnd);
-  SciCall_Colourise(iRangeStart, iRangeEnd);
 }
 
 

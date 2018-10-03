@@ -6722,7 +6722,7 @@ void LoadSettings()
     Settings.EFR_Data.bTransformBS = IniSectionGetBool(pIniSection, L"FindTransformBS", Defaults.EFR_Data.bTransformBS);
     Defaults.EFR_Data.bWildcardSearch = false;
     Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(pIniSection, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
-    Defaults.EFR_Data.bMarkOccurences = false;
+    Defaults.EFR_Data.bMarkOccurences = true;
     Settings.EFR_Data.bMarkOccurences = IniSectionGetBool(pIniSection, L"FindMarkAllOccurrences", Defaults.EFR_Data.bMarkOccurences);
     Defaults.EFR_Data.bHideNonMatchedLines = false;
     Settings.EFR_Data.bHideNonMatchedLines = IniSectionGetBool(pIniSection, L"HideNonMatchedLines", Defaults.EFR_Data.bHideNonMatchedLines);
@@ -6753,17 +6753,17 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(WordWrap, false);  g_bWordWrapG = Settings.WordWrap;
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
-    GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 0, 0, 6);
+    GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 2, 0, 6);
 
     Defaults.WordWrapSymbols = 22;
-    int iWS = IniSectionGetInt(pIniSection, L"WordWrapSymbols", Defaults.WordWrapSymbols);
+    int const iWS = IniSectionGetInt(pIniSection, L"WordWrapSymbols", Defaults.WordWrapSymbols);
     Settings.WordWrapSymbols = clampi(iWS % 10, 0, 2) + clampi((iWS % 100 - iWS % 10) / 10, 0, 2) * 10;
     
-    GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, false);
+    GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, true);
     GET_BOOL_VALUE_FROM_INISECTION(MatchBraces, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
-    GET_BOOL_VALUE_FROM_INISECTION(HighlightCurrentLine, false);
-    GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, false);
+    GET_BOOL_VALUE_FROM_INISECTION(HighlightCurrentLine, true);
+    GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
     GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCompleteWords, false);
@@ -6784,7 +6784,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(MarkOccurrences, 1, 0, 3);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchVisible, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchCase, false);
-    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchWholeWords, false);
+    GET_BOOL_VALUE_FROM_INISECTION(MarkOccurrencesMatchWholeWords, true);
 
     Defaults.MarkOccurrencesCurrentWord = !Defaults.MarkOccurrencesMatchWholeWords;
     Settings.MarkOccurrencesCurrentWord = IniSectionGetBool(pIniSection, L"MarkOccurrencesCurrentWord", Defaults.MarkOccurrencesCurrentWord);
