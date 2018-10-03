@@ -494,13 +494,14 @@ SpecialRepresentations::SpecialRepresentations() {
 }
 
 void SpecialRepresentations::SetRepresentation(const char *charBytes, const char *value) {
-	MapRepresentation::iterator it = mapReprs.find(KeyFromString(charBytes, UTF8MaxBytes));
+	const unsigned int key = KeyFromString(charBytes, UTF8MaxBytes);
+	MapRepresentation::iterator it = mapReprs.find(key);
 	if (it == mapReprs.end()) {
 		// New entry so increment for first byte
 		const unsigned char ucStart = charBytes[0];
 		startByteHasReprs[ucStart]++;
 	}
-	mapReprs[KeyFromString(charBytes, UTF8MaxBytes)] = Representation(value);
+	mapReprs[key] = Representation(value);
 }
 
 void SpecialRepresentations::ClearRepresentation(const char *charBytes) {

@@ -73,7 +73,7 @@ static bool CanDeferToLastStep(const DocModification &mh) {
 
 static bool CanEliminate(const DocModification &mh) {
 	return
-			(mh.modificationType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) != 0;
+	    (mh.modificationType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) != 0;
 }
 
 /*
@@ -82,10 +82,10 @@ static bool CanEliminate(const DocModification &mh) {
 */
 static bool IsLastStep(const DocModification &mh) {
 	return
-			(mh.modificationType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO)) != 0
-			&& (mh.modificationType & SC_MULTISTEPUNDOREDO) != 0
-			&& (mh.modificationType & SC_LASTSTEPINUNDOREDO) != 0
-			&& (mh.modificationType & SC_MULTILINEUNDOREDO) != 0;
+	    (mh.modificationType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO)) != 0
+	    && (mh.modificationType & SC_MULTISTEPUNDOREDO) != 0
+	    && (mh.modificationType & SC_LASTSTEPINUNDOREDO) != 0
+	    && (mh.modificationType & SC_MULTILINEUNDOREDO) != 0;
 }
 
 Timer::Timer() :
@@ -206,7 +206,7 @@ void Editor::SetRepresentations() {
 	reprs.Clear();
 
 	// C0 control set
-	const char * const reps[] = {
+	const char *const reps[] = {
 		"NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL",
 		"BS", "HT", "LF", "VT", "FF", "CR", "SO", "SI",
 		"DLE", "DC1", "DC2", "DC3", "DC4", "NAK", "SYN", "ETB",
@@ -220,7 +220,7 @@ void Editor::SetRepresentations() {
 	// C1 control set
 	// As well as Unicode mode, ISO-8859-1 should use these
 	if (IsUnicodeMode()) {
-		const char * const repsC1[] = {
+		const char *const repsC1[] = {
 			"PAD", "HOP", "BPH", "NBH", "IND", "NEL", "SSA", "ESA",
 			"HTS", "HTJ", "VTS", "PLD", "PLU", "RI", "SS2", "SS3",
 			"DCS", "PU1", "PU2", "STS", "CCH", "MW", "SPA", "EPA",
@@ -294,7 +294,7 @@ void Editor::RefreshStyleData() {
 }
 
 Point Editor::GetVisibleOriginInMain() const {
-	return Point(0,0);
+	return Point(0, 0);
 }
 
 PointDocument Editor::DocumentPointFromView(Point ptView) const {
@@ -636,7 +636,7 @@ void Editor::InvalidateWholeSelection() {
 }
 
 /* For Line selection - the anchor and caret are always
-	 at the beginning and end of the region lines. */
+   at the beginning and end of the region lines. */
 SelectionRange Editor::LineSelectionRange(SelectionPosition currentPos_, SelectionPosition anchor_) const {
 	if (currentPos_ > anchor_) {
 		anchor_ = SelectionPosition(
@@ -823,13 +823,13 @@ SelectionPosition Editor::MovePositionOutsideChar(SelectionPosition pos, Sci::Po
 		if (moveDir > 0) {
 			if ((pos.Position() > 0) && vs.styles[pdoc->StyleIndexAt(pos.Position() - 1)].IsProtected()) {
 				while ((pos.Position() < pdoc->Length()) &&
-								(vs.styles[pdoc->StyleIndexAt(pos.Position())].IsProtected()))
+				        (vs.styles[pdoc->StyleIndexAt(pos.Position())].IsProtected()))
 					pos.Add(1);
 			}
 		} else if (moveDir < 0) {
 			if (vs.styles[pdoc->StyleIndexAt(pos.Position())].IsProtected()) {
 				while ((pos.Position() > 0) &&
-								(vs.styles[pdoc->StyleIndexAt(pos.Position() - 1)].IsProtected()))
+				        (vs.styles[pdoc->StyleIndexAt(pos.Position() - 1)].IsProtected()))
 					pos.Add(-1);
 			}
 		}
@@ -1025,7 +1025,7 @@ void Editor::MoveSelectedLines(int lineDelta) {
 	// stop it right there!
 	if ((selectionStart == 0 && lineDelta < 0)
 		|| (selectionEnd == pdoc->Length() && lineDelta > 0)
-					|| selectionStart == selectionEnd) {
+	        || selectionStart == selectionEnd) {
 		return;
 	}
 
@@ -1075,15 +1075,15 @@ void Editor::MoveCaretInsideView(bool ensureVisible) {
 	const Point pt = PointMainCaret();
 	if (pt.y < rcClient.top) {
 		MovePositionTo(SPositionFromLocation(
-								Point::FromInts(lastXChosen - xOffset, static_cast<int>(rcClient.top)),
+		            Point::FromInts(lastXChosen - xOffset, static_cast<int>(rcClient.top)),
 					false, false, UserVirtualSpace()),
 					Selection::noSel, ensureVisible);
 	} else if ((pt.y + vs.lineHeight - 1) > rcClient.bottom) {
 		const ptrdiff_t yOfLastLineFullyDisplayed = static_cast<ptrdiff_t>(rcClient.top) + (LinesOnScreen() - 1) * vs.lineHeight;
 		MovePositionTo(SPositionFromLocation(
-								Point::FromInts(lastXChosen - xOffset, static_cast<int>(rcClient.top + yOfLastLineFullyDisplayed)),
+		            Point::FromInts(lastXChosen - xOffset, static_cast<int>(rcClient.top + yOfLastLineFullyDisplayed)),
 					false, false, UserVirtualSpace()),
-						Selection::noSel, ensureVisible);
+		        Selection::noSel, ensureVisible);
 	}
 }
 
@@ -1119,23 +1119,23 @@ the left and bottom UZs are extended up to right and top UZs respectively.
 This way, we favour the displaying of useful information: the beginning of lines,
 where most code reside, and the lines after the caret, eg. the body of a function.
 
-		 |        |       |      |                                            |
+     |        |       |      |                                            |
 slop | strict | jumps | even | Caret can go to the margin                 | When reaching limit (caret going out of
-		 |        |       |      |                                            | visibility or going into the UZ) display is...
+     |        |       |      |                                            | visibility or going into the UZ) display is...
 -----+--------+-------+------+--------------------------------------------+--------------------------------------------------------------
-	0  |   0    |   0   |   0  | Yes                                        | moved to put caret on top/on right
-	0  |   0    |   0   |   1  | Yes                                        | moved by one position
-	0  |   0    |   1   |   0  | Yes                                        | moved to put caret on top/on right
-	0  |   0    |   1   |   1  | Yes                                        | centred on the caret
-	0  |   1    |   -   |   0  | Caret is always on top/on right of display | -
-	0  |   1    |   -   |   1  | No, caret is always centred                | -
-	1  |   0    |   0   |   0  | Yes                                        | moved to put caret out of the asymmetrical UZ
-	1  |   0    |   0   |   1  | Yes                                        | moved to put caret out of the UZ
-	1  |   0    |   1   |   0  | Yes                                        | moved to put caret at 3UZ of the top or right margin
-	1  |   0    |   1   |   1  | Yes                                        | moved to put caret at 3UZ of the margin
-	1  |   1    |   -   |   0  | Caret is always at UZ of top/right margin  | -
-	1  |   1    |   0   |   1  | No, kept out of UZ                         | moved by one position
-	1  |   1    |   1   |   1  | No, kept out of UZ                         | moved to put caret at 3UZ of the margin
+  0  |   0    |   0   |   0  | Yes                                        | moved to put caret on top/on right
+  0  |   0    |   0   |   1  | Yes                                        | moved by one position
+  0  |   0    |   1   |   0  | Yes                                        | moved to put caret on top/on right
+  0  |   0    |   1   |   1  | Yes                                        | centred on the caret
+  0  |   1    |   -   |   0  | Caret is always on top/on right of display | -
+  0  |   1    |   -   |   1  | No, caret is always centred                | -
+  1  |   0    |   0   |   0  | Yes                                        | moved to put caret out of the asymmetrical UZ
+  1  |   0    |   0   |   1  | Yes                                        | moved to put caret out of the UZ
+  1  |   0    |   1   |   0  | Yes                                        | moved to put caret at 3UZ of the top or right margin
+  1  |   0    |   1   |   1  | Yes                                        | moved to put caret at 3UZ of the margin
+  1  |   1    |   -   |   0  | Caret is always at UZ of top/right margin  | -
+  1  |   1    |   0   |   1  | No, kept out of UZ                         | moved by one position
+  1  |   1    |   1   |   1  | No, kept out of UZ                         | moved to put caret at 3UZ of the margin
 */
 
 Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &range, const XYScrollOptions options) {
@@ -1322,7 +1322,7 @@ Editor::XYScrollPosition Editor::XYScrollToMakeVisible(const SelectionRange &ran
 			}
 		} else {	// No slop
 			if (bStrict ||
-							(bJump && (pt.x < rcClient.left || pt.x >= rcClient.right))) {
+			        (bJump && (pt.x < rcClient.left || pt.x >= rcClient.right))) {
 				// Strict or going out of display
 				if (bEven) {
 					// Center caret
@@ -1694,7 +1694,7 @@ void Editor::RefreshPixMaps(Surface *surfaceWindow) {
 		if (!view.pixmapLine->Initialised()) {
 
 			view.pixmapLine->InitPixMap(static_cast<int>(rcClient.Width()), vs.lineHeight,
-							surfaceWindow, wMain.GetID());
+			        surfaceWindow, wMain.GetID());
 		}
 		if (!marginView.pixmapSelMargin->Initialised()) {
 			marginView.pixmapSelMargin->InitPixMap(vs.fixedColumnWidth,
@@ -1894,7 +1894,6 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 
 		// Vector elements point into selection in order to change selection.
 		std::vector<SelectionRange *> selPtrs;
-		selPtrs.reserve(sel.Count());
 		for (size_t r = 0; r < sel.Count(); r++) {
 			selPtrs.push_back(&sel.Range(r));
 		}
@@ -1976,7 +1975,7 @@ void Editor::AddCharUTF(const char *s, unsigned int len, bool treatAsDBCS) {
 		}
 		NotifyChar(byte);
 	}
-	
+
 	if (recordingMacro) {
 		NotifyMacroRecord(SCI_REPLACESEL, 0, reinterpret_cast<sptr_t>(s));
 	}
@@ -2541,7 +2540,7 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 	if (mh.modificationType & SC_MOD_CHANGELINESTATE) {
 		if (paintState == painting) {
 			CheckForChangeOutsidePaint(
-					Range(pdoc->LineStart(mh.line),
+			    Range(pdoc->LineStart(mh.line),
 					pdoc->LineStart(mh.line + 1)));
 		} else {
 			// Could check that change is before last visible line.
@@ -2554,7 +2553,7 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 	if (mh.modificationType & SC_MOD_LEXERSTATE) {
 		if (paintState == painting) {
 			CheckForChangeOutsidePaint(
-					Range(mh.position, mh.position + mh.length));
+			    Range(mh.position, mh.position + mh.length));
 		} else {
 			Redraw();
 		}
@@ -2852,9 +2851,9 @@ void Editor::PageMove(int direction, Selection::selTypes selt, bool stuttered) {
 	const Sci::Line currentLine = pdoc->SciLineFromPosition(sel.MainCaret());
 	const Sci::Line topStutterLine = topLine + caretYSlop;
 	const Sci::Line bottomStutterLine =
-			pdoc->SciLineFromPosition(PositionFromLocation(
-									Point::FromInts(lastXChosen - xOffset, direction * vs.lineHeight * static_cast<int>(LinesToScroll()))))
-			- caretYSlop - 1;
+	    pdoc->SciLineFromPosition(PositionFromLocation(
+	                Point::FromInts(lastXChosen - xOffset, direction * vs.lineHeight * static_cast<int>(LinesToScroll()))))
+	    - caretYSlop - 1;
 
 	if (stuttered && (direction < 0 && currentLine > topStutterLine)) {
 		topLineNew = topLine;
@@ -2870,7 +2869,7 @@ void Editor::PageMove(int direction, Selection::selTypes selt, bool stuttered) {
 		const Point pt = LocationFromPosition(sel.MainCaret());
 
 		topLineNew = std::clamp<Sci::Line>(
-								topLine + direction * LinesToScroll(), 0, MaxScrollPos());
+		            topLine + direction * LinesToScroll(), 0, MaxScrollPos());
 		newPos = SPositionFromLocation(
 			Point::FromInts(lastXChosen - xOffset, static_cast<int>(pt.y) +
 				direction * (vs.lineHeight * static_cast<int>(LinesToScroll()))),
@@ -4022,9 +4021,9 @@ CaseFolder *Editor::CaseFolderForEncoding() {
  * @return The position of the found text, -1 if not found.
  */
 Sci::Position Editor::FindText(
-		uptr_t wParam,		///< Search modes : @c SCFIND_MATCHCASE, @c SCFIND_WHOLEWORD,
-		///< @c SCFIND_WORDSTART, @c SCFIND_REGEXP or @c SCFIND_POSIX.
-		sptr_t lParam) {	///< @c Sci_TextToFind structure: The text to search for in the given range.
+    uptr_t wParam,		///< Search modes : @c SCFIND_MATCHCASE, @c SCFIND_WHOLEWORD,
+    ///< @c SCFIND_WORDSTART, @c SCFIND_REGEXP or @c SCFIND_POSIX.
+    sptr_t lParam) {	///< @c Sci_TextToFind structure: The text to search for in the given range.
 
 	Sci_TextToFind *ft = static_cast<Sci_TextToFind *>(PtrFromSPtr(lParam));
 	Sci::Position lengthFound = strlen(ft->lpstrText);
@@ -4069,10 +4068,10 @@ void Editor::SearchAnchor() {
  * @return The position of the found text, -1 if not found.
  */
 Sci::Position Editor::SearchText(
-		unsigned int iMessage,		///< Accepts both @c SCI_SEARCHNEXT and @c SCI_SEARCHPREV.
-		uptr_t wParam,				///< Search modes : @c SCFIND_MATCHCASE, @c SCFIND_WHOLEWORD,
-		///< @c SCFIND_WORDSTART, @c SCFIND_REGEXP or @c SCFIND_POSIX.
-		sptr_t lParam) {			///< The text to search for.
+    unsigned int iMessage,		///< Accepts both @c SCI_SEARCHNEXT and @c SCI_SEARCHPREV.
+    uptr_t wParam,				///< Search modes : @c SCFIND_MATCHCASE, @c SCFIND_WHOLEWORD,
+    ///< @c SCFIND_WORDSTART, @c SCFIND_REGEXP or @c SCFIND_POSIX.
+    sptr_t lParam) {			///< The text to search for.
 
 	const char *txt = CharPtrFromSPtr(lParam);
 	Sci::Position pos = INVALID_POSITION;
@@ -4264,10 +4263,10 @@ void Editor::DropAt(SelectionPosition position, const char *value, size_t length
 	const bool positionWasInSelection = PositionInSelection(position.Position());
 
 	const bool positionOnEdgeOfSelection =
-			(position == SelectionStart()) || (position == SelectionEnd());
+	    (position == SelectionStart()) || (position == SelectionEnd());
 
 	if ((inDragDrop != ddDragging) || !(positionWasInSelection) ||
-					(positionOnEdgeOfSelection && !moving)) {
+	        (positionOnEdgeOfSelection && !moving)) {
 
 		const SelectionPosition selStart = SelectionStart();
 		const SelectionPosition selEnd = SelectionEnd();
@@ -4461,7 +4460,7 @@ void Editor::DwellEnd(bool mouseMoved) {
 void Editor::MouseLeave() {
 	SetHotSpotRange(nullptr);
 	if (!HaveMouseCapture()) {
-		ptMouseLast = Point(-1,-1);
+		ptMouseLast = Point(-1, -1);
 		DwellEnd(true);
 	}
 }
@@ -4816,7 +4815,7 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, int modifiers) {
 		if (hotspot.Valid() && !PointIsHotspot(pt))
 			SetHotSpotRange(nullptr);
 
-		if (hotSpotClickPos != INVALID_POSITION && PositionFromLocation(pt,true,true) != hotSpotClickPos) {
+		if (hotSpotClickPos != INVALID_POSITION && PositionFromLocation(pt, true, true) != hotSpotClickPos) {
 			if (inDragDrop == ddNone) {
 				DisplayCursor(Window::cursorText);
 			}
@@ -5207,7 +5206,7 @@ void Editor::SetDocPointer(Document *document) {
 	//Platform::DebugPrintf("** %x setdoc to %x\n", pdoc, document);
 	pdoc->RemoveWatcher(this, 0);
 	pdoc->Release();
-	if (document == NULL) {
+	if (!document) {
 		pdoc = new Document(SC_DOCUMENTOPTION_DEFAULT);
 	} else {
 		pdoc = document;
@@ -5410,7 +5409,7 @@ void Editor::EnsureLineVisible(Sci::Line lineDoc, bool enforcePolicy) {
 				SetVerticalScrollPos();
 				Redraw();
 			} else if ((lineDisplay > topLine + LinesOnScreen() - 1) ||
-							((visiblePolicy & VISIBLE_STRICT) && (lineDisplay > topLine + LinesOnScreen() - 1 - visibleSlop))) {
+			        ((visiblePolicy & VISIBLE_STRICT) && (lineDisplay > topLine + LinesOnScreen() - 1 - visibleSlop))) {
 				SetTopLine(std::clamp<Sci::Line>(lineDisplay - LinesOnScreen() + 1 + visibleSlop, 0, MaxScrollPos()));
 				SetVerticalScrollPos();
 				Redraw();
@@ -5491,7 +5490,7 @@ void Editor::FoldChanged(Sci::Line line, int levelNow, int levelPrev) {
 		}
 	}
 	if (!(levelNow & SC_FOLDLEVELWHITEFLAG) &&
-					(LevelNumber(levelPrev) > LevelNumber(levelNow))) {
+	        (LevelNumber(levelPrev) > LevelNumber(levelNow))) {
 		if (pcs->HiddenLines()) {
 			// See if should still be hidden
 			const Sci::Line parentLine = pdoc->GetFoldParent(line);
@@ -5526,7 +5525,7 @@ void Editor::NeedShown(Sci::Position pos, Sci::Position len) {
 }
 
 Sci::Position Editor::GetTag(char *tagValue, int tagNumber) {
-	const char *text = 0;
+	const char *text = nullptr;
 	Sci::Position length = 0;
 	if ((tagNumber >= 1) && (tagNumber <= 9)) {
 		char name[3] = "\\?";
@@ -5933,7 +5932,7 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		// Replacement of the old Scintilla interpretation of EM_LINELENGTH
 	case SCI_LINELENGTH:
 		if ((static_cast<Sci::Position>(wParam) < 0) ||
-						(static_cast<Sci::Position>(wParam) > pdoc->LineFromPosition(pdoc->Length())))
+		        (static_cast<Sci::Position>(wParam) > pdoc->LineFromPosition(pdoc->Length())))
 			return 0;
 		return pdoc->LineStart(static_cast<Sci::Position>(wParam) + 1) - pdoc->LineStart(static_cast<Sci::Position>(wParam));
 
@@ -6376,19 +6375,19 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_POSITIONFROMPOINT:
 		return PositionFromLocation(Point::FromInts(static_cast<int>(wParam) - vs.ExternalMarginWidth(), static_cast<int>(lParam)),
-							false, false);
+					    false, false);
 
 	case SCI_POSITIONFROMPOINTCLOSE:
 		return PositionFromLocation(Point::FromInts(static_cast<int>(wParam) - vs.ExternalMarginWidth(), static_cast<int>(lParam)),
-							true, false);
+					    true, false);
 
 	case SCI_CHARPOSITIONFROMPOINT:
 		return PositionFromLocation(Point::FromInts(static_cast<int>(wParam) - vs.ExternalMarginWidth(), static_cast<int>(lParam)),
-							false, true);
+					    false, true);
 
 	case SCI_CHARPOSITIONFROMPOINTCLOSE:
 		return PositionFromLocation(Point::FromInts(static_cast<int>(wParam) - vs.ExternalMarginWidth(), static_cast<int>(lParam)),
-							true, true);
+					    true, true);
 
 	case SCI_GOTOLINE:
 		GoToLine(static_cast<Sci::Line>(wParam));
@@ -6506,15 +6505,15 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_CLEARTABSTOPS:
 		if (view.ClearTabstops(static_cast<Sci::Line>(wParam))) {
-			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, 0, static_cast<Sci::Line>(wParam));
-			NotifyModified(pdoc, mh, NULL);
+			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, nullptr, static_cast<Sci::Line>(wParam));
+			NotifyModified(pdoc, mh, nullptr);
 		}
 		break;
 
 	case SCI_ADDTABSTOP:
 		if (view.AddTabstop(static_cast<Sci::Line>(wParam), static_cast<int>(lParam))) {
-			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, 0, static_cast<Sci::Line>(wParam));
-			NotifyModified(pdoc, mh, NULL);
+			const DocModification mh(SC_MOD_CHANGETABSTOPS, 0, 0, 0, nullptr, static_cast<Sci::Line>(wParam));
+			NotifyModified(pdoc, mh, nullptr);
 		}
 		break;
 
@@ -7569,13 +7568,17 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		InvalidateStyleRedraw();
 		break;
 
-	case SCI_SETZOOM:
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		vs.zoomLevel = std::clamp(static_cast<int>(wParam), SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-		InvalidateStyleRedraw();
-		NotifyZoom();
-		break;
+	case SCI_SETZOOM: {
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+			const int zoomLevel = std::clamp(static_cast<int>(wParam), SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+			if (zoomLevel != vs.zoomLevel) {
+				vs.zoomLevel = zoomLevel;
+				InvalidateStyleRedraw();
+				NotifyZoom();
+			}
+			break;
+		}
 
 	case SCI_GETZOOM:
 		return vs.zoomLevel;
@@ -8227,7 +8230,6 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_COUNTCHARACTERS:
 		return pdoc->CountCharacters(static_cast<Sci::Position>(wParam), lParam);
-		//return pdoc->CountCharacters(static_cast<Sci::Position>(wParam), static_cast<Sci::Position>(lParam));
 
 	case SCI_COUNTCODEUNITS:
 		return pdoc->CountUTF16(static_cast<Sci::Position>(wParam), lParam);
