@@ -418,6 +418,7 @@ DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, 
 //  Lexer
 //
 DeclareSciCallV2(SetProperty, SETPROPERTY, const char*, key, const char*, value)
+DeclareSciCallV2(SetKeywords, SETKEYWORDS, int, keywordset, const char*, keywords)
 DeclareSciCallV2(Colourise, COLOURISE, DocPos, startPos, DocPos, endPos)
 
 

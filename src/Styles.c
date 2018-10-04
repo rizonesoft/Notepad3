@@ -533,18 +533,18 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // Lexer very specific styles
   if (pLexNew->lexerID == SCLEX_XML)
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.xml.allow.scripts", (LPARAM)"1");
+    SciCall_SetProperty("lexer.xml.allow.scripts", "1");
   if (pLexNew->lexerID == SCLEX_CPP) {
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"styling.within.preprocessor", (LPARAM)"1");
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.cpp.track.preprocessor", (LPARAM)"0");
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.cpp.update.preprocessor", (LPARAM)"0");
+    SciCall_SetProperty("styling.within.preprocessor", "1");
+    SciCall_SetProperty("lexer.cpp.track.preprocessor", "0");
+    SciCall_SetProperty("lexer.cpp.update.preprocessor", "0");
   }
   else if (pLexNew->lexerID == SCLEX_PASCAL)
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.pascal.smart.highlighting", (LPARAM)"1");
+    SciCall_SetProperty("lexer.pascal.smart.highlighting", "1");
   else if (pLexNew->lexerID == SCLEX_SQL) {
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"sql.backslash.escapes", (LPARAM)"1");
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.sql.backticks.identifier", (LPARAM)"1");
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.sql.numbersign.comment", (LPARAM)"1");
+    SciCall_SetProperty("sql.backslash.escapes", "1");
+    SciCall_SetProperty("lexer.sql.backticks.identifier", "1");
+    SciCall_SetProperty("lexer.sql.numbersign.comment", "1");
   }
   else if (pLexNew->lexerID == SCLEX_NSIS)
     SciCall_SetProperty("nsis.ignorecase", "1");
@@ -582,7 +582,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // Add KeyWord Lists
   for (int i = 0; i < (KEYWORDSET_MAX + 1); i++) {
-    SendMessage(hwnd, SCI_SETKEYWORDS, i, (LPARAM)pLexNew->pKeyWords->pszKeyWords[i]);
+    SciCall_SetKeywords(i, pLexNew->pKeyWords->pszKeyWords[i]);
   }
 
   // Idle Styling (very large text)
