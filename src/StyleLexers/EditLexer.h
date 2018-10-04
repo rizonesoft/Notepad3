@@ -11,7 +11,7 @@
 
 // -----------------------------------------------------------------------------
 
-#define INITIAL_BASE_FONT_SIZE (10.0f)
+#define INITIAL_BASE_FONT_SIZE (11.0f)
 
 #define BUFZIZE_STYLE_EXTENTIONS 512
 #define BUFSIZE_STYLE_VALUE 256

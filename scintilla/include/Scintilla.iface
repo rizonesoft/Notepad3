@@ -4975,7 +4975,7 @@ fun void AllocateLineCharacterIndex=2711(int lineCharacterIndex,)
 fun void ReleaseLineCharacterIndex=2712(int lineCharacterIndex,)
 
 # Retrieve the document line containing a position measured in index units.
-fun int LineFromIndexPosition=2713(position posUTF32, int lineCharacterIndex)
+fun int LineFromIndexPosition=2713(position pos, int lineCharacterIndex)
 
 # Retrieve the position measured in index units at the start of a document line.
 fun position IndexPositionFromLine=2714(int line, int lineCharacterIndex)

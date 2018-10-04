@@ -81,7 +81,7 @@ protected:
 
 	void CallTipClick();
 	void CallTipShow(Point pt, const char *defn);
-	virtual void CreateCallTipWindow(const PRectangle& rc) = 0;
+	virtual void CreateCallTipWindow(PRectangle rc) = 0;
 
 	void ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) override;
 	void RightButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers) override;
