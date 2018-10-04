@@ -6021,7 +6021,7 @@ static void  _HandleTinyExpr()
     DocPos lineLen = SciCall_LineLength(SciCall_LineFromPosition(iCurPos));
     char* lineBuf = (char*)AllocMem(lineLen + 1, HEAP_ZERO_MEMORY);
     if (lineBuf) {
-      DocPos const iLnCaretPos = SciCall_GetCurLine(lineLen, lineBuf);
+      DocPos const iLnCaretPos = SciCall_GetCurLine((unsigned int)lineLen, lineBuf);
       lineBuf[(iLnCaretPos > 1) ? (iLnCaretPos - 2) : 0] = '\0'; // break before "=?"
 
       int iExprErr = 1;
@@ -6549,7 +6549,8 @@ void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize)
 // 
 void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize)
 {
-  WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, chFindPattern, (int)bufferSize, NULL, NULL);
+  WideCharToMultiByte(Encoding_SciCP, 0, sCurrentFindPattern, -1, 
+                      chFindPattern, (MBWC_DocPos_Cast)bufferSize, NULL, NULL);
 }
 
 

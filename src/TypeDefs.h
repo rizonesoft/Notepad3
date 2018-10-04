@@ -14,40 +14,33 @@
 #ifndef _NP3_TYPEDEFS_H_
 #define _NP3_TYPEDEFS_H_
 
+#include <intsafe.h>
 #include <stdbool.h>
+
 #include "Sci_Position.h"
 
-//~#define NP3_COMPILE_TEST 1
-
 //
-// SC_DOCUMENTOPTION_TEXT_LARGE
+// TODO:
+// SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)
 //
-#if defined(SCI_LARGE_FILE_SUPPORT)
-  typedef Sci_Position   DocPos;
-  typedef Sci_PositionU  DocPosU;
-  typedef Sci_PositionCR DocCR;
-  typedef Sci_Line       DocLn;
-  #define DOCPOSFMTA "%ti"
-  #define DOCPOSFMTW L"%ti"
-#else
 
-  #ifdef NP3_COMPILE_TEST
-    typedef ptrdiff_t DocPos;
-    typedef size_t DocPosU;
-    typedef long DocPosCR;
-    typedef ptrdiff_t DocLn;
-    #define DOCPOSFMTA "%ti"
-    #define DOCPOSFMTW L"%ti"
-  #else
-    typedef int  DocPos;
-    typedef unsigned int DocPosU;
-    typedef long DocPosCR;
-    typedef int  DocLn;
-    #define DOCPOSFMTA "%i"
-    #define DOCPOSFMTW L"%i"
-  #endif
+/// deprecated:
+///typedef int            DocPos;
+///typedef unsigned int   DocPosU;
+///typedef long           DocPosCR;
+///typedef int            DocLn;
+///#define DOCPOSFMTA "%i"
+///#define DOCPOSFMTW L"%i"
 
-#endif
+typedef Sci_Position   DocPos;
+typedef Sci_PositionU  DocPosU;
+typedef Sci_PositionCR DocPosCR;
+typedef DocPos         DocLn;   // Sci::Line
+#define DOCPOSFMTA "%ti"
+#define DOCPOSFMTW L"%ti"
+
+// TODO: refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
+typedef int MBWC_DocPos_Cast; 
 
 // --------------------------------------------------------------------------
     

@@ -274,7 +274,7 @@ DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator)
 DeclareSciCallV01(AutoCSetFillups, AUTOCSETFILLUPS, const char*, text)
 DeclareSciCallV1(AutoCSetChooseSingle, AUTOCSETCHOOSESINGLE, bool, flag)
 DeclareSciCallV1(AutoCSetOrder, AUTOCSETORDER, int, options)
-DeclareSciCallV2(AutoCShow, AUTOCSHOW, int, len, const char*, list)
+DeclareSciCallV2(AutoCShow, AUTOCSHOW, DocPos, len, const char*, list)
 
 
 //=============================================================================
