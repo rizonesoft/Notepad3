@@ -63,7 +63,6 @@
 #define SCFIND_NP3_REGEX (SCFIND_REGEXP | SCFIND_POSIX)
 
 
-extern DWORD g_dwLastIOError;
 extern bool g_bReplaceInitialized;
 extern bool g_bFindReplCopySelOrClip;
 
@@ -74,7 +73,6 @@ static int s_xFindReplaceDlgSave;
 static int s_yFindReplaceDlgSave;
 
 // Default Codepage and Character Set
-extern int  g_iDefaultCharSet;
 extern bool g_bForceLoadASCIIasUTF8;
 extern bool g_bUseLimitedAutoCCharSet;
 extern bool g_bIsCJKInputCodePage;
@@ -918,7 +916,7 @@ bool EditLoadFile(
                             OPEN_EXISTING,
                             FILE_ATTRIBUTE_NORMAL,
                             NULL);
-  g_dwLastIOError = GetLastError();
+  Globals.dwLastError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
     Encoding_SrcCmdLn(CPI_NONE);
@@ -971,7 +969,7 @@ bool EditLoadFile(
 
   char* lpData = AllocMem(dwBufSize, HEAP_ZERO_MEMORY);
 
-  g_dwLastIOError = GetLastError();
+  Globals.dwLastError = GetLastError();
   if (!lpData)
   {
     CloseHandle(hFile);
@@ -984,7 +982,7 @@ bool EditLoadFile(
 
   DWORD cbData = 0L;
   int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufSize - 2, &lpData, &cbData);
-  g_dwLastIOError = GetLastError();
+  Globals.dwLastError = GetLastError();
   CloseHandle(hFile);
 
   bool bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
@@ -1256,7 +1254,7 @@ bool EditSaveFile(
                      OPEN_ALWAYS,
                      FILE_ATTRIBUTE_NORMAL,
                      NULL);
-  g_dwLastIOError = GetLastError();
+  Globals.dwLastError = GetLastError();
 
   // failure could be due to missing attributes (2k/XP)
   if (hFile == INVALID_HANDLE_VALUE)
@@ -1272,7 +1270,7 @@ bool EditSaveFile(
                         OPEN_ALWAYS,
                         FILE_ATTRIBUTE_NORMAL | dwAttributes,
                         NULL);
-      g_dwLastIOError = GetLastError();
+      Globals.dwLastError = GetLastError();
     }
   }
 
@@ -1296,7 +1294,7 @@ bool EditSaveFile(
 
   if (cbData == 0) {
     bWriteSuccess = SetEndOfFile(hFile);
-    g_dwLastIOError = GetLastError();
+    Globals.dwLastError = GetLastError();
   }
   else {
 
@@ -1342,7 +1340,7 @@ bool EditSaveFile(
         _swab((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
       }
       bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &dwBytesWritten);
-      g_dwLastIOError = GetLastError();
+      Globals.dwLastError = GetLastError();
 
       FreeMem(lpDataWide);
       FreeMem(lpData);
@@ -1361,7 +1359,7 @@ bool EditSaveFile(
     }
       //bWriteSuccess = WriteFile(hFile,lpData,cbData,&dwBytesWritten,NULL);
       bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
-      g_dwLastIOError = GetLastError();
+      Globals.dwLastError = GetLastError();
 
       FreeMem(lpData);
     }
@@ -1396,7 +1394,7 @@ bool EditSaveFile(
       if (!bCancelDataLoss || InfoBoxLng(MBOKCANCEL,L"MsgConv3",IDS_MUI_ERR_UNICODE2) == IDOK) {
         SetEndOfFile(hFile);
         bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
-        g_dwLastIOError = GetLastError();
+        Globals.dwLastError = GetLastError();
       }
       else {
         bWriteSuccess = false;
@@ -1409,7 +1407,7 @@ bool EditSaveFile(
     else {
       SetEndOfFile(hFile);
       bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpData, cbData, &dwBytesWritten);
-      g_dwLastIOError = GetLastError();
+      Globals.dwLastError = GetLastError();
       FreeMem(lpData);
     }
   }

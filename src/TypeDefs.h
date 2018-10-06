@@ -223,9 +223,12 @@ typedef struct _globals_t
   HWND      hwndEdit;
   HANDLE    hndlScintilla;
   HWND      hwndStatus;
+  DWORD     dwLastError;
+  HMENU     hMainMenu;
   HICON     hDlgIcon;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
+  int       iDefaultCharSet;
   UINT		  uCurrentDPI;
   UINT		  uCurrentPPI;
   LANGID    iPrefLANGID;

@@ -118,6 +118,12 @@ static WCHAR* const _s_RecentReplace = L"Recent Replace";
 
 static WCHAR  s_tchLastSaveCopyDir[MAX_PATH + 1] = { L'\0' };
 
+static HMODULE s_hRichEdit = NULL;
+static bool s_bRunningWatch = false;
+
+static int s_iSortOptions = 0;
+static int s_iAlignMode = 0;
+
 // Globals <= @@@
 bool      g_bWordWrapG;
 bool      g_bTabsAsSpacesG;
@@ -153,10 +159,6 @@ int     cyReBarFrame;
 int     cxEditFrame;
 int     cyEditFrame;
 
-DWORD     g_dwLastIOError = 0;
-
-int       g_iDefaultCharSet = 0;
-
 int       iInitialLine;
 int       iInitialColumn;
 int       iInitialLexer;
@@ -174,10 +176,6 @@ WIN32_FIND_DATA fdCurFile;
 
 UINT      msgTaskbarCreated = 0;
 
-HMODULE   hRichEdit = NULL;
-
-static bool g_bRunningWatch = false;
-
 bool g_bReplaceInitialized = false;
 
 WCHAR wchPrefixSelection[256] = { L'\0' };
@@ -185,9 +183,6 @@ WCHAR wchAppendSelection[256] = { L'\0' };
 
 WCHAR wchPrefixLines[256] = { L'\0' };
 WCHAR wchAppendLines[256] = { L'\0' };
-
-static int iSortOptions = 0;
-static int iAlignMode   = 0;
 
 bool      flagIsElevated = false;
 WCHAR     wchWndClass[16] = MKWCS(APPNAME);
@@ -447,7 +442,6 @@ static int s_flagBufferFile         = 0;
 // static forward declarations 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw);
 static void  _UpdateToolbarDelayed();
-static bool  _RegisterWndClass(HINSTANCE hInstance);
 static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID const langID);
 
 //==============================================================================
@@ -477,6 +471,45 @@ static void  _SetDocumentModified(bool bModified)
 static void  _InitConstants()
 {
   Constants.FileBrowserMiniPath = L"minipath.exe";
+}
+
+
+static void _CleanUpResources(const HWND hwnd, bool bIsInitialized) 
+{
+  if (hwnd) {
+
+    KillTimer(hwnd, IDT_TIMER_MRKALL);
+  }
+
+  CmdMessageQueue_t* pmqc = NULL;
+  CmdMessageQueue_t* dummy;
+  DL_FOREACH_SAFE(MessageQueue, pmqc, dummy)
+  {
+    DL_DELETE(MessageQueue, pmqc);
+    FreeMem(pmqc);
+  }
+
+  // Save Settings is done elsewhere
+
+  Scintilla_ReleaseResources();
+
+  if (Globals.hMainMenu) { 
+    DestroyMenu(Globals.hMainMenu); 
+  }
+
+  if (Globals.hLngResContainer != Globals.hInstance) {
+    FreeMUILibrary(Globals.hLngResContainer);
+  }
+
+  if (s_hRichEdit) {
+    FreeLibrary(s_hRichEdit);
+  }
+
+  if (bIsInitialized) {
+    UnregisterClass(wchWndClass, Globals.hInstance);
+  }
+
+  OleUninitialize();
 }
 
 //=============================================================================
@@ -542,18 +575,27 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
     StringCchCat(wchWndClass,COUNTOF(wchWndClass),L"B");
 
   // Relaunch with elevated privileges
-  if (RelaunchElevated(NULL))
+  if (RelaunchElevated(NULL)) {
     return 0;
-
+  }
   // Try to run multiple instances
-  if (RelaunchMultiInst())
+  if (RelaunchMultiInst()) {
     return 0;
-
+  }
   // Try to activate another window
-  if (ActivatePrevInst())
+  if (ActivatePrevInst()) {
     return 0;
+  }
 
-  // Load Settings
+  (void)OleInitialize(NULL);
+
+  INITCOMMONCONTROLSEX icex;
+  icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+  icex.dwICC = ICC_WIN95_CLASSES | ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES;
+  InitCommonControlsEx(&icex);
+
+  Scintilla_RegisterClasses(hInstance);
+
   LoadSettings();
 
   // ----------------------------------------------------
@@ -610,34 +652,38 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
   }
   // ----------------------------------------------------
 
-  // Init OLE and Common Controls
-  (void)OleInitialize(NULL);
-  INITCOMMONCONTROLSEX icex;
-  icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-  icex.dwICC  = ICC_WIN95_CLASSES|ICC_COOL_CLASSES|ICC_BAR_CLASSES|ICC_USEREX_CLASSES;
-  InitCommonControlsEx(&icex);
 
   msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
 
-  hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use "RichEdit20W" for control in .rc
-  //hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
+  s_hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use "RichEdit20W" for control in .rc
+  //s_hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
 
-  if (!_RegisterWndClass(Globals.hInstance)) { return 1; }
+  if (!Globals.hDlgIcon) {
+    Globals.hDlgIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
+      GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
+  }
 
-  Scintilla_RegisterClasses(Globals.hInstance);
-
-  HMENU  hMainMenu = NULL;
+  Globals.hMainMenu = NULL;
   if (Globals.hLngResContainer != Globals.hInstance) {
-    hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
-    if (!hMainMenu) {
+    Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+    if (!Globals.hMainMenu) {
       GetLastErrorToMsgBox(L"LoadMenu()", 0);
     }
   }
 
-  HWND hwnd = InitInstance(Globals.hInstance, lpCmdLine, nCmdShow);
-  if (!hwnd) { return 1; }
+  if (!InitApplication(Globals.hInstance)) 
+  {
+    _CleanUpResources(NULL, false);
+    return 1; 
+  }
 
-  if (hMainMenu) { SetMenu(hwnd, hMainMenu); }
+  HWND const hwnd = InitInstance(Globals.hInstance, lpCmdLine, nCmdShow);
+  if (!hwnd) { 
+    _CleanUpResources(hwnd, true);
+    return 1; 
+  }
+
+  if (Globals.hMainMenu) { SetMenu(hwnd, Globals.hMainMenu); }
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
   DragAndDropInit(NULL);
@@ -673,56 +719,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
     }
   }
 
-  KillTimer(hwnd, IDT_TIMER_MRKALL);
-
-  CmdMessageQueue_t* pmqc = NULL;
-  CmdMessageQueue_t* dummy;
-  DL_FOREACH_SAFE(MessageQueue, pmqc, dummy)
-  {
-    DL_DELETE(MessageQueue, pmqc);
-    FreeMem(pmqc);
-  }
-
-  // Save Settings is done elsewhere
-
-  if (hMainMenu) { DestroyMenu(hMainMenu); }
-  Scintilla_ReleaseResources();
-  UnregisterClass(wchWndClass, Globals.hInstance);
-
-  OleUninitialize();
-
-  if (Globals.hLngResContainer != Globals.hInstance) { FreeMUILibrary(Globals.hLngResContainer); }
+  _CleanUpResources(hwnd, true);
 
   return (int)(msg.wParam);
-}
-
-
-//=============================================================================
-//
-//  _RegisterWndClass()
-//
-//
-static bool  _RegisterWndClass(HINSTANCE hInstance)
-{
-  if (!Globals.hDlgIcon) {
-    Globals.hDlgIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
-                      GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
-  }
-
-  WNDCLASS wc;
-  ZeroMemory(&wc, sizeof(WNDCLASS));
-  wc.style         = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
-  wc.lpfnWndProc   = (WNDPROC)MainWndProc;
-  wc.cbClsExtra    = 0;
-  wc.cbWndExtra    = 0;
-  wc.hInstance     = hInstance;
-  wc.hIcon         = Globals.hDlgIcon;
-  wc.hCursor       = LoadCursor(NULL,IDC_ARROW);
-  wc.hbrBackground = (HBRUSH)(COLOR_3DFACE+1);
-  wc.lpszMenuName  = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
-  wc.lpszClassName = wchWndClass;
-
-  return RegisterClass(&wc);
 }
 
 
@@ -967,6 +966,30 @@ static void  _InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
   }
 
   *pWinInfo = winfo;
+}
+
+
+//=============================================================================
+//
+// InitApplication()
+//
+//
+bool InitApplication(HINSTANCE hInstance)
+{
+  WNDCLASS wc;
+  ZeroMemory(&wc, sizeof(WNDCLASS));
+  wc.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
+  wc.lpfnWndProc = (WNDPROC)MainWndProc;
+  wc.cbClsExtra = 0;
+  wc.cbWndExtra = 0;
+  wc.hInstance = hInstance;
+  wc.hIcon = Globals.hDlgIcon;
+  wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+  wc.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1);
+  wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
+  wc.lpszClassName = wchWndClass;
+
+  return RegisterClass(&wc);
 }
 
 
@@ -2527,7 +2550,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     }
   }
 
-  if (!g_bRunningWatch) {
+  if (!s_bRunningWatch) {
     InstallFileWatching(Globals.CurrentFile);
   }
 
@@ -3726,10 +3749,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_ALIGN:
       {
-        if (EditAlignDlg(hwnd,&iAlignMode)) {
+        if (EditAlignDlg(hwnd,&s_iAlignMode)) {
           BeginWaitCursor(NULL);
           _BEGIN_UNDO_ACTION_;
-          EditAlignText(Globals.hwndEdit,iAlignMode);
+          EditAlignText(Globals.hwndEdit,s_iAlignMode);
           _END_UNDO_ACTION_;
           EndWaitCursor();
         }
@@ -3739,10 +3762,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SORTLINES:
       {
-        if (EditSortDlg(hwnd,&iSortOptions)) {
+        if (EditSortDlg(hwnd,&s_iSortOptions)) {
           BeginWaitCursor(NULL);
           _BEGIN_UNDO_ACTION_;
-          EditSortLines(Globals.hwndEdit,iSortOptions);
+          EditSortLines(Globals.hwndEdit,s_iSortOptions);
           _END_UNDO_ACTION_;
           EndWaitCursor();
         }
@@ -4783,7 +4806,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           Settings.FileWatchingMode = iPrevFileWatchingMode;
           Settings.ResetFileWatching = bPrevResetFileWatching;
         }
-        if (!g_bRunningWatch) { InstallFileWatching(Globals.CurrentFile); }
+        if (!s_bRunningWatch) { InstallFileWatching(Globals.CurrentFile); }
 
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
         UpdateToolbar();
@@ -5011,7 +5034,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             MsgBoxLng(MBINFO,IDS_MUI_SAVEDSETTINGS);
           }
           else {
-            g_dwLastIOError = GetLastError();
+            Globals.dwLastError = GetLastError();
             MsgBoxLng(MBWARN,IDS_MUI_WRITEINI_FAIL);
           }
         }
@@ -7016,7 +7039,7 @@ void LoadSettings()
   Encoding_SetDefaultFlag(Settings.DefaultEncoding);
 
   // define default charset
-  g_iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
+  Globals.iDefaultCharSet = (int)CharSetFromCodePage((UINT)iSciDefaultCodePage);
 
   // Scintilla Styles
   Style_Load();
@@ -7937,7 +7960,7 @@ int CreateIniFileEx(LPCWSTR lpszIniFile)
     HANDLE hFile = CreateFile(lpszIniFile,
               GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
               NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-    g_dwLastIOError = GetLastError();
+    Globals.dwLastError = GetLastError();
     if (hFile != INVALID_HANDLE_VALUE) {
       if (GetFileSize(hFile,NULL) == 0) {
         DWORD dw;
@@ -9256,7 +9279,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       HANDLE hFile = CreateFile(szFileName,
                       GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
                       NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
-      g_dwLastIOError = GetLastError();
+      Globals.dwLastError = GetLastError();
       fSuccess = (hFile != INVALID_HANDLE_VALUE);
       if (fSuccess) {
         FileVars_Init(NULL,0,&fvCurFile);
@@ -9588,7 +9611,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       StringCchCopy(tchBase,COUNTOF(tchBase),Globals.CurrentFile);
       PathStripPath(tchBase);
     }
-    if (!flagIsElevated && g_dwLastIOError == ERROR_ACCESS_DENIED) {
+    if (!flagIsElevated && Globals.dwLastError == ERROR_ACCESS_DENIED) {
       if (IDYES == MsgBoxLng(MBYESNOWARN,IDS_MUI_ERR_ACCESSDENIED,tchFile)) {
         WCHAR lpTempPathBuffer[MAX_PATH];
         WCHAR szTempFileName[MAX_PATH];
@@ -10278,21 +10301,21 @@ void InstallFileWatching(LPCWSTR lpszFile)
   // Terminate
   if (!Settings.FileWatchingMode || !lpszFile || StringCchLen(lpszFile,MAX_PATH) == 0)
   {
-    if (g_bRunningWatch)
+    if (s_bRunningWatch)
     {
       if (hChangeHandle) {
         FindCloseChangeNotification(hChangeHandle);
         hChangeHandle = NULL;
       }
       KillTimer(NULL,ID_WATCHTIMER);
-      g_bRunningWatch = false;
+      s_bRunningWatch = false;
       dwChangeNotifyTime = 0;
     }
   }
   else  // Install
   {
     // Terminate previous watching
-    if (g_bRunningWatch) {
+    if (s_bRunningWatch) {
       if (hChangeHandle) {
         FindCloseChangeNotification(hChangeHandle);
         hChangeHandle = NULL;
@@ -10321,7 +10344,7 @@ void InstallFileWatching(LPCWSTR lpszFile)
       FILE_NOTIFY_CHANGE_SIZE | \
       FILE_NOTIFY_CHANGE_LAST_WRITE);
 
-    g_bRunningWatch = true;
+    s_bRunningWatch = true;
     dwChangeNotifyTime = 0;
   }
   UpdateToolbar();
@@ -10335,7 +10358,7 @@ void InstallFileWatching(LPCWSTR lpszFile)
 //
 void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
 {
-  if (g_bRunningWatch)
+  if (s_bRunningWatch)
   {
     if (dwChangeNotifyTime > 0 && GetTickCount() - dwChangeNotifyTime > Settings2.AutoReloadTimeout)
     {
@@ -10344,7 +10367,7 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
         hChangeHandle = NULL;
       }
       KillTimer(NULL,ID_WATCHTIMER);
-      g_bRunningWatch = false;
+      s_bRunningWatch = false;
       dwChangeNotifyTime = 0;
       SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
     }
@@ -10372,12 +10395,12 @@ void CALLBACK WatchTimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
           hChangeHandle = NULL;
         }
         if (Settings.FileWatchingMode == 2) {
-          g_bRunningWatch = true; /* ! */
+          s_bRunningWatch = true; /* ! */
           dwChangeNotifyTime = GetTickCount();
         }
         else {
           KillTimer(NULL,ID_WATCHTIMER);
-          g_bRunningWatch = false;
+          s_bRunningWatch = false;
           dwChangeNotifyTime = 0;
           SendMessage(Globals.hwndMain,WM_CHANGENOTIFY,0,0);
         }

@@ -51,7 +51,6 @@ extern const int FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;
 extern bool g_bIniFileFromScratch;
-extern int  g_iDefaultCharSet;
 
 
 bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCF);
@@ -2341,9 +2340,9 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
   }
 
-  int iCharSet = g_iDefaultCharSet;
+  int iCharSet = Globals.iDefaultCharSet;
   if (!Style_StrGetCharSet(lpszStyle, &iCharSet)) {
-    iCharSet = g_iDefaultCharSet;
+    iCharSet = Globals.iDefaultCharSet;
   }
     
   // is "size:" definition relative ?
@@ -2551,7 +2550,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (bGlobalDefaultStyle &&
     (lf.lfCharSet != DEFAULT_CHARSET) &&
     (lf.lfCharSet != ANSI_CHARSET) &&
-    (lf.lfCharSet != g_iDefaultCharSet)) {
+    (lf.lfCharSet != Globals.iDefaultCharSet)) {
     if (lf.lfCharSet == iCharSet) {
       if (StrStrI(lpszStyle, L"charset:"))
       {
