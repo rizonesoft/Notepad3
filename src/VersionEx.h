@@ -4,10 +4,10 @@
 //                                                         //
 // //////////////////////////////////////////////////////////
 #define APPNAME "Notepad3"
-#define VERSION_MAJOR 4
+#define VERSION_MAJOR 5
 #define VERSION_MINOR 18
-#define VERSION_REV 921
-#define VERSION_BUILD 1116
-#define SCINTILLA_VER 411
+#define VERSION_REV 1003
+#define VERSION_BUILD 1309
+#define SCINTILLA_VER 412
 #define ONIGMO_REGEX_VER 6.1.3
-#define VERSION_PATCH " TinyExpr"
+#define VERSION_PATCH " RC"

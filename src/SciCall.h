@@ -274,7 +274,7 @@ DeclareSciCallV1(AutoCSetSeperator, AUTOCSETSEPARATOR, char, seperator)
 DeclareSciCallV01(AutoCSetFillups, AUTOCSETFILLUPS, const char*, text)
 DeclareSciCallV1(AutoCSetChooseSingle, AUTOCSETCHOOSESINGLE, bool, flag)
 DeclareSciCallV1(AutoCSetOrder, AUTOCSETORDER, int, options)
-DeclareSciCallV2(AutoCShow, AUTOCSHOW, int, len, const char*, list)
+DeclareSciCallV2(AutoCShow, AUTOCSHOW, DocPos, len, const char*, list)
 
 
 //=============================================================================
@@ -388,8 +388,10 @@ DeclareSciCallR0(GetMaxLineState, GETMAXLINESTATE, DocLn)
 //
 //  Indicators
 //
+DeclareSciCallV1(SetIndicatorCurrent, SETINDICATORCURRENT, int, indicatorID)
 DeclareSciCallR2(IndicatorValueAt, INDICATORVALUEAT, int, int, indicatorID, DocPos, position)
 DeclareSciCallV2(IndicatorFillRange, INDICATORFILLRANGE, DocPos, position, DocPos, length)
+DeclareSciCallV2(IndicatorClearRange, INDICATORCLEARRANGE, DocPos, position, DocPos, length)
 
 
 //=============================================================================
@@ -416,6 +418,7 @@ DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, 
 //  Lexer
 //
 DeclareSciCallV2(SetProperty, SETPROPERTY, const char*, key, const char*, value)
+DeclareSciCallV2(SetKeywords, SETKEYWORDS, int, keywordset, const char*, keywords)
 DeclareSciCallV2(Colourise, COLOURISE, DocPos, startPos, DocPos, endPos)
 
 

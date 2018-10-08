@@ -14,40 +14,33 @@
 #ifndef _NP3_TYPEDEFS_H_
 #define _NP3_TYPEDEFS_H_
 
+#include <intsafe.h>
 #include <stdbool.h>
+
 #include "Sci_Position.h"
 
-//~#define NP3_COMPILE_TEST 1
-
 //
-// SC_DOCUMENTOPTION_TEXT_LARGE
+// TODO:
+// SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)
 //
-#if defined(SCI_LARGE_FILE_SUPPORT)
-  typedef Sci_Position   DocPos;
-  typedef Sci_PositionU  DocPosU;
-  typedef Sci_PositionCR DocCR;
-  typedef Sci_Line       DocLn;
-  #define DOCPOSFMTA "%ti"
-  #define DOCPOSFMTW L"%ti"
-#else
 
-  #ifdef NP3_COMPILE_TEST
-    typedef ptrdiff_t DocPos;
-    typedef size_t DocPosU;
-    typedef long DocPosCR;
-    typedef ptrdiff_t DocLn;
-    #define DOCPOSFMTA "%ti"
-    #define DOCPOSFMTW L"%ti"
-  #else
-    typedef int  DocPos;
-    typedef unsigned int DocPosU;
-    typedef long DocPosCR;
-    typedef int  DocLn;
-    #define DOCPOSFMTA "%i"
-    #define DOCPOSFMTW L"%i"
-  #endif
+/// deprecated:
+///typedef int            DocPos;
+///typedef unsigned int   DocPosU;
+///typedef long           DocPosCR;
+///typedef int            DocLn;
+///#define DOCPOSFMTA "%i"
+///#define DOCPOSFMTW L"%i"
 
-#endif
+typedef Sci_Position   DocPos;
+typedef Sci_PositionU  DocPosU;
+typedef Sci_PositionCR DocPosCR;
+typedef DocPos         DocLn;   // Sci::Line
+#define DOCPOSFMTA "%ti"
+#define DOCPOSFMTW L"%ti"
+
+// TODO: refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
+typedef int MBWC_DocPos_Cast; 
 
 // --------------------------------------------------------------------------
     
@@ -153,6 +146,28 @@ typedef struct _editfindreplace
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301
 
+
+// --------------------------------------------------------------------------
+
+#define MRU_MAXITEMS    32
+#define MRU_ITEMSFILE   32
+#define MRU_ITEMSFNDRPL 16
+#define MRU_NOCASE    1
+#define MRU_UTF8      2
+#define MRU_BMRK_SIZE 512
+
+typedef struct _mrulist
+{
+  LPCWSTR szRegKey;
+  int     iFlags;
+  int     iSize;
+  LPWSTR  pszItems[MRU_MAXITEMS];
+  int     iEncoding[MRU_MAXITEMS];
+  DocPos  iCaretPos[MRU_MAXITEMS];
+  LPWSTR  pszBookMarks[MRU_MAXITEMS];
+}
+MRULIST, *PMRULIST, *LPMRULIST;
+
 // --------------------------------------------------------------------------
 
 typedef struct _cmq
@@ -208,13 +223,20 @@ typedef struct _globals_t
   HWND      hwndEdit;
   HANDLE    hndlScintilla;
   HWND      hwndStatus;
+  DWORD     dwLastError;
+  HMENU     hMainMenu;
   HICON     hDlgIcon;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
+  int       iDefaultCharSet;
   UINT		  uCurrentDPI;
   UINT		  uCurrentPPI;
   LANGID    iPrefLANGID;
   int       iEOLMode;
+  LPMRULIST pFileMRU;
+  LPMRULIST pMRUfind;
+  LPMRULIST pMRUreplace;
+
 
   WCHAR     WorkingDirectory[MAX_PATH + 1];
   WCHAR     IniFile[MAX_PATH + 1];
@@ -288,12 +310,28 @@ typedef struct _settings_t
   bool TransparentMode;
   int RenderingTechnology;
   int Bidirectional;
-
+  bool ShowToolbar;
+  bool ShowStatusbar;
+  int EncodingDlgSizeX;
+  int EncodingDlgSizeY;
+  int RecodeDlgSizeX;
+  int RecodeDlgSizeY;
+  int FileMRUDlgSizeX;
+  int FileMRUDlgSizeY;
+  int OpenWithDlgSizeX;
+  int OpenWithDlgSizeY;
+  int FavoritesDlgSizeX;
+  int FavoritesDlgSizeY;
+  int FindReplaceDlgPosX;
+  int FindReplaceDlgPosY;
+  int CustomSchemesDlgPosX;
+  int CustomSchemesDlgPosY;
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
   WCHAR OpenWithDir[MAX_PATH + 1];
   WCHAR FavoritesDir[MAX_PATH + 1];
+  WCHAR ToolbarButtons[MIDSZ_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
 

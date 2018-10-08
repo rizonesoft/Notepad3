@@ -17,6 +17,7 @@
 #define _NP3_EDIT_H_
 
 #include "Scintilla.h"
+#include "SciCall.h"
 #include "TypeDefs.h"
 
 // extern "C" declarations of Scintilla functions
@@ -107,15 +108,17 @@ void  EditSetAccelWordNav(HWND,bool);
 bool  EditAutoCompleteWord(HWND,bool);
 void  EditGetBookmarkList(HWND,LPWSTR,int);
 void  EditSetBookmarkList(HWND,LPCWSTR);
-void  EditApplyLexerStyle(HWND, DocPos, DocPos);
 void  EditFinalizeStyling(HWND, DocPos);
 
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditUpdateVisibleUrlHotspot(bool);
 void  EditHideNotMarkedLineRange(HWND, DocPos, DocPos, bool);
 
-//void SciInitThemes(HWND);
-//LRESULT CALLBACK SciThemedWndProc(HWND,UINT,WPARAM,LPARAM);
+//  if iRangeEnd == -1 : apply style from iRangeStart to document end
+inline void EditApplyLexerStyle(HWND hwnd, const DocPos iRangeStart, const DocPos iRangeEnd) {
+  (void)(hwnd); SciCall_Colourise(iRangeStart, iRangeEnd);
+}
+
 
 #define FV_TABWIDTH        1
 #define FV_INDENTWIDTH     2

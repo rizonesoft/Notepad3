@@ -267,7 +267,7 @@ bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpStri
 {
   // TODO: length limit of lpCachedIniSection
   WCHAR* p = lpCachedIniSection;
-  if (p) {
+  if (p && lpString) {
     while (*p) {
       p = StrEnd(p,0) + 1; // skip '\0\0's
     }
@@ -330,7 +330,7 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 UINT GetCurrentDPI(HWND hwnd) {
   UINT dpi = 0;
   if (IsWin10()) {
-    HMODULE const hModule = GetModuleHandle(_T("user32.dll"));
+    HMODULE const hModule = GetModuleHandle(MKWCS("user32.dll"));
     if (hModule) {
       FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
       if (pfnGetDpiForWindow) {
@@ -2237,18 +2237,20 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
     }
     //TODO: HTML Hex encoded (&#x...)
     if (!bOk) {
-      posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
+      posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
+                                    &(outBuffer[posOut]), (MBWC_DocPos_Cast)(outLen - posOut), NULL, NULL);
     }
   }
 
   // copy rest
   while ((lpURL[posIn] != L'\0') && (posOut < outLen))
   {
-    posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, &(outBuffer[posOut]), (int)(outLen - posOut), NULL, NULL);
+    posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
+                                  &(outBuffer[posOut]), (MBWC_DocPos_Cast)(outLen - posOut), NULL, NULL);
   }
   outBuffer[posOut] = '\0';
 
-  int iOut = MultiByteToWideChar(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, (int)*pcchUnescaped);
+  int const iOut = MultiByteToWideChar(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, (MBWC_DocPos_Cast)*pcchUnescaped);
   FreeMem(outBuffer);
 
   *pcchUnescaped = ((iOut > 0) ? (iOut - 1) : 0);

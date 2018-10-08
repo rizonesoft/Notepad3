@@ -51,10 +51,6 @@
 #include "dialogs.h"
 
 
-extern DWORD dwLastIOError;
-
-
-
 //=============================================================================
 //
 //  MsgBoxLng()
@@ -112,7 +108,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
-      dwLastIOError,
+      Globals.dwLastError,
       Globals.iPrefLANGID,
       (LPTSTR)&lpMsgBuf,
       0,
@@ -438,7 +434,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
       }
 
-      SetDlgItemText(hwnd, IDC_VERSION, L"" VERSION_FILEVERSION_LONG);
+      SetDlgItemText(hwnd, IDC_VERSION, MKWCS(VERSION_FILEVERSION_LONG));
 
       if (hFontTitle) { DeleteObject(hFontTitle); }
 
@@ -614,7 +610,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       {
         WCHAR wchVerInfo[1024] = { L'\0' };
         WCHAR wchAuthInfo[128] = { L'\0' };
-        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), L"" VERSION_FILEVERSION_LONG);
+        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), MKWCS(VERSION_FILEVERSION_LONG));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
@@ -735,7 +731,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
               ExtractFirstArgument(arg1,arg1,arg2,MAX_PATH);
 
-              if (StringCchCompareNI(arg1,COUNTOF(arg1), TSTRG(APPNAME),CSTRLEN(TSTRG(APPNAME))) == 0 ||
+              if (StringCchCompareNI(arg1,COUNTOF(arg1), STRGW(APPNAME),CSTRLEN(STRGW(APPNAME))) == 0 ||
                   StringCchCompareNI(arg1,COUNTOF(arg1),L"notepad3.exe", CSTRLEN(L"notepad3.exe")) == 0) {
                 GetModuleFileName(NULL,arg1,COUNTOF(arg1));
                 bQuickExit = true;
@@ -805,9 +801,6 @@ void RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 //
 //  OpenWithDlgProc()
 //
-extern int cxOpenWithDlg;
-extern int cyOpenWithDlg;
-
 INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
 
@@ -820,7 +813,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
 
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
-        ResizeDlg_Init(hwnd,cxOpenWithDlg,cyOpenWithDlg,IDC_RESIZEGRIP3);
+        ResizeDlg_Init(hwnd,Settings.OpenWithDlgSizeX,Settings.OpenWithDlgSizeY,IDC_RESIZEGRIP3);
 
         SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
 
@@ -843,7 +836,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
       DirList_Destroy(GetDlgItem(hwnd,IDC_OPENWITHDIR));
       DeleteBitmapButton(hwnd,IDC_GETOPENWITHDIR);
 
-      ResizeDlg_Destroy(hwnd,&cxOpenWithDlg,&cyOpenWithDlg);
+      ResizeDlg_Destroy(hwnd,&Settings.OpenWithDlgSizeX,&Settings.OpenWithDlgSizeY);
       return false;
 
 
@@ -1004,9 +997,6 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
 //
 //  FavoritesDlgProc()
 //
-extern int cxFavoritesDlg;
-extern int cyFavoritesDlg;
-
 INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
   switch(umsg)
@@ -1018,7 +1008,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
 
         LVCOLUMN lvc = { LVCF_FMT|LVCF_TEXT, LVCFMT_LEFT, 0, L"", -1, 0, 0, 0 };
 
-        ResizeDlg_Init(hwnd,cxFavoritesDlg,cyFavoritesDlg,IDC_RESIZEGRIP3);
+        ResizeDlg_Init(hwnd,Settings.FavoritesDlgSizeX,Settings.FavoritesDlgSizeY,IDC_RESIZEGRIP3);
 
         SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
 
@@ -1041,7 +1031,7 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
       DirList_Destroy(GetDlgItem(hwnd,IDC_FAVORITESDIR));
       DeleteBitmapButton(hwnd,IDC_GETFAVORITESDIR);
 
-      ResizeDlg_Destroy(hwnd,&cxFavoritesDlg,&cyFavoritesDlg);
+      ResizeDlg_Destroy(hwnd,&Settings.FavoritesDlgSizeX,&Settings.FavoritesDlgSizeY);
       return false;
 
 
@@ -1261,10 +1251,6 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
 //  FileMRUDlgProc()
 //
 //
-extern LPMRULIST g_pFileMRU;
-extern int  cxFileMRUDlg;
-extern int  cyFileMRUDlg;
-
 typedef struct tagIconThreadInfo
 {
   HWND hwnd;                 // HWND of ListView Control
@@ -1383,7 +1369,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         }
         SetWindowLongPtr(hwnd,DWLP_USER,(LONG_PTR)lParam);
 
-        ResizeDlg_Init(hwnd,cxFileMRUDlg,cyFileMRUDlg,IDC_RESIZEGRIP);
+        ResizeDlg_Init(hwnd,Settings.FileMRUDlgSizeX,Settings.FileMRUDlgSizeY,IDC_RESIZEGRIP);
 
         ListView_SetImageList(GetDlgItem(hwnd,IDC_FILEMRU),
           (HIMAGELIST)SHGetFileInfo(L"C:\\",FILE_ATTRIBUTE_DIRECTORY,
@@ -1437,7 +1423,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         Settings.PreserveCaretPos = (IsDlgButtonChecked(hwnd, IDC_PRESERVECARET)) ? true : false;
         Settings.SaveRecentFiles  = (IsDlgButtonChecked(hwnd, IDC_SAVEMRU)) ? true : false;
 
-        ResizeDlg_Destroy(hwnd,&cxFileMRUDlg,&cyFileMRUDlg);
+        ResizeDlg_Destroy(hwnd,&Settings.FileMRUDlgSizeX,&Settings.FileMRUDlgSizeY);
       }
       return false;
 
@@ -1599,8 +1585,8 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             lvi.iImage = shfi.iIcon;
 
-            for (i = 0; i < MRU_Count(g_pFileMRU); i++) {
-              MRU_Enum(g_pFileMRU,i,tch,COUNTOF(tch));
+            for (i = 0; i < MRU_Count(Globals.pFileMRU); i++) {
+              MRU_Enum(Globals.pFileMRU,i,tch,COUNTOF(tch));
               PathAbsoluteFromApp(tch,NULL,0,true);
               //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_ADDSTRING,0,(LPARAM)tch); }
               //  SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_SETCARETINDEX,0,false);
@@ -1652,7 +1638,7 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
                 // don't remove myself
                 int iCur = 0;
-                if (!MRU_FindFile(g_pFileMRU, Globals.CurrentFile, &iCur)) {
+                if (!MRU_FindFile(Globals.pFileMRU, Globals.CurrentFile, &iCur)) {
                   iCur = -1;
                 }
 
@@ -1662,8 +1648,8 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
                 if (IDYES == answ) {
 
-                  MRU_Delete(g_pFileMRU,lvi.iItem);
-                  MRU_DeleteFileFromStore(g_pFileMRU,tchFileName);
+                  MRU_Delete(Globals.pFileMRU,lvi.iItem);
+                  MRU_DeleteFileFromStore(Globals.pFileMRU,tchFileName);
 
                   //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
                   //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);
@@ -2421,9 +2407,6 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
 //
 //  SelectEncodingDlg()
 //
-extern int cxEncodingDlg;
-extern int cyEncodingDlg;
-
 bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
 {
 
@@ -2432,8 +2415,8 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
 
   dd.bRecodeOnly = false;
   dd.idEncoding = *pidREncoding;
-  dd.cxDlg = cxEncodingDlg;
-  dd.cyDlg = cyEncodingDlg;
+  dd.cxDlg = Settings.EncodingDlgSizeX;
+  dd.cyDlg = Settings.EncodingDlgSizeY;
 
   iResult = ThemedDialogBoxParam(
               Globals.hLngResContainer,
@@ -2442,8 +2425,8 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
               SelectEncodingDlgProc,
               (LPARAM)&dd);
 
-  cxEncodingDlg = dd.cxDlg;
-  cyEncodingDlg = dd.cyDlg;
+  Settings.EncodingDlgSizeX = dd.cxDlg;
+  Settings.EncodingDlgSizeY = dd.cyDlg;
 
   if (iResult == IDOK) {
     *pidREncoding = dd.idEncoding;
@@ -2459,9 +2442,6 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
 //
 //  RecodeDlg()
 //
-extern int cxRecodeDlg;
-extern int cyRecodeDlg;
-
 bool RecodeDlg(HWND hwnd,int *pidREncoding)
 {
 
@@ -2470,8 +2450,8 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
 
   dd.bRecodeOnly = true;
   dd.idEncoding = *pidREncoding;
-  dd.cxDlg = cxRecodeDlg;
-  dd.cyDlg = cyRecodeDlg;
+  dd.cxDlg = Settings.RecodeDlgSizeX;
+  dd.cyDlg = Settings.RecodeDlgSizeY;
 
   iResult = ThemedDialogBoxParam(
               Globals.hLngResContainer,
@@ -2480,8 +2460,8 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
               SelectEncodingDlgProc,
               (LPARAM)&dd);
 
-  cxRecodeDlg = dd.cxDlg;
-  cyRecodeDlg = dd.cyDlg;
+  Settings.RecodeDlgSizeX = dd.cxDlg;
+  Settings.RecodeDlgSizeY = dd.cyDlg;
 
   if (iResult == IDOK) {
     *pidREncoding = dd.idEncoding;

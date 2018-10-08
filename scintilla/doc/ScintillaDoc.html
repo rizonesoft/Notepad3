@@ -1537,7 +1537,7 @@ struct Sci_TextToFind {
      <a class="message" href="#SCI_ALLOCATELINECHARACTERINDEX">SCI_ALLOCATELINECHARACTERINDEX(int lineCharacterIndex)</a><br />
      <a class="message" href="#SCI_RELEASELINECHARACTERINDEX">SCI_RELEASELINECHARACTERINDEX(int lineCharacterIndex)</a><br />
      <a class="message" href="#SCI_LINEFROMINDEXPOSITION">SCI_LINEFROMINDEXPOSITION(int pos, int lineCharacterIndex) &rarr; int</a><br />
-     <a class="message" href="#SCI_INDEXPOSITIONFROMLINE">SCI_INDEXPOSITIONFROMLINE(int line, int lineCharacterIndex) &rarr; int</a><br />
+     <a class="message" href="#SCI_INDEXPOSITIONFROMLINE">SCI_INDEXPOSITIONFROMLINE(int line, int lineCharacterIndex) &rarr; position</a><br />
     </code>
 
     <p><b id="SCI_POSITIONRELATIVE">SCI_POSITIONRELATIVE(int pos, int relative) &rarr; position</b><br />
@@ -1549,7 +1549,7 @@ struct Sci_TextToFind {
     <p><b id="SCI_COUNTCHARACTERS">SCI_COUNTCHARACTERS(int start, int end) &rarr; int</b><br />
      Returns the number of whole characters between two positions.</p>
 
-    <p><b id="SCI_POSITIONRELATIVECODEUNITS">SCI_POSITIONRELATIVECODEUNITS(int pos, int relative) &rarr; int</b><br />
+    <p><b id="SCI_POSITIONRELATIVECODEUNITS">SCI_POSITIONRELATIVECODEUNITS(int pos, int relative) &rarr; position</b><br />
     <b id="SCI_COUNTCODEUNITS">SCI_COUNTCODEUNITS(int start, int end) &rarr; int</b><br />
      These are the UTF-16 versions of <code>SCI_POSITIONRELATIVE</code> and <code>SCI_COUNTCHARACTERS</code>
      working in terms of UTF-16 code units.</p>
@@ -1569,7 +1569,7 @@ struct Sci_TextToFind {
      Only one index of each type is created for a document at a time.</p>
 
     <p><b id="SCI_LINEFROMINDEXPOSITION">SCI_LINEFROMINDEXPOSITION(int pos, int lineCharacterIndex) &rarr; int</b><br />
-    <b id="SCI_INDEXPOSITIONFROMLINE">SCI_INDEXPOSITIONFROMLINE(int line, int lineCharacterIndex) &rarr; int</b><br />
+    <b id="SCI_INDEXPOSITIONFROMLINE">SCI_INDEXPOSITIONFROMLINE(int line, int lineCharacterIndex) &rarr; position</b><br />
      The document line of a particular character or code unit may be found by calling <code>SCI_LINEFROMINDEXPOSITION</code> with one of
      <code>SC_LINECHARACTERINDEX_UTF32(1)</code> or <code>SC_LINECHARACTERINDEX_UTF16(2)</code>.
      The inverse action, finds the starting position of a document line either in characters or code units from the document start by calling

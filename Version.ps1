@@ -33,7 +33,7 @@ function DebugOutput($msg)
 try 
 {
   $AppName = "Notepad3"
-	$Major = 4
+	$Major = 5
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format MMdd)
 	if ($AppVeyorEnv) {

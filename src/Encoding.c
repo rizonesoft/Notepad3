@@ -6,8 +6,8 @@
 * Encoding.c                                                                  *
 *   Handling and Helpers for File Encoding                                    *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
-*	                                                                            *
-*	                                                                            *
+*                                                                             *
+*                                                                             *
 *                                                                             *
 *                                                  (c) Rizonesoft 2015-2018   *
 *                                                    https://rizonesoft.com   *
@@ -242,7 +242,8 @@ int Encoding_MapUnicode(int iUni) {
 // ============================================================================
 
 
-void Encoding_SetLabel(int iEncoding) {
+void Encoding_SetLabel(int iEncoding) 
+{
   if (g_Encodings[iEncoding].wchLabel[0] == L'\0') {
     WCHAR wch1[128] = { L'\0' };
     WCHAR wch2[128] = { L'\0' };
@@ -271,7 +272,8 @@ void Encoding_SetLabel(int iEncoding) {
 // ============================================================================
 
 
-int Encoding_MatchW(LPCWSTR pwszTest) {
+int Encoding_MatchW(LPCWSTR pwszTest) 
+{
   char tchTest[256] = { '\0' };
   WideCharToMultiByteStrg(CP_ACP, pwszTest, tchTest);
   return(Encoding_MatchA(tchTest));
@@ -279,7 +281,8 @@ int Encoding_MatchW(LPCWSTR pwszTest) {
 // ============================================================================
 
 
-int Encoding_MatchA(char *pchTest) {
+int Encoding_MatchA(char *pchTest) 
+{
   char  chTest[256] = { '\0' };
   char *pchSrc = pchTest;
   char *pchDst = chTest;
