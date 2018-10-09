@@ -181,6 +181,13 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 // ----------------------------------------------------------------------------
 
+inline bool IsFullHDOrHigher(int resX, int resY) {
+  if (resX <= 0) { resX = GetSystemMetrics(SM_CXSCREEN); }
+  if (resY <= 0) { resY = GetSystemMetrics(SM_CYSCREEN); }
+  return ((resX >= 1920) && (resY >= 1080));
+}
+
+// ----------------------------------------------------------------------------
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
 #define IsXP()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
@@ -368,7 +375,6 @@ WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
 // ----------------------------------------------------------------------------
 
 bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
-
 
 //==== StrSafe lstrlen() =======================================================
 inline size_t StringCchLenA(LPCSTR s, size_t n) { 

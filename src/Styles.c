@@ -179,7 +179,7 @@ bool Style_IsCurLexerStandard()
 //
 static float  _SetBaseFontSize(float fSize)
 {
-  static float fBaseFontSize = INITIAL_BASE_FONT_SIZE;
+  static float fBaseFontSize = 10.0f;
 
   if (fSize >= 0.0f) {
     fBaseFontSize = Round10th(fSize);
@@ -212,7 +212,7 @@ int  Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 //
 static float  _SetCurrentFontSize(float fSize)
 {
-  static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
+  static float fCurrentFontSize = 10.0f;
 
   if (signbit(fSize) == 0) {
     float const fSizeR10th = Round10th(fSize);
@@ -233,13 +233,11 @@ float Style_GetCurrentFontSize()
 //
 void Style_Load()
 {
-  WCHAR tch[32] = { L'\0' };
+  _SetBaseFontSize(IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f);
 
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
-    int const cchIniSection = (int)len;
-    
     // Default colors
     s_colorDefault[0] = RGB(0x00, 0x00, 0x00);
     s_colorDefault[1] = RGB(0x0A, 0x24, 0x6A);
@@ -257,6 +255,9 @@ void Style_Load()
     s_colorDefault[13] = RGB(0xC8, 0x00, 0x00);
     s_colorDefault[14] = RGB(0xB0, 0x00, 0xB0);
     s_colorDefault[15] = RGB(0xB2, 0x8B, 0x40);
+
+    WCHAR tch[32] = { L'\0' };
+    int const cchIniSection = (int)len;
 
     LoadIniSection(L"Custom Colors", pIniSection, cchIniSection);
     for (int i = 0; i < 16; i++) {
@@ -613,8 +614,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
-  _SetBaseFontSize(INITIAL_BASE_FONT_SIZE);
-  _SetCurrentFontSize(INITIAL_BASE_FONT_SIZE);
+  float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
+  _SetBaseFontSize(fBFS);
+  _SetCurrentFontSize(fBFS);
   Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg, true);
 
   // ---  apply current scheme specific settings to default style  ---
@@ -2355,13 +2357,12 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   }
     
   // is "size:" definition relative ?
-  bool bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
+  bool const bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
-  const float fBaseFontSize = (bGlobalDefaultStyle ? INITIAL_BASE_FONT_SIZE : \
-    (bCurrentDefaultStyle ? _GetBaseFontSize() : Style_GetCurrentFontSize()));
+  float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
+  float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? _GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
-
 
   int iFontHeight = 0;
   int iPointSize = 0;

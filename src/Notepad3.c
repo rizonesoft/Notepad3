@@ -1026,6 +1026,7 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   if (s_WinInfo.zoom) {
     SciCall_SetZoom(s_WinInfo.zoom);
   }
+
   // Current file information -- moved in front of ShowWindow()
   FileLoad(true,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,L"");
 
@@ -6918,9 +6919,8 @@ void LoadSettings()
     IniSectionGetString(pIniSection, L"BitmapDisabled", L"",
                         s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmap));
 
-    int ResX = GetSystemMetrics(SM_CXSCREEN);
-    int ResY = GetSystemMetrics(SM_CYSCREEN);
-
+    int const ResX = GetSystemMetrics(SM_CXSCREEN);
+    int const ResY = GetSystemMetrics(SM_CYSCREEN);
 
     // --------------------------------------------------------------------------
     LoadIniSection(L"Window", pIniSection, cchIniSection);
@@ -6931,7 +6931,7 @@ void LoadSettings()
     s_iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
     s_iHighDpiToolBar = clampi(s_iHighDpiToolBar, -1, 1);
     if (s_iHighDpiToolBar < 0) { // undefined: determine high DPI (higher than Full-HD)
-      s_iHighDpiToolBar = ((ResX >= 1920) && (ResY >= 1080)) ? 1 : 0;
+      s_iHighDpiToolBar = IsFullHDOrHigher(ResX, ResY) ? 1 : 0;
     }
 
     // --------------------------------------------------------------
