@@ -386,7 +386,7 @@ void  _InitTextBuffer(HWND hwnd, const char* lpstrText, DocPos textLen,  bool bS
 //  EditSetNewText()
 //
 extern bool bFreezeAppTitle;
-extern FILEVARS fvCurFile;
+extern FILEVARS g_fvCurFile;
 
 void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 {
@@ -394,7 +394,7 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 
   _ClearTextBuffer(hwnd);
 
-  FileVars_Apply(hwnd,&fvCurFile);
+  FileVars_Apply(hwnd,&g_fvCurFile);
 
   _InitTextBuffer(hwnd, lpstrText, cbText, true);
 
@@ -1068,7 +1068,7 @@ bool EditLoadFile(
   bool const bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
 
   if (cbData == 0) {
-    FileVars_Init(NULL,0,&fvCurFile);
+    FileVars_Init(NULL,0,&g_fvCurFile);
     *iEOLMode = Settings.DefaultEOLMode;
     *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
@@ -1116,7 +1116,7 @@ bool EditLoadFile(
     if (convCnt != 0) {
       FreeMem(lpData);
       EditSetNewText(hwnd,"",0);
-      FileVars_Init(lpDataUTF8,convCnt - 1,&fvCurFile);
+      FileVars_Init(lpDataUTF8,convCnt - 1,&g_fvCurFile);
       EditSetNewText(hwnd,lpDataUTF8,convCnt - 1);
       *iEOLMode = EditDetectEOLMode(hwnd,lpDataUTF8);
       FreeMem(lpDataUTF8);
@@ -1132,17 +1132,17 @@ bool EditLoadFile(
 
   else { // ===  ALL OTHERS  ===
 
-    FileVars_Init(lpData,cbData,&fvCurFile);
+    FileVars_Init(lpData,cbData,&g_fvCurFile);
 
     // ===  UTF-8  ===
-    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&fvCurFile) && !Settings.NoEncodingTags);
+    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&g_fvCurFile) && !Settings.NoEncodingTags);
     bool const bForcedNonUTF8 = !Encoding_IsNONE(iForcedEncoding) && !Encoding_IsUTF8(iForcedEncoding);
 
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
     bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
     bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUTF8(iPreferedEncoding); // non-reliable analysis = soft-hint
 
-    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&fvCurFile) && !Settings.NoEncodingTags);
+    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&g_fvCurFile) && !Settings.NoEncodingTags);
 
     //if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8)))
     if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
@@ -1166,10 +1166,10 @@ bool EditLoadFile(
       if (!Encoding_IsNONE(iForcedEncoding))
         *iEncoding = iForcedEncoding;
       else {
-        *iEncoding = FileVars_GetEncoding(&fvCurFile);
+        *iEncoding = FileVars_GetEncoding(&g_fvCurFile);
         if (Encoding_IsNONE(*iEncoding)) 
         {
-          *iEncoding = ((fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferedEncoding);
+          *iEncoding = ((g_fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferedEncoding);
         }
       }
 
@@ -7887,7 +7887,7 @@ extern int g_iTabWidthG;
 extern int g_iIndentWidthG;
 extern bool g_bWordWrapG;
 extern int g_iLongLinesLimitG;
-extern int iWrapCol;
+extern int g_iWrapCol;
 
 bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
 
@@ -7934,7 +7934,7 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
 
   SendMessage(hwnd,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
 
-  iWrapCol = 0;
+  g_iWrapCol = 0;
 
   return(true);
 }
