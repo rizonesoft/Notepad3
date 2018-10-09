@@ -89,22 +89,24 @@ void DbgLog(const char *fmt, ...);
 
 // min/max
 #define _min_(x,y) (((x) < (y)) ? (x) : (y))
-__forceinline int min_i(int x, int y) { return (x < y) ? x : y; }
-__forceinline unsigned int min_u(unsigned int x, unsigned int y) { return (x < y) ? x : y; }
-__forceinline long min_l(long x, long y) { return (x < y) ? x : y; }
-__forceinline size_t min_s(size_t x, size_t y) { return (x < y) ? x : y; }
-__forceinline DocPos min_p(DocPos x, DocPos y) { return (x < y) ? x : y; }
-__forceinline DocLn min_ln(DocLn x, DocLn y) { return (x < y) ? x : y; }
-__forceinline DocPosCR min_cr(DocPosCR x, DocPosCR y) { return (x < y) ? x : y; }
+inline int min_i(const int x, const int y) { return (x < y) ? x : y; }
+inline unsigned int min_u(const unsigned int x, const unsigned int y) { return (x < y) ? x : y; }
+inline long min_l(const long x, const long y) { return (x < y) ? x : y; }
+inline size_t min_s(const size_t x, const size_t y) { return (x < y) ? x : y; }
+inline DocPos min_p(const DocPos x, const DocPos y) { return (x < y) ? x : y; }
+inline DocLn min_ln(const DocLn x, const DocLn y) { return (x < y) ? x : y; }
+inline DocPosCR min_cr(const DocPosCR x, const DocPosCR y) { return (x < y) ? x : y; }
 
 #define _max_(x,y) (((x) > (y)) ? (x) : (y))
-__forceinline int max_i(int x, int y) { return (x > y) ? x : y; }
-__forceinline unsigned int max_u(unsigned int x, unsigned int y) { return (x > y) ? x : y; }
-__forceinline long max_l(long x, long y) { return (x > y) ? x : y; }
-__forceinline size_t max_s(size_t x, size_t y) { return (x > y) ? x : y; }
-__forceinline DocPos max_p(DocPos x, DocPos y) { return (x > y) ? x : y; }
-__forceinline DocLn max_ln(DocLn x, DocLn y) { return (x > y) ? x : y; }
-__forceinline DocPosCR max_cr(DocPosCR x, DocPosCR y) { return (x > y) ? x : y; }
+inline int max_i(int x, int y) { return (x > y) ? x : y; }
+inline unsigned int max_u(unsigned int x, unsigned int y) { return (x > y) ? x : y; }
+inline long max_l(const long x, const long y) { return (x > y) ? x : y; }
+inline size_t max_s(const size_t x, const size_t y) { return (x > y) ? x : y; }
+inline DocPos max_p(const DocPos x, const DocPos y) { return (x > y) ? x : y; }
+inline DocLn max_ln(const DocLn x, const DocLn y) { return (x > y) ? x : y; }
+inline DocPosCR max_cr(const DocPosCR x, const DocPosCR y) { return (x > y) ? x : y; }
+
+inline DocPos abs_p(const DocPos x) { return (x >= 0LL) ? x : (0LL - x); }
 
 // swap 
 inline void swapi(int* a, int* b) { int t = *a;  *a = *b;  *b = t; }
@@ -124,16 +126,16 @@ inline unsigned clampul(unsigned long x, unsigned long lower, unsigned long uppe
 }
 
 // Is the character an octal digit?
-inline bool IsDigitA(CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
-inline bool IsDigitW(WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
+inline bool IsDigitA(const CHAR ch) { return ((ch >= '0') && (ch <= '9')); }
+inline bool IsDigitW(const WCHAR wch) { return ((wch >= L'0') && (wch <= L'9')); }
 
 // Is the character a white space char?
-inline bool IsBlankChar(CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
-inline bool IsBlankCharW(WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
+inline bool IsBlankChar(const CHAR ch) { return ((ch == ' ') || (ch == '\t')); }
+inline bool IsBlankCharW(const WCHAR wch) { return ((wch == L' ') || (wch == L'\t')); }
 
-inline int float2int(float f) { return (int)lroundf(f); }
-inline float Round10th(float f) { return (float)float2int(f * 10.0f) / 10; }
-inline bool HasNonZeroFraction(float f) { return ((float2int(f * 10.0f) % 10) != 0); }
+inline int float2int(const float f) { return (int)lroundf(f); }
+inline float Round10th(const float f) { return (float)float2int(f * 10.0f) / 10; }
+inline bool HasNonZeroFraction(const float f) { return ((float2int(f * 10.0f) % 10) != 0); }
 
 // ----------------------------------------------------------------------------
 
@@ -179,6 +181,13 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 // ----------------------------------------------------------------------------
 
+inline bool IsFullHDOrHigher(int resX, int resY) {
+  if (resX <= 0) { resX = GetSystemMetrics(SM_CXSCREEN); }
+  if (resY <= 0) { resY = GetSystemMetrics(SM_CYSCREEN); }
+  return ((resX >= 1920) && (resY >= 1080));
+}
+
+// ----------------------------------------------------------------------------
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
 #define IsXP()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
@@ -253,7 +262,6 @@ int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
 #define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
 #define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
 #define GetLngStringW2MB(id,pb,cb) LoadLngStringW2MB((id),(pb),(cb))
-
 
 
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
@@ -368,7 +376,6 @@ WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
 
 bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 
-
 //==== StrSafe lstrlen() =======================================================
 inline size_t StringCchLenA(LPCSTR s, size_t n) { 
   size_t len = (n ? n : STRSAFE_MAX_CCH); return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, len, &len)) ? len : n));
@@ -403,21 +410,21 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 
 // NOTE: !!! differences in AutoCompleteList depending compare functions (CRT vs. Shlwapi)) !!!
 
-#define StringCchCompareNA(s1,l1,s2,l2)   StrCmpNA((s1),(s2),min_i((l1),(l2)))
+#define StringCchCompareNA(s1,l1,s2,l2)   StrCmpNA((s1),(s2),min_i((int)(l1),(int)(l2)))
 //#define StringCchCompareNA(s1,l1,s2,l2)   strncmp((s1),(s2),min_s((l1),(l2)))
 #define StringCchCompareXA(s1,s2)         StrCmpA((s1),(s2))
 //#define StringCchCompareXA(s1,s2)         strcmp((s1),(s2))
 
-#define StringCchCompareNIA(s1,l1,s2,l2)  StrCmpNIA((s1),(s2),min_i((l1),(l2)))
+#define StringCchCompareNIA(s1,l1,s2,l2)  StrCmpNIA((s1),(s2),min_i((int)(l1),(int)(l2)))
 //#define StringCchCompareNIA(s1,l1,s2,l2)  _strnicmp((s1),(s2),min_s((l1),(l2)))
 #define StringCchCompareXIA(s1,s2)        StrCmpIA((s1),(s2))
 //#define StringCchCompareXIA(s1,s2)        _stricmp((s1),(s2))
 
 
-#define StringCchCompareNW(s1,l1,s2,l2)   StrCmpNW((s1),(s2),min_i((l1),(l2)))
+#define StringCchCompareNW(s1,l1,s2,l2)   StrCmpNW((s1),(s2),min_i((int)(l1),(int)(l2)))
 #define StringCchCompareXW(s1,s2)         StrCmpW((s1),(s2))
 
-#define StringCchCompareNIW(s1,l1,s2,l2)  StrCmpNIW((s1),(s2),min_i((l1),(l2)))
+#define StringCchCompareNIW(s1,l1,s2,l2)  StrCmpNIW((s1),(s2),min_i((int)(l1),(int)(l2)))
 #define StringCchCompareXIW(s1,s2)        StrCmpIW((s1),(s2))
 
 #if defined(UNICODE) || defined(_UNICODE)  

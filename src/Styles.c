@@ -47,11 +47,10 @@
 
 #include "Styles.h"
 
-extern const int FontQuality[4];
+extern const int g_FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;
 extern bool g_bIniFileFromScratch;
-extern int  g_iDefaultCharSet;
 
 
 bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCF);
@@ -121,7 +120,9 @@ static PEDITLEXER s_pLexCurrent = &lexStandard;
 
 static bool s_fWarnedNoIniFile = false;
 
-static COLORREF s_colorCustom[16];
+static COLORREF s_colorDefault[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static COLORREF s_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
 static bool s_bAutoSelect = true;
 
 #define STYLESELECTDLG_X 304
@@ -178,7 +179,7 @@ bool Style_IsCurLexerStandard()
 //
 static float  _SetBaseFontSize(float fSize)
 {
-  static float fBaseFontSize = INITIAL_BASE_FONT_SIZE;
+  static float fBaseFontSize = 10.0f;
 
   if (fSize >= 0.0f) {
     fBaseFontSize = Round10th(fSize);
@@ -211,7 +212,7 @@ int  Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 //
 static float  _SetCurrentFontSize(float fSize)
 {
-  static float fCurrentFontSize = INITIAL_BASE_FONT_SIZE;
+  static float fCurrentFontSize = 10.0f;
 
   if (signbit(fSize) == 0) {
     float const fSizeR10th = Round10th(fSize);
@@ -232,41 +233,48 @@ float Style_GetCurrentFontSize()
 //
 void Style_Load()
 {
-  WCHAR tch[32] = { L'\0' };
+  _SetBaseFontSize(IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f);
 
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
+    // Default colors
+    s_colorDefault[0] = RGB(0x00, 0x00, 0x00);
+    s_colorDefault[1] = RGB(0x0A, 0x24, 0x6A);
+    s_colorDefault[2] = RGB(0x3A, 0x6E, 0xA5);
+    s_colorDefault[3] = RGB(0x00, 0x3C, 0xE6);
+    s_colorDefault[4] = RGB(0x00, 0x66, 0x33);
+    s_colorDefault[5] = RGB(0x60, 0x80, 0x20);
+    s_colorDefault[6] = RGB(0x64, 0x80, 0x00);
+    s_colorDefault[7] = RGB(0xA4, 0x60, 0x00);
+    s_colorDefault[8] = RGB(0xFF, 0xFF, 0xFF);
+    s_colorDefault[9] = RGB(0xFF, 0xFF, 0xE2);
+    s_colorDefault[10] = RGB(0xFF, 0xF1, 0xA8);
+    s_colorDefault[11] = RGB(0xFF, 0xC0, 0x00);
+    s_colorDefault[12] = RGB(0xFF, 0x40, 0x00);
+    s_colorDefault[13] = RGB(0xC8, 0x00, 0x00);
+    s_colorDefault[14] = RGB(0xB0, 0x00, 0xB0);
+    s_colorDefault[15] = RGB(0xB2, 0x8B, 0x40);
+
+    WCHAR tch[32] = { L'\0' };
     int const cchIniSection = (int)len;
-    // Custom colors
-    s_colorCustom[0] = RGB(0x00, 0x00, 0x00);
-    s_colorCustom[1] = RGB(0x0A, 0x24, 0x6A);
-    s_colorCustom[2] = RGB(0x3A, 0x6E, 0xA5);
-    s_colorCustom[3] = RGB(0x00, 0x3C, 0xE6);
-    s_colorCustom[4] = RGB(0x00, 0x66, 0x33);
-    s_colorCustom[5] = RGB(0x60, 0x80, 0x20);
-    s_colorCustom[6] = RGB(0x64, 0x80, 0x00);
-    s_colorCustom[7] = RGB(0xA4, 0x60, 0x00);
-    s_colorCustom[8] = RGB(0xFF, 0xFF, 0xFF);
-    s_colorCustom[9] = RGB(0xFF, 0xFF, 0xE2);
-    s_colorCustom[10] = RGB(0xFF, 0xF1, 0xA8);
-    s_colorCustom[11] = RGB(0xFF, 0xC0, 0x00);
-    s_colorCustom[12] = RGB(0xFF, 0x40, 0x00);
-    s_colorCustom[13] = RGB(0xC8, 0x00, 0x00);
-    s_colorCustom[14] = RGB(0xB0, 0x00, 0xB0);
-    s_colorCustom[15] = RGB(0xB2, 0x8B, 0x40);
 
     LoadIniSection(L"Custom Colors", pIniSection, cchIniSection);
     for (int i = 0; i < 16; i++) {
       WCHAR wch[32] = { L'\0' };
       StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
+      int itok = 0;
       if (IniSectionGetString(pIniSection, tch, L"", wch, COUNTOF(wch))) {
         if (wch[0] == L'#') {
           unsigned int irgb;
-          int itok = swscanf_s(CharNext(wch), L"%x", &irgb);
-          if (itok == 1)
+          itok = swscanf_s(CharNext(wch), L"%x", &irgb);
+          if (itok == 1) {
             s_colorCustom[i] = RGB((irgb & 0xFF0000) >> 16, (irgb & 0xFF00) >> 8, irgb & 0xFF);
+          }
         }
+      }
+      if (itok != 1) {
+        s_colorCustom[i] = s_colorDefault[i];
       }
     }
 
@@ -284,7 +292,6 @@ void Style_Load()
     // scheme select dlg dimensions
     s_cxStyleSelectDlg = clampi(IniSectionGetInt(pIniSection, L"SelectDlgSizeX", STYLESELECTDLG_X), 0, 8192);
     s_cyStyleSelectDlg = clampi(IniSectionGetInt(pIniSection, L"SelectDlgSizeY", STYLESELECTDLG_Y), 0, 8192);
-
 
     for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
 
@@ -333,11 +340,13 @@ void Style_Save()
   if (pIniSection) {
     // Custom colors
     for (int i = 0; i < 16; i++) {
-      WCHAR wch[32] = { L'\0' };
-      StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
-      StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
-        (int)GetRValue(s_colorCustom[i]), (int)GetGValue(s_colorCustom[i]), (int)GetBValue(s_colorCustom[i]));
-      IniSectionSetString(pIniSection, tch, wch);
+      if (s_colorCustom[i] != s_colorDefault[i]) {
+        WCHAR wch[32] = { L'\0' };
+        StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
+        StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
+          (int)GetRValue(s_colorCustom[i]), (int)GetGValue(s_colorCustom[i]), (int)GetBValue(s_colorCustom[i]));
+        IniSectionSetString(pIniSection, tch, wch);
+      }
     }
     SaveIniSection(L"Custom Colors", pIniSection);
     ZeroMemory(pIniSection, len * sizeof(WCHAR));
@@ -533,18 +542,18 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // Lexer very specific styles
   if (pLexNew->lexerID == SCLEX_XML)
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.xml.allow.scripts", (LPARAM)"1");
+    SciCall_SetProperty("lexer.xml.allow.scripts", "1");
   if (pLexNew->lexerID == SCLEX_CPP) {
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"styling.within.preprocessor", (LPARAM)"1");
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.cpp.track.preprocessor", (LPARAM)"0");
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.cpp.update.preprocessor", (LPARAM)"0");
+    SciCall_SetProperty("styling.within.preprocessor", "1");
+    SciCall_SetProperty("lexer.cpp.track.preprocessor", "0");
+    SciCall_SetProperty("lexer.cpp.update.preprocessor", "0");
   }
   else if (pLexNew->lexerID == SCLEX_PASCAL)
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.pascal.smart.highlighting", (LPARAM)"1");
+    SciCall_SetProperty("lexer.pascal.smart.highlighting", "1");
   else if (pLexNew->lexerID == SCLEX_SQL) {
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"sql.backslash.escapes", (LPARAM)"1");
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.sql.backticks.identifier", (LPARAM)"1");
-    SendMessage(hwnd, SCI_SETPROPERTY, (WPARAM)"lexer.sql.numbersign.comment", (LPARAM)"1");
+    SciCall_SetProperty("sql.backslash.escapes", "1");
+    SciCall_SetProperty("lexer.sql.backticks.identifier", "1");
+    SciCall_SetProperty("lexer.sql.numbersign.comment", "1");
   }
   else if (pLexNew->lexerID == SCLEX_NSIS)
     SciCall_SetProperty("nsis.ignorecase", "1");
@@ -582,7 +591,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
   // Add KeyWord Lists
   for (int i = 0; i < (KEYWORDSET_MAX + 1); i++) {
-    SendMessage(hwnd, SCI_SETKEYWORDS, i, (LPARAM)pLexNew->pKeyWords->pszKeyWords[i]);
+    SciCall_SetKeywords(i, pLexNew->pKeyWords->pszKeyWords[i]);
   }
 
   // Idle Styling (very large text)
@@ -605,8 +614,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
-  _SetBaseFontSize(INITIAL_BASE_FONT_SIZE);
-  _SetCurrentFontSize(INITIAL_BASE_FONT_SIZE);
+  float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
+  _SetBaseFontSize(fBFS);
+  _SetCurrentFontSize(fBFS);
   Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg, true);
 
   // ---  apply current scheme specific settings to default style  ---
@@ -1416,7 +1426,7 @@ bool Style_HasLexerForExt(LPCWSTR lpszExt)
 //
 //  Style_SetLexerFromFile()
 //
-extern FILEVARS fvCurFile;
+extern FILEVARS g_fvCurFile;
 
 void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
@@ -1425,12 +1435,12 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   PEDITLEXER pLexNew = NULL;
   PEDITLEXER pLexSniffed = NULL;
 
-  if ((fvCurFile.mask & FV_MODE) && fvCurFile.tchMode[0]) {
+  if ((g_fvCurFile.mask & FV_MODE) && g_fvCurFile.tchMode[0]) {
 
     WCHAR wchMode[32] = { L'\0' };
     PEDITLEXER pLexMode;
 
-    MultiByteToWideCharStrg(Encoding_SciCP, fvCurFile.tchMode, wchMode);
+    MultiByteToWideCharStrg(Encoding_SciCP, g_fvCurFile.tchMode, wchMode);
 
     if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
@@ -2341,19 +2351,18 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
     }
   }
 
-  int iCharSet = g_iDefaultCharSet;
+  int iCharSet = Globals.iDefaultCharSet;
   if (!Style_StrGetCharSet(lpszStyle, &iCharSet)) {
-    iCharSet = g_iDefaultCharSet;
+    iCharSet = Globals.iDefaultCharSet;
   }
     
   // is "size:" definition relative ?
-  bool bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
+  bool const bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
-  const float fBaseFontSize = (bGlobalDefaultStyle ? INITIAL_BASE_FONT_SIZE : \
-    (bCurrentDefaultStyle ? _GetBaseFontSize() : Style_GetCurrentFontSize()));
+  float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
+  float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? _GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
-
 
   int iFontHeight = 0;
   int iPointSize = 0;
@@ -2380,7 +2389,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   bool bIsUnderline = (StrStrI(lpszStyle, L"underline")) ? true : false;
   bool bIsStrikeout = (StrStrI(lpszStyle, L"strikeout")) ? true : false;
 
-  int iQuality = FontQuality[Settings2.SciFontQuality];
+  int iQuality = g_FontQuality[Settings2.SciFontQuality];
   switch (iQuality) {
   case SC_EFF_QUALITY_NON_ANTIALIASED:
     iQuality = NONANTIALIASED_QUALITY;
@@ -2551,7 +2560,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (bGlobalDefaultStyle &&
     (lf.lfCharSet != DEFAULT_CHARSET) &&
     (lf.lfCharSet != ANSI_CHARSET) &&
-    (lf.lfCharSet != g_iDefaultCharSet)) {
+    (lf.lfCharSet != Globals.iDefaultCharSet)) {
     if (lf.lfCharSet == iCharSet) {
       if (StrStrI(lpszStyle, L"charset:"))
       {
@@ -2766,7 +2775,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
     SendMessage(hwnd, SCI_SETFONTQUALITY, wQuality, 0);
   }
   else if (bInitDefault) {
-    WPARAM wQuality = (WPARAM)FontQuality[Settings2.SciFontQuality];
+    WPARAM wQuality = (WPARAM)g_FontQuality[Settings2.SciFontQuality];
     if (wQuality == SC_EFF_QUALITY_DEFAULT) {
       // undefined, use general settings, except for special fonts
       if (StringCchCompareXI(wchFontName, L"Calibri") == 0 ||

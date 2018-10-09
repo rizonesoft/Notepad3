@@ -51,10 +51,6 @@
 #include "dialogs.h"
 
 
-extern DWORD g_dwLastIOError;
-
-
-
 //=============================================================================
 //
 //  MsgBoxLng()
@@ -112,7 +108,7 @@ int MsgBoxLng(int iType, UINT uIdMsg, ...)
     FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
-      g_dwLastIOError,
+      Globals.dwLastError,
       Globals.iPrefLANGID,
       (LPTSTR)&lpMsgBuf,
       0,
