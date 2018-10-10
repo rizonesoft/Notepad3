@@ -6806,8 +6806,8 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  g_bTabsAsSpacesG = Settings.TabsAsSpaces;
     GET_BOOL_VALUE_FROM_INISECTION(TabIndents, true);  g_bTabIndentsG = Settings.TabIndents;
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
-    GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 256);  g_iTabWidthG = Settings.TabWidth;
-    GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 256);  g_iIndentWidthG = Settings.IndentWidth;
+    GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  g_iTabWidthG = Settings.TabWidth;
+    GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  g_iIndentWidthG = Settings.IndentWidth;
     GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, true);
     GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  g_iLongLinesLimitG = Settings.LongLinesLimit;
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
@@ -6876,20 +6876,20 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ShowToolbar, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowStatusbar, true);
 
-    GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeX, 256, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeY, 262, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeX, 256, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeY, 262, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeX, 412, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeY, 376, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeX, 384, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeX, 384, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeX, 334, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeX, 334, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosX, 0, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosY, 0, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, 0, 0, 8192);
-    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, 0, 0, 8192);
+    GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeX, 256, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(EncodingDlgSizeY, 262, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeX, 256, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(RecodeDlgSizeY, 262, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeX, 412, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FileMRUDlgSizeY, 376, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeX, 384, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(OpenWithDlgSizeY, 384, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeX, 334, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FavoritesDlgSizeY, 334, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(FindReplaceDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosX, CW_USEDEFAULT, INT_MIN, INT_MAX);
+    GET_INT_VALUE_FROM_INISECTION(CustomSchemesDlgPosY, CW_USEDEFAULT, INT_MIN, INT_MAX);
 
     // --------------------------------------------------------------------------
     LoadIniSection(L"Statusbar Settings", pIniSection, cchIniSection);

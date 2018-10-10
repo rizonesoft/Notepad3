@@ -2996,39 +2996,37 @@ void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode)
 void CenterDlgInParent(HWND hDlg)
 {
   RECT rcDlg;
-  HWND hParent;
-  RECT rcParent;
-  MONITORINFO mi;
-  HMONITOR hMonitor;
-
-  int xMin, yMin, xMax, yMax, x, y;
-
   GetWindowRect(hDlg, &rcDlg);
 
-  hParent = GetParent(hDlg);
+  HWND const hParent = GetParent(hDlg);
+  RECT rcParent;
   GetWindowRect(hParent, &rcParent);
 
-  hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
-  mi.cbSize = sizeof(mi);
+  HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
+
+  MONITORINFO mi;
+  mi.cbSize = sizeof(MONITORINFO);
   GetMonitorInfo(hMonitor, &mi);
 
-  xMin = mi.rcWork.left;
-  yMin = mi.rcWork.top;
+  int const xMin = mi.rcWork.left;
+  int const yMin = mi.rcWork.top;
 
-  xMax = (mi.rcWork.right) - (rcDlg.right - rcDlg.left);
-  yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
+  int const xMax = (mi.rcWork.right) - (rcDlg.right - rcDlg.left);
+  int const yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
 
+  int x;
   if ((rcParent.right - rcParent.left) - (rcDlg.right - rcDlg.left) > 20)
     x = rcParent.left + (((rcParent.right - rcParent.left) - (rcDlg.right - rcDlg.left)) / 2);
   else
     x = rcParent.left + 70;
 
+  int y;
   if ((rcParent.bottom - rcParent.top) - (rcDlg.bottom - rcDlg.top) > 20)
     y = rcParent.top + (((rcParent.bottom - rcParent.top) - (rcDlg.bottom - rcDlg.top)) / 2);
   else
     y = rcParent.top + 60;
 
-  SetWindowPos(hDlg, NULL, max_i(xMin, min_i(xMax, x)), max_i(yMin, min_i(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+  SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
   //SnapToDefaultButton(hDlg);
 }
@@ -3042,17 +3040,15 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 {
 
   RECT rcDlg;
-  HWND hParent;
-  RECT rcParent;
-
   GetWindowRect(hDlg, &rcDlg);
 
-  hParent = GetParent(hDlg);
+  HWND const hParent = GetParent(hDlg);
+  RECT rcParent;
   GetWindowRect(hParent, &rcParent);
 
   // return positions relative to parent window
-  *xDlg = rcDlg.left - rcParent.left;
-  *yDlg = rcDlg.top - rcParent.top;
+  *xDlg = (rcDlg.left - rcParent.left);
+  *yDlg = (rcDlg.top - rcParent.top);
 
 }
 
@@ -3063,35 +3059,30 @@ void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg)
 //
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 {
-
   RECT rcDlg;
-  HWND hParent;
-  RECT rcParent;
-  MONITORINFO mi;
-  HMONITOR hMonitor;
-
-  int xMin, yMin, xMax, yMax, x, y;
-
   GetWindowRect(hDlg, &rcDlg);
 
-  hParent = GetParent(hDlg);
+  HWND const hParent = GetParent(hDlg);
+  RECT rcParent;
   GetWindowRect(hParent, &rcParent);
 
-  hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
+  HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
+
+  MONITORINFO mi;
   mi.cbSize = sizeof(mi);
   GetMonitorInfo(hMonitor, &mi);
 
-  xMin = mi.rcWork.left;
-  yMin = mi.rcWork.top;
+  int const xMin = mi.rcWork.left;
+  int const yMin = mi.rcWork.top;
 
-  xMax = (mi.rcWork.right) - (rcDlg.right - rcDlg.left);
-  yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
+  int const xMax = (mi.rcWork.right) - (rcDlg.right - rcDlg.left);
+  int const yMax = (mi.rcWork.bottom) - (rcDlg.bottom - rcDlg.top);
 
   // desired positions relative to parent window
-  x = rcParent.left + xDlg;
-  y = rcParent.top + yDlg;
+  int const x = rcParent.left + xDlg;
+  int const y = rcParent.top + yDlg;
 
-  SetWindowPos(hDlg, NULL, max_i(xMin, min_i(xMax, x)), max_i(yMin, min_i(yMax, y)), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+  SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
 
 
@@ -3112,8 +3103,6 @@ typedef struct _resizedlg {
 
 void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
 {
-  WCHAR wch[64] = { L'\0' };
-
   RECT rc;
   GetClientRect(hwnd, &rc);
 
@@ -3140,6 +3129,8 @@ void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
 
     SetWindowLongPtr(hwnd, GWL_STYLE, GetWindowLongPtr(hwnd, GWL_STYLE) | WS_THICKFRAME);
     SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
+    WCHAR wch[64] = { L'\0' };
     GetMenuString(GetSystemMenu(GetParent(hwnd), false), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
     InsertMenu(GetSystemMenu(hwnd, false), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
     InsertMenu(GetSystemMenu(hwnd, false), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
@@ -3186,7 +3177,7 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
 HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlags)
 {
   RECT rc;
-  HWND hwndCtl = GetDlgItem(hwndDlg, nCtlId);
+  HWND const hwndCtl = GetDlgItem(hwndDlg, nCtlId);
   GetWindowRect(hwndCtl, &rc);
   MapWindowPoints(NULL, hwndDlg, (LPPOINT)&rc, 2);
   if (uFlags & SWP_NOSIZE) {
@@ -3202,12 +3193,12 @@ HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlag
 //
 void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, UINT uBmpId)
 {
-  HWND hwndCtl = GetDlgItem(hwnd, nCtlId);
-  BITMAP bmp;
-  BUTTON_IMAGELIST bi;
+  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   HBITMAP hBmp = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   hBmp = ResizeImageForCurrentDPI(hBmp);
+  BITMAP bmp;
   GetObject(hBmp, sizeof(BITMAP), &bmp);
+  BUTTON_IMAGELIST bi;
   bi.himl = ImageList_Create(bmp.bmWidth, bmp.bmHeight, ILC_COLOR32 | ILC_MASK, 1, 0);
   ImageList_AddMasked(bi.himl, hBmp, CLR_DEFAULT);
   DeleteObject(hBmp);
@@ -3224,15 +3215,14 @@ void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, UINT uBmpId)
 //
 void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF crColor)
 {
-  HWND hwndCtl = GetDlgItem(hwnd, nCtlId);
-  BUTTON_IMAGELIST bi;
+  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   HIMAGELIST himlOld = NULL;
-  HBITMAP hBmp;
   COLORMAP colormap[2];
 
-  if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi))
+  BUTTON_IMAGELIST bi;
+  if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi)) {
     himlOld = bi.himl;
-
+  }
   if (IsWindowEnabled(hwndCtl) && crColor != ((COLORREF)-1)) {
     colormap[0].from = RGB(0x00, 0x00, 0x00);
     colormap[0].to = GetSysColor(COLOR_3DSHADOW);
@@ -3255,7 +3245,7 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
     colormap[1].to = RGB(0xFF, 0xFF, 0xFF);
   }
 
-  hBmp = CreateMappedBitmap(hInstance, IDB_PICK, 0, colormap, 2);
+  HBITMAP hBmp = CreateMappedBitmap(hInstance, IDB_PICK, 0, colormap, 2);
 
   bi.himl = ImageList_Create(10, 10, ILC_COLORDDB | ILC_MASK, 1, 0);
   ImageList_AddMasked(bi.himl, hBmp, RGB(0xFF, 0xFF, 0xFF));
@@ -3278,7 +3268,7 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
 //
 void DeleteBitmapButton(HWND hwnd, int nCtlId)
 {
-  HWND hwndCtl = GetDlgItem(hwnd, nCtlId);
+  HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   BUTTON_IMAGELIST bi;
   if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi))
     ImageList_Destroy(bi.himl);
@@ -3307,7 +3297,7 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
 void StatusSetText(HWND hwnd, UINT nPart, LPCWSTR lpszText)
 {
   if (lpszText) {
-    UINT uFlags = (nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+    UINT const uFlags = (nPart == (UINT)STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
     SendMessage(hwnd, SB_SETTEXT, uFlags, (LPARAM)lpszText);
   }
 }
@@ -3321,7 +3311,7 @@ bool StatusSetTextID(HWND hwnd, UINT nPart, UINT uID)
 {
 
   WCHAR szText[256] = { L'\0' };
-  UINT uFlags = (nPart == STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
+  UINT const uFlags = (nPart == STATUS_HELP) ? nPart | SBT_NOBORDERS : nPart;
 
   if (!uID)
   {
@@ -3345,13 +3335,12 @@ int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButton
 {
   WCHAR tchButtons[512] = { L'\0' };
   WCHAR tchItem[32] = { L'\0' };
-  int i, c;
-  TBBUTTON tbb;
 
   StringCchCopy(tchButtons, COUNTOF(tchButtons), L"");
-  c = min_i(50, (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
+  int const c = min_i(50, (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0));
 
-  for (i = 0; i < c; i++) {
+  for (int i = 0; i < c; i++) {
+    TBBUTTON tbb;
     SendMessage(hwnd, TB_GETBUTTON, (WPARAM)i, (LPARAM)&tbb);
     StringCchPrintf(tchItem, COUNTOF(tchItem), L"%i ",
       (tbb.idCommand == 0) ? 0 : tbb.idCommand - cmdBase + 1);
@@ -3365,8 +3354,6 @@ int Toolbar_GetButtons(HWND hwnd, int cmdBase, LPWSTR lpszButtons, int cchButton
 int Toolbar_SetButtons(HWND hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON ptbb, int ctbb)
 {
   WCHAR tchButtons[MIDSZ_BUFFER];
-  int i, c;
-  int iCmd;
 
   ZeroMemory(tchButtons, COUNTOF(tchButtons) * sizeof(tchButtons[0]));
   StringCchCopyN(tchButtons, COUNTOF(tchButtons), lpszButtons, COUNTOF(tchButtons) - 2);
@@ -3376,18 +3363,19 @@ int Toolbar_SetButtons(HWND hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON 
     MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLen(p,0) + 1) * sizeof(WCHAR));
     p = StrStr(tchButtons, L"  ");  // next
   }
-  c = (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0);
-  for (i = 0; i < c; i++)
+  int const c = (int)SendMessage(hwnd, TB_BUTTONCOUNT, 0, 0);
+  for (int i = 0; i < c; i++) {
     SendMessage(hwnd, TB_DELETEBUTTON, 0, 0);
-
-  for (i = 0; i < COUNTOF(tchButtons); i++)
+  }
+  for (int i = 0; i < COUNTOF(tchButtons); i++) {
     if (tchButtons[i] == L' ') tchButtons[i] = 0;
-
+  }
   p = tchButtons;
   while (*p) {
+    int iCmd;
     if (swscanf_s(p, L"%i", &iCmd) == 1) {
-      iCmd = (iCmd == 0) ? 0 : iCmd + cmdBase - 1;
-      for (i = 0; i < ctbb; i++) {
+     iCmd = (iCmd == 0) ? 0 : iCmd + cmdBase - 1;
+      for (int i = 0; i < ctbb; i++) {
         if (ptbb[i].idCommand == iCmd) {
           SendMessage(hwnd, TB_ADDBUTTONS, (WPARAM)1, (LPARAM)&ptbb[i]);
           break;
@@ -3411,7 +3399,7 @@ Based on code of MFC helper class CDialogTemplate
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
   bool bSucceed = false;
-  UINT ppi = GetCurrentPPI(NULL);
+  UINT const ppi = GetCurrentPPI(NULL);
 
   HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
   if (hTheme) {

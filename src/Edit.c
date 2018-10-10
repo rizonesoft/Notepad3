@@ -5122,7 +5122,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       }
 
       if (!s_bSwitchedFindReplace) {
-        if (Settings.FindReplaceDlgPosX == 0 || Settings.FindReplaceDlgPosY == 0)
+        if (Settings.FindReplaceDlgPosX == CW_USEDEFAULT || Settings.FindReplaceDlgPosY == CW_USEDEFAULT)
           CenterDlgInParent(hwnd);
         else
           SetDlgPos(hwnd, Settings.FindReplaceDlgPosX, Settings.FindReplaceDlgPosY);
@@ -5665,7 +5665,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       case IDACC_RESETPOS:
         CenterDlgInParent(hwnd);
-        Settings.FindReplaceDlgPosX = Settings.FindReplaceDlgPosY = 0;
+        Settings.FindReplaceDlgPosX = Settings.FindReplaceDlgPosY = CW_USEDEFAULT;
         break;
 
       case IDACC_FINDNEXT:
