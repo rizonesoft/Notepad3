@@ -32,22 +32,21 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
+#ifdef __cplusplus
+#include <cstring>
+#else
 #include <string.h>
-
-#include "platform.h"
-#include "scintilla.h"
-#include "scilexer.h"
+#endif
+#include "Platform.h"
+#include "Scintilla.h"
+#include "SciLexer.h"
 #include "resource.h"
 
 extern "C" {
-#include "dialogs.h"
-#include "helpers.h"
+#include "Dialogs.h"
+#include "Helpers.h"
 #include "TypeDefs.h"
 }
-
-
-// Global settings...
-extern "C" SETTINGS_T Settings;
 
 // Stored objects...
 HGLOBAL hDevMode = nullptr;
@@ -342,7 +341,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
   while (lengthPrinted < lengthDoc) {
     printPage = (!(pdlg.Flags & PD_PAGENUMS) ||
-                 (pageNum >= pdlg.nFromPage) && (pageNum <= pdlg.nToPage));
+                 ((pageNum >= pdlg.nFromPage) && (pageNum <= pdlg.nToPage)));
 
     StringCchPrintf(pageString,COUNTOF(pageString),pszPageFormat,pageNum);
 

@@ -18,12 +18,16 @@
 
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
+#ifdef __cplusplus
+#include <cmath>
+#else
 #include <math.h>
+#endif
 #include <strsafe.h>
 #include <shlwapi.h>
 #include <versionhelpers.h>
 
-#include "typedefs.h"
+#include "TypeDefs.h"
 
 // ============================================================================
 // ---  Disable/Enable some CodeAnalysis Warnings  ---
@@ -153,15 +157,15 @@ inline bool IniSetInt(LPCWSTR lpSection, LPCWSTR lpName, int i) {
 #define LoadIniSection(lpSection,lpBuf,cchBuf) GetPrivateProfileSection(lpSection,lpBuf,(cchBuf),Globals.IniFile)
 #define SaveIniSection(lpSection,lpBuf)        WritePrivateProfileSection(lpSection,lpBuf,Globals.IniFile)
 
-int IniSectionGetString(LPCWSTR, LPCWSTR, LPCWSTR, LPWSTR, int);
-int IniSectionGetInt(LPCWSTR, LPCWSTR, int);
-UINT IniSectionGetUInt(LPCWSTR, LPCWSTR, UINT);
-DocPos IniSectionGetPos(LPCWSTR, LPCWSTR, DocPos);
+int IniSectionGetString(LPCWSTR lpCachedIniSection, LPCWSTR lpName, LPCWSTR lpDefault, LPWSTR lpReturnedString, int cchReturnedString);
+int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault);
+UINT IniSectionGetUInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, UINT uDefault);
+DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDefault);
 inline bool IniSectionGetBool(LPCWSTR lpCachedIniSection, LPCWSTR lpName, bool bDefault) {
   return (IniSectionGetInt(lpCachedIniSection, lpName, ((bDefault) ? 1 : 0)) ? true : false);
 }
 
-bool IniSectionSetString(LPWSTR,LPCWSTR,LPCWSTR);
+bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString);
 
 inline bool IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName, int i) {
   WCHAR tch[32]={L'\0'}; StringCchPrintf(tch,COUNTOF(tch),L"%i",i); return IniSectionSetString(lpCachedIniSection,lpName,tch);
@@ -214,7 +218,7 @@ inline bool IsFullHDOrHigher(int resX, int resY) {
                                                  //   Applications that need to distinguish between server and client versions of Windows should call this function.
 
 
-bool SetClipboardTextW(HWND, LPCWSTR, size_t);
+bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 
 UINT GetCurrentDPI(HWND hwnd);
 UINT GetCurrentPPI(HWND hwnd);
@@ -225,19 +229,19 @@ inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.uCur
 inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.uCurrentDPI) / (float)Globals.uCurrentPPI); }
 inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.uCurrentDPI) / (float)Globals.uCurrentPPI) * 10; }
 
-HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR);
+HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
 bool IsElevated();
 bool IsUserAdmin();
 //bool SetExplorerTheme(HWND);
 
 
-bool BitmapMergeAlpha(HBITMAP,COLORREF);
-bool BitmapAlphaBlend(HBITMAP,COLORREF,BYTE);
-bool BitmapGrayScale(HBITMAP);
-bool VerifyContrast(COLORREF,COLORREF);
-bool IsFontAvailable(LPCWSTR);
+bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
+bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);
+bool BitmapGrayScale(HBITMAP hbmp);
+bool VerifyContrast(COLORREF cr1,COLORREF cr2);
+bool IsFontAvailable(LPCWSTR lpszFontName);
 
-bool IsCmdEnabled(HWND, UINT);
+bool IsCmdEnabled(HWND hwnd, UINT uId);
 
 
 #define DlgBtnChk(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
@@ -255,8 +259,8 @@ bool IsCmdEnabled(HWND, UINT);
 
 int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
 int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
-int FormatLngStringW(LPWSTR, int, UINT, ...);
-int FormatLngStringA(LPSTR, int, UINT, ...);
+int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...);
+int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...);
 int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
 
 #define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
@@ -264,19 +268,19 @@ int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
 #define GetLngStringW2MB(id,pb,cb) LoadLngStringW2MB((id),(pb),(cb))
 
 
-bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR, size_t);
-void PathRelativeToApp(LPWSTR,LPWSTR,int,bool,bool,bool);
-void PathAbsoluteFromApp(LPWSTR,LPWSTR,int,bool);
+bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
+void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
+void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);
 
 
-bool PathIsLnkFile(LPCWSTR);
-bool PathGetLnkPath(LPCWSTR,LPWSTR,int);
-bool PathIsLnkToDirectory(LPCWSTR,LPWSTR,int);
-bool PathCreateDeskLnk(LPCWSTR);
-bool PathCreateFavLnk(LPCWSTR,LPCWSTR,LPCWSTR);
+bool PathIsLnkFile(LPCWSTR pszPath);
+bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath);
+bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath);
+bool PathCreateDeskLnk(LPCWSTR pszDocument);
+bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir);
 
 
-bool StrLTrim(LPWSTR,LPCWSTR);
+bool StrLTrim(LPWSTR pszSource,LPCWSTR pszTrimChars);
 
 inline bool TrimStringA(LPSTR lpString) {
   if (!lpString || !*lpString) { return false; }
@@ -296,56 +300,56 @@ inline bool TrimStringW(LPWSTR lpString) {
 #define TrimString TrimStringA
 #endif
 
-bool ExtractFirstArgument(LPCWSTR, LPWSTR, LPWSTR, int);
+bool ExtractFirstArgument(LPCWSTR lpArgs, LPWSTR lpArg1, LPWSTR lpArg2, int len);
 
-void PrepareFilterStr(LPWSTR);
+void PrepareFilterStr(LPWSTR lpFilter);
 
-void StrTab2Space(LPWSTR);
-void PathFixBackslashes(LPWSTR);
+void StrTab2Space(LPWSTR lpsz);
+void PathFixBackslashes(LPWSTR lpsz);
 
 
-void  ExpandEnvironmentStringsEx(LPWSTR,DWORD);
-void  PathCanonicalizeEx(LPWSTR,int);
-DWORD GetLongPathNameEx(LPWSTR,DWORD);
-DWORD NormalizePathEx(LPWSTR,int);
-DWORD_PTR SHGetFileInfo2(LPCWSTR,DWORD,SHFILEINFO*,UINT,UINT);
+void  ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc);
+void  PathCanonicalizeEx(LPWSTR lpszPath,int len);
+DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer);
+DWORD NormalizePathEx(LPWSTR lpszPath,int len);
+DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,SHFILEINFO* psfi,UINT cbFileInfo,UINT uFlags);
 
-size_t FormatNumberStr(LPWSTR);
-bool SetDlgItemIntEx(HWND,int,UINT);
+size_t FormatNumberStr(LPWSTR lpNumberStr);
+bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
 
 
 #define MultiByteToWideCharStrg(c,a,w) MultiByteToWideChar((c),0,(a),-1,(w),COUNTOF(w))
 #define WideCharToMultiByteStrg(c,w,a) WideCharToMultiByte((c),0,(w),-1,(a),COUNTOF(a),NULL,NULL)
 
 
-UINT    GetDlgItemTextW2MB(HWND,int,LPSTR,int);
-UINT    SetDlgItemTextMB2W(HWND,int,LPSTR);
-LRESULT ComboBox_AddStringMB2W(HWND,LPCSTR);
+UINT    GetDlgItemTextW2MB(HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount);
+UINT    SetDlgItemTextMB2W(HWND hDlg,int nIDDlgItem,LPSTR lpString);
+LRESULT ComboBox_AddStringMB2W(HWND hwnd,LPCSTR lpString);
 
 
-UINT CodePageFromCharSet(UINT);
-UINT CharSetFromCodePage(UINT);
+UINT CodePageFromCharSet(UINT uCharSet);
+UINT CharSetFromCodePage(UINT uCodePage);
 
 
 //==== MRU Functions ==========================================================
 
-LPMRULIST MRU_Create(LPCWSTR,int,int);
-bool      MRU_Destroy(LPMRULIST);
-bool      MRU_Add(LPMRULIST,LPCWSTR,int,DocPos,LPCWSTR);
-bool      MRU_FindFile(LPMRULIST,LPCWSTR,int*);
-bool      MRU_AddFile(LPMRULIST,LPCWSTR,bool,bool,int,DocPos,LPCWSTR);
-bool      MRU_Delete(LPMRULIST,int);
-bool      MRU_DeleteFileFromStore(LPMRULIST,LPCWSTR);
-bool      MRU_Empty(LPMRULIST);
-int       MRU_Enum(LPMRULIST,int,LPWSTR,int);
-bool      MRU_Load(LPMRULIST);
-bool      MRU_Save(LPMRULIST);
-bool      MRU_MergeSave(LPMRULIST,bool,bool,bool);
+LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize);
+bool      MRU_Destroy(LPMRULIST pmru);
+bool      MRU_Add(LPMRULIST pmru,LPCWSTR pszNew,int iEnc,DocPos iPos,LPCWSTR pszBookMarks);
+bool      MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex);
+bool      MRU_AddFile(LPMRULIST pmru,LPCWSTR pszFile,bool,bool,int iEnc,DocPos iPos,LPCWSTR pszBookMarks);
+bool      MRU_Delete(LPMRULIST pmru,int iIndex);
+bool      MRU_DeleteFileFromStore(LPMRULIST pmru,LPCWSTR pszFile);
+bool      MRU_Empty(LPMRULIST pmru);
+int       MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem);
+bool      MRU_Load(LPMRULIST pmru);
+bool      MRU_Save(LPMRULIST pmru);
+bool      MRU_MergeSave(LPMRULIST pmru,bool,bool,bool);
 #define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 
 //==== UnSlash Functions ======================================================
-void TransformBackslashes(char*,bool,UINT,int*);
-void TransformMetaChars(char*,bool,int);
+void TransformBackslashes(char* pszInput,bool,UINT cpEdit,int* iReplaceMsg);
+void TransformMetaChars(char* pszInput,bool,int iEOLMode);
 
 //==== MinimizeToTray Functions - see comments in Helpers.c ===================
 bool GetDoAnimateMinimize(VOID);
@@ -354,8 +358,8 @@ VOID RestoreWndFromTray(HWND hWnd);
 
 //==== StrCut methods ===================
 
-CHAR*  StrCutIA(CHAR*,const CHAR*);
-WCHAR* StrCutIW(WCHAR*,const WCHAR*);
+CHAR*  StrCutIA(CHAR* s,const CHAR* pattern);
+WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern);
 #if defined(UNICODE) || defined(_UNICODE)  
 #define StrCutI StrCutIW
 #else
@@ -364,8 +368,8 @@ WCHAR* StrCutIW(WCHAR*,const WCHAR*);
 
 
 //==== StrNextTok methods ===================
-CHAR*  StrNextTokA(CHAR*, const CHAR*);
-WCHAR* StrNextTokW(WCHAR*, const WCHAR*);
+CHAR*  StrNextTokA(CHAR* strg, const CHAR* tokens);
+WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens);
 #if defined(UNICODE) || defined(_UNICODE)  
 #define StrNextTok StrNextTokW
 #else
@@ -439,6 +443,11 @@ inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz) {
 #define StringCchCompareXI(s1,s2)        StringCchCompareXIA((s1),(s2))
 #endif
 
+#ifdef __cplusplus
+#undef NULL
+#define NULL nullptr
+#endif
+
 //==== StrIs(Not)Empty() =============================================
 
 inline bool StrIsEmptyA(LPCSTR s) { return ((s == NULL) || (*s == '\0')); }
@@ -467,9 +476,9 @@ inline int GetHexDigit(char ch) {
 
 // ----------------------------------------------------------------------------
 
-void UrlUnescapeEx(LPWSTR, LPWSTR, DWORD*);
+void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped);
 
-int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault);
+int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
 int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
 
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
@@ -504,7 +513,7 @@ typedef struct tDROPTARGET *PDROPTARGET;
 typedef DWORD(*DNDCALLBACK)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData);
 
 void DragAndDropInit(HANDLE hHeap);
-PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK, void *pUserData);
+PDROPTARGET RegisterDragAndDrop(HWND hWnd, CLIPFORMAT *pFormat, ULONG lFmt, UINT nMsg, DNDCALLBACK pDropProc, void *pUserData);
 PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget);
 
 #endif
@@ -512,4 +521,4 @@ PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget);
 
 #endif //_NP3_HELPERS_H_
 
-///   End of Helpers.h   \\\
+///   End of Helpers.h   ///

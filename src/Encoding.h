@@ -75,52 +75,52 @@ extern bool g_bForceCompEncDetection;
 typedef struct _np2encoding {
   UINT    uFlags;
   UINT    uCodePage;
-  char*   pszParseNames;
+  const char* pszParseNames;
   int     idsName;
   int     iCEDEncoding;
   WCHAR   wchLabel[64];
 } NP2ENCODING;
 
 int  Encoding_CountOf();
-int  Encoding_Current(int);    // getter/setter
-int  Encoding_SrcCmdLn(int);     // getter/setter
-int  Encoding_SrcWeak(int);    // getter/setter
-bool Encoding_HasChanged(int); // query/setter
+int  Encoding_Current(int iEncoding);            // getter/setter
+int  Encoding_SrcCmdLn(int iSrcEncoding);        // getter/setter
+int  Encoding_SrcWeak(int iSrcWeakEnc);          // getter/setter
+bool Encoding_HasChanged(int iOriginalEncoding); // query/setter
 
 void Encoding_InitDefaults();
-int  Encoding_MapIniSetting(bool, int);
-int  Encoding_MapUnicode(int);
-void Encoding_SetLabel(int);
-int  Encoding_MatchW(LPCWSTR);
-int  Encoding_MatchA(char*);
-bool Encoding_IsValid(int);
-int  Encoding_GetByCodePage(UINT);
-void Encoding_AddToListView(HWND, int, bool);
-bool Encoding_GetFromListView(HWND, int *);
-void Encoding_AddToComboboxEx(HWND, int, bool);
-bool Encoding_GetFromComboboxEx(HWND, int *);
+int  Encoding_MapIniSetting(bool, int iSetting);
+int  Encoding_MapUnicode(int iUni);
+void Encoding_SetLabel(int iEncoding);
+int  Encoding_MatchW(LPCWSTR pwszTest);
+int  Encoding_MatchA(char* pchTest);
+bool Encoding_IsValid(int iTestEncoding);
+int  Encoding_GetByCodePage(UINT cp);
+void Encoding_AddToListView(HWND hwnd, int idSel, bool);
+bool Encoding_GetFromListView(HWND hwnd, int * pidEncoding);
+void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool);
+bool Encoding_GetFromComboboxEx(HWND hwnd, int * pidEncoding);
 
-UINT Encoding_GetCodePage(int);
+UINT Encoding_GetCodePage(int iEncoding);
 
-bool Encoding_IsDefault(int);
-bool Encoding_IsANSI(int);
-bool Encoding_IsOEM(int);
-bool Encoding_IsUTF8(int);
-bool Encoding_IsUTF8_SIGN(int);
-bool Encoding_IsMBCS(int);
-bool Encoding_IsUNICODE(int);
-bool Encoding_IsUNICODE_BOM(int);
-bool Encoding_IsUNICODE_REVERSE(int);
-bool Encoding_IsINTERNAL(int);
-bool Encoding_IsEXTERNAL_8BIT(int);
-bool Encoding_IsRECODE(int);
+bool Encoding_IsDefault(int iEncoding);
+bool Encoding_IsANSI(int iEncoding);
+bool Encoding_IsOEM(int iEncoding);
+bool Encoding_IsUTF8(int iEncoding);
+bool Encoding_IsUTF8_SIGN(int iEncoding);
+bool Encoding_IsMBCS(int iEncoding);
+bool Encoding_IsUNICODE(int iEncoding);
+bool Encoding_IsUNICODE_BOM(int iEncoding);
+bool Encoding_IsUNICODE_REVERSE(int iEncoding);
+bool Encoding_IsINTERNAL(int iEncoding);
+bool Encoding_IsEXTERNAL_8BIT(int iEncoding);
+bool Encoding_IsRECODE(int iEncoding);
 
 // Scintilla related
 #define Encoding_SciCP  CP_UTF8
 
-void Encoding_SetDefaultFlag(int);
-const WCHAR* Encoding_GetLabel(int);
-const char* Encoding_GetParseNames(int);
+void Encoding_SetDefaultFlag(int iEncoding);
+const WCHAR* Encoding_GetLabel(int iEncoding);
+const char* Encoding_GetParseNames(int iEncoding);
 
 bool Has_UTF16_LE_BOM(const char* pBuf, int cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, int cnt);
@@ -130,15 +130,14 @@ inline bool IsUTF8Signature(const char* p) {
 }
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-bool IsValidUnicode(const char*, size_t, bool*, bool*);
-bool IsValidUTF7(const char*, size_t);
-bool IsValidUTF8(const char*, size_t);
+bool IsValidUnicode(const char* pBuffer, size_t cb, bool*, bool*);
+bool IsValidUTF7(const char* pTest, size_t nLength);
+bool IsValidUTF8(const char* pTest, size_t nLength);
 
 // Google's "Compact Encoding Detection" 
 extern NP2ENCODING g_Encodings[];
-int Encoding_CountOf();
 void ChangeEncodingCodePage(int cpi, UINT newCP);
-int Encoding_Analyze(const char* const text, const size_t len, const int encodingHint, bool* isReliable);
+int Encoding_Analyze(const char* text, size_t len, int encodingHint, bool* isReliable);
 
 // 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 1361 Johab
 inline bool IsDBCSCodePage(UINT cp) {

@@ -39,9 +39,9 @@ struct FontFaceInfo
     FontFaceInfo(
         const WCHAR* fontFaceName,
         ULONG packedAttributes)
-        :   fontWeight((DWRITE_FONT_WEIGHT) LOWORD(packedAttributes)),
-            fontStyle((DWRITE_FONT_STYLE) LOBYTE(HIWORD(packedAttributes))),
-            fontStretch((DWRITE_FONT_STRETCH) HIBYTE(HIWORD(packedAttributes)))
+        :   fontWeight(static_cast<DWRITE_FONT_WEIGHT>(LOWORD(packedAttributes))),
+            fontStyle(static_cast<DWRITE_FONT_STYLE>(LOBYTE(HIWORD(packedAttributes)))),
+            fontStretch(static_cast<DWRITE_FONT_STRETCH>(HIBYTE(HIWORD(packedAttributes))))
     {
         StringCchCopy(this->fontFaceName, ARRAYSIZE(this->fontFaceName), fontFaceName);
     }

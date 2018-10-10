@@ -900,6 +900,10 @@ CountWidths CountCharacterWidthsUTF8(std::string_view sv) noexcept {
 
 }
 
+bool CellBuffer::MaintainingLineCharacterIndex() const noexcept {
+	return plv->LineCharacterIndex() != SC_LINECHARACTERINDEX_NONE;
+}
+
 void CellBuffer::RecalculateIndexLineStarts(Sci::Line lineFirst, Sci::Line lineLast) {
 	std::string text;
 	Sci::Position posLineEnd = LineStart(lineFirst);
@@ -932,8 +936,10 @@ void CellBuffer::BasicInsertString(Sci::Position position, const char *s, Sci::P
 	// A simple insertion is one that inserts valid text on a single line at a character boundary
 	bool simpleInsertion = false;
 
+	const bool maintainingIndex = MaintainingLineCharacterIndex();
+
 	// Check for breaking apart a UTF-8 sequence and inserting invalid UTF-8
-	if (utf8Substance && (plv->LineCharacterIndex() != SC_LINECHARACTERINDEX_NONE)) {
+	if (utf8Substance && maintainingIndex) {
 		// Actually, don't need to check that whole insertion is valid just that there
 		// are no potential fragments at ends.
 		simpleInsertion = UTF8IsCharacterBoundary(position) &&
@@ -1011,11 +1017,13 @@ void CellBuffer::BasicInsertString(Sci::Position position, const char *s, Sci::P
 			chPrev = chAt;
 		}
 	}
-	if (simpleInsertion) {
-		const CountWidths cw = CountCharacterWidthsUTF8(std::string_view(s, insertLength));
-		plv->InsertCharacters(linePosition, cw);
-	} else {
-		RecalculateIndexLineStarts(linePosition, lineInsert - 1);
+	if (maintainingIndex) {
+		if (simpleInsertion) {
+			const CountWidths cw = CountCharacterWidthsUTF8(std::string_view(s, insertLength));
+			plv->InsertCharacters(linePosition, cw);
+		} else {
+			RecalculateIndexLineStarts(linePosition, lineInsert - 1);
+		}
 	}
 }
 
@@ -1043,7 +1051,7 @@ void CellBuffer::BasicDeleteChars(Sci::Position position, Sci::Position deleteLe
 
 		// Check for breaking apart a UTF-8 sequence
 		// Needs further checks that text is UTF-8 or that some other break apart is occurring
-		if (utf8Substance && (plv->LineCharacterIndex() != SC_LINECHARACTERINDEX_NONE)) {
+		if (utf8Substance && MaintainingLineCharacterIndex()) {
 			const Sci::Position posEnd = position + deleteLength;
 			const Sci::Line lineEndRemove = plv->LineFromPosition(posEnd);
 			const bool simpleDeletion =

@@ -20,99 +20,95 @@
 #include "SciCall.h"
 #include "TypeDefs.h"
 
-// extern "C" declarations of Scintilla functions
-int Scintilla_RegisterClasses(void*);
-int Scintilla_ReleaseResources();
-
 void  EditInitializeSciCtrl(HWND);
-void  EditInitWordDelimiter(HWND);
-void  EditSetNewText(HWND,char*,DWORD);
-bool  EditConvertText(HWND,int,int,bool);
-bool  EditSetNewEncoding(HWND,int,bool,bool);
-bool  EditIsRecodingNeeded(WCHAR*,int);
-char* EditGetClipboardText(HWND,bool,int*,int*);
-bool  EditSetClipboardText(HWND, const char*, const size_t);
-bool  EditClearClipboard(HWND);
-bool  EditSwapClipboard(HWND,bool);
-bool  EditCopyAppend(HWND,bool);
-int   EditDetectEOLMode(HWND,char*);
-bool  EditLoadFile(HWND,LPWSTR,bool,bool,int*,int*,bool*,bool*,bool*);
-bool  EditSaveFile(HWND,LPCWSTR,int,bool*,bool);
+void  EditInitWordDelimiter(HWND hwnd);
+void  EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText);
+bool  EditConvertText(HWND hwnd,int encSource,int encDest,bool);
+bool  EditSetNewEncoding(HWND hwnd,int iNewEncoding,bool,bool);
+bool  EditIsRecodingNeeded(WCHAR* pszText,int cchLen);
+char* EditGetClipboardText(HWND hwnd,bool,int* pLineCount,int* pLenLastLn);
+bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
+bool  EditClearClipboard(HWND hwnd);
+bool  EditSwapClipboard(HWND hwnd,bool);
+bool  EditCopyAppend(HWND hwnd,bool);
+int   EditDetectEOLMode(HWND hwnd,char* lpData);
+bool  EditLoadFile(HWND hwnd,LPWSTR pszFile,bool,bool,int* iEncoding,int* iEOLMode,bool*,bool*,bool*);
+bool  EditSaveFile(HWND hwnd,LPCWSTR pszFile,int iEncoding,bool*,bool);
 
-void  EditInvertCase(HWND);
-void  EditTitleCase(HWND);
-void  EditSentenceCase(HWND);
+void  EditInvertCase(HWND hwnd);
+void  EditTitleCase(HWND hwnd);
+void  EditSentenceCase(HWND hwnd);
 
-void  EditURLEncode(HWND);
-void  EditURLDecode(HWND);
-void  EditEscapeCChars(HWND);
-void  EditUnescapeCChars(HWND);
-void  EditChar2Hex(HWND);
-void  EditHex2Char(HWND);
-void  EditFindMatchingBrace(HWND);
-void  EditSelectToMatchingBrace(HWND);
-void  EditModifyNumber(HWND,bool);
+void  EditURLEncode(HWND hwnd);
+void  EditURLDecode(HWND hwnd);
+void  EditEscapeCChars(HWND hwnd);
+void  EditUnescapeCChars(HWND hwnd);
+void  EditChar2Hex(HWND hwnd);
+void  EditHex2Char(HWND hwnd);
+void  EditFindMatchingBrace(HWND hwnd);
+void  EditSelectToMatchingBrace(HWND hwnd);
+void  EditModifyNumber(HWND hwnd,bool);
 
-void  EditTabsToSpaces(HWND,int,bool);
-void  EditSpacesToTabs(HWND,int,bool);
+void  EditTabsToSpaces(HWND hwnd,int nTabWidth,bool);
+void  EditSpacesToTabs(HWND hwnd,int nTabWidth,bool);
 
-void  EditMoveUp(HWND);
-void  EditMoveDown(HWND);
-void  EditJumpToSelectionEnd(HWND);
-void  EditJumpToSelectionStart(HWND);
-void  EditModifyLines(HWND,LPCWSTR,LPCWSTR);
-void  EditIndentBlock(HWND,int,bool);
-void  EditAlignText(HWND,int);
-void  EditEncloseSelection(HWND,LPCWSTR,LPCWSTR);
-void  EditToggleLineComments(HWND,LPCWSTR,bool);
-void  EditPadWithSpaces(HWND,bool,bool);
-void  EditStripFirstCharacter(HWND);
-void  EditStripLastCharacter(HWND,bool,bool);
-void  EditCompressBlanks(HWND);
-void  EditRemoveBlankLines(HWND,bool,bool);
-void  EditRemoveDuplicateLines(HWND,bool);
-void  EditWrapToColumn(HWND,DocPos);
+void  EditMoveUp(HWND hwnd);
+void  EditMoveDown(HWND hwnd);
+void  EditJumpToSelectionEnd(HWND hwnd);
+void  EditJumpToSelectionStart(HWND hwnd);
+void  EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend);
+void  EditIndentBlock(HWND hwnd,int cmd,bool);
+void  EditAlignText(HWND hwnd,int nMode);
+void  EditEncloseSelection(HWND hwnd,LPCWSTR pwszOpen,LPCWSTR pwszClose);
+void  EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,bool);
+void  EditPadWithSpaces(HWND hwnd,bool,bool);
+void  EditStripFirstCharacter(HWND hwnd);
+void  EditStripLastCharacter(HWND hwnd,bool,bool);
+void  EditCompressBlanks(HWND hwnd);
+void  EditRemoveBlankLines(HWND hwnd,bool,bool);
+void  EditRemoveDuplicateLines(HWND hwnd,bool);
+void  EditWrapToColumn(HWND hwnd,DocPos nColumn);
 void  EditSplitLines(HWND hwnd);
-void  EditJoinLinesEx(HWND,bool,bool);
-void  EditSortLines(HWND,int);
+void  EditJoinLinesEx(HWND hwnd,bool,bool);
+void  EditSortLines(HWND hwnd,int iSortFlags);
 
-void  EditJumpTo(HWND, DocLn, DocPos);
-void  EditScrollTo(HWND, DocLn, int);
-void  EditSetSelectionEx(HWND, DocPos, DocPos, DocPos, DocPos);
-void  EditFixPositions(HWND);
-void  EditEnsureSelectionVisible(HWND);
-void  EditGetExcerpt(HWND,LPWSTR,DWORD);
+void  EditJumpTo(HWND hwnd, DocLn iNewLine, DocPos iNewCol);
+void  EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop);
+void  EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
+void  EditFixPositions(HWND hwnd);
+void  EditEnsureSelectionVisible(HWND hwnd);
+void  EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
-HWND  EditFindReplaceDlg(HWND,LPCEDITFINDREPLACE,bool);
-bool  EditFindNext(HWND,LPCEDITFINDREPLACE,bool,bool);
-bool  EditFindPrev(HWND,LPCEDITFINDREPLACE,bool,bool);
-bool  EditReplace(HWND,LPCEDITFINDREPLACE);
-int   EditReplaceAllInRange(HWND,LPCEDITFINDREPLACE,DocPos,DocPos,DocPos*);
-bool  EditReplaceAll(HWND,LPCEDITFINDREPLACE,bool);
-bool  EditReplaceAllInSelection(HWND,LPCEDITFINDREPLACE,bool);
-bool  EditLinenumDlg(HWND);
-bool  EditModifyLinesDlg(HWND,LPWSTR,LPWSTR);
-bool  EditEncloseSelectionDlg(HWND,LPWSTR,LPWSTR);
-bool  EditInsertTagDlg(HWND,LPWSTR,LPWSTR);
-bool  EditSortDlg(HWND,int*);
-bool  EditAlignDlg(HWND,int*);
+HWND  EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool);
+bool  EditFindNext(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool,bool);
+bool  EditFindPrev(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool,bool);
+bool  EditReplace(HWND hwnd,LPCEDITFINDREPLACE lpefr);
+int   EditReplaceAllInRange(HWND hwnd,LPCEDITFINDREPLACE lpefr,DocPos iStartPos,DocPos iEndPos,DocPos* enlargement);
+bool  EditReplaceAll(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool);
+bool  EditReplaceAllInSelection(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool);
+bool  EditLinenumDlg(HWND hwnd);
+bool  EditModifyLinesDlg(HWND hwnd,LPWSTR pwsz1,LPWSTR pwsz2);
+bool  EditEncloseSelectionDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose);
+bool  EditInsertTagDlg(HWND hwnd,LPWSTR pwszOpen,LPWSTR pwszClose);
+bool  EditSortDlg(HWND hwnd,int* piSortFlags);
+bool  EditAlignDlg(HWND hwnd,int* piAlignMode);
 bool  EditPrint(HWND,LPCWSTR,LPCWSTR);
 void  EditPrintSetup(HWND);
 void  EditPrintInit();
-void  EditMatchBrace(HWND);
-void  EditClearAllOccurrenceMarkers(HWND);
+void  EditMatchBrace(HWND hwnd);
+void  EditClearAllOccurrenceMarkers(HWND hwnd);
 bool  EditToggleView(HWND hwnd, bool bToggleView);
-void  EditMarkAll(HWND, char*, int, DocPos, DocPos, bool, bool);
-void  EditUpdateUrlHotspots(HWND, DocPos, DocPos, bool);
-void  EditSetAccelWordNav(HWND,bool);
-bool  EditAutoCompleteWord(HWND,bool);
-void  EditGetBookmarkList(HWND,LPWSTR,int);
-void  EditSetBookmarkList(HWND,LPCWSTR);
-void  EditFinalizeStyling(HWND, DocPos);
+void  EditMarkAll(HWND hwnd, char* pszFind, int flags, DocPos rangeStart, DocPos rangeEnd, bool, bool);
+void  EditUpdateUrlHotspots(HWND hwnd, DocPos startPos, DocPos endPos, bool);
+void  EditSetAccelWordNav(HWND hwnd,bool);
+bool  EditAutoCompleteWord(HWND hwnd,bool);
+void  EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);
+void  EditSetBookmarkList(HWND hwnd,LPCWSTR pszBookMarks);
+void  EditFinalizeStyling(HWND hwnd, DocPos iEndPos);
 
 void  EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void  EditUpdateVisibleUrlHotspot(bool);
-void  EditHideNotMarkedLineRange(HWND, DocPos, DocPos, bool);
+void  EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, bool);
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
 inline void EditApplyLexerStyle(HWND hwnd, const DocPos iRangeStart, const DocPos iRangeEnd) {
@@ -144,14 +140,14 @@ typedef struct _filevars {
 
 } FILEVARS, *LPFILEVARS;
 
-bool FileVars_Init(char*,DWORD,LPFILEVARS);
-bool FileVars_Apply(HWND,LPFILEVARS);
-bool FileVars_ParseInt(char*,char*,int*);
-bool FileVars_ParseStr(char*,char*,char*,int);
-bool FileVars_IsUTF8(LPFILEVARS);
-bool FileVars_IsNonUTF8(LPFILEVARS);
-bool FileVars_IsValidEncoding(LPFILEVARS);
-int  FileVars_GetEncoding(LPFILEVARS);
+bool FileVars_Init(char* lpData,DWORD cbData,LPFILEVARS lpfv);
+bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv);
+bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
+bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue);
+bool FileVars_IsUTF8(LPFILEVARS lpfv);
+bool FileVars_IsNonUTF8(LPFILEVARS lpfv);
+bool FileVars_IsValidEncoding(LPFILEVARS lpfv);
+int  FileVars_GetEncoding(LPFILEVARS lpfv);
 
 
 //
@@ -169,9 +165,9 @@ typedef enum {
   DOWN = 1
 } FOLD_MOVE;
 
-void EditToggleFolds(FOLD_ACTION,bool);
-void EditFoldClick(DocLn, int);
-void EditFoldAltArrow(FOLD_MOVE, FOLD_ACTION);
+void EditToggleFolds(FOLD_ACTION action,bool);
+void EditFoldClick(DocLn ln, int mode);
+void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action);
 
 void EditShowZoomCallTip(HWND hwnd);
 void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
@@ -180,4 +176,4 @@ void EditShowZeroLengthCallTip(HWND hwnd, DocPos iPosition);
 
 #endif //_NP3_EDIT_H_
 
-///   End of Edit.h   \\\
+///   End of Edit.h   ///

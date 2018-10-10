@@ -37,11 +37,11 @@ bool SelectEncodingDlg(HWND,int *);
 bool RecodeDlg(HWND,int *);
 bool SelectDefLineEndingDlg(HWND,int *);
 
-bool GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo);
+bool GetMonitorInfoFromRect(const RECT* rc, MONITORINFO* hMonitorInfo);
 void WinInfoToScreen(WININFO*);
 WININFO GetMyWindowPlacement(HWND,MONITORINFO *);
 void FitIntoMonitorWorkArea(RECT*, WININFO*, bool);
-WINDOWPLACEMENT WindowPlacementFromInfo(HWND, const WININFO* const);
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND, const WININFO*);
 
 void DialogNewWindow(HWND,bool,bool);
 void DialogFileBrowse(HWND);

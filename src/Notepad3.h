@@ -109,19 +109,19 @@ typedef enum {
 
 
 //==== Function Declarations ==================================================
-bool InitApplication(HINSTANCE);
-HWND InitInstance(HINSTANCE,LPWSTR,int);
+bool InitApplication(HINSTANCE hInstance);
+HWND InitInstance(HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
 void BeginWaitCursor(LPCWSTR text);
 void EndWaitCursor();
 bool ActivatePrevInst();
 bool RelaunchMultiInst();
-bool RelaunchElevated(LPWSTR);
-void SnapToWinInfoPos(HWND, const WININFO* const, bool);
-void ShowNotifyIcon(HWND,bool);
-void SetNotifyIconTitle(HWND);
-void InstallFileWatching(LPCWSTR);
-void CALLBACK WatchTimerProc(HWND,UINT,UINT_PTR,DWORD);
-void CALLBACK PasteBoardTimer(HWND,UINT,UINT_PTR,DWORD);
+bool RelaunchElevated(LPWSTR lpArgs);
+void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea);
+void ShowNotifyIcon(HWND hwnd, bool bAdd);
+void SetNotifyIconTitle(HWND hwnd);
+void InstallFileWatching(LPCWSTR lpszFile);
+void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+void CALLBACK PasteBoardTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 
 void LoadSettings();
@@ -131,7 +131,7 @@ void LoadFlags();
 int  FindIniFile();
 int  TestIniFile();
 int  CreateIniFile();
-int  CreateIniFileEx(LPCWSTR);
+int  CreateIniFileEx(LPCWSTR lpszIniFile);
 
 
 void MarkAllOccurrences(int delay, bool bForceClear);
@@ -139,52 +139,52 @@ void UpdateToolbar();
 void UpdateStatusbar(bool);
 void UpdateMarginWidth();
 void UpdateSettingsCmds();
-void UpdateVisibleUrlHotspot(int);
+void UpdateVisibleUrlHotspot(int delay);
 void UpdateUI();
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
 int  BeginUndoAction();
-void EndUndoAction(int);
-void RestoreAction(int,DoAction);
+void EndUndoAction(int token);
+void RestoreAction(int token, DoAction doAct);
 
 #define _BEGIN_UNDO_ACTION_  { int const _token_ = BeginUndoAction(); __try {  
 #define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
 
 
-void OpenHotSpotURL(DocPos, bool);
+void OpenHotSpotURL(DocPos position, bool bForceBrowser);
 
 bool IsFindPatternEmpty();
-void SetFindPattern(LPCWSTR);
-void SetFindPatternMB(LPCSTR);
-void GetFindPattern(LPWSTR, size_t);
-void GetFindPatternMB(LPSTR, size_t);
+void SetFindPattern(LPCWSTR wchFindPattern);
+void SetFindPatternMB(LPCSTR chFindPattern);
+void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize);
+void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize);
 
-bool FileIO(bool,LPWSTR,bool,bool,int*,int*,bool*,bool*,bool*,bool*,bool);
-bool FileLoad(bool,bool,bool,bool,bool,LPCWSTR);
-bool FileRevert(LPCWSTR,bool);
+bool FileIO(bool,LPWSTR pszFileName,bool,bool,int* ienc,int* ieol,bool*,bool*,bool*,bool*,bool);
+bool FileLoad(bool,bool,bool,bool,bool,LPCWSTR lpszFile);
+bool FileRevert(LPCWSTR szFileName,bool);
 bool FileSave(bool,bool,bool,bool);
-bool OpenFileDlg(HWND,LPWSTR,int,LPCWSTR);
-bool SaveFileDlg(HWND,LPWSTR,int,LPCWSTR);
+bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
+bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir);
 
-void CreateBars(HWND, HINSTANCE);
+void CreateBars(HWND hwnd, HINSTANCE hInstance);
 
-LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
-LRESULT MsgCreate(HWND, WPARAM, LPARAM);
-LRESULT MsgEndSession(HWND, UINT, WPARAM, LPARAM);
-LRESULT MsgThemeChanged(HWND, WPARAM, LPARAM);
-LRESULT MsgDPIChanged(HWND, WPARAM, LPARAM);
-LRESULT MsgSize(HWND, WPARAM, LPARAM);
-LRESULT MsgDropFiles(HWND, WPARAM, LPARAM);
-LRESULT MsgCopyData(HWND, WPARAM, LPARAM);
-LRESULT MsgContextMenu(HWND, UINT, WPARAM, LPARAM);
-LRESULT MsgInitMenu(HWND, WPARAM, LPARAM);
-LRESULT MsgNotify(HWND, WPARAM, LPARAM);
-LRESULT MsgChangeNotify(HWND, WPARAM, LPARAM);
-LRESULT MsgTrayMessage(HWND, WPARAM, LPARAM);
-LRESULT MsgCommand(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
+LRESULT MsgCreate(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
+LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
+LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam);
+LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
-LRESULT MsgSysCommand(HWND, UINT, WPARAM, LPARAM);
+LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 
 void IgnoreNotifyChangeEvent();
@@ -195,4 +195,4 @@ bool CheckNotifyChangeEvent();
 
 
 #endif //_NP3_NOTEPAD3_H_
-///   End of Notepad3.h   \\\
+///   End of Notepad3.h   ///

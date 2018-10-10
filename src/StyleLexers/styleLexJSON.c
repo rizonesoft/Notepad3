@@ -20,15 +20,15 @@ EDITLEXER lexJSON = {
 SCLEX_JSON, IDS_LEX_JSON, L"JSON", L"json; eslintrc; jshintrc; jsonld", L"", 
 &LexFunction, // static
 &KeyWords_JSON, {
-    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    //{ SCE_C_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    { SCE_C_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
-    { SCE_C_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#A46000", L"" },
-    { SCE_C_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
-    { SCE_JSON_STRING, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-    { SCE_C_REGEX, IDS_LEX_STR_63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
-    { SCE_JSON_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
-    { SCE_C_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    //{ {SCE_C_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    { {SCE_C_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+    { {SCE_C_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#A46000", L"" },
+    { {SCE_C_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+    { {SCE_JSON_STRING}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+    { {SCE_C_REGEX}, IDS_LEX_STR_63135, L"Regex", L"fore:#006633; back:#FFF1A8", L"" },
+    { {SCE_JSON_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+    { {SCE_C_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
     EDITLEXER_SENTINEL } };
 
 /*

@@ -28,12 +28,12 @@ EDITLEXER lexBAT = {
 SCLEX_BATCH, IDS_LEX_BATCH, L"Batch Files", L"bat; cmd", L"", 
 &LexFunction, // static
 &KeyWords_BAT, {
-    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    //{ SCE_BAT_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    { SCE_BAT_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-    { SCE_BAT_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
-    { SCE_BAT_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"fore:#003CE6; back:#FFF1A8", L"" },
-    { SCE_BAT_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
-    { MULTI_STYLE(SCE_BAT_COMMAND,SCE_BAT_HIDE,0,0), IDS_LEX_STR_63236, L"Command", L"bold", L"" },
-    { SCE_BAT_LABEL, IDS_LEX_STR_63235, L"Label", L"fore:#C80000; back:#F4F4F4; eolfilled", L"" },
+    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    //{ {SCE_BAT_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    { {SCE_BAT_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+    { {SCE_BAT_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0A246A", L"" },
+    { {SCE_BAT_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"fore:#003CE6; back:#FFF1A8", L"" },
+    { {SCE_BAT_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+    { {MULTI_STYLE(SCE_BAT_COMMAND,SCE_BAT_HIDE,0,0)}, IDS_LEX_STR_63236, L"Command", L"bold", L"" },
+    { {SCE_BAT_LABEL}, IDS_LEX_STR_63235, L"Label", L"fore:#C80000; back:#F4F4F4; eolfilled", L"" },
     EDITLEXER_SENTINEL } };
