@@ -228,7 +228,7 @@ static void utarray_str_cpy(void *dst, const void *src) {
 }
 static void utarray_str_dtor(void *elt) {
   char **eltc = (char**)elt;
-  if (*eltc != NULL) free(*eltc);
+  if (*eltc != NULL) { free(*eltc); }
 }
 static const UT_icd ut_str_icd UTARRAY_UNUSED = {sizeof(char*),NULL,utarray_str_cpy,utarray_str_dtor};
 static const UT_icd ut_int_icd UTARRAY_UNUSED = {sizeof(int),NULL,NULL,NULL};

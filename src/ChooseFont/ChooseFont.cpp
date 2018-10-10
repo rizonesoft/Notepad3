@@ -49,7 +49,7 @@ class ChooseFontDialog
 {
 public:
 
-    explicit ChooseFontDialog(HWND hParent, const WCHAR* localeName, const UINT dpi, LPCHOOSEFONT lpCFGDI);
+    explicit ChooseFontDialog(HWND hParent, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCFGDI);
     virtual ~ChooseFontDialog();
     ChooseFontDialog() = delete;
 
@@ -79,7 +79,7 @@ private:
 
     static INT_PTR CALLBACK CFDialogProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-    BOOL OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam);
+    BOOL OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam);
     void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
     void OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT* lpDrawItem);
 };
@@ -153,8 +153,8 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
         SafeRelease(&m_currentTextFormat);
 
         const WCHAR* const fontFamilyName = m_chooseFontStruct->lpLogFont->lfFaceName;
-        float const pointSize = (float)m_chooseFontStruct->iPointSize / 10.0f;
-        DWRITE_FONT_WEIGHT const fontWeight = (DWRITE_FONT_WEIGHT)m_chooseFontStruct->lpLogFont->lfWeight; // TODO: mapping?
+        float const pointSize = static_cast<float>(m_chooseFontStruct->iPointSize) / 10.0f;
+        auto const fontWeight = static_cast<DWRITE_FONT_WEIGHT>(m_chooseFontStruct->lpLogFont->lfWeight); // TODO: mapping?
         DWRITE_FONT_STYLE const fontStyle = (m_chooseFontStruct->lpLogFont->lfItalic ?
           DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL);
         DWRITE_FONT_STRETCH const fontStretch = DWRITE_FONT_STRETCH_NORMAL;
@@ -174,10 +174,10 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
     if (SUCCEEDED(hr))
     {
       if (Globals.hLngResContainer) {
-        hr = (HRESULT)DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
+        hr = static_cast<HRESULT>(DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, reinterpret_cast<LPARAM>(this)));
       }
       else {
-        hr = (HRESULT)DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
+        hr = static_cast<HRESULT>(DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, reinterpret_cast<LPARAM>(this)));
       }
     }
 
@@ -219,10 +219,10 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat* textFormatIn, IDWrite
     if (SUCCEEDED(hr))
     {
       if (Globals.hLngResContainer) {
-        hr = (HRESULT)DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
+        hr = static_cast<HRESULT>(DialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, reinterpret_cast<LPARAM>(this)));
       }
       else {
-        hr = (HRESULT)DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, (LPARAM)this);
+        hr = static_cast<HRESULT>(DialogBoxParam(g_hInstanceNP3, MAKEINTRESOURCE(IDD_MUI_CHOOSEFONT), m_parent, CFDialogProc, reinterpret_cast<LPARAM>(this)));
       }
     }
 
@@ -303,7 +303,7 @@ HRESULT ChooseFontDialog::OnFontFamilySelect()
 
         for (int i = 0; i != fontFaceCount; ++i)
         {
-            if ((ULONG)ComboBox_GetItemData(hwndFontFaceNames, i) == bestFitAttributes)
+            if (static_cast<ULONG>(ComboBox_GetItemData(hwndFontFaceNames, i)) == bestFitAttributes)
             {
                 selectedFontFaceName = i;
                 break;
@@ -315,9 +315,9 @@ HRESULT ChooseFontDialog::OnFontFamilySelect()
     }
 
     // Release the held font list.
-    for (size_t i = 0, ci = fonts.size(); i < ci; ++i)
+    for (auto& font : fonts)
     {
-        SafeRelease(&fonts[i]);
+        SafeRelease(&font);
     }
     SafeRelease(&fontFamily);
 
@@ -550,13 +550,13 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
 
         // Get the font face attributes
         int selectedFontFace = ComboBox_GetCurSel(hwndFontFaces);
-        ULONG packedAttributes = (ULONG) ComboBox_GetItemData(hwndFontFaces, selectedFontFace);
+        auto packedAttributes = static_cast<ULONG>(ComboBox_GetItemData(hwndFontFaces, selectedFontFace));
 
         // Get the font size
         WCHAR fontSizeText[100];
         GetWindowText(hwndFontSizes, &fontSizeText[0], _ARRAYSIZE(fontSizeText));
 
-        float pointSize = float(wcstod(fontSizeText, nullptr));
+        auto pointSize = static_cast<float>(wcstod(fontSizeText, nullptr));
         if (pointSize <= 0.0f) { pointSize = 10.0f; }
 
         FontFaceInfo fontFaceInfo(fontFamilyName, packedAttributes);
@@ -596,15 +596,14 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
 
     // Layout the sample text using the text format and UI bounds (converted to DIPs)
     IDWriteTextLayout* textLayout = nullptr;
-    if (SUCCEEDED(hr))
-    {
-        hr = g_dwrite->CreateTextLayout(
-                sampleText, 
-                _ARRAYSIZE(sampleText) - 1, 
-                m_renderTextFormat,
-                (float)(width  * m_currentDPI) / GetDeviceCaps(sampleDC, LOGPIXELSX),
-                (float)(height * m_currentDPI) / GetDeviceCaps(sampleDC, LOGPIXELSY),
-                &textLayout);
+    if (SUCCEEDED(hr)) {
+      hr = g_dwrite->CreateTextLayout(
+        sampleText,
+        _ARRAYSIZE(sampleText) - 1,
+        m_renderTextFormat,
+        static_cast<float>((width  * m_currentDPI) / GetDeviceCaps(sampleDC, LOGPIXELSX)),
+        static_cast<float>((height * m_currentDPI) / GetDeviceCaps(sampleDC, LOGPIXELSY)),
+        &textLayout);
     }
 
     // Create a DWrite surface to render to
@@ -661,12 +660,12 @@ INT_PTR CALLBACK ChooseFontDialog::CFDialogProc(HWND hWnd, UINT message, WPARAM 
     if (message == WM_INITDIALOG) {
         SetWindowLongPtr(hWnd, GWLP_USERDATA, lParam);
     }
-    ChooseFontDialog* this_ = (ChooseFontDialog*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    auto this_ = reinterpret_cast<ChooseFontDialog*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
     if (this_ != nullptr)
     {
       LPCFHOOKPROC hookFct = this_->m_chooseFontStruct->lpfnHook;
       if (hookFct) {
-        (*hookFct)(hWnd, message, wParam, (LPARAM)this_->m_chooseFontStruct);
+        (*hookFct)(hWnd, message, wParam, reinterpret_cast<LPARAM>(this_->m_chooseFontStruct));
       }
       switch (message)
         {
@@ -819,12 +818,12 @@ static void  SetChosenFontFromTextFormat(
     DWRITE_FONT_STYLE const fontStyle = textFormat->GetFontStyle();
 
     StringCchCopy(lpCF->lpLogFont->lfFaceName, LF_FACESIZE, fontFamilyName);
-    lpCF->lpLogFont->lfHeight = -MulDiv((int)lround(pointSize), GetDeviceCaps(lpCF->hDC, LOGPIXELSY), 72);
-    lpCF->iPointSize = (INT)lround(pointSize * 10.0f);
-    lpCF->lpLogFont->lfWeight = (LONG)fontWeight;
-    lpCF->lpLogFont->lfItalic = (BYTE)(((fontStyle == DWRITE_FONT_STYLE_ITALIC) || 
-                                        (fontStyle == DWRITE_FONT_STYLE_OBLIQUE)) ? TRUE : FALSE);
-    lpCF->lpLogFont->lfQuality = (BYTE)CLEARTYPE_QUALITY;
+    lpCF->lpLogFont->lfHeight = -MulDiv(static_cast<int>(lround(pointSize)), GetDeviceCaps(lpCF->hDC, LOGPIXELSY), 72);
+    lpCF->iPointSize = static_cast<INT>(lround(pointSize * 10.0f));
+    lpCF->lpLogFont->lfWeight = static_cast<LONG>(fontWeight);
+    lpCF->lpLogFont->lfItalic = static_cast<BYTE>((((fontStyle == DWRITE_FONT_STYLE_ITALIC) ||
+                                        (fontStyle == DWRITE_FONT_STYLE_OBLIQUE)) ? TRUE : FALSE));
+    lpCF->lpLogFont->lfQuality = static_cast<BYTE>(CLEARTYPE_QUALITY);
 
     ReleaseDC(lpCF->hwndOwner, hdc);
   }

@@ -16,22 +16,6 @@
 *                                                                 *
 * GdiTextRenderer::GdiTextRenderer                                *
 *                                                                 *
-* Construct the object.                                           *
-*                                                                 *
-******************************************************************/
-
-GdiTextRenderer::GdiTextRenderer()
-    :   m_refs(0),
-        m_renderTarget(),
-        m_renderingParams()
-{
-}
-
-
-/******************************************************************
-*                                                                 *
-* GdiTextRenderer::GdiTextRenderer                                *
-*                                                                 *
 * Destruct the object.                                            *
 *                                                                 *
 ******************************************************************/
@@ -288,8 +272,8 @@ ULONG STDMETHODCALLTYPE GdiTextRenderer::AddRef()
 ULONG STDMETHODCALLTYPE GdiTextRenderer::Release()
 {
     LONG refs = InterlockedDecrement(&m_refs);
-    if (refs == 0)
-        delete this;
-
+    if (refs == 0) {
+      delete this;
+    }
     return refs;
 }

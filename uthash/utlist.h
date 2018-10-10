@@ -451,8 +451,8 @@ do {                                                                            
 do {                                                                                           \
     LL_FOREACH2(head,out,next) {                                                               \
       int const res = (cmp(out,elt));                                                          \
-      if (res == 0) break;                                                                     \
-      else if (res > 0) { (out) = NULL; break; }                                               \
+      if (res == 0) { break; }                                                                 \
+      if (res > 0) { (out) = NULL; break; }                                                    \
       (prv) = (out);                                                                           \
     }                                                                                          \
 } while (0)

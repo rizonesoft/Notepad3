@@ -198,7 +198,8 @@ static const te_variable *find_builtin(const char *name, int len) {
         if (!c) c = '\0' - functions[i].name[len];
         if (c == 0) {
             return functions + i;
-        } else if (c > 0) {
+        }
+        if (c > 0) {
             imin = i + 1;
         } else {
             imax = i - 1;
@@ -726,11 +727,10 @@ te_expr *te_compile(const char *expression, const te_variable *variables, int va
             if (*error == 0) *error = 1;
         }
         return 0;
-    } else {
-        optimize(root);
-        if (error) *error = 0;
-        return root;
     }
+    optimize(root);
+    if (error) *error = 0;
+    return root;
 }
 
 

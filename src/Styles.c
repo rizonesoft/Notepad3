@@ -1350,24 +1350,33 @@ PEDITLEXER  Style_SniffShebang(char* pchText)
       while (*pch && *pch != ' ' && *pch != '\t' && *pch != '\r' && *pch != '\n')
         pch++;
     }
-    if ((pch - pchText) >= 3 && StrCmpNIA(pch-3,"php",3) == 0)
+    if ((pch - pchText) >= 3 && StrCmpNIA(pch - 3, "php", 3) == 0) {
       return(&lexHTML);
-    else if ((pch - pchText) >= 4 && StrCmpNIA(pch-4,"perl",4) == 0)
+    }
+    if ((pch - pchText) >= 4 && StrCmpNIA(pch - 4, "perl", 4) == 0) {
       return(&lexPL);
-    else if ((pch - pchText) >= 6 && StrCmpNIA(pch-6,"python",6) == 0)
+    }
+    if ((pch - pchText) >= 6 && StrCmpNIA(pch - 6, "python", 6) == 0) {
       return(&lexPY);
-    else if ((pch - pchText) >= 3 && StrCmpNA(pch-3,"tcl",3) == 0)
+    }
+    if ((pch - pchText) >= 3 && StrCmpNA(pch - 3, "tcl", 3) == 0) {
       return(&lexTCL);
-    else if ((pch - pchText) >= 4 && StrCmpNA(pch-4,"wish",4) == 0)
+    }
+    if ((pch - pchText) >= 4 && StrCmpNA(pch - 4, "wish", 4) == 0) {
       return(&lexTCL);
-    else if ((pch - pchText) >= 5 && StrCmpNA(pch-5,"tclsh",5) == 0)
+    }
+    if ((pch - pchText) >= 5 && StrCmpNA(pch - 5, "tclsh", 5) == 0) {
       return(&lexTCL);
-    else if ((pch - pchText) >= 2 && StrCmpNA(pch-2,"sh",2) == 0)
+    }
+    if ((pch - pchText) >= 2 && StrCmpNA(pch - 2, "sh", 2) == 0) {
       return(&lexBASH);
-    else if ((pch - pchText) >= 4 && StrCmpNA(pch-4,"ruby",4) == 0)
+    }
+    if ((pch - pchText) >= 4 && StrCmpNA(pch - 4, "ruby", 4) == 0) {
       return(&lexRUBY);
-    else if ((pch - pchText) >= 4 && StrCmpNA(pch-4,"node",4) == 0)
+    }
+    if ((pch - pchText) >= 4 && StrCmpNA(pch - 4, "node", 4) == 0) {
       return(&lexJS);
+    }
   }
   return(NULL);
 }

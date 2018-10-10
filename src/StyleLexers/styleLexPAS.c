@@ -24,15 +24,15 @@ EDITLEXER lexPAS = {
 SCLEX_PASCAL, IDS_LEX_PASCAL_SRC, L"Pascal Source Code", L"pas; dpr; dpk; dfm; inc; pp", L"", 
 &LexFunction, // static
 &KeyWords_PAS, {
-    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    //{ SCE_PAS_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    { MULTI_STYLE(SCE_PAS_COMMENT,SCE_PAS_COMMENT2,SCE_PAS_COMMENTLINE,0), IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
-    { SCE_PAS_WORD, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#800080", L"" },
-    { SCE_PAS_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
-    { MULTI_STYLE(SCE_PAS_STRING,SCE_PAS_CHARACTER,SCE_PAS_STRINGEOL,0), IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-    { MULTI_STYLE(SCE_PAS_NUMBER,SCE_PAS_HEXNUMBER,0,0), IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
-    { SCE_PAS_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
-    { SCE_PAS_ASM, IDS_LEX_STR_63205, L"Inline Asm", L"fore:#0000FF", L"" },
-    { MULTI_STYLE(SCE_PAS_PREPROCESSOR,SCE_PAS_PREPROCESSOR2,0,0), IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF00FF", L"" },
+    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    //{ {SCE_PAS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    { {MULTI_STYLE(SCE_PAS_COMMENT,SCE_PAS_COMMENT2,SCE_PAS_COMMENTLINE,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
+    { {SCE_PAS_WORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#800080", L"" },
+    { {SCE_PAS_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+    { {MULTI_STYLE(SCE_PAS_STRING,SCE_PAS_CHARACTER,SCE_PAS_STRINGEOL,0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
+    { {MULTI_STYLE(SCE_PAS_NUMBER,SCE_PAS_HEXNUMBER,0,0)}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
+    { {SCE_PAS_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
+    { {SCE_PAS_ASM}, IDS_LEX_STR_63205, L"Inline Asm", L"fore:#0000FF", L"" },
+    { {MULTI_STYLE(SCE_PAS_PREPROCESSOR,SCE_PAS_PREPROCESSOR2,0,0)}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF00FF", L"" },
     EDITLEXER_SENTINEL } };
 

@@ -38,21 +38,21 @@
 #include <time.h>
 #include <muiload.h>
 
-#include "edit.h"
-#include "styles.h"
-#include "dialogs.h"
+#include "Edit.h"
+#include "Styles.h"
+#include "Dialogs.h"
 #include "resource.h"
 #include "../crypto/crypto.h"
 #include "../uthash/utarray.h"
 #include "../uthash/utlist.h"
 #include "../tinyexpr/tinyexpr.h"
-#include "encoding.h"
-#include "helpers.h"
+#include "Encoding.h"
+#include "Helpers.h"
 #include "VersionEx.h"
 #include "SciCall.h"
-#include "scilexer.h"
+#include "SciLexer.h"
 
-#include "notepad3.h"
+#include "Notepad3.h"
 
 
 /******************************************************************************
@@ -187,46 +187,46 @@ CALLTIPTYPE g_CallTipType = CT_NONE;
 
 #define INISECTIONBUFCNT 32
 
-static TBBUTTON  s_tbbMainWnd[] = { { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 3,IDT_FILE_SAVE,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 2,IDT_FILE_BROWSE,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 4,IDT_EDIT_UNDO,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 5,IDT_EDIT_REDO,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 6,IDT_EDIT_CUT,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 7,IDT_EDIT_COPY,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 8,IDT_EDIT_PASTE,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 9,IDT_EDIT_FIND,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 25,IDT_VIEW_TOGGLE_VIEW,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 16,IDT_FILE_EXIT,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 0,0,0,BTNS_SEP,0,0 },
-                                    { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,BTNS_BUTTON,0,0 },
-                                    { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,0,0 }
+static TBBUTTON  s_tbbMainWnd[] = { { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 3,IDT_FILE_SAVE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 2,IDT_FILE_BROWSE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 4,IDT_EDIT_UNDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 5,IDT_EDIT_REDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 6,IDT_EDIT_CUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 7,IDT_EDIT_COPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 8,IDT_EDIT_PASTE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 9,IDT_EDIT_FIND,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 25,IDT_VIEW_TOGGLE_VIEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 16,IDT_FILE_EXIT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 0,0,0,BTNS_SEP,{0},0,0 },
+                                    { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+                                    { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 }
 };
 
 #define NUMTOOLBITMAPS  27
@@ -268,7 +268,7 @@ static UT_array* UndoRedoSelectionUTArray = NULL;
 static bool  _InUndoRedoTransaction();
 static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
-static int   _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection);
+static int   _UndoRedoActionMap(int token, UndoRedoSelection_t* selection);
 
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
@@ -363,7 +363,8 @@ static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 }
 // ----------------------------------------------------------------------------
 
-static void  _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
+/* UNUSED yet
+static void _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
 {
   CmdMessageQueue_t* pmqc;
 
@@ -377,6 +378,7 @@ static void  _MQ_RemoveCmd(CmdMessageQueue_t* const pMsgQCmd)
     }
   }
 }
+*/
 // ----------------------------------------------------------------------------
 
 
@@ -432,7 +434,7 @@ static int s_flagBufferFile         = 0;
 // static forward declarations 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw);
 static void  _UpdateToolbarDelayed();
-static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID const langID);
+static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID langID);
 
 //==============================================================================
 //
@@ -507,13 +509,13 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 //  WinMain()
 //
 //
-int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
+int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
   _InitConstants();
 
   // Set global variable Globals.hInstance
   Globals.hInstance = hInstance;
-  Globals.hPrevInst = hPrevInst;
+  Globals.hPrevInst = hPrevInstance;
   Globals.hndlProcessHeap = GetProcessHeap();
 
   WCHAR wchAppDir[2 * MAX_PATH + 4] = { L'\0' };
@@ -559,11 +561,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
   }
 
   // Adapt window class name
-  if (s_flagIsElevated)
-    StringCchCat(s_wchWndClass,COUNTOF(s_wchWndClass),L"U");
-  if (s_flagPasteBoard)
-    StringCchCat(s_wchWndClass,COUNTOF(s_wchWndClass),L"B");
-
+  if (s_flagIsElevated) {
+    StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
+  }
+  if (s_flagPasteBoard) {
+    StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
+  }
   // Relaunch with elevated privileges
   if (RelaunchElevated(NULL)) {
     return 0;
@@ -667,7 +670,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInst, _In_
     return 1; 
   }
 
-  HWND const hwnd = InitInstance(Globals.hInstance, lpCmdLine, nCmdShow);
+  HWND const hwnd = InitInstance(Globals.hInstance, lpCmdLine, nShowCmd);
   if (!hwnd) { 
     _CleanUpResources(hwnd, true);
     return 1; 
@@ -760,7 +763,7 @@ static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t ln
 //  _LoadLanguageResources
 //
 //
-static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID const langID)
+static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID langID)
 {
   bool bLngAvailable = (StrStrIW(s_tchAvailableLanguages, localeName) != NULL);
   if (!bLngAvailable) { return NULL; }
@@ -835,7 +838,7 @@ void BeginWaitCursor(LPCWSTR text)
   if (CheckWaitCursorStack())
   {
     SciCall_SetCursor(SC_CURSORWAIT); // delayed to SCN_DWELLSTART
-    StatusSetText(Globals.hwndStatus, STATUS_HELP, (LPCWSTR)text);
+    StatusSetText(Globals.hwndStatus, STATUS_HELP, text);
     //StatusSetTextID(Globals.hwndStatus, STATUS_HELP, uid);
   }
   InterlockedIncrement(&iWaitCursorStackCounter);
@@ -987,7 +990,7 @@ bool InitApplication(HINSTANCE hInstance)
 //
 //  InitInstance()
 //
-HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
+HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 {
   UNUSED(pszCmdLine);
  
@@ -1244,9 +1247,9 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
 
     GetLngString(IDS_MUI_PRINT_PAGENUM, tchPageFmt, COUNTOF(tchPageFmt));
 
-    if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt))
+    if (!EditPrint(Globals.hwndEdit, pszTitle, tchPageFmt)) {
       MsgBoxLng(MBWARN, IDS_MUI_PRINT_ERROR, pszTitle);
-
+    }
     PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
   }
   return(Globals.hwndMain);
@@ -1609,11 +1612,11 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   else
     SendMessage(hwndEditCtrl, SCI_SETXCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), (LPARAM)0);
 
-  if (Settings2.CurrentLineVerticalSlop > 0)
+  if (Settings2.CurrentLineVerticalSlop > 0) {
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(CARET_SLOP | _CARET_SYMETRY | _CARET_ENFORCE), Settings2.CurrentLineVerticalSlop);
-  else
+  } else {
     SendMessage(hwndEditCtrl, SCI_SETYCARETPOLICY, (WPARAM)(_CARET_SYMETRY), 0);
-
+  }
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, (WPARAM)(Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION), 0);
   SendMessage(hwndEditCtrl, SCI_SETENDATLASTLINE, (WPARAM)((Settings.ScrollPastEOF) ? 0 : 1), 0);
 
@@ -1876,12 +1879,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
   if (!s_bExternalBitmap) {
     bool fProcessed = false;
-    if (Flags.ToolbarLook == 1)
-      fProcessed = BitmapAlphaBlend(hbmpCopy,GetSysColor(COLOR_3DFACE),0x60);
-    else if (Flags.ToolbarLook == 2 || (!IsXP() && Flags.ToolbarLook == 0))
+    if (Flags.ToolbarLook == 1) {
+      fProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
+    }
+    else if (Flags.ToolbarLook == 2 || (!IsXP() && Flags.ToolbarLook == 0)) {
       fProcessed = BitmapGrayScale(hbmpCopy);
-    if (fProcessed && !IsXP())
-      BitmapMergeAlpha(hbmpCopy,GetSysColor(COLOR_3DFACE));
+    }
+    if (fProcessed && !IsXP()) {
+      BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
+    }
     if (fProcessed) {
       himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
       ImageList_AddMasked(himl,hbmpCopy,CLR_DEFAULT);
@@ -2654,26 +2660,35 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   EnableCmd(hmenu,IDM_ENCODING_RECODE,i);
 
-  if (Encoding_IsUNICODE_REVERSE(Encoding_Current(CPI_GET)))
+  if (Encoding_IsUNICODE_REVERSE(Encoding_Current(CPI_GET))) {
     i = IDM_ENCODING_UNICODEREV;
-  else if (Encoding_IsUNICODE(Encoding_Current(CPI_GET)))
+  }
+  else if (Encoding_IsUNICODE(Encoding_Current(CPI_GET))) {
     i = IDM_ENCODING_UNICODE;
-  else if (Encoding_IsUTF8_SIGN(Encoding_Current(CPI_GET)))
+  }
+  else if (Encoding_IsUTF8_SIGN(Encoding_Current(CPI_GET))) {
     i = IDM_ENCODING_UTF8SIGN;
-  else if (Encoding_IsUTF8(Encoding_Current(CPI_GET)))
+  }
+  else if (Encoding_IsUTF8(Encoding_Current(CPI_GET))) {
     i = IDM_ENCODING_UTF8;
-  else if (Encoding_IsANSI(Encoding_Current(CPI_GET)))
+  }
+  else if (Encoding_IsANSI(Encoding_Current(CPI_GET))) {
     i = IDM_ENCODING_ANSI;
-  else
+  }
+  else {
     i = -1;
+  }
   CheckMenuRadioItem(hmenu,IDM_ENCODING_ANSI,IDM_ENCODING_UTF8SIGN,i,MF_BYCOMMAND);
 
-  if (Globals.iEOLMode == SC_EOL_CRLF)
+  if (Globals.iEOLMode == SC_EOL_CRLF) {
     i = IDM_LINEENDINGS_CRLF;
-  else if (Globals.iEOLMode == SC_EOL_LF)
+  }
+  else if (Globals.iEOLMode == SC_EOL_LF) {
     i = IDM_LINEENDINGS_LF;
-  else
+  }
+  else {
     i = IDM_LINEENDINGS_CR;
+  }
   CheckMenuRadioItem(hmenu,IDM_LINEENDINGS_CRLF,IDM_LINEENDINGS_CR,i,MF_BYCOMMAND);
 
   EnableCmd(hmenu,IDM_FILE_RECENT,(MRU_Count(Globals.pFileMRU) > 0));
@@ -2842,17 +2857,19 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
   CheckCmd(hmenu, IDM_VIEW_TOGGLE_VIEW, EditToggleView(Globals.hwndEdit, false));
 
-  if (Settings.MarkOccurrencesMatchWholeWords)
+  if (Settings.MarkOccurrencesMatchWholeWords) {
     i = IDM_VIEW_MARKOCCUR_WORD;
-  else if (Settings.MarkOccurrencesCurrentWord)
+  }
+  else if (Settings.MarkOccurrencesCurrentWord) {
     i = IDM_VIEW_MARKOCCUR_CURRENT;
-  else
+  }
+  else {
     i = IDM_VIEW_MARKOCCUR_WNONE;
-
+  }
   CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
   CheckCmdPos(GetSubMenu(GetSubMenu(GetMenu(Globals.hwndMain), 2), 17), 5, (i != IDM_VIEW_MARKOCCUR_WNONE));
 
-  i = (int)(Settings.MarkOccurrences > 0);
+  i = (Settings.MarkOccurrences > 0);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CASE, i);
   EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
@@ -3237,18 +3254,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_ENCODING_SELECT:
       {
         int iNewEncoding = Encoding_Current(CPI_GET);
-        if (LOWORD(wParam) == IDM_ENCODING_SELECT && !SelectEncodingDlg(hwnd,&iNewEncoding))
+        if (LOWORD(wParam) == IDM_ENCODING_SELECT && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
           break;
-        else {
-          switch (LOWORD(wParam)) {
-            case IDM_ENCODING_UNICODE:    iNewEncoding = CPI_UNICODEBOM; break;
-            case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
-            case IDM_ENCODING_UTF8:       iNewEncoding = CPI_UTF8; break;
-            case IDM_ENCODING_UTF8SIGN:   iNewEncoding = CPI_UTF8SIGN; break;
-            case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
-          }
         }
-
+        switch (LOWORD(wParam)) 
+        {
+        case IDM_ENCODING_UNICODE:    iNewEncoding = CPI_UNICODEBOM; break;
+        case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
+        case IDM_ENCODING_UTF8:       iNewEncoding = CPI_UTF8; break;
+        case IDM_ENCODING_UTF8SIGN:   iNewEncoding = CPI_UTF8SIGN; break;
+        case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
+        }
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, s_flagSetEncoding,
@@ -3359,8 +3375,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COPY:
     case IDM_EDIT_COPYLINE:
-      if (s_flagPasteBoard)
+      if (s_flagPasteBoard) {
         s_bLastCopyFromMe = true;
+      }
       SciCall_CopyAllowLine();
       UpdateToolbar();
       break;
@@ -3513,8 +3530,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_CUTLINE:
       {
-        if (s_flagPasteBoard)
+        if (s_flagPasteBoard) {
           s_bLastCopyFromMe = true;
+        }
         _BEGIN_UNDO_ACTION_;
         SendMessage(Globals.hwndEdit,SCI_LINECUT,0,0);
         _END_UNDO_ACTION_;
@@ -7821,19 +7839,15 @@ static bool  _CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWST
       StringCchCopy(lpszFile,MAX_PATH,tch);
       return true;
     }
-    else {
-      WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
-      ExpandEnvironmentStrings(tch,tchFileExpanded,COUNTOF(tchFileExpanded));
-      if (PathIsRelative(tchFileExpanded)) {
-        StringCchCopy(lpszFile,MAX_PATH,lpszModule);
-        StringCchCopy(PathFindFileName(lpszFile),MAX_PATH,tchFileExpanded);
-        return true;
-      }
-      else {
-        StringCchCopy(lpszFile,MAX_PATH,tchFileExpanded);
-        return true;
-      }
+    WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
+    ExpandEnvironmentStrings(tch,tchFileExpanded,COUNTOF(tchFileExpanded));
+    if (PathIsRelative(tchFileExpanded)) {
+      StringCchCopy(lpszFile,MAX_PATH,lpszModule);
+      StringCchCopy(PathFindFileName(lpszFile),MAX_PATH,tchFileExpanded);
+      return true;
     }
+    StringCchCopy(lpszFile,MAX_PATH,tchFileExpanded);
+    return true;
   }
   return false;
 }
@@ -7852,17 +7866,16 @@ int FindIniFile() {
   SetEnvironmentVariable(L"NOTEPAD3MODULEDIR", tchPath);
 
   if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile))) {
-    if (StringCchCompareXI(Globals.IniFile,L"*?") == 0)
+    if (StringCchCompareXI(Globals.IniFile, L"*?") == 0) {
       return(0);
-    else {
-      if (!_CheckIniFile(Globals.IniFile,tchModule)) {
-        ExpandEnvironmentStringsEx(Globals.IniFile,COUNTOF(Globals.IniFile));
-        if (PathIsRelative(Globals.IniFile)) {
-          StringCchCopy(tchPath,COUNTOF(tchPath),tchModule);
-          PathRemoveFileSpec(tchPath);
-          PathCchAppend(tchPath,COUNTOF(tchPath),Globals.IniFile);
-          StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile),tchPath);
-        }
+    }
+    if (!_CheckIniFile(Globals.IniFile,tchModule)) {
+      ExpandEnvironmentStringsEx(Globals.IniFile,COUNTOF(Globals.IniFile));
+      if (PathIsRelative(Globals.IniFile)) {
+        StringCchCopy(tchPath,COUNTOF(tchPath),tchModule);
+        PathRemoveFileSpec(tchPath);
+        PathCchAppend(tchPath,COUNTOF(tchPath),Globals.IniFile);
+        StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile),tchPath);
       }
     }
   }
@@ -7925,8 +7938,7 @@ int TestIniFile() {
     StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile),L"");
     return(0);
   }
-  else
-    return(1);
+  return(1);
 }
 
 
@@ -7939,7 +7951,6 @@ int CreateIniFile()
 int CreateIniFileEx(LPCWSTR lpszIniFile) 
 {
   if (*lpszIniFile) {
-
     WCHAR *pwchTail = StrRChrW(lpszIniFile, NULL, L'\\');
     if (pwchTail) {
       *pwchTail = 0;
@@ -7960,11 +7971,8 @@ int CreateIniFileEx(LPCWSTR lpszIniFile)
       CloseHandle(hFile);
       return(1);
     }
-    else
-      return(0);
   }
-  else
-    return(0);
+  return(0);
 }
 
 
@@ -9073,7 +9081,7 @@ void RestoreAction(int token, DoAction doAct)
 //  _UndoSelectionMap()
 //
 //
-static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* const selection)
+static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
 {
   if (UndoRedoSelectionUTArray == NULL)  { return -1; }
 
@@ -9479,7 +9487,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
     }
   }
 
-  if (!bSaveAlways && (!IsDocumentModified && !Encoding_HasChanged(CPI_GET) || bIsEmptyNewFile) && !bSaveAs) {
+  if (!bSaveAlways && ((!IsDocumentModified && !Encoding_HasChanged(CPI_GET)) || bIsEmptyNewFile) && !bSaveAs) {
     int idx;
     if (MRU_FindFile(Globals.pFileMRU,Globals.CurrentFile,&idx)) {
       Globals.pFileMRU->iEncoding[idx] = Encoding_Current(CPI_GET);
@@ -9708,9 +9716,7 @@ bool OpenFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
     StringCchCopyN(lpstrFile,cchFile,szFile,COUNTOF(szFile));
     return true;
   }
-
-  else
-    return false;
+  return false;
 }
 
 
@@ -9763,9 +9769,7 @@ bool SaveFileDlg(HWND hwnd,LPWSTR lpstrFile,int cchFile,LPCWSTR lpstrInitialDir)
     StringCchCopyN(lpstrFile,cchFile,szNewFile,COUNTOF(szNewFile));
     return true;
   }
-
-  else
-    return false;
+  return false;
 }
 
 
@@ -9915,20 +9919,17 @@ bool ActivatePrevInst()
 
         return(true);
       }
-
-      else // IsWindowEnabled()
-      {
-        // Ask...
-        if (IDYES == MsgBoxLng(MBYESNOWARN,IDS_MUI_ERR_PREVWINDISABLED))
-          return(false);
-        else
-          return(true);
+      // IsWindowEnabled()
+      if (IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_PREVWINDISABLED)) {
+        return(false);
       }
+      return(true);
     }
   }
 
-  if (Flags.NoReuseWindow)
+  if (Flags.NoReuseWindow) {
     return(false);
+  }
 
   hwnd = NULL;
   EnumWindows(EnumWndProc,(LPARAM)&hwnd);
@@ -10024,14 +10025,10 @@ bool ActivatePrevInst()
       }
       return(true);
     }
-    else // IsWindowEnabled()
-    {
-      // Ask...
-      return ((IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_PREVWINDISABLED)) ? false : true);
-    }
+    // IsWindowEnabled()
+    return ((IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_PREVWINDISABLED)) ? false : true);
   }
-  else
-    return(false);
+  return(false);
 }
 
 
@@ -10085,12 +10082,10 @@ bool RelaunchMultiInst() {
     return true;
   }
 
-  else {
-    for (int i = 0; i < cFileList; i++) {
-      LocalFree(lpFileList[i]); // StrDup()
-    }
-    return false;
+  for (int i = 0; i < cFileList; i++) {
+    LocalFree(lpFileList[i]); // StrDup()
   }
+  return false;
 }
 
 
@@ -10156,7 +10151,7 @@ bool RelaunchElevated(LPWSTR lpArgs) {
 //  SnapToWinInfoPos()
 //  Aligns Notepad3 to the default window position on the current screen
 //
-void SnapToWinInfoPos(HWND hwnd, const WININFO* const pWinInfo, bool bFullWorkArea)
+void SnapToWinInfoPos(HWND hwnd, const WININFO* pWinInfo, bool bFullWorkArea)
 {
   static WINDOWPLACEMENT s_wndplPrev;
   static bool s_bPrevFullWAFlag = false;
@@ -10441,4 +10436,4 @@ void CALLBACK PasteBoardTimer(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
   UNUSED(hwnd);
 }
 
-///  End of Notepad3.c  \\\
+///  End of Notepad3.c  ///

@@ -20,8 +20,8 @@ class DECLSPEC_UUID("70d1bcc3-2fcf-4b42-bfce-e3cd4db9d316") GdiTextRenderer : pu
 {
 public:
 
-    GdiTextRenderer();
-    ~GdiTextRenderer();
+    GdiTextRenderer() = default;
+    virtual ~GdiTextRenderer();
 
     HDC GetDC();
 
@@ -29,9 +29,9 @@ public:
 
 private:
 
-    IDWriteBitmapRenderTarget*   m_renderTarget;
-    IDWriteRenderingParams*      m_renderingParams;
-    volatile LONG                m_refs;
+    volatile LONG                m_refs = 0;
+    IDWriteBitmapRenderTarget*   m_renderTarget = nullptr;
+    IDWriteRenderingParams*      m_renderingParams = nullptr;
     
     HRESULT STDMETHODCALLTYPE DrawGlyphRun(
         void* clientDrawingContext,
@@ -40,21 +40,21 @@ private:
         DWRITE_MEASURING_MODE measuringMode,
         DWRITE_GLYPH_RUN const* glyphRun,
         DWRITE_GLYPH_RUN_DESCRIPTION const* glyphRunDescription,
-        IUnknown* clientDrawingEffect);
+        IUnknown* clientDrawingEffect) override;
 
     HRESULT STDMETHODCALLTYPE DrawUnderline(
         void* clientDrawingContext,
         FLOAT baselineOriginX,
         FLOAT baselineOriginY,
         DWRITE_UNDERLINE const* underline,
-        IUnknown* clientDrawingEffect);
+        IUnknown* clientDrawingEffect) override;
 
     HRESULT STDMETHODCALLTYPE DrawStrikethrough(
         void* clientDrawingContext,
         FLOAT baselineOriginX,
         FLOAT baselineOriginY,
         DWRITE_STRIKETHROUGH const* strikethrough,
-        IUnknown* clientDrawingEffect);
+        IUnknown* clientDrawingEffect) override;
 
     HRESULT STDMETHODCALLTYPE DrawInlineObject(
         void* clientDrawingContext,
@@ -63,27 +63,27 @@ private:
         IDWriteInlineObject* /* inlineObject */,
         BOOL isSideways,
         BOOL isRightToLeft,
-        IUnknown* clientDrawingEffect);
+        IUnknown* clientDrawingEffect) override;
 
     HRESULT STDMETHODCALLTYPE IsPixelSnappingDisabled(
         void* clientDrawingContext,
-        OUT BOOL* isDisabled);
+        OUT BOOL* isDisabled) override;
 
     HRESULT STDMETHODCALLTYPE GetCurrentTransform(
         void* clientDrawingContext,
-        OUT DWRITE_MATRIX* transform);
+        OUT DWRITE_MATRIX* transform) override;
 
     HRESULT STDMETHODCALLTYPE GetPixelsPerDip(
         void* clientDrawingContext,
-        OUT FLOAT* pixelsPerDip);
+        OUT FLOAT* pixelsPerDip) override;
     
 public:
 
     HRESULT STDMETHODCALLTYPE QueryInterface( 
         REFIID riid,
-        void **ppvObject);
+        void **ppvObject) override;
 
-    ULONG STDMETHODCALLTYPE AddRef();
+    ULONG STDMETHODCALLTYPE AddRef() override;
 
-    ULONG STDMETHODCALLTYPE Release();
+    ULONG STDMETHODCALLTYPE Release() override;
 };
