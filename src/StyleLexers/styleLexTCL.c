@@ -44,15 +44,15 @@ EDITLEXER lexTCL = {
 SCLEX_TCL, IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl", L"", 
 &LexFunction, // static
 &KeyWords_TCL, {
-    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    //{ SCE_TCL_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    { SCE_TCL__MULTI_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-    { SCE_TCL__MULTI_KEYWORD, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
-    { SCE_TCL_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
-    { SCE_TCL_IN_QUOTE, IDS_LEX_STR_63131, L"String", L"fore:#008080", L"" },
-    { SCE_TCL_OPERATOR, IDS_LEX_STR_63132, L"Operator", L"", L"" },
-    { SCE_TCL_IDENTIFIER, IDS_LEX_STR_63129, L"Identifier", L"fore:#800080", L"" },
-    { SCE_TCL__MULTI_SUBSTITUTION, IDS_LEX_STR_63274, L"Substitution", L"fore:#CC0000", L"" },
-    { SCE_TCL_MODIFIER, IDS_LEX_STR_63275, L"Modifier", L"fore:#FF00FF", L"" },
+    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    //{ {SCE_TCL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    { {SCE_TCL__MULTI_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
+    { {SCE_TCL__MULTI_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
+    { {SCE_TCL_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+    { {SCE_TCL_IN_QUOTE}, IDS_LEX_STR_63131, L"String", L"fore:#008080", L"" },
+    { {SCE_TCL_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"", L"" },
+    { {SCE_TCL_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"fore:#800080", L"" },
+    { {SCE_TCL__MULTI_SUBSTITUTION}, IDS_LEX_STR_63274, L"Substitution", L"fore:#CC0000", L"" },
+    { {SCE_TCL_MODIFIER}, IDS_LEX_STR_63275, L"Modifier", L"fore:#FF00FF", L"" },
     EDITLEXER_SENTINEL } };
 

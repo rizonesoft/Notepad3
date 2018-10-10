@@ -365,7 +365,7 @@ static int  FindCodePage(const Encoding& encoding)
   default:
     for (int i = 0; i < Encoding_CountOf(); ++i) {
       if (encoding == g_Encodings[i].iCEDEncoding) {
-        iCodePage = (int)g_Encodings[i].uCodePage;
+        iCodePage = static_cast<int>(g_Encodings[i].uCodePage);
         break;
       }
     }
@@ -386,7 +386,7 @@ static int  MapEncoding2CPI(const char* const text, const size_t len, const Enco
     iNP3Encoding = CPI_ASCII_7BIT;
   }
   else { // check for default ANSI
-    if (FindCodePage(encoding) == (int)g_Encodings[CPI_ANSI_DEFAULT].uCodePage) {
+    if (FindCodePage(encoding) == static_cast<int>(g_Encodings[CPI_ANSI_DEFAULT].uCodePage)) {
       iNP3Encoding = CPI_ANSI_DEFAULT;
     }
   }

@@ -108,7 +108,7 @@ inline void SafeAttach(InterfaceType** currentObject, InterfaceType* newObject)
 
 
 // Maps exceptions to equivalent HRESULTs,
-inline HRESULT ExceptionToHResult() throw()
+inline HRESULT ExceptionToHResult() noexcept
 {
     try
     {

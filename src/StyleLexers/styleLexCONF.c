@@ -127,16 +127,16 @@ EDITLEXER lexCONF = {
 SCLEX_CONF, IDS_LEX_APC_CFG, L"Apache Config Files", L"conf; htaccess", L"", 
 &LexFunction, // static
 &KeyWords_CONF, {
-    { STYLE_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    //{ SCE_CONF_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-    { SCE_CONF_COMMENT, IDS_LEX_STR_63127, L"Comment", L"fore:#648000", L"" },
-    { SCE_CONF_STRING, IDS_LEX_STR_63131, L"String", L"fore:#B000B0", L"" },
-    { SCE_CONF_NUMBER, IDS_LEX_STR_63130, L"Number", L"fore:#FF4000", L"" },
-    { SCE_CONF_DIRECTIVE, IDS_LEX_STR_63203, L"Directive", L"fore:#003CE6", L"" },
-    { SCE_CONF_IP, IDS_LEX_STR_63248, L"IP Address", L"bold; fore:#FF4000", L"" },
-// Not used by lexer  { SCE_CONF_IDENTIFIER, L"Identifier", L"", L"" },
-// Lexer is buggy     { SCE_CONF_OPERATOR, L"Operator", L"", L"" },
-// Lexer is buggy     { SCE_CONF_PARAMETER, L"Runtime Directive Parameter", L"", L"" },
-// Lexer is buggy     { SCE_CONF_EXTENSION, L"Extension", L"", L"" },
+    { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    //{ {SCE_CONF_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+    { {SCE_CONF_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#648000", L"" },
+    { {SCE_CONF_STRING}, IDS_LEX_STR_63131, L"String", L"fore:#B000B0", L"" },
+    { {SCE_CONF_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF4000", L"" },
+    { {SCE_CONF_DIRECTIVE}, IDS_LEX_STR_63203, L"Directive", L"fore:#003CE6", L"" },
+    { {SCE_CONF_IP}, IDS_LEX_STR_63248, L"IP Address", L"bold; fore:#FF4000", L"" },
+// Not used by lexer  { {SCE_CONF_IDENTIFIER}, L"Identifier", L"", L"" },
+// Lexer is buggy     { {SCE_CONF_OPERATOR}, L"Operator", L"", L"" },
+// Lexer is buggy     { {SCE_CONF_PARAMETER}, L"Runtime Directive Parameter", L"", L"" },
+// Lexer is buggy     { {SCE_CONF_EXTENSION}, L"Extension", L"", L"" },
     EDITLEXER_SENTINEL } };
 

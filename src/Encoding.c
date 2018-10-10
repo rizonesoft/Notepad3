@@ -35,10 +35,10 @@
 
 #include "../uthash/utarray.h"
 
-#include "scintilla.h"
-#include "helpers.h"
+#include "Scintilla.h"
+#include "Helpers.h"
 #include "resource.h"
-#include "encoding.h"
+#include "Encoding.h"
 
 //=============================================================================
 //
@@ -216,28 +216,29 @@ int Encoding_MapIniSetting(bool bLoad, int iSetting) {
     case CPI_UNICODE:      return  6;
     case CPI_UNICODEBE:    return  7;
     case CPI_UTF7:         return  8;
-    default: {
-      if (Encoding_IsValid(iSetting))
+    default:
+      if (Encoding_IsValid(iSetting)) {
         return(g_Encodings[iSetting].uCodePage);
-      else
-        return CPI_ANSI_DEFAULT;
-    }
+      }
+      return CPI_ANSI_DEFAULT;
     }
   }
 }
 // ============================================================================
 
 
-int Encoding_MapUnicode(int iUni) {
-
-  if (iUni == CPI_UNICODEBOM)
+int Encoding_MapUnicode(int iUni) 
+{
+  if (iUni == CPI_UNICODEBOM) {
     return CPI_UNICODE;
-  else if (iUni == CPI_UNICODEBEBOM)
+  }
+  if (iUni == CPI_UNICODEBEBOM) {
     return CPI_UNICODEBE;
-  else if (iUni == CPI_UTF8SIGN)
+  }
+  if (iUni == CPI_UTF8SIGN) {
     return CPI_UTF8;
-  else
-    return iUni;
+  }
+  return iUni;
 }
 // ============================================================================
 
@@ -288,9 +289,10 @@ int Encoding_MatchA(char *pchTest)
   char *pchDst = chTest;
   *pchDst++ = ',';
   while (*pchSrc) {
-    if (IsCharAlphaNumericA(*pchSrc))
+    if (IsCharAlphaNumericA(*pchSrc)) {
       *pchDst++ = *CharLowerA(pchSrc);
-    pchSrc++;
+    }
+    ++pchSrc;
   }
   *pchDst++ = ',';
   *pchDst = 0;
@@ -298,11 +300,11 @@ int Encoding_MatchA(char *pchTest)
     if (StrStrIA(g_Encodings[i].pszParseNames, chTest)) {
       CPINFO cpi;
       if ((g_Encodings[i].uFlags & NCP_INTERNAL) ||
-        IsValidCodePage(g_Encodings[i].uCodePage) &&
-        GetCPInfo(g_Encodings[i].uCodePage, &cpi))
+        (IsValidCodePage(g_Encodings[i].uCodePage) &&
+         GetCPInfo(g_Encodings[i].uCodePage, &cpi))) {
         return(i);
-      else
-        return(-1);
+      }
+      return(-1);
     }
   }
   return(-1);
@@ -325,8 +327,8 @@ bool Encoding_IsValid(int iTestEncoding) {
   CPINFO cpi;
   if ((iTestEncoding >= 0) && (iTestEncoding < Encoding_CountOf())) {
     if ((g_Encodings[iTestEncoding].uFlags & NCP_INTERNAL) ||
-      IsValidCodePage(g_Encodings[iTestEncoding].uCodePage) &&
-      GetCPInfo(g_Encodings[iTestEncoding].uCodePage, &cpi)) {
+      (IsValidCodePage(g_Encodings[iTestEncoding].uCodePage) &&
+       GetCPInfo(g_Encodings[iTestEncoding].uCodePage, &cpi))) {
       return(true);
     }
   }

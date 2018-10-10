@@ -38,17 +38,17 @@
 #include <richedit.h>
 #pragma warning( pop ) 
 
-#include "notepad3.h"
-#include "edit.h"
-#include "dlapi.h"
+#include "Notepad3.h"
+#include "Edit.h"
+#include "Dlapi.h"
 #include "resource.h"
-#include "version.h"
-#include "helpers.h"
-#include "encoding.h"
+#include "Version.h"
+#include "Helpers.h"
+#include "Encoding.h"
 #include "TypeDefs.h"
 #include "SciCall.h"
 
-#include "dialogs.h"
+#include "Dialogs.h"
 
 
 //=============================================================================
@@ -1234,15 +1234,10 @@ bool AddToFavDlg(HWND hwnd,LPCWSTR lpszName,LPCWSTR lpszTarget)
       MsgBoxLng(MBWARN,IDS_MUI_FAV_FAILURE);
       return false;
     }
-    else {
-      MsgBoxLng(MBINFO,IDS_MUI_FAV_SUCCESS);
-      return true;
-    }
+    MsgBoxLng(MBINFO,IDS_MUI_FAV_SUCCESS);
+    return true;
   }
-
-  else
-    return false;
-
+  return false;
 }
 
 
@@ -1696,13 +1691,11 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 {
-
-  if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FILEMRU),
-                hwnd,FileMRUDlgProc,(LPARAM)lpstrFile))
+  if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_FILEMRU),
+                                   hwnd, FileMRUDlgProc, (LPARAM)lpstrFile)) {
     return true;
-  else
-    return false;
-
+  }
+  return false;
 }
 
 
@@ -2263,9 +2256,7 @@ bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
     *pidREncoding = dd.idEncoding;
     return(true);
   }
-  else
-    return(false);
-
+  return(false);
 }
 
 
@@ -2432,9 +2423,7 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
     *pidREncoding = dd.idEncoding;
     return(true);
   }
-  else
-    return(false);
-
+  return(false);
 }
 
 
@@ -2467,9 +2456,7 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
     *pidREncoding = dd.idEncoding;
     return(true);
   }
-  else
-    return(false);
-
+  return(false);
 }
 
 
@@ -2559,7 +2546,7 @@ bool SelectDefLineEndingDlg(HWND hwnd,int *iOption)
 //
 //  GetMonitorInfoFromRect()
 //
-bool GetMonitorInfoFromRect(const RECT* const rc, MONITORINFO* hMonitorInfo)
+bool GetMonitorInfoFromRect(const RECT* rc, MONITORINFO* hMonitorInfo)
 {
   bool result = false;
   if (hMonitorInfo) {
@@ -2676,7 +2663,7 @@ void FitIntoMonitorWorkArea(RECT* pRect, WININFO* pWinInfo, bool bFullWorkArea)
 //  WindowPlacementFromInfo()
 //
 //
-WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* const pWinInfo)
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo)
 {
   WINDOWPLACEMENT wndpl;
   ZeroMemory(&wndpl, sizeof(WINDOWPLACEMENT));
@@ -3202,10 +3189,10 @@ HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlag
   HWND hwndCtl = GetDlgItem(hwndDlg, nCtlId);
   GetWindowRect(hwndCtl, &rc);
   MapWindowPoints(NULL, hwndDlg, (LPPOINT)&rc, 2);
-  if (uFlags & SWP_NOSIZE)
+  if (uFlags & SWP_NOSIZE) {
     return(DeferWindowPos(hdwp, hwndCtl, NULL, rc.left + dx, rc.top + dy, 0, 0, SWP_NOZORDER | SWP_NOSIZE));
-  else
-    return(DeferWindowPos(hdwp, hwndCtl, NULL, 0, 0, rc.right - rc.left + dx, rc.bottom - rc.top + dy, SWP_NOZORDER | SWP_NOMOVE));
+  }
+  return(DeferWindowPos(hdwp, hwndCtl, NULL, 0, 0, rc.right - rc.left + dx, rc.bottom - rc.top + dy, SWP_NOZORDER | SWP_NOMOVE));
 }
 
 
@@ -3453,8 +3440,8 @@ inline bool DialogTemplate_HasFont(const DLGTEMPLATE* pTemplate) {
     (DialogTemplate_IsDialogEx(pTemplate) ? ((DLGTEMPLATEEX*)pTemplate)->style : pTemplate->style));
 }
 
-inline int DialogTemplate_FontAttrSize(bool bDialogEx) {
-  return (int)sizeof(WORD) * (bDialogEx ? 3 : 1);
+inline size_t DialogTemplate_FontAttrSize(bool bDialogEx) {
+  return (sizeof(WORD) * (bDialogEx ? 3 : 1));
 }
 
 
@@ -3511,18 +3498,18 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
     }
     bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
     bool bHasFont = DialogTemplate_HasFont(pTemplate);
-    int cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
+    size_t cbFontAttr = DialogTemplate_FontAttrSize(bDialogEx);
 
     if (bDialogEx)
       ((DLGTEMPLATEEX*)pTemplate)->style |= DS_SHELLFONT;
     else
       pTemplate->style |= DS_SHELLFONT;
 
-    int cbNew = cbFontAttr + (((int)StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+    size_t cbNew = cbFontAttr + ((StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
     BYTE* pbNew = (BYTE*)wchFaceName;
 
     BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
-    int cbOld = (int)(bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
+    size_t cbOld = (bHasFont ? cbFontAttr + 2 * (StringCchLen((WCHAR*)(pb + cbFontAttr), 0) + 1) : 0);
 
     BYTE* pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
     BYTE* pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);

@@ -20,7 +20,7 @@
 #include "util/encodings/encodings.h"  // for Encoding
 #include "util/languages/languages.h"  // for Language
 
-#include <string.h>
+#include <cstring>
 
 namespace CompactEncDet {
   // We may want different statistics, depending on whether the text being
@@ -67,9 +67,9 @@ namespace CompactEncDet {
   Encoding DetectEncoding(
       const char* text, int text_length, const char* url_hint,
       const char* http_charset_hint, const char* meta_charset_hint,
-      const int encoding_hint,
-      const Language language_hint,  // User interface lang
-      const TextCorpusType corpus_type, bool ignore_7bit_mail_encodings,
+      int encoding_hint,
+      Language language_hint,  // User interface lang
+      TextCorpusType corpus_type, bool ignore_7bit_mail_encodings,
       int* bytes_consumed, bool* is_reliable);
 
   // Support functions for unit test program

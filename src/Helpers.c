@@ -32,13 +32,13 @@
 #include <shlobj.h>
 #include <shellapi.h>
 //#include <pathcch.h>
-#include "scintilla.h"
+#include "Scintilla.h"
 #include "resource.h"
-#include "edit.h"
-#include "encoding.h"
-#include "notepad3.h"
+#include "Edit.h"
+#include "Encoding.h"
+#include "Notepad3.h"
 
-#include "helpers.h"
+#include "Helpers.h"
 
 //=============================================================================
 
@@ -191,8 +191,7 @@ int IniSectionGetString(
         StringCchCopyN(lpReturnedString, cchReturnedString, (p+ich+1), cchReturnedString);
         return (int)StringCchLen(lpReturnedString, cchReturnedString);
       }
-      else
-        p = StrEnd(p,0) + 1; // skip '\0's
+      p = StrEnd(p,0) + 1; // skip '\0's
     }
   }
   StringCchCopyN(lpReturnedString, cchReturnedString, lpDefault, cchReturnedString);
@@ -208,13 +207,12 @@ int IniSectionGetInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, int iDefault)
     while (*p) {
       if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
         int i = 0;
-        if (swscanf_s((p+ich+1), L"%i", &i) == 1)
+        if (swscanf_s((p + ich + 1), L"%i", &i) == 1) {
           return(i);
-        else
-          return(iDefault);
+        }
+        return(iDefault);
       }
-      else
-        p = StrEnd(p,0) + 1; // skip '\0's
+      p = StrEnd(p,0) + 1; // skip '\0's
     }
   }
   return(iDefault);
@@ -229,13 +227,12 @@ UINT IniSectionGetUInt(LPCWSTR lpCachedIniSection, LPCWSTR lpName, UINT uDefault
     while (*p) {
       if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
         UINT u;
-        if (swscanf_s((p+ich+1), L"%u", &u) == 1)
+        if (swscanf_s((p + ich + 1), L"%u", &u) == 1) {
           return(u);
-        else
-          return(uDefault);
+        }
+        return(uDefault);
       }
-      else
-        p = StrEnd(p,0) + 1; // skip '\0's
+      p = StrEnd(p,0) + 1; // skip '\0's
     }
   }
   return(uDefault);
@@ -250,22 +247,21 @@ DocPos IniSectionGetPos(LPCWSTR lpCachedIniSection, LPCWSTR lpName, DocPos posDe
     while (*p) {
       if ((StrCmpNI(p, lpName, ich) == 0) && (p[ich] == L'=')) {
         long long pos = 0;
-        if (swscanf_s((p+ich+1), L"%lli", &pos) == 1)
+        if (swscanf_s((p + ich + 1), L"%lli", &pos) == 1) {
           return (DocPos)pos;
-        else
-          return (DocPos)posDefault;
+        }
+        return posDefault;
       }
-      else
-        p = StrEnd(p,0) + 1; // skip '\0's
+      p = StrEnd(p,0) + 1; // skip '\0's
     }
   }
-  return (DocPos)posDefault;
+  return posDefault;
 }
 
 
 bool IniSectionSetString(LPWSTR lpCachedIniSection,LPCWSTR lpName,LPCWSTR lpString)
 {
-  // TODO: length limit of lpCachedIniSection
+  // TODO(rkotten): length limit of lpCachedIniSection
   WCHAR* p = lpCachedIniSection;
   if (p && lpString) {
     while (*p) {
@@ -306,13 +302,13 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
   if (lpMsgBuf) {
     // Display the error message and exit the process
     size_t const len = StringCchLenW((LPCWSTR)lpMsgBuf, 0) + StringCchLenW((LPCWSTR)lpszFunction, 0) + 80;
-    LPVOID lpDisplayBuf = (LPVOID)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    LPWSTR lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
 
     if (lpDisplayBuf) {
-      StringCchPrintf((LPWSTR)lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
+      StringCchPrintf(lpDisplayBuf, len, L"Error: '%s' failed with error id %d:\n%s.\n",
                       lpszFunction, dwErrID, (LPCWSTR)lpMsgBuf);
 
-      MessageBox(NULL, (LPCWSTR)lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
+      MessageBox(NULL, lpDisplayBuf, L"Notepad3 - ERROR", MB_OK | MB_ICONEXCLAMATION);
 
       FreeMem(lpDisplayBuf);
     }
@@ -658,12 +654,10 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 
   ustate = GetMenuState(hmenu,uId,MF_BYCOMMAND);
 
-  if (ustate == 0xFFFFFFFF)
+  if (ustate == 0xFFFFFFFF) {
     return true;
-
-  else
-    return (!(ustate & (MF_GRAYED|MF_DISABLED)));
-
+  }
+  return (!(ustate & (MF_GRAYED|MF_DISABLED)));
 }
 
 //=============================================================================
@@ -714,8 +708,7 @@ int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
     FreeMem(pBuffer);
     return (int)StringCchLenW(lpOutput, nOutput);
   }
-  else
-    return 0;
+  return 0;
 }
 
 //=============================================================================
@@ -732,8 +725,7 @@ int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
     FreeMem(pBuffer);
     return (int)StringCchLenA(lpOutput, nOutput);
   }
-  else 
-    return 0;
+  return 0;
 }
 
 
@@ -875,10 +867,10 @@ bool PathIsLnkFile(LPCWSTR pszPath)
   if (!pszPath || !*pszPath)
     return false;
 
-  if (StringCchCompareXI(PathFindExtension(pszPath),L".lnk"))
+  if (StringCchCompareXI(PathFindExtension(pszPath), L".lnk")) {
     return false;
-  else
-    return PathGetLnkPath(pszPath,tchResPath,COUNTOF(tchResPath));
+  }
+  return PathGetLnkPath(pszPath,tchResPath,COUNTOF(tchResPath));
 }
 
 
@@ -901,11 +893,11 @@ bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
 
   if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
                                  CLSCTX_INPROC_SERVER,
-                                 &IID_IShellLink,&psl)))
+                                 &IID_IShellLink,(void**)&psl)))
   {
     IPersistFile *ppf;
 
-    if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,&ppf)))
+    if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,(void**)&ppf)))
     {
       WORD wsz[MAX_PATH] = { L'\0' };
 
@@ -948,27 +940,16 @@ bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
 //
 bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
 {
-
   WCHAR tchResPath[MAX_PATH] = { L'\0' };
-
-  if (PathIsLnkFile(pszPath)) 
-  {
-    if (PathGetLnkPath(pszPath,tchResPath,sizeof(WCHAR)*COUNTOF(tchResPath))) 
-    {
-      if (PathIsDirectory(tchResPath)) 
-      {
-        StringCchCopyN(pszResPath,cchResPath,tchResPath,COUNTOF(tchResPath));
+  if (PathIsLnkFile(pszPath)) {
+    if (PathGetLnkPath(pszPath, tchResPath, sizeof(WCHAR)*COUNTOF(tchResPath))) {
+      if (PathIsDirectory(tchResPath)) {
+        StringCchCopyN(pszResPath, cchResPath, tchResPath, COUNTOF(tchResPath));
         return (true);
       }
-      else
-        return false;
-      }
-    else
-      return false;
     }
-  else
-    return false;
-
+  }
+  return false;
 }
 
 
@@ -1019,11 +1000,11 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
 
   if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
                                  CLSCTX_INPROC_SERVER,
-                                 &IID_IShellLink,&psl)))
+                                 &IID_IShellLink,(void**)&psl)))
   {
     IPersistFile *ppf;
 
-    if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,&ppf)))
+    if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,(void**)&ppf)))
     {
       WORD wsz[MAX_PATH] = { L'\0' };
 
@@ -1076,11 +1057,11 @@ bool PathCreateFavLnk(LPCWSTR pszName,LPCWSTR pszTarget,LPCWSTR pszDir)
 
   if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
                                  CLSCTX_INPROC_SERVER,
-                                 &IID_IShellLink,&psl)))
+                                 &IID_IShellLink,(void**)&psl)))
   {
     IPersistFile *ppf;
 
-    if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,&ppf)))
+    if (SUCCEEDED(psl->lpVtbl->QueryInterface(psl,&IID_IPersistFile,(void**)&ppf)))
     {
       WORD wsz[MAX_PATH] = { L'\0' };
 
@@ -1328,25 +1309,22 @@ DWORD NormalizePathEx(LPWSTR lpszPath,int len)
 //  Return a default name when the file has been removed, and always append
 //  a filename extension
 //
-DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,
-                         SHFILEINFO *psfi,UINT cbFileInfo,UINT uFlags)
+DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath, DWORD dwFileAttributes,
+                         SHFILEINFO *psfi, UINT cbFileInfo, UINT uFlags)
 {
-
-  if (PathFileExists(pszPath)) {
-
-    DWORD_PTR dw = SHGetFileInfo(pszPath,dwFileAttributes,psfi,cbFileInfo,uFlags);
-    if (StringCchLenW(psfi->szDisplayName,COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath),MAX_PATH))
-      StringCchCat(psfi->szDisplayName,COUNTOF(psfi->szDisplayName),PathFindExtension(pszPath));
+  if (PathFileExists(pszPath)) 
+  {
+    DWORD_PTR dw = SHGetFileInfo(pszPath, dwFileAttributes, psfi, cbFileInfo, uFlags);
+    if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH))
+      StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
     return(dw);
   }
 
-  else {
-    DWORD_PTR dw = SHGetFileInfo(pszPath,FILE_ATTRIBUTE_NORMAL,psfi,cbFileInfo,uFlags|SHGFI_USEFILEATTRIBUTES);
-    if (StringCchLenW(psfi->szDisplayName,COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath),MAX_PATH))
-      StringCchCat(psfi->szDisplayName,COUNTOF(psfi->szDisplayName),PathFindExtension(pszPath));
-    return(dw);
+  DWORD_PTR dw = SHGetFileInfo(pszPath, FILE_ATTRIBUTE_NORMAL, psfi, cbFileInfo, uFlags | SHGFI_USEFILEATTRIBUTES);
+  if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH)) {
+    StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
   }
-
+  return(dw);
 }
 
 
@@ -1453,10 +1431,10 @@ LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 UINT CodePageFromCharSet(UINT uCharSet)
 {
   CHARSETINFO ci;
-  if (TranslateCharsetInfo((DWORD*)(UINT_PTR)uCharSet,&ci,TCI_SRCCHARSET))
+  if (TranslateCharsetInfo((DWORD*)(UINT_PTR)uCharSet, &ci, TCI_SRCCHARSET)) {
     return(ci.ciACP);
-  else
-    return(GetACP());
+  }
+  return(GetACP());
 }
 
 
@@ -1466,10 +1444,10 @@ UINT CodePageFromCharSet(UINT uCharSet)
 //
 UINT CharSetFromCodePage(UINT uCodePage) {
   CHARSETINFO ci;
-  if (TranslateCharsetInfo((DWORD*)(UINT_PTR)uCodePage,&ci,TCI_SRCCODEPAGE))
+  if (TranslateCharsetInfo((DWORD*)(UINT_PTR)uCodePage, &ci, TCI_SRCCODEPAGE)) {
     return(ci.ciCharset);  // corresponds to SCI: SC_CHARSET_XXX
-  else
-    return(ANSI_CHARSET);
+  }
+  return(ANSI_CHARSET);
 }
 
 
@@ -1505,10 +1483,10 @@ bool MRU_Destroy(LPMRULIST pmru)
 
 int MRU_Compare(LPMRULIST pmru,LPCWSTR psz1,LPCWSTR psz2) 
 {
-  if (pmru->iFlags & MRU_NOCASE)
-    return(StringCchCompareXI(psz1,psz2));
-  else
-    return(StringCchCompareX(psz1,psz2));
+  if (pmru->iFlags & MRU_NOCASE) {
+    return(StringCchCompareXI(psz1, psz2));
+  }
+  return(StringCchCompareX(psz1,psz2));
 }
 
 bool MRU_Add(LPMRULIST pmru,LPCWSTR pszNew, int iEnc, DocPos iPos, LPCWSTR pszBookMarks)
@@ -1542,16 +1520,14 @@ bool MRU_FindFile(LPMRULIST pmru,LPCWSTR pszFile,int* iIndex) {
       *iIndex = i;
       return false;
     }
-    else if (StringCchCompareXI(pmru->pszItems[i],pszFile) == 0) {
+    if (StringCchCompareXI(pmru->pszItems[i],pszFile) == 0) {
       *iIndex = i;
       return true;
     }
-    else {
-      PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),true);
-      if (StringCchCompareXI(wchItem,pszFile) == 0) {
-        *iIndex = i;
-        return true;
-      }
+    PathAbsoluteFromApp(pmru->pszItems[i],wchItem,COUNTOF(wchItem),true);
+    if (StringCchCompareXI(wchItem,pszFile) == 0) {
+      *iIndex = i;
+      return true;
     }
   }
   *iIndex = i;
@@ -1653,22 +1629,18 @@ bool MRU_Empty(LPMRULIST pmru)
   return true;
 }
 
-int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem) 
+int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
 {
   if (pszItem == NULL || cchItem == 0) {
     int i = 0;
-    while (i < pmru->iSize && pmru->pszItems[i])
-      i++;
+    while (i < pmru->iSize && pmru->pszItems[i]) { ++i; }
     return(i);
   }
-  else {
-    if (iIndex < 0 || iIndex > pmru->iSize-1 || !pmru->pszItems[iIndex])
-      return(-1);
-    else {
-      StringCchCopyN(pszItem,cchItem,pmru->pszItems[iIndex],cchItem);
-      return((int)StringCchLen(pszItem,cchItem));
-    }
+  if (iIndex < 0 || iIndex > pmru->iSize - 1 || !pmru->pszItems[iIndex]) {
+    return(-1);
   }
+  StringCchCopyN(pszItem, cchItem, pmru->pszItems[iIndex], cchItem);
+  return((int)StringCchLen(pszItem, cchItem));
 }
 
 bool MRU_Load(LPMRULIST pmru) 
@@ -1793,14 +1765,11 @@ bool MRU_MergeSave(LPMRULIST pmru,bool bAddFiles,bool bRelativePath,bool bUnexpa
 }
 
 
-/******************************************************************************
-*
-*  UnSlash functions
-*  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
-*
-/
-
-/**
+/** ******************************************************************************
+ *
+ *  UnSlash functions
+ *  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
+ *
  * Convert C style \a, \b, \f, \n, \r, \t, \v, \xhh and \uhhhh into their indicated characters.
  */
 unsigned int UnSlash(char *s,UINT cpEdit) {
@@ -2235,7 +2204,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
         }
       }
     }
-    //TODO: HTML Hex encoded (&#x...)
+    // TODO(rkotten): HTML Hex encoded (&#x...)
     if (!bOk) {
       posOut += WideCharToMultiByte(Encoding_SciCP, 0, &(lpURL[posIn++]), 1, 
                                     &(outBuffer[posOut]), (MBWC_DocPos_Cast)(outLen - posOut), NULL, NULL);
@@ -2263,7 +2232,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 //  ReadStrgsFromCSV()
 //
 //
-int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int const iCount, int const iLen, LPCWSTR sDefault)
+int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault)
 {
   static WCHAR wchTmpBuff[MIDSZ_BUFFER];
 
@@ -2518,7 +2487,7 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_QueryInterface(PIDROPTARGET pThis, REFI
     *ppvObject = pThis;
     return S_OK;
   }
-  else if (IsEqualGUID(riid, &IID_IDropTarget))
+  if (IsEqualGUID(riid, &IID_IDropTarget))
   {
     IDRPTRG_AddRef(pThis);
     *ppvObject = pThis;
@@ -2676,7 +2645,7 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *p
 //
 //  CreateDropTarget()
 //
-IDropTarget* CreateDropTarget(CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT nMsg,
+IDropTarget* CreateDropTarget(const CLIPFORMAT *pFormat, ULONG lFmt, HWND hWnd, UINT nMsg,
   DWORD(*pDropProc)(CLIPFORMAT cf, HGLOBAL hData, HWND hWnd, DWORD dwKeyState, POINTL pt, void *pUserData),
   void *pUserData)
 {
@@ -2754,4 +2723,4 @@ PDROPTARGET RevokeDragAndDrop(PDROPTARGET pTarget)
   return NULL;
 }
 
-///   End of Helpers.c   \\\
+///   End of Helpers.c   ///

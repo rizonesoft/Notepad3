@@ -15,12 +15,15 @@
 #define _NP3_TYPEDEFS_H_
 
 #include <intsafe.h>
+
+#ifndef __cplusplus
 #include <stdbool.h>
+#endif
 
 #include "Sci_Position.h"
 
 //
-// TODO:
+// TODO(rkotten): 
 // SCI_CREATEDOCUMENT (SC_DOCUMENTOPTION_TEXT_LARGE)
 //
 
@@ -39,7 +42,7 @@ typedef DocPos         DocLn;   // Sci::Line
 #define DOCPOSFMTA "%ti"
 #define DOCPOSFMTW L"%ti"
 
-// TODO: refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
+// TODO(rkotten): refactoring of MultiByteToWideChar / WideCharToMultiByte DocPos casting refactoring
 typedef int MBWC_DocPos_Cast; 
 
 // --------------------------------------------------------------------------
