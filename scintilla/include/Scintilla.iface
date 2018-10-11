@@ -267,8 +267,8 @@ get int GetIMEInteraction=2678(,)
 set void SetIMEInteraction=2679(int imeInteraction,)
 
 # >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-get bool IsIMEOpen=2717(,)
-get bool IsIMEModeCJK=2718(,)
+get bool IsIMEOpen=2719(,)
+get bool IsIMEModeCJK=2720(,)
 # <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enu MarkerSymbol=SC_MARK_
@@ -1812,6 +1812,12 @@ get int GetDocumentOptions=2379(,)
 
 # Get which document modification events are sent to the container.
 get int GetModEventMask=2378(,)
+
+# Set whether command events are sent to the container.
+set void SetCommandEvents=2717(bool commandEvents,)
+
+# Get whether command events are sent to the container.
+get bool GetCommandEvents=2718(,)
 
 # Change internal focus flag.
 set void SetFocus=2380(bool focus,)
