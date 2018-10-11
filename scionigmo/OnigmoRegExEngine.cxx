@@ -59,7 +59,7 @@ using namespace Scintilla;
 // ***   Oningmo configuration   ***
 // ============================================================================
 
-const OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_UTF8;  // ONIG_ENCODING_ASCII;
+constexpr OnigEncoding g_pOnigEncodingType = ONIG_ENCODING_UTF8;  // ONIG_ENCODING_ASCII;
 static OnigEncoding g_UsedEncodingsTypes[] = { g_pOnigEncodingType };
 
 // ============================================================================
@@ -147,16 +147,16 @@ RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 *
 * Is the character an octal digit?
 */
-inline bool IsOctalDigit(char ch)
+constexpr bool IsOctalDigit(char ch)
 {
   return ((ch >= '0') && (ch <= '7'));
 }
 // ----------------------------------------------------------------------------
 
 /**
-* If the character is an hexa digit, get its value.
+* If the character is an hex digit, get its value.
 */
-inline int GetHexDigit(char ch)
+constexpr int GetHexDigit(char ch)
 {
   if ((ch >= '0') && (ch <= '9')) {
     return (ch - '0');
