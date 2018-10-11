@@ -19,7 +19,7 @@
 
 #ifdef SCI_OWNREGEX
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -46,14 +46,14 @@
 #include "onigmo.h"   // Onigmo - Regular Expression Engine (v6.1.3)
 // ---------------------------------------------------------------
 
+#define UCharPtr(pchar) reinterpret_cast<OnigUChar*>(pchar)
+#define UCharCPtr(pchar) reinterpret_cast<const OnigUChar*>(pchar)
+
 using namespace Scintilla;
 
-#define SciPos(pos)    static_cast<Sci::Position>(pos)
-#define SciLn(line)    static_cast<Sci::Line>(line)
-#define SciPosExt(pos) static_cast<Sci_Position>(pos)
-
-//#define Cast2long(n)   static_cast<long>(n)
-
+#define SciPos(pos)     static_cast<Sci::Position>(pos)
+#define SciLn(line)     static_cast<Sci::Line>(line)
+#define SciPosExt(pos)  static_cast<Sci_Position>(pos)
 
 // ============================================================================
 // ***   Oningmo configuration   ***
@@ -70,33 +70,30 @@ class OnigmoRegExEngine : public RegexSearchBase
 public:
 
   explicit OnigmoRegExEngine(CharClassify* charClassTable)
-    : m_RegExprStrg()
-    , m_OnigSyntax(*ONIG_SYNTAX_PERL)
+    : m_OnigSyntax(*ONIG_SYNTAX_PERL)
     , m_CmplOptions(ONIG_OPTION_DEFAULT)
     , m_RegExpr(nullptr)
     , m_Region({0,0,nullptr,nullptr,nullptr})
     , m_ErrorInfo()
     , m_MatchPos(ONIG_MISMATCH)
     , m_MatchLen(0)
-    , m_SubstBuffer()
   {
     m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END;
     onig_initialize(g_UsedEncodingsTypes, _ARRAYSIZE(g_UsedEncodingsTypes));
     onig_region_init(&m_Region);
   }
 
-  virtual ~OnigmoRegExEngine()
+  ~OnigmoRegExEngine() override
   {
     onig_region_free(&m_Region, 0);
     onig_free(m_RegExpr);
     onig_end();
   }
 
-  virtual Sci::Position FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
-                                 bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position* length) override;
+  Sci::Position FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
+                         bool caseSensitive, bool word, bool wordStart, int searchFlags, Sci::Position* length) override;
 
-  virtual const char* SubstituteByPosition(Document* doc, const char* text, Sci::Position* length) override;
-
+  const char* SubstituteByPosition(Document* doc, const char* text, Sci::Position* length) override;
 
   const OnigRegion& GetRegion() const { return m_Region; };
 
@@ -148,30 +145,27 @@ RegexSearchBase *Scintilla::CreateRegexSearch(CharClassify *charClassTable)
 *  UnSlash functions
 *  Mostly taken from SciTE, (c) Neil Hodgson, http://www.scintilla.org
 *
-/
-
-/**
 * Is the character an octal digit?
 */
-static bool IsOctalDigit(char ch)
+inline bool IsOctalDigit(char ch)
 {
-  return ch >= '0' && ch <= '7';
+  return ((ch >= '0') && (ch <= '7'));
 }
 // ----------------------------------------------------------------------------
 
 /**
 * If the character is an hexa digit, get its value.
 */
-static int GetHexDigit(char ch)
+inline int GetHexDigit(char ch)
 {
-  if (ch >= '0' && ch <= '9') {
-    return ch - '0';
+  if ((ch >= '0') && (ch <= '9')) {
+    return (ch - '0');
   }
-  if (ch >= 'A' && ch <= 'F') {
-    return ch - 'A' + 10;
+  if ((ch >= 'A') && (ch <= 'F')) {
+    return (ch - 'A' + 10);
   }
-  if (ch >= 'a' && ch <= 'f') {
-    return ch - 'a' + 10;
+  if ((ch >= 'a') && (ch <= 'f')) {
+    return (ch - 'a' + 10);
   }
   return -1;
 }
@@ -212,10 +206,10 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
     return SciPos(-1);
   }
 
-  Sci::Position docLen = SciPos(doc->Length());
+  auto const docLen = SciPos(doc->Length());
 
-  const bool findForward = (minPos <= maxPos);
-  const int increment = findForward ? 1 : -1;
+  bool const findForward = (minPos <= maxPos);
+  int const increment = findForward ? 1 : -1;
 
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
   minPos = doc->MovePositionOutsideChar(minPos, increment, false);
@@ -256,9 +250,10 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
   ONIG_OPTION_ON(onigmoOptions, (rangeBeg != 0) ? ONIG_OPTION_NOTBOL : ONIG_OPTION_NONE);
   ONIG_OPTION_ON(onigmoOptions, (rangeEnd != docLen) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
 
-  std::string sRegExprStrg = translateRegExpr(std::string(pattern), word, wordStart, doc->eolMode, onigmoOptions);
+  std::string sPattern(pattern);
+  std::string const sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigmoOptions);
 
-  bool bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigmoOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
+  bool const bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigmoOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
 
   if (bReCompile) {
     m_RegExprStrg.clear();
@@ -270,10 +265,10 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
 
       onig_region_free(&m_Region, 0);
 
-      int res = onig_new(&m_RegExpr, (UChar*)m_RegExprStrg.c_str(), (UChar*)(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
+      int res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
                          m_CmplOptions, g_pOnigEncodingType, &m_OnigSyntax, &einfo);
       if (res != 0) {
-        onig_error_code_to_str((UChar*)m_ErrorInfo, res, &einfo);
+        onig_error_code_to_str(UCharPtr(m_ErrorInfo), res, &einfo);
         return SciPos(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
       }
 
@@ -288,10 +283,10 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
   m_MatchLen = SciPos(0);
 
   // ---  search document range for pattern match   ---
-  UChar* docBegPtr = (UChar*)doc->RangePointer(0, docLen);
-  UChar* docSEndPtr = (UChar*)doc->RangePointer(docLen, 0);
-  UChar* rangeBegPtr = (UChar*)doc->RangePointer(rangeBeg, rangeLen);
-  UChar* rangeEndPtr = (UChar*)doc->RangePointer(rangeEnd, 0);
+  auto const docBegPtr = UCharCPtr(doc->RangePointer(0, docLen));
+  auto const docSEndPtr = UCharCPtr(doc->RangePointer(docLen, 0));
+  auto const rangeBegPtr = UCharCPtr(doc->RangePointer(rangeBeg, rangeLen));
+  auto const rangeEndPtr = UCharCPtr(doc->RangePointer(rangeEnd, 0));
 
   OnigPosition result = ONIG_MISMATCH;
   try {
@@ -305,7 +300,7 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
   }
 
   if (result < ONIG_MISMATCH) {
-    onig_error_code_to_str((UChar*)m_ErrorInfo, result);
+    onig_error_code_to_str(UCharPtr(m_ErrorInfo), result);
     return SciPos(-3);
   }
 
@@ -361,12 +356,12 @@ const char* OnigmoRegExEngine::SubstituteByPosition(Document* doc, const char* t
     *length = SciPos(-1);
     return nullptr;
   }
-
-  std::string rawReplStrg = convertReplExpr(std::string(text, *length));
+  std::string sText(text, *length);
+  std::string const rawReplStrg = convertReplExpr(sText);
 
   m_SubstBuffer.clear();
 
-  //TODO: allow for arbitrary number of grups/regions
+  //TODO: allow for arbitrary number of groups/regions
 
   for (size_t j = 0; j < rawReplStrg.length(); j++) 
   {
@@ -375,13 +370,13 @@ const char* OnigmoRegExEngine::SubstituteByPosition(Document* doc, const char* t
     {
       if ((rawReplStrg[j + 1] >= '0') && (rawReplStrg[j + 1] <= '9'))
       {
-        int grpNum = rawReplStrg[j + 1] - '0';
+        int const grpNum = rawReplStrg[j + 1] - '0';
         if (grpNum < m_Region.num_regs)
         {
-          Sci::Position rBeg = SciPos(m_Region.beg[grpNum]);
-          Sci::Position len = SciPos(m_Region.end[grpNum] - rBeg);
+          auto const rBeg = SciPos(m_Region.beg[grpNum]);
+          auto const  len = SciPos(m_Region.end[grpNum] - rBeg);
 
-          m_SubstBuffer.append(doc->RangePointer(rBeg, len), (size_t)len);
+          m_SubstBuffer.append(doc->RangePointer(rBeg, len), static_cast<size_t>(len));
         }
         bReplaced = true;
         ++j;
@@ -391,17 +386,17 @@ const char* OnigmoRegExEngine::SubstituteByPosition(Document* doc, const char* t
         size_t k = ((rawReplStrg[j + 1] == '+') && (rawReplStrg[j + 2] == '{')) ? (j + 3) : ((rawReplStrg[j + 1] == '{') ? (j + 2) : 0);
         if (k > 0) {
           // named group replacemment
-          UChar* name_beg = (UChar*)&(rawReplStrg[k]);
+          auto const name_beg = UCharCPtr(&(rawReplStrg[k]));
           while (rawReplStrg[k] &&  IsCharAlphaNumericA(rawReplStrg[k])) { ++k; }
           if (rawReplStrg[k] == '}')
           {
-            int grpNum = onig_name_to_backref_number(m_RegExpr, name_beg, (UChar*)&(rawReplStrg[k]), &m_Region);
+            int const grpNum = onig_name_to_backref_number(m_RegExpr, name_beg, UCharCPtr(&(rawReplStrg[k])), &m_Region);
             if ((grpNum >= 0) && (grpNum < m_Region.num_regs))
             {
-              Sci::Position rBeg = SciPos(m_Region.beg[grpNum]);
-              Sci::Position len = SciPos(m_Region.end[grpNum] - rBeg);
+              auto const rBeg = SciPos(m_Region.beg[grpNum]);
+              auto const  len = SciPos(m_Region.end[grpNum] - rBeg);
 
-              m_SubstBuffer.append(doc->RangePointer(rBeg, len), (size_t)len);
+              m_SubstBuffer.append(doc->RangePointer(rBeg, len), static_cast<size_t>(len));
             }
             bReplaced = true;
             j = k;
@@ -575,23 +570,23 @@ std::string& OnigmoRegExEngine::convertReplExpr(std::string& replStr)
           hex = GetHexDigit(replStr[i]);
           if (hex >= 0) {
             ++i;
-            val[0] = (WCHAR)hex;
+            val[0] = static_cast<WCHAR>(hex);
             hex = GetHexDigit(replStr[i]);
             if (hex >= 0) {
               ++i;
               val[0] *= 16;
-              val[0] += (WCHAR)hex;
+              val[0] += static_cast<WCHAR>(hex);
               if (!bShort) {
                 hex = GetHexDigit(replStr[i]);
                 if (hex >= 0) {
                   ++i;
                   val[0] *= 16;
-                  val[0] += (WCHAR)hex;
+                  val[0] += static_cast<WCHAR>(hex);
                   hex = GetHexDigit(replStr[i]);
                   if (hex >= 0) {
                     ++i;
                     val[0] *= 16;
-                    val[0] += (WCHAR)hex;
+                    val[0] += static_cast<WCHAR>(hex);
                   }
                 }
               }
