@@ -7264,6 +7264,8 @@ struct SCNotification {
     <p>The following <code>SCI_*</code> messages are associated with these notifications:</p>
     <code><a class="message" href="#SCI_SETMODEVENTMASK">SCI_SETMODEVENTMASK(int eventMask)</a><br />
      <a class="message" href="#SCI_GETMODEVENTMASK">SCI_GETMODEVENTMASK &rarr; int</a><br />
+     <a class="message" href="#SCI_SETCOMMANDEVENTS">SCI_SETCOMMANDEVENTS(bool commandEvents)</a><br />
+     <a class="message" href="#SCI_GETCOMMANDEVENTS">SCI_GETCOMMANDEVENTS &rarr; bool</a><br />
      <a class="message" href="#SCI_SETMOUSEDWELLTIME">SCI_SETMOUSEDWELLTIME(int periodMilliseconds)</a><br />
      <a class="message" href="#SCI_GETMOUSEDWELLTIME">SCI_GETMOUSEDWELLTIME &rarr; int</a><br />
      <a class="message" href="#SCI_SETIDENTIFIER">SCI_SETIDENTIFIER(int identifier)</a><br />
@@ -7750,7 +7752,9 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     <code>EN_CHANGE</code>). No other information is sent. If you need more detailed information
     use <a class="message" href="#SCN_MODIFIED"><code>SCN_MODIFIED</code></a>. You can filter the
     types of changes you are notified about with <a class="message"
-    href="#SCI_SETMODEVENTMASK"><code>SCI_SETMODEVENTMASK</code></a>.</p>
+    href="#SCI_SETMODEVENTMASK"><code>SCI_SETMODEVENTMASK</code></a> and
+    <a class="message"
+    href="#SCI_SETCOMMANDEVENTS"><code>SCI_SETCOMMANDEVENTS</code></a>.</p>
 
     <p><b id="SCI_SETMODEVENTMASK">SCI_SETMODEVENTMASK(int eventMask)</b><br />
      <b id="SCI_GETMODEVENTMASK">SCI_GETMODEVENTMASK &rarr; int</b><br />
@@ -7769,6 +7773,14 @@ href="#SCI_POSITIONFROMLINE">SCI_POSITIONFROMLINE</a>(lineNumber);
     <code>SC_LASTSTEPINUNDOREDO</code>, <code>SC_MOD_CHANGEMARKER</code>,
     <code>SC_MOD_BEFOREINSERT</code>, <code>SC_MOD_BEFOREDELETE</code>,
     <code>SC_MULTILINEUNDOREDO</code>, and <code>SC_MODEVENTMASKALL</code>.</p>
+
+    <p><b id="SCI_SETCOMMANDEVENTS">SCI_SETCOMMANDEVENTS(bool commandEvents)</b><br />
+     <b id="SCI_GETCOMMANDEVENTS">SCI_GETCOMMANDEVENTS &rarr; bool</b><br />
+     These messages set and get whether <code>SCEN_*</code> command events are
+    sent to the container. For <code>SCEN_CHANGE</code> this acts as an additional filter over
+    <a class="message" href="#SCI_SETMODEVENTMASK"><code>SCI_SETMODEVENTMASK</code></a>.
+    Most applications should set this off to avoid overhead and only use
+    <a class="message" href="#SCN_MODIFIED"><code>SCN_MODIFIED</code></a>.</p>
 
     <p><b id="SCEN_SETFOCUS">SCEN_SETFOCUS</b><br />
      <b id="SCEN_KILLFOCUS">SCEN_KILLFOCUS</b><br />

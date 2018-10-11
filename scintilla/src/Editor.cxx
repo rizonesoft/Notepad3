@@ -181,6 +181,7 @@ Editor::Editor() {
 	needIdleStyling = false;
 
 	modEventMask = SC_MODEVENTMASKALL;
+	commandEvents = true;
 
 	pdoc->AddWatcher(this, 0);
 
@@ -2677,9 +2678,11 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 
 	// If client wants to see this modification
 	if (mh.modificationType & modEventMask) {
-		if ((mh.modificationType & (SC_MOD_CHANGESTYLE | SC_MOD_CHANGEINDICATOR)) == 0) {
-			// Real modification made to text of document.
-			NotifyChange();	// Send EN_CHANGE
+		if (commandEvents) {
+			if ((mh.modificationType & (SC_MOD_CHANGESTYLE | SC_MOD_CHANGEINDICATOR)) == 0) {
+				// Real modification made to text of document.
+				NotifyChange();	// Send EN_CHANGE
+			}
 		}
 
 		SCNotification scn = {};
@@ -7664,6 +7667,13 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETMODEVENTMASK:
 		return modEventMask;
+
+	case SCI_SETCOMMANDEVENTS:
+		commandEvents = static_cast<bool>(wParam);
+		return 0;
+
+	case SCI_GETCOMMANDEVENTS:
+		return commandEvents;
 
 	case SCI_CONVERTEOLS:
 		pdoc->ConvertLineEnds(static_cast<int>(wParam));

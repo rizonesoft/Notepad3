@@ -32,7 +32,7 @@ typedef __int64 (*LexFunctionPtr_t)(LexFunctionType type, int value);
 
 typedef struct _editstyle
 {
-#pragma warning(disable : 4201)  // MS's Non-Std: Struktur/Union ohne Namen
+#pragma warning(disable : 4201)  // MS's Non-Std: Structure/Union w/o name
   union
   {
     INT32 iStyle;
@@ -53,7 +53,7 @@ typedef struct _keywordlist
 } KEYWORDLIST, *PKEYWORDLIST;
 
 
-#pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Struktur/Union
+#pragma warning(disable : 4200)  // MS's Non-Std: Null-Array in Structure/Union
 typedef struct _editlexer
 {
   int lexerID;

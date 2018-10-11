@@ -2120,9 +2120,11 @@ void ScintillaWin::NotifyChange() noexcept {
 }
 
 void ScintillaWin::NotifyFocus(bool focus) {
-	::SendMessage(::GetParent(MainHWND()), WM_COMMAND,
-		MAKELONG(GetCtrlID(), focus ? SCEN_SETFOCUS : SCEN_KILLFOCUS),
-		reinterpret_cast<LPARAM>(MainHWND()));
+	if (commandEvents) {
+		::SendMessage(::GetParent(MainHWND()), WM_COMMAND,
+			MAKELONG(GetCtrlID(), focus ? SCEN_SETFOCUS : SCEN_KILLFOCUS),
+			reinterpret_cast<LPARAM>(MainHWND()));
+	}
 	Editor::NotifyFocus(focus);
 }
 
