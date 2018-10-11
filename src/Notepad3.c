@@ -1283,6 +1283,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_WINDOWPOSCHANGING:
     case WM_WINDOWPOSCHANGED:
     case WM_TIMER:
+    case WM_KEYDOWN:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYDOWN:
@@ -1296,7 +1297,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
-       
+
     case WM_SYSKEYUP:
       if (!(GetAsyncKeyState(VK_MENU) & SHRT_MIN))  // NOT ALT-KEY DOWN
       {
@@ -2513,12 +2514,9 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   return 0LL;
 }
 
-
-
 //=============================================================================
 //
 //  MsgChangeNotify() - Handles WM_CHANGENOTIFY
-//
 //
 LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
@@ -5144,14 +5142,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+#if 0
+    case CMD_LEFT:
+      //Sci_SendMsgV0(CHARLEFT);
+      SciCall_GotoPos(SciCall_PositionBefore(SciCall_GetCurrentPos()));
+      break;
+
+    case CMD_RIGHT:
+      //Sci_SendMsgV0(CHARRIGHT);
+      SciCall_GotoPos(SciCall_PositionAfter(SciCall_GetCurrentPos()));
+      break;
+#endif
 
     case CMD_CTRLLEFT:
-        SendMessage(Globals.hwndEdit, SCI_WORDLEFT, 0, 0);
+      Sci_SendMsgV0(WORDLEFT);
       break;
 
 
     case CMD_CTRLRIGHT:
-        SendMessage(Globals.hwndEdit, SCI_WORDRIGHT, 0, 0);
+      Sci_SendMsgV0(WORDRIGHT);
       break;
 
 

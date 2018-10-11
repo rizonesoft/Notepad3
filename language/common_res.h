@@ -327,6 +327,8 @@
 #define CMD_FULLSCRWINPOS               20050
 #define CMD_DEFAULTWINPOS               20051
 #define CMD_SAVEASDEFWINPOS             20052
+//#define CMD_LEFT                        20053
+//#define CMD_RIGHT                       20054
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
