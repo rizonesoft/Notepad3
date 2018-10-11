@@ -463,7 +463,7 @@
 #define IDM_VIEW_SHOWEOLS               40408
 #define IDM_VIEW_WORDWRAPSYMBOLS        40409
 #define IDM_VIEW_MATCHBRACES            40410
-#define IDM_VIEW_HILITECURRENTLINE      40411
+#define IDM_VIEW_HIGHLIGHTCURRENTLINE   40411
 #define IDM_VIEW_LINENUMBERS            40412
 #define IDM_VIEW_MARGIN                 40413
 #define IDM_VIEW_ZOOMIN                 40414
