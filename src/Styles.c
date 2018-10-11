@@ -3195,7 +3195,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         hFontTitle = CreateFontIndirect(&lf);
         SendDlgItemMessage(hwnd,IDC_TITLE,WM_SETFONT,(WPARAM)hFontTitle,true);
 
-        if (Settings.CustomSchemesDlgPosX == 0 || Settings.CustomSchemesDlgPosY == 0)
+        if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT)
           CenterDlgInParent(hwnd);
         else
           SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
@@ -3714,7 +3714,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
 
         case IDACC_RESETPOS:
           CenterDlgInParent(hwnd);
-          Settings.CustomSchemesDlgPosX = Settings.CustomSchemesDlgPosY = 0;
+          Settings.CustomSchemesDlgPosX = Settings.CustomSchemesDlgPosY = CW_USEDEFAULT;
           break;
 
 

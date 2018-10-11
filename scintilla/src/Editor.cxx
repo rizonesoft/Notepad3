@@ -4160,9 +4160,7 @@ std::string Editor::RangeText(Sci::Position start, Sci::Position end) const {
 	if (start < end) {
 		const Sci::Position len = end - start;
 		std::string ret(len, '\0');
-		for (int i = 0; i < len; i++) {
-			ret[i] = pdoc->CharAt(start + i);
-		}
+		pdoc->GetCharRange(ret.data(), start, len);
 		return ret;
 	}
 	return std::string();
