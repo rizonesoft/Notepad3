@@ -5857,9 +5857,9 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 {
   char const cStyle = SciCall_GetStyleAt(position);
+  int const iStyleID = Style_GetHotspotStyleID();
 
-  if ((int)cStyle != Style_GetHotspotStyleID()) { return; }
-  if (!SciCall_StyleGetHotspot(Style_GetHotspotStyleID())) { return; }
+  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return; }
 
   // get left most position of style
   DocPos pos = position;
