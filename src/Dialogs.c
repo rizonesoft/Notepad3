@@ -3399,7 +3399,7 @@ Based on code of MFC helper class CDialogTemplate
 bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 {
   bool bSucceed = false;
-  UINT const ppi = GetCurrentPPI(NULL);
+  DPI_T const ppi = GetCurrentPPI(NULL);
 
   HTHEME hTheme = OpenThemeData(NULL, L"WINDOWSTYLE;WINDOW");
   if (hTheme) {
@@ -3408,7 +3408,7 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
       if (lf.lfHeight < 0) {
         lf.lfHeight = -lf.lfHeight;
       }
-      *wSize = (WORD)MulDiv(lf.lfHeight, 72, ppi);
+      *wSize = (WORD)MulDiv(lf.lfHeight, 72, ppi.y);
       if (*wSize == 0) { *wSize = 8; }
       StringCchCopyN(lpFaceName, LF_FACESIZE, lf.lfFaceName, LF_FACESIZE);
       bSucceed = true;

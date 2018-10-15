@@ -1676,8 +1676,8 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
-  Globals.uCurrentDPI = GetCurrentDPI(hwnd);
-  Globals.uCurrentPPI = GetCurrentPPI(hwnd);
+  Globals.CurrentDPI = GetCurrentDPI(hwnd);
+  Globals.CurrentPPI = GetCurrentPPI(hwnd);
 
   // Setup edit control
   Globals.hwndEdit = CreateWindowEx(
@@ -2074,8 +2074,9 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  Globals.uCurrentDPI = HIWORD(wParam);
-  Globals.uCurrentPPI = GetCurrentPPI(hwnd);
+  Globals.CurrentDPI.x = LOWORD(wParam);
+  Globals.CurrentDPI.y = HIWORD(wParam);
+  Globals.CurrentPPI = GetCurrentPPI(hwnd);
 
   DocPos const pos = SciCall_GetCurrentPos();
 
@@ -2083,7 +2084,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 #if 0
   char buf[128];
-  sprintf(buf, "WM_DPICHANGED: dpi=%u, %u\n", Globals.uCurrentDPI, Globals.uCurrentPPI);
+  sprintf(buf, "WM_DPICHANGED: dpi=%u,%u  ppi=%u,%u\n", Globals.CurrentDPI.x, Globals.CurrentDPI.y, Globals.CurrentPPI.x, Globals.CurrentPPI.y);
   SendMessage(Globals.hwndEdit, SCI_INSERTTEXT, 0, (LPARAM)buf);
 #endif
 

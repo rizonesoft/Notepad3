@@ -53,7 +53,7 @@ extern bool g_bCodeFoldingAvailable;
 extern bool g_bIniFileFromScratch;
 
 
-bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCF);
+bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCF);
 
 // ----------------------------------------------------------------------------
 
@@ -175,8 +175,9 @@ bool Style_IsCurLexerStandard()
 
 //=============================================================================
 //
-//  _SetBaseFontSize(), _GetBaseFontSize()
+//  Style_GetBaseFontSize()
 //
+
 static float  _SetBaseFontSize(float fSize)
 {
   static float fBaseFontSize = 10.0f;
@@ -187,10 +188,15 @@ static float  _SetBaseFontSize(float fSize)
   return fBaseFontSize;
 }
 
-static float  _GetBaseFontSize()
+//=============================================================================
+//
+//  Style_GetBaseFontSize()
+//
+float Style_GetBaseFontSize()
 {
   return _SetBaseFontSize(-1.0);
 }
+
 
 
 //=============================================================================
@@ -1181,7 +1187,7 @@ void Style_SetCurrentLineBackground(HWND hwnd, bool bHiLitCurrLn)
 //
 static int  _GetMarkerMarginWidth()
 {
-  float fSize = _GetBaseFontSize();
+  float fSize = Style_GetBaseFontSize();
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
   float const zoomPercent = (float)SciCall_GetZoom();
@@ -2369,7 +2375,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   bool const bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
   float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
-  float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? _GetBaseFontSize() : Style_GetCurrentFontSize()));
+  float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
 
@@ -2486,7 +2492,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.uCurrentDPI, &cf) ||
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.CurrentDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }

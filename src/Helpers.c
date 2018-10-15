@@ -323,19 +323,21 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 //
 //  GetCurrentDPI()
 //
-UINT GetCurrentDPI(HWND hwnd) {
-  UINT dpi = 0;
+DPI_T GetCurrentDPI(HWND hwnd) {
+
+  DPI_T CurDPI = { 0, 0 };
+
   if (IsWin10()) {
     HMODULE const hModule = GetModuleHandle(MKWCS("user32.dll"));
     if (hModule) {
       FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
       if (pfnGetDpiForWindow) {
-        dpi = (UINT)pfnGetDpiForWindow(hwnd);
+        CurDPI.x = CurDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
       }
     }
   }
 
-  if ((dpi == 0) && IsWin81()) {
+  if ((CurDPI.x == 0) && IsWin81()) {
     HMODULE hShcore = LoadLibrary(L"shcore.dll");
     if (hShcore) {
       FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
@@ -343,20 +345,24 @@ UINT GetCurrentDPI(HWND hwnd) {
         HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
         UINT dpiX = 0, dpiY = 0;
         if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
-          dpi = dpiX;
+          CurDPI.x = dpiX;
+          CurDPI.y = dpiY;
         }
       }
       FreeLibrary(hShcore);
     }
   }
 
-  if (dpi == 0) {
+  if (CurDPI.x == 0) {
     HDC hDC = GetDC(hwnd);
-    dpi = GetDeviceCaps(hDC, LOGPIXELSY);
+    CurDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
+    CurDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
     ReleaseDC(hwnd, hDC);
   }
 
-  return max_u(dpi, USER_DEFAULT_SCREEN_DPI);
+  CurDPI.x = max_u(CurDPI.x, USER_DEFAULT_SCREEN_DPI);
+  CurDPI.y = max_u(CurDPI.y, USER_DEFAULT_SCREEN_DPI);
+  return CurDPI;
 }
 
 
@@ -365,11 +371,13 @@ UINT GetCurrentDPI(HWND hwnd) {
 //  GetCurrentPPI()
 //  (font size) points per inch
 //
-UINT GetCurrentPPI(HWND hwnd) {
+DPI_T GetCurrentPPI(HWND hwnd) {
   HDC const hDC = GetDC(hwnd);
-  UINT const ppi = GetDeviceCaps(hDC, LOGPIXELSY);
+  DPI_T ppi;
+  ppi.x = max_u(GetDeviceCaps(hDC, LOGPIXELSX), USER_DEFAULT_SCREEN_DPI);
+  ppi.y = max_u(GetDeviceCaps(hDC, LOGPIXELSY), USER_DEFAULT_SCREEN_DPI);
   ReleaseDC(hwnd, hDC);
-  return max_u(ppi, USER_DEFAULT_SCREEN_DPI);
+  return ppi;
 }
 
 /*
@@ -398,9 +406,9 @@ HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp)
       UINT const uDPIUnit = (UINT)(USER_DEFAULT_SCREEN_DPI / 2U);
       UINT uDPIScaleFactor = max_u(1U, (UINT)MulDiv(bmp.bmHeight, 8, 64));
       UINT const uDPIBase = (uDPIScaleFactor - 1U) * uDPIUnit;
-      if (Globals.uCurrentDPI > (uDPIBase + uDPIUnit)) {
-        int width = MulDiv(bmp.bmWidth, (Globals.uCurrentDPI - uDPIBase), uDPIUnit);
-        int height = MulDiv(bmp.bmHeight, (Globals.uCurrentDPI - uDPIBase), uDPIUnit);
+      if (Globals.CurrentDPI.x > (uDPIBase + uDPIUnit)) {
+        int width = MulDiv(bmp.bmWidth, (Globals.CurrentDPI.x - uDPIBase), uDPIUnit);
+        int height = MulDiv(bmp.bmHeight, (Globals.CurrentDPI.y - uDPIBase), uDPIUnit);
         HBITMAP hCopy = CopyImage(hbmp, IMAGE_BITMAP, width, height, LR_CREATEDIBSECTION | LR_COPYRETURNORG | LR_COPYDELETEORG);
         if (hCopy) {
           hbmp = hCopy;
