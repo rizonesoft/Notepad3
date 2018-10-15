@@ -47,6 +47,9 @@
 
 #include "Styles.h"
 
+
+#define INITIAL_BASE_FONT_SIZE (IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f)
+
 extern const int g_FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;
@@ -239,7 +242,10 @@ float Style_GetCurrentFontSize()
 //
 void Style_Load()
 {
-  _SetBaseFontSize(IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f);
+
+  float const fBFS = INITIAL_BASE_FONT_SIZE;
+  _SetBaseFontSize(fBFS);
+  _SetCurrentFontSize(fBFS);
 
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
@@ -541,8 +547,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     s_pLexCurrent = GetCurrentStdLexer();
   }
 
-  const WCHAR* const wchStandardStyleStrg = s_pLexCurrent->Styles[STY_DEFAULT].szValue;
-
   // Lexer 
   SendMessage(hwnd, SCI_SETLEXER, pLexNew->lexerID, 0);
 
@@ -620,9 +624,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
-  float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
+  float const fBFS = INITIAL_BASE_FONT_SIZE;
   _SetBaseFontSize(fBFS);
   _SetCurrentFontSize(fBFS);
+  const WCHAR* const wchStandardStyleStrg = s_pLexCurrent->Styles[STY_DEFAULT].szValue;
   Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg, true);
 
   // ---  apply current scheme specific settings to default style  ---
@@ -1095,8 +1100,7 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
     }
   }
   else {
-    const WCHAR* const lpszStyleHotSpot = s_pLexCurrent->Styles[STY_DEFAULT].szValue;
-    Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
+    Style_SetStyles(hwnd, cHotSpotStyleID, L"", false); // uses Styles[STY_DEFAULT]
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)false);
   }
 
@@ -2374,7 +2378,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // is "size:" definition relative ?
   bool const bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
-  float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
+  float const fBFS = INITIAL_BASE_FONT_SIZE;
   float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
@@ -2818,8 +2822,8 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
       if (bInitDefault) {
         _SetBaseFontSize(fBaseFontSize);
       }
+      _SetCurrentFontSize(fBaseFontSize);
     }
-    _SetCurrentFontSize(fBaseFontSize);
   }
   else if (bInitDefault) {
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));
