@@ -1283,6 +1283,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_WINDOWPOSCHANGING:
     case WM_WINDOWPOSCHANGED:
     case WM_TIMER:
+    case WM_KEYDOWN:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYDOWN:
@@ -1296,7 +1297,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
-       
+
     case WM_SYSKEYUP:
       if (!(GetAsyncKeyState(VK_MENU) & SHRT_MIN))  // NOT ALT-KEY DOWN
       {
@@ -2513,12 +2514,9 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   return 0LL;
 }
 
-
-
 //=============================================================================
 //
 //  MsgChangeNotify() - Handles WM_CHANGENOTIFY
-//
 //
 LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
@@ -2892,7 +2890,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
   CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
-  CheckCmd(hmenu, IDM_VIEW_HILITECURRENTLINE, Settings.HighlightCurrentLine);
+  CheckCmd(hmenu, IDM_VIEW_HIGHLIGHTCURRENTLINE, Settings.HighlightCurrentLine);
   CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
  
@@ -4753,7 +4751,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.AutoCloseTags = !Settings.AutoCloseTags;
       break;
 
-    case IDM_VIEW_HILITECURRENTLINE:
+    case IDM_VIEW_HIGHLIGHTCURRENTLINE:
       Settings.HighlightCurrentLine = !Settings.HighlightCurrentLine;
       Style_SetCurrentLineBackground(Globals.hwndEdit, Settings.HighlightCurrentLine);
       break;
@@ -5144,14 +5142,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+#if 0
+    case CMD_LEFT:
+      //Sci_SendMsgV0(CHARLEFT);
+      SciCall_GotoPos(SciCall_PositionBefore(SciCall_GetCurrentPos()));
+      break;
+
+    case CMD_RIGHT:
+      //Sci_SendMsgV0(CHARRIGHT);
+      SciCall_GotoPos(SciCall_PositionAfter(SciCall_GetCurrentPos()));
+      break;
+#endif
 
     case CMD_CTRLLEFT:
-        SendMessage(Globals.hwndEdit, SCI_WORDLEFT, 0, 0);
+      Sci_SendMsgV0(WORDLEFT);
       break;
 
 
     case CMD_CTRLRIGHT:
-        SendMessage(Globals.hwndEdit, SCI_WORDRIGHT, 0, 0);
+      Sci_SendMsgV0(WORDRIGHT);
       break;
 
 
@@ -5848,9 +5857,9 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 {
   char const cStyle = SciCall_GetStyleAt(position);
+  int const iStyleID = Style_GetHotspotStyleID();
 
-  if ((int)cStyle != Style_GetHotspotStyleID()) { return; }
-  if (!SciCall_StyleGetHotspot(Style_GetHotspotStyleID())) { return; }
+  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return; }
 
   // get left most position of style
   DocPos pos = position;

@@ -90,11 +90,12 @@ typedef enum {
   STY_INVISIBLE = 16,
   STY_READONLY = 17
 
-  // MAX = 127
+  // MAX = (127 - STYLE_LASTPREDEFINED)
+  // -------^----- => char <-> int casting !!!
 }
 LexDefaultStyles;
 
-#define _STYLE_GETSTYLEID(ID) ((int)(STYLE_MAX - ID))
+#define _STYLE_GETSTYLEID(ID) ((int)((STYLE_LASTPREDEFINED + 1) + ID))
 #define Style_GetHotspotStyleID()   _STYLE_GETSTYLEID(STY_URL_HOTSPOT)
 #define Style_GetInvisibleStyleID() _STYLE_GETSTYLEID(STY_INVISIBLE)
 #define Style_GetReadonlyStyleID()  _STYLE_GETSTYLEID(STY_READONLY)
