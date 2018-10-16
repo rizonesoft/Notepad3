@@ -1283,6 +1283,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_WINDOWPOSCHANGING:
     case WM_WINDOWPOSCHANGED:
     case WM_TIMER:
+    case WM_KEYDOWN:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYDOWN:
@@ -1296,7 +1297,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
       }
       return DefWindowProc(hwnd, umsg, wParam, lParam);
-       
+
     case WM_SYSKEYUP:
       if (!(GetAsyncKeyState(VK_MENU) & SHRT_MIN))  // NOT ALT-KEY DOWN
       {
@@ -1675,8 +1676,8 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   HINSTANCE const hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
 
-  Globals.uCurrentDPI = GetCurrentDPI(hwnd);
-  Globals.uCurrentPPI = GetCurrentPPI(hwnd);
+  Globals.CurrentDPI = GetCurrentDPI(hwnd);
+  Globals.CurrentPPI = GetCurrentPPI(hwnd);
 
   // Setup edit control
   Globals.hwndEdit = CreateWindowEx(
@@ -2073,8 +2074,9 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-  Globals.uCurrentDPI = HIWORD(wParam);
-  Globals.uCurrentPPI = GetCurrentPPI(hwnd);
+  Globals.CurrentDPI.x = LOWORD(wParam);
+  Globals.CurrentDPI.y = HIWORD(wParam);
+  Globals.CurrentPPI = GetCurrentPPI(hwnd);
 
   DocPos const pos = SciCall_GetCurrentPos();
 
@@ -2082,7 +2084,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 #if 0
   char buf[128];
-  sprintf(buf, "WM_DPICHANGED: dpi=%u, %u\n", Globals.uCurrentDPI, Globals.uCurrentPPI);
+  sprintf(buf, "WM_DPICHANGED: dpi=%u,%u  ppi=%u,%u\n", Globals.CurrentDPI.x, Globals.CurrentDPI.y, Globals.CurrentPPI.x, Globals.CurrentPPI.y);
   SendMessage(Globals.hwndEdit, SCI_INSERTTEXT, 0, (LPARAM)buf);
 #endif
 
@@ -2513,12 +2515,9 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   return 0LL;
 }
 
-
-
 //=============================================================================
 //
 //  MsgChangeNotify() - Handles WM_CHANGENOTIFY
-//
 //
 LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
@@ -2892,7 +2891,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
   CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
-  CheckCmd(hmenu, IDM_VIEW_HILITECURRENTLINE, Settings.HighlightCurrentLine);
+  CheckCmd(hmenu, IDM_VIEW_HIGHLIGHTCURRENTLINE, Settings.HighlightCurrentLine);
   CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
  
@@ -4753,7 +4752,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.AutoCloseTags = !Settings.AutoCloseTags;
       break;
 
-    case IDM_VIEW_HILITECURRENTLINE:
+    case IDM_VIEW_HIGHLIGHTCURRENTLINE:
       Settings.HighlightCurrentLine = !Settings.HighlightCurrentLine;
       Style_SetCurrentLineBackground(Globals.hwndEdit, Settings.HighlightCurrentLine);
       break;
@@ -5144,14 +5143,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+#if 0
+    case CMD_LEFT:
+      //Sci_SendMsgV0(CHARLEFT);
+      SciCall_GotoPos(SciCall_PositionBefore(SciCall_GetCurrentPos()));
+      break;
+
+    case CMD_RIGHT:
+      //Sci_SendMsgV0(CHARRIGHT);
+      SciCall_GotoPos(SciCall_PositionAfter(SciCall_GetCurrentPos()));
+      break;
+#endif
 
     case CMD_CTRLLEFT:
-        SendMessage(Globals.hwndEdit, SCI_WORDLEFT, 0, 0);
+      Sci_SendMsgV0(WORDLEFT);
       break;
 
 
     case CMD_CTRLRIGHT:
-        SendMessage(Globals.hwndEdit, SCI_WORDRIGHT, 0, 0);
+      Sci_SendMsgV0(WORDRIGHT);
       break;
 
 
@@ -5848,9 +5858,9 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 {
   char const cStyle = SciCall_GetStyleAt(position);
+  int const iStyleID = Style_GetHotspotStyleID();
 
-  if ((int)cStyle != Style_GetHotspotStyleID()) { return; }
-  if (!SciCall_StyleGetHotspot(Style_GetHotspotStyleID())) { return; }
+  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return; }
 
   // get left most position of style
   DocPos pos = position;
@@ -6847,19 +6857,23 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
-    Defaults.PrintZoom = (s_iSettingsVersion < CFG_VER_0001) ? 10 : 100;
+    int const zoomScale  = float2int(1000.0f / INITIAL_BASE_FONT_SIZE);
+    Defaults.PrintZoom = (s_iSettingsVersion < CFG_VER_0001) ? (int)(zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(pIniSection, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (s_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
     Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
-    Defaults.PrintMargin.left = -1;
-    Settings.PrintMargin.left = clampi(IniSectionGetInt(pIniSection, L"PrintMarginLeft", Defaults.PrintMargin.left), -1, 40000);
-    Defaults.PrintMargin.top = -1;
-    Settings.PrintMargin.top = clampi(IniSectionGetInt(pIniSection, L"PrintMarginTop", Defaults.PrintMargin.top), -1, 40000);
-    Defaults.PrintMargin.right = -1;
-    Settings.PrintMargin.right = clampi(IniSectionGetInt(pIniSection, L"PrintMarginRight", Defaults.PrintMargin.right), -1, 40000);
-    Defaults.PrintMargin.bottom = -1;
-    Settings.PrintMargin.bottom = clampi(IniSectionGetInt(pIniSection, L"PrintMarginBottom", Defaults.PrintMargin.bottom), -1, 40000);
+    WCHAR localeInfo[3];
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
+    LONG const _margin = (localeInfo[0] == L'0') ? 2000L : 1000L; // Metric system. L'1' is US System
+    Defaults.PrintMargin.left = _margin;
+    Settings.PrintMargin.left = clampi(IniSectionGetInt(pIniSection, L"PrintMarginLeft", Defaults.PrintMargin.left), _margin, 40000);
+    Defaults.PrintMargin.top = _margin;
+    Settings.PrintMargin.top = clampi(IniSectionGetInt(pIniSection, L"PrintMarginTop", Defaults.PrintMargin.top), _margin, 40000);
+    Defaults.PrintMargin.right = _margin;
+    Settings.PrintMargin.right = clampi(IniSectionGetInt(pIniSection, L"PrintMarginRight", Defaults.PrintMargin.right), _margin, 40000);
+    Defaults.PrintMargin.bottom = _margin;
+    Settings.PrintMargin.bottom = clampi(IniSectionGetInt(pIniSection, L"PrintMarginBottom", Defaults.PrintMargin.bottom), _margin, 40000);
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
     GET_INT_VALUE_FROM_INISECTION(FileWatchingMode, 0, 0, 2);

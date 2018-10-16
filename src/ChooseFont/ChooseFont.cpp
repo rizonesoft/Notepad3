@@ -49,7 +49,7 @@ class ChooseFontDialog
 {
 public:
 
-    explicit ChooseFontDialog(HWND hParent, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCFGDI);
+    explicit ChooseFontDialog(HWND hParent, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCFGDI);
     virtual ~ChooseFontDialog();
     ChooseFontDialog() = delete;
 
@@ -61,7 +61,7 @@ private:
     HWND                    m_parent;
     HWND                    m_dialog;
     WCHAR                   m_localeName[LOCALE_NAME_MAX_LENGTH];
-    UINT                    m_currentDPI;
+    DPI_T                   m_currentDPI;
     LPCHOOSEFONT            m_chooseFontStruct;
     IDWriteFontCollection*  m_fontCollection;
     IDWriteTextFormat*      m_currentTextFormat;
@@ -93,7 +93,7 @@ private:
 *                                                                 *
 ******************************************************************/
 
-ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const UINT dpi, LPCHOOSEFONT lpCFGDI)
+ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const DPI_T dpi, LPCHOOSEFONT lpCFGDI)
   : m_parent(hParent)
   , m_dialog(nullptr)
   , m_currentDPI(dpi)
@@ -108,7 +108,7 @@ ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const 
   else {
     // Default to the users' locale
     //GetUserDefaultLocaleName(&m_localeName[0], COUNTOF(m_localeName));
-    GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SNAME, &m_localeName[0], _ARRAYSIZE(m_localeName));
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SNAME, &m_localeName[0], _ARRAYSIZE(m_localeName));
   }
 }
 
@@ -574,7 +574,7 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
           &m_currentTextFormat);
 
         // Create the rendering text format object
-        float dipSize = (pointSize * m_currentDPI) / 72.0f;
+        float dipSize = (pointSize * m_currentDPI.y) / 72.0f;
 
         SafeRelease(&m_renderTextFormat);
         hr = g_dwrite->CreateTextFormat(
@@ -601,8 +601,8 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
         sampleText,
         _ARRAYSIZE(sampleText) - 1,
         m_renderTextFormat,
-        static_cast<float>((width  * m_currentDPI) / GetDeviceCaps(sampleDC, LOGPIXELSX)),
-        static_cast<float>((height * m_currentDPI) / GetDeviceCaps(sampleDC, LOGPIXELSY)),
+        static_cast<float>((width  * m_currentDPI.x) / GetDeviceCaps(sampleDC, LOGPIXELSX)),
+        static_cast<float>((height * m_currentDPI.y) / GetDeviceCaps(sampleDC, LOGPIXELSY)),
         &textLayout);
     }
 
@@ -805,7 +805,7 @@ void ChooseFontDialog::OnDrawItem(HWND hwnd, const DRAWITEMSTRUCT* lpDrawItem)
 
 static void  SetChosenFontFromTextFormat(
   IDWriteTextFormat* textFormat, 
-  LPCHOOSEFONT lpCF, const UINT dpi)
+  LPCHOOSEFONT lpCF, const DPI_T dpi)
 {
   if (textFormat != nullptr)
   {
@@ -830,7 +830,7 @@ static void  SetChosenFontFromTextFormat(
 }
 // ============================================================================
 
-extern "C" bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCFGDI)
+extern "C" bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCFGDI)
 {
     if (!lpCFGDI) { return false; }
 
@@ -840,7 +840,7 @@ extern "C" bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT d
     // for security exploits.
     HeapSetInformation(nullptr, HeapEnableTerminationOnCorruption, nullptr, 0);
 
-    if (dpi == 0) { dpi = USER_DEFAULT_SCREEN_DPI; }
+    if (dpi.x == 0) { dpi.x = dpi.y = USER_DEFAULT_SCREEN_DPI; }
 
     g_hInstanceNP3 = lpCFGDI->hInstance;
 

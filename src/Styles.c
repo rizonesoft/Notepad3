@@ -53,7 +53,7 @@ extern bool g_bCodeFoldingAvailable;
 extern bool g_bIniFileFromScratch;
 
 
-bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, UINT dpi, LPCHOOSEFONT lpCF);
+bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCF);
 
 // ----------------------------------------------------------------------------
 
@@ -175,8 +175,9 @@ bool Style_IsCurLexerStandard()
 
 //=============================================================================
 //
-//  _SetBaseFontSize(), _GetBaseFontSize()
+//  Style_GetBaseFontSize()
 //
+
 static float  _SetBaseFontSize(float fSize)
 {
   static float fBaseFontSize = 10.0f;
@@ -187,10 +188,15 @@ static float  _SetBaseFontSize(float fSize)
   return fBaseFontSize;
 }
 
-static float  _GetBaseFontSize()
+//=============================================================================
+//
+//  Style_GetBaseFontSize()
+//
+float Style_GetBaseFontSize()
 {
   return _SetBaseFontSize(-1.0);
 }
+
 
 
 //=============================================================================
@@ -233,7 +239,10 @@ float Style_GetCurrentFontSize()
 //
 void Style_Load()
 {
-  _SetBaseFontSize(IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f);
+
+  float const fBFS = INITIAL_BASE_FONT_SIZE;
+  _SetBaseFontSize(fBFS);
+  _SetCurrentFontSize(fBFS);
 
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
@@ -535,8 +544,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     s_pLexCurrent = GetCurrentStdLexer();
   }
 
-  const WCHAR* const wchStandardStyleStrg = s_pLexCurrent->Styles[STY_DEFAULT].szValue;
-
   // Lexer 
   SendMessage(hwnd, SCI_SETLEXER, pLexNew->lexerID, 0);
 
@@ -614,9 +621,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   //~Style_SetACPfromCharSet(hwnd);
 
   // ---  apply/init  default style  ---
-  float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
+  float const fBFS = INITIAL_BASE_FONT_SIZE;
   _SetBaseFontSize(fBFS);
   _SetCurrentFontSize(fBFS);
+  const WCHAR* const wchStandardStyleStrg = s_pLexCurrent->Styles[STY_DEFAULT].szValue;
   Style_SetStyles(hwnd, STYLE_DEFAULT, wchStandardStyleStrg, true);
 
   // ---  apply current scheme specific settings to default style  ---
@@ -1089,8 +1097,7 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
     }
   }
   else {
-    const WCHAR* const lpszStyleHotSpot = s_pLexCurrent->Styles[STY_DEFAULT].szValue;
-    Style_SetStyles(hwnd, cHotSpotStyleID, lpszStyleHotSpot, false);
+    Style_SetStyles(hwnd, cHotSpotStyleID, L"", false); // uses Styles[STY_DEFAULT]
     SendMessage(hwnd, SCI_STYLESETHOTSPOT, cHotSpotStyleID, (LPARAM)false);
   }
 
@@ -1181,7 +1188,7 @@ void Style_SetCurrentLineBackground(HWND hwnd, bool bHiLitCurrLn)
 //
 static int  _GetMarkerMarginWidth()
 {
-  float fSize = _GetBaseFontSize();
+  float fSize = Style_GetBaseFontSize();
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
   Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
   float const zoomPercent = (float)SciCall_GetZoom();
@@ -2368,8 +2375,8 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   // is "size:" definition relative ?
   bool const bRelFontSize = (!StrStrI(lpszStyle, L"size:") || StrStrI(lpszStyle, L"size:+") || StrStrI(lpszStyle, L"size:-"));
 
-  float const fBFS = IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f;
-  float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? _GetBaseFontSize() : Style_GetCurrentFontSize()));
+  float const fBFS = INITIAL_BASE_FONT_SIZE;
+  float const fBaseFontSize = (bGlobalDefaultStyle ? fBFS : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
   // Font Height
 
@@ -2486,7 +2493,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
 
   // ---  open systems Font Selection dialog  ---
   if (Settings.RenderingTechnology > 0) {
-    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.uCurrentDPI, &cf) ||
+    if (!ChooseFontDirectWrite(Globals.hwndMain, Settings2.PreferredLanguageLocaleName, Globals.CurrentDPI, &cf) ||
         (lf.lfFaceName[0] == L'\0')) { 
       return false; 
     }
@@ -2812,8 +2819,8 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
       if (bInitDefault) {
         _SetBaseFontSize(fBaseFontSize);
       }
+      _SetCurrentFontSize(fBaseFontSize);
     }
-    _SetCurrentFontSize(fBaseFontSize);
   }
   else if (bInitDefault) {
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, (LPARAM)ScaleFractionalFontSize(fBaseFontSize));

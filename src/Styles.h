@@ -71,6 +71,7 @@ bool   Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle,LPCWSTR sLexerNa
 bool   Style_SelectColor(HWND hwnd,bool,LPWSTR lpszStyle,int cchStyle,bool);
 void   Style_SetStyles(HWND hwnd,int iStyle,LPCWSTR lpszStyle,bool);
 bool   Style_IsCurLexerStandard();
+float  Style_GetBaseFontSize();
 PEDITLEXER Style_GetCurrentLexerPtr();
 int    Style_GetCurrentLexerRID();
 void   Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName);

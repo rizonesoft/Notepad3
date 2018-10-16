@@ -47,6 +47,12 @@ typedef int MBWC_DocPos_Cast;
 
 // --------------------------------------------------------------------------
     
+typedef struct _dpi_t
+{
+  UINT x;
+  UINT y;
+} DPI_T;
+
 typedef struct _wi
 {
   int x;
@@ -232,8 +238,8 @@ typedef struct _globals_t
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
-  UINT		  uCurrentDPI;
-  UINT		  uCurrentPPI;
+  DPI_T     CurrentDPI;
+  DPI_T     CurrentPPI;
   LANGID    iPrefLANGID;
   int       iEOLMode;
   LPMRULIST pFileMRU;
@@ -304,6 +310,7 @@ typedef struct _settings_t
   int PrintFooter;
   int PrintColorMode;
   int PrintZoom;
+  int PrintFontSize;
   bool SaveBeforeRunningTools;
   int FileWatchingMode;
   bool ResetFileWatching;

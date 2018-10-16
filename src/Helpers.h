@@ -191,6 +191,8 @@ inline bool IsFullHDOrHigher(int resX, int resY) {
   return ((resX >= 1920) && (resY >= 1080));
 }
 
+#define INITIAL_BASE_FONT_SIZE (IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f)
+
 // ----------------------------------------------------------------------------
 
 //#define Is2k()    (g_uWinVer >= 0x0500)
@@ -220,14 +222,14 @@ inline bool IsFullHDOrHigher(int resX, int resY) {
 
 bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 
-UINT GetCurrentDPI(HWND hwnd);
-UINT GetCurrentPPI(HWND hwnd);
+DPI_T GetCurrentDPI(HWND hwnd);
+DPI_T GetCurrentPPI(HWND hwnd);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
-#define ScaleIntToCurrentDPI(val) MulDiv((val), Globals.uCurrentDPI, USER_DEFAULT_SCREEN_DPI)
-inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.uCurrentDPI) / (float)USER_DEFAULT_SCREEN_DPI); }
-#define ScaleIntFontSize(val) MulDiv((val), Globals.uCurrentDPI, Globals.uCurrentPPI)
-inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.uCurrentDPI) / (float)Globals.uCurrentPPI); }
-inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.uCurrentDPI) / (float)Globals.uCurrentPPI) * 10; }
+#define ScaleIntToCurrentDPI(val) MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI)
+inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.CurrentDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }
+#define ScaleIntFontSize(val) MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y)
+inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y); }
+inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y) * 10; }
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
 bool IsElevated();

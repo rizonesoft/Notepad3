@@ -327,6 +327,8 @@
 #define CMD_FULLSCRWINPOS               20050
 #define CMD_DEFAULTWINPOS               20051
 #define CMD_SAVEASDEFWINPOS             20052
+//#define CMD_LEFT                        20053
+//#define CMD_RIGHT                       20054
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
@@ -462,7 +464,7 @@
 #define IDM_VIEW_SHOWEOLS               40408
 #define IDM_VIEW_WORDWRAPSYMBOLS        40409
 #define IDM_VIEW_MATCHBRACES            40410
-#define IDM_VIEW_HILITECURRENTLINE      40411
+#define IDM_VIEW_HIGHLIGHTCURRENTLINE   40411
 #define IDM_VIEW_LINENUMBERS            40412
 #define IDM_VIEW_MARGIN                 40413
 #define IDM_VIEW_ZOOMIN                 40414
