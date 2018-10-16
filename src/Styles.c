@@ -47,9 +47,6 @@
 
 #include "Styles.h"
 
-
-#define INITIAL_BASE_FONT_SIZE (IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f)
-
 extern const int g_FontQuality[4];
 
 extern bool g_bCodeFoldingAvailable;

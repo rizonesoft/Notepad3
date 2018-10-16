@@ -161,7 +161,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     // from the Page Setup dialog to device units.
     // (There are 2540 hundredths of a mm in an inch.)
     WCHAR localeInfo[3];
-    GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
 
     RECT rectSetup;
     if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System
@@ -275,9 +275,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
   SendMessage(hwnd,SCI_SETPRINTCOLOURMODE,printColorModes[Settings.PrintColorMode],0);
 
-  // Set print zoom...
-  int const magnification = float2int(((float)Settings.PrintZoom * 10.0f) / Style_GetBaseFontSize());
-  SendMessage(hwnd, SCI_SETPRINTMAGNIFICATION, (WPARAM)magnification, 0);
+  // Set print magnification...
+  SendMessage(hwnd, SCI_SETPRINTMAGNIFICATION, (WPARAM)Settings.PrintZoom, 0);
 
   DocPos const lengthDocMax = SciCall_GetTextLength();
   DocPos lengthDoc = lengthDocMax;
@@ -454,9 +453,8 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);
-
         UDACCEL const acc[1] = { { 0, 10 } };
+        SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);
         SendDlgItemMessage(hwnd,31,UDM_SETACCEL,1,(WPARAM)acc);
         SendDlgItemMessage(hwnd,31,UDM_SETRANGE32,SC_MIN_ZOOM_LEVEL,SC_MAX_ZOOM_LEVEL);
         SendDlgItemMessage(hwnd,31,UDM_SETPOS32,0,Settings.PrintZoom);
@@ -516,8 +514,10 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       if (LOWORD(wParam) == IDOK)
       {
         BOOL bError = FALSE;
-        int const iPos = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
-        Settings.PrintZoom = bError ? 100 : iPos;
+        int const iZoom = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
+        Settings.PrintZoom = bError ? 100 : iZoom;
+        int const iFontSize = (int)SendDlgItemMessage(hwnd, 41, UDM_GETPOS32, 0, (LPARAM)&bError);
+        Settings.PrintFontSize = bError ? 10 : iFontSize;
         Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
         Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
         Settings.PrintColorMode = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
@@ -588,7 +588,7 @@ static void EditPrintInit()
       Settings.PrintMargin.right == -1 || Settings.PrintMargin.bottom == -1)
   {
     WCHAR localeInfo[3];
-    GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
 
     if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System
       Settings.PrintMargin.left = 2000;

@@ -191,6 +191,8 @@ inline bool IsFullHDOrHigher(int resX, int resY) {
   return ((resX >= 1920) && (resY >= 1080));
 }
 
+#define INITIAL_BASE_FONT_SIZE (IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f)
+
 // ----------------------------------------------------------------------------
 
 //#define Is2k()    (g_uWinVer >= 0x0500)

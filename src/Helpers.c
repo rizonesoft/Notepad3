@@ -1351,13 +1351,13 @@ size_t FormatNumberStr(LPWSTR lpNumberStr)
   StrTrim(lpNumberStr, L" \t");
 
   if (szSep[0] == L'\0') {
-    if (!GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND, szSep, COUNTOF(szSep))) {
+    if (!GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_STHOUSAND, szSep, COUNTOF(szSep))) {
       szSep[0] = L'\'';
     }
   }
 
   if (szGrp[0] == L'\0') {
-    if (!GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SGROUPING, szGrp, COUNTOF(szGrp))) {
+    if (!GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SGROUPING, szGrp, COUNTOF(szGrp))) {
       szGrp[0] = L'0';
     }
     if (szGrp[0] == L'\0') { 

@@ -1170,12 +1170,9 @@ int FormatNumberStr(LPWSTR lpNumberStr)
   if (StrIsEmpty(lpNumberStr))
     return(0);
 
-  if (!GetLocaleInfo(LOCALE_USER_DEFAULT,
-                     LOCALE_STHOUSAND,
-                     szSep,
-                     COUNTOF(szSep)))
+  if (!GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_STHOUSAND, szSep, COUNTOF(szSep))) {
     szSep[0] = L'\'';
-
+  }
   c = StrEnd(lpNumberStr);
 
   while ((c = CharPrev(lpNumberStr,c)) != lpNumberStr)

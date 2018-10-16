@@ -108,7 +108,7 @@ ChooseFontDialog::ChooseFontDialog(HWND hParent, const WCHAR* localeName, const 
   else {
     // Default to the users' locale
     //GetUserDefaultLocaleName(&m_localeName[0], COUNTOF(m_localeName));
-    GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SNAME, &m_localeName[0], _ARRAYSIZE(m_localeName));
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_SNAME, &m_localeName[0], _ARRAYSIZE(m_localeName));
   }
 }
 

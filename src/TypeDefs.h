@@ -310,6 +310,7 @@ typedef struct _settings_t
   int PrintFooter;
   int PrintColorMode;
   int PrintZoom;
+  int PrintFontSize;
   bool SaveBeforeRunningTools;
   int FileWatchingMode;
   bool ResetFileWatching;
