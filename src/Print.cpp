@@ -517,7 +517,6 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
         int const iZoom = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
         Settings.PrintZoom = bError ? 100 : iZoom;
         int const iFontSize = (int)SendDlgItemMessage(hwnd, 41, UDM_GETPOS32, 0, (LPARAM)&bError);
-        Settings.PrintFontSize = bError ? 10 : iFontSize;
         Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
         Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
         Settings.PrintColorMode = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
@@ -584,23 +583,12 @@ extern "C" void EditPrintSetup(HWND hwnd)
 //
 static void EditPrintInit()
 {
-  if (Settings.PrintMargin.left == -1 || Settings.PrintMargin.top == -1 ||
-      Settings.PrintMargin.right == -1 || Settings.PrintMargin.bottom == -1)
-  {
+  if (Settings.PrintMargin.left  <= -1 || Settings.PrintMargin.top    <= -1 ||
+      Settings.PrintMargin.right <= -1 || Settings.PrintMargin.bottom <= -1) {
     WCHAR localeInfo[3];
     GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
-
-    if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System
-      Settings.PrintMargin.left = 2000;
-      Settings.PrintMargin.top = 2000;
-      Settings.PrintMargin.right = 2000;
-      Settings.PrintMargin.bottom = 2000; 
-    }
-    else {
-      Settings.PrintMargin.left = 1000;
-      Settings.PrintMargin.top = 1000;
-      Settings.PrintMargin.right = 1000;
-      Settings.PrintMargin.bottom = 1000; }
+    LONG const _margin = (localeInfo[0] == L'0') ? 2000L : 1000L;  // Metric system. L'1' is US System
+    Settings.PrintMargin = { _margin, _margin, _margin, _margin };
   }
 }
 
