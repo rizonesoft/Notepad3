@@ -445,7 +445,7 @@ const char *RESearch::Compile(const char *pattern, Sci::Position length, bool ca
 
 	if (!pattern || !length) {
 		if (sta)
-			return 0;
+			return nullptr;
 		else
 			return badpat("No previous regular expression");
 	}
@@ -727,7 +727,7 @@ const char *RESearch::Compile(const char *pattern, Sci::Position length, bool ca
 		return badpat((posix ? "Unmatched (" : "Unmatched \\("));
 	*mp = END;
 	sta = OKP;
-	return 0;
+	return nullptr;
 }
 
 /*

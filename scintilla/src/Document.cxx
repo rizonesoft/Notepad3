@@ -84,8 +84,31 @@ int LexInterface::LineEndTypesSupported() {
 	return 0;
 }
 
+ActionDuration::ActionDuration(double duration_, double minDuration_, double maxDuration_) noexcept :
+	duration(duration_), minDuration(minDuration_), maxDuration(maxDuration_) {
+}
+
+void ActionDuration::AddSample(size_t numberActions, double durationOfActions) noexcept {
+	// Only adjust for multiple actions to avoid instability
+	if (numberActions < 8)
+		return;
+
+	// Alpha value for exponential smoothing.
+	// Most recent value contributes 25% to smoothed value.
+	const double alpha = 0.25;
+
+	const double durationOne = durationOfActions / numberActions;
+	duration = std::clamp(alpha * durationOne + (1.0 - alpha) * duration,
+		minDuration, maxDuration);
+}
+
+double ActionDuration::Duration() const noexcept {
+	return duration;
+}
+
 Document::Document(int options) :
-	cb((options & SC_DOCUMENTOPTION_STYLES_NONE) == 0, (options & SC_DOCUMENTOPTION_TEXT_LARGE) != 0) {
+	cb((options & SC_DOCUMENTOPTION_STYLES_NONE) == 0, (options & SC_DOCUMENTOPTION_TEXT_LARGE) != 0),
+	durationStyleOneLine(0.00001, 0.000001, 0.0001) {
 	refCount = 0;
 #ifdef _WIN32
 	eolMode = SC_EOL_CRLF;
@@ -106,7 +129,6 @@ Document::Document(int options) :
 	useTabs = true;
 	tabIndents = true;
 	backspaceUnindents = false;
-	durationStyleOneLine = 0.00001;
 
 	matchesValid = false;
 
@@ -2211,30 +2233,11 @@ void Document::EnsureStyledTo(Sci::Position pos) {
 }
 
 void Document::StyleToAdjustingLineDuration(Sci::Position pos) {
-	// Place bounds on the duration used to avoid glitches spiking it
-	// and so causing slow styling or non-responsive scrolling
-	const double minDurationOneLine = 0.000001;
-	const double maxDurationOneLine = 0.0001;
-
-	// Alpha value for exponential smoothing.
-	// Most recent value contributes 25% to smoothed value.
-	const double alpha = 0.25;
-
 	const Sci::Line lineFirst = SciLineFromPosition(GetEndStyled());
 	ElapsedPeriod epStyling;
 	EnsureStyledTo(pos);
-	const double durationStyling = epStyling.Duration();
 	const Sci::Line lineLast = SciLineFromPosition(GetEndStyled());
-	if (lineLast >= lineFirst + 8) {
-		// Only adjust for styling multiple lines to avoid instability
-		const double durationOneLine = durationStyling / (lineLast - lineFirst);
-		durationStyleOneLine = alpha * durationOneLine + (1.0 - alpha) * durationStyleOneLine;
-		if (durationStyleOneLine < minDurationOneLine) {
-			durationStyleOneLine = minDurationOneLine;
-		} else if (durationStyleOneLine > maxDurationOneLine) {
-			durationStyleOneLine = maxDurationOneLine;
-		}
-	}
+	durationStyleOneLine.AddSample(lineLast - lineFirst, epStyling.Duration());
 }
 
 void Document::LexerChanged() {
