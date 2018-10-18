@@ -91,7 +91,7 @@ static bool IsLastStep(const DocModification &mh) {
 }
 
 Timer::Timer() :
-		ticking(false), ticksToWait(0), tickerID(0) {}
+		ticking(false), ticksToWait(0), tickerID{} {}
 
 Idler::Idler() :
 		state(false), idlerID(0) {}
