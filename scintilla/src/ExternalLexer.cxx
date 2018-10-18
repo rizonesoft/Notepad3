@@ -65,7 +65,7 @@ LexerLibrary::LexerLibrary(const char *moduleName_) {
 				// Assign a buffer for the lexer name.
 				char lexname[100] = "";
 				GetLexerName(i, lexname, sizeof(lexname));
-				ExternalLexerModule *lex = new ExternalLexerModule(SCLEX_AUTOMATIC, NULL, lexname, NULL);
+				ExternalLexerModule *lex = new ExternalLexerModule(SCLEX_AUTOMATIC, nullptr, lexname, nullptr);
 				// This is storing a second reference to lex in the Catalogue as well as in modules.
 				// TODO: Should use std::shared_ptr or similar to ensure allocation safety.
 				Catalogue::AddLexerModule(lex);

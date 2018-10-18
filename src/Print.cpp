@@ -46,11 +46,14 @@ extern "C" {
 #include "Dialogs.h"
 #include "Helpers.h"
 #include "TypeDefs.h"
+#include "SciCall.h"
 }
 
+extern "C" float Style_GetBaseFontSize();
+
 // Stored objects...
-HGLOBAL hDevMode = nullptr;
-HGLOBAL hDevNames = nullptr;
+static HGLOBAL hDevMode = nullptr;
+static HGLOBAL hDevNames = nullptr;
 
 static void EditPrintInit();
 
@@ -74,54 +77,15 @@ void StatusUpdatePrintPage(int iPageNum)
 
 extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 {
-
   // Don't print empty documents
   if (SendMessage(hwnd,SCI_GETLENGTH,0,0) == 0) {
     MsgBoxLng(MBWARN,IDS_MUI_PRINT_EMPTY);
     return true;
   }
 
-  int startPos;
-  int endPos;
-
-  HDC hdc;
-
-  RECT rectMargins;
-  RECT rectPhysMargins;
-  RECT rectSetup;
-  POINT ptPage;
-  POINT ptDpi;
-
-  //RECT rectSetup;
-
-  TEXTMETRIC tm;
-
-  int headerLineHeight;
-  HFONT fontHeader;
-
-  int footerLineHeight;
-  HFONT fontFooter;
-
-  WCHAR dateString[MIDSZ_BUFFER] = { L'\0' };
-
-  DOCINFO di = {sizeof(DOCINFO), nullptr, nullptr, nullptr, 0};
-
-  int lengthDoc;
-  int lengthDocMax;
-  int lengthPrinted;
-
-  struct Sci_RangeToFormat frPrint;
-
-  int pageNum;
-  bool printPage;
-
-  WCHAR pageString[32] = { L'\0' };
-
-  HPEN pen;
-  HPEN penOld;
-
   PRINTDLG pdlg = { sizeof(PRINTDLG), nullptr, nullptr, nullptr, nullptr, 
     0, 0, 0, 0, 0, 0, nullptr, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+
   pdlg.hwndOwner = GetParent(hwnd);
   pdlg.hInstance = Globals.hInstance;
   pdlg.Flags = PD_USEDEVMODECOPIES | PD_ALLPAGES | PD_RETURNDC;
@@ -134,8 +98,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   pdlg.hDevMode = hDevMode;
   pdlg.hDevNames = hDevNames;
 
-  startPos = (int)SendMessage(hwnd,SCI_GETSELECTIONSTART,0,0);
-  endPos = (int)SendMessage(hwnd,SCI_GETSELECTIONEND,0,0);
+  DocPos const startPos = SciCall_GetSelectionStart();
+  DocPos const endPos = SciCall_GetSelectionEnd();
 
   if (startPos == endPos) {
     pdlg.Flags |= PD_NOSELECTION;
@@ -153,18 +117,21 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   hDevMode = pdlg.hDevMode;
   hDevNames = pdlg.hDevNames;
 
-  hdc = pdlg.hDC;
+  HDC const hdc = pdlg.hDC;
 
   // Get printer resolution
+  POINT ptDpi;
   ptDpi.x = GetDeviceCaps(hdc, LOGPIXELSX);    // dpi in X direction
   ptDpi.y = GetDeviceCaps(hdc, LOGPIXELSY);    // dpi in Y direction
 
   // Start by getting the physical page size (in device units).
+  POINT ptPage;
   ptPage.x = GetDeviceCaps(hdc, PHYSICALWIDTH);   // device units
   ptPage.y = GetDeviceCaps(hdc, PHYSICALHEIGHT);  // device units
 
   // Get the dimensions of the unprintable
   // part of the page (in device units).
+  RECT rectPhysMargins;
   rectPhysMargins.left = GetDeviceCaps(hdc, PHYSICALOFFSETX);
   rectPhysMargins.top = GetDeviceCaps(hdc, PHYSICALOFFSETY);
 
@@ -184,18 +151,19 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
   EditPrintInit();
 
+  RECT rectMargins;
   // Take in account the page setup given by the user (if one value is not null)
   if (Settings.PrintMargin.left != 0 || Settings.PrintMargin.right != 0 ||
-          Settings.PrintMargin.top != 0 || Settings.PrintMargin.bottom != 0) {
-
+          Settings.PrintMargin.top != 0 || Settings.PrintMargin.bottom != 0) 
+  {
     // Convert the hundredths of millimeters (HiMetric) or
     // thousandths of inches (HiEnglish) margin values
     // from the Page Setup dialog to device units.
     // (There are 2540 hundredths of a mm in an inch.)
-
     WCHAR localeInfo[3];
-    GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
 
+    RECT rectSetup;
     if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System
       rectSetup.left = MulDiv (Settings.PrintMargin.left, ptDpi.x, 2540);
       rectSetup.top = MulDiv (Settings.PrintMargin.top, ptDpi.y, 2540);
@@ -208,7 +176,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       rectSetup.bottom  = MulDiv(Settings.PrintMargin.bottom, ptDpi.y, 1000);
     }
 
-    // Dont reduce margins below the minimum printable area
+    // Don't reduce margins below the minimum printable area
     rectMargins.left  = max_l(rectPhysMargins.left, rectSetup.left);
     rectMargins.top  = max_l(rectPhysMargins.top, rectSetup.top);
     rectMargins.right  = max_l(rectPhysMargins.right, rectSetup.right);
@@ -230,31 +198,36 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   // Convert page size to logical units and we're done!
   DPtoLP(hdc, (LPPOINT) &ptPage, 1);
 
-  headerLineHeight = MulDiv(8,ptDpi.y, 72);
-  fontHeader = CreateFont(headerLineHeight,
-                          0, 0, 0,
-                          FW_BOLD,
-                          0,
-                          0,
-                          0, 0, 0,
-                          0, 0, 0,
-                          L"Arial");
+  int headerLineHeight = MulDiv(8, ptDpi.y, 72);
+
+  HFONT fontHeader = CreateFont(headerLineHeight,
+                                0, 0, 0,
+                                FW_BOLD,
+                                0,
+                                0,
+                                0, 0, 0,
+                                0, 0, 0,
+                                L"Arial");
+
   SelectObject(hdc, fontHeader);
+
+  TEXTMETRIC tm;
   GetTextMetrics(hdc, &tm);
   headerLineHeight = tm.tmHeight + tm.tmExternalLeading;
 
   if (Settings.PrintHeader == 3)
     headerLineHeight = 0;
 
-  footerLineHeight = MulDiv(7,ptDpi.y, 72);
-  fontFooter = CreateFont(footerLineHeight,
-                          0, 0, 0,
-                          FW_NORMAL,
-                          0,
-                          0,
-                          0, 0, 0,
-                          0, 0, 0,
-                          L"Arial");
+  int footerLineHeight = MulDiv(7,ptDpi.y, 72);
+  HFONT fontFooter = CreateFont(footerLineHeight,
+                                0, 0, 0,
+                                FW_NORMAL,
+                                0,
+                                0,
+                                0, 0, 0,
+                                0, 0, 0,
+                                L"Arial");
+
   SelectObject(hdc, fontFooter);
   GetTextMetrics(hdc, &tm);
   footerLineHeight = tm.tmHeight + tm.tmExternalLeading;
@@ -262,6 +235,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   if (Settings.PrintFooter == 1)
     footerLineHeight = 0;
 
+  DOCINFO di = { sizeof(DOCINFO), nullptr, nullptr, nullptr, 0 };
   di.lpszDocName = pszDocTitle;
   di.lpszOutput = nullptr;
   di.lpszDatatype = nullptr;
@@ -276,6 +250,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   }
 
   // Get current date...
+  WCHAR dateString[MIDSZ_BUFFER] = { L'\0' };
   SYSTEMTIME st;
   GetLocalTime(&st);
   GetDateFormat(LOCALE_USER_DEFAULT,DATE_SHORTDATE,&st,nullptr,dateString,MIDSZ_BUFFER);
@@ -300,12 +275,12 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
   SendMessage(hwnd,SCI_SETPRINTCOLOURMODE,printColorModes[Settings.PrintColorMode],0);
 
-  // Set print zoom...
-  SendMessage(hwnd,SCI_SETPRINTMAGNIFICATION,(WPARAM)Settings.PrintZoom,0);
+  // Set print magnification...
+  SendMessage(hwnd, SCI_SETPRINTMAGNIFICATION, (WPARAM)Settings.PrintZoom, 0);
 
-  lengthDoc = (int)SendMessage(hwnd,SCI_GETLENGTH,0,0);
-  lengthDocMax = lengthDoc;
-  lengthPrinted = 0;
+  DocPos const lengthDocMax = SciCall_GetTextLength();
+  DocPos lengthDoc = lengthDocMax;
+  DocPos lengthPrinted = 0;
 
   // Requested to print selection
   if (pdlg.Flags & PD_SELECTION) {
@@ -324,6 +299,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   }
 
   // We must substract the physical margins from the printable area
+  struct Sci_RangeToFormat frPrint;
   frPrint.hdc = hdc;
   frPrint.hdcTarget = hdc;
   frPrint.rc.left = rectMargins.left - rectPhysMargins.left;
@@ -336,12 +312,15 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
   frPrint.rcPage.bottom = ptPage.y - rectPhysMargins.top - rectPhysMargins.bottom - 1;
   frPrint.rc.top += headerLineHeight + headerLineHeight / 2;
   frPrint.rc.bottom -= footerLineHeight + footerLineHeight / 2;
+  
   // Print each page
-  pageNum = 1;
+  int pageNum = 1;
+  WCHAR pageString[32] = { L'\0' };
 
-  while (lengthPrinted < lengthDoc) {
-    printPage = (!(pdlg.Flags & PD_PAGENUMS) ||
-                 ((pageNum >= pdlg.nFromPage) && (pageNum <= pdlg.nToPage)));
+  while (lengthPrinted < lengthDoc) 
+  {
+    bool printPage = (!(pdlg.Flags & PD_PAGENUMS) ||
+      ((pageNum >= pdlg.nFromPage) && (pageNum <= pdlg.nToPage)));
 
     StringCchPrintf(pageString,COUNTOF(pageString),pszPageFormat,pageNum);
 
@@ -384,8 +363,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       if (Settings.PrintHeader < 3)
       {
         SetTextAlign(hdc, ta);
-        pen = CreatePen(0, 1, RGB(0,0,0));
-        penOld = (HPEN)SelectObject(hdc, pen);
+        HPEN pen = CreatePen(0, 1, RGB(0,0,0));
+        HPEN const penOld = (HPEN)SelectObject(hdc, pen);
         MoveToEx(hdc, frPrint.rc.left, frPrint.rc.top - headerLineHeight / 4, nullptr);
         LineTo(hdc, frPrint.rc.right, frPrint.rc.top - headerLineHeight / 4);
         SelectObject(hdc, penOld);
@@ -393,8 +372,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
       }
     }
 
-    frPrint.chrg.cpMin = lengthPrinted;
-    frPrint.chrg.cpMax = lengthDoc;
+    frPrint.chrg.cpMin = static_cast<DocPosCR>(lengthPrinted);
+    frPrint.chrg.cpMax = static_cast<DocPosCR>(lengthDoc);
 
     lengthPrinted = (int)SendMessage(hwnd, SCI_FORMATRANGE, printPage, (LPARAM)&frPrint);
 
@@ -415,8 +394,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
                       (UINT)StringCchLenW(pageString,COUNTOF(pageString)), nullptr);
 
         SetTextAlign(hdc, ta);
-        pen = ::CreatePen(0, 1, RGB(0,0,0));
-        penOld = (HPEN)SelectObject(hdc, pen);
+        HPEN pen = ::CreatePen(0, 1, RGB(0,0,0));
+        HPEN const penOld = (HPEN)SelectObject(hdc, pen);
         SetBkColor(hdc, RGB(0,0,0));
         MoveToEx(hdc, frPrint.rc.left, frPrint.rc.bottom + footerLineHeight / 4, nullptr);
         LineTo(hdc, frPrint.rc.right, frPrint.rc.bottom + footerLineHeight / 4);
@@ -463,6 +442,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 //
 extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
+  UNUSED(lParam);
+
   switch (uiMsg)
   {
     case WM_INITDIALOG:
@@ -472,9 +453,8 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
 
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);
-
         UDACCEL const acc[1] = { { 0, 10 } };
+        SendDlgItemMessage(hwnd,30,EM_LIMITTEXT,32,0);
         SendDlgItemMessage(hwnd,31,UDM_SETACCEL,1,(WPARAM)acc);
         SendDlgItemMessage(hwnd,31,UDM_SETRANGE32,SC_MIN_ZOOM_LEVEL,SC_MAX_ZOOM_LEVEL);
         SendDlgItemMessage(hwnd,31,UDM_SETPOS32,0,Settings.PrintZoom);
@@ -534,9 +514,9 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       if (LOWORD(wParam) == IDOK)
       {
         BOOL bError = FALSE;
-        int const iPos = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
-        Settings.PrintZoom = bError ? 100 : iPos;
-
+        int const iZoom = (int)SendDlgItemMessage(hwnd,31,UDM_GETPOS32,0,(LPARAM)&bError);
+        Settings.PrintZoom = bError ? 100 : iZoom;
+        int const iFontSize = (int)SendDlgItemMessage(hwnd, 41, UDM_GETPOS32, 0, (LPARAM)&bError);
         Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
         Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
         Settings.PrintColorMode = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
@@ -550,9 +530,6 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
     default:
       break;
   }
-
-  UNUSED(lParam);
-
   return 0;
 }
 
@@ -606,23 +583,12 @@ extern "C" void EditPrintSetup(HWND hwnd)
 //
 static void EditPrintInit()
 {
-  if (Settings.PrintMargin.left == -1 || Settings.PrintMargin.top == -1 ||
-      Settings.PrintMargin.right == -1 || Settings.PrintMargin.bottom == -1)
-  {
+  if (Settings.PrintMargin.left  <= -1 || Settings.PrintMargin.top    <= -1 ||
+      Settings.PrintMargin.right <= -1 || Settings.PrintMargin.bottom <= -1) {
     WCHAR localeInfo[3];
-    GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
-
-    if (localeInfo[0] == L'0') {  // Metric system. L'1' is US System
-      Settings.PrintMargin.left = 2000;
-      Settings.PrintMargin.top = 2000;
-      Settings.PrintMargin.right = 2000;
-      Settings.PrintMargin.bottom = 2000; }
-
-    else {
-      Settings.PrintMargin.left = 1000;
-      Settings.PrintMargin.top = 1000;
-      Settings.PrintMargin.right = 1000;
-      Settings.PrintMargin.bottom = 1000; }
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, 3);
+    LONG const _margin = (localeInfo[0] == L'0') ? 2000L : 1000L;  // Metric system. L'1' is US System
+    Settings.PrintMargin = { _margin, _margin, _margin, _margin };
   }
 }
 

@@ -86,6 +86,7 @@ typedef enum {
   STY_BOOK_MARK = 12,
   STY_MARK_OCC = 13,
   STY_URL_HOTSPOT = 14,
+
   STY_IME_COLOR = 15,
   STY_INVISIBLE = 16,
   STY_READONLY = 17
@@ -95,10 +96,10 @@ typedef enum {
 }
 LexDefaultStyles;
 
-#define _STYLE_GETSTYLEID(ID) ((int)((STYLE_LASTPREDEFINED + 1) + ID))
-#define Style_GetHotspotStyleID()   _STYLE_GETSTYLEID(STY_URL_HOTSPOT)
-#define Style_GetInvisibleStyleID() _STYLE_GETSTYLEID(STY_INVISIBLE)
-#define Style_GetReadonlyStyleID()  _STYLE_GETSTYLEID(STY_READONLY)
+#define _STYLE_GETSTYLEID(ID) ((STYLE_LASTPREDEFINED + 1) + ID)
+#define Style_GetHotspotStyleID()   ((int)_STYLE_GETSTYLEID(STY_URL_HOTSPOT))
+#define Style_GetInvisibleStyleID() ((int)_STYLE_GETSTYLEID(STY_INVISIBLE))
+#define Style_GetReadonlyStyleID()  ((int)_STYLE_GETSTYLEID(STY_READONLY))
 
 
 // -----------------------------------------------------------------------------

@@ -138,7 +138,7 @@ class LineVector : public ILineVector {
 	LineStartIndex<POS> startsUTF16;
 	LineStartIndex<POS> startsUTF32;
 public:
-	LineVector() : starts(256), perLine(0) {
+	LineVector() : starts(256), perLine(nullptr) {
 		Init();
  	}
 	// Deleted so LineVector objects can not be copied.
@@ -650,7 +650,7 @@ bool CellBuffer::SetStyleFor(Sci::Position position, Sci::Position lengthStyle, 
 const char *CellBuffer::DeleteChars(Sci::Position position, Sci::Position deleteLength, bool &startSequence) {
 	// InsertString and DeleteChars are the bottleneck though which all changes occur
 	PLATFORM_ASSERT(deleteLength > 0);
-	const char *data = 0;
+	const char *data = nullptr;
 	if (!readOnly) {
 		if (collectingUndo) {
 			// Save into the undo/redo stack, but only the characters - not the formatting
@@ -1148,7 +1148,7 @@ void CellBuffer::EndUndoAction() {
 
 void CellBuffer::AddUndoAction(Sci::Position token, bool mayCoalesce) {
 	bool startSequence;
-	uh.AppendAction(containerAction, token, 0, 0, startSequence, mayCoalesce);
+	uh.AppendAction(containerAction, token, nullptr, 0, startSequence, mayCoalesce);
 }
 
 void CellBuffer::DeleteUndoHistory() {
