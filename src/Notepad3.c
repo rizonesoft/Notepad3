@@ -871,7 +871,7 @@ void EndWaitCursor()
 //  _InitWindowPosition()
 //
 //
-static WININFO  _InitDefaultWndPos(const int flagsPos)
+static WININFO _InitDefaultWndPos(const int flagsPos)
 {
   RECT rc;
   GetWindowRect(GetDesktopWindow(), &rc);
