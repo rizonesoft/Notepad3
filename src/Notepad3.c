@@ -871,7 +871,7 @@ void EndWaitCursor()
 //  _InitWindowPosition()
 //
 //
-static WININFO  _InitDefaultWndPos(const int flagsPos)
+static WININFO _InitDefaultWndPos(const int flagsPos)
 {
   RECT rc;
   GetWindowRect(GetDesktopWindow(), &rc);
@@ -2000,9 +2000,6 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     // Terminate file watching
     InstallFileWatching(NULL);
-
-    // remember window position
-    s_WinInfo = GetMyWindowPlacement(hwnd, NULL);
 
     DragAcceptFiles(hwnd, true);
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
@@ -7095,10 +7092,12 @@ void SaveSettings(bool bSaveSettingsNow)
 
   CreateIniFile();
 
-  if (!s_bSaveSettings && !bSaveSettingsNow) {
+  if (!(s_bSaveSettings || bSaveSettingsNow)) {
     IniSetBool(L"Settings", L"SaveSettings", s_bSaveSettings);
     return;
   }
+  // update window placement 
+  s_WinInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
 
   WCHAR tchMsg[80];
   GetLngString(IDS_MUI_SAVINGSETTINGS, tchMsg, COUNTOF(tchMsg));
@@ -7261,7 +7260,6 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosX);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, CustomSchemesDlgPosY);
 
-
     SaveIniSection(L"Settings", pIniSection);
 
     FreeMem(pIniSection);
@@ -7269,11 +7267,6 @@ void SaveSettings(bool bSaveSettingsNow)
 
   // Scintilla Styles
   Style_Save();
-
-  // update window placement 
-  if (bSaveSettingsNow) {
-    s_WinInfo = GetMyWindowPlacement(Globals.hwndMain, NULL);
-  }
 
   int ResX = GetSystemMetrics(SM_CXSCREEN);
   int ResY = GetSystemMetrics(SM_CYSCREEN);
