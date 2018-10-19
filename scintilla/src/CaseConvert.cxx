@@ -602,11 +602,11 @@ public:
 	const char *Find(int character) {
 		const std::vector<int>::iterator it = std::lower_bound(characters.begin(), characters.end(), character);
 		if (it == characters.end())
-			return 0;
+			return nullptr;
 		else if (*it == character)
 			return conversions[it - characters.begin()].conversion;
 		else
-			return 0;
+			return nullptr;
 	}
 	size_t CaseConvertString(char *converted, size_t sizeConverted, const char *mixed, size_t lenMixed) override {
 		size_t lenConverted = 0;
@@ -614,7 +614,7 @@ public:
 		unsigned char bytes[UTF8MaxBytes + 1]{};
 		while (mixedPos < lenMixed) {
 			const unsigned char leadByte = mixed[mixedPos];
-			const char *caseConverted = 0;
+			const char *caseConverted = nullptr;
 			size_t lenMixedChar = 1;
 			if (UTF8IsAscii(leadByte)) {
 				caseConverted = Find(leadByte);
@@ -779,7 +779,7 @@ CaseConverter *ConverterForConversion(enum CaseConversion conversion) {
 	case CaseConversionLower:
 		return &caseConvLow;
 	}
-	return 0;
+	return nullptr;
 }
 
 }

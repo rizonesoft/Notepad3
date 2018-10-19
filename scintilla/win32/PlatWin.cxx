@@ -75,8 +75,8 @@ ID2D1Factory *pD2DFactory = nullptr;
 IDWriteRenderingParams *defaultRenderingParams = nullptr;
 IDWriteRenderingParams *customClearTypeRenderingParams = nullptr;
 
-static HMODULE hDLLD2D = NULL;
-static HMODULE hDLLDWrite = NULL;
+static HMODULE hDLLD2D {};
+static HMODULE hDLLDWrite {};
 
 bool LoadD2D() {
 	static bool triedLoadingD2D = false;
@@ -156,7 +156,7 @@ struct FormatAndMetrics {
 	FormatAndMetrics(HFONT hfont_, int extraFontFlag_, int characterSet_) :
 		technology(SCWIN_TECH_GDI), hfont(hfont_),
 #if defined(USE_D2D)
-		pTextFormat(0),
+		pTextFormat(nullptr),
 #endif
 		extraFontFlag(extraFontFlag_), characterSet(characterSet_), yAscent(2), yDescent(1), yInternalLeading(0) {
 	}
@@ -168,7 +168,7 @@ struct FormatAndMetrics {
 	        FLOAT yDescent_,
 	        FLOAT yInternalLeading_) :
 		technology(SCWIN_TECH_DIRECTWRITE),
-		hfont(0),
+		hfont{},
 		pTextFormat(pTextFormat_),
 		extraFontFlag(extraFontFlag_),
 		characterSet(characterSet_),
@@ -238,9 +238,9 @@ void SetWindowPointer(HWND hWnd, void *ptr) {
 }
 
 CRITICAL_SECTION crPlatformLock;
-HINSTANCE hinstPlatformRes = 0;
+HINSTANCE hinstPlatformRes {};
 
-HCURSOR reverseArrowCursor = NULL;
+HCURSOR reverseArrowCursor {};
 
 FormatAndMetrics *FamFromFontID(void *fid) {
 	return static_cast<FormatAndMetrics *>(fid);
@@ -332,7 +332,7 @@ public:
 FontCached *FontCached::first = nullptr;
 
 FontCached::FontCached(const FontParameters &fp) :
-	next(0), usage(0), size(1.0), hash(0) {
+	next(nullptr), usage(0), size(1.0), hash(0) {
 	SetLogFont(lf, fp.faceName, fp.characterSet, fp.size, fp.weight, fp.italic, fp.extraFontFlag);
 	technology = fp.technology;
 	hash = HashFont(fp);
@@ -414,7 +414,7 @@ void FontCached::Release() {
 }
 
 FontID FontCached::FindOrCreate(const FontParameters &fp) {
-	FontID ret = 0;
+	FontID ret {};
 	::EnterCriticalSection(&crPlatformLock);
 	const int hashFind = HashFont(fp);
 	for (FontCached *cur=first; cur; cur=cur->next) {
@@ -453,7 +453,7 @@ void FontCached::ReleaseId(FontID fid_) {
 	::LeaveCriticalSection(&crPlatformLock);
 }
 
-Font::Font() noexcept : fid(0) {
+Font::Font() noexcept : fid{} {
 }
 
 Font::~Font() {
@@ -520,21 +520,22 @@ public:
 typedef VarBuffer<XYPOSITION, stackBufferLength> TextPositions;
 
 class SurfaceGDI : public Surface {
-	bool unicodeMode;
-	HDC hdc;
-	bool hdcOwned;
-	HPEN pen;
-	HPEN penOld;
-	HBRUSH brush;
-	HBRUSH brushOld;
-	HFONT font;
-	HFONT fontOld;
-	HBITMAP bitmap;
-	HBITMAP bitmapOld;
-	int maxWidthMeasure;
-	int maxLenText;
+	bool unicodeMode=false;
+	HDC hdc{};
+	bool hdcOwned=false;
+	HPEN pen{};
+	HPEN penOld{};
+	HBRUSH brush{};
+	HBRUSH brushOld{};
+	HFONT font{};
+	HFONT fontOld{};
+	HBITMAP bitmap{};
+	HBITMAP bitmapOld{};
+	int maxWidthMeasure = INT_MAX;
+	// There appears to be a 16 bit string length limit in GDI on NT.
+	int maxLenText = 65535;
 
-	int codePage;
+	int codePage = 0;
 
 	void BrushColor(ColourDesired back);
 	void SetFont(Font &font_);
@@ -595,18 +596,7 @@ public:
 	void SetBidiR2L(bool bidiR2L_) override;
 };
 
-SurfaceGDI::SurfaceGDI() :
-	unicodeMode(false),
-	hdc(0), 	hdcOwned(false),
-	pen(0), 	penOld(0),
-	brush(0), brushOld(0),
-	font(0), 	fontOld(0),
-	bitmap(0), bitmapOld(0) {
-	maxWidthMeasure = INT_MAX;
-	// There appears to be a 16 bit string length limit in GDI on NT.
-	maxLenText = 65535;
-
-	codePage = 0;
+SurfaceGDI::SurfaceGDI() {
 }
 
 SurfaceGDI::~SurfaceGDI() {
@@ -1235,7 +1225,7 @@ void SurfaceD2D::SetScale() {
 }
 
 bool SurfaceD2D::Initialised() {
-	return pRenderTarget != 0;
+	return pRenderTarget != nullptr;
 }
 
 HRESULT SurfaceD2D::FlushDrawing() {
@@ -1381,7 +1371,7 @@ void SurfaceD2D::Polygon(Point *pts, size_t npts, ColourDesired fore, ColourDesi
 	if (pRenderTarget) {
 		ID2D1Factory *pFactory = nullptr;
 		pRenderTarget->GetFactory(&pFactory);
-		ID2D1PathGeometry *geometry=0;
+		ID2D1PathGeometry *geometry=nullptr;
 		HRESULT hr = pFactory->CreatePathGeometry(&geometry);
 		if (SUCCEEDED(hr)) {
 			ID2D1GeometrySink *sink = nullptr;
@@ -2533,7 +2523,7 @@ class ListBoxX : public ListBox {
 	static const Point ImageInset;	// Padding around image
 
 public:
-	ListBoxX() : lineHeight(10), fontCopy(0), technology(0), lb(0), unicodeMode(false),
+	ListBoxX() : lineHeight(10), fontCopy{}, technology(0), lb{}, unicodeMode(false),
 		desiredVisibleRows(9), maxItemCharacters(0), aveCharWidth(8),
 		parent(nullptr), ctrlID(0),
 		delegate(nullptr),
@@ -3341,7 +3331,7 @@ bool ListBoxX_Unregister() {
 
 }
 
-Menu::Menu() noexcept : mid(0) {
+Menu::Menu() noexcept : mid{} {
 }
 
 void Menu::CreatePopUp() {

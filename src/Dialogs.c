@@ -2599,6 +2599,21 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   wndpl.length = sizeof(WINDOWPLACEMENT);
   GetWindowPlacement(hwnd, &wndpl);
 
+  // corrections in case of aero snapped position
+  if (SW_NORMAL == wndpl.showCmd) {
+    RECT rc;
+    GetWindowRect(hwnd, &rc);
+    MONITORINFO mi;
+    GetMonitorInfoFromRect(&rc, &mi);
+    LONG const width = rc.right - rc.left;
+    LONG const height = rc.bottom - rc.top;
+    rc.left -= (mi.rcWork.left - mi.rcMonitor.left);
+    rc.right = rc.left + width;
+    rc.top -= (mi.rcWork.top - mi.rcMonitor.top);
+    rc.bottom = rc.top + height;
+    wndpl.rcNormalPosition = rc;
+  }
+
   WININFO wi;
   wi.x = wndpl.rcNormalPosition.left;
   wi.y = wndpl.rcNormalPosition.top;
@@ -2607,6 +2622,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo)
   wi.max = IsZoomed(hwnd) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
   wi.zoom = SciCall_GetZoom();
 
+  // set monitor info too
   GetMonitorInfoFromRect(&(wndpl.rcNormalPosition), hMonitorInfo);
 
   return wi;

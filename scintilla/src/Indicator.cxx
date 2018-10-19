@@ -60,7 +60,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		const PRectangle rcSquiggle = PixelGridAlign(rc);
 
 		const int width = std::min(4000, static_cast<int>(rcSquiggle.Width()));
-		RGBAImage image(width, 3, 1.0, 0);
+		RGBAImage image(width, 3, 1.0, nullptr);
 		enum { alphaFull = 0xff, alphaSide = 0x2f, alphaSide2=0x5f };
 		for (int x = 0; x < width; x++) {
 			if (x%2) {
@@ -165,7 +165,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		IntegerRectangle ircBox(rcBox);
 		// Cap width at 4000 to avoid large allocations when mistakes made
 		const int width = std::min(ircBox.Width(), 4000);
-		RGBAImage image(width, ircBox.Height(), 1.0, 0);
+		RGBAImage image(width, ircBox.Height(), 1.0, nullptr);
 		// Draw horizontal lines top and bottom
 		for (int x=0; x<width; x++) {
 			for (int y = 0; y<ircBox.Height(); y += ircBox.Height() - 1) {
