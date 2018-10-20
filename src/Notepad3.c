@@ -5360,7 +5360,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_WEBACTION2:
       {
         StringCchCopyW(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer),
-          (LOWORD(wParam) == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate1);
+          (LOWORD(wParam) == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate2);
 
         if (StringCchLenW(tchMaxPathBuffer,0) > 0) {
 
@@ -6735,7 +6735,7 @@ void LoadSettings()
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(pIniSection, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
     
-    StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https ://en.wikipedia.org/w/index.php?search=%s");
+    StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
     IniSectionGetString(pIniSection, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
 
 
