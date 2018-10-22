@@ -512,7 +512,7 @@ private:
 	int sysCaretHeight;
 };
 
-HINSTANCE ScintillaWin::hInstance = nullptr;
+HINSTANCE ScintillaWin::hInstance {};
 ATOM ScintillaWin::scintillaClassAtom = 0;
 ATOM ScintillaWin::callClassAtom = 0;
 
@@ -2313,11 +2313,11 @@ bool ScintillaWin::CanPaste() {
 namespace {
 
 class GlobalMemory {
-	HGLOBAL hand;
+	HGLOBAL hand {};
 public:
-	void *ptr;
-	GlobalMemory() noexcept : hand(nullptr), ptr(nullptr) {}
-	explicit GlobalMemory(HGLOBAL hand_) noexcept : hand(hand_), ptr(nullptr) {
+	void *ptr {};
+	GlobalMemory() noexcept = default;
+	explicit GlobalMemory(HGLOBAL hand_) noexcept : hand(hand_) {
 		if (hand) {
 			ptr = ::GlobalLock(hand);
 		}
