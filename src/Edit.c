@@ -285,7 +285,7 @@ void EditInitWordDelimiter(HWND hwnd)
 
   char whitesp[ANSI_CHAR_BUFFER*2] = { '\0' };
   if (StringCchLen(Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars)) > 0) {
-    WideCharToMultiByteStrg(Encoding_SciCP, Settings2.ExtendedWhiteSpaceChars, whitesp);
+    WideCharToMultiByte(Encoding_SciCP, 0, Settings2.ExtendedWhiteSpaceChars, -1, whitesp, COUNTOF(whitesp), NULL, NULL);
   }
 
   // 3rd set accelerated arrays
@@ -317,10 +317,10 @@ void EditInitWordDelimiter(HWND hwnd)
 
   if (StringCchLen(Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet)) > 0)
   {
-    WideCharToMultiByteStrg(Encoding_SciCP, Settings2.AutoCompleteWordCharSet, AutoCompleteWordCharSet);
+    WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteWordCharSet, -1, AutoCompleteWordCharSet, COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
     g_bUseLimitedAutoCCharSet = true;
   } else {
-    WideCharToMultiByteStrg(Encoding_SciCP, W_AUTOC_WORD_ANSI1252, AutoCompleteWordCharSet);
+    WideCharToMultiByte(Encoding_SciCP, 0, W_AUTOC_WORD_ANSI1252, -1, AutoCompleteWordCharSet, COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
     g_bUseLimitedAutoCCharSet = false;
   }
 
@@ -1851,7 +1851,7 @@ void EditChar2Hex(HWND hwnd) {
     StringCchCopyA(ch, COUNTOF(ch), "\\x00");
   }
   else {
-    MultiByteToWideCharStrg(Encoding_SciCP, ch, wch);
+    MultiByteToWideChar(Encoding_SciCP, 0, ch, -1, wch, COUNTOF(wch));
     if (wch[0] <= 0xFF)
       StringCchPrintfA(ch, COUNTOF(ch), "\\x%02X", wch[0] & 0xFF);
     else
@@ -1923,7 +1923,7 @@ void EditHex2Char(HWND hwnd)
       else {
         WCHAR wch[8] = { L'\0' };
         StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)i);
-        cch = WideCharToMultiByteStrg(Encoding_SciCP, wch, ch) - 1;
+        cch = WideCharToMultiByte(Encoding_SciCP, 0, wch, -1, ch, COUNTOF(ch), NULL, NULL) - 1;
 
         if (bTrySelExpand && (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)iSelStart - 1, 0) == '\\') {
           --iSelStart;
@@ -2394,8 +2394,8 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
   DocPos iSelStart = SciCall_GetSelectionStart();
   DocPos iSelEnd = SciCall_GetSelectionEnd();
 
-  if (StrIsNotEmpty(pwszPrefix)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszPrefix, mszPrefix1); }
-  if (StrIsNotEmpty(pwszAppend)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszAppend, mszAppend1); }
+  if (StrIsNotEmpty(pwszPrefix)) { WideCharToMultiByte(Encoding_SciCP, 0, pwszPrefix, -1, mszPrefix1, COUNTOF(mszPrefix1), NULL, NULL); }
+  if (StrIsNotEmpty(pwszAppend)) { WideCharToMultiByte(Encoding_SciCP, 0, pwszAppend, -1, mszAppend1, COUNTOF(mszAppend1), NULL, NULL); }
 
   if (!SciCall_IsSelectionRectangle())
   {
@@ -2720,10 +2720,6 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 //
 void EditAlignText(HWND hwnd, int nMode)
 {
-#define BUFSIZE_ALIGN 512
-  char  chNewLineBuf[BUFSIZE_ALIGN * 3] = { '\0' };
-  WCHAR wchNewLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
-
   DocPos iCurPos = SciCall_GetCurrentPos();
   DocPos iAnchorPos = SciCall_GetAnchor();
 
@@ -2743,7 +2739,7 @@ void EditAlignText(HWND hwnd, int nMode)
   }
   if (iLineEnd <= iLineStart) { return; }
 
-  DocPos iMinIndent = BUFSIZE_ALIGN;
+  int iMinIndent = INT_MAX;
   DocPos iMaxLength = 0;
 
   for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++) {
@@ -2752,25 +2748,28 @@ void EditAlignText(HWND hwnd, int nMode)
     const DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine);
 
     if (iLineIndentPos != iLineEndPos) {
-      DocPos const iIndentCol = (DocPos)SendMessage(hwnd, SCI_GETLINEINDENTATION, (WPARAM)iLine, 0);
+      int const iIndentCol = SciCall_GetLineIndentation(iLine);
       DocPos iTail = iLineEndPos - 1;
-      char ch = (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)iTail, 0);
+      char ch = SciCall_GetCharAt(iTail);
       while (iTail >= iLineStart && (ch == ' ' || ch == '\t')) {
         --iTail;
-        ch = (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)iTail, 0);
+        ch = SciCall_GetCharAt(iTail);
         --iLineEndPos;
       }
       const DocPos iEndCol = SciCall_GetColumn(iLineEndPos);
 
-      iMinIndent = min_p(iMinIndent, iIndentCol);
+      iMinIndent = min_i(iMinIndent, iIndentCol);
       iMaxLength = max_p(iMaxLength, iEndCol);
     }
   }
 
-  if (iMaxLength < BUFSIZE_ALIGN) {
+  size_t const iBufCount = (iMaxLength + 3) * 3;
+  char* chNewLineBuf = AllocMem(iBufCount, HEAP_ZERO_MEMORY);
+  WCHAR* wchLineBuf = AllocMem(iBufCount * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  WCHAR* wchNewLineBuf = AllocMem(iBufCount * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  PWCHAR* pWords = (PWCHAR*)AllocMem(iBufCount * sizeof(PWCHAR), HEAP_ZERO_MEMORY);
 
-    WCHAR wchLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
-    WCHAR* pWords[BUFSIZE_ALIGN * 3 / 2];
+  if (chNewLineBuf && wchLineBuf && wchNewLineBuf) {
 
     _IGNORE_NOTIFY_CHANGE_;
     _ENTER_TARGET_TRANSACTION_;
@@ -2790,7 +2789,7 @@ void EditAlignText(HWND hwnd, int nMode)
         int const cchLine = (MBWC_DocPos_Cast)SciCall_LineLength(iLine);
         int const cwch = MultiByteToWideChar(Encoding_SciCP, 0,
                                              SciCall_GetRangePointer(iStartPos, cchLine),
-                                             cchLine, wchLineBuf, COUNTOF(wchLineBuf));
+                                             cchLine, wchLineBuf, (MBWC_DocPos_Cast)iBufCount);
         wchLineBuf[cwch] = L'\0';
         StrTrim(wchLineBuf, L"\r\n\t ");
 
@@ -2834,9 +2833,9 @@ void EditAlignText(HWND hwnd, int nMode)
               DocPos const iSpacesPerGap = (iMaxLength - iMinIndent - iWordsLength) / iGaps;
               DocPos const iExtraSpaces = (iMaxLength - iMinIndent - iWordsLength) % iGaps;
 
-              int length = BUFSIZE_ALIGN * 3;
-              StringCchCopy(wchNewLineBuf, COUNTOF(wchNewLineBuf), pWords[0]);
-              p = StrEnd(wchNewLineBuf, COUNTOF(wchNewLineBuf));
+              DocPos const length = iMaxLength * 3;
+              StringCchCopy(wchNewLineBuf, iBufCount, pWords[0]);
+              p = StrEnd(wchNewLineBuf, iBufCount);
 
               for (int i = 1; i < iWords; i++) {
                 for (int j = 0; j < iSpacesPerGap; j++) {
@@ -2847,29 +2846,30 @@ void EditAlignText(HWND hwnd, int nMode)
                   *p++ = L' ';
                   *p = 0;
                 }
-                StringCchCat(p, (length - StringCchLenW(wchNewLineBuf, COUNTOF(wchNewLineBuf))), pWords[i]);
+                StringCchCat(p, (length - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
                 p = StrEnd(p, 0);
               }
             }
             else {
-              StringCchCopy(wchNewLineBuf, COUNTOF(wchNewLineBuf), pWords[0]);
-              p = StrEnd(wchNewLineBuf, COUNTOF(wchNewLineBuf));
+              StringCchCopy(wchNewLineBuf, iBufCount, pWords[0]);
+              p = StrEnd(wchNewLineBuf, iBufCount);
 
               for (int i = 1; i < iWords; i++) {
                 *p++ = L' ';
                 *p = 0;
-                StringCchCat(p, (COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf, COUNTOF(wchNewLineBuf))), pWords[i]);
+                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
                 p = StrEnd(p, 0);
               }
             }
 
 
-            int const cch = WideCharToMultiByteStrg(Encoding_SciCP, wchNewLineBuf, chNewLineBuf) - 1;
+            int const cch = WideCharToMultiByte(Encoding_SciCP, 0, wchNewLineBuf, -1, chNewLineBuf, COUNTOF(chNewLineBuf), NULL, NULL) - 1;
             SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
             SciCall_ReplaceTarget(cch, chNewLineBuf);
             SciCall_SetLineIndentation(iLine, iMinIndent);
           }
           else {
+            chNewLineBuf[0] = '\0';
             wchNewLineBuf[0] = L'\0';
             p = wchNewLineBuf;
 
@@ -2887,31 +2887,34 @@ void EditAlignText(HWND hwnd, int nMode)
               *p = 0;
             }
             for (int i = 0; i < iWords; i++) {
-              StringCchCat(p, (COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf, COUNTOF(wchNewLineBuf))), pWords[i]);
+              StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
               if (i < iWords - 1)
-                StringCchCat(p, (COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf, COUNTOF(wchNewLineBuf))), L" ");
+                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), L" ");
               if (nMode == ALIGN_CENTER && iWords > 1 && iOddSpaces > 0 && i + 1 >= iWords / 2) {
-                StringCchCat(p, (COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf, COUNTOF(wchNewLineBuf))), L" ");
+                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), L" ");
                 iOddSpaces--;
               }
               p = StrEnd(p, 0);
             }
 
-            int cch = WideCharToMultiByteStrg(Encoding_SciCP, wchNewLineBuf, chNewLineBuf) - 1;
+            int const cch = WideCharToMultiByte(Encoding_SciCP, 0, wchNewLineBuf, -1,
+                                                chNewLineBuf, (MBWC_DocPos_Cast)iBufCount, NULL, NULL) - 1;
 
-            DocPos iPos = 0;
-            if (nMode == ALIGN_RIGHT || nMode == ALIGN_CENTER) {
-              SciCall_SetLineIndentation(iLine, iMinIndent);
-              iPos = SciCall_GetLineIndentPosition(iLine);
-            }
-            else {
-              iPos = SciCall_PositionFromLine(iLine);
-            }
-            SciCall_SetTargetRange(iPos, SciCall_GetLineEndPosition(iLine));
-            SciCall_ReplaceTarget(cch, chNewLineBuf);
+            if (cch >= 0) {
+              DocPos iPos = 0;
+              if (nMode == ALIGN_RIGHT || nMode == ALIGN_CENTER) {
+                SciCall_SetLineIndentation(iLine, iMinIndent);
+                iPos = SciCall_GetLineIndentPosition(iLine);
+              }
+              else {
+                iPos = SciCall_PositionFromLine(iLine);
+              }
+              SciCall_SetTargetRange(iPos, SciCall_GetLineEndPosition(iLine));
+              SciCall_ReplaceTarget(cch, chNewLineBuf);
 
-            if (nMode == ALIGN_LEFT) {
-              SciCall_SetLineIndentation(iLine, iMinIndent);
+              if (nMode == ALIGN_LEFT) {
+                SciCall_SetLineIndentation(iLine, iMinIndent);
+              }
             }
           }
         }
@@ -2919,6 +2922,11 @@ void EditAlignText(HWND hwnd, int nMode)
     }
     _LEAVE_TARGET_TRANSACTION_;
     _OBSERVE_NOTIFY_CHANGE_;
+
+    FreeMem(pWords);
+    FreeMem(wchNewLineBuf);
+    FreeMem(wchLineBuf);
+    FreeMem(chNewLineBuf);
   }
   else {
     MsgBoxLng(MBINFO, IDS_MUI_BUFFERTOOSMALL);
@@ -2957,8 +2965,8 @@ void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
   const DocPos iSelStart = SciCall_GetSelectionStart();
   const DocPos iSelEnd = SciCall_GetSelectionEnd();
 
-  if (StrIsNotEmpty(pwszOpen)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszOpen, mszOpen); }
-  if (StrIsNotEmpty(pwszClose)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszClose, mszClose); }
+  if (StrIsNotEmpty(pwszOpen)) { WideCharToMultiByte(Encoding_SciCP, 0, pwszOpen, -1, mszOpen, COUNTOF(mszOpen), NULL, NULL); }
+  if (StrIsNotEmpty(pwszClose)) { WideCharToMultiByte(Encoding_SciCP, 0, pwszClose, -1, mszClose, COUNTOF(mszClose), NULL, NULL); }
 
   DocPos const iLenOpen = (DocPos)StringCchLenA(mszOpen, COUNTOF(mszOpen));
   DocPos const iLenClose = (DocPos)StringCchLenA(mszClose, COUNTOF(mszClose));
@@ -3882,8 +3890,8 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
     pszText = AllocMem(cchConvW * 3, HEAP_ZERO_MEMORY);
     if (pszText) 
     {
-      int cchConvM = WideCharToMultiByte(Encoding_SciCP, 0, pszConvW, cchConvW, 
-                                         pszText, (MBWC_DocPos_Cast)SizeOfMem(pszText), NULL, NULL);
+      int const cchConvM = WideCharToMultiByte(Encoding_SciCP, 0, pszConvW, cchConvW, 
+                                               pszText, (MBWC_DocPos_Cast)SizeOfMem(pszText), NULL, NULL);
 
       if (iCurPos < iAnchorPos) {
         iAnchorPos = iSelStart + cchConvM;
