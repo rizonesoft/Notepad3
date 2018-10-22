@@ -2621,16 +2621,14 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
-  //DocPos p;
-  bool b,e,s;
-
-  HMENU hmenu = (HMENU)wParam;
+  HMENU const hmenu = (HMENU)wParam;
 
   bool const ro = SciCall_GetReadOnly();
   DocPos const iCurPos = SciCall_GetCurrentPos();
   DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
 
   int i = (int)StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile));
+
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
   EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, i);
@@ -2695,10 +2693,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_UNDO,SciCall_CanUndo() && !ro);
   EnableCmd(hmenu,IDM_EDIT_REDO,SciCall_CanRedo() && !ro);
 
-  s = SciCall_IsSelectionEmpty();
-  e = (SciCall_GetTextLength() == 0);
-  b = SciCall_CanPaste();
-  
+  bool const s = SciCall_IsSelectionEmpty();
+  bool const e = (SciCall_GetTextLength() == 0);
+  bool const b = SciCall_CanPaste();
+  bool const mls = Sci_IsMultiLineSelection();
+
   EnableCmd(hmenu,IDM_EDIT_CUT, !e && !ro);       // allow Ctrl-X w/o selection
   EnableCmd(hmenu,IDM_EDIT_COPY, !e);             // allow Ctrl-C w/o selection
 
@@ -2739,10 +2738,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
-  EnableCmd(hmenu, IDM_EDIT_ALIGN, !ro);
-  EnableCmd(hmenu, IDM_EDIT_SORTLINES,
-    (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -
-      SciCall_LineFromPosition(SciCall_GetSelectionStart())) >= 1);
+  EnableCmd(hmenu, IDM_EDIT_ALIGN, mls && !ro);
+  EnableCmd(hmenu, IDM_EDIT_SORTLINES, mls && !ro);
  
   //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
   EnableCmd(hmenu,IDM_EDIT_SPLITLINES,!s && !ro);
@@ -2796,8 +2793,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_INSERT_PATHNAME,!ro);
 
   EnableCmd(hmenu, IDM_EDIT_INSERT_GUID, !ro);
-
-  e = (SciCall_GetTextLength() == 0);
 
   EnableCmd(hmenu,IDM_EDIT_FIND, !e);
   EnableCmd(hmenu,IDM_EDIT_SAVEFIND, !e);
