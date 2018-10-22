@@ -1453,10 +1453,9 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 
   if ((g_fvCurFile.mask & FV_MODE) && g_fvCurFile.tchMode[0]) {
 
-    WCHAR wchMode[32] = { L'\0' };
     PEDITLEXER pLexMode;
-
-    MultiByteToWideCharStrg(Encoding_SciCP, g_fvCurFile.tchMode, wchMode);
+    WCHAR wchMode[MICRO_BUFFER] = { L'\0' };
+    MultiByteToWideChar(Encoding_SciCP, 0, g_fvCurFile.tchMode, -1, wchMode, MICRO_BUFFER);
 
     if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {
@@ -2764,13 +2763,13 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   char chFontName[80] = { '\0' };
   if (Style_StrGetFont(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
     if (StringCchLenW(wchFontName, COUNTOF(wchFontName)) > 0) {
-      WideCharToMultiByteStrg(Encoding_SciCP, wchFontName, chFontName);
+      WideCharToMultiByte(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
       SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
     }
   }
   else if (bInitDefault) {
     Style_StrGetFont(L"font:Default", wchFontName, COUNTOF(wchFontName));
-    WideCharToMultiByteStrg(Encoding_SciCP, wchFontName, chFontName);
+    WideCharToMultiByte(Encoding_SciCP, 0, wchFontName, -1, chFontName, COUNTOF(chFontName), NULL, NULL);
     SendMessage(hwnd, SCI_STYLESETFONT, iStyle, (LPARAM)chFontName);
   }
   

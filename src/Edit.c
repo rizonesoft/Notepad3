@@ -285,7 +285,7 @@ void EditInitWordDelimiter(HWND hwnd)
 
   char whitesp[ANSI_CHAR_BUFFER*2] = { '\0' };
   if (StringCchLen(Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars)) > 0) {
-    WideCharToMultiByteStrg(Encoding_SciCP, Settings2.ExtendedWhiteSpaceChars, whitesp);
+    WideCharToMultiByte(Encoding_SciCP, 0, Settings2.ExtendedWhiteSpaceChars, -1, whitesp, COUNTOF(whitesp), NULL, NULL);
   }
 
   // 3rd set accelerated arrays
@@ -317,10 +317,10 @@ void EditInitWordDelimiter(HWND hwnd)
 
   if (StringCchLen(Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet)) > 0)
   {
-    WideCharToMultiByteStrg(Encoding_SciCP, Settings2.AutoCompleteWordCharSet, AutoCompleteWordCharSet);
+    WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteWordCharSet, -1, AutoCompleteWordCharSet, COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
     g_bUseLimitedAutoCCharSet = true;
   } else {
-    WideCharToMultiByteStrg(Encoding_SciCP, W_AUTOC_WORD_ANSI1252, AutoCompleteWordCharSet);
+    WideCharToMultiByte(Encoding_SciCP, 0, W_AUTOC_WORD_ANSI1252, -1, AutoCompleteWordCharSet, COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
     g_bUseLimitedAutoCCharSet = false;
   }
 
@@ -1851,7 +1851,7 @@ void EditChar2Hex(HWND hwnd) {
     StringCchCopyA(ch, COUNTOF(ch), "\\x00");
   }
   else {
-    MultiByteToWideCharStrg(Encoding_SciCP, ch, wch);
+    MultiByteToWideChar(Encoding_SciCP, 0, ch, -1, wch, COUNTOF(wch));
     if (wch[0] <= 0xFF)
       StringCchPrintfA(ch, COUNTOF(ch), "\\x%02X", wch[0] & 0xFF);
     else
@@ -1923,7 +1923,7 @@ void EditHex2Char(HWND hwnd)
       else {
         WCHAR wch[8] = { L'\0' };
         StringCchPrintfW(wch, COUNTOF(wch), L"%lc", (WCHAR)i);
-        cch = WideCharToMultiByteStrg(Encoding_SciCP, wch, ch) - 1;
+        cch = WideCharToMultiByte(Encoding_SciCP, 0, wch, -1, ch, COUNTOF(ch), NULL, NULL) - 1;
 
         if (bTrySelExpand && (char)SendMessage(hwnd, SCI_GETCHARAT, (WPARAM)iSelStart - 1, 0) == '\\') {
           --iSelStart;
@@ -2394,8 +2394,8 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
   DocPos iSelStart = SciCall_GetSelectionStart();
   DocPos iSelEnd = SciCall_GetSelectionEnd();
 
-  if (StrIsNotEmpty(pwszPrefix)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszPrefix, mszPrefix1); }
-  if (StrIsNotEmpty(pwszAppend)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszAppend, mszAppend1); }
+  if (StrIsNotEmpty(pwszPrefix)) { WideCharToMultiByte(Encoding_SciCP, 0, pwszPrefix, -1, mszPrefix1, COUNTOF(mszPrefix1), NULL, NULL); }
+  if (StrIsNotEmpty(pwszAppend)) { WideCharToMultiByte(Encoding_SciCP, 0, pwszAppend, -1, mszAppend1, COUNTOF(mszAppend1), NULL, NULL); }
 
   if (!SciCall_IsSelectionRectangle())
   {
@@ -2718,188 +2718,189 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 //
 //  EditAlignText()
 //
-void EditAlignText(HWND hwnd,int nMode)
+void EditAlignText(HWND hwnd, int nMode)
 {
-  #define BUFSIZE_ALIGN 512
-  char  chNewLineBuf[BUFSIZE_ALIGN * 3] = { '\0' };
-  WCHAR wchNewLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
-
-  const DocPos iSelStart  = SciCall_GetSelectionStart();
-  const DocPos iSelEnd    = SciCall_GetSelectionEnd();
-  DocPos iCurPos    = SciCall_GetCurrentPos();
+  DocPos iCurPos = SciCall_GetCurrentPos();
   DocPos iAnchorPos = SciCall_GetAnchor();
 
-  if (!SciCall_IsSelectionRectangle())
-  {
-    DocPos iMinIndent = BUFSIZE_ALIGN;
-    DocPos iMaxLength = 0;
+  DocPos const iSelStart = SciCall_GetSelectionStart();
+  DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
-    DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
-    DocLn iLineEnd   = SciCall_LineFromPosition(iSelEnd);
-    
-    if (iSelEnd <= SciCall_PositionFromLine(iLineEnd))
-    {
-      if ((iLineEnd - iLineStart) >= 1) { --iLineEnd; }
+  DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
+  DocLn const _lnend = SciCall_LineFromPosition(iSelEnd);
+  DocLn const iLineEnd = (iSelEnd <= SciCall_PositionFromLine(_lnend)) ? (_lnend - 1) : _lnend;
+
+  DocPos const iCurCol = SciCall_GetColumn(iCurPos);
+  DocPos const iAnchorCol = SciCall_GetColumn(iAnchorPos);
+
+  if (SciCall_IsSelectionRectangle()) {
+    MsgBoxLng(MBWARN, IDS_MUI_SELRECT);
+    return;
+  }
+  if (iLineEnd <= iLineStart) { return; }
+
+  int iMinIndent = INT_MAX;
+  DocPos iMaxLength = 0;
+
+  for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++) {
+
+    DocPos iLineEndPos = SciCall_GetLineEndPosition(iLine);
+    const DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine);
+
+    if (iLineIndentPos != iLineEndPos) {
+      int const iIndentCol = SciCall_GetLineIndentation(iLine);
+      DocPos iTail = iLineEndPos - 1;
+      char ch = SciCall_GetCharAt(iTail);
+      while (iTail >= iLineStart && (ch == ' ' || ch == '\t')) {
+        --iTail;
+        ch = SciCall_GetCharAt(iTail);
+        --iLineEndPos;
+      }
+      const DocPos iEndCol = SciCall_GetColumn(iLineEndPos);
+
+      iMinIndent = min_i(iMinIndent, iIndentCol);
+      iMaxLength = max_p(iMaxLength, iEndCol);
     }
+  }
+
+  size_t const iBufCount = (iMaxLength + 3) * 3;
+  char* chNewLineBuf = AllocMem(iBufCount, HEAP_ZERO_MEMORY);
+  WCHAR* wchLineBuf = AllocMem(iBufCount * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  WCHAR* wchNewLineBuf = AllocMem(iBufCount * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+  PWCHAR* pWords = (PWCHAR*)AllocMem(iBufCount * sizeof(PWCHAR), HEAP_ZERO_MEMORY);
+
+  if (chNewLineBuf && wchLineBuf && wchNewLineBuf) {
+
+    _IGNORE_NOTIFY_CHANGE_;
+    _ENTER_TARGET_TRANSACTION_;
 
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++) {
+      DocPos const iStartPos = SciCall_PositionFromLine(iLine);
+      DocPos const iEndPos = SciCall_GetLineEndPosition(iLine);
+      DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
 
-      DocPos iLineEndPos    = SciCall_GetLineEndPosition(iLine);
-      const DocPos iLineIndentPos = SciCall_GetLineIndentPosition(iLine);
-
-      if (iLineIndentPos != iLineEndPos) 
-      {
-        DocPos const iIndentCol = (DocPos)SendMessage(hwnd,SCI_GETLINEINDENTATION,(WPARAM)iLine,0);
-        DocPos iTail = iLineEndPos-1;
-        char ch = (char)SendMessage(hwnd,SCI_GETCHARAT,(WPARAM)iTail,0);
-        while (iTail >= iLineStart && (ch == ' ' || ch == '\t'))
-        {
-          --iTail;
-          ch = (char)SendMessage(hwnd,SCI_GETCHARAT,(WPARAM)iTail,0);
-          --iLineEndPos;
-        }
-        const DocPos iEndCol = SciCall_GetColumn(iLineEndPos);
-
-        iMinIndent = min_p(iMinIndent,iIndentCol);
-        iMaxLength = max_p(iMaxLength,iEndCol);
+      if ((iIndentPos == iEndPos) && (iEndPos > 0)) {
+        SciCall_SetTargetRange(iStartPos, iEndPos);
+        SciCall_ReplaceTarget(0, "");
       }
-    }
+      else {
+        int iWords = 0;
+        int iWordsLength = 0;
+        int const cchLine = (MBWC_DocPos_Cast)SciCall_LineLength(iLine);
+        int const cwch = MultiByteToWideChar(Encoding_SciCP, 0,
+                                             SciCall_GetRangePointer(iStartPos, cchLine),
+                                             cchLine, wchLineBuf, (MBWC_DocPos_Cast)iBufCount);
+        wchLineBuf[cwch] = L'\0';
+        StrTrim(wchLineBuf, L"\r\n\t ");
 
-    if (iMaxLength < BUFSIZE_ALIGN) {
-
-      WCHAR wchLineBuf[BUFSIZE_ALIGN * 3] = { L'\0' };
-      WCHAR* pWords[BUFSIZE_ALIGN * 3 / 2];
-
-      _IGNORE_NOTIFY_CHANGE_;
-      _ENTER_TARGET_TRANSACTION_;
-
-      for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++)
-      {
-        DocPos const iStartPos = SciCall_PositionFromLine(iLine);
-        DocPos const iEndPos = SciCall_GetLineEndPosition(iLine);
-        DocPos const iIndentPos = SciCall_GetLineIndentPosition(iLine);
-
-        if ((iIndentPos == iEndPos) && (iEndPos > 0)) {
-          SciCall_SetTargetRange(iStartPos, iEndPos);
-          SciCall_ReplaceTarget(0, "");
-        }
-        else {
-          int iWords = 0;
-          int iWordsLength = 0;
-          int const cchLine = (MBWC_DocPos_Cast)SciCall_LineLength(iLine);
-          int const cwch = MultiByteToWideChar(Encoding_SciCP, 0, 
-                                               SciCall_GetRangePointer(iStartPos, cchLine),
-                                               cchLine, wchLineBuf, COUNTOF(wchLineBuf));
-          wchLineBuf[cwch] = L'\0';
-          StrTrim(wchLineBuf,L"\r\n\t ");
-
-          WCHAR* p = wchLineBuf;
-          while (*p) {
-            if ((*p != L' ') && (*p != L'\t')) {
-              pWords[iWords++] = p++;
+        WCHAR* p = wchLineBuf;
+        while (*p) {
+          if ((*p != L' ') && (*p != L'\t')) {
+            pWords[iWords++] = p++;
+            iWordsLength++;
+            while (*p && (*p != L' ') && (*p != L'\t')) {
+              p++;
               iWordsLength++;
-              while (*p && (*p != L' ') && (*p != L'\t')) {
-                p++;
-                iWordsLength++;
-              }
             }
-            else
-              *p++ = L'\0';
           }
+          else
+            *p++ = L'\0';
+        }
 
-          if (iWords > 0) {
+        if (iWords > 0) {
 
-            if (nMode == ALIGN_JUSTIFY || nMode == ALIGN_JUSTIFY_EX) {
+          if (nMode == ALIGN_JUSTIFY || nMode == ALIGN_JUSTIFY_EX) {
 
-              bool bNextLineIsBlank = false;
-              if (nMode == ALIGN_JUSTIFY_EX) 
-              {
-                if (SciCall_GetLineCount() <= iLine + 1) {
-                  bNextLineIsBlank = true;
-                }
-                else {
-                  DocPos const iLineEndPos    = SciCall_GetLineEndPosition(iLine + 1);
-                  DocPos const iLineIndentPos = SciCall_GetLineIndentPosition(iLine + 1);
-                  if (iLineIndentPos == iLineEndPos) {
-                    bNextLineIsBlank = true;
-                  }
-                }
-              }
-
-              if ((nMode == ALIGN_JUSTIFY || nMode == ALIGN_JUSTIFY_EX) &&
-                  iWords > 1 && iWordsLength >= 2 &&
-                  ((nMode != ALIGN_JUSTIFY_EX || !bNextLineIsBlank || iLineStart == iLineEnd) ||
-                  (bNextLineIsBlank && iWordsLength > (iMaxLength - iMinIndent) * 0.75))) 
-              {
-                int iGaps = iWords - 1;
-                DocPos const iSpacesPerGap = (iMaxLength - iMinIndent - iWordsLength) / iGaps;
-                DocPos const iExtraSpaces = (iMaxLength - iMinIndent - iWordsLength) % iGaps;
-
-                int length = BUFSIZE_ALIGN * 3;
-                StringCchCopy(wchNewLineBuf,COUNTOF(wchNewLineBuf),pWords[0]);
-                p = StrEnd(wchNewLineBuf, COUNTOF(wchNewLineBuf));
-
-                for (int i = 1; i < iWords; i++) {
-                  for (int j = 0; j < iSpacesPerGap; j++) {
-                    *p++ = L' ';
-                    *p = 0;
-                  }
-                  if (i > iGaps - iExtraSpaces) {
-                    *p++ = L' ';
-                    *p = 0;
-                  }
-                  StringCchCat(p,(length - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),pWords[i]);
-                  p = StrEnd(p,0);
-                }
+            bool bNextLineIsBlank = false;
+            if (nMode == ALIGN_JUSTIFY_EX) {
+              if (SciCall_GetLineCount() <= iLine + 1) {
+                bNextLineIsBlank = true;
               }
               else {
-                StringCchCopy(wchNewLineBuf,COUNTOF(wchNewLineBuf),pWords[0]);
-                p = StrEnd(wchNewLineBuf, COUNTOF(wchNewLineBuf));
+                DocPos const iLineEndPos = SciCall_GetLineEndPosition(iLine + 1);
+                DocPos const iLineIndentPos = SciCall_GetLineIndentPosition(iLine + 1);
+                if (iLineIndentPos == iLineEndPos) {
+                  bNextLineIsBlank = true;
+                }
+              }
+            }
 
-                for (int i = 1; i < iWords; i++) {
+            if ((nMode == ALIGN_JUSTIFY || nMode == ALIGN_JUSTIFY_EX) &&
+                iWords > 1 && iWordsLength >= 2 &&
+                ((nMode != ALIGN_JUSTIFY_EX || !bNextLineIsBlank || iLineStart == iLineEnd) ||
+                (bNextLineIsBlank && iWordsLength > (iMaxLength - iMinIndent) * 0.75))) {
+              int iGaps = iWords - 1;
+              DocPos const iSpacesPerGap = (iMaxLength - iMinIndent - iWordsLength) / iGaps;
+              DocPos const iExtraSpaces = (iMaxLength - iMinIndent - iWordsLength) % iGaps;
+
+              DocPos const length = iMaxLength * 3;
+              StringCchCopy(wchNewLineBuf, iBufCount, pWords[0]);
+              p = StrEnd(wchNewLineBuf, iBufCount);
+
+              for (int i = 1; i < iWords; i++) {
+                for (int j = 0; j < iSpacesPerGap; j++) {
                   *p++ = L' ';
                   *p = 0;
-                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),pWords[i]);
-                  p = StrEnd(p,0);
                 }
+                if (i > iGaps - iExtraSpaces) {
+                  *p++ = L' ';
+                  *p = 0;
+                }
+                StringCchCat(p, (length - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
+                p = StrEnd(p, 0);
               }
-
-
-              int const cch = WideCharToMultiByteStrg(Encoding_SciCP, wchNewLineBuf, chNewLineBuf) - 1;
-              SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
-              SciCall_ReplaceTarget(cch, chNewLineBuf);
-              SciCall_SetLineIndentation(iLine, iMinIndent);
             }
             else {
-              wchNewLineBuf[0] = L'\0';
-              p = wchNewLineBuf;
+              StringCchCopy(wchNewLineBuf, iBufCount, pWords[0]);
+              p = StrEnd(wchNewLineBuf, iBufCount);
 
-              DocPos const iExtraSpaces = iMaxLength - iMinIndent - iWordsLength - iWords + 1;
-              if (nMode == ALIGN_RIGHT) {
-                for (int i = 0; i < iExtraSpaces; i++)
-                  *p++ = L' ';
+              for (int i = 1; i < iWords; i++) {
+                *p++ = L' ';
                 *p = 0;
+                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
+                p = StrEnd(p, 0);
               }
+            }
 
-              DocPos iOddSpaces = iExtraSpaces % 2;
-              if (nMode == ALIGN_CENTER) {
-                for (int i = 1; i < iExtraSpaces - iOddSpaces; i+=2)
-                  *p++ = L' ';
-                *p = 0;
+
+            int const cch = WideCharToMultiByte(Encoding_SciCP, 0, wchNewLineBuf, -1, chNewLineBuf, COUNTOF(chNewLineBuf), NULL, NULL) - 1;
+            SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
+            SciCall_ReplaceTarget(cch, chNewLineBuf);
+            SciCall_SetLineIndentation(iLine, iMinIndent);
+          }
+          else {
+            chNewLineBuf[0] = '\0';
+            wchNewLineBuf[0] = L'\0';
+            p = wchNewLineBuf;
+
+            DocPos const iExtraSpaces = iMaxLength - iMinIndent - iWordsLength - iWords + 1;
+            if (nMode == ALIGN_RIGHT) {
+              for (int i = 0; i < iExtraSpaces; i++)
+                *p++ = L' ';
+              *p = 0;
+            }
+
+            DocPos iOddSpaces = iExtraSpaces % 2;
+            if (nMode == ALIGN_CENTER) {
+              for (int i = 1; i < iExtraSpaces - iOddSpaces; i += 2)
+                *p++ = L' ';
+              *p = 0;
+            }
+            for (int i = 0; i < iWords; i++) {
+              StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
+              if (i < iWords - 1)
+                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), L" ");
+              if (nMode == ALIGN_CENTER && iWords > 1 && iOddSpaces > 0 && i + 1 >= iWords / 2) {
+                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), L" ");
+                iOddSpaces--;
               }
-              for (int i = 0; i < iWords; i++) {
-                StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),pWords[i]);
-                if (i < iWords - 1)
-                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),L" ");
-                if (nMode == ALIGN_CENTER && iWords > 1 && iOddSpaces > 0 && i + 1 >= iWords / 2) {
-                  StringCchCat(p,(COUNTOF(wchNewLineBuf) - StringCchLenW(wchNewLineBuf,COUNTOF(wchNewLineBuf))),L" ");
-                  iOddSpaces--;
-                }
-                p = StrEnd(p,0);
-              }
+              p = StrEnd(p, 0);
+            }
 
-              int cch = WideCharToMultiByteStrg(Encoding_SciCP,wchNewLineBuf,chNewLineBuf) - 1;
+            int const cch = WideCharToMultiByte(Encoding_SciCP, 0, wchNewLineBuf, -1,
+                                                chNewLineBuf, (MBWC_DocPos_Cast)iBufCount, NULL, NULL) - 1;
 
+            if (cch >= 0) {
               DocPos iPos = 0;
               if (nMode == ALIGN_RIGHT || nMode == ALIGN_CENTER) {
                 SciCall_SetLineIndentation(iLine, iMinIndent);
@@ -2918,24 +2919,29 @@ void EditAlignText(HWND hwnd,int nMode)
           }
         }
       }
-      _LEAVE_TARGET_TRANSACTION_;
-      _OBSERVE_NOTIFY_CHANGE_;
     }
-    else {
-      MsgBoxLng(MBINFO, IDS_MUI_BUFFERTOOSMALL);
-    }
-    if (iCurPos < iAnchorPos) {
-      iCurPos = SciCall_PositionFromLine(iLineStart);
-      iAnchorPos = SciCall_PositionFromLine(iLineEnd + 1);
-    }
-    else {
-      iAnchorPos = SciCall_PositionFromLine(iLineStart);
-      iCurPos = SciCall_PositionFromLine(iLineEnd + 1);
-    }
-    EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
+    _LEAVE_TARGET_TRANSACTION_;
+    _OBSERVE_NOTIFY_CHANGE_;
+
+    FreeMem(pWords);
+    FreeMem(wchNewLineBuf);
+    FreeMem(wchLineBuf);
+    FreeMem(chNewLineBuf);
   }
-  else
-    MsgBoxLng(MBWARN, IDS_MUI_SELRECT);
+  else {
+    MsgBoxLng(MBINFO, IDS_MUI_BUFFERTOOSMALL);
+  }
+
+  if (iAnchorPos > iCurPos) {
+    iCurPos = SciCall_FindColumn(iLineStart, iCurCol);
+    iAnchorPos = SciCall_FindColumn(_lnend, iAnchorCol);
+  }
+  else {
+    iAnchorPos = SciCall_FindColumn(iLineStart, iAnchorCol);
+    iCurPos = SciCall_FindColumn(_lnend, iCurCol);
+  }
+
+  EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
 }
 
 
@@ -2959,8 +2965,8 @@ void EditEncloseSelection(HWND hwnd, LPCWSTR pwszOpen, LPCWSTR pwszClose)
   const DocPos iSelStart = SciCall_GetSelectionStart();
   const DocPos iSelEnd = SciCall_GetSelectionEnd();
 
-  if (StrIsNotEmpty(pwszOpen)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszOpen, mszOpen); }
-  if (StrIsNotEmpty(pwszClose)) { WideCharToMultiByteStrg(Encoding_SciCP, pwszClose, mszClose); }
+  if (StrIsNotEmpty(pwszOpen)) { WideCharToMultiByte(Encoding_SciCP, 0, pwszOpen, -1, mszOpen, COUNTOF(mszOpen), NULL, NULL); }
+  if (StrIsNotEmpty(pwszClose)) { WideCharToMultiByte(Encoding_SciCP, 0, pwszClose, -1, mszClose, COUNTOF(mszClose), NULL, NULL); }
 
   DocPos const iLenOpen = (DocPos)StringCchLenA(mszOpen, COUNTOF(mszOpen));
   DocPos const iLenClose = (DocPos)StringCchLenA(mszClose, COUNTOF(mszClose));
@@ -3884,8 +3890,8 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
     pszText = AllocMem(cchConvW * 3, HEAP_ZERO_MEMORY);
     if (pszText) 
     {
-      int cchConvM = WideCharToMultiByte(Encoding_SciCP, 0, pszConvW, cchConvW, 
-                                         pszText, (MBWC_DocPos_Cast)SizeOfMem(pszText), NULL, NULL);
+      int const cchConvM = WideCharToMultiByte(Encoding_SciCP, 0, pszConvW, cchConvW, 
+                                               pszText, (MBWC_DocPos_Cast)SizeOfMem(pszText), NULL, NULL);
 
       if (iCurPos < iAnchorPos) {
         iAnchorPos = iSelStart + cchConvM;
@@ -4076,17 +4082,6 @@ int CmpLogicalRev(const void *s1, const void *s2) {
 
 void EditSortLines(HWND hwnd, int iSortFlags)
 {
-  bool bIsRectangular = false;
-
-  DocPos iCurPos = 0;
-  DocPos iAnchorPos = 0;
-  DocPos iCurPosVS = 0;
-  DocPos iAnchorPosVS = 0;
-  DocPos iSelStart = 0;
-  DocPos iSelEnd = 0;
-  DocLn  iLineStart = 0;
-  DocLn  iLineEnd = 0;
-  DocPos iSortColumn = 0;
 
   DocPos cchTotal = 0;
   DocPos ichlMax = 3;
@@ -4098,49 +4093,30 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   
   FNSTRCMP pfnStrCmp = (iSortFlags & SORT_NOCASE) ? StrCmpIW : StrCmpW;
 
-  if (SciCall_IsSelectionRectangle()) {
+  bool const bIsRectSel = SciCall_IsSelectionRectangle();
 
-    bIsRectangular = true;
+  DocPos const iSelStart = SciCall_GetSelectionStart(); //iSelStart = SciCall_PositionFromLine(iLine);
+  DocPos const iSelEnd = SciCall_GetSelectionEnd();
+  //DocLn const iLine = SciCall_LineFromPosition(iSelStart);
 
-    iCurPos = SciCall_GetRectangularSelectionCaret();
-    iAnchorPos = SciCall_GetRectangularSelectionAnchor();
-    iCurPosVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
-    iAnchorPosVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+  DocPos iCurPos = bIsRectSel ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
+  DocPos iAnchorPos = bIsRectSel ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
+  DocPos iCurPosVS = bIsRectSel ? SciCall_GetRectangularSelectionCaretVirtualSpace() : 0;
+  DocPos iAnchorPosVS = bIsRectSel ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : 0;
 
-    iSelStart = SciCall_GetSelectionStart();
-    iSelEnd = SciCall_GetSelectionEnd();
+  DocLn const iRcCurLine = bIsRectSel ? SciCall_LineFromPosition(iCurPos) : 0;
+  DocLn const iRcAnchorLine = bIsRectSel ? SciCall_LineFromPosition(iAnchorPos) : 0;
 
-    DocLn const iRcCurLine = SciCall_LineFromPosition(iCurPos);
-    DocLn const iRcAnchorLine = SciCall_LineFromPosition(iAnchorPos);
+  DocPos const iCurCol = SciCall_GetColumn(iCurPos);
+  DocPos const iAnchorCol = SciCall_GetColumn(iAnchorPos);
+  DocLn const iSortColumn = bIsRectSel ? min_p(iCurCol, iAnchorCol) : (UINT)SciCall_GetColumn(iCurPos);
 
-    DocPos const iRcCurCol = SciCall_GetColumn(iCurPos);
-    DocPos const iRcAnchorCol = SciCall_GetColumn(iAnchorPos);
-
-    iLineStart = min_ln(iRcCurLine, iRcAnchorLine);
-    iLineEnd = max_ln(iRcCurLine, iRcAnchorLine);
-
-    iSortColumn = min_p(iRcCurCol, iRcAnchorCol);
-  }
-  else { // stream selection
-
-    iCurPos = SciCall_GetCurrentPos();
-    iAnchorPos = SciCall_GetAnchor();
-
-    iSelStart = SciCall_GetSelectionStart();
-    iSelEnd = SciCall_GetSelectionEnd();
- 
-    DocLn const iLine = SciCall_LineFromPosition(iSelStart);
-    iSelStart = SciCall_PositionFromLine(iLine);
-    iLineStart = SciCall_LineFromPosition(iSelStart);
-    iLineEnd = SciCall_LineFromPosition(iSelEnd);
-
-    if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) { --iLineEnd; }
-
-    iSortColumn = (UINT)SciCall_GetColumn(iCurPos);
-  }
+  DocLn const iLineStart = bIsRectSel ? min_ln(iRcCurLine, iRcAnchorLine) : SciCall_LineFromPosition(iSelStart);
+  DocLn const _lnend = bIsRectSel ? max_ln(iRcCurLine, iRcAnchorLine) : SciCall_LineFromPosition(iSelEnd);
+  DocLn const iLineEnd = (iSelEnd <= SciCall_PositionFromLine(_lnend)) ? (_lnend - 1) : _lnend;
+  if (iLineEnd <= iLineStart) { return; }
 
   DocLn const iLineCount = iLineEnd - iLineStart + 1;
-  if (iLineCount < 2) { return; }
 
   int const cEOLMode = SciCall_GetEOLMode();
   char mszEOL[] = "\r\n";
@@ -4154,7 +4130,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
   iTabWidth = (int)SendMessage(hwnd, SCI_GETTABWIDTH, 0, 0);
 
-  if (bIsRectangular) 
+  if (bIsRectSel)
   {
     EditPadWithSpaces(hwnd, !(iSortFlags & SORT_SHUFFLE), true);
     // changed rectangular selection
@@ -4302,15 +4278,15 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   }
   FreeMem(pLines);
 
-  DocPos const iResultLength = (DocPos)StringCchLenA(pmszResult, lenRes) + ((cEOLMode == SC_EOL_CRLF) ? 2 : 1);
-  if (!bIsRectangular) {
+  //DocPos const iResultLength = (DocPos)StringCchLenA(pmszResult, lenRes) + ((cEOLMode == SC_EOL_CRLF) ? 2 : 1);
+  if (!bIsRectSel) {
     if (iAnchorPos > iCurPos) {
-      iCurPos = iSelStart;
-      iAnchorPos = iSelStart + iResultLength;
+      iCurPos = SciCall_FindColumn(iLineStart, iCurCol);
+      iAnchorPos = SciCall_FindColumn(_lnend, iAnchorCol);
     }
     else {
-      iAnchorPos = iSelStart;
-      iCurPos = iSelStart + iResultLength;
+      iAnchorPos = SciCall_FindColumn(iLineStart, iAnchorCol);
+      iCurPos = SciCall_FindColumn(_lnend, iCurCol);
     }
   }
 
@@ -4321,7 +4297,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   _LEAVE_TARGET_TRANSACTION_;
   FreeMem(pmszResult);
 
-  if (bIsRectangular)
+  if (bIsRectSel)
     EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
   else
     EditSetSelectionEx(hwnd, iAnchorPos, iCurPos, -1, -1);
