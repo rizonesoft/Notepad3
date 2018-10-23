@@ -304,6 +304,7 @@ typedef struct _settings_t
   bool LoadNFOasOEM;
   bool NoEncodingTags;
   int DefaultEOLMode;
+  bool WarnInconsistEOLs;
   bool FixLineEndings;
   bool FixTrailingBlanks;
   int PrintHeader;
@@ -409,7 +410,26 @@ typedef struct _flags_t
 
 extern FLAGS_T Flags;
 
+//=============================================================================
 
+typedef struct _editfileiostatus
+{
+  int iEncoding;
+  int iEOLMode;
+
+  bool bFileTooBig;
+  bool bUnicodeErr;
+
+  // inconsistent line endings
+  bool bInconsistent;
+  DocLn linesCount[3];
+
+  bool bCancelDataLoss;
+  bool bUnknownExt;
+
+} EditFileIOStatus;
+
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false }
 
 //=============================================================================
 

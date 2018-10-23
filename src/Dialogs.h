@@ -35,7 +35,7 @@ bool TabSettingsDlg(HWND,UINT,int *);
 bool SelectDefEncodingDlg(HWND,int *);
 bool SelectEncodingDlg(HWND,int *);
 bool RecodeDlg(HWND,int *);
-bool SelectDefLineEndingDlg(HWND,int *);
+bool SelectDefLineEndingDlg(HWND,LPARAM);
 
 bool GetMonitorInfoFromRect(const RECT* rc, MONITORINFO* hMonitorInfo);
 void WinInfoToScreen(WININFO*);
