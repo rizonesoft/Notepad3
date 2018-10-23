@@ -884,7 +884,7 @@ void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
         ++linesCount[SC_EOL_CRLF];
       }
       else {
-        ++linesCount[SC_EOL_LF];
+        ++linesCount[SC_EOL_CR];
       }
       break;
     default:
@@ -895,16 +895,14 @@ void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
 
   DocLn const linesMax = max_ln(max_ln(linesCount[0], linesCount[1]), linesCount[2]);
 
-  if (linesMax != linesCount[iEOLMode]) {
-    if (linesMax == linesCount[SC_EOL_CRLF]) {
-      iEOLMode = SC_EOL_CRLF;
-    }
-    else if (linesMax == linesCount[SC_EOL_LF]) {
-      iEOLMode = SC_EOL_LF;
-    }
-    else {
-      iEOLMode = SC_EOL_CR;
-    }
+  if (linesMax == linesCount[SC_EOL_CRLF]) {
+    iEOLMode = SC_EOL_CRLF;
+  }
+  else if (linesMax == linesCount[SC_EOL_CR]) {
+    iEOLMode = SC_EOL_CR;
+  }
+  else {
+    iEOLMode = SC_EOL_LF;
   }
 
   status->iEOLMode = iEOLMode;

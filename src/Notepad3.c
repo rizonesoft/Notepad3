@@ -9403,8 +9403,19 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       MsgBoxLng(MBWARN, IDS_MUI_ERR_UNICODE);
     }
     // Show inconsistent line endings warning
-    if (fioStatus.bInconsistent && Settings.WarnInconsistEOLs) {
-      MsgBoxLng(MBWARN, IDS_MUI_WARN_INCONSIST_EOLS);
+    if (fioStatus.bInconsistent && Settings.WarnInconsistEOLs) 
+    {
+      WCHAR szDefault[32];
+      WCHAR szStatistic[80];
+      int const eolm = Globals.iEOLMode; //Settings.DefaultEOLMode;
+      StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s", 
+        ((eolm == SC_EOL_CRLF) ? L"CRLF (\\r\\n)" : ((eolm == SC_EOL_CR) ? L"CR (\\r)" : L"LF (\\n)")));
+      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L">>> #CRLF = %i, #CR = %i,  #LF = %i <<<",
+                      fioStatus.linesCount[SC_EOL_CRLF], fioStatus.linesCount[SC_EOL_CR], fioStatus.linesCount[SC_EOL_LF]);
+      int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONSIST_EOLS, szStatistic, szDefault);
+      if (res == IDYES) {
+        SciCall_ConvertEOLs(eolm);
+      }
     }
   }
   else if (!(fioStatus.bFileTooBig || fioStatus.bUnknownExt)) {
