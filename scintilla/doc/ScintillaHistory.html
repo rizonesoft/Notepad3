@@ -556,8 +556,19 @@
 	can be a significant performance cost.
 	</li>
 	<li>
+	Improve efficiency of idle wrapping by wrapping in blocks as large as possible while
+	still remaining responsive.
+	</li>
+	<li>
+	Updated case conversion and character categories to Unicode 11.
+	</li>
+	<li>
 	Fixed a crash on Cocoa in bidirectional mode where some patterns of invalid UTF-8
 	caused failures to create Unicode strings.
+	</li>
+	<li>
+	SCI_MARKERADD returns -1 for invalid lines as documented instead of 0.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2051/">Bug #2051</a>.
 	</li>
 	<li>
 	Improve performance of text insertion when Unicode line indexing off.
@@ -571,19 +582,11 @@
 	Released 2 October 2018.
 	</li>
 	<li>
-	Improve efficiency of idle wrapping by wrapping in blocks as large as possible while
-	still remaining responsive.
-	</li>
-	<li>
 	C++ lexer fixes evaluation of "#elif".
 	<a href="https://sourceforge.net/p/scintilla/bugs/2045/">Bug #2045</a>.
 	</li>
 	<li>
 	Markdown lexer fixes highlighting of non-ASCII characters in links.
-	</li>
-	<li>
-	SCI_MARKERADD returns -1 for invalid lines as documented instead of 0.
-	<a href="https://sourceforge.net/p/scintilla/bugs/2051/">Bug #2051</a>.
 	</li>
 	<li>
 	SciTE on Win32 drops menukey feature, makes Del key work again in find and replace strips

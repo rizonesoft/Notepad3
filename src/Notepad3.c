@@ -1173,7 +1173,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   if (s_flagMatchText && lpMatchArg) {
     if (StrIsNotEmpty(lpMatchArg) && SendMessage(Globals.hwndEdit,SCI_GETLENGTH,0,0)) {
 
-      WideCharToMultiByteStrg(Encoding_SciCP,lpMatchArg,Settings.EFR_Data.szFind);
+      WideCharToMultiByte(Encoding_SciCP,0,lpMatchArg,-1,Settings.EFR_Data.szFind,COUNTOF(Settings.EFR_Data.szFind),NULL,NULL);
 
       if (s_flagMatchText & 4)
         Settings.EFR_Data.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
@@ -2621,16 +2621,14 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
   UNUSED(lParam);
 
-  //DocPos p;
-  bool b,e,s;
-
-  HMENU hmenu = (HMENU)wParam;
+  HMENU const hmenu = (HMENU)wParam;
 
   bool const ro = SciCall_GetReadOnly();
   DocPos const iCurPos = SciCall_GetCurrentPos();
   DocLn  const iCurLine = SciCall_LineFromPosition(iCurPos);
 
   int i = (int)StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile));
+
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
   EnableCmd(hmenu, CMD_RELOADFORCEDETECTION, i);
@@ -2695,10 +2693,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_UNDO,SciCall_CanUndo() && !ro);
   EnableCmd(hmenu,IDM_EDIT_REDO,SciCall_CanRedo() && !ro);
 
-  s = SciCall_IsSelectionEmpty();
-  e = (SciCall_GetTextLength() == 0);
-  b = SciCall_CanPaste();
-  
+  bool const s = SciCall_IsSelectionEmpty();
+  bool const e = (SciCall_GetTextLength() == 0);
+  bool const b = SciCall_CanPaste();
+  bool const mls = Sci_IsMultiLineSelection();
+
   EnableCmd(hmenu,IDM_EDIT_CUT, !e && !ro);       // allow Ctrl-X w/o selection
   EnableCmd(hmenu,IDM_EDIT_COPY, !e);             // allow Ctrl-C w/o selection
 
@@ -2739,10 +2738,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
 
   EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
-  EnableCmd(hmenu, IDM_EDIT_ALIGN, !ro);
-  EnableCmd(hmenu, IDM_EDIT_SORTLINES,
-    (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -
-      SciCall_LineFromPosition(SciCall_GetSelectionStart())) >= 1);
+  EnableCmd(hmenu, IDM_EDIT_ALIGN, mls && !ro);
+  EnableCmd(hmenu, IDM_EDIT_SORTLINES, mls && !ro);
  
   //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
   EnableCmd(hmenu,IDM_EDIT_SPLITLINES,!s && !ro);
@@ -2796,8 +2793,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_INSERT_PATHNAME,!ro);
 
   EnableCmd(hmenu, IDM_EDIT_INSERT_GUID, !ro);
-
-  e = (SciCall_GetTextLength() == 0);
 
   EnableCmd(hmenu,IDM_EDIT_FIND, !e);
   EnableCmd(hmenu,IDM_EDIT_SAVEFIND, !e);
@@ -4010,7 +4005,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           StringCchPrintf(tchDateTime,COUNTOF(tchDateTime),L"%s %s",tchTime,tchDate);
         }
         char chDateTime[128] = { '\0' };
-        WideCharToMultiByteStrg(Encoding_SciCP,tchDateTime, chDateTime);
+        WideCharToMultiByte(Encoding_SciCP,0,tchDateTime,-1,chDateTime,COUNTOF(chDateTime),NULL,NULL);
         _BEGIN_UNDO_ACTION_;
         SendMessage(Globals.hwndEdit,SCI_REPLACESEL,0,(LPARAM)chDateTime);
         _END_UNDO_ACTION_;
@@ -4040,7 +4035,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           pszInsert = tchUntitled;
         }
         char chPath[MAX_PATH + 1];
-        WideCharToMultiByteStrg(Encoding_SciCP, pszInsert, chPath);
+        WideCharToMultiByte(Encoding_SciCP, 0, pszInsert, -1, chPath, COUNTOF(chPath), NULL, NULL);
         _BEGIN_UNDO_ACTION_;
         SendMessage(Globals.hwndEdit, SCI_REPLACESEL, 0, (LPARAM)chPath);
         _END_UNDO_ACTION_;
@@ -4054,7 +4049,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SUCCEEDED(CoCreateGuid(&guid))) {  
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
             StrTrimW(tchMaxPathBuffer, L"{}");
-            if (WideCharToMultiByteStrg(Encoding_SciCP, tchMaxPathBuffer, chMaxPathBuffer)) {
+            if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
               _BEGIN_UNDO_ACTION_;
               SendMessage(Globals.hwndEdit,SCI_REPLACESEL,0,(LPARAM)chMaxPathBuffer);
               _END_UNDO_ACTION_;
@@ -4460,7 +4455,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Settings.EFR_Data.bTransformBS = false;
 
         WCHAR wszBuf[FNDRPL_BUFFER];
-        MultiByteToWideCharStrg(Encoding_SciCP, mszSelection, wszBuf);
+        MultiByteToWideChar(Encoding_SciCP, 0, mszSelection, -1, wszBuf, FNDRPL_BUFFER);
         MRU_Add(Globals.pMRUfind, wszBuf, 0, 0, NULL);
         SetFindPattern(wszBuf);
 
@@ -5337,8 +5332,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         mktime(&sst);
         wcsftime(wchReplace,COUNTOF(wchReplace),wchTemplate,&sst);
 
-        WideCharToMultiByteStrg(Encoding_SciCP,wchFind,efrTS.szFind);
-        WideCharToMultiByteStrg(Encoding_SciCP,wchReplace,efrTS.szReplace);
+        WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, efrTS.szFind,COUNTOF(efrTS.szFind),NULL,NULL);
+        WideCharToMultiByte(Encoding_SciCP, 0, wchReplace, -1, efrTS.szReplace, COUNTOF(efrTS.szReplace), NULL, NULL);
 
         if (!SendMessage(Globals.hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0))
           EditReplaceAllInSelection(Globals.hwndEdit, &efrTS, true);
@@ -5360,13 +5355,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_WEBACTION2:
       {
         StringCchCopyW(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer),
-          (LOWORD(wParam) == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate1);
+          (LOWORD(wParam) == CMD_WEBACTION1) ? Settings2.WebTemplate1 : Settings2.WebTemplate2);
 
         if (StringCchLenW(tchMaxPathBuffer,0) > 0) {
 
           DocPos const cchSelection = SciCall_GetSelText(NULL);
 
-          char  mszSelection[512] = { '\0' };
+          char  mszSelection[HUGE_BUFFER] = { '\0' };
           if ((1 < cchSelection) && (cchSelection < (DocPos)COUNTOF(mszSelection)))
           {
             SciCall_GetSelText(mszSelection);
@@ -5383,8 +5378,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
             if (StringCchLenA(mszSelection,COUNTOF(mszSelection))) {
 
-              WCHAR wszSelection[512] = { L'\0' };
-              MultiByteToWideCharStrg(Encoding_SciCP,mszSelection,wszSelection);
+              WCHAR wszSelection[HUGE_BUFFER] = { L'\0' };
+              MultiByteToWideChar(Encoding_SciCP,0,mszSelection,-1,wszSelection, HUGE_BUFFER);
 
               int cmdsz = (512 + COUNTOF(tchMaxPathBuffer) + MAX_PATH + 32);
               LPWSTR lpszCommand = AllocMem(sizeof(WCHAR)*cmdsz, HEAP_ZERO_MEMORY);
@@ -5887,7 +5882,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
     if (!StringCchLenA(chURL, COUNTOF(chURL))) { return; }
 
     WCHAR wchURL[HUGE_BUFFER] = { L'\0' };
-    MultiByteToWideCharStrg(Encoding_SciCP, chURL, wchURL);
+    MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, HUGE_BUFFER);
 
     const WCHAR* chkPreFix = L"file://";
     size_t const len = StringCchLenW(chkPreFix,0);
@@ -6735,7 +6730,7 @@ void LoadSettings()
     StringCchCopyW(Defaults2.WebTemplate1, COUNTOF(Defaults2.WebTemplate1), L"https://google.com/search?q=%s");
     IniSectionGetString(pIniSection, L"WebTemplate1", Defaults2.WebTemplate1, Settings2.WebTemplate1, COUNTOF(Settings2.WebTemplate1));
     
-    StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https ://en.wikipedia.org/w/index.php?search=%s");
+    StringCchCopyW(Defaults2.WebTemplate2, COUNTOF(Defaults2.WebTemplate2), L"https://en.wikipedia.org/w/index.php?search=%s");
     IniSectionGetString(pIniSection, L"WebTemplate2", Defaults2.WebTemplate2, Settings2.WebTemplate2, COUNTOF(Settings2.WebTemplate2));
 
 

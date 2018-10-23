@@ -276,7 +276,7 @@ void Encoding_SetLabel(int iEncoding)
 int Encoding_MatchW(LPCWSTR pwszTest) 
 {
   char tchTest[256] = { '\0' };
-  WideCharToMultiByteStrg(CP_ACP, pwszTest, tchTest);
+  WideCharToMultiByte(CP_ACP, 0, pwszTest, -1, tchTest, COUNTOF(tchTest), NULL, NULL);
   return(Encoding_MatchA(tchTest));
 }
 // ============================================================================

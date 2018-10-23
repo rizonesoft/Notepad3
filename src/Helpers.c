@@ -1420,14 +1420,14 @@ UINT GetDlgItemTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, int nMaxCount
 UINT SetDlgItemTextMB2W(HWND hDlg, int nIDDlgItem, LPSTR lpString)
 {
   WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideCharStrg(Encoding_SciCP, lpString, wsz);
+  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
   return SetDlgItemTextW(hDlg, nIDDlgItem, wsz);
 }
 
 LRESULT ComboBox_AddStringMB2W(HWND hwnd, LPCSTR lpString)
 {
   WCHAR wsz[FNDRPL_BUFFER] = L"";
-  MultiByteToWideCharStrg(Encoding_SciCP, lpString, wsz);
+  MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, wsz, FNDRPL_BUFFER);
   return SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)wsz);
 }
 
@@ -1669,7 +1669,7 @@ bool MRU_Load(LPMRULIST pmru)
       if (IniSectionGetString(pIniSection, tchName, L"", tchItem, COUNTOF(tchItem))) {
         /*if (pmru->iFlags & MRU_UTF8) {
           WCHAR wchItem[1024];
-          int cbw = MultiByteToWideCharStrg(CP_UTF7,tchItem,wchItem);
+          int cbw = MultiByteToWideChar(CP_UTF7, 0, tchItem, -1, wchItem, COUNTOF(wchItem));
           WideCharToMultiByte(Encoding_SciCP,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
           pmru->pszItems[n] = StrDup(tchItem);
         }
@@ -1711,7 +1711,7 @@ bool MRU_Save(LPMRULIST pmru) {
         /*if (pmru->iFlags & MRU_UTF8) {
           WCHAR  tchItem[1024];
           WCHAR wchItem[1024];
-          int cbw = MultiByteToWideCharStrg(Encoding_SciCP,pmru->pszItems[i],wchItem);
+          int cbw = MultiByteToWideChar(Encoding_SciCP,0,pmru->pszItems[i],-1,wchItem,COUNTOF(wchItem));
           WideCharToMultiByte(CP_UTF7,0,wchItem,cbw,tchItem,COUNTOF(tchItem),NULL,NULL);
           IniSectionSetString(pIniSection,tchName,tchItem);
         }
@@ -1834,7 +1834,7 @@ unsigned int UnSlash(char *s,UINT cpEdit) {
           }
           if (val[0]) {
             val[1] = 0;
-            WideCharToMultiByteStrg(cpEdit,val,ch);
+            WideCharToMultiByte(cpEdit,0,val,-1,ch,COUNTOF(ch),NULL,NULL);
             *o = *pch++;
             while (*pch)
               *++o = *pch++;

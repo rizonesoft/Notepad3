@@ -320,10 +320,6 @@ size_t FormatNumberStr(LPWSTR lpNumberStr);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
 
 
-#define MultiByteToWideCharStrg(c,a,w) MultiByteToWideChar((c),0,(a),-1,(w),COUNTOF(w))
-#define WideCharToMultiByteStrg(c,w,a) WideCharToMultiByte((c),0,(w),-1,(a),COUNTOF(a),NULL,NULL)
-
-
 UINT    GetDlgItemTextW2MB(HWND hDlg,int nIDDlgItem,LPSTR lpString,int nMaxCount);
 UINT    SetDlgItemTextMB2W(HWND hDlg,int nIDDlgItem,LPSTR lpString);
 LRESULT ComboBox_AddStringMB2W(HWND hwnd,LPCSTR lpString);
