@@ -825,7 +825,8 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
   HANDLE const hOld   = GetClipboardData(CF_UNICODETEXT);
   const WCHAR* pszOld = GlobalLock(hOld);
 
-  const WCHAR *pszSep = ((Globals.iEOLMode == SC_EOL_CRLF) ? L"\r\n" : ((Globals.iEOLMode == SC_EOL_CR) ? L"\r" : L"\n"));
+  int const _eol_mode = SciCall_GetEOLMode();
+  const WCHAR *pszSep = ((_eol_mode == SC_EOL_CRLF) ? L"\r\n" : ((_eol_mode == SC_EOL_CR) ? L"\r" : L"\n"));
 
   size_t cchNewText = cchTextW;
   if (pszOld && *pszOld) {
@@ -1070,7 +1071,7 @@ bool EditLoadFile(
     *iEOLMode = Settings.DefaultEOLMode;
     *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
-    SendMessage(hwnd,SCI_SETEOLMODE,Settings.DefaultEOLMode,0);
+    SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
   // ===  UNICODE  ===
@@ -1277,13 +1278,13 @@ bool EditSaveFile(
 
   // ensure consistent line endings
   if (Settings.FixLineEndings) {
-    SendMessage(hwnd,SCI_CONVERTEOLS, SciCall_GetEOLMode(),0);
-    EditFixPositions(hwnd);
+    EditEnsureConsistentLineEndings(hwnd);
   }
 
   // strip trailing blanks
-  if (Settings.FixTrailingBlanks)
+  if (Settings.FixTrailingBlanks) {
     EditStripLastCharacter(hwnd, true, true);
+  }
 
   // get text
   cbData = (DWORD)SciCall_GetTextLength();
@@ -3807,7 +3808,7 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
 
   int cchEOL = 2;
   WCHAR wszEOL[] = L"\r\n";
-  int cEOLMode = SciCall_GetEOLMode();
+  int const cEOLMode = SciCall_GetEOLMode();
   if (cEOLMode == SC_EOL_CR)
     cchEOL = 1;
   else if (cEOLMode == SC_EOL_LF) {
@@ -4381,6 +4382,17 @@ void EditEnsureSelectionVisible(HWND hwnd)
 
 //=============================================================================
 //
+//  EditEnsureConsistentLineEndings()
+//
+void EditEnsureConsistentLineEndings(HWND hwnd)
+{
+  SciCall_ConvertEOLs(SciCall_GetEOLMode());
+  EditFixPositions(hwnd);
+}
+
+
+//=============================================================================
+//
 //  EditScrollTo()
 //
 void EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop)
@@ -4434,23 +4446,24 @@ void EditFixPositions(HWND hwnd)
 {
   UNUSED(hwnd);
 
-  DocPos iCurrentPos = SciCall_GetCurrentPos();
-  const DocPos iAnchorPos = SciCall_GetAnchor();
-  const DocPos iMaxPos = Sci_GetDocEndPosition();
+  DocPos const iCurrentPos = SciCall_GetCurrentPos();
+  DocPos const iAnchorPos = SciCall_GetAnchor();
+  DocPos const iMaxPos = Sci_GetDocEndPosition();
+  
+  DocPos iNewPos = iCurrentPos;
 
   if ((iCurrentPos > 0) && (iCurrentPos < iMaxPos)) 
   {
-    const DocPos iNewPos = SciCall_PositionAfter( SciCall_PositionBefore(iCurrentPos) );
+    iNewPos = SciCall_PositionAfter(SciCall_PositionBefore(iCurrentPos));
 
     if (iNewPos != iCurrentPos) {
       SciCall_SetCurrentPos(iNewPos);
-      iCurrentPos = iNewPos;
     }
   }
 
-  if ((iAnchorPos != iCurrentPos) && (iAnchorPos > 0) && (iAnchorPos < iMaxPos)) 
+  if ((iAnchorPos != iNewPos) && (iAnchorPos > 0) && (iAnchorPos < iMaxPos))
   {
-    const DocPos iNewPos = SciCall_PositionAfter(SciCall_PositionBefore(iAnchorPos));
+    iNewPos = SciCall_PositionAfter(SciCall_PositionBefore(iAnchorPos));
     if (iNewPos != iAnchorPos) { 
       SciCall_SetAnchor(iNewPos); 
     }

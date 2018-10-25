@@ -601,10 +601,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetKeywords(i, pLexNew->pKeyWords->pszKeyWords[i]);
   }
 
-  // Idle Styling (very large text)
-  SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
-  //SendMessage(hwnd, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
-
   // --------------------------------------------------------------------------
 
   // Clear
