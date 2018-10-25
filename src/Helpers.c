@@ -1928,7 +1928,6 @@ void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplac
 }
 
 
-
 void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
 {
   if (!bRegEx)  return;

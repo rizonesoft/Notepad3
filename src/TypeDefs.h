@@ -241,7 +241,6 @@ typedef struct _globals_t
   DPI_T     CurrentDPI;
   DPI_T     CurrentPPI;
   LANGID    iPrefLANGID;
-  int       iEOLMode;
   LPMRULIST pFileMRU;
   LPMRULIST pMRUfind;
   LPMRULIST pMRUreplace;

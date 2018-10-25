@@ -109,7 +109,8 @@ int  Encoding_SrcWeak(int iSrcWeakEnc)
 // ============================================================================
 
 
-bool Encoding_HasChanged(int iOriginalEncoding) {
+bool Encoding_HasChanged(int iOriginalEncoding) 
+{
   static int OriginalEncoding = CPI_NONE;
 
   if (iOriginalEncoding >= CPI_NONE) {
