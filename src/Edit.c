@@ -3823,7 +3823,7 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
 
   int cchEOL = 2;
   WCHAR wszEOL[] = L"\r\n";
-  int cEOLMode = SciCall_GetEOLMode();
+  int const cEOLMode = SciCall_GetEOLMode();
   if (cEOLMode == SC_EOL_CR)
     cchEOL = 1;
   else if (cEOLMode == SC_EOL_LF) {

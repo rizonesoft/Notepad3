@@ -1554,7 +1554,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 
 
-  SendMessage(hwndEditCtrl, SCI_SETEOLMODE, SC_EOL_CRLF, 0);
+  SendMessage(hwndEditCtrl, SCI_SETEOLMODE, Settings.DefaultEOLMode, 0);
   SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
   SendMessage(hwndEditCtrl, SCI_USEPOPUP, false, 0);
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
@@ -1566,8 +1566,11 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
+  // Idle Styling (very large text)
+  //~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
+  SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
-  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // SCI 4.1.3 : speedup folding
+  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
 
   // assign command keys
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
@@ -3315,8 +3318,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _IGNORE_NOTIFY_CHANGE_;
         int const _eol_mode = (LOWORD(wParam)-IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
         SciCall_SetEOLMode(_eol_mode);
-        SciCall_ConvertEOLs(_eol_mode);
-        EditFixPositions(Globals.hwndEdit);
+        EditEnsureConsistentLineEndings(Globals.hwndEdit);
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
         UpdateStatusbar(false);
@@ -6438,8 +6440,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             switch (pnmm->dwItemSpec)
             {
               case STATUS_EOLMODE:
-                SciCall_ConvertEOLs(SciCall_GetEOLMode());
-                EditFixPositions(Globals.hwndEdit);
+                EditEnsureConsistentLineEndings(Globals.hwndEdit);
                 return 1LL;
 
               default:
@@ -7361,10 +7362,10 @@ void ParseCommandLine()
         // EOL Mode
         else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0)
           s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
-        else if (StringCchCompareXI(lp1, L"LF") == 0)
-          s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
         else if (StringCchCompareXI(lp1, L"CR") == 0)
           s_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
+        else if (StringCchCompareXI(lp1, L"LF") == 0)
+          s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
 
         // Shell integration
         else if (StrCmpNI(lp1, L"appid=", CSTRLEN(L"appid=")) == 0) {
@@ -8657,7 +8658,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   if (s_iStatusbarVisible[STATUS_EOLMODE]) 
   {
     int const _eol_mode = SciCall_GetEOLMode();
-    if (s_iEOLMode != _eol_mode) {
+
+    if (s_iEOLMode != _eol_mode) 
+    {
       if (_eol_mode == SC_EOL_LF) {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF%s",
                         s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
@@ -9190,6 +9193,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
   EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
   fioStatus.iEOLMode = Settings.DefaultEOLMode;
+  fioStatus.iEncoding = CPI_ANSI_DEFAULT;
 
   if (bNew || bReload) {
     if (EditToggleView(Globals.hwndEdit, false)) {
