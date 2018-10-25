@@ -31,9 +31,9 @@ bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
 bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
-int   EditDetectEOLMode(HWND hwnd,char* lpData);
-bool  EditLoadFile(HWND hwnd,LPWSTR pszFile,bool,bool,int* iEncoding,int* iEOLMode,bool*,bool*,bool*);
-bool  EditSaveFile(HWND hwnd,LPCWSTR pszFile,int iEncoding,bool*,bool);
+void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
+bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool, bool, EditFileIOStatus* status);
+bool  EditSaveFile(HWND hwnd,LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
 
 void  EditInvertCase(HWND hwnd);
 void  EditTitleCase(HWND hwnd);

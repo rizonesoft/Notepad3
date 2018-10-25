@@ -856,34 +856,62 @@ bool EditCopyAppend(HWND hwnd, bool bAppend)
 
 //=============================================================================
 //
-//  EditDetectEOLMode() - moved here to handle Unicode files correctly
+// EditDetectEOLMode() - moved here to handle Unicode files correctly
+// by zufuliu (https://github.com/zufuliu/notepad2)
 //
-int EditDetectEOLMode(HWND hwnd, char* lpData)
+void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
 {
-  UNUSED(hwnd);
   int iEOLMode = Settings.DefaultEOLMode;
 
-  LPCSTR cp = lpData ? StrPBrkA(lpData, "\r\n") : NULL;
-
-  if (!cp) {
-    return iEOLMode;
+  if (cbData == 0) {
+    status->iEOLMode = iEOLMode;
+    return;
   }
 
-  if (*cp == '\r') {
-    if (*(cp + 1) == '\n') {
-      iEOLMode = SC_EOL_CRLF;
+  DocLn linesCount[3] = { 0, 0, 0 };
+
+  LPCSTR cp = lpData;
+  LPCSTR const end = cp + cbData;
+  while (cp < end) {
+    switch (*cp) {
+    case '\n':
+      ++cp;
+      ++linesCount[SC_EOL_LF];
+      break;
+    case '\r':
+      ++cp;
+      if (*cp == '\n') {
+        ++cp;
+        ++linesCount[SC_EOL_CRLF];
+      }
+      else {
+        ++linesCount[SC_EOL_CR];
+      }
+      break;
+    default:
+      ++cp;
+      break;
     }
-    else {
-      iEOLMode = SC_EOL_CR;
-    }
+  }
+
+  DocLn const linesMax = max_ln(max_ln(linesCount[0], linesCount[1]), linesCount[2]);
+
+  if (linesMax == linesCount[SC_EOL_CRLF]) {
+    iEOLMode = SC_EOL_CRLF;
+  }
+  else if (linesMax == linesCount[SC_EOL_CR]) {
+    iEOLMode = SC_EOL_CR;
   }
   else {
     iEOLMode = SC_EOL_LF;
   }
 
-  return iEOLMode;
+  status->iEOLMode = iEOLMode;
+  status->bInconsistent = ((!!linesCount[0]) + (!!linesCount[1]) + (!!linesCount[2])) > 1;
+  status->linesCount[SC_EOL_CRLF] = linesCount[SC_EOL_CRLF];
+  status->linesCount[SC_EOL_CR] = linesCount[SC_EOL_CR];
+  status->linesCount[SC_EOL_LF] = linesCount[SC_EOL_LF];
 }
-
 
 
 //=============================================================================
@@ -895,18 +923,11 @@ bool EditLoadFile(
        LPWSTR pszFile,
        bool bSkipUTFDetection,
        bool bSkipANSICPDetection,
-       int* iEncoding,
-       int* iEOLMode,
-       bool *pbUnicodeErr,
-       bool *pbFileTooBig,
-       bool *pbUnkownExt)
+       EditFileIOStatus* status)
 {
-  if (pbUnicodeErr)
-    *pbUnicodeErr = false;
-  if (pbFileTooBig)
-    *pbFileTooBig = false;
-  if (pbUnkownExt)
-    *pbUnkownExt  = false;
+  status->bUnicodeErr = false;
+  status->bFileTooBig = false;
+  status->bUnknownExt = false;
 
   HANDLE hFile = CreateFile(pszFile,
                             GENERIC_READ,
@@ -932,8 +953,7 @@ bool EditLoadFile(
   if (!Style_HasLexerForExt(lpszExt)) {
     if (InfoBoxLng(MBYESNO,L"MsgFileUnknownExt",IDS_MUI_WARN_UNKNOWN_EXT,lpszExt) != IDYES) {
       CloseHandle(hFile);
-      if (pbUnkownExt)
-        *pbUnkownExt = true;
+      status->bUnknownExt = true;
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return false;
@@ -945,8 +965,7 @@ bool EditLoadFile(
   if ((dwFileSizeLimit != 0) && ((dwFileSizeLimit * 1024 * 1024) < dwFileSize)) {
     if (InfoBoxLng(MBYESNO,L"MsgFileSizeWarning",IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
-      if (pbFileTooBig)
-        *pbFileTooBig = true;
+      status->bFileTooBig = true;
       Encoding_SrcCmdLn(CPI_NONE);
       Encoding_SrcWeak(CPI_NONE);
       return false;
@@ -972,8 +991,7 @@ bool EditLoadFile(
   if (!lpData)
   {
     CloseHandle(hFile);
-    if (pbFileTooBig)
-      *pbFileTooBig = false;
+    status->bFileTooBig = true;
     Encoding_SrcCmdLn(CPI_NONE);
     Encoding_SrcWeak(CPI_NONE);
     return false;
@@ -986,7 +1004,6 @@ bool EditLoadFile(
 
   bool bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
   // ((readFlag == DECRYPT_SUCCESS) || (readFlag & DECRYPT_NO_ENCRYPTION)) => true;
-
   if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS))
   {
     bReadSuccess = (InfoBoxLng(MBOKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
@@ -1068,8 +1085,9 @@ bool EditLoadFile(
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&g_fvCurFile);
-    *iEOLMode = Settings.DefaultEOLMode;
-    *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
+    status->iEOLMode = Settings.DefaultEOLMode;
+    status->iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : 
+      (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
@@ -1094,10 +1112,10 @@ bool EditLoadFile(
     if (bReverse) 
     {
       _swab(lpData,lpData,cbData);
-      *iEncoding = (bBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
+      status->iEncoding = (bBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBE);
     }
     else {
-      *iEncoding = (bBOM ? CPI_UNICODEBOM : CPI_UNICODE);
+      status->iEncoding = (bBOM ? CPI_UNICODEBOM : CPI_UNICODE);
     }
 
     char* lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
@@ -1106,8 +1124,7 @@ bool EditLoadFile(
               (bBOM) ? (cbData)/sizeof(WCHAR) : cbData/sizeof(WCHAR) + 1,lpDataUTF8,(MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8),NULL,NULL);
 
     if (convCnt == 0) {
-      if (pbUnicodeErr)
-        *pbUnicodeErr = true;
+      status->bUnicodeErr = true;
       convCnt = (DWORD)WideCharToMultiByte(CP_ACP,0,(bBOM) ? (LPWSTR)lpData + 1 : (LPWSTR)lpData,
                 (-1),lpDataUTF8,(MBWC_DocPos_Cast)SizeOfMem(lpDataUTF8),NULL,NULL);
     }
@@ -1117,7 +1134,7 @@ bool EditLoadFile(
       EditSetNewText(hwnd,"",0);
       FileVars_Init(lpDataUTF8,convCnt - 1,&g_fvCurFile);
       EditSetNewText(hwnd,lpDataUTF8,convCnt - 1);
-      *iEOLMode = EditDetectEOLMode(hwnd,lpDataUTF8);
+      EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
       FreeMem(lpDataUTF8);
     }
     else {
@@ -1149,13 +1166,13 @@ bool EditLoadFile(
       EditSetNewText(hwnd,"",0);
       if (bIsUTF8Sig) {
         EditSetNewText(hwnd,UTF8StringStart(lpData),cbData-3);
-        *iEncoding = CPI_UTF8SIGN;
-        *iEOLMode = EditDetectEOLMode(hwnd,UTF8StringStart(lpData));
+        status->iEncoding = CPI_UTF8SIGN;
+        EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
       }
       else {
         EditSetNewText(hwnd,lpData,cbData);
-        *iEncoding = CPI_UTF8;
-        *iEOLMode = EditDetectEOLMode(hwnd,lpData);
+        status->iEncoding = CPI_UTF8;
+        EditDetectEOLMode(lpData, cbData, status);
       }
       FreeMem(lpData);
     }
@@ -1163,19 +1180,19 @@ bool EditLoadFile(
     else { // ===  ALL OTHER  ===
 
       if (!Encoding_IsNONE(iForcedEncoding))
-        *iEncoding = iForcedEncoding;
+        status->iEncoding = iForcedEncoding;
       else {
-        *iEncoding = FileVars_GetEncoding(&g_fvCurFile);
-        if (Encoding_IsNONE(*iEncoding)) 
+        status->iEncoding = FileVars_GetEncoding(&g_fvCurFile);
+        if (Encoding_IsNONE(status->iEncoding)) 
         {
-          *iEncoding = ((g_fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferedEncoding);
+          status->iEncoding = ((g_fvCurFile.mask & FV_ENCODING) ? CPI_ANSI_DEFAULT : iPreferedEncoding);
         }
       }
 
-      if (((Encoding_GetCodePage(*iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(*iEncoding)) ||
-          ((Encoding_GetCodePage(*iEncoding) == CP_UTF7) && IsValidUTF7(lpData,cbData))) {
+      if (((Encoding_GetCodePage(status->iEncoding) != CP_UTF7) && Encoding_IsEXTERNAL_8BIT(status->iEncoding)) ||
+          ((Encoding_GetCodePage(status->iEncoding) == CP_UTF7) && IsValidUTF7(lpData,cbData))) {
 
-        UINT uCodePage = Encoding_GetCodePage(*iEncoding);
+        UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
 
         LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
         int const cbDataWide = MultiByteToWideChar(uCodePage,0,lpData,cbData,lpDataWide,(MBWC_DocPos_Cast)(SizeOfMem(lpDataWide)/sizeof(WCHAR)));
@@ -1189,7 +1206,7 @@ bool EditLoadFile(
             FreeMem(lpDataWide);
             EditSetNewText(hwnd,"",0);
             EditSetNewText(hwnd,lpData,cbData);
-            *iEOLMode = EditDetectEOLMode(hwnd,lpData);
+            EditDetectEOLMode(lpData, cbData, status);
             FreeMem(lpData);
           }
           else {
@@ -1209,10 +1226,10 @@ bool EditLoadFile(
         }
       }
       else {
-        *iEncoding = Encoding_IsValid(iForcedEncoding) ? iForcedEncoding : iPreferedEncoding;
+        status->iEncoding = Encoding_IsValid(iForcedEncoding) ? iForcedEncoding : iPreferedEncoding;
         EditSetNewText(hwnd,"",0);
         EditSetNewText(hwnd,lpData,cbData);
-        *iEOLMode = EditDetectEOLMode(hwnd,lpData);
+        EditDetectEOLMode(lpData, cbData, status);
         FreeMem(lpData);
       }
     }
@@ -1232,8 +1249,7 @@ bool EditLoadFile(
 bool EditSaveFile(
        HWND hwnd,
        LPCWSTR pszFile,
-       int iEncoding,
-       bool *pbCancelDataLoss,
+       EditFileIOStatus* status,
        bool bSaveCopy)
 {
 
@@ -1244,7 +1260,7 @@ bool EditSaveFile(
   DWORD cbData;
   DWORD dwBytesWritten;
 
-  *pbCancelDataLoss = false;
+  status->bCancelDataLoss = false;
 
   hFile = CreateFile(pszFile,
                      GENERIC_WRITE,
@@ -1321,13 +1337,13 @@ bool EditSaveFile(
       }
     }*/
 
-    if (Encoding_IsUNICODE(iEncoding))
+    if (Encoding_IsUNICODE(status->iEncoding))
     {
       SetEndOfFile(hFile);
 
       LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
       int bomoffset = 0;
-      if (Encoding_IsUNICODE_BOM(iEncoding)) {
+      if (Encoding_IsUNICODE_BOM(status->iEncoding)) {
         const char* bom = "\xFF\xFE";
         CopyMemory((char*)lpDataWide, bom, 2);
         bomoffset = 1;
@@ -1335,7 +1351,7 @@ bool EditSaveFile(
       int const cbDataWide = bomoffset + 
         MultiByteToWideChar(Encoding_SciCP, 0, lpData, cbData, &lpDataWide[bomoffset], 
         (MBWC_DocPos_Cast)((SizeOfMem(lpDataWide) / sizeof(WCHAR)) - bomoffset));
-      if (Encoding_IsUNICODE_REVERSE(iEncoding)) {
+      if (Encoding_IsUNICODE_REVERSE(status->iEncoding)) {
         _swab((char*)lpDataWide, (char*)lpDataWide, cbDataWide * sizeof(WCHAR));
       }
       bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE*)lpDataWide, cbDataWide * sizeof(WCHAR), &dwBytesWritten);
@@ -1345,11 +1361,11 @@ bool EditSaveFile(
       FreeMem(lpData);
     }
 
-    else if (Encoding_IsUTF8(iEncoding))
+    else if (Encoding_IsUTF8(status->iEncoding))
     {
       SetEndOfFile(hFile);
 
-      if (Encoding_IsUTF8_SIGN(iEncoding)) {
+      if (Encoding_IsUTF8_SIGN(status->iEncoding)) {
         const char* bom = "\xEF\xBB\xBF";
         DWORD bomoffset = 3;
         MoveMemory(&lpData[bomoffset], lpData, cbData);
@@ -1363,16 +1379,16 @@ bool EditSaveFile(
       FreeMem(lpData);
     }
 
-    else if (Encoding_IsEXTERNAL_8BIT(iEncoding)) {
+    else if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) {
 
       BOOL bCancelDataLoss = FALSE;
-      UINT uCodePage = Encoding_GetCodePage(iEncoding);
+      UINT uCodePage = Encoding_GetCodePage(status->iEncoding);
 
       LPWSTR lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
       int    cbDataWide = MultiByteToWideChar(Encoding_SciCP,0,lpData,cbData,
                                               lpDataWide,(MBWC_DocPos_Cast)(SizeOfMem(lpDataWide)/sizeof(WCHAR)));
 
-      if (Encoding_IsMBCS(iEncoding)) {
+      if (Encoding_IsMBCS(status->iEncoding)) {
         FreeMem(lpData);
         lpData = AllocMem(SizeOfMem(lpDataWide) * 2, HEAP_ZERO_MEMORY); // need more space
         cbData = WideCharToMultiByte(uCodePage, 0, lpDataWide, cbDataWide, 
@@ -1397,9 +1413,8 @@ bool EditSaveFile(
       }
       else {
         bWriteSuccess = false;
-        *pbCancelDataLoss = true;
+        status->bCancelDataLoss = true;
       }
-
       FreeMem(lpData);
     }
 
@@ -5806,8 +5821,9 @@ HWND EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool bReplace)
             EditFindReplaceDlgProcW,
             (LPARAM) lpefr);
 
-  ShowWindow(hDlg,SW_SHOW);
-
+  if (hDlg != INVALID_HANDLE_VALUE) {
+    ShowWindow(hDlg, SW_SHOW);
+  }
   CoUninitialize();
   return hDlg;
 }

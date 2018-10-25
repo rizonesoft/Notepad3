@@ -3743,7 +3743,9 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                       GetParent(hwnd),
                                       Style_CustomizeSchemesDlgProc,
                                       (LPARAM)NULL);
-  ShowWindow(hDlg, SW_SHOW);
+  if (hDlg != INVALID_HANDLE_VALUE) {
+    ShowWindow(hDlg, SW_SHOW);
+  }
   return hDlg;
 }
 

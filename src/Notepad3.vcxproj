@@ -367,6 +367,7 @@
     <ClCompile Include="..\crypto\rijndael-api-fst.c" />
     <ClCompile Include="..\crypto\sha-256.c" />
     <ClCompile Include="..\tinyexpr\tinyexpr.c" />
+    <ClCompile Include="AccelKeys.c" />
     <ClCompile Include="ChooseFont\ChooseFont.cpp" />
     <ClCompile Include="ChooseFont\FontEnumeration.cpp" />
     <ClCompile Include="ChooseFont\GdiTextRenderer.cpp" />
@@ -453,6 +454,7 @@
     <ClInclude Include="..\uthash\utlist.h" />
     <ClInclude Include="..\uthash\utringbuffer.h" />
     <ClInclude Include="..\uthash\utstring.h" />
+    <ClInclude Include="AccelKeys.h" />
     <ClInclude Include="ChooseFont\ChooseFont.h" />
     <ClInclude Include="ChooseFont\FontEnumeration.h" />
     <ClInclude Include="ChooseFont\GdiTextRenderer.h" />

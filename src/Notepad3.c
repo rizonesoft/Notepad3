@@ -1164,7 +1164,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     SendMessage(
       Globals.hwndMain,
       WM_COMMAND,
-      MAKELONG(IDM_LINEENDINGS_CRLF + s_flagSetEOLMode - 1, 1),
+      MAKELONG(IDM_LINEENDINGS_CRLF + s_flagSetEOLMode -1,1),
       0);
     s_flagSetEOLMode = 0;
   }
@@ -3327,7 +3327,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_LINEENDINGS_SETDEFAULT:
-        SelectDefLineEndingDlg(hwnd, &Settings.DefaultEOLMode);
+        SelectDefLineEndingDlg(hwnd, (LPARAM)&Settings.DefaultEOLMode);
       break;
 
 
@@ -6847,6 +6847,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
     GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
     GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
+    GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistEOLs, true);
     GET_BOOL_VALUE_FROM_INISECTION(FixLineEndings, false);
     GET_BOOL_VALUE_FROM_INISECTION(FixTrailingBlanks, false);
     GET_INT_VALUE_FROM_INISECTION(PrintHeader, 1, 0, 3);
@@ -7205,6 +7206,7 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadNFOasOEM);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, NoEncodingTags);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEOLMode);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistEOLs);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FixLineEndings);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FixTrailingBlanks);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PrintHeader);
@@ -9142,9 +9144,7 @@ static int  _UndoRedoActionMap(int token, UndoRedoSelection_t* selection)
 //
 //
 bool FileIO(bool fLoad,LPWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSICPDetection,
-            int *ienc,int *ieol,
-            bool *pbUnicodeErr,bool *pbFileTooBig, bool* pbUnknownExt,
-            bool *pbCancelDataLoss,bool bSaveCopy)
+            EditFileIOStatus* status, bool bSaveCopy)
 {
   WCHAR tch[MAX_PATH+40];
   bool fSuccess;
@@ -9155,12 +9155,12 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSI
   BeginWaitCursor(tch);
 
   if (fLoad) {
-    fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,ienc,ieol,pbUnicodeErr,pbFileTooBig,pbUnknownExt);
+    fSuccess = EditLoadFile(Globals.hwndEdit,pszFileName,bSkipUnicodeDetect,bSkipANSICPDetection,status);
   }
   else {
     int idx;
     if (MRU_FindFile(Globals.pFileMRU,pszFileName,&idx)) {
-      Globals.pFileMRU->iEncoding[idx] = *ienc;
+      Globals.pFileMRU->iEncoding[idx] = status->iEncoding;
       Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetCurrentPos() : 0);
       WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
       EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
@@ -9168,7 +9168,7 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSI
         LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
       Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
     }
-    fSuccess = EditSaveFile(Globals.hwndEdit,pszFileName,*ienc,pbCancelDataLoss,bSaveCopy);
+    fSuccess = EditSaveFile(Globals.hwndEdit,pszFileName, status, bSaveCopy);
   }
 
   dwFileAttributes = GetFileAttributes(pszFileName);
@@ -9189,11 +9189,11 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 {
   WCHAR tch[MAX_PATH] = { L'\0' };
   WCHAR szFileName[MAX_PATH] = { L'\0' };
-  bool bUnicodeErr = false;
-  bool bFileTooBig = false;
-  bool bUnknownExt = false;
-  bool fSuccess;
-  int fileEncoding = CPI_ANSI_DEFAULT;
+  bool fSuccess = false;
+
+  EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
+  fioStatus.iEOLMode = Settings.DefaultEOLMode;
+  fioStatus.iEncoding = CPI_ANSI_DEFAULT;
 
   if (bNew || bReload) {
     if (EditToggleView(Globals.hwndEdit, false)) {
@@ -9280,8 +9280,6 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
   }
  
   // Ask to create a new file...
-  int _eol_mode = Settings.DefaultEOLMode;
-
   if (!bReload && !PathFileExists(szFileName))
   {
     if (s_flagQuietCreate || MsgBoxLng(MBYESNO,IDS_MUI_ASK_CREATE,szFileName) == IDYES) {
@@ -9296,9 +9294,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
         Style_SetDefaultLexer(Globals.hwndEdit);
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
         if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
-          fileEncoding = Encoding_SrcCmdLn(CPI_GET);
-          Encoding_Current(fileEncoding);
-          Encoding_HasChanged(fileEncoding);
+          fioStatus.iEncoding = Encoding_SrcCmdLn(CPI_GET);
+          Encoding_Current(fioStatus.iEncoding);
+          Encoding_HasChanged(fioStatus.iEncoding);
         }
         else {
           Encoding_Current(Settings.DefaultEncoding);
@@ -9317,14 +9315,14 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
   else {
     int idx;
     if (!bReload && MRU_FindFile(Globals.pFileMRU,szFileName,&idx)) {
-      fileEncoding = Globals.pFileMRU->iEncoding[idx];
-      if (fileEncoding > 0)
-        Encoding_SrcCmdLn(Encoding_MapUnicode(fileEncoding));
+      fioStatus.iEncoding = Globals.pFileMRU->iEncoding[idx];
+      if (fioStatus.iEncoding > 0)
+        Encoding_SrcCmdLn(Encoding_MapUnicode(fioStatus.iEncoding));
     }
     else
-      fileEncoding = Encoding_Current(CPI_GET);
+      fioStatus.iEncoding = Encoding_Current(CPI_GET);
 
-    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fileEncoding,&_eol_mode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,false);     
+    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fioStatus,false);
   }
   if (fSuccess) {
     StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFileName);
@@ -9337,9 +9335,10 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     if (!s_flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(Globals.hwndEdit,Globals.CurrentFile);
 
-    SciCall_SetEOLMode(_eol_mode);
-    Encoding_Current(fileEncoding); // load may change encoding
-    Encoding_HasChanged(fileEncoding);
+    SciCall_SetEOLMode(fioStatus.iEOLMode);
+    Encoding_Current(fioStatus.iEncoding); // load may change encoding
+    Encoding_HasChanged(fioStatus.iEncoding);
+
     int idx = 0;
     DocPos iCaretPos = 0;
     LPCWSTR pszBookMarks = L"";
@@ -9347,7 +9346,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       iCaretPos = Globals.pFileMRU->iCaretPos[idx];
       pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
     }
-    MRU_AddFile(Globals.pFileMRU,szFileName,Flags.RelativeFileMRU,Flags.PortableMyDocs,fileEncoding,iCaretPos,pszBookMarks);
+    MRU_AddFile(Globals.pFileMRU,szFileName,Flags.RelativeFileMRU,Flags.PortableMyDocs,fioStatus.iEncoding,iCaretPos,pszBookMarks);
    
     EditSetBookmarkList(Globals.hwndEdit, pszBookMarks);
     SetFindPattern((Globals.pMRUfind ? Globals.pMRUfind->pszItems[0] : L""));
@@ -9401,13 +9400,28 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     UpdateSettingsCmds();
 
     // Show warning: Unicode file loaded as ANSI
-    if (bUnicodeErr)
-      MsgBoxLng(MBWARN,IDS_MUI_ERR_UNICODE);
+    if (fioStatus.bUnicodeErr) {
+      MsgBoxLng(MBWARN, IDS_MUI_ERR_UNICODE);
+    }
+    // Show inconsistent line endings warning
+    if (fioStatus.bInconsistent && Settings.WarnInconsistEOLs) 
+    {
+      WCHAR szDefault[32];
+      WCHAR szStatistic[80];
+      int const eolm = SciCall_GetEOLMode(); //Settings.DefaultEOLMode;
+      StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s", 
+        ((eolm == SC_EOL_CRLF) ? L"CRLF (\\r\\n)" : ((eolm == SC_EOL_CR) ? L"CR (\\r)" : L"LF (\\n)")));
+      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L">>> #CRLF = %i, #CR = %i,  #LF = %i <<<",
+                      fioStatus.linesCount[SC_EOL_CRLF], fioStatus.linesCount[SC_EOL_CR], fioStatus.linesCount[SC_EOL_LF]);
+      int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONSIST_EOLS, szStatistic, szDefault);
+      if (res == IDYES) {
+        SciCall_ConvertEOLs(eolm);
+      }
+    }
   }
-
-  else if (!(bFileTooBig || bUnknownExt))
-    MsgBoxLng(MBWARN,IDS_MUI_ERR_LOADFILE,szFileName);
-
+  else if (!(fioStatus.bFileTooBig || fioStatus.bUnknownExt)) {
+    MsgBoxLng(MBWARN, IDS_MUI_ERR_LOADFILE, szFileName);
+  }
   return(fSuccess);
 }
 
@@ -9479,7 +9493,10 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
   WCHAR tchFile[MAX_PATH] = { L'\0' };
   WCHAR tchBase[MAX_PATH] = { L'\0' };
   bool fSuccess = false;
-  bool bCancelDataLoss = false;
+
+  EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
+  fioStatus.iEncoding = Encoding_Current(CPI_GET);
+  fioStatus.iEOLMode = SciCall_GetEOLMode();
 
   bool bIsEmptyNewFile = false;
   if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)) == 0) {
@@ -9556,10 +9573,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
 
     if (SaveFileDlg(Globals.hwndMain,tchFile,COUNTOF(tchFile),tchInitialDir))
     {
-      int fileEncoding = Encoding_Current(CPI_GET);
-      int _eol_mode = Settings.DefaultEOLMode;
-      fSuccess = FileIO(false, tchFile, false, true, &fileEncoding, &_eol_mode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
-      //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
+      fSuccess = FileIO(false, tchFile, false, true, &fioStatus, bSaveCopy);
+      //~if (fSuccess) Encoding_Current(fioStatus.iEncoding); // save should not change encoding
       if (fSuccess)
       {
         if (!bSaveCopy)
@@ -9581,10 +9596,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       return false;
   }
   else {
-    int fileEncoding = Encoding_Current(CPI_GET);
-    int _eol_mode = Settings.DefaultEOLMode;
-    fSuccess = FileIO(false, Globals.CurrentFile, false, true, &fileEncoding, &_eol_mode, NULL, NULL, NULL, &bCancelDataLoss, false);
-    //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
+    fSuccess = FileIO(false, Globals.CurrentFile, false, true, &fioStatus, false);
+    //~if (fSuccess) Encoding_Current(fioStatus.iEncoding); // save should not change encoding
   }
 
   if (fSuccess)
@@ -9612,7 +9625,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
       InstallFileWatching(Globals.CurrentFile);
     }
   }
-  else if (!bCancelDataLoss)
+  else if (!fioStatus.bCancelDataLoss)
   {
     if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)) > 0) {
       StringCchCopy(tchFile,COUNTOF(tchFile),Globals.CurrentFile);
@@ -9626,10 +9639,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
 
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
             GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
-          int _eol_mode = Settings.DefaultEOLMode;
-          int fileEncoding = Encoding_Current(CPI_GET);
-          if (FileIO(false,szTempFileName,false,true,&fileEncoding,&_eol_mode,NULL,NULL,NULL,&bCancelDataLoss,true)) {
-            //~Encoding_Current(fileEncoding); // save should not change encoding
+          if (FileIO(false,szTempFileName,false,true,&fioStatus,true)) {
+            //~Encoding_Current(fioStatus.iEncoding); // save should not change encoding
             WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
             size_t const wlen = StringCchLenW(lpCmdLine,0) + 2;
