@@ -1164,7 +1164,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     SendMessage(
       Globals.hwndMain,
       WM_COMMAND,
-      MAKELONG(IDM_LINEENDINGS_CRLF + s_flagSetEOLMode -1,1),
+      MAKELONG(IDM_LINEENDINGS_CRLF + s_flagSetEOLMode - 1, 1),
       0);
     s_flagSetEOLMode = 0;
   }
@@ -1554,7 +1554,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
   SendMessage(hwndEditCtrl, SCI_SETCODEPAGE, (WPARAM)SC_CP_UTF8, 0); // fixed internal UTF-8 
 
-  SendMessage(hwndEditCtrl, SCI_SETEOLMODE, SC_EOL_CRLF, 0);
+  SendMessage(hwndEditCtrl, SCI_SETEOLMODE, Settings.DefaultEOLMode, 0);
   SendMessage(hwndEditCtrl, SCI_SETPASTECONVERTENDINGS, true, 0);
   SendMessage(hwndEditCtrl, SCI_USEPOPUP, false, 0);
   SendMessage(hwndEditCtrl, SCI_SETSCROLLWIDTH, 1, 0);
@@ -2684,13 +2684,13 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   if (_eol_mode == SC_EOL_CRLF) {
     i = IDM_LINEENDINGS_CRLF;
   }
-  else if (_eol_mode == SC_EOL_LF) {
-    i = IDM_LINEENDINGS_LF;
-  }
-  else {
+  else if (_eol_mode == SC_EOL_CR) {
     i = IDM_LINEENDINGS_CR;
   }
-  CheckMenuRadioItem(hmenu,IDM_LINEENDINGS_CRLF,IDM_LINEENDINGS_CR,i,MF_BYCOMMAND);
+  else {
+    i = IDM_LINEENDINGS_LF;
+  }
+  CheckMenuRadioItem(hmenu,IDM_LINEENDINGS_CRLF,IDM_LINEENDINGS_LF,i,MF_BYCOMMAND);
 
   EnableCmd(hmenu,IDM_FILE_RECENT,(MRU_Count(Globals.pFileMRU) > 0));
 
@@ -3327,7 +3327,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_LINEENDINGS_SETDEFAULT:
-      SelectDefLineEndingDlg(hwnd,&Settings.DefaultEOLMode);
+        SelectDefLineEndingDlg(hwnd, &Settings.DefaultEOLMode);
       break;
 
 
@@ -6466,8 +6466,8 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
               case STATUS_EOLMODE:
                 {
-                  int const _eol_mode = SciCall_GetEOLMode();
                   int i;
+                  int const _eol_mode = SciCall_GetEOLMode();
                   if (_eol_mode == SC_EOL_CRLF)
                     i = IDM_LINEENDINGS_CRLF;
                   else if (_eol_mode == SC_EOL_CR)
@@ -7360,10 +7360,10 @@ void ParseCommandLine()
         // EOL Mode
         else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0)
           s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
-        else if (StringCchCompareXI(lp1, L"LF") == 0)
-          s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
         else if (StringCchCompareXI(lp1, L"CR") == 0)
           s_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
+        else if (StringCchCompareXI(lp1, L"LF") == 0)
+          s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
 
         // Shell integration
         else if (StrCmpNI(lp1, L"appid=", CSTRLEN(L"appid=")) == 0) {
@@ -9217,8 +9217,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     FileVars_Init(NULL,0,&g_fvCurFile);
     EditSetNewText(Globals.hwndEdit, "", 0);
 
-    int const _eol_mode = Settings.DefaultEOLMode;
-    SciCall_SetEOLMode(_eol_mode);
+    SciCall_SetEOLMode(Settings.DefaultEOLMode);
     Encoding_Current(Settings.DefaultEncoding);
     Encoding_HasChanged(Settings.DefaultEncoding);
     
@@ -9325,9 +9324,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     else
       fileEncoding = Encoding_Current(CPI_GET);
 
-    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fileEncoding,&_eol_mode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,false);
-    if (fSuccess)
-      Encoding_Current(fileEncoding); // load may change encoding
+    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fileEncoding,&_eol_mode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,false);     
   }
   if (fSuccess) {
     StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),szFileName);
@@ -9341,7 +9338,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       Style_SetLexerFromFile(Globals.hwndEdit,Globals.CurrentFile);
 
     SciCall_SetEOLMode(_eol_mode);
-    fileEncoding = Encoding_Current(CPI_GET);
+    Encoding_Current(fileEncoding); // load may change encoding
     Encoding_HasChanged(fileEncoding);
     int idx = 0;
     DocPos iCaretPos = 0;

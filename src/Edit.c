@@ -1071,7 +1071,7 @@ bool EditLoadFile(
     *iEOLMode = Settings.DefaultEOLMode;
     *iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
-    SendMessage(hwnd,SCI_SETEOLMODE,Settings.DefaultEOLMode,0);
+    SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
   // ===  UNICODE  ===
@@ -1282,8 +1282,9 @@ bool EditSaveFile(
   }
 
   // strip trailing blanks
-  if (Settings.FixTrailingBlanks)
+  if (Settings.FixTrailingBlanks) {
     EditStripLastCharacter(hwnd, true, true);
+  }
 
   // get text
   cbData = (DWORD)SciCall_GetTextLength();
@@ -3807,7 +3808,7 @@ void EditWrapToColumn(HWND hwnd,DocPos nColumn/*,int nTabWidth*/)
 
   int cchEOL = 2;
   WCHAR wszEOL[] = L"\r\n";
-  int cEOLMode = SciCall_GetEOLMode();
+  int const cEOLMode = SciCall_GetEOLMode();
   if (cEOLMode == SC_EOL_CR)
     cchEOL = 1;
   else if (cEOLMode == SC_EOL_LF) {
