@@ -77,6 +77,7 @@ void  EditScrollTo(HWND hwnd, DocLn iScrollToLine, int iSlop);
 void  EditSetSelectionEx(HWND hwnd, DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void  EditFixPositions(HWND hwnd);
 void  EditEnsureSelectionVisible(HWND hwnd);
+void	EditEnsureConsistentLineEndings(HWND hwnd);
 void  EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
 HWND  EditFindReplaceDlg(HWND hwnd,LPCEDITFINDREPLACE lpefr,bool);

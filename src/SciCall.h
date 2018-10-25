@@ -227,6 +227,8 @@ DeclareSciCallR1(PositionBefore, POSITIONBEFORE, DocPos, DocPos, position)
 DeclareSciCallR1(PositionAfter, POSITIONAFTER, DocPos, DocPos, position)
 DeclareSciCallR1(GetCharAt, GETCHARAT, char, DocPos, position)
 DeclareSciCallR0(GetEOLMode, GETEOLMODE, int)
+DeclareSciCallV1(SetEOLMode, SETEOLMODE, int, eolmode)
+DeclareSciCallV1(ConvertEOLs, CONVERTEOLS, int, eolmode)
 
 DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT)
 DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs)

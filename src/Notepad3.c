@@ -1566,8 +1566,11 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSBLINK, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETADDITIONALCARETSVISIBLE, true, 0);
   SendMessage(hwndEditCtrl, SCI_SETVIRTUALSPACEOPTIONS, SCVS_NONE, 0);
+  // Idle Styling (very large text)
+  //~SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_ALL, 0);  
+  SendMessage(hwndEditCtrl, SCI_SETIDLESTYLING, SC_IDLESTYLING_AFTERVISIBLE, 0);
   SendMessage(hwndEditCtrl, SCI_SETLAYOUTCACHE, SC_CACHE_PAGE, 0);
-  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // SCI 4.1.3 : speedup folding
+  SendMessage(hwndEditCtrl, SCI_SETCOMMANDEVENTS, false, 0); // speedup folding
 
   // assign command keys
   SendMessage(hwndEditCtrl, SCI_ASSIGNCMDKEY, (SCK_NEXT + (SCMOD_CTRL << 16)), SCI_PARADOWN);
@@ -2677,10 +2680,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   }
   CheckMenuRadioItem(hmenu,IDM_ENCODING_ANSI,IDM_ENCODING_UTF8SIGN,i,MF_BYCOMMAND);
 
-  if (Globals.iEOLMode == SC_EOL_CRLF) {
+  int const _eol_mode = SciCall_GetEOLMode();
+  if (_eol_mode == SC_EOL_CRLF) {
     i = IDM_LINEENDINGS_CRLF;
   }
-  else if (Globals.iEOLMode == SC_EOL_LF) {
+  else if (_eol_mode == SC_EOL_LF) {
     i = IDM_LINEENDINGS_LF;
   }
   else {
@@ -3312,10 +3316,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        Globals.iEOLMode = (LOWORD(wParam)-IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
-        SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,Globals.iEOLMode,0);
-        SendMessage(Globals.hwndEdit,SCI_CONVERTEOLS,Globals.iEOLMode,0);
-        EditFixPositions(Globals.hwndEdit);
+        int const _eol_mode = (LOWORD(wParam)-IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
+        SciCall_SetEOLMode(_eol_mode);
+        EditEnsureConsistentLineEndings(Globals.hwndEdit);
         _OBSERVE_NOTIFY_CHANGE_;
         EndWaitCursor();
         UpdateStatusbar(false);
@@ -5940,7 +5943,8 @@ static void  _HandleAutoIndent(int const charAdded)
 {
   // TODO: handle indent after '{' and un-indent on '}' in C/C++ ?
   // in CRLF mode handle LF only...
-  if (((SC_EOL_CRLF == Globals.iEOLMode) && (charAdded != '\r')) || (SC_EOL_CRLF != Globals.iEOLMode))
+  int const _eol_mode = SciCall_GetEOLMode();
+  if (((SC_EOL_CRLF == _eol_mode) && (charAdded != '\r')) || (SC_EOL_CRLF != _eol_mode))
   {
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
@@ -6436,8 +6440,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             switch (pnmm->dwItemSpec)
             {
               case STATUS_EOLMODE:
-                SendMessage(Globals.hwndEdit,SCI_CONVERTEOLS, SciCall_GetEOLMode(),0);
-                EditFixPositions(Globals.hwndEdit);
+                EditEnsureConsistentLineEndings(Globals.hwndEdit);
                 return 1LL;
 
               default:
@@ -6463,15 +6466,16 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
               case STATUS_EOLMODE:
                 {
+                  int const _eol_mode = SciCall_GetEOLMode();
                   int i;
-                  if (Globals.iEOLMode == SC_EOL_CRLF)
+                  if (_eol_mode == SC_EOL_CRLF)
                     i = IDM_LINEENDINGS_CRLF;
-                  else if (Globals.iEOLMode == SC_EOL_LF)
-                    i = IDM_LINEENDINGS_LF;
-                  else
+                  else if (_eol_mode == SC_EOL_CR)
                     i = IDM_LINEENDINGS_CR;
-                  i++;
-                  if (i > IDM_LINEENDINGS_CR) { i = IDM_LINEENDINGS_CRLF; }
+                  else
+                    i = IDM_LINEENDINGS_LF;
+                  ++i;
+                  if (i > IDM_LINEENDINGS_LF) { i = IDM_LINEENDINGS_CRLF; }
                   PostMessage(hwnd, WM_COMMAND, MAKELONG(i, 1), 0);
                 }
                 return 1LL;
@@ -6842,7 +6846,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, false);
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
     GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
-    GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);  Globals.iEOLMode = Settings.DefaultEOLMode;
+    GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
     GET_BOOL_VALUE_FROM_INISECTION(FixLineEndings, false);
     GET_BOOL_VALUE_FROM_INISECTION(FixTrailingBlanks, false);
     GET_INT_VALUE_FROM_INISECTION(PrintHeader, 1, 0, 3);
@@ -8649,24 +8653,25 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   static int s_iEOLMode = -1;
 
-  if (s_iStatusbarVisible[STATUS_EOLMODE])
+  if (s_iStatusbarVisible[STATUS_EOLMODE]) 
   {
-    if (s_iEOLMode != Globals.iEOLMode) {
-      if (Globals.iEOLMode == SC_EOL_CR)
-      {
-        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR%s",
-          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
-      }
-      else if (Globals.iEOLMode == SC_EOL_LF)
-      {
+    int const _eol_mode = SciCall_GetEOLMode();
+
+    if (s_iEOLMode != _eol_mode) 
+    {
+      if (_eol_mode == SC_EOL_LF) {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF%s",
-          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+                        s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+      }
+      else if (_eol_mode == SC_EOL_CR) {
+        StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR%s",
+                        s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
       else {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sCR+LF%s",
-          s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
+                        s_mxSBPrefix[STATUS_EOLMODE], s_mxSBPostfix[STATUS_EOLMODE]);
       }
-      s_iEOLMode = Globals.iEOLMode;
+      s_iEOLMode = _eol_mode;
       bIsUpdateNeeded = true;
     }
   }
@@ -9212,8 +9217,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     FileVars_Init(NULL,0,&g_fvCurFile);
     EditSetNewText(Globals.hwndEdit, "", 0);
 
-    Globals.iEOLMode = Settings.DefaultEOLMode;
-    SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,Globals.iEOLMode,0);
+    int const _eol_mode = Settings.DefaultEOLMode;
+    SciCall_SetEOLMode(_eol_mode);
     Encoding_Current(Settings.DefaultEncoding);
     Encoding_HasChanged(Settings.DefaultEncoding);
     
@@ -9276,6 +9281,8 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
   }
  
   // Ask to create a new file...
+  int _eol_mode = Settings.DefaultEOLMode;
+
   if (!bReload && !PathFileExists(szFileName))
   {
     if (s_flagQuietCreate || MsgBoxLng(MBYESNO,IDS_MUI_ASK_CREATE,szFileName) == IDYES) {
@@ -9288,8 +9295,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
         FileVars_Init(NULL,0,&g_fvCurFile);
         EditSetNewText(Globals.hwndEdit,"",0);
         Style_SetDefaultLexer(Globals.hwndEdit);
-        Globals.iEOLMode = Settings.DefaultEOLMode;
-        SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,Globals.iEOLMode,0);
+        SciCall_SetEOLMode(Settings.DefaultEOLMode);
         if (Encoding_SrcCmdLn(CPI_GET) != CPI_NONE) {
           fileEncoding = Encoding_SrcCmdLn(CPI_GET);
           Encoding_Current(fileEncoding);
@@ -9319,7 +9325,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     else
       fileEncoding = Encoding_Current(CPI_GET);
 
-    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fileEncoding,&Globals.iEOLMode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,false);
+    fSuccess = FileIO(true,szFileName,bSkipUnicodeDetect,bSkipANSICPDetection,&fileEncoding,&_eol_mode,&bUnicodeErr,&bFileTooBig,&bUnknownExt,NULL,false);
     if (fSuccess)
       Encoding_Current(fileEncoding); // load may change encoding
   }
@@ -9334,7 +9340,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     if (!s_flagLexerSpecified) // flag will be cleared
       Style_SetLexerFromFile(Globals.hwndEdit,Globals.CurrentFile);
 
-    SendMessage(Globals.hwndEdit,SCI_SETEOLMODE,Globals.iEOLMode,0);
+    SciCall_SetEOLMode(_eol_mode);
     fileEncoding = Encoding_Current(CPI_GET);
     Encoding_HasChanged(fileEncoding);
     int idx = 0;
@@ -9554,7 +9560,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
     if (SaveFileDlg(Globals.hwndMain,tchFile,COUNTOF(tchFile),tchInitialDir))
     {
       int fileEncoding = Encoding_Current(CPI_GET);
-      fSuccess = FileIO(false, tchFile, false, true, &fileEncoding, &Globals.iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
+      int _eol_mode = Settings.DefaultEOLMode;
+      fSuccess = FileIO(false, tchFile, false, true, &fileEncoding, &_eol_mode, NULL, NULL, NULL, &bCancelDataLoss, bSaveCopy);
       //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
       if (fSuccess)
       {
@@ -9578,7 +9585,8 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
   }
   else {
     int fileEncoding = Encoding_Current(CPI_GET);
-    fSuccess = FileIO(false, Globals.CurrentFile, false, true, &fileEncoding, &Globals.iEOLMode, NULL, NULL, NULL, &bCancelDataLoss, false);
+    int _eol_mode = Settings.DefaultEOLMode;
+    fSuccess = FileIO(false, Globals.CurrentFile, false, true, &fileEncoding, &_eol_mode, NULL, NULL, NULL, &bCancelDataLoss, false);
     //~if (fSuccess) Encoding_Current(fileEncoding); // save should not change encoding
   }
 
@@ -9621,8 +9629,9 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
 
         if (GetTempPath(MAX_PATH,lpTempPathBuffer) &&
             GetTempFileName(lpTempPathBuffer,TEXT("NP3"),0,szTempFileName)) {
+          int _eol_mode = Settings.DefaultEOLMode;
           int fileEncoding = Encoding_Current(CPI_GET);
-          if (FileIO(false,szTempFileName,false,true,&fileEncoding,&Globals.iEOLMode,NULL,NULL,NULL,&bCancelDataLoss,true)) {
+          if (FileIO(false,szTempFileName,false,true,&fileEncoding,&_eol_mode,NULL,NULL,NULL,&bCancelDataLoss,true)) {
             //~Encoding_Current(fileEncoding); // save should not change encoding
             WCHAR szArguments[2048] = { L'\0' };
             LPWSTR lpCmdLine = GetCommandLine();
