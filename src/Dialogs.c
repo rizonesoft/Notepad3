@@ -3533,8 +3533,9 @@ INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
   DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
-  INT_PTR ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
+  INT_PTR ret = (INT_PTR)NULL;
   if (pDlgTemplate) {
+    ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
   }
   return ret;
@@ -3544,11 +3545,12 @@ HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
   DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
-  HWND hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
+  HWND hwnd = INVALID_HANDLE_VALUE;
   if (pDlgTemplate) {
+    hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
   }
-  return(hwnd);
+  return hwnd;
 }
 
 //  End of Dialogs.c
