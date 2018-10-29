@@ -1843,14 +1843,14 @@ INT_PTR ThemedDialogBoxParam(
   DLGPROC lpDialogFunc,
   LPARAM dwInitParam) {
 
-  INT_PTR ret;
-  DLGTEMPLATE *pDlgTemplate;
+  INT_PTR ret = IDABORT;
+  DLGTEMPLATE *pDlgTemplate = NULL;
 
   pDlgTemplate = LoadThemedDialogTemplate(lpTemplate,hInstance);
-  ret = DialogBoxIndirectParam(hInstance,pDlgTemplate,hWndParent,lpDialogFunc,dwInitParam);
-  if (pDlgTemplate)
+  if (pDlgTemplate) {
+    ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     LocalFree(pDlgTemplate);
-
+  }
   return(ret);
 }
 

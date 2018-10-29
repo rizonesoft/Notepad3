@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{BF3DEE96-735B-4A5E-95DD-3D3661B62EEF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>np3enus</RootNamespace>
+    <RootNamespace>mpengb</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -100,7 +100,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;NP3ENUS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;NP3ENGB_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -109,10 +109,9 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-GB"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\mplng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\en-GB\mplng.dll.mui"</Command>
-    </PostBuildEvent>
-    <PostBuildEvent>
+        "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\en-GB\mplng.dll.mui"
+      </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
@@ -126,7 +125,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;NP3ENUS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;NP3ENGB_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -135,10 +134,9 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-GB"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\mplng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\en-GB\mplng.dll.mui"</Command>
-    </PostBuildEvent>
-    <PostBuildEvent>
+        "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\en-GB\mplng.dll.mui"
+      </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
@@ -154,7 +152,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;NP3ENUS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;NP3ENGB_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
@@ -167,10 +165,9 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-GB"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\mplng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\en-GB\mplng.dll.mui"</Command>
-    </PostBuildEvent>
-    <PostBuildEvent>
+        "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\en-GB\mplng.dll.mui"
+      </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>
@@ -186,7 +183,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;NP3ENUS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;NP3ENGB_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
@@ -199,10 +196,9 @@
     </Link>
     <PostBuildEvent>
       <Command>mkdir "$(TargetDir)..\en-GB"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\mplng.dll.mui"
-"$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\en-GB\mplng.dll.mui"</Command>
-    </PostBuildEvent>
-    <PostBuildEvent>
+        "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -q "$(ProjectDir)..\..\..\language\DoReverseMuiLoc.rcconfig" -v 2 -x 0x0809 -g 0x0409 "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).discard" "$(TargetDir)..\en-GB\mplng.dll.mui"
+        "$(UCRTContentRoot)bin\$(WindowsTargetPlatformVersion)\x86\muirct.exe" -c "$(TargetDir)..\mplng.dll" -e "$(TargetDir)..\en-GB\mplng.dll.mui"
+      </Command>
       <Message>MUI Split</Message>
     </PostBuildEvent>
     <ResourceCompile>

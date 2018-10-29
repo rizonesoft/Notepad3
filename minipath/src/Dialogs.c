@@ -352,11 +352,9 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //  RunDlg()
 //
 //
-void RunDlg(HWND hwnd)
+INT_PTR RunDlg(HWND hwnd)
 {
-
-  ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_RUN),hwnd,RunDlgProc);
-
+  return ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_RUN),hwnd,RunDlgProc);
 }
 
 
@@ -544,9 +542,9 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //  GotoDlg()
 //
 //
-void GotoDlg(HWND hwnd)
+INT_PTR GotoDlg(HWND hwnd)
 {
-  ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_GOTO),hwnd,GotoDlgProc);
+  return ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_GOTO),hwnd,GotoDlgProc);
 }
 
 
@@ -556,7 +554,6 @@ void GotoDlg(HWND hwnd)
 //
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
-
   static HFONT hFontTitle;
 
   switch(umsg)
@@ -1904,9 +1901,9 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
   fod.wFunc = *wFunc;
 
   dli.mask = DLI_FILENAME;
-  if (DirList_GetItem(hwndDirList,-1,&dli) != -1)
-    lstrcpy(fod.szSource,GetFilenameStr(dli.szFileName));
-
+  if (DirList_GetItem(hwndDirList, -1, &dli) != -1) {
+    lstrcpy(fod.szSource, GetFilenameStr(dli.szFileName));
+  }
   else
    return FALSE;
 
@@ -2717,16 +2714,16 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
         case IDC_FINDWIN:
           {
-            ShowWindow(hwnd,SW_HIDE);
-            ShowWindow(hwndMain,SW_HIDE);
+            ShowWindow(hwnd, SW_HIDE);
+            ShowWindow(hwndMain, SW_HIDE);
 
-            ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_FINDWIN),hwnd,FindWinDlgProc,(LPARAM)szTargetWndClass);
+            ThemedDialogBoxParam(g_hLngResContainer, MAKEINTRESOURCE(IDD_FINDWIN), hwnd, FindWinDlgProc, (LPARAM)szTargetWndClass);
 
-            ShowWindow(hwndMain,SW_SHOWNORMAL);
-            ShowWindow(hwnd,SW_SHOWNORMAL);
+            ShowWindow(hwndMain, SW_SHOWNORMAL);
+            ShowWindow(hwnd, SW_SHOWNORMAL);
 
-            CheckRadioButton(hwnd,IDC_ALWAYSRUN,IDC_USEDDE,IDC_SENDDROPMSG);
-            CheckRadioButton(hwnd,IDC_LAUNCH,IDC_TARGET,IDC_TARGET);
+            CheckRadioButton(hwnd, IDC_ALWAYSRUN, IDC_USEDDE, IDC_SENDDROPMSG);
+            CheckRadioButton(hwnd, IDC_LAUNCH, IDC_TARGET, IDC_TARGET);
           }
           return FALSE;
 

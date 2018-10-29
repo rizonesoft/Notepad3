@@ -22,7 +22,7 @@ int  MsgBoxLng(int, UINT, ...);
 void DisplayCmdLineHelp(HWND);
 bool GetDirectory(HWND,int,LPWSTR,LPCWSTR,bool);
 INT_PTR CALLBACK AboutDlgProc(HWND,UINT,WPARAM,LPARAM);
-void RunDlg(HWND,LPCWSTR);
+INT_PTR RunDlg(HWND,LPCWSTR);
 bool OpenWithDlg(HWND,LPCWSTR);
 bool FavoritesDlg(HWND,LPWSTR);
 bool AddToFavDlg(HWND,LPCWSTR,LPCWSTR);
