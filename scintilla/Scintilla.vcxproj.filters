@@ -16,26 +16,17 @@
     <Filter Include="win32">
       <UniqueIdentifier>{afe7e35e-cd81-406c-a770-df29d2b3fc95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="onigmo">
-      <UniqueIdentifier>{00656640-8f29-43f9-bec5-1606d0bc9c8c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="onigmo\enc">
-      <UniqueIdentifier>{909b2fb7-b55a-4f43-b2dc-684f15e48202}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="onigmo\enc\unicode">
-      <UniqueIdentifier>{bd95e86d-a622-4f27-83a2-4350229f9747}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="onigmo\enc\jis">
-      <UniqueIdentifier>{d7aa3af2-2ffd-4ec3-b607-9f535109918c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="scionigmo">
-      <UniqueIdentifier>{268508f5-d854-478b-be02-e0dff910e70b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="onigmo\win32">
-      <UniqueIdentifier>{4fc7e856-11b1-431c-aac8-9bb9c28d1b86}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sciXlexers">
       <UniqueIdentifier>{3e51698b-084e-40cf-8dee-860bd61d7a2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="oniguruma">
+      <UniqueIdentifier>{9602f50a-8421-47b2-bd09-b6dce4ce2455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="oniguruma\src">
+      <UniqueIdentifier>{c317cefd-5e5c-48d6-a31c-2b92d0ec83b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="oniguruma\src\data">
+      <UniqueIdentifier>{82ef20f6-3da5-4984-acf6-ac5fc96cf8ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -273,174 +264,6 @@
     <ClCompile Include="lexers\LexD.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\onigmo\enc\ascii.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\big5.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\cp949.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\emacs_mule.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\euc_jp.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\euc_kr.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\euc_tw.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\gb18030.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\gbk.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_1.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_2.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_3.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_4.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_5.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_6.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_7.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_8.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_9.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_10.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_11.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_13.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_14.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_15.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_16.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\koi8_r.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\koi8_u.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\mktable.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\shift_jis.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\unicode.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\us_ascii.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_8.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_16be.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_16le.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_32be.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_32le.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_31j.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1250.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1251.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1252.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1253.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1254.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1257.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regenc.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regexec.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regposerr.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regtrav.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\scionigmo\OnigmoRegExEngine.cxx">
-      <Filter>scionigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regcomp.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regerror.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regext.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\reggnu.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regparse.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regposix.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regsyntax.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\regversion.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\st.c">
-      <Filter>onigmo</Filter>
-    </ClCompile>
     <ClCompile Include="lexers\LexNimrod.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -455,6 +278,81 @@
     </ClCompile>
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx">
       <Filter>sciXlexers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\ascii.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\mktable.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\onig_init.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regcomp.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regenc.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regerror.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regexec.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regext.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\reggnu.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regparse.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regsyntax.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regtrav.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\regversion.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\st.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode_fold1_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode_fold2_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode_fold3_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode_unfold_key.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\utf8.c">
+      <Filter>oniguruma\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode_egcb_data.c">
+      <Filter>oniguruma\src\data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode_fold_data.c">
+      <Filter>oniguruma\src\data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode_property_data.c">
+      <Filter>oniguruma\src\data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\oniguruma\src\unicode_property_data_posix.c">
+      <Filter>oniguruma\src\data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx">
+      <Filter>oniguruma</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -635,45 +533,6 @@
     <ClInclude Include="include\ILoader.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\onigmo\enc\jis\props.h">
-      <Filter>onigmo\enc\jis</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\enc\unicode\casefold.h">
-      <Filter>onigmo\enc\unicode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\enc\unicode\name2ctype.h">
-      <Filter>onigmo\enc\unicode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\enc\iso_8859.h">
-      <Filter>onigmo\enc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\enc\shift_jis.h">
-      <Filter>onigmo\enc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\onigmo.h">
-      <Filter>onigmo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\regint.h">
-      <Filter>onigmo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\st.h">
-      <Filter>onigmo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\win32\config.h">
-      <Filter>onigmo\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\onigmognu.h">
-      <Filter>onigmo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\onigmoposix.h">
-      <Filter>onigmo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\regenc.h">
-      <Filter>onigmo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\regparse.h">
-      <Filter>onigmo</Filter>
-    </ClInclude>
     <ClInclude Include="win32\ScintillaWin.h">
       <Filter>win32</Filter>
     </ClInclude>
@@ -685,6 +544,24 @@
     </ClInclude>
     <ClInclude Include="..\sciXlexers\SciXLexer.h">
       <Filter>sciXlexers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oniguruma\src\oniguruma.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oniguruma\src\regenc.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oniguruma\src\regint.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oniguruma\src\regparse.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oniguruma\src\st.h">
+      <Filter>oniguruma\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\oniguruma\config.h">
+      <Filter>oniguruma</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

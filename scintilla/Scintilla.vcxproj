@@ -115,13 +115,13 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../onigmo;../onigmo/win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma;../oniguruma/src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;HAVE_CONFIG_H;ENABLE_POSIX_API=NO;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -140,13 +140,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../onigmo;../onigmo/win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma;../oniguruma/src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;HAVE_CONFIG_H;ENABLE_POSIX_API=NO;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -164,13 +164,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../onigmo;../onigmo/win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma;../oniguruma/src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableEnhancedInstructionSet Condition="'$(VisualStudioVersion)'&gt;'10.0'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;HAVE_CONFIG_H;ENABLE_POSIX_API=NO;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -188,12 +188,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../onigmo;../onigmo/win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma;../oniguruma/src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;SCI_OWNREGEX;ONIG_EXTERN=extern;HAVE_CONFIG_H;ENABLE_POSIX_API=NO;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -212,62 +212,39 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\onigmo\enc\ascii.c" />
-    <ClCompile Include="..\onigmo\enc\big5.c" />
-    <ClCompile Include="..\onigmo\enc\cp949.c" />
-    <ClCompile Include="..\onigmo\enc\emacs_mule.c" />
-    <ClCompile Include="..\onigmo\enc\euc_jp.c" />
-    <ClCompile Include="..\onigmo\enc\euc_kr.c" />
-    <ClCompile Include="..\onigmo\enc\euc_tw.c" />
-    <ClCompile Include="..\onigmo\enc\gb18030.c" />
-    <ClCompile Include="..\onigmo\enc\gbk.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_1.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_10.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_11.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_13.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_14.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_15.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_16.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_2.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_3.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_4.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_5.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_6.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_7.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_8.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_9.c" />
-    <ClCompile Include="..\onigmo\enc\koi8_r.c" />
-    <ClCompile Include="..\onigmo\enc\koi8_u.c" />
-    <ClCompile Include="..\onigmo\enc\mktable.c" />
-    <ClCompile Include="..\onigmo\enc\shift_jis.c" />
-    <ClCompile Include="..\onigmo\enc\unicode.c" />
-    <ClCompile Include="..\onigmo\enc\us_ascii.c" />
-    <ClCompile Include="..\onigmo\enc\utf_16be.c" />
-    <ClCompile Include="..\onigmo\enc\utf_16le.c" />
-    <ClCompile Include="..\onigmo\enc\utf_32be.c" />
-    <ClCompile Include="..\onigmo\enc\utf_32le.c" />
-    <ClCompile Include="..\onigmo\enc\utf_8.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1250.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1251.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1252.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1253.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1254.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1257.c" />
-    <ClCompile Include="..\onigmo\enc\windows_31j.c" />
-    <ClCompile Include="..\onigmo\regcomp.c" />
-    <ClCompile Include="..\onigmo\regenc.c" />
-    <ClCompile Include="..\onigmo\regerror.c" />
-    <ClCompile Include="..\onigmo\regexec.c" />
-    <ClCompile Include="..\onigmo\regext.c" />
-    <ClCompile Include="..\onigmo\reggnu.c" />
-    <ClCompile Include="..\onigmo\regparse.c" />
-    <ClCompile Include="..\onigmo\regposerr.c" />
-    <ClCompile Include="..\onigmo\regposix.c" />
-    <ClCompile Include="..\onigmo\regsyntax.c" />
-    <ClCompile Include="..\onigmo\regtrav.c" />
-    <ClCompile Include="..\onigmo\regversion.c" />
-    <ClCompile Include="..\onigmo\st.c" />
-    <ClCompile Include="..\scionigmo\OnigmoRegExEngine.cxx" />
+    <ClCompile Include="..\oniguruma\src\ascii.c" />
+    <ClCompile Include="..\oniguruma\src\mktable.c" />
+    <ClCompile Include="..\oniguruma\src\onig_init.c" />
+    <ClCompile Include="..\oniguruma\src\regcomp.c" />
+    <ClCompile Include="..\oniguruma\src\regenc.c" />
+    <ClCompile Include="..\oniguruma\src\regerror.c" />
+    <ClCompile Include="..\oniguruma\src\regexec.c" />
+    <ClCompile Include="..\oniguruma\src\regext.c" />
+    <ClCompile Include="..\oniguruma\src\reggnu.c" />
+    <ClCompile Include="..\oniguruma\src\regparse.c" />
+    <ClCompile Include="..\oniguruma\src\regsyntax.c" />
+    <ClCompile Include="..\oniguruma\src\regtrav.c" />
+    <ClCompile Include="..\oniguruma\src\regversion.c" />
+    <ClCompile Include="..\oniguruma\src\st.c" />
+    <ClCompile Include="..\oniguruma\src\unicode.c" />
+    <None Include="..\oniguruma\src\unicode_egcb_data.c">
+      <FileType>CppCode</FileType>
+    </None>
+    <ClCompile Include="..\oniguruma\src\unicode_fold1_key.c" />
+    <ClCompile Include="..\oniguruma\src\unicode_fold2_key.c" />
+    <ClCompile Include="..\oniguruma\src\unicode_fold3_key.c" />
+    <None Include="..\oniguruma\src\unicode_fold_data.c">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="..\oniguruma\src\unicode_property_data.c">
+      <FileType>CppCode</FileType>
+    </None>
+    <None Include="..\oniguruma\src\unicode_property_data_posix.c">
+      <FileType>CppCode</FileType>
+    </None>
+    <ClCompile Include="..\oniguruma\src\unicode_unfold_key.c" />
+    <ClCompile Include="..\oniguruma\src\utf8.c" />
+    <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx" />
     <ClCompile Include="..\sciXlexers\LexAHK.cxx" />
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx" />
     <ClCompile Include="lexers\LexAsm.cxx" />
@@ -353,19 +330,12 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\onigmo\enc\iso_8859.h" />
-    <ClInclude Include="..\onigmo\enc\jis\props.h" />
-    <ClInclude Include="..\onigmo\enc\shift_jis.h" />
-    <ClInclude Include="..\onigmo\enc\unicode\casefold.h" />
-    <ClInclude Include="..\onigmo\enc\unicode\name2ctype.h" />
-    <ClInclude Include="..\onigmo\onigmo.h" />
-    <ClInclude Include="..\onigmo\onigmognu.h" />
-    <ClInclude Include="..\onigmo\onigmoposix.h" />
-    <ClInclude Include="..\onigmo\regenc.h" />
-    <ClInclude Include="..\onigmo\regint.h" />
-    <ClInclude Include="..\onigmo\regparse.h" />
-    <ClInclude Include="..\onigmo\st.h" />
-    <ClInclude Include="..\onigmo\win32\config.h" />
+    <ClInclude Include="..\oniguruma\config.h" />
+    <ClInclude Include="..\oniguruma\src\oniguruma.h" />
+    <ClInclude Include="..\oniguruma\src\regenc.h" />
+    <ClInclude Include="..\oniguruma\src\regint.h" />
+    <ClInclude Include="..\oniguruma\src\regparse.h" />
+    <ClInclude Include="..\oniguruma\src\st.h" />
     <ClInclude Include="..\sciXlexers\SciXLexer.h" />
     <ClInclude Include="include\ILexer.h" />
     <ClInclude Include="include\ILoader.h" />
