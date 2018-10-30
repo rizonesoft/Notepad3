@@ -5131,11 +5131,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_CLEAR:
     case CMD_DEL:
-      {
-        _BEGIN_UNDO_ACTION_;
+        ///~_BEGIN_UNDO_ACTION_;
         SciCall_Clear();
-        _END_UNDO_ACTION_;
-      }
+        ///~_END_UNDO_ACTION_;
       break;
 
 #if 0
