@@ -1,12 +1,11 @@
 /**
- * @file  OnigmoRegExEngine.cxx
- * @brief integrate Onigmo regex engine for Scintilla library
+ * @file  OnigurumaRegExEngine.cxx
+ * @brief integrate Oniguruma regex engine for Scintilla library
  *        (Scintilla Lib is copyright 1998-2017 by Neil Hodgson <neilh@scintilla.org>)
  *
- *        uses Oniguruma - Regular Expression Engine (v6.1.3) (onigmo.h) - https://github.com/kkos/oniguruma
+ *        uses Oniguruma - Regular Expression Engine (v6.9.0) (oniguruma.h) - https://github.com/kkos/oniguruma
  *
  *   See also the Wiki page: https://github.com/kkos/oniguruma/wiki
- *   See also the Wiki page: https://github.com/k-takata/Onigmo/wiki
  *
  *
  * @autor Rainer Kottenhoff (RaiKoHoff)
@@ -221,7 +220,7 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
 
 
   // -----------------------------
-  // --- Onigmo Engine Options ---
+  // --- Oniguruma Engine Options ---
   // -----------------------------
 
   // fixed options
@@ -321,7 +320,7 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
 ////static int GrpNameCallback(const UChar* name, const UChar* name_end, 
 ////  int ngroup_num, int* group_nums, regex_t* reg, void* arg)
 ////{
-////  OnigmoRegExEngine* pRegExInstance = dynamic_cast<OnigmoRegExEngine*>(arg);
+////  OnigurumaRegExEngine* pRegExInstance = dynamic_cast<OnigurumaRegExEngine*>(arg);
 ////
 ////  const OnigRegion& region = pRegExInstance->GetRegion();
 ////
@@ -427,7 +426,7 @@ const char* OnigurumaRegExEngine::SubstituteByPosition(Document* doc, const char
 // ============================================================================
 
 /*
-void OnigmoRegExEngine::regexFindAndReplace(std::string& inputStr_inout, const std::string& patternStr, const std::string& replStr)
+void OnigurumaRegExEngine::regexFindAndReplace(std::string& inputStr_inout, const std::string& patternStr, const std::string& replStr)
 {
   OnigRegex       oRegExpr;
   OnigRegion      oRegion;
@@ -489,7 +488,7 @@ std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, boo
     tmpStr.append(regExprStr);
   }
 
-  // Onigmo supports LTGT word boundary by: ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END
+  // Oniguruma supports LTGT word boundary by: ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END
   //
   //~replaceAll(tmpStr, R"(\<)", R"((?<!\w)(?=\w))");  // word begin
   //~replaceAll(tmpStr, R"(\(?<!\w)(?=\w))", R"(\\<)"); // esc'd

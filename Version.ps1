@@ -45,7 +45,7 @@ try
 	if (!$Build) { $Build = 0 }
 	$SciVer = [int](Get-Content "scintilla\version.txt")
 	if (!$SciVer) { $SciVer = 0 }
-	$OnigmoVer = [string](Get-Content "onigmo\version.txt")
+	$OnigmoVer = [string](Get-Content "oniguruma\version.txt")
 	if (!$OnigmoVer) { $OnigmoVer = "0.0.0" }
 	
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
