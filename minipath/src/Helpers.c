@@ -520,7 +520,7 @@ void CenterDlgInParent(HWND hDlg)
 //
 //  MakeBitmapButton()
 //
-void MakeBitmapButton(HWND hwnd,int nCtlId,HINSTANCE hInstance,UINT uBmpId)
+void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
 {
   HWND hwndCtl = GetDlgItem(hwnd,nCtlId);
   BITMAP bmp;

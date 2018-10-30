@@ -6855,7 +6855,7 @@ void LoadSettings()
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
 
     int const zoomScale  = float2int(1000.0f / INITIAL_BASE_FONT_SIZE);
-    Defaults.PrintZoom = (s_iSettingsVersion < CFG_VER_0001) ? (int)(zoomScale / 10) : zoomScale;
+    Defaults.PrintZoom = (s_iSettingsVersion < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(pIniSection, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (s_iSettingsVersion < CFG_VER_0001) { iPrintZoom = 100 + (iPrintZoom - 10) * 10; }
     Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);

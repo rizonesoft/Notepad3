@@ -66,7 +66,7 @@ BOOL BitmapGrayScale(HBITMAP);
 
 BOOL SetWindowPathTitle(HWND,LPCWSTR);
 void CenterDlgInParent(HWND);
-void MakeBitmapButton(HWND,int,HINSTANCE,UINT);
+void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId);
 void DeleteBitmapButton(HWND,int);
 void SetWindowTransparentMode(HWND,BOOL);
 
