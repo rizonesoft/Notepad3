@@ -3611,9 +3611,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_DELETEBACK:
       {
-        _BEGIN_UNDO_ACTION_;
+        ///~_BEGIN_UNDO_ACTION_;
         SendMessage(Globals.hwndEdit, SCI_DELETEBACK, 0, 0);
-        _END_UNDO_ACTION_;
+        ///~_END_UNDO_ACTION_;
       }
       break;
 
