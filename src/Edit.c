@@ -916,6 +916,54 @@ void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
 
 //=============================================================================
 //
+// EditDetectIndentMode() - check indentation consistency
+//
+void EditDetectIndentMode(HWND hwnd)
+{
+  int const tabWidth = Settings.TabWidth;
+  //int const indentWidth = Settings.IndentWidth;
+
+  int tabCount = 0;
+  int spaceCount = 0;
+
+  DocLn const lineCount = SciCall_GetLineCount();
+
+  for (DocLn line = 0; line < lineCount; ++line) 
+  {
+    DocPos const lineStartPos = SciCall_PositionFromLine(line);
+    DocPos const lineIndentBeg = SciCall_GetLineIndentPosition(line);
+    int subSpcCnt = 0;
+    for (DocPos pos = lineStartPos; pos < lineIndentBeg; ++pos) {
+      char const ch = SciCall_GetCharAt(pos);
+      switch (ch) {
+      case 0x09: // tab
+        ++tabCount;
+        break;
+      case 0x20: // space
+        ++subSpcCnt;
+        if (subSpcCnt >= tabWidth) {
+          ++spaceCount;
+          subSpcCnt = 0;
+        }
+        break;
+      default:
+        break;
+      }
+    }
+  }
+  
+  if (((tabCount > 0) && (spaceCount > 0))              // mismatch
+      || (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
+      || (!Settings.TabsAsSpaces && (spaceCount > 0)))  // indent space, should be populated with tabs
+  {
+    MessageBox(hwnd, L"Found Indentation Inconsistency.", L"Notepad3 - Inconsistent Indentation", MB_OK | MB_ICONEXCLAMATION);
+  }
+
+}
+
+
+//=============================================================================
+//
 //  EditLoadFile()
 //
 bool EditLoadFile(
@@ -1237,8 +1285,10 @@ bool EditLoadFile(
 
   Encoding_SrcCmdLn(CPI_NONE);
   Encoding_SrcWeak(CPI_NONE);
-  return true;
 
+  EditDetectIndentMode(hwnd);
+
+  return true;
 }
 
 
