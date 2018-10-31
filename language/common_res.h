@@ -276,6 +276,7 @@
 #define IDC_COPYVERSTRG                 18090
 #define IDC_RICHEDITABOUT               18091
 #define IDC_TRANSL_AUTH                 18092
+#define IDC_TRANSPARENT                 18093
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

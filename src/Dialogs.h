@@ -49,7 +49,7 @@ void DialogAdminExe(HWND hwnd,bool);
 INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...);
 
 bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool, UINT uIDUntitled, LPCWSTR lpszFile, int iFormat, bool, UINT uIDReadOnly, bool, LPCWSTR lpszExcerpt);
-void SetWindowTransparentMode(HWND hwnd, bool);
+void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
 void CenterDlgInParent(HWND hDlg);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);

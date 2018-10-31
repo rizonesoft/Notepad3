@@ -2985,13 +2985,12 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 //
 //  SetWindowTransparentMode()
 //
-void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode)
+void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel)
 {
   if (bTransparentMode) {
     SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
     // get opacity level from registry
-    int const iAlphaPercent = Settings2.OpacityLevel;
-    BYTE const bAlpha = (BYTE)MulDiv(iAlphaPercent, 255, 100);
+    BYTE const bAlpha = (BYTE)MulDiv(iOpacityLevel, 255, 100);
     SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
     return;
   }

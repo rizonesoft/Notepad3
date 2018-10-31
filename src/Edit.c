@@ -5125,6 +5125,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
       }
 
+      CheckDlgButton(hwnd, IDC_TRANSPARENT, Settings.FindReplaceTransparentMode ? BST_CHECKED : BST_UNCHECKED);
+
       if (!s_bSwitchedFindReplace) {
         if (Settings.FindReplaceDlgPosX == CW_USEDEFAULT || Settings.FindReplaceDlgPosY == CW_USEDEFAULT)
           CenterDlgInParent(hwnd);
@@ -5137,7 +5139,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         CopyMemory(sg_pefrData, &s_efrSave, sizeof(EDITFINDREPLACE));
       }
       _SetSearchFlags(hwnd, sg_pefrData); // sync
-      s_anyMatch = s_fwrdMatch = NO_MATCH;
+      s_fwrdMatch = NO_MATCH;
+      s_anyMatch = (SciCall_IsSelectionRectangle() || SciCall_IsSelectionEmpty() ? NO_MATCH : MATCH);
 
       HMENU hmenu = GetSystemMenu(hwnd, false);
       GetLngString(IDS_MUI_SAVEPOS, tchBuf, COUNTOF(tchBuf));
@@ -5149,6 +5152,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       hBrushRed = CreateSolidBrush(rgbRedColorRef);
       hBrushGreen = CreateSolidBrush(rgbGreenColorRef);
       hBrushBlue = CreateSolidBrush(rgbBlueColorRef);
+
+      // find first occurrence of clip-board text
+      //if (!SciCall_IsSelectionRectangle() && SciCall_IsSelectionEmpty()) {
+      //  PostMessage(hwnd, WM_COMMAND, MAKELONG(IDOK, 1), 0);
+      //}
 
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
     }
@@ -5220,13 +5228,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case WA_INACTIVE:
           //~s_InitialTopLine = -1;
           //~g_bFindReplCopySelOrClip = true;
-          SetWindowTransparentMode(hwnd, true);
+          SetWindowTransparentMode(hwnd, Settings.FindReplaceTransparentMode, Settings2.FindReplaceOpacityLevel);
           break;
 
         case WA_CLICKACTIVE:
           // mouse click activation
         case WA_ACTIVE:
-          SetWindowTransparentMode(hwnd, false);
+          SetWindowTransparentMode(hwnd, false, 100);
         default:
           s_fwrdMatch = NO_MATCH;
           s_InitialSearchStart = SciCall_GetSelectionStart();
@@ -5501,6 +5509,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
         break;
 
+      case IDC_TRANSPARENT:
+        Settings.FindReplaceTransparentMode = (IsDlgButtonChecked(hwnd, IDC_TRANSPARENT) == BST_CHECKED);
+        break;
 
       case IDC_REPLACE:
       case IDC_REPLACEALL:

@@ -317,6 +317,7 @@ typedef struct _settings_t
   bool AlwaysOnTop;
   bool MinimizeToTray;
   bool TransparentMode;
+  bool FindReplaceTransparentMode;
   int RenderingTechnology;
   int Bidirectional;
   bool ShowToolbar;
@@ -352,6 +353,7 @@ typedef struct _settings2_t
 {
   int    FileLoadWarningMB;
   int    OpacityLevel;
+  int    FindReplaceOpacityLevel;
   DWORD  FileCheckInverval;
   DWORD  AutoReloadTimeout;
   int    IMEInteraction;

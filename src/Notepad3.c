@@ -1023,7 +1023,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   if (Settings.TransparentMode) {
-    SetWindowTransparentMode(Globals.hwndMain, true);
+    SetWindowTransparentMode(Globals.hwndMain, true, Settings2.OpacityLevel);
   }
   
   if (s_WinInfo.zoom) {
@@ -4927,7 +4927,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_TRANSPARENT:
       Settings.TransparentMode = !Settings.TransparentMode;
-      SetWindowTransparentMode(hwnd,Settings.TransparentMode);
+      SetWindowTransparentMode(hwnd,Settings.TransparentMode, Settings2.OpacityLevel);
       break;
 
     case IDM_SET_RENDER_TECH_DEFAULT:
@@ -6704,7 +6704,10 @@ void LoadSettings()
     Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(pIniSection, L"FileLoadWarningMB", Defaults2.FileLoadWarningMB), 0, 2048);
     
     Defaults2.OpacityLevel = 75;
-    Settings2.OpacityLevel = clampi(IniSectionGetInt(pIniSection, L"OpacityLevel", Defaults2.OpacityLevel), 0, 100);
+    Settings2.OpacityLevel = clampi(IniSectionGetInt(pIniSection, L"OpacityLevel", Defaults2.OpacityLevel), 10, 100);
+
+    Defaults2.FindReplaceOpacityLevel = 50;
+    Settings2.FindReplaceOpacityLevel = clampi(IniSectionGetInt(pIniSection, L"FindReplaceOpacityLevel", Defaults2.FindReplaceOpacityLevel), 10, 100);
 
     Defaults2.FileBrowserPath[0] = L'\0';
     IniSectionGetString(pIniSection, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
@@ -6877,6 +6880,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
     GET_BOOL_VALUE_FROM_INISECTION(MinimizeToTray, false);
     GET_BOOL_VALUE_FROM_INISECTION(TransparentMode, false);
+    GET_BOOL_VALUE_FROM_INISECTION(FindReplaceTransparentMode, true);
     GET_INT_VALUE_FROM_INISECTION(RenderingTechnology, Defaults.RenderingTechnology, 0, 3);  // set before
     GET_INT_VALUE_FROM_INISECTION(Bidirectional, Defaults.Bidirectional, 0, 2);  // set before
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(pIniSection, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
@@ -7231,6 +7235,7 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AlwaysOnTop);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MinimizeToTray);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TransparentMode);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FindReplaceTransparentMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, RenderingTechnology);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, Bidirectional);
     ///~IniSectionSetInt(pIniSection, L"IMEInteraction", Settings2.IMEInteraction);
