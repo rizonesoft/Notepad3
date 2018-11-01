@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by menu_ru_ru.rc
+// Used by dialogs_ru_ru.rc
 //
 
 // Next default values for new objects
