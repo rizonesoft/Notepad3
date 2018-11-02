@@ -498,8 +498,28 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     char pAboutRes[4000];
     GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
     StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
     GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
     StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+
+
 
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
     pAboutInfo = pAboutResource;
