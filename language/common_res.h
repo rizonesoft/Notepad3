@@ -122,10 +122,20 @@
 #define IDS_MUI_TITLE_FIXARB            15028
 #define IDS_MUI_ABOUT_RTF_1             15029
 #define IDS_MUI_ABOUT_RTF_2             15030
-#define IDS_MUI_TRANSL_AUTHOR           15031
-#define IDS_MUI_ASSOCIATED_EXT          15032
-#define IDS_MUI_EXAMPLE_TEXT            15033
-#define IDS_MUI_ZERO_LEN_MATCH          15034
+#define IDS_MUI_ABOUT_RTF_3             15031
+#define IDS_MUI_ABOUT_RTF_4             15032
+#define IDS_MUI_ABOUT_RTF_5             15033
+#define IDS_MUI_ABOUT_RTF_6             15034
+#define IDS_MUI_ABOUT_CONTRIBS          15035
+#define IDS_MUI_ABOUT_LIBS              15036
+#define IDS_MUI_ABOUT_ACKNOWLEDGES      15037
+#define IDS_MUI_ABOUT_MORE              15038
+#define IDS_MUI_ABOUT_LICENSES          15039
+
+#define IDS_MUI_TRANSL_AUTHOR           15050
+#define IDS_MUI_ASSOCIATED_EXT          15051
+#define IDS_MUI_EXAMPLE_TEXT            15052
+#define IDS_MUI_ZERO_LEN_MATCH          15053
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
