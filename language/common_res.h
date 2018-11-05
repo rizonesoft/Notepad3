@@ -635,8 +635,8 @@
 #define IDS_ENC_BIG5_HKSCS              61082
 
 #define IDS_EOL_WIN                     62000
-#define IDS_EOL_UNIX                    62001
-#define IDS_EOL_MAC                     62002
+#define IDS_EOL_MAC                     62001
+#define IDS_EOL_UNIX                    62002
 
 #define IDS_LEX_DEF_TXT                 63000
 #define IDS_LEX_WEB_SRC                 63001
