@@ -5560,6 +5560,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
+    case CMD_CLEARSAVEDWINPOS:
+      s_DefWinInfo = _InitDefaultWndPos(2);
+      IniSetString(L"Settings2", L"DefaultWindowPosition", NULL);
+    break;
+
     case CMD_OPENINIFILE:
       if (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile))) {
         SaveSettings(false);
