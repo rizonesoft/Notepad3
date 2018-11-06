@@ -126,7 +126,6 @@ static WCHAR* const _s_RecentReplace = L"Recent Replace";
 static WCHAR     s_tchLastSaveCopyDir[MAX_PATH + 1] = { L'\0' };
 static bool      s_bExternalBitmap = false;
 
-static HMODULE   s_hRichEdit = NULL;
 static bool      s_bRunningWatch = false;
 static bool      s_bFileReadOnly = false;
 
@@ -159,6 +158,7 @@ static int       s_iExprError = -1;
 
 static WIN32_FIND_DATA s_fdCurFile;
 
+static HMODULE s_hRichEdit = INVALID_HANDLE_VALUE;
 
 // Globals <= @@@
 bool      g_bWordWrapG;
@@ -495,6 +495,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
   if (s_hRichEdit) {
     FreeLibrary(s_hRichEdit);
+    s_hRichEdit = INVALID_HANDLE_VALUE;
   }
 
   if (bIsInitialized) {
@@ -645,11 +646,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   }
   // ----------------------------------------------------
 
+  if (s_hRichEdit == INVALID_HANDLE_VALUE) {
+    //s_hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
+    s_hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h
+  }
 
   s_msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
-
-  s_hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use "RichEdit20W" for control in .rc
-  //s_hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in .rc
 
   if (!Globals.hDlgIcon) {
     Globals.hDlgIcon = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON,
@@ -2768,7 +2770,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_ESCAPECCHARS,!s && !ro);
   EnableCmd(hmenu,IDM_EDIT_UNESCAPECCHARS,!s && !ro);
 
-  EnableCmd(hmenu,IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after curr pos
+  EnableCmd(hmenu,IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after current pos
   EnableCmd(hmenu,IDM_EDIT_HEX2CHAR, !s && !ro);
 
   //EnableCmd(hmenu,IDM_EDIT_INCREASENUM,!s && !ro);
