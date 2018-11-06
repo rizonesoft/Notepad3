@@ -9423,7 +9423,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       int const eolm = SciCall_GetEOLMode(); //Settings.DefaultEOLMode;
       StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s", 
         ((eolm == SC_EOL_CRLF) ? L"CRLF (\\r\\n)" : ((eolm == SC_EOL_CR) ? L"CR (\\r)" : L"LF (\\n)")));
-      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L">>> #CRLF = %i, #CR = %i,  #LF = %i <<<",
+      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  #CRLF = %i\n  #CR = %i\n  #LF = %i\n",
                       fioStatus.linesCount[SC_EOL_CRLF], fioStatus.linesCount[SC_EOL_CR], fioStatus.linesCount[SC_EOL_LF]);
       int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONSIST_EOLS, szStatistic, szDefault);
       if (res == IDYES) {

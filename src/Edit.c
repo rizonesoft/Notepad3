@@ -920,6 +920,8 @@ void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
 //
 void EditDetectIndentMode(HWND hwnd)
 {
+  UNUSED(hwnd);
+
   int const tabWidth = Settings.TabWidth;
   //int const indentWidth = Settings.IndentWidth;
 
@@ -956,8 +958,16 @@ void EditDetectIndentMode(HWND hwnd)
     if (((tabCount > 0) && (spaceCount > 0))
         //|| (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
         //|| (!Settings.TabsAsSpaces && (spaceCount > 0))   // indent space, should be populated with tabs
-        ) {
-      MessageBox(hwnd, L"Found Indentation Inconsistency.", L"Notepad3 - Inconsistent Indentation", MB_OK | MB_ICONEXCLAMATION);
+        ) 
+    {
+      WCHAR szDefault[32];
+      WCHAR szStatistic[80];
+      StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s (width=%i)", (Settings.TabsAsSpaces ? L"SPC" : L"TAB"), Settings.TabWidth);
+      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  #TAB = %i\n  #(%i)SPC = %i\n", tabCount, Settings.TabWidth, spaceCount);
+      int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONS_INDENTS, szStatistic, szDefault);
+      if (res == IDYES) {
+        //SciCall_ConvertEOLs(eolm);
+      }
     }
   }
   // TODO: Set correct Indent mode
@@ -2770,8 +2780,9 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
   }
 
   if (bSingleLine) {
-    if (bFormatIndentation)
+    if (bFormatIndentation) {
       EditSetSelectionEx(hwnd, SciCall_GetCurrentPos() + iDiffCurrent + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiffCurrent, -1, -1);
+    }
   }
   else {  // on multiline indentation, anchor and current positions are moved to line begin resp. end
     if (bFixStart) {
