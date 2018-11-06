@@ -50,7 +50,6 @@
 
 #include "Dialogs.h"
 
-
 //=============================================================================
 //
 //  MsgBoxLng()
@@ -383,6 +382,7 @@ static DWORD _LoadStringEx(UINT nResId, LPCTSTR pszRsType, LPSTR strOut)
 //  (EditStreamCallback)
 //  _LoadRtfCallback() RTF edit control StreamIn's callback function 
 //
+#if true
 static DWORD CALLBACK _LoadRtfCallback(
   DWORD_PTR dwCookie,  // (in) pointer to the string
   LPBYTE pbBuff,       // (in) pointer to the destination buffer
@@ -391,7 +391,7 @@ static DWORD CALLBACK _LoadRtfCallback(
 )
 {
   LPSTR* pstr = (LPSTR*)dwCookie;
-  LONG len = (LONG)StringCchLenA(*pstr,0);
+  LONG const len = (LONG)StringCchLenA(*pstr,0);
 
   if (len < cb)
   {
@@ -410,10 +410,36 @@ static DWORD CALLBACK _LoadRtfCallback(
 }
 // ----------------------------------------------------------------------------
 
+#else
 
-static char pAboutResource[8192] = { '\0' };
-static char* pAboutInfo;
+static DWORD CALLBACK _LoadRtfCallbackW(
+  DWORD_PTR dwCookie,  // (in) pointer to the string
+  LPBYTE pbBuff,       // (in) pointer to the destination buffer
+  LONG cb,             // (in) size in bytes of the destination buffer
+  LONG FAR* pcb        // (out) number of bytes transfered
+)
+{
+  LPWSTR* pstr = (LPWSTR*)dwCookie;
+  LONG const len = (LONG)StringCchLen(*pstr, 0);
+  LONG const size = len * sizeof(WCHAR);
 
+  cb -= (cb % sizeof(WCHAR));
+
+  if (size < cb) {
+    *pcb = size;
+    memcpy(pbBuff, (LPCWSTR)*pstr, *pcb);
+    *pstr += len;
+    //*pstr = '\0';
+  }
+  else {
+    *pcb = cb;
+    memcpy(pbBuff, (LPCWSTR)*pstr, *pcb);
+    *pstr += (cb / sizeof(WCHAR));
+  }
+  return 0;
+}
+// ----------------------------------------------------------------------------
+#endif
 
 //=============================================================================
 //
@@ -494,64 +520,84 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETEVENTMASK, 0, (LPARAM)(ENM_LINK)); // link click
 
   #if true
+    static char pAboutResource[8192] = { '\0' };
+    static char* pAboutInfo = NULL;
+    
+    if (pAboutInfo == NULL) 
+    {
+      char pAboutRes[4000];
+      GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
 
-    char pAboutRes[4000];
-    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-    GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
-    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
-
-
-
+      pAboutInfo = pAboutResource;
+    }
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
-    pAboutInfo = pAboutResource;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
-    
-    //DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
-    //if (dwSize != 0) {
-    //  char* pchBuffer = AllocMem(dwSize + 1, HEAP_ZERO_MEMORY);
-    //  pAboutInfo = pchBuffer;
-    //  _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
-    //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-    //  FreeMem(pchBuffer);
-    //}
-    //else {
-    //  pAboutInfo = chErrMsg;
-    //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-    //}
-    
   #else
-    PARAFORMAT2 pf2;
-    ZeroMemory(&pf2, sizeof(PARAFORMAT2));
-    pf2.cbSize = (UINT)sizeof(PARAFORMAT2);
-    pf2.dwMask = (PFM_SPACEBEFORE | PFM_SPACEAFTER | PFM_LINESPACING);
-    pf2.dySpaceBefore = 48;     // paragraph
-    pf2.dySpaceAfter = 48;      // paragraph
-    pf2.dyLineSpacing = 24;     // [twips]
-    pf2.bLineSpacingRule = 5;   // 5: dyLineSpacing/20 is the spacing, in lines, from one line to the next.
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETPARAFORMAT, 0, (LPARAM)&pf2);
-    SetDlgItemText(hwnd, IDC_RICHEDITABOUT, ABOUT_INFO_PLAIN);
-  #endif
 
+    static WCHAR pAboutResource[8192] = { L'\0' };
+    static PWCHAR pAboutInfo = NULL;
+
+    if (pAboutInfo == NULL) {
+      WCHAR pAboutRes[4000];
+      GetLngString(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCopy(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+      GetLngString(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
+      StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+
+      pAboutInfo = pAboutResource;
+    }
+
+    EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallbackW };
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, (WPARAM)(UINT)(SF_TEXT | SF_UNICODE), (LPARAM)&editStreamIn);
+
+    // EM_SETTEXTEX is Richedit 3.0 only
+    //SETTEXTEX ste;
+    //ste.flags = ST_SELECTION;  // replace everything
+    //ste.codepage = 1200;       // Unicode is codepage 1200
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETTEXTEX, (WPARAM)&ste, (LPARAM)pAboutInfo);
+
+  #endif
+    
     CenterDlgInParent(hwnd);
   }
   return true;

@@ -943,4 +943,6 @@
 #define IDS_LEX_STR_63352               63352
 #define IDS_LEX_STR_63353               63353
 
+#define RICHEDIT_CONTROL_VER            "RichEdit50W"  // RICHEDIT_CONTROL_VER
+
 #endif //_COMMON_RES_H_
