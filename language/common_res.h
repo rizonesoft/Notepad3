@@ -287,6 +287,12 @@
 #define IDC_RICHEDITABOUT               18091
 #define IDC_TRANSL_AUTH                 18092
 #define IDC_TRANSPARENT                 18093
+#define IDC_TAB_WIDTH                   18094
+#define IDC_INDENT_DEPTH                18095
+#define IDC_TAB_AS_SPC                  18096
+#define IDC_TAB_INDENTS                 18097
+#define IDC_BACKTAB_INDENTS             18098
+#define IDC_WARN_INCONSISTENT_INDENTS   18099
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

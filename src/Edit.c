@@ -951,13 +951,16 @@ void EditDetectIndentMode(HWND hwnd)
       }
     }
   }
-  
-  if (((tabCount > 0) && (spaceCount > 0))              // mismatch
-      || (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
-      || (!Settings.TabsAsSpaces && (spaceCount > 0)))  // indent space, should be populated with tabs
-  {
-    MessageBox(hwnd, L"Found Indentation Inconsistency.", L"Notepad3 - Inconsistent Indentation", MB_OK | MB_ICONEXCLAMATION);
+
+  if (Settings.WarnInconsistentIndents && !Style_IsCurLexerStandard()) {
+    if (((tabCount > 0) && (spaceCount > 0))
+        //|| (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
+        //|| (!Settings.TabsAsSpaces && (spaceCount > 0))   // indent space, should be populated with tabs
+        ) {
+      MessageBox(hwnd, L"Found Indentation Inconsistency.", L"Notepad3 - Inconsistent Indentation", MB_OK | MB_ICONEXCLAMATION);
+    }
   }
+  // TODO: Set correct Indent mode
 
 }
 
@@ -1341,6 +1344,8 @@ bool EditSaveFile(
 
   if (hFile == INVALID_HANDLE_VALUE)
     return false;
+
+  EditDetectIndentMode(hwnd);
 
   // ensure consistent line endings
   if (Settings.FixLineEndings) {

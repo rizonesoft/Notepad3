@@ -6825,6 +6825,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  g_iTabWidthG = Settings.TabWidth;
     GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  g_iIndentWidthG = Settings.IndentWidth;
+    GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, true);
     GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, true);
     GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  g_iLongLinesLimitG = Settings.LongLinesLimit;
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
@@ -7191,6 +7192,7 @@ void SaveSettings(bool bSaveSettingsNow)
     if (g_iIndentWidthG != Defaults.TabWidth) {
       IniSectionSetInt(pIniSection, L"IndentWidth", g_iIndentWidthG);
     }
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistentIndents);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkLongLines);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLinesLimit);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, LongLineMode);

@@ -2117,30 +2117,26 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 
 INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
+  UNUSED(lParam);
+
   switch(umsg)
   {
-
     case WM_INITDIALOG:
       {
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        SetDlgItemInt(hwnd,100,Settings.TabWidth,false);
-        SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,15,0);
+        SetDlgItemInt(hwnd,IDC_TAB_WIDTH,Settings.TabWidth,false);
+        SendDlgItemMessage(hwnd,IDC_TAB_WIDTH,EM_LIMITTEXT,15,0);
 
-        SetDlgItemInt(hwnd,101,Settings.IndentWidth,false);
-        SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,15,0);
+        SetDlgItemInt(hwnd,IDC_INDENT_DEPTH,Settings.IndentWidth,false);
+        SendDlgItemMessage(hwnd,IDC_INDENT_DEPTH,EM_LIMITTEXT,15,0);
 
-        if (Settings.TabsAsSpaces)
-          CheckDlgButton(hwnd,102,BST_CHECKED);
-
-        if (Settings.TabIndents)
-          CheckDlgButton(hwnd,103,BST_CHECKED);
-
-        if (Settings.BackspaceUnindents)
-          CheckDlgButton(hwnd,104,BST_CHECKED);
+        CheckDlgButton(hwnd,IDC_TAB_AS_SPC, Settings.TabsAsSpaces ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd,IDC_TAB_INDENTS, Settings.TabIndents ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd,IDC_BACKTAB_INDENTS, Settings.BackspaceUnindents ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, Settings.WarnInconsistentIndents ? BST_CHECKED : BST_UNCHECKED);
 
         CenterDlgInParent(hwnd);
-
       }
       return true;
 
@@ -2149,47 +2145,36 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 
       switch(LOWORD(wParam))
       {
-
-        case IDOK: {
-
-          BOOL fTranslated1,fTranslated2;
-
-          UINT iNewTabWidth = GetDlgItemInt(hwnd,100,&fTranslated1,FALSE);
-          UINT iNewIndentWidth = GetDlgItemInt(hwnd,101,&fTranslated2,FALSE);
-
-          if (fTranslated1 && fTranslated2)
+        case IDOK: 
           {
-            Settings.TabWidth = iNewTabWidth;
-            Settings.IndentWidth = iNewIndentWidth;
+            BOOL fTranslated1, fTranslated2;
+            UINT const iNewTabWidth = GetDlgItemInt(hwnd, IDC_TAB_WIDTH, &fTranslated1, FALSE);
+            UINT const iNewIndentWidth = GetDlgItemInt(hwnd, IDC_INDENT_DEPTH, &fTranslated2, FALSE);
 
-            Settings.TabsAsSpaces = (IsDlgButtonChecked(hwnd,102)) ? true : false;
-
-            Settings.TabIndents = (IsDlgButtonChecked(hwnd,103)) ? true : false;
-
-            Settings.BackspaceUnindents = (IsDlgButtonChecked(hwnd,104)) ? true : false;
-
-            EndDialog(hwnd,IDOK);
-          }
-
-          else
-            PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,(fTranslated1) ? 101 : 100)),1);
-
+            if (fTranslated1 && fTranslated2) {
+              Settings.TabWidth = iNewTabWidth;
+              Settings.IndentWidth = iNewIndentWidth;
+              Settings.TabsAsSpaces = (IsDlgButtonChecked(hwnd, IDC_TAB_AS_SPC)) ? true : false;
+              Settings.TabIndents = (IsDlgButtonChecked(hwnd, IDC_TAB_INDENTS)) ? true : false;
+              Settings.BackspaceUnindents = (IsDlgButtonChecked(hwnd, IDC_BACKTAB_INDENTS)) ? true : false;
+              Settings.WarnInconsistentIndents = (IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS)) ? true : false;
+              EndDialog(hwnd, IDOK);
+            }
+            else {
+              PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, (fTranslated1) ? IDC_INDENT_DEPTH : IDC_TAB_WIDTH)), 1);
+            }
           }
           break;
-
 
         case IDCANCEL:
           EndDialog(hwnd,IDCANCEL);
           break;
 
+        default:
+          break;
       }
-
       return true;
-
   }
-
-  UNUSED(lParam);
-
   return false;
 }
 

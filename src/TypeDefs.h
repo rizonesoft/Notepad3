@@ -282,6 +282,7 @@ typedef struct _settings_t
   bool BackspaceUnindents;
   int TabWidth;
   int IndentWidth;
+  bool WarnInconsistentIndents;
   bool MarkLongLines;
   int LongLinesLimit;
   int LongLineMode;
