@@ -45,7 +45,7 @@ Goto LABEL_END
 ; =============================================================================
 CHECK_NP3_STARTS:
 ; check that NP3 starts up
-WinWait ahk_pid %v_Notepad3_PID%, , 3
+WinWait ahk_pid %v_Notepad3_PID%, , 10
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
@@ -91,7 +91,7 @@ WinActivate, ahk_pid %v_Notepad3_PID%
 ; This will select File->Open in Notepad:
 WinMenuSelectItem, ahk_pid %v_Notepad3_PID%, , Help, About...
 
-WinWait, About %v_NP3Name%, , 1
+WinWait, About %v_NP3Name%, , 3
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
@@ -103,7 +103,7 @@ WinActivate  ; About Box
 ;ControlFocus, OK, About %v_NP3Name%
  ControlClick, OK, About %v_NP3Name%
 ;Send {Enter}
-WinWaitClose, About %v_NP3Name%, , 1
+WinWaitClose, About %v_NP3Name%, , 2
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
@@ -116,7 +116,7 @@ Return
  
 ; =============================================================================
 LABEL_END:
-WinClose ahk_pid %v_Notepad3_PID%, , 1
+WinClose ahk_pid %v_Notepad3_PID%, , 2
 v_ErrLevel = %ErrorLevel%
 if (v_ErrLevel != 0)
 {
