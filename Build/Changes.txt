@@ -26,6 +26,8 @@ NEW:
 - Handle zero-length lines in line-sorting algorithm.
 - Support for "Rust" source code syntax highlighting.
 - Multilingual support.
+- The TinyExpr module
+- Add schema related keywords Auto Completion  & IME
 
 --------------------------------------------------
 CHANGES:
@@ -43,6 +45,9 @@ CHANGES:
 - Adapted PortableApps.com creator script to MUI structure.
 - STD/2ND sync with DefaultText/2ndDefaultText handling.
 - Reorganization of Menus in more sub-menu to shorter the Menus Lists
+- Show Zoom Percentage on magnification changes
+- Tidy Notepad3.ini to remove all defaulted [Setting] items
+- Change Default settings to make the first experience of Notepad3 more attractive...
 
 --------------------------------------------------
 FIXES:
@@ -56,6 +61,7 @@ FIXES:
 - Center commandline help dialog.
 - In case of STD lexer only display "Default Text" in statusbar (indicator shows which one).
 - Fixed resource file problem (preproc defines).
+- Fixed save window Position (Default and Initial switch)
 
 --------------------------------------------------
 TRANSLATIONS (MUI):
