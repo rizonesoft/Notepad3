@@ -28,14 +28,16 @@ setlocal enableextensions
 
 :: ====================================================================================================================
 
+set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR ja-JP nl-NL ru-RU zh-CN
+
+:: ====================================================================================================================
+
 :: --- Environment ---
 set SCRIPT_DIR=%~dp0
 set PORTAPP_ROOT_DIR=D:\PortableApps
 set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\PortableApps.comAppCompactor.exe
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
-
-set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR ja-JP nl-NL ru-RU zh-CN
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
@@ -44,7 +46,6 @@ set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable
 set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo
 set NP3_PORTAPP_INSTALL=%NP3_PORTAPP_DIR%\App\AppInfo\installer
-
 
 set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
 set NP3_BUILD_NAME=%SCRIPT_DIR%_buildname.txt
