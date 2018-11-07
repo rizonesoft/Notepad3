@@ -69,7 +69,7 @@ TRANSLATIONS (MUI):
 - Chinese Translation.
 - Japanese Translation
 - Russian Translation.
-- Belorussian Translation.
+- Belarusian Translation.
 - Afrikaans Translation (in progress)...
 
 ==================================================
