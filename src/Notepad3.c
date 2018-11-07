@@ -160,31 +160,6 @@ static WIN32_FIND_DATA s_fdCurFile;
 
 static HMODULE s_hRichEdit = INVALID_HANDLE_VALUE;
 
-// Globals <= @@@
-bool      g_bWordWrapG;
-bool      g_bTabsAsSpacesG;
-bool      g_bTabIndentsG;
-int       g_iTabWidthG;
-int       g_iIndentWidthG;
-int       g_iLongLinesLimitG;
-bool      g_bCodeFoldingAvailable;
-bool      g_bForceLoadASCIIasUTF8 = false;
-int       g_iWrapCol = 0;
-bool      g_bZeroBasedColumnIndex = false;
-bool      g_bZeroBasedCharacterCount = false;
-int       g_iReplacedOccurrences = 0;
-int       g_iMarkOccurrencesCount = 0;
-bool      g_bChasingDocTail = false;
-bool      g_bUseLimitedAutoCCharSet = false;
-bool      g_bIsCJKInputCodePage = false;
-bool      g_bIniFileFromScratch = false;
-bool      g_bFindReplCopySelOrClip = true;
-bool      g_bReplaceInitialized = false;
-FILEVARS  g_fvCurFile;
-
-CALLTIPTYPE g_CallTipType = CT_NONE;
-
-
 #define INISECTIONBUFCNT 32
 
 static TBBUTTON  s_tbbMainWnd[] = { { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
@@ -460,9 +435,25 @@ static void  _SetDocumentModified(bool bModified)
 //==============================================================================
 
 
-static void  _InitConstants()
+static void _InitGlobals()
 {
   Constants.FileBrowserMiniPath = L"minipath.exe";
+
+  Globals.CallTipType = CT_NONE;
+  Globals.iWrapCol = 0;
+  Globals.bCodeFoldingAvailable = false;
+  Globals.bForceLoadASCIIasUTF8 = false;
+  Globals.bZeroBasedColumnIndex = false;
+  Globals.bZeroBasedCharacterCount = false;
+  Globals.iReplacedOccurrences = 0;
+  Globals.iMarkOccurrencesCount = 0;
+  Globals.bChasingDocTail = false;
+  Globals.bUseLimitedAutoCCharSet = false;
+  Globals.bIsCJKInputCodePage = false;
+  Globals.bIniFileFromScratch = false;
+  Globals.bFindReplCopySelOrClip = true;
+  Globals.bReplaceInitialized = false;
+  Globals.FindReplaceMatchFoundState = FND_NOP;
 }
 
 
@@ -512,7 +503,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 //
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
-  _InitConstants();
+  _InitGlobals();
 
   // Set global variable Globals.hInstance
   Globals.hInstance = hInstance;
@@ -1098,7 +1089,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
         InstallFileWatching(Globals.CurrentFile);
       }
       else if (s_flagChangeNotify == 2) {
-        if (!g_bChasingDocTail) { 
+        if (!Globals.bChasingDocTail) { 
           SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); 
         }
         else {
@@ -1223,8 +1214,8 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   if (s_flagStartAsTrayIcon)
     SetNotifyIconTitle(Globals.hwndMain);
 
-  g_iReplacedOccurrences = 0;
-  g_iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
+  Globals.iReplacedOccurrences = 0;
+  Globals.iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
 
   UpdateToolbar();
   UpdateStatusbar(false);
@@ -1423,7 +1414,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case WM_INPUTLANGCHANGE:
-      g_bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
+      Globals.bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
       break;
 
     default:
@@ -2393,7 +2384,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
             InstallFileWatching(Globals.CurrentFile);
           }
           else if (params->flagChangeNotify == 2) {
-            if (!g_bChasingDocTail) {
+            if (!Globals.bChasingDocTail) {
               SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
             }
             else {
@@ -2537,9 +2528,9 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     {
       FileRevert(Globals.CurrentFile, Encoding_HasChanged(CPI_GET));
       
-      if (g_bChasingDocTail) 
+      if (Globals.bChasingDocTail) 
       {
-        SciCall_SetReadOnly(g_bChasingDocTail);
+        SciCall_SetReadOnly(Globals.bChasingDocTail);
         //SetForegroundWindow(hwnd);
         SciCall_ScrollToEnd(); 
       }
@@ -2825,13 +2816,13 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_VIEW_FONT, !IsWindow(Globals.hwndDlgCustomizeSchemes));
   EnableCmd(hmenu, IDM_VIEW_CURRENTSCHEME, !IsWindow(Globals.hwndDlgCustomizeSchemes));
 
-  EnableCmd(hmenu, IDM_VIEW_FOLDING, g_bCodeFoldingAvailable);
-  CheckCmd(hmenu, IDM_VIEW_FOLDING, (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
-  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  EnableCmd(hmenu, IDM_VIEW_FOLDING, Globals.bCodeFoldingAvailable);
+  CheckCmd(hmenu, IDM_VIEW_FOLDING, (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLEFOLDS,!e && (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
 
   bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
   bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
-  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !e && (g_bCodeFoldingAvailable && Settings.ShowCodeFolding) && (bF || bH));
+  EnableCmd(hmenu,IDM_VIEW_TOGGLE_CURRENT_FOLD, !e && (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding) && (bF || bH));
 
   CheckCmd(hmenu,IDM_VIEW_USE2NDDEFAULT,Style_GetUse2ndDefault());
 
@@ -2842,7 +2833,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu,IDM_VIEW_AUTOINDENTTEXT,Settings.AutoIndent);
   CheckCmd(hmenu,IDM_VIEW_LINENUMBERS,Settings.ShowLineNumbers);
   CheckCmd(hmenu,IDM_VIEW_MARGIN,Settings.ShowSelectionMargin);
-  CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
+  CheckCmd(hmenu,IDM_VIEW_CHASING_DOCTAIL, Globals.bChasingDocTail);
 
   EnableCmd(hmenu,IDM_EDIT_COMPLETEWORD,!e && !ro);
   CheckCmd(hmenu,IDM_VIEW_AUTOCOMPLETEWORDS,Settings.AutoCompleteWords && !ro);
@@ -3783,17 +3774,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_COLUMNWRAP:
       {
-        if (g_iWrapCol == 0) {
-          g_iWrapCol = Settings.LongLinesLimit;
+        if (Globals.iWrapCol == 0) {
+          Globals.iWrapCol = Settings.LongLinesLimit;
         }
 
         UINT uWrpCol = 0;
         if (ColumnWrapDlg(hwnd,IDD_MUI_COLUMNWRAP,&uWrpCol))
         {
-          g_iWrapCol = (DocPos)clampi((int)uWrpCol, 1, Settings.LongLinesLimit);
+          Globals.iWrapCol = (DocPos)clampi((int)uWrpCol, 1, Settings.LongLinesLimit);
           BeginWaitCursor(NULL);
           _BEGIN_UNDO_ACTION_;
-          EditWrapToColumn(Globals.hwndEdit,g_iWrapCol);
+          EditWrapToColumn(Globals.hwndEdit,Globals.iWrapCol);
           _END_UNDO_ACTION_;
           EndWaitCursor();
         }
@@ -4332,11 +4323,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_FIND:
       if (!IsWindow(Globals.hwndDlgFindReplace)) {
-        g_bFindReplCopySelOrClip = true;
+        Globals.bFindReplCopySelOrClip = true;
         Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, false);
       }
       else {
-        g_bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
+        Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
         if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
           SendMessage(Globals.hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDMSG_SWITCHTOFIND, 1), 0);
           DestroyWindow(Globals.hwndDlgFindReplace);
@@ -4353,11 +4344,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_REPLACE:
       if (!IsWindow(Globals.hwndDlgFindReplace)) {
-        g_bFindReplCopySelOrClip = true;
+        Globals.bFindReplCopySelOrClip = true;
         Globals.hwndDlgFindReplace = EditFindReplaceDlg(Globals.hwndEdit, &Settings.EFR_Data, true);
       }
       else {
-        g_bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
+        Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
         if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
           SendMessage(Globals.hwndDlgFindReplace, WM_COMMAND, MAKELONG(IDMSG_SWITCHTOREPLACE, 1), 0);
           DestroyWindow(Globals.hwndDlgFindReplace);
@@ -4407,7 +4398,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break;
 
           case IDM_EDIT_REPLACENEXT:
-            if (g_bReplaceInitialized)
+            if (Globals.bReplaceInitialized)
               EditReplace(Globals.hwndEdit,&Settings.EFR_Data);
             else
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_EDIT_REPLACE,1),0);
@@ -4548,7 +4539,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       Settings.WordWrap = !Settings.WordWrap;
       _SetWrapIndentMode(Globals.hwndEdit);
       EditEnsureSelectionVisible(Globals.hwndEdit);
-      g_bWordWrapG = Settings.WordWrap;
+      Globals.bWordWrap = Settings.WordWrap;
       UpdateToolbar();
       break;
 
@@ -4588,7 +4579,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Style_SetLongLineColors(Globals.hwndEdit);
         Settings.LongLinesLimit = clampi(Settings.LongLinesLimit, 0, LONG_LINES_MARKER_LIMIT);
         SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
-        g_iLongLinesLimitG = Settings.LongLinesLimit;
+        Globals.iLongLinesLimit = Settings.LongLinesLimit;
         UpdateToolbar();
         UpdateStatusbar(false);
       }
@@ -4598,7 +4589,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TABSASSPACES:
       Settings.TabsAsSpaces = !Settings.TabsAsSpaces;
       SendMessage(Globals.hwndEdit,SCI_SETUSETABS,!Settings.TabsAsSpaces,0);
-      g_bTabsAsSpacesG = Settings.TabsAsSpaces;
+      Globals.bTabsAsSpaces = Settings.TabsAsSpaces;
       break;
 
 
@@ -4612,10 +4603,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Settings.IndentWidth = clampi(Settings.IndentWidth, 0, 256);
         SendMessage(Globals.hwndEdit,SCI_SETTABWIDTH,Settings.TabWidth,0);
         SendMessage(Globals.hwndEdit,SCI_SETINDENT,Settings.IndentWidth,0);
-        g_bTabsAsSpacesG = Settings.TabsAsSpaces;
-        g_bTabIndentsG   = Settings.TabIndents;
-        g_iTabWidthG     = Settings.TabWidth;
-        g_iIndentWidthG  = Settings.IndentWidth;
+        Globals.bTabsAsSpaces = Settings.TabsAsSpaces;
+        Globals.bTabIndents   = Settings.TabIndents;
+        Globals.iTabWidth     = Settings.TabWidth;
+        Globals.iIndentWidth  = Settings.IndentWidth;
         if (SendMessage(Globals.hwndEdit, SCI_GETWRAPINDENTMODE, 0, 0) == SC_WRAPINDENT_FIXED) {
           _SetWrapStartIndent(Globals.hwndEdit);
         }
@@ -4796,10 +4787,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         static int iPrevFileWatchingMode = 0;
         static bool bPrevResetFileWatching = false;
 
-        g_bChasingDocTail = !g_bChasingDocTail;
-        SciCall_SetReadOnly(g_bChasingDocTail);
+        Globals.bChasingDocTail = !Globals.bChasingDocTail;
+        SciCall_SetReadOnly(Globals.bChasingDocTail);
 
-        if (g_bChasingDocTail) 
+        if (Globals.bChasingDocTail) 
         {
           SetForegroundWindow(hwnd);
           flagPrevChangeNotify = s_flagChangeNotify;
@@ -4816,7 +4807,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         if (!s_bRunningWatch) { InstallFileWatching(Globals.CurrentFile); }
 
-        CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
+        CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, Globals.bChasingDocTail);
         UpdateToolbar();
       }
       break;
@@ -5244,10 +5235,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_RELOADASCIIASUTF8:
       {
         if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
-          g_bForceLoadASCIIasUTF8 = true;
+          Globals.bForceLoadASCIIasUTF8 = true;
           StringCchCopy(tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer),Globals.CurrentFile);
           FileLoad(false, false, true, true, true, tchMaxPathBuffer);
-          g_bForceLoadASCIIasUTF8 = false;
+          Globals.bForceLoadASCIIasUTF8 = false;
         }
       }
       break;
@@ -5257,7 +5248,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     {
       g_bForceCompEncDetection = true;
       if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
-        g_bForceLoadASCIIasUTF8 = false;
+        Globals.bForceLoadASCIIasUTF8 = false;
         StringCchCopy(tchMaxPathBuffer, COUNTOF(tchMaxPathBuffer), Globals.CurrentFile);
         FileLoad(false, false, true, false, false, tchMaxPathBuffer);
       }
@@ -5428,7 +5419,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SendMessage(Globals.hwndEdit,SCI_SETEDGECOLUMN,Settings.LongLinesLimit,0);
         UpdateToolbar();
         UpdateStatusbar(false);
-        g_iLongLinesLimitG = Settings.LongLinesLimit;
+        Globals.iLongLinesLimit = Settings.LongLinesLimit;
       }
       break;
 
@@ -6285,9 +6276,9 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           {
             int const ich = scn->ch;
 
-            if (g_CallTipType != CT_NONE) {
+            if (Globals.CallTipType != CT_NONE) {
               SciCall_CallTipCancel();   
-              g_CallTipType = CT_NONE;
+              Globals.CallTipType = CT_NONE;
             }
 
             switch (ich) {
@@ -6801,7 +6792,7 @@ void LoadSettings()
     }
 
     GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
-    GET_BOOL_VALUE_FROM_INISECTION(WordWrap, false);  g_bWordWrapG = Settings.WordWrap;
+    GET_BOOL_VALUE_FROM_INISECTION(WordWrap, false);  Globals.bWordWrap = Settings.WordWrap;
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 2, 0, 6);
 
@@ -6820,14 +6811,14 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AutoCLexerKeyWords, false);
     GET_BOOL_VALUE_FROM_INISECTION(AccelWordNavigation, false);
     GET_BOOL_VALUE_FROM_INISECTION(ShowIndentGuides, false);
-    GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  g_bTabsAsSpacesG = Settings.TabsAsSpaces;
-    GET_BOOL_VALUE_FROM_INISECTION(TabIndents, true);  g_bTabIndentsG = Settings.TabIndents;
+    GET_BOOL_VALUE_FROM_INISECTION(TabsAsSpaces, false);  Globals.bTabsAsSpaces = Settings.TabsAsSpaces;
+    GET_BOOL_VALUE_FROM_INISECTION(TabIndents, true);  Globals.bTabIndents = Settings.TabIndents;
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
-    GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  g_iTabWidthG = Settings.TabWidth;
-    GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  g_iIndentWidthG = Settings.IndentWidth;
+    GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  Globals.iTabWidth = Settings.TabWidth;
+    GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  Globals.iIndentWidth = Settings.IndentWidth;
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, true);
     GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, true);
-    GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  g_iLongLinesLimitG = Settings.LongLinesLimit;
+    GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  Globals.iLongLinesLimit = Settings.LongLinesLimit;
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
     GET_BOOL_VALUE_FROM_INISECTION(ShowSelectionMargin, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
@@ -6946,8 +6937,8 @@ void LoadSettings()
     IniSectionGetString(pIniSection, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
     ReadVectorFromString(tchStatusBar, s_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0);
 
-    g_bZeroBasedColumnIndex = IniSectionGetBool(pIniSection, L"ZeroBasedColumnIndex", false);
-    g_bZeroBasedCharacterCount = IniSectionGetBool(pIniSection, L"ZeroBasedCharacterCount", false);
+    Globals.bZeroBasedColumnIndex = IniSectionGetBool(pIniSection, L"ZeroBasedColumnIndex", false);
+    Globals.bZeroBasedCharacterCount = IniSectionGetBool(pIniSection, L"ZeroBasedCharacterCount", false);
 
 
     // --------------------------------------------------------------------------
@@ -7162,8 +7153,8 @@ void SaveSettings(bool bSaveSettingsNow)
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, PathNameFormat);
 
-    if (g_bWordWrapG != Defaults.WordWrap) {
-      IniSectionSetBool(pIniSection, L"WordWrap", g_bWordWrapG);
+    if (Globals.bWordWrap != Defaults.WordWrap) {
+      IniSectionSetBool(pIniSection, L"WordWrap", Globals.bWordWrap);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapIndent);
@@ -7181,16 +7172,16 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowIndentGuides);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabsAsSpaces);
 
-    if (g_bTabIndentsG != Defaults.TabIndents) {
-      IniSectionSetBool(pIniSection, L"", g_bTabIndentsG);
+    if (Globals.bTabIndents != Defaults.TabIndents) {
+      IniSectionSetBool(pIniSection, L"", Globals.bTabIndents);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, BackspaceUnindents);
 
-    if (g_iTabWidthG != Defaults.TabWidth) {
-      IniSectionSetInt(pIniSection, L"TabWidth", g_iTabWidthG);
+    if (Globals.iTabWidth != Defaults.TabWidth) {
+      IniSectionSetInt(pIniSection, L"TabWidth", Globals.iTabWidth);
     }
-    if (g_iIndentWidthG != Defaults.TabWidth) {
-      IniSectionSetInt(pIniSection, L"IndentWidth", g_iIndentWidthG);
+    if (Globals.iIndentWidth != Defaults.TabWidth) {
+      IniSectionSetInt(pIniSection, L"IndentWidth", Globals.iIndentWidth);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistentIndents);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkLongLines);
@@ -7989,7 +7980,7 @@ int CreateIniFileEx(LPCWSTR lpszIniFile)
       if (GetFileSize(hFile,NULL) == 0) {
         DWORD dw;
         WriteFile(hFile,(LPCVOID)L"\xFEFF[Notepad3]\r\n",26,&dw,NULL);
-        g_bIniFileFromScratch = true;
+        Globals.bIniFileFromScratch = true;
       }
       CloseHandle(hFile);
       return(1);
@@ -8081,7 +8072,7 @@ static void  _UpdateToolbarDelayed()
   EnableTool(IDT_FILE_ADDTOFAV, StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile)));
   EnableTool(IDT_FILE_SAVE, (IsDocumentModified || Encoding_HasChanged(CPI_GET)) /*&& !bReadOnly*/);
   CheckTool(IDT_VIEW_WORDWRAP, Settings.WordWrap);
-  CheckTool(IDT_VIEW_CHASING_DOCTAIL, g_bChasingDocTail);
+  CheckTool(IDT_VIEW_CHASING_DOCTAIL, Globals.bChasingDocTail);
 
   bool b1 = SciCall_IsSelectionEmpty();
   bool b2 = (bool)(SciCall_GetTextLength() > 0);
@@ -8104,7 +8095,7 @@ static void  _UpdateToolbarDelayed()
   EnableTool(IDT_EDIT_COPY, !b1 && !ro);
   EnableTool(IDT_EDIT_CLEAR, !b1 && !ro);
 
-  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  EnableTool(IDT_VIEW_TOGGLEFOLDS, b2 && (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
 
   EnableTool(IDT_VIEW_TOGGLE_VIEW, b2 && ((Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible));
   CheckTool(IDT_VIEW_TOGGLE_VIEW, tv);
@@ -8317,8 +8308,6 @@ void UpdateStatusbar(bool bForceRedraw)
 
 const static WCHAR* FR_Status[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+->]>", L"[--<<]", L"[+-<<]", L"<[<-+]"};
 
-FR_STATES g_FindReplaceMatchFoundState = FND_NOP;
-
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
   if (!Settings.ShowStatusbar) { return; }
@@ -8380,7 +8369,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (s_iStatusbarVisible[STATUS_DOCCOLUMN] || Globals.hwndDlgFindReplace)
   {
-    DocPos const colOffset = g_bZeroBasedColumnIndex ? 0 : 1;
+    DocPos const colOffset = Globals.bZeroBasedColumnIndex ? 0 : 1;
 
     static DocPos s_iCol = -1;
     DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
@@ -8412,7 +8401,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (s_iStatusbarVisible[STATUS_DOCCHAR])
   {
-    DocPos const chrOffset = g_bZeroBasedCharacterCount ? 0 : 1;
+    DocPos const chrOffset = Globals.bZeroBasedCharacterCount ? 0 : 1;
 
     static DocPos s_iChr = -1;
     DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
@@ -8574,17 +8563,17 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (s_iStatusbarVisible[STATUS_OCCURRENCE] || Globals.hwndDlgFindReplace)
   {
-    if ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != g_iMarkOccurrencesCount))
+    if ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount))
     {
-      if ((g_iMarkOccurrencesCount >= 0) && !Settings.MarkOccurrencesMatchVisible)
+      if ((Globals.iMarkOccurrencesCount >= 0) && !Settings.MarkOccurrencesMatchVisible)
       {
-        if ((Settings2.MarkOccurrencesMaxCount < 0) || (g_iMarkOccurrencesCount < Settings2.MarkOccurrencesMaxCount))
+        if ((Settings2.MarkOccurrencesMaxCount < 0) || (Globals.iMarkOccurrencesCount < Settings2.MarkOccurrencesMaxCount))
         {
-          StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", g_iMarkOccurrencesCount);
+          StringCchPrintf(tchOcc, COUNTOF(tchOcc), L"%i", Globals.iMarkOccurrencesCount);
           FormatNumberStr(tchOcc);
         }
         else {
-          StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", g_iMarkOccurrencesCount);
+          StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", Globals.iMarkOccurrencesCount);
           FormatNumberStr(tchTmp);
           StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
         }
@@ -8597,7 +8586,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         s_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, s_mxSBPostfix[STATUS_OCCURRENCE]);
 
       s_bMOVisible = Settings.MarkOccurrencesMatchVisible;
-      s_iMarkOccurrencesCount = g_iMarkOccurrencesCount;
+      s_iMarkOccurrencesCount = Globals.iMarkOccurrencesCount;
       bIsUpdateNeeded = true;
     }
   }
@@ -8609,11 +8598,11 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
   if (s_iStatusbarVisible[STATUS_OCCREPLACE] || Globals.hwndDlgFindReplace)
   {
-    if (s_iReplacedOccurrences != g_iReplacedOccurrences)
+    if (s_iReplacedOccurrences != Globals.iReplacedOccurrences)
     {
-      if (g_iReplacedOccurrences > 0)
+      if (Globals.iReplacedOccurrences > 0)
       {
-        StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", g_iReplacedOccurrences);
+        StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", Globals.iReplacedOccurrences);
         FormatNumberStr(tchRepl);
       }
       else {
@@ -8623,7 +8612,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
         s_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, s_mxSBPostfix[STATUS_OCCREPLACE]);
 
-      s_iReplacedOccurrences = g_iReplacedOccurrences;
+      s_iReplacedOccurrences = Globals.iReplacedOccurrences;
       bIsUpdateNeeded = true;
     }
   }
@@ -8793,8 +8782,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // update Find/Replace dialog (if any)
   static WCHAR tchReplOccs[32] = { L'\0' };
   if (Globals.hwndDlgFindReplace) {
-    if (g_iReplacedOccurrences > 0)
-      StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", g_iReplacedOccurrences);
+    if (Globals.iReplacedOccurrences > 0)
+      StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", Globals.iReplacedOccurrences);
     else
       StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
 
@@ -8806,7 +8795,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       s_mxSBPrefix[STATUS_SELECTION], tchSel,
       s_mxSBPrefix[STATUS_OCCURRENCE], tchOcc,
       s_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
-      FR_Status[g_FindReplaceMatchFoundState]);
+      FR_Status[Globals.FindReplaceMatchFoundState]);
 
     SetWindowText(GetDlgItem(Globals.hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
   }
@@ -8837,7 +8826,7 @@ void UpdateMarginWidth()
     SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
   }
 
-  Style_SetFolding(Globals.hwndEdit, (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  Style_SetFolding(Globals.hwndEdit, (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
   Style_SetBookmark(Globals.hwndEdit, Settings.ShowSelectionMargin);
 }
 
@@ -9226,7 +9215,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     SetDlgItemText(Globals.hwndMain,IDC_FILENAME,Globals.CurrentFile);
     SetDlgItemInt(Globals.hwndMain,IDC_REUSELOCK,GetTickCount(),false);
     if (!s_fKeepTitleExcerpt) { StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L""); }
-    FileVars_Init(NULL,0,&g_fvCurFile);
+    FileVars_Init(NULL,0,&Globals.fvCurFile);
     EditSetNewText(Globals.hwndEdit, "", 0);
 
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
@@ -9245,7 +9234,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
     // Terminate file watching
     if (Settings.ResetFileWatching) {
-      if (g_bChasingDocTail) {
+      if (Globals.bChasingDocTail) {
         SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
       }
       Settings.FileWatchingMode = 0;
@@ -9301,7 +9290,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       Globals.dwLastError = GetLastError();
       fSuccess = (hFile != INVALID_HANDLE_VALUE);
       if (fSuccess) {
-        FileVars_Init(NULL,0,&g_fvCurFile);
+        FileVars_Init(NULL,0,&Globals.fvCurFile);
         EditSetNewText(Globals.hwndEdit,"",0);
         Style_SetDefaultLexer(Globals.hwndEdit);
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
@@ -9368,7 +9357,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
 
     // Install watching of the current file
     if (!bReload && Settings.ResetFileWatching) {
-      if (g_bChasingDocTail) {
+      if (Globals.bChasingDocTail) {
         SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
       }
       Settings.FileWatchingMode = 0;
@@ -9629,7 +9618,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
 
       // Install watching of the current file
       if (bSaveAs && Settings.ResetFileWatching) {
-        if (g_bChasingDocTail) {
+        if (Globals.bChasingDocTail) {
           SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0);
         }
         Settings.FileWatchingMode = 0;

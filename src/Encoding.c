@@ -48,7 +48,6 @@
 int g_DOSEncoding = CPI_NONE;
 bool g_bForceCompEncDetection = false;
 
-extern bool g_bIsCJKInputCodePage;
 
 // ============================================================================
 
@@ -136,7 +135,7 @@ void Encoding_InitDefaults()
   assert(g_Encodings[CPI_ANSI_DEFAULT].uCodePage == ansiInputCP);
   StringCchPrintf(wchANSI, COUNTOF(wchANSI), L" (CP-%u)", ansiInputCP);
 
-  g_bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
+  Globals.bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
 
   for (int i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
     if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage)) {

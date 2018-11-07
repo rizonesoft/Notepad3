@@ -133,6 +133,24 @@ typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH } CALLTIPTYPE;
 
 // --------------------------------------------------------------------------
 
+typedef struct _filevars
+{
+
+  int mask;
+  int iTabWidth;
+  int iIndentWidth;
+  bool bTabsAsSpaces;
+  bool bTabIndents;
+  bool fWordWrap;
+  int iLongLinesLimit;
+  char tchEncoding[32];
+  int  iEncoding;
+  char tchMode[32];
+
+} FILEVARS, *LPFILEVARS;
+
+// --------------------------------------------------------------------------
+
 typedef struct _editfindreplace
 {
   char szFind[FNDRPL_BUFFER];
@@ -244,7 +262,30 @@ typedef struct _globals_t
   LPMRULIST pFileMRU;
   LPMRULIST pMRUfind;
   LPMRULIST pMRUreplace;
+  CALLTIPTYPE CallTipType;
+  FILEVARS  fvCurFile;
+  bool      bWordWrap;
+  bool      bTabsAsSpaces;
+  bool      bTabIndents;
+  int       iTabWidth;
+  int       iIndentWidth;
+  int       iLongLinesLimit;
+  int       iWrapCol;
 
+  bool      bCodeFoldingAvailable;
+  bool      bForceLoadASCIIasUTF8;
+  bool      bZeroBasedColumnIndex;
+  bool      bZeroBasedCharacterCount;
+  int       iReplacedOccurrences;
+  int       iMarkOccurrencesCount;
+  bool      bChasingDocTail;
+  bool      bUseLimitedAutoCCharSet;
+  bool      bIsCJKInputCodePage;
+  bool      bIniFileFromScratch;
+  bool      bFindReplCopySelOrClip;
+  bool      bReplaceInitialized;
+
+  FR_STATES FindReplaceMatchFoundState;
 
   WCHAR     WorkingDirectory[MAX_PATH + 1];
   WCHAR     IniFile[MAX_PATH + 1];

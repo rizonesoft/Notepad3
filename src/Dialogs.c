@@ -1773,7 +1773,6 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //            102 Radio Button (Auto-Reload)
 //            103 Check Box    (Reset on New)
 //
-extern bool g_bChasingDocTail;
 
 INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
@@ -1800,7 +1799,7 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
 
       Settings.ResetFileWatching = (IsDlgButtonChecked(hwnd, 103) == BST_CHECKED) ? true : false;
 
-      if (g_bChasingDocTail) { SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
+      if (Globals.bChasingDocTail) { SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
 
       EndDialog(hwnd, IDOK);
       break;

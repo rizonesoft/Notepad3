@@ -126,21 +126,6 @@ inline void EditApplyLexerStyle(HWND hwnd, const DocPos iRangeStart, const DocPo
 #define FV_ENCODING       64
 #define FV_MODE          128
 
-typedef struct _filevars {
-
-  int mask;
-  int iTabWidth;
-  int iIndentWidth;
-  bool bTabsAsSpaces;
-  bool bTabIndents;
-  bool fWordWrap;
-  int iLongLinesLimit;
-  char tchEncoding[32];
-  int  iEncoding;
-  char tchMode[32];
-
-} FILEVARS, *LPFILEVARS;
-
 bool FileVars_Init(char* lpData,DWORD cbData,LPFILEVARS lpfv);
 bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv);
 bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
