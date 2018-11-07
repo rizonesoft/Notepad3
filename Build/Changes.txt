@@ -61,10 +61,16 @@ FIXES:
 TRANSLATIONS (MUI):
 --------------------------------------------------
 
-- French Translation.
-- MiniPath German Translation.
+- German Translation
 - English (UK) Translation.
-- German Translation.
+- French Translation.
+- Dutch Translation.
+- Spanish Translation.
+- Chinese Translation.
+- Japanese Translation
+- Russian Translation.
+- Belorussian Translation.
+- Afrikaans Translation (in progress)...
 
 ==================================================
 Version 4.18.511.992 (12 May 2018)
