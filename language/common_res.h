@@ -231,8 +231,8 @@
 #define IDC_NFOASOEM                    18034
 #define IDC_ENCODINGFROMFILEVARS        18035
 #define IDC_EOLMODELIST                 18036
-#define IDC_WARNINCONSISTENTEOLS        18037
-#define IDC_CONSISTENTEOLS              18038
+#define IDC_WARN_INCONSISTENT_EOLS      18037
+#define IDC_CONSISTENT_EOLS             18038
 #define IDC_AUTOSTRIPBLANKS             18039
 #define IDC_LINENUM                     18040
 #define IDC_COLNUM                      18041

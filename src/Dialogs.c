@@ -2538,8 +2538,8 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
         SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETCURSEL,(WPARAM)*piOption,0);
         SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETEXTENDEDUI,true,0);
 
-        CheckDlgButton(hwnd,IDC_WARNINCONSISTENTEOLS, DlgBtnChk(Settings.WarnInconsistEOLs));
-        CheckDlgButton(hwnd,IDC_CONSISTENTEOLS, DlgBtnChk(Settings.FixLineEndings));
+        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_EOLS, DlgBtnChk(Settings.WarnInconsistEOLs));
+        CheckDlgButton(hwnd,IDC_CONSISTENT_EOLS, DlgBtnChk(Settings.FixLineEndings));
         CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, DlgBtnChk(Settings.FixTrailingBlanks));
 
         CenterDlgInParent(hwnd);
@@ -2552,8 +2552,8 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
       {
         case IDOK: {
             *piOption = (int)SendDlgItemMessage(hwnd,IDC_EOLMODELIST,CB_GETCURSEL,0,0);
-            Settings.WarnInconsistEOLs = (IsDlgButtonChecked(hwnd,IDC_WARNINCONSISTENTEOLS) == BST_CHECKED);
-            Settings.FixLineEndings = (IsDlgButtonChecked(hwnd,IDC_CONSISTENTEOLS) == BST_CHECKED);
+            Settings.WarnInconsistEOLs = (IsDlgButtonChecked(hwnd,IDC_WARN_INCONSISTENT_EOLS) == BST_CHECKED);
+            Settings.FixLineEndings = (IsDlgButtonChecked(hwnd,IDC_CONSISTENT_EOLS) == BST_CHECKED);
             Settings.FixTrailingBlanks = (IsDlgButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS) == BST_CHECKED);
             EndDialog(hwnd,IDOK);
           }

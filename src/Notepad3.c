@@ -3561,7 +3561,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INDENT:
       {
         _BEGIN_UNDO_ACTION_;
-        EditIndentBlock(Globals.hwndEdit, SCI_TAB, true);
+        EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
         _END_UNDO_ACTION_;
       }
       break;
@@ -3569,7 +3569,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_UNINDENT:
       {
         _BEGIN_UNDO_ACTION_;
-        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true);
+        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
         _END_UNDO_ACTION_;
       }
       break;
@@ -3577,7 +3577,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_TAB:
       {
         _BEGIN_UNDO_ACTION_;
-        EditIndentBlock(Globals.hwndEdit, SCI_TAB, false);
+        EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
         _END_UNDO_ACTION_;
       }
       break;
@@ -3585,7 +3585,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_BACKTAB:
       {
         _BEGIN_UNDO_ACTION_;
-        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false);
+        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
         _END_UNDO_ACTION_;
       }
       break;
@@ -3593,11 +3593,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_CTRLTAB:
       {
         _BEGIN_UNDO_ACTION_;
-        SendMessage(Globals.hwndEdit, SCI_SETUSETABS, true, 0);
-        SendMessage(Globals.hwndEdit, SCI_SETTABINDENTS, false, 0);
-        EditIndentBlock(Globals.hwndEdit, SCI_TAB, false);
-        SendMessage(Globals.hwndEdit, SCI_SETTABINDENTS, Settings.TabIndents, 0);
-        SendMessage(Globals.hwndEdit, SCI_SETUSETABS, !Settings.TabsAsSpaces, 0);
+        SciCall_SetUseTabs(true);
+        SciCall_SetTabIndents(false);
+        EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+        SciCall_SetTabIndents(Settings.TabIndents);
+        SciCall_SetUseTabs(!Settings.TabsAsSpaces);
         _END_UNDO_ACTION_;
       }
       break;
@@ -4596,13 +4596,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TABSETTINGS:
       if (TabSettingsDlg(hwnd,IDD_MUI_TABSETTINGS,NULL))
       {
-        SendMessage(Globals.hwndEdit,SCI_SETUSETABS,!Settings.TabsAsSpaces,0);
-        SendMessage(Globals.hwndEdit,SCI_SETTABINDENTS,Settings.TabIndents,0);
-        SendMessage(Globals.hwndEdit,SCI_SETBACKSPACEUNINDENTS,Settings.BackspaceUnindents,0);
+        SciCall_SetUseTabs(!Settings.TabsAsSpaces);
+        SciCall_SetTabIndents(Settings.TabIndents);
+        SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
         Settings.TabWidth = clampi(Settings.TabWidth, 1, 256);
         Settings.IndentWidth = clampi(Settings.IndentWidth, 0, 256);
-        SendMessage(Globals.hwndEdit,SCI_SETTABWIDTH,Settings.TabWidth,0);
-        SendMessage(Globals.hwndEdit,SCI_SETINDENT,Settings.IndentWidth,0);
+        SciCall_SetTabWidth(Settings.TabWidth);
+        SciCall_SetIndent(Settings.IndentWidth);
         Globals.bTabsAsSpaces = Settings.TabsAsSpaces;
         Globals.bTabIndents   = Settings.TabIndents;
         Globals.iTabWidth     = Settings.TabWidth;
@@ -9180,6 +9180,36 @@ bool FileIO(bool fLoad,LPWSTR pszFileName,bool bSkipUnicodeDetect,bool bSkipANSI
   return(fSuccess);
 }
 
+//=============================================================================
+//
+// _WarnInconsistentIndentation()
+//
+static void _WarnInconsistentIndentation(const EditFileIOStatus* const status)
+{
+  if (((status->indentCount[0] > 0) && (status->indentCount[1] > 0))
+      //|| (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
+      //|| (!Settings.TabsAsSpaces && (spaceCount > 0))   // indent space, should be populated with tabs
+      ) {
+    WCHAR szDefault[32];
+    WCHAR szStatistic[80];
+    StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s(%i)",
+      (Settings.TabsAsSpaces ? L"BLANK" : L"TABULATOR"), (Settings.TabsAsSpaces ? Settings.IndentWidth : Settings.TabWidth));
+    StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  # TABULATOR(%i) = %i\n  # BLANK(%i) = %i\n",
+                    Settings.TabWidth, status->indentCount[0], Settings.IndentWidth, status->indentCount[1]);
+
+    int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONS_INDENTS, szStatistic, szDefault);
+
+    if (res == IDYES) {
+      BeginWaitCursor(NULL);
+      _BEGIN_UNDO_ACTION_;
+      EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
+      EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
+      _END_UNDO_ACTION_;
+      EndWaitCursor();
+    }
+  }
+}
+
 
 //=============================================================================
 //
@@ -9404,8 +9434,9 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
     if (fioStatus.bUnicodeErr) {
       MsgBoxLng(MBWARN, IDS_MUI_ERR_UNICODE);
     }
+
     // Show inconsistent line endings warning
-    if (fioStatus.bInconsistent && Settings.WarnInconsistEOLs) 
+    if (fioStatus.bInconsistentEOLs && Settings.WarnInconsistEOLs) 
     {
       WCHAR szDefault[32];
       WCHAR szStatistic[80];
@@ -9413,12 +9444,19 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s", 
         ((eolm == SC_EOL_CRLF) ? L"CRLF (\\r\\n)" : ((eolm == SC_EOL_CR) ? L"CR (\\r)" : L"LF (\\n)")));
       StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  #CRLF = %i\n  #CR = %i\n  #LF = %i\n",
-                      fioStatus.linesCount[SC_EOL_CRLF], fioStatus.linesCount[SC_EOL_CR], fioStatus.linesCount[SC_EOL_LF]);
+                      fioStatus.eolCount[SC_EOL_CRLF], fioStatus.eolCount[SC_EOL_CR], fioStatus.eolCount[SC_EOL_LF]);
       int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONSIST_EOLS, szStatistic, szDefault);
       if (res == IDYES) {
         SciCall_ConvertEOLs(eolm);
       }
     }
+
+    if (Settings.WarnInconsistentIndents && !Style_IsCurLexerStandard()) {
+      EditCheckIndentationConsistency(Globals.hwndEdit, &fioStatus);
+      _WarnInconsistentIndentation(&fioStatus);
+      // TODO: Set correct Indent mode / verify settings vs. file majority
+    }
+
   }
   else if (!(fioStatus.bFileTooBig || fioStatus.bUnknownExt)) {
     MsgBoxLng(MBWARN, IDS_MUI_ERR_LOADFILE, szFileName);

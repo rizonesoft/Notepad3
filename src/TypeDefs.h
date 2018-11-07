@@ -464,15 +464,18 @@ typedef struct _editfileiostatus
   bool bUnicodeErr;
 
   // inconsistent line endings
-  bool bInconsistent;
-  DocLn linesCount[3];
+  bool bInconsistentEOLs;
+  DocLn eolCount[3];
 
   bool bCancelDataLoss;
   bool bUnknownExt;
 
+  // inconsistent indentation
+  DocLn indentCount[2];
+
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, {0,0} }
 
 //=============================================================================
 

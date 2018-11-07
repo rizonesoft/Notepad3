@@ -887,26 +887,26 @@ void EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status)
   }
 
   status->iEOLMode = iEOLMode;
-  status->bInconsistent = ((!!linesCount[0]) + (!!linesCount[1]) + (!!linesCount[2])) > 1;
-  status->linesCount[SC_EOL_CRLF] = linesCount[SC_EOL_CRLF];
-  status->linesCount[SC_EOL_CR] = linesCount[SC_EOL_CR];
-  status->linesCount[SC_EOL_LF] = linesCount[SC_EOL_LF];
+  status->bInconsistentEOLs = ((!!linesCount[0]) + (!!linesCount[1]) + (!!linesCount[2])) > 1;
+  status->eolCount[SC_EOL_CRLF] = linesCount[SC_EOL_CRLF];
+  status->eolCount[SC_EOL_CR] = linesCount[SC_EOL_CR];
+  status->eolCount[SC_EOL_LF] = linesCount[SC_EOL_LF];
 }
 
 
 //=============================================================================
 //
-// EditDetectIndentMode() - check indentation consistency
+// EditCheckIndentationConsistency() - check indentation consistency
 //
-void EditDetectIndentMode(HWND hwnd)
+void EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status)
 {
   UNUSED(hwnd);
 
-  int const tabWidth = Settings.TabWidth;
-  //int const indentWidth = Settings.IndentWidth;
+  //int const tabWidth = Settings.TabWidth;
+  int const indentWidth = Settings.IndentWidth;
 
   int tabCount = 0;
-  int spaceCount = 0;
+  int blankCount = 0;
 
   DocLn const lineCount = SciCall_GetLineCount();
 
@@ -923,8 +923,8 @@ void EditDetectIndentMode(HWND hwnd)
         break;
       case 0x20: // space
         ++subSpcCnt;
-        if (subSpcCnt >= tabWidth) {
-          ++spaceCount;
+        if (subSpcCnt >= indentWidth) {
+          ++blankCount;
           subSpcCnt = 0;
         }
         break;
@@ -933,25 +933,8 @@ void EditDetectIndentMode(HWND hwnd)
       }
     }
   }
-
-  if (Settings.WarnInconsistentIndents && !Style_IsCurLexerStandard()) {
-    if (((tabCount > 0) && (spaceCount > 0))
-        //|| (Settings.TabsAsSpaces && (tabCount > 0))      // existing tabs, should be replaced by spaces
-        //|| (!Settings.TabsAsSpaces && (spaceCount > 0))   // indent space, should be populated with tabs
-        ) 
-    {
-      WCHAR szDefault[32];
-      WCHAR szStatistic[80];
-      StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s (width=%i)", (Settings.TabsAsSpaces ? L"SPC" : L"TAB"), Settings.TabWidth);
-      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  #TAB = %i\n  #(%i)SPC = %i\n", tabCount, Settings.TabWidth, spaceCount);
-      int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONS_INDENTS, szStatistic, szDefault);
-      if (res == IDYES) {
-        //SciCall_ConvertEOLs(eolm);
-      }
-    }
-  }
-  // TODO: Set correct Indent mode
-
+  status->indentCount[0] = tabCount;
+  status->indentCount[1] = blankCount;
 }
 
 
@@ -1279,8 +1262,6 @@ bool EditLoadFile(
   Encoding_SrcCmdLn(CPI_NONE);
   Encoding_SrcWeak(CPI_NONE);
 
-  EditDetectIndentMode(hwnd);
-
   return true;
 }
 
@@ -1334,8 +1315,6 @@ bool EditSaveFile(
 
   if (hFile == INVALID_HANDLE_VALUE)
     return false;
-
-  EditDetectIndentMode(hwnd);
 
   // ensure consistent line endings
   if (Settings.FixLineEndings) {
@@ -2697,29 +2676,30 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 //
 //  EditIndentBlock()
 //
-void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
+void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll)
 {
   if ((cmd != SCI_TAB) && (cmd != SCI_BACKTAB)) {
     SendMessage(hwnd, cmd, 0, 0);
     return;
   }
-
-  if (SciCall_IsSelectionRectangle()) 
+  if (!bForceAll && SciCall_IsSelectionRectangle())
   {
     SendMessage(hwnd, cmd, 0, 0);
     return;
   }
 
-  const DocPos iCurPos = SciCall_GetCurrentPos();
-  const DocPos iAnchorPos = SciCall_GetAnchor();
-  //const DocPos iSelStart = SciCall_GetSelectionStart();
-  //const DocPos iSelEnd = SciCall_GetSelectionEnd();
-  const DocLn iCurLine = SciCall_LineFromPosition(iCurPos);
-  const DocLn iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-  const bool bSingleLine = Sci_IsSingleLineSelection();
+  DocPos const iInitialPos = SciCall_GetCurrentPos();
+  if (bForceAll) { SciCall_SelectAll(); }
 
-  const bool _bTabIndents = (bool)SendMessage(hwnd, SCI_GETTABINDENTS, 0, 0);
-  const bool _bBSpUnindents = (bool)SendMessage(hwnd, SCI_GETBACKSPACEUNINDENTS, 0, 0);
+  DocPos const iCurPos = SciCall_GetCurrentPos();
+  DocPos const iAnchorPos = SciCall_GetAnchor();
+
+  DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
+  DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
+  bool const bSingleLine = Sci_IsSingleLineSelection();
+
+  bool const _bTabIndents = SciCall_GetTabIndents();
+  bool const _bBSpUnindents = SciCall_GetBackSpaceUnIndents();
 
   DocPos iDiffCurrent = 0;
   DocPos iDiffAnchor = 0;
@@ -2745,33 +2725,39 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation)
 
   if (cmd == SCI_TAB) 
   {
-    SendMessage(hwnd, SCI_SETTABINDENTS, (bFormatIndentation ? true : _bTabIndents), 0);
+    SciCall_SetTabIndents(bFormatIndentation ? true : _bTabIndents);
     SendMessage(hwnd, SCI_TAB, 0, 0);
-    if (bFormatIndentation)
-      SendMessage(hwnd, SCI_SETTABINDENTS, _bTabIndents, 0);
+    if (bFormatIndentation) {
+      SciCall_SetTabIndents(_bTabIndents);
+    }
   }
   else  // SCI_BACKTAB
   {
-    //if (SciCall_PositionFromLine(iCurLine) != SciCall_GetSelectionStart()) 
-    SendMessage(hwnd, SCI_SETBACKSPACEUNINDENTS, (bFormatIndentation ? true : _bBSpUnindents), 0);
+    SciCall_SetBackSpaceUnIndents(bFormatIndentation ? true : _bBSpUnindents);
     SendMessage(hwnd, SCI_BACKTAB, 0, 0);
-    if (bFormatIndentation)
-      SendMessage(hwnd, SCI_SETBACKSPACEUNINDENTS, _bBSpUnindents, 0);
+    if (bFormatIndentation) {
+      SciCall_SetBackSpaceUnIndents(_bBSpUnindents);
+    }
   }
 
-  if (bSingleLine) {
-    if (bFormatIndentation) {
-      EditSetSelectionEx(hwnd, SciCall_GetCurrentPos() + iDiffCurrent + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiffCurrent, -1, -1);
+  if (!bForceAll) {
+    if (bSingleLine) {
+      if (bFormatIndentation) {
+        EditSetSelectionEx(hwnd, SciCall_GetCurrentPos() + iDiffCurrent + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiffCurrent, -1, -1);
+      }
+    }
+    else {  // on multiline indentation, anchor and current positions are moved to line begin resp. end
+      if (bFixStart) {
+        if (iCurPos < iAnchorPos)
+          iDiffCurrent = SciCall_LineLength(iCurLine) - Sci_GetEOLLen();
+        else
+          iDiffAnchor = SciCall_LineLength(iAnchorLine) - Sci_GetEOLLen();
+      }
+      EditSetSelectionEx(hwnd, SciCall_GetLineEndPosition(iAnchorLine) - iDiffAnchor, SciCall_GetLineEndPosition(iCurLine) - iDiffCurrent, -1, -1);
     }
   }
-  else {  // on multiline indentation, anchor and current positions are moved to line begin resp. end
-    if (bFixStart) {
-      if (iCurPos < iAnchorPos)
-        iDiffCurrent = SciCall_LineLength(iCurLine) - Sci_GetEOLLen();
-      else
-        iDiffAnchor = SciCall_LineLength(iAnchorLine) - Sci_GetEOLLen();
-    }
-    EditSetSelectionEx(hwnd, SciCall_GetLineEndPosition(iAnchorLine) - iDiffAnchor, SciCall_GetLineEndPosition(iCurLine) - iDiffCurrent, -1, -1);
+  else {
+    EditSetSelectionEx(hwnd, iInitialPos, iInitialPos, -1, -1);
   }
 }
 
