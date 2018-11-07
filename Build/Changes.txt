@@ -31,7 +31,6 @@ NEW:
 CHANGES:
 --------------------------------------------------
 
-
 - MiniPath About dialog: visual adjustments.
 - Optimize icon resource handling.
 - Optimized MiniPath resource file (icon/bitmap placement).
@@ -43,6 +42,7 @@ CHANGES:
 - Line sorting: Move empty lines to end of selection (always, if not removed).
 - Adapted PortableApps.com creator script to MUI structure.
 - STD/2ND sync with DefaultText/2ndDefaultText handling.
+- Reorganization of Menus in more sub-menu to shorter the Menus Lists
 
 --------------------------------------------------
 FIXES:
@@ -61,7 +61,7 @@ FIXES:
 TRANSLATIONS (MUI):
 --------------------------------------------------
 
-- German Translation
+- German Translation.
 - English (UK) Translation.
 - French Translation.
 - Dutch Translation.
