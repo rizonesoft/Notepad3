@@ -115,7 +115,7 @@ call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP
 :: DEVNAME need some more PortableApps preparation
 ::~  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "_%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
 ::~  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "_%DEVNAME%" "%NP3_PORTAPP_INSTALL%.ini"
-call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "" "%NP3_PORTAPP_INFO%.ini"
+call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
 call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "" "%NP3_PORTAPP_INSTALL%.ini"
 
 del /F "%NP3_PORTAPP_INFO%_tmp.ini"
@@ -134,7 +134,7 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
 :: rename
-rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%_English.paf.exe" "Notepad3Portable_%DEVNAME%_%VERSION%_English.paf.exe"
+rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
 
 :: ====================================================================================================================
 goto :END
@@ -182,6 +182,7 @@ goto:EOF
 set /p nxbuild=<%NP3_BUILD_VER%
 set /a BUILD = %nxbuild% - 1
 set /p DEVNAME=<%NP3_BUILD_NAME%
+set DEVNAME=%DEVNAME:"=%
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 

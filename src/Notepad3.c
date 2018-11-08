@@ -6816,7 +6816,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
     GET_INT_VALUE_FROM_INISECTION(TabWidth, 4, 1, 1024);  Globals.iTabWidth = Settings.TabWidth;
     GET_INT_VALUE_FROM_INISECTION(IndentWidth, 4, 0, 1024);  Globals.iIndentWidth = Settings.IndentWidth;
-    GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, true);
+    GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, true);
     GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);  Globals.iLongLinesLimit = Settings.LongLinesLimit;
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_BACKGROUND);
