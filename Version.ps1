@@ -49,9 +49,9 @@ try
 	if (!$OnigmoVer) { $OnigmoVer = "0.0.0" }
 	
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
-	DebugOutput("Version number: '$VerPatch v$CompleteVer'")
+	DebugOutput("Version number: 'v$CompleteVer $VerPatch'")
 
-if ($VerPatch) { $VerPatch = " $VerPatch" }  # ensure space in front of string
+#~if ($VerPatch) { $VerPatch = " $VerPatch" }  # ensure space in front of string
 
 	Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content "src\VersionEx.h"

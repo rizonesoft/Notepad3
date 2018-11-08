@@ -1,6 +1,6 @@
 ﻿;Copyright 2004-2016 John T. Haller of PortableApps.com
 
-;Website: http://PortableApps.com/FirefoxPortable
+;Website: http://PortableApps.com/Notepad3Portable
 
 ;This software is OSI Certified Open Source Software.
 ;OSI Certified is a certification mark of the Open Source Initiative.
@@ -19,21 +19,32 @@
 ;along with this program; if not, write to the Free Software
 ;Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+!define PORTABLEAPPNAME "Notepad3, Portable Edition"
+!define NamePortable "Notepad3, Portable Edition"
+!define APPNAME "Notepad3"
+!define NAME "Notepad3Portable"
+!define AppID "Notepad3Portable"
+!define VER "5.18.1108.1350"
+!define WEBSITE "PortableApps.com/Notepad3Portable"
+!define DEFAULTEXE "Notepad3.exe"
+!define DEFAULTAPPDIR "Notepad3"
+!define LAUNCHERLANGUAGE "English"
+
 ;=== Program Details
-Name "Notepad3"
-OutFile "Notepad3.exe"
-Caption "Notepad3 | PortableApps.com"
-VIProductVersion "4.18.516.992"
-VIAddVersionKey ProductName "Notepad3"
+Name "${PORTABLEAPPNAME}"
+OutFile "${DEFAULTEXE}"
+Caption "${PORTABLEAPPNAME} | PortableApps.com"
+VIProductVersion "${VER}"
+VIAddVersionKey ProductName "${PORTABLEAPPNAME}"
 VIAddVersionKey Comments "A notepad replacement"
 VIAddVersionKey CompanyName "Rizonesoft"
 VIAddVersionKey LegalCopyright "Derick Payne"
 VIAddVersionKey FileDescription "Based on code from Notepad2, ® Florian Balmer 1996-2011"
-VIAddVersionKey FileVersion "4.18.516.992"
-VIAddVersionKey ProductVersion "4.18.516.992"
-VIAddVersionKey InternalName "Notepad3"
+VIAddVersionKey FileVersion "${VER}"
+VIAddVersionKey ProductVersion "${VER}"
+VIAddVersionKey InternalName "${PORTABLEAPPNAME}"
 VIAddVersionKey LegalTrademarks "Rizonesoft® 2008-2018"
-VIAddVersionKey OriginalFilename "Notepad3.exe"
+VIAddVersionKey OriginalFilename "${DEFAULTEXE}"
 ;VIAddVersionKey PrivateBuild ""
 ;VIAddVersionKey SpecialBuild ""
 
@@ -44,12 +55,16 @@ SilentInstall Silent
 AutoCloseWindow True
 RequestExecutionLevel user
 XPStyle on
+Unicode true
 
 ; Best Compression
 SetCompress Auto
 SetCompressor /SOLID lzma
 SetCompressorDictSize 32
 SetDatablockOptimize On
+
+;=== Include
+;(Standard NSIS)
 
 ;=== Program Icon
 Icon "..\..\App\AppInfo\appicon.ico"
@@ -58,7 +73,8 @@ Icon "..\..\App\AppInfo\appicon.ico"
 BrandingText "Rizonesoft®"
 
 ;=== Languages
-LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\${LAUNCHERLANGUAGE}.nlf"
+!include PortableApps.comLauncherLANG_${LAUNCHERLANGUAGE}.nsh
 
 Section "Main"
 	MessageBox MB_OK|MB_ICONINFORMATION "Notepad3.exe is running and will close when you click OK."

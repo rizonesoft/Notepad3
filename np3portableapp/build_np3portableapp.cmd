@@ -28,14 +28,16 @@ setlocal enableextensions
 
 :: ====================================================================================================================
 
+set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR ja-JP nl-NL ru-RU zh-CN
+
+:: ====================================================================================================================
+
 :: --- Environment ---
 set SCRIPT_DIR=%~dp0
 set PORTAPP_ROOT_DIR=D:\PortableApps
 set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\PortableApps.comAppCompactor.exe
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
-
-set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR ja-JP nl-NL ru-RU zh-CN
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
@@ -44,7 +46,6 @@ set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable
 set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo
 set NP3_PORTAPP_INSTALL=%NP3_PORTAPP_DIR%\App\AppInfo\installer
-
 
 set NP3_BUILD_VER=%SCRIPT_DIR%..\Versions\build.txt
 set NP3_BUILD_NAME=%SCRIPT_DIR%_buildname.txt
@@ -114,7 +115,7 @@ call :REPLACE "xxxVERSIONxxx" "%NP3_PORTAPP_INFO%_template.ini" "%VERSION%" "%NP
 :: DEVNAME need some more PortableApps preparation
 ::~  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "_%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
 ::~  call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "_%DEVNAME%" "%NP3_PORTAPP_INSTALL%.ini"
-call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "" "%NP3_PORTAPP_INFO%.ini"
+call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INFO%_tmp.ini" "%DEVNAME%" "%NP3_PORTAPP_INFO%.ini"
 call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "" "%NP3_PORTAPP_INSTALL%.ini"
 
 del /F "%NP3_PORTAPP_INFO%_tmp.ini"
@@ -133,7 +134,7 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
 :: rename
-rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%_English.paf.exe" "Notepad3Portable_%DEVNAME%_%VERSION%_English.paf.exe"
+rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
 
 :: ====================================================================================================================
 goto :END
@@ -181,6 +182,7 @@ goto:EOF
 set /p nxbuild=<%NP3_BUILD_VER%
 set /a BUILD = %nxbuild% - 1
 set /p DEVNAME=<%NP3_BUILD_NAME%
+set DEVNAME=%DEVNAME:"=%
 goto:EOF
 :: --------------------------------------------------------------------------------------------------------------------
 

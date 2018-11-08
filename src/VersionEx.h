@@ -6,8 +6,8 @@
 #define APPNAME "Notepad3"
 #define VERSION_MAJOR 5
 #define VERSION_MINOR 18
-#define VERSION_REV 1106
-#define VERSION_BUILD 1434
+#define VERSION_REV 1108
+#define VERSION_BUILD 1436
 #define SCINTILLA_VER 412
 #define ONIGMO_REGEX_VER 6.1.3
-#define VERSION_PATCH " RC"
+#define VERSION_PATCH "Dev_Test_1"
