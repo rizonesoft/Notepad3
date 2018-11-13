@@ -192,7 +192,7 @@
 #define IDD_MUI_ENCODING                17030
 #define IDD_MUI_ALIGN                   17031
 #define IDD_MUI_CHOOSEFONT              17032
-
+#define IDD_MUI_CMDLINEHELP             17033
 
 #define IDC_COMMANDLINE                 18000
 #define IDC_SEARCHEXE                   18001
@@ -285,6 +285,7 @@
 #define IDC_COPYVERSTRG                 18088
 #define IDC_RICHEDITABOUT               18089
 #define IDC_TRANSL_AUTH                 18090
+#define IDC_CMDLINEHELP                 18091
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
