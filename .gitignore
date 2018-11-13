@@ -49,7 +49,7 @@ Thumbs.db
 /src/VersionEx.h
 /minipath/src/VersionEx.h
 
-#/Version_*.cmd
+/Version_*.cmd
 /Versions/build.txt
 /np3portableapp/_buildname.txt
 
