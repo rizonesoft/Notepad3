@@ -250,6 +250,7 @@ INT_PTR InfoBoxLng(int iType, LPCWSTR lpstrSetting, int uidMessage, ...)
 //
 //  DisplayCmdLineHelp()
 //
+#if 0
 void DisplayCmdLineHelp(HWND hwnd)
 {
   WCHAR szTitle[32] = { L'\0' };
@@ -276,7 +277,56 @@ void DisplayCmdLineHelp(HWND hwnd)
   MessageBoxIndirect(&mbp);
   //MsgBoxLng(MBINFO, IDS_MUI_CMDLINEHELP);
 }
+#else
 
+INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
+{
+  UNUSED(lParam);
+
+  switch (umsg) {
+  case WM_INITDIALOG:
+    {
+      WCHAR szTitle[80] = { L'\0' };
+      WCHAR szText[2048] = { L'\0' };
+      GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
+      GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
+      SetWindowText(hwnd, szTitle);
+      SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
+    }
+    break;
+
+  case WM_COMMAND:
+    switch (LOWORD(wParam)) {
+    case IDOK:
+    case IDCANCEL:
+    case IDYES:
+    case IDNO:
+      EndDialog(hwnd, LOWORD(wParam));
+      break;
+    }
+    return true;
+
+  default:
+    break;
+  }
+  return false;
+}
+
+INT_PTR DisplayCmdLineHelp(HWND hwnd)
+{
+  return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CMDLINEHELP), hwnd, CmdLineHelpProc, (LPARAM)L"");
+
+  //if (!hwnd) {
+  //  // text to std-out
+  //  //RedirectIOToConsole();
+  //  //fwprintf(stdout, L"\n!!! blahblub ???\n");
+  //  //fflush(stdout);
+  //  //SleepEx(5000,FALSE);
+  //}
+  //return(0);
+}
+
+#endif
 
 //=============================================================================
 //

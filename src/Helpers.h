@@ -354,6 +354,9 @@ bool GetDoAnimateMinimize(VOID);
 VOID MinimizeWndToTray(HWND hWnd);
 VOID RestoreWndFromTray(HWND hWnd);
 
+// console helper from Print.cpp
+//void RedirectIOToConsole();
+
 //==== StrCut methods ===================
 
 CHAR*  StrCutIA(CHAR* s,const CHAR* pattern);
