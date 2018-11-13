@@ -66,9 +66,9 @@ BOOL BitmapGrayScale(HBITMAP);
 
 BOOL SetWindowPathTitle(HWND,LPCWSTR);
 void CenterDlgInParent(HWND);
-void MakeBitmapButton(HWND,int,HINSTANCE,UINT);
+void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId);
 void DeleteBitmapButton(HWND,int);
-void SetWindowTransparentMode(HWND,BOOL);
+void SetWindowTransparentMode(HWND hwnd, BOOL bTransparentMode, int iOpacityLevel);
 
 #define StatusSetSimple(hwnd,b) SendMessage(hwnd,SB_SIMPLE,(WPARAM)b,0)
 BOOL StatusSetText(HWND,UINT,LPCWSTR);

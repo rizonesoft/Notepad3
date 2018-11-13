@@ -340,6 +340,13 @@ DeclareSciCallR1(StyleGetHotspot, STYLEGETHOTSPOT, bool, int, iStyle)
 //
 // Indentation Guides
 //
+DeclareSciCallV1(SetIndent, SETINDENT, int, width)
+DeclareSciCallV1(SetTabWidth, SETTABWIDTH, int, width)
+DeclareSciCallR0(GetTabIndents, GETTABINDENTS, bool)
+DeclareSciCallR0(GetBackSpaceUnIndents, GETBACKSPACEUNINDENTS, bool)
+DeclareSciCallV1(SetUseTabs, SETUSETABS, bool, use)
+DeclareSciCallV1(SetTabIndents, SETTABINDENTS, bool, indents)
+DeclareSciCallV1(SetBackSpaceUnIndents, SETBACKSPACEUNINDENTS, bool, unindents)
 DeclareSciCallR1(BraceMatch, BRACEMATCH, DocPos, DocPos, position)
 DeclareSciCallV2(BraceHighLight, BRACEHIGHLIGHT, DocPos, pos1, DocPos, pos2)
 DeclareSciCallV1(BraceBadLight, BRACEBADLIGHT, DocPos, pos)

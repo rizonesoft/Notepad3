@@ -133,6 +133,24 @@ typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH } CALLTIPTYPE;
 
 // --------------------------------------------------------------------------
 
+typedef struct _filevars
+{
+
+  int mask;
+  int iTabWidth;
+  int iIndentWidth;
+  bool bTabsAsSpaces;
+  bool bTabIndents;
+  bool fWordWrap;
+  int iLongLinesLimit;
+  char tchEncoding[32];
+  int  iEncoding;
+  char tchMode[32];
+
+} FILEVARS, *LPFILEVARS;
+
+// --------------------------------------------------------------------------
+
 typedef struct _editfindreplace
 {
   char szFind[FNDRPL_BUFFER];
@@ -244,7 +262,30 @@ typedef struct _globals_t
   LPMRULIST pFileMRU;
   LPMRULIST pMRUfind;
   LPMRULIST pMRUreplace;
+  CALLTIPTYPE CallTipType;
+  FILEVARS  fvCurFile;
+  bool      bWordWrap;
+  bool      bTabsAsSpaces;
+  bool      bTabIndents;
+  int       iTabWidth;
+  int       iIndentWidth;
+  int       iLongLinesLimit;
+  int       iWrapCol;
 
+  bool      bCodeFoldingAvailable;
+  bool      bForceLoadASCIIasUTF8;
+  bool      bZeroBasedColumnIndex;
+  bool      bZeroBasedCharacterCount;
+  int       iReplacedOccurrences;
+  int       iMarkOccurrencesCount;
+  bool      bChasingDocTail;
+  bool      bUseLimitedAutoCCharSet;
+  bool      bIsCJKInputCodePage;
+  bool      bIniFileFromScratch;
+  bool      bFindReplCopySelOrClip;
+  bool      bReplaceInitialized;
+
+  FR_STATES FindReplaceMatchFoundState;
 
   WCHAR     WorkingDirectory[MAX_PATH + 1];
   WCHAR     IniFile[MAX_PATH + 1];
@@ -282,6 +323,7 @@ typedef struct _settings_t
   bool BackspaceUnindents;
   int TabWidth;
   int IndentWidth;
+  bool WarnInconsistentIndents;
   bool MarkLongLines;
   int LongLinesLimit;
   int LongLineMode;
@@ -317,6 +359,7 @@ typedef struct _settings_t
   bool AlwaysOnTop;
   bool MinimizeToTray;
   bool TransparentMode;
+  bool FindReplaceTransparentMode;
   int RenderingTechnology;
   int Bidirectional;
   bool ShowToolbar;
@@ -352,6 +395,7 @@ typedef struct _settings2_t
 {
   int    FileLoadWarningMB;
   int    OpacityLevel;
+  int    FindReplaceOpacityLevel;
   DWORD  FileCheckInverval;
   DWORD  AutoReloadTimeout;
   int    IMEInteraction;
@@ -420,15 +464,18 @@ typedef struct _editfileiostatus
   bool bUnicodeErr;
 
   // inconsistent line endings
-  bool bInconsistent;
-  DocLn linesCount[3];
+  bool bInconsistentEOLs;
+  DocLn eolCount[3];
 
   bool bCancelDataLoss;
   bool bUnknownExt;
 
+  // inconsistent indentation
+  DocLn indentCount[2];
+
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, {0,0,0}, false, false, {0,0} }
 
 //=============================================================================
 

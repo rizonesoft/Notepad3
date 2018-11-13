@@ -12,7 +12,73 @@ LEGEND:
 
 ==================================================
 
+==================================================
+Version 5.18.1103.1407 (3 November 2018)
+==================================================
+
 --------------------------------------------------
+NEW:
+--------------------------------------------------
+
+- Added initial "minipath.ini" to Visual Studio Project.
+- Read undefined MiniPath settings from Notepad3.ini (Preferred language and Favorites directory).
+- MiniPath Multilingual support.
+- Handle zero-length lines in line-sorting algorithm.
+- Support for "Rust" source code syntax highlighting.
+- Multilingual support.
+- The TinyExpr module
+- Add schema related keywords Auto Completion  & IME
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+
+- MiniPath About dialog: visual adjustments.
+- Optimize icon resource handling.
+- Optimized MiniPath resource file (icon/bitmap placement).
+- Enhanced MiniPath.
+- Small design change of MiniPath's Copy/Move dialog box.
+- Scintilla updated to 410.
+- Print option "Screen Colors" now prints with the same colors used on screen including line numbers.
+- Changed behavior of removing duplicate lines (ignore EOL/EOF chars).
+- Line sorting: Move empty lines to end of selection (always, if not removed).
+- Adapted PortableApps.com creator script to MUI structure.
+- STD/2ND sync with DefaultText/2ndDefaultText handling.
+- Reorganization of Menus in more sub-menu to shorter the Menus Lists
+- Show Zoom Percentage on magnification changes
+- Tidy Notepad3.ini to remove all defaulted [Setting] items
+- Change Default settings to make the first experience of Notepad3 more attractive...
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
+
+- Do not reset scroll-width tracking on saving file (issue #539: https://github.com/rizonesoft/Notepad3/issues/539).
+- Fixed portable MiniPath redirector .ini files.
+- Support Scintilla's new indicator box styles ("INDIC_GRADIENT" and "INDIC_CRADIENTCENTRE").
+- Fixed incremental search on find/replace dialog.
+- Fixed line sorting.
+- Center commandline help dialog.
+- In case of STD lexer only display "Default Text" in statusbar (indicator shows which one).
+- Fixed resource file problem (preproc defines).
+- Fixed save window Position (Default and Initial switch)
+
+--------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------
+
+- German Translation.
+- English (UK) Translation.
+- French Translation.
+- Dutch Translation.
+- Spanish Translation.
+- Chinese Translation.
+- Japanese Translation
+- Russian Translation.
+- Belarusian Translation.
+- Afrikaans Translation (in progress)...
+
+==================================================
 Version 4.18.511.992 (12 May 2018)
 --------------------------------------------------
 - New: Menu entries for (hidden) Accelerator Keys.

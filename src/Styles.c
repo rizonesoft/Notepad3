@@ -49,10 +49,6 @@
 
 extern const int g_FontQuality[4];
 
-extern bool g_bCodeFoldingAvailable;
-extern bool g_bIniFileFromScratch;
-
-
 bool ChooseFontDirectWrite(HWND hwnd, const WCHAR* localeName, DPI_T dpi, LPCHOOSEFONT lpCF);
 
 // ----------------------------------------------------------------------------
@@ -382,7 +378,7 @@ void Style_Save()
     SaveIniSection(L"Styles", pIniSection);
     ZeroMemory(pIniSection, len * sizeof(WCHAR));
 
-    if (g_bIniFileFromScratch) {
+    if (Globals.bIniFileFromScratch) {
       for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
         SaveIniSection(g_pLexArray[iLexer]->pszName, L"\0");
       }
@@ -582,11 +578,11 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   case SCLEX_CONF:
   case SCLEX_MAKEFILE:
   case SCLEX_MARKDOWN:
-    g_bCodeFoldingAvailable = false;
+    Globals.bCodeFoldingAvailable = false;
     SciCall_SetProperty("fold", "0");
     break;
   default:
-    g_bCodeFoldingAvailable = true;
+    Globals.bCodeFoldingAvailable = true;
     SciCall_SetProperty("fold", "1");
     SciCall_SetProperty("fold.compact", "0");
     SciCall_SetProperty("fold.comment", "1");
@@ -1331,7 +1327,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   // set width
   Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
-  Style_SetFolding(hwnd, (g_bCodeFoldingAvailable && Settings.ShowCodeFolding));
+  Style_SetFolding(hwnd, (Globals.bCodeFoldingAvailable && Settings.ShowCodeFolding));
 }
 
 
@@ -1438,8 +1434,6 @@ bool Style_HasLexerForExt(LPCWSTR lpszExt)
 //
 //  Style_SetLexerFromFile()
 //
-extern FILEVARS g_fvCurFile;
-
 void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
 {
   LPWSTR lpszExt = PathFindExtension(lpszFile);
@@ -1447,11 +1441,11 @@ void Style_SetLexerFromFile(HWND hwnd,LPCWSTR lpszFile)
   PEDITLEXER pLexNew = NULL;
   PEDITLEXER pLexSniffed = NULL;
 
-  if ((g_fvCurFile.mask & FV_MODE) && g_fvCurFile.tchMode[0]) {
+  if ((Globals.fvCurFile.mask & FV_MODE) && Globals.fvCurFile.tchMode[0]) {
 
     PEDITLEXER pLexMode;
     WCHAR wchMode[MICRO_BUFFER] = { L'\0' };
-    MultiByteToWideChar(Encoding_SciCP, 0, g_fvCurFile.tchMode, -1, wchMode, MICRO_BUFFER);
+    MultiByteToWideChar(Encoding_SciCP, 0, Globals.fvCurFile.tchMode, -1, wchMode, MICRO_BUFFER);
 
     if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CSTRLEN(L"cgi")) == 0 ||
                          StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CSTRLEN(L"fcgi")) == 0)) {

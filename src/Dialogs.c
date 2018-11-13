@@ -50,7 +50,6 @@
 
 #include "Dialogs.h"
 
-
 //=============================================================================
 //
 //  MsgBoxLng()
@@ -383,6 +382,8 @@ static DWORD _LoadStringEx(UINT nResId, LPCTSTR pszRsType, LPSTR strOut)
 //  (EditStreamCallback)
 //  _LoadRtfCallback() RTF edit control StreamIn's callback function 
 //
+#if true
+
 static DWORD CALLBACK _LoadRtfCallback(
   DWORD_PTR dwCookie,  // (in) pointer to the string
   LPBYTE pbBuff,       // (in) pointer to the destination buffer
@@ -391,7 +392,7 @@ static DWORD CALLBACK _LoadRtfCallback(
 )
 {
   LPSTR* pstr = (LPSTR*)dwCookie;
-  LONG len = (LONG)StringCchLenA(*pstr,0);
+  LONG const len = (LONG)StringCchLenA(*pstr,0);
 
   if (len < cb)
   {
@@ -410,10 +411,37 @@ static DWORD CALLBACK _LoadRtfCallback(
 }
 // ----------------------------------------------------------------------------
 
+#else
 
-static char pAboutResource[8192] = { '\0' };
-static char* pAboutInfo;
+static DWORD CALLBACK _LoadRtfCallbackW(
+  DWORD_PTR dwCookie,  // (in) pointer to the string
+  LPBYTE pbBuff,       // (in) pointer to the destination buffer
+  LONG cb,             // (in) size in bytes of the destination buffer
+  LONG FAR* pcb        // (out) number of bytes transfered
+)
+{
+  LPWSTR* pstr = (LPWSTR*)dwCookie;
+  LONG const len = (LONG)StringCchLen(*pstr, 0);
+  LONG const size = len * sizeof(WCHAR);
 
+  cb -= (cb % sizeof(WCHAR));
+
+  if (size < cb) {
+    *pcb = size;
+    memcpy(pbBuff, (LPCWSTR)*pstr, *pcb);
+    *pstr += len;
+    //*pstr = '\0';
+  }
+  else {
+    *pcb = cb;
+    memcpy(pbBuff, (LPCWSTR)*pstr, *pcb);
+    *pstr += (cb / sizeof(WCHAR));
+  }
+  return 0;
+}
+// ----------------------------------------------------------------------------
+
+#endif
 
 //=============================================================================
 //
@@ -495,43 +523,84 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
   #if true
 
+    static char pAboutResource[8192] = { '\0' };
+    static char* pAboutInfo = NULL;
+
     char pAboutRes[4000];
-    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+    GetLngStringA(IDS_MUI_ABOUT_RTF_0, pAboutRes, COUNTOF(pAboutRes));
     StringCchCopyA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_DEV, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
     GetLngStringA(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
     StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngStringA(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+
+    pAboutInfo = pAboutResource;
 
     EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallback };
-    pAboutInfo = pAboutResource;
     SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
 
-    
-    //DWORD dwSize = _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", NULL);
-    //if (dwSize != 0) {
-    //  char* pchBuffer = AllocMem(dwSize + 1, HEAP_ZERO_MEMORY);
-    //  pAboutInfo = pchBuffer;
-    //  _LoadStringEx(IDR_ABOUTINFO_RTF, L"RTF", pAboutInfo);
-    //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-    //  FreeMem(pchBuffer);
-    //}
-    //else {
-    //  pAboutInfo = chErrMsg;
-    //  SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, SF_RTF, (LPARAM)&editStreamIn);
-    //}
-    
   #else
-    PARAFORMAT2 pf2;
-    ZeroMemory(&pf2, sizeof(PARAFORMAT2));
-    pf2.cbSize = (UINT)sizeof(PARAFORMAT2);
-    pf2.dwMask = (PFM_SPACEBEFORE | PFM_SPACEAFTER | PFM_LINESPACING);
-    pf2.dySpaceBefore = 48;     // paragraph
-    pf2.dySpaceAfter = 48;      // paragraph
-    pf2.dyLineSpacing = 24;     // [twips]
-    pf2.bLineSpacingRule = 5;   // 5: dyLineSpacing/20 is the spacing, in lines, from one line to the next.
-    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETPARAFORMAT, 0, (LPARAM)&pf2);
-    SetDlgItemText(hwnd, IDC_RICHEDITABOUT, ABOUT_INFO_PLAIN);
-  #endif
 
+    static WCHAR pAboutResource[8192] = { L'\0' };
+    static PWCHAR pAboutInfo = NULL;
+
+    WCHAR pAboutRes[4000];
+    GetLngString(IDS_MUI_ABOUT_RTF_1, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCopy(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_CONTRIBS, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_RTF_2, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_LIBS, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_RTF_3, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_ACKNOWLEDGES, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_RTF_4, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_MORE, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_RTF_5, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_LICENSES, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+    GetLngString(IDS_MUI_ABOUT_RTF_6, pAboutRes, COUNTOF(pAboutRes));
+    StringCchCat(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
+
+    pAboutInfo = pAboutResource;
+
+    EDITSTREAM editStreamIn = { (DWORD_PTR)&pAboutInfo, 0, _LoadRtfCallbackW };
+    SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_STREAMIN, (WPARAM)(UINT)(SF_TEXT | SF_UNICODE), (LPARAM)&editStreamIn);
+
+    // EM_SETTEXTEX is Richedit 3.0 only
+    //SETTEXTEX ste;
+    //ste.flags = ST_SELECTION;  // replace everything
+    //ste.codepage = 1200;       // Unicode is codepage 1200
+    //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETTEXTEX, (WPARAM)&ste, (LPARAM)pAboutInfo);
+
+  #endif
+    
     CenterDlgInParent(hwnd);
   }
   return true;
@@ -791,9 +860,9 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 //
 //  RunDlg()
 //
-void RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
+INT_PTR RunDlg(HWND hwnd,LPCWSTR lpstrDefault)
 {
-  ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_RUN), hwnd, RunDlgProc, (LPARAM)lpstrDefault);
+  return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_RUN), hwnd, RunDlgProc, (LPARAM)lpstrDefault);
 }
 
 
@@ -1708,7 +1777,6 @@ bool FileMRUDlg(HWND hwnd,LPWSTR lpstrFile)
 //            102 Radio Button (Auto-Reload)
 //            103 Check Box    (Reset on New)
 //
-extern bool g_bChasingDocTail;
 
 INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
@@ -1735,7 +1803,7 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
 
       Settings.ResetFileWatching = (IsDlgButtonChecked(hwnd, 103) == BST_CHECKED) ? true : false;
 
-      if (g_bChasingDocTail) { SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
+      if (Globals.bChasingDocTail) { SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_VIEW_CHASING_DOCTAIL, 1), 0); }
 
       EndDialog(hwnd, IDOK);
       break;
@@ -2052,30 +2120,26 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 
 INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
+  UNUSED(lParam);
+
   switch(umsg)
   {
-
     case WM_INITDIALOG:
       {
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        SetDlgItemInt(hwnd,100,Settings.TabWidth,false);
-        SendDlgItemMessage(hwnd,100,EM_LIMITTEXT,15,0);
+        SetDlgItemInt(hwnd,IDC_TAB_WIDTH,Settings.TabWidth,false);
+        SendDlgItemMessage(hwnd,IDC_TAB_WIDTH,EM_LIMITTEXT,15,0);
 
-        SetDlgItemInt(hwnd,101,Settings.IndentWidth,false);
-        SendDlgItemMessage(hwnd,101,EM_LIMITTEXT,15,0);
+        SetDlgItemInt(hwnd,IDC_INDENT_DEPTH,Settings.IndentWidth,false);
+        SendDlgItemMessage(hwnd,IDC_INDENT_DEPTH,EM_LIMITTEXT,15,0);
 
-        if (Settings.TabsAsSpaces)
-          CheckDlgButton(hwnd,102,BST_CHECKED);
-
-        if (Settings.TabIndents)
-          CheckDlgButton(hwnd,103,BST_CHECKED);
-
-        if (Settings.BackspaceUnindents)
-          CheckDlgButton(hwnd,104,BST_CHECKED);
+        CheckDlgButton(hwnd,IDC_TAB_AS_SPC, Settings.TabsAsSpaces ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd,IDC_TAB_INDENTS, Settings.TabIndents ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd,IDC_BACKTAB_INDENTS, Settings.BackspaceUnindents ? BST_CHECKED : BST_UNCHECKED);
+        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, Settings.WarnInconsistentIndents ? BST_CHECKED : BST_UNCHECKED);
 
         CenterDlgInParent(hwnd);
-
       }
       return true;
 
@@ -2084,47 +2148,36 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
 
       switch(LOWORD(wParam))
       {
-
-        case IDOK: {
-
-          BOOL fTranslated1,fTranslated2;
-
-          UINT iNewTabWidth = GetDlgItemInt(hwnd,100,&fTranslated1,FALSE);
-          UINT iNewIndentWidth = GetDlgItemInt(hwnd,101,&fTranslated2,FALSE);
-
-          if (fTranslated1 && fTranslated2)
+        case IDOK: 
           {
-            Settings.TabWidth = iNewTabWidth;
-            Settings.IndentWidth = iNewIndentWidth;
+            BOOL fTranslated1, fTranslated2;
+            UINT const iNewTabWidth = GetDlgItemInt(hwnd, IDC_TAB_WIDTH, &fTranslated1, FALSE);
+            UINT const iNewIndentWidth = GetDlgItemInt(hwnd, IDC_INDENT_DEPTH, &fTranslated2, FALSE);
 
-            Settings.TabsAsSpaces = (IsDlgButtonChecked(hwnd,102)) ? true : false;
-
-            Settings.TabIndents = (IsDlgButtonChecked(hwnd,103)) ? true : false;
-
-            Settings.BackspaceUnindents = (IsDlgButtonChecked(hwnd,104)) ? true : false;
-
-            EndDialog(hwnd,IDOK);
-          }
-
-          else
-            PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,(fTranslated1) ? 101 : 100)),1);
-
+            if (fTranslated1 && fTranslated2) {
+              Settings.TabWidth = iNewTabWidth;
+              Settings.IndentWidth = iNewIndentWidth;
+              Settings.TabsAsSpaces = (IsDlgButtonChecked(hwnd, IDC_TAB_AS_SPC)) ? true : false;
+              Settings.TabIndents = (IsDlgButtonChecked(hwnd, IDC_TAB_INDENTS)) ? true : false;
+              Settings.BackspaceUnindents = (IsDlgButtonChecked(hwnd, IDC_BACKTAB_INDENTS)) ? true : false;
+              Settings.WarnInconsistentIndents = (IsDlgButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS)) ? true : false;
+              EndDialog(hwnd, IDOK);
+            }
+            else {
+              PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, (fTranslated1) ? IDC_INDENT_DEPTH : IDC_TAB_WIDTH)), 1);
+            }
           }
           break;
-
 
         case IDCANCEL:
           EndDialog(hwnd,IDCANCEL);
           break;
 
+        default:
+          break;
       }
-
       return true;
-
   }
-
-  UNUSED(lParam);
-
   return false;
 }
 
@@ -2489,8 +2542,8 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
         SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETCURSEL,(WPARAM)*piOption,0);
         SendDlgItemMessage(hwnd, IDC_EOLMODELIST,CB_SETEXTENDEDUI,true,0);
 
-        CheckDlgButton(hwnd,IDC_WARNINCONSISTENTEOLS, DlgBtnChk(Settings.WarnInconsistEOLs));
-        CheckDlgButton(hwnd,IDC_CONSISTENTEOLS, DlgBtnChk(Settings.FixLineEndings));
+        CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_EOLS, DlgBtnChk(Settings.WarnInconsistEOLs));
+        CheckDlgButton(hwnd,IDC_CONSISTENT_EOLS, DlgBtnChk(Settings.FixLineEndings));
         CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, DlgBtnChk(Settings.FixTrailingBlanks));
 
         CenterDlgInParent(hwnd);
@@ -2503,8 +2556,8 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
       {
         case IDOK: {
             *piOption = (int)SendDlgItemMessage(hwnd,IDC_EOLMODELIST,CB_GETCURSEL,0,0);
-            Settings.WarnInconsistEOLs = (IsDlgButtonChecked(hwnd,IDC_WARNINCONSISTENTEOLS) == BST_CHECKED);
-            Settings.FixLineEndings = (IsDlgButtonChecked(hwnd,IDC_CONSISTENTEOLS) == BST_CHECKED);
+            Settings.WarnInconsistEOLs = (IsDlgButtonChecked(hwnd,IDC_WARN_INCONSISTENT_EOLS) == BST_CHECKED);
+            Settings.FixLineEndings = (IsDlgButtonChecked(hwnd,IDC_CONSISTENT_EOLS) == BST_CHECKED);
             Settings.FixTrailingBlanks = (IsDlgButtonChecked(hwnd,IDC_AUTOSTRIPBLANKS) == BST_CHECKED);
             EndDialog(hwnd,IDOK);
           }
@@ -2985,13 +3038,12 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 //
 //  SetWindowTransparentMode()
 //
-void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode)
+void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel)
 {
   if (bTransparentMode) {
     SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
     // get opacity level from registry
-    int const iAlphaPercent = Settings2.OpacityLevel;
-    BYTE const bAlpha = (BYTE)MulDiv(iAlphaPercent, 255, 100);
+    BYTE const bAlpha = (BYTE)MulDiv(iOpacityLevel, 255, 100);
     SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
     return;
   }
@@ -3201,7 +3253,7 @@ HDWP DeferCtlPos(HDWP hdwp, HWND hwndDlg, int nCtlId, int dx, int dy, UINT uFlag
 //
 //  MakeBitmapButton()
 //
-void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, UINT uBmpId)
+void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
 {
   HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   HBITMAP hBmp = LoadImage(hInstance, MAKEINTRESOURCE(uBmpId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);

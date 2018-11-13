@@ -159,7 +159,7 @@ HMODULE              g_hLngResContainer = NULL;
 
 WCHAR                g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
 LANGID               g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-static WCHAR* const  g_tchAvailableLanguages = L"af-ZA de-DE es-ES en-GB fr-FR ja-JP nl-NL zh-CN"; // en-US internal
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE es-ES en-GB fr-FR ja-JP nl-NL ru-RU zh-CN"; // en-US internal
 
 
 //=============================================================================
@@ -504,8 +504,10 @@ HWND InitInstance(HINSTANCE hInstance,LPWSTR pszCmdLine,int nCmdShow)
   if (bAlwaysOnTop)
     SetWindowPos(hwndMain,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
 
-  if (g_bTransparentMode)
-    SetWindowTransparentMode(hwndMain,TRUE);
+  if (g_bTransparentMode) {
+    int const iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
+    SetWindowTransparentMode(hwndMain, TRUE, clampi(iAlphaPercent, 0, 100));
+  }
 
   if (!flagStartAsTrayIcon) {
     ShowWindow(hwndMain,nCmdShow);
@@ -2257,8 +2259,9 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 
     case ACC_SWITCHTRANSPARENCY:
-      g_bTransparentMode = g_bTransparentMode ? 0 : 1;
-      SetWindowTransparentMode(hwnd,g_bTransparentMode);
+      g_bTransparentMode = !g_bTransparentMode;
+      int const iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
+      SetWindowTransparentMode(hwndMain, g_bTransparentMode, clampi(iAlphaPercent, 0, 100));
       break;
 
 

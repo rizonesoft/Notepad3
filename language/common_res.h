@@ -71,6 +71,7 @@
 #define IDS_MUI_WARN_LOAD_BIG_FILE      13012
 #define IDS_MUI_WARN_UNKNOWN_EXT        13013
 #define IDS_MUI_WARN_INCONSIST_EOLS     13014
+#define IDS_MUI_WARN_INCONS_INDENTS     13015
 
 #define IDS_MUI_SELRECT                 14000
 #define IDS_MUI_BUFFERTOOSMALL          14001
@@ -121,12 +122,24 @@
 #define IDS_MUI_TITLE_FIXCUR            15026
 #define IDS_MUI_TITLE_RELARB            15027
 #define IDS_MUI_TITLE_FIXARB            15028
-#define IDS_MUI_ABOUT_RTF_1             15029
-#define IDS_MUI_ABOUT_RTF_2             15030
-#define IDS_MUI_TRANSL_AUTHOR           15031
-#define IDS_MUI_ASSOCIATED_EXT          15032
-#define IDS_MUI_EXAMPLE_TEXT            15033
-#define IDS_MUI_ZERO_LEN_MATCH          15034
+#define IDS_MUI_ABOUT_RTF_0             15029
+#define IDS_MUI_ABOUT_RTF_1             15030
+#define IDS_MUI_ABOUT_RTF_2             15031
+#define IDS_MUI_ABOUT_RTF_3             15032
+#define IDS_MUI_ABOUT_RTF_4             15033
+#define IDS_MUI_ABOUT_RTF_5             15034
+#define IDS_MUI_ABOUT_RTF_6             15035
+#define IDS_MUI_ABOUT_DEV               15036
+#define IDS_MUI_ABOUT_CONTRIBS          15037
+#define IDS_MUI_ABOUT_LIBS              15038
+#define IDS_MUI_ABOUT_ACKNOWLEDGES      15039
+#define IDS_MUI_ABOUT_MORE              15040
+#define IDS_MUI_ABOUT_LICENSES          15041
+
+#define IDS_MUI_TRANSL_AUTHOR           15050
+#define IDS_MUI_ASSOCIATED_EXT          15051
+#define IDS_MUI_EXAMPLE_TEXT            15052
+#define IDS_MUI_ZERO_LEN_MATCH          15053
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
@@ -220,8 +233,8 @@
 #define IDC_NFOASOEM                    18034
 #define IDC_ENCODINGFROMFILEVARS        18035
 #define IDC_EOLMODELIST                 18036
-#define IDC_WARNINCONSISTENTEOLS        18037
-#define IDC_CONSISTENTEOLS              18038
+#define IDC_WARN_INCONSISTENT_EOLS      18037
+#define IDC_CONSISTENT_EOLS             18038
 #define IDC_AUTOSTRIPBLANKS             18039
 #define IDC_LINENUM                     18040
 #define IDC_COLNUM                      18041
@@ -276,6 +289,13 @@
 #define IDC_COPYVERSTRG                 18090
 #define IDC_RICHEDITABOUT               18091
 #define IDC_TRANSL_AUTH                 18092
+#define IDC_TRANSPARENT                 18093
+#define IDC_TAB_WIDTH                   18094
+#define IDC_INDENT_DEPTH                18095
+#define IDC_TAB_AS_SPC                  18096
+#define IDC_TAB_INDENTS                 18097
+#define IDC_BACKTAB_INDENTS             18098
+#define IDC_WARN_INCONSISTENT_INDENTS   18099
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
@@ -330,8 +350,9 @@
 #define CMD_FULLSCRWINPOS               20050
 #define CMD_DEFAULTWINPOS               20051
 #define CMD_SAVEASDEFWINPOS             20052
-//#define CMD_LEFT                        20053
-//#define CMD_RIGHT                       20054
+#define CMD_CLEARSAVEDWINPOS            20053
+//#define CMD_LEFT                        20054
+//#define CMD_RIGHT                       20055
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001
@@ -626,8 +647,8 @@
 #define IDS_ENC_BIG5_HKSCS              61082
 
 #define IDS_EOL_WIN                     62000
-#define IDS_EOL_UNIX                    62001
-#define IDS_EOL_MAC                     62002
+#define IDS_EOL_MAC                     62001
+#define IDS_EOL_UNIX                    62002
 
 #define IDS_LEX_DEF_TXT                 63000
 #define IDS_LEX_WEB_SRC                 63001
@@ -933,5 +954,7 @@
 #define IDS_LEX_STR_63351               63351
 #define IDS_LEX_STR_63352               63352
 #define IDS_LEX_STR_63353               63353
+
+#define RICHEDIT_CONTROL_VER            "RichEdit50W"  // RICHEDIT_CONTROL_VER
 
 #endif //_COMMON_RES_H_

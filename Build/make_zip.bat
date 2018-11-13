@@ -85,7 +85,7 @@ IF EXIST "%TEMP_NAME%"     RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 IF NOT EXIST "Packages"    MD "Packages"
 
-FOR %%A IN ("Changes.txt" "License.txt" "Readme.txt"^
+FOR %%A IN ("Changes.txt" "License.txt" "Readme.txt" "Notepad3.ini" "minipath.ini"^
 	"..\%1\ced.exe" "..\%1\Notepad3.exe" "..\%1\np3encrypt.exe"^
 	"..\%1\minipath.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
 
@@ -98,8 +98,8 @@ IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 
 PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mx=9^
- "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Changes.txt"^
- "Readme.txt" "Favorites" "minipath.exe" "np3encrypt.exe" "ced.exe" "lng">NUL
+ "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "Changes.txt"^
+ "Readme.txt" "Favorites" "minipath.exe" "minipath.ini" "np3encrypt.exe" "ced.exe" "lng">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "%ZIP_NAME%.zip created successfully!"

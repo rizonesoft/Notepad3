@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by strings_be_by.rc
+// Used by dialogs_be_by.rc
 //
 
 // Next default values for new objects
