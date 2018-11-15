@@ -292,6 +292,7 @@ INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
       GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
       SetWindowText(hwnd, szTitle);
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
+      //SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)IDC_CMDLINEHELP, TRUE);
     }
     break;
 

@@ -1,4 +1,4 @@
-// Scintilla source code edit control
+﻿// Scintilla source code edit control
 /** @file LexAHKL.cxx
  ** Lexer AutoHotkey L
  ** Created by Isaias "RaptorX" Baez (graptorx@gmail.com)

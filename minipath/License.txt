@@ -1,7 +1,7 @@
-MiniPath Copyright © 2008-2016 Rizonesoft, All rights reserved.
+ï»¿MiniPath Copyright Â© 2008-2016 Rizonesoft, All rights reserved.
 https://rizonesoft.com
 
-metapath Copyright © 2004-2011 Florian Balmer
+metapath Copyright Â© 2004-2011 Florian Balmer
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

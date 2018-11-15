@@ -1,4 +1,4 @@
-/*
+﻿/*
  *  FIPS-180-2 compliant SHA-256 implementation
  *
  *  Copyright (C) 2001-2003  Christophe Devine

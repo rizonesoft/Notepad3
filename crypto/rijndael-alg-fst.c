@@ -1,4 +1,4 @@
-/**
+﻿/**
  * rijndael-alg-fst.c
  *
  * @version 3.0 (December 2000)

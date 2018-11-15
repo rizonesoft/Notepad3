@@ -44,7 +44,6 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon
@@ -68,15 +67,12 @@ IDB_PICK                BITMAP                  "Pick.bmp"
 IDB_ENCODING            BITMAP                  "Encoding.bmp"
 
 
-
-
-
 /////////////////////////////////////////////////////////////////////////////
 // English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-
+#pragma code_page(65001)  // UTF-8
 
 /////////////////////////////////////////////////////////////////////////////
 //

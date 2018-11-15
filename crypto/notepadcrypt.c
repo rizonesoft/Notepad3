@@ -1,4 +1,4 @@
-/*
+﻿/*
 *
 * Distributed under the terms of the GNU General Public License,
 * see License.txt for details.
