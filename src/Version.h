@@ -61,9 +61,14 @@
 // ============================================================================
 
 // Compiler specific
+
 #if defined(_MSC_VER)
-    #if (_MSC_VER >= 1915)
-        #if(_MSC_FULL_VER >= 191526732)
+    #if (_MSC_VER >= 1916)
+        #if(_MSC_FULL_VER >= 191627023) 
+            #define VER_CPL     MS Visual C++ 2017 v15.9.0
+        #endif
+    #elif (_MSC_VER >= 1915)
+        #if(_MSC_FULL_VER >= 191526732) 
             #define VER_CPL     MS Visual C++ 2017 v15.8.(8-9)
         #elif(_MSC_FULL_VER >= 191526730)
             #define VER_CPL     MS Visual C++ 2017 v15.8.(5-7)
