@@ -1,4 +1,4 @@
-// Copyright 2016 Google Inc.
+﻿// Copyright 2016 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -88,19 +88,19 @@ using std::string;
 
 // Norbert Runge has noted these words in CP1252 that are mistakenly identified
 // as UTF-8 because of the last pair of characters:
-//  NESTLÉ®               0xC9 0xAE U+00C9 U+00AE   C9AE = U+026E;SMALL LEZH
-//  drauß\u2019           0xDF 0x92 U+00DF U+2019   DF92 = U+07D2;NKO LETTER N
-//  Mutterschoß\u201c     0xDF 0x93 U+00DF U+201C   DF93 = U+07D3;NKO LETTER BA
-//  Schoß\u201c           0xDF 0x93 U+00DF U+201C
-//  weiß\u201c            0xDF 0x93 U+00DF U+00AB
-//  Schnellfuß\u201c      0xDF 0x93 U+00DF U+201C
-//  süß«                  0xDF 0xAB U+00DF U+00AB   DFAB = U+07EB;NKO HIGH TONE
+//  NESTLÃƒâ€°Ã‚Â®               0xC9 0xAE U+00C9 U+00AE   C9AE = U+026E;SMALL LEZH
+//  drauÃƒÅ¸\u2019           0xDF 0x92 U+00DF U+2019   DF92 = U+07D2;NKO LETTER N
+//  MutterschoÃƒÅ¸\u201c     0xDF 0x93 U+00DF U+201C   DF93 = U+07D3;NKO LETTER BA
+//  SchoÃƒÅ¸\u201c           0xDF 0x93 U+00DF U+201C
+//  weiÃƒÅ¸\u201c            0xDF 0x93 U+00DF U+00AB
+//  SchnellfuÃƒÅ¸\u201c      0xDF 0x93 U+00DF U+201C
+//  sÃƒÂ¼ÃƒÅ¸Ã‚Â«                  0xDF 0xAB U+00DF U+00AB   DFAB = U+07EB;NKO HIGH TONE
 // These four byte combinations now explicitly boost Latin1/CP1252.
 
 // And for reference, here are a couple of Portuguese spellings
 // that may be mistaken as double-byte encodings.
-//   informações          0xE7 0xF5
-//   traição              0xE7 0xE3
+//   informaÃƒÂ§ÃƒÂµes          0xE7 0xF5
+//   traiÃƒÂ§ÃƒÂ£o              0xE7 0xE3
 
 
 static const char* kVersion = "2.2";

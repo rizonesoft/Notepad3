@@ -1,4 +1,4 @@
-#ifndef SCIXLEXER_H
+﻿#ifndef SCIXLEXER_H
 #define SCIXLEXER_H
 
 #define SCLEX_AHK   200
