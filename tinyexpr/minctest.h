@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * MINCTEST - Minimal C Test Library - 0.1
  *

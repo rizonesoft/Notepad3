@@ -1,4 +1,4 @@
-// Scintilla source code edit control
+﻿// Scintilla source code edit control
 /** @file LexAHK.cxx
  ** Lexer for AutoHotkey, simplified version
  ** Written by Philippe Lhoste (PhiLho)

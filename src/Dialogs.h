@@ -19,7 +19,7 @@
 #include "TypeDefs.h"
 
 int  MsgBoxLng(int iType, UINT uIdMsg, ...);
-void DisplayCmdLineHelp(HWND hwnd);
+INT_PTR DisplayCmdLineHelp(HWND hwnd);
 bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool);
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam);
 INT_PTR RunDlg(HWND hwnd,LPCWSTR lpstrDefault);
