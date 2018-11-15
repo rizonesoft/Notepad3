@@ -21,6 +21,9 @@ indent_style = space
 indent_size = 2
 tab_width = 2
 
+[*.rc]
+charset = utf-8
+
 [language/**.h]
 charset = utf-8
 
