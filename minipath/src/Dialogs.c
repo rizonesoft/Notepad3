@@ -1,4 +1,4 @@
-/******************************************************************************
+ï»¿/******************************************************************************
 *                                                                             *
 *                                                                             *
 * MiniPath - Notepad3 Explorer Plugin                                         *
@@ -2557,7 +2557,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
 
         if (g_hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIcon); }
 
-        // Bitmap für den Browse-Button
+        // Bitmap fÃ¼r den Browse-Button
         MakeBitmapButton(hwnd,IDC_BROWSE,g_hInstance,IDB_OPEN);
         //MakeBitmapButton(hwnd,IDC_FINDWIN,g_hInstance,IDB_BROWSE);
 
@@ -2633,7 +2633,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
-            // ofn ausfüllen
+            // ofn ausfÃ¼llen
             ofn.lStructSize = sizeof(OPENFILENAME);
             ofn.hwndOwner   = hwnd;
             ofn.lpstrFilter = szFilter;

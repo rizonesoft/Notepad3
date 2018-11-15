@@ -1,4 +1,4 @@
-/**
+﻿/**
  * rijndael-api-fst.c
  *
  * @version 2.9 (December 2000)

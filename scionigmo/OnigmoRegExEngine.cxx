@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file  OnigmoRegExEngine.cxx
  * @brief integrate Onigmo regex engine for Scintilla library
  *        (Scintilla Lib is copyright 1998-2017 by Neil Hodgson <neilh@scintilla.org>)

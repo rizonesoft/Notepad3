@@ -1,4 +1,4 @@
-#ifndef _SHA256_H
+﻿#ifndef _SHA256_H
 #define _SHA256_H
 
 #ifndef uint8
