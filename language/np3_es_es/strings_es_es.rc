@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -187,9 +187,62 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR       "(es-ES) Traducción española por hpwamr"
-    IDS_MUI_CMDLINEHELP         "Ayuda de la línea de comando\r\n\r\narchivo\tDebe ser el ultimo argumento,\n\tsin espacios entre comillas por defecto.\n+\tAceptar múltiples argumentos de archivo\n\t(con espacios entre comillas).\n-\tAceptar argumento de archivo único\n\t(sin espacios entre comillas).\n…\tCodificación\n\t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\n…\tModo de final de línea (/crlf, /cr, /lf).\n/e\tCodificación de la fuente del archivo.\n/g\tSaltar a la posición especificada\n\t(/g -1 fin de archivo).\n/m\tCoincidencia de texto especificado\n\t(/m- último, /mr regex, /mb backslash).\n/l\tAuto-recargar archivos modificados.\n/q\tForzar la creación de nuevos archivos sin aviso.\n/s\tSeleccione el esquema de sintaxis especificado.\n/d\tSeleccione el esquema de texto por defecto.\n/h\tSSeleccione un esquema de código fuente Web.\n/x\tSeleccione el esquema de documento XML.\n/c\tAbrir nueva ventana y pegar contenido\n\tdel portapapeles.\n/b\tAbre una nueva tabla de pegar para \n\trecoger las entradas del portapapeles.\n/n\tSiempre abre una nueva ventana\n\t(/ns instancia de archivo único).\n/r\tReutilizar la ventana (/rs instancia de archivo único).\n/p\tEstablecer el tamaño y la posición de la ventana\n\t(/p0, /ps, /pf,l,t,r,b,m).\n/t\tEstablecer el título de la ventana.\n/i\tComenzar como un icono de la barra de tareas.\n/o\tVentana siempre visible.\n/f\tEspecificar archivo ini (/f0 no ini-file).\n/u\tLanzar con privilegios elevados.\n/v\tImprimir el archivo inmediatamente y dejar.\n/vd\tImprimir archivo\n\t(abrir el cuadro de diálogo de la impresora).\n/z\tIr a la siguiente (usar para reemplazar \n\tel Notepad basado en el registro)."
     IDS_MUI_EXAMPLE_TEXT        "El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Corresponde a longitud cero"
+END
+
+STRINGTABLE
+BEGIN
+IDS_MUI_CMDLINEHELP "\
+Ayuda de la línea de comando\r\n\r\n\
+archivo\tDebe ser el ultimo argumento,\r\n\
+ \tsin espacios entre comillas por defecto.\r\n\
++\tAceptar múltiples argumentos de archivo\r\n\
+ \t(con espacios entre comillas).\r\n\
+-\tAceptar argumento de archivo único\r\n\
+ \t(sin espacios entre comillas).\r\n\
+…\tCodificación\r\n\
+ \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+…\tModo de final de línea (/crlf, /cr, /lf).\r\n\
+/e\tCodificación de la fuente del archivo.\r\n\
+/g\tSaltar a la posición especificada\r\n\
+ \t(/g -1 fin de archivo).\r\n\
+/m\tCoincidencia de texto especificado\r\n\
+ \t(/m- último, /mr regex, /mb backslash).\r\n\
+/l\tAuto-recargar archivos modificados.\r\n\
+/q\tForzar la creación de nuevos archivos sin aviso.\r\n\
+/s\tSeleccione el esquema de sintaxis especificado.\r\n\
+/d\tSeleccione el esquema de texto por defecto.\r\n\
+/h\tSSeleccione un esquema de código fuente Web.\r\n\
+/x\tSeleccione el esquema de documento XML.\r\n\
+/c\tAbrir nueva ventana y pegar contenido\r\n\
+ \tdel portapapeles.\r\n\
+/b\tAbre una nueva tabla de pegar para \r\n\
+ \trecoger las entradas del portapapeles.\r\n\
+/n\tSiempre abre una nueva ventana\r\n\
+ \t(/ns instancia de archivo único).\r\n\
+/r\tReutilizar la ventana (/rs instancia de archivo único).\r\n\
+/p\tEstablecer el tamaño y la posición de la ventana\r\n\
+ \t(/p0, /ps, /pf,l,t,r,b,m).\r\n\
+ /t\tEstablecer el título de la ventana.\r\n\
+/i\tComenzar como un icono de la barra de tareas.\r\n\
+/o\tVentana siempre visible.\r\n\
+/f\tEspecificar archivo ini (/f0 no ini-file).\r\n\
+/u\tLanzar con privilegios elevados.\r\n\
+/v\tImprimir el archivo inmediatamente y dejar.\r\n\
+/vd\tImprimir archivo\r\n\
+ \t(abrir el cuadro de diálogo de la impresora).\r\n\
+/z\tIr a la siguiente (usar para reemplazar \r\n\
+ \tel Notepad basado en el registro).\
+"
+
+IDS_MUI_STYLEEDIT_HELP "\
+Las extensiones de archivo están separadas por ';'\r\n\r\n\
+Estilo formato:\r\n\
+font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
+fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+Copiar formato: usar 'copiar y pegar' o 'arrastrar y soltar'.\
+"
 END
 
 STRINGTABLE

@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -291,7 +291,7 @@ BEGIN
     GROUPBOX        "Información",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Personalizar esquemas",IDC_TITLE,220,25,200,12
-    LTEXT           "Las extensiones de archivo están separadas por ';'\n\nEstilo formato:\nfont:Name;size:[+/-]nn.mm;bold;italic;underline;\nfore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\n\nCopiar formato: usar 'copiar y pegar' o 'arrastrar y soltar'.",IDC_STATIC,197,50,252,74
+    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 90

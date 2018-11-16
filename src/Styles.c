@@ -3119,11 +3119,15 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static __int64 Style_ChangedBackup[NUMLEXERS];
 
   WCHAR tchBuf[128] = { L'\0' };
+  WCHAR wchText[512] = { L'\0' };
 
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        GetLngString(IDS_MUI_STYLEEDIT_HELP, wchText, COUNTOF(wchText));
+        SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, wchText);
+
         // Backup Styles
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         ZeroMemory(&Style_StylesBackup, NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * sizeof(WCHAR*));
