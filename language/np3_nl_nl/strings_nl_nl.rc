@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -189,9 +189,62 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(nl-NL) Nederlandse vertaling door hpwamr"
-    IDS_MUI_CMDLINEHELP     "Hulp bij de opdrachtregel\n\nbestand\tMoet het laatste argument zijn,\n\tgeen aanhalingstekens spaties standaard.\n+\tAccepteer meerdere bestandsargumenten \n\t(met aanhalingstekens spaties).\n-\tAccepteer argument voor een enkel bestand \n\t(zonder aanhalingstekens).\n…\tCodering\n\t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\n…\tLijn ending modus (/crlf, /cr, /lf).\n/e\tBestandsbron codering.\n/g\tSpring naar de opgegeven positie\n\t(/g -1 einde van het bestand).\n/m\tMatch met opgegeven tekst\n\t(/m- last, /mr regex, /mb backslash).\n/l\tAuto-herlaad van gewijzigde bestanden.\n/q\tForceer het maken van nieuwe bestanden \n\tzonder prompt.\n/s\tSelecteer opgegeven syntaxisschema.\n/d\tSelecteer standaardtekstschema.\n/h\tSelecteer Web Source Code-schema.\n/x\tSelecteer XML-document scheme.\n/c\tOpen een nieuw venster en plak inhoud \n\tvan klembord.\n/b\tOpen nieuw plakbord om de klemborditems \n\tte verzamelen.\n/n\tOpen altijd een nieuw venster \n\t(/ns één bestand instantie).\n/r\tHergebruik venster (/rs één bestand instantie).\n/p\tStel vensterpositie en -grootte in \n\t(/p0, /ps, /pf,l,t,r,b,m).\n/t\tStel de titel van het venster in.\n/i\tStart als systeemvak icoon.\n/o\tHoud het venster bovenop.\n/f\tGeef een ini-bestand op (/f0 geeb ini-bestand).\n/u\tLanceer met verhoogde rechten.\n/v\tPrint bestand onmiddellijk en verlaat.\n/vd\tBestand printen (open printerdialoog).\n/z\tVolgende overslaan (bruikbaar voor \n\tregister-gebaseerde Notepad vervanging)."
     IDS_MUI_EXAMPLE_TEXT    "Pa's wijze lynx bezag vroom het fikse aquaduct, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH  "^ Nul-lengte Match"
+END
+
+STRINGTABLE
+BEGIN
+IDS_MUI_CMDLINEHELP "\
+Hulp bij de opdrachtregel\r\n\r\n\
+bestand\tMoet het laatste argument zijn,\r\n\
+ \tgeen aanhalingstekens spaties standaard.\r\n\
++\tAccepteer meerdere bestandsargumenten \r\n\
+ \t(met aanhalingstekens spaties).\r\n\
+-\tAccepteer argument voor een enkel bestand \r\n\
+ \t(zonder aanhalingstekens).\r\n\
+…\tCodering\r\n\
+ \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+…\tLijn ending modus (/crlf, /cr, /lf).\r\n\
+/e\tBestandsbron codering.\r\n\
+/g\tSpring naar de opgegeven positie\r\n\
+ \t(/g -1 einde van het bestand).\r\n\
+/m\tMatch met opgegeven tekst\r\n\
+ \t(/m- last, /mr regex, /mb backslash).\r\n\
+/l\tAuto-herlaad van gewijzigde bestanden.\r\n\
+/q\tForceer het maken van nieuwe bestanden \r\n\
+ \tzonder prompt.\r\n\
+/s\tSelecteer opgegeven syntaxisschema.\r\n\
+/d\tSelecteer standaardtekstschema.\r\n\
+/h\tSelecteer Web Source Code-schema.\r\n\
+/x\tSelecteer XML-document scheme.\r\n\
+/c\tOpen een nieuw venster en plak inhoud \r\n\
+ \tvan klembord.\r\n\
+/b\tOpen nieuw plakbord om de klemborditems \r\n\
+ \tte verzamelen.\r\n\
+/n\tOpen altijd een nieuw venster \r\n\
+ \t(/ns één bestand instantie).\r\n\
+/r\tHergebruik venster (/rs één bestand instantie).\r\n\
+/p\tStel vensterpositie en -grootte in \r\n\
+ \t(/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/t\tStel de titel van het venster in.\r\n\
+/i\tStart als systeemvak icoon.\r\n\
+/o\tHoud het venster bovenop.\r\n\
+/f\tGeef een ini-bestand op (/f0 geeb ini-bestand).\r\n\
+/u\tLanceer met verhoogde rechten.\r\n\
+/v\tPrint bestand onmiddellijk en verlaat.\r\n\
+/vd\tBestand printen (open printerdialoog).\r\n\
+/z\tVolgende overslaan (bruikbaar voor \r\n\
+ \tregister-gebaseerde Notepad vervanging).\
+"
+
+IDS_MUI_STYLEEDIT_HELP "\
+Bestand extensies moeten gescheiden door ';'\r\n\r\n\
+Stijl formaat:\r\n\
+font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
+fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+Kopieer formaat: gebruik 'kopiëren en plakken' of 'slepen en neerzetten'.\
+"
 END
 
 STRINGTABLE
