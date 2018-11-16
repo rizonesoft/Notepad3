@@ -280,7 +280,7 @@ BEGIN
     GROUPBOX        "提示信息",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "自定义语法高亮方案",IDC_TITLE,220,25,200,12
-    LTEXT           "文件扩展名必须以 ; 隔开。\n\n样式格式：\nfont:Name;size:[+/-]nn.mm;bold;italic;underline;\nfore:#ffffff;back:#bbbbbb;eolfilled\n\n样式属性可以复制粘贴或拖放。\n\n“预览”按钮不会应用修改。",IDC_STATIC,197,50,252,74
+    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 90

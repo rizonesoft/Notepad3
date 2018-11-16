@@ -291,7 +291,7 @@ BEGIN
     GROUPBOX        "Info",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Personnaliser les Schèmes",IDC_TITLE,220,25,200,12
-    LTEXT           "Les extensions de fichier sont séparées par ';'\n\nStyle format:\nfont:Name;size:[+/-]nn.mm;bold;italic;underline;\nfore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\n\nCopier format: utiliser 'copier-coller' ou 'glisser-déposer'.",IDC_STATIC,197,50,262,74
+    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 90

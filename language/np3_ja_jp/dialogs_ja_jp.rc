@@ -291,7 +291,7 @@ BEGIN
     GROUPBOX        "説明",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "色とフォントの指定方法",IDC_TITLE,220,25,200,12
-    LTEXT           "拡張子の区切りは ; です。\n\n設定書式:\nfont:フォント名;size:[+/-]nn.mm;bold;italic;underline;\nfore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\n\n各指定は省略可能。フォントのnnはサイズ。foreは文字色。\nコピー&&ペーストやドラッグ&&ドロップでも指定が変更できます。\nプレビューでの反映では、まだ設定は保存されません。",IDC_STATIC,197,50,252,74
+    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 90

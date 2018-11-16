@@ -187,9 +187,55 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR       "(zh-CN) 简体中文翻译 by lhmouse"
-    IDS_MUI_CMDLINEHELP         "命令行帮助\r\n\r\nfile\tMust be the last argument,\n\tno quoted spaces by default.\n+\tAccept multiple file arguments (with quoted spaces).\n-\tAccept single file argument (without quoted spaces).\n…\tEncoding\n\t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\n…\tLine ending mode (/crlf, /cr, /lf).\n/e\tFile source encoding.\n/g\tJump to specified position (/g -1 end of file).\n/m\tMatch specified text\n\t(/m- last, /mr regex, /mb backslash).\n/l\tAuto-reload modified files.\n/q\tForce creation of new files without prompt.\n/s\tSelect specified syntax scheme.\n/d\tSelect default text scheme.\n/h\tSelect Web Source Code scheme.\n/x\tSelect XML Document scheme.\n/c\tOpen new window and paste clipboard contents.\n/b\tOpen new paste board to collect clipboard entries.\n/n\tAlways open a new window (/ns single file instance).\n/r\tReuse window (/rs single file instance).\n/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\n/t\tSet window title.\n/i\tStart as tray icon.\n/o\tKeep window on top.\n/f\tSpecify ini-file (/f0 no ini-file).\n/u\tLaunch with elevated privileges.\n/v\tPrint file immediately and quit.\n/vd\tPrint file (open printer dialog).\n/z\tSkip next\n\t(usable for registry-based Notepad replacement)."
     IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789.\n中国智造，慧及全球"
     IDS_MUI_ZERO_LEN_MATCH      "^ 零宽度匹配"
+END
+
+STRINGTABLE
+BEGIN
+IDS_MUI_CMDLINEHELP "\
+命令行帮助\r\n\r\n\
+file\tMust be the last argument,\r\n\
+ \tno quoted spaces by default.\r\n\
++\tAccept multiple file arguments (with quoted spaces).\r\n\
+-\tAccept single file argument (without quoted spaces).\r\n\
+…\tEncoding\r\n\
+ \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+…\tLine ending mode (/crlf, /cr, /lf).\r\n\
+/e\tFile source encoding.\r\n\
+/g\tJump to specified position (/g -1 end of file).\r\n\
+/m\tMatch specified text\r\n\
+ \t(/m- last, /mr regex, /mb backslash).\r\n\
+/l\tAuto-reload modified files.\r\n\
+/q\tForce creation of new files without prompt.\r\n\
+/s\tSelect specified syntax scheme.\r\n\
+/d\tSelect default text scheme.\r\n\
+/h\tSelect Web Source Code scheme.\r\n\
+/x\tSelect XML Document scheme.\r\n\
+/c\tOpen new window and paste clipboard contents.\r\n\
+/b\tOpen new paste board to collect clipboard entries.\r\n\
+/n\tAlways open a new window (/ns single file instance).\r\n\
+/r\tReuse window (/rs single file instance).\r\n\
+/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/t\tSet window title.\r\n\
+/i\tStart as tray icon.\r\n\
+/o\tKeep window on top.\r\n\
+/f\tSpecify ini-file (/f0 no ini-file).\r\n\
+/u\tLaunch with elevated privileges.\r\n\
+/v\tPrint file immediately and quit.\r\n\
+/vd\tPrint file (open printer dialog).\r\n\
+/z\tSkip next\r\n\
+ \t(usable for registry-based Notepad replacement).\
+"
+
+IDS_MUI_STYLEEDIT_HELP "\
+文件扩展名必须以 ; 隔开。\r\n\r\n\
+样式格式：\r\n\
+font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
+fore:#ffffff;back:#bbbbbb;eolfilled\r\n\r\n\
+样式属性可以复制粘贴或拖放。\r\n\r\n\
+“预览”按钮不会应用修改。\
+"
 END
 
 STRINGTABLE

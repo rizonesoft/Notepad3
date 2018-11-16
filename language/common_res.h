@@ -138,6 +138,7 @@
 #define IDS_MUI_ASSOCIATED_EXT          15051
 #define IDS_MUI_EXAMPLE_TEXT            15052
 #define IDS_MUI_ZERO_LEN_MATCH          15053
+#define IDS_MUI_STYLEEDIT_HELP          15054
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
@@ -286,6 +287,7 @@
 #define IDC_RICHEDITABOUT               18089
 #define IDC_TRANSL_AUTH                 18090
 #define IDC_CMDLINEHELP                 18091
+#define IDC_STYLEEDIT_HELP              18092
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

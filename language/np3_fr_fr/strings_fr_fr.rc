@@ -187,9 +187,61 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR       "(fr-FR) Traduction française par hpwamr"
-    IDS_MUI_CMDLINEHELP         "Aide de la ligne de commande\r\n\r\nfichier\tDoit être le dernier argument,\n\taucun espace entre guillemets par défaut.\n+\tAccepte plusieurs arguments \n\t(avec des espaces entre guillemets).\n-\tAccepte un seul argument de fichier \n\t(sans espaces entre guillemets).\n…\tEncodage \n\t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\n…\tMode fin de ligne (/crlf, /cr, /lf).\n/e\tCodage de la source du fichier.\n/g\tAller à la position spécifiée (/g -1 fin de fichier).\n/m\tCorrespond au texte spécifié \n\t(/m- dernier, /mr regex, /mb backslash).\n/l\tAuto-recharger les fichiers modifiés.\n/q\tForcer la création de nouveaux fichiers sans invite.\n/s\tSélectionner le schème de syntaxe spécifié.\n/d\tSélectionner le schème de texte par défaut.\n/h\tSélectionner un schème de code source Web.\n/x\tSélectionner un schème de document XML.\n/c\tOuvrir une nouvelle fenêtre et coller \n\tle contenu du presse-papiers.\n/b\tOuvrir un nouveau tableau de collage pour \n\tcollecter les entrées du presse-papiers.\n/n\tToujours ouvrir une nouvelle fenêtre \n\t(/ns instance de fichier unique).\n/r\tRéutiliser la fenêtre (/rs instance de fichier unique).\n/p\tDéfinir la position et la taille de la fenêtre \n\t(/p0, /ps, /pf,l,t,r,b,m).\n/t\tDéfinir un titre de fenêtre.\n/i\tDémarrer en tant que icône de barre de tâches.\n/o\tFenêtre toujours visible.\n/f\tSpecifié fichier ini (/f0 pas de fichier ini).\n/u\tLancer avec des privilèges élevés.\n/v\tImprimer le fichier immédiatement et quitter.\n/vd\tImprimer le fichier \n\t(ouvrir le dialogue de l'imprimante).\n/z\tPasser au suivant (utilisable pour le remplacement \n\tdu Notepad basé sur le registre)."
     IDS_MUI_EXAMPLE_TEXT        "Voix ambiguë d'un cœur qui au zéphyr préfère les jattes de kiwis, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Correspond à longueur zéro"
+END
+
+STRINGTABLE
+BEGIN
+IDS_MUI_CMDLINEHELP "\
+Aide de la ligne de commande\r\n\r\n\
+fichier\tDoit être le dernier argument,\r\n\
+ \taucun espace entre guillemets par défaut.\r\n\
++\tAccepte plusieurs arguments \r\n\
+ \t(avec des espaces entre guillemets).\r\n\
+-\tAccepte un seul argument de fichier \r\n\
+ \t(sans espaces entre guillemets).\r\n\
+…\tEncodage \r\n\
+ \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+…\tMode fin de ligne (/crlf, /cr, /lf).\r\n\
+/e\tCodage de la source du fichier.\r\n\
+/g\tAller à la position spécifiée (/g -1 fin de fichier).\r\n\
+/m\tCorrespond au texte spécifié \r\n\
+ \t(/m- dernier, /mr regex, /mb backslash).\r\n\
+/l\tAuto-recharger les fichiers modifiés.\r\n\
+/q\tForcer la création de nouveaux fichiers sans invite.\r\n\
+/s\tSélectionner le schème de syntaxe spécifié.\r\n\
+/d\tSélectionner le schème de texte par défaut.\r\n\
+/h\tSélectionner un schème de code source Web.\r\n\
+/x\tSélectionner un schème de document XML.\r\n\
+/c\tOuvrir une nouvelle fenêtre et coller \r\n\
+ \tle contenu du presse-papiers.\r\n\
+/b\tOuvrir un nouveau tableau de collage pour \r\n\
+ \tcollecter les entrées du presse-papiers.\r\n\
+/n\tToujours ouvrir une nouvelle fenêtre \r\n\
+ \t(/ns instance de fichier unique).\r\n\
+/r\tRéutiliser la fenêtre (/rs instance de fichier unique).\r\n\
+/p\tDéfinir la position et la taille de la fenêtre \r\n\
+ \t(/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/t\tDéfinir un titre de fenêtre.\r\n\
+/i\tDémarrer en tant que icône de barre de tâches.\r\n\
+/o\tFenêtre toujours visible.\r\n\
+/f\tSpecifié fichier ini (/f0 pas de fichier ini).\r\n\
+/u\tLancer avec des privilèges élevés.\r\n\
+/v\tImprimer le fichier immédiatement et quitter.\r\n\
+/vd\tImprimer le fichier \r\n\
+ \t(ouvrir le dialogue de l'imprimante).\r\n\
+/z\tPasser au suivant (utilisable pour le remplacement \r\n\
+ \tdu Notepad basé sur le registre).\
+"
+
+IDS_MUI_STYLEEDIT_HELP "\
+Les extensions de fichier sont séparées par ';'\r\n\r\n\
+Style format:\r\n\
+font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
+fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+Copier format: utiliser 'copier-coller' ou 'glisser-déposer'.\
+"
 END
 
 STRINGTABLE
