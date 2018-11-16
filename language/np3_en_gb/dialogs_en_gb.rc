@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -68,7 +68,18 @@ BEGIN
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
     PUSHBUTTON      "Copy Version Text",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
-    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,360,168
+    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,360,170
+END
+
+IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 280, 160
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Command Line Help"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+ICON            IDI_MUI_RUN, IDC_STATIC, 10, 7, 20, 20
+DEFPUSHBUTTON   "OK", IDOK, 220, 137, 55, 16
+//LTEXT           "_place_holder_", IDC_CMDLINEHELP, 40, 7, 226, 290
+EDITTEXT        IDC_CMDLINEHELP, 36, 7, 230, 120, ES_MULTILINE | ES_READONLY | WS_VSCROLL | NOT WS_BORDER
 END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 273, 142
@@ -175,8 +186,7 @@ BEGIN
     GROUPBOX        "Encoding Detection: ",IDC_STATIC,7,58,183,77,0,WS_EX_TRANSPARENT
     CONTROL         "Skip &ANSI Code Page detection.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,122,10
-    CONTROL         "Skip &UNICODE detection.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,122,10
+    CONTROL         "Skip &UNICODE detection.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,122,10
     CONTROL         "Open 7-bit &ASCII files in UTF-8 mode.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,136,10
     CONTROL         "Open 8-bit *.&nfo/diz files in DOS-437 mode.",IDC_NFOASOEM,
@@ -253,7 +263,8 @@ BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
     CONTROL         "Set selected scheme as &default.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,118,10
-    CONTROL         "&Auto-select by filename extension.",IDC_AUTOSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
+    CONTROL         "&Auto-select by filename extension.",IDC_AUTOSELECT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Cancel",IDCANCEL,108,113,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,117,10,10
@@ -283,7 +294,7 @@ BEGIN
     GROUPBOX        "Info",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Customise Schemes",IDC_TITLE,220,25,200,12
-    LTEXT           "Filename extensions must be separated by ;\n\nStyle format:\nfont:Name;size:[+/-]nn.mm;bold;italic;underline;\nfore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\n\nStyle properties can be copied using copy and paste or drag and drop.",IDC_STATIC,197,50,252,74
+    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 102
@@ -539,8 +550,8 @@ BEGIN
     CONTROL         "&Merge duplicate lines.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,85,10
     CONTROL         "&Remove duplicate lines.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,91,10
     CONTROL         "Remove &unique lines.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,84,10
-    CONTROL         "Remove &empty lines.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Remove &white-space lines.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Remove &empty lines.", 106, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 86, 104, 10
+    CONTROL         "Remove &white-space lines.", 107, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 98, 104, 10
     CONTROL         "&Case insensitive.",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,70,10
     CONTROL         "Logical &number comparison.",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,104,10
     CONTROL         "Column &sort (rectangular selection).",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,131,10

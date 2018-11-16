@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -58,7 +58,6 @@ CAPTION "О программе Notepad3"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,330,256,50,14
-    //ICON            IDR_MAINWND128, IDC_STATIC,4,5,128,128,SS_REALSIZEIMAGE,WS_EX_TRANSPARENT
     EDITTEXT        IDC_VERSION,77,7,220,14,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
     LTEXT           "Версия библиотеки Scintilla:",IDC_SCI_VERSION,80,24,219,8
     LTEXT           "Компилятор:",IDC_COMPILER,80,35,218,8
@@ -68,7 +67,18 @@ BEGIN
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
     PUSHBUTTON      "Копировать версию",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
-    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,168
+    CONTROL         "",IDC_RICHEDITABOUT,"RichEdit50W",WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
+END
+
+IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 280, 160
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Command Line Help"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+ICON            IDI_MUI_RUN, IDC_STATIC, 10, 7, 20, 20
+DEFPUSHBUTTON   "OK", IDOK, 220, 137, 55, 16
+//LTEXT           "_place_holder_", IDC_CMDLINEHELP, 40, 7, 226, 290
+EDITTEXT        IDC_CMDLINEHELP, 36, 7, 230, 120, ES_MULTILINE | ES_READONLY | WS_VSCROLL | NOT WS_BORDER
 END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 313, 142
@@ -159,7 +169,7 @@ BEGIN
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
     LTEXT           "Нажмите здесь для задания папки с ярлыками избранных приложений",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,108,108,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
 END
 
@@ -283,7 +293,7 @@ BEGIN
     GROUPBOX        "Информация",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Настройка стилей",IDC_TITLE,220,25,200,12
-    LTEXT           "Расширения файлов должны быть разделены символом ;\n\nФормат стиля:\nfont:Name;size:[+/-]nn.mm;bold;italic;underline;\nfore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\n\nСвойства стилей можно скопировати и вставить или перетянуть.",IDC_STATIC,197,50,252,74
+    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 185, 102
@@ -327,7 +337,7 @@ BEGIN
     COMBOBOX        103,7,58,231,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,132,79,50,14
     PUSHBUTTON      "Отмена",IDCANCEL,188,79,50,14
-    LTEXT           "Без отступа|Перенос с отступом в 1 символ|Перенос с отступом в 2 символа|Перенос с отступом в 1 уровень|Перенос с отступом в 2 уровня|Перенос с отступом как у первой подстроки|Перенос с отступом в 1 уровень в последующих подстроках",200,0,0,840,8,NOT WS_VISIBLE
+    LTEXT           "Без отступа|Перенос с отступом в один символ|Перенос с отступом в два символа|Перенос с отступом в один уровень|Перенос с отступом в два уровня|Перенос с отступом как у первой подстроки|Перенос с отступом в один уровень в последующих подстроках",200,0,0,896,8,NOT WS_VISIBLE
     LTEXT           "Без индикатора перед переносом|Показывать индикатор перед переносом (рядом с текстом)|Показывать индикатор перед переносом (рядом с границей)",201,0,0,530,8,NOT WS_VISIBLE
     LTEXT           "Без индикатора после переноса|Показывать индикатор после переноса (рядом с текстом)|Показывать индикатор после переноса (рядом с границей)",202,0,0,514,8,NOT WS_VISIBLE
     LTEXT           "Перенос текста между словами|Перенос текста между любыми символами",203,0,0,254,8,NOT WS_VISIBLE
@@ -341,7 +351,7 @@ BEGIN
     GROUPBOX        "Бумага",1073,8,8,224,56,WS_GROUP
     LTEXT           "&Размер:",1089,16,24,36,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "П&одача:",1090,16,45,36,8
+    LTEXT           "По&дача:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Ориентация",1072,8,69,64,56,WS_GROUP
     CONTROL         "&Книжная",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
@@ -349,7 +359,7 @@ BEGIN
     GROUPBOX        "Поля",1075,80,69,152,56,WS_GROUP
     LTEXT           "&Левое:",1102,88,85,32,8
     EDITTEXT        1155,120,82,28,12,WS_GROUP
-    LTEXT           "&Правое:",1103,164,85,32,8
+    LTEXT           "Прав&ое:",1103,164,85,32,8
     EDITTEXT        1157,196,82,28,12,WS_GROUP
     LTEXT           "В&ерхнее:",1104,88,104,32,8
     EDITTEXT        1156,120,103,28,12,WS_GROUP

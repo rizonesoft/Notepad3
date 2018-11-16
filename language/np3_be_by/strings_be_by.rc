@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -54,173 +54,229 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW                "Новый"
-    IDT_FILE_OPEN               "Открыть"
-    IDT_FILE_BROWSE             "Обзор"
-    IDT_FILE_SAVE               "Сохранить"
-    IDT_EDIT_UNDO               "Отмена"
-    IDT_EDIT_REDO               "Повтор"
-    IDT_EDIT_CUT                "Вырезать"
-    IDT_EDIT_COPY               "Копировать"
-    IDT_EDIT_PASTE              "Вставить"
-    IDT_EDIT_FIND               "Найти"
-    IDT_EDIT_REPLACE            "Заменить"
-    IDT_VIEW_WORDWRAP           "Перенос строк"
-    IDT_VIEW_ZOOMIN             "Крупнее"
-    IDT_VIEW_ZOOMOUT            "Мельче"
-    IDT_VIEW_SCHEME             "Выбрать схему"
-    IDT_VIEW_SCHEMECONFIG       "Настроить схему"
-    IDT_FILE_EXIT               "Выход"
-    IDT_FILE_SAVEAS             "Сохранить как"
-    IDT_FILE_SAVECOPY           "Сохранить копию"
-    IDT_EDIT_CLEAR              "Удалить"
-    IDT_FILE_PRINT              "Печать"
-    IDT_FILE_OPENFAV            "Избранное"
-    IDT_FILE_ADDTOFAV           "Добавить в избранное"
-    IDT_VIEW_TOGGLEFOLDS        "Свернуть/развернуть блоки кода"
-    IDT_FILE_LAUNCH             "Выполнить документ"
-    IDT_VIEW_TOGGLE_VIEW        "Фокусировка просмотра"
-    IDT_VIEW_CHASING_DOCTAIL    "Слежение за файлом"
+    IDT_FILE_NEW                "Новы"
+    IDT_FILE_OPEN               "Адкрыць"
+    IDT_FILE_BROWSE             "Агляд"
+    IDT_FILE_SAVE               "Захаваць"
+    IDT_EDIT_UNDO               "Скасаваць"
+    IDT_EDIT_REDO               "Паўтор"
+    IDT_EDIT_CUT                "Выразать"
+    IDT_EDIT_COPY               "Капіяваць"
+    IDT_EDIT_PASTE              "Уставіць"
+    IDT_EDIT_FIND               "Знайсці"
+    IDT_EDIT_REPLACE            "Замяніць"
+    IDT_VIEW_WORDWRAP           "Перанос радкоў"
+    IDT_VIEW_ZOOMIN             "Павялічыць"
+    IDT_VIEW_ZOOMOUT            "Паменьшыць"
+    IDT_VIEW_SCHEME             "Выбраць схему"
+    IDT_VIEW_SCHEMECONFIG       "Наладзіць схему"
+    IDT_FILE_EXIT               "Выхад"
+    IDT_FILE_SAVEAS             "Захаваць як"
+    IDT_FILE_SAVECOPY           "Захаваць копію"
+    IDT_EDIT_CLEAR              "Выдаліць"
+    IDT_FILE_PRINT              "Друк"
+    IDT_FILE_OPENFAV            "Абранае"
+    IDT_FILE_ADDTOFAV           "Дадаць у абранае"
+    IDT_VIEW_TOGGLEFOLDS        "Згарнуць/разгарнуць блокі коду"
+    IDT_FILE_LAUNCH             "Выканаць дакумент"
+    IDT_VIEW_TOGGLE_VIEW        "Факусаваны прагляд"
+    IDT_VIEW_CHASING_DOCTAIL    "Назіранне за файлам"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE            "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED   "%s (Администратор)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Буфер обмена"
-    IDS_MUI_UNTITLED            "Безымянный"
+    IDS_MUI_APPTITLE_ELEVATED   "%s (Адміністратар)"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Буфер абмену"
+    IDS_MUI_UNTITLED            "Безыменны"
     IDS_MUI_TITLEEXCERPT        "«%s»"
-    IDS_MUI_READONLY            "(Только чтение)"
-    IDS_MUI_LOADFILE            "Загрузка «%s»..."
-    IDS_MUI_SAVEFILE            "Сохранение «%s»..."
-    IDS_MUI_PRINTFILE           "Печать страницы %i..."
-    IDS_MUI_SAVINGSETTINGS      "Сохранение настроек..."
-    IDS_MUI_LINKDESCRIPTION     "Редактировать в Notepad3"
-    IDS_MUI_FILTER_ALL          "Все файлы (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE          "Исполняемые файлы (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Все файлы (*.*)|*.*|"
-    IDS_MUI_FILTER_INI          "Файлы настроек (*.ini)|*.ini|Все файлы (*.*)|*.*|"
-    IDS_MUI_OPENWITH            "Выберите папку с ярлыками избранных приложений."
-    IDS_MUI_FAVORITES           "Выберите папку с ярлыками избранных файлов."
-    IDS_MUI_BACKSLASHHELP       "Управляющие символы\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP          "Синтаксис регулярный выражений (многострочный)\n\n.\tЛюбой символ\n^\tНачало строки\n$\tКонец строки\n\\<\tНачало слова\n\\>\tКонец слова\n\\b\tГраница слова\n[...]\tНабор символов ([abc]) или диапазон ([a-z])\n[^...]\tСимволы НЕ из набора или диапазона\n\\d\tЦифра\n\\D\tЛюбой символ, кроме цифры\n\\s\tПробельный символ\n\\S\tНепробельный символ\n\\w\tСимвол, образующий «слово»\n\\W\tСимвол, не образующий «слово»\n\\x\tEscape-символ со специальным назначением\n\\xHH\tШестнадцатеричный символ HH\n?\tКоличество совпадений 0 или 1\n*\tКоличество совпадений 0 или больше\n+\tКоличество совпадений 1 или больш\n*? и +?\tНежадный режим квантификаторов «?» и «+»\n(\tНачало группы\n)\tКонец группы\n\\n\tУказывает на номер группы при замене (n — 1-9)\n"
-    IDS_MUI_WILDCARDHELP        "Wildcard поиск\n\n*\tЛюбое количество символов.\n?\tТолько один символ. "
+    IDS_MUI_READONLY            "(Толькі чытанне)"
+    IDS_MUI_LOADFILE            "Ладаванне «%s»..."
+    IDS_MUI_SAVEFILE            "Захаванне «%s»..."
+    IDS_MUI_PRINTFILE           "Друкаванне старонкі %i..."
+    IDS_MUI_SAVINGSETTINGS      "Захаванне наладаў..."
+    IDS_MUI_LINKDESCRIPTION     "Рэдагаваць у Notepad3"
+    IDS_MUI_FILTER_ALL          "Усе файлы (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE          "Выканальныя файлы (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Усе файлы (*.*)|*.*|"
+    IDS_MUI_FILTER_INI          "Файлы наладаў (*.ini)|*.ini|Усе файлы (*.*)|*.*|"
+    IDS_MUI_OPENWITH            "Выберыце папку з цэтлікамі абраных праграмаў."
+    IDS_MUI_FAVORITES           "Выберыце папку з цэтлікамі абраных файлаў."
+    IDS_MUI_BACKSLASHHELP       "Сімвалы кіравання\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_REGEXPHELP          "Сінтаксіс регулярных выразаў (многарадковы)\n\n.\tУсякі сімвал\n^\tПачатак радка\n$\tКанец радка\n\\<\tПачатак слова\n\\>\tКанец слова\n\\b\tМяжа слова\n[...]\tНабор сімвалаў ([abc]) ці дыяпазон ([a-z])\n[^...]\tСімвалы НЕ з набора ці дыяпазона\n\\d\tЛічба\n\\D\tУсякі сімвал, акрамя лічбы\n\\s\tПрабельны сімвал\n\\S\tНепрабельны сімвал\n\\w\tСімвал, які ўтварае «слова»\n\\W\tСімвал, які не ўтварае «слова»\n\\x\tEscape-сімвал са спецыяльным прызначэннем\n\\xHH\tШаснаццатковы сімвал HH\n?\tКолькасць супадзенняў 0 ці 1\n*\tКолькасць супадзенняў 0 ці болей\n+\tКолькасць супадзенняў 1 ці болей\n*? и +?\tНепрагны рэжым кванціфікатараў «?» і «+»\n(\tПачатак групы\n)\tКанец групы\n\\n\tЗазначае нумар групы ў час замены (n — 1-9)\n"
+    IDS_MUI_WILDCARDHELP        "Wildcard пошук\n\n*\tУсякая колькасць сімвалаў.\n?\tТолькі адзін сімвал. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE        "Ошибка загрузки «%s»."
-    IDS_MUI_ERR_SAVEFILE        "Ошибка сохранения «%s»."
-    IDS_MUI_ERR_BROWSE          "Не найден плагин браузера файлов.\nПлагин MiniPath можно загрузить с сайта https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG          "Нет доступа к выбранному файлу!\nХотите удалить его из списка?"
-    IDS_MUI_ERR_CREATELINK      "Ошибка создания ярлыка на Рабочем столе."
-    IDS_MUI_ERR_PREVWINDISABLED "Существующий экземпляр Notepad3 либо занят, либо имеет открытое диалоговое окно.\nЖелаете открыть новый экземпляр Notepad3?"
-    IDS_MUI_ERR_ENCODINGNA      "Таблицы преобразования кодовой страницы не существуют для выбранной кодировки в этой системе."
-    IDS_MUI_ERR_UNICODE         "Ошибка преобразования Unicode-файла.\nДанные будут утеряны, если файл будет сохранен!"
-    IDS_MUI_ERR_UNICODE2        "Определенные символы в текущем тексте не поддерживаются выбранной кодировкой и будут заменены заполнителями при сохранении. Рекомендуется выбрать другую кодировку файла. Все равно продолжить?"
-    IDS_MUI_ERR_DROP            "За один раз можно перетащить только один файл!"
-    IDS_MUI_ERR_ACCESSDENIED    "Файл «%s» не может быть сохранен и может быть защищен.\n\nХотите запустить Notepad3 от имени Администратора?"
-    IDS_MUI_ERR_ADMINEXE        "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com ?"
-    IDS_MUI_WARN_LOAD_BIG_FILE  "Вы уверены, что хотите открыть этот очень большой файл?"
-    IDS_MUI_WARN_UNKNOWN_EXT    "Неизвестное расширения файла (%s)!\nПродолжить загрузку данных?"
+    IDS_MUI_ERR_LOADFILE        "Памылка чытання «%s»."
+    IDS_MUI_ERR_SAVEFILE        "Памылка захоўвання «%s»."
+    IDS_MUI_ERR_BROWSE          "Не знойдзены плагін аглядніка файлаў.\nПлагін MiniPath можна спампаваць з сайта https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG          "Няма доступа да выбранага файла!\nХочаце выдаліць яго са спіску?"
+    IDS_MUI_ERR_CREATELINK      "Памылка стварэння цэтліка на Працоўным стале."
+    IDS_MUI_ERR_PREVWINDISABLED "Існы экзэмпляр Notepad3 альбо заняты, альбо мае адкрытае дыялогавае акно.\nЖадаеце адкрыць новы экзэмпляр Notepad3?"
+    IDS_MUI_ERR_ENCODINGNA      "Табліца пераўтварэння кодавай старонкі не знойдзена для выбранай кадоўкі ў гэтай сістэме."
+    IDS_MUI_ERR_UNICODE         "Памылка пераўтварэння Unicode-файла.\nДаныя будуць згублены падчас захавання файла!"
+    IDS_MUI_ERR_UNICODE2        "Вызначаныя сімвалы ў гэтым тэксце не падтрымліваюцца выбранай кадоўкай і будуць заменены сімваламі-заменнікамі падчас захавання. Лепей выбраць іншую кадоўку файла. Усё роўна працягнуць?"
+    IDS_MUI_ERR_DROP            "За адзін раз можна перацягнуць толькі адзін файл!"
+    IDS_MUI_ERR_ACCESSDENIED    "Файл «%s» нельга захаваць з прычыны абароны ад змянення.\n\nХочаце запусціць Notepad3 ад імя Адміністратара?"
+    IDS_MUI_ERR_ADMINEXE        "Не знойдены інструмент адміністратара\nНаведаць сайт https://rizonesoft.com ?"
+    IDS_MUI_WARN_LOAD_BIG_FILE  "Вы ўпэўнены, што хочаце адкрыць гэты вялікі файл?"
+    IDS_MUI_WARN_UNKNOWN_EXT    "Невядомае пашырэнне файла (%s)!\nПрацягнуць ладаванне даных?"
     IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks by '%s'?"                           
     IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT             "Эта операция не может быть выполнена с прямоугольным выделением."
-    IDS_MUI_BUFFERTOOSMALL      "Эта операция не может быть выполнена (слишком длинные строки)."
-    IDS_MUI_FIND_WRAPFW         "Достигнут конец документа, поиск будет продолжен с начала."
-    IDS_MUI_FIND_WRAPRE         "Достигнуто начало документа, поиск будет продолжен с конца."
-    IDS_MUI_NOTFOUND            "Указанный текст не найден."
-    IDS_MUI_REPLCOUNT           "Заменено совпадений текста: %i."
-    IDS_MUI_ASK_ENCODING        "Переключение кодировки файла с одной на другую может заменить неподдерживаемый текст заполнителями, а история отмены будет очищена. Все равно продолжить?"
-    IDS_MUI_ASK_ENCODING2       "Вы собираетесь изменить кодировку пустого файла. Обратите внимание, что это очистит историю отмены, поскольку она не может быть синхронизирована с новой кодировкой. Все равно продолжить?"
-    IDS_MUI_READONLY_SAVE       "«%s» только для чтения. Сохранить в другой файл?"
-    IDS_MUI_FILECHANGENOTIFY    "Этот файл был изменен внешней программой. Переоткрыть его?"
-    IDS_MUI_FILECHANGENOTIFY2   "Этот файл был удален. Сохранить заново?"
-    IDS_MUI_STICKYWINPOS        "Фиксированное положение окна включено. Любое новое окно Notepad3 будет запущено с текущими настройками положения."
-    IDS_MUI_SAVEDSETTINGS       "Текущие настройки приложения были сохранены."
-    IDS_MUI_CREATEINI_FAIL      "Ошибка создания конфигурационного файла."
-    IDS_MUI_WRITEINI_FAIL       "Ошибка записи настроек в конфигурационный файл."
-    IDS_MUI_SETTINGSNOTSAVED    "Конфигурационный файл не найден.\nДля сохранения изменений стилей сохраните настройки (F7) или вернитесь к настройке стилей (Ctrl+F12) и экспортируйте их."
-    IDS_MUI_EXPORT_FAIL         "Ошибка экспорта настроек стилей в «%s»."
-    IDS_MUI_REGEX_INVALID       "Ошибка обработки регулярного выражения. Выражение недействительно!"
-    IDS_MUI_DROP_NO_FILE        "Не удается получить имя файла. \nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3."
+    IDS_MUI_SELRECT             "Дзеянне не можа быць выкананым з прамавугольным вылучэннем."
+    IDS_MUI_BUFFERTOOSMALL      "Дзеянне не можа быць выкананым (вельмі доўгія радкі)."
+    IDS_MUI_FIND_WRAPFW         "Дасягнуты канец дакумента, пошук будзе працягнуты з пачатку."
+    IDS_MUI_FIND_WRAPRE         "Дасягнуты пачатак дакумента, пошук будзе працягнуты з канцу."
+    IDS_MUI_NOTFOUND            "Зазначаны тэкст не знойдзены."
+    IDS_MUI_REPLCOUNT           "Замененых супадзенняў тэксту: %i."
+    IDS_MUI_ASK_ENCODING        "Пераключэнне кадоўкі файла з адной на другую можа замяніць непадтрымоўваны тэкст сімваламі-заменнікамі, а гісторыя адмены будзе прыбрана. Усё роўна працягнуць?"
+    IDS_MUI_ASK_ENCODING2       "Вы збіраецеся змяніць кадоўку пустога файла. Звярніце ўвагу, што гэта прыбярэ гісторыю адмены, паколькі яна не можа быць скаардынаванай з новай кадоўкай. Усё роўна працягнуць?"
+    IDS_MUI_READONLY_SAVE       "«%s» толькі для чытання. Захваць у іншы файл?"
+    IDS_MUI_FILECHANGENOTIFY    "Гэты файл быў зменены вонкавай праграмай. Пераадкрыць яго?"
+    IDS_MUI_FILECHANGENOTIFY2   "Гэты файл быў выдалены. Захаваць нанава?"
+    IDS_MUI_STICKYWINPOS        "Фіксаваная пазіцыя акна задзейнічана. Усякае новае акно Notepad3 запусціцца з цяперашнімі наладамі пазіцыі."
+    IDS_MUI_SAVEDSETTINGS       "Цяперашнія налады пазіцыі былі захаваны."
+    IDS_MUI_CREATEINI_FAIL      "Памылка падчас стварэння файла наладаў."
+    IDS_MUI_WRITEINI_FAIL       "Памылка пісання наладаў у файл."
+    IDS_MUI_SETTINGSNOTSAVED    "Файл наладаў не знойдзены.\nКаб захаваць змяненні стыляў, захавайце налады (F7) альбо вярніцеся да наладаў стыляў (Ctrl+F12) і эспартуйце іх."
+    IDS_MUI_EXPORT_FAIL         "Памылка экспарту наладаў стыляў «%s»."
+    IDS_MUI_REGEX_INVALID       "Памылка апрацоўкі рэгулярнага выразу. Выраз несапраўдны!"
+    IDS_MUI_DROP_NO_FILE        "Не выйшла атрымаць імя файла. \nКалі перацягваеце з 32-бітнай праграмы,\nперацягніце на паліцу прыладаў Notepad3."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE            "Сохранить изменения в «%s»?"
-    IDS_MUI_ASK_REVERT          "Восстановить файл до последнего сохраненного состояния? Несохраненные изменения будут утеряны!"
-    IDS_MUI_ASK_RECODE          "Для переоткрытия в другой кодировке требуется перезагрузка файла с диска, несохраненные изменения будут утеряны!"
-    IDS_MUI_ASK_CREATE          "«%s» не найден.\nХотите создать этот файл?"
-    IDS_MUI_PRINT_HEADER        "Имя файла, текущие дата и время|Имя файла, текущая дата|Имя файла|Оставить пустым"
-    IDS_MUI_PRINT_FOOTER        "Номер страницы|Оставить пустым"
-    IDS_MUI_PRINT_COLOR         "Обычный|Инвертировать (темный фон)|Черное на белом|Цветное на белом|Цветное на белом (кроме номеров строк)|Цвета экрана"
-    IDS_MUI_PRINT_PAGENUM       "Страница %i"
-    IDS_MUI_PRINT_EMPTY         "Эта страница не содержит какого-либо текста для печати."
-    IDS_MUI_PRINT_ERROR         "Ошибка печати «%s»!"
-    IDS_MUI_FAV_SUCCESS         "Ярлык текущего файла был добавлен в папку избранного."
-    IDS_MUI_FAV_FAILURE         "Невозможно добавить ярлык текущего файла.\nУбедитесь, что нет другого файла с таким же именем."
-    IDS_MUI_READONLY_MODIFY     "Атрибуты «%s» нельзя именить."
-    IDS_MUI_SAVEPOS             "&Сохранить положение\tCtrl+S"
-    IDS_MUI_RESETPOS            "С&бросить положение\tCtrl+R"
-    IDS_MUI_PREVIEW             "&Предпросмотр настроек\tCtrl+P"
-    IDS_MUI_PASS_FAILURE        "Парольная фраза недействительна.\nПопробовать с другой?"
-    IDS_MUI_NOPASS              "Расшифровка отменена!\nПрочитать зашифрованные данные как есть?"
+    IDS_MUI_ASK_SAVE            "Захаваць змяненні ў «%s»?"
+    IDS_MUI_ASK_REVERT          "Узнавіць файл да апошняга захаванага стану? Незахаваныя змяненні будуць згублены!"
+    IDS_MUI_ASK_RECODE          "Каб пераадкрыць у іншай кадоўцы, неабходна пераладаваць файл з дыска. Незахаваныя змяненні будуць згублены!"
+    IDS_MUI_ASK_CREATE          "«%s» не знойдены.\nХочаце стварыць гэты файл?"
+    IDS_MUI_PRINT_HEADER        "Імя файла, цяперашнія дата і час|Імя файла, цяперашняя дата|Імя файла|Пакінуць пустым"
+    IDS_MUI_PRINT_FOOTER        "Нумар старонкі|Пакінуць пустым"
+    IDS_MUI_PRINT_COLOR         "Звычайны|Інвертаваць (цёмны фон)|Чорнае на белым|Каляровае на белым|Каляровае на белым (акрамя нумароў радкоў)|Колеры экрана"
+    IDS_MUI_PRINT_PAGENUM       "Старонка %i"
+    IDS_MUI_PRINT_EMPTY         "Гэта старонка не мае ніякага тэксту для друку."
+    IDS_MUI_PRINT_ERROR         "Памылка друку «%s»!"
+    IDS_MUI_FAV_SUCCESS         "Цэтлік гэтага файла быў дададзены ў папку з абраным."
+    IDS_MUI_FAV_FAILURE         "Немагчыма дадаць цэтлік гэтага файла.\nПераканайцеся, што няма іншага файла з такой назвай."
+    IDS_MUI_READONLY_MODIFY     "Атрыбуты «%s» нельга змяніць."
+    IDS_MUI_SAVEPOS             "&Захаваць пазіцыю\tCtrl+S"
+    IDS_MUI_RESETPOS            "С&кінуць пазіцыю\tCtrl+R"
+    IDS_MUI_PREVIEW             "&Прадагляд наладаў\tCtrl+P"
+    IDS_MUI_PASS_FAILURE        "Парольны сказ несапраўдны.\nПаспрабаваць з іншым?"
+    IDS_MUI_NOPASS              "Расшыфраванне скасавана!\nПрачытаць шыфраваныя дадзеныя як ёсць?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_STY_BASESTD         "БАЗОВЫЙ (стиль по умолчанию):"
-    IDS_MUI_STY_BASE2ND         "БАЗОВЫЙ (доп. стиль по умолчанию):"
-    IDS_MUI_STY_LEXDEF          "%s - стиль по умолчанию:"
-    IDS_MUI_STY_LEXSTYLE        "Стиль %s:"
-    IDS_MUI_TITLE_RELBASE       " +++ БАЗОВЫЙ (%s) +++"
-    IDS_MUI_TITLE_FIXBASE       "БАЗОВЫЙ (%s)"
-    IDS_MUI_TITLE_RELCUR        " +++ Стиль %s: %s +++"
-    IDS_MUI_TITLE_FIXCUR        "Стиль %s: %s"
-    IDS_MUI_TITLE_RELARB        " +++ Стиль '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB        "Стиль '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT      "Связанные расширения файлов:"
+    IDS_MUI_STY_BASESTD         "БАЗАВЫ (прадвызначаны стыль):"
+    IDS_MUI_STY_BASE2ND         "БАЗАВЫ (другі прадвызначаны стыль):"
+    IDS_MUI_STY_LEXDEF          "%s - прадвызначаны стыль:"
+    IDS_MUI_STY_LEXSTYLE        "Стыль %s:"
+    IDS_MUI_TITLE_RELBASE       " +++ БАЗАВЫ (%s) +++"
+    IDS_MUI_TITLE_FIXBASE       "БАЗАВЫ (%s)"
+    IDS_MUI_TITLE_RELCUR        " +++ Стыль %s: %s +++"
+    IDS_MUI_TITLE_FIXCUR        "Стыль %s: %s"
+    IDS_MUI_TITLE_RELARB        " +++ Стыль '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB        "Стыль '%s' (%s)"
+    IDS_MUI_ASSOCIATED_EXT      "Звязаныя пашырэнні файлаў:"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "(be-BY) Пераклад by alexantr"
-    IDS_MUI_CMDLINEHELP         "Параметры командной строки\n\nфайл\tДолжен быть последним аргументом,\n\tбез пробелов по умолчанию.\n+\tПринять несколько аргументов файлов\n\t(с кодированными пробелами).\n-\tПринять один аргумент файла\n\t(без кодированнных пробелов).\n…\tКодировка\n\t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\n…\tФормат окончаний строк\n(/crlf, /cr, /lf).\n/e\tИсходная кодировка файла.\n/g\tПерейти к указанной позиции\n\t(/g -1 конец файла).\n/m\tНайти указанный текст\n\t(/m- последний, /mr regex, /mb бэкслэш).\n/l\tАвтообновление измененных файлов.\n/q\tФорсировать создание новых файлов\n\tбез запроса.\n/s\tВыбрать схему синтаксиса.\n/d\tВыбрать схему текста по умолчанию.\n/h\tВыбрать схему Web Source Code.\n/x\tВыбрать схему XML Document.\n/c\tОткрыть новое окно и вставить\n\tсодержимое буфера обмена.\n/b\tОткрыть новое окно для сбора\n\tизменений буфера обмена.\n/n\tВсегда открывать новое окно\n\t(/ns один экземпляр файла).\n/r\tПереиспользовать окно\n\t(/rs один экземпляр файла).\n/p\tЗадать положение и размер окна\n\t(/p0, /ps, /pf,l,t,r,b,m).\n/t\tЗадать заголовок окна.\n/i\tЗапустить иконкой в области уведомлений.\n/o\tПоверх других окон.\n/f\tЗадать ini-файл (/f0 без ini-файла).\n/u\tЗапуск с повышенными полномочиями.\n/v\tРаспечатать файл и выйти.\n/vd\tРаспечатать файл (открыть диалог печати).\n/z\tПропустить следующий (применимо\n\tдля поиска с регулярным выражением)."
-    IDS_MUI_EXAMPLE_TEXT        "У Іўі худы жвавы чорт у зялёнай камізэльцы пабег пад’есці фаршу з юшкай, 0123456789."
-    IDS_MUI_ZERO_LEN_MATCH      "^ Совпадение нулевой длины"
+    IDS_MUI_TRANSL_AUTHOR       "(be-BY) Пераклад: alexantr"
+    IDS_MUI_EXAMPLE_TEXT        "У Іўі худы жвавы чорт у зялёнай камізэльцы пабег пад'есці фаршу з юшкай, 0123456789."
+    IDS_MUI_ZERO_LEN_MATCH      "^ Супадзенне нулявой даўжыні"
+END
+
+STRINGTABLE
+BEGIN
+IDS_MUI_CMDLINEHELP "\
+Параметры камандавага радку\r\n\r\n\
+файл\tПавінен быць апошнім аргументам,\n\
+ \tпершапачаткова без прабелаў.\n\
++\tПрыняць некалькі\r\n\
+ \tаргументаў файлаў\r\n\
+ \t(з кадаванымі прабеламі).\r\n\
+-\tПрыняць адзін аргумент файла\r\n\
+ \t(без кадаваных прабелаў).\r\n\
+…\tКадоўка\r\n\
+ \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+…\tФармат канчаткаў радкоў\r\n\
+ \t(/crlf, /cr, /lf).\r\n\
+/e\tЗыходная кадоўка файла.\r\n\
+/g\tПерайсці да зазначанага месца\r\n\
+ \t(/g -1 канец файла).\r\n\
+/m\tЗнайсці названы тэкст\r\n\
+ \t(/m- апошні, /mr regex, /mb бэкслэш).\r\n\
+/l\tАўтаабнаўленне змененых файлаў.\r\n\
+/q\tПрымусіць ствараць новыя файлы\r\n\
+ \tбез запыту.\r\n\
+/s\tВыбраць схему сінтаксісу.\r\n\
+/d\tВыбраць прадвызначаную схему тэкста.\r\n\
+/h\tВыбраць схему Web Source Code.\r\n\
+/x\tВыбраць схему XML Document.\r\n\
+/c\tАдкрыць новае акно і уставіць\r\n\
+ \tзмесціва буфера абмену.\r\n\
+/b\tАдкрыць новае акно для збірання\r\n\
+ \tзмяненняў буфера абмена.\r\n\
+/n\tЗаўсёды адкрываць новае акно\r\n\
+ \t(/ns адзін экзэмпляр файла).\r\n\
+/r\tВыкарыстаць былое акно\r\n\
+ \t(/rs адзін экзэмпляр файла).\r\n\
+/p\tЗадаць пазіцыю і памер акна\r\n\
+ \t(/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/t\tЗадаць назву акна.\r\n\
+/i\tЗапусціць значком на паліцы задач.\r\n\
+/o\tЗверху іншых вокнаў.\r\n\
+/f\tЗадаць ini-файл (/f0 без ini-файла).\r\n\
+/u\tЗапусціць з павышанымі паўнамоцтвамі.\r\n\
+/v\tНадрукаваць файл і выйсці.\r\n\
+/vd\tНадрукаваць файл (адкрыць дыялог друку).\r\n\
+/z\tПрапусціць наступны (прыдатна\r\n\
+ \tдля пошуку з рэгулярным выразам).\
+"
+
+IDS_MUI_STYLEEDIT_HELP "\
+Пашырэнні файлаў павінны быць падзелены сімвалам ;\r\n\r\n\
+Фармат стылю:\r\n\
+font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
+fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+Уласцівасці стыляў можна скапіяваць і ўставіць альбо перацягнуць.\
+"
 END
 
 STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset204 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fswiss\\fcharset204 Arial;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 Development:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'d0\\'e0\\'f1\\'ef\\'f0\\'e0\\'f6\\'ee\\'a2\\'ea\\'e0\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 \\'ea\\'e0\\'ed\\'f2\\'f0\\'fb\\'e1'\\'fe\\'f2\\'e0\\'f0\\'e0\\'a2:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'ca\\'e0\\'ed\\'f2\\'f0\\'fb\\'e1'\\'fe\\'f2\\'e0\\'f0\\'fb\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / \\'e1\\'b3\\'e1\\'eb\\'b3\\'ff\\'f2\\'fd\\'ea\\'b3:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / \\f1\\'c1\\'b3\\'e1\\'eb\\'b3\\'ff\\'f2\\'fd\\'ea\\'b3\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 \\'ef\\'e0\\'f6\\'e2\\'e5\\'f0\\'e4\\'e6\\'e0\\'ed\\'ed\\'ff:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'cf\\'e0\\'e4\\'e7\\'ff\\'ea\\'b3\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 \\'f0\\'fd\\'f1\\'f3\\'f0\\'f1\\'fb:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'d0\\'fd\\'f1\\'f3\\'f0\\'f1\\'fb\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
-\\cf0 \\fs20\\b1\\ul1 \\'eb\\'b3\\'f6\\'fd\\'ed\\'e7\\'b3\\'b3:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'cb\\'b3\\'f6\\'fd\\'ed\\'e7\\'b3\\'b3\\f0 :\\ul0\\b0\\fs18\\par\
 "
 
 IDS_MUI_ABOUT_RTF_6  "\
-\\cf0 \\fs20\\b1\\ul1 \\'eb\\'b3\\'f6\\'fd\\'ed\\'e7\\'b3\\'ff Notepad3:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\'cb\\'b3\\'f6\\'fd\\'ed\\'e7\\'b3\\'ff\\f0  Notepad3:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2015-2018 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\

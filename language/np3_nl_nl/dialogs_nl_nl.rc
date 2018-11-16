@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -68,7 +68,18 @@ BEGIN
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
     PUSHBUTTON      "Kopieer Versies Tekst",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
-    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,360,168
+    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,360,170
+END
+
+IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 280, 160
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Command Line Help"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+ICON            IDI_MUI_RUN, IDC_STATIC, 10, 7, 20, 20
+DEFPUSHBUTTON   "OK", IDOK, 220, 137, 55, 16
+//LTEXT           "_place_holder_", IDC_CMDLINEHELP, 40, 7, 226, 290
+EDITTEXT        IDC_CMDLINEHELP, 36, 7, 230, 120, ES_MULTILINE | ES_READONLY | WS_VSCROLL | NOT WS_BORDER
 END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 273, 142
@@ -283,7 +294,7 @@ BEGIN
     GROUPBOX        "Info",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
     LTEXT           "Aanpassen Schema's",IDC_TITLE,220,25,200,12
-    LTEXT           "Bestand extensies moeten gescheiden door ';'\n\nStijl formaat:\nfont:Name;size:[+/-]nn.mm;bold;italic;underline;\nfore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\n\nKopieer formaat: gebruik 'kopiëren en plakken' of 'slepen en neerzetten'.",IDC_STATIC,197,50,252,74
+    EDITTEXT        IDC_STYLEEDIT_HELP, 197, 50, 252, 74, ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 102
