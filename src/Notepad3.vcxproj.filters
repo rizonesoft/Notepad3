@@ -386,6 +386,9 @@
     <ClInclude Include="AccelKeys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\uthash\utstack.h">
+      <Filter>Source Files\uthash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">

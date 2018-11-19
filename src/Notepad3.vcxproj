@@ -453,6 +453,7 @@
     <ClInclude Include="..\uthash\uthash.h" />
     <ClInclude Include="..\uthash\utlist.h" />
     <ClInclude Include="..\uthash\utringbuffer.h" />
+    <ClInclude Include="..\uthash\utstack.h" />
     <ClInclude Include="..\uthash\utstring.h" />
     <ClInclude Include="AccelKeys.h" />
     <ClInclude Include="ChooseFont\ChooseFont.h" />
