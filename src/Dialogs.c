@@ -293,6 +293,7 @@ INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
       SetWindowText(hwnd, szTitle);
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
       //SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)IDC_CMDLINEHELP, TRUE);
+      CenterDlgInParent(hwnd);
     }
     break;
 
