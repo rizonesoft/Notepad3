@@ -546,12 +546,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   // set AppUserModelID
   PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
 
-  // Command Line Help Dialog
-  if (s_flagDisplayHelp) {
-    DisplayCmdLineHelp(NULL);
-    return 0;
-  }
-
   // Adapt window class name
   if (s_flagIsElevated) {
     StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"U");
@@ -640,6 +634,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   if (s_hRichEdit == INVALID_HANDLE_VALUE) {
     //s_hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
     s_hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h
+  }
+
+  // Command Line Help Dialog
+  if (s_flagDisplayHelp) {
+    DisplayCmdLineHelp(NULL);
+    _CleanUpResources(NULL, false);
+    return 0;
   }
 
   s_msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");

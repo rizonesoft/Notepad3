@@ -3108,7 +3108,10 @@ void CenterDlgInParent(HWND hDlg)
 
   HWND const hParent = GetParent(hDlg);
   RECT rcParent;
-  GetWindowRect(hParent, &rcParent);
+  if (hParent)
+    GetWindowRect(hParent, &rcParent);
+  else
+    GetWindowRect(GetDesktopWindow(), &rcParent);
 
   HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
 
@@ -3136,7 +3139,7 @@ void CenterDlgInParent(HWND hDlg)
 
   SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
-  //SnapToDefaultButton(hDlg);
+  //~SnapToDefaultButton(hDlg);
 }
 
 
