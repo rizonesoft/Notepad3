@@ -46,7 +46,7 @@ struct FontFaceInfo
         StringCchCopy(this->fontFaceName, ARRAYSIZE(this->fontFaceName), fontFaceName);
     }
 
-    ULONG PackedFontAttributes()
+    ULONG const PackedFontAttributes() const
     {
         return MAKELONG(fontWeight, MAKEWORD(fontStyle, fontStretch));
     }

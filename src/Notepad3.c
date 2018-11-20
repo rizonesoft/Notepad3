@@ -623,7 +623,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     if (res == 0) { // last try
       Globals.iPrefLANGID = GetUserDefaultUILanguage();
       LCID const lcid = MAKELCID(Globals.iPrefLANGID, SORT_DEFAULT);
-      res = LCIDToLocaleName(lcid, Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), 0);
+      /*res = */LCIDToLocaleName(lcid, Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), 0);
     }
   }
 
@@ -2974,7 +2974,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  char chMaxPathBuffer[MAX_PATH + 1] = { '\0' };
   WCHAR tchMaxPathBuffer[MAX_PATH + 1] = { L'\0' };
 
   switch(LOWORD(wParam))
@@ -3966,8 +3965,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INSERT_SHORTDATE:
     case IDM_EDIT_INSERT_LONGDATE:
       {
-        WCHAR tchDate[64] = { L'\0' };
-        WCHAR tchTime[64] = { L'\0' };
         WCHAR tchDateTime[128] = { L'\0' };
         WCHAR tchTemplate[128] = { L'\0' };
         SYSTEMTIME st;
@@ -3976,7 +3973,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         GetLocalTime(&st);
 
         StringCchCopyW(tchTemplate, COUNTOF(tchTemplate),
-          (LOWORD(wParam) == IDM_EDIT_INSERT_SHORTDATE) ? Settings2.DateTimeLong : Settings2.DateTimeLong);
+          (LOWORD(wParam) == IDM_EDIT_INSERT_SHORTDATE) ? Settings2.DateTimeShort : Settings2.DateTimeLong);
 
         if (StringCchLenW(tchTemplate,0) > 0)
         {
@@ -3993,6 +3990,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           wcsftime(tchDateTime,COUNTOF(tchDateTime),tchTemplate,&sst);
         }
         else {
+          WCHAR tchDate[64] = { L'\0' };
+          WCHAR tchTime[64] = { L'\0' };
           GetDateFormat(LOCALE_USER_DEFAULT,(
             LOWORD(wParam) == IDM_EDIT_INSERT_SHORTDATE) ? DATE_SHORTDATE : DATE_LONGDATE,
             &st,NULL,tchDate,COUNTOF(tchDate));
@@ -4045,6 +4044,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SUCCEEDED(CoCreateGuid(&guid))) {  
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
             StrTrimW(tchMaxPathBuffer, L"{}");
+            char chMaxPathBuffer[MAX_PATH + 1] = { '\0' };
             if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
               _BEGIN_UNDO_ACTION_;
               SendMessage(Globals.hwndEdit,SCI_REPLACESEL,0,(LPARAM)chMaxPathBuffer);
@@ -6741,13 +6741,13 @@ void LoadSettings()
     LoadIniSection(L"Settings", pIniSection, cchIniSection);
     // --------------------------------------------------------------------------
 
-#define GET_BOOL_VALUE_FROM_INISECTION(VARNAME,DEFAULT)                         \
-  Defaults.##VARNAME = DEFAULT;                                              \
-  Settings.##VARNAME = IniSectionGetBool(pIniSection, STRGW(VARNAME), Defaults.##VARNAME)
+#define GET_BOOL_VALUE_FROM_INISECTION(VARNAME,DEFAULT) \
+  Defaults.VARNAME = DEFAULT;                       \
+  Settings.VARNAME = IniSectionGetBool(pIniSection, STRGW(VARNAME), Defaults.VARNAME)
 
-#define GET_INT_VALUE_FROM_INISECTION(VARNAME,DEFAULT,MIN,MAX)                  \
-  Defaults.##VARNAME = DEFAULT;                                              \
-  Settings.##VARNAME = clampi(IniSectionGetInt(pIniSection, STRGW(VARNAME), Defaults.##VARNAME),MIN,MAX)
+#define GET_INT_VALUE_FROM_INISECTION(VARNAME,DEFAULT,MIN,MAX) \
+  Defaults.VARNAME = DEFAULT;                              \
+  Settings.VARNAME = clampi(IniSectionGetInt(pIniSection, STRGW(VARNAME), Defaults.VARNAME),MIN,MAX)
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveRecentFiles, true);
     GET_BOOL_VALUE_FROM_INISECTION(PreserveCaretPos, false);
@@ -7076,8 +7076,8 @@ void LoadSettings()
 //
 
 #define SAVE_VALUE_IF_NOT_EQ_DEFAULT(TYPE,VARNAME)                           \
-  if (Settings.##VARNAME != Defaults.##VARNAME) {                            \
-    IniSectionSet##TYPE(pIniSection, STRGW(VARNAME), Settings.##VARNAME);  \
+  if (Settings.VARNAME != Defaults.VARNAME) {                            \
+    IniSectionSet##TYPE(pIniSection, STRGW(VARNAME), Settings.VARNAME);  \
   }
 
 // ----------------------------------------------------------------------------
@@ -7085,8 +7085,6 @@ void LoadSettings()
 
 void SaveSettings(bool bSaveSettingsNow) 
 {
-  WCHAR wchTmp[MAX_PATH] = { L'\0' };
-
   if (StringCchLenW(Globals.IniFile, COUNTOF(Globals.IniFile)) == 0) { return; }
 
   if (!s_bEnableSaveSettings) { return; }
@@ -7142,6 +7140,8 @@ void SaveSettings(bool bSaveSettingsNow)
     if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags) {
       IniSectionSetInt(pIniSection, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);
     }
+    
+    WCHAR wchTmp[MAX_PATH] = { L'\0' };
     if (StringCchCompareXIW(Settings.OpenWithDir, Defaults.OpenWithDir) != 0) {
       PathRelativeToApp(Settings.OpenWithDir, wchTmp, COUNTOF(wchTmp), false, true, Flags.PortableMyDocs);
       IniSectionSetString(pIniSection, L"OpenWithDir", wchTmp);
@@ -7309,27 +7309,26 @@ void SaveSettings(bool bSaveSettingsNow)
 //
 void ParseCommandLine()
 {
-  LPWSTR lp1,lp2,lp3;
-  bool bContinue = true;
-  bool bIsFileArg = false;
-  bool bIsNotepadReplacement = false;
-
   LPWSTR lpCmdLine = GetCommandLine();
-
   if (StrIsEmpty(lpCmdLine)) { return; }
 
   // Good old console can also send args separated by Tabs
   StrTab2Space(lpCmdLine);
 
   DocPos const len = (DocPos)(StringCchLenW(lpCmdLine,0) + 2UL);
-  lp1 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
-  lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
-  lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+  LPWSTR lp1 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+  LPWSTR lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
+  LPWSTR lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
 
-  if (lp1 && lp2 && lp3) {
+  if (lp1 && lp2 && lp3) 
+  {
+    bool bIsNotepadReplacement = false;
+    
     // Start with 2nd argument
     ExtractFirstArgument(lpCmdLine, lp1, lp3, (int)len);
 
+    bool bContinue = true;
+    bool bIsFileArg = false;
     while (bContinue && ExtractFirstArgument(lp3, lp1, lp2, (int)len)) {
       // options
       if (lp1[1] == L'\0') {
@@ -7802,10 +7801,11 @@ void LoadFlags()
 static bool  _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
-  WCHAR tchBuild[MAX_PATH] = { L'\0' };
   ExpandEnvironmentStrings(lpszFile,tchFileExpanded,COUNTOF(tchFileExpanded));
 
-  if (PathIsRelative(tchFileExpanded)) {
+  if (PathIsRelative(tchFileExpanded)) 
+  {
+    WCHAR tchBuild[MAX_PATH] = { L'\0' };
     // program directory
     StringCchCopy(tchBuild,COUNTOF(tchBuild),lpszModule);
     StringCchCopy(PathFindFileName(tchBuild),COUNTOF(tchBuild),tchFileExpanded);
@@ -8312,12 +8312,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
   if (!Settings.ShowStatusbar) { return; }
 
-  bool bIsUpdateNeeded = bForceRedraw;
-
   static sectionTxt_t tchStatusBar[STATUS_SECTOR_COUNT];
-  static WCHAR tchFRStatus[128] = { L'\0' };
-  static WCHAR tchTmp[32] = { L'\0' };
-
 
   // ------------------------------------------------------
   // common calculations 
@@ -8329,19 +8324,21 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   DocPos const iSelStart         = SciCall_GetSelectionStart();
   DocPos const iSelEnd           = SciCall_GetSelectionEnd();
 
-
   bool const   bIsSelectionEmpty = SciCall_IsSelectionEmpty();
   bool const   bIsSelCountable   = !(bIsSelectionEmpty || SciCall_IsSelectionRectangle());
 
-  // ------------------------------------------------------
+  bool bIsUpdateNeeded = bForceRedraw;
 
   static WCHAR tchLn[32] = { L'\0' };
-  static DocLn s_iLnFromPos = -1;
   static WCHAR tchLines[32] = { L'\0' };
-  static DocLn s_iLnCnt = -1;
+
+  // ------------------------------------------------------
 
   if (s_iStatusbarVisible[STATUS_DOCLINE] || Globals.hwndDlgFindReplace)
   {
+    static DocLn s_iLnFromPos = -1;
+    static DocLn s_iLnCnt = -1;
+
     if (s_iLnFromPos != iLnFromPos) {
       StringCchPrintf(tchLn, COUNTOF(tchLn), DOCPOSFMTW, iLnFromPos + 1);
       FormatNumberStr(tchLn);
@@ -8365,7 +8362,6 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   static WCHAR tchCol[32] = { L'\0' };
-  static WCHAR tchCols[32] = { L'\0' };
 
   if (s_iStatusbarVisible[STATUS_DOCCOLUMN] || Globals.hwndDlgFindReplace)
   {
@@ -8379,6 +8375,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
 
     static DocPos s_iCols = -1;
+    static WCHAR tchCols[32] = { L'\0' };
     DocPos const iCols = SciCall_GetColumn(iLineBack);
     if (s_iCols != iCols) {
       StringCchPrintf(tchCols, COUNTOF(tchCols), DOCPOSFMTW, iCols);
@@ -8396,14 +8393,13 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  static WCHAR tchChr[32] = { L'\0' };
-  static WCHAR tchChrs[32] = { L'\0' };
-
   if (s_iStatusbarVisible[STATUS_DOCCHAR])
   {
+    static WCHAR tchChr[32] = { L'\0' };
+    static WCHAR tchChrs[32] = { L'\0' };
+    static DocPos s_iChr = -1;
     DocPos const chrOffset = Globals.bZeroBasedCharacterCount ? 0 : 1;
 
-    static DocPos s_iChr = -1;
     DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
     if (s_iChr != iChr) {
       StringCchPrintf(tchChr, COUNTOF(tchChr), DOCPOSFMTW, iChr + chrOffset);
@@ -8428,17 +8424,18 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  // number of selected chars in statusbar
   static WCHAR tchSel[32] = { L'\0' };
-  static WCHAR tchSelB[64] = { L'\0' };
-  static bool s_bIsSelCountable = false;
-  static DocPos s_iSelStart = -1;
-  static DocPos s_iSelEnd = -1;
 
+  // number of selected chars in statusbar
   if (s_iStatusbarVisible[STATUS_SELECTION] || s_iStatusbarVisible[STATUS_SELCTBYTES] || Globals.hwndDlgFindReplace)
   {
-    if ((s_bIsSelCountable != bIsSelCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)) {
+    static bool s_bIsSelCountable = false;
+    static DocPos s_iSelStart = -1;
+    static DocPos s_iSelEnd = -1;
 
+    if ((s_bIsSelCountable != bIsSelCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)) 
+    {
+      static WCHAR tchSelB[64] = { L'\0' };
       if (bIsSelCountable)
       {
         const DocPos iSel = (DocPos)SendMessage(Globals.hwndEdit, SCI_COUNTCHARACTERS, iSelStart, iSelEnd);
@@ -8465,12 +8462,11 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // number of selected lines in statusbar
-  static WCHAR tchLinesSelected[32] = { L'\0' };
-  static bool s_bIsSelectionEmpty = true;
-  static DocLn s_iLinesSelected = -1;
-
   if (s_iStatusbarVisible[STATUS_SELCTLINES])
   {
+    static bool s_bIsSelectionEmpty = true;
+    static DocLn s_iLinesSelected = -1;
+
     DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
     DocPos const iStartOfLinePos = SciCall_PositionFromLine(iLineEnd);
@@ -8479,6 +8475,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected))
     {
+      static WCHAR tchLinesSelected[32] = { L'\0' };
       if (bIsSelectionEmpty) {
         tchLinesSelected[0] = L'-';
         tchLinesSelected[1] = L'-';
@@ -8499,11 +8496,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // try calculate expression of selection
-  static WCHAR tchExpression[32] = { L'\0' };
-  static int s_iExErr = -3;
-
   if (s_iStatusbarVisible[STATUS_TINYEXPR])
   {
+    static WCHAR tchExpression[32] = { L'\0' };
+    static int s_iExErr = -3;
     s_dExpression = 0.0;
     tchExpression[0] = L'-';
     tchExpression[1] = L'-';
@@ -8556,13 +8552,13 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  // number of occurrence marks found
   static WCHAR tchOcc[32] = { L'\0' };
-  static int s_iMarkOccurrencesCount = -111;
-  static bool s_bMOVisible = false;
 
+  // number of occurrence marks found
   if (s_iStatusbarVisible[STATUS_OCCURRENCE] || Globals.hwndDlgFindReplace)
   {
+    static int s_iMarkOccurrencesCount = -111;
+    static bool s_bMOVisible = false;
     if ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount))
     {
       if ((Globals.iMarkOccurrencesCount >= 0) && !Settings.MarkOccurrencesMatchVisible)
@@ -8573,6 +8569,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
           FormatNumberStr(tchOcc);
         }
         else {
+          static WCHAR tchTmp[32] = { L'\0' };
           StringCchPrintf(tchTmp, COUNTOF(tchTmp), L"%i", Globals.iMarkOccurrencesCount);
           FormatNumberStr(tchTmp);
           StringCchPrintf(tchOcc, COUNTOF(tchOcc), L">= %s", tchTmp);
@@ -8593,13 +8590,13 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // number of replaced pattern
-  static WCHAR tchRepl[32] = { L'\0' };
-  static int s_iReplacedOccurrences = -1;
-
   if (s_iStatusbarVisible[STATUS_OCCREPLACE] || Globals.hwndDlgFindReplace)
   {
+    static int s_iReplacedOccurrences = -1;
+
     if (s_iReplacedOccurrences != Globals.iReplacedOccurrences)
     {
+      static WCHAR tchRepl[32] = { L'\0' };
       if (Globals.iReplacedOccurrences > 0)
       {
         StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", Globals.iReplacedOccurrences);
@@ -8619,13 +8616,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // ------------------------------------------------------
 
   // get number of bytes in current encoding
-  static WCHAR tchBytes[32] = { L'\0' };
-  static DocPos s_iTextLength = -1;
-
   if (s_iStatusbarVisible[STATUS_DOCSIZE])
   {
+    static DocPos s_iTextLength = -1;
     DocPos const iTextLength = SciCall_GetTextLength();
     if (s_iTextLength != iTextLength) {
+      static WCHAR tchBytes[32] = { L'\0' };
       StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
 
       StringCchPrintf(tchStatusBar[STATUS_DOCSIZE], txtWidth, L"%s%s%s",
@@ -8637,10 +8633,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  static int s_iEncoding = -1;
-
   if (s_iStatusbarVisible[STATUS_CODEPAGE])
   {
+    static int s_iEncoding = -1;
     int const iEncoding = Encoding_Current(CPI_GET);
     if (s_iEncoding != iEncoding) {
       Encoding_SetLabel(iEncoding);
@@ -8654,10 +8649,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  static int s_iEOLMode = -1;
-
   if (s_iStatusbarVisible[STATUS_EOLMODE]) 
   {
+    static int s_iEOLMode = -1;
     int const _eol_mode = SciCall_GetEOLMode();
 
     if (s_iEOLMode != _eol_mode) 
@@ -8680,10 +8674,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  static bool s_bIsOVR = -1;
-
   if (s_iStatusbarVisible[STATUS_OVRMODE])
   {
+    static bool s_bIsOVR = -1;
     bool const bIsOVR = (bool)SendMessage(Globals.hwndEdit, SCI_GETOVERTYPE, 0, 0);
     if (s_bIsOVR != bIsOVR) {
       if (bIsOVR)
@@ -8701,10 +8694,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  static bool s_bUse2ndDefault = -1;
-
   if (s_iStatusbarVisible[STATUS_2ND_DEF])
   {
+    static bool s_bUse2ndDefault = -1;
     bool const bUse2ndDefault = Style_GetUse2ndDefault();
     if (s_bUse2ndDefault != bUse2ndDefault)
     {
@@ -8721,15 +8713,13 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   }
   // ------------------------------------------------------
 
-  static int s_iCurLexer = -1;
-  static WCHAR tchLexerName[MINI_BUFFER];
-
   if (s_iStatusbarVisible[STATUS_LEXER])
   {
-
+    static int s_iCurLexer = -1;
     int const iCurLexer = Style_GetCurrentLexerRID();
     if (s_iCurLexer != iCurLexer)
     {
+      static WCHAR tchLexerName[MINI_BUFFER];
       if (Style_IsCurLexerStandard())
         Style_GetLexerDisplayName(NULL, tchLexerName, MINI_BUFFER); // don't distinguish between STD/2ND
       else
@@ -8780,8 +8770,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   // --------------------------------------------------------------------------
 
   // update Find/Replace dialog (if any)
-  static WCHAR tchReplOccs[32] = { L'\0' };
   if (Globals.hwndDlgFindReplace) {
+    static WCHAR tchReplOccs[32] = { L'\0' };
     if (Globals.iReplacedOccurrences > 0)
       StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", Globals.iReplacedOccurrences);
     else
@@ -8789,6 +8779,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     const WCHAR* SBFMT = L" %s%s / %s     %s%s     %s%s     %s%s     %s%s     (  %s  )              ";
 
+    static WCHAR tchFRStatus[128] = { L'\0' };
     StringCchPrintf(tchFRStatus, COUNTOF(tchFRStatus), SBFMT,
       s_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines,
       s_mxSBPrefix[STATUS_DOCCOLUMN], tchCol,
@@ -10297,24 +10288,22 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
 //
 void SetNotifyIconTitle(HWND hwnd)
 {
-
   NOTIFYICONDATA nid;
-  SHFILEINFO shfi;
-  WCHAR tchTitle[256] = { L'\0' };
-  WCHAR tchFormat[32] = { L'\0' };
-
   ZeroMemory(&nid,sizeof(NOTIFYICONDATA));
   nid.cbSize = sizeof(NOTIFYICONDATA);
   nid.hWnd = hwnd;
   nid.uID = 0;
   nid.uFlags = NIF_TIP;
 
+  WCHAR tchTitle[256] = { L'\0' };
   if (StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt))) {
+    WCHAR tchFormat[32] = { L'\0' };
     GetLngString(IDS_MUI_TITLEEXCERPT,tchFormat,COUNTOF(tchFormat));
     StringCchPrintf(tchTitle,COUNTOF(tchTitle),tchFormat,s_wchTitleExcerpt);
   }
 
   else if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
+    SHFILEINFO shfi;
     SHGetFileInfo2(Globals.CurrentFile,FILE_ATTRIBUTE_NORMAL,
       &shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
     PathCompactPathEx(tchTitle,shfi.szDisplayName,COUNTOF(tchTitle)-4,0);
@@ -10340,10 +10329,6 @@ void SetNotifyIconTitle(HWND hwnd)
 //
 void InstallFileWatching(LPCWSTR lpszFile)
 {
-
-  WCHAR tchDirectory[MAX_PATH] = { L'\0' };
-  HANDLE hFind;
-
   // Terminate
   if (!Settings.FileWatchingMode || !lpszFile || StringCchLen(lpszFile,MAX_PATH) == 0)
   {
@@ -10373,11 +10358,12 @@ void InstallFileWatching(LPCWSTR lpszFile)
     else
       SetTimer(NULL,ID_WATCHTIMER,Settings2.FileCheckInverval,WatchTimerProc);
 
+    WCHAR tchDirectory[MAX_PATH] = { L'\0' };
     StringCchCopy(tchDirectory,COUNTOF(tchDirectory),lpszFile);
     PathRemoveFileSpec(tchDirectory);
 
     // Save data of current file
-    hFind = FindFirstFile(Globals.CurrentFile,&s_fdCurFile);
+    HANDLE hFind = FindFirstFile(Globals.CurrentFile,&s_fdCurFile);
     if (hFind != INVALID_HANDLE_VALUE)
       FindClose(hFind);
     else

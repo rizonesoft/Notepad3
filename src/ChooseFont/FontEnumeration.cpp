@@ -74,11 +74,9 @@ HRESULT GetLocalizedName(IDWriteLocalizedStrings* names, const WCHAR* locale, OU
 
 HRESULT GetFontFamilyName(IDWriteFontFamily* fontFamily, const WCHAR* locale, OUT std::wstring& familyName)
 {
-    HRESULT hr = S_OK;
-
     IDWriteLocalizedStrings* familyNames = nullptr;
 
-    hr = fontFamily->GetFamilyNames(&familyNames);
+    HRESULT hr = fontFamily->GetFamilyNames(&familyNames);
 
     if (SUCCEEDED(hr))
     {
@@ -101,11 +99,9 @@ HRESULT GetFontFamilyName(IDWriteFontFamily* fontFamily, const WCHAR* locale, OU
 
 HRESULT GetFontFaceName(IDWriteFont* font, const WCHAR* locale, OUT std::wstring& faceName)
 {
-    HRESULT hr = S_OK;
-
     IDWriteLocalizedStrings* faceNames = nullptr;
 
-    hr = font->GetFaceNames(&faceNames);
+    HRESULT hr = font->GetFaceNames(&faceNames);
 
     if (SUCCEEDED(hr))
     {
@@ -157,12 +153,10 @@ HRESULT GetFontFamily(IDWriteFontCollection* fontCollection, const WCHAR* fontFa
 
 HRESULT GetFonts(IDWriteFontCollection* fontCollection, const WCHAR* fontFamilyName, IN OUT std::vector<IDWriteFont*>& fonts)
 {
-    HRESULT hr = S_OK;
-
     IDWriteFontFamily* fontFamily = nullptr;
     IDWriteFont*       font       = nullptr;
 
-    hr = GetFontFamily(fontCollection, fontFamilyName, &fontFamily);
+    HRESULT hr = GetFontFamily(fontCollection, fontFamilyName, &fontFamily);
 
     if (SUCCEEDED(hr))
     {

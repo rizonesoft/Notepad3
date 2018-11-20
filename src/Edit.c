@@ -1878,7 +1878,6 @@ void EditChar2Hex(HWND hwnd) {
   }
 
   char  ch[32] = { '\0' };
-  WCHAR wch[32] = { L'\0' };
 
   EditSetSelectionEx(hwnd, iSelStart, iSelEnd, -1, -1);
   
@@ -1891,6 +1890,7 @@ void EditChar2Hex(HWND hwnd) {
     StringCchCopyA(ch, COUNTOF(ch), "\\x00");
   }
   else {
+    WCHAR wch[32] = { L'\0' };
     MultiByteToWideChar(Encoding_SciCP, 0, ch, -1, wch, COUNTOF(wch));
     if (wch[0] <= 0xFF)
       StringCchPrintfA(ch, COUNTOF(ch), "\\x%02X", wch[0] & 0xFF);
@@ -2069,44 +2069,41 @@ void EditModifyNumber(HWND hwnd,bool bIncrease) {
       char chFormat[32] = { '\0' };
       if (!StrChrIA(chNumber, 'x') && sscanf_s(chNumber, "%ui", &iNumber) == 1) {
         iWidth = (int)StringCchLenA(chNumber, COUNTOF(chNumber));
-        if (iNumber >= 0) {
-          if (bIncrease && (iNumber < INT_MAX))
-            iNumber++;
-          if (!bIncrease && (iNumber > 0))
-            iNumber--;
+        if (bIncrease && (iNumber < UINT_MAX))
+          iNumber++;
+        if (!bIncrease && (iNumber > 0))
+          iNumber--;
 
-          StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%0%ii", iWidth);
-          StringCchPrintfA(chNumber, COUNTOF(chNumber), chFormat, iNumber);
-          SciCall_ReplaceSel(chNumber);
-          SciCall_SetSel(iSelStart, iSelStart + (DocPos)StringCchLenA(chNumber, COUNTOF(chNumber)));
-        }
+        StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%0%ii", iWidth);
+        StringCchPrintfA(chNumber, COUNTOF(chNumber), chFormat, iNumber);
+        SciCall_ReplaceSel(chNumber);
+        SciCall_SetSel(iSelStart, iSelStart + (DocPos)StringCchLenA(chNumber, COUNTOF(chNumber)));
       }
-      else if (sscanf_s(chNumber, "%x", &iNumber) == 1) {
-        bool bUppercase = false;
+      else if (sscanf_s(chNumber, "%x", &iNumber) == 1) 
+      {
         iWidth = (int)StringCchLenA(chNumber, COUNTOF(chNumber)) - 2;
-        if (iNumber >= 0) {
-          if (bIncrease && iNumber < INT_MAX)
-            iNumber++;
-          if (!bIncrease && iNumber > 0)
-            iNumber--;
-          for (int i = (int)StringCchLenA(chNumber, COUNTOF(chNumber)) - 1; i >= 0; i--) {
-            if (IsCharLowerA(chNumber[i])) {
-              break;
-            }
-            if (IsCharUpperA(chNumber[i])) {
-              bUppercase = true;
-              break;
-            }
+        if (bIncrease && iNumber < UINT_MAX)
+          iNumber++;
+        if (!bIncrease && iNumber > 0)
+          iNumber--;
+        bool bUppercase = false;
+        for (int i = (int)StringCchLenA(chNumber, COUNTOF(chNumber)) - 1; i >= 0; i--) {
+          if (IsCharLowerA(chNumber[i])) {
+            break;
           }
-          if (bUppercase)
-            StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%#0%iX", iWidth);
-          else
-            StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%#0%ix", iWidth);
-
-          StringCchPrintfA(chNumber, COUNTOF(chNumber), chFormat, iNumber);
-          SciCall_ReplaceSel(chNumber);
-          SciCall_SetSel(iSelStart, iSelStart + (DocPos)StringCchLenA(chNumber, COUNTOF(chNumber)));
+          if (IsCharUpperA(chNumber[i])) {
+            bUppercase = true;
+            break;
+          }
         }
+        if (bUppercase)
+          StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%#0%iX", iWidth);
+        else
+          StringCchPrintfA(chFormat, COUNTOF(chFormat), "%%#0%ix", iWidth);
+
+        StringCchPrintfA(chNumber, COUNTOF(chNumber), chFormat, iNumber);
+        SciCall_ReplaceSel(chNumber);
+        SciCall_SetSel(iSelStart, iSelStart + (DocPos)StringCchLenA(chNumber, COUNTOF(chNumber)));
       }
     }
   }
@@ -2427,7 +2424,6 @@ void EditJumpToSelectionEnd(HWND hwnd)
 //
 void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
 {
-  bool  bAppendNum = false;
   char  mszPrefix1[256*3] = { '\0' };
   char  mszAppend1[256*3] = { '\0' };
 
@@ -2532,7 +2528,9 @@ void EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend)
       }
     }
 
-    if (StringCchLenA(mszAppend1,COUNTOF(mszAppend1))) 
+    bool  bAppendNum = false;
+
+    if (StringCchLenA(mszAppend1,COUNTOF(mszAppend1)))
     {
       char* p = StrStrA(mszAppend1, "$(");
       while (!bAppendNum && p) {
@@ -3583,7 +3581,6 @@ void EditCompressBlanks(HWND hwnd)
 
     bool bIsLineStart = true;
     bool bIsLineEnd = true;
-    bool bModified = false;
 
     const char* pszIn = NULL;
     char* pszOut = NULL;
@@ -3602,6 +3599,7 @@ void EditCompressBlanks(HWND hwnd)
     }
 
     if (pszIn && pszOut) {
+      bool bModified = false;
       char* co = pszOut;
       DocPos remWSuntilCaretPos = 0;
       for (int i = 0; i < cch; ++i) {
@@ -4214,12 +4212,13 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     int const cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0) - 1;
     if (cchw > 0) {
-      int col = 0, tabs = iTabWidth;
+      int tabs = iTabWidth;
       int const lnLen = (MBWC_DocPos_Cast)(sizeof(WCHAR) * (cchw + 1));
       pLines[i].pwszLine = AllocMem(lnLen, HEAP_ZERO_MEMORY);
       MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[i].pwszLine, lnLen / (int)sizeof(WCHAR));
       pLines[i].pwszSortEntry = pLines[i].pwszLine;
       if (iSortFlags & SORT_COLUMN) {
+        int col = 0;
         while (*(pLines[i].pwszSortEntry)) {
           if (*(pLines[i].pwszSortEntry) == L'\t') {
             if (col + tabs <= iSortColumn) {
@@ -4278,8 +4277,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
   char* pmszBuf = AllocMem(ichlMax + 1, HEAP_ZERO_MEMORY);
 
   for (DocLn i = 0; i < iLineCount; ++i) {
-    bool bDropLine = false;
     if (pLines[i].pwszLine && ((iSortFlags & SORT_SHUFFLE) || StrIsNotEmpty(pLines[i].pwszLine))) {
+      bool bDropLine = false;
       if (!(iSortFlags & SORT_SHUFFLE)) {
         if (iSortFlags & SORT_MERGEDUP || iSortFlags & SORT_UNIQDUP || iSortFlags & SORT_UNIQUNIQ) {
           if (i < (iLineCount - 1)) {
@@ -5313,7 +5312,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             lpszSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
             SciCall_GetSelText(lpszSelection);
           }
-          else if (cchSelection <= 1) {
+          else { // (cchSelection <= 1)
             // nothing is selected in the editor:
             // if first time you bring up find/replace dialog, 
             // copy content clipboard to find box
@@ -6385,18 +6384,14 @@ bool EditToggleView(HWND hwnd, bool bToggleView)
 {
   UNUSED(hwnd);
   static bool bHideNonMatchedLines = false;
-
-  static bool bSaveOccVisible = false;
-  static bool bSaveHyperlinkHotspots = false;
-  static bool bSaveFoldingAvailable = false;
-  static bool bSaveShowFolding = false;
-
   if (bToggleView) 
   {
     bool const bWaitCursor = ((Globals.iMarkOccurrencesCount > 1000) || (SciCall_GetLineCount() > 2000)) ? true : false;
+    static bool bSaveHyperlinkHotspots = false;
+    static bool bSaveFoldingAvailable = false;
+    static bool bSaveShowFolding = false;
     if (bWaitCursor) { BeginWaitCursor(NULL); }
     _IGNORE_NOTIFY_CHANGE_;
-
     if (!bHideNonMatchedLines) {
       bSaveFoldingAvailable = Globals.bCodeFoldingAvailable;
       bSaveShowFolding = Settings.ShowCodeFolding;
@@ -7124,25 +7119,25 @@ INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
   static int id_hover;
   static int id_capture;
 
-  static HFONT hFontNormal;
-  static HFONT hFontHover;
-
   static HCURSOR hCursorNormal;
   static HCURSOR hCursorHover;
 
   switch(umsg)
   {
+    static HFONT hFontHover;
+
     case WM_INITDIALOG:
       {
-        LOGFONT lf;
-
         id_hover = 0;
         id_capture = 0;
 
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        if (NULL == (hFontNormal = (HFONT)SendDlgItemMessage(hwnd,200,WM_GETFONT,0,0)))
+        static HFONT hFontNormal;
+        if (NULL == (hFontNormal = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0))) {
           hFontNormal = GetStockObject(DEFAULT_GUI_FONT);
+        }
+        LOGFONT lf;
         GetObject(hFontNormal,sizeof(LOGFONT),&lf);
         lf.lfUnderline = true;
         hFontHover = CreateFontIndirect(&lf);
@@ -7493,17 +7488,16 @@ INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM l
       switch(LOWORD(wParam))
       {
         case 100: {
-            if (HIWORD(wParam) == EN_CHANGE) {
-
-              WCHAR wchBuf[256] = { L'\0' };
-              WCHAR wchIns[256] = L"</";
+            if (HIWORD(wParam) == EN_CHANGE) 
+            {
               bool bClear = true;
-
+              WCHAR wchBuf[256] = { L'\0' };
               GetDlgItemTextW(hwnd,100,wchBuf,256);
               if (StringCchLenW(wchBuf,COUNTOF(wchBuf)) >= 3) {
 
                 if (wchBuf[0] == L'<') 
                 {
+                  WCHAR wchIns[256] = L"</";
                   int  cchIns = 2;
                   const WCHAR* pwCur = &wchBuf[1];
                   while (
@@ -8199,8 +8193,6 @@ void __stdcall EditFoldPerformAction(DocLn ln, int mode, FOLD_ACTION action)
 
 void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 {
-  static FOLD_ACTION sbLastSniffAllAction = EXPAND;
-  
   DocLn const iBegLn = SciCall_LineFromPosition(SciCall_GetSelectionStart());
   DocLn const iEndLn = SciCall_LineFromPosition(SciCall_GetSelectionEnd());
 
