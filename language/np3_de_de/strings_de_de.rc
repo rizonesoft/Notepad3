@@ -198,37 +198,31 @@ BEGIN
 IDS_MUI_CMDLINEHELP "\
 Kommandozeilen Hilfe\r\n\r\n\
 Datei\tMuss das letzte Argument sein,\r\n\
- \tnormalerweise keine gequoteten Leerstellen.\r\n\
-+\tAkzeptiere mehrere Dateien\r\n\
- \t(mit gequoteten Leerstellen).\r\n\
--\tAkzeptiere ein einzelne Datei\r\n\
- \t(ohne gequotete Leerstellen).\r\n\
-…\tCodierung\r\n\
- \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tZeilenumbruch Modus\r\n\
- \t(/crlf, /cr, /lf).\r\n\
+ \t   normalerweise keine gequoteten Leerstellen.\r\n\
++\tAkzeptiere mehrere Dateien (mit gequoteten Leerstellen).\r\n\
+-\tAkzeptiere ein einzelne Datei (ohne gequotete Leerstellen).\r\n\
+…\tCodierung (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+…\tZeilenumbruch Modus (/crlf, /cr, /lf).\r\n\
 /e\tDatei Quellen Codierung.\r\n\
-/g\tSpringe zur gegebenen Position\r\n\
- \t(/g -1 Ende der Datei).\r\n\
+/g\tSpringe zur gegebenen Position (/g -1 Ende der Datei).\r\n\
 /m\tFinde gegebenen Suchbegriff\r\n\
- \t(/m- letzter, /mr regex, /mb backslash).\r\n\
+ \t   (/m- letzter, /mr regex, /mb backslash).\r\n\
 /l\tAuto-Neu-Laden einer veränderten Datei.\r\n\
-/q\tErzwinge die Erzeugung einer neuen Datei\r\n\
- \tohne Nachfrage.\r\n\
+/q\tErzwinge die Erzeugung einer neuen Datei ohne Nachfrage.\r\n\
 /s\tSetze das gegebene Syntax Schema.\r\n\
 /d\tSetze das Standard-Text Schema.\r\n\
 /h\tSetze das Web Quellcode Schema.\r\n\
 /x\tSetze das XML Dokument Schema.\r\n\
 /c\tÖffne ein neues Fenster und\r\n\
- \tfüge den Inhalt der Zwischenablage ein.\r\n\
+ \t   füge den Inhalt der Zwischenablage ein.\r\n\
 /b\tÖffne ein neues 'Paste Board' um\r\n\
- \tdie Einträge der Zwischenablage zu sammeln.\r\n\
+ \t   die Einträge der Zwischenablage zu sammeln.\r\n\
 /n\tÖffne immer ein neues Fenster\r\n\
- \t(/ns single file instance).\r\n\
+ \t   (/ns single file instance).\r\n\
 /r\tBenutze geöffnetes Fenster erneut\r\n\
- \t(/rs single file instance).\r\n\
+ \t   (/rs single file instance).\r\n\
 /p\tSetze Fenster: Position und Größe\r\n\
- \t(/p0, /ps, /pf,l,t,r,b,m).\r\n\
+ \t   (/p0, /ps, /pf,l,t,r,b,m).\r\n\
 /t\tSetze Fenster-Titel.\r\n\
 /i\tStarte als 'Tray-Icon'.\r\n\
 /o\tHalte Fenster immer auf oberster Ebene.\r\n\
@@ -237,7 +231,7 @@ Datei\tMuss das letzte Argument sein,\r\n\
 /v\tDrucke Datei und beende Programm.\r\n\
 /vd\tDrucke Datei (öffne Drucker-Dialog).\r\n\
 /z\tÜberspringe Nächstes\r\n\
- \t(nützlich für Registy-Basierte Notepad Ersetzung).\
+ \t   (nützlich für Registy-Basierte Notepad Ersetzung).\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
