@@ -195,36 +195,34 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Hulp bij de opdrachtregel\r\n\r\n\
-bestand\tMoet het laatste argument zijn,\r\n\
- \tgeen aanhalingstekens spaties standaard.\r\n\
-+\tAccepteer meerdere bestandsargumenten \r\n\
- \t(met aanhalingstekens spaties).\r\n\
--\tAccepteer argument voor een enkel bestand \r\n\
- \t(zonder aanhalingstekens).\r\n\
-…\tCodering\r\n\
- \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+Gebruik:\r\n\
+Notepad3 \t[/?] [...[Codering]] [...[Lijn ending modus]] [/e] [/g] [/m] [/l]\r\n\
+ \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[schijf:][pad]bestand[...]]\r\n\r\n\
+bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\
+ \tspaties standaard.\r\n\
++\tAccepteer meerdere bestandsargumenten (met\r\n\
+ \taanhalingstekens spaties).\r\n\
+-\tAccepteer argument voor een enkel bestand (zonder\r\n\
+ \taanhalingstekens).\r\n\r\n\
+Opties:\r\n\
+/?\tTonen dit help-bericht.\r\n\
+…\tCodering (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 …\tLijn ending modus (/crlf, /cr, /lf).\r\n\
 /e\tBestandsbron codering.\r\n\
-/g\tSpring naar de opgegeven positie\r\n\
- \t(/g -1 einde van het bestand).\r\n\
-/m\tMatch met opgegeven tekst\r\n\
- \t(/m- last, /mr regex, /mb backslash).\r\n\
+/g\tSpring naar de opgegeven positie (/g -1 einde van het bestand).\r\n\
+/m\tMatch met opgegeven tekst (/m- last, /mr regex, /mb backslash).\r\n\
 /l\tAuto-herlaad van gewijzigde bestanden.\r\n\
-/q\tForceer het maken van nieuwe bestanden \r\n\
- \tzonder prompt.\r\n\
+/q\tForceer het maken van nieuwe bestanden zonder prompt.\r\n\
 /s\tSelecteer opgegeven syntaxisschema.\r\n\
 /d\tSelecteer standaardtekstschema.\r\n\
 /h\tSelecteer Web Source Code-schema.\r\n\
 /x\tSelecteer XML-document scheme.\r\n\
-/c\tOpen een nieuw venster en plak inhoud \r\n\
- \tvan klembord.\r\n\
-/b\tOpen nieuw plakbord om de klemborditems \r\n\
- \tte verzamelen.\r\n\
-/n\tOpen altijd een nieuw venster \r\n\
- \t(/ns één bestand instantie).\r\n\
+/c\tOpen een nieuw venster en plak inhoud van klembord.\r\n\
+/b\tOpen nieuw plakbord om de klemborditems te verzamelen.\r\n\
+/n\tOpen altijd een nieuw venster (/ns één bestand instantie).\r\n\
 /r\tHergebruik venster (/rs één bestand instantie).\r\n\
-/p\tStel vensterpositie en -grootte in \r\n\
- \t(/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tStel vensterpositie en -grootte in (/p0, /ps, /pf,l,t,r,b,m).\r\n\
 /t\tStel de titel van het venster in.\r\n\
 /i\tStart als systeemvak icoon.\r\n\
 /o\tHoud het venster bovenop.\r\n\
@@ -232,15 +230,20 @@ bestand\tMoet het laatste argument zijn,\r\n\
 /u\tLanceer met verhoogde rechten.\r\n\
 /v\tPrint bestand onmiddellijk en verlaat.\r\n\
 /vd\tBestand printen (open printerdialoog).\r\n\
-/z\tVolgende overslaan (bruikbaar voor \r\n\
- \tregister-gebaseerde Notepad vervanging).\
+/z\tVolgende overslaan (bruikbaar voor het register-gebaseerde\r\n\
+ \tNotepad vervanging).\r\n\r\n\
+Voorbeelden:\r\n\
+ \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t... Open nieuw bestand: ""Test.txt"" Coder.=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t... Print het bestand: ""Test.txt"" onmiddellijk.\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Bestand extensies moeten gescheiden door ';'\r\n\r\n\
 Stijl formaat:\r\n\
-font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
-fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
 Kopieer formaat: gebruik 'kopiëren en plakken' of 'slepen en neerzetten'.\
 "
 END
