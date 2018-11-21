@@ -472,7 +472,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Уставіць тэг HTML/XML"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Адчыняльны тэг (з атрыбутами):",IDC_STATIC,7,7,119,8
+    LTEXT           "&Адчыняльны тэг (з атрыбутамі):",IDC_STATIC,7,7,119,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
     LTEXT           "&Зачыняльны тэг (можна рэдагаваць):",IDC_STATIC,7,37,134,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
