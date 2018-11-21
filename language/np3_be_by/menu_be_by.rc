@@ -389,7 +389,7 @@ BEGIN
             POPUP "&Адлюстраванне назвы акна"
             BEGIN
                 MENUITEM "&Толькі імя файла",           IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Імя файла и &папка",          IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "Імя файла і &папка",          IDM_VIEW_SHOWFILENAMEFIRST
                 MENUITEM "Поўны &шлях",                 IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Урывак тэксту\tCtrl+9",      IDM_VIEW_SHOWEXCERPT
             END
