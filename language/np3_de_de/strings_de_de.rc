@@ -195,32 +195,35 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Kommandozeilen Hilfe\r\n\r\n\
-Datei\tMuss das letzte Argument sein,\r\n\
- \t   normalerweise keine gequoteten Leerstellen.\r\n\
+Nutzung:\r\n\
+Notepad3 \t[/?] [...[Codierung]] [...[Zeilenumbruch Modus]] [/e] [/g] [/m]\r\n\
+ \t[/l] [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[Laufwerk:][Pfad]Datei[...]]\r\n\r\n\
+Datei\tMuss das letzte Argument sein, normalerweise\r\n\
+ \tkeine gequoteten Leerstellen.\r\n\
 +\tAkzeptiere mehrere Dateien (mit gequoteten Leerstellen).\r\n\
--\tAkzeptiere ein einzelne Datei (ohne gequotete Leerstellen).\r\n\
+-\tAkzeptiere ein einzelne Datei (ohne gequotete Leerstellen).\r\n\r\n\
+Optionen:\r\n\
+/?\tDiesen Hilfetext anzeigen.\r\n\
 …\tCodierung (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 …\tZeilenumbruch Modus (/crlf, /cr, /lf).\r\n\
 /e\tDatei Quellen Codierung.\r\n\
 /g\tSpringe zur gegebenen Position (/g -1 Ende der Datei).\r\n\
-/m\tFinde gegebenen Suchbegriff\r\n\
- \t   (/m- letzter, /mr regex, /mb backslash).\r\n\
+/m\tFinde gegebenen Suchbegriff (/m- letzter, /mr regex,\r\n\
+ \t/mb backslash).\r\n\
 /l\tAuto-Neu-Laden einer veränderten Datei.\r\n\
 /q\tErzwinge die Erzeugung einer neuen Datei ohne Nachfrage.\r\n\
 /s\tSetze das gegebene Syntax Schema.\r\n\
 /d\tSetze das Standard-Text Schema.\r\n\
 /h\tSetze das Web Quellcode Schema.\r\n\
 /x\tSetze das XML Dokument Schema.\r\n\
-/c\tÖffne ein neues Fenster und\r\n\
- \t   füge den Inhalt der Zwischenablage ein.\r\n\
-/b\tÖffne ein neues 'Paste Board' um\r\n\
- \t   die Einträge der Zwischenablage zu sammeln.\r\n\
-/n\tÖffne immer ein neues Fenster\r\n\
- \t   (/ns single file instance).\r\n\
-/r\tBenutze geöffnetes Fenster erneut\r\n\
- \t   (/rs single file instance).\r\n\
-/p\tSetze Fenster: Position und Größe\r\n\
- \t   (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/c\tÖffne ein neues Fenster und füge den Inhalt\r\n\
+ \tder Zwischenablage ein.\r\n\
+/b\tÖffne ein neues 'Paste Board' um die Einträge\r\n\
+ \tder Zwischenablage zu sammeln.\r\n\
+/n\tÖffne immer ein neues Fenster (/ns single file instance).\r\n\
+/r\tBenutze geöffnetes Fenster erneut (/rs single file instance).\r\n\
+/p\tSetze Fenster: Position und Größe (/p0, /ps, /pf,l,t,r,b,m).\r\n\
 /t\tSetze Fenster-Titel.\r\n\
 /i\tStarte als 'Tray-Icon'.\r\n\
 /o\tHalte Fenster immer auf oberster Ebene.\r\n\
@@ -228,15 +231,20 @@ Datei\tMuss das letzte Argument sein,\r\n\
 /u\tStarte mit erhöhten Benutzerrechten.\r\n\
 /v\tDrucke Datei und beende Programm.\r\n\
 /vd\tDrucke Datei (öffne Drucker-Dialog).\r\n\
-/z\tÜberspringe Nächstes\r\n\
- \t   (nützlich für Registy-Basierte Notepad Ersetzung).\
+/z\tÜberspringe Nächstes (nützlich für Registy-Basierte\r\n\
+ \tNotepad Ersetzung).\r\n\r\n\
+Beispiele:\r\n\
+ \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t... Drucke Datei: ""Test.txt"" direkt.\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Trennung von Dateinamen-Erweiterungen mittels ';'.\r\n\r\n\
 Stil-Format:\r\n\
-font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
-fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
 Formate kopieren: 'Copy && Paste' oder 'Drag && Drop'\
 "
 END

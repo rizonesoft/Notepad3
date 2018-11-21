@@ -195,51 +195,57 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Aide de la ligne de commande\r\n\r\n\
-fichier\tDoit être le dernier argument,\r\n\
- \taucun espace entre guillemets par défaut.\r\n\
-+\tAccepte plusieurs arguments \r\n\
- \t(avec des espaces entre guillemets).\r\n\
--\tAccepte un seul argument de fichier \r\n\
- \t(sans espaces entre guillemets).\r\n\
-…\tEncodage \r\n\
- \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+Usage:\r\n\
+Notepad3 \t[/?] [...[Encodage]] [...[Mode fin de ligne]] [/e] [/g] [/m] [/l]\r\n\
+ \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[lecteur:][chemin]fichier[...]]\r\n\r\n\
+fichier\tDoit être le dernier argument, aucun espace entre guillemets\r\n\
+ \tpar défaut.\r\n\
++\tAccepte plusieurs arguments (avec des espaces entre guillemets).\r\n\
+-\tAccepte un seul argument de fichier (sans espaces entre\r\n\
+ \tguillemets).\r\n\r\n\
+Options:\r\n\
+/?\tAfficher ce message d'aide.\r\n\
+…\tEncodage (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 …\tMode fin de ligne (/crlf, /cr, /lf).\r\n\
 /e\tCodage de la source du fichier.\r\n\
 /g\tAller à la position spécifiée (/g -1 fin de fichier).\r\n\
-/m\tCorrespond au texte spécifié \r\n\
- \t(/m- dernier, /mr regex, /mb backslash).\r\n\
+/m\tCorrespond au texte spécifié (/m- dernier, /mr regex,\r\n\
+ \t/mb backslash).\r\n\
 /l\tAuto-recharger les fichiers modifiés.\r\n\
 /q\tForcer la création de nouveaux fichiers sans invite.\r\n\
 /s\tSélectionner le schème de syntaxe spécifié.\r\n\
 /d\tSélectionner le schème de texte par défaut.\r\n\
 /h\tSélectionner un schème de code source Web.\r\n\
 /x\tSélectionner un schème de document XML.\r\n\
-/c\tOuvrir une nouvelle fenêtre et coller \r\n\
- \tle contenu du presse-papiers.\r\n\
-/b\tOuvrir un nouveau tableau de collage pour \r\n\
- \tcollecter les entrées du presse-papiers.\r\n\
-/n\tToujours ouvrir une nouvelle fenêtre \r\n\
- \t(/ns instance de fichier unique).\r\n\
+/c\tOuvrir une nouvelle fenêtre et coller le contenu du presse-papiers.\r\n\
+/b\tOuvrir un nouveau tableau de collage pour collecter les entrées\r\n\
+ \tdu presse-papiers.\r\n\
+/n\tToujours ouvrir une nouvelle fenêtre (/ns instance\r\n\
+ \tde fichier unique).\r\n\
 /r\tRéutiliser la fenêtre (/rs instance de fichier unique).\r\n\
-/p\tDéfinir la position et la taille de la fenêtre \r\n\
- \t(/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/p\tDéfinir la position et la taille de la fenêtre (/p0, /ps, /pf,l,t,r,b,m).\r\n\
 /t\tDéfinir un titre de fenêtre.\r\n\
 /i\tDémarrer en tant que icône de barre de tâches.\r\n\
 /o\tFenêtre toujours visible.\r\n\
 /f\tSpecifié fichier ini (/f0 pas de fichier ini).\r\n\
 /u\tLancer avec des privilèges élevés.\r\n\
 /v\tImprimer le fichier immédiatement et quitter.\r\n\
-/vd\tImprimer le fichier \r\n\
- \t(ouvrir le dialogue de l'imprimante).\r\n\
-/z\tPasser au suivant (utilisable pour le remplacement \r\n\
- \tdu Notepad basé sur le registre).\
+/vd\tImprimer le fichier (ouvrir le dialogue de l'imprimante).\r\n\
+/z\tPasser au suivant (utilisable pour le remplacement du Notepad\r\n\
+ \t basé sur le registre).\r\n\r\n\
+Exemples:\r\n\
+ \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t... Ouvre nouveau doc.: ""Test.txt"" Encod.=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t... Imprime le fichier: ""Test.txt"" immédiatement.\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Les extensions de fichier sont séparées par ';'\r\n\r\n\
 Style format:\r\n\
-font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
-fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
 Copier format: utiliser 'copier-coller' ou 'glisser-déposer'.\
 "
 END

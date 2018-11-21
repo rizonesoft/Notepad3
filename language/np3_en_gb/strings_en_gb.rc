@@ -195,17 +195,20 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Command Line Help\r\n\r\n\
-file\tMust be the last argument,\r\n\
- \tno quoted spaces by default.\r\n\
+Usage:\r\n\
+Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+ \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[...]]\r\n\r\n\
+file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
--\tAccept single file argument (without quoted spaces).\r\n\
-…\tEncoding\r\n\
- \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+-\tAccept single file argument (without quoted spaces).\r\n\r\n\
+Options:\r\n\
+/?\tDispay this help message.\r\n\
+…\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 …\tLine ending mode (/crlf, /cr, /lf).\r\n\
 /e\tFile source encoding.\r\n\
 /g\tJump to specified position (/g -1 end of file).\r\n\
-/m\tMatch specified text\r\n\
- \t(/m- last, /mr regex, /mb backslash).\r\n\
+/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
 /l\tAuto-reload modified files.\r\n\
 /q\tForce creation of new files without prompt.\r\n\
 /s\tSelect specified syntax scheme.\r\n\
@@ -217,22 +220,26 @@ file\tMust be the last argument,\r\n\
 /n\tAlways open a new window (/ns single file instance).\r\n\
 /r\tReuse window (/rs single file instance).\r\n\
 /p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\r\n\
- /t\tSet window title.\r\n\
+/t\tSet window title.\r\n\
 /i\tStart as tray icon.\r\n\
 /o\tKeep window on top.\r\n\
 /f\tSpecify ini-file (/f0 no ini-file).\r\n\
 /u\tLaunch with elevated privileges.\r\n\
 /v\tPrint file immediately and quit.\r\n\
 /vd\tPrint file (open printer dialog).\r\n\
-/z\tSkip next\r\n\
- \t(usable for registry-based Notepad replacement).\
+/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
+Examples:\r\n\
+ \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t... Print file: ""Test.txt"" immediately.\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Filename extensions must be separated by ;\r\n\r\n\
 Style format:\r\n\
-font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
-fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
 Style properties can be copied using copy and paste or drag and drop.\
 "
 END
