@@ -194,11 +194,10 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Hulp bij de opdrachtregel\r\n\r\n\
 Gebruik:\r\n\
-Notepad3 \t[/?] [...[Codering]] [...[Lijn ending modus]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] […[Codering]] […[Lijn ending modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[schijf:][pad]bestand[...]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[schijf:][pad]bestand[…]]\r\n\r\n\
 bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\
  \tspaties standaard.\r\n\
 +\tAccepteer meerdere bestandsargumenten (met\r\n\
@@ -233,10 +232,10 @@ Opties:\r\n\
 /z\tVolgende overslaan (bruikbaar voor het register-gebaseerde\r\n\
  \tNotepad vervanging).\r\n\r\n\
 Voorbeelden:\r\n\
- \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open nieuw bestand: ""Test.txt"" Coder.=UTF-8-BOM, EoL=CRLF.\r\n\
- \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print het bestand: ""Test.txt"" onmiddellijk.\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t… Open een nieuw bestand: ""Test.txt"" Codering=UTF-8-BOM, EoL=CRLF.\r\n\
+Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t… Print het bestand: ""Test.txt"" onmiddellijk.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\

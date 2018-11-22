@@ -195,9 +195,9 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 用法：\r\n\
-Notepad3 \t[/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] […[编码]] […[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[盘符:][路径]文件名[...]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[盘符:][路径]文件名[…]]\r\n\r\n\
 文件\t必须是最后一个参数，不需要双引号。\r\n\
 +\t接收多个文件参数（对于有空格的参数，需要用双引号括起来）。\r\n\
 -\t接收单个文件参数（对于有空格的参数，不需要双引号）。\r\n\r\n\
@@ -228,10 +228,10 @@ Notepad3 \t[/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
 /vd\t打印文件（打开打印机对话框）。\r\n\
 /z\t忽略下一个参数（当通过注册表替换系统记事本时这可能有用）。\r\n\r\n\
 示例：\r\n\
- \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... 使用 UTF-8-BOM 编码、CRLF 换行符模式打开文件 ""Test.txt""。\r\n\
- \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... 打印文件 ""Test.txt""。\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t… 使用 UTF-8-BOM 编码、CRLF 换行符模式打开文件 ""Test.txt""。\r\n\
+Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t… 打印文件 ""Test.txt""。\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
