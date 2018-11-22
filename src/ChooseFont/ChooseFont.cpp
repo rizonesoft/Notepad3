@@ -667,6 +667,8 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
 {
   m_dialog = dialog;
 
+  if (Globals.hDlgIcon) { SendMessage(dialog, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
   HWND hwndFamilyNames = GetDlgItem(dialog, IDC_FONT_FAMILY_NAMES);
   HWND hwndSizes = GetDlgItem(dialog, IDC_FONT_SIZE);
 

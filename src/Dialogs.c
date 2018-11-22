@@ -286,6 +286,7 @@ INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
   switch (umsg) {
   case WM_INITDIALOG:
     {
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
       //WCHAR szTitle[80] = { L'\0' };
       //GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
       //SetWindowText(hwnd, szTitle);
@@ -509,6 +510,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   case WM_INITDIALOG:
   {
     {
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
       if (!hIcon) {
         hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
       }
