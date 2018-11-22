@@ -286,11 +286,11 @@ INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
   switch (umsg) {
   case WM_INITDIALOG:
     {
-      WCHAR szTitle[80] = { L'\0' };
+      //WCHAR szTitle[80] = { L'\0' };
       WCHAR szText[4096] = { L'\0' };
-      GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
+      //GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
       GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
-      SetWindowText(hwnd, szTitle);
+      //SetWindowText(hwnd, szTitle);
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
       //SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)IDC_CMDLINEHELP, TRUE);
       CenterDlgInParent(hwnd);
