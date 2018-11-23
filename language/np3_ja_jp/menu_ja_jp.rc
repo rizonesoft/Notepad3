@@ -16,9 +16,11 @@
 /////////////////////////////////////////////////////////////////////////////
 // Japanese (Japan) resources
 
+// This line is temporarily added to resolve display issues with few characters.
+
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(65001)
+#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

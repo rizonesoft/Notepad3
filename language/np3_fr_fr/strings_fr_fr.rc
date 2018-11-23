@@ -194,11 +194,10 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Aide de la ligne de commande\r\n\r\n\
 Usage:\r\n\
-Notepad3 \t[/?] [...[Encodage]] [...[Mode fin de ligne]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] […[Encodage]] […[Mode de fin de ligne]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[lecteur:][chemin]fichier[...]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[lecteur:][chemin]fichier[…]]\r\n\r\n\
 fichier\tDoit être le dernier argument, aucun espace entre guillemets\r\n\
  \tpar défaut.\r\n\
 +\tAccepte plusieurs arguments (avec des espaces entre guillemets).\r\n\
@@ -207,7 +206,7 @@ fichier\tDoit être le dernier argument, aucun espace entre guillemets\r\n\
 Options:\r\n\
 /?\tAfficher ce message d'aide.\r\n\
 …\tEncodage (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tMode fin de ligne (/crlf, /cr, /lf).\r\n\
+…\tMode de fin de ligne (/crlf, /cr, /lf).\r\n\
 /e\tCodage de la source du fichier.\r\n\
 /g\tAller à la position spécifiée (/g -1 fin de fichier).\r\n\
 /m\tCorrespond au texte spécifié (/m- dernier, /mr regex,\r\n\
@@ -235,10 +234,10 @@ Options:\r\n\
 /z\tPasser au suivant (utilisable pour le remplacement du Notepad\r\n\
  \t basé sur le registre).\r\n\r\n\
 Exemples:\r\n\
- \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Ouvre nouveau doc.: ""Test.txt"" Encod.=UTF-8-BOM, EoL=CRLF.\r\n\
- \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Imprime le fichier: ""Test.txt"" immédiatement.\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t… Ouvre un nouveau fichier: ""Test.txt"" Encodage=UTF-8-BOM, EoL=CRLF.\r\n\
+Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t… Imprime le fichier: ""Test.txt"" immédiatement.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\

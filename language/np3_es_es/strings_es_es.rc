@@ -194,11 +194,10 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Ayuda de la línea de comando\r\n\r\n\
 Uso:\r\n\
-Notepad3 \t[/?] [...[Codificación]] [...[Modo de final de línea]] [/e] [/g] [/m]\r\n\
- \t[/l] [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[unidad:][ruta]archivo[...]]\r\n\r\n\
+Notepad3 \t[/?] […[Codificación]] […[Modo de final de línea]] [/e] [/g] [/m] [/l]\r\n\
+ \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[unidad:][ruta]archivo[…]]\r\n\r\n\
 archivo\tDebe ser el ultimo argumento, sin espacios entre\r\n\
  \tcomillas por defecto.\r\n\
 +\tAceptar múltiples argumentos de archivo (con espacios\r\n\
@@ -235,10 +234,10 @@ Opciones:\r\n\
 /z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\
  \ten el registro).\r\n\r\n\
 Ejemplos:\r\n\
- \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Abrir nuevo archivo: ""Test.txt"" Codif.=UTF-8-BOM, EoL=CRLF.\r\n\
- \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Imprimir el archivo: ""Test.txt"" inmediatamente.\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t… Abrir un nuevo archivo: ""Test.txt"" Codificación=UTF-8-BOM, EoL=CRLF.\r\n\
+Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t… Imprimir el archivo: ""Test.txt"" inmediatamente.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
