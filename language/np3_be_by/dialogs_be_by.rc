@@ -539,7 +539,7 @@ BEGIN
     CONTROL         "Выдаліць &унікальныя радкі",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,108,10
     CONTROL         "Выдал&іць пустыя радкі",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,94,10
     CONTROL         "Выдаліць радкі толькі &з прабеламі",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,131,10
-    CONTROL         "&Не улічваць рэгістр",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,81,10
+    CONTROL         "&Не ўлічваць рэгістр",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,81,10
     CONTROL         "&Лагічнае параўнанне радкоў",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,114,10
     CONTROL         "У &слупку (прамавугольнае вылучэнне)",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,147,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
