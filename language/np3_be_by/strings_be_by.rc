@@ -18,7 +18,6 @@
 
 // This line is temporarily added to resolve display issues with few characters.
 // This line is temporarily added to resolve display issues with few characters.
-// This line is temporarily added to resolve display issues with few characters.
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
 LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
