@@ -259,8 +259,8 @@ BEGIN
             MENUITEM "Адшукаць парныя ду&жкі\tCtrl+B", IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "Вылучыць па &парным дужкам\tCtrl+Shift+B", IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "&Вылучыць да наступнага уваходжання\tCtrl+Alt+F2", IDM_EDIT_SELTONEXT
-            MENUITEM "Вылучыць да папярэдняга ува&ходжання\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM "&Вылучыць да наступнага ўваходжання\tCtrl+Alt+F2", IDM_EDIT_SELTONEXT
+            MENUITEM "Вылучыць да папярэдняга ўва&ходжання\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
         END
         MENUITEM SEPARATOR
         POPUP "&Закладкі"
