@@ -234,7 +234,7 @@ Notepad3 \t[/?] […[文字コード]] […[改行コード]] [/e] [/g] [/m] [/l
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t… 新規ファイル Test.txt を開く: 文字コード UTF-8-BOM, 改行 CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… すぐに Test.txt を印刷
+ \t… すぐに Test.txt を印刷\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
