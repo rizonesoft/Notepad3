@@ -196,45 +196,51 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-命令行帮助\r\n\r\n\
-file\tMust be the last argument,\r\n\
- \tno quoted spaces by default.\r\n\
-+\tAccept multiple file arguments (with quoted spaces).\r\n\
--\tAccept single file argument (without quoted spaces).\r\n\
-…\tEncoding\r\n\
- \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tFile source encoding.\r\n\
-/g\tJump to specified position (/g -1 end of file).\r\n\
-/m\tMatch specified text\r\n\
- \t(/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-reload modified files.\r\n\
-/q\tForce creation of new files without prompt.\r\n\
-/s\tSelect specified syntax scheme.\r\n\
-/d\tSelect default text scheme.\r\n\
-/h\tSelect Web Source Code scheme.\r\n\
-/x\tSelect XML Document scheme.\r\n\
-/c\tOpen new window and paste clipboard contents.\r\n\
-/b\tOpen new paste board to collect clipboard entries.\r\n\
-/n\tAlways open a new window (/ns single file instance).\r\n\
-/r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\r\n\
-/t\tSet window title.\r\n\
-/i\tStart as tray icon.\r\n\
-/o\tKeep window on top.\r\n\
-/f\tSpecify ini-file (/f0 no ini-file).\r\n\
-/u\tLaunch with elevated privileges.\r\n\
-/v\tPrint file immediately and quit.\r\n\
-/vd\tPrint file (open printer dialog).\r\n\
-/z\tSkip next\r\n\
- \t(usable for registry-based Notepad replacement).\
+用法：\r\n\
+Notepad3 \t[/?] […[编码]] […[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
+ \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[盘符:][路径]文件名[…]]\r\n\r\n\
+文件\t必须是最后一个参数，不需要双引号。\r\n\
++\t接收多个文件参数（对于有空格的参数，需要用双引号括起来）。\r\n\
+-\t接收单个文件参数（对于有空格的参数，不需要双引号）。\r\n\r\n\
+选项：\r\n\
+/?\t显示这个帮助消息。\r\n\
+…\t编码（/ansi, /unicode, /unicodebe, /utf8, /utf8sig）。\r\n\
+…\t换行符模式（/crlf, /cr, /lf）。\r\n\
+/e\t选择文件编码。\r\n\
+/g\t跳转到指定位置（/g -1 跳转到文件末尾）\r\n\
+/m\t匹配指定字符串（/m- 上次匹配的, /mr 正则表达式, /mb 转义反斜杠）。\r\n\
+/l\t自动重新加载被修改的文件。\r\n\
+/q\t如果文件不存在就创建之而不提示。\r\n\
+/s\t选择语法高亮方案。\r\n\
+/d\t选择“默认文本”方案。\r\n\
+/h\t选择“Web 源代码”方案。\r\n\
+/x\t选择“XML 文件”方案。\r\n\
+/c\t打开新窗口并粘贴剪贴板内容。\r\n\
+/b\t打开剪贴板收集窗口（自动粘贴加入到剪贴板中的内容）。\r\n\
+/n\t总是打开新窗口（/ns 对于每个文件只允许打开一个实例）。\r\n\
+/r\t重用已存在的窗口（/rs 对于每个文件只允许打开一个实例）。\r\n\
+/p\t设置窗口位置和大小（/p0, /ps, /pf,l,t,r,b,m）。\r\n\
+/t\t设置窗口标题。\r\n\
+/i\t以托盘图标状态启动。\r\n\
+/o\t窗口置顶。\r\n\
+/f\t指定配置文件（/f0 不使用配置文件）。\r\n\
+/u\t以管理员权限启动。\r\n\
+/v\t打印文件并退出。\r\n\
+/vd\t打印文件（打开打印机对话框）。\r\n\
+/z\t忽略下一个参数（当通过注册表替换系统记事本时这可能有用）。\r\n\r\n\
+示例：\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t… 使用 UTF-8-BOM 编码、CRLF 换行符模式打开文件 ""Test.txt""。\r\n\
+Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t… 打印文件 ""Test.txt""。\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 文件扩展名必须以 ; 隔开。\r\n\r\n\
 样式格式：\r\n\
-font:Name;size:[+/-]nn.mm;bold;italic;underline;\r\n\
-fore:#ffffff;back:#bbbbbb;eolfilled\r\n\r\n\
+font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
 样式属性可以复制粘贴或拖放。\r\n\r\n\
 “预览”按钮不会应用修改。\
 "

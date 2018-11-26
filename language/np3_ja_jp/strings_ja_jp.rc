@@ -196,18 +196,22 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-コマンドラインのヘルプ\r\n\r\n\
+記述法:\r\n\
+Notepad3 \t[/?] […[文字コード]] […[改行コード]] [/e] [/g] [/m] [/l]\r\n\
+ \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[ドライブ:][パス]ファイル名[…]]\r\n\r\n\
 ファイル\t相対パス可能. 最後の引数にする必要がある.\r\n\
  \tデフォルトでは空白があっても引用符は不要.\r\n\
 +\t複数のファイルの引数を許容 (要・引用符)\r\n\
--\tファイル引数をひとつだけ許容 (引用符不要)\r\n\
-…\t文字コード\r\n\
- \t(/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+-\tファイル引数をひとつだけ許容 (引用符不要)\r\n\r\n\
+引数（省略可）:\r\n\
+/?\tヘルプを表示\r\n\
+…\t文字コード (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
 …\t改行コード (/crlf, /cr, /lf)\r\n\
 /e\tファイルの文字コードを指定 [/e id]\r\n\
 /g\t指定位置にジャンプ (/g 行[,列] -1で終端)\r\n\
-/m\t文字列一致 [/m text]\r\n\
- \t(/m- 最後, /mr 正規表現, /mb バックスラッシュ変換)\r\n\
+/m\t文字列一致 [/m text] (/m- 最後, /mr 正規表現,\r\n\
+ \t/mb バックスラッシュ変換)\r\n\
 /l\tファイル変更時に自動で最新内容に再読み込み\r\n\
 /q\tファイルがない場合、問い合わせずファイル作成\r\n\
 /s\t配色設定を指定 [/s ext]\r\n\
@@ -218,8 +222,8 @@ IDS_MUI_CMDLINEHELP "\
 /b\tクリップボード履歴表示モードで開く\r\n\
 /n\t新しいウィンドウで開く (/ns ファイルは単一のインスタンス)\r\n\
 /r\tひとつウインドウを再利用 (/rs 同じく単一のインスタンス\r\n\
-/p\tウィンドウの位置とサイズを指定 [/p x,y,sizex,y[,max] ]\r\n\
- \t(/p0, /ps, /pf,l,t,r,b,m)\r\n\
+/p\tウィンドウの位置とサイズを指定 [/p x,y,sizex,y[,max]] (/p0, /ps,\r\n\
+ \t/pf,l,t,r,b,m)\r\n\
 /t\tタイトルバーの文字列を指定 [/t text]\r\n\
 /i\tシステムトレイ内に起動\r\n\
 /o\t常に手前に表示\r\n\
@@ -227,15 +231,19 @@ IDS_MUI_CMDLINEHELP "\
 /u\t管理者権限で実行\r\n\
 /v\tすぐに印刷して終了する\r\n\
 /vd\tファイルの印刷(印刷ダイアログを開く)\r\n\
-/z\t「次へ」を省略\r\n\
- \t(レジストリでメモ帳を置換している際に有効化)\
+/z\t「次へ」を省略 (レジストリでメモ帳を置換している際に有効化)\r\n\r\n\
+例:\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t… 新規ファイル Test.txt を開く: 文字コード UTF-8-BOM, 改行 CRLF\r\n\
+Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t… すぐに Test.txt を印刷\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 拡張子の区切りは ; です。\r\n\r\n\
 設定書式:\r\n\
-font:フォント名;size:[+/-]nn.mm;bold;italic;underline;\r\n\
-fore:#ffffff;back:#bbbbbb;eolfilled;indic_gradient\r\n\r\n\
+font:フォント名; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
 各指定は省略可能。フォントのnnはサイズ。foreは文字色。\r\n\
 コピー&&ペーストやドラッグ&&ドロップでも指定が変更できます。\r\n\
 プレビューでの反映では、まだ設定は保存されません。\

@@ -196,11 +196,10 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Command Line Help\r\n\r\n\
 Usage:\r\n\
-Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[...]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[…]]\r\n\r\n\
 file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
@@ -231,10 +230,10 @@ Options:\r\n\
 /vd\tPrint file (open printer dialog).\r\n\
 /z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
 Examples:\r\n\
- \t> Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
- \t> Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print file: ""Test.txt"" immediately.\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t… Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t… Print the file: ""Test.txt"" immediately.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\

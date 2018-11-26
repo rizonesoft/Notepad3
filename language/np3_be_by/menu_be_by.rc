@@ -16,6 +16,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // Belarusian (Belarus) resources
 
+// This line is temporarily added to resolve display issues with few characters.
+
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
 LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
 #pragma code_page(65001)  // UTF-8
@@ -257,8 +259,8 @@ BEGIN
             MENUITEM "Адшукаць парныя ду&жкі\tCtrl+B", IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "Вылучыць па &парным дужкам\tCtrl+Shift+B", IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "&Вылучыць да наступнага уваходжання\tCtrl+Alt+F2", IDM_EDIT_SELTONEXT
-            MENUITEM "Вылучыць да папярэдняга ува&ходжання\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM "&Вылучыць да наступнага ўваходжання\tCtrl+Alt+F2", IDM_EDIT_SELTONEXT
+            MENUITEM "Вылучыць да папярэдняга ўва&ходжання\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
         END
         MENUITEM SEPARATOR
         POPUP "&Закладкі"
@@ -389,7 +391,7 @@ BEGIN
             POPUP "&Адлюстраванне назвы акна"
             BEGIN
                 MENUITEM "&Толькі імя файла",           IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "Імя файла и &папка",          IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "Імя файла і &папка",          IDM_VIEW_SHOWFILENAMEFIRST
                 MENUITEM "Поўны &шлях",                 IDM_VIEW_SHOWFULLPATH
                 MENUITEM "&Урывак тэксту\tCtrl+9",      IDM_VIEW_SHOWEXCERPT
             END

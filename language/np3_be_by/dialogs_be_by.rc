@@ -70,15 +70,13 @@ BEGIN
     CONTROL         "",IDC_RICHEDITABOUT,"RichEdit50W",WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
 END
 
-IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 280, 160
+IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Command Line Help"
+CAPTION "Параметры камандавага радку"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-ICON            IDR_MAINWND48, IDC_STATIC, 10, 7, 20, 20
-DEFPUSHBUTTON   "OK", IDOK, 220, 137, 55, 16
-//LTEXT           "_place_holder_", IDC_CMDLINEHELP, 40, 7, 226, 290
-EDITTEXT        IDC_CMDLINEHELP, 36, 7, 230, 120, ES_MULTILINE | ES_READONLY | WS_VSCROLL | NOT WS_BORDER
+    DEFPUSHBUTTON   "OK", IDOK, 239, 187, 55, 16
+    EDITTEXT        IDC_CMDLINEHELP, 16, 7, 274, 170, ES_MULTILINE | ES_READONLY | WS_VSCROLL | NOT WS_BORDER
 END
 
 IDD_MUI_FIND DIALOGEX 0, 0, 313, 142
@@ -477,7 +475,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Уставіць тэг HTML/XML"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Адчыняльны тэг (з атрыбутами):",IDC_STATIC,7,7,119,8
+    LTEXT           "&Адчыняльны тэг (з атрыбутамі):",IDC_STATIC,7,7,119,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
     LTEXT           "&Зачыняльны тэг (можна рэдагаваць):",IDC_STATIC,7,37,134,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
@@ -546,7 +544,7 @@ BEGIN
     CONTROL         "Выдаліць &унікальныя радкі",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,108,10
     CONTROL         "Выдал&іць пустыя радкі",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,94,10
     CONTROL         "Выдаліць радкі толькі &з прабеламі",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,131,10
-    CONTROL         "&Не улічваць рэгістр",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,81,10
+    CONTROL         "&Не ўлічваць рэгістр",108,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,115,81,10
     CONTROL         "&Лагічнае параўнанне радкоў",109,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,127,114,10
     CONTROL         "У &слупку (прамавугольнае вылучэнне)",110,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,147,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14

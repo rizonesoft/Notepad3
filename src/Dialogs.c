@@ -45,8 +45,8 @@
 #include "Version.h"
 #include "Helpers.h"
 #include "Encoding.h"
-#include "SciCall.h"
 #include "TypeDefs.h"
+#include "SciCall.h"
 
 #include "Dialogs.h"
 
@@ -58,13 +58,15 @@ static HHOOK hhkMsgBox = NULL;
 
 static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
 {
+  HWND  hParentWnd, hChildWnd;    // msgbox is "child"
+  RECT  rParent, rChild, rDesktop;
+
   // notification that a window is about to be activated  
   if (nCode == HCBT_ACTIVATE) {
     // set window handles
-    HWND hParentWnd = GetForegroundWindow(); // msgbox is "child"
-    HWND hChildWnd = (HWND)wParam; // window handle is wParam
+    hParentWnd = GetForegroundWindow();
+    hChildWnd = (HWND)wParam; // window handle is wParam
 
-    RECT  rParent, rChild, rDesktop;
     if ((hParentWnd != NULL) && (hChildWnd != NULL) &&
         (GetWindowRect(GetDesktopWindow(), &rDesktop) != 0) &&
         (GetWindowRect(hParentWnd, &rParent) != 0) &&
@@ -284,13 +286,13 @@ INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
   switch (umsg) {
   case WM_INITDIALOG:
     {
-      WCHAR szTitle[80] = { L'\0' };
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+      //WCHAR szTitle[80] = { L'\0' };
+      //GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
+      //SetWindowText(hwnd, szTitle);
       WCHAR szText[4096] = { L'\0' };
-      GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
       GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
-      SetWindowText(hwnd, szTitle);
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
-      //SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)IDC_CMDLINEHELP, TRUE);
       CenterDlgInParent(hwnd);
     }
     break;
@@ -499,41 +501,45 @@ static DWORD CALLBACK _LoadRtfCallbackW(
 //
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
+  WCHAR wch[256] = { L'\0' };
+  static HFONT hFontTitle;
   static HICON hIcon = NULL;
 
   switch (umsg)
   {
   case WM_INITDIALOG:
   {
-    if (!hIcon) {
-      hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
+    {
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
+      if (!hIcon) {
+        hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
+      }
+
+      SetDlgItemText(hwnd, IDC_VERSION, MKWCS(VERSION_FILEVERSION_LONG));
+
+      if (hFontTitle) { DeleteObject(hFontTitle); }
+
+      if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
+        hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
+      }
+
+      LOGFONT lf;
+      GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+      lf.lfWeight = FW_BOLD;
+      lf.lfWidth  = ScaleIntFontSize(8);
+      lf.lfHeight = ScaleIntFontSize(22);
+      // lf.lfQuality = ANTIALIASED_QUALITY;
+      hFontTitle = CreateFontIndirect(&lf);
+
+      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
     }
-
-    SetDlgItemText(hwnd, IDC_VERSION, MKWCS(VERSION_FILEVERSION_LONG));
-
-    static HFONT hFontTitle;
-    if (hFontTitle) { DeleteObject(hFontTitle); }
-
-    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
-      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-    }
-
-    LOGFONT lf;
-    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-    lf.lfWeight = FW_BOLD;
-    lf.lfWidth  = ScaleIntFontSize(8);
-    lf.lfHeight = ScaleIntFontSize(22);
-    // lf.lfQuality = ANTIALIASED_QUALITY;
-    hFontTitle = CreateFontIndirect(&lf);
-
-    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
 
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
     SetDlgItemText(hwnd, IDC_COPYRIGHT, VERSION_LEGALCOPYRIGHT);
     SetDlgItemText(hwnd, IDC_AUTHORNAME, VERSION_AUTHORNAME);
     SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
 
-    WCHAR wch[256] = { L'\0' };
     if (GetDlgItem(hwnd, IDC_WEBPAGE) == NULL) {
       SetDlgItemText(hwnd, IDC_WEBPAGE2, VERSION_WEBPAGEDISPLAY);
       ShowWindow(GetDlgItem(hwnd, IDC_WEBPAGE2), SW_SHOWNORMAL);
@@ -1399,9 +1405,10 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
     SHFILEINFO shfi;
     ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
-    if (ListView_GetItem(hwnd,&lvi)) 
-    {
-      DWORD dwAttr = 0;
+    DWORD dwAttr = 0;
+
+    if (ListView_GetItem(hwnd,&lvi)) {
+
       if (PathIsUNC(tch) || !PathFileExists(tch)) {
         dwFlags |= SHGFI_USEFILEATTRIBUTES;
         dwAttr = FILE_ATTRIBUTE_NORMAL;
@@ -2810,6 +2817,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo)
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 {
   WCHAR szModuleName[MAX_PATH] = { L'\0' };
+  WCHAR szFileName[MAX_PATH] = { L'\0' };
   WCHAR szParameters[2 * MAX_PATH + 64] = { L'\0' };
   WCHAR tch[64] = { L'\0' };
 
@@ -2852,7 +2860,6 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 
   if (bSetCurFile && StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) 
   {
-    WCHAR szFileName[MAX_PATH] = { L'\0' };
     StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);
     PathQuoteSpaces(szFileName);
     StringCchCat(szParameters, COUNTOF(szParameters), L" ");
@@ -3003,8 +3010,12 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   LPCWSTR lpszFile, int iFormat, bool bModified,
   UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt)
 {
+
   WCHAR szUntitled[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szExcrptQuot[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szExcrptFmt[32] = { L'\0' };
   WCHAR szAppName[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
   WCHAR szReadOnly[32] = { L'\0' };
   WCHAR szTitle[LARGE_BUFFER] = { L'\0' };
 
@@ -3017,7 +3028,6 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   }
 
   if (bIsElevated) {
-    WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
     FormatLngStringW(szElevatedAppName, COUNTOF(szElevatedAppName), IDS_MUI_APPTITLE_ELEVATED, szAppName);
     StringCchCopyN(szAppName, COUNTOF(szAppName), szElevatedAppName, COUNTOF(szElevatedAppName));
   }
@@ -3028,8 +3038,6 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
     StringCchCopy(szTitle, COUNTOF(szTitle), L"");
 
   if (StrIsNotEmpty(lpszExcerpt)) {
-    WCHAR szExcrptFmt[32] = { L'\0' };
-    WCHAR szExcrptQuot[MIDSZ_BUFFER] = { L'\0' };
     GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
     StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
     StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
@@ -3627,8 +3635,8 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  INT_PTR ret = IDABORT;
   DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  INT_PTR ret = (INT_PTR)NULL;
   if (pDlgTemplate) {
     ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
@@ -3639,13 +3647,13 @@ INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
 HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  HWND hwnd = INVALID_HANDLE_VALUE;
   DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  HWND hwnd = INVALID_HANDLE_VALUE;
   if (pDlgTemplate) {
     hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
   }
-  return(hwnd);
+  return hwnd;
 }
 
 //  End of Dialogs.c
