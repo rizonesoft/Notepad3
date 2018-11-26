@@ -194,16 +194,16 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
-Notepad3 \t[/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+記述法:\r\n\
+Notepad3 \t[/?] […[文字コード]] […[改行コード]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[ドライブ:][パス]ファイル名[…]]\r\n\r\n\
 ファイル\t相対パス可能. 最後の引数にする必要がある.\r\n\
  \tデフォルトでは空白があっても引用符は不要.\r\n\
 +\t複数のファイルの引数を許容 (要・引用符)\r\n\
 -\tファイル引数をひとつだけ許容 (引用符不要)\r\n\r\n\
-Options:\r\n\
-/?\tDispay this help message.\r\n\
+引数（省略可）:\r\n\
+/?\tヘルプを表示\r\n\
 …\t文字コード (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
 …\t改行コード (/crlf, /cr, /lf)\r\n\
 /e\tファイルの文字コードを指定 [/e id]\r\n\
@@ -230,11 +230,11 @@ Options:\r\n\
 /v\tすぐに印刷して終了する\r\n\
 /vd\tファイルの印刷(印刷ダイアログを開く)\r\n\
 /z\t「次へ」を省略 (レジストリでメモ帳を置換している際に有効化)\r\n\r\n\
-Examples:\r\n\
+例:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t… 新規ファイル Test.txt を開く: 文字コード UTF-8-BOM, 改行 CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… Print the file: ""Test.txt"" immediately.\
+ \t… すぐに Test.txt を印刷
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
