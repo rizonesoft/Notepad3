@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
 LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
-#pragma code_page(65001)  //  UTF-8 Signature
+#pragma code_page(1251)  // Cyrillic
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

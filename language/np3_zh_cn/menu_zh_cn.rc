@@ -1,4 +1,4 @@
-ï»¿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
-#pragma code_page(65001)  //  UTF-8 Signature
+#pragma code_page(936)  // Chinese Simplified (GBK-2312)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -54,382 +54,382 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "æ–‡ä»¶(&F)"
+    POPUP "ÎÄ¼þ(&F)"
     BEGIN
-        MENUITEM "æ–°å»º(&N)\tCtrl+N",              IDM_FILE_NEW
-        MENUITEM "æ‰“å¼€(&O)...\tCtrl+O",           IDM_FILE_OPEN
-        MENUITEM "è¿˜åŽŸ(&V)\tF5",                  IDM_FILE_REVERT
-        MENUITEM "ä¿å­˜(&S)\tCtrl+S",              IDM_FILE_SAVE
-        MENUITEM "å¦å­˜ä¸º(&A)...\tF6",              IDM_FILE_SAVEAS
-        MENUITEM "ä¿å­˜å‰¯æœ¬(&C)...\tCtrl+F6",        IDM_FILE_SAVECOPY
-        MENUITEM "åªè¯»(&R)",                      IDM_FILE_READONLY
+        MENUITEM "ÐÂ½¨(&N)\tCtrl+N",              IDM_FILE_NEW
+        MENUITEM "´ò¿ª(&O)...\tCtrl+O",           IDM_FILE_OPEN
+        MENUITEM "»¹Ô­(&V)\tF5",                  IDM_FILE_REVERT
+        MENUITEM "±£´æ(&S)\tCtrl+S",              IDM_FILE_SAVE
+        MENUITEM "Áí´æÎª(&A)...\tF6",              IDM_FILE_SAVEAS
+        MENUITEM "±£´æ¸±±¾(&C)...\tCtrl+F6",        IDM_FILE_SAVECOPY
+        MENUITEM "Ö»¶Á(&R)",                      IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "è®¾ç½®åŠ å¯†å£ä»¤(&Y)...",               IDM_SETPASS
+        MENUITEM "ÉèÖÃ¼ÓÃÜ¿ÚÁî(&Y)...",               IDM_SETPASS
         MENUITEM SEPARATOR
-        POPUP "å¯åŠ¨(&L)"
+        POPUP "Æô¶¯(&L)"
         BEGIN
-            MENUITEM "æ–°çª—å£(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
-            MENUITEM "ç©ºçª—å£(&E)\tAlt+Shift+N",        IDM_FILE_NEWWINDOW2
+            MENUITEM "ÐÂ´°¿Ú(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
+            MENUITEM "¿Õ´°¿Ú(&E)\tAlt+Shift+N",        IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
-            MENUITEM "è¿è¡Œå½“å‰æ–‡æ¡£(&D)\tCtrl+L",          IDM_FILE_LAUNCH
-            MENUITEM "æ‰“å¼€æ–¹å¼(&O)...\tAlt+L",          IDM_FILE_OPENWITH
-            MENUITEM "è¿è¡Œ(&C)...\tCtrl+R",           IDM_FILE_RUN
+            MENUITEM "ÔËÐÐµ±Ç°ÎÄµµ(&D)\tCtrl+L",          IDM_FILE_LAUNCH
+            MENUITEM "´ò¿ª·½Ê½(&O)...\tAlt+L",          IDM_FILE_OPENWITH
+            MENUITEM "ÔËÐÐ(&C)...\tCtrl+R",           IDM_FILE_RUN
             MENUITEM SEPARATOR
-            MENUITEM "Web æ¨¡æ¿ 1(&1)\tCtrl+Shift+1",  CMD_WEBACTION1
-            MENUITEM "Web æ¨¡æ¿ 2(&2)\tCtrl+Shift+2",  CMD_WEBACTION2
+            MENUITEM "Web Ä£°å 1(&1)\tCtrl+Shift+1",  CMD_WEBACTION1
+            MENUITEM "Web Ä£°å 2(&2)\tCtrl+Shift+2",  CMD_WEBACTION2
         END
         MENUITEM SEPARATOR
-        POPUP "ç¼–ç (&E)"
+        POPUP "±àÂë(&E)"
         BEGIN
             MENUITEM "ANSI(&A)",                    IDM_ENCODING_ANSI
-            MENUITEM "Unicodeï¼ˆUTF-16 å°ç«¯åºï¼‰(&U)",     IDM_ENCODING_UNICODE
-            MENUITEM "Unicodeï¼ˆUTF-16 å¤§ç«¯åºï¼‰(&B)",     IDM_ENCODING_UNICODEREV
-            MENUITEM "Unicodeï¼ˆUTF-8 æ— ç­¾åï¼‰(&8)\tShift+F8", IDM_ENCODING_UTF8
-            MENUITEM "Unicodeï¼ˆUTF-8 å¸¦ç­¾åï¼‰(&S)",      IDM_ENCODING_UTF8SIGN
-            MENUITEM "é€‰æ‹©ç¼–ç (&M)...\tF9",             IDM_ENCODING_SELECT
+            MENUITEM "Unicode£¨UTF-16 Ð¡¶ËÐò£©(&U)",     IDM_ENCODING_UNICODE
+            MENUITEM "Unicode£¨UTF-16 ´ó¶ËÐò£©(&B)",     IDM_ENCODING_UNICODEREV
+            MENUITEM "Unicode£¨UTF-8 ÎÞÇ©Ãû£©(&8)\tShift+F8", IDM_ENCODING_UTF8
+            MENUITEM "Unicode£¨UTF-8 ´øÇ©Ãû£©(&S)",      IDM_ENCODING_UTF8SIGN
+            MENUITEM "Ñ¡Ôñ±àÂë(&M)...\tF9",             IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "ä½¿ç”¨ Compact Encoding Detection æ£€æµ‹ç¼–ç å¹¶é‡æ–°åŠ è½½(&M)", CMD_RELOADFORCEDETECTION
+            MENUITEM "Ê¹ÓÃ Compact Encoding Detection ¼ì²â±àÂë²¢ÖØÐÂ¼ÓÔØ(&M)", CMD_RELOADFORCEDETECTION
             MENUITEM SEPARATOR
-            MENUITEM "ä½¿ç”¨é»˜è®¤ç¼–ç é‡æ–°åŠ è½½(&E)\tCtrl-Alt-F",  CMD_RECODEDEFAULT
-            MENUITEM "ä½¿ç”¨ ANSI ç¼–ç é‡æ–°åŠ è½½(&A)\tCtrl-Shift+A", CMD_RECODEANSI
-            MENUITEM "ä½¿ç”¨ OEM ç¼–ç é‡æ–°åŠ è½½(&O)\tCtrl+Shift+O", CMD_RECODEOEM
-            MENUITEM "ä½¿ç”¨ UTF-8 ç¼–ç é‡æ–°åŠ è½½(&8)\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
-            MENUITEM "å¿½ç•¥ç¼–ç æ ‡è®°å¹¶é‡æ–°åŠ è½½(&T)\tAlt+F8",     CMD_RELOADNOFILEVARS
-            MENUITEM "é€‰æ‹©ç¼–ç å¹¶é‡æ–°åŠ è½½(&R)...\tF8",        IDM_ENCODING_RECODE
+            MENUITEM "Ê¹ÓÃÄ¬ÈÏ±àÂëÖØÐÂ¼ÓÔØ(&E)\tCtrl-Alt-F",  CMD_RECODEDEFAULT
+            MENUITEM "Ê¹ÓÃ ANSI ±àÂëÖØÐÂ¼ÓÔØ(&A)\tCtrl-Shift+A", CMD_RECODEANSI
+            MENUITEM "Ê¹ÓÃ OEM ±àÂëÖØÐÂ¼ÓÔØ(&O)\tCtrl+Shift+O", CMD_RECODEOEM
+            MENUITEM "Ê¹ÓÃ UTF-8 ±àÂëÖØÐÂ¼ÓÔØ(&8)\tCtrl+Shift+F8", CMD_RELOADASCIIASUTF8
+            MENUITEM "ºöÂÔ±àÂë±ê¼Ç²¢ÖØÐÂ¼ÓÔØ(&T)\tAlt+F8",     CMD_RELOADNOFILEVARS
+            MENUITEM "Ñ¡Ôñ±àÂë²¢ÖØÐÂ¼ÓÔØ(&R)...\tF8",        IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
-            MENUITEM "è®¾ç½®(&D)...",                   IDM_ENCODING_SETDEFAULT
+            MENUITEM "ÉèÖÃ(&D)...",                   IDM_ENCODING_SETDEFAULT
         END
-        POPUP "æ¢è¡Œ(&G)"
+        POPUP "»»ÐÐ(&G)"
         BEGIN
             MENUITEM "Windows(&W) (CR+LF)",         IDM_LINEENDINGS_CRLF
             MENUITEM "Mac(&M) (CR)",                IDM_LINEENDINGS_CR
             MENUITEM "Unix(&U) (LF)",               IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "è®¾ç½®(&D)...",                   IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "ÉèÖÃ(&D)...",                   IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "é¡µé¢è®¾ç½®(&T)...",                 IDM_FILE_PAGESETUP
-        MENUITEM "æ‰“å°(&P)...\tCtrl+P",           IDM_FILE_PRINT
+        MENUITEM "Ò³ÃæÉèÖÃ(&T)...",                 IDM_FILE_PAGESETUP
+        MENUITEM "´òÓ¡(&P)...\tCtrl+P",           IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "å±žæ€§(&I)...",                   IDM_FILE_PROPERTIES
-        MENUITEM "åœ¨æ¡Œé¢åˆ›å»ºå¿«æ·æ–¹å¼(&D)",               IDM_FILE_CREATELINK
+        MENUITEM "ÊôÐÔ(&I)...",                   IDM_FILE_PROPERTIES
+        MENUITEM "ÔÚ×ÀÃæ´´½¨¿ì½Ý·½Ê½(&D)",               IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "æµè§ˆ(&B)...\tCtrl+M",           IDM_FILE_BROWSE
-        POPUP "æ”¶è—å¤¹(&F)"
+        MENUITEM "ä¯ÀÀ(&B)...\tCtrl+M",           IDM_FILE_BROWSE
+        POPUP "ÊÕ²Ø¼Ð(&F)"
         BEGIN
-            MENUITEM "æ‰“å¼€æ”¶è—å¤¹(&O)...\tAlt+I",         IDM_FILE_OPENFAV
-            MENUITEM "å°†å½“å‰æ–‡ä»¶æ·»åŠ åˆ°æ”¶è—å¤¹(&A)...\tAlt+K",   IDM_FILE_ADDTOFAV
-            MENUITEM "ç®¡ç†æ”¶è—å¤¹(&M)...\tAlt+F9",        IDM_FILE_MANAGEFAV
+            MENUITEM "´ò¿ªÊÕ²Ø¼Ð(&O)...\tAlt+I",         IDM_FILE_OPENFAV
+            MENUITEM "½«µ±Ç°ÎÄ¼þÌí¼Óµ½ÊÕ²Ø¼Ð(&A)...\tAlt+K",   IDM_FILE_ADDTOFAV
+            MENUITEM "¹ÜÀíÊÕ²Ø¼Ð(&M)...\tAlt+F9",        IDM_FILE_MANAGEFAV
         END
-        MENUITEM "æœ€è¿‘ä½¿ç”¨çš„(&H)...\tCtrl+Alt+H",    IDM_FILE_RECENT
+        MENUITEM "×î½üÊ¹ÓÃµÄ(&H)...\tCtrl+Alt+H",    IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "é€€å‡º(&X)\tAlt+F4",              IDM_FILE_EXIT
+        MENUITEM "ÍË³ö(&X)\tAlt+F4",              IDM_FILE_EXIT
     END
-    POPUP "ç¼–è¾‘(&E)"
+    POPUP "±à¼­(&E)"
     BEGIN
-        MENUITEM "æ’¤é”€(&U)\tCtrl+Z",              IDM_EDIT_UNDO
-        MENUITEM "é‡åš(&R)\tCtrl+Y",              IDM_EDIT_REDO
+        MENUITEM "³·Ïú(&U)\tCtrl+Z",              IDM_EDIT_UNDO
+        MENUITEM "ÖØ×ö(&R)\tCtrl+Y",              IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "å‰ªåˆ‡(&T)\tCtrl+X",              IDM_EDIT_CUT
-        MENUITEM "å¤åˆ¶(&C)\tCtrl+C",              IDM_EDIT_COPY
-        MENUITEM "å…¨éƒ¨å¤åˆ¶(&L)\tAlt+C",             IDM_EDIT_COPYALL
-        MENUITEM "å¢žé‡å¤åˆ¶(&Y)\tCtrl+E",            IDM_EDIT_COPYADD
-        MENUITEM "ç²˜è´´(&P)\tCtrl+V",              IDM_EDIT_PASTE
-        MENUITEM "å’Œå‰ªè´´æ¿äº¤æ¢(&W)\tCtrl+K",          IDM_EDIT_SWAP
-        MENUITEM "åˆ é™¤(&D)\tDel",                 IDM_EDIT_CLEAR
-        MENUITEM "æ¸…ç©ºå‰ªè´´æ¿(&E)",                   IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "å…¨é€‰(&A)\tCtrl+A",              IDM_EDIT_SELECTALL
+        MENUITEM "¼ôÇÐ(&T)\tCtrl+X",              IDM_EDIT_CUT
+        MENUITEM "¸´ÖÆ(&C)\tCtrl+C",              IDM_EDIT_COPY
+        MENUITEM "È«²¿¸´ÖÆ(&L)\tAlt+C",             IDM_EDIT_COPYALL
+        MENUITEM "ÔöÁ¿¸´ÖÆ(&Y)\tCtrl+E",            IDM_EDIT_COPYADD
+        MENUITEM "Õ³Ìù(&P)\tCtrl+V",              IDM_EDIT_PASTE
+        MENUITEM "ºÍ¼ôÌù°å½»»»(&W)\tCtrl+K",          IDM_EDIT_SWAP
+        MENUITEM "É¾³ý(&D)\tDel",                 IDM_EDIT_CLEAR
+        MENUITEM "Çå¿Õ¼ôÌù°å(&E)",                   IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "È«Ñ¡(&A)\tCtrl+A",              IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "å•è¯(&O)"
+        POPUP "µ¥´Ê(&O)"
         BEGIN
-            MENUITEM "è¡¥å…¨å•è¯(&C)\tCtrl+Alt+Enter",    IDM_EDIT_COMPLETEWORD
+            MENUITEM "²¹È«µ¥´Ê(&C)\tCtrl+Alt+Enter",    IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
-            MENUITEM "å…‰æ ‡å‘å·¦è·³è¿‡ä¸€ä¸ªå•è¯(&L)\tCtrl+Left",   CMD_CTRLLEFT
-            MENUITEM "å…‰æ ‡å‘å³è·³è¿‡ä¸€ä¸ªå•è¯(&R)\tCtrl+Right",  CMD_CTRLRIGHT
-            MENUITEM "åˆ é™¤å…‰æ ‡å·¦è¾¹çš„å•è¯(&D)\tCtrl+Back",    CMD_CTRLBACK
-            MENUITEM "åˆ é™¤å…‰æ ‡å³è¾¹çš„å•è¯(&W)\tCtrl+Del",     CMD_CTRLDEL
+            MENUITEM "¹â±êÏò×óÌø¹ýÒ»¸öµ¥´Ê(&L)\tCtrl+Left",   CMD_CTRLLEFT
+            MENUITEM "¹â±êÏòÓÒÌø¹ýÒ»¸öµ¥´Ê(&R)\tCtrl+Right",  CMD_CTRLRIGHT
+            MENUITEM "É¾³ý¹â±ê×ó±ßµÄµ¥´Ê(&D)\tCtrl+Back",    CMD_CTRLBACK
+            MENUITEM "É¾³ý¹â±êÓÒ±ßµÄµ¥´Ê(&W)\tCtrl+Del",     CMD_CTRLDEL
         END
-        POPUP "è¡Œ(&L)"
+        POPUP "ÐÐ(&L)"
         BEGIN
-            MENUITEM "ä¸Šç§»è¡Œ(&U)\tCtrl+Shift+Up",      IDM_EDIT_MOVELINEUP
-            MENUITEM "ä¸‹ç§»è¡Œ(&M)\tCtrl+Shift+Down",    IDM_EDIT_MOVELINEDOWN
+            MENUITEM "ÉÏÒÆÐÐ(&U)\tCtrl+Shift+Up",      IDM_EDIT_MOVELINEUP
+            MENUITEM "ÏÂÒÆÐÐ(&M)\tCtrl+Shift+Down",    IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "å‰ªåˆ‡è¡Œ(&L)\tCtrl[+Shift]+X",     IDM_EDIT_CUTLINE
-            MENUITEM "å¤åˆ¶è¡Œ(&C)\tCtrl[+Shift]+C",     IDM_EDIT_COPYLINE
-            MENUITEM "åŽŸåœ°å¤åˆ¶è¡Œ/é€‰åŒº(&D)\tCtrl+D",        IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "ä¸Žä¸Šä¸€è¡Œè°ƒæ¢(&T)\tAlt+D",           IDM_EDIT_LINETRANSPOSE
-            MENUITEM "åˆ é™¤è¡Œ(&E)\tCtrl+Shift+D",       IDM_EDIT_DELETELINE
+            MENUITEM "¼ôÇÐÐÐ(&L)\tCtrl[+Shift]+X",     IDM_EDIT_CUTLINE
+            MENUITEM "¸´ÖÆÐÐ(&C)\tCtrl[+Shift]+C",     IDM_EDIT_COPYLINE
+            MENUITEM "Ô­µØ¸´ÖÆÐÐ/Ñ¡Çø(&D)\tCtrl+D",        IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "ÓëÉÏÒ»ÐÐµ÷»»(&T)\tAlt+D",           IDM_EDIT_LINETRANSPOSE
+            MENUITEM "É¾³ýÐÐ(&E)\tCtrl+Shift+D",       IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "å‘å·¦åˆ é™¤ç›´åˆ°è¡Œé¦–(&H)\tCtrl+Shift+Backspace", IDM_EDIT_DELETELINELEFT
-            MENUITEM "å‘å³åˆ é™¤ç›´åˆ°è¡Œå°¾(&T)\tCtrl+Shift+Delete", IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Ïò×óÉ¾³ýÖ±µ½ÐÐÊ×(&H)\tCtrl+Shift+Backspace", IDM_EDIT_DELETELINELEFT
+            MENUITEM "ÏòÓÒÉ¾³ýÖ±µ½ÐÐÎ²(&T)\tCtrl+Shift+Delete", IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "ç¡¬æ¢è¡Œå¤„ç†(&W)...\tCtrl+Shift+W",  IDM_EDIT_COLUMNWRAP
-            MENUITEM "æ‹†åˆ†è¡Œ(&S)\tCtrl+I",             IDM_EDIT_SPLITLINES
-            MENUITEM "è¿žæŽ¥è¡Œï¼ˆç”¨ç©ºæ ¼éš”å¼€ï¼‰(&J)\tCtrl+J",      IDM_EDIT_JOINLINES
-            MENUITEM "è¿žæŽ¥è¡Œï¼ˆä¸æ·»åŠ ç©ºæ ¼ï¼‰(&F)\tCtrl+Alt+J",  IDM_EDIT_JOINLN_NOSP
-            MENUITEM "è¿žæŽ¥è¡Œï¼ˆä¿ç•™æ®µè½ï¼‰(&P)\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
+            MENUITEM "Ó²»»ÐÐ´¦Àí(&W)...\tCtrl+Shift+W",  IDM_EDIT_COLUMNWRAP
+            MENUITEM "²ð·ÖÐÐ(&S)\tCtrl+I",             IDM_EDIT_SPLITLINES
+            MENUITEM "Á¬½ÓÐÐ£¨ÓÃ¿Õ¸ñ¸ô¿ª£©(&J)\tCtrl+J",      IDM_EDIT_JOINLINES
+            MENUITEM "Á¬½ÓÐÐ£¨²»Ìí¼Ó¿Õ¸ñ£©(&F)\tCtrl+Alt+J",  IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Á¬½ÓÐÐ£¨±£Áô¶ÎÂä£©(&P)\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "åˆå¹¶ç©ºè¡Œ(&G)\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "åˆå¹¶åªæœ‰ç©ºç™½å­—ç¬¦çš„è¡Œ(&N)\tCtrl+Alt+Y",  IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "åˆ é™¤ç©ºè¡Œ(&R)\tAlt+R",             IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "åˆ é™¤åªæœ‰ç©ºç™½å­—ç¬¦çš„è¡Œ(&M)\tCtrl+Alt+B",  IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "åˆ é™¤é‡å¤è¡Œ(&O)\tCtrl+Alt+D",       IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "ºÏ²¢¿ÕÐÐ(&G)\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "ºÏ²¢Ö»ÓÐ¿Õ°××Ö·ûµÄÐÐ(&N)\tCtrl+Alt+Y",  IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "É¾³ý¿ÕÐÐ(&R)\tAlt+R",             IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "É¾³ýÖ»ÓÐ¿Õ°××Ö·ûµÄÐÐ(&M)\tCtrl+Alt+B",  IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "É¾³ýÖØ¸´ÐÐ(&O)\tCtrl+Alt+D",       IDM_EDIT_REMOVEDUPLICATELINES
         END
-        POPUP "é€‰æ‹©(&S)"
+        POPUP "Ñ¡Ôñ(&S)"
         BEGIN
-            MENUITEM "å¢žåŠ ç¼©è¿›(&I)",                    IDM_EDIT_INDENT
-            MENUITEM "å‡å°‘ç¼©è¿›(&U)",                    IDM_EDIT_UNINDENT
+            MENUITEM "Ôö¼ÓËõ½ø(&I)",                    IDM_EDIT_INDENT
+            MENUITEM "¼õÉÙËõ½ø(&U)",                    IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "ç»™é€‰å®šæ–‡æœ¬æ·»åŠ æ‹¬å·(&E)"
+            POPUP "¸øÑ¡¶¨ÎÄ±¾Ìí¼ÓÀ¨ºÅ(&E)"
             BEGIN
-                MENUITEM "å•å¼•å·(&S)\tCtrl+1",             CMD_STRINGIFY
-                MENUITEM "åŒå¼•å·(&D)\tCtrl+2",             CMD_STRINGIFY2
+                MENUITEM "µ¥ÒýºÅ(&S)\tCtrl+1",             CMD_STRINGIFY
+                MENUITEM "Ë«ÒýºÅ(&D)\tCtrl+2",             CMD_STRINGIFY2
                 MENUITEM SEPARATOR
                 MENUITEM "( )\tCtrl+3",                 CMD_EMBRACE
                 MENUITEM "[ ]\tCtrl+4",                 CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                 CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "åå¼•å·(&B)\tCtrl+6",             CMD_EMBRACE4
+                MENUITEM "·´ÒýºÅ(&B)\tCtrl+6",             CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "è‡ªå®šä¹‰(&W)...\tAlt+Q",           IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "×Ô¶¨Òå(&W)...\tAlt+Q",           IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "åŽŸåœ°å¤åˆ¶é€‰å®šå†…å®¹/Line(&D)\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Ô­µØ¸´ÖÆÑ¡¶¨ÄÚÈÝ/Line(&D)\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "å¡«å……ç©ºæ ¼(&P)\tAlt+B",             IDM_EDIT_PADWITHSPACES
-            MENUITEM "åˆ é™¤ç¬¬ä¸€ä¸ªå­—ç¬¦(&F)\tAlt+Z",          IDM_EDIT_STRIP1STCHAR
-            MENUITEM "åˆ é™¤æœ€åŽä¸€ä¸ªå­—ç¬¦(&L)\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "åˆ é™¤è¡Œå°¾ç©ºç™½å­—ç¬¦(&T)\tAlt+W",         IDM_EDIT_TRIMLINES
-            MENUITEM "åŽ‹ç¼©ç©ºç™½å­—ç¬¦(&W)\tAlt+P",           IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Ìî³ä¿Õ¸ñ(&P)\tAlt+B",             IDM_EDIT_PADWITHSPACES
+            MENUITEM "É¾³ýµÚÒ»¸ö×Ö·û(&F)\tAlt+Z",          IDM_EDIT_STRIP1STCHAR
+            MENUITEM "É¾³ý×îºóÒ»¸ö×Ö·û(&L)\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "É¾³ýÐÐÎ²¿Õ°××Ö·û(&T)\tAlt+W",         IDM_EDIT_TRIMLINES
+            MENUITEM "Ñ¹Ëõ¿Õ°××Ö·û(&W)\tAlt+P",           IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "ä¿®æ”¹(&M)...\tAlt+M",            IDM_EDIT_MODIFYLINES
-            MENUITEM "å¯¹é½(&A)...\tAlt+J",            IDM_EDIT_ALIGN
-            MENUITEM "æŽ’åº(&S)...\tAlt+O",            IDM_EDIT_SORTLINES
+            MENUITEM "ÐÞ¸Ä(&M)...\tAlt+M",            IDM_EDIT_MODIFYLINES
+            MENUITEM "¶ÔÆë(&A)...\tAlt+J",            IDM_EDIT_ALIGN
+            MENUITEM "ÅÅÐò(&S)...\tAlt+O",            IDM_EDIT_SORTLINES
         END
-        POPUP "è½¬æ¢(&N)"
+        POPUP "×ª»»(&N)"
         BEGIN
-            MENUITEM "è½¬æ¢ä¸ºå¤§å†™(&U)\tCtrl+Shift+U",     IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "è½¬æ¢ä¸ºå°å†™(&L)\tCtrl+U",           IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "×ª»»Îª´óÐ´(&U)\tCtrl+Shift+U",     IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "×ª»»ÎªÐ¡Ð´(&L)\tCtrl+U",           IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "åè½¬å¤§å°å†™(&I)\tCtrl+Alt+U",       IDM_EDIT_INVERTCASE
-            MENUITEM "è¯é¦–å¤§å†™(&C)\tCtrl+Alt+I",        IDM_EDIT_TITLECASE
-            MENUITEM "å¥é¦–å¤§å†™(&S)\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
+            MENUITEM "·´×ª´óÐ¡Ð´(&I)\tCtrl+Alt+U",       IDM_EDIT_INVERTCASE
+            MENUITEM "´ÊÊ×´óÐ´(&C)\tCtrl+Alt+I",        IDM_EDIT_TITLECASE
+            MENUITEM "¾äÊ×´óÐ´(&S)\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "è½¬æ¢å…¨éƒ¨ç©ºæ ¼ä¸ºåˆ¶è¡¨ç¬¦(&T)\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
-            MENUITEM "è½¬æ¢å…¨éƒ¨åˆ¶è¡¨ç¬¦ä¸ºç©ºæ ¼(&N)\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
+            MENUITEM "×ª»»È«²¿¿Õ¸ñÎªÖÆ±í·û(&T)\tCtrl+Shift+T", IDM_EDIT_CONVERTSPACES
+            MENUITEM "×ª»»È«²¿ÖÆ±í·ûÎª¿Õ¸ñ(&N)\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "è½¬æ¢è¡Œé¦–ç©ºæ ¼ä¸ºåˆ¶è¡¨ç¬¦(&B)\tCtrl+Alt+T",  IDM_EDIT_CONVERTSPACES2
-            MENUITEM "è½¬æ¢è¡Œé¦–åˆ¶è¡¨ç¬¦ä¸ºç©ºæ ¼(&F)\tCtrl+Alt+S",  IDM_EDIT_CONVERTTABS2
+            MENUITEM "×ª»»ÐÐÊ×¿Õ¸ñÎªÖÆ±í·û(&B)\tCtrl+Alt+T",  IDM_EDIT_CONVERTSPACES2
+            MENUITEM "×ª»»ÐÐÊ×ÖÆ±í·ûÎª¿Õ¸ñ(&F)\tCtrl+Alt+S",  IDM_EDIT_CONVERTTABS2
         END
-        POPUP "æ’å…¥(&I)"
+        POPUP "²åÈë(&I)"
         BEGIN
-            MENUITEM "åœ¨å…‰æ ‡å‰æ’å…¥æ–°è¡Œ(&N)\tCtrl+Enter",    CMD_CTRLENTER
+            MENUITEM "ÔÚ¹â±êÇ°²åÈëÐÂÐÐ(&N)\tCtrl+Enter",    CMD_CTRLENTER
             MENUITEM SEPARATOR
-            MENUITEM "HTML/XML æ ‡è®°(&H)...\tAlt+X",   IDM_EDIT_INSERT_TAG
+            MENUITEM "HTML/XML ±ê¼Ç(&H)...\tAlt+X",   IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
-            MENUITEM "ç¼–ç åç§°(&E)\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
+            MENUITEM "±àÂëÃû³Æ(&E)\tCtrl+F8",           IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "æ—¥æœŸå’Œæ—¶é—´ï¼ˆçŸ­æ ¼å¼ï¼‰(&T)\tCtrl+F5",     IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "æ—¥æœŸå’Œæ—¶é—´ï¼ˆé•¿æ ¼å¼ï¼‰(&L)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
-            MENUITEM "æ›´æ–°æ—¶é—´æˆ³(&U)\tShift+F5",         CMD_TIMESTAMPS
+            MENUITEM "ÈÕÆÚºÍÊ±¼ä£¨¶Ì¸ñÊ½£©(&T)\tCtrl+F5",     IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "ÈÕÆÚºÍÊ±¼ä£¨³¤¸ñÊ½£©(&L)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "¸üÐÂÊ±¼ä´Á(&U)\tShift+F5",         CMD_TIMESTAMPS
             MENUITEM SEPARATOR
-            MENUITEM "æ–‡ä»¶å(&F)\tCtrl+F9",            IDM_EDIT_INSERT_FILENAME
-            MENUITEM "å®Œæ•´æ–‡ä»¶è·¯å¾„(&P)\tCtrl+Shift+F9",   IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "ÎÄ¼þÃû(&F)\tCtrl+F9",            IDM_EDIT_INSERT_FILENAME
+            MENUITEM "ÍêÕûÎÄ¼þÂ·¾¶(&P)\tCtrl+Shift+F9",   IDM_EDIT_INSERT_PATHNAME
             MENUITEM SEPARATOR
             MENUITEM "GUID(&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
         END
-        POPUP "æ‚é¡¹(&M)"
+        POPUP "ÔÓÏî(&M)"
         BEGIN
-            MENUITEM "åˆ‡æ¢è¡Œæ³¨é‡Š(&L)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
-            MENUITEM "æ·»åŠ å—æ³¨é‡Š(&S)\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
+            MENUITEM "ÇÐ»»ÐÐ×¢ÊÍ(&L)\tCtrl+Q",           IDM_EDIT_LINECOMMENT
+            MENUITEM "Ìí¼Ó¿é×¢ÊÍ(&S)\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            MENUITEM "URL ç¼–ç (&U)\tCtrl+Shift+E",    IDM_EDIT_URLENCODE
-            MENUITEM "URL è§£ç (&D)\tCtrl+Shift+R",    IDM_EDIT_URLDECODE
+            MENUITEM "URL ±àÂë(&U)\tCtrl+Shift+E",    IDM_EDIT_URLENCODE
+            MENUITEM "URL ½âÂë(&D)\tCtrl+Shift+R",    IDM_EDIT_URLDECODE
             MENUITEM SEPARATOR
-            MENUITEM "C è½¬ä¹‰(&E)\tCtrl+Alt+E",        IDM_EDIT_ESCAPECCHARS
-            MENUITEM "C åè½¬ä¹‰(&K)\tCtrl+Alt+R",       IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "C ×ªÒå(&E)\tCtrl+Alt+E",        IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C ·´×ªÒå(&K)\tCtrl+Alt+R",       IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "è½¬æ¢ä¸ºåå…­è¿›åˆ¶(&C)\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
-            MENUITEM "ä»Žåå…­è¿›åˆ¶è½¬æ¢(&H)\tCtrl+Alt+C",     IDM_EDIT_HEX2CHAR
+            MENUITEM "×ª»»ÎªÊ®Áù½øÖÆ(&C)\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
+            MENUITEM "´ÓÊ®Áù½øÖÆ×ª»»(&H)\tCtrl+Alt+C",     IDM_EDIT_HEX2CHAR
             MENUITEM SEPARATOR
-            MENUITEM "å¢žåŠ æ•°å€¼(&+)\tCtrl+Alt+NK+",      CMD_INCREASENUM
-            MENUITEM "å‡å°‘æ•°å€¼(&+)\tCtrl+Alt+NK-",      CMD_DECREASENUM
+            MENUITEM "Ôö¼ÓÊýÖµ(&+)\tCtrl+Alt+NK+",      CMD_INCREASENUM
+            MENUITEM "¼õÉÙÊýÖµ(&+)\tCtrl+Alt+NK-",      CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "æŸ¥æ‰¾é…å¯¹çš„æ‹¬å·(&F)\tCtrl+B",         IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "é€‰å®šç›´åˆ°é…å¯¹çš„æ‹¬å·(&M)\tCtrl+Shift+B", IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "²éÕÒÅä¶ÔµÄÀ¨ºÅ(&F)\tCtrl+B",         IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Ñ¡¶¨Ö±µ½Åä¶ÔµÄÀ¨ºÅ(&M)\tCtrl+Shift+B", IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
-            MENUITEM "é€‰å®šç›´åˆ°ä¸‹ä¸€ä¸ªæŸ¥æ‰¾åŒ¹é…(&N)\tCtrl+Alt+F2", IDM_EDIT_SELTONEXT
-            MENUITEM "é€‰å®šç›´åˆ°ä¸Šä¸€ä¸ªæŸ¥æ‰¾åŒ¹é…(&P)\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM "Ñ¡¶¨Ö±µ½ÏÂÒ»¸ö²éÕÒÆ¥Åä(&N)\tCtrl+Alt+F2", IDM_EDIT_SELTONEXT
+            MENUITEM "Ñ¡¶¨Ö±µ½ÉÏÒ»¸ö²éÕÒÆ¥Åä(&P)\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
         END
         MENUITEM SEPARATOR
-        POPUP "ä¹¦ç­¾(&K)"
+        POPUP "ÊéÇ©(&K)"
         BEGIN
-            MENUITEM "åˆ‡æ¢(&T)\tCtrl+F2",             BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "ÇÐ»»(&T)\tCtrl+F2",             BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "è·³è½¬åˆ°ä¸‹ä¸€ä¸ªä¹¦ç­¾(&N)\tF2",            BME_EDIT_BOOKMARKNEXT
-            MENUITEM "è·³è½¬åˆ°ä¸Šä¸€ä¸ªä¹¦ç­¾(&P)\tShift+F2",      BME_EDIT_BOOKMARKPREV
+            MENUITEM "Ìø×ªµ½ÏÂÒ»¸öÊéÇ©(&N)\tF2",            BME_EDIT_BOOKMARKNEXT
+            MENUITEM "Ìø×ªµ½ÉÏÒ»¸öÊéÇ©(&P)\tShift+F2",      BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
-            MENUITEM "æ¸…é™¤å…¨éƒ¨ä¹¦ç­¾(&C)\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
+            MENUITEM "Çå³ýÈ«²¿ÊéÇ©(&C)\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
         END
         MENUITEM SEPARATOR
-        POPUP "æŸ¥æ‰¾(&S)"
+        POPUP "²éÕÒ(&S)"
         BEGIN
-            MENUITEM "æŸ¥æ‰¾(&F)...\tCtrl+F",           IDM_EDIT_FIND
-            MENUITEM "ä¿å­˜æŸ¥æ‰¾å†…å®¹(&T)\tAlt+F3",          IDM_EDIT_SAVEFIND
-            MENUITEM "æŸ¥æ‰¾ä¸‹ä¸€ä¸ª(&X)\tF3",               IDM_EDIT_FINDNEXT
-            MENUITEM "æŸ¥æ‰¾ä¸Šä¸€ä¸ª(&V)\tShift+F3",         IDM_EDIT_FINDPREV
-            MENUITEM "å‘ä¸‹æŸ¥æ‰¾é€‰åŒº(&Y)\tCtrl+F3",         CMD_FINDNEXTSEL
-            MENUITEM "å‘ä¸ŠæŸ¥æ‰¾é€‰åŒº(&Z)\tCtrl+Shift+F3",   CMD_FINDPREVSEL
-            MENUITEM "æ›¿æ¢(&R)...\tCtrl+H",           IDM_EDIT_REPLACE
-            MENUITEM "æ›¿æ¢ä¸‹ä¸€ä¸ª(&X)\tF4",               IDM_EDIT_REPLACENEXT
-            MENUITEM "è·³è½¬åˆ°(&G)...\tCtrl+G",          IDM_EDIT_GOTOLINE
+            MENUITEM "²éÕÒ(&F)...\tCtrl+F",           IDM_EDIT_FIND
+            MENUITEM "±£´æ²éÕÒÄÚÈÝ(&T)\tAlt+F3",          IDM_EDIT_SAVEFIND
+            MENUITEM "²éÕÒÏÂÒ»¸ö(&X)\tF3",               IDM_EDIT_FINDNEXT
+            MENUITEM "²éÕÒÉÏÒ»¸ö(&V)\tShift+F3",         IDM_EDIT_FINDPREV
+            MENUITEM "ÏòÏÂ²éÕÒÑ¡Çø(&Y)\tCtrl+F3",         CMD_FINDNEXTSEL
+            MENUITEM "ÏòÉÏ²éÕÒÑ¡Çø(&Z)\tCtrl+Shift+F3",   CMD_FINDPREVSEL
+            MENUITEM "Ìæ»»(&R)...\tCtrl+H",           IDM_EDIT_REPLACE
+            MENUITEM "Ìæ»»ÏÂÒ»¸ö(&X)\tF4",               IDM_EDIT_REPLACENEXT
+            MENUITEM "Ìø×ªµ½(&G)...\tCtrl+G",          IDM_EDIT_GOTOLINE
         END
     END
-    POPUP "æŸ¥çœ‹(&V)"
+    POPUP "²é¿´(&V)"
     BEGIN
-        POPUP "è¯­æ³•é«˜äº®æ–¹æ¡ˆ(&S)"
+        POPUP "Óï·¨¸ßÁÁ·½°¸(&S)"
         BEGIN
-            MENUITEM "é€‰æ‹©è¯­æ³•é«˜äº®æ–¹æ¡ˆ(&X)...\tF12",        IDM_VIEW_SCHEME
-            MENUITEM "ä½¿ç”¨å¤‡é€‰åŸºæœ¬æ ·å¼(&2)\tShift+F12",     IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "è‡ªå®šä¹‰è¯­æ³•é«˜äº®æ–¹æ¡ˆ(&C)...\tCtrl+F12",  IDM_VIEW_SCHEMECONFIG
-            MENUITEM "å…¨å±€é»˜è®¤å­—ä½“(&D)...\tAlt+F12",      IDM_VIEW_FONT
-            MENUITEM "å½“å‰è¯­æ³•é«˜äº®æ–¹æ¡ˆé»˜è®¤å­—ä½“(&H)...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+            MENUITEM "Ñ¡ÔñÓï·¨¸ßÁÁ·½°¸(&X)...\tF12",        IDM_VIEW_SCHEME
+            MENUITEM "Ê¹ÓÃ±¸Ñ¡»ù±¾ÑùÊ½(&2)\tShift+F12",     IDM_VIEW_USE2NDDEFAULT
+            MENUITEM "×Ô¶¨ÒåÓï·¨¸ßÁÁ·½°¸(&C)...\tCtrl+F12",  IDM_VIEW_SCHEMECONFIG
+            MENUITEM "È«¾ÖÄ¬ÈÏ×ÖÌå(&D)...\tAlt+F12",      IDM_VIEW_FONT
+            MENUITEM "µ±Ç°Óï·¨¸ßÁÁ·½°¸Ä¬ÈÏ×ÖÌå(&H)...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
         MENUITEM SEPARATOR
-        MENUITEM "è‡ªåŠ¨æ¢è¡Œ(&R)\tCtrl+W",            IDM_VIEW_WORDWRAP
-        MENUITEM "æ˜¾ç¤ºè¡Œé•¿åº¦æ ‡è®°(&L)\tCtrl+Shift+L",   IDM_VIEW_LONGLINEMARKER
-        MENUITEM "æ˜¾ç¤ºç¼©è¿›æŒ‡å¼•(&A)\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "×Ô¶¯»»ÐÐ(&R)\tCtrl+W",            IDM_VIEW_WORDWRAP
+        MENUITEM "ÏÔÊ¾ÐÐ³¤¶È±ê¼Ç(&L)\tCtrl+Shift+L",   IDM_VIEW_LONGLINEMARKER
+        MENUITEM "ÏÔÊ¾Ëõ½øÖ¸Òý(&A)\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "æ˜¾ç¤ºç©ºç™½å­—ç¬¦(&W)\tCtrl+Shift+8",    IDM_VIEW_SHOWBLANKS
-        MENUITEM "æ˜¾ç¤ºæ¢è¡Œç¬¦(&E)\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
-        MENUITEM "æ˜¾ç¤ºè½¯æ¢è¡Œ(&P)\tCtrl+Shift+0",     IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "ÏÔÊ¾¿Õ°××Ö·û(&W)\tCtrl+Shift+8",    IDM_VIEW_SHOWBLANKS
+        MENUITEM "ÏÔÊ¾»»ÐÐ·û(&E)\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
+        MENUITEM "ÏÔÊ¾Èí»»ÐÐ(&P)\tCtrl+Shift+0",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
-        MENUITEM "æ£€æµ‹è¶…é“¾æŽ¥(&Y)\tCtrl+Alt+W",       IDM_VIEW_HYPERLINKHOTSPOTS
-        MENUITEM "æç¤ºé…å¯¹æ‹¬å·(&V)\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
-        MENUITEM "é«˜äº®æ˜¾ç¤ºå½“å‰è¡Œ(&G)\tCtrl+Shift+I",   IDM_VIEW_HIGHLIGHTCURRENTLINE
-        POPUP "æ ‡è®°åŒ¹é…(&K)"
+        MENUITEM "¼ì²â³¬Á´½Ó(&Y)\tCtrl+Alt+W",       IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "ÌáÊ¾Åä¶ÔÀ¨ºÅ(&V)\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES
+        MENUITEM "¸ßÁÁÏÔÊ¾µ±Ç°ÐÐ(&G)\tCtrl+Shift+I",   IDM_VIEW_HIGHLIGHTCURRENTLINE
+        POPUP "±ê¼ÇÆ¥Åä(&K)"
         BEGIN
-            MENUITEM "å¯ç”¨(&A)\tAlt+A",               IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "ÆôÓÃ(&A)\tAlt+A",               IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM SEPARATOR
-            MENUITEM "ä»…æ ‡è®°å¯è§å†…å®¹(&O)",                 IDM_VIEW_MARKOCCUR_VISIBLE
+            MENUITEM "½ö±ê¼Ç¿É¼ûÄÚÈÝ(&O)",                 IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
-            MENUITEM "å¤§å°å†™åŒ¹é…(&C)",                   IDM_VIEW_MARKOCCUR_CASE
-            POPUP "å…¨è¯åŒ¹é…(&W)"
+            MENUITEM "´óÐ¡Ð´Æ¥Åä(&C)",                   IDM_VIEW_MARKOCCUR_CASE
+            POPUP "È«´ÊÆ¥Åä(&W)"
             BEGIN
-                MENUITEM "å…³é—­(&F)",                      IDM_VIEW_MARKOCCUR_WNONE
-                MENUITEM "åŒ¹é…é€‰å®šå•è¯(&S)",                  IDM_VIEW_MARKOCCUR_WORD
-                MENUITEM "åŒ¹é…å½“å‰å•è¯(&C)",                  IDM_VIEW_MARKOCCUR_CURRENT
+                MENUITEM "¹Ø±Õ(&F)",                      IDM_VIEW_MARKOCCUR_WNONE
+                MENUITEM "Æ¥ÅäÑ¡¶¨µ¥´Ê(&S)",                  IDM_VIEW_MARKOCCUR_WORD
+                MENUITEM "Æ¥Åäµ±Ç°µ¥´Ê(&C)",                  IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
-        MENUITEM "è¡Œå·(&N)\tCtrl+Shift+N",        IDM_VIEW_LINENUMBERS
-        MENUITEM "æ•´è¡Œé€‰æ‹©æ (&M)\tCtrl+Shift+M",     IDM_VIEW_MARGIN
+        MENUITEM "ÐÐºÅ(&N)\tCtrl+Shift+N",        IDM_VIEW_LINENUMBERS
+        MENUITEM "ÕûÐÐÑ¡ÔñÀ¸(&M)\tCtrl+Shift+M",     IDM_VIEW_MARGIN
         MENUITEM SEPARATOR
-        POPUP "æ˜¾ç¤º(&D)"
+        POPUP "ÏÔÊ¾(&D)"
         BEGIN
-            MENUITEM "ä»£ç æŠ˜å (&F)\tCtrl+Shift+Alt+F",  IDM_VIEW_FOLDING
-            MENUITEM "æŠ˜å /å±•å¼€(&T)\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
-            MENUITEM "ä»…æ˜¾ç¤ºåŒ¹é…è¡Œ(&V)\tCtrl+Alt+V",      IDM_VIEW_TOGGLE_VIEW
-            MENUITEM "è¿½è¸ªæ–‡ä»¶æœ«å°¾ï¼ˆtail å‘½ä»¤ï¼‰(&T)",         IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "å…è®¸æ»šåŠ¨è¶…è¿‡æ–‡ä»¶å°¾(&F)",               IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "´úÂëÕÛµþ(&F)\tCtrl+Shift+Alt+F",  IDM_VIEW_FOLDING
+            MENUITEM "ÕÛµþ/Õ¹¿ª(&T)\tCtrl+Shift+F",     IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "½öÏÔÊ¾Æ¥ÅäÐÐ(&V)\tCtrl+Alt+V",      IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "×·×ÙÎÄ¼þÄ©Î²£¨tail ÃüÁî£©(&T)",         IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "ÔÊÐí¹ö¶¯³¬¹ýÎÄ¼þÎ²(&F)",               IDM_VIEW_SCROLLPASTEOF
         END
-        POPUP "å·¥å…·æ (&T)"
+        POPUP "¹¤¾ßÀ¸(&T)"
         BEGIN
-            MENUITEM "æ˜¾ç¤ºå·¥å…·æ (&T)",                   IDM_VIEW_TOOLBAR
-            MENUITEM "ä½¿ç”¨é«˜è§£æžåº¦å·¥å…·æ (&H)",               IDM_VIEW_TOGGLETB
-            MENUITEM "è‡ªå®šä¹‰å·¥å…·æ (&C)...",               IDM_VIEW_CUSTOMIZETB
-            MENUITEM "æ˜¾ç¤ºçŠ¶æ€æ (&S)",                   IDM_VIEW_STATUSBAR
+            MENUITEM "ÏÔÊ¾¹¤¾ßÀ¸(&T)",                   IDM_VIEW_TOOLBAR
+            MENUITEM "Ê¹ÓÃ¸ß½âÎö¶È¹¤¾ßÀ¸(&H)",               IDM_VIEW_TOGGLETB
+            MENUITEM "×Ô¶¨Òå¹¤¾ßÀ¸(&C)...",               IDM_VIEW_CUSTOMIZETB
+            MENUITEM "ÏÔÊ¾×´Ì¬À¸(&S)",                   IDM_VIEW_STATUSBAR
         END
-        POPUP "ç¼©æ”¾(&Z)"
+        POPUP "Ëõ·Å(&Z)"
         BEGIN
-            MENUITEM "æ”¾å¤§(&I)\tCtrl++",              IDM_VIEW_ZOOMIN
-            MENUITEM "ç¼©å°(&O)\tCtrl+-",              IDM_VIEW_ZOOMOUT
-            MENUITEM "é‡ç½®ç¼©æ”¾(&Z)\tCtrl+0",            IDM_VIEW_RESETZOOM
+            MENUITEM "·Å´ó(&I)\tCtrl++",              IDM_VIEW_ZOOMIN
+            MENUITEM "ËõÐ¡(&O)\tCtrl+-",              IDM_VIEW_ZOOMOUT
+            MENUITEM "ÖØÖÃËõ·Å(&Z)\tCtrl+0",            IDM_VIEW_RESETZOOM
         END
-        POPUP "çª—å£ä½ç½®(&P)"
+        POPUP "´°¿ÚÎ»ÖÃ(&P)"
         BEGIN
-            MENUITEM "å¤åˆ¶çª—å£ä½ç½®å‚æ•°(&A)\tCtrl+Shift+K",  CMD_COPYWINPOS
-            MENUITEM "è°ƒæ•´çª—å£è‡³é»˜è®¤ä½ç½®(&D)\tCtrl+Shift+P", CMD_DEFAULTWINPOS
-            MENUITEM "ä¿å­˜ä¸ºé»˜è®¤çª—å£ä½ç½®(&V)",               CMD_SAVEASDEFWINPOS
-            MENUITEM "æ¸…é™¤å·²ä¿å­˜çš„é»˜è®¤çª—å£ä½ç½®(&C)",            CMD_CLEARSAVEDWINPOS
-            MENUITEM "è°ƒæ•´çª—å£è‡³åˆå§‹ä½ç½®(&T)\tCtrl+F11",     CMD_INITIALWINPOS
-            MENUITEM "è°ƒæ•´çª—å£è‡³å±å¹•å¤§å°(&S)\tF11",          CMD_FULLSCRWINPOS
-            MENUITEM "ç²˜æ€§çª—å£ä½ç½®(&P)",                  IDM_VIEW_STICKYWINPOS
+            MENUITEM "¸´ÖÆ´°¿ÚÎ»ÖÃ²ÎÊý(&A)\tCtrl+Shift+K",  CMD_COPYWINPOS
+            MENUITEM "µ÷Õû´°¿ÚÖÁÄ¬ÈÏÎ»ÖÃ(&D)\tCtrl+Shift+P", CMD_DEFAULTWINPOS
+            MENUITEM "±£´æÎªÄ¬ÈÏ´°¿ÚÎ»ÖÃ(&V)",               CMD_SAVEASDEFWINPOS
+            MENUITEM "Çå³ýÒÑ±£´æµÄÄ¬ÈÏ´°¿ÚÎ»ÖÃ(&C)",            CMD_CLEARSAVEDWINPOS
+            MENUITEM "µ÷Õû´°¿ÚÖÁ³õÊ¼Î»ÖÃ(&T)\tCtrl+F11",     CMD_INITIALWINPOS
+            MENUITEM "µ÷Õû´°¿ÚÖÁÆÁÄ»´óÐ¡(&S)\tF11",          CMD_FULLSCRWINPOS
+            MENUITEM "Õ³ÐÔ´°¿ÚÎ»ÖÃ(&P)",                  IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "è®¾ç½®(&S)"
+    POPUP "ÉèÖÃ(&S)"
     BEGIN
-        MENUITEM "å°†åˆ¶è¡¨ç¬¦æ›¿æ¢ä¸ºç©ºæ ¼(&S)",               IDM_VIEW_TABSASSPACES
-        MENUITEM "åˆ¶è¡¨ç¬¦è®¾ç½®(&T)...\tCtrl+T",        IDM_VIEW_TABSETTINGS
-        MENUITEM "è‡ªåŠ¨æ¢è¡Œè®¾ç½®(&W)...",               IDM_VIEW_WORDWRAPSETTINGS
-        MENUITEM "è¡Œé•¿åº¦æ ‡è®°è®¾ç½®(&L)...",              IDM_VIEW_LONGLINESETTINGS
-        MENUITEM "è‡ªåŠ¨ç¼©è¿›(&D)",                    IDM_VIEW_AUTOINDENTTEXT
-        MENUITEM "è‡ªåŠ¨æ’å…¥ HTML/XML å…³é—­æ ‡è®°(&H)\tCtrl+Shift+H", IDM_VIEW_AUTOCLOSETAGS
-        MENUITEM "è‡ªåŠ¨è¡¥å…¨å•è¯(&U)",                  IDM_VIEW_AUTOCOMPLETEWORDS
-        MENUITEM "è‡ªåŠ¨è¡¥å…¨è¯­æ³•å…³é”®å­—(&K)",               IDM_VIEW_AUTOCLEXKEYWORDS
-        MENUITEM "åŠ é€Ÿå•è¯å¯¼èˆª(&G)\tCtrl+Alt+A",      IDM_VIEW_ACCELWORDNAV
+        MENUITEM "½«ÖÆ±í·ûÌæ»»Îª¿Õ¸ñ(&S)",               IDM_VIEW_TABSASSPACES
+        MENUITEM "ÖÆ±í·ûÉèÖÃ(&T)...\tCtrl+T",        IDM_VIEW_TABSETTINGS
+        MENUITEM "×Ô¶¯»»ÐÐÉèÖÃ(&W)...",               IDM_VIEW_WORDWRAPSETTINGS
+        MENUITEM "ÐÐ³¤¶È±ê¼ÇÉèÖÃ(&L)...",              IDM_VIEW_LONGLINESETTINGS
+        MENUITEM "×Ô¶¯Ëõ½ø(&D)",                    IDM_VIEW_AUTOINDENTTEXT
+        MENUITEM "×Ô¶¯²åÈë HTML/XML ¹Ø±Õ±ê¼Ç(&H)\tCtrl+Shift+H", IDM_VIEW_AUTOCLOSETAGS
+        MENUITEM "×Ô¶¯²¹È«µ¥´Ê(&U)",                  IDM_VIEW_AUTOCOMPLETEWORDS
+        MENUITEM "×Ô¶¯²¹È«Óï·¨¹Ø¼ü×Ö(&K)",               IDM_VIEW_AUTOCLEXKEYWORDS
+        MENUITEM "¼ÓËÙµ¥´Êµ¼º½(&G)\tCtrl+Alt+A",      IDM_VIEW_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "æ¯ä¸ªæ–‡ä»¶æœ€å¤šåªå…è®¸æ‰“å¼€ä¸€ä¸ªå®žä¾‹(&F)",         IDM_VIEW_SINGLEFILEINSTANCE
-        MENUITEM "æ–‡ä»¶ä¿®æ”¹é€šçŸ¥(&C)...\tAlt+F5",       IDM_VIEW_CHANGENOTIFY
-        POPUP "Esc é”®åŠŸèƒ½(&K)"
+        MENUITEM "Ã¿¸öÎÄ¼þ×î¶àÖ»ÔÊÐí´ò¿ªÒ»¸öÊµÀý(&F)",         IDM_VIEW_SINGLEFILEINSTANCE
+        MENUITEM "ÎÄ¼þÐÞ¸ÄÍ¨Öª(&C)...\tAlt+F5",       IDM_VIEW_CHANGENOTIFY
+        POPUP "Esc ¼ü¹¦ÄÜ(&K)"
         BEGIN
-            MENUITEM "æ— (&N)",                       IDM_VIEW_NOESCFUNC
-            MENUITEM "æœ€å°åŒ– Notepad3(&M)",            IDM_VIEW_ESCMINIMIZE
-            MENUITEM "é€€å‡º Notepad3(&X)",             IDM_VIEW_ESCEXIT
+            MENUITEM "ÎÞ(&N)",                       IDM_VIEW_NOESCFUNC
+            MENUITEM "×îÐ¡»¯ Notepad3(&M)",            IDM_VIEW_ESCMINIMIZE
+            MENUITEM "ÍË³ö Notepad3(&X)",             IDM_VIEW_ESCEXIT
         END
-        MENUITEM "è¿è¡Œå·¥å…·å‰å…ˆä¿å­˜æ–‡ä»¶(&B)",              IDM_VIEW_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "ÔËÐÐ¹¤¾ßÇ°ÏÈ±£´æÎÄ¼þ(&B)",              IDM_VIEW_SAVEBEFORERUNNINGTOOLS
         MENUITEM SEPARATOR
-        POPUP "è®°å¿†æ€§(&R)"
+        POPUP "¼ÇÒäÐÔ(&R)"
         BEGIN
-            MENUITEM "è®°å¿†æœ€è¿‘ä½¿ç”¨çš„æ–‡ä»¶(&I)",               IDM_VIEW_NOSAVERECENT
-            MENUITEM "è®°å¿†æ’å…¥å…‰æ ‡ä½ç½®(&V)",                IDM_VIEW_NOPRESERVECARET
-            MENUITEM "è®°å¿†æŸ¥æ‰¾å†…å®¹(&E)",                  IDM_VIEW_NOSAVEFINDREPL
+            MENUITEM "¼ÇÒä×î½üÊ¹ÓÃµÄÎÄ¼þ(&I)",               IDM_VIEW_NOSAVERECENT
+            MENUITEM "¼ÇÒä²åÈë¹â±êÎ»ÖÃ(&V)",                IDM_VIEW_NOPRESERVECARET
+            MENUITEM "¼ÇÒä²éÕÒÄÚÈÝ(&E)",                  IDM_VIEW_NOSAVEFINDREPL
         END
-        POPUP "çª—å£(&W)"
+        POPUP "´°¿Ú(&W)"
         BEGIN
-            POPUP "æ ‡é¢˜æ æ˜¾ç¤º(&Y)"
+            POPUP "±êÌâÀ¸ÏÔÊ¾(&Y)"
             BEGIN
-                MENUITEM "ä»…æ–‡ä»¶å(&O)",                    IDM_VIEW_SHOWFILENAMEONLY
-                MENUITEM "æ–‡ä»¶åå’Œæ–‡ä»¶å¤¹(&D)",                 IDM_VIEW_SHOWFILENAMEFIRST
-                MENUITEM "å®Œæ•´æ–‡ä»¶è·¯å¾„(&P)",                  IDM_VIEW_SHOWFULLPATH
-                MENUITEM "æ‘˜å½•é€‰ä¸­å†…å®¹(&T)\tCtrl+9",          IDM_VIEW_SHOWEXCERPT
+                MENUITEM "½öÎÄ¼þÃû(&O)",                    IDM_VIEW_SHOWFILENAMEONLY
+                MENUITEM "ÎÄ¼þÃûºÍÎÄ¼þ¼Ð(&D)",                 IDM_VIEW_SHOWFILENAMEFIRST
+                MENUITEM "ÍêÕûÎÄ¼þÂ·¾¶(&P)",                  IDM_VIEW_SHOWFULLPATH
+                MENUITEM "ÕªÂ¼Ñ¡ÖÐÄÚÈÝ(&T)\tCtrl+9",          IDM_VIEW_SHOWEXCERPT
             END
-            MENUITEM "é‡ç”¨çª—å£(&R)",                    IDM_VIEW_REUSEWINDOW
-            MENUITEM "çª—å£ç½®é¡¶(&A)\tAlt+T",             IDM_VIEW_ALWAYSONTOP
-            MENUITEM "æœ€å°åŒ–åˆ°æ‰˜ç›˜(&Z)",                  IDM_VIEW_MINTOTRAY
-            MENUITEM "åŠé€æ˜Žçª—å£(&M)\tAlt+G",            IDM_VIEW_TRANSPARENT
+            MENUITEM "ÖØÓÃ´°¿Ú(&R)",                    IDM_VIEW_REUSEWINDOW
+            MENUITEM "´°¿ÚÖÃ¶¥(&A)\tAlt+T",             IDM_VIEW_ALWAYSONTOP
+            MENUITEM "×îÐ¡»¯µ½ÍÐÅÌ(&Z)",                  IDM_VIEW_MINTOTRAY
+            MENUITEM "°ëÍ¸Ã÷´°¿Ú(&M)\tAlt+G",            IDM_VIEW_TRANSPARENT
         END
-        POPUP "æ–‡æœ¬å¤„ç†æŠ€æœ¯(&T)"
+        POPUP "ÎÄ±¾´¦Àí¼¼Êõ(&T)"
         BEGIN
-            POPUP "æ¸²æŸ“æŠ€æœ¯(&R)"
+            POPUP "äÖÈ¾¼¼Êõ(&R)"
             BEGIN
-                MENUITEM "é»˜è®¤ GDI(&G)",                  IDM_SET_RENDER_TECH_DEFAULT
+                MENUITEM "Ä¬ÈÏ GDI(&G)",                  IDM_SET_RENDER_TECH_DEFAULT
                 MENUITEM "DirectWrite (Direct2D)(&D)",  IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite Retain(&R)",      IDM_SET_RENDER_TECH_D2DRETAIN
                 MENUITEM "DirectWrite GDI DC(&W)",      IDM_SET_RENDER_TECH_D2DDC
             END
-            POPUP "åŒå‘æ–‡æœ¬æ”¯æŒ(&B)"
+            POPUP "Ë«ÏòÎÄ±¾Ö§³Ö(&B)"
             BEGIN
-                MENUITEM "ç¦ç”¨(&N)",                      IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "å¯ç”¨ï¼Œé»˜è®¤ä»Žå·¦å‘å³(&L)",               IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "å¯ç”¨ï¼Œé»˜è®¤ä»Žå³å‘å·¦(&R)",               IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "½ûÓÃ(&N)",                      IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "ÆôÓÃ£¬Ä¬ÈÏ´Ó×óÏòÓÒ(&L)",               IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "ÆôÓÃ£¬Ä¬ÈÏ´ÓÓÒÏò×ó(&R)",               IDM_SET_BIDIRECTIONAL_R2L
             END
         END
-        POPUP "é«˜çº§è®¾ç½®(&A)"
+        POPUP "¸ß¼¶ÉèÖÃ(&A)"
         BEGIN
-            MENUITEM "é€€å‡ºæ—¶ä¿å­˜è®¾ç½®(&X)",                 IDM_VIEW_SAVESETTINGS
-            MENUITEM "ç«‹å³ä¿å­˜è®¾ç½®(&N)\tF7",              IDM_VIEW_SAVESETTINGSNOW
-            MENUITEM "æ‰“å¼€é…ç½®æ–‡ä»¶(&O)\tCtrl+F7",         CMD_OPENINIFILE
+            MENUITEM "ÍË³öÊ±±£´æÉèÖÃ(&X)",                 IDM_VIEW_SAVESETTINGS
+            MENUITEM "Á¢¼´±£´æÉèÖÃ(&N)\tF7",              IDM_VIEW_SAVESETTINGSNOW
+            MENUITEM "´ò¿ªÅäÖÃÎÄ¼þ(&O)\tCtrl+F7",         CMD_OPENINIFILE
         END
     END
-    POPUP "å¸®åŠ©(&H)"
+    POPUP "°ïÖú(&H)"
     BEGIN
-        MENUITEM "åœ¨çº¿æ–‡æ¡£(&O)\tF1",                IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "ÔÚÏßÎÄµµ(&O)\tF1",                IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "è¿è¡Œç®¡ç†å·¥å…·(&T)...",               IDM_HELP_ADMINEXE
-        MENUITEM "è®¿é—®ç½‘ç«™ä»¥æ£€æŸ¥æ›´æ–°(&W)",               IDM_HELP_UPDATEWEBSITE
+        MENUITEM "ÔËÐÐ¹ÜÀí¹¤¾ß(&T)...",               IDM_HELP_ADMINEXE
+        MENUITEM "·ÃÎÊÍøÕ¾ÒÔ¼ì²é¸üÐÂ(&W)",               IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "å‘½ä»¤è¡Œå¸®åŠ©(&C)...",                IDM_HELP_CMD
-        MENUITEM "å…³äºŽ(&A)...\tShift+F1",         IDM_HELP_ABOUT
+        MENUITEM "ÃüÁîÐÐ°ïÖú(&C)...",                IDM_HELP_CMD
+        MENUITEM "¹ØÓÚ(&A)...\tShift+F1",         IDM_HELP_ABOUT
     END
 END
 
@@ -437,31 +437,31 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "æ’¤é”€(&U)",                      IDM_EDIT_UNDO
-        MENUITEM "é‡åš(&R)",                      IDM_EDIT_REDO
+        MENUITEM "³·Ïú(&U)",                      IDM_EDIT_UNDO
+        MENUITEM "ÖØ×ö(&R)",                      IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "å‰ªåˆ‡(&T)",                      IDM_EDIT_CUT
-        MENUITEM "å¤åˆ¶(&C)",                      IDM_EDIT_COPY
-        MENUITEM "ç²˜è´´(&P)",                      IDM_EDIT_PASTE
-        MENUITEM "åˆ é™¤(&D)",                      IDM_EDIT_CLEAR
+        MENUITEM "¼ôÇÐ(&T)",                      IDM_EDIT_CUT
+        MENUITEM "¸´ÖÆ(&C)",                      IDM_EDIT_COPY
+        MENUITEM "Õ³Ìù(&P)",                      IDM_EDIT_PASTE
+        MENUITEM "É¾³ý(&D)",                      IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "å…¨é€‰(&A)",                      IDM_EDIT_SELECTALL
+        MENUITEM "È«Ñ¡(&A)",                      IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "æŠ˜å /å±•å¼€(&T)",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "ÕÛµþ/Õ¹¿ª(&T)",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "æ‰“å¼€è¶…é“¾æŽ¥(&H)",                   CMD_OPEN_HYPERLINK
+        MENUITEM "´ò¿ª³¬Á´½Ó(&H)",                   CMD_OPEN_HYPERLINK
     END
     POPUP "+"
     BEGIN
-        MENUITEM "æ˜¾ç¤ºå·¥å…·æ (&T)",                   IDM_VIEW_TOOLBAR
-        MENUITEM "ä½¿ç”¨é«˜è§£æžåº¦å·¥å…·æ (&H)",               IDM_VIEW_TOGGLETB
-        MENUITEM "è‡ªå®šä¹‰å·¥å…·æ (&C)...",               IDM_VIEW_CUSTOMIZETB
-        MENUITEM "æ˜¾ç¤ºçŠ¶æ€æ (&S)",                   IDM_VIEW_STATUSBAR
+        MENUITEM "ÏÔÊ¾¹¤¾ßÀ¸(&T)",                   IDM_VIEW_TOOLBAR
+        MENUITEM "Ê¹ÓÃ¸ß½âÎö¶È¹¤¾ßÀ¸(&H)",               IDM_VIEW_TOGGLETB
+        MENUITEM "×Ô¶¨Òå¹¤¾ßÀ¸(&C)...",               IDM_VIEW_CUSTOMIZETB
+        MENUITEM "ÏÔÊ¾×´Ì¬À¸(&S)",                   IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "æ‰“å¼€ Notepad3",                 IDM_TRAY_RESTORE
-        MENUITEM "é€€å‡º Notepad3",                 IDM_TRAY_EXIT
+        MENUITEM "´ò¿ª Notepad3",                 IDM_TRAY_RESTORE
+        MENUITEM "ÍË³ö Notepad3",                 IDM_TRAY_EXIT
     END
 END
 
