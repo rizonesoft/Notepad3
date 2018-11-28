@@ -1,4 +1,4 @@
-п»ї// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
-#pragma code_page(65001)  //  UTF-8 Signature
+#pragma code_page(1251)  // Cyrillic (Win-1251)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -71,223 +71,223 @@ END
 
 IDD_RUN DIALOGEX 0, 0, 238, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Р’С‹РїРѕР»РЅРёС‚СЊ"
+CAPTION "Выполнить"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            VK_NUMPAD5,IDC_STATIC,7,7,20,20
-    LTEXT           "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РїСЂРѕРіСЂР°РјРјС‹, РїР°РїРєРё, РґРѕРєСѓРјРµРЅС‚Р° РёР»Рё СЂРµСЃСѓСЂСЃР° РРЅС‚РµСЂРЅРµС‚Р°, РєРѕС‚РѕСЂС‹Рµ С‚СЂРµР±СѓРµС‚СЃСЏ РѕС‚РєСЂС‹С‚СЊ.",IDC_STATIC,35,7,196,17
+    LTEXT           "Введите название программы, папки, документа или ресурса Интернета, которые требуется открыть.",IDC_STATIC,35,7,196,17
     EDITTEXT        IDC_COMMANDLINE,35,35,179,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,218,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,126,64,50,14
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,181,64,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,181,64,50,14
 END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "РћС‚РєСЂС‹С‚СЊ СЃ РїРѕРјРѕС‰СЊСЋ..."
+CAPTION "Открыть с помощью..."
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "РќР°Р¶РјРёС‚Рµ Р·РґРµСЃСЊ РґР»СЏ Р·Р°РґР°РЅРёСЏ РїР°РїРєРё СЃ СЏСЂР»С‹РєР°РјРё РёР·Р±СЂР°РЅРЅС‹С… РїСЂРёР»РѕР¶РµРЅРёР№",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Нажмите здесь для задания папки с ярлыками избранных приложений",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,108,108,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
 END
 
 IDD_GOTO DIALOGEX 0, 0, 238, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "РџРµСЂРµР№С‚Рё"
+CAPTION "Перейти"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            VK_NUMPAD6,IDC_STATIC,7,7,20,20
-    LTEXT           "Р’РІРµРґРёС‚Рµ РёРјСЏ С„Р°Р№Р»Р° РёР»Рё РїР°РїРєРё РґР»СЏ РѕС‚РєСЂС‹С‚РёСЏ РёР»Рё РІС‹Р±РµСЂРёС‚Рµ РёР· СЃРїРёСЃРєР° РЅРµРґР°РІРЅРѕ РїРѕСЃРµС‰РµРЅРЅСѓСЋ РїР°РїРєСѓ.",IDC_STATIC,35,7,196,17
+    LTEXT           "Введите имя файла или папки для открытия или выберите из списка недавно посещенную папку.",IDC_STATIC,35,7,196,17
     COMBOBOX        IDC_GOTO,35,35,196,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,126,64,50,14,WS_DISABLED
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,181,64,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,181,64,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
 IDD_FILTER DIALOGEX 0, 0, 212, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Р¤РёР»СЊС‚СЂ С„Р°Р№Р»РѕРІ"
+CAPTION "Фильтр файлов"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "РЈРєР°Р¶РёС‚Рµ РјР°СЃРєСѓ РёРјРµРЅ &С„Р°Р№Р»РѕРІ, СЂР°Р·РґРµР»СЏСЏ Р·РЅР°РєРѕРј ;",IDC_STATIC,7,7,164,8
+    LTEXT           "Укажите маску имен &файлов, разделяя знаком ;",IDC_STATIC,7,7,164,8
     EDITTEXT        IDC_FILTER,7,22,181,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,192,22,13,13
-    CONTROL         "&РСЃРєР»СЋС‡РёС‚СЊ С„Р°Р№Р»С‹, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёРµ С„РёР»СЊС‚СЂСѓ",IDC_NEGFILTER,
+    CONTROL         "&Исключить файлы, соответствующие фильтру",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,177,10
     DEFPUSHBUTTON   "OK",IDOK,100,58,50,14
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,155,58,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,155,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ"
+CAPTION "Переименовать"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "РР·:",IDC_STATIC,7,9,12,8
+    LTEXT           "Из:",IDC_STATIC,7,9,12,8
     EDITTEXT        IDC_OLDNAME,24,7,141,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&Р’:",IDC_STATIC,7,26,8,8
+    LTEXT           "&В:",IDC_STATIC,7,26,8,8
     EDITTEXT        IDC_NEWNAME,24,25,141,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,53,50,14,WS_DISABLED
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,115,53,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,115,53,50,14
 END
 
 IDD_NEWDIR DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "РќРѕРІР°СЏ РїР°РїРєР°"
+CAPTION "Новая папка"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "РРјСЏ РЅРѕРІРѕР№ РїР°РїРєРё:",IDC_STATIC,7,7,158,8
+    LTEXT           "Имя новой папки:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,115,45,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,115,45,50,14
 END
 
 IDD_COPYMOVE DIALOGEX 0, 0, 230, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "РљРѕРїРёСЂРѕРІР°С‚СЊ/РїРµСЂРµРјРµСЃС‚РёС‚СЊ"
+CAPTION "Копировать/переместить"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "РСЃС…РѕРґРЅС‹Р№ С„Р°Р№Р»:",IDC_STATIC,7,7,57,8
+    LTEXT           "Исходный файл:",IDC_STATIC,7,7,57,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "РњРµСЃС‚Рѕ &РЅР°Р·РЅР°С‡РµРЅРёСЏ:",IDC_STATIC,7,37,66,8
+    LTEXT           "Место &назначения:",IDC_STATIC,7,37,66,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
-    LTEXT           "Р”РµР№СЃС‚РІРёРµ:",IDC_STATIC,7,66,36,8
-    CONTROL         "&РљРѕРїРёСЂРѕРІР°С‚СЊ",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,48,66,57,10
-    CONTROL         "&РџРµСЂРµРјРµСЃС‚РёС‚СЊ",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,48,78,60,10
+    LTEXT           "Действие:",IDC_STATIC,7,66,36,8
+    CONTROL         "&Копировать",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,48,66,57,10
+    CONTROL         "&Переместить",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,48,78,60,10
     DEFPUSHBUTTON   "OK",IDOK,117,74,50,14,WS_DISABLED
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,173,74,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
 END
 
 IDPP_GENERAL DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "РћСЃРЅРѕРІРЅС‹Рµ"
+CAPTION "Основные"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            VK_NUMPAD7,IDC_STATIC,10,10,20,20
-    LTEXT           "РћСЃРЅРѕРІРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё MiniPath.",IDC_STATIC,40,15,104,8
-    CONTROL         "&РћС‚РєСЂС‹РІР°С‚СЊ РѕР±СЉРµРєС‚С‹ РѕРґРЅРёРј РєР»РёРєРѕРј",IDC_SINGLECLICK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,135,10
-    CONTROL         "&Р’С‹РґРµР»РµРЅРёРµ СЃР»РµРґСѓРµС‚ Р·Р° РєСѓСЂСЃРѕСЂРѕРј",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,127,10
-    CONTROL         "Р’С‹РґРµР»РµРЅРёРµ &РЅР° РІСЃСЋ С€РёСЂРёРЅСѓ",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,107,10
-    CONTROL         "&РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ С†РµР»РµРІРѕРµ РѕРєРЅРѕ РїСЂРё РѕС‚РєСЂС‹С‚РёРё С„Р°Р№Р»Р°",IDC_FOCUSEDIT,
+    LTEXT           "Основные настройки MiniPath.",IDC_STATIC,40,15,104,8
+    CONTROL         "&Открывать объекты одним кликом",IDC_SINGLECLICK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,135,10
+    CONTROL         "&Выделение следует за курсором",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,127,10
+    CONTROL         "Выделение &на всю ширину",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,107,10
+    CONTROL         "&Активировать целевое окно при открытии файла",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,185,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "РћРєРЅРѕ MiniPath РїРѕРІРµСЂС… &РґСЂСѓРіРёС… РѕРєРѕРЅ",IDC_ALWAYSONTOP,
+    CONTROL         "Окно MiniPath поверх &других окон",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,132,10
-    CONTROL         "РЎРІРѕСЂР°С‡РёРІР°С‚СЊ РІ РїР°РЅРµР»СЊ &СѓРІРµРґРѕРјР»РµРЅРёР№",IDC_MINIMIZETOTRAY,
+    CONTROL         "Сворачивать в панель &уведомлений",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,139,10
-    CONTROL         "РСЃ&РїРѕР»СЊР·РѕРІР°С‚СЊ СѓР¶Рµ РѕС‚РєСЂС‹С‚РѕРµ РѕРєРЅРѕ РїСЂРё Р·Р°РїСѓСЃРєРµ MiniPath",IDC_REUSEWINDOW,
+    CONTROL         "Ис&пользовать уже открытое окно при запуске MiniPath",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,203,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&РЎРѕС…СЂР°РЅСЏС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё РїСЂРё РІС‹С…РѕРґРµ",IDC_SAVESETTINGS,
+    CONTROL         "&Сохранять настройки при выходе",IDC_SAVESETTINGS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,132,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Р Р°СЃС€РёСЂРµРЅРЅС‹Рµ"
+CAPTION "Расширенные"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            VK_NUMPAD8,IDC_STATIC,10,10,20,20
-    LTEXT           "Р Р°СЃС€РёСЂРµРЅРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё MiniPath.",IDC_STATIC,40,15,160,8
-    CONTROL         "&РџР°РїРєР° РїСЂРё Р·Р°РїСѓСЃРєРµ:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,82,10
-    CONTROL         "РџРѕСЃР»РµРґРЅСЏСЏ &РѕС‚РєСЂС‹С‚Р°СЏ",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,88,10
-    CONTROL         "РџР°РїРєР° В«&РР·Р±СЂР°РЅРЅРѕРµВ»",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,80,10
+    LTEXT           "Расширенные настройки MiniPath.",IDC_STATIC,40,15,160,8
+    CONTROL         "&Папка при запуске:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,82,10
+    CONTROL         "Последняя &открытая",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,88,10
+    CONTROL         "Папка «&Избранное»",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,80,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&РЈРґР°Р»СЏС‚СЊ Р°С‚СЂРёР±СѓС‚ В«С‚РѕР»СЊРєРѕ РґР»СЏ С‡С‚РµРЅРёСЏВ» РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё",IDC_CLEARREADONLY,
+    CONTROL         "&Удалять атрибут «только для чтения» при сохранении",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,205,10
-    CONTROL         "Рџ&РµСЂРµРёРјРµРЅРѕРІР°С‚СЊ РєРѕРїРёСЂСѓРµРјС‹Р№ С„Р°Р№Р» РїСЂРё СЃРѕРІРїР°РґРµРЅРёРё РёРјРµРЅ",IDC_RENAMEONCOLLISION,
+    CONTROL         "П&ереименовать копируемый файл при совпадении имен",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,205,10
-    CONTROL         "РџРµСЂРµРјРµС‰Р°С‚СЊ Сѓ&РґР°Р»РµРЅРЅС‹Рµ С„Р°Р№Р»С‹ РІ РєРѕСЂР·РёРЅСѓ",IDC_USERECYCLEBIN,
+    CONTROL         "Перемещать у&даленные файлы в корзину",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,159,10
-    CONTROL         "&РќРµ СЃРїСЂР°С€РёРІР°С‚СЊ РїСЂРё СѓРґР°Р»РµРЅРёРё (РЅРµ СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ)",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Не спрашивать при удалении (не рекомендуется)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,185,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "РљР»Р°РІРё&С€Р° Esc...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,67,10
-    CONTROL         "РЎРІРѕСЂР°С‡РёРІР°РµС‚ Рѕ&РєРЅРѕ",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,79,10
-    CONTROL         "&Р—Р°РєСЂС‹РІР°РµС‚ MiniPath",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,82,10
+    CONTROL         "Клави&ша Esc...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,67,10
+    CONTROL         "Сворачивает о&кно",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,79,10
+    CONTROL         "&Закрывает MiniPath",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,82,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "РћР±СЉРµРєС‚С‹"
+CAPTION "Объекты"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            VK_NUMPAD9,IDC_STATIC,10,10,20,20
-    LTEXT           "РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РѕР±СЉРµРєС‚РѕРІ РІ СЃРїРёСЃРєРµ.",IDC_STATIC,40,15,116,8
-    GROUPBOX        "Р¦РІРµС‚Р°",IDC_STATIC,10,41,205,134
-    LTEXT           "РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С†РІРµС‚, РєРѕРіРґР° РќР•Рў С„РёР»СЊС‚СЂР°:",IDC_STATIC,20,54,140,8
-    CONTROL         "Р¦РІРµС‚ &РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,83,10
-    CONTROL         "&РЎРІРѕР№ С†РІРµС‚:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
+    LTEXT           "Отображение объектов в списке.",IDC_STATIC,40,15,116,8
+    GROUPBOX        "Цвета",IDC_STATIC,10,41,205,134
+    LTEXT           "Использовать цвет, когда НЕТ фильтра:",IDC_STATIC,20,54,140,8
+    CONTROL         "Цвет &по умолчанию",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,83,10
+    CONTROL         "&Свой цвет:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Р’С‹Р±СЂР°С‚СЊ...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С†РІРµС‚, РєРѕРіРґР° Р•РЎРўР¬ С„РёР»СЊС‚СЂ:",IDC_STATIC,20,105,140,8
-    CONTROL         "Р¦РІРµС‚ РїРѕ &СѓРјРѕР»С‡Р°РЅРёСЋ",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,83,10
-    CONTROL         "РЎРІРѕР№ &С†РІРµС‚:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
+    PUSHBUTTON      "Выбрать...",IDC_COLOR_PICK1,119,80,50,14
+    LTEXT           "Использовать цвет, когда ЕСТЬ фильтр:",IDC_STATIC,20,105,140,8
+    CONTROL         "Цвет по &умолчанию",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,83,10
+    CONTROL         "Свой &цвет:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Р’С‹Р±СЂР°С‚СЊ...",IDC_COLOR_PICK2,120,130,50,14
+    PUSHBUTTON      "Выбрать...",IDC_COLOR_PICK2,120,130,50,14
 END
 
 IDPP_PROG DIALOGEX 0, 0, 226, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Р Р°СЃРїРѕР»РѕР¶РµРЅРёРµ"
+CAPTION "Расположение"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            VK_MULTIPLY,IDC_STATIC,10,10,20,20
-    LTEXT           "РЈРєР°Р¶РёС‚Рµ РІРЅРµС€РЅРёРµ РїСЂРѕРіСЂР°РјРјС‹ Рё РїСѓС‚Рё.",IDC_STATIC,40,15,128,8
-    LTEXT           "&РџСЂРѕРіСЂР°РјРјР° Р±С‹СЃС‚СЂРѕРіРѕ РїСЂРѕСЃРјРѕС‚СЂР° (Ctrl+Q):",IDC_STATIC,10,41,140,8
+    LTEXT           "Укажите внешние программы и пути.",IDC_STATIC,40,15,128,8
+    LTEXT           "&Программа быстрого просмотра (Ctrl+Q):",IDC_STATIC,10,41,140,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
-    LTEXT           "РџР°РїРєР° В«&РР·Р±СЂР°РЅРЅРѕРµВ» (F11):",IDC_STATIC,10,76,90,8
+    LTEXT           "Папка «&Избранное» (F11):",IDC_STATIC,10,76,90,8
     EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
 IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Р¦РµР»РµРІРѕРµ РїСЂРёР»РѕР¶РµРЅРёРµ"
+CAPTION "Целевое приложение"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "РќРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С†РµР»РµРІРѕРµ РїСЂРёР»РѕР¶РµРЅРёРµ, РїСЂРѕСЃС‚Рѕ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р»",IDC_LAUNCH,
+    CONTROL         "Не использовать целевое приложение, просто открыть файл",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,225,10
-    CONTROL         "РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїСЂРёР»РѕР¶РµРЅРёРµ РІ РєР°С‡РµСЃС‚РІРµ С†РµР»РµРІРѕРіРѕ:",IDC_TARGET,
+    CONTROL         "Использовать приложение в качестве целевого:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,182,10
-    LTEXT           "РЈРєР°Р¶РёС‚Рµ РґРµР№СЃС‚РІРёРµ, РµСЃР»Рё С†РµР»РµРІРѕРµ РїСЂРёР»РѕР¶РµРЅРёРµ СѓР¶Рµ Р·Р°РїСѓС‰РµРЅРѕ:",IDC_STATIC,7,64,212,8
+    LTEXT           "Укажите действие, если целевое приложение уже запущено:",IDC_STATIC,7,64,212,8
     EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
-    LTEXT           "РЎРѕРѕР±С‰РµРЅРёРµ:",IDC_STATIC,20,120,42,8
-    CONTROL         "Р—Р°РїСѓСЃРєР°С‚СЊ С†РµР»РµРІРѕРµ РїСЂРёР»РѕР¶РµРЅРёРµ РєР°Р¶РґС‹Р№ СЂР°Р· РїСЂРё РѕС‚РєСЂС‹С‚РёРё С„Р°Р№Р»Р°",IDC_ALWAYSRUN,
+    LTEXT           "Сообщение:",IDC_STATIC,20,120,42,8
+    CONTROL         "Запускать целевое приложение каждый раз при открытии файла",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,240,10
-    CONTROL         "РћС‚РїСЂР°РІРёС‚СЊ РєРѕРјР°РЅРґСѓ РѕРєСЂС‹С‚РёСЏ С„Р°Р№Р»Р° С†РµР»РµРІРѕРјСѓ РѕРєРЅСѓ:",IDC_SENDDROPMSG,
+    CONTROL         "Отправить команду окрытия файла целевому окну:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
-    CONTROL         "Р’С‹РїРѕР»РЅРёС‚СЊ РєРѕРјР°РЅРґСѓ DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,102,10
-    LTEXT           "РџСЂРёР»РѕР¶РµРЅРёРµ:",IDC_STATIC,128,120,46,8
-    PUSHBUTTON      "РќР°Р№С‚Рё РѕРєРЅРѕ...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "РўРµРјР°:",IDC_STATIC,198,120,20,8
+    CONTROL         "Выполнить команду DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,102,10
+    LTEXT           "Приложение:",IDC_STATIC,128,120,46,8
+    PUSHBUTTON      "Найти окно...",IDC_FINDWIN,204,91,60,14
+    LTEXT           "Тема:",IDC_STATIC,198,120,20,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,214,159,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,214,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 238, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "РќР°Р№С‚Рё РѕРєРЅРѕ"
+CAPTION "Найти окно"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            VK_ADD,IDC_CROSSCURSOR,7,7,20,20,SS_CENTERIMAGE
-    LTEXT           "РџРµСЂРµРјРµСЃС‚РёС‚Рµ РїРµСЂРµРєСЂРµСЃС‚РёРµ РЅР° РІС‹Р±СЂР°РЅРЅРѕРµ С†РµР»РµРІРѕРµ РѕРєРЅРѕ РёР»Рё РЅР°Р¶РјРёС‚Рµ Esc РґР»СЏ РѕС‚РјРµРЅС‹.",IDC_STATIC,35,7,196,17
+    LTEXT           "Переместите перекрестие на выбранное целевое окно или нажмите Esc для отмены.",IDC_STATIC,35,7,196,17
     EDITTEXT        IDC_WINTITLE,35,35,196,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
     DEFPUSHBUTTON   "OK",IDOK,127,64,50,14,WS_DISABLED
-    PUSHBUTTON      "РћС‚РјРµРЅР°",IDCANCEL,181,64,50,14
+    PUSHBUTTON      "Отмена",IDCANCEL,181,64,50,14
 END
 
 

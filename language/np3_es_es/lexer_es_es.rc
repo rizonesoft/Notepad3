@@ -1,4 +1,4 @@
-ï»¿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
-#pragma code_page(65001)  //  UTF-8 Signature
+#pragma code_page(1252)  // Western European
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ BEGIN
     IDS_LEX_STD_CARET              "Caret (Color, Size 1-3)"
     IDS_LEX_STD_LONG_LN            "Long Line Marker (Colors)"
     IDS_LEX_STD_X_SPC              "Extra Line Spacing (Size)"
-    IDS_LEX_2ND_STYLE              "2Âº Defecto Estilo"
+    IDS_LEX_2ND_STYLE              "2º Defecto Estilo"
     IDS_LEX_2ND_MARGIN             "2nd Margins and Line Numbers"
     IDS_LEX_2ND_BRACE              "2nd Matching Braces (Indicator)"
     IDS_LEX_2ND_BRACE_FAIL         "2nd Matching Braces Error (Indicator)"
@@ -167,7 +167,7 @@ BEGIN
     IDS_LEX_STR_63127              "Comentario"
     IDS_LEX_STR_63128              "Keyword"
     IDS_LEX_STR_63129              "Identifier"
-    IDS_LEX_STR_63130              "NÃºmero"
+    IDS_LEX_STR_63130              "Número"
     IDS_LEX_STR_63131              "String"
     IDS_LEX_STR_63132              "Operator"
     IDS_LEX_STR_63133              "Preprocessor"
@@ -339,7 +339,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264              "Hyperlink Hotspots"
     IDS_LEX_STR_63265              "2nd Hyperlink Hotspots"
-    IDS_LEX_STR_63266              "2Âº Defecto Texto"
+    IDS_LEX_STR_63266              "2º Defecto Texto"
     IDS_LEX_STR_63267              "Variable within String"
     IDS_LEX_STR_63268              "Ordered List"
     IDS_LEX_STR_63269              "Infix"
