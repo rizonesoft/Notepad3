@@ -1,4 +1,4 @@
-Ôªø// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
-#pragma code_page(65001)  //  UTF-8 Signature
+#pragma code_page(1252)  // Western European
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ BEGIN
     IDT_EDIT_PASTE               "Pegar"
     IDT_EDIT_FIND                "Buscar"
     IDT_EDIT_REPLACE             "Reemplazar"
-    IDT_VIEW_WORDWRAP            "Ajuste autom√°tico de l√≠nea"
+    IDT_VIEW_WORDWRAP            "Ajuste autom·tico de lÌnea"
     IDT_VIEW_ZOOMIN              "Zoom Acercar"
     IDT_VIEW_ZOOMOUT             "Zoom Alejar"
     IDT_VIEW_SCHEME              "Seleccionar esquema"
@@ -76,7 +76,7 @@ BEGIN
     IDT_EDIT_CLEAR               "Eliminar"
     IDT_FILE_PRINT               "Imprimir"
     IDT_FILE_OPENFAV             "Favoritos"
-    IDT_FILE_ADDTOFAV            "A√±adir a favoritos"
+    IDT_FILE_ADDTOFAV            "AÒadir a favoritos"
     IDT_VIEW_TOGGLEFOLDS         "Alternar pliegues"
     IDT_FILE_LAUNCH              "Ejecutar Documento"
     IDT_VIEW_TOGGLE_VIEW         "Vista enfocada"
@@ -88,91 +88,91 @@ BEGIN
     IDS_MUI_APPTITLE             "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED    "%s (Administrador)"
     IDS_MUI_APPTITLE_PASTEBOARD  "Notepad3 : Portapeles"
-    IDS_MUI_UNTITLED             "Sin t√≠tulo"
+    IDS_MUI_UNTITLED             "Sin tÌtulo"
     IDS_MUI_TITLEEXCERPT         """%s"""
-    IDS_MUI_READONLY             "(S√≥lo lectura)"
+    IDS_MUI_READONLY             "(SÛlo lectura)"
     IDS_MUI_LOADFILE             "Carga ""%s""..."
     IDS_MUI_SAVEFILE             "Guardando ""%s""..."
-    IDS_MUI_PRINTFILE            "Imprimir p√°gina %i..."
+    IDS_MUI_PRINTFILE            "Imprimir p·gina %i..."
     IDS_MUI_SAVINGSETTINGS       "Guardar configuraciones..."
     IDS_MUI_LINKDESCRIPTION      "Editar con Notepad3"
     IDS_MUI_FILTER_ALL           "Todos los archivos (*.*)|*.*|"
     IDS_MUI_FILTER_EXE           "Archivos ejecutables (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI           "Archivos de configuraci√≥n (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI           "Archivos de configuraciÛn (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_MUI_OPENWITH             "Seleccionar la carpeta con enlaces a sus aplicaciones favoritas."
     IDS_MUI_FAVORITES            "Seleccionar la carpeta con enlaces a tus archivos favoritos."
     IDS_MUI_BACKSLASHHELP        "Backslash transformaciones\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP           "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP         "Buscar con joker\n\n*\tCoincide con cero o m√°s caracteres.\n?\tCoincide exactamente con un car√°cter. "
+    IDS_MUI_WILDCARDHELP         "Buscar con joker\n\n*\tCoincide con cero o m·s caracteres.\n?\tCoincide exactamente con un car·cter. "
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE        "Error carga ""%s""."
     IDS_MUI_ERR_SAVEFILE        "Error guardando ""%s""."
-    IDS_MUI_ERR_BROWSE          "No se encontr√≥ plug-in para el navegador de archibos.\nEl plug-in de navegador de archivos MiniPath se puede descargar desde https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG          "¬°No hay acceso al archivo seleccionado!\n¬øDesea eliminarlo de la lista?"
+    IDS_MUI_ERR_BROWSE          "No se encontrÛ plug-in para el navegador de archibos.\nEl plug-in de navegador de archivos MiniPath se puede descargar desde https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG          "°No hay acceso al archivo seleccionado!\nøDesea eliminarlo de la lista?"
     IDS_MUI_ERR_CREATELINK      "Error al crear el enlace de escritorio."
-    IDS_MUI_ERR_PREVWINDISABLED "La ventana de Notepad3 existente est√° ocupada o tiene un cuadro de di√°logo activo.\n¬øQuiere abrir otra ventana de Notepad3?"
-    IDS_MUI_ERR_ENCODINGNA      "Las tablas de conversi√≥n de p√°ginas de c√≥digos para la codificaci√≥n seleccionada no est√°n disponibles en su sistema."
-    IDS_MUI_ERR_UNICODE         "Error al convertir este archivo Unicode.\n¬°Los datos se perder√°n si se guarda el archivo!"
-    IDS_MUI_ERR_ADMINEXE        "Ninguna administraci√≥n ejecutable encontrado.\n¬øConsultar website https://rizonesoft.com ?"
-    IDS_MUI_ERR_ACCESSDENIED    "El archivo ""%s"" no se puede guardar y puede estar protegido.\n\n¬øQuiere lanzar Notepad3 como administrador?"
-    IDS_MUI_ERR_UNICODE2        "Ciertos caracteres en el texto actual no son compatibles con la codificaci√≥n seleccionada, y pueden ser reemplazados por marcadores de posici√≥n predeterminados al guardar. Se recomienda elegir otra codificaci√≥n de archivo. ¬øContinuar?"
-    IDS_MUI_ERR_DROP            "¬°S√≥lo se puede eliminar un archivo al mismo tiempo!"
-    IDS_MUI_WARN_LOAD_BIG_FILE  "¬ø¬øSeguro que quiere abrir este archivo grande??"
-    IDS_MUI_WARN_UNKNOWN_EXT    "¬°Extensi√≥n de nombre de archivo desconocido (%s)!\n¬øCargando datos de todos modos?"
+    IDS_MUI_ERR_PREVWINDISABLED "La ventana de Notepad3 existente est· ocupada o tiene un cuadro de di·logo activo.\nøQuiere abrir otra ventana de Notepad3?"
+    IDS_MUI_ERR_ENCODINGNA      "Las tablas de conversiÛn de p·ginas de cÛdigos para la codificaciÛn seleccionada no est·n disponibles en su sistema."
+    IDS_MUI_ERR_UNICODE         "Error al convertir este archivo Unicode.\n°Los datos se perder·n si se guarda el archivo!"
+    IDS_MUI_ERR_ADMINEXE        "Ninguna administraciÛn ejecutable encontrado.\nøConsultar website https://rizonesoft.com ?"
+    IDS_MUI_ERR_ACCESSDENIED    "El archivo ""%s"" no se puede guardar y puede estar protegido.\n\nøQuiere lanzar Notepad3 como administrador?"
+    IDS_MUI_ERR_UNICODE2        "Ciertos caracteres en el texto actual no son compatibles con la codificaciÛn seleccionada, y pueden ser reemplazados por marcadores de posiciÛn predeterminados al guardar. Se recomienda elegir otra codificaciÛn de archivo. øContinuar?"
+    IDS_MUI_ERR_DROP            "°SÛlo se puede eliminar un archivo al mismo tiempo!"
+    IDS_MUI_WARN_LOAD_BIG_FILE  "øøSeguro que quiere abrir este archivo grande??"
+    IDS_MUI_WARN_UNKNOWN_EXT    "°ExtensiÛn de nombre de archivo desconocido (%s)!\nøCargando datos de todos modos?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT             "Esta operaci√≥n no se puede realizar en una selecci√≥n rectangular."
-    IDS_MUI_BUFFERTOOSMALL      "Esta operaci√≥n no se puede realizar (l√≠neas demasiado largas)."
-    IDS_MUI_FIND_WRAPFW         "Se llega al final del documento, reinicie la b√∫squeda al principio."
-    IDS_MUI_FIND_WRAPRE         "Se llega al principio del documento, reinicie la b√∫squeda al final."
+    IDS_MUI_SELRECT             "Esta operaciÛn no se puede realizar en una selecciÛn rectangular."
+    IDS_MUI_BUFFERTOOSMALL      "Esta operaciÛn no se puede realizar (lÌneas demasiado largas)."
+    IDS_MUI_FIND_WRAPFW         "Se llega al final del documento, reinicie la b˙squeda al principio."
+    IDS_MUI_FIND_WRAPRE         "Se llega al principio del documento, reinicie la b˙squeda al final."
     IDS_MUI_NOTFOUND            "El texto especificado no fue encontrado."
     IDS_MUI_REPLCOUNT           "%i ocurrencias del texto especificado se han reemplazado."
-    IDS_MUI_ASK_ENCODING        "Cambiar la codificaci√≥n del archivo de una codificaci√≥n a otra puede reemplazar el texto no compatible con caracteres predeterminados, y el historial de deshacer se borrar√°. ¬øContinuar?"
-    IDS_MUI_ASK_ENCODING2       "Est√° a punto de cambiar la codificaci√≥n de un archivo vac√≠o. Tenga en cuenta que esto borrar√° el historial de deshacer, ya que no se puede sincronizar con la nueva codificaci√≥n. ¬øContinuar?"
-    IDS_MUI_READONLY_SAVE       """%s"" es de s√≥lo lectura. ¬øGuardar en un archivo diferente?"
-    IDS_MUI_FILECHANGENOTIFY    "El archivo actual ha sido modificado por un programa externo. ¬øRecargar?"
-    IDS_MUI_FILECHANGENOTIFY2   "El archivo actual ha sido eliminado. ¬øGuardar ahora?"
-    IDS_MUI_STICKYWINPOS        "La posici√≥n de la ventana fija est√° activada. Cualquier nueva ventana de Notepad3 utilizar√° la configuraci√≥n de ubicaci√≥n de la ventana actual."
-    IDS_MUI_SAVEDSETTINGS       "Los par√°metros actuales del programa se han guardado."
-    IDS_MUI_CREATEINI_FAIL      "Error al crear el archivo de configuraci√≥n."
-    IDS_MUI_WRITEINI_FAIL       "Error al escribir los par√°metros en el archivo de configuraci√≥n."
-    IDS_MUI_SETTINGSNOTSAVED    "Ning√∫n archivo de configuraci√≥n existente encontrado.\nPara mantener los cambios de estilo, guardar la configuraci√≥n ahora (F7) o volver a la configuraci√≥n del esquema (Ctrl + F12) y exportar sus estilos."
-    IDS_MUI_EXPORT_FAIL         "Error al exportar la configuraci√≥n de estilo a ""%s""."
-    IDS_MUI_REGEX_INVALID       "Error al evaluar la expresi√≥n regular. ¬°La expresi√≥n es inv√°lida!"
-    IDS_MUI_DROP_NO_FILE        "No se recuper√≥ un nombre de archivo v√°lido.\nSi se usa una aplicaci√≥n de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3"
+    IDS_MUI_ASK_ENCODING        "Cambiar la codificaciÛn del archivo de una codificaciÛn a otra puede reemplazar el texto no compatible con caracteres predeterminados, y el historial de deshacer se borrar·. øContinuar?"
+    IDS_MUI_ASK_ENCODING2       "Est· a punto de cambiar la codificaciÛn de un archivo vacÌo. Tenga en cuenta que esto borrar· el historial de deshacer, ya que no se puede sincronizar con la nueva codificaciÛn. øContinuar?"
+    IDS_MUI_READONLY_SAVE       """%s"" es de sÛlo lectura. øGuardar en un archivo diferente?"
+    IDS_MUI_FILECHANGENOTIFY    "El archivo actual ha sido modificado por un programa externo. øRecargar?"
+    IDS_MUI_FILECHANGENOTIFY2   "El archivo actual ha sido eliminado. øGuardar ahora?"
+    IDS_MUI_STICKYWINPOS        "La posiciÛn de la ventana fija est· activada. Cualquier nueva ventana de Notepad3 utilizar· la configuraciÛn de ubicaciÛn de la ventana actual."
+    IDS_MUI_SAVEDSETTINGS       "Los par·metros actuales del programa se han guardado."
+    IDS_MUI_CREATEINI_FAIL      "Error al crear el archivo de configuraciÛn."
+    IDS_MUI_WRITEINI_FAIL       "Error al escribir los par·metros en el archivo de configuraciÛn."
+    IDS_MUI_SETTINGSNOTSAVED    "Ning˙n archivo de configuraciÛn existente encontrado.\nPara mantener los cambios de estilo, guardar la configuraciÛn ahora (F7) o volver a la configuraciÛn del esquema (Ctrl + F12) y exportar sus estilos."
+    IDS_MUI_EXPORT_FAIL         "Error al exportar la configuraciÛn de estilo a ""%s""."
+    IDS_MUI_REGEX_INVALID       "Error al evaluar la expresiÛn regular. °La expresiÛn es inv·lida!"
+    IDS_MUI_DROP_NO_FILE        "No se recuperÛ un nombre de archivo v·lido.\nSi se usa una aplicaciÛn de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE            "¬øGuardar cambios a ""%s""?"
-    IDS_MUI_ASK_REVERT          "¬øRevertir archivo al √∫ltimo estado guardado? ¬°Sus cambios se perder√°n!"
-    IDS_MUI_ASK_RECODE          "¬°La recodificaci√≥n requiere volver a cargar el archivo desde el disco, los cambios no guardados se perder√°n!"
-    IDS_MUI_ASK_CREATE          """%s"" no encontrado.\n¬øQuiere crear este archivo?"
+    IDS_MUI_ASK_SAVE            "øGuardar cambios a ""%s""?"
+    IDS_MUI_ASK_REVERT          "øRevertir archivo al ˙ltimo estado guardado? °Sus cambios se perder·n!"
+    IDS_MUI_ASK_RECODE          "°La recodificaciÛn requiere volver a cargar el archivo desde el disco, los cambios no guardados se perder·n!"
+    IDS_MUI_ASK_CREATE          """%s"" no encontrado.\nøQuiere crear este archivo?"
     IDS_MUI_PRINT_HEADER        "Nombre de archivo, fecha y hora actual|Nombre del archivo, fecha actual|Nombre del archivo|Dejar en blanco"
-    IDS_MUI_PRINT_FOOTER        "N√∫mero de p√°gina|Dejar en blanco"
-    IDS_MUI_PRINT_COLOR         "Normal|Inversi√≥n (fondo oscuro)|Negro sobre blanco|Color en blanco|Color en blanco (excepto n√∫meros de l√≠nea)|Colores de pantalla"
-    IDS_MUI_PRINT_PAGENUM       "P√°gina %i"
-    IDS_MUI_PRINT_EMPTY         "Este documento no contiene ning√∫n texto para imprimir."
-    IDS_MUI_PRINT_ERROR         "¬°Error de impresi√≥n ""%s""!"
+    IDS_MUI_PRINT_FOOTER        "N˙mero de p·gina|Dejar en blanco"
+    IDS_MUI_PRINT_COLOR         "Normal|InversiÛn (fondo oscuro)|Negro sobre blanco|Color en blanco|Color en blanco (excepto n˙meros de lÌnea)|Colores de pantalla"
+    IDS_MUI_PRINT_PAGENUM       "P·gina %i"
+    IDS_MUI_PRINT_EMPTY         "Este documento no contiene ning˙n texto para imprimir."
+    IDS_MUI_PRINT_ERROR         "°Error de impresiÛn ""%s""!"
     IDS_MUI_FAV_SUCCESS         "Se ha creado un acceso directo al archivo actual en la carpeta de favoritos."
-    IDS_MUI_FAV_FAILURE         "No se pudo crear el acceso directo al archivo actual.\nAseg√∫rase de que no haya otro archivo con el mismo nombre."
+    IDS_MUI_FAV_FAILURE         "No se pudo crear el acceso directo al archivo actual.\nAseg˙rase de que no haya otro archivo con el mismo nombre."
     IDS_MUI_READONLY_MODIFY     "Los atributos de ""%s"" no se pudieron modificar."
-    IDS_MUI_SAVEPOS             "&Guardar posici√≥n\tCtrl+S"
-    IDS_MUI_RESETPOS            "&Reiniciar posici√≥n\tCtrl+R"
-    IDS_MUI_PREVIEW             "Vista &previa configuraci√≥n\tCtrl+P"
-    IDS_MUI_PASS_FAILURE        "La frase de contrase√±a es incorrecta.\n¬øReintentar otra frase de contrase√±a?"
-    IDS_MUI_NOPASS              "¬°Descifrado cancelado!\n¬øLeer datos crudos encriptados?"
+    IDS_MUI_SAVEPOS             "&Guardar posiciÛn\tCtrl+S"
+    IDS_MUI_RESETPOS            "&Reiniciar posiciÛn\tCtrl+R"
+    IDS_MUI_PREVIEW             "Vista &previa configuraciÛn\tCtrl+P"
+    IDS_MUI_PASS_FAILURE        "La frase de contraseÒa es incorrecta.\nøReintentar otra frase de contraseÒa?"
+    IDS_MUI_NOPASS              "°Descifrado cancelado!\nøLeer datos crudos encriptados?"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_STY_BASESTD         "BASE (Defecto Estilo):"
-    IDS_MUI_STY_BASE2ND         "BASE (2¬∫ Defecto Estilo):"
+    IDS_MUI_STY_BASE2ND         "BASE (2∫ Defecto Estilo):"
     IDS_MUI_STY_LEXDEF          "%s - Defecto Estilo:"
     IDS_MUI_STY_LEXSTYLE        "%s's  Estilo:"
     IDS_MUI_TITLE_RELBASE       " +++ BASE (%s) +++"
@@ -186,8 +186,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "(es-ES) Traducci√≥n espa√±ola por hpwamr"
-    IDS_MUI_EXAMPLE_TEXT        "El veloz murci√©lago hind√∫ com√≠a feliz cardillo y kiwi. La cig√ºe√±a tocaba el saxof√≥n detr√°s del palenque de paja, 0123456789."
+    IDS_MUI_TRANSL_AUTHOR       "(es-ES) TraducciÛn espaÒola por hpwamr"
+    IDS_MUI_EXAMPLE_TEXT        "El veloz murciÈlago hind˙ comÌa feliz cardillo y kiwi. La cig¸eÒa tocaba el saxofÛn detr·s del palenque de paja, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Corresponde a longitud cero"
 END
 
@@ -195,53 +195,53 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Uso:\r\n\
-Notepad3 \t[/?] [‚Ä¶[Codificaci√≥n]] [‚Ä¶[Modo de final de l√≠nea]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [Ö[CodificaciÛn]] [Ö[Modo de final de lÌnea]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[unidad:][ruta]archivo[‚Ä¶]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[unidad:][ruta]archivo[Ö]]\r\n\r\n\
 archivo\tDebe ser el ultimo argumento, sin espacios entre\r\n\
  \tcomillas por defecto.\r\n\
-+\tAceptar m√∫ltiples argumentos de archivo (con espacios\r\n\
++\tAceptar m˙ltiples argumentos de archivo (con espacios\r\n\
  \tentre comillas).\r\n\
--\tAceptar argumento de archivo √∫nico (sin espacios entre comillas).\r\n\r\n\
+-\tAceptar argumento de archivo ˙nico (sin espacios entre comillas).\r\n\r\n\
 Opciones:\r\n\
 /?\tMostrar este mensaje de ayuda.\r\n\
-‚Ä¶\tCodificaci√≥n (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-‚Ä¶\tModo de final de l√≠nea (/crlf, /cr, /lf).\r\n\
-/e\tCodificaci√≥n de la fuente del archivo.\r\n\
-/g\tSaltar a la posici√≥n especificada (/g -1 fin de archivo).\r\n\
-/m\tCoincidencia de texto especificado (/m- √∫ltimo, /mr regex,\r\n\
+Ö\tCodificaciÛn (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+Ö\tModo de final de lÌnea (/crlf, /cr, /lf).\r\n\
+/e\tCodificaciÛn de la fuente del archivo.\r\n\
+/g\tSaltar a la posiciÛn especificada (/g -1 fin de archivo).\r\n\
+/m\tCoincidencia de texto especificado (/m- ˙ltimo, /mr regex,\r\n\
  \t/mb backslash).\r\n\
 /l\tAuto-recargar archivos modificados.\r\n\
-/q\tForzar la creaci√≥n de nuevos archivos sin aviso.\r\n\
+/q\tForzar la creaciÛn de nuevos archivos sin aviso.\r\n\
 /s\tSeleccione el esquema de sintaxis especificado.\r\n\
 /d\tSeleccione el esquema de texto por defecto.\r\n\
-/h\tSeleccione un esquema de c√≥digo fuente Web.\r\n\
+/h\tSeleccione un esquema de cÛdigo fuente Web.\r\n\
 /x\tSeleccione el esquema de documento XML.\r\n\
 /c\tAbrir nueva ventana y pegar contenido del portapapeles.\r\n\
 /b\tAbre una nueva tabla de pegar para recoger las entradas\r\n\
  \tdel portapapeles.\r\n\
-/n\tSiempre abre una nueva ventana (/ns instancia de archivo √∫nico).\r\n\
-/r\tReutilizar la ventana (/rs instancia de archivo √∫nico).\r\n\
-/p\tEstablecer el tama√±o y la posici√≥n de la ventana (/p0, /ps,\r\n\
+/n\tSiempre abre una nueva ventana (/ns instancia de archivo ˙nico).\r\n\
+/r\tReutilizar la ventana (/rs instancia de archivo ˙nico).\r\n\
+/p\tEstablecer el tamaÒo y la posiciÛn de la ventana (/p0, /ps,\r\n\
  \t/pf,l,t,r,b,m).\r\n\
-/t\tEstablecer el t√≠tulo de la ventana.\r\n\
+/t\tEstablecer el tÌtulo de la ventana.\r\n\
 /i\tComenzar como un icono de la barra de tareas.\r\n\
 /o\tVentana siempre visible.\r\n\
 /f\tEspecificar archivo ini (/f0 no ini-file).\r\n\
 /u\tLanzar con privilegios elevados.\r\n\
 /v\tImprimir el archivo inmediatamente y dejar.\r\n\
-/vd\tImprimir archivo (abrir el cuadro de di√°logo de la impresora).\r\n\
+/vd\tImprimir archivo (abrir el cuadro de di·logo de la impresora).\r\n\
 /z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\
  \ten el registro).\r\n\r\n\
 Ejemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t‚Ä¶ Abrir un nuevo archivo: ""Test.txt"" Codificaci√≥n=UTF-8-BOM, EoL=CRLF.\r\n\
+ \tÖ Abrir un nuevo archivo: ""Test.txt"" CodificaciÛn=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t‚Ä¶ Imprimir el archivo: ""Test.txt"" inmediatamente.\
+ \tÖ Imprimir el archivo: ""Test.txt"" inmediatamente.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Las extensiones de archivo est√°n separadas por ';'\r\n\r\n\
+Las extensiones de archivo est·n separadas por ';'\r\n\r\n\
 Estilo formato:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
@@ -280,32 +280,32 @@ IDS_MUI_ABOUT_RTF_6 "\
 \\cf0 Notepad3 y MiniPath Copyright \\u0169   2015-2018 Rizonesoft, Todos derechos reservados.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
 \\cf0 \\par\
-\\cf0 La redistribuci√≥n y el uso en las formas de c√≥digo fuente y binario, con o sin\\par\
-\\cf0 modificaciones, est√°n permitidos siempre que se cumplan las siguientes condiciones:\\par\
+\\cf0 La redistribuciÛn y el uso en las formas de cÛdigo fuente y binario, con o sin\\par\
+\\cf0 modificaciones, est·n permitidos siempre que se cumplan las siguientes condiciones:\\par\
 \\cf0 \\par\
-\\cf0 1. Las redistribuciones del c√≥digo fuente deben conservar el aviso de copyright\\par\
+\\cf0 1. Las redistribuciones del cÛdigo fuente deben conservar el aviso de copyright\\par\
 \\cf0 anterior, esta lista de condiciones y el siguiente descargo de responsabilidad.\\par\
 \\cf0 \\par\
 \\cf0 2. Las redistribuciones en formato binario deben reproducir el aviso de copyright\\par\
 \\cf0 anterior, esta lista de condiciones y el siguiente descargo de responsabilidad\\par\
-\\cf0 en la documentaci√≥n y/u otros materiales suministrados con la distribuci√≥n.\\par\
+\\cf0 en la documentaciÛn y/u otros materiales suministrados con la distribuciÛn.\\par\
 \\cf0 \\par\
 \\cf0 3. Ni el nombre de Florian Balmer ni los nombres de sus contribuyentes pueden\\par\
 \\cf0 usarse para respaldar o promocionar productos derivados de este software sin\\par\
-\\cf0 permiso espec√≠fico previo y por escrito.\\par\
+\\cf0 permiso especÌfico previo y por escrito.\\par\
 \\cf0 \\par\
 \\cf0 ESTE SOFTWARE SE SUMINISTRA POR LOS PROPIETARIOS DEL COPYRIGHT Y\\par\
-\\cf0 CONTRIBUYENTES 'COMO EST√Å' Y CUALQUIER GARANT√çAS EXPRESAS O IMPL√çCITAS,\\par\
-\\cf0 INCLUYENDO, PERO NO LIMITADO A, LAS GARANT√çAS IMPL√çCITAS DE COMERCIALIZACI√ìN\\par\
-\\cf0 Y APTITUD PARA UN PROP√ìSITO PARTICULAR SON RECHAZADAS. EN NING√öN CASO\\par\
-\\cf0  LOSPROPIETARIOS DEL COPYRIGHT Y CONTRIBUYENTES SER√ÅN RESPONSABLES POR\\par\
-\\cf0 NING√öN DA√ëO DIRECTO, INDIRECTO, INCIDENTAL, ESPECIAL, EJEMPLAR O COSECUENCIAL\\par\
-\\cf0 (INCLUYENDO, PERO NO LIMITADO A, LA ADQUISICI√ìN O SUSTITUCI√ìN DE BIENES\\par\
-\\cf0 O SERVICIOS; LA P√âRDIDA DE USO, DE DATOS O DE BENEFICIOS; O INTERRUPCI√ìN\\par\
-\\cf0 DE LA ACTIVIDAD EMPRESARIAL) O POR CUALQUIER TEOR√çA DE RESPONSABILIDAD, YA\\par\
+\\cf0 CONTRIBUYENTES 'COMO EST¡' Y CUALQUIER GARANTÕAS EXPRESAS O IMPLÕCITAS,\\par\
+\\cf0 INCLUYENDO, PERO NO LIMITADO A, LAS GARANTÕAS IMPLÕCITAS DE COMERCIALIZACI”N\\par\
+\\cf0 Y APTITUD PARA UN PROP”SITO PARTICULAR SON RECHAZADAS. EN NING⁄N CASO\\par\
+\\cf0  LOSPROPIETARIOS DEL COPYRIGHT Y CONTRIBUYENTES SER¡N RESPONSABLES POR\\par\
+\\cf0 NING⁄N DA—O DIRECTO, INDIRECTO, INCIDENTAL, ESPECIAL, EJEMPLAR O COSECUENCIAL\\par\
+\\cf0 (INCLUYENDO, PERO NO LIMITADO A, LA ADQUISICI”N O SUSTITUCI”N DE BIENES\\par\
+\\cf0 O SERVICIOS; LA P…RDIDA DE USO, DE DATOS O DE BENEFICIOS; O INTERRUPCI”N\\par\
+\\cf0 DE LA ACTIVIDAD EMPRESARIAL) O POR CUALQUIER TEORÕA DE RESPONSABILIDAD, YA\\par\
 \\cf0 SEA POR CONTRATO, RESPONSABILIDAD ESTRICTA O AGRAVIO (INCLUYENDO NEGLIGENCIA\\par\
 \\cf0 O CUALQUIER OTRA CAUSA) QUE SURJA DE CUALQUIER MANERA DEL USO DE ESTE\\par\
-\\cf0 SOFTWARE, INCLUSO SI SE HA ADVERTIDO DE LA POSIBILIDAD DE TALES DA√ëOS.\\par\
+\\cf0 SOFTWARE, INCLUSO SI SE HA ADVERTIDO DE LA POSIBILIDAD DE TALES DA—OS.\\par\
 }"
 
 END
