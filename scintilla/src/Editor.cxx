@@ -773,6 +773,7 @@ void Editor::MultipleSelectAdd(AddNumber addNumber) {
 					selectedText.c_str(), searchFlags, &lengthFound);
 				if (pos >= 0) {
 					sel.AddSelection(SelectionRange(pos + lengthFound, pos));
+					ContainerNeedsUpdate(SC_UPDATE_SELECTION);
 					ScrollRange(sel.RangeMain());
 					Redraw();
 					if (addNumber == addOne)

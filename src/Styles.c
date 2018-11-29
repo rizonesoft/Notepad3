@@ -87,7 +87,7 @@ static PEDITLEXER g_pLexArray[NUMLEXERS] =
   &lexMAK,           // Makefiles
   &lexMARKDOWN,      // Markdown
   &lexMATLAB,        // MATLAB
-  &lexNimrod,        // Nim(rod)
+  &lexNim,           // Nim(rod)
   &lexNSIS,          // NSIS Script
   &lexPAS,           // Pascal Source Code
   &lexPL,            // Perl Script

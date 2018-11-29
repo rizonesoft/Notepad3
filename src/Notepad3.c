@@ -51,6 +51,7 @@
 #include "VersionEx.h"
 #include "SciCall.h"
 #include "SciLexer.h"
+#include "SciXLexer.h"
 
 #include "Notepad3.h"
 

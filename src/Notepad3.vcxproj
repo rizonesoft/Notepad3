@@ -405,7 +405,7 @@
     <ClCompile Include="StyleLexers\styleLexMAK.c" />
     <ClCompile Include="StyleLexers\styleLexMARKDOWN.c" />
     <ClCompile Include="StyleLexers\styleLexMATLAB.c" />
-    <ClCompile Include="StyleLexers\styleLexNimrod.c" />
+    <ClCompile Include="StyleLexers\styleLexNim.c" />
     <ClCompile Include="StyleLexers\styleLexNSIS.c" />
     <ClCompile Include="StyleLexers\styleLexPAS.c" />
     <ClCompile Include="StyleLexers\styleLexPL.c" />
