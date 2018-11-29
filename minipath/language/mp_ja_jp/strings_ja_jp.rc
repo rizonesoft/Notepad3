@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(932)  // Japanese (Shift-JIS)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,85 +53,85 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "戻る"
-    IDT_HISTORY_FORWARD     "進む"
-    IDT_UPDIR               "上のフォルダ"
-    IDT_ROOT                "ルートフォルダ"
-    IDT_VIEW_FAVORITES      "お気に入り"
-    IDT_FILE_PREV           "前のファイルを開く"
-    IDT_FILE_NEXT           "次のファイルを開く"
-    IDT_FILE_RUN            "実行"
+    IDT_HISTORY_BACK        "�߂�"
+    IDT_HISTORY_FORWARD     "�i��"
+    IDT_UPDIR               "��̃t�H���_"
+    IDT_ROOT                "���[�g�t�H���_"
+    IDT_VIEW_FAVORITES      "���C�ɓ���"
+    IDT_FILE_PREV           "�O�̃t�@�C�����J��"
+    IDT_FILE_NEXT           "���̃t�@�C�����J��"
+    IDT_FILE_RUN            "���s"
     IDT_FILE_QUICKVIEW      "Quickview"
-    IDT_FILE_SAVEAS         "名前を付けて保存"
-    IDT_FILE_COPYMOVE       "コピー/移動"
-    IDT_FILE_DELETE         "削除"
-    IDT_FILE_DELETE2        "削除 (直接)"
-    IDT_VIEW_FILTER         "フィルター"
+    IDT_FILE_SAVEAS         "���O��t���ĕۑ�"
+    IDT_FILE_COPYMOVE       "�R�s�[/�ړ�"
+    IDT_FILE_DELETE         "�폜"
+    IDT_FILE_DELETE2        "�폜 (����)"
+    IDT_VIEW_FILTER         "�t�B���^�["
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath (ja-JP)"
-    IDS_NUMFILES            "%s 項目"
-    IDS_NUMFILES2           "%s 項目| フィルター使用"
-    IDS_SAVEFILE            "保存中 ""%s""..."
-    IDS_OPEN_FILE_WITH      "%sで開く"
+    IDS_NUMFILES            "%s ����"
+    IDS_NUMFILES2           "%s ����| �t�B���^�[�g�p"
+    IDS_SAVEFILE            "�ۑ��� ""%s""..."
+    IDS_OPEN_FILE_WITH      "%s�ŊJ��"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "フォルダアクセスエラー\n指定したフォルダにアクセスできません。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_FILE            "ファイルアクセスエラー\n""%s""にアクセスできません。\nこのファイルはほかのプログラムに使用されれています。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_NEW             "ファイルアクセスエラー\nファイルを作成できませんでした。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_NEWDIR          "フォルダアクセスエラー\nフォルダを作成できませんでした。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_SAVEAS1         "ファイル保存エラー\n""%s""の保存に失敗しました。\nファイルはおそらく書き込み保護されています。"
-    IDS_ERR_SAVEAS2         "ファイル保存エラー\nファイルの保存時に読み取り専用属性を除去できませんでした。"
-    IDS_ERR_CMDLINE         "MiniPath\nコマンドラインで指定されたファイルやフォルダにアクセスできません。"
-    IDS_ERR_STARTUPDIR      "MiniPath\n起動時に読み込むフォルダがありません。\n設定から存在するフォルダを指定してください。"
-    IDS_ERR_DROP1           "MiniPath\n\nドロップしたファイルやフォルダにアクセスできません。"
-    IDS_ERR_DROP2           "MiniPath\n一度にひとつのフォルダやファイルしかドロップできません。"
-    IDS_ERR_FAVORITES       "お気に入り\n「お気に入り」フォルダにアクセスできません。\n設定から存在するフォルダを指定してください。"
-    IDS_ERR_LNK_GETPATH     "ショートカット作成エラー\nショートカットする対象のパスが正しくありません。\nおそらくファイルやフォルダではありません。"
-    IDS_ERR_LNK_NOACCESS    "ショートカット作成エラー\nショートカットの対象のパスにアクセスできません。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_CREATELINK      "ショートカット作成エラー\n指定したショートカットを作成できません。\nおそらくフォルダが書き込み保護されています。"
-    IDS_ERR_FILTER          "ファイルフィルター・エラー\n追加のフィルタの指定がありません。\nMiniPathのreadmeファイルに詳細が説明されています。(試訳)"
-    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPathウインドウがビジー状態、あるいはダイアログを使用しています。\n新しいMiniPathのウインドウを開きますか？"
+    IDS_ERR_CD              "�t�H���_�A�N�Z�X�G���[\n�w�肵���t�H���_�ɃA�N�Z�X�ł��܂���B\n�f�B�X�N���邢�̓l�b�g���[�N�ڑ����m�F���Ă��������B"
+    IDS_ERR_FILE            "�t�@�C���A�N�Z�X�G���[\n""%s""�ɃA�N�Z�X�ł��܂���B\n���̃t�@�C���͂ق��̃v���O�����Ɏg�p�����Ă��܂��B\n�f�B�X�N���邢�̓l�b�g���[�N�ڑ����m�F���Ă��������B"
+    IDS_ERR_NEW             "�t�@�C���A�N�Z�X�G���[\n�t�@�C�����쐬�ł��܂���ł����B\n�f�B�X�N���邢�̓l�b�g���[�N�ڑ����m�F���Ă��������B"
+    IDS_ERR_NEWDIR          "�t�H���_�A�N�Z�X�G���[\n�t�H���_���쐬�ł��܂���ł����B\n�f�B�X�N���邢�̓l�b�g���[�N�ڑ����m�F���Ă��������B"
+    IDS_ERR_SAVEAS1         "�t�@�C���ۑ��G���[\n""%s""�̕ۑ��Ɏ��s���܂����B\n�t�@�C���͂����炭�������ݕی삳��Ă��܂��B"
+    IDS_ERR_SAVEAS2         "�t�@�C���ۑ��G���[\n�t�@�C���̕ۑ����ɓǂݎ���p�����������ł��܂���ł����B"
+    IDS_ERR_CMDLINE         "MiniPath\n�R�}���h���C���Ŏw�肳�ꂽ�t�@�C����t�H���_�ɃA�N�Z�X�ł��܂���B"
+    IDS_ERR_STARTUPDIR      "MiniPath\n�N�����ɓǂݍ��ރt�H���_������܂���B\n�ݒ肩�瑶�݂���t�H���_���w�肵�Ă��������B"
+    IDS_ERR_DROP1           "MiniPath\n\n�h���b�v�����t�@�C����t�H���_�ɃA�N�Z�X�ł��܂���B"
+    IDS_ERR_DROP2           "MiniPath\n��x�ɂЂƂ̃t�H���_��t�@�C�������h���b�v�ł��܂���B"
+    IDS_ERR_FAVORITES       "���C�ɓ���\n�u���C�ɓ���v�t�H���_�ɃA�N�Z�X�ł��܂���B\n�ݒ肩�瑶�݂���t�H���_���w�肵�Ă��������B"
+    IDS_ERR_LNK_GETPATH     "�V���[�g�J�b�g�쐬�G���[\n�V���[�g�J�b�g����Ώۂ̃p�X������������܂���B\n�����炭�t�@�C����t�H���_�ł͂���܂���B"
+    IDS_ERR_LNK_NOACCESS    "�V���[�g�J�b�g�쐬�G���[\n�V���[�g�J�b�g�̑Ώۂ̃p�X�ɃA�N�Z�X�ł��܂���B\n�f�B�X�N���邢�̓l�b�g���[�N�ڑ����m�F���Ă��������B"
+    IDS_ERR_CREATELINK      "�V���[�g�J�b�g�쐬�G���[\n�w�肵���V���[�g�J�b�g���쐬�ł��܂���B\n�����炭�t�H���_���������ݕی삳��Ă��܂��B"
+    IDS_ERR_FILTER          "�t�@�C���t�B���^�[�E�G���[\n�ǉ��̃t�B���^�̎w�肪����܂���B\nMiniPath��readme�t�@�C���ɏڍׂ���������Ă��܂��B(����)"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath�E�C���h�E���r�W�[��ԁA���邢�̓_�C�A���O���g�p���Ă��܂��B\n�V����MiniPath�̃E�C���h�E���J���܂����H"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\n対象ウインドウがビジー状態、あるいはダイアログを使用しています。\n新しいウインドウを開きますか？"
-    IDS_ERR_INVALIDTARGET   "MiniPath\n必須項目の設定が完了していません。\n対象プログラムのウインドウを指定する必要があります。"
-    IDS_ERR_INIOPEN         "MiniPath\n設定ファイルにアクセスできません。"
-    IDS_ERR_INICREATE       "設定の保存\n設定ファイル作成のエラー。"
-    IDS_ERR_INIWRITE        "設定の保存\n設定が保存されていません！\n設定ファイルに書き込み出来ませんでした。"
+    IDS_ERR_TARGETDISABLED  "MiniPath\n�ΏۃE�C���h�E���r�W�[��ԁA���邢�̓_�C�A���O���g�p���Ă��܂��B\n�V�����E�C���h�E���J���܂����H"
+    IDS_ERR_INVALIDTARGET   "MiniPath\n�K�{���ڂ̐ݒ肪�������Ă��܂���B\n�Ώۃv���O�����̃E�C���h�E���w�肷��K�v������܂��B"
+    IDS_ERR_INIOPEN         "MiniPath\n�ݒ�t�@�C���ɃA�N�Z�X�ł��܂���B"
+    IDS_ERR_INICREATE       "�ݒ�̕ۑ�\n�ݒ�t�@�C���쐬�̃G���[�B"
+    IDS_ERR_INIWRITE        "�ݒ�̕ۑ�\n�ݒ肪�ۑ�����Ă��܂���I\n�ݒ�t�@�C���ɏ������ݏo���܂���ł����B"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "プログラムの指定"
-    IDS_GETQUICKVIEWER      "Quickviewの指定"
-    IDS_GETTARGET           "エディターの指定"
-    IDS_NEWFILE             "新規作成"
-    IDS_FILTER_ALL          "すべてのファイル(*.*)\n*.*\n"
-    IDS_FILTER_EXE          "実行ファイル(*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nすべてのファイル(*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "フォルダを選択"
-    IDS_FAVORITES           "「お気に入り」フォルダの指定"
+    IDS_SEARCHEXE           "�v���O�����̎w��"
+    IDS_GETQUICKVIEWER      "Quickview�̎w��"
+    IDS_GETTARGET           "�G�f�B�^�[�̎w��"
+    IDS_NEWFILE             "�V�K�쐬"
+    IDS_FILTER_ALL          "���ׂẴt�@�C��(*.*)\n*.*\n"
+    IDS_FILTER_EXE          "���s�t�@�C��(*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\n���ׂẴt�@�C��(*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "�t�H���_��I��"
+    IDS_FAVORITES           "�u���C�ɓ���v�t�H���_�̎w��"
 END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "常に最前面に表示(&K)"
-    SC_ABOUT                "バージョン情報(&I)..."
+    SC_ALWAYSONTOP          "��ɍőO�ʂɕ\��(&K)"
+    SC_ABOUT                "�o�[�W�������(&I)..."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "選択項目を開くプログラムがあるフォルダを指定します。"
-    IDS_COPYMOVE            "対象のフォルダを選択してください。"
-    IDS_CREATELINK          "選択項目のショートカットを作成するフォルダを選択します。"
-    IDS_SAVESETTINGS        "設定の保存\n現在の設定を保存しました。"
-    IDS_MUI_TRANSL_AUTHOR   "(ja-JP) 日本語翻訳 by maboroshin"
+    IDS_OPENWITH            "�I�����ڂ��J���v���O����������t�H���_���w�肵�܂��B"
+    IDS_COPYMOVE            "�Ώۂ̃t�H���_��I�����Ă��������B"
+    IDS_CREATELINK          "�I�����ڂ̃V���[�g�J�b�g���쐬����t�H���_��I�����܂��B"
+    IDS_SAVESETTINGS        "�ݒ�̕ۑ�\n���݂̐ݒ��ۑ����܂����B"
+    IDS_MUI_TRANSL_AUTHOR   "(ja-JP) ���{��|�� by maboroshin"
 END
 
 

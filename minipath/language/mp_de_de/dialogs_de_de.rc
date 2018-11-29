@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -71,11 +71,11 @@ END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "AusfÃ¼hren"
+CAPTION "Ausführen"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Den Namen eines Programms, Verzeichnisses oder Dokuments zum AusfÃ¼hren eingeben.", IDC_STATIC, 35, 7, 188, 17
+    LTEXT           "Den Namen eines Programms, Verzeichnisses oder Dokuments zum Ausführen eingeben.", IDC_STATIC, 35, 7, 188, 17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -84,7 +84,7 @@ END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ã–ffnen mit..."
+CAPTION "Öffnen mit..."
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
@@ -101,7 +101,7 @@ CAPTION "Gehe Zu"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Gib den Namen einer Datei oder eines zu Ã¶ffnenden Verzeichnisses an - oder wÃ¤hle ein zuletzt besuchtes Verzeisnis aus der Liste.",IDC_STATIC,35,7,182,34
+    LTEXT           "Gib den Namen einer Datei oder eines zu öffnenden Verzeichnisses an - oder wähle ein zuletzt besuchtes Verzeisnis aus der Liste.",IDC_STATIC,35,7,182,34
     COMBOBOX        IDC_GOTO,35,42,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Abbruch",IDCANCEL,167,66,50,14
@@ -116,7 +116,7 @@ BEGIN
     LTEXT           "Neue(n) &Filter angeben. (Separator ';')",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
-    CONTROL         "Gefilterte &Dateien ausschlieÃŸen.",IDC_NEGFILTER,
+    CONTROL         "Gefilterte &Dateien ausschließen.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
     DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
     PUSHBUTTON      "Abbruch",IDCANCEL,127,58,50,14
@@ -140,7 +140,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Neues Verzeichnis"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Name fÃ¼r das neue Verzeichnis:",IDC_STATIC,7,7,158,8
+    LTEXT           "Name für das neue Verzeichnis:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Abbruch",IDCANCEL,115,45,50,14
@@ -171,11 +171,11 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "Allgemeine Programm-Einstellungen festlegen.",IDC_STATIC,40,15, 180,8
-    CONTROL         "Erlaube einen &Einfach-Maus-Click um Objekte zu Ã¶ffnen.",IDC_SINGLECLICK,
+    CONTROL         "Erlaube einen &Einfach-Maus-Click um Objekte zu öffnen.",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46, 230,10
     CONTROL         "Erlaube &Verfolgungs-Spur-Auswahl.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58, 230,10
     CONTROL         "Erlaube volle &Zeilen-Auswahl.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70, 230,10
-    CONTROL         "&Immer das Ziel-Fenster aktivieren, wenn eine Datei geÃ¶ffnet wird.",IDC_FOCUSEDIT,
+    CONTROL         "&Immer das Ziel-Fenster aktivieren, wenn eine Datei geöffnet wird.",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82, 230,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100, 240,1
     CONTROL         "&Halte MiniPath-Fenster immer im Vordergrund.",IDC_ALWAYSONTOP,
@@ -199,13 +199,13 @@ BEGIN
     CONTROL         "das &zuletzt benutzte.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,130,46, 105,10
     CONTROL         """&Favoriten"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,130,58, 105,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,240,1
-    CONTROL         "&LÃ¶sche Schreibschutz-Attribut der gespeicherten Datei.",IDC_CLEARREADONLY,
+    CONTROL         "&Lösche Schreibschutz-Attribut der gespeicherten Datei.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85, 230,10
     CONTROL         "&Umbenennung von kopierten Dateien bei Namenskonflikt.",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97, 230,10
-    CONTROL         "GelÃ¶schte Dateien in den &Papierkorb schieben.",IDC_USERECYCLEBIN,
+    CONTROL         "Gelöschte Dateien in den &Papierkorb schieben.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109, 230,10
-    CONTROL         "&Ohne Nachfrage lÃ¶schen (nicht empfohlen).",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Ohne Nachfrage löschen (nicht empfohlen).",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121, 230,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,240,1
     CONTROL         "Erlaube ""&Esc""-Taste um...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148, 105,10
@@ -219,18 +219,18 @@ CAPTION "Aussehen"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Erscheinung der EintrÃ¤ge in der Verzeichnis-Liste.",IDC_STATIC,40,15,180,8
+    LTEXT           "Erscheinung der Einträge in der Verzeichnis-Liste.",IDC_STATIC,40,15,180,8
     GROUPBOX        "Farben",IDC_STATIC,10,41,238,134
     LTEXT           "Benutze diese Textfarbe, wenn KEIN FILTER gesetzt ist:",IDC_STATIC,20,54, 220,8
     CONTROL         "Voreingestellte &Fenster-Farbe.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,180,10
     CONTROL         "&Selbstdefinierte Farbe:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,80,10
     EDITTEXT        IDC_COLOR_SAMP1,105,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "WÃ¤hle Farbe...",IDC_COLOR_PICK1,140,80,60,14
+    PUSHBUTTON      "Wähle Farbe...",IDC_COLOR_PICK1,140,80,60,14
     LTEXT           "Benutze diese Textfarbe, wenn ein FILTER AKTIV IST:",IDC_STATIC,20,105, 220,8
     CONTROL         "&Voreingestellte &Fenster-Farbe.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,180,10
     CONTROL         "Sel&bstdefinierte Farbe:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,80,10
     EDITTEXT        IDC_COLOR_SAMP2,105,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "WÃ¤hle Farbe...",IDC_COLOR_PICK2,140,130,60,14
+    PUSHBUTTON      "Wähle Farbe...",IDC_COLOR_PICK2,140,130,60,14
 END
 
 IDPP_PROG DIALOGEX 0, 0, 260, 185
@@ -253,19 +253,19 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Ziel-Applikation"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Keine spezifische Ziel-Applikation nutzen, einfach die ausgewÃ¤hlte Datei starten.",IDC_LAUNCH,
+    CONTROL         "Keine spezifische Ziel-Applikation nutzen, einfach die ausgewählte Datei starten.",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,265,10
     CONTROL         "Benutze diese Ziel-Applikation:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,240,10
-    LTEXT           "Lege die Aktion fest, falls die Ziel-Applikation bereits lÃ¤uft:", IDC_STATIC, 7, 64, 240, 8
+    LTEXT           "Lege die Aktion fest, falls die Ziel-Applikation bereits läuft:", IDC_STATIC, 7, 64, 240, 8
     EDITTEXT        IDC_TARGETPATH,16,35,245,14,ES_AUTOHSCROLL
     PUSHBUTTON      "", IDC_BROWSE, 265, 35, 15, 14, BS_BITMAP
     LTEXT           "Nachricht:", IDC_STATIC, 16, 120, 40, 8
-    CONTROL         "KEINE, starte die Ziel-Applikation immer wenn eine Datei geÃ¶ffnet wird.",IDC_ALWAYSRUN,
+    CONTROL         "KEINE, starte die Ziel-Applikation immer wenn eine Datei geöffnet wird.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,240,10
     CONTROL         "Sende eine ""FILE OPEN"" Nachricht zum Ziel-Fenster:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,170,10
-    CONTROL         "FÃ¼hre folgendes DDE-Kommando aus:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,240,10
+    CONTROL         "Führe folgendes DDE-Kommando aus:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,240,10
     LTEXT           "Applikation:",IDC_STATIC,124,120,40,8
     PUSHBUTTON      "Ziel-Fenster...", IDC_FINDWIN, 180, 91, 60, 14
     LTEXT           "Thema:",IDC_STATIC,194,120,40,8
@@ -282,7 +282,7 @@ CAPTION "Definiere Ziel-Fenster"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Ziehe das Fadenkreuz Ã¼ber das neu zu definierende Ziel-Fenster, oder drÃ¼cke ""Esc"" zum Abbruch.",IDC_STATIC,35,7,168,22
+    LTEXT           "Ziehe das Fadenkreuz über das neu zu definierende Ziel-Fenster, oder drücke ""Esc"" zum Abbruch.",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Fenster-Klasse",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Fenster-Modul",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ BEGIN
         MENUITEM "&Herladen\tF5",                           IDM_FILE_REVERT
         MENUITEM "&Opslaan\tCtrl+S",                        IDM_FILE_SAVE
         MENUITEM "Op&slaan als...\tF6",                     IDM_FILE_SAVEAS
-        MENUITEM "Opslaan &kopiÃ«ren...\tCtrl+F6",           IDM_FILE_SAVECOPY
+        MENUITEM "Opslaan &kopiëren...\tCtrl+F6",           IDM_FILE_SAVECOPY
         MENUITEM "&Alleen-lezen",                           IDM_FILE_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Instellen encryptie wachtwoord...",       IDM_SETPASS
@@ -131,9 +131,9 @@ BEGIN
         MENUITEM "Op&nieuw doen\tCtrl+Y",                   IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "Knip&pen\tCtrl+X",                        IDM_EDIT_CUT
-        MENUITEM "&KopiÃ«ren\tCtrl+C",                       IDM_EDIT_COPY
-        MENUITEM "KopiÃ«ren &alles\tAlt+C",                  IDM_EDIT_COPYALL
-        MENUITEM "Ko&piÃ«ren toevoegen\tCtrl+E",             IDM_EDIT_COPYADD
+        MENUITEM "&Kopiëren\tCtrl+C",                       IDM_EDIT_COPY
+        MENUITEM "Kopiëren &alles\tAlt+C",                  IDM_EDIT_COPYALL
+        MENUITEM "Ko&piëren toevoegen\tCtrl+E",             IDM_EDIT_COPYADD
         MENUITEM "&Plakken\tCtrl+V",                        IDM_EDIT_PASTE
         MENUITEM "&Ruilen\tCtrl+K",                         IDM_EDIT_SWAP
         MENUITEM "&Verwijderen\tDel",                       IDM_EDIT_CLEAR
@@ -155,7 +155,7 @@ BEGIN
             MENUITEM "&Naar beneden verplaatsen\tCtrl+Shift+Down",  IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "Knippen &lijn\tCtrl[+Shift]+X",               IDM_EDIT_CUTLINE
-            MENUITEM "&KopiÃ«ren lijn\tCtrl[+Shift]+C",              IDM_EDIT_COPYLINE
+            MENUITEM "&Kopiëren lijn\tCtrl[+Shift]+C",              IDM_EDIT_COPYLINE
             MENUITEM "&Dupliceren lijn/selectie\tCtrl+D",           IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "&Permuteren lijnen\tAlt+D",                   IDM_EDIT_LINETRANSPOSE
             MENUITEM "&Verwijderen lijn\tCtrl+Shift+D",             IDM_EDIT_DELETELINE
@@ -441,7 +441,7 @@ BEGIN
         MENUITEM "&Opnieuw doen",                           IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "Kni&ppen",                                IDM_EDIT_CUT
-        MENUITEM "&KopiÃ«ren",                               IDM_EDIT_COPY
+        MENUITEM "&Kopiëren",                               IDM_EDIT_COPY
         MENUITEM "&Plakken",                                IDM_EDIT_PASTE
         MENUITEM "&Verwijderen",                            IDM_EDIT_CLEAR
         MENUITEM SEPARATOR

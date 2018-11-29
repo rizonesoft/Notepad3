@@ -3,7 +3,9 @@
 //{{NO_DEPENDENCIES}}
 // common language (MUI) defines
 //
+#ifndef IDC_STATIC
 #define IDC_STATIC                       (-1)
+#endif
 
 #define IDR_MUI_MAINMENU                10001
 #define IDR_MUI_POPUPMENU               10002

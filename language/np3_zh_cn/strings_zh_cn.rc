@@ -14,11 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Chinesisch (Vereinfacht, VR China) resources
+// Chinese (Simplified, PRC) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(936)  // Chinese Simplified (GBK-2312)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -54,121 +54,121 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW                "新建"
-    IDT_FILE_OPEN               "打开"
-    IDT_FILE_BROWSE             "浏览"
-    IDT_FILE_SAVE               "保存"
-    IDT_EDIT_UNDO               "撤销"
-    IDT_EDIT_REDO               "重做"
-    IDT_EDIT_CUT                "剪切"
-    IDT_EDIT_COPY               "复制"
-    IDT_EDIT_PASTE              "粘贴"
-    IDT_EDIT_FIND               "查找"
-    IDT_EDIT_REPLACE            "替换"
-    IDT_VIEW_WORDWRAP           "自动换行"
-    IDT_VIEW_ZOOMIN             "放大"
-    IDT_VIEW_ZOOMOUT            "缩小"
-    IDT_VIEW_SCHEME             "选择语法高亮方案"
-    IDT_VIEW_SCHEMECONFIG       "自定义语法高亮方案"
-    IDT_FILE_EXIT               "退出"
-    IDT_FILE_SAVEAS             "另存为"
-    IDT_FILE_SAVECOPY           "保存副本"
-    IDT_EDIT_CLEAR              "删除"
-    IDT_FILE_PRINT              "打印"
-    IDT_FILE_OPENFAV            "收藏夹"
-    IDT_FILE_ADDTOFAV           "添加到收藏夹"
-    IDT_VIEW_TOGGLEFOLDS        "折叠/展开"
-    IDT_FILE_LAUNCH             "运行当前文档"
-    IDT_VIEW_TOGGLE_VIEW        "仅显示匹配行"
-    IDT_VIEW_CHASING_DOCTAIL    "追踪文件结尾（tail 命令）"
+    IDT_FILE_NEW                "�½�"
+    IDT_FILE_OPEN               "��"
+    IDT_FILE_BROWSE             "���"
+    IDT_FILE_SAVE               "����"
+    IDT_EDIT_UNDO               "����"
+    IDT_EDIT_REDO               "����"
+    IDT_EDIT_CUT                "����"
+    IDT_EDIT_COPY               "����"
+    IDT_EDIT_PASTE              "ճ��"
+    IDT_EDIT_FIND               "����"
+    IDT_EDIT_REPLACE            "�滻"
+    IDT_VIEW_WORDWRAP           "�Զ�����"
+    IDT_VIEW_ZOOMIN             "�Ŵ�"
+    IDT_VIEW_ZOOMOUT            "��С"
+    IDT_VIEW_SCHEME             "ѡ���﷨��������"
+    IDT_VIEW_SCHEMECONFIG       "�Զ����﷨��������"
+    IDT_FILE_EXIT               "�˳�"
+    IDT_FILE_SAVEAS             "����Ϊ"
+    IDT_FILE_SAVECOPY           "���渱��"
+    IDT_EDIT_CLEAR              "ɾ��"
+    IDT_FILE_PRINT              "��ӡ"
+    IDT_FILE_OPENFAV            "�ղؼ�"
+    IDT_FILE_ADDTOFAV           "���ӵ��ղؼ�"
+    IDT_VIEW_TOGGLEFOLDS        "�۵�/չ��"
+    IDT_FILE_LAUNCH             "���е�ǰ�ĵ�"
+    IDT_VIEW_TOGGLE_VIEW        "����ʾƥ����"
+    IDT_VIEW_CHASING_DOCTAIL    "׷���ļ���β��tail ���"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE            "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED   "%s（管理员权限）"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : 剪贴板收集模式"
-    IDS_MUI_UNTITLED            "未命名"
-    IDS_MUI_TITLEEXCERPT        "“%s”"
-    IDS_MUI_READONLY            "（只读）"
-    IDS_MUI_LOADFILE            "正在加载“%s”..."
-    IDS_MUI_SAVEFILE            "正在保存“%s”..."
-    IDS_MUI_PRINTFILE           "正在打印第 %i 页..."
-    IDS_MUI_SAVINGSETTINGS      "正在保存设置..."
-    IDS_MUI_LINKDESCRIPTION     "用 Notepad3 编辑"
-    IDS_MUI_FILTER_ALL          "所有文件(*.*)|*.*|"
-    IDS_MUI_FILTER_EXE          "可执行文件(*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|所有文件(*.*)|*.*|"
-    IDS_MUI_FILTER_INI          "配置文件(*.ini)|*.ini|所有文件(*.*)|*.*|"
-    IDS_MUI_OPENWITH            "请选择用于收藏应用程序的文件夹。"
-    IDS_MUI_FAVORITES           "请选择用于收藏文件的文件夹。"
-    IDS_MUI_BACKSLASHHELP       "反斜杠转义序列：\n\n\\a\t响铃符 (BEL, ASCII 7)\n\\b\t退格符 (BS, ASCII 8)\n\\f\t跳页符 (FF, ASCII 12)\n\\n\t换行符 (LF, ASCII 10)\n\\r\t回车符 (CR, ASCII 13)\n\\t\t水平制表符 (HT, ASCII 9)\n\\v\t垂直制表符 (VT, ASCII 11)\n\\ooo\t八进制数值 ooo 对应的字符\n\\uHHHH\t十六进制数值 HHHH 对应的字符\n\\xHH\t十六进制数值 HH 对应的字符\n\\\\\t反斜杠"
-    IDS_MUI_REGEXPHELP          "正则表达式语法（支持多行匹配）：\n\n.\t任意字符\n^\t行首\n$\t行尾\n\\<\t词首\n\\>\t词尾\n\\b\t词首或词尾\n[...]\t集合（[abc]）或范围（[a-z]）中的任一字符\n[^...]\t除集合或范围以外的任一字符\n\\d\t单个十进制数字\n\\D\t单个除十进制数字以外的任意字符\n\\s\t单个空格字符\n\\S\t单个除空格字符以外的任意字符\n\\w\t任一可出现于标识符中的字符\n\\W\t任一不可出现于标识符中的字符\n\\\\\t反斜杠\n\\xHH\t十六进制数值 HH 对应的字符\n?\t匹配它前面的单元至多 1 次\n*\t匹配它前面的单元 0 次或任意次\n+\t匹配它前面的单元至少 1 次\n*? 和 +?\t非贪婪匹配的 ? 和 +\n(\t分组开始\n)\t分组结束\n\\1 - \\9\t引用指定序号的已匹配分组\n"
-    IDS_MUI_WILDCARDHELP        "通配符：\n\n*\t匹配 0 或任意个字符\n?\t匹配恰好一个字符"
+    IDS_MUI_APPTITLE_ELEVATED   "%s������ԱȨ�ޣ�"
+    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : �������ռ�ģʽ"
+    IDS_MUI_UNTITLED            "δ����"
+    IDS_MUI_TITLEEXCERPT        "��%s��"
+    IDS_MUI_READONLY            "��ֻ����"
+    IDS_MUI_LOADFILE            "���ڼ��ء�%s��..."
+    IDS_MUI_SAVEFILE            "���ڱ��桰%s��..."
+    IDS_MUI_PRINTFILE           "���ڴ�ӡ�� %i ҳ..."
+    IDS_MUI_SAVINGSETTINGS      "���ڱ�������..."
+    IDS_MUI_LINKDESCRIPTION     "�� Notepad3 �༭"
+    IDS_MUI_FILTER_ALL          "�����ļ�(*.*)|*.*|"
+    IDS_MUI_FILTER_EXE          "��ִ���ļ�(*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|�����ļ�(*.*)|*.*|"
+    IDS_MUI_FILTER_INI          "�����ļ�(*.ini)|*.ini|�����ļ�(*.*)|*.*|"
+    IDS_MUI_OPENWITH            "��ѡ�������ղ�Ӧ�ó�����ļ��С�"
+    IDS_MUI_FAVORITES           "��ѡ�������ղ��ļ����ļ��С�"
+    IDS_MUI_BACKSLASHHELP       "��б��ת�����У�\n\n\\a\t����� (BEL, ASCII 7)\n\\b\t�˸�� (BS, ASCII 8)\n\\f\t��ҳ�� (FF, ASCII 12)\n\\n\t���з� (LF, ASCII 10)\n\\r\t�س��� (CR, ASCII 13)\n\\t\tˮƽ�Ʊ��� (HT, ASCII 9)\n\\v\t��ֱ�Ʊ��� (VT, ASCII 11)\n\\ooo\t�˽�����ֵ ooo ��Ӧ���ַ�\n\\uHHHH\tʮ��������ֵ HHHH ��Ӧ���ַ�\n\\xHH\tʮ��������ֵ HH ��Ӧ���ַ�\n\\\\\t��б��"
+    IDS_MUI_REGEXPHELP          "�������ʽ�﷨��֧�ֶ���ƥ�䣩��\n\n.\t�����ַ�\n^\t����\n$\t��β\n\\<\t����\n\\>\t��β\n\\b\t���׻��β\n[...]\t���ϣ�[abc]����Χ��[a-z]���е���һ�ַ�\n[^...]\t�����ϻ�Χ�������һ�ַ�\n\\d\t����ʮ��������\n\\D\t������ʮ������������������ַ�\n\\s\t�����ո��ַ�\n\\S\t�������ո��ַ�����������ַ�\n\\w\t��һ�ɳ����ڱ�ʶ���е��ַ�\n\\W\t��һ���ɳ����ڱ�ʶ���е��ַ�\n\\\\\t��б��\n\\xHH\tʮ��������ֵ HH ��Ӧ���ַ�\n?\tƥ����ǰ��ĵ�Ԫ���� 1 ��\n*\tƥ����ǰ��ĵ�Ԫ 0 �λ������\n+\tƥ����ǰ��ĵ�Ԫ���� 1 ��\n*? �� +?\t��̰��ƥ��� ? �� +\n(\t���鿪ʼ\n)\t�������\n\\1 - \\9\t����ָ����ŵ���ƥ�����\n"
+    IDS_MUI_WILDCARDHELP        "ͨ�����\n\n*\tƥ�� 0 ��������ַ�\n?\tƥ��ǡ��һ���ַ�"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE        "加载“%s”时遇到错误。"
-    IDS_MUI_ERR_SAVEFILE        "保存“%s”时遇到错误。"
-    IDS_MUI_ERR_BROWSE          "无可用文件浏览器插件。\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载。"
-    IDS_MUI_ERR_MRUDLG          "指定的文件无法访问。它可能已被改名、删除或移动。\n\n从列表中删除它吗？"
-    IDS_MUI_ERR_CREATELINK      "创建桌面快捷方式时遇到错误。"
-    IDS_MUI_ERR_PREVWINDISABLED "当前已存在的 Notepad3 窗口正忙，或有一个已打开的对话框正在阻止它响应。\n\n打开一个新的 Notepad3 窗口吗？"
-    IDS_MUI_ERR_ENCODINGNA      "用于选定的编码转换的代码页表在当前系统上不可用。"
-    IDS_MUI_ERR_UNICODE         "转换该 Unicode 文件时遇到错误。\n\n警告：保存该文件会导致数据丢失。"
-    IDS_MUI_ERR_UNICODE2        "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码。\n\n是否继续？"
-    IDS_MUI_ERR_DROP            "一次只能拖放一个文件。"
-    IDS_MUI_ERR_ACCESSDENIED    "文件“%s”不能被保存，它可能是受保护的。\n\n是否以管理员权限运行 Notepad3？"
-    IDS_MUI_ERR_ADMINEXE        "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
-    IDS_MUI_WARN_LOAD_BIG_FILE  "是否确实要打开一个如此庞大的文件？"
-    IDS_MUI_WARN_UNKNOWN_EXT    "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
+    IDS_MUI_ERR_LOADFILE        "���ء�%s��ʱ��������"
+    IDS_MUI_ERR_SAVEFILE        "���桰%s��ʱ��������"
+    IDS_MUI_ERR_BROWSE          "�޿����ļ�����������\n\nMiniPath ������Դ� https://rizonesoft.com/ ���ء�"
+    IDS_MUI_ERR_MRUDLG          "ָ�����ļ��޷����ʡ��������ѱ�������ɾ�����ƶ���\n\n���б���ɾ������"
+    IDS_MUI_ERR_CREATELINK      "���������ݷ�ʽʱ��������"
+    IDS_MUI_ERR_PREVWINDISABLED "��ǰ�Ѵ��ڵ� Notepad3 ������æ������һ���Ѵ򿪵ĶԻ���������ֹ����Ӧ��\n\n��һ���µ� Notepad3 ������"
+    IDS_MUI_ERR_ENCODINGNA      "����ѡ���ı���ת���Ĵ���ҳ���ڵ�ǰϵͳ�ϲ����á�"
+    IDS_MUI_ERR_UNICODE         "ת���� Unicode �ļ�ʱ��������\n\n���棺������ļ��ᵼ�����ݶ�ʧ��"
+    IDS_MUI_ERR_UNICODE2        "�ڵ�ǰ�ĵ��е�ĳЩ�ַ�����ʹ��ѡ���ı����ʾ���ڱ����ļ�ʱ�����ǿ��ܱ��滻Ϊ�����ַ�����ˣ�����ѡ���������롣\n\n�Ƿ������"
+    IDS_MUI_ERR_DROP            "һ��ֻ���Ϸ�һ���ļ���"
+    IDS_MUI_ERR_ACCESSDENIED    "�ļ���%s�����ܱ����棬���������ܱ����ġ�\n\n�Ƿ��Թ���ԱȨ������ Notepad3��"
+    IDS_MUI_ERR_ADMINEXE        "�޹������߿��á�\n\n���� https://rizonesoft.com/ ������"
+    IDS_MUI_WARN_LOAD_BIG_FILE  "�Ƿ�ȷʵҪ��һ������Ӵ���ļ���"
+    IDS_MUI_WARN_UNKNOWN_EXT    "��չ����%s��������֪���ı��ļ�����ȻҪ���Դ���"
     IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks by '%s'?"
     IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT             "该操作不能在矩形选区上执行。"
-    IDS_MUI_BUFFERTOOSMALL      "该操作不能执行，因为有些行太长了。"
-    IDS_MUI_FIND_WRAPFW         "已到达文件结尾，将从开头开始重新查找。"
-    IDS_MUI_FIND_WRAPRE         "已到达文件开头，将从结尾开始重新查找。"
-    IDS_MUI_NOTFOUND            "没有找到指定的文本。"
-    IDS_MUI_REPLCOUNT           "已完成 %i 处替换。"
-    IDS_MUI_ASK_ENCODING        "切换文件编码可能导致部分无法表示的字符被替换为其它字符，并且该操作会清空撤销历史。是否继续？"
-    IDS_MUI_ASK_ENCODING2       "切换文件编码会清空撤销历史。是否继续？"
-    IDS_MUI_READONLY_SAVE       "“%s”是只读的。是否尝试使用其它名字保存？"
-    IDS_MUI_FILECHANGENOTIFY    "当前文件已被其它程序修改。是否重新加载？"
-    IDS_MUI_FILECHANGENOTIFY2   "当前文件已被删除。是否保存？"
-    IDS_MUI_STICKYWINPOS        "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置。"
-    IDS_MUI_SAVEDSETTINGS       "当前设置已保存。"
-    IDS_MUI_CREATEINI_FAIL      "创建配置文件失败。"
-    IDS_MUI_WRITEINI_FAIL       "将设置写入配置文件失败。"
-    IDS_MUI_SETTINGSNOTSAVED    "当前无配置文件可用。\n\n若要保存已修改的样式，请按 F7 保存设置，或按 Ctrl+F12 导出样式。"
-    IDS_MUI_EXPORT_FAIL         "导出样式设置到文件“%s”时遇到错误。"
-    IDS_MUI_REGEX_INVALID       "正则表达式无效。"
-    IDS_MUI_DROP_NO_FILE        "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
+    IDS_MUI_SELRECT             "�ò��������ھ���ѡ����ִ�С�"
+    IDS_MUI_BUFFERTOOSMALL      "�ò�������ִ�У���Ϊ��Щ��̫���ˡ�"
+    IDS_MUI_FIND_WRAPFW         "�ѵ����ļ���β�����ӿ�ͷ��ʼ���²��ҡ�"
+    IDS_MUI_FIND_WRAPRE         "�ѵ����ļ���ͷ�����ӽ�β��ʼ���²��ҡ�"
+    IDS_MUI_NOTFOUND            "û���ҵ�ָ�����ı���"
+    IDS_MUI_REPLCOUNT           "����� %i ���滻��"
+    IDS_MUI_ASK_ENCODING        "�л��ļ�������ܵ��²����޷���ʾ���ַ����滻Ϊ�����ַ������Ҹò�������ճ�����ʷ���Ƿ������"
+    IDS_MUI_ASK_ENCODING2       "�л��ļ��������ճ�����ʷ���Ƿ������"
+    IDS_MUI_READONLY_SAVE       "��%s����ֻ���ġ��Ƿ���ʹ���������ֱ��棿"
+    IDS_MUI_FILECHANGENOTIFY    "��ǰ�ļ��ѱ����������޸ġ��Ƿ����¼��أ�"
+    IDS_MUI_FILECHANGENOTIFY2   "��ǰ�ļ��ѱ�ɾ�����Ƿ񱣴棿"
+    IDS_MUI_STICKYWINPOS        "ճ�Դ���λ�������á��µ� Notepad3 ���ڽ�ʹ�ú͵�ǰ����һ�µ�λ�����á�"
+    IDS_MUI_SAVEDSETTINGS       "��ǰ�����ѱ��档"
+    IDS_MUI_CREATEINI_FAIL      "���������ļ�ʧ�ܡ�"
+    IDS_MUI_WRITEINI_FAIL       "������д�������ļ�ʧ�ܡ�"
+    IDS_MUI_SETTINGSNOTSAVED    "��ǰ�������ļ����á�\n\n��Ҫ�������޸ĵ���ʽ���밴 F7 �������ã��� Ctrl+F12 ������ʽ��"
+    IDS_MUI_EXPORT_FAIL         "������ʽ���õ��ļ���%s��ʱ��������"
+    IDS_MUI_REGEX_INVALID       "�������ʽ��Ч��"
+    IDS_MUI_DROP_NO_FILE        "δ�ܻ�ȡ�ļ�����\n\n����� 32 λӦ�ó����Ϸ��ļ������Ϸŵ� Notepad3 �Ĺ������ϡ�"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE            "将修改保存到“%s”？"
-    IDS_MUI_ASK_REVERT          "还原文件到上次保存的状态吗？\n\n警告：所有未保存的修改将丢失。"
-    IDS_MUI_ASK_RECODE          "更改编码并重新加载吗？\n\n警告：所有未保存的修改将丢失。"
-    IDS_MUI_ASK_CREATE          "文件“%s”未找到。是否创建一个新的文件？"
-    IDS_MUI_PRINT_HEADER        "文件名，当前日期和时间|文件名，当前日期|文件名|留空"
-    IDS_MUI_PRINT_FOOTER        "页码|留空"
-    IDS_MUI_PRINT_COLOR         "标准|反色（暗色背景）|白底黑字|白底彩字|白底彩字（除行号以外）|和屏幕颜色相同"
-    IDS_MUI_PRINT_PAGENUM       "第 %i 页"
-    IDS_MUI_PRINT_EMPTY         "该文件不包含任何可打印文本。"
-    IDS_MUI_PRINT_ERROR         "打印文件“%s”时遇到错误。"
-    IDS_MUI_FAV_SUCCESS         "已成功在收藏夹中创建了当前文件的快捷方式。"
-    IDS_MUI_FAV_FAILURE         "无法在收藏夹中创建当前文件的快捷方式。请先从收藏夹中删除同名文件。"
-    IDS_MUI_READONLY_MODIFY     "文件“%s”的属性无法被修改。"
-    IDS_MUI_SAVEPOS             "保存位置(&S)\tCtrl+S"
-    IDS_MUI_RESETPOS            "重置位置(&R)\tCtrl+R"
-    IDS_MUI_PREVIEW             "预览设置(&P)\tCtrl+P"
-    IDS_MUI_PASS_FAILURE        "加密口令不正确。换一个试试？"
-    IDS_MUI_NOPASS              "已放弃解密。是否加载加密的数据？"
+    IDS_MUI_ASK_SAVE            "���޸ı��浽��%s����"
+    IDS_MUI_ASK_REVERT          "��ԭ�ļ����ϴα����״̬��\n\n���棺����δ������޸Ľ���ʧ��"
+    IDS_MUI_ASK_RECODE          "���ı��벢���¼�����\n\n���棺����δ������޸Ľ���ʧ��"
+    IDS_MUI_ASK_CREATE          "�ļ���%s��δ�ҵ����Ƿ񴴽�һ���µ��ļ���"
+    IDS_MUI_PRINT_HEADER        "�ļ�������ǰ���ں�ʱ��|�ļ�������ǰ����|�ļ���|����"
+    IDS_MUI_PRINT_FOOTER        "ҳ��|����"
+    IDS_MUI_PRINT_COLOR         "��׼|��ɫ����ɫ������|�׵׺���|�׵ײ���|�׵ײ��֣����к����⣩|����Ļ��ɫ��ͬ"
+    IDS_MUI_PRINT_PAGENUM       "�� %i ҳ"
+    IDS_MUI_PRINT_EMPTY         "���ļ��������κοɴ�ӡ�ı���"
+    IDS_MUI_PRINT_ERROR         "��ӡ�ļ���%s��ʱ��������"
+    IDS_MUI_FAV_SUCCESS         "�ѳɹ����ղؼ��д����˵�ǰ�ļ��Ŀ�ݷ�ʽ��"
+    IDS_MUI_FAV_FAILURE         "�޷����ղؼ��д�����ǰ�ļ��Ŀ�ݷ�ʽ�����ȴ��ղؼ���ɾ��ͬ���ļ���"
+    IDS_MUI_READONLY_MODIFY     "�ļ���%s���������޷����޸ġ�"
+    IDS_MUI_SAVEPOS             "����λ��(&S)\tCtrl+S"
+    IDS_MUI_RESETPOS            "����λ��(&R)\tCtrl+R"
+    IDS_MUI_PREVIEW             "Ԥ������(&P)\tCtrl+P"
+    IDS_MUI_PASS_FAILURE        "���ܿ����ȷ����һ�����ԣ�"
+    IDS_MUI_NOPASS              "�ѷ������ܡ��Ƿ���ؼ��ܵ����ݣ�"
 END
 
 STRINGTABLE
@@ -183,66 +183,66 @@ BEGIN
     IDS_MUI_TITLE_FIXCUR        " %s: %s Style"
     IDS_MUI_TITLE_RELARB        " +++ Style '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB        " Style '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT      "关联的文件扩展名："
+    IDS_MUI_ASSOCIATED_EXT      "�������ļ���չ����"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR       "(zh-CN) 简体中文翻译 by lhmouse"
-    IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789.\n中国智造，慧及全球"
-    IDS_MUI_ZERO_LEN_MATCH      "^ 零宽度匹配"
+    IDS_MUI_TRANSL_AUTHOR       "(zh-CN) �������ķ��� by lhmouse"
+    IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789.\n�й����죬�ۼ�ȫ��"
+    IDS_MUI_ZERO_LEN_MATCH      "^ �����ƥ��"
 END
 
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-用法：\r\n\
-Notepad3 \t[/?] […[编码]] […[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
+�÷���\r\n\
+Notepad3 \t[/?] [��[����]] [��[���з�ģʽ]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[盘符:][路径]文件名[…]]\r\n\r\n\
-文件\t必须是最后一个参数，不需要双引号。\r\n\
-+\t接收多个文件参数（对于有空格的参数，需要用双引号括起来）。\r\n\
--\t接收单个文件参数（对于有空格的参数，不需要双引号）。\r\n\r\n\
-选项：\r\n\
-/?\t显示这个帮助消息。\r\n\
-…\t编码（/ansi, /unicode, /unicodebe, /utf8, /utf8sig）。\r\n\
-…\t换行符模式（/crlf, /cr, /lf）。\r\n\
-/e\t选择文件编码。\r\n\
-/g\t跳转到指定位置（/g -1 跳转到文件末尾）\r\n\
-/m\t匹配指定字符串（/m- 上次匹配的, /mr 正则表达式, /mb 转义反斜杠）。\r\n\
-/l\t自动重新加载被修改的文件。\r\n\
-/q\t如果文件不存在就创建之而不提示。\r\n\
-/s\t选择语法高亮方案。\r\n\
-/d\t选择“默认文本”方案。\r\n\
-/h\t选择“Web 源代码”方案。\r\n\
-/x\t选择“XML 文件”方案。\r\n\
-/c\t打开新窗口并粘贴剪贴板内容。\r\n\
-/b\t打开剪贴板收集窗口（自动粘贴加入到剪贴板中的内容）。\r\n\
-/n\t总是打开新窗口（/ns 对于每个文件只允许打开一个实例）。\r\n\
-/r\t重用已存在的窗口（/rs 对于每个文件只允许打开一个实例）。\r\n\
-/p\t设置窗口位置和大小（/p0, /ps, /pf,l,t,r,b,m）。\r\n\
-/t\t设置窗口标题。\r\n\
-/i\t以托盘图标状态启动。\r\n\
-/o\t窗口置顶。\r\n\
-/f\t指定配置文件（/f0 不使用配置文件）。\r\n\
-/u\t以管理员权限启动。\r\n\
-/v\t打印文件并退出。\r\n\
-/vd\t打印文件（打开打印机对话框）。\r\n\
-/z\t忽略下一个参数（当通过注册表替换系统记事本时这可能有用）。\r\n\r\n\
-示例：\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[�̷�:][·��]�ļ���[��]]\r\n\r\n\
+�ļ�\t���������һ������������Ҫ˫���š�\r\n\
++\t���ն���ļ������������пո�Ĳ�������Ҫ��˫��������������\r\n\
+-\t���յ����ļ������������пո�Ĳ���������Ҫ˫���ţ���\r\n\r\n\
+ѡ�\r\n\
+/?\t��ʾ���������Ϣ��\r\n\
+��\t���루/ansi, /unicode, /unicodebe, /utf8, /utf8sig����\r\n\
+��\t���з�ģʽ��/crlf, /cr, /lf����\r\n\
+/e\tѡ���ļ����롣\r\n\
+/g\t��ת��ָ��λ�ã�/g -1 ��ת���ļ�ĩβ��\r\n\
+/m\tƥ��ָ���ַ�����/m- �ϴ�ƥ���, /mr �������ʽ, /mb ת�巴б�ܣ���\r\n\
+/l\t�Զ����¼��ر��޸ĵ��ļ���\r\n\
+/q\t����ļ������ھʹ���֮������ʾ��\r\n\
+/s\tѡ���﷨����������\r\n\
+/d\tѡ��Ĭ���ı���������\r\n\
+/h\tѡ��Web Դ���롱������\r\n\
+/x\tѡ��XML �ļ���������\r\n\
+/c\t���´��ڲ�ճ�����������ݡ�\r\n\
+/b\t�򿪼������ռ����ڣ��Զ�ճ�����뵽�������е����ݣ���\r\n\
+/n\t���Ǵ��´��ڣ�/ns ����ÿ���ļ�ֻ������һ��ʵ������\r\n\
+/r\t�����Ѵ��ڵĴ��ڣ�/rs ����ÿ���ļ�ֻ������һ��ʵ������\r\n\
+/p\t���ô���λ�úʹ�С��/p0, /ps, /pf,l,t,r,b,m����\r\n\
+/t\t���ô��ڱ��⡣\r\n\
+/i\t������ͼ��״̬������\r\n\
+/o\t�����ö���\r\n\
+/f\tָ�������ļ���/f0 ��ʹ�������ļ�����\r\n\
+/u\t�Թ���ԱȨ��������\r\n\
+/v\t��ӡ�ļ����˳���\r\n\
+/vd\t��ӡ�ļ����򿪴�ӡ���Ի��򣩡�\r\n\
+/z\t������һ����������ͨ��ע����滻ϵͳ���±�ʱ��������ã���\r\n\r\n\
+ʾ����\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… 使用 UTF-8-BOM 编码、CRLF 换行符模式打开文件 ""Test.txt""。\r\n\
+ \t�� ʹ�� UTF-8-BOM ���롢CRLF ���з�ģʽ���ļ� ""Test.txt""��\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… 打印文件 ""Test.txt""。\
+ \t�� ��ӡ�ļ� ""Test.txt""��\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-文件扩展名必须以 ; 隔开。\r\n\r\n\
-样式格式：\r\n\
+�ļ���չ�������� ; ������\r\n\r\n\
+��ʽ��ʽ��\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-样式属性可以复制粘贴或拖放。\r\n\r\n\
-“预览”按钮不会应用修改。\
+��ʽ���Կ��Ը���ճ�����Ϸš�\r\n\r\n\
+��Ԥ������ť����Ӧ���޸ġ�\
 "
 END
 
@@ -250,29 +250,29 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}{\\f1\\fswiss\\fcharset134 Arial;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 Development:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\b0\\'cf\\'ee\\'c4\\'bf\\'c0\\'fa\\'ca\\'b7\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Contributors:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\b0\\'b9\\'b1\\'cf\\'d7\\'d5\\'df\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Libraries:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / \\f1\\b0\\'bf\\'e2\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 Acknowledgments:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\b0\\'d6\\'c2\\'d0\\'bb\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 Resources:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\b0\\'c6\\'e4\\'cb\\'fc\\'d7\\'ca\\'d4\\'b4\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
-\\cf0 \\fs20\\b1\\ul1 Licenses:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f1\\b0\\'d0\\'ed\\'bf\\'c9\\'d6\\'a4\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\
 "
 
 IDS_MUI_ABOUT_RTF_6  "\
-\\cf0 \\fs20\\b1\\ul1 Notepad3 License:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Notepad3 \\f1\\b0\\'d0\\'ed\\'bf\\'c9\\'d6\\'a4\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2015-2018 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
@@ -305,6 +305,7 @@ IDS_MUI_ABOUT_RTF_6  "\
 }"
 
 END
+
 
 #endif    // Chinesisch (Vereinfacht, VR China) resources
 /////////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -14,11 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Afrikaans resources
+// Afrikaans (South Africa) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_AFK)
 LANGUAGE LANG_AFRIKAANS, SUBLANG_DEFAULT
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -177,7 +177,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Kodering"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Standaard Kodering (nuwe lÃªer):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Standaard Kodering (nuwe l�er):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
     CONTROL         "Gebruik as en terug&val op opsporing mislukking.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
@@ -185,11 +185,11 @@ BEGIN
     CONTROL         "Slaan &ANSI-kode opsporing oor.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,122,10
     CONTROL         "Slaan &UNICODE-kode opsporing oor.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,122,10
-    CONTROL         "Maak 7-bit &ASCII-lÃªers in UTF-8 wyse oop.",IDC_ASCIIASUTF8,
+    CONTROL         "Maak 7-bit &ASCII-l�ers in UTF-8 wyse oop.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,136,10
-    CONTROL         "Maak 8-bit *.&nfo/diz lÃªers in DOS-437 wyse oop.",IDC_NFOASOEM,
+    CONTROL         "Maak 8-bit *.&nfo/diz l�ers in DOS-437 wyse oop.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,155,10
-    CONTROL         "Moenie enkoderinglÃªer &tags ontleed nie.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Moenie enkoderingl�er &tags ontleed nie.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,126,10
     DEFPUSHBUTTON   "OK",IDOK,87,138,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,140,138,50,14
@@ -227,13 +227,13 @@ END
 
 IDD_MUI_FILEMRU DIALOGEX 0, 0, 269, 160
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Maak Onlangse LÃªer Oop"
+CAPTION "Maak Onlangse L�er Oop"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
     CONTROL         "&Onthou soekpatroon.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
     CONTROL         "&Behou caret &posisie.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
-    CONTROL         "&Stoor onlangse lÃªerlys by uitgang.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
+    CONTROL         "&Stoor onlangse l�erlys by uitgang.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
     PUSHBUTTON      "Gooi weg",IDC_REMOVE,212,107,50,14,WS_DISABLED
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
     PUSHBUTTON      "Kanselleer",IDCANCEL,212,139,50,14
@@ -242,13 +242,13 @@ END
 
 IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 65
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "LÃªerveranderingkennisgewing"
+CAPTION "L�erveranderingkennisgewing"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "&Geen.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
     CONTROL         "&Wys boodskap.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
     CONTROL         "&Herlaai outomaties (ongewysig).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Stel terug as 'n nuwe lÃªer oopgemaak word.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
+    CONTROL         "&Stel terug as 'n nuwe l�er oopgemaak word.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,109,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,127,24,50,14
 END
@@ -880,7 +880,7 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // Afrikaans (Südafrika) resources
+#endif    // Afrikaans (S�dafrika) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

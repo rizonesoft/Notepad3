@@ -1093,7 +1093,8 @@ bool EditLoadFile(
   else if (iFileEncWeak != CPI_NONE) {
     iPreferedEncoding = iFileEncWeak;
   }
-  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
+  // TODO: check switch for reliability in encoding settings
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) /* && bIsReliable */) {
     iPreferedEncoding = iAnalyzedEncoding;
   } 
   else if (Encoding_IsNONE(iPreferedEncoding)) {

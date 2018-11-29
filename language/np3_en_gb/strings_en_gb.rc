@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -197,16 +197,16 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Usage:\r\n\
-Notepad3 \t[/?] [â€¦[Encoding]] [â€¦[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[â€¦]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[…]]\r\n\r\n\
 file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
 Options:\r\n\
 /?\tDispay this help message.\r\n\
-â€¦\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-â€¦\tLine ending mode (/crlf, /cr, /lf).\r\n\
+…\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+…\tLine ending mode (/crlf, /cr, /lf).\r\n\
 /e\tFile source encoding.\r\n\
 /g\tJump to specified position (/g -1 end of file).\r\n\
 /m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
@@ -231,9 +231,9 @@ Options:\r\n\
 /z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
 Examples:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \tâ€¦ Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t… Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \tâ€¦ Print the file: ""Test.txt"" immediately.\
+ \t… Print the file: ""Test.txt"" immediately.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\

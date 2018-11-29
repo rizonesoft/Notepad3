@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT                "DÃ©faut Texte"
+    IDS_LEX_DEF_TXT                "Défaut Texte"
     IDS_LEX_WEB_SRC                "Web Source Code"
     IDS_LEX_XML_DOC                "XML Document"
     IDS_LEX_CSS_STYLE              "CSS Style Sheets"
@@ -125,7 +125,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_STYLE              "DÃ©faut Style"
+    IDS_LEX_STD_STYLE              "Défaut Style"
     IDS_LEX_STD_MARGIN             "Margins and Line Numbers"
     IDS_LEX_STD_BRACE              "Matching Braces (Indicator)"
     IDS_LEX_STD_BRACE_FAIL         "Matching Braces Error (Indicator)"
@@ -141,7 +141,7 @@ BEGIN
     IDS_LEX_STD_CARET              "Caret (Color, Size 1-3)"
     IDS_LEX_STD_LONG_LN            "Long Line Marker (Colors)"
     IDS_LEX_STD_X_SPC              "Extra Line Spacing (Size)"
-    IDS_LEX_2ND_STYLE              "2Ã¨me DÃ©faut Style"
+    IDS_LEX_2ND_STYLE              "2ème Défaut Style"
     IDS_LEX_2ND_MARGIN             "2nd Margins and Line Numbers"
     IDS_LEX_2ND_BRACE              "2nd Matching Braces (Indicator)"
     IDS_LEX_2ND_BRACE_FAIL         "2nd Matching Braces Error (Indicator)"
@@ -163,11 +163,11 @@ END
     
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63126              "DÃ©faut"
+    IDS_LEX_STR_63126              "Défaut"
     IDS_LEX_STR_63127              "Commentaire"
     IDS_LEX_STR_63128              "Keyword"
     IDS_LEX_STR_63129              "Identifier"
-    IDS_LEX_STR_63130              "NumÃ©ro"
+    IDS_LEX_STR_63130              "Numéro"
     IDS_LEX_STR_63131              "String"
     IDS_LEX_STR_63132              "Operator"
     IDS_LEX_STR_63133              "Preprocessor"
@@ -339,7 +339,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264              "Hyperlink Hotspots"
     IDS_LEX_STR_63265              "2nd Hyperlink Hotspots"
-    IDS_LEX_STR_63266              "2Ã¨me DÃ©faut Texte"
+    IDS_LEX_STR_63266              "2ème Défaut Texte"
     IDS_LEX_STR_63267              "Variable within String"
     IDS_LEX_STR_63268              "Ordered List"
     IDS_LEX_STR_63269              "Infix"
