@@ -186,9 +186,6 @@
     <ClCompile Include="StyleLexers\styleLexMATLAB.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
-    <ClCompile Include="StyleLexers\styleLexNimrod.c">
-      <Filter>Source Files\StyleLexers</Filter>
-    </ClCompile>
     <ClCompile Include="StyleLexers\styleLexNSIS.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
@@ -251,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="AccelKeys.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexNim.c">
+      <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -385,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="AccelKeys.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uthash\utstack.h">
+      <Filter>Source Files\uthash</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

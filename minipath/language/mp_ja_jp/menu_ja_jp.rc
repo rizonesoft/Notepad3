@@ -1,4 +1,4 @@
-ï»¿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(932)  // Japanese (Shift-JIS)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -56,72 +56,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "é–‹ã(&O)",                       IDM_FILE_OPEN
-        MENUITEM "åˆ¥ã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã§é–‹ã(&W)...",   IDM_FILE_OPENWITH
+        MENUITEM "ŠJ‚­(&O)",                       IDM_FILE_OPEN
+        MENUITEM "•Ê‚ÌƒvƒƒOƒ‰ƒ€‚ÅŠJ‚­(&W)...",   IDM_FILE_OPENWITH
         MENUITEM "Quickview(&Q)",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ã‚³ãƒ”ãƒ¼(&C)",                  IDM_POP_COPYNAME
-        MENUITEM "ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆä½œæˆ(&K)...",             IDM_FILE_CREATELINK
-        MENUITEM "åå‰ã‚’ä»˜ã‘ã¦ä¿å­˜(&S)...",                 IDM_FILE_SAVEAS
-        MENUITEM "ã‚³ãƒ”ãƒ¼/ç§»å‹•(&M)...",               IDM_FILE_COPYMOVE
-        MENUITEM "å‰Šé™¤(&E)...",                  IDM_FILE_DELETE
-        MENUITEM "åå‰ã®å¤‰æ›´(&N)...",                  IDM_FILE_RENAME
+        MENUITEM "ƒtƒ@ƒCƒ‹–¼‚ðƒRƒs[(&C)",                  IDM_POP_COPYNAME
+        MENUITEM "ƒVƒ‡[ƒgƒJƒbƒgì¬(&K)...",             IDM_FILE_CREATELINK
+        MENUITEM "–¼‘O‚ð•t‚¯‚Ä•Û‘¶(&S)...",                 IDM_FILE_SAVEAS
+        MENUITEM "ƒRƒs[/ˆÚ“®(&M)...",               IDM_FILE_COPYMOVE
+        MENUITEM "íœ(&E)...",                  IDM_FILE_DELETE
+        MENUITEM "–¼‘O‚Ì•ÏX(&N)...",                  IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "å®Ÿè¡Œ(&L)",                     IDM_FILE_LAUNCH
-        MENUITEM "ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æŒ‡å®šã—ã¦å®Ÿè¡Œ(&R)...",        IDM_FILE_RUN
+        MENUITEM "ŽÀs(&L)",                     IDM_FILE_LAUNCH
+        MENUITEM "ƒtƒ@ƒCƒ‹–¼‚ðŽw’è‚µ‚ÄŽÀs(&R)...",        IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(&P)",                 IDM_FILE_PROPERTIES
+        MENUITEM "ƒvƒƒpƒeƒB(&P)",                 IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "æ–°è¦ä½œæˆ(&N)",                IDM_FILE_NEW
-        MENUITEM "ãƒ•ã‚©ãƒ«ãƒ€ã®ä½œæˆ(&W)...",           IDM_FILE_NEWDIR
+        MENUITEM "V‹Kì¬(&N)",                IDM_FILE_NEW
+        MENUITEM "ƒtƒHƒ‹ƒ_‚Ìì¬(&W)...",           IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼(&F)...",             IDM_VIEW_FILTER
-        MENUITEM "ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼è§£é™¤(&R)",              IDM_VIEW_FILTERALL
-        POPUP "è¡¨ç¤º(&S)"
+        MENUITEM "ƒtƒ@ƒCƒ‹ƒtƒBƒ‹ƒ^[(&F)...",             IDM_VIEW_FILTER
+        MENUITEM "ƒtƒBƒ‹ƒ^[‰ðœ(&R)",              IDM_VIEW_FILTERALL
+        POPUP "•\Ž¦(&S)"
         BEGIN
-            MENUITEM "ãƒ•ã‚©ãƒ«ãƒ€(&D)",            IDM_VIEW_FOLDERS
-            MENUITEM "ãƒ•ã‚¡ã‚¤ãƒ«(&F)",                  IDM_VIEW_FILES
-            MENUITEM "ã‚·ã‚¹ãƒ†ãƒ é–¢é€£(&S)",        IDM_VIEW_HIDDEN
+            MENUITEM "ƒtƒHƒ‹ƒ_(&D)",            IDM_VIEW_FOLDERS
+            MENUITEM "ƒtƒ@ƒCƒ‹(&F)",                  IDM_VIEW_FILES
+            MENUITEM "ƒVƒXƒeƒ€ŠÖ˜A(&S)",        IDM_VIEW_HIDDEN
         END
-        POPUP "è¡¨ç¤ºé †(&O)"
+        POPUP "•\Ž¦‡(&O)"
         BEGIN
-            MENUITEM "åå‰(&N)",                IDM_SORT_NAME
-            MENUITEM "ã‚µã‚¤ã‚º(&S)",                IDM_SORT_SIZE
-            MENUITEM "ç¨®é¡ž(&T)",                IDM_SORT_TYPE
-            MENUITEM "æ—¥ä»˜(&D)",                IDM_SORT_DATE
+            MENUITEM "–¼‘O(&N)",                IDM_SORT_NAME
+            MENUITEM "ƒTƒCƒY(&S)",                IDM_SORT_SIZE
+            MENUITEM "Ží—Þ(&T)",                IDM_SORT_TYPE
+            MENUITEM "“ú•t(&D)",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "é€†é †(&R)",                IDM_SORT_REVERSE
+            MENUITEM "‹t‡(&R)",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "ãŠæ°—ã«å…¥ã‚Šã‚’è¡¨ç¤º(&G)",             IDM_VIEW_FAVORITES
-        MENUITEM "ãŠæ°—ã«å…¥ã‚Šã‚’ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ã§é–‹ã(&E)",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "ãƒ•ã‚©ãƒ«ãƒ€é¸æŠž(&D)...",               IDM_FILE_CHANGEDIR
+        MENUITEM "‚¨‹C‚É“ü‚è‚ð•\Ž¦(&G)",             IDM_VIEW_FAVORITES
+        MENUITEM "‚¨‹C‚É“ü‚è‚ðƒGƒNƒXƒvƒ[ƒ‰‚ÅŠJ‚­(&E)",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "ƒtƒHƒ‹ƒ_‘I‘ð(&D)...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "ãƒ‰ãƒ©ã‚¤ãƒ–ã®è¡¨ç¤º(&V)",                IDM_VIEW_DRIVEBOX
+        MENUITEM "ƒhƒ‰ƒCƒu‚Ì•\Ž¦(&V)",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "è¨­å®šã®ä¿å­˜(&A)",             IDM_VIEW_SAVESETTINGS
-        MENUITEM "æŒ‡å®šãƒ—ãƒ­ã‚°ãƒ©ãƒ ã®è¨­å®š(&T)...",            IDM_VIEW_FINDTARGET
-        MENUITEM "è¨­å®š(&P)...",                 IDM_VIEW_OPTIONS
+        MENUITEM "Ý’è‚Ì•Û‘¶(&A)",             IDM_VIEW_SAVESETTINGS
+        MENUITEM "Žw’èƒvƒƒOƒ‰ƒ€‚ÌÝ’è(&T)...",            IDM_VIEW_FINDTARGET
+        MENUITEM "Ý’è(&P)...",                 IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "ãƒ•ã‚©ãƒ«ãƒ€(&D)...",               IDM_FILE_CHANGEDIR
-        MENUITEM "ãƒ‰ãƒ©ã‚¤ãƒ–ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£(&P)",           IDM_FILE_DRIVEPROP
+        MENUITEM "ƒtƒHƒ‹ƒ_(&D)...",               IDM_FILE_CHANGEDIR
+        MENUITEM "ƒhƒ‰ƒCƒu‚ÌƒvƒƒpƒeƒB(&P)",           IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "ãƒ‰ãƒ©ã‚¤ãƒ–ã®è¡¨ç¤º(&V)",                IDM_VIEW_DRIVEBOX
+        MENUITEM "ƒhƒ‰ƒCƒu‚Ì•\Ž¦(&V)",                IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã‚’è¡¨ç¤º(&T)",               IDM_VIEW_TOOLBAR
-        MENUITEM "ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã®ç·¨é›†(&E)...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼ã‚’è¡¨ç¤º(&S)",             IDM_VIEW_STATUSBAR
+        MENUITEM "ƒc[ƒ‹ƒo[‚ð•\Ž¦(&T)",               IDM_VIEW_TOOLBAR
+        MENUITEM "ƒc[ƒ‹ƒo[‚Ì•ÒW(&E)...",            IDM_VIEW_CUSTOMIZETB
+        MENUITEM "ƒXƒe[ƒ^ƒXƒo[‚ð•\Ž¦(&S)",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "MiniPathã‚’é–‹ã",               IDM_TRAY_RESTORE
-        MENUITEM "MiniPathã®çµ‚äº†",               IDM_TRAY_EXIT
+        MENUITEM "MiniPath‚ðŠJ‚­",               IDM_TRAY_RESTORE
+        MENUITEM "MiniPath‚ÌI—¹",               IDM_TRAY_EXIT
     END
 END
 

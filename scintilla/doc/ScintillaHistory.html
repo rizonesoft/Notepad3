@@ -536,6 +536,10 @@
       </tr><tr>
 	<td>maboroshin</td>
 	<td>Gokul Krishnan</td>
+	<td>John Horigan</td>
+	<td>jj5</td>
+      </tr><tr>
+	<td>Jad Altahan</td>
     </tr>
     </table>
     <p>
@@ -562,6 +566,33 @@
 	<li>
 	Updated case conversion and character categories to Unicode 11.
 	</li>
+ 	<li>
+	Added "nim" lexer (SCLEX_NIM) for the Nim language which was previously called Nimrod.
+	For compatibility, the old "nimrod" lexer is still present but is deprecated and will be removed at the
+	next major version.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1242/">Feature #1242.</a>
+	</li>
+ 	<li>
+	The Bash lexer implements substyles for multiple sets of keywords and supports SCI_PROPERTYNAMES.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2054/">Bug #2054</a>.
+	</li>
+ 	<li>
+	For SciTE's Find in Files, allow case-sensitivity and whole-word options when running
+	a user defined command.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2053/">Bug #2053</a>.
+	</li>
+	<li>
+	Notify with SC_UPDATE_SELECTION when user performs a multiple selection add.
+	</li>
+	<li>
+	On Cocoa, fix a crash that occurred when entering a dead key diacritic then a character
+	that can not take that diacritic, such as option+e (acute accent) followed by g.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2061/">Bug #2061</a>.
+	</li>
+	<li>
+	On Cocoa, use dark info bar background when system is set to Dark Appearance.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2055/">Bug #2055</a>.
+	</li>
 	<li>
 	Fixed a crash on Cocoa in bidirectional mode where some patterns of invalid UTF-8
 	caused failures to create Unicode strings.
@@ -572,6 +603,10 @@
 	</li>
 	<li>
 	Improve performance of text insertion when Unicode line indexing off.
+	</li>
+	<li>
+	On Linux, enable Lua to access dynamic libraries.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2058/">Bug #2058</a>.
 	</li>
     </ul>
     <h3>

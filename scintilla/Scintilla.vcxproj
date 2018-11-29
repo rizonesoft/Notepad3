@@ -23,7 +23,7 @@
     <ProjectGuid>{5877B917-512B-49F5-B514-1B4159E7A9CA}</ProjectGuid>
     <ProjectName>Scintilla</ProjectName>
     <RootNamespace>Scintilla</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -254,7 +254,7 @@
     <ClCompile Include="lexers\LexMake.cxx" />
     <ClCompile Include="lexers\LexMarkdown.cxx" />
     <ClCompile Include="lexers\LexMatlab.cxx" />
-    <ClCompile Include="lexers\LexNimrod.cxx" />
+    <ClCompile Include="lexers\LexNim.cxx" />
     <ClCompile Include="lexers\LexNsis.cxx" />
     <ClCompile Include="lexers\LexNull.cxx" />
     <ClCompile Include="lexers\LexPascal.cxx" />

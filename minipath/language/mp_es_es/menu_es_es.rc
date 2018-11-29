@@ -1,4 +1,4 @@
-Ôªø// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ BEGIN
     BEGIN
         MENUITEM "&Abrir",                       IDM_FILE_OPEN
         MENUITEM "Abrir &con alternativa App...",   IDM_FILE_OPENWITH
-        MENUITEM "&Vista r√°pida",                  IDM_FILE_QUICKVIEW
+        MENUITEM "&Vista r·pida",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
         MENUITEM "&Copiar nombre",                  IDM_POP_COPYNAME
         MENUITEM "Crear en&lace...",             IDM_FILE_CREATELINK
@@ -88,7 +88,7 @@ BEGIN
         POPUP "&Ordenar"
         BEGIN
             MENUITEM "por &Nombre",                IDM_SORT_NAME
-            MENUITEM "por &Tama√±o",                IDM_SORT_SIZE
+            MENUITEM "por &TamaÒo",                IDM_SORT_SIZE
             MENUITEM "por &Tipo",                IDM_SORT_TYPE
             MENUITEM "por &Fecha",                IDM_SORT_DATE
             MENUITEM SEPARATOR
@@ -102,7 +102,7 @@ BEGIN
         MENUITEM "Mos&trar discos",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
         MENUITEM "Gu&ardar configuraciones",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Configuraci√≥n de des&tino...",            IDM_VIEW_FINDTARGET
+        MENUITEM "ConfiguraciÛn de des&tino...",            IDM_VIEW_FINDTARGET
         MENUITEM "O&pciones...",                 IDM_VIEW_OPTIONS
     END
     POPUP "+"

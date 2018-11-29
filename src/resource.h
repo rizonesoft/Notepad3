@@ -2,6 +2,10 @@
 // Microsoft Visual C++ generated include file.
 // Used by Notepad3.rc
 //
+#ifndef IDC_STATIC
+#define IDC_STATIC                     (-1)
+#endif
+
 #define IDR_RT_MANIFEST                 1
 
 #define IDR_POPUPMENU                   115

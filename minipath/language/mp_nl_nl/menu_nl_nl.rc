@@ -1,4 +1,4 @@
-ï»¿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -60,10 +60,10 @@ BEGIN
         MENUITEM "Openen &met Alternatieve App...",   IDM_FILE_OPENWITH
         MENUITEM "&Snelle kijk",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Naam kopiÃ«ren",                  IDM_POP_COPYNAME
+        MENUITEM "&Naam kopiëren",                  IDM_POP_COPYNAME
         MENUITEM "Lin&k maken...",             IDM_FILE_CREATELINK
         MENUITEM "&Opslaan als...",                 IDM_FILE_SAVEAS
-        MENUITEM "KopiÃ«ren/&Verplaatsen...",               IDM_FILE_COPYMOVE
+        MENUITEM "Kopiëren/&Verplaatsen...",               IDM_FILE_COPYMOVE
         MENUITEM "Verwijderen...",                  IDM_FILE_DELETE
         MENUITEM "Her&noemen...",                  IDM_FILE_RENAME
         MENUITEM SEPARATOR

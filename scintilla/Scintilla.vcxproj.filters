@@ -330,9 +330,6 @@
     <ClCompile Include="..\onigmo\st.c">
       <Filter>onigmo</Filter>
     </ClCompile>
-    <ClCompile Include="lexers\LexNimrod.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
     <ClCompile Include="lexers\LexR.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -344,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx">
       <Filter>sciXlexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers\LexNim.cxx">
+      <Filter>lexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

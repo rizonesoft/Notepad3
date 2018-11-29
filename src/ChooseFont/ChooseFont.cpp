@@ -72,12 +72,12 @@ private:
   HRESULT OnFontSizeSelect();
 
   HRESULT OnFontFamilyNameEdit(HWND hwndFontFamilies);
-  HRESULT OnFontFaceNameEdit(HWND hwndFontFaces);
-  HRESULT OnFontSizeNameEdit(HWND hwndFontSizes);
+  HRESULT OnFontFaceNameEdit(HWND hwnd);
+  HRESULT OnFontSizeNameEdit(HWND hwnd);
 
   HRESULT DrawSampleText(HDC sampleDC);
 
-  static INT_PTR CALLBACK CFDialogProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+  static INT_PTR CALLBACK CFDialogProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
   BOOL OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam);
   void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
@@ -139,13 +139,11 @@ ChooseFontDialog::~ChooseFontDialog()
 
 HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
 {
-  HRESULT hr = S_OK;
-
   *textFormat = nullptr;
 
   // Default to the system font collection
   SafeRelease(&m_fontCollection);
-  hr = g_dwrite->GetSystemFontCollection(&m_fontCollection);
+  HRESULT hr = g_dwrite->GetSystemFontCollection(&m_fontCollection);
 
   // Create a default text format
   if (SUCCEEDED(hr)) {
@@ -198,15 +196,13 @@ HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat** textFormat)
 
 HRESULT ChooseFontDialog::GetTextFormat(IDWriteTextFormat* textFormatIn, IDWriteTextFormat** textFormatOut)
 {
-  HRESULT hr = S_OK;
-
   *textFormatOut = nullptr;
 
   SafeSet(&m_currentTextFormat, textFormatIn);
 
   // Pull out the input font attributes
   SafeRelease(&m_fontCollection);
-  hr = m_currentTextFormat->GetFontCollection(&m_fontCollection);
+  HRESULT hr = m_currentTextFormat->GetFontCollection(&m_fontCollection);
 
   if (SUCCEEDED(hr)) {
     hr = m_currentTextFormat->GetLocaleName(&m_localeName[0], _ARRAYSIZE(m_localeName));
@@ -553,19 +549,20 @@ HRESULT ChooseFontDialog::DrawSampleText(HDC sampleDC)
       m_localeName,
       &m_currentTextFormat);
 
-    // Create the rendering text format object
-    float dipSize = (pointSize * m_currentDPI.y) / 72.0f;
-
-    SafeRelease(&m_renderTextFormat);
-    hr = g_dwrite->CreateTextFormat(
-      fontFamilyName,
-      m_fontCollection,
-      fontFaceInfo.fontWeight,
-      fontFaceInfo.fontStyle,
-      fontFaceInfo.fontStretch,
-      dipSize,
-      m_localeName,
-      &m_renderTextFormat);
+    if (SUCCEEDED(hr)) {
+      // Create the rendering text format object
+      float dipSize = (pointSize * m_currentDPI.y) / 72.0f;
+      SafeRelease(&m_renderTextFormat);
+      hr = g_dwrite->CreateTextFormat(
+        fontFamilyName,
+        m_fontCollection,
+        fontFaceInfo.fontWeight,
+        fontFaceInfo.fontStyle,
+        fontFaceInfo.fontStretch,
+        dipSize,
+        m_localeName,
+        &m_renderTextFormat);
+    }
   }
   // Get the size of the sample box
   RECT sampleBounds = {};
@@ -666,6 +663,8 @@ INT_PTR CALLBACK ChooseFontDialog::CFDialogProc(HWND hWnd, UINT message, WPARAM 
 BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
 {
   m_dialog = dialog;
+
+  if (Globals.hDlgIcon) { SendMessage(dialog, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
   HWND hwndFamilyNames = GetDlgItem(dialog, IDC_FONT_FAMILY_NAMES);
   HWND hwndSizes = GetDlgItem(dialog, IDC_FONT_SIZE);

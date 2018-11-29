@@ -122,7 +122,7 @@ bool IsValidUTF8(const char* pTest, size_t nLength);
 // Google's "Compact Encoding Detection" 
 extern NP2ENCODING g_Encodings[];
 void ChangeEncodingCodePage(int cpi, UINT newCP);
-int Encoding_Analyze(const char* text, size_t len, int encodingHint, bool* isReliable);
+int Encoding_Analyze(const char* text, size_t len, int encodingHint, bool* pIsReliable);
 
 // 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 1361 Johab
 inline bool IsDBCSCodePage(UINT cp) {

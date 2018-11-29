@@ -349,14 +349,13 @@ int CmpEncoding(const void *s1, const void *s2) {
 
 
 void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
-  int i;
   int iSelItem = -1;
   LVITEM lvi;
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
-    for (i = 0; i < Encoding_CountOf(); i++) {
+    for (int i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
       GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
@@ -366,7 +365,7 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
     lvi.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
     lvi.pszText = wchBuf;
 
-    for (i = 0; i < Encoding_CountOf(); i++) {
+    for (int i = 0; i < Encoding_CountOf(); i++) {
 
       int id = pEE[i].id;
       if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
@@ -435,14 +434,13 @@ bool Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
 
 
 void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
-  int i;
   int iSelItem = -1;
   COMBOBOXEXITEM cbei;
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
-    for (i = 0; i < Encoding_CountOf(); i++) {
+    for (int i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
       GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
@@ -455,7 +453,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
     cbei.iImage = 0;
     cbei.iSelectedImage = 0;
 
-    for (i = 0; i < Encoding_CountOf(); i++) {
+    for (int i = 0; i < Encoding_CountOf(); i++) {
 
       int id = pEE[i].id;
       if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {

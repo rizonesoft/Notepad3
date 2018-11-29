@@ -12,7 +12,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
-#pragma code_page(65001)  // UTF-8
+//~~~#pragma code_page(65001)  // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -107,11 +107,11 @@ IDS_MUI_ABOUT_LIBS  "\
 "
 //
 // Caution: To correctly access the site "https://github.com/craigo-"
-// a No-Break Space "Â " (alt+0160) is added AFTER the "-" !
+// a No-Break Space " " (alt+0160) is added AFTER the "-" !
 //
 
 IDS_MUI_ABOUT_ACKNOWLEDGES  "\
-\\cf0 craigo-\\tab https://github.com/craigo-Â \\par\
+\\cf0 craigo-\\tab https://github.com/craigo- \\par\
 \\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
 \\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
 \\cf0 engelhro\\tab https://github.com/engelhro\\par\

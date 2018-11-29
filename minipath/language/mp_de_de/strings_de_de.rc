@@ -1,4 +1,4 @@
-ï»¿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,19 +53,19 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "ZurÃ¼ck"
-    IDT_HISTORY_FORWARD     "VorwÃ¤rts"
-    IDT_UPDIR               "Ãœbergeordnetes Verzeichnis"
+    IDT_HISTORY_BACK        "Zurück"
+    IDT_HISTORY_FORWARD     "Vorwärts"
+    IDT_UPDIR               "Übergeordnetes Verzeichnis"
     IDT_ROOT                "Wurzelverzeichnis"
     IDT_VIEW_FAVORITES      "Favoriten"
     IDT_FILE_PREV           "Vorherige Datei"
-    IDT_FILE_NEXT           "NÃ¤chste Datei"
+    IDT_FILE_NEXT           "Nächste Datei"
     IDT_FILE_RUN            "Starten"
     IDT_FILE_QUICKVIEW      "Schnellansicht"
     IDT_FILE_SAVEAS         "Speichern als"
     IDT_FILE_COPYMOVE       "Kopieren/Bewegen"
-    IDT_FILE_DELETE         "LÃ¶schen"
-    IDT_FILE_DELETE2        "LÃ¶schen (Kein Papierkorb)"
+    IDT_FILE_DELETE         "Löschen"
+    IDT_FILE_DELETE2        "Löschen (Kein Papierkorb)"
     IDT_VIEW_FILTER         "Filter"
 END
 
@@ -75,33 +75,33 @@ BEGIN
     IDS_NUMFILES            "%s Objekt(e)"
     IDS_NUMFILES2           "%s Objekt(e) | Filter"
     IDS_SAVEFILE            "Speichern ""%s""..."
-    IDS_OPEN_FILE_WITH      "Ã–ffnen mit %s"
+    IDS_OPEN_FILE_WITH      "Öffnen mit %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Verzeichniszugriffs Fehler\nKein Zugriff auf das gewÃ¤hlte Verzeichnis.\nÃœberprÃ¼fe das Speichermedium oder die Netzwerkverbindung."
-    IDS_ERR_FILE            "Dateizugriffs Fehler\nKein Zugriff auf ""%s"".\nDie Datei wird mÃ¶glicherweise von einer anderen Applikation genutzt.\nÃœberprÃ¼fe das Speichermedium oder die Netzwerkverbindung."
-    IDS_ERR_NEW             "Dateizugriffs Fehler\nDie Datei kann nicht erzeugt werden.\nÃœberprÃ¼fe das Speichermedium oder die Netzwerkverbindung."
-    IDS_ERR_NEWDIR          "Verzeichniszugriffs Fehler\nDas Verzeichnis kann nicht erzeugt werden.\nÃœberprÃ¼fe das Speichermedium oder die Netzwerkverbindung."
-    IDS_ERR_SAVEAS1         "Datei Speicher-Fehler\nFehler beim Speichern von ""%s"".\nMÃ¶glicherweise ist eine bereits existierende Datei schreibgeschÃ¼tzt."
+    IDS_ERR_CD              "Verzeichniszugriffs Fehler\nKein Zugriff auf das gewählte Verzeichnis.\nÜberprüfe das Speichermedium oder die Netzwerkverbindung."
+    IDS_ERR_FILE            "Dateizugriffs Fehler\nKein Zugriff auf ""%s"".\nDie Datei wird möglicherweise von einer anderen Applikation genutzt.\nÜberprüfe das Speichermedium oder die Netzwerkverbindung."
+    IDS_ERR_NEW             "Dateizugriffs Fehler\nDie Datei kann nicht erzeugt werden.\nÜberprüfe das Speichermedium oder die Netzwerkverbindung."
+    IDS_ERR_NEWDIR          "Verzeichniszugriffs Fehler\nDas Verzeichnis kann nicht erzeugt werden.\nÜberprüfe das Speichermedium oder die Netzwerkverbindung."
+    IDS_ERR_SAVEAS1         "Datei Speicher-Fehler\nFehler beim Speichern von ""%s"".\nMöglicherweise ist eine bereits existierende Datei schreibgeschützt."
     IDS_ERR_SAVEAS2         "Datei Speicher-Fehler\nFehler beim Entfernen des Schreibschutz-Attributs der gespeicherten Datei."
     IDS_ERR_CMDLINE         "MiniPath\nFehler beim Zugriff auf die in der Kommandozeile angegebene Datei."
     IDS_ERR_STARTUPDIR      "MiniPath\nKein Zugriff auf das Startup-Verzeichnis."
     IDS_ERR_DROP1           "MiniPath\nKein Zugriff auf fallengelassene(s) Datei oder Verzeichnis."
     IDS_ERR_DROP2           "MiniPath\nEs kann nur eine einzelne Datei oder ein einzelnes Verzeichnis auf einmal fallengelassen werden."
     IDS_ERR_FAVORITES       "Favoriten\nKein Zugriff auf ""Favoriten"" Ordner.\nGebe ein valides Verzeichnis in der ""Optionen"" Dialogbox an."
-    IDS_ERR_LNK_GETPATH     "Link Fehler\nKein valider Filesystem-Pfad fÃ¼r das verlinkte Objekt verfÃ¼gbar.\nMÃ¶glicherweise verweist der Link nicht auf eine Datei oder ein Verzeichnis."
-    IDS_ERR_LNK_NOACCESS    "Link Fehler\nKein Zugriff auf den Filesystem-Pfad fÃ¼r das verlinkte Objekt.\nÃœberprÃ¼fe das Speichermedium oder die Netzwerkverbindung."
-    IDS_ERR_CREATELINK      "Link Fehler\nFehler beim Erzeugen des angegebenen Links.\nMÃ¶glicherweise ist das Zielverzeichnis schreibgeschÃ¼tzt."
+    IDS_ERR_LNK_GETPATH     "Link Fehler\nKein valider Filesystem-Pfad für das verlinkte Objekt verfügbar.\nMöglicherweise verweist der Link nicht auf eine Datei oder ein Verzeichnis."
+    IDS_ERR_LNK_NOACCESS    "Link Fehler\nKein Zugriff auf den Filesystem-Pfad für das verlinkte Objekt.\nÜberprüfe das Speichermedium oder die Netzwerkverbindung."
+    IDS_ERR_CREATELINK      "Link Fehler\nFehler beim Erzeugen des angegebenen Links.\nMöglicherweise ist das Zielverzeichnis schreibgeschützt."
     IDS_ERR_FILTER          "Dateifilter Fehler\nNo additional filters specified.\nPlease refer to the MiniPath readme file for more information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nDas existierende MiniPath Fenster ist beschÃ¤ftigt oder hat eine aktive Dialogbox.\nMÃ¶chtest du ein neues MiniPath Fenster Ã¶ffnen?"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nDas existierende MiniPath Fenster ist beschäftigt oder hat eine aktive Dialogbox.\nMöchtest du ein neues MiniPath Fenster öffnen?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nDas gewÃ¤hlte ist beschÃ¤ftigt oder hat eine aktive Dialogbox.\nMÃ¶chtest du ein neues Fenster Ã¶ffnen?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nStelle bitte sicher, daÃŸ alle benÃ¶tigten Felder ausgefÃ¼llt sind.\nDu wirst auch ein Ziel-Fenster finden mÃ¼ssen, wenn die entsprechende Option gewÃ¤hlt wurde."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nDas gewählte ist beschäftigt oder hat eine aktive Dialogbox.\nMöchtest du ein neues Fenster öffnen?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nStelle bitte sicher, daß alle benötigten Felder ausgefüllt sind.\nDu wirst auch ein Ziel-Fenster finden müssen, wenn die entsprechende Option gewählt wurde."
     IDS_ERR_INIOPEN         "MiniPath\nKein Zugriff auf Konfigurationsdatei."
     IDS_ERR_INICREATE       "Einstellungen speichern\nFehler beim Erzeugen der Konfigurationsdatei."
     IDS_ERR_INIWRITE        "Einstellungen speichern\nEinstellungen wurden nicht gespeichert!\nKein Schreibrecht auf Konfigurationsdatei."
@@ -114,8 +114,8 @@ BEGIN
     IDS_GETTARGET           "Suche Editor"
     IDS_NEWFILE             "Neue Datei"
     IDS_FILTER_ALL          "Alle Dateien (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "AusfÃ¼hrbare Dateien (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "WÃ¤hle ein neues Verzeichnis."
+    IDS_FILTER_EXE          "Ausführbare Dateien (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "Wähle ein neues Verzeichnis."
     IDS_FAVORITES           "Lege das ""Favoriten"" Verzeichnis fest."
 END
 
@@ -127,11 +127,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "WÃ¤hle das Verzeichnis mit den Links zu deinen favorisierten Applikationen."
-    IDS_COPYMOVE            "WÃ¤hle ein Zielverzeichnis."
-    IDS_CREATELINK          "WÃ¤hle ein Zielverzeichnis fÃ¼r den neuen Link."
+    IDS_OPENWITH            "Wähle das Verzeichnis mit den Links zu deinen favorisierten Applikationen."
+    IDS_COPYMOVE            "Wähle ein Zielverzeichnis."
+    IDS_CREATELINK          "Wähle ein Zielverzeichnis für den neuen Link."
     IDS_SAVESETTINGS        "Einstellungen speichern\nDie aktuellen Programmeinstellungen wurden gespeichert."
-    IDS_MUI_TRANSL_AUTHOR   "(de-DE) Deutsche Ãœbersetzung von RaiKoHoff"
+    IDS_MUI_TRANSL_AUTHOR   "(de-DE) Deutsche Übersetzung von RaiKoHoff"
 END
 
 

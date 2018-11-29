@@ -1,4 +1,4 @@
-Ôªø// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,15 +53,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "Atr√°s"
+    IDT_HISTORY_BACK        "Atr·s"
     IDT_HISTORY_FORWARD     "Adelante"
     IDT_UPDIR               "Carpeta superior"
-    IDT_ROOT                "Carpeta ra√≠z"
+    IDT_ROOT                "Carpeta raÌz"
     IDT_VIEW_FAVORITES      "Favoritos"
     IDT_FILE_PREV           "Archivo anterior"
     IDT_FILE_NEXT           "Archivo siguiente"
     IDT_FILE_RUN            "Ejecutar"
-    IDT_FILE_QUICKVIEW      "Vista r√°pida"
+    IDT_FILE_QUICKVIEW      "Vista r·pida"
     IDT_FILE_SAVEAS         "Guardar como"
     IDT_FILE_COPYMOVE       "Copiar/Mover"
     IDT_FILE_DELETE         "Eliminar"
@@ -80,37 +80,37 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Error de acceso a la carpeta\nNo hay acceso a la carpeta especificada.\nCompruebe el disco o la conexi√≥n de red."
-    IDS_ERR_FILE            "Error de acceso a archivos\nNo tiene acceso a ""%s"".\nEl archivo puede ser utilizado por otra aplicaci√≥n."
-    IDS_ERR_NEW             "Error de acceso al archivo\nEl archivo no se pudo crear.\nCompruebe el disco o la conexi√≥n de red."
-    IDS_ERR_NEWDIR          "Error de acceso a la carpeta\nNo se pudo crear la carpeta.\nCompruebe el disco o la conexi√≥n de red."
-    IDS_ERR_SAVEAS1         "Error de guardado de archivo\nError saving ""%s"".\nProbablemente un archivo ya existente est√° protegido contra escritura."
-    IDS_ERR_SAVEAS2         "Archivo Error de guardado\nError que elimina el atributo de s√≥lo lectura del archivo guardado."
-    IDS_ERR_CMDLINE         "MiniPath\nError al acceder al archivo o carpeta especificado en la l√≠nea de comando."
+    IDS_ERR_CD              "Error de acceso a la carpeta\nNo hay acceso a la carpeta especificada.\nCompruebe el disco o la conexiÛn de red."
+    IDS_ERR_FILE            "Error de acceso a archivos\nNo tiene acceso a ""%s"".\nEl archivo puede ser utilizado por otra aplicaciÛn."
+    IDS_ERR_NEW             "Error de acceso al archivo\nEl archivo no se pudo crear.\nCompruebe el disco o la conexiÛn de red."
+    IDS_ERR_NEWDIR          "Error de acceso a la carpeta\nNo se pudo crear la carpeta.\nCompruebe el disco o la conexiÛn de red."
+    IDS_ERR_SAVEAS1         "Error de guardado de archivo\nError saving ""%s"".\nProbablemente un archivo ya existente est· protegido contra escritura."
+    IDS_ERR_SAVEAS2         "Archivo Error de guardado\nError que elimina el atributo de sÛlo lectura del archivo guardado."
+    IDS_ERR_CMDLINE         "MiniPath\nError al acceder al archivo o carpeta especificado en la lÌnea de comando."
     IDS_ERR_STARTUPDIR      "MiniPath\nNo hay acceso a la carpeta de inicio."
     IDS_ERR_DROP1           "MiniPath\nNo hay acceso al archivo o carpeta eliminada."
-    IDS_ERR_DROP2           "MiniPath\nS√≥lo un archivo o carpeta puede ser depositado a la vez."
-    IDS_ERR_FAVORITES       "Favoritos\nNo hay acceso a la carpeta ""Favoritos"".\nEspecifique una carpeta v√°lida en el cuadro de di√°logo ""Opciones""."
-    IDS_ERR_LNK_GETPATH     "Error de enlace\nNo hay una ruta v√°lida del sistema de archivos disponible para el objeto vinculado.\nProbablemente el enlace no se refiera a un archivo o carpeta."
-    IDS_ERR_LNK_NOACCESS    "Error de enlace\nNo hay acceso a la ruta del sistema de archivos del objeto vinculado.\nCompruebe el disco o la conexi√≥n de red."
-    IDS_ERR_CREATELINK      "Error de enlace\nError al crear el enlace especificado.\nProbablemente la carpeta de destino est√© protegido contra escritura."
-    IDS_ERR_FILTER          "Error de filtro de archivo\nNo se especifican filtros adicionales.\nConsulte el archivo 'readme' de MiniPath para obtener m√°s informaci√≥n."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nLa ventana MiniPath existente est√° ocupada o tiene un cuadro de di√°logo activo.\n¬øDesea abrir otra ventana MiniPath?"
+    IDS_ERR_DROP2           "MiniPath\nSÛlo un archivo o carpeta puede ser depositado a la vez."
+    IDS_ERR_FAVORITES       "Favoritos\nNo hay acceso a la carpeta ""Favoritos"".\nEspecifique una carpeta v·lida en el cuadro de di·logo ""Opciones""."
+    IDS_ERR_LNK_GETPATH     "Error de enlace\nNo hay una ruta v·lida del sistema de archivos disponible para el objeto vinculado.\nProbablemente el enlace no se refiera a un archivo o carpeta."
+    IDS_ERR_LNK_NOACCESS    "Error de enlace\nNo hay acceso a la ruta del sistema de archivos del objeto vinculado.\nCompruebe el disco o la conexiÛn de red."
+    IDS_ERR_CREATELINK      "Error de enlace\nError al crear el enlace especificado.\nProbablemente la carpeta de destino estÈ protegido contra escritura."
+    IDS_ERR_FILTER          "Error de filtro de archivo\nNo se especifican filtros adicionales.\nConsulte el archivo 'readme' de MiniPath para obtener m·s informaciÛn."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nLa ventana MiniPath existente est· ocupada o tiene un cuadro de di·logo activo.\nøDesea abrir otra ventana MiniPath?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nLa ventana de destino existente est√° ocupada o tiene un cuadro de di√°logo activo.\n¬øDesea abrir otra ventana MiniPath?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nPor favor, aseg√∫rese de que todos los campos est√©n completos.\nTambi√©n deber√° encontrar una ventana de destino si la opci√≥n apropiada est√° habilitada."
-    IDS_ERR_INIOPEN         "MiniPath\nNo hay acceso al archivo de configuraci√≥n MiniPath."
-    IDS_ERR_INICREATE       "Guardar configuraci√≥n\nError al crear el archivo de configuraci√≥n."
-    IDS_ERR_INIWRITE        "Guardar configuraci√≥n\n¬°Configuraciones no guardadas!\nSin acceso de escritura al archivo de configuraci√≥n."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nLa ventana de destino existente est· ocupada o tiene un cuadro de di·logo activo.\nøDesea abrir otra ventana MiniPath?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nPor favor, aseg˙rese de que todos los campos estÈn completos.\nTambiÈn deber· encontrar una ventana de destino si la opciÛn apropiada est· habilitada."
+    IDS_ERR_INIOPEN         "MiniPath\nNo hay acceso al archivo de configuraciÛn MiniPath."
+    IDS_ERR_INICREATE       "Guardar configuraciÛn\nError al crear el archivo de configuraciÛn."
+    IDS_ERR_INIWRITE        "Guardar configuraciÛn\n°Configuraciones no guardadas!\nSin acceso de escritura al archivo de configuraciÛn."
 END
 
 STRINGTABLE
 BEGIN
     IDS_SEARCHEXE           "Buscar ejecutable"
-    IDS_GETQUICKVIEWER      "Buscar vista r√°pida"
+    IDS_GETQUICKVIEWER      "Buscar vista r·pida"
     IDS_GETTARGET           "Buscar Editor"
     IDS_NEWFILE             "Nuevo archivo"
     IDS_FILTER_ALL          "Todos los archivos (*.*)\n*.*\n"
@@ -122,7 +122,7 @@ END
 STRINGTABLE
 BEGIN
     SC_ALWAYSONTOP          "&Siempre visible"
-    SC_ABOUT                "&Informaci√≥n..."
+    SC_ABOUT                "&InformaciÛn..."
 END
 
 STRINGTABLE
@@ -130,8 +130,8 @@ BEGIN
     IDS_OPENWITH            "Seleccionar la carpeta con enlaces a sus aplicaciones favoritas."
     IDS_COPYMOVE            "Seleccionar una carpeta de destino."
     IDS_CREATELINK          "Seleccionar una carpeta de destino para el nuevo enlace."
-    IDS_SAVESETTINGS        "Guardar configuraci√≥n\nLa configuraci√≥n actual del programa se ha guardado."
-    IDS_MUI_TRANSL_AUTHOR   "(es-ES) Traducci√≥n espa√±ola por hpwamr"
+    IDS_SAVESETTINGS        "Guardar configuraciÛn\nLa configuraciÛn actual del programa se ha guardado."
+    IDS_MUI_TRANSL_AUTHOR   "(es-ES) TraducciÛn espaÒola por hpwamr"
 END
 
 

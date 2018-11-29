@@ -1,4 +1,4 @@
-п»ї// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_BEL)
 LANGUAGE LANG_BELARUSIAN, SUBLANG_DEFAULT
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(1251)  // Cyrillic (Win-1251)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -56,72 +56,72 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&РђРґРєСЂС‹С†СЊ",                    IDM_FILE_OPEN
-        MENUITEM "РђРґРєСЂС‹С†СЊ Р· &РґР°РїР°РјРѕРіР°Р№...",     IDM_FILE_OPENWITH
-        MENUITEM "&РҐСѓС‚РєС– РїСЂР°РіР»СЏРґ",              IDM_FILE_QUICKVIEW
+        MENUITEM "&Адкрыць",                    IDM_FILE_OPEN
+        MENUITEM "Адкрыць з &дапамогай...",     IDM_FILE_OPENWITH
+        MENUITEM "&Хуткі прагляд",              IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&РљР°РїС–СЏРІР°С†СЊ С€Р»СЏС…",             IDM_POP_COPYNAME
-        MENUITEM "РЎС‚РІР°СЂС‹С†СЊ &С†СЌС‚Р»С–Рє...",         IDM_FILE_CREATELINK
-        MENUITEM "&Р—Р°С…Р°РІР°С†СЊ СЏРє...",             IDM_FILE_SAVEAS
-        MENUITEM "РљР°РїС–СЏРІР°С†СЊ/Рї&РµСЂР°СЃСѓРЅСѓС†СЊ...",    IDM_FILE_COPYMOVE
-        MENUITEM "&Р’С‹РґР°Р»С–С†СЊ...",                IDM_FILE_DELETE
-        MENUITEM "РџРµСЂР°&Р№РјРµРЅР°РІР°С†СЊ...",           IDM_FILE_RENAME
+        MENUITEM "&Капіяваць шлях",             IDM_POP_COPYNAME
+        MENUITEM "Стварыць &цэтлік...",         IDM_FILE_CREATELINK
+        MENUITEM "&Захаваць як...",             IDM_FILE_SAVEAS
+        MENUITEM "Капіяваць/п&ерасунуць...",    IDM_FILE_COPYMOVE
+        MENUITEM "&Выдаліць...",                IDM_FILE_DELETE
+        MENUITEM "Пера&йменаваць...",           IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "Р’&С‹РєР°РЅР°С†СЊ",                   IDM_FILE_LAUNCH
-        MENUITEM "Р’С‹РєР°РЅР°С†СЊ Р· Р°СЂРіСѓ&РјРµРЅС‚Р°РјС–...",  IDM_FILE_RUN
+        MENUITEM "В&ыканаць",                   IDM_FILE_LAUNCH
+        MENUITEM "Выканаць з аргу&ментамі...",  IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&РЈР»Р°СЃС†С–РІР°СЃС†С–",                IDM_FILE_PROPERTIES
+        MENUITEM "&Уласцівасці",                IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&РќРѕРІС‹ С„Р°Р№Р»...",               IDM_FILE_NEW
-        MENUITEM "РќРѕРІР°СЏ &РїР°РїРєР°...",             IDM_FILE_NEWDIR
+        MENUITEM "&Новы файл...",               IDM_FILE_NEW
+        MENUITEM "Новая &папка...",             IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&Р¤С–Р»СЊС‚СЂ С„Р°Р№Р»Р°Сћ...",           IDM_VIEW_FILTER
-        MENUITEM "РЎРєС–РЅ&СѓС†СЊ С„С–Р»СЊС‚СЂ",             IDM_VIEW_FILTERALL
-        POPUP "РџР°РєР°Р·&РІР°С†СЊ"
+        MENUITEM "&Фільтр файлаў...",           IDM_VIEW_FILTER
+        MENUITEM "Скін&уць фільтр",             IDM_VIEW_FILTERALL
+        POPUP "Паказ&ваць"
         BEGIN
-            MENUITEM "&РџР°РїРєС–",                      IDM_VIEW_FOLDERS
-            MENUITEM "&Р¤Р°Р№Р»С‹",                      IDM_VIEW_FILES
-            MENUITEM "&РЎС–СЃС‚СЌРјРЅС‹СЏ Р°Р±'РµРєС‚С‹",          IDM_VIEW_HIDDEN
+            MENUITEM "&Папкі",                      IDM_VIEW_FOLDERS
+            MENUITEM "&Файлы",                      IDM_VIEW_FILES
+            MENUITEM "&Сістэмныя аб'екты",          IDM_VIEW_HIDDEN
         END
-        POPUP "&РЎР°СЂС‚Р°РІР°С†СЊ"
+        POPUP "&Сартаваць"
         BEGIN
-            MENUITEM "&Р†РјСЏ",                        IDM_SORT_NAME
-            MENUITEM "&РџР°РјРµСЂ",                      IDM_SORT_SIZE
-            MENUITEM "&РўС‹Рї",                        IDM_SORT_TYPE
-            MENUITEM "&Р”Р°С‚Р°",                       IDM_SORT_DATE
+            MENUITEM "&Імя",                        IDM_SORT_NAME
+            MENUITEM "&Памер",                      IDM_SORT_SIZE
+            MENUITEM "&Тып",                        IDM_SORT_TYPE
+            MENUITEM "&Дата",                       IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "Р†&РЅРІРµСЂС‚Р°РІР°С†СЊ",                IDM_SORT_REVERSE
+            MENUITEM "І&нвертаваць",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "РџРµСЂР°Р№СЃС†С– Сћ Р°&Р±СЂР°РЅР°Рµ",         IDM_VIEW_FAVORITES
-        MENUITEM "&Р СЌРґР°РіР°РІР°С†СЊ Р°Р±СЂР°РЅР°Рµ",         IDM_VIEW_EDITFAVORITES
-        MENUITEM "РџРµСЂР°Р№СЃС†С– Сћ Рї&Р°РїРєСѓ...",        IDM_FILE_CHANGEDIR
+        MENUITEM "Перайсці ў а&бранае",         IDM_VIEW_FAVORITES
+        MENUITEM "&Рэдагаваць абранае",         IDM_VIEW_EDITFAVORITES
+        MENUITEM "Перайсці ў п&апку...",        IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "РџР°РєР°&Р·РІР°С†СЊ РґС‹СЃРєС–",            IDM_VIEW_DRIVEBOX
+        MENUITEM "Пака&зваць дыскі",            IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "Р—Р°&С…Р°РІР°С†СЊ РЅР°Р»Р°РґС‹",            IDM_VIEW_SAVESETTINGS
-        MENUITEM "&РњСЌС‚Р°РІР°СЏ РїСЂР°РіСЂР°РјР°...",        IDM_VIEW_FINDTARGET
-        MENUITEM "РќР°&Р»Р°РґС‹...",                  IDM_VIEW_OPTIONS
+        MENUITEM "За&хаваць налады",            IDM_VIEW_SAVESETTINGS
+        MENUITEM "&Мэтавая праграма...",        IDM_VIEW_FINDTARGET
+        MENUITEM "На&лады...",                  IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&РџРµСЂР°Р№СЃС†С– Сћ РїР°РїРєСѓ...",        IDM_FILE_CHANGEDIR
-        MENUITEM "РЈР»Р°СЃС†С–РІР°СЃС†С– &РґС‹СЃРєР°",          IDM_FILE_DRIVEPROP
+        MENUITEM "&Перайсці ў папку...",        IDM_FILE_CHANGEDIR
+        MENUITEM "Уласцівасці &дыска",          IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "РџР°&РєР°Р·РІР°С†СЊ РґС‹СЃРєС–",            IDM_VIEW_DRIVEBOX
+        MENUITEM "Па&казваць дыскі",            IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "РџР°РєР°Р·Р°С†СЊ &РїР°Р»С–С†Сѓ РїСЂС‹Р»Р°РґР°Сћ",   IDM_VIEW_TOOLBAR
-        MENUITEM "&РќР°Р»Р°РґР·С–С†СЊ РїР°Р»С–С†Сѓ РїСЂС‹Р»Р°РґР°Сћ...", IDM_VIEW_CUSTOMIZETB
-        MENUITEM "РџР°РєР°Р·Р°С†СЊ СЂР°РґРѕРє &СЃС‚Р°РЅСѓ",       IDM_VIEW_STATUSBAR
+        MENUITEM "Паказаць &паліцу прыладаў",   IDM_VIEW_TOOLBAR
+        MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Паказаць радок &стану",       IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "РђРґРєСЂС‹С†СЊ MiniPath",            IDM_TRAY_RESTORE
-        MENUITEM "Р—Р°РєСЂС‹С†СЊ MiniPath",            IDM_TRAY_EXIT
+        MENUITEM "Адкрыць MiniPath",            IDM_TRAY_RESTORE
+        MENUITEM "Закрыць MiniPath",            IDM_TRAY_EXIT
     END
 END
 

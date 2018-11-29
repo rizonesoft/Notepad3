@@ -286,13 +286,14 @@ INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
   switch (umsg) {
   case WM_INITDIALOG:
     {
-      WCHAR szTitle[80] = { L'\0' };
-      WCHAR szText[2048] = { L'\0' };
-      GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+      //WCHAR szTitle[80] = { L'\0' };
+      //GetLngString(IDS_MUI_APPTITLE, szTitle, COUNTOF(szTitle));
+      //SetWindowText(hwnd, szTitle);
+      WCHAR szText[4096] = { L'\0' };
       GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
-      SetWindowText(hwnd, szTitle);
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
-      //SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)IDC_CMDLINEHELP, TRUE);
+      CenterDlgInParent(hwnd);
     }
     break;
 
@@ -509,6 +510,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   case WM_INITDIALOG:
   {
     {
+      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+
       if (!hIcon) {
         hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
       }
@@ -3113,7 +3116,10 @@ void CenterDlgInParent(HWND hDlg)
 
   HWND const hParent = GetParent(hDlg);
   RECT rcParent;
-  GetWindowRect(hParent, &rcParent);
+  if (hParent)
+    GetWindowRect(hParent, &rcParent);
+  else
+    GetWindowRect(GetDesktopWindow(), &rcParent);
 
   HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
 
@@ -3141,7 +3147,7 @@ void CenterDlgInParent(HWND hDlg)
 
   SetWindowPos(hDlg, NULL, clampi(x, xMin, xMax), clampi(y, yMin, yMax), 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
-  //SnapToDefaultButton(hDlg);
+  //~SnapToDefaultButton(hDlg);
 }
 
 
@@ -3629,8 +3635,8 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
 INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  INT_PTR ret = IDABORT;
   DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  INT_PTR ret = (INT_PTR)NULL;
   if (pDlgTemplate) {
     ret = DialogBoxIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
@@ -3641,13 +3647,13 @@ INT_PTR ThemedDialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndP
 HWND CreateThemedDialogParam(HINSTANCE hInstance, LPCTSTR lpTemplate, HWND hWndParent,
                              DLGPROC lpDialogFunc, LPARAM dwInitParam) 
 {
-  HWND hwnd = INVALID_HANDLE_VALUE;
   DLGTEMPLATE* pDlgTemplate = LoadThemedDialogTemplate(lpTemplate, hInstance);
+  HWND hwnd = INVALID_HANDLE_VALUE;
   if (pDlgTemplate) {
     hwnd = CreateDialogIndirectParam(hInstance, pDlgTemplate, hWndParent, lpDialogFunc, dwInitParam);
     FreeMem(pDlgTemplate);
   }
-  return(hwnd);
+  return hwnd;
 }
 
 //  End of Dialogs.c
