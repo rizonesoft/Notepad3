@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -18,7 +18,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(65001)  //  UTF-8 Signature
+#pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -348,7 +348,7 @@ BEGIN
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Bron:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Oriëntatie",1072,8,69,64,56,WS_GROUP
+    GROUPBOX        "Ori�ntatie",1072,8,69,64,56,WS_GROUP
     CONTROL         "&Staand",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
     CONTROL         "L&iggend",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
     GROUPBOX        "Marges",1075,80,69,152,56,WS_GROUP
