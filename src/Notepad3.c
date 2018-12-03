@@ -5077,19 +5077,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_ESCAPE:
-      if (SciCall_CallTipActive()) {
-        SciCall_CallTipCancel();
-        break;
-      }
-      if (SciCall_AutoCActive()) {
-        SciCall_AutoCCancel();
-        break;
-      }
-      if (!SciCall_IsSelectionEmpty()) {
-        DocPos const iCurPos = SciCall_GetCurrentPos();
-        EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
-        break;
-      }
       if (Settings.EscFunction == 1) {
         SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
       }
@@ -5097,6 +5084,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         PostMessage(hwnd, WM_CLOSE, 0, 0);
       }
       else {
+        if (SciCall_CallTipActive()) {
+          SciCall_CallTipCancel();
+        }
+        if (SciCall_AutoCActive()) {
+          SciCall_AutoCCancel();
+        }
+        if (!SciCall_IsSelectionEmpty()) {
+          DocPos const iCurPos = SciCall_GetCurrentPos();
+          EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
+        }
         SciCall_Cancel();
       }
       break;
