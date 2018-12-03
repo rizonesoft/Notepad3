@@ -6926,8 +6926,6 @@ static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
     // clear indicator
     SciCall_BraceBadLight(INVALID_POSITION);
     SciCall_SetHighLightGuide(0);
-    if (!Settings2.UseOldStyleBraceMatching)
-      SciCall_BraceBadLightIndicator(false, INDIC_NP3_BAD_BRACE);
     return true;
   }
 
@@ -6940,16 +6938,10 @@ static bool  _HighlightIfBrace(HWND hwnd, DocPos iPos)
       DocPos col2 = SciCall_GetColumn(iBrace2);
       SciCall_BraceHighLight(iPos, iBrace2);
       SciCall_SetHighLightGuide(min_i((int)col1, (int)col2));
-      if (!Settings2.UseOldStyleBraceMatching) {
-        SciCall_BraceHighLightIndicator(true, INDIC_NP3_MATCH_BRACE);
-      }
     }
     else {
       SciCall_BraceBadLight(iPos);
       SciCall_SetHighLightGuide(0);
-      if (!Settings2.UseOldStyleBraceMatching) {
-        SciCall_BraceHighLightIndicator(true, INDIC_NP3_BAD_BRACE);
-      }
     }
     return true;
   }
