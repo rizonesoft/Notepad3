@@ -5077,19 +5077,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_ESCAPE:
-      if (Settings.EscFunction == 1) {
+      if (SciCall_CallTipActive() || SciCall_AutoCActive()) {
+        SciCall_CallTipCancel();
+        SciCall_AutoCCancel();
+      }
+      else if (Settings.EscFunction == 1) {
         SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
       }
       else if (Settings.EscFunction == 2) {
         PostMessage(hwnd, WM_CLOSE, 0, 0);
       }
       else {
-        if (SciCall_CallTipActive()) {
-          SciCall_CallTipCancel();
-        }
-        if (SciCall_AutoCActive()) {
-          SciCall_AutoCCancel();
-        }
         if (!SciCall_IsSelectionEmpty()) {
           DocPos const iCurPos = SciCall_GetCurrentPos();
           EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
