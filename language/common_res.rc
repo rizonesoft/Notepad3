@@ -68,12 +68,6 @@ IDR_RIZBITMAP           BITMAP                  "rizonesoft.bmp"
 IDC_COPY                CURSOR                  "Copy.cur"
 
 
-// NOT able to get "RichEdit Friendly Name Hyperlinks" up and running :-/ (https://blogs.msdn.microsoft.com/murrays/2009/09/24/richedit-friendly-name-hyperlinks/) 
-// ... "{\\field{\\*\\fldinst{HYPERLINK \"" VERSIONA_FILEVERSION_LONG "\"}}{\\fldrslt{https://www.rizonesoft.com/downloads/notepad3}}}\\par"
-
-//"\\viewkind4\\uc1\\pard\\cf1\\f0\\fs20\\b1 " VERSIONA_FILEVERSION_LONG " \\cf0\\uc0\\par"
-
-
 STRINGTABLE
 BEGIN
 
@@ -105,13 +99,14 @@ IDS_MUI_ABOUT_LIBS  "\
 \\cf0 Lewis Van Winkle (TinyExpr)\\tab https://github.com/codeplea/tinyexpr\\par\
 \\cf0 \\par\
 "
+
 //
-// Caution: To correctly access the site "https://github.com/craigo-"
-// a No-Break Space " " (alt+0160) is added AFTER the "-" !
+// For "craigo-": to access the right site "https://github.com/craigo-",
+//   a slash "/" is voluntarily added after the "craigo-" !
 //
 
 IDS_MUI_ABOUT_ACKNOWLEDGES  "\
-\\cf0 craigo-\\tab https://github.com/craigo- \\par\
+\\cf0 craigo-\\tab https://github.com/craigo-/\\par\
 \\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
 \\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
 \\cf0 engelhro\\tab https://github.com/engelhro\\par\
@@ -137,13 +132,6 @@ IDS_MUI_ABOUT_LICENSES  "\
 "
 
 END
-
-//"\\trowd\\cellx4000\\cellx8000"
-//"\\intbl cell 1\\cell"
-//"\\intbl lots of text in cell two\\cell\\row"
-//"\\trowd\\cellx4000\\cellx8000"
-//"\\intbl row 2 cell 1\\cell"
-//"\\intbl lots of text in row 2 cell two\\cell\\row"
 
 
 #ifndef APSTUDIO_INVOKED
