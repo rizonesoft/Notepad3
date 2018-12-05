@@ -6840,15 +6840,15 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, CPI_ANSI_DEFAULT, CED_NO_MAPPING, INT_MAX);
-    // if DefaultEncoding is not defined set to system's current code-page 
+    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, CPI_NONE, CED_NO_MAPPING, Encoding_CountOf()-1);
+    // if DefaultEncoding is not defined set to UTF-8 //~system's current code-page 
     Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ?
-      Encoding_MapIniSetting(true, (int)GetACP()) : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
+      PREFERRED_DEFAULT_ENCODING : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
 
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
-    GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, false);
+    GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
     GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
     GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
