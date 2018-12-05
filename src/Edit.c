@@ -5261,16 +5261,23 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           }
           else if (cchSelection <= 1) {
             // nothing is selected in the editor:
-            // if first time you bring up find/replace dialog, 
-            // copy content clipboard to find box
-            char* pClip = EditGetClipboardText(hwnd, false, NULL, NULL);
-            if (pClip) {
-              size_t const len = StringCchLenA(pClip,0);
-              if (len) {
-                lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
-                StringCchCopyNA(lpszSelection, len + 1, pClip, len);
+            // if first time you bring up find/replace dialog,
+            // use most recent search pattern to find box
+            GetFindPattern(tchBuf, FNDRPL_BUFFER);
+            if (tchBuf[0] == L'\0') {
+              MRU_Enum(Globals.pMRUfind, 0, tchBuf, COUNTOF(tchBuf));
+            }
+            // no recent find pattern: copy content clipboard to find box
+            if (tchBuf[0] == L'\0') {
+              char* pClip = EditGetClipboardText(hwnd, false, NULL, NULL);
+              if (pClip) {
+                size_t const len = StringCchLenA(pClip, 0);
+                if (len) {
+                  lpszSelection = AllocMem(len + 1, HEAP_ZERO_MEMORY);
+                  StringCchCopyNA(lpszSelection, len + 1, pClip, len);
+                }
+                FreeMem(pClip);
               }
-              FreeMem(pClip);
             }
           }
 
