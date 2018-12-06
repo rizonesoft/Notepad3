@@ -10,13 +10,16 @@ static __int64 LexFunction(LexFunctionType type, int value)
 
 // ----------------------------------------------------------------------------
 
+// https://github.com/nim-lang/Nim/blob/devel/doc/keywords.txt
+
 KEYWORDLIST KeyWords_Nim = {
-  "addr and as asm atomic bind block break case cast concept const continue converter "
+  "addr and as asm bind block break case cast concept const continue converter "
   "defer discard distinct div do elif else end enum except export finally for from func "
-  "generic if import in include interface is isnot iterator let macro method mixin mod "
+  "if import in include interface is isnot iterator let macro method mixin mod "
   "nil not notin object of or out proc ptr raise ref return shl shr static "
-  "template try tuple type using var when while with without xor yield",
+  "template try tuple type using var when while xor yield",
   "", "", "", "", "", "", "", "" };
+
 
 
 EDITLEXER lexNim = { 
