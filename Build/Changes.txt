@@ -13,7 +13,7 @@ LEGEND:
 ==================================================
 
 ==================================================
-Version 5.18.1205.1444 (5 December 2018)
+Version 5.18.1206.1448 (6 December 2018)
 ==================================================
 
 --------------------------------------------------
@@ -50,6 +50,8 @@ CHANGES:
 - Change Default settings to make the first experience of Notepad3 more attractive...
 - ANSI CodePage detection (CED) - allow less reliable results also
 - Open Find/Replace: Use most recent search pattern instead of clipboard (if selection eis empty)
+- Encoding affinity: UTF-8 instead of local ANSI code-page
+- Replace dialog: tmp disable "mark all occ" in case of multi-line selection
 
 --------------------------------------------------
 FIXES:
