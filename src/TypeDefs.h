@@ -95,7 +95,7 @@ typedef enum
   XXXL_BUFFER = 4096,
 
   ANSI_CHAR_BUFFER = 258,
-  FNDRPL_BUFFER = 1024,
+  FNDRPL_BUFFER = 2048,
   LONG_LINES_MARKER_LIMIT = 4096
 
 } BUFFER_SIZES;
@@ -299,6 +299,7 @@ extern GLOBALS_T Globals;
 
 typedef struct _settings_t
 {
+  bool SaveSettings;
   bool SaveRecentFiles;
   bool PreserveCaretPos;
   bool SaveFindReplace;

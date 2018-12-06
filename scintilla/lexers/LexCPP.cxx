@@ -201,17 +201,27 @@ struct EscapeSequence {
 
 std::string GetRestOfLine(LexAccessor &styler, Sci_Position start, bool allowSpace) {
 	std::string restOfLine;
-	Sci_Position i =0;
+	Sci_Position line = styler.GetLine(start);
+	Sci_Position pos = start;
+	Sci_Position endLine = styler.LineEnd(line);
 	char ch = styler.SafeGetCharAt(start, '\n');
-	const Sci_Position endLine = styler.LineEnd(styler.GetLine(start));
-	while (((start+i) < endLine) && (ch != '\r')) {
-		const char chNext = styler.SafeGetCharAt(start + i + 1, '\n');
-		if (ch == '/' && (chNext == '/' || chNext == '*'))
-			break;
-		if (allowSpace || (ch != ' '))
-			restOfLine += ch;
-		i++;
-		ch = chNext;
+	while (pos < endLine) {
+		if (ch == '\\' && ((pos + 1) == endLine)) {
+			// Continuation line
+			line++;
+			pos = styler.LineStart(line);
+			endLine = styler.LineEnd(line);
+			ch = styler.SafeGetCharAt(pos, '\n');
+		} else {
+			const char chNext = styler.SafeGetCharAt(pos + 1, '\n');
+			if (ch == '/' && (chNext == '/' || chNext == '*'))
+				break;
+			if (allowSpace || (ch != ' ')) {
+				restOfLine += ch;
+			}
+			pos++;
+			ch = chNext;
+		}
 	}
 	return restOfLine;
 }

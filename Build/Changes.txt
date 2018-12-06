@@ -13,7 +13,7 @@ LEGEND:
 ==================================================
 
 ==================================================
-Version 5.18.1103.1407 (3 November 2018)
+Version 5.18.1206.1448 (6 December 2018)
 ==================================================
 
 --------------------------------------------------
@@ -48,6 +48,10 @@ CHANGES:
 - Show Zoom Percentage on magnification changes
 - Tidy Notepad3.ini to remove all defaulted [Setting] items
 - Change Default settings to make the first experience of Notepad3 more attractive...
+- ANSI CodePage detection (CED) - allow less reliable results also
+- Open Find/Replace: Use most recent search pattern instead of clipboard (if selection eis empty)
+- Encoding affinity: UTF-8 instead of local ANSI code-page
+- Replace dialog: tmp disable "mark all occ" in case of multi-line selection
 
 --------------------------------------------------
 FIXES:
@@ -62,6 +66,8 @@ FIXES:
 - In case of STD lexer only display "Default Text" in statusbar (indicator shows which one).
 - Fixed resource file problem (preproc defines).
 - Fixed save window Position (Default and Initial switch)
+- Fixed problem with bad brace highlighting (indicator)
+- if activated, ESC will close/minimize program immediately w/o canceling selection/tooltip first.
 
 --------------------------------------------------
 TRANSLATIONS (MUI):

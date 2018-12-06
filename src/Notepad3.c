@@ -85,8 +85,7 @@ static WCHAR     s_wchTmpFilePath[MAX_PATH + 1] = { L'\0' };
 
 static WCHAR* const s_tchAvailableLanguages = L"af-ZA be-BY de-DE es-ES en-GB fr-FR ja-JP nl-NL ru-RU zh-CN"; // en-US internal
 
-static int    s_iSettingsVersion = CFG_VER_NONE;
-static bool   s_bSaveSettings = true;
+static int    s_iSettingsVersion = CFG_VER_CURRENT;
 static bool   s_bEnableSaveSettings = true;
 
 static prefix_t s_mxSBPrefix[STATUS_SECTOR_COUNT];
@@ -1592,6 +1591,10 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
   SendMessage(hwndEditCtrl, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, RGB(0xFF, 0x00, 0x00));
   SendMessage(hwndEditCtrl, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, 120);
   SendMessage(hwndEditCtrl, SCI_INDICSETOUTLINEALPHA, INDIC_NP3_BAD_BRACE, 120);
+  if (!Settings2.UseOldStyleBraceMatching) {
+    SendMessage(hwndEditCtrl, SCI_BRACEHIGHLIGHTINDICATOR, true, INDIC_NP3_MATCH_BRACE);
+    SendMessage(hwndEditCtrl, SCI_BRACEBADLIGHTINDICATOR, true, INDIC_NP3_BAD_BRACE);
+  }
 
   // paste into rectangular selection
   SendMessage(hwndEditCtrl, SCI_SETMULTIPASTE, SC_MULTIPASTE_EACH, 0);
@@ -2938,7 +2941,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckMenuRadioItem(hmenu,IDM_VIEW_NOESCFUNC,IDM_VIEW_ESCEXIT,i,MF_BYCOMMAND);
 
   i = (int)StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile));
-  CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,s_bSaveSettings && i);
+  CheckCmd(hmenu,IDM_VIEW_SAVESETTINGS,Settings.SaveSettings && i);
 
   EnableCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
   EnableCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
@@ -4999,11 +5002,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_SAVESETTINGS:
       if (IsCmdEnabled(hwnd, IDM_VIEW_SAVESETTINGS)) {
-        s_bSaveSettings = !s_bSaveSettings;
-        if (s_bSaveSettings)
+        Settings.SaveSettings = !Settings.SaveSettings;
+        if (Settings.SaveSettings == Defaults.SaveSettings)
           IniSetString(L"Settings", L"SaveSettings", NULL);
         else
-          IniSetBool(L"Settings", L"SaveSettings", s_bSaveSettings);
+          IniSetBool(L"Settings", L"SaveSettings", Settings.SaveSettings);
       }
       break;
 
@@ -5065,26 +5068,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_ESCAPE:
-      if (SciCall_CallTipActive()) {
+      if (SciCall_CallTipActive() || SciCall_AutoCActive()) {
         SciCall_CallTipCancel();
-        break;
-      }
-      if (SciCall_AutoCActive()) {
         SciCall_AutoCCancel();
-        break;
       }
-      if (!SciCall_IsSelectionEmpty()) {
-        DocPos const iCurPos = SciCall_GetCurrentPos();
-        EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
-        break;
-      }
-      if (Settings.EscFunction == 1) {
+      else if (Settings.EscFunction == 1) {
         SendMessage(hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
       }
       else if (Settings.EscFunction == 2) {
         PostMessage(hwnd, WM_CLOSE, 0, 0);
       }
       else {
+        if (!SciCall_IsSelectionEmpty()) {
+          DocPos const iCurPos = SciCall_GetCurrentPos();
+          EditSetSelectionEx(Globals.hwndEdit, iCurPos, iCurPos, -1, -1);
+        }
         SciCall_Cancel();
       }
       break;
@@ -6607,8 +6605,10 @@ void LoadSettings()
   if (pIniSection) 
   {
     // prerequisites 
-    s_bSaveSettings = IniGetBool(L"Settings", L"SaveSettings", true);
     s_iSettingsVersion = IniGetInt(L"Settings", L"SettingsVersion", CFG_VER_NONE);
+
+    Defaults.SaveSettings = true;
+    Settings.SaveSettings = IniGetBool(L"Settings", L"SaveSettings", Defaults.SaveSettings);
 
     // first load "hard coded" .ini-Settings
     // --------------------------------------------------------------------------
@@ -6641,7 +6641,7 @@ void LoadSettings()
 
     // deprecated
     Defaults.RenderingTechnology = IniSectionGetInt(pIniSection, L"SciDirectWriteTech", -111);
-    if ((Defaults.RenderingTechnology != -111) && s_bSaveSettings) {
+    if ((Defaults.RenderingTechnology != -111) && Settings.SaveSettings) {
       // cleanup
       IniSetString(L"Settings2", L"SciDirectWriteTech", NULL);
     }
@@ -6649,7 +6649,7 @@ void LoadSettings()
 
     // Settings2 deprecated
     Defaults.Bidirectional = IniSectionGetInt(pIniSection, L"EnableBidirectionalSupport", -111);
-    if ((Defaults.Bidirectional != -111) && s_bSaveSettings) {
+    if ((Defaults.Bidirectional != -111) && Settings.SaveSettings) {
       // cleanup
       IniSetString(L"Settings2", L"EnableBidirectionalSupport", NULL);
     }
@@ -6744,11 +6744,11 @@ void LoadSettings()
     // --------------------------------------------------------------------------
 
 #define GET_BOOL_VALUE_FROM_INISECTION(VARNAME,DEFAULT) \
-  Defaults.VARNAME = DEFAULT;                       \
+  Defaults.VARNAME = DEFAULT;                           \
   Settings.VARNAME = IniSectionGetBool(pIniSection, STRGW(VARNAME), Defaults.VARNAME)
 
 #define GET_INT_VALUE_FROM_INISECTION(VARNAME,DEFAULT,MIN,MAX) \
-  Defaults.VARNAME = DEFAULT;                              \
+  Defaults.VARNAME = DEFAULT;                                  \
   Settings.VARNAME = clampi(IniSectionGetInt(pIniSection, STRGW(VARNAME), Defaults.VARNAME),MIN,MAX)
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveRecentFiles, true);
@@ -6837,15 +6837,15 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, CPI_ANSI_DEFAULT, CED_NO_MAPPING, INT_MAX);
-    // if DefaultEncoding is not defined set to system's current code-page 
+    int const iPrefEncIniSetting = Encoding_MapIniSetting(false, PREFERRED_DEFAULT_ENCODING);
+    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CED_NO_MAPPING, Encoding_CountOf()-1);
     Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ?
-      Encoding_MapIniSetting(true, (int)GetACP()) : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
+      PREFERRED_DEFAULT_ENCODING : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
 
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
-    GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, false);
+    GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
     GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
     GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
@@ -7077,7 +7077,7 @@ void LoadSettings()
 //  SaveSettings()
 //
 
-#define SAVE_VALUE_IF_NOT_EQ_DEFAULT(TYPE,VARNAME)                           \
+#define SAVE_VALUE_IF_NOT_EQ_DEFAULT(TYPE,VARNAME)                       \
   if (Settings.VARNAME != Defaults.VARNAME) {                            \
     IniSectionSet##TYPE(pIniSection, STRGW(VARNAME), Settings.VARNAME);  \
   }
@@ -7093,8 +7093,11 @@ void SaveSettings(bool bSaveSettingsNow)
 
   CreateIniFile();
 
-  if (!(s_bSaveSettings || bSaveSettingsNow)) {
-    IniSetBool(L"Settings", L"SaveSettings", s_bSaveSettings);
+  if (!(Settings.SaveSettings || bSaveSettingsNow)) {
+    IniSetInt(L"Settings", L"SettingsVersion", CFG_VER_CURRENT);
+    if (Settings.SaveSettings != Defaults.SaveSettings) {
+      IniSetBool(L"Settings", L"SaveSettings", Settings.SaveSettings);
+    }
     return;
   }
   // update window placement 
@@ -7107,10 +7110,11 @@ void SaveSettings(bool bSaveSettingsNow)
   int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
   WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
 
-  if (pIniSection) {
+  if (pIniSection) 
+  {
     IniSectionSetInt(pIniSection, L"SettingsVersion", CFG_VER_CURRENT);
-    IniSectionSetBool(pIniSection, L"SaveSettings", s_bSaveSettings);
 
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveSettings);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveRecentFiles);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreserveCaretPos);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveFindReplace);
@@ -7200,9 +7204,10 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewWhiteSpace);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewEOLs);
 
-    if (Settings.DefaultEncoding != Defaults.DefaultEncoding) {
-      IniSectionSetInt(pIniSection, L"DefaultEncoding", Encoding_MapIniSetting(false, Settings.DefaultEncoding));
-    }
+    Settings.DefaultEncoding = Encoding_MapIniSetting(false, Settings.DefaultEncoding);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEncoding);
+    Settings.DefaultEncoding = Encoding_MapIniSetting(true, Settings.DefaultEncoding);
+
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseDefaultForFileEncoding);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipUnicodeDetection);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipANSICodePageDetection);
@@ -7905,8 +7910,8 @@ int FindIniFile() {
       bFound = _CheckIniFile(tchPath,tchModule);
     }
 
-    if (bFound) {
-
+    if (bFound) 
+    {
       // allow two redirections: administrator -> user -> custom
       if (_CheckIniFileRedirect(MKWCS(APPNAME), MKWCS(APPNAME) L".ini", tchPath, tchModule)) {
         _CheckIniFileRedirect(MKWCS(APPNAME), MKWCS(APPNAME) L".ini", tchPath, tchModule);
@@ -8834,7 +8839,7 @@ void UpdateSettingsCmds()
 {
     HMENU hmenu = GetSystemMenu(Globals.hwndMain, false);
     bool hasIniFile = (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile)) > 0 || StringCchLenW(s_wchIniFile2,COUNTOF(s_wchIniFile2)) > 0);
-    CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, s_bSaveSettings && s_bEnableSaveSettings);
+    CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && s_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && s_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && s_bEnableSaveSettings);
     if (SciCall_GetZoom() != 100) { EditShowZoomCallTip(Globals.hwndEdit); }
