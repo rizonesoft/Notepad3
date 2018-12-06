@@ -258,6 +258,7 @@ extern GLOBALS_T Globals;
 
 typedef struct _settings_t
 {
+  bool SaveSettings;
   bool SaveRecentFiles;
   bool PreserveCaretPos;
   bool SaveFindReplace;
