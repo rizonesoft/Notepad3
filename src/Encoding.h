@@ -56,6 +56,8 @@ extern bool g_bForceCompEncDetection;
 
 #define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
 
+//~#define PREFERRED_DAFAULT_ENCODING  CPI_ANSI_DEFAULT
+#define PREFERRED_DEFAULT_ENCODING  CPI_UTF8
 
 typedef struct _np2encoding {
   UINT    uFlags;

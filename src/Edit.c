@@ -1054,7 +1054,7 @@ bool EditLoadFile(
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
   int iPreferedEncoding = (bNfoDizDetected) ? g_DOSEncoding :
-    ((Settings.UseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT);
+    ((Settings.UseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? Settings.DefaultEncoding : PREFERRED_DEFAULT_ENCODING);
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
@@ -4998,7 +4998,7 @@ static void  _DelayMarkAll(HWND hwnd, int delay, DocPos iStartPos)
 //
 //  EditFindReplaceDlgProcW()
 //
-static char g_lastFind[FNDRPL_BUFFER] = { L'\0' };
+static char s_lastFind[FNDRPL_BUFFER] = { L'\0' };
 
 INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
@@ -5017,10 +5017,11 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
   static int  iSaveMarkOcc = -1;
   static bool bSaveOccVisible = false;
-
   static bool bSaveTFBackSlashes = false;
+  static bool _bRestoreMarkOcc = true;
 
   WCHAR tchBuf[FNDRPL_BUFFER] = { L'\0' };
+
 
   switch (umsg)
   {
@@ -5039,6 +5040,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       iSaveMarkOcc = s_bSwitchedFindReplace ? iSaveMarkOcc : Settings.MarkOccurrences;
       bSaveOccVisible = s_bSwitchedFindReplace ? bSaveOccVisible : Settings.MarkOccurrencesMatchVisible;
+      _bRestoreMarkOcc = sg_pefrData->bMarkOccurences;
 
       //const WORD wTabSpacing = (WORD)SendMessage(sg_pefrData->hwnd, SCI_GETTABWIDTH, 0, 0);;  // dialog box units
       //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
@@ -5108,6 +5110,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
       }
 
+      // switch off "mark all occ" in case of initial replace dialog on multiline selection
+      if (GetDlgItem(hwnd, IDC_REPLACE) && !s_bSwitchedFindReplace) {
+        if (Sci_IsMultiLineSelection()) {
+          sg_pefrData->bMarkOccurences = false;
+        }
+      }
       if (sg_pefrData->bMarkOccurences) {
         Settings.MarkOccurrences = 0;
         Settings.MarkOccurrencesMatchVisible = false;
@@ -5209,6 +5217,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             }
           }
           sg_pefrData->szFind[0] = '\0';
+          sg_pefrData->bMarkOccurences = _bRestoreMarkOcc;
 
           Settings.MarkOccurrences = iSaveMarkOcc;
           Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
@@ -5279,7 +5288,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
           EditEnsureSelectionVisible(Globals.hwndEdit);
 
-          DialogEnableWindow(hwnd, IDC_REPLACEINSEL, !SciCall_IsSelectionEmpty());
+          bool const bEnableReplInSel = !(SciCall_IsSelectionEmpty() || SciCall_IsSelectionRectangle());
+          DialogEnableWindow(hwnd, IDC_REPLACEINSEL, bEnableReplInSel);
 
           break;
         }
@@ -5372,13 +5382,13 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           StringCchCopyNA(szFind, FNDRPL_BUFFER, szCmpBuf, FNDRPL_BUFFER);
         }
 
-        bool bEnableF = (GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT)) ||
+        bool const bEnableF = (GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT)) ||
           CB_ERR != SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_GETCURSEL, 0, 0));
 
-        bool bEnableR = (GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT)) ||
+        bool const bEnableR = (GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT)) ||
           CB_ERR != SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_GETCURSEL, 0, 0));
 
-        bool bEnableIS = !(bool)SendMessage(Globals.hwndEdit, SCI_GETSELECTIONEMPTY, 0, 0);
+        bool const bEnableIS = !(SciCall_IsSelectionEmpty() || SciCall_IsSelectionRectangle());
 
         DialogEnableWindow(hwnd, IDOK, bEnableF);
         DialogEnableWindow(hwnd, IDC_FINDPREV, bEnableF);
@@ -5405,10 +5415,10 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         {
           _SetSearchFlags(hwnd, sg_pefrData);
           if (sg_pefrData->bMarkOccurences) {
-            if (sg_pefrData->bStateChanged || (StringCchCompareXA(g_lastFind, sg_pefrData->szFind) != 0)) {
+            if (sg_pefrData->bStateChanged || (StringCchCompareXA(s_lastFind, sg_pefrData->szFind) != 0)) {
               _IGNORE_NOTIFY_CHANGE_;
               if (EditToggleView(Globals.hwndEdit, false)) { _DeleteLineStateAll(LINESTATE_OCCURRENCE_MARK); }
-              StringCchCopyA(g_lastFind, COUNTOF(g_lastFind), sg_pefrData->szFind);
+              StringCchCopyA(s_lastFind, COUNTOF(s_lastFind), sg_pefrData->szFind);
               RegExResult_t match = _FindHasMatch(Globals.hwndEdit, sg_pefrData, 0, (sg_pefrData->bMarkOccurences), false);
               if (s_anyMatch != match) { s_anyMatch = match; }
               // we have to set Sci's regex instance to first find (have substitution in place)
@@ -5445,6 +5455,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           {
             iSaveMarkOcc = Settings.MarkOccurrences;
             bSaveOccVisible = Settings.MarkOccurrencesMatchVisible;
+            _bRestoreMarkOcc = true;
 
             Settings.MarkOccurrences = 0;
             Settings.MarkOccurrencesMatchVisible = false;
@@ -5457,6 +5468,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           else {  // switched OFF
             Settings.MarkOccurrences = iSaveMarkOcc;
             Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
+            _bRestoreMarkOcc = false;
             //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
             if (EditToggleView(Globals.hwndEdit, false)) {
