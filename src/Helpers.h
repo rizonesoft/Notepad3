@@ -185,16 +185,6 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID);
 
 // ----------------------------------------------------------------------------
 
-inline bool IsFullHDOrHigher(int resX, int resY) {
-  if (resX <= 0) { resX = GetSystemMetrics(SM_CXSCREEN); }
-  if (resY <= 0) { resY = GetSystemMetrics(SM_CYSCREEN); }
-  return ((resX >= 1920) && (resY >= 1080));
-}
-
-#define INITIAL_BASE_FONT_SIZE (IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f)
-
-// ----------------------------------------------------------------------------
-
 //#define Is2k()    (g_uWinVer >= 0x0500)
 #define IsXP()     IsWindowsXPOrGreater()        // Indicates if the current OS version matches,or is greater than,the Windows XP version.
 #define IsXP1()    IsWindowsXPSP1OrGreater()     // Indicates if the current OS version matches,or is greater than,the Windows XP with Service Pack 1 (SP1)version.
@@ -230,6 +220,19 @@ inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.Curr
 #define ScaleIntFontSize(val) MulDiv((val), Globals.CurrentDPI.y, Globals.CurrentPPI.y)
 inline int ScaleFontSize(float fSize) { return float2int((fSize * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y); }
 inline int ScaleFractionalFontSize(float fSize) { return float2int((fSize * 10.0f * Globals.CurrentDPI.y) / (float)Globals.CurrentPPI.y) * 10; }
+int GetSystemMetricsEx(int nValue);
+
+// ----------------------------------------------------------------------------
+
+inline bool IsFullHDOrHigher(int resX, int resY) {
+  if (resX <= 0) { resX = GetSystemMetrics(SM_CXSCREEN); }
+  if (resY <= 0) { resY = GetSystemMetrics(SM_CYSCREEN); }
+  return ((resX >= 1920) && (resY >= 1080));
+}
+
+#define INITIAL_BASE_FONT_SIZE (IsFullHDOrHigher(-1, -1) ? 11.0f : 10.0f)
+
+// ----------------------------------------------------------------------------
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
 bool IsElevated();

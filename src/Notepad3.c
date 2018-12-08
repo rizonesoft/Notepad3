@@ -700,7 +700,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
       if (iTr || IsDialogMessage(Globals.hwndDlgCustomizeSchemes, &msg))
         continue;
     }
-    if (!TranslateAccelerator(hwnd,hAccMain,&msg)) {
+    if (!TranslateAccelerator(hwnd, hAccMain, &msg)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
@@ -963,9 +963,10 @@ static void  _InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
 //
 bool InitApplication(HINSTANCE hInstance)
 {
-  WNDCLASS wc;
-  ZeroMemory(&wc, sizeof(WNDCLASS));
-  wc.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
+  WNDCLASSEX wc;
+  ZeroMemory(&wc, sizeof(WNDCLASSEX));
+  wc.cbSize = sizeof(WNDCLASSEX);
+  wc.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
   wc.lpfnWndProc = (WNDPROC)MainWndProc;
   wc.cbClsExtra = 0;
   wc.cbWndExtra = 0;
@@ -976,7 +977,7 @@ bool InitApplication(HINSTANCE hInstance)
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
-  return RegisterClass(&wc);
+  return RegisterClassEx(&wc);
 }
 
 
