@@ -5413,7 +5413,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-
+/* ~~~
     case CMD_INCLINELIMIT:
     case CMD_DECLINELIMIT:
       if (!Settings.MarkLongLines)
@@ -5430,6 +5430,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         g_iLongLinesLimitG = Settings.LongLinesLimit;
       }
       break;
+~~~ */
 
     case CMD_STRINGIFY:
       {
