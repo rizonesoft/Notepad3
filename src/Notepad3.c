@@ -3304,7 +3304,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_ENCODING_SETDEFAULT:
-      SelectDefEncodingDlg(hwnd,&Settings.DefaultEncoding);
+      SelectDefEncodingDlg(hwnd, &Settings.DefaultEncoding);
       break;
 
 
@@ -6839,10 +6839,9 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-    int const iPrefEncIniSetting = Encoding_MapIniSetting(false, PREFERRED_DEFAULT_ENCODING);
-    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CED_NO_MAPPING, Encoding_CountOf()-1);
-    Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ?
-      PREFERRED_DEFAULT_ENCODING : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
+    int const iPrefEncIniSetting = Encoding_MapIniSetting(false, CPI_UTF8);
+    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CED_NO_MAPPING, INT_MAX);
+    Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_UTF8 : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
 
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
