@@ -76,6 +76,7 @@
 
 #endif
 
+#include <memory>
 #include <vector>
 #include <string_view>
 
