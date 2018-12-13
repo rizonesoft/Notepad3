@@ -342,9 +342,6 @@
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx">
       <Filter>sciXlexers</Filter>
     </ClCompile>
-    <ClCompile Include="lexers\LexNim.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">

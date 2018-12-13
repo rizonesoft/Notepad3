@@ -484,7 +484,8 @@ class LexerCPP : public ILexer4 {
 	bool caseSensitive;
 	CharacterSet setWord;
 	CharacterSet setNegationOp;
-	CharacterSet setArithmethicOp;
+	CharacterSet setAddOp;
+	CharacterSet setMultOp;
 	CharacterSet setRelOp;
 	CharacterSet setLogicalOp;
 	CharacterSet setWordStart;
@@ -525,7 +526,8 @@ public:
 		caseSensitive(caseSensitive_),
 		setWord(CharacterSet::setAlphaNum, "._", 0x80, true),
 		setNegationOp(CharacterSet::setNone, "!"),
-		setArithmethicOp(CharacterSet::setNone, "+-/*%"),
+		setAddOp(CharacterSet::setNone, "+-"),
+		setMultOp(CharacterSet::setNone, "*/%"),
 		setRelOp(CharacterSet::setNone, "=!<>"),
 		setLogicalOp(CharacterSet::setNone, "|&"),
 		subStyles(styleSubable, 0x80, 0x40, activeFlag) {
@@ -1628,13 +1630,15 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 	}
 
 	// Evaluate expressions in precedence order
-	enum precedence { precArithmetic, precRelative, precLogical };
-	for (int prec=precArithmetic; prec <= precLogical; prec++) {
+	enum precedence { precMult, precAdd, precRelative
+		, precLogical, /* end marker */ precLast };
+	for (int prec = precMult; prec < precLast; prec++) {
 		// Looking at 3 tokens at a time so end at 2 before end
 		for (size_t k=0; (k+2)<tokens.size();) {
 			const char chOp = tokens[k+1][0];
 			if (
-				((prec==precArithmetic) && setArithmethicOp.Contains(chOp)) ||
+				((prec==precMult) && setMultOp.Contains(chOp)) ||
+				((prec==precAdd) && setAddOp.Contains(chOp)) ||
 				((prec==precRelative) && setRelOp.Contains(chOp)) ||
 				((prec==precLogical) && setLogicalOp.Contains(chOp))
 				) {
@@ -1667,11 +1671,9 @@ void LexerCPP::EvaluateTokens(std::vector<std::string> &tokens, const SymbolTabl
 					result = valA || valB;
 				else if (tokens[k+1] == "&&")
 					result = valA && valB;
-				char sResult[30];
-				sprintf(sResult, "%d", result);
 				std::vector<std::string>::iterator itInsert =
 					tokens.erase(tokens.begin() + k, tokens.begin() + k + 3);
-				tokens.insert(itInsert, sResult);
+				tokens.insert(itInsert, std::to_string(result));
 			} else {
 				k++;
 			}
