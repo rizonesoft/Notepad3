@@ -699,7 +699,7 @@ BOOL ChooseFontDialog::OnInitDialog(HWND dialog, HWND hwndFocus, LPARAM lParam)
   }
 
   // Select the current size
-  FLOAT  fCurFontSize = round(m_currentTextFormat->GetFontSize() * 10.0f) / 10.0f;
+  FLOAT  fCurFontSize = static_cast<FLOAT>(round(m_currentTextFormat->GetFontSize() * 10.0f) / 10.0f);
   StringCchPrintf(sizeName, _ARRAYSIZE(sizeName), L"%.3G", fCurFontSize);
 
   SetWindowText(hwndSizes, sizeName);
