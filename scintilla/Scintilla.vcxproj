@@ -258,6 +258,7 @@
     <ClCompile Include="lexers\LexMake.cxx" />
     <ClCompile Include="lexers\LexMarkdown.cxx" />
     <ClCompile Include="lexers\LexMatlab.cxx" />
+    <ClCompile Include="lexers\LexNim.cxx" />
     <ClCompile Include="lexers\LexNsis.cxx" />
     <ClCompile Include="lexers\LexNull.cxx" />
     <ClCompile Include="lexers\LexPascal.cxx" />
