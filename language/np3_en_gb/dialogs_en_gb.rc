@@ -172,7 +172,7 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
 END
 
-IDD_MUI_DEFENCODING DIALOGEX 0, 0, 197, 159
+IDD_MUI_DEFENCODING DIALOGEX 0, 0, 197, 172
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Encoding"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -181,19 +181,21 @@ BEGIN
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
     CONTROL         "Use as &fallback on detection failure.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Encoding Detection: ",IDC_STATIC,7,58,183,77,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Encoding Detection: ",IDC_STATIC,7,58,183,90,0,WS_EX_TRANSPARENT
     CONTROL         "Open 7-bit &ASCII files in UTF-8 mode.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,136,10
+    CONTROL         "Use &reliable detection results only.", IDC_RELIABLE_DETECTION_RES,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,83,122,10
     CONTROL         "Open 8-bit *.&nfo/diz files in DOS-437 mode.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,155,10
     CONTROL         "Don't parse encoding file &tags.",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,126,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,126,10
     CONTROL         "Skip &ANSI Code Page detection.",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,127,122,10
     CONTROL         "Skip &UNICODE detection.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,122,10
-    DEFPUSHBUTTON   "OK",IDOK,87,138,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,140,138,50,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,134,122,10
+    DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,140,151,50,14
 END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 196, 80
@@ -670,7 +672,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 190
         TOPMARGIN, 7
-        BOTTOMMARGIN, 152
+        BOTTOMMARGIN, 165
     END
 
     IDD_MUI_DEFEOLMODE, DIALOG

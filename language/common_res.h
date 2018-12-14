@@ -301,6 +301,7 @@
 #define IDC_WARN_INCONSISTENT_INDENTS   18099
 #define IDC_CMDLINEHELP                 18100
 #define IDC_STYLEEDIT_HELP              18101
+#define IDC_RELIABLE_DETECTION_RES      18102
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

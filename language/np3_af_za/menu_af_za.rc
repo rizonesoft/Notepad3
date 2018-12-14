@@ -54,7 +54,7 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "&Lêer"
+    POPUP "&L?er"
     BEGIN
         MENUITEM "&New\tCtrl+N",                            IDM_FILE_NEW
         MENUITEM "&Open...\tCtrl+O",                        IDM_FILE_OPEN
