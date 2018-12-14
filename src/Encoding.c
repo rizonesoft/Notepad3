@@ -514,86 +514,92 @@ bool Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
 // ============================================================================
 
 
-UINT Encoding_GetCodePage(int iEncoding) {
+UINT Encoding_GetCodePage(const int iEncoding) {
   return (iEncoding >= 0) ? g_Encodings[iEncoding].uCodePage : CP_ACP;
 }
 // ============================================================================
 
-bool Encoding_IsDefault(int iEncoding) {
+bool Encoding_IsDefault(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_DEFAULT) : false;
 }
 // ============================================================================
 
-bool Encoding_IsANSI(int iEncoding) {
+bool Encoding_IsANSI(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ANSI) : false;
 }
 // ============================================================================
 
-bool Encoding_IsOEM(int iEncoding) {
+bool Encoding_IsOEM(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_OEM) : false;
 }
 // ============================================================================
 
-bool Encoding_IsUTF8(int iEncoding) {
+bool Encoding_IsUTF8(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8) : false;
 }
 // ============================================================================
 
-bool Encoding_IsUTF8_SIGN(int iEncoding) {
+bool Encoding_IsUTF8_SIGN(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) : false;
 }
 // ============================================================================
 
-bool Encoding_IsMBCS(int iEncoding) {
+bool Encoding_IsMBCS(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_MBCS) : false;
 }
 // ============================================================================
 
-bool Encoding_IsUNICODE(int iEncoding) {
+bool Encoding_IsASCII(const int iEncoding) {
+  return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_ASCII_7BIT) : false;
+}
+// ============================================================================
+
+
+bool Encoding_IsUNICODE(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE) : false;
 }
 // ============================================================================
 
-bool Encoding_IsUNICODE_BOM(int iEncoding) {
+bool Encoding_IsUNICODE_BOM(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM) : false;
 }
 // ============================================================================
 
-bool Encoding_IsUNICODE_REVERSE(int iEncoding) {
+bool Encoding_IsUNICODE_REVERSE(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE) : false;
 }
 // ============================================================================
 
 
-bool Encoding_IsINTERNAL(int iEncoding) {
+bool Encoding_IsINTERNAL(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_INTERNAL) : false;
 }
 // ============================================================================
 
-bool Encoding_IsEXTERNAL_8BIT(int iEncoding) {
+bool Encoding_IsEXTERNAL_8BIT(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT) : false;
 }
 // ============================================================================
 
-bool Encoding_IsRECODE(int iEncoding) {
+bool Encoding_IsRECODE(const int iEncoding) {
   return  (iEncoding >= 0) ? (g_Encodings[iEncoding].uFlags & NCP_RECODE) : false;
 }
 // ============================================================================
 
 
-void Encoding_SetDefaultFlag(int iEncoding) {
+void Encoding_SetDefaultFlag(const int iEncoding) {
   if (iEncoding >= 0)
     g_Encodings[iEncoding].uFlags |= NCP_DEFAULT;
 }
 // ============================================================================
 
 
-const WCHAR* Encoding_GetLabel(int iEncoding) {
+const WCHAR* Encoding_GetLabel(const int iEncoding) {
   return (iEncoding >= 0) ? g_Encodings[iEncoding].wchLabel : NULL;
 }
 // ============================================================================
 
-const char* Encoding_GetParseNames(int iEncoding) {
+const char* Encoding_GetParseNames(const int iEncoding) {
   return (iEncoding >= 0) ? g_Encodings[iEncoding].pszParseNames : NULL;
 }
 // ============================================================================
@@ -659,13 +665,14 @@ bool IsValidUnicode(const char* pBuffer, size_t cb, bool* lpbBOM, bool* lpbRever
 // ============================================================================
 
 
-bool IsValidUTF7(const char* pTest, size_t nLength) {
-  const char *pt = pTest;
+bool IsValidUTF7(const char* pTest, size_t nLength) 
+{
+  if (!pTest) { return false; }
 
-  for (size_t i = 0; i < nLength; i++) {
-    if (*pt & 0x80 || !*pt)
-      return false;
-    pt++;
+  char const *pt = pTest;
+  for (size_t i = 0; i < nLength; ++i) {
+    if ((*pt & 0x80) || !*pt) { return false; }
+    ++pt;
   }
   return true;
 }

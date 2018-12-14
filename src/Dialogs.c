@@ -2289,7 +2289,7 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
   static PENCODEDLG pdd;
 
   static int s_iEnc;
-  static bool s_bIsUTF8Fallback;
+  static bool s_bUseAsFallback;
   static bool s_bLoadASCIIasUTF8;
 
   switch (umsg)
@@ -2312,18 +2312,20 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
     SendDlgItemMessage(hwnd, IDC_ENCODINGLIST, CBEM_SETIMAGELIST, 0, (LPARAM)himl);
     SendDlgItemMessage(hwnd, IDC_ENCODINGLIST, CB_SETEXTENDEDUI, true, 0);
 
-    CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(Settings.UseDefaultForFileEncoding));
-    CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, DlgBtnChk(Settings.SkipUnicodeDetection));
-    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, DlgBtnChk(Settings.SkipANSICodePageDetection));
-    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(Settings.LoadASCIIasUTF8));
-    CheckDlgButton(hwnd, IDC_NFOASOEM, DlgBtnChk(Settings.LoadNFOasOEM));
-    CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, DlgBtnChk(Settings.NoEncodingTags));
-
     Encoding_AddToComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), pdd->idEncoding, 0);
 
     Encoding_GetFromComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), &s_iEnc);
-    s_bIsUTF8Fallback = Settings.UseDefaultForFileEncoding;
     s_bLoadASCIIasUTF8 = Settings.LoadASCIIasUTF8;
+    s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
+
+    CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
+    CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, DlgBtnChk(Settings.SkipUnicodeDetection));
+    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, DlgBtnChk(Settings.SkipANSICodePageDetection));
+    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
+    CheckDlgButton(hwnd, IDC_NFOASOEM, DlgBtnChk(Settings.LoadNFOasOEM));
+    CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, DlgBtnChk(Settings.NoEncodingTags));
+
+    DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
 
     CenterDlgInParent(hwnd);
   }
@@ -2341,10 +2343,10 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
     case IDC_USEASREADINGFALLBACK:
       if (s_iEnc != CPI_ANSI_DEFAULT) {
-        s_bIsUTF8Fallback = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED);
+        s_bUseAsFallback = (IsDlgButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) == BST_CHECKED);
       }
       if (s_iEnc == CPI_UTF8) {
-        if (s_bIsUTF8Fallback) {
+        if (s_bUseAsFallback) {
           CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(true));
           DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, false);
         }
@@ -2360,25 +2362,29 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
     {
       Encoding_GetFromComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), &s_iEnc);
 
+      s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
+
       if (s_iEnc == CPI_UTF8) {
-        if (s_bIsUTF8Fallback) {
-          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(true));
+        if (s_bUseAsFallback) {
           DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, false);
+          CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(true));
         }
-        DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, true);
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bIsUTF8Fallback));
+        DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
       }
       else if (s_iEnc == CPI_ANSI_DEFAULT) {
         DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
         CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(true));
+        s_bUseAsFallback = true;
         DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, false);
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
       }
       else {
+        s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
         DialogEnableWindow(hwnd, IDC_ASCIIASUTF8, true);
         CheckDlgButton(hwnd, IDC_ASCIIASUTF8, DlgBtnChk(s_bLoadASCIIasUTF8));
-        DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, true);
-        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bIsUTF8Fallback));
+        DialogEnableWindow(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
+        CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, DlgBtnChk(s_bUseAsFallback));
       }
     }
     break;

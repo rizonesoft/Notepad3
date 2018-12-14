@@ -180,15 +180,16 @@ BEGIN
     CONTROL         "Utilizar como alternativa en caso de &fallo de detección.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,180,10
     GROUPBOX        "Detección de codificación: ",IDC_STATIC,7,58,183,77,0,WS_EX_TRANSPARENT
-    CONTROL         "Omitir detección de página de códigos ANSI.",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,180,10
-    CONTROL         "Omitir la detección &UNICODE.",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,122,10
     CONTROL         "Abrir archivos 7-bit &ASCII en UTF-8 modo.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,136,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,136,10
     CONTROL         "Abrir archivos 8-bit *.&nfo/diz en DOS-437 modo.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,155,10
     CONTROL         "No analizar las e&tiquetas de codificación de archivos.",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,180,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,180,10
+    CONTROL         "Omitir detección de página de códigos ANSI.",IDC_NOANSICPDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,180,10
+    CONTROL         "Omitir la detección &UNICODE.",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,138,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,140,138,50,14
 END
