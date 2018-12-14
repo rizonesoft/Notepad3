@@ -1094,7 +1094,7 @@ bool EditLoadFile(
     iPreferedEncoding = iFileEncWeak;
   }
   // TODO: check switch for reliability in encoding settings
-  else if (!Encoding_IsNONE(iAnalyzedEncoding) /* && bIsReliable */) {
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) && bIsReliable) {
     iPreferedEncoding = iAnalyzedEncoding;
   } 
   else if (Encoding_IsNONE(iPreferedEncoding)) {

@@ -182,16 +182,16 @@ BEGIN
     CONTROL         "判別に失敗したら代替して開く(非互換)(&F)",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
     GROUPBOX        "文字コード判別: ",IDC_STATIC,7,58,183,77,0,WS_EX_TRANSPARENT
-    CONTROL         "ANSIの判別を省略(&A)",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,122,10
-    CONTROL         "Unicodeの判別を省略(&U)", IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,122,10
     CONTROL         "7-bit ASCIIはUTF-8モードで開く(&A)",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,136,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,136,10
     CONTROL         "8-bit のnfo/dizファイルはDOS-437モードで開く(&N)",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,165,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,165,10
     CONTROL         "タグ中の文字コードの指定を解析しない(&T)",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,153,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,153,10
+    CONTROL         "ANSIの判別を省略(&A)",IDC_NOANSICPDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,122,10
+    CONTROL         "Unicodeの判別を省略(&U)", IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,138,50,14
     PUSHBUTTON      "キャンセル",IDCANCEL,140,138,50,14
 END

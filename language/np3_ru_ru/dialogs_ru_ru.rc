@@ -181,16 +181,16 @@ BEGIN
     CONTROL         "Как &резервная при ошибке определения",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
     GROUPBOX        "Определение кодировки: ",IDC_STATIC,7,58,197,77,0,WS_EX_TRANSPARENT
-    CONTROL         "Не определять кодовую страницу &ANSI",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,151,10
-    CONTROL         "Пропускать определение &UNICODE",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,135,10
     CONTROL         "Открывать 7-битные файлы A&SCII как UTF-8",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,169,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,169,10
     CONTROL         "Открывать 8-битные файлы *.&nfo/diz как DOS-437",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,189,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,189,10
     CONTROL         "Не парсить &теги кодировки файла",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,133,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,133,10
+    CONTROL         "Не определять кодовую страницу &ANSI",IDC_NOANSICPDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,151,10
+    CONTROL         "Пропускать определение &UNICODE",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,135,10
     DEFPUSHBUTTON   "OK",IDOK,101,138,50,14
     PUSHBUTTON      "Отмена",IDCANCEL,154,138,50,14
 END

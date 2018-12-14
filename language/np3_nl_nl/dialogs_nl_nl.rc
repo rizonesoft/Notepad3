@@ -182,16 +182,16 @@ BEGIN
     CONTROL         "Gebruik als &fallback op detectiefout.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
     GROUPBOX        "Encodering detectie: ",IDC_STATIC,7,58,183,77,0,WS_EX_TRANSPARENT
-    CONTROL         "Overslaan &ANSI Code Page detectie.",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,122,10
-    CONTROL         "Overslaan &UNICODE detectie.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,122,10
     CONTROL         "Openen 7-bit &ASCII bestanden in UTF-8 modus.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,155,10
     CONTROL         "Openen 8-bit *.&nfo/diz bestanden in DOS-437 modus.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,175,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,175,10
     CONTROL         "Bestandsecoderings&tags niet analiseren.",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,140,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,140,10
+    CONTROL         "Overslaan &ANSI Code Page detectie.",IDC_NOANSICPDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,122,10
+    CONTROL         "Overslaan &UNICODE detectie.",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,138,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,140,138,50,14
 END

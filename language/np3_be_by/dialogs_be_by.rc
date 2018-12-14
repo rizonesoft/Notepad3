@@ -179,15 +179,16 @@ BEGIN
     CONTROL         "Як &рэзервовая падчас памылкі вызначэння",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,162,10
     GROUPBOX        "Вызначэнне кадоўкі:",IDC_STATIC,7,58,197,77,0,WS_EX_TRANSPARENT
-    CONTROL         "Не вызначаць кодавую старонку &ANSI",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,147,10
-    CONTROL         "Не вызначаць &UNICODE",IDC_NOUNICODEDETECTION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,96,10
     CONTROL         "Адкрываць 7-бітныя файлы A&SCII як UTF-8",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,163,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,163,10
     CONTROL         "Адкрываць 8-бітныя файлы *.&nfo/diz як DOS-437",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,182,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,182,10
     CONTROL         "Не разбіраць &тэгі кадоўкі файла",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,125,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,125,10
+    CONTROL         "Не вызначаць кодавую старонку &ANSI",IDC_NOANSICPDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,147,10
+    CONTROL         "Не вызначаць &UNICODE",IDC_NOUNICODEDETECTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,96,10
     DEFPUSHBUTTON   "OK",IDOK,101,138,50,14
     PUSHBUTTON      "Скасаваць",IDCANCEL,154,138,50,14
 END
