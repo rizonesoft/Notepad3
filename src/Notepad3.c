@@ -700,7 +700,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
       if (iTr || IsDialogMessage(Globals.hwndDlgCustomizeSchemes, &msg))
         continue;
     }
-    if (!TranslateAccelerator(hwnd,hAccMain,&msg)) {
+    if (!TranslateAccelerator(hwnd, hAccMain, &msg)) {
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
@@ -963,9 +963,10 @@ static void  _InitWindowPosition(WININFO* pWinInfo, const int flagsPos)
 //
 bool InitApplication(HINSTANCE hInstance)
 {
-  WNDCLASS wc;
-  ZeroMemory(&wc, sizeof(WNDCLASS));
-  wc.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
+  WNDCLASSEX wc;
+  ZeroMemory(&wc, sizeof(WNDCLASSEX));
+  wc.cbSize = sizeof(WNDCLASSEX);
+  wc.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
   wc.lpfnWndProc = (WNDPROC)MainWndProc;
   wc.cbClsExtra = 0;
   wc.cbWndExtra = 0;
@@ -976,7 +977,7 @@ bool InitApplication(HINSTANCE hInstance)
   wc.lpszMenuName = MAKEINTRESOURCE(IDR_MUI_MAINMENU);
   wc.lpszClassName = s_wchWndClass;
 
-  return RegisterClass(&wc);
+  return RegisterClassEx(&wc);
 }
 
 
@@ -3303,7 +3304,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_ENCODING_SETDEFAULT:
-      SelectDefEncodingDlg(hwnd,&Settings.DefaultEncoding);
+      SelectDefEncodingDlg(hwnd, &Settings.DefaultEncoding);
       break;
 
 
@@ -5405,7 +5406,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       }
       break;
 
-
+/* ~~~
     case CMD_INCLINELIMIT:
     case CMD_DECLINELIMIT:
       if (!Settings.MarkLongLines)
@@ -5422,6 +5423,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Globals.iLongLinesLimit = Settings.LongLinesLimit;
       }
       break;
+~~~ */
 
     case CMD_STRINGIFY:
       {
@@ -6837,17 +6839,16 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-    int const iPrefEncIniSetting = Encoding_MapIniSetting(false, PREFERRED_DEFAULT_ENCODING);
-    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CED_NO_MAPPING, Encoding_CountOf()-1);
-    Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ?
-      PREFERRED_DEFAULT_ENCODING : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
-
+    int const iPrefEncIniSetting = Encoding_MapIniSetting(false, CPI_UTF8);
+    GET_INT_VALUE_FROM_INISECTION(DefaultEncoding, iPrefEncIniSetting, CED_NO_MAPPING, INT_MAX);
+    Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_UTF8 : Encoding_MapIniSetting(true, Settings.DefaultEncoding));
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
-    GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
-    GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
+    GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
     GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
     GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistEOLs, true);
     GET_BOOL_VALUE_FROM_INISECTION(FixLineEndings, false);
@@ -7209,11 +7210,12 @@ void SaveSettings(bool bSaveSettingsNow)
     Settings.DefaultEncoding = Encoding_MapIniSetting(true, Settings.DefaultEncoding);
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseDefaultForFileEncoding);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipUnicodeDetection);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipANSICodePageDetection);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadASCIIasUTF8);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseReliableCEDonly);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadNFOasOEM);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, NoEncodingTags);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipUnicodeDetection);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipANSICodePageDetection);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEOLMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistEOLs);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FixLineEndings);

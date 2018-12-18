@@ -61,7 +61,7 @@ BEGIN
     IDT_EDIT_UNDO               "Ongedaan maken"
     IDT_EDIT_REDO               "Opnieuw doen"
     IDT_EDIT_CUT                "Knippen"
-    IDT_EDIT_COPY               "Kopieren"
+    IDT_EDIT_COPY               "Kopiëren"
     IDT_EDIT_PASTE              "Plakken"
     IDT_EDIT_FIND               "Zoeken"
     IDT_EDIT_REPLACE            "Vervangen"

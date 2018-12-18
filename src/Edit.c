@@ -1054,7 +1054,7 @@ bool EditLoadFile(
   size_t const cbNbytes4Analysis = (cbData < 200000L) ? cbData : 200000L;
 
   int iPreferedEncoding = (bNfoDizDetected) ? g_DOSEncoding :
-    ((Settings.UseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? Settings.DefaultEncoding : PREFERRED_DEFAULT_ENCODING);
+    ((Settings.UseDefaultForFileEncoding || (cbNbytes4Analysis == 0)) ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT);
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
@@ -1093,8 +1093,7 @@ bool EditLoadFile(
   else if (iFileEncWeak != CPI_NONE) {
     iPreferedEncoding = iFileEncWeak;
   }
-  // TODO: check switch for reliability in encoding settings
-  else if (!Encoding_IsNONE(iAnalyzedEncoding) /* && bIsReliable */) {
+  else if (!Encoding_IsNONE(iAnalyzedEncoding) && (bIsReliable || !Settings.UseReliableCEDonly)) {
     iPreferedEncoding = iAnalyzedEncoding;
   } 
   else if (Encoding_IsNONE(iPreferedEncoding)) {
@@ -5018,7 +5017,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
   static int  iSaveMarkOcc = -1;
   static bool bSaveOccVisible = false;
   static bool bSaveTFBackSlashes = false;
-  static bool _bRestoreMarkOcc = true;
 
   WCHAR tchBuf[FNDRPL_BUFFER] = { L'\0' };
 
@@ -5040,7 +5038,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
       iSaveMarkOcc = s_bSwitchedFindReplace ? iSaveMarkOcc : Settings.MarkOccurrences;
       bSaveOccVisible = s_bSwitchedFindReplace ? bSaveOccVisible : Settings.MarkOccurrencesMatchVisible;
-      _bRestoreMarkOcc = sg_pefrData->bMarkOccurences;
 
       //const WORD wTabSpacing = (WORD)SendMessage(sg_pefrData->hwnd, SCI_GETTABWIDTH, 0, 0);;  // dialog box units
       //SendDlgItemMessage(hwnd, IDC_FINDTEXT, EM_SETTABSTOPS, 1, (LPARAM)&wTabSpacing);
@@ -5061,9 +5058,9 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       COMBOBOXINFO infoF = { sizeof(COMBOBOXINFO) };
       GetComboBoxInfo(GetDlgItem(hwnd, IDC_FINDTEXT), &infoF);
       //SHAutoComplete(infoF.hwndItem, SHACF_DEFAULT);
-      if (infoF.hwndItem)
+      if (infoF.hwndItem) {
         SHAutoComplete(infoF.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
-
+      }
       if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
         SetDlgItemTextMB2W(hwnd, IDC_FINDTEXT, sg_pefrData->szFind);
       }
@@ -5110,12 +5107,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         DialogEnableWindow(hwnd, IDC_DOT_MATCH_ALL, false);
       }
 
-      // switch off "mark all occ" in case of initial replace dialog on multiline selection
-      if (GetDlgItem(hwnd, IDC_REPLACE) && !s_bSwitchedFindReplace) {
-        if (Sci_IsMultiLineSelection()) {
-          sg_pefrData->bMarkOccurences = false;
-        }
-      }
       if (sg_pefrData->bMarkOccurences) {
         Settings.MarkOccurrences = 0;
         Settings.MarkOccurrencesMatchVisible = false;
@@ -5199,6 +5190,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
       //}
 
       SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, MQ_ExecuteNext);
+      _DelayMarkAll(hwnd, 0, s_InitialSearchStart);
     }
     return true;
 
@@ -5217,7 +5209,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             }
           }
           sg_pefrData->szFind[0] = '\0';
-          sg_pefrData->bMarkOccurences = _bRestoreMarkOcc;
 
           Settings.MarkOccurrences = iSaveMarkOcc;
           Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
@@ -5319,7 +5310,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           tchBuf[0] = L'\0';
 
           DocPos const cchSelection = SciCall_GetSelText(NULL);
-          if (1 < cchSelection) {
+          if ((1 < cchSelection) && !(GetDlgItem(hwnd, IDC_REPLACE) && Sci_IsMultiLineSelection())) {
             lpszSelection = AllocMem(cchSelection, HEAP_ZERO_MEMORY);
             SciCall_GetSelText(lpszSelection);
           }
@@ -5423,7 +5414,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
               if (s_anyMatch != match) { s_anyMatch = match; }
               // we have to set Sci's regex instance to first find (have substitution in place)
               DocPos const iStartPos = (DocPos)lParam;
-              s_fwrdMatch = _FindHasMatch(Globals.hwndEdit, sg_pefrData, iStartPos, false, true);
+              if (!GetDlgItem(hwnd, IDC_REPLACE) || !Sci_IsMultiLineSelection()) {
+                s_fwrdMatch = _FindHasMatch(Globals.hwndEdit, sg_pefrData, iStartPos, false, true);
+              }
+              else {
+                s_fwrdMatch = match;
+              }
               sg_pefrData->bStateChanged = false;
               InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, true);
               if (match != MATCH) { 
@@ -5455,7 +5451,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           {
             iSaveMarkOcc = Settings.MarkOccurrences;
             bSaveOccVisible = Settings.MarkOccurrencesMatchVisible;
-            _bRestoreMarkOcc = true;
 
             Settings.MarkOccurrences = 0;
             Settings.MarkOccurrencesMatchVisible = false;
@@ -5468,7 +5463,6 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
           else {  // switched OFF
             Settings.MarkOccurrences = iSaveMarkOcc;
             Settings.MarkOccurrencesMatchVisible = bSaveOccVisible;
-            _bRestoreMarkOcc = false;
             //DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, (Settings.MarkOccurrences > 0) && !Settings.MarkOccurrencesMatchVisible);
             DialogEnableWindow(hwnd, IDC_TOGGLE_VISIBILITY, false);
             if (EditToggleView(Globals.hwndEdit, false)) {

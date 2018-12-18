@@ -340,11 +340,12 @@ typedef struct _settings_t
   bool ViewEOLs;
   int DefaultEncoding; // default new file encoding
   bool UseDefaultForFileEncoding;
-  bool SkipUnicodeDetection;
-  bool SkipANSICodePageDetection;
   bool LoadASCIIasUTF8;
+  bool UseReliableCEDonly;
   bool LoadNFOasOEM;
   bool NoEncodingTags;
+  bool SkipUnicodeDetection;
+  bool SkipANSICodePageDetection;
   int DefaultEOLMode;
   bool WarnInconsistEOLs;
   bool FixLineEndings;

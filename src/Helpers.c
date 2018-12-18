@@ -393,6 +393,17 @@ if (!bSucceed) {
 }*/
 
 
+//=============================================================================
+//
+//  GetSystemMetricsEx()
+//  get system metrix for current DPI 
+// https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
+//
+int GetSystemMetricsEx(int nValue) {
+
+  return ScaleIntToCurrentDPI(GetSystemMetrics(nValue));
+}
+
 
 //=============================================================================
 //

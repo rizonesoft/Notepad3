@@ -31,9 +31,10 @@ extern bool g_bForceCompEncDetection;
 #define NCP_ANSI              64
 #define NCP_OEM              128
 #define NCP_MBCS             256
-#define NCP_INTERNAL         (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI|NCP_OEM|NCP_MBCS)
-#define NCP_EXTERNAL_8BIT    512
-#define NCP_RECODE          1024
+#define NCP_ASCII_7BIT       512
+#define NCP_INTERNAL         (NCP_DEFAULT|NCP_UTF8|NCP_UTF8_SIGN|NCP_UNICODE|NCP_UNICODE_REVERSE|NCP_UNICODE_BOM|NCP_ANSI|NCP_OEM|NCP_MBCS|NCP_ASCII_7BIT)
+#define NCP_EXTERNAL_8BIT   1024
+#define NCP_RECODE          2048
 
 #define CED_NO_MAPPING       (-4)
 #define CPI_ASCII_7BIT       (-3)
@@ -55,9 +56,6 @@ extern bool g_bForceCompEncDetection;
 #define CPI_UCS4BE   CPI_UTF32BE // invalid
 
 #define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
-
-//~#define PREFERRED_DAFAULT_ENCODING  CPI_ANSI_DEFAULT
-#define PREFERRED_DEFAULT_ENCODING  CPI_UTF8
 
 typedef struct _np2encoding {
   UINT    uFlags;
@@ -87,27 +85,28 @@ bool Encoding_GetFromListView(HWND hwnd, int * pidEncoding);
 void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool);
 bool Encoding_GetFromComboboxEx(HWND hwnd, int * pidEncoding);
 
-UINT Encoding_GetCodePage(int iEncoding);
+UINT Encoding_GetCodePage(const int iEncoding);
 
-bool Encoding_IsDefault(int iEncoding);
-bool Encoding_IsANSI(int iEncoding);
-bool Encoding_IsOEM(int iEncoding);
-bool Encoding_IsUTF8(int iEncoding);
-bool Encoding_IsUTF8_SIGN(int iEncoding);
-bool Encoding_IsMBCS(int iEncoding);
-bool Encoding_IsUNICODE(int iEncoding);
-bool Encoding_IsUNICODE_BOM(int iEncoding);
-bool Encoding_IsUNICODE_REVERSE(int iEncoding);
-bool Encoding_IsINTERNAL(int iEncoding);
-bool Encoding_IsEXTERNAL_8BIT(int iEncoding);
-bool Encoding_IsRECODE(int iEncoding);
+bool Encoding_IsDefault(const int iEncoding);
+bool Encoding_IsANSI(const int iEncoding);
+bool Encoding_IsOEM(const int iEncoding);
+bool Encoding_IsUTF8(const int iEncoding);
+bool Encoding_IsUTF8_SIGN(const int iEncoding);
+bool Encoding_IsMBCS(const int iEncoding);
+bool Encoding_IsASCII(const int iEncoding);
+bool Encoding_IsUNICODE(const int iEncoding);
+bool Encoding_IsUNICODE_BOM(const int iEncoding);
+bool Encoding_IsUNICODE_REVERSE(const int iEncoding);
+bool Encoding_IsINTERNAL(const int iEncoding);
+bool Encoding_IsEXTERNAL_8BIT(const int iEncoding);
+bool Encoding_IsRECODE(const int iEncoding);
 
 // Scintilla related
 #define Encoding_SciCP  CP_UTF8
 
-void Encoding_SetDefaultFlag(int iEncoding);
-const WCHAR* Encoding_GetLabel(int iEncoding);
-const char* Encoding_GetParseNames(int iEncoding);
+void Encoding_SetDefaultFlag(const int iEncoding);
+const WCHAR* Encoding_GetLabel(const int iEncoding);
+const char* Encoding_GetParseNames(const int iEncoding);
 
 bool Has_UTF16_LE_BOM(const char* pBuf, int cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, int cnt);
