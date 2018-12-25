@@ -86,34 +86,42 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='12.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='15.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='16.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='10.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='12.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='15.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='16.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='10.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='12.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='15.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' And '$(VisualStudioVersion)'=='16.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='10.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='12.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='15.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64' And '$(VisualStudioVersion)'=='16.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='10.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='12.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='15.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='16.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='10.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='12.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='15.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='16.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='10.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='12.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='15.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32' And '$(VisualStudioVersion)'=='16.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='10.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='12.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='14.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='15.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64' And '$(VisualStudioVersion)'=='16.0'">..\Bin\$(Configuration)_$(PlatformShortName)_$(PlatformToolset)\obj\scintilla\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
