@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTSTACK_H
 #define UTSTACK_H
 
-#define UTSTACK_VERSION 2.0.2
+#define UTSTACK_VERSION 2.1.0
 
 /*
  * This file contains macros to manipulate a singly-linked list as a stack.

@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTLIST_H
 #define UTLIST_H
 
-#define UTLIST_VERSION 2.0.2
+#define UTLIST_VERSION 2.1.0
 
 #include <assert.h>
 
