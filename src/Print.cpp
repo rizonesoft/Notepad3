@@ -9,7 +9,7 @@
 *                                                                             *
 * Mostly taken from SciTE, (c) Neil Hodgson                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2015-2018   *
+*                                                  (c) Rizonesoft 2015-2019   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

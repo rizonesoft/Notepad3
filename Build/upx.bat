@@ -7,7 +7,7 @@ rem * upx.bat                                                                  *
 rem *   Batch file to compress all executable files.                           *
 rem *                                                                          *
 rem *                                                                          *
-rem *                                     (c) Rizonesoft 2008-2016             *
+rem *                                     (c) Rizonesoft 2008-2019             *
 rem *                                         https://rizonesoft.com           *
 rem *                                                                          *
 rem *                                                                          *
