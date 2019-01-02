@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTARRAY_H
 #define UTARRAY_H
 
-#define UTARRAY_VERSION 2.0.2
+#define UTARRAY_VERSION 2.1.0
 
 #include <stddef.h>  /* size_t */
 #include <string.h>  /* memset, etc */

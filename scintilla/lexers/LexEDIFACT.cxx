@@ -80,8 +80,8 @@ public:
 	{
 		return -1;
 	}
-	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
-	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
+	void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position length, int initStyle, IDocument *pAccess) override;
 	void * SCI_METHOD PrivateCall(int, void *) override
 	{
 		return NULL;
@@ -125,9 +125,9 @@ LexerEDIFACT::LexerEDIFACT()
 	m_chSegment = '\'';
 }
 
-void LexerEDIFACT::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int, IDocument *pAccess)
+void LexerEDIFACT::Lex(Sci_PositionU startPos, Sci_Position length, int, IDocument *pAccess)
 {
-	Sci_PositionU posFinish = startPos + lengthDoc;
+	Sci_PositionU posFinish = startPos + length;
 	InitialiseFromUNA(pAccess, posFinish);
 
 	// Look backwards for a ' or a document beginning
@@ -205,40 +205,85 @@ void LexerEDIFACT::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int, IDoc
 	pAccess->SetStyleFor(posFinish - posSegmentStart, SCE_EDI_BADSEGMENT);
 }
 
-void LexerEDIFACT::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int, IDocument *pAccess)
+void LexerEDIFACT::Fold(Sci_PositionU startPos, Sci_Position length, int, IDocument *pAccess)
 {
 	if (!m_bFold)
 		return;
 
-	// Fold at UNx lines. ie, UNx segments = 0, other segments = 1.
-	// There's no sub folding, so we can be quite simple.
-	Sci_Position endPos = startPos + lengthDoc;
+	Sci_PositionU endPos = startPos + length;
+	startPos = FindPreviousEnd(pAccess, startPos);
+	char c;
 	char SegmentHeader[4] = { 0 };
 
-	int iIndentPrevious = 0;
-	Sci_Position lineLast = pAccess->LineFromPosition(endPos);
+	bool AwaitingSegment = true;
+	Sci_PositionU currLine = pAccess->LineFromPosition(startPos);
+	int levelCurrentStyle = SC_FOLDLEVELBASE;
+	if (currLine > 0)
+		levelCurrentStyle = pAccess->GetLevel(currLine - 1); // bottom 12 bits are level
+	int indentCurrent = levelCurrentStyle & SC_FOLDLEVELNUMBERMASK;
+	int indentNext = indentCurrent;
 
-	for (Sci_Position lineCurrent = pAccess->LineFromPosition(startPos); lineCurrent <= lineLast; lineCurrent++)
+	while (startPos < endPos)
 	{
-		Sci_Position posLineStart = pAccess->LineStart(lineCurrent);
-		posLineStart = ForwardPastWhitespace(pAccess, posLineStart, endPos);
-		Sci_Position lineDataStart = pAccess->LineFromPosition(posLineStart);
-		// Fill in whitespace lines?
-		for (; lineCurrent < lineDataStart; lineCurrent++)
-			pAccess->SetLevel(lineCurrent, SC_FOLDLEVELBASE | SC_FOLDLEVELWHITEFLAG | iIndentPrevious);
-		pAccess->GetCharRange(SegmentHeader, posLineStart, 3);
-		//if (DetectSegmentHeader(SegmentHeader) == SCE_EDI_BADSEGMENT) // Abort if this is not a proper segment header
+		pAccess->GetCharRange(&c, startPos, 1);
+		switch (c)
+		{
+		case '\t':
+		case '\r':
+		case ' ':
+			startPos++;
+			continue;
+		case '\n':
+			currLine = pAccess->LineFromPosition(startPos);
+			pAccess->SetLevel(currLine, levelCurrentStyle | indentCurrent);
+			startPos++;
+			levelCurrentStyle = SC_FOLDLEVELBASE;
+			indentCurrent = indentNext;
+			continue;
+		}
+		if (c == m_chRelease)
+		{
+			startPos += 2;
+			continue;
+		}
+		if (c == m_chSegment)
+		{
+			AwaitingSegment = true;
+			startPos++;
+			continue;
+		}
 
-		int level = 0;
-		if (memcmp(SegmentHeader, "UNH", 3) == 0) // UNH starts blocks
-			level = SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG;
-		// Check for UNA,B and Z. All others are inside messages
-		else if (!memcmp(SegmentHeader, "UNA", 3) || !memcmp(SegmentHeader, "UNB", 3) || !memcmp(SegmentHeader, "UNZ", 3))
-			level = SC_FOLDLEVELBASE;
-		else
-			level = SC_FOLDLEVELBASE | 1;
-		pAccess->SetLevel(lineCurrent, level);
-		iIndentPrevious = level & SC_FOLDLEVELNUMBERMASK;
+		if (!AwaitingSegment)
+		{
+			startPos++;
+			continue;
+		}
+		
+		// Segment!
+		pAccess->GetCharRange(SegmentHeader, startPos, 3);
+		if (SegmentHeader[0] != 'U' || SegmentHeader[1] != 'N')
+		{
+			startPos++;
+			continue;
+		}
+
+		AwaitingSegment = false;
+		switch (SegmentHeader[2])
+		{
+		case 'H':
+		case 'G':
+			indentNext++;
+			levelCurrentStyle = SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG;
+			break;
+
+		case 'T':
+		case 'E':
+			if (indentNext > 0)
+				indentNext--;
+			break;
+		}
+
+		startPos += 3;
 	}
 }
 
@@ -314,7 +359,9 @@ int LexerEDIFACT::DetectSegmentHeader(char SegmentHeader[3]) const
 
 	if (m_bHighlightAllUN && !memcmp(SegmentHeader, "UN", 2))
 		return SCE_EDI_UNH;
-	else if (memcmp(SegmentHeader, "UNH", 3) == 0)
+	else if (!memcmp(SegmentHeader, "UNH", 3))
+		return SCE_EDI_UNH;
+	else if (!memcmp(SegmentHeader, "UNG", 3))
 		return SCE_EDI_UNH;
 
 	return SCE_EDI_SEGMENTSTART;

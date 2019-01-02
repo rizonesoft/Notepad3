@@ -306,8 +306,10 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
 
   if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) 
   {
-    m_MatchPos = SciPos(result); //SciPos(m_Region.beg[0]);
-    m_MatchLen = SciPos(m_Region.end[0] - result);
+    //~m_MatchPos = SciPos(result); //
+    m_MatchPos = SciPos(m_Region.beg[0]);
+    //~m_MatchLen = SciPos(m_Region.end[0] - result);
+    m_MatchLen = SciPos(m_Region.end[0] - m_Region.beg[0]);
   }
 
   //NOTE: potential 64-bit-size issue at interface here:
