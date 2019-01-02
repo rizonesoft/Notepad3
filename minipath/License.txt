@@ -1,4 +1,4 @@
-﻿MiniPath Copyright © 2008-2016 Rizonesoft, All rights reserved.
+﻿MiniPath Copyright © 2008-2019 Rizonesoft, All rights reserved.
 https://rizonesoft.com
 
 metapath Copyright © 2004-2011 Florian Balmer
