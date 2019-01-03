@@ -6124,11 +6124,11 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   _ENTER_TARGET_TRANSACTION_;
 
   SciCall_TargetFromSelection();
-  SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace);
+  Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
 
   // move caret behind replacement
 
-  const DocPos after = SciCall_GetTargetEnd();
+  DocPos const after = SciCall_GetTargetEnd();
   SciCall_SetSel(after, after);
 
   _LEAVE_TARGET_TRANSACTION_;
@@ -6203,10 +6203,12 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
       iPos = -1;
   } 
   
-  int iCount = utarray_len(ReplPosUTArray);
+  int const iCount = utarray_len(ReplPosUTArray);
+  if (iCount <= 0) { FreeMem(pszReplace); return 0; }
 
   // ===  iterate over findings and replace strings  ===
-  DocPos offset = 0;
+  DocPos searchStart = iStartPos;
+  DocPos totalReplLength = 0;
 
   _IGNORE_NOTIFY_CHANGE_;
 
@@ -6215,16 +6217,18 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
                   pPosPair = (ReplPos_t*)utarray_next(ReplPosUTArray, pPosPair)) {
 
     // redo find to get group ranges filled
-    start = pPosPair->beg + offset;
-    end = iEndPos + offset;
+    start = searchStart;
+    end = iEndPos + totalReplLength;
 
     iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
 
     _ENTER_TARGET_TRANSACTION_;
 
     SciCall_SetTargetRange(start, end);
-
-    offset += ((DocPos)SendMessage(hwnd, iReplaceMsg, (WPARAM)-1, (LPARAM)pszReplace) - pPosPair->end + pPosPair->beg);
+    // SCI_REPLACETARGET or SCI_REPLACETARGETRE
+    DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
+    totalReplLength += replLen + pPosPair->beg - pPosPair->end;
+    searchStart = SciCall_GetTargetEnd();
 
     _LEAVE_TARGET_TRANSACTION_;
   }
@@ -6235,7 +6239,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
   utarray_free(ReplPosUTArray);
   FreeMem(pszReplace);
 
-  *enlargement = offset;
+  *enlargement = totalReplLength;
 
   return iCount;
 }
