@@ -214,6 +214,7 @@ DeclareSciCallR0(GetTargetEnd, GETTARGETEND, DocPos)
 DeclareSciCallV0(TargetFromSelection, TARGETFROMSELECTION)
 DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end)
 DeclareSciCallR2(ReplaceTarget, REPLACETARGET, DocPos, DocPos, length, const char*, text)
+DeclareSciCallR2(ReplaceTargetRe, REPLACETARGETRE, DocPos, DocPos, length, const char*, text)
 DeclareSciCallV2(AddText, ADDTEXT, DocPos, length, const char*, text)
 
 
@@ -501,6 +502,8 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine) {
   }
   return iMaxLineLen;
 }
+
+#define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
 
 //=============================================================================
 
