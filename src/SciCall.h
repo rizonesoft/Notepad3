@@ -216,7 +216,8 @@ DeclareSciCallV2(SetTargetRange, SETTARGETRANGE, DocPos, start, DocPos, end)
 DeclareSciCallR2(ReplaceTarget, REPLACETARGET, DocPos, DocPos, length, const char*, text)
 DeclareSciCallR2(ReplaceTargetRe, REPLACETARGETRE, DocPos, DocPos, length, const char*, text)
 DeclareSciCallV2(AddText, ADDTEXT, DocPos, length, const char*, text)
-
+DeclareSciCallV1(SetSearchFlags, SETSEARCHFLAGS, int, flags)
+DeclareSciCallR2(SearchInTarget, SEARCHINTARGET, DocPos, DocPos, length, const char*, text)
 
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position)
 DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position)
