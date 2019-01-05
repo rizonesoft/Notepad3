@@ -6,10 +6,12 @@
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
+
+--------------------------------------------------------------------------------
 Description
 --------------------------------------------------------------------------------
-Notepad like text editor based on the Scintilla source code. Notepad3 based on 
-code from Notepad2 and MiniPath on code from metapath.
+Notepad like text editor is based on the Scintilla source code. 
+Notepad3 isbased on code from Notepad2 and MiniPath on code from metapath.
 
 --------------------------------------------------------------------------------
 Changes compared to Flo's official Notepad2 (made in Notepad2-mod):
@@ -57,12 +59,21 @@ Supported Operating Systems:
 Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
 
 --------------------------------------------------------------------------------
-Contributors
+Development:
 --------------------------------------------------------------------------------
-- Rainer Kottenhoff
-- Florian Balmer ( http://www.flos-freeware.ch )
-- XhmikosR ( http://xhmikosr.github.io/notepad2-mod/ )
-- Kai Liu ( http://code.kliu.org/misc/notepad2/ )
-- RL Vision
-- Aleksandar Lekov
+- Florian 'Flo' Balmer (Notepad2) ( http://www.flos-freeware.ch )
+- Rainer Kottenhoff ( https://github.com/RaiKoHoff )
+
+--------------------------------------------------------------------------------
+Contributors:
+--------------------------------------------------------------------------------
+- Derick Payne (© Rizonesoft) ( https://www.rizonesoft.com )
+- XhmikosR (Notepad2-mod) ( https://xhmikosr.github.io/notepad2-mod )
+- Kai Liu (CodeFolding) ( http://code.kliu.org/misc/notepad2 )
+- RL Vision (Bookmarks) ( https://www.rlvision.com/notepad2/about.php )
+- Aleksandar Lekov (MarkOcc./AutoCompl.)
 - Bruno Barbieri
+- Matthew Ellis (MinimizeToTray)
+- Igal Tabachnik (RelaunchElevated) ( https://github.com/hmemcpy )
+- Et alii @ GitHub ( https://github.com/XhmikosR/notepad2-mod/graphs/contributors )
+
