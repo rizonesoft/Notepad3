@@ -6161,7 +6161,7 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   Globals.iReplacedOccurrences = 0;
 
   DocPos const findLen = (DocPos)StringCchLenA(lpefr->szFind, 0);
-  DocPos const iPos = _FindInTarget(hwnd, lpefr->szFind, findLen,  (int)(lpefr->fuFlags), &start, &end, false, FRMOD_NORM);
+  DocPos const iPos = _FindInTarget(hwnd, lpefr->szFind, findLen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_NORM);
 
   // w/o selection, replacement string is put into current position
   // but this maybe not intended here
@@ -6181,7 +6181,6 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
     FreeMem(pszReplace);
     SciCall_SetCurrentPos(selBeg);
     return EditFindNext(hwnd, lpefr, false, false);
-    //EditSetSelectionEx(hwnd, start, end, -1, -1);
   }
 
   _ENTER_TARGET_TRANSACTION_;
