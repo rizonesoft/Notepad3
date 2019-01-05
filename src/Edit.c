@@ -6097,14 +6097,17 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
   if (!pszReplace)
     return false; // recoding of clipboard canceled
 
+  DocPos const selBeg = SciCall_GetSelectionStart();
+  DocPos const selEnd = SciCall_GetSelectionEnd();
+
   // redo find to get group ranges filled
-  DocPos start = (SciCall_IsSelectionEmpty() ? SciCall_GetCurrentPos() : SciCall_GetSelectionStart());
+  DocPos start = (SciCall_IsSelectionEmpty() ? SciCall_GetCurrentPos() : selBeg);
   DocPos end = SciCall_GetTextLength();
   DocPos _start = start;
   g_iReplacedOccurrences = 0;
 
-  DocPos const iPos = _FindInTarget(hwnd, lpefr->szFind, (DocPos)StringCchLenA(lpefr->szFind, FRMOD_NORM),
-    (int)(lpefr->fuFlags), &start, &end, false, false);
+  DocPos const findLen = (DocPos)StringCchLenA(lpefr->szFind, 0);
+  DocPos const iPos = _FindInTarget(hwnd, lpefr->szFind, findLen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_NORM);
 
   // w/o selection, replacement string is put into current position
   // but this maybe not intended here
@@ -6119,17 +6122,21 @@ bool EditReplace(HWND hwnd, LPCEDITFINDREPLACE lpefr) {
       return true;
     }
   }
-  g_iReplacedOccurrences = 1;
+  // if selection is is not equal current find, set selection
+  else if ((selBeg != start) || (selEnd != end)) {
+    FreeMem(pszReplace);
+    SciCall_SetCurrentPos(selBeg);
+    return EditFindNext(hwnd, lpefr, false, false);
+  }
 
   _ENTER_TARGET_TRANSACTION_;
 
   SciCall_TargetFromSelection();
   Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
+  g_iReplacedOccurrences = 1;
 
   // move caret behind replacement
-
-  DocPos const after = SciCall_GetTargetEnd();
-  SciCall_SetSel(after, after);
+  SciCall_SetCurrentPos(SciCall_GetTargetEnd());
 
   _LEAVE_TARGET_TRANSACTION_;
 
