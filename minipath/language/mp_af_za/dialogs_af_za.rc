@@ -108,18 +108,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 204, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Lêer Filter"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Spesifiseer 'n nuwe lêer &filter. Skei meervoudige filters deur ;",IDC_STATIC,7,7,170,8
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
+    LTEXT           "Spesifiseer 'n nuwe lêer &filter. Skei meervoudige filters deur ;",IDC_STATIC,7,7,210,8
+    EDITTEXT        IDC_FILTER,7,22,173,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,184,22,13,13
     CONTROL         "&Sluit lêers wat ooreenstem met die filter uit.",IDC_NEGFILTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
-    DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "Kanselleer",IDCANCEL,127,58,50,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,158,10
+    DEFPUSHBUTTON   "OK",IDOK,92,58,50,14
+    PUSHBUTTON      "Kanselleer",IDCANCEL,147,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
@@ -170,20 +170,20 @@ CAPTION "Algemeen"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Spesifiseer algemene programinstellings vir MiniPath.",IDC_STATIC,40,15,153,8
+    LTEXT           "Spesifiseer algemene programinstellings vir MiniPath.",IDC_STATIC,40,15,193,8
     CONTROL         "&Laat slegs enkele muisklikte toe om voorwerpe oop te maak.",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,191,10
     CONTROL         "&Aktiveer spoorseleksie.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
     CONTROL         "Aktiveer &volle ry seleksie.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
     CONTROL         "A&ktiveer altyd die teikenvenster wanneer 'n lêer geopen word.",IDC_FOCUSEDIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,197,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "&Hou MiniPath-venster altyd bo-op.",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "&Minimeer na die system tray (klik om te heraktiveer).",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
-    CONTROL         "&Probeer om bestaande venster te hergebruik wanneer MiniPath begin.",IDC_REUSEWINDOW,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,187,10
+    CONTROL         "&Probeer bestaande venster hergebruik wanneer MiniPath begin.",IDC_REUSEWINDOW,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,205,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
     CONTROL         "&Stoor instellings by uitgang.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
 END
@@ -194,23 +194,23 @@ CAPTION "Gevorderde"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Spesifiseer gevorderde programinstellings vir MiniPath.",IDC_STATIC,40,15,160,8
+    LTEXT           "Spesifiseer gevorderde programinstellings vir MiniPath.",IDC_STATIC,40,15,200,8
     CONTROL         "Gebruik &opstart gids:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
     CONTROL         "&Mees onlangs gebruik.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
     CONTROL         """&Gunstelinge"" gids.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "Maak &leesalleen eienskappe van gestoorde lêers skoon.",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,200,10
     CONTROL         "Hernoem gekopieerde lêers op &naam botsings.",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,200,10
     CONTROL         "&Skuif geskrapte lêers na die recycle bin.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "Moenie lêer-&uitvee bevestig nie (word nie aanbeveel nie).",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "Aktiveer ""&Esc"" sleutel om...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Minimaliseer &venster.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "M&aak MiniPath toe.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "Minimaliseer &venster.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,100,10
+    CONTROL         "M&aak MiniPath toe.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,100,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -221,14 +221,14 @@ BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
     LTEXT           "Voorkoms van items in die lys.",IDC_STATIC,40,15,118,8
     GROUPBOX        "Kleure",IDC_STATIC,10,41,205,134
-    LTEXT           "Gebruik hierdie teks kleur wanneer GEEN FILTER ingestel is nie:",IDC_STATIC,20,54,136,8
+    LTEXT           "Gebruik hierdie teks kleur wanneer GEEN FILTER ingestel is nie:",IDC_STATIC,20,54,190,8
     CONTROL         "Standaard &vensters kleur.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
-    CONTROL         "Gepasmaakte &kleur:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
+    CONTROL         "Pasmaak &kleur:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Kies Kleur...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Gebruik hierdie teks kleur wanneer 'n FILTER AKTIEF is:",IDC_STATIC,20,105,146,8
+    LTEXT           "Gebruik hierdie teks kleur wanneer 'n FILTER AKTIEF is:",IDC_STATIC,20,105,180,8
     CONTROL         "Vers&tek vensters kle&ur.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
-    CONTROL         "Gepasmaakte Kle&ur:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
+    CONTROL         "Pasmaak Kle&ur:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Kies Kleur...",IDC_COLOR_PICK2,120,130,50,14
 END
@@ -239,8 +239,8 @@ CAPTION "Plekke"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Spesifiseer eksterne programme en plekke.",IDC_STATIC,40,15,122,8
-    LTEXT           "&Verstek ""Vinnige Vertoning"" program (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "Spesifiseer eksterne programme en plekke.",IDC_STATIC,40,15,152,8
+    LTEXT           "&Verstek ""Vinnige Vertoning"" program (Ctrl+Q):",IDC_STATIC,10,41,156,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "&Gunstelinge Gids (F11):",IDC_STATIC,10,76,76,8
@@ -253,8 +253,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Teikentoepassing"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Moenie enige spesifieke teikentoepassing gebruik nie, bloot die gekose lêer begin.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
+    CONTROL         "Moenie spesifieke teikentoepassing gebruik nie, bloot die gekose lêer begin.",IDC_LAUNCH,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,255,10
     CONTROL         "Gebruik die volgende teikenprogram:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
     LTEXT           "Gee die aksie as die teikentoepassing reeds uitgevoer word:",IDC_STATIC,7,64,196,8
@@ -262,13 +262,13 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
     LTEXT           "Boodskap:",IDC_STATIC,20,120,32,8
     CONTROL         "Geen, voer teikenprogram elke keer as 'n lêer oopgemaak word.",IDC_ALWAYSRUN,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,211,10
     CONTROL         "Stuur 'n lêer oop boodskap na die toepassing venster:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
     CONTROL         "Voer die volgende DDE opdrag uit:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Toepassing:",IDC_STATIC,128,120,38,8
     PUSHBUTTON      "Vind Venster...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "Onderwerp:",IDC_STATIC,198,120,20,8
+    LTEXT           "Onderwerp:",IDC_STATIC,198,120,50,8
     EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
