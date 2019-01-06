@@ -185,7 +185,7 @@ BEGIN
     CONTROL         "&Probeer bestaande venster hergebruik wanneer MiniPath begin.",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,205,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Stoor instellings by uitgang.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "&Stoor instellings by uitgang.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,100,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
