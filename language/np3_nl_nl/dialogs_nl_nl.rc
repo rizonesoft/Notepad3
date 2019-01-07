@@ -245,7 +245,7 @@ BEGIN
     CONTROL         "&Geen.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
     CONTROL         "&Tonen bericht.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
     CONTROL         "&Auto-herladen (ongewijzigd).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Resetten als een nieuw bestand wordt geopend.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,150,10
+    CONTROL         "&Resetten als een nieuw bestand wordt geopend.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,155,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,127,24,50,14
 END

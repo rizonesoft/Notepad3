@@ -100,7 +100,7 @@ BEGIN
     PUSHBUTTON      "查找上一个(&P)",IDC_FINDPREV,234,24,67,14
     PUSHBUTTON      "关闭",IDCANCEL,234,96,66,14
     CONTROL         "<a>切换到“替换”对话框 (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,103,74,10
+                    "SysLink",0x0,125,103,94,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,210,84,14,10
@@ -135,7 +135,7 @@ BEGIN
     PUSHBUTTON      "交换查找和替换内容(&X)",IDC_SWAPSTRG,120,32,102,12
     PUSHBUTTON      "关闭",IDCANCEL,234,126,67,14
     CONTROL         "<a>切换到“查找”对话框 (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,
-                    "SysLink",0x0,125,130,74,10
+                    "SysLink",0x0,125,130,94,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,210,114,14,10
@@ -205,7 +205,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "跳转到"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "行(&L)：",IDC_STATIC,7,7,16,8
+    LTEXT           "行(&L)：",IDC_STATIC,7,7,26,8
     EDITTEXT        IDC_LINENUM,7,24,46,14,ES_AUTOHSCROLL
     LTEXT           "列(&C)：",IDC_STATIC,63,7,27,8
     EDITTEXT        IDC_COLNUM,63,24,46,14,ES_AUTOHSCROLL
