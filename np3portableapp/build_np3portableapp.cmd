@@ -86,6 +86,9 @@ copy "%NP3_DISTRIB_DIR%\Readme.txt" "%NP3_PORTAPP_DIR%\Other\Help\Readme.txt" /Y
 copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\Other\Help\KeyboardShortcuts.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\Other\Help\encryption-doc.txt" /Y /V
 
+:: clear Notepad3 binary dir (except .ini files)
+for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\" /b /a-d /s ^| findstr /v .ini') do del "%%f"
+
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d"
   copy /B "%NP3_WIN32_DIR%\lng\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d\" /Y /V
@@ -141,7 +144,8 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
 :: rename
-rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
+::echo rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
+::rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
 
 :: ====================================================================================================================
 goto :END
