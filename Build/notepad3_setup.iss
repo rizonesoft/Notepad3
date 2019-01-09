@@ -131,10 +131,6 @@ Source: Notepad3.ini;                                               DestDir: {us
 Source: {#bindir}\Release_x64_v141\minipath.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v141\minipath.exe;                    DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: minipath.ini;                                               DestDir: {userappdata}\Rizonesoft\Notepad3; Flags: onlyifdoesntexist uninsneveruninstall
-Source: {#bindir}\Release_x64_v141\np3encrypt.exe;                  DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\np3encrypt.exe;                  DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
-Source: {#bindir}\Release_x64_v141\ced.exe;                         DestDir: {app};                             Flags: ignoreversion;                         Check: Is64BitInstallMode()
-Source: {#bindir}\Release_x86_v141\ced.exe;                         DestDir: {app};                             Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v141\lng\mplng.dll;                   DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
 Source: {#bindir}\Release_x86_v141\lng\mplng.dll;                   DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: not Is64BitInstallMode()
 Source: {#bindir}\Release_x64_v141\lng\np3lng.dll;                  DestDir: {app}\lng;                         Flags: ignoreversion;                         Check: Is64BitInstallMode()
