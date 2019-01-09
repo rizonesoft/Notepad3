@@ -38,7 +38,7 @@ Keyboard Shortcuts for Notepad3
     Alt+Backspace         Undo.
     Ctrl+Y                Redo.
     Ctrl+Shift+Y          Undo.
-    Ctrl+X                Cut selection  / Cut current line,  if no selection.
+    Ctrl+X                Cut selection  / Cut current line, if no selection.
     Shift+Del             Cut.
     Ctrl+C                Copy selection / Copy current line, if no selection .
     Alt+C                 Copy all.
@@ -110,7 +110,7 @@ Keyboard Shortcuts for Notepad3
     Ctrl+Shift+F5         Time/date (long form).
     Ctrl+F9               Filename.
     Ctrl+Shift+F9         Path and filename.
-    Ctrl+Shift+.          GUID
+    Ctrl+Shift+.          Insert GUID.
 
   Special
 
@@ -148,10 +148,10 @@ Keyboard Shortcuts for Notepad3
 
   Bookmarks
 
-    F2                    Jump to next bookmark
-    Shift+F2              Jump to previous bookmark
-    Ctrl+F2               Toggle bookmark
-    Alt+F2                Clear all
+    F2                    Jump to next bookmark.
+    Shift+F2              Jump to previous bookmark.
+    Ctrl+F2               Toggle bookmark.
+    Alt+F2                Clear all.
     
   Syntax scheme, Font
 
@@ -175,6 +175,8 @@ Keyboard Shortcuts for Notepad3
     Ctrl+Shift+0          Show wrap symbols.
     Ctrl+Shift+V          Toggle visual brace matching.
     Ctrl+Shift+I          Highlight current line.
+    Ctrl+Shift+Alt+F      Activate/Deactivate code folding.
+    Ctrl+Shift+F          Toggle all folds.
 
   Zoom
 

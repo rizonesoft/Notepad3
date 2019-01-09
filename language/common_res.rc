@@ -78,7 +78,7 @@ IDS_MUI_ABOUT_DEV  "\
 "
 
 IDS_MUI_ABOUT_CONTRIBS  "\
-\\cf0 Derick Payne(\\u0169   Rizonesoft)\\tab https://www.rizonesoft.com\\par\
+\\cf0 Derick Payne (\\u0169   Rizonesoft)\\tab https://www.rizonesoft.com\\par\
 \\cf0 XhmikosR (Notepad2-mod)\\tab https://xhmikosr.github.io/notepad2-mod\\par\
 \\cf0 Kai Liu (CodeFolding)\\tab http://code.kliu.org/misc/notepad2\\par\
 \\cf0 RL Vision (Bookmarks)\\tab https://www.rlvision.com/notepad2/about.php\\par\
@@ -118,7 +118,7 @@ IDS_MUI_ABOUT_ACKNOWLEDGES  "\
 "
 
 IDS_MUI_ABOUT_MORE  "\
-\\cf0 NotepadCrypt Version(Java)\\tab https://www.nayuki.io/page/notepadcrypt-format-decryptor-java\\par\
+\\cf0 NotepadCrypt (Version Java)\\tab https://www.nayuki.io/page/notepadcrypt-format-decryptor-java\\par\
 \\cf0 \\par\
 "
 

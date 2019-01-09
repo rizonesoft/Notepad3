@@ -8491,7 +8491,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         tchLinesSelected[2] = L'\0';
       }
       else {
-        StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%i", iLinesSelected);
+        StringCchPrintf(tchLinesSelected, COUNTOF(tchLinesSelected), L"%lli", iLinesSelected);
         FormatNumberStr(tchLinesSelected);
       }
       StringCchPrintf(tchStatusBar[STATUS_SELCTLINES], txtWidth, L"%s%s%s",
@@ -9194,7 +9194,7 @@ static void _WarnInconsistentIndentation(const EditFileIOStatus* const status)
     WCHAR szStatistic[80];
     StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s(%i)",
       (Settings.TabsAsSpaces ? L"BLANK" : L"TABULATOR"), (Settings.TabsAsSpaces ? Settings.IndentWidth : Settings.TabWidth));
-    StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  # TABULATOR(%i) = %i\n  # BLANK(%i) = %i\n",
+    StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  # TABULATOR(%i) = %lli\n  # BLANK(%i) = %lli\n",
                     Settings.TabWidth, status->indentCount[0], Settings.IndentWidth, status->indentCount[1]);
 
     int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONS_INDENTS, szStatistic, szDefault);
@@ -9443,7 +9443,7 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
       int const eolm = SciCall_GetEOLMode(); //Settings.DefaultEOLMode;
       StringCchPrintf(szDefault, COUNTOF(szDefault), L"%s", 
         ((eolm == SC_EOL_CRLF) ? L"CRLF (\\r\\n)" : ((eolm == SC_EOL_CR) ? L"CR (\\r)" : L"LF (\\n)")));
-      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  #CRLF = %i\n  #CR = %i\n  #LF = %i\n",
+      StringCchPrintf(szStatistic, COUNTOF(szStatistic), L"  #CRLF = %lli\n  #CR = %lli\n  #LF = %lli\n",
                       fioStatus.eolCount[SC_EOL_CRLF], fioStatus.eolCount[SC_EOL_CR], fioStatus.eolCount[SC_EOL_LF]);
       int const res = MsgBoxLng(MBYESNOWARN, IDS_MUI_WARN_INCONSIST_EOLS, szStatistic, szDefault);
       if (res == IDYES) {

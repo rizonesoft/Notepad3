@@ -35,11 +35,13 @@ set NP3_LANGUAGE_SET=af-ZA be-BY de-DE en-GB es-ES fr-FR ja-JP nl-NL ru-RU zh-CN
 :: --- Environment ---
 set SCRIPT_DIR=%~dp0
 set PORTAPP_ROOT_DIR=D:\PortableApps
+::set PORTAPP_ROOT_DIR=D:\Rizonesoft\PortableApps\PortableApps
 set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\PortableApps.comAppCompactor.exe
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
+set NP3_DOC_DIR=%SCRIPT_DIR%..\DOC
 set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
 set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
 
@@ -78,6 +80,14 @@ if defined FILEVER set VERSION=%FILEVER%
 
 copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
+copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\Other\Help\Changes.txt" /Y /V
+copy "%NP3_DISTRIB_DIR%\License.txt" "%NP3_PORTAPP_DIR%\Other\Help\License.txt" /Y /V
+copy "%NP3_DISTRIB_DIR%\Readme.txt" "%NP3_PORTAPP_DIR%\Other\Help\Readme.txt" /Y /V
+copy "%NP3_DOC_DIR%\KeyboardShortcuts.txt" "%NP3_PORTAPP_DIR%\Other\Help\KeyboardShortcuts.txt" /Y /V
+copy "%NP3_DOC_DIR%\crypto\encryption-doc.txt" "%NP3_PORTAPP_DIR%\Other\Help\encryption-doc.txt" /Y /V
+
+:: clear Notepad3 binary dir (except .ini files)
+for /f %%f in ('dir "%NP3_PORTAPP_DIR%\App\Notepad3\" /b /a-d /s ^| findstr /v .ini') do del "%%f"
 
 for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\%%d"
@@ -88,8 +98,8 @@ copy /B "%NP3_WIN32_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\l
 
 copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-copy /B "%NP3_WIN32_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+::copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+::copy /B "%NP3_WIN32_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\86\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\" /Y /V
@@ -103,8 +113,8 @@ copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng
 
 copy /B "%NP3_X64_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-copy /B "%NP3_X64_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+::copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+::copy /B "%NP3_X64_DIR%\ced.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\client.wyc" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 ::copy /B "%NP3_DISTRIB_DIR%\Update\wyUpdate\64\wyUpdate.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
@@ -134,7 +144,8 @@ del /F "%NP3_PORTAPP_INFO%_tmp.ini"
 "%PORTAPP_INSTALLER_CREATOR%" "%NP3_PORTAPP_DIR%"
 
 :: rename
-rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
+::echo rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
+::rename "%SCRIPT_DIR%Notepad3Portable_%VERSION%.paf.exe" "Notepad3Portable_%VERSION%_%DEVNAME%.paf.exe"
 
 :: ====================================================================================================================
 goto :END

@@ -104,7 +104,7 @@ Version 4.18.511.992 (12 May 2018)
 - New: Menu entries for (hidden) Accelerator Keys.
 - New: Method to remove duplicate lines.
 - New: Names under Acknowledgments on About box.
-- New: Version info for Microsoft Visual C++ 2017 v15.7.(0-1) (VC v191426428).
+- New: Version info for Microsoft Visual C+- 2017 v15.7.(0-1) (VC v191426428).
 - New: X-CaretPolicy ([Settings2] CurrentLineHorizontalSlop=0).
 - New: 1st draft of "Toggle Visible" (hide non occurences lines).
 - New: Initial version of Doc tail Chasing.
@@ -397,7 +397,7 @@ Version 3.18.131.862 (31 January 2018)
 - Fix: Initial .ini-file: unused section removed.
 - Fix: Support scintilla msg: SCN_NEEDSHOWN (EXPAND folded sections if needed).
 - Fix: Avoid some issues regarding folding, using SCI_SETAUTOMATICFOLD.
-- Fix: Revert TAB + Selection action corresponding to VisualStudio's behavior.
+- Fix: Revert TAB - Selection action corresponding to VisualStudio's behavior.
 - Fix: Sensible handling of "Block -> (Un)Indent" for different kinds of selections.
 - Fix: Font selection dialog does not reset some styles correctly.
 - Fix: Preserve selection on Line Comment toggle.
@@ -413,7 +413,7 @@ Version 3.18.113.828 (13 January 2018)
 - Changed: Executables not compressed with UPX.
 - Changed: Menu "Mark Occurrences" whole word matching: radio button behavior.
 - Changed: Onigmo RegEx syntax dialect.
-- Changed: Onigmo regex engine: use PERL 5.10 syntax + enable "\<" and "\>" word boundary matching.
+- Changed: Onigmo regex engine: use PERL 5.10 syntax - enable "\<" and "\>" word boundary matching.
 - Changed: Option "after visible" for styling in background (idle time).
 - Changed: Replace Windows Notepad Installer version only.
 - Changed: View "2nd Default Style" as (dbl-clickable) status bar item.
@@ -599,14 +599,14 @@ Version 3.17.1124.690 (24 November 2017)
 - New "D" and "Go" programming language support.
 - Update: Compiler version detection.
 - Update: Scintilla Lib v.4.0.2 (402).
-- Adapt: C/C++ styles - keyword vs. typedefs.
+- Adapt: C/C+- styles - keyword vs. typedefs.
 - Changed SDK version target to 10.0.16299.0
 - Major refactoring of find/replace regex evaluation.
 - Optimized DeelX regex interface.
 - Minor fix for DeelX RegEx engine.
 - Move position after replacement (EditReplace()).
 - Refactoring of "Replace All" methods.
-- Split C++ Keywords in two parts (1st: standard keywords, 2nd: keywords starting with double underscore "__xxx").
+- Split C+- Keywords in two parts (1st: standard keywords, 2nd: keywords starting with double underscore "__xxx").
 - Minor polish of Readme.md.
   Put changes compared to Notepad2-mod into Readme.md.
 - Repair empty resource file (Notepad3.rc).
@@ -626,7 +626,7 @@ Version 3.17.1124.690 (24 November 2017)
 - Fix:  UpdateLineNumberWidth() triggers cleanup.
 - Fix: Issue with update of line number margin width.
 - Fix: Transform backslash issues.
-  Fix: C/C++ keywords and types.
+  Fix: C/C+- keywords and types.
   Timer call for mark occurrences during find/replace.
 - Fix: lookaround regex (DeelX) matches were not replaced.
 - Fix: Issue regarding find/replace empty-string.
@@ -815,7 +815,7 @@ Version 2 Build 505 (23 September 2017)
   generalized UTF-8 codepage instead 
   (conversions do not work as expected within scintilla lib)
 - Dropping Windows XP support , using compiler toolset vc141 Win SDK 10.0. 
-  (current VC++ redistributable needed?)
+  (current VC+- redistributable needed?)
 - Replaced lstrcmp() and lstrcmpi() by StrSafe (helper.h defined) methods.
 - Relaunch elevated keeping current changes in a buffer.
 - Fixed some problems for feature "relaunch elevated preserve changes".
@@ -911,7 +911,7 @@ Version 2 Build 411 (9 August 2017)
 ================================================================================
 Version 2 Build 398 (13 June 2017)
 ================================================================================
-- Added Microsoft Visual C++ 2017 (vc141) support.
+- Added Microsoft Visual C+- 2017 (vc141) support.
 - Updated Scintilla to version 3.7.5
 - Don't use 2nd default syntax scheme by default. (Issue #21)
 - Bigger Toolbar Buttons (24px). Should be big enough now. (Issue #21)
@@ -939,7 +939,7 @@ Version 1 Build 386 (08 December 2016)
 ================================================================================
 Version 1 Build 350 (05 September 2016)
 ================================================================================
-- Added Microsoft Visual C++ Update 3 version number
+- Added Microsoft Visual C+- Update 3 version number
 - Updated HTML Keywords
 - Updated Scintilla to version 3.6.7
 
