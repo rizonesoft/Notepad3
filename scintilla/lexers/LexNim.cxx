@@ -297,6 +297,7 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
     int decimalCount = 0;
 
     bool funcNameExists = false;
+    bool isStylingRawString = false;
 
     for (; sc.More(); sc.Forward()) {
         if (sc.atLineStart) {
@@ -310,7 +311,7 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
 
         // Handle string line continuation
         if (sc.ch == '\\' && (sc.chNext == '\n' || sc.chNext == '\r') &&
-           (sc.state == SCE_NIM_STRING || sc.state == SCE_NIM_CHARACTER)) {
+           (sc.state == SCE_NIM_STRING || sc.state == SCE_NIM_CHARACTER) && !isStylingRawString) {
             sc.Forward();
 
             if (sc.ch == '\r' && sc.chNext == '\n') {
@@ -477,7 +478,7 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                 }
                 break;
             case SCE_NIM_STRING:
-                if (sc.ch == '\\') {
+                if (sc.ch == '\\' && !isStylingRawString) {
                     if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
                         sc.Forward();
                     }
@@ -543,11 +544,15 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
             }
             // Raw string
             else if ((sc.ch == 'r' || sc.ch == 'R') && sc.chNext == '\"') {
+                isStylingRawString = true;
+
                 sc.SetState(SCE_NIM_STRING);
                 sc.Forward();
             }
             // String and triple double literal
             else if (sc.ch == '\"') {
+                isStylingRawString = false;
+
                 if (sc.Match(R"(""")")) {
                     sc.SetState(SCE_NIM_TRIPLEDOUBLE);
                 } else {

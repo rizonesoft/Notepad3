@@ -10,6 +10,9 @@ useInitializationList
 // produces same result on empty collections
 useStlAlgorithm
 
+// cppcheck 1.86 seems to be misunderstanding flow control in the large switch statement
+knownConditionTrueFalse:scintilla/src/Editor.cxx
+
 // Some non-explicit constructors are used for conversions or are private to lexers
 noExplicitConstructor
 
@@ -26,6 +29,7 @@ passedByValue
 // Suppress most lexer warnings since the lexers are maintained by others
 redundantCondition:scintilla/lexers/LexA68k.cxx
 useInitializationList:scintilla/lexers/LexAsm.cxx
+shadowVar:scintilla/lexers/LexAU3.cxx
 useInitializationList:scintilla/lexers/LexBasic.cxx
 uninitMemberVar:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBash.cxx
@@ -33,6 +37,7 @@ variableScope:scintilla/lexers/LexBatch.cxx
 variableScope:scintilla/lexers/LexCmake.cxx
 variableScope:scintilla/lexers/LexCSS.cxx
 useInitializationList:scintilla/lexers/LexD.cxx
+unreadVariable:scintilla/lexers/LexDMAP.cxx
 variableScope:scintilla/lexers/LexErlang.cxx
 variableScope:scintilla/lexers/LexGui4Cli.cxx
 variableScope:scintilla/lexers/LexInno.cxx
@@ -45,7 +50,9 @@ variableScope:scintilla/lexers/LexNimrod.cxx
 variableScope:scintilla/lexers/LexNsis.cxx
 variableScope:scintilla/lexers/LexOpal.cxx
 variableScope:scintilla/lexers/LexPB.cxx
+shadowVar:scintilla/lexers/LexPowerPro.cxx
 variableScope:scintilla/lexers/LexProgress.cxx
+redundantAssignment:scintilla/lexers/LexRegistry.cxx
 variableScope:scintilla/lexers/LexRuby.cxx
 uninitMemberVar:scintilla/lexers/LexRuby.cxx
 variableScope:scintilla/lexers/LexSpecman.cxx
@@ -53,10 +60,13 @@ clarifyCalculation:scintilla/lexers/LexTADS3.cxx
 invalidscanf:scintilla/lexers/LexTCMD.cxx
 knownConditionTrueFalse:scintilla/lexers/LexTCMD.cxx
 variableScope:scintilla/lexers/LexTeX.cxx
+knownConditionTrueFalse:scintilla/lexers/LexVerilog.cxx
+shadowVar:scintilla/lexers/LexVHDL.cxx
 variableScope:scintilla/lexers/LexVHDL.cxx
+unreadVariable:scintilla/lexers/LexVisualProlog.cxx
 
 // Suppress everything in catch.hpp as won't be changing
 *:scintilla/test/unit/catch.hpp
-preprocessorErrorDirective:scintilla/test/unit/*.cxx
-syntaxError:scintilla/test/unit/unitTest.cxx
+// For now, suppress all test source files as, since Catch 2, cppcheck shows many warnings showing
+// it doesn't understand the REQUIRE macro
 *:scintilla/test/unit/*.cxx

@@ -600,7 +600,7 @@ public:
 	}
 	virtual ~CaseConverter() = default;
 	bool Initialised() const {
-		return characters.size() > 0;
+		return !characters.empty();
 	}
 	void Add(int character, const char *conversion) {
 		characterToConversion.emplace_back(character, conversion);

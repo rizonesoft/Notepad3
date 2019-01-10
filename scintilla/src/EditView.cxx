@@ -976,7 +976,7 @@ void EditView::DrawEOL(Surface *surface, const EditModel &model, const ViewStyle
 	int alpha = SC_ALPHA_NOALPHA;
 	if (!hideSelection) {
 		const Sci::Position posAfterLineEnd = model.pdoc->LineStart(line + 1);
-		eolInSelection = (lastSubLine == true) ? model.sel.InSelectionForEOL(posAfterLineEnd) : 0;
+		eolInSelection = lastSubLine ? model.sel.InSelectionForEOL(posAfterLineEnd) : 0;
 		alpha = (eolInSelection == 1) ? vsDraw.selAlpha : vsDraw.selAdditionalAlpha;
 	}
 

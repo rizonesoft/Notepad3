@@ -1115,7 +1115,7 @@ public:
 	SurfaceD2D(SurfaceD2D &&) = delete;
 	SurfaceD2D &operator=(const SurfaceD2D &) = delete;
 	SurfaceD2D &operator=(SurfaceD2D &&) = delete;
-	virtual ~SurfaceD2D() override;
+	~SurfaceD2D() override;
 
 	void SetScale();
 	void Init(WindowID wid) override;
@@ -1274,9 +1274,9 @@ void SurfaceD2D::PenColour(ColourDesired fore) {
 void SurfaceD2D::D2DPenColour(ColourDesired fore, int alpha) {
 	if (pRenderTarget) {
 		D2D_COLOR_F col;
-		col.r = (fore.AsInteger() & 0xff) / 255.0f;
-		col.g = ((fore.AsInteger() & 0xff00) >> 8) / 255.0f;
-		col.b = (fore.AsInteger() >> 16) / 255.0f;
+		col.r = fore.GetRedComponent();
+		col.g = fore.GetGreenComponent();
+		col.b = fore.GetBlueComponent();
 		col.a = alpha / 255.0f;
 		if (pBrush) {
 			pBrush->SetColor(col);
