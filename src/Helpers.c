@@ -393,6 +393,17 @@ if (!bSucceed) {
 }*/
 
 
+//=============================================================================
+//
+//  GetSystemMetricsEx()
+//  get system metrix for current DPI 
+// https://docs.microsoft.com/de-de/windows/desktop/api/winuser/nf-winuser-getsystemmetricsfordpi
+//
+int GetSystemMetricsEx(int nValue) {
+
+  return ScaleIntToCurrentDPI(GetSystemMetrics(nValue));
+}
+
 
 //=============================================================================
 //
@@ -522,11 +533,10 @@ bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest)
   BITMAP bmp;
   if (GetObject(hbmp,sizeof(BITMAP),&bmp)) {
     if (bmp.bmBitsPixel == 32) {
-      int x,y;
       RGBQUAD *prgba = bmp.bmBits;
       if (prgba) {
-        for (y = 0; y < bmp.bmHeight; y++) {
-          for (x = 0; x < bmp.bmWidth; x++) {
+        for (int y = 0; y < bmp.bmHeight; y++) {
+          for (int x = 0; x < bmp.bmWidth; x++) {
             BYTE alpha = prgba[x].rgbReserved;
             prgba[x].rgbRed = ((prgba[x].rgbRed * alpha) + (GetRValue(crDest) * (255 - alpha))) >> 8;
             prgba[x].rgbGreen = ((prgba[x].rgbGreen * alpha) + (GetGValue(crDest) * (255 - alpha))) >> 8;
@@ -553,11 +563,10 @@ bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha)
   BITMAP bmp;
   if (GetObject(hbmp,sizeof(BITMAP),&bmp)) {
     if (bmp.bmBitsPixel == 32) {
-      int x,y;
       RGBQUAD *prgba = bmp.bmBits;
       if (prgba) {
-        for (y = 0; y < bmp.bmHeight; y++) {
-          for (x = 0; x < bmp.bmWidth; x++) {
+        for (int y = 0; y < bmp.bmHeight; y++) {
+          for (int x = 0; x < bmp.bmWidth; x++) {
             prgba[x].rgbRed = ((prgba[x].rgbRed * alpha) + (GetRValue(crDest) * (255 - alpha))) >> 8;
             prgba[x].rgbGreen = ((prgba[x].rgbGreen * alpha) + (GetGValue(crDest) * (255 - alpha))) >> 8;
             prgba[x].rgbBlue = ((prgba[x].rgbBlue * alpha) + (GetBValue(crDest) * (255 - alpha))) >> 8;
@@ -582,11 +591,10 @@ bool BitmapGrayScale(HBITMAP hbmp)
   BITMAP bmp;
   if (GetObject(hbmp,sizeof(BITMAP),&bmp)) {
     if (bmp.bmBitsPixel == 32) {
-      int x,y;
       RGBQUAD *prgba = bmp.bmBits;
       if (prgba) {
-        for (y = 0; y < bmp.bmHeight; y++) {
-          for (x = 0; x < bmp.bmWidth; x++) {
+        for (int y = 0; y < bmp.bmHeight; y++) {
+          for (int x = 0; x < bmp.bmWidth; x++) {
             prgba[x].rgbRed = prgba[x].rgbGreen = prgba[x].rgbBlue =
               (((BYTE)((prgba[x].rgbRed * 38 + prgba[x].rgbGreen * 75 + prgba[x].rgbBlue * 15) >> 7) * 0x80) + (0xD0 * (255 - 0x80))) >> 8;
           }
@@ -948,8 +956,8 @@ bool PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
 //
 bool PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
 {
-  WCHAR tchResPath[MAX_PATH] = { L'\0' };
   if (PathIsLnkFile(pszPath)) {
+    WCHAR tchResPath[MAX_PATH] = { L'\0' };
     if (PathGetLnkPath(pszPath, tchResPath, sizeof(WCHAR)*COUNTOF(tchResPath))) {
       if (PathIsDirectory(tchResPath)) {
         StringCchCopyN(pszResPath, cchResPath, tchResPath, COUNTOF(tchResPath));
@@ -1653,10 +1661,6 @@ int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
 
 bool MRU_Load(LPMRULIST pmru) 
 {
-  WCHAR tchName[32] = { L'\0' };
-  WCHAR tchItem[1024] = { L'\0' };
-  WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
-
   size_t const len = 2 * MRU_MAXITEMS * 1024;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
@@ -1665,7 +1669,9 @@ bool MRU_Load(LPMRULIST pmru)
 
     int n = 0;
     for (int i = 0; i < pmru->iSize; i++) {
+      WCHAR tchName[32] = { L'\0' };
       StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
+      WCHAR tchItem[1024] = { L'\0' };
       if (IniSectionGetString(pIniSection, tchName, L"", tchItem, COUNTOF(tchItem))) {
         /*if (pmru->iFlags & MRU_UTF8) {
           WCHAR wchItem[1024];
@@ -1684,6 +1690,8 @@ bool MRU_Load(LPMRULIST pmru)
         pmru->iCaretPos[n] = (Settings.PreserveCaretPos) ? IniSectionGetInt(pIniSection, tchName, 0) : 0;
 
         StringCchPrintf(tchName, COUNTOF(tchName), L"BMRK%.2i", i + 1);
+        
+        WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
         IniSectionGetString(pIniSection, tchName, L"", wchBookMarks, COUNTOF(wchBookMarks));
         pmru->pszBookMarks[n] = StrDup(wchBookMarks);
 
@@ -1696,10 +1704,8 @@ bool MRU_Load(LPMRULIST pmru)
   return false;
 }
 
-bool MRU_Save(LPMRULIST pmru) {
-
-  WCHAR tchName[32] = { L'\0' };
-
+bool MRU_Save(LPMRULIST pmru) 
+{
   size_t const len = 2 * MRU_MAXITEMS * 1024;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
@@ -1707,6 +1713,7 @@ bool MRU_Save(LPMRULIST pmru) {
 
     for (int i = 0; i < pmru->iSize; i++) {
       if (pmru->pszItems[i]) {
+        WCHAR tchName[32] = { L'\0' };
         StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
         /*if (pmru->iFlags & MRU_UTF8) {
           WCHAR  tchItem[1024];
@@ -1926,7 +1933,6 @@ void TransformBackslashes(char* pszInput, bool bRegEx, UINT cpEdit, int* iReplac
     UnSlash(pszInput, cpEdit);
   }
 }
-
 
 
 void TransformMetaChars(char* pszInput, bool bRegEx, int iEOLMode)
@@ -2608,7 +2614,6 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *p
 {
   FORMATETC fmtetc = { CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
   STGMEDIUM medium;
-  ULONG lFmt;
   DROPDATA DropData;
 
   UNUSED(dwKeyState);
@@ -2616,6 +2621,7 @@ static HRESULT STDMETHODCALLTYPE IDRPTRG_Drop(PIDROPTARGET pThis, IDataObject *p
 
   if (pThis->bAllowDrop)
   {
+    ULONG lFmt;
     for (lFmt = 0; lFmt < pThis->lNumFormats; lFmt++)
     {
       fmtetc.cfFormat = pThis->pFormat[lFmt];

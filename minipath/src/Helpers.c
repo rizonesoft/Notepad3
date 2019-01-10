@@ -520,7 +520,7 @@ void CenterDlgInParent(HWND hDlg)
 //
 //  MakeBitmapButton()
 //
-void MakeBitmapButton(HWND hwnd,int nCtlId,HINSTANCE hInstance,UINT uBmpId)
+void MakeBitmapButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, WORD uBmpId)
 {
   HWND hwndCtl = GetDlgItem(hwnd,nCtlId);
   BITMAP bmp;
@@ -553,17 +553,11 @@ void DeleteBitmapButton(HWND hwnd,int nCtlId)
 //
 //  SetWindowTransparentMode()
 //
-void SetWindowTransparentMode(HWND hwnd,BOOL bTransparentMode)
+void SetWindowTransparentMode(HWND hwnd, BOOL bTransparentMode, int iOpacityLevel)
 {
   if (bTransparentMode) {
     SetWindowLongPtr(hwnd, GWL_EXSTYLE, GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-
-    // get opacity level from registry
-    int iAlphaPercent = IniGetInt(L"Settings2", L"OpacityLevel", 75);
-    iAlphaPercent = clampi(iAlphaPercent, 0, 100);
-
-    BYTE const bAlpha = (BYTE)MulDiv(iAlphaPercent, 255, 100);
-
+    BYTE const bAlpha = (BYTE)MulDiv(iOpacityLevel, 255, 100);
     SetLayeredWindowAttributes(hwnd, 0, bAlpha, LWA_ALPHA);
   }
   else

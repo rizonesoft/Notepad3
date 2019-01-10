@@ -160,7 +160,7 @@ void SetFindPatternMB(LPCSTR chFindPattern);
 void GetFindPattern(LPWSTR wchFindPattern, size_t bufferSize);
 void GetFindPatternMB(LPSTR chFindPattern, size_t bufferSize);
 
-bool FileIO(bool,LPWSTR pszFileName,bool,bool,int* ienc,int* ieol,bool*,bool*,bool*,bool*,bool);
+bool FileIO(bool, LPWSTR pszFileName, bool, bool, EditFileIOStatus* status, bool);
 bool FileLoad(bool,bool,bool,bool,bool,LPCWSTR lpszFile);
 bool FileRevert(LPCWSTR szFileName,bool);
 bool FileSave(bool,bool,bool,bool);

@@ -122,6 +122,8 @@ BEGIN
     IDS_MUI_ERR_DROP            "Only one file can be dropped at the same time!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "Are you sure you want to open this large file?"
     IDS_MUI_WARN_UNKNOWN_EXT    "Unknown file name extension (%s) !\nLoading data anyway ?"
+    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks by '%s'?"
+    IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
 END
 
 STRINGTABLE
@@ -302,7 +304,6 @@ IDS_MUI_ABOUT_RTF_6 "\
 }"
 
 END
-
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////

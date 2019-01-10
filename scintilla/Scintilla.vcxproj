@@ -225,47 +225,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\onigmo\enc\ascii.c" />
-    <ClCompile Include="..\onigmo\enc\big5.c" />
-    <ClCompile Include="..\onigmo\enc\cp949.c" />
-    <ClCompile Include="..\onigmo\enc\emacs_mule.c" />
-    <ClCompile Include="..\onigmo\enc\euc_jp.c" />
-    <ClCompile Include="..\onigmo\enc\euc_kr.c" />
-    <ClCompile Include="..\onigmo\enc\euc_tw.c" />
-    <ClCompile Include="..\onigmo\enc\gb18030.c" />
-    <ClCompile Include="..\onigmo\enc\gbk.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_1.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_10.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_11.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_13.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_14.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_15.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_16.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_2.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_3.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_4.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_5.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_6.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_7.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_8.c" />
-    <ClCompile Include="..\onigmo\enc\iso_8859_9.c" />
-    <ClCompile Include="..\onigmo\enc\koi8_r.c" />
-    <ClCompile Include="..\onigmo\enc\koi8_u.c" />
     <ClCompile Include="..\onigmo\enc\mktable.c" />
-    <ClCompile Include="..\onigmo\enc\shift_jis.c" />
     <ClCompile Include="..\onigmo\enc\unicode.c" />
     <ClCompile Include="..\onigmo\enc\us_ascii.c" />
-    <ClCompile Include="..\onigmo\enc\utf_16be.c" />
-    <ClCompile Include="..\onigmo\enc\utf_16le.c" />
-    <ClCompile Include="..\onigmo\enc\utf_32be.c" />
-    <ClCompile Include="..\onigmo\enc\utf_32le.c" />
     <ClCompile Include="..\onigmo\enc\utf_8.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1250.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1251.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1252.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1253.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1254.c" />
-    <ClCompile Include="..\onigmo\enc\windows_1257.c" />
-    <ClCompile Include="..\onigmo\enc\windows_31j.c" />
     <ClCompile Include="..\onigmo\regcomp.c" />
     <ClCompile Include="..\onigmo\regenc.c" />
     <ClCompile Include="..\onigmo\regerror.c" />
@@ -303,7 +266,7 @@
     <ClCompile Include="lexers\LexMake.cxx" />
     <ClCompile Include="lexers\LexMarkdown.cxx" />
     <ClCompile Include="lexers\LexMatlab.cxx" />
-    <ClCompile Include="lexers\LexNimrod.cxx" />
+    <ClCompile Include="lexers\LexNim.cxx" />
     <ClCompile Include="lexers\LexNsis.cxx" />
     <ClCompile Include="lexers\LexNull.cxx" />
     <ClCompile Include="lexers\LexPascal.cxx" />
@@ -365,9 +328,7 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\onigmo\enc\iso_8859.h" />
     <ClInclude Include="..\onigmo\enc\jis\props.h" />
-    <ClInclude Include="..\onigmo\enc\shift_jis.h" />
     <ClInclude Include="..\onigmo\enc\unicode\casefold.h" />
     <ClInclude Include="..\onigmo\enc\unicode\name2ctype.h" />
     <ClInclude Include="..\onigmo\onigmo.h" />

@@ -19,8 +19,35 @@ LEGEND:
 3) ENHANCEMENT: (Optimize)
 4) FIXES: (Debug)
 5) REMOVED: 
-
 --------------------------------------------------------------------------------
+ABBREV:
+--------------------------------------------------
+CED - (C)ompact (E)ncoding (D)etection 
+NLS - (N)ew (L)anguage (S)trings 
+SCL - (SC)intilla (L)ibrary
+
+
+==================================================
+Current Version 5.19.110.build (10. Januar 2019)
+==================================================
+
+--------------------------------------------------
+NEW:
+--------------------------------------------------
+- add CED reliability option (NLS: dialogs)
+- Indentation consistency check on file open (NLS: dialogs)
+- End-of-Line (EOL) consistency check on file open (NLS: dialogs)
+
+--------------------------------------------------
+CHANGES:
+--------------------------------------------------
+
+- SCL new Nim lexer replaces old Nimrod lexer (new highlighting)
+- Up-to-Date SCL
+
+--------------------------------------------------
+FIXES:
+--------------------------------------------------
 
 
 ================================================================================

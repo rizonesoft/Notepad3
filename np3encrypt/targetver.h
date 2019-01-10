@@ -1,5 +1,4 @@
-﻿#ifndef _TARGETVER_H_
-#define _TARGETVER_H_
+﻿#pragma once
 
 // Durch Einbeziehen von"SDKDDKVer.h" wird die höchste verfügbare Windows-Plattform definiert.
 
@@ -9,5 +8,3 @@
 #include <WinSDKVer.h>
 #define _WIN32_WINNT 0x500
 #include <SDKDDKVer.h>
-
-#endif //_TARGETVER_H_

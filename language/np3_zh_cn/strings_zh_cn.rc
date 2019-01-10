@@ -122,6 +122,8 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE        "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE  "是否确实要打开一个如此庞大的文件？"
     IDS_MUI_WARN_UNKNOWN_EXT    "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
+    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks by '%s'?"
+    IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
 END
 
 STRINGTABLE

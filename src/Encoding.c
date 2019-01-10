@@ -48,7 +48,6 @@
 int g_DOSEncoding = CPI_NONE;
 bool g_bForceCompEncDetection = false;
 
-extern bool g_bIsCJKInputCodePage;
 
 // ============================================================================
 
@@ -109,7 +108,8 @@ int  Encoding_SrcWeak(int iSrcWeakEnc)
 // ============================================================================
 
 
-bool Encoding_HasChanged(int iOriginalEncoding) {
+bool Encoding_HasChanged(int iOriginalEncoding) 
+{
   static int OriginalEncoding = CPI_NONE;
 
   if (iOriginalEncoding >= CPI_NONE) {
@@ -135,7 +135,7 @@ void Encoding_InitDefaults()
   assert(g_Encodings[CPI_ANSI_DEFAULT].uCodePage == ansiInputCP);
   StringCchPrintf(wchANSI, COUNTOF(wchANSI), L" (CP-%u)", ansiInputCP);
 
-  g_bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
+  Globals.bIsCJKInputCodePage = IsDBCSCodePage(Scintilla_InputCodePage());
 
   for (int i = CPI_UTF7 + 1; i < Encoding_CountOf(); ++i) {
     if (Encoding_IsValid(i) && (g_Encodings[i].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage)) {
@@ -349,14 +349,13 @@ int CmpEncoding(const void *s1, const void *s2) {
 
 
 void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
-  int i;
   int iSelItem = -1;
   LVITEM lvi;
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
-    for (i = 0; i < Encoding_CountOf(); i++) {
+    for (int i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
       GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
@@ -366,7 +365,7 @@ void Encoding_AddToListView(HWND hwnd, int idSel, bool bRecodeOnly) {
     lvi.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
     lvi.pszText = wchBuf;
 
-    for (i = 0; i < Encoding_CountOf(); i++) {
+    for (int i = 0; i < Encoding_CountOf(); i++) {
 
       int id = pEE[i].id;
       if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
@@ -435,14 +434,13 @@ bool Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
 
 
 void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
-  int i;
   int iSelItem = -1;
   COMBOBOXEXITEM cbei;
   WCHAR wchBuf[256] = { L'\0' };
 
   PENCODINGENTRY pEE = AllocMem(Encoding_CountOf() * sizeof(ENCODINGENTRY), HEAP_ZERO_MEMORY);
   if (pEE) {
-    for (i = 0; i < Encoding_CountOf(); i++) {
+    for (int i = 0; i < Encoding_CountOf(); i++) {
       pEE[i].id = i;
       GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
     }
@@ -455,7 +453,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
     cbei.iImage = 0;
     cbei.iSelectedImage = 0;
 
-    for (i = 0; i < Encoding_CountOf(); i++) {
+    for (int i = 0; i < Encoding_CountOf(); i++) {
 
       int id = pEE[i].id;
       if (!bRecodeOnly || (g_Encodings[id].uFlags & NCP_RECODE)) {
@@ -478,7 +476,6 @@ void Encoding_AddToComboboxEx(HWND hwnd, int idSel, bool bRecodeOnly) {
           StringCchCatN(wchBuf, COUNTOF(wchBuf), wchOEM, COUNTOF(wchOEM));
 
         cbei.iImage = (Encoding_IsValid(id) ? 0 : 1);
-
         cbei.lParam = (LPARAM)id;
         SendMessage(hwnd, CBEM_INSERTITEM, 0, (LPARAM)&cbei);
 

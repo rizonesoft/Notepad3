@@ -267,7 +267,7 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
 
       int res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
                          m_CmplOptions, g_pOnigEncodingType, &m_OnigSyntax, &einfo);
-      if (res != 0) {
+      if (res != ONIG_NORMAL) {
         onig_error_code_to_str(UCharPtr(m_ErrorInfo), res, &einfo);
         return SciPos(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
       }

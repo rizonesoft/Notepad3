@@ -133,7 +133,7 @@ extern EDITLEXER lexLUA;           // Lua Script
 extern EDITLEXER lexMAK;           // Makefiles
 extern EDITLEXER lexMARKDOWN;      // Markdown
 extern EDITLEXER lexMATLAB;        // MATLAB
-extern EDITLEXER lexNimrod;        // Nim(rod)
+extern EDITLEXER lexNim;           // Nim(rod)
 extern EDITLEXER lexNSIS;          // NSIS Script
 extern EDITLEXER lexPAS;           // Pascal Source Code
 extern EDITLEXER lexPL;            // Perl Script

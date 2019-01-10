@@ -276,85 +276,7 @@
     <ClCompile Include="..\onigmo\enc\ascii.c">
       <Filter>onigmo\enc</Filter>
     </ClCompile>
-    <ClCompile Include="..\onigmo\enc\big5.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\cp949.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\emacs_mule.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\euc_jp.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\euc_kr.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\euc_tw.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\gb18030.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\gbk.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_1.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_2.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_3.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_4.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_5.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_6.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_7.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_8.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_9.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_10.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_11.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_13.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_14.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_15.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\iso_8859_16.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\koi8_r.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\koi8_u.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
     <ClCompile Include="..\onigmo\enc\mktable.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\shift_jis.c">
       <Filter>onigmo\enc</Filter>
     </ClCompile>
     <ClCompile Include="..\onigmo\enc\unicode.c">
@@ -364,39 +286,6 @@
       <Filter>onigmo\enc</Filter>
     </ClCompile>
     <ClCompile Include="..\onigmo\enc\utf_8.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_16be.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_16le.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_32be.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\utf_32le.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_31j.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1250.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1251.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1252.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1253.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1254.c">
-      <Filter>onigmo\enc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\onigmo\enc\windows_1257.c">
       <Filter>onigmo\enc</Filter>
     </ClCompile>
     <ClCompile Include="..\onigmo\regenc.c">
@@ -441,9 +330,6 @@
     <ClCompile Include="..\onigmo\st.c">
       <Filter>onigmo</Filter>
     </ClCompile>
-    <ClCompile Include="lexers\LexNimrod.cxx">
-      <Filter>lexers</Filter>
-    </ClCompile>
     <ClCompile Include="lexers\LexR.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
@@ -455,6 +341,9 @@
     </ClCompile>
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx">
       <Filter>sciXlexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers\LexNim.cxx">
+      <Filter>lexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -643,12 +532,6 @@
     </ClInclude>
     <ClInclude Include="..\onigmo\enc\unicode\name2ctype.h">
       <Filter>onigmo\enc\unicode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\enc\iso_8859.h">
-      <Filter>onigmo\enc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\onigmo\enc\shift_jis.h">
-      <Filter>onigmo\enc</Filter>
     </ClInclude>
     <ClInclude Include="..\onigmo\onigmo.h">
       <Filter>onigmo</Filter>

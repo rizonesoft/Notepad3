@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef UTSTRING_H
 #define UTSTRING_H
 
-#define UTSTRING_VERSION 2.0.2
+#define UTSTRING_VERSION 2.1.0
 
 #include <stdlib.h>
 #include <string.h>

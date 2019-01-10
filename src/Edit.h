@@ -31,9 +31,10 @@ bool  EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
 bool  EditClearClipboard(HWND hwnd);
 bool  EditSwapClipboard(HWND hwnd,bool);
 bool  EditCopyAppend(HWND hwnd,bool);
-int   EditDetectEOLMode(HWND hwnd,char* lpData);
-bool  EditLoadFile(HWND hwnd,LPWSTR pszFile,bool,bool,int* iEncoding,int* iEOLMode,bool*,bool*,bool*);
-bool  EditSaveFile(HWND hwnd,LPCWSTR pszFile,int iEncoding,bool*,bool);
+void  EditDetectEOLMode(LPCSTR lpData, DWORD cbData, EditFileIOStatus* status);
+void  EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status);
+bool  EditLoadFile(HWND hwnd, LPWSTR pszFile, bool, bool, EditFileIOStatus* status);
+bool  EditSaveFile(HWND hwnd,LPCWSTR pszFile, EditFileIOStatus* status, bool bSaveCopy);
 
 void  EditInvertCase(HWND hwnd);
 void  EditTitleCase(HWND hwnd);
@@ -57,7 +58,7 @@ void  EditMoveDown(HWND hwnd);
 void  EditJumpToSelectionEnd(HWND hwnd);
 void  EditJumpToSelectionStart(HWND hwnd);
 void  EditModifyLines(HWND hwnd,LPCWSTR pwszPrefix,LPCWSTR pwszAppend);
-void  EditIndentBlock(HWND hwnd,int cmd,bool);
+void  EditIndentBlock(HWND hwnd,int cmd, bool bFormatIndentation, bool bForceAll);
 void  EditAlignText(HWND hwnd,int nMode);
 void  EditEncloseSelection(HWND hwnd,LPCWSTR pwszOpen,LPCWSTR pwszClose);
 void  EditToggleLineComments(HWND hwnd,LPCWSTR pwszComment,bool);
@@ -125,21 +126,6 @@ inline void EditApplyLexerStyle(HWND hwnd, const DocPos iRangeStart, const DocPo
 #define FV_LONGLINESLIMIT 32
 #define FV_ENCODING       64
 #define FV_MODE          128
-
-typedef struct _filevars {
-
-  int mask;
-  int iTabWidth;
-  int iIndentWidth;
-  bool bTabsAsSpaces;
-  bool bTabIndents;
-  bool fWordWrap;
-  int iLongLinesLimit;
-  char tchEncoding[32];
-  int  iEncoding;
-  char tchMode[32];
-
-} FILEVARS, *LPFILEVARS;
 
 bool FileVars_Init(char* lpData,DWORD cbData,LPFILEVARS lpfv);
 bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv);

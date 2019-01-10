@@ -367,6 +367,7 @@
     <ClCompile Include="..\crypto\rijndael-api-fst.c" />
     <ClCompile Include="..\crypto\sha-256.c" />
     <ClCompile Include="..\tinyexpr\tinyexpr.c" />
+    <ClCompile Include="AccelKeys.c" />
     <ClCompile Include="ChooseFont\ChooseFont.cpp" />
     <ClCompile Include="ChooseFont\FontEnumeration.cpp" />
     <ClCompile Include="ChooseFont\GdiTextRenderer.cpp" />
@@ -404,7 +405,7 @@
     <ClCompile Include="StyleLexers\styleLexMAK.c" />
     <ClCompile Include="StyleLexers\styleLexMARKDOWN.c" />
     <ClCompile Include="StyleLexers\styleLexMATLAB.c" />
-    <ClCompile Include="StyleLexers\styleLexNimrod.c" />
+    <ClCompile Include="StyleLexers\styleLexNim.c" />
     <ClCompile Include="StyleLexers\styleLexNSIS.c" />
     <ClCompile Include="StyleLexers\styleLexPAS.c" />
     <ClCompile Include="StyleLexers\styleLexPL.c" />
@@ -452,7 +453,9 @@
     <ClInclude Include="..\uthash\uthash.h" />
     <ClInclude Include="..\uthash\utlist.h" />
     <ClInclude Include="..\uthash\utringbuffer.h" />
+    <ClInclude Include="..\uthash\utstack.h" />
     <ClInclude Include="..\uthash\utstring.h" />
+    <ClInclude Include="AccelKeys.h" />
     <ClInclude Include="ChooseFont\ChooseFont.h" />
     <ClInclude Include="ChooseFont\FontEnumeration.h" />
     <ClInclude Include="ChooseFont\GdiTextRenderer.h" />

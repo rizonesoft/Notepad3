@@ -143,7 +143,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_ru_ru", "minipath\langua
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C0B9717-FC7C-4EEA-BC48-6107418A7D93}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E5B87EB-C468-4334-8384-E9A3F0F6FBDA}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection

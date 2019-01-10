@@ -122,6 +122,8 @@ BEGIN
     IDS_MUI_ERR_DROP            "Slegs een lêer kan op dieselfde tyd laat val word!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "Is jy seker jy wil hierdie groot lêer oopmaak?"
     IDS_MUI_WARN_UNKNOWN_EXT    "Onbekende lêernaam uitbreiding (%s)!\nLaai data in elk geval?"
+    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks by '%s'?"
+    IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
 END
 
 STRINGTABLE
@@ -304,7 +306,7 @@ IDS_MUI_ABOUT_RTF_6 "\
 
 END
 
-#endif    // Afrikaans (Südafrika) resources
+#endif    // Afrikaans (South Africa) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

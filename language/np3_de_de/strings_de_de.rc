@@ -122,6 +122,8 @@ BEGIN
     IDS_MUI_ERR_DROP            "Es kann immer nur eine Datei gleichzeitig verworfen werden!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "Bist Du sicher, dass Du diese sehr groﬂe Datei ˆffnen mˆchtest?"
     IDS_MUI_WARN_UNKNOWN_EXT    "Unbekannte Dateierweiterung (%s) !\nSollen die Daten trotzdem geladen werden?"
+    IDS_MUI_WARN_INCONSIST_EOLS "Die Datei hat uneinheitliche Zeilenumbr√ºche!\n%s\nAlle Zeilenumbr√ºche mit '%s' angleichen?"
+    IDS_MUI_WARN_INCONS_INDENTS "Die Datei hat uneinheitliche Einr√ºckungen!\n%s\nErsetze die Einr√ºckung mit '%s'?"
 END
 
 STRINGTABLE
