@@ -2712,7 +2712,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_CLEAR, !s && !ro);
 
   EnableCmd(hmenu, IDM_EDIT_SELECTALL, !e);
-  
+  EnableCmd(hmenu, IDM_EDIT_GOTOLINE, !e);
+
   OpenClipboard(hwnd);
   EnableCmd(hmenu,IDM_EDIT_CLEARCLIPBOARD,CountClipboardFormats());
   CloseClipboard();
