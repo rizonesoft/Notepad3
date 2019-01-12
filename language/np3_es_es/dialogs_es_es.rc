@@ -67,7 +67,7 @@ BEGIN
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
     PUSHBUTTON      "Copiar Versión Texto",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
-    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,360,168
+    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
 END
 
 IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
@@ -96,7 +96,8 @@ BEGIN
     CONTROL         "Ce&rrar tras encontrar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,80,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
+    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Cerrar",IDCANCEL,212,99,54,14
@@ -128,7 +129,8 @@ BEGIN
     CONTROL         "Ce&rrar tras reemplazar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,80,77,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
+    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Reemplazar",IDC_REPLACE,211,43,55,14
@@ -214,17 +216,17 @@ BEGIN
     PUSHBUTTON      "Cancelar",IDCANCEL,139,24,50,14
 END
 
-IDD_MUI_LINENUM DIALOGEX 0, 0, 186, 47
+IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Ir a"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Línea:",IDC_STATIC,7,7,40,8
-    EDITTEXT        IDC_LINENUM,7,24,46,14,ES_AUTOHSCROLL
-    LTEXT           "&Columna:",IDC_STATIC,63,7,40,8
-    EDITTEXT        IDC_COLNUM,63,24,46,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
-    PUSHBUTTON      "Cancelar",IDCANCEL,129,24,50,14
+    LTEXT           "&Línea:",IDC_LINE_TEXT,7,8,101,8
+    EDITTEXT        IDC_LINENUM,7,18,101,12,ES_AUTOHSCROLL
+    LTEXT           "&Columna:",IDC_COLUMN_TEXT,7,40,101,8
+    EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,58,74,50,14
+    PUSHBUTTON      "Cancelar",IDCANCEL,7,74,50,14
 END
 
 IDD_MUI_FILEMRU DIALOGEX 0, 0, 269, 160
@@ -235,7 +237,8 @@ BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
     CONTROL         "&Preservar la posición de caret.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "&Guardar la lista de archivos recientes al salir.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,180,10
-    CONTROL         "&Recordar patrón de búsqueda.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,120,10
+    CONTROL         "&Recordar patrón de búsqueda.",IDC_REMEMBERSEARCHPATTERN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,120,10
     PUSHBUTTON      "Eliminar",IDC_REMOVE,212,107,50,14,WS_DISABLED
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,212,139,50,14
@@ -263,7 +266,8 @@ BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
     CONTROL         "Establecer esquema seleccionado por &defecto.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,155,10
-    CONTROL         "Selección &automática por extensión de archivo.",IDC_AUTOSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,155,10
+    CONTROL         "Selección &automática por extensión de archivo.",IDC_AUTOSELECT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,155,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,113,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,117,10,10
@@ -307,8 +311,10 @@ BEGIN
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Insertar tabulación como e&spacios.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Tecla &Tab vuelve a formatear la sangría.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "Tecla &Retroceso vuelve a formatear la sangría.",IDC_BACKTAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+    CONTROL         "Tecla &Retroceso vuelve a formatear la sangría.",IDC_BACKTAB_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
+    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,117,27,50,14
 END
@@ -684,9 +690,9 @@ BEGIN
     IDD_MUI_LINENUM, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 179
+        RIGHTMARGIN, 108
         TOPMARGIN, 7
-        BOTTOMMARGIN, 40
+        BOTTOMMARGIN, 88
     END
 
     IDD_MUI_FILEMRU, DIALOG
@@ -876,13 +882,12 @@ IDD_MUI_ALIGN, DIALOG
         TOPMARGIN, 7
         BOTTOMMARGIN, 193
     END
-
 END
 #endif    // APSTUDIO_INVOKED
 
-
 #endif    // Spanish (Spain, International Sort) resources
 /////////////////////////////////////////////////////////////////////////////
+
 
 
 #ifndef APSTUDIO_INVOKED
@@ -894,5 +899,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
 

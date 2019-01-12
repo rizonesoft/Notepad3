@@ -102,16 +102,6 @@ const char* MyEncodingName(Encoding enc) {
 }
 
 
-// http://www.iana.org/assignments/character-sets says charset name is up to
-// 40 bytes of any printable ASCII, but that can't be right
-// when parsing HTML; at least quote is not allowed. The list
-// here includes all punctuation in all registered names as of April 2006
-static const char* kWordLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                  "abcdefghijklmnopqrstuvwxyz"
-                                  "0123456789"
-                                  "-_.:()";
-
-
 // Normalize ASCII string to first 4 alphabetic chars and last 4 digit chars
 // Letters are forced to lowercase ASCII
 // Used to normalize charset= values
@@ -128,7 +118,7 @@ string MakeChar44(const string& str) {
       }
     } else if (kIsDigit[uc]) {
       if (d_ptr < 4) {
-        res[d_ptr + 4] = kCharsetToLowerTbl[uc];
+        res[4 + d_ptr] = kCharsetToLowerTbl[uc];
       } else {
         // Keep last 4 digits by shifting left
         res[4] = res[5];

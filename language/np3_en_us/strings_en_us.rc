@@ -191,6 +191,8 @@ BEGIN
     IDS_MUI_TRANSL_AUTHOR       "(en-US) English(amer.) text by Flo Balmer et al."
     IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Zero-Length Match"
+    IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN         "Column (1 - %lli):"
 END
 
 STRINGTABLE
@@ -277,7 +279,7 @@ IDS_MUI_ABOUT_RTF_5  "\
 \\cf0 \\fs20\\b1\\ul1 Licenses:\\ul0\\b0\\fs18\\par\
 "
 
-IDS_MUI_ABOUT_RTF_6  "\
+IDS_MUI_ABOUT_RTF_6 "\
 \\cf0 \\fs20\\b1\\ul1 Notepad3 License:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2015-2019 Rizonesoft, All rights reserved.\\par\

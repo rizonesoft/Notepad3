@@ -191,6 +191,8 @@ BEGIN
     IDS_MUI_TRANSL_AUTHOR       "(ja-JP) 日本語翻訳 maboroshin"
     IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789.\nいろはにほへと ちりぬるを わかよたれそ つねならむ うゐのおくやま けふこえて あさきゆめみし ゑひもせす。\nとても綺麗な夕日、今日もたくさん動いて、ご飯もおいしい。よく眠れそうだ。"
     IDS_MUI_ZERO_LEN_MATCH      "^ 空文字列に一致"
+    IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN         "Column (1 - %lli):"
 END
 
 STRINGTABLE

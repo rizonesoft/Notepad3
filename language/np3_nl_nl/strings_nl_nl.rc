@@ -188,9 +188,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(nl-NL) Nederlandse vertaling door hpwamr"
-    IDS_MUI_EXAMPLE_TEXT    "Pa's wijze lynx bezag vroom het fikse aquaduct, 0123456789."
-    IDS_MUI_ZERO_LEN_MATCH  "^ Nul-lengte Match"
+    IDS_MUI_TRANSL_AUTHOR       "(nl-NL) Nederlandse vertaling door hpwamr"
+    IDS_MUI_EXAMPLE_TEXT        "Pa's wijze lynx bezag vroom het fikse aquaduct, 0123456789."
+    IDS_MUI_ZERO_LEN_MATCH      "^ Nul-lengte Match"
+    IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN         "Column (1 - %lli):"
 END
 
 STRINGTABLE

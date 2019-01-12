@@ -25,28 +25,30 @@
 
 using namespace Scintilla;
 
-static bool strstart(const char *haystack, const char *needle) {
+namespace {
+
+bool strstart(const char *haystack, const char *needle) noexcept {
 	return strncmp(haystack, needle, strlen(needle)) == 0;
 }
 
-static bool Is0To9(char ch) {
+constexpr bool Is0To9(char ch) noexcept {
 	return (ch >= '0') && (ch <= '9');
 }
 
-static bool Is1To9(char ch) {
+constexpr bool Is1To9(char ch) noexcept {
 	return (ch >= '1') && (ch <= '9');
 }
 
-static bool IsAlphabetic(int ch) {
+bool IsAlphabetic(int ch) {
 	return IsASCII(ch) && isalpha(ch);
 }
 
-static inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
+inline bool AtEOL(Accessor &styler, Sci_PositionU i) {
 	return (styler[i] == '\n') ||
 	       ((styler[i] == '\r') && (styler.SafeGetCharAt(i + 1) != '\n'));
 }
 
-static int RecogniseErrorListLine(const char *lineBuffer, Sci_PositionU lengthLine, Sci_Position &startValue) {
+int RecogniseErrorListLine(const char *lineBuffer, Sci_PositionU lengthLine, Sci_Position &startValue) {
 	if (lineBuffer[0] == '>') {
 		// Command or return status
 		return SCE_ERR_CMD;
@@ -175,7 +177,7 @@ static int RecogniseErrorListLine(const char *lineBuffer, Sci_PositionU lengthLi
 					canBeCtags = false;
 				}
 			} else if (state == stGccStart) {	// <filename>:
-				state = Is0To9(ch) ? stGccDigit : stUnrecognized;
+				state = ((ch == '-') || Is0To9(ch)) ? stGccDigit : stUnrecognized;
 			} else if (state == stGccDigit) {	// <filename>:<line>
 				if (ch == ':') {
 					state = stGccColumn;	// :9.*: is GCC
@@ -206,14 +208,13 @@ static int RecogniseErrorListLine(const char *lineBuffer, Sci_PositionU lengthLi
 				} else if ((ch == ':' && chNext == ' ') || (ch == ' ')) {
 					// Possibly Delphi.. don't test against chNext as it's one of the strings below.
 					char word[512];
-					Sci_PositionU j, chPos;
 					unsigned numstep;
-					chPos = 0;
 					if (ch == ' ')
 						numstep = 1; // ch was ' ', handle as if it's a delphi errorline, only add 1 to i.
 					else
 						numstep = 2; // otherwise add 2.
-					for (j = i + numstep; j < lengthLine && IsAlphabetic(lineBuffer[j]) && chPos < sizeof(word) - 1; j++)
+					Sci_PositionU chPos = 0;
+					for (Sci_PositionU j = i + numstep; j < lengthLine && IsAlphabetic(lineBuffer[j]) && chPos < sizeof(word) - 1; j++)
 						word[chPos++] = lineBuffer[j];
 					word[chPos] = 0;
 					if (!CompareCaseInsensitive(word, "error") || !CompareCaseInsensitive(word, "warning") ||
@@ -268,13 +269,11 @@ static int RecogniseErrorListLine(const char *lineBuffer, Sci_PositionU lengthLi
 
 #define CSI "\033["
 
-namespace {
-
-bool SequenceEnd(int ch) {
+constexpr bool SequenceEnd(int ch) noexcept {
 	return (ch == 0) || ((ch >= '@') && (ch <= '~'));
 }
 
-int StyleFromSequence(const char *seq) {
+int StyleFromSequence(const char *seq) noexcept {
 	int bold = 0;
 	int colour = 0;
 	while (!SequenceEnd(*seq)) {
@@ -301,9 +300,7 @@ int StyleFromSequence(const char *seq) {
 	return SCE_ERR_ES_BLACK + bold * 8 + colour;
 }
 
-}
-
-static void ColouriseErrorListLine(
+void ColouriseErrorListLine(
     char *lineBuffer,
     Sci_PositionU lengthLine,
     Sci_PositionU endPos,
@@ -311,7 +308,7 @@ static void ColouriseErrorListLine(
 	bool valueSeparate,
 	bool escapeSequences) {
 	Sci_Position startValue = -1;
-	int style = RecogniseErrorListLine(lineBuffer, lengthLine, startValue);
+	const int style = RecogniseErrorListLine(lineBuffer, lengthLine, startValue);
 	if (escapeSequences && strstr(lineBuffer, CSI)) {
 		const Sci_Position startPos = endPos - lengthLine;
 		const char *linePortion = lineBuffer;
@@ -354,7 +351,7 @@ static void ColouriseErrorListLine(
 	}
 }
 
-static void ColouriseErrorListDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
+void ColouriseErrorListDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[], Accessor &styler) {
 	char lineBuffer[10000];
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
@@ -386,8 +383,10 @@ static void ColouriseErrorListDoc(Sci_PositionU startPos, Sci_Position length, i
 	}
 }
 
-static const char *const emptyWordListDesc[] = {
-	0
+const char *const emptyWordListDesc[] = {
+	nullptr
 };
+
+}
 
 LexerModule lmErrorList(SCLEX_ERRORLIST, ColouriseErrorListDoc, "errorlist", 0, emptyWordListDesc);

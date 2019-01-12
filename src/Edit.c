@@ -44,6 +44,7 @@
 #include "../uthash/utarray.h"
 #include "../uthash/utlist.h"
 //#include "../uthash/utstring.h"
+#include "../tinyexpr/tinyexpr.h"
 
 #include "Helpers.h"
 #include "Encoding.h"
@@ -7032,69 +7033,102 @@ void EditMatchBrace(HWND hwnd)
 //
 INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 {
+  UNUSED(lParam);
+
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        WCHAR wchLineCaption[96];
+        WCHAR wchColumnCaption[96];
+
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-        DocLn iCurLine = SciCall_LineFromPosition(SciCall_GetCurrentPos())+1;
-        DocPos iCurColumn = SciCall_GetColumn(SciCall_GetCurrentPos()) + 1;
+        DocLn const iCurLine = SciCall_LineFromPosition(SciCall_GetCurrentPos())+1;
+        DocLn const iMaxLnNum = SciCall_GetLineCount();
+        DocPos const iCurColumn = SciCall_GetColumn(SciCall_GetCurrentPos()) + 1;
+        DocPos const iLineEndPos = Sci_GetNetLineLength(iCurLine);
+
+        FormatLngStringW(wchLineCaption, COUNTOF(wchLineCaption), IDS_MUI_GOTO_LINE, iMaxLnNum);
+        FormatLngStringW(wchColumnCaption, COUNTOF(wchColumnCaption), IDS_MUI_GOTO_COLUMN, 
+          max_p(iLineEndPos, (DocPos)Globals.iLongLinesLimit));
+        SetDlgItemText(hwnd, IDC_LINE_TEXT, wchLineCaption);
+        SetDlgItemText(hwnd, IDC_COLUMN_TEXT, wchColumnCaption);
 
         SetDlgItemInt(hwnd, IDC_LINENUM, (UINT)iCurLine, false);
         SetDlgItemInt(hwnd, IDC_COLNUM, (UINT)iCurColumn, false);
-        SendDlgItemMessage(hwnd,IDC_LINENUM,EM_LIMITTEXT,15,0);
-        SendDlgItemMessage(hwnd,IDC_COLNUM,EM_LIMITTEXT,15,0);
+        SendDlgItemMessage(hwnd,IDC_LINENUM,EM_LIMITTEXT,80,0);
+        SendDlgItemMessage(hwnd,IDC_COLNUM,EM_LIMITTEXT,80,0);
         CenterDlgInParent(hwnd);
       }
       return true;
 
 
     case WM_COMMAND:
-
-      switch(LOWORD(wParam))
       {
-        case IDOK: 
+        switch (LOWORD(wParam))
         {
-          BOOL fTranslated = TRUE;
-          DocLn iNewLine = (DocLn)GetDlgItemInt(hwnd,IDC_LINENUM,&fTranslated,FALSE);
+        case IDOK:
+        {
+          DocLn const iMaxLnNum = SciCall_GetLineCount();
 
-          DocLn iMaxLine = (DocLn)SendMessage(Globals.hwndEdit,SCI_GETLINECOUNT,0,0);
+          //~BOOL fTranslated = TRUE;
+          //~DocLn iNewLine = (DocLn)GetDlgItemInt(hwnd, IDC_LINENUM, &fTranslated, FALSE);
 
-          DocPos iNewCol = 1;
-          BOOL fTranslated2 = TRUE;
-          if (SendDlgItemMessage(hwnd, IDC_COLNUM, WM_GETTEXTLENGTH, 0, 0) > 0) {
-            iNewCol = (DocPos)GetDlgItemInt(hwnd, IDC_COLNUM, &fTranslated2, FALSE);
+          int iExprError = 0;
+          bool bLnTranslated = true;
+          DocLn iNewLine = 0;
+          if (SendDlgItemMessage(hwnd, IDC_LINENUM, WM_GETTEXTLENGTH, 0, 0) > 0) 
+          {
+            char chLineNumber[96];
+            GetDlgItemTextA(hwnd, IDC_LINENUM, chLineNumber, COUNTOF(chLineNumber));
+            iNewLine = (DocLn)te_interp(chLineNumber, &iExprError);
+            if (iExprError > 1) {
+              chLineNumber[iExprError-1] = '\0';
+              iNewLine = (DocLn)te_interp(chLineNumber, &iExprError);
+            }
+            bLnTranslated = (iExprError == 0);
           }
 
-          if (!fTranslated || !fTranslated2)
+          bool bColTranslated = true;
+          DocPos iNewCol = 1;
+          if (SendDlgItemMessage(hwnd, IDC_COLNUM, WM_GETTEXTLENGTH, 0, 0) > 0) 
           {
-            PostMessage(hwnd,WM_NEXTDLGCTL,(WPARAM)(GetDlgItem(hwnd,(!fTranslated) ? IDC_LINENUM : IDC_COLNUM)),1);
+            char chColumnNumber[96];
+            GetDlgItemTextA(hwnd, IDC_COLNUM, chColumnNumber, COUNTOF(chColumnNumber));
+            iNewCol = (DocPos)te_interp(chColumnNumber, &iExprError);
+            if (iExprError > 1) {
+              chColumnNumber[iExprError-1] = '\0';
+              iNewLine = (DocLn)te_interp(chColumnNumber, &iExprError);
+            }
+            bColTranslated = (iExprError == 0);
+          }
+
+          if (!bLnTranslated || !bColTranslated)
+          {
+            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, (!bLnTranslated) ? IDC_LINENUM : IDC_COLNUM)), 1);
             return true;
           }
 
-          if ((iNewLine > 0) && (iNewLine <= iMaxLine) && (iNewCol > 0))
+          if ((iNewLine > 0) && (iNewLine <= iMaxLnNum) && (iNewCol > 0))
           {
-            EditJumpTo(Globals.hwndEdit,iNewLine,iNewCol);
-            EndDialog(hwnd,IDOK);
+            EditJumpTo(Globals.hwndEdit, iNewLine, iNewCol);
+            EndDialog(hwnd, IDOK);
           }
           else {
-            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, (!((iNewLine > 0) && (iNewLine <= iMaxLine))) ? IDC_LINENUM : IDC_COLNUM)), 1);
+            PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(hwnd, (!((iNewLine > 0) && (iNewLine <= iMaxLnNum))) ? IDC_LINENUM : IDC_COLNUM)), 1);
           }
         }
         break;
 
         case IDCANCEL:
-          EndDialog(hwnd,IDCANCEL);
+          EndDialog(hwnd, IDCANCEL);
           break;
 
+        }
       }
       return true;
-
   }
-
-  UNUSED(lParam);
-
   return false;
 }
 

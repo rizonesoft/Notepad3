@@ -67,7 +67,7 @@ BEGIN
     CONTROL         "",IDC_WEBPAGE,"SysLink",WS_TABSTOP,200,52,100,10
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP | SS_NOTIFY | SS_REALSIZEIMAGE,305,7,130,20,WS_EX_TRANSPARENT
     PUSHBUTTON      "Kopieer Versies Tekst",IDC_COPYVERSTRG,304,35,76,14,BS_FLAT
-    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | ES_READONLY | ES_NUMBER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,20,80,360,170
+    CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x29c4,20,80,360,170
 END
 
 IDD_MUI_CMDLINEHELP DIALOGEX 0, 0, 300, 210
@@ -96,7 +96,8 @@ BEGIN
     CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
     CONTROL         "Markeer v&oorvallen",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
+    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "Zoeken vori&ge",IDOK,211,7,55,14
     PUSHBUTTON      "Zoeken vori&ge",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Sluiten",IDCANCEL,212,99,54,14
@@ -128,7 +129,8 @@ BEGIN
     CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "Markeer v&oorvallen",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
+    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "Zoeken vori&ge",IDOK,211,7,55,14
     PUSHBUTTON      "Zoeken vori&ge",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Vervangen",IDC_REPLACE,211,43,55,14
@@ -214,17 +216,17 @@ BEGIN
     PUSHBUTTON      "Annuleren",IDCANCEL,139,24,50,14
 END
 
-IDD_MUI_LINENUM DIALOGEX 0, 0, 186, 47
+IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Ga naar"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Lijn:",IDC_STATIC,7,7,16,8
-    EDITTEXT        IDC_LINENUM,7,24,46,14,ES_AUTOHSCROLL
-    LTEXT           "&Kolom:",IDC_STATIC,63,7,27,8
-    EDITTEXT        IDC_COLNUM,63,24,46,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,129,24,50,14
+    LTEXT           "&Lijn:",IDC_LINE_TEXT,7,8,101,8
+    EDITTEXT        IDC_LINENUM,7,18,101,12,ES_AUTOHSCROLL
+    LTEXT           "&Kolom:",IDC_COLUMN_TEXT,7,40,101,8
+    EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,58,74,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,7,74,50,14
 END
 
 IDD_MUI_FILEMRU DIALOGEX 0, 0, 269, 160
@@ -235,7 +237,8 @@ BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
     CONTROL         "&Behouden Caret positie.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
     CONTROL         "Op&slaaan recente bestandslijst bij afsluiten.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,160,10
-    CONTROL         "Onthouden zoek pat&roon.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
+    CONTROL         "Onthouden zoek pat&roon.",IDC_REMEMBERSEARCHPATTERN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
     PUSHBUTTON      "Verwijderen",IDC_REMOVE,212,107,50,14,WS_DISABLED
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
     PUSHBUTTON      "Annuleren",IDCANCEL,212,139,50,14
@@ -263,7 +266,8 @@ BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
     CONTROL         "Instellen geselecteerde schema als stand&aard.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,148,10
-    CONTROL         "&Auto-selectie op bestandsextensie.",IDC_AUTOSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
+    CONTROL         "&Auto-selectie op bestandsextensie.",IDC_AUTOSELECT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,127,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Annuleren",IDCANCEL,108,113,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,117,10,10
@@ -307,8 +311,10 @@ BEGIN
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Tabs invoegen als &spaties.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Tab toets &herformatteren indentatie.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "&Backspace toets herformatteren indentatie.",IDC_BACKTAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,157,10
-    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+    CONTROL         "&Backspace toets herformatteren indentatie.",IDC_BACKTAB_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,157,10
+    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,117,27,50,14
 END
@@ -684,9 +690,9 @@ BEGIN
     IDD_MUI_LINENUM, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 179
+        RIGHTMARGIN, 108
         TOPMARGIN, 7
-        BOTTOMMARGIN, 40
+        BOTTOMMARGIN, 88
     END
 
     IDD_MUI_FILEMRU, DIALOG
@@ -868,7 +874,7 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 67
     END
-    
+
     IDD_MUI_CHOOSEFONT, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -876,13 +882,12 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 193
     END
-
 END
 #endif    // APSTUDIO_INVOKED
 
-
 #endif    // Dutch (Netherlands) resources
 /////////////////////////////////////////////////////////////////////////////
+
 
 
 #ifndef APSTUDIO_INVOKED
@@ -894,5 +899,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
 

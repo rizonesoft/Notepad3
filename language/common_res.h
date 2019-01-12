@@ -143,6 +143,8 @@
 #define IDS_MUI_EXAMPLE_TEXT            15052
 #define IDS_MUI_ZERO_LEN_MATCH          15053
 #define IDS_MUI_STYLEEDIT_HELP          15054
+#define IDS_MUI_GOTO_LINE               15055
+#define IDS_MUI_GOTO_COLUMN             15056
 
 #define IDR_MAINWND                     16000
 #define IDR_MAINWND48                   16001
@@ -302,6 +304,8 @@
 #define IDC_CMDLINEHELP                 18100
 #define IDC_STYLEEDIT_HELP              18101
 #define IDC_RELIABLE_DETECTION_RES      18102
+#define IDC_LINE_TEXT                   18103
+#define IDC_COLUMN_TEXT                 18104
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

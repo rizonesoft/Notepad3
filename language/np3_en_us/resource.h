@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by np3_en_us.rc
+// Von Microsoft Visual C++ generierte Includedatei.
+// Verwendet durch dialogs_en_us.rc
 //
 
 // Next default values for new objects

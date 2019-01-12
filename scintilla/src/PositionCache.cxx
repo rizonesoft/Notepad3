@@ -683,7 +683,7 @@ PositionCacheEntry::PositionCacheEntry(const PositionCacheEntry &other) :
 }
 
 void PositionCacheEntry::Set(unsigned int styleNumber_, const char *s_,
-	unsigned int len_, XYPOSITION *positions_, unsigned int clock_) {
+	unsigned int len_, const XYPOSITION *positions_, unsigned int clock_) {
 	Clear();
 	styleNumber = styleNumber_;
 	len = len_;
