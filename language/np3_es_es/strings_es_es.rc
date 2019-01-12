@@ -191,6 +191,8 @@ BEGIN
     IDS_MUI_TRANSL_AUTHOR       "(es-ES) Traducción española por hpwamr"
     IDS_MUI_EXAMPLE_TEXT        "El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Corresponde a longitud cero"
+    IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN         "Column (1 - %lli):"
 END
 
 STRINGTABLE

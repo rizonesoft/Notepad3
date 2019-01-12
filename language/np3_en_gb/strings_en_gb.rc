@@ -191,6 +191,8 @@ BEGIN
     IDS_MUI_TRANSL_AUTHOR       "(en-GB) English (brit.) translation by hpwamr"
     IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789."
     IDS_MUI_ZERO_LEN_MATCH      "^ Zero-Length Match"
+    IDS_MUI_GOTO_LINE           "Line (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN         "Column (1 - %lli):"
 END
 
 STRINGTABLE
@@ -237,12 +239,13 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ;\r\n\r\n\
+Filename extensions must be separated by ';'\r\n\r\n\
 Style format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
 Style properties can be copied using copy and paste or drag and drop.\
 "
+
 END
 
 STRINGTABLE

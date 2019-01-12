@@ -28,12 +28,13 @@ SCL - (SC)intilla (L)ibrary
 
 
 ==================================================
-Current Version 5.19.110.build (10. Januar 2019)
+Current Version 5.19.112.build (12. Januar 2019)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes)
 - add CED reliability option (NLS: dialogs)
 - Indentation consistency check on file open (NLS: dialogs)
 - End-of-Line (EOL) consistency check on file open (NLS: dialogs)
@@ -42,7 +43,7 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-
+- Goto-Dlg (Line/Column) shows max line number
 - Scintilla Library (SCL) version 4.1.3 (2019-01-10)
 - SCL new Nim lexer replaces old Nimrod lexer (new highlighting)
 - Up-to-Date SCL
