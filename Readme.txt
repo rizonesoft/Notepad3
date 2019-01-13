@@ -11,7 +11,7 @@
 Description
 --------------------------------------------------------------------------------
 Notepad like text editor is based on the Scintilla source code. 
-Notepad3 isbased on code from Notepad2 and MiniPath on code from metapath.
+Notepad3 is based on code from Notepad2 and MiniPath on code from metapath.
 
 --------------------------------------------------------------------------------
 Changes compared to Flo's official Notepad2 (made in Notepad2-mod):
