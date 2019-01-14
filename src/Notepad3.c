@@ -2887,10 +2887,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = SciCall_GetLexer();
   //EnableCmd(hmenu,IDM_VIEW_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
   CheckCmd(hmenu, IDM_VIEW_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
-  CheckCmd(hmenu, IDM_VIEW_HIGHLIGHTCURRENTLINE, Settings.HighlightCurrentLine);
+
+  i = IDM_VIEW_HILITCURLN_NONE + Settings.HighlightCurrentLine;
+  CheckMenuRadioItem(hmenu, IDM_VIEW_HILITCURLN_NONE, IDM_VIEW_HILITCURLN_FRAME, i, MF_BYCOMMAND);
+
   CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
- 
 
   i = Flags.ReuseWindow;
   CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
@@ -4727,12 +4729,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       SendMessage(Globals.hwndEdit,SCI_SETVIEWWS,(Settings.ViewWhiteSpace)?SCWS_VISIBLEALWAYS:SCWS_INVISIBLE,0);
       break;
 
-
     case IDM_VIEW_SHOWEOLS:
       Settings.ViewEOLs = !Settings.ViewEOLs;
       SendMessage(Globals.hwndEdit,SCI_SETVIEWEOL,Settings.ViewEOLs,0);
       break;
-
 
     case IDM_VIEW_MATCHBRACES:
       Settings.MatchBraces = !Settings.MatchBraces;
@@ -4742,14 +4742,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SciCall_BraceHighLight(INVALID_POSITION, INVALID_POSITION);
       break;
 
-
     case IDM_VIEW_AUTOCLOSETAGS:
       Settings.AutoCloseTags = !Settings.AutoCloseTags;
       break;
 
-    case IDM_VIEW_HIGHLIGHTCURRENTLINE:
-      Settings.HighlightCurrentLine = !Settings.HighlightCurrentLine;
-      Style_SetCurrentLineBackground(Globals.hwndEdit, Settings.HighlightCurrentLine);
+    case IDM_VIEW_TOGGLE_HILITCURLN:
+    case IDM_VIEW_HILITCURLN_NONE:
+    case IDM_VIEW_HILITCURLN_BACK:
+    case IDM_VIEW_HILITCURLN_FRAME:
+      {
+        int set = LOWORD(wParam) - IDM_VIEW_HILITCURLN_NONE;
+        Settings.HighlightCurrentLine = (set >= 0) ? set : ((Settings.HighlightCurrentLine + 1) % 3);
+        Style_HighlightCurrentLine(Globals.hwndEdit, Settings.HighlightCurrentLine);
+      }
       break;
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
@@ -6808,7 +6813,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ShowWordWrapSymbols, true);
     GET_BOOL_VALUE_FROM_INISECTION(MatchBraces, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
-    GET_BOOL_VALUE_FROM_INISECTION(HighlightCurrentLine, true);
+    GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
     GET_BOOL_VALUE_FROM_INISECTION(ScrollPastEOF, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoIndent, true);
@@ -7170,7 +7175,7 @@ void SaveSettings(bool bSaveSettingsNow)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowWordWrapSymbols);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MatchBraces);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCloseTags);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HighlightCurrentLine);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, HighlightCurrentLine);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HyperlinkHotspot);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoIndent);

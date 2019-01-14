@@ -305,7 +305,12 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES
-        MENUITEM "高亮显示当前行(&G)\tCtrl+Shift+I",           IDM_VIEW_HIGHLIGHTCURRENTLINE
+        POPUP "高亮显示当前行(&G)\tCtrl+Shift+I"
+        BEGIN
+            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+        END
         POPUP "标记匹配(&K)"
         BEGIN
             MENUITEM "启用(&A)\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF

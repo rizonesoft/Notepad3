@@ -305,7 +305,12 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indikator\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Zeige passende Klammer\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
-        MENUITEM "Aktuelle Zeile hervorheben\tCtrl+Shift+I", IDM_VIEW_HIGHLIGHTCURRENTLINE
+        POPUP "A&ktuelle Zeile hervorheben\tCtrl+Shift+I"
+        BEGIN
+            MENUITEM "&Ohne Hervorhebung",                  IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "&Hintergrund Farbe",                  IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "&Rahmen",                             IDM_VIEW_HILITCURLN_FRAME
+        END
         POPUP "Markiere Fundstellen"
         BEGIN
             MENUITEM "&Aktivieren\tAlt+A",                  IDM_VIEW_MARKOCCUR_ONOFF
