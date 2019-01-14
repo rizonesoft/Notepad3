@@ -181,19 +181,19 @@ BEGIN
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
     CONTROL         "Gebruik as en terug&val op opsporing mislukking.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Kodering Deteksie: ",IDC_STATIC,7,58,183,90,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Kodering Deteksie: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Maak 7-bit &ASCII-lêers in UTF-8 wyse oop.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,71,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,155,10
     CONTROL         "Use &reliable detection results only.", IDC_RELIABLE_DETECTION_RES,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,83,155,10
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
     CONTROL         "Maak 8-bit *.&nfo/diz lêers in DOS-437 wyse oop.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,96,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
     CONTROL         "Moenie enkoderinglêer &tags ontleed nie.",IDC_ENCODINGFROMFILEVARS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,109,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
     CONTROL         "Slaan &ANSI-kode opsporing oor.",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,121,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,155,10
     CONTROL         "Slaan &UNICODE-kode opsporing oor.",IDC_NOUNICODEDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,134,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,140,151,50,14
 END
