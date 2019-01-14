@@ -79,7 +79,7 @@ typedef enum {
   STY_INDENT_GUIDE = 5,
   STY_SEL_TXT = 6,
   STY_WHITESPACE = 7,
-  STY_CUR_LN_BCK = 8,
+  STY_CUR_LN = 8,
   STY_CARET = 9,
   STY_LONG_LN_MRK = 10,
   STY_X_LN_SPACE = 11,

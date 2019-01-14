@@ -305,7 +305,12 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Отображать &гиперссылки\tCtrl+Alt+W",             IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "О&тмечать парные скобки\tCtrl+Shift+V",           IDM_VIEW_MATCHBRACES
-        MENUITEM "Подсвечивать т&екущую строку\tCtrl+Shift+I",      IDM_VIEW_HIGHLIGHTCURRENTLINE
+        POPUP "Подсвечивать т&екущую строку\tCtrl+Shift+I"
+        BEGIN
+            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+        END
         POPUP "По&дсветка совпадений"
         BEGIN
             MENUITEM "&Активна\tAlt+A",                 IDM_VIEW_MARKOCCUR_ONOFF

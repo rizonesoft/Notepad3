@@ -305,7 +305,12 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Indicateurs H&yperlink\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Correspondence &visuelle des accolades\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
-        MENUITEM "Mise en b&rillance de la ligne actuelle\tCtrl+Shift+I", IDM_VIEW_HIGHLIGHTCURRENTLINE
+        POPUP "Mise en b&rillance de la ligne actuelle\tCtrl+Shift+I"
+        BEGIN
+            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+        END
         POPUP "Mar&quer occurrences"
         BEGIN
             MENUITEM "&Actif\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF

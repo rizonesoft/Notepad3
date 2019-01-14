@@ -311,7 +311,7 @@ typedef struct _settings_t
   bool ShowWordWrapSymbols;
   bool MatchBraces;
   bool AutoCloseTags;
-  bool HighlightCurrentLine;
+  int  HighlightCurrentLine;
   bool HyperlinkHotspot;
   bool ScrollPastEOF;
   bool AutoIndent;

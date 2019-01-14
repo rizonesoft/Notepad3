@@ -830,7 +830,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   SendMessage(hwnd, SCI_SETWHITESPACESIZE, iValue, 0);
 
   // current line background
-  Style_SetCurrentLineBackground(hwnd, Settings.HighlightCurrentLine);
+  Style_HighlightCurrentLine(hwnd, Settings.HighlightCurrentLine);
 
   // bookmark line or marker
   Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
@@ -1131,46 +1131,60 @@ void Style_SetLongLineColors(HWND hwnd)
 
   if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) 
   {
-    if (Style_StrGetColor(true, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue,&rgb)) // edge fore
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
-    else
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
+    if (!Style_StrGetColor(true, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, &rgb)) { // edge fore
+      rgb = GetSysColor(COLOR_3DLIGHT);
+    }
+    SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
   }
   else {
-    if (Style_StrGetColor(false, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue,&rgb)) // edge back
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
-    else
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
+    if (Style_StrGetColor(false, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, &rgb)) { // edge back
+      rgb = GetSysColor(COLOR_3DLIGHT);
+    }
+    SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
   }
 }
 
 
 //=============================================================================
 //
-//  Style_SetCurrentLineBackground()
+// Style_HighlightCurrentLine()
 //
-void Style_SetCurrentLineBackground(HWND hwnd, bool bHiLitCurrLn)
+void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 {
-  if (bHiLitCurrLn) 
-  {
-    COLORREF rgb = 0;
-    if (Style_StrGetColor(false, GetCurrentStdLexer()->Styles[STY_CUR_LN_BCK].szValue, &rgb)) // caret line back
-    {
-      SendMessage(hwnd, SCI_SETCARETLINEVISIBLEALWAYS, true, 0);
-      SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, true, 0);
-      SendMessage(hwnd, SCI_SETCARETLINEBACK, rgb, 0);
-
-      int alpha = 0;
-      if (Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN_BCK].szValue, &alpha, true))
-        SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,alpha,0);
-      else
-        SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,SC_ALPHA_NOALPHA,0);
-
-      return;
-    }
-  }
+  SendMessage(hwnd, SCI_SETCARETLINEFRAME, 0, 0);
   SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, false, 0);
   SendMessage(hwnd, SCI_SETCARETLINEVISIBLEALWAYS, false, 0);
+
+  if (iHiLitCurLn > 0)
+  {
+    bool const backgrColor = (iHiLitCurLn == 1);
+
+    LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
+
+    COLORREF rgb;
+    if (!Style_StrGetColor(!backgrColor, szValue, &rgb)) {
+      rgb = (backgrColor ? RGB(0xFF, 0xFF, 0x00) : RGB(0xC2, 0xC0, 0xC3));
+    }
+
+    int alpha = 0;
+    if (!Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, true)) {
+      alpha = SC_ALPHA_NOALPHA;
+    }
+
+    if (!backgrColor) {
+      int iFrameSize = 0;
+      if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
+        iFrameSize = 2;
+      }
+      iFrameSize = max_i(1, ScaleIntToCurrentDPI(iFrameSize));
+      SendMessage(hwnd, SCI_SETCARETLINEFRAME, iFrameSize, 0);
+    }
+
+    SendMessage(hwnd, SCI_SETCARETLINEBACK, rgb, 0);
+    SendMessage(hwnd, SCI_SETCARETLINEBACKALPHA, alpha, 0);
+    SendMessage(hwnd, SCI_SETCARETLINEVISIBLEALWAYS, true, 0);
+    SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, true, 0);
+  }
 }
 
 
@@ -1836,20 +1850,31 @@ bool Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
 //
 bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"charset:");
   if (p)
   {
-    StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"charset:"));
-    p = StrChr(tch, L';');
-    if (p) { *p = L'\0'; }
-    TrimStringW(tch);
+    p += CSTRLEN(L"charset:");
     int iValue = 0;
-    if (1 == swscanf_s(tch, L"%i", &iValue))
-    {
+    if (Char2IntW(p, &iValue)) {
       *i = max_i(SC_CHARSET_ANSI, iValue);
       return true;
     }
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
+//  Style_StrGetIntSizeInt()
+//
+bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
+{
+  WCHAR *p = StrStrI(lpszStyle, L"size:");
+  if (p)
+  {
+    p += CSTRLEN(L"size:");
+    return Char2IntW(p, i);
   }
   return false;
 }

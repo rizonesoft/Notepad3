@@ -305,7 +305,12 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indicatoren\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visuele Brace Matching\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES
-        MENUITEM "Mar&keer actueel lijn\tCtrl+Shift+I",     IDM_VIEW_HIGHLIGHTCURRENTLINE
+        POPUP "Mar&keer actueel lijn\tCtrl+Shift+I"
+        BEGIN
+            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+        END
         POPUP "Mar&keer voorvallen"
         BEGIN
             MENUITEM "&Actief\tAlt+A",                      IDM_VIEW_MARKOCCUR_ONOFF
