@@ -41,9 +41,11 @@ inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
 }
 
 // clamp
-static inline int clampi(int x, int lower, int upper) {
+inline int clampi(int x, int lower, int upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
+
+inline BOOL IsKeyDown(int key) { return (((GetKeyState(key) >> 8) & 0xff) != 0); }
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 

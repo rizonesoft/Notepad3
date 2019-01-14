@@ -1282,7 +1282,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYDOWN:
-      if (GetAsyncKeyState(VK_MENU) & SHRT_MIN)  // ALT-KEY DOWN
+      if (IsAsyncKeyDown(VK_MENU))  // ALT-KEY DOWN
       {
         if (!bAltKeyIsDown) {
           bAltKeyIsDown = true;
@@ -1294,7 +1294,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYUP:
-      if (!(GetAsyncKeyState(VK_MENU) & SHRT_MIN))  // NOT ALT-KEY DOWN
+      if (!IsAsyncKeyDown(VK_MENU))  // NOT ALT-KEY DOWN
       {
         if (bAltKeyIsDown) {
           bAltKeyIsDown = false;

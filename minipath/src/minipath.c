@@ -29,7 +29,6 @@
 #include "minipath.h"
 #include "resource.h"
 
-
 HICON     g_hDlgIcon = NULL;
 
 /******************************************************************************
@@ -72,9 +71,9 @@ HANDLE    hChangeHandle = NULL;
 
 HISTORY   mHistory;
 
-WCHAR      g_wchIniFile[MAX_PATH] = L"";
-WCHAR      g_wchIniFile2[MAX_PATH] = L"";
-WCHAR      g_wchNP3IniFile[MAX_PATH] = L"";
+WCHAR     g_wchIniFile[MAX_PATH] = L"";
+WCHAR     g_wchIniFile2[MAX_PATH] = L"";
+WCHAR     g_wchNP3IniFile[MAX_PATH] = L"";
 
 BOOL      bSaveSettings;
 WCHAR     szQuickview[MAX_PATH] = L"";
@@ -151,6 +150,8 @@ WCHAR szTargetApplicationWndClass[MAX_PATH] = L"";
 WCHAR szDDEMsg[256] = L"";
 WCHAR szDDEApp[256] = L"";
 WCHAR szDDETopic[256] = L"";
+
+static BOOL bHasQuickview = FALSE;
 
 UINT16    g_uWinVer;
 
@@ -1396,7 +1397,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   DirList_GetItem(hwndDirList,-1,&dli);
 
   EnableCmd(hmenu,IDM_FILE_LAUNCH,(i && dli.ntype == DLE_FILE));
-  EnableCmd(hmenu,IDM_FILE_QUICKVIEW,(i && dli.ntype == DLE_FILE));
+  EnableCmd(hmenu,IDM_FILE_QUICKVIEW,(i && dli.ntype == DLE_FILE) && bHasQuickview);
   EnableCmd(hmenu,IDM_FILE_OPENWITH,i);
   EnableCmd(hmenu,IDM_FILE_CREATELINK,i);
   EnableCmd(hmenu,IDM_FILE_SAVEAS,(i && dli.ntype == DLE_FILE));
@@ -2156,6 +2157,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_OPTIONS:
       OptionsPropSheet(hwnd, g_hLngResContainer);
+      bHasQuickview = GetFileAttributes(szQuickview) != INVALID_FILE_ATTRIBUTES;
       break;
 
 
@@ -2626,9 +2628,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           if (bSingleClick && ListView_GetSelectedCount(hwndDirList))
           {
-            if (HIBYTE(GetKeyState(VK_MENU)))
+            if (IsKeyDown(VK_MENU))
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_PROPERTIES,1),0);
-            else if (HIBYTE(GetKeyState(VK_SHIFT)))
+            else if (IsKeyDown(VK_SHIFT))
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPENNEW,1),0);
             else
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
@@ -2638,9 +2640,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case NM_DBLCLK:
         case NM_RETURN:
 
-          if (HIBYTE(GetKeyState(VK_MENU)))
+          if (IsKeyDown(VK_MENU))
             SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_PROPERTIES,1),0);
-          else if (HIBYTE(GetKeyState(VK_SHIFT)))
+          else if (IsKeyDown(VK_SHIFT))
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPENNEW,1),0);
           else
             SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
@@ -2921,6 +2923,8 @@ void LoadSettings()
   }
   else
     PathAbsoluteFromApp(szQuickview,NULL,COUNTOF(szQuickview),TRUE);
+
+  bHasQuickview = GetFileAttributes(szQuickview) != INVALID_FILE_ATTRIBUTES;
 
   IniSectionGetString(pIniSection,L"QuikviewParams",L"",
     szQuickviewParams,COUNTOF(szQuickviewParams));

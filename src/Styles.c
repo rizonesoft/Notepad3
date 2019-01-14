@@ -2495,7 +2495,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (bWithEffects)
     cf.Flags |= CF_EFFECTS;
 
-  if (HIBYTE(GetKeyState(VK_SHIFT))) {
+  if (IsKeyDown(VK_SHIFT)) {
     cf.Flags |= CF_FIXEDPITCHONLY;
   }
 
