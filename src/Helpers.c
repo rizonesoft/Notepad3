@@ -783,8 +783,7 @@ void PathRelativeToApp(
   GetModuleFileName(NULL,wchAppPath,COUNTOF(wchAppPath));
   PathCanonicalizeEx(wchAppPath,MAX_PATH);
   PathCchRemoveFileSpec(wchAppPath,COUNTOF(wchAppPath));
-  (void)GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
-  //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
+  GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
   GetKnownFolderPath(&FOLDERID_Documents, wchUserFiles, COUNTOF(wchUserFiles));
 
   if (bUnexpandMyDocs &&
@@ -833,7 +832,6 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool bExpand
   }
 
   if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CSTRLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
-    //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
     GetKnownFolderPath(&FOLDERID_Documents, wchPath, COUNTOF(wchPath));
     PathCchAppend(wchPath,COUNTOF(wchPath),lpszSrc+CSTRLEN("%CSIDL:MYDOCUMENTS%"));
   }
@@ -1005,7 +1003,6 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
   StringCchCopy(tchArguments,COUNTOF(tchArguments),L"-n ");
   StringCchCat(tchArguments,COUNTOF(tchArguments),tchDocTemp);
 
-  //SHGetSpecialFolderPath(NULL,tchLinkDir,CSIDL_DESKTOPDIRECTORY,true);
   GetKnownFolderPath(&FOLDERID_Desktop, tchLinkDir, COUNTOF(tchLinkDir));
 
   GetLngString(IDS_MUI_LINKDESCRIPTION,tchDescription,COUNTOF(tchDescription));

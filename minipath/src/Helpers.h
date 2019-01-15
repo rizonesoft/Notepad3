@@ -119,7 +119,7 @@ void PrepareFilterStr(LPWSTR);
 void StrTab2Space(LPWSTR);
 void ExpandEnvironmentStringsEx(LPWSTR,DWORD);
 void PathCanonicalizeEx(LPWSTR);
-DWORD SearchPathEx(LPCWSTR,LPCWSTR,LPCWSTR,DWORD,LPWSTR,LPWSTR*);
+BOOL SearchPathEx(LPCWSTR,DWORD,LPWSTR);
 int  FormatNumberStr(LPWSTR);
 
 void GetDefaultFavoritesDir(LPWSTR,int);
@@ -153,6 +153,10 @@ static inline BOOL StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')
 #define StrIsEmpty(s)     StrIsEmptyA(s)
 #define StrIsNotEmpty(s)  (!StrIsEmptyA(s))
 #endif
+
+//==== StrEqual() =============================================
+
+#define StrEqual(s1, s2) (lstrcmp((s1),(s2)) == 0)
 
 
 //==== History Functions ======================================================
