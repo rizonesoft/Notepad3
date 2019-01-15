@@ -45,10 +45,11 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
+- Up-to-Date SCL (GitHub Mirror 2019-Jan-15)
+- Optimized file search for items (filebrowser, .ini file, dirs)
 - Goto-Dlg (Line/Column) shows max line number
 - Scintilla Library (SCL) version 4.1.3 (2019-01-10)
 - SCL new Nim lexer replaces old Nimrod lexer (new highlighting)
-- Up-to-Date SCL
 
 --------------------------------------------------
 FIXES:

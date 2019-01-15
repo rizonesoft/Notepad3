@@ -559,6 +559,11 @@
 	Released 10 January 2019.
 	</li>
  	<li>
+	The C++ lexer, with styling.within.preprocessor on, now interprets "(" in preprocessor "#if("
+	as an operator instead of part of the directive. This improves folding as well which could become
+	unbalanced.
+	</li>
+ 	<li>
 	Fix raw strings in nim.
 	<a href="https://sourceforge.net/p/scintilla/feature-requests/1253/">Feature #1253</a>.
 	</li>
