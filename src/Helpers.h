@@ -138,6 +138,9 @@ inline int float2int(const float f) { return (int)lroundf(f); }
 inline float Round10th(const float f) { return (float)float2int(f * 10.0f) / 10; }
 inline bool HasNonZeroFraction(const float f) { return ((float2int(f * 10.0f) % 10) != 0); }
 
+inline bool IsKeyDown(int key) { return (((GetKeyState(key) >> 8) & 0xff) != 0); }
+inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0xff) != 0); }
+
 // ----------------------------------------------------------------------------
 
 #define IniGetString(lpSection,lpName,lpDefault,lpReturnedStr,nSize) GetPrivateProfileString(lpSection,lpName,(lpDefault),(lpReturnedStr),(nSize),Globals.IniFile)

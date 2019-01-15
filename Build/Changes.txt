@@ -35,11 +35,12 @@ Current Version 5.19.112.build (12 January 2019)
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I)  (NLS: strings)
 - Goto-Dlg (Line/Column) accepts TinyExpr (ignoring suffixes)
-- add CED reliability option (NLS: dialogs)
+- Add CED reliability option (NLS: dialogs)
 - Indentation consistency check on file open (NLS: dialogs)
 - End-of-Line (EOL) consistency check on file open (NLS: dialogs)
-- checkbox for transparent Find/Replace Dialogbox on loosing focus
+- Checkbox for transparent Find/Replace Dialogbox on loosing focus
 
 --------------------------------------------------
 CHANGES:

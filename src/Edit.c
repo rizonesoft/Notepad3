@@ -5644,7 +5644,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDACC_SELTONEXT:
           if (!bIsFindDlg) { Globals.bReplaceInitialized = true; }
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionEnd(hwnd); }
-          EditFindNext(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTONEXT), HIBYTE(GetKeyState(VK_F3)));
+          EditFindNext(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTONEXT), IsKeyDown(VK_F3));
           s_InitialSearchStart = SciCall_GetSelectionStart();
           s_InitialAnchorPos = SciCall_GetAnchor();
           s_InitialCaretPos = SciCall_GetCurrentPos();
@@ -5655,7 +5655,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDACC_SELTOPREV:
           if (!bIsFindDlg) { Globals.bReplaceInitialized = true; }
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionStart(hwnd);  }
-          EditFindPrev(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTOPREV), HIBYTE(GetKeyState(VK_F3)));
+          EditFindPrev(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTOPREV), IsKeyDown(VK_F3));
           s_InitialSearchStart = SciCall_GetSelectionStart();
           s_InitialAnchorPos = SciCall_GetAnchor();
           s_InitialCaretPos = SciCall_GetCurrentPos();

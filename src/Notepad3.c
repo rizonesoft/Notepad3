@@ -1282,7 +1282,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYDOWN:
-      if (GetAsyncKeyState(VK_MENU) & SHRT_MIN)  // ALT-KEY DOWN
+      if (IsAsyncKeyDown(VK_MENU))  // ALT-KEY DOWN
       {
         if (!bAltKeyIsDown) {
           bAltKeyIsDown = true;
@@ -1294,7 +1294,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       return DefWindowProc(hwnd, umsg, wParam, lParam);
 
     case WM_SYSKEYUP:
-      if (!(GetAsyncKeyState(VK_MENU) & SHRT_MIN))  // NOT ALT-KEY DOWN
+      if (!IsAsyncKeyDown(VK_MENU))  // NOT ALT-KEY DOWN
       {
         if (bAltKeyIsDown) {
           bAltKeyIsDown = false;
@@ -9293,17 +9293,18 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
   if (PathIsRelative(tch)) {
     StringCchCopyN(szFileName,COUNTOF(szFileName),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
     PathCchAppend(szFileName,COUNTOF(szFileName),tch);
-    if (!PathFileExists(szFileName)) {
-      WCHAR wchFullPath[MAX_PATH] = { L'\0' };
-      if (SearchPath(NULL,tch,NULL,COUNTOF(wchFullPath),wchFullPath,NULL)) {
-        StringCchCopy(szFileName,COUNTOF(szFileName),wchFullPath);
-      }
-    }
+    //~ don't search in PATH when opening relative paths via command line
+    //~if (!PathFileExists(szFileName)) {
+    //~  WCHAR wchFullPath[MAX_PATH] = { L'\0' };
+    //~  if (SearchPath(NULL,tch,NULL,COUNTOF(wchFullPath),wchFullPath,NULL)) {
+    //~    StringCchCopy(szFileName,COUNTOF(szFileName),wchFullPath);
+    //~  }
+    //~}
   }
-  else
-    StringCchCopy(szFileName,COUNTOF(szFileName),tch);
-
-  NormalizePathEx(szFileName,COUNTOF(szFileName));
+  else {
+    StringCchCopy(szFileName, COUNTOF(szFileName), tch);
+  }
+  NormalizePathEx(szFileName, COUNTOF(szFileName));
 
   if (PathIsLnkFile(szFileName))
     PathGetLnkPath(szFileName,szFileName,COUNTOF(szFileName));
@@ -9915,23 +9916,24 @@ bool ActivatePrevInst()
     if (PathIsRelative(lpFileArg)) {
       StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
       PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
-      if (PathFileExists(tchTmp))
-        StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
-      else {
-        if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-          StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
-        else {
-          StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
-          PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
-          StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
-        }
-      }
+      //~ don't search in PATH when opening relative paths via command line
+      //~if (PathFileExists(tchTmp))
+      //~  StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
+      //~else {
+      //~  if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
+      //~    StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
+      //~  else {
+      //~    StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
+      //~    PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
+      //~    StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
+      //~  }
+      //~}
+      StringCchCopy(lpFileArg, (MAX_PATH + 1), tchTmp);
     }
-
-    else if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-      StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
-
-    NormalizePathEx(lpFileArg,(MAX_PATH+1));
+    else if (SearchPath(NULL, lpFileArg, NULL, COUNTOF(tchTmp), tchTmp, NULL)) {
+      StringCchCopy(lpFileArg, (MAX_PATH + 1), tchTmp);
+    }
+    NormalizePathEx(lpFileArg, (MAX_PATH + 1));
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
