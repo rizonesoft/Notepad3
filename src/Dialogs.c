@@ -2947,7 +2947,6 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 }
 
 
-
 //=============================================================================
 //
 //  DialogFileBrowse()
@@ -2956,34 +2955,29 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 void DialogFileBrowse(HWND hwnd)
 {
   WCHAR tchParam[MAX_PATH+1] = L"";
-  WCHAR tchExeFile[MAX_PATH+1];
+  WCHAR tchExeFile[MAX_PATH+1] = L"";
   WCHAR tchTemp[MAX_PATH+1];
 
   StringCchCopyW(tchTemp, COUNTOF(tchTemp), Settings2.FileBrowserPath);
 
-  if (StringCchLenW(Settings2.FileBrowserPath,0) > 0)
+  if (StringCchLenW(Settings2.FileBrowserPath, 0) > 0)
   {
-    ExtractFirstArgument(tchTemp, tchExeFile, tchParam, MAX_PATH+2);
-    if (PathIsRelative(tchExeFile)) {
-      if (!SearchPath(NULL, tchExeFile, L".exe", COUNTOF(tchTemp), tchTemp, NULL)) {
-        GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
-        PathRemoveFileSpec(tchTemp);
-        PathCchAppend(tchTemp, COUNTOF(tchTemp), tchExeFile);
-        StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
-      }
+    ExtractFirstArgument(tchTemp, tchExeFile, tchParam, COUNTOF(tchTemp));
+  }
+  if (StrIsEmpty(tchExeFile)) {
+    StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
+  }
+  if (PathIsRelative(tchExeFile)) {
+    GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
+    PathRemoveFileSpec(tchTemp);
+    PathAppend(tchTemp, tchExeFile);
+    if (PathFileExists(tchTemp)) {
+      StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
     }
   }
-  else {
-    if (!SearchPath(NULL, Constants.FileBrowserMiniPath, L".exe", COUNTOF(tchExeFile), tchExeFile, NULL)) {
-      GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
-      PathRemoveFileSpec(tchExeFile);
-      PathCchAppend(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
-    }
-  }
-
-  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(Globals.CurrentFile, (MAX_PATH+1)))
+  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(Globals.CurrentFile, COUNTOF(tchParam))) {
     StringCchCat(tchParam, COUNTOF(tchParam), L" ");
-
+  }
   if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
     StringCchCopy(tchTemp, COUNTOF(tchTemp), Globals.CurrentFile);
     PathQuoteSpaces(tchTemp);

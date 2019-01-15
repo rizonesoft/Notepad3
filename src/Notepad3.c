@@ -111,13 +111,13 @@ static WININFO s_DefWinInfo = INIT_WININFO;
 static int     s_WinCurrentWidth = 0;
 
 #define FILE_LIST_SIZE 32
-static LPWSTR    lpFileList[FILE_LIST_SIZE] = { NULL };
-static int       cFileList = 0;
-static int       cchiFileList = 0;
-static LPWSTR    lpFileArg = NULL;
-static LPWSTR    lpSchemeArg = NULL;
-static LPWSTR    lpMatchArg = NULL;
-static LPWSTR    lpEncodingArg = NULL;
+static LPWSTR    s_lpFileList[FILE_LIST_SIZE] = { NULL };
+static int       s_cFileList = 0;
+static int       s_cchiFileList = 0;
+static LPWSTR    s_lpFileArg = NULL;
+static LPWSTR    s_lpSchemeArg = NULL;
+static LPWSTR    s_lpMatchArg = NULL;
+static LPWSTR    s_lpEncodingArg = NULL;
 
 static WCHAR* const _s_RecentFiles = L"Recent Files";
 static WCHAR* const _s_RecentFind = L"Recent Find";
@@ -1038,28 +1038,28 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Source Encoding
-  if (lpEncodingArg)
-    Encoding_SrcCmdLn(Encoding_MatchW(lpEncodingArg));
+  if (s_lpEncodingArg)
+    Encoding_SrcCmdLn(Encoding_MatchW(s_lpEncodingArg));
 
   // Pathname parameter
-  if (s_flagBufferFile || (lpFileArg /*&& !g_flagNewFromClipboard*/))
+  if (s_flagBufferFile || (s_lpFileArg /*&& !g_flagNewFromClipboard*/))
   {
     bool bOpened = false;
 
     // Open from Directory
-    if (!s_flagBufferFile && PathIsDirectory(lpFileArg)) {
+    if (!s_flagBufferFile && PathIsDirectory(s_lpFileArg)) {
       WCHAR tchFile[MAX_PATH] = { L'\0' };
-      if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), lpFileArg))
+      if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), s_lpFileArg))
         bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
     }
     else {
-      LPCWSTR lpFileToOpen = s_flagBufferFile ? s_wchTmpFilePath : lpFileArg;
+      LPCWSTR lpFileToOpen = s_flagBufferFile ? s_wchTmpFilePath : s_lpFileArg;
       bOpened = FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, lpFileToOpen);
       if (bOpened) {
         if (s_flagBufferFile) {
-          if (lpFileArg) {
+          if (s_lpFileArg) {
             InstallFileWatching(NULL); // Terminate file watching
-            StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),lpFileArg);
+            StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),s_lpFileArg);
             InstallFileWatching(Globals.CurrentFile);
           }
           else
@@ -1080,9 +1080,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
         }
       }
     }
-    if (lpFileArg) {
-      FreeMem(lpFileArg);
-      lpFileArg = NULL;
+    if (s_lpFileArg) {
+      FreeMem(s_lpFileArg);
+      s_lpFileArg = NULL;
     }
     if (bOpened) {
       if (s_flagChangeNotify == 1) {
@@ -1165,10 +1165,10 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Match Text
-  if (s_flagMatchText && lpMatchArg) {
-    if (StrIsNotEmpty(lpMatchArg) && SendMessage(Globals.hwndEdit,SCI_GETLENGTH,0,0)) {
+  if (s_flagMatchText && s_lpMatchArg) {
+    if (StrIsNotEmpty(s_lpMatchArg) && SendMessage(Globals.hwndEdit,SCI_GETLENGTH,0,0)) {
 
-      WideCharToMultiByte(Encoding_SciCP,0,lpMatchArg,-1,Settings.EFR_Data.szFind,COUNTOF(Settings.EFR_Data.szFind),NULL,NULL);
+      WideCharToMultiByte(Encoding_SciCP,0,s_lpMatchArg,-1,Settings.EFR_Data.szFind,COUNTOF(Settings.EFR_Data.szFind),NULL,NULL);
 
       if (s_flagMatchText & 4)
         Settings.EFR_Data.fuFlags |= (SCFIND_REGEXP | SCFIND_POSIX);
@@ -1186,8 +1186,8 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
         EditEnsureSelectionVisible(Globals.hwndEdit);
       }
     }
-    LocalFree(lpMatchArg);  // StrDup()
-    lpMatchArg = NULL;
+    LocalFree(s_lpMatchArg);  // StrDup()
+    s_lpMatchArg = NULL;
   }
 
   // Check for Paste Board option -- after loading files
@@ -1203,9 +1203,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 
   // check if a lexer was specified from the command line
   if (s_flagLexerSpecified) {
-    if (lpSchemeArg) {
-      Style_SetLexerFromName(Globals.hwndEdit,Globals.CurrentFile,lpSchemeArg);
-      LocalFree(lpSchemeArg);  // StrDup()
+    if (s_lpSchemeArg) {
+      Style_SetLexerFromName(Globals.hwndEdit,Globals.CurrentFile,s_lpSchemeArg);
+      LocalFree(s_lpSchemeArg);  // StrDup()
     }
     else if (s_iInitialLexer >=0 && s_iInitialLexer < NUMLEXERS)
       Style_SetLexerFromID(Globals.hwndEdit,s_iInitialLexer);
@@ -1800,6 +1800,28 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
 //=============================================================================
 //
+//  _LoadBitmapFile()
+//
+static HBITMAP _LoadBitmapFile(LPCWSTR path)
+{
+  WCHAR szTmp[MAX_PATH];
+  if (PathIsRelative(path)) {
+    GetModuleFileName(NULL, szTmp, COUNTOF(szTmp));
+    PathRemoveFileSpec(szTmp);
+    PathAppend(szTmp, path);
+    path = szTmp;
+  }
+
+  if (!PathFileExists(path)) {
+    return NULL;
+  }
+  HBITMAP const hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+  return hbmp;
+}
+
+
+//=============================================================================
+//
 //  CreateBars() - Create Toolbar and Statusbar
 //
 //
@@ -1814,12 +1836,9 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // Add Toolbar Bitmap
   HBITMAP hbmp = NULL;
   HBITMAP hbmpCopy = NULL;
-  WCHAR szTmp[MAX_PATH] = { L'\0' };
-  if (StringCchLenW(s_tchToolbarBitmap,COUNTOF(s_tchToolbarBitmap)))
+  if (StrIsNotEmpty(s_tchToolbarBitmap))
   {
-    if (!SearchPath(NULL,s_tchToolbarBitmap,L".bmp",COUNTOF(szTmp),szTmp,NULL))
-      StringCchCopy(szTmp,COUNTOF(szTmp),s_tchToolbarBitmap);
-    hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmap);
   }
 
   if (hbmp) {
@@ -1836,7 +1855,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   hbmp = ResizeImageForCurrentDPI(hbmp);
   hbmpCopy = ResizeImageForCurrentDPI(hbmpCopy);
  
-
   BITMAP bmp;
   GetObject(hbmp,sizeof(BITMAP),&bmp);
   HIMAGELIST himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
@@ -1848,10 +1866,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   hbmp = NULL;
   if (StringCchLenW(s_tchToolbarBitmapHot,COUNTOF(s_tchToolbarBitmapHot)))
   {
-    if (!SearchPath(NULL,s_tchToolbarBitmapHot,L".bmp",COUNTOF(szTmp),szTmp,NULL))
-      StringCchCopy(szTmp,COUNTOF(szTmp),s_tchToolbarBitmapHot);
-
-    hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmapHot);
     hbmp = ResizeImageForCurrentDPI(hbmp);
     if (hbmp)
     {
@@ -1867,10 +1882,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   hbmp = NULL;
   if (StringCchLenW(s_tchToolbarBitmapDisabled,COUNTOF(s_tchToolbarBitmapDisabled)))
   {
-    if (!SearchPath(NULL,s_tchToolbarBitmapDisabled,L".bmp",COUNTOF(szTmp),szTmp,NULL))
-      StringCchCopy(szTmp,COUNTOF(szTmp),s_tchToolbarBitmapDisabled);
-
-    hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    hbmp = _LoadBitmapFile(s_tchToolbarBitmapDisabled);
     hbmp = ResizeImageForCurrentDPI(hbmp);
     if (hbmp)
     {
@@ -6784,7 +6796,6 @@ void LoadSettings()
 
     Defaults.OpenWithDir[0] = L'\0';
     if (!IniSectionGetString(pIniSection, L"OpenWithDir", Defaults.OpenWithDir, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir))) {
-      //SHGetSpecialFolderPath(NULL, Settings.OpenWithDir, CSIDL_DESKTOPDIRECTORY, true);
       GetKnownFolderPath(&FOLDERID_Desktop, Settings.OpenWithDir, COUNTOF(Settings.OpenWithDir));
     }
     else {
@@ -6794,7 +6805,6 @@ void LoadSettings()
     Defaults.FavoritesDir[0] = L'\0';
     //StringCchCopyW(Defaults.FavoritesDir, COUNTOF(Defaults.FavoritesDir), L"%USERPROFILE%");
     if (!IniSectionGetString(pIniSection, L"Favorites", Defaults.FavoritesDir, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir))) {
-      //SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,Settings.FavoritesDir);
       GetKnownFolderPath(&FOLDERID_Favorites, Settings.FavoritesDir, COUNTOF(Settings.FavoritesDir));
     }
     else {
@@ -7546,9 +7556,9 @@ void ParseCommandLine()
 
         case L'E':
           if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-            if (lpEncodingArg)
-              LocalFree(lpEncodingArg);
-            lpEncodingArg = StrDup(lp1);
+            if (s_lpEncodingArg)
+              LocalFree(s_lpEncodingArg);
+            s_lpEncodingArg = StrDup(lp1);
           }
           break;
 
@@ -7576,8 +7586,8 @@ void ParseCommandLine()
               bTransBS = true;
 
             if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-              if (lpMatchArg) { LocalFree(lpMatchArg); }  // StrDup()
-              lpMatchArg = StrDup(lp1);
+              if (s_lpMatchArg) { LocalFree(s_lpMatchArg); }  // StrDup()
+              s_lpMatchArg = StrDup(lp1);
               s_flagMatchText = 1;
 
               if (bFindUp)
@@ -7609,34 +7619,34 @@ void ParseCommandLine()
 
         case L'S':
           if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-            if (lpSchemeArg) { LocalFree(lpSchemeArg); }  // StrDup()
-            lpSchemeArg = StrDup(lp1);
+            if (s_lpSchemeArg) { LocalFree(s_lpSchemeArg); }  // StrDup()
+            s_lpSchemeArg = StrDup(lp1);
             s_flagLexerSpecified = 1;
           }
           break;
 
         case L'D':
-          if (lpSchemeArg) {
-            LocalFree(lpSchemeArg);  // StrDup()
-            lpSchemeArg = NULL;
+          if (s_lpSchemeArg) {
+            LocalFree(s_lpSchemeArg);  // StrDup()
+            s_lpSchemeArg = NULL;
           }
           s_iInitialLexer = 0;
           s_flagLexerSpecified = 1;
           break;
 
         case L'H':
-          if (lpSchemeArg) {
-            LocalFree(lpSchemeArg);  // StrDup()
-            lpSchemeArg = NULL;
+          if (s_lpSchemeArg) {
+            LocalFree(s_lpSchemeArg);  // StrDup()
+            s_lpSchemeArg = NULL;
           }
           s_iInitialLexer = 35;
           s_flagLexerSpecified = 1;
           break;
 
         case L'X':
-          if (lpSchemeArg) {
-            LocalFree(lpSchemeArg);  // StrDup()
-            lpSchemeArg = NULL;
+          if (s_lpSchemeArg) {
+            LocalFree(s_lpSchemeArg);  // StrDup()
+            s_lpSchemeArg = NULL;
           }
           s_iInitialLexer = 36;
           s_flagLexerSpecified = 1;
@@ -7673,32 +7683,32 @@ void ParseCommandLine()
       else {
         LPWSTR lpFileBuf = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
         if (lpFileBuf) {
-          cchiFileList = (int)(StringCchLenW(lpCmdLine, len - 2) - StringCchLenW(lp3, len));
+          s_cchiFileList = (int)(StringCchLenW(lpCmdLine, len - 2) - StringCchLenW(lp3, len));
 
-          if (lpFileArg) {
-            FreeMem(lpFileArg);
+          if (s_lpFileArg) {
+            FreeMem(s_lpFileArg);
             //lpFileArg = NULL;
           }
-          lpFileArg = AllocMem(sizeof(WCHAR)*(MAX_PATH+1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
-          StringCchCopy(lpFileArg, (MAX_PATH+1), lp3);
+          s_lpFileArg = AllocMem(sizeof(WCHAR)*(MAX_PATH+1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
+          StringCchCopy(s_lpFileArg, (MAX_PATH+1), lp3);
 
-          PathFixBackslashes(lpFileArg);
+          PathFixBackslashes(s_lpFileArg);
 
-          if (!PathIsRelative(lpFileArg) && !PathIsUNC(lpFileArg) &&
-              PathGetDriveNumber(lpFileArg) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/) {
+          if (!PathIsRelative(s_lpFileArg) && !PathIsUNC(s_lpFileArg) &&
+              PathGetDriveNumber(s_lpFileArg) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/) {
 
             WCHAR wchPath[(MAX_PATH+1)] = { L'\0' };
             StringCchCopy(wchPath, COUNTOF(wchPath), Globals.WorkingDirectory);
             PathStripToRoot(wchPath);
-            PathCchAppend(wchPath, COUNTOF(wchPath), lpFileArg);
-            StringCchCopy(lpFileArg, (MAX_PATH+1), wchPath);
+            PathCchAppend(wchPath, COUNTOF(wchPath), s_lpFileArg);
+            StringCchCopy(s_lpFileArg, (MAX_PATH+1), wchPath);
           }
 
-          StrTrim(lpFileArg, L" \"");
+          StrTrim(s_lpFileArg, L" \"");
 
-          while ((cFileList < FILE_LIST_SIZE) && ExtractFirstArgument(lp3, lpFileBuf, lp3, (int)len)) {
+          while ((s_cFileList < FILE_LIST_SIZE) && ExtractFirstArgument(lp3, lpFileBuf, lp3, (int)len)) {
             PathQuoteSpaces(lpFileBuf);
-            lpFileList[cFileList++] = StrDup(lpFileBuf); // LocalAlloc()
+            s_lpFileList[s_cFileList++] = StrDup(lpFileBuf); // LocalAlloc()
           }
           bContinue = false;
         }
@@ -7810,10 +7820,9 @@ void LoadFlags()
 
 //=============================================================================
 //
-//  FindIniFile()
+//  _CheckIniFile()
 //
-//
-static bool  _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
+static bool _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
 {
   WCHAR tchFileExpanded[MAX_PATH] = { L'\0' };
   ExpandEnvironmentStrings(lpszFile,tchFileExpanded,COUNTOF(tchFileExpanded));
@@ -7837,8 +7846,7 @@ static bool  _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
       StringCchCopy(lpszFile, MAX_PATH, tchBuild);
       return true;
     }
-    // %APPDATA%
-    //if (S_OK == SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
+    // Application Data (%APPDATA%)
     if (GetKnownFolderPath(&FOLDERID_RoamingAppData, tchBuild, COUNTOF(tchBuild))) {
       PathCchAppend(tchBuild,COUNTOF(tchBuild),tchFileExpanded);
       if (PathFileExists(tchBuild)) {
@@ -7846,11 +7854,19 @@ static bool  _CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
         return true;
       }
     }
-    // general
-    if (SearchPath(NULL,tchFileExpanded,L".ini",COUNTOF(tchBuild),tchBuild,NULL)) {
-      StringCchCopy(lpszFile,MAX_PATH,tchBuild);
-      return true;
+    // Home (%HOMEPATH%) user's profile dir
+    if (GetKnownFolderPath(&FOLDERID_Profile, tchBuild, COUNTOF(tchBuild))) {
+      PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
+      if (PathFileExists(tchBuild)) {
+        StringCchCopy(lpszFile, MAX_PATH, tchBuild);
+        return true;
+      }
     }
+    //~// in general search path
+    //~if (SearchPath(NULL,tchFileExpanded,L".ini",COUNTOF(tchBuild),tchBuild,NULL)) {
+    //~  StringCchCopy(lpszFile,MAX_PATH,tchBuild);
+    //~  return true;
+    //~}
   }
   else if (PathFileExists(tchFileExpanded)) {
     StringCchCopy(lpszFile,MAX_PATH,tchFileExpanded);
@@ -9888,7 +9904,7 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
           bContinue = FALSE;
 
         GetDlgItemText(hwnd,IDC_FILENAME,tchFileName,COUNTOF(tchFileName));
-        if (StringCchCompareXI(tchFileName,lpFileArg) == 0)
+        if (StringCchCompareXI(tchFileName,s_lpFileArg) == 0)
           *(HWND*)lParam = hwnd;
         else
           bContinue = TRUE;
@@ -9905,35 +9921,19 @@ bool ActivatePrevInst()
   if ((Flags.NoReuseWindow && !Flags.SingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard)
     return(false);
 
-  if (Flags.SingleFileInstance && lpFileArg) {
+  if (Flags.SingleFileInstance && s_lpFileArg) 
+  {
+    ExpandEnvironmentStringsEx(s_lpFileArg,(DWORD)SizeOfMem(s_lpFileArg)/sizeof(WCHAR));
 
-    // Search working directory from second instance, first!
-    // lpFileArg is at least MAX_PATH+4 WCHARS
-    WCHAR tchTmp[(MAX_PATH+1)] = { L'\0' };
-
-    ExpandEnvironmentStringsEx(lpFileArg,(DWORD)SizeOfMem(lpFileArg)/sizeof(WCHAR));
-
-    if (PathIsRelative(lpFileArg)) {
+    if (PathIsRelative(s_lpFileArg)) {
+      WCHAR tchTmp[MAX_PATH] = { L'\0' };
       StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
-      PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
+      PathCchAppend(tchTmp,COUNTOF(tchTmp),s_lpFileArg);
+      StringCchCopy(s_lpFileArg, MAX_PATH, tchTmp);
       //~ don't search in PATH when opening relative paths via command line
-      //~if (PathFileExists(tchTmp))
-      //~  StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
-      //~else {
-      //~  if (SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-      //~    StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
-      //~  else {
-      //~    StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
-      //~    PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
-      //~    StringCchCopy(lpFileArg,(MAX_PATH+1),tchTmp);
-      //~  }
-      //~}
-      StringCchCopy(lpFileArg, (MAX_PATH + 1), tchTmp);
+      //~...SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL)...
     }
-    else if (SearchPath(NULL, lpFileArg, NULL, COUNTOF(tchTmp), tchTmp, NULL)) {
-      StringCchCopy(lpFileArg, (MAX_PATH + 1), tchTmp);
-    }
-    NormalizePathEx(lpFileArg, (MAX_PATH + 1));
+    NormalizePathEx(s_lpFileArg, MAX_PATH);
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -9956,16 +9956,16 @@ bool ActivatePrevInst()
         SetForegroundWindow(hwnd);
 
         size_t cb = sizeof(np3params);
-        if (lpSchemeArg) {
-          cb += ((StringCchLen(lpSchemeArg, 0) + 1) * sizeof(WCHAR));
+        if (s_lpSchemeArg) {
+          cb += ((StringCchLen(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR));
         }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = false;
         params->flagChangeNotify = 0;
         params->flagQuietCreate = false;
         params->flagLexerSpecified = s_flagLexerSpecified;
-        if (s_flagLexerSpecified && lpSchemeArg) {
-          StringCchCopy(StrEnd(&params->wchData,0)+1,(StringCchLen(lpSchemeArg,0)+1),lpSchemeArg);
+        if (s_flagLexerSpecified && s_lpSchemeArg) {
+          StringCchCopy(StrEnd(&params->wchData,0)+1,(StringCchLen(s_lpSchemeArg,0)+1),s_lpSchemeArg);
           params->iInitialLexer = -1;
         }
         else
@@ -9974,7 +9974,7 @@ bool ActivatePrevInst()
         params->iInitialLine = s_iInitialLine;
         params->iInitialColumn = s_iInitialColumn;
 
-        params->iSrcEncoding = (lpEncodingArg) ? Encoding_MatchW(lpEncodingArg) : CPI_NONE;
+        params->iSrcEncoding = (s_lpEncodingArg) ? Encoding_MatchW(s_lpEncodingArg) : CPI_NONE;
         params->flagSetEncoding = s_flagSetEncoding;
         params->flagSetEOLMode = s_flagSetEOLMode;
         params->flagTitleExcerpt = 0;
@@ -10022,35 +10022,22 @@ bool ActivatePrevInst()
 
       SetForegroundWindow(hwnd);
 
-      if (lpFileArg)
+      if (s_lpFileArg)
       {
-        // Search working directory from second instance, first!
-        // lpFileArg is at least MAX_PATH+4 WCHAR
-        WCHAR tchTmp[(MAX_PATH+1)] = { L'\0' };
+        ExpandEnvironmentStringsEx(s_lpFileArg,(DWORD)SizeOfMem(s_lpFileArg)/sizeof(WCHAR));
 
-        ExpandEnvironmentStringsEx(lpFileArg,(DWORD)SizeOfMem(lpFileArg)/sizeof(WCHAR));
-
-        if (PathIsRelative(lpFileArg)) {
+        if (PathIsRelative(s_lpFileArg)) {
+          WCHAR tchTmp[MAX_PATH] = { L'\0' };
           StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
-          PathCchAppend(tchTmp,COUNTOF(tchTmp),lpFileArg);
-          if (PathFileExists(tchTmp)) {
-            StringCchCopy(lpFileArg, (MAX_PATH+1), tchTmp);
-          }
-          else {
-            if (SearchPath(NULL, lpFileArg, NULL, COUNTOF(tchTmp), tchTmp, NULL)) {
-              StringCchCopy(lpFileArg, (MAX_PATH+1), tchTmp);
-            }
-          }
-        }
-        else if (SearchPath(NULL, lpFileArg, NULL, COUNTOF(tchTmp), tchTmp, NULL)) {
-          StringCchCopy(lpFileArg, (MAX_PATH+1), tchTmp);
+          PathCchAppend(tchTmp,COUNTOF(tchTmp),s_lpFileArg);
+          StringCchCopy(s_lpFileArg, MAX_PATH, tchTmp);
         }
 
         size_t cb = sizeof(np3params);
-        cb += (StringCchLenW(lpFileArg,0) + 1) * sizeof(WCHAR);
+        cb += (StringCchLenW(s_lpFileArg,0) + 1) * sizeof(WCHAR);
 
-        if (lpSchemeArg)
-          cb += (StringCchLenW(lpSchemeArg,0) + 1) * sizeof(WCHAR);
+        if (s_lpSchemeArg)
+          cb += (StringCchLenW(s_lpSchemeArg,0) + 1) * sizeof(WCHAR);
 
         size_t cchTitleExcerpt = StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
         if (cchTitleExcerpt) {
@@ -10058,12 +10045,12 @@ bool ActivatePrevInst()
         }
         LPnp3params params = AllocMem(cb, HEAP_ZERO_MEMORY);
         params->flagFileSpecified = true;
-        StringCchCopy(&params->wchData, StringCchLenW(lpFileArg,0)+1,lpFileArg);
+        StringCchCopy(&params->wchData, StringCchLenW(s_lpFileArg,0)+1,s_lpFileArg);
         params->flagChangeNotify = s_flagChangeNotify;
         params->flagQuietCreate = s_flagQuietCreate;
         params->flagLexerSpecified = s_flagLexerSpecified;
-        if (s_flagLexerSpecified && lpSchemeArg) {
-          StringCchCopy(StrEnd(&params->wchData,0)+1, StringCchLen(lpSchemeArg,0)+1,lpSchemeArg);
+        if (s_flagLexerSpecified && s_lpSchemeArg) {
+          StringCchCopy(StrEnd(&params->wchData,0)+1, StringCchLen(s_lpSchemeArg,0)+1,s_lpSchemeArg);
           params->iInitialLexer = -1;
         }
         else {
@@ -10073,7 +10060,7 @@ bool ActivatePrevInst()
         params->iInitialLine = s_iInitialLine;
         params->iInitialColumn = s_iInitialColumn;
 
-        params->iSrcEncoding = (lpEncodingArg) ? Encoding_MatchW(lpEncodingArg) : CPI_NONE;
+        params->iSrcEncoding = (s_lpEncodingArg) ? Encoding_MatchW(s_lpEncodingArg) : CPI_NONE;
         params->flagSetEncoding = s_flagSetEncoding;
         params->flagSetEOLMode = s_flagSetEOLMode;
 
@@ -10090,7 +10077,7 @@ bool ActivatePrevInst()
 
         SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
         FreeMem(params);    params = NULL;
-        FreeMem(lpFileArg); lpFileArg = NULL;
+        FreeMem(s_lpFileArg); s_lpFileArg = NULL;
       }
       return(true);
     }
@@ -10108,7 +10095,7 @@ bool ActivatePrevInst()
 //
 bool RelaunchMultiInst() {
 
-  if (Flags.MultiFileArg == 2 && cFileList > 1) {
+  if (Flags.MultiFileArg == 2 && s_cFileList > 1) {
 
     LPWSTR lpCmdLineNew = StrDup(GetCommandLine());
     size_t len = StringCchLen(lpCmdLineNew,0) + 1UL;
@@ -10116,7 +10103,7 @@ bool RelaunchMultiInst() {
     LPWSTR lp2 = AllocMem(sizeof(WCHAR)*len, HEAP_ZERO_MEMORY);
 
     StrTab2Space(lpCmdLineNew);
-    StringCchCopy(lpCmdLineNew + cchiFileList,2,L"");
+    StringCchCopy(lpCmdLineNew + s_cchiFileList,2,L"");
 
     WCHAR* pwch = CharPrev(lpCmdLineNew,StrEnd(lpCmdLineNew,len));
     int k = 0;
@@ -10124,14 +10111,14 @@ bool RelaunchMultiInst() {
       *pwch = L' ';
       pwch = CharPrev(lpCmdLineNew,pwch);
       if (k++ > 1)
-        cchiFileList--;
+        s_cchiFileList--;
     }
 
-    for (int i = 0; i < cFileList; i++) 
+    for (int i = 0; i < s_cFileList; i++) 
     {
-      StringCchCopy(lpCmdLineNew + cchiFileList,8,L" /n - ");
-      StringCchCat(lpCmdLineNew,len,lpFileList[i]);
-      LocalFree(lpFileList[i]); // StrDup()
+      StringCchCopy(lpCmdLineNew + s_cchiFileList,8,L" /n - ");
+      StringCchCat(lpCmdLineNew,len,s_lpFileList[i]);
+      LocalFree(s_lpFileList[i]); // StrDup()
 
       STARTUPINFO si;
       ZeroMemory(&si,sizeof(STARTUPINFO));
@@ -10146,13 +10133,13 @@ bool RelaunchMultiInst() {
     LocalFree(lpCmdLineNew); // StrDup()
     FreeMem(lp1);
     FreeMem(lp2);
-    FreeMem(lpFileArg); lpFileArg = NULL;
+    FreeMem(s_lpFileArg); s_lpFileArg = NULL;
 
     return true;
   }
 
-  for (int i = 0; i < cFileList; i++) {
-    LocalFree(lpFileList[i]); // StrDup()
+  for (int i = 0; i < s_cFileList; i++) {
+    LocalFree(s_lpFileList[i]); // StrDup()
   }
   return false;
 }

@@ -1120,34 +1120,26 @@ void PathCanonicalizeEx(LPWSTR lpSrc)
 extern WCHAR g_tchFavoritesDir[MAX_PATH];
 extern WCHAR szCurDir[MAX_PATH];
 
-DWORD SearchPathEx(LPCWSTR lpPath,LPCWSTR lpFileName,LPCWSTR lpExtension,
-                   DWORD nBufferLength,LPWSTR lpBuffer,LPWSTR *lpFilePart)
-{
+BOOL SearchPathEx(LPCWSTR lpFileName, DWORD nBufferLength, LPWSTR lpBuffer) {
   DWORD dwRetVal = 0;
 
-  if (lstrcmp(lpFileName,L"..") == 0 || lstrcmp(lpFileName,L".") == 0)
-  {
-    if (lstrcmp(lpFileName,L"..") == 0 && PathIsRoot(szCurDir)) {
-      lstrcpyn(lpBuffer,L"*.*",nBufferLength);
+  if (StrEqual(lpFileName, L"..") || StrEqual(lpFileName, L".")) {
+    if (StrEqual(lpFileName, L"..") && PathIsRoot(szCurDir)) {
+      lstrcpyn(lpBuffer, L"*.*", nBufferLength);
       dwRetVal = 1;
     }
-    else
-      dwRetVal = SearchPath(szCurDir,lpFileName,lpExtension,
-                            nBufferLength,lpBuffer,lpFilePart);
   }
 
-  else
-  {
-    dwRetVal = SearchPath(lpPath,lpFileName,lpExtension,
-                          nBufferLength,lpBuffer,lpFilePart);
-
-    // Search L"Favorites" if no result
-    if (!dwRetVal)
-      dwRetVal = SearchPath(g_tchFavoritesDir,lpFileName,lpExtension,
-                            nBufferLength,lpBuffer,lpFilePart);
+  if (!dwRetVal) {
+    dwRetVal = SearchPath(szCurDir, lpFileName, NULL, nBufferLength, lpBuffer, NULL);
   }
 
-  return(dwRetVal);
+  // Search Favorites if no result
+  if (!dwRetVal) {
+    dwRetVal = SearchPath(g_tchFavoritesDir, lpFileName, NULL, nBufferLength, lpBuffer, NULL);
+  }
+
+  return dwRetVal != 0;
 }
 
 
