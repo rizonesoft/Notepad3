@@ -6,7 +6,7 @@
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
-Rizonesoft Notepad3 -- CHANGELOG --
+Rizonesoft Notepad3 --- CHANGELOG ---
 ================================================================================
 
 --------------------------------------------------
@@ -14,7 +14,7 @@ LEGEND:
 --------------------------------------------------
 1) NEW: (Added, Feature)
 2) CHANGES:
-3) ENHANCEMENTS (Optimize)
+3) ENHANCEMENT: (Optimize)
 4) FIXES: (Debug)
 5) REMOVED: 
 6)TRANSLATIONS (MUI): (New Language)
