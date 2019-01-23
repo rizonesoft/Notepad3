@@ -437,6 +437,12 @@ static void  _SetDocumentModified(bool bModified)
 
 static void _InitGlobals()
 {
+  ZeroMemory(&Globals, sizeof(GLOBALS_T));
+  ZeroMemory(&Settings, sizeof(SETTINGS_T));
+  ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
+  ZeroMemory(&Flags, sizeof(FLAGS_T));
+  ZeroMemory(&Constants, sizeof(CONSTANTS_T));
+
   Constants.FileBrowserMiniPath = L"minipath.exe";
 
   Globals.CallTipType = CT_NONE;
@@ -641,6 +647,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
       GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
   }
 
+  if (!Globals.hIcon128) {
+    Globals.hIcon128 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
+  }
+
   // Command Line Help Dialog
   if (s_flagDisplayHelp) {
     DisplayCmdLineHelp(NULL);
@@ -668,6 +678,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   if (!hwnd) { 
     _CleanUpResources(hwnd, true);
     return 1; 
+  }
+
+  if (Globals.hIcon128) {
+      SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)Globals.hIcon128);
+  }
+  if (Globals.hDlgIcon) {
+    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon);
   }
 
   if (Globals.hMainMenu) { SetMenu(hwnd, Globals.hMainMenu); }
@@ -1247,6 +1264,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     }
     PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
   }
+
   return(Globals.hwndMain);
 }
 

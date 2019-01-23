@@ -253,6 +253,7 @@ typedef struct _globals_t
   DWORD     dwLastError;
   HMENU     hMainMenu;
   HICON     hDlgIcon;
+  HICON     hIcon128;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
