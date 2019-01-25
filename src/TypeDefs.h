@@ -394,6 +394,34 @@ extern SETTINGS_T Settings;
 
 // ------------------------------------
 
+typedef struct _flags_t
+{
+  bool bStickyWindowPosition;
+  bool bReuseWindow;
+  bool bSingleFileInstance;
+  int fStickyWindowPosition;
+  int fReuseWindow;
+  int fSingleFileInstance;
+  int fNoReuseWindow;
+
+  int MultiFileArg;
+  int RelativeFileMRU;
+  int PortableMyDocs;
+  int NoFadeHidden;
+  int ToolbarLook;
+  int SimpleIndentGuides;
+  int NoHTMLGuess;
+  int NoCGIGuess;
+  int NoFileVariables;
+  int ShellUseSystemMRU;
+  int PrintFileAndLeave;
+
+} FLAGS_T, * PFLAGS_T;
+
+extern FLAGS_T Flags;
+
+// ------------------------------------
+
 typedef struct _settings2_t
 {
   int    FileLoadWarningMB;
@@ -431,30 +459,6 @@ typedef struct _settings2_t
 } SETTINGS2_T, *PSETTINGS2_T;
 
 extern SETTINGS2_T Settings2;
-
-// ------------------------------------
-
-typedef struct _flags_t
-{
-  int StickyWindowPosition;
-  int ReuseWindow;
-  int NoReuseWindow;
-  int SingleFileInstance;
-  int MultiFileArg;
-  int RelativeFileMRU;
-  int PortableMyDocs;
-  int NoFadeHidden;
-  int ToolbarLook;
-  int SimpleIndentGuides;
-  int NoHTMLGuess;
-  int NoCGIGuess;
-  int NoFileVariables;
-  int ShellUseSystemMRU;
-  int PrintFileAndLeave;
-
-} FLAGS_T, *PFLAGS_T;
-
-extern FLAGS_T Flags;
 
 //=============================================================================
 

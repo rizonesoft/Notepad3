@@ -22,27 +22,26 @@ knownConditionTrueFalse:scintilla/src/Document.cxx
 // ScintillaDocument is providing an API and there are no consumers of the API inside Scintilla
 unusedFunction:scintilla/qt/ScintillaEdit/ScintillaDocument.cpp
 
+// moc_ files are not understood by cppcheck
+noValidConfiguration
+
 // The performance cost of by-value passing is often small and using a reference decreases
 // code legibility.
 passedByValue
 
 // Suppress most lexer warnings since the lexers are maintained by others
 redundantCondition:scintilla/lexers/LexA68k.cxx
-useInitializationList:scintilla/lexers/LexAsm.cxx
 shadowVar:scintilla/lexers/LexAU3.cxx
-useInitializationList:scintilla/lexers/LexBasic.cxx
 uninitMemberVar:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBatch.cxx
 variableScope:scintilla/lexers/LexCmake.cxx
 variableScope:scintilla/lexers/LexCSS.cxx
-useInitializationList:scintilla/lexers/LexD.cxx
 unreadVariable:scintilla/lexers/LexDMAP.cxx
 variableScope:scintilla/lexers/LexErlang.cxx
 variableScope:scintilla/lexers/LexGui4Cli.cxx
 variableScope:scintilla/lexers/LexInno.cxx
 variableScope:scintilla/lexers/LexLaTeX.cxx
-copyCtorAndEqOperator:scintilla/lexers/LexLaTeX.cxx
 variableScope:scintilla/lexers/LexMetapost.cxx
 variableScope:scintilla/lexers/LexModula.cxx
 variableScope:scintilla/lexers/LexMSSQL.cxx
@@ -63,7 +62,6 @@ variableScope:scintilla/lexers/LexTeX.cxx
 knownConditionTrueFalse:scintilla/lexers/LexVerilog.cxx
 shadowVar:scintilla/lexers/LexVHDL.cxx
 variableScope:scintilla/lexers/LexVHDL.cxx
-unreadVariable:scintilla/lexers/LexVisualProlog.cxx
 
 // Suppress everything in catch.hpp as won't be changing
 *:scintilla/test/unit/catch.hpp

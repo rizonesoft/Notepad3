@@ -75,6 +75,26 @@ bool IsNewline(const int ch) {
     return (ch == '\n' || ch == '\r');
 }
 
+bool IsFuncName(const char *str) {
+    const char *identifiers[] = {
+        "proc",
+        "func",
+        "macro",
+        "method",
+        "template",
+        "iterator",
+        "converter"
+    };
+
+    for (const char *id : identifiers) {
+        if (strcmp(str, id) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 constexpr bool IsTripleLiteral(const int style) noexcept {
     return style == SCE_NIM_TRIPLE || style == SCE_NIM_TRIPLEDOUBLE;
 }
@@ -419,17 +439,7 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                     sc.SetState(SCE_NIM_DEFAULT);
 
                     if (style == SCE_NIM_WORD) {
-                        if (0 == strcmp(s, "proc") 
-                            || 0 == strcmp(s, "func") 
-                            || 0 == strcmp(s, "macro") 
-                            || 0 == strcmp(s, "method") 
-                            || 0 == strcmp(s, "template") 
-                            || 0 == strcmp(s, "iterator") 
-                            || 0 == strcmp(s, "converter")) {
-                            funcNameExists = true;
-                        } else {
-                            funcNameExists = false;
-                        }
+                        funcNameExists = IsFuncName(s);
                     } else {
                         funcNameExists = false;
                     }
