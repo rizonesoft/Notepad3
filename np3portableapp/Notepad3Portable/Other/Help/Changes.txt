@@ -29,7 +29,7 @@ MUI - (M)ultilingual (U)ser (I)nterface
 
 
 ==================================================
-Current Version 5.19.115.build (15 January 2019)
+Current Version 5.19.125.build (25 January 2019)
 ==================================================
 
 --------------------------------------------------
@@ -45,7 +45,8 @@ NEW:
 --------------------------------------------------
 CHANGES:
 --------------------------------------------------
-- Up-to-Date SCL (GitHub Mirror 2019-Jan-15)
+- Update of Onigmo RegEx engine (2019-Jan-24)
+- Up-to-Date SCL (GitHub Mirror 2019-Jan-24)
 - Optimized file search for items (filebrowser, .ini file, dirs)
 - Goto-Dlg (Line/Column) shows max line number
 - Scintilla Library (SCL) version 4.1.3 (2019-01-10)
@@ -54,6 +55,8 @@ CHANGES:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- support high-definition icon for taskbar
+- .vcxproj files supporting VS2019_Prev_2 (vc142)
 
 --------------------------------------------------
 TRANSLATIONS (MUI):

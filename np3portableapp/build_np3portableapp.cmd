@@ -42,8 +42,10 @@ set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\Porta
 
 set NP3_DISTRIB_DIR=%SCRIPT_DIR%..\Build
 set NP3_DOC_DIR=%SCRIPT_DIR%..\DOC
-set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
-set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
+::set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v141
+::set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v141
+set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v142
+set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v142
 
 set NP3_PORTAPP_DIR=%SCRIPT_DIR%Notepad3Portable
 set NP3_PORTAPP_INFO=%NP3_PORTAPP_DIR%\App\AppInfo\appinfo

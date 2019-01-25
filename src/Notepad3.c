@@ -61,15 +61,16 @@
 * Local and global Variables for Notepad3.c
 *
 */
+CONSTANTS_T Constants;
 GLOBALS_T   Globals;
+
+FLAGS_T     Flags;
+FLAGS_T     DefaultFlags;
+
 SETTINGS_T  Settings;
 SETTINGS2_T Settings2;
-FLAGS_T     Flags;
-CONSTANTS_T Constants;
-
 static SETTINGS_T  Defaults;
 static SETTINGS2_T Defaults2;
-static FLAGS_T     DefaultFlags;
 
 // ------------------------------------
 
@@ -437,7 +438,15 @@ static void  _SetDocumentModified(bool bModified)
 
 static void _InitGlobals()
 {
+  ZeroMemory(&Globals, sizeof(GLOBALS_T));
+  ZeroMemory(&Settings, sizeof(SETTINGS_T));
+  ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
+  ZeroMemory(&Flags, sizeof(FLAGS_T));
+  ZeroMemory(&Constants, sizeof(CONSTANTS_T));
+
+  
   Constants.FileBrowserMiniPath = L"minipath.exe";
+
 
   Globals.CallTipType = CT_NONE;
   Globals.iWrapCol = 0;
@@ -454,6 +463,26 @@ static void _InitGlobals()
   Globals.bFindReplCopySelOrClip = true;
   Globals.bReplaceInitialized = false;
   Globals.FindReplaceMatchFoundState = FND_NOP;
+
+
+  DefaultFlags.bStickyWindowPosition = false;
+  DefaultFlags.bReuseWindow = false;
+  DefaultFlags.bSingleFileInstance = true;
+  DefaultFlags.fStickyWindowPosition = 0; Flags.fStickyWindowPosition = 0;
+  DefaultFlags.fReuseWindow = 0; Flags.fReuseWindow = 0;
+  DefaultFlags.fNoReuseWindow = 0; Flags.fNoReuseWindow = 0;
+  DefaultFlags.fSingleFileInstance = 1; Flags.fSingleFileInstance = 1;
+  DefaultFlags.MultiFileArg = 0;
+  DefaultFlags.RelativeFileMRU = 1;
+  DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
+  DefaultFlags.NoFadeHidden = 0;
+  DefaultFlags.ToolbarLook = IsXP() ? 1 : 2;
+  DefaultFlags.SimpleIndentGuides = 0;
+  DefaultFlags.NoHTMLGuess = 0;
+  DefaultFlags.NoCGIGuess = 0;
+  DefaultFlags.NoFileVariables = 0;
+  DefaultFlags.ShellUseSystemMRU = 1;
+  DefaultFlags.PrintFileAndLeave = 0;
 }
 
 
@@ -641,6 +670,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
       GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_DEFAULTCOLOR);
   }
 
+  if (!Globals.hIcon128) {
+    Globals.hIcon128 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
+  }
+
   // Command Line Help Dialog
   if (s_flagDisplayHelp) {
     DisplayCmdLineHelp(NULL);
@@ -668,6 +701,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   if (!hwnd) { 
     _CleanUpResources(hwnd, true);
     return 1; 
+  }
+
+  if (Globals.hIcon128) {
+      SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)Globals.hIcon128);
+  }
+  if (Globals.hDlgIcon) {
+    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon);
   }
 
   if (Globals.hMainMenu) { SetMenu(hwnd, Globals.hMainMenu); }
@@ -1247,6 +1287,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     }
     PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
   }
+
   return(Globals.hwndMain);
 }
 
@@ -2710,7 +2751,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   bool const s = SciCall_IsSelectionEmpty();
   bool const e = (SciCall_GetTextLength() == 0);
-  bool const b = SciCall_CanPaste();
+  bool const p = SciCall_CanPaste();
   bool const mls = Sci_IsMultiLineSelection();
 
   EnableCmd(hmenu,IDM_EDIT_CUT, !e && !ro);       // allow Ctrl-X w/o selection
@@ -2719,8 +2760,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_EDIT_COPYALL, !e);
   EnableCmd(hmenu,IDM_EDIT_COPYADD, !e);
 
-  EnableCmd(hmenu,IDM_EDIT_PASTE, b && !ro);
-  EnableCmd(hmenu,IDM_EDIT_SWAP, (!s || b) && !ro);
+  EnableCmd(hmenu,IDM_EDIT_PASTE, p && !ro);
+  EnableCmd(hmenu,IDM_EDIT_SWAP, (!s || p) && !ro);
   EnableCmd(hmenu,IDM_EDIT_CLEAR, !s && !ro);
 
   EnableCmd(hmenu, IDM_EDIT_SELECTALL, !e);
@@ -2906,12 +2947,13 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
   CheckCmd(hmenu, IDM_VIEW_SCROLLPASTEOF, Settings.ScrollPastEOF);
 
-  i = Flags.ReuseWindow;
-  CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,i);
-  i = Flags.SingleFileInstance;
-  CheckCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,i);
-  i = Flags.StickyWindowPosition;
-  CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,i);
+  bool b = Flags.bReuseWindow;
+  CheckCmd(hmenu,IDM_VIEW_REUSEWINDOW,b);
+  b = Flags.bSingleFileInstance;
+  CheckCmd(hmenu,IDM_VIEW_SINGLEFILEINSTANCE,b);
+  b = Flags.bStickyWindowPosition;
+  CheckCmd(hmenu,IDM_VIEW_STICKYWINPOS,b);
+
   CheckCmd(hmenu,IDM_VIEW_ALWAYSONTOP,((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1));
   CheckCmd(hmenu,IDM_VIEW_MINTOTRAY,Settings.MinimizeToTray);
   CheckCmd(hmenu,IDM_VIEW_TRANSPARENT,Settings.TransparentMode);
@@ -4867,7 +4909,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_STICKYWINPOS:
 
-      if (Flags.StickyWindowPosition == 0)
+      if (!Flags.bStickyWindowPosition)
       {
         WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
@@ -4890,15 +4932,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         IniSetBool(L"Window",tchMaximized,wi.max);
         IniSetInt(L"Window", tchZoom, wi.zoom);
 
-        Flags.StickyWindowPosition = 1;
+        Flags.bStickyWindowPosition = true;
         InfoBoxLng(0,L"MsgStickyWinPos",IDS_MUI_STICKYWINPOS);
       }
       else {
-        Flags.StickyWindowPosition = 0;
+        Flags.bStickyWindowPosition = false;
       }
       
-      if (Flags.StickyWindowPosition != DefaultFlags.StickyWindowPosition)
-        IniSetInt(L"Settings2", L"StickyWindowPosition", Flags.StickyWindowPosition);
+      if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition)
+        IniSetBool(L"Settings2", L"StickyWindowPosition", Flags.bStickyWindowPosition);
       else
         IniSetString(L"Settings2", L"StickyWindowPosition", NULL);
 
@@ -4906,18 +4948,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_VIEW_REUSEWINDOW:
-      Flags.ReuseWindow = (Flags.ReuseWindow != 0) ? 0 : 1; // reverse
-      if (Flags.ReuseWindow != DefaultFlags.ReuseWindow)
-        IniSetInt(L"Settings2", L"ReuseWindow", Flags.ReuseWindow);
+      Flags.bReuseWindow = !Flags.bReuseWindow; // reverse
+      if (Flags.bReuseWindow != DefaultFlags.bReuseWindow)
+        IniSetBool(L"Settings2", L"ReuseWindow", Flags.bReuseWindow);
       else
         IniSetString(L"Settings2", L"ReuseWindow", NULL);
       break;
 
 
     case IDM_VIEW_SINGLEFILEINSTANCE:
-      Flags.SingleFileInstance = (Flags.SingleFileInstance != 0) ? 0 : 1; // reverse
-      if (Flags.SingleFileInstance != DefaultFlags.SingleFileInstance)
-        IniSetInt(L"Settings2", L"SingleFileInstance", Flags.SingleFileInstance);
+      Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
+      if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance)
+        IniSetInt(L"Settings2", L"SingleFileInstance", Flags.bSingleFileInstance);
       else
         IniSetString(L"Settings2", L"SingleFileInstance", NULL);
       break;
@@ -7304,7 +7346,7 @@ void SaveSettings(bool bSaveSettingsNow)
   StringCchPrintf(tchHighDpiToolBar,COUNTOF(tchHighDpiToolBar),L"%ix%i HighDpiToolBar", ResX, ResY);
   IniSetInt(L"Window", tchHighDpiToolBar, s_iHighDpiToolBar);
 
-  if (Flags.StickyWindowPosition == 0) {
+  if (Flags.fStickyWindowPosition == 0) {
 
     WCHAR tchPosX[32], tchPosY[32], tchSizeX[32], tchSizeY[32], tchMaximized[32], tchZoom[32];
 
@@ -7426,21 +7468,21 @@ void ParseCommandLine()
         else switch (*CharUpper(lp1)) {
 
         case L'N':
-          Flags.ReuseWindow = 0;
-          Flags.NoReuseWindow = 1;
+          Flags.fReuseWindow = 0;
+          Flags.fNoReuseWindow = 1;
           if (*CharUpper(lp1 + 1) == L'S')
-            Flags.SingleFileInstance = 1;
+            Flags.fSingleFileInstance = 1;
           else
-            Flags.SingleFileInstance = 0;
+            Flags.fSingleFileInstance = 0;
           break;
 
         case L'R':
-          Flags.ReuseWindow = 1;
-          Flags.NoReuseWindow = 0;
+          Flags.fReuseWindow = 1;
+          Flags.fNoReuseWindow = 0;
           if (*CharUpper(lp1 + 1) == L'S')
-            Flags.SingleFileInstance = 1;
+            Flags.fSingleFileInstance = 1;
           else
-            Flags.SingleFileInstance = 0;
+            Flags.fSingleFileInstance = 0;
           break;
 
         case L'F':
@@ -7734,24 +7776,6 @@ void ParseCommandLine()
 //
 void LoadFlags()
 {
-  DefaultFlags.StickyWindowPosition = 0;
-  DefaultFlags.ReuseWindow = 0;
-  DefaultFlags.NoReuseWindow = 1;
-  DefaultFlags.SingleFileInstance = 1;
-  DefaultFlags.MultiFileArg = 0;
-  DefaultFlags.RelativeFileMRU = 1;
-  DefaultFlags.PortableMyDocs = DefaultFlags.RelativeFileMRU;
-  DefaultFlags.NoFadeHidden = 0;
-  DefaultFlags.ToolbarLook = IsXP() ? 1 : 2;
-  DefaultFlags.SimpleIndentGuides = 0;
-  DefaultFlags.NoHTMLGuess = 0;
-  DefaultFlags.NoCGIGuess = 0;
-  DefaultFlags.NoFileVariables = 0;
-  DefaultFlags.ShellUseSystemMRU = 1;
-  DefaultFlags.PrintFileAndLeave = 0;
-
-  // --------------------------------------------------------------------------
-
   int const cchIniSection = INISECTIONBUFCNT * HUGE_BUFFER;
 
   WCHAR *pIniSection = AllocMem(sizeof(WCHAR) * cchIniSection, HEAP_ZERO_MEMORY);
@@ -7760,16 +7784,15 @@ void LoadFlags()
   {
     LoadIniSection(L"Settings2", pIniSection, cchIniSection);
 
-    if (IniSectionGetInt(pIniSection, L"StickyWindowPosition", DefaultFlags.StickyWindowPosition))
-      Flags.StickyWindowPosition = 1;
+    Flags.bStickyWindowPosition = IniSectionGetBool(pIniSection, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
+    Flags.bReuseWindow = IniSectionGetBool(pIniSection, L"ReuseWindow", DefaultFlags.bReuseWindow);
+    Flags.bSingleFileInstance = IniSectionGetBool(pIniSection, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
 
-    if (!Flags.ReuseWindow && !Flags.NoReuseWindow) {
-
-      if (!IniSectionGetInt(pIniSection, L"ReuseWindow", DefaultFlags.ReuseWindow))
-        Flags.NoReuseWindow = 1;
-
-      if (IniSectionGetInt(pIniSection, L"SingleFileInstance", DefaultFlags.SingleFileInstance))
-        Flags.SingleFileInstance = 1;
+    if (!Flags.fReuseWindow && !Flags.fNoReuseWindow) 
+    {
+      Flags.fReuseWindow = Flags.bReuseWindow ? 1 : 0;
+      Flags.fNoReuseWindow = Flags.bReuseWindow ? 0 : 1;
+      Flags.fSingleFileInstance = Flags.bSingleFileInstance ? 1 : 0;
     }
 
     if (Flags.MultiFileArg == 0) {
@@ -9918,10 +9941,10 @@ bool ActivatePrevInst()
   HWND hwnd = NULL;
   COPYDATASTRUCT cds;
 
-  if ((Flags.NoReuseWindow && !Flags.SingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard)
+  if ((Flags.fNoReuseWindow && !Flags.fSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard)
     return(false);
 
-  if (Flags.SingleFileInstance && s_lpFileArg) 
+  if (Flags.fSingleFileInstance && s_lpFileArg) 
   {
     ExpandEnvironmentStringsEx(s_lpFileArg,(DWORD)SizeOfMem(s_lpFileArg)/sizeof(WCHAR));
 
@@ -9996,7 +10019,7 @@ bool ActivatePrevInst()
     }
   }
 
-  if (Flags.NoReuseWindow) {
+  if (Flags.fNoReuseWindow) {
     return(false);
   }
 

@@ -503,7 +503,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 {
   WCHAR wch[256] = { L'\0' };
   static HFONT hFontTitle;
-  static HICON hIcon = NULL;
 
   switch (umsg)
   {
@@ -511,10 +510,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   {
     {
       if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
-
-      if (!hIcon) {
-        hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
-      }
 
       SetDlgItemText(hwnd, IDC_VERSION, MKWCS(VERSION_FILEVERSION_LONG));
 
@@ -661,11 +656,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
 
   case WM_PAINT:
-    if (hIcon) {
+    if (Globals.hIcon128) {
       RECT rt;
       GetWindowRect(hwnd, &rt);
       HDC hdc = GetWindowDC(hwnd);
-      DrawIconEx(hdc, 16, 32, hIcon, 128, 128, 0, NULL, DI_NORMAL);
+      DrawIconEx(hdc, 16, 32, Globals.hIcon128, 128, 128, 0, NULL, DI_NORMAL);
       ReleaseDC(hwnd, hdc);
     }
     return 0;
