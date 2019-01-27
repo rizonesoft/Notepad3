@@ -6227,6 +6227,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
   int slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
   if (slen <= 0) { return 0; }
 
+  // SCI_REPLACETARGET or SCI_REPLACETARGETRE
   int iReplaceMsg = SCI_REPLACETARGET;
   char* pszReplace = _GetReplaceString(hwnd, lpefr, &iReplaceMsg);
   if (!pszReplace) {
@@ -6278,16 +6279,22 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
                   pPosPair != NULL;
                   pPosPair = (ReplPos_t*)utarray_next(ReplPosUTArray, pPosPair)) {
 
-    // redo find to get group ranges filled
     start = searchStart;
     end = iEndPos + totalReplLength;
 
-    iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
+    if (iReplaceMsg == SCI_REPLACETARGETRE) 
+    {
+      // redo find to get group ranges filled
+      iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
+    }
+    else {
+      start = pPosPair->beg + totalReplLength;
+      end = pPosPair->end + totalReplLength;
+    }
 
     _ENTER_TARGET_TRANSACTION_;
 
     SciCall_SetTargetRange(start, end);
-    // SCI_REPLACETARGET or SCI_REPLACETARGETRE
     DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
     totalReplLength += replLen + pPosPair->beg - pPosPair->end;
     searchStart = SciCall_GetTargetEnd();
