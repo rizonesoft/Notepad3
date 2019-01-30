@@ -1346,7 +1346,7 @@ BOOL DriveBox_SelectDrive(HWND hwnd,LPCWSTR lpszPath)
   }
 
   // Don't select anything
-  SendMessage(hwnd,CB_SETCURSEL,(WPARAM)-1,0);
+  SendMessage(hwnd,CB_SETCURSEL,(WPARAM)1,0);
   return FALSE;
 
 }

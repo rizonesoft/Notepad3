@@ -343,7 +343,7 @@ typedef struct _ee {
 } ENCODINGENTRY, *PENCODINGENTRY;
 
 int CmpEncoding(const void *s1, const void *s2) {
-  return StrCmp(((PENCODINGENTRY)s1)->wch, ((PENCODINGENTRY)s2)->wch);
+  return StrCmp(((const PENCODINGENTRY)s1)->wch, ((const PENCODINGENTRY)s2)->wch);
 }
 // ============================================================================
 

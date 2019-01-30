@@ -338,14 +338,13 @@ void Style_Load()
 //
 void Style_Save()
 {
-  WCHAR tch[32] = { L'\0' };;
-  WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
     // Custom colors
     for (int i = 0; i < 16; i++) {
       if (s_colorCustom[i] != s_colorDefault[i]) {
+        WCHAR tch[32] = { L'\0' };
         WCHAR wch[32] = { L'\0' };
         StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
         StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
@@ -393,6 +392,7 @@ void Style_Save()
       while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
         if (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & (((__int64)1) << (i+2))) != 0LL) {
           // normalize
+          WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
           szTmpStyle[0] = L'\0'; // clear
           Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
           IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
@@ -468,7 +468,6 @@ bool Style_Export(HWND hwnd)
   WCHAR szFile[MAX_PATH * 2] = { L'\0' };
   WCHAR szFilter[256] = { L'\0' };
   OPENFILENAME ofn;
-  DWORD dwError = ERROR_SUCCESS;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
   GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
@@ -485,6 +484,7 @@ bool Style_Export(HWND hwnd)
 
   if (GetSaveFileName(&ofn)) 
   {
+    DWORD dwError = ERROR_SUCCESS;
     size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
     WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pIniSection) {
@@ -843,10 +843,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   else {
     SendMessage(hwnd, SCI_SETCARETSTYLE, CARETSTYLE_LINE, 0);
 
-    WCHAR wch[32] = { L'\0' };
     iValue = 1;
     fValue = 1.0f;  // default caret width
     if (Style_StrGetSize(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
+      WCHAR wch[32] = { L'\0' };
       iValue = clampi(float2int(fValue), 1, 3); // don't allow invisible 0
       StringCchPrintf(wch,COUNTOF(wch),L"size:%i",iValue);
       StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
@@ -1822,10 +1822,10 @@ bool Style_StrGetFont(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
 //
 bool Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"smoothing:");
   if (p)
   {
+    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
     StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"smoothing:"));
     p = StrChr(tch, L';');
     if (p)
@@ -1929,12 +1929,10 @@ bool Style_StrGetSize(LPCWSTR lpszStyle, float* f)
 //
 bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-  WCHAR wchFloatVal[64];
-
   WCHAR *p = StrStrI(lpszStyle, L"size:");
   if (p)
   {
+    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
     StringCchCopy(tch, COUNTOF(tch), (p + CSTRLEN(L"size:")));
     p = StrChr(tch, L';');
     if (p) { *p = L'\0'; }
@@ -1942,6 +1940,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 
     float fValue = 0.0f;
     if (Char2FloatW(tch, &fValue)) {
+      WCHAR wchFloatVal[64];
       fValue = (float)fabs(fValue);
       Float2String(fValue, wchFloatVal, COUNTOF(wchFloatVal));
 
@@ -2034,12 +2033,12 @@ void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
 //
 bool Style_StrGetColor(bool bFore, LPCWSTR lpszStyle, COLORREF* rgb)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *pItem = (bFore) ? L"fore:" : L"back:";
 
   WCHAR *p = StrStrI(lpszStyle, pItem);
   if (p)
   {
+    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
     StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(pItem,0));
     if (tch[0] == L'#')
       tch[0] = L' ';
@@ -2586,11 +2585,11 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   StringCchCat(szNewStyle, COUNTOF(szNewStyle), newSize);
 
   
-  WCHAR chset[32] = { L'\0' };
   if (bGlobalDefaultStyle &&
     (lf.lfCharSet != DEFAULT_CHARSET) &&
     (lf.lfCharSet != ANSI_CHARSET) &&
     (lf.lfCharSet != Globals.iDefaultCharSet)) {
+    WCHAR chset[32] = { L'\0' };
     if (lf.lfCharSet == iCharSet) {
       if (StrStrI(lpszStyle, L"charset:"))
       {
@@ -3129,7 +3128,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static PEDITLEXER pCurrentLexer = NULL;
   static PEDITSTYLE pCurrentStyle = NULL;
   static int iCurStyleIdx = -1;
-  static HFONT hFontTitle;
   static HBRUSH hbrFore;
   static HBRUSH hbrBack;
   static bool bIsStyleSelected = false;
@@ -3137,13 +3135,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
   static __int64 Style_ChangedBackup[NUMLEXERS];
 
-  WCHAR tchBuf[128] = { L'\0' };
-  WCHAR wchText[512] = { L'\0' };
-
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        WCHAR wchText[512] = { L'\0' };
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         GetLngString(IDS_MUI_STYLEEDIT_HELP, wchText, COUNTOF(wchText));
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, wchText);
@@ -3207,6 +3203,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         MakeBitmapButton(hwnd,IDC_NEXTSTYLE,Globals.hInstance,IDB_NEXT);
 
         // Setup title font
+        static HFONT hFontTitle = NULL;
         if (hFontTitle) {
           DeleteObject(hFontTitle);
         }
@@ -3225,6 +3222,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         else
           SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
 
+        WCHAR tchBuf[128] = { L'\0' };
         HMENU hmenu = GetSystemMenu(hwnd, false);
         GetLngString(IDS_MUI_PREVIEW, tchBuf, COUNTOF(tchBuf));
         InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchBuf);
