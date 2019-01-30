@@ -424,13 +424,17 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                 sc.SetState(SCE_NIM_DEFAULT);
                 break;
             case SCE_NIM_IDENTIFIER:
-                if (!IsAWordChar(sc.ch)) {
+                if (sc.ch == '.' || !IsAWordChar(sc.ch)) {
                     char s[100];
                     sc.GetCurrent(s, sizeof(s));
                     int style = SCE_NIM_IDENTIFIER;
 
                     if (keywords.InList(s) && !funcNameExists) {
-                        style = SCE_NIM_WORD;
+                        // Prevent styling keywords if they are sub-identifiers
+                        Sci_Position segStart = styler.GetStartSegment() - 1;
+                        if (segStart < 0 || styler.SafeGetCharAt(segStart, '\0') != '.') {
+                            style = SCE_NIM_WORD;
+                        }
                     } else if (funcNameExists) {
                         style = SCE_NIM_FUNCNAME;
                     }
@@ -447,6 +451,18 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
 
                 if (IsAlphaNumeric(sc.ch) && sc.chNext == '\"') {
                     isStylingRawStringIdent = true;
+                    sc.ForwardSetState(SCE_NIM_DEFAULT);
+                }
+                break;
+            case SCE_NIM_FUNCNAME:
+                if (sc.ch == '`') {
+                    funcNameExists = false;
+                    sc.ForwardSetState(SCE_NIM_DEFAULT);
+                } else if (sc.atLineEnd) {
+                    // Prevent leaking the style to the next line if not closed
+                    funcNameExists = false;
+
+                    sc.ChangeState(SCE_NIM_STRINGEOL);
                     sc.ForwardSetState(SCE_NIM_DEFAULT);
                 }
                 break;
@@ -523,7 +539,10 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                 }
                 break;
             case SCE_NIM_BACKTICKS:
-                if (sc.ch == '`' || sc.atLineEnd) {
+                if (sc.ch == '`' ) {
+                    sc.ForwardSetState(SCE_NIM_DEFAULT);
+                } else if (sc.atLineEnd) {
+                    sc.ChangeState(SCE_NIM_STRINGEOL);
                     sc.ForwardSetState(SCE_NIM_DEFAULT);
                 }
                 break;
@@ -627,10 +646,10 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
             }
             // Operator definition
             else if (sc.ch == '`') {
-                sc.SetState(SCE_NIM_BACKTICKS);
-
                 if (funcNameExists) {
-                    funcNameExists = false;
+                    sc.SetState(SCE_NIM_FUNCNAME);
+                } else {
+                    sc.SetState(SCE_NIM_BACKTICKS);
                 }
             }
             // Keyword

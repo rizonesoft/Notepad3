@@ -128,8 +128,10 @@ next:
 				continue;
 			case ',':
 				sc.SetState(SCE_TCL_OPERATOR);
-				if (subParen)
+				if (subParen) {
 					sc.ForwardSetState(SCE_TCL_SUBSTITUTION);
+					goto next;	// Already forwarded so avoid loop's Forward()
+				}
 				continue;
 			default :
 				// maybe spaces should be allowed ???
