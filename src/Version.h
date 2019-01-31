@@ -71,7 +71,7 @@
         #endif
     #elif (_MSC_VER >= 1916)
         #if(_MSC_FULL_VER >= 191627026) 
-            #define VER_CPL     MS Visual C++ 2017 v15.9.5
+            #define VER_CPL     MS Visual C++ 2017 v15.9.(5-6)
         #elif(_MSC_FULL_VER >= 191627025) 
             #define VER_CPL     MS Visual C++ 2017 v15.9.4
         #elif(_MSC_FULL_VER >= 191627024) 

@@ -251,7 +251,7 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
   ONIG_OPTION_ON(onigmoOptions, (rangeEnd != docLen) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
 
   std::string sPattern(pattern);
-  std::string const sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigmoOptions);
+  std::string const & sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigmoOptions);
 
   bool const bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigmoOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
 
@@ -360,7 +360,7 @@ const char* OnigmoRegExEngine::SubstituteByPosition(Document* doc, const char* t
     return nullptr;
   }
   std::string sText(text, *length);
-  std::string const rawReplStrg = convertReplExpr(sText);
+  std::string const & rawReplStrg = convertReplExpr(sText);
 
   m_SubstBuffer.clear();
 

@@ -3479,7 +3479,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
       if (bTrailingBlanksOnly)
       {
         DocPos i = iEndPos;
-        char ch = '\0';
+        char ch;
         do {
           ch = SciCall_GetCharAt(--i);
         } while ((i >= iStartPos) && IsBlankChar(ch));

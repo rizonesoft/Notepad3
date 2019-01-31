@@ -508,27 +508,25 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   {
   case WM_INITDIALOG:
   {
-    {
-      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-      SetDlgItemText(hwnd, IDC_VERSION, MKWCS(VERSION_FILEVERSION_LONG));
+    SetDlgItemText(hwnd, IDC_VERSION, MKWCS(VERSION_FILEVERSION_LONG));
 
-      if (hFontTitle) { DeleteObject(hFontTitle); }
+    if (hFontTitle) { DeleteObject(hFontTitle); }
 
-      if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
-        hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-      }
-
-      LOGFONT lf;
-      GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-      lf.lfWeight = FW_BOLD;
-      lf.lfWidth  = ScaleIntFontSize(8);
-      lf.lfHeight = ScaleIntFontSize(22);
-      // lf.lfQuality = ANTIALIASED_QUALITY;
-      hFontTitle = CreateFontIndirect(&lf);
-
-      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
+    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
+      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
     }
+
+    LOGFONT lf;
+    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+    lf.lfWeight = FW_BOLD;
+    lf.lfWidth  = ScaleIntFontSize(8);
+    lf.lfHeight = ScaleIntFontSize(22);
+    // lf.lfQuality = ANTIALIASED_QUALITY;
+    hFontTitle = CreateFontIndirect(&lf);
+
+    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
 
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
     SetDlgItemText(hwnd, IDC_COPYRIGHT, VERSION_LEGALCOPYRIGHT);

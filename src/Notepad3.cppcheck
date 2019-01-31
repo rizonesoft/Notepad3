@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <platform>win64</platform>
+    <analyze-all-vs-configs>true</analyze-all-vs-configs>
+    <libraries>
+        <library>windows</library>
+    </libraries>
+    <addons>
+        <addon>cert</addon>
+    </addons>
+    <tools>
+        <tool>clang-tidy</tool>
+    </tools>
+</project>
