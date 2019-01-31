@@ -1066,7 +1066,7 @@ bool EditLoadFile(
     bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
 
     if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
-      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
+      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on preferred
     }
     else {
       if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
@@ -1085,13 +1085,16 @@ bool EditLoadFile(
   }
   // --------------------------------------------------------------------------
 
+  bool const bIsForced = !Encoding_IsNONE(iForcedEncoding);
+  bool const bIsUnicodeForced = Encoding_IsUNICODE(iForcedEncoding);
+
   // choose best encoding guess
   int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
 
-  if (!Encoding_IsNONE(iForcedEncoding)) {
+  if (bIsForced) {
     iPreferedEncoding = iForcedEncoding;
   }
-  else if (iFileEncWeak != CPI_NONE) {
+  else if (!Encoding_IsNONE(iFileEncWeak)) {
     iPreferedEncoding = iFileEncWeak;
   }
   else if (!Encoding_IsNONE(iAnalyzedEncoding) && (bIsReliable || !Settings.UseReliableCEDonly)) {
@@ -1103,27 +1106,26 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
 
+  bool const bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
+
   bool bBOM = false;
   bool bReverse = false;
-
-  bool const bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
+  bool const bIsUnicodeValid = IsValidUnicode(lpData, cbData, &bBOM, &bReverse);
+  bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable)
+    && !bIsForced && !bSkipUTFDetection && !bIsUTF8Sig);
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&Globals.fvCurFile);
     status->iEOLMode = Settings.DefaultEOLMode;
-    status->iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : 
+    status->iEncoding = bIsForced ? iForcedEncoding :
       (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
+
   // ===  UNICODE  ===
-  else if (Encoding_IsUNICODE(iForcedEncoding) ||
-    (Encoding_IsNONE(iForcedEncoding) && !bSkipUTFDetection && !bIsUTF8Sig
-      && (IsValidUnicode(lpData, cbData, &bBOM, &bReverse) 
-        || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable))
-      )
-    )
+  else if (bIsUnicodeForced || (!bIsForced && bIsUnicodeAnalyzed && bIsUnicodeValid))
   {
     if (iForcedEncoding == CPI_UNICODE) {
       bBOM = Has_UTF16_LE_BOM(lpData, clampi((int)cbData, 0, 8));
@@ -1176,8 +1178,9 @@ bool EditLoadFile(
     FileVars_Init(lpData,cbData,&Globals.fvCurFile);
 
     // ===  UTF-8  ===
-    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
-    bool const bForcedNonUTF8 = !Encoding_IsNONE(iForcedEncoding) && !Encoding_IsUTF8(iForcedEncoding);
+    bool const bForcedUTF8 = Encoding_IsUTF8(iForcedEncoding);
+    bool const bHardRulesUTF8 = bForcedUTF8 || (FileVars_IsUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
+    bool const bForcedNonUTF8 = bIsForced && !bForcedUTF8;
 
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
     bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
@@ -1204,7 +1207,7 @@ bool EditLoadFile(
 
     else { // ===  ALL OTHER  ===
 
-      if (!Encoding_IsNONE(iForcedEncoding))
+      if (bIsForced)
         status->iEncoding = iForcedEncoding;
       else {
         status->iEncoding = FileVars_GetEncoding(&Globals.fvCurFile);
