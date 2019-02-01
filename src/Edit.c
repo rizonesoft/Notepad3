@@ -390,10 +390,10 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
 {
   if (encSource == encDest)
-    return(true);
+    return true;
 
   if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
-    return(false);
+    return false;
 
   DocPos const length = SciCall_GetTextLength();
 
@@ -435,7 +435,7 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
 
     FreeMem(pchText);
   }
-  return(true);
+  return true;
 }
 
 
@@ -1178,22 +1178,18 @@ bool EditLoadFile(
     FileVars_Init(lpData,cbData,&Globals.fvCurFile);
 
     // ===  UTF-8  ===
-    bool const bForcedUTF8 = Encoding_IsUTF8(iForcedEncoding);
-    bool const bHardRulesUTF8 = bForcedUTF8 || (FileVars_IsUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
-    bool const bForcedNonUTF8 = bIsForced && !bForcedUTF8;
-
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
+    bool const bForcedUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
     bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
-    bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUTF8(iPreferedEncoding); // non-reliable analysis = soft-hint
+    bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && Encoding_IsUTF8(iPreferedEncoding); // non-reliable analysis = soft-hint
 
-    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
+    bool const bRejectUTF8 = !bValidUTF8 || (!bIsUTF8Sig && bSkipUTFDetection);
 
-    //if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8)))
-    if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
+    if (bForcedUTF8 || (!bRejectUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
     {
       EditSetNewText(hwnd,"",0);
       if (bIsUTF8Sig) {
-        EditSetNewText(hwnd,UTF8StringStart(lpData),cbData-3);
+        EditSetNewText(hwnd,UTF8StringStart(lpData),cbData - 3);
         status->iEncoding = CPI_UTF8SIGN;
         EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
       }
@@ -8021,7 +8017,7 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
 
   Globals.iWrapCol = 0;
 
-  return(true);
+  return true;
 }
 
 
@@ -8063,19 +8059,19 @@ bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue) {
 
     int itok = sscanf_s(tch,"%i",piValue);
     if (itok == 1)
-      return(true);
+      return true;
 
     if (tch[0] == 't') {
       *piValue = 1;
-      return(true);
+      return true;
     }
 
     if (tch[0] == 'n' || tch[0] == 'f') {
       *piValue = 0;
-      return(true);
+      return true;
     }
   }
-  return(false);
+  return false;
 }
 
 
@@ -8121,9 +8117,9 @@ bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) 
 
     StringCchCopyNA(pszValue,cchValue,tch,COUNTOF(tch));
 
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -8135,24 +8131,9 @@ bool FileVars_IsUTF8(LPFILEVARS lpfv) {
   if (lpfv->mask & FV_ENCODING) {
     if (StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf-8",CSTRLEN("utf-8")) == 0 ||
         StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf8", CSTRLEN("utf8")) == 0)
-      return(true);
+      return true;
   }
-  return(false);
-}
-
-
-//=============================================================================
-//
-//  FileVars_IsNonUTF8()
-//
-bool FileVars_IsNonUTF8(LPFILEVARS lpfv) {
-  if (lpfv->mask & FV_ENCODING) {
-    if (StringCchLenA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding)) &&
-        StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf-8", CSTRLEN("utf-8")) != 0 &&
-        StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf8", CSTRLEN("utf8")) != 0)
-      return(true);
-  }
-  return(false);
+  return false;
 }
 
 
@@ -8168,11 +8149,12 @@ bool FileVars_IsValidEncoding(LPFILEVARS lpfv) {
     if ((Encoding_IsINTERNAL(lpfv->iEncoding)) ||
          (IsValidCodePage(Encoding_GetCodePage(lpfv->iEncoding)) &&
           GetCPInfo(Encoding_GetCodePage(lpfv->iEncoding),&cpi))) {
-      return(true);
+      return true;
     }
   }
-  return(false);
+  return false;
 }
+
 
 //=============================================================================
 //
@@ -8182,7 +8164,7 @@ int FileVars_GetEncoding(LPFILEVARS lpfv) {
   if (lpfv->mask & FV_ENCODING) {
     return(lpfv->iEncoding);
   }
-  return(-1);
+  return CPI_NONE;
 }
 
 

@@ -142,7 +142,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
             }
             InvalidateRect(hDlg, NULL, TRUE);
           }
-          return(true);
+          return true;
         break;
 
         case IDOK:
@@ -164,7 +164,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
             unicodeStringCpy(fileKey, unicodeFileKey, sizeof(fileKey));
             unicodeStringCpy(masterKey, unicodeMasterKey, sizeof(masterKey));
             EndDialog(hDlg, IDOK);
-            return(true);
+            return true;
         }
 
         break;
@@ -264,7 +264,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
               SendDlgItemMessage(hDlg, IDC_PWD_EDIT3, EM_SETPASSWORDCHAR, (WPARAM)wDot, 0);
             }
             InvalidateRect(hDlg, NULL, TRUE);
-            return(true);
+            return true;
             break;
           }
         case IDOK:
@@ -287,7 +287,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
               }
               EndDialog(hDlg, IDOK);
           }
-          return(true);
+          return true;
           break;
 
         case IDCANCEL:
@@ -527,7 +527,7 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, DWORD size, DWORD 
             // write the PREAMBLE, punt if that failed
             if (!WriteFile(hFile, precodedata, precode_size, &PREAMBLE_written, NULL)) {
                 *written = PREAMBLE_written;
-                return(false);
+                return false;
             }
         }
 

@@ -1,4 +1,4 @@
-// Copyright 2016 Google Inc.
+﻿// Copyright 2016 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -363,6 +363,9 @@ static const char* kWhatSetName[] = {"Ascii", "Other"};
 // regions (ISO-2022-xx, HZ)
 enum StateSoSi {SOSI_NONE, SOSI_ERROR, SOSI_ONEBYTE, SOSI_TWOBYTE};
 
+#define UTF8_ARR_CNT 6
+#define BYTE32_ARR_CNT 8
+
 typedef struct {
   const uint8* initial_src;       // For calculating byte offsets
   const uint8* limit_src;         // Range of input source
@@ -386,30 +389,30 @@ typedef struct {
   bool do_latin_trigrams;           // True if we actually are scoring trigrams
 
   // Miscellaneous state variables for difficult encodings
-  int binary_quadrants_count;     // Number of four bigram quadrants seen:
-                                  //  0xxxxxxx0xxxxxxx 0xxxxxxx1xxxxxx
-                                  //  1xxxxxxx0xxxxxxx 1xxxxxxx1xxxxxx
-  int binary_8x4_count;           // Number of 8x4 buckets seen:
-  uint32 binary_quadrants_seen;   // Bit[i] set if bigram i.......i....... seen
-  uint32 binary_8x4_seen;         // Bit[i] set if bigram iii.....ii...... seen
-  int utf7_starts;                // Count of possible UTF-7 beginnings seen
-  int prior_utf7_offset;          // Source consumed by prior UTF-7 string
-  int next_utf8_ministate;        // Mini state for UTF-8 sequences
-  int utf8_minicount[6];          // Number of correct 2- 3- 4-byte seq, errors
-  int next_utf8utf8_ministate;    // Mini state for UTF8UTF8 sequences
-  int utf8utf8_odd_byte;          // UTF8UTF8 seq has odd number of bytes
-  int utf8utf8_minicount[6];      // Number of correct 2- 3- 4-byte seq, errors
+  int binary_quadrants_count;           // Number of four bigram quadrants seen:
+                                        //  0xxxxxxx0xxxxxxx 0xxxxxxx1xxxxxx
+                                        //  1xxxxxxx0xxxxxxx 1xxxxxxx1xxxxxx
+  int binary_8x4_count;                 // Number of 8x4 buckets seen:
+  uint32 binary_quadrants_seen;         // Bit[i] set if bigram i.......i....... seen
+  uint32 binary_8x4_seen;               // Bit[i] set if bigram iii.....ii...... seen
+  int utf7_starts;                      // Count of possible UTF-7 beginnings seen
+  int prior_utf7_offset;                // Source consumed by prior UTF-7 string
+  int next_utf8_ministate;              // Mini state for UTF-8 sequences
+  int utf8_minicount[UTF8_ARR_CNT];     // Number of correct 2- 3- 4-byte seq, errors
+  int next_utf8utf8_ministate;          // Mini state for UTF8UTF8 sequences
+  int utf8utf8_odd_byte;                // UTF8UTF8 seq has odd number of bytes
+  int utf8utf8_minicount[UTF8_ARR_CNT]; // Number of correct 2- 3- 4-byte seq, errors
   StateSoSi next_2022_state;            // Mini state for 2022 sequences
   StateSoSi next_hz_state;              // Mini state for HZ sequences
   bool next_eucjp_oddphase;             // Mini state for EUC-JP sequences
-  int byte32_count[8];            // Count of top 3 bits of byte1 of bigram
-                                  // 0x1x 2x3x 4x5x 6x7x 8x9x AxBx CxDx ExFx
-  uint32 active_special;          // Bits showing which special cases are active
-
-  Encoding tld_hint;              // Top TLD encoding or UNKNOWN
-  Encoding http_hint;             // What the document says about itself or
-  Encoding meta_hint;             // UNKNOWN_ENCODING. BOM is initial byte
-  Encoding bom_hint;              // order mark for UTF-xx
+  int byte32_count[BYTE32_ARR_CNT];     // Count of top 3 bits of byte1 of bigram
+                                        // 0x1x 2x3x 4x5x 6x7x 8x9x AxBx CxDx ExFx
+  uint32 active_special;                // Bits showing which special cases are active
+                                        
+  Encoding tld_hint;                    // Top TLD encoding or UNKNOWN
+  Encoding http_hint;                   // What the document says about itself or
+  Encoding meta_hint;                   // UNKNOWN_ENCODING. BOM is initial byte
+  Encoding bom_hint;                    // order mark for UTF-xx
 
   // small cache of previous interesting bigrams
   int next_prior_bigram;
@@ -1371,9 +1374,10 @@ void PsMark(const uint8* src, int len, const uint8* isrc, int weightshift) {
 // Unfortunately, we have to skip back N lines since source was printed for
 // up to 8 bigrams before we get here. Match on src+1 to handle 0/31 better
 void PsHighlight(const uint8* src, const uint8* isrc, int trigram_val, int n) {
-  auto offset = static_cast<int>((src + 1) - isrc);
+  auto offset = src ? static_cast<int>((src + 1) - isrc) :
+                      static_cast<int>((const uint8*)1 - isrc);
   int offset32 = (offset % pssourcewidth);    // mod len bytes
-  offset -= offset32;                     // round down to multiple of len bytes
+  offset -= offset32;                         // round down to multiple of len bytes
 
   for (int i = 1; i <= 16; ++i) {
     if (do_src_offset[(next_do_src_line - i) & 0x0f] == offset) {
@@ -1413,14 +1417,17 @@ void InitDetectEncodingState(DetectEncodingState* destatep) {
   destatep->utf7_starts = 0;
   destatep->prior_utf7_offset = 0;
   destatep->next_utf8_ministate = 0;
-  for (int & i : destatep->utf8_minicount) {i = 0;}
+  //for (int & i : destatep->utf8_minicount) {i = 0;}
+  std::fill(destatep->utf8_minicount, destatep->utf8_minicount + UTF8_ARR_CNT, 0);
   destatep->next_utf8utf8_ministate = 0;
   destatep->utf8utf8_odd_byte = 0;
-  for (int & i : destatep->utf8utf8_minicount) {i = 0;}
+  //for (int & i : destatep->utf8utf8_minicount) {i = 0;}
+  std::fill(destatep->utf8utf8_minicount, destatep->utf8utf8_minicount + UTF8_ARR_CNT, 0);
   destatep->next_2022_state = SOSI_NONE;
   destatep->next_hz_state = SOSI_NONE;
   destatep->next_eucjp_oddphase = false;
-  for (int & i : destatep->byte32_count) {i = 0;}
+  //for (int & i : destatep->byte32_count) {i = 0;}
+  std::fill(destatep->byte32_count, destatep->byte32_count + BYTE32_ARR_CNT, 0);
   destatep->active_special = 0xffffffff;
   destatep->tld_hint = UNKNOWN_ENCODING;
   destatep->http_hint = UNKNOWN_ENCODING;
@@ -1910,9 +1917,7 @@ int ApplyDefaultHint(const CompactEncDet::TextCorpusType corpus_type,
 
   if (FLAGS_demo_nodefault) {
     // Demo, make initial probs all zero
-    for (int & i : destatep->enc_prob) {
-      i = 0;
-    }
+    std::fill(destatep->enc_prob, destatep->enc_prob + NUM_RANKEDENCODING, 0);
   }
 
   if (destatep->debug_data != nullptr) {
@@ -2098,7 +2103,8 @@ void ApplyHints(const char* url_hint,
   if (hint_count == 0) {
     destatep->looking_for_latin_trigrams = true;    // Default needs trigrams
     destatep->declared_enc_2 = destatep->declared_enc_1;
-    hint_count += ApplyDefaultHint(corpus_type, destatep);
+    //~hint_count += ApplyDefaultHint(corpus_type, destatep);
+    ApplyDefaultHint(corpus_type, destatep);
   }
 
 
@@ -2214,10 +2220,10 @@ void InitialBytesBoost(const uint8* src,
                        DetectEncodingState* destatep) {
   if (text_length < 4) {return;}
 
-  char32 pair01 = (src[0] << 8) | src[1];
-  char32 pair23 = (src[2] << 8) | src[3];
-  char32 quad0123 = (pair01 << 16) | pair23;
-
+  uint32 pair01 = (src[0] << 8) | src[1];
+  uint32 pair23 = (src[2] << 8) | src[3];
+  uint32 quad0123 = (pair01 << 16) | pair23;
+  
   bool utf_16_indication = false;
   bool utf_32_indication = false;
   int best_enc = -1;
@@ -2539,7 +2545,7 @@ void UTF7BoostWhack(DetectEncodingState* destatep, int next_pair, uint8 byte2) {
       int nmod8 = n & 7;
       if ((n == 3) || (n == 6)) {
         // short but legal -- treat as neutral
-      } else if ((nmod8 == 0) | (nmod8 == 3) | (nmod8 == 6)) {
+      } else if ((nmod8 == 0) || (nmod8 == 3) || (nmod8 == 6)) {
         // Good length. Check for good Unicode.
         if (GoodUnicodeFromBase64(start, start + n)) {
           // Good length and Unicode, boost
@@ -4893,7 +4899,6 @@ Encoding Rescan(Encoding enc,
   auto scanned_bytes = static_cast<int>(src - isrc);
   auto unscanned_bytes = static_cast<int>(srctextlimit - src);
   auto text_length = static_cast<int>(srctextlimit - isrc);
-  bool empty_rescan = true;
 
   // See if enough bytes left to bother doing rescan
   if (kMinRescanLength < unscanned_bytes) {
@@ -4963,7 +4968,7 @@ Encoding Rescan(Encoding enc,
                              &mid_second_best_enc);
     destatep->reliable = mid_is_reliable;
 
-    empty_rescan = (mid_enc == ASCII_7BIT);
+    bool const empty_rescan = (mid_enc == ASCII_7BIT);
 
     // Not the right decision if, e.g. enc=Greek, mid=ASCII7, one=KSC
     // hence the !empty_rescan term

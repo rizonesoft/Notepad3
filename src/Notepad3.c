@@ -9942,7 +9942,7 @@ bool ActivatePrevInst()
   COPYDATASTRUCT cds;
 
   if ((Flags.fNoReuseWindow && !Flags.fSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard)
-    return(false);
+    return false;
 
   if (Flags.fSingleFileInstance && s_lpFileArg) 
   {
@@ -10009,18 +10009,18 @@ bool ActivatePrevInst()
         SendMessage(hwnd,WM_COPYDATA,(WPARAM)NULL,(LPARAM)&cds);
         FreeMem(params);
 
-        return(true);
+        return true;
       }
       // IsWindowEnabled()
       if (IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_PREVWINDISABLED)) {
-        return(false);
+        return false;
       }
-      return(true);
+      return true;
     }
   }
 
   if (Flags.fNoReuseWindow) {
-    return(false);
+    return false;
   }
 
   hwnd = NULL;
@@ -10102,12 +10102,12 @@ bool ActivatePrevInst()
         FreeMem(params);    params = NULL;
         FreeMem(s_lpFileArg); s_lpFileArg = NULL;
       }
-      return(true);
+      return true;
     }
     // IsWindowEnabled()
     return ((IDYES == MsgBoxLng(MBYESNOWARN, IDS_MUI_ERR_PREVWINDISABLED)) ? false : true);
   }
-  return(false);
+  return false;
 }
 
 
