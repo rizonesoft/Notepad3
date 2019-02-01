@@ -101,7 +101,7 @@ bool IsValidEncoding(Encoding enc);
 // good to consider the full matrix of all pairs of encodings and to fish out
 // all compatible pairs.
 //
-bool IsEncEncCompatible(Encoding from, Encoding to);
+bool IsEncEncCompatible(const Encoding from, const Encoding to);
 
 // To be a superset of 7-bit Ascii means that bytes 0...127 in the given
 // encoding represent the same characters as they do in ISO_8859_1.
@@ -225,7 +225,7 @@ bool IsJapaneseCellPhoneCarrierSpecificEncoding(Encoding enc);
 // Given the encoding, returns its standard name.
 // Return invalid_encoding_name() if the encoding is invalid.
 //
-const char* EncodingName(Encoding enc);
+const char* EncodingName(const Encoding enc);
 
 //
 // MimeEncodingName
@@ -235,7 +235,7 @@ const char* EncodingName(Encoding enc);
 //
 // This name is suitable for using in HTTP headers, HTML tags,
 // and as the "charset" parameter of a MIME Content-Type.
-const char* MimeEncodingName(Encoding enc);
+const char* MimeEncodingName(const Encoding enc);
 
 
 // The maximum length of an encoding name

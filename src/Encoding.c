@@ -329,10 +329,10 @@ bool Encoding_IsValid(int iTestEncoding) {
     if ((g_Encodings[iTestEncoding].uFlags & NCP_INTERNAL) ||
       (IsValidCodePage(g_Encodings[iTestEncoding].uCodePage) &&
        GetCPInfo(g_Encodings[iTestEncoding].uCodePage, &cpi))) {
-      return(true);
+      return true;
     }
   }
-  return(false);
+  return false;
 }
 // ============================================================================
 
@@ -428,7 +428,7 @@ bool Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
 
     return (true);
   }
-  return(false);
+  return false;
 }
 // ============================================================================
 
@@ -506,7 +506,7 @@ bool Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
 
     return (true);
   }
-  return(false);
+  return false;
 }
 // ============================================================================
 

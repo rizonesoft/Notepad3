@@ -453,10 +453,10 @@ bool Style_Import(HWND hwnd)
         }
       }
       FreeMem(pIniSection);
-      return(true);
+      return true;
     }
   }
-  return(false);
+  return false;
 }
 
 //=============================================================================
@@ -504,9 +504,9 @@ bool Style_Export(HWND hwnd)
     if (dwError != ERROR_SUCCESS) {
       MsgBoxLng(MBINFO,IDS_MUI_EXPORT_FAIL,szFile);
     }
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 

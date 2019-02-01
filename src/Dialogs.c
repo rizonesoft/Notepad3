@@ -1272,9 +1272,9 @@ bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
                              hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite))
   {
     StringCchCopyN(lpstrFile,MAX_PATH,dliFavorite.szFileName,MAX_PATH);
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -2421,9 +2421,9 @@ bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
 
   if (iResult == IDOK) {
     *pidREncoding = dd.idEncoding;
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -2588,9 +2588,9 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
 
   if (iResult == IDOK) {
     *pidREncoding = dd.idEncoding;
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -2621,9 +2621,9 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
 
   if (iResult == IDOK) {
     *pidREncoding = dd.idEncoding;
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 

@@ -455,7 +455,7 @@ bool IsElevated() {
   HANDLE hToken = NULL;
 
   if (!IsVista())
-    return(false);
+    return false;
 
   if (OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&hToken)) {
 
@@ -1009,7 +1009,7 @@ bool PathCreateDeskLnk(LPCWSTR pszDocument)
 
   // Try to construct a valid filename...
   if (!SHGetNewLinkInfo(pszDocument,tchLinkDir,tchLnkFileName,&fMustCopy,SHGNLI_PREFIXNAME))
-    return(false);
+    return false;
 
   if (SUCCEEDED(CoCreateInstance(&CLSID_ShellLink,NULL,
                                  CLSCTX_INPROC_SERVER,
