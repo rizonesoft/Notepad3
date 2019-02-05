@@ -14,7 +14,7 @@ Keyboard Shortcuts for Notepad3
     F6                    Save file as.
     Ctrl+F6               Save file copy.
     Ctrl+P                Print file.
-    Alt+H                 Open recent file.
+    Ctrl+Alt+H            Open recent file.
 
   Tools
 
