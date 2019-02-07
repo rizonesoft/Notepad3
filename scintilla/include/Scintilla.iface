@@ -2185,6 +2185,9 @@ enu CaretStyle=CARETSTYLE_
 val CARETSTYLE_INVISIBLE=0
 val CARETSTYLE_LINE=1
 val CARETSTYLE_BLOCK=2
+val CARETSTYLE_OVERSTRIKE_BAR=0
+val CARETSTYLE_OVERSTRIKE_BLOCK=16
+val CARETSTYLE_INS_MASK=0xF
 
 # Set the style of the caret to be drawn.
 set void SetCaretStyle=2512(int caretStyle,)

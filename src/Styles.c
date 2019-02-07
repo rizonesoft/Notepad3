@@ -836,21 +836,29 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
 
   // caret style and width
+
+  int ovr_mask = CARETSTYLE_OVERSTRIKE_BLOCK;
+  if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrbar")) {
+    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrbar");
+    ovr_mask = CARETSTYLE_OVERSTRIKE_BAR;
+  }
+
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"block")) {
-    SendMessage(hwnd,SCI_SETCARETSTYLE,CARETSTYLE_BLOCK,0);
-    StringCchCopy(wchSpecificStyle,COUNTOF(wchSpecificStyle),L"block");
+    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; block");
+    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK | ovr_mask), 0);
   }
   else {
-    SendMessage(hwnd, SCI_SETCARETSTYLE, CARETSTYLE_LINE, 0);
+    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_LINE | ovr_mask), 0);
 
     iValue = 1;
     fValue = 1.0f;  // default caret width
+    WCHAR wch[32] = { L'\0' };
     if (Style_StrGetSize(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
-      WCHAR wch[32] = { L'\0' };
       iValue = clampi(float2int(fValue), 1, 3); // don't allow invisible 0
-      StringCchPrintf(wch,COUNTOF(wch),L"size:%i",iValue);
-      StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
     }
+    StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
+    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
+
     SendMessage(hwnd, SCI_SETCARETWIDTH, iValue, 0);
   }
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"noblink")) {
@@ -2328,6 +2336,10 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
   }
 
   // --------   other style settings   --------
+  if (StrStrI(lpszStyleSrc, L"ovrbar") && !StrStrI(lpszStyleDest, L"ovrbar")) {
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ovrbar");
+  }
+
   if (StrStrI(lpszStyleSrc, L"block") && !StrStrI(lpszStyleDest, L"block")) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; block");
   }

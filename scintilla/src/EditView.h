@@ -54,7 +54,7 @@ public:
 	int tabWidthMinimumPixels;
 
 	bool hideSelection;
-	bool drawOverstrikeCaret;
+	bool drawOverstrikeCaret; // used by the curses platform
 
 	/** In bufferedDraw mode, graphics operations are drawn to a pixmap and then copied to
 	* the screen. This avoids flashing but is about 30% slower. */
