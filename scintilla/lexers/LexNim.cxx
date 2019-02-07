@@ -55,6 +55,11 @@ int GetNumStyle(const int numType) {
     return SCE_NIM_NUMBER;
 }
 
+bool IsLetter(const int ch) {
+    // 97 to 122 || 65 to 90
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+
 bool IsAWordChar(const int ch) {
     return ch < 0x80 && (isalnum(ch) || ch == '_' || ch == '.');
 }
@@ -163,10 +168,12 @@ int IndentAmount(const Sci_Position line, Accessor &styler) {
 struct OptionsNim {
     bool fold;
     bool foldCompact;
+    bool highlightRawStrIdent;
 
     OptionsNim() {
         fold = true;
         foldCompact = true;
+        highlightRawStrIdent = false;
     }
 };
 
@@ -177,6 +184,10 @@ static const char *const nimWordListDesc[] = {
 
 struct OptionSetNim : public OptionSet<OptionsNim> {
     OptionSetNim() {
+        DefineProperty("lexer.nim.raw.strings.highlight.ident", &OptionsNim::highlightRawStrIdent,
+            "Set to 1 to enable highlighting generalized raw string identifiers. "
+            "Generalized raw string identifiers are anything other than r (or R).");
+
         DefineProperty("fold", &OptionsNim::fold);
         DefineProperty("fold.compact", &OptionsNim::foldCompact);
 
@@ -451,6 +462,16 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
 
                 if (IsAlphaNumeric(sc.ch) && sc.chNext == '\"') {
                     isStylingRawStringIdent = true;
+
+                    if (options.highlightRawStrIdent) {
+                        if (styler.SafeGetCharAt(sc.currentPos + 2) == '\"' &&
+                            styler.SafeGetCharAt(sc.currentPos + 3) == '\"') {
+                            sc.ChangeState(SCE_NIM_TRIPLEDOUBLE);
+                        } else {
+                            sc.ChangeState(SCE_NIM_STRING);
+                        }
+                    }
+
                     sc.ForwardSetState(SCE_NIM_DEFAULT);
                 }
                 break;
@@ -603,7 +624,10 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                     sc.SetState(SCE_NIM_STRING);
                 }
 
-                if (sc.ch == 'r' || sc.ch == 'R') {
+                int rawStrStyle = options.highlightRawStrIdent ? IsLetter(sc.ch) :
+                                  (sc.ch == 'r' || sc.ch == 'R');
+
+                if (rawStrStyle) {
                     sc.Forward();
 
                     if (sc.state == SCE_NIM_TRIPLEDOUBLE) {

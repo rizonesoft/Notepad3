@@ -3214,11 +3214,13 @@ struct Sci_TextToFind {
     <p><b id="SCI_SETCARETSTYLE">SCI_SETCARETSTYLE(int caretStyle)</b><br />
      <b id="SCI_GETCARETSTYLE">SCI_GETCARETSTYLE &rarr; int</b><br />
      The style of the caret can be set with <code>SCI_SETCARETSTYLE</code> to be a line caret
-    (CARETSTYLE_LINE=1), a block caret (CARETSTYLE_BLOCK=2) or to not draw at all
-    (CARETSTYLE_INVISIBLE=0). The default value is the line caret (CARETSTYLE_LINE=1).
+    (CARETSTYLE_LINE=1) or a block caret (CARETSTYLE_BLOCK=2) for insert mode combined with
+    a bar caret (CARETSTYLE_OVERSTRIKE_BAR=0) or a block caret (CARETSTYLE_OVERSTRIKE_BLOCK=16) for overtype mode,
+    or to not draw at all (CARETSTYLE_INVISIBLE=0). The default value for insert mode is the line caret (CARETSTYLE_LINE=1),
+    for overtype mode is the bar caret (CARETSTYLE_OVERSTRIKE_BAR=0).
     You can determine the current caret style setting using <code>SCI_GETCARETSTYLE</code>.</p>
 
-    <p>The block character draws most combining and multibyte character sequences successfully,
+    <p>The block caret draws most combining and multibyte character sequences successfully,
     though some fonts like Thai Fonts (and possibly others) can sometimes appear strange when
     the cursor is positioned at these characters, which may result in only drawing a part of the
     cursor character sequence. This is most notable on Windows platforms.</p>

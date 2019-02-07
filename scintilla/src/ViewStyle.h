@@ -220,10 +220,14 @@ public:
 
 	bool WhiteSpaceVisible(bool inIndent) const;
 
-  // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-  bool ViewStyle::ZoomIn() noexcept;
-  bool ViewStyle::ZoomOut() noexcept;
-  // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	enum class CaretShape { invisible, line, block, bar };
+	bool IsBlockCaretStyle() const noexcept;
+	CaretShape CaretShapeForMode(bool inOverstrike) const noexcept;
+
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	bool ViewStyle::ZoomIn() noexcept;
+	bool ViewStyle::ZoomOut() noexcept;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 private:
 	void AllocStyles(size_t sizeNew);
