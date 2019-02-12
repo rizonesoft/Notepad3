@@ -1,6 +1,6 @@
 ;* Notepad3 - Installer script
 ;*
-;* Copyright (C) 2008-2016 Rizonesoft 
+;* (c) Rizonesoft 2008-2019 
 
 ; Requirements:
 ; Inno Setup: http://www.jrsoftware.org/isdl.php
@@ -31,13 +31,14 @@
 #ifnexist bindir + "\Release_x64_v141\minipath.exe"
   #error Compile MiniPath x64 first
 #endif
-#ifnexist bindir + "\Release_x64_v141\np3encrypt.exe"
+
+#ifnexist bindir + "\Release_x64_v141\np3encrypt.exe"
   #error Compile np3encrypt.exe x64 first
 #endif
 
 #define app_version   GetFileVersion(bindir + "\Release_x86_v141\Notepad3.exe")
 #define app_name      "Notepad3"
-#define app_copyright "Copyright © 2008-2016, Rizonesoft."
+#define app_copyright "(c) Rizonesoft 2008-2019"
 #define quick_launch  "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
 [Setup]
