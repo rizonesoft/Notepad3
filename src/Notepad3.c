@@ -84,7 +84,7 @@ static HWND      s_hwndReBar = NULL;
 static WCHAR     s_wchIniFile2[MAX_PATH + 1] = { L'\0' };
 static WCHAR     s_wchTmpFilePath[MAX_PATH + 1] = { L'\0' };
 
-static WCHAR* const s_tchAvailableLanguages = L"af-ZA be-BY de-DE es-ES en-GB fr-FR ja-JP ko-KR nl-NL ru-RU zh-CN"; // en-US internal
+static WCHAR* const s_tchAvailableLanguages = L"af-ZA be-BY de-DE es-ES en-GB fr-FR hu-HU ja-JP ko-KR nl-NL ru-RU zh-CN"; // en-US internal
 
 static int    s_iSettingsVersion = CFG_VER_CURRENT;
 static bool   s_bEnableSaveSettings = true;

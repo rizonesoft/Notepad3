@@ -14,11 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United Kingdom) resources
+// Hungarian (Hungary) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
-#pragma code_page(1252)  // Western European (Win-1252)
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
+LANGUAGE LANG_HUNGARIAN, SUBLANG_DEFAULT
+#pragma code_page(1250)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -210,7 +210,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(en-GB) English (brit.) translation by hpwamr"
+    IDS_MUI_TRANSL_AUTHOR   "(hu-HU) Hungarian translation by XXX"
     IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
     IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
@@ -336,7 +336,7 @@ IDS_MUI_ABOUT_RTF_6 "\
 
 END
 
-#endif    // English (United Kingdom) resources
+#endif    // Hungarian (Hungary) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
