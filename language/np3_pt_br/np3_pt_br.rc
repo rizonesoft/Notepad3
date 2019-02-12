@@ -14,10 +14,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Portuguese (Brazil) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
 #pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
@@ -42,9 +42,11 @@ END
 3 TEXTINCLUDE 
 BEGIN
     "#include ""../common_res.rc""\r\n"
-    "#include ""menu_en_us.rc""\r\n"
-    "#include ""strings_en_us.rc""\r\n"
-    "#include ""dialogs_en_us.rc""\r\n"
+    "#include ""menu_pt_br.rc""\r\n"
+    "#include ""strings_pt_br.rc""\r\n"
+    "#include ""encode_pt_br.rc""\r\n"
+    "#include ""lexer_pt_br.rc""\r\n"
+    "#include ""dialogs_pt_br.rc""\r\n"
     "\r\n"
     "\0"
 END
@@ -52,7 +54,7 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // English (United States) resources
+#endif    // Portuguese (Brazil) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -62,9 +64,12 @@ END
 // Generated from the TEXTINCLUDE 3 resource.
 //
 #include "../common_res.rc"
-#include "menu_en_us.rc"
-#include "strings_en_us.rc"
-#include "dialogs_en_us.rc"
+#include "menu_pt_br.rc"
+#include "strings_pt_br.rc"
+#include "encode_pt_br.rc"
+#include "lexer_pt_br.rc"
+#include "dialogs_pt_br.rc"
+
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED

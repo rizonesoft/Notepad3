@@ -14,10 +14,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Portuguese (Brazil) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
 #pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
@@ -115,9 +115,9 @@ BEGIN
         MENUITEM "Create &Desktop Link",        IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "&Browse...\tCtrl+M",          IDM_FILE_BROWSE
-        POPUP "&Favorites"
+        POPUP "&Favourites"
         BEGIN
-            MENUITEM "&Open Favorites...\tAlt+I",  IDM_FILE_OPENFAV
+            MENUITEM "&Open Favourites...\tAlt+I",  IDM_FILE_OPENFAV
             MENUITEM "&Add Current File...\tAlt+K", IDM_FILE_ADDTOFAV
             MENUITEM "&Manage...\tAlt+F9",          IDM_FILE_MANAGEFAV
         END
@@ -290,7 +290,7 @@ BEGIN
         BEGIN
             MENUITEM "Synta&x Scheme...\tF12",      IDM_VIEW_SCHEME
             MENUITEM "&2nd Default Scheme\tShift+F12", IDM_VIEW_USE2NDDEFAULT
-            MENUITEM "&Customize Schemes...\tCtrl+F12", IDM_VIEW_SCHEMECONFIG
+            MENUITEM "&Customise Schemes...\tCtrl+F12", IDM_VIEW_SCHEMECONFIG
             MENUITEM "Global &Default Font...\tAlt+F12", IDM_VIEW_FONT
             MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         END
@@ -341,7 +341,7 @@ BEGIN
         BEGIN
             MENUITEM "Show Tool&bar",               IDM_VIEW_TOOLBAR
             MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
-            MENUITEM "C&ustomize Toolbar...",       IDM_VIEW_CUSTOMIZETB
+            MENUITEM "C&ustomise Toolbar...",       IDM_VIEW_CUSTOMIZETB
             MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -378,7 +378,7 @@ BEGIN
         POPUP "Esc &Key Function"
         BEGIN
             MENUITEM "&None",                       IDM_VIEW_NOESCFUNC
-            MENUITEM "&Minimize Notepad3",          IDM_VIEW_ESCMINIMIZE
+            MENUITEM "&Minimise Notepad3",          IDM_VIEW_ESCMINIMIZE
             MENUITEM "E&xit Notepad3",              IDM_VIEW_ESCEXIT
         END
         MENUITEM "Save &Before Running Tools",  IDM_VIEW_SAVEBEFORERUNNINGTOOLS
@@ -400,7 +400,7 @@ BEGIN
             END
             MENUITEM "&Reuse Window",               IDM_VIEW_REUSEWINDOW
             MENUITEM "&Always On Top\tAlt+T",       IDM_VIEW_ALWAYSONTOP
-            MENUITEM "Minimi&ze To Tray",           IDM_VIEW_MINTOTRAY
+            MENUITEM "Minimi&se To Tray",           IDM_VIEW_MINTOTRAY
             MENUITEM "Transparent &Mode\tAlt+G",    IDM_VIEW_TRANSPARENT
         END
         POPUP "&Technology"
@@ -460,7 +460,7 @@ BEGIN
     BEGIN
         MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
         MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
-        MENUITEM "&Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Customise Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"
@@ -470,7 +470,7 @@ BEGIN
     END
 END
 
-#endif    // English (United States) resources
+#endif    // Portuguese (Brazil) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

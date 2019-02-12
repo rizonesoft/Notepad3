@@ -14,10 +14,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Portuguese (Brazil) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
 #pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
@@ -57,7 +57,7 @@ BEGIN
     IDT_HISTORY_FORWARD     "Forward"
     IDT_UPDIR               "Upper Directory"
     IDT_ROOT                "Root Directory"
-    IDT_VIEW_FAVORITES      "Favorites"
+    IDT_VIEW_FAVORITES      "Favourites"
     IDT_FILE_PREV           "Previous File"
     IDT_FILE_NEXT           "Next File"
     IDT_FILE_RUN            "Run"
@@ -90,7 +90,7 @@ BEGIN
     IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory."
     IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory."
     IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time."
-    IDS_ERR_FAVORITES       "Favorites\nNo access to ""Favorites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
+    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
     IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object.\nProbably the link doesn't refer to a file or directory."
     IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object.\nCheck the disk or the network connection."
     IDS_ERR_CREATELINK      "Link Error\nError creating the specified link.\nProbably the destination directory is write-protected."
@@ -116,7 +116,7 @@ BEGIN
     IDS_FILTER_ALL          "All files (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Executable files (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
     IDS_GETDIRECTORY        "Select a new directory."
-    IDS_FAVORITES           "Specify the ""Favorites"" directory."
+    IDS_FAVORITES           "Specify the ""Favourites"" directory."
 END
 
 STRINGTABLE
@@ -127,15 +127,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Select the directory with links to your favorite applications."
+    IDS_OPENWITH            "Select the directory with links to your favourite applications."
     IDS_COPYMOVE            "Select a destination directory."
     IDS_CREATELINK          "Select a destination directory for the new link."
     IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "(en-US) English(amer.) text by Flo Balmer et al."
+    IDS_MUI_TRANSL_AUTHOR   "(pt-BR) Portuguese (Brazil) translation by XXX"
 END
 
 
-#endif    // English (United States) resources
+#endif    // Portuguese (Brazil) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

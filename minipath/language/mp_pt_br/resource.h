@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by strings_en_us.rc
+// Used by mp_pt_br.rc
 //
 
 // Next default values for new objects

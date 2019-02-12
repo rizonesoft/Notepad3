@@ -14,10 +14,10 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Portuguese (Brazil) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PTB)
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
 #pragma code_page(1252)  // Western European (Win-1252)
 
 #ifdef APSTUDIO_INVOKED
@@ -167,7 +167,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Click here to specify the directory with links to your favorite applications.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Click here to specify the directory with links to your favourite applications.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -274,7 +274,7 @@ END
 
 IDD_MUI_STYLECONFIG DIALOGEX 0, 0, 467, 254
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Customize Schemes"
+CAPTION "Customise Schemes"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,240
@@ -295,7 +295,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,410,233,50,14
     GROUPBOX        "Info",IDC_STATIC,180,7,280,127
     ICON            IDI_MUI_STYLES,IDC_STATIC,189,19,20,20
-    LTEXT           "Customize Schemes",IDC_TITLE,220,25,200,12
+    LTEXT           "Customise Schemes",IDC_TITLE,220,25,200,12
     EDITTEXT        IDC_STYLEEDIT_HELP,197,50,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
@@ -326,7 +326,7 @@ BEGIN
     LTEXT           "&Limit for long lines:",IDC_STATIC,7,10,60,8
     EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
     CONTROL         "Show &edge line.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,67,10
-    CONTROL         "Change &background color.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
+    CONTROL         "Change &background colour.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,127,24,50,14
 END
@@ -375,7 +375,7 @@ BEGIN
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Footer:",IDC_STATIC,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    GROUPBOX        "Print Colors",1076,8,191,224,37,WS_GROUP
+    GROUPBOX        "Print Colours",1076,8,191,224,37,WS_GROUP
     LTEXT           "Mo&de:",IDC_STATIC,16,207,36,8
     COMBOBOX        34,64,206,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Scaling",IDC_STATIC,240,170,108,58,WS_GROUP
@@ -393,12 +393,12 @@ END
 
 IDD_MUI_FAVORITES DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Favorites"
+CAPTION "Favourites"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Click here to specify the directory with links to your favorite files.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Click here to specify the directory with links to your favourite files.",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -406,10 +406,10 @@ END
 
 IDD_MUI_ADDTOFAV DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Add to Favorites"
+CAPTION "Add to Favourites"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Enter the name for the new favorites item:",IDC_STATIC,7,7,158,8
+    LTEXT           "Enter the name for the new favourites item:",IDC_STATIC,7,7,158,8
     EDITTEXT        100,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Cancel",IDCANCEL,115,45,50,14
@@ -883,7 +883,7 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // English (United States) resources
+#endif    // Portuguese (Brazil) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
