@@ -14,11 +14,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Korean (Korea) resources
+// Hungarian (Hungary) resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
-LANGUAGE LANG_KOREAN, SUBLANG_KOREAN
-#pragma code_page(949)  // Korean (Unified Hangul Code) (Win-949)
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_HUN)
+LANGUAGE LANG_HUNGARIAN, SUBLANG_DEFAULT
+#pragma code_page(1250)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -883,7 +883,7 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Korean (Korea) resources
+#endif    // Hungarian (Hungary) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
