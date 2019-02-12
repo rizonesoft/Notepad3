@@ -159,10 +159,6 @@ BEGIN
     IDS_LEX_2ND_X_SPC       "2nd Extra Line Spacing (Size)"
     IDS_LEX_STD_BKMRK       "Bookmarks and Folding (Colors, Size)"
     IDS_LEX_2ND_BKMRK       "2nd Bookmarks and Folding (Colors, Size)"
-END
-    
-STRINGTABLE
-BEGIN
     IDS_LEX_STR_63126       "Default"
     IDS_LEX_STR_63127       "Comment"
     IDS_LEX_STR_63128       "Keyword"
@@ -432,11 +428,11 @@ BEGIN
     IDS_LEX_STR_63340       "Standard Type"
     IDS_LEX_STR_63341       "Word"
     IDS_LEX_STR_63342       "Verbatim"
+    IDS_LEX_STR_63343       "Built-In Type"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63343       "Built-In Type"
     IDS_LEX_STR_63344       "Byte String"
     IDS_LEX_STR_63345       "Other Keyword"
     IDS_LEX_STR_63346       "Rust Lifetime"
@@ -453,6 +449,7 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 
+
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -462,3 +459,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+

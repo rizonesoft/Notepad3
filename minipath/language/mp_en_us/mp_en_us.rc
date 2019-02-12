@@ -66,7 +66,6 @@ END
 #include "strings_en_us.rc"
 #include "dialogs_en_us.rc"
 
-
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 
