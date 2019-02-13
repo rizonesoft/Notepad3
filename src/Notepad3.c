@@ -74,7 +74,7 @@ static SETTINGS2_T Defaults2;
 
 // ------------------------------------
 
-static WCHAR     s_wchWndClass[16] = MKWCS(APPNAME);
+static WCHAR     s_wchWndClass[16] = _W(SAPPNAME);
 
 static HWND      s_hwndEditFrame = NULL;
 static HWND      s_hwndNextCBChain = NULL;
@@ -1040,7 +1040,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   Globals.hwndMain = CreateWindowEx(
                0,
                s_wchWndClass,
-               TEXT(APPNAME),
+               _W(SAPPNAME),
                WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                srcninfo.x,
                srcninfo.y,
@@ -6775,7 +6775,7 @@ void LoadSettings()
     Defaults2.FileBrowserPath[0] = L'\0';
     IniSectionGetString(pIniSection, L"filebrowser.exe", Defaults2.FileBrowserPath, Settings2.FileBrowserPath, COUNTOF(Settings2.FileBrowserPath));
     
-    StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), MKWCS(APPNAME));
+    StringCchCopyW(Defaults2.AppUserModelID, COUNTOF(Defaults2.AppUserModelID), _W(SAPPNAME));
     IniSectionGetString(pIniSection, L"ShellAppUserModelID", Defaults2.AppUserModelID, Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
 
     Defaults2.ExtendedWhiteSpaceChars[0] = L'\0';
@@ -6808,11 +6808,11 @@ void LoadSettings()
 
 #define GET_BOOL_VALUE_FROM_INISECTION(VARNAME,DEFAULT) \
   Defaults.VARNAME = DEFAULT;                           \
-  Settings.VARNAME = IniSectionGetBool(pIniSection, STRGW(VARNAME), Defaults.VARNAME)
+  Settings.VARNAME = IniSectionGetBool(pIniSection,  _W(_STRG(VARNAME)), Defaults.VARNAME)
 
 #define GET_INT_VALUE_FROM_INISECTION(VARNAME,DEFAULT,MIN,MAX) \
   Defaults.VARNAME = DEFAULT;                                  \
-  Settings.VARNAME = clampi(IniSectionGetInt(pIniSection, STRGW(VARNAME), Defaults.VARNAME),MIN,MAX)
+  Settings.VARNAME = clampi(IniSectionGetInt(pIniSection,  _W(_STRG(VARNAME)), Defaults.VARNAME),MIN,MAX)
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveRecentFiles, true);
     GET_BOOL_VALUE_FROM_INISECTION(PreserveCaretPos, false);
@@ -7139,7 +7139,7 @@ void LoadSettings()
 
 #define SAVE_VALUE_IF_NOT_EQ_DEFAULT(TYPE,VARNAME)                       \
   if (Settings.VARNAME != Defaults.VARNAME) {                            \
-    IniSectionSet##TYPE(pIniSection, STRGW(VARNAME), Settings.VARNAME);  \
+    IniSectionSet##TYPE(pIniSection,  _W(_STRG(VARNAME)), Settings.VARNAME);  \
   }
 
 // ----------------------------------------------------------------------------
@@ -7443,7 +7443,7 @@ void ParseCommandLine()
                          lp1 + CSTRLEN(L"appid="), len - CSTRLEN(L"appid="));
           StrTrim(Settings2.AppUserModelID, L" ");
           if (StringCchLenW(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID)) == 0)
-            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), MKWCS(APPNAME));
+            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W(SAPPNAME));
         }
 
         else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0) {
@@ -7961,8 +7961,8 @@ int FindIniFile() {
     if (bFound) 
     {
       // allow two redirections: administrator -> user -> custom
-      if (_CheckIniFileRedirect(MKWCS(APPNAME), MKWCS(APPNAME) L".ini", tchPath, tchModule)) {
-        _CheckIniFileRedirect(MKWCS(APPNAME), MKWCS(APPNAME) L".ini", tchPath, tchModule);
+      if (_CheckIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", tchPath, tchModule)) {
+        _CheckIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", tchPath, tchModule);
       }
       StringCchCopy(Globals.IniFile,COUNTOF(Globals.IniFile),tchPath);
     }
@@ -10299,7 +10299,7 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
   nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
   nid.uCallbackMessage = WM_TRAYMESSAGE;
   nid.hIcon = hIcon;
-  StringCchCopy(nid.szTip,COUNTOF(nid.szTip), MKWCS(APPNAME));
+  StringCchCopy(nid.szTip,COUNTOF(nid.szTip), _W(SAPPNAME));
 
   if(bAdd)
     Shell_NotifyIcon(NIM_ADD,&nid);

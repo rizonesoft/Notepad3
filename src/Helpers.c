@@ -328,7 +328,7 @@ DPI_T GetCurrentDPI(HWND hwnd) {
   DPI_T CurDPI = { 0, 0 };
 
   if (IsWin10()) {
-    HMODULE const hModule = GetModuleHandle(MKWCS("user32.dll"));
+    HMODULE const hModule = GetModuleHandle(L"user32.dll");
     if (hModule) {
       FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
       if (pfnGetDpiForWindow) {
