@@ -42,8 +42,8 @@ BEGIN
       VALUE "InternalName",     SAPPNAME
       VALUE "ProductName",      SAPPNAME
       VALUE "CompanyName",      VERSION_COMPANYNAME
-      VALUE "FileVersion",      VERSION_FILEVERSION
-      VALUE "ProductVersion",   VERSION_FILEVERSION
+      VALUE "FileVersion",      _STRG(VERSION_FILEVERSION)
+      VALUE "ProductVersion",   _STRG(VERSION_FILEVERSION)
       VALUE "LegalCopyright",   VERSION_LEGALCOPYRIGHT
       VALUE "OriginalFilename", SAPPNAME ".exe"
     END
