@@ -102,18 +102,20 @@ IDS_MUI_ABOUT_LIBS  "\
 
 //
 // For "craigo-": to access the right site "https://github.com/craigo-",
-//   a slash "/" is voluntarily added after the "craigo-" !
+// a slash "/" is voluntarily added after the "craigo-" !
 //
 
 IDS_MUI_ABOUT_ACKNOWLEDGES  "\
-\\cf0 craigo-\\tab https://github.com/craigo-/\\par\
-\\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
-\\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
-\\cf0 engelhro\\tab https://github.com/engelhro\\par\
-\\cf0 AlexIljin\\tab https://github.com/AlexIljin\\par\
-\\cf0 maboroshin\\tab https://github.com/maboroshin\\par\
-\\cf0 zufuliu\\tab https://github.com/zufuliu\\par\
 \\cf0 alexantr\\tab https://github.com/alexantr\\par\
+\\cf0 AlexIljin\\tab https://github.com/AlexIljin\\par\
+\\cf0 craigo-\\tab https://github.com/craigo-/\\par\
+\\cf0 engelhro\\tab https://github.com/engelhro\\par\
+\\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
+\\cf0 lhmouse\\tab https://github.com/lhmouse\\par\
+\\cf0 maboroshin\\tab https://github.com/maboroshin\\par\
+\\cf0 rizonesoft\\tab https://github.com/rizonesoft\\par\
+\\cf0 xsak\\tab https://github.com/xsak\\par\
+\\cf0 zufuliu\\tab https://github.com/zufuliu\\par\
 \\cf0 \\par\
 "
 

@@ -198,10 +198,10 @@ Keyboard Shortcuts for Notepad3
 
   Misc.
 
-    Esc                   Optionally minimize or exit Notepad2.
-    Shift+Esc             Save file and exit Notepad2.
-    F1                    Display version info.
-
+    Esc                   Optionally minimize or exit Notepad3.
+    Shift+Esc             Save file and exit Notepad3.
+    F1                    Online Documentation.
+    Shift+F1              Display Info version "About…"
 
 Regular Expression Syntax
 
@@ -261,40 +261,47 @@ Regular Expression Syntax
          - Convert tabs to double spaces: find "\t" replace with "  "
 
 
-Command Line Switches
+Command Line Help
 
-  Notepad2.exe [(encoding)] [(line ending mode)] [/g ln[,col]]
-               [/m[-][r|b] text] [/q] [/s ext] [/d] [/h] [/x] [/c]
-               [/b] [/n|/ns] [/r|/rs]
-               [/p x,y,cx,cy[,max]|/p0|/ps|/pf,l,t,r,b,m]
-               [/t title] [/i] [/f ini|/f0] [/?] [+|-] [file] ...
+Usage:
+  Notepad3  [/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]
+            [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]
+            [/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[…]]
 
-    file  File to open, can be a relative pathname, or a shell link.
-          Must be the last argument, no quoted spaces by default.
-    +     Accept multiple file arguments (with quoted spaces).
-    -     Accept single file argument (without quoted spaces).
-    ...   Desired file encoding (can be one of /ansi, /unicode,
-            /unicodebe, /utf8 or /utf8sig).
-    ...   Desired line ending mode (either /crlf, /lf, or /cr).
-    /g    Jump to specified position, /g -1 means end of file.
-    /m    Match specified text (/m- last, /mr regex, /mb backslash).
-    /q    Force creation of new files without prompt.
-    /s    Select syntax scheme associated with specified extension.
-    /d    Select default text scheme.
-    /h    Select Web Source Code scheme.
-    /x    Select XML Document scheme.
-    /c    Open a new Notepad2 window and paste the clipboard contents.
-    /b    Open a new Notepad2 paste board to collect clipboard entries.
-    /n    Always open a new Notepad2 window (/ns single file instance).
-    /r    Reuse Notepad2 window (/rs single file instance).
-    /p    Set window position to x,y with size cx,cy, optional max set
-          to nonzero to zoom; /p0 system, /ps internal defaults;
-          /p(f)ull,(l)eft,(t)op,(r)ight,(b)ottom,(m)argin.
-    /t    Set window title.
-    /i    Start as tray icon.
-    /f    Specify ini-file; /f0 use no ini-file (don't save settings).
-    /v    Print file and quit.
-    /vd   Print file, but show Printer config dialog.
-    /z    Skip next (Registry based Notepad replacement)
-    /?    Display a brief summary about command line parameters.
+  file   Must be the last argument, no quoted spaces by default.
+  +      Accept multiple file arguments (with quoted spaces).
+  -      Accept single file argument (without quoted spaces).
 
+Options:
+  /?     Dispay this help message.
+  …      Encoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).
+  …      Line ending mode (/crlf, /cr, /lf).
+  /e     File source encoding.
+  /g     Jump to specified position (/g -1 end of file).
+  /m     Match specified text (/m- last, /mr regex, /mb backslash).
+  /l     Auto-reload modified files.
+  /q     Force creation of new files without prompt.
+  /s     Select specified syntax scheme.
+  /d     Select default text scheme.
+  /h     Select Web Source Code scheme.
+  /x     Select XML Document scheme.
+  /c     Open new window and paste clipboard contents.
+  /b     Open new paste board to collect clipboard entries.
+  /n     Always open a new window (/ns single file instance).
+  /r     Reuse window (/rs single file instance).
+  /p     Set window position and size (/p0, /ps, /pf,l,t,r,b,m).
+  /t     Set window title.
+  /i     Start as tray icon.
+  /o     Keep window on top.
+  /f     Specify ini-file (/f0 no ini-file).
+  /u     Launch with elevated privileges.
+  /v     Print file immediately and quit.
+  /vd    Print file (open printer dialog).
+  /z     Skip next (usable for registry-based Notepad replacement).
+
+Examples:
+  Notepad3  /utf8sig /crlf d:\temp\Test.txt
+             … Open a new file: "Test.txt" Encoding=UTF-8-BOM, EoL=CRLF.
+  Notepad3  /v d:\temp\Test.txt
+            … Print the file: "Test.txt" immediately.
+ 
