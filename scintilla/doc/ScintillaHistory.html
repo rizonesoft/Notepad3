@@ -568,6 +568,10 @@
 	<a href="https://sourceforge.net/p/scintilla/feature-requests/1217/">Feature #1217</a>.
 	</li>
  	<li>
+	SciTE supports changing caret style via caret.style property.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1264/">Feature #1624</a>.
+	</li>
+ 	<li>
 	The C++ lexer, with styling.within.preprocessor on, now interprets "(" in preprocessor "#if("
 	as an operator instead of part of the directive. This improves folding as well which could become
 	unbalanced.
@@ -595,6 +599,11 @@
  	<li>
 	Fix TCL lexer recognizing '"' after "," inside a bracketed substitution.
 	<a href="https://sourceforge.net/p/scintilla/bugs/1947/">Bug #1947</a>.
+	</li>
+ 	<li>
+	Fix garbage text from SCI_MOVESELECTEDLINESUP and SCI_MOVESELECTEDLINESDOWN
+	for rectangular or thin selection by performing no action.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2078/">Bug #2078</a>.
 	</li>
     </ul>
     <h3>
