@@ -29,7 +29,7 @@ Keyboard Shortcuts for Notepad3
 
     Alt+I                 Open favorites.
     Alt+K                 Add to favorites.
-    F9                    Manage favorites.
+    Alt+F9                Manage favorites.
 
   Edit
 
@@ -40,7 +40,7 @@ Keyboard Shortcuts for Notepad3
     Ctrl+Shift+Y          Undo.
     Ctrl+X                Cut selection  / Cut current line, if no selection.
     Shift+Del             Cut.
-    Ctrl+C                Copy selection / Copy current line, if no selection .
+    Ctrl+C                Copy selection / Copy current line, if no selection.
     Alt+C                 Copy all.
     Ctrl+E                Copy add.
     Ctrl+V                Paste.
