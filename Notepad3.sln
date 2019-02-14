@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28531.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Notepad3", "src\Notepad3.vcxproj", "{BAAD32AB-CD47-12FD-873C-0BBC204B7641}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -182,6 +182,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_pt_br", "minipath\language\mp_pt_br\mp_pt_br.vcxproj", "{83E5EEBE-9764-4C5B-9FDC-EB84A369C501}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{490D24BD-21E0-4BAD-B2D4-0A3BEC347AA9}"
+	ProjectSection(SolutionItems) = preProject
+		Version.cmd = Version.cmd
+		Version.ps1 = Version.ps1
 	EndProjectSection
 EndProject
 Global
@@ -463,6 +469,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{490D24BD-21E0-4BAD-B2D4-0A3BEC347AA9} = {6E5B87EB-C468-4334-8384-E9A3F0F6FBDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0B8FE68-ECBC-4173-9027-E1EC2C9B5BDF}
