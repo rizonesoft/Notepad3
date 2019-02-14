@@ -36,16 +36,15 @@
 
 // ============================================================================
 
-#ifndef _MKWCS
-#define _DO_STRINGIFYA(s) #s
-#define _DO_STRINGIFYW(s) L ## #s
-#define STRG(s)  _DO_STRINGIFYA(s)
-#define STRGW(s) _DO_STRINGIFYW(s)
-
-#define _MKWCS(s) L ## s
-#define MKWCS(s)  _MKWCS(s)
+#ifndef _W
+#define __CC(p,s) p ## s
+#define _W(s)  __CC(L,s)
 #endif
 
+#ifndef _STRG
+#define _STRINGIFY(s) #s
+#define _STRG(s)  _STRINGIFY(s)
+#endif
 
 #define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)

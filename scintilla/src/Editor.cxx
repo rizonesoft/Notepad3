@@ -1005,6 +1005,10 @@ void Editor::VerticalCentreCaret() {
 
 void Editor::MoveSelectedLines(int lineDelta) {
 
+	if (sel.IsRectangular()) {
+		return;
+	}
+
 	// if selection doesn't start at the beginning of the line, set the new start
 	Sci::Position selectionStart = SelectionStart().Position();
 	const Sci::Line startLine = pdoc->SciLineFromPosition(selectionStart);
@@ -1044,7 +1048,6 @@ void Editor::MoveSelectedLines(int lineDelta) {
 	SelectionText selectedText;
 	CopySelectionRange(&selectedText);
 
-	Sci::Position selectionLength = SelectionRange(selectionStart, selectionEnd).Length();
 	const Point currentLocation = LocationFromPosition(CurrentPosition());
 	const Sci::Line currentLine = LineFromLocation(currentLocation);
 
@@ -1057,7 +1060,7 @@ void Editor::MoveSelectedLines(int lineDelta) {
 		pdoc->InsertString(pdoc->Length(), eol, strlen(eol));
 	GoToLine(currentLine + lineDelta);
 
-	selectionLength = pdoc->InsertString(CurrentPosition(), selectedText.Data(), selectionLength);
+	Sci::Position selectionLength = pdoc->InsertString(CurrentPosition(), selectedText.Data(), selectedText.Length());
 	if (appendEol) {
 		const Sci::Position lengthInserted = pdoc->InsertString(CurrentPosition() + selectionLength, eol, strlen(eol));
 		selectionLength += lengthInserted;
