@@ -93,7 +93,7 @@ IDS_MUI_ABOUT_CONTRIBS  "\
 IDS_MUI_ABOUT_LIBS  "\
 \\cf0 N.Hodgson (Scintilla)\\tab https://www.scintilla.org\\par\
 \\cf0 K.Takata (Onigmo Regex)\\tab https://github.com/k-takata/Onigmo\\par\
-\\cf0 D.Dyer (NotepadCrypt)\\tab http://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
+\\cf0 D.Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
 \\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash\\par\
 \\cf0 Jinsuk Kim (CED EncDet)\\tab https://github.com/google/compact_enc_det\\par\
 \\cf0 Lewis Van Winkle (TinyExpr)\\tab https://github.com/codeplea/tinyexpr\\par\
