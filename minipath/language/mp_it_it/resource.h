@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Von Microsoft Visual C++ generierte Includedatei.
-// Verwendet durch np3_en_gb.rc
+// Microsoft Visual C++ generated include file.
+// Used by mp__it_it.rc
 //
 
 // Next default values for new objects
