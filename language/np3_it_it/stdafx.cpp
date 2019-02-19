@@ -1,5 +1,5 @@
 ﻿// stdafx.cpp : Quelldatei, die nur die Standard-Includes einbindet.
-// np3_en_gb.pch ist der vorkompilierte Header.
+// np3_it_it.pch ist der vorkompilierte Header.
 // stdafx.obj enthält die vorkompilierten Typinformationen.
 
 #include "stdafx.h"

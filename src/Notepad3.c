@@ -85,7 +85,7 @@ static WCHAR     s_wchIniFile2[MAX_PATH + 1] = { L'\0' };
 static WCHAR     s_wchTmpFilePath[MAX_PATH + 1] = { L'\0' };
 
 // 'en-US' internal default
-static WCHAR* const s_tchAvailableLanguages = L"af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU ja-JP nl-NL pt-BR ru-RU zh-CN";
+static WCHAR* const s_tchAvailableLanguages = L"af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP nl-NL pt-BR ru-RU zh-CN";
 
 static int    s_iSettingsVersion = CFG_VER_CURRENT;
 static bool   s_bEnableSaveSettings = true;
