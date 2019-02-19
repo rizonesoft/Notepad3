@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Notepad3", "src\Notepad3.vcxproj", "{BAAD32AB-CD47-12FD-873C-0BBC204B7641}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -192,12 +192,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{490D
 		Version.ps1 = Version.ps1
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_it_it", "O:\_PROJECTS\_GITHUB\Notepad3\language\np3_it_it\np3_it_it.vcxproj", "{2EB07C98-0F3F-4CB6-B448-099770AF1989}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_it_it", "language\np3_it_it\np3_it_it.vcxproj", "{2EB07C98-0F3F-4CB6-B448-099770AF1989}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_it_it", "O:\_PROJECTS\_GITHUB\Notepad3\minipath\language\mp_it_it\mp_it_it.vcxproj", "{DA372A4B-7AE0-4C50-97B7-49D5FF953325}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_it_it", "minipath\language\mp_it_it\mp_it_it.vcxproj", "{DA372A4B-7AE0-4C50-97B7-49D5FF953325}"
 	ProjectSection(ProjectDependencies) = postProject
 		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
 	EndProjectSection
