@@ -54,189 +54,181 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "New"
-    IDT_FILE_OPEN           "Open"
-    IDT_FILE_BROWSE         "Browse"
-    IDT_FILE_SAVE           "Save"
-    IDT_EDIT_UNDO           "Undo"
-    IDT_EDIT_REDO           "Redo"
-    IDT_EDIT_CUT            "Cut"
-    IDT_EDIT_COPY           "Copy"
+    IDT_FILE_NEW                "»õ ÆÄÀÏ"
+    IDT_FILE_OPEN               "¿­±â"
+    IDT_FILE_BROWSE             "Minipath·Î Å½»ö"
+    IDT_FILE_SAVE               "ÀúÀå"
+    IDT_EDIT_UNDO               "½ÇÇà Ãë¼Ò"
+    IDT_EDIT_REDO               "´Ù½Ã ½ÇÇà"
+    IDT_EDIT_CUT                "Àß¶ó³»±â"
+    IDT_EDIT_COPY               "º¹»ç"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Paste"
-    IDT_EDIT_FIND           "Find"
-    IDT_EDIT_REPLACE        "Replace"
-    IDT_VIEW_WORDWRAP       "Word Wrap"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
-    IDT_VIEW_SCHEME         "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
-    IDT_FILE_EXIT           "Exit"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_SAVECOPY       "Save Copy"
-    IDT_EDIT_CLEAR          "Delete"
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favourites"
-    IDT_FILE_ADDTOFAV       "Add to Favourites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
+    IDT_EDIT_PASTE              "ºÙ¿© ³Ö±â"
+    IDT_EDIT_FIND               "Ã£±â"
+    IDT_EDIT_REPLACE            "¹Ù²Ù±â"
+    IDT_VIEW_WORDWRAP           "¿öµå ·¦"
+    IDT_VIEW_ZOOMIN             "È®´ë"
+    IDT_VIEW_ZOOMOUT            "Ãà¼Ò"
+    IDT_VIEW_SCHEME             "½ºÅ°¸¶ ¼±ÅÃ"
+    IDT_VIEW_SCHEMECONFIG       "½ºÅ°¸¶ ÆíÁý"
+    IDT_FILE_EXIT               "Á¾·á"
+    IDT_FILE_SAVEAS             "´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå"
+    IDT_FILE_SAVECOPY           "º¹»çº» ÀúÀå"
+    IDT_EDIT_CLEAR              "»èÁ¦"
+    IDT_FILE_PRINT              "ÀÎ¼â"
+    IDT_FILE_OPENFAV            "Áñ°Ü Ã£±â"
+    IDT_FILE_ADDTOFAV           "Áñ°Ü Ã£±â¿¡ Ãß°¡"
+    IDT_VIEW_TOGGLEFOLDS        "¸ðµç Á¢±â ÀüÈ¯"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH         "Execute Document"
-    IDT_VIEW_TOGGLE_VIEW    "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Doc Tail Chasing"
+    IDT_FILE_LAUNCH             "¹®¼­ ½ÇÇà"
+    IDT_VIEW_TOGGLE_VIEW        "ÁýÁß"
+    IDT_VIEW_CHASING_DOCTAIL    "¿­¶÷"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE        "Notepad3"
-    IDS_MUI_APPTITLE_ELEVATED "%s (Administrator)"
-    IDS_MUI_APPTITLE_PASTEBOARD "Notepad3 : Clipboard"
-    IDS_MUI_UNTITLED        "Untitled"
-    IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Read Only)"
-    IDS_MUI_LOADFILE        "Loading ""%s""..."
-    IDS_MUI_SAVEFILE        "Saving ""%s""..."
-    IDS_MUI_PRINTFILE       "Printing page %i..."
-    IDS_MUI_SAVINGSETTINGS  "Saving settings..."
-    IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
+    IDS_MUI_APPTITLE            "Notepad3"
+    IDS_MUI_APPTITLE_ELEVATED   "%s (°ü¸®ÀÚ)"
+    IDS_MUI_APPTITLE_PASTEBOARD "¸Þ¸ðÀå3 : Å¬¸³ º¸µå"
+    IDS_MUI_UNTITLED            "Á¦¸ñ ¾øÀ½"
+    IDS_MUI_TITLEEXCERPT        """%s"""
+    IDS_MUI_READONLY            "(ÀÐ±â Àü¿ë)"
+    IDS_MUI_LOADFILE            "ÀÐ¾î¿À±â ""%s""..."
+    IDS_MUI_SAVEFILE            "ÀúÀå ""%s""..."
+    IDS_MUI_PRINTFILE           "ÀÎ¼â ÆäÀÌÁö %i..."
+    IDS_MUI_SAVINGSETTINGS      "¼³Á¤ ÀúÀå..."
+    IDS_MUI_LINKDESCRIPTION     "¸Þ¸ðÀå 3À¸·Î ÆíÁý"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications."
-    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+    IDS_MUI_FILTER_ALL          "¸ðµç ÆÄÀÏ (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE          "½ÇÇà ÆÄÀÏ (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|¸ðµç ÆÄÀÏ (*.*)|*.*|"
+    IDS_MUI_FILTER_INI          "¼³Á¤ ÆÄÀÏ (*.ini)|*.ini|¸ðµç ÆÄÀÏ (*.*)|*.*|"
+    IDS_MUI_OPENWITH            "¼±È£ÇÏ´Â ÀÀ¿ë ÇÁ·Î±×·¥ ¸µÅ©µéÀÇ µð·ºÅä¸®¸¦ Á¤ÇÏ¼¼¿ä."
+    IDS_MUI_FAVORITES           "Áñ°Ü Ã£´Â ÆÄÀÏ ¸µÅ©µéÀÇ µð·ºÅä¸®¸¦ Á¤ÇÏ¼¼¿ä."
+    IDS_MUI_BACKSLASHHELP       "¹é ½½·¡½Ã º¯È¯\n\n\\a\t°æº¸ (BEL, Ascii 7)\n\\b\t¹é½ºÆäÀÌ½º (BS, Ascii 8)\n\\f\tÆû ÇÇµå (FF, Ascii 12)\n\\n\t»õ ¶óÀÎ (LF, Ascii 10)\n\\r\tÄ³¸®Áö ¸®ÅÏ (CR, Ascii 13)\n\\t\t°¡·Î ÅÇ (HT, Ascii 9)\n\\v\t¼öÁ÷ ÅÇ (VT, Ascii 11)\n\\0oo\t8Áø¹ý °ª\n\\u####\t16Áø¼ö °ª\n\\xhh\t16Áø¼ö °ª\n\\\\\t¹é ½½·¡½Ã"
+    IDS_MUI_REGEXPHELP          "Á¤±Ô½Ä ±¸¹® (¿©·¯ ÁÙ)\n\n.\t¸ðµç ¹®ÀÚ¿Í ÀÏÄ¡.\n^\tÁÙÀÇ Ã³À½\n$\tÁÙÀÇ ³¡\n\\<\t´Ü¾îÀÇ ½ÃÀÛ\n\\>\t´Ü¾îÀÇ ³¡\n\\b\t´Ü¾î °æ°è\n[...]\t¹®ÀÚ ÁýÇÕ([abc]) ¶Ç´Â ¹üÀ§ ([a-z])\n[^...]\tÁ¦¿ÜÇÒ ¹®ÀÚ ÁýÇÕ ¶Ç´Â ¹üÀ§\n\\d\t¸ðµç 10Áø¼ö\n\\D\t¼ýÀÚ°¡ ¾Æ´Ñ ¹®ÀÚ\n\\s\t°ø¹é ¹®ÀÚ\n\\S\t°ø¹éÀÌ ¾Æ´Ñ ¹®ÀÚ\n\\w\t¸ðµç ""´Ü¾î"" ¹®ÀÚ\n\\W\t¸ðµç ""ºñ-´Ü¾î"" ¹®ÀÚ\n\\x\tÆ¯º°ÇÑ ÀÇ¹Ì¸¦ °¡Áø Escape ¹®ÀÚ\n\\xHH\tHex °ªÀÌ HHÀÎ ¹®ÀÚ\n?\t0È¸ ¶Ç´Â 1È¸ ÀÏÄ¡\n*\t0È¸ ÀÌ»ó ÀÏÄ¡\n+\t1È¸ ÀÌ»ó ÀÏÄ¡\n*? or +?\t ""?"" ¹× ""+"" ÀÇ ¿å½É ¾ø´Â ÀÏÄ¡\n(\t¿µ¿ªÀÇ ½ÃÀÛ\n)\t¿µ¿ªÀÇ ³¡\n\\n\t´ëÃ¼ ÇÒ ¿µ¿ª ÂüÁ¶ (nÀº 1-9)\n"
+    IDS_MUI_WILDCARDHELP        "¿ÍÀÏµå Ä«µå °Ë»ö\n\n*\t0°³ ÀÌ»óÀÇ ¹®ÀÚ¿Í ÀÏÄ¡ÇÕ´Ï´Ù.\n?\tÁ¤È®ÇÏ°Ô ÇÏ³ªÀÇ ¹®ÀÚ¿Í ÀÏÄ¡ÇÕ´Ï´Ù. "
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Error loading ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Error saving ""%s""."
-    IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
-    IDS_MUI_ERR_PREVWINDISABLED 
-                            "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
-    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
-    IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
+    IDS_MUI_ERR_LOADFILE        """%s"" ÆÄÀÏÀ» ÀÐ´Â µµÁß ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù."
+    IDS_MUI_ERR_SAVEFILE        """%s"" ÆÄÀÏÀ» ÀúÀåÇÏ´Â µµÁß ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù."
+    IDS_MUI_ERR_BROWSE          "ÆÄÀÏ ºê¶ó¿ìÀú ÇÃ·¯±×ÀÎÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù. \nMiniPath ÆÄÀÏ ºê¶ó¿ìÀú ÇÃ·¯±×ÀÎÀº https://rizonesoft.com¿¡¼­ ´Ù¿î·Îµå ÇÒ ¼ö ÀÖ½À´Ï´Ù."
+    IDS_MUI_ERR_MRUDLG          "¼±ÅÃÇÑ ÆÄÀÏ¿¡ Á¢±ÙÇÒ ¼ö ¾ø½À´Ï´Ù!\n¸ñ·Ï¿¡¼­ Á¦°ÅÇÒ±î¿ä?"
+    IDS_MUI_ERR_CREATELINK      "µ¥½ºÅ©Åé ¸µÅ©¸¦ ¸¸µå´Â Áß¿¡ ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù."
+    IDS_MUI_ERR_PREVWINDISABLED "±âÁ¸ Notepad3 Ã¢ÀÌ »ç¿ë ÁßÀÌ°Å³ª ´ëÈ­ »óÀÚ°¡ ¿­·Á ÀÖ½À´Ï´Ù.\n¸Þ¸ðÀå 3 Ã¢À» »õ·Î ¿­°Ú½À´Ï±î?"
+    IDS_MUI_ERR_ENCODINGNA      "¼±ÅÃÇÑ ÀÎÄÚµù¿¡ ´ëÇÑ ÄÚµå ÆäÀÌÁö º¯È¯ Å×ÀÌºíÀ» ½Ã½ºÅÛ¿¡¼­ Áö¿øÇÏÁö ¾Ê½À´Ï´Ù."
+    IDS_MUI_ERR_UNICODE         "ÀÌ À¯´ÏÄÚµå ÆÄÀÏÀ» º¯È¯ÇÏ´Â Áß ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù.\nÆÄÀÏÀ» ÀúÀåÇÏ¸é µ¥ÀÌÅÍ°¡ ¼Õ½ÇµË´Ï´Ù!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
-    IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
-    IDS_MUI_ERR_ACCESSDENIED 
-                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch Notepad3 as Administrator?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com ?"
-    IDS_MUI_WARN_LOAD_BIG_FILE 
-                            "Are you sure you want to open this large file?"
-    IDS_MUI_WARN_UNKNOWN_EXT 
-                            "Unknown file name extension (%s) !\nLoading data anyway ?"
-    IDS_MUI_WARN_INCONSIST_EOLS 
-                            "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
-    IDS_MUI_WARN_INCONS_INDENTS 
-                            "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
+    IDS_MUI_ERR_ADMINEXE        "»ç¿ë °¡´ÉÇÑ °ü¸® µµ±¸¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. https://rizonesoft.com ¿¡¼­ È®ÀÎ ÇÏ½Ã°Ú½À´Ï±î?"
+    IDS_MUI_ERR_ACCESSDENIED    """%s"" ÆÄÀÏÀ» ÀúÀåÇÒ ¼ö ¾øÀ¸¸ç º¸È£µÇ¾î ÀÖÀ» ¼ö ÀÖ½À´Ï´Ù. \n\n°ü¸®ÀÚ ±ÇÇÑÀ¸·Î ¸Þ¸ðÀå 3À» ½ÃÀÛ ÇÏ½Ã°Ú½À´Ï±î?"
+    IDS_MUI_ERR_UNICODE2        "ÇöÀç ÅØ½ºÆ®ÀÇ Æ¯Á¤ ¹®ÀÚ¸¦ ÇöÀç ÀÎÄÚµù¿¡¼­ Áö¿øÇÏÁö ¾Ê±â ¶§¹®¿¡ ÀúÀå½Ã¿¡´Â ±âº» ¹®ÀÚ·Î ´ëÃ¼µÉ °ÍÀÔ´Ï´Ù. ´Ù¸¥ ÀÎÄÚµùÀ» ¼±ÅÃÇÏ´Â°Ô ÁÁ½À´Ï´Ù. °è¼Ó ÇÒ±î¿ä?"
+    IDS_MUI_ERR_DROP            "ÇÑ ¹ø¿¡ ÇÏ³ªÀÇ ÆÄÀÏ¸¸ ²ø¾î¼­ ³õÀ» ¼ö ÀÖ½À´Ï´Ù.!"
+    IDS_MUI_WARN_LOAD_BIG_FILE  "ÀÌ ´ë¿ë·® ÆÄÀÏÀ» ¿­°Ú½À´Ï±î?"
+    IDS_MUI_WARN_UNKNOWN_EXT    "¾Ë ¼ö ¾ø´Â È®ÀåÀÚ (%s)!\nµ¥ÀÌÅÍ¸¦ ·Îµù ÇÏ½Ã°Ú½À´Ï±î?"
+    IDS_MUI_WARN_INCONSIST_EOLS "ÆÄÀÏÀÇ ÁÙ ¹Ù²ÞÀÌ ÀÏ°üµÇÁö ¾Ê½À´Ï´Ù!\n%s\n¸ðµç ÁÙ ¹Ù²ÞÀ» '%s'(À¸)·Î ¹Ù²Ù½Ã°Ú½À´Ï±î?"
+    IDS_MUI_WARN_INCONS_INDENTS "ÆÄÀÏÀÇ µé¿©¾²±â°¡ ÀÏ°üµÇÁö ¾Ê½À´Ï´Ù!\n%s\nµé¿©¾²±â¸¦ '%s'(À¸)·Î ¹Ù²Ù½Ã°Ú½À´Ï±î?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "This operation can't be performed within a rectangular selection."
-    IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)."
-    IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning."
-    IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end."
-    IDS_MUI_NOTFOUND        "The specified text was not found."
-    IDS_MUI_REPLCOUNT       "%i occurrences of the specified text have been replaced."
-    IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
-    IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
-    IDS_MUI_FILECHANGENOTIFY 
-                            "The current file has been modified by an external program. Reload?"
-    IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
-    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
-    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
-    IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
-    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
-    IDS_MUI_SETTINGSNOTSAVED 
-                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
+    IDS_MUI_SELRECT             "ÀÌ ÀÛ¾÷Àº »ç°¢Çü ¼±ÅÃ ³»¿¡¼­ ¼öÇà ÇÒ ¼ö ¾ø½À´Ï´Ù."
+    IDS_MUI_BUFFERTOOSMALL      "ÀÌ ÀÛ¾÷Àº ¼öÇà ÇÒ ¼ö ¾ø½À´Ï´Ù (³Ê¹« ±ä ÁÙ)."
+    IDS_MUI_FIND_WRAPFW         "¹®¼­ ³¡¿¡ µµ´ÞÇÏ¿© Ã³À½ºÎÅÍ ´Ù½Ã Ã£½À´Ï´Ù."
+    IDS_MUI_FIND_WRAPRE         "¹®¼­ÀÇ Ã³À½ ºÎºÐ¿¡ µµ´ÞÇÏ¿© ³¡¿¡¼­ ºÎÅÍ ´Ù½Ã Ã£½À´Ï´Ù."
+    IDS_MUI_NOTFOUND            "ÁöÁ¤µÈ ¹®ÀÚ¿­À» Ã£À» ¼ö ¾ø½À´Ï´Ù."
+    IDS_MUI_REPLCOUNT           "%i °³ÀÇ °Ë»öµÈ ¹®ÀÚ¿­À» ±³Ã¼ÇÏ¿´½À´Ï´Ù."
+    IDS_MUI_ASK_ENCODING        "ÇÑ ÀÎÄÚµù¿¡¼­ ´Ù¸¥ ÀÎÄÚµùÀ¸·Î ÆÄÀÏ ÀÎÄÚµùÀ» ÀüÈ¯ÇÏ¸é Áö¿øµÇÁö ¾Ê´Â ÅØ½ºÆ®°¡ ±âº» ¹®ÀÚ·Î ¹Ù²ð ¼ö ÀÖÀ¸¸ç ½ÇÇà Ãë¼Ò ±â·ÏÀÌ Áö¿öÁý´Ï´Ù. °è¼ÓÇÒ±î¿ä?"
+    IDS_MUI_ASK_ENCODING2       "ºó ÆÄÀÏÀÇ ÀÎÄÚµùÀ» º¯°æÇÏ·Á°íÇÕ´Ï´Ù. »õ ÀÎÄÚµù°ú µ¿±âÈ­ ÇÒ ¼ö ¾øÀ¸¹Ç·Î ½ÇÇà Ãë¼Ò ±â·ÏÀÌ Áö¿öÁý´Ï´Ù. °è¼ÓÇÒ±î¿ä?"
+    IDS_MUI_READONLY_SAVE       """%s""Àº(´Â) ÀÐ±â Àü¿ëÀÔ´Ï´Ù. ´Ù¸¥ ÆÄÀÏ·Î ÀúÀå ÇÏ½Ã°Ú½À´Ï±î?"
+    IDS_MUI_FILECHANGENOTIFY    "ÇöÀç ÆÄÀÏÀº ¿ÜºÎ ÇÁ·Î±×·¥¿¡ ÀÇÇØ º¯°æ µÇ¾ú½À´Ï´Ù. ´Ù½Ã ·Îµå ÇÏ½Ã°Ú½À´Ï±î?"
+    IDS_MUI_FILECHANGENOTIFY2   "ÇöÀç ÆÄÀÏÀÌ »èÁ¦µÇ¾ú½À´Ï´Ù. Áö±Ý ÀúÀåÇÒ±î¿ä?"
+    IDS_MUI_STICKYWINPOS        "Ã¢ À§Ä¡ °íÁ¤ ±â´ÉÀÌ È°¼ºÈ­ µÇ¾ú½À´Ï´Ù. ¸ðµç »õ·Î¿î ¸Þ¸ðÀå3 Ã¢Àº ÇöÀç À§Ä¡ ¼³Á¤À» »ç¿ëÇÏ°Ô µË´Ï´Ù."
+    IDS_MUI_SAVEDSETTINGS       "ÇöÀç ÇÁ·Î±×·¥ ¼³Á¤ÀÌ ÀúÀåµÇ¾ú½À´Ï´Ù."
+    IDS_MUI_CREATEINI_FAIL      "¼³Á¤ ÆÄÀÏÀ» ¸¸µå´Â Áß ¿À·ù°¡ ¹ß»ýÇÏ¿´½À´Ï´Ù."
+    IDS_MUI_WRITEINI_FAIL       "¼³Á¤À» ÀúÀå ÇÏ´Â Áß ¿À·ù°¡ ¹ß»ýÇÏ¿´½À´Ï´Ù."
+    IDS_MUI_SETTINGSNOTSAVED    "±âÁ¸ ¼³Á¤ ÆÄÀÏÀÌ ¾ø½À´Ï´Ù. \n½ºÅ¸ÀÏ ¼³Á¤À» À¯ÁöÇÏ·Á¸é ÀúÀå(F7) ÇÏ°Å³ª ½ºÅ°¸¶ ÆíÁý(Ctrl+F12) ¿¡¼­ ½ºÅ¸ÀÏÀ» ³»º¸³»±â ÇÏ¸é µË´Ï´Ù."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_EXPORT_FAIL     "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID   "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE    "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
+    IDS_MUI_EXPORT_FAIL         "½ºÅ¸ÀÏ ¼³Á¤À» ""%s""(À¸)·Î ³»º¸³»´Â Áß ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù."
+    IDS_MUI_REGEX_INVALID       "Á¤±Ô Ç¥Çö½ÄÀ» Æò°¡ÇÏ´Â Áß ¿À·ù°¡ ¹ß»ýÇß½À´Ï´Ù. Ç¥Çö½ÄÀÌ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù!"
+    IDS_MUI_DROP_NO_FILE        "°¡Á®¿Â ÆÄÀÏ ÀÌ¸§ÀÌ ¿Ã¹Ù¸£Áö ¾Ê½À´Ï´Ù.\n32 ºñÆ® ÀÀ¿ë ÇÁ·Î±×·¥¿¡¼­ ²ø¾î ¿À´Â °æ¿ì\n¸Þ¸ðÀå 3ÀÇ µµ±¸ ¸ðÀ½¿¡ µå·¡±× ¾Ø µå·ÓÇÏ½Ê½Ã¿À."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to ""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state? Your changes will be lost!"
-    IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
-    IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
-    IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
-    IDS_MUI_PRINT_FOOTER    "Page Number|Leave blank"
-    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
-    IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_ASK_SAVE            """%s""¿¡ ´ëÇÑ º¯°æ »çÇ×À» ÀúÀå ÇÏ½Ã°Ú½À´Ï±î?"
+    IDS_MUI_ASK_REVERT          "ÆÄÀÏÀ» ¸¶Áö¸·À¸·Î ÀúÀåµÈ »óÅÂ·Î µÇ µ¹¸®½Ã°Ú½À´Ï±î? º¯°æ»çÇ×À» ÀÒ°Ô µË´Ï´Ù!"
+    IDS_MUI_ASK_RECODE          "ÄÚµå º¯°æ½Ã ÆÄÀÏÀ» ´Ù½Ã ·Îµå ÇØ¾ß ÇÏ¸ç, ÀúÀåÇÏÁö ¾ÊÀº º¯°æ ³»¿ëÀº ÀÒ°Ô µË´Ï´Ù!"
+    IDS_MUI_ASK_CREATE          """%s"" ÆÄÀÏÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.\nÀÌ ÆÄÀÏÀ» »ý¼ºÇÏ½Ã°Ú½À´Ï±î?"
+    IDS_MUI_PRINT_HEADER        "ÆÄÀÏ ÀÌ¸§, ÇöÀç ³¯Â¥ ¹× ½Ã°£|ÆÄÀÏ ÀÌ¸§, ÇöÀç ³¯Â¥|ÆÄÀÏ ÀÌ¸§|ºñ¿ö µÎ±â"
+    IDS_MUI_PRINT_FOOTER        "ÆäÀÌÁö ¹øÈ£|ºñ¿ö µÎ±â."
+    IDS_MUI_PRINT_COLOR         "Normal|Invert light (dark background)|Black on white|Color on white|Color on white (except line numbers)|Screen Colors"
+    IDS_MUI_PRINT_PAGENUM       "ÆäÀÌÁö %i"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "This document doesn't contain any text to be printed."
-    IDS_MUI_PRINT_ERROR     "Error printing ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "A shortcut to the current file has been created in the favourites directory."
-    IDS_MUI_FAV_FAILURE     "The shortcut to the current file could not be created.\nMake sure there's no other file with the same name."
-    IDS_MUI_READONLY_MODIFY "The attributes of ""%s"" could not be modified."
-    IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "The Passphrase is incorrect.\nRetry another Passphrase?"
-    IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
-    IDS_MUI_STY_BASESTD     "BASE (Default Style):"
-    IDS_MUI_STY_BASE2ND     "BASE (2nd Default Style):"
-    IDS_MUI_STY_LEXDEF      "%s - Default Style:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
-    IDS_MUI_TITLE_RELBASE   " +++ BASE (%s) +++"
+    IDS_MUI_PRINT_EMPTY         "ÀÌ ¹®¼­¿¡´Â ÀÎ¼â ÇÒ ÅØ½ºÆ®°¡ ¾ø½À´Ï´Ù."
+    IDS_MUI_PRINT_ERROR         """%s"" ÀÎ¼â ¿À·ù!"
+    IDS_MUI_FAV_SUCCESS         "ÇöÀç ÆÄÀÏ¿¡ ´ëÇÑ ¹Ù·Î °¡±â°¡ Áñ°Ü Ã£±â µð·ºÅä¸®¿¡ ¸¸µé¾îÁ³½À´Ï´Ù."
+    IDS_MUI_FAV_FAILURE         "ÇöÀç ÆÄÀÏ¿¡ ´ëÇÑ ¹Ù·Î °¡±â¸¦ ¸¸µé ¼ö ¾ø½À´Ï´Ù. \n°°Àº ÀÌ¸§ÀÇ ´Ù¸¥ ÆÄÀÏÀÌ ¾ø´ÂÁö È®ÀÎÇÏ½Ê½Ã¿À."
+    IDS_MUI_READONLY_MODIFY     """%s""ÀÇ ¼Ó¼ºÀ» ¼öÁ¤ÇÒ ¼ö ¾ø½À´Ï´Ù."
+    IDS_MUI_SAVEPOS             "À§Ä¡ ÀúÀå(&S)\tCtrl+S"
+    IDS_MUI_RESETPOS            "À§Ä¡ Àç¼³Á¤(&R)\tCtrl+R"
+    IDS_MUI_PREVIEW             "¹Ì¸® º¸±â ¼³Á¤(&P)\tCtrl+P"
+    IDS_MUI_PASS_FAILURE        "¾ÏÈ£°¡ ¿Ã¹Ù¸£Áö ¾Ê½À´Ï´Ù.\n´Ù¸¥ ¾ÏÈ£ ¹®±¸¸¦ ´Ù½Ã ÀÔ·Â ÇÏ½Ã°Ú½À´Ï±î?"
+    IDS_MUI_NOPASS              "ÇØµ¶ Ãë¼ÒµÊ!\n¾ÏÈ£È­µÈ ¿ø½Ã µ¥ÀÌÅÍ ÀÐ±â?"
+    IDS_MUI_STY_BASESTD         "BASE (±âº» ½ºÅ¸ÀÏ):"
+    IDS_MUI_STY_BASE2ND         "BASE (2nd ±âº» ½ºÅ¸ÀÏ):"
+    IDS_MUI_STY_LEXDEF          "%s - ±âº» ½ºÅ¸ÀÏ:"
+    IDS_MUI_STY_LEXSTYLE        "%s - ½ºÅ¸ÀÏ:"
+    IDS_MUI_TITLE_RELBASE       " +++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) Korean (Unified Hangul) translation by XXX"
-    IDS_MUI_TITLE_FIXBASE   " BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    " +++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    " %s: %s Style"
-    IDS_MUI_TITLE_RELARB    " +++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    " Style '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "Associated filename extensions:"
-    IDS_MUI_EXAMPLE_TEXT    "The quick brown fox jumps over the lazy dog, 0123456789."
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Line (1 - %lli):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %lli):"
+    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) Korean (Unified Hangul) translation by testinsovr"
+    IDS_MUI_TITLE_FIXBASE       " BASE (%s)"
+    IDS_MUI_TITLE_RELCUR        " +++ %s: %s - ½ºÅ¸ÀÏ +++"
+    IDS_MUI_TITLE_FIXCUR        " %s: %s - ½ºÅ¸ÀÏ"
+    IDS_MUI_TITLE_RELARB        " +++ Style '%s' - (%s) +++"
+    IDS_MUI_TITLE_FIXARB        " Style '%s' - (%s)"
+    IDS_MUI_ASSOCIATED_EXT      "¿¬°áµÈ È®ÀåÀÚ:"
+    IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789.\r\nºü¸¥ °¥»ö ¿©¿ì°¡ ´À¸° °³¸¦ ¶Ù¾î ³Ñ¾ú´Ù."
+    IDS_MUI_ZERO_LEN_MATCH      "^ Zero-Length Match"
+    IDS_MUI_GOTO_LINE           "Çà (1 - %lli):"
+    IDS_MUI_GOTO_COLUMN         "¿­ (1 - %lli):"
 END
 
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Usage:\r\n\
-Notepad3 \t[/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [¡¦[Encoding]] [¡¦[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[¡¦]]\r\n\r\n\
 file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
 Options:\r\n\
 /?\tDispay this help message.\r\n\
-…\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tLine ending mode (/crlf, /cr, /lf).\r\n\
+¡¦\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+¡¦\tLine ending mode (/crlf, /cr, /lf).\r\n\
 /e\tFile source encoding.\r\n\
 /g\tJump to specified position (/g -1 end of file).\r\n\
 /m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
@@ -261,17 +253,17 @@ Options:\r\n\
 /z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
 Examples:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t¡¦ Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… Print the file: ""Test.txt"" immediately.\
+ \t¡¦ Print the file: ""Test.txt"" immediately.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ';'\r\n\r\n\
-Style format:\r\n\
+È®ÀåÀÚ´Â ';' ·Î ±¸ºÐµÇ¾î¾ß ÇÕ´Ï´Ù.\r\n\r\n\
+½ºÅ¸ÀÏ Çü½Ä:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Style properties can be copied using copy and paste or drag and drop.\
+½ºÅ¸ÀÏ ¼Ó¼ºÀº º¹»ç/ºÙ¿©³Ö±â, È¤Àº ²ø¾î¼­ ³õ±â·Î º¹»ç ÇÒ ¼ö ÀÖ½À´Ï´Ù.\
 "
 
 END
@@ -340,7 +332,6 @@ END
 /////////////////////////////////////////////////////////////////////////////
 
 
-
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -350,4 +341,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
