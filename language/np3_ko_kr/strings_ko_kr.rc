@@ -202,7 +202,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) Korean (Unified Hangul) translation by testinsovr"
+    IDS_MUI_TRANSL_AUTHOR       "(ko-KR) Korean (Unified Hangul) translation by testinsovr"
     IDS_MUI_TITLE_FIXBASE       " BASE (%s)"
     IDS_MUI_TITLE_RELCUR        " +++ %s: %s - 스타일 +++"
     IDS_MUI_TITLE_FIXCUR        " %s: %s - 스타일"
@@ -218,44 +218,44 @@ END
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
-Notepad3 \t[/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+사용법:\r\n\
+Notepad3 \t[/?] […[인코딩]] […[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[…]]\r\n\r\n\
-file\tMust be the last argument, no quoted spaces by default.\r\n\
-+\tAccept multiple file arguments (with quoted spaces).\r\n\
--\tAccept single file argument (without quoted spaces).\r\n\r\n\
-Options:\r\n\
-/?\tDispay this help message.\r\n\
-…\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tFile source encoding.\r\n\
-/g\tJump to specified position (/g -1 end of file).\r\n\
-/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-reload modified files.\r\n\
-/q\tForce creation of new files without prompt.\r\n\
-/s\tSelect specified syntax scheme.\r\n\
-/d\tSelect default text scheme.\r\n\
-/h\tSelect Web Source Code scheme.\r\n\
-/x\tSelect XML Document scheme.\r\n\
-/c\tOpen new window and paste clipboard contents.\r\n\
-/b\tOpen new paste board to collect clipboard entries.\r\n\
-/n\tAlways open a new window (/ns single file instance).\r\n\
-/r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m).\r\n\
-/t\tSet window title.\r\n\
-/i\tStart as tray icon.\r\n\
-/o\tKeep window on top.\r\n\
-/f\tSpecify ini-file (/f0 no ini-file).\r\n\
-/u\tLaunch with elevated privileges.\r\n\
-/v\tPrint file immediately and quit.\r\n\
-/vd\tPrint file (open printer dialog).\r\n\
-/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
-Examples:\r\n\
+ \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]파일명[…]]\r\n\r\n\
+파일명\t마지막 인수여야 하며, 기본적으로 따옴표 생략.\r\n\
++\t여러개의 파일 지정(따옴표 사용).\r\n\
+-\t단일 파일 지정(따옴표 생략).\r\n\r\n\
+옵션:\r\n\
+/?\t도움말 메시지 표시.\r\n\
+…\t인코딩 (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+…\t줄 끝 모드 (/crlf, /cr, /lf).\r\n\
+/e\t파일 소스 인코딩.\r\n\
+/g\t지정 위치로 이동 (/g -1 end of file).\r\n\
+/m\t지정 문자열 일치 (/m- last, /mr regex, /mb backslash).\r\n\
+/l\t변경된 파일 자동으로 다시 읽음.\r\n\
+/q\t실행시 새 파일 생성.\r\n\
+/s\t지정된 스키마 선택.\r\n\
+/d\t기본 텍스트 스키마 선택.\r\n\
+/h\t웹 소스코드 스키마 선택.\r\n\
+/x\tXML 문서 스키마 선택.\r\n\
+/c\t새 창을 열면서 클립보드 내용 붙여넣기.\r\n\
+/b\t클립보드 항목 수집용 붙여넣기판으로 열기.\r\n\
+/n\t항상 새 창 열기 (/ns 단일 파일 인스턴스).\r\n\
+/r\t윈도우 다시 사용 (/rs 단일 파일 인스턴스).\r\n\
+/p\t윈도우 위치와 크기 지정 (/p0, /ps, /pf,l,t,r,b,m).\r\n\
+/t\t윈도우 타이틀 지정.\r\n\
+/i\t트레이 아이콘으로 실행.\r\n\
+/o\t최상위 창으로.\r\n\
+/f\t지정된 ini 파일 사용 (/f0 ini 파일 없음).\r\n\
+/u\t높은 권한(관리자 권한)으로 실행.\r\n\
+/v\t파일을 즉시 인쇄 한 후 종료.\r\n\
+/vd\t파일 인쇄 (프린터 대화 상자 열기).\r\n\
+/z\t다음 건너 뛰기 (레지스트리 기반 메모장 교체를 위해 사용 가능).\r\n\r\n\
+예:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t… 새 파일 열기: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… Print the file: ""Test.txt"" immediately.\
+ \t… 파일 바로 인쇄: ""Test.txt""\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
