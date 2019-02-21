@@ -201,7 +201,7 @@ IDS_MUI_CMDLINEHELP "\
 記述法:\r\n\
 Notepad3 \t[/?] […[文字コード]] […[改行コード]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[ドライブ:][パス]ファイル名[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[ドライブ:][パス]ファイル名[…]]\r\n\r\n\
 ファイル\t相対パス可能. 最後の引数にする必要がある.\r\n\
  \tデフォルトでは空白があっても引用符は不要.\r\n\
 +\t複数のファイルの引数を許容 (要・引用符)\r\n\
@@ -233,6 +233,7 @@ Notepad3 \t[/?] […[文字コード]] […[改行コード]] [/e] [/g] [/m] [/l]\r\n\
 /u\t管理者権限で実行\r\n\
 /v\tすぐに印刷して終了する\r\n\
 /vd\tファイルの印刷(印刷ダイアログを開く)\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
 /z\t「次へ」を省略 (レジストリでメモ帳を置換している際に有効化)\r\n\r\n\
 例:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\

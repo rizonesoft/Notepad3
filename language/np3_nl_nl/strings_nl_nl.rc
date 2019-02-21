@@ -201,7 +201,7 @@ IDS_MUI_CMDLINEHELP "\
 Gebruik:\r\n\
 Notepad3 \t[/?] […[Codering]] […[Lijn ending modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[schijf:][pad]bestand[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[schijf:][pad]bestand[…]]\r\n\r\n\
 bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\
  \tspaties standaard.\r\n\
 +\tAccepteer meerdere bestandsargumenten (met\r\n\
@@ -233,6 +233,7 @@ Opties:\r\n\
 /u\tLanceer met verhoogde rechten.\r\n\
 /v\tPrint bestand onmiddellijk en verlaat.\r\n\
 /vd\tBestand printen (open printerdialoog).\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
 /z\tVolgende overslaan (bruikbaar voor het register-gebaseerde\r\n\
  \tNotepad vervanging).\r\n\r\n\
 Voorbeelden:\r\n\

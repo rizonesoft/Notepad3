@@ -221,7 +221,7 @@ IDS_MUI_CMDLINEHELP "\
 사용법:\r\n\
 Notepad3 \t[/?] […[인코딩]] […[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[drive:][path]파일명[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]파일명[…]]\r\n\r\n\
 파일명\t마지막 인수여야 하며, 기본적으로 따옴표 생략.\r\n\
 +\t여러개의 파일 지정(따옴표 사용).\r\n\
 -\t단일 파일 지정(따옴표 생략).\r\n\r\n\
@@ -250,6 +250,7 @@ Notepad3 \t[/?] […[인코딩]] […[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
 /u\t높은 권한(관리자 권한)으로 실행.\r\n\
 /v\t파일을 즉시 인쇄 한 후 종료.\r\n\
 /vd\t파일 인쇄 (프린터 대화 상자 열기).\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
 /z\t다음 건너 뛰기 (레지스트리 기반 메모장 교체를 위해 사용 가능).\r\n\r\n\
 예:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\

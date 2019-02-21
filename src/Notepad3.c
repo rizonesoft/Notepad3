@@ -135,7 +135,6 @@ static int       s_iHighDpiToolBar = -1;
 static int       s_iSortOptions = 0;
 static int       s_iAlignMode = 0;
 static bool      s_bIsAppThemed = true;
-static bool      s_flagIsElevated = false;
 static UINT      s_msgTaskbarCreated = 0;
 static bool      s_dwChangeNotifyTime = 0;
 static HANDLE    s_hChangeHandle = NULL;
@@ -389,22 +388,25 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 //
 // Static Flags
 //
-static int s_flagStartAsTrayIcon    = 0;
-static int s_flagAlwaysOnTop        = 0;
-static int s_flagPosParam           = 0;
-static int s_flagWindowPos          = 0;
-static int s_flagNewFromClipboard   = 0;
-static int s_flagPasteBoard         = 0;
-static int s_flagSetEncoding        = 0;
-static int s_flagSetEOLMode         = 0;
-static int s_flagJumpTo             = 0;
-static int s_flagMatchText          = 0;
-static int s_flagChangeNotify       = 0;
-static int s_flagLexerSpecified     = 0;
-static int s_flagQuietCreate        = 0;
-static int s_flagRelaunchElevated   = 0;
-static int s_flagDisplayHelp        = 0;
-static int s_flagBufferFile         = 0;
+static bool s_flagIsElevated           = false;
+static bool s_flagStartAsTrayIcon      = false;
+static bool s_flagPosParam             = false;
+static bool s_flagNewFromClipboard     = false;
+static bool s_flagPasteBoard           = false;
+static bool s_flagJumpTo               = false;
+static bool s_flagLexerSpecified       = false;
+static bool s_flagQuietCreate          = false;
+static bool s_flagRelaunchElevated     = false;
+static bool s_flagDisplayHelp          = false;
+static bool s_flagBufferFile           = false;
+static bool s_flagSearchPathIfRelative = false;
+// multi-state flags
+static int s_flagAlwaysOnTop  = 0;
+static int s_flagWindowPos    = 0;
+static int s_flagSetEncoding  = 0;
+static int s_flagSetEOLMode   = 0;
+static int s_flagMatchText    = 0;
+static int s_flagChangeNotify = 0;
 
 //==============================================================================
 
@@ -1157,7 +1159,7 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
 
   // reset
   Encoding_SrcCmdLn(CPI_NONE);
-  s_flagQuietCreate = 0;
+  s_flagQuietCreate = false;
   s_fKeepTitleExcerpt = 0;
 
   // undo / redo selections
@@ -1255,13 +1257,13 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
     }
     else if (s_iInitialLexer >=0 && s_iInitialLexer < NUMLEXERS)
       Style_SetLexerFromID(Globals.hwndEdit,s_iInitialLexer);
-    s_flagLexerSpecified = 0;
+    s_flagLexerSpecified = false;
   }
 
   // If start as tray icon, set current filename as tooltip
-  if (s_flagStartAsTrayIcon)
+  if (s_flagStartAsTrayIcon) {
     SetNotifyIconTitle(Globals.hwndMain);
-
+  }
   Globals.iReplacedOccurrences = 0;
   Globals.iMarkOccurrencesCount = (Settings.MarkOccurrences > 0) ? 0 : -1;
 
@@ -2422,10 +2424,10 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
       CopyMemory(params, pcds->lpData, pcds->cbData);
 
       if (params->flagLexerSpecified)
-        s_flagLexerSpecified = 1;
+        s_flagLexerSpecified = true;
 
       if (params->flagQuietCreate)
-        s_flagQuietCreate = 1;
+        s_flagQuietCreate = true;
 
       if (params->flagFileSpecified) {
 
@@ -2499,8 +2501,8 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
         EditJumpTo(Globals.hwndEdit, params->iInitialLine, params->iInitialColumn);
       }
 
-      s_flagLexerSpecified = 0;
-      s_flagQuietCreate = 0;
+      s_flagLexerSpecified = false;
+      s_flagQuietCreate = false;
 
       FreeMem(params);
     }
@@ -7462,8 +7464,8 @@ void ParseCommandLine()
           StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
                          lp1 + CSTRLEN(L"tmpfbuf="), len - CSTRLEN(L"tmpfbuf="));
           TrimStringW(s_wchTmpFilePath);
-          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, false);
-          s_flagBufferFile = 1;
+          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, s_flagSearchPathIfRelative);
+          s_flagBufferFile = true;
         }
 
         else switch (*CharUpper(lp1)) {
@@ -7497,7 +7499,7 @@ void ParseCommandLine()
           break;
 
         case L'I':
-          s_flagStartAsTrayIcon = 1;
+          s_flagStartAsTrayIcon = true;
           break;
 
         case L'O':
@@ -7522,16 +7524,16 @@ void ParseCommandLine()
               break;
             }
             if (*(lp + 1) == L'0' || *CharUpper(lp + 1) == L'O') {
-              s_flagPosParam = 1;
+              s_flagPosParam = true;
               s_flagWindowPos = 1;
             }
             else if (*CharUpper(lp + 1) == L'D' || *CharUpper(lp + 1) == L'S') {
-              s_flagPosParam = 1;
+              s_flagPosParam = true;
               s_flagWindowPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
             }
             else if (StrChrI(L"FLTRBM", *(lp + 1))) {
               WCHAR *p = (lp + 1);
-              s_flagPosParam = 1;
+              s_flagPosParam = true;
               s_flagWindowPos = 0;
               while (*p) {
                 switch (*CharUpper(p)) {
@@ -7569,7 +7571,7 @@ void ParseCommandLine()
               int bMaximize = 0;
               int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &wi.x, &wi.y, &wi.cx, &wi.cy, &bMaximize);
               if (itok == 4 || itok == 5) { // scan successful
-                s_flagPosParam = 1;
+                s_flagPosParam = true;
                 s_flagWindowPos = 0;
                 if (wi.cx < 1) wi.cx = CW_USEDEFAULT;
                 if (wi.cy < 1) wi.cy = CW_USEDEFAULT;
@@ -7589,11 +7591,11 @@ void ParseCommandLine()
           break;
 
         case L'C':
-          s_flagNewFromClipboard = 1;
+          s_flagNewFromClipboard = true;
           break;
 
         case L'B':
-          s_flagPasteBoard = 1;
+          s_flagPasteBoard = true;
           break;
 
         case L'E':
@@ -7609,7 +7611,7 @@ void ParseCommandLine()
             int itok =
               swscanf_s(lp1, L"%i,%i", &s_iInitialLine, &s_iInitialColumn);
             if (itok == 1 || itok == 2) { // scan successful
-              s_flagJumpTo = 1;
+              s_flagJumpTo = true;
             }
           }
           break;
@@ -7656,14 +7658,14 @@ void ParseCommandLine()
           break;
 
         case L'Q':
-          s_flagQuietCreate = 1;
+          s_flagQuietCreate = true;
           break;
 
         case L'S':
           if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
             if (s_lpSchemeArg) { LocalFree(s_lpSchemeArg); }  // StrDup()
             s_lpSchemeArg = StrDup(lp1);
-            s_flagLexerSpecified = 1;
+            s_flagLexerSpecified = true;
           }
           break;
 
@@ -7673,7 +7675,7 @@ void ParseCommandLine()
             s_lpSchemeArg = NULL;
           }
           s_iInitialLexer = 0;
-          s_flagLexerSpecified = 1;
+          s_flagLexerSpecified = true;
           break;
 
         case L'H':
@@ -7682,7 +7684,7 @@ void ParseCommandLine()
             s_lpSchemeArg = NULL;
           }
           s_iInitialLexer = 35;
-          s_flagLexerSpecified = 1;
+          s_flagLexerSpecified = true;
           break;
 
         case L'X':
@@ -7691,11 +7693,15 @@ void ParseCommandLine()
             s_lpSchemeArg = NULL;
           }
           s_iInitialLexer = 36;
-          s_flagLexerSpecified = 1;
+          s_flagLexerSpecified = true;
           break;
 
         case L'U':
-          s_flagRelaunchElevated = 1;
+          s_flagRelaunchElevated = true;
+          break;
+
+        case L'Y':
+          s_flagSearchPathIfRelative = true;
           break;
 
         case L'Z':
@@ -7705,7 +7711,7 @@ void ParseCommandLine()
           break;
 
         case L'?':
-          s_flagDisplayHelp = 1;
+          s_flagDisplayHelp = true;
           break;
 
         case L'V':
@@ -9320,13 +9326,14 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
   }
 
   if (StrIsEmpty(lpszFile)) {
-    if (!OpenFileDlg(Globals.hwndMain, szFileName,COUNTOF(szFileName),NULL))
+    if (!OpenFileDlg(Globals.hwndMain, szFileName, COUNTOF(szFileName), NULL)) {
       return false;
+    }
   }
   else {
     StringCchCopy(szFileName, COUNTOF(szFileName), lpszFile);
+    NormalizePathEx(szFileName, COUNTOF(szFileName), true, s_flagSearchPathIfRelative);
   }
-  NormalizePathEx(szFileName, COUNTOF(szFileName), true, false);
 
   // change current directory to prevent directory lock on another path
   WCHAR szFolder[MAX_PATH];
@@ -9723,7 +9730,7 @@ bool FileSave(bool bSaveAlways,bool bAsk,bool bSaveAs,bool bSaveCopy)
                 StringCchPrintf(szArguments,COUNTOF(szArguments),L"%s \"%s\"",szArguments,tchFile);
               }
             }
-            s_flagRelaunchElevated = 1;
+            s_flagRelaunchElevated = true;
             if (RelaunchElevated(szArguments)) {
               // set no change and quit
               Encoding_HasChanged(Encoding_Current(CPI_GET));
@@ -9929,7 +9936,7 @@ bool ActivatePrevInst()
   if (Flags.fSingleFileInstance && s_lpFileArg) 
   {
 
-    NormalizePathEx(s_lpFileArg, (DWORD)SizeOfMem(s_lpFileArg) / sizeof(WCHAR), true, false);
+    NormalizePathEx(s_lpFileArg, (DWORD)SizeOfMem(s_lpFileArg) / sizeof(WCHAR), true, s_flagSearchPathIfRelative);
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -9959,14 +9966,14 @@ bool ActivatePrevInst()
         params->flagFileSpecified = false;
         params->flagChangeNotify = 0;
         params->flagQuietCreate = false;
-        params->flagLexerSpecified = s_flagLexerSpecified;
+        params->flagLexerSpecified = s_flagLexerSpecified ? 1 : 0;
         if (s_flagLexerSpecified && s_lpSchemeArg) {
           StringCchCopy(StrEnd(&params->wchData,0)+1,(StringCchLen(s_lpSchemeArg,0)+1),s_lpSchemeArg);
           params->iInitialLexer = -1;
         }
         else
           params->iInitialLexer = s_iInitialLexer;
-        params->flagJumpTo = s_flagJumpTo;
+        params->flagJumpTo = s_flagJumpTo ? 1 : 0;
         params->iInitialLine = s_iInitialLine;
         params->iInitialColumn = s_iInitialColumn;
 
@@ -10034,8 +10041,8 @@ bool ActivatePrevInst()
         params->flagFileSpecified = true;
         StringCchCopy(&params->wchData, StringCchLenW(s_lpFileArg,0)+1,s_lpFileArg);
         params->flagChangeNotify = s_flagChangeNotify;
-        params->flagQuietCreate = s_flagQuietCreate;
-        params->flagLexerSpecified = s_flagLexerSpecified;
+        params->flagQuietCreate = s_flagQuietCreate ? 1 : 0;
+        params->flagLexerSpecified = s_flagLexerSpecified ? 1 : 0;
         if (s_flagLexerSpecified && s_lpSchemeArg) {
           StringCchCopy(StrEnd(&params->wchData,0)+1, StringCchLen(s_lpSchemeArg,0)+1,s_lpSchemeArg);
           params->iInitialLexer = -1;
@@ -10043,7 +10050,7 @@ bool ActivatePrevInst()
         else {
           params->iInitialLexer = s_iInitialLexer;
         }
-        params->flagJumpTo = s_flagJumpTo;
+        params->flagJumpTo = s_flagJumpTo ? 1 : 0;
         params->iInitialLine = s_iInitialLine;
         params->iInitialColumn = s_iInitialColumn;
 
