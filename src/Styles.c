@@ -414,8 +414,8 @@ void Style_Save()
 //
 bool Style_Import(HWND hwnd)
 {
-  WCHAR szFile[MAX_PATH * 2] = { L'\0' };
-  WCHAR szFilter[256] = { L'\0' };
+  WCHAR szFile[MAX_PATH] = { L'\0' };
+  WCHAR szFilter[MAX_PATH] = { L'\0' };
   OPENFILENAME ofn;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
@@ -465,7 +465,7 @@ bool Style_Import(HWND hwnd)
 //
 bool Style_Export(HWND hwnd)
 {
-  WCHAR szFile[MAX_PATH * 2] = { L'\0' };
+  WCHAR szFile[MAX_PATH] = { L'\0' };
   WCHAR szFilter[256] = { L'\0' };
   OPENFILENAME ofn;
 

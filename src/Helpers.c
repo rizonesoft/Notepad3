@@ -1262,10 +1262,9 @@ void PathFixBackslashes(LPWSTR lpsz)
 //
 //  Adjusted for Windows 95
 //
-void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
+void ExpandEnvironmentStringsEx(LPWSTR lpSrc, DWORD dwSrc)
 {
-  WCHAR szBuf[LARGE_BUFFER];
-
+  WCHAR szBuf[HUGE_BUFFER];
   if (ExpandEnvironmentStrings(lpSrc, szBuf, COUNTOF(szBuf))) {
     StringCchCopyN(lpSrc, dwSrc, szBuf, COUNTOF(szBuf));
   }
@@ -1277,11 +1276,12 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
 //  PathCanonicalizeEx()
 //
 //
-void PathCanonicalizeEx(LPWSTR lpszPath,int len)
+void PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer)
 {
-  WCHAR szDst[(MAX_PATH+1)] = { L'\0' };
-  if (PathCchCanonicalize(szDst,len,lpszPath) == S_OK)
-    StringCchCopy(lpszPath,len,szDst);
+  WCHAR szDst[MAX_PATH] = { L'\0' };
+  if (PathCchCanonicalize(szDst, MAX_PATH, lpszPath) == S_OK) {
+    StringCchCopy(lpszPath, cchBuffer, szDst);
+  }
 }
 
 
@@ -1290,42 +1290,29 @@ void PathCanonicalizeEx(LPWSTR lpszPath,int len)
 //  GetLongPathNameEx()
 //
 //
-DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer)
+DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer)
 {
-  DWORD dwRet = GetLongPathName(lpszPath,lpszPath,cchBuffer);
+  DWORD const dwRet = GetLongPathName(lpszPath, lpszPath, cchBuffer);
   if (dwRet) {
-    if (PathGetDriveNumber(lpszPath) != -1)
-      CharUpperBuff(lpszPath,1);
-    return(dwRet);
+    if (PathGetDriveNumber(lpszPath) != -1) {
+      CharUpperBuff(lpszPath, 1);
+    }
   }
-  return(0);
+  return dwRet;
 }
 
 
 //=============================================================================
 //
-//  NormalizePathEx()
-//
-//
-DWORD NormalizePathEx(LPWSTR lpszPath,int len)
-{
-  PathCanonicalizeEx(lpszPath,len);
-  return GetLongPathNameEx(lpszPath,(DWORD)len);
-}
-
-
-
-//=============================================================================
-//
-//  SHGetFileInfo2()
+//  _SHGetFileInfoEx()
 //
 //  Return a default name when the file has been removed, and always append
 //  a filename extension
 //
-DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath, DWORD dwFileAttributes,
-                         SHFILEINFO *psfi, UINT cbFileInfo, UINT uFlags)
+static DWORD_PTR _SHGetFileInfoEx(LPCWSTR pszPath, DWORD dwFileAttributes,
+  SHFILEINFO* psfi, UINT cbFileInfo, UINT uFlags)
 {
-  if (PathFileExists(pszPath)) 
+  if (PathFileExists(pszPath))
   {
     DWORD_PTR dw = SHGetFileInfo(pszPath, dwFileAttributes, psfi, cbFileInfo, uFlags);
     if (StringCchLenW(psfi->szDisplayName, COUNTOF(psfi->szDisplayName)) < StringCchLen(PathFindFileName(pszPath), MAX_PATH))
@@ -1338,6 +1325,94 @@ DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath, DWORD dwFileAttributes,
     StringCchCat(psfi->szDisplayName, COUNTOF(psfi->szDisplayName), PathFindExtension(pszPath));
   }
   return(dw);
+}
+
+
+//=============================================================================
+//
+//  PathResolveDisplayName()
+//
+void PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath)
+{
+  SHFILEINFO shfi;
+  UINT const shfi_size = (UINT)sizeof(SHFILEINFO);
+  ZeroMemory(&shfi, shfi_size);
+  if (_SHGetFileInfoEx(lpszSourcePath, FILE_ATTRIBUTE_NORMAL, &shfi, shfi_size, SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES)) {
+    StringCchCopy(lpszDestPath, cchDestBuffer, shfi.szDisplayName);
+  }
+  else {
+    StringCchCopy(lpszDestPath, cchDestBuffer, PathFindFileName(lpszSourcePath));
+  }
+}
+
+
+//=============================================================================
+//
+//  NormalizePathEx()
+//
+DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative)
+{
+  WCHAR tmpFilePath[MAX_PATH] = { L'\0' };
+
+  StringCchCopyN(tmpFilePath, COUNTOF(tmpFilePath), lpszPath, cchBuffer);
+  ExpandEnvironmentStringsEx(tmpFilePath, COUNTOF(tmpFilePath));
+  
+  PathUnquoteSpaces(tmpFilePath);
+
+  if (PathIsRelative(tmpFilePath)) 
+  {
+    StringCchCopyN(lpszPath, cchBuffer, Globals.WorkingDirectory, COUNTOF(Globals.WorkingDirectory));
+    PathCchAppend(lpszPath, cchBuffer, tmpFilePath);
+    if (bSearchPathIfRelative) {
+      if (!PathFileExists(lpszPath)) {
+        PathStripPath(tmpFilePath);
+        if (SearchPath(NULL, tmpFilePath, NULL, cchBuffer, lpszPath, NULL) == 0) {
+          StringCchCopy(lpszPath, cchBuffer, tmpFilePath);
+        }
+      }
+    }
+  }
+  else {
+    StringCchCopy(lpszPath, cchBuffer, tmpFilePath);
+  }
+
+  PathCanonicalizeEx(lpszPath, cchBuffer);
+  GetLongPathNameEx(lpszPath, cchBuffer);
+
+  if (PathIsLnkFile(lpszPath)) {
+    PathGetLnkPath(lpszPath, lpszPath, cchBuffer);
+  }
+
+  if (bRealPath) {
+    // get real path name (by zufuliu)
+    HANDLE hFile = CreateFile(lpszPath, // file to open
+      GENERIC_READ,                     // open for reading
+      FILE_SHARE_READ,                  // share for reading
+      NULL,                             // default security
+      OPEN_EXISTING,                    // existing file only
+      FILE_ATTRIBUTE_NORMAL,            // normal file
+      NULL);                            // no attr. template
+
+    if (hFile != INVALID_HANDLE_VALUE) {
+      if (GetFinalPathNameByHandleW(hFile, tmpFilePath,
+        COUNTOF(tmpFilePath), FILE_NAME_OPENED) > 0)
+      {
+        if (StrCmpN(tmpFilePath, L"\\\\?\\", 4) == 0) {
+          WCHAR* p = tmpFilePath + 4;
+          if (StrCmpN(p, L"UNC\\", 4) == 0) {
+            p += 2;
+            *p = L'\\';
+          }
+          StringCchCopyW(lpszPath, MAX_PATH, p);
+        }
+      }
+    }
+    CloseHandle(hFile);
+  }
+
+  size_t pathLen = 0;
+  StringCchLength(lpszPath, cchBuffer, &pathLen);
+  return (DWORD)pathLen;
 }
 
 

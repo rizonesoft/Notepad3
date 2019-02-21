@@ -997,19 +997,6 @@ bool EditLoadFile(
     }
   }
 
-  // display real path name (by zufuliu)
-  WCHAR realPath[MAX_PATH] = L"";
-  if (GetFinalPathNameByHandleW(hFile, realPath, MAX_PATH, /*FILE_NAME_OPENED*/0x8) > 0) {
-    if (StrCmpN(realPath, L"\\\\?\\", 4) == 0) {
-      WCHAR* p = realPath + 4;
-      if (StrCmpN(p, L"UNC\\", 4) == 0) {
-        p += 2;
-        *p = L'\\';
-      }
-      StringCchCopyW(pszFile, MAX_PATH, p);
-    }
-  }
-
   char* lpData = AllocMem(dwBufSize, HEAP_ZERO_MEMORY);
 
   Globals.dwLastError = GetLastError();

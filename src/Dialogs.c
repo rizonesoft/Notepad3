@@ -785,7 +785,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             WCHAR szArgs[MAX_PATH] = { L'\0' };
             WCHAR szArg2[MAX_PATH] = { L'\0' };
             WCHAR szFile[MAX_PATH * 2] = { L'\0' };
-            WCHAR szFilter[256] = { L'\0' };
+            WCHAR szFilter[MAX_PATH] = { L'\0' };
             OPENFILENAME ofn;
             ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
@@ -853,7 +853,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 bQuickExit = true;
               }
 
-              if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+              if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
                 PathRemoveFileSpec(wchDirectory);
               }
@@ -1080,7 +1080,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     WCHAR szParam[MAX_PATH] = { L'\0' };
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
-    if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+    if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
       StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
       PathRemoveFileSpec(wchDirectory);
     }
@@ -1311,8 +1311,7 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
 
     case IDOK:
       pszName = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
-      GetDlgItemText(hwnd, 100, pszName,
-                     MAX_PATH - 1);
+      GetDlgItemText(hwnd, 100, pszName, MAX_PATH - 1);
       EndDialog(hwnd, IDOK);
       break;
 
@@ -2884,7 +2883,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   if (bSaveOnRunTools && !FileSave(false, true, false, false)) { return; }
 
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
-  NormalizePathEx(szModuleName, COUNTOF(szModuleName));
+  NormalizePathEx(szModuleName, COUNTOF(szModuleName), true, false);
 
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
@@ -2918,7 +2917,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
-  if (bSetCurFile && StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) 
+  if (bSetCurFile && StringCchLenW(Globals.CurrentFile, MAX_PATH)) 
   {
     StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);
     PathQuoteSpaces(szFileName);
@@ -2947,9 +2946,9 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 //
 void DialogFileBrowse(HWND hwnd)
 {
-  WCHAR tchParam[MAX_PATH+1] = L"";
-  WCHAR tchExeFile[MAX_PATH+1] = L"";
-  WCHAR tchTemp[MAX_PATH+1];
+  WCHAR tchParam[MAX_PATH] = L"";
+  WCHAR tchExeFile[MAX_PATH] = L"";
+  WCHAR tchTemp[MAX_PATH];
 
   StringCchCopyW(tchTemp, COUNTOF(tchTemp), Settings2.FileBrowserPath);
 
@@ -2971,7 +2970,7 @@ void DialogFileBrowse(HWND hwnd)
   if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(Globals.CurrentFile, COUNTOF(tchParam))) {
     StringCchCat(tchParam, COUNTOF(tchParam), L" ");
   }
-  if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+  if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
     StringCchCopy(tchTemp, COUNTOF(tchTemp), Globals.CurrentFile);
     PathQuoteSpaces(tchTemp);
     StringCchCat(tchParam, COUNTOF(tchParam), tchTemp);
@@ -3003,12 +3002,12 @@ void DialogFileBrowse(HWND hwnd)
 
 void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 {
-  WCHAR tchExe[MAX_PATH+2];
+  WCHAR tchExe[MAX_PATH];
 
   StringCchCopyW(tchExe, COUNTOF(tchExe), Settings2.AdministrationTool);
   if (bExecInstaller && !StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
 
-  WCHAR tchExePath[MAX_PATH + 2];
+  WCHAR tchExePath[MAX_PATH];
   if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
     // try Notepad3's dir path
     GetModuleFileName(NULL, tchExePath, COUNTOF(tchExePath));
@@ -3101,13 +3100,10 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   {
     if (iFormat < 2 && !PathIsRoot(lpszFile))
     {
-      if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0) {
-        SHFILEINFO shfi;
+      if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0) 
+      {
         StringCchCopy(szCachedFile, COUNTOF(szCachedFile), lpszFile);
-        if (SHGetFileInfo2(lpszFile, FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES))
-          StringCchCopy(szCachedDisplayName, COUNTOF(szCachedDisplayName), shfi.szDisplayName);
-        else
-          StringCchCopy(szCachedDisplayName, COUNTOF(szCachedDisplayName), PathFindFileName(lpszFile));
+        PathGetDisplayName(szCachedDisplayName, COUNTOF(szCachedDisplayName), szCachedFile);
       }
       StringCchCat(szTitle, COUNTOF(szTitle), szCachedDisplayName);
       if (iFormat == 1) {
