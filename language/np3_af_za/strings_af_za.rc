@@ -201,7 +201,7 @@ IDS_MUI_CMDLINEHELP "\
 Gebruik:\r\n\
 Notepad3 \t[/?] […[Enkodering]] […[Lyn Eindig Metode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[Hardeskyf:][Pad]Lêernaam[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[Hardeskyf:][Pad]Lêernaam[…]]\r\n\r\n\
 lêer\tMoet die laaste argument wees, geen standaard spasies nie.\r\n\
 +\tAanvaar verskeie lêer argumente (met aangehaalde spasies).\r\n\
 -\tAanvaar enkellêer argument (sonder aangehaalde spasies).\r\n\r\n\
@@ -230,6 +230,7 @@ Opsies:\r\n\
 /u\tBegin met verhoogde voorregte.\r\n\
 /v\tDruk lêer dadelik en stop.\r\n\
 /vd\tDruk lêer (maak drukker dialoog oop).\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
 /z\tSlaan oor na (bruikbaar vir registry-basis Notepad-vervanging).\r\n\r\n\
 Voorbeelde:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\

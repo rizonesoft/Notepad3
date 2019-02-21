@@ -2883,7 +2883,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   if (bSaveOnRunTools && !FileSave(false, true, false, false)) { return; }
 
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
-  NormalizePathEx(szModuleName, COUNTOF(szModuleName), true, false);
+  PathCanonicalizeEx(szModuleName, COUNTOF(szModuleName));
 
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
