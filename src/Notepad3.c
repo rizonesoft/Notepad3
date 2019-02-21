@@ -81,8 +81,8 @@ static HWND      s_hwndNextCBChain = NULL;
 static HWND      s_hwndToolbar = NULL;
 static HWND      s_hwndReBar = NULL;
 
-static WCHAR     s_wchIniFile2[MAX_PATH + 1] = { L'\0' };
-static WCHAR     s_wchTmpFilePath[MAX_PATH + 1] = { L'\0' };
+static WCHAR     s_wchIniFile2[MAX_PATH] = { L'\0' };
+static WCHAR     s_wchTmpFilePath[MAX_PATH] = { L'\0' };
 
 // 'en-US' internal default
 static WCHAR* const s_tchAvailableLanguages = L"af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pt-BR ru-RU zh-CN";
@@ -99,9 +99,9 @@ static int     s_vSBSOrder[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
               
 static int     s_iStatusbarWidthSpec[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
               
-static WCHAR   s_tchToolbarBitmap[MAX_PATH + 1] = { L'\0' };
-static WCHAR   s_tchToolbarBitmapHot[MAX_PATH + 1] = { L'\0' };
-static WCHAR   s_tchToolbarBitmapDisabled[MAX_PATH + 1] = { L'\0' };
+static WCHAR   s_tchToolbarBitmap[MAX_PATH] = { L'\0' };
+static WCHAR   s_tchToolbarBitmapHot[MAX_PATH] = { L'\0' };
+static WCHAR   s_tchToolbarBitmapDisabled[MAX_PATH] = { L'\0' };
 
 static WCHAR   s_wchPrefixSelection[256] = { L'\0' };
 static WCHAR   s_wchAppendSelection[256] = { L'\0' };
@@ -125,7 +125,7 @@ static WCHAR* const _s_RecentFiles = L"Recent Files";
 static WCHAR* const _s_RecentFind = L"Recent Find";
 static WCHAR* const _s_RecentReplace = L"Recent Replace";
 
-static WCHAR     s_tchLastSaveCopyDir[MAX_PATH + 1] = { L'\0' };
+static WCHAR     s_tchLastSaveCopyDir[MAX_PATH] = { L'\0' };
 static bool      s_bExternalBitmap = false;
 
 static bool      s_bRunningWatch = false;
@@ -524,6 +524,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
   }
 
   OleUninitialize();
+
+  if (s_lpFileArg) {
+    FreeMem(s_lpFileArg);
+    s_lpFileArg = NULL;
+  }
 }
 
 //=============================================================================
@@ -1106,9 +1111,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
           else
             StringCchCopy(Globals.CurrentFile,COUNTOF(Globals.CurrentFile),L"");
 
-          if (!s_flagLexerSpecified)
-            Style_SetLexerFromFile(Globals.hwndEdit,Globals.CurrentFile);
-
+          if (!s_flagLexerSpecified) {
+            Style_SetLexerFromFile(Globals.hwndEdit, Globals.CurrentFile);
+          }
           _SetDocumentModified(true);
 
           // check for temp file and delete
@@ -1267,14 +1272,14 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   // print file immediately and quit
   if (Flags.PrintFileAndLeave)
   {
-    SHFILEINFO shfi;
     WCHAR *pszTitle;
     WCHAR tchUntitled[32] = { L'\0' };
     WCHAR tchPageFmt[32] = { L'\0' };
+    WCHAR szDisplayName[MAX_PATH];
 
     if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
-      SHGetFileInfo2(Globals.CurrentFile, FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
-      pszTitle = shfi.szDisplayName;
+      PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+      pszTitle = szDisplayName;
     }
     else {
       GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
@@ -3038,7 +3043,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  WCHAR tchMaxPathBuffer[MAX_PATH + 1] = { L'\0' };
+  WCHAR tchMaxPathBuffer[MAX_PATH] = { L'\0' };
 
   switch(LOWORD(wParam))
   {
@@ -3185,16 +3190,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_PRINT:
       {
-        SHFILEINFO shfi;
-        ZeroMemory(&shfi, sizeof(SHFILEINFO));
-
         WCHAR *pszTitle;
         WCHAR tchUntitled[32] = { L'\0' };
         WCHAR tchPageFmt[32] = { L'\0' };
+        WCHAR szDisplayName[MAX_PATH];
 
-        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
-          SHGetFileInfo2(Globals.CurrentFile,FILE_ATTRIBUTE_NORMAL,&shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
-          pszTitle = shfi.szDisplayName;
+        if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) 
+        {
+          PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+          pszTitle = szDisplayName;
         }
         else {
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
@@ -3257,11 +3261,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_ADDTOFAV:
-      if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
-        SHFILEINFO shfi;
-        SHGetFileInfo2(Globals.CurrentFile,FILE_ATTRIBUTE_NORMAL,
-          &shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
-        AddToFavDlg(hwnd,shfi.szDisplayName,Globals.CurrentFile);
+      if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
+        WCHAR szDisplayName[MAX_PATH];
+        PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+        AddToFavDlg(hwnd, szDisplayName, Globals.CurrentFile);
       }
       break;
 
@@ -4075,25 +4078,24 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_INSERT_FILENAME:
     case IDM_EDIT_INSERT_PATHNAME:
       {
-        SHFILEINFO shfi;
         WCHAR *pszInsert;
         WCHAR tchUntitled[32];
-        //int   iSelStart;
+        WCHAR szDisplayName[MAX_PATH];
 
         if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
           if (LOWORD(wParam) == IDM_EDIT_INSERT_FILENAME) {
-            SHGetFileInfo2(Globals.CurrentFile, FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO),
-                           SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
-            pszInsert = shfi.szDisplayName;
+            PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+            pszInsert = szDisplayName;
           }
-          else
+          else {
             pszInsert = Globals.CurrentFile;
+          }
         }
         else {
           GetLngString(IDS_MUI_UNTITLED, tchUntitled, COUNTOF(tchUntitled));
           pszInsert = tchUntitled;
         }
-        char chPath[MAX_PATH + 1];
+        char chPath[MAX_PATH];
         WideCharToMultiByte(Encoding_SciCP, 0, pszInsert, -1, chPath, COUNTOF(chPath), NULL, NULL);
         _BEGIN_UNDO_ACTION_;
         SendMessage(Globals.hwndEdit, SCI_REPLACESEL, 0, (LPARAM)chPath);
@@ -4108,7 +4110,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (SUCCEEDED(CoCreateGuid(&guid))) {  
           if (StringFromGUID2(&guid, tchMaxPathBuffer,COUNTOF(tchMaxPathBuffer))) {
             StrTrimW(tchMaxPathBuffer, L"{}");
-            char chMaxPathBuffer[MAX_PATH + 1] = { '\0' };
+            char chMaxPathBuffer[MAX_PATH] = { '\0' };
             if (WideCharToMultiByte(Encoding_SciCP, 0, tchMaxPathBuffer, -1, chMaxPathBuffer, COUNTOF(chMaxPathBuffer), NULL, NULL)) {
               _BEGIN_UNDO_ACTION_;
               SendMessage(Globals.hwndEdit,SCI_REPLACESEL,0,(LPARAM)chMaxPathBuffer);
@@ -4964,7 +4966,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       else
         IniSetString(L"Settings2", L"SingleFileInstance", NULL);
       break;
-
 
     case IDM_VIEW_ALWAYSONTOP:
       if ((Settings.AlwaysOnTop || s_flagAlwaysOnTop == 2) && s_flagAlwaysOnTop != 1) {
@@ -5958,7 +5959,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
 
       if (PathIsDirectory(szFileName))
       {
-        WCHAR tchFile[MAX_PATH + 1] = { L'\0' };
+        WCHAR tchFile[MAX_PATH] = { L'\0' };
 
         if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
           FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
@@ -5969,7 +5970,7 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
     }
     else { // open in web browser
 
-      WCHAR wchDirectory[MAX_PATH+1] = { L'\0' };
+      WCHAR wchDirectory[MAX_PATH] = { L'\0' };
       if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
         StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
         PathRemoveFileSpec(wchDirectory);
@@ -7461,8 +7462,7 @@ void ParseCommandLine()
           StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
                          lp1 + CSTRLEN(L"tmpfbuf="), len - CSTRLEN(L"tmpfbuf="));
           TrimStringW(s_wchTmpFilePath);
-          PathUnquoteSpaces(s_wchTmpFilePath);
-          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath));
+          NormalizePathEx(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath), true, false);
           s_flagBufferFile = 1;
         }
 
@@ -7492,8 +7492,7 @@ void ParseCommandLine()
           else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
             StringCchCopyN(Globals.IniFile, COUNTOF(Globals.IniFile), lp1, len);
             TrimStringW(Globals.IniFile);
-            PathUnquoteSpaces(Globals.IniFile);
-            NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile));
+            NormalizePathEx(Globals.IniFile, COUNTOF(Globals.IniFile), true, false);
           }
           break;
 
@@ -7733,18 +7732,18 @@ void ParseCommandLine()
             //lpFileArg = NULL;
           }
           s_lpFileArg = AllocMem(sizeof(WCHAR)*(MAX_PATH+1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
-          StringCchCopy(s_lpFileArg, (MAX_PATH+1), lp3);
+          StringCchCopy(s_lpFileArg, MAX_PATH, lp3);
 
           PathFixBackslashes(s_lpFileArg);
 
           if (!PathIsRelative(s_lpFileArg) && !PathIsUNC(s_lpFileArg) &&
               PathGetDriveNumber(s_lpFileArg) == -1 /*&& PathGetDriveNumber(Globals.WorkingDirectory) != -1*/) {
 
-            WCHAR wchPath[(MAX_PATH+1)] = { L'\0' };
+            WCHAR wchPath[MAX_PATH] = { L'\0' };
             StringCchCopy(wchPath, COUNTOF(wchPath), Globals.WorkingDirectory);
             PathStripToRoot(wchPath);
             PathCchAppend(wchPath, COUNTOF(wchPath), s_lpFileArg);
-            StringCchCopy(s_lpFileArg, (MAX_PATH+1), wchPath);
+            StringCchCopy(s_lpFileArg, MAX_PATH, wchPath);
           }
 
           StrTrim(s_lpFileArg, L" \"");
@@ -7972,7 +7971,7 @@ int FindIniFile() {
     }
   }
 
-  NormalizePathEx(Globals.IniFile,COUNTOF(Globals.IniFile));
+  NormalizePathEx(Globals.IniFile,COUNTOF(Globals.IniFile), true, false);
  
   return(1);
 }
@@ -8000,7 +7999,7 @@ int TestIniFile() {
     }
   }
   
-  NormalizePathEx(Globals.IniFile,COUNTOF(Globals.IniFile));
+  NormalizePathEx(Globals.IniFile,COUNTOF(Globals.IniFile), true, false);
 
   if (!PathFileExists(Globals.IniFile) || PathIsDirectory(Globals.IniFile)) {
     StringCchCopy(s_wchIniFile2,COUNTOF(s_wchIniFile2),Globals.IniFile);
@@ -9264,7 +9263,6 @@ static void _WarnInconsistentIndentation(const EditFileIOStatus* const status)
 //
 bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, bool bSkipANSICPDetection, LPCWSTR lpszFile)
 {
-  WCHAR tch[MAX_PATH] = { L'\0' };
   WCHAR szFileName[MAX_PATH] = { L'\0' };
   bool fSuccess = false;
 
@@ -9322,36 +9320,17 @@ bool FileLoad(bool bDontSave, bool bNew, bool bReload, bool bSkipUnicodeDetect, 
   }
 
   if (StrIsEmpty(lpszFile)) {
-    if (!OpenFileDlg(Globals.hwndMain,tch,COUNTOF(tch),NULL))
+    if (!OpenFileDlg(Globals.hwndMain, szFileName,COUNTOF(szFileName),NULL))
       return false;
   }
-  else
-    StringCchCopy(tch,COUNTOF(tch),lpszFile);
-
-  ExpandEnvironmentStringsEx(tch,COUNTOF(tch));
-
-  if (PathIsRelative(tch)) {
-    StringCchCopyN(szFileName,COUNTOF(szFileName),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
-    PathCchAppend(szFileName,COUNTOF(szFileName),tch);
-    //~ don't search in PATH when opening relative paths via command line
-    //~if (!PathFileExists(szFileName)) {
-    //~  WCHAR wchFullPath[MAX_PATH] = { L'\0' };
-    //~  if (SearchPath(NULL,tch,NULL,COUNTOF(wchFullPath),wchFullPath,NULL)) {
-    //~    StringCchCopy(szFileName,COUNTOF(szFileName),wchFullPath);
-    //~  }
-    //~}
-  }
   else {
-    StringCchCopy(szFileName, COUNTOF(szFileName), tch);
+    StringCchCopy(szFileName, COUNTOF(szFileName), lpszFile);
   }
-  NormalizePathEx(szFileName, COUNTOF(szFileName));
-
-  if (PathIsLnkFile(szFileName))
-    PathGetLnkPath(szFileName,szFileName,COUNTOF(szFileName));
+  NormalizePathEx(szFileName, COUNTOF(szFileName), true, false);
 
   // change current directory to prevent directory lock on another path
-  WCHAR szFolder[MAX_PATH+2];
-  if (SUCCEEDED(StringCchCopy(szFolder,COUNTOF(szFolder),tch))) {
+  WCHAR szFolder[MAX_PATH];
+  if (SUCCEEDED(StringCchCopy(szFolder,COUNTOF(szFolder), szFileName))) {
     if (SUCCEEDED(PathCchRemoveFileSpec(szFolder,COUNTOF(szFolder)))) {
       SetCurrentDirectory(szFolder);
     }
@@ -9920,18 +9899,19 @@ BOOL CALLBACK EnumWndProc2(HWND hwnd,LPARAM lParam)
     if (StringCchCompareNIW(szClassName,COUNTOF(szClassName),s_wchWndClass,COUNTOF(s_wchWndClass)) == 0) {
 
       DWORD dwReuseLock = GetDlgItemInt(hwnd,IDC_REUSELOCK,NULL,false);
-      if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
+      if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) 
+      {
+        if (IsWindowEnabled(hwnd)) { bContinue = FALSE; }
 
         WCHAR tchFileName[MAX_PATH] = { L'\0' };
-
-        if (IsWindowEnabled(hwnd))
-          bContinue = FALSE;
-
-        GetDlgItemText(hwnd,IDC_FILENAME,tchFileName,COUNTOF(tchFileName));
-        if (StringCchCompareXI(tchFileName,s_lpFileArg) == 0)
+        GetDlgItemText(hwnd, IDC_FILENAME, tchFileName, COUNTOF(tchFileName));
+        
+        if (StringCchCompareXI(tchFileName, s_lpFileArg) == 0) {
           *(HWND*)lParam = hwnd;
-        else
+        }
+        else {
           bContinue = TRUE;
+        }
       }
     }
   return bContinue;
@@ -9942,22 +9922,14 @@ bool ActivatePrevInst()
   HWND hwnd = NULL;
   COPYDATASTRUCT cds;
 
-  if ((Flags.fNoReuseWindow && !Flags.fSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard)
+  if ((Flags.fNoReuseWindow && !Flags.fSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard) {
     return false;
+  }
 
   if (Flags.fSingleFileInstance && s_lpFileArg) 
   {
-    ExpandEnvironmentStringsEx(s_lpFileArg,(DWORD)SizeOfMem(s_lpFileArg)/sizeof(WCHAR));
 
-    if (PathIsRelative(s_lpFileArg)) {
-      WCHAR tchTmp[MAX_PATH] = { L'\0' };
-      StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
-      PathCchAppend(tchTmp,COUNTOF(tchTmp),s_lpFileArg);
-      StringCchCopy(s_lpFileArg, MAX_PATH, tchTmp);
-      //~ don't search in PATH when opening relative paths via command line
-      //~...SearchPath(NULL,lpFileArg,NULL,COUNTOF(tchTmp),tchTmp,NULL)...
-    }
-    NormalizePathEx(s_lpFileArg, MAX_PATH);
+    NormalizePathEx(s_lpFileArg, (DWORD)SizeOfMem(s_lpFileArg) / sizeof(WCHAR), true, false);
 
     EnumWindows(EnumWndProc2,(LPARAM)&hwnd);
 
@@ -10048,15 +10020,6 @@ bool ActivatePrevInst()
 
       if (s_lpFileArg)
       {
-        ExpandEnvironmentStringsEx(s_lpFileArg,(DWORD)SizeOfMem(s_lpFileArg)/sizeof(WCHAR));
-
-        if (PathIsRelative(s_lpFileArg)) {
-          WCHAR tchTmp[MAX_PATH] = { L'\0' };
-          StringCchCopyN(tchTmp,COUNTOF(tchTmp),Globals.WorkingDirectory,COUNTOF(Globals.WorkingDirectory));
-          PathCchAppend(tchTmp,COUNTOF(tchTmp),s_lpFileArg);
-          StringCchCopy(s_lpFileArg, MAX_PATH, tchTmp);
-        }
-
         size_t cb = sizeof(np3params);
         cb += (StringCchLenW(s_lpFileArg,0) + 1) * sizeof(WCHAR);
 
@@ -10188,7 +10151,7 @@ bool RelaunchElevated(LPWSTR lpArgs) {
   LPWSTR lpCmdLine = GetCommandLine();
   size_t wlen = StringCchLenW(lpCmdLine,0) + 2UL;
 
-  WCHAR lpExe[MAX_PATH + 2] = { L'\0' };
+  WCHAR lpExe[MAX_PATH] = { L'\0' };
   WCHAR szArgs[2032] = { L'\0' };
   WCHAR szArguments[2032] = { L'\0' };
 
@@ -10331,10 +10294,9 @@ void SetNotifyIconTitle(HWND hwnd)
   }
 
   else if (StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile))) {
-    SHFILEINFO shfi;
-    SHGetFileInfo2(Globals.CurrentFile,FILE_ATTRIBUTE_NORMAL,
-      &shfi,sizeof(SHFILEINFO),SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES);
-    PathCompactPathEx(tchTitle,shfi.szDisplayName,COUNTOF(tchTitle)-4,0);
+    WCHAR szDisplayName[MAX_PATH];
+    PathGetDisplayName(szDisplayName, COUNTOF(szDisplayName), Globals.CurrentFile);
+    PathCompactPathEx(tchTitle,szDisplayName,COUNTOF(tchTitle)-4,0);
   }
   else {
     GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);

@@ -304,7 +304,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   LoadFlags();
 
   // Try to activate another window
-  if (ActivatePrevInst()) { return(0); }
+  if (ActivatePrevInst()) { return 0; }
 
   // Init OLE and Common Controls
   OleInitialize(NULL);

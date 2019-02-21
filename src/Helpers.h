@@ -314,10 +314,11 @@ void PathFixBackslashes(LPWSTR lpsz);
 
 
 void  ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc);
-void  PathCanonicalizeEx(LPWSTR lpszPath,int len);
-DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer);
-DWORD NormalizePathEx(LPWSTR lpszPath,int len);
-DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,SHFILEINFO* psfi,UINT cbFileInfo,UINT uFlags);
+void  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer);
+DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
+void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
+DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
+
 
 size_t FormatNumberStr(LPWSTR lpNumberStr);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);

@@ -288,9 +288,9 @@ typedef struct _globals_t
 
   FR_STATES FindReplaceMatchFoundState;
 
-  WCHAR     WorkingDirectory[MAX_PATH + 1];
-  WCHAR     IniFile[MAX_PATH + 1];
-  WCHAR     CurrentFile[MAX_PATH + 1];
+  WCHAR     WorkingDirectory[MAX_PATH];
+  WCHAR     IniFile[MAX_PATH];
+  WCHAR     CurrentFile[MAX_PATH];
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -384,8 +384,8 @@ typedef struct _settings_t
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
-  WCHAR OpenWithDir[MAX_PATH + 1];
-  WCHAR FavoritesDir[MAX_PATH + 1];
+  WCHAR OpenWithDir[MAX_PATH];
+  WCHAR FavoritesDir[MAX_PATH];
   WCHAR ToolbarButtons[MIDSZ_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
@@ -441,19 +441,19 @@ typedef struct _settings2_t
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
   WCHAR DefaultExtension[64];
-  WCHAR DefaultDirectory[MAX_PATH + 1];
+  WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];
 
-  WCHAR FileBrowserPath[MAX_PATH + 1];
+  WCHAR FileBrowserPath[MAX_PATH];
   WCHAR AppUserModelID[32];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
   WCHAR TimeStamp[128];
   WCHAR DateTimeShort[128];
   WCHAR DateTimeLong[128];
-  WCHAR WebTemplate1[MAX_PATH + 1];
-  WCHAR WebTemplate2[MAX_PATH + 1];
-  WCHAR AdministrationTool[MAX_PATH + 1];
+  WCHAR WebTemplate1[MAX_PATH];
+  WCHAR WebTemplate2[MAX_PATH];
+  WCHAR AdministrationTool[MAX_PATH];
   WCHAR DefaultWindowPosition[64];
 
 } SETTINGS2_T, *PSETTINGS2_T;
