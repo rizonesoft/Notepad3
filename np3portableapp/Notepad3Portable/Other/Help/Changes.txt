@@ -29,12 +29,13 @@ SCI - (SCI)ntilla Library
 
 
 ==================================================
-Current Version 5.19.201.build (2019-Feb-01)
+Current Version 5.19.224.build (2019-Feb-24)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Command line option [/Y] to search env PATH for relative filename  (NLS: strings)
 - Customize Schemes: Caret style 'ovrbar' (default) to switch caret style 
     between BAR and BLOCK 
 - Highlight current line Frame-Mode (+ mode toggle Ctrl+Shift*I) (NLS: strings)
@@ -59,6 +60,7 @@ CHANGES:
 --------------------------------------------------
 FIXES:
 --------------------------------------------------
+- single file instance: find correct window for real paths
 - minor issue on UTF-8 encoding detection
 - high quality icon for Taskbar (big icons)
 - support high-definition icon for taskbar
@@ -67,6 +69,7 @@ FIXES:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
+- Korean (UHC) Translation (partial).
 
 
 ==================================================

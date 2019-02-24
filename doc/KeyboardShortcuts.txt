@@ -266,7 +266,7 @@ Command Line Help
 Usage:
   Notepad3  [/?] […[Encoding]] […[Line ending mode]] [/e] [/g] [/m] [/l]
             [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]
-            [/f] [/u] [/v] [/vd] [/z] [[drive:][path]filename[…]]
+            [/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[…]]
 
   file   Must be the last argument, no quoted spaces by default.
   +      Accept multiple file arguments (with quoted spaces).
@@ -297,6 +297,7 @@ Options:
   /u     Launch with elevated privileges.
   /v     Print file immediately and quit.
   /vd    Print file (open printer dialog).
+  /y     Search environment PATH in case of relative filename.
   /z     Skip next (usable for registry-based Notepad replacement).
 
 Examples:
