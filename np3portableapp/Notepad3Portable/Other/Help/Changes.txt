@@ -29,7 +29,7 @@ SCI - (SCI)ntilla Library
 
 
 ==================================================
-Current Version 5.19.224.build (2019-Feb-24)
+Current Version 5.19.226.build (2019-Feb-26)
 ==================================================
 
 --------------------------------------------------
@@ -69,6 +69,7 @@ FIXES:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
+- Add All Currently Available Languages in "*.ini" files
 - Korean (UHC) Translation (partial).
 
 
