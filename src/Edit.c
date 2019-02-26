@@ -4955,8 +4955,8 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
 //
 static void  _DeleteLineStateAll(int const iLineStateBit)
 {
-  DocLn const iLastLine = SciCall_GetLineCount();
-  for (DocLn iLine = 0; iLine < iLastLine; ++iLine) {
+  DocLn const iLastLine = SciCall_GetMaxLineState();
+  for (DocLn iLine = 0; iLine <= iLastLine; ++iLine) {
     int const iLnSt = SciCall_GetLineState(iLine);
     if (iLnSt & iLineStateBit) {
       SciCall_SetLineState(iLine, (iLnSt & ~iLineStateBit));
@@ -6857,7 +6857,9 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
   }
   else // =====   hide lines without marker   =====
   {
-    EditApplyLexerStyle(hwnd, 0, -1); // reset
+    // !!! do not apply LexerStyles here, 
+    // cause some Lexers destroy/reset LineState of Occurrences marker
+    //~EditApplyLexerStyle(hwnd, 0, -1); // reset
 
     // prepare hidden (folding) settings
     Globals.bCodeFoldingAvailable = true; // saved before
@@ -6873,10 +6875,10 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
     // --- hide lines without indicator ---
 
-    const DocLn iStartLine = SciCall_LineFromPosition(iStartPos);
-    const DocLn iEndLine = SciCall_LineFromPosition(iEndPos);
+    DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);
+    DocLn const iEndLine = SciCall_LineFromPosition(iEndPos);
 
-    const int baseLevel = SciCall_GetFoldLevel(iStartLine) & SC_FOLDLEVELNUMBERMASK;
+    int const baseLevel = SciCall_GetFoldLevel(iStartLine) & SC_FOLDLEVELNUMBERMASK;
 
     // clear levels to avoid multi rearangements on existing lexer provided levels
     for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine)
@@ -6885,26 +6887,28 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     }
 
     // 1st line
-    if ((SciCall_GetLineState(iStartLine) & LINESTATE_OCCURRENCE_MARK) == 0)
+    int level = baseLevel;
+
+    if ((SciCall_GetLineState(iStartLine) & LINESTATE_OCCURRENCE_MARK) != 0)
     { // hide
-      const DocPos begPos = SciCall_PositionFromLine(iStartLine);
-      const DocPos lnLen = SciCall_LineLength(iStartLine);
+      DocPos const begPos = SciCall_PositionFromLine(iStartLine);
+      DocPos const lnLen = SciCall_LineLength(iStartLine);
       SciCall_StartStyling(begPos);
       SciCall_SetStyling((DocPosCR)lnLen, Style_GetInvisibleStyleID());
+      SciCall_SetFoldLevel(iStartLine, SC_FOLDLEVELWHITEFLAG | level);
     }
 
-    int level = baseLevel;
     for (DocLn iLine = iStartLine + 1; iLine <= iEndLine; ++iLine)
     {
       if ((SciCall_GetLineState(iLine) & LINESTATE_OCCURRENCE_MARK) != 0) // visible
       {
-        while (level > baseLevel) { --level; }
+        level = baseLevel;
         SciCall_SetFoldLevel(iLine, level);
       }
       else // hide line
       {
-        const DocPos begPos = SciCall_PositionFromLine(iLine);
-        const DocPos lnLen = SciCall_LineLength(iLine);
+        DocPos const begPos = SciCall_PositionFromLine(iLine);
+        DocPos const lnLen = SciCall_LineLength(iLine);
         SciCall_StartStyling(begPos);
         SciCall_SetStyling((DocPosCR)lnLen, Style_GetInvisibleStyleID());
 
@@ -6917,7 +6921,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
     DocPos const iTextLength = SciCall_GetTextLength();
     if (iEndPos < iTextLength) {
-      const DocPos iStartStyling = SciCall_PositionFromLine(iEndLine + 1);
+      DocPos const iStartStyling = SciCall_PositionFromLine(iEndLine + 1);
       if ((iStartStyling >= 0) && (iStartStyling < iTextLength)) {
         SciCall_StartStyling(iStartStyling);
         EditFinalizeStyling(hwnd, -1);
