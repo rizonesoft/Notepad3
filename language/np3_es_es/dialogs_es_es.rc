@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "Ce&rrar tras encontrar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,80,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+    CONTROL         "Modo transparente al perder el foco", IDC_TRANSPARENT, 
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,24,55,14
@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "Ce&rrar tras reemplazar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,80,77,10
     CONTROL         "Marca &ocurrencias",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Con comodín",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+    CONTROL         "Modo transparente al perder el foco", IDC_TRANSPARENT, 
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "&Buscar siguiente",IDOK,211,7,55,14
     PUSHBUTTON      "Buscar ante&rior",IDC_FINDPREV,211,23,55,14
@@ -185,7 +185,7 @@ BEGIN
     GROUPBOX        "Detección de codificación: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Abrir archivos 7-bit &ASCII en UTF-8 modo.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Use &reliable detection results only.", IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Utilizar solo &resultados de detección confiables.", IDC_RELIABLE_DETECTION_RES,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
     CONTROL         "Abrir archivos 8-bit *.&nfo/diz en DOS-437 modo.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
@@ -204,9 +204,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Finales de línea"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Defecto modo de final de línea:",IDC_STATIC,7,7,116,8
+    LTEXT           "Modo de final de línea pre&determinado:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Show inconsistent line-breaks warning.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Mostrar aviso de saltos de línea inconsistentes.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
     CONTROL         "&Asegure los finales de línea consistentes al guardar.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
@@ -427,7 +427,7 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "Clave Maestra opcional:",IDC_STATIC,17,61,88,10,NOT WS_GROUP
-    CONTROL         "Cifrar usando la frase de contraseña",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,140,10
+    CONTROL         "Cifrar usando la Frase de Contraseña",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,140,10
     CONTROL         "Reutilizar la Clave",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     GROUPBOX        "Frase de Contraseña",IDC_STATIC,7,7,297,108
     CONTROL         "Mostrar la Frase de Contraseña",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,120,10
@@ -609,7 +609,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
     LTEXT           "&Fuente:", IDC_STATIC, 7, 7, 127, 8
     COMBOBOX        IDC_FONT_FAMILY_NAMES, 7, 16, 138, 84, CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Estill&o de fuente:", IDC_STATIC, 154, 7, 72, 8
+    LTEXT           "Estil&o de fuente:", IDC_STATIC, 154, 7, 72, 8
     COMBOBOX        IDC_FONT_FACE_NAMES, 154, 16, 84, 84, CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
     LTEXT           "&Tamaño:", IDC_STATIC, 247, 7, 40, 8
     COMBOBOX        IDC_FONT_SIZE, 247, 16, 44, 84, CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP
