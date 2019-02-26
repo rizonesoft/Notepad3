@@ -313,7 +313,7 @@ BEGIN
     CONTROL         "Tecla &Tab vuelve a formatear la sangría.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "Tecla &Retroceso vuelve a formatear la sangría.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Warning on inconsistent indentation.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Advertencia sobre sangría inconsistente.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,117,27,50,14
