@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "&Fermer après trouver",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "Marquer &occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "Avec &Joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT,
+    CONTROL         "Mode transparent avec perte de focus", IDC_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 118, 124, 10
     DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
     PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,24,55,14
@@ -129,7 +129,7 @@ BEGIN
     CONTROL         "&Fermer après trouver",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,75,10
     CONTROL         "Marquer &occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "Avec &Joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
-    CONTROL         "Transparent mode on losing focus", IDC_TRANSPARENT, 
+    CONTROL         "Mode transparent avec perte de focus", IDC_TRANSPARENT, 
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 144, 124, 10
     DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
     PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,23,55,14
@@ -184,9 +184,9 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,168,10
     GROUPBOX        "Détection d'encodage: ",IDC_STATIC,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Ouvrir fichiers 7-bit &ASCII en mode UTF-8.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Use &reliable detection results only.", IDC_RELIABLE_DETECTION_RES,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,155,10
+    CONTROL         "Utiliser uniquement des &résultats de détection fiables.", IDC_RELIABLE_DETECTION_RES,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP,14,82,170,10
     CONTROL         "Ouvrir fichiers 8-bit *.&nfo/diz en mode DOS-437.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
     CONTROL         "Pas analyser les balises de codage de &fichier.",IDC_ENCODINGFROMFILEVARS,
@@ -206,7 +206,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Mode de fin de ligne par &défaut:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Show inconsistent line-breaks warning.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Afficher un avertissement de sauts de ligne incohérents.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
     CONTROL         "Assur&er des fins de ligne cohérentes.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
