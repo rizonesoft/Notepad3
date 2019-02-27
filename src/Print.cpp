@@ -500,6 +500,10 @@ extern "C" UINT_PTR CALLBACK PageSetupHook(HWND hwnd, UINT uiMsg, WPARAM wParam,
       }
       break;
 
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
+
     case WM_COMMAND:
       if (LOWORD(wParam) == IDOK)
       {

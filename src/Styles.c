@@ -3241,6 +3241,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
       DialogEnableWindow(hwnd, IDC_PREVIEW, ((pCurrentLexer == s_pLexCurrent) || (pCurrentLexer == GetCurrentStdLexer())));
       break;
 
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
+
     case WM_DESTROY:
       {
         DeleteBitmapButton(hwnd, IDC_STYLEFORE);
@@ -3873,6 +3877,11 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         CenterDlgInParent(hwnd);
       }
       return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
 
     case WM_DESTROY:

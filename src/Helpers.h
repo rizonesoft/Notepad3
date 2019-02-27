@@ -213,6 +213,7 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 
 DPI_T GetCurrentDPI(HWND hwnd);
 DPI_T GetCurrentPPI(HWND hwnd);
+void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi);
 HBITMAP ResizeImageForCurrentDPI(HBITMAP hbmp);
 #define ScaleIntToCurrentDPI(val) MulDiv((val), Globals.CurrentDPI.y, USER_DEFAULT_SCREEN_DPI)
 inline int ScaleToCurrentDPI(float fVal) { return float2int((fVal * Globals.CurrentDPI.y) / (float)USER_DEFAULT_SCREEN_DPI); }

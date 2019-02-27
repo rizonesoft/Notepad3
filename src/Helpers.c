@@ -315,19 +315,19 @@ DWORD GetLastErrorToMsgBox(LPWSTR lpszFunction, DWORD dwErrID)
 //
 DPI_T GetCurrentDPI(HWND hwnd) {
 
-  DPI_T CurDPI = { 0, 0 };
+  DPI_T curDPI = { 0, 0 };
 
   if (IsWin10()) {
     HMODULE const hModule = GetModuleHandle(L"user32.dll");
     if (hModule) {
       FARPROC const pfnGetDpiForWindow = GetProcAddress(hModule, "GetDpiForWindow");
       if (pfnGetDpiForWindow) {
-        CurDPI.x = CurDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
+        curDPI.x = curDPI.y = (UINT)pfnGetDpiForWindow(hwnd);
       }
     }
   }
 
-  if ((CurDPI.x == 0) && IsWin81()) {
+  if ((curDPI.x == 0) && IsWin81()) {
     HMODULE hShcore = LoadLibrary(L"shcore.dll");
     if (hShcore) {
       FARPROC const pfnGetDpiForMonitor = GetProcAddress(hShcore, "GetDpiForMonitor");
@@ -335,24 +335,24 @@ DPI_T GetCurrentDPI(HWND hwnd) {
         HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
         UINT dpiX = 0, dpiY = 0;
         if (pfnGetDpiForMonitor(hMonitor, 0 /* MDT_EFFECTIVE_DPI */, &dpiX, &dpiY) == S_OK) {
-          CurDPI.x = dpiX;
-          CurDPI.y = dpiY;
+          curDPI.x = dpiX;
+          curDPI.y = dpiY;
         }
       }
       FreeLibrary(hShcore);
     }
   }
 
-  if (CurDPI.x == 0) {
+  if (curDPI.x == 0) {
     HDC hDC = GetDC(hwnd);
-    CurDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
-    CurDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
+    curDPI.x = GetDeviceCaps(hDC, LOGPIXELSX);
+    curDPI.y = GetDeviceCaps(hDC, LOGPIXELSY);
     ReleaseDC(hwnd, hDC);
   }
 
-  CurDPI.x = max_u(CurDPI.x, USER_DEFAULT_SCREEN_DPI);
-  CurDPI.y = max_u(CurDPI.y, USER_DEFAULT_SCREEN_DPI);
-  return CurDPI;
+  curDPI.x = max_u(curDPI.x, USER_DEFAULT_SCREEN_DPI);
+  curDPI.y = max_u(curDPI.y, USER_DEFAULT_SCREEN_DPI);
+  return curDPI;
 }
 
 
@@ -392,6 +392,31 @@ if (!bSucceed) {
 int GetSystemMetricsEx(int nValue) {
 
   return ScaleIntToCurrentDPI(GetSystemMetrics(nValue));
+}
+
+
+//=============================================================================
+//
+//  UpdateWindowLayoutForDPI()
+//
+void UpdateWindowLayoutForDPI(HWND hWnd, int x_96dpi, int y_96dpi, int w_96dpi, int h_96dpi)
+{
+  // only update yet
+  SetWindowPos(hWnd, hWnd, x_96dpi, y_96dpi, w_96dpi, h_96dpi,
+    SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION );
+
+  // TODO: ...
+#if 0
+  DPI_T const wndDPI = GetCurrentDPI(hWnd);
+
+  int dpiScaledX = MulDiv(x_96dpi, wndDPI.x, 96);
+  int dpiScaledY = MulDiv(y_96dpi, wndDPI.y, 96);
+  int dpiScaledWidth = MulDiv(w_96dpi, wndDPI.y, 96);
+  int dpiScaledHeight = MulDiv(h_96dpi, wndDPI.y, 96);
+
+  SetWindowPos(hWnd, hWnd, dpiScaledX, dpiScaledY, dpiScaledWidth, dpiScaledY, SWP_NOZORDER | SWP_NOACTIVATE);
+#endif
+
 }
 
 

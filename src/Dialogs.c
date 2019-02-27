@@ -170,6 +170,10 @@ INT_PTR CALLBACK InfoBoxDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
     }
     return true;
 
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
+
   case WM_COMMAND:
     switch (LOWORD(wParam))
     {
@@ -284,6 +288,10 @@ INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
       SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
       CenterDlgInParent(hwnd);
     }
+    break;
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
     break;
 
   case WM_COMMAND:
@@ -642,6 +650,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
   return true;
 
 
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
+
+
   case WM_PAINT:
     if (Globals.hIcon128) {
       RECT rt;
@@ -757,6 +770,11 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         CenterDlgInParent(hwnd);
       }
       return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
 
     case WM_DESTROY:
@@ -935,6 +953,11 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         CenterDlgInParent(hwnd);
       }
       return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
 
     case WM_DESTROY:
@@ -1132,6 +1155,11 @@ INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
       return true;
 
 
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
+
+
     case WM_DESTROY:
       DirList_Destroy(GetDlgItem(hwnd,IDC_FAVORITESDIR));
       DeleteBitmapButton(hwnd,IDC_GETFAVORITESDIR);
@@ -1290,6 +1318,11 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
       CenterDlgInParent(hwnd);
     }
     return true;
+
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
 
 
   case WM_COMMAND:
@@ -1499,6 +1532,11 @@ INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         CenterDlgInParent(hwnd);
       }
       return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
 
     case WM_DESTROY:
@@ -1826,6 +1864,10 @@ INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
     }
     return true;
 
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
+
   case WM_COMMAND:
     switch (LOWORD(wParam)) {
     case IDOK:
@@ -1897,6 +1939,11 @@ INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
       CenterDlgInParent(hwnd);
     }
     return true;
+
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
 
 
   case WM_COMMAND:
@@ -1995,6 +2042,11 @@ INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
     return true;
 
 
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
+
+
   case WM_COMMAND:
 
     switch (LOWORD(wParam)) {
@@ -2083,6 +2135,11 @@ INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LP
 
     }
     return true;
+
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
 
 
   case WM_COMMAND:
@@ -2177,6 +2234,11 @@ INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
         CenterDlgInParent(hwnd);
       }
       return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
 
     case WM_COMMAND:
@@ -2296,6 +2358,11 @@ INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
     CenterDlgInParent(hwnd);
   }
   return true;
+
+
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
 
 
   case WM_COMMAND:
@@ -2462,6 +2529,11 @@ INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM 
         CenterDlgInParent(hwnd);
       }
       return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
 
     case WM_DESTROY:
@@ -2651,6 +2723,11 @@ INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LP
         CenterDlgInParent(hwnd);
       }
       return true;
+
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
 
     case WM_COMMAND:
@@ -3295,6 +3372,7 @@ void ResizeDlg_Init(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip)
 
     SetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE,
                      GetWindowLongPtr(GetDlgItem(hwnd, nIdGrip), GWL_STYLE) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+    
     int const cGrip = GetSystemMetricsEx(SM_CXHTHUMB);
     SetWindowPos(GetDlgItem(hwnd, nIdGrip), NULL, pResizeDlg->cxClient - cGrip, pResizeDlg->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
   }
