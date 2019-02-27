@@ -15,30 +15,20 @@
 *                                                                             *
 *******************************************************************************/
 
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 //#include <uxtheme.h>
 #include <shlobj.h>
 #include <shellapi.h>
 //#include <pathcch.h>
-#include "Scintilla.h"
+
 #include "resource.h"
 #include "Edit.h"
 #include "Encoding.h"
+#include "MuiLanguage.h"
 #include "Notepad3.h"
 
-#include "Helpers.h"
+#include "Scintilla.h"
 
 //=============================================================================
 
@@ -678,75 +668,6 @@ bool IsCmdEnabled(HWND hwnd,UINT uId)
 
 //=============================================================================
 //
-//  LoadLngStringW()
-//
-int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax) 
-{
-  const int nLen = LoadStringW(Globals.hLngResContainer, uID, lpBuffer, nBufferMax);
-  return (nLen != 0) ? nLen : LoadStringW(Globals.hInstance, uID, lpBuffer, nBufferMax);
-}
-
-//=============================================================================
-//
-//  LoadLngStringW2MB()
-//
-static WCHAR s_tmpStringBuffer[512];
-
-int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax)
-{
-  const int nLen = LoadStringW(Globals.hLngResContainer, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer));
-  if (nLen == 0) { LoadStringW(Globals.hInstance, uID, s_tmpStringBuffer, COUNTOF(s_tmpStringBuffer)); }
-  return WideCharToMultiByte(CP_UTF8, 0, s_tmpStringBuffer, -1, lpBuffer, nBufferMax, NULL, NULL);
-}
-
-//=============================================================================
-//
-//  LoadLngStringA()
-//
-int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax)
-{
-  const int nLen = LoadStringA(Globals.hLngResContainer, uID, lpBuffer, nBufferMax);
-  return (nLen != 0) ? nLen : LoadStringA(Globals.hInstance, uID, lpBuffer, nBufferMax);
-}
-
-
-//=============================================================================
-//
-//  FormatLngStringW()
-//
-int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
-{
-  WCHAR* pBuffer = AllocMem(sizeof(WCHAR)*nOutput, HEAP_ZERO_MEMORY);
-  if (pBuffer) {
-    if (LoadLngStringW(uIdFormat, pBuffer, nOutput)) {
-      StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
-    }
-    FreeMem(pBuffer);
-    return (int)StringCchLenW(lpOutput, nOutput);
-  }
-  return 0;
-}
-
-//=============================================================================
-//
-//  FormatLngStringA()
-//
-int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...)
-{
-  CHAR* pBuffer = AllocMem(sizeof(CHAR)*nOutput, HEAP_ZERO_MEMORY);
-  if (pBuffer) {
-    if (LoadLngStringA(uIdFormat, pBuffer, nOutput)) {
-      StringCchVPrintfA(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)&uIdFormat + 1));
-    }
-    FreeMem(pBuffer);
-    return (int)StringCchLenA(lpOutput, nOutput);
-  }
-  return 0;
-}
-
-
-//=============================================================================
-//
 //  GetKnownFolderPath()
 //
 bool GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount)
@@ -763,7 +684,6 @@ bool GetKnownFolderPath(REFKNOWNFOLDERID rfid, LPWSTR lpOutPath, size_t cchCount
   }
   return false;
 }
-
 
 //=============================================================================
 //

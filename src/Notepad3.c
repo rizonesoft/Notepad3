@@ -13,19 +13,8 @@
 *                                                                             *
 *******************************************************************************/
 
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <shlobj.h>
@@ -36,7 +25,6 @@
 #include <string.h>
 //#include <pathcch.h>
 #include <time.h>
-#include <muiload.h>
 
 #include "Edit.h"
 #include "Styles.h"
@@ -47,11 +35,13 @@
 #include "../uthash/utlist.h"
 #include "../tinyexpr/tinyexpr.h"
 #include "Encoding.h"
-#include "Helpers.h"
 #include "VersionEx.h"
 #include "SciCall.h"
+
 #include "SciLexer.h"
 #include "SciXLexer.h"
+
+#include "MuiLanguage.h"
 
 #include "Notepad3.h"
 
@@ -83,9 +73,6 @@ static HWND      s_hwndReBar = NULL;
 
 static WCHAR     s_wchIniFile2[MAX_PATH] = { L'\0' };
 static WCHAR     s_wchTmpFilePath[MAX_PATH] = { L'\0' };
-
-// 'en-US' internal default
-static WCHAR* const s_tchAvailableLanguages = L"af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pt-BR ru-RU zh-CN";
 
 static int    s_iSettingsVersion = CFG_VER_CURRENT;
 static bool   s_bEnableSaveSettings = true;
@@ -413,7 +400,6 @@ static int s_flagChangeNotify = 0;
 // static forward declarations 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw);
 static void  _UpdateToolbarDelayed();
-static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID langID);
 
 //==============================================================================
 //
@@ -450,7 +436,7 @@ static void _InitGlobals()
   
   Constants.FileBrowserMiniPath = L"minipath.exe";
 
-
+  Globals.hMainMenu = NULL;
   Globals.CallTipType = CT_NONE;
   Globals.iWrapCol = 0;
   Globals.bCodeFoldingAvailable = false;
@@ -512,9 +498,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     DestroyMenu(Globals.hMainMenu); 
   }
 
-  if (Globals.hLngResContainer != Globals.hInstance) {
-    FreeMUILibrary(Globals.hLngResContainer);
-  }
+  FreeLanguageResources(Globals.hLngResContainer);
+  Globals.hLngResContainer = NULL;
 
   if (s_hRichEdit) {
     FreeLibrary(s_hRichEdit);
@@ -617,55 +602,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   // ----------------------------------------------------
   // MultiLingual
   //
-  bool bPrefLngNotAvail = false;
-  
-  int res = 0;
-  if (StringCchLen(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName)) > 0)
-  {
-    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
-    res = ResolveLocaleName(Settings2.PreferredLanguageLocaleName, wchLngLocalName, LOCALE_NAME_MAX_LENGTH);
-    if (res > 0) {
-      StringCchCopy(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), wchLngLocalName); // put back resolved name
-    }
-    // get LANGID
-    Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-    res = GetLocaleInfoEx(Settings2.PreferredLanguageLocaleName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&Globals.iPrefLANGID, sizeof(LANGID));
-  }
+  Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+  Globals.hLngResContainer = LoadLanguageResources(&Globals.iPrefLANGID);
 
-  if (res == 0) // No preferred language defined or retrievable, try to get User UI Language
-  {
-    //~GetUserDefaultLocaleName(&Settings2.PreferredLanguageLocaleName[0], COUNTOF(Settings2.PreferredLanguageLocaleName));
-    ULONG numLngs = 0;
-    DWORD cchLngsBuffer = 0;
-    BOOL hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, NULL, &cchLngsBuffer);
-    if (hr) {
-      WCHAR* pwszLngsBuffer = AllocMem((cchLngsBuffer + 2) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-      if (pwszLngsBuffer) {
-        hr = GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLngs, pwszLngsBuffer, &cchLngsBuffer);
-        if (hr && (numLngs > 0)) {
-          // get the first 
-          StringCchCopy(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), pwszLngsBuffer);
-          Globals.iPrefLANGID = LANGIDFROMLCID(LocaleNameToLCID(Settings2.PreferredLanguageLocaleName, 0));
-          res = 1;
-        }
-        FreeMem(pwszLngsBuffer);
-      }
-    }
-    if (res == 0) { // last try
-      Globals.iPrefLANGID = GetUserDefaultUILanguage();
-      LCID const lcid = MAKELCID(Globals.iPrefLANGID, SORT_DEFAULT);
-      /*res = */LCIDToLocaleName(lcid, Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), 0);
-    }
-  }
-
-  Globals.hLngResContainer = _LoadLanguageResources(Settings2.PreferredLanguageLocaleName, Globals.iPrefLANGID);
-
-  if (!Globals.hLngResContainer) // fallback en-US (1033)
-  {
-    LANGID const langID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-    Globals.hLngResContainer = Globals.hInstance; 
-    if (Globals.iPrefLANGID != langID) { bPrefLngNotAvail = true; }
-  }
   // ----------------------------------------------------
 
   if (s_hRichEdit == INVALID_HANDLE_VALUE) {
@@ -691,7 +630,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   s_msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
 
-  Globals.hMainMenu = NULL;
   if (Globals.hLngResContainer != Globals.hInstance) {
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
@@ -730,7 +668,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
  
   SetTimer(hwnd, IDT_TIMER_MRKALL, USER_TIMER_MINIMUM, (TIMERPROC)MQ_ExecuteNext);
   
-  if (bPrefLngNotAvail) {
+  if (Globals.bPrefLngNotAvail) {
     InfoBoxLng(MBWARN, L"MsgPrefLanguageNotAvailable", IDS_WARN_PREF_LNG_NOT_AVAIL, Settings2.PreferredLanguageLocaleName);
   }
 
@@ -757,98 +695,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   _CleanUpResources(hwnd, true);
 
   return (int)(msg.wParam);
-}
-
-
-//=============================================================================
-//
-//  _LngStrToMultiLngStr
-//
-//
-static bool  _LngStrToMultiLngStr(WCHAR* pLngStr, WCHAR* pLngMultiStr, size_t lngMultiStrSize)
-{
-  bool rtnVal = true;
-
-  size_t strLen = StringCchLenW(pLngStr,0);
-
-  if ((strLen > 0) && pLngMultiStr && (lngMultiStrSize > 0)) {
-    WCHAR* lngMultiStrPtr = pLngMultiStr;
-    WCHAR* last = pLngStr + (Has_UTF16_LE_BOM((char*)pLngStr,clampi((int)strLen,0,8)) ? 1 : 0);
-    while (last && rtnVal) {
-      // make sure you validate the user input
-      WCHAR* next = StrNextTok(last, L",; :");
-      if (next) { *next = L'\0'; }
-      strLen = StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
-      if (strLen && IsValidLocaleName(last)) {
-        lngMultiStrPtr[0] = L'\0';
-        rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr)), last));
-        lngMultiStrPtr += strLen + 1;
-      }
-      last = (next ? next + 1 : next);
-    }
-    if (rtnVal && (lngMultiStrSize - (lngMultiStrPtr - pLngMultiStr))) // make sure there is a double null term for the multi-string
-    {
-      lngMultiStrPtr[0] = L'\0';
-    }
-    else // fail and guard anyone whom might use the multi-string
-    {
-      lngMultiStrPtr[0] = L'\0';
-      lngMultiStrPtr[1] = L'\0';
-    }
-  }
-  return rtnVal;
-}
-
-
-//=============================================================================
-//
-//  _LoadLanguageResources
-//
-//
-static HMODULE  _LoadLanguageResources(const WCHAR* localeName, LANGID langID)
-{
-  bool bLngAvailable = (StrStrIW(s_tchAvailableLanguages, localeName) != NULL);
-  if (!bLngAvailable) { return NULL; }
-
-  WCHAR tchAvailLngs[LARGE_BUFFER] = { L'\0' };
-  StringCchCopyW(tchAvailLngs, LARGE_BUFFER, s_tchAvailableLanguages);
-  WCHAR tchUserLangMultiStrg[LARGE_BUFFER] = { L'\0' };
-  if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, LARGE_BUFFER))
-  {
-    GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
-    return NULL;
-  }
-
-  // set the appropriate fallback list
-  DWORD langCount = 0;
-  // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
-  if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
-  {
-    GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
-    return NULL;
-  }
-  SetThreadUILanguage(langID);
-
-  // NOTES:
-  // an application developer that makes the assumption the fallback list provided by the
-  // system / OS is entirely sufficient may or may not be making a good assumption based  mostly on:
-  // A. your choice of languages installed with your application
-  // B. the languages on the OS at application install time
-  // C. the OS users propensity to install/uninstall language packs
-  // D. the OS users propensity to change language settings
-
-  // obtains access to the proper resource container 
-  // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
- 
-  HMODULE hLangResourceContainer = LoadMUILibraryW(L"lng/np3lng.dll", MUI_LANGUAGE_NAME, langID);
-
-  //if (!hLangResourceContainer)
-  //{
-  //  GetLastErrorToMsgBox(L"LoadMUILibrary", 0);
-  //  return NULL;
-  //}
-
-  return hLangResourceContainer;
 }
 
 
@@ -2140,8 +1986,6 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   DocPos const pos = SciCall_GetCurrentPos();
 
-  HINSTANCE hInstance = (HINSTANCE)(INT_PTR)GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
-
 #if 0
   char buf[128];
   sprintf(buf, "WM_DPICHANGED: dpi=%u,%u  ppi=%u,%u\n", Globals.CurrentDPI.x, Globals.CurrentDPI.y, Globals.CurrentPPI.x, Globals.CurrentPPI.y);
@@ -2157,7 +2001,7 @@ LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
   DestroyWindow(s_hwndToolbar);
   DestroyWindow(s_hwndReBar);
   DestroyWindow(Globals.hwndStatus);
-  CreateBars(hwnd, hInstance);
+  CreateBars(hwnd, Globals.hInstance);
 
   RECT* const rc = (RECT*)lParam;
   SendWMSize(hwnd, rc);
@@ -3034,6 +2878,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = (int)StringCchLenW(Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
   EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
+  for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng) {
+    EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
+    CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsLoaded);
+  }
+
   return 0LL;
 }
 
@@ -3068,6 +2917,57 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_TIMER_UPDATE_HOTSPOT:
       EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
       break;
+
+
+    case IDM_MUI_LANG_EN_US:
+    case IDM_MUI_LANG_AF_ZA:
+    case IDM_MUI_LANG_BE_BY:
+    case IDM_MUI_LANG_DE_DE:
+    case IDM_MUI_LANG_EN_GB:
+    case IDM_MUI_LANG_ES_ES:
+    case IDM_MUI_LANG_FR_FR:
+    case IDM_MUI_LANG_HU_HU:
+    case IDM_MUI_LANG_IT_IT:
+    case IDM_MUI_LANG_JP_JP:
+    case IDM_MUI_LANG_KO_KR:
+    case IDM_MUI_LANG_NL_NL:
+    case IDM_MUI_LANG_PT_BR:
+    case IDM_MUI_LANG_RU_RU:
+    case IDM_MUI_LANG_ZH_CN:
+      {
+        int iLngIdx = (int)LOWORD(wParam) - IDM_MUI_LANG_EN_US;
+
+        if (Globals.iPrefLANGID != MUI_LanguageDLLs[iLngIdx].LangId)
+        {
+          if (IsWindow(Globals.hwndDlgFindReplace)) {
+            SendMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
+          }
+          if (IsWindow(Globals.hwndDlgCustomizeSchemes)) {
+            SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0);
+          }
+
+          StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), MUI_LanguageDLLs[iLngIdx].szLocaleName);
+          IniSetString(L"Settings2", L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
+
+          DestroyMenu(Globals.hMainMenu);
+          FreeLanguageResources(Globals.hLngResContainer);
+
+          Globals.iPrefLANGID = MUI_LanguageDLLs[iLngIdx].LangId;
+          Globals.hLngResContainer = LoadLanguageResources(&Globals.iPrefLANGID);
+          Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+
+          SetMenu(Globals.hwndMain, Globals.hMainMenu);
+          DrawMenuBar(Globals.hwndMain);
+
+          SendWMSize(Globals.hwndMain, NULL);
+          UpdateUI();
+          UpdateToolbar();
+          UpdateStatusbar(true);
+
+        }
+      }
+      break;
+
 
     case IDM_FILE_NEW:
       FileLoad(false,true,false,Settings.SkipUnicodeDetection,Settings.SkipANSICodePageDetection,L"");
@@ -8399,18 +8299,18 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     static DocLn s_iLnFromPos = -1;
     static DocLn s_iLnCnt = -1;
 
-    if (s_iLnFromPos != iLnFromPos) {
+    if (bForceRedraw || (s_iLnFromPos != iLnFromPos)) {
       StringCchPrintf(tchLn, COUNTOF(tchLn), DOCPOSFMTW, iLnFromPos + 1);
       FormatNumberStr(tchLn);
     }
 
     DocLn const  iLnCnt = SciCall_GetLineCount();
-    if (s_iLnCnt != iLnCnt) {
+    if (bForceRedraw || (s_iLnCnt != iLnCnt)) {
       StringCchPrintf(tchLines, COUNTOF(tchLines), DOCPOSFMTW, iLnCnt);
       FormatNumberStr(tchLines);
     }
 
-    if ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt))
+    if (bForceRedraw || ((s_iLnFromPos != iLnFromPos) || (s_iLnCnt != iLnCnt)))
     {
       StringCchPrintf(tchStatusBar[STATUS_DOCLINE], txtWidth, L"%s%s / %s%s",
         s_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines, s_mxSBPostfix[STATUS_DOCLINE]);
@@ -8429,7 +8329,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     static DocPos s_iCol = -1;
     DocPos const iCol = SciCall_GetColumn(iPos) + SciCall_GetSelectionNCaretVirtualSpace(0);
-    if (s_iCol != iCol) {
+    if (bForceRedraw || (s_iCol != iCol)) {
       StringCchPrintf(tchCol, COUNTOF(tchCol), DOCPOSFMTW, iCol + colOffset);
       FormatNumberStr(tchCol);
     }
@@ -8437,12 +8337,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     static DocPos s_iCols = -1;
     static WCHAR tchCols[32] = { L'\0' };
     DocPos const iCols = SciCall_GetColumn(iLineBack);
-    if (s_iCols != iCols) {
+    if (bForceRedraw || (s_iCols != iCols)) {
       StringCchPrintf(tchCols, COUNTOF(tchCols), DOCPOSFMTW, iCols);
       FormatNumberStr(tchCols);
     }
 
-    if ((s_iCol != iCol) || (s_iCols != iCols)) {
+    if (bForceRedraw || ((s_iCol != iCol) || (s_iCols != iCols))) {
       StringCchPrintf(tchStatusBar[STATUS_DOCCOLUMN], txtWidth, L"%s%s / %s%s",
         s_mxSBPrefix[STATUS_DOCCOLUMN], tchCol, tchCols, s_mxSBPostfix[STATUS_DOCCOLUMN]);
 
@@ -8461,14 +8361,14 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     DocPos const chrOffset = Globals.bZeroBasedCharacterCount ? 0 : 1;
 
     DocPos const iChr = SciCall_CountCharacters(iLineBegin, iPos);
-    if (s_iChr != iChr) {
+    if (bForceRedraw || (s_iChr != iChr)) {
       StringCchPrintf(tchChr, COUNTOF(tchChr), DOCPOSFMTW, iChr + chrOffset);
       FormatNumberStr(tchChr);
     }
 
     static DocPos s_iChrs = -1;
     DocPos const iChrs = SciCall_CountCharacters(iLineBegin, iLineBack);
-    if (s_iChrs != iChrs) {
+    if (bForceRedraw || (s_iChrs != iChrs)) {
       StringCchPrintf(tchChrs, COUNTOF(tchChrs), DOCPOSFMTW, iChrs);
       FormatNumberStr(tchChrs);
     }
@@ -8493,7 +8393,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     static DocPos s_iSelStart = -1;
     static DocPos s_iSelEnd = -1;
 
-    if ((s_bIsSelCountable != bIsSelCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)) 
+    if (bForceRedraw || ((s_bIsSelCountable != bIsSelCountable) || (s_iSelStart != iSelStart) || (s_iSelEnd != iSelEnd)))
     {
       static WCHAR tchSelB[64] = { L'\0' };
       if (bIsSelCountable)
@@ -8533,7 +8433,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     DocLn const iLinesSelected = ((iSelStart != iSelEnd) && (iStartOfLinePos != iSelEnd)) ? ((iLineEnd - iLineStart) + 1) : (iLineEnd - iLineStart);
 
-    if ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected))
+    if (bForceRedraw || ((s_bIsSelectionEmpty != bIsSelectionEmpty) || (s_iLinesSelected != iLinesSelected)))
     {
       static WCHAR tchLinesSelected[32] = { L'\0' };
       if (bIsSelectionEmpty) {
@@ -8601,8 +8501,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
       StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[%i]", s_iExprError);
     }
 
-    if (!s_iExprError || (s_iExErr != s_iExprError)) {
-
+    if (bForceRedraw || (!s_iExprError || (s_iExErr != s_iExprError))) 
+    {
       StringCchPrintf(tchStatusBar[STATUS_TINYEXPR], txtWidth, L"%s%s%s ",
         s_mxSBPrefix[STATUS_TINYEXPR], tchExpression, s_mxSBPostfix[STATUS_TINYEXPR]);
 
@@ -8619,7 +8519,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   {
     static int s_iMarkOccurrencesCount = -111;
     static bool s_bMOVisible = false;
-    if ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount))
+    if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount)))
     {
       if ((Globals.iMarkOccurrencesCount >= 0) && !Settings.MarkOccurrencesMatchVisible)
       {
@@ -8654,7 +8554,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   {
     static int s_iReplacedOccurrences = -1;
 
-    if (s_iReplacedOccurrences != Globals.iReplacedOccurrences)
+    if (bForceRedraw || (s_iReplacedOccurrences != Globals.iReplacedOccurrences))
     {
       static WCHAR tchRepl[32] = { L'\0' };
       if (Globals.iReplacedOccurrences > 0)
@@ -8680,7 +8580,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   {
     static DocPos s_iTextLength = -1;
     DocPos const iTextLength = SciCall_GetTextLength();
-    if (s_iTextLength != iTextLength) {
+    if (bForceRedraw || (s_iTextLength != iTextLength)) 
+    {
       static WCHAR tchBytes[32] = { L'\0' };
       StrFormatByteSize(iTextLength, tchBytes, COUNTOF(tchBytes));
 
@@ -8697,7 +8598,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   {
     static int s_iEncoding = -1;
     int const iEncoding = Encoding_Current(CPI_GET);
-    if (s_iEncoding != iEncoding) {
+    if (bForceRedraw || (s_iEncoding != iEncoding)) 
+    {
       Encoding_SetLabel(iEncoding);
 
       StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
@@ -8714,7 +8616,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     static int s_iEOLMode = -1;
     int const _eol_mode = SciCall_GetEOLMode();
 
-    if (s_iEOLMode != _eol_mode) 
+    if (bForceRedraw || (s_iEOLMode != _eol_mode))
     {
       if (_eol_mode == SC_EOL_LF) {
         StringCchPrintf(tchStatusBar[STATUS_EOLMODE], txtWidth, L"%sLF%s",
@@ -8738,7 +8640,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   {
     static bool s_bIsOVR = -1;
     bool const bIsOVR = (bool)SendMessage(Globals.hwndEdit, SCI_GETOVERTYPE, 0, 0);
-    if (s_bIsOVR != bIsOVR) {
+    if (bForceRedraw || (s_bIsOVR != bIsOVR)) 
+    {
       if (bIsOVR)
       {
         StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",
@@ -8758,7 +8661,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   {
     static bool s_bUse2ndDefault = -1;
     bool const bUse2ndDefault = Style_GetUse2ndDefault();
-    if (s_bUse2ndDefault != bUse2ndDefault)
+    if (bForceRedraw || (s_bUse2ndDefault != bUse2ndDefault))
     {
       if (bUse2ndDefault)
         StringCchPrintf(tchStatusBar[STATUS_2ND_DEF], txtWidth, L"%s2ND%s",
@@ -8777,7 +8680,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
   {
     static int s_iCurLexer = -1;
     int const iCurLexer = Style_GetCurrentLexerRID();
-    if (s_iCurLexer != iCurLexer)
+    if (bForceRedraw || (s_iCurLexer != iCurLexer))
     {
       static WCHAR tchLexerName[MINI_BUFFER];
       if (Style_IsCurLexerStandard())

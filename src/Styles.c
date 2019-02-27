@@ -13,19 +13,8 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <assert.h>
 #include <commctrl.h>
 #include <commdlg.h>
@@ -42,7 +31,8 @@
 #include "Dialogs.h"
 #include "resource.h"
 #include "Encoding.h"
-#include "Helpers.h"
+#include "MuiLanguage.h"
+
 #include "SciCall.h"
 
 #include "Styles.h"
