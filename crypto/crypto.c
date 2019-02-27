@@ -123,9 +123,12 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         // Don't use: SetFocus( GetDlgItem( hDlg, IDC_PWD_EDIT1 ) );
         SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT1));
     }
-
     return true;
     break;
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
+      break;
 
     case WM_COMMAND:
 
@@ -249,6 +252,10 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         SetDialogFocus(hDlg, GetDlgItem(hDlg, IDC_PWD_EDIT3));
       }
       return true;
+      break;
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hDlg, 0, 0, 0, 0);
       break;
 
     case WM_COMMAND:

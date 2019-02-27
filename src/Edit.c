@@ -5168,7 +5168,12 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     return true;
 
 
-    case WM_DESTROY:
+  case WM_DPICHANGED:
+    UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+    break;
+  
+  
+  case WM_DESTROY:
       {
         if (!s_bSwitchedFindReplace)
         {
@@ -7048,6 +7053,11 @@ INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPa
       return true;
 
 
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
+
+
     case WM_COMMAND:
       {
         switch (LOWORD(wParam))
@@ -7187,6 +7197,10 @@ INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         CenterDlgInParent(hwnd);
       }
       return true;
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
     case WM_DESTROY:
       DeleteObject(hFontHover);
@@ -7365,6 +7379,11 @@ INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
         CenterDlgInParent(hwnd);
       }
       return true;
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
+
     case WM_COMMAND:
       switch(LOWORD(wParam))
       {
@@ -7383,6 +7402,7 @@ INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
             EndDialog(hwnd,IDOK);
           }
           break;
+
         case IDCANCEL:
           EndDialog(hwnd,IDCANCEL);
           break;
@@ -7443,6 +7463,11 @@ INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
         CenterDlgInParent(hwnd);
       }
       return true;
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
+
     case WM_COMMAND:
       switch(LOWORD(wParam))
       {
@@ -7516,6 +7541,11 @@ INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM l
         CenterDlgInParent(hwnd);
       }
       return false;
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
+
     case WM_COMMAND:
       switch(LOWORD(wParam))
       {
@@ -7686,6 +7716,10 @@ INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         CenterDlgInParent(hwnd);
       }
       return true;
+
+    case WM_DPICHANGED:
+      UpdateWindowLayoutForDPI(hwnd, 0, 0, 0, 0);
+      break;
 
     case WM_COMMAND:
       switch(LOWORD(wParam))
