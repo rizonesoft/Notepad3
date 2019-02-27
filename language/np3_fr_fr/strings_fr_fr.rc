@@ -195,22 +195,22 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "Language"
-    IDS_MUI_LANG_EN_US      "English (United States)\t\t\t[%s]"                 
-    IDS_MUI_LANG_AF_ZA      "Afrikaans (South Africa)\t\t\t[%s]"               
-    IDS_MUI_LANG_BE_BY      "Belarusian (Belarus)\t\t\t[%s]"                    
-    IDS_MUI_LANG_DE_DE      "German (Germany)\t\t\t[%s]"                        
-    IDS_MUI_LANG_EN_GB      "English (United Kingdom)\t\t\t[%s]"                
-    IDS_MUI_LANG_ES_ES      "Spanish (Spain)\t\t\t[%s]"                  
-    IDS_MUI_LANG_FR_FR      "French (France)\t\t\t[%s]"                        
-    IDS_MUI_LANG_HU_HU      "Hungarian (Hungary)\t\t\t[%s]"                     
-    IDS_MUI_LANG_IT_IT      "Italian (Italy)\t\t\t[%s]"                         
-    IDS_MUI_LANG_JP_JP      "Japanese (Japan)\t\t\t[%s]"                        
-    IDS_MUI_LANG_KO_KR      "Korean (Korea)\t\t\t[%s]"                          
-    IDS_MUI_LANG_NL_NL      "Dutch (Netherlands)\t\t\t[%s]"                    
-    IDS_MUI_LANG_PT_BR      "Portuguese (Brazil)\t\t\t[%s]"                     
-    IDS_MUI_LANG_RU_RU      "Russian (Russia)\t\t\t[%s]"                        
-    IDS_MUI_LANG_ZH_CN      "Chinese (Hans)\t\t\t[%s]"                         
+    IDS_MUI_MENU_LANGUAGE   "Langue"
+    IDS_MUI_LANG_EN_US      "Anglais (États-Unis)\t\t\t[%s]"                 
+    IDS_MUI_LANG_AF_ZA      "Afrikaans (Afrique du Sud)\t\t\t[%s]"               
+    IDS_MUI_LANG_BE_BY      "Biélorusse (Biélorussie)\t\t\t[%s]"                    
+    IDS_MUI_LANG_DE_DE      "Allemand (Allemagne)\t\t\t[%s]"                        
+    IDS_MUI_LANG_EN_GB      "Anglais (Royaume Uni)\t\t\t[%s]"                
+    IDS_MUI_LANG_ES_ES      "Espagnol (Espagne)\t\t\t[%s]"                  
+    IDS_MUI_LANG_FR_FR      "Français (France)\t\t\t[%s]"                        
+    IDS_MUI_LANG_HU_HU      "Hongrois (Hongrie)\t\t\t[%s]"                     
+    IDS_MUI_LANG_IT_IT      "Italien (Italie)\t\t\t[%s]"                         
+    IDS_MUI_LANG_JP_JP      "Japonais (Japon)\t\t\t[%s]"                        
+    IDS_MUI_LANG_KO_KR      "Coréen (Corée)\t\t\t[%s]"                          
+    IDS_MUI_LANG_NL_NL      "Néerlandais (Pays-Bas)\t\t\t[%s]"                    
+    IDS_MUI_LANG_PT_BR      "Portugais (Brésil)\t\t\t[%s]"                     
+    IDS_MUI_LANG_RU_RU      "Russe (Russie)\t\t\t[%s]"                        
+    IDS_MUI_LANG_ZH_CN      "Chinois (Hans)\t\t\t[%s]"                         
 END
 
 STRINGTABLE
