@@ -24,22 +24,22 @@
 
 MUILANGUAGE MUI_LanguageDLLs[NUM_OF_MUI_LANGUAGES] =
 {
-  { IDM_MUI_LANG_EN_US, L"en-US", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
-  //                              
-  { IDM_MUI_LANG_AF_ZA, L"af-ZA", MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), false, false },
-  { IDM_MUI_LANG_BE_BY, L"be-BY", MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), false, false },
-  { IDM_MUI_LANG_DE_DE, L"de-DE", MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), false, false },
-  { IDM_MUI_LANG_EN_GB, L"en-GB", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), false, false },
-  { IDM_MUI_LANG_ES_ES, L"es-ES", MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), false, false },
-  { IDM_MUI_LANG_FR_FR, L"fr-FR", MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
-  { IDM_MUI_LANG_HU_HU, L"hu-HU", MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
-  { IDM_MUI_LANG_IT_IT, L"it-IT", MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), false, false },
-  { IDM_MUI_LANG_JP_JP, L"ja-JP", MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
-  { IDM_MUI_LANG_KO_KR, L"ko-KR", MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), false, false },
-  { IDM_MUI_LANG_NL_NL, L"nl-NL", MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), false, false },
-  { IDM_MUI_LANG_PT_BR, L"pt-BR", MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), false, false },
-  { IDM_MUI_LANG_RU_RU, L"ru-RU", MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), false, false },
-  { IDM_MUI_LANG_ZH_CN, L"zh-CN", MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
+  { IDS_MUI_LANG_EN_US, L"en-US", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
+  // ----------------------------
+  { IDS_MUI_LANG_AF_ZA, L"af-ZA", MAKELANGID(LANG_AFRIKAANS, SUBLANG_AFRIKAANS_SOUTH_AFRICA), false, false },
+  { IDS_MUI_LANG_BE_BY, L"be-BY", MAKELANGID(LANG_BELARUSIAN, SUBLANG_BELARUSIAN_BELARUS), false, false },
+  { IDS_MUI_LANG_DE_DE, L"de-DE", MAKELANGID(LANG_GERMAN, SUBLANG_GERMAN), false, false },
+  { IDS_MUI_LANG_EN_GB, L"en-GB", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_UK), false, false },
+  { IDS_MUI_LANG_ES_ES, L"es-ES", MAKELANGID(LANG_SPANISH, SUBLANG_SPANISH_MODERN), false, false },
+  { IDS_MUI_LANG_FR_FR, L"fr-FR", MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), false, false },
+  { IDS_MUI_LANG_HU_HU, L"hu-HU", MAKELANGID(LANG_HUNGARIAN, SUBLANG_HUNGARIAN_HUNGARY), false, false },
+  { IDS_MUI_LANG_IT_IT, L"it-IT", MAKELANGID(LANG_ITALIAN, SUBLANG_ITALIAN), false, false },
+  { IDS_MUI_LANG_JP_JP, L"ja-JP", MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN), false, false },
+  { IDS_MUI_LANG_KO_KR, L"ko-KR", MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN), false, false },
+  { IDS_MUI_LANG_NL_NL, L"nl-NL", MAKELANGID(LANG_DUTCH, SUBLANG_DUTCH), false, false },
+  { IDS_MUI_LANG_PT_BR, L"pt-BR", MAKELANGID(LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN), false, false },
+  { IDS_MUI_LANG_RU_RU, L"ru-RU", MAKELANGID(LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA), false, false },
+  { IDS_MUI_LANG_ZH_CN, L"zh-CN", MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
 };
 
 
@@ -49,14 +49,15 @@ MUILANGUAGE MUI_LanguageDLLs[NUM_OF_MUI_LANGUAGES] =
 //  CheckAvailableLanguages
 //
 //
-static void _CheckAvailableLanguageDLLs()
+static int _CheckAvailableLanguageDLLs()
 {
   WCHAR wchRelPath[MAX_PATH];
   WCHAR wchAbsPath[MAX_PATH];
 
-  for (int i = 1; i < NUM_OF_MUI_LANGUAGES; ++i)
+  int count = 1;
+  for (int lng = 1; lng < NUM_OF_MUI_LANGUAGES; ++lng)
   {
-    if (IsValidLocaleName(MUI_LanguageDLLs[i].szLocaleName))
+    if (IsValidLocaleName(MUI_LanguageDLLs[lng].szLocaleName))
     {
       //WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH];
       //if (ResolveLocaleName(MUI_LanguageDLLs[i].szLocaleName, wchLngLocalName, LOCALE_NAME_MAX_LENGTH)) {
@@ -64,14 +65,18 @@ static void _CheckAvailableLanguageDLLs()
       //}
       
       // get LANGID
-      GetLocaleInfoEx(MUI_LanguageDLLs[i].szLocaleName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, (LPWSTR)&(MUI_LanguageDLLs[i].LangId), sizeof(LANGID));
+      GetLocaleInfoEx(MUI_LanguageDLLs[lng].szLocaleName, LOCALE_ILANGUAGE | LOCALE_RETURN_NUMBER, 
+        (LPWSTR)&(MUI_LanguageDLLs[lng].LangId), sizeof(LANGID));
 
       // check for DLL
-      StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[i].szLocaleName);
+      StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].szLocaleName);
       PathAbsoluteFromApp(wchRelPath, wchAbsPath, COUNTOF(wchAbsPath), false);
-      MUI_LanguageDLLs[i].bHasDLL = PathFileExists(wchAbsPath);
+      bool const bAvail = PathFileExists(wchAbsPath);
+      MUI_LanguageDLLs[lng].bHasDLL = bAvail;
+      count += bAvail ? 1 : 0;
     }
   }
+  return count;
 }
 
 
@@ -183,7 +188,7 @@ static bool _GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, L
 HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
 {
   // 1st check language resources
-  _CheckAvailableLanguageDLLs();
+  Globals.iAvailLngCount = _CheckAvailableLanguageDLLs();
 
   LANGID languageID = MUI_LanguageDLLs[0].LangId;
 
