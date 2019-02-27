@@ -364,21 +364,22 @@
 //#define CMD_LEFT                        20054
 //#define CMD_RIGHT                       20055
 
-#define IDM_MUI_LANG_EN_US              34500
-#define IDM_MUI_LANG_AF_ZA              34501
-#define IDM_MUI_LANG_BE_BY              34502
-#define IDM_MUI_LANG_DE_DE              34503
-#define IDM_MUI_LANG_EN_GB              34504
-#define IDM_MUI_LANG_ES_ES              34505
-#define IDM_MUI_LANG_FR_FR              34506
-#define IDM_MUI_LANG_HU_HU              34507
-#define IDM_MUI_LANG_IT_IT              34508
-#define IDM_MUI_LANG_JP_JP              34509
-#define IDM_MUI_LANG_KO_KR              34510
-#define IDM_MUI_LANG_NL_NL              34511
-#define IDM_MUI_LANG_PT_BR              34512
-#define IDM_MUI_LANG_RU_RU              34513
-#define IDM_MUI_LANG_ZH_CN              34514
+#define IDS_MUI_MENU_LANGUAGE           34500
+#define IDS_MUI_LANG_EN_US              34501
+#define IDS_MUI_LANG_AF_ZA              34502
+#define IDS_MUI_LANG_BE_BY              34503
+#define IDS_MUI_LANG_DE_DE              34504
+#define IDS_MUI_LANG_EN_GB              34505
+#define IDS_MUI_LANG_ES_ES              34506
+#define IDS_MUI_LANG_FR_FR              34507
+#define IDS_MUI_LANG_HU_HU              34508
+#define IDS_MUI_LANG_IT_IT              34509
+#define IDS_MUI_LANG_JP_JP              34510
+#define IDS_MUI_LANG_KO_KR              34511
+#define IDS_MUI_LANG_NL_NL              34512
+#define IDS_MUI_LANG_PT_BR              34513
+#define IDS_MUI_LANG_RU_RU              34514
+#define IDS_MUI_LANG_ZH_CN              34515
 
 #define IDM_FILE_NEW                    40000
 #define IDM_FILE_OPEN                   40001

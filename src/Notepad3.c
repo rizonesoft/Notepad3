@@ -438,6 +438,7 @@ static void _InitGlobals()
 
   Globals.hMainMenu = NULL;
   Globals.CallTipType = CT_NONE;
+  Globals.iAvailLngCount = 1;
   Globals.iWrapCol = 0;
   Globals.bCodeFoldingAvailable = false;
   Globals.bForceLoadASCIIasUTF8 = false;
@@ -475,7 +476,39 @@ static void _InitGlobals()
 }
 
 
-static void _CleanUpResources(const HWND hwnd, bool bIsInitialized) 
+static bool _InsertLanguageMenu(HMENU hMenuBar)
+{
+  // check, if we need a language switching menu
+  if (Globals.iAvailLngCount < 2) {
+    return false;
+  }
+
+  HMENU hmenuLanguage = CreatePopupMenu();
+
+  WCHAR wchMenuItemFmt[128];
+  WCHAR wchMenuItemStrg[196];
+  for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng)
+  {
+    if (MUI_LanguageDLLs[lng].bHasDLL) 
+    {
+      GetLngString(MUI_LanguageDLLs[lng].rid, wchMenuItemFmt, COUNTOF(wchMenuItemFmt));
+      StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].szLocaleName);
+      AppendMenu(hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
+    }
+  }
+
+  // --- insert ---
+  int const pos = GetMenuItemCount(hMenuBar) - 1;
+  if (pos >= 0) {
+    GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
+    return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hmenuLanguage, wchMenuItemStrg);
+  }
+  return false;
+}
+
+
+
+static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
   if (hwnd) {
 
@@ -517,6 +550,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     s_lpFileArg = NULL;
   }
 }
+
 
 //=============================================================================
 //
@@ -630,13 +664,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
   s_msgTaskbarCreated = RegisterWindowMessage(L"TaskbarCreated");
 
-  if (Globals.hLngResContainer != Globals.hInstance) {
-    Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
-    if (!Globals.hMainMenu) {
-      GetLastErrorToMsgBox(L"LoadMenu()", 0);
-    }
+  Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+  if (!Globals.hMainMenu) {
+    GetLastErrorToMsgBox(L"LoadMenu()", 0);
+    _CleanUpResources(NULL, false);
+    return 1;
   }
-
+  _InsertLanguageMenu(Globals.hMainMenu);
+  
   if (!InitApplication(Globals.hInstance)) 
   {
     _CleanUpResources(NULL, false);
@@ -2879,7 +2914,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
   for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng) {
-    EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
+    //EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
     CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsLoaded);
   }
 
@@ -2918,26 +2953,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
       break;
 
-
-    case IDM_MUI_LANG_EN_US:
-    case IDM_MUI_LANG_AF_ZA:
-    case IDM_MUI_LANG_BE_BY:
-    case IDM_MUI_LANG_DE_DE:
-    case IDM_MUI_LANG_EN_GB:
-    case IDM_MUI_LANG_ES_ES:
-    case IDM_MUI_LANG_FR_FR:
-    case IDM_MUI_LANG_HU_HU:
-    case IDM_MUI_LANG_IT_IT:
-    case IDM_MUI_LANG_JP_JP:
-    case IDM_MUI_LANG_KO_KR:
-    case IDM_MUI_LANG_NL_NL:
-    case IDM_MUI_LANG_PT_BR:
-    case IDM_MUI_LANG_RU_RU:
-    case IDM_MUI_LANG_ZH_CN:
+    case IDS_MUI_LANG_EN_US:
+    case IDS_MUI_LANG_AF_ZA:
+    case IDS_MUI_LANG_BE_BY:
+    case IDS_MUI_LANG_DE_DE:
+    case IDS_MUI_LANG_EN_GB:
+    case IDS_MUI_LANG_ES_ES:
+    case IDS_MUI_LANG_FR_FR:
+    case IDS_MUI_LANG_HU_HU:
+    case IDS_MUI_LANG_IT_IT:
+    case IDS_MUI_LANG_JP_JP:
+    case IDS_MUI_LANG_KO_KR:
+    case IDS_MUI_LANG_NL_NL:
+    case IDS_MUI_LANG_PT_BR:
+    case IDS_MUI_LANG_RU_RU:
+    case IDS_MUI_LANG_ZH_CN:
       {
-        int iLngIdx = (int)LOWORD(wParam) - IDM_MUI_LANG_EN_US;
+        int iLngIdx = (int)LOWORD(wParam) - IDS_MUI_LANG_EN_US;
 
-        if (Globals.iPrefLANGID != MUI_LanguageDLLs[iLngIdx].LangId)
+        if (!MUI_LanguageDLLs[iLngIdx].bIsLoaded)
         {
           if (IsWindow(Globals.hwndDlgFindReplace)) {
             SendMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
@@ -2947,14 +2981,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           }
 
           StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), MUI_LanguageDLLs[iLngIdx].szLocaleName);
-          IniSetString(L"Settings2", L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
-
+          if (s_bEnableSaveSettings) {
+            IniSetString(L"Settings2", L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
+          }
           DestroyMenu(Globals.hMainMenu);
           FreeLanguageResources(Globals.hLngResContainer);
 
           Globals.iPrefLANGID = MUI_LanguageDLLs[iLngIdx].LangId;
           Globals.hLngResContainer = LoadLanguageResources(&Globals.iPrefLANGID);
           Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+          if (!Globals.hMainMenu) {
+            GetLastErrorToMsgBox(L"LoadMenu()", 0);
+            PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
+            break;
+          }
+          _InsertLanguageMenu(Globals.hMainMenu);
 
           SetMenu(Globals.hwndMain, Globals.hMainMenu);
           DrawMenuBar(Globals.hwndMain);
@@ -2963,7 +3004,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           UpdateUI();
           UpdateToolbar();
           UpdateStatusbar(true);
-
         }
       }
       break;
