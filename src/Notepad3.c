@@ -8197,12 +8197,12 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
     }
     // normalize
     int const iCeilFloor = (totalCnt + 1) / 2;
-    int iTotalPropWidth = 0;
+    //int iTotalPropWidth = 0;
     for (int i = 0; i < STATUS_SECTOR_COUNT; ++i) {
       if (bIsPropSection[i]) {
         int const width = (totalCnt > 1) ? ((vPropWidth[i] + iCeilFloor) / totalCnt) : 0;
         vPropWidth[i] = width;
-        iTotalPropWidth += width;
+        //iTotalPropWidth += width;
       }
     }
     // check for fitting

@@ -5335,6 +5335,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
             if (s_tchBuf[0] == L'\0') {
               GetFindPattern(s_tchBuf, FNDRPL_BUFFER);
             }
+            // cppcheck-suppress duplicateCondition  // s_tchBuf may have changed
             if (s_tchBuf[0] == L'\0') {
               MRU_Enum(Globals.pMRUfind, 0, s_tchBuf, COUNTOF(s_tchBuf));
             }
@@ -6263,7 +6264,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
     if (iReplaceMsg == SCI_REPLACETARGETRE) 
     {
       // redo find to get group ranges filled
-      iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
+      /*iPos = */_FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
     }
     else {
       start = pPosPair->beg + totalReplLength;
@@ -6728,6 +6729,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
   {
     const char* const sep = " ";
     SciCall_AutoCCancel();
+    // cppcheck-suppress constArgument
     SciCall_AutoCSetSeperator(sep[0]);
     SciCall_AutoCSetIgnoreCase(true);
     //SendMessage(hwnd, SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR, (WPARAM)SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE, 0);
@@ -7284,8 +7286,8 @@ INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
     case WM_LBUTTONUP:
       {
-        POINT pt;
-        pt.x = LOWORD(lParam);  pt.y = HIWORD(lParam);
+        //POINT pt;
+        //pt.x = LOWORD(lParam);  pt.y = HIWORD(lParam);
         //HWND hwndHover = ChildWindowFromPoint(hwnd,pt);
         //DWORD dwId = GetWindowLong(hwndHover,GWL_ID);
         if (id_capture != 0) {
@@ -8302,6 +8304,7 @@ void EditFoldClick(DocLn ln, int mode)
       // Save the info needed to match this click with the next click
       prev.ln = ln;
       prev.mode = mode;
+      // cppcheck-suppress unreadVariable
       prev.dwTickCount = GetTickCount();
       return;
     }
