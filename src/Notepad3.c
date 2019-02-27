@@ -2959,7 +2959,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
           SetMenu(Globals.hwndMain, Globals.hMainMenu);
           DrawMenuBar(Globals.hwndMain);
 
-          MsgDPIChanged(Globals.hwndMain, MAKEWPARAM(Globals.CurrentDPI.x, Globals.CurrentDPI.y), 0);
+          SendWMSize(Globals.hwndMain, NULL);
+          UpdateUI();
+          UpdateToolbar();
+          UpdateStatusbar(true);
+
         }
       }
       break;
