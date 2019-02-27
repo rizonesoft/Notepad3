@@ -15,19 +15,8 @@
 *                                                                             *
 *******************************************************************************/
 
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <shellapi.h>
 #include <commctrl.h>
 #include <stdlib.h>
@@ -35,10 +24,12 @@
 
 #include "../uthash/utarray.h"
 
-#include "Scintilla.h"
-#include "Helpers.h"
 #include "resource.h"
 #include "Encoding.h"
+#include "MuiLanguage.h"
+
+#include "Scintilla.h"
+
 
 //=============================================================================
 //
@@ -329,10 +320,10 @@ bool Encoding_IsValid(int iTestEncoding) {
     if ((g_Encodings[iTestEncoding].uFlags & NCP_INTERNAL) ||
       (IsValidCodePage(g_Encodings[iTestEncoding].uCodePage) &&
        GetCPInfo(g_Encodings[iTestEncoding].uCodePage, &cpi))) {
-      return(true);
+      return true;
     }
   }
-  return(false);
+  return false;
 }
 // ============================================================================
 
@@ -343,7 +334,7 @@ typedef struct _ee {
 } ENCODINGENTRY, *PENCODINGENTRY;
 
 int CmpEncoding(const void *s1, const void *s2) {
-  return StrCmp(((PENCODINGENTRY)s1)->wch, ((PENCODINGENTRY)s2)->wch);
+  return StrCmp(((const PENCODINGENTRY)s1)->wch, ((const PENCODINGENTRY)s2)->wch);
 }
 // ============================================================================
 
@@ -428,7 +419,7 @@ bool Encoding_GetFromListView(HWND hwnd, int *pidEncoding) {
 
     return (true);
   }
-  return(false);
+  return false;
 }
 // ============================================================================
 
@@ -506,7 +497,7 @@ bool Encoding_GetFromComboboxEx(HWND hwnd, int *pidEncoding) {
 
     return (true);
   }
-  return(false);
+  return false;
 }
 // ============================================================================
 

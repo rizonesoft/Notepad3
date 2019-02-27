@@ -132,7 +132,6 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv);
 bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue);
 bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue);
 bool FileVars_IsUTF8(LPFILEVARS lpfv);
-bool FileVars_IsNonUTF8(LPFILEVARS lpfv);
 bool FileVars_IsValidEncoding(LPFILEVARS lpfv);
 int  FileVars_GetEncoding(LPFILEVARS lpfv);
 

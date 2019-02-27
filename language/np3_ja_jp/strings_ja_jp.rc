@@ -122,7 +122,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE        "管理ツールが見つかりません。\nNotepad3の公式サイトを開きますか？ https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE  "大容量のファイルです。このファイルを開きますか？"
     IDS_MUI_WARN_UNKNOWN_EXT    "%s は設定のない拡張子です。\n読み込みますか？"
-    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks by '%s'?"
+    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
     IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
 END
 
@@ -201,7 +201,7 @@ IDS_MUI_CMDLINEHELP "\
 記述法:\r\n\
 Notepad3 \t[/?] […[文字コード]] […[改行コード]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[ドライブ:][パス]ファイル名[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[ドライブ:][パス]ファイル名[…]]\r\n\r\n\
 ファイル\t相対パス可能. 最後の引数にする必要がある.\r\n\
  \tデフォルトでは空白があっても引用符は不要.\r\n\
 +\t複数のファイルの引数を許容 (要・引用符)\r\n\
@@ -233,6 +233,7 @@ Notepad3 \t[/?] […[文字コード]] […[改行コード]] [/e] [/g] [/m] [/l]\r\n\
 /u\t管理者権限で実行\r\n\
 /v\tすぐに印刷して終了する\r\n\
 /vd\tファイルの印刷(印刷ダイアログを開く)\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
 /z\t「次へ」を省略 (レジストリでメモ帳を置換している際に有効化)\r\n\r\n\
 例:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
@@ -271,7 +272,7 @@ IDS_MUI_ABOUT_RTF_3  "\
 \\cf0 \\fs20\\b1\\ul1 \\f1\\b0\\'d6\\'78\\'b4\\'c7\\'a3\\'ba\\f0\\b1\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 \\f2\\'83\\'8a\\'83\\'5c\\'81\\'5b\\'83\\'58\\f0: \\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 \\f2\\'83\\'8a\\'83\\'5c\\'81\\'5b\\'83\\'58\\f0 :\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
 \\cf0 \\fs20\\b1\\ul1 \\f2\\'83\\'89\\'83\\'43\\'83\\'5a\\'83\\'93\\'83\\'58\\f0 :\\ul0\\b0\\fs18\\par\

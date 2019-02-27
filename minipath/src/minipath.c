@@ -29,7 +29,6 @@
 #include "minipath.h"
 #include "resource.h"
 
-
 HICON     g_hDlgIcon = NULL;
 
 /******************************************************************************
@@ -72,9 +71,9 @@ HANDLE    hChangeHandle = NULL;
 
 HISTORY   mHistory;
 
-WCHAR      g_wchIniFile[MAX_PATH] = L"";
-WCHAR      g_wchIniFile2[MAX_PATH] = L"";
-WCHAR      g_wchNP3IniFile[MAX_PATH] = L"";
+WCHAR     g_wchIniFile[MAX_PATH] = L"";
+WCHAR     g_wchIniFile2[MAX_PATH] = L"";
+WCHAR     g_wchNP3IniFile[MAX_PATH] = L"";
 
 BOOL      bSaveSettings;
 WCHAR     szQuickview[MAX_PATH] = L"";
@@ -152,6 +151,8 @@ WCHAR szDDEMsg[256] = L"";
 WCHAR szDDEApp[256] = L"";
 WCHAR szDDETopic[256] = L"";
 
+static BOOL bHasQuickview = FALSE;
+
 UINT16    g_uWinVer;
 
 HINSTANCE            g_hInstance = NULL;
@@ -159,7 +160,8 @@ HMODULE              g_hLngResContainer = NULL;
 
 WCHAR                g_tchPrefLngLocName[LOCALE_NAME_MAX_LENGTH + 1];
 LANGID               g_iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE es-ES en-GB fr-FR ja-JP nl-NL ru-RU zh-CN"; // en-US internal
+// 'en-US' internal default
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE en-GB es-ES fr-FR hu-HU it-IT ja-JP ko-KR nl-NL pt-BR ru-RU zh-CN";
 
 
 //=============================================================================
@@ -302,7 +304,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
   LoadFlags();
 
   // Try to activate another window
-  if (ActivatePrevInst()) { return(0); }
+  if (ActivatePrevInst()) { return 0; }
 
   // Init OLE and Common Controls
   OleInitialize(NULL);
@@ -1057,6 +1059,28 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
 //=============================================================================
 //
+//  _LoadBitmapFile()
+//
+static HBITMAP _LoadBitmapFile(LPCWSTR path)
+{
+  WCHAR szTmp[MAX_PATH];
+  if (PathIsRelative(path)) {
+    GetModuleFileName(NULL, szTmp, COUNTOF(szTmp));
+    PathRemoveFileSpec(szTmp);
+    PathAppend(szTmp, path);
+    path = szTmp;
+  }
+
+  if (!PathFileExists(path)) {
+    return NULL;
+  }
+  HBITMAP const hbmp = (HBITMAP)LoadImage(NULL, path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+  return hbmp;
+}
+
+
+//=============================================================================
+//
 //  CreateBars() - Create Toolbar and Statusbar
 //
 //
@@ -1070,7 +1094,6 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   BITMAP bmp;
   HBITMAP hbmp, hbmpCopy = NULL;
   HIMAGELIST himl;
-  WCHAR szTmp[MAX_PATH];
   BOOL bExternalBitmap = FALSE;
 
   DWORD dwToolbarStyle   = WS_TOOLBAR | TBSTYLE_FLAT | CCS_ADJUSTABLE;
@@ -1098,19 +1121,19 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   hbmp = NULL;
   if (StrIsNotEmpty(tchToolbarBitmap))
   {
-    if (!SearchPath(NULL,tchToolbarBitmap,NULL,COUNTOF(szTmp),szTmp,NULL))
-      lstrcpy(szTmp,tchToolbarBitmap);
-    hbmp = LoadImage(NULL,szTmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION|LR_LOADFROMFILE);
+    hbmp = _LoadBitmapFile(tchToolbarBitmap);
   }
-  if (hbmp)
+  if (hbmp) {
     bExternalBitmap = TRUE;
+  }
   else {
     hbmp = LoadImage(hInstance,MAKEINTRESOURCE(IDR_MAINWND),IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
     hbmpCopy = CopyImage(hbmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
   }
   GetObject(hbmp,sizeof(BITMAP),&bmp);
-  if (!IsXP())
-    BitmapMergeAlpha(hbmp,GetSysColor(COLOR_3DFACE));
+  if (!IsXP()) {
+    BitmapMergeAlpha(hbmp, GetSysColor(COLOR_3DFACE));
+  }
   himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
   ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
   DeleteObject(hbmp);
@@ -1120,10 +1143,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   hbmp = NULL;
   if (StrIsNotEmpty(tchToolbarBitmapHot))
   {
-    if (!SearchPath(NULL,tchToolbarBitmapHot,NULL,COUNTOF(szTmp),szTmp,NULL))
-      lstrcpy(szTmp,tchToolbarBitmapHot);
-
-    hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    hbmp = _LoadBitmapFile(tchToolbarBitmapHot);
     if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
@@ -1138,10 +1158,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
   hbmp = NULL;
   if (StrIsNotEmpty(tchToolbarBitmapDisabled))
   {
-    if (!SearchPath(NULL,tchToolbarBitmapDisabled,NULL,COUNTOF(szTmp),szTmp,NULL))
-      lstrcpy(szTmp,tchToolbarBitmapDisabled);
-
-    hbmp = LoadImage(NULL, szTmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+    hbmp = _LoadBitmapFile(tchToolbarBitmapDisabled);
     if (hbmp)
     {
       GetObject(hbmp,sizeof(BITMAP),&bmp);
@@ -1396,7 +1413,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
   DirList_GetItem(hwndDirList,-1,&dli);
 
   EnableCmd(hmenu,IDM_FILE_LAUNCH,(i && dli.ntype == DLE_FILE));
-  EnableCmd(hmenu,IDM_FILE_QUICKVIEW,(i && dli.ntype == DLE_FILE));
+  EnableCmd(hmenu,IDM_FILE_QUICKVIEW,(i && dli.ntype == DLE_FILE) && bHasQuickview);
   EnableCmd(hmenu,IDM_FILE_OPENWITH,i);
   EnableCmd(hmenu,IDM_FILE_CREATELINK,i);
   EnableCmd(hmenu,IDM_FILE_SAVEAS,(i && dli.ntype == DLE_FILE));
@@ -2156,6 +2173,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
     case IDM_VIEW_OPTIONS:
       OptionsPropSheet(hwnd, g_hLngResContainer);
+      bHasQuickview = PathFileExists(szQuickview);
       break;
 
 
@@ -2626,9 +2644,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
           if (bSingleClick && ListView_GetSelectedCount(hwndDirList))
           {
-            if (HIBYTE(GetKeyState(VK_MENU)))
+            if (IsKeyDown(VK_MENU))
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_PROPERTIES,1),0);
-            else if (HIBYTE(GetKeyState(VK_SHIFT)))
+            else if (IsKeyDown(VK_SHIFT))
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPENNEW,1),0);
             else
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
@@ -2638,9 +2656,9 @@ LRESULT MsgNotify(HWND hwnd,WPARAM wParam,LPARAM lParam)
         case NM_DBLCLK:
         case NM_RETURN:
 
-          if (HIBYTE(GetKeyState(VK_MENU)))
+          if (IsKeyDown(VK_MENU))
             SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_PROPERTIES,1),0);
-          else if (HIBYTE(GetKeyState(VK_SHIFT)))
+          else if (IsKeyDown(VK_SHIFT))
               SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPENNEW,1),0);
           else
             SendMessage(hwnd,WM_COMMAND,MAKELONG(IDM_FILE_OPEN,1),0);
@@ -2921,6 +2939,8 @@ void LoadSettings()
   }
   else
     PathAbsoluteFromApp(szQuickview,NULL,COUNTOF(szQuickview),TRUE);
+
+  bHasQuickview = PathFileExists(szQuickview);
 
   IniSectionGetString(pIniSection,L"QuikviewParams",L"",
     szQuickviewParams,COUNTOF(szQuickviewParams));
@@ -3316,37 +3336,40 @@ int CheckIniFile(LPWSTR lpszFile,LPCWSTR lpszModule)
     lstrcpy(PathFindFileName(tchBuild),tchFileExpanded);
     if (PathFileExists(tchBuild)) {
       lstrcpy(lpszFile,tchBuild);
-      return(1);
+      return 1;
     }
-    // sub directory (.\np3\) 
+    // Sub directory (.\np3\) 
     lstrcpy(tchBuild,lpszModule);
     PathRemoveFileSpec(tchBuild);
     lstrcat(tchBuild,L"\\np3\\");
     lstrcat(tchBuild,tchFileExpanded);
     if (PathFileExists(tchBuild)) {
       lstrcpy(lpszFile,tchBuild);
-      return(1);
+      return 1;
     }
-    // %appdata%
-    if (S_OK == SHGetFolderPath(NULL,CSIDL_APPDATA,NULL,SHGFP_TYPE_CURRENT,tchBuild)) {
-      PathAppend(tchBuild,tchFileExpanded);
+    // Application Data (%APPDATA%)
+    if (S_OK == SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
+      PathAppend(tchBuild, tchFileExpanded);
       if (PathFileExists(tchBuild)) {
-        lstrcpy(lpszFile,tchBuild);
-        return(1);
+        lstrcpy(lpszFile, tchBuild);
+        return 1;
       }
     }
-    // general
-    if (SearchPath(NULL,tchFileExpanded,NULL,COUNTOF(tchBuild),tchBuild,NULL)) {
-      lstrcpy(lpszFile,tchBuild);
-      return(1);
+    // Home (%HOMEPATH%)
+    if (S_OK == SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, SHGFP_TYPE_CURRENT, tchBuild)) {
+      PathAppend(tchBuild, tchFileExpanded);
+      if (PathFileExists(tchBuild)) {
+        lstrcpy(lpszFile, tchBuild);
+        return 1;
+      }
     }
   }
   else if (PathFileExists(tchFileExpanded)) {
     lstrcpy(lpszFile,tchFileExpanded);
-    return(1);
+    return 1;
   }
 
-  return(0);
+  return 0;
 }
 
 int CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
@@ -3549,17 +3572,16 @@ BOOL DisplayPath(LPCWSTR lpPath,UINT uIdError)
   lstrcpy(szTmp,lpPath);
   ExpandEnvironmentStringsEx(szTmp,COUNTOF(szTmp));
 
-  if (!SearchPathEx(NULL,szTmp,NULL,COUNTOF(szPath),szPath,NULL))
-    lstrcpy(szPath,szTmp);
-
-  if (PathIsLnkFile(szPath))
+  if (!SearchPathEx(szTmp, COUNTOF(szPath), szPath)) {
+    lstrcpy(szPath, szTmp);
+  }
+  if (PathIsLnkFile(szPath)) {
     return DisplayLnkFile(szPath);
-
+  }
   dwAttr = GetFileAttributes(szPath);
 
   if (dwAttr != INVALID_FILE_ATTRIBUTES)
   {
-
     if (dwAttr & FILE_ATTRIBUTE_DIRECTORY)
     {
       if (!SetCurrentDirectory(szPath))
@@ -3646,14 +3668,13 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
 
   ExpandEnvironmentStringsEx(szTmp,COUNTOF(szTmp));
 
-  if (!SearchPathEx(NULL,szTmp,NULL,COUNTOF(szPath),szPath,NULL))
-    lstrcpy(szPath,szTmp);
-
+  if (!SearchPathEx(szTmp, COUNTOF(szPath), szPath)) {
+    lstrcpy(szPath, szTmp);
+  }
   dwAttr = GetFileAttributes(szPath);
 
   if (dwAttr != INVALID_FILE_ATTRIBUTES)
   {
-
     if (dwAttr & FILE_ATTRIBUTE_DIRECTORY)
     {
       if (!SetCurrentDirectory(szPath))
@@ -3794,26 +3815,14 @@ BOOL ActivatePrevInst()
 
       if (lpPathArg)
       {
-        // Search working directory from second instance, first!
-        // lpFileArg is at least MAX_PATH+2 bytes
-        WCHAR tchTmp[MAX_PATH];
-
         ExpandEnvironmentStringsEx(lpPathArg,(DWORD)GlobalSize(lpPathArg)/sizeof(WCHAR));
 
         if (PathIsRelative(lpPathArg)) {
-          GetCurrentDirectory(COUNTOF(tchTmp),tchTmp);
-          PathAppend(tchTmp,lpPathArg);
-          if (PathFileExists(tchTmp))
-            lstrcpy(lpPathArg,tchTmp);
-          else {
-            if (SearchPath(NULL,lpPathArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-              lstrcpy(lpPathArg,tchTmp);
-          }
+          WCHAR tchTmp[MAX_PATH];
+          GetCurrentDirectory(COUNTOF(tchTmp), tchTmp);
+          PathAppend(tchTmp, lpPathArg);
+          lstrcpy(lpPathArg, tchTmp);
         }
-
-        else if (SearchPath(NULL,lpPathArg,NULL,COUNTOF(tchTmp),tchTmp,NULL))
-          lstrcpy(lpPathArg,tchTmp);
-
         cds.dwData = DATA_MINIPATH_PATHARG;
         cds.cbData = (DWORD)GlobalSize(lpPathArg);
         cds.lpData = lpPathArg;
@@ -4036,13 +4045,14 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
 
       lstrcpy(szTmp,szTargetApplication);
       PathAbsoluteFromApp(szTmp,szFile,COUNTOF(szFile),TRUE);
-      if (!PathFileExists(szFile)) {
-        if (!SearchPath(NULL,szTmp,NULL,COUNTOF(szFile),szFile,NULL)) {
-          GetModuleFileName(NULL,szFile,COUNTOF(szFile));
-          PathRemoveFileSpec(szFile);
-          PathAppend(szFile,szTmp);
-        }
-      }
+
+      //~if (!PathFileExists(szFile)) {
+      //~  if (!SearchPath(NULL,szTmp,NULL,COUNTOF(szFile),szFile,NULL)) {
+      //~    GetModuleFileName(NULL,szFile,COUNTOF(szFile));
+      //~    PathRemoveFileSpec(szFile);
+      //~    PathAppend(szFile,szTmp);
+      //~  }
+      //~}
 
       SHELLEXECUTEINFO sei = { 0 };
       sei.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -4057,10 +4067,8 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       ShellExecuteEx(&sei);
     }
   }
-
   else
   {
-    WCHAR  szFile[MAX_PATH];
     LPWSTR lpParam;
     WCHAR  szParam[MAX_PATH] = L"";
     WCHAR  szTmp[MAX_PATH];
@@ -4095,18 +4103,22 @@ void LaunchTarget(LPCWSTR lpFileName,BOOL bOpenNew)
       lstrcpy(szTmp,szTargetApplication);
       ExpandEnvironmentStringsEx(szTmp,COUNTOF(szTmp));
 
-      if (PathIsRelative(szTmp)) {
-        PathAbsoluteFromApp(szTmp,szFile,COUNTOF(szFile),TRUE);
-        if (!PathFileExists(szFile)) {
-          if (!SearchPath(NULL,szTmp,NULL,COUNTOF(szFile),szFile,NULL)) {
-            GetModuleFileName(NULL,szFile,COUNTOF(szFile));
-            PathRemoveFileSpec(szFile);
-            PathAppend(szFile,szTmp);
-          }
-        }
-      }
-      else
-        lstrcpy(szFile,szTmp);
+      WCHAR  szFile[MAX_PATH];
+
+      //~if (PathIsRelative(szTmp)) {
+      //~  PathAbsoluteFromApp(szTmp,szFile,COUNTOF(szFile),TRUE);
+      //~  if (!PathFileExists(szFile)) {
+      //~    if (!SearchPath(NULL,szTmp,NULL,COUNTOF(szFile),szFile,NULL)) {
+      //~      GetModuleFileName(NULL,szFile,COUNTOF(szFile));
+      //~      PathRemoveFileSpec(szFile);
+      //~      PathAppend(szFile,szTmp);
+      //~    }
+      //~  }
+      //~}
+      //~else {
+      //~  lstrcpy(szFile, szTmp);
+      //~}
+      PathAbsoluteFromApp(szTmp, szFile, COUNTOF(szFile), TRUE);
 
       SHELLEXECUTEINFO sei = { 0 };
       sei.cbSize = sizeof(SHELLEXECUTEINFO);

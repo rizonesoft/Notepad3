@@ -55,6 +55,11 @@ int GetNumStyle(const int numType) {
     return SCE_NIM_NUMBER;
 }
 
+bool IsLetter(const int ch) {
+    // 97 to 122 || 65 to 90
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+
 bool IsAWordChar(const int ch) {
     return ch < 0x80 && (isalnum(ch) || ch == '_' || ch == '.');
 }
@@ -73,6 +78,26 @@ int IsNumOctal(const StyleContext &sc) {
 
 bool IsNewline(const int ch) {
     return (ch == '\n' || ch == '\r');
+}
+
+bool IsFuncName(const char *str) {
+    const char *identifiers[] = {
+        "proc",
+        "func",
+        "macro",
+        "method",
+        "template",
+        "iterator",
+        "converter"
+    };
+
+    for (const char *id : identifiers) {
+        if (strcmp(str, id) == 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 constexpr bool IsTripleLiteral(const int style) noexcept {
@@ -99,10 +124,8 @@ int GetIndent(const Sci_Position line, Accessor &styler) {
     bool inPrevPrefix = line > 0;
     Sci_Position posPrev = inPrevPrefix ? styler.LineStart(line - 1) : 0;
 
-    // No fold points inside block comments and triple literals
-    while ((IsASpaceOrTab(ch) 
-        || IsStreamComment(style) 
-        || IsTripleLiteral(style)) && (startPos < eolPos)) {
+    // No fold points inside triple literals
+    while ((IsASpaceOrTab(ch) || IsTripleLiteral(style)) && (startPos < eolPos)) {
         if (inPrevPrefix) {
             char chPrev = styler[posPrev++];
             if (chPrev != ' ' && chPrev != '\t') {
@@ -121,11 +144,14 @@ int GetIndent(const Sci_Position line, Accessor &styler) {
         style = styler.StyleAt(startPos);
     }
 
-    indent += SC_FOLDLEVELBASE;
+    // Prevent creating fold lines for comments if indented
+    if (!(IsStreamComment(style) || IsLineComment(style)))
+        indent += SC_FOLDLEVELBASE;
 
     if (styler.LineStart(line) == styler.Length() 
         || IsASpaceOrTab(ch) 
         || IsNewline(ch) 
+        || IsStreamComment(style)
         || IsLineComment(style)) {
         return indent | SC_FOLDLEVELWHITEFLAG;
     } else {
@@ -142,10 +168,12 @@ int IndentAmount(const Sci_Position line, Accessor &styler) {
 struct OptionsNim {
     bool fold;
     bool foldCompact;
+    bool highlightRawStrIdent;
 
     OptionsNim() {
         fold = true;
         foldCompact = true;
+        highlightRawStrIdent = false;
     }
 };
 
@@ -156,6 +184,10 @@ static const char *const nimWordListDesc[] = {
 
 struct OptionSetNim : public OptionSet<OptionsNim> {
     OptionSetNim() {
+        DefineProperty("lexer.nim.raw.strings.highlight.ident", &OptionsNim::highlightRawStrIdent,
+            "Set to 1 to enable highlighting generalized raw string identifiers. "
+            "Generalized raw string identifiers are anything other than r (or R).");
+
         DefineProperty("fold", &OptionsNim::fold);
         DefineProperty("fold.compact", &OptionsNim::foldCompact);
 
@@ -298,6 +330,7 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
 
     bool funcNameExists = false;
     bool isStylingRawString = false;
+    bool isStylingRawStringIdent = false;
 
     for (; sc.More(); sc.Forward()) {
         if (sc.atLineStart) {
@@ -402,13 +435,17 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                 sc.SetState(SCE_NIM_DEFAULT);
                 break;
             case SCE_NIM_IDENTIFIER:
-                if (!IsAWordChar(sc.ch)) {
+                if (sc.ch == '.' || !IsAWordChar(sc.ch)) {
                     char s[100];
                     sc.GetCurrent(s, sizeof(s));
                     int style = SCE_NIM_IDENTIFIER;
 
                     if (keywords.InList(s) && !funcNameExists) {
-                        style = SCE_NIM_WORD;
+                        // Prevent styling keywords if they are sub-identifiers
+                        Sci_Position segStart = styler.GetStartSegment() - 1;
+                        if (segStart < 0 || styler.SafeGetCharAt(segStart, '\0') != '.') {
+                            style = SCE_NIM_WORD;
+                        }
                     } else if (funcNameExists) {
                         style = SCE_NIM_FUNCNAME;
                     }
@@ -417,20 +454,37 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                     sc.SetState(SCE_NIM_DEFAULT);
 
                     if (style == SCE_NIM_WORD) {
-                        if (0 == strcmp(s, "proc") 
-                            || 0 == strcmp(s, "func") 
-                            || 0 == strcmp(s, "macro") 
-                            || 0 == strcmp(s, "method") 
-                            || 0 == strcmp(s, "template") 
-                            || 0 == strcmp(s, "iterator") 
-                            || 0 == strcmp(s, "converter")) {
-                            funcNameExists = true;
-                        } else {
-                            funcNameExists = false;
-                        }
+                        funcNameExists = IsFuncName(s);
                     } else {
                         funcNameExists = false;
                     }
+                }
+
+                if (IsAlphaNumeric(sc.ch) && sc.chNext == '\"') {
+                    isStylingRawStringIdent = true;
+
+                    if (options.highlightRawStrIdent) {
+                        if (styler.SafeGetCharAt(sc.currentPos + 2) == '\"' &&
+                            styler.SafeGetCharAt(sc.currentPos + 3) == '\"') {
+                            sc.ChangeState(SCE_NIM_TRIPLEDOUBLE);
+                        } else {
+                            sc.ChangeState(SCE_NIM_STRING);
+                        }
+                    }
+
+                    sc.ForwardSetState(SCE_NIM_DEFAULT);
+                }
+                break;
+            case SCE_NIM_FUNCNAME:
+                if (sc.ch == '`') {
+                    funcNameExists = false;
+                    sc.ForwardSetState(SCE_NIM_DEFAULT);
+                } else if (sc.atLineEnd) {
+                    // Prevent leaking the style to the next line if not closed
+                    funcNameExists = false;
+
+                    sc.ChangeState(SCE_NIM_STRINGEOL);
+                    sc.ForwardSetState(SCE_NIM_DEFAULT);
                 }
                 break;
             case SCE_NIM_COMMENT:
@@ -478,10 +532,14 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                 }
                 break;
             case SCE_NIM_STRING:
-                if (sc.ch == '\\' && !isStylingRawString) {
+                if (!isStylingRawStringIdent && !isStylingRawString && sc.ch == '\\') {
                     if (sc.chNext == '\"' || sc.chNext == '\'' || sc.chNext == '\\') {
                         sc.Forward();
                     }
+                } else if (isStylingRawString && sc.ch == '\"' && sc.chNext == '\"') {
+                    // Forward in situations such as r"a""bc\" so that "bc\" wouldn't be
+                    // considered a string of its own
+                    sc.Forward();
                 } else if (sc.ch == '\"') {
                     sc.ForwardSetState(SCE_NIM_DEFAULT);
                 } else if (sc.atLineEnd) {
@@ -502,14 +560,26 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                 }
                 break;
             case SCE_NIM_BACKTICKS:
-                if (sc.ch == '`' || sc.atLineEnd) {
+                if (sc.ch == '`' ) {
+                    sc.ForwardSetState(SCE_NIM_DEFAULT);
+                } else if (sc.atLineEnd) {
+                    sc.ChangeState(SCE_NIM_STRINGEOL);
                     sc.ForwardSetState(SCE_NIM_DEFAULT);
                 }
                 break;
             case SCE_NIM_TRIPLEDOUBLE:
                 if (sc.Match(R"(""")")) {
-                    sc.Forward(2);
-                    sc.ForwardSetState(SCE_NIM_DEFAULT);
+
+                    // Outright forward all " after the closing """ as a triple double
+                    //
+                    // A valid example where this is needed is: """8 double quotes->""""""""
+                    // You can have as many """ at the end as you wish, as long as the actual
+                    // closing literal is there
+                    while (sc.ch == '"') {
+                        sc.Forward();
+                    }
+
+                    sc.SetState(SCE_NIM_DEFAULT);
                 }
                 break;
             case SCE_NIM_TRIPLE:
@@ -543,11 +613,31 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
                 }
             }
             // Raw string
-            else if ((sc.ch == 'r' || sc.ch == 'R') && sc.chNext == '\"') {
+            else if (IsAlphaNumeric(sc.ch) && sc.chNext == '\"') {
                 isStylingRawString = true;
 
-                sc.SetState(SCE_NIM_STRING);
-                sc.Forward();
+                // Triple doubles can be raw strings too. How sweet
+                if (styler.SafeGetCharAt(sc.currentPos + 2) == '\"' &&
+                    styler.SafeGetCharAt(sc.currentPos + 3) == '\"') {
+                    sc.SetState(SCE_NIM_TRIPLEDOUBLE);
+                } else {
+                    sc.SetState(SCE_NIM_STRING);
+                }
+
+                int rawStrStyle = options.highlightRawStrIdent ? IsLetter(sc.ch) :
+                                  (sc.ch == 'r' || sc.ch == 'R');
+
+                if (rawStrStyle) {
+                    sc.Forward();
+
+                    if (sc.state == SCE_NIM_TRIPLEDOUBLE) {
+                        sc.Forward(2);
+                    }
+                } else {
+                    // Anything other than r/R is considered a general raw string identifier
+                    isStylingRawStringIdent = true;
+                    sc.SetState(SCE_NIM_IDENTIFIER);
+                }
             }
             // String and triple double literal
             else if (sc.ch == '\"') {
@@ -555,6 +645,17 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
 
                 if (sc.Match(R"(""")")) {
                     sc.SetState(SCE_NIM_TRIPLEDOUBLE);
+                    
+                    // Keep forwarding until the total opening literal count is 5
+                    // A valid example where this is needed is: """""<-5 double quotes"""
+                    while (sc.ch == '"') {
+                        sc.Forward();
+
+                        if (sc.Match(R"(""")")) {
+                            sc.Forward();
+                            break;
+                        }
+                    }
                 } else {
                     sc.SetState(SCE_NIM_STRING);
                 }
@@ -569,10 +670,10 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
             }
             // Operator definition
             else if (sc.ch == '`') {
-                sc.SetState(SCE_NIM_BACKTICKS);
-
                 if (funcNameExists) {
-                    funcNameExists = false;
+                    sc.SetState(SCE_NIM_FUNCNAME);
+                } else {
+                    sc.SetState(SCE_NIM_BACKTICKS);
                 }
             }
             // Keyword
@@ -616,6 +717,8 @@ void SCI_METHOD LexerNim::Lex(Sci_PositionU startPos, Sci_Position length,
 
         if (sc.atLineEnd) {
             funcNameExists = false;
+            isStylingRawString = false;
+            isStylingRawStringIdent = false;
         }
     }
 

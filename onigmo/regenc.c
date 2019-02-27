@@ -3,7 +3,7 @@
 **********************************************************************/
 /*-
  * Copyright (c) 2002-2007  K.Kosako  <sndgk393 AT ybb DOT ne DOT jp>
- * Copyright (c) 2011-2016  K.Takata  <kentkt AT csc DOT jp>
+ * Copyright (c) 2011-2019  K.Takata  <kentkt AT csc DOT jp>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -951,6 +951,7 @@ onigenc_property_list_add_property(UChar* name, const OnigCodePoint* prop,
 }
 #endif
 
+#ifdef USE_CASE_MAP_API
 extern int
 onigenc_ascii_only_case_map(OnigCaseFoldType* flagP, const OnigUChar** pp, const OnigUChar* end,
 			    OnigUChar* to, OnigUChar* to_end, const struct OnigEncodingTypeST* enc)
@@ -969,7 +970,7 @@ onigenc_ascii_only_case_map(OnigCaseFoldType* flagP, const OnigUChar** pp, const
 
     if (code >= 'a' && code <= 'z' && (flags & ONIGENC_CASE_UPCASE)) {
       flags |= ONIGENC_CASE_MODIFIED;
-      code += 'A' - 'a';
+      code -= 'a' - 'A';
     } else if (code >= 'A' && code <= 'Z' &&
 	(flags & (ONIGENC_CASE_DOWNCASE | ONIGENC_CASE_FOLD))) {
       flags |= ONIGENC_CASE_MODIFIED;
@@ -997,8 +998,7 @@ onigenc_single_byte_ascii_only_case_map(OnigCaseFoldType* flagP, const OnigUChar
 
     if (code >= 'a' && code <= 'z' && (flags & ONIGENC_CASE_UPCASE)) {
       flags |= ONIGENC_CASE_MODIFIED;
-      code -= 'a';
-      code += 'A';
+      code -= 'a' - 'A';
     } else if (code >= 'A' && code <= 'Z' &&
 	(flags & (ONIGENC_CASE_DOWNCASE | ONIGENC_CASE_FOLD))) {
       flags |= ONIGENC_CASE_MODIFIED;
@@ -1011,3 +1011,4 @@ onigenc_single_byte_ascii_only_case_map(OnigCaseFoldType* flagP, const OnigUChar
   *flagP = flags;
   return (int )(to - to_start);
 }
+#endif

@@ -1,17 +1,12 @@
-
-=======================================================================
-=                                                                     =
-=                                                                     =
-=   Notepad2 - light-weight Scintilla-based text editor for Windows   =
-=                                                                     =
-=                                                                     =
-=                                                   Notepad2 4.2.25   =
-=                                      (c) Florian Balmer 2004-2011   =
-=                                       http://www.flos-freeware.ch   =
-=                                                                     =
-=                                                                     =
-=======================================================================
-
+================================================================================
+=                                                                              =
+=            Notepad2 - light-weight Scintilla-based text editor for Windows   =
+=                                                                              =
+=                                                            Notepad2 4.2.25   =
+=                                               (c) Florian Balmer 2004-2011   =
+=                                                http://www.flos-freeware.ch   =
+=                                                                              =
+================================================================================
 
 Description
 

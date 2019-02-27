@@ -67,9 +67,9 @@ namespace CompactEncDet {
   Encoding DetectEncoding(
       const char* text, int text_length, const char* url_hint,
       const char* http_charset_hint, const char* meta_charset_hint,
-      int encoding_hint,
-      Language language_hint,  // User interface lang
-      TextCorpusType corpus_type, bool ignore_7bit_mail_encodings,
+      const int encoding_hint,
+      const Language language_hint,  // User interface lang
+      const TextCorpusType corpus_type, bool ignore_7bit_mail_encodings,
       int* bytes_consumed, bool* is_reliable);
 
   // Support functions for unit test program
@@ -78,6 +78,6 @@ namespace CompactEncDet {
   Encoding TopEncodingOfTLDHint(const char* name);
   Encoding TopEncodingOfCharsetHint(const char* name);
   const char* Version();
-};      // End namespace CompactEncDet
+}      // End namespace CompactEncDet
 
 #endif  // COMPACT_ENC_DET_COMPACT_ENC_DET_H_

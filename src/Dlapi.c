@@ -12,25 +12,14 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <string.h>
-#include "Helpers.h"
+
 #include "Dlapi.h"
 
 
@@ -857,9 +846,9 @@ bool DirList_GetLongPathName(HWND hwnd,LPWSTR lpszLongPath,int length)
   if (SHGetPathFromIDList(lpdl->pidl,tch))
   {
     StringCchCopy(lpszLongPath,length,tch);
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -885,7 +874,7 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
   int i = -1;
 
   if (!lpszFullPath || !StringCchLen(lpszFullPath, MAX_PATH)) {
-    return(false);
+    return false;
   }
 
   GetShortPathName(lpszFullPath,szShortPath,MAX_PATH);
@@ -912,12 +901,12 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
       ListView_SetItemState(hwnd,i,LVIS_FLAGS,LVIS_FLAGS);
       ListView_EnsureVisible(hwnd,i,false);
 
-      return(true);
+      return true;
     }
 
   }
 
-  return(false);
+  return false;
 
 }
 
@@ -979,7 +968,7 @@ bool DirList_MatchFilter(LPSHELLFOLDER lpsf,LPCITEMIDLIST pidl,PDL_FILTER pdlf)
 
   // All the directories are added
   if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-    return(true);
+    return true;
 
   // Check if exclude *.* after directories have been added
   if (pdlf->nCount == 0 && pdlf->bExcludeFilter)
@@ -993,9 +982,9 @@ bool DirList_MatchFilter(LPSHELLFOLDER lpsf,LPCITEMIDLIST pidl,PDL_FILTER pdlf)
       if (bMatchSpec)
       {
         if (!pdlf->bExcludeFilter) {
-          return(true);
+          return true;
         }
-        return(false);
+        return false;
       }
     }
   }
@@ -1266,7 +1255,7 @@ bool DriveBox_SelectDrive(HWND hwnd,LPCWSTR lpszPath)
   }
 
   // Don't select anything
-  SendMessage(hwnd,CB_SETCURSEL,(WPARAM)-1,0);
+  SendMessage(hwnd,CB_SETCURSEL,(WPARAM)1,0);
   return false;
 
 }

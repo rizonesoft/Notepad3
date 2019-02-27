@@ -73,7 +73,7 @@ add_library(ced ${CED_LIBRARY_SOURCES})
 #add_definitions(-DHTML5_MODE)
 
 set(GTEST_INCLUDE_DIR "gtest/googletest/include")
-set(GTEST_LIB_DIR "${CMAKE_SOURCE_DIR}/gtest/googlemock/gtest")
+set(GTEST_LIB_DIR "${CMAKE_SOURCE_DIR}/gtest/lib")
 
 set(CED_UNITTEST_SOURCES
     compact_enc_det/compact_enc_det_unittest.cc

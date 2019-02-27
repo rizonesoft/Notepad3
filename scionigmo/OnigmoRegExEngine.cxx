@@ -215,9 +215,9 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
   minPos = doc->MovePositionOutsideChar(minPos, increment, false);
   maxPos = doc->MovePositionOutsideChar(maxPos, increment, false);
 
-  Sci::Position rangeBeg = (findForward) ? minPos : maxPos;
-  Sci::Position rangeEnd = (findForward) ? maxPos : minPos;
-  Sci::Position rangeLen = (rangeEnd - rangeBeg);
+  Sci::Position const rangeBeg = (findForward) ? minPos : maxPos;
+  Sci::Position const rangeEnd = (findForward) ? maxPos : minPos;
+  Sci::Position const rangeLen = (rangeEnd - rangeBeg);
 
 
   // -----------------------------
@@ -251,7 +251,7 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
   ONIG_OPTION_ON(onigmoOptions, (rangeEnd != docLen) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
 
   std::string sPattern(pattern);
-  std::string const sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigmoOptions);
+  std::string const & sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigmoOptions);
 
   bool const bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigmoOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
 
@@ -283,17 +283,18 @@ Sci::Position OnigmoRegExEngine::FindText(Document* doc, Sci::Position minPos, S
   m_MatchLen = SciPos(0);
 
   // ---  search document range for pattern match   ---
+  // !!! Performance issue: Scintilla: moving Gap needs memcopy - high costs for find/replace in large document
   auto const docBegPtr = UCharCPtr(doc->RangePointer(0, docLen));
-  auto const docSEndPtr = UCharCPtr(doc->RangePointer(docLen, 0));
+  auto const docEndPtr = UCharCPtr(doc->RangePointer(docLen, 0));
   auto const rangeBegPtr = UCharCPtr(doc->RangePointer(rangeBeg, rangeLen));
   auto const rangeEndPtr = UCharCPtr(doc->RangePointer(rangeEnd, 0));
 
   OnigPosition result = ONIG_MISMATCH;
   try {
     if (findForward)
-      result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
+      result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigmoOptions);
     else //                                                              X                                    //
-      result = onig_search(m_RegExpr, docBegPtr, docSEndPtr, rangeEndPtr, rangeBegPtr, &m_Region, onigmoOptions);
+      result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeEndPtr, rangeBegPtr, &m_Region, onigmoOptions);
   }
   catch (...) {
     return SciPos(-3);  // -1 is normally used for not found, -3 is used here for exception
@@ -359,7 +360,7 @@ const char* OnigmoRegExEngine::SubstituteByPosition(Document* doc, const char* t
     return nullptr;
   }
   std::string sText(text, *length);
-  std::string const rawReplStrg = convertReplExpr(sText);
+  std::string const & rawReplStrg = convertReplExpr(sText);
 
   m_SubstBuffer.clear();
 

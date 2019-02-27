@@ -12,19 +12,8 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <commctrl.h>
 #include <shlobj.h>
 #include <shellapi.h>
@@ -43,9 +32,9 @@
 #include "Dlapi.h"
 #include "resource.h"
 #include "Version.h"
-#include "Helpers.h"
 #include "Encoding.h"
-#include "TypeDefs.h"
+#include "MuiLanguage.h"
+
 #include "SciCall.h"
 
 #include "Dialogs.h"
@@ -503,49 +492,42 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 {
   WCHAR wch[256] = { L'\0' };
   static HFONT hFontTitle;
-  static HICON hIcon = NULL;
 
   switch (umsg)
   {
   case WM_INITDIALOG:
   {
-    {
-      if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
+    if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
 
-      if (!hIcon) {
-        hIcon = LoadImage(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, LR_DEFAULTCOLOR);
-      }
+    SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)));
 
-      SetDlgItemText(hwnd, IDC_VERSION, MKWCS(VERSION_FILEVERSION_LONG));
+    if (hFontTitle) { DeleteObject(hFontTitle); }
 
-      if (hFontTitle) { DeleteObject(hFontTitle); }
-
-      if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
-        hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
-      }
-
-      LOGFONT lf;
-      GetObject(hFontTitle, sizeof(LOGFONT), &lf);
-      lf.lfWeight = FW_BOLD;
-      lf.lfWidth  = ScaleIntFontSize(8);
-      lf.lfHeight = ScaleIntFontSize(22);
-      // lf.lfQuality = ANTIALIASED_QUALITY;
-      hFontTitle = CreateFontIndirect(&lf);
-
-      SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
+    if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
+      hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
     }
 
+    LOGFONT lf;
+    GetObject(hFontTitle, sizeof(LOGFONT), &lf);
+    lf.lfWeight = FW_BOLD;
+    lf.lfWidth  = ScaleIntFontSize(8);
+    lf.lfHeight = ScaleIntFontSize(22);
+    // lf.lfQuality = ANTIALIASED_QUALITY;
+    hFontTitle = CreateFontIndirect(&lf);
+
+    SendDlgItemMessage(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hFontTitle, true);
+
     SetDlgItemText(hwnd, IDC_SCI_VERSION, VERSION_SCIVERSION);
-    SetDlgItemText(hwnd, IDC_COPYRIGHT, VERSION_LEGALCOPYRIGHT);
-    SetDlgItemText(hwnd, IDC_AUTHORNAME, VERSION_AUTHORNAME);
+    SetDlgItemText(hwnd, IDC_COPYRIGHT, _W(VERSION_LEGALCOPYRIGHT));
+    SetDlgItemText(hwnd, IDC_AUTHORNAME, _W(VERSION_AUTHORNAME));
     SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
 
     if (GetDlgItem(hwnd, IDC_WEBPAGE) == NULL) {
-      SetDlgItemText(hwnd, IDC_WEBPAGE2, VERSION_WEBPAGEDISPLAY);
+      SetDlgItemText(hwnd, IDC_WEBPAGE2, _W(VERSION_WEBPAGEDISPLAY));
       ShowWindow(GetDlgItem(hwnd, IDC_WEBPAGE2), SW_SHOWNORMAL);
     }
     else {
-      StringCchPrintf(wch, COUNTOF(wch), L"<A>%s</A>", VERSION_WEBPAGEDISPLAY);
+      StringCchPrintf(wch, COUNTOF(wch), L"<A>%s</A>", _W(VERSION_WEBPAGEDISPLAY));
       SetDlgItemText(hwnd, IDC_WEBPAGE, wch);
     }
 
@@ -661,11 +643,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
 
   case WM_PAINT:
-    if (hIcon) {
+    if (Globals.hIcon128) {
       RECT rt;
       GetWindowRect(hwnd, &rt);
       HDC hdc = GetWindowDC(hwnd);
-      DrawIconEx(hdc, 16, 32, hIcon, 128, 128, 0, NULL, DI_NORMAL);
+      DrawIconEx(hdc, 16, 32, Globals.hIcon128, 128, 128, 0, NULL, DI_NORMAL);
       ReleaseDC(hwnd, hdc);
     }
     return 0;
@@ -726,14 +708,14 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     switch (LOWORD(wParam))
     {
     case IDC_RIZONEBMP:
-      ShellExecute(hwnd, L"open", L"https://www.rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+      ShellExecute(hwnd, L"open", _W(VERSION_WEBPAGEDISPLAY), NULL, NULL, SW_SHOWNORMAL);
       break;
 
     case IDC_COPYVERSTRG:
       {
         WCHAR wchVerInfo[1024] = { L'\0' };
         WCHAR wchAuthInfo[128] = { L'\0' };
-        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), MKWCS(VERSION_FILEVERSION_LONG));
+        StringCchCopy(wchVerInfo, COUNTOF(wchVerInfo), _W(_STRG(VERSION_FILEVERSION_LONG)));
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_COMPILER);
         StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n");
@@ -792,7 +774,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             WCHAR szArgs[MAX_PATH] = { L'\0' };
             WCHAR szArg2[MAX_PATH] = { L'\0' };
             WCHAR szFile[MAX_PATH * 2] = { L'\0' };
-            WCHAR szFilter[256] = { L'\0' };
+            WCHAR szFilter[MAX_PATH] = { L'\0' };
             OPENFILENAME ofn;
             ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
@@ -854,13 +836,13 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               ExpandEnvironmentStringsEx(arg1,COUNTOF(arg1));
               ExtractFirstArgument(arg1,arg1,arg2,MAX_PATH);
 
-              if (StringCchCompareNI(arg1,COUNTOF(arg1), STRGW(APPNAME),CSTRLEN(STRGW(APPNAME))) == 0 ||
+              if (StringCchCompareNI(arg1,COUNTOF(arg1), _W(SAPPNAME),CSTRLEN(_W(SAPPNAME))) == 0 ||
                   StringCchCompareNI(arg1,COUNTOF(arg1),L"notepad3.exe", CSTRLEN(L"notepad3.exe")) == 0) {
                 GetModuleFileName(NULL,arg1,COUNTOF(arg1));
                 bQuickExit = true;
               }
 
-              if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+              if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
                 StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
                 PathRemoveFileSpec(wchDirectory);
               }
@@ -1087,7 +1069,7 @@ bool OpenWithDlg(HWND hwnd,LPCWSTR lpstrFile)
     WCHAR szParam[MAX_PATH] = { L'\0' };
     WCHAR wchDirectory[MAX_PATH] = { L'\0' };
 
-    if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+    if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
       StringCchCopy(wchDirectory,COUNTOF(wchDirectory),Globals.CurrentFile);
       PathRemoveFileSpec(wchDirectory);
     }
@@ -1279,9 +1261,9 @@ bool FavoritesDlg(HWND hwnd,LPWSTR lpstrFile)
                              hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite))
   {
     StringCchCopyN(lpstrFile,MAX_PATH,dliFavorite.szFileName,MAX_PATH);
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -1318,8 +1300,7 @@ INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPa
 
     case IDOK:
       pszName = (LPWSTR)GetWindowLongPtr(hwnd, DWLP_USER);
-      GetDlgItemText(hwnd, 100, pszName,
-                     MAX_PATH - 1);
+      GetDlgItemText(hwnd, 100, pszName, MAX_PATH - 1);
       EndDialog(hwnd, IDOK);
       break;
 
@@ -2428,9 +2409,9 @@ bool SelectDefEncodingDlg(HWND hwnd,int *pidREncoding)
 
   if (iResult == IDOK) {
     *pidREncoding = dd.idEncoding;
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -2595,9 +2576,9 @@ bool SelectEncodingDlg(HWND hwnd,int *pidREncoding)
 
   if (iResult == IDOK) {
     *pidREncoding = dd.idEncoding;
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -2628,9 +2609,9 @@ bool RecodeDlg(HWND hwnd,int *pidREncoding)
 
   if (iResult == IDOK) {
     *pidREncoding = dd.idEncoding;
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -2891,7 +2872,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   if (bSaveOnRunTools && !FileSave(false, true, false, false)) { return; }
 
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
-  NormalizePathEx(szModuleName, COUNTOF(szModuleName));
+  PathCanonicalizeEx(szModuleName, COUNTOF(szModuleName));
 
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
@@ -2925,7 +2906,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
   StringCchPrintf(tch, COUNTOF(tch), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
   StringCchCat(szParameters, COUNTOF(szParameters), tch);
 
-  if (bSetCurFile && StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) 
+  if (bSetCurFile && StringCchLenW(Globals.CurrentFile, MAX_PATH)) 
   {
     StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);
     PathQuoteSpaces(szFileName);
@@ -2947,7 +2928,6 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 }
 
 
-
 //=============================================================================
 //
 //  DialogFileBrowse()
@@ -2955,36 +2935,31 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 //
 void DialogFileBrowse(HWND hwnd)
 {
-  WCHAR tchParam[MAX_PATH+1] = L"";
-  WCHAR tchExeFile[MAX_PATH+1];
-  WCHAR tchTemp[MAX_PATH+1];
+  WCHAR tchParam[MAX_PATH] = L"";
+  WCHAR tchExeFile[MAX_PATH] = L"";
+  WCHAR tchTemp[MAX_PATH];
 
   StringCchCopyW(tchTemp, COUNTOF(tchTemp), Settings2.FileBrowserPath);
 
-  if (StringCchLenW(Settings2.FileBrowserPath,0) > 0)
+  if (StringCchLenW(Settings2.FileBrowserPath, 0) > 0)
   {
-    ExtractFirstArgument(tchTemp, tchExeFile, tchParam, MAX_PATH+2);
-    if (PathIsRelative(tchExeFile)) {
-      if (!SearchPath(NULL, tchExeFile, L".exe", COUNTOF(tchTemp), tchTemp, NULL)) {
-        GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
-        PathRemoveFileSpec(tchTemp);
-        PathCchAppend(tchTemp, COUNTOF(tchTemp), tchExeFile);
-        StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
-      }
+    ExtractFirstArgument(tchTemp, tchExeFile, tchParam, COUNTOF(tchTemp));
+  }
+  if (StrIsEmpty(tchExeFile)) {
+    StringCchCopy(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
+  }
+  if (PathIsRelative(tchExeFile)) {
+    GetModuleFileName(NULL, tchTemp, COUNTOF(tchTemp));
+    PathRemoveFileSpec(tchTemp);
+    PathAppend(tchTemp, tchExeFile);
+    if (PathFileExists(tchTemp)) {
+      StringCchCopy(tchExeFile, COUNTOF(tchExeFile), tchTemp);
     }
   }
-  else {
-    if (!SearchPath(NULL, Constants.FileBrowserMiniPath, L".exe", COUNTOF(tchExeFile), tchExeFile, NULL)) {
-      GetModuleFileName(NULL, tchExeFile, COUNTOF(tchExeFile));
-      PathRemoveFileSpec(tchExeFile);
-      PathCchAppend(tchExeFile, COUNTOF(tchExeFile), Constants.FileBrowserMiniPath);
-    }
-  }
-
-  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(Globals.CurrentFile, (MAX_PATH+1)))
+  if (StringCchLenW(tchParam, COUNTOF(tchParam)) && StringCchLenW(Globals.CurrentFile, COUNTOF(tchParam))) {
     StringCchCat(tchParam, COUNTOF(tchParam), L" ");
-
-  if (StringCchLenW(Globals.CurrentFile, (MAX_PATH+1))) {
+  }
+  if (StringCchLenW(Globals.CurrentFile, MAX_PATH)) {
     StringCchCopy(tchTemp, COUNTOF(tchTemp), Globals.CurrentFile);
     PathQuoteSpaces(tchTemp);
     StringCchCat(tchParam, COUNTOF(tchParam), tchTemp);
@@ -3016,12 +2991,12 @@ void DialogFileBrowse(HWND hwnd)
 
 void DialogAdminExe(HWND hwnd, bool bExecInstaller)
 {
-  WCHAR tchExe[MAX_PATH+2];
+  WCHAR tchExe[MAX_PATH];
 
   StringCchCopyW(tchExe, COUNTOF(tchExe), Settings2.AdministrationTool);
   if (bExecInstaller && !StringCchLenW(tchExe, COUNTOF(tchExe))) { return; }
 
-  WCHAR tchExePath[MAX_PATH + 2];
+  WCHAR tchExePath[MAX_PATH];
   if (!SearchPath(NULL, tchExe, L".exe", COUNTOF(tchExePath), tchExePath, NULL)) {
     // try Notepad3's dir path
     GetModuleFileName(NULL, tchExePath, COUNTOF(tchExePath));
@@ -3114,13 +3089,10 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   {
     if (iFormat < 2 && !PathIsRoot(lpszFile))
     {
-      if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0) {
-        SHFILEINFO shfi;
+      if (StringCchCompareN(szCachedFile, COUNTOF(szCachedFile), lpszFile, MAX_PATH) != 0) 
+      {
         StringCchCopy(szCachedFile, COUNTOF(szCachedFile), lpszFile);
-        if (SHGetFileInfo2(lpszFile, FILE_ATTRIBUTE_NORMAL, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME | SHGFI_USEFILEATTRIBUTES))
-          StringCchCopy(szCachedDisplayName, COUNTOF(szCachedDisplayName), shfi.szDisplayName);
-        else
-          StringCchCopy(szCachedDisplayName, COUNTOF(szCachedDisplayName), PathFindFileName(lpszFile));
+        PathGetDisplayName(szCachedDisplayName, COUNTOF(szCachedDisplayName), szCachedFile);
       }
       StringCchCat(szTitle, COUNTOF(szTitle), szCachedDisplayName);
       if (iFormat == 1) {

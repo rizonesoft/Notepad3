@@ -122,7 +122,7 @@ BEGIN
     IDS_MUI_ERR_DROP            "¡Sólo se puede eliminar un archivo al mismo tiempo!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "¿¿Seguro que quiere abrir este archivo grande??"
     IDS_MUI_WARN_UNKNOWN_EXT    "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargando datos de todos modos?"
-    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks by '%s'?"
+    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
     IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
 END
 
@@ -201,7 +201,7 @@ IDS_MUI_CMDLINEHELP "\
 Uso:\r\n\
 Notepad3 \t[/?] […[Codificación]] […[Modo de final de línea]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[unidad:][ruta]archivo[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[unidad:][ruta]archivo[…]]\r\n\r\n\
 archivo\tDebe ser el ultimo argumento, sin espacios entre\r\n\
  \tcomillas por defecto.\r\n\
 +\tAceptar múltiples argumentos de archivo (con espacios\r\n\
@@ -235,6 +235,7 @@ Opciones:\r\n\
 /u\tLanzar con privilegios elevados.\r\n\
 /v\tImprimir el archivo inmediatamente y dejar.\r\n\
 /vd\tImprimir archivo (abrir el cuadro de diálogo de la impresora).\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
 /z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\
  \ten el registro).\r\n\r\n\
 Ejemplos:\r\n\

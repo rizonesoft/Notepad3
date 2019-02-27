@@ -305,7 +305,12 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Вызначаць &гіперспасылкі\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
-        MENUITEM "Падсвечваць ак&тыўны радок\tCtrl+Shift+I", IDM_VIEW_HIGHLIGHTCURRENTLINE
+        POPUP "Падсвечваць ак&тыўны радок\tCtrl+Shift+I"
+        BEGIN
+            MENUITEM "&No Highlight",                       IDM_VIEW_HILITCURLN_NONE
+            MENUITEM "Background &Color",                   IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Outline &Frame",                      IDM_VIEW_HILITCURLN_FRAME
+        END
         POPUP "Па&дсвечванне супадзенняў"
         BEGIN
             MENUITEM "&Задзейнічаць\tAlt+A",        IDM_VIEW_MARKOCCUR_ONOFF
@@ -420,6 +425,24 @@ BEGIN
             MENUITEM "Захаваць налады &зараз\tF7",  IDM_VIEW_SAVESETTINGSNOW
             MENUITEM "&Адкрыць файл наладаў\tCtrl+F7", CMD_OPENINIFILE
         END
+    END
+    POPUP "Language"
+    BEGIN
+        MENUITEM "English (United States)",             IDM_MUI_LANG_EN_US    
+        MENUITEM "Afrikaans (South Africa )",           IDM_MUI_LANG_AF_ZA    
+        MENUITEM "Belarusian (Belarus)",                IDM_MUI_LANG_BE_BY    
+        MENUITEM "German (Germany)",                    IDM_MUI_LANG_DE_DE    
+        MENUITEM "English (United Kingdom)",            IDM_MUI_LANG_EN_GB    
+        MENUITEM "Spanish (Spain Modern)",              IDM_MUI_LANG_ES_ES    
+        MENUITEM "French (France )",                    IDM_MUI_LANG_FR_FR    
+        MENUITEM "Hungarian (Hungary)",                 IDM_MUI_LANG_HU_HU    
+        MENUITEM "Italian (Italy)",                     IDM_MUI_LANG_IT_IT    
+        MENUITEM "Japanese (Japan)",                    IDM_MUI_LANG_JP_JP    
+        MENUITEM "Korean (Korea)",                      IDM_MUI_LANG_KO_KR    
+        MENUITEM "Dutch (Netherlands )",                IDM_MUI_LANG_NL_NL    
+        MENUITEM "Portuguese (Brazil)",                 IDM_MUI_LANG_PT_BR    
+        MENUITEM "Russian (Russia)",                    IDM_MUI_LANG_RU_RU    
+        MENUITEM "Chinese  (Hans)",                     IDM_MUI_LANG_ZH_CN    
     END
     POPUP "&Даведка"
     BEGIN

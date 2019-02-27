@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Von Microsoft Visual C++ generierte Includedatei.
-// Verwendet durch np3_en_uk.rc
+// Verwendet durch np3_en_gb.rc
 //
 
 // Next default values for new objects

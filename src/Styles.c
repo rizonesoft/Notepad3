@@ -13,19 +13,8 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
+#include "Helpers.h"
+
 #include <assert.h>
 #include <commctrl.h>
 #include <commdlg.h>
@@ -42,7 +31,8 @@
 #include "Dialogs.h"
 #include "resource.h"
 #include "Encoding.h"
-#include "Helpers.h"
+#include "MuiLanguage.h"
+
 #include "SciCall.h"
 
 #include "Styles.h"
@@ -338,14 +328,13 @@ void Style_Load()
 //
 void Style_Save()
 {
-  WCHAR tch[32] = { L'\0' };;
-  WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
   size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
   WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
   if (pIniSection) {
     // Custom colors
     for (int i = 0; i < 16; i++) {
       if (s_colorCustom[i] != s_colorDefault[i]) {
+        WCHAR tch[32] = { L'\0' };
         WCHAR wch[32] = { L'\0' };
         StringCchPrintf(tch, COUNTOF(tch), L"%02i", i + 1);
         StringCchPrintf(wch, COUNTOF(wch), L"#%02X%02X%02X",
@@ -393,6 +382,7 @@ void Style_Save()
       while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
         if (((*pLexFunction)(FCT_SETTING_CHANGE, 0) & (((__int64)1) << (i+2))) != 0LL) {
           // normalize
+          WCHAR szTmpStyle[BUFSIZE_STYLE_VALUE];
           szTmpStyle[0] = L'\0'; // clear
           Style_CopyStyles_IfNotDefined(g_pLexArray[iLexer]->Styles[i].szValue, szTmpStyle, COUNTOF(szTmpStyle), true, true);
           IniSectionSetString(pIniSection, g_pLexArray[iLexer]->Styles[i].pszName, szTmpStyle);
@@ -414,8 +404,8 @@ void Style_Save()
 //
 bool Style_Import(HWND hwnd)
 {
-  WCHAR szFile[MAX_PATH * 2] = { L'\0' };
-  WCHAR szFilter[256] = { L'\0' };
+  WCHAR szFile[MAX_PATH] = { L'\0' };
+  WCHAR szFilter[MAX_PATH] = { L'\0' };
   OPENFILENAME ofn;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
@@ -453,10 +443,10 @@ bool Style_Import(HWND hwnd)
         }
       }
       FreeMem(pIniSection);
-      return(true);
+      return true;
     }
   }
-  return(false);
+  return false;
 }
 
 //=============================================================================
@@ -465,10 +455,9 @@ bool Style_Import(HWND hwnd)
 //
 bool Style_Export(HWND hwnd)
 {
-  WCHAR szFile[MAX_PATH * 2] = { L'\0' };
+  WCHAR szFile[MAX_PATH] = { L'\0' };
   WCHAR szFilter[256] = { L'\0' };
   OPENFILENAME ofn;
-  DWORD dwError = ERROR_SUCCESS;
 
   ZeroMemory(&ofn,sizeof(OPENFILENAME));
   GetLngString(IDS_MUI_FILTER_INI,szFilter,COUNTOF(szFilter));
@@ -485,6 +474,7 @@ bool Style_Export(HWND hwnd)
 
   if (GetSaveFileName(&ofn)) 
   {
+    DWORD dwError = ERROR_SUCCESS;
     size_t const len = NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER * 100;
     WCHAR *pIniSection = AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
     if (pIniSection) {
@@ -504,9 +494,9 @@ bool Style_Export(HWND hwnd)
     if (dwError != ERROR_SUCCESS) {
       MsgBoxLng(MBINFO,IDS_MUI_EXPORT_FAIL,szFile);
     }
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -830,27 +820,35 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   SendMessage(hwnd, SCI_SETWHITESPACESIZE, iValue, 0);
 
   // current line background
-  Style_SetCurrentLineBackground(hwnd, Settings.HighlightCurrentLine);
+  Style_HighlightCurrentLine(hwnd, Settings.HighlightCurrentLine);
 
   // bookmark line or marker
   Style_SetBookmark(hwnd, Settings.ShowSelectionMargin);
 
   // caret style and width
+
+  int ovr_mask = CARETSTYLE_OVERSTRIKE_BLOCK;
+  if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue, L"ovrbar")) {
+    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrbar");
+    ovr_mask = CARETSTYLE_OVERSTRIKE_BAR;
+  }
+
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"block")) {
-    SendMessage(hwnd,SCI_SETCARETSTYLE,CARETSTYLE_BLOCK,0);
-    StringCchCopy(wchSpecificStyle,COUNTOF(wchSpecificStyle),L"block");
+    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; block");
+    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_BLOCK | ovr_mask), 0);
   }
   else {
-    SendMessage(hwnd, SCI_SETCARETSTYLE, CARETSTYLE_LINE, 0);
+    SendMessage(hwnd, SCI_SETCARETSTYLE, (CARETSTYLE_LINE | ovr_mask), 0);
 
-    WCHAR wch[32] = { L'\0' };
     iValue = 1;
     fValue = 1.0f;  // default caret width
+    WCHAR wch[32] = { L'\0' };
     if (Style_StrGetSize(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
       iValue = clampi(float2int(fValue), 1, 3); // don't allow invisible 0
-      StringCchPrintf(wch,COUNTOF(wch),L"size:%i",iValue);
-      StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
     }
+    StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
+    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
+
     SendMessage(hwnd, SCI_SETCARETWIDTH, iValue, 0);
   }
   if (StrStr(pCurrentStandard->Styles[STY_CARET].szValue,L"noblink")) {
@@ -1131,46 +1129,60 @@ void Style_SetLongLineColors(HWND hwnd)
 
   if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) 
   {
-    if (Style_StrGetColor(true, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue,&rgb)) // edge fore
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
-    else
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
+    if (!Style_StrGetColor(true, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, &rgb)) { // edge fore
+      rgb = GetSysColor(COLOR_3DLIGHT);
+    }
+    SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
   }
   else {
-    if (Style_StrGetColor(false, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue,&rgb)) // edge back
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
-    else
-      SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
+    if (Style_StrGetColor(false, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, &rgb)) { // edge back
+      rgb = GetSysColor(COLOR_3DLIGHT);
+    }
+    SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
   }
 }
 
 
 //=============================================================================
 //
-//  Style_SetCurrentLineBackground()
+// Style_HighlightCurrentLine()
 //
-void Style_SetCurrentLineBackground(HWND hwnd, bool bHiLitCurrLn)
+void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 {
-  if (bHiLitCurrLn) 
-  {
-    COLORREF rgb = 0;
-    if (Style_StrGetColor(false, GetCurrentStdLexer()->Styles[STY_CUR_LN_BCK].szValue, &rgb)) // caret line back
-    {
-      SendMessage(hwnd, SCI_SETCARETLINEVISIBLEALWAYS, true, 0);
-      SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, true, 0);
-      SendMessage(hwnd, SCI_SETCARETLINEBACK, rgb, 0);
-
-      int alpha = 0;
-      if (Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN_BCK].szValue, &alpha, true))
-        SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,alpha,0);
-      else
-        SendMessage(hwnd,SCI_SETCARETLINEBACKALPHA,SC_ALPHA_NOALPHA,0);
-
-      return;
-    }
-  }
+  SendMessage(hwnd, SCI_SETCARETLINEFRAME, 0, 0);
   SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, false, 0);
   SendMessage(hwnd, SCI_SETCARETLINEVISIBLEALWAYS, false, 0);
+
+  if (iHiLitCurLn > 0)
+  {
+    bool const backgrColor = (iHiLitCurLn == 1);
+
+    LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
+
+    COLORREF rgb;
+    if (!Style_StrGetColor(!backgrColor, szValue, &rgb)) {
+      rgb = (backgrColor ? RGB(0xFF, 0xFF, 0x00) : RGB(0xC2, 0xC0, 0xC3));
+    }
+
+    int alpha = 0;
+    if (!Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, true)) {
+      alpha = SC_ALPHA_NOALPHA;
+    }
+
+    if (!backgrColor) {
+      int iFrameSize = 0;
+      if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
+        iFrameSize = 2;
+      }
+      iFrameSize = max_i(1, ScaleIntToCurrentDPI(iFrameSize));
+      SendMessage(hwnd, SCI_SETCARETLINEFRAME, iFrameSize, 0);
+    }
+
+    SendMessage(hwnd, SCI_SETCARETLINEBACK, rgb, 0);
+    SendMessage(hwnd, SCI_SETCARETLINEBACKALPHA, alpha, 0);
+    SendMessage(hwnd, SCI_SETCARETLINEVISIBLEALWAYS, true, 0);
+    SendMessage(hwnd, SCI_SETCARETLINEVISIBLE, true, 0);
+  }
 }
 
 
@@ -1808,10 +1820,10 @@ bool Style_StrGetFont(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
 //
 bool Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"smoothing:");
   if (p)
   {
+    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
     StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"smoothing:"));
     p = StrChr(tch, L';');
     if (p)
@@ -1836,20 +1848,31 @@ bool Style_StrGetFontQuality(LPCWSTR lpszStyle,LPWSTR lpszQuality,int cchQuality
 //
 bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *p = StrStrI(lpszStyle, L"charset:");
   if (p)
   {
-    StringCchCopy(tch,COUNTOF(tch),p + CSTRLEN(L"charset:"));
-    p = StrChr(tch, L';');
-    if (p) { *p = L'\0'; }
-    TrimStringW(tch);
+    p += CSTRLEN(L"charset:");
     int iValue = 0;
-    if (1 == swscanf_s(tch, L"%i", &iValue))
-    {
+    if (Char2IntW(p, &iValue)) {
       *i = max_i(SC_CHARSET_ANSI, iValue);
       return true;
     }
+  }
+  return false;
+}
+
+
+//=============================================================================
+//
+//  Style_StrGetIntSizeInt()
+//
+bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
+{
+  WCHAR *p = StrStrI(lpszStyle, L"size:");
+  if (p)
+  {
+    p += CSTRLEN(L"size:");
+    return Char2IntW(p, i);
   }
   return false;
 }
@@ -1904,12 +1927,10 @@ bool Style_StrGetSize(LPCWSTR lpszStyle, float* f)
 //
 bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-  WCHAR wchFloatVal[64];
-
   WCHAR *p = StrStrI(lpszStyle, L"size:");
   if (p)
   {
+    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
     StringCchCopy(tch, COUNTOF(tch), (p + CSTRLEN(L"size:")));
     p = StrChr(tch, L';');
     if (p) { *p = L'\0'; }
@@ -1917,6 +1938,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize)
 
     float fValue = 0.0f;
     if (Char2FloatW(tch, &fValue)) {
+      WCHAR wchFloatVal[64];
       fValue = (float)fabs(fValue);
       Float2String(fValue, wchFloatVal, COUNTOF(wchFloatVal));
 
@@ -2009,12 +2031,12 @@ void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
 //
 bool Style_StrGetColor(bool bFore, LPCWSTR lpszStyle, COLORREF* rgb)
 {
-  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
   WCHAR *pItem = (bFore) ? L"fore:" : L"back:";
 
   WCHAR *p = StrStrI(lpszStyle, pItem);
   if (p)
   {
+    WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
     StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(pItem,0));
     if (tch[0] == L'#')
       tch[0] = L' ';
@@ -2304,6 +2326,10 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
   }
 
   // --------   other style settings   --------
+  if (StrStrI(lpszStyleSrc, L"ovrbar") && !StrStrI(lpszStyleDest, L"ovrbar")) {
+    StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; ovrbar");
+  }
+
   if (StrStrI(lpszStyleSrc, L"block") && !StrStrI(lpszStyleDest, L"block")) {
     StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), L"; block");
   }
@@ -2470,7 +2496,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   if (bWithEffects)
     cf.Flags |= CF_EFFECTS;
 
-  if (HIBYTE(GetKeyState(VK_SHIFT))) {
+  if (IsKeyDown(VK_SHIFT)) {
     cf.Flags |= CF_FIXEDPITCHONLY;
   }
 
@@ -2561,11 +2587,11 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   StringCchCat(szNewStyle, COUNTOF(szNewStyle), newSize);
 
   
-  WCHAR chset[32] = { L'\0' };
   if (bGlobalDefaultStyle &&
     (lf.lfCharSet != DEFAULT_CHARSET) &&
     (lf.lfCharSet != ANSI_CHARSET) &&
     (lf.lfCharSet != Globals.iDefaultCharSet)) {
+    WCHAR chset[32] = { L'\0' };
     if (lf.lfCharSet == iCharSet) {
       if (StrStrI(lpszStyle, L"charset:"))
       {
@@ -3104,7 +3130,6 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static PEDITLEXER pCurrentLexer = NULL;
   static PEDITSTYLE pCurrentStyle = NULL;
   static int iCurStyleIdx = -1;
-  static HFONT hFontTitle;
   static HBRUSH hbrFore;
   static HBRUSH hbrBack;
   static bool bIsStyleSelected = false;
@@ -3112,13 +3137,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
   static WCHAR* Style_StylesBackup[NUMLEXERS * AVG_NUM_OF_STYLES_PER_LEXER];
   static __int64 Style_ChangedBackup[NUMLEXERS];
 
-  WCHAR tchBuf[128] = { L'\0' };
-  WCHAR wchText[512] = { L'\0' };
-
   switch(umsg)
   {
     case WM_INITDIALOG:
       {
+        WCHAR wchText[512] = { L'\0' };
         if (Globals.hDlgIcon) { SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIcon); }
         GetLngString(IDS_MUI_STYLEEDIT_HELP, wchText, COUNTOF(wchText));
         SetDlgItemText(hwnd, IDC_STYLEEDIT_HELP, wchText);
@@ -3182,6 +3205,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         MakeBitmapButton(hwnd,IDC_NEXTSTYLE,Globals.hInstance,IDB_NEXT);
 
         // Setup title font
+        static HFONT hFontTitle = NULL;
         if (hFontTitle) {
           DeleteObject(hFontTitle);
         }
@@ -3200,6 +3224,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
         else
           SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
 
+        WCHAR tchBuf[128] = { L'\0' };
         HMENU hmenu = GetSystemMenu(hwnd, false);
         GetLngString(IDS_MUI_PREVIEW, tchBuf, COUNTOF(tchBuf));
         InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_PREVIEW, tchBuf);

@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Von Microsoft Visual C++ generierte Includedatei.
-// Verwendet durch dialogs_en_us.rc
+// Microsoft Visual C++ generated include file.
+// Used by strings_en_us.rc
 //
 
 // Next default values for new objects

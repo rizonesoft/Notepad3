@@ -14,7 +14,22 @@
 #ifndef _NP3_TYPEDEFS_H_
 #define _NP3_TYPEDEFS_H_
 
+#if !defined(WINVER)
+#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(_WIN32_WINNT)
+#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#endif
+#if !defined(NTDDI_VERSION)
+#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#endif
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
+#define NOMINMAX 1
+#include <windows.h>
+
 #include <intsafe.h>
+#include <strsafe.h>
 
 #ifndef __cplusplus
 #include <stdbool.h>
@@ -221,7 +236,7 @@ typedef struct _cmq
 
 #define MARKER_NP3_BOOKMARK      1
 
-#define LINESTATE_OCCURRENCE_MARK 0x4
+#define LINESTATE_OCCURRENCE_MARK (1 << 13) 
 
 #define INDIC_NP3_MARK_OCCURANCE 1
 #define INDIC_NP3_MATCH_BRACE    2
@@ -245,6 +260,7 @@ typedef struct _globals_t
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
   HMODULE   hLngResContainer;
+  bool      bPrefLngNotAvail;
   HWND      hwndMain;
   HANDLE    hndlProcessHeap;
   HWND      hwndEdit;
@@ -253,6 +269,7 @@ typedef struct _globals_t
   DWORD     dwLastError;
   HMENU     hMainMenu;
   HICON     hDlgIcon;
+  HICON     hIcon128;
   HWND      hwndDlgFindReplace;
   HWND      hwndDlgCustomizeSchemes;
   int       iDefaultCharSet;
@@ -287,9 +304,9 @@ typedef struct _globals_t
 
   FR_STATES FindReplaceMatchFoundState;
 
-  WCHAR     WorkingDirectory[MAX_PATH + 1];
-  WCHAR     IniFile[MAX_PATH + 1];
-  WCHAR     CurrentFile[MAX_PATH + 1];
+  WCHAR     WorkingDirectory[MAX_PATH];
+  WCHAR     IniFile[MAX_PATH];
+  WCHAR     CurrentFile[MAX_PATH];
 
 } GLOBALS_T, *PGLOBALS_T;
 
@@ -311,7 +328,7 @@ typedef struct _settings_t
   bool ShowWordWrapSymbols;
   bool MatchBraces;
   bool AutoCloseTags;
-  bool HighlightCurrentLine;
+  int  HighlightCurrentLine;
   bool HyperlinkHotspot;
   bool ScrollPastEOF;
   bool AutoIndent;
@@ -383,13 +400,41 @@ typedef struct _settings_t
 
   RECT PrintMargin;
   EDITFINDREPLACE EFR_Data;
-  WCHAR OpenWithDir[MAX_PATH + 1];
-  WCHAR FavoritesDir[MAX_PATH + 1];
+  WCHAR OpenWithDir[MAX_PATH];
+  WCHAR FavoritesDir[MAX_PATH];
   WCHAR ToolbarButtons[MIDSZ_BUFFER];
 
 } SETTINGS_T, *PSETTINGS_T;
 
 extern SETTINGS_T Settings;
+
+// ------------------------------------
+
+typedef struct _flags_t
+{
+  bool bStickyWindowPosition;
+  bool bReuseWindow;
+  bool bSingleFileInstance;
+  int fStickyWindowPosition;
+  int fReuseWindow;
+  int fSingleFileInstance;
+  int fNoReuseWindow;
+
+  int MultiFileArg;
+  int RelativeFileMRU;
+  int PortableMyDocs;
+  int NoFadeHidden;
+  int ToolbarLook;
+  int SimpleIndentGuides;
+  int NoHTMLGuess;
+  int NoCGIGuess;
+  int NoFileVariables;
+  int ShellUseSystemMRU;
+  int PrintFileAndLeave;
+
+} FLAGS_T, * PFLAGS_T;
+
+extern FLAGS_T Flags;
 
 // ------------------------------------
 
@@ -412,48 +457,24 @@ typedef struct _settings2_t
 
   WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH+1];
   WCHAR DefaultExtension[64];
-  WCHAR DefaultDirectory[MAX_PATH + 1];
+  WCHAR DefaultDirectory[MAX_PATH];
   WCHAR FileDlgFilters[XHUGE_BUFFER];
 
-  WCHAR FileBrowserPath[MAX_PATH + 1];
+  WCHAR FileBrowserPath[MAX_PATH];
   WCHAR AppUserModelID[32];
   WCHAR ExtendedWhiteSpaceChars[ANSI_CHAR_BUFFER + 1];
   WCHAR AutoCompleteWordCharSet[ANSI_CHAR_BUFFER + 1];
   WCHAR TimeStamp[128];
   WCHAR DateTimeShort[128];
   WCHAR DateTimeLong[128];
-  WCHAR WebTemplate1[MAX_PATH + 1];
-  WCHAR WebTemplate2[MAX_PATH + 1];
-  WCHAR AdministrationTool[MAX_PATH + 1];
+  WCHAR WebTemplate1[MAX_PATH];
+  WCHAR WebTemplate2[MAX_PATH];
+  WCHAR AdministrationTool[MAX_PATH];
   WCHAR DefaultWindowPosition[64];
 
 } SETTINGS2_T, *PSETTINGS2_T;
 
 extern SETTINGS2_T Settings2;
-
-// ------------------------------------
-
-typedef struct _flags_t
-{
-  int StickyWindowPosition;
-  int ReuseWindow;
-  int NoReuseWindow;
-  int SingleFileInstance;
-  int MultiFileArg;
-  int RelativeFileMRU;
-  int PortableMyDocs;
-  int NoFadeHidden;
-  int ToolbarLook;
-  int SimpleIndentGuides;
-  int NoHTMLGuess;
-  int NoCGIGuess;
-  int NoFileVariables;
-  int ShellUseSystemMRU;
-  int PrintFileAndLeave;
-
-} FLAGS_T, *PFLAGS_T;
-
-extern FLAGS_T Flags;
 
 //=============================================================================
 

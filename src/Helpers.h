@@ -19,12 +19,11 @@
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 
+#include "TypeDefs.h"
+
 #include <math.h>
-#include <strsafe.h>
 #include <shlwapi.h>
 #include <versionhelpers.h>
-
-#include "TypeDefs.h"
 
 // ============================================================================
 // ---  Disable/Enable some CodeAnalysis Warnings  ---
@@ -36,20 +35,20 @@
 
 // ============================================================================
 
-#ifndef _MKWCS
-#define _DO_STRINGIFYA(s) #s
-#define _DO_STRINGIFYW(s) L ## #s
-#define STRG(s)  _DO_STRINGIFYA(s)
-#define STRGW(s) _DO_STRINGIFYW(s)
-
-#define _MKWCS(s) L ## s
-#define MKWCS(s)  _MKWCS(s)
+#ifndef _W
+#define __CC(p,s) p ## s
+#define _W(s)  __CC(L,s)
 #endif
 
+#ifndef _STRG
+#define _STRINGIFY(s) #s
+#define _STRG(s)  _STRINGIFY(s)
+#endif
 
 #define UNUSED(expr) (void)(expr)
 #define SIZEOF(ar) sizeof(ar)
-#define COUNTOF(ar) ARRAYSIZE(ar)   //#define COUNTOF(ar) (sizeof(ar)/sizeof(ar[0]))
+//#define ARRAYSIZE(A) (assert(!(sizeof(A) % sizeof(*(A)))), (sizeof(A) / sizeof(*(A))))
+#define COUNTOF(ar) ARRAYSIZE(ar)
 #define CSTRLEN(s)  (COUNTOF(s)-1)
 
 #define NOOP ((void)0)
@@ -137,6 +136,9 @@ inline bool IsBlankCharW(const WCHAR wch) { return ((wch == L' ') || (wch == L'\
 inline int float2int(const float f) { return (int)lroundf(f); }
 inline float Round10th(const float f) { return (float)float2int(f * 10.0f) / 10; }
 inline bool HasNonZeroFraction(const float f) { return ((float2int(f * 10.0f) % 10) != 0); }
+
+inline bool IsKeyDown(int key) { return (((GetKeyState(key) >> 8) & 0xff) != 0); }
+inline bool IsAsyncKeyDown(int key) { return (((GetAsyncKeyState(key) >> 8) & 0xff) != 0); }
 
 // ----------------------------------------------------------------------------
 
@@ -259,17 +261,6 @@ bool IsCmdEnabled(HWND hwnd, UINT uId);
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
 
 
-int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
-int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
-int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...);
-int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...);
-int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
-
-#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
-#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
-#define GetLngStringW2MB(id,pb,cb) LoadLngStringW2MB((id),(pb),(cb))
-
-
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);
 void PathRelativeToApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool,bool,bool);
 void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,bool);
@@ -311,10 +302,11 @@ void PathFixBackslashes(LPWSTR lpsz);
 
 
 void  ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc);
-void  PathCanonicalizeEx(LPWSTR lpszPath,int len);
-DWORD GetLongPathNameEx(LPWSTR lpszPath,DWORD cchBuffer);
-DWORD NormalizePathEx(LPWSTR lpszPath,int len);
-DWORD_PTR SHGetFileInfo2(LPCWSTR pszPath,DWORD dwFileAttributes,SHFILEINFO* psfi,UINT cbFileInfo,UINT uFlags);
+void  PathCanonicalizeEx(LPWSTR lpszPath, DWORD cchBuffer);
+DWORD GetLongPathNameEx(LPWSTR lpszPath, DWORD cchBuffer);
+void  PathGetDisplayName(LPWSTR lpszDestPath, DWORD cchDestBuffer, LPCWSTR lpszSourcePath);
+DWORD NormalizePathEx(LPWSTR lpszPath, DWORD cchBuffer, bool bRealPath, bool bSearchPathIfRelative);
+
 
 size_t FormatNumberStr(LPWSTR lpNumberStr);
 bool SetDlgItemIntEx(HWND hwnd,int nIdItem,UINT uValue);
@@ -482,6 +474,11 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped);
 int ReadStrgsFromCSV(LPCWSTR wchCSVStrg, prefix_t sMatrix[], int iCount, int iLen, LPCWSTR sDefault);
 int ReadVectorFromString(LPCWSTR wchStrg, int iVector[], int iCount, int iMin, int iMax, int iDefault);
 
+inline bool Char2IntW(LPCWSTR str, int* value) {
+  LPWSTR end;
+  *value = (int)wcstol(str, &end, 10);
+  return (str != end);
+}
 bool Char2FloatW(WCHAR* wnumber, float* fresult);
 void Float2String(float fValue, LPWSTR lpszStrg, int cchSize);
 

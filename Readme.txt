@@ -6,16 +6,18 @@
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
+Rizonesoft Notepad3 --- README ---
+================================================================================
 
---------------------------------------------------------------------------------
+--------------------------------------------------
 Description
---------------------------------------------------------------------------------
+--------------------------------------------------
 Notepad like text editor is based on the Scintilla source code. 
 Notepad3 isbased on code from Notepad2 and MiniPath on code from metapath.
 
---------------------------------------------------------------------------------
+--------------------------------------------------
 Changes compared to Flo's official Notepad2 (made in Notepad2-mod):
---------------------------------------------------------------------------------
+--------------------------------------------------
 - Code folding
 - Support for bookmarks
 - Option to mark all occurrences of a word
@@ -27,9 +29,9 @@ Changes compared to Flo's official Notepad2 (made in Notepad2-mod):
 - Improved support for NFO ANSI art
 - Other various minor changes and tweaks
 
---------------------------------------------------------------------------------
+--------------------------------------------------
 Changes compared to the Notepad2-mod fork:
---------------------------------------------------------------------------------
+--------------------------------------------------
 - Additional syntax highlighting support for Awk, D, golang, MATLAB
 - State of the art Regular Expression search engine (Onigmu)
 - New toolbar icons based on Yusuke Kamiyaman's Fugue Icons 
@@ -53,20 +55,20 @@ Changes compared to the Notepad2-mod fork:
 - Dropped support for Windows XP version
 - Other various minor changes, tweaks and bugfixes
 
---------------------------------------------------------------------------------
+--------------------------------------------------
 Supported Operating Systems:
---------------------------------------------------------------------------------
+--------------------------------------------------
 Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
 
---------------------------------------------------------------------------------
+--------------------------------------------------
 Development:
---------------------------------------------------------------------------------
+--------------------------------------------------
 - Florian 'Flo' Balmer (Notepad2) ( http://www.flos-freeware.ch )
 - Rainer Kottenhoff ( https://github.com/RaiKoHoff )
 
---------------------------------------------------------------------------------
+--------------------------------------------------
 Contributors:
---------------------------------------------------------------------------------
+--------------------------------------------------
 - Derick Payne (© Rizonesoft) ( https://www.rizonesoft.com )
 - XhmikosR (Notepad2-mod) ( https://xhmikosr.github.io/notepad2-mod )
 - Kai Liu (CodeFolding) ( http://code.kliu.org/misc/notepad2 )

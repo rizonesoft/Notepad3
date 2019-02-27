@@ -1,4 +1,4 @@
-﻿// np3_en_uk.cpp: Definiert die exportierten Funktionen für die DLL-Anwendung.
+﻿// np3_en_gb.cpp: Definiert die exportierten Funktionen für die DLL-Anwendung.
 //
 
 #include "stdafx.h"

@@ -252,6 +252,9 @@
     <ClCompile Include="StyleLexers\styleLexNim.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="MuiLanguage.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">
@@ -388,6 +391,9 @@
     </ClInclude>
     <ClInclude Include="..\uthash\utstack.h">
       <Filter>Source Files\uthash</Filter>
+    </ClInclude>
+    <ClInclude Include="MuiLanguage.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

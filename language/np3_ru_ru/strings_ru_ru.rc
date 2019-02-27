@@ -122,7 +122,7 @@ BEGIN
     IDS_MUI_ERR_ADMINEXE        "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE  "Вы уверены, что хотите открыть этот очень большой файл?"
     IDS_MUI_WARN_UNKNOWN_EXT    "Неизвестное расширения файла (%s)!\nПродолжить загрузку данных?"
-    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks by '%s'?"
+    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
     IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
 END
 
@@ -201,7 +201,7 @@ IDS_MUI_CMDLINEHELP "\
 Использование:\r\n\
 Notepad3 \t[/?] […[Кодировка]] […[Окончания строк]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/z] [[диск:][путь]имя[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[диск:][путь]имя[…]]\r\n\r\n\
 файл\tДолжен быть последним аргументом, изначально без пробелов.\r\n\
 +\tНесколько аргументов файлов (с кодированными пробелами).\r\n\
 -\tОдин аргумент файла (без кодированнных пробелов).\r\n\r\n\
@@ -231,6 +231,7 @@ Notepad3 \t[/?] […[Кодировка]] […[Окончания строк]] [/e] [/g] [/m] [/l]\r\n\
 /u\tЗапуск с повышенными полномочиями.\r\n\
 /v\tРаспечатать файл немедленно и выйти.\r\n\
 /vd\tРаспечатать файл (открыть диалог печати).\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
 /z\tПропустить следующий (применимо для поиска\r\n\
  \tс регулярным выражением).\r\n\r\n\
 Примеры:\r\n\

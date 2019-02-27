@@ -13,20 +13,8 @@
 *                                                                             *
 *******************************************************************************/
 
-#if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
-#endif
-#if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
+#include "Helpers.h"
 
-#define VC_EXTRALEAN 1
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <windows.h>
 #include <shlwapi.h>
 #include <commctrl.h>
 #include <commdlg.h>
@@ -46,9 +34,8 @@
 //#include "../uthash/utstring.h"
 #include "../tinyexpr/tinyexpr.h"
 
-#include "Helpers.h"
 #include "Encoding.h"
-#include "TypeDefs.h"
+#include "MuiLanguage.h"
 
 #include "SciCall.h"
 #include "SciLexer.h"
@@ -390,10 +377,10 @@ void EditSetNewText(HWND hwnd,char* lpstrText,DWORD cbText)
 bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
 {
   if (encSource == encDest)
-    return(true);
+    return true;
 
   if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest)))
-    return(false);
+    return false;
 
   DocPos const length = SciCall_GetTextLength();
 
@@ -435,7 +422,7 @@ bool EditConvertText(HWND hwnd, int encSource, int encDest, bool bSetSavePoint)
 
     FreeMem(pchText);
   }
-  return(true);
+  return true;
 }
 
 
@@ -997,19 +984,6 @@ bool EditLoadFile(
     }
   }
 
-  // display real path name (by zufuliu)
-  WCHAR realPath[MAX_PATH] = L"";
-  if (GetFinalPathNameByHandleW(hFile, realPath, MAX_PATH, /*FILE_NAME_OPENED*/0x8) > 0) {
-    if (StrCmpN(realPath, L"\\\\?\\", 4) == 0) {
-      WCHAR* p = realPath + 4;
-      if (StrCmpN(p, L"UNC\\", 4) == 0) {
-        p += 2;
-        *p = L'\\';
-      }
-      StringCchCopyW(pszFile, MAX_PATH, p);
-    }
-  }
-
   char* lpData = AllocMem(dwBufSize, HEAP_ZERO_MEMORY);
 
   Globals.dwLastError = GetLastError();
@@ -1066,7 +1040,7 @@ bool EditLoadFile(
     bool const bIsUnicode = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUNICODE(iAnalyzedEncoding);
 
     if (iAnalyzedEncoding == CPI_ASCII_7BIT) {
-      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on prefered
+      iAnalyzedEncoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding; // stay on preferred
     }
     else {
       if ((bSkipUTFDetection && bIsUnicode) || (bSkipANSICPDetection && !bIsUnicode)) {
@@ -1085,13 +1059,16 @@ bool EditLoadFile(
   }
   // --------------------------------------------------------------------------
 
+  bool const bIsForced = !Encoding_IsNONE(iForcedEncoding);
+  bool const bIsUnicodeForced = Encoding_IsUNICODE(iForcedEncoding);
+
   // choose best encoding guess
   int const iFileEncWeak = Encoding_SrcWeak(CPI_GET);
 
-  if (!Encoding_IsNONE(iForcedEncoding)) {
+  if (bIsForced) {
     iPreferedEncoding = iForcedEncoding;
   }
-  else if (iFileEncWeak != CPI_NONE) {
+  else if (!Encoding_IsNONE(iFileEncWeak)) {
     iPreferedEncoding = iFileEncWeak;
   }
   else if (!Encoding_IsNONE(iAnalyzedEncoding) && (bIsReliable || !Settings.UseReliableCEDonly)) {
@@ -1103,27 +1080,26 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
 
+  bool const bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
+
   bool bBOM = false;
   bool bReverse = false;
-
-  bool const bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
+  bool const bIsUnicodeValid = IsValidUnicode(lpData, cbData, &bBOM, &bReverse);
+  bool const bIsUnicodeAnalyzed = ((Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable)
+    && !bIsForced && !bSkipUTFDetection && !bIsUTF8Sig);
 
   if (cbData == 0) {
     FileVars_Init(NULL,0,&Globals.fvCurFile);
     status->iEOLMode = Settings.DefaultEOLMode;
-    status->iEncoding = !Encoding_IsNONE(iForcedEncoding) ? iForcedEncoding : 
+    status->iEncoding = bIsForced ? iForcedEncoding :
       (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : iPreferedEncoding);
     EditSetNewText(hwnd,"",0);
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     FreeMem(lpData);
   }
+
   // ===  UNICODE  ===
-  else if (Encoding_IsUNICODE(iForcedEncoding) ||
-    (Encoding_IsNONE(iForcedEncoding) && !bSkipUTFDetection && !bIsUTF8Sig
-      && (IsValidUnicode(lpData, cbData, &bBOM, &bReverse) 
-        || (Encoding_IsUNICODE(iAnalyzedEncoding) && bIsReliable))
-      )
-    )
+  else if (bIsUnicodeForced || (!bIsForced && bIsUnicodeAnalyzed && bIsUnicodeValid))
   {
     if (iForcedEncoding == CPI_UNICODE) {
       bBOM = Has_UTF16_LE_BOM(lpData, clampi((int)cbData, 0, 8));
@@ -1176,21 +1152,18 @@ bool EditLoadFile(
     FileVars_Init(lpData,cbData,&Globals.fvCurFile);
 
     // ===  UTF-8  ===
-    bool const bHardRulesUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
-    bool const bForcedNonUTF8 = !Encoding_IsNONE(iForcedEncoding) && !Encoding_IsUTF8(iForcedEncoding);
-
     bool const bValidUTF8 = IsValidUTF8(lpData, cbData);
+    bool const bForcedUTF8 = Encoding_IsUTF8(iForcedEncoding) || (FileVars_IsUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
     bool const bAnalysisUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && bIsReliable;
-    bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) || Encoding_IsUTF8(iPreferedEncoding); // non-reliable analysis = soft-hint
+    bool const bSoftHintUTF8 = Encoding_IsUTF8(iAnalyzedEncoding) && Encoding_IsUTF8(iPreferedEncoding); // non-reliable analysis = soft-hint
 
-    bool const bRejectUTF8 = bSkipUTFDetection || bForcedNonUTF8 || (FileVars_IsNonUTF8(&Globals.fvCurFile) && !Settings.NoEncodingTags);
+    bool const bRejectUTF8 = !bValidUTF8 || (!bIsUTF8Sig && bSkipUTFDetection);
 
-    //if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8)))
-    if (bHardRulesUTF8 || (!bRejectUTF8 && bValidUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
+    if (bForcedUTF8 || (!bRejectUTF8 && (bIsUTF8Sig || bAnalysisUTF8 || bSoftHintUTF8))) // soft-hint = prefer UTF-8
     {
       EditSetNewText(hwnd,"",0);
       if (bIsUTF8Sig) {
-        EditSetNewText(hwnd,UTF8StringStart(lpData),cbData-3);
+        EditSetNewText(hwnd,UTF8StringStart(lpData),cbData - 3);
         status->iEncoding = CPI_UTF8SIGN;
         EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
       }
@@ -1204,7 +1177,7 @@ bool EditLoadFile(
 
     else { // ===  ALL OTHER  ===
 
-      if (!Encoding_IsNONE(iForcedEncoding))
+      if (bIsForced)
         status->iEncoding = iForcedEncoding;
       else {
         status->iEncoding = FileVars_GetEncoding(&Globals.fvCurFile);
@@ -3479,7 +3452,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
       if (bTrailingBlanksOnly)
       {
         DocPos i = iEndPos;
-        char ch = '\0';
+        char ch;
         do {
           ch = SciCall_GetCharAt(--i);
         } while ((i >= iStartPos) && IsBlankChar(ch));
@@ -4969,8 +4942,8 @@ static RegExResult_t  _FindHasMatch(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos 
 //
 static void  _DeleteLineStateAll(int const iLineStateBit)
 {
-  DocLn const iLastLine = SciCall_GetLineCount();
-  for (DocLn iLine = 0; iLine < iLastLine; ++iLine) {
+  DocLn const iLastLine = SciCall_GetMaxLineState();
+  for (DocLn iLine = 0; iLine <= iLastLine; ++iLine) {
     int const iLnSt = SciCall_GetLineState(iLine);
     if (iLnSt & iLineStateBit) {
       SciCall_SetLineState(iLine, (iLnSt & ~iLineStateBit));
@@ -5644,7 +5617,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDACC_SELTONEXT:
           if (!bIsFindDlg) { Globals.bReplaceInitialized = true; }
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionEnd(hwnd); }
-          EditFindNext(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTONEXT), HIBYTE(GetKeyState(VK_F3)));
+          EditFindNext(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTONEXT), IsKeyDown(VK_F3));
           s_InitialSearchStart = SciCall_GetSelectionStart();
           s_InitialAnchorPos = SciCall_GetAnchor();
           s_InitialCaretPos = SciCall_GetCurrentPos();
@@ -5655,7 +5628,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         case IDACC_SELTOPREV:
           if (!bIsFindDlg) { Globals.bReplaceInitialized = true; }
           if (!SciCall_IsSelectionEmpty()) { EditJumpToSelectionStart(hwnd);  }
-          EditFindPrev(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTOPREV), HIBYTE(GetKeyState(VK_F3)));
+          EditFindPrev(sg_pefrData->hwnd, sg_pefrData, (LOWORD(wParam) == IDACC_SELTOPREV), IsKeyDown(VK_F3));
           s_InitialSearchStart = SciCall_GetSelectionStart();
           s_InitialAnchorPos = SciCall_GetAnchor();
           s_InitialCaretPos = SciCall_GetCurrentPos();
@@ -6227,6 +6200,7 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
   int slen = _EditGetFindStrg(hwnd, lpefr, szFind, COUNTOF(szFind));
   if (slen <= 0) { return 0; }
 
+  // SCI_REPLACETARGET or SCI_REPLACETARGETRE
   int iReplaceMsg = SCI_REPLACETARGET;
   char* pszReplace = _GetReplaceString(hwnd, lpefr, &iReplaceMsg);
   if (!pszReplace) {
@@ -6278,16 +6252,22 @@ int EditReplaceAllInRange(HWND hwnd, LPCEDITFINDREPLACE lpefr, DocPos iStartPos,
                   pPosPair != NULL;
                   pPosPair = (ReplPos_t*)utarray_next(ReplPosUTArray, pPosPair)) {
 
-    // redo find to get group ranges filled
     start = searchStart;
     end = iEndPos + totalReplLength;
 
-    iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
+    if (iReplaceMsg == SCI_REPLACETARGETRE) 
+    {
+      // redo find to get group ranges filled
+      iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, false, FRMOD_IGNORE);
+    }
+    else {
+      start = pPosPair->beg + totalReplLength;
+      end = pPosPair->end + totalReplLength;
+    }
 
     _ENTER_TARGET_TRANSACTION_;
 
     SciCall_SetTargetRange(start, end);
-    // SCI_REPLACETARGET or SCI_REPLACETARGETRE
     DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
     totalReplLength += replLen + pPosPair->beg - pPosPair->end;
     searchStart = SciCall_GetTargetEnd();
@@ -6864,7 +6844,9 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
   }
   else // =====   hide lines without marker   =====
   {
-    EditApplyLexerStyle(hwnd, 0, -1); // reset
+    // !!! do not apply LexerStyles here, 
+    // cause some Lexers destroy/reset LineState of Occurrences marker
+    //~EditApplyLexerStyle(hwnd, 0, -1); // reset
 
     // prepare hidden (folding) settings
     Globals.bCodeFoldingAvailable = true; // saved before
@@ -6880,10 +6862,10 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
     // --- hide lines without indicator ---
 
-    const DocLn iStartLine = SciCall_LineFromPosition(iStartPos);
-    const DocLn iEndLine = SciCall_LineFromPosition(iEndPos);
+    DocLn const iStartLine = SciCall_LineFromPosition(iStartPos);
+    DocLn const iEndLine = SciCall_LineFromPosition(iEndPos);
 
-    const int baseLevel = SciCall_GetFoldLevel(iStartLine) & SC_FOLDLEVELNUMBERMASK;
+    int const baseLevel = SciCall_GetFoldLevel(iStartLine) & SC_FOLDLEVELNUMBERMASK;
 
     // clear levels to avoid multi rearangements on existing lexer provided levels
     for (DocLn iLine = iStartLine; iLine <= iEndLine; ++iLine)
@@ -6892,26 +6874,28 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
     }
 
     // 1st line
-    if ((SciCall_GetLineState(iStartLine) & LINESTATE_OCCURRENCE_MARK) == 0)
+    int level = baseLevel;
+
+    if ((SciCall_GetLineState(iStartLine) & LINESTATE_OCCURRENCE_MARK) != 0)
     { // hide
-      const DocPos begPos = SciCall_PositionFromLine(iStartLine);
-      const DocPos lnLen = SciCall_LineLength(iStartLine);
+      DocPos const begPos = SciCall_PositionFromLine(iStartLine);
+      DocPos const lnLen = SciCall_LineLength(iStartLine);
       SciCall_StartStyling(begPos);
       SciCall_SetStyling((DocPosCR)lnLen, Style_GetInvisibleStyleID());
+      SciCall_SetFoldLevel(iStartLine, SC_FOLDLEVELWHITEFLAG | level);
     }
 
-    int level = baseLevel;
     for (DocLn iLine = iStartLine + 1; iLine <= iEndLine; ++iLine)
     {
       if ((SciCall_GetLineState(iLine) & LINESTATE_OCCURRENCE_MARK) != 0) // visible
       {
-        while (level > baseLevel) { --level; }
+        level = baseLevel;
         SciCall_SetFoldLevel(iLine, level);
       }
       else // hide line
       {
-        const DocPos begPos = SciCall_PositionFromLine(iLine);
-        const DocPos lnLen = SciCall_LineLength(iLine);
+        DocPos const begPos = SciCall_PositionFromLine(iLine);
+        DocPos const lnLen = SciCall_LineLength(iLine);
         SciCall_StartStyling(begPos);
         SciCall_SetStyling((DocPosCR)lnLen, Style_GetInvisibleStyleID());
 
@@ -6924,7 +6908,7 @@ void EditHideNotMarkedLineRange(HWND hwnd, DocPos iStartPos, DocPos iEndPos, boo
 
     DocPos const iTextLength = SciCall_GetTextLength();
     if (iEndPos < iTextLength) {
-      const DocPos iStartStyling = SciCall_PositionFromLine(iEndLine + 1);
+      DocPos const iStartStyling = SciCall_PositionFromLine(iEndLine + 1);
       if ((iStartStyling >= 0) && (iStartStyling < iTextLength)) {
         SciCall_StartStyling(iStartStyling);
         EditFinalizeStyling(hwnd, -1);
@@ -8011,7 +7995,7 @@ bool FileVars_Apply(HWND hwnd,LPFILEVARS lpfv) {
 
   Globals.iWrapCol = 0;
 
-  return(true);
+  return true;
 }
 
 
@@ -8053,19 +8037,19 @@ bool FileVars_ParseInt(char* pszData,char* pszName,int* piValue) {
 
     int itok = sscanf_s(tch,"%i",piValue);
     if (itok == 1)
-      return(true);
+      return true;
 
     if (tch[0] == 't') {
       *piValue = 1;
-      return(true);
+      return true;
     }
 
     if (tch[0] == 'n' || tch[0] == 'f') {
       *piValue = 0;
-      return(true);
+      return true;
     }
   }
-  return(false);
+  return false;
 }
 
 
@@ -8111,9 +8095,9 @@ bool FileVars_ParseStr(char* pszData,char* pszName,char* pszValue,int cchValue) 
 
     StringCchCopyNA(pszValue,cchValue,tch,COUNTOF(tch));
 
-    return(true);
+    return true;
   }
-  return(false);
+  return false;
 }
 
 
@@ -8125,24 +8109,9 @@ bool FileVars_IsUTF8(LPFILEVARS lpfv) {
   if (lpfv->mask & FV_ENCODING) {
     if (StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf-8",CSTRLEN("utf-8")) == 0 ||
         StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf8", CSTRLEN("utf8")) == 0)
-      return(true);
+      return true;
   }
-  return(false);
-}
-
-
-//=============================================================================
-//
-//  FileVars_IsNonUTF8()
-//
-bool FileVars_IsNonUTF8(LPFILEVARS lpfv) {
-  if (lpfv->mask & FV_ENCODING) {
-    if (StringCchLenA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding)) &&
-        StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf-8", CSTRLEN("utf-8")) != 0 &&
-        StringCchCompareNIA(lpfv->tchEncoding,COUNTOF(lpfv->tchEncoding),"utf8", CSTRLEN("utf8")) != 0)
-      return(true);
-  }
-  return(false);
+  return false;
 }
 
 
@@ -8158,11 +8127,12 @@ bool FileVars_IsValidEncoding(LPFILEVARS lpfv) {
     if ((Encoding_IsINTERNAL(lpfv->iEncoding)) ||
          (IsValidCodePage(Encoding_GetCodePage(lpfv->iEncoding)) &&
           GetCPInfo(Encoding_GetCodePage(lpfv->iEncoding),&cpi))) {
-      return(true);
+      return true;
     }
   }
-  return(false);
+  return false;
 }
+
 
 //=============================================================================
 //
@@ -8172,7 +8142,7 @@ int FileVars_GetEncoding(LPFILEVARS lpfv) {
   if (lpfv->mask & FV_ENCODING) {
     return(lpfv->iEncoding);
   }
-  return(-1);
+  return CPI_NONE;
 }
 
 

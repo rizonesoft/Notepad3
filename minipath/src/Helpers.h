@@ -41,9 +41,11 @@ inline BOOL IniSectionSetInt(LPWSTR lpCachedIniSection,LPCWSTR lpName,int i) {
 }
 
 // clamp
-static inline int clampi(int x, int lower, int upper) {
+inline int clampi(int x, int lower, int upper) {
   return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
+
+inline BOOL IsKeyDown(int key) { return (((GetKeyState(key) >> 8) & 0xff) != 0); }
 
 #define StrEnd(pStart) (pStart + lstrlen(pStart))
 
@@ -117,7 +119,7 @@ void PrepareFilterStr(LPWSTR);
 void StrTab2Space(LPWSTR);
 void ExpandEnvironmentStringsEx(LPWSTR,DWORD);
 void PathCanonicalizeEx(LPWSTR);
-DWORD SearchPathEx(LPCWSTR,LPCWSTR,LPCWSTR,DWORD,LPWSTR,LPWSTR*);
+BOOL SearchPathEx(LPCWSTR,DWORD,LPWSTR);
 int  FormatNumberStr(LPWSTR);
 
 void GetDefaultFavoritesDir(LPWSTR,int);
@@ -151,6 +153,10 @@ static inline BOOL StrIsEmptyW(LPCWSTR s) { return ((s == NULL) || (*s == L'\0')
 #define StrIsEmpty(s)     StrIsEmptyA(s)
 #define StrIsNotEmpty(s)  (!StrIsEmptyA(s))
 #endif
+
+//==== StrEqual() =============================================
+
+#define StrEqual(s1, s2) (lstrcmp((s1),(s2)) == 0)
 
 
 //==== History Functions ======================================================
