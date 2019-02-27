@@ -47,15 +47,13 @@ static HHOOK hhkMsgBox = NULL;
 
 static LRESULT CALLBACK _MsgBoxProc(INT nCode, WPARAM wParam, LPARAM lParam)
 {
-  HWND  hParentWnd, hChildWnd;    // msgbox is "child"
-  RECT  rParent, rChild, rDesktop;
-
   // notification that a window is about to be activated  
   if (nCode == HCBT_ACTIVATE) {
     // set window handles
-    hParentWnd = GetForegroundWindow();
-    hChildWnd = (HWND)wParam; // window handle is wParam
+    HWND hParentWnd = GetForegroundWindow();
+    HWND hChildWnd = (HWND)wParam; // window handle is wParam
 
+    RECT  rParent, rChild, rDesktop;
     if ((hParentWnd != NULL) && (hChildWnd != NULL) &&
         (GetWindowRect(GetDesktopWindow(), &rDesktop) != 0) &&
         (GetWindowRect(hParentWnd, &rParent) != 0) &&
@@ -498,9 +496,6 @@ static DWORD CALLBACK _LoadRtfCallbackW(
 //
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
-  WCHAR wch[256] = { L'\0' };
-  static HFONT hFontTitle;
-
   switch (umsg)
   {
   case WM_INITDIALOG:
@@ -509,12 +504,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
     SetDlgItemText(hwnd, IDC_VERSION, _W(_STRG(VERSION_FILEVERSION_LONG)));
 
+    static HFONT hFontTitle = NULL;
     if (hFontTitle) { DeleteObject(hFontTitle); }
-
     if (NULL == (hFontTitle = (HFONT)SendDlgItemMessage(hwnd, IDC_VERSION, WM_GETFONT, 0, 0))) {
       hFontTitle = GetStockObject(DEFAULT_GUI_FONT);
     }
-
     LOGFONT lf;
     GetObject(hFontTitle, sizeof(LOGFONT), &lf);
     lf.lfWeight = FW_BOLD;
@@ -530,6 +524,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     SetDlgItemText(hwnd, IDC_AUTHORNAME, _W(VERSION_AUTHORNAME));
     SetDlgItemText(hwnd, IDC_COMPILER, VERSION_COMPILER);
 
+    WCHAR wch[256] = { L'\0' };
     if (GetDlgItem(hwnd, IDC_WEBPAGE) == NULL) {
       SetDlgItemText(hwnd, IDC_WEBPAGE2, _W(VERSION_WEBPAGEDISPLAY));
       ShowWindow(GetDlgItem(hwnd, IDC_WEBPAGE2), SW_SHOWNORMAL);
@@ -538,10 +533,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
       StringCchPrintf(wch, COUNTOF(wch), L"<A>%s</A>", _W(VERSION_WEBPAGEDISPLAY));
       SetDlgItemText(hwnd, IDC_WEBPAGE, wch);
     }
-
     GetLngString(IDS_MUI_TRANSL_AUTHOR, wch, COUNTOF(wch));
     SetDlgItemText(hwnd, IDC_TRANSL_AUTH, wch);
-
 
     // --- Rich Edit Control ---
     //SendDlgItemMessage(hwnd, IDC_RICHEDITABOUT, EM_SETBKGNDCOLOR, 0, (LPARAM)GetBackgroundColor(hwnd));
@@ -1419,10 +1412,9 @@ DWORD WINAPI FileMRUIconThread(LPVOID lpParam) {
     SHFILEINFO shfi;
     ZeroMemory(&shfi, sizeof(SHFILEINFO));
 
-    DWORD dwAttr = 0;
-
-    if (ListView_GetItem(hwnd,&lvi)) {
-
+    if (ListView_GetItem(hwnd,&lvi)) 
+    {
+      DWORD dwAttr = 0;
       if (PathIsUNC(tch) || !PathFileExists(tch)) {
         dwFlags |= SHGFI_USEFILEATTRIBUTES;
         dwAttr = FILE_ATTRIBUTE_NORMAL;
@@ -2941,16 +2933,14 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo)
 //
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 {
-  WCHAR szModuleName[MAX_PATH] = { L'\0' };
-  WCHAR szFileName[MAX_PATH] = { L'\0' };
-  WCHAR szParameters[2 * MAX_PATH + 64] = { L'\0' };
-  WCHAR tch[64] = { L'\0' };
-
   if (bSaveOnRunTools && !FileSave(false, true, false, false)) { return; }
 
+  WCHAR szModuleName[MAX_PATH] = { L'\0' };
   GetModuleFileName(NULL, szModuleName, COUNTOF(szModuleName));
   PathCanonicalizeEx(szModuleName, COUNTOF(szModuleName));
 
+  WCHAR tch[64] = { L'\0' };
+  WCHAR szParameters[2 * MAX_PATH + 64] = { L'\0' };
   StringCchPrintf(tch, COUNTOF(tch), L"\"-appid=%s\"", Settings2.AppUserModelID);
   StringCchCopy(szParameters, COUNTOF(szParameters), tch);
 
@@ -2985,6 +2975,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, bool bSetCurFile)
 
   if (bSetCurFile && StringCchLenW(Globals.CurrentFile, MAX_PATH)) 
   {
+    WCHAR szFileName[MAX_PATH] = { L'\0' };
     StringCchCopy(szFileName, COUNTOF(szFileName), Globals.CurrentFile);
     PathQuoteSpaces(szFileName);
     StringCchCat(szParameters, COUNTOF(szParameters), L" ");
@@ -3129,34 +3120,31 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   LPCWSTR lpszFile, int iFormat, bool bModified,
   UINT uIDReadOnly, bool bReadOnly, LPCWSTR lpszExcerpt)
 {
-
-  WCHAR szUntitled[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szExcrptQuot[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szExcrptFmt[32] = { L'\0' };
-  WCHAR szAppName[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szReadOnly[32] = { L'\0' };
-  WCHAR szTitle[LARGE_BUFFER] = { L'\0' };
-
   if (bFreezeAppTitle)
     return false;
 
+  WCHAR szAppName[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szUntitled[MIDSZ_BUFFER] = { L'\0' };
   if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
     !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
   }
-
   if (bIsElevated) {
+    WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
     FormatLngStringW(szElevatedAppName, COUNTOF(szElevatedAppName), IDS_MUI_APPTITLE_ELEVATED, szAppName);
     StringCchCopyN(szAppName, COUNTOF(szAppName), szElevatedAppName, COUNTOF(szElevatedAppName));
   }
 
+  WCHAR szTitle[LARGE_BUFFER] = { L'\0' };
+  
   if (bModified)
     StringCchCopy(szTitle, COUNTOF(szTitle), pszMod);
   else
     StringCchCopy(szTitle, COUNTOF(szTitle), L"");
 
   if (StrIsNotEmpty(lpszExcerpt)) {
+    WCHAR szExcrptFmt[32] = { L'\0' };
+    WCHAR szExcrptQuot[MIDSZ_BUFFER] = { L'\0' };
     GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
     StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
     StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
@@ -3190,6 +3178,7 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
     StringCchCat(szTitle, COUNTOF(szTitle), szUntitled);
   }
 
+  WCHAR szReadOnly[32] = { L'\0' };
   if (bReadOnly && GetLngString(uIDReadOnly, szReadOnly, COUNTOF(szReadOnly)))
   {
     StringCchCat(szTitle, COUNTOF(szTitle), L" ");
