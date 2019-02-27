@@ -29,12 +29,13 @@ SCI - (SCI)ntilla Library
 
 
 ==================================================
-Current Version 5.19.226.build (2019-Feb-26)
+Current Version 5.19.227.build (2019-Feb-27)
 ==================================================
 
 --------------------------------------------------
 NEW:
 --------------------------------------------------
+- Add a Languages Selection in UI Main Menu
 - Command line option [/Y] to search env PATH for relative filename  (NLS: strings)
 - Customize Schemes: Caret style 'ovrbar' (default) to switch caret style 
     between BAR and BLOCK 
@@ -69,7 +70,6 @@ FIXES:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Add All Currently Available Languages in "*.ini" files
 - Korean (UHC) Translation (partial).
 
 
