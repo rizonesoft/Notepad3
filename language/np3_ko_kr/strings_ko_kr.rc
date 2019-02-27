@@ -209,7 +209,7 @@ BEGIN
     IDS_MUI_TITLE_RELARB        " +++ Style '%s' - (%s) +++"
     IDS_MUI_TITLE_FIXARB        " Style '%s' - (%s)"
     IDS_MUI_ASSOCIATED_EXT      "연결된 확장자:"
-    IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789.\r\n빠른 갈색 여우가 느린 개를 뛰어 넘었다."
+    IDS_MUI_EXAMPLE_TEXT        "The quick brown fox jumps over the lazy dog, 0123456789.\r\n빠른 갈색 여우가 느린 개를 뛰어 넘었다.\r\n\\ * & ^ % $ # @ ! ~"
     IDS_MUI_ZERO_LEN_MATCH      "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE           "행 (1 - %lli):"
     IDS_MUI_GOTO_COLUMN         "열 (1 - %lli):"
@@ -270,7 +270,7 @@ Notepad3 \t[/?] […[인코딩]] […[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
 /u\t높은 권한(관리자 권한)으로 실행.\r\n\
 /v\t파일을 즉시 인쇄 한 후 종료.\r\n\
 /vd\t파일 인쇄 (프린터 대화 상자 열기).\r\n\
-/y\t상대 경로 파일 이름의 경우 환경 PATH 검색.\r\n\
+/y\t상대 경로 파일 이름의 경우 PATH 환경 검색.\r\n\
 /z\t다음 건너 뛰기 (레지스트리 기반 메모장 교체를 위해 사용 가능).\r\n\r\n\
 예:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
