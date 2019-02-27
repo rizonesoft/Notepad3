@@ -381,6 +381,7 @@
     <ClCompile Include="Encoding.c" />
     <ClCompile Include="EncodingCED.cpp" />
     <ClCompile Include="Helpers.c" />
+    <ClCompile Include="MuiLanguage.c" />
     <ClCompile Include="Notepad3.c" />
     <ClCompile Include="Print.cpp" />
     <ClCompile Include="StyleLexers\styleLexAHK.c" />
@@ -468,6 +469,7 @@
     <ClInclude Include="Edit.h" />
     <ClInclude Include="Encoding.h" />
     <ClInclude Include="Helpers.h" />
+    <ClInclude Include="MuiLanguage.h" />
     <ClInclude Include="Notepad3.h" />
     <ClInclude Include="SciCall.h" />
     <ClInclude Include="StyleLexers\EditLexer.h" />

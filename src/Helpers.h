@@ -19,12 +19,11 @@
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 
+#include "TypeDefs.h"
+
 #include <math.h>
-#include <strsafe.h>
 #include <shlwapi.h>
 #include <versionhelpers.h>
-
-#include "TypeDefs.h"
 
 // ============================================================================
 // ---  Disable/Enable some CodeAnalysis Warnings  ---
@@ -260,17 +259,6 @@ bool IsCmdEnabled(HWND hwnd, UINT uId);
 
 #define DialogEnableWindow(hdlg, id, b) { HWND hctrl = GetDlgItem((hdlg),(id)); if (!(b)) { \
   if (GetFocus() == hctrl) { SendMessage((hdlg), WM_NEXTDLGCTL, 0, false); } }; EnableWindow(hctrl, (b)); }
-
-
-int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
-int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
-int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...);
-int FormatLngStringA(LPSTR lpOutput, int nOutput, UINT uIdFormat, ...);
-int LoadLngStringW2MB(UINT uID, LPSTR lpBuffer, int nBufferMax);
-
-#define GetLngString(id,pb,cb) LoadLngStringW((id),(pb),(cb))
-#define GetLngStringA(id,pb,cb) LoadLngStringA((id),(pb),(cb))
-#define GetLngStringW2MB(id,pb,cb) LoadLngStringW2MB((id),(pb),(cb))
 
 
 bool GetKnownFolderPath(REFKNOWNFOLDERID, LPWSTR lpOutPath, size_t cchCount);

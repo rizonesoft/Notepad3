@@ -426,6 +426,24 @@ BEGIN
             MENUITEM "설정 파일 열기(&O)\tCtrl+F7",        CMD_OPENINIFILE
         END
     END
+    POPUP "Language"
+    BEGIN
+        MENUITEM "English (United States)",             IDM_MUI_LANG_EN_US    
+        MENUITEM "Afrikaans (South Africa )",           IDM_MUI_LANG_AF_ZA    
+        MENUITEM "Belarusian (Belarus)",                IDM_MUI_LANG_BE_BY    
+        MENUITEM "German (Germany)",                    IDM_MUI_LANG_DE_DE    
+        MENUITEM "English (United Kingdom)",            IDM_MUI_LANG_EN_GB    
+        MENUITEM "Spanish (Spain Modern)",              IDM_MUI_LANG_ES_ES    
+        MENUITEM "French (France )",                    IDM_MUI_LANG_FR_FR    
+        MENUITEM "Hungarian (Hungary)",                 IDM_MUI_LANG_HU_HU    
+        MENUITEM "Italian (Italy)",                     IDM_MUI_LANG_IT_IT    
+        MENUITEM "Japanese (Japan)",                    IDM_MUI_LANG_JP_JP    
+        MENUITEM "Korean (Korea)",                      IDM_MUI_LANG_KO_KR    
+        MENUITEM "Dutch (Netherlands )",                IDM_MUI_LANG_NL_NL    
+        MENUITEM "Portuguese (Brazil)",                 IDM_MUI_LANG_PT_BR    
+        MENUITEM "Russian (Russia)",                    IDM_MUI_LANG_RU_RU    
+        MENUITEM "Chinese  (Hans)",                     IDM_MUI_LANG_ZH_CN    
+    END
     POPUP "도움말(&H)"
     BEGIN
         MENUITEM "온라인 설명서(&O)\tF1",               IDM_HELP_ONLINEDOCUMENTATION
