@@ -223,7 +223,7 @@ BEGIN
     IDS_MUI_LANG_BE_BY      "Belarusian (Belarus)\t\t\t[%s]"                    
     IDS_MUI_LANG_DE_DE      "German (Germany)\t\t\t[%s]"                        
     IDS_MUI_LANG_EN_GB      "English (United Kingdom)\t\t\t[%s]"                
-    IDS_MUI_LANG_ES_ES      "Spanish (Spain Modern)\t\t\t[%s]"                  
+    IDS_MUI_LANG_ES_ES      "Spanish (Spain)\t\t\t[%s]"                  
     IDS_MUI_LANG_FR_FR      "French (France)\t\t\t[%s]"                        
     IDS_MUI_LANG_HU_HU      "Hungarian (Hungary)\t\t\t[%s]"                     
     IDS_MUI_LANG_IT_IT      "Italian (Italy)\t\t\t[%s]"                         
