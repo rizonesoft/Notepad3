@@ -260,6 +260,7 @@ typedef struct _globals_t
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
   HMODULE   hLngResContainer;
+  int       iAvailLngCount;
   bool      bPrefLngNotAvail;
   HWND      hwndMain;
   HANDLE    hndlProcessHeap;
