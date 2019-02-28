@@ -170,9 +170,9 @@ Keyboard Shortcuts for Notepad3
     Ctrl+Shift+G          Show indentation guides.
     Ctrl+Shift+N          Show line numbers.
     Ctrl+Shift+M          Show selection margin.
+    Ctrl+Shift+7          Show wrap symbols.
     Ctrl+Shift+8          Show whitespace.
     Ctrl+Shift+9          Show line endings.
-    Ctrl+Shift+0          Show wrap symbols.
     Ctrl+Shift+V          Toggle visual brace matching.
     Ctrl+Shift+I          Highlight current line.
     Ctrl+Shift+Alt+F      Activate/Deactivate code folding.
