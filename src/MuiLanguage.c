@@ -223,19 +223,16 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
   // C. the OS users propensity to install/uninstall language packs
   // D. the OS users propensity to change language settings
 
-  bool bFallbackOK = true;
   WCHAR tchUserLangMultiStrg[LARGE_BUFFER] = { L'\0' };
   if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, COUNTOF(tchUserLangMultiStrg)))
   {
     GetLastErrorToMsgBox(L"_LngStrToMultiLngStr()", ERROR_MUI_INVALID_LOCALE_NAME);
-    bFallbackOK = false;
   }
   DWORD langCount = 0;
   // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
   if (!SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0))
   {
     GetLastErrorToMsgBox(L"SetProcessPreferredUILanguages()", 0);
-    bFallbackOK = false;
   }
 
   // obtains access to the proper resource container 
