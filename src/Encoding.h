@@ -64,6 +64,7 @@ typedef struct _np2encoding {
   int     idsName;
   int     iCEDEncoding;
   WCHAR   wchLabel[64];
+
 } NP2ENCODING;
 
 int  Encoding_CountOf();
@@ -77,7 +78,7 @@ int  Encoding_MapIniSetting(bool, int iSetting);
 int  Encoding_MapUnicode(int iUni);
 void Encoding_SetLabel(int iEncoding);
 int  Encoding_MatchW(LPCWSTR pwszTest);
-int  Encoding_MatchA(char* pchTest);
+int  Encoding_MatchA(const char* pchTest);
 bool Encoding_IsValid(int iTestEncoding);
 int  Encoding_GetByCodePage(UINT cp);
 void Encoding_AddToListView(HWND hwnd, int idSel, bool);
@@ -123,7 +124,8 @@ bool IsValidUTF8(const char* pTest, size_t nLength);
 // Google's "Compact Encoding Detection" 
 extern NP2ENCODING g_Encodings[];
 void ChangeEncodingCodePage(int cpi, UINT newCP);
-int Encoding_Analyze(const char* text, size_t len, int encodingHint, bool* pIsReliable);
+int Encoding_Analyze_CED(const char* text, size_t len, int encodingHint, bool* pIsReliable);
+int Encoding_Analyze_UCHARDET(const char* text, size_t len, int encodingHint, bool* pIsReliable);
 
 // 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 1361 Johab
 inline bool IsDBCSCodePage(UINT cp) {

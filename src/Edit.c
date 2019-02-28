@@ -1033,7 +1033,8 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
-  int iAnalyzedEncoding = Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+  //int iAnalyzedEncoding = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+  int iAnalyzedEncoding = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
 
   if (!g_bForceCompEncDetection) 
   {

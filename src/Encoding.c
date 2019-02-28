@@ -273,32 +273,24 @@ int Encoding_MatchW(LPCWSTR pwszTest)
 // ============================================================================
 
 
-int Encoding_MatchA(char *pchTest) 
+int Encoding_MatchA(const char *pchTest) 
 {
-  char  chTest[256] = { '\0' };
-  char *pchSrc = pchTest;
-  char *pchDst = chTest;
-  *pchDst++ = ',';
-  while (*pchSrc) {
-    if (IsCharAlphaNumericA(*pchSrc)) {
-      *pchDst++ = *CharLowerA(pchSrc);
-    }
-    ++pchSrc;
-  }
-  *pchDst++ = ',';
-  *pchDst = 0;
-  for (int i = 0; i < Encoding_CountOf(); i++) {
-    if (StrStrIA(g_Encodings[i].pszParseNames, chTest)) {
+  char  chTestLC[256] = { '\0' };
+  StringCchCopyA(chTestLC, 256, pchTest);
+  CharLowerA(chTestLC);
+  StringCchCatA(chTestLC, 256, ","); // parsing incl. comma
+  for (int cpiEncId = 0; cpiEncId < Encoding_CountOf(); cpiEncId++) {
+    if (StrStrIA(g_Encodings[cpiEncId].pszParseNames, chTestLC)) {
       CPINFO cpi;
-      if ((g_Encodings[i].uFlags & NCP_INTERNAL) ||
-        (IsValidCodePage(g_Encodings[i].uCodePage) &&
-         GetCPInfo(g_Encodings[i].uCodePage, &cpi))) {
-        return(i);
+      if ((g_Encodings[cpiEncId].uFlags & NCP_INTERNAL) ||
+        (IsValidCodePage(g_Encodings[cpiEncId].uCodePage) &&
+         GetCPInfo(g_Encodings[cpiEncId].uCodePage, &cpi))) {
+        return cpiEncId;
       }
-      return(-1);
+      return CPI_NONE;
     }
   }
-  return(-1);
+  return CPI_NONE;
 }
 // ============================================================================
 
