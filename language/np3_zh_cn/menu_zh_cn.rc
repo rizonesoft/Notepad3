@@ -299,9 +299,9 @@ BEGIN
         MENUITEM "显示行长度标记(&L)\tCtrl+Shift+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "显示缩进指引(&A)\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "显示软换行(&P)\tCtrl+Shift+7",              IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "显示空白字符(&W)\tCtrl+Shift+8",            IDM_VIEW_SHOWBLANKS
         MENUITEM "显示换行符(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
-        MENUITEM "显示软换行(&P)\tCtrl+Shift+0",              IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES

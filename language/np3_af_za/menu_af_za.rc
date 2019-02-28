@@ -299,9 +299,9 @@ BEGIN
         MENUITEM "&Lang Lyn Merker\tCtrl+Shift+L",          IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indent&asiegidse\tCtrl+Shift+G",       	IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Wys &Oorvloei Simbole\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "W&ys Oop Spasies\tCtrl+Shift+8",          IDM_VIEW_SHOWBLANKS
         MENUITEM "Wys Lyn &Einde\tCtrl+Shift+9",        	IDM_VIEW_SHOWEOLS
-        MENUITEM "Wys &Oorvloei Simbole\tCtrl+Shift+0",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "Skakel &Hotspots\tCtrl+Alt+W",         	IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visuele Hakie Passing\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES

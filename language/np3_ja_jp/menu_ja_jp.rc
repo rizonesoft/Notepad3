@@ -299,9 +299,9 @@ BEGIN
         MENUITEM "行の長さのガイド(&L)\tCtrl+Shift+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "インデントのガイド(&A)\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "折り返し記号(&P)\tCtrl+Shift+7",              IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "空白(&W)\tCtrl+Shift+8",                    IDM_VIEW_SHOWBLANKS
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",                IDM_VIEW_SHOWEOLS
-        MENUITEM "折り返し記号(&P)\tCtrl+Shift+0",              IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",       IDM_VIEW_MATCHBRACES

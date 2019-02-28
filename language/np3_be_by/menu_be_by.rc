@@ -299,9 +299,9 @@ BEGIN
         MENUITEM "&Метка доўгіх радкоў\tCtrl+Shift+L", IDM_VIEW_LONGLINEMARKER
         MENUITEM "Л&інія водступа\tCtrl+Shift+G", IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Паказваць &сімвалы пераносаў\tCtrl+Shift+7", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Паказваць пра&бельныя сімвалы\tCtrl+Shift+8", IDM_VIEW_SHOWBLANKS
         MENUITEM "Паказваць &канчаткі радкоў\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
-        MENUITEM "Паказваць &сімвалы пераносаў\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "Вызначаць &гіперспасылкі\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Адзначаць парныя ду&жкі\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
