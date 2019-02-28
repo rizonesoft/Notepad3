@@ -54,17 +54,17 @@ END
 
 IDR_MUI_MAINMENU MENU
 BEGIN
-    POPUP "Archivo"
+    POPUP "&Archivo"
     BEGIN
         MENUITEM "&Nuevo\tCtrl+N",                          IDM_FILE_NEW
         MENUITEM "&Abrir...\tCtrl+O",                       IDM_FILE_OPEN
         MENUITEM "&Recargar\tF5",                           IDM_FILE_REVERT
         MENUITEM "&Guardar\tCtrl+S",                        IDM_FILE_SAVE
-        MENUITEM "Guardar &como...\tF6",                    IDM_FILE_SAVEAS
-        MENUITEM "Guardar co&pia...\tCtrl+F6",              IDM_FILE_SAVECOPY
-        MENUITEM "&Sólo lectura",                           IDM_FILE_READONLY
+        MENUITEM "G&uardar como...\tF6",                    IDM_FILE_SAVEAS
+        MENUITEM "Guardar &copia...\tCtrl+F6",              IDM_FILE_SAVECOPY
+        MENUITEM "Sólo &lectura",                           IDM_FILE_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "Establecer contraseña de enc&riptación...", IDM_SETPASS
+        MENUITEM "&Establecer contraseña de encriptación...", IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "Lan&zar"
         BEGIN
@@ -108,11 +108,11 @@ BEGIN
             MENUITEM "&Defecto...",                         IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Confi&gurar página...",                   IDM_FILE_PAGESETUP
+        MENUITEM "Configurar &página...",                   IDM_FILE_PAGESETUP
         MENUITEM "&Imprimir...\tCtrl+P",                    IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Propie&dades...",                         IDM_FILE_PROPERTIES
-        MENUITEM "Crear enlace en el &escritorio",          IDM_FILE_CREATELINK
+        MENUITEM "Crear enlace en el escri&torio",          IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "&Mini explorador externo...\tCtrl+M",     IDM_FILE_BROWSE
         POPUP "Fa&voritos"
@@ -123,7 +123,7 @@ BEGIN
         END
         MENUITEM "Reciente (&Historial)...\tCtrl+Alt+H",    IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "Sa&lir\tAlt+F4",                          IDM_FILE_EXIT
+        MENUITEM "&Salir\tAlt+F4",                          IDM_FILE_EXIT
     END
     POPUP "&Edición"
     BEGIN
