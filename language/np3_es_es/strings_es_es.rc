@@ -87,7 +87,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE             "Notepad3"
     IDS_MUI_APPTITLE_ELEVATED    "%s (Administrador)"
-    IDS_MUI_APPTITLE_PASTEBOARD  "Notepad3 : Portapeles"
+    IDS_MUI_APPTITLE_PASTEBOARD  "Notepad3 : Portapapeles"
     IDS_MUI_UNTITLED             "Sin título"
     IDS_MUI_TITLEEXCERPT         """%s"""
     IDS_MUI_READONLY             "(Sólo lectura)"
@@ -97,8 +97,8 @@ BEGIN
     IDS_MUI_SAVINGSETTINGS       "Guardar configuraciones..."
     IDS_MUI_LINKDESCRIPTION      "Editar con Notepad3"
     IDS_MUI_FILTER_ALL           "Todos los archivos (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE           "Archivos ejecutables (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI           "Archivos de configuración (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE           "Archivos ejecutables (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Todos los archivos (*.*)|*.*|"
+    IDS_MUI_FILTER_INI           "Archivos de configuración (*.ini)|*.ini|Todos los archivos (*.*)|*.*|"
     IDS_MUI_OPENWITH             "Seleccionar la carpeta con enlaces a sus aplicaciones favoritas."
     IDS_MUI_FAVORITES            "Seleccionar la carpeta con enlaces a tus archivos favoritos."
     IDS_MUI_BACKSLASHHELP        "Backslash transformaciones\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
@@ -121,9 +121,9 @@ BEGIN
     IDS_MUI_ERR_UNICODE2        "Ciertos caracteres en el texto actual no son compatibles con la codificación seleccionada, y pueden ser reemplazados por marcadores de posición predeterminados al guardar. Se recomienda elegir otra codificación de archivo. ¿Continuar?"
     IDS_MUI_ERR_DROP            "¡Sólo se puede eliminar un archivo al mismo tiempo!"
     IDS_MUI_WARN_LOAD_BIG_FILE  "¿¿Seguro que quiere abrir este archivo grande??"
-    IDS_MUI_WARN_UNKNOWN_EXT    "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargando datos de todos modos?"
-    IDS_MUI_WARN_INCONSIST_EOLS "The file has inconsistent line-breaks!\n%s\nReplace all line-breaks with '%s'?"
-    IDS_MUI_WARN_INCONS_INDENTS "The file has inconsistent indentation!\n%s\nReplace indentation with '%s'?"
+    IDS_MUI_WARN_UNKNOWN_EXT    "¡Extensión de nombre de archivo desconocido (%s)!\n¿Cargar de todos modos?"
+    IDS_MUI_WARN_INCONSIST_EOLS "¡El archivo tiene saltos de línea inconsistentes!\n%s\n¿Reemplazar todos los saltos de línea con '%s'?"
+    IDS_MUI_WARN_INCONS_INDENTS "¡El archivo tiene sangría inconsistente!\n%s\n¿Reemplazar sangría con '%s'?"
 END
 
 STRINGTABLE
@@ -143,10 +143,10 @@ BEGIN
     IDS_MUI_SAVEDSETTINGS       "Los parámetros actuales del programa se han guardado."
     IDS_MUI_CREATEINI_FAIL      "Error al crear el archivo de configuración."
     IDS_MUI_WRITEINI_FAIL       "Error al escribir los parámetros en el archivo de configuración."
-    IDS_MUI_SETTINGSNOTSAVED    "Ningún archivo de configuración existente encontrado.\nPara mantener los cambios de estilo, guardar la configuración ahora (F7) o volver a la configuración del esquema (Ctrl + F12) y exportar sus estilos."
+    IDS_MUI_SETTINGSNOTSAVED    "Ningún archivo de configuración existente encontrado.\nPara mantener los cambios de estilo, guardar la configuración ahora (F7) o volver a la configuración del esquema (Ctrl+F12) y exportar sus estilos."
     IDS_MUI_EXPORT_FAIL         "Error al exportar la configuración de estilo a ""%s""."
     IDS_MUI_REGEX_INVALID       "Error al evaluar la expresión regular. ¡La expresión es inválida!"
-    IDS_MUI_DROP_NO_FILE        "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3"
+    IDS_MUI_DROP_NO_FILE        "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3."
 END
 
 STRINGTABLE
@@ -209,7 +209,7 @@ BEGIN
     IDS_MUI_LANG_IT_IT      "Italiano (Italia)\t\t\t[%s]"                         
     IDS_MUI_LANG_JP_JP      "Japonés (Japón)\t\t\t[%s]"                        
     IDS_MUI_LANG_KO_KR      "Coreano (Corea)\t\t\t[%s]"                          
-    IDS_MUI_LANG_NL_NL      "Neerlandés (Países Bajos)\t\t\t[%s]"                    
+    IDS_MUI_LANG_NL_NL      "Holandés (Países Bajos)\t\t\t[%s]"                    
     IDS_MUI_LANG_PT_BR      "Portugués (Brasil)\t\t\t[%s]"                     
     IDS_MUI_LANG_RU_RU      "Ruso (Rusia)\t\t\t[%s]"                        
     IDS_MUI_LANG_ZH_CN      "Chino (Hans)\t\t\t[%s]"                         
@@ -222,7 +222,7 @@ Uso:\r\n\
 Notepad3 \t[/?] […[Codificación]] […[Modo de final de línea]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[unidad:][ruta]archivo[…]]\r\n\r\n\
-archivo\tDebe ser el ultimo argumento, sin espacios entre\r\n\
+archivo\tDebe ser el último argumento, sin espacios entre\r\n\
  \tcomillas por defecto.\r\n\
 +\tAceptar múltiples argumentos de archivo (con espacios\r\n\
  \tentre comillas).\r\n\
@@ -253,9 +253,9 @@ Opciones:\r\n\
 /o\tVentana siempre visible.\r\n\
 /f\tEspecificar archivo ini (/f0 no ini-file).\r\n\
 /u\tLanzar con privilegios elevados.\r\n\
-/v\tImprimir el archivo inmediatamente y dejar.\r\n\
+/v\tImprimir el archivo inmediatamente y salir.\r\n\
 /vd\tImprimir archivo (abrir el cuadro de diálogo de la impresora).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
+/y\tBuscar variable de entorno PATH en caso de nombre de archivo relativo.\r\n\
 /z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\
  \ten el registro).\r\n\r\n\
 Ejemplos:\r\n\
@@ -315,21 +315,21 @@ IDS_MUI_ABOUT_RTF_6 "\
 \\cf0 anterior, esta lista de condiciones y el siguiente descargo de responsabilidad\\par\
 \\cf0 en la documentación y/u otros materiales suministrados con la distribución.\\par\
 \\cf0 \\par\
-\\cf0 3. Ni el nombre de Florian Balmer ni los nombres de sus contribuyentes pueden\\par\
+\\cf0 3. Ni el nombre de Florian Balmer ni los nombres de sus contribuidores pueden\\par\
 \\cf0 usarse para respaldar o promocionar productos derivados de este software sin\\par\
 \\cf0 permiso específico previo y por escrito.\\par\
 \\cf0 \\par\
 \\cf0 ESTE SOFTWARE SE SUMINISTRA POR LOS PROPIETARIOS DEL COPYRIGHT Y\\par\
-\\cf0 CONTRIBUYENTES 'COMO ESTÁ' Y CUALQUIER GARANTÍAS EXPRESAS O IMPLÍCITAS,\\par\
+\\cf0 CONTRIBUIDORES 'TAL CUAL' Y CUALQUIER GARANTÍA EXPRESA O IMPLÍCITA,\\par\
 \\cf0 INCLUYENDO, PERO NO LIMITADO A, LAS GARANTÍAS IMPLÍCITAS DE COMERCIALIZACIÓN\\par\
-\\cf0 Y APTITUD PARA UN PROPÓSITO PARTICULAR SON RECHAZADAS. EN NINGÚN CASO\\par\
-\\cf0  LOSPROPIETARIOS DEL COPYRIGHT Y CONTRIBUYENTES SERÁN RESPONSABLES POR\\par\
+\\cf0 Y ADECUACIÓN PARA UN PROPÓSITO PARTICULAR SON RECHAZADAS. EN NINGÚN CASO\\par\
+\\cf0 LOS PROPIETARIOS DEL COPYRIGHT Y CONTRIBUIDORES SERÁN RESPONSABLES POR\\par\
 \\cf0 NINGÚN DAÑO DIRECTO, INDIRECTO, INCIDENTAL, ESPECIAL, EJEMPLAR O COSECUENCIAL\\par\
 \\cf0 (INCLUYENDO, PERO NO LIMITADO A, LA ADQUISICIÓN O SUSTITUCIÓN DE BIENES\\par\
 \\cf0 O SERVICIOS; LA PÉRDIDA DE USO, DE DATOS O DE BENEFICIOS; O INTERRUPCIÓN\\par\
 \\cf0 DE LA ACTIVIDAD EMPRESARIAL) O POR CUALQUIER TEORÍA DE RESPONSABILIDAD, YA\\par\
 \\cf0 SEA POR CONTRATO, RESPONSABILIDAD ESTRICTA O AGRAVIO (INCLUYENDO NEGLIGENCIA\\par\
-\\cf0 O CUALQUIER OTRA CAUSA) QUE SURJA DE CUALQUIER MANERA DEL USO DE ESTE\\par\
+\\cf0 O CUALQUIER OTRA CAUSA) QUE SURJA DE CUALQUIER FORMA DEL USO DE ESTE\\par\
 \\cf0 SOFTWARE, INCLUSO SI SE HA ADVERTIDO DE LA POSIBILIDAD DE TALES DAÑOS.\\par\
 }"
 
