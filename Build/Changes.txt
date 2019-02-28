@@ -29,7 +29,7 @@ SCI - (SCI)ntilla Library
 
 
 ==================================================
-Current Version 5.19.227.build (2019-Feb-27)
+Current Version 5.19.228.build (2019-Feb-28)
 ==================================================
 
 --------------------------------------------------
@@ -55,7 +55,7 @@ CHANGES:
 - Update of Onigmo RegEx engine (2019-Jan-24)
 - Optimized file search for items (filebrowser, .ini file, dirs)
 - Goto-Dlg (Line/Column) shows max line number
-- Scintilla Library (SCI) version 4.1.3 (2019-Jan-10)
+- Scintilla Library (SCI) version 4.1.4 (2019-Fev-15)
 - SCI new Nim lexer replaces old Nimrod lexer (new highlighting)
 
 --------------------------------------------------
@@ -70,7 +70,7 @@ FIXES:
 --------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------
-- Korean (UHC) Translation (partial).
+- Korean (UHC) Translation
 
 
 ==================================================
