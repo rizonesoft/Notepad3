@@ -157,7 +157,6 @@ bool SetClipboardTextW(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW)
     return true; 
   }
   CloseClipboard();
-  // cppcheck-suppress memleak // ClipBoard is owner now
   return false;
 }
 

@@ -299,9 +299,9 @@ BEGIN
         MENUITEM "Marqueur de &longue ligne\tCtrl+Shift+L",             IDM_VIEW_LONGLINEMARKER
         MENUITEM "Guides de retra&it\tCtrl+Shift+G",                    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Afficher le retour automatique à la ligne\tCtrl+Shift+7", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Afficher les &blancs\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "Afficher les fins de lign&e\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
-        MENUITEM "Afficher le retour automatique à la ligne\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "Indicateurs H&yperlink\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "Correspondence &visuelle des accolades\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES

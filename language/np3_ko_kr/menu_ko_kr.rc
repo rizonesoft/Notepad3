@@ -299,9 +299,9 @@ BEGIN
         MENUITEM "긴 줄 표시(&L)\tCtrl+Shift+L",         IDM_VIEW_LONGLINEMARKER
         MENUITEM "들여쓰기 안내선(&A)\tCtrl+Shift+G",       IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "워드 랩 기호 표시(&P)\tCtrl+Shift+7",        IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "공백 표시(&B)\tCtrl+Shift+8",              IDM_VIEW_SHOWBLANKS
         MENUITEM "줄 끝 표시(&E)\tCtrl+Shift+9",        IDM_VIEW_SHOWEOLS
-        MENUITEM "워드 랩 기호 표시(&P)\tCtrl+Shift+0",        IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "하이퍼 링크 핫스팟(&Y)\tCtrl+Alt+W",         IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "괄호 짝 강조(&V)\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES

@@ -299,9 +299,9 @@ BEGIN
         MENUITEM "&Langzeilen Markierung\tCtrl+Shift+L",    IDM_VIEW_LONGLINEMARKER
         MENUITEM "Leitlinien Einrückung\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Zeige Umbruchsymbole\tCtrl+Shift+7",      IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Zeige Leerzeichen\tCtrl+Shift+8",         IDM_VIEW_SHOWBLANKS
         MENUITEM "Zeige Zeilenumbrüche\tCtrl+Shift+9",      IDM_VIEW_SHOWEOLS
-        MENUITEM "Zeige Umbruchsymbole\tCtrl+Shift+0",      IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indikator\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Zeige passende Klammer\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES

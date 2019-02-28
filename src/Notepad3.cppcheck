@@ -3,6 +3,7 @@
     <platform>win64</platform>
     <analyze-all-vs-configs>true</analyze-all-vs-configs>
     <libraries>
+        <library>std</library>
         <library>windows</library>
     </libraries>
     <addons>

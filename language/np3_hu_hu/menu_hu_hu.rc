@@ -299,9 +299,9 @@ BEGIN
         MENUITEM "&Long Line Marker\tCtrl+Shift+L", IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indent&ation Guides\tCtrl+Shift+G", IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
+        MENUITEM "Show Wra&p Symbols\tCtrl+Shift+7", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Show &Blanks\tCtrl+Shift+8",  IDM_VIEW_SHOWBLANKS
         MENUITEM "Show Line &Endings\tCtrl+Shift+9", IDM_VIEW_SHOWEOLS
-        MENUITEM "Show Wra&p Symbols\tCtrl+Shift+0", IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Hotspots\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
         MENUITEM "&Visual Brace Matching\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES

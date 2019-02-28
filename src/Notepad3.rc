@@ -73,7 +73,7 @@ IDB_ENCODING            BITMAP                  "Encoding.bmp"
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(65001)  // UTF-8
+#pragma code_page(65001)  // UTF-8 (no SIG/BOM)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -83,7 +83,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 IDR_MAINWND ACCELERATORS
 BEGIN
     "0",            IDM_VIEW_RESETZOOM,     VIRTKEY, CONTROL, NOINVERT
-    "0",            IDM_VIEW_WORDWRAPSYMBOLS, VIRTKEY, SHIFT, CONTROL, NOINVERT
     "1",            CMD_STRINGIFY,          VIRTKEY, CONTROL, NOINVERT
     "1",            CMD_WEBACTION1,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     "2",            CMD_STRINGIFY2,         VIRTKEY, CONTROL, NOINVERT
@@ -92,7 +91,8 @@ BEGIN
     "4",            CMD_EMBRACE2,           VIRTKEY, CONTROL, NOINVERT
     "5",            CMD_EMBRACE3,           VIRTKEY, CONTROL, NOINVERT
     "6",            CMD_EMBRACE4,           VIRTKEY, CONTROL, NOINVERT
-    "8",            IDM_VIEW_SHOWBLANKS, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "7",            IDM_VIEW_WORDWRAPSYMBOLS, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "8",            IDM_VIEW_SHOWBLANKS,    VIRTKEY, SHIFT, CONTROL, NOINVERT
     "9",            CMD_TOGGLETITLE,        VIRTKEY, CONTROL, NOINVERT
     "9",            IDM_VIEW_SHOWEOLS,      VIRTKEY, SHIFT, CONTROL, NOINVERT
     "A",            IDM_EDIT_SELECTALL,     VIRTKEY, CONTROL, NOINVERT
