@@ -235,9 +235,9 @@ CAPTION "Abrir archivo reciente"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Preservar la posición de caret",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
-    CONTROL         "&Guardar la lista de archivos recientes al salir",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,180,10
-    CONTROL         "&Recordar patrón de búsqueda",IDC_REMEMBERSEARCHPATTERN,
+    CONTROL         "&Preservar la posición de caret.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
+    CONTROL         "&Guardar la lista de archivos recientes al salir.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,180,10
+    CONTROL         "&Recordar patrón de búsqueda.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,120,10
     PUSHBUTTON      "Eliminar",IDC_REMOVE,212,107,50,14,WS_DISABLED
     DEFPUSHBUTTON   "OK",IDOK,154,139,50,14,WS_DISABLED
@@ -250,10 +250,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Notificación de cambio de archivo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "&Nada",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
-    CONTROL         "&Mostrar mensaje",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
-    CONTROL         "&Auto-recarga (sin modificar)",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Restablecer si se abre un nuevo archivo",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,150,10
+    CONTROL         "&Nada.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
+    CONTROL         "&Mostrar mensaje.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,71,10
+    CONTROL         "&Auto-recarga (sin modificar).",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Restablecer si se abre un nuevo archivo.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,48,150,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
 END
@@ -264,9 +264,9 @@ CAPTION "Seleccionar Esquema"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,70
-    CONTROL         "Establecer esquema seleccionado por &defecto",IDC_DEFAULTSCHEME,
+    CONTROL         "Establecer esquema seleccionado por &defecto.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,155,10
-    CONTROL         "Selección &automática por extensión de archivo",IDC_AUTOSELECT,
+    CONTROL         "Selección &automática por extensión de archivo.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,155,10
     DEFPUSHBUTTON   "OK",IDOK,53,113,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,108,113,50,14
@@ -286,7 +286,7 @@ BEGIN
     PUSHBUTTON      "C. T&exto...",IDC_STYLEFORE,181,201,46,14
     PUSHBUTTON      "&C. Fondo...",IDC_STYLEBACK,232,201,46,14
     PUSHBUTTON      "Fuen&te...",IDC_STYLEFONT,283,201,42,14
-    PUSHBUTTON      "&Probar",IDC_PREVIEW,330,201,42,14
+    PUSHBUTTON      "&Ejemplo",IDC_PREVIEW,330,201,42,14
     PUSHBUTTON      "&Restablecer",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14
@@ -309,11 +309,11 @@ BEGIN
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
     LTEXT           "&Tamaño sangría:",IDC_STATIC,7,30,60,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "Insertar tabulación como e&spacios",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tecla &Tab vuelve a formatear la sangría",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "Tecla &Retroceso vuelve a formatear la sangría",IDC_BACKTAB_INDENTS,
+    CONTROL         "Insertar tabulación como e&spacios.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Tecla &Tab vuelve a formatear la sangría.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tecla &Retroceso vuelve a formatear la sangría.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Advertencia sobre sangría inconsistente",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Advertencia sobre sangría inconsistente.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,117,27,50,14
@@ -326,8 +326,8 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "&Límite líneas largas:",IDC_STATIC,7,10,60,8
     EDITTEXT        100,77,7,30,14,ES_AUTOHSCROLL
-    CONTROL         "Mostrar la lín&ea de borde",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,100,10
-    CONTROL         "Cambiar el color de fondo",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
+    CONTROL         "Mostrar la lín&ea de borde.",101,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,100,10
+    CONTROL         "Cambiar el color de fondo.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
 END
@@ -399,7 +399,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Cliquear aquí para especificar la carpeta con enlaces a sus archivos favoritos",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Cliquear aquí para especificar la carpeta con enlaces a sus archivos favoritos.",IDC_FAVORITESDESCR,26,83,142,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
