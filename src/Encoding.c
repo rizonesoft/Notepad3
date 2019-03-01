@@ -275,7 +275,9 @@ int Encoding_MatchW(LPCWSTR pwszTest)
 
 int Encoding_MatchA(const char *pchTest) 
 {
-  char  chTestLC[256] = { '\0' };
+  char chTestLC[256];
+  chTestLC[0] = ',';
+  chTestLC[1] = '\0';
   StringCchCopyA(chTestLC, 256, pchTest);
   CharLowerA(chTestLC);
   StringCchCatA(chTestLC, 256, ","); // parsing incl. comma

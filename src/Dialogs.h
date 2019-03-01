@@ -18,6 +18,9 @@
 
 #include "TypeDefs.h"
 
+#define ADDTITLEINFO_BUF_LEN 256
+extern WCHAR szAdditionalTitleInfo[]; // UCHARDET
+
 int  MsgBoxLng(int iType, UINT uIdMsg, ...);
 INT_PTR DisplayCmdLineHelp(HWND hwnd);
 bool GetDirectory(HWND hwndParent,int uiTitle,LPWSTR pszFolder,LPCWSTR pszBase,bool);

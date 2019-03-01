@@ -253,7 +253,7 @@ void EditInitWordDelimiter(HWND hwnd)
   // 2nd get user settings
 
   char whitesp[ANSI_CHAR_BUFFER*2] = { '\0' };
-  if (StringCchLen(Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars)) > 0) {
+  if (StrIsNotEmpty(Settings2.ExtendedWhiteSpaceChars)) {
     WideCharToMultiByte(Encoding_SciCP, 0, Settings2.ExtendedWhiteSpaceChars, -1, whitesp, COUNTOF(whitesp), NULL, NULL);
   }
 
@@ -284,7 +284,7 @@ void EditInitWordDelimiter(HWND hwnd)
   StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
   StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
 
-  if (StringCchLen(Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet)) > 0)
+  if (StrIsNotEmpty(Settings2.AutoCompleteWordCharSet))
   {
     WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteWordCharSet, -1, AutoCompleteWordCharSet, COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
     Globals.bUseLimitedAutoCCharSet = true;
@@ -931,23 +931,23 @@ void EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status)
 //  EditLoadFile()
 //
 bool EditLoadFile(
-       HWND hwnd,
-       LPWSTR pszFile,
-       bool bSkipUTFDetection,
-       bool bSkipANSICPDetection,
-       EditFileIOStatus* status)
+  HWND hwnd,
+  LPWSTR pszFile,
+  bool bSkipUTFDetection,
+  bool bSkipANSICPDetection,
+  EditFileIOStatus* status)
 {
   status->bUnicodeErr = false;
   status->bFileTooBig = false;
   status->bUnknownExt = false;
 
   HANDLE hFile = CreateFile(pszFile,
-                            GENERIC_READ,
-                            FILE_SHARE_READ|FILE_SHARE_WRITE,
-                            NULL,
-                            OPEN_EXISTING,
-                            FILE_ATTRIBUTE_NORMAL,
-                            NULL);
+    GENERIC_READ,
+    FILE_SHARE_READ | FILE_SHARE_WRITE,
+    NULL,
+    OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL,
+    NULL);
   Globals.dwLastError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
@@ -957,13 +957,13 @@ bool EditLoadFile(
   }
 
   // calculate buffer limit
-  DWORD dwFileSize = GetFileSize(hFile,NULL);
+  DWORD dwFileSize = GetFileSize(hFile, NULL);
   DWORD dwBufSize = dwFileSize + 16;
 
   // check for unknown extension
   LPWSTR lpszExt = PathFindExtension(pszFile);
   if (!Style_HasLexerForExt(lpszExt)) {
-    if (InfoBoxLng(MBYESNO,L"MsgFileUnknownExt",IDS_MUI_WARN_UNKNOWN_EXT,lpszExt) != IDYES) {
+    if (InfoBoxLng(MBYESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt) != IDYES) {
       CloseHandle(hFile);
       status->bUnknownExt = true;
       Encoding_SrcCmdLn(CPI_NONE);
@@ -975,7 +975,7 @@ bool EditLoadFile(
   // Check if a warning message should be displayed for large files
   DWORD dwFileSizeLimit = Settings2.FileLoadWarningMB;
   if ((dwFileSizeLimit != 0) && ((dwFileSizeLimit * 1024 * 1024) < dwFileSize)) {
-    if (InfoBoxLng(MBYESNO,L"MsgFileSizeWarning",IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
+    if (InfoBoxLng(MBYESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
       status->bFileTooBig = true;
       Encoding_SrcCmdLn(CPI_NONE);
@@ -997,7 +997,7 @@ bool EditLoadFile(
   }
 
   DWORD cbData = 0L;
-  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufSize - 2, (void**)&lpData, &cbData);
+  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufSize - 2, (void**)& lpData, &cbData);
   Globals.dwLastError = GetLastError();
   CloseHandle(hFile);
 
@@ -1006,12 +1006,12 @@ bool EditLoadFile(
   if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS))
   {
     bReadSuccess = (InfoBoxLng(MBOKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
-    if (!bReadSuccess) { 
-      FreeMem(lpData); 
-      return true; 
+    if (!bReadSuccess) {
+      FreeMem(lpData);
+      return true;
     }
   }
-  
+
   if (!bReadSuccess) {
     FreeMem(lpData);
     Encoding_SrcCmdLn(CPI_NONE);
@@ -1022,7 +1022,7 @@ bool EditLoadFile(
   bool bNfoDizDetected = false;
   if (Settings.LoadNFOasOEM)
   {
-    if (lpszExt && !(StringCchCompareXI(lpszExt,L".nfo") && StringCchCompareXI(lpszExt,L".diz")))
+    if (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")))
       bNfoDizDetected = true;
   }
 
@@ -1033,8 +1033,51 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
-  //int iAnalyzedEncoding = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
-  int iAnalyzedEncoding = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+
+  int const iAnalyzedEncoding_CED = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+
+  char origUCHARDET[256] = { '\0' };
+  float confidence = 0.50f; // reliable ?
+  int iAnalyzedEncoding = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, iPreferedEncoding, &confidence, origUCHARDET, 256);
+
+
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // UCHARDET
+  STRSAFE_LPWSTR wchOrigUCHARDET[128] = { L'\0' };
+
+  StringCchCopy(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, L"UCHARDET='");
+  if (iAnalyzedEncoding >= 0) 
+  {
+    MultiByteToWideChar(CP_ACP, 0, origUCHARDET, -1, (LPWSTR)wchOrigUCHARDET, 128);
+    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
+  }
+  else {
+    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (iAnalyzedEncoding == CPI_ASCII_7BIT) ? L"ASCII" : L"<unknown>");
+  }
+  StringCchPrintf((LPWSTR)wchOrigUCHARDET, 128, L"' Conf=%4.2f%%", confidence);
+  StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
+
+  StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, L"    CED='");
+  if (iAnalyzedEncoding_CED >= 0) 
+  {
+    //GetLngString(g_Encodings[iAnalyzedEncoding_CED].idsName, (LPWSTR)wchOrigUCHARDET, 128);
+    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, g_Encodings[iAnalyzedEncoding_CED].wchLabel);
+  }
+  else {
+    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (iAnalyzedEncoding == CPI_ASCII_7BIT) ? L"ASCII" : L"<unknown>");
+  }
+  StringCchPrintf((LPWSTR)wchOrigUCHARDET, 128, L"' (%s).", bIsReliable ? L"reliable" : L"NOT reliable");
+  StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+  bIsReliable = (confidence >= 0.50f);
 
   if (!g_bForceCompEncDetection) 
   {
@@ -1336,7 +1379,7 @@ bool EditSaveFile(
       }
     }*/
 
-    if (Encoding_IsUNICODE(status->iEncoding))
+    if (Encoding_IsUNICODE(status->iEncoding))  // UTF-16LE/BE_(BOM)
     {
       SetEndOfFile(hFile);
 

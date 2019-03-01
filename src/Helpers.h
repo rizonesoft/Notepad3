@@ -16,9 +16,6 @@
 #ifndef _NP3_HELPERS_H_
 #define _NP3_HELPERS_H_
 
-#define STRSAFE_NO_CB_FUNCTIONS
-#define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
-
 #include "TypeDefs.h"
 
 #include <math.h>

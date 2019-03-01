@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
+﻿/* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -43,14 +43,14 @@
 class HandleUniversalDetector : public nsUniversalDetector
 {
 protected:
-    char *m_charset;
+    char* m_charset;
     float m_confidence;
 public:
     HandleUniversalDetector()
-    : nsUniversalDetector(NS_FILTER_ALL)
-    , m_charset(0)
+      : nsUniversalDetector(NS_FILTER_ALL)
+      , m_charset(nullptr)
+      , m_confidence(0.0f)
     {
-        m_confidence = 0.0;
     }
 
     virtual ~HandleUniversalDetector()
@@ -63,8 +63,9 @@ public:
 
     virtual void Report(const char* charset, float confidence)
     {
-        if (m_charset)
+        if (m_charset) {
             free(m_charset);
+        }
         m_charset = strdup(charset);
         m_confidence = confidence;
     }
@@ -72,29 +73,30 @@ public:
     virtual void Reset()
     {
         nsUniversalDetector::Reset();
-        if (m_charset)
+        if (m_charset) {
             free(m_charset);
+        }
         m_charset = strdup("");
         m_confidence = 0.0;
     }
 
     const char* GetCharset() const
     {
-        return m_charset? m_charset : "";
+        return m_charset ? m_charset : "";
     }
 
-    float GetConfidence() {
+    float GetConfidence() const {
         return m_confidence;
     }
 
-    PRBool HasDone() {
+    PRBool HasDone() const {
         return mDone;
     }
 };
 
 uchardet_t uchardet_new(void)
 {
-    return reinterpret_cast<uchardet_t> (new HandleUniversalDetector());
+    return reinterpret_cast<uchardet_t>(new HandleUniversalDetector());
 }
 
 void uchardet_delete(uchardet_t ud)
@@ -104,7 +106,7 @@ void uchardet_delete(uchardet_t ud)
 
 int uchardet_handle_data(uchardet_t ud, const char * data, size_t len)
 {
-    nsresult ret = reinterpret_cast<HandleUniversalDetector*>(ud)->HandleData(data, (PRUint32)len);
+    nsresult const ret = reinterpret_cast<HandleUniversalDetector*>(ud)->HandleData(data, (PRUint32)len);
     if (ret == NS_ERROR_OUT_OF_MEMORY) {
         return HANDLE_DATA_RESULT_ERROR;
     }

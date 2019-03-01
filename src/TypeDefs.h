@@ -28,8 +28,10 @@
 #define NOMINMAX 1
 #include <windows.h>
 
-#include <intsafe.h>
+#define STRSAFE_NO_CB_FUNCTIONS
+#define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
+#include <intsafe.h>
 
 #ifndef __cplusplus
 #include <stdbool.h>

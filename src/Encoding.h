@@ -40,6 +40,7 @@ extern bool g_bForceCompEncDetection;
 #define CPI_ASCII_7BIT       (-3)
 #define CPI_GET              (-2)
 #define CPI_NONE             (-1)
+// following IDs must match with : NP2ENCODING g_Encodings[]
 #define CPI_ANSI_DEFAULT       0
 #define CPI_OEM                1
 #define CPI_UNICODEBOM         2
@@ -125,7 +126,7 @@ bool IsValidUTF8(const char* pTest, size_t nLength);
 extern NP2ENCODING g_Encodings[];
 void ChangeEncodingCodePage(int cpi, UINT newCP);
 int Encoding_Analyze_CED(const char* text, size_t len, int encodingHint, bool* pIsReliable);
-int Encoding_Analyze_UCHARDET(const char* text, size_t len, int encodingHint, bool* pIsReliable);
+int Encoding_Analyze_UCHARDET(const char* text, size_t len, int encodingHint, float* pConfidence, char* origUCHARDET, int cch);
 
 // 932 Shift-JIS, 936 GBK, 949 UHC, 950 Big5, 1361 Johab
 inline bool IsDBCSCodePage(UINT cp) {
