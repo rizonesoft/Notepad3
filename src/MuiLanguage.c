@@ -22,7 +22,9 @@
 
 //=============================================================================
 
-MUILANGUAGE MUI_LanguageDLLs[NUM_OF_MUI_LANGUAGES] =
+//NUM_OF_MUI_LANGUAGES
+
+MUILANGUAGE MUI_LanguageDLLs[] =
 {
   { IDS_MUI_LANG_EN_US, L"en-US", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
   // ----------------------------
@@ -42,6 +44,7 @@ MUILANGUAGE MUI_LanguageDLLs[NUM_OF_MUI_LANGUAGES] =
   { IDS_MUI_LANG_ZH_CN, L"zh-CN", MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
 };
 
+int MuiLanguages_CountOf() { return COUNTOF(MUI_LanguageDLLs); };
 
 
 //=============================================================================
@@ -55,7 +58,7 @@ static int _CheckAvailableLanguageDLLs()
   WCHAR wchAbsPath[MAX_PATH];
 
   int count = 1;
-  for (int lng = 1; lng < NUM_OF_MUI_LANGUAGES; ++lng)
+  for (int lng = 1; lng < MuiLanguages_CountOf(); ++lng)
   {
     if (IsValidLocaleName(MUI_LanguageDLLs[lng].szLocaleName))
     {
@@ -203,7 +206,7 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
   // set the appropriate fallback list
   int iPrefLngIndex = -1;
   WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
-  for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng) {
+  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
     if (StringCchCompareXIW(MUI_LanguageDLLs[lng].szLocaleName, Settings2.PreferredLanguageLocaleName) == 0) {
       if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
         StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].szLocaleName);
@@ -257,6 +260,12 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
 
   SetThreadUILanguage(languageID);
 
+  // update language dependent items
+  for (int enc = 0; enc < Encoding_CountOf(); ++enc) 
+  {
+    Encoding_SetLabel(enc);
+  }
+
   *pPrefLanguageID = languageID;
   return hLangResourceContainer;
 }
@@ -274,7 +283,7 @@ void FreeLanguageResources(HMODULE hLangResourceContainer)
       FreeMUILibrary(hLangResourceContainer);
     }
   }
-  for (int i = 0; i < NUM_OF_MUI_LANGUAGES; ++i) {
+  for (int i = 0; i < MuiLanguages_CountOf(); ++i) {
     MUI_LanguageDLLs[i].bIsLoaded = false;
   }
 }

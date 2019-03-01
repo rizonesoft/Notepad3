@@ -28,9 +28,8 @@ typedef struct _muilanguage
 
 } MUILANGUAGE, *PMUILANGUAGE;
 
-
-#define NUM_OF_MUI_LANGUAGES 15
 extern MUILANGUAGE MUI_LanguageDLLs[];
+int MuiLanguages_CountOf();
 
 
 HMODULE LoadLanguageResources(LANGID* pPrefLanguageID);

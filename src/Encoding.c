@@ -234,32 +234,33 @@ int Encoding_MapUnicode(int iUni)
 // ============================================================================
 
 
-void Encoding_SetLabel(int iEncoding) 
+void Encoding_SetLabel(int iEncoding)
 {
-  if (g_Encodings[iEncoding].wchLabel[0] == L'\0') {
-    WCHAR wch1[128] = { L'\0' };
-    WCHAR wch2[128] = { L'\0' };
-    GetLngString(g_Encodings[iEncoding].idsName, wch1, COUNTOF(wch1));
-    WCHAR *pwsz = StrChr(wch1, L';');
+  WCHAR wch1[128] = { L'\0' };
+  GetLngString(g_Encodings[iEncoding].idsName, wch1, COUNTOF(wch1));
+
+  // point to correct label in list
+  WCHAR* pwsz = StrChr(wch1, L';');
+  if (pwsz) {
+    pwsz = StrChr(CharNext(pwsz), L';');
     if (pwsz) {
-      pwsz = StrChr(CharNext(pwsz), L';');
-      if (pwsz) {
-        pwsz = CharNext(pwsz);
-      }
+      pwsz = CharNext(pwsz);
     }
-    if (!pwsz)
-      pwsz = wch1;
-
-    StringCchCopyN(wch2, COUNTOF(wch2), pwsz, COUNTOF(wch1));
-
-    if (Encoding_IsANSI(iEncoding))
-      StringCchCatN(wch2, COUNTOF(wch2), wchANSI, COUNTOF(wchANSI));
-    else if (Encoding_IsOEM(iEncoding))
-      StringCchCatN(wch2, COUNTOF(wch2), wchOEM, COUNTOF(wchOEM));
-
-    StringCchCopyN(g_Encodings[iEncoding].wchLabel, COUNTOF(g_Encodings[iEncoding].wchLabel),
-      wch2, COUNTOF(g_Encodings[iEncoding].wchLabel));
   }
+  if (!pwsz)
+    pwsz = wch1;
+
+  WCHAR wch2[128] = { L'\0' };
+  StringCchCopyN(wch2, COUNTOF(wch2), pwsz, COUNTOF(wch1));
+
+  if (Encoding_IsANSI(iEncoding)) {
+    StringCchCatN(wch2, COUNTOF(wch2), wchANSI, COUNTOF(wchANSI));
+  }
+  else if (Encoding_IsOEM(iEncoding)) {
+    StringCchCatN(wch2, COUNTOF(wch2), wchOEM, COUNTOF(wchOEM));
+  }
+
+  StringCchCopyN(g_Encodings[iEncoding].wchLabel, COUNTOF(g_Encodings[iEncoding].wchLabel), wch2, COUNTOF(wch2));
 }
 // ============================================================================
 

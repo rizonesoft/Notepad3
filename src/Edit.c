@@ -1042,7 +1042,6 @@ bool EditLoadFile(
 
 
 
-
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // UCHARDET
@@ -1057,20 +1056,24 @@ bool EditLoadFile(
   else {
     StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (iAnalyzedEncoding == CPI_ASCII_7BIT) ? L"ASCII" : L"<unknown>");
   }
-  StringCchPrintf((LPWSTR)wchOrigUCHARDET, 128, L"' Conf=%4.2f%%", confidence);
+  StringCchPrintf((LPWSTR)wchOrigUCHARDET, 128, L"' Conf=%3.0f%%", confidence * 100.0f);
   StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
 
   StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, L"    CED='");
   if (iAnalyzedEncoding_CED >= 0) 
   {
-    //GetLngString(g_Encodings[iAnalyzedEncoding_CED].idsName, (LPWSTR)wchOrigUCHARDET, 128);
-    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, g_Encodings[iAnalyzedEncoding_CED].wchLabel);
+    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, Encoding_GetLabel(iAnalyzedEncoding_CED));
   }
   else {
-    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (iAnalyzedEncoding == CPI_ASCII_7BIT) ? L"ASCII" : L"<unknown>");
+    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (iAnalyzedEncoding_CED == CPI_ASCII_7BIT) ? L"ascii" : L"<unknown>");
   }
-  StringCchPrintf((LPWSTR)wchOrigUCHARDET, 128, L"' (%s).", bIsReliable ? L"reliable" : L"NOT reliable");
-  StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
+  if ((iAnalyzedEncoding_CED >= 0) || (iAnalyzedEncoding_CED == CPI_ASCII_7BIT)) {
+    StringCchPrintf((LPWSTR)wchOrigUCHARDET, 128, L"' (%s).", bIsReliable ? L"reliable" : L"NOT reliable");
+    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
+  }
+  else {
+    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, L"'");
+  }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1370,8 +1373,6 @@ bool EditSaveFile(
             bEncodingMismatch = false;
         }
         if (bEncodingMismatch) {
-          Encoding_SetLabel(iAltEncoding);
-          Encoding_SetLabel(iEncoding);
           InfoBoxLng(0,L"MsgEncodingMismatch",IDS_MUI_ENCODINGMISMATCH,
             g_Encodings[iAltEncoding].wchLabel,
             g_Encodings[iEncoding].wchLabel);

@@ -299,16 +299,19 @@ extern "C" NP2ENCODING g_Encodings[] = {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             /* 137 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57011, "x-iscii-pa,xisciipa,",                                                           00000, L"" }, // ISCII Panjabi
 };
 
+constexpr int _CountOfEncodings() { return ARRAYSIZE(g_Encodings); }
+
 extern "C" int Encoding_CountOf()
 {
-  return ARRAYSIZE(g_Encodings);
+  return _CountOfEncodings();
 }
+
 //=============================================================================
 
 
 constexpr int _MapCPI2Encoding(const int iNP3Encoding)
 {
-  if ((iNP3Encoding < 0) || (iNP3Encoding >= Encoding_CountOf())) {
+  if ((iNP3Encoding < 0) || (iNP3Encoding >= _CountOfEncodings())) {
     return UNKNOWN_ENCODING; // CPI_NONE, CPI_GET
   }
 
@@ -388,7 +391,7 @@ constexpr int _FindCodePage(const Encoding& encoding)
     break;
 
   default:
-    for (int i = 0; i < Encoding_CountOf(); ++i) {
+    for (int i = 0; i < _CountOfEncodings(); ++i) {
       if (encoding == g_Encodings[i].iCEDEncoding) {
         iCodePage = static_cast<int>(g_Encodings[i].uCodePage);
         break;
@@ -418,7 +421,7 @@ static int  _MapCEDEncoding2CPI(const char* const text, const size_t len, const 
 
   if (cpiEncoding == CPI_NONE)
   {
-    for (int cpiIdx = 0; cpiIdx < Encoding_CountOf(); ++cpiIdx) {
+    for (int cpiIdx = 0; cpiIdx < _CountOfEncodings(); ++cpiIdx) {
       if (encoding == g_Encodings[cpiIdx].iCEDEncoding) {
         cpiEncoding = cpiIdx;
         break;
@@ -601,10 +604,12 @@ extern "C" int Encoding_Analyze_UCHARDET(const char* const text, const size_t le
   uchardet_t hUcharDet = uchardet_new();
 
   int const result = uchardet_handle_data(hUcharDet, text, len);
-  uchardet_data_end(hUcharDet); // transfer results
+  
+  uchardet_data_end(hUcharDet); // transfer report
 
   switch (result) 
   {
+  case HANDLE_DATA_RESULT_NEED_MORE_DATA:  // need more data is a result too 
   case HANDLE_DATA_RESULT_DETECTED:
   {
     const char* charset = uchardet_get_charset(hUcharDet);
@@ -614,11 +619,6 @@ extern "C" int Encoding_Analyze_UCHARDET(const char* const text, const size_t le
     encoding = _MapUCARDETEncoding2CPI(text, len, encodingHint, charset, &confidence);
   }
   break;
-
-  case HANDLE_DATA_RESULT_NEED_MORE_DATA:
-    encoding = CPI_NONE;
-    confidence = 0.0f;
-    break;
 
   case HANDLE_DATA_RESULT_ERROR:
   default:

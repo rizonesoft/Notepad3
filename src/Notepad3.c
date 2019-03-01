@@ -487,7 +487,7 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
 
   WCHAR wchMenuItemFmt[128];
   WCHAR wchMenuItemStrg[196];
-  for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng)
+  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng)
   {
     if (MUI_LanguageDLLs[lng].bHasDLL) 
     {
@@ -2914,7 +2914,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = (int)StringCchLenW(Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
   EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
-  for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng) {
+  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
     //EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
     CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsLoaded);
   }
@@ -2932,7 +2932,7 @@ static bool _DynamicLanguageMenuCmd(int cmd)
 {
   int iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
 
-  if ((iLngIdx < 0) || (iLngIdx >= NUM_OF_MUI_LANGUAGES)) {
+  if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf())) {
     return false;
   }
   if (!MUI_LanguageDLLs[iLngIdx].bIsLoaded)
@@ -8636,8 +8636,6 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     int const iEncoding = Encoding_Current(CPI_GET);
     if (bForceRedraw || (s_iEncoding != iEncoding)) 
     {
-      Encoding_SetLabel(iEncoding);
-
       StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
         s_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), s_mxSBPostfix[STATUS_CODEPAGE]);
 
