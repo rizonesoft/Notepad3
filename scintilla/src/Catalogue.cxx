@@ -92,6 +92,7 @@ int Scintilla_LinkLexers() {
 	//LINK_LEXER(lmBlitzBasic);
 	//LINK_LEXER(lmBullant);
 	//LINK_LEXER(lmCaml);
+	//LINK_LEXER(lmCIL);
 	//LINK_LEXER(lmClw);
 	//LINK_LEXER(lmClwNoCase);
 	LINK_LEXER(lmCmake);

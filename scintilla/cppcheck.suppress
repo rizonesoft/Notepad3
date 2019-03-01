@@ -32,16 +32,17 @@ passedByValue
 // Suppress most lexer warnings since the lexers are maintained by others
 redundantCondition:scintilla/lexers/LexA68k.cxx
 shadowVar:scintilla/lexers/LexAU3.cxx
+unreadVariable:scintilla/lexers/LexBaan.cxx
 uninitMemberVar:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBash.cxx
 variableScope:scintilla/lexers/LexBatch.cxx
 variableScope:scintilla/lexers/LexCmake.cxx
 variableScope:scintilla/lexers/LexCSS.cxx
-unreadVariable:scintilla/lexers/LexDMAP.cxx
 variableScope:scintilla/lexers/LexErlang.cxx
 variableScope:scintilla/lexers/LexGui4Cli.cxx
 variableScope:scintilla/lexers/LexInno.cxx
 variableScope:scintilla/lexers/LexLaTeX.cxx
+unreadVariable:scintilla/lexers/LexMatlab.cxx
 variableScope:scintilla/lexers/LexMetapost.cxx
 variableScope:scintilla/lexers/LexModula.cxx
 variableScope:scintilla/lexers/LexMSSQL.cxx
@@ -55,13 +56,17 @@ redundantAssignment:scintilla/lexers/LexRegistry.cxx
 variableScope:scintilla/lexers/LexRuby.cxx
 uninitMemberVar:scintilla/lexers/LexRuby.cxx
 variableScope:scintilla/lexers/LexSpecman.cxx
+unreadVariable:scintilla/lexers/LexSpice.cxx
 clarifyCalculation:scintilla/lexers/LexTADS3.cxx
 invalidscanf:scintilla/lexers/LexTCMD.cxx
 knownConditionTrueFalse:scintilla/lexers/LexTCMD.cxx
 variableScope:scintilla/lexers/LexTeX.cxx
 knownConditionTrueFalse:scintilla/lexers/LexVerilog.cxx
+constArgument:scintilla/lexers/LexVerilog.cxx
 shadowVar:scintilla/lexers/LexVHDL.cxx
+unreadVariable:scintilla/lexers/LexVHDL.cxx
 variableScope:scintilla/lexers/LexVHDL.cxx
+unreadVariable:scintilla/lexers/LexVisualProlog.cxx
 
 // Suppress everything in catch.hpp as won't be changing
 *:scintilla/test/unit/catch.hpp
