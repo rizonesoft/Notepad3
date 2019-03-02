@@ -450,7 +450,7 @@ bool EditSetNewEncoding(HWND hwnd, int iNewEncoding, bool bNoUI, bool bSetSavePo
     }
     // and vice versa ???
 
-    if (SciCall_GetTextLength() == 0) {
+    if (SciCall_GetTextLength() <= 0) {
 
       bool bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
       

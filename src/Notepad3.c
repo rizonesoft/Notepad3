@@ -390,7 +390,7 @@ static bool s_flagSearchPathIfRelative = false;
 // multi-state flags
 static int s_flagAlwaysOnTop  = 0;
 static int s_flagWindowPos    = 0;
-static int s_flagSetEncoding  = 0;
+static int s_flagSetEncoding  = CPI_NONE;
 static int s_flagSetEOLMode   = 0;
 static int s_flagMatchText    = 0;
 static int s_flagChangeNotify = 0;
@@ -1075,13 +1075,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Encoding
-  if (0 != s_flagSetEncoding) {
-    SendMessage(
-      Globals.hwndMain,
-      WM_COMMAND,
-      MAKELONG(IDM_ENCODING_ANSI + s_flagSetEncoding -1,1),
-      0);
-    s_flagSetEncoding = 0;
+  if (s_flagSetEncoding != CPI_NONE) {
+    SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
+    s_flagSetEncoding = CPI_NONE;
   }
 
   // EOL mode
@@ -1257,7 +1253,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_QUERYENDSESSION:
       if (FileSave(false, true, false, false)) {
-        return 1LL;
+        return TRUE;
       }
       break;
 
@@ -1725,7 +1721,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   ObserveNotifyChangeEvent();
 
-  return 0;
+  return 0LL;
 }
 
 
@@ -2004,7 +2000,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   if (umsg == WM_DESTROY)
     PostQuitMessage(0);
 
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2135,7 +2131,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(hwnd);
   UNUSED(lParam);
 
-  if (wParam == SIZE_MINIMIZED) { return 0LL; }
+  if (wParam == SIZE_MINIMIZED) { return FALSE; }
 
   int x = 0;
   int y = 0;
@@ -2234,7 +2230,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   DragFinish(hDrop);
 
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2341,14 +2337,10 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
           }
 
-          if (0 != params->flagSetEncoding) {
+          if (params->flagSetEncoding != CPI_NONE) {
             s_flagSetEncoding = params->flagSetEncoding;
-            SendMessage(
-              hwnd,
-              WM_COMMAND,
-              MAKELONG(IDM_ENCODING_ANSI + s_flagSetEncoding - 1, 1),
-              0);
-            s_flagSetEncoding = 0;
+            SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
+            s_flagSetEncoding = CPI_NONE;
           }
 
           if (0 != params->flagSetEOLMode) {
@@ -2452,7 +2444,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
   DestroyMenu(hmenu);
 
-  return 0LL;
+  return FALSE;
 }
 
 //=============================================================================
@@ -2493,7 +2485,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     InstallFileWatching(Globals.CurrentFile);
   }
 
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2548,10 +2540,10 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     default:
-      return 1LL;
+      return TRUE;
 
   }
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2919,7 +2911,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsLoaded);
   }
 
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2982,7 +2974,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   WCHAR tchMaxPathBuffer[MAX_PATH] = { L'\0' };
 
   if (_DynamicLanguageMenuCmd(LOWORD(wParam))) { 
-    return 0LL; 
+    return FALSE; 
   }
   switch(LOWORD(wParam))
   {
@@ -3249,21 +3241,26 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_ENCODING_UTF8SIGN:
     case IDM_ENCODING_SELECT:
       {
-        int iNewEncoding = Encoding_Current(CPI_GET);
-        if (LOWORD(wParam) == IDM_ENCODING_SELECT && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
-          break;
+        int iNewEncoding = (HIWORD(wParam) >= IDM_ENCODING_SELECT) ? (HIWORD(wParam) - IDM_ENCODING_SELECT) : Encoding_Current(CPI_GET);
+
+        if (LOWORD(wParam) == IDM_ENCODING_SELECT) {
+          if ((HIWORD(wParam) < IDM_ENCODING_SELECT) && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
+            break; // no change
+          }
         }
-        switch (LOWORD(wParam)) 
-        {
-        case IDM_ENCODING_UNICODE:    iNewEncoding = CPI_UNICODEBOM; break;
-        case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
-        case IDM_ENCODING_UTF8:       iNewEncoding = CPI_UTF8; break;
-        case IDM_ENCODING_UTF8SIGN:   iNewEncoding = CPI_UTF8SIGN; break;
-        case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
+        else {
+          switch (LOWORD(wParam))
+          {
+          case IDM_ENCODING_UNICODE:    iNewEncoding = CPI_UNICODEBOM; break;
+          case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
+          case IDM_ENCODING_UTF8:       iNewEncoding = CPI_UTF8; break;
+          case IDM_ENCODING_UTF8SIGN:   iNewEncoding = CPI_UTF8SIGN; break;
+          case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
+          }
         }
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, s_flagSetEncoding,
+        if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE),
                                StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)) == 0)) {
 
           if (SendMessage(Globals.hwndEdit,SCI_GETLENGTH,0,0) == 0) {
@@ -3271,8 +3268,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Encoding_HasChanged(iNewEncoding);
           }
           else {
-            if (Encoding_IsANSI(Encoding_Current(CPI_GET)) || Encoding_IsANSI(iNewEncoding))
+            if (Encoding_IsANSI(Encoding_Current(CPI_GET)) || Encoding_IsANSI(iNewEncoding)) {
               Encoding_HasChanged(CPI_NONE);
+            }
             Encoding_Current(iNewEncoding);
           }
         }
@@ -5807,7 +5805,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     default:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -5825,7 +5823,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       MinimizeWndToTray(hwnd);
       ShowNotifyIcon(hwnd, true);
       SetNotifyIconTitle(hwnd);
-      return 0LL; // swallowed
+      return FALSE; // swallowed
     }
     break;
 
@@ -6374,7 +6372,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           break;
 
         default:
-          return 0LL;
+          return FALSE;
       }
       // in any case 
       if (Settings.MarkOccurrencesCurrentWord && (Settings.MarkOccurrences > 0)) {
@@ -6404,10 +6402,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
               StringCchCopyN(((LPTBNOTIFY)lParam)->pszText,((LPTBNOTIFY)lParam)->cchText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
-              return 1LL;
+              return TRUE;
             }
           }
-          return 0LL;
+          return FALSE;
 
         case TBN_RESET:
           {
@@ -6417,12 +6415,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
             SendMessage(s_hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)s_tbbMainWnd);
           }
-          return 0LL;
+          return FALSE;
 
         default:
-          return 0LL;
+          return FALSE;
       }
-      return 1LL;
+      return TRUE;
 
     // ------------------------------------------------------------------------
 
@@ -6439,10 +6437,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             {
               case STATUS_EOLMODE:
                 EditEnsureConsistentLineEndings(Globals.hwndEdit);
-                return 1LL;
+                return TRUE;
 
               default:
-                return 0LL;
+                return FALSE;
             }
           }
           break;
@@ -6456,11 +6454,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               case STATUS_DOCLINE:
               case STATUS_DOCCOLUMN:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_EDIT_GOTOLINE,1),0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_CODEPAGE:
                 PostMessage(hwnd,WM_COMMAND,MAKELONG(IDM_ENCODING_SELECT,1),0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_EOLMODE:
                 {
@@ -6476,19 +6474,19 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                   if (i > IDM_LINEENDINGS_LF) { i = IDM_LINEENDINGS_CRLF; }
                   PostMessage(hwnd, WM_COMMAND, MAKELONG(i, 1), 0);
                 }
-                return 1LL;
+                return TRUE;
 
               case STATUS_OVRMODE:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(CMD_VK_INSERT, 1), 0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_2ND_DEF:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_LEXER:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_SCHEME, 1), 0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_TINYEXPR:
                 {
@@ -6507,7 +6505,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 break;
 
               default:
-                return 0LL;
+                return FALSE;
             }
           }
           break;
@@ -6539,7 +6537,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
   }
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -7355,27 +7353,38 @@ void ParseCommandLine()
         StrLTrim(lp1, L"-/");
 
         // Encoding
-        if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0)
-          s_flagSetEncoding = IDM_ENCODING_ANSI - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0)
-          s_flagSetEncoding = IDM_ENCODING_UNICODE - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0)
-          s_flagSetEncoding = IDM_ENCODING_UNICODEREV - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0)
-          s_flagSetEncoding = IDM_ENCODING_UTF8 - IDM_ENCODING_ANSI + 1;
+        int const encoding = Encoding_MatchW(lp1);
+        if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0) {
+          s_flagSetEncoding = CPI_ANSI_DEFAULT;
+        }
+        else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0) {
+          s_flagSetEncoding = CPI_UNICODEBOM;
+        }
+        else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0) {
+          s_flagSetEncoding = CPI_UNICODEBEBOM;
+        }
+        else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0) {
+          s_flagSetEncoding = CPI_UTF8;
+        }
         else if (StringCchCompareXI(lp1, L"UTF8SIG") == 0 || StringCchCompareXI(lp1, L"UTF-8SIG") == 0 ||
-                 StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
-                 StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0)
-          s_flagSetEncoding = IDM_ENCODING_UTF8SIGN - IDM_ENCODING_ANSI + 1;
-
+          StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
+            StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0) {
+          s_flagSetEncoding = CPI_UTF8SIGN;
+        }
+        // maybe parsed encoding
+        else if (encoding != CPI_NONE) {
+          s_flagSetEncoding = encoding;
+        }
         // EOL Mode
-        else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0)
+        else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0) {
           s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
-        else if (StringCchCompareXI(lp1, L"CR") == 0)
+        }
+        else if (StringCchCompareXI(lp1, L"CR") == 0) {
           s_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
-        else if (StringCchCompareXI(lp1, L"LF") == 0)
+        }
+        else if (StringCchCompareXI(lp1, L"LF") == 0) {
           s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
-
+        }
         // Shell integration
         else if (StrCmpNI(lp1, L"appid=", CSTRLEN(L"appid=")) == 0) {
           StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
@@ -7384,7 +7393,6 @@ void ParseCommandLine()
           if (StringCchLenW(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID)) == 0)
             StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W(SAPPNAME));
         }
-
         else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0) {
           WCHAR wch[16];
           StringCchCopyN(wch, COUNTOF(wch), lp1 + CSTRLEN(L"sysmru="), COUNTOF(wch));
@@ -7394,7 +7402,6 @@ void ParseCommandLine()
           else
             Flags.ShellUseSystemMRU = 1;
         }
-
         // Relaunch elevated
         else if (StrCmpNI(lp1, L"tmpfbuf=", CSTRLEN(L"tmpfbuf=")) == 0) {
           StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
