@@ -777,9 +777,9 @@ Keyboard Shortcuts for Notepad2
     Ctrl+Shift+G          Show indentation guides.
     Ctrl+Shift+N          Show line numbers.
     Ctrl+Shift+M          Show selection margin.
+    Ctrl+Shift+7          Show wrap symbols.
     Ctrl+Shift+8          Show whitespace.
     Ctrl+Shift+9          Show line endings.
-    Ctrl+Shift+7          Show wrap symbols.
     Ctrl+Shift+V          Toggle visual brace matching.
     Ctrl+Shift+I          Highlight current line.
 
