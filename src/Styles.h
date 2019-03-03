@@ -17,6 +17,7 @@
 #define _NP3_STYLES_H_
 
 #include "Scintilla.h"
+#include "TypeDefs.h"
 #include "StyleLexers/EditLexer.h"
 
 
@@ -63,7 +64,7 @@ bool   Style_StrGetCharSet(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i);
 bool   Style_StrGetSize(LPCWSTR lpszStyle,float* f);
 bool   Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize);
-bool   Style_StrGetColor(bool,LPCWSTR lpszStyle, COLORREF* rgb);
+bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb);
 bool   Style_StrGetCase(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetAlpha(LPCWSTR lpszStyle,int* i,bool);
 bool   Style_GetIndicatorType(LPWSTR lpszStyle,int cchSize,int* idx);

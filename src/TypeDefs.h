@@ -89,6 +89,10 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
 
 // ----------------------------------------------------------------------------
 
+typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
+
+// ----------------------------------------------------------------------------
+
 // keep backward compatible with older settings-file versions
 typedef enum
 {
