@@ -3115,6 +3115,7 @@ static const WCHAR *pszSep = L" - ";
 static const WCHAR *pszMod = L"* ";
 static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
 static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
+static WCHAR szAdditionalTitleInfo[MAX_PATH] = { L'\0' };
 
 bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
   LPCWSTR lpszFile, int iFormat, bool bModified,
@@ -3123,19 +3124,19 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   if (bFreezeAppTitle)
     return false;
 
-  WCHAR szAppName[MIDSZ_BUFFER] = { L'\0' };
-  WCHAR szUntitled[MIDSZ_BUFFER] = { L'\0' };
+  WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
+  WCHAR szUntitled[SMALL_BUFFER] = { L'\0' };
   if (!GetLngString(uIDAppName, szAppName, COUNTOF(szAppName)) ||
     !GetLngString(uIDUntitled, szUntitled, COUNTOF(szUntitled))) {
     return false;
   }
   if (bIsElevated) {
-    WCHAR szElevatedAppName[MIDSZ_BUFFER] = { L'\0' };
+    WCHAR szElevatedAppName[SMALL_BUFFER] = { L'\0' };
     FormatLngStringW(szElevatedAppName, COUNTOF(szElevatedAppName), IDS_MUI_APPTITLE_ELEVATED, szAppName);
     StringCchCopyN(szAppName, COUNTOF(szAppName), szElevatedAppName, COUNTOF(szElevatedAppName));
   }
 
-  WCHAR szTitle[LARGE_BUFFER] = { L'\0' };
+  WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
   
   if (bModified)
     StringCchCopy(szTitle, COUNTOF(szTitle), pszMod);
@@ -3144,13 +3145,12 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 
   if (StrIsNotEmpty(lpszExcerpt)) {
     WCHAR szExcrptFmt[32] = { L'\0' };
-    WCHAR szExcrptQuot[MIDSZ_BUFFER] = { L'\0' };
+    WCHAR szExcrptQuot[SMALL_BUFFER] = { L'\0' };
     GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
     StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
     StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
   }
-
-  else if (StringCchLen(lpszFile, MAX_PATH))
+  else if (StrIsNotEmpty(lpszFile))
   {
     if (iFormat < 2 && !PathIsRoot(lpszFile))
     {
@@ -3188,8 +3188,19 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
   StringCchCat(szTitle, COUNTOF(szTitle), pszSep);
   StringCchCat(szTitle, COUNTOF(szTitle), szAppName);
 
+  // UCHARDET
+  if (StrIsNotEmpty(szAdditionalTitleInfo)) {
+    StringCchCat(szTitle, COUNTOF(szTitle), pszSep);
+    StringCchCat(szTitle, COUNTOF(szTitle), szAdditionalTitleInfo);
+  }
+
   return SetWindowText(hwnd, szTitle);
 
+}
+
+void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)
+{
+  StringCchCopy(szAdditionalTitleInfo, COUNTOF(szAdditionalTitleInfo), lpszAddTitleInfo);
 }
 
 

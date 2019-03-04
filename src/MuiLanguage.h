@@ -24,17 +24,16 @@ typedef struct _muilanguage
   // !!! WARNING:  LCID is DEPRECATED 
   LANGID  LangId; // just for historic reasons
   bool    bHasDLL;
-  bool    bIsLoaded;
+  bool    bIsActive;
 
 } MUILANGUAGE, *PMUILANGUAGE;
 
-
-#define NUM_OF_MUI_LANGUAGES 15
 extern MUILANGUAGE MUI_LanguageDLLs[];
+int MuiLanguages_CountOf();
 
 
-HMODULE LoadLanguageResources(LANGID* pPrefLanguageID);
-void    FreeLanguageResources(HMODULE hLangResourceContainer);
+LANGID LoadLanguageResources();
+void   FreeLanguageResources();
 
 int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
 int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);

@@ -639,7 +639,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       pCurrentStandard->Styles[STY_BRACE_OK].szValue, false); // brace light
   }
   else {
-    if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_BRACE_OK].szValue, &dColor))
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_OK].szValue, FOREGROUND_LAYER, &dColor))
       SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_MATCH_BRACE, dColor);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, true))
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_MATCH_BRACE, iValue);
@@ -660,7 +660,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
       pCurrentStandard->Styles[STY_BRACE_BAD].szValue, false); // brace bad
   }
   else {
-    if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &dColor))
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, FOREGROUND_LAYER, &dColor))
       SendMessage(hwnd, SCI_INDICSETFORE, INDIC_NP3_BAD_BRACE, dColor);
     if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, true))
       SendMessage(hwnd, SCI_INDICSETALPHA, INDIC_NP3_BAD_BRACE, iValue);
@@ -678,7 +678,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
 
   // Occurrences Marker
-  if (!Style_StrGetColor(true, pCurrentStandard->Styles[STY_MARK_OCC].szValue, &dColor))
+  if (!Style_StrGetColor(pCurrentStandard->Styles[STY_MARK_OCC].szValue, FOREGROUND_LAYER, &dColor))
   {
     WCHAR* sty = L"";
     switch (Settings.MarkOccurrences) {
@@ -728,7 +728,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   #define _SC_INDIC_IME_CONVERTED (INDIC_IME + 2)
   #define _SC_INDIC_IME_UNKNOWN    INDIC_IME_MAX
 
-  if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_IME_COLOR].szValue, &dColor)) { // IME foregr
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &dColor)) { // IME foregr
     SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_INPUT, dColor);
     SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_TARGET, dColor);
     SendMessage(hwnd, SCI_INDICSETFORE, _SC_INDIC_IME_CONVERTED, dColor);
@@ -742,7 +742,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   }
   Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue, false); // indent guide
 
-  if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_SEL_TXT].szValue, &rgb)) { // selection fore
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FOREGROUND_LAYER, &rgb)) { // selection fore
     SendMessage(hwnd, SCI_SETSELFORE, true, rgb);
     SendMessage(hwnd, SCI_SETADDITIONALSELFORE, rgb, 0);
   }
@@ -751,7 +751,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_SETADDITIONALSELFORE, 0, 0);
   }
 
-  if (Style_StrGetColor(false, pCurrentStandard->Styles[STY_SEL_TXT].szValue, &dColor)) { // selection back
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER , &dColor)) { // selection back
     SendMessage(hwnd, SCI_SETSELBACK, true, dColor);
     SendMessage(hwnd, SCI_SETADDITIONALSELBACK, dColor, 0);
   }
@@ -774,12 +774,12 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
   else
     SendMessage(hwnd, SCI_SETSELEOLFILLED, 0, 0);
 
-  if (Style_StrGetColor(true, pCurrentStandard->Styles[STY_WHITESPACE].szValue, &rgb)) // whitespace fore
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb)) // whitespace fore
     SendMessage(hwnd, SCI_SETWHITESPACEFORE, true, rgb);
   else
     SendMessage(hwnd, SCI_SETWHITESPACEFORE, 0, 0);
 
-  if (Style_StrGetColor(false, pCurrentStandard->Styles[STY_WHITESPACE].szValue, &rgb)) // whitespace back
+  if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, BACKGROUND_LAYER, &rgb)) // whitespace back
     SendMessage(hwnd, SCI_SETWHITESPACEBACK, true, rgb);
   else
     SendMessage(hwnd, SCI_SETWHITESPACEBACK, 0, 0);    // use a default value...
@@ -799,7 +799,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     StringCchPrintf(pCurrentStandard->Styles[STY_WHITESPACE].szValue, 
                     COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue), L"size:%i", iValue);
 
-    if (Style_StrGetColor(true, wchStyle, &rgb)) {
+    if (Style_StrGetColor(wchStyle, FOREGROUND_LAYER, &rgb)) {
       StringCchPrintf(tch, COUNTOF(tch), L"; fore:#%02X%02X%02X",
         (int)GetRValue(rgb),
         (int)GetGValue(rgb),
@@ -808,7 +808,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
                    COUNTOF(pCurrentStandard->Styles[STY_WHITESPACE].szValue), tch);
     }
 
-    if (Style_StrGetColor(false, wchStyle, &rgb)) {
+    if (Style_StrGetColor(wchStyle, BACKGROUND_LAYER, &rgb)) {
       StringCchPrintf(tch, COUNTOF(tch), L"; back:#%02X%02X%02X",
         (int)GetRValue(rgb),
         (int)GetGValue(rgb),
@@ -862,7 +862,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SendMessage(hwnd, SCI_SETADDITIONALCARETSBLINK, ((uCaretBlinkTime != 0) ? true : false), 0);
   }
   // caret fore
-  if (!Style_StrGetColor(true, pCurrentStandard->Styles[STY_CARET].szValue, &rgb)) {
+  if (!Style_StrGetColor(pCurrentStandard->Styles[STY_CARET].szValue, FOREGROUND_LAYER, &rgb)) {
     rgb = GetSysColor(COLOR_WINDOWTEXT);
   }
   else {
@@ -886,13 +886,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
                 COUNTOF(pCurrentStandard->Styles[STY_CARET].szValue),wchSpecificStyle);
 
   if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) {
-    if (Style_StrGetColor(true,pCurrentStandard->Styles[STY_LONG_LN_MRK].szValue,&rgb)) // edge fore
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_LONG_LN_MRK].szValue, FOREGROUND_LAYER, &rgb)) // edge fore
       SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
     else
       SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
   }
   else {
-    if (Style_StrGetColor(false,pCurrentStandard->Styles[STY_LONG_LN_MRK].szValue,&rgb)) // edge back
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb)) // edge back
       SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
     else
       SendMessage(hwnd,SCI_SETEDGECOLOUR,GetSysColor(COLOR_3DLIGHT),0);
@@ -1075,13 +1075,13 @@ void Style_SetUrlHotSpot(HWND hwnd, bool bHotSpot)
 
     COLORREF rgb = 0;
     // Fore
-    if (Style_StrGetColor(true, lpszStyleHotSpot, &rgb)) {
+    if (Style_StrGetColor(lpszStyleHotSpot, FOREGROUND_LAYER, &rgb)) {
       COLORREF inactiveFG = (COLORREF)((rgb * 75 + 50) / 100);
       SendMessage(hwnd, SCI_STYLESETFORE, cHotSpotStyleID, (LPARAM)inactiveFG);
       SendMessage(hwnd, SCI_SETHOTSPOTACTIVEFORE, true, (LPARAM)rgb);
     }
     // Back
-    if (Style_StrGetColor(false, lpszStyleHotSpot, &rgb)) {
+    if (Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &rgb)) {
       SendMessage(hwnd, SCI_STYLESETBACK, cHotSpotStyleID, (LPARAM)rgb);
       SendMessage(hwnd, SCI_SETHOTSPOTACTIVEBACK, true, (LPARAM)rgb);
     }
@@ -1129,13 +1129,13 @@ void Style_SetLongLineColors(HWND hwnd)
 
   if (SendMessage(hwnd,SCI_GETEDGEMODE,0,0) == EDGE_LINE) 
   {
-    if (!Style_StrGetColor(true, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, &rgb)) { // edge fore
+    if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, FOREGROUND_LAYER, &rgb)) { // edge fore
       rgb = GetSysColor(COLOR_3DLIGHT);
     }
     SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
   }
   else {
-    if (Style_StrGetColor(false, GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, &rgb)) { // edge back
+    if (Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb)) { // edge back
       rgb = GetSysColor(COLOR_3DLIGHT);
     }
     SendMessage(hwnd,SCI_SETEDGECOLOUR,rgb,0);
@@ -1160,7 +1160,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
     LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
 
     COLORREF rgb;
-    if (!Style_StrGetColor(!backgrColor, szValue, &rgb)) {
+    if (!Style_StrGetColor(szValue, (backgrColor ? BACKGROUND_LAYER : FOREGROUND_LAYER),  &rgb)) {
       rgb = (backgrColor ? RGB(0xFF, 0xFF, 0x00) : RGB(0xC2, 0xC0, 0xC3));
     }
 
@@ -1193,8 +1193,8 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 static int  _GetMarkerMarginWidth()
 {
   float fSize = Style_GetBaseFontSize();
-  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize); // relative to LineNumber
-  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);
+  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
+  Style_StrGetSize(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
   float const zoomPercent = (float)SciCall_GetZoom();
   return ScaleToCurrentDPI((fSize * zoomPercent) / 100.0f);
 }
@@ -1216,7 +1216,7 @@ void Style_SetFolding(HWND hwnd, bool bShowCodeFolding)
 void Style_SetBookmark(HWND hwnd, bool bShowSelMargin)
 {
   UNUSED(hwnd);
-  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth() : 0));
+  SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowSelMargin ? _GetMarkerMarginWidth() + 4 : 0));
 }
 
 
@@ -1231,10 +1231,10 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
   }
 
   COLORREF clrFore = SciCall_StyleGetFore(STYLE_LINENUMBER);
-  Style_StrGetColor(true, lpszStyle, &clrFore);
+  Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &clrFore);
 
   COLORREF clrBack = SciCall_StyleGetBack(STYLE_LINENUMBER);
-  Style_StrGetColor(false, lpszStyle, &clrBack);
+  Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &clrBack);
   
   //SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrBack);
 
@@ -1248,15 +1248,15 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   const WCHAR* wchBookMarkStyleStrg = GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue;
 
-  Style_StrGetColor(true, wchBookMarkStyleStrg, &bmkFore);
-  Style_StrGetColor(false, wchBookMarkStyleStrg, &bmkBack);
+  Style_StrGetColor(wchBookMarkStyleStrg, FOREGROUND_LAYER, &bmkFore);
+  Style_StrGetColor(wchBookMarkStyleStrg, BACKGROUND_LAYER, &bmkBack);
 
   // adjust background color by alpha in case of show margin
   int alpha = 20;
   Style_StrGetAlpha(wchBookMarkStyleStrg, &alpha, true);
 
   COLORREF bckgrnd = clrBack;
-  Style_StrGetColor(false, lpszStyle, &bckgrnd);
+  Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &bckgrnd);
   bmkBack = Style_RgbAlpha(bmkBack, bckgrnd, min_i(0xFF, alpha));
 
   SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_BOOKMARK);
@@ -1270,7 +1270,7 @@ void Style_SetMargin(HWND hwnd, int iStyle, LPCWSTR lpszStyle)
 
   COLORREF fldHiLight = clrFore;
   const WCHAR* wchHighlightStyleStrg = GetCurrentStdLexer()->Styles[STY_SEL_TXT].szValue;
-  Style_StrGetColor(false, wchHighlightStyleStrg, &fldHiLight);
+  Style_StrGetColor(wchHighlightStyleStrg, FOREGROUND_LAYER, &fldHiLight);
 
   SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
   SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
@@ -2029,9 +2029,9 @@ void Style_AppendWeightStr(LPWSTR lpszWeight, int cchSize, int fontWeight)
 //
 //  Style_StrGetColor()
 //
-bool Style_StrGetColor(bool bFore, LPCWSTR lpszStyle, COLORREF* rgb)
+bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb)
 {
-  WCHAR *pItem = (bFore) ? L"fore:" : L"back:";
+  WCHAR *pItem = (layer == FOREGROUND_LAYER) ? L"fore:" : L"back:";
 
   WCHAR *p = StrStrI(lpszStyle, pItem);
   if (p)
@@ -2260,7 +2260,7 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
     }
 
     if (StrStrI(lpszStyleSrc, L"fore:") && !StrStrI(lpszStyleDest, L"fore:")) { // foreground
-      if (Style_StrGetColor(true, lpszStyleSrc, &dColor)) {
+      if (Style_StrGetColor(lpszStyleSrc, FOREGROUND_LAYER, &dColor)) {
         StringCchPrintf(tch, COUNTOF(tch), L"; fore:#%02X%02X%02X",
           (int)GetRValue(dColor), (int)GetGValue(dColor), (int)GetBValue(dColor));
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
@@ -2268,7 +2268,7 @@ void Style_CopyStyles_IfNotDefined(LPWSTR lpszStyleSrc, LPWSTR lpszStyleDest, in
     }
 
     if (StrStrI(lpszStyleSrc, L"back:") && !StrStrI(lpszStyleDest, L"back:")) { // background
-      if (Style_StrGetColor(false, lpszStyleSrc, &dColor)) {
+      if (Style_StrGetColor(lpszStyleSrc, BACKGROUND_LAYER, &dColor)) {
         StringCchPrintf(tch, COUNTOF(tch), L"; back:#%02X%02X%02X",
           (int)GetRValue(dColor), (int)GetGValue(dColor), (int)GetBValue(dColor));
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), tch);
@@ -2453,7 +2453,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
   lf.lfPitchAndFamily = FIXED_PITCH | FF_MODERN;
 
   COLORREF color = 0L;
-  Style_StrGetColor(true, lpszStyle, &color);
+  Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &color);
 
   // Init cf
   CHOOSEFONT cf;
@@ -2660,7 +2660,7 @@ bool Style_SelectFont(HWND hwnd,LPWSTR lpszStyle,int cchStyle, LPCWSTR sLexerNam
       StringCchCat(szNewStyle, COUNTOF(szNewStyle), newColor);
     }
     // copy background
-    if (Style_StrGetColor(false, lpszStyle, &color)) {
+    if (Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &color)) {
       StringCchPrintf(newColor, COUNTOF(newColor), L"; back:#%02X%02X%02X",
                       (int)GetRValue(color),
                       (int)GetGValue(color),
@@ -2696,7 +2696,7 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
   ZeroMemory(&cc,sizeof(CHOOSECOLOR));
 
   dRGBResult = (bForeGround) ? GetSysColor(COLOR_WINDOWTEXT) : GetSysColor(COLOR_WINDOW);
-  Style_StrGetColor(bForeGround,lpszStyle,&dRGBResult);
+  Style_StrGetColor(lpszStyle, (bForeGround ? FOREGROUND_LAYER : BACKGROUND_LAYER), &dRGBResult);
 
   cc.lStructSize = sizeof(CHOOSECOLOR);
   cc.hwndOwner = hwnd;
@@ -2721,7 +2721,7 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
       (int)GetBValue(dRGBResult));
     StringCchCat(szNewStyle,COUNTOF(szNewStyle),tch);
 
-    if (Style_StrGetColor(false,lpszStyle,&dColor))
+    if (Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &dColor))
     {
       StringCchPrintf(tch,COUNTOF(tch),L"; back:#%02X%02X%02X",
         (int)GetRValue(dColor),
@@ -2732,7 +2732,7 @@ bool Style_SelectColor(HWND hwnd,bool bForeGround,LPWSTR lpszStyle,int cchStyle,
   }
   else // set background
   {
-    if (Style_StrGetColor(true,lpszStyle,&dColor))
+    if (Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &dColor))
     {
       StringCchPrintf(tch,COUNTOF(tch),L"; fore:#%02X%02X%02X; ",
         (int)GetRValue(dColor),
@@ -2852,7 +2852,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
 
   COLORREF dColor = 0L;
   // Fore
-  if (Style_StrGetColor(true, lpszStyle, &dColor)) {
+  if (Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &dColor)) {
     SendMessage(hwnd, SCI_STYLESETFORE, iStyle, (LPARAM)dColor);
   }
   else if (bInitDefault) {
@@ -2860,7 +2860,7 @@ void Style_SetStyles(HWND hwnd, int iStyle, LPCWSTR lpszStyle, bool bInitDefault
   }
 
   // Back
-  if (Style_StrGetColor(false, lpszStyle, &dColor)) {
+  if (Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &dColor)) {
     SendMessage(hwnd, SCI_STYLESETBACK, iStyle, (LPARAM)dColor);
   }
   else if (bInitDefault) {
@@ -3606,11 +3606,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam
               GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
 
               COLORREF cr = (COLORREF)-1; // SciCall_StyleGetFore(STYLE_DEFAULT);
-              Style_StrGetColor(true, tch, &cr);
+              Style_StrGetColor(tch, FOREGROUND_LAYER, &cr);
               MakeColorPickButton(hwnd, IDC_STYLEFORE, Globals.hInstance, cr);
 
               cr = (COLORREF)-1; // SciCall_StyleGetBack(STYLE_DEFAULT);
-              Style_StrGetColor(false, tch, &cr);
+              Style_StrGetColor(tch, BACKGROUND_LAYER, &cr);
               MakeColorPickButton(hwnd, IDC_STYLEBACK, Globals.hInstance, cr);
             }
           }

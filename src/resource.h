@@ -31,6 +31,7 @@
 #define IDC_DOC_MODIFIED                235
 #define IDT_TIMER_UPDATE_STATUSBAR      236
 #define IDT_TIMER_UPDATE_TOOLBAR        237
+#define IDT_TIMER_CLEAR_CALLTIP         238
 
 #define IDACC_FIND                      302
 #define IDACC_REPLACE                   303

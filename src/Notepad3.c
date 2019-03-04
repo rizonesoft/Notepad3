@@ -233,6 +233,8 @@ static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, UndoRedoSelection_t* selection);
 
+static void  _DelayClearZoomCallTip(int delay);
+
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 static CLIPFORMAT cfDrpF = CF_HDROP;
@@ -390,7 +392,7 @@ static bool s_flagSearchPathIfRelative = false;
 // multi-state flags
 static int s_flagAlwaysOnTop  = 0;
 static int s_flagWindowPos    = 0;
-static int s_flagSetEncoding  = 0;
+static int s_flagSetEncoding  = CPI_NONE;
 static int s_flagSetEOLMode   = 0;
 static int s_flagMatchText    = 0;
 static int s_flagChangeNotify = 0;
@@ -487,7 +489,7 @@ static bool _InsertLanguageMenu(HMENU hMenuBar)
 
   WCHAR wchMenuItemFmt[128];
   WCHAR wchMenuItemStrg[196];
-  for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng)
+  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng)
   {
     if (MUI_LanguageDLLs[lng].bHasDLL) 
     {
@@ -531,8 +533,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     DestroyMenu(Globals.hMainMenu); 
   }
 
-  FreeLanguageResources(Globals.hLngResContainer);
-  Globals.hLngResContainer = NULL;
+  FreeLanguageResources();
 
   if (s_hRichEdit) {
     FreeLibrary(s_hRichEdit);
@@ -636,8 +637,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   // ----------------------------------------------------
   // MultiLingual
   //
-  Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-  Globals.hLngResContainer = LoadLanguageResources(&Globals.iPrefLANGID);
+  //Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+  Globals.iPrefLANGID = LoadLanguageResources();
 
   // ----------------------------------------------------
 
@@ -1075,13 +1076,9 @@ HWND InitInstance(HINSTANCE hInstance,LPCWSTR pszCmdLine,int nCmdShow)
   }
 
   // Encoding
-  if (0 != s_flagSetEncoding) {
-    SendMessage(
-      Globals.hwndMain,
-      WM_COMMAND,
-      MAKELONG(IDM_ENCODING_ANSI + s_flagSetEncoding -1,1),
-      0);
-    s_flagSetEncoding = 0;
+  if (s_flagSetEncoding != CPI_NONE) {
+    SendMessage(Globals.hwndMain, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
+    s_flagSetEncoding = CPI_NONE;
   }
 
   // EOL mode
@@ -1257,7 +1254,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_QUERYENDSESSION:
       if (FileSave(false, true, false, false)) {
-        return 1LL;
+        return TRUE;
       }
       break;
 
@@ -1343,7 +1340,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case WM_MOUSEWHEEL:
-      if (wParam & MK_CONTROL) { EditShowZoomCallTip(Globals.hwndEdit); }
+      if (wParam & MK_CONTROL) { ShowZoomCallTip(); }
       break;
 
     case WM_INPUTLANGCHANGE:
@@ -1725,7 +1722,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
   ObserveNotifyChangeEvent();
 
-  return 0;
+  return 0LL;
 }
 
 
@@ -2004,7 +2001,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   if (umsg == WM_DESTROY)
     PostQuitMessage(0);
 
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2135,7 +2132,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
   UNUSED(hwnd);
   UNUSED(lParam);
 
-  if (wParam == SIZE_MINIMIZED) { return 0LL; }
+  if (wParam == SIZE_MINIMIZED) { return FALSE; }
 
   int x = 0;
   int y = 0;
@@ -2234,7 +2231,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   DragFinish(hDrop);
 
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2341,14 +2338,10 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
           }
 
-          if (0 != params->flagSetEncoding) {
+          if (params->flagSetEncoding != CPI_NONE) {
             s_flagSetEncoding = params->flagSetEncoding;
-            SendMessage(
-              hwnd,
-              WM_COMMAND,
-              MAKELONG(IDM_ENCODING_ANSI + s_flagSetEncoding - 1, 1),
-              0);
-            s_flagSetEncoding = 0;
+            SendMessage(hwnd, WM_COMMAND, MAKELONG(IDM_ENCODING_SELECT, IDM_ENCODING_SELECT + s_flagSetEncoding), 0);
+            s_flagSetEncoding = CPI_NONE;
           }
 
           if (0 != params->flagSetEOLMode) {
@@ -2452,7 +2445,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
   DestroyMenu(hmenu);
 
-  return 0LL;
+  return FALSE;
 }
 
 //=============================================================================
@@ -2493,7 +2486,7 @@ LRESULT MsgChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     InstallFileWatching(Globals.CurrentFile);
   }
 
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2548,10 +2541,10 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
     default:
-      return 1LL;
+      return TRUE;
 
   }
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2914,12 +2907,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   i = (int)StringCchLenW(Settings2.AdministrationTool, COUNTOF(Settings2.AdministrationTool));
   EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
 
-  for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng) {
+  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
     //EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
-    CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsLoaded);
+    CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsActive);
   }
 
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -2932,10 +2925,10 @@ static bool _DynamicLanguageMenuCmd(int cmd)
 {
   int iLngIdx = (cmd - IDS_MUI_LANG_EN_US); // consecutive IDs
 
-  if ((iLngIdx < 0) || (iLngIdx >= NUM_OF_MUI_LANGUAGES)) {
+  if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf())) {
     return false;
   }
-  if (!MUI_LanguageDLLs[iLngIdx].bIsLoaded)
+  if (!MUI_LanguageDLLs[iLngIdx].bIsActive)
   {
     if (IsWindow(Globals.hwndDlgFindReplace)) {
       SendMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
@@ -2948,10 +2941,9 @@ static bool _DynamicLanguageMenuCmd(int cmd)
     IniSetString(L"Settings2", L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
 
     DestroyMenu(Globals.hMainMenu);
-    FreeLanguageResources(Globals.hLngResContainer);
-
     Globals.iPrefLANGID = MUI_LanguageDLLs[iLngIdx].LangId;
-    Globals.hLngResContainer = LoadLanguageResources(&Globals.iPrefLANGID);
+    FreeLanguageResources();
+    Globals.iPrefLANGID = LoadLanguageResources();
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
       GetLastErrorToMsgBox(L"LoadMenu()", 0);
@@ -2982,7 +2974,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
   WCHAR tchMaxPathBuffer[MAX_PATH] = { L'\0' };
 
   if (_DynamicLanguageMenuCmd(LOWORD(wParam))) { 
-    return 0LL; 
+    return FALSE; 
   }
   switch(LOWORD(wParam))
   {
@@ -3004,6 +2996,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDT_TIMER_UPDATE_HOTSPOT:
       EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
+      break;
+
+    case IDT_TIMER_CLEAR_CALLTIP:
+      CancelCallTip();
       break;
 
     case IDM_FILE_NEW:
@@ -3249,21 +3245,26 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_ENCODING_UTF8SIGN:
     case IDM_ENCODING_SELECT:
       {
-        int iNewEncoding = Encoding_Current(CPI_GET);
-        if (LOWORD(wParam) == IDM_ENCODING_SELECT && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
-          break;
+        int iNewEncoding = (HIWORD(wParam) >= IDM_ENCODING_SELECT) ? (HIWORD(wParam) - IDM_ENCODING_SELECT) : Encoding_Current(CPI_GET);
+
+        if (LOWORD(wParam) == IDM_ENCODING_SELECT) {
+          if ((HIWORD(wParam) < IDM_ENCODING_SELECT) && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
+            break; // no change
+          }
         }
-        switch (LOWORD(wParam)) 
-        {
-        case IDM_ENCODING_UNICODE:    iNewEncoding = CPI_UNICODEBOM; break;
-        case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
-        case IDM_ENCODING_UTF8:       iNewEncoding = CPI_UTF8; break;
-        case IDM_ENCODING_UTF8SIGN:   iNewEncoding = CPI_UTF8SIGN; break;
-        case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
+        else {
+          switch (LOWORD(wParam))
+          {
+          case IDM_ENCODING_UNICODE:    iNewEncoding = CPI_UNICODEBOM; break;
+          case IDM_ENCODING_UNICODEREV: iNewEncoding = CPI_UNICODEBEBOM; break;
+          case IDM_ENCODING_UTF8:       iNewEncoding = CPI_UTF8; break;
+          case IDM_ENCODING_UTF8SIGN:   iNewEncoding = CPI_UTF8SIGN; break;
+          case IDM_ENCODING_ANSI:       iNewEncoding = CPI_ANSI_DEFAULT; break;
+          }
         }
         BeginWaitCursor(NULL);
         _IGNORE_NOTIFY_CHANGE_;
-        if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, s_flagSetEncoding,
+        if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE),
                                StringCchLenW(Globals.CurrentFile,COUNTOF(Globals.CurrentFile)) == 0)) {
 
           if (SendMessage(Globals.hwndEdit,SCI_GETLENGTH,0,0) == 0) {
@@ -3271,8 +3272,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Encoding_HasChanged(iNewEncoding);
           }
           else {
-            if (Encoding_IsANSI(Encoding_Current(CPI_GET)) || Encoding_IsANSI(iNewEncoding))
+            if (Encoding_IsANSI(Encoding_Current(CPI_GET)) || Encoding_IsANSI(iNewEncoding)) {
               Encoding_HasChanged(CPI_NONE);
+            }
             Encoding_Current(iNewEncoding);
           }
         }
@@ -3373,7 +3375,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (s_flagPasteBoard) {
         s_bLastCopyFromMe = true;
       }
-      SciCall_CopyAllowLine();
+      if (!HandleHotSpotURL(SciCall_GetCurrentPos(), COPY_HYPERLINK)) {
+        SciCall_CopyAllowLine();
+      }
       UpdateToolbar();
       break;
 
@@ -4769,7 +4773,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         SciCall_ZoomIn();
         UpdateMarginWidth();
-        EditShowZoomCallTip(Globals.hwndEdit);
+        ShowZoomCallTip();
       }
       break;
 
@@ -4777,16 +4781,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         SciCall_ZoomOut();
         UpdateMarginWidth();
-        EditShowZoomCallTip(Globals.hwndEdit);
-      }
+        ShowZoomCallTip();
+    }
       break;
 
     case IDM_VIEW_RESETZOOM:
       {
         SciCall_SetZoom(100);
         UpdateMarginWidth();
-        EditShowZoomCallTip(Globals.hwndEdit);
-      }
+        ShowZoomCallTip();
+    }
       break;
 
     case IDM_VIEW_CHASING_DOCTAIL: 
@@ -5071,7 +5075,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_ESCAPE:
       if (SciCall_CallTipActive() || SciCall_AutoCActive()) {
-        SciCall_CallTipCancel();
+        CancelCallTip();
         SciCall_AutoCCancel();
       }
       else if (Settings.EscFunction == 1) {
@@ -5570,7 +5574,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_OPEN_HYPERLINK:
-        OpenHotSpotURL(SciCall_GetCurrentPos(), false);
+        HandleHotSpotURL(SciCall_GetCurrentPos(), OPEN_WITH_BROWSER);
       break;
 
 
@@ -5807,7 +5811,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     default:
       return DefWindowProc(hwnd, umsg, wParam, lParam);
   }
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -5825,7 +5829,7 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       MinimizeWndToTray(hwnd);
       ShowNotifyIcon(hwnd, true);
       SetNotifyIconTitle(hwnd);
-      return 0LL; // swallowed
+      return FALSE; // swallowed
     }
     break;
 
@@ -5845,15 +5849,17 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  OpenHotSpotURL()
+//  HandleHotSpotURL()
 //
 //
-void OpenHotSpotURL(DocPos position, bool bForceBrowser)
+bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
 {
+  bool bHandled = false;
+
   char const cStyle = SciCall_GetStyleAt(position);
   int const iStyleID = Style_GetHotspotStyleID();
 
-  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return; }
+  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return bHandled; }
 
   // get left most position of style
   DocPos pos = position;
@@ -5880,20 +5886,27 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
     StringCchCopyNA(chURL, XHUGE_BUFFER, SciCall_GetRangePointer(firstPos, length), length);
     StrTrimA(chURL, " \t\n\r");
     
-    if (!StringCchLenA(chURL, COUNTOF(chURL))) { return; }
+    if (!StringCchLenA(chURL, COUNTOF(chURL))) { return bHandled; }
 
-    WCHAR wchURL[HUGE_BUFFER] = { L'\0' };
-    MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, HUGE_BUFFER);
+    WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
+    int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, XHUGE_BUFFER) - 1;
 
     const WCHAR* chkPreFix = L"file://";
-    size_t const len = StringCchLenW(chkPreFix,0);
+    size_t const lenPfx = StringCchLenW(chkPreFix,0);
 
-    if (!bForceBrowser && (StrStrIW(wchURL, chkPreFix) == wchURL))
+    if (operation & COPY_HYPERLINK)
     {
-      WCHAR* szFileName = &(wchURL[len]);
+      if (lenHypLnk > 0) {
+        SetClipboardTextW(Globals.hwndMain, wchURL, lenHypLnk);
+        bHandled = true;
+      }
+    }
+    if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIW(wchURL, chkPreFix) == wchURL))
+    {
+      WCHAR* szFileName = &(wchURL[lenPfx]);
       StrTrimW(szFileName, L"/");
 
-      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - (int)len);
+      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - (int)lenPfx);
 
       if (PathIsDirectory(szFileName))
       {
@@ -5902,12 +5915,13 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
         if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
           FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
       }
-      else
+      else {
         FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, szFileName);
-
+      }
+      bHandled = true;
     }
-    else { // open in web browser
-
+    else if (operation & (OPEN_WITH_NOTEPAD3 | OPEN_WITH_NOTEPAD3)) // open in web browser
+    {
       WCHAR wchDirectory[MAX_PATH] = { L'\0' };
       if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
         StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
@@ -5926,9 +5940,10 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
       sei.nShow = SW_SHOWNORMAL;
       ShellExecuteEx(&sei);
 
+      bHandled = true;
     }
-
   }
+  return bHandled;
 }
 
 
@@ -6264,11 +6279,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         {
           if (scn->modifiers & SCMOD_CTRL) {
             // open in browser
-            OpenHotSpotURL((int)scn->position, true);
+            HandleHotSpotURL((int)scn->position, OPEN_WITH_BROWSER);
           }
           if (scn->modifiers & SCMOD_ALT) {
             // open in application, if applicable (file://)
-            OpenHotSpotURL((int)scn->position, false);
+            HandleHotSpotURL((int)scn->position, OPEN_WITH_NOTEPAD3);
           }
         }
         break;
@@ -6279,8 +6294,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             int const ich = scn->ch;
 
             if (Globals.CallTipType != CT_NONE) {
-              SciCall_CallTipCancel();   
-              Globals.CallTipType = CT_NONE;
+              CancelCallTip();
             }
 
             switch (ich) {
@@ -6374,7 +6388,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
           break;
 
         default:
-          return 0LL;
+          return FALSE;
       }
       // in any case 
       if (Settings.MarkOccurrencesCurrentWord && (Settings.MarkOccurrences > 0)) {
@@ -6404,10 +6418,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               GetLngString(s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem].idCommand,tch,COUNTOF(tch));
               StringCchCopyN(((LPTBNOTIFY)lParam)->pszText,((LPTBNOTIFY)lParam)->cchText,tch,((LPTBNOTIFY)lParam)->cchText);
               CopyMemory(&((LPTBNOTIFY)lParam)->tbButton,&s_tbbMainWnd[((LPTBNOTIFY)lParam)->iItem],sizeof(TBBUTTON));
-              return 1LL;
+              return TRUE;
             }
           }
-          return 0LL;
+          return FALSE;
 
         case TBN_RESET:
           {
@@ -6417,12 +6431,12 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
             SendMessage(s_hwndToolbar,TB_ADDBUTTONS,NUMINITIALTOOLS,(LPARAM)s_tbbMainWnd);
           }
-          return 0LL;
+          return FALSE;
 
         default:
-          return 0LL;
+          return FALSE;
       }
-      return 1LL;
+      return TRUE;
 
     // ------------------------------------------------------------------------
 
@@ -6439,10 +6453,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             {
               case STATUS_EOLMODE:
                 EditEnsureConsistentLineEndings(Globals.hwndEdit);
-                return 1LL;
+                return TRUE;
 
               default:
-                return 0LL;
+                return FALSE;
             }
           }
           break;
@@ -6456,11 +6470,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
               case STATUS_DOCLINE:
               case STATUS_DOCCOLUMN:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_EDIT_GOTOLINE,1),0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_CODEPAGE:
                 PostMessage(hwnd,WM_COMMAND,MAKELONG(IDM_ENCODING_SELECT,1),0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_EOLMODE:
                 {
@@ -6476,19 +6490,19 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                   if (i > IDM_LINEENDINGS_LF) { i = IDM_LINEENDINGS_CRLF; }
                   PostMessage(hwnd, WM_COMMAND, MAKELONG(i, 1), 0);
                 }
-                return 1LL;
+                return TRUE;
 
               case STATUS_OVRMODE:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(CMD_VK_INSERT, 1), 0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_2ND_DEF:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_USE2NDDEFAULT, 1), 0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_LEXER:
                 PostMessage(hwnd, WM_COMMAND, MAKELONG(IDM_VIEW_SCHEME, 1), 0);
-                return 1LL;
+                return TRUE;
 
               case STATUS_TINYEXPR:
                 {
@@ -6507,7 +6521,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 break;
 
               default:
-                return 0LL;
+                return FALSE;
             }
           }
           break;
@@ -6539,7 +6553,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
       break;
 
   }
-  return 0LL;
+  return FALSE;
 }
 
 
@@ -7355,27 +7369,38 @@ void ParseCommandLine()
         StrLTrim(lp1, L"-/");
 
         // Encoding
-        if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0)
-          s_flagSetEncoding = IDM_ENCODING_ANSI - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0)
-          s_flagSetEncoding = IDM_ENCODING_UNICODE - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0)
-          s_flagSetEncoding = IDM_ENCODING_UNICODEREV - IDM_ENCODING_ANSI + 1;
-        else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0)
-          s_flagSetEncoding = IDM_ENCODING_UTF8 - IDM_ENCODING_ANSI + 1;
+        int const encoding = Encoding_MatchW(lp1);
+        if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0) {
+          s_flagSetEncoding = CPI_ANSI_DEFAULT;
+        }
+        else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0) {
+          s_flagSetEncoding = CPI_UNICODEBOM;
+        }
+        else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0) {
+          s_flagSetEncoding = CPI_UNICODEBEBOM;
+        }
+        else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0) {
+          s_flagSetEncoding = CPI_UTF8;
+        }
         else if (StringCchCompareXI(lp1, L"UTF8SIG") == 0 || StringCchCompareXI(lp1, L"UTF-8SIG") == 0 ||
-                 StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
-                 StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0)
-          s_flagSetEncoding = IDM_ENCODING_UTF8SIGN - IDM_ENCODING_ANSI + 1;
-
+          StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
+            StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0) {
+          s_flagSetEncoding = CPI_UTF8SIGN;
+        }
+        // maybe parsed encoding
+        else if (encoding != CPI_NONE) {
+          s_flagSetEncoding = encoding;
+        }
         // EOL Mode
-        else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0)
+        else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0) {
           s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
-        else if (StringCchCompareXI(lp1, L"CR") == 0)
+        }
+        else if (StringCchCompareXI(lp1, L"CR") == 0) {
           s_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
-        else if (StringCchCompareXI(lp1, L"LF") == 0)
+        }
+        else if (StringCchCompareXI(lp1, L"LF") == 0) {
           s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
-
+        }
         // Shell integration
         else if (StrCmpNI(lp1, L"appid=", CSTRLEN(L"appid=")) == 0) {
           StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
@@ -7384,7 +7409,6 @@ void ParseCommandLine()
           if (StringCchLenW(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID)) == 0)
             StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W(SAPPNAME));
         }
-
         else if (StrCmpNI(lp1, L"sysmru=", CSTRLEN(L"sysmru=")) == 0) {
           WCHAR wch[16];
           StringCchCopyN(wch, COUNTOF(wch), lp1 + CSTRLEN(L"sysmru="), COUNTOF(wch));
@@ -7394,7 +7418,6 @@ void ParseCommandLine()
           else
             Flags.ShellUseSystemMRU = 1;
         }
-
         // Relaunch elevated
         else if (StrCmpNI(lp1, L"tmpfbuf=", CSTRLEN(L"tmpfbuf=")) == 0) {
           StringCchCopyN(s_wchTmpFilePath, COUNTOF(s_wchTmpFilePath),
@@ -7989,10 +8012,10 @@ int CreateIniFileEx(LPCWSTR lpszIniFile)
 
 //=============================================================================
 //
-//  DelayUpdateStatusbar()
+//  _DelayUpdateStatusbar()
 //  
 //
-static void  DelayUpdateStatusbar(int delay, bool bForceRedraw)
+static void  _DelayUpdateStatusbar(int delay, bool bForceRedraw)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_STATUSBAR, 1), (LPARAM)0, 0 };
   mqc.hwnd = Globals.hwndMain;
@@ -8003,12 +8026,26 @@ static void  DelayUpdateStatusbar(int delay, bool bForceRedraw)
 
 //=============================================================================
 //
-//  DelayUpdateToolbar()
+//  _DelayUpdateToolbar()
 //  
 //
-static void  DelayUpdateToolbar(int delay)
+static void  _DelayUpdateToolbar(int delay)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_TOOLBAR, 1), (LPARAM)0, 0 };
+  mqc.hwnd = Globals.hwndMain;
+  //mqc.lparam = (LPARAM)bForceRedraw;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+}
+
+
+//=============================================================================
+//
+//  _DelayClearZoomCallTip()
+//  
+//
+static void  _DelayClearZoomCallTip(int delay)
+{
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_CLEAR_CALLTIP, 1), (LPARAM)0, 0 };
   mqc.hwnd = Globals.hwndMain;
   //mqc.lparam = (LPARAM)bForceRedraw;
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
@@ -8049,7 +8086,7 @@ void UpdateVisibleUrlHotspot(int delay)
 //
 void UpdateToolbar()
 {
-  DelayUpdateToolbar(40);
+  _DelayUpdateToolbar(40);
 }
 
 //=============================================================================
@@ -8297,7 +8334,7 @@ static double  _InterpRectSelTinyExpr(int* piExprError)
 //
 void UpdateStatusbar(bool bForceRedraw)
 {
-  DelayUpdateStatusbar(40, bForceRedraw);
+  _DelayUpdateStatusbar(40, bForceRedraw);
 }
 
 //=============================================================================
@@ -8636,8 +8673,6 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     int const iEncoding = Encoding_Current(CPI_GET);
     if (bForceRedraw || (s_iEncoding != iEncoding)) 
     {
-      Encoding_SetLabel(iEncoding);
-
       StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
         s_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), s_mxSBPostfix[STATUS_CODEPAGE]);
 
@@ -8836,7 +8871,7 @@ void UpdateSettingsCmds()
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && s_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && s_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && s_bEnableSaveSettings);
-    if (SciCall_GetZoom() != 100) { EditShowZoomCallTip(Globals.hwndEdit); }
+    if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); }
 }
 
 
@@ -10257,6 +10292,40 @@ void SetNotifyIconTitle(HWND hwnd)
   StringCchCat(nid.szTip,COUNTOF(nid.szTip),tchTitle);
 
   Shell_NotifyIcon(NIM_MODIFY,&nid);
+}
+
+
+
+//=============================================================================
+//
+//  ShowZoomCallTip()
+//
+void ShowZoomCallTip()
+{
+  int const iZoomLevelPercent = SciCall_GetZoom();
+
+  char chToolTip[32] = { '\0' };
+  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
+
+  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+
+  int const iXOff = SciCall_GetXOffset();
+  SciCall_SetXOffset(0);
+  SciCall_CallTipShow(iPos, chToolTip);
+  SciCall_SetXOffset(iXOff);
+  Globals.CallTipType = CT_ZOOM;
+  _DelayClearZoomCallTip(2000);
+}
+
+
+//=============================================================================
+//
+//  CancelCallTip()
+//
+void CancelCallTip()
+{
+  SciCall_CallTipCancel();
+  Globals.CallTipType = CT_NONE;
 }
 
 

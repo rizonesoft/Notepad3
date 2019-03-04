@@ -1,0 +1,27 @@
+#!/bin/bash
+python ./BuildLangModel.py ar --max-page=100 --max-depth=4
+python ./BuildLangModel.py cs --max-page=100 --max-depth=4
+python ./BuildLangModel.py da --max-page=100 --max-depth=4
+python ./BuildLangModel.py de --max-page=100 --max-depth=4
+python ./BuildLangModel.py el --max-page=100 --max-depth=4
+python ./BuildLangModel.py eo --max-page=100 --max-depth=4
+python ./BuildLangModel.py es --max-page=100 --max-depth=4
+python ./BuildLangModel.py et --max-page=100 --max-depth=4
+python ./BuildLangModel.py fi --max-page=100 --max-depth=4
+python ./BuildLangModel.py fr --max-page=100 --max-depth=4
+python ./BuildLangModel.py ga --max-page=100 --max-depth=4
+python ./BuildLangModel.py hr --max-page=100 --max-depth=4
+python ./BuildLangModel.py hu --max-page=100 --max-depth=4
+python ./BuildLangModel.py it --max-page=100 --max-depth=4
+python ./BuildLangModel.py lt --max-page=100 --max-depth=4
+python ./BuildLangModel.py lv --max-page=100 --max-depth=4
+python ./BuildLangModel.py mt --max-page=100 --max-depth=4
+python ./BuildLangModel.py pl --max-page=100 --max-depth=4
+python ./BuildLangModel.py pt --max-page=100 --max-depth=4
+python ./BuildLangModel.py ro --max-page=100 --max-depth=4
+python ./BuildLangModel.py sk --max-page=100 --max-depth=4
+python ./BuildLangModel.py sl --max-page=100 --max-depth=4
+python ./BuildLangModel.py sv --max-page=100 --max-depth=4
+python ./BuildLangModel.py th --max-page=100 --max-depth=4
+python ./BuildLangModel.py tr --max-page=100 --max-depth=4
+python ./BuildLangModel.py vi --max-page=100 --max-depth=4

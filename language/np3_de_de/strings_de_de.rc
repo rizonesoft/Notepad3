@@ -198,13 +198,13 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "Sprache"
-    IDS_MUI_LANG_EN_US      "Englisches (Vereinigtes States)\t\t\t[%s]"                 
+    IDS_MUI_LANG_EN_US      "Englisch (Vereinigte Staaten)\t\t\t[%s]"                 
     IDS_MUI_LANG_AF_ZA      "Afrikaans (Südafrika)\t\t\t[%s]"               
     IDS_MUI_LANG_BE_BY      "Weißrussisch (Weißrussland)\t\t\t[%s]"                    
-    IDS_MUI_LANG_DE_DE      "Deutsches (Deutschland)\t\t\t[%s]"                        
-    IDS_MUI_LANG_EN_GB      "Englisches (Vereinigtes Königreich)\t\t\t[%s]"                
+    IDS_MUI_LANG_DE_DE      "Deutsch (Deutschland)\t\t\t[%s]"                        
+    IDS_MUI_LANG_EN_GB      "Englisch (Vereinigtes Königreich)\t\t\t[%s]"                
     IDS_MUI_LANG_ES_ES      "Spanisch (Spanien)\t\t\t[%s]"                  
-    IDS_MUI_LANG_FR_FR      "Französisch Frankreich)\t\t\t[%s]"                        
+    IDS_MUI_LANG_FR_FR      "Französisch (Frankreich)\t\t\t[%s]"                        
     IDS_MUI_LANG_HU_HU      "Ungarisch (Ungarn)\t\t\t[%s]"                     
     IDS_MUI_LANG_IT_IT      "Italienisch (Italien)\t\t\t[%s]"                         
     IDS_MUI_LANG_JP_JP      "Japanisch (Japan)\t\t\t[%s]"                        

@@ -28,8 +28,10 @@
 #define NOMINMAX 1
 #include <windows.h>
 
-#include <intsafe.h>
+#define STRSAFE_NO_CB_FUNCTIONS
+#define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>
+#include <intsafe.h>
 
 #ifndef __cplusplus
 #include <stdbool.h>
@@ -84,6 +86,11 @@ typedef struct _wi
 inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
   RECT rc; SetRect(&rc, pWinInfo->x, pWinInfo->y, pWinInfo->x + pWinInfo->cx, pWinInfo->y + pWinInfo->cy); return rc;
 }
+
+// ----------------------------------------------------------------------------
+
+typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
+typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4 } HYPERLINK_OPS;  // Hyperlink Operations
 
 // ----------------------------------------------------------------------------
 
@@ -144,7 +151,7 @@ typedef enum {
 
 // --------------------------------------------------------------------------
 
-typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH } CALLTIPTYPE;
+typedef enum { CT_NONE = 0, CT_ZOOM, CT_ZEROLEN_MATCH, CT_ENC_INFO } CALLTIPTYPE;
 
 // --------------------------------------------------------------------------
 
@@ -259,7 +266,7 @@ typedef struct _globals_t
 {
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
-  HMODULE   hLngResContainer;
+  HINSTANCE hLngResContainer;
   int       iAvailLngCount;
   bool      bPrefLngNotAvail;
   HWND      hwndMain;

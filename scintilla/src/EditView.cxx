@@ -63,7 +63,7 @@ static constexpr bool IsControlCharacter(int ch) noexcept {
 	return ch >= 0 && ch < ' ';
 }
 
-PrintParameters::PrintParameters() {
+PrintParameters::PrintParameters() noexcept {
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	magnification = 100;
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
@@ -194,25 +194,25 @@ EditView::EditView() {
 EditView::~EditView() {
 }
 
-bool EditView::SetTwoPhaseDraw(bool twoPhaseDraw) {
+bool EditView::SetTwoPhaseDraw(bool twoPhaseDraw) noexcept {
 	const PhasesDraw phasesDrawNew = twoPhaseDraw ? phasesTwo : phasesOne;
 	const bool redraw = phasesDraw != phasesDrawNew;
 	phasesDraw = phasesDrawNew;
 	return redraw;
 }
 
-bool EditView::SetPhasesDraw(int phases) {
+bool EditView::SetPhasesDraw(int phases) noexcept {
 	const PhasesDraw phasesDrawNew = static_cast<PhasesDraw>(phases);
 	const bool redraw = phasesDraw != phasesDrawNew;
 	phasesDraw = phasesDrawNew;
 	return redraw;
 }
 
-bool EditView::LinesOverlap() const {
+bool EditView::LinesOverlap() const noexcept {
 	return phasesDraw == phasesMultiple;
 }
 
-void EditView::ClearAllTabstops() {
+void EditView::ClearAllTabstops() noexcept {
 	ldTabstops.reset();
 }
 
@@ -280,7 +280,7 @@ void EditView::AllocateGraphics(const ViewStyle &vsDraw) {
 		pixmapIndentGuideHighlight.reset(Surface::Allocate(vsDraw.technology));
 }
 
-static const char *ControlCharacterString(unsigned char ch) {
+static const char *ControlCharacterString(unsigned char ch) noexcept {
 	const char * const reps[] = {
 		"NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL",
 		"BS", "HT", "LF", "VT", "FF", "CR", "SO", "SI",
@@ -827,7 +827,7 @@ Sci::Position EditView::StartEndDisplayLine(Surface *surface, const EditModel &m
 	return posRet;
 }
 
-static ColourDesired SelectionBackground(const ViewStyle &vsDraw, bool main, bool primarySelection) {
+static ColourDesired SelectionBackground(const ViewStyle &vsDraw, bool main, bool primarySelection) noexcept {
 	return main ?
 		(primarySelection ? vsDraw.selColours.back : vsDraw.selBackground2) :
 		vsDraw.selAdditionalBackground;
@@ -2337,7 +2337,7 @@ void EditView::FillLineRemainder(Surface *surface, const EditModel &model, const
 // Space (3 space characters) between line numbers and text when printing.
 #define lineNumberPrintSpace "   "
 
-static ColourDesired InvertedLight(ColourDesired orig) {
+static ColourDesired InvertedLight(ColourDesired orig) noexcept {
 	unsigned int r = orig.GetRed();
 	unsigned int g = orig.GetGreen();
 	unsigned int b = orig.GetBlue();

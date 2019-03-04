@@ -132,7 +132,8 @@ int  FindIniFile();
 int  TestIniFile();
 int  CreateIniFile();
 int  CreateIniFileEx(LPCWSTR lpszIniFile);
-
+void ShowZoomCallTip();
+void CancelCallTip();
 
 void MarkAllOccurrences(int delay, bool bForceClear);
 void UpdateToolbar();
@@ -152,7 +153,7 @@ void RestoreAction(int token, DoAction doAct);
 #define _END_UNDO_ACTION_    } __finally { EndUndoAction(_token_); } }
 
 
-void OpenHotSpotURL(DocPos position, bool bForceBrowser);
+bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation);
 
 bool IsFindPatternEmpty();
 void SetFindPattern(LPCWSTR wchFindPattern);

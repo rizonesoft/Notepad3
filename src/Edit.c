@@ -253,7 +253,7 @@ void EditInitWordDelimiter(HWND hwnd)
   // 2nd get user settings
 
   char whitesp[ANSI_CHAR_BUFFER*2] = { '\0' };
-  if (StringCchLen(Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars)) > 0) {
+  if (StrIsNotEmpty(Settings2.ExtendedWhiteSpaceChars)) {
     WideCharToMultiByte(Encoding_SciCP, 0, Settings2.ExtendedWhiteSpaceChars, -1, whitesp, COUNTOF(whitesp), NULL, NULL);
   }
 
@@ -284,7 +284,7 @@ void EditInitWordDelimiter(HWND hwnd)
   StringCchCopyA(DelimCharsAccel, COUNTOF(DelimCharsAccel), WhiteSpaceCharsDefault);
   StringCchCatA(DelimCharsAccel, COUNTOF(DelimCharsAccel), lineEnds);
 
-  if (StringCchLen(Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet)) > 0)
+  if (StrIsNotEmpty(Settings2.AutoCompleteWordCharSet))
   {
     WideCharToMultiByte(Encoding_SciCP, 0, Settings2.AutoCompleteWordCharSet, -1, AutoCompleteWordCharSet, COUNTOF(AutoCompleteWordCharSet), NULL, NULL);
     Globals.bUseLimitedAutoCCharSet = true;
@@ -450,7 +450,7 @@ bool EditSetNewEncoding(HWND hwnd, int iNewEncoding, bool bNoUI, bool bSetSavePo
     }
     // and vice versa ???
 
-    if (SciCall_GetTextLength() == 0) {
+    if (SciCall_GetTextLength() <= 0) {
 
       bool bIsEmptyUndoHistory = !(SciCall_CanUndo() || SciCall_CanRedo());
       
@@ -928,26 +928,79 @@ void EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status)
 
 //=============================================================================
 //
+//  _SetEncodingTitleInfo()
+//
+static void _SetEncodingTitleInfo(const char* origUCHARDET, int encUCHARDET, float confidence, int encCED, bool bReliableCED)
+{
+  char tmpBuf[128] = { '\0' };
+  char chEncodingInfo[MAX_PATH] = { L'\0' };
+
+  StringCchCopyA(chEncodingInfo, COUNTOF(chEncodingInfo), "UCHARDET='");
+  if (encUCHARDET >= 0)
+  {
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), origUCHARDET);
+  }
+  else {
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), (encUCHARDET == CPI_ASCII_7BIT) ? "ASCII" : "<unknown>");
+  }
+  StringCchPrintfA(tmpBuf, 128, "' Conf=%.0f%%", confidence * 100.0f);
+  StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), tmpBuf);
+
+  StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), " || CED='");
+  if (encCED >= 0)
+  {
+    char chEncodingLabel[128] = { '\0' };
+    WideCharToMultiByte(CP_UTF7, 0, Encoding_GetLabel(encCED), -1, chEncodingLabel, COUNTOF(chEncodingLabel),0 , 0);
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), chEncodingLabel);
+  }
+  else {
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), (encCED == CPI_ASCII_7BIT) ? "ascii" : "<unknown>");
+  }
+  if ((encCED >= 0) || (encCED == CPI_ASCII_7BIT)) {
+    StringCchPrintfA(tmpBuf, 128, "' (%s)", bReliableCED ? "reliable" : "NOT reliable");
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), tmpBuf);
+  }
+  else {
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), "'");
+  }
+
+#ifdef _SHOW_ENC_IN_TITLE_
+  WCHAR wchAddTitleInfo[MAX_PATH];
+  MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchAddTitleInfo, 128);
+  SetAdditionalTitleInfo(wchAddTitleInfo);
+#else
+  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+  int const iXOff = SciCall_GetXOffset();
+  SciCall_SetXOffset(0);
+  SciCall_CallTipShow(iPos, chEncodingInfo);
+  SciCall_SetXOffset(iXOff);
+  Globals.CallTipType = CT_ENC_INFO;
+#endif
+}
+
+
+//=============================================================================
+//
 //  EditLoadFile()
 //
 bool EditLoadFile(
-       HWND hwnd,
-       LPWSTR pszFile,
-       bool bSkipUTFDetection,
-       bool bSkipANSICPDetection,
-       EditFileIOStatus* status)
+  HWND hwnd,
+  LPWSTR pszFile,
+  bool bSkipUTFDetection,
+  bool bSkipANSICPDetection,
+  EditFileIOStatus* status)
 {
   status->bUnicodeErr = false;
   status->bFileTooBig = false;
   status->bUnknownExt = false;
 
   HANDLE hFile = CreateFile(pszFile,
-                            GENERIC_READ,
-                            FILE_SHARE_READ|FILE_SHARE_WRITE,
-                            NULL,
-                            OPEN_EXISTING,
-                            FILE_ATTRIBUTE_NORMAL,
-                            NULL);
+    GENERIC_READ,
+    FILE_SHARE_READ | FILE_SHARE_WRITE,
+    NULL,
+    OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL,
+    NULL);
   Globals.dwLastError = GetLastError();
 
   if (hFile == INVALID_HANDLE_VALUE) {
@@ -957,13 +1010,13 @@ bool EditLoadFile(
   }
 
   // calculate buffer limit
-  DWORD dwFileSize = GetFileSize(hFile,NULL);
+  DWORD dwFileSize = GetFileSize(hFile, NULL);
   DWORD dwBufSize = dwFileSize + 16;
 
   // check for unknown extension
   LPWSTR lpszExt = PathFindExtension(pszFile);
   if (!Style_HasLexerForExt(lpszExt)) {
-    if (InfoBoxLng(MBYESNO,L"MsgFileUnknownExt",IDS_MUI_WARN_UNKNOWN_EXT,lpszExt) != IDYES) {
+    if (InfoBoxLng(MBYESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, lpszExt) != IDYES) {
       CloseHandle(hFile);
       status->bUnknownExt = true;
       Encoding_SrcCmdLn(CPI_NONE);
@@ -975,7 +1028,7 @@ bool EditLoadFile(
   // Check if a warning message should be displayed for large files
   DWORD dwFileSizeLimit = Settings2.FileLoadWarningMB;
   if ((dwFileSizeLimit != 0) && ((dwFileSizeLimit * 1024 * 1024) < dwFileSize)) {
-    if (InfoBoxLng(MBYESNO,L"MsgFileSizeWarning",IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
+    if (InfoBoxLng(MBYESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE) != IDYES) {
       CloseHandle(hFile);
       status->bFileTooBig = true;
       Encoding_SrcCmdLn(CPI_NONE);
@@ -997,7 +1050,7 @@ bool EditLoadFile(
   }
 
   DWORD cbData = 0L;
-  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufSize - 2, (void**)&lpData, &cbData);
+  int const readFlag = ReadAndDecryptFile(hwnd, hFile, dwBufSize - 2, (void**)& lpData, &cbData);
   Globals.dwLastError = GetLastError();
   CloseHandle(hFile);
 
@@ -1006,12 +1059,12 @@ bool EditLoadFile(
   if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS))
   {
     bReadSuccess = (InfoBoxLng(MBOKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS) == IDOK);
-    if (!bReadSuccess) { 
-      FreeMem(lpData); 
-      return true; 
+    if (!bReadSuccess) {
+      FreeMem(lpData);
+      return true;
     }
   }
-  
+
   if (!bReadSuccess) {
     FreeMem(lpData);
     Encoding_SrcCmdLn(CPI_NONE);
@@ -1022,7 +1075,7 @@ bool EditLoadFile(
   bool bNfoDizDetected = false;
   if (Settings.LoadNFOasOEM)
   {
-    if (lpszExt && !(StringCchCompareXI(lpszExt,L".nfo") && StringCchCompareXI(lpszExt,L".diz")))
+    if (lpszExt && !(StringCchCompareXI(lpszExt, L".nfo") && StringCchCompareXI(lpszExt, L".diz")))
       bNfoDizDetected = true;
   }
 
@@ -1033,7 +1086,50 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
-  int iAnalyzedEncoding = Encoding_Analyze(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+  float confidence = 0.0f;
+  float const reliability_threshold = 0.50f;
+
+  char origUCHARDET[256] = { '\0' };
+  reliability_threshold;
+  int const iAnalyzedEncoding_UCD = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, &confidence, origUCHARDET, 256);
+  float const confidence_UCD = confidence;
+  int const iAnalyzedEncoding_CED = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
+
+  // ------------------------------------------------------
+  // calculate reliability
+  confidence = confidence_UCD;
+  int iAnalyzedEncoding = iAnalyzedEncoding_UCD;
+
+  float const ced_confidence = bIsReliable ? reliability_threshold + 0.25f : 0.25f;
+
+  if (iAnalyzedEncoding == iAnalyzedEncoding_CED) {
+    if (!Encoding_IsNONE(iAnalyzedEncoding)) {
+      confidence = (confidence + ced_confidence + 0.25f) / 2.0f;
+    }
+  }
+  else { // ambiguous results
+    if (Encoding_IsNONE(iAnalyzedEncoding)) {
+      // no UCHARDET rely on CED
+      iAnalyzedEncoding = iAnalyzedEncoding_CED;
+      confidence = ced_confidence;
+    }
+    else { // have UCHARDET result
+      if (!Encoding_IsNONE(iAnalyzedEncoding_CED)) 
+      {
+        if (confidence < ced_confidence) {
+          iAnalyzedEncoding = iAnalyzedEncoding_CED;
+          confidence = ced_confidence;
+        }
+        else if ((confidence < ced_confidence) && bIsReliable) {
+          iAnalyzedEncoding = iAnalyzedEncoding_CED;  // prefer CED
+          confidence = (confidence + ced_confidence) / 2.0f;
+        }
+      }
+    }
+  }
+  bIsReliable = (confidence >= reliability_threshold);
+  // ------------------------------------------------------
+
 
   if (!g_bForceCompEncDetection) 
   {
@@ -1236,6 +1332,13 @@ bool EditLoadFile(
   Encoding_SrcCmdLn(CPI_NONE);
   Encoding_SrcWeak(CPI_NONE);
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // UCHARDET
+  _SetEncodingTitleInfo(origUCHARDET, iAnalyzedEncoding_UCD, confidence_UCD, iAnalyzedEncoding_CED, bIsReliable);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   return true;
 }
 
@@ -1326,8 +1429,6 @@ bool EditSaveFile(
             bEncodingMismatch = false;
         }
         if (bEncodingMismatch) {
-          Encoding_SetLabel(iAltEncoding);
-          Encoding_SetLabel(iEncoding);
           InfoBoxLng(0,L"MsgEncodingMismatch",IDS_MUI_ENCODINGMISMATCH,
             g_Encodings[iAltEncoding].wchLabel,
             g_Encodings[iEncoding].wchLabel);
@@ -1335,7 +1436,7 @@ bool EditSaveFile(
       }
     }*/
 
-    if (Encoding_IsUNICODE(status->iEncoding))
+    if (Encoding_IsUNICODE(status->iEncoding))  // UTF-16LE/BE_(BOM)
     {
       SetEndOfFile(hFile);
 
@@ -5891,7 +5992,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
       bSuppressNotFound = true;
   }
 
-  SciCall_CallTipCancel();
+  CancelCallTip();
 
   DocPos iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, true, FRMOD_NORM);
 
@@ -5969,7 +6070,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
       bSuppressNotFound = true;
   }
 
-  SciCall_CallTipCancel();
+  CancelCallTip();
 
   DocPos iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, true, FRMOD_NORM);
 
@@ -8364,29 +8465,6 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
       }
     }
   }
-}
-
-
-//=============================================================================
-//
-//  EditShowZoomCallTip()
-//
-void EditShowZoomCallTip(HWND hwnd)
-{
-  UNUSED(hwnd);
-
-  int const iZoomLevelPercent = SciCall_GetZoom();
-
-  char chToolTip[32] = { '\0' };
-  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
-
-  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
-
-  int const iXOff = SciCall_GetXOffset();
-  SciCall_SetXOffset(0);
-  SciCall_CallTipShow(iPos, chToolTip);
-  SciCall_SetXOffset(iXOff);
-  Globals.CallTipType = CT_ZOOM;
 }
 
 

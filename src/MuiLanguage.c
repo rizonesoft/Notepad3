@@ -22,7 +22,9 @@
 
 //=============================================================================
 
-MUILANGUAGE MUI_LanguageDLLs[NUM_OF_MUI_LANGUAGES] =
+//NUM_OF_MUI_LANGUAGES
+
+MUILANGUAGE MUI_LanguageDLLs[] =
 {
   { IDS_MUI_LANG_EN_US, L"en-US", MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), true, false }, // internal - must be 1st
   // ----------------------------
@@ -42,6 +44,7 @@ MUILANGUAGE MUI_LanguageDLLs[NUM_OF_MUI_LANGUAGES] =
   { IDS_MUI_LANG_ZH_CN, L"zh-CN", MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), false, false}
 };
 
+int MuiLanguages_CountOf() { return COUNTOF(MUI_LanguageDLLs); };
 
 
 //=============================================================================
@@ -55,7 +58,7 @@ static int _CheckAvailableLanguageDLLs()
   WCHAR wchAbsPath[MAX_PATH];
 
   int count = 1;
-  for (int lng = 1; lng < NUM_OF_MUI_LANGUAGES; ++lng)
+  for (int lng = 1; lng < MuiLanguages_CountOf(); ++lng)
   {
     if (IsValidLocaleName(MUI_LanguageDLLs[lng].szLocaleName))
     {
@@ -185,7 +188,7 @@ static bool _GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, L
 //  LoadLanguageResources
 //
 //
-HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
+LANGID LoadLanguageResources()
 {
   // 1st check language resources
   Globals.iAvailLngCount = _CheckAvailableLanguageDLLs();
@@ -203,7 +206,7 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
   // set the appropriate fallback list
   int iPrefLngIndex = -1;
   WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
-  for (int lng = 0; lng < NUM_OF_MUI_LANGUAGES; ++lng) {
+  for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
     if (StringCchCompareXIW(MUI_LanguageDLLs[lng].szLocaleName, Settings2.PreferredLanguageLocaleName) == 0) {
       if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
         StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].szLocaleName);
@@ -238,27 +241,36 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
-  HMODULE hLangResourceContainer = NULL;
+  HINSTANCE _hLangResourceContainer = NULL;
   Globals.bPrefLngNotAvail = (iPrefLngIndex < 0);
 
   if ((iPrefLngIndex >= 0) && MUI_LanguageDLLs[iPrefLngIndex].bHasDLL) {
-    hLangResourceContainer = (0 == iPrefLngIndex) ? Globals.hInstance :
+    _hLangResourceContainer = (iPrefLngIndex == 0) ? Globals.hInstance :
       LoadMUILibrary(L"lng/np3lng.dll", MUI_LANGUAGE_NAME | MUI_LANGUAGE_EXACT, languageID);
-    MUI_LanguageDLLs[iPrefLngIndex].bIsLoaded = true;
+    if (_hLangResourceContainer) {
+      MUI_LanguageDLLs[0].bIsActive = false;
+      MUI_LanguageDLLs[iPrefLngIndex].bIsActive = true;
+    }
   }
-
-  if (!hLangResourceContainer) {
+  if (!_hLangResourceContainer) {
     // fallback to ENGLISH_US
+    //GetLastErrorToMsgBox(L"LoadMUILibrary", 0);
     Globals.bPrefLngNotAvail = (languageID != MUI_LanguageDLLs[0].LangId);
     languageID = MUI_LanguageDLLs[0].LangId;
-    hLangResourceContainer = Globals.hInstance;
-    MUI_LanguageDLLs[0].bIsLoaded = true;
+    _hLangResourceContainer = Globals.hInstance;
+    MUI_LanguageDLLs[0].bIsActive = true;
   }
 
+  Globals.hLngResContainer = _hLangResourceContainer;
   SetThreadUILanguage(languageID);
 
-  *pPrefLanguageID = languageID;
-  return hLangResourceContainer;
+  // update language dependent items
+  for (int enc = 0; enc < Encoding_CountOf(); ++enc) 
+  {
+    Encoding_SetLabel(enc);
+  }
+
+  return languageID;
 }
 
 
@@ -267,15 +279,16 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
 //  FreeLanguageResources
 //
 //
-void FreeLanguageResources(HMODULE hLangResourceContainer)
+void FreeLanguageResources()
 {
-  if (hLangResourceContainer) {
-    if (hLangResourceContainer != Globals.hInstance) {
-      FreeMUILibrary(hLangResourceContainer);
-    }
+  if (Globals.hLngResContainer != Globals.hInstance) {
+    HINSTANCE const _hLngResContainer = Globals.hLngResContainer;
+    Globals.hLngResContainer = Globals.hInstance;
+    MUI_LanguageDLLs[0].bIsActive = true;
+    FreeMUILibrary(_hLngResContainer);
   }
-  for (int i = 0; i < NUM_OF_MUI_LANGUAGES; ++i) {
-    MUI_LanguageDLLs[i].bIsLoaded = false;
+  for (int i = 1; i < MuiLanguages_CountOf(); ++i) {
+    MUI_LanguageDLLs[i].bIsActive = false;
   }
 }
 

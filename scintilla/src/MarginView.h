@@ -32,7 +32,7 @@ public:
 	 * existing platforms must implement as empty. */
 	DrawWrapMarkerFn customDrawWrapMarker;
 
-	MarginView();
+	MarginView() noexcept;
 
 	void DropGraphics(bool freeObjects);
 	void AllocateGraphics(const ViewStyle &vsDraw);
