@@ -200,7 +200,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "Мовы"
     IDS_MUI_LANG_EN_US      "Англійская (ЗША)\t\t\t[%s]"                 
     IDS_MUI_LANG_AF_ZA      "Афрыкаанс (Паўднёвая Афрыка)\t\t\t[%s]"               
-    IDS_MUI_LANG_BE_BY      "Беларуская (Беларусь)\t\t\t[%s]"                    
+    IDS_MUI_LANG_BE_BY      "Беларускі (Беларусь)\t\t\t[%s]"                    
     IDS_MUI_LANG_DE_DE      "Нямецкая (Германія)\t\t\t[%s]"                        
     IDS_MUI_LANG_EN_GB      "Англійская (Вялікабрытанія)\t\t\t[%s]"                
     IDS_MUI_LANG_ES_ES      "Іспанскі (Іспанія)\t\t\t[%s]"                  

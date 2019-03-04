@@ -197,7 +197,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "язык"
+    IDS_MUI_MENU_LANGUAGE   "Язык"
     IDS_MUI_LANG_EN_US      "Английский Соединенные Штаты)\t\t\t[%s]"                 
     IDS_MUI_LANG_AF_ZA      "Африкаанс (Южная Африка)\t\t\t[%s]"               
     IDS_MUI_LANG_BE_BY      "Белорусский (Беларусь)\t\t\t[%s]"                    
