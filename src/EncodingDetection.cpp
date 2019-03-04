@@ -554,18 +554,18 @@ extern "C" int Encoding_Analyze_CED(const char* const text, const size_t len, co
 //   UCHARDET
 // ============================================================================
 
-static int _MapUCARDETEncoding2CPI(const char* const text, const size_t len, 
-  const int encodingHint, const char* charset, float* pConfidence)
+static int _MapUCARDETEncoding2CPI(const char* const text, const size_t len, const char* charset, float* pConfidence)
 {
   (void)text; // UNUSED
   (void)len;  // UNUSED
 
+  int cpiEncoding = CPI_NONE;
+
   if (!charset || (charset[0] == '\0')) {
     *pConfidence = 0.0f;
-    return encodingHint;
+    return cpiEncoding;
   }
 
-  int cpiEncoding = CPI_NONE;
 
   // preprocessing: special cases
   if (_stricmp(charset, "ascii") == 0) {
@@ -587,16 +587,16 @@ static int _MapUCARDETEncoding2CPI(const char* const text, const size_t len,
   if (cpiEncoding == CPI_NONE)
   {
     *pConfidence = 0.0f;
-    cpiEncoding = encodingHint;
   }
 
+  *pConfidence = 0.0f;
   return cpiEncoding;
 }
 // ============================================================================
 
 
 extern "C" int Encoding_Analyze_UCHARDET(const char* const text, const size_t len, 
-  const int encodingHint, float* pConfidence, char* origUCHARDET, int cch)
+  float* pConfidence, char* origUCHARDET, int cch)
 {
   int encoding = CPI_NONE;
   float confidence = 0.0f;
@@ -616,7 +616,7 @@ extern "C" int Encoding_Analyze_UCHARDET(const char* const text, const size_t le
     StringCchCopyA(origUCHARDET, cch, charset);  // UCHARDET
 
     confidence = uchardet_get_confidence(hUcharDet);
-    encoding = _MapUCARDETEncoding2CPI(text, len, encodingHint, charset, &confidence);
+    encoding = _MapUCARDETEncoding2CPI(text, len, charset, &confidence);
   }
   break;
 

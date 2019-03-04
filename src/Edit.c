@@ -1034,13 +1034,11 @@ bool EditLoadFile(
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
 
-  int const iAnalyzedEncoding_CED = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
-
   char origUCHARDET[256] = { '\0' };
   float confidence = 0.50f; // reliable ?
-  int iAnalyzedEncoding = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, iPreferedEncoding, &confidence, origUCHARDET, 256);
+  int iAnalyzedEncoding = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, &confidence, origUCHARDET, 256);
 
-
+  int const iAnalyzedEncoding_CED = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1077,10 +1075,39 @@ bool EditLoadFile(
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  // ------------------------------------------------------
+  // calculate reliability
+  float const reliability_threshold = 0.50f;
+  float const ced_confidence = bIsReliable ? reliability_threshold + 0.25f : 0.25f;
 
+  if (iAnalyzedEncoding == iAnalyzedEncoding_CED) {
+    if (!Encoding_IsNONE(iAnalyzedEncoding)) {
+      confidence = (confidence + ced_confidence + 0.25f) / 2.0f;
+    }
+  }
+  else { // ambiguous results
+    if (Encoding_IsNONE(iAnalyzedEncoding)) {
+      // no UCHARDET rely on CED
+      iAnalyzedEncoding = iAnalyzedEncoding_CED;
+      confidence = ced_confidence;
+    }
+    else { // have UCHARDET result
+      if (!Encoding_IsNONE(iAnalyzedEncoding_CED)) 
+      {
+        if (confidence < ced_confidence) {
+          iAnalyzedEncoding = iAnalyzedEncoding_CED;
+          confidence = ced_confidence;
+        }
+        else if ((confidence < ced_confidence) && bIsReliable) {
+          iAnalyzedEncoding = iAnalyzedEncoding_CED;  // prefer CED
+          confidence = (confidence + ced_confidence) / 2.0f;
+        }
+      }
+    }
+  }
+  bIsReliable = (confidence >= reliability_threshold);
+  // ------------------------------------------------------
 
-
-  bIsReliable = (confidence >= 0.50f);
 
   if (!g_bForceCompEncDetection) 
   {

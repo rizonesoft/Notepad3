@@ -90,6 +90,7 @@ inline RECT RectFromWinInfo(const WININFO* const pWinInfo) {
 // ----------------------------------------------------------------------------
 
 typedef enum { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
+typedef enum { OPEN_WITH_BROWSER = 1, OPEN_WITH_NOTEPAD3 = 2, COPY_HYPERLINK = 4 } HYPERLINK_OPS;  // Hyperlink Operations
 
 // ----------------------------------------------------------------------------
 

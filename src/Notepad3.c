@@ -3371,7 +3371,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       if (s_flagPasteBoard) {
         s_bLastCopyFromMe = true;
       }
-      SciCall_CopyAllowLine();
+      if (!HandleHotSpotURL(SciCall_GetCurrentPos(), COPY_HYPERLINK)) {
+        SciCall_CopyAllowLine();
+      }
       UpdateToolbar();
       break;
 
@@ -5568,7 +5570,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_OPEN_HYPERLINK:
-        OpenHotSpotURL(SciCall_GetCurrentPos(), false);
+        HandleHotSpotURL(SciCall_GetCurrentPos(), OPEN_WITH_BROWSER);
       break;
 
 
@@ -5843,15 +5845,17 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  OpenHotSpotURL()
+//  HandleHotSpotURL()
 //
 //
-void OpenHotSpotURL(DocPos position, bool bForceBrowser)
+bool HandleHotSpotURL(DocPos position, HYPERLINK_OPS operation)
 {
+  bool bHandled = false;
+
   char const cStyle = SciCall_GetStyleAt(position);
   int const iStyleID = Style_GetHotspotStyleID();
 
-  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return; }
+  if (!SciCall_StyleGetHotspot(iStyleID) || (cStyle != (char)iStyleID)) { return bHandled; }
 
   // get left most position of style
   DocPos pos = position;
@@ -5878,20 +5882,27 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
     StringCchCopyNA(chURL, XHUGE_BUFFER, SciCall_GetRangePointer(firstPos, length), length);
     StrTrimA(chURL, " \t\n\r");
     
-    if (!StringCchLenA(chURL, COUNTOF(chURL))) { return; }
+    if (!StringCchLenA(chURL, COUNTOF(chURL))) { return bHandled; }
 
-    WCHAR wchURL[HUGE_BUFFER] = { L'\0' };
-    MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, HUGE_BUFFER);
+    WCHAR wchURL[XHUGE_BUFFER] = { L'\0' };
+    int const lenHypLnk = MultiByteToWideChar(Encoding_SciCP, 0, chURL, -1, wchURL, XHUGE_BUFFER) - 1;
 
     const WCHAR* chkPreFix = L"file://";
-    size_t const len = StringCchLenW(chkPreFix,0);
+    size_t const lenPfx = StringCchLenW(chkPreFix,0);
 
-    if (!bForceBrowser && (StrStrIW(wchURL, chkPreFix) == wchURL))
+    if (operation & COPY_HYPERLINK)
     {
-      WCHAR* szFileName = &(wchURL[len]);
+      if (lenHypLnk > 0) {
+        SetClipboardTextW(Globals.hwndMain, wchURL, lenHypLnk);
+        bHandled = true;
+      }
+    }
+    if ((operation & OPEN_WITH_NOTEPAD3) && (StrStrIW(wchURL, chkPreFix) == wchURL))
+    {
+      WCHAR* szFileName = &(wchURL[lenPfx]);
       StrTrimW(szFileName, L"/");
 
-      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - (int)len);
+      PathCanonicalizeEx(szFileName, COUNTOF(wchURL) - (int)lenPfx);
 
       if (PathIsDirectory(szFileName))
       {
@@ -5900,12 +5911,13 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
         if (OpenFileDlg(Globals.hwndMain, tchFile, COUNTOF(tchFile), szFileName))
           FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, tchFile);
       }
-      else
+      else {
         FileLoad(false, false, false, Settings.SkipUnicodeDetection, Settings.SkipANSICodePageDetection, szFileName);
-
+      }
+      bHandled = true;
     }
-    else { // open in web browser
-
+    else if (operation & (OPEN_WITH_NOTEPAD3 | OPEN_WITH_NOTEPAD3)) // open in web browser
+    {
       WCHAR wchDirectory[MAX_PATH] = { L'\0' };
       if (StringCchLenW(Globals.CurrentFile, COUNTOF(Globals.CurrentFile))) {
         StringCchCopy(wchDirectory, COUNTOF(wchDirectory), Globals.CurrentFile);
@@ -5924,9 +5936,10 @@ void OpenHotSpotURL(DocPos position, bool bForceBrowser)
       sei.nShow = SW_SHOWNORMAL;
       ShellExecuteEx(&sei);
 
+      bHandled = true;
     }
-
   }
+  return bHandled;
 }
 
 
@@ -6262,11 +6275,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         {
           if (scn->modifiers & SCMOD_CTRL) {
             // open in browser
-            OpenHotSpotURL((int)scn->position, true);
+            HandleHotSpotURL((int)scn->position, OPEN_WITH_BROWSER);
           }
           if (scn->modifiers & SCMOD_ALT) {
             // open in application, if applicable (file://)
-            OpenHotSpotURL((int)scn->position, false);
+            HandleHotSpotURL((int)scn->position, OPEN_WITH_NOTEPAD3);
           }
         }
         break;
