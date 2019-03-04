@@ -188,7 +188,7 @@ static bool _GetUserPreferredLanguage(LPWSTR pszPrefLocaleName, int cchBuffer, L
 //  LoadLanguageResources
 //
 //
-HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
+LANGID LoadLanguageResources()
 {
   // 1st check language resources
   Globals.iAvailLngCount = _CheckAvailableLanguageDLLs();
@@ -241,23 +241,27 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
   // obtains access to the proper resource container 
   // for standard Win32 resource loading this is normally a PE module - use LoadLibraryEx
 
-  HMODULE hLangResourceContainer = NULL;
+  HINSTANCE _hLangResourceContainer = NULL;
   Globals.bPrefLngNotAvail = (iPrefLngIndex < 0);
 
   if ((iPrefLngIndex >= 0) && MUI_LanguageDLLs[iPrefLngIndex].bHasDLL) {
-    hLangResourceContainer = (0 == iPrefLngIndex) ? Globals.hInstance :
+    _hLangResourceContainer = (iPrefLngIndex == 0) ? Globals.hInstance :
       LoadMUILibrary(L"lng/np3lng.dll", MUI_LANGUAGE_NAME | MUI_LANGUAGE_EXACT, languageID);
-    MUI_LanguageDLLs[iPrefLngIndex].bIsLoaded = true;
+    if (_hLangResourceContainer) {
+      MUI_LanguageDLLs[0].bIsActive = false;
+      MUI_LanguageDLLs[iPrefLngIndex].bIsActive = true;
+    }
   }
-
-  if (!hLangResourceContainer) {
+  if (!_hLangResourceContainer) {
     // fallback to ENGLISH_US
+    //GetLastErrorToMsgBox(L"LoadMUILibrary", 0);
     Globals.bPrefLngNotAvail = (languageID != MUI_LanguageDLLs[0].LangId);
     languageID = MUI_LanguageDLLs[0].LangId;
-    hLangResourceContainer = Globals.hInstance;
-    MUI_LanguageDLLs[0].bIsLoaded = true;
+    _hLangResourceContainer = Globals.hInstance;
+    MUI_LanguageDLLs[0].bIsActive = true;
   }
 
+  Globals.hLngResContainer = _hLangResourceContainer;
   SetThreadUILanguage(languageID);
 
   // update language dependent items
@@ -266,8 +270,7 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
     Encoding_SetLabel(enc);
   }
 
-  *pPrefLanguageID = languageID;
-  return hLangResourceContainer;
+  return languageID;
 }
 
 
@@ -276,15 +279,16 @@ HMODULE LoadLanguageResources(LANGID* pPrefLanguageID)
 //  FreeLanguageResources
 //
 //
-void FreeLanguageResources(HMODULE hLangResourceContainer)
+void FreeLanguageResources()
 {
-  if (hLangResourceContainer) {
-    if (hLangResourceContainer != Globals.hInstance) {
-      FreeMUILibrary(hLangResourceContainer);
-    }
+  if (Globals.hLngResContainer != Globals.hInstance) {
+    HINSTANCE const _hLngResContainer = Globals.hLngResContainer;
+    Globals.hLngResContainer = Globals.hInstance;
+    MUI_LanguageDLLs[0].bIsActive = true;
+    FreeMUILibrary(_hLngResContainer);
   }
-  for (int i = 0; i < MuiLanguages_CountOf(); ++i) {
-    MUI_LanguageDLLs[i].bIsLoaded = false;
+  for (int i = 1; i < MuiLanguages_CountOf(); ++i) {
+    MUI_LanguageDLLs[i].bIsActive = false;
   }
 }
 

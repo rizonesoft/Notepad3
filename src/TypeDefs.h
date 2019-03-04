@@ -266,7 +266,7 @@ typedef struct _globals_t
 {
   HINSTANCE hInstance;
   HINSTANCE hPrevInst;
-  HMODULE   hLngResContainer;
+  HINSTANCE hLngResContainer;
   int       iAvailLngCount;
   bool      bPrefLngNotAvail;
   HWND      hwndMain;

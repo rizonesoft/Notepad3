@@ -533,8 +533,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     DestroyMenu(Globals.hMainMenu); 
   }
 
-  FreeLanguageResources(Globals.hLngResContainer);
-  Globals.hLngResContainer = NULL;
+  FreeLanguageResources();
 
   if (s_hRichEdit) {
     FreeLibrary(s_hRichEdit);
@@ -638,8 +637,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
   // ----------------------------------------------------
   // MultiLingual
   //
-  Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-  Globals.hLngResContainer = LoadLanguageResources(&Globals.iPrefLANGID);
+  //Globals.iPrefLANGID = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+  Globals.iPrefLANGID = LoadLanguageResources();
 
   // ----------------------------------------------------
 
@@ -2910,7 +2909,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
   for (int lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
     //EnableCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bHasDLL);
-    CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsLoaded);
+    CheckCmd(hmenu, MUI_LanguageDLLs[lng].rid, MUI_LanguageDLLs[lng].bIsActive);
   }
 
   return FALSE;
@@ -2929,7 +2928,7 @@ static bool _DynamicLanguageMenuCmd(int cmd)
   if ((iLngIdx < 0) || (iLngIdx >= MuiLanguages_CountOf())) {
     return false;
   }
-  if (!MUI_LanguageDLLs[iLngIdx].bIsLoaded)
+  if (!MUI_LanguageDLLs[iLngIdx].bIsActive)
   {
     if (IsWindow(Globals.hwndDlgFindReplace)) {
       SendMessage(Globals.hwndDlgFindReplace, WM_CLOSE, 0, 0);
@@ -2942,10 +2941,9 @@ static bool _DynamicLanguageMenuCmd(int cmd)
     IniSetString(L"Settings2", L"PreferredLanguageLocaleName", Settings2.PreferredLanguageLocaleName);
 
     DestroyMenu(Globals.hMainMenu);
-    FreeLanguageResources(Globals.hLngResContainer);
-
     Globals.iPrefLANGID = MUI_LanguageDLLs[iLngIdx].LangId;
-    Globals.hLngResContainer = LoadLanguageResources(&Globals.iPrefLANGID);
+    FreeLanguageResources();
+    Globals.iPrefLANGID = LoadLanguageResources();
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
       GetLastErrorToMsgBox(L"LoadMenu()", 0);
