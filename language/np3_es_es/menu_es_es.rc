@@ -335,14 +335,14 @@ BEGIN
             MENUITEM "&Alternar pliegues\tCtrl+Shift+F",                IDM_VIEW_TOGGLEFOLDS
             MENUITEM "&Vista enfocada\tCtrl+Alt+V",                     IDM_VIEW_TOGGLE_VIEW
             MENUITEM "&Monitoreo de Log (Tail)",                        IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "&Desplazarse después el final de archivo",        IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "&Desplazarse después del final de archivo",        IDM_VIEW_SCROLLPASTEOF
         END
         POPUP "Barra de herram&ientas"
         BEGIN
             MENUITEM "&Mostrar la barra de herramientas",               IDM_VIEW_TOOLBAR
             MENUITEM "&Barra de herramientas con Iconos grandes",       IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",                          IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Cargar tema de la barra de herramientas...",     IDM_VIEW_LOADTHEMETB
             MENUITEM "Mostrar barra de &estado",                        IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -427,7 +427,7 @@ BEGIN
             MENUITEM "&Abrir el archivo de configuración\tCtrl+F7",     CMD_OPENINIFILE
         END
     END
-    POPUP "&Ayuda"
+    POPUP "Ay&uda"
     BEGIN
         MENUITEM "&Documentación en línea\tF1",                         IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
@@ -459,11 +459,11 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Mostrar la &barra de herramientas",           IDM_VIEW_TOOLBAR
-        MENUITEM "Barra de herramientas con Iconos grandes",    IDM_VIEW_TOGGLETB
+        MENUITEM "&Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
+        MENUITEM "&Barra de herramientas con Iconos grandes",   IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",                      IDM_VIEW_LOADTHEMETB
-        MENUITEM "Mostrar barra de e&stado",                    IDM_VIEW_STATUSBAR
+        MENUITEM "&Cargar tema de la barra de herramientas...", IDM_VIEW_LOADTHEMETB
+        MENUITEM "Mostrar la barra de &estado",                 IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
