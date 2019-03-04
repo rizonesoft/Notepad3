@@ -233,7 +233,7 @@ BEGIN
     IDS_MUI_LANG_EN_GB      "Angol Egyesült Királyság)\t\t\t[%s]"                
     IDS_MUI_LANG_ES_ES      "Spanyol (Spanyolország)\t\t\t[%s]"                  
     IDS_MUI_LANG_FR_FR      "Francia (Franciaország)\t\t\t[%s]"                        
-    IDS_MUI_LANG_HU_HU      "Magyar (Magyar)\t\t\t[%s]"                     
+    IDS_MUI_LANG_HU_HU      "Magyar (Magyarország)\t\t\t[%s]"                     
     IDS_MUI_LANG_IT_IT      "Olasz (Olaszország)\t\t\t[%s]"                         
     IDS_MUI_LANG_JP_JP      "Japán (Japán)\t\t\t[%s]"                        
     IDS_MUI_LANG_KO_KR      "Koreai (koreai)\t\t\t[%s]"                          
