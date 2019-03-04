@@ -10431,7 +10431,7 @@ void ShowZoomCallTip()
   SciCall_CallTipShow(iPos, chToolTip);
   SciCall_SetXOffset(iXOff);
   Globals.CallTipType = CT_ZOOM;
-  _DelayClearZoomCallTip(2000);
+  _DelayClearZoomCallTip(3600);
 }
 
 
