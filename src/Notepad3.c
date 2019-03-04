@@ -2999,7 +2999,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDT_TIMER_CLEAR_CALLTIP:
-      SciCall_CallTipCancel();
+      CancelCallTip();
       break;
 
     case IDM_FILE_NEW:
@@ -5075,7 +5075,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_ESCAPE:
       if (SciCall_CallTipActive() || SciCall_AutoCActive()) {
-        SciCall_CallTipCancel();
+        CancelCallTip();
         SciCall_AutoCCancel();
       }
       else if (Settings.EscFunction == 1) {
@@ -6294,8 +6294,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             int const ich = scn->ch;
 
             if (Globals.CallTipType != CT_NONE) {
-              SciCall_CallTipCancel();   
-              Globals.CallTipType = CT_NONE;
+              CancelCallTip();
             }
 
             switch (ich) {
@@ -10318,6 +10317,16 @@ void ShowZoomCallTip()
   _DelayClearZoomCallTip(2000);
 }
 
+
+//=============================================================================
+//
+//  CancelCallTip()
+//
+void CancelCallTip()
+{
+  SciCall_CallTipCancel();
+  Globals.CallTipType = CT_NONE;
+}
 
 
 //=============================================================================

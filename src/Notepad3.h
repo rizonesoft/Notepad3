@@ -133,6 +133,7 @@ int  TestIniFile();
 int  CreateIniFile();
 int  CreateIniFileEx(LPCWSTR lpszIniFile);
 void ShowZoomCallTip();
+void CancelCallTip();
 
 void MarkAllOccurrences(int delay, bool bForceClear);
 void UpdateToolbar();

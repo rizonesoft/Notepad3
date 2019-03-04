@@ -3115,8 +3115,7 @@ static const WCHAR *pszSep = L" - ";
 static const WCHAR *pszMod = L"* ";
 static WCHAR szCachedFile[MAX_PATH] = { L'\0' };
 static WCHAR szCachedDisplayName[MAX_PATH] = { L'\0' };
-
-WCHAR szAdditionalTitleInfo[ADDTITLEINFO_BUF_LEN] = { L'\0' };  // UCHARDET
+static WCHAR szAdditionalTitleInfo[MAX_PATH] = { L'\0' };
 
 bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitled,
   LPCWSTR lpszFile, int iFormat, bool bModified,
@@ -3197,6 +3196,11 @@ bool SetWindowTitle(HWND hwnd, UINT uIDAppName, bool bIsElevated, UINT uIDUntitl
 
   return SetWindowText(hwnd, szTitle);
 
+}
+
+void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo)
+{
+  StringCchCopy(szAdditionalTitleInfo, COUNTOF(szAdditionalTitleInfo), lpszAddTitleInfo);
 }
 
 

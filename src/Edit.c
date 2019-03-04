@@ -928,6 +928,59 @@ void EditCheckIndentationConsistency(HWND hwnd, EditFileIOStatus* status)
 
 //=============================================================================
 //
+//  _SetEncodingTitleInfo()
+//
+static void _SetEncodingTitleInfo(const char* origUCHARDET, int encUCHARDET, float confidence, int encCED, bool bReliableCED)
+{
+  char tmpBuf[128] = { '\0' };
+  char chEncodingInfo[MAX_PATH] = { L'\0' };
+
+  StringCchCopyA(chEncodingInfo, COUNTOF(chEncodingInfo), "UCHARDET='");
+  if (encUCHARDET >= 0)
+  {
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), origUCHARDET);
+  }
+  else {
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), (encUCHARDET == CPI_ASCII_7BIT) ? "ASCII" : "<unknown>");
+  }
+  StringCchPrintfA(tmpBuf, 128, "' Conf=%.0f%%", confidence * 100.0f);
+  StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), tmpBuf);
+
+  StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), " || CED='");
+  if (encCED >= 0)
+  {
+    char chEncodingLabel[128] = { '\0' };
+    WideCharToMultiByte(CP_UTF7, 0, Encoding_GetLabel(encCED), -1, chEncodingLabel, COUNTOF(chEncodingLabel),0 , 0);
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), chEncodingLabel);
+  }
+  else {
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), (encCED == CPI_ASCII_7BIT) ? "ascii" : "<unknown>");
+  }
+  if ((encCED >= 0) || (encCED == CPI_ASCII_7BIT)) {
+    StringCchPrintfA(tmpBuf, 128, "' (%s)", bReliableCED ? "reliable" : "NOT reliable");
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), tmpBuf);
+  }
+  else {
+    StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), "'");
+  }
+
+#ifdef _SHOW_ENC_IN_TITLE_
+  WCHAR wchAddTitleInfo[MAX_PATH];
+  MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchAddTitleInfo, 128);
+  SetAdditionalTitleInfo(wchAddTitleInfo);
+#else
+  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+  int const iXOff = SciCall_GetXOffset();
+  SciCall_SetXOffset(0);
+  SciCall_CallTipShow(iPos, chEncodingInfo);
+  SciCall_SetXOffset(iXOff);
+  Globals.CallTipType = CT_ENC_INFO;
+#endif
+}
+
+
+//=============================================================================
+//
 //  EditLoadFile()
 //
 bool EditLoadFile(
@@ -1033,51 +1086,18 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
+  float const reliability_threshold = 0.50f;
 
   char origUCHARDET[256] = { '\0' };
-  float confidence = 0.50f; // reliable ?
-  int iAnalyzedEncoding = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, &confidence, origUCHARDET, 256);
-
+  float confidence_UCD = reliability_threshold;
+  int const iAnalyzedEncoding_UCD = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, &confidence_UCD, origUCHARDET, 256);
   int const iAnalyzedEncoding_CED = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // UCHARDET
-  STRSAFE_LPWSTR wchOrigUCHARDET[128] = { L'\0' };
-
-  StringCchCopy(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, L"UCHARDET='");
-  if (iAnalyzedEncoding >= 0) 
-  {
-    MultiByteToWideChar(CP_ACP, 0, origUCHARDET, -1, (LPWSTR)wchOrigUCHARDET, 128);
-    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
-  }
-  else {
-    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (iAnalyzedEncoding == CPI_ASCII_7BIT) ? L"ASCII" : L"<unknown>");
-  }
-  StringCchPrintf((LPWSTR)wchOrigUCHARDET, 128, L"' Conf=%3.0f%%", confidence * 100.0f);
-  StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
-
-  StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, L"    CED='");
-  if (iAnalyzedEncoding_CED >= 0) 
-  {
-    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, Encoding_GetLabel(iAnalyzedEncoding_CED));
-  }
-  else {
-    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (iAnalyzedEncoding_CED == CPI_ASCII_7BIT) ? L"ascii" : L"<unknown>");
-  }
-  if ((iAnalyzedEncoding_CED >= 0) || (iAnalyzedEncoding_CED == CPI_ASCII_7BIT)) {
-    StringCchPrintf((LPWSTR)wchOrigUCHARDET, 128, L"' (%s).", bIsReliable ? L"reliable" : L"NOT reliable");
-    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, (LPWSTR)wchOrigUCHARDET);
-  }
-  else {
-    StringCchCat(szAdditionalTitleInfo, ADDTITLEINFO_BUF_LEN, L"'");
-  }
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // ------------------------------------------------------
   // calculate reliability
-  float const reliability_threshold = 0.50f;
+  float confidence = confidence_UCD;
+  int iAnalyzedEncoding = iAnalyzedEncoding_UCD;
+
   float const ced_confidence = bIsReliable ? reliability_threshold + 0.25f : 0.25f;
 
   if (iAnalyzedEncoding == iAnalyzedEncoding_CED) {
@@ -1309,6 +1329,13 @@ bool EditLoadFile(
 
   Encoding_SrcCmdLn(CPI_NONE);
   Encoding_SrcWeak(CPI_NONE);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // UCHARDET
+  _SetEncodingTitleInfo(origUCHARDET, iAnalyzedEncoding_UCD, confidence_UCD, iAnalyzedEncoding_CED, bIsReliable);
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   return true;
 }
@@ -5963,7 +5990,7 @@ bool EditFindNext(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
       bSuppressNotFound = true;
   }
 
-  SciCall_CallTipCancel();
+  CancelCallTip();
 
   DocPos iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, true, FRMOD_NORM);
 
@@ -6041,7 +6068,7 @@ bool EditFindPrev(HWND hwnd, LPCEDITFINDREPLACE lpefr, bool bExtendSelection, bo
       bSuppressNotFound = true;
   }
 
-  SciCall_CallTipCancel();
+  CancelCallTip();
 
   DocPos iPos = _FindInTarget(hwnd, szFind, slen, (int)(lpefr->fuFlags), &start, &end, true, FRMOD_NORM);
 
