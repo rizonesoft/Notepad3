@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "Show Tool&bar",               IDM_VIEW_TOOLBAR
             MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
             MENUITEM "C&ustomise Toolbar...",       IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
             MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -461,6 +462,7 @@ BEGIN
         MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
         MENUITEM "HighDPI Toolbar",             IDM_VIEW_TOGGLETB
         MENUITEM "&Customise Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
         MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"

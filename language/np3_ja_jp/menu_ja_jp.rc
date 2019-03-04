@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "ツールバーを表示(&B)",                        IDM_VIEW_TOOLBAR
             MENUITEM "高解像度ツールバー",                          IDM_VIEW_TOGGLETB
             MENUITEM "ツールバーの編集(&U)...",                     IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",                   IDM_VIEW_LOADTHEMETB
             MENUITEM "ステータスバーを表示(&S)",                      IDM_VIEW_STATUSBAR
         END
         POPUP "拡大縮小(&Z)"
@@ -461,6 +462,7 @@ BEGIN
         MENUITEM "ツールバーの表示(&T)",                         IDM_VIEW_TOOLBAR
         MENUITEM "高解像度ツールバー",                           IDM_VIEW_TOGGLETB
         MENUITEM "ツールバーの編集(&C)...",                      IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Load Toolbar Theme...",                    IDM_VIEW_LOADTHEMETB
         MENUITEM "ステータスバーの表示(&S)",                       IDM_VIEW_STATUSBAR
     END
     POPUP "+"

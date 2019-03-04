@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "&Mostrar la barra de herramientas",               IDM_VIEW_TOOLBAR
             MENUITEM "&Barra de herramientas con Iconos grandes",       IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",                          IDM_VIEW_LOADTHEMETB
             MENUITEM "Mostrar barra de &estado",                        IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -461,6 +462,7 @@ BEGIN
         MENUITEM "Mostrar la &barra de herramientas",           IDM_VIEW_TOOLBAR
         MENUITEM "Barra de herramientas con Iconos grandes",    IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Load Toolbar Theme...",                      IDM_VIEW_LOADTHEMETB
         MENUITEM "Mostrar barra de e&stado",                    IDM_VIEW_STATUSBAR
     END
     POPUP "+"

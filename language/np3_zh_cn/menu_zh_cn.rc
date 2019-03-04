@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "显示工具栏(&T)",                        IDM_VIEW_TOOLBAR
             MENUITEM "使用高解析度工具栏(&H)",                 IDM_VIEW_TOGGLETB
             MENUITEM "自定义工具栏(&C)...",                   IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",               IDM_VIEW_LOADTHEMETB
             MENUITEM "显示状态栏(&S)",                        IDM_VIEW_STATUSBAR
         END
         POPUP "缩放(&Z)"
@@ -461,6 +462,7 @@ BEGIN
         MENUITEM "显示工具栏(&T)",                           IDM_VIEW_TOOLBAR
         MENUITEM "使用高解析度工具栏(&H)",                    IDM_VIEW_TOGGLETB
         MENUITEM "自定义工具栏(&C)...",                       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Load Toolbar Theme...",                   IDM_VIEW_LOADTHEMETB
         MENUITEM "显示状态栏(&S)",                            IDM_VIEW_STATUSBAR
     END
     POPUP "+"

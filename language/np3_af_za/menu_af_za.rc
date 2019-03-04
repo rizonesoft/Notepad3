@@ -341,7 +341,8 @@ BEGIN
         BEGIN
             MENUITEM "Wys Nuts&balk",                       IDM_VIEW_TOOLBAR
             MENUITEM "HighDPI Nutsbalk",                    IDM_VIEW_TOGGLETB
-            MENUITEM "Pas&maak Nutsbalk...",               	IDM_VIEW_CUSTOMIZETB
+            MENUITEM "Pas&maak Nutsbalk...",                IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "Wys &Statusbalk",                     IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -460,7 +461,8 @@ BEGIN
     BEGIN
         MENUITEM "Wys &Nutsbalk",                           IDM_VIEW_TOOLBAR
         MENUITEM "&HighDPI Nutsbalk",                       IDM_VIEW_TOGGLETB
-        MENUITEM "&Pas Nutsbalk...",                   		IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Pas Nutsbalk...",                        IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Load Toolbar Theme...",                  IDM_VIEW_LOADTHEMETB
         MENUITEM "Wys &Statusbalk",                         IDM_VIEW_STATUSBAR
     END
     POPUP "+"

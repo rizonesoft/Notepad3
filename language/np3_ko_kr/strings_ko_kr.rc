@@ -111,6 +111,7 @@ BEGIN
     IDS_MUI_FILTER_ALL          "모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_EXE          "실행 파일 (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_INI          "설정 파일 (*.ini)|*.ini|모든 파일 (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP       "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
     IDS_MUI_OPENWITH            "선호하는 응용 프로그램 링크들의 디렉토리를 정하세요."
     IDS_MUI_FAVORITES           "즐겨 찾는 파일 링크들의 디렉토리를 정하세요."
     IDS_MUI_BACKSLASHHELP       "백 슬래시 변환\n\n\\a\t경보 (BEL, Ascii 7)\n\\b\t백스페이스 (BS, Ascii 8)\n\\f\t폼 피드 (FF, Ascii 12)\n\\n\t새 라인 (LF, Ascii 10)\n\\r\t캐리지 리턴 (CR, Ascii 13)\n\\t\t가로 탭 (HT, Ascii 9)\n\\v\t수직 탭 (VT, Ascii 11)\n\\0oo\t8진법 값\n\\u####\t16진수 값\n\\xhh\t16진수 값\n\\\\\t백 슬래시"
@@ -128,6 +129,7 @@ BEGIN
     IDS_MUI_ERR_PREVWINDISABLED "기존 Notepad3 창이 사용 중이거나 대화 상자가 열려 있습니다.\n메모장 3 창을 새로 열겠습니까?"
     IDS_MUI_ERR_ENCODINGNA      "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 지원하지 않습니다."
     IDS_MUI_ERR_UNICODE         "이 유니코드 파일을 변환하는 중 오류가 발생했습니다.\n파일을 저장하면 데이터가 손실됩니다!"
+    IDS_MUI_ERR_BITMAP          "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
 END
 
 STRINGTABLE

@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "Zeige &Werkzeugleiste",                   IDM_VIEW_TOOLBAR
             MENUITEM "&HighDPI Werkzeugleiste",                 IDM_VIEW_TOGGLETB
             MENUITEM "Werkzeugleiste &anpassen...",             IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Lade andere Toolbar...",                 IDM_VIEW_LOADTHEMETB
             MENUITEM "Zeige &Statusleiste",                     IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -461,6 +462,7 @@ BEGIN
         MENUITEM "Zeige &Werkzeugleiste",       IDM_VIEW_TOOLBAR
         MENUITEM "&HighDPI Werkzeugleiste",     IDM_VIEW_TOGGLETB
         MENUITEM "&Werkzeugleiste anpassen...", IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Lade andere Toolbar...",     IDM_VIEW_LOADTHEMETB
         MENUITEM "Zeige &Statusleiste",         IDM_VIEW_STATUSBAR
     END
     POPUP "+"
