@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
             MENUITEM "HighDPI панель &инструментов",        IDM_VIEW_TOGGLETB
             MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
         END
         POPUP "Мас&штаб"
@@ -461,6 +462,7 @@ BEGIN
         MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
         MENUITEM "HighDPI панель &инструментов",        IDM_VIEW_TOGGLETB
         MENUITEM "&Настроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
         MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
     END
     POPUP "+"

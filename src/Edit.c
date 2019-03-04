@@ -964,7 +964,7 @@ static void _SetEncodingTitleInfo(const char* origUCHARDET, int encUCHARDET, flo
     StringCchCatA(chEncodingInfo, COUNTOF(chEncodingInfo), "'");
   }
 
-#ifdef _SHOW_ENC_IN_TITLE_
+#if 1
   WCHAR wchAddTitleInfo[MAX_PATH];
   MultiByteToWideChar(CP_UTF7, 0, chEncodingInfo, -1, wchAddTitleInfo, 128);
   SetAdditionalTitleInfo(wchAddTitleInfo);

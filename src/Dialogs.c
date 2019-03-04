@@ -784,7 +784,7 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
           {
             WCHAR szArgs[MAX_PATH] = { L'\0' };
             WCHAR szArg2[MAX_PATH] = { L'\0' };
-            WCHAR szFile[MAX_PATH * 2] = { L'\0' };
+            WCHAR szFile[MAX_PATH] = { L'\0' };
             WCHAR szFilter[MAX_PATH] = { L'\0' };
             OPENFILENAME ofn;
             ZeroMemory(&ofn,sizeof(OPENFILENAME));
@@ -813,7 +813,6 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
               }
               SetDlgItemText(hwnd,IDC_COMMANDLINE,szFile);
             }
-
             PostMessage(hwnd,WM_NEXTDLGCTL,1,0);
           }
           break;
@@ -3493,8 +3492,9 @@ void MakeColorPickButton(HWND hwnd, int nCtlId, HINSTANCE hInstance, COLORREF cr
   SendMessage(hwndCtl, BCM_SETIMAGELIST, 0, (LPARAM)&bi);
   InvalidateRect(hwndCtl, NULL, true);
 
-  if (himlOld)
+  if (himlOld) {
     ImageList_Destroy(himlOld);
+  }
 }
 
 
@@ -3506,8 +3506,9 @@ void DeleteBitmapButton(HWND hwnd, int nCtlId)
 {
   HWND const hwndCtl = GetDlgItem(hwnd, nCtlId);
   BUTTON_IMAGELIST bi;
-  if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi))
+  if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)& bi)) {
     ImageList_Destroy(bi.himl);
+  }
 }
 
 

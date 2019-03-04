@@ -342,6 +342,7 @@ BEGIN
             MENUITEM "Werk&balk tonen",                                 IDM_VIEW_TOOLBAR
             MENUITEM "Grote pictogrammen",                              IDM_VIEW_TOGGLETB
             MENUITEM "Werkbal&k aanpassen...",                          IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",                          IDM_VIEW_LOADTHEMETB
             MENUITEM "Toon &statusbalk",                                IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -461,6 +462,7 @@ BEGIN
         MENUITEM "Werk&balk tonen",                         IDM_VIEW_TOOLBAR
         MENUITEM "Grote pictogrammen",                      IDM_VIEW_TOGGLETB
         MENUITEM "&Werkbal&k aanpassen...",                 IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Load Toolbar Theme...",                  IDM_VIEW_LOADTHEMETB
         MENUITEM "Toon &statusbalk",                        IDM_VIEW_STATUSBAR
     END
     POPUP "+"
