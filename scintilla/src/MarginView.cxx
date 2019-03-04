@@ -100,7 +100,7 @@ void DrawWrapMarker(Surface *surface, PRectangle rcPlace,
 		y - 2 * dy);
 }
 
-MarginView::MarginView() {
+MarginView::MarginView() noexcept {
 	wrapMarkerPaddingRight = 3;
 	customDrawWrapMarker = nullptr;
 }

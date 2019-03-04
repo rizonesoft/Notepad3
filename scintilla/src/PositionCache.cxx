@@ -99,7 +99,7 @@ void LineLayout::EnsureBidiData() {
 	}
 }
 
-void LineLayout::Free() {
+void LineLayout::Free() noexcept {
 	chars.reset();
 	styles.reset();
 	positions.reset();
@@ -391,7 +391,7 @@ void LineLayoutCache::AllocateForLevel(Sci::Line linesOnScreen, Sci::Line linesI
 	PLATFORM_ASSERT(cache.size() == lengthForLevel);
 }
 
-void LineLayoutCache::Deallocate() {
+void LineLayoutCache::Deallocate() noexcept {
 	PLATFORM_ASSERT(useCount == 0);
 	cache.clear();
 }
@@ -409,7 +409,7 @@ void LineLayoutCache::Invalidate(LineLayout::validLevel validity_) {
 	}
 }
 
-void LineLayoutCache::SetLevel(int level_) {
+void LineLayoutCache::SetLevel(int level_) noexcept {
 	allInvalidated = false;
 	if ((level_ != -1) && (level != level_)) {
 		level = level_;
@@ -465,7 +465,7 @@ LineLayout *LineLayoutCache::Retrieve(Sci::Line lineNumber, Sci::Line lineCaret,
 	return ret;
 }
 
-void LineLayoutCache::Dispose(LineLayout *ll) {
+void LineLayoutCache::Dispose(LineLayout *ll) noexcept {
 	allInvalidated = false;
 	if (ll) {
 		if (!ll->inCache) {
@@ -488,7 +488,7 @@ static unsigned int KeyFromString(const char *charBytes, size_t len) {
 	return k;
 }
 
-SpecialRepresentations::SpecialRepresentations() {
+SpecialRepresentations::SpecialRepresentations() noexcept {
 	const short none = 0;
 	std::fill(startByteHasReprs, std::end(startByteHasReprs), none);
 }
@@ -664,11 +664,11 @@ TextSegment BreakFinder::Next() {
 	}
 }
 
-bool BreakFinder::More() const {
+bool BreakFinder::More() const noexcept {
 	return (subBreak >= 0) || (nextBreak < lineRange.end);
 }
 
-PositionCacheEntry::PositionCacheEntry() :
+PositionCacheEntry::PositionCacheEntry() noexcept :
 	styleNumber(0), len(0), clock(0), positions(nullptr) {
 }
 
@@ -701,7 +701,7 @@ PositionCacheEntry::~PositionCacheEntry() {
 	Clear();
 }
 
-void PositionCacheEntry::Clear() {
+void PositionCacheEntry::Clear() noexcept {
 	positions.reset();
 	styleNumber = 0;
 	len = 0;
@@ -721,7 +721,7 @@ bool PositionCacheEntry::Retrieve(unsigned int styleNumber_, const char *s_,
 	}
 }
 
-unsigned int PositionCacheEntry::Hash(unsigned int styleNumber_, const char *s, unsigned int len_) {
+unsigned int PositionCacheEntry::Hash(unsigned int styleNumber_, const char *s, unsigned int len_) noexcept {
 	unsigned int ret = s[0] << 7;
 	for (unsigned int i=0; i<len_; i++) {
 		ret *= 1000003;
@@ -734,11 +734,11 @@ unsigned int PositionCacheEntry::Hash(unsigned int styleNumber_, const char *s, 
 	return ret;
 }
 
-bool PositionCacheEntry::NewerThan(const PositionCacheEntry &other) const {
+bool PositionCacheEntry::NewerThan(const PositionCacheEntry &other) const noexcept {
 	return clock > other.clock;
 }
 
-void PositionCacheEntry::ResetClock() {
+void PositionCacheEntry::ResetClock() noexcept {
 	if (clock > 0) {
 		clock = 1;
 	}
@@ -754,7 +754,7 @@ PositionCache::~PositionCache() {
 	Clear();
 }
 
-void PositionCache::Clear() {
+void PositionCache::Clear() noexcept {
 	if (!allClear) {
 		for (PositionCacheEntry &pce : pces) {
 			pce.Clear();
