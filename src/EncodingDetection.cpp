@@ -559,37 +559,29 @@ static int _MapUCARDETEncoding2CPI(const char* const text, const size_t len, con
   (void)text; // UNUSED
   (void)len;  // UNUSED
 
+  float confidence = *pConfidence;
   int cpiEncoding = CPI_NONE;
 
-  if (!charset || (charset[0] == '\0')) {
-    *pConfidence = 0.0f;
-    return cpiEncoding;
-  }
+  if (charset || (charset[0] != '\0')) {
+    // preprocessing: special cases
+    if (_stricmp(charset, "ascii") == 0) {
+      cpiEncoding = CPI_ASCII_7BIT;
+    }
+    else {
+      cpiEncoding = Encoding_MatchA(charset);
+    }
 
-
-  // preprocessing: special cases
-  if (_stricmp(charset, "ascii") == 0) {
-    cpiEncoding = CPI_ASCII_7BIT;
-  }
-  else {
-    cpiEncoding = Encoding_MatchA(charset);
-  }
-
-  // check for default ANSI
-  if (cpiEncoding > CPI_ANSI_DEFAULT)
-  {
-    if (g_Encodings[cpiEncoding].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage) 
+    // check for default ANSI
+    if (cpiEncoding > CPI_ANSI_DEFAULT)
     {
-      cpiEncoding = CPI_ANSI_DEFAULT;
+      if (g_Encodings[cpiEncoding].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage)
+      {
+        cpiEncoding = CPI_ANSI_DEFAULT;
+      }
     }
   }
 
-  if (cpiEncoding == CPI_NONE)
-  {
-    *pConfidence = 0.0f;
-  }
-
-  *pConfidence = 0.0f;
+  *pConfidence = (cpiEncoding == CPI_NONE) ? 0.0f : confidence;
   return cpiEncoding;
 }
 // ============================================================================

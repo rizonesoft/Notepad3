@@ -1086,16 +1086,18 @@ bool EditLoadFile(
 
   // --------------------------------------------------------------------------
   bool bIsReliable = false;
+  float confidence = 0.0f;
   float const reliability_threshold = 0.50f;
 
   char origUCHARDET[256] = { '\0' };
-  float confidence_UCD = reliability_threshold;
-  int const iAnalyzedEncoding_UCD = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, &confidence_UCD, origUCHARDET, 256);
+  reliability_threshold;
+  int const iAnalyzedEncoding_UCD = Encoding_Analyze_UCHARDET(lpData, cbNbytes4Analysis, &confidence, origUCHARDET, 256);
+  float const confidence_UCD = confidence;
   int const iAnalyzedEncoding_CED = Encoding_Analyze_CED(lpData, cbNbytes4Analysis, iPreferedEncoding, &bIsReliable);
 
   // ------------------------------------------------------
   // calculate reliability
-  float confidence = confidence_UCD;
+  confidence = confidence_UCD;
   int iAnalyzedEncoding = iAnalyzedEncoding_UCD;
 
   float const ced_confidence = bIsReliable ? reliability_threshold + 0.25f : 0.25f;
