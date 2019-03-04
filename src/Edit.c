@@ -8441,29 +8441,6 @@ void EditFoldAltArrow(FOLD_MOVE move, FOLD_ACTION action)
 
 //=============================================================================
 //
-//  EditShowZoomCallTip()
-//
-void EditShowZoomCallTip(HWND hwnd)
-{
-  UNUSED(hwnd);
-
-  int const iZoomLevelPercent = SciCall_GetZoom();
-
-  char chToolTip[32] = { '\0' };
-  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
-
-  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
-
-  int const iXOff = SciCall_GetXOffset();
-  SciCall_SetXOffset(0);
-  SciCall_CallTipShow(iPos, chToolTip);
-  SciCall_SetXOffset(iXOff);
-  Globals.CallTipType = CT_ZOOM;
-}
-
-
-//=============================================================================
-//
 //  EditShowZeroLengthCallTip()
 //
 static char s_chZeroLenCT[80] = { '\0' };

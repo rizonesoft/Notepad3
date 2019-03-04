@@ -233,6 +233,8 @@ static void  _SaveRedoSelection(int token);
 static int   _SaveUndoSelection();
 static int   _UndoRedoActionMap(int token, UndoRedoSelection_t* selection);
 
+static void  _DelayClearZoomCallTip(int delay);
+
 
 #ifdef _EXTRA_DRAG_N_DROP_HANDLER_
 static CLIPFORMAT cfDrpF = CF_HDROP;
@@ -1339,7 +1341,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case WM_MOUSEWHEEL:
-      if (wParam & MK_CONTROL) { EditShowZoomCallTip(Globals.hwndEdit); }
+      if (wParam & MK_CONTROL) { ShowZoomCallTip(); }
       break;
 
     case WM_INPUTLANGCHANGE:
@@ -2996,6 +2998,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDT_TIMER_UPDATE_HOTSPOT:
       EditUpdateVisibleUrlHotspot(Settings.HyperlinkHotspot);
+      break;
+
+    case IDT_TIMER_CLEAR_CALLTIP:
+      SciCall_CallTipCancel();
       break;
 
     case IDM_FILE_NEW:
@@ -4769,7 +4775,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         SciCall_ZoomIn();
         UpdateMarginWidth();
-        EditShowZoomCallTip(Globals.hwndEdit);
+        ShowZoomCallTip();
       }
       break;
 
@@ -4777,16 +4783,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       {
         SciCall_ZoomOut();
         UpdateMarginWidth();
-        EditShowZoomCallTip(Globals.hwndEdit);
-      }
+        ShowZoomCallTip();
+    }
       break;
 
     case IDM_VIEW_RESETZOOM:
       {
         SciCall_SetZoom(100);
         UpdateMarginWidth();
-        EditShowZoomCallTip(Globals.hwndEdit);
-      }
+        ShowZoomCallTip();
+    }
       break;
 
     case IDM_VIEW_CHASING_DOCTAIL: 
@@ -8009,10 +8015,10 @@ int CreateIniFileEx(LPCWSTR lpszIniFile)
 
 //=============================================================================
 //
-//  DelayUpdateStatusbar()
+//  _DelayUpdateStatusbar()
 //  
 //
-static void  DelayUpdateStatusbar(int delay, bool bForceRedraw)
+static void  _DelayUpdateStatusbar(int delay, bool bForceRedraw)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_STATUSBAR, 1), (LPARAM)0, 0 };
   mqc.hwnd = Globals.hwndMain;
@@ -8023,12 +8029,26 @@ static void  DelayUpdateStatusbar(int delay, bool bForceRedraw)
 
 //=============================================================================
 //
-//  DelayUpdateToolbar()
+//  _DelayUpdateToolbar()
 //  
 //
-static void  DelayUpdateToolbar(int delay)
+static void  _DelayUpdateToolbar(int delay)
 {
   static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_UPDATE_TOOLBAR, 1), (LPARAM)0, 0 };
+  mqc.hwnd = Globals.hwndMain;
+  //mqc.lparam = (LPARAM)bForceRedraw;
+  _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
+}
+
+
+//=============================================================================
+//
+//  _DelayClearZoomCallTip()
+//  
+//
+static void  _DelayClearZoomCallTip(int delay)
+{
+  static CmdMessageQueue_t mqc = { NULL, WM_COMMAND, (WPARAM)MAKELONG(IDT_TIMER_CLEAR_CALLTIP, 1), (LPARAM)0, 0 };
   mqc.hwnd = Globals.hwndMain;
   //mqc.lparam = (LPARAM)bForceRedraw;
   _MQ_AppendCmd(&mqc, (UINT)(delay <= 0 ? 0 : _MQ_ms(delay)));
@@ -8069,7 +8089,7 @@ void UpdateVisibleUrlHotspot(int delay)
 //
 void UpdateToolbar()
 {
-  DelayUpdateToolbar(40);
+  _DelayUpdateToolbar(40);
 }
 
 //=============================================================================
@@ -8317,7 +8337,7 @@ static double  _InterpRectSelTinyExpr(int* piExprError)
 //
 void UpdateStatusbar(bool bForceRedraw)
 {
-  DelayUpdateStatusbar(40, bForceRedraw);
+  _DelayUpdateStatusbar(40, bForceRedraw);
 }
 
 //=============================================================================
@@ -8854,7 +8874,7 @@ void UpdateSettingsCmds()
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && s_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && s_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && s_bEnableSaveSettings);
-    if (SciCall_GetZoom() != 100) { EditShowZoomCallTip(Globals.hwndEdit); }
+    if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); }
 }
 
 
@@ -10276,6 +10296,30 @@ void SetNotifyIconTitle(HWND hwnd)
 
   Shell_NotifyIcon(NIM_MODIFY,&nid);
 }
+
+
+
+//=============================================================================
+//
+//  ShowZoomCallTip()
+//
+void ShowZoomCallTip()
+{
+  int const iZoomLevelPercent = SciCall_GetZoom();
+
+  char chToolTip[32] = { '\0' };
+  StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
+
+  DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+
+  int const iXOff = SciCall_GetXOffset();
+  SciCall_SetXOffset(0);
+  SciCall_CallTipShow(iPos, chToolTip);
+  SciCall_SetXOffset(iXOff);
+  Globals.CallTipType = CT_ZOOM;
+  _DelayClearZoomCallTip(2000);
+}
+
 
 
 //=============================================================================
