@@ -194,6 +194,7 @@ bool CheckNotifyChangeEvent();
 #define _IGNORE_NOTIFY_CHANGE_     __try { IgnoreNotifyChangeEvent(); 
 #define _OBSERVE_NOTIFY_CHANGE_  } __finally { ObserveNotifyChangeEvent(); }
 
+#define COND_SHOW_ZOOM_CALLTIP() { if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); } }
 
 #endif //_NP3_NOTEPAD3_H_
 ///   End of Notepad3.h   ///

@@ -340,7 +340,7 @@ BEGIN
         POPUP "ѕанель инстр&ументов"
         BEGIN
             MENUITEM "ѕоказать &панель инструментов",       IDM_VIEW_TOOLBAR
-            MENUITEM "HighDPI панель &инструментов",        IDM_VIEW_TOGGLETB
+            MENUITEM "To&ggle панель инструментов",         IDM_VIEW_TOGGLETB
             MENUITEM "&Ќастроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "ѕоказать &строку состо€ни€",          IDM_VIEW_STATUSBAR
@@ -460,7 +460,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "ѕоказать &панель инструментов",       IDM_VIEW_TOOLBAR
-        MENUITEM "HighDPI панель &инструментов",        IDM_VIEW_TOGGLETB
+        MENUITEM "To&ggle панель инструментов",         IDM_VIEW_TOGGLETB
         MENUITEM "&Ќастроить панель инструментов...",   IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
         MENUITEM "ѕоказать &строку состо€ни€",          IDM_VIEW_STATUSBAR
