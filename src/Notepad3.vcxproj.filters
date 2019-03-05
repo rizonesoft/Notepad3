@@ -408,6 +408,9 @@
     <ClCompile Include="EncodingDetection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangAfricaansModel.cpp">
+      <Filter>Source Files\uchardet\LangModels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">
