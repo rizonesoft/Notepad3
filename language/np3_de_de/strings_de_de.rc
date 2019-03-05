@@ -221,17 +221,17 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Nutzung:\r\n\
-Notepad3 \t[/?] […[Codierung]] […[Zeilenumbruch Modus]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [...[Codierung]] [...[Zeilenumbruch Modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[Laufwerk:][Pfad]Datei[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[Laufwerk:][Pfad]Datei[...]]\r\n\r\n\
 Datei\tMuss das letzte Argument sein, normalerweise\r\n\
  \tkeine gequoteten Leerstellen.\r\n\
 +\tAkzeptiere mehrere Dateien (mit gequoteten Leerstellen).\r\n\
 -\tAkzeptiere ein einzelne Datei (ohne gequotete Leerstellen).\r\n\r\n\
 Optionen:\r\n\
 /?\tDiesen Hilfetext anzeigen.\r\n\
-…\tCodierung (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tZeilenumbruch Modus (/crlf, /cr, /lf).\r\n\
+...\tCodierung (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tZeilenumbruch Modus (/crlf, /cr, /lf).\r\n\
 /e\tDatei Quellen Codierung.\r\n\
 /g\tSpringe zur gegebenen Position (/g -1 Ende der Datei).\r\n\
 /m\tFinde gegebenen Suchbegriff (/m- letzter, /mr regex,\r\n\
@@ -261,9 +261,9 @@ Optionen:\r\n\
  \tNotepad Ersetzung).\r\n\r\n\
 Beispiele:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… Drucke Datei: ""Test.txt"" direkt.\
+ \t... Drucke Datei: ""Test.txt"" direkt.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\

@@ -241,16 +241,16 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 사용법:\r\n\
-Notepad3 \t[/?] […[인코딩]] […[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [...[인코딩]] [...[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]파일명[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]파일명[...]]\r\n\r\n\
 파일명\t마지막 인수여야 하며, 기본적으로 따옴표 생략.\r\n\
 +\t여러개의 파일 지정(따옴표 사용).\r\n\
 -\t단일 파일 지정(따옴표 생략).\r\n\r\n\
 옵션:\r\n\
 /?\t도움말 메시지 표시.\r\n\
-…\t인코딩 (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\t줄 끝 모드 (/crlf, /cr, /lf).\r\n\
+...\t인코딩 (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\t줄 끝 모드 (/crlf, /cr, /lf).\r\n\
 /e\t파일 소스 인코딩.\r\n\
 /g\t지정 위치로 이동 (/g -1 end of file).\r\n\
 /m\t지정 문자열 일치 (/m- last, /mr regex, /mb backslash).\r\n\
@@ -276,9 +276,9 @@ Notepad3 \t[/?] […[인코딩]] […[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
 /z\t다음 건너 뛰기 (레지스트리 기반 메모장 교체를 위해 사용 가능).\r\n\r\n\
 예:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… 새 파일 열기: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... 새 파일 열기: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… 파일 바로 인쇄: ""Test.txt""\
+ \t... 파일 바로 인쇄: ""Test.txt""\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
