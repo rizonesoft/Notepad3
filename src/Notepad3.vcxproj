@@ -393,6 +393,12 @@
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangLatvianModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangLithuanianModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangMalteseModel.cpp" />
+    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangNederlandsModel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangPolishModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangPortugueseModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangRomanianModel.cpp" />

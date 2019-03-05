@@ -43,10 +43,10 @@ import re
 ## Mandatory Properties ##
 
 # The human name for the language, in English.
-name = 'Africaans'
+name = 'Nederlands'
 # Use 2-letter ISO 639-1 if possible, 3-letter ISO code otherwise,
 # or use another catalog as a last resort.
-code = 'af'
+code = 'nl'
 # ASCII characters are also used in French.
 use_ascii = True
 # The charsets we want to support and create data for.
@@ -58,9 +58,9 @@ charsets = ['WINDOWS-1252', 'ISO-8859-1', 'ISO-8859-9', 'ISO-8859-15']
 # If use_ascii=True, there is no need to add any ASCII characters.
 # If case_mapping=True, there is no need to add several cases of a same
 # character (provided Python algorithms know the right cases).
-alphabet = ['è', 'é', 'ê', 'ë', 'î', 'ï','ô', 'û']
+alphabet = ['ë', 'ï', 'ö']
 # The start page. Though optional, it is advised to choose one yourself.
-start_pages = ['Tuisblad']
+start_pages = ['Hoofdpagina']
 # give possibility to select another code for the Wikipedia URL.
 wikipedia_code = code
 # 'a' and 'A' will be considered the same character, and so on.
