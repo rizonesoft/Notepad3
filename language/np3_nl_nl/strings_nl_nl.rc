@@ -221,9 +221,9 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Gebruik:\r\n\
-Notepad3 \t[/?] […[Codering]] […[Lijn ending modus]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [...[Codering]] [...[Lijn ending modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[schijf:][pad]bestand[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[schijf:][pad]bestand[...]]\r\n\r\n\
 bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\
  \tspaties standaard.\r\n\
 +\tAccepteer meerdere bestandsargumenten (met\r\n\
@@ -232,8 +232,8 @@ bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\
  \taanhalingstekens).\r\n\r\n\
 Opties:\r\n\
 /?\tTonen dit help-bericht.\r\n\
-…\tCodering (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tLijn ending modus (/crlf, /cr, /lf).\r\n\
+...\tCodering (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tLijn ending modus (/crlf, /cr, /lf).\r\n\
 /e\tBestandsbron codering.\r\n\
 /g\tSpring naar de opgegeven positie (/g -1 einde van het bestand).\r\n\
 /m\tMatch met opgegeven tekst (/m- last, /mr regex, /mb backslash).\r\n\
@@ -260,9 +260,9 @@ Opties:\r\n\
  \tNotepad vervanging).\r\n\r\n\
 Voorbeelden:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… Open een nieuw bestand: ""Test.txt"" Codering=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Open een nieuw bestand: ""Test.txt"" Codering=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… Print het bestand: ""Test.txt"" onmiddellijk.\
+ \t... Print het bestand: ""Test.txt"" onmiddellijk.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\

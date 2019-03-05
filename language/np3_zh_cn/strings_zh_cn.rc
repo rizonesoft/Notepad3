@@ -221,16 +221,16 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 用法：\r\n\
-Notepad3 \t[/?] […[编码]] […[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[盘符:][路径]文件名[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[盘符:][路径]文件名[...]]\r\n\r\n\
 文件\t必须是最后一个参数，不需要双引号。\r\n\
 +\t接收多个文件参数（对于有空格的参数，需要用双引号括起来）。\r\n\
 -\t接收单个文件参数（对于有空格的参数，不需要双引号）。\r\n\r\n\
 选项：\r\n\
 /?\t显示这个帮助消息。\r\n\
-…\t编码（/ansi, /unicode, /unicodebe, /utf8, /utf8sig）。\r\n\
-…\t换行符模式（/crlf, /cr, /lf）。\r\n\
+...\t编码（/ansi, /unicode, /unicodebe, /utf8, /utf8sig）。\r\n\
+...\t换行符模式（/crlf, /cr, /lf）。\r\n\
 /e\t选择文件编码。\r\n\
 /g\t跳转到指定位置（/g -1 跳转到文件末尾）\r\n\
 /m\t匹配指定字符串（/m- 上次匹配的, /mr 正则表达式, /mb 转义反斜杠）。\r\n\
@@ -256,9 +256,9 @@ Notepad3 \t[/?] […[编码]] […[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
 /z\t忽略下一个参数（当通过注册表替换系统记事本时这可能有用）。\r\n\r\n\
 示例：\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… 使用 UTF-8-BOM 编码、CRLF 换行符模式打开文件 ""Test.txt""。\r\n\
+ \t... 使用 UTF-8-BOM 编码、CRLF 换行符模式打开文件 ""Test.txt""。\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… 打印文件 ""Test.txt""。\
+ \t... 打印文件 ""Test.txt""。\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\

@@ -221,16 +221,16 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Gebruik:\r\n\
-Notepad3 \t[/?] […[Enkodering]] […[Lyn Eindig Metode]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 \t[/?] [...[Enkodering]] [...[Lyn Eindig Metode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[Hardeskyf:][Pad]Lêernaam[…]]\r\n\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[Hardeskyf:][Pad]Lêernaam[...]]\r\n\r\n\
 lêer\tMoet die laaste argument wees, geen standaard spasies nie.\r\n\
 +\tAanvaar verskeie lêer argumente (met aangehaalde spasies).\r\n\
 -\tAanvaar enkellêer argument (sonder aangehaalde spasies).\r\n\r\n\
 Opsies:\r\n\
 /?\tWys hierdie hulpboodskap.\r\n\
-…\tEnkodering (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-…\tLyn eindig metode (/crlf, /cr, /lf).\r\n\
+...\tEnkodering (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tLyn eindig metode (/crlf, /cr, /lf).\r\n\
 /e\tLêer bron kodering.\r\n\
 /g\tSpring na gespesifiseerde posisie (/g -1 end of file).\r\n\
 /m\tPas gespesifiseerde teks (/m- last, /mr regex, /mb backslash).\r\n\
@@ -256,9 +256,9 @@ Opsies:\r\n\
 /z\tSlaan oor na (bruikbaar vir registry-basis Notepad-vervanging).\r\n\r\n\
 Voorbeelde:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t… Maak 'n nuwe lêer oop: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Maak 'n nuwe lêer oop: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t… Druk die lêer: ""Test.txt"" onmiddellik.\
+ \t... Druk die lêer: ""Test.txt"" onmiddellik.\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
