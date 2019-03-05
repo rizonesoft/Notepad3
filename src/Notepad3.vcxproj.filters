@@ -411,6 +411,9 @@
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangAfricaansModel.cpp">
       <Filter>Source Files\uchardet\LangModels</Filter>
     </ClCompile>
+    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangBelarusianModel.cpp">
+      <Filter>Source Files\uchardet\LangModels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dialogs.h">

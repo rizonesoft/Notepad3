@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -253,6 +253,7 @@ extern const SequenceModel Iso_8859_15SwedishModel;
 extern const SequenceModel Windows_1252SwedishModel;
 
 extern const SequenceModel Windows_1252AfricaansModel;
+extern const SequenceModel Windows_1251BelarusianModel;
 
 #endif /* nsSingleByteCharSetProber_h__ */
 
