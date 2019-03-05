@@ -339,11 +339,11 @@ BEGIN
         END
         POPUP "&Barre à outils"
         BEGIN
-            MENUITEM "Afficher la &barre à outils",         IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle Toolbar",                     IDM_VIEW_TOGGLETB
+            MENUITEM "A&fficher la barre à outils",         IDM_VIEW_TOOLBAR
+            MENUITEM "Al&terner la barre à outils",         IDM_VIEW_TOGGLETB
             MENUITEM "Gérer la barre à outils...",          IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
-            MENUITEM "Afficher la barre d'ét&at",           IDM_VIEW_STATUSBAR
+            MENUITEM "&Charger un thème d'outils...",        IDM_VIEW_LOADTHEMETB
+            MENUITEM "Affic&her la barre d'état",           IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
         BEGIN
@@ -459,11 +459,11 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Afficher la barre à ou&tils",             IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Toolbar",                         IDM_VIEW_TOGGLETB
+        MENUITEM "A&fficher la barre à outils",             IDM_VIEW_TOOLBAR
+        MENUITEM "Al&terner la barre à outils",             IDM_VIEW_TOGGLETB
         MENUITEM "&Gérer la barre à outils...",             IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",                  IDM_VIEW_LOADTHEMETB
-        MENUITEM "Afficher la barre d'ét&at",               IDM_VIEW_STATUSBAR
+        MENUITEM "&Charger un thème d'outils...",           IDM_VIEW_LOADTHEMETB
+        MENUITEM "Affi&cher la barre d'état",               IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN

@@ -340,9 +340,9 @@ BEGIN
         POPUP "Barra de herram&ientas"
         BEGIN
             MENUITEM "&Mostrar la barra de herramientas",               IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle Toolbar",                                 IDM_VIEW_TOGGLETB
+            MENUITEM "Al&ternar la barra de herramientas",              IDM_VIEW_TOGGLETB
             MENUITEM "&Personalizar la barra de herramientas...",       IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Cargar tema de la barra de herramientas...",     IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Cargar un tema de herramientas...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "Mostrar barra de &estado",                        IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -460,9 +460,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Toolbar",                             IDM_VIEW_TOGGLETB
+        MENUITEM "Al&ternar la barra de herramientas",          IDM_VIEW_TOGGLETB
         MENUITEM "&Personalizar la barra de herramientas...",   IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Cargar tema de la barra de herramientas...", IDM_VIEW_LOADTHEMETB
+        MENUITEM "&Cargar un tema de herramientas...",          IDM_VIEW_LOADTHEMETB
         MENUITEM "Mostrar la barra de &estado",                 IDM_VIEW_STATUSBAR
     END
     POPUP "+"

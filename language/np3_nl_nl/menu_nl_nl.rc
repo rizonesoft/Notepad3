@@ -340,9 +340,9 @@ BEGIN
         POPUP "&Werkbalk"
         BEGIN
             MENUITEM "Werk&balk tonen",                                 IDM_VIEW_TOOLBAR
-            MENUITEM "To&ggle Toolbar",                                 IDM_VIEW_TOGGLETB
+            MENUITEM "To&ggle werkbalk",                                IDM_VIEW_TOGGLETB
             MENUITEM "Werkbal&k aanpassen...",                          IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",                          IDM_VIEW_LOADTHEMETB
+            MENUITEM "&Laden een werkbalk thema...",                    IDM_VIEW_LOADTHEMETB
             MENUITEM "Toon &statusbalk",                                IDM_VIEW_STATUSBAR
         END
         POPUP "&Zoom"
@@ -460,9 +460,9 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Werk&balk tonen",                         IDM_VIEW_TOOLBAR
-        MENUITEM "To&ggle Toolbar",                         IDM_VIEW_TOGGLETB
-        MENUITEM "&Werkbal&k aanpassen...",                 IDM_VIEW_CUSTOMIZETB
-        MENUITEM "&Load Toolbar Theme...",                  IDM_VIEW_LOADTHEMETB
+        MENUITEM "To&ggle werkbalk",                        IDM_VIEW_TOGGLETB
+        MENUITEM "Werkbal&k aanpassen...",                  IDM_VIEW_CUSTOMIZETB
+        MENUITEM "&Laden een werkbalk thema...",            IDM_VIEW_LOADTHEMETB
         MENUITEM "Toon &statusbalk",                        IDM_VIEW_STATUSBAR
     END
     POPUP "+"
