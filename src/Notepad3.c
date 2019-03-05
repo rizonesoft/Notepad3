@@ -1796,6 +1796,7 @@ bool SelectExternalToolBar(HWND hwnd)
   {
     StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L""); // clear
     StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapHot), L""); // clear
+    s_iHighDpiToolBar = 2;
     return true;
   }
   return false;
@@ -1818,7 +1819,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
   // Add Toolbar Bitmap
   HBITMAP hbmp = NULL;
   HBITMAP hbmpCopy = NULL;
-  if (StrIsNotEmpty(s_tchToolbarBitmap))
+
+  if ((s_iHighDpiToolBar == 2) && StrIsNotEmpty(s_tchToolbarBitmap))
   {
     hbmp = _LoadBitmapFile(s_tchToolbarBitmap);
 
@@ -1833,14 +1835,14 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         (bmp.bmHeight * NUMTOOLBITMAPS), bmp.bmHeight, NUMTOOLBITMAPS);
 
       StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
+      s_iHighDpiToolBar = 1;
       DeleteObject(hbmp);
       hbmp = NULL;
     }
-
   }
 
   if (!hbmp) {
-    LPWSTR toolBarIntRes = (s_iHighDpiToolBar >= 1) ? MAKEINTRESOURCE(IDR_MAINWNDTB2) : MAKEINTRESOURCE(IDR_MAINWNDTB);
+    LPWSTR toolBarIntRes = (s_iHighDpiToolBar == 0) ? MAKEINTRESOURCE(IDR_MAINWNDTB) : MAKEINTRESOURCE(IDR_MAINWNDTB2);
     hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   }
 
@@ -2996,8 +2998,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
   EnableCmd(hmenu,IDM_VIEW_NOPRESERVECARET,i);
   EnableCmd(hmenu,IDM_VIEW_NOSAVEFINDREPL,i);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGS,s_bEnableSaveSettings && i);
-
-  CheckCmd(hmenu, IDM_VIEW_TOGGLETB, ((s_iHighDpiToolBar >= 1) && StrIsEmpty(s_tchToolbarBitmap)));
 
   i = (StringCchLenW(Globals.IniFile,COUNTOF(Globals.IniFile)) > 0 || StringCchLenW(s_wchIniFile2,COUNTOF(s_wchIniFile2)) > 0);
   EnableCmd(hmenu,IDM_VIEW_SAVESETTINGSNOW,s_bEnableSaveSettings && i);
@@ -4943,12 +4943,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
       break;
 
     case IDM_VIEW_TOGGLETB:
-      s_iHighDpiToolBar = (s_iHighDpiToolBar <= 0) ? 1 : 0;
-      if (s_iHighDpiToolBar >= 0) {
-        StringCchCopy(s_tchToolbarBitmap, COUNTOF(s_tchToolbarBitmap), L"");
-        StringCchCopy(s_tchToolbarBitmapHot, COUNTOF(s_tchToolbarBitmapHot), L"");
-        StringCchCopy(s_tchToolbarBitmapDisabled, COUNTOF(s_tchToolbarBitmapDisabled), L"");
-      }
+      s_iHighDpiToolBar = (s_iHighDpiToolBar + 1) % (StrIsEmpty(s_tchToolbarBitmap) ? 2 : 3);
       SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
       break;
 
@@ -7093,8 +7088,8 @@ void LoadSettings()
 
     WCHAR tchHighDpiToolBar[32] = { L'\0' };
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
-    s_iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, 0);
-    s_iHighDpiToolBar = clampi(s_iHighDpiToolBar, -1, 1);
+    s_iHighDpiToolBar = IniSectionGetInt(pIniSection, tchHighDpiToolBar, -1);
+    s_iHighDpiToolBar = StrIsNotEmpty(s_tchToolbarBitmap) ? 2 : clampi(s_iHighDpiToolBar, -1, 1);
     if (s_iHighDpiToolBar < 0) { // undefined: determine high DPI (higher than Full-HD)
       s_iHighDpiToolBar = IsFullHDOrHigher(ResX, ResY) ? 1 : 0;
     }
@@ -8988,7 +8983,7 @@ void UpdateSettingsCmds()
     CheckCmd(hmenu, IDM_VIEW_SAVESETTINGS, Settings.SaveSettings && s_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGS, hasIniFile && s_bEnableSaveSettings);
     EnableCmd(hmenu, IDM_VIEW_SAVESETTINGSNOW, hasIniFile && s_bEnableSaveSettings);
-    if (SciCall_GetZoom() != 100) { ShowZoomCallTip(); }
+    COND_SHOW_ZOOM_CALLTIP();
 }
 
 
@@ -9005,6 +9000,7 @@ void UpdateUI()
   scn.updated = (SC_UPDATE_CONTENT | SC_UPDATE_NP3_INTERNAL_NOTIFY);
   SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
   //PostMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
+  COND_SHOW_ZOOM_CALLTIP();
 }
 
 

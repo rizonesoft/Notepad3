@@ -340,10 +340,10 @@ BEGIN
         POPUP "도구 모음(&T)"
         BEGIN
             MENUITEM "도구 모음 보기(&B)",                       IDM_VIEW_TOOLBAR
-            MENUITEM "HighDPI 도구 모음",                     IDM_VIEW_TOGGLETB
-            MENUITEM "도구 모음 사용자 지정(&U)...",               IDM_VIEW_CUSTOMIZETB
-            MENUITEM "&Load Toolbar Theme...",                IDM_VIEW_LOADTHEMETB
-            MENUITEM "상태 표시 줄 보이기(&S)",                     IDM_VIEW_STATUSBAR
+            MENUITEM "To&ggle 도구 모음",                        IDM_VIEW_TOGGLETB
+            MENUITEM "도구 모음 사용자 지정(&U)...",              IDM_VIEW_CUSTOMIZETB
+            MENUITEM "&Load Toolbar Theme...",                  IDM_VIEW_LOADTHEMETB
+            MENUITEM "상태 표시 줄 보이기(&S)",                   IDM_VIEW_STATUSBAR
         END
         POPUP "확대/축소(&Z)"
         BEGIN

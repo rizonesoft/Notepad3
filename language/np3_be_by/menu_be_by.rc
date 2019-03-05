@@ -340,7 +340,7 @@ BEGIN
         POPUP "Паліца пры&ладаў"
         BEGIN
             MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-            MENUITEM "HighDPI паліца пр&ыладаў",      IDM_VIEW_TOGGLETB
+            MENUITEM "To&ggle паліца прыладаў",       IDM_VIEW_TOGGLETB
             MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Load Toolbar Theme...",        IDM_VIEW_LOADTHEMETB
             MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
@@ -460,7 +460,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
-        MENUITEM "HighDPI паліца пр&ыладаў",      IDM_VIEW_TOGGLETB
+        MENUITEM "To&ggle паліца прыладаў",       IDM_VIEW_TOGGLETB
         MENUITEM "&Наладзіць паліцу прыладаў...", IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Load Toolbar Theme...",        IDM_VIEW_LOADTHEMETB
         MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR

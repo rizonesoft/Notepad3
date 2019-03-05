@@ -340,7 +340,7 @@ BEGIN
         POPUP "&Barre à outils"
         BEGIN
             MENUITEM "Afficher la &barre à outils",         IDM_VIEW_TOOLBAR
-            MENUITEM "Barre à outils avec grandes Icônes",  IDM_VIEW_TOGGLETB
+            MENUITEM "To&ggle Toolbar",                     IDM_VIEW_TOGGLETB
             MENUITEM "Gérer la barre à outils...",          IDM_VIEW_CUSTOMIZETB
             MENUITEM "&Load Toolbar Theme...",              IDM_VIEW_LOADTHEMETB
             MENUITEM "Afficher la barre d'ét&at",           IDM_VIEW_STATUSBAR
@@ -460,7 +460,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Afficher la barre à ou&tils",             IDM_VIEW_TOOLBAR
-        MENUITEM "Barre à outils avec grandes Icônes",      IDM_VIEW_TOGGLETB
+        MENUITEM "To&ggle Toolbar",                         IDM_VIEW_TOGGLETB
         MENUITEM "&Gérer la barre à outils...",             IDM_VIEW_CUSTOMIZETB
         MENUITEM "&Load Toolbar Theme...",                  IDM_VIEW_LOADTHEMETB
         MENUITEM "Afficher la barre d'ét&at",               IDM_VIEW_STATUSBAR
