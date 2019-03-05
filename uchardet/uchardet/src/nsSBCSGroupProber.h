@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -40,7 +40,7 @@
 #define nsSBCSGroupProber_h__
 
 
-#define NUM_OF_SBCS_PROBERS 101
+#define NUM_OF_SBCS_PROBERS 102
 
 class nsCharSetProber;
 class nsSBCSGroupProber: public nsCharSetProber {

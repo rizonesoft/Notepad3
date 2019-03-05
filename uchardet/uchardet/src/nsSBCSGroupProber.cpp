@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+﻿/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -192,6 +192,7 @@ nsSBCSGroupProber::nsSBCSGroupProber()
   mProbers[99] = new nsSingleByteCharSetProber(&Windows_1252SwedishModel);
   
   mProbers[100] = new nsSingleByteCharSetProber(&Windows_1252AfricaansModel);
+  mProbers[101] = new nsSingleByteCharSetProber(&Windows_1251BelarusianModel);
 
   Reset();
 }
